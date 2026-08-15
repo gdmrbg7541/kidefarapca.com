@@ -2656,6 +2656,14 @@ input:checked +
     transition: 0.3s; font-size: 0.9rem; color: #333;
 }
 .memory-btn.active { background: #ff922b; color: white; }
+/* Hafıza oyunu başladıktan sonra mod düğmeleri kilitlenir: oyun
+   ortasında sekme değiştirmek skoru sessizce siliyordu. Çıkış tek
+   kapıdan — ✕ (İptal). */
+.memory-btn.memory-btn-kilitli {
+    opacity: .42; cursor: not-allowed; box-shadow: none;
+    filter: grayscale(.5);
+}
+.memory-btn.memory-btn-kilitli:hover { opacity: .42; }
 
 .memory-card { perspective: 1000px; cursor: pointer;
     z-index: 1000; width: 100%; height: 100%; min-height: 180px; }
@@ -5815,6 +5823,50 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
     font-size: calc(1.02rem * var(--ktk-olcek)); line-height: 1.65; color: #5A6474;
 }
 
+/* GİRİŞTEKİ "NEDEN" IZGARASI — kılavuzun ilk ekranı yalnız "ne yapar"ı
+   değil "neden işe yarar"ı da söylesin diye. Kartlar solda renkli bir
+   simge, sağda tek cümlelik gerekçe; renk her kartta --nk ile veriliyor
+   ki ızgara tek renge boğulmasın. */
+.ktk-neden {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(300px * var(--ktk-olcek)), 1fr));
+    gap: calc(12px * var(--ktk-olcek)) calc(20px * var(--ktk-olcek));
+    margin: calc(22px * var(--ktk-olcek)) 0 calc(16px * var(--ktk-olcek));
+    text-align: left;
+}
+.ktk-nk {
+    display: flex; align-items: flex-start; gap: calc(12px * var(--ktk-olcek));
+    background: #F8FAFD; border: 1px solid #EBF0F7;
+    border-radius: calc(14px * var(--ktk-olcek));
+    padding: calc(13px * var(--ktk-olcek)) calc(15px * var(--ktk-olcek));
+}
+.ktk-nk > div {
+    font-size: calc(.93rem * var(--ktk-olcek)); line-height: 1.55; color: #55606F;
+}
+.ktk-nk b { color: #1d1d1f; }
+.ktk-nk > div > b:first-child {
+    display: block; font-size: calc(1rem * var(--ktk-olcek));
+    font-weight: 800; margin-bottom: calc(3px * var(--ktk-olcek));
+}
+.ktk-nk kbd {
+    display: inline-block; padding: 0 calc(5px * var(--ktk-olcek));
+    border-radius: calc(5px * var(--ktk-olcek)); background: #EDF1F7;
+    border: 1px solid #DDE3EC; font-family: inherit; font-weight: 700;
+    font-size: calc(.84rem * var(--ktk-olcek)); color: #374151;
+}
+.ktk-nk-ik {
+    flex: 0 0 auto; width: calc(38px * var(--ktk-olcek)); height: calc(38px * var(--ktk-olcek));
+    display: flex; align-items: center; justify-content: center;
+    border-radius: calc(11px * var(--ktk-olcek));
+    background: #EEF3F9;                                   /* color-mix yoksa yedek */
+    background: color-mix(in srgb, var(--nk) 12%, #fff);
+    color: var(--nk);
+}
+.ktk-nk-ik svg { width: calc(21px * var(--ktk-olcek)); height: calc(21px * var(--ktk-olcek)); }
+.ktk-alt-not {
+    margin: 0 auto !important; max-width: calc(720px * var(--ktk-olcek));
+    font-size: calc(.96rem * var(--ktk-olcek)) !important; color: #7A8494 !important;
+}
+
 .ktk-bolum {
     display: grid; grid-template-columns: 1fr 1.15fr;
     gap: calc(26px * var(--ktk-olcek)); align-items: center;
@@ -5830,10 +5882,22 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
     border-radius: 50%; background: #EAF2FA; color: #2980B9;
     font-size: calc(1.02rem * var(--ktk-olcek)); font-weight: 800;
 }
+/* Başlıklar: numara dairesinin yanına adımı anlatan bir simge. Simge
+   flex kutunun ilk çocuğu, metin ikinci — başlık iki satıra sararsa
+   simge yukarıda hizalı kalsın diye align-items: flex-start değil,
+   metin bloğu ayrı span'de tutuluyor. */
 .ktk-yazi h3 {
     margin: 0 0 calc(9px * var(--ktk-olcek));
     font-size: calc(1.34rem * var(--ktk-olcek)); font-weight: 800; color: #1d1d1f;
+    display: flex; align-items: center; gap: calc(10px * var(--ktk-olcek));
 }
+.ktk-bik {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: calc(30px * var(--ktk-olcek)); height: calc(30px * var(--ktk-olcek));
+    border-radius: calc(9px * var(--ktk-olcek));
+    background: #EAF2FA; color: #2980B9;
+}
+.ktk-bik svg { width: calc(19px * var(--ktk-olcek)); height: calc(19px * var(--ktk-olcek)); }
 .ktk-yazi p {
     margin: 0 0 calc(9px * var(--ktk-olcek));
     font-size: calc(1rem * var(--ktk-olcek)); line-height: 1.62; color: #4B5563;
@@ -5879,6 +5943,17 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
 }
 .ktk-bolum:has(.ktk-genis) { grid-template-columns: 1fr; }
 .ktk-genis img { border-radius: calc(10px * var(--ktk-olcek)); }
+/* İki görselli bölüm (tablonun iki sekmesi, ek kartının iki hâli):
+   alt alta iki kare + altlarında hangi hâl olduğunu söyleyen etiket.
+   Yan yana koymadım — kılavuz sütunu zaten dar, iki tabloyu yan yana
+   sıkıştırınca harekeler okunmaz oluyordu. */
+.ktk-cift { display: grid; gap: calc(14px * var(--ktk-olcek)); }
+.ktk-cift figure { margin: 0; }
+.ktk-cift figcaption {
+    margin-top: calc(6px * var(--ktk-olcek)); text-align: center;
+    font-size: calc(.82rem * var(--ktk-olcek)); font-weight: 700;
+    color: #7A8494; letter-spacing: .015em;
+}
 
 .ktk-dip {
     display: flex; flex-wrap: wrap; align-items: center; gap: calc(8px * var(--ktk-olcek)) calc(18px * var(--ktk-olcek));
@@ -6286,3 +6361,61 @@ body.ko-sakin .sitemap-wave-hint { animation: none !important; transition: none 
    olur olmaz gizlenmesin — önce aşağı kayan tabloyla birlikte süzülsün.
    Kayış bitince `ko-bas-kayan` kalkar, aşağıdaki kural yine iş görür. */
 #tab1 table.ko-acik > thead > tr.ko-bas-kayan { display: table-row !important; }
+
+/* KELİME LİSTESİ BAŞLIKLARI — site renginde zemin, BEYAZ yazı.
+   Başlık/ok için ayrı ayrı #000 veren eski kurallar duruyor (başka
+   yerlerde de kullanılıyorlar), bu yüzden renkli kartın içindekiler
+   burada topluca beyaza çekiliyor. Açık uçlu geçişlerde (yeşil, amber)
+   okunurluk için çok hafif bir gölge var — koyu zeminde fark edilmez. */
+.thematic-accordion-item.site-renk,
+.thematic-accordion-item.site-renk .thematic-accordion-header,
+.thematic-accordion-item.site-renk .thematic-accordion-title,
+.thematic-accordion-item.site-renk .thematic-accordion-title span,
+.thematic-accordion-item.site-renk .thematic-accordion-icon {
+    color: #fff !important;
+}
+.thematic-accordion-item.site-renk .thematic-accordion-title {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+}
+.thematic-accordion-item.site-renk { border-color: rgba(255, 255, 255, .18); }
+.thematic-accordion-item.site-renk .thematic-accordion-header:hover {
+    background: rgba(255, 255, 255, .13);
+}
+
+/* ARAMA EKRANI BAŞLIK İKONLARI (Sözlük / Vezinlere Bak).
+   Başlık RTL bir esnek kutu: DOM'da nokta → ikon → yazı sırası,
+   ekranda YAZI → İKON → nokta olarak okunur. Yani ikon kelimenin
+   sağında; tek eksik olan araya boşluktu. margin-left kelimeye,
+   margin-right noktaya bakıyor. Eski Font Awesome <i>'leri yerine
+   satır içi SVG: CDN'e bağlı değil, boyu yazıyla orantılı. */
+.kt-bas-ik {
+    width: 21px; height: 21px; flex: 0 0 auto;
+    margin-left: 11px; margin-right: 4px;
+    opacity: .88;
+}
+
+/* KONU ÖBEĞİ BAŞLIĞI — kelime listeleri ekranında grupları ayırır.
+   Izgaranın tamamını kaplar (grid-column: 1 / -1) ki kartların
+   arasına satır olarak girsin; ilk öbeğin üstünde fazladan boşluk
+   olmasın diye :first-child'ın üst payı kısılıyor. */
+.ktl-obek {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 10px;
+    margin: 26px 2px 2px; padding: 0 0 9px;
+    border-bottom: 2px solid rgba(41, 128, 185, .16);
+}
+.ktl-obek:first-child { margin-top: 4px; }
+.ktl-obek-ik { font-size: 1.55rem; line-height: 1; }
+.ktl-obek-ad {
+    font-size: 1.38rem; font-weight: 800; color: #2C3E50;
+    letter-spacing: .01em;
+}
+.ktl-obek-say {
+    margin-left: auto; font-size: .88rem; font-weight: 700;
+    color: #7C8797; background: #EEF2F7;
+    padding: 4px 13px; border-radius: 999px;
+}
+@media (max-width: 1024px) {
+    .ktl-obek { margin-top: 20px; }
+    .ktl-obek-ad { font-size: 1.05rem; }
+}

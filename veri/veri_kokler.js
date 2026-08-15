@@ -540,9 +540,7 @@ const wordEasterEggs = {
         19: { base: { emoji: "📜", arText: "عَهْد", trText: "Söz / Ahit / Dönem.", ornek: { ar: "وَلِيُّ الْعَهْدِ", tr: "Veliaht (Geleceğin yöneticisi)." } } },
         
         // --- 21 Numaralı Kalıp ---
-        21: { 
-            "ة": { emoji: "⚖️", arText: "عُهْدَة", trText: "Sorumluluk / Mesuliyet / Uhde.", ornek: { ar: "هَذَا فِي عُهْدَتِي", tr: "Bu benim uhdemdedir (sorumluluğumdadır)." } }
-        },
+        21: { "base": { "emoji": "⚖️", "arText": "عُهْدَة", "trText": "Sorumluluk / Mesuliyet / Uhde.", "ornek": { "ar": "هَذَا فِي عُهْدَتِي", "tr": "Bu benim uhdemdedir (sorumluluğumdadır)." } } },
         
         // --- 38 Numaralı Kalıp (İsm-i Mekan) ---
         38: { base: { emoji: "🏛️", arText: "مَعْهَد", trText: "Enstitü / Kurum / Akademi.", ornek: { ar: "مَعْهَدُ اللُّغَاتِ", tr: "Diller enstitüsü." } } },
@@ -581,9 +579,7 @@ const wordEasterEggs = {
         },
 
         // --- 35 Numaralı Kalıp (فَعِيل - İsim) ---
-        35: { 
-            "ة": { emoji: "⛺", arText: "عَشِيرَة", trText: "Kabile / Aşiret / Yakın akraba.", ornek: { ar: "عَشِيرَةُ الرَّجُلِ", tr: "Adamın aşireti (kabilesi)." } }
-        },
+        35: { "base": { "emoji": "🤝", "arText": "عَشِير", "trText": "Yakın arkadaş, eş, hısım", "ornek": { "ar": "وَلَبِئْسَ الْعَشِيرُ", "tr": "O ne kötü bir arkadaştır! (Hac sûresi, 13)" } }, "ة": { "emoji": "⛺", "arText": "عَشِيرَة", "trText": "Kabile / Aşiret / Yakın akraba.", "ornek": { "ar": "عَشِيرَةُ الرَّجُلِ", "tr": "Adamın aşireti (kabilesi)." } } },
 
         // --- 58-61 Numaralı Kalıplar (Tef'il Babı - Ona tamamlamak / Öşür almak) ---
         58: { base: { emoji: "⚖️", arText: "عَشَّرَ", trText: "Ona tamamladı / Öşür (onda bir) aldı.", ornek: { ar: "عَشَّرَ الْمَالَ", tr: "Maldan öşür aldı." } } },
@@ -955,7 +951,7 @@ const wordEasterEggs = {
                 ornek: { ar: "💡 مَعْلُومَة ثَقَافِيَّة", tr: "Kültürel Not: Duyurmak, dinlemek ve izin vermek (duyup onaylamak) kavramlarının hepsi 'Kulak' kökünden türer." }
             } 
         },
-        20: { 
+        20: { tip: "uzuv", 
             base: { emoji: "📜", arText: "إِذْن", trText: "İzin / Müsaade, onay.",
                 ornek: { ar: "دَخَلَ بِإِذْنِ صَاحِبِ الْبَيْتِ", tr: "Ev sahibinin izniyle girdi." }
             } 
@@ -1233,18 +1229,7 @@ const wordEasterEggs = {
         },
         
         // --- 34 Numaralı Kalıp (فَعَّالَة - Mübalağa) ---
-        34: { 
-            suggestsPlus: true, 
-            "ة": {
-                emoji: "🧠", 
-                arText: "عَلَّامَة", 
-                trText: "Çok bilen / Allâme.",
-                ornek: {
-                    ar: "هُوَ عَلَّامَةُ الْعَصْرِ فِي الْفِقْهِ",
-                    tr: "O, fıkıh ilminde asrın allâmesidir (büyük bilginidir)."
-                }
-            } 
-        },
+        34: { "base": { "emoji": "🧠", "arText": "عَلَّام", "trText": "Çok iyi bilen, allâm", "ornek": { "ar": "إِنَّكَ أَنْتَ عَلَّامُ الْغُيُوبِ", "tr": "Şüphesiz gaybları en iyi bilen sensin. (Mâide sûresi, 109)" } }, "suggestsPlus": true, "ة": { "emoji": "🧠", "arText": "عَلَّامَة", "trText": "Çok bilen / Allâme.", "ornek": { "ar": "هُوَ عَلَّامَةُ الْعَصْرِ فِي الْفِقْهِ", "tr": "O, fıkıh ilminde asrın allâmesidir (büyük bilginidir)." } } },
         
         // --- 36 Numaralı Kalıp (مَفْعُول) ---
         36: {
@@ -1605,18 +1590,7 @@ const wordEasterEggs = {
         },
         
         // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
-        63: { 
-            suggestsPlus: true, 
-            "ات": { 
-                emoji: "🔮", 
-                arText: "مُقَدَّرَات", 
-                trText: "Mukadderat / Alın yazısı.",
-                ornek: {
-                    ar: "مُقَدَّرَاتُ الْإِنْسَانِ مَكْتُوبَةٌ",
-                    tr: "İnsanın mukadderatı (alın yazısı) yazılmıştır."
-                }
-            } 
-        },
+        63: { "base": { "emoji": "📜", "arText": "مُقَدَّر", "trText": "Takdir edilmiş, alın yazısı olan", "ornek": { "ar": "كُلُّ شَيْءٍ مُقَدَّرٌ عِنْدَ اللهِ", "tr": "Her şey Allah katında takdir edilmiştir." } }, "suggestsPlus": true, "ات": { "emoji": "🔮", "arText": "مُقَدَّرَات", "trText": "Mukadderat / Alın yazısı.", "ornek": { "ar": "مُقَدَّرَاتُ الْإِنْسَانِ مَكْتُوبَةٌ", "tr": "İnsanın mukadderatı (alın yazısı) yazılmıştır." } } },
 
 
         // --- 77 Numaralı Kalıp (اِفْتَعَلَ - Mazi / İfti'âl Babı) ---
@@ -2592,7 +2566,7 @@ const wordEasterEggs = {
         },
         
         // --- 40 Numaralı Kalıp (مِفْعَال) ---
-        40: { 
+        40: { tip: "esya", 
             base: { emoji: "🔑", arText: "مِفْتَاح", trText: "Anahtar.", ornek: { ar: "أَعْطِنِي مِفْتَاحَ السَّيَّارَةِ", tr: "Bana arabanın anahtarını ver." } } 
         },
         
@@ -3865,6 +3839,7 @@ const wordEasterEggs = {
     // 19. T-B-Q (ط ب ق) KÖKÜ - Uymak / Katman / Tatbik Etmek
     // ==================================================================
     "طبق": {
+        41: { tekilId: 17, base: { emoji: "🍽️", arText: "أَطْبَاق", trText: "Tabaklar (طَبَق çoğulu)", ornek: { ar: "عَلَى الطَّاوِلَةِ سَبْعَةُ أَطْبَاقٍ", tr: "Masada yedi tabak var." } } },
         // --- 17 Numaralı Kalıp (فَعَل) ---
         17: { 
             base: { emoji: "🍽️", arText: "طَبَق", trText: "Tabak / Katman.", ornek: { ar: "وَضَعَ الطَّعَامَ فِي طَبَقٍ", tr: "Yemeği bir tabağa koydu." } }, 
@@ -4257,7 +4232,7 @@ const wordEasterEggs = {
         },
         
         // --- 38 Numaralı Kalıp (مَفْعَل) ---
-        38: { 
+        38: { tip: "okul", 
             base: { emoji: "🏫", arText: "مَدْرَسَة", trText: "Okul.", ornek: { ar: "ذَهَبَ إِلَى الْمَدْرَسَةِ", tr: "Okula gitti." }, cogul: "مَدَارِس" },
             suggestsPlus: true, 
             "ة": {
@@ -4790,7 +4765,7 @@ const wordEasterEggs = {
             base: { emoji: "👥", arText: "سُكَّان", trText: "Sakinler / Oturanlar / Nüfus.", ornek: { ar: "عَدَدُ السُّكَّانِ كَبِيرٌ", tr: "Nüfus/Sakinlerin sayısı büyüktür." } } 
         },
         // --- 35 Numaralı Kalıp (فَعِيل) ---
-        35: { 
+        35: { tip: "esya", 
             base: { emoji: "🕊️", arText: "سَكِين", trText: "Huzur (Yalın).", ornek: { ar: "نَزَلَ السَّكِينُ", tr: "Huzur indi." } },
             suggestsPlus: true, 
             "ة": {
@@ -6240,8 +6215,7 @@ const wordEasterEggs = {
     // 54. Sh-H-R (ش ه ر) KÖKÜ - Belirmek / İlan Etmek / Ay / Şöhret
     "شهر": {
         19: { base: { emoji: "📅", arText: "شَهْر", trText: "Ay.", ornek: { ar: "شَهْرُ رَمَضَانَ الَّذِي أُنزِلَ فِيهِ الْقُرْآنُ", tr: "Ramazan ayı, içinde Kur'an'ın indirildiği aydır. (Bakara Suresi)" } } }, // شَهْر
-        21: { suggestsPlus: true, "ة": {
-                emoji: "🌟", arText: "شُهْرَة", trText: "Şöhret / Tanınmışlık.", ornek: { ar: "النَّجَاحُ يَجْلِبُ الشُّهْرَةَ عَبْرَ الْعَمَلِ", tr: "Başarı, çalışmayla birlikte şöhreti (tanınmışlığı) getirir." } } }, // شُهْر + ة = شُهْرَة
+        21: { "base": { "emoji": "🌟", "arText": "شُهْرَة", "trText": "Şöhret / Tanınmışlık.", "ornek": { "ar": "النَّجَاحُ يَجْلِبُ الشُّهْرَةَ عَبْرَ الْعَمَلِ", "tr": "Başarı, çalışmayla birlikte şöhreti (tanınmışlığı) getirir." } } }, // شُهْر + ة = شُهْرَة
         36: {
             base: { emoji: "🎤", arText: "مَشْهُور", trText: "Meşhur / Tanınmış.", ornek: { ar: "هُوَ كَاتِبٌ مَشْهُورٌ فِي الْعَالَمِ", tr: "O, dünyada meşhur (tanınmış) bir yazardır." } } }, // مَشْهُور
         61: { base: { emoji: "📢", arText: "تَشْهِير", trText: "Teşhir / İfşa etme, yayma.", ornek: { ar: "تَشْهِيرُ الْأَخْبَارِ الْكَاذِبَةِ مَمْنُوعٌ", tr: "Yalan haberlerin teşhir edilmesi (ifşa edilmesi/yayılması) yasaktır." } } }, // تَشْهِير
@@ -6426,8 +6400,7 @@ const wordEasterEggs = {
 
     // 57. W-K-L (و ك ل) KÖKÜ - Güvenmek / Vekil Tayin Etmek / Dayanmak
     "وكل": {
-        22: { suggestsPlus: true, "ة": {
-                emoji: "📜", arText: "وَكَالَة", trText: "Vekalet / Temsil yetkisi.", ornek: { ar: "أَعْطَاهُ وَكَالَةً عَامَّةً", tr: "Ona genel vekalet (temsil yetkisi) verdi." } } }, // وَكَال + ة = وَكَالَة
+        22: { "base": { "emoji": "📜", "arText": "وَكَالَة", "trText": "Vekalet / Temsil yetkisi.", "ornek": { "ar": "أَعْطَاهُ وَكَالَةً عَامَّةً", "tr": "Ona genel vekalet (temsil yetkisi) verdi." } } }, // وَكَال + ة = وَكَالَة
         35: { base: { emoji: "🛡️", arText: "وَكِيل", trText: "Vekil.", ornek: { ar: "حَسْبُنَا اللهُ وَنِعْمَ الْوَكِيلُ", tr: "Allah bize yeter, O ne güzel vekildir. (Âl-i İmrân Suresi)" } } }, // وَكِيل
         62: { base: { emoji: "👤", arText: "مُوَكِّل", trText: "Müvekkil.", ornek: { ar: "الْمُحَامِي يُدَافِعُ عَنْ مُوَكِّلِهِ", tr: "Avukat müvekkilini (kendisini vekil tayin edeni) savunur." } } }, // مُوَكِّل
         91: { base: { emoji: "🤲", arText: "تَوَكُّل", trText: "Tevekkül.", ornek: { ar: "وَمَنْ يَتَوَكَّلْ عَلَى اللهِ فَهُوَ حَسْبُهُ", tr: "Kim Allah'a tevekkül ederse, O ona yeter. (Talak Suresi)" } } }, // تَوَكُّل
@@ -6442,8 +6415,8 @@ const wordEasterEggs = {
 
     // 58. Q-D-M (ق د م) KÖKÜ - Öne Geçmek / Eski / Sunmak / Adım
     "قدم": {
-        17: { suggestsPlus: true, "ة": {
-                emoji: "🪜", arText: "قَدَمَة", trText: "Adım / Basamak." } }, // قَدَم + ة = قَدَمَة
+        33: { base: { emoji: "🚌", arText: "قَادِم", trText: "Gelen, gelecek olan", ornek: { ar: "سَأُسَافِرُ الْأُسْبُوعَ الْقَادِمَ", tr: "Gelecek hafta yolculuğa çıkacağım." } } },
+        17: { "base": { "emoji": "🦶", "arText": "قَدَم", "trText": "Ayak; adım", "ornek": { "ar": "أَلْعَبُ كُرَةَ الْقَدَمِ", "tr": "Futbol oynuyorum." }, "cogul": "أَقْدَام" }, "suggestsPlus": true, "ة": { "emoji": "🪜", "arText": "قَدَمَة", "trText": "Adım / Basamak." } }, // قَدَم + ة = قَدَمَة
         35: { base: { emoji: "🏛️", arText: "قَدِيم", trText: "Kadim / Eski.", ornek: { ar: "صَدَاقَتُنَا قَدِيمَةٌ وَقَوِيَّةٌ", tr: "Dostluğumuz kadim (eski) ve güçlüdür." } } }, // قَدِيم
         
         // --- 50 Numaralı Kalıp (أَفْعَل - İsm-i Tafdil) ---
@@ -6458,8 +6431,7 @@ const wordEasterEggs = {
         },
         
         61: { base: { emoji: "🎁", arText: "تَقْدِيم", trText: "Takdim / Sunma.", ornek: { ar: "تَقْدِيمُ الْهَدَايَا يَزِيدُ الْمَحَبَّةَ", tr: "Hediye takdim etmek (sunmak) sevgiyi artırır." } } }, // تَقْدِيم
-        62: { suggestsPlus: true, "ة": {
-                emoji: "📖", arText: "مُقَدِّمَة", trText: "Mukaddime / Önsöz, giriş.", ornek: { ar: "مُقَدِّمَةُ ابْنِ خَلْدُونَ أَثَرٌ تَارِيخِيٌّ عَظِيمٌ", tr: "İbn Haldun'un Mukaddime'si (önsözü/giriş eseri) harika bir tarihi eserdir." } } }, // مُقَدِّم + ة = مُقَدِّمَة
+        62: { "base": { "emoji": "🎤", "arText": "مُقَدِّم", "trText": "Sunucu, takdim eden", "ornek": { "ar": "مُقَدِّمُ الْبَرْنَامَجِ لَطِيفٌ", "tr": "Programın sunucusu nazik biri." } }, "suggestsPlus": true, "ة": { "emoji": "📖", "arText": "مُقَدِّمَة", "trText": "Mukaddime / Önsöz, giriş.", "ornek": { "ar": "مُقَدِّمَةُ ابْنِ خَلْدُونَ أَثَرٌ تَارِيخِيٌّ عَظِيمٌ", "tr": "İbn Haldun'un Mukaddime'si (önsözü/giriş eseri) harika bir tarihi eserdir." } } }, // مُقَدِّم + ة = مُقَدِّمَة
         // --- Otomatik Eklenen Fiiller ---
         58: { base: { emoji: "🎁", arText: "قَدَّمَ", trText: "Takdim etti / Sundu.", ornek: { ar: "قَدَّمَ هَدِيَّةً لِأُمِّهِ", tr: "Annesine bir hediye takdim etti." } } },
         59: { base: { emoji: "🎁", arText: "يُقَدِّمُ", trText: "Takdim eder / Sunar.", ornek: { ar: "يُقَدِّمُ بَرْنَامَجًا تِلْفِزْيُونِيًّا", tr: "Televizyon programı sunuyor." } } },
@@ -6499,13 +6471,13 @@ const wordEasterEggs = {
 
     // 60. '-D-L (ع د ل) KÖKÜ - Adalet / Eşitlik / Düzenleme
     "عدل": {
-        19: { suggestsPlus: true, "يَّة": { emoji: "🏛️", arText: "عَدْلِيَّة", trText: "Adliye / Adalet sarayı.", ornek: { ar: "ذَهَبَ الْمُحَامِي إِلَى الْعَدْلِيَّةِ", tr: "Avukat adliyeye (sarayına) gitti." } } }, // عَدْل + يَّة = عَدْلِيَّة
+        19: { "base": { "emoji": "⚖️", "arText": "عَدْل", "trText": "Adalet, doğruluk", "ornek": { "ar": "إِنَّ اللهَ يَأْمُرُ بِالْعَدْلِ وَالْإِحْسَانِ", "tr": "Şüphesiz Allah adaleti ve ihsanı emreder. (Nahl sûresi, 90)" } }, "suggestsPlus": true, "يَّة": { "emoji": "🏛️", "arText": "عَدْلِيَّة", "trText": "Adliye / Adalet sarayı.", "ornek": { "ar": "ذَهَبَ الْمُحَامِي إِلَى الْعَدْلِيَّةِ", "tr": "Avukat adliyeye (sarayına) gitti." } } }, // عَدْل + يَّة = عَدْلِيَّة
         22: {
             base: { emoji: "⚖️", arText: "عَدَالَة", trText: "Adalet.", ornek: { ar: "الْعَدَالَةُ أَسَاسُ الْمُلْكِ", tr: "Adalet mülkün (devletin) temelidir." } }
         },
         33: {
             base: { emoji: "👨‍⚖️", arText: "عَادِل", trText: "Adil.", ornek: { ar: "هُوَ قَاضٍ عَادِلٌ يَحْكُمُ بِالْحَقِّ", tr: "O, hakla hükmeden adil bir kadıdır (hakimdir)." } } }, // عَادِل
-        61: { suggestsPlus: true, "ات": { emoji: "🔧", arText: "تَعْدِيلَات", trText: "Tadilat / Değişiklikler.", ornek: { ar: "إِجْرَاءُ تَعْدِيلَاتٍ جَدِيدَةٍ فِي الْقَانُونِ", tr: "Kanunda yeni tadilatlar (düzenlemeler/değişiklikler) yapmak." } } }, // تَعْدِيل + ات = تَعْدِيلَات
+        61: { "base": { "emoji": "🔧", "arText": "تَعْدِيل", "trText": "Tadil, değişiklik yapma (masdar)" }, "suggestsPlus": true, "ات": { "emoji": "🔧", "arText": "تَعْدِيلَات", "trText": "Tadilat / Değişiklikler.", "ornek": { "ar": "إِجْرَاءُ تَعْدِيلَاتٍ جَدِيدَةٍ فِي الْقَانُونِ", "tr": "Kanunda yeni tadilatlar (düzenlemeler/değişiklikler) yapmak." } } }, // تَعْدِيل + ات = تَعْدِيلَات
         69: { base: { emoji: "🟰", arText: "مُعَادِل", trText: "Muadil / Eşdeğer.", ornek: { ar: "هَذَا الدَّوَاءُ مُعَادِلٌ لِلْآخَرِ", tr: "Bu ilaç diğeriyle muadildir (eşdeğerdir)." } } }, // مُعَادِل
         80: { base: { emoji: "🍃", arText: "اِعْتِدَال", trText: "İtidal / Denge, ölçülülük.", ornek: { ar: "الِاعْتِدَالُ فِي كُلِّ شَيْءٍ خَيْرٌ", tr: "Her şeyde itidal (ölçülülük/dengeli olmak) hayırlıdır." } } }, // اِعْتِدَال
         // --- Otomatik Eklenen Fiiller ---
@@ -6690,14 +6662,7 @@ const wordEasterEggs = {
         33: {
             base: { emoji: "🙋", arText: "آكِل", trText: "Yiyen, Obur (İsm-i Fail).", ornek: { ar: "هُوَ آكِلٌ لِلُّحُومِ", tr: "O et yiyen birisidir." } }
         },
-        36: { 
-            suggestsPlus: true,
-            "ات": { 
-                emoji: "💬", 
-                arText: "مَأْكُولَات", 
-                trText: "Yiyecekler" 
-            }
-        }
+        36: { "base": { "emoji": "🍽️", "arText": "مَأْكُول", "trText": "Yenilen şey, yiyecek" }, "suggestsPlus": true, "ات": { "emoji": "💬", "arText": "مَأْكُولَات", "trText": "Yiyecekler" } }
     },
     
     "سأل": {
@@ -6724,14 +6689,7 @@ const wordEasterEggs = {
         36: {
             base: { emoji: "👤", arText: "مَسْؤُول", trText: "Sorumlu / Mesul (İsm-i Meful).", ornek: { ar: "هُوَ مَسْؤُولٌ عَنِ الْمَشْرُوعِ", tr: "O projeden sorumludur." } }
         },
-        38: { 
-            suggestsPlus: true,
-            "ة": {
-                emoji: "📄", 
-                arText: "مَسْأَلَة", 
-                trText: "Mesele / Sorun." 
-            }
-        }
+        38: { "base": { "emoji": "📄", "arText": "مَسْأَلَة", "trText": "Mesele / Sorun." } }
     },
 
     "قول": {
@@ -6818,6 +6776,7 @@ const wordEasterEggs = {
     },
 
     "مشي": {
+        47: { tekilId: 33, base: { emoji: "🚶‍♂️", arText: "مُشَاة", trText: "Yayalar (مَاشٍ çoğulu)", ornek: { ar: "الْمُشَاةُ يَعْبُرُونَ مِنَ الْمَمَرِّ", tr: "Yayalar geçitten geçiyor." } } },
         1: { 
             base: { emoji: "🚶", arText: "مَشَى", trText: "Yürüdü.", ornek: { ar: "مَشَى فِي الطَّرِيقِ", tr: "Yolda yürüdü." } },
         },
@@ -7408,6 +7367,8 @@ const wordEasterEggs = {
     },
 
     "وصل": {
+        64: { base: { emoji: "🔗", arText: "وَاصَلَ", trText: "Sürdürdü, devam etti; bağlantı kurdu" } },
+        67: { base: { emoji: "🚌", arText: "مُوَاصَلَة", trText: "Sürdürme; ulaşım", ornek: { ar: "أَذْهَبُ إِلَى الْمَدْرَسَةِ بِالْمُوَاصَلَاتِ", tr: "Okula toplu taşımayla giderim." }, cogul: "مُوَاصَلَات" } },
         // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / 1. Bab) ---
         1: { 
             base: { 
@@ -9739,15 +9700,7 @@ const wordEasterEggs = {
         },
 
         // --- 23 Numaralı Kalıp (Çoğul İsim ve Masdar) ---
-        23: { 
-            suggestsPlus: true,
-            "ة": {
-                emoji: "💼", 
-                arText: "تِجَارَة", 
-                trText: "Ticaret.",
-                ornek: { ar: "التِّجَارَةُ رِبْحٌ", tr: "Ticaret kazançtır." }
-            } 
-        },
+        23: { "base": { "emoji": "💼", "arText": "تِجَارَة", "trText": "Ticaret.", "ornek": { "ar": "التِّجَارَةُ رِبْحٌ", "tr": "Ticaret kazançtır." } } },
 
         // --- 33 Numaralı Kalıp (İsm-i Fâil) ---
         33: {
@@ -13380,7 +13333,7 @@ const wordEasterEggs = {
         },
 
         // --- 20 Numaralı Kalıp (فِعْل - İsim / Masdar) ---
-        20: { 
+        20: { tip: "uzuv", 
             base: { 
                 emoji: "📜", 
                 arText: "شِعْر", 
@@ -13617,6 +13570,18 @@ const wordEasterEggs = {
         }
     },
     "حسب": {
+        /* MÜCERRED — kökün iki ayrı fiili var, ikisi ayrı bâbdan:
+           1. bâb حَسَبَ-يَحْسُبُ «saydı, hesapladı» (حِسَاب buradan),
+           6. bâb حَسِبَ-يَحْسِبُ «sandı, zannetti». İkincisi altıncı bâbın
+           misâl olmayan en meşhur örneğidir; ders kitapları bu bâbı hep
+           bu fiille anlatır. */
+        1: { base: { emoji: "🧮", arText: "حَسَبَ", trText: "Saydı, hesapladı", ornek: { ar: "حَسَبَ الطَّالِبُ نُقُودَهُ", tr: "Öğrenci parasını saydı." } } },
+        2: { base: { emoji: "🔁", arText: "يَحْسُبُ", trText: "Sayar, hesaplar", ornek: { ar: "يَحْسُبُ التَّاجِرُ أَرْبَاحَهُ", tr: "Tüccar kârını hesaplar." } } },
+        3: { base: { emoji: "❗", arText: "اُحْسُبْ", trText: "Say!, hesapla!", ornek: { ar: "اُحْسُبْ هَذِهِ الْمَسْأَلَةَ", tr: "Bu problemi hesapla." } } },
+        14: { base: { emoji: "🤔", arText: "حَسِبَ", trText: "Sandı, zannetti", ornek: { ar: "حَسِبَ الْعَمَلَ سَهْلًا", tr: "İşi kolay sandı." } } },
+        15: { base: { emoji: "🔁", arText: "يَحْسِبُ", trText: "Sanır, zanneder", ornek: { ar: "يَحْسِبُهُ الظَّمْآنُ مَاءً", tr: "Susayan onu su sanır. (Nûr sûresi, 39)" } } },
+        16: { base: { emoji: "❗", arText: "اِحْسِبْ", trText: "San!, öyle farz et!", ornek: { ar: "اِحْسِبْنِي مِنْ إِخْوَانِكَ", tr: "Beni kardeşlerinden say." } } },
+
         // --- 23 Numaralı Kalıp (فِعَال - Masdar/İsim) ---
         23: { 
             base: { 
@@ -13854,6 +13819,11 @@ const wordEasterEggs = {
         54: { base: { emoji: "↩️", arText: "أَعِدْ", trText: "Geri ver! / İade et!", ornek: { ar: "أَعِدِ الْمَالَ لِصَاحِبِهِ", tr: "Parayı sahibine geri ver." } } },
     },
     "قوم": {
+        52: { base: { emoji: "🏨", arText: "أَقَامَ", trText: "İkamet etti, kaldı; (tören) düzenledi", ornek: { ar: "سَأُقِيمُ فِي الْفُنْدُقِ ثَلَاثَةَ أَيَّامٍ", tr: "Otelde üç gün kalacağım." } } },
+        53: { base: { emoji: "🔁", arText: "يُقِيمُ", trText: "İkamet eder, kalır" } },
+        54: { base: { emoji: "📣", arText: "أَقِمْ", trText: "İkamet et!, ayakta tut!", ornek: { ar: "وَأَقِمِ الصَّلَاةَ", tr: "Namazı dosdoğru kıl. (Lokmân sûresi, 17)" } } },
+        55: { base: { emoji: "📘", arText: "إِقَامَة", trText: "İkamet, oturma; kamet (masdar)" } },
+        56: { base: { emoji: "🏠", arText: "مُقِيم", trText: "İkamet eden, mukim" } },
         // --- 1 Numaralı Kalıp (Mücerret 1. Bab Mazi - Ecvef) ---
         1: { 
             base: { 
@@ -15427,6 +15397,14 @@ const wordEasterEggs = {
         60: { base: { emoji: "📚", arText: "ثَقِّفْ", trText: "Eğit! / Kültürlendir!", ornek: { ar: "ثَقِّفْ نَفْسَكَ بِالْقِرَاءَةِ", tr: "Okuyarak kendini eğit." } } },
     },
     "وجه": {
+        77: { base: { emoji: "🧭", arText: "اِتَّجَهَ", trText: "Yöneldi, bir yöne döndü", ornek: { ar: "اِتَّجَهَ الْمُسَافِرُ إِلَى الْمَطَارِ", tr: "Yolcu havalimanına yöneldi." } } },
+        78: { base: { emoji: "🔁", arText: "يَتَّجِهُ", trText: "Yönelir", ornek: { ar: "يَتَّجِهُ الطَّرِيقُ إِلَى الشَّمَالِ", tr: "Yol kuzeye yöneliyor." } } },
+        79: { base: { emoji: "📣", arText: "اِتَّجِهْ", trText: "Yönel!, git!", ornek: { ar: "اِتَّجِهْ إِلَى الْيَمِينِ ثُمَّ سِرْ مُبَاشَرَةً", tr: "Sağa yönel, sonra dosdoğru git." } } },
+        80: { base: { emoji: "📘", arText: "اِتِّجَاه", trText: "Yön, istikamet (masdar)", cogul: "اِتِّجَاهَات" } },
+        81: { base: { emoji: "➡️", arText: "مُتَّجِه", trText: "Yönelen, giden" } },
+        /* İftiâlin ism-i mef'ûlü: bâb 77-81 zaten vardı, eksik olan tek
+           halka 82'ydi. و ilk harf olduğu için idgâm olur: مُوْتَجَه ⬅️ مُتَّجَه */
+        82: { base: { emoji: "🎯", arText: "مُتَّجَه", trText: "Yönelinen yer, hedef, varılacak taraf", ornek: { ar: "هَذَا مُتَّجَهُ الْقَافِلَةِ", tr: "Kervanın yöneldiği yer burasıdır." } } },
         // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
         19: {
             cogulId: 43,
@@ -18509,12 +18487,12 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             tekilId: 21,
             base: {
                 emoji: "🐾",
-                arText: "أَظْفَار / أَظَافِير",
-                trText: "Azfâr / Ezâfîr - Tırnaklar, Pençeler. Bu ismin çoğulu birden fazladır.",
+                arText: "أَظْفَار",
+                trText: "Azfâr - Tırnaklar, Pençeler.",
                 ornek: [
                     { 
-                        ar: "١. وَزْن أَفْعَال ⬅️ أَظْفَار", 
-                        tr: "1. Kırık Çoğul Kalıbı: 'Ef'âl' vezninde (Azfâr)." 
+                        ar: "وَزْن أَفْعَال ⬅️ أَظْفَار", 
+                        tr: "Kırık Çoğul Kalıbı: 'Ef'âl' vezninde (Azfâr)." 
                     },
                     { 
                         ar: "أَظْفَارُ النَّسْرِ حَادَّةٌ", 
@@ -19294,7 +19272,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - İsim / Masdar) ---
-        19: { 
+        19: { tip: "uzuv", 
             cogulId: 43,
             base: { 
                 emoji: "❤️", 
@@ -20214,7 +20192,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         },
 
         // --- 19 Numaralı Kalıp (فَعْل - İsim) ---
-        19: {
+        19: { tip: "uzuv",
             base: {
                 emoji: "👤",
                 arText: "ظَهْر",
@@ -21398,6 +21376,8 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         }
     },
     "سير": {
+        19: { base: { emoji: "🚗", arText: "سَيْر", trText: "Yürüyüş, gidiş; trafik akışı", ornek: { ar: "الطَّرِيقُ جَاهِزٌ لِلسَّيْرِ", tr: "Yol gitmeye hazır." } } },
+        22: { base: { emoji: "📖", arText: "سِيرَة", trText: "Sîret, hayat hikâyesi, biyografi", cogul: "سِيَر" } },
         1: { base: { emoji: "🚶", arText: "سَارَ", trText: "Yürüdü / Gitti.", ornek: { ar: "سَارَ فِي الطَّرِيقِ بِمُفْرَدِهِ", tr: "Yolda tek başına yürüdü." } } },
         2: { base: { emoji: "🚶‍♂️", arText: "يَسِيرُ", trText: "Yürür / Gider.", ornek: { ar: "يَسِيرُ بِبُطْءٍ", tr: "Yavaşça yürür." } } },
         3: { base: { emoji: "🚶‍♀️", arText: "سِرْ", trText: "Yürü / Git.", ornek: { ar: "سِرْ عَلَى بَرَكَةِ اللهِ", tr: "Allah'ın bereketi üzere yürü/git." } } },
@@ -21508,6 +21488,9 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         19: { base: { emoji: "💡", arText: "ضَوْء", trText: "Işık.", ornek: { ar: "ضَوْءُ الشَّمْسِ", tr: "Güneş ışığı." } } }
     },
     "مرر": {
+        22: { base: { emoji: "🔂", arText: "مَرَّة", trText: "Kere, defa", ornek: { ar: "مَرَّةً أُخْرَى مِنْ فَضْلِكَ", tr: "Lütfen bir kere daha." }, cogul: "مَرَّات" } },
+        33: { base: { emoji: "🚶", arText: "مَارّ", trText: "Geçen, gelip geçen", cogul: "مَارَّة" } },
+        38: { base: { emoji: "🚸", arText: "مَمَرّ", trText: "Geçit, koridor", ornek: { ar: "اُعْبُرِ الشَّارِعَ مِنْ مَمَرِّ الْمُشَاةِ", tr: "Caddeyi yaya geçidinden geç." }, cogul: "مَمَرَّات" } },
         1: { base: { emoji: "🚶", arText: "مَرَّ", trText: "Geçti / Uğradı.", ornek: { ar: "مَرَّ بِصَدِيقِهِ", tr: "Arkadaşına uğradı." } } },
         2: { base: { emoji: "🔄", arText: "يَمُرُّ", trText: "Geçer / Uğrar.", ornek: { ar: "يَمُرُّ الْوَقْتُ بِسُرْعَةٍ", tr: "Vakit hızla geçer." } } },
         3: { base: { emoji: "➡️", arText: "مُرَّ", trText: "Geç / Uğra.", ornek: { ar: "مُرَّ عَلَيْنَا غَدًا", tr: "Yarın bize uğra." } } },
@@ -21723,7 +21706,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         4: { base: { emoji: "🧿", arText: "يَعِينُ", trText: "Gözü değer / Nazar eder.", ornek: { ar: "يَعِينُ الْحَاسِدُ بِعَيْنِهِ", tr: "Haset eden kişi gözüyle nazar eder." } } },
         5: { base: { emoji: "🧿", arText: "عِنْ", trText: "Gözün değsin / Nazar et! (Beddua gibi)", ornek: { ar: "لَا تَعِنْ أَخَاكَ", tr: "Kardeşine nazar etme (göz değdirme)." } } },
         
-        19: { 
+        19: { tip: "uzuv", 
             base: { emoji: "👁️", arText: "عَيْن", trText: "Göz / Pınar / Su kaynağı / Casus (İsim) | Nazar / Göz değmesi (Masdar).", muennes: "عَيْنٌ", ornek: { ar: "فِيهَا عَيْنٌ جَارِيَةٌ - الْعَيْنُ حَقٌّ", tr: "Orada akan bir pınar vardır. (Ğâşiye, 12) - Nazar (göz değmesi) haktır. (Hadis)" } }
         },
         43: { 
@@ -21780,7 +21763,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
     // ==================================================================
     "أنف": {
         // --- İsim ve Zarf Kalıpları ---
-        19: { 
+        19: { tip: "uzuv", 
             base: { 
                 emoji: "👃", 
                 arText: "أَنْف", 
@@ -23696,7 +23679,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         43: { tekilId: 19, base: { emoji: "📜", arText: "سُطُور", trText: "Satırlar", ornek: { ar: "بَيْنَ السُّطُورِ مَعَانٍ خَفِيَّةٌ", tr: "Satır aralarında gizli anlamlar vardır." } } },
         33: { base: { emoji: "🧑‍💻", arText: "سَاطِر", trText: "Yazan, satır çeken", ornek: { ar: "الْقَلَمُ سَاطِرٌ لِمَا يُمْلِيهِ الْعَقْلُ", tr: "Kalem, aklın söylediğini satıra döker." } } },
         36: { base: { emoji: "📄", arText: "مَسْطُور", trText: "Satırlanmış, yazılmış", ornek: { ar: "وَكِتَابٍ مَسْطُورٍ", tr: "Satır satır yazılmış bir kitaba (yemin olsun)." } } },
-        39: { base: { emoji: "📐", arText: "مِسْطَرَة", trText: "Cetvel (satır çekme aleti)", ornek: { ar: "خُطَّ الْخَطَّ بِالْمِسْطَرَةِ", tr: "Çizgiyi cetvelle çiz." }, cogul: "مَسَاطِر" } },
+        39: { tip: "okul", base: { emoji: "📐", arText: "مِسْطَرَة", trText: "Cetvel (satır çekme aleti)", ornek: { ar: "خُطَّ الْخَطَّ بِالْمِسْطَرَةِ", tr: "Çizgiyi cetvelle çiz." }, cogul: "مَسَاطِر" } },
         58: { base: { emoji: "🗂️", arText: "سَطَّرَ", trText: "Satırladı, çizgilerle düzenledi", ornek: { ar: "سَطَّرَ الدَّفْتَرَ قَبْلَ الْكِتَابَةِ", tr: "Yazmadan önce defteri satırladı." } } },
         61: { base: { emoji: "🧾", arText: "تَسْطِير", trText: "Satırlama, çizgi çekme", ornek: { ar: "تَسْطِيرُ الْوَرَقِ يُرَتِّبُ الْخَطَّ", tr: "Kâğıdı satırlamak yazıyı düzenler." } } },
         59: { base: { emoji: "🔁", arText: "يُسَطِّرُ", trText: "Satırlar, çizgilerle düzenler" } },
@@ -24054,7 +24037,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         1: { base: { emoji: "🌸", arText: "زَهَرَ", trText: "Çiçek açtı; parladı", ornek: { ar: "زَهَرَ الْبُسْتَانُ فِي الرَّبِيعِ", tr: "Bahçe baharda çiçek açtı." } } },
         6: { base: { emoji: "🌼", arText: "يَزْهَرُ", trText: "Çiçek açar; parlar", ornek: { ar: "يَزْهَرُ اللَّوْزُ قَبْلَ غَيْرِهِ", tr: "Badem, diğerlerinden önce çiçek açar." } } },
         7: { base: { emoji: "🌷", arText: "اِزْهَرْ", trText: "Çiçek aç!, parla!", ornek: { ar: "اِزْهَرْ حَيْثُ زُرِعْتَ", tr: "Ekildiğin yerde çiçek aç. (özlü söz)" } } },
-        19: { base: { emoji: "🌺", arText: "زَهْرَة", trText: "Çiçek", ornek: { ar: "قَطَفَ زَهْرَةً مِنَ الْحَدِيقَةِ", tr: "Bahçeden bir çiçek kopardı." }, cogul: "زُهُور" } },
+        19: { tip: "doga", base: { emoji: "🌺", arText: "زَهْرَة", trText: "Çiçek", ornek: { ar: "قَطَفَ زَهْرَةً مِنَ الْحَدِيقَةِ", tr: "Bahçeden bir çiçek kopardı." }, cogul: "زُهُور" } },
         43: { tekilId: 19, base: { emoji: "💐", arText: "زُهُور", trText: "Çiçekler", ornek: { ar: "الزُّهُورُ تُزَيِّنُ الطَّرِيقَ", tr: "Çiçekler yolu süslüyor." } } },
         33: { base: { emoji: "✨", arText: "زَاهِر", trText: "Parlak, ışıldayan", ornek: { ar: "مُسْتَقْبَلٌ زَاهِرٌ يَنْتَظِرُهُ", tr: "Onu parlak bir gelecek bekliyor." } } },
         52: { base: { emoji: "🌱", arText: "أَزْهَرَ", trText: "Çiçek açtı, çiçeklendirdi", ornek: { ar: "أَزْهَرَتِ الشَّجَرَةُ بَعْدَ الْمَطَرِ", tr: "Ağaç yağmurdan sonra çiçek açtı." } } },
@@ -24349,7 +24332,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         3: { base: { emoji: "👇", arText: "اُقْعُدْ", trText: "Otur!", ornek: { ar: "اُقْعُدْ يَا أَحْمَدُ", tr: "Otur ey Ahmed." } } },
         25: { base: { emoji: "🛋️", arText: "قُعُود", trText: "Oturma, oturuş", ornek: { ar: "الْقُعُودُ الطَّوِيلُ يُتْعِبُ الظَّهْرَ", tr: "Uzun oturmak sırtı yorar." } } },
         33: { base: { emoji: "🙍", arText: "قَاعِد", trText: "Oturan, oturmakta olan", ornek: { ar: "الْقَاعِدُ لَا يَرَى مَا يَرَاهُ الْقَائِمُ", tr: "Oturan, ayaktakinin gördüğünü görmez." } }, suggestsPlus: true, "ة": { emoji: "📐", arText: "قَاعِدَة", trText: "Kural, kaide; temel, üs", ornek: { ar: "هَذِهِ قَاعِدَةٌ نَحْوِيَّةٌ مُهِمَّةٌ", tr: "Bu önemli bir nahiv kuralıdır." }, cogul: "قَوَاعِد" } },
-        37: { base: { emoji: "🪑", arText: "مَقْعَد", trText: "Sıra, oturulacak yer, koltuk", ornek: { ar: "مَقْعَدِي فِي الصَّفِّ الْأَوَّلِ", tr: "Sıram ön sıradadır." }, cogul: "مَقَاعِد" } },
+        37: { tip: "okul", base: { emoji: "🪑", arText: "مَقْعَد", trText: "Sıra, oturulacak yer, koltuk", ornek: { ar: "مَقْعَدِي فِي الصَّفِّ الْأَوَّلِ", tr: "Sıram ön sıradadır." }, cogul: "مَقَاعِد" } },
         52: { base: { emoji: "🛑", arText: "أَقْعَدَ", trText: "Oturttu, iş göremez hâle getirdi", ornek: { ar: "أَقْعَدَهُ الْمَرَضُ عَنِ الْعَمَلِ", tr: "Hastalık onu işten alıkoydu." } } },
         94: { base: { emoji: "👴", arText: "تَقَاعَدَ", trText: "Emekli oldu", ornek: { ar: "تَقَاعَدَ وَالِدِي بَعْدَ ثَلَاثِينَ سَنَةً", tr: "Babam otuz yıl sonra emekli oldu." } } },
         97: { base: { emoji: "📜", arText: "تَقَاعُد", trText: "Emeklilik", ornek: { ar: "سِنُّ التَّقَاعُدِ يَخْتَلِفُ مِنْ بَلَدٍ إِلَى آخَرَ", tr: "Emeklilik yaşı ülkeden ülkeye değişir." } } },
@@ -24395,7 +24378,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         2: { base: { emoji: "🗄️", arText: "يَخْزُنُ", trText: "Depolar, saklar", ornek: { ar: "يَخْزُنُ الْحَاسُوبُ الْمَلَفَّاتِ", tr: "Bilgisayar dosyaları saklar." } } },
         3: { base: { emoji: "🔐", arText: "اُخْزُنْ", trText: "Depola!, sakla!", ornek: { ar: "اُخْزُنْ عَمَلَكَ قَبْلَ إِغْلَاقِ الْجِهَازِ", tr: "Cihazı kapatmadan önce çalışmanı kaydet." } } },
         19: { base: { emoji: "🏬", arText: "خَزْن", trText: "Depolama, saklama", ornek: { ar: "خَزْنُ الْمَاءِ ضَرُورِيٌّ فِي الصَّحْرَاءِ", tr: "Çölde su depolamak zorunludur." } } },
-        23: { base: { emoji: "🚪", arText: "خِزَانَة", trText: "Dolap, gardırop", ornek: { ar: "فِي غُرْفَتِي سَرِيرٌ وَخِزَانَةٌ", tr: "Odamda bir yatak ve bir dolap var." }, cogul: "خَزَائِن" } },
+        23: { tip: "esya", base: { emoji: "🚪", arText: "خِزَانَة", trText: "Dolap, gardırop", ornek: { ar: "فِي غُرْفَتِي سَرِيرٌ وَخِزَانَةٌ", tr: "Odamda bir yatak ve bir dolap var." }, cogul: "خَزَائِن" } },
         33: { base: { emoji: "🔑", arText: "خَازِن", trText: "Hazinedar, saklayan", ornek: { ar: "الْخَازِنُ أَمِينٌ عَلَى مَا فِي يَدِهِ", tr: "Hazinedar, elindekine karşı emindir." } } },
         35: { base: { emoji: "💰", arText: "خَزِينَة", trText: "Hazine, kasa", ornek: { ar: "خَزِينَةُ الدَّوْلَةِ تَحْتَ الرَّقَابَةِ", tr: "Devlet hazinesi denetim altındadır." }, cogul: "خَزَائِن" } },
         36: { base: { emoji: "🧊", arText: "مَخْزُون", trText: "Depolanmış; stok", ornek: { ar: "الْمَخْزُونُ يَكْفِي لِشَهْرٍ", tr: "Stok bir ay yeter." } } },
@@ -24414,7 +24397,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         19: { base: { emoji: "💦", arText: "غَسْل", trText: "Yıkama", ornek: { ar: "غَسْلُ الْأَيْدِي يَقِي مِنَ الْمَرَضِ", tr: "El yıkamak hastalıktan korur." } } },
         21: { base: { emoji: "🕌", arText: "غُسْل", trText: "Gusül: bütün bedeni yıkama", ornek: { ar: "الْغُسْلُ وَاجِبٌ فِي حَالَاتٍ مَعْلُومَةٍ", tr: "Gusül, bilinen hâllerde vaciptir." } } },
         33: { base: { emoji: "🙋", arText: "غَاسِل", trText: "Yıkayan", ornek: { ar: "الْغَاسِلُ يَبْدَأُ بِالْيَمِينِ", tr: "Yıkayan sağdan başlar." } } },
-        34: { base: { emoji: "🌀", arText: "غَسَّالَة", trText: "Çamaşır makinesi", ornek: { ar: "فِي الْمَطْبَخِ غَسَّالَةٌ جَدِيدَةٌ", tr: "Mutfakta yeni bir çamaşır makinesi var." }, cogul: "غَسَّالَات" } },
+        34: { tip: "esya", base: { emoji: "🌀", arText: "غَسَّالَة", trText: "Çamaşır makinesi", ornek: { ar: "فِي الْمَطْبَخِ غَسَّالَةٌ جَدِيدَةٌ", tr: "Mutfakta yeni bir çamaşır makinesi var." }, cogul: "غَسَّالَات" } },
         36: { base: { emoji: "👕", arText: "مَغْسُول", trText: "Yıkanmış", ornek: { ar: "الثَّوْبُ الْمَغْسُولُ نَظِيفٌ", tr: "Yıkanmış elbise temizdir." } } },
         38: { base: { emoji: "🚰", arText: "مَغْسَل", trText: "Lavabo, yıkama yeri", ornek: { ar: "الْمَغْسَلُ بِجَانِبِ الْبَابِ", tr: "Lavabo kapının yanındadır." }, cogul: "مَغَاسِل" } },
         77: { base: { emoji: "🛁", arText: "اِغْتَسَلَ", trText: "Yıkandı, gusletti", ornek: { ar: "اِغْتَسَلَ ثُمَّ لَبِسَ ثِيَابًا نَظِيفَةً", tr: "Yıkandı, sonra temiz elbiseler giydi." } } },
@@ -24432,7 +24415,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         33: { base: { emoji: "🙎", arText: "كَانِس", trText: "Süpüren", ornek: { ar: "الْكَانِسُ يَبْدَأُ مِنَ الزَّاوِيَةِ", tr: "Süpüren köşeden başlar." } } },
         34: { base: { emoji: "🧑‍🔧", arText: "كَنَّاس", trText: "Çöpçü, süpürücü", ornek: { ar: "الْكَنَّاسُ يَعْمَلُ قَبْلَ شُرُوقِ الشَّمْسِ", tr: "Çöpçü güneş doğmadan çalışır." } } },
         36: { base: { emoji: "🌟", arText: "مَكْنُوس", trText: "Süpürülmüş", ornek: { ar: "الصَّفُّ مَكْنُوسٌ وَنَظِيفٌ", tr: "Sınıf süpürülmüş ve temizdir." } } },
-        39: { base: { emoji: "🧹", arText: "مِكْنَسَة", trText: "Süpürge", ornek: { ar: "الْمِكْنَسَةُ خَلْفَ الْبَابِ", tr: "Süpürge kapının arkasındadır." }, cogul: "مَكَانِس" } }
+        39: { tip: "esya", base: { emoji: "🧹", arText: "مِكْنَسَة", trText: "Süpürge", ornek: { ar: "الْمِكْنَسَةُ خَلْفَ الْبَابِ", tr: "Süpürge kapının arkasındadır." }, cogul: "مَكَانِس" } }
     },
 
     /* 311 — ن ظ ف : Temiz olmak (5. bâb) */
@@ -24454,14 +24437,14 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
     "ثلج": {
         1: { base: { emoji: "❄️", arText: "ثَلَجَ", trText: "Kar yağdı; soğuttu", ornek: { ar: "ثَلَجَتِ السَّمَاءُ فِي الشِّتَاءِ", tr: "Kışın kar yağdı." } } },
         2: { base: { emoji: "🌨️", arText: "يَثْلُجُ", trText: "Kar yağar", ornek: { ar: "يَثْلُجُ الْجَبَلُ كُلَّ عَامٍ", tr: "Dağa her yıl kar yağar." } } },
-        19: { base: { emoji: "🧊", arText: "ثَلْج", trText: "Kar; buz", ornek: { ar: "غَطَّى الثَّلْجُ سَطْحَ الْبَيْتِ", tr: "Kar, evin damını örttü." }, cogul: "ثُلُوج" } },
+        19: { tip: "doga", base: { emoji: "🧊", arText: "ثَلْج", trText: "Kar; buz", ornek: { ar: "غَطَّى الثَّلْجُ سَطْحَ الْبَيْتِ", tr: "Kar, evin damını örttü." }, cogul: "ثُلُوج" } },
         33: { base: { emoji: "⛄", arText: "ثَالِج", trText: "Karlı, kar yağdıran", ornek: { ar: "يَوْمٌ ثَالِجٌ بَارِدٌ", tr: "Karlı, soğuk bir gün." } } },
-        34: { base: { emoji: "🧊", arText: "ثَلَّاجَة", trText: "Buzdolabı", ornek: { ar: "فِي الْمَطْبَخِ ثَلَّاجَةٌ وَفُرْنٌ", tr: "Mutfakta bir buzdolabı ve bir fırın var." }, cogul: "ثَلَّاجَات" } },
+        34: { tip: "esya", base: { emoji: "🧊", arText: "ثَلَّاجَة", trText: "Buzdolabı", ornek: { ar: "فِي الْمَطْبَخِ ثَلَّاجَةٌ وَفُرْنٌ", tr: "Mutfakta bir buzdolabı ve bir fırın var." }, cogul: "ثَلَّاجَات" } },
         52: { base: { emoji: "😌", arText: "أَثْلَجَ", trText: "Ferahlattı, içini serinletti", ornek: { ar: "أَثْلَجَ الْخَبَرُ صَدْرِي", tr: "Haber içimi ferahlattı." }, }, not: "Not: أَثْلَجَ صَدْرَهُ deyimi «içini serinletti, ferahlattı» demektir. Sıcak çölde kar bir müjde olduğu için sevinç bu kökle anlatılır." },
         58: { base: { emoji: "🍧", arText: "ثَلَّجَ", trText: "Dondurdu, buzlandırdı", ornek: { ar: "ثَلَّجَتْ أُمِّي الْعَصِيرَ", tr: "Annem meyve suyunu dondurdu." } } },
         61: { base: { emoji: "🥶", arText: "تَثْلِيج", trText: "Dondurma, soğutma (işlemi)", ornek: { ar: "تَثْلِيجُ اللَّحْمِ يَحْفَظُهُ", tr: "Eti dondurmak onu korur." } } },
         63: { base: { emoji: "🍨", arText: "مُثَلَّج", trText: "Dondurulmuş; dondurma", ornek: { ar: "يُحِبُّ الْأَطْفَالُ الْمُثَلَّجَاتِ", tr: "Çocuklar dondurmayı sever." }, cogul: "مُثَلَّجَات" } },
-        3: { base: { emoji: "📣", arText: "أُثْلُجْ", trText: "Kar yağar" } },
+        3: { base: { emoji: "📣", arText: "اُثْلُجْ", trText: "Kar yağar" } },
         53: { base: { emoji: "🔁", arText: "يُثْلِجُ", trText: "Ferahlatır, içini serinletir" } },
         54: { base: { emoji: "📣", arText: "أَثْلِجْ", trText: "Ferahlat!, içini serinlet!" } },
         55: { base: { emoji: "📘", arText: "إِثْلَاج", trText: "Ferahlatma, içini serinletme (masdar)" } },
@@ -24478,7 +24461,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         35: { base: { emoji: "⬇️", arText: "مَهِين", trText: "Hakir, değersiz; zayıf", ornek: { ar: "أَلَمْ نَخْلُقْكُمْ مِنْ مَاءٍ مَهِينٍ", tr: "Sizi hakir bir sudan yaratmadık mı?" }, }, not: "DİKKAT: مِهْنَة (meslek) ile مَهِين (hakir) aynı köktendir ama anlamları ayrışmıştır. Ortak fikir «hizmet/aşağıda durma»dır; mesleği icra eden hizmet eder, مَهِين ise değeri düşük olandır. Karıştırmamak için harekeye dikkat." },
         77: { base: { emoji: "🏭", arText: "اِمْتَهَنَ", trText: "Meslek edindi; hor gördü", ornek: { ar: "اِمْتَهَنَ التِّجَارَةَ مُنْذُ شَبَابِهِ", tr: "Gençliğinden beri ticareti meslek edindi." } } },
         80: { base: { emoji: "📋", arText: "اِمْتِهَان", trText: "Meslek edinme; hor görme", ornek: { ar: "اِمْتِهَانُ الْحِرْفَةِ شَرَفٌ لَا عَيْبٌ", tr: "Bir zanaatı meslek edinmek ayıp değil, şereftir." } } },
-        3: { base: { emoji: "📣", arText: "أُمْهُنْ", trText: "İş görür, hizmet eder" } },
+        3: { base: { emoji: "📣", arText: "اُمْهُنْ", trText: "İş görür, hizmet eder" } },
         78: { base: { emoji: "🔁", arText: "يَمْتَهِنُ", trText: "Meslek edinir, hor görür" } },
         79: { base: { emoji: "📣", arText: "اِمْتَهِنْ", trText: "Meslek edin!, hor gör!" } }
     },
@@ -24503,7 +24486,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         22: { base: { emoji: "🌅", arText: "صَبَاح", trText: "Sabah", ornek: { ar: "صَبَاحُ الْخَيْرِ يَا مُعَلِّمِي", tr: "Günaydın öğretmenim." } } },
         21: { base: { emoji: "🌄", arText: "صُبْح", trText: "Sabah vakti; sabah namazı", ornek: { ar: "صَلَّيْنَا الصُّبْحَ فِي الْمَسْجِدِ", tr: "Sabah namazını mescitte kıldık." } } },
         35: { base: { emoji: "😊", arText: "صَبِيح", trText: "Güzel yüzlü, aydınlık çehreli", ornek: { ar: "وَجْهٌ صَبِيحٌ يَبْعَثُ السُّرُورَ", tr: "Aydınlık bir yüz sevinç verir." } } },
-        39: { base: { emoji: "💡", arText: "مِصْبَاح", trText: "Lamba, kandil", ornek: { ar: "أَضَأْتُ الْمِصْبَاحَ فِي غُرْفَتِي", tr: "Odamdaki lambayı yaktım." }, cogul: "مَصَابِيح" } },
+        39: { tip: "esya", base: { emoji: "💡", arText: "مِصْبَاح", trText: "Lamba, kandil", ornek: { ar: "أَضَأْتُ الْمِصْبَاحَ فِي غُرْفَتِي", tr: "Odamdaki lambayı yaktım." }, cogul: "مَصَابِيح" } },
         52: { base: { emoji: "🌤️", arText: "أَصْبَحَ", trText: "Sabahladı; oldu, olageldi (kâne'nin kardeşi)", ornek: { ar: "أَصْبَحَ الْجَوُّ جَمِيلًا", tr: "Hava güzel oldu." }, }, not: "ÇOK ÖNEMLİ: أَصْبَحَ iki iş yapar. (1) Asıl anlamı «sabaha çıktı». (2) كَانَ ve kardeşleri arasında yer alır: ismini merfû, haberini MANSUB yapar — أَصْبَحَ الْجَوُّ جَمِيلًا (الجوُّ ismi, جميلًا haberi). Sınavda mansub haberi yakalamak için bu fiil işaret sayılır." },
         53: { base: { emoji: "🌞", arText: "يُصْبِحُ", trText: "Sabahlar; olur", ornek: { ar: "يُصْبِحُ الطَّالِبُ نَشِيطًا بَعْدَ النَّوْمِ", tr: "Öğrenci uykudan sonra dinç olur." } } },
         55: { base: { emoji: "🕰️", arText: "إِصْبَاح", trText: "Sabahlama, sabaha çıkma", ornek: { ar: "الْإِصْبَاحُ عَلَى نِعْمَةٍ شُكْرٌ", tr: "Bir nimetle sabahlamak şükür gerektirir." } } },
@@ -24516,7 +24499,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     /* 316 — ك ر س : Sandalye; bir işe adamak */
     "كرس": {
-        19: { base: { emoji: "🪑", arText: "كُرْسِيّ", trText: "Sandalye, koltuk; makam", ornek: { ar: "اَلْكُرْسِيُّ بِجَانِبِ الطَّاوِلَةِ", tr: "Sandalye masanın yanındadır." }, cogul: "كَرَاسِيّ" }, not: "Not: كُرْسِيّ hem oturulan sandalyedir hem de mecazen «makam, taht»tır. Âyet-i Kerîme'de geçen اَلْكُرْسِيّ ise Allah'ın ilim ve saltanatını anlatır; sandalye anlamıyla karıştırılmaz." },
+        19: { tip: "esya", base: { emoji: "🪑", arText: "كُرْسِيّ", trText: "Sandalye, koltuk; makam", ornek: { ar: "اَلْكُرْسِيُّ بِجَانِبِ الطَّاوِلَةِ", tr: "Sandalye masanın yanındadır." }, cogul: "كَرَاسِيّ" }, not: "Not: كُرْسِيّ hem oturulan sandalyedir hem de mecazen «makam, taht»tır. Âyet-i Kerîme'de geçen اَلْكُرْسِيّ ise Allah'ın ilim ve saltanatını anlatır; sandalye anlamıyla karıştırılmaz." },
         58: { base: { emoji: "🎯", arText: "كَرَّسَ", trText: "Adadı, tahsis etti; yerleştirdi", ornek: { ar: "كَرَّسَ حَيَاتَهُ لِلْعِلْمِ", tr: "Hayatını ilme adadı." } } },
         59: { base: { emoji: "⏳", arText: "يُكَرِّسُ", trText: "Adar, tahsis eder", ornek: { ar: "يُكَرِّسُ وَقْتَهُ لِلْقِرَاءَةِ", tr: "Vaktini okumaya ayırıyor." } } },
         60: { base: { emoji: "📌", arText: "كَرِّسْ", trText: "Ada!, tahsis et!", ornek: { ar: "كَرِّسْ سَاعَةً لِلْمُرَاجَعَةِ", tr: "Tekrara bir saat ayır." } } },
@@ -24573,7 +24556,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         57: { base: { emoji: "⛔", arText: "مُغْلَق", trText: "Kapalı", ornek: { ar: "الْمَحَلُّ مُغْلَقٌ يَوْمَ الْأَحَدِ", tr: "Dükkân pazar günü kapalıdır." } } },
         40: { base: { emoji: "🔏", arText: "مِغْلَاق", trText: "Kilit, sürgü", ornek: { ar: "الْمِغْلَاقُ مَكْسُورٌ فَأَصْلِحْهُ", tr: "Kilit kırık, onu tamir et." }, cogul: "مَغَالِيق" } },
         2: { base: { emoji: "🔁", arText: "يَغْلُقُ", trText: "Kapar (klasik kullanım)" } },
-        3: { base: { emoji: "📣", arText: "أُغْلُقْ", trText: "Kapa! (klasik kullanım)" } }
+        3: { base: { emoji: "📣", arText: "اُغْلُقْ", trText: "Kapa! (klasik kullanım)" } }
     },
 
     /* 320 — خ ب ز : Ekmek (1. bâb) */
@@ -24630,7 +24613,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         63: { base: { emoji: "🚫", arText: "مُعَطَّل", trText: "Bozuk, arızalı; durdurulmuş", ornek: { ar: "الْمِصْعَدُ مُعَطَّلٌ الْيَوْمَ", tr: "Asansör bugün bozuk." } } },
         88: { base: { emoji: "🪫", arText: "تَعَطَّلَ", trText: "Bozuldu, arızalandı", ornek: { ar: "تَعَطَّلَتِ السَّيَّارَةُ فِي الطَّرِيقِ", tr: "Araba yolda bozuldu." } } },
         91: { base: { emoji: "⚠️", arText: "تَعَطُّل", trText: "Bozulma, arıza", ornek: { ar: "تَعَطُّلُ الْجِهَازِ أَخَّرَ الْعَمَلَ", tr: "Cihazın arızalanması işi geciktirdi." } } },
-        3: { base: { emoji: "📣", arText: "أُعْطُلْ", trText: "Boş kalır, durur" } },
+        3: { base: { emoji: "📣", arText: "اُعْطُلْ", trText: "Boş kalır, durur" } },
         59: { base: { emoji: "🔁", arText: "يُعَطِّلُ", trText: "Durdurur, işlemez hâle getirir" } },
         60: { base: { emoji: "📣", arText: "عَطِّلْ", trText: "Durdur!, işlemez hâle getir!" } },
         89: { base: { emoji: "🔁", arText: "يَتَعَطَّلُ", trText: "Bozulur, arızalanır" } },
@@ -24657,7 +24640,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         58: { base: { emoji: "⏱️", arText: "بَكَّرَ", trText: "Erken yaptı, erkene aldı", ornek: { ar: "بَكَّرَ فِي النَّوْمِ لِيَسْتَيْقِظَ مُبَكِّرًا", tr: "Erken kalkmak için erken yattı." } } },
         61: { base: { emoji: "📅", arText: "تَبْكِير", trText: "Erkene alma, erken davranma", ornek: { ar: "التَّبْكِيرُ فِي الصَّلَاةِ فَضِيلَةٌ", tr: "Namazda erken davranmak fazilettir." } } },
         62: { base: { emoji: "🌞", arText: "مُبَكِّر", trText: "Erken, erkenci", ornek: { ar: "أَسْتَيْقِظُ مُبَكِّرًا فِي الصَّبَاحِ", tr: "Sabah erkenden uyanırım." } } },
-        3: { base: { emoji: "📣", arText: "أُبْكُرْ", trText: "Erken davranır" } },
+        3: { base: { emoji: "📣", arText: "اُبْكُرْ", trText: "Erken davranır" } },
         53: { base: { emoji: "🔁", arText: "يُبْكِرُ", trText: "Erken davranır, erken çıkar" } },
         54: { base: { emoji: "📣", arText: "أَبْكِرْ", trText: "Erken davran!, erken çık!" } },
         55: { base: { emoji: "📘", arText: "إِبْكَار", trText: "Erken davranma, erken çıkma (masdar)" } },
@@ -24722,7 +24705,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         64: { base: { emoji: "🫱", arText: "زَامَلَ", trText: "Beraber çalıştı, arkadaşlık etti", ornek: { ar: "زَامَلْتُهُ سِنِينَ فِي الْمَدْرَسَةِ", tr: "Okulda yıllarca onunla arkadaşlık ettim." } } },
         67: { base: { emoji: "🤗", arText: "مُزَامَلَة", trText: "Beraber bulunma, arkadaşlık", ornek: { ar: "الْمُزَامَلَةُ تُعَلِّمُ الصَّبْرَ", tr: "Arkadaşlık sabrı öğretir." } } },
         2: { base: { emoji: "🔁", arText: "يَزْمُلُ", trText: "Arkadaşlık eder, yoldaş olur" } },
-        3: { base: { emoji: "📣", arText: "أُزْمُلْ", trText: "Arkadaşlık et!, yoldaş ol!" } },
+        3: { base: { emoji: "📣", arText: "اُزْمُلْ", trText: "Arkadaşlık et!, yoldaş ol!" } },
         65: { base: { emoji: "🔁", arText: "يُزَامِلُ", trText: "Beraber çalışır, arkadaşlık eder" } },
         66: { base: { emoji: "📣", arText: "زَامِلْ", trText: "Beraber çalış!, arkadaşlık et!" } }
     },
@@ -24733,7 +24716,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         2: { base: { emoji: "🧣", arText: "يَسْتُرُ", trText: "Örter, gizler", ornek: { ar: "اللهُ يَسْتُرُ عِبَادَهُ", tr: "Allah kullarını örter." } } },
         3: { base: { emoji: "🤲", arText: "اُسْتُرْ", trText: "Ört!, gizle!", ornek: { ar: "اُسْتُرْ عَيْبَ أَخِيكَ", tr: "Kardeşinin ayıbını ört." } } },
         20: { base: { emoji: "🛡️", arText: "سِتْر", trText: "Örtü, perde; ırz ve namusun korunması", ornek: { ar: "الْحَيَاءُ سِتْرٌ لِصَاحِبِهِ", tr: "Hayâ, sahibi için bir örtüdür." } } },
-        23: { base: { emoji: "🪟", arText: "سِتَارَة", trText: "Perde", ornek: { ar: "السِّتَارَةُ عَلَى الشُّبَّاكِ جَمِيلَةٌ", tr: "Pencerenin üstündeki perde güzel." }, cogul: "سَتَائِر" } },
+        23: { tip: "esya", base: { emoji: "🪟", arText: "سِتَارَة", trText: "Perde", ornek: { ar: "السِّتَارَةُ عَلَى الشُّبَّاكِ جَمِيلَةٌ", tr: "Pencerenin üstündeki perde güzel." }, cogul: "سَتَائِر" } },
         33: { base: { emoji: "🧱", arText: "سَاتِر", trText: "Örten, gizleyen; siper", ornek: { ar: "اللهُ سَاتِرُ الْعُيُوبِ", tr: "Allah ayıpları örtendir." } } },
         34: { base: { emoji: "🌟", arText: "سَتَّار", trText: "Çokça örten (Settâr)", ornek: { ar: "يَا سَتَّارُ اسْتُرْنَا", tr: "Ey Settâr, bizi ört." } } },
         36: { base: { emoji: "🙈", arText: "مَسْتُور", trText: "Örtülü, gizli kalmış", ornek: { ar: "عَيْبُهُ مَسْتُورٌ بِفَضْلِ اللهِ", tr: "Ayıbı Allah'ın lütfuyla örtülüdür." } } },
@@ -24752,7 +24735,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         36: { base: { emoji: "🛣️", arText: "مَسْطُوح", trText: "Düzleştirilmiş, yayılmış", ornek: { ar: "الطَّرِيقُ مَسْطُوحٌ وَمُعَبَّدٌ", tr: "Yol düzleştirilmiş ve asfaltlanmıştır." } } },
         58: { base: { emoji: "🚧", arText: "سَطَّحَ", trText: "Düzleştirdi, yassılaştırdı", ornek: { ar: "سَطَّحُوا الْأَرْضَ قَبْلَ الْبِنَاءِ", tr: "İnşaattan önce araziyi düzlediler." } } },
         61: { base: { emoji: "🛠️", arText: "تَسْطِيح", trText: "Düzleştirme", ornek: { ar: "تَسْطِيحُ الْمَوْضُوعِ يُفْقِدُهُ قِيمَتَهُ", tr: "Konuyu yüzeyselleştirmek onu değersizleştirir." } } },
-        3: { base: { emoji: "📣", arText: "أُسْطُحْ", trText: "Düzler, yayar" } },
+        3: { base: { emoji: "📣", arText: "اُسْطُحْ", trText: "Düzler, yayar" } },
         59: { base: { emoji: "🔁", arText: "يُسَطِّحُ", trText: "Düzleştirir, yassılaştırır" } },
         60: { base: { emoji: "📣", arText: "سَطِّحْ", trText: "Düzleştir!, yassılaştır!" } }
     },
@@ -24783,7 +24766,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         22: { base: { emoji: "🎁", arText: "جَزَالَة", trText: "Bolluk; (üslûpta) sağlamlık", ornek: { ar: "جَزَالَةُ الْأُسْلُوبِ تُقَوِّي الْمَعْنَى", tr: "Üslûbun sağlamlığı manayı güçlendirir." } } },
         52: { base: { emoji: "🤲", arText: "أَجْزَلَ", trText: "Bol bol verdi", ornek: { ar: "أَجْزَلَ اللهُ لَكَ الْعَطَاءَ", tr: "Allah sana bol bol versin." } } },
         55: { base: { emoji: "💫", arText: "إِجْزَال", trText: "Bol bol verme", ornek: { ar: "الْإِجْزَالُ فِي الشُّكْرِ أَدَبٌ", tr: "Teşekkürü bol tutmak edeptendir." } } },
-        13: { base: { emoji: "📣", arText: "أُجْزُلْ", trText: "Bollaşır" } },
+        13: { base: { emoji: "📣", arText: "اُجْزُلْ", trText: "Bollaşır" } },
         53: { base: { emoji: "🔁", arText: "يُجْزِلُ", trText: "Bol bol verir" } },
         54: { base: { emoji: "📣", arText: "أَجْزِلْ", trText: "Bol bol ver!" } }
     },
@@ -24936,7 +24919,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         61: { base: { emoji: "🗿", arText: "تَجْسِيم", trText: "Somutlaştırma, üç boyutlandırma", ornek: { ar: "تَجْسِيمُ الْمَعْنَى يُقَرِّبُهُ لِلطِّفْلِ", tr: "Anlamı somutlaştırmak onu çocuğa yaklaştırır." } } },
         88: { base: { emoji: "🌟", arText: "تَجَسَّمَ", trText: "Cisimlendi, gözle görülür hâle geldi", ornek: { ar: "تَجَسَّمَ الْحُلْمُ أَمَامَ عَيْنَيْهِ", tr: "Rüya gözlerinin önünde cisimlendi." } } },
         12: { base: { emoji: "🔁", arText: "يَجْسُمُ", trText: "İrileşir, büyür" } },
-        13: { base: { emoji: "📣", arText: "أُجْسُمْ", trText: "İrileş!, büyü!" } },
+        13: { base: { emoji: "📣", arText: "اُجْسُمْ", trText: "İrileş!, büyü!" } },
         59: { base: { emoji: "🔁", arText: "يُجَسِّمُ", trText: "Cisimleştirir, somutlaştırır, abartır" } },
         60: { base: { emoji: "📣", arText: "جَسِّمْ", trText: "Cisimleştir!, somutlaştır!, abart!" } },
         89: { base: { emoji: "🔁", arText: "يَتَجَسَّمُ", trText: "Cisimlenir, gözle görülür hâle gelir" } },
@@ -24965,7 +24948,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         3: { base: { emoji: "🪄", arText: "اُفْرُشْ", trText: "Ser!, döşe!", ornek: { ar: "اُفْرُشْ سَجَّادَةَ الصَّلَاةِ", tr: "Namaz seccadesini ser." } } },
         19: { base: { emoji: "🛏️", arText: "فَرْش", trText: "Döşeme, yaygı", ornek: { ar: "فَرْشُ الْغُرْفَةِ جَمِيلٌ", tr: "Odanın döşemesi güzel." } } },
         20: { base: { emoji: "🛌", arText: "فِرَاش", trText: "Yatak, döşek", ornek: { ar: "نَامَ عَلَى فِرَاشٍ وَثِيرٍ", tr: "Yumuşak bir yatakta uyudu." }, cogul: "فُرُش" } },
-        39: { base: { emoji: "🪥", arText: "فُرْشَاة", trText: "Fırça (diş fırçası)", ornek: { ar: "أُنَظِّفُ أَسْنَانِي بِفُرْشَاةٍ", tr: "Dişlerimi fırçayla temizlerim." }, cogul: "فُرَش" } },
+        39: { tip: "esya", base: { emoji: "🪥", arText: "فُرْشَاة", trText: "Fırça (diş fırçası)", ornek: { ar: "أُنَظِّفُ أَسْنَانِي بِفُرْشَاةٍ", tr: "Dişlerimi fırçayla temizlerim." }, cogul: "فُرَش" } },
         33: { base: { emoji: "🙋", arText: "فَارِش", trText: "Seren, döşeyen", ornek: { ar: "الْفَارِشُ لِلْبِسَاطِ يُتْقِنُ عَمَلَهُ", tr: "Halıyı seren işini iyi yapar." } } },
         36: { base: { emoji: "🏠", arText: "مَفْرُوش", trText: "Döşenmiş, mefruşatlı", ornek: { ar: "اِسْتَأْجَرْنَا شَقَّةً مَفْرُوشَةً", tr: "Eşyalı bir daire kiraladık." } } }
     },
@@ -24980,7 +24963,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         53: { base: { emoji: "🌧️", arText: "يُمْطِرُ", trText: "Yağmur yağdırır, yağar", ornek: { ar: "يُمْطِرُ الْجَوُّ فِي الشِّتَاءِ كَثِيرًا", tr: "Kışın çok yağmur yağar." } } },
         56: { base: { emoji: "🌫️", arText: "مُمْطِر", trText: "Yağmurlu", ornek: { ar: "الطَّقْسُ مُمْطِرٌ الْيَوْمَ", tr: "Hava bugün yağmurlu." } } },
         39: { base: { emoji: "☂️", arText: "مِمْطَر", trText: "Yağmurluk (giysi)", ornek: { ar: "اِلْبَسْ مِمْطَرَكَ فَالْجَوُّ مُمْطِرٌ", tr: "Yağmurluğunu giy, hava yağmurlu." } } },
-        3: { base: { emoji: "📣", arText: "أُمْطُرْ", trText: "Yağmur yağar" } },
+        3: { base: { emoji: "📣", arText: "اُمْطُرْ", trText: "Yağmur yağar" } },
         54: { base: { emoji: "📣", arText: "أَمْطِرْ", trText: "Yağmur yağdır!" } },
         55: { base: { emoji: "📘", arText: "إِمْطَار", trText: "Yağmur yağdırma (masdar)" } }
     },
@@ -25164,7 +25147,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     /* 357 — ب ح ر : Deniz (sâlim) */
     "بحر": {
-        19: { base: { emoji: "🌊", arText: "بَحْر", trText: "Deniz; (şiirde) vezin, bahir", ornek: { ar: "مَرْمَرَةُ بَحْرٌ دَاخِلِيٌّ", tr: "Marmara bir iç denizdir." }, cogul: "بِحَار" }, suggestsPlus: true, "يّ": { emoji: "⚓", arText: "بَحْرِيّ", trText: "Denizle ilgili, bahriyeli, deniz kuvvetleri mensubu" }, not: "SEMANTİK ÇEKİRDEK: «YARIP GENİŞLETMEK». Kök «yarmak, derinleştirmek» manasındadır; deniz karayı yaran büyük yarıktır. بُحَيْرَة (göl) ism-i tasgirdir: «küçük deniz». Şiirdeki بَحْر (vezin) de sözün akıp gittiği geniş yatağı anlatır." },
+        19: { tip: "doga", base: { emoji: "🌊", arText: "بَحْر", trText: "Deniz; (şiirde) vezin, bahir", ornek: { ar: "مَرْمَرَةُ بَحْرٌ دَاخِلِيٌّ", tr: "Marmara bir iç denizdir." }, cogul: "بِحَار" }, suggestsPlus: true, "يّ": { emoji: "⚓", arText: "بَحْرِيّ", trText: "Denizle ilgili, bahriyeli, deniz kuvvetleri mensubu" }, not: "SEMANTİK ÇEKİRDEK: «YARIP GENİŞLETMEK». Kök «yarmak, derinleştirmek» manasındadır; deniz karayı yaran büyük yarıktır. بُحَيْرَة (göl) ism-i tasgirdir: «küçük deniz». Şiirdeki بَحْر (vezin) de sözün akıp gittiği geniş yatağı anlatır." },
         44: { tekilId: 19, base: { emoji: "🗺️", arText: "بِحَار", trText: "Denizler (بَحْر çoğulu)" } },
         49: { base: { emoji: "🏞️", arText: "بُحَيْرَة", trText: "Göl (küçük deniz — ism-i tasgir)", ornek: { ar: "أُوزُونْغُولُ بُحَيْرَةٌ فِي طَرَابْزُونَ", tr: "Uzungöl, Trabzon'da bir göldür." }, cogul: "بُحَيْرَات" } },
         34: { base: { emoji: "🧑‍✈️", arText: "بَحَّار", trText: "Denizci, gemici", cogul: "بَحَّارَة" } },
@@ -25194,7 +25177,8 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     /* 359 — أ ه ل : Ehil, aile (mehmûz-ul fâ) */
     "أهل": {
-        17: { base: { emoji: "👨‍👩‍👧", arText: "أَهْل", trText: "Aile, ev halkı; bir işin ehli", ornek: { ar: "أَهْلًا وَسَهْلًا وَمَرْحَبًا", tr: "Hoş geldin, safa geldin." }, cogul: "أَهَالٍ" }, suggestsPlus: true, "يّ": { emoji: "🏟️", arText: "أَهْلِيّ", trText: "Ehlî, sivil, yerli (spor kulübü adı)" }, not: "SEMANTİK ÇEKİRDEK: «BİR YERE / BİR İŞE AİT OLMAK». أَهْل hem «ev halkı» hem «bir işin uzmanı»dır: «ehl-i beyt» ile «ehl-i sanat» aynı çekirdeği taşır. تَأَهَّلَ ise hem «evlendi» hem «yeterlilik kazandı» demektir." },
+        19: { base: { emoji: "👨‍👩‍👧", arText: "أَهْل", trText: "Aile, ev halkı; bir işin ehli", ornek: { ar: "أَهْلًا وَسَهْلًا وَمَرْحَبًا", tr: "Hoş geldin, safa geldin." }, cogul: "أَهَالٍ" }, suggestsPlus: true, "يّ": { emoji: "🏟️", arText: "أَهْلِيّ", trText: "Ehlî, sivil, yerli (spor kulübü adı)" }, not: "SEMANTİK ÇEKİRDEK: «BİR YERE / BİR İŞE AİT OLMAK». أَهْل hem «ev halkı» hem «bir işin uzmanı»dır: «ehl-i beyt» ile «ehl-i sanat» aynı çekirdeği taşır. تَأَهَّلَ ise hem «evlendi» hem «yeterlilik kazandı» demektir. Türkçedeki AHALİ de bu kökün çoğulu أَهَالِي'den gelir: «bir yerin halkı»." },
+        22: { tekilId: 19, base: { emoji: "👥", arText: "أَهَالِي", trText: "Ahali, halk; bir yerin sakinleri (أَهْل çoğulu)", ornek: { ar: "أَهَالِي الْقَرْيَةِ يَسْتَقْبِلُونَ الضُّيُوفَ", tr: "Köyün ahalisi misafirleri karşılıyor." } } },
         33: { base: { emoji: "🏘️", arText: "آهِل", trText: "Meskûn, nüfusu olan (yer)" } },
         58: { base: { emoji: "🎓", arText: "أَهَّلَ", trText: "Ehil kıldı, yeterli hâle getirdi" } },
         59: { base: { emoji: "🔁", arText: "يُؤَهِّلُ", trText: "Ehil kılar, yeterli hâle getirir" } },
@@ -25249,7 +25233,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     /* 363 — ش م س : Güneş (sâlim) */
     "شمس": {
-        21: { base: { emoji: "☀️", arText: "شَمْس", trText: "Güneş", ornek: { ar: "وَالشَّمْسِ وَضُحَاهَا", tr: "Güneşe ve onun aydınlığına andolsun. (Şems sûresi, 1)" }, cogul: "شُمُوس" }, suggestsPlus: true, "يّ": { emoji: "🔆", arText: "شَمْسِيّ", trText: "Güneşle ilgili; şemsî takvim", ornek: { ar: "السَّنَةُ الشَّمْسِيَّةُ ثَلَاثُمِائَةٍ وَخَمْسَةٌ وَسِتُّونَ يَوْمًا", tr: "Şemsî yıl üç yüz altmış beş gündür." } }, not: "SEMANTİK ÇEKİRDEK: «GÜNEŞ». Arapçada شَمْس müennestir. Güneşi kabul eden yere مَشْمَس, güneşli havaya مُشْمِس denir; şemsiye (شَمْسِيَّة) ise güneşten koruyan şeydir." },
+        21: { tip: "doga", base: { emoji: "☀️", arText: "شَمْس", trText: "Güneş", ornek: { ar: "وَالشَّمْسِ وَضُحَاهَا", tr: "Güneşe ve onun aydınlığına andolsun. (Şems sûresi, 1)" }, cogul: "شُمُوس" }, suggestsPlus: true, "يّ": { emoji: "🔆", arText: "شَمْسِيّ", trText: "Güneşle ilgili; şemsî takvim", ornek: { ar: "السَّنَةُ الشَّمْسِيَّةُ ثَلَاثُمِائَةٍ وَخَمْسَةٌ وَسِتُّونَ يَوْمًا", tr: "Şemsî yıl üç yüz altmış beş gündür." } }, not: "SEMANTİK ÇEKİRDEK: «GÜNEŞ». Arapçada شَمْس müennestir. Güneşi kabul eden yere مَشْمَس, güneşli havaya مُشْمِس denir; şemsiye (شَمْسِيَّة) ise güneşten koruyan şeydir." },
         52: { base: { emoji: "🌞", arText: "أَشْمَسَ", trText: "(Gün) güneşli oldu" } },
         56: { base: { emoji: "🌤️", arText: "مُشْمِس", trText: "Güneşli", ornek: { ar: "الْجَوُّ مُشْمِسٌ وَدَافِئٌ", tr: "Hava güneşli ve ılık." } } },
         94: { base: { emoji: "🏖️", arText: "تَشَمَّسَ", trText: "Güneşlendi, güneş banyosu yaptı" } }
@@ -25281,7 +25265,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     /* 367 — و ر ق : Yaprak, kâğıt (misâl vâvî) */
     "ورق": {
-        17: { base: { emoji: "🍃", arText: "وَرَق", trText: "Yaprak; kâğıt (cins isim)", ornek: { ar: "تَسْقُطُ الْأَوْرَاقُ فِي الْخَرِيفِ", tr: "Yapraklar sonbaharda dökülür." }, cogul: "أَوْرَاق" }, suggestsPlus: true, "ة": { emoji: "📄", arText: "وَرَقَة", trText: "Bir yaprak, bir kâğıt (tekil)", ornek: { ar: "أَعْطِنِي وَرَقَةً وَقَلَمًا", tr: "Bana bir kâğıt ve kalem ver." }, cogul: "وَرَقَات" }, not: "SEMANTİK ÇEKİRDEK: «İNCE YAPRAK». وَرَق cins isimdir: tek bir yaprak için ة eklenir (وَرَقَة). Kâğıt icat edilince ağaç yaprağının adı ona da verilmiştir; وِرَاقَة kâğıtçılık/hattatlıktır." },
+        17: { tip: "doga", base: { emoji: "🍃", arText: "وَرَق", trText: "Yaprak; kâğıt (cins isim)", ornek: { ar: "تَسْقُطُ الْأَوْرَاقُ فِي الْخَرِيفِ", tr: "Yapraklar sonbaharda dökülür." }, cogul: "أَوْرَاق" }, suggestsPlus: true, "ة": { emoji: "📄", arText: "وَرَقَة", trText: "Bir yaprak, bir kâğıt (tekil)", ornek: { ar: "أَعْطِنِي وَرَقَةً وَقَلَمًا", tr: "Bana bir kâğıt ve kalem ver." }, cogul: "وَرَقَات" }, not: "SEMANTİK ÇEKİRDEK: «İNCE YAPRAK». وَرَق cins isimdir: tek bir yaprak için ة eklenir (وَرَقَة). Kâğıt icat edilince ağaç yaprağının adı ona da verilmiştir; وِرَاقَة kâğıtçılık/hattatlıktır." },
         41: { tekilId: 17, base: { emoji: "📚", arText: "أَوْرَاق", trText: "Yapraklar; evraklar, belgeler", ornek: { ar: "أَوْرَاقُ الشَّجَرِ صَفْرَاءُ", tr: "Ağacın yaprakları sarıdır." } } },
         34: { base: { emoji: "🖋️", arText: "وَرَّاق", trText: "Kâğıtçı, kitap istinsah eden" } }
     },
@@ -25314,7 +25298,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     /* 370 — غ ي م : Bulut (ecvef yâî) */
     "غيم": {
-        19: { base: { emoji: "☁️", arText: "غَيْم", trText: "Bulut", ornek: { ar: "غَطَّى الْغَيْمُ السَّمَاءَ", tr: "Bulut gökyüzünü kapladı." }, cogul: "غُيُوم" }, not: "SEMANTİK ÇEKİRDEK: «ÖRTMEK». Bulut gökyüzünü örttüğü için bu adı alır; غَائِم «örtülü, bulutlu» hava demektir. Aynı örtme fikri غَمّ (gam: kalbi örten sıkıntı) kelimesiyle de akrabadır." },
+        19: { tip: "doga", base: { emoji: "☁️", arText: "غَيْم", trText: "Bulut", ornek: { ar: "غَطَّى الْغَيْمُ السَّمَاءَ", tr: "Bulut gökyüzünü kapladı." }, cogul: "غُيُوم" }, not: "SEMANTİK ÇEKİRDEK: «ÖRTMEK». Bulut gökyüzünü örttüğü için bu adı alır; غَائِم «örtülü, bulutlu» hava demektir. Aynı örtme fikri غَمّ (gam: kalbi örten sıkıntı) kelimesiyle de akrabadır." },
         25: { tekilId: 19, base: { emoji: "🌥️", arText: "غُيُوم", trText: "Bulutlar (غَيْم çoğulu)" } },
         33: { base: { emoji: "🌥️", arText: "غَائِم", trText: "Bulutlu", ornek: { ar: "الطَّقْسُ غَائِمٌ الْيَوْمَ", tr: "Bugün hava bulutlu." } } },
         52: { base: { emoji: "🌫️", arText: "أَغَامَ", trText: "(Gökyüzü) bulutlandı" } },
@@ -25456,6 +25440,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     /* 382 — أ خ ر : Sonrakilik, âhiret (mehmûz-ul fâ) */
     "أخر": {
+        92: { base: { emoji: "🐌", arText: "مُتَأَخِّر", trText: "Gecikmiş, geç kalan", ornek: { ar: "وَصَلْتُ مُتَأَخِّرًا إِلَى الصَّفِّ", tr: "Sınıfa geç geldim." } } },
         30: { base: { emoji: "🔄", arText: "آخَر", trText: "Başka, diğer (eril)", ornek: { ar: "أُرِيدُ شَيْئًا آخَرَ", tr: "Başka bir şey istiyorum." }, cogul: "آخَرُونَ" }, not: "SEMANTİK ÇEKİRDEK: «ARKADA KALMAK». آخَر (başka biri) ile آخِر (sonuncu) yazılışta bir harfle ayrılır: آخَر «diğeri», آخِر «en sonuncusu»dur. الْآخِرَة ise «arkadan gelen yurt», yani âhirettir." },
         31: { base: { emoji: "🔄", arText: "أُخْرَى", trText: "Başka, diğer (dişil)", ornek: { ar: "مَرَّةً أُخْرَى مِنْ فَضْلِكَ", tr: "Lütfen bir kere daha." } } },
         33: { base: { emoji: "🏁", arText: "آخِر", trText: "Son, sonuncu", ornek: { ar: "فِي آخِرِ الشَّهْرِ", tr: "Ayın sonunda." } }, suggestsPlus: true, "ة": { emoji: "🌅", arText: "آخِرَة", trText: "Âhiret, son yurt", ornek: { ar: "وَالْآخِرَةُ خَيْرٌ وَأَبْقَى", tr: "Âhiret daha hayırlı ve kalıcıdır. (A'lâ sûresi, 17)" } } },
@@ -25569,7 +25554,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         19: { base: { emoji: "💭", arText: "رَأْي", trText: "Görüş, fikir, kanaat", ornek: { ar: "مَا رَأْيُكَ فِي هَذَا؟", tr: "Bu konuda görüşün nedir?" }, cogul: "آرَاء" } },
         22: { base: { emoji: "👀", arText: "رُؤْيَة", trText: "Görme, görüş (masdar)" } },
         32: { base: { emoji: "💤", arText: "رُؤْيَا", trText: "Rüya, uykuda görülen" } },
-        40: { base: { emoji: "🪞", arText: "مِرْآة", trText: "Ayna", cogul: "مَرَايَا" } },
+        40: { tip: "esya", base: { emoji: "🪞", arText: "مِرْآة", trText: "Ayna", cogul: "مَرَايَا" } },
         41: { tekilId: 19, base: { emoji: "🗳️", arText: "آرَاء", trText: "Görüşler, fikirler (رَأْي çoğulu)" } }
     },
 
@@ -25600,8 +25585,8 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         1: { base: { emoji: "⚖️", arText: "جَارَ", trText: "Haksızlık etti, zulmetti; komşu oldu" } },
         2: { base: { emoji: "🔁", arText: "يَجُورُ", trText: "Zulmeder" } },
         19: { base: { emoji: "🚫", arText: "جَوْر", trText: "Zulüm, haksızlık" }, not: "SEMANTİK ÇEKİRDEK: «DOĞRU ÇİZGİDEN SAPMA». جَوْر adaletten sapmadır. جَار (komşu) ise «yanında duran, sınırın hemen ötesindeki»dir; hadiste komşu hakkı çok vurgulanmıştır." },
+        29: { tekilId: 33, base: { emoji: "👨‍👩‍👦", arText: "جِيرَان", trText: "Komşular (جَار çoğulu — فِعْلَان vezninde kırık çoğul)", ornek: { ar: "يَزُورُ النَّاسُ جِيرَانَهُمْ فِي الْعِيدِ", tr: "İnsanlar bayramda komşularını ziyaret eder." } } },
         33: { base: { emoji: "🏘️", arText: "جَار", trText: "Komşu", ornek: { ar: "الْجَارُ قَبْلَ الدَّارِ", tr: "Evden önce komşu (bakılır). (Atasözü)" }, cogul: "جِيرَان" }, suggestsPlus: true, "ة": { emoji: "👩‍🦰", arText: "جَارَة", trText: "Kadın komşu", cogul: "جَارَات" } },
-        44: { tekilId: 33, base: { emoji: "👨‍👩‍👦", arText: "جِيرَان", trText: "Komşular (جَار çoğulu)", ornek: { ar: "يَزُورُ النَّاسُ جِيرَانَهُمْ فِي الْعِيدِ", tr: "İnsanlar bayramda komşularını ziyaret eder." } } },
         64: { base: { emoji: "🤝", arText: "جَاوَرَ", trText: "Komşu oldu, yan yana bulundu" } },
         67: { base: { emoji: "📘", arText: "مُجَاوَرَة", trText: "Komşuluk, yakın olma (masdar)" } },
         94: { base: { emoji: "🏡", arText: "تَجَاوَرَ", trText: "Birbirine komşu oldular" } }
@@ -25703,7 +25688,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
     /* 402 — س ن ن : Diş, yaş, sünnet (muzâaf) */
     "سنن": {
         1: { base: { emoji: "⚔️", arText: "سَنَّ", trText: "Biledi; (kanun, âdet) koydu", ornek: { ar: "مَنْ سَنَّ سُنَّةً حَسَنَةً فَلَهُ أَجْرُهَا", tr: "Kim güzel bir çığır açarsa onun sevabı ona aittir. (Hadîs-i şerîf)" } }, not: "SEMANTİK ÇEKİRDEK: «DÜZGÜN BİR YOL AÇMAK». سُنَّة açılmış yol, سِنّ hem diş hem yaş (dişlerle ölçülen ömür), مُسِنّ ise yaşı ilerlemiş kimsedir. سَنَّ الْقَانُونَ «kanun koydu» demektir." },
-        20: { base: { emoji: "🦷", arText: "سِنّ", trText: "Diş; yaş (ömür)", ornek: { ar: "كَمْ سِنُّكَ؟ ‑ سِنِّي خَمْسَةَ عَشَرَ عَامًا", tr: "Kaç yaşındasın? ‑ On beş yaşındayım." }, cogul: "أَسْنَان" } },
+        20: { tip: "uzuv", base: { emoji: "🦷", arText: "سِنّ", trText: "Diş; yaş (ömür)", ornek: { ar: "كَمْ سِنُّكَ؟ ‑ سِنِّي خَمْسَةَ عَشَرَ عَامًا", tr: "Kaç yaşındasın? ‑ On beş yaşındayım." }, cogul: "أَسْنَان" } },
         41: { tekilId: 20, base: { emoji: "😬", arText: "أَسْنَان", trText: "Dişler (سِنّ çoğulu)" } },
         22: { base: { emoji: "🕌", arText: "سُنَّة", trText: "Sünnet, âdet, izlenen yol", cogul: "سُنَن" } },
         52: { base: { emoji: "👴", arText: "أَسَنَّ", trText: "Yaşlandı, yaşı ilerledi" } },
@@ -25883,6 +25868,252 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         61: { base: { emoji: "🤍", arText: "تَضْحِيَة", trText: "Fedakârlık; kurban kesme (masdar)", ornek: { ar: "التَّضْحِيَةُ مِنْ أَجْلِ الْوَطَنِ شَرَفٌ", tr: "Vatan uğruna fedakârlık şereftir." }, cogul: "تَضْحِيَات" } },
         30: { base: { emoji: "🕋", arText: "أَضْحَى", trText: "Kurban (عِيدُ الْأَضْحَى: Kurban Bayramı)", ornek: { ar: "لِلْمُسْلِمِينَ عِيدَانِ: عِيدُ الْفِطْرِ وَعِيدُ الْأَضْحَى", tr: "Müslümanların iki bayramı vardır: Ramazan Bayramı ve Kurban Bayramı." } } },
         35: { base: { emoji: "🐏", arText: "أُضْحِيَة", trText: "Kurbanlık hayvan", cogul: "أَضَاحِي" } }
+    },
+
+    /* 418 — س م و : Yükselmek; isim (nâkıs vâvî) */
+    "سمو": {
+        1: { base: { emoji: "⬆️", arText: "سَمَا", trText: "Yükseldi, yüceldi" }, not: "SEMANTİK ÇEKİRDEK: «YÜKSELME». سَمَاء yukarıda olan, اِسْم ise bir şeyi anılır kılıp «yükselten» alâmettir (Basra ekolüne göre kök س م و, Kûfe ekolüne göre و س م'dir). سَمِيّ «adaş», أَسْمَاء ise isimlerdir." },
+        2: { base: { emoji: "🔁", arText: "يَسْمُو", trText: "Yükselir, yücelir" } },
+        22: { base: { emoji: "🌌", arText: "سَمَاء", trText: "Gökyüzü, sema", ornek: { ar: "السَّمَاءُ زَرْقَاءُ الْيَوْمَ", tr: "Bugün gökyüzü mavi." }, cogul: "سَمَاوَات" } },
+        20: { base: { emoji: "🏷️", arText: "اِسْم", trText: "İsim, ad", ornek: { ar: "مَا اسْمُكَ؟ ‑ اِسْمِي فُرْقَان", tr: "Adın ne? ‑ Adım Furkan." }, cogul: "أَسْمَاء" } },
+        41: { tekilId: 20, base: { emoji: "📇", arText: "أَسْمَاء", trText: "İsimler (اِسْم çoğulu)", ornek: { ar: "وَلِلَّهِ الْأَسْمَاءُ الْحُسْنَى", tr: "En güzel isimler Allah'ındır. (A'râf sûresi, 180)" } } },
+        35: { base: { emoji: "👥", arText: "سَمِيّ", trText: "Adaş, aynı adı taşıyan" } },
+        58: { base: { emoji: "✍️", arText: "سَمَّى", trText: "İsim verdi, adlandırdı" } },
+        59: { base: { emoji: "🔁", arText: "يُسَمِّي", trText: "Adlandırır" } },
+        60: { base: { emoji: "📣", arText: "سَمِّ", trText: "Adlandır!" } },
+        61: { base: { emoji: "📘", arText: "تَسْمِيَة", trText: "Adlandırma (masdar)" } },
+        52: { base: { emoji: "🔺", arText: "أَسْمَى", trText: "Yüceltti; daha yüce" } }
+    },
+
+    /* 419 — ع ط و : Vermek (nâkıs vâvî) */
+    "عطو": {
+        1: { base: { emoji: "🤲", arText: "عَطَا", trText: "Verdi, uzattı" }, not: "SEMANTİK ÇEKİRDEK: «ELİ UZATIP VERME». عَطَاء karşılıksız veriştir; إِعْطَاء vermek fiilinin masdarı, مُعْطٍ verendir. Kur'an'da «إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ» buyrulur." },
+        22: { base: { emoji: "🎁", arText: "عَطَاء", trText: "Bağış, veriş, atâ", cogul: "أَعْطِيَة" } },
+        52: { base: { emoji: "🫴", arText: "أَعْطَى", trText: "Verdi", ornek: { ar: "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ", tr: "Şüphesiz biz sana Kevser'i verdik. (Kevser sûresi, 1)" } } },
+        53: { base: { emoji: "🔁", arText: "يُعْطِي", trText: "Verir" } },
+        54: { base: { emoji: "📣", arText: "أَعْطِ", trText: "Ver!", ornek: { ar: "أَعْطِنِي قَلَمًا مِنْ فَضْلِكَ", tr: "Lütfen bana bir kalem ver." } } },
+        55: { base: { emoji: "📘", arText: "إِعْطَاء", trText: "Verme (masdar)" } },
+        56: { base: { emoji: "🙌", arText: "مُعْطٍ", trText: "Veren, bağışta bulunan" } },
+        94: { base: { emoji: "🤝", arText: "تَعَاطَى", trText: "Alıp verdi, uğraştı; (ilaç) aldı" } }
+    },
+
+    /* 420 — ل ق ي : Karşılaşmak (nâkıs yâî) */
+    "لقي": {
+        8: { base: { emoji: "🤝", arText: "لَقِيَ", trText: "Karşılaştı, kavuştu", ornek: { ar: "لَقِيَ صَدِيقَهُ فِي السُّوقِ", tr: "Arkadaşına çarşıda rastladı." } }, not: "SEMANTİK ÇEKİRDEK: «KARŞI KARŞIYA GELME». لِقَاء buluşma, مُلَاقَاة karşılaşma, أَلْقَى «karşıya bıraktı → attı, (ders) verdi»dir. «إِلَى اللِّقَاءِ» vedalaşırken «görüşmek üzere» demektir." },
+        9: { base: { emoji: "🔁", arText: "يَلْقَى", trText: "Karşılaşır, kavuşur" } },
+        22: { base: { emoji: "👋", arText: "لِقَاء", trText: "Buluşma, karşılaşma", ornek: { ar: "إِلَى اللِّقَاءِ يَا صَدِيقِي", tr: "Görüşmek üzere dostum." }, cogul: "لِقَاءَات" } },
+        52: { base: { emoji: "🎤", arText: "أَلْقَى", trText: "Attı, bıraktı; (konuşma) yaptı", ornek: { ar: "أَلْقَى الْمُدِيرُ كَلِمَةً قَصِيرَةً", tr: "Müdür kısa bir konuşma yaptı." } } },
+        55: { base: { emoji: "📘", arText: "إِلْقَاء", trText: "Atma; hitap etme (masdar)" } },
+        64: { base: { emoji: "🫱", arText: "لَاقَى", trText: "Karşıladı, karşılaştı" } },
+        67: { base: { emoji: "📘", arText: "مُلَاقَاة", trText: "Karşılaşma (masdar)" } },
+        77: { base: { emoji: "📥", arText: "اِلْتَقَى", trText: "Buluştu, bir araya geldi" } },
+        80: { base: { emoji: "📘", arText: "اِلْتِقَاء", trText: "Buluşma (masdar)" } }
+    },
+
+    /* 421 — ح و ل : Hâl, dönüşmek, yıl (ecvef vâvî) */
+    "حول": {
+        1: { base: { emoji: "🔄", arText: "حَالَ", trText: "Değişti, araya girdi, döndü" } },
+        2: { base: { emoji: "🔁", arText: "يَحُولُ", trText: "Değişir, engel olur" } },
+        19: { base: { emoji: "😊", arText: "حَال", trText: "Hâl, durum; (nahiv) hâl", ornek: { ar: "كَيْفَ حَالُكَ؟ ‑ الْحَمْدُ لِلَّهِ بِخَيْرٍ", tr: "Nasılsın? ‑ Allah'a hamdolsun, iyiyim." }, cogul: "أَحْوَال" }, not: "SEMANTİK ÇEKİRDEK: «BİR HÂLDEN BAŞKASINA DÖNME». حَال insanın içinde bulunduğu andır; حَوْل bir tam dönüş yani yıldır (لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ). تَحْوِيل (havale) ve مُحَاوَلَة (deneme) de bu dönüşten gelir." },
+        41: { tekilId: 19, base: { emoji: "📊", arText: "أَحْوَال", trText: "Hâller, durumlar (حَال çoğulu)" } },
+        21: { base: { emoji: "🗓️", arText: "حَوْل", trText: "Yıl, tam devir; güç" } },
+        58: { base: { emoji: "🔀", arText: "حَوَّلَ", trText: "Çevirdi, dönüştürdü, havale etti" } },
+        61: { base: { emoji: "📘", arText: "تَحْوِيل", trText: "Dönüştürme, havale (masdar)" } },
+        64: { base: { emoji: "🎯", arText: "حَاوَلَ", trText: "Denedi, çalıştı, gayret etti" } },
+        67: { base: { emoji: "📘", arText: "مُحَاوَلَة", trText: "Deneme, teşebbüs (masdar)" } },
+        88: { base: { emoji: "🦋", arText: "تَحَوَّلَ", trText: "Dönüştü, başkalaştı" } },
+        91: { base: { emoji: "📘", arText: "تَحَوُّل", trText: "Dönüşüm (masdar)" } }
+    },
+
+    /* 422 — غ د و : Sabah; öğle yemeği (nâkıs vâvî) */
+    "غدو": {
+        1: { base: { emoji: "🌅", arText: "غَدَا", trText: "Sabahleyin gitti; (bir hâle) geldi" }, not: "SEMANTİK ÇEKİRDEK: «SABAH VAKTİ». غَدَاة sabah, غَدًا yarın, غَدَاء ise günün ilk büyük öğünü (öğle yemeği)dir; akşam öğünü عَشَاء ile çift oluşturur." },
+        2: { base: { emoji: "🔁", arText: "يَغْدُو", trText: "Sabahleyin gider; olur" } },
+        22: { tip: "yiyecek", base: { emoji: "🍲", arText: "غَدَاء", trText: "Öğle yemeği", ornek: { ar: "أَتَغَدَّى مَعَ أُسْرَتِي فِي الظُّهْرِ", tr: "Öğlen ailemle öğle yemeği yerim." } } },
+        17: { tip: "zaman", base: { emoji: "🌄", arText: "غَدَاة", trText: "Sabah vakti" } },
+        19: { tip: "zaman", base: { emoji: "📆", arText: "غَد", trText: "Yarın", ornek: { ar: "سَأُسَافِرُ غَدًا", tr: "Yarın yolculuğa çıkacağım." } } },
+        88: { base: { emoji: "🍽️", arText: "تَغَدَّى", trText: "Öğle yemeği yedi", ornek: { ar: "يَتَغَدَّى الطُّلَّابُ فِي الْمَقْصَفِ", tr: "Öğrenciler kantinde öğle yemeği yiyor." } } },
+        89: { base: { emoji: "🔁", arText: "يَتَغَدَّى", trText: "Öğle yemeği yer" } },
+        90: { base: { emoji: "📣", arText: "تَغَدَّ", trText: "Öğle yemeği ye!" } },
+        91: { base: { emoji: "📘", arText: "تَغَدٍّ", trText: "Öğle yemeği yeme (masdar)" } }
+    },
+
+    /* 423 — ع ش و : Akşam; akşam yemeği (nâkıs vâvî) */
+    "عشو": {
+        22: { tip: "zaman", base: { emoji: "🌆", arText: "عِشَاء", trText: "Yatsı vakti; akşam yemeği", ornek: { ar: "أُصَلِّي الْعِشَاءَ فِي الْمَسْجِدِ", tr: "Yatsı namazını camide kılarım." } }, not: "SEMANTİK ÇEKİRDEK: «AKŞAM KARANLIĞI». عِشَاء hem yatsı vaktini hem akşam öğününü karşılar; عَشَاء (fetha ile) yalnız akşam yemeğidir. غَدَاء ile birlikte günün iki ana öğününü oluşturur." },
+        17: { tip: "yiyecek", base: { emoji: "🍽️", arText: "عَشَاء", trText: "Akşam yemeği", ornek: { ar: "الْعَشَاءُ جَاهِزٌ", tr: "Akşam yemeği hazır." } } },
+        88: { base: { emoji: "🌃", arText: "تَعَشَّى", trText: "Akşam yemeği yedi", ornek: { ar: "أَتَعَشَّى مَعَ وَالِدَيَّ", tr: "Anne babamla akşam yemeği yerim." } } },
+        89: { base: { emoji: "🔁", arText: "يَتَعَشَّى", trText: "Akşam yemeği yer" } },
+        90: { base: { emoji: "📣", arText: "تَعَشَّ", trText: "Akşam yemeği ye!" } },
+        91: { base: { emoji: "📘", arText: "تَعَشٍّ", trText: "Akşam yemeği yeme (masdar)" } },
+        33: { base: { emoji: "🌙", arText: "عَاشٍ", trText: "Akşamlayan; gözü zayıf gören" } }
+    },
+
+    /* 424 — ل ذ ذ : Lezzet (muzâaf) */
+    "لذذ": {
+        14: { base: { emoji: "😋", arText: "لَذَّ", trText: "Lezzetli oldu, hoşa gitti" } },
+        20: { base: { emoji: "🍰", arText: "لِذَّة", trText: "Lezzet, haz", cogul: "لَذَّات" }, not: "SEMANTİK ÇEKİRDEK: «HOŞA GİTME». لَذِيذ tadı hoş olan; kelime yalnız yemek için değil, «uyku, söz, hatıra» için de kullanılır: نَوْمٌ لَذِيذٌ (tatlı bir uyku)." },
+        35: { base: { emoji: "🍯", arText: "لَذِيذ", trText: "Lezzetli, tatlı", ornek: { ar: "الْأَطْعِمَةُ التُّرْكِيَّةُ لَذِيذَةٌ جِدًّا", tr: "Türk yemekleri çok lezzetlidir." }, cogul: "لِذَاذ" } },
+        52: { base: { emoji: "😍", arText: "أَلَذَّ", trText: "Lezzet verdi, hoşuna gitti" } },
+        100: { base: { emoji: "🥰", arText: "اِسْتَلَذَّ", trText: "Lezzet aldı, zevk aldı" } },
+        103: { base: { emoji: "📘", arText: "اِسْتِلْذَاذ", trText: "Zevk alma (masdar)" } }
+    },
+
+    /* 425 — ش و ر : İşaret, danışma (ecvef vâvî) */
+    "شور": {
+        1: { base: { emoji: "🍯", arText: "شَارَ", trText: "(Bal) topladı; işaret etti" } },
+        22: { base: { emoji: "🗳️", arText: "شُورَى", trText: "Şûra, danışma", ornek: { ar: "وَأَمْرُهُمْ شُورَىٰ بَيْنَهُمْ", tr: "İşleri aralarında danışma iledir. (Şûrâ sûresi, 38)" } }, not: "SEMANTİK ÇEKİRDEK: «GİZLİ OLANI ÇIKARIP GÖSTERME». Kovandan bal çıkarmak da شَارَ'dır; fikri ortaya çıkarmak مُشَاوَرَة, eli-kolu kullanıp göstermek إِشَارَة olur. Trafik lambasına da إِشَارَة denir." },
+        64: { base: { emoji: "🤝", arText: "شَاوَرَ", trText: "Danıştı, istişare etti" } },
+        67: { base: { emoji: "📘", arText: "مُشَاوَرَة", trText: "İstişare, danışma (masdar)" } },
+        52: { base: { emoji: "👉", arText: "أَشَارَ", trText: "İşaret etti, gösterdi", ornek: { ar: "أَشَارَ الْمُعَلِّمُ إِلَى الْخَرِيطَةِ", tr: "Öğretmen haritayı işaret etti." } } },
+        53: { base: { emoji: "🔁", arText: "يُشِيرُ", trText: "İşaret eder" } },
+        54: { base: { emoji: "📣", arText: "أَشِرْ", trText: "İşaret et!" } },
+        55: { base: { emoji: "🚦", arText: "إِشَارَة", trText: "İşaret; trafik lambası", ornek: { ar: "قِفْ عِنْدَ الْإِشَارَةِ الْحَمْرَاءِ", tr: "Kırmızı ışıkta dur." }, cogul: "إِشَارَات" } },
+        100: { base: { emoji: "💬", arText: "اِسْتَشَارَ", trText: "Danıştı, fikrini sordu" } },
+        103: { base: { emoji: "📘", arText: "اِسْتِشَارَة", trText: "Danışma, konsültasyon (masdar)" } },
+        104: { tip: "meslek", base: { emoji: "🧑‍💼", arText: "مُسْتَشَار", trText: "Danışman, müsteşar" } }
+    },
+
+    /* 426 — ص و ت : Ses (ecvef vâvî) */
+    "صوت": {
+        19: { base: { emoji: "🔊", arText: "صَوْت", trText: "Ses; oy", ornek: { ar: "اِقْرَأْ بِصَوْتٍ عَالٍ", tr: "Yüksek sesle oku." }, cogul: "أَصْوَات" }, suggestsPlus: true, "يّ": { emoji: "🎙️", arText: "صَوْتِيّ", trText: "Sesli, sese ait" }, not: "SEMANTİK ÇEKİRDEK: «SES». Kur'an'da «وَاغْضُضْ مِنْ صَوْتِكَ» (sesini kıs) buyrulur. Modern kullanımda seçimde verilen «oy» da صَوْت'tur; تَصْوِيت oylamadır." },
+        41: { tekilId: 19, base: { emoji: "📢", arText: "أَصْوَات", trText: "Sesler; oylar (صَوْت çoğulu)" } },
+        58: { base: { emoji: "🗳️", arText: "صَوَّتَ", trText: "Ses çıkardı; oy verdi" } },
+        61: { base: { emoji: "📘", arText: "تَصْوِيت", trText: "Oylama, oy verme (masdar)" } }
+    },
+
+    /* 427 — ع ل و : Yükseklik (nâkıs vâvî) */
+    "علو": {
+        1: { base: { emoji: "⬆️", arText: "عَلَا", trText: "Yükseldi, yüceldi", ornek: { ar: "عَلَا صَوْتُهُ فِي الْقَاعَةِ", tr: "Sesi salonda yükseldi." } }, not: "SEMANTİK ÇEKİRDEK: «YÜKSEKLİK». Allah'ın «el-Aliyy» ismi, عَالٍ (yüksek), أَعْلَى (en yüce) ve تَعَالَى (yüceldi) hep buradandır. «تَعَالَ» (gel!) de aslında «yukarı gel» demektir: yüksekte duran kimse aşağıdakini böyle çağırırdı." },
+        2: { base: { emoji: "🔁", arText: "يَعْلُو", trText: "Yükselir" } },
+        3: { base: { emoji: "📣", arText: "اُعْلُ", trText: "Yüksel!" } },
+        33: { base: { emoji: "🗻", arText: "عَالٍ", trText: "Yüksek, yüce", ornek: { ar: "بِصَوْتٍ عَالٍ", tr: "Yüksek sesle." } } },
+        35: { base: { emoji: "👑", arText: "عَلِيّ", trText: "Yüce, ulu (Allah'ın ismi)" } },
+        50: { base: { emoji: "🥇", arText: "أَعْلَى", trText: "Daha yüksek, en yüce", ornek: { ar: "سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَى", tr: "Yüce Rabbinin adını tesbih et. (A'lâ sûresi, 1)" } } },
+        21: { base: { emoji: "📐", arText: "عُلُوّ", trText: "Yükseklik, yücelik" } },
+        94: { base: { emoji: "✨", arText: "تَعَالَى", trText: "Yüceldi, yücedir; (emir) gel!", ornek: { ar: "تَعَالَ يَا صَدِيقِي", tr: "Gel dostum." } } },
+        100: { base: { emoji: "🗼", arText: "اِسْتَعْلَى", trText: "Üstün geldi, büyüklük tasladı" } }
+    },
+
+    /* 428 — أ ب و : Baba (nâkıs vâvî) */
+    /* أَب (17) KALDIRILDI — Geylani: "baba kelimesi veri_sozluk'tan sızmış,
+       kalıp listesinde olmamalı". 17 = فَعَل (masdar / sıfat-ı müşebbehe);
+       أَب ise iki harfli CÂMİD bir isim, hiçbir vezinden türemiyor — satır
+       üzerindeki `tip: "aile"` etiketi de nereden geldiğini söylüyor: sözlük
+       girdisi olarak yazılmış, numara verilince kalıp listesine düşmüş.
+       Sözlükte zaten var ("Aile: Baba", isDictOnly). Kökün semantik notu ile
+       gerçekten أَفْعَال vezninde olan kırık çoğulu (آبَاء) duruyor. */
+    "أبو": {
+        41: { base: { emoji: "👴", arText: "آبَاء", trText: "Babalar, atalar (أَب çoğulu)", ornek: { ar: "وَجَدْنَا آبَاءَنَا عَلَىٰ أُمَّةٍ", tr: "Atalarımızı bir din üzere bulduk. (Zuhruf sûresi, 22)" } }, not: "SEMANTİK ÇEKİRDEK: «BABALIK». أَب, esmâ-i sitte (altı isim) denen özel gruptandır: tamlama hâlinde harflerle irablanır — أَبُوكَ (merfû), أَبَاكَ (mansûb), أَبِيكَ (mecrûr). أُبُوَّة babalık, أَبَوِيّ babaya ait demektir." },
+        21: { base: { emoji: "🤱", arText: "أُبُوَّة", trText: "Babalık" } },
+        58: { base: { emoji: "🧑‍🍼", arText: "أَبَّى", trText: "Babalık etti" } }
+    },
+
+    /* 429 — ش م م : Koklamak (muzâaf) */
+    "شمم": {
+        1: { base: { emoji: "👃", arText: "شَمَّ", trText: "Kokladı", ornek: { ar: "أَشُمُّ رَائِحَةَ الْوَرْدِ", tr: "Gül kokusunu kokluyorum." } }, not: "SEMANTİK ÇEKİRDEK: «BURUNLA ALGILAMA». شَمّ beş duyudan biridir: görme (بَصَر), işitme (سَمْع), tatma (ذَوْق), dokunma (لَمْس) ve koklama (شَمّ). شَمَم ayrıca «burun yüksekliği → onur, gurur» demektir." },
+        2: { base: { emoji: "🔁", arText: "يَشُمُّ", trText: "Koklar" } },
+        3: { base: { emoji: "📣", arText: "شُمَّ", trText: "Kokla!" } },
+        19: { base: { emoji: "🌸", arText: "شَمّ", trText: "Koklama, koku alma (masdar)" } },
+        36: { base: { emoji: "🍈", arText: "مَشْمُوم", trText: "Koklanan şey; kavun" } },
+        17: { base: { emoji: "🦁", arText: "شَمَم", trText: "Onur, gurur, izzet-i nefis" } }
+    },
+
+    /* 430 — ش ف ي : Şifa, iyileşme (nâkıs yâî) */
+    "شفي": {
+        8: { base: { emoji: "💊", arText: "شَفِيَ", trText: "İyileşti, şifa buldu", ornek: { ar: "شَفِيَ الْمَرِيضُ بِإِذْنِ اللهِ", tr: "Hasta Allah'ın izniyle iyileşti." } }, not: "SEMANTİK ÇEKİRDEK: «HASTALIĞIN KENARINDAN KURTULMA». شَفَا bir şeyin kenarı, uçurumun kıyısıdır; hasta o kenardan döndüğünde شِفَاء bulmuş olur. «شَفَاكَ اللهُ» hastaya söylenen duadır: Allah sana şifa versin." },
+        9: { base: { emoji: "🔁", arText: "يَشْفَى", trText: "İyileşir" } },
+        22: { tip: "saglik", base: { emoji: "🩺", arText: "شِفَاء", trText: "Şifa, iyileşme", ornek: { ar: "وَنُنَزِّلُ مِنَ الْقُرْآنِ مَا هُوَ شِفَاءٌ", tr: "Kur'an'dan şifa olan şeyler indiriyoruz. (İsrâ sûresi, 82)" } } },
+        52: { base: { emoji: "🤲", arText: "أَشْفَى", trText: "Şifa verdi; (bir şeyin) eşiğine geldi" } },
+        58: { base: { emoji: "💖", arText: "شَفَّى", trText: "İyileştirdi, şifa verdi" } },
+        38: { tip: "saglik", base: { emoji: "🏥", arText: "مُسْتَشْفًى", trText: "Hastane (şifa istenen yer)", ornek: { ar: "وَالِدَتِي مُمَرِّضَةٌ فِي الْمُسْتَشْفَى", tr: "Annem hastanede hemşiredir." }, cogul: "مُسْتَشْفَيَات" } },
+        100: { base: { emoji: "🏨", arText: "اِسْتَشْفَى", trText: "Şifa aradı, tedavi oldu" } }
+    },
+
+    /* 431 — ط ب ع : Tabiat; basmak (3. bâb) */
+    "طبع": {
+        1: { base: { emoji: "🖨️", arText: "طَبَعَ", trText: "Bastı, mühürledi; huy verdi", ornek: { ar: "طَبَعَ الْكِتَابَ فِي مَطْبَعَةٍ كَبِيرَةٍ", tr: "Kitabı büyük bir matbaada bastı." } }, not: "SEMANTİK ÇEKİRDEK: «MÜHÜR BASMA». Mühür neye basılırsa izini bırakır: yaratılışın insana bastığı iz طَبْع (huy), tabiatın kendisi طَبِيعَة, kâğıda basmak ise مَطْبَعَة (matbaa)dır. طَبْعًا «tabii ki» demektir." },
+        6: { base: { emoji: "🔁", arText: "يَطْبَعُ", trText: "Basar, mühürler" } },
+        7: { base: { emoji: "📣", arText: "اِطْبَعْ", trText: "Bas!" } },
+        19: { base: { emoji: "🧬", arText: "طَبْع", trText: "Huy, mizaç; baskı", cogul: "طِبَاع" } },
+        35: { base: { emoji: "🏞️", arText: "طَبِيعَة", trText: "Tabiat, doğa; mizaç", ornek: { ar: "أُوزُونْغُولُ جَمِيلَةٌ بِطَبِيعَتِهَا", tr: "Uzungöl doğasıyla güzeldir." } }, suggestsPlus: true, "يّ": { emoji: "✅", arText: "طَبِيعِيّ", trText: "Doğal, tabii, normal", ornek: { ar: "هَذَا أَمْرٌ طَبِيعِيٌّ", tr: "Bu normal bir durum." } } },
+        38: { base: { emoji: "🏭", arText: "مَطْبَعَة", trText: "Matbaa, basımevi", cogul: "مَطَابِع" } },
+        36: { base: { emoji: "📕", arText: "مَطْبُوع", trText: "Basılmış, matbu" } }
+    },
+
+    /* 432 — ش ط أ : Kıyı, filiz (mehmûz-ul lâm) */
+    "شطأ": {
+        19: { base: { emoji: "🏖️", arText: "شَطْء", trText: "Filiz, sürgün", ornek: { ar: "كَزَرْعٍ أَخْرَجَ شَطْأَهُ", tr: "Filizini çıkaran ekin gibi. (Fetih sûresi, 29)" } }, not: "SEMANTİK ÇEKİRDEK: «YANDAN ÇIKAN KENAR». Ekinin yanından çıkan filiz de, denizin yanındaki kara şeridi de aynı köktendir: شَاطِئ kıyı, sahil demektir." },
+        33: { base: { emoji: "🌊", arText: "شَاطِئ", trText: "Kıyı, sahil", ornek: { ar: "جَلَسْنَا عَلَى شَاطِئِ الْبَحْرِ", tr: "Deniz kıyısında oturduk." }, cogul: "شَوَاطِئ" } },
+        48: { tekilId: 33, base: { emoji: "🏝️", arText: "شَوَاطِئ", trText: "Kıyılar, sahiller (شَاطِئ çoğulu)" } }
+    },
+
+    /* 433 — أ د و : Alet, edat (nâkıs vâvî) */
+    "أدو": {
+        22: { base: { emoji: "🧰", arText: "أَدَاة", trText: "Alet, araç; (nahiv) edat", ornek: { ar: "أَدَوَاتُ الدَّرْسِ فِي الْحَقِيبَةِ", tr: "Ders araçları çantadadır." }, cogul: "أَدَوَات" }, not: "SEMANTİK ÇEKİRDEK: «İŞ GÖRMEYE YARAYAN ARAÇ». Nahivde de kelimeleri birbirine bağlayan yardımcı kelimelere أَدَاة denir: أَدَوَاتُ الِاسْتِفْهَامِ (soru edatları), أَدَوَاتُ الشَّرْطِ (şart edatları)." },
+        41: { tekilId: 22, base: { emoji: "🛠️", arText: "أَدَوَات", trText: "Aletler, araçlar; edatlar (أَدَاة çoğulu)" } },
+        58: { base: { emoji: "⚙️", arText: "أَدَّى", trText: "Yerine getirdi, edâ etti, ödedi", ornek: { ar: "أَدَّى الصَّلَاةَ فِي وَقْتِهَا", tr: "Namazı vaktinde edâ etti." } } },
+        59: { base: { emoji: "🔁", arText: "يُؤَدِّي", trText: "Yerine getirir, sebep olur" } },
+        60: { base: { emoji: "📣", arText: "أَدِّ", trText: "Edâ et!, yerine getir!" } },
+        61: { base: { emoji: "📘", arText: "تَأْدِيَة", trText: "Edâ etme, yerine getirme (masdar)" } }
+    },
+
+    /* 434 — ف ر ص : Fırsat (sâlim) */
+    "فرص": {
+        1: { base: { emoji: "✂️", arText: "فَرَصَ", trText: "Kesip ayırdı, pay çıkardı" } },
+        21: { base: { emoji: "🍀", arText: "فُرْصَة", trText: "Fırsat, imkân; teneffüs", ornek: { ar: "فُرْصَةٌ سَعِيدَةٌ", tr: "Memnun oldum. (Tanışma kalıbı: mutlu bir fırsat)" }, cogul: "فُرَص" }, not: "SEMANTİK ÇEKİRDEK: «ZAMANDAN KESİLEN PARÇA». فُرْصَة, zamanın akışından kesilip insana düşen elverişli parçadır. Tanışırken söylenen «فُرْصَةٌ سَعِيدَةٌ» tam olarak «mutlu bir fırsat (oldu)» demektir." },
+        44: { tekilId: 21, base: { emoji: "🎰", arText: "فُرَص", trText: "Fırsatlar (فُرْصَة çoğulu)" } },
+        77: { base: { emoji: "🎯", arText: "اِفْتَرَصَ", trText: "Fırsat buldu, fırsattan yararlandı" } },
+        80: { base: { emoji: "📘", arText: "اِفْتِرَاص", trText: "Fırsattan yararlanma (masdar)" } }
+    },
+
+    /* 435 — ع ز ز : İzzet, aziz olmak (muzâaf) */
+    "عزز": {
+        1: { base: { emoji: "💪", arText: "عَزَّ", trText: "Aziz oldu, güçlendi; nadir bulundu", ornek: { ar: "عَزَّ وَجَلَّ", tr: "(Allah) azîz ve celîldir." } }, not: "SEMANTİK ÇEKİRDEK: «SAĞLAMLIK VE NADİRLİK». عَزِيز hem güçlü hem de az bulunduğu için değerli olandır; bu yüzden hem Allah'ın ismi hem de sevilene hitap («عَزِيزِي»: azizim) olur. تَعْزِيز güçlendirme, اِعْتِزَاز ise onur duymadır." },
+        2: { base: { emoji: "🔁", arText: "يَعِزُّ", trText: "Aziz olur, güçlenir" } },
+        20: { base: { emoji: "🏅", arText: "عِزّ", trText: "İzzet, şeref, güç" }, suggestsPlus: true, "ة": { emoji: "👑", arText: "عِزَّة", trText: "İzzet, onur, üstünlük", ornek: { ar: "وَلِلَّهِ الْعِزَّةُ وَلِرَسُولِهِ", tr: "İzzet Allah'ın, Resûlünün(dür). (Münâfikûn sûresi, 8)" } } },
+        35: { base: { emoji: "💎", arText: "عَزِيز", trText: "Aziz, değerli, güçlü", ornek: { ar: "صَدِيقَتِي الْعَزِيزَةُ", tr: "Değerli arkadaşım (kadın)." }, cogul: "أَعِزَّاء" } },
+        58: { base: { emoji: "🛡️", arText: "عَزَّزَ", trText: "Güçlendirdi, pekiştirdi" } },
+        61: { base: { emoji: "📘", arText: "تَعْزِيز", trText: "Güçlendirme, pekiştirme (masdar)" } },
+        77: { base: { emoji: "🎖️", arText: "اِعْتَزَّ", trText: "Onur duydu, iftihar etti" } },
+        80: { base: { emoji: "📘", arText: "اِعْتِزَاز", trText: "Onur duyma, iftihar (masdar)" } }
+    },
+
+    /* 437 — و ر ث : Miras almak (misâl vâvî · 6. bâb) */
+    "ورث": {
+        14: { base: { emoji: "🏺", arText: "وَرِثَ", trText: "Miras aldı, vâris oldu", ornek: { ar: "وَوَرِثَ سُلَيْمَانُ دَاوُودَ", tr: "Süleyman Dâvûd'a vâris oldu. (Neml sûresi, 16)" } }, not: "SEMANTİK ÇEKİRDEK: «ÖNCEKİNDEN DEVRALMA». Altıncı bâbın (فَعِلَ-يَفْعِلُ) üyelerinin neredeyse tamamı bu kök gibi MİSÂL'dir, yani ilk harfi و'dır ve muzâride bu و düşer: وَرِثَ ⬅️ يَرِثُ." },
+        15: { base: { emoji: "🔁", arText: "يَرِثُ", trText: "Miras alır", ornek: { ar: "يَرِثُ الْوَلَدُ أَبَاهُ", tr: "Çocuk babasına vâris olur." } } },
+        16: { base: { emoji: "❗", arText: "رِثْ", trText: "Vâris ol!" } },
+        33: { base: { emoji: "⚖️", arText: "وَارِث", trText: "Vâris, mirasçı", ornek: { ar: "اللهُ خَيْرُ الْوَارِثِينَ", tr: "Allah vârislerin en hayırlısıdır." }, cogul: "وَرَثَة" }, suggestsPlus: true },
+        40: { base: { emoji: "📜", arText: "مِيرَاث", trText: "Miras", ornek: { ar: "قَسَّمُوا الْمِيرَاثَ بِالْعَدْلِ", tr: "Mirası adaletle paylaştırdılar." }, cogul: "مَوَارِيث" } },
+        52: { base: { emoji: "🎁", arText: "أَوْرَثَ", trText: "Miras bıraktı, vâris kıldı" } }
+    },
+
+    /* 438 — و ل ي : Yakın olmak, ardından gelmek; yönetmek (misâl · 6. bâb) */
+    "ولي": {
+        14: { base: { emoji: "🤝", arText: "وَلِيَ", trText: "Yakın oldu; işi üstlendi, yönetti", ornek: { ar: "وَلِيَ الْقَضَاءَ فِي الْمَدِينَةِ", tr: "Şehirde kadılık görevini üstlendi." } }, not: "SEMANTİK ÇEKİRDEK: «ARADA BOŞLUK BIRAKMADAN YANINDA OLMA». وَلِيّ arada kimse olmadan yanında duran dosttur; وَالِي işin başında duran yöneticidir; يَلِي de «hemen ardından gelen»i anlatır." },
+        15: { base: { emoji: "🔁", arText: "يَلِي", trText: "Ardından gelir, takip eder", ornek: { ar: "مَا يَلِي مِنَ الْأَسْئِلَةِ صَعْبٌ", tr: "Ardından gelen (aşağıdaki) sorular zordur." } } },
+        33: { base: { emoji: "🏛️", arText: "وَالِي", trText: "Vali, işin başındaki yönetici", cogul: "وُلَاة" } },
+        35: { base: { emoji: "🛡️", arText: "وَلِيّ", trText: "Velî, dost, koruyucu", ornek: { ar: "اللهُ وَلِيُّ الَّذِينَ آمَنُوا", tr: "Allah iman edenlerin velîsidir. (Bakara sûresi, 257)" }, cogul: "أَوْلِيَاء" } },
+        88: { base: { emoji: "↩️", arText: "تَوَلَّى", trText: "Üstlendi; yüz çevirdi, sırtını döndü" } },
+        91: { base: { emoji: "📘", arText: "تَوَلِّي", trText: "Üstlenme; yüz çevirme (masdar)" } }
+    },
+
+    /* 439 — و ر م : Şişmek (misâl vâvî · 6. bâb) */
+    "ورم": {
+        14: { tip: "saglik", base: { emoji: "🤕", arText: "وَرِمَ", trText: "Şişti, kabardı", ornek: { ar: "وَرِمَ وَجْهُهُ مِنَ الضَّرْبَةِ", tr: "Darbeden yüzü şişti." } } },
+        15: { base: { emoji: "🔁", arText: "يَرِمُ", trText: "Şişer" } },
+        17: { tip: "saglik", cogulId: 41, base: { emoji: "🩹", arText: "وَرَم", trText: "Şişlik, ur, tümör", ornek: { ar: "ظَهَرَ وَرَمٌ فِي يَدِهِ", tr: "Elinde bir şişlik belirdi." } } },
+        41: { tekilId: 17, base: { emoji: "🩺", arText: "أَوْرَام", trText: "Şişlikler, tümörler (وَرَم çoğulu)" } }
+    },
+
+    /* 436 — أ و ل : İlk; dönüp varmak (ecvef vâvî) */
+    "أول": {
+        1: { base: { emoji: "🔙", arText: "آلَ", trText: "Döndü, vardı, dönüştü" }, not: "SEMANTİK ÇEKİRDEK: «BAŞA DÖNME». آلَ إِلَى «sonunda ona vardı» demektir; أَوَّل bir dizinin başa dönülen ilk halkasıdır. تَأْوِيل ise sözü aslına döndürerek yorumlamaktır. أَوَّلًا «önce, birinci olarak»tır." },
+        30: { tip: "sirasayi", base: { emoji: "1️⃣", arText: "أَوَّل", trText: "İlk, birinci", ornek: { ar: "أَوَّلًا نَغْسِلُ الْيَدَيْنِ", tr: "Önce ellerimizi yıkarız." }, cogul: "أَوَائِل" }, suggestsPlus: true, "ة": { emoji: "🥇", arText: "أُولَى", trText: "İlk, birinci (dişil)" } },
+        48: { tekilId: 30, base: { emoji: "📜", arText: "أَوَائِل", trText: "İlkler, başlangıçlar (أَوَّل çoğulu)" } },
+        58: { base: { emoji: "🔍", arText: "أَوَّلَ", trText: "Yorumladı, te'vil etti" } },
+        61: { base: { emoji: "📘", arText: "تَأْوِيل", trText: "Te'vil, yorumlama (masdar)" } }
     }
 
 };

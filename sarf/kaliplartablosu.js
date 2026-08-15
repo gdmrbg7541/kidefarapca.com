@@ -3792,6 +3792,30 @@ window.kilavuzAc = function () {
     p.scrollTop = 0;
     requestAnimationFrame(function () { p.classList.add('ktk-acik'); });
 };
+/* İLK ZİYARET: kılavuz kendiliğinden açılır. Sayfa tanıtımsız açıldığında
+   öğretmen tabloyu nereden çekeceğini bilemiyordu; ⓘ'yi arayan da olmuyordu.
+   localStorage'a bir işaret bırakılır, ikinci açılıştan itibaren bir daha
+   kendi kendine açılmaz — ⓘ düğmesi zaten üst çubukta duruyor.
+   Aynı ziyarette "Günün Kökü" penceresi bastırılır (aşağıda showRootOfDay
+   başında kontrol var) ki iki pencere üst üste binmesin. */
+(function () {
+    var ANAHTAR = 'kidef_kt_kilavuz_v1';
+    var ilk = false;
+    try { ilk = !localStorage.getItem(ANAHTAR); } catch (e) { ilk = false; }
+    if (!ilk) return;
+    window._ktkIlkZiyaret = true;
+    try { localStorage.setItem(ANAHTAR, '1'); } catch (e) {}
+    function ac() {
+        setTimeout(function () {
+            var o = document.getElementById('rootOfDayOverlay');
+            if (o && o.parentNode) o.parentNode.removeChild(o);
+            if (typeof window.kilavuzAc === 'function') window.kilavuzAc();
+        }, 900);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ac);
+    else ac();
+})();
+
 window.kilavuzKapat = function () {
     var p = document.getElementById('kt-kilavuz');
     if (!p) return;
@@ -8511,6 +8535,10 @@ function renderThematicLists() {
             tipList.forEach(tip => {
                 let actualTip = tip;
                 if (tip === "sayi" && rootKey.includes("Sıra:")) actualTip = "sirasayi";
+                /* Tasgir/Tafdil birer VEZİN: kendi konu listeleri kaldırıldı.
+                   kategoriTanimlari'nda yoklar; buradaki otomatik algılama
+                   onları geri diriltmesin diye açıkça eleniyorlar. */
+                if (actualTip === "tasgir" || actualTip === "tafdil" || actualTip === "isim") return;
                 
                 if (!categories[actualTip]) {
                 // OTOMATİK ALGILAMA: Kullanıcı sozlukverileri.js'ye tip eklemiş ama kategoriTanimlari'na eklemeyi unutmuşsa,
@@ -8539,6 +8567,8 @@ function renderThematicLists() {
                 if (kData && kData.tip) {
                     let tipList = Array.isArray(kData.tip) ? kData.tip : [kData.tip];
                     tipList.forEach(tip => {
+                        /* Tasgir/Tafdil vezin, konu değil — kendi listeleri yok. */
+                        if (tip === "tasgir" || tip === "tafdil" || tip === "isim") return;
                         if (!categories[tip]) {
                         let autoTitle = tip.replace(/_/g, " ");
                         autoTitle = autoTitle.charAt(0).toUpperCase() + autoTitle.slice(1);
@@ -8557,26 +8587,10 @@ function renderThematicLists() {
                 }
             }
 
-            // 49 Numaralı Kalıp (İsm-i Tasgir)
-            if (rootData[49] && rootData[49].base && rootData[49].base.arText) {
-                categories["tasgir"].items.push({
-                    rootKey: rootKey,
-                    arText: rootData[49].base.arText,
-                    trText: rootData[49].base.trText || "",
-                    emoji: rootData[49].base.emoji || "🔍"
-                });
-            }
-            // 50 ve 51 Numaralı Kalıplar (İsm-i Tafdil)
-            [50, 51].forEach(k => {
-                if (rootData[k] && rootData[k].base && rootData[k].base.arText) {
-                    categories["tafdil"].items.push({
-                        rootKey: rootKey,
-                        arText: rootData[k].base.arText,
-                        trText: rootData[k].base.trText || "",
-                        emoji: rootData[k].base.emoji || "🏆"
-                    });
-                }
-            });
+            /* 49 (İsm-i Tasgir) ile 50-51 (İsm-i Tafdil) kalıplarını konu
+               listesine toplayan blok KALDIRILDI: ikisi de vezin, konu değil.
+               Bu kelimeler tabloda ilgili kutuya dokununca zaten örnekleriyle
+               listeleniyor. */
         }
     }
     
@@ -8640,40 +8654,73 @@ function renderThematicLists() {
         return idxA - idxB;
     });
 
-    // Dikey (yukarıdan aşağıya) ve Sağdan Sola (RTL) okuma düzeni için Grid Matrix'i oluştur
-    const L = sortedKeys.length;
+    /* ÖBEKLEME: kırktan fazla liste düz bir ızgarada alt alta dizilince
+       aranan başlık gözle taranıyordu. Artık kategoriler konu öbeklerine
+       ayrılıyor (veri_sozluk.js'teki `grup` alanı + kategoriGruplari);
+       her öbek kendi başlığının altında, kendi üç sütunlu bloğunda durur.
+       Grubu tanımsız bir liste çıkarsa en sona "Diğer" öbeğine düşer. */
     const cols = 3;
-    const rows = Math.ceil(L / cols);
-    const reorderedKeys = [];
-    
-    for(let r = 0; r < rows; r++) {
-        if(r < L) reorderedKeys.push(sortedKeys[r]); // Sağ Sütun
-        if(r + rows < L) reorderedKeys.push(sortedKeys[r + rows]); // Orta Sütun
-        if(r + 2*rows < L) reorderedKeys.push(sortedKeys[r + 2*rows]); // Sol Sütun
+    const _gruplar = (typeof kategoriGruplari !== 'undefined') ? kategoriGruplari : null;
+    const _grupAdi = (k) => ((typeof kategoriTanimlari !== 'undefined' && kategoriTanimlari[k]) ? kategoriTanimlari[k].grup : null);
+    const _obekler = [];
+    if (_gruplar) {
+        for (const _gk in _gruplar) {
+            const _uye = sortedKeys.filter(k => _grupAdi(k) === _gk);
+            if (_uye.length) _obekler.push({ bilgi: _gruplar[_gk], anahtar: _uye });
+        }
+        const _kalan = sortedKeys.filter(k => !_gruplar[_grupAdi(k)]);
+        if (_kalan.length) _obekler.push({ bilgi: { title: "Diğer", icon: "📌" }, anahtar: _kalan });
+    } else {
+        _obekler.push({ bilgi: null, anahtar: sortedKeys });
     }
 
     html = _sayacSerit;   /* sıfırlama sayacı silmesin */
     
     var colorIndex = 0;
+    for (const _obek of _obekler) {
+    const obekKeys = _obek.anahtar;
+    const L = obekKeys.length;
+    const rows = Math.ceil(L / cols);
+    if (_obek.bilgi) {
+        html += '<div class="ktl-obek" dir="ltr"><span class="ktl-obek-ik">' + (_obek.bilgi.icon || '') +
+                '</span><span class="ktl-obek-ad">' + _obek.bilgi.title +
+                '</span><span class="ktl-obek-say">' + L + ' liste</span></div>';
+    }
     // Satır Satır DOM oluşturuyoruz
     for(let r = 0; r < rows; r++) {
         
-    // Pastel colors for accordion items
-    /* SİTE PALETİ: index.html'deki amber → turuncu → kırmızı ekseni,
-       arada yeşil/mavi vurgular. Pastel gri tonlar kaldırıldı. */
+    /* SİTE PALETİ — kelime listesi başlıkları.
+       On renk var; satır başına ÜÇ kart düşüyor ve indeks birer birer
+       artıyor. 10 ile 3 birbirini bölmediği için ne yatay komşular
+       (fark 1) ne de dikey komşular (fark 3) aynı renge düşer — eski
+       altı renkli dizide her sütun iki renk arasında gidip geliyor,
+       liste çizgili görünüyordu. Renkler koyu uçtan seçildi ki üstteki
+       BEYAZ yazı her kartta okunsun. */
     const siteColors = [
-        'linear-gradient(135deg,#FFC107 0%,#F39C12 100%)',
-        'linear-gradient(135deg,#EF5350 0%,#E53935 100%)',
-        'linear-gradient(135deg,#20C997 0%,#16A085 100%)',
-        'linear-gradient(135deg,#5DADE2 0%,#2980B9 100%)',
-        'linear-gradient(135deg,#F39C12 0%,#EF5350 100%)',
-        'linear-gradient(135deg,#A78BFA 0%,#7C3AED 100%)'
+        'linear-gradient(135deg,#2ECC71 0%,#27AE60 100%)',   /* yeşil      */
+        'linear-gradient(135deg,#20C997 0%,#16A085 100%)',   /* turkuaz    */
+        'linear-gradient(135deg,#F39C12 0%,#E67E22 100%)',   /* turuncu    */
+        'linear-gradient(135deg,#5DADE2 0%,#2980B9 100%)',   /* mavi       */
+        'linear-gradient(135deg,#EF5350 0%,#E53935 100%)',   /* kırmızı    */
+        'linear-gradient(135deg,#A78BFA 0%,#7C3AED 100%)',   /* mor        */
+        'linear-gradient(135deg,#22B8CF 0%,#0B7285 100%)',   /* camgöbeği  */
+        'linear-gradient(135deg,#EFA00B 0%,#D97706 100%)',   /* amber      */
+        'linear-gradient(135deg,#5C7CFA 0%,#3B5BDB 100%)',   /* çivit      */
+        'linear-gradient(135deg,#F06595 0%,#D6336C 100%)'    /* gül        */
     ];
     let rowKeys = [];
 
-        if(r < L) rowKeys.push(sortedKeys[r]);
-        if(r + rows < L) rowKeys.push(sortedKeys[r + rows]);
-        if(r + 2*rows < L) rowKeys.push(sortedKeys[r + 2*rows]);
+        /* SATIR SIRALI dağıtım. Eskiden sütun sıralıydı (keys[r],
+           keys[r+rows], keys[r+2*rows]); liste sayısı 3'ün katı
+           olmayınca bazı JS "satırları" 2 kart taşıyordu, CSS ızgarası
+           ise boşluk bırakmayıp bir sonraki satırın kartını yanına
+           çekiyordu. O kartın açılan panelden sonra geldiği için, komşu
+           bir başlığa basılınca alt satıra düşüyordu. Satır sıralı
+           dağıtımda JS satırı ile ızgara satırı birebir örtüşüyor. */
+        for (let c = 0; c < cols; c++) {
+            const i = r * cols + c;
+            if (i < L) rowKeys.push(obekKeys[i]);
+        }
         
         // 1. Bu satırın başlıkları (Sırayla 3 sütuna yerleşir)
         
@@ -8787,6 +8834,7 @@ function renderThematicLists() {
             `;
         }
     }
+    }   /* öbek döngüsü */
     
     container.innerHTML = html;
     
@@ -8801,6 +8849,8 @@ function renderThematicLists() {
 }
 
 function openMemorySetup(key) {
+    /* Oyun sürerken "Hafıza Oyunu" düğmesi de kurulum ekranını sıfırlamasın. */
+    if (activeMemoryGames[key] && activeMemoryGames[key].gameStarted) return;
     const btnStart = document.getElementById(`btn-start-${key}`);
     const btnCancel = document.getElementById(`btn-cancel-${key}`);
     if (btnStart) btnStart.style.display = 'inline-block';
@@ -8832,6 +8882,7 @@ function cancelMemorySetup(key) {
     if (typeof SoundEngine !== "undefined") SoundEngine.playClose();
     
     if (activeMemoryGames[key]) activeMemoryGames[key].gameStarted = false;
+    oyunKilidi(key, false);
     
     const btnStart = document.getElementById(`btn-start-${key}`);
     const btnCancel = document.getElementById(`btn-cancel-${key}`);
@@ -8875,7 +8926,24 @@ function startMemoryGameFlow(key) {
 
 
 
+/* OYUN KİLİDİ — Hafıza oyunu BAŞLADIKTAN sonra "Liste Modu" ve
+   "Çalışma Kartları" düğmeleri kilitlenir. Oyun ortasında sekme
+   değiştirmek eşleşmeleri ve skoru sessizce siliyordu; çıkış tek
+   kapıdan olsun diye ✕ (İptal) dışında yol bırakılmıyor. */
+function oyunKilidi(key, kilit) {
+    ['btn-list-', 'btn-study-', 'btn-mem-'].forEach(function (on) {
+        var d = document.getElementById(on + key);
+        if (!d) return;
+        d.disabled = !!kilit;
+        d.classList.toggle('memory-btn-kilitli', !!kilit);
+        d.title = kilit ? 'Oyun sürerken kapalı — çıkmak için ✕' : '';
+    });
+}
+window.oyunKilidi = oyunKilidi;
+
 function setMemoryMode(key, mode) {
+    /* Oyun sürerken sekme değişmez (yukarıdaki nota bak). */
+    if (activeMemoryGames[key] && activeMemoryGames[key].gameStarted) return;
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
     let state = activeMemoryGames[key];
@@ -9298,6 +9366,7 @@ function startGameAndFullscreen(key) {
     if (btnCancel) btnCancel.style.display = 'inline-block';
     startMemoryGameFlow(key);
     if (activeMemoryGames[key]) activeMemoryGames[key].gameStarted = true;
+    oyunKilidi(key, true);
     const toggle = document.getElementById(`mode-toggle-${key}`);
     if (toggle) toggle.disabled = true;
     const pairCount = document.getElementById(`pairCount-${key}`);
@@ -10555,6 +10624,8 @@ function fdmSekmeleriGuncelle() {
 
 // --- GÜNÜN KÖKÜ (ROOT OF THE DAY) ---
 function showRootOfDay() {
+    /* İlk ziyarette ekranı kılavuz kaplıyor — günün kökü o sefer atlanır. */
+    if (window._ktkIlkZiyaret) return;
     if (typeof wordEasterEggs === 'undefined') return;
     
     // Verbs IDs to exclude

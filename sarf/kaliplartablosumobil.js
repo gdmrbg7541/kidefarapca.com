@@ -8024,6 +8024,10 @@ function renderThematicLists() {
             tipList.forEach(tip => {
                 let actualTip = tip;
                 if (tip === "sayi" && rootKey.includes("Sıra:")) actualTip = "sirasayi";
+                /* Tasgir/Tafdil birer VEZİN: kendi konu listeleri kaldırıldı.
+                   kategoriTanimlari'nda yoklar; buradaki otomatik algılama
+                   onları geri diriltmesin diye açıkça eleniyorlar. */
+                if (actualTip === "tasgir" || actualTip === "tafdil" || actualTip === "isim") return;
                 
                 if (!categories[actualTip]) {
                 // OTOMATİK ALGILAMA: Kullanıcı sozlukverileri.js'ye tip eklemiş ama kategoriTanimlari'na eklemeyi unutmuşsa,
@@ -8052,6 +8056,8 @@ function renderThematicLists() {
                 if (kData && kData.tip) {
                     let tipList = Array.isArray(kData.tip) ? kData.tip : [kData.tip];
                     tipList.forEach(tip => {
+                        /* Tasgir/Tafdil vezin, konu değil — kendi listeleri yok. */
+                        if (tip === "tasgir" || tip === "tafdil" || tip === "isim") return;
                         if (!categories[tip]) {
                         let autoTitle = tip.replace(/_/g, " ");
                         autoTitle = autoTitle.charAt(0).toUpperCase() + autoTitle.slice(1);
@@ -8070,26 +8076,10 @@ function renderThematicLists() {
                 }
             }
 
-            // 49 Numaralı Kalıp (İsm-i Tasgir)
-            if (rootData[49] && rootData[49].base && rootData[49].base.arText) {
-                categories["tasgir"].items.push({
-                    rootKey: rootKey,
-                    arText: rootData[49].base.arText,
-                    trText: rootData[49].base.trText || "",
-                    emoji: rootData[49].base.emoji || "🔍"
-                });
-            }
-            // 50 ve 51 Numaralı Kalıplar (İsm-i Tafdil)
-            [50, 51].forEach(k => {
-                if (rootData[k] && rootData[k].base && rootData[k].base.arText) {
-                    categories["tafdil"].items.push({
-                        rootKey: rootKey,
-                        arText: rootData[k].base.arText,
-                        trText: rootData[k].base.trText || "",
-                        emoji: rootData[k].base.emoji || "🏆"
-                    });
-                }
-            });
+            /* 49 (İsm-i Tasgir) ile 50-51 (İsm-i Tafdil) kalıplarını konu
+               listesine toplayan blok KALDIRILDI: ikisi de vezin, konu değil.
+               Bu kelimeler tabloda ilgili kutuya dokununca zaten örnekleriyle
+               listeleniyor. */
         }
     }
     
@@ -8116,31 +8106,68 @@ function renderThematicLists() {
         return idxA - idxB;
     });
 
-    // Dikey (yukarıdan aşağıya) ve Sağdan Sola (RTL) okuma düzeni için Grid Matrix'i oluştur
-    const L = sortedKeys.length;
+    /* ÖBEKLEME: kırktan fazla liste düz bir ızgarada alt alta dizilince
+       aranan başlık gözle taranıyordu. Artık kategoriler konu öbeklerine
+       ayrılıyor (veri_sozluk.js'teki `grup` alanı + kategoriGruplari);
+       her öbek kendi başlığının altında, kendi bloğunda durur. Grubu
+       tanımsız bir liste çıkarsa en sona "Diğer" öbeğine düşer. */
     const isMobile = window.innerWidth <= 1024;
     const cols = isMobile ? 1 : 3;
-    const rows = Math.ceil(L / cols);
-    const reorderedKeys = [];
-    
-    for(let r = 0; r < rows; r++) {
-        for(let c = 0; c < cols; c++) {
-            if (r + c*rows < L) reorderedKeys.push(sortedKeys[r + c*rows]);
+    const _gruplar = (typeof kategoriGruplari !== 'undefined') ? kategoriGruplari : null;
+    const _grupAdi = (k) => ((typeof kategoriTanimlari !== 'undefined' && kategoriTanimlari[k]) ? kategoriTanimlari[k].grup : null);
+    const _obekler = [];
+    if (_gruplar) {
+        for (const _gk in _gruplar) {
+            const _uye = sortedKeys.filter(k => _grupAdi(k) === _gk);
+            if (_uye.length) _obekler.push({ bilgi: _gruplar[_gk], anahtar: _uye });
         }
+        const _kalan = sortedKeys.filter(k => !_gruplar[_grupAdi(k)]);
+        if (_kalan.length) _obekler.push({ bilgi: { title: "Diğer", icon: "📌" }, anahtar: _kalan });
+    } else {
+        _obekler.push({ bilgi: null, anahtar: sortedKeys });
     }
 
     html = "";
     
     var colorIndex = 0;
+    for (const _obek of _obekler) {
+    const obekKeys = _obek.anahtar;
+    const L = obekKeys.length;
+    const rows = Math.ceil(L / cols);
+    if (_obek.bilgi) {
+        html += '<div class="ktl-obek" dir="ltr"><span class="ktl-obek-ik">' + (_obek.bilgi.icon || '') +
+                '</span><span class="ktl-obek-ad">' + _obek.bilgi.title +
+                '</span><span class="ktl-obek-say">' + L + ' liste</span></div>';
+    }
     // Satır Satır DOM oluşturuyoruz
     for(let r = 0; r < rows; r++) {
         
-    // Pastel colors for accordion items
-    const pastelColors = ['#e6e2d8', '#d8dfd6', '#e8dadb', '#d4dbe0', '#ded9e3', '#e6dacb', '#d3dfdf', '#dadfda', '#e8e4d3', '#dfd7df'];
+    /* SİTE PALETİ — kelime listesi başlıkları.
+       On renk var; satır başına ÜÇ kart düşüyor ve indeks birer birer
+       artıyor. 10 ile 3 birbirini bölmediği için ne yatay komşular
+       (fark 1) ne de dikey komşular (fark 3) aynı renge düşer — eski
+       altı renkli dizide her sütun iki renk arasında gidip geliyor,
+       liste çizgili görünüyordu. Renkler koyu uçtan seçildi ki üstteki
+       BEYAZ yazı her kartta okunsun. */
+    const siteColors = [
+        'linear-gradient(135deg,#2ECC71 0%,#27AE60 100%)',   /* yeşil      */
+        'linear-gradient(135deg,#20C997 0%,#16A085 100%)',   /* turkuaz    */
+        'linear-gradient(135deg,#F39C12 0%,#E67E22 100%)',   /* turuncu    */
+        'linear-gradient(135deg,#5DADE2 0%,#2980B9 100%)',   /* mavi       */
+        'linear-gradient(135deg,#EF5350 0%,#E53935 100%)',   /* kırmızı    */
+        'linear-gradient(135deg,#A78BFA 0%,#7C3AED 100%)',   /* mor        */
+        'linear-gradient(135deg,#22B8CF 0%,#0B7285 100%)',   /* camgöbeği  */
+        'linear-gradient(135deg,#EFA00B 0%,#D97706 100%)',   /* amber      */
+        'linear-gradient(135deg,#5C7CFA 0%,#3B5BDB 100%)',   /* çivit      */
+        'linear-gradient(135deg,#F06595 0%,#D6336C 100%)'    /* gül        */
+    ];
     let rowKeys = [];
 
         for(let c = 0; c < cols; c++) {
-            if (r + c*rows < L) rowKeys.push(sortedKeys[r + c*rows]);
+            /* SATIR SIRALI: sütun sıralı dağıtımda 3'ün katı olmayan
+               öbeklerde ızgara satırı ile JS satırı örtüşmüyordu. */
+            const i = r * cols + c;
+            if (i < L) rowKeys.push(obekKeys[i]);
         }
         
         // 1. Bu satırın başlıkları (Sırayla sütunlara yerleşir)
@@ -8163,7 +8190,7 @@ function renderThematicLists() {
             };
             
             html += `
-                <div class="thematic-accordion-item" style="background: ${pastelColors[colorIndex++ % pastelColors.length]}; color: #000;" onclick="toggleThematicAccordion(this, '${key}')" id="header-${key}">
+                <div class="thematic-accordion-item site-renk" style="background: ${siteColors[colorIndex++ % siteColors.length]}; color: #fff;" onclick="toggleThematicAccordion(this, '${key}')" id="header-${key}">
                     <div class="thematic-accordion-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <i class="fas fa-chevron-down thematic-accordion-icon" id="icon-${key}"></i>
@@ -8171,7 +8198,7 @@ function renderThematicLists() {
                                 ${cat.icon} 
                                 <div style="display:flex; flex-direction:column; align-items:flex-start;">
                                     <span>${cat.title}</span>
-                                    ${cat.arTitle ? `<span style="font-family:'Arakom', sans-serif; font-weight:normal; font-size:2.3rem; color:#000; line-height:1; margin-top:6px;">${cat.arTitle}</span>` : ''}
+                                    ${cat.arTitle ? `<span style="font-family:'Arakom', sans-serif; font-weight:normal; font-size:2.3rem; color:rgba(255,255,255,.92); line-height:1; margin-top:6px;">${cat.arTitle}</span>` : ''}
                                 </div>
                             </h3>
                         </div>
@@ -8213,7 +8240,9 @@ function renderThematicLists() {
         }
     }
     
-    container.innerHTML = html;
+}   /* öbek döngüsü */
+    
+        container.innerHTML = html;
     
     let viewer = document.getElementById('thematic-viewer-container');
     if(viewer) viewer.remove();

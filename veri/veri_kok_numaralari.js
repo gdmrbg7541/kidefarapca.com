@@ -10,7 +10,7 @@
 
    ÜÇ NUMARA, ÜÇ KAYNAK
    --------------------
-   KÖK   : bu dosyadaki KOK_NO tablosu (001–417).
+   KÖK   : bu dosyadaki KOK_NO tablosu (001–439).
            Sıra, veri_kokler.js içindeki YAZIM sırasıdır. Bu numaralar
            SABİTTİR: yeni kök eklendiğinde listenin SONUNA eklenir, aradaki
            hiçbir numara kaymaz. Çünkü numaralar basılı materyalde (berat
@@ -29,7 +29,7 @@
    çünkü kökün aslî harfi hemzedir, kürsü yalnızca imlâdır.
    ============================================================================ */
 
-/* Kök numaraları — veri_kokler.js yazım sırası (417 kök).
+/* Kök numaraları — veri_kokler.js yazım sırası (439 kök).
    Liste, veri_kokler.js içindeki wordEasterEggs nesnesinin BİRİNCİ SEVİYE
    anahtarları taranarak üretildi (girinti değil, süslü parantez derinliği
    esas alındı; dosyada girinti tutarsız). SONA EKLE, ARAYA GİRME. */
@@ -466,7 +466,33 @@ const KOK_NO = {
     "طوع": 414,
     "جسد": 415,
     "متع": 416,
-    "ضحي": 417
+    "ضحي": 417,
+
+    /* 418 – 436 · 5, 7 ve 9. sınıf müfredat boşlukları */
+    "سمو": 418,
+    "عطو": 419,
+    "لقي": 420,
+    "حول": 421,
+    "غدو": 422,
+    "عشو": 423,
+    "لذذ": 424,
+    "شور": 425,
+    "صوت": 426,
+    "علو": 427,
+    "أبو": 428,
+    "شمم": 429,
+    "شفي": 430,
+    "طبع": 431,
+    "شطأ": 432,
+    "أدو": 433,
+    "فرص": 434,
+    "عزز": 435,
+    "أول": 436,
+
+    /* 437 – 439 · altıncı bâbı zenginleştiren misâl kökler */
+    "ورث": 437,
+    "ولي": 438,
+    "ورم": 439
 };
 
 /* ---------------------------------------------------------------------------

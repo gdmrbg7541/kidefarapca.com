@@ -6095,3 +6095,49 @@ body.ko-sakin .sitemap-wave-hint { animation: none !important; transition: none 
    olur olmaz gizlenmesin — önce aşağı kayan tabloyla birlikte süzülsün.
    Kayış bitince `ko-bas-kayan` kalkar, aşağıdaki kural yine iş görür. */
 #tab1 table.ko-acik > thead > tr.ko-bas-kayan { display: table-row !important; }
+
+/* KELİME LİSTESİ BAŞLIKLARI — site renginde zemin, BEYAZ yazı.
+   Başlık/ok için ayrı ayrı #000 veren eski kurallar duruyor (başka
+   yerlerde de kullanılıyorlar), bu yüzden renkli kartın içindekiler
+   burada topluca beyaza çekiliyor. Açık uçlu geçişlerde (yeşil, amber)
+   okunurluk için çok hafif bir gölge var — koyu zeminde fark edilmez. */
+.thematic-accordion-item.site-renk,
+.thematic-accordion-item.site-renk .thematic-accordion-header,
+.thematic-accordion-item.site-renk .thematic-accordion-title,
+.thematic-accordion-item.site-renk .thematic-accordion-title span,
+.thematic-accordion-item.site-renk .thematic-accordion-icon {
+    color: #fff !important;
+}
+.thematic-accordion-item.site-renk .thematic-accordion-title {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+}
+.thematic-accordion-item.site-renk { border-color: rgba(255, 255, 255, .18); }
+.thematic-accordion-item.site-renk .thematic-accordion-header:hover {
+    background: rgba(255, 255, 255, .13);
+}
+
+/* KONU ÖBEĞİ BAŞLIĞI — kelime listeleri ekranında grupları ayırır.
+   Izgaranın tamamını kaplar (grid-column: 1 / -1) ki kartların
+   arasına satır olarak girsin; ilk öbeğin üstünde fazladan boşluk
+   olmasın diye :first-child'ın üst payı kısılıyor. */
+.ktl-obek {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 10px;
+    margin: 26px 2px 2px; padding: 0 0 9px;
+    border-bottom: 2px solid rgba(41, 128, 185, .16);
+}
+.ktl-obek:first-child { margin-top: 4px; }
+.ktl-obek-ik { font-size: 1.55rem; line-height: 1; }
+.ktl-obek-ad {
+    font-size: 1.38rem; font-weight: 800; color: #2C3E50;
+    letter-spacing: .01em;
+}
+.ktl-obek-say {
+    margin-left: auto; font-size: .88rem; font-weight: 700;
+    color: #7C8797; background: #EEF2F7;
+    padding: 4px 13px; border-radius: 999px;
+}
+@media (max-width: 1024px) {
+    .ktl-obek { margin-top: 20px; }
+    .ktl-obek-ad { font-size: 1.05rem; }
+}
