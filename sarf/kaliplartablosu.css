@@ -657,11 +657,60 @@ td:first-child {
 #tab2 .glass-box .ar { font-size: 38px; line-height: 1; }
 
 /* Sülasi (Mücerred) Tablosu - GENEL YEKPARE MAT PASTEL GRADYAN (Parlak beyaz içermez, ana renklere benzemez) */
-#tab1 tbody {
-    background: linear-gradient(135deg, #e6e2db 0%, #dce2dd 33%, #e1dfe6 66%, #eaddd7 100%) !important;
+/* DEGRADE ARTIK TABLONUN KENDİSİNDE, tbody'de değil: hücreler kendi
+   dilimini taşıyacak (kalipliste.js → ustZeminDilimle), oluklar ve
+   yuvarlatılmış köşeler beyaz kalsın diye tbody beyaza çekildi. Böylece
+   üstteki gri, altbilgi blokları gibi HÜCREYE AİT bir dolgu oluyor;
+   eskiden hücrelerden bağımsız tek bir levhaydı. */
+/* DEGRADE ARTIK HİÇBİR YERE BOYANMIYOR, yalnız DEĞİŞKEN olarak
+   duruyor: hücreler dilimini buradan alıyor (kalipliste.js →
+   ustZeminDilimle). Tabloya boyanınca satırlar aşağı süzülüp gitse bile
+   altta gri bir plaka kalıyordu — sağda BABLAR'dan solda zaman-mekân
+   sütununa kadar (Geylani). Değişken boyamadığı için o plaka yok. */
+#tab1 .container > table {
+    --ust-degrade: linear-gradient(135deg, #e6e2db 0%, #dce2dd 33%, #e1dfe6 66%, #eaddd7 100%);
+    background: transparent !important;
 }
+#tab1 tbody {
+    background: #ffffff !important;
+}
+/* ÖRNEK LİSTESİ AÇIKKEN DEGRADE BÜTÜN SAYFAYI KAPLAR (Geylani:
+   "arkada çıkan degrade tüm sayfayı kaplasın"): tablo kutusuyla sınırlı
+   bir levha değil, pencereye çakılı tek bir zemin. Sayfa kartı da
+   saydamlaşıyor ki altındaki degrade görünsün. */
+body.muc-zemin::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #e6e2db 0%, #dce2dd 33%, #e1dfe6 66%, #eaddd7 100%);
+    z-index: 0;
+    opacity: 0;
+    transition: opacity var(--muc-zemin-sure, .9s) ease-out;
+    pointer-events: none;
+}
+body.muc-zemin.muc-zemin-ac::before { opacity: 1; }
+/* ŞERİDİN AYRI BANDI YOK. Sayfa zemini zaten arkada duruyor; şerit de
+   aynı degradeyi taşıdığı için ikisi üst üste binince (özellikle
+   beliriş sırasında, ikisi de yarı saydamken) sayfadan KOYU çıkıyor ve
+   en üstte sağdan sola uzanan ekstra bir bant gibi görünüyordu
+   (Geylani: "yukarda ekstra bi kısım var, ona gerek yok").
+   Şerit saydam duruyor; yalnız sayfa kaydırılıp levha yapışkan hâle
+   geçtiğinde boyanıyor — o an sayfa zemini zaten tam opak, dolayısıyla
+   dikiş görünmüyor, kartlar da altından geçerken okunaklı kalıyor. */
+body.muc-zemin #tab1 .muc-levha-zemin {
+    opacity: 0 !important;
+    transition: opacity .28s ease !important;
+}
+body.muc-zemin.ko-stor-yuzer #tab1 .muc-levha-zemin { opacity: 1 !important; }
+/* Sayfa kartı saydamlaşır ki altındaki zemin görünsün; sınıf ancak
+   tablo ekrandan çekildikten sonra takılıyor, o an ekran zaten boş. */
+body.muc-zemin #tab1 .container,
+body.muc-zemin .window-pencere { background: transparent !important; box-shadow: none !important; }
+body.muc-zemin #tab1 { position: relative; z-index: 1; }
+body.muc-zemin #tab1 .container > table > tbody { background: transparent !important; }
 
-/* Mücerred tablosundaki tüm hücre (td) arkaplanlarını şeffaf yaparak genel gradyanı görünür kılıyoruz */
+/* Hücreler saydam başlar; dilimlerini kalipliste.js yazar (yazamazsa
+   tablo yine eski görünümüne düşer, degrade tablodan görünür). */
 #tab1 tbody td {
     background: transparent !important;
 }
@@ -4721,6 +4770,21 @@ body.ust-kilit i.fa-sync-alt.root-icon {
     background-color: #fffaf9 !important;
     box-shadow: inset 0 3px 8px rgba(255,59,48,.15), 0 0 0 3px rgba(255,59,48,.35) !important;
     z-index: 100;
+}
+
+/* ============ TABLO YEKPARE: ÜST HÜCRELER DE ALTTAKİ BLOKLAR GİBİ ====
+   İki bölge zaten AYNI yapıyla kurulmuş: hücre/blok saydam, üstünde
+   4px beyaz kenar, gri-mavi zemin arkadan (tbody / .footer-container
+   degradesi) görünüyor. Tek fark KÖŞELERDİ — altbilgi blokları 12px
+   yuvarlak, üstteki hücreler keskin. Bu yüzden alttaki bölüm "kart"
+   gibi, üstteki ise kesilmiş tek parça bir levha gibi okunuyordu
+   (Geylani: "gri rengi de aşağıdaki tabloda olduğu gibi yapalım, tablo
+   tasarımı yekpare olsun"). Aynı yarıçapı üst tabloya da veriyoruz.
+   Kapsam yalnız ANA tablolar: örnek matrisi (.kl-tablo), çekim
+   tabloları ve maraton tabloları dışarıda. */
+#tab1 .container > table > tbody > tr:not(.ko-satir):not(.muc-levha-satir) > td,
+#tab2 .container > table > tbody > tr:not(.ko-satir):not(.muc-levha-satir) > td {
+    border-radius: 12px;
 }
 
 /* LEVHA ZEMİNİ AYRI KAT: şerit soluklanırken içindeki vezin

@@ -2116,6 +2116,17 @@
         /* Boya AYRI KATMANA: kutular hücrenin içinde yaşıyor, hücreye
            opaklık verilseydi başlık da solardı (bkz. levhaKur). */
         var td = hucre.querySelector('.muc-levha-zemin') || hucre;
+        /* ÇİFT BOYA OLMASIN: zemin katı kurulmadan önce (arka plan
+           çizimi sırasında) hücrenin kendisi boyanmış olabiliyor; ikisi
+           üst üste gelince şerit sayfa zemininden koyu çıkıyor ve en
+           üstte sağdan sola uzanan ekstra bir bant gibi görünüyordu. */
+        if (td !== hucre) {
+            hucre.style.removeProperty('background-image');
+            hucre.style.removeProperty('background-color');
+            hucre.style.removeProperty('background-attachment');
+            hucre.style.removeProperty('background-size');
+            hucre.style.removeProperty('background-position');
+        }
         var zem = odak.evTonlar && odak.evTonlar[odak.no];
         if (zem) {                            /* ev zemini renkliyse o renk */
             td.style.removeProperty('background-image');
@@ -2123,7 +2134,28 @@
             return;
         }
         td.style.removeProperty('background-color');
+        /* ŞERİT DE SAYFANIN ZEMİNİYLE AYNI: degrade pencereye çakılı
+           (background-attachment: fixed), yani `body.muc-odak::before`
+           ile birebir hizalı. Yapışkan başlık şeridi arkadaki zeminin
+           devamı gibi duruyor, kartlar altından akarken de okunaklı
+           kalıyor. */
+        var deg = ustDegrade();
+        if (deg) {
+            td.style.setProperty('background-image', deg, 'important');
+            td.style.setProperty('background-attachment', 'fixed', 'important');
+            td.style.setProperty('background-size', 'cover', 'important');
+            td.style.setProperty('background-position', 'center', 'important');
+            return;
+        }
         mucZeminKopyala(td);
+    }
+    /* Sayfanın gri degradesi: hiçbir öğeye boyanmıyor, tabloda değişken
+       olarak duruyor (bkz. ustZeminDilimle). */
+    function ustDegrade() {
+        var t1 = document.getElementById('tab1');
+        var tablo = t1 && t1.querySelector('.container > table');
+        if (!tablo) return '';
+        return (getComputedStyle(tablo).getPropertyValue('--ust-degrade') || '').trim();
     }
     /* BÂB ODAĞINDA SİMETRİ: örnek sütunları levhadaki ÜÇ kutunun tam
        altına gelir. Matrise colgroup, levhaya aynı ölçülerde grid izleri
@@ -2448,6 +2480,11 @@
             mucLevhaBoya();
             var zem0 = lvTdB && lvTdB.querySelector('.muc-levha-zemin');
             if (zem0) { zem0.style.transition = 'none'; zem0.style.opacity = '0'; }
+            /* SAYFA ZEMİNİ: degrade artık tablo kutusuyla sınırlı değil,
+               pencereye çakılı olarak BÜTÜN SAYFAYI kaplıyor (Geylani).
+               Sınıf tablo çekildikten sonra takılıyor, saydam başlıyor;
+               vezinler başlığa dönüşürken birlikte beliriyor. */
+            document.body.classList.add('muc-zemin');
             /* ARA LEVHALI TAKIM (cem-i teksir): örnek listesi ARKA
                PLANDA, kutular daha TABLODAYKEN kurulmuştu; o sırada
                tekilTakimCiz ikinci dörtlüyü ara levhaya indiremedi —
@@ -2569,7 +2606,14 @@
             var ic = belirHazirla(st0.govdeTr);
             mucHizala();                      /* matris izleri: ancak şimdi ölçülebilir */
             mucLevhaBoya();
-            cakiliSil(st0, KL_LISTE_MS);      /* ara levhadakiler örneklerle devrolur */
+            /* ARA LEVHADAKİLER: kopyalar varış noktalarında bekliyor;
+               asıl kutular altlarında, örneklerle birlikte beliriyor.
+               Liste tam görünür olunca kopyalar sessizce siliniyor —
+               ikisi üst üste olduğu için ekranda hiçbir şey değişmiyor.
+               (Aynı anda biri sönüp öteki belirseydi vezin ortada bir
+               parça sönük görünürdü.) */
+            (st0.kutular || []).forEach(function (k) { k.style.visibility = ''; });
+            st0.zaman.push(setTimeout(function () { cakiliSil(st0); }, KL_LISTE_MS + 60));
             belirBasla(ic, KL_LISTE_MS);
         }, KL_CUBUK_MS + KL_MUC_MS + 60 + KL_MUC_ARA + KL_MUC_BELIR + KL_MUC_ARA));
 
@@ -2597,6 +2641,46 @@
         if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
         return true;
     }
+    /* ======= ÜST TABLONUN GRİSİ HÜCRELERE DAĞITILIR =======
+       Altbilgi bloklarında (cem-i teksir · ism-i tasğir · ism-i tafdil)
+       dolgu bloğun KENDİSİNE ait: yuvarlak köşeli, kutuları saran bir
+       kart. Mücerred tablosunda ise gri tek bir levhaydı, hücrelerden
+       bağımsızdı; köşeleri yuvarlatmak da işe yaramıyordu çünkü levha
+       arkadan görünmeye devam ediyordu (Geylani: "gri rengi de aşağıdaki
+       tabloda olduğu gibi yapalım, tablo tasarımı yekpare olsun").
+       Çözüm: degrade tablonun üstünde duruyor, her hücre ondan KENDİ
+       DİLİMİNİ alıyor (boyut = tablonun boyu, konum = hücrenin tabloya
+       göre kayması). Görünen renk birebir aynı kalıyor — tek fark,
+       dolgu artık hücrenin malı; oluklar ve yuvarlak köşeler beyaz. */
+    function ustZeminDilimle() {
+        var t1 = document.getElementById('tab1');
+        var tablo = t1 && t1.querySelector('.container > table');
+        if (!tablo || tablo.classList.contains('ko-acik')) return;
+        var rt = tablo.getBoundingClientRect();
+        if (!rt.width || !rt.height) return;
+        /* Kaynak DEĞİŞKENDEN okunur: degrade hiçbir öğeye boyanmıyor,
+           yoksa satırlar aşağı süzülüp gitse bile altta gri bir plaka
+           kalıyordu (sağda BABLAR'dan solda zaman-mekân sütununa kadar). */
+        var ts = getComputedStyle(tablo);
+        var img = (ts.getPropertyValue('--ust-degrade') || '').trim();
+        if (!img) img = ts.backgroundImage;
+        if (!img || img === 'none') return;
+        var boy = Math.round(rt.width) + 'px ' + Math.round(rt.height) + 'px';
+        Array.prototype.forEach.call(
+            tablo.querySelectorAll(':scope > tbody > tr:not(.ko-satir):not(.muc-levha-satir) > td'),
+            function (td) {
+                var r = td.getBoundingClientRect();
+                if (!r.width || !r.height) return;
+                td.style.setProperty('background-image', img, 'important');
+                td.style.setProperty('background-size', boy, 'important');
+                td.style.setProperty('background-position',
+                    Math.round(rt.left - r.left) + 'px ' + Math.round(rt.top - r.top) + 'px', 'important');
+            });
+    }
+    window.addEventListener('resize', function () { ustZeminDilimle(); });
+    if (document.readyState === 'complete') setTimeout(ustZeminDilimle, 0);
+    else window.addEventListener('load', function () { setTimeout(ustZeminDilimle, 0); });
+
     /* ================= ÇAKILI VEZİNLER =================
        Tablo aşağı süzülürken TIKLANAN VEZİNLER EKRANDA SABİT KALIR
        (Geylani: "tablo aşağı kayarken ilgili vezinler kaymasa sonra
@@ -2667,76 +2751,92 @@
        Örneklerin üstünde AYRI bir başlık kutusu yok: liste başlığı,
        tablodan kalan veznin kendisidir (Geylani: "örnek listelerindeki
        başlıklar olmasın, tablodan kalan vezinler başlıklara dönüşsün").
-       Kutu levhaya taşındıktan sonra, TEK KAREDE çakılı kopyanın
-       üstüne çivilenir (ters dönüşüm), kopya aynı karede silinir —
-       ekranda tek kutu kalır, hem de tablodaki görünümüyle. Sonraki
-       karede dönüşüm serbest bırakılır: kutu kendi yerine süzülüp
-       başlık ölçüsüne büyür. Ne ikinci bir kutu belirir ne de bir şey
-       söner; kutunun kendisi başlığa dönüşür.
 
-       ÖLÇEK TEK KATSAYI: en ve boy oranlarının ortalaması alınıyor
-       (tablo kutusu 125×59, başlık 250×115 → 0,500 ve 0,513, farkı
-       gözle görülmez). Ayrı ayrı ölçeklenseydi yazı ezilirdi. */
+       NİÇİN ÖLÇEK DEĞİL, GERÇEK BOY? transform: scale() tek katsayıyla
+       yapılırsa kutu hedefin boyuna oturmuyor, iki katsayıyla yapılırsa
+       yazı eziliyor. Cem-i teksirde fark uçuk: tablodaki kutu 237×53,
+       hedefi 170×88 — biri yatık, öteki dikey. Bu yüzden kopyanın kendi
+       left/top/width/height'ı, dolgusu ve harflerinin font-size'ı
+       canlandırılıyor: kutu da yazı da bozulmadan, hedefin TAM ölçüsüne
+       dönüşüyor. Varışta asıl kutu görünür olup kopya siliniyor —
+       ikisi bire bir çakıştığı için ekranda hiçbir şey değişmiyor.
+
+       ARA LEVHADAKİLER (cem-i teksirin 45-48'i) listenin İÇİNDE
+       oturuyor; liste bu anda henüz akış dışı olduğu için ölçüsü bir an
+       akışa alınıp (görünmeden) okunuyor. Onların kopyası varış
+       noktasında BEKLER: asıl kutular örneklerle birlikte altlarında
+       belirir, kopya en sonda sessizce silinir. */
     function cakiliDonustur(st, sure, bitti) {
         var kat = st && st.cakili;
         var kutular = (st && st.kutular) || [];
         var hucre = st && st.satir && st.satir.querySelector('td');
         var zemin = hucre && hucre.querySelector('.muc-levha-zemin');
         function zeminAc() {
+            /* Sayfa zemini ile şerit birlikte, aynı eğride belirir */
+            document.body.style.setProperty('--muc-zemin-sure', klSn(sure));
+            document.body.classList.add('muc-zemin-ac');
             if (!zemin) return;
             zemin.style.transition = 'opacity ' + klSn(sure) + ' ease-out';
             zemin.style.opacity = '1';
         }
         if (!kat || !kutular.length) { zeminAc(); if (bitti) bitti(); return; }
 
-        var isler = [], bekleyen = [];
+        /* Gizli listeyi bir an akışa al: ara levhadaki hedefler ölçülsün */
+        var gSatir = st.govdeTr;
+        var gGizliydi = !!(gSatir && gSatir.style.display === 'none');
+        if (gGizliydi) { gSatir.style.visibility = 'hidden'; gSatir.style.display = ''; }
+
+        var kr = kat.getBoundingClientRect();
+        var isler = [];
         Array.prototype.forEach.call(kat.children, function (kl, i) {
             var hedef = kutular[i];
             if (!hedef) return;
             var r1 = hedef.getBoundingClientRect();
-            var r0 = kl.getBoundingClientRect();
-            /* Ölçülemeyen hedef = cem-i teksirin ikinci dörtlüsü: yeri
-               ARA LEVHA, yani örnek listesinin içinde; liste henüz akış
-               dışı. O kopyalar yerinde bekler, örneklerle birlikte
-               devrini teslim eder (3. vuruşta cakiliSil). */
-            if (!r1.width || !r1.height || !r0.width || !r0.height) { bekleyen.push(kl); return; }
+            if (!r1.width || !r1.height) return;
+            var hs = getComputedStyle(hedef);
+            var yazi = [];
+            var asilY = hedef.querySelectorAll('.ar, .ar-small');
+            Array.prototype.forEach.call(kl.querySelectorAll('.ar, .ar-small'), function (e, j) {
+                if (asilY[j]) yazi.push({ e: e, boy: getComputedStyle(asilY[j]).fontSize });
+            });
             isler.push({
-                kl: kl, hedef: hedef,
-                dx: Math.round((r0.left + r0.width / 2) - (r1.left + r1.width / 2)),
-                dy: Math.round((r0.top + r0.height / 2) - (r1.top + r1.height / 2)),
-                s: ((r0.width / r1.width) + (r0.height / r1.height)) / 2
+                kl: kl, hedef: hedef, yazi: yazi,
+                bekle: gGizliydi && gSatir.contains(hedef),
+                l: Math.round(r1.left - kr.left), t: Math.round(r1.top - kr.top),
+                w: Math.round(r1.width), h: Math.round(r1.height),
+                pad: hs.padding
             });
         });
-        if (!isler.length) {
-            zeminAc();
-            if (!bekleyen.length) cakiliSil(st);
-            if (bitti) bitti();
-            return;
-        }
+        if (gGizliydi) { gSatir.style.display = 'none'; gSatir.style.visibility = ''; }
 
-        /* TEK KARE: gerçek kutu kopyanın yerine çivilenir, kopya silinir */
+        if (!isler.length) { zeminAc(); cakiliSil(st); if (bitti) bitti(); return; }
+
+        var EGRI = ' ' + KL_EGRI_AC;
         isler.forEach(function (it) {
-            it.hedef.style.transition = 'none';
-            it.hedef.style.transformOrigin = '50% 50%';
-            it.hedef.style.transform = 'translate(' + it.dx + 'px,' + it.dy + 'px) scale(' +
-                                       it.s.toFixed(4) + ')';
-            it.hedef.style.visibility = '';
-            it.kl.remove();
+            it.kl.style.transition = 'left ' + klSn(sure) + EGRI + ', top ' + klSn(sure) + EGRI +
+                                     ', width ' + klSn(sure) + EGRI + ', height ' + klSn(sure) + EGRI +
+                                     ', padding ' + klSn(sure) + EGRI;
+            it.yazi.forEach(function (y) { y.e.style.transition = 'font-size ' + klSn(sure) + EGRI; });
         });
-        void (hucre || document.body).offsetHeight;
-
-        /* Serbest bırak: kutu başlık yerine süzülüp büyür */
+        void kat.offsetHeight;
         isler.forEach(function (it) {
-            it.hedef.style.transition = 'transform ' + klSn(sure) + ' ' + KL_EGRI_AC;
-            it.hedef.style.transform = '';
+            it.kl.style.left = it.l + 'px';
+            it.kl.style.top = it.t + 'px';
+            it.kl.style.width = it.w + 'px';
+            it.kl.style.height = it.h + 'px';
+            it.kl.style.padding = it.pad;
+            it.yazi.forEach(function (y) { y.e.style.fontSize = y.boy; });
         });
         zeminAc();
+
         setTimeout(function () {
+            var kalan = 0;
             isler.forEach(function (it) {
-                it.hedef.style.transition = ''; it.hedef.style.transform = '';
-                it.hedef.style.transformOrigin = '';
+                if (it.bekle) { kalan++; return; }
+                it.hedef.style.visibility = '';   /* asıl kutu devralır */
+                it.kl.remove();
             });
-            if (!bekleyen.length) cakiliSil(st);
+            if (!kalan) cakiliSil(st);
             if (bitti) bitti();
         }, sure + 40);
     }
@@ -2864,7 +2964,9 @@
     function mucSonlandir(st, sessiz) {
         cakiliSil(st);                        /* yarıda kalan kopyalar */
         kapatXSil();
-        document.body.classList.remove('muc-odak', 'muc-serit-yok', 'muc-bar-acik');
+        document.body.classList.remove('muc-odak', 'muc-serit-yok', 'muc-bar-acik',
+                                       'muc-zemin', 'muc-zemin-ac');
+        document.body.style.removeProperty('--muc-zemin-sure');
         var govde1 = st.satir.parentElement;
         var evler = st.evler || [];
         var r0lar = evler.map(function (ev) { return ev.kutu.getBoundingClientRect(); });
@@ -2952,6 +3054,9 @@
             if (r0lar[i]) kutuSuzul(ev.kutu, r0lar[i]);
         });
         if (typeof window.kidefUstKilit === 'function') window.kidefUstKilit();
+        /* Tablo geri geldi: hücre dilimleri yeni ölçüye göre tazelensin */
+        setTimeout(ustZeminDilimle, 60);
+        setTimeout(ustZeminDilimle, KL_MUC_MS + 120);
         if (!sessiz && typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
     }
 
