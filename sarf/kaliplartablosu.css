@@ -4723,6 +4723,44 @@ body.ust-kilit i.fa-sync-alt.root-icon {
     z-index: 100;
 }
 
+/* LEVHA ZEMİNİ AYRI KAT: şerit soluklanırken içindeki vezin
+   başlıkları etkilenmesin diye zemin, hücrenin kendisine değil
+   hücrenin içindeki bu kata boyanıyor (kalipliste.js → mucLevhaBoya).
+   Kutular onun üstünde, kendi opaklıklarıyla durur. */
+#tab1 .muc-levha-satir > td { position: relative; }
+#tab1 .muc-levha-zemin {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    z-index: 0;
+    pointer-events: none;
+}
+#tab1 .muc-levha-satir > td > .muc-levha { position: relative; z-index: 1; }
+
+/* ============ ÇAKILI VEZİN KATMANI ============
+   Tablo aşağı süzülürken tıklanan vezinler EKRANDA SABİT durur: gerçek
+   kutular satırların içinde olduğu için onlarla kayıyorlardı, bu yüzden
+   kopyaları buraya çakılıyor (kalipliste.js → cakiliKur). Katman #tab1'in
+   içinde: `#tab1 .glass-box` kuralları kopyalara da işlesin diye.
+   Tablo gidince kopyalar söner, levhadaki asıllar belirir — vezin
+   uçmaz, DÖNÜŞÜR. */
+.muc-cakili {
+    position: fixed;
+    inset: 0;
+    /* Levha hücresi stor perdede `z-index: 1200` ile yapışıyor; 850'de
+       kalınca yürüyen kopyalar bandın ALTINDA kalıp soluk görünüyordu
+       (ölçüldü). Üst çubuk 1000000+ olduğu için onun altında kalır. */
+    z-index: 1300;
+    pointer-events: none;
+}
+.muc-cakili .muc-cakili-kutu {
+    position: absolute;
+    margin: 0 !important;
+    box-sizing: border-box;
+    opacity: 1;
+    transition: opacity var(--muc-cakili-sure, .9s) ease-in;
+}
+
 /* ================== STOR PERDE GERİ DÖNÜŞÜ ==================
    Kalıp odağı (örnek listesi) açıkken üst çubuk YAPIŞKANDIR:
    derine inerken yukarı süzülüp kaybolur (ko-stor-sakla), geri
@@ -5646,3 +5684,8 @@ body.ko-sakin .easter-egg-trigger,
 body.ko-sakin .plus-hint-badge,
 body.ko-sakin .root-icon,
 body.ko-sakin .sitemap-wave-hint { animation: none !important; transition: none !important; }
+
+/* MÜCERRED AÇILIŞI: mavi/yeşil dilbilgisi başlık satırı, tablo `ko-acik`
+   olur olmaz gizlenmesin — önce aşağı kayan tabloyla birlikte süzülsün.
+   Kayış bitince `ko-bas-kayan` kalkar, aşağıdaki kural yine iş görür. */
+#tab1 table.ko-acik > thead > tr.ko-bas-kayan { display: table-row !important; }

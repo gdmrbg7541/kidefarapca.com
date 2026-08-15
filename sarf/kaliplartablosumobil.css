@@ -6090,3 +6090,8 @@ body.ko-sakin .easter-egg-trigger,
 body.ko-sakin .plus-hint-badge,
 body.ko-sakin .root-icon,
 body.ko-sakin .sitemap-wave-hint { animation: none !important; transition: none !important; }
+
+/* MÜCERRED AÇILIŞI: mavi/yeşil dilbilgisi başlık satırı, tablo `ko-acik`
+   olur olmaz gizlenmesin — önce aşağı kayan tabloyla birlikte süzülsün.
+   Kayış bitince `ko-bas-kayan` kalkar, aşağıdaki kural yine iş görür. */
+#tab1 table.ko-acik > thead > tr.ko-bas-kayan { display: table-row !important; }
