@@ -22,7 +22,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
 
-    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=201">
+    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=207">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="arakom.css?v=1">
@@ -257,6 +257,88 @@
     </div>
 </div>
 
+
+<!-- ============ İ'RAB SONLARI (kalıp: tamlamavecumleler.html) ============
+     "+" menüsündeki ekler kelimenin SONUNU etkiliyor: harf-i cer ismi
+     mecrur, lâm-ı ta'lîl muzâriyi mansub yapar. Bu yüzden ek kartının
+     altında ilgili i'rab sonları tablosu da gösteriliyor. Tablolar
+     tamlamavecumleler.html'den birebir alındı; kalıp olarak duruyor,
+     ekBilgiAc gerekeni kopyalayıp karta koyuyor. -->
+<template id="kt-son-isim">
+<table class="tc-irab tc-irab-isim">
+      <thead>
+        <tr>
+          <th style="width:104px"></th>
+        <th><span class="tc-ib-ar" dir="rtl">مُفْرَد</span><span class="tc-ib-ad">Tekil</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
+        <th><span class="tc-ib-ar" dir="rtl">تَثْنِيَة</span><span class="tc-ib-ad">İkil</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span></span></th>
+        <th colspan="2"><span class="tc-ib-ar" dir="rtl">جَمْع سَالِم</span><span class="tc-ib-ad">Düzenli Çoğul</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span> <b>+</b> <span class="tc-ib-hareke">Hareke</span></span></th>
+        <th><span class="tc-ib-ar" dir="rtl">جَمْع تَكْسِير</span><span class="tc-ib-ad">Düzensiz Çoğul</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="tc-h-merfu">
+          <td class="tc-hal">Merfu</td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــُ / ـــٌ</span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــَانِ</span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــُونَ</span></td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَاتُ</span></td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــُ / ـــٌ</span></td>
+        </tr>
+        <tr class="tc-h-mansub">
+          <td class="tc-hal">Mansub</td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَ / ـــًا</span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــَيْنِ</span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــِينَ</span></td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَاتِ</span></td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَ / ـــًا</span></td>
+        </tr>
+        <tr class="tc-h-mecrur">
+          <td class="tc-hal">Mecrur</td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــِ / ـــٍ</span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــَيْنِ</span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــِينَ</span></td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَاتِ</span></td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــِ / ـــٍ</span></td>
+        </tr>
+      </tbody>
+    </table>
+</template>
+<template id="kt-son-fiil">
+<table class="tc-irab tc-irab-fiil">
+      <thead>
+        <tr>
+          <th style="width:104px"></th>
+        <th><span class="tc-ib-ar" dir="rtl">مُفْرَد</span><span class="tc-ib-ad">Tekil</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
+        <th><span class="tc-ib-ar" dir="rtl">تَثْنِيَة</span><span class="tc-ib-ad">İkil</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span></span></th>
+        <th colspan="2"><span class="tc-ib-ar" dir="rtl">جَمْع</span><span class="tc-ib-ad">Çoğul</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span> <b>+</b> <span class="tc-ib-hareke">Hareke</span></span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="tc-h-merfu">
+          <td class="tc-hal">Merfu</td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــُ</span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــَانِ</span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــُونَ</span></td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــْنَ</span></td>
+        </tr>
+        <tr class="tc-h-mansub">
+          <td class="tc-hal">Mansub</td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَ</span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــَا&zwnj;<span class="tc-dusen">نِ</span></span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــُوا&zwnj;<span class="tc-dusen">نَ</span></span></td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــْنَ</span></td>
+        </tr>
+        <tr class="tc-h-meczum">
+          <td class="tc-hal">Meczum</td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــْ</span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــَا&zwnj;<span class="tc-dusen">نِ</span></span></td>
+          <td><span class="tc-ib-harf">ـ ـ ـ ـــُوا&zwnj;<span class="tc-dusen">نَ</span></span></td>
+          <td><span class="tc-ib-hareke">ـ ـ ـ ـــْنَ</span></td>
+        </tr>
+      </tbody>
+    </table>
+</template>
+
 <!-- ============ KULLANIM KILAVUZU ============
      Üst çubuğun en sağındaki ⓘ ile açılır (kilavuzAc). Her bölümde
      sayfanın kendisinden alınmış bir ekran görüntüsü var: anlatılan yer
@@ -276,7 +358,7 @@
       <h2>Kalıplar Tablosu</h2>
       <p>Arapçada kelimeler köklerden <b>vezinlerle</b> türer. Bu tablo, üç harfli bir kökün
          hangi vezinde hangi kelimeye dönüştüğünü tek ekranda gösterir: solda isim kalıpları,
-         sağda fiil kalıpları, aşağıda kırık çoğullar. Aşağıdaki dokuz adım tablonun
+         sağda fiil kalıpları, aşağıda kırık çoğullar. Aşağıdaki on iki adım tablonun
          her parçasını sırayla anlatıyor.</p>
     </header>
 
@@ -292,7 +374,7 @@
           <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg></span><b>Kronometre</b> — hız ve telaffuz testi.</li>
           <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg></span><b>Hızlı sözlük</b> — kelimeleri liste hâlinde tara.</li>
           <li><span class="ktk-ik"><i class="fas fa-sync-alt"></i></span><b>Yenile</b> — tabloyu boşaltır, kökü siler.</li>
-          <li><span class="ktk-ik"><i class="fas fa-plus"></i></span><b>Ek menüsü</b> — ön ve son ekler (8. adım).</li>
+          <li><span class="ktk-ik"><i class="fas fa-plus"></i></span><b>Ek menüsü</b> — ön ve son ekler (11. adım).</li>
           <li><span class="ktk-ik"><i class="fas fa-search"></i></span><b>Arama</b> — Arapça klavyeyle kök yaz (2. adım).</li>
           <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="16.6" x2="12" y2="11.2"></line><line x1="12" y1="7.7" x2="12.01" y2="7.7"></line></svg></span><b>Kılavuz</b> — bu ekran.</li>
         </ul>
@@ -324,6 +406,18 @@
     <section class="ktk-bolum">
       <div class="ktk-yazi">
         <span class="ktk-no">4</span>
+        <h3>Kökler listesi</h3>
+        <p>Şema ikonu <b>439 kökü</b> ilk harfine göre dizilmiş hâlde açar. Her kökün yanında
+           anlamını hatırlatan bir emoji var; birine dokunmak o kökü doğrudan tabloya yerleştirir.</p>
+        <p>En üstteki şerit <b>son bakılan kökleri</b> tutar — aynı köke dönmek için listeyi
+           yeniden taramana gerek kalmaz.</p>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/kokler.jpg" alt="Kökler listesi" loading="lazy"></figure>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">5</span>
         <h3>Tabloyu okumak</h3>
         <p>Üstteki iki sekme iki dünyayı ayırır:</p>
         <ul>
@@ -339,7 +433,7 @@
 
     <section class="ktk-bolum">
       <div class="ktk-yazi">
-        <span class="ktk-no">5</span>
+        <span class="ktk-no">6</span>
         <h3>Bir vezne dokunmak</h3>
         <p>Herhangi bir vezin kutusuna dokun: tablo aşağı süzülür, ekran o vezne ayrılır ve
            <b>o vezinde gelen bütün kelimeler</b> örnekleriyle listelenir. Fiil kalıplarında
@@ -354,7 +448,36 @@
 
     <section class="ktk-bolum">
       <div class="ktk-yazi">
-        <span class="ktk-no">6</span>
+        <span class="ktk-no">7</span>
+        <h3>Fiil çekim tablosu</h3>
+        <p>Kök tanımlıyken bir <b>fiil kutusuna iki kez</b> dokun: kalıp gerçek kelimeye dönüşür
+           (<span dir="rtl">فَعَلَ</span> ➜ <span dir="rtl">كَتَبَ</span>). Sonra kutunun köşesindeki
+           <b>numaraya</b> dokun — o fiilin çekim tablosu açılır.</p>
+        <p>Sütunlar <b>Müfred · Tesniye · Cemi</b>, satırlar kişilerdir. Aşağı kaydırdıkça çekimin
+           bütün varyasyonları gelir: Malum, Menfi <span dir="rtl">(مَا)</span>, Cehd-i Mutlak
+           <span dir="rtl">(لَمْ)</span>, Nefy-i İstikbal <span dir="rtl">(لَنْ)</span>, Nehiy…
+           İki yandaki oklar komşu çekime geçirir.</p>
+        <p class="ktk-ipucu">Çekim pencereleri dışarı tıklayınca kapanmaz; birden fazlasını yan yana
+           açık tutup karşılaştırabilirsin. Her biri kendi <b>✕</b>'i ile kapanır.</p>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/cekim.jpg" alt="Fiil çekim tablosu" loading="lazy"></figure>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">8</span>
+        <h3>Hızlı sözlük</h3>
+        <p>Liste ikonu tabloyu bir <b>sözlük gibi</b> açar: kalıplar numarası, emojisi ve Türkçe
+           karşılığıyla alt alta sıralanır — <b>yeşil</b> olanlar fiil, <b>mavi</b> olanlar isim kalıbı.</p>
+        <p>Hangi kalıbın ne işe yaradığını tabloyu gezmeden hızlıca taramak için. Üstteki not da
+           hatırlatır: Türkçeye geçen Arapça kelimeler genellikle isimdir.</p>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/hizli.jpg" alt="Hızlı sözlük kipi" loading="lazy"></figure>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">9</span>
         <h3>Dilbilgisi başlıkları</h3>
         <p>Sütun başlıklarına (MÂZÎ, MUZÂRİ, MASTAR…) dokunursan o konunun dilbilgisi ekranı
            açılır: tanım, çekim tablosu, örnek fiiller. Üstteki şeritten konudan konuya
@@ -365,7 +488,7 @@
 
     <section class="ktk-bolum">
       <div class="ktk-yazi">
-        <span class="ktk-no">7</span>
+        <span class="ktk-no">10</span>
         <h3>Bâb bilgisi</h3>
         <p>Mezîd sekmesinde bâb adlarının (İf'âl, Tef'îl, İstif'âl…) yanındaki <b>ⓘ</b> o bâbın
            satırını açar: bâbın ne işe yaradığı, hangi anlamı kattığı ve örnekleri.</p>
@@ -376,13 +499,13 @@
 
     <section class="ktk-bolum">
       <div class="ktk-yazi">
-        <span class="ktk-no">8</span>
+        <span class="ktk-no">11</span>
         <h3>Ek menüsü <span class="ktk-artı">+</span></h3>
         <p>Sağda <b>ön ekler</b> (اَلْـ, وَ, لِـ, بِـ…), solda <b>son ekler</b> (ـة, ـيّ, ـانِ, ـونَ, ـات…).</p>
         <ul>
           <li><b>Bir kelime türettiysen</b> — yani tabloda bir vezne dokunduysan — eke basmak
               o kelimeye eki ekler.</li>
-          <li><b>Ortada kelime yoksa</b> eke basmak ekin kendisini anlatır (9. adım).</li>
+          <li><b>Ortada kelime yoksa</b> eke basmak ekin kendisini anlatır (12. adım).</li>
         </ul>
       </div>
       <figure class="ktk-gorsel"><img src="sarf/kilavuz/ekmenu.jpg" alt="Ek menüsü" loading="lazy"></figure>
@@ -390,7 +513,7 @@
 
     <section class="ktk-bolum">
       <div class="ktk-yazi">
-        <span class="ktk-no">9</span>
+        <span class="ktk-no">12</span>
         <h3>Ek bilgi kartı</h3>
         <p>Kelime türetilmemişken bir eke dokunduğunda menü ekranı kaplayacak şekilde büyür ve
            ortada o ekin kartı açılır: ne işe yaradığı, yalın hâlden ekli hâle geçiş şeması,
@@ -904,7 +1027,7 @@
      başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
      buradan okunuyor. Yan etkisi yok, yalnız sabit tanımlar. -->
 <script src="veri/veri_vezin_numaralari.js?v=1"></script>
-<script src="sarf/kaliplartablosu.js?v=181"></script>
+<script src="sarf/kaliplartablosu.js?v=182"></script>
 <script src="sarf/babodak.js?v=6"></script>
 <!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama

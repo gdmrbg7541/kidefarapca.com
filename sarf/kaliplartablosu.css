@@ -1482,8 +1482,8 @@ body.matrix-active { overflow: hidden !important; }
 
 /* HAZIR KÖK İKONU YÖNLENDİRME ANİMASYONU */
 @keyframes bookWavePulse {
-    0% { box-shadow: 0 0 0 0 rgba(43, 136, 217, 0.6); transform: scale(1); }
-    70% { box-shadow: 0 0 0 15px rgba(43, 136, 217, 0); transform: scale(1.15); }
+    0% { box-shadow: 0 0 0 0 rgba(43, 136, 217, 0.45); transform: scale(1); }
+    70% { box-shadow: 0 0 0 4px rgba(43, 136, 217, 0); transform: scale(1.035); }
     100% { box-shadow: 0 0 0 0 rgba(43, 136, 217, 0); transform: scale(1); }
 }
 
@@ -2986,8 +2986,8 @@ input:checked +
 
 /* KÖKLER LİSTESİ YÖNLENDİRME ANİMASYONU (SİTEMAP) */
 @keyframes sitemapWavePulse {
-    0% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.55); transform: scale(1); }
-    70% { box-shadow: 0 0 0 8px rgba(243, 156, 18, 0); transform: scale(1.07); }
+    0% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.45); transform: scale(1); }
+    70% { box-shadow: 0 0 0 4px rgba(243, 156, 18, 0); transform: scale(1.035); }
     100% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0); transform: scale(1); }
 }
 
@@ -3009,8 +3009,8 @@ input:checked +
 
 /* Sayfa açılışında (kök seçilmemişken) kronometre için YEŞİL dalga vurgusu */
 @keyframes sitemapWavePulseGreen {
-    0% { box-shadow: 0 0 0 0 rgba(32, 201, 151, 0.55); transform: scale(1); }
-    70% { box-shadow: 0 0 0 8px rgba(32, 201, 151, 0); transform: scale(1.07); }
+    0% { box-shadow: 0 0 0 0 rgba(32, 201, 151, 0.45); transform: scale(1); }
+    70% { box-shadow: 0 0 0 4px rgba(32, 201, 151, 0); transform: scale(1.035); }
     100% { box-shadow: 0 0 0 0 rgba(32, 201, 151, 0); transform: scale(1); }
 }
 
@@ -3024,8 +3024,8 @@ input:checked +
 
 /* Kök seçilince liste ikonu için KIRMIZI dalga vurgusu */
 @keyframes sitemapWavePulseRed {
-    0% { box-shadow: 0 0 0 0 rgba(238, 82, 83, 0.55); transform: scale(1); }
-    70% { box-shadow: 0 0 0 8px rgba(238, 82, 83, 0); transform: scale(1.07); }
+    0% { box-shadow: 0 0 0 0 rgba(238, 82, 83, 0.45); transform: scale(1); }
+    70% { box-shadow: 0 0 0 4px rgba(238, 82, 83, 0); transform: scale(1.035); }
     100% { box-shadow: 0 0 0 0 rgba(238, 82, 83, 0); transform: scale(1); }
 }
 
@@ -5631,6 +5631,109 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
 #suffix-dropdown .ek-orta .ekb-o-ekli { font-size: 1.28rem; }
 
 /* =========================================================================
+   EK KARTINDA İ'RAB SONLARI
+   -------------------------------------------------------------------------
+   Ekler kelimenin SONUNU değiştirir: harf-i cer ismi mecrûr, lâm-ı ta'lîl
+   muzâriyi mansûb yapar. Bu yüzden kartın altına tamlamavecumleler.html'in
+   sonlar tablosu birebir gömüldü. Biçim de oradan geldi; yalnız punto ve
+   dolgu kart ölçeğine (--ekb-olcek) bağlandı ki 4K'da da orantılı büyüsün.
+   ========================================================================= */
+.ekb-sonlar {
+    --ekb-o: var(--ekb-olcek, 1);
+    margin-top: calc(16px * var(--ekb-o));
+    padding: calc(16px * var(--ekb-o)) calc(18px * var(--ekb-o)) calc(14px * var(--ekb-o));
+    border: 1px solid #E6EBF2; border-radius: calc(14px * var(--ekb-o));
+    background: #FBFCFE;
+}
+.ekb-son-bas {
+    display: flex; align-items: center; gap: calc(10px * var(--ekb-o));
+    font-size: calc(1.12rem * var(--ekb-o)); font-weight: 800; color: #1d1d1f;
+    margin-bottom: calc(6px * var(--ekb-o));
+}
+.ekb-son-etiket {
+    flex: 0 0 auto; padding: calc(3px * var(--ekb-o)) calc(11px * var(--ekb-o));
+    border-radius: 999px; background: #3A4657; color: #fff;
+    font-size: calc(.68rem * var(--ekb-o)); font-weight: 800; letter-spacing: .08em;
+}
+.ekb-son-giris {
+    margin: 0 0 calc(10px * var(--ekb-o));
+    font-size: calc(.98rem * var(--ekb-o)); line-height: 1.55; color: #5A6474;
+}
+.ekb-son-sekme { display: flex; gap: calc(8px * var(--ekb-o)); margin-bottom: calc(10px * var(--ekb-o)); }
+.ekb-ss {
+    border: 1px solid #DDE3EC; background: #fff; color: #6B7280; cursor: pointer;
+    padding: calc(6px * var(--ekb-o)) calc(18px * var(--ekb-o));
+    border-radius: 999px; font-family: inherit; font-weight: 800;
+    font-size: calc(.82rem * var(--ekb-o)); letter-spacing: .06em;
+    transition: background .15s, color .15s, border-color .15s;
+}
+.ekb-ss.aktif { background: #3A4657; border-color: #3A4657; color: #fff; }
+.ekb-son-kutu { overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; }
+
+/* --- tablonun kendisi (tamlamavecumleler.css'ten) --- */
+/* Tablo İÇERİĞİ KADAR geniş olur ve ortalanır. `width:100%` bırakılınca
+   artan bütün yer hâl etiketi sütununa gidiyor, Merfu/Mansub/Mecrur
+   blokları tablonun yarısını kaplıyordu (ölçüldü). */
+.ekb-sonlar .tc-irab {
+    direction: rtl; width: max-content !important; margin: 0 auto; max-width: 100%;
+    border-collapse: separate !important; border-spacing: 0 calc(6px * var(--ekb-o));
+    table-layout: auto !important;
+}
+/* Başlık bandı MOR DEĞİL: mecrur etiketi de mor, ikisi karışıyordu
+   (Geylani). Nötr kurşuni bir bant hem yeşil-mavi-mor-kırmızı hâl
+   etiketlerinin hiçbiriyle çakışmıyor hem de onları öne çıkarıyor. */
+.ekb-sonlar .tc-irab th {
+    background: #3A4657; color: #fff; border: 1px solid #2C3644;
+    padding: calc(8px * var(--ekb-o)) calc(7px * var(--ekb-o)) calc(9px * var(--ekb-o));
+    text-align: center; line-height: 1.3; font-family: 'Marhey', system-ui, sans-serif;
+}
+.ekb-sonlar .tc-irab th .tc-ib-ar {
+    display: block; direction: rtl; font-family: 'Arakom', 'Traditional Arabic', serif;
+    font-size: calc(1.2rem * var(--ekb-o)); line-height: 1.4;
+}
+.ekb-sonlar .tc-irab th .tc-ib-ad { display: block; font-size: calc(.88rem * var(--ekb-o)); font-weight: 700; }
+.ekb-sonlar .tc-irab th .tc-ib-alt {
+    display: inline-block; margin-top: calc(3px * var(--ekb-o));
+    padding: calc(1px * var(--ekb-o)) calc(9px * var(--ekb-o)); border-radius: calc(6px * var(--ekb-o));
+    background: #EDEFF3; color: #7C8794; font-size: calc(.74rem * var(--ekb-o)); font-weight: 700;
+}
+.ekb-sonlar .tc-irab th .tc-ib-alt b { color: #9AA5B1; font-weight: 700; }
+.ekb-sonlar .tc-ib-hareke { color: #D6199B; }
+.ekb-sonlar .tc-ib-harf { color: #1D6FD0; }
+.ekb-sonlar .tc-irab td {
+    background: #fff; border: 1px solid #D8DEE6;
+    padding: calc(11px * var(--ekb-o)) calc(9px * var(--ekb-o)); text-align: center;
+    font-family: 'Arakom', 'Traditional Arabic', serif;
+    font-size: calc(2rem * var(--ekb-o)); white-space: nowrap; line-height: 1.5;
+}
+/* `!important`: sayfanın kendi tablo kuralları hücre rengini eziyordu —
+   etiketler renkli zeminde kızıl çıkıyordu (ölçüldü). */
+.ekb-sonlar .tc-irab .tc-hal {
+    font-family: 'Marhey', system-ui, sans-serif !important; font-weight: 700;
+    font-size: calc(.86rem * var(--ekb-o)) !important; color: #fff !important;
+    white-space: nowrap;
+    /* Etiket sütunu içeriği kadar: 104px'te blok tablonun neredeyse
+       üçte birini kaplıyordu (Geylani: "çok geniş olmuş"). */
+    width: 1%; padding: calc(9px * var(--ekb-o)) calc(12px * var(--ekb-o)) !important;
+}
+/* KÖŞEDEKİ BOŞ HÜCRE: bant rengini taşımasın, saydam kalsın */
+.ekb-sonlar .tc-irab th:first-child {
+    background: transparent !important; border-color: transparent !important;
+    width: 1%; padding: 0 !important;
+}
+.ekb-sonlar .tc-h-merfu  .tc-hal { background: #12A05F; }
+.ekb-sonlar .tc-h-mansub .tc-hal { background: #2C7BE5; }
+.ekb-sonlar .tc-h-mecrur .tc-hal { background: #8B4BD8; }
+.ekb-sonlar .tc-h-meczum .tc-hal { background: #C0392B; }
+/* O hâlde DÜŞEN nûn: yerinde durur ama üstü çizilir (Arakom'un kendi
+   strikeout ölçüsü sıfıra yakın olduğu için çizgi elle çiziliyor). */
+.ekb-sonlar .tc-dusen { position: relative; display: inline-block; line-height: 1; color: #E11D2E; }
+.ekb-sonlar .tc-dusen::after {
+    content: ""; position: absolute; left: -.08em; right: -.08em; bottom: .42em;
+    border-top: .075em solid currentColor; pointer-events: none;
+}
+
+/* =========================================================================
    ÜST ÇUBUK SİMGELERİ — TEK SIRA, EŞİT ARA
    -------------------------------------------------------------------------
    Dokuz simge iki ayrı grupta, kutunun iki ucuna yaslanıyordu; ortada
@@ -5646,6 +5749,11 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
 #root-display-box > div { justify-content: space-evenly !important; padding: 0 6px !important; }
 /* `!important` şart: grupların `display:flex`i satır içinde yazılı */
 #root-display-box > div > div { display: contents !important; }
+/* SİMGELER DAHA KÜÇÜK: çizgi ikonlar 22px ile Font Awesome glifleri
+   (16px) arasında boy farkı vardı; 18px ikisini de aynı ölçüye getiriyor.
+   Kutu dolgusu da 8 → 6px: dalga halkası simgeye daha yakın oturuyor. */
+#root-display-box .root-icon { padding: 6px; font-size: 1.05rem; }
+#root-display-box .root-icon > svg { width: 18px !important; height: 18px !important; }
 
 /* =========================================================================
    KULLANIM KILAVUZU — üst çubuğun en sağındaki ⓘ

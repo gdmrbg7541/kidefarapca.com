@@ -3264,7 +3264,7 @@ window.semaSorSerit = function () {
 window.EK_BILGI = {
     /* ---------------- ÖN EKLER ---------------- */
     "ال": {
-        tur: "on", ad: "Harf-i Ta'rîf", altAd: "belirlilik takısı", renk: "#2980B9",
+        son: "isim", tur: "on", ad: "Harf-i Ta'rîf", altAd: "belirlilik takısı", renk: "#2980B9",
         ozet: "Belirsiz ismi belirli yapar: «bir kitap» ➜ «o kitap».",
         sema: { once: "كِتَابٌ", onceTr: "bir kitap", ek: "الْ", govde: "كِتَاب", sonra: "الْكِتَابُ", sonraTr: "kitap" },
         ornekler: [
@@ -3275,7 +3275,7 @@ window.EK_BILGI = {
         ikon: "belirli"
     },
     "وَ": {
-        tur: "on", ad: "Atıf Vâv'ı", altAd: "«ve»", renk: "#20C997",
+        son: "ikisi", tur: "on", ad: "Atıf Vâv'ı", altAd: "«ve»", renk: "#20C997",
         ozet: "İki kelimeyi ya da iki cümleyi birbirine bağlar; sırası önemli değildir.",
         sema: { once: "قَلَمٌ", onceTr: "kalem", ek: "وَ", govde: "قَلَم", sonra: "وَقَلَمٌ", sonraTr: "ve kalem" },
         ornekler: [
@@ -3286,7 +3286,7 @@ window.EK_BILGI = {
         ikon: "baglac"
     },
     "لِ": {
-        tur: "on", ad: "Lâm-ı Cer", altAd: "«için, -e ait»", renk: "#F39C12",
+        son: "ikisi", tur: "on", ad: "Lâm-ı Cer", altAd: "«için, -e ait»", renk: "#F39C12",
         ozet: "Aitlik ve amaç bildirir; kendinden sonraki ismi ESRELİ (mecrûr) yapar.",
         sema: { once: "الْمُعَلِّمُ", onceTr: "öğretmen", ek: "لِ", govde: "لْمُعَلِّم", sonra: "لِلْمُعَلِّمِ", sonraTr: "öğretmen için" },
         ornekler: [
@@ -3297,7 +3297,7 @@ window.EK_BILGI = {
         ikon: "cer"
     },
     "فَ": {
-        tur: "on", ad: "Atıf Fâ'sı", altAd: "«ve hemen ardından»", renk: "#20C997",
+        son: "ikisi", tur: "on", ad: "Atıf Fâ'sı", altAd: "«ve hemen ardından»", renk: "#20C997",
         ozet: "وَ gibi bağlar, ama SIRA ve SEBEP bildirir: önce o oldu, hemen ardından bu.",
         sema: { once: "جَلَسَ", onceTr: "oturdu", ek: "فَ", govde: "جَلَسَ", sonra: "فَجَلَسَ", sonraTr: "ve hemen oturdu" },
         ornekler: [
@@ -3308,7 +3308,7 @@ window.EK_BILGI = {
         ikon: "baglac"
     },
     "كَ": {
-        tur: "on", ad: "Kâf-ı Teşbîh", altAd: "«gibi»", renk: "#A78BFA",
+        son: "isim", tur: "on", ad: "Kâf-ı Teşbîh", altAd: "«gibi»", renk: "#A78BFA",
         ozet: "Benzetme yapar; harf-i cerdir, sonraki ismi ESRELİ yapar.",
         sema: { once: "الْأَسَدُ", onceTr: "aslan", ek: "كَ", govde: "لْأَسَد", sonra: "كَالْأَسَدِ", sonraTr: "aslan gibi" },
         ornekler: [
@@ -3319,7 +3319,7 @@ window.EK_BILGI = {
         ikon: "cer"
     },
     "بِ": {
-        tur: "on", ad: "Bâ-i Cer", altAd: "«ile, -de»", renk: "#F39C12",
+        son: "isim", tur: "on", ad: "Bâ-i Cer", altAd: "«ile, -de»", renk: "#F39C12",
         ozet: "Çoğunlukla ALET/VASITA bildirir: neyle yapıldı? Sonraki ismi ESRELİ yapar.",
         sema: { once: "الْقَلَمُ", onceTr: "kalem", ek: "بِ", govde: "لْقَلَم", sonra: "بِالْقَلَمِ", sonraTr: "kalemle" },
         ornekler: [
@@ -3332,7 +3332,7 @@ window.EK_BILGI = {
 
     /* ---------------- SON EKLER ---------------- */
     "ا": {
-        tur: "son", ad: "Tenvîn-i Nasb", altAd: "«ـًا»", renk: "#E53935",
+        son: "isim", tur: "son", ad: "Tenvîn-i Nasb", altAd: "«ـًا»", renk: "#E53935",
         ozet: "Kelimeyi mef'ûl, hâl ya da zarf yapar; sonuna iki üstün + elif gelir.",
         sema: { once: "شُكْرٌ", onceTr: "teşekkür", ek: "ـًا", govde: "شُكْر", sonra: "شُكْرًا", sonraTr: "teşekkürler" },
         ornekler: [
@@ -3343,7 +3343,7 @@ window.EK_BILGI = {
         ikon: "tenvin"
     },
     "ة": {
-        tur: "son", ad: "Te'nîs Tâ'sı", altAd: "dişillik", renk: "#EF5350",
+        son: "isim", tur: "son", ad: "Te'nîs Tâ'sı", altAd: "dişillik", renk: "#EF5350",
         ozet: "Eril kelimeyi dişil yapar; ayrıca bir cinsin TEK tanesini gösterir.",
         sema: { once: "مُعَلِّمٌ", onceTr: "öğretmen (erkek)", ek: "ة", govde: "مُعَلِّم", sonra: "مُعَلِّمَةٌ", sonraTr: "öğretmen (kadın)" },
         ornekler: [
@@ -3354,7 +3354,7 @@ window.EK_BILGI = {
         ikon: "disil"
     },
     "يّ": {
-        tur: "son", ad: "Nisbet Yâ'sı", altAd: "aidiyet", renk: "#7C3AED",
+        son: "isim", tur: "son", ad: "Nisbet Yâ'sı", altAd: "aidiyet", renk: "#7C3AED",
         ozet: "«O yere, o soya, o şeye ait» anlamı verir; sıfat yapar.",
         sema: { once: "تُرْكِيَا", onceTr: "Türkiye", ek: "ـيّ", govde: "تُرْك", sonra: "تُرْكِيٌّ", sonraTr: "Türk" },
         ornekler: [
@@ -3365,7 +3365,7 @@ window.EK_BILGI = {
         ikon: "nisbet"
     },
     "يّة": {
-        tur: "son", ad: "Nisbet + Te'nîs", altAd: "«ـيَّة»", renk: "#7C3AED",
+        son: "isim", tur: "son", ad: "Nisbet + Te'nîs", altAd: "«ـيَّة»", renk: "#7C3AED",
         ozet: "Nisbetin dişili; ayrıca SOYUT İSİM (kavram adı) yapar.",
         sema: { once: "حُرّ", onceTr: "hür", ek: "ـيَّة", govde: "حُرّ", sonra: "حُرِّيَّةٌ", sonraTr: "hürriyet" },
         ornekler: [
@@ -3376,7 +3376,7 @@ window.EK_BILGI = {
         ikon: "nisbet"
     },
     "انِ": {
-        tur: "son", ad: "Tesniye (İkil)", altAd: "merfû hâli", renk: "#16A085",
+        son: "isim", tur: "son", ad: "Tesniye (İkil)", altAd: "merfû hâli", renk: "#16A085",
         ozet: "Arapçada «iki tane» için ayrı bir sayı vardır: ne tekil ne çoğul.",
         sema: { once: "كِتَابٌ", onceTr: "bir kitap", ek: "ـانِ", govde: "كِتَاب", sonra: "كِتَابَانِ", sonraTr: "iki kitap" },
         ornekler: [
@@ -3387,7 +3387,7 @@ window.EK_BILGI = {
         ikon: "ikil"
     },
     "يْنِ": {
-        tur: "son", ad: "Tesniye (İkil)", altAd: "mansûb / mecrûr hâli", renk: "#16A085",
+        son: "isim", tur: "son", ad: "Tesniye (İkil)", altAd: "mansûb / mecrûr hâli", renk: "#16A085",
         ozet: "İkilin nesne ve harf-i cerden sonraki hâli.",
         sema: { once: "كِتَابَانِ", onceTr: "iki kitap (özne)", ek: "ـَيْنِ", govde: "كِتَاب", sonra: "كِتَابَيْنِ", sonraTr: "iki kitabı" },
         ornekler: [
@@ -3398,7 +3398,7 @@ window.EK_BILGI = {
         ikon: "ikil"
     },
     "ونَ": {
-        tur: "son", ad: "Cem'-i Müzekker Sâlim", altAd: "merfû hâli", renk: "#2980B9",
+        son: "isim", tur: "son", ad: "Cem'-i Müzekker Sâlim", altAd: "merfû hâli", renk: "#2980B9",
         ozet: "Akıllı ERKEKLER için düzenli çoğul; kelimenin yapısı bozulmaz, sona ek gelir.",
         sema: { once: "مُسْلِمٌ", onceTr: "bir müslüman", ek: "ـونَ", govde: "مُسْلِم", sonra: "مُسْلِمُونَ", sonraTr: "müslümanlar" },
         ornekler: [
@@ -3409,7 +3409,7 @@ window.EK_BILGI = {
         ikon: "cogul"
     },
     "ينَ": {
-        tur: "son", ad: "Cem'-i Müzekker Sâlim", altAd: "mansûb / mecrûr hâli", renk: "#2980B9",
+        son: "isim", tur: "son", ad: "Cem'-i Müzekker Sâlim", altAd: "mansûb / mecrûr hâli", renk: "#2980B9",
         ozet: "Düzenli eril çoğulun nesne ve harf-i cerden sonraki hâli.",
         sema: { once: "مُسْلِمُونَ", onceTr: "müslümanlar (özne)", ek: "ـينَ", govde: "مُسْلِم", sonra: "مُسْلِمِينَ", sonraTr: "müslümanları" },
         ornekler: [
@@ -3420,7 +3420,7 @@ window.EK_BILGI = {
         ikon: "cogul"
     },
     "ات": {
-        tur: "son", ad: "Cem'-i Müennes Sâlim", altAd: "düzenli dişil çoğul", renk: "#EF5350",
+        son: "isim", tur: "son", ad: "Cem'-i Müennes Sâlim", altAd: "düzenli dişil çoğul", renk: "#EF5350",
         ozet: "Dişil kelimeler için düzenli çoğul; ة düşer, yerine ـَات gelir.",
         sema: { once: "مُعَلِّمَةٌ", onceTr: "bir kadın öğretmen", ek: "ـَات", govde: "مُعَلِّم", sonra: "مُعَلِّمَاتٌ", sonraTr: "kadın öğretmenler" },
         ornekler: [
@@ -3431,7 +3431,7 @@ window.EK_BILGI = {
         ikon: "cogul"
     },
     "يَّات": {
-        tur: "son", ad: "Nisbet + Dişil Çoğul", altAd: "«ـيَّات»", renk: "#7C3AED",
+        son: "isim", tur: "son", ad: "Nisbet + Dişil Çoğul", altAd: "«ـيَّات»", renk: "#7C3AED",
         ozet: "Nisbet ekli dişil kelimelerin çoğulu; soyut isimleri de çoğullar.",
         sema: { once: "حُرِّيَّةٌ", onceTr: "hürriyet", ek: "ـيَّات", govde: "حُرّ", sonra: "حُرِّيَّاتٌ", sonraTr: "hürriyetler" },
         ornekler: [
@@ -3617,6 +3617,61 @@ window.ekBosOrta = function () {
     orta.style.removeProperty('--ekb-renk');
 };
 
+/* ---------- EKİN KELİME SONUNA ETKİSİ ----------
+   Geylani: "ekler kelimenin sonunu etkilediği için tamlamavecumleler'deki
+   sonlar tablolarını buraya da gömelim; sadece isimlerin başına gelen
+   eklerde yalnız isim sonu, hem isme hem fiile gelenlerde ikisi de
+   ulaşılabilsin."
+   Tablolar HTML'de <template> olarak duruyor (kt-son-isim / kt-son-fiil),
+   tamlamavecumleler.html'den birebir alındı. Burada yalnız hangisinin
+   gösterileceği seçiliyor:
+     son: "isim"  → yalnız ismin i'râb sonları
+     son: "fiil"  → yalnız muzâri fiilin sonları
+     son: "ikisi" → iki sekme, ikisine de ulaşılır (وَ, فَ, لِ gibi hem
+                    isme hem fiile gelen harflerde). */
+function ekbKalip(id) {
+    var t = document.getElementById(id);
+    return (t && t.innerHTML) ? t.innerHTML : '';
+}
+function ekbSonlarHtml(d) {
+    var s = d && d.son;
+    if (!s) return '';
+    var isim = (s === 'isim' || s === 'ikisi');
+    var fiil = (s === 'fiil' || s === 'ikisi');
+    var ikisi = isim && fiil;
+    var bas = ikisi ? 'İsmin ve fiilin i\'râb sonları'
+                    : (isim ? 'İsmin i\'râb sonları' : 'Muzâri fiilin i\'râb sonları');
+    var giris = ikisi
+        ? 'Bu harf hem ismin hem fiilin başına gelir; ikisinin de sonunu değiştirir. Sekmelerden birine dokun.'
+        : (isim ? 'Gövde <span dir="rtl">ـ ـ ـ</span> aynı kalır, değişen yalnız <b>son</b>dur. İsim <b>meczum olmaz</b>.'
+                : 'Fiilde <b>mecrur yoktur</b>, yerine <b>meczum</b> vardır. Üstü çizili nûnlar o hâlde <b>düşer</b>.');
+    var sekme = ikisi
+        ? '<div class="ekb-son-sekme" role="tablist">' +
+            '<button type="button" class="ekb-ss aktif" data-hedef="isim" onclick="ekbSonSec(this,\'isim\')">İSİM</button>' +
+            '<button type="button" class="ekb-ss" data-hedef="fiil" onclick="ekbSonSec(this,\'fiil\')">FİİL</button>' +
+          '</div>'
+        : '';
+    var govde = '';
+    if (isim) govde += '<div class="ekb-son-kutu" data-hedef="isim">' + ekbKalip('kt-son-isim') + '</div>';
+    if (fiil) govde += '<div class="ekb-son-kutu" data-hedef="fiil"' + (ikisi ? ' hidden' : '') + '>' +
+                       ekbKalip('kt-son-fiil') + '</div>';
+    if (!govde) return '';
+    return '<div class="ekb-sonlar">' +
+             '<div class="ekb-son-bas"><span class="ekb-son-etiket">KELİMENİN SONU</span>' + bas + '</div>' +
+             '<p class="ekb-son-giris">' + giris + '</p>' + sekme + govde +
+           '</div>';
+}
+window.ekbSonSec = function (tus, hedef) {
+    var kap = tus.closest('.ekb-sonlar');
+    if (!kap) return;
+    kap.querySelectorAll('.ekb-ss').forEach(function (b) {
+        b.classList.toggle('aktif', b.getAttribute('data-hedef') === hedef);
+    });
+    kap.querySelectorAll('.ekb-son-kutu').forEach(function (k) {
+        k.hidden = (k.getAttribute('data-hedef') !== hedef);
+    });
+};
+
 window.ekBilgiAc = function (ek) {
     var d = window.EK_BILGI[ek];
     if (!d) return false;
@@ -3676,7 +3731,8 @@ window.ekBilgiAc = function (ek) {
         '<p class="ekb-ozet">' + ekbArYalit(d.ozet) + '</p>' +
         semaHtml +
         '<div class="ekb-ornekler">' + ornekHtml + '</div>' +
-        '<div class="ekb-dikkat"><b>Dikkat</b><span>' + ekbArYalit(d.dikkat) + '</span></div>';
+        '<div class="ekb-dikkat"><b>Dikkat</b><span>' + ekbArYalit(d.dikkat) + '</span></div>' +
+        ekbSonlarHtml(d);
 
     /* "+" MENÜSÜ GENİŞ HÂLDEYSE (kök tanımlı değil): bilgi ayrı bir
        perdede değil, menünün tam ortasında — son eklerle ön eklerin
