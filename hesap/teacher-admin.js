@@ -179,6 +179,17 @@ function renderAdminPanel() {
                 <div id="admin-all-lessons" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;"></div>
             </details>
 
+            <details class="admin-details" name="admin-accordion" id="admin-onay-details" ontoggle="if(this.open) loadOgretmenOnaylari()">
+                <summary class="admin-summary">🧑‍🏫 Öğretmen Onayları <span id="admin-onay-badge"></span></summary>
+                <div style="padding:10px 0;">
+                    <p style="font-size:0.86rem; color:#7f8c8d; margin:0 0 10px;">
+                        Öğretmen olarak kayıt olanlar buraya düşer; onaylanana kadar siteye giremezler.
+                    </p>
+                    <button class="btn" onclick="loadOgretmenOnaylari()" style="margin-bottom:10px; font-size:0.9rem;">🔄 Yenile</button>
+                    <div id="admin-onay-list" style="max-height:400px; overflow-y:auto;">Bölümü açınca yüklenir…</div>
+                </div>
+            </details>
+
             <details class="admin-details" name="admin-accordion">
                 <summary class="admin-summary">👨‍🏫 Öğretmenler</summary>
                 <div id="admin-teacher-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;"></div>
@@ -791,6 +802,65 @@ function deleteStudentCard(emailEnc) {
     }
 }
 
+
+
+
+/* ==========================================================================
+   ÖĞRETMEN ONAYLARI  (sistem/erisim.js ile birlikte çalışır)
+   Öğretmen kaydı kullanicilar/{uid}.ogretmenOnay = 'bekliyor' ile açılır;
+   hesap onaylanana kadar siteye giremez. Buradan onaylanınca alan 'onayli'
+   olur ve öğretmenin ekranındaki perde ANINDA kalkar (kendi belgesini
+   onSnapshot ile dinliyor). "Reddet" hesabı silmez, yalnız kapalı tutar.
+   ========================================================================== */
+function loadOgretmenOnaylari() {
+    var kutu = document.getElementById('admin-onay-list');
+    var rozet = document.getElementById('admin-onay-badge');
+    if (!kutu) return;
+    if (typeof firebase === 'undefined' || !isFirebaseReady || !window.KidefErisim) {
+        kutu.innerHTML = '<p>Bu kip çevrimdışıyken kullanılamaz.</p>';
+        return;
+    }
+    kutu.innerHTML = '<p>Yükleniyor…</p>';
+    window.KidefErisim.bekleyenler().then(function (liste) {
+        if (rozet) rozet.innerHTML = liste.length
+            ? '<span style="background:#e74c3c; color:#fff; border-radius:999px; padding:2px 10px; font-size:0.8rem; margin-left:8px;">' + liste.length + '</span>'
+            : '';
+        if (!liste.length) { kutu.innerHTML = '<p>Onay bekleyen öğretmen yok.</p>'; return; }
+        var html = '';
+        liste.forEach(function (o) {
+            var ad = o.name || o.email || o._id;
+            html += '<div style="display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #E9EEF5; border-radius:10px; padding:11px 14px; margin-bottom:8px; flex-wrap:wrap;">' +
+                      '<div style="flex:1; min-width:180px;">' +
+                        '<strong style="display:block; color:#2c3e50;">' + ad + '</strong>' +
+                        '<span style="font-size:0.85rem; color:#7f8c8d;">' + (o.email || '') +
+                          (o.meslek ? ' · ' + o.meslek : '') + (o.phone ? ' · ' + o.phone : '') + '</span>' +
+                      '</div>' +
+                      '<button class="btn" style="background:#27ae60; color:#fff; padding:7px 16px; font-size:0.9rem;" ' +
+                        'onclick="ogretmenOnayVer(\'' + o._id + '\', true)">Onayla</button>' +
+                      '<button class="btn" style="background:#EDF1F7; color:#5b6b80; padding:7px 16px; font-size:0.9rem;" ' +
+                        'onclick="ogretmenOnayVer(\'' + o._id + '\', false)">Reddet</button>' +
+                    '</div>';
+        });
+        kutu.innerHTML = html;
+    }).catch(function (e) {
+        kutu.innerHTML = '<p>Liste alınamadı: ' + (e && (e.code || e.message)) + '</p>';
+    });
+}
+window.loadOgretmenOnaylari = loadOgretmenOnaylari;
+
+function ogretmenOnayVer(uid, onay) {
+    if (!window.KidefErisim) return;
+    var islem = onay ? window.KidefErisim.onayla(uid) : window.KidefErisim.reddet(uid);
+    islem.then(function () {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert(onay ? 'Öğretmen onaylandı.' : 'Başvuru reddedildi.');
+        }
+        loadOgretmenOnaylari();
+    }).catch(function (e) {
+        if (typeof showCustomAlert === 'function') showCustomAlert('İşlem başarısız: ' + (e && (e.code || e.message)));
+    });
+}
+window.ogretmenOnayVer = ogretmenOnayVer;
 
 function renderAdminTeacherList() {
     const container = document.getElementById('admin-teacher-list');

@@ -253,6 +253,52 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="sistem/kilit.js?v=12"></script>
+    <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
+    <script src="sistem/erisim.js?v=1"></script>
+<style>
+/* ==== ERİŞİM KATMANI (sistem/erisim.js) ================================
+   1) ÖĞRENCİ KATEGORİ KISITI — site "Sadece Girişliler" kademesindeyken
+      öğrenci hesabında ana sayfada yalnız üç kategori kalır. Kural gövde
+      sınıfına bağlı; bölümler sonradan yeniden çizilse de yerinde durur.
+   2) ÖĞRETMEN ONAY PERDESİ — onayı bekleyen öğretmen hesabında iner. */
+body.erisim-ogrenci-kisit #home-hub-section > .content-section { display: none !important; }
+body.erisim-ogrenci-kisit #home-hub-section > #oyunlar,
+body.erisim-ogrenci-kisit #home-hub-section > #degerler-egitimi,
+body.erisim-ogrenci-kisit #home-hub-section > #youtube-kanallari { display: block !important; }
+
+#ogretmenOnayPerde {
+    position: fixed; inset: 0; z-index: 2147483000; display: none;
+    align-items: center; justify-content: center; padding: 22px;
+    background: linear-gradient(160deg, #F5A623 0%, #E8830C 55%, #D2740A 100%);
+    font-family: 'Arakom', 'Marhey', system-ui, sans-serif;
+}
+#ogretmenOnayPerde .eop-kutu {
+    width: min(560px, 100%); background: #fff; border-radius: 22px;
+    padding: 34px 30px 26px; text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,.28);
+}
+#ogretmenOnayPerde .eop-ikon {
+    width: 62px; height: 62px; margin: 0 auto 14px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: #FEF3E2; color: #E8830C;
+}
+#ogretmenOnayPerde .eop-ikon svg { width: 32px; height: 32px; }
+#ogretmenOnayPerde h2 { margin: 0 0 10px; font-size: 1.55rem; color: #1d1d1f; }
+#ogretmenOnayPerde p { margin: 0 0 8px; font-size: 1.02rem; line-height: 1.6; color: #4B5563; }
+#ogretmenOnayPerde .eop-tus { display: flex; gap: 10px; justify-content: center; margin: 20px 0 6px; flex-wrap: wrap; }
+#ogretmenOnayPerde .eop-tus button {
+    border: none; border-radius: 12px; padding: 11px 22px; cursor: pointer;
+    font-family: inherit; font-size: 1rem; font-weight: 700;
+    background: #E8830C; color: #fff; transition: filter .15s;
+}
+#ogretmenOnayPerde .eop-tus button:hover { filter: brightness(1.07); }
+#ogretmenOnayPerde .eop-tus button.eop-cik { background: #EDF1F7; color: #4B5563; }
+#ogretmenOnayPerde .eop-dip { font-size: .88rem; color: #8A94A3; margin-top: 12px; }
+@media (max-width: 520px) {
+    #ogretmenOnayPerde .eop-kutu { padding: 26px 20px 20px; }
+    #ogretmenOnayPerde h2 { font-size: 1.3rem; }
+}
+</style>
 <style>
 /* ==== CANLI DERS: TAŞINABİLİR PENCERE (siteden bağımsız, sürüklenebilir) ==== */
 #live-class-modal.windowed {
@@ -5056,7 +5102,7 @@
         <script src="hesap/paketler.js"></script>
         <script src="sistem/state.js"></script>
     <script src="sistem/rol.js?v=20260805a"></script>
-    <script src="hesap/auth.js?v=20260815a"></script>
+    <script src="hesap/auth.js?v=20260815b"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
     <script src="hesap/qrgiris.js?v=20260815a"></script>
     <script>
@@ -5075,7 +5121,7 @@
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>
     <script src="hesap/course-content.js"></script>
-    <script src="hesap/teacher-admin.js?v=20260731g"></script>
+    <script src="hesap/teacher-admin.js?v=20260815a"></script>
     <script src="sistem/alarm.js?v=20260814c"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
     <script src="hesap/listelerim.js?v=20260815a"></script>

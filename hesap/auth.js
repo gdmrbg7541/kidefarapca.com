@@ -370,7 +370,10 @@ function authIslemi() {
         firebase.auth().createUserWithEmailAndPassword(email, pass)
         .then((userCredential) => { 
             // Firestore'a kaydet
-            return db.collection('kullanicilar').doc(userCredential.user.uid).set({
+            /* ÖĞRETMEN ONAY KAPISI: öğretmen kaydı doğrudan açılmaz, yönetici
+               onayına düşer. Alan 'bekliyor' kaldıkça sistem/erisim.js perdeyi
+               indirir. Öğrenci kaydında bu alan hiç yazılmaz. */
+            var _kayit = {
                 email: email,
                 role: regRole,
                 name: sName || "Belirtilmedi",
@@ -379,7 +382,12 @@ function authIslemi() {
                 phone: phone ? ("+90" + phone) : "",
                 packages: [],
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
+            };
+            if (regRole === 'teacher') {
+                _kayit.ogretmenOnay = 'bekliyor';
+                _kayit.onayIstekTarihi = firebase.firestore.FieldValue.serverTimestamp();
+            }
+            return db.collection('kullanicilar').doc(userCredential.user.uid).set(_kayit).then(() => {
                 // Yaris onleme: dokuman yazildiktan sonra dogru rolle girisi tamamla
                 /* Kayit formunda ogretmen kodu girildiyse sakla:
                    giris tamamlaninca ogrencihesap.js otomatik istek gonderir. */
@@ -388,7 +396,9 @@ function authIslemi() {
                     var tkod = tkEl ? tkEl.value.trim() : '';
                     if (regRole === 'student' && tkod) localStorage.setItem('oh_beklenen_kod', tkod);
                 } catch (e) { }
-                showCustomAlert("Kayıt başarılı!");
+                showCustomAlert(regRole === 'teacher'
+                    ? "Kaydın alındı. Öğretmen hesapları yönetici onayından sonra açılıyor; onaylandığında siteyi kullanabileceksin."
+                    : "Kayıt başarılı!");
                 selectedRole = regRole;
                 isRegistering = false;
                 basariliGiris(email, phone ? ("+90" + phone) : "", sName || "");
