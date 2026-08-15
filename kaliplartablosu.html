@@ -22,7 +22,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
 
-    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=197">
+    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=201">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="arakom.css?v=1">
@@ -144,6 +144,9 @@
                 <i class="fas fa-sync-alt root-icon" onclick="event.stopPropagation(); resetTableOnly()"></i>
                 <i class="fas fa-plus root-icon" onclick="event.stopPropagation(); toggleSuffixMenu(event)" title="Ek Ekle" style="font-size: 1.15rem;"></i>
                 <i class="fas fa-search root-icon" onclick="event.stopPropagation(); openKeyboard()" title="Arama"></i>
+                <!-- KULLANIM KILAVUZU: çubuğun en sağında, aramanın yanında.
+                     Ötekilerle aynı dilde çizgi ikon (22px, 2.5 stroke). -->
+                <span id="static-kilavuz-btn" class="root-icon" onclick="event.stopPropagation(); kilavuzAc()" title="Nasıl kullanılır?" aria-label="Kullanım kılavuzu" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="16.6" x2="12" y2="11.2"></line><line x1="12" y1="7.7" x2="12.01" y2="7.7"></line></svg></span>
             </div>
         </div>
     </div>  
@@ -252,6 +255,158 @@
         </button>
         <div class="ekb-govde"></div>
     </div>
+</div>
+
+<!-- ============ KULLANIM KILAVUZU ============
+     Üst çubuğun en sağındaki ⓘ ile açılır (kilavuzAc). Her bölümde
+     sayfanın kendisinden alınmış bir ekran görüntüsü var: anlatılan yer
+     hangisiyse okuyan onu görüyor. Görseller sarf/kilavuz/ altında,
+     `loading="lazy"` ile — kılavuz açılmadan indirilmiyorlar. -->
+<div id="kt-kilavuz" onclick="if(event.target===this) kilavuzKapat()">
+  <div class="ktk-kart" role="dialog" aria-label="Kalıplar tablosu kullanım kılavuzu">
+    <button class="ktk-kapat" onclick="kilavuzKapat()" aria-label="Kapat" title="Kapat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+
+    <header class="ktk-tepe">
+      <div class="ktk-rozet">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="16.6" x2="12" y2="11.2"></line><line x1="12" y1="7.7" x2="12.01" y2="7.7"></line></svg>
+        KULLANIM KILAVUZU
+      </div>
+      <h2>Kalıplar Tablosu</h2>
+      <p>Arapçada kelimeler köklerden <b>vezinlerle</b> türer. Bu tablo, üç harfli bir kökün
+         hangi vezinde hangi kelimeye dönüştüğünü tek ekranda gösterir: solda isim kalıpları,
+         sağda fiil kalıpları, aşağıda kırık çoğullar. Aşağıdaki dokuz adım tablonun
+         her parçasını sırayla anlatıyor.</p>
+    </header>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi ktk-tek">
+        <span class="ktk-no">1</span>
+        <h3>Üst çubuk</h3>
+        <p>Bütün araçlar sağ üstteki şeritte, soldan sağa:</p>
+        <ul class="ktk-ikonlu">
+          <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 8h9a4.5 4.5 0 0 1 4.42 3.66l.66 3.5A2.7 2.7 0 0 1 18.93 18.4L17 16.5H7L5.07 18.4a2.7 2.7 0 0 1-4.65-3.24l.66-3.5A4.5 4.5 0 0 1 7.5 8Z"></path><line x1="7" y1="12" x2="7" y2="14"></line><line x1="6" y1="13" x2="8" y2="13"></line><circle cx="16.4" cy="12.4" r=".9" fill="currentColor" stroke="none"></circle><circle cx="18.2" cy="14.2" r=".9" fill="currentColor" stroke="none"></circle></svg></span><b>Oyunlar</b> — sarf oyunları listesi.</li>
+          <li><span class="ktk-ik"><i class="fas fa-book"></i></span><b>Hazır fiiller</b> — bir tık ile köke geçersin.</li>
+          <li><span class="ktk-ik"><i class="fas fa-sitemap"></i></span><b>Kökler</b> — 250'yi aşkın kökün listesi.</li>
+          <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg></span><b>Kronometre</b> — hız ve telaffuz testi.</li>
+          <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg></span><b>Hızlı sözlük</b> — kelimeleri liste hâlinde tara.</li>
+          <li><span class="ktk-ik"><i class="fas fa-sync-alt"></i></span><b>Yenile</b> — tabloyu boşaltır, kökü siler.</li>
+          <li><span class="ktk-ik"><i class="fas fa-plus"></i></span><b>Ek menüsü</b> — ön ve son ekler (8. adım).</li>
+          <li><span class="ktk-ik"><i class="fas fa-search"></i></span><b>Arama</b> — Arapça klavyeyle kök yaz (2. adım).</li>
+          <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="16.6" x2="12" y2="11.2"></line><line x1="12" y1="7.7" x2="12.01" y2="7.7"></line></svg></span><b>Kılavuz</b> — bu ekran.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">2</span>
+        <h3>Kök tanımlamak</h3>
+        <p>Büyüteç ikonu Arapça klavyeyi açar. Üç harfli kökü yaz (ör. <b dir="rtl">ك ت ب</b>)
+           ve onayla; tablodaki bütün kutular o kökün harfleriyle dolar.</p>
+        <p class="ktk-ipucu">Kök tanımlamadan da tabloyu gezebilirsin: kutularda kalıbın
+           kendisi (فَعَلَ, مَفْعُول…) yazılıdır.</p>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/arama.jpg" alt="Kök arama klavyesi" loading="lazy"></figure>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">3</span>
+        <h3>Hazır fiiller</h3>
+        <p>Klavyeyle uğraşmak istemezsen kitap ikonundan hazır fiil listesini aç, birine dokun;
+           kök doğrudan tabloya yerleşir.</p>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/fiiller.jpg" alt="Hazır fiiller listesi" loading="lazy"></figure>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">4</span>
+        <h3>Tabloyu okumak</h3>
+        <p>Üstteki iki sekme iki dünyayı ayırır:</p>
+        <ul>
+          <li><b>Sülâsî Mücerred</b> — üç harfli çıplak kök; altı bâb, her bâb bir satır.</li>
+          <li><b>Sülâsî Mezîd</b> — harf eklenmiş bâblar: İf'âl, Tef'îl, Müfâale… her biri bir satır.</li>
+        </ul>
+        <p>Sütunlar kelimenin türünü söyler: <b>Mâzî · Muzâri · Emir</b> fiil,
+           <b>Mastar · İsm-i Fâil · İsm-i Mef'ûl · Zaman-Mekân</b> isim. En altta
+           <b>Cem-i Teksîr</b>, <b>İsm-i Tasğîr</b> ve <b>İsm-i Tafdîl</b> blokları durur.</p>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/tablo.jpg" alt="Kalıplar tablosunun genel görünümü" loading="lazy"></figure>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">5</span>
+        <h3>Bir vezne dokunmak</h3>
+        <p>Herhangi bir vezin kutusuna dokun: tablo aşağı süzülür, ekran o vezne ayrılır ve
+           <b>o vezinde gelen bütün kelimeler</b> örnekleriyle listelenir. Fiil kalıplarında
+           bâbın üçlüsü (mâzî-muzâri-emir) birlikte açılır.</p>
+        <p>Şerit üzerinden alfabeye, aksâm-ı seb'aya göre süzebilirsin. Kapatmak için veznin
+           köşesindeki çarpıya ya da <b>Esc</b>'ye bas.</p>
+        <p class="ktk-ipucu">Liste açıkken <b>geri tuşu</b> önce tam ekrandan çıkarır,
+           listeyi kapatmaz.</p>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/liste.jpg" alt="Bir veznin örnek listesi" loading="lazy"></figure>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">6</span>
+        <h3>Dilbilgisi başlıkları</h3>
+        <p>Sütun başlıklarına (MÂZÎ, MUZÂRİ, MASTAR…) dokunursan o konunun dilbilgisi ekranı
+           açılır: tanım, çekim tablosu, örnek fiiller. Üstteki şeritten konudan konuya
+           geçebilir, tam ekran tuşuyla çekimi bütün hâlinde görebilirsin.</p>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/gramer.jpg" alt="Dilbilgisi ekranı" loading="lazy"></figure>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">7</span>
+        <h3>Bâb bilgisi</h3>
+        <p>Mezîd sekmesinde bâb adlarının (İf'âl, Tef'îl, İstif'âl…) yanındaki <b>ⓘ</b> o bâbın
+           satırını açar: bâbın ne işe yaradığı, hangi anlamı kattığı ve örnekleri.</p>
+        <p class="ktk-ipucu">Açıkken <b>geri tuşu</b> önce bu bilgiyi kapatır.</p>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/bab.jpg" alt="Bâb bilgisi satırı" loading="lazy"></figure>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">8</span>
+        <h3>Ek menüsü <span class="ktk-artı">+</span></h3>
+        <p>Sağda <b>ön ekler</b> (اَلْـ, وَ, لِـ, بِـ…), solda <b>son ekler</b> (ـة, ـيّ, ـانِ, ـونَ, ـات…).</p>
+        <ul>
+          <li><b>Bir kelime türettiysen</b> — yani tabloda bir vezne dokunduysan — eke basmak
+              o kelimeye eki ekler.</li>
+          <li><b>Ortada kelime yoksa</b> eke basmak ekin kendisini anlatır (9. adım).</li>
+        </ul>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/ekmenu.jpg" alt="Ek menüsü" loading="lazy"></figure>
+    </section>
+
+    <section class="ktk-bolum">
+      <div class="ktk-yazi">
+        <span class="ktk-no">9</span>
+        <h3>Ek bilgi kartı</h3>
+        <p>Kelime türetilmemişken bir eke dokunduğunda menü ekranı kaplayacak şekilde büyür ve
+           ortada o ekin kartı açılır: ne işe yaradığı, yalın hâlden ekli hâle geçiş şeması,
+           iki örnek ve bir dikkat notu.</p>
+        <p class="ktk-ipucu">Aynı eke bir daha dokunursan kart kapanır, menü eski hâline döner.</p>
+      </div>
+      <figure class="ktk-gorsel"><img src="sarf/kilavuz/ekkart.jpg" alt="Ek bilgi kartı" loading="lazy"></figure>
+    </section>
+
+    <footer class="ktk-dip">
+      <b>Kısayollar</b>
+      <span><kbd>Esc</kbd> açık olanı kapatır</span>
+      <span><kbd>←</kbd> geri tuşu: önce tam ekran, sonra açık bilgi, en son sayfa</span>
+      <span>BÜYÜTME anahtarı kutuları büyütür</span>
+    </footer>
+  </div>
 </div>
 
 <div class="window-pencere">
@@ -749,7 +904,7 @@
      başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
      buradan okunuyor. Yan etkisi yok, yalnız sabit tanımlar. -->
 <script src="veri/veri_vezin_numaralari.js?v=1"></script>
-<script src="sarf/kaliplartablosu.js?v=180"></script>
+<script src="sarf/kaliplartablosu.js?v=181"></script>
 <script src="sarf/babodak.js?v=6"></script>
 <!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama

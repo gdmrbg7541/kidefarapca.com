@@ -3342,4 +3342,48 @@
     /* Üst çubuk kilidi için: örnek listesi (kapanış animasyonu dahil)
        açık mı? babodak'taki ustKilit iki odağı birlikte okuyor. */
     window.KalipOdak = { aktif: function () { return !!(odak || kapanan); } };
+
+    /* ---------- GERİ TUŞU: ÜÇ KADEMELİ ----------
+       Geylani: "eğer vezinlerden birinin örnek listesi açılmışsa demek ki
+       tam ekrandır, bu geri tuşuna basılınca tam ekrandan çıksın ama örnek
+       listelerini kapatmasın; eğer if'âl…istif'âl başlıklarındaki bir
+       infoya basılmış ve o satır açılmışsa geri tuşuna basmak infoyu
+       kapatma işine yarasın, info kapandıktan sonra bir daha basılırsa
+       geri tuşu asıl işlevini yapsın."
+         1. basış → örnek listesi açık VE tam ekrandaysak: yalnız tam
+            ekrandan çıkılır. Liste olduğu gibi kalır. (Escape ikisini
+            birden kapattığı için bu yol gerekiyordu.)
+         2. basış → bâb ⓘ odağı açıksa: o kapanır.
+         3. basış → tuşun asıl işi: kidefGeri (bir önceki sayfa / anasayfa).
+       Dinleyici YAKALAMA aşamasında: bağlantının kendi onclick'i
+       (kidefGeriDon) ancak sıra ona gelirse çalışsın diye. Böylece
+       kaliplartablosu.html'in HTML'ine hiç dokunmadan davranış eklenir. */
+    function tamEkranCikYalniz() {
+        if (!tamEkranMi()) return false;
+        var f = document.exitFullscreen || document.webkitExitFullscreen;
+        if (!f) return false;
+        tamEkranBiz = false;          /* artık bizim açtığımız sayılmaz */
+        try {
+            var s = f.call(document);
+            if (s && s['catch']) s['catch'](function () { });
+        } catch (e) { return false; }
+        return true;
+    }
+    document.addEventListener('click', function (e) {
+        var a = (e.target && e.target.closest)
+            ? e.target.closest('.back-btn-area a, a.back-link') : null;
+        if (!a) return;
+        if (a.getAttribute('data-kidef-home')) return;   /* ev tuşu kendi işini yapar */
+        /* 1) Örnek listesi açık + tam ekran → yalnız tam ekrandan çık */
+        if (window.KalipOdak && window.KalipOdak.aktif() && tamEkranMi()) {
+            if (tamEkranCikYalniz()) { e.preventDefault(); e.stopPropagation(); return; }
+        }
+        /* 2) Bâb ⓘ odağı açık → önce onu kapat */
+        if (window.BabOdak && window.BabOdak.aktif && window.BabOdak.aktif()) {
+            e.preventDefault(); e.stopPropagation();
+            window.BabOdak.kapat();
+            return;
+        }
+        /* 3) Başka bir şey yok → tuş asıl işini yapsın (karışma) */
+    }, true);
 })();

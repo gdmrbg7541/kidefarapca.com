@@ -3723,9 +3723,34 @@ window.ekBilgiKapat = function () {
     }, 200);
 };
 
-/* Escape ile de kapansın — önce (varsa) ek perdesi, yoksa geniş "+" menüsü */
+/* ---------- KULLANIM KILAVUZU ----------
+   Üst çubuğun en sağındaki ⓘ açar. İçerik HTML'de duruyor (görseller
+   `loading="lazy"`, yani kılavuz açılmadan indirilmiyor); burada yalnız
+   açılış/kapanış var. */
+window.kilavuzAc = function () {
+    var p = document.getElementById('kt-kilavuz');
+    if (!p) return;
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+    if (window._ktkKapatZaman) { clearTimeout(window._ktkKapatZaman); window._ktkKapatZaman = null; }
+    p.style.display = 'block';
+    p.scrollTop = 0;
+    requestAnimationFrame(function () { p.classList.add('ktk-acik'); });
+};
+window.kilavuzKapat = function () {
+    var p = document.getElementById('kt-kilavuz');
+    if (!p) return;
+    p.classList.remove('ktk-acik');
+    if (window._ktkKapatZaman) clearTimeout(window._ktkKapatZaman);
+    window._ktkKapatZaman = setTimeout(function () {
+        p.style.display = 'none'; window._ktkKapatZaman = null;
+    }, 220);
+};
+
+/* Escape ile de kapansın — önce kılavuz, sonra ek perdesi, en son geniş menü */
 document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
+    var kil = document.getElementById('kt-kilavuz');
+    if (kil && kil.style.display === 'block') { window.kilavuzKapat(); return; }
     var perde = document.getElementById('ek-bilgi-perde');
     if (perde && perde.style.display === 'flex') { window.ekBilgiKapat(); return; }
     var menu = document.getElementById('suffix-dropdown');
