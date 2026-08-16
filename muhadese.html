@@ -27,7 +27,7 @@
    TUM MUHADESE DOSYALARI  muhadese/  klasorunde, ders verileri  muhadese/veri/ icinde. */
 (function(){
   var KOK = 'muhadese/';           /* klasor yolu tek yerden yonetilsin */
-  var S   = '?v=20260808u';        /* onbellek surumu */
+  var S   = '?v=20260816c';        /* onbellek surumu */
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   /* Gecerli bicimler: 10_1_1 (okul) | kalip_xxx | alan_xxx */
@@ -201,6 +201,24 @@
         </label>
         <span class="switch-text" id="lang-ar">AR</span>
     </div>
+
+    <!-- SESLİ OKUMA ANAHTARI — cümleyi tarayıcının konuşma motoruyla
+         (internet üzerinden gelen seslerle) okuma özelliğini açıp kapatır.
+         Tercih tarayıcıda saklanır: ders değişse de, sayfa kapanıp
+         açılsa da aynı kalır. TR/AR anahtarının hemen yanında durur. -->
+    <div class="switch-wrapper ses-switch ses-kapali" id="sesSwitch" title="Sesli okuma kapalı">
+        <span class="switch-text ses-ikon" aria-hidden="true">
+            <svg class="ik ses-ik-acik" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 9.4h3.1L11.9 5.3v13.4L7.3 14.6H4.2z"/><path d="M15.6 9.4a3.7 3.7 0 0 1 0 5.2"/><path d="M18.3 6.7a7.5 7.5 0 0 1 0 10.6"/></svg>
+            <svg class="ik ses-ik-kapali" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 9.4h3.1L11.9 5.3v13.4L7.3 14.6H4.2z"/><path d="M15.8 9.6l4.6 4.8"/><path d="M20.4 9.6l-4.6 4.8"/></svg>
+        </span>
+        <label class="switch">
+            <!-- Başlangıç KAPALI: işaret kutusu boş gelir, JS saklanmış
+                 tercihi okuyup gerekirse açar (bkz. simultane.js). -->
+            <input type="checkbox" id="ses-toggle"
+                   onchange="sesliOkumaDegistir()" aria-label="Cümleyi sesli okuma">
+            <span class="slider"></span>
+        </label>
+    </div>
 </nav>
 
 <main class="workspace kd-oyn">
@@ -284,7 +302,7 @@ window.muhGeri = muhGeri;
 /* Liste modunun betikleri (oynatıcı modunda gereksiz, yüklenmez). */
 (function(){
   if (window.KIDEF_DERS) return;
-  document.write('<scr'+'ipt src="muhadese/muhadese.js?v=20260804d"><\/scr'+'ipt>');
+  document.write('<scr'+'ipt src="muhadese/muhadese.js?v=20260816a"><\/scr'+'ipt>');
   document.write('<scr'+'ipt src="sistem/geri.js?v=20260808a"><\/scr'+'ipt>');
   document.write('<scr'+'ipt src="sistem/gorevkopru.js?v=7"><\/scr'+'ipt>');
 })();

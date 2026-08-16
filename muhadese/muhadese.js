@@ -33,11 +33,16 @@ const educationData = {
         }
     ],
     "6": [
+        /* 1. ÜNİTE 2025 ders kitabına göre güncellendi (komisyon verisi):
+           ünite adı ve üç dersin başlıkları kitaptaki hâliyle yazıldı;
+           veri dosyaları muhadese/veri/6_1_1..3.js. Diğer üniteler
+           kitap verisi gelene kadar "YAKINDA" olarak kalıyor. */
         {
-            unitName: "1. Ünite: Akrabalarım | أَقارِبي",
+            unitName: "1. Ünite: Günlük Hayat | الحَياةُ اليَوْمِيَّة",
             lessons: [
-                { name: "1. Ders: Aile ve Akrabalarım | الأُسْرَة وَالأَقارِب", simultaneUrl: "muhadese.html?ders=6_1_1" },
-                { name: "2. Ders: Meslekler | المِهَن", simultaneUrl: "muhadese.html?ders=6_1_2" },
+                { name: "1. Ders: Okulda | في المَدْرَسَة", simultaneUrl: "muhadese.html?ders=6_1_1", aktif: true },
+                { name: "2. Ders: Oyunlar | الأَلْعاب", simultaneUrl: "muhadese.html?ders=6_1_2", aktif: true },
+                { name: "3. Ders: Evde | في البَيْت", simultaneUrl: "muhadese.html?ders=6_1_3", aktif: true },
             ]
         },
         {

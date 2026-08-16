@@ -1,6 +1,55 @@
+/* ==================================================================
+   SESLİ OKUMA AÇ/KAPA  (şeritteki hoparlör anahtarı)
+   ------------------------------------------------------------------
+   Cümleler tarayıcının konuşma motoruyla okunuyor; bu motorun sesleri
+   çoğu cihazda internetten geliyor. Anahtar kapalıyken hiçbir yerde
+   ses üretilmez. Tercih localStorage'da saklanır: ders değişse de,
+   sayfa kapanıp açılsa da aynı kalır.
+   VARSAYILAN: KAPALI (Geylani: "ses başta kapalı olsun"). Sesi isteyen
+   anahtarı açar; o tercih de saklanır, her derste tekrar açmak gerekmez.
+   ================================================================== */
+var SES_ANAHTARI = 'kidefSesliOkuma';
+
+function sesliOkumaTercihi() {
+    try {
+        var v = localStorage.getItem(SES_ANAHTARI);
+        return (v === null) ? false : (v === '1');   /* kayıt yoksa kapalı */
+    } catch (e) { return false; }
+}
+
+window.sesliOkumaAcik = sesliOkumaTercihi();   /* ilk seslendirmeden ÖNCE hazır olsun */
+
+function sesliOkumaUygula(acik) {
+    window.sesliOkumaAcik = !!acik;
+    var kutu = document.getElementById('sesSwitch');
+    var tus = document.getElementById('ses-toggle');
+    if (tus) tus.checked = !!acik;
+    if (kutu) {
+        kutu.classList.toggle('ses-kapali', !acik);
+        kutu.setAttribute('title', acik ? 'Sesli okuma açık' : 'Sesli okuma kapalı');
+    }
+    /* Kapatıldığı anda okunmakta olan cümle de sussun */
+    if (!acik && window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+function sesliOkumaDegistir() {
+    var tus = document.getElementById('ses-toggle');
+    var acik = tus ? !!tus.checked : true;
+    try { localStorage.setItem(SES_ANAHTARI, acik ? '1' : '0'); } catch (e) { }
+    sesliOkumaUygula(acik);
+}
+window.sesliOkumaDegistir = sesliOkumaDegistir;
+
+(function () {
+    function kur() { sesliOkumaUygula(window.sesliOkumaAcik); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
+    else kur();
+})();
+
 function speakCurrentSentence() {
     // Mevcut konuşmayı iptal et
     window.speechSynthesis.cancel();
+    if (!window.sesliOkumaAcik) return;          /* anahtar kapalı: hiç okuma */
 
     let wordsData = [];
     let langCode = "";
@@ -34,6 +83,7 @@ function speakCurrentSentence() {
 function speakText(text, lang) {
     // Eğer tarayıcıda devam eden bir konuşma varsa durdur
     window.speechSynthesis.cancel();
+    if (!window.sesliOkumaAcik) return;          /* anahtar kapalı: hiç okuma */
 
     const utterance = new SpeechSynthesisUtterance(text);
     // lang: 'ar-SA' (Arapça) veya 'tr-TR' (Türkçe)
@@ -1054,6 +1104,7 @@ function undoToStep(targetOrder, trId, arId, playerNum) {
     /* Kart yuzu renkleri: site paletinden. */
     const cardColors = ["#16A085", "#3498DB", "#F39C12", "#EF5350", "#7C3AED", "#27AE60", "#E67E22", "#20C997"];
     let mode = 'liste', isAr = true, sutun = 3;   /* sutun: listenin sütun sayısı (1|2|3) */
+    let sutunElle = false;                        /* kullanıcı seçtiyse otomatik ayar susar */
 
     function playSound(id) {
         const s = document.getElementById(id);
@@ -1095,6 +1146,7 @@ function undoToStep(targetOrder, trId, arId, playerNum) {
                      '<span class="kl-ar" dir="rtl">' + (w.ar || '') + '</span>' +
                    '</li>';
         }).join('') + '</ol></div>';
+        otoSutun(kap);
     }
 
     /* ---------- KARTLAR: kendini deneme ---------- */
@@ -1172,14 +1224,43 @@ function undoToStep(targetOrder, trId, arId, playerNum) {
        ölçüler CSS'te, çünkü satır yüksekliği ile defter çizgisinin adımı
        aynı değişkenden beslenmek zorunda. Tek sütunda yazılar büyüyor. */
     function setSutun(n) {
+        sutunElle = true;                 /* bundan sonra otomatik ayar susar */
         sutun = (n === 1 || n === 2) ? n : 3;
+        isaretle();
+        const d = document.querySelector('.kl-defter');
+        if (d) d.className = 'kl-defter sutun-' + sutun;
+    }
+
+    /* Sütun sayısını İÇERİĞE göre seç.
+       Kelime listelerinde üç sütun rahat; ama kalıp başlıklarında satırlar
+       öbek ya da cümle olabiliyor ve üç sütunda karşılık kırpılıyor.
+       Bir satırın ihtiyacı olan gerçek genişlik ölçülüp kaç sütun sığdığı
+       hesaplanıyor. Kullanıcı seçici ile bir şey seçtiyse buraya girilmez. */
+    function otoSutun(kap) {
+        if (sutunElle) return;
+        const d = kap.querySelector('.kl-defter');
+        const satirlar = [].slice.call(kap.querySelectorAll('.kl-satir'));
+        if (!d || !satirlar.length) return;
+        let enGenis = 0;
+        satirlar.forEach(function (r) {
+            const no = r.querySelector('.kl-no'), tr = r.querySelector('.kl-tr'), ar = r.querySelector('.kl-ar');
+            if (!no || !tr || !ar) return;
+            /* tr.scrollWidth = kırpılmamış hâlinin gerçek genişliği */
+            const g = no.offsetWidth + tr.scrollWidth + ar.offsetWidth + 78;
+            if (g > enGenis) enGenis = g;
+        });
+        const alan = d.clientWidth - 32;
+        let n = Math.floor((alan + 30) / (enGenis + 30));
+        n = Math.max(1, Math.min(3, n));
+        if (n !== sutun) { sutun = n; isaretle(); d.className = 'kl-defter sutun-' + sutun; }
+    }
+
+    function isaretle() {
         [].forEach.call(document.querySelectorAll('.kel-sutun-t'), function (b) {
             const secili = Number(b.dataset.sutun) === sutun;
             b.classList.toggle('aktif', secili);
             b.setAttribute('aria-pressed', secili ? 'true' : 'false');
         });
-        const d = document.querySelector('.kl-defter');
-        if (d) d.className = 'kl-defter sutun-' + sutun;
     }
 
   window.kelInit = init;

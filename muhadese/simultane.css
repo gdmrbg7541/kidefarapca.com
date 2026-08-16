@@ -466,6 +466,43 @@ input:checked + .slider:before {
     text-shadow: 0 0 8px rgba(255,255,255,0.8);
 }
 
+/* ---- SESLİ OKUMA ANAHTARI (TR/AR anahtarının yanında) ----
+   Açıkken yeşil ve hoparlör simgesi dalgalı; kapalıyken anahtar soluk
+   griye döner, simge çarpılı hoparlöre dönüşür. Durum yalnız
+   #sesSwitch'e verilen sınıfla anlatılır; TR/AR anahtarına dokunmaz. */
+#sesSwitch { margin-left: 12px; gap: 8px; }
+
+#sesSwitch .ses-ikon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 21px; height: 21px; opacity: 1;
+}
+#sesSwitch .ses-ikon .ik { width: 100%; height: 100%; display: none; }
+/* Seçici ağırlıkları eşit olsun diye ikisi de .ses-ikon üzerinden yazıldı */
+#sesSwitch .ses-ikon .ses-ik-acik { display: block; }
+#sesSwitch.ses-kapali .ses-ikon .ses-ik-acik { display: none; }
+#sesSwitch.ses-kapali .ses-ikon .ses-ik-kapali { display: block; }
+#sesSwitch.ses-kapali .ses-ikon { opacity: .5; }
+
+/* Kapalı hâlde mavi değil, nötr gri dursun ki "kapalı" olduğu belli olsun */
+#sesSwitch .slider { background-color: rgba(255, 255, 255, .32); }
+#sesSwitch input:checked + .slider { background-color: var(--p2-color); }
+
+@media screen and (max-width: 768px) {
+    #sesSwitch { margin-left: 8px; gap: 6px; }
+    #sesSwitch .ses-ikon { width: 18px; height: 18px; }
+}
+
+/* Dar ekranda şerit TR/AR anahtarını gizliyor (bkz. max-width:560px
+   kuralı). Sesli okuma anahtarı orada da KALSIN: otomatik okumayı
+   susturmak en çok telefonda gerekiyor. Yer kaplamaması için küçülür. */
+@media (max-width: 560px) {
+    .navbar #sesSwitch { display: flex !important; margin-left: 6px; gap: 5px; }
+    #sesSwitch .switch { width: 40px; height: 22px; }
+    #sesSwitch .slider:before { height: 16px; width: 16px; left: 3px; bottom: 2px; }
+    #sesSwitch input:checked + .slider:before { transform: translateX(19px); }
+    #sesSwitch .ses-ikon { width: 17px; height: 17px; }
+}
+
 /* Ateş ve Kıvılcım Parlama Animasyonu */
 @keyframes tr-fire-glow {
     0% { box-shadow: 0 0 8px #ff4500, 0 0 15px #ff8c00; transform: scale(1); }
@@ -1308,7 +1345,9 @@ html.dusuk-guc .switch-wrapper .ik-kisi2 .ik-p2 { opacity: 1; }
 /* aynı kural kartlar kipinde de geçerli, iki kip aynı görünsün */
 #kelime-mode .card-face.lang-tr span::first-letter{ text-transform: uppercase; }
 .kl-nokta{
-    flex: 1 1 auto; min-width: 14px; height: 0; align-self: center;
+    /* min-width 0: satır darsa noktalı bağ önce KENDİ yerinden verir,
+       karşılığın kırpılması en son çare olsun. */
+    flex: 1 1 auto; min-width: 0; height: 0; align-self: center;
     margin: 0 12px; position: relative; top: 3px;
     border-bottom: 2px dotted rgba(120,112,92,.34);
 }
