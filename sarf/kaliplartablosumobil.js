@@ -1394,7 +1394,10 @@ function selectReadyVerb(verb) {
     // YENİ: Mezid sekmesinde kelime var mı kontrolü
     const mezidBtn = document.querySelector('.mezid-btn');
     setTimeout(() => {
-        applyMarathonHeaderColors();
+        /* Bu işlev mobil sürümde hiç tanımlı değil; her kök seçiminde
+           "applyMarathonHeaderColors is not defined" hatası atıyordu.
+           Çevredeki kodun diliyle aynı korumaya alındı. */
+        if (typeof applyMarathonHeaderColors === 'function') applyMarathonHeaderColors();
     }, 50);
     if (mezidBtn) {
         mezidBtn.classList.remove('heartbeat-active');
@@ -7348,7 +7351,9 @@ window.openMarathon = function() {
     let nextArr = document.getElementById('next-arr');
     if (nextArr) nextArr.style.display = 'flex';
 
-    let rootContainer = document.querySelector('.important-roots-wrapper');
+    /* KAPSAM: '.important-roots-wrapper' yalnız kökler penceresinin
+       (#verb-overlay) içinde var; maraton/atlas ekranında yok. */
+    let rootContainer = document.querySelector('#marathon-overlay .important-roots-wrapper');
     if (rootContainer) rootContainer.style.display = 'flex';
     let verbDisplay = document.getElementById('verb-root-display');
     if (verbDisplay) verbDisplay.style.display = 'flex';
@@ -7917,7 +7922,12 @@ function openRootsModal() {
         
         const rootHeader = document.querySelector('.root-header');
         if (rootHeader) rootHeader.style.display = 'none';
-        
+
+        /* GÜVENLİK KEMERİ: başka bir ekran üst satıra satıriçi display
+           bırakmış olabilir; her açılışta temizlensin. */
+        const onemliSargi = document.querySelector('.important-roots-wrapper');
+        if (onemliSargi) onemliSargi.style.removeProperty('display');
+
         const overlay = document.getElementById('verb-overlay');
         if (overlay) overlay.style.display = 'flex';
         document.getElementById("game-wrapper").style.display = "none";
@@ -8797,8 +8807,12 @@ window.openAtlasOverlay = function(stage) {
     document.getElementById('chrono-main').style.display = 'none';
     document.getElementById('stage-label').style.display = 'none';
     document.getElementById('pause-btn').style.display = 'none';
-    
-    let rootContainer = document.querySelector('.important-roots-wrapper');
+
+    /* HATA DÜZELTMESİ: kapsamsız seçici, atlas açılırken KÖKLER
+       PENCERESİNDEKİ üst satırı (çok kullanılan fiiller + ✕ + kök
+       sayısı) satıriçi display:none ile gizliyor, atlas kapanınca da
+       kimse geri açmıyordu. Artık yalnız maraton ekranına bakılıyor. */
+    let rootContainer = document.querySelector('#marathon-overlay .important-roots-wrapper');
     if (rootContainer) rootContainer.style.display = 'none';
     
     let verbDisplay = document.getElementById('verb-root-display');
