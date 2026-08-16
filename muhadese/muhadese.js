@@ -45,11 +45,14 @@ const educationData = {
                 { name: "3. Ders: Evde | في البَيْت", simultaneUrl: "muhadese.html?ders=6_1_3", aktif: true },
             ]
         },
+        /* 2. ÜNİTE de 2025 ders kitabına göre güncellendi (komisyon
+           verisi): veri dosyaları muhadese/veri/6_2_1..3.js. */
         {
-            unitName: "2. Ünite: Haydi Okula | هَيّا إِلى المَدْرَسَة",
+            unitName: "2. Ünite: Yiyecekler ve İçecekler | المَأْكولات وَالمَشْروبات",
             lessons: [
-                { name: "1. Ders: Okulun Bölümleri | أَقْسامُ المَدْرَسَة", simultaneUrl: "muhadese.html?ders=6_2_1" },
-                { name: "2. Ders: Okul Eşyaları | أَدَواتُ المَدْرَسَة", simultaneUrl: "muhadese.html?ders=6_2_2" },
+                { name: "1. Ders: Kahvaltıda | في الفَطور", simultaneUrl: "muhadese.html?ders=6_2_1", aktif: true },
+                { name: "2. Ders: Öğle Yemeğinde | في الغَداء", simultaneUrl: "muhadese.html?ders=6_2_2", aktif: true },
+                { name: "3. Ders: Akşam Yemeğinde | في العَشاء", simultaneUrl: "muhadese.html?ders=6_2_3", aktif: true },
             ]
         },
         {
