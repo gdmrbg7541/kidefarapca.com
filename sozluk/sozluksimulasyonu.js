@@ -676,6 +676,9 @@ olduğu gibi yazılır.</li>
 
         const gameContainer = document.querySelector('.game-container'); 
         const sentenceDisplayArea = document.getElementById('sentence-display-area'); 
+        const cumleSatir = document.getElementById('cumle-satir');
+        const okOnceki = document.getElementById('ok-onceki');
+        const okSonraki = document.getElementById('ok-sonraki');
         const inputArea = document.getElementById('input-area'); 
         const inputWrapper = document.getElementById('input-wrapper'); 
         const submitBtn = document.getElementById('submit-btn'); 
@@ -810,6 +813,59 @@ olduğu gibi yazılır.</li>
             keyboardEl.appendChild(specialKeysRow);
         }
         
+        /* ================================================================
+           CÜMLELER ARASI GEZİNME  (cümle kutusunun iki yanındaki oklar)
+           ----------------------------------------------------------------
+           Geylani: "cümleler arasında gezilebilsin". Sol ok bir önceki,
+           sağ ok bir sonraki cümleyi açar. Seviyenin ilk/son cümlesinde
+           ilgili ok söner. Seviye bitirme akışı ("Devam Et" / » tuşu)
+           olduğu gibi kalır; oklar yalnız gezinir, seviye bitirmez.
+           ================================================================ */
+
+        /* Cümle kutusu ile okları TEK yerden açıp kapatır: eskiden yalnız
+           kutunun display'i değişiyordu, oklar boş ekranda kalırdı. */
+        function cumleAlaniGoster(ac) {
+            sentenceDisplayArea.style.display = ac ? 'flex' : 'none';
+            if (cumleSatir) cumleSatir.style.display = ac ? 'flex' : 'none';
+        }
+
+        function oklariTazele() {
+            if (!okOnceki || !okSonraki) return;
+            var kume = gameData[currentLevelIndex];
+            var n = (kume && kume.sentences) ? kume.sentences.length : 0;
+            okOnceki.disabled = !n || currentSentenceIndex <= 0;
+            okSonraki.disabled = !n || currentSentenceIndex >= n - 1;
+            okOnceki.title = okOnceki.disabled ? 'Bu seviyenin ilk cümlesi' : 'Önceki cümle';
+            okSonraki.title = okSonraki.disabled ? 'Bu seviyenin son cümlesi' : 'Sonraki cümle';
+        }
+
+        function cumleyeGit(yon) {
+            var kume = gameData[currentLevelIndex];
+            if (!kume || !kume.sentences) return;
+            var hedef = currentSentenceIndex + yon;
+            if (hedef < 0 || hedef >= kume.sentences.length) return;
+            playTouchSound();
+            currentSentenceIndex = hedef;
+            loadSentence(currentSentenceIndex);
+        }
+
+        if (okOnceki) okOnceki.addEventListener('click', function () { cumleyeGit(-1); });
+        if (okSonraki) okSonraki.addEventListener('click', function () { cumleyeGit(1); });
+
+        /* Tahtada anlatırken kumanda/klavye oku da işe yarasın. Metin
+           kutusu readonly olduğu için ok tuşları başka bir işi bozmaz;
+           yine de bir pencere (ipucu/hata) açıkken devreye girmez. */
+        document.addEventListener('keydown', function (e) {
+            if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+            if (!cumleSatir || cumleSatir.style.display === 'none') return;
+            var acikPencere = [].some.call(document.querySelectorAll('.modal'), function (m) {
+                return getComputedStyle(m).display !== 'none';
+            });
+            if (acikPencere) return;
+            e.preventDefault();
+            cumleyeGit(e.key === 'ArrowLeft' ? -1 : 1);
+        });
+
         // --- Sonraki Cümleye Geçme Fonksiyonu ---
         function forceNextSentence() {
             // GÜNCELLENDİ: Seviye sonu mantığı eklendi
@@ -903,7 +959,7 @@ olduğu gibi yazılır.</li>
             
             // Gizlenmiş olabilecek alanları göster
             inputArea.style.display = 'flex';
-            sentenceDisplayArea.style.display = 'flex';
+            cumleAlaniGoster(true);
             
             // YENİ: Cümleleri yüklemeden önce karıştır
             shuffleArray(gameData[currentLevelIndex].sentences); 
@@ -918,7 +974,7 @@ olduğu gibi yazılır.</li>
             // Önce her şeyi gizle (başlangıç durumu için)
             levelSelector.style.display = 'none';
             contentWrapperHr.style.display = 'none';
-            sentenceDisplayArea.style.display = 'none';
+            cumleAlaniGoster(false);
             inputArea.style.display = 'none';
             startPrompt.style.display = 'none';
             promptContainer.style.display = 'none'; // YENİ
@@ -948,7 +1004,7 @@ olduğu gibi yazılır.</li>
             else if (state === 'typing') {
                 levelSelector.style.display = 'flex';
                 contentWrapperHr.style.display = 'block';
-                sentenceDisplayArea.style.display = 'flex';
+                cumleAlaniGoster(true);
                 inputArea.style.display = 'flex';
                 inputWrapper.style.display = 'flex';
                 keyboardEl.style.display = 'flex';
@@ -968,7 +1024,7 @@ olduğu gibi yazılır.</li>
             } else if (state === 'guessing') {
                 levelSelector.style.display = 'flex';
                 contentWrapperHr.style.display = 'block';
-                sentenceDisplayArea.style.display = 'flex';
+                cumleAlaniGoster(true);
                 inputArea.style.display = 'flex'; 
                 promptContainer.style.display = 'flex'; // YENİ
                 guessPrompt.style.display = 'flex';
@@ -980,7 +1036,7 @@ olduğu gibi yazılır.</li>
             } else if (state === 'reviewing') {
                 levelSelector.style.display = 'flex';
                 contentWrapperHr.style.display = 'block';
-                sentenceDisplayArea.style.display = 'flex';
+                cumleAlaniGoster(true);
                 inputArea.style.display = 'flex'; 
                 promptContainer.style.display = 'flex'; // YENİ
                 fullTurkishContainerStatic.style.display = 'flex'; // YENİ
@@ -998,7 +1054,7 @@ olduğu gibi yazılır.</li>
             } else if (state === 'level_complete') {
                 levelSelector.style.display = 'flex';
                 contentWrapperHr.style.display = 'block';
-                sentenceDisplayArea.style.display = 'flex';
+                cumleAlaniGoster(true);
                 headerButtons.style.display = 'flex'; // YENİ: Göster
                 jokerBtn.style.display = 'inline-block';
                 hintBtn.style.display = 'inline-block';
@@ -1056,6 +1112,7 @@ olduğu gibi yazılır.</li>
             });
             
             sentenceDisplayArea.appendChild(wordPairsContainer);
+            oklariTazele();
             // GÜNCELLENDİ: Tam cümle artık buraya eklenmiyor
             // sentenceDisplayArea.appendChild(fullTurkishContainer);
             

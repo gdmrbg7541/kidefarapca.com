@@ -203,6 +203,57 @@
     padding-top: 1vmin; /* Çizgiye çok yapışmasın diye minik bir boşluk */
 }
 
+/* --- CÜMLELER ARASI GEZİNME OKLARI ---------------------------------
+   Cümle kutusu artık bir satırın ortasında duruyor; iki yanında birer
+   ok var. Kutunun kendi genişliği %100'dü, satır içinde esneyebilsin
+   diye burada geçersiz kılınıyor. */
+.cumle-satir {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2vmin;
+    width: 100%;
+    min-height: 0;
+    /* SAYFA RTL (.game-container: direction:rtl). Satırı LTR'ye
+       çeviriyoruz ki SOL ok "önceki", SAĞ ok "sonraki" olsun; yoksa
+       flex sırası ters dönüyor ve oklar yer değiştiriyordu. */
+    direction: ltr;
+}
+.cumle-satir > .sentence-display-area {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    direction: rtl;   /* Arapça kelime sırası bozulmasın */
+}
+.cumle-ok {
+    flex: 0 0 auto;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 5vmin; height: 5vmin; min-width: 34px; min-height: 34px;
+    padding: 0;
+    background: #ffffff;
+    color: #2563EB;
+    border: 0.25vmin solid #dbe3ec;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0.3vmin 0.8vmin rgba(15, 23, 42, .10);
+    transition: background-color .18s, color .18s, transform .18s, opacity .18s;
+}
+.cumle-ok svg { width: 60%; height: 60%; display: block; }
+.cumle-ok:hover:not(:disabled) { background: #2563EB; color: #ffffff; transform: scale(1.08); }
+.cumle-ok:active:not(:disabled) { transform: scale(.96); }
+.cumle-ok:disabled { opacity: .28; cursor: default; box-shadow: none; }
+
+/* Telefon YATAY (oyun dikey modu zaten desteklemiyor, bkz. HTML'deki
+   "cihazınızı yatay konuma çeviriniz" uyarısı): oklar biraz küçülür. */
+@media (orientation: landscape) and (max-height: 600px) {
+    .cumle-satir { gap: .8vmin; }
+    .cumle-ok { width: 7vmin; height: 7vmin; min-width: 30px; min-height: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .cumle-ok { transition: none; }
+    .cumle-ok:hover:not(:disabled) { transform: none; }
+}
+
 /* 255. satır civarı - Cümle kutusuna üstten sabit itme payı verin */
 .sentence-display-area {
     margin-top: 0vmin; /* YENİ: Bu satırı ekleyin/değiştirin. Sabit durmasını sağlar. */

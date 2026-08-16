@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;500;700&family=Marhey:wght@300..700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="sozluk/sozluksimulasyonu.css">
+    <link rel="stylesheet" href="sozluk/sozluksimulasyonu.css?v=20260816b">
     <link rel="stylesheet" href="arakom.css?v=1">
 </head>
 <body>
@@ -46,8 +46,27 @@
                 <p class="sinif-kunye" id="sinif-kunye" hidden></p>
 
                 <hr> <div class="main-content-area" id="main-content-area">
-                    <div class="sentence-display-area" id="sentence-display-area">
-                        </div>
+                    <!-- CÜMLELER ARASI GEZİNME: cümle kutusunun iki yanında
+                         birer ok. Sol ok önceki, sağ ok sonraki cümleyi açar;
+                         seviyenin ilk/son cümlesinde ilgili ok söner.
+                         Oklar kutuyla BİRLİKTE görünüp gizlenir (bkz.
+                         sozluksimulasyonu.js → cumleAlaniGoster). -->
+                    <div class="cumle-satir" id="cumle-satir">
+                        <button type="button" class="cumle-ok" id="ok-onceki"
+                                title="Önceki cümle" aria-label="Önceki cümle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
+                        </button>
+
+                        <div class="sentence-display-area" id="sentence-display-area">
+                            </div>
+
+                        <button type="button" class="cumle-ok" id="ok-sonraki"
+                                title="Sonraki cümle" aria-label="Sonraki cümle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
 
                     <div class="input-area" id="input-area">
                         
@@ -93,21 +112,23 @@
     </div>
 
 
-    <!-- SINIF KİPİ — ?sinif=5|7|9|10 ile açıldığında oyunun verisi o
+    <!-- SINIF KİPİ — ?sinif=5|6|7|9|10 ile açıldığında oyunun verisi o
          sınıfın MUHÂDESE ders cümleleridir. Veri dosyası ANA BETİKTEN
          ÖNCE, belge yazılırken (document.write) yükleniyor; böylece
          gameData hazırlanırken window.SOZLUK_SINIF yerinde olur.
-         (Aynı kalıp muhadese.html'de de kullanılıyor.) -->
+         (Aynı kalıp muhadese.html'de de kullanılıyor.)
+         ⚠️ Yeni sınıf eklerken AŞAĞIDAKİ LİSTEYE de eklenmeli; yoksa
+            veri dosyası hiç yüklenmez ve sayfa boş açılır. -->
     <script>
     (function () {
       try {
         var s = (new URLSearchParams(location.search).get('sinif') || '').trim();
-        if (['5', '7', '9', '10'].indexOf(s) < 0) return;
-        document.write('<scr' + 'ipt src="sozluk/veri/sozluk_' + s + '.js?v=20260812a"><\/scr' + 'ipt>');
+        if (['5', '6', '7', '9', '10'].indexOf(s) < 0) return;
+        document.write('<scr' + 'ipt src="sozluk/veri/sozluk_' + s + '.js?v=20260816a"><\/scr' + 'ipt>');
       } catch (e) {}
     })();
     </script>
-    <script src="sozluk/sozluksimulasyonu.js?v=20260812a"></script>
+    <script src="sozluk/sozluksimulasyonu.js?v=20260816b"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
