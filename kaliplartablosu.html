@@ -23,7 +23,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
 
-    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=212">
+    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=213">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="arakom.css?v=1">
@@ -174,7 +174,17 @@
         </label>
     </div>
 
-    
+    <!-- ANLAM: tıklanan veznin Türkçesini kutunun altında küçük bir
+         katman olarak gösterir (sarf/vezingezinti.js). -->
+    <div class="zoom-toggle-area">
+        <span class="zoom-toggle-label">ANLAM</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="anlamToggleCheckbox" checked>
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+
+
     <div class="back-btn-area">
         <a href="index.html" onclick="return kidefGeriDon(event)" class="back-link" title="kidefarapca.com'a Dön" data-kidef-done="1">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1116,6 +1126,10 @@
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama
      evresinde devraldığı için eski davranışa karışmaz. -->
 <script src="sarf/kalipliste.js?v=71"></script>
+<!-- Sunum kumandasının İLERİ tuşuyla tanımlı vezinler arasında gezinme
+     ve tıklanan veznin anlamını gösteren katman. Ana betikten SONRA
+     yüklenir; handleBoxClick'i sarmalayarak bağlanır. -->
+<script src="sarf/vezingezinti.js?v=8"></script>
 <script src="sarf/muhadesekopru.js?v=2"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
