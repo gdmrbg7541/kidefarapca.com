@@ -8,7 +8,8 @@
         var ua = navigator.userAgent || '';
         var isMobile = /Mobi|Android|iPhone|iPod|iPad/i.test(ua) || window.innerWidth <= 768;
         if (isMobile && location.search.indexOf('nomobil') === -1) {
-          location.replace('kaliplartablosumobil.html');
+          /* ?kok=... gibi parametreler mobil sürüme de taşınsın (muhâdese köprüsü) */
+          location.replace('kaliplartablosumobil.html' + location.search);
         }
       })();
     </script>
@@ -1115,6 +1116,7 @@
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama
      evresinde devraldığı için eski davranışa karışmaz. -->
 <script src="sarf/kalipliste.js?v=71"></script>
+<script src="sarf/muhadesekopru.js?v=2"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">

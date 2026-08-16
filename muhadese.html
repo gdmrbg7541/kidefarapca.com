@@ -27,7 +27,7 @@
    TUM MUHADESE DOSYALARI  muhadese/  klasorunde, ders verileri  muhadese/veri/ icinde. */
 (function(){
   var KOK = 'muhadese/';           /* klasor yolu tek yerden yonetilsin */
-  var S   = '?v=20260816d';        /* onbellek surumu */
+  var S   = '?v=20260816f';        /* onbellek surumu */
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   /* Gecerli bicimler: 10_1_1 (okul) | kalip_xxx | alan_xxx */
@@ -60,6 +60,11 @@
   y.push('<link rel="stylesheet" href="arakom.css?v=1">');
   if (d){
     y.push('<scr'+'ipt src="' + veri + S + '"><\/scr'+'ipt>');
+    /* SARF KÖPRÜSÜ: kökü bilinen kelimelerin altına rozet konur, tıklanınca
+       kalıplar tablosu sekmesine geçilir. Harita küçük (35 KB), sarf motoru
+       burada YÜKLENMEZ. Yeni ünite eklenince kok_haritasi.js yeniden üretilmeli. */
+    y.push('<scr'+'ipt src="' + KOK + 'veri/kok_haritasi.js' + S + '"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="' + KOK + 'sarfkopru.js' + S + '"><\/scr'+'ipt>');
     y.push('<scr'+'ipt src="' + KOK + 'simultane.js' + S + '"><\/scr'+'ipt>');
   } else {
     /* Liste modu: kalip ve alan basliklarini da bu iki dosyadan okur */

@@ -979,6 +979,13 @@ function renderContent(words, trId, arId, playerNum = null) {
             span.style.fontFamily = AR_FONT;
             span.onclick = () => handleMove(w.order, w.tr, trId, arId, playerNum, originalIndex);
         }
+        /* SARF KÖPRÜSÜ: kelimenin kökü ve türü span'a işlenir. Tıklanınca
+           sol alttaki tür şeridinde o tür yanar, oradan kalıplar tablosuna
+           geçilir (bkz. muhadese/sarfkopru.js). Kelimenin üstüne hiçbir şey
+           eklenmez — cümle temiz kalır. Kök her zaman kelimenin
+           ARAPÇASINDAN bulunur; yön ne olursa olsun aynı kelimeyi gösterir. */
+        if (window.KidefSarf && w.ar) window.KidefSarf.kelimeIsaretle(span, w.ar);
+
         trCont.appendChild(span);
     });
 }
