@@ -967,9 +967,20 @@
                     var bas = document.createElement('div');
                     bas.className = 'kl-panel-bas';
                     bas.setAttribute('dir', 'rtl');
-                    bas.innerHTML = '<span class="kl-panel-vezin">' + (kalipBilgi(no).ar || '') +
+                    var bi = kalipBilgi(no);
+                    bas.innerHTML = '<span class="kl-panel-vezin">' + (bi.ar || '') +
                         '</span><b class="kl-panel-no">' + no + '</b>';
                     panel.appendChild(bas);
+                    /* Harekeyle ayrışan ailelerde (17-32) vezin tek başına
+                       yetmiyor: görevi de yazılır — Masdar / Sıfat-ı
+                       Müşebbehe gibi. */
+                    if (tk.panelTr && bi.tr) {
+                        var alt = document.createElement('div');
+                        alt.className = 'kl-panel-gorev';
+                        alt.setAttribute('dir', 'ltr');
+                        alt.textContent = bi.tr;
+                        panel.appendChild(alt);
+                    }
                 }
                 var gv = document.createElement('div');
                 gv.className = 'kl-panel-govde';
@@ -1169,7 +1180,10 @@
     function adYaz(n) {
         var bilgi = kalipBilgi(acikNo);
         var birim = (acikGor.kip === 'tekil') ? 'kelime' : 'kök';
-        var ad = (acikGor.kip === 'tekil') ? (bilgi.tr || 'Kalıp') : acikGor.ad;
+        var tkAd = (acikGor.kip === 'tekil') ? takimBul(acikNo) : null;
+        var ad = (acikGor.kip === 'tekil')
+            ? ((tkAd && tkAd.baslik) || bilgi.tr || 'Kalıp')
+            : acikGor.ad;
         /* Süzgeç açıkken "12 / 64" — bütünün neresindeyiz belli olsun */
         var sayi = suzgec.deger ? (n + ' / ' + tumler.length) : String(tumler.length);
         var el = document.getElementById('klAd');
@@ -2150,12 +2164,29 @@
        olarak örneklerin ortasına iner; başlık orada zorunlu.
        kisa: sekizli görünüm ekrana sığsın diye kartlar SIKI dizilir,
        Türkçeleri gizli durur — kelimeye dokununca açılır. */
+    /* MASDAR/SIFAT TAKIMLARI (17-32): bu vezinler birbirine yalnız
+       HAREKEYLE benziyor (فَعَل · فَعِل · فَعْل …). Tek tek açılınca hangi
+       listenin hangi vezne ait olduğu ayırt edilemiyordu; artık aynı
+       yazılış ailesi birlikte açılıyor ve her panel KENDİ başlığını
+       taşıyor (vezin + numara + Türkçe görevi — panelTr).
+         17-21 · 22-24 · 25-26 · 27-29 · 30-32
+       baslik alanı üst şeritte görünen takım adıdır. */
     var TAKIMLAR = [
         { ad: 'fail', uyeler: [33, 34, 35], sutun: 3, panelBas: false },
         { ad: 'zamanmekan', uyeler: [37, 38], sutun: 2, panelBas: false },
         { ad: 'alet', uyeler: [39, 40], sutun: 2, panelBas: false },
         { ad: 'tafdil', uyeler: [50, 51], sutun: 2, panelBas: false },
-        { ad: 'teksir', uyeler: [41, 42, 43, 44, 45, 46, 47, 48], sutun: 4, panelBas: true, kisa: true }
+        { ad: 'teksir', uyeler: [41, 42, 43, 44, 45, 46, 47, 48], sutun: 4, panelBas: true, kisa: true },
+        { ad: 'masdar1', uyeler: [17, 18, 19, 20, 21], sutun: 5, panelBas: true, panelTr: true,
+          baslik: 'Üç Harfli Masdarlar' },
+        { ad: 'masdar2', uyeler: [22, 23, 24], sutun: 3, panelBas: true, panelTr: true,
+          baslik: 'Fe\'âl Masdarları' },
+        { ad: 'masdar3', uyeler: [25, 26], sutun: 2, panelBas: true, panelTr: true,
+          baslik: 'Fu\'ûl Masdarları' },
+        { ad: 'masdar4', uyeler: [27, 28, 29], sutun: 3, panelBas: true, panelTr: true,
+          baslik: 'Fu\'lân Masdarları' },
+        { ad: 'sifat', uyeler: [30, 31, 32], sutun: 3, panelBas: true, panelTr: true,
+          baslik: 'Sıfat-ı Müşebbehe (Renk ve Kusur)' }
     ];
     function takimBul(no) {
         for (var i = 0; i < TAKIMLAR.length; i++)
@@ -2985,7 +3016,10 @@
        ayrışıyor, hangisinde olduğun ancak kırmızıdan anlaşılıyor. */
     function secBoya(st) {
         if (!st || !st.kutular) return;
-        var hepsi = !!(st.no >= 1 && st.no <= 16 && babBul(st.no));
+        /* BÂBDA üç kutu birlikte kırmızı olurdu; TAKIMLARDA da öyle
+           olsun — birine dokunulunca ailenin tamamı seçili görünür
+           (ism-i fâil üçlüsü, zaman-mekân, âlet, masdar aileleri…). */
+        var hepsi = !!(st.no >= 1 && st.no <= 16 && babBul(st.no)) || !!takimBul(st.no);
         st.kutular.forEach(function (k) {
             k.classList.toggle('ko-sec', hepsi || k === st.kutu);
         });

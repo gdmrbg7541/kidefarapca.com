@@ -5278,6 +5278,24 @@ body.mezid-odak #tab2.tab-content { width: 100% !important; }
     border-radius: 8px;
     padding: 1px 7px;
 }
+/* HAREKEYLE AYRIŞAN AİLELERDE (17-32) vezinin görevi de yazılır:
+   فَعَل ile فَعِل arasındaki fark yalnız harekedir, hangi panelin ne
+   olduğu başlıktan okunmalı. Başlığın hemen altında, sessiz bir
+   satır — kartların önüne geçmez. */
+.kl-panel-gorev {
+    margin: -3px 0 7px;
+    text-align: center;
+    font-family: 'Marhey', 'Inter', sans-serif;
+    font-size: .78rem;
+    line-height: 1.25;
+    color: #64748b;
+    letter-spacing: .2px;
+}
+/* Beş panelli aile (17-21) dar ekranda sıkışmasın */
+.kl-takim-masdar1 .kl-panel-bas { font-size: 1.28rem; gap: 6px; }
+.kl-takim-masdar1 .kl-panel-gorev { font-size: .72rem; }
+.kl-takim-masdar1 .kl-takim-panel { padding: 5px 4px 7px; }
+
 .kl-panel-govde {
     overflow-y: auto;
     overscroll-behavior: contain;

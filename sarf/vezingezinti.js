@@ -444,22 +444,27 @@
             'line-height:1.25;border-width:3px;box-shadow:0 22px 55px rgba(0,0,0,.22);' +
             'display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;' +
             'overflow:hidden;pointer-events:auto}' +
-            '#vezin-anlam-katmani.vg-yan.vg-orneksiz{justify-content:center}' +
+            '#vezin-anlam-katmani.vg-yan.vg-orneksiz .vg-govde{display:flex;flex-direction:column;justify-content:center}' +
             '#vezin-anlam-katmani.vg-yan.vg-orneksiz .vg-ornekler{display:none}' +
             '#vezin-anlam-katmani.vg-yan .vg-bas{flex:0 0 auto;text-align:center;' +
             'direction:ltr;unicode-bidi:isolate}' +
             '#vezin-anlam-katmani:not(.vg-yan) .vg-ornekler{display:none}' +
-            '#vezin-anlam-katmani.vg-yan .vg-ornekler{flex:1 1 auto;min-height:0;' +
-            'overflow-y:auto;overflow-x:hidden;margin-top:16px;padding-top:14px;' +
-            'border-top:2px solid #edf1f6;-webkit-overflow-scrolling:touch;' +
-            'overscroll-behavior:contain}' +
-            '#vezin-anlam-katmani.vg-yan .vg-ornekler::-webkit-scrollbar{width:10px}' +
-            '#vezin-anlam-katmani.vg-yan .vg-ornekler::-webkit-scrollbar-track' +
+            /* ANLAM DA ÖRNEK DE AYNI GÖVDEDE KAYAR.
+               Kaydırma çubuğu panelin İÇİNDE kalır; sayfaya taşmaz ve
+               uzun anlam kırpılmaz. */
+            '#vezin-anlam-katmani.vg-yan .vg-govde{flex:1 1 auto;min-height:0;' +
+            'overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;' +
+            'overscroll-behavior:contain;scrollbar-gutter:stable}' +
+            '#vezin-anlam-katmani:not(.vg-yan) .vg-govde{overflow:visible}' +
+            '#vezin-anlam-katmani.vg-yan .vg-ornekler{margin-top:16px;padding-top:14px;' +
+            'border-top:2px solid #edf1f6}' +
+            '#vezin-anlam-katmani.vg-yan .vg-govde::-webkit-scrollbar{width:10px}' +
+            '#vezin-anlam-katmani.vg-yan .vg-govde::-webkit-scrollbar-track' +
             '{background:#f3f6fa;border-radius:6px}' +
-            '#vezin-anlam-katmani.vg-yan .vg-ornekler::-webkit-scrollbar-thumb' +
+            '#vezin-anlam-katmani.vg-yan .vg-govde::-webkit-scrollbar-thumb' +
             '{background:#c3ccd8;border-radius:6px}' +
             /* Altta devamı olduğunu belli eden yumuşama */
-            '#vezin-anlam-katmani.vg-yan.vg-kayar .vg-ornekler' +
+            '#vezin-anlam-katmani.vg-yan.vg-kayar .vg-govde' +
             '{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 38px),transparent);' +
             'mask-image:linear-gradient(to bottom,#000 calc(100% - 38px),transparent)}' +
             '#vezin-anlam-katmani .vg-ornek{padding:9px 2px;border-bottom:1px dashed #e7ecf3}' +
@@ -493,6 +498,19 @@
         ['click', 'mousedown', 'pointerdown', 'touchstart'].forEach(function (t) {
             katman.addEventListener(t, function (e) { e.stopPropagation(); }, false);
         });
+
+        /* TEKERLEK PANELDEN DIŞARI SIZMASIN.
+           Gövde kaydırılabiliyorsa kendi içinde kayar; kayacak yeri
+           kalmadıysa olay yutulur — yoksa arkadaki sayfa kayıyordu. */
+        katman.addEventListener('wheel', function (e) {
+            var gv = katman.querySelector('.vg-govde');
+            if (!gv || !katman.classList.contains('vg-yan')) { e.preventDefault(); return; }
+            var kayabilir = gv.scrollHeight > gv.clientHeight + 1;
+            if (!kayabilir) { e.preventDefault(); return; }
+            var ustte = gv.scrollTop <= 0, altta = gv.scrollTop + gv.clientHeight >= gv.scrollHeight - 1;
+            if ((e.deltaY < 0 && ustte) || (e.deltaY > 0 && altta)) e.preventDefault();
+        }, { passive: false });
+
         document.body.appendChild(katman);
         return katman;
     }
@@ -507,10 +525,11 @@
 
         katmanKur();
         katman.innerHTML =
+            '<div class="vg-govde">' +
             '<div class="vg-bas" dir="ltr">' +
             (bilgi.emoji ? '<span class="vg-emoji">' + bilgi.emoji + '</span>' : '') +
             '<span class="vg-metin"></span></div>' +
-            '<div class="vg-ornekler"></div>';
+            '<div class="vg-ornekler"></div></div>';
         katman.querySelector('.vg-metin').textContent = String(bilgi.tr).trim();
         ornekleriYaz(bilgi.ornekler);
         katman.classList.toggle('vg-orneksiz', !bilgi.ornekler.length);
@@ -531,7 +550,8 @@
         var kap = katman.querySelector('.vg-ornekler');
         if (!kap) return;
         kap.innerHTML = '';
-        kap.scrollTop = 0;
+        var gv = katman.querySelector('.vg-govde');
+        if (gv) gv.scrollTop = 0;
         (liste || []).forEach(function (o) {
             var satir = document.createElement('div');
             satir.className = 'vg-ornek';
@@ -719,8 +739,11 @@
         katman.style.height = panelYuk + 'px';
         katman.style.minHeight = panelYuk + 'px';
 
-        /* Anlam yazısı: panelin üst yarısını aşmayan en büyük punto
-           (yalnız imza değişince denenir). Örnek yoksa daha cömert. */
+        /* Punto ANLAMIN kendi boyuna göre seçilir: örnek varsa panelin
+           yarısını, yoksa panelin tamamını aşmayan en büyük punto.
+           Örnekler sığmazsa yazı KÜÇÜLTÜLMEZ — gövde kendi içinde
+           kayar. (Aksi hâlde örneği çok olan kelimede anlam gereksiz
+           yere en küçük puntoya düşüyordu.) */
         var bas = katman.querySelector('.vg-bas');
         var sinir = orneksiz ? panelYuk - 44 : panelYuk * 0.46;
         for (var i = 0; i < YAN_PUNTO.length; i++) {
@@ -734,8 +757,8 @@
 
         /* Örnekler sığmıyorsa alt kenar yumuşasın: devamı olduğu
            anlaşılsın, kesilmiş gibi durmasın. */
-        var orn = katman.querySelector('.vg-ornekler');
-        katman.classList.toggle('vg-kayar', !!orn && orn.scrollHeight > orn.clientHeight + 2);
+        var gv = katman.querySelector('.vg-govde');
+        katman.classList.toggle('vg-kayar', !!gv && gv.scrollHeight > gv.clientHeight + 2);
         /* Ok, dev kelimenin ortasını göstersin */
         var okY = Math.max(24, Math.min(merkezY - ust, panelYuk - 24));
         katman.style.setProperty('--vg-oky', Math.round(okY) + 'px');
@@ -750,6 +773,12 @@
 
         var klon = document.getElementById('crisp-zoom-clone');
         if (klon && yanaYerlestir(klon)) return;
+
+        /* Kutu yatayda ekran dışına çıktıysa (sekme bandı kaydı, öteki
+           sekmeye geçildi) katman havada kalmasın. */
+        var kr = katmanKutu.getBoundingClientRect();
+        var kx = kr.left + kr.width / 2;
+        if (kx < -8 || kx > window.innerWidth + 8) { anlamGizle(); return; }
 
         katman.classList.remove('vg-yan');
         katman.style.fontSize = '';
@@ -884,6 +913,19 @@
             window.checkWordEasterEgg._vg = 1;
         }
 
+        /* 1d) SEKME DEĞİŞİNCE ANLAM KAPANSIN.
+           Mücerredde bir vezin türetilip mezide geçilince kelime öteki
+           sekmeyle birlikte kayıp gidiyor; anlam katmanının ekranda
+           öksüz kalmaması için kapatılıyor. */
+        if (typeof window.setTab === 'function' && !window.setTab._vg) {
+            var eskiSekme = window.setTab;
+            window.setTab = function () {
+                try { anlamGizle(); } catch (e) { /* yoksay */ }
+                return eskiSekme.apply(this, arguments);
+            };
+            window.setTab._vg = 1;
+        }
+
         /* 2) Kök değişimi → gezinti başa döner */
         ['selectReadyVerb', 'confirmRoot', 'resetTableOnly'].forEach(function (ad) {
             if (typeof window[ad] !== 'function' || window[ad]._vg) return;
@@ -923,6 +965,21 @@
             anahtar._vg = 1;
         }
     }
+
+    /* 4b) BAŞKA YERE TIKLAYINCA ANLAM KAPANIR.
+       Kutuya (ya da büyütülmüş klona) tıklamak kendi döngüsünü
+       yürütür, katmanı oradaki kural açıp kapatır. Panelin kendisi
+       tıklamayı zaten yutuyor (örnekler kaydırılabilsin diye).
+       Geri kalan her yer: katman kapanır. */
+    document.addEventListener('click', function (e) {
+        if (!katman || !katman.classList.contains('vg-acik')) return;
+        var h = e.target;
+        if (!h || !h.closest) return;
+        if (h.closest('#vezin-anlam-katmani')) return;
+        if (h.closest('.glass-box')) return;              /* kutu / dev klon */
+        if (h.closest('#suffix-dropdown')) return;        /* "+" ek menüsü */
+        anlamGizle();
+    }, true);
 
     /* 5) İLERİ TUŞU — yakalama evresinde; sayfanın kaydırması araya girmesin */
     document.addEventListener('keydown', function (e) {
