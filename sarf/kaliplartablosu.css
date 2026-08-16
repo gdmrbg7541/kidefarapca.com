@@ -209,6 +209,37 @@ input:checked + .toggle-slider:before {
     transform: translateX(20px);
 }
 
+/* İKİ ANAHTAR YAN YANA (BÜYÜTME + ANLAM).
+   Üst çubukta kök kutusu 450 px sabit, sekme bandı kalan yeri alıyor.
+   İkinci anahtar eklenince dar ekranlarda sekme bandı öyle daralıyordu
+   ki "SÜLASİ MÜCERRED" yazısı kendi sayı rozetinin altına giriyordu.
+   1300 px altında iki anahtar da küçülüp banda yer açar; okunurluk
+   bozulmaz, düzen aynı kalır. */
+@media screen and (max-width: 1300px) {
+    .zoom-toggle-area { gap: 6px; padding: 0 9px; }
+    .zoom-toggle-label { font-size: 12px; }
+    .toggle-switch { width: 36px !important; height: 20px; }
+    .toggle-slider:before { height: 15px; width: 15px; left: 2.5px; bottom: 2.5px; }
+    input:checked + .toggle-slider:before { transform: translateX(16px); }
+    #root-display-box { width: 400px; flex: 0 0 400px; }
+    /* Sekme yazısı ortalı, sayı rozeti sağa yapışık: bant daralınca
+       yazının kuyruğu rozetin altına giriyordu. Yazı ve rozet birlikte
+       küçülür, rozet de kenara yaklaşır. */
+    .switch-btn { font-size: 14px; }
+    .switch-btn span:last-child { font-size: 0.95rem; right: 9px !important; padding: 2px 7px !important; }
+}
+@media screen and (max-width: 1120px) {
+    .switch-btn { font-size: 12.5px; }
+    #root-display-box { width: 360px; flex: 0 0 360px; }
+}
+@media screen and (max-width: 1060px) {
+    .zoom-toggle-label { font-size: 10px; }
+    .zoom-toggle-area { gap: 5px; padding: 0 7px; }
+    .switch-btn { font-size: 11.5px; }
+    .switch-btn span:last-child { font-size: 0.8rem; right: 6px !important; padding: 1px 5px !important; }
+    #root-display-box { width: 330px; flex: 0 0 330px; }
+}
+
 .back-btn-area {
     display: flex;
     align-items: center;
