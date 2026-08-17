@@ -5611,15 +5611,15 @@ const wordEasterEggs = {
         }, 
         
         // --- 35 Numaralı Kalıp (فَعِيل) ---
-        35: { 
-            base: { emoji: "💎", arText: "حَقِيق", trText: "Gerçek (Yalın).", ornek: { ar: "هَذَا حَقِيقٌ أَنْ يَحْدُثَ", tr: "Bunun olması gerçektir/muhakkaktır." } },
-            suggestsPlus: true, 
-            "ة": {
-                emoji: "💎", 
-                arText: "حَقِيقَة", 
+        35: {
+            /* Kullanımda olan biçim doğrudan حَقِيقَة; "+ة" eki kaldırıldı,
+               kelime kalıbın kendi kaydına alındı. */
+            base: {
+                emoji: "💎",
+                arText: "حَقِيقَة",
                 trText: "Hakikat / Gerçek.",
                 ornek: { ar: "هَذِهِ هِيَ الْحَقِيقَةُ", tr: "İşte bu hakikattir (gerçektir)." }
-            } 
+            }
         }, 
 
         // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
@@ -20508,10 +20508,63 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         79: { base: { emoji: "⬆️", arText: "اِرْتَفِعْ", trText: "Yüksel!", ornek: { ar: "اِرْتَفِعْ بِأَخْلَاقِكَ", tr: "Ahlakınla yüksel." } } },
     },
     "فضل": {
-        90: { base: { emoji: "🤲", arText: "تَفَضَّلَ", trText: "Lütfetti / Buyurdu.", ornek: { ar: "تَفَضَّلَ الْمُدِيرُ بِالْكَلَامِ", tr: "Müdür konuşma lütfunda bulundu/buyurdu." } } },
-        91: { base: { emoji: "💬", arText: "يَتَفَضَّلُ", trText: "Lütfeder / Buyurur.", ornek: { ar: "يَتَفَضَّلُ بِقَبُولِ الدَّعْوَةِ", tr: "Daveti kabul etme lütfunda bulunur." } } },
-        92: { base: { emoji: "🚪", arText: "تَفَضَّلْ", trText: "Buyur / Lütfen.", ornek: { ar: "تَفَضَّلْ بِالدُّخُولِ", tr: "Lütfen/buyur içeri gir." } } },
-        93: { base: { emoji: "🤝", arText: "مُتَفَضِّل", trText: "Lütfeden / İkram eden.", ornek: { ar: "اللهُ مُتَفَضِّلٌ عَلَى عِبَادِهِ", tr: "Allah kullarına lütfedendir." } } },
+        /* İSİM KALIPLARI — masdar (فَضْل), ism-i fâil (فَاضِل),
+           sıfat-ı müşebbehe (فَضِيل) ve onun ة'li hâli (فَضِيلَة) ile
+           ism-i tafdîl (أَفْضَل). Türkçeye geçen fazl · fâzıl · fazilet ·
+           efdal kelimelerinin tümü bu dört kalıptan gelir. */
+        19: {
+            base: {
+                emoji: "🎁",
+                arText: "فَضْل",
+                trText: "Fazl / Lütuf, ihsan, üstünlük.",
+                ornek: [
+                    { ar: "وَابْتَغُوا مِنْ فَضْلِ اللهِ", tr: "Allah'ın fazlından (lütfundan) isteyin. (Cum'a sûresi, 10)" },
+                    { ar: "مِنْ فَضْلِكَ، أَعْطِنِي الْكِتَابَ", tr: "Lütfen (senin fazlından), bana kitabı ver." }
+                ]
+            }
+        },
+        33: {
+            base: {
+                emoji: "🌟",
+                arText: "فَاضِل",
+                trText: "Fâzıl / Erdemli, faziletli kimse.",
+                ornek: { ar: "أُسْتَاذُنَا رَجُلٌ فَاضِلٌ", tr: "Hocamız fâzıl (faziletli) bir insandır." }
+            }
+        },
+        35: {
+            base: {
+                emoji: "💎",
+                arText: "فَضِيل",
+                trText: "Faziletli / Üstün olan.",
+                ornek: { ar: "هُوَ رَجُلٌ فَضِيلٌ بَيْنَ قَوْمِهِ", tr: "O, kavmi arasında faziletli bir adamdır." }
+            },
+            suggestsPlus: true,
+            "ة": {
+                emoji: "🏵️",
+                arText: "فَضِيلَة",
+                trText: "Fazilet / Erdem.",
+                ornek: { ar: "الصِّدْقُ فَضِيلَةٌ", tr: "Doğruluk bir fazilettir (erdemdir)." }
+            }
+        },
+        50: {
+            base: {
+                emoji: "🏅",
+                arText: "أَفْضَل",
+                trText: "Efdal / En üstün, daha faziletli.",
+                ornek: [
+                    { ar: "أَفْضَلُ النَّاسِ أَنْفَعُهُمْ لِلنَّاسِ", tr: "İnsanların en efdali (hayırlısı), insanlara en faydalı olandır. (Hadîs-i şerîf)" },
+                    { ar: "ذَلِكَ فَضْلُ اللهِ يُؤْتِيهِ مَنْ يَشَاءُ", tr: "Bu, Allah'ın fazlıdır; onu dilediğine verir. (Cum'a sûresi, 4)" }
+                ]
+            }
+        },
+        /* TEFE'UL BÂBI — 88/89 mazi ve muzâri olduğu için 90-93 bir
+           kaydırma hatasıyla yeniden mazi/muzâri/emir/ism-i fâil
+           yazılmıştı. Kalıp numaralarına göre düzeltildi:
+           90 emir · 91 masdar · 92 ism-i fâil · 93 ism-i mef'ûl. */
+        90: { base: { emoji: "🚪", arText: "تَفَضَّلْ", trText: "Buyur! / Lütfet!", ornek: { ar: "تَفَضَّلْ بِالدُّخُولِ", tr: "Buyurun, içeri giriniz." } } },
+        91: { base: { emoji: "🤲", arText: "تَفَضُّل", trText: "Lütufta bulunma / İkram etme (masdar).", ornek: { ar: "نَشْكُرُ تَفَضُّلَكُمْ عَلَيْنَا", tr: "Bize olan lütfunuz (ikramınız) için teşekkür ederiz." } } },
+        92: { base: { emoji: "🤝", arText: "مُتَفَضِّل", trText: "Lütfeden / İkramda bulunan.", ornek: { ar: "اللهُ مُتَفَضِّلٌ عَلَى عِبَادِهِ", tr: "Allah kullarına lütufta bulunandır." } } },
+        93: { base: { emoji: "🎁", arText: "مُتَفَضَّل", trText: "Kendisine lütfedilen / İhsan edilmiş.", ornek: { ar: "هُوَ مُتَفَضَّلٌ عَلَيْهِ بِالنِّعْمَةِ", tr: "O, nimetle kendisine lütufta bulunulmuş kimsedir." } } },
         58: { 
             base: { emoji: "⭐", arText: "فَضَّلَ", trText: "Tercih Etti", ornek: { ar: "فَضَّلَ الشَّايَ عَلَى الْقَهْوَةِ", tr: "Çayı kahveye tercih etti." } } 
         },
@@ -26114,6 +26167,162 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         48: { tekilId: 30, base: { emoji: "📜", arText: "أَوَائِل", trText: "İlkler, başlangıçlar (أَوَّل çoğulu)" } },
         58: { base: { emoji: "🔍", arText: "أَوَّلَ", trText: "Yorumladı, te'vil etti" } },
         61: { base: { emoji: "📘", arText: "تَأْوِيل", trText: "Te'vil, yorumlama (masdar)" } }
-    }
+    },
 
+    /* ==================================================================
+       6. SINIF ÜNİTELERİNDEN GELEN YENİ KÖKLER (6_1_1 … 6_2_3)
+       Ders kitabındaki kelimeler taranıp sözlükte karşılığı bulunmayan
+       kökler eklendi. Kalıp numaraları veri_vezin_numaralari.js ile
+       aynıdır. Türetilemeyen (câmid) kelimeler veri_sozluk.js'e yazıldı.
+       ================================================================== */
+    "جوع": {
+        1: { base: { emoji: "🍽️", arText: "جَاعَ", trText: "Acıktı", ornek: { ar: "جَاعَ الطِّفْلُ فَأَكَلَ خُبْزًا", tr: "Çocuk acıktı ve ekmek yedi." } } },
+        2: { base: { emoji: "🤤", arText: "يَجُوعُ", trText: "Acıkır / Acıkıyor", ornek: { ar: "يَجُوعُ فِي الظُّهْرِ", tr: "Öğlen acıkır." } } },
+        21: { base: { emoji: "😖", arText: "جُوع", trText: "Açlık", ornek: { ar: "الْجُوعُ يُتْعِبُ الْإِنْسَانَ", tr: "Açlık insanı yorar." } } },
+        28: {
+            base: { emoji: "😋", arText: "جَوْعَان", trText: "Aç", ornek: { ar: "أَنَا جَوْعَانُ جِدًّا", tr: "Çok açım." } },
+            "ة": { emoji: "😋", arText: "جَوْعَانَة", trText: "Aç (dişil)", ornek: { ar: "أُخْتِي جَوْعَانَةٌ", tr: "Kız kardeşim aç." } }
+        }
+    },
+
+    "عطش": {
+        8: { base: { emoji: "💧", arText: "عَطِشَ", trText: "Susadı", ornek: { ar: "عَطِشَ فِي الْمَلْعَبِ", tr: "Sahada susadı." } } },
+        9: { base: { emoji: "🚰", arText: "يَعْطَشُ", trText: "Susar / Susuyor", ornek: { ar: "يَعْطَشُ بَعْدَ الرِّيَاضَةِ", tr: "Spordan sonra susar." } } },
+        17: { base: { emoji: "🏜️", arText: "عَطَش", trText: "Susuzluk", ornek: { ar: "الْعَطَشُ شَدِيدٌ فِي الصَّيْفِ", tr: "Yazın susuzluk şiddetlidir." } } },
+        28: {
+            base: { emoji: "🥤", arText: "عَطْشَان", trText: "Susamış / Susuz", ornek: { ar: "أَنَا عَطْشَانُ، أُرِيدُ مَاءً", tr: "Susadım, su istiyorum." } },
+            "ة": { emoji: "🥤", arText: "عَطْشَانَة", trText: "Susamış (dişil)", ornek: { ar: "أُمِّي عَطْشَانَةٌ", tr: "Annem susamış." } }
+        }
+    },
+
+    "شبع": {
+        8: { base: { emoji: "🍲", arText: "شَبِعَ", trText: "Doydu", ornek: { ar: "شَبِعَ مِنَ الطَّعَامِ", tr: "Yemekten doydu." } } },
+        9: { base: { emoji: "😌", arText: "يَشْبَعُ", trText: "Doyar / Doyuyor", ornek: { ar: "يَشْبَعُ بِرَغِيفٍ وَاحِدٍ", tr: "Bir ekmekle doyar." } } },
+        28: {
+            base: { emoji: "😊", arText: "شَبْعَان", trText: "Tok", ornek: { ar: "لَا، أَنَا شَبْعَانُ", tr: "Hayır, ben tokum." } },
+            "ة": { emoji: "😊", arText: "شَبْعَانَة", trText: "Tok (dişil)", ornek: { ar: "هِيَ شَبْعَانَةٌ الْآنَ", tr: "O şimdi tok." } }
+        }
+    },
+
+    "تعب": {
+        8: { base: { emoji: "😩", arText: "تَعِبَ", trText: "Yoruldu", ornek: { ar: "تَعِبَ بَعْدَ الْمُبَارَاةِ", tr: "Maçtan sonra yoruldu." } } },
+        9: { base: { emoji: "😮‍💨", arText: "يَتْعَبُ", trText: "Yorulur / Yoruluyor", ornek: { ar: "يَتْعَبُ مِنَ الرَّكْضِ", tr: "Koşmaktan yorulur." } } },
+        17: { base: { emoji: "🥱", arText: "تَعَب", trText: "Yorgunluk", ornek: { ar: "أَشْعُرُ بِالتَّعَبِ", tr: "Yorgunluk hissediyorum." } } },
+        28: {
+            base: { emoji: "😴", arText: "تَعْبَان", trText: "Yorgun", ornek: { ar: "أَنَا تَعْبَانُ الْيَوْمَ", tr: "Bugün yorgunum." } },
+            "ة": { emoji: "😴", arText: "تَعْبَانَة", trText: "Yorgun (dişil)", ornek: { ar: "خَالَتِي تَعْبَانَةٌ", tr: "Teyzem yorgun." } }
+        }
+    },
+
+    "ركض": {
+        1: { base: { emoji: "🏃", arText: "رَكَضَ", trText: "Koştu", ornek: { ar: "رَكَضَ إِلَى الْمَدْرَسَةِ", tr: "Okula koştu." } } },
+        2: { base: { emoji: "👟", arText: "يَرْكُضُ", trText: "Koşar / Koşuyor", ornek: { ar: "يَرْكُضُ فِي الْحَدِيقَةِ", tr: "Bahçede koşuyor." } } },
+        3: { base: { emoji: "❗", arText: "اُرْكُضْ", trText: "Koş!", ornek: { ar: "اُرْكُضْ بِسُرْعَةٍ", tr: "Hızlı koş." } } },
+        19: { base: { emoji: "🏅", arText: "رَكْض", trText: "Koşma / Koşu", ornek: { ar: "الرَّكْضُ رِيَاضَةٌ مُفِيدَةٌ", tr: "Koşu faydalı bir spordur." } } }
+    },
+
+    "بري": {
+        64: { base: { emoji: "🤼", arText: "بَارَى", trText: "Yarıştı / Karşılaştı", ornek: { ar: "بَارَى فَرِيقَنَا فَرِيقًا قَوِيًّا", tr: "Takımımız güçlü bir takımla karşılaştı." } } },
+        65: { base: { emoji: "⚔️", arText: "يُبَارِي", trText: "Yarışır / Karşılaşır", ornek: { ar: "يُبَارِي زَمِيلَهُ فِي السِّبَاقِ", tr: "Yarışta arkadaşıyla yarışır." } } },
+        67: { base: { emoji: "⚽", arText: "مُبَارَاة", trText: "Maç / Müsabaka", ornek: { ar: "عِنْدَنَا مُبَارَاةٌ مُهِمَّةٌ غَدًا", tr: "Yarın önemli bir maçımız var." } } }
+    },
+
+    "أتي": {
+        1: { base: { emoji: "🚶", arText: "أَتَى", trText: "Geldi", ornek: { ar: "أَتَى أَبِي مِنَ الْعَمَلِ", tr: "Babam işten geldi." } } },
+        4: { base: { emoji: "🚪", arText: "يَأْتِي", trText: "Gelir / Geliyor", ornek: { ar: "يَأْتِي جَدِّي يَوْمَ الْجُمُعَةِ", tr: "Dedem cuma günü gelir." } } }
+    },
+
+    "قصف": {
+        1: { base: { emoji: "💥", arText: "قَصَفَ", trText: "Kırdı / Gümbürdedi", ornek: { ar: "قَصَفَ الرَّعْدُ فِي اللَّيْلِ", tr: "Gece gök gürledi." } } },
+        38: { base: { emoji: "🥪", arText: "مَقْصَف", trText: "Kantin / Büfe", ornek: { ar: "أَشْتَرِي السَّنْدَوِيشَ مِنَ الْمَقْصَفِ", tr: "Sandviçi kantinden alırım." } } }
+    },
+
+    "وفق": {
+        58: { base: { emoji: "✨", arText: "وَفَّقَ", trText: "Başarılı kıldı / Muvaffak etti", ornek: { ar: "وَفَّقَهُ اللهُ فِي الِامْتِحَانِ", tr: "Allah onu sınavda başarılı kıldı." } } },
+        59: { base: { emoji: "🌟", arText: "يُوَفِّقُ", trText: "Başarılı kılar", ornek: { ar: "يُوَفِّقُ اللهُ الْمُجْتَهِدَ", tr: "Allah çalışkanı başarılı kılar." } } },
+        61: { base: { emoji: "🎯", arText: "تَوْفِيق", trText: "Başarı / Muvaffakiyet", ornek: { ar: "بِالتَّوْفِيقِ يَا صَدِيقِي", tr: "Başarılar dostum." } } }
+    },
+
+    "مني": {
+        88: { base: { emoji: "🌠", arText: "تَمَنَّى", trText: "Diledi / Temenni etti", ornek: { ar: "تَمَنَّى لِي النَّجَاحَ", tr: "Bana başarı diledi." } } },
+        89: { base: { emoji: "🤞", arText: "يَتَمَنَّى", trText: "Diler / Temenni eder", ornek: { ar: "أَتَمَنَّى لَكُمُ الْفَوْزَ", tr: "Size zafer dilerim." } } },
+        91: { base: { emoji: "💭", arText: "تَمَنٍّ", trText: "Dilek / Temenni", ornek: { ar: "التَّمَنِّي لَا يَكْفِي", tr: "Temenni yetmez." } } }
+    },
+
+    "حلل": {
+        1: { base: { emoji: "🧩", arText: "حَلَّ", trText: "Çözdü", ornek: { ar: "حَلَّ الْمَسْأَلَةَ بِسُرْعَةٍ", tr: "Problemi hızlıca çözdü." } } },
+        2: { base: { emoji: "🔑", arText: "يَحُلُّ", trText: "Çözer / Çözüyor", ornek: { ar: "سَيَحُلُّ الْمُشْكِلَةَ غَدًا", tr: "Sorunu yarın çözecek." } } },
+        19: { base: { emoji: "💡", arText: "حَلّ", trText: "Çözüm", ornek: { ar: "لِكُلِّ مُشْكِلَةٍ حَلٌّ", tr: "Her sorunun bir çözümü vardır." } } }
+    },
+
+    "سرف": {
+        52: { base: { emoji: "🚱", arText: "أَسْرَفَ", trText: "İsraf etti / Aşırı gitti", ornek: { ar: "أَسْرَفَ فِي الْمَاءِ", tr: "Suyu israf etti." } } },
+        53: { base: { emoji: "⚠️", arText: "يُسْرِفُ", trText: "İsraf eder", ornek: { ar: "لَا تُسْرِفْ فِي الطَّعَامِ", tr: "Yemekte israf etme." } } },
+        55: { base: { emoji: "🗑️", arText: "إِسْرَاف", trText: "İsraf", ornek: { ar: "الْإِسْرَافُ حَرَامٌ", tr: "İsraf haramdır." } } }
+    },
+
+    "شوي": {
+        1: { base: { emoji: "🔥", arText: "شَوَى", trText: "Kızarttı / Izgara yaptı", ornek: { ar: "شَوَى اللَّحْمَ عَلَى النَّارِ", tr: "Eti ateşte kızarttı." } } },
+        4: { base: { emoji: "🍢", arText: "يَشْوِي", trText: "Kızartır / Izgara yapar", ornek: { ar: "يَشْوِي أَبِي الدَّجَاجَ", tr: "Babam tavuğu ızgara yapar." } } },
+        36: {
+            base: { emoji: "🍗", arText: "مَشْوِيّ", trText: "Izgara / Kızarmış", ornek: { ar: "أُرِيدُ الدَّجَاجَ الْمَشْوِيَّ", tr: "Izgara tavuk istiyorum." } },
+            "ة": { emoji: "🐟", arText: "مَشْوِيَّة", trText: "Izgara (dişil)", ornek: { ar: "السَّمَكَةُ الْمَشْوِيَّةُ لَذِيذَةٌ", tr: "Izgara balık lezzetlidir." } }
+        }
+    },
+
+    "ختم": {
+        1: { base: { emoji: "🔏", arText: "خَتَمَ", trText: "Mühürledi / Bitirdi", ornek: { ar: "خَتَمَ الدَّرْسَ بِدُعَاءٍ", tr: "Dersi dua ile bitirdi." } } },
+        4: { base: { emoji: "📜", arText: "يَخْتِمُ", trText: "Mühürler / Bitirir", ornek: { ar: "يَخْتِمُ الْكِتَابَ فِي أُسْبُوعٍ", tr: "Kitabı bir haftada bitirir." } } },
+        33: { base: { emoji: "🏁", arText: "خَاتِم", trText: "Bitiren / Son", ornek: { ar: "هُوَ خَاتِمُ الْأَنْبِيَاءِ", tr: "O, peygamberlerin sonuncusudur." } } }
+    },
+
+    "وعد": {
+        1: { base: { emoji: "🤝", arText: "وَعَدَ", trText: "Söz verdi / Vaat etti", ornek: { ar: "وَعَدَ صَدِيقَهُ بِالْمُسَاعَدَةِ", tr: "Arkadaşına yardım sözü verdi." } } },
+        4: { base: { emoji: "✋", arText: "يَعِدُ", trText: "Söz verir", ornek: { ar: "يَعِدُ وَلَا يُخْلِفُ", tr: "Söz verir ve sözünden dönmez." } } },
+        19: { base: { emoji: "📝", arText: "وَعْد", trText: "Söz / Vaat", ornek: { ar: "الْوَعْدُ دَيْنٌ", tr: "Söz borçtur." } } },
+        37: { base: { emoji: "📅", arText: "مَوْعِد", trText: "Randevu / Buluşma vakti", ornek: { ar: "عِنْدِي مَوْعِدٌ مَعَ الطَّبِيبِ", tr: "Doktorla randevum var." } } }
+    },
+
+    "مهد": {
+        58: { base: { emoji: "🛤️", arText: "مَهَّدَ", trText: "Zemin hazırladı / Düzledi", ornek: { ar: "مَهَّدَ الطَّرِيقَ لِلنَّجَاحِ", tr: "Başarı için yolu hazırladı." } } },
+        59: { base: { emoji: "🧱", arText: "يُمَهِّدُ", trText: "Hazırlar / Düzler", ornek: { ar: "يُمَهِّدُ الْمُعَلِّمُ لِلدَّرْسِ", tr: "Öğretmen derse hazırlık yapar." } } },
+        61: {
+            base: { emoji: "📋", arText: "تَمْهِيد", trText: "Hazırlık / Giriş", ornek: { ar: "التَّمْهِيدُ قَبْلَ الدَّرْسِ مُفِيدٌ", tr: "Dersten önceki hazırlık faydalıdır." } },
+            "يَّة": { emoji: "⚽", arText: "تَمْهِيدِيَّة", trText: "Hazırlık (maçı)", ornek: { ar: "لَعِبْنَا مُبَارَاةً تَمْهِيدِيَّةً", tr: "Bir hazırlık maçı oynadık." } }
+        }
+    },
+
+    "فوز": {
+        1: { base: { emoji: "🏆", arText: "فَازَ", trText: "Kazandı / Zafer kazandı", ornek: { ar: "فَازَ فَرِيقُنَا بِالْمُبَارَاةِ", tr: "Takımımız maçı kazandı." } } },
+        2: { base: { emoji: "🥇", arText: "يَفُوزُ", trText: "Kazanır / Kazanıyor", ornek: { ar: "يَفُوزُ الْمُجْتَهِدُ دَائِمًا", tr: "Çalışkan her zaman kazanır." } } },
+        19: { base: { emoji: "🎉", arText: "فَوْز", trText: "Zafer / Galibiyet", ornek: { ar: "أَتَمَنَّى لَكُمُ الْفَوْزَ", tr: "Size zafer dilerim." } } },
+        33: { base: { emoji: "😄", arText: "فَائِز", trText: "Kazanan / Galip", ornek: { ar: "مَنِ الْفَائِزُ فِي الْمُبَارَاةِ؟", tr: "Maçı kim kazandı?" } } }
+    },
+
+    "حور": {
+        64: { base: { emoji: "💬", arText: "حَاوَرَ", trText: "Karşılıklı konuştu", ornek: { ar: "حَاوَرَ الطَّالِبُ مُعَلِّمَهُ", tr: "Öğrenci öğretmeniyle konuştu." } } },
+        65: { base: { emoji: "🗨️", arText: "يُحَاوِرُ", trText: "Karşılıklı konuşur", ornek: { ar: "يُحَاوِرُ النَّادِلَ فِي الْمَطْعَمِ", tr: "Lokantada garsonla konuşur." } } },
+        68: { base: { emoji: "🗣️", arText: "حِوَار", trText: "Konuşma / Diyalog", ornek: { ar: "الْحِوَارُ بَيْنَ النَّادِلِ وَفَاتِحٍ", tr: "Garson ile Fatih arasındaki konuşma." } } }
+    },
+
+    "دقق": {
+        35: {
+            base: { emoji: "🔎", arText: "دَقِيق", trText: "İnce / Dakik", ornek: { ar: "عَمَلٌ دَقِيقٌ وَجَمِيلٌ", tr: "İnce ve güzel bir iş." } },
+            "ة": { emoji: "⏱️", arText: "دَقِيقَة", trText: "Dakika", ornek: { ar: "بَعْدَ عَشْرِ دَقَائِقَ", tr: "On dakika sonra." } }
+        },
+        48: { base: { emoji: "🕙", arText: "دَقَائِق", trText: "Dakikalar", ornek: { ar: "الطَّعَامُ جَاهِزٌ بَعْدَ دَقَائِقَ", tr: "Yemek birkaç dakika sonra hazır." } } }
+    },
+
+    "نهي": {
+        52: { base: { emoji: "✅", arText: "أَنْهَى", trText: "Bitirdi / Tamamladı", ornek: { ar: "أَنْهَى وَاجِبَهُ قَبْلَ النَّوْمِ", tr: "Ödevini uyumadan önce bitirdi." } } },
+        53: { base: { emoji: "🏁", arText: "يُنْهِي", trText: "Bitirir / Tamamlar", ornek: { ar: "هَلْ أَنْهَيْتَ وَاجِبَكَ؟", tr: "Ödevini bitirdin mi?" } } },
+        55: { base: { emoji: "📗", arText: "إِنْهَاء", trText: "Bitirme / Tamamlama", ornek: { ar: "إِنْهَاءُ الْعَمَلِ مُهِمٌّ", tr: "İşi bitirmek önemlidir." } } }
+    },
+
+    "هنأ": {
+        35: { base: { emoji: "😋", arText: "هَنِيء", trText: "Afiyetli / Tatlı", ornek: { ar: "طَعَامٌ هَنِيءٌ", tr: "Afiyetli bir yemek." } } },
+        58: { base: { emoji: "🎊", arText: "هَنَّأَ", trText: "Tebrik etti / Kutladı", ornek: { ar: "هَنَّأَ صَدِيقَهُ بِالنَّجَاحِ", tr: "Arkadaşını başarısı için tebrik etti." } } },
+        59: { base: { emoji: "👏", arText: "يُهَنِّئُ", trText: "Tebrik eder", ornek: { ar: "يُهَنِّئُ الْمُعَلِّمُ الطُّلَّابَ", tr: "Öğretmen öğrencileri tebrik eder." } } },
+        61: { base: { emoji: "💌", arText: "تَهْنِئَة", trText: "Tebrik", ornek: { ar: "أَرْسَلْتُ لَهُ تَهْنِئَةً", tr: "Ona bir tebrik gönderdim." } } }
+    }
 };

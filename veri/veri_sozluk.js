@@ -2999,7 +2999,71 @@ const sozlukVerileri = {
     "İsim: Marmara": {
         isDictOnly: true,
         tekil: { base: { emoji: "🌊", arText: "بَحْر مَرْمَرَة", trText: "Marmara Denizi", ornek: { ar: "بَحْرُ مَرْمَرَةَ بَيْنَ الْبَحْرِ الْأَسْوَدِ وَبَحْرِ إِيجَة", tr: "Marmara Denizi, Karadeniz ile Ege arasındadır." } } }
-    }
+    },
+
+    /* ==================================================================
+       6. SINIF ÜNİTELERİNDEN GELEN CÂMİD KELİMELER (6_1_1 … 6_2_3)
+       Kökten türetilmeyen kelimeler: nidâ/zarf edatları, özel isimler,
+       yabancı asıllı ve donuk isimler, kalıp ifadeler. Kökü olanlar
+       veri_kokler.js'e yazıldı.
+       ================================================================== */
+    "Edat: Ey (Nida)": { isDictOnly: true, tip: "harficer", tekil: { base: { emoji: "📢", arText: "يَا", trText: "Ey / Hey (seslenme edatı)", ornek: { ar: "يَا أُسْتَاذُ، صَبَاحَ الْخَيْرِ", tr: "Öğretmenim, günaydın." } } } },
+
+    "Zarf: Yanında (Sahiplik)": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "🫱", arText: "عِنْدَ", trText: "Yanında / -de var", ornek: { ar: "عِنْدِي كِتَابٌ جَدِيدٌ", tr: "Bende yeni bir kitap var." } } } },
+
+    "Zarf: -dığı Zaman": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "⏳", arText: "عِنْدَمَا", trText: "...dığı zaman / ...ınca", ornek: { ar: "عِنْدَمَا يَأْتِي أَبِي نَفْرَحُ", tr: "Babam geldiğinde seviniriz." } } } },
+
+    "İsim: Allah": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "☝️", arText: "الله", trText: "Allah", ornek: { ar: "الْحَمْدُ لله", tr: "Hamd Allah'a mahsustur." } } } },
+
+    "Kalıp: Elhamdülillah": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🙏", arText: "الْحَمْدُ لله", trText: "Elhamdülillah / Çok şükür", ornek: { ar: "كَيْفَ حَالُكَ؟ الْحَمْدُ لله", tr: "Nasılsın? Elhamdülillah." } } } },
+
+    "İsim: Yusuf": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👦", arText: "يُوسُف", trText: "Yusuf (özel isim)", ornek: { ar: "يَا يُوسُفُ، هَيَّا بِنَا", tr: "Ey Yusuf, haydi gidelim." } } } },
+
+    "İsim: Tarık": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👦", arText: "طَارِق", trText: "Tarık (özel isim)", ornek: { ar: "طَارِقٌ فِي غُرْفَتِهِ", tr: "Tarık odasında." } } } },
+
+    "İsim: Zeynep": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👧", arText: "زَيْنَب", trText: "Zeynep (özel isim)", ornek: { ar: "زَيْنَبُ تِلْمِيذَةٌ مُجْتَهِدَةٌ", tr: "Zeynep çalışkan bir öğrencidir." } } } },
+
+    "İsim: Zeyd": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👦", arText: "زَيْد", trText: "Zeyd (özel isim)", ornek: { ar: "يَا زَيْدُ، هَلْ أَنْتَ تَعْبَانُ؟", tr: "Ey Zeyd, yorgun musun?" } } } },
+
+    "İsim: Süleyman": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👦", arText: "سُلَيْمَان", trText: "Süleyman (özel isim)", ornek: { ar: "سُلَيْمَانُ صَدِيقِي", tr: "Süleyman arkadaşımdır." } } } },
+
+    "Meslek: Üstat (Öğretmen)": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👨‍🏫", arText: "أُسْتَاذ", trText: "Üstat / Öğretmen", ornek: { ar: "أُسْتَاذِي فِي الْمَدْرَسَةِ", tr: "Öğretmenim okulda." } } }, cogul: "أَسَاتِذَة", cogulTr: "Öğretmenler / Üstatlar" },
+
+    "Okul: Öğrenci (Talebe)": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🎒", arText: "تِلْمِيذ", trText: "Öğrenci / Talebe", ornek: { ar: "هُوَ تِلْمِيذٌ فِي الصَّفِّ السَّادِسِ", tr: "O, altıncı sınıfta bir öğrencidir." } } }, cogul: "تَلَامِيذ", cogulTr: "Öğrenciler" },
+
+    "Okul: Öğrenci (Kız)": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🎒", arText: "تِلْمِيذَة", trText: "Öğrenci (kız) / Talebe", ornek: { ar: "زَيْنَبُ تِلْمِيذَةٌ نَشِيطَةٌ", tr: "Zeynep hareketli bir öğrencidir." } } }, cogul: "تِلْمِيذَات", cogulTr: "Kız öğrenciler" },
+
+    "Meslek: Garson": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🧑‍🍳", arText: "نَادِل", trText: "Garson", ornek: { ar: "النَّادِلُ يُقَدِّمُ الطَّعَامَ", tr: "Garson yemeği getiriyor." } } }, cogul: "نُدُل", cogulTr: "Garsonlar" },
+
+    "Sebze: Mercimek": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🥣", arText: "عَدَس", trText: "Mercimek", ornek: { ar: "أُرِيدُ شُورْبَةَ الْعَدَسِ", tr: "Mercimek çorbası istiyorum." } } } },
+
+    "Sebze: Sebzeler": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🥗", arText: "خَضْرَوَات", trText: "Sebzeler", ornek: { ar: "أُرِيدُ سَمَكًا مَعَ الْخَضْرَوَاتِ", tr: "Sebzeli balık istiyorum." } } } },
+
+    "Eşya: Yüzük": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "💍", arText: "خَاتَم", trText: "Yüzük", ornek: { ar: "هَلْ عِنْدَكَ خَاتَمٌ؟", tr: "Sende yüzük var mı?" } } }, cogul: "خَوَاتِم", cogulTr: "Yüzükler" },
+
+    "Eşya: Gözlük": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👓", arText: "نَظَّارَة", trText: "Gözlük", ornek: { ar: "عِنْدَكَ اثْنَتَا عَشْرَةَ نَظَّارَةً", tr: "Sende on iki gözlük var." } } }, cogul: "نَظَّارَات", cogulTr: "Gözlükler" },
+
+    "Oyun: Misket": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🔵", arText: "دِعْبِلَة", trText: "Misket / Bilye", ornek: { ar: "أَلْعَبُ بِالدِّعْبِلَةِ مَعَ أَخِي", tr: "Kardeşimle misket oynuyorum." } } }, cogul: "دَعَابِل", cogulTr: "Misketler" },
+
+    "Aile: Yavrum": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👶", arText: "بُنَيّ", trText: "Yavrum / Oğulcuğum", ornek: { ar: "يَا بُنَيَّ، اِغْسِلْ يَدَيْكَ", tr: "Yavrum, ellerini yıka." } } } },
+
+    "Edat: Alo": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "☎️", arText: "أَلُو", trText: "Alo", ornek: { ar: "أَلُو، مَنْ مَعِي؟", tr: "Alo, kimsiniz?" } } } },
+
+    "Edat: Haydi": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🏃", arText: "هَيَّا", trText: "Haydi", ornek: { ar: "هَيَّا يَا يُوسُفُ إِلَى الْمَقْصَفِ", tr: "Haydi Yusuf, kantine." } } } },
+
+    "Sayı: On İki": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🔢", arText: "اِثْنَا عَشَرَ", trText: "On iki", ornek: { ar: "عِنْدِي اثْنَا عَشَرَ قَلَمًا", tr: "Bende on iki kalem var." } } } },
+
+    "Sayı: On İki (Dişil)": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🔢", arText: "اِثْنَتَا عَشْرَةَ", trText: "On iki (dişil sayılanla)", ornek: { ar: "عِنْدَكَ اثْنَتَا عَشْرَةَ كُرَةً", tr: "Sende on iki top var." } } } },
+
+    "Sıra: On Birinci (Dişil)": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🕚", arText: "الْحَادِيَةَ عَشْرَةَ", trText: "On bir / On birinci (dişil)", ornek: { ar: "السَّاعَةُ الْآنَ الْحَادِيَةَ عَشْرَةَ", tr: "Saat şimdi on bir." } } } },
+
+    "Kalıp: Afiyet Olsun": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "😋", arText: "هَنِيئًا", trText: "Afiyet olsun / Afiyetle", ornek: { ar: "هَنِيئًا مَرِيئًا", tr: "Afiyet olsun." } } } },
+
+    "Kalıp: Afiyet ve Şifa": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🍽️", arText: "بِالْهَنَاءِ وَالشِّفَاءِ", trText: "Afiyet olsun (yemek duası)", ornek: { ar: "بِالْهَنَاءِ وَالشِّفَاءِ يَا وَالِدَتِي", tr: "Afiyet olsun anneciğim." } } } },
+
+    "Kalıp: Eline Sağlık": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "👏", arText: "سَلِمَتْ يَدَاكِ", trText: "Eline sağlık", ornek: { ar: "الطَّعَامُ لَذِيذٌ، سَلِمَتْ يَدَاكِ", tr: "Yemek lezzetli, eline sağlık." } } } },
+
+    "Zarf: Erkenden": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "⏰", arText: "مُبَكِّرًا", trText: "Erkenden / Erken", ornek: { ar: "أَسْتَيْقِظُ مُبَكِّرًا كُلَّ يَوْمٍ", tr: "Her gün erken kalkarım." } } } }
 };
 
 // Kökler dosyasındaki eski sözlük verilerini yeni sözlük verileriyle birleştir
