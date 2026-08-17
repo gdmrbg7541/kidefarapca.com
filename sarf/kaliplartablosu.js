@@ -2568,10 +2568,20 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             wrapper.addEventListener('mouseup', stopDrag);
             wrapper.addEventListener('mousemove', moveDrag);
 
-            // Touch events
-            wrapper.addEventListener('touchstart', startDrag, {passive: true});
-            wrapper.addEventListener('touchend', stopDrag);
-            wrapper.addEventListener('touchmove', moveDrag, {passive: false});
+            /* DOKUNMATİKTE EL SÜRÜKLEMESİ YOK — TARAYICI KAYDIRIR.
+               Şerit zaten `overflow-x: auto` + `scroll-snap-type: x
+               mandatory`: parmakla kaydırınca tarayıcı hem kendi
+               kaydırmasını yürütüyor hem de aşağıdaki elle kaydırma
+               `scrollLeft`i aynı anda yazıyordu. İki kaynak birbirini
+               eziyor, tablolar arası geçiş takılıyor, kimi zaman iki
+               tablonun ortasında kalıyordu (Geylani: "tablolar arası
+               dokunmatik geçiş yeterince stabil değil"). Üstelik
+               `e.touches[0]` tek parmağı okuduğu için iki tabloyu aynı
+               anda kaydırmak da bozuluyordu.
+               Fare sürüklemesi (masaüstünde tut-çek) olduğu gibi duruyor;
+               dokunmatikte tarayıcının kendi ivmeli kaydırması ve
+               yapışma noktaları devrede — hem daha akıcı, hem çok
+               parmakla aynı anda birden çok tabloda çalışıyor. */
         };
 
         window.scrollConjugationCarouselDefined = true;
@@ -2627,28 +2637,48 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     expandBtn.onclick = function(event) { event.stopPropagation(); openMatrixFullscreen(event, this); };
     inlineContainer.appendChild(expandBtn);
     
+    /* ================= TABLOYU SÜRÜKLEME =================
+       İŞARETÇİ OLAYLARI + İŞARETÇİ KİLİDİ (setPointerCapture).
+       ESKİ HÂLİ dokunmatikte HİÇ çalışmıyordu: sürükleme hareketleri
+       `document` üzerinde dinleniyordu, ama kabın kendi
+       `ontouchmove = stopPropagation`'ı (yukarıda, sayfanın kutu
+       işleyicilerine sızmasın diye) onların document'a ulaşmasını
+       kesiyordu — parmak tutuyor, tablo yerinde duruyordu.
+       Ayrıca hareket `e.touches[0]`'dan okunuyordu: iki tabloyu iki
+       parmakla birlikte sürüklemek isteyince ikisi de AYNI parmağı
+       izliyordu (Geylani: "birden fazla fiil çekimini dokunmatik olarak
+       kontrol etmek… yeterince stabil değil").
+       ŞİMDİ her tablo kendi tutamağında kendi işaretçisini kilitliyor:
+       parmak nereye giderse gitsin olaylar o tutamağa geliyor, iki
+       (ya da daha çok) tablo birbirine karışmadan aynı anda
+       sürüklenebiliyor. Fare ve kalem de aynı yoldan geçiyor. */
     const dragBar = inlineContainer.querySelector('.popup-drag-bar');
-    let isDraggingPopup = false; let pStartX, pStartY, pInitialLeft, pInitialTop;
-    const onPopupDragStart = (e) => {
-        e.stopPropagation(); isDraggingPopup = true; dragBar.style.cursor = 'grabbing';
-        pStartX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-        pStartY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-        pInitialLeft = inlineContainer.offsetLeft; pInitialTop = inlineContainer.offsetTop;
-        inlineContainer.style.right = 'auto'; 
-        document.addEventListener('mousemove', onPopupDragMove); document.addEventListener('mouseup', onPopupDragEnd);
-        document.addEventListener('touchmove', onPopupDragMove, { passive: false }); document.addEventListener('touchend', onPopupDragEnd);
-    };
-    const onPopupDragMove = (e) => {
-        if (!isDraggingPopup) return; e.preventDefault(); e.stopPropagation(); 
-        let x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; let y = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-        inlineContainer.style.left = (pInitialLeft + (x - pStartX)) + 'px'; inlineContainer.style.top = (pInitialTop + (y - pStartY)) + 'px';
-    };
-    const onPopupDragEnd = (e) => {
-        if (e) e.stopPropagation(); isDraggingPopup = false; dragBar.style.cursor = 'grab';
-        document.removeEventListener('mousemove', onPopupDragMove); document.removeEventListener('mouseup', onPopupDragEnd);
-        document.removeEventListener('touchmove', onPopupDragMove); document.removeEventListener('touchend', onPopupDragEnd);
-    };
-    dragBar.addEventListener('mousedown', onPopupDragStart); dragBar.addEventListener('touchstart', onPopupDragStart, { passive: false });
+    if (dragBar) {
+        let sur = null;                       /* {id, x, y, l, t} */
+        dragBar.addEventListener('pointerdown', (e) => {
+            if (sur) return;                  /* bir tabloyu tek işaretçi sürükler */
+            sur = { id: e.pointerId, x: e.clientX, y: e.clientY,
+                    l: inlineContainer.offsetLeft, t: inlineContainer.offsetTop };
+            inlineContainer.style.right = 'auto';
+            dragBar.style.cursor = 'grabbing';
+            try { dragBar.setPointerCapture(e.pointerId); } catch (x) {}
+            e.stopPropagation();
+        });
+        dragBar.addEventListener('pointermove', (e) => {
+            if (!sur || e.pointerId !== sur.id) return;
+            e.stopPropagation();
+            inlineContainer.style.left = (sur.l + (e.clientX - sur.x)) + 'px';
+            inlineContainer.style.top  = (sur.t + (e.clientY - sur.y)) + 'px';
+        });
+        const surBitir = (e) => {
+            if (!sur || e.pointerId !== sur.id) return;
+            try { dragBar.releasePointerCapture(sur.id); } catch (x) {}
+            sur = null; dragBar.style.cursor = 'grab';
+            e.stopPropagation();
+        };
+        dragBar.addEventListener('pointerup', surBitir);
+        dragBar.addEventListener('pointercancel', surBitir);
+    }
     boxElement.style.zIndex = '';  // kutu stacking context olusturmasin (kalip popuplarin ustune cikmasin)
     boxElement.classList.add('matrix-opened');
     if (inlineContainer) inlineContainer.style.setProperty('z-index', String(window._fdmPopupZ = (window._fdmPopupZ || 2000000) + 1), 'important');
@@ -2664,8 +2694,12 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             if (cont) cont.style.setProperty('z-index', String(window._fdmPopupZ = (window._fdmPopupZ || 2000000) + 1), 'important');
         }
     }
-    document.addEventListener('mousedown', _raisePopup, true);
-    document.addEventListener('touchstart', _raisePopup, { passive: true, capture: true });
+    /* TEK YOL: pointerdown fare · dokunuş · kalem üçünü birden karşılar.
+       Eskiden mousedown + touchstart ayrı ayrı dinleniyordu; dokunmatik
+       cihazda tarayıcı touchstart'ın ardından sahte bir mousedown daha
+       üretiyor, aynı tablo iki kez öne alınıyor ve iki tabloya sırayla
+       dokununca hangisinin önde olduğu şaşıyordu. */
+    document.addEventListener('pointerdown', _raisePopup, true);
 })();
 
 // Global tıklama (kapatma) event listener'ı aynen kalıyor
@@ -8302,7 +8336,14 @@ window.closeMarathon = function() {
     document.getElementById('chrono-main').style.display = 'none';
     
     if (window.mLaunchedFromTelaffuz) {
-        document.getElementById('telaffuz-overlay').style.display = 'block';
+        /* 'block' DEĞİL 'flex': perde bir sütun flex kabı (başlık +
+           kayan liste). block'a düşünce kayan bölüm `flex:1` ile
+           yükseklik alamıyor, boyu bütün içeriğe (ölçüldü: 30782 px)
+           uzuyor ve perdenin overflow:hidden'ı altını kesiyordu —
+           liste donuyor, aşağıdaki fiillere inilemiyordu (Geylani:
+           "bi fiile tıklayıp çıkınca scroll donuyor"). openTelaffuz()
+           zaten 'flex' veriyor; dönüşte de aynısı. */
+        document.getElementById('telaffuz-overlay').style.display = 'flex';
         window.mLaunchedFromTelaffuz = false;
     } else {
         const gw = document.getElementById("game-wrapper");
@@ -11148,8 +11189,10 @@ window.closeRootOfDay = function() {
 /* ============================================================================
    MARATON SÜZGECİ — kalıp listesi perdesindeki (kalipliste.js) süzgeç
    tasarımının aynısı. Tek fark: harf klavyesinin yerinde HARF SAYISI
-   tuşları (4 · 5 · 6) duruyor, çünkü maratonda süzülen şey kökün baş harfi
-   değil fiilin kaç harfli olduğudur. Aksâm-ı seb'a şeması birebir aynı:
+   tuşları (3 · 4 · 5 · 6) duruyor, çünkü maratonda süzülen şey kökün baş
+   harfi değil fiilin kaç harfli olduğudur. ÜÇ HARFLİLER DE SÜZÜLEBİLİR
+   (Geylani: "rakamlarda 3 te olmalı"): sülâsî mücerred bâbların mazileri
+   maraton havuzunda zaten vardı, yalnız süzgeçte tuşları yoktu. Aksâm-ı seb'a şeması birebir aynı:
    solda sahih üçü yeşil, sağda mu'tel dördü turuncu, her kart ad · tanım ·
    örnek fiil taşır. Sayılar canlıdır: o an kaç fiil düştüğünü gösterir.
    ========================================================================= */
@@ -11184,13 +11227,13 @@ function maratonSayim() {
         var fiiller = (typeof getAvailableMaziVerbs === 'function') ? getAvailableMaziVerbs(kok) : [];
         fiiller.forEach(function (v) {
             var n = getLetterCountFromRefId(v.refId);
-            /* Toplam ve aksâm sayıları BÜTÜN fiilleri kapsar (3 harfliler dâhil);
-               süzgeçte yalnız harf sayısı tuşları 4-6 ile sınırlıdır. Böylece
-               "Hepsi" rozetiyle listedeki fiil sayısı birbirini tutar. */
+            /* Toplam ve aksâm sayıları BÜTÜN fiilleri kapsar; harf sayısı
+               tuşları da artık 3'ten 6'ya kadar. Böylece "Hepsi" rozetiyle
+               dört rakamın toplamı birbirini tutar. */
             say.toplam++;
             aksamList.forEach(function (a) { say.aksam[a] = (say.aksam[a] || 0) + 1; });
             say.bas[bh] = (say.bas[bh] || 0) + 1;
-            if (n >= 4 && n <= 6) say.harf[n] = (say.harf[n] || 0) + 1;
+            if (n >= 3 && n <= 6) say.harf[n] = (say.harf[n] || 0) + 1;
         });
     });
     return say;
@@ -11244,9 +11287,9 @@ function maratonSuzgecCiz() {
         klavye += '</div>';
     });
 
-    /* --- HARF SAYISI: en sağdaki dikey sütun (4 · 5 · 6) --- */
+    /* --- HARF SAYISI: en sağdaki dikey sütun (3 · 4 · 5 · 6) --- */
     var rakam = '';
-    [4, 5, 6].forEach(function (n) {
+    [3, 4, 5, 6].forEach(function (n) {
         var adet = say.harf[n] || 0;
         var sinif = 'kl-tus mt-tus' + (secHarf === n ? ' kl-tus-secili' : '') + (adet ? '' : ' kl-tus-olu');
         rakam += '<button type="button" class="' + sinif + '"' + (adet ? '' : ' disabled') +
@@ -11325,7 +11368,7 @@ function maratonSec(tur, deger) {
 
 // --- TELAFFUZ FILTRESI VE MARATON ARAMA ---
 window.telaffuzFilters = {
-    letter: [],   /* fiilin harf sayısı: 4 · 5 · 6 */
+    letter: [],   /* fiilin harf sayısı: 3 · 4 · 5 · 6 */
     aksam:  [],   /* aksâm-ı seb'a */
     bas:    []    /* kökün baş harfi (klavye) */
 };

@@ -729,14 +729,28 @@
         sar.style.height = '';
         ciz();
         var bitis = sar.getBoundingClientRect().height;
-        if (Math.abs(basla - bitis) < 1) { sar.style.transition = ''; return; }
+        if (Math.abs(basla - bitis) < 1) { sar.style.transition = ''; storOlc(); return; }
         sar.style.height = basla + 'px';
         void sar.offsetHeight;
         sar.style.transition = 'height ' + SURE_SUZGEC;
         sar.style.height = bitis + 'px';
         clearTimeout(seritYumusat._z);
+        /* YAPIŞMA EŞİĞİ ŞERİTLE BİRLİKTE DEĞİŞMELİ.
+           Şerit katlanınca/açılınca yüksekliği değişiyor ama sticky
+           eşikleri (--ko-bar-yuk / --ko-serit-yuk / --ko-bas-kayma) eski
+           ölçüyle kalıyordu: vezin levhası katlanmış şeridin bıraktığı
+           boşluğa inemiyor, "tam yukarı çıkmıyordu". Ölçü, yumuşama
+           boyunca her karede yenileniyor — levha şeritle birlikte
+           süzülüyor, sonunda da bir kez daha sabitleniyor. */
+        var bitisAn = Date.now() + 900;
+        (function izle() {
+            storOlc();
+            if (Date.now() < bitisAn) requestAnimationFrame(izle);
+        })();
         seritYumusat._z = setTimeout(function () {
             sar.style.transition = ''; sar.style.height = '';
+            storOlc();
+            takimPayOlc(true);      /* şerit oturdu: panel tavanı hemen tazelensin */
         }, 900);
     }
     /* Ok İKİ YÖNLÜ: açıkken yukarı bakar (katla), kapalıyken aşağı
@@ -1211,6 +1225,7 @@
            levhayla hizalanır — ölçü her çizimde yeniden alınır. */
         if (odak) { if (odak.muc) { mucHizala(); mucLevhaBoya(); } else sutunlariHizala(); }
         adYaz(n);
+        takimPayOlc();          /* panel sayısı/başlık boyu değişmiş olabilir */
         return n;
     }
 
@@ -2108,10 +2123,31 @@
         var EGRI = KL_EGRI_KAP;
         var A = KL_KAP_SERIT, B = KL_KAP_LISTE;
         if (sar) {
-            sar.style.height = sar.getBoundingClientRect().height + 'px';
-            void sar.offsetHeight;
-            sar.style.transition = 'height ' + klSn(A) + ' ' + EGRI;
-            sar.style.height = '0px';
+            /* KATLAR ÇEKİLİYKEN ŞERİT CANLANDIRILMAZ.
+               Takım kipinde tablo, şeridin YERİNİ geri almak için
+               --ko-serit-oz kadar yukarı çekilidir; yani şerit görüş
+               alanının ÜSTÜNDE, zaten görünmüyor. Boyu yavaşça sıfıra
+               inerken pay 116 px'te donuk kalıyor, altındaki her şey o
+               kadar yukarı süzülüyor ve vezinler ekranın üstünden taşıp
+               kırpılıyordu (ölçüldü: levha +3 px'ten −113 px'e iniyor —
+               Geylani: "cemi teksîr kapatılırken bi kısmı görünmüyor").
+               Görünmeyen bir şeyi canlandırmanın anlamı yok: şerit ve
+               pay TEK KAREDE birlikte sıfırlanır, ikisi birbirini tam
+               götürür, ekranda hiçbir şey oynamaz. Katlar açıkken şerit
+               görünür ve tablonun payı zaten sıfırdır — orada eski
+               yumuşak kapanış aynen sürüyor. */
+            var cekili = barKipi() && !document.body.classList.contains('muc-takim-ust');
+            if (cekili) {
+                document.body.classList.add('muc-kapaniyor');   /* pay geçişi kapalı */
+                sar.style.transition = 'none';
+                sar.style.height = '0px';
+                document.body.style.setProperty('--ko-serit-oz', '0px');
+            } else {
+                sar.style.height = sar.getBoundingClientRect().height + 'px';
+                void sar.offsetHeight;
+                sar.style.transition = 'height ' + klSn(A) + ' ' + EGRI;
+                sar.style.height = '0px';
+            }
         }
         st.zaman.push(setTimeout(function () {
             if (st.bitti) return;
@@ -2216,33 +2252,193 @@
         }
         return false;
     }
-    /* ÇOK BANTLI TAKIMDA (cem-i teksir: 8 vezin, iki sıra) ŞERİT AKIŞTAN
-       ÇIKAR. Sebebi dikey alan: şerit 120px yer kaplıyor (klavye çipleri
-       56 + "Cemi Teksir · 57 kelime" satırı 32 + paylar) ve ekran
-       kaydırılınca yerinde boşluk bırakıyordu — vezinler tepeye
-       oturamıyordu. Şeritsiz hâlde teksir görünümü 920px'e iniyor,
-       yani ekrana sığıyor: kaydırma da bitiyor, boşluk da.
-       Tek bantlı takımlarda (tafdil · fâil · zaman-mekân · âlet) ve
-       tekil kalıplarda şerit aynen duruyor. */
-    function seritGizle(takim) {
-        var bantli = !!(takim && takim.uyeler.length > takim.sutun);
-        document.body.classList.toggle('muc-serit-yok', bantli);
-        /* Üst çubuk da çekilir; her açılışta kapalı başlar */
-        if (!bantli) document.body.classList.remove('muc-bar-acik');
+    /* ================= TAKIM KİPİ: ÜST KATLAR =================
+       ARTIK BÜTÜN VEZİNLERDE AYNI SİSTEM (Geylani: "vezinlere basınca
+       bazılarında filtre kısmı çıkmıyor… tüm vezinlerde sistem aynı
+       olmalı, filtre ve yapışkan kısmın yukarı çıkması vs").
+
+       ESKİDEN: takım görünümlerinde (17-21 · 22-24 · 25-26 · 27-29 ·
+       30-32 · ism-i fâil · zaman-mekân · âlet · cem-i teksir · tafdil)
+       Kök Ara / Aksâm-ı Seb'a şeridi HİÇ ÇİZİLMİYORDU, üst çubuk da
+       baştan çekiliydi. Sebep dikey alandı: takımda örnekler panel panel
+       KENDİ İÇİNDE kaydığı için sayfanın kayacak yeri yok, o yüzden stor
+       perdesi hiç tetiklenmiyor, şerit yalnız görünmez oluyor ama YERİ
+       duruyordu — vezinlerin üstünde ~145 px boş bant kalıyordu.
+
+       ŞİMDİ: şerit takımda da çiziliyor ve üst çubukla birlikte AÇIK
+       geliyor; tekil kalıplarda ne görülüyorsa burada da o görülüyor.
+       Ekranı yukarı çekince (tekerlek aşağı / parmak yukarı) ikisi
+       BİRLİKTE kalkıyor ve YERLERİNİ DE bırakıyor — vezinler tepeye
+       oturuyor; ters yönde jest ikisini geri indiriyor. Şeridin yeri
+       tablonun negatif üst payıyla geri alınıyor (bir <td>'ye margin
+       işlemediği için); paneller de boşalan kadar uzuyor (--kl-panel-yuk).
+       Tekil kalıpta aynı işi sayfanın gerçek kaydırması + stor perdesi
+       yapıyor; gözle görülen davranış birebir aynı. */
+    function seritGizle(takim, bab) {
+        /* TEK EKRAN KİPİ: hem takımlar hem BÂBLAR (1-16).
+           Bâb odağında örnekler bir matris; eskiden bütün sayfa kayıyordu
+           (ölçüldü: 1. bâbda 14 237 px). Sayfa kayınca vezin levhası ile
+           filtre yapışkanlıkla ekranda tutulmaya çalışılıyor, matrisin
+           sütunları levhadan kopuyordu. Artık matris KENDİ kabında kayıyor
+           (--kl-kaydir-yuk), sayfanın kendisi kaymıyor; dışarıda yapılan
+           jest ise üst katları kaldırıp filtreyi topluyor — takımlarda ne
+           oluyorsa o (Geylani: "1-16 vezin örnekleri diğer vezinler gibi
+           hareket etsin"). */
+        var tekEkran = !!(takim || bab);
+        document.body.classList.remove('muc-kapaniyor');   /* yarım kalmışsa */
+        document.body.classList.toggle('muc-takim', tekEkran);
+        document.body.classList.toggle('muc-bab', !!bab && !takim);
+        /* Her açılışta üst katlar AÇIK: ilk görüntüde filtre görünsün */
+        document.body.classList.toggle('muc-takim-ust', tekEkran);
+        payGozcuKur(tekEkran);
+        takimPayOlc();
     }
-    /* ÜST ÇUBUĞU EKRANI AŞAĞI ÇEKİNCE GERİ GETİR. Bu görünümde sayfa
+    /* ŞERİDİN BOYU SONRADAN OTURUYOR: açılış sırasında şerit satırı
+       daha `display:none` (tablo çekilene kadar akış dışında), ölçü o
+       anda 0 çıkıyor ve paneller olduğundan uzun kalıyordu — ekranın
+       altından taşıp sayfaya kaydırma çubuğu getiriyordu. Gözcü, şerit
+       ve üst çubuk her boy değiştirdiğinde payı yeniden yazıyor;
+       süzgeç açılıp kapandığında da aynı yoldan geçiyor. */
+    var payGozcu = null;
+    function payGozcuKur(takimda) {
+        if (!takimda) {
+            if (payGozcu) { payGozcu.disconnect(); payGozcu = null; }
+            return;
+        }
+        if (typeof ResizeObserver === 'undefined') {
+            /* Gözcüsüz tarayıcıda birkaç kare sonra tek seferlik ölçüm */
+            [80, 400, 1200, 2600].forEach(function (ms) { setTimeout(takimPayOlc, ms); });
+            return;
+        }
+        if (!payGozcu) payGozcu = new ResizeObserver(function () { takimPayOlc(); });
+        payGozcu.disconnect();
+        /* Üst çubuk · şerit · vezin levhası: üçünün boyu da panellere
+           kalan yeri değiştiriyor. Panellerin KENDİSİ izlenmiyor —
+           ölçüm onları değiştirdiği için gözcü kendi kuyruğunu kovalardı. */
+        [document.querySelector('.top-bar'),
+         document.querySelector('.ko-suzgec-satir > td'),
+         document.querySelector('.muc-levha-satir > td')]
+            .forEach(function (el) { if (el) payGozcu.observe(el); });
+    }
+    /* ÜST KATLARI EKRANI AŞAĞI ÇEKİNCE GERİ GETİR. Bu görünümde sayfa
        kaymadığı için stor perdesi tetiklenmiyor — jesti kendimiz
-       dinliyoruz: tekerlek yukarı / parmak aşağı = çubuk iner, ters
-       yön = yine çekilir. Panel içi kaydırma ÖNCELİKLİ: panelin daha
+       dinliyoruz: tekerlek yukarı / parmak aşağı = katlar iner, ters
+       yön = kalkarlar. Panel içi kaydırma ÖNCELİKLİ: panelin daha
        kayacak yeri varsa jest ona bırakılır. */
     function panelPayiVar(hedef, yon) {
-        var g = (hedef && hedef.closest) ? hedef.closest('.kl-panel-govde') : null;
+        /* Takımda panel gövdesi, bâbda matrisin kabı — hangisi daha
+           yakınsa jest önce ona ait. */
+        var g = (hedef && hedef.closest) ? hedef.closest('.kl-panel-govde, .ko-kaydir') : null;
         if (!g) return false;
         return (yon < 0) ? (g.scrollTop > 1)
                          : (g.scrollTop + g.clientHeight < g.scrollHeight - 1);
     }
-    function barAc(ac) { document.body.classList.toggle('muc-bar-acik', !!ac); }
-    function barKipi() { return document.body.classList.contains('muc-serit-yok'); }
+    /* PANEL TAVANI ÖLÇÜLEREK BULUNUR, SABİTLE DEĞİL.
+       Takım görünümü tek ekrana sığmalı: sığmazsa sayfada kaydırma
+       çubuğu doğuyor, çubuk da genişliği değiştirip titreme yapıyor.
+       Sığacak boy CSS sabitleriyle (100vh − 245px gibi) tutturulamıyor,
+       çünkü üstteki katlar (bar + şerit) inip kalkıyor, panel başlığı
+       kimi ailede iki satır (vezin + Türkçe görev), teksirde ise iki
+       bant + ara levha var.
+
+       ÖLÇÜM HİÇBİR ŞEYE DOKUNMAZ. İlk sürümde gövdeler bir an sıfıra
+       indirilip sayfanın kalanı ölçülüyordu; kâğıt üstünde tek görevde
+       bitiyordu ama tarayıcı o ara biçimi de hesaplıyor ve geçiş yeniden
+       açıldığında animasyonu SIFIRDAN başlatıyordu — liste her ölçümde
+       yeniden büyüyordu (ölçüldü: tek açılışta 65 yerleşim değişimi;
+       Geylani: "birden fazla render oluyormuş gibi tekrar tekrar scroll
+       oluyor"). Şimdi ölçü tamamen okumadan çıkarılıyor:
+         · bantların ÜSTÜNDEKİ her şey  = ilk bandın tepesi
+         · her bandın panel KROMU       = bant boyu − en uzun gövde
+         · bantlar arası (ara levha)    = alt bandın tepesi − üstün dibi
+       Kalan boşluk bantlara bölünür. Gövdelerin o anki boyu ne olursa
+       olsun (tavana dayalı ya da içerikten kısa) krom aynı çıkar, yani
+       ölçü kendi kendini düzeltir; kartlar dolarken bile oynamaz. */
+    function takimOlc() {
+        var b = document.body;
+        if (!b.classList.contains('muc-takim')) {
+            b.style.removeProperty('--kl-panel-yuk');
+            b.style.removeProperty('--kl-kaydir-yuk');
+            return;
+        }
+        /* Şeridin boyunu BURADA da yazıyoruz: storOlc yalnız kaydırmada
+           çalışıyor, takımda ise sayfa hiç kaymıyor — ölçü 0'da kalıp
+           tablo yukarı çekilemiyordu (levha tepeye 116 px uzak kalıyordu). */
+        var td = document.querySelector('.ko-suzgec-satir > td');
+        if (td && td.offsetHeight) b.style.setProperty('--ko-serit-oz', td.offsetHeight + 'px');
+        /* BÂB ODAĞI: kayan tek bir kap var (matrisin kabı). Üstünde ne
+           kalıyorsa gerisi onun; ölçü kabın kendi tepesinden okunuyor. */
+        if (b.classList.contains('muc-bab')) {
+            var kay = document.querySelector('#tab1 .ko-kaydir');
+            if (!kay) return;
+            var kr = kay.getBoundingClientRect();
+            if (!kr.height) return;
+            var yer = Math.max(180, Math.floor(
+                window.innerHeight - (kr.top + (window.scrollY || 0)) - 6));
+            var oncekiK = parseFloat(b.style.getPropertyValue('--kl-kaydir-yuk')) || 0;
+            if (Math.abs(yer - oncekiK) > 2) b.style.setProperty('--kl-kaydir-yuk', yer + 'px');
+            return;
+        }
+        var yuva = document.getElementById('klGovde');
+        var bantlar = yuva ? yuva.querySelectorAll('.kl-takim') : [];
+        if (!bantlar.length) return;
+        var ilk = bantlar[0].getBoundingClientRect();
+        if (!ilk.height) return;              /* daha yerleşmemiş: ölçme */
+        var dolu = ilk.top + (window.scrollY || 0);
+        var oncekiAlt = null;
+        for (var i = 0; i < bantlar.length; i++) {
+            var r = bantlar[i].getBoundingClientRect();
+            if (oncekiAlt !== null) dolu += Math.max(0, r.top - oncekiAlt);
+            oncekiAlt = r.bottom;
+            var gvd = bantlar[i].querySelectorAll('.kl-panel-govde');
+            var enUzun = 0;
+            for (var j = 0; j < gvd.length; j++)
+                enUzun = Math.max(enUzun, gvd[j].getBoundingClientRect().height);
+            dolu += Math.max(0, r.height - enUzun);
+        }
+        var pay = Math.max(120,
+            Math.floor((window.innerHeight - dolu - 6) / bantlar.length));
+        /* Birkaç piksellik oynamalar yazılmaz: yoksa kartlar dolarken
+           tavan sürekli tazelenip geçişi yeniden tetiklerdi. */
+        var eski = parseFloat(b.style.getPropertyValue('--kl-panel-yuk')) || 0;
+        if (Math.abs(pay - eski) > 2) b.style.setProperty('--kl-panel-yuk', pay + 'px');
+    }
+    /* İKİ HIZ:
+       · hemen = true  → aynı karede ölç. Üst katlar inip kalkarken
+         (jest) paneller barla BİRLİKTE büyüsün diye gerekli.
+       · hemen = false → yalnız yerleşim durduktan sonra ölç. Liste
+         açılırken levha, panel başlıkları ve kartlar sırayla oturuyor;
+         her ara durumda tavan yazılsaydı geçiş üst üste tetiklenir,
+         liste birkaç kez yeniden büyürdü. Bekleyiş her yeni istekte
+         baştan kurulur, yani ölçü hareket bitince bir kez alınır. */
+    var olcuBekleyen = 0, olcuSaat = null;
+    function takimPayOlc(hemen) {
+        if (!document.body.classList.contains('muc-takim')) {
+            if (document.body.style.getPropertyValue('--kl-panel-yuk'))
+                document.body.style.removeProperty('--kl-panel-yuk');
+            if (document.body.style.getPropertyValue('--kl-kaydir-yuk'))
+                document.body.style.removeProperty('--kl-kaydir-yuk');
+            return;
+        }
+        if (hemen && !olcuBekleyen) olcuBekleyen = requestAnimationFrame(function () {
+            olcuBekleyen = 0; takimOlc();
+        });
+        clearTimeout(olcuSaat);
+        olcuSaat = setTimeout(function () { olcuSaat = null; takimOlc(); }, 400);
+    }
+    function barAc(ac) {
+        var b = document.body;
+        if (b.classList.contains('muc-takim-ust') === !!ac) return;
+        b.classList.toggle('muc-takim-ust', !!ac);
+        takimPayOlc(true);          /* paneller barla birlikte büyüsün */
+    }
+    function barKipi() { return document.body.classList.contains('muc-takim'); }
+    /* KAYAN KAP HER ZAMAN ÖNCELİKLİ — iki yönde de.
+       Örneklerin içinde gezerken üst katlar oynamaz; jest ancak kabın
+       DIŞINDA yapılırsa (levha, kenar boşlukları) ya da kap yolun
+       sonuna geldiyse katlara geçer (Geylani: "örnekleri kaydırırken
+       sayfa kaymasın, örnek konteynırı dışında kaydırılırsa filtre
+       kaybolsun"). */
     document.addEventListener('wheel', function (e) {
         if (!barKipi()) return;
         if (e.deltaY < -4) { if (!panelPayiVar(e.target, -1)) barAc(true); }
@@ -2559,8 +2755,8 @@
             yuva.classList.add('muc-levha-takim', 'muc-levha-' + takim.ad);
             yuva.style.setProperty('--takim-sutun', takim.sutun);
             lv.classList.add('muc-satir-takim', 'muc-satir-' + takim.ad);
-            seritGizle(takim);
         }
+        seritGizle(takim, trio);
         /* Evler ŞİMDİ saklanır (kutular hâlâ yerinde): kapanışta aynen
            geri konurlar. */
         var evler = kutular.map(function (k) {
@@ -2778,7 +2974,19 @@
                ikisi üst üste olduğu için ekranda hiçbir şey değişmiyor.
                (Aynı anda biri sönüp öteki belirseydi vezin ortada bir
                parça sönük görünürdü.) */
-            (st0.kutular || []).forEach(function (k) { k.style.visibility = ''; });
+            /* ARA LEVHADAKİLER (cem-i teksîrin 45-48'i) İSTİSNA: onlar
+               listenin İÇİNDE yaşıyor ve liste bu anda hâlâ aşağı doğru
+               beliriyor — asıl kutu o kayışa katılıyor, kopya ise varış
+               noktasında duruyor. İkisi birden görünür olunca aralarında
+               10 px'lik bir fark doğuyor ve vezin bir saniye boyunca ÇİFT
+               görünüyordu (Geylani: "45-48. kalıplar iki kopya
+               görünüyor"). Onlar kopyalarıyla AYNI ANDA devralıyor:
+               aşağıdaki cakiliSil hem kopyayı siliyor hem asılları
+               görünür yapıyor, o anda ikisi birebir çakışık. */
+            var gvd = st0.govdeTr;
+            (st0.kutular || []).forEach(function (k) {
+                if (!(gvd && gvd.contains(k))) k.style.visibility = '';
+            });
             st0.zaman.push(setTimeout(function () { cakiliSil(st0); }, KL_LISTE_MS + 60));
             belirBasla(ic, KL_LISTE_MS);
         }, KL_CUBUK_MS + KL_MUC_MS + 60 + KL_MUC_ARA + KL_MUC_BELIR + KL_MUC_ARA));
@@ -3087,7 +3295,7 @@
         } else {
             yuva.style.removeProperty('--takim-sutun');
         }
-        seritGizle(takim);
+        seritGizle(takim, trio);
         var izi = yuva.querySelector('.muc-levha-kok-izi');
         if (trio && !izi) {
             izi = document.createElement('span');
@@ -3140,9 +3348,11 @@
            SESLİ kapanışta kilit için güvenlik saati kurulur: aşağıdaki
            kanca herhangi bir sebeple çalışmazsa sayfa kilitli kalmasın. */
         if (!sessiz) cubukSaat(KL_MUC_MS + 900);
-        document.body.classList.remove('muc-odak', 'muc-serit-yok', 'muc-bar-acik',
-                                       'muc-zemin', 'muc-zemin-ac');
+        document.body.classList.remove('muc-odak', 'muc-takim', 'muc-takim-ust',
+                                       'muc-bab', 'muc-kapaniyor', 'muc-zemin', 'muc-zemin-ac');
         document.body.style.removeProperty('--muc-zemin-sure');
+        document.body.style.removeProperty('--kl-panel-yuk');
+        document.body.style.removeProperty('--kl-kaydir-yuk');
         var govde1 = st.satir.parentElement;
         var evler = st.evler || [];
         var r0lar = evler.map(function (ev) { return ev.kutu.getBoundingClientRect(); });
@@ -3372,6 +3582,16 @@
         bs.setProperty('--ko-bar-yuk', barYuk + 'px');
         bs.setProperty('--ko-serit-yuk', (seritYuk + 60) + 'px');      /* gölge payı */
         bs.setProperty('--ko-bas-kayma', (barYuk + seritYuk) + 'px');
+        /* Şeridin GÖLGESİZ, gerçek boyu: takım kipinde tablo bu kadar
+           yukarı çekilerek şeridin YERİ geri alınıyor. */
+        bs.setProperty('--ko-serit-oz', seritYuk + 'px');
+        /* MEZİDDE TÜRKÇE BAŞLIK SATIRININ BOYU: odak satırı (ⓘ'den
+           ism-i mef'ûle kadar olan Arapça vezinler) tam onun altına
+           yapışsın diye eşiği buradan okuyor. */
+        var mezBas = document.querySelector('#tab2 table.ko-acik > thead > tr:not(.ko-satir)');
+        if (mezBas && mezBas.offsetHeight)
+            bs.setProperty('--ko-mez-bas', mezBas.offsetHeight + 'px');
+        takimPayOlc();
     }
     window.addEventListener('scroll', function () {
         var b = document.body;

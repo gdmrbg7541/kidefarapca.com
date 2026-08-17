@@ -4962,6 +4962,44 @@ body.ko-stor.ko-stor-sakla #tab1 table.ko-acik thead .ko-suzgec-satir > td,
 body.ko-stor.ko-stor-sakla #tab2 table.ko-acik thead .ko-suzgec-satir > td {
     transform: translateY(calc(-1 * (var(--ko-bar-yuk, 62px) + var(--ko-serit-yuk, 420px))));
 }
+/* ============ MEZİDDE VEZİN SATIRI DA YAPIŞIR ============
+   Örnek listesinde derine inerken eskiden yalnız TÜRKÇE başlık satırı
+   (MAZİ · MUZARİ · … · İSMİ MEF'UL) tepede kalıyordu; altındaki
+   ARAPÇA vezin satırı — ⓘ'den ism-i mef'ûl veznine kadar bâbın kendi
+   satırı — yukarı kayıp kayboluyordu. Öğrenci örnekleri gezerken
+   hangi veznin altında olduğunu göremiyordu (Geylani: "sadece türkçe
+   başlıklar değil arapça vezinler de sabit kalsın, info olan yerden
+   ismi meful veznine kadar olan satırın hepsi").
+   Satır Türkçe başlığın TAM ALTINA yapışıyor: eşiği bar + şerit
+   payına başlığın kendi boyu eklenerek bulunuyor (--ko-mez-bas'ı
+   kalipliste.js/storOlc ölçüyor). Katlar çekilince o da onlarla
+   birlikte yukarı süzülüyor — aynı eğri, aynı dil. */
+body.ko-stor #tab2 table.ko-acik > tbody > tr.ko-odak-satir > td {
+    /* !important ŞART: bâb künyesinin hücresi (ⓘ · kalıp · "4 Tef'il")
+       satır içi `position: relative` taşıyor; onsuz o tek hücre yapışmaz,
+       vezinler tepede kalırken künye aşağıda kayıp gidiyordu. */
+    position: sticky !important;
+    top: calc(var(--ko-bas-kayma, 120px) + var(--ko-mez-bas, 41px));
+    z-index: 1190;               /* Türkçe başlık 1200'ün hemen altında */
+    transition: transform .35s ease, background-color .3s ease, box-shadow .3s ease;
+    will-change: transform;
+}
+body.ko-stor.ko-stor-sakla #tab2 table.ko-acik > tbody > tr.ko-odak-satir > td {
+    transform: translateY(calc(-1 * var(--ko-bas-kayma, 120px)));
+    transition: transform .65s cubic-bezier(.33, 0, .18, 1),
+                background-color .3s ease, box-shadow .3s ease;
+}
+/* Asılıyken buzlu zemin: altından akan örnek satırları içinden
+   görünmesin. Sayfanın başındayken saydam, yani duran görünüm hiç
+   değişmiyor. */
+body.ko-stor.ko-stor-yuzer #tab2 table.ko-acik > tbody > tr.ko-odak-satir > td {
+    background-color: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+}
+body.ko-stor.ko-stor-yuzer #tab2 table.ko-acik > tbody > tr.ko-odak-satir > td:first-child {
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+}
 /* Buzlu zemin, sakla sırasında da kalır: şerit yukarı çekilirken
    arkasındaki satırlar içinden görünmesin. */
 body.ko-stor.ko-stor-yuzer #tab1 table.ko-acik thead .ko-suzgec-satir > td,
@@ -5058,17 +5096,44 @@ body.ko-stor #tab1 table.ko-acik .muc-levha-satir.muc-satir-takim > td {
     position: static;
     transform: none !important;
 }
-/* ÇOK BANTLI TAKIMDA (cem-i teksir) ŞERİT HİÇ YOK: 8 vezin + iki örnek
-   bandı için 120px'lik klavye/başlık şeridi lüks kalıyordu. Kaldırınca
-   görünüm ekrana sığıyor — kaydırma da, tepedeki boşluk da bitiyor,
-   vezinler üst çubuğun hemen altında duruyor. (kalipliste.js
-   seritGizle() bu sınıfı yönetir.) */
-body.muc-serit-yok #tab1 table.ko-acik > thead > tr.ko-suzgec-satir { display: none; }
+/* TEK EKRAN KİPİNDE (takım ve bâb) LEVHA HİÇ YAPIŞMAZ: sayfa zaten
+   kaymıyor, örnekler kendi kabında kayıyor. Yapışkan kalırsa levha
+   eşiğine (bar + şerit) doğru itiliyor ve üst katlar çekilince tepede
+   48 px'lik boşluk bırakıyordu — vezin tam yukarı oturamıyordu. */
+body.muc-takim #tab1 table.ko-acik .muc-levha-satir > td {
+    position: static;
+    transform: none !important;
+}
+/* ============ TAKIM KİPİNDE ÜST KATLAR (bar + şerit) ============
+   Kök Ara / Aksâm-ı Seb'a şeridi ARTIK TAKIMDA DA VAR ve üst çubukla
+   birlikte AÇIK gelir: her vezinde aynı görüntü (Geylani: "tüm
+   vezinlerde sistem aynı olmalı, filtre ve yapışkan kısmın yukarı
+   çıkması vs"). Ekranı yukarı çekince ikisi birlikte kalkar ve
+   YERLERİNİ DE bırakır — vezinler tepeye oturur; ters jest indirir.
+   Jesti kalipliste.js dinler (muc-takim-ust).
+
+   ŞERİDİN YERİ NASIL GERİ ALINIYOR: şerit bir <tr>/<td>; ne margin
+   ne transform onun yerini bırakır. Bu yüzden çekilen şey TABLONUN
+   KENDİSİ: negatif üst payla tam şerit boyu yukarı kayıyor, şerit
+   görüş alanının üstünde kalıyor, levha en tepeye oturuyor. */
+body.muc-takim #tab1 table.ko-acik {
+    margin-top: calc(-1 * (var(--ko-serit-oz, 116px) + 2px));
+    transition: margin-top .42s cubic-bezier(.33, 0, .18, 1);
+}
+body.muc-takim.muc-takim-ust #tab1 table.ko-acik { margin-top: 0; }
+/* Kapanışta pay şeridin küçülmesini KARE KARE izler (kalipliste.js);
+   üstüne bir de geçiş binerse pay geride kalır ve vezinler ekranın
+   üstünden taşar. Kapanış boyunca geçiş kapalı. */
+body.muc-takim.muc-kapaniyor #tab1 table.ko-acik { transition: none; }
+/* Takımda sayfa kaymıyor; şerit yapışkan kalsaydı tablo çekilirken
+   tepede asılı kalırdı. Akışında dursun, tabloyla birlikte gitsin. */
+body.muc-takim #tab1 table.ko-acik > thead > tr.ko-suzgec-satir > td {
+    position: static;
+    transform: none !important;
+}
 /* ÜST ÇUBUK (sekmeler) DA ÇEKİLİR — hem kendisi hem YERİ: negatif pay
-   olmasa 56px'lik boşluğu kalırdı, vezinler tepeye oturamazdı. Ekranı
-   aşağı çekince (tekerlek yukarı / parmak aşağı) geri iner; yukarı
-   çekince yine kalkar. Jesti kalipliste.js dinler (muc-bar-acik). */
-body.muc-serit-yok .top-bar {
+   olmasa 56px'lik boşluğu kalırdı, vezinler tepeye oturamazdı. */
+body.muc-takim .top-bar {
     transform: translateY(-140%);
     margin-bottom: calc(-1 * var(--ko-bar-yuk, 48px));
     transition: transform .42s cubic-bezier(.33, 0, .18, 1),
@@ -5078,12 +5143,12 @@ body.muc-serit-yok .top-bar {
 /* Sürüklenebilir kök levhası (فعل) belge koordinatlarına çakılı duruyor;
    içerik yukarı kayınca 41'in kutusunun üstüne biniyordu. Bu görünümde
    tablo zaten gizli, levhanın işi yok — sönük dursun. */
-body.muc-serit-yok .draggable-root-clone {
+body.muc-takim .draggable-root-clone {
     opacity: 0;
     pointer-events: none;
     transition: opacity .3s ease;
 }
-body.muc-serit-yok.muc-bar-acik .top-bar {
+body.muc-takim.muc-takim-ust .top-bar {
     transform: none;
     margin-bottom: 10px;
     background-color: rgba(255, 255, 255, 0.94);
@@ -5307,18 +5372,54 @@ body.mezid-odak #tab2.tab-content { width: 100% !important; }
    içinde kayar; teksirde iki sıra olduğu için tavan alçaktır. */
 .kl-takim .kl-panel-govde { max-height: clamp(300px, 56vh, 760px); }
 .kl-takim-teksir .kl-panel-govde { max-height: clamp(210px, 26vh, 380px); }
-/* ŞERİTSİZ (8 vezinli) GÖRÜNÜMDE EKRAN DİKEYDE %100 KULLANILIR: iki
-   panel bandı, ekrandan sabit paylar (üst/alt 2px, levha 102, ara levha
-   114, panel başlıkları ve dolgular ~2×46, kaydırıcı payı 6) düşüldükten
-   sonra kalanı PAYLAŞIR. Formül: her gövde = 50vh − 165px. Küçük
-   ekranlarda 150px'in altına inmesin diye taban var. */
-body.muc-serit-yok .kl-takim-teksir .kl-panel-govde {
-    max-height: max(150px, calc(50vh - 159px));
+/* TAKIM GÖRÜNÜMÜ EKRANI DİKEYDE %100 KULLANIR: panellerin tavanını
+   kalipliste.js/takimOlc ÖLÇEREK yazar (--kl-panel-yuk) — sayfanın geri
+   kalanı (üst katlar, levha, ara levha, panel başlıkları) ne tutuyorsa
+   kalan boşluk bantlara paylaştırılır. Sabitlerle tutturulamıyordu:
+   üst katlar inip kalkıyor, masdar ailelerinde panel başlığı iki satır,
+   teksirde iki bant var. Aşağıdaki calc()'lar yalnız JS yetişmeden
+   önceki ilk kare için yedek. Geçiş katların süresiyle aynı ki
+   büyüme ile kalkış tek hareket görünsün. */
+body.muc-takim .kl-takim-teksir .kl-panel-govde {
+    max-height: var(--kl-panel-yuk, max(120px, calc(50vh - 159px)));
+    transition: max-height .42s cubic-bezier(.33, 0, .18, 1);
 }
-body.muc-serit-yok { padding-top: 2px !important; padding-bottom: 2px !important; }
+body.muc-takim .kl-takim:not(.kl-takim-teksir) .kl-panel-govde {
+    max-height: var(--kl-panel-yuk, max(150px, calc(100vh - 245px)));
+    transition: max-height .42s cubic-bezier(.33, 0, .18, 1);
+}
+/* ALT DOLGULAR HER İKİ HÂLDE DE SIFIRA YAKIN: aşağıda boşuna yer
+   tutmasınlar, kazanılan yer panellere gitsin. */
+/* BÂB ODAĞINDA (1-16) MATRİS KENDİ KABINDA KAYAR.
+   Eskiden bütün sayfa kayıyordu (ölçüldü: 1. bâbda 14 237 px): örnekleri
+   gezerken vezin levhası yapışkanlıkla tutulmaya çalışılıyor, sütunlar
+   levhadan kopuyor, üstteki filtre de yolda kalıyordu. Artık kabın tavanı
+   ölçülerek yazılıyor (kalipliste.js/takimOlc) ve kaydırma onun İÇİNDE
+   kalıyor; kabın dışında yapılan jest üst katları kaldırıp filtreyi
+   topluyor — takımlarda ne oluyorsa o. */
+body.muc-bab #tab1 .ko-kaydir {
+    max-height: var(--kl-kaydir-yuk, calc(100vh - 380px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    transition: max-height .42s cubic-bezier(.33, 0, .18, 1);
+}
+body.muc-takim { padding-bottom: 2px !important; }
 /* .container'ın dikey dolgusu !important ile geliyor (bkz. yukarısı) */
-body.muc-serit-yok #tab1 .container { padding-top: 2px !important; padding-bottom: 0 !important; }
-body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
+body.muc-takim #tab1 .container { padding-bottom: 0 !important; }
+body.muc-takim #tab1 .ko-kaydir { padding-bottom: 0; }
+/* ÜST DOLGULAR YALNIZ KATLAR ÇEKİLİYKEN DARALIR.
+   Önce takım kipine girer girmez daralıyorlardı; vezne dokunulduğu an
+   sayfa 22 px (gövde 20 → 2, kap 6 → 2) YUKARI SIÇRIYOR, hemen ardından
+   tablo aşağı süzülmeye başlıyordu (Geylani: "tablo önce biraz yukarı
+   çıkıyor sonra aşağı iniyor"). Artık katlar açıkken tekil kalıplarla
+   aynı boşluk duruyor; daralma katların kalkışıyla birlikte ve aynı
+   eğride oluyor, yani tek yumuşak harekete katılıyor. */
+body.muc-takim, body.muc-takim #tab1 .container {
+    transition: padding-top .42s cubic-bezier(.33, 0, .18, 1);
+}
+body.muc-takim:not(.muc-takim-ust) { padding-top: 2px !important; }
+body.muc-takim:not(.muc-takim-ust) #tab1 .container { padding-top: 2px !important; }
 /* Kart sütunu panelin genişliğine göre kendiliğinden: 2 sütunlu
    takımda panel geniş (2-3 kart), 3 sütunluda dar (1-2 kart). */
 .kl-takim .kl-izgara { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
@@ -5399,15 +5500,17 @@ body.muc-serit-yok #tab1 .ko-kaydir { padding-bottom: 0; }
     .mt-klavye-sira .kl-tus-harf { font-size: 20px; }
     .mt-klavye-sira .kl-tus-hepsi { min-width: 72px; }
 }
-/* Üç tuş levhanın boyunu paylaşır: yanındaki şema ne kadar uzarsa
-   tuşlar da o kadar uzar, sütunda boşluk kalmaz. */
+/* DÖRT tuş levhanın boyunu paylaşır: yanındaki şema ne kadar uzarsa
+   tuşlar da o kadar uzar, sütunda boşluk kalmaz. 3 harfliler de
+   eklenince (3 · 4 · 5 · 6) tuşlar küçüldü: dar sütunda dördü de
+   sığsın diye en 60→50 px, rakam 22→18 px, aralar 9→6 px. */
 .mt-rakam-tuslar {
     flex: 1 1 auto; width: 100%; display: flex; flex-direction: column;
-    align-items: stretch; justify-content: stretch; gap: 9px;
+    align-items: stretch; justify-content: stretch; gap: 6px;
 }
-.mt-tus { width: 60px; height: auto; flex: 1 1 0; min-height: 48px; }
-.mt-tus .kl-tus-harf { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 800; }
-.mt-tus .kl-tus-sayi { font-size: .64rem; }
+.mt-tus { width: 50px; height: auto; flex: 1 1 0; min-height: 38px; }
+.mt-tus .kl-tus-harf { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 800; }
+.mt-tus .kl-tus-sayi { font-size: .6rem; }
 .mt-bilgi {
     margin-left: 9px; color: #FFC107; cursor: pointer; font-size: .95rem;
     transition: color .15s ease, transform .12s ease;
