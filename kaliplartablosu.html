@@ -23,7 +23,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
 
-    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=244">
+    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=249">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="arakom.css?v=1">
@@ -187,7 +187,11 @@
      bir kök seçilince o kökte TANIMLI FİİLLERİN çekim tabloları
      kendiliğinden açılıp rıhtımda (yüzen simge) hazır bekliyor. -->
 <div id="ayar-menu" class="ayar-menu" role="dialog" aria-label="Ayarlar">
-    <div class="ayar-bas">AYARLAR</div>
+    <div class="ayar-bas">
+        <span>AYARLAR</span>
+        <button type="button" class="ayar-kapat" onclick="ayarMenuKapat(event)"
+                title="Ayarları kapat" aria-label="Ayarları kapat">&#10005;</button>
+    </div>
 
     <label class="ayar-satir">
         <span class="ayar-ad">BÜYÜTME
@@ -1145,8 +1149,8 @@
      başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
      buradan okunuyor. Yan etkisi yok, yalnız sabit tanımlar. -->
 <script src="veri/veri_vezin_numaralari.js?v=1"></script>
-<script src="sarf/kaliplartablosu.js?v=221"></script>
-<script src="sarf/babodak.js?v=6"></script>
+<script src="sarf/kaliplartablosu.js?v=226"></script>
+<script src="sarf/babodak.js?v=7"></script>
 <!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama
      evresinde devraldığı için eski davranışa karışmaz. -->
@@ -1154,7 +1158,7 @@
 <!-- Sunum kumandasının İLERİ tuşuyla tanımlı vezinler arasında gezinme
      ve tıklanan veznin anlamını gösteren katman. Ana betikten SONRA
      yüklenir; handleBoxClick'i sarmalayarak bağlanır. -->
-<script src="sarf/vezingezinti.js?v=21"></script>
+<script src="sarf/vezingezinti.js?v=23"></script>
 <script src="sarf/muhadesekopru.js?v=2"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
