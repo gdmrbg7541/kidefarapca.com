@@ -4106,6 +4106,38 @@ window.fdmKokLevhaTazele = function () {
     document.documentElement.classList.toggle('fdm-tablo-acik', acik);
 };
 
+/* HIZLI LİSTE AÇIKKEN ÇEKİM TAHTASI ÇEKİLİR. Tahta sayfanın en üst
+   katmanında durduğu için listenin üstüne biniyordu (Geylani: "hızlı
+   liste açıldığında fiil çekim popup kısmı tablonun arkasında olsun
+   veya geçici olarak kaybolsun"). Liste kapanınca tahta olduğu gibi
+   geri geliyor — yeri, ölçeği, kaydırması korunuyor. */
+(function () {
+    function durumYaz() {
+        var o = document.getElementById('fast-dictionary-overlay');
+        var acik = !!(o && getComputedStyle(o).display !== 'none');
+        document.body.classList.toggle('hizli-liste-acik', acik);
+    }
+    function sarmala(ad) {
+        if (typeof window[ad] !== 'function' || window[ad]._fdmListe) return;
+        var eski = window[ad];
+        window[ad] = function () {
+            var s = eski.apply(this, arguments);
+            durumYaz();
+            setTimeout(durumYaz, 60);      /* geçiş animasyonundan sonra da doğrula */
+            return s;
+        };
+        window[ad]._fdmListe = 1;
+    }
+    function kur() {
+        sarmala('openFastDictionaryMode');
+        sarmala('closeFastDictionaryMode');
+        durumYaz();
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
+    else kur();
+    window.addEventListener('load', kur);
+})();
+
 /* BÜYÜTME anahtarı değişince levha/kilit durumu tazeleniyor: anahtar
    açıkken tahta gizlendiği için levha geri gelmeli, kapanınca yeniden
    çekilmeli. */
@@ -13768,13 +13800,17 @@ function fdmYuklemeIlerlet(bitti, toplam) {
     if (!c) return;
     c.style.width = toplam ? (Math.round(100 * Math.min(1, bitti / toplam)) + '%') : '';
 }
-function fdmYuklemeKapat(tur) {
+function fdmYuklemeKapat(tur, ani) {
     var y = document.getElementById('fdm-yukleniyor');
     if (!y) return;
     /* Yeni bir hazırlık perdeyi devraldıysa eski tur onu indirmez. */
-    if (tur !== undefined && y.dataset.tur !== String(tur)) return;
+    if (tur !== undefined && tur !== null && y.dataset.tur !== String(tur)) return;
     clearTimeout(window._fdmYukSaat);
     y.classList.remove('acik');
+    /* `ani`: perde daha ekrana çizilmeden kaldırılıyor (hazırlık
+       yapılmayacağı aynı iş adımında anlaşıldığında) — yoksa kısa bir
+       beyaz parlama görünüyordu. */
+    if (ani) { if (y.parentNode) y.parentNode.removeChild(y); return; }
     setTimeout(function () {
         if (y.parentNode && !y.classList.contains('acik')) y.parentNode.removeChild(y);
     }, 300);
@@ -13912,6 +13948,7 @@ window.fdmCekimHazirla = function () {
            tablolar değil, kök seçilince kendiliğinden hazırlananlar.
            Tek tek ✕'leri yok; tahtanın ✕'i de kapatmıyor, küçültüyor. */
         t.dataset.hazir = '1';
+        t.dataset.hazirKok = kok;      /* aynı kök için bir daha hazırlanmasın */
         t.querySelectorAll('.fdm-hucre').forEach(function (h) { h.dataset.hazir = '1'; });
         var kirmizi = t.querySelector('.fdm-kirmizi');
         if (kirmizi) {
@@ -13995,6 +14032,18 @@ window.fdmCekimHazirla = function () {
             var s = eski.apply(this, arguments);
             if (perde) {
                 var k = (typeof currentRoot !== 'undefined') ? String(currentRoot || '').trim() : '';
+                /* AYNI KÖK İÇİN İKİNCİ KEZ HAZIRLIK YOK. Hızlı Liste
+                   açılırken kökü onaylamak için confirmRoot'u iki kez
+                   çağırıyor; bu da çekimleri baştan hazırlatıyordu
+                   (Geylani: "hızlı listeye basınca fiiller bi daha
+                   hazırlanıyor"). Tahtada o kökün hazır tabloları
+                   duruyorsa hiçbir şey yapılmıyor. */
+                var tv = document.getElementById('fdm-tahta');
+                if (tv && tv.dataset.hazir === '1' && tv.dataset.hazirKok === k &&
+                    tv.querySelector('.fdm-hucre')) {
+                    fdmYuklemeKapat(null, true);
+                    return s;
+                }
                 var olacak = window.fdmHazirKutulari().length > 0;
                 if (olacak) {
                     fdmYuklemeAc(k, 0, null);

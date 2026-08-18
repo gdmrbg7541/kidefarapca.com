@@ -664,7 +664,8 @@ body.fdm-tablo-acik .draggable-root-clone {
    açıkken fiil çekim popup kısmı görünecek, sadece büyüme esnasında
    görünmemeli"). Yerini ve kaydırmasını korusun diye display yerine
    opaklık kullanılıyor. */
-body:has(#crisp-zoom-clone) .fdm-tahta {
+body:has(#crisp-zoom-clone) .fdm-tahta,
+body.hizli-liste-acik .fdm-tahta {
     opacity: 0 !important; pointer-events: none !important;
     transition: opacity .2s ease;
 }
