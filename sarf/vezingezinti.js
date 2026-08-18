@@ -500,13 +500,55 @@
             if (!d) return;
             d = null;
             kumandaBelirt();                       /* bıraktıktan sonra yavaşça solsun */
+            kumandaKacti = null;                   /* yeni yer öğretmenin seçimi */
             try {
                 localStorage.setItem(KUMANDA_YER,
                     JSON.stringify({ x: kumanda.offsetLeft, y: kumanda.offsetTop }));
             } catch (x) {}
+            kumandaKacir();                        /* dev kelimenin üstüne bırakıldıysa kaçsın */
         }
         tut.addEventListener('pointerup', birak);
         tut.addEventListener('pointercancel', birak);
+    }
+
+    /* ---- BÜYÜTÜLMÜŞ KELİMENİN ÜSTÜNE OTURMASIN ----
+       Büyütme açıkken vezne dokununca ekranın ortasında dev kelime, onun
+       yanında anlam paneli, altında da dev kök levhası duruyor. Kumanda
+       bunlardan birinin üstüne denk gelirse kendiliğinden en boş köşeye
+       kaçıyor; dev kelime kapanınca öğretmenin bıraktığı yere dönüyor
+       (Geylani: "ileri geri tuşunu ekranda kaydırmak büyük olan kısmı
+       kapatmasın"). */
+    var kumandaKacti = null;
+    function ortusme(a, b) {
+        return Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
+               Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+    }
+    function kumandaKacir() {
+        if (!kumanda || !kumanda.classList.contains('vg-k-acik')) return;
+        var engeller = ['crisp-zoom-clone', 'crisp-root-clone', 'vezin-anlam-katmani']
+            .map(function (id) { return document.getElementById(id); })
+            .filter(function (el) { return el && gorunurMu(el) && el.getBoundingClientRect().width > 8; })
+            .map(function (el) { return el.getBoundingClientRect(); });
+        if (!engeller.length) {
+            if (kumandaKacti) { kumandaTasi(kumandaKacti.x, kumandaKacti.y); kumandaKacti = null; }
+            return;
+        }
+        var r = kumanda.getBoundingClientRect();
+        var simdiki = engeller.reduce(function (s, e) { return s + ortusme(r, e); }, 0);
+        if (simdiki <= 0) return;
+        if (!kumandaKacti) kumandaKacti = { x: kumanda.offsetLeft, y: kumanda.offsetTop };
+        var en = kumanda.offsetWidth, boy = kumanda.offsetHeight, p = 14;
+        var adaylar = [[window.innerWidth - en - p, window.innerHeight - boy - p],
+                       [p, window.innerHeight - boy - p],
+                       [window.innerWidth - en - p, p],
+                       [p, p]];
+        var enIyi = null, enAz = Infinity;
+        adaylar.forEach(function (a) {
+            var kutu = { left: a[0], top: a[1], right: a[0] + en, bottom: a[1] + boy };
+            var c = engeller.reduce(function (s, e) { return s + ortusme(kutu, e); }, 0);
+            if (c < enAz) { enAz = c; enIyi = a; }
+        });
+        if (enIyi && enAz < simdiki) kumandaTasi(enIyi[0], enIyi[1]);
     }
 
     /* Tam ekranı kaplayan tablo/tahta varken kumanda görünmüyor. */
@@ -534,7 +576,8 @@
         var ac = kokteVezinVar() && !perdeAcikMi() && !tamEkranAcikMi() && !hazirlik;
         if (!ac) { if (kumanda) kumanda.classList.remove('vg-k-acik'); return; }
         kumandaKur();
-        if (!kumanda.classList.contains('vg-k-acik')) {
+        if (kumanda.classList.contains('vg-k-acik')) { kumandaKacir(); return; }
+        {
             kumanda.classList.add('vg-k-acik');
             kumandaYerleskeYukle();
             /* Belirirken küçük bir yükseliş — nereden geldiği belli olsun. */
@@ -1331,6 +1374,11 @@
        Geri kalan her yer: katman kapanır. */
     document.addEventListener('click', function (e) {
         if (!katman || !katman.classList.contains('vg-acik')) return;
+        /* BÜYÜTMEDE ANLAM SABİT DURUR: dev kelime ekrandayken yanındaki
+           anlam paneli başka bir yere dokunmakla kapanmıyor; büyütme
+           kapanınca (kırmızı ✕) birlikte gidiyor (Geylani: "büyütme
+           açıkken açılan anlam kısmı başka yere basınca kapanmasın"). */
+        if (buyutmeAcik() && document.getElementById('crisp-zoom-clone')) return;
         var h = e.target;
         if (!h || !h.closest) return;
         if (h.closest('#vezin-anlam-katmani')) return;

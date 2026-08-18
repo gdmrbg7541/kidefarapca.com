@@ -658,7 +658,16 @@ body.fdm-tablo-acik .draggable-root-clone {
    levhası ise dev klonun ÜSTÜNDE duruyor (Geylani: "büyütme açıkken
    fiil çekim popup görünmesin; ileri geri tuşları, anlam, kök levhası
    vezinlerin üstünde görünsün"). */
-body:has(#zoomToggleCheckbox:checked) .fdm-tahta { display: none !important; }
+/* Ölçüt BÜYÜTME ANAHTARI DEĞİL, DEV KELİMENİN KENDİSİ: anahtar açıkken
+   çekim tabloları ekranda duruyor, yalnız bir vezin büyütüldüğü sürece
+   çekiliyor — tıpkı kahverengi kök levhası gibi (Geylani: "büyütme
+   açıkken fiil çekim popup kısmı görünecek, sadece büyüme esnasında
+   görünmemeli"). Yerini ve kaydırmasını korusun diye display yerine
+   opaklık kullanılıyor. */
+body:has(#crisp-zoom-clone) .fdm-tahta {
+    opacity: 0 !important; pointer-events: none !important;
+    transition: opacity .2s ease;
+}
 /* Levhanın z-index'i YÜKSELTİLMİYOR: denendi, sayfanın üstüne çıkıp
    vezinlerin tıklamalarını yutuyordu (ölçüldü: büyütme açıkken kutuya
    üç kez tıklandı, dev klon hiç doğmadı). Levha kendi katmanında zaten
@@ -721,6 +730,19 @@ body:has(#zoomToggleCheckbox:checked) .fdm-tahta { display: none !important; }
 .fdm-tahta.fdm-tam { border-radius: 0; }
 .fdm-tahta.fdm-tam .fdm-izgara { width: 100%; }
 .fdm-tahta.fdm-tam .fdm-hucre { width: auto !important; }
+/* TAM EKRANDA TABLOLAR SATIRI DOLDURUR: satır kipinde emir tablosu
+   mâzîden kısa olduğu için altında koca bir boşluk kalıyordu. Hücreler
+   satırın boyuna geriliyor, tablo da kutunun ortasında duruyor
+   (Geylani: "satır düzeninde tablolar pencereye tam yayılsın"). */
+.fdm-tahta.fdm-tam .fdm-izgara { align-items: stretch; }
+.fdm-tahta.fdm-tam .fdm-hucre {
+    display: flex !important; flex-direction: column;
+}
+/* Tablo, uzayan kutunun ORTASINDA dursun (üstte kalıp altta boşluk
+   bırakmasın). */
+.fdm-tahta.fdm-tam .fdm-hucre .carousel-container-outer {
+    flex: 1 1 auto; min-height: 0;
+}
 /* TAM EKRANDA YAKINLAŞINCA ızgara ekrana ZORLANMIYOR: `width: 100%`
    yakınlaştırmayı enine kilitliyordu — tablo boyuna uzayıp enine
    sıkışıyor, üstelik taşan kısım kaydırılamıyordu (ölçüldü: ic 2'de
@@ -737,10 +759,12 @@ body:has(#zoomToggleCheckbox:checked) .fdm-tahta { display: none !important; }
     transition: left .46s cubic-bezier(.22, .61, .36, 1),
                 top .46s cubic-bezier(.22, .61, .36, 1);
 }
-.fdm-tahta.fdm-gecis .fdm-gorus {
-    transition: width .46s cubic-bezier(.22, .61, .36, 1),
-                height .46s cubic-bezier(.22, .61, .36, 1);
-}
+/* PENCERENİN ÖLÇÜSÜ ANINDA DEĞİŞİYOR, YERİ YUMUŞAK. Görüşün eni/boyu
+   da geçişe alınınca `fdmTahtaSigdir` ekrana sığdırmayı ANİMASYONUN
+   ORTASINDAKİ ölçüyle hesaplıyordu: art arda satır/sütun'a basınca
+   tahta her seferinde biraz daha büyüyüp sağa taşıyordu (ölçüldü: sağ
+   kenar 1694 px, ekran 1512 px). Tabloların kayma animasyonu zaten
+   hareketi taşıyor. */
 .fdm-ayirici.fdm-cizgi-belir { animation: fdmCizgiBelir .46s ease both; }
 @keyframes fdmCizgiBelir {
     from { opacity: 0; }
@@ -775,6 +799,7 @@ body:has(#zoomToggleCheckbox:checked) .fdm-tahta { display: none !important; }
     box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
     transition: filter .15s ease, transform .12s ease;
 }
+.fdm-dizim svg { width: 14px; height: 14px; fill: currentColor; flex: none; display: block; }
 .fdm-dizim:hover { filter: brightness(.97); transform: translateY(-50%) scale(1.05); }
 .fdm-dizim:active { transform: translateY(-50%) scale(.95); }
 .fdm-tahta.fdm-boyutlaniyor { transition: none !important; }
@@ -7028,9 +7053,23 @@ body.ko-sakin .sitemap-wave-hint { animation: none !important; transition: none 
 .ayar-menu.acik { display: block; animation: ayarAc .16s cubic-bezier(.25, 1, .5, 1); }
 @keyframes ayarAc { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: none; } }
 .ayar-bas {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
     font-size: .74rem; font-weight: 900; letter-spacing: .14em; color: #64748b;
     padding: 0 2px 10px; border-bottom: 1px solid rgba(15, 23, 42, .08); margin-bottom: 6px;
 }
+/* Başlığın sağ ucunda kapatma çarpısı: menünün nereden kapandığı belli
+   olsun (Geylani: "ayarlar yazan satırın sağında bi çarpı olsun"). */
+.ayar-kapat {
+    flex: none; width: 26px; height: 26px; padding: 0; margin: -4px -2px -4px 0;
+    display: flex; align-items: center; justify-content: center;
+    border: none; border-radius: 50%; cursor: pointer;
+    background: rgba(15, 23, 42, .06); color: #475569;
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 900; line-height: 1;
+    letter-spacing: 0;
+    transition: background .15s ease, color .15s ease, transform .12s ease;
+}
+.ayar-kapat:hover { background: #ef4444; color: #fff; }
+.ayar-kapat:active { transform: scale(.9); }
 .ayar-satir {
     display: flex; align-items: center; justify-content: space-between; gap: 14px;
     padding: 11px 2px; cursor: pointer; border-radius: 12px;
@@ -7053,6 +7092,46 @@ body.fdm-hazirlik .fdm-tahta { opacity: 0 !important; pointer-events: none !impo
     100% { opacity: 1; transform: none; }
 }
 .fdm-tahta.fdm-belir { animation: fdmBelir .5s cubic-bezier(.22, 1.2, .4, 1); }
+
+/* BÜYÜTMEYİ KAPATAN KIRMIZI ÇARPI: dev kelime ekrandayken araç
+   çubuğunun hemen altında duruyor; büyütme yalnız buradan kapanıyor. */
+.fdm-buyutme-kapat {
+    /* EN SAĞDA: araç çubuğunun altında, sağ kenara yaslı (Geylani). */
+    position: fixed; right: 18px; left: auto;
+    z-index: 1000008;
+    width: 48px; height: 48px; padding: 0;
+    border: 3px solid #fff; border-radius: 50%;
+    background: #ef4444; color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 900; line-height: 1;
+    box-shadow: 0 10px 22px rgba(239, 68, 68, .38), 0 2px 6px rgba(15, 23, 42, .2);
+    animation: fdmKapatBelir .3s cubic-bezier(.22, 1.2, .4, 1);
+}
+.fdm-buyutme-kapat:hover { filter: brightness(1.07); }
+.fdm-buyutme-kapat:active { transform: scale(.92); }
+@keyframes fdmKapatBelir {
+    from { opacity: 0; transform: translateY(-12px) scale(.8); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* "TAM EKRANDAN ÇIKILDI" ŞERİDİ: kenardan tutup küçültünce kipin
+   değiştiği belli olsun diye şeridin altında kısa süre beliriyor. */
+.fdm-tam-uyari {
+    position: absolute; left: 50%; top: 46px; transform: translateX(-50%);
+    z-index: 1000012; pointer-events: none; white-space: nowrap;
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(15, 23, 42, .88); color: #fff;
+    font-family: 'Inter', sans-serif; font-size: .74rem; font-weight: 800;
+    letter-spacing: .05em;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, .28);
+    animation: fdmTamUyari 1.9s ease both;
+}
+@keyframes fdmTamUyari {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+    12%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+    75%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+}
 
 /* ================= YÜKLENİYOR EKRANI =================
    Çekimler hazırlanırken sayfanın üstüne ince bir perde iniyor: dönen

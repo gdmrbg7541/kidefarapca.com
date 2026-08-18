@@ -270,6 +270,18 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
 /* Odak satırları nth-child şerit renklerinden ETKİLENMESİN — nötr zemin.
    (id + sınıf özgüllüğü, sayfanın !important'lı nth-child kurallarını ezer) */
 #tab2 tr.bo-satir td{ background-color:#fbfcfd !important; }
+/* ⓘ ODAKTAYKEN ✕ OLUR: aynı düğme hem açıyor hem kapatıyor; öğretmen
+   nereden kapatacağını simgeden görüyor (Geylani: "info simgesi çarpıya
+   dönüşsün ki nereden kapatması gerektiğini bilsin"). */
+.info-icon.bo-kapat{ color:#ef4444 !important; }
+.info-icon.bo-kapat i{ display:none !important; }
+.info-icon.bo-kapat::after{ content:'\\2715'; font-family:'Inter','Segoe UI',sans-serif;
+    font-weight:900; font-size:1.02rem; line-height:1; }
+/* BÂB ODAĞI AÇIKKEN KAHVERENGİ KÖK LEVHASI ÇEKİLİR: odak satırları
+   tablonun en üstüne taşınıyor, levha tam onların üstüne düşüyordu.
+   Odak kapanınca levha geri geliyor. */
+body.bo-odak-acik .draggable-root-clone:not(#crisp-root-clone){
+    opacity:0 !important; pointer-events:none !important; transition:opacity .25s ease; }
 @media (max-width:900px){
     .bo-kok{ font-size:1.6rem; padding:4px 8px 2px; }
     .bo-hedef{ min-height:88px; }
@@ -598,6 +610,13 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
         });
         // Odaktayken bu bâbın kalıp yazıları büyük görünsün (2.5rem)
         babRow.classList.add('bo-odak-kalip');
+        /* ⓘ simgesi ✕ olsun: aynı düğme odağı kapatıyor. */
+        const ikon = babRow.querySelector('.info-icon');
+        if (ikon) {
+            ikon.classList.add('bo-kapat');
+            if (!ikon.dataset.boBaslik) ikon.dataset.boBaslik = ikon.getAttribute('title') || '';
+            ikon.setAttribute('title', 'Bilgiyi kapat');
+        }
 
         /* Ekranda İLERİ düğmesi YOK (köke dokunmak zaten kolay) —
            ilerletme SUNUM KUMANDASININ ileri tuşundan geliyor, aşağıdaki
@@ -634,6 +653,14 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
 
     function closeOdak() {
         if (!aktifBab) return;
+        /* ✕ yeniden ⓘ olur. */
+        document.querySelectorAll('.info-icon.bo-kapat').forEach(ik => {
+            ik.classList.remove('bo-kapat');
+            if (ik.dataset.boBaslik !== undefined) {
+                ik.setAttribute('title', ik.dataset.boBaslik);
+                delete ik.dataset.boBaslik;
+            }
+        });
         const st = babRows[aktifBab];
         if (st) {
             // FLIP başlangıcı: satırın üstteki (taşınmadan önceki) ekran konumu
@@ -715,6 +742,8 @@ window.BO_SURE = '1s cubic-bezier(.22,1,.36,1)';
         const kalip = !!(window.KalipOdak && window.KalipOdak.aktif && window.KalipOdak.aktif());
         const aktif = !!aktifBab || kalip;
         document.body.classList.toggle('ust-kilit', aktif);
+        /* Kahverengi kök levhası bâb odağında çekiliyor (CSS). */
+        document.body.classList.toggle('bo-odak-acik', !!aktifBab);
         /* STOR PERDE yalnız örnek listesinde: sayfa kayar, başlık yapışır
            (CSS: body.ko-stor). Bâb ⓘ odağında gerek yok. */
         document.body.classList.toggle('ko-stor', kalip);

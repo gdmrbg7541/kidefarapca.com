@@ -1255,11 +1255,41 @@ const SoundEngine = {
     }
 };
 
+/* BÜYÜTMEYİ KAPATAN KIRMIZI ÇARPI — araç çubuğunun hemen altında.
+   Büyütme açıkken bir vezne dokununca ekranı dev kelime kaplıyordu ve
+   kapatmak için "bir yere" tıklamak gerekiyordu; nereye basılacağı belli
+   değildi. Artık tek kapatma yeri bu düğme (Geylani: "araç çubuğunun
+   altında bi kırmızı çarpı olsun, sadece oraya basınca büyüme
+   kapansın"). */
+window.fdmBuyutmeKapatDugmesi = function (goster) {
+    var b = document.getElementById('fdm-buyutme-kapat');
+    if (!goster) { if (b && b.parentNode) b.parentNode.removeChild(b); return null; }
+    if (b) return b;
+    b = document.createElement('button');
+    b.id = 'fdm-buyutme-kapat';
+    b.type = 'button';
+    b.className = 'fdm-buyutme-kapat';
+    b.title = 'Büyütmeyi kapat';
+    b.setAttribute('aria-label', 'Büyütmeyi kapat');
+    b.innerHTML = '&#10005;';
+    b.onclick = function (e) {
+        e.preventDefault(); e.stopPropagation();
+        if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
+        window.fdmBuyutmeKapatDugmesi(false);
+    };
+    var cubuk = document.querySelector('.top-bar') || document.getElementById('tabSwitch');
+    var r = cubuk ? cubuk.getBoundingClientRect() : null;
+    b.style.top = Math.round((r && r.bottom > 0 ? r.bottom : 66) + 10) + 'px';
+    document.body.appendChild(b);
+    return b;
+};
+
 // Temizlik fonksiyonu
 function closeAllZoomedBoxes() {
     document.querySelectorAll('.zoom-overlay').forEach(overlay => {
         overlay.classList.remove('active');
     });
+    if (window.fdmBuyutmeKapatDugmesi) window.fdmBuyutmeKapatDugmesi(false);
     
     // Ekranda açık olan DEV KALIP klonunu sil
     const clone = document.getElementById('crisp-zoom-clone');
@@ -1366,8 +1396,16 @@ function closeIfOutside(e) {
                      e.target.closest('#suffix-dropdown') ||
                      e.target.closest('.crisp-zoom-clone') ||
                      e.target.closest('#crisp-zoom-clone') ||
+                     e.target.closest('#vg-kumanda') ||        /* ileri/geri kumandası */
                      e.target.closest('.fa-plus') ||
                      e.target.closest('#mobile-top-plus');
+
+    /* BÜYÜTMEDE DIŞARI TIKLAMAK KAPATMAZ. Dev kelime yalnız araç
+       çubuğunun altındaki kırmızı ✕ ile ya da ileri/geri tuşuyla
+       kapanıyor; kumandayı taşımak, boşluğa dokunmak kapatmıyor
+       (Geylani: "sadece çarpı veya ileri tuşuyla büyüme kapansın"). */
+    const buyutmeKutusu = document.getElementById('zoomToggleCheckbox');
+    if (buyutmeKutusu && buyutmeKutusu.checked && document.getElementById('crisp-zoom-clone')) return;
 
     if (!isInside) {
         // COKLU POPUP: disariya tiklayinca fiil popuplari KAPANMASIN (sadece X ile kapanir).
@@ -3029,8 +3067,17 @@ function fdmDizimYazi(t) {
     if (!b) return;
     var d = window.FDM_DIZIM;
     var satirMi = (d === 'sutun');                 /* ekrandaki adıyla SATIR */
-    b.innerHTML = (satirMi ? '&#9776;' : '&#9868;') +
-                  '<span>' + (satirMi ? 'SATIR' : 'SÜTUN') + '</span>';
+    /* SİMGE ADIYLA AYNI YÖNDE: SATIR'da yatay çubuklar, SÜTUN'da DİKEY
+       çubuklar (Geylani: "sütunda dikey svg olsun, iki yatay çizgi
+       değil"). */
+    var ikon = satirMi
+        ? '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.2" width="13" height="2.6" rx="1.3"/>' +
+          '<rect x="1.5" y="6.7" width="13" height="2.6" rx="1.3"/>' +
+          '<rect x="1.5" y="11.2" width="13" height="2.6" rx="1.3"/></svg>'
+        : '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.2" y="1.5" width="2.6" height="13" rx="1.3"/>' +
+          '<rect x="6.7" y="1.5" width="2.6" height="13" rx="1.3"/>' +
+          '<rect x="11.2" y="1.5" width="2.6" height="13" rx="1.3"/></svg>';
+    b.innerHTML = ikon + '<span>' + (satirMi ? 'SATIR' : 'SÜTUN') + '</span>';
     b.title = satirMi
         ? 'SATIR kipi: bir fiilin mâzî · muzâri · emri yan yana. SÜTUN kipine geçmek için bas.'
         : 'SÜTUN kipi: bir fiilin mâzî · muzâri · emri alt alta. SATIR kipine geçmek için bas.';
@@ -3099,7 +3146,13 @@ window.fdmDizimDegistir = function (e) {
     /* Pencerenin kendi ölçüsü ve yeri de yumuşak değişsin. */
     t.classList.add('fdm-gecis');
     setTimeout(function () { t.classList.remove('fdm-gecis'); }, FDM_GECIS_SURE + 60);
-    if (!t.classList.contains('fdm-yuzen')) window.fdmTahtaSigdir(true);
+    /* TAM EKRANDAN ÇIKMADAN kip değişiyor: `fdmTahtaSigdir` tahtayı
+       pencereye döndürüyordu, satır/sütun tuşuna basmak tam ekranı
+       kapatmış oluyordu (Geylani: "sütun ve satır tuşlarına basınca tam
+       ekrandan çıkmasın"). Tam ekrandaysa yalnız yeni düzene göre
+       yeniden yerleştiriliyor. */
+    if (t.classList.contains('fdm-tam')) window.fdmTamYerlestir();
+    else if (!t.classList.contains('fdm-yuzen')) window.fdmTahtaSigdir(true);
     fdmDizimGecisOynat(izgara, eskiler);
     if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
 };
@@ -3238,7 +3291,15 @@ window.fdmHucreOdakla = function (hucre) {
     if (t.dataset.odakHucre === anahtar && fdmIcOlcek(t) > 1.02) {
         t.dataset.odakHucre = '';
         k = Math.max(fdmIcEnAz(t), 1);
-        fdmOdakAnim(t, k, izgara.offsetWidth / 2, izgara.offsetHeight / 2);
+        /* UZAKLAŞIRKEN DE AYNI TABLOYA BAKILIYOR. Eskiden ızgaranın
+           ortasına dönülüyordu; üst satırdaki bir tablodan uzaklaşınca
+           pencere ortaya kayıyor ve tablonun ÜSTÜ (başlığı, ilk satırı)
+           görünmez oluyordu (Geylani: "küçülünce tablonun yukarısı
+           görünmüyor, özellikle üstteki tablolarda"). Hedef tablonun
+           kendi ortası; kaydırma ızgara sınırlarına kırpıldığı için üst
+           satırda kendiliğinden en başa yaslanıyor. */
+        fdmOdakAnim(t, k, hucre.offsetLeft + hucre.offsetWidth / 2,
+                          hucre.offsetTop + hucre.offsetHeight / 2);
     } else {
         t.dataset.odakHucre = anahtar;
         /* Tam ekranda şeritler ÖNCE doğal enine dönüyor; hücre ölçüsü
@@ -3268,12 +3329,17 @@ function fdmOdakAnim(t, k1, hedefX, hedefY, sure) {
     var mx0 = (gorus.scrollLeft + gorus.clientWidth / 2) / k0;
     var my0 = (gorus.scrollTop + gorus.clientHeight / 2) / k0;
     var t0 = performance.now();
-    sure = sure || 420;
+    /* YAKINLAŞMA YAVAŞ VE PÜRÜZSÜZ: 420 ms sert geliyordu. Süre uzatıldı
+       ve eğri iki uçtan da yumuşayan biçime çevrildi — hareket başlarken
+       ve dururken sarsılmıyor (Geylani: "zoom animasyonu daha pürüzsüz
+       ve yumuşak, yavaş olsun"). */
+    sure = sure || 720;
     t.classList.add('fdm-canli');
     fdmTamSablonTazele(t, Math.max(k0, k1));   /* geçiş boyunca doğal şerit */
     function adim(simdi) {
         var p = Math.min(1, (simdi - t0) / sure);
-        var e = 1 - Math.pow(1 - p, 3);                 /* easeOutCubic */
+        /* easeInOutCubic: iki uçta da yumuşak */
+        var e = (p < 0.5) ? (4 * p * p * p) : (1 - Math.pow(-2 * p + 2, 3) / 2);
         var k = k0 + (k1 - k0) * e;
         var mx = mx0 + (hedefX - mx0) * e;
         var my = my0 + (hedefY - my0) * e;
@@ -3316,7 +3382,11 @@ window.fdmDisYakinlastir = function (t, k, mx, my) {
         t.classList.remove('fdm-tam');
         var g0 = t.querySelector('.fdm-gorus'), iz0 = t.querySelector('.fdm-izgara');
         if (g0) { g0.style.width = ''; g0.style.height = ''; }
-        if (iz0) iz0.style.gridTemplateColumns = '';
+        if (iz0) { iz0.style.gridTemplateColumns = ''; delete iz0.dataset.tamHucreEn; }
+        t.classList.remove('fdm-tam-yakin');
+        fdmGorusOlc(t);     /* pencere kipinin kendi ölçüsü geri gelsin: yoksa
+                               görüş içeriğe göre şişiyor, yakınlaşınca pencere
+                               büyüyordu (ölçüldü: 1049 → 2755 px) */
         fdmGorusOlc(t);
         window.fdmYesilTusYazi();
         tb = fdmTahtaTaban(t);
@@ -3654,7 +3724,11 @@ window.fdmTahtaTamEkran = function (e) {
         t.classList.remove('fdm-tam');
         var g0 = t.querySelector('.fdm-gorus'), iz0 = t.querySelector('.fdm-izgara');
         if (g0) { g0.style.width = ''; g0.style.height = ''; }
-        if (iz0) iz0.style.gridTemplateColumns = '';
+        if (iz0) { iz0.style.gridTemplateColumns = ''; delete iz0.dataset.tamHucreEn; }
+        t.classList.remove('fdm-tam-yakin');
+        fdmGorusOlc(t);     /* pencere kipinin kendi ölçüsü geri gelsin: yoksa
+                               görüş içeriğe göre şişiyor, yakınlaşınca pencere
+                               büyüyordu (ölçüldü: 1049 → 2755 px) */
         var k = parseFloat(t.dataset.tamEskiOlcek) || 1;
         t.style.setProperty('--fdm-olcek', k);
         if (t.dataset.tamEskiSol !== undefined) {
@@ -3907,6 +3981,38 @@ function fdmTahtaSurukle(t) {
    Kenar tutamaklarında tek eksenin, köşelerde başlangıç vektörüne
    İZDÜŞÜMÜN oranı alınıyor — parmak karşıya geçse bile ölçek
    sıçramıyor. */
+/* Tam ekrandan PENCEREYE dönüş: ölçek ve yer olduğu gibi korunuyor,
+   yalnız kip değişiyor. Kenardan tutup küçültme bunu kullanıyor. */
+function fdmTamdanKopar(t) {
+    if (!t || !t.classList.contains('fdm-tam')) return false;
+    var g = t.querySelector('.fdm-gorus'), iz = t.querySelector('.fdm-izgara');
+    var r = t.getBoundingClientRect();
+    var k = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
+    t.classList.remove('fdm-tam');
+    t.classList.remove('fdm-tam-yakin');
+    if (iz) { iz.style.gridTemplateColumns = ''; delete iz.dataset.tamHucreEn; }
+    if (g) { g.style.width = ''; g.style.height = ''; }
+    fdmGorusOlc(t);                       /* pencere kipinin kendi ölçüsü */
+    t.style.setProperty('--fdm-olcek', k);
+    window.fdmEkranaYerlestir(t, Math.round(r.left), Math.round(r.top));
+    window.fdmYesilTusYazi();
+    window.fdmSariTusYazi();
+    window.fdmKokLevhaTazele();
+    fdmTamCikisUyari(t);
+    return true;
+}
+
+/* "Tam ekrandan çıkıldı" — şeridin altında kısa bir bilgi şeridi. */
+function fdmTamCikisUyari(t) {
+    var eski = t.querySelector('.fdm-tam-uyari');
+    if (eski) eski.remove();
+    var u = document.createElement('div');
+    u.className = 'fdm-tam-uyari';
+    u.textContent = 'Tam ekrandan çıkıldı';
+    t.appendChild(u);
+    setTimeout(function () { if (u.parentNode) u.parentNode.removeChild(u); }, 1900);
+}
+
 function fdmTahtaOlcekle(t) {
     var YONLER = {
         n:  [0.5, 1, 'y'], s:  [0.5, 0, 'y'],
@@ -3924,6 +4030,13 @@ function fdmTahtaOlcekle(t) {
         tut.addEventListener('pointerdown', function (e) {
             var y = YONLER[tut.getAttribute('data-yon')];
             if (!y || d) return;
+            /* KENARDAN TUTUP KÜÇÜLTMEK TAM EKRANDAN ÇIKARIR. Eskiden
+               tahta küçülüyor ama `fdm-tam` üstünde kalıyordu: köşeler
+               hâlâ keskin, yeşil düğme hâlâ "Tam ekrandan çık" diyordu,
+               yani tam ekrandan çıkılıp çıkılmadığı anlaşılmıyordu
+               (Geylani). Artık tutamağa dokunulduğu anda pencere kipine
+               dönülüyor ve kısa bir uyarı beliriyor. */
+            fdmTamdanKopar(t);
             var r = t.getBoundingClientRect();
             d = { id: e.pointerId, eksen: y[2],
                   fx: y[0], fy: y[1], tb: fdmTahtaTaban(t),
@@ -3984,13 +4097,7 @@ window.fdmKokLevhaTazele = function () {
        ekranda değil: kahverengi kök levhası görünmeli, ⓘ düğmeleri ve
        dilbilgisi başlıkları çalışmalı (Geylani: "kahverengi kök levhası
        fiil çekim tabloları açılmamışken görünmeli"). */
-    /* Büyütme açıkken tahta zaten gizli: levha görünsün, ⓘ kilidi
-       açılsın. */
-    var buyutme = (function () {
-        var c = document.getElementById('zoomToggleCheckbox');
-        return !!(c && c.checked);
-    })();
-    var acik = !!t && !t.classList.contains('fdm-yuzen') && !buyutme;
+    var acik = !!t && !t.classList.contains('fdm-yuzen');
     document.body.classList.toggle('fdm-tablo-acik', acik);
     document.body.classList.toggle('fdm-kilit', acik);
     /* `overscroll-behavior` gövdeden görüntü alanına ancak html'in kendi
@@ -6442,10 +6549,12 @@ function triggerAreaPulse(boxElement) {
         if (!localOverlay) {
             localOverlay = document.createElement('div');
             localOverlay.className = 'zoom-overlay';
+            /* PERDEYE DOKUNMAK ARTIK KAPATMIYOR: büyütme yalnız araç
+               çubuğunun altındaki kırmızı çarpıyla kapanıyor (Geylani).
+               Dokunuş yine yutuluyor ki arkadaki kutulara geçmesin. */
             const closeLocalOverlay = function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
             };
             localOverlay.onclick = closeLocalOverlay;
             localOverlay.ontouchstart = closeLocalOverlay;
@@ -6468,6 +6577,9 @@ function triggerAreaPulse(boxElement) {
         };
         cloneBox.onclick = advanceState;
         cloneBox.ontouchstart = advanceState;
+
+        /* Kapatma çarpısı ekrana gelsin. */
+        if (window.fdmBuyutmeKapatDugmesi) window.fdmBuyutmeKapatDugmesi(true);
 
         // Yıldız butonu için
         const trigger = cloneBox.querySelector('.easter-egg-trigger');
@@ -8572,10 +8684,21 @@ function selectRootFromMainKeyboard(root) {
    büyük olan vezin küçülmesin"): ek eklemek büyütmeyi bozan bir iş
    değil — kutu büyük kalır, ek doğrudan ona işlenir. */
 function _ekBuyutmeMuaf(t) {
+    /* BÜYÜTME YALNIZ KIRMIZI ÇARPI (ya da ileri/geri) İLE KAPANIR.
+       Dev kelime ekrandayken sayfanın hiçbir yerine dokunmak onu
+       kapatmıyor — kumanda taşınırken, anlam paneli okunurken kapanması
+       en çok şikâyet edilen davranıştı (Geylani: "sadece çarpı veya
+       ileri tuşuyla büyüme kapansın"). Çarpının kendi işleyicisi
+       closeAllZoomedBoxes'ı doğrudan çağırıyor. */
+    if (document.getElementById('crisp-zoom-clone')) {
+        var c = document.getElementById('zoomToggleCheckbox');
+        if (c && c.checked) return true;
+    }
     return !!(t && t.closest && (
         t.closest('.glass-box.pulse-highlight') ||
         t.closest('.crisp-zoom-clone') ||
         t.closest('#suffix-dropdown') ||
+        t.closest('#vg-kumanda') ||
         t.closest('.fa-plus') ||
         t.closest('#mobile-top-plus')));
 }
@@ -13558,6 +13681,14 @@ window.ayarMenuAc = function (e) {
     var acik = m.classList.toggle('acik');
     if (acik && typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
 };
+/* Başlık satırındaki ✕ */
+window.ayarMenuKapat = function (e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    var m = document.getElementById('ayar-menu');
+    if (!m || !m.classList.contains('acik')) return;
+    m.classList.remove('acik');
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
+};
 document.addEventListener('click', function (e) {
     var m = document.getElementById('ayar-menu');
     if (!m || !m.classList.contains('acik')) return;
@@ -13768,6 +13899,12 @@ window.fdmCekimHazirla = function () {
            ilk basışta kökün EN KÜÇÜK numaralı kalıbı gelsin. */
         if (window.KidefVezinGezinti && window.KidefVezinGezinti.sifirla) {
             try { window.KidefVezinGezinti.sifirla(); } catch (x) { /* yoksay */ }
+            /* Perde sönerken kumanda hâlâ "perde açık" sayılıyor; perde
+               gidince bir kez daha sorulup hemen beliriyor (yoksa 700
+               ms'lik denetim turunu bekliyordu). */
+            setTimeout(function () {
+                try { window.KidefVezinGezinti.kumandaGuncelle(); } catch (x) { /* yoksay */ }
+            }, 380);
         }
         var t = document.getElementById('fdm-tahta');
         if (!t) return;
