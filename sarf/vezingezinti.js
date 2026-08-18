@@ -4,14 +4,23 @@
    İki iş yapar, ikisi de tabloya dışarıdan bağlanır; ana betiğin (
    sarf/kaliplartablosu.js) hiçbir satırı değişmez.
 
-   1) İLERİ TUŞU (sunum kumandası: PageDown / sağ ok / boşluk)
+   1) İLERİ / GERİ TUŞU (sunum kumandası: PageDown · sağ ok · boşluk =
+      ileri; PageUp · sol ok · geri tuşu = geri)
       Bir kök tanımlandıktan sonra her basış, o kökün TANIMLI vezinlerine
       sırayla geçer: kutu ekranın ortasına gelir, kelime türetilir
       (büyütme açıksa büyütülmüş hâliyle). Sıra SON vezinde biter:
       tuş işlevini yitirir ve "vezin kalmadı" uyarısı çalar. Büyütme açık
-      olsa bile son vezinde ilerleme yoktur.
+      olsa bile son vezinde ilerleme yoktur. Geri tuşu bir önceki vezne
+      döner, ilk veznin gerisine gitmez.
       İmleç elle tıklamayla da eşitlenir: öğretmen aradaki bir kutuya
       tıklarsa ileri tuşu oradan devam eder.
+
+   1b) YÜZEN KUMANDA
+      Elinde sunum kumandası olmayan öğretmen için, kök seçilir seçilmez
+      ekranda saydam bir İLERİ · GERİ çifti beliriyor: araç çubuğunun
+      hemen altında durur, tutamağından tutulup istenen yere taşınabilir
+      (yeri hatırlanır). Böylece öğretmen tahtanın önüne geçmeden
+      vezinleri sırayla açabiliyor.
 
    2) ANLAM KATMANI
       Bir vezne tıklanınca o veznin Türkçesi kutunun altında (yer yoksa
@@ -27,6 +36,7 @@
 
     /* Kumandaların donanımsal olarak gönderdiği tuşlar */
     var ILERI_TUSLARI = ['ArrowRight', 'PageDown', ' ', 'Spacebar'];
+    var GERI_TUSLARI = ['ArrowLeft', 'PageUp', 'Backspace'];
 
     /* Sözlük kaydında "+ eki" sayılmayan (yapısal) anahtarlar */
     var YAPISAL = ['base', 'cekimi', 'isNotVerb', 'ornek', 'tekil', 'cogul',
@@ -208,7 +218,17 @@
     function sonVezinUyar() {
         var rs = refler();
         if (!rs.length) return;
-        var hedef = document.getElementById('crisp-zoom-clone') || kutuBul(rs[rs.length - 1]);
+        vezinUyar(rs[rs.length - 1]);
+    }
+
+    function ilkVezinUyar() {
+        var rs = refler();
+        if (!rs.length) return;
+        vezinUyar(rs[sira >= 0 ? sira : 0]);
+    }
+
+    function vezinUyar(ref) {
+        var hedef = document.getElementById('crisp-zoom-clone') || kutuBul(ref);
         if (!hedef) return;
         function yak(a) {
             if (a) {
@@ -272,6 +292,23 @@
         vezneGit(rs[sira]);
     }
 
+    /* GERİ ADIM: bir önceki vezne döner. İleri tuşunun tersine kutunun
+       aşamalarını tek tek geri almıyor — öğretmen "bir önceki vezni
+       göster" diyor, ona baştan gidiliyor. İlk veznin gerisi yok:
+       uyarı sesi çalıp çerçeve yanıp söner. */
+    function geri() {
+        var rs = refler();
+        if (!rs.length) return;
+        if (mesgul) return;
+        if (sira <= 0) {
+            vezinBittiSesi();
+            ilkVezinUyar();
+            return;
+        }
+        sira--;
+        vezneGit(rs[sira]);
+    }
+
     function vezneGit(ref) {
         var kutu = kutuBul(ref);
         if (!kutu) return;
@@ -317,6 +354,181 @@
 
         handleBoxClick(kutu);
         mesgul = false;
+    }
+
+    /* ---------------------------------------------------------------- */
+    /* YÜZEN KUMANDA (İLERİ · GERİ)                                      */
+    /* ---------------------------------------------------------------- */
+    /* Sunum kumandası olmayan öğretmen için ekranda duran iki tuş
+       (Geylani: "bi köke tıklayınca yüzen ileri geri tuşu çıksın,
+       öğretmende kumanda yoksa kullanır... öğretmen tahtanın önüne
+       geçmeden sadece tuşlarla vezinleri açar"). Araç çubuğunun ALT
+       KENARINA yaslanıyor: el aynı bölgede kalsın, hem çubuğa hem
+       tuşlara uzanılabilsin. Saydam duruyor, üstüne gelinince
+       belirginleşiyor; tutamağından tutulup istenen yere taşınıyor ve
+       yeri hatırlanıyor. Sayfa sağdan sola aktığı için İLERİ SOLDA. */
+    var KUMANDA_YER = 'kidef_kumanda_yer';
+    var kumanda = null, kumandaKok = '', kumandaVezin = 0, kumandaSolma = null;
+
+    /* Dokunmatik tahtada "hover" yok: her dokunuşta kumanda kısa süre
+       tam görünür oluyor, sonra yine saydamlaşıyor. */
+    function kumandaBelirt() {
+        if (!kumanda) return;
+        kumanda.classList.add('vg-k-etkin');
+        clearTimeout(kumandaSolma);
+        kumandaSolma = setTimeout(function () {
+            if (kumanda) kumanda.classList.remove('vg-k-etkin');
+        }, 1600);
+    }
+
+    var OK_SOL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" ' +
+                 'stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+    var OK_SAG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" ' +
+                 'stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+
+    function kumandaKur() {
+        if (kumanda) return kumanda;
+        var s = document.createElement('style');
+        s.textContent =
+            '#vg-kumanda{position:fixed;z-index:999997;display:none;align-items:center;gap:4px;' +
+            'padding:5px;border-radius:999px;background:rgba(255,255,255,.26);' +
+            'border:1px solid rgba(255,255,255,.55);' +
+            '-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);' +
+            'box-shadow:0 6px 16px rgba(15,23,42,.10);opacity:.42;' +
+            'transition:opacity .18s ease,box-shadow .18s ease;direction:ltr;' +
+            'touch-action:none;user-select:none;-webkit-user-select:none;' +
+            'font-family:system-ui,"Segoe UI",Roboto,sans-serif}' +
+            '#vg-kumanda.vg-k-acik{display:flex}' +
+            '#vg-kumanda:hover,#vg-kumanda.vg-k-etkin{opacity:1;box-shadow:0 12px 28px rgba(15,23,42,.20)}' +
+            '#vg-kumanda .vg-k-tus{display:flex;align-items:center;gap:6px;cursor:pointer;' +
+            'border:0;margin:0;border-radius:999px;padding:9px 16px;font-family:inherit;' +
+            'font-size:13.5px;font-weight:700;letter-spacing:.06em;color:#1f2937;' +
+            'background:rgba(255,255,255,.55);transition:background .15s ease,transform .12s ease}' +
+            '#vg-kumanda .vg-k-tus:hover{background:rgba(255,255,255,.95)}' +
+            '#vg-kumanda .vg-k-tus:active{transform:scale(.93)}' +
+            '#vg-kumanda .vg-k-tus svg{width:17px;height:17px;flex:0 0 auto}' +
+            '#vg-kumanda .vg-k-tut{width:16px;height:26px;border-radius:6px;cursor:grab;' +
+            'color:rgba(31,41,55,.5);background-image:radial-gradient(currentColor 1.4px,transparent 1.5px);' +
+            'background-size:6px 6px;background-position:center}' +
+            '#vg-kumanda .vg-k-tut:active{cursor:grabbing}' +
+            '@media (max-width:1024px){#vg-kumanda .vg-k-tus{padding:9px 12px;font-size:12px}}';
+        document.head.appendChild(s);
+
+        kumanda = document.createElement('div');
+        kumanda.id = 'vg-kumanda';
+        kumanda.setAttribute('role', 'group');
+        kumanda.setAttribute('aria-label', 'Vezin kumandası');
+        kumanda.innerHTML =
+            '<button type="button" class="vg-k-tus vg-k-ileri" aria-label="Sonraki vezin" ' +
+            'title="Sonraki vezin (kumanda: ileri · boşluk · PageDown)">' + OK_SOL + '<span>İLERİ</span></button>' +
+            '<span class="vg-k-tut" title="Tutup taşı" aria-hidden="true"></span>' +
+            '<button type="button" class="vg-k-tus vg-k-geri" aria-label="Önceki vezin" ' +
+            'title="Önceki vezin (kumanda: geri · PageUp)"><span>GERİ</span>' + OK_SAG + '</button>';
+        document.body.appendChild(kumanda);
+
+        /* Dokunmatik tahtada "hover" yok: her dokunuşta kumanda kısa
+           süre tam görünür oluyor, sonra yine saydamlaşıyor. */
+        kumanda.addEventListener('pointerdown', kumandaBelirt, true);
+
+        function bagla(sec, is) {
+            var d = kumanda.querySelector(sec);
+            d.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+            d.addEventListener('click', function (e) {
+                e.preventDefault(); e.stopPropagation();
+                /* Odak tuşta kalmasın: boşluk/ok tuşları hem tuşu hem
+                   gezintiyi tetiklemesin. */
+                try { d.blur(); } catch (x) {}
+                is();
+            });
+        }
+        bagla('.vg-k-ileri', ileri);
+        bagla('.vg-k-geri', geri);
+        kumandaSurukle();
+        window.addEventListener('resize', function () {
+            kumandaTasi(kumanda.offsetLeft, kumanda.offsetTop);
+        });
+        return kumanda;
+    }
+
+    function kumandaTasi(l, t) {
+        if (!kumanda) return;
+        var en = kumanda.offsetWidth || 220, boy = kumanda.offsetHeight || 46;
+        l = Math.max(6, Math.min(l, window.innerWidth - en - 6));
+        t = Math.max(6, Math.min(t, window.innerHeight - boy - 6));
+        kumanda.style.left = Math.round(l) + 'px';
+        kumanda.style.top = Math.round(t) + 'px';
+    }
+
+    /* Öntanımlı yer: araç çubuğunun ALTINDA, EN AŞAĞIDA — ekranın alt
+       sağ köşesi (Geylani: "araç çubuğunun altında en aşağıda olsun
+       öğretmen hem araç çubuğuna hem ileri geri tuşuna ulaşabilsin").
+       Böylece çubuğun da kökün de üstünü kapatmıyor; rıhtım sol alt
+       köşede park ettiği için sağ uç seçildi. Öğretmen taşırsa yeri
+       hatırlanıyor. */
+    function kumandaYerleskeYukle() {
+        if (!kumanda) return;
+        var y = null;
+        try { y = JSON.parse(localStorage.getItem(KUMANDA_YER) || 'null'); } catch (x) { y = null; }
+        if (y && typeof y.x === 'number' && typeof y.y === 'number') { kumandaTasi(y.x, y.y); return; }
+        var cubuk = document.querySelector('.top-bar') || document.getElementById('tabSwitch');
+        var r = cubuk ? cubuk.getBoundingClientRect() : null;
+        var alt = (r && r.bottom > 0) ? r.bottom + 8 : 82;   /* çubuğun altında kalsın */
+        kumandaTasi(window.innerWidth - (kumanda.offsetWidth || 220) - 18,
+                    Math.max(alt, window.innerHeight - (kumanda.offsetHeight || 50) - 14));
+    }
+
+    function kumandaSurukle() {
+        var tut = kumanda.querySelector('.vg-k-tut'), d = null;
+        tut.addEventListener('pointerdown', function (e) {
+            d = { x: e.clientX, y: e.clientY, l: kumanda.offsetLeft, t: kumanda.offsetTop };
+            clearTimeout(kumandaSolma);            /* sürüklerken solmasın */
+            kumanda.classList.add('vg-k-etkin');
+            try { tut.setPointerCapture(e.pointerId); } catch (x) {}
+            e.preventDefault(); e.stopPropagation();
+        });
+        tut.addEventListener('pointermove', function (e) {
+            if (!d) return;
+            kumandaTasi(d.l + (e.clientX - d.x), d.t + (e.clientY - d.y));
+            e.preventDefault();
+        });
+        function birak() {
+            if (!d) return;
+            d = null;
+            kumandaBelirt();                       /* bıraktıktan sonra yavaşça solsun */
+            try {
+                localStorage.setItem(KUMANDA_YER,
+                    JSON.stringify({ x: kumanda.offsetLeft, y: kumanda.offsetTop }));
+            } catch (x) {}
+        }
+        tut.addEventListener('pointerup', birak);
+        tut.addEventListener('pointercancel', birak);
+    }
+
+    /* Tam ekranı kaplayan tablo/tahta varken kumanda görünmüyor. */
+    function tamEkranAcikMi() {
+        if (gorunurMu(document.getElementById('matrix-fullscreen-overlay'))) return true;
+        var t = document.getElementById('fdm-tahta');
+        return !!(t && t.classList.contains('fdm-tam'));
+    }
+
+    /* Kökün vezin sayısı yalnız kök DEĞİŞİNCE hesaplanıyor (getSorted…
+       her çağrıda listeyi yeniden kuruyor, saniyede birkaç kez çağırmaya
+       gerek yok). */
+    function kokteVezinVar() {
+        var k = kok();
+        if (!k) { kumandaKok = ''; kumandaVezin = 0; return false; }
+        if (k !== kumandaKok) { kumandaKok = k; kumandaVezin = refler().length; }
+        return kumandaVezin > 0;
+    }
+
+    function kumandaGuncelle() {
+        var ac = kokteVezinVar() && !perdeAcikMi() && !tamEkranAcikMi();
+        if (!ac) { if (kumanda) kumanda.classList.remove('vg-k-acik'); return; }
+        kumandaKur();
+        if (!kumanda.classList.contains('vg-k-acik')) {
+            kumanda.classList.add('vg-k-acik');
+            kumandaYerleskeYukle();
+        }
     }
 
     /* ---------------------------------------------------------------- */
@@ -931,8 +1143,23 @@
         if (zincir) { clearTimeout(zincir); zincir = null; }
         if (bekci) { clearTimeout(bekci); bekci = null; }
         anlamGizle();
+        kumandaKok = '';                 /* yeni kökün vezinleri sayılsın */
+        try { kumandaGuncelle(); } catch (e) { /* yoksay */ }
     }
-    window.KidefVezinGezinti = { ileri: ileri, sifirla: sifirla, anlamGizle: anlamGizle };
+    /* Bir kalıbın anlamı (emoji + Türkçe + örnekler) dışarıya da
+       veriliyor: çekim tahtasındaki her tablo başlığında o kelimenin
+       Türkçesi yazıyor (Geylani: "her tablonun anlamı olsun, trText
+       kısmı yani"). Aynı sözlük mantığı iki yerde ayrı ayrı yazılmasın
+       diye tek kaynak burası. */
+    function anlamAl(ref, kutu) {
+        var k = kok();
+        if (!k) return { emoji: '', tr: '', ornekler: [] };
+        var ek = kutu && kutu.getAttribute ? kutu.getAttribute('data-active-suffix') : null;
+        return anlamBul(k, ref, ek);
+    }
+    window.KidefVezinGezinti = { ileri: ileri, geri: geri, sifirla: sifirla,
+                                 anlamGizle: anlamGizle, kumandaGuncelle: kumandaGuncelle,
+                                 anlamAl: anlamAl };
 
     function baglan() {
         klonIzle();
@@ -1084,21 +1311,32 @@
         var h = e.target;
         if (!h || !h.closest) return;
         if (h.closest('#vezin-anlam-katmani')) return;
+        if (h.closest('#vg-kumanda')) return;             /* yüzen kumanda */
         if (h.closest('.glass-box')) return;              /* kutu / dev klon */
         if (h.closest('#suffix-dropdown')) return;        /* "+" ek menüsü */
         anlamGizle();
     }, true);
 
-    /* 5) İLERİ TUŞU — yakalama evresinde; sayfanın kaydırması araya girmesin */
+    /* 5) İLERİ / GERİ TUŞU — yakalama evresinde; sayfanın kaydırması
+       araya girmesin. Sunum kumandalarının "geri" düğmesi PageUp ya da
+       sol ok gönderir. */
     document.addEventListener('keydown', function (e) {
-        if (ILERI_TUSLARI.indexOf(e.key) === -1) return;
+        var ileriMi = ILERI_TUSLARI.indexOf(e.key) !== -1;
+        var geriMi = !ileriMi && GERI_TUSLARI.indexOf(e.key) !== -1;
+        if (!ileriMi && !geriMi) return;
         if (e.ctrlKey || e.metaKey || e.altKey) return;
         if (gezintiKapali()) return;
         if (!refler().length) return;                 /* kök yoksa sayfa normal davransın */
         e.preventDefault();
         e.stopPropagation();
-        ileri();
+        if (ileriMi) ileri(); else geri();
     }, true);
+
+    /* 6) KUMANDANIN GÖRÜNÜRLÜĞÜ: kök tanımlandığında çıkar, kök
+       silinince ya da tam ekran/perde açılınca çekilir. */
+    setInterval(function () {
+        try { kumandaGuncelle(); } catch (e) { /* yoksay */ }
+    }, 700);
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', baglan);

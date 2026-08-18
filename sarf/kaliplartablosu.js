@@ -1189,6 +1189,25 @@ const SoundEngine = {
         osc.stop(now + 0.04);
     },
     
+    /* Yumuşak beliriş: çekim tabloları arka planda hazırlanıp yüzen
+       simge ekrana geldiğinde çalıyor. İki hafif sinüs, alçak sesle
+       yukarı doğru — dikkat çeker ama dersi bölmez. */
+    playYumusak() {
+        this.init();
+        const now = this.ctx.currentTime;
+        [[523.25, 0], [783.99, 0.09]].forEach(([hz, gec]) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(hz, now + gec);
+            gain.gain.setValueAtTime(0, now + gec);
+            gain.gain.linearRampToValueAtTime(0.035, now + gec + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0008, now + gec + 0.32);
+            osc.connect(gain); gain.connect(this.ctx.destination);
+            osc.start(now + gec); osc.stop(now + gec + 0.36);
+        });
+    },
+
     // 2. Yumuşak ve Derin Kapatma Sesi (Soft Cancel)
     playClose() {
         this.init();
@@ -2370,6 +2389,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             <span class="fdm-hucre-rozet" title="${rozet === '3+' ? 'Mezid fiil' : 'Üç harfli (mücerred) fiil'}"><bdi>${rozet}</bdi></span>
             ${grup.ad ? `<span class="fdm-hucre-fiil" title="Bu satırın fiili"><bdi>${grup.ad}</bdi></span>` : ''}
             <span class="fdm-hucre-ad">${refId ? refId + ' · ' : ''}${TIP_AD[tip] || 'ÇEKİM'}</span>
+            <span class="fdm-hucre-anlam"></span>
             <span class="fdm-hucre-tus">
                 <button type="button" class="fdm-hucre-btn matrix-expand-btn" title="Bu tabloyu tam ekran"
                         aria-label="Bu tabloyu tam ekran" onclick="openMatrixFullscreen(event, this)">&#10530;</button>
@@ -2680,6 +2700,10 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
            satırda (satır kipinde tek sütunda) toplanıyor. */
         inlineContainer.setAttribute('data-fiil', grup.anahtar);
         if (grup.ad) inlineContainer.setAttribute('data-fiil-ad', grup.ad);
+        /* Ortak mâzî (1. kalıp): hangi bâbın kuşağına gireceği dizilimde
+           kararlaştırılsın diye aday satırlar taşınıyor. */
+        if (grup.adaylar && grup.adaylar.length > 1)
+            inlineContainer.setAttribute('data-fiil-adaylar', grup.adaylar.join(','));
         izgara.appendChild(inlineContainer);
     }
     inlineContainer.innerHTML = html;
@@ -2710,13 +2734,29 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     /* Yeni tablo eklenince tahta ekranı aşabilir; aşıyorsa kendiliğinden
        ekrana sığdırılıp ortalanıyor — az önce açtığın tablo hep görünür
        olsun. Sığıyorsa öğretmenin koyduğu yer ve ölçek korunuyor. */
+    /* İKİNCİ TABLO AÇILINCA TAM EKRAN: tek bir çekim küçük pencerede
+       duruyor, ama yanına ikincisi gelir gelmez (mâzîden sonra muzâri
+       gibi) tahta bütün ekranı kaplıyor — karşılaştırma böyle rahat
+       oluyor (Geylani: "bir tane daha açılırsa tablolar tam ekrana
+       geçsinler; küçük tablo sadece bir fiilin mâzîsi ya da sadece
+       muzârisi açıkken olacak"). Arka plandaki hazırlık bu kuralın
+       dışında: orada tablolar zaten rıhtıma iniyor. */
+    var hucreSayisi = izgara.querySelectorAll('.fdm-hucre').length;
+    var ikinciTablo = yeniHucre && hucreSayisi === 2 &&
+                      !tahta.classList.contains('fdm-yuzen') &&
+                      !tahta.classList.contains('fdm-tam') &&
+                      !document.body.classList.contains('fdm-hazirlik');
     if (tahta.classList.contains('fdm-yuzen')) window.fdmYuzenYerlestir();
+    else if (ikinciTablo) window.fdmTamAc(tahta);
     else if (tahta.classList.contains('fdm-tam')) window.fdmTamYerlestir();
-    else if (izgara.querySelectorAll('.fdm-hucre').length === 1) window.fdmTahtaSigdir(true);
+    else if (hucreSayisi === 1) window.fdmTahtaSigdir(true);
     else {
-        var k0 = parseFloat(tahta.style.getPropertyValue('--fdm-olcek')) || 1;
-        if (tahta.offsetWidth * k0 > window.innerWidth - 20 ||
-            tahta.offsetHeight * k0 > window.innerHeight - 20) window.fdmTahtaSigdir(true);
+        /* Ölçek artık `zoom` ile ÇOCUĞA uygulandığı için tahtanın
+           offsetWidth/Height'ı zaten son ölçüsü; bir daha k ile çarpmak
+           taşmayı gizliyordu (ölçüldü: 1512×860'ta 4 kutuda 17 px alt
+           taşma). Doğrudan ekranla karşılaştırılıyor. */
+        if (tahta.offsetWidth > window.innerWidth - 20 ||
+            tahta.offsetHeight > window.innerHeight - 20) window.fdmTahtaSigdir(true);
         else window.fdmGorunurKil(tahta);
     }
 
@@ -2742,20 +2782,141 @@ window.FDM_SUTUN = { mazi: 1, muzari: 2, emir: 3, isim: 4 };
    oturum boyunca değişmiyor. Ad olarak o satırın mâzîsi okunuyor —
    kök yerleştirilmişse gerçek fiil (عَلَّمَ) görünüyor. */
 window._fdmFiilNo = window._fdmFiilNo || 0;
+/* Bir bâb satırının fiil kimliği. */
+function fdmSatirAnahtar(tr) {
+    if (!tr) return '';
+    if (!tr.dataset.fdmFiilNo) tr.dataset.fdmFiilNo = String(++window._fdmFiilNo);
+    return 'f' + tr.dataset.fdmFiilNo;
+}
+
+/* Satırın mâzîsi. Kendi satırında yoksa ÜSTTEKİ satırlardan bu satırı
+   KAPSAYAN (rowspan) mâzî aranıyor: 1. kalıp (فَعَلَ) birinci, ikinci ve
+   üçüncü bâbın ortak mâzîsi olduğu için tabloda üç satırı kaplayan tek
+   bir hücre. Böylece 4-5 ve 6-7 kalıplarının başlığında da o fiil
+   yazıyor. */
+function fdmSatirFiilAdi(tr) {
+    if (!tr) return '';
+    var b = tr.querySelector('.glass-box[data-type="mazi"] .ar') ||
+            tr.querySelector('.glass-box.is-verb .ar');
+    if (b) return (b.textContent || '').trim();
+    var geri = 1, s = tr.previousElementSibling;
+    while (s && geri < 8) {
+        var kutu = s.querySelector('td[rowspan] .glass-box[data-type="mazi"]');
+        var td = (kutu && kutu.closest) ? kutu.closest('td') : null;
+        if (td && parseInt(td.getAttribute('rowspan') || '1', 10) > geri) {
+            var a = kutu.querySelector('.ar');
+            return a ? (a.textContent || '').trim() : '';
+        }
+        s = s.previousElementSibling; geri++;
+    }
+    return '';
+}
+
 function fdmFiilGrubu(boxElement) {
     var tr = boxElement && boxElement.closest ? boxElement.closest('tr') : null;
-    var anahtar, ad = '';
+    var td = boxElement && boxElement.closest ? boxElement.closest('td') : null;
+    var anahtar, ad = '', adaylar = [];
     if (tr) {
-        if (!tr.dataset.fdmFiilNo) tr.dataset.fdmFiilNo = String(++window._fdmFiilNo);
-        anahtar = 'f' + tr.dataset.fdmFiilNo;
-        var mz = tr.querySelector('.glass-box[data-type="mazi"] .ar') ||
-                 tr.querySelector('.glass-box.is-verb .ar');
-        if (mz) ad = (mz.textContent || '').trim();
+        anahtar = fdmSatirAnahtar(tr);
+        ad = fdmSatirFiilAdi(tr);
+        /* ORTAK MÂZÎ: 1. kalıp üç bâbın (2-3 · 4-5 · 6-7) tek mâzîsi.
+           Hangi fiile ait olduğu SABİT DEĞİL; kapsadığı satırların
+           anahtarları aday olarak saklanıyor, karar dizilim sırasında
+           veriliyor (fdmEsnekFiilCoz) — muzârisi 4, emri 5 olan bir
+           fiilde mâzî onların sütununa katılsın (Geylani: "1. kalıp hem
+           2-3 hem 4-5 hem 6-7 için ortak, şu an mazileri farklı
+           yerlerde çıkıyor"). */
+        var kap = td ? parseInt(td.getAttribute('rowspan') || '1', 10) : 1;
+        if (kap > 1) {
+            var s = tr;
+            for (var i = 0; i < kap && s; i++) {
+                adaylar.push(fdmSatirAnahtar(s));
+                s = s.nextElementSibling;
+            }
+        }
     } else {
         anahtar = 'k' + (boxElement.dataset.fdmNo ||
             (boxElement.dataset.fdmNo = String(++window._fdmKutuNo)));
     }
-    return { anahtar: anahtar, ad: ad };
+    return { anahtar: anahtar, ad: ad, adaylar: adaylar };
+}
+
+/* Ortak mâzî hangi kuşağa girecek? Açık tablolara bakılıyor: adayları
+   arasında EN ÇOK tablosu olan bâb kazanıyor, eşitlikte bâb sırası
+   (yani kalıbın kendi satırı) öne geçiyor. Hiçbir adayın tablosu yoksa
+   mâzî kendi satırında tek başına duruyor. Karar her dizilimde yeniden
+   veriliyor: sonradan 6 ve 7 açılırsa mâzî oraya taşınıyor. */
+function fdmEsnekFiilCoz(izgara) {
+    var hucreler = Array.prototype.slice.call(izgara.querySelectorAll('.fdm-hucre'));
+    var sabit = {};
+    hucreler.forEach(function (h) {
+        if (h.dataset.fiilAdaylar) return;
+        var k = h.getAttribute('data-fiil') || 'x';
+        sabit[k] = (sabit[k] || 0) + 1;
+    });
+    hucreler.forEach(function (h) {
+        var ham = h.dataset.fiilAdaylar;
+        if (!ham) return;
+        var adaylar = ham.split(',');
+        var en = adaylar[0], enSayi = 0;
+        adaylar.forEach(function (a) {
+            var n = sabit[a] || 0;
+            if (n > enSayi) { enSayi = n; en = a; }
+        });
+        h.setAttribute('data-fiil', en);
+    });
+}
+
+/* Başlıktaki fiil adı hep GÜNCEL okunuyor: tablo açıldığında kök daha
+   mâzîye girmemiş olabiliyordu; o zaman kutuda hâlâ فَعَلَ yazıyor ve
+   aynı fiilin tabloları farklı adlar gösteriyordu (4 · MUZÂRİ'de فَعَلَ,
+   1 · MÂZÎ'de كَتَبَ). Dizilimde satırın mâzîsi yeniden okunup yazılıyor. */
+/* HER TABLONUN ANLAMI: başlıkta kalıbın Türkçesi (sözlükteki trText)
+   duruyor — öğrenci tabloya bakarken kelimenin ne demek olduğunu da
+   görsün (Geylani: "her tablonun anlamı olsun, trText kısmı yani").
+   Anlam sözlükten vezingezinti üzerinden okunuyor: "+" eki etkinse onun
+   karşılığı, yoksa temel anlam. */
+function fdmHucreAnlamTazele(h) {
+    var kap = h.querySelector('.fdm-hucre-anlam');
+    if (!kap) return;
+    var parca = (h.getAttribute('data-anahtar') || '').replace(/^k/, '').split('_');
+    var ref = parca[0], no = parca[1];
+    var kutu = no ? document.querySelector('.glass-box[data-fdm-no="' + no + '"]') : null;
+    var a = null;
+    try {
+        if (window.KidefVezinGezinti && window.KidefVezinGezinti.anlamAl)
+            a = window.KidefVezinGezinti.anlamAl(ref, kutu);
+    } catch (x) { a = null; }
+    var tr = (a && a.tr) ? String(a.tr).trim() : '';
+    if (!tr) { kap.textContent = ''; kap.removeAttribute('title'); return; }
+    kap.textContent = ((a.emoji ? a.emoji + ' ' : '') + tr);
+    kap.title = tr;
+}
+
+function fdmFiilAdlariTazele(izgara) {
+    izgara.querySelectorAll('.fdm-hucre').forEach(function (h) {
+        fdmHucreAnlamTazele(h);
+        var k = h.getAttribute('data-fiil') || '';
+        if (k.charAt(0) !== 'f') return;
+        var tr = document.querySelector('tr[data-fdm-fiil-no="' + k.slice(1) + '"]');
+        var ad = fdmSatirFiilAdi(tr);
+        if (!ad) return;
+        h.setAttribute('data-fiil-ad', ad);
+        var kap = h.querySelector('.fdm-hucre-fiil');
+        if (!kap) {
+            var bas = h.querySelector('.fdm-hucre-bas');
+            var rozet = h.querySelector('.fdm-hucre-rozet');
+            if (!bas) return;
+            kap = document.createElement('span');
+            kap.className = 'fdm-hucre-fiil';
+            kap.title = 'Bu satırın fiili';
+            kap.appendChild(document.createElement('bdi'));
+            if (rozet && rozet.nextSibling) bas.insertBefore(kap, rozet.nextSibling);
+            else bas.insertBefore(kap, bas.firstChild);
+        }
+        var et = kap.querySelector('bdi') || kap;
+        if (et.textContent !== ad) et.textContent = ad;
+    });
 }
 
 function fdmTahta() {
@@ -2843,33 +3004,103 @@ function fdmRihtimKur(t) {
    veya muzarileri; mazi varsa ilk satırda olsunlar, muzariler ikinci,
    emirler 3"). Bâbları karşılaştırırken satır kipi, tek bir fiilin
    çekimlerini toplarken sütun kipi işe yarıyor. */
-window.FDM_DIZIM = (function () {
-    try { return localStorage.getItem('kidef_fdm_dizim') === 'satir' ? 'satir' : 'sutun'; }
-    catch (x) { return 'sutun'; }
-})();
+/* İKİ KİP VAR, ÜÇÜNCÜSÜ YOK. Düğme yalnız SATIR ile SÜTUN arasında
+   gidip geliyor; "OTO" diye bir kip görünmüyor (Geylani: "otomatik mod
+   olmasın, sadece satır ve sütun arasında geçiş yapılabilir olmalı").
+   Açılış kipini yine kural belirliyor: kökte TEK fiil varsa SATIR
+   (mâzî · muzâri · emir yan yana — emre ulaşmak için kaydırmak
+   gerekmesin), İKİ ve daha fazlası varsa SÜTUN (her fiil bir sütun;
+   karşılaştırma böyle kuruluyor). Öğretmen düğmeye basınca seçim ELLE
+   yapılmış sayılıyor ve tahta kapanana kadar korunuyor.
+   İç değerler: 'sutun' = tür sütunda (fiil satırda) = ekranda SATIR
+   kipi · 'satir' = tür satırda (fiil sütunda) = ekranda SÜTUN kipi. */
+window.FDM_DIZIM = 'sutun';
+window.FDM_DIZIM_ELLE = false;      /* düğmeye basıldı mı? */
+/* Ekranda hangi kip geçerli? Elle seçilmediyse fiil sayısı belirliyor. */
+function fdmEtkinDizim(fiilSayisi) {
+    if (!window.FDM_DIZIM_ELLE) window.FDM_DIZIM = (fiilSayisi > 1) ? 'satir' : 'sutun';
+    return window.FDM_DIZIM;
+}
+/* KİP ADI FİİLE GÖRE: bir fiilin mâzî/muzâri/emri YAN YANA diziliyorsa
+   "SATIR" kipi, ALT ALTA diziliyorsa "SÜTUN" kipi. (Etiketler eskiden
+   türün eksenini anlatıyordu, öğretmenin adlandırmasının tersiydi.) */
 function fdmDizimYazi(t) {
     var b = t && t.querySelector('.fdm-dizim');
     if (!b) return;
-    var satir = window.FDM_DIZIM === 'satir';
-    b.innerHTML = (satir ? '&#9776;' : '&#9868;') + '<span>' + (satir ? 'SATIR' : 'SÜTUN') + '</span>';
-    b.title = satir
-        ? 'Şu an SATIR kipi: aynı tür tablolar yan yana (1. satır mâzîler, 2. muzâriler, 3. emirler). Sütun kipine geç.'
-        : 'Şu an SÜTUN kipi: mâzîler en sağda alt alta. Satır kipine geç.';
+    var d = window.FDM_DIZIM;
+    var satirMi = (d === 'sutun');                 /* ekrandaki adıyla SATIR */
+    b.innerHTML = (satirMi ? '&#9776;' : '&#9868;') +
+                  '<span>' + (satirMi ? 'SATIR' : 'SÜTUN') + '</span>';
+    b.title = satirMi
+        ? 'SATIR kipi: bir fiilin mâzî · muzâri · emri yan yana. SÜTUN kipine geçmek için bas.'
+        : 'SÜTUN kipi: bir fiilin mâzî · muzâri · emri alt alta. SATIR kipine geçmek için bas.';
+}
+/* KİP DEĞİŞİNCE TABLOLAR KAYARAK YER DEĞİŞTİRİR (FLIP): önce eski
+   yerleri ölçülüyor, yeni yerleşimden sonra her tablo eski yerine
+   "geri itiliyor" ve oradan yumuşakça yeni yerine kayıyor. Böylece
+   satır ↔ sütun geçişi birden olmuyor (Geylani: "yer değiştirme
+   animasyonu olsun, birden olmasın"). Ayırıcı çizgiler de yeni
+   yönünde belirerek geliyor. */
+var FDM_GECIS_SURE = 460;
+function fdmDizimGecisOlc(izgara) {
+    var liste = [];
+    if (!izgara) return liste;
+    izgara.querySelectorAll('.fdm-hucre').forEach(function (h) {
+        liste.push({ h: h, x: h.offsetLeft, y: h.offsetTop });
+    });
+    return liste;
+}
+function fdmDizimGecisOynat(izgara, eskiler) {
+    if (!izgara || !eskiler.length) return;
+    var oynayan = [];
+    eskiler.forEach(function (o) {
+        if (!o.h.isConnected) return;
+        var dx = o.x - o.h.offsetLeft, dy = o.y - o.h.offsetTop;
+        if (!dx && !dy) return;
+        /* Kaydırma `transform` ile değil `translate` özelliğiyle
+           yapılıyor: hücrenin kendi kuralında `transform: none
+           !important` var (kutu düğmelerinin kapsayan bloğu bozulmasın
+           diye) ve satır içi dönüşümü eziyordu — ölçüldü: 90 ms'de
+           tablolar çoktan yeni yerindeydi, animasyon hiç oynamıyordu. */
+        o.h.style.transition = 'none';
+        o.h.style.translate = dx + 'px ' + dy + 'px';
+        oynayan.push(o.h);
+    });
+    izgara.querySelectorAll('.fdm-ayirici').forEach(function (c) {
+        c.classList.add('fdm-cizgi-belir');
+    });
+    if (!oynayan.length) return;
+    void izgara.offsetWidth;                       /* yerleşim kesinleşsin */
+    requestAnimationFrame(function () {
+        oynayan.forEach(function (h) {
+            h.style.transition = 'translate ' + FDM_GECIS_SURE + 'ms cubic-bezier(.22,.61,.36,1)';
+            h.style.translate = '0px 0px';
+        });
+    });
+    setTimeout(function () {
+        oynayan.forEach(function (h) { h.style.transition = ''; h.style.translate = ''; });
+    }, FDM_GECIS_SURE + 60);
 }
 window.fdmDizimDegistir = function (e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
-    window.FDM_DIZIM = (window.FDM_DIZIM === 'satir') ? 'sutun' : 'satir';
-    try { localStorage.setItem('kidef_fdm_dizim', window.FDM_DIZIM); } catch (x) {}
+    /* SATIR ⇄ SÜTUN; başka kip yok. */
+    window.FDM_DIZIM = (window.FDM_DIZIM === 'sutun') ? 'satir' : 'sutun';
+    window.FDM_DIZIM_ELLE = true;    /* artık fiil sayısı karışmıyor */
     var t = document.getElementById('fdm-tahta');
     if (!t) return;
     fdmDizimYazi(t);
     var izgara = t.querySelector('.fdm-izgara');
+    var eskiler = fdmDizimGecisOlc(izgara);
     if (izgara) fdmIzgaraDiz(izgara);
     t.style.setProperty('--fdm-ic-olcek', 1);
     t.classList.remove('fdm-odak');
     t.dataset.odakHucre = '';
     fdmTuvalOlc(t);
+    /* Pencerenin kendi ölçüsü ve yeri de yumuşak değişsin. */
+    t.classList.add('fdm-gecis');
+    setTimeout(function () { t.classList.remove('fdm-gecis'); }, FDM_GECIS_SURE + 60);
     if (!t.classList.contains('fdm-yuzen')) window.fdmTahtaSigdir(true);
+    fdmDizimGecisOynat(izgara, eskiler);
     if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
 };
 
@@ -2909,6 +3140,8 @@ function fdmGorusOlc(t) {
     /* Rıhtımdayken pencere gizli; ölçüler 0 çıkar ve dönüşte bozuk bir
        düzen kalırdı. Ölçüm, tablolar geri açılırken yapılıyor. */
     if (t.classList.contains('fdm-yuzen')) return;
+    /* Tam ekranda pencere ölçüsünü fdmTamYerlestir yazıyor. */
+    if (t.classList.contains('fdm-tam')) { window.fdmTamYerlestir(); return; }
     /* VARSAYILAN BOY: yan yana ÜÇ, alt alta İKİ tablo (Geylani).
        Dördüncü sütun ve üçüncü satır kaydırma ile geliyor; kenar
        tutamaklarıyla istenirse küçültülüp büyütülebiliyor. */
@@ -2955,6 +3188,21 @@ function fdmIcEnAz(t) {
                      gorus.clientHeight / izgara.offsetHeight);
     return Math.max(0.25, Math.min(1, k));
 }
+/* TAM EKRANDA ŞERİTLER: ölçek 1'deyken tablolar kalan genişliği eşit
+   bölüşüyor (ekran dolsun); YAKLAŞILDIĞINDA ise doğal enlerine dönüyor
+   ki ızgara pencereyi aşabilsin ve kaydırarak gezilebilsin. `1fr`
+   şeritler yaklaşınca tabloyu enine kilitliyor, `max-content` ızgara
+   ile birleşince de şerit sonsuza gidiyordu (ölçüldü: hücre 4.000.006
+   px). Bu yüzden karar tek yerden veriliyor. */
+function fdmTamSablonTazele(t, k) {
+    if (!t || !t.classList.contains('fdm-tam')) return;
+    var iz = t.querySelector('.fdm-izgara');
+    if (!iz) return;
+    var yakin = k > 1.02;
+    t.classList.toggle('fdm-tam-yakin', yakin);
+    fdmTamSutunlar(iz, yakin);
+}
+
 /* İç ölçeği değiştirir; EKRANDA (mx,my) noktası yerinde kalır. */
 window.fdmIcYakinlastir = function (t, k, mx, my) {
     var gorus = t.querySelector('.fdm-gorus');
@@ -2962,6 +3210,7 @@ window.fdmIcYakinlastir = function (t, k, mx, my) {
     var k0 = fdmIcOlcek(t);
     k = Math.max(fdmIcEnAz(t), Math.min(window.FDM_IC_EN_COK, k));
     if (Math.abs(k - k0) < 0.002) return;
+    fdmTamSablonTazele(t, Math.max(k, k0));   /* geçiş boyunca doğal şerit */
     var dis = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
     var r = gorus.getBoundingClientRect();
     if (typeof mx !== 'number') { mx = r.left + r.width / 2; my = r.top + r.height / 2; }
@@ -2972,6 +3221,7 @@ window.fdmIcYakinlastir = function (t, k, mx, my) {
     gorus.scrollLeft = cx * k - px;
     gorus.scrollTop = cy * k - py;
     t.classList.toggle('fdm-odak', k > 1.02);
+    fdmTamSablonTazele(t, k);                 /* yerleşince şeritler tazelensin */
 };
 
 /* Bir tabloya tıklanınca o tablo ORTAYA gelip yakınlaşıyor; aynı
@@ -2991,6 +3241,10 @@ window.fdmHucreOdakla = function (hucre) {
         fdmOdakAnim(t, k, izgara.offsetWidth / 2, izgara.offsetHeight / 2);
     } else {
         t.dataset.odakHucre = anahtar;
+        /* Tam ekranda şeritler ÖNCE doğal enine dönüyor; hücre ölçüsü
+           sonra okunuyor, yoksa hedef nokta eski yerleşimden alınıp
+           tablo yanlış yere oturuyordu. */
+        fdmTamSablonTazele(t, 2);
         k = Math.max(1, Math.min(window.FDM_IC_EN_COK,
             Math.min(gorus.clientWidth * 0.96 / hucre.offsetWidth,
                      gorus.clientHeight * 0.96 / hucre.offsetHeight)));
@@ -3016,6 +3270,7 @@ function fdmOdakAnim(t, k1, hedefX, hedefY, sure) {
     var t0 = performance.now();
     sure = sure || 420;
     t.classList.add('fdm-canli');
+    fdmTamSablonTazele(t, Math.max(k0, k1));   /* geçiş boyunca doğal şerit */
     function adim(simdi) {
         var p = Math.min(1, (simdi - t0) / sure);
         var e = 1 - Math.pow(1 - p, 3);                 /* easeOutCubic */
@@ -3032,6 +3287,7 @@ function fdmOdakAnim(t, k1, hedefX, hedefY, sure) {
         else {
             t.classList.remove('fdm-canli');
             t.classList.toggle('fdm-odak', k1 > 1.02);
+            fdmTamSablonTazele(t, k1);         /* uzaklaşınca şeritler yeniden paylaşılsın */
         }
     }
     requestAnimationFrame(adim);
@@ -3039,14 +3295,54 @@ function fdmOdakAnim(t, k1, hedefX, hedefY, sure) {
 
 /* ---- KISTIRMA (iki parmak) ve DOKUNMATİK YÜZEY (ctrl+teker) ----
    Tarayıcı, dizüstü dokunmatik yüzeyinde iki parmakla kıstırmayı
-   `ctrlKey`li bir teker olayı olarak veriyor; tablette ise iki ayrı
-   dokunuş geliyor. İkisi de aynı iç ölçeği sürüyor. */
+   `ctrlKey`li bir teker olayı olarak veriyor; tablette iki ayrı dokunuş
+   geliyor. İKİSİ DE TAHTANIN KENDİSİNİ büyütüp küçültüyor — pencere de
+   tablolarla birlikte küçülüyor. Eskiden yalnız İÇERİK küçülüyordu:
+   pencere aynı kalıp içi boşalıyordu, küçültmenin sonu gelmiyormuş gibi
+   duruyordu (Geylani: "sonsuz küçültme olmasın, daha pratik küçülüp
+   büyüsünler"). Parmakların ortasındaki nokta yerinde kalıyor. */
+window.fdmDisYakinlastir = function (t, k, mx, my) {
+    var tb = fdmTahtaTaban(t);
+    if (!tb.lw && !tb.bw) return;
+    var k0 = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
+    k = Math.max(0.35, Math.min(3.2, k));
+    if (Math.abs(k - k0) < 0.002) return;
+    var r = t.getBoundingClientRect();
+    if (typeof mx !== 'number') { mx = r.left + r.width / 2; my = r.top + r.height / 2; }
+    var fx = r.width ? (mx - r.left) / r.width : 0.5;
+    var fy = r.height ? (my - r.top) / r.height : 0.5;
+    /* Elle ölçek verildi: kendiliğinden yerleşen kipler bırakılıyor. */
+    if (t.classList.contains('fdm-tam')) {
+        t.classList.remove('fdm-tam');
+        var g0 = t.querySelector('.fdm-gorus'), iz0 = t.querySelector('.fdm-izgara');
+        if (g0) { g0.style.width = ''; g0.style.height = ''; }
+        if (iz0) iz0.style.gridTemplateColumns = '';
+        fdmGorusOlc(t);
+        window.fdmYesilTusYazi();
+        tb = fdmTahtaTaban(t);
+    }
+    t.style.setProperty('--fdm-olcek', k);
+    var o = fdmTahtaOlcu(tb, k);
+    window.fdmEkranaYerlestir(t, Math.round(mx - fx * o.w), Math.round(my - fy * o.h));
+    fdmKaybolmasin(t);
+};
+/* Kıstırma imlecin altındaki noktayı sabit tuttuğu için tahta çok
+   büyürken ekranın dışına kaçabiliyor; hiçbir yeri görünmüyorsa geri
+   çekiliyor ki öğretmen onu kaybetmesin. */
+function fdmKaybolmasin(t) {
+    var r = t.getBoundingClientRect(), pay = 60;
+    if (r.right < pay || r.bottom < pay ||
+        r.left > window.innerWidth - pay || r.top > window.innerHeight - pay) {
+        window.fdmGorunurKil(t);
+    }
+}
 function fdmYakinlastirmaKur(t) {
     t.addEventListener('wheel', function (e) {
         if (!e.ctrlKey) return;                 /* düz kaydırma: pencereye bırak */
         e.preventDefault(); e.stopPropagation();
-        var k0 = fdmIcOlcek(t);
-        window.fdmIcYakinlastir(t, k0 * (1 - e.deltaY / 260), e.clientX, e.clientY);
+        var k0 = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
+        /* 260 yerine 150: bir jestte gözle görülür bir değişim olsun. */
+        window.fdmDisYakinlastir(t, k0 * (1 - e.deltaY / 150), e.clientX, e.clientY);
     }, { passive: false });
 
     var par = {}, kis = null;
@@ -3057,7 +3353,8 @@ function fdmYakinlastirmaKur(t) {
         var id = Object.keys(par);
         if (id.length === 2) {
             var a = par[id[0]], b = par[id[1]];
-            kis = { d0: uzaklik(a, b) || 1, k0: fdmIcOlcek(t) };
+            kis = { d0: uzaklik(a, b) || 1,
+                    k0: parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1 };
             window._fdmKistirma = true;         /* sürükleme dursun */
         }
     }, true);
@@ -3068,7 +3365,7 @@ function fdmYakinlastirmaKur(t) {
         if (!kis || id.length !== 2) return;
         e.preventDefault(); e.stopPropagation();
         var a = par[id[0]], b = par[id[1]];
-        window.fdmIcYakinlastir(t, kis.k0 * (uzaklik(a, b) / kis.d0),
+        window.fdmDisYakinlastir(t, kis.k0 * (uzaklik(a, b) / kis.d0),
             (a.x + b.x) / 2, (a.y + b.y) / 2);
     }, true);
     function birak(e) {
@@ -3084,7 +3381,7 @@ function fdmYakinlastirmaKur(t) {
    satıra iner, aradan biri kapanınca kalanlar yukarı kayar. */
 function fdmIzgaraDiz(izgara) {
     var sayac = {};
-    var satirKipi = (window.FDM_DIZIM === 'satir');
+    var satirKipi = false;      /* aşağıda fiil sayısına göre belirleniyor */
     /* İKİDEN ÇOK TABLO VARSA TAM EKRAN YOK: tam ekran tek bir tabloyu
        kaplıyor, yan yana karşılaştırmanın da anlamı kalmıyor. Öğretmen:
        "birden fazla popup açıldığında tam ekran özelliği olmasın, sadece
@@ -3102,6 +3399,16 @@ function fdmIzgaraDiz(izgara) {
        satır açtırıp her çağrıda çoğalıyorlardı (ölçüldü: iki fiil için
        dört ayırıcı, ızgara 966 px). */
     izgara.querySelectorAll('.fdm-ayirici').forEach(function (c) { c.remove(); });
+    fdmEsnekFiilCoz(izgara);        /* ortak mâzî hangi fiile katılıyor? */
+    fdmFiilAdlariTazele(izgara);    /* başlıktaki fiil adı güncellensin */
+    var fiiller = [];
+    izgara.querySelectorAll('.fdm-hucre').forEach(function (h) {
+        var gr = h.getAttribute('data-fiil') || 'x';
+        if (fiiller.indexOf(gr) < 0) fiiller.push(gr);
+    });
+    satirKipi = (fdmEtkinDizim(fiiller.length) === 'satir');
+    /* Kip fiil sayısıyla değişmiş olabilir: düğmenin yazısı da güncelleniyor. */
+    if (tahtaEl) fdmDizimYazi(tahtaEl);
     izgara.querySelectorAll('.fdm-hucre').forEach(function (h) {
         var tip = h.getAttribute('data-tip') || 'isim';
         var grup = h.getAttribute('data-fiil') || 'x';
@@ -3132,25 +3439,39 @@ function fdmIzgaraDiz(izgara) {
             h.style.gridRow = String(r);
         }
     });
-    turler.sort(function (a, b) { return a - b; });
+    /* Çizgi ızgaranın bir ucundan öbür ucuna uzanmalı. `1 / -1` burada
+       işe yaramıyor: ızgaranın açık (explicit) şablonu yok, `-1` ilk
+       çizgiye düşüyor ve ayırıcı tek sütuna sıkışıyordu (ölçüldü:
+       1540 px'lik ızgarada çizgi 466 px). Bu yüzden kapsanacak şerit
+       sayısı elle veriliyor: en büyük tür sırası × 2 − 1. */
+    var enBuyukTur = 1;
+    for (var ti = 0; ti < turler.length; ti++) enBuyukTur = Math.max(enBuyukTur, turler[ti]);
+    var serit = 2 * enBuyukTur - 1;
+    izgara.dataset.serit = String(serit);
+    /* Yatay ve dikey şerit sayıları AYRI: kipe göre eksenler yer
+       değiştiriyor. Tam ekranda sütunlar paylaştırılırken bu gerekiyor —
+       eskiden tür sayısı (serit) kullanılıyordu, iki fiil açıkken beş
+       sütun açılıp biri BOŞ kalıyordu ve tablolar ekranın üçte ikisine
+       sıkışıyordu (ölçüldü: 1fr auto 1fr auto 1fr, üçüncü şerit boş;
+       Geylani: "iki fiil varsa tam ekranda kutular büyük olsun, illa 3
+       fiile gerek yok ekranı doldurmak için"). */
+    var fiilSerit = Math.max(1, 2 * satirlar.length - 1);
+    izgara.dataset.enSerit = String(satirKipi ? fiilSerit : serit);
+    izgara.dataset.boySerit = String(satirKipi ? serit : fiilSerit);
     function ayirici(dikey, hat) {
         var cz = document.createElement('div');
         cz.className = 'fdm-ayirici' + (dikey ? ' fdm-ayirici-dikey' : '');
-        if (dikey) { cz.style.gridColumn = String(hat); cz.style.gridRow = '1 / -1'; }
-        else { cz.style.gridRow = String(hat); cz.style.gridColumn = '1 / -1'; }
+        if (dikey) { cz.style.gridColumn = String(hat); cz.style.gridRow = '1 / span ' + serit; }
+        else { cz.style.gridRow = String(hat); cz.style.gridColumn = '1 / span ' + serit; }
         izgara.appendChild(cz);
     }
-    /* İKİ YÖNDE DE ÇİZGİ: fiil kuşakları arasına ve tür sütunları
-       arasına, ızgaranın bir ucundan öbür ucuna (Geylani: "ayırıcı
-       çizgi tüm satır ve sütun boyunca devam etsin"). Çizgiler yalnız
-       GERÇEKTEN VAR OLAN komşu kuşakların arasına konuyor; boş kalan
-       türlerin yerinde çizgi bırakılmıyor. */
+    /* ÇİZGİ SAYISI KUTUYA DEĞİL FİİLE BAĞLI: iki fiil varsa bir çizgi,
+       üç fiil varsa iki çizgi — o fiilden bir tablo da açılmış olsa üç
+       tablo da (Geylani). Çizgi yalnız fiil kuşaklarının ARASINDA,
+       ızgaranın bir ucundan öbür ucuna uzanıyor; kutuların çevresinde
+       çizgi yok. Bir fiilin tabloları satır boyunca diziliyorsa çizgi
+       yatay, sütun boyunca diziliyorsa dikey oluyor. */
     for (var ci = 1; ci < satirlar.length; ci++) ayirici(satirKipi, 2 * ci);
-    for (var tj = 1; tj < turler.length; tj++) {
-        /* iki tür arasındaki ayırıcı hattı: küçük olanın hemen sonrası */
-        var hat = 2 * turler[tj] - 2;
-        ayirici(!satirKipi, hat);
-    }
     var t = izgara.closest ? izgara.closest('.fdm-tahta') : null;
     if (t) { fdmGorusOlc(t); window.fdmSimgeleriYenile(t); }
 }
@@ -3215,25 +3536,33 @@ window.fdmTahtaYuzen = function (e, ac) {
         if (!t.classList.contains('fdm-yuzen'))
             t.dataset.eskiOlcek = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
         t.classList.add('fdm-yuzen');
+        /* Rıhtıma inerken tam ekran kipi bırakılıyor: yoksa rıhtımdayken
+           yapılan ölçümler tam ekran hesabına düşüp simgenin ölçeğini
+           bozuyordu. Rıhtımdan çıkışta zaten yeniden açılıyor. */
+        t.classList.remove('fdm-tam');
+        t.classList.remove('fdm-tam-yakin');
         t.style.setProperty('--fdm-olcek', 1);   /* rıhtım zaten küçük */
         window.fdmSimgeleriYenile(t);
         window.fdmYuzenYerlestir();
+        window.fdmYesilTusYazi();
     } else {
         t.classList.remove('fdm-yuzen');
         var k = parseFloat(t.dataset.eskiOlcek) || 1;
         t.style.setProperty('--fdm-olcek', k);
         fdmGorusOlc(t);                          /* rıhtımdayken ölçülemiyordu */
-        /* Tablolar RIHTIMIN BIRAKILDIĞI YERDE açılıyor: öğretmen rıhtımı
-           istediği köşeye sürükleyip oradan açabilsin (Geylani: "yüzebilir
-           kısmı sürükleyebilmeliyim istediğim yere, tıklayınca tablolar
-           açılsın"). Ekrana sığmıyorsa sığdırılıyor; sığıyorsa yalnız
-           görüş alanına çekiliyor — ölçüm GEÇİŞİN ARDINA bırakılıyor,
-           yoksa hâlâ küçük dikdörtgen okunuyor (ölçüldü: 31 px taşma). */
-        if (t.offsetWidth * k > window.innerWidth - 20 ||
-            t.offsetHeight * k > window.innerHeight - 20) window.fdmTahtaSigdir(true);
-        else setTimeout(function () { window.fdmGorunurKil(t); }, 240);
+        /* RIHTIMDAN ÇIKIŞ = TAM EKRAN. Hazır çekimler ya simge hâlinde
+           duruyor ya da bütün ekranı kaplıyor; arada bir pencere yok
+           (Geylani: "hazır fiiller kısmına tıklanırsa direkt tam ekran
+           olarak açılsın, ya tamamen küçültülsün ya da tam ekran
+           olsun"). Önce ekrana sığdırılıp ortalanıyor: tam ekrandan
+           çıkınca tahta düzgün bir yerde belirsin. */
+        window.fdmTahtaSigdir(true);
+        window.fdmTamAc(t);
     }
     window.fdmSariTusYazi();
+    /* Rıhtıma inince kök levhası geri gelsin, ⓘ ve başlık kilidi açılsın;
+       tablolar açılınca yeniden çekilsin. */
+    window.fdmKokLevhaTazele();
     if (e && typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
 };
 
@@ -3323,38 +3652,131 @@ window.fdmTahtaTamEkran = function (e) {
     if (!t) return;
     if (t.classList.contains('fdm-tam')) {
         t.classList.remove('fdm-tam');
+        var g0 = t.querySelector('.fdm-gorus'), iz0 = t.querySelector('.fdm-izgara');
+        if (g0) { g0.style.width = ''; g0.style.height = ''; }
+        if (iz0) iz0.style.gridTemplateColumns = '';
         var k = parseFloat(t.dataset.tamEskiOlcek) || 1;
         t.style.setProperty('--fdm-olcek', k);
         if (t.dataset.tamEskiSol !== undefined) {
             t.style.left = t.dataset.tamEskiSol + 'px';
             t.style.top = t.dataset.tamEskiUst + 'px';
         }
-        setTimeout(function () { window.fdmGorunurKil(t); }, 240);
+        /* Tam ekrana girerken kaydedilen ölçü artık küçük gelebilir:
+           ikinci tablo tam ekranı kendiliğinden açıyor, sonra üçüncü,
+           dördüncü tablo ekleniyor. Çıkışta tahta ekrana sığmıyorsa
+           sığdırılıp ortalanıyor (ölçüldü: 1075×940 tahta 860 px'lik
+           ekranda 88 px taşıyordu). */
+        setTimeout(function () {
+            if (t.offsetWidth > window.innerWidth - 20 ||
+                t.offsetHeight > window.innerHeight - 20) window.fdmTahtaSigdir(true);
+            else window.fdmGorunurKil(t);
+        }, 240);
     } else {
-        t.dataset.tamEskiOlcek = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
-        t.dataset.tamEskiSol = window.fdmYer(t).l;
-        t.dataset.tamEskiUst = window.fdmYer(t).t;
-        t.classList.remove('fdm-yuzen');
-        t.classList.add('fdm-tam');
-        window.fdmTamYerlestir();
+        window.fdmTamAc(t);
     }
     window.fdmYesilTusYazi();
     window.fdmSariTusYazi();
     if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
 };
+/* Tam ekranı SESSİZCE açar (rıhtımdan çıkış ve ikinci tablo bunu
+   kullanıyor; kendi tık sesleri zaten var). */
+window.fdmTamAc = function (t) {
+    if (!t || t.classList.contains('fdm-tam')) return;
+    t.dataset.tamEskiOlcek = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
+    t.dataset.tamEskiSol = window.fdmYer(t).l;
+    t.dataset.tamEskiUst = window.fdmYer(t).t;
+    t.classList.remove('fdm-yuzen');
+    t.classList.add('fdm-tam');
+    window.fdmTamYerlestir();
+    window.fdmYesilTusYazi();
+    window.fdmSariTusYazi();
+    window.fdmKokLevhaTazele();
+};
+/* TAM EKRAN: EKRANIN %100'Ü. Tahta ölçeklenip ortalanmıyor — görüş
+   penceresi ekran kadar açılıyor ve tablolar SÜTUNLARI PAYLAŞARAK
+   genişliyor. Böylece kenarlarda boşluk kalmıyor, ekranda tablodan
+   başka bir şey görünmüyor (Geylani: "ekranın %100'ünü kullanalım…
+   özellikle yatay olarak kenarlarda çok boşluk olmasın"). Tarayıcının
+   kendi tam ekran kipi istenmiyor. */
+var FDM_TAM_EN_COK = 2.2;      /* tam ekranda içerik en çok bu kadar büyür */
 window.fdmTamYerlestir = function () {
     var t = document.getElementById('fdm-tahta');
     if (!t || !t.classList.contains('fdm-tam')) return;
-    var a = fdmTamAlan(), tb = fdmTahtaTaban(t);
-    if (!tb.lw && !tb.bw) return;
-    var k = Math.max(0.3, Math.min(3.2,
-        (window.innerWidth - 16 - tb.bw) / (tb.lw || 1),
-        (a.boy - 16 - tb.bh) / (tb.lh || 1)));
+    var g = t.querySelector('.fdm-gorus'), iz = t.querySelector('.fdm-izgara');
+    if (!g || !iz) return;
+    var a = fdmTamAlan();
+    t.style.setProperty('--fdm-olcek', 1);
+    g.style.width = ''; g.style.height = '';
+    t.classList.remove('fdm-tam-yakin');
+    delete iz.dataset.tamHucreEn;
+    fdmTamSutunlar(iz, true);                 /* önce DOĞAL ölçü (500 px şerit) */
+    var cerceveEn = t.offsetWidth - g.offsetWidth;
+    var cerceveBoy = t.offsetHeight - g.offsetHeight;
+    var enUygun = Math.max(240, window.innerWidth - cerceveEn);
+    var boyUygun = Math.max(160, a.boy - cerceveBoy);
+    /* ÖLÇEK EKRANI DOLDURACAK KADAR: tablolar kendi doğal ölçüsünde ne
+       kadar yer kaplıyorsa, ekranın eni ve boyu hangisi önce dolarsa o
+       oran seçiliyor. Böylece iki fiil açıkken de kutular büyüyor —
+       ekranı doldurmak için üç fiil gerekmiyor. Eskiden ölçek 1'i
+       geçemiyordu, iki fiilde tablolar küçücük kalıyordu. */
+    var dogalEn = Math.max(1, iz.offsetWidth);
+    var dogalBoy = Math.max(1, fdmIkiSatirBoyu(iz));
+    var k = Math.max(0.3, Math.min(FDM_TAM_EN_COK,
+                     Math.min(enUygun / dogalEn, boyUygun / dogalBoy)));
     t.style.setProperty('--fdm-olcek', k);
-    var o = fdmTahtaOlcu(tb, k);
-    window.fdmEkranaYerlestir(t, Math.round((window.innerWidth - o.w) / 2),
-                                 Math.round(a.ust + (a.boy - o.h) / 2));
+    g.style.width = Math.round(enUygun / k) + 'px';
+    g.style.height = Math.round(boyUygun / k) + 'px';
+    fdmTamSutunlar(iz);
+    /* Şeritler eşitlenince satırlar biraz uzayabiliyor; iki satır hâlâ
+       sığmıyorsa ölçek bir kez düzeltiliyor (alttaki satır yarım
+       kalmasın). */
+    var boy2 = fdmIkiSatirBoyu(iz);
+    if (boy2 > boyUygun / k + 1) {
+        k = Math.max(0.3, boyUygun / boy2);
+        t.style.setProperty('--fdm-olcek', k);
+        g.style.width = Math.round(enUygun / k) + 'px';
+        g.style.height = Math.round(boyUygun / k) + 'px';
+    }
+    /* Paylaşılan şerit eni saklanıyor: yaklaşırken tablolar bu enle
+       birlikte büyüsün, ekranda gördüğü düzen bozulmasın. */
+    var h0 = iz.querySelector('.fdm-hucre');
+    if (h0 && h0.offsetWidth) iz.dataset.tamHucreEn = String(h0.offsetWidth);
+    window.fdmEkranaYerlestir(t, 0, a.ust);
 };
+/* Izgaranın ilk İKİ satırının boyu (varsayılan görünür pay). */
+function fdmIkiSatirBoyu(iz) {
+    var ust = [];
+    iz.querySelectorAll('.fdm-hucre').forEach(function (h) {
+        if (ust.indexOf(h.offsetTop) < 0) ust.push(h.offsetTop);
+    });
+    ust.sort(function (a, b) { return a - b; });
+    return ust.length > 2 ? (ust[2] - FDM_IZGARA_ARA) : iz.offsetHeight;
+}
+/* İçerik şeritleri eşit pay alsın, ayırıcı şeritleri kendi inceliğinde
+   kalsın: tek numaralı şeritler tablolara, çift numaralılar çizgilere
+   ait (bkz. fdmIzgaraDiz). */
+/* İçerik şeridinin ALT SINIRI tablonun kendi eni: `minmax(0, 1fr)`
+   şeritleri ekrana zorla sığdırıyordu, bu yüzden tam ekranda İÇERİK
+   YAKINLAŞTIRMASI enine çalışmıyordu — tablo boyuna uzayıp enine
+   sıkışıyordu (ölçüldü: ic 2'de hücre 724 → 710 px eninde kalıyor,
+   boyu 367 → 728'e çıkıyordu). Alt sınır konunca yaklaşınca ızgara
+   pencereyi aşıyor ve normal kipteki gibi kaydırarak geziliyor. */
+var FDM_HUCRE_EN = 500;        /* .fdm-hucre'nin doğal eni (CSS) */
+function fdmTamSutunlar(iz, sabit) {
+    var n = parseInt(iz.dataset.enSerit, 10) || parseInt(iz.dataset.serit, 10) || 1;
+    /* Yaklaşırken şerit eni PİKSELE sabitleniyor. `max-content` şeritler
+       burada işe yaramıyor: hücrenin içindeki taşıyıcılar yüzdeyle
+       ölçüldüğü için belirsiz genişlikte çöküyor (ölçüldü: hücre eni
+       4.000.006 px). Sabit en hem yerleşimi bozmuyor hem de ızgaranın
+       pencereyi aşmasını sağlıyor — asıl istenen bu. */
+    var w = parseFloat(iz.dataset.tamHucreEn) || FDM_HUCRE_EN;
+    var p = [];
+    for (var i = 1; i <= n; i++) {
+        p.push(i % 2 ? (sabit ? (Math.round(w) + 'px') : ('minmax(' + FDM_HUCRE_EN + 'px, 1fr)'))
+                     : 'auto');
+    }
+    iz.style.gridTemplateColumns = p.join(' ');
+}
 /* Yeşil düğmenin simgesi duruma göre: dışa oklar = tam ekran yap,
    içe köşeler = tam ekrandan çık. */
 window.fdmYesilTusYazi = function () {
@@ -3381,8 +3803,19 @@ window.fdmYuzenYerlestir = function () {
 };
 
 /* Kırmızı düğme: bütün tabloları kapatır, tahtayı kaldırır. */
-window.fdmTahtaKapat = function (e) {
+window.fdmTahtaKapat = function (e, zorla) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
+    /* HAZIR ÇEKİMLER KAPANMAZ, KÜÇÜLÜR. Kök seçilince kendiliğinden
+       hazırlanan tabloların ✕'i onları yok etmiyor, rıhtıma indiriyor —
+       bir daha hazırlanmalarına gerek kalmasın (Geylani: "tüm
+       tabloların çarpısına basınca küçülme olsun, tabloların
+       kaybolmasına gerek yok"). Elle açılan tablolarda ✕ eskisi gibi
+       kapatıyor. `zorla` yalnız yeni hazırlık kurulurken kullanılıyor. */
+    var t0 = document.getElementById('fdm-tahta');
+    if (!zorla && t0 && t0.dataset.hazir === '1' && !t0.classList.contains('fdm-yuzen')) {
+        window.fdmTahtaYuzen(e || null, true);
+        return;
+    }
     if (typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
     document.querySelectorAll('.glass-box.matrix-opened').forEach(function (b) {
         b.classList.remove('matrix-opened');
@@ -3390,6 +3823,9 @@ window.fdmTahtaKapat = function (e) {
     });
     var t = document.getElementById('fdm-tahta');
     if (t) t.remove();
+    /* Tahta kapandı: kip seçimi de sıfırlanıyor, yeni tahta yine kurala
+       göre açılsın (tek fiil → SATIR, iki ve fazlası → SÜTUN). */
+    window.FDM_DIZIM_ELLE = false;
     window.fdmKokLevhaTazele();
 };
 
@@ -3542,12 +3978,19 @@ function fdmTahtaOlcekle(t) {
    tam ekranın kapanışı, tablonun sıfırlanması) buradan geçiyor. */
 window.fdmKokLevhaTazele = function () {
     var t = document.getElementById('fdm-tahta');
-    document.body.classList.toggle('fdm-tablo-acik', !!t);
-    document.body.classList.toggle('fdm-kilit', !!t);
+    /* TAHTANIN VAR OLMASI YETMİYOR, AÇIK OLMASI GEREKİYOR. Çekimler
+       kendiliğinden hazırlandığı için tahta artık hemen her zaman var
+       ama çoğu zaman RIHTIMDA (küçük simge) duruyor. O hâlde tablolar
+       ekranda değil: kahverengi kök levhası görünmeli, ⓘ düğmeleri ve
+       dilbilgisi başlıkları çalışmalı (Geylani: "kahverengi kök levhası
+       fiil çekim tabloları açılmamışken görünmeli"). */
+    var acik = !!t && !t.classList.contains('fdm-yuzen');
+    document.body.classList.toggle('fdm-tablo-acik', acik);
+    document.body.classList.toggle('fdm-kilit', acik);
     /* `overscroll-behavior` gövdeden görüntü alanına ancak html'in kendi
        değeri auto ise geçiyor; tarayıcının geri-git jesti bu yüzden
        kapanmıyordu. Sınıf html'e de konuyor. */
-    document.documentElement.classList.toggle('fdm-tablo-acik', !!t);
+    document.documentElement.classList.toggle('fdm-tablo-acik', acik);
 };
 
 /* Çekim tahtası ekranda mı? Tahta açıkken ⓘ düğmeleri ve dilbilgisi
@@ -13079,4 +13522,230 @@ window.atlasBasliklaKapat = function () {
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', atlasKaydirmaKur);
     else atlasKaydirmaKur();
+})();
+/* ================= AYAR MENÜSÜ =================
+   Üst çubuktaki dişli. BÜYÜTME ve ANLAM anahtarları buraya taşındı;
+   üçüncü seçenek yeni: bir kök seçilince o kökte TANIMLI FİİLLERİN
+   çekim tabloları kendiliğinden açılıp rıhtımda (yüzen simge) hazır
+   bekliyor — öğretmen tek dokunuşla hepsini ekrana getiriyor. */
+window.ayarMenuAc = function (e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    var m = document.getElementById('ayar-menu');
+    if (!m) return;
+    var acik = m.classList.toggle('acik');
+    if (acik && typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+};
+document.addEventListener('click', function (e) {
+    var m = document.getElementById('ayar-menu');
+    if (!m || !m.classList.contains('acik')) return;
+    if (e.target.closest && (e.target.closest('#ayar-menu') || e.target.closest('#static-ayar-btn'))) return;
+    m.classList.remove('acik');
+}, true);
+document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var m = document.getElementById('ayar-menu');
+    if (m) m.classList.remove('acik');
+});
+
+/* Seçim hatırlansın (öteki iki anahtarın kendi belleği zaten var). */
+(function () {
+    function kur() {
+        var c = document.getElementById('cekimHazirCheckbox');
+        if (!c) return;
+        /* Öntanımlı AÇIK: yalnız açıkça kapatıldıysa kapalı gelir. */
+        try { c.checked = localStorage.getItem('kidef_cekim_hazir') !== '0'; } catch (x) {}
+        c.addEventListener('change', function () {
+            try { localStorage.setItem('kidef_cekim_hazir', c.checked ? '1' : '0'); } catch (x) {}
+            if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+            if (c.checked) window.fdmCekimHazirla();
+        });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
+    else kur();
+})();
+
+/* Kökte tanımlı FİİL kalıplarını (mâzî · muzâri · emir) sırayla türetip
+   çekim tablolarını tahtaya ekler, sonra tahtayı rıhtıma indirir.
+   Sesler ve büyütme klonu bu toplu hazırlıkta susturuluyor — ekranda
+   bir şey patlamasın, öğretmen kökü seçtiğinde sayfa sakin kalsın. */
+/* Hazırlıkta tıklanan kutuyu tıklanmamış hâline döndürür. */
+function fdmKutuGeriAl(b, yedek) {
+    try { if (typeof resetBox === 'function') resetBox(b); } catch (x) { /* yoksay */ }
+    try {
+        var tr = b.querySelector('.inline-tr-text');
+        if (tr) tr.remove();
+        /* Emoji izleri: kutunun içindeki uçuşan emoji ve sayfaya
+           bırakılmış kopyaları da siliniyor. */
+        b.querySelectorAll('.elegant-emoji').forEach(function (x) { x.remove(); });
+        var rf = b.querySelector('.ref');
+        if (rf) {
+            var rid = (rf.textContent || '').trim();
+            document.querySelectorAll('.easter-egg-emoji[data-ref="' + rid + '"], ' +
+                                      '.elegant-emoji[data-ref="' + rid + '"]')
+                .forEach(function (x) { if (!b.contains(x)) x.remove(); });
+        }
+        b.removeAttribute('data-last-emoji');
+        b.removeAttribute('data-last-root');
+        b.className = yedek.sinif;
+        if (yedek.stil === null) b.removeAttribute('style');
+        else b.setAttribute('style', yedek.stil);
+        if (yedek.tik === null) b.removeAttribute('data-tiklama-sayisi');
+        else b.setAttribute('data-tiklama-sayisi', yedek.tik);
+        if (yedek.ek === null) b.removeAttribute('data-active-suffix');
+        else b.setAttribute('data-active-suffix', yedek.ek);
+        b.removeAttribute('data-modal-closed');
+    } catch (x) { /* yoksay */ }
+}
+
+window.fdmCekimHazirla = function () {
+    var anahtar = document.getElementById('cekimHazirCheckbox');
+    if (!anahtar || !anahtar.checked) return;
+    var kok = (typeof currentRoot !== 'undefined') ? String(currentRoot || '').trim() : '';
+    if (kok.length !== 3 || typeof sozlukVerileri === 'undefined' || !sozlukVerileri[kok]) return;
+    var kayit = sozlukVerileri[kok];
+    var kutular = [];
+    document.querySelectorAll('#tab1 .glass-box, #tab2 .glass-box').forEach(function (b) {
+        var tip = b.getAttribute('data-type');
+        if (tip !== 'mazi' && tip !== 'muzari' && tip !== 'emir') return;
+        var r = b.querySelector('.ref');
+        if (!r) return;
+        var no = r.textContent.trim();
+        if (!no || (!kayit[no] && !kayit[parseInt(no, 10)])) return;
+        kutular.push(b);
+    });
+    if (!kutular.length) return;
+    /* Önceki kökten kalan tablolar karışmasın: tahta sıfırdan kuruluyor
+       (hazır tahta ✕ ile küçülüyor, burada gerçekten kapanmalı). */
+    if (document.getElementById('fdm-tahta')) window.fdmTahtaKapat(null, true);
+
+    var ses = (typeof SoundEngine !== 'undefined') ? SoundEngine : null;
+    var yedek = {};
+    if (ses) ['playClick', 'playClose', 'playReset', 'playPop'].forEach(function (ad) {
+        if (typeof ses[ad] === 'function') { yedek[ad] = ses[ad]; ses[ad] = function () {}; }
+    });
+    /* EMOJİ DE PATLAMASIN. Kelime türeyince kutudan bir emoji fırlıyor
+       (`elegant-emoji` + pop animasyonu); hazırlık kutulara tıkladığı
+       için ekranda emojiler uçuşuyordu (Geylani: "emojiler çıkıyor hazır
+       fiiller oluşturulurken"). Hazırlık boyunca emoji SESSİZ kipte
+       üretiliyor — veri olarak duruyor ama görünmüyor. */
+    var eskiEgg = window.checkWordEasterEgg;
+    if (typeof eskiEgg === 'function') {
+        window.checkWordEasterEgg = function (kutu, ek, sessiz, ilk) {
+            return eskiEgg.call(this, kutu, ek, true, ilk);
+        };
+    }
+    function sesiAc() {
+        if (typeof eskiEgg === 'function') window.checkWordEasterEgg = eskiEgg;
+        if (!ses) return;
+        Object.keys(yedek).forEach(function (ad) { ses[ad] = yedek[ad]; });
+    }
+
+    /* TEK SEFERDE TEK HAZIRLIK: kök arka arkaya değişirse eski hazırlık
+       yarıda kesiliyor. Kesilmezse iki kökün tabloları aynı tahtada
+       karışıyordu (ölçüldü: كتب seçilince 78 · 94 · 95 gibi başka kökün
+       kalıpları da açılıyordu). */
+    var tur = (window._fdmHazirTur = (window._fdmHazirTur || 0) + 1);
+    /* HAZIRLIK ARKA PLANDA: tahta perde arkasında kuruluyor, sayfanın
+       sekmesi ve kaydırması bozulmuyor, kutular hazırlık biter bitmez
+       eski hâline dönüyor. Sonunda küçük yüzen simge yumuşak bir sesle
+       ve animasyonla beliriyor (Geylani). */
+    var eskiSekme = (typeof currentTabActive !== 'undefined') ? currentTabActive : 0;
+    var eskiKay = window.scrollY || 0;
+    document.body.classList.add('fdm-hazirlik');
+
+    var i = 0;
+    function bitir() {
+        if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
+        if (window.KidefVezinGezinti && window.KidefVezinGezinti.anlamGizle)
+            window.KidefVezinGezinti.anlamGizle();
+        sesiAc();
+        /* setTab HER ZAMAN çağrılıyor (aynı sekme olsa bile): kalipliste
+           bu çağrıyı sarmalayıp açık kalmış BÂB ODAĞINI da kapatıyor.
+           Mezidde bir kutuya dokunmak odağı açıyordu, hazırlık bitince
+           sayfa öteki sekmede bir bâb listesinde kalıyordu (ölçüldü). */
+        if (typeof setTab === 'function') setTab(eskiSekme, true);
+        setTimeout(function () { window.scrollTo({ top: eskiKay, behavior: 'auto' }); }, 280);
+        document.body.classList.remove('fdm-hazirlik');
+        var t = document.getElementById('fdm-tahta');
+        if (!t) return;
+        /* HAZIR TAHTA İŞARETİ: bu tablolar öğretmenin tek tek açtığı
+           tablolar değil, kök seçilince kendiliğinden hazırlananlar.
+           Tek tek ✕'leri yok; tahtanın ✕'i de kapatmıyor, küçültüyor. */
+        t.dataset.hazir = '1';
+        t.querySelectorAll('.fdm-hucre').forEach(function (h) { h.dataset.hazir = '1'; });
+        var kirmizi = t.querySelector('.fdm-kirmizi');
+        if (kirmizi) {
+            kirmizi.title = 'Küçült — hazır çekimler durmaya devam eder';
+            kirmizi.setAttribute('aria-label', 'Küçült');
+        }
+        window.fdmTahtaYuzen(null, true);
+        t.classList.remove('fdm-belir');
+        void t.offsetWidth;                       /* animasyon yeniden başlasın */
+        t.classList.add('fdm-belir');
+        setTimeout(function () { t.classList.remove('fdm-belir'); }, 700);
+        if (typeof SoundEngine !== 'undefined' && SoundEngine.playYumusak) SoundEngine.playYumusak();
+    }
+    function sonraki() {
+        if (tur !== window._fdmHazirTur) {
+            /* Yeni hazırlık perdeyi kendi adına açtı; eski tur perdeyi
+               İNDİRMEZ — indirince yeni turun tabloları ekranda tek tek
+               belirip duruyordu (ölçüldü: ikinci turda hazirlik=false,
+               hücreler 1 → 5 → 8 görünür şekilde ekleniyordu). */
+            sesiAc(); return;
+        }
+        if (i >= kutular.length) { bitir(); return; }
+        var b = kutular[i++];
+        /* KUTUNUN DOKUNULMAMIŞ HÂLİ: hazırlık kutuya tıklamak zorunda
+           (tablo ancak öyle türüyor), ama iş bitince kutu tıklanmamış
+           gibi durmalı — öğrenci kendisi tıklayıp keşfetsin (Geylani:
+           "otomatik oluşunca vezinlere basılmış görünmemeli"). Bu yüzden
+           kutunun sınıfları, satır içi stili ve sayaçları tıklamadan
+           ÖNCE saklanıp sonra aynen geri yazılıyor; resetBox tek başına
+           yetmiyordu (kok-turendi, current-active-red gibi yeşil/kırmızı
+           işaretleri bırakıyordu). */
+        var yedek = { sinif: b.className, stil: b.getAttribute('style'),
+                      tik: b.getAttribute('data-tiklama-sayisi'),
+                      ek: b.getAttribute('data-active-suffix') };
+        for (var n = 0; n < 4 && !b.classList.contains('kok-turendi'); n++) {
+            try { handleBoxClick(b); } catch (x) { break; }
+        }
+        if (b.classList.contains('kok-turendi')) {
+            var r = b.querySelector('.ref');
+            if (r) { try { r.click(); } catch (x) {} }
+        }
+        /* GERİ ALMA AYNI İŞ ADIMINDA: tarayıcı araya bir kare çizmeden
+           kutu eski hâline dönüyor, yani vezin bir an için bile yeşile
+           dönmüş görünmüyor (Geylani: "hiç tıklamak benzeri bir şey
+           olmasın"). Tablo bu adımda kurulup tahtaya geçtiği için
+           içeriği bundan etkilenmiyor. Gecikmeli ikinci geri alma,
+           sonradan gelen izler (geç çalışan işleyiciler) içindir. */
+        fdmKutuGeriAl(b, yedek);
+        setTimeout(function () { fdmKutuGeriAl(b, yedek); }, 30);
+        setTimeout(sonraki, 70);
+    }
+    setTimeout(sonraki, 60);
+};
+
+/* Kök seçilir seçilmez (hazır fiil ya da elle girilen kök) hazırlık.
+   Yalnız ÖĞRETMEN bir kök seçtiğinde: sayfa ilk açılışlarda kendiliğinden
+   فعل kökünü yüklüyor (fialLoadCount < 3), o tanıtım seçimi için rıhtım
+   açılmıyor — sayfa açılır açılmaz köşede yüzen bir simge belirmesin,
+   üstelik dokunulmadan ses de çalınamaz. İlk dokunuş/tuş/tıklamadan
+   sonraki her kök seçimi hazırlığı başlatıyor. */
+(function () {
+    window._fdmEtkilesim = window._fdmEtkilesim || false;
+    ['pointerdown', 'touchstart', 'keydown', 'mousedown'].forEach(function (o) {
+        document.addEventListener(o, function () { window._fdmEtkilesim = true; },
+                                  { capture: true, passive: true });
+    });
+    ['selectReadyVerb', 'confirmRoot'].forEach(function (ad) {
+        if (typeof window[ad] !== 'function' || window[ad]._fdmHazir) return;
+        var eski = window[ad];
+        window[ad] = function () {
+            var s = eski.apply(this, arguments);
+            if (window._fdmEtkilesim) setTimeout(function () { window.fdmCekimHazirla(); }, 1200);
+            return s;
+        };
+        window[ad]._fdmHazir = 1;
+    });
 })();

@@ -701,6 +701,38 @@ body.fdm-tablo-acik .draggable-root-clone {
 .fdm-tahta.fdm-yuzen .fdm-tut { display: none !important; }
 .fdm-tahta.fdm-yuzen .fdm-simgeler { display: grid; }
 
+/* TAM EKRANDA TABLOLAR SÜTUNLARI PAYLAŞIR: sabit 500 px yerine kalan
+   genişliği eşit bölüşüyorlar, kenarlarda boşluk kalmıyor. */
+.fdm-tahta.fdm-tam { border-radius: 0; }
+.fdm-tahta.fdm-tam .fdm-izgara { width: 100%; }
+.fdm-tahta.fdm-tam .fdm-hucre { width: auto !important; }
+/* TAM EKRANDA YAKINLAŞINCA ızgara ekrana ZORLANMIYOR: `width: 100%`
+   yakınlaştırmayı enine kilitliyordu — tablo boyuna uzayıp enine
+   sıkışıyor, üstelik taşan kısım kaydırılamıyordu (ölçüldü: ic 2'de
+   yatay kaydırma payı 0, odaklanan tablo pencerenin 329 px dışında).
+   Yaklaşınca ızgara normal kipteki gibi kendi doğal enini alıyor ve
+   tablolar arasında kaydırarak geziliyor. */
+.fdm-tahta.fdm-tam.fdm-tam-yakin .fdm-izgara { width: max-content; }
+
+/* SATIR ⇄ SÜTUN GEÇİŞİ YUMUŞAK: tablolar eski yerlerinden yenisine
+   kayarken (JS'teki FLIP) pencerenin kendi ölçüsü ve yeri de aynı
+   eğriyle değişiyor; ayırıcı çizgiler yeni yönünde belirerek geliyor
+   (Geylani: "yer değiştirme animasyonu olsun, birden olmasın"). */
+.fdm-tahta.fdm-gecis {
+    transition: left .46s cubic-bezier(.22, .61, .36, 1),
+                top .46s cubic-bezier(.22, .61, .36, 1);
+}
+.fdm-tahta.fdm-gecis .fdm-gorus {
+    transition: width .46s cubic-bezier(.22, .61, .36, 1),
+                height .46s cubic-bezier(.22, .61, .36, 1);
+}
+.fdm-ayirici.fdm-cizgi-belir { animation: fdmCizgiBelir .46s ease both; }
+@keyframes fdmCizgiBelir {
+    from { opacity: 0; }
+    40%  { opacity: 0; }
+    to   { opacity: 1; }
+}
+
 /* TEK SİMGE: içindeki göz sayısı ve dizilişi açık tabloları anlatır. */
 .fdm-simgeler { display: none; }
 .fdm-tahta.fdm-yuzen .fdm-simgeler { display: block; }
@@ -776,19 +808,21 @@ body.fdm-tablo-acik .draggable-root-clone {
 /* Yakınlaşılmış tabloda imleç "geri uzaklaş" der. */
 .fdm-tahta.fdm-odak .fdm-hucre { cursor: zoom-out; }
 .fdm-tahta:not(.fdm-odak) .fdm-hucre { cursor: zoom-in; }
-/* AYIRICI ÇİZGİLER — ızgaranın BİR UCUNDAN ÖBÜR UCUNA kesintisiz:
-   yatayda fiil kuşaklarını, dikeyde tür sütunlarını ayırıyor. İnce,
-   yumuşak uçlu, gölgeli: kalın bir bölme değil, zarif bir hat. */
+/* AYIRICI ÇİZGİ — FİİL KUŞAKLARI ARASINDA, ızgaranın bir ucundan öbür
+   ucuna. Kalın ama ağır değil: uçları yuvarlatılmış, enine ince bir
+   ışık-gölge geçişiyle hafif kabartmalı bir ray gibi duruyor
+   (Geylani: "daha kalın daha şık olsun"). Boyunca renk düz — uçları
+   soluklaşan geçiş çizgiyi kısa gösteriyordu. */
 .fdm-ayirici {
-    height: 2px; width: 100%; align-self: center; justify-self: stretch;
-    background: #cbd5e1;
-    border-radius: 2px; pointer-events: none;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, .9);
+    height: 5px; width: 100%; align-self: center; justify-self: stretch;
+    background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 55%, #7c8ba1 100%);
+    border-radius: 999px; pointer-events: none;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .16), 0 0 0 1px rgba(255, 255, 255, .75);
 }
 .fdm-ayirici-dikey {
-    height: 100%; width: 2px; align-self: stretch; justify-self: center;
-    background: #cbd5e1;
-    box-shadow: 1px 0 0 rgba(255, 255, 255, .9);
+    height: 100%; width: 5px; align-self: stretch; justify-self: center;
+    background: linear-gradient(90deg, #e2e8f0 0%, #94a3b8 55%, #7c8ba1 100%);
+    box-shadow: 1px 0 2px rgba(15, 23, 42, .16), 0 0 0 1px rgba(255, 255, 255, .75);
 }
 /* HÜCRE: eski popup'ın gövdesi, artık ızgarada bir kutu */
 .fdm-hucre {
@@ -882,6 +916,17 @@ body.fdm-kilit .block-title { pointer-events: none !important; cursor: default !
     font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 800;
     letter-spacing: .06em; color: #475569; white-space: nowrap;
 }
+/* KELİMENİN TÜRKÇESİ: başlıkta, kalıp adının yanında. Uzun anlamlar
+   satırı taşırmasın diye tek satır ve üç noktayla kesiliyor; tamamı
+   ipucu (title) olarak duruyor. Boşken hiç yer kaplamıyor. */
+.fdm-hucre-anlam {
+    flex: 1 1 auto; min-width: 0;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    text-align: left; direction: ltr;
+    font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 600;
+    color: #0f766e;
+}
+.fdm-hucre-anlam:empty { display: none; }
 /* ROZET: 3 = mücerred · 3+ = mezid. Tahta iki sekmede de yüzdüğü için
    hangi tablonun nereden geldiği başlıktan okunabilmeli. Fiil oldukları
    için dolgu yeşil — sayfadaki fiil başlıklarıyla aynı yeşil. */
@@ -898,6 +943,10 @@ body.fdm-kilit .block-title { pointer-events: none !important; cursor: default !
 .fdm-hucre-tus { display: flex; align-items: center; gap: 7px; }
 /* Tek tabloda ⤢ var; iki ve üstünde yalnız ✕ kalır. */
 .fdm-tahta.fdm-coklu .fdm-hucre .matrix-expand-btn { display: none !important; }
+/* HAZIR ÇEKİMLERDE TABLO BAŞINA ✕ YOK: bu tablolar bir bütün, tek tek
+   kapatılmıyor; tahtanın ✕'i de onları küçültüyor (Geylani: "hazır
+   fiillerde her tabloda çarpı olmasın"). */
+.fdm-hucre[data-hazir="1"] .fdm-hucre-x { display: none !important; }
 /* İki sınıf: eski `.matrix-close-btn` / `.matrix-expand-btn` kuralları
    (mutlak konum, 24 px kırmızı ✕) dosyada DAHA SONRA geldiği için tek
    sınıflı bir kural onları ezemiyordu. Hücreyle birlikte yazılınca
@@ -6939,3 +6988,47 @@ body.ko-sakin .sitemap-wave-hint { animation: none !important; transition: none 
     .ktl-obek { margin-top: 20px; }
     .ktl-obek-ad { font-size: 1.05rem; }
 }
+
+/* ==================== AYAR MENÜSÜ ====================
+   Üst çubuktaki dişli düğmesinin açtığı küçük pano. BÜYÜTME ve ANLAM
+   anahtarları buraya taşındı (çubukta yer açıldı, MÜCERRED/MEZİD
+   sekmesi genişledi); yanlarına da "fiil çekimleri hazır" seçeneği
+   eklendi. */
+.ayar-menu {
+    display: none;
+    position: fixed; top: 74px; right: 18px; z-index: 3000000;
+    width: 320px; padding: 14px 16px 16px;
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, .85); border-radius: 20px;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, .18), 0 2px 6px rgba(0, 0, 0, .06);
+    direction: ltr; font-family: 'Inter', sans-serif;
+}
+.ayar-menu.acik { display: block; animation: ayarAc .16s cubic-bezier(.25, 1, .5, 1); }
+@keyframes ayarAc { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: none; } }
+.ayar-bas {
+    font-size: .74rem; font-weight: 900; letter-spacing: .14em; color: #64748b;
+    padding: 0 2px 10px; border-bottom: 1px solid rgba(15, 23, 42, .08); margin-bottom: 6px;
+}
+.ayar-satir {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 11px 2px; cursor: pointer; border-radius: 12px;
+}
+.ayar-satir:hover { background: rgba(15, 23, 42, .04); }
+.ayar-satir + .ayar-satir { border-top: 1px solid rgba(15, 23, 42, .06); }
+.ayar-ad {
+    display: flex; flex-direction: column; gap: 3px;
+    font-size: .84rem; font-weight: 800; letter-spacing: .04em; color: #1f2937;
+}
+.ayar-not { font-size: .7rem; font-weight: 500; letter-spacing: 0; color: #64748b; line-height: 1.35; }
+.ayar-menu .toggle-switch { flex: none; }
+
+/* Hazırlık perde arkasında: tahta kurulurken görünmüyor. */
+body.fdm-hazirlik .fdm-tahta { opacity: 0 !important; pointer-events: none !important; }
+/* Rıhtım belirirken yumuşak bir yaylanma. */
+@keyframes fdmBelir {
+    0%   { opacity: 0; transform: translateY(14px) scale(.82); }
+    60%  { opacity: 1; transform: translateY(-3px) scale(1.04); }
+    100% { opacity: 1; transform: none; }
+}
+.fdm-tahta.fdm-belir { animation: fdmBelir .5s cubic-bezier(.22, 1.2, .4, 1); }
