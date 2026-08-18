@@ -43,6 +43,9 @@
                     'telaffuz-overlay', 'sarfOyunlarOverlay', 'ek-bilgi-perde',
                     'kt-kilavuz', 'rootOfDayOverlay'];
 
+    var ANLAM_SURESI = 3000;   /* balon kaç ms sonra kendiliğinden çekilsin */
+    var anlamSaat = null;
+
     var sira = -1;          /* gezintideki vezin sırası (-1 = daha başlanmadı) */
     var zincir = null;      /* açık tıklama zincirinin zamanlayıcısı */
     var mesgul = false;     /* geçiş sürüyor: yeni basışlar yutulur */
@@ -440,7 +443,11 @@
             /* Yan panel SABİT bir kutu: eni ve boyu kelimeye göre
                değişmez. Üstte anlam, altta örnek cümleler; örnekler
                sığmazsa kendi içinde dikey kayar. */
-            '#vezin-anlam-katmani.vg-yan{padding:22px 30px;border-radius:24px;' +
+            /* SAĞ DOLGU İNCE: kaydırma çubuğu panelin kenarına yakın
+               dursun, kelimelerin üstüne gelmesin (Geylani: "scroll
+               çubuğunu daha kenara al"). Yazıların çubuktan uzaklığı
+               gövdenin kendi sağ dolgusuyla korunuyor. */
+            '#vezin-anlam-katmani.vg-yan{padding:22px 10px 22px 30px;border-radius:24px;' +
             'line-height:1.25;border-width:3px;box-shadow:0 22px 55px rgba(0,0,0,.22);' +
             'display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;' +
             'overflow:hidden;pointer-events:auto}' +
@@ -452,7 +459,7 @@
             /* ANLAM DA ÖRNEK DE AYNI GÖVDEDE KAYAR.
                Kaydırma çubuğu panelin İÇİNDE kalır; sayfaya taşmaz ve
                uzun anlam kırpılmaz. */
-            '#vezin-anlam-katmani.vg-yan .vg-govde{flex:1 1 auto;min-height:0;' +
+            '#vezin-anlam-katmani.vg-yan .vg-govde{flex:1 1 auto;min-height:0;padding-right:16px;' +
             'overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;' +
             'overscroll-behavior:contain;scrollbar-gutter:stable}' +
             '#vezin-anlam-katmani:not(.vg-yan) .vg-govde{overflow:visible}' +
@@ -469,13 +476,13 @@
             'mask-image:linear-gradient(to bottom,#000 calc(100% - 38px),transparent)}' +
             '#vezin-anlam-katmani .vg-ornek{padding:9px 2px;border-bottom:1px dashed #e7ecf3}' +
             '#vezin-anlam-katmani .vg-ornek:last-child{border-bottom:0}' +
-            '#vezin-anlam-katmani .vg-oar{font-size:40px;line-height:1.55;color:#111;' +
+            '#vezin-anlam-katmani .vg-oar{font-size:60px;line-height:1.5;color:#111;' +
             'direction:rtl;text-align:right}' +
-            '#vezin-anlam-katmani .vg-otr{font-size:25px;line-height:1.35;color:#5b6472;' +
+            '#vezin-anlam-katmani .vg-otr{font-size:38px;line-height:1.3;color:#5b6472;' +
             'direction:ltr;text-align:left;margin-top:2px}' +
-            '#vezin-anlam-katmani .vg-onot{font-size:21px;color:#8a93a0;direction:ltr;' +
+            '#vezin-anlam-katmani .vg-onot{font-size:32px;color:#8a93a0;direction:ltr;' +
             'text-align:left;margin-top:3px}' +
-            '#vezin-anlam-katmani.vg-buyuk{font-size:31px;padding:13px 26px;border-radius:18px}' +
+            '#vezin-anlam-katmani.vg-buyuk{font-size:34px;padding:13px 26px;border-radius:18px}' +
             '#vezin-anlam-katmani .vg-emoji{margin-right:8px}' +
             '#vezin-anlam-katmani.vg-yan .vg-emoji{display:block;margin:0 0 6px 0;font-size:.85em}' +
             '#vezin-anlam-katmani::after{content:"";position:absolute;' +
@@ -541,6 +548,24 @@
            bir açılış animasyonu var: katman ölçüyü ona göre yeniden
            alsın, yerinde zıplama görünmesin. */
         [60, 180, 330].forEach(function (ms) { setTimeout(konumla, ms); });
+        anlamSaatiKur();
+    }
+
+    /* ---- KENDİLİĞİNDEN KAPANMA ----
+       Kök vezne girince çıkan anlam balonu ÜÇ SANİYE durup çekiliyor
+       (Geylani: "kök vezne girdiğinde çıkan anlam 3 saniye sonra
+       kaybolsun"). Balon vezinlerin üstünde asılı kalmıyor, tahtayı
+       ve komşu kalıpları kapatmıyor.
+       BÜYÜTME AÇIKKEN SAAT İŞLEMEZ: orada katman dev kutunun yanındaki
+       okuma paneli — örnek cümleleriyle birlikte okunuyor ve kutu
+       kapanınca zaten kendisi de kapanıyor. */
+    function anlamSaatiKur() {
+        clearTimeout(anlamSaat);
+        if (buyutmeAcik() || document.getElementById('crisp-zoom-clone')) return;
+        anlamSaat = setTimeout(function () {
+            anlamSaat = null;
+            anlamGizle();
+        }, ANLAM_SURESI);
     }
 
     /* Örnek cümleler: Arapçası sağa yaslı ve iri, Türkçesi altında.
@@ -580,8 +605,18 @@
     }
 
     function anlamGizle() {
+        clearTimeout(anlamSaat);
+        anlamSaat = null;
         if (!katman) return;
-        katman.classList.remove('vg-acik');
+        /* YAN KİP DE KALKAR. '.vg-yan' kuralı display:flex ve
+           pointer-events:auto veriyordu; yalnız '.vg-acik' kaldırılınca
+           katman EKRANDA KALIYOR ve 810x620'lik görünmez bir levha gibi
+           tıklamaları yutuyordu — kapattıktan sonra başka vezne
+           tıklanamamasının sebebi buydu (ölçüldü: 4 numaralı kutunun
+           tıklaması hiç ulaşmıyordu). */
+        katman.classList.remove('vg-acik', 'vg-yan');
+        katman.style.pointerEvents = 'none';
+        yanIz = '';
         katmanKutu = null;
         izlemeyiDurdur();
     }
@@ -590,7 +625,8 @@
        Dev kelime ve kahverengi kök taşı SOLDA açılır, anlam onların
        SAĞINDA iri puntoyla durur. Anlam kalan yere sığacak en büyük
        puntoyu seçiyor. */
-    var YAN_PUNTO = [64, 56, 48, 42, 36, 31];
+    /* Türkçe anlamın punto merdiveni — hepsi ~%10 büyütüldü. */
+    var YAN_PUNTO = [70, 62, 53, 46, 40, 34];
     var SOL_PAY = 0.028;          /* dev kutunun sol kenarına bırakılan pay */
     var ARA = 30;                 /* kutu ile anlam paneli arası */
     var SAG_PAY = 24;             /* panelin sağ kenar payı */
@@ -607,7 +643,10 @@
        uzun kelimede KUTU değil YAZI biraz küçülür, kutu yerinde kalır.
        ANLAM kapalıysa hiç dokunmuyoruz: kutu eskisi gibi ortada,
        kendi eniyle açılır. */
-    var EN_ORANI = 0.45;
+    /* Vezin kutusunun ekran eni. 0,45'ten 0,40'a indirildi: kutudan
+       kısılan yer anlam paneline gidiyor, panel yatayda ~%10 genişliyor
+       (Geylani: "anlam kısmını yatay olarak %10 daha büyük yap"). */
+    var EN_ORANI = 0.40;
     var TAM_PUNTO = 0;
     var olcer = null;
 
@@ -731,6 +770,7 @@
         yanIz = iz;
 
         katman.classList.add('vg-yan');
+        katman.style.removeProperty('pointer-events');
         katman.classList.remove('vg-alt', 'vg-ust', 'vg-buyuk');
         /* EN ve BOY SABİT: panel her vezinde aynı dikdörtgen. Böylece
            anlam değişince ne panel ne de dev kutu yer/ölçü değiştirir. */
@@ -859,7 +899,18 @@
            vezin duruyor: فَعَلَ). Anlam o anda görünürse kelime
            türemeden Türkçesi okunmuş olur. Bu yüzden katman ancak
            kelime türetildiğinde (kutu 'kok-turendi' olunca) açılır. */
-        if (!kutu.getAttribute('data-tiklama-sayisi')) { anlamGizle(); return; }
+        var asama = parseInt(kutu.getAttribute('data-tiklama-sayisi') || '0', 10);
+        if (!asama) { anlamGizle(); return; }
+        /* BÜYÜTME AÇIKKEN ANLAM YALNIZ DEV KUTU EKRANDAYKEN DURUR.
+           Son vuruş kutuyu kapatıyor ama kutu 'kok-turendi' kaldığı için
+           katman küçük bir balona dönüşüp başka vezinlerin üstünde asılı
+           kalıyordu — hem görüntüyü kirletiyor hem de kapanış animasyonu
+           sürerken tıklamayı yutuyordu (Geylani: "kapatınca başka vezne
+           fareyle tıklayamıyorum"). Büyütme açıkken 4. aşama KAPANIŞ
+           aşamasıdır; orada katman da kapanıyor. (Dev kutunun varlığına
+           bakmıyoruz: klon bir tık gecikmeyle doğabiliyor, ölçüldü —
+           aynı karede art arda gelen vuruşlarda anlam hiç açılmıyordu.) */
+        if (buyutmeAcik() && asama >= 4) { anlamGizle(); return; }
         if (kutu.classList.contains('kok-turendi')) anlamGoster(kutu);
         else anlamGizle();
     }
@@ -926,6 +977,33 @@
             window.setTab._vg = 1;
         }
 
+        /* 1e) ÇEKİM TABLOSU AÇILINCA ANLAM KAPANSIN.
+           Kalıp numarasına basılınca fiilin çekim tablosu kutunun
+           üstünde beliriyor; anlam katmanı da kelimenin yanında
+           duruyordu, ikisi üst üste biniyordu. Dışarı-tıklama kapanışı
+           burada devreye girmiyor: numara kutunun (.glass-box) İÇİNDE,
+           o da bilerek muaf tutulan yerlerden (Geylani: "fiil çekimi
+           popup açıldığında kelimenin anlamı kapansın"). */
+        if (typeof window.openConjugationPopup === 'function' && !window.openConjugationPopup._vg) {
+            var eskiCekim = window.openConjugationPopup;
+            window.openConjugationPopup = function () {
+                var s = eskiCekim.apply(this, arguments);
+                /* KAPATMA EN SONA. Tablo açılırken içeriden
+                   checkWordEasterEgg çağrılıyor; yukarıdaki 1b kancası da
+                   onu görüp anlamı BİR TIK SONRA tazeliyor. Kapatmayı
+                   önce yapsaydık anlam hemen geri geliyordu (ölçüldü:
+                   tablo açıldı ama katman ekranda kaldı). Bu yüzden hem
+                   şimdi hem de tazelemenin ardından kapatılıyor. */
+                try {
+                    anlamGizle();
+                    setTimeout(anlamGizle, 0);
+                    setTimeout(anlamGizle, 80);
+                } catch (e) { /* yoksay */ }
+                return s;
+            };
+            window.openConjugationPopup._vg = 1;
+        }
+
         /* 2) Kök değişimi → gezinti başa döner */
         ['selectReadyVerb', 'confirmRoot', 'resetTableOnly'].forEach(function (ad) {
             if (typeof window[ad] !== 'function' || window[ad]._vg) return;
@@ -938,12 +1016,42 @@
             window[ad]._vg = 1;
         });
 
-        /* 3) Büyütme kapanınca katman kutuya geri yapışsın */
+        /* 3) BÜYÜTME KAPANINCA ANLAM DA KAPANSIN.
+           Eskiden katman kutuya geri yapışıyordu: dev panel küçülüp
+           kutunun altında ufak bir balon olarak KALIYORDU. Balon başka
+           vezinlerin üstüne düşüyor, üstelik kapanış animasyonu sürerken
+           panel hâlâ tıklama alan koca bir dikdörtgen oluyordu — o anda
+           başka bir vezne tıklanamıyordu (Geylani: "kapatınca başka
+           vezne fareyle tıklayamıyorum"). Artık kapanışta katman da
+           kapanıyor; yeni vezinde kök yerine oturunca yeniden çıkıyor. */
         if (typeof window.closeAllZoomedBoxes === 'function' && !window.closeAllZoomedBoxes._vg) {
             var eskiKapat = window.closeAllZoomedBoxes;
             window.closeAllZoomedBoxes = function () {
                 var s = eskiKapat.apply(this, arguments);
-                try { tazele(); } catch (e) { /* yoksay */ }
+                /* KARAR BİR TIK SONRAYA. Bu işlev yalnız "kapat"ta değil,
+                   VEZİNDEN VEZNE GEÇERKEN de çağrılıyor; hemen kapatsaydık
+                   yeni vezinde anlam hiç açılmıyordu (ölçüldü: art arda
+                   gelen vuruşlarda panel boş kalıyordu). Bir tık sonra
+                   ekranda dev kutu VARSA katman yerinde tazeleniyor,
+                   YOKSA gerçekten kapanmış demektir ve katman da kapanıyor. */
+                try {
+                    setTimeout(function () {
+                        if (document.getElementById('crisp-zoom-clone')) { tazele(); return; }
+                        /* BÜYÜTME KAPALIYKEN DEV KUTU ZATEN DOĞMUYOR.
+                           "Klon yok → kapat" kuralı bu durumda anlamı
+                           haksız yere kapatıyordu: sayfanın dışarı-tıklama
+                           işleyicisi her gerçek tıklamada bu işlevi
+                           çağırıyor, kök vezne girer girmez açılan anlam
+                           bir tık sonra sönüyordu (ölçüldü: katman
+                           `vg-acik` alıp hemen bırakıyor; programatik
+                           tıklamayla görülmüyordu çünkü belge tıklaması
+                           hiç doğmuyor). Kutu hâlâ türetilmişse anlam
+                           durur, yalnız tazelenir. */
+                        if (!buyutmeAcik() && katmanKutu && katmanKutu.isConnected &&
+                            katmanKutu.classList.contains('kok-turendi')) { tazele(); return; }
+                        anlamGizle();
+                    }, 0);
+                } catch (e) { /* yoksay */ }
                 return s;
             };
             window.closeAllZoomedBoxes._vg = 1;

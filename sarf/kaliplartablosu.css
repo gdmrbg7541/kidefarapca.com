@@ -597,7 +597,10 @@ td:first-child {
 
 .conjugation-inline-container {
     display: flex;
-    position: absolute; 
+    /* SABİT: kutuya değil EKRANA göre. Sürükleyip sağa/aşağı taşırken
+       sayfanın kaydırılabilir alanını büyütmüyor; tablo ekranın dışına
+       çıkıyor ama kaydırma çubuğu çıkmıyor. */
+    position: fixed; 
     background: #ffffff !important;
     border: 3px solid #000000;
     border-radius: 16px;       
@@ -607,7 +610,11 @@ td:first-child {
     width: 500px !important;    /* tam ekran olmayan tablo biraz daha kucuk */
     max-width: 92vw !important;
     max-height: 74vh !important;
-    overflow-y: auto !important;
+    /* TAŞMA GÖRÜNÜR: kenar/köşe tutamakları kutunun kenarına BİNİYOR
+       (yarısı dışarıda), kırpılırsa tutulacak yer yarıya iniyordu.
+       Kaydırma zaten içeride: şerit 52vh, tablolar kendi kaplarında —
+       kutunun kendisi taşmıyor (ölçüldü). */
+    overflow: visible !important;
     opacity: 0;
     pointer-events: none;
     transform: scale(0.95);
@@ -618,7 +625,368 @@ td:first-child {
     display: block;
     opacity: 1;
     pointer-events: auto;
-    transform: scale(1);
+    /* ORANSAL BÜYÜME: ölçeği kenar/köşe tutamakları yazar (--fdm-olcek).
+       Başlangıç noktası SOL ÜST — kalıplartablosu.js'teki çapa hesabı
+       buna dayanıyor. */
+    transform: scale(var(--fdm-olcek, 1));
+    transform-origin: top left;
+}
+
+/* HANGİ SEKMEDEYSEK O SEKMENİN TABLOLARI GÖRÜNÜR.
+   (Sınıfı kaliplartablosu.js/setTab yönetir.) */
+/* (Tahta artık body'nin çocuğu ve tek; sekmeye göre gizlemeye gerek
+   kalmadı — tablolar sekmeyle birlikte kaymıyor.) */
+
+/* ÇEKİM TABLOSU AÇIKKEN KAHVERENGİ KÖK LEVHASI ÇEKİLİR.
+   Levha belge koordinatlarına çakılı ve hep önde; tablo çoğu zaman tam
+   onun üstüne açılıyor, levha tablonun içine giriyordu. Tek bir tablo
+   bile açıkken sönüyor, hepsi kapanınca geri beliriyor.
+   (Sınıfı kaliplartablosu.js/fdmKokLevhaTazele yönetir.) */
+body.fdm-tablo-acik .draggable-root-clone {
+    /* !important: levhanın opaklığı kimi durumda satır içi yazılıyor
+       (büyütme açıkken kök klonu), onsuz kural geçmiyordu. */
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity .25s ease;
+}
+
+/* ==================== ÇEKİM TAHTASI ====================
+   Bütün çekim tabloları TEK bir tahtanın ızgarasında yan yana durur.
+   Sütunlar Arapçanın yönünde: MÂZÎ en sağda, sonra MUZÂRİ, EMİR, İSİM.
+   Aynı türden ikinci tablo bir alt satıra iner. Tahta bir pencere gibi:
+   şeridinden ya da boş alanından sürüklenir, sekiz tutamağından
+   ORANSAL büyür (tablolar ve yazılar birlikte). */
+.fdm-tahta {
+    position: fixed;
+    left: 0; top: 0;
+    z-index: 2000000;
+    /* Sayfa RTL; tahtanın KENDİ kabuğu soldan sağa. Rıhtım kipinde kap
+       esnek bir satır oluyor ve RTL mirasıyla düğmeler sağa, simgeler
+       sola düşüyordu (ölçüldü: simgeler 30-147, düğmeler 159-235 px).
+       Tabloların içi `dir="rtl"` ile kendi yönünü koruyor. */
+    direction: ltr;
+    display: block;
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 18px;
+    padding: 50px 14px 14px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .42);
+    /* ÖLÇEK `transform` DEĞİL: bkz. .fdm-gorus'taki `zoom`. Dönüşümle
+       büyütünce yazı bir kez çizilip gerdiriliyor, büyüdükçe netlik
+       kaybediyordu. */
+    touch-action: none;
+    cursor: grab;
+}
+/* YÜZEN MOD — sarı düğme. MacBook'un sarı noktası gibi: pencere yok
+   olmuyor, küçülüp sol alt köşeye park ediyor. Kalıp tablosunun üstü
+   açılıyor, öğretmen yandaki kalıbın numarasına basıp ikinci, üçüncü
+   çekimi tahtaya ekleyebiliyor. Konum/ölçek işi JavaScript'te; buradaki
+   kurallar yalnız "havada duran küçük pencere" görüntüsünü veriyor. */
+/* Küçültülünce tahta bir RIHTIM oluyor: tablolar değil, her tablo için
+   BİR SİMGE. Gezinme, kaydırma, yakınlaşma yok — yalnız sürükle ve
+   tıkla. Tıklayınca tablolar rıhtımın bırakıldığı yerde açılıyor. */
+.fdm-tahta.fdm-yuzen {
+    display: block;
+    padding: 10px;
+    border-width: 2px; border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, .38);
+    cursor: grab;
+}
+/* SİMGE HÂLİNDE DÜĞME YOK: kapatma/küçültme/büyütme tabloların açık
+   hâline ait (Geylani: "simge halindeki yüzen popup bi simge olacak").
+   Rıhtımda yalnız simgeler var; tıklayınca tablolar açılıyor. */
+.fdm-tahta.fdm-yuzen .popup-drag-bar,
+.fdm-tahta.fdm-yuzen .fdm-isiklar,
+.fdm-tahta.fdm-yuzen .fdm-gorus,
+.fdm-tahta.fdm-yuzen .fdm-tut { display: none !important; }
+.fdm-tahta.fdm-yuzen .fdm-simgeler { display: grid; }
+
+/* TEK SİMGE: içindeki göz sayısı ve dizilişi açık tabloları anlatır. */
+.fdm-simgeler { display: none; }
+.fdm-tahta.fdm-yuzen .fdm-simgeler { display: block; }
+.fdm-simge {
+    display: block; border: none; background: none; padding: 0; cursor: pointer;
+    transition: transform .14s ease, filter .14s ease;
+}
+.fdm-simge svg {
+    display: block;
+    width: auto; height: auto;
+    max-width: 108px; max-height: 96px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .18));
+}
+.fdm-simge:hover { transform: scale(1.06); filter: brightness(1.04); }
+.fdm-simge:active { transform: scale(.95); }
+
+/* DİZİM KİPİ DÜĞMESİ — şeridin sağ ucunda: türler sütunda mı satırda mı */
+.fdm-dizim {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 26px; padding: 0 11px;
+    border: 1.5px solid #cbd5e1; border-radius: 999px; background: #fff;
+    color: #475569; cursor: pointer; z-index: 1000011;
+    font-family: 'Inter', sans-serif; font-size: .68rem; font-weight: 900; letter-spacing: .06em;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+    transition: filter .15s ease, transform .12s ease;
+}
+.fdm-dizim:hover { filter: brightness(.97); transform: translateY(-50%) scale(1.05); }
+.fdm-dizim:active { transform: translateY(-50%) scale(.95); }
+.fdm-tahta.fdm-boyutlaniyor { transition: none !important; }
+.fdm-tahta.fdm-boyutlaniyor * { transition: none !important; }
+.fdm-tahta .popup-drag-bar {
+    position: absolute; top: 0; left: 0; width: 100%; height: 40px;
+    background: #f1f5f9; border-top-left-radius: 15px; border-top-right-radius: 15px;
+    border-bottom: 2px solid #e2e8f0;
+    display: flex; justify-content: center; align-items: center;
+    cursor: grab; z-index: 3; touch-action: none;
+}
+/* GÖRÜŞ PENCERESİ: bir sütunda en çok iki tablo görünür, gerisi
+   kaydırmayla gelir. İki parmakla / dokunmatik yüzeyle yakınlaşılır,
+   yukarı-aşağı sağ-sola kaydırılarak öteki tablolara geçilir. */
+.fdm-gorus {
+    overflow: auto;
+    overscroll-behavior: contain;
+    direction: ltr;                 /* kaydırma matematiği soldan sağa kalsın */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;      /* tek parmak kaydırır, iki parmak kıstırır */
+    /* PENCERE ÖLÇEĞİ: yerleşimi değiştiren `zoom`. Yazılar her ölçekte
+       gerçek boyunda diziliyor — büyüdükçe netlik düşmüyor. Tahtanın
+       kendisi ölçeklenmediği için `left/top` gerçek piksel kalıyor. */
+    zoom: var(--fdm-olcek, 1);
+}
+.fdm-gorus::-webkit-scrollbar { width: 10px; height: 10px; }
+.fdm-gorus::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+.fdm-gorus::-webkit-scrollbar-track { background: transparent; }
+/* TUVAL: ölçeklenmiş içeriğin gerçek boyunu taşır — kaydırma payları
+   buradan doğuyor (dönüşüm tek başına kaydırma alanı üretmez). */
+.fdm-tuval { position: relative; }
+.fdm-izgara {
+    display: grid;
+    gap: 14px;
+    align-items: start;
+    justify-items: stretch;
+    width: max-content;
+    zoom: var(--fdm-ic-olcek, 1);   /* içerik yakınlaşması da yerleşimle */
+    /* GEÇİŞ YOK: yakınlaşma JavaScript'te ölçek + kaydırma birlikte
+       yumuşatılarak yapılıyor. CSS geçişi eklenirse ikisi denk düşmüyor,
+       tablo yandan kayarak geliyormuş gibi görünüyor. */
+}
+.fdm-tahta.fdm-canli .fdm-gorus { scroll-behavior: auto; }
+/* Yakınlaşılmış tabloda imleç "geri uzaklaş" der. */
+.fdm-tahta.fdm-odak .fdm-hucre { cursor: zoom-out; }
+.fdm-tahta:not(.fdm-odak) .fdm-hucre { cursor: zoom-in; }
+/* AYIRICI ÇİZGİLER — ızgaranın BİR UCUNDAN ÖBÜR UCUNA kesintisiz:
+   yatayda fiil kuşaklarını, dikeyde tür sütunlarını ayırıyor. İnce,
+   yumuşak uçlu, gölgeli: kalın bir bölme değil, zarif bir hat. */
+.fdm-ayirici {
+    height: 2px; width: 100%; align-self: center; justify-self: stretch;
+    background: #cbd5e1;
+    border-radius: 2px; pointer-events: none;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .9);
+}
+.fdm-ayirici-dikey {
+    height: 100%; width: 2px; align-self: stretch; justify-self: center;
+    background: #cbd5e1;
+    box-shadow: 1px 0 0 rgba(255, 255, 255, .9);
+}
+/* HÜCRE: eski popup'ın gövdesi, artık ızgarada bir kutu */
+.fdm-hucre {
+    /* `relative` — hem akışta duruyor (eski `fixed` ezildi) hem de
+       içindeki mutlak konumlu öğelerin kapsayan bloğu oluyor. `static`
+       bıraktığımızda hücrenin çarpı/tam-ekran düğmeleri kapsayan blok
+       diye TAHTAYI buluyor, dördü birden tahtanın köşesine yığılıyordu
+       (ölçüldü: tek bir kırmızı ✕ tahtanın sağ üstünde, gri büyütme
+       düğmesi de sol üstteki noktaların üstünde duruyordu). */
+    position: relative !important;
+    width: 500px !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .10) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    overflow: hidden !important;
+    z-index: auto !important;
+    display: block !important;
+    cursor: default;
+}
+.fdm-hucre .carousel-container-outer { margin-top: 0 !important; height: auto !important; }
+/* Tahtanın kendisi `touch-action: none` — parmak nereye değerse tahta
+   gezsin, sayfa kaymasın. Ama bu, hücrenin İÇİNDEKİ olumlu/menfî
+   şeridinin parmakla kaydırılmasını da kapatıyordu (ölçüldü: dokunuşla
+   şerit 0'da çakılı kalıyordu). Şeride `pan-x` verilince tarayıcı
+   yatayda gene kendi ivmeli kaydırmasını ve yapışma noktalarını
+   yürütüyor: tablolar arası geçiş eskisi gibi akıcı, tahta sürüklemesi
+   ise bozulmuyor. */
+.fdm-hucre .conjugation-carousel { touch-action: pan-x; }
+/* İKİ VE DAHA ÇOK TABLO: şerit parmakla dönmüyor. Olumlu ↔ olumsuz
+   geçişi yalnız oklarla; parmak/dokunmatik yüzey ise tablolar arasında
+   gezinmeye ayrılıyor (Geylani: "diğer tabloya geçmek isteyebilirim").
+   `overflow-x: hidden` elle kaydırmayı kapatır ama okların programlı
+   kaydırmasını ve yapışma noktalarını bozmaz. Tek tablo açıkken eski
+   davranış aynen sürüyor. */
+.fdm-tahta.fdm-coklu .fdm-hucre .conjugation-carousel,
+.fdm-tahta.fdm-odak .fdm-hucre .conjugation-carousel {
+    overflow-x: hidden !important;
+    touch-action: pan-x pan-y;
+}
+/* ŞERİT KAYDIRILAMAZ HÂLE GELİNCE parmak hareketi zincirlenip
+   TARAYICININ GERİ GİTME JESTİNİ tetikliyordu: yan yana iki tablo
+   varken sağa doğru bir kaydırma sayfayı geri alıyor, bütün tablolar
+   uçuyordu (ölçüldü: tahta DOM'dan silinmiyor, sayfa değişiyordu).
+   Tahta açıkken yatay taşma zinciri kapatılıyor. */
+html.fdm-tablo-acik, body.fdm-tablo-acik { overscroll-behavior-x: none; }
+.fdm-hucre .conjugation-carousel { overscroll-behavior: contain; }
+/* GEZİNTİ OKLARI: satır içi biçimde −15 px ile hücrenin dışına
+   taşıyorlardı, hücrenin `overflow: hidden`ı da yarılarını kesiyordu.
+   Şeridin iki yanında zaten 40'ar px boşluk var; oklar oraya, tablonun
+   dibine alındı (Geylani: "oklar taşıyor, tablolara daha yakın olsun").
+   Satır içi biçimi ancak `!important` ezebiliyor. */
+.fdm-hucre .carousel-nav-btn { width: 30px !important; height: 30px !important; }
+.fdm-hucre .left-btn  { left: 5px !important; }
+.fdm-hucre .right-btn { right: 5px !important; }
+.fdm-hucre .carousel-nav-btn svg { width: 17px; height: 17px; }
+
+/* TAHTA AÇIKKEN: ⓘ düğmeleri ve dilbilgisi başlıkları tıklanmaz.
+   İşlevler de kendi içinde kilitli (çift emniyet); buradaki kural
+   imleci ve dokunuşu daha baştan kesiyor. */
+body.fdm-kilit .th-3d-btn,
+body.fdm-kilit .header-info-icon,
+body.fdm-kilit .mt-bilgi,
+body.fdm-kilit .info-icon,
+body.fdm-kilit .block-title { pointer-events: none !important; cursor: default !important; }
+/* FİİL KÜNYESİ: hangi satırın (satır kipinde hangi sütunun) hangi
+   fiile ait olduğu başlıktaki fiil yazısından okunuyor. Fiil başına
+   ayrı renk verilmiyor (Geylani: "her fiil için renk olmasın");
+   ayırıcı görev artık satır/sütun boyunca uzanan çizgide. */
+.fdm-hucre-bas {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; padding: 7px 12px;
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+    direction: ltr;
+}
+.fdm-hucre-fiil {
+    flex: none; max-width: 150px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    padding: 1px 10px; border-radius: 11px;
+    background: #475569; color: #fff; direction: rtl;
+    font-family: 'Arakom', 'Amiri', serif; font-size: 1.02rem; line-height: 1.45;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+}
+.fdm-hucre-ad {
+    font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 800;
+    letter-spacing: .06em; color: #475569; white-space: nowrap;
+}
+/* ROZET: 3 = mücerred · 3+ = mezid. Tahta iki sekmede de yüzdüğü için
+   hangi tablonun nereden geldiği başlıktan okunabilmeli. Fiil oldukları
+   için dolgu yeşil — sayfadaki fiil başlıklarıyla aynı yeşil. */
+.fdm-hucre-rozet {
+    flex: none;
+    min-width: 30px; padding: 2px 9px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff; border-radius: 12px;
+    font-family: 'Inter', sans-serif; font-weight: 900; font-size: .82rem;
+    letter-spacing: .04em; text-align: center; direction: ltr;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 1px 3px rgba(0, 0, 0, .18);
+}
+.fdm-hucre-tus { display: flex; align-items: center; gap: 7px; }
+/* Tek tabloda ⤢ var; iki ve üstünde yalnız ✕ kalır. */
+.fdm-tahta.fdm-coklu .fdm-hucre .matrix-expand-btn { display: none !important; }
+/* İki sınıf: eski `.matrix-close-btn` / `.matrix-expand-btn` kuralları
+   (mutlak konum, 24 px kırmızı ✕) dosyada DAHA SONRA geldiği için tek
+   sınıflı bir kural onları ezemiyordu. Hücreyle birlikte yazılınca
+   özgüllük yükseliyor ve düğmeler başlığın akışında kalıyor. */
+.fdm-hucre .fdm-hucre-btn {
+    width: 26px; height: 26px; border-radius: 50%; border: none; padding: 0;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+    color: #fff; background: #64748b;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+    transition: filter .15s ease, transform .12s ease;
+    position: static; top: auto; right: auto; left: auto;
+    flex: none;
+}
+.fdm-hucre .fdm-hucre-btn.fdm-hucre-x { background: #ff5f57; color: #fff; font-size: 12px; }
+.fdm-hucre .fdm-hucre-btn:hover { filter: brightness(1.08); transform: scale(1.12); }
+.fdm-hucre .fdm-hucre-btn:active { filter: brightness(.9); transform: scale(.94); }
+
+/* ================= ÇEKİM TABLOSU: PENCERE DAVRANIŞI =================
+   Sekiz tutamak (dört kenar + dört köşe). Hangisinden çekilirse
+   çekilsin tablo ORANINI BOZMADAN büyür; yazılar da onunla büyür.
+   Tutamakların kalınlığı ÖLÇEĞE BÖLÜNÜYOR: pencere ne kadar büyürse
+   büyüsün ekranda hep aynı kalınlıkta (20 px, köşelerde 30 px) kalıyor
+   — parmakla rahat tutulsun, ama devasa bir tutuş bandına da dönüşmesin
+   (Geylani: "dokunarak rahatlıkla büyütebilmek için kenarlar kalın
+   olsun"). */
+.fdm-tut {
+    position: absolute;
+    z-index: 1000002;
+    touch-action: none;
+}
+.conjugation-inline-container.fdm-boyutlaniyor { transition: none !important; }
+.conjugation-inline-container.fdm-boyutlaniyor * { transition: none !important; }
+
+/* TUTAMAKLAR KABIN KENDİ ÇİZGİSİNDE: dışarı taşmıyor, ayrıca köşe ve
+   kenar izleri de yok (Geylani: "sürükleyerek büyütme kısmı tablodan
+   taşmış, o çizgilere gerek yok, konteynırın kendi çizgisine o özelliği
+   atayalım"). Bantlar tahtanın iç dolgusuna denk geliyor; tabloların
+   üstüne binmiyor, tıklamalarını yutmuyor. Üst bant şeridin yalnız ilk
+   12 px'ini kaplar — kalan 28 px sürükleme için temiz kalıyor. */
+.fdm-tut-n { top: 0;    left: 0; right: 0; height: 12px; cursor: ns-resize; }
+.fdm-tut-s { bottom: 0; left: 0; right: 0; height: 14px; cursor: ns-resize; }
+.fdm-tut-w { left: 0;   top: 0; bottom: 0; width: 14px;  cursor: ew-resize; }
+.fdm-tut-e { right: 0;  top: 0; bottom: 0; width: 14px;  cursor: ew-resize; }
+.fdm-kose  { width: 18px; height: 18px; z-index: 1000003; }
+.fdm-tut-nw { top: 0;    left: 0;  height: 14px; cursor: nwse-resize; }
+.fdm-tut-ne { top: 0;    right: 0; height: 14px; cursor: nesw-resize; }
+.fdm-tut-sw { bottom: 0; left: 0;  cursor: nesw-resize; }
+.fdm-tut-se { bottom: 0; right: 0; cursor: nwse-resize; }
+/* Tutulan kenar, kabın kendi çizgisini vurgulayarak belli oluyor. */
+.fdm-tahta.fdm-boyutlaniyor { border-color: #2B88D9; }
+
+/* ---- İKİ BÜYÜK DÜĞME: KAPAT (kırmızı) · TAM EKRAN (yeşil) ----
+   ŞERİDİN İÇİNDE DEĞİL, KABIN DOĞRUDAN ÇOCUĞU. Şerit kendi yığın
+   bağlamını kuruyor (position + z-index), içine konulan düğme
+   tutamakların üstüne çıkamıyor ve kenar tutamakları düğmeleri
+   yutuyordu — çarpıya basılamıyor, tam ekran açılamıyordu (Geylani:
+   "büyütme kısmı engel oluyor, büyütemiyorum, çarpıdan kapatamıyorum").
+   Dışarı alınınca düğmeler en üstte; ayrıca soldan 26 px başlıyorlar,
+   yani sol üst köşe tutamağının (20 px) alanına hiç girmiyorlar.
+   Simgeler DAİMA görünür: dokunmatikte "üstüne gelme" yok. */
+.fdm-tahta .fdm-isiklar {
+    position: absolute; left: 26px; top: 7px;
+    display: flex; align-items: center; gap: 12px;
+    z-index: 1000010;                 /* tutamakların (1000003) üstünde */
+    direction: ltr;                   /* tablo RTL; düğme sırası şaşmasın */
+}
+.fdm-tahta .fdm-nokta {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: none; padding: 0; cursor: pointer;
+    position: static;                 /* .matrix-close-btn'in absolute'unu ezer */
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; line-height: 1; color: #fff;
+    font-family: 'Inter', sans-serif; font-weight: 700;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .22);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12), 0 2px 5px rgba(0, 0, 0, .22);
+    transition: filter .15s ease, transform .12s ease;
+    touch-action: manipulation;
+}
+.fdm-tahta .fdm-kirmizi { background: #ff5f57; }
+.fdm-tahta .fdm-sari    { background: #febc2e; font-size: 11px; color: #7c4a03; }
+.fdm-tahta .fdm-yesil   { background: #28c840; font-size: 13px; }
+.fdm-tahta .fdm-nokta:hover { filter: brightness(1.06); transform: scale(1.1); }
+.fdm-tahta .fdm-nokta:active { filter: brightness(.88); transform: scale(.94); }
+/* Eski çarpı/büyüteç biçimleri (mutlak konum, 24px kırmızı ✕) uygulanmasın */
+.fdm-tahta .fdm-nokta { top: auto; right: auto; left: auto; }
+
+.popup-drag-bar .fdm-tutus {
+    width: 50px; height: 6px; background: #cbd5e1; border-radius: 10px; pointer-events: none;
 }
 
 .conjugation-table {
@@ -1007,7 +1375,7 @@ body.muc-zemin #tab1 .container > table > tbody { background: transparent !impor
 }
 
 .matrix-fullscreen-close {
-    position: fixed; top: 25px; left: 25px; width: 50px; height: 50px;
+    position: absolute; top: 18px; left: 18px; width: 50px; height: 50px;
     background: #ffffff; border: 3px solid #000000; border-radius: 50%; display: flex;
     align-items: center; justify-content: center; font-size: 28px; color: #000000; 
     cursor: pointer;

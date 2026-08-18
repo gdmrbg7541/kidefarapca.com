@@ -1410,6 +1410,14 @@ function setTab(tabIndex, noSound = false) {
     const switcher = document.getElementById('tabSwitch');
     
     currentTabActive = tabIndex;
+    /* ÖTEKİ SEKMENİN ÇEKİM TABLOLARI GÖRÜNMESİN.
+       Tablo `position: fixed`; sekme bandı da dönüşümle kaydığından
+       mücerredde açılmış bir tablo mezide geçilince ekranda kalıyordu
+       (Geylani: "mücerred kısmındaki fiil çekim popupları mezid kısmında
+       çıkıyor"). Kapatmıyoruz, yalnız gizliyoruz: sekmeye dönünce
+       oldukları gibi duruyorlar. */
+    document.body.classList.toggle('fdm-mezid-sekme', tabIndex === 1);
+    if (window.fdmTahtaSekmeTazele) window.fdmTahtaSekmeTazele();
 
     // KESİN ÇÖZÜM: Tabloların içerik boyutuna göre sınırlarını esnetmesini engelliyoruz (min-width: 0 kuralı)
     document.querySelectorAll('.tab-content').forEach(tab => {
@@ -1600,6 +1608,7 @@ function resetBox(el) {
     el.style.boxShadow = ""; 
     
     el.classList.remove('matrix-opened');
+    if (window.fdmKokLevhaTazele) window.fdmKokLevhaTazele();
     const container = el.querySelector('.conjugation-inline-container');
     if (container) {
         container.remove(); 
@@ -2055,22 +2064,21 @@ function closeInlineMatrix(e, btnElement) {
     }
     SoundEngine.playClose();
     
+    /* Çarpı artık HÜCRENİN kendi çarpısı: yalnız o tabloyu kaldırır,
+       ızgarayı sıkıştırır, son tablo da kapandıysa tahtayı siler. */
+    const hucre = btnElement.closest ? btnElement.closest('.fdm-hucre') : null;
+    if (hucre) { fdmHucreKapat(hucre); return; }
+    /* Eski yol (kutunun içindeki tablo) — geriye dönük güvence */
     const boxElement = btnElement.closest('.glass-box');
     if (boxElement) {
         boxElement.classList.add('no-transition');
         boxElement.classList.remove('matrix-opened');
         boxElement.style.zIndex = "";
-        
-        const container = boxElement.querySelector('.conjugation-inline-container');
-        if (container) {
-            // ÇÖZÜM: 'none' yerine boş bırakıyoruz ki CSS dosyasındaki açma/kapama kurallarını ezmesin!
-            container.style.display = ''; 
-        }
-
         setTimeout(() => {
             boxElement.classList.remove('no-transition');
         }, 50);
     }
+    if (window.fdmKokLevhaTazele) window.fdmKokLevhaTazele();
 
     // Çarpıya basınca aktif kutu seçimini kaldır ki Hızlı Liste'de + sızıntısı olmasın
     lastClickedBoxTextSpan = null;
@@ -2213,18 +2221,6 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         checkWordEasterEgg(boxElement);
     }
 
-    let inlineContainer = boxElement.querySelector('.conjugation-inline-container');
-    if (!inlineContainer) {
-        inlineContainer = document.createElement('div');
-        inlineContainer.className = 'conjugation-inline-container';
-        // ÇÖZÜM: Hesaplama yapılmadan önce sayfa dışına taşmasını ve scroll çıkarmasını engelle
-        // Sadece visibility: hidden yapmak veya top: 0 atamak sayfa sonundaki öğelerde aşağı taşmaya neden olabilir.
-        // display: none ile DOM'a eklenirken hiç alan kaplamamasını sağlıyoruz.
-        inlineContainer.style.display = 'none'; 
-        boxElement.appendChild(inlineContainer);
-    } else {
-        inlineContainer.style.display = 'none'; 
-    }
 
     if (!anaVezin) anaVezin = boxElement.getAttribute('data-original') || '';
 
@@ -2359,11 +2355,28 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
 
     let hasCarousel = tablesToRender.length > 1;
 
+    /* HÜCRE BAŞLIĞI: hangi kalıbın hangi çekimi olduğu, kendi tam ekranı
+       ve kendi kapatması. Sürükleme, büyütme ve genel kapatma artık
+       TAHTANIN işi (aşağıdaki fdmTahta). */
+    var TIP_AD = { mazi: 'MÂZÎ', muzari: 'MUZÂRİ', emir: 'EMİR', isim: 'İSİM' };
+    /* ROZET: tablo mücerredden mi mezidden mi geldi? Sayfanın kendi
+       diliyle: 3 (üç harfli) · 3+ (mezid). Fiil oldukları için dolgu
+       YEŞİL — sayfadaki fiil başlıklarının yeşiliyle aynı. */
+    var sekmeKabi0 = boxElement.closest ? boxElement.closest('.tab-content') : null;
+    var rozet = (sekmeKabi0 && sekmeKabi0.id === 'tab2') ? '3+' : '3';
+    var grup = fdmFiilGrubu(boxElement);
     let html = `
-        <div class="popup-drag-bar" style="position: absolute; top: 0; left: 0; width: 100%; height: 35px; background: #f1f5f9; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom: 2px solid #e2e8f0; display: flex; justify-content: center; align-items: center; cursor: grab; z-index: 10; touch-action: none;">
-            <div style="width: 50px; height: 6px; background: #cbd5e1; border-radius: 10px; pointer-events: none;"></div>
+        <div class="fdm-hucre-bas">
+            <span class="fdm-hucre-rozet" title="${rozet === '3+' ? 'Mezid fiil' : 'Üç harfli (mücerred) fiil'}"><bdi>${rozet}</bdi></span>
+            ${grup.ad ? `<span class="fdm-hucre-fiil" title="Bu satırın fiili"><bdi>${grup.ad}</bdi></span>` : ''}
+            <span class="fdm-hucre-ad">${refId ? refId + ' · ' : ''}${TIP_AD[tip] || 'ÇEKİM'}</span>
+            <span class="fdm-hucre-tus">
+                <button type="button" class="fdm-hucre-btn matrix-expand-btn" title="Bu tabloyu tam ekran"
+                        aria-label="Bu tabloyu tam ekran" onclick="openMatrixFullscreen(event, this)">&#10530;</button>
+                <button type="button" class="fdm-hucre-btn fdm-hucre-x matrix-close-btn" title="Bu tabloyu kapat"
+                        aria-label="Bu tabloyu kapat" onclick="closeInlineMatrix(event, this)">&#10005;</button>
+            </span>
         </div>
-        <div class="matrix-close-btn" style="z-index: 11; top: 2px;" onclick="closeInlineMatrix(event, this)">✕</div>
     `;
     
     html += `<div class="carousel-container-outer" style="position: relative; margin-top: 25px; width: 100%; display: flex; align-items: center; justify-content: center; height: calc(100% - 25px);">`;
@@ -2500,6 +2513,10 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             let scrollLeft;
 
             const startDrag = (e) => {
+                /* Birden fazla tablo varsa şerit elle çekilmiyor: sayfa
+                   geçişi oklara ait, sürükleme tahtayı gezmeye. */
+                var tk = wrapper.closest('.fdm-tahta');
+                if (tk && (tk.classList.contains('fdm-coklu') || tk.classList.contains('fdm-odak'))) return;
                 isDown = true;
                 wrapper.style.cursor = 'grabbing';
                 wrapper.style.scrollSnapType = 'none'; // Disable snap while dragging
@@ -2568,6 +2585,42 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             wrapper.addEventListener('mouseup', stopDrag);
             wrapper.addEventListener('mousemove', moveDrag);
 
+            /* ---- DİZÜSTÜ DOKUNMATİK YÜZEYİ (touchpad) ile SAĞ/SOL ----
+               İki parmakla YANA kaydırmak, sağ/sol oklarına basmakla aynı
+               işi yapıyor: tam BİR tablo ilerliyor, yapışma noktasına
+               oturuyor (Geylani: "touchbar kısmıyla rahatlıkla sağ sol
+               oklarına basar gibi gezebilmeliyiz").
+               Yalnız YATAY niyet dinleniyor (|deltaX| > |deltaY|); dikey
+               kaydırma uzun tablonun kendi içinde kalıyor. Bir jestte tek
+               sayfa: eşik + kilit, savurmanın üç tablo birden atlamasını
+               önlüyor. */
+            var tekerKilit = false, tekerBirikim = 0, tekerSaat = null;
+            wrapper.addEventListener('wheel', function (e) {
+                if (e.ctrlKey) return;                                  /* kıstırma: tahtaya bırak */
+                /* BİRDEN FAZLA TABLO AÇIKSA yatay kaydırma tablolar arası
+                   GEZİNMEYE ayrılıyor; olumlu ↔ olumsuz geçişi yalnız
+                   oklarla yapılıyor (Geylani: "diğer tabloya geçmek
+                   isteyebilirim; sadece bi fiil çekimi popup açıksa
+                   dokunmatikle olumsuzlara geçebilsin"). Yakınlaşılmış
+                   tahtada da aynı kural. */
+                var tk = wrapper.closest('.fdm-tahta');
+                if (tk && (tk.classList.contains('fdm-coklu') || tk.classList.contains('fdm-odak'))) return;
+                if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;   /* dikey: tabloya bırak */
+                if (wrapper.scrollWidth <= wrapper.clientWidth + 4) return;  /* tek tablo */
+                e.preventDefault();                       /* sayfa yana kaymasın */
+                if (tekerKilit) return;
+                tekerBirikim += e.deltaX;
+                clearTimeout(tekerSaat);
+                tekerSaat = setTimeout(function () { tekerBirikim = 0; }, 260);
+                if (Math.abs(tekerBirikim) < 26) return;
+                var yon = tekerBirikim > 0 ? 1 : -1;
+                tekerBirikim = 0;
+                tekerKilit = true;
+                wrapper.style.scrollSnapType = 'x mandatory';
+                wrapper.scrollBy({ left: yon * wrapper.clientWidth, behavior: 'smooth' });
+                setTimeout(function () { tekerKilit = false; }, 430);
+            }, { passive: false });
+
             /* DOKUNMATİKTE EL SÜRÜKLEMESİ YOK — TARAYICI KAYDIRIR.
                Şerit zaten `overflow-x: auto` + `scroll-snap-type: x
                mandatory`: parmakla kaydırınca tarayıcı hem kendi
@@ -2587,113 +2640,1022 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         window.scrollConjugationCarouselDefined = true;
     }
 
-    setTimeout(() => {
-        const wrapper = inlineContainer.querySelector('.conjugation-carousel');
-        if (wrapper) {
-            wrapper.style.cursor = 'grab';
-            window.initCarouselDrag(wrapper);
-        }
-    }, 50);
+    /* ================= TEK TAHTA, YAN YANA TABLOLAR =================
+       Her çekim tablosu ayrı bir pencere değil; hepsi TEK bir tahtanın
+       ızgarasında duruyor (Geylani: "ayrı ayrı iki tablo yerine tek
+       konteynır, yan yana olsun").
+
+       SÜTUNLAR — Arapçanın yönünde, sağdan sola:
+           MAZİ (en sağ) · MUZÂRİ · EMİR · İSİM
+       Hangi kalıptan açılırsa açılsın tablo kendi sütununa gider; aynı
+       türden ikinci bir tablo açılırsa BİR ALT SATIRA iner. Böylece
+       mezidde "üç bâbın mazisi yan yana, altlarında muzârileri" gibi
+       karşılaştırmalar tek ekranda kuruluyor.
+
+       TAHTANIN KENDİSİ tek pencere: bir sürükleme şeridi, iki düğme
+       (kapat · ekrana sığdır) ve sekiz büyütme tutamağı ONDA. Tahta
+       oransal büyüyor, yani bütün tablolar ve yazılar birlikte. Boş
+       alandan tutup sürüklemek de tahtayı gezdiriyor — büyük bir
+       görselde gezer gibi. */
+    var tahta = fdmTahta();
+    var izgara = tahta.querySelector('.fdm-izgara');
+    var hucreAnahtar = 'k' + refId + '_' + (boxElement.dataset.fdmNo ||
+        (boxElement.dataset.fdmNo = String(++window._fdmKutuNo)));
+
+    let inlineContainer = izgara.querySelector('.fdm-hucre[data-anahtar="' + hucreAnahtar + '"]');
+    var yeniHucre = !inlineContainer;
+    if (yeniHucre) {
+        inlineContainer = document.createElement('div');
+        inlineContainer.className = 'conjugation-inline-container fdm-hucre';
+        inlineContainer.setAttribute('data-anahtar', hucreAnahtar);
+        inlineContainer.setAttribute('data-tip', tip || 'isim');
+        /* Hücre hangi sekmeden açıldı? Tahta gövdenin çocuğu olduğu için
+           sekme bandıyla birlikte kaymıyor; ama mücerredde açılmış bir
+           tablo mezide geçilince ekranda durmasın (Geylani: "mücerred
+           kısmındaki fiil çekim popupları mezid kısmında çıkıyor").
+           Tahtada iki sekmeden de hücre varsa tahta ikisinde de görünür. */
+        var sekmeKabi = boxElement.closest ? boxElement.closest('.tab-content') : null;
+        inlineContainer.setAttribute('data-sekme', (sekmeKabi && sekmeKabi.id === 'tab2') ? '1' : '0');
+        /* Hangi FİİLE ait? Aynı fiilin mâzîsi, muzârisi ve emri tek bir
+           satırda (satır kipinde tek sütunda) toplanıyor. */
+        inlineContainer.setAttribute('data-fiil', grup.anahtar);
+        if (grup.ad) inlineContainer.setAttribute('data-fiil-ad', grup.ad);
+        izgara.appendChild(inlineContainer);
+    }
     inlineContainer.innerHTML = html;
-    inlineContainer.style.overflowY = 'hidden'; 
-    inlineContainer.style.paddingTop = '15px'; 
+    fdmIzgaraDiz(izgara);
 
-    // Ölçüm için geçici olarak fixed yapıp ekrana koyalım (böylece sayfa boyunu uzatmaz)
-    inlineContainer.style.position = 'fixed';
-    inlineContainer.style.visibility = 'hidden';
-    inlineContainer.style.display = 'block';
-    inlineContainer.style.top = '0px';
-    inlineContainer.style.left = '0px';
-    
-    const popupWidth = inlineContainer.offsetWidth || 600;  
-    const popupHeight = inlineContainer.offsetHeight || 410; 
+    /* Şeritteki gezinme okları ve kaydırma tutuşu her hücrede kendi
+       başına çalışıyor (her tablonun kendi olumlu/menfî şeridi var). */
+    setTimeout(function () {
+        var wrapper = inlineContainer.querySelector('.conjugation-carousel');
+        if (wrapper) { wrapper.style.cursor = 'grab'; window.initCarouselDrag(wrapper); }
+    }, 50);
 
-    // Ölçüm bitti. DOM hesaplamaları (getBoundingClientRect) sırasında sayfayı germemesi için gizle
-    inlineContainer.style.display = 'none'; 
-    inlineContainer.style.position = 'absolute'; 
-    
-    const boxWidth = boxElement.offsetWidth; const rect = boxElement.getBoundingClientRect();
-    let targetTop = (window.innerHeight / 2) - (popupHeight / 2) - rect.top;
-    let targetLeft = -popupWidth - 40;
+    /* Hücrenin kendi içi sayfanın kutu işleyicilerine sızmasın.
+       Tabloya (düğmeler ve oklar dışında) tıklamak onu ortalayıp
+       yakınlaştırıyor; aynı tabloya bir daha tıklamak uzaklaştırıyor. */
+    inlineContainer.onmousedown = function (e) { e.stopPropagation(); };
+    inlineContainer.onclick = function (e) {
+        e.stopPropagation();
+        if (e.target.closest && e.target.closest('button, a, input, select, .carousel-nav-btn')) return;
+        window.fdmHucreOdakla(inlineContainer);
+    };
+    inlineContainer.ontouchstart = function (e) { e.stopPropagation(); };
+    inlineContainer.ontouchend = function (e) { e.stopPropagation(); };
 
-    let globalLeft = rect.left + targetLeft; let globalRight = globalLeft + popupWidth;
-    let globalTop = rect.top + targetTop; let globalBottom = globalTop + popupHeight;
+    /* Yeni hücre eklendiyse tahta ekrana sığmayabilir: ilk açılışta
+       ortalanıp sığdırılıyor, sonraki eklemelerde yalnız görüş alanına
+       çekiliyor — öğretmenin koyduğu yer bozulmasın. */
+    /* Yeni tablo eklenince tahta ekranı aşabilir; aşıyorsa kendiliğinden
+       ekrana sığdırılıp ortalanıyor — az önce açtığın tablo hep görünür
+       olsun. Sığıyorsa öğretmenin koyduğu yer ve ölçek korunuyor. */
+    if (tahta.classList.contains('fdm-yuzen')) window.fdmYuzenYerlestir();
+    else if (tahta.classList.contains('fdm-tam')) window.fdmTamYerlestir();
+    else if (izgara.querySelectorAll('.fdm-hucre').length === 1) window.fdmTahtaSigdir(true);
+    else {
+        var k0 = parseFloat(tahta.style.getPropertyValue('--fdm-olcek')) || 1;
+        if (tahta.offsetWidth * k0 > window.innerWidth - 20 ||
+            tahta.offsetHeight * k0 > window.innerHeight - 20) window.fdmTahtaSigdir(true);
+        else window.fdmGorunurKil(tahta);
+    }
 
-    if (globalLeft < 10) targetLeft += (10 - globalLeft); 
-    if (globalRight > window.innerWidth - 10) targetLeft -= (globalRight - (window.innerWidth - 10)); 
-    if (globalTop < 10) targetTop += (10 - globalTop); 
-    if (globalBottom > window.innerHeight - 10) targetTop -= (globalBottom - (window.innerHeight - 10)); 
+    boxElement.style.zIndex = '';  // kutu stacking context olusturmasin
+    boxElement.classList.add('matrix-opened');
+    window.fdmKokLevhaTazele();
+}
 
-    inlineContainer.style.left = `${targetLeft}px`; inlineContainer.style.top = `${targetTop}px`;
-    inlineContainer.style.right = 'auto'; inlineContainer.style.display = 'block'; 
-    inlineContainer.style.visibility = 'visible'; 
-    inlineContainer.onmousedown = function(e) { e.stopPropagation(); }; inlineContainer.onclick = function(e) { e.stopPropagation(); };
-    inlineContainer.ontouchstart = function(e) { e.stopPropagation(); }; inlineContainer.ontouchmove = function(e) { e.stopPropagation(); }; 
-    inlineContainer.ontouchend = function(e) { e.stopPropagation(); };  
-    
-    const expandBtn = document.createElement('div'); expandBtn.className = 'matrix-expand-btn';
-    expandBtn.title = 'Tam Ekran'; expandBtn.innerHTML = '<i class="fas fa-expand"></i>';
-    expandBtn.style.zIndex = '11'; expandBtn.style.top = '2px';
-    expandBtn.onclick = function(event) { event.stopPropagation(); openMatrixFullscreen(event, this); };
-    inlineContainer.appendChild(expandBtn);
-    
-    /* ================= TABLOYU SÜRÜKLEME =================
-       İŞARETÇİ OLAYLARI + İŞARETÇİ KİLİDİ (setPointerCapture).
-       ESKİ HÂLİ dokunmatikte HİÇ çalışmıyordu: sürükleme hareketleri
-       `document` üzerinde dinleniyordu, ama kabın kendi
-       `ontouchmove = stopPropagation`'ı (yukarıda, sayfanın kutu
-       işleyicilerine sızmasın diye) onların document'a ulaşmasını
-       kesiyordu — parmak tutuyor, tablo yerinde duruyordu.
-       Ayrıca hareket `e.touches[0]`'dan okunuyordu: iki tabloyu iki
-       parmakla birlikte sürüklemek isteyince ikisi de AYNI parmağı
-       izliyordu (Geylani: "birden fazla fiil çekimini dokunmatik olarak
-       kontrol etmek… yeterince stabil değil").
-       ŞİMDİ her tablo kendi tutamağında kendi işaretçisini kilitliyor:
-       parmak nereye giderse gitsin olaylar o tutamağa geliyor, iki
-       (ya da daha çok) tablo birbirine karışmadan aynı anda
-       sürüklenebiliyor. Fare ve kalem de aynı yoldan geçiyor. */
-    const dragBar = inlineContainer.querySelector('.popup-drag-bar');
-    if (dragBar) {
-        let sur = null;                       /* {id, x, y, l, t} */
-        dragBar.addEventListener('pointerdown', (e) => {
-            if (sur) return;                  /* bir tabloyu tek işaretçi sürükler */
-            sur = { id: e.pointerId, x: e.clientX, y: e.clientY,
-                    l: inlineContainer.offsetLeft, t: inlineContainer.offsetTop };
-            inlineContainer.style.right = 'auto';
-            dragBar.style.cursor = 'grabbing';
-            try { dragBar.setPointerCapture(e.pointerId); } catch (x) {}
-            e.stopPropagation();
+/* ---------------------------------------------------------------
+   TAHTA: tek pencere, içinde ızgara
+   --------------------------------------------------------------- */
+window._fdmKutuNo = window._fdmKutuNo || 0;
+/* Sütun sırası: 1 = en sağ (ızgara RTL). */
+window.FDM_SUTUN = { mazi: 1, muzari: 2, emir: 3, isim: 4 };
+
+/* ============ FİİL GRUBU ============
+   Bir fiilin mâzîsi, muzârisi ve emri AYNI SATIRA (satır kipinde aynı
+   sütuna) düşüyor; başka bir fiil o satıra karışamıyor (Geylani:
+   "عَلِمَ يَعْلَمُ bi satır veya sütunda olsun... bi tabloyu kapatınca o
+   fiilin satırına başka fiil karışamasın").
+   Fiilin kimliği kutunun bulunduğu SATIR: kalıplar tablosunda her satır
+   bir bâb, yani bir fiil. Satıra bir kez numara veriliyor, o numara
+   oturum boyunca değişmiyor. Ad olarak o satırın mâzîsi okunuyor —
+   kök yerleştirilmişse gerçek fiil (عَلَّمَ) görünüyor. */
+window._fdmFiilNo = window._fdmFiilNo || 0;
+function fdmFiilGrubu(boxElement) {
+    var tr = boxElement && boxElement.closest ? boxElement.closest('tr') : null;
+    var anahtar, ad = '';
+    if (tr) {
+        if (!tr.dataset.fdmFiilNo) tr.dataset.fdmFiilNo = String(++window._fdmFiilNo);
+        anahtar = 'f' + tr.dataset.fdmFiilNo;
+        var mz = tr.querySelector('.glass-box[data-type="mazi"] .ar') ||
+                 tr.querySelector('.glass-box.is-verb .ar');
+        if (mz) ad = (mz.textContent || '').trim();
+    } else {
+        anahtar = 'k' + (boxElement.dataset.fdmNo ||
+            (boxElement.dataset.fdmNo = String(++window._fdmKutuNo)));
+    }
+    return { anahtar: anahtar, ad: ad };
+}
+
+function fdmTahta() {
+    var t = document.getElementById('fdm-tahta');
+    if (t) return t;
+    t = document.createElement('div');
+    t.id = 'fdm-tahta';
+    t.className = 'fdm-tahta';
+    t.innerHTML =
+        '<div class="popup-drag-bar"><span class="fdm-tutus"></span>' +
+          '<button type="button" class="fdm-dizim" onclick="fdmDizimDegistir(event)"></button>' +
+        '</div>' +
+        '<div class="fdm-isiklar">' +
+          '<button type="button" class="fdm-nokta fdm-kirmizi" title="Hepsini kapat" ' +
+          'aria-label="Hepsini kapat" onclick="fdmTahtaKapat(event)">&#10005;</button>' +
+          '<button type="button" class="fdm-nokta fdm-sari" title="Yüzen moda al — küçülüp köşeye ' +
+          'park eder" aria-label="Yüzen mod" onclick="fdmTahtaYuzen(event)">&#8722;</button>' +
+          '<button type="button" class="fdm-nokta fdm-yesil" title="Tam ekran" ' +
+          'aria-label="Tam ekran" onclick="fdmTahtaTamEkran(event)">&#10530;</button>' +
+        '</div>' +
+        '<div class="fdm-simgeler" dir="rtl"></div>' +
+        '<div class="fdm-gorus"><div class="fdm-tuval">' +
+          '<div class="fdm-izgara" dir="rtl"></div>' +
+        '</div></div>' +
+        '<div class="fdm-tut fdm-tut-n" data-yon="n"></div>' +
+        '<div class="fdm-tut fdm-tut-s" data-yon="s"></div>' +
+        '<div class="fdm-tut fdm-tut-w" data-yon="w"></div>' +
+        '<div class="fdm-tut fdm-tut-e" data-yon="e"></div>' +
+        '<div class="fdm-tut fdm-kose fdm-tut-nw" data-yon="nw"></div>' +
+        '<div class="fdm-tut fdm-kose fdm-tut-ne" data-yon="ne"></div>' +
+        '<div class="fdm-tut fdm-kose fdm-tut-sw" data-yon="sw"></div>' +
+        '<div class="fdm-tut fdm-kose fdm-tut-se" data-yon="se"></div>';
+    document.body.appendChild(t);
+    fdmTahtaSurukle(t);
+    fdmTahtaOlcekle(t);
+    fdmYakinlastirmaKur(t);
+    fdmRihtimKur(t);
+    fdmDizimYazi(t);
+    window.fdmYesilTusYazi();
+    return t;
+}
+
+/* RIHTIMA TIKLAMA: tablolar geri açılır. Simgeye basılmışsa o tablo
+   ortalanır. Sürükleme sonrası gelen tıklama yutuluyor — rıhtımı
+   taşırken tablolar açılmasın. */
+function fdmRihtimKur(t) {
+    var bas = null;
+    /* Hangi simgeye basıldığı POINTERDOWN'da saklanıyor: sürükleme
+       işaretçiyi tahtaya kilitlediği (setPointerCapture) için tarayıcı
+       sonraki `click`i de tahtaya yönlendiriyor, simge kayboluyordu
+       (ölçüldü: click hedefi `.fdm-simge` değil `.fdm-tahta` geliyordu). */
+    t.addEventListener('pointerdown', function (e) {
+        if (!t.classList.contains('fdm-yuzen')) return;
+        bas = { x: e.clientX, y: e.clientY, kaydi: false,
+                simge: e.target.closest ? e.target.closest('.fdm-simge') : null,
+                nokta: e.target.closest ? e.target.closest('.fdm-nokta') : null };
+    }, true);
+    t.addEventListener('pointermove', function (e) {
+        if (!bas) return;
+        if (Math.abs(e.clientX - bas.x) + Math.abs(e.clientY - bas.y) > 6) {
+            bas.kaydi = true;
+            t.dataset.rihtimTasindi = '1';   /* öğretmenin koyduğu yer korunsun */
+        }
+    }, true);
+    t.addEventListener('click', function (e) {
+        if (!t.classList.contains('fdm-yuzen')) return;
+        var nokta = (bas && bas.nokta) || (e.target.closest && e.target.closest('.fdm-nokta'));
+        if (nokta) { bas = null; return; }               /* üç düğme kendi işini yapar */
+        if (bas && bas.kaydi) { bas = null; return; }    /* sürüklemeydi */
+        var simge = (bas && bas.simge) ||
+                    (e.target.closest ? e.target.closest('.fdm-simge') : null);
+        window.fdmTahtaYuzen(null, false);
+        if (simge) {
+            var h = t.querySelector('.fdm-hucre[data-anahtar="' + simge.getAttribute('data-anahtar') + '"]');
+            if (h) setTimeout(function () { window.fdmHucreOdakla(h); }, 300);
+        }
+        bas = null;
+    });
+}
+
+/* ---- DİZİM KİPİ: TÜRLER SÜTUNDA mı SATIRDA mı? ----
+   Öntanımlı kip SÜTUN: mâzîler en sağdaki sütunda alt alta. İkinci kip
+   SATIR: aynı türden tablolar YAN YANA — birinci satır mâzîler, ikinci
+   muzâriler, üçüncü emirler (Geylani: "mazileri yanyana alabilelim
+   veya muzarileri; mazi varsa ilk satırda olsunlar, muzariler ikinci,
+   emirler 3"). Bâbları karşılaştırırken satır kipi, tek bir fiilin
+   çekimlerini toplarken sütun kipi işe yarıyor. */
+window.FDM_DIZIM = (function () {
+    try { return localStorage.getItem('kidef_fdm_dizim') === 'satir' ? 'satir' : 'sutun'; }
+    catch (x) { return 'sutun'; }
+})();
+function fdmDizimYazi(t) {
+    var b = t && t.querySelector('.fdm-dizim');
+    if (!b) return;
+    var satir = window.FDM_DIZIM === 'satir';
+    b.innerHTML = (satir ? '&#9776;' : '&#9868;') + '<span>' + (satir ? 'SATIR' : 'SÜTUN') + '</span>';
+    b.title = satir
+        ? 'Şu an SATIR kipi: aynı tür tablolar yan yana (1. satır mâzîler, 2. muzâriler, 3. emirler). Sütun kipine geç.'
+        : 'Şu an SÜTUN kipi: mâzîler en sağda alt alta. Satır kipine geç.';
+}
+window.fdmDizimDegistir = function (e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    window.FDM_DIZIM = (window.FDM_DIZIM === 'satir') ? 'sutun' : 'satir';
+    try { localStorage.setItem('kidef_fdm_dizim', window.FDM_DIZIM); } catch (x) {}
+    var t = document.getElementById('fdm-tahta');
+    if (!t) return;
+    fdmDizimYazi(t);
+    var izgara = t.querySelector('.fdm-izgara');
+    if (izgara) fdmIzgaraDiz(izgara);
+    t.style.setProperty('--fdm-ic-olcek', 1);
+    t.classList.remove('fdm-odak');
+    t.dataset.odakHucre = '';
+    fdmTuvalOlc(t);
+    if (!t.classList.contains('fdm-yuzen')) window.fdmTahtaSigdir(true);
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+};
+
+/* ================= GÖRÜŞ PENCERESİ (tuval) =================
+   Tablolar artık sınırsız uzayan bir ızgarada değil, SABİT BİR GÖRÜŞ
+   PENCERESİNİN içinde duruyor. Bir sütunda en çok İKİ tablo alt alta
+   görünüyor; üçüncü mâzî açılırsa pencere büyümüyor, aşağısı kaydırma
+   ile geliyor (Geylani: "en fazla iki tablo alt alta olsun, sonrakiler
+   için scroll olsun"). Pencere iki ölçekli: DIŞ ölçek (--fdm-olcek)
+   pencereyi büyütür, İÇ ölçek (--fdm-ic-olcek) pencerenin içindeki
+   tabloları — yani bir görselde gezer gibi yaklaşıp uzaklaşmak. Tuval,
+   ölçeklenmiş içeriğin gerçek boyunu taşıyan kutudur; kaydırma payları
+   ondan doğuyor. */
+window.FDM_IC_EN_AZ = 0.5;   /* alt sınır artık içeriğe göre: bkz. fdmIcEnAz */
+window.FDM_IC_EN_COK = 3;
+var FDM_IZGARA_ARA = 14;   /* .fdm-izgara gap */
+
+function fdmIcOlcek(t) {
+    var v = parseFloat(t.style.getPropertyValue('--fdm-ic-olcek'));
+    return (v > 0) ? v : 1;
+}
+/* İçerik `zoom` ile büyüdüğü için yerleşim kendiliğinden genişliyor;
+   tuvale ayrıca ölçü yazmaya gerek kalmadı (dönüşümle büyütürken
+   kaydırma payları doğmadığından elle yazılıyordu). */
+function fdmTuvalOlc(t) {
+    var tuval = t.querySelector('.fdm-tuval');
+    if (!tuval) return;
+    tuval.style.width = '';
+    tuval.style.height = '';
+}
+/* Pencerenin boyu İÇ ÖLÇEKTEN BAĞIMSIZ: iç ölçek 1'ken ölçülen "iki
+   satır" boyunda sabitleniyor. Yaklaşınca pencere büyümüyor, içerik
+   kayıyor. */
+function fdmGorusOlc(t) {
+    var izgara = t.querySelector('.fdm-izgara'), gorus = t.querySelector('.fdm-gorus');
+    if (!izgara || !gorus) return;
+    /* Rıhtımdayken pencere gizli; ölçüler 0 çıkar ve dönüşte bozuk bir
+       düzen kalırdı. Ölçüm, tablolar geri açılırken yapılıyor. */
+    if (t.classList.contains('fdm-yuzen')) return;
+    /* VARSAYILAN BOY: yan yana ÜÇ, alt alta İKİ tablo (Geylani).
+       Dördüncü sütun ve üçüncü satır kaydırma ile geliyor; kenar
+       tutamaklarıyla istenirse küçültülüp büyütülebiliyor. */
+    var ust = [], sol = [];
+    izgara.querySelectorAll('.fdm-hucre').forEach(function (h) {
+        if (ust.indexOf(h.offsetTop) < 0) ust.push(h.offsetTop);
+        if (sol.indexOf(h.offsetLeft) < 0) sol.push(h.offsetLeft);
+    });
+    ust.sort(function (a, b) { return a - b; });
+    sol.sort(function (a, b) { return b - a; });     /* RTL: sağdaki sütun önce */
+    var cokSatir = ust.length > 2, cokSutun = sol.length > 3;
+    var boy = cokSatir ? (ust[2] - FDM_IZGARA_ARA) : izgara.offsetHeight;
+    /* Üç sütunluk en: en sağdaki sütunun sağ kenarından üçüncü sütunun
+       sol kenarına kadar. */
+    var en = izgara.offsetWidth;
+    if (cokSutun) {
+        var sagSutunEn = 0;
+        izgara.querySelectorAll('.fdm-hucre').forEach(function (h) {
+            if (h.offsetLeft === sol[0]) sagSutunEn = Math.max(sagSutunEn, h.offsetWidth);
         });
-        dragBar.addEventListener('pointermove', (e) => {
-            if (!sur || e.pointerId !== sur.id) return;
-            e.stopPropagation();
-            inlineContainer.style.left = (sur.l + (e.clientX - sur.x)) + 'px';
-            inlineContainer.style.top  = (sur.t + (e.clientY - sur.y)) + 'px';
+        en = (sol[0] + sagSutunEn) - sol[2];
+    }
+    gorus.style.width = (en + (cokSatir ? 14 : 0)) + 'px';
+    gorus.style.height = (boy + (cokSutun ? 14 : 0)) + 'px';
+    fdmTuvalOlc(t);
+    /* Sütun sayısı değiştiyse Arapçanın başlangıcına, yani SAĞ UCA
+       yaslanılıyor: mâzî sütunu hep görünür kalsın. */
+    var oncekiSutun = parseInt(t.dataset.sonSutun || '0', 10);
+    t.dataset.sonSutun = String(sol.length);
+    if (cokSutun && sol.length !== oncekiSutun) {
+        requestAnimationFrame(function () {
+            gorus.scrollLeft = gorus.scrollWidth - gorus.clientWidth;
         });
-        const surBitir = (e) => {
-            if (!sur || e.pointerId !== sur.id) return;
-            try { dragBar.releasePointerCapture(sur.id); } catch (x) {}
-            sur = null; dragBar.style.cursor = 'grab';
+    }
+}
+/* EN ÇOK NE KADAR KÜÇÜLTÜLEBİLİR? Bütün tablolar pencereye sığdığı
+   anda küçültme duruyor; ötesi yalnız boşluk büyütürdü (Geylani:
+   "sonsuz küçültme olmasın, tabloların hepsi göründükten sonra daha
+   fazla küçültme olmasın"). Zaten sığıyorlarsa alt sınır 1'dir. */
+function fdmIcEnAz(t) {
+    var izgara = t.querySelector('.fdm-izgara'), gorus = t.querySelector('.fdm-gorus');
+    if (!izgara || !gorus || !izgara.offsetWidth || !izgara.offsetHeight) return 1;
+    var k = Math.min(gorus.clientWidth / izgara.offsetWidth,
+                     gorus.clientHeight / izgara.offsetHeight);
+    return Math.max(0.25, Math.min(1, k));
+}
+/* İç ölçeği değiştirir; EKRANDA (mx,my) noktası yerinde kalır. */
+window.fdmIcYakinlastir = function (t, k, mx, my) {
+    var gorus = t.querySelector('.fdm-gorus');
+    if (!gorus) return;
+    var k0 = fdmIcOlcek(t);
+    k = Math.max(fdmIcEnAz(t), Math.min(window.FDM_IC_EN_COK, k));
+    if (Math.abs(k - k0) < 0.002) return;
+    var dis = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
+    var r = gorus.getBoundingClientRect();
+    if (typeof mx !== 'number') { mx = r.left + r.width / 2; my = r.top + r.height / 2; }
+    var px = (mx - r.left) / dis, py = (my - r.top) / dis;   /* pencere içi yer */
+    var cx = (gorus.scrollLeft + px) / k0, cy = (gorus.scrollTop + py) / k0;
+    t.style.setProperty('--fdm-ic-olcek', k);
+    fdmTuvalOlc(t);
+    gorus.scrollLeft = cx * k - px;
+    gorus.scrollTop = cy * k - py;
+    t.classList.toggle('fdm-odak', k > 1.02);
+};
+
+/* Bir tabloya tıklanınca o tablo ORTAYA gelip yakınlaşıyor; aynı
+   tabloya bir daha tıklanınca hepsi yeniden görünür olacak şekilde
+   uzaklaşıyor (Geylani: "fareyle bi kutuya tıklanırsa o ortalansın
+   yaklaşılsın"). */
+window.fdmHucreOdakla = function (hucre) {
+    var t = document.getElementById('fdm-tahta');
+    if (!t || !hucre) return;
+    var gorus = t.querySelector('.fdm-gorus');
+    var izgara = t.querySelector('.fdm-izgara');
+    var anahtar = hucre.getAttribute('data-anahtar') || '';
+    var k;
+    if (t.dataset.odakHucre === anahtar && fdmIcOlcek(t) > 1.02) {
+        t.dataset.odakHucre = '';
+        k = Math.max(fdmIcEnAz(t), 1);
+        fdmOdakAnim(t, k, izgara.offsetWidth / 2, izgara.offsetHeight / 2);
+    } else {
+        t.dataset.odakHucre = anahtar;
+        k = Math.max(1, Math.min(window.FDM_IC_EN_COK,
+            Math.min(gorus.clientWidth * 0.96 / hucre.offsetWidth,
+                     gorus.clientHeight * 0.96 / hucre.offsetHeight)));
+        fdmOdakAnim(t, k, hucre.offsetLeft + hucre.offsetWidth / 2,
+                          hucre.offsetTop + hucre.offsetHeight / 2);
+    }
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+};
+
+/* YUMUŞAK YAKINLAŞMA: ölçek ile kaydırma TEK BİR ZAMAN ÇİZGİSİNDE
+   birlikte yürüyor. Eskiden ölçeği CSS geçişi, kaydırmayı da tarayıcının
+   `behavior:'smooth'`u ayrı ayrı yapıyordu; ikisi denk düşmediği için
+   tablo yandan kayarak geliyormuş gibi duruyordu (Geylani: "sanki
+   sağdan geliyormuş gibi olmasın"). Şimdi bakılan noktanın kendisi
+   yumuşatılıyor: görüşün ortası eski merkezden yeni merkeze giderken
+   ölçek de onunla büyüyor — gerçek bir yakınlaşma. */
+function fdmOdakAnim(t, k1, hedefX, hedefY, sure) {
+    var gorus = t.querySelector('.fdm-gorus');
+    if (!gorus) return;
+    var k0 = fdmIcOlcek(t);
+    var mx0 = (gorus.scrollLeft + gorus.clientWidth / 2) / k0;
+    var my0 = (gorus.scrollTop + gorus.clientHeight / 2) / k0;
+    var t0 = performance.now();
+    sure = sure || 420;
+    t.classList.add('fdm-canli');
+    function adim(simdi) {
+        var p = Math.min(1, (simdi - t0) / sure);
+        var e = 1 - Math.pow(1 - p, 3);                 /* easeOutCubic */
+        var k = k0 + (k1 - k0) * e;
+        var mx = mx0 + (hedefX - mx0) * e;
+        var my = my0 + (hedefY - my0) * e;
+        t.style.setProperty('--fdm-ic-olcek', k);
+        fdmTuvalOlc(t);
+        gorus.scrollLeft = Math.max(0, Math.min(gorus.scrollWidth - gorus.clientWidth,
+                                                mx * k - gorus.clientWidth / 2));
+        gorus.scrollTop = Math.max(0, Math.min(gorus.scrollHeight - gorus.clientHeight,
+                                               my * k - gorus.clientHeight / 2));
+        if (p < 1) requestAnimationFrame(adim);
+        else {
+            t.classList.remove('fdm-canli');
+            t.classList.toggle('fdm-odak', k1 > 1.02);
+        }
+    }
+    requestAnimationFrame(adim);
+}
+
+/* ---- KISTIRMA (iki parmak) ve DOKUNMATİK YÜZEY (ctrl+teker) ----
+   Tarayıcı, dizüstü dokunmatik yüzeyinde iki parmakla kıstırmayı
+   `ctrlKey`li bir teker olayı olarak veriyor; tablette ise iki ayrı
+   dokunuş geliyor. İkisi de aynı iç ölçeği sürüyor. */
+function fdmYakinlastirmaKur(t) {
+    t.addEventListener('wheel', function (e) {
+        if (!e.ctrlKey) return;                 /* düz kaydırma: pencereye bırak */
+        e.preventDefault(); e.stopPropagation();
+        var k0 = fdmIcOlcek(t);
+        window.fdmIcYakinlastir(t, k0 * (1 - e.deltaY / 260), e.clientX, e.clientY);
+    }, { passive: false });
+
+    var par = {}, kis = null;
+    function uzaklik(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+    t.addEventListener('pointerdown', function (e) {
+        if (e.pointerType !== 'touch') return;
+        par[e.pointerId] = { x: e.clientX, y: e.clientY };
+        var id = Object.keys(par);
+        if (id.length === 2) {
+            var a = par[id[0]], b = par[id[1]];
+            kis = { d0: uzaklik(a, b) || 1, k0: fdmIcOlcek(t) };
+            window._fdmKistirma = true;         /* sürükleme dursun */
+        }
+    }, true);
+    t.addEventListener('pointermove', function (e) {
+        if (e.pointerType !== 'touch' || !par[e.pointerId]) return;
+        par[e.pointerId] = { x: e.clientX, y: e.clientY };
+        var id = Object.keys(par);
+        if (!kis || id.length !== 2) return;
+        e.preventDefault(); e.stopPropagation();
+        var a = par[id[0]], b = par[id[1]];
+        window.fdmIcYakinlastir(t, kis.k0 * (uzaklik(a, b) / kis.d0),
+            (a.x + b.x) / 2, (a.y + b.y) / 2);
+    }, true);
+    function birak(e) {
+        if (e.pointerType !== 'touch') return;
+        delete par[e.pointerId];
+        if (Object.keys(par).length < 2) { kis = null; window._fdmKistirma = false; }
+    }
+    t.addEventListener('pointerup', birak, true);
+    t.addEventListener('pointercancel', birak, true);
+}
+
+/* Hücreleri sütun/satıra yerleştirir: aynı türden ikinci tablo alt
+   satıra iner, aradan biri kapanınca kalanlar yukarı kayar. */
+function fdmIzgaraDiz(izgara) {
+    var sayac = {};
+    var satirKipi = (window.FDM_DIZIM === 'satir');
+    /* İKİDEN ÇOK TABLO VARSA TAM EKRAN YOK: tam ekran tek bir tabloyu
+       kaplıyor, yan yana karşılaştırmanın da anlamı kalmıyor. Öğretmen:
+       "birden fazla popup açıldığında tam ekran özelliği olmasın, sadece
+       her tabloda çarpı olsun". Tek tablo kalınca ⤢ geri geliyor. */
+    var tahtaEl = izgara.closest ? izgara.closest('.fdm-tahta') : null;
+    if (tahtaEl) tahtaEl.classList.toggle('fdm-coklu', izgara.children.length > 1);
+    /* İKİNCİ EKSEN ARTIK SAYAÇ DEĞİL, FİİL: aynı fiilin tabloları tek
+       bir satırı (satır kipinde tek sütunu) paylaşıyor. Aynı fiilden
+       aynı türde ikinci bir tablo açılırsa ona ayrı bir satır veriliyor
+       ki üst üste binmesin. Satırların sırası ilk açılışa göre; bir
+       fiilin son tablosu kapanınca satırı boşalıp kendiliğinden
+       kapanıyor, komşu fiiller yer değiştirmiyor. */
+    var satirlar = [];
+    /* Eski ayırıcılar önce siliniyor: sayıma karışırlarsa kendilerine
+       satır açtırıp her çağrıda çoğalıyorlardı (ölçüldü: iki fiil için
+       dört ayırıcı, ızgara 966 px). */
+    izgara.querySelectorAll('.fdm-ayirici').forEach(function (c) { c.remove(); });
+    izgara.querySelectorAll('.fdm-hucre').forEach(function (h) {
+        var tip = h.getAttribute('data-tip') || 'isim';
+        var grup = h.getAttribute('data-fiil') || 'x';
+        var kt = grup + '|' + tip;
+        sayac[kt] = (sayac[kt] || 0) + 1;
+        var anahtar = grup + '#' + (sayac[kt] - 1);
+        h.dataset.fdmSatir = anahtar;
+        if (satirlar.indexOf(anahtar) < 0) satirlar.push(anahtar);
+    });
+    /* AYIRICI ÇİZGİ: fiil kuşakları arasına ince bir çizgi konuyor
+       (Geylani: "ayırıcı çizgi olsun"). Izgarada her fiile İKİ sıra
+       ayrılıyor — biri çizgi, biri tablolar; ilk fiilin önünde çizgi
+       olmuyor. Satır kipinde çizgi dikey. */
+    var turler = [];
+    izgara.querySelectorAll('.fdm-hucre').forEach(function (h) {
+        var tip = h.getAttribute('data-tip') || 'isim';
+        var s = window.FDM_SUTUN[tip] || 4;
+        if (turler.indexOf(s) < 0) turler.push(s);
+        var i = satirlar.indexOf(h.dataset.fdmSatir);
+        h.dataset.fdmSira = String(i + 1);          /* rıhtım simgesi bunu kullanıyor */
+        var r = 2 * i + 1;                          /* fiil sırası: 1, 3, 5… */
+        var c = 2 * s - 1;                          /* tür sırası:  1, 3, 5… */
+        if (satirKipi) {                 /* tür = SATIR, fiil = sütun */
+            h.style.gridRow = String(c);
+            h.style.gridColumn = String(r);
+        } else {                         /* tür = SÜTUN, fiil = satır */
+            h.style.gridColumn = String(c);
+            h.style.gridRow = String(r);
+        }
+    });
+    turler.sort(function (a, b) { return a - b; });
+    function ayirici(dikey, hat) {
+        var cz = document.createElement('div');
+        cz.className = 'fdm-ayirici' + (dikey ? ' fdm-ayirici-dikey' : '');
+        if (dikey) { cz.style.gridColumn = String(hat); cz.style.gridRow = '1 / -1'; }
+        else { cz.style.gridRow = String(hat); cz.style.gridColumn = '1 / -1'; }
+        izgara.appendChild(cz);
+    }
+    /* İKİ YÖNDE DE ÇİZGİ: fiil kuşakları arasına ve tür sütunları
+       arasına, ızgaranın bir ucundan öbür ucuna (Geylani: "ayırıcı
+       çizgi tüm satır ve sütun boyunca devam etsin"). Çizgiler yalnız
+       GERÇEKTEN VAR OLAN komşu kuşakların arasına konuyor; boş kalan
+       türlerin yerinde çizgi bırakılmıyor. */
+    for (var ci = 1; ci < satirlar.length; ci++) ayirici(satirKipi, 2 * ci);
+    for (var tj = 1; tj < turler.length; tj++) {
+        /* iki tür arasındaki ayırıcı hattı: küçük olanın hemen sonrası */
+        var hat = 2 * turler[tj] - 2;
+        ayirici(!satirKipi, hat);
+    }
+    var t = izgara.closest ? izgara.closest('.fdm-tahta') : null;
+    if (t) { fdmGorusOlc(t); window.fdmSimgeleriYenile(t); }
+}
+
+/* Tahtayı ekrana sığdır ve ortala (yeşil düğme · ilk açılış). */
+/* ============ ÖLÇEK ARTIK YERLEŞİMLE (zoom) ============
+   Tahta eskiden `transform: scale()` ile büyüyordu: yazılar bir kez
+   çizilip sonra gerdiriliyor, büyüdükçe netlik kaybediliyordu (Geylani:
+   "tablo büyüdükçe netleşme azalmasın"). Artık ölçek GÖRÜŞ
+   PENCERESİNE `zoom` olarak veriliyor; tarayıcı yazıyı gerçek boyunda
+   yeniden diziyor, yani her ölçekte cam gibi net. Tahtanın kendi
+   `left/top`u ölçekten etkilenmiyor (zoom çocukta), sürükleme ve
+   yerleştirme matematiği olduğu gibi kalıyor.
+   Tahtanın ekrandaki ölçüsü artık ölçeğin DOĞRUSAL bir işlevi:
+   W(k) = görüşün kendi eni × k + çerçeve payı. */
+function fdmTahtaTaban(t) {
+    var g = t.querySelector('.fdm-gorus');
+    var k0 = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
+    if (!g || !g.offsetWidth) return { lw: 0, lh: 0, bw: t.offsetWidth, bh: t.offsetHeight };
+    return { lw: g.offsetWidth, lh: g.offsetHeight,
+             bw: t.offsetWidth - g.offsetWidth * k0,
+             bh: t.offsetHeight - g.offsetHeight * k0 };
+}
+function fdmTahtaOlcu(tb, k) { return { w: tb.lw * k + tb.bw, h: tb.lh * k + tb.bh }; }
+
+window.fdmTahtaSigdir = function (ilk) {
+    var t = document.getElementById('fdm-tahta');
+    if (!t) return;
+    t.classList.remove('fdm-yuzen');
+    t.classList.remove('fdm-tam');     /* kendiliğinden sığdırma tam ekrandan çıkarır */
+    if (window.fdmSariTusYazi) window.fdmSariTusYazi();
+    if (window.fdmYesilTusYazi) window.fdmYesilTusYazi();
+    var tb = fdmTahtaTaban(t);
+    if (!tb.lw && !tb.bw) return;
+    var pay = 24;
+    var k = Math.min(1, (window.innerWidth - pay - tb.bw) / (tb.lw || 1),
+                        (window.innerHeight - pay - tb.bh) / (tb.lh || 1));
+    k = Math.max(0.35, Math.min(3.2, k));
+    t.style.setProperty('--fdm-olcek', k);
+    var o = fdmTahtaOlcu(tb, k);
+    window.fdmEkranaYerlestir(t,
+        Math.round((window.innerWidth - o.w) / 2),
+        Math.round((window.innerHeight - o.h) / 2));
+    if (!ilk && typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+};
+
+/* ============ SARI DÜĞME: YÜZEN MOD ============
+   MacBook'ta sarı nokta pencereyi Dock'a indirir; burada pencere yok
+   olmuyor, KÜÇÜLÜP SOL ALT KÖŞEYE park ediyor — "bi nevi simge haline
+   almak ama biz yüzme moduna alacağız" (Geylani). Böylece tahta ekranda
+   kalırken kalıp tablosunun üstünden çekiliyor: yandaki kalıbın
+   numarasına rahatça basılıp ikinci, üçüncü çekim tahtaya ekleniyor.
+   Yüzerken tablo eklenirse mod bozulmuyor, tahta küçük kalıyor; işi
+   bitince sarıya bir daha basınca eski ölçeğine ve eski yerine dönüyor.
+   (Saydamlaştırma bunun yanında gereksiz kaldığı için kaldırıldı.) */
+window.fdmTahtaYuzen = function (e, ac) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    var t = document.getElementById('fdm-tahta');
+    if (!t) return;
+    var olacak = (typeof ac === 'boolean') ? ac : !t.classList.contains('fdm-yuzen');
+    if (olacak) {
+        if (!t.classList.contains('fdm-yuzen'))
+            t.dataset.eskiOlcek = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
+        t.classList.add('fdm-yuzen');
+        t.style.setProperty('--fdm-olcek', 1);   /* rıhtım zaten küçük */
+        window.fdmSimgeleriYenile(t);
+        window.fdmYuzenYerlestir();
+    } else {
+        t.classList.remove('fdm-yuzen');
+        var k = parseFloat(t.dataset.eskiOlcek) || 1;
+        t.style.setProperty('--fdm-olcek', k);
+        fdmGorusOlc(t);                          /* rıhtımdayken ölçülemiyordu */
+        /* Tablolar RIHTIMIN BIRAKILDIĞI YERDE açılıyor: öğretmen rıhtımı
+           istediği köşeye sürükleyip oradan açabilsin (Geylani: "yüzebilir
+           kısmı sürükleyebilmeliyim istediğim yere, tıklayınca tablolar
+           açılsın"). Ekrana sığmıyorsa sığdırılıyor; sığıyorsa yalnız
+           görüş alanına çekiliyor — ölçüm GEÇİŞİN ARDINA bırakılıyor,
+           yoksa hâlâ küçük dikdörtgen okunuyor (ölçüldü: 31 px taşma). */
+        if (t.offsetWidth * k > window.innerWidth - 20 ||
+            t.offsetHeight * k > window.innerHeight - 20) window.fdmTahtaSigdir(true);
+        else setTimeout(function () { window.fdmGorunurKil(t); }, 240);
+    }
+    window.fdmSariTusYazi();
+    if (e && typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+};
+
+/* ---- RIHTIM SİMGELERİ ----
+   Küçültme modunda tablolar KÜÇÜLTÜLMÜŞ HÂLDE değil, her tablo için
+   BİR SİMGE olarak duruyor (Geylani: "kaç tablo varsa her tablo için bi
+   svg olsun, tablolar arasında gezilme vs olmayacak"). Simge: minik bir
+   çekim tablosu çizimi, üstünde kalıp numarası; dolgu fiillerde yeşil,
+   isimlerde mavi — sayfanın kendi renkleri. Simgeye basınca tablolar
+   açılıp o tablo ortalanıyor. */
+window.fdmSimgeleriYenile = function (t) {
+    t = t || document.getElementById('fdm-tahta');
+    if (!t) return;
+    var kap = t.querySelector('.fdm-simgeler');
+    if (!kap) return;
+    var hucreler = t.querySelectorAll('.fdm-hucre');
+    if (!hucreler.length) { kap.innerHTML = ''; return; }
+
+    /* TEK BİR TABLO SİMGESİ. Kaç tablo açıksa simgenin içinde o kadar
+       GÖZ var ve gözler tabloların dizilişini birebir taşıyor: 2 mâzî +
+       2 muzâri + 2 emir → 2 satır 3 sütunluk göz; üç mâzî → 1 sütun
+       3 satır (Geylani: "kaç tablo açılırsa açılsın sadece bi tane
+       yüzen tablo svg olacak, açılan tablo sayısında da göz olacak").
+       Göz rengi türün rengi: fiil yeşil, isim mavi. */
+    var yer = [], sutunlar = [], satirlar = [];
+    var satirKipi0 = (window.FDM_DIZIM === 'satir');
+    Array.prototype.forEach.call(hucreler, function (h) {
+        /* Izgarada fiil kuşakları arasında ayırıcı satırlar var; simgede
+           onlar yok, bu yüzden sıralama `fdmSira`dan okunuyor. */
+        var tur = window.FDM_SUTUN[h.getAttribute('data-tip') || 'isim'] || 4;
+        var fiilSira = parseInt(h.dataset.fdmSira, 10) || 1;
+        var s = satirKipi0 ? fiilSira : tur;
+        var r = satirKipi0 ? tur : fiilSira;
+        var tip = h.getAttribute('data-tip') || 'isim';
+        yer.push({ s: s, r: r, tip: tip });
+        if (sutunlar.indexOf(s) < 0) sutunlar.push(s);
+        if (satirlar.indexOf(r) < 0) satirlar.push(r);
+    });
+    sutunlar.sort(function (a, b) { return a - b; });   /* 1 = mâzî = EN SAĞ */
+    satirlar.sort(function (a, b) { return a - b; });
+
+    var GEN = 26, YUK = 20, ARA = 5, PAY = 7;
+    var en = sutunlar.length * GEN + (sutunlar.length - 1) * ARA + 2 * PAY;
+    var boy = satirlar.length * YUK + (satirlar.length - 1) * ARA + 2 * PAY;
+    var gozler = '';
+    yer.forEach(function (v) {
+        /* RTL: 1 numaralı sütun sağda */
+        var si = sutunlar.length - 1 - sutunlar.indexOf(v.s);
+        var ri = satirlar.indexOf(v.r);
+        gozler += '<rect x="' + (PAY + si * (GEN + ARA)) + '" y="' + (PAY + ri * (YUK + ARA)) +
+                  '" width="' + GEN + '" height="' + YUK + '" rx="4" fill="' +
+                  (v.tip === 'isim' ? '#3b82f6' : '#22c55e') + '"/>';
+    });
+    /* SVG'ye açık ölçü veriliyor: yalnız viewBox'la bırakılınca kap
+       küçücük kalıyordu (ölçüldü: rıhtım 24×24 px). */
+    var kOl = Math.min(112 / en, 96 / boy, 3.2);
+    var svg = '<svg width="' + Math.round(en * kOl) + '" height="' + Math.round(boy * kOl) +
+              '" viewBox="0 0 ' + en + ' ' + boy + '" aria-hidden="true">' +
+              '<rect x="1" y="1" width="' + (en - 2) + '" height="' + (boy - 2) +
+              '" rx="8" fill="#ffffff" stroke="#0f172a" stroke-width="2"/>' + gozler + '</svg>';
+    kap.innerHTML =
+        '<button type="button" class="fdm-simge" title="' + hucreler.length +
+        ' çekim tablosu — açmak için tıkla" aria-label="Çekim tablolarını aç">' +
+        svg + '</button>';
+};
+
+/* Sarı düğmenin ipucu metni her zaman gerçek durumu söylesin (yeşil
+   düğme de yüzen moddan çıkarabiliyor). */
+window.fdmSariTusYazi = function () {
+    var t = document.getElementById('fdm-tahta');
+    var btn = t && t.querySelector('.fdm-sari');
+    if (!btn) return;
+    btn.title = t.classList.contains('fdm-yuzen')
+        ? 'Eski boyuna döndür'
+        : 'Yüzen moda al — küçülüp köşeye park eder';
+};
+
+/* ============ YEŞİL DÜĞME: TAHTANIN TAM EKRANI ============
+   Tam ekran yalnız tek bir tabloya değil, HEPSİNİ TAŞIYAN TAHTAYA da
+   var (Geylani: "sadece bi tablo için değil, hepsini kapsayan konteynır
+   için de"). Tahta sayfanın tamamına oranını bozmadan yayılıyor —
+   gerekirse 1'in üstüne de büyüyerek. İkinci basış eski ölçeğe ve eski
+   yere döndürüyor. */
+window.fdmTahtaTamEkran = function (e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    var t = document.getElementById('fdm-tahta');
+    if (!t) return;
+    if (t.classList.contains('fdm-tam')) {
+        t.classList.remove('fdm-tam');
+        var k = parseFloat(t.dataset.tamEskiOlcek) || 1;
+        t.style.setProperty('--fdm-olcek', k);
+        if (t.dataset.tamEskiSol !== undefined) {
+            t.style.left = t.dataset.tamEskiSol + 'px';
+            t.style.top = t.dataset.tamEskiUst + 'px';
+        }
+        setTimeout(function () { window.fdmGorunurKil(t); }, 240);
+    } else {
+        t.dataset.tamEskiOlcek = parseFloat(t.style.getPropertyValue('--fdm-olcek')) || 1;
+        t.dataset.tamEskiSol = window.fdmYer(t).l;
+        t.dataset.tamEskiUst = window.fdmYer(t).t;
+        t.classList.remove('fdm-yuzen');
+        t.classList.add('fdm-tam');
+        window.fdmTamYerlestir();
+    }
+    window.fdmYesilTusYazi();
+    window.fdmSariTusYazi();
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+};
+window.fdmTamYerlestir = function () {
+    var t = document.getElementById('fdm-tahta');
+    if (!t || !t.classList.contains('fdm-tam')) return;
+    var a = fdmTamAlan(), tb = fdmTahtaTaban(t);
+    if (!tb.lw && !tb.bw) return;
+    var k = Math.max(0.3, Math.min(3.2,
+        (window.innerWidth - 16 - tb.bw) / (tb.lw || 1),
+        (a.boy - 16 - tb.bh) / (tb.lh || 1)));
+    t.style.setProperty('--fdm-olcek', k);
+    var o = fdmTahtaOlcu(tb, k);
+    window.fdmEkranaYerlestir(t, Math.round((window.innerWidth - o.w) / 2),
+                                 Math.round(a.ust + (a.boy - o.h) / 2));
+};
+/* Yeşil düğmenin simgesi duruma göre: dışa oklar = tam ekran yap,
+   içe köşeler = tam ekrandan çık. */
+window.fdmYesilTusYazi = function () {
+    var t = document.getElementById('fdm-tahta');
+    var b = t && t.querySelector('.fdm-yesil');
+    if (!b) return;
+    var tam = t.classList.contains('fdm-tam');
+    b.innerHTML = tam
+        ? '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" ' +
+          'stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/></svg>'
+        : '&#10530;';
+    b.title = tam ? 'Tam ekrandan çık' : 'Tam ekran';
+};
+
+/* Rıhtımı ilk açılışta SOL ALT köşeye park eder; sonra öğretmen onu
+   dilediği yere sürükleyebiliyor, o yer korunuyor. */
+window.fdmYuzenYerlestir = function () {
+    var t = document.getElementById('fdm-tahta');
+    if (!t || !t.classList.contains('fdm-yuzen')) return;
+    if (t.dataset.rihtimTasindi === '1') { window.fdmGorunurKil(t); return; }
+    var h = t.offsetHeight;
+    window.fdmEkranaYerlestir(t, 16, Math.round(window.innerHeight - h - 16));
+};
+
+/* Kırmızı düğme: bütün tabloları kapatır, tahtayı kaldırır. */
+window.fdmTahtaKapat = function (e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClose) SoundEngine.playClose();
+    document.querySelectorAll('.glass-box.matrix-opened').forEach(function (b) {
+        b.classList.remove('matrix-opened');
+        b.style.zIndex = '';
+    });
+    var t = document.getElementById('fdm-tahta');
+    if (t) t.remove();
+    window.fdmKokLevhaTazele();
+};
+
+/* Tek hücreyi kapatır; sonuncu da kapandıysa tahta gider. */
+function fdmHucreKapat(hucre) {
+    if (!hucre) return;
+    var anahtar = hucre.getAttribute('data-anahtar') || '';
+    var no = anahtar.split('_')[1];
+    var kutu = no ? document.querySelector('.glass-box[data-fdm-no="' + no + '"]') : null;
+    var izgara = hucre.parentElement;
+    hucre.remove();
+    if (izgara) fdmIzgaraDiz(izgara);
+    /* Kutunun başka hücresi kalmadıysa kırmızı vurgusu da kalksın */
+    if (kutu && !document.querySelector('.fdm-hucre[data-anahtar$="_' + no + '"]')) {
+        kutu.classList.remove('matrix-opened');
+        kutu.style.zIndex = '';
+    }
+    if (izgara && !izgara.children.length) {
+        var t = document.getElementById('fdm-tahta');
+        if (t) t.remove();
+    }
+    window.fdmTahtaSekmeTazele();
+    window.fdmKokLevhaTazele();
+}
+
+/* Tahtayı şeritten ya da BOŞ ALANDAN sürükleme (görselde gezer gibi) */
+function fdmTahtaSurukle(t) {
+    var bar = t.querySelector('.popup-drag-bar');
+    var sur = null;
+    function bas(e) {
+        /* Boş alandan da tutulabilir; hücrenin İÇİ, tutamaklar ve
+           DÜĞMELER hariç. Dizim düğmesi de buraya eklendi: sürükleme
+           işaretçiyi şeride kilitlediği için tıklama şeride yönleniyor,
+           düğmenin `onclick`i hiç çalışmıyordu (Geylani: "sütun tuşu
+           çalışmıyor"). */
+        if (e.target.closest('.fdm-hucre') || e.target.closest('.fdm-tut') ||
+            e.target.closest('.fdm-nokta') || e.target.closest('.fdm-dizim')) return;
+        if (sur) return;
+        sur = { id: e.pointerId, x: e.clientX, y: e.clientY,
+                l: window.fdmYer(t).l, t: window.fdmYer(t).t, hedef: e.currentTarget };
+        e.currentTarget.style.cursor = 'grabbing';
+        try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) {}
+        e.stopPropagation();
+    }
+    function kaydir(e) {
+        if (!sur || e.pointerId !== sur.id) return;
+        if (window._fdmKistirma) return;        /* iki parmak: kıstırma sürüyor */
+        e.stopPropagation();
+        t.style.left = (sur.l + (e.clientX - sur.x)) + 'px';
+        t.style.top = (sur.t + (e.clientY - sur.y)) + 'px';
+    }
+    function bitir(e) {
+        if (!sur || e.pointerId !== sur.id) return;
+        try { sur.hedef.releasePointerCapture(sur.id); } catch (x) {}
+        sur.hedef.style.cursor = '';
+        sur = null;
+        e.stopPropagation();
+    }
+    [bar, t].forEach(function (el) {
+        if (!el) return;
+        el.addEventListener('pointerdown', bas);
+        el.addEventListener('pointermove', kaydir);
+        el.addEventListener('pointerup', bitir);
+        el.addEventListener('pointercancel', bitir);
+    });
+    if (bar) bar.addEventListener('dblclick', function (e) {
+        e.stopPropagation();
+        window.fdmTahtaSigdir();
+    });
+}
+
+/* ============ KENARDAN / KÖŞEDEN ORANSAL BÜYÜTME ============
+   Sekiz tutamağın hangisinden çekilirse çekilsin tek bir ÖLÇEK
+   değişiyor: tahta da içindeki bütün tablolar ve yazılar da aynı
+   oranda büyüyüp küçülüyor. Çekilen tutamağın KARŞISINDAKİ nokta
+   yerinde çakılı kalır; ölçek `scale`in sol üst başlangıcından
+   uygulandığı için çapa `left/top` ölçekle birlikte kaydırılarak
+   sabitleniyor: left = l0 + ax·(k0 − k).
+   Kenar tutamaklarında tek eksenin, köşelerde başlangıç vektörüne
+   İZDÜŞÜMÜN oranı alınıyor — parmak karşıya geçse bile ölçek
+   sıçramıyor. */
+function fdmTahtaOlcekle(t) {
+    var YONLER = {
+        n:  [0.5, 1, 'y'], s:  [0.5, 0, 'y'],
+        w:  [1, 0.5, 'x'], e:  [0, 0.5, 'x'],
+        nw: [1, 1, 'xy'],  ne: [0, 1, 'xy'],
+        sw: [1, 0, 'xy'],  se: [0, 0, 'xy']
+    };
+    var EN_KUCUK = 0.35, EN_BUYUK = 3.2;
+    function suanOlcek() {
+        var v = parseFloat(t.style.getPropertyValue('--fdm-olcek'));
+        return (v > 0) ? v : 1;
+    }
+    t.querySelectorAll('.fdm-tut').forEach(function (tut) {
+        var d = null;
+        tut.addEventListener('pointerdown', function (e) {
+            var y = YONLER[tut.getAttribute('data-yon')];
+            if (!y || d) return;
+            var r = t.getBoundingClientRect();
+            d = { id: e.pointerId, eksen: y[2],
+                  fx: y[0], fy: y[1], tb: fdmTahtaTaban(t),
+                  Ax: r.left + y[0] * r.width, Ay: r.top + y[1] * r.height,
+                  k0: suanOlcek(), l0: window.fdmYer(t).l, t0: window.fdmYer(t).t };
+            d.dx0 = e.clientX - d.Ax;
+            d.dy0 = e.clientY - d.Ay;
+            t.classList.add('fdm-boyutlaniyor');
+            tut.classList.add('fdm-etkin');
+            try { tut.setPointerCapture(e.pointerId); } catch (x) {}
+            e.preventDefault(); e.stopPropagation();
+        });
+        tut.addEventListener('pointermove', function (e) {
+            if (!d || e.pointerId !== d.id) return;
+            e.stopPropagation();
+            var dx = e.clientX - d.Ax, dy = e.clientY - d.Ay, oran;
+            if (d.eksen === 'x') oran = d.dx0 ? dx / d.dx0 : 1;
+            else if (d.eksen === 'y') oran = d.dy0 ? dy / d.dy0 : 1;
+            else {
+                var b = d.dx0 * d.dx0 + d.dy0 * d.dy0;
+                oran = b ? (dx * d.dx0 + dy * d.dy0) / b : 1;
+            }
+            var k = Math.max(EN_KUCUK, Math.min(EN_BUYUK, d.k0 * oran));
+            t.style.setProperty('--fdm-olcek', k);
+            /* Çekilen tutamağın KARŞISINDAKİ nokta yerinde kalsın:
+               tahta artık yerleşimle büyüdüğü için ölçü ölçeğin doğrusal
+               işlevi — çapa, iki ölçü arasındaki farkın oranı kadar
+               kaydırılıyor. */
+            var o0 = fdmTahtaOlcu(d.tb, d.k0), o1 = fdmTahtaOlcu(d.tb, k);
+            t.style.left = (d.l0 + d.fx * (o0.w - o1.w)) + 'px';
+            t.style.top = (d.t0 + d.fy * (o0.h - o1.h)) + 'px';
+        });
+        var bitir = function (e) {
+            if (!d || e.pointerId !== d.id) return;
+            try { tut.releasePointerCapture(d.id); } catch (x) {}
+            d = null;
+            if (window.fdmGorunurKil) window.fdmGorunurKil(t);
+            t.classList.remove('fdm-boyutlaniyor');
+            tut.classList.remove('fdm-etkin');
             e.stopPropagation();
         };
-        dragBar.addEventListener('pointerup', surBitir);
-        dragBar.addEventListener('pointercancel', surBitir);
-    }
-    boxElement.style.zIndex = '';  // kutu stacking context olusturmasin (kalip popuplarin ustune cikmasin)
-    boxElement.classList.add('matrix-opened');
-    if (inlineContainer) inlineContainer.style.setProperty('z-index', String(window._fdmPopupZ = (window._fdmPopupZ || 2000000) + 1), 'important');
+        tut.addEventListener('pointerup', bitir);
+        tut.addEventListener('pointercancel', bitir);
+    });
 }
+
+/* KAHVERENGİ KÖK LEVHASI (sürüklenebilir فعل tuğlası) çekim tablosu
+   açıkken çekilir: tablo genelde onun üstüne düşüyor, levha da hep
+   önde durduğu için tablonun içine giriyordu (Geylani: "fiil popup
+   açıkken kahverengi kök levhası kaybolsun"). Ekranda TEK BİR tablo
+   bile kalmayınca geri geliyor — üç kapanış yolu da (kırmızı nokta,
+   tam ekranın kapanışı, tablonun sıfırlanması) buradan geçiyor. */
+window.fdmKokLevhaTazele = function () {
+    var t = document.getElementById('fdm-tahta');
+    document.body.classList.toggle('fdm-tablo-acik', !!t);
+    document.body.classList.toggle('fdm-kilit', !!t);
+    /* `overscroll-behavior` gövdeden görüntü alanına ancak html'in kendi
+       değeri auto ise geçiyor; tarayıcının geri-git jesti bu yüzden
+       kapanmıyordu. Sınıf html'e de konuyor. */
+    document.documentElement.classList.toggle('fdm-tablo-acik', !!t);
+};
+
+/* Çekim tahtası ekranda mı? Tahta açıkken ⓘ düğmeleri ve dilbilgisi
+   başlıkları çalışmıyor: bunlar tam ekran örtüler açıyor, tahtanın
+   üstüne binip öğretmeni tablolardan koparıyordu (Geylani: "popup
+   açıkken infolar, dilbilgisi başlıkları çalışmasın"). Saydam kipte de
+   kilit sürüyor — hayalet kipte amaç kalıp numaralarına ulaşmak. */
+window.fdmTahtaEkranda = function () {
+    return !!document.getElementById('fdm-tahta');
+};
+
+/* TAHTA SEKMEYE BAĞLI DEĞİL: mücerredde açılan tablolar mezide
+   geçilince kaybolmuyor, YÜZEN bir pencere olarak ekranda kalıyor
+   (Geylani: "mezid kısmına geçerken popuplar yüzen bi popup a dönsün").
+   Böylece mezidde bir tablo daha açıldığında üç harfli fiille mezid
+   fiili yan yana karşılaştırılabiliyor. Hangi hücrenin nereden geldiği
+   başlıktaki YEŞİL rozetten okunuyor: 3 = mücerred, 3+ = mezid.
+   Sekme bandı dönüşümlü olduğu için geçişten sonra tahtanın görüş
+   alanında kaldığı bir kez daha doğrulanıyor. */
+window.fdmTahtaSekmeTazele = function () {
+    var t = document.getElementById('fdm-tahta');
+    if (!t) return;
+    window.fdmGorunurKil(t);
+    window.fdmKokLevhaTazele();
+};
+
+/* Kap `position: fixed`; sabit kapta offsetLeft/offsetTop güvenilir
+   değil (offsetParent yok). Yeri her zaman hesaplanmış left/top'tan
+   okunuyor — dönüşümden de etkilenmiyor. */
+window.fdmYer = function (el) {
+    var cs = getComputedStyle(el);
+    return { l: parseFloat(cs.left) || 0, t: parseFloat(cs.top) || 0 };
+};
+
+/* Tablonun kutusuna göre sapmasını sakla / o sapmayla yeniden yerleştir.
+   Sekme bandı dönüşümlü olduğu için `fixed` kabın kapsayan bloğu sekme
+   değiştikçe değişiyor; aynı `left` değeri öteki sekmede bambaşka bir
+   yere düşüyor (ölçüldü: 620 px, dönüşte −847 px oluyordu). */
+window.fdmYerKaydet = function (k) {
+    var box = k && k.closest ? k.closest('.glass-box') : null;
+    if (!box) return;
+    var r = box.getBoundingClientRect();
+    if (!r.width) return;
+    k.dataset.fdmDx = Math.round(window.fdmYer(k).l - r.left);
+    k.dataset.fdmDy = Math.round(window.fdmYer(k).t - r.top);
+};
+/* Kabı EKRANDA istenen noktaya taşır: `left/top` kapsayan bloğa göre
+   olduğundan hedef, ölçülen fark kadar düzeltilerek yazılır. */
+window.fdmEkranaYerlestir = function (k, x, y) {
+    var r = k.getBoundingClientRect();
+    if (!r.width) { k.style.left = x + 'px'; k.style.top = y + 'px'; return; }
+    var o = window.fdmYer(k);
+    k.style.left = Math.round(o.l + (x - r.left)) + 'px';
+    k.style.top = Math.round(o.t + (y - r.top)) + 'px';
+};
+window.fdmYerlestir = function (k) {
+    var box = k && k.closest ? k.closest('.glass-box') : null;
+    if (!box) return;
+    var r = box.getBoundingClientRect();
+    if (!r.width) return;
+    window.fdmEkranaYerlestir(k, r.left + parseFloat(k.dataset.fdmDx || '0'),
+                                 r.top + parseFloat(k.dataset.fdmDy || '0'));
+    window.fdmGorunurKil(k);
+};
+
+/* SARI NOKTA: tabloyu özgün boyuna döndürür. Ölçek sol üst köşeden
+   uygulandığı için konumu düzeltmeye gerek yok — pencere yerinde kalır,
+   yalnız boyu bire döner. */
+window.fdmBoyuSifirla = function (e, btn) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    var kap = btn && btn.closest ? btn.closest('.conjugation-inline-container') : null;
+    if (!kap && btn && btn.parentElement) kap = btn.parentElement;
+    if (!kap) return;
+    kap.style.setProperty('--fdm-olcek', 1);
+    /* Ölçek 0,15 sn'lik geçişle küçülüyor; ölçüyü hemen alsak eski (büyük)
+       dikdörtgeni okurduk. Görüş alanına çekme geçişin ardına bırakılıyor. */
+    setTimeout(function () { window.fdmGorunurKil(kap); }, 190);
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+};
+
+/* Pencere büyürken ekranın dışına taşmış olabilir; küçülünce ya da
+   boyutlandırma bitince en azından üst şeridi tutulabilir kalsın diye
+   görüş alanına çekilir. Ekrandan geniş kaldıysa soldan hizalanır. */
+window.fdmGorunurKil = function (kap) {
+    if (!kap) return;
+    var r = kap.getBoundingClientRect(), pay = 8, dx = 0, dy = 0;
+    if (r.width < window.innerWidth - 2 * pay) {
+        if (r.left < pay) dx = pay - r.left;
+        else if (r.right > window.innerWidth - pay) dx = (window.innerWidth - pay) - r.right;
+    } else if (r.left > pay) dx = pay - r.left;
+    /* Dikeyde de yatayın aynısı: sığıyorsa iki kenar da içeri alınıyor,
+       ekrandan uzunsa üstten hizalanıyor. Eskiden yalnız "üst kenar
+       ekranın dibini geçti mi" bakılıyordu; rıhtım sol alt köşedeyken
+       tablolar oradan açılınca tahtanın 750 px'i ekranın altında
+       kalıyordu (ölçüldü). */
+    if (r.height < window.innerHeight - 2 * pay) {
+        if (r.top < pay) dy = pay - r.top;
+        else if (r.bottom > window.innerHeight - pay) dy = (window.innerHeight - pay) - r.bottom;
+    } else if (r.top > pay) dy = pay - r.top;
+    if (dx) kap.style.left = (window.fdmYer(kap).l + dx) + 'px';
+    if (dy) kap.style.top = (window.fdmYer(kap).t + dy) + 'px';
+};
 
 // COKLU POPUP: bir popup'a (matrix-opened kutu) tiklandiginda EN ONE gelsin
 (function(){
-    function _raisePopup(e){
-        var t = e.target;
-        var box = (t && t.closest) ? t.closest('.glass-box.matrix-opened') : null;
-        if (box) {
-            var cont = box.querySelector('.conjugation-inline-container');
-            if (cont) cont.style.setProperty('z-index', String(window._fdmPopupZ = (window._fdmPopupZ || 2000000) + 1), 'important');
-        }
-    }
+    /* TEK TAHTA olduğu için "öne getirme" işi kalmadı; işlev, eski
+       kurulumlarla uyum için duruyor ama bir şey yapmıyor. */
+    function _raisePopup(){ }
     /* TEK YOL: pointerdown fare · dokunuş · kalem üçünü birden karşılar.
        Eskiden mousedown + touchstart ayrı ayrı dinleniyordu; dokunmatik
        cihazda tarayıcı touchstart'ın ardından sahte bir mousedown daha
@@ -4638,6 +5600,7 @@ document.querySelectorAll('.matrix-close-btn').forEach(btn => {
         const currentBox = this.closest('.glass-box');
         if (currentBox) {
             currentBox.classList.remove('matrix-opened');
+            if (window.fdmKokLevhaTazele) window.fdmKokLevhaTazele();
         }
     });
 });
@@ -5161,7 +6124,9 @@ function openMatrixFullscreen(e, btnElement) {
     }
     if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
     
-    const boxElement = btnElement.closest('.glass-box');
+    /* Kaynak artık TAHTADAKİ HÜCRE; eski yol (kutu içi) yedekte. */
+    const hucre = btnElement.closest ? btnElement.closest('.fdm-hucre') : null;
+    const boxElement = hucre || btnElement.closest('.glass-box');
     if (!boxElement) return;
     
     document.body.classList.add('matrix-active');
@@ -5175,9 +6140,17 @@ function openMatrixFullscreen(e, btnElement) {
         const content = document.createElement('div');
         content.className = 'matrix-fullscreen-content';
         
+        /* TAM EKRANDAN ÇIKIŞ: aynı düğme, ama simgesi artık İÇE DOĞRU
+           oklar — "küçült" (Geylani: "tam ekran olunca oklar küçültme
+           olarak değişsin, ikinci basışta tam ekrandan çıksın"). */
         const closeBtn = document.createElement('div');
         closeBtn.className = 'matrix-fullscreen-close';
-        closeBtn.innerText = '✕';
+        closeBtn.innerHTML =
+            '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" ' +
+            'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/></svg>';
+        closeBtn.title = 'Tam ekrandan çık';
+        closeBtn.setAttribute('aria-label', 'Tam ekrandan çık');
         closeBtn.addEventListener('click', closeMatrixFullscreen);
         
         content.appendChild(closeBtn);
@@ -5291,8 +6264,29 @@ function openMatrixFullscreen(e, btnElement) {
     }
     
     contentArea.appendChild(tableWrapper);
+    fdmTamEkranSinir(fullscreenOverlay);
     fullscreenOverlay.style.display = 'flex';
 }
+
+/* Örtünün sınırları: sayfanın tamamı. */
+/* TAM EKRAN ALANI = SAYFANIN TAMAMI. Tarayıcının kendi sekme çubuğu
+   zaten sayfanın dışında; onun altındaki her yer kaplanıyor (Geylani:
+   "tam ekran tüm sayfayı kaplamalı, tarayıcı sekmeleri hariç").
+   Tarayıcının tam ekran kipi (F11) istenmiyor. */
+function fdmTamAlan() {
+    return { ust: 0, boy: window.innerHeight };
+}
+function fdmTamEkranSinir(ortu) {
+    var a = fdmTamAlan();
+    ortu.style.top = a.ust + 'px';
+    ortu.style.height = 'calc(100vh - ' + a.ust + 'px)';
+}
+window.addEventListener('resize', function () {
+    var o = document.getElementById('matrix-fullscreen-overlay');
+    if (o && getComputedStyle(o).display !== 'none') fdmTamEkranSinir(o);
+    var t = document.getElementById('fdm-tahta');
+    if (t && t.classList.contains('fdm-tam')) window.fdmTamYerlestir();
+});
 
 function closeMatrixFullscreen(e) {
     if (e) {
@@ -5310,10 +6304,10 @@ function closeMatrixFullscreen(e) {
     }
 
     // YENİ: Tam ekran kapatıldığında arkadaki açık küçük popup'ı (tabloyu) da otomatik kapat
-    document.querySelectorAll('.glass-box.matrix-opened').forEach(box => {
-        const closeBtn = box.querySelector('.matrix-close-btn');
-        if (closeBtn) closeInlineMatrix(null, closeBtn);
-    });
+    /* Tam ekrandan çıkınca ARKADAKİ TAHTA DURUYOR: öğretmen yan yana
+       dizdiği tablolara geri dönsün (eskiden hepsi kapanıyordu, tek
+       tablo varken mantıklıydı; artık tahta bir çalışma alanı). */
+    if (window.fdmKokLevhaTazele) window.fdmKokLevhaTazele();
 }
 
 // ==================================================================
@@ -7827,6 +8821,7 @@ function getBabInfo(rawName) {
 }
 
 window.showBabInfo = function(rawName) {
+    if (window.fdmTahtaEkranda && window.fdmTahtaEkranda()) return;   /* tahta açık: ⓘ çalışmaz */
     const overlay = document.getElementById('bab-info-overlay');
     const titleEl = document.getElementById('bab-info-title');
     const textEl = document.getElementById('bab-info-text');
@@ -9675,6 +10670,7 @@ function startGameAndFullscreen(key) {
 
 
 window.openGrammarOverlay = function(stage) {
+    if (window.fdmTahtaEkranda && window.fdmTahtaEkranda()) return;   /* tahta açık: başlıklar kilitli */
     var kaynak = null;
     if (window.event) {
         window.event.preventDefault();
@@ -11399,6 +12395,7 @@ function toggleTFilter(el, type, value) {
 
 function showAksamSebaGenelInfo(e) {
     if(e) e.stopPropagation();
+    if (window.fdmTahtaEkranda && window.fdmTahtaEkranda()) return;   /* tahta açık: ⓘ çalışmaz */
     document.getElementById('aksam-info-title').innerText = "Aksam-ı Seb'a Nedir?";
     document.getElementById('aksam-info-overlay').style.display = 'flex';
     document.getElementById('aksam-info-text').innerHTML = `
