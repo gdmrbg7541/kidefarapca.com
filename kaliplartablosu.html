@@ -23,7 +23,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
 
-    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=236">
+    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=242">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="arakom.css?v=1">
@@ -147,6 +147,7 @@
                 <i class="fas fa-search root-icon" onclick="event.stopPropagation(); openKeyboard()" title="Arama"></i>
                 <!-- KULLANIM KILAVUZU: çubuğun en sağında, aramanın yanında.
                      Ötekilerle aynı dilde çizgi ikon (22px, 2.5 stroke). -->
+                <span id="static-ayar-btn" class="root-icon" onclick="event.stopPropagation(); ayarMenuAc(event)" title="Ayarlar" aria-label="Ayarlar" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.557V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.557-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9.1A1.7 1.7 0 0 0 10.13 3.1V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.557 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.04A1.7 1.7 0 0 0 20.9 10.1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1.03Z"></path></svg></span>
                 <span id="static-kilavuz-btn" class="root-icon" onclick="event.stopPropagation(); kilavuzAc()" title="Nasıl kullanılır?" aria-label="Kullanım kılavuzu" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="16.6" x2="12" y2="11.2"></line><line x1="12" y1="7.7" x2="12.01" y2="7.7"></line></svg></span>
             </div>
         </div>
@@ -166,23 +167,9 @@
         </button>
     </div>
 
-    <div class="zoom-toggle-area">
-        <span class="zoom-toggle-label">BÜYÜTME</span>
-        <label class="toggle-switch">
-            <input type="checkbox" id="zoomToggleCheckbox" checked>
-            <span class="toggle-slider"></span>
-        </label>
-    </div>
-
-    <!-- ANLAM: tıklanan veznin Türkçesini kutunun altında küçük bir
-         katman olarak gösterir (sarf/vezingezinti.js). -->
-    <div class="zoom-toggle-area">
-        <span class="zoom-toggle-label">ANLAM</span>
-        <label class="toggle-switch">
-            <input type="checkbox" id="anlamToggleCheckbox" checked>
-            <span class="toggle-slider"></span>
-        </label>
-    </div>
+    <!-- BÜYÜTME ve ANLAM anahtarları AYAR MENÜSÜNE taşındı (aşağıda,
+         #ayar-menu). Üst çubukta yer açıldığı için MÜCERRED/MEZİD
+         sekmesi genişledi. -->
 
 
     <div class="back-btn-area">
@@ -193,6 +180,44 @@
             </svg>
         </a>
     </div>
+</div>
+
+<!-- ================= AYAR MENÜSÜ =================
+     BÜYÜTME ve ANLAM anahtarları buraya taşındı; üçüncüsü yeni:
+     bir kök seçilince o kökte TANIMLI FİİLLERİN çekim tabloları
+     kendiliğinden açılıp rıhtımda (yüzen simge) hazır bekliyor. -->
+<div id="ayar-menu" class="ayar-menu" role="dialog" aria-label="Ayarlar">
+    <div class="ayar-bas">AYARLAR</div>
+
+    <label class="ayar-satir">
+        <span class="ayar-ad">BÜYÜTME
+            <span class="ayar-not">Vezne basınca kelime dev kutuda açılsın</span>
+        </span>
+        <span class="toggle-switch">
+            <input type="checkbox" id="zoomToggleCheckbox" checked>
+            <span class="toggle-slider"></span>
+        </span>
+    </label>
+
+    <label class="ayar-satir">
+        <span class="ayar-ad">ANLAM
+            <span class="ayar-not">Kök vezne girince Türkçesi görünsün</span>
+        </span>
+        <span class="toggle-switch">
+            <input type="checkbox" id="anlamToggleCheckbox" checked>
+            <span class="toggle-slider"></span>
+        </span>
+    </label>
+
+    <label class="ayar-satir">
+        <span class="ayar-ad">FİİL ÇEKİMLERİ HAZIR
+            <span class="ayar-not">Kök seçilince tanımlı fiillerin çekim tabloları yüzen simgede hazır dursun</span>
+        </span>
+        <span class="toggle-switch">
+            <input type="checkbox" id="cekimHazirCheckbox" checked>
+            <span class="toggle-slider"></span>
+        </span>
+    </label>
 </div>
 
 <div id="suffix-dropdown" style="display: none; position: absolute; background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05); z-index: 2000; padding: 22px; direction: rtl; box-sizing: border-box; width: max-content; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility;">
@@ -884,7 +909,7 @@
 
     </div>
 </div>
-    <script src="veri/veri_kokler.js?v=138"></script>
+    <script src="veri/veri_kokler.js?v=140"></script>
     </div>
     
     <!-- AKSAM-I SEB'A BİLGİ OVERLAY -->
@@ -1120,7 +1145,7 @@
      başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
      buradan okunuyor. Yan etkisi yok, yalnız sabit tanımlar. -->
 <script src="veri/veri_vezin_numaralari.js?v=1"></script>
-<script src="sarf/kaliplartablosu.js?v=209"></script>
+<script src="sarf/kaliplartablosu.js?v=218"></script>
 <script src="sarf/babodak.js?v=6"></script>
 <!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama
@@ -1129,7 +1154,7 @@
 <!-- Sunum kumandasının İLERİ tuşuyla tanımlı vezinler arasında gezinme
      ve tıklanan veznin anlamını gösteren katman. Ana betikten SONRA
      yüklenir; handleBoxClick'i sarmalayarak bağlanır. -->
-<script src="sarf/vezingezinti.js?v=16"></script>
+<script src="sarf/vezingezinti.js?v=18"></script>
 <script src="sarf/muhadesekopru.js?v=2"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
