@@ -3984,7 +3984,13 @@ window.fdmKokLevhaTazele = function () {
        ekranda değil: kahverengi kök levhası görünmeli, ⓘ düğmeleri ve
        dilbilgisi başlıkları çalışmalı (Geylani: "kahverengi kök levhası
        fiil çekim tabloları açılmamışken görünmeli"). */
-    var acik = !!t && !t.classList.contains('fdm-yuzen');
+    /* Büyütme açıkken tahta zaten gizli: levha görünsün, ⓘ kilidi
+       açılsın. */
+    var buyutme = (function () {
+        var c = document.getElementById('zoomToggleCheckbox');
+        return !!(c && c.checked);
+    })();
+    var acik = !!t && !t.classList.contains('fdm-yuzen') && !buyutme;
     document.body.classList.toggle('fdm-tablo-acik', acik);
     document.body.classList.toggle('fdm-kilit', acik);
     /* `overscroll-behavior` gövdeden görüntü alanına ancak html'in kendi
@@ -3992,6 +3998,23 @@ window.fdmKokLevhaTazele = function () {
        kapanmıyordu. Sınıf html'e de konuyor. */
     document.documentElement.classList.toggle('fdm-tablo-acik', acik);
 };
+
+/* BÜYÜTME anahtarı değişince levha/kilit durumu tazeleniyor: anahtar
+   açıkken tahta gizlendiği için levha geri gelmeli, kapanınca yeniden
+   çekilmeli. */
+(function () {
+    function kur() {
+        var c = document.getElementById('zoomToggleCheckbox');
+        if (!c || c._fdmLevha) return;
+        c.addEventListener('change', function () {
+            if (window.fdmKokLevhaTazele) window.fdmKokLevhaTazele();
+        });
+        c._fdmLevha = 1;
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
+    else kur();
+    window.addEventListener('load', kur);
+})();
 
 /* Çekim tahtası ekranda mı? Tahta açıkken ⓘ düğmeleri ve dilbilgisi
    başlıkları çalışmıyor: bunlar tam ekran örtüler açıyor, tahtanın
@@ -13568,6 +13591,64 @@ document.addEventListener('keydown', function (e) {
    çekim tablolarını tahtaya ekler, sonra tahtayı rıhtıma indirir.
    Sesler ve büyütme klonu bu toplu hazırlıkta susturuluyor — ekranda
    bir şey patlamasın, öğretmen kökü seçtiğinde sayfa sakin kalsın. */
+/* ============ HAZIRLIK PERDESİ (yükleniyor ekranı) ============
+   KÖKE DOKUNULDUĞU ANDA iniyor ve sayfayı kapatıyor: sarı vurgular,
+   kahverengi kök levhası, çekim tabloları… hepsi perdenin arkasında
+   hazırlanıyor. Perde kalktığında sistem hazır oluyor (Geylani: "bi
+   köke tıkladığı anda yükleniyor yazısı çıksın; sarı vurgular, kök
+   levhası göründüğünde tüm sistem hazır olmuş olmalı"). Üstünde dönen
+   halka, kökün kendisi ve kaç tablonun kurulduğunu gösteren çizgi var;
+   tıklamaları da yutuyor ki araya giren bir dokunuş sırayı bozmasın. */
+function fdmYuklemeAc(kok, toplam, tur) {
+    var y = document.getElementById('fdm-yukleniyor');
+    if (!y) {
+        y = document.createElement('div');
+        y.id = 'fdm-yukleniyor';
+        y.className = 'fdm-yukleniyor';
+        y.setAttribute('role', 'status');
+        y.setAttribute('aria-live', 'polite');
+        y.innerHTML =
+            '<div class="fdm-yuk-kart">' +
+              '<div class="fdm-yuk-cark" aria-hidden="true"></div>' +
+              '<div class="fdm-yuk-yazi">Fiil çekimleri hazırlanıyor…</div>' +
+              '<div class="fdm-yuk-kok" dir="rtl"></div>' +
+              '<div class="fdm-yuk-cizgi"><span></span></div>' +
+            '</div>';
+        document.body.appendChild(y);
+        /* Perde ilk karede açılıyor: kök seçiminin getirdiği değişiklikler
+           (vurgular, levha) perdenin ARDINDA olup bitsin. */
+        void y.offsetWidth;
+    }
+    if (tur !== undefined && tur !== null) y.dataset.tur = String(tur);
+    else if (!y.dataset.tur) y.dataset.tur = '';       /* daha sahiplenilmedi */
+    var k = y.querySelector('.fdm-yuk-kok');
+    if (k && kok) k.textContent = kok;
+    fdmYuklemeIlerlet(0, toplam);
+    clearTimeout(window._fdmYukSaat);
+    y.classList.add('acik');
+    return y;
+}
+function fdmYuklemeIlerlet(bitti, toplam) {
+    var y = document.getElementById('fdm-yukleniyor');
+    if (!y) return;
+    /* Tablo sayısı daha bilinmiyorsa çizgi belirsiz kipte akıyor. */
+    y.classList.toggle('belirsiz', !toplam);
+    var c = y.querySelector('.fdm-yuk-cizgi span');
+    if (!c) return;
+    c.style.width = toplam ? (Math.round(100 * Math.min(1, bitti / toplam)) + '%') : '';
+}
+function fdmYuklemeKapat(tur) {
+    var y = document.getElementById('fdm-yukleniyor');
+    if (!y) return;
+    /* Yeni bir hazırlık perdeyi devraldıysa eski tur onu indirmez. */
+    if (tur !== undefined && y.dataset.tur !== String(tur)) return;
+    clearTimeout(window._fdmYukSaat);
+    y.classList.remove('acik');
+    setTimeout(function () {
+        if (y.parentNode && !y.classList.contains('acik')) y.parentNode.removeChild(y);
+    }, 300);
+}
+
 /* Hazırlıkta tıklanan kutuyu tıklanmamış hâline döndürür. */
 function fdmKutuGeriAl(b, yedek) {
     try { if (typeof resetBox === 'function') resetBox(b); } catch (x) { /* yoksay */ }
@@ -13597,11 +13678,15 @@ function fdmKutuGeriAl(b, yedek) {
     } catch (x) { /* yoksay */ }
 }
 
-window.fdmCekimHazirla = function () {
+/* Kökte tanımlı FİİL kutuları (mâzî · muzâri · emir). Hem hazırlığın
+   kendisi hem de "hazırlık olacak mı?" sorusu buradan besleniyor —
+   yükleniyor perdesi köke dokunulur dokunulmaz iniyor, o yüzden karar
+   hazırlık başlamadan verilebilmeli. */
+window.fdmHazirKutulari = function () {
     var anahtar = document.getElementById('cekimHazirCheckbox');
-    if (!anahtar || !anahtar.checked) return;
+    if (!anahtar || !anahtar.checked) return [];
     var kok = (typeof currentRoot !== 'undefined') ? String(currentRoot || '').trim() : '';
-    if (kok.length !== 3 || typeof sozlukVerileri === 'undefined' || !sozlukVerileri[kok]) return;
+    if (kok.length !== 3 || typeof sozlukVerileri === 'undefined' || !sozlukVerileri[kok]) return [];
     var kayit = sozlukVerileri[kok];
     var kutular = [];
     document.querySelectorAll('#tab1 .glass-box, #tab2 .glass-box').forEach(function (b) {
@@ -13613,7 +13698,13 @@ window.fdmCekimHazirla = function () {
         if (!no || (!kayit[no] && !kayit[parseInt(no, 10)])) return;
         kutular.push(b);
     });
-    if (!kutular.length) return;
+    return kutular;
+};
+
+window.fdmCekimHazirla = function () {
+    var kok = (typeof currentRoot !== 'undefined') ? String(currentRoot || '').trim() : '';
+    var kutular = window.fdmHazirKutulari();
+    if (!kutular.length) { fdmYuklemeKapat(); return; }
     /* Önceki kökten kalan tablolar karışmasın: tahta sıfırdan kuruluyor
        (hazır tahta ✕ ile küçülüyor, burada gerçekten kapanmalı). */
     if (document.getElementById('fdm-tahta')) window.fdmTahtaKapat(null, true);
@@ -13652,9 +13743,16 @@ window.fdmCekimHazirla = function () {
     var eskiSekme = (typeof currentTabActive !== 'undefined') ? currentTabActive : 0;
     var eskiKay = window.scrollY || 0;
     document.body.classList.add('fdm-hazirlik');
+    fdmYuklemeAc(kok, kutular.length, tur);
+    /* Kumanda hemen çekilsin: 700 ms'lik denetim turunu bekleseydi
+       yükleniyor ekranının altında bir an görünüyordu (ölçüldü). */
+    if (window.KidefVezinGezinti && window.KidefVezinGezinti.kumandaGuncelle) {
+        try { window.KidefVezinGezinti.kumandaGuncelle(); } catch (x) { /* yoksay */ }
+    }
 
     var i = 0;
     function bitir() {
+        fdmYuklemeKapat(tur);
         if (typeof closeAllZoomedBoxes === 'function') closeAllZoomedBoxes();
         if (window.KidefVezinGezinti && window.KidefVezinGezinti.anlamGizle)
             window.KidefVezinGezinti.anlamGizle();
@@ -13666,6 +13764,11 @@ window.fdmCekimHazirla = function () {
         if (typeof setTab === 'function') setTab(eskiSekme, true);
         setTimeout(function () { window.scrollTo({ top: eskiKay, behavior: 'auto' }); }, 280);
         document.body.classList.remove('fdm-hazirlik');
+        /* Gezinti imleci başa alınıyor: hazırlıktan sonra ileri tuşuna
+           ilk basışta kökün EN KÜÇÜK numaralı kalıbı gelsin. */
+        if (window.KidefVezinGezinti && window.KidefVezinGezinti.sifirla) {
+            try { window.KidefVezinGezinti.sifirla(); } catch (x) { /* yoksay */ }
+        }
         var t = document.getElementById('fdm-tahta');
         if (!t) return;
         /* HAZIR TAHTA İŞARETİ: bu tablolar öğretmenin tek tek açtığı
@@ -13694,6 +13797,7 @@ window.fdmCekimHazirla = function () {
             sesiAc(); return;
         }
         if (i >= kutular.length) { bitir(); return; }
+        fdmYuklemeIlerlet(i, kutular.length);
         var b = kutular[i++];
         /* KUTUNUN DOKUNULMAMIŞ HÂLİ: hazırlık kutuya tıklamak zorunda
            (tablo ancak öyle türüyor), ama iş bitince kutu tıklanmamış
@@ -13742,8 +13846,32 @@ window.fdmCekimHazirla = function () {
         if (typeof window[ad] !== 'function' || window[ad]._fdmHazir) return;
         var eski = window[ad];
         window[ad] = function () {
+            /* PERDE KÖKE DOKUNULUR DOKUNULMAZ İNİYOR. Kök seçimi sarı
+               vurguları ve kahverengi levhayı hemen çiziyor; öğretmen
+               önce onları, sonra hazırlığı görüyordu. Artık ikisi de
+               perdenin arkasında oluyor: perde kalktığında sistem hazır
+               (Geylani: "bi köke tıkladığı anda yükleniyor yazısı
+               çıksın; sarı vurgular, kök levhası göründüğünde tüm
+               sistem hazır olmuş olmalı"). */
+            var perde = window._fdmEtkilesim;
+            if (perde) fdmYuklemeAc('', 0, null);
             var s = eski.apply(this, arguments);
-            if (window._fdmEtkilesim) setTimeout(function () { window.fdmCekimHazirla(); }, 1200);
+            if (perde) {
+                var k = (typeof currentRoot !== 'undefined') ? String(currentRoot || '').trim() : '';
+                var olacak = window.fdmHazirKutulari().length > 0;
+                if (olacak) {
+                    fdmYuklemeAc(k, 0, null);
+                    setTimeout(function () { window.fdmCekimHazirla(); }, 700);
+                    /* Emniyet: hazırlık bir yerde takılırsa perde inatla
+                       kalmasın. */
+                    setTimeout(function () {
+                        var y = document.getElementById('fdm-yukleniyor');
+                        if (y && !y.dataset.tur) fdmYuklemeKapat();
+                    }, 6000);
+                } else {
+                    fdmYuklemeKapat();       /* hazırlanacak fiil yok */
+                }
+            }
             return s;
         };
         window[ad]._fdmHazir = 1;

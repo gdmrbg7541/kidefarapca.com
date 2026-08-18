@@ -51,7 +51,7 @@
                     'fast-dictionary-overlay', 'verb-overlay', 'conjugation-overlay',
                     'bab-info-overlay', 'aksam-info-overlay', 'aksam-sema-overlay',
                     'telaffuz-overlay', 'sarfOyunlarOverlay', 'ek-bilgi-perde',
-                    'kt-kilavuz', 'rootOfDayOverlay'];
+                    'kt-kilavuz', 'rootOfDayOverlay', 'fdm-yukleniyor'];
 
     var ANLAM_SURESI = 3000;   /* balon kaç ms sonra kendiliğinden çekilsin */
     var anlamSaat = null;
@@ -390,7 +390,9 @@
         if (kumanda) return kumanda;
         var s = document.createElement('style');
         s.textContent =
-            '#vg-kumanda{position:fixed;z-index:999997;display:none;align-items:center;gap:4px;' +
+            /* Dev büyütme klonunun (999999) ÜSTÜNDE: büyütme açıkken de
+               ileri/geri tuşlarına ulaşılabilsin. */
+            '#vg-kumanda{position:fixed;z-index:1000007;display:none;align-items:center;gap:4px;' +
             'padding:5px;border-radius:999px;background:rgba(255,255,255,.26);' +
             'border:1px solid rgba(255,255,255,.55);' +
             '-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);' +
@@ -411,6 +413,9 @@
             'color:rgba(31,41,55,.5);background-image:radial-gradient(currentColor 1.4px,transparent 1.5px);' +
             'background-size:6px 6px;background-position:center}' +
             '#vg-kumanda .vg-k-tut:active{cursor:grabbing}' +
+            '#vg-kumanda.vg-k-gelir{animation:vgKumandaGelir .5s cubic-bezier(.22,.61,.36,1)}' +
+            '@keyframes vgKumandaGelir{from{opacity:0;transform:translateY(16px) scale(.94)}' +
+            'to{opacity:.42;transform:none}}' +
             '@media (max-width:1024px){#vg-kumanda .vg-k-tus{padding:9px 12px;font-size:12px}}';
         document.head.appendChild(s);
 
@@ -522,12 +527,23 @@
     }
 
     function kumandaGuncelle() {
-        var ac = kokteVezinVar() && !perdeAcikMi() && !tamEkranAcikMi();
+        /* Çekimler hazırlanırken kumanda görünmüyor: yükleniyor ekranı
+           kalkınca, tablolar hazır olunca beliriyor (Geylani: "fiil
+           çekimleri hazırlanınca ileri geri çıksın"). */
+        var hazirlik = !!(document.body && document.body.classList.contains('fdm-hazirlik'));
+        var ac = kokteVezinVar() && !perdeAcikMi() && !tamEkranAcikMi() && !hazirlik;
         if (!ac) { if (kumanda) kumanda.classList.remove('vg-k-acik'); return; }
         kumandaKur();
         if (!kumanda.classList.contains('vg-k-acik')) {
             kumanda.classList.add('vg-k-acik');
             kumandaYerleskeYukle();
+            /* Belirirken küçük bir yükseliş — nereden geldiği belli olsun. */
+            kumanda.classList.remove('vg-k-gelir');
+            void kumanda.offsetWidth;
+            kumanda.classList.add('vg-k-gelir');
+            setTimeout(function () {
+                if (kumanda) kumanda.classList.remove('vg-k-gelir');
+            }, 620);
         }
     }
 
@@ -1096,6 +1112,13 @@
 
     function tiklamaSonrasi(kutu) {
         if (!kutu) return;
+        /* ARKA PLANDAKİ HAZIRLIK SAYILMAZ. Kök seçilince çekim tabloları
+           kendiliğinden hazırlanırken kutulara programla tıklanıyor;
+           bunlar "öğretmen o vezne tıkladı" sayılırsa imleç listenin
+           ortasında kalıyor ve ileri tuşu ilk kalıbı hiç göstermiyordu
+           (Geylani: "bazen 66'dan bazen 3'ten başlıyor" — imleç son
+           hazırlanan kutuda kalıyormuş). */
+        if (document.body && document.body.classList.contains('fdm-hazirlik')) return;
 
         /* İmleci elle tıklanan kutuya eşitle: ileri tuşu oradan devam eder */
         var i = dizinBul(refler(), refOku(kutu));

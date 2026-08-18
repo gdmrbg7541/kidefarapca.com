@@ -650,6 +650,21 @@ body.fdm-tablo-acik .draggable-root-clone {
     transition: opacity .25s ease;
 }
 
+/* ============ BÜYÜTME AÇIKKEN ÇEKİM TAHTASI ÇEKİLİR ============
+   Büyütme açıkken vezne dokunmak ekranı kaplayan dev bir klon açıyor;
+   çekim tahtası onun altında kalıp iki ayrı gösterimi çakıştırıyordu.
+   Büyütme açıkken tahta hiç görünmüyor, anahtar kapanınca (rıhtımda
+   olduğu gibi) geri geliyor. Kumanda, anlam katmanı ve kahverengi kök
+   levhası ise dev klonun ÜSTÜNDE duruyor (Geylani: "büyütme açıkken
+   fiil çekim popup görünmesin; ileri geri tuşları, anlam, kök levhası
+   vezinlerin üstünde görünsün"). */
+body:has(#zoomToggleCheckbox:checked) .fdm-tahta { display: none !important; }
+/* Levhanın z-index'i YÜKSELTİLMİYOR: denendi, sayfanın üstüne çıkıp
+   vezinlerin tıklamalarını yutuyordu (ölçüldü: büyütme açıkken kutuya
+   üç kez tıklandı, dev klon hiç doğmadı). Levha kendi katmanında zaten
+   vezinlerin üstünde duruyor; anlam katmanı da (1 000 000) dev klonun
+   (999 999) üstünde. */
+
 /* ==================== ÇEKİM TAHTASI ====================
    Bütün çekim tabloları TEK bir tahtanın ızgarasında yan yana durur.
    Sütunlar Arapçanın yönünde: MÂZÎ en sağda, sonra MUZÂRİ, EMİR, İSİM.
@@ -1504,7 +1519,13 @@ body.muc-zemin #tab1 .container > table > tbody { background: transparent !impor
 }
 .draggable-root-clone:active { cursor: grabbing; }
 
-body:has(#zoomToggleCheckbox:checked) .draggable-root-clone:not(#crisp-root-clone) {
+/* KÜÇÜK LEVHA YALNIZ DEV KLON EKRANDAYKEN ÇEKİLİR. Eskiden ölçüt
+   BÜYÜTME ANAHTARIYDI: anahtar açık ama hiçbir vezin büyütülmemişken
+   ekranda hiç kök levhası kalmıyordu (dev klon ancak bir vezne
+   dokununca doğuyor). Artık anahtar açıkken de kök hep görünüyor;
+   yalnız dev klon çıktığında yerini ona bırakıyor (Geylani: "büyütme
+   açıkken … kök levhası vezinlerin üstünde görünsün"). */
+body:has(#crisp-root-clone) .draggable-root-clone:not(#crisp-root-clone) {
     opacity: 0 !important; pointer-events: none !important; transition: opacity 0.2s ease !important;
 }
 
@@ -7032,3 +7053,69 @@ body.fdm-hazirlik .fdm-tahta { opacity: 0 !important; pointer-events: none !impo
     100% { opacity: 1; transform: none; }
 }
 .fdm-tahta.fdm-belir { animation: fdmBelir .5s cubic-bezier(.22, 1.2, .4, 1); }
+
+/* ================= YÜKLENİYOR EKRANI =================
+   Çekimler hazırlanırken sayfanın üstüne ince bir perde iniyor: dönen
+   halka, kök ve ilerleme çizgisi. Perde tıklamayı da yutuyor ki
+   hazırlık sürerken araya giren bir dokunuş sırayı bozmasın. */
+.fdm-yukleniyor {
+    /* Tahtanın (2000000) da üstünde: perde kalkana kadar arkada ne
+       olduğu görünmesin — sarı vurgular ve kök levhası ancak sistem
+       hazır olunca ortaya çıksın. */
+    position: fixed; inset: 0; z-index: 2000050;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(248, 250, 252, .97);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s ease;          /* yalnız KAPANIRKEN yumuşak */
+}
+/* Açılış ANINDA: perde inerken bir kare bile sayfa görünmesin —
+   sarı vurgular kök seçilir seçilmez çiziliyor. */
+.fdm-yukleniyor.acik { opacity: 1; pointer-events: auto; transition: none; }
+.fdm-yuk-kart {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    /* Sayfa RTL: kart soldan sağa olmalı, yoksa "…" başa geçiyor ve
+       ilerleme çizgisi ters yönden doluyor. */
+    direction: ltr;
+    min-width: 240px; padding: 26px 34px 22px;
+    background: #fff; border-radius: 20px;
+    border: 1px solid rgba(15, 23, 42, .07);
+    box-shadow: 0 22px 50px rgba(15, 23, 42, .18);
+    transform: translateY(8px) scale(.97);
+    transition: transform .26s cubic-bezier(.22, .61, .36, 1);
+}
+.fdm-yukleniyor.acik .fdm-yuk-kart { transform: none; }
+.fdm-yuk-cark {
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 4px solid #e2e8f0; border-top-color: #22c55e;
+    animation: fdmYukDon .8s linear infinite;
+}
+@keyframes fdmYukDon { to { transform: rotate(360deg); } }
+.fdm-yuk-yazi {
+    font-family: 'Inter', sans-serif; font-size: .9rem; font-weight: 700;
+    letter-spacing: .03em; color: #334155;
+}
+.fdm-yuk-kok {
+    font-family: 'Arakom', 'Amiri', serif; font-size: 1.7rem; line-height: 1.3;
+    color: #0f172a;
+}
+.fdm-yuk-kok:empty { display: none; }
+.fdm-yuk-cizgi {
+    width: 100%; height: 6px; border-radius: 999px;
+    background: #eef2f7; overflow: hidden;
+}
+.fdm-yuk-cizgi span {
+    display: block; width: 0; height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+    transition: width .25s ease;
+}
+/* Kaç tablo kurulacağı daha bilinmiyorken (kök yeni seçildi) çizgi
+   belirsiz kipte akıyor. */
+.fdm-yukleniyor.belirsiz .fdm-yuk-cizgi span {
+    width: 42%; transition: none;
+    animation: fdmYukAk 1.1s ease-in-out infinite;
+}
+@keyframes fdmYukAk {
+    0%   { transform: translateX(-115%); }
+    100% { transform: translateX(240%); }
+}
