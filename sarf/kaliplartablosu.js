@@ -3794,19 +3794,34 @@ window.fdmTamYerlestir = function () {
        ekranı doldurmak için üç fiil gerekmiyor. Eskiden ölçek 1'i
        geçemiyordu, iki fiilde tablolar küçücük kalıyordu. */
     var dogalEn = Math.max(1, iz.offsetWidth);
-    var dogalBoy = Math.max(1, fdmIkiSatirBoyu(iz));
-    var k = Math.max(0.3, Math.min(FDM_TAM_EN_COK,
-                     Math.min(enUygun / dogalEn, boyUygun / dogalBoy)));
+    /* BÜTÜN SATIRLAR EKRANA SIĞSIN. Eskiden yalnız İKİ satırlık boy
+       ölçülüyordu; sütun düzeninde bir fiilin mâzî-muzâri-emri alt
+       alta geldiği için üçüncü satır ekranın altından taşıyordu
+       (ölçüldü: iki fiil / altı tablo, taşma 212 px). Artık en alttaki
+       tablonun altı esas alınıyor. */
+    var boyOl = fdmTamIcerikBoyu(iz);
+    var ikiKip = false;
+    var dogalBoy = Math.max(1, boyOl.tum);
+    var k = fdmTamOlcek(enUygun, boyUygun, dogalEn, dogalBoy);
+    /* Satır çok olduğunda hepsini sığdırmak yazıyı okunmaz hâle
+       getirir; o zaman iki satırlık ölçüye dönülüyor, gerisi
+       kaydırılarak geziliyor. */
+    if (k < FDM_TAM_EN_AZ && boyOl.iki < boyOl.tum) {
+        ikiKip = true;
+        dogalBoy = Math.max(1, boyOl.iki);
+        k = fdmTamOlcek(enUygun, boyUygun, dogalEn, dogalBoy);
+    }
     t.style.setProperty('--fdm-olcek', k);
     g.style.width = Math.round(enUygun / k) + 'px';
     g.style.height = Math.round(boyUygun / k) + 'px';
     fdmTamSutunlar(iz);
-    /* Şeritler eşitlenince satırlar biraz uzayabiliyor; iki satır hâlâ
-       sığmıyorsa ölçek bir kez düzeltiliyor (alttaki satır yarım
+    /* Şeritler eşitlenince satırlar biraz uzayabiliyor; içerik hâlâ
+       sığmıyorsa ölçek bir kez düzeltiliyor (alt satır yarım
        kalmasın). */
-    var boy2 = fdmIkiSatirBoyu(iz);
-    if (boy2 > boyUygun / k + 1) {
-        k = Math.max(0.3, boyUygun / boy2);
+    var boy2 = fdmTamIcerikBoyu(iz);
+    var hedefBoy = Math.max(1, ikiKip ? boy2.iki : boy2.tum);
+    if (hedefBoy > boyUygun / k + 1) {
+        k = Math.max(0.3, boyUygun / hedefBoy);
         t.style.setProperty('--fdm-olcek', k);
         g.style.width = Math.round(enUygun / k) + 'px';
         g.style.height = Math.round(boyUygun / k) + 'px';
@@ -3818,13 +3833,22 @@ window.fdmTamYerlestir = function () {
     window.fdmEkranaYerlestir(t, 0, a.ust);
 };
 /* Izgaranın ilk İKİ satırının boyu (varsayılan görünür pay). */
-function fdmIkiSatirBoyu(iz) {
-    var ust = [];
+var FDM_TAM_EN_AZ = 0.45;      /* bunun altına inecekse iki satır sığdırılır */
+function fdmTamOlcek(enUygun, boyUygun, en, boy) {
+    return Math.max(0.3, Math.min(FDM_TAM_EN_COK,
+                    Math.min(enUygun / en, boyUygun / boy)));
+}
+/* İki ölçü birden: `tum` en alttaki tablonun altı (hepsi görünsün),
+   `iki` yalnız iki satırlık boy (satır çoksa geri düşülen ölçü). */
+function fdmTamIcerikBoyu(iz) {
+    var ust = [], alt = 0;
     iz.querySelectorAll('.fdm-hucre').forEach(function (h) {
         if (ust.indexOf(h.offsetTop) < 0) ust.push(h.offsetTop);
+        alt = Math.max(alt, h.offsetTop + h.offsetHeight);
     });
     ust.sort(function (a, b) { return a - b; });
-    return ust.length > 2 ? (ust[2] - FDM_IZGARA_ARA) : iz.offsetHeight;
+    if (!alt) alt = iz.offsetHeight;
+    return { tum: alt, iki: ust.length > 2 ? (ust[2] - FDM_IZGARA_ARA) : alt };
 }
 /* İçerik şeritleri eşit pay alsın, ayırıcı şeritleri kendi inceliğinde
    kalsın: tek numaralı şeritler tablolara, çift numaralılar çizgilere
