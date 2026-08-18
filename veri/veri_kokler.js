@@ -21384,11 +21384,26 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         12: { base: { emoji: "📉", arText: "يَصْغُرُ", trText: "Küçük olur / Küçülür.", ornek: { ar: "الشَّيْءُ مِنْ بَعِيدٍ يَصْغُرُ", tr: "Şey uzaktan küçülür/küçük olur." } } },
         13: { base: { emoji: "🔽", arText: "اُصْغُرْ", trText: "Küçül.", ornek: { ar: "اُصْغُرْ أَمَامَ اللهِ", tr: "Allah'ın karşısında küçül/mütevazı ol." } } },
         35: { base: { emoji: "🐜", arText: "صَغِير", trText: "Küçük.", ornek: { ar: "هُوَ طِفْلٌ صَغِيرٌ", tr: "O küçük bir çocuktur." } } },
-        50: { 
+        50: {
             base: { emoji: "🔬", arText: "أَصْغَر", trText: "Daha küçük / En küçük.", ornek: { ar: "هُوَ أَصْغَرُ إِخْوَتِهِ", tr: "O kardeşlerinin en küçüğüdür." } },
             suggestsPlus: true,
             "يّ": { emoji: "🔻", arText: "أَصْغَرِيّ", trText: "Asgari / En alt sınır." }
-        }
+        },
+        49: {
+            base: {
+                emoji: "🐣",
+                arText: "صُغَيْر / صُغَيِّر",
+                trText: "Küçücük (ism-i tasğîr).",
+                ornek: { ar: "فِي يَدِهِ كِتَابٌ صُغَيِّرٌ", tr: "Elinde küçücük bir kitap var." },
+                not: "Not: İsm-i tasğîr, üç harfli isimlerde فُعَيْل veznindedir (كَلْب → كُلَيْب, صَغْر → صُغَيْر). Ancak صَغِير gibi فَعِيل vezninde bir sıfat küçültülürken vezin فُعَيِّل olur ve صُغَيِّر gelir; klasik kullanımda yaygın olan budur. İkisi de 'küçücük' demektir."
+            }
+        },
+        58: { base: { emoji: "🔻", arText: "صَغَّرَ", trText: "Küçülttü.", ornek: { ar: "صَغَّرَ الْمُعَلِّمُ الْخَطَّ", tr: "Öğretmen yazıyı küçülttü." } } },
+        59: { base: { emoji: "📉", arText: "يُصَغِّرُ", trText: "Küçültür / Küçültüyor.", ornek: { ar: "يُصَغِّرُ الصُّورَةَ قَبْلَ الطَّبْعِ", tr: "Baskıdan önce resmi küçültüyor." } } },
+        60: { base: { emoji: "✂️", arText: "صَغِّرْ", trText: "Küçült.", ornek: { ar: "صَغِّرْ خَطَّكَ قَلِيلًا", tr: "Yazını biraz küçült." } } },
+        61: { base: { emoji: "📜", arText: "تَصْغِير", trText: "Küçültme / Tasgîr (sarf bâbı).", ornek: { ar: "التَّصْغِيرُ بَابٌ مِنْ أَبْوَابِ الصَّرْفِ", tr: "Tasgîr, sarf bâblarından bir bâbdır." } } },
+        62: { base: { emoji: "🔎", arText: "مُصَغِّر", trText: "Küçülten.", ornek: { ar: "هَذَا زُجَاجٌ مُصَغِّرٌ", tr: "Bu, küçülten bir camdır." } } },
+        63: { base: { emoji: "🐜", arText: "مُصَغَّر", trText: "Küçültülmüş / Tasgîr edilmiş.", ornek: { ar: "كُلَيْبٌ اِسْمٌ مُصَغَّرٌ", tr: "Küleyb, küçültülmüş (tasgîr edilmiş) bir isimdir." } } }
     },
     "خفف": {
         1: { base: { emoji: "🍃", arText: "خَفَّ", trText: "Hafifledi.", ornek: { ar: "خَفَّ الْأَلَمُ بِالدَّوَاءِ", tr: "Acı ilaçla hafifledi." } } },
@@ -26162,8 +26177,18 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     /* 436 — أ و ل : İlk; dönüp varmak (ecvef vâvî) */
     "أول": {
-        1: { base: { emoji: "🔙", arText: "آلَ", trText: "Döndü, vardı, dönüştü" }, not: "SEMANTİK ÇEKİRDEK: «BAŞA DÖNME». آلَ إِلَى «sonunda ona vardı» demektir; أَوَّل bir dizinin başa dönülen ilk halkasıdır. تَأْوِيل ise sözü aslına döndürerek yorumlamaktır. أَوَّلًا «önce, birinci olarak»tır." },
-        30: { tip: "sirasayi", base: { emoji: "1️⃣", arText: "أَوَّل", trText: "İlk, birinci", ornek: { ar: "أَوَّلًا نَغْسِلُ الْيَدَيْنِ", tr: "Önce ellerimizi yıkarız." }, cogul: "أَوَائِل" }, suggestsPlus: true, "ة": { emoji: "🥇", arText: "أُولَى", trText: "İlk, birinci (dişil)" } },
+        /* 1. KALIP (آلَ "döndü, vardı") KALDIRILDI. İki sebep:
+           · Maraton havuzuna sülâsî mazi olarak düşüyordu ama أول hem
+             MEHMÛZ-I FÂ hem ECVEF; ortadaki و düşünce hemze ötre alır
+             (أُلْتُ · أُلْنَا). Çekim motoru medli elifi koruyup
+             آلْتُ · آلْنَا üretiyordu — ölçüldü, on üç sîga da yanlıştı.
+             Veride bu birleşimden başka fiil yok, tek istisna buydu.
+           · Müfredatta geçmiyor; öğrenci maraton listesinde tanımadığı
+             bir fiille karşılaşıyordu (Geylani: "آل diye bi kelime fiil
+             olarak çıkıyor ama öyle bi kök ve fiil yok").
+           Kökün kendisi duruyor: أَوَّل · أَوَائِل · أَوَّلَ · تَأْوِيل.
+           Semantik çekirdek notu aşağıya, 30. kalıba taşındı. */
+        30: { tip: "sirasayi", base: { emoji: "1️⃣", arText: "أَوَّل", trText: "İlk, birinci", ornek: { ar: "أَوَّلًا نَغْسِلُ الْيَدَيْنِ", tr: "Önce ellerimizi yıkarız." }, cogul: "أَوَائِل" }, not: "SEMANTİK ÇEKİRDEK: «BAŞA DÖNME». آلَ إِلَى «sonunda ona vardı» demektir; أَوَّل bir dizinin başa dönülen ilk halkasıdır. تَأْوِيل ise sözü aslına döndürerek yorumlamaktır. أَوَّلًا «önce, birinci olarak»tır.", suggestsPlus: true, "ة": { emoji: "🥇", arText: "أُولَى", trText: "İlk, birinci (dişil)" } },
         48: { tekilId: 30, base: { emoji: "📜", arText: "أَوَائِل", trText: "İlkler, başlangıçlar (أَوَّل çoğulu)" } },
         58: { base: { emoji: "🔍", arText: "أَوَّلَ", trText: "Yorumladı, te'vil etti" } },
         61: { base: { emoji: "📘", arText: "تَأْوِيل", trText: "Te'vil, yorumlama (masdar)" } }
