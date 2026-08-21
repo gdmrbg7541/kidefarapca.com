@@ -172,6 +172,10 @@
            test de aynı iskelete oturuyor, yalnız içerik alanını alıyor. */
         var kabuk = el('content-' + key);
         if (kabuk) kabuk.classList.add('kl-sabit-baslik');
+        /* Liste ekrandan kalkıyor; sütun seçicinin de anlamı kalmıyor.
+           Geri dönüşte setMemoryMode('list') onu yeniden gösteriyor. */
+        var sec = el('sutun-sec-' + key);
+        if (sec) sec.style.display = 'none';
         g.className = 'kt-test-alan';
         g.removeAttribute('style');
         g.removeAttribute('data-total');
@@ -248,7 +252,6 @@
         if (liste.length < 2) {
             serit.insertAdjacentHTML('beforeend',
                 '<div class="kt-serit">' +
-                '<span class="kt-serit-rozet">Test</span>' +
                 '<span class="kt-serit-not">Bu listede test için en az 2 kelime gerekiyor; şu an ' +
                 liste.length + ' var.</span>' +
                 '</div>');
@@ -261,8 +264,9 @@
         oturum[key].adet = secenek.indexOf(10) > -1 ? 10 : secenek[0];
 
         serit.insertAdjacentHTML('beforeend',
+            /* Şeritte ayrıca "Test" etiketi YOK: mod satırındaki düğme
+               zaten turuncu ve "Test Modu" yazıyor, ikinci etiket fazlaydı. */
             '<div class="kt-serit">' +
-            '<span class="kt-serit-rozet">Test</span>' +
             '<div class="kt-serit-grup" id="kt-kisi-' + key + '">' +
                 '<button type="button" class="kt-mini secili" data-kisi="1" ' +
                 'onclick="KidefKelimeTest.kisi(\'' + key + '\',1)">🧑‍🎓 Tek Kişilik</button>' +
@@ -424,7 +428,7 @@
             return '<button type="button" class="kt-sik' + (q.arTr ? '' : ' ar') + '" data-i="' + i + '"' +
                    (q.arTr ? '' : ' dir="rtl"') + '>' +
                    (tus[i] ? '<span class="kt-tus">' + tus[i] + '</span>' : '') +
-                   esc(metin) + '</button>';
+                   '<span class="kt-sik-yazi">' + esc(metin) + '</span></button>';
         }).join('');
         [].forEach.call(sikKutu.querySelectorAll('.kt-sik'), function (b) {
             b.onclick = function () { cevapla(key, p, parseInt(b.getAttribute('data-i'), 10)); };
@@ -432,7 +436,65 @@
         s.kalan = SORU_SURE;
         sureCiz(key, p);
         noktaCiz(key, p);
+        /* Çizim bittikten sonra ölç: kutular yerine oturmuş olsun. */
+        requestAnimationFrame(function () { olcekle(key, p); });
     }
+
+    /* =================================================================
+       YAZI BOYU ALANA GÖRE (Geylani: "flex olsun, taşma olmasın")
+       -----------------------------------------------------------------
+       Sabit clamp ölçüleri kısa kelimede alanı boş bırakıyor, uzun
+       ibarede taşırıyordu; harekeler de kırpılabiliyordu. Ölçü ikili
+       aramayla bulunuyor: kutusuna SIĞAN EN BÜYÜK punto. Satır aralığı
+       1.35 — üstteki ve alttaki harekeler için pay bırakıyor.
+       ================================================================= */
+    /* Ölçü ikili aramayla bulunur: KUTUSU TAŞMAYAN en büyük punto.
+       Taşma, yazının kendisinde değil KAPSAYICIDA ölçülüyor — başlık
+       çipi, emoji ve aradaki boşluklar da hesaba katılsın diye; tahminî
+       pay bırakmak dar ekranlarda 12 px taşırıyordu.
+       2 px hoşgörü: satır kutusu kesirli çıkıyor, scrollHeight yukarı /
+       clientHeight aşağı yuvarlanıyor. Harekelerin payını punto değil,
+       satır aralığı (Arapçada 1.7) veriyor. */
+    function sigdirKapta(yazi, kap, enAz, enCok) {
+        if (!yazi || !kap) return enAz;
+        var lo = enAz, hi = enCok, iyi = enAz;
+        for (var i = 0; i < 9; i++) {
+            var m = (lo + hi) / 2;
+            yazi.style.fontSize = m.toFixed(1) + 'px';
+            var tasti = (kap.scrollHeight > kap.clientHeight + 2) ||
+                        (kap.scrollWidth > kap.clientWidth + 2) ||
+                        (yazi.scrollWidth > yazi.clientWidth + 2);
+            if (tasti) hi = m; else { iyi = m; lo = m; }
+        }
+        /* Bir punto pay: yuvarlama sınırda kalmasın. */
+        iyi = Math.max(enAz, Math.floor(iyi) - 1);
+        yazi.style.fontSize = iyi + 'px';
+        return iyi;
+    }
+    function soruOlcekle(key, p) {
+        var kap = el('kt-soru-' + p + '-' + key); if (!kap) return;
+        var kelime = kap.querySelector('.kt-kelime'); if (!kelime) return;
+        var ar = kelime.classList.contains('ar');
+        sigdirKapta(kelime, kap, ar ? 16 : 13, ar ? 132 : 68);
+    }
+    function siklariOlcekle(key, p) {
+        var kutu = el('kt-siklar-' + p + '-' + key); if (!kutu) return;
+        var dugmeler = [].slice.call(kutu.querySelectorAll('.kt-sik'));
+        if (!dugmeler.length) return;
+        var ar = dugmeler[0].classList.contains('ar');
+        var enAz = ar ? 11 : 9, enCok = ar ? 62 : 34;
+        var kucuk = enCok;
+        dugmeler.forEach(function (b) {
+            var y = b.querySelector('.kt-sik-yazi'); if (!y) return;
+            var s = sigdirKapta(y, b, enAz, enCok);
+            if (s < kucuk) kucuk = s;
+        });
+        /* Dördü de aynı puntoda dursun — göz sıçramasın. */
+        dugmeler.forEach(function (b) {
+            var y = b.querySelector('.kt-sik-yazi'); if (y) y.style.fontSize = kucuk + 'px';
+        });
+    }
+    function olcekle(key, p) { soruOlcekle(key, p); siklariOlcekle(key, p); }
 
     function cevapla(key, p, sikIndex) {
         var o = oturum[key]; if (!o || !o.durum) return;
@@ -697,6 +759,19 @@
         var o = oturum[key];
         if (o && o.klavye) { document.removeEventListener('keydown', o.klavye); o.klavye = null; }
     }
+
+    /* Ekran döndürülünce / pencere boyutlanınca yeniden ölçülür. */
+    var olcumZaman = null;
+    window.addEventListener('resize', function () {
+        clearTimeout(olcumZaman);
+        olcumZaman = setTimeout(function () {
+            for (var k in oturum) {
+                var o = oturum[k];
+                if (!o || !o.oyuncular) continue;
+                o.oyuncular.forEach(function (p) { olcekle(k, p); });
+            }
+        }, 160);
+    });
 
     window.KidefKelimeTest = {
         ac: ac, kisi: kisi, adet: adet, basla: basla, kapat: kapat,

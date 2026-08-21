@@ -194,18 +194,28 @@
     text-transform: uppercase; letter-spacing: .03em;
     color: var(--kt-sol); background: var(--kt-kutu); border: 1px solid var(--kt-cizgi2);
 }
-.kt-kelime { font-weight: 700; line-height: 1.18; word-break: break-word; max-width: 100%; color: #1b2430; }
+/* HAREKELER İÇİN PAY: Arapçada üstteki (ötre/üstün/şedde) ve alttaki
+   (esre) işaretler satır kutusunun dışına taşıyor; 1.35'te tepeleri
+   kırpılıyordu. 1.7 hepsini içine alıyor. */
+.kt-kelime { font-weight: 700; line-height: 1.35; word-break: break-word;
+              width: 100%; max-width: 100%; color: #1b2430; }
+.kt-kelime.ar { line-height: 1.7; }
 .kt-kelime.ar { font-family: 'Arakom', 'Noto Naskh Arabic', serif; font-size: clamp(2.4rem, 7vw, 4.6rem); direction: rtl; }
 .kt-kelime.tr { font-size: clamp(1.5rem, 3.6vw, 2.6rem); direction: ltr; }
 .kt-emoji { font-size: clamp(1.6rem, 4vw, 2.6rem); line-height: 1; }
 
 /* şıklar */
+/* Şıklar panelden sabit bir pay alır (içerik kadar değil): böylece
+   düğmelerin gerçek bir kutusu olur ve yazı o kutuyu doldurabilir.
+   grid-auto-rows:1fr → kaç satır olursa olsun eşit bölünür. */
 .kt-siklar {
     display: grid; grid-template-columns: 1fr 1fr; gap: 9px;
+    grid-auto-rows: 1fr;
+    flex: 0 0 40%; min-height: 0;
     width: 100%; max-width: 920px; margin: 0 auto;
 }
 .kt-sik {
-    position: relative; cursor: pointer; min-height: 58px; padding: 11px 12px;
+    position: relative; cursor: pointer; min-height: 46px; height: 100%; padding: 9px 12px;
     display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center;
     font-family: inherit; font-size: 1.05rem; font-weight: 700; color: var(--kt-yazi);
     background: var(--kt-kutu); border: 2px solid var(--kt-cizgi); border-radius: 12px;
@@ -213,7 +223,11 @@
     transition: transform .12s, background .16s, border-color .16s, box-shadow .16s;
     word-break: break-word;
 }
-.kt-sik.ar { font-family: 'Arakom', 'Noto Naskh Arabic', serif; font-size: 1.8rem; direction: rtl; }
+.kt-sik.ar { font-family: 'Arakom', 'Noto Naskh Arabic', serif; font-size: 1.6rem; direction: rtl; }
+/* Yazı kabuğu: ölçüyü JS buraya yazıyor (bkz. sigdir). Harekeler
+   kırpılmasın diye satır aralığı geniş. */
+.kt-sik-yazi { display: block; width: 100%; line-height: 1.35; }
+.kt-sik.ar .kt-sik-yazi { line-height: 1.7; }
 .kt-sik:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--kt-onay); box-shadow: 0 7px 14px rgba(0,0,0,.09); }
 .kt-sik:disabled { cursor: default; box-shadow: none; }
 .kt-sik .kt-tus {
@@ -350,8 +364,25 @@
     .kt-arena.kt-iki { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
     .kt-oyuncu { padding: 11px; }
     .kt-secim { grid-template-columns: 1fr; }
-    .kt-sik { min-height: 50px; font-size: .95rem; }
+    .kt-sik { min-height: 40px; font-size: .95rem; padding: 6px 9px; }
     .kt-sik.ar { font-size: 1.5rem; }
+    /* TELEFONDA KAPIŞMA — ekran ikiye bölününce her panele ~340 px
+       kalıyor; üstteki şerit, süre çubuğu, yön çipi, dört şık ve nokta
+       dizisi hepsi birden sığmıyordu, yazı en küçük puntoda bile
+       taşıyordu. İkincil öğeler kısılıyor, alan soruya ve şıklara
+       veriliyor. */
+    .kt-arena.kt-iki .kt-siklar { flex: 0 0 46%; gap: 6px; }
+    .kt-arena.kt-iki .kt-sik { padding: 4px 7px; min-height: 34px; }
+    .kt-arena.kt-iki .kt-soru { padding: 2px 4px 6px; gap: 4px; }
+    .kt-arena.kt-iki .kt-noktalar { display: none; }
+    .kt-arena.kt-iki .kt-emoji { display: none; }
+    .kt-arena.kt-iki .kt-ust { margin-bottom: 5px; gap: 6px; }
+    .kt-arena.kt-iki .kt-sure { height: 5px; margin-bottom: 6px; }
+    .kt-arena.kt-iki .kt-kim { padding: 3px 9px; font-size: .66rem; }
+    .kt-arena.kt-iki .kt-puan b { font-size: 1.05rem; }
+    .kt-arena.kt-iki .kt-puan span { display: none; }
+    .kt-arena.kt-iki .kt-yon { padding: 2px 8px; font-size: .6rem; }
+    .kt-arena.kt-iki .kt-oyuncu { padding: 8px; }
     .kt-dueello { grid-template-columns: 1fr auto 1fr; gap: 8px; }
     .kt-yildizlar svg { width: 36px; height: 36px; }
     /* Telefonda klavye yok: şık numaraları da klavye notu da gizlenir. */
@@ -365,11 +396,8 @@
     .kt-ust { gap: 7px; }
     .kt-puan b { font-size: 1.25rem; }
 }
-/* Kapışmada tek ekranda iki panel var: yazılar bir tık küçülsün */
-.kt-arena.kt-iki .kt-kelime.ar { font-size: clamp(1.9rem, 4.6vw, 3.4rem); }
-.kt-arena.kt-iki .kt-kelime.tr { font-size: clamp(1.2rem, 2.4vw, 1.9rem); }
-.kt-arena.kt-iki .kt-sik { min-height: 50px; font-size: .95rem; }
-.kt-arena.kt-iki .kt-sik.ar { font-size: 1.5rem; }
+/* Kapışmada punto ayrıca küçültülmüyor: alan yarıya inince ölçüyü
+   zaten sigdir() kendisi buluyor. */
 
 /* =====================================================================
    KOMPAKT KURULUM ŞERİDİ

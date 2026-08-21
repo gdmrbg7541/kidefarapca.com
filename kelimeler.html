@@ -23,7 +23,7 @@
      ===================================================================== -->
 
 <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=253">
-<link rel="stylesheet" href="sarf/kelimetest.css?v=5">
+<link rel="stylesheet" href="sarf/kelimetest.css?v=6">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="arakom.css?v=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,8 +111,8 @@
 
 <script src="veri/veri_kokler.js?v=1"></script>
 <script src="veri/veri_sozluk.js?v=1"></script>
-<script src="sarf/kelimeler.js?v=7"></script>
-<script src="sarf/kelimetest.js?v=7"></script>
+<script src="sarf/kelimeler.js?v=12"></script>
+<script src="sarf/kelimetest.js?v=10"></script>
 <script src="sarf/ihkelime.js?v=3"></script>
 <script>
 /* ---- GERİ DÖNÜŞ ----
@@ -127,7 +127,22 @@ function kdHedef() {
     if (m) return { url: 'index.html?ihsinif=' + m[1] + '#imam-hatip', ad: m[1] + '. Sınıf' };
     return { url: 'index.html#ogretmen-ozel', ad: 'Ana Sayfa' };
 }
-function kdGeri() { location.href = kdHedef().url; }
+/* ÇIKIŞTA SEKMEYİ KAPAT. Bu sayfa index'ten YENİ SEKMEDE açılıyor;
+   geri gitmek yerine yönlendirince ikinci bir index açılıyordu ve
+   ilkindeki (İmam Hatip sınıfı gibi) durum boşa gidiyordu. Sekme
+   kapatılamıyorsa — adres çubuğundan açılmış ya da kalıplar
+   tablosundan aynı sekmede gelinmişse — eski davranış sürüyor. */
+function kdGeri() {
+    var h = kdHedef();
+    if (window.opener && !window.opener.closed) {
+        try { window.opener.focus(); } catch (e) { }
+        window.close();
+        /* close() engellendiyse hâlâ buradayız: yönlendirerek çık. */
+        setTimeout(function () { location.href = h.url; }, 200);
+        return;
+    }
+    location.href = h.url;
+}
 (function () {
     var h = kdHedef();
     var y = document.getElementById('kd-geri-yazi');

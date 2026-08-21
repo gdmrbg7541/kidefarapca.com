@@ -99,6 +99,112 @@ function klStilKur() {
         'flex:0 0 auto;margin-bottom:12px !important;}' +
         '.fullscreen-accordion.kl-sabit-baslik .thematic-words-grid{' +
         'flex:1 1 auto;min-height:0;overflow-y:auto;}' +
+        /* SON AÇILAN LİSTE — kapanınca hangisinden çıkıldığı belli olsun */
+        '.thematic-accordion-item.kl-son{' +
+        'outline:3px solid #F39C12;outline-offset:3px;' +
+        'box-shadow:0 10px 24px rgba(243,156,18,.28) !important;}' +
+
+        /* ---- SÜTUN SEÇİCİ (mod satırında) ---- */
+        '.kdf-sutun{display:none;gap:4px;background:#EEF2F7;padding:4px;' +
+        'border-radius:12px;direction:ltr;}' +
+        '.kdf-sutun-t{display:inline-flex;align-items:center;justify-content:center;' +
+        'width:38px;height:34px;padding:0;border:0;background:transparent;' +
+        'cursor:pointer;color:#94A3B8;border-radius:9px;' +
+        'transition:background .18s,color .18s,box-shadow .18s;}' +
+        '.kdf-sutun-t svg{width:21px;height:21px;pointer-events:none;}' +
+        '.kdf-sutun-t:hover{color:#C0392B;}' +
+        '.kdf-sutun-t.aktif{background:#fff;color:#C0392B;box-shadow:0 2px 8px rgba(15,23,42,.14);}' +
+        /* dar ekranda liste zaten tek sütun; seçici anlamsız olur */
+        '@media (max-width:768px){.kdf-sutun{display:none !important;}}' +
+
+        /* ---- ÇİZGİLİ DEFTER YAPRAĞI (muhadese ile aynı dil) ----
+           Çizgiler satırların kenarlığı DEĞİL, yaprağın zemininde duran
+           tekrarlı bir desen; bu yüzden --kdf-adim (satır yüksekliği) ile
+           desenin adımı birebir aynı olmak zorunda, yoksa yazılar
+           çizgiden kayar. İkisi tek değişkenden besleniyor. */
+        '.kdf-defter{--kdf-adim:66px;--kdf-ust:24px;' +
+        '--kdf-cizgi:rgba(64,124,196,.22);--kdf-kenar:rgba(199,62,58,.40);' +
+        'position:relative;width:100%;max-width:1420px;margin:0 auto;' +
+        'background-color:#FFFDF5;background-image:repeating-linear-gradient(to bottom,' +
+        'transparent 0,transparent calc(var(--kdf-adim) - 1px),' +
+        'var(--kdf-cizgi) calc(var(--kdf-adim) - 1px),var(--kdf-cizgi) var(--kdf-adim));' +
+        'background-position:0 var(--kdf-ust);border:1px solid #E6DFCC;' +
+        'border-radius:7px 7px 5px 5px;padding:var(--kdf-ust) 0 8px;direction:ltr;' +
+        'box-shadow:0 1px 0 #F2ECDC,0 3px 0 #FFFDF5,0 4px 0 #E9E2D0,' +
+        '0 6px 0 #FFFDF5,0 7px 0 #DFD8C5,0 16px 30px rgba(15,23,42,.15);}' +
+        '.kdf-izgara{list-style:none;margin:0;padding:0 16px;columns:420px;' +
+        'column-gap:30px;column-rule:1px solid rgba(176,166,140,.34);}' +
+        /* Sütun kuralları yalnız geniş ekranda: dar ekranda liste her
+           hâlükârda tek sütun kalsın, masaüstünde seçilen 3 sütun
+           telefonda yapışmasın. */
+        '@media (min-width:769px){' +
+        '.kdf-defter.sutun-1 .kdf-izgara{columns:1;}' +
+        '.kdf-defter.sutun-2 .kdf-izgara{columns:2;}' +
+        '.kdf-defter.sutun-3 .kdf-izgara{columns:3;}' +
+        /* TEK SÜTUNDA YAZILAR BÜYÜK, TÜRKÇE ARAPÇAYA YAKIN (Geylani).
+           Tek sütunda satır boyu bir kelimeye ayrıldığı için punto
+           serbest: Türkçe/Arapça oranı 2,08'den 1,7'ye indi, ikisi de
+           büyüdü. Satır adımı (--kdf-adim) buna göre yükseltildi —
+           Türkçe iki satıra sardığında (2×3,5rem×1,25 ≈ 140 px) hâlâ
+           adımın içinde kalıyor, defter çizgisi kaymıyor. */
+        '.kdf-defter.sutun-1{--kdf-adim:150px;--kdf-ust:40px;max-width:1240px;}' +
+        '.kdf-defter.sutun-1 .kdf-izgara{padding:0 30px;}' +
+        '.kdf-defter.sutun-1 .kdf-no{width:72px;padding-right:22px;margin-right:28px;font-size:1.75rem;}' +
+        /* Punto hem yüksekliğe hem GENİŞLİĞE bakıyor: yalnız vh olsaydı
+           uzun tablette (820×1180) satır ekrandan taşardı — yükseklik
+           bol, genişlik dar. min() ikisinden küçüğünü alıyor. */
+        '.kdf-defter.sutun-1 .kdf-tr,.kdf-defter.sutun-1 .kdf-emoji{font-size:clamp(2.15rem,min(5.8vh,5.2vw),3.5rem);}' +
+        '.kdf-defter.sutun-1 .kdf-ar{font-size:clamp(3.6rem,min(10vh,9vw),6rem);}' +
+        '.kdf-defter.sutun-1 .kdf-nokta{margin:0 26px;}' +
+        '.kdf-defter.sutun-2{--kdf-adim:96px;--kdf-ust:28px;}' +
+        '.kdf-defter.sutun-2 .kdf-no{width:52px;padding-right:15px;margin-right:19px;font-size:1.28rem;}' +
+        '.kdf-defter.sutun-2 .kdf-tr,.kdf-defter.sutun-2 .kdf-emoji{font-size:clamp(1.3rem,3.3vh,2.05rem);}' +
+        '.kdf-defter.sutun-2 .kdf-ar{font-size:clamp(2.5rem,6.6vh,4rem);}' +
+        '.kdf-defter.sutun-2 .kdf-nokta{margin:0 16px;}}' +
+        '.kdf-satir{height:var(--kdf-adim);break-inside:avoid;display:flex;' +
+        'align-items:center;padding-right:6px;border-radius:3px;transition:background .15s;}' +
+        /* fosforlu kalemle üstünden geçmiş gibi */
+        '.kdf-satir:hover{background:rgba(250,204,21,.22);}' +
+        '.kdf-no{flex:0 0 auto;width:44px;align-self:stretch;display:flex;' +
+        'align-items:center;justify-content:flex-end;padding-right:12px;margin-right:15px;' +
+        'border-right:2px solid var(--kdf-kenar);font-weight:600;color:#B0A78F;' +
+        'font-size:clamp(.84rem,1.9vh,1.02rem);font-variant-numeric:tabular-nums;}' +
+        /* Karşılık İKİ SATIRA kadar sarabiliyor: uzun Türkçe açıklamalar
+           tek satıra sığmayıp "…" ile kesiliyordu. Satır yüksekliği
+           (--kdf-adim) iki satırı rahat alıyor, defter çizgisi kaymıyor. */
+        '.kdf-tr{flex:0 1 auto;min-width:0;text-align:left;font-weight:600;color:#4E5A66;' +
+        'font-size:clamp(1rem,2.45vh,1.4rem);line-height:1.25;' +
+        'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;' +
+        /* "1.000.000.000" gibi bölünmeyen tek parça yazılar kutuya
+           sığmayıp yandan kesiliyordu; sığmıyorsa bölünsün. */
+        'overflow-wrap:break-word;overflow:hidden;}' +
+        /* Emoji karşılığın BAŞINDA ve onunla AYNI puntoda (Geylani) */
+        '.kdf-emoji{flex:0 0 auto;margin-right:9px;line-height:1;' +
+        'font-size:clamp(1rem,2.45vh,1.4rem);}' +
+        '.kdf-tr::first-letter{text-transform:uppercase;}' +
+        /* min-width:0 → satır darsa önce noktalı bağ yerinden verir,
+           karşılığın kırpılması en son çare olsun */
+        '.kdf-nokta{flex:1 1 auto;min-width:0;height:0;align-self:center;' +
+        'margin:0 12px;position:relative;top:3px;' +
+        'border-bottom:2px dotted rgba(120,112,92,.34);}' +
+        '.kdf-ar{flex:0 0 auto;direction:rtl;text-align:right;' +
+        'font-family:"Arakom","Harmattan",serif;' +
+        'font-size:clamp(1.75rem,4.5vh,2.7rem);line-height:1.3;color:#1E2A38;' +
+        'font-synthesis:none;-webkit-font-synthesis:none;}' +
+        '@media (max-width:768px){' +
+        /* Telefonda satır adımı biraz yüksek: Türkçe karşılık uzun
+           olduğunda tek satıra sıkışıp "Hayır / Değil (Olumsu…" diye
+           kesiliyordu. İki satıra kadar sarıyor, defter çizgisi de o
+           adıma göre. */
+        '.kdf-defter{--kdf-adim:92px;--kdf-ust:18px;}' +
+        '.kdf-tr{-webkit-line-clamp:3;}' +
+        '.kdf-izgara{columns:1;padding:0 11px;}' +
+        '.kdf-no{width:30px;padding-right:7px;margin-right:10px;font-size:.82rem;}' +
+        '.kdf-nokta{margin:0 8px;}' +
+        '.kdf-emoji{margin-right:7px;font-size:clamp(.92rem,2.1vh,1.1rem);}' +
+        '.kdf-tr{font-size:clamp(.92rem,2.1vh,1.1rem);}' +
+        '.kdf-ar{font-size:clamp(1.45rem,3.6vh,2rem);}}' +
+
         /* LİSTE MODU TAM EKRANDA TEK SÜTUN VE ORTALI. Ortak stildeki
            ".fullscreen-accordion .thematic-words-grid:not(.memory-mode)"
            kuralı üç sütun dayatıyor; liste modunda ızgarada tek bir
@@ -109,10 +215,11 @@ function klStilKur() {
         '.fullscreen-accordion .thematic-words-grid.list-mode-grid{' +
         'display:flex !important;flex-direction:column;align-items:center;' +
         /* Ortak kural sağa 10 px boşluk koyuyor (kaydırma çubuğu payı);
-           tek yana konunca kâğıt 10 px sola kayıyordu. İki yana eşit. */
+           tek yana konunca yaprak 10 px sola kayıyordu. İki yana eşit. */
         'padding-left:10px;}' +
-        '.fullscreen-accordion .list-mode-paper{' +
-        'width:100%;max-width:1100px;margin-block:auto;}' +
+        /* Dikey ortalama `margin-block:auto` ile: yaprak sığıyorsa
+           ortalanır, taşıyorsa üstten başlar. */
+        '.fullscreen-accordion .kdf-defter{margin-block:auto;}' +
         /* ---- KOMPAKT AYAR ŞERİDİ + SABİT LİSTE BAŞLIĞI ----
            Panelin üstü üç sabit satır: mod düğmeleri, kipe ait ayar
            şeridi, liste başlığı. Altındaki içerik kayar. Böylece her
@@ -143,9 +250,7 @@ function klStilKur() {
         '.memory-game-controls{flex-wrap:wrap;}' +
         /* Dar ekranda kâğıt tek sütun ve daha az iç boşluk */
         '@media (max-width:700px){' +
-        '.list-mode-columns{column-count:1;column-rule:none;}' +
-        '.list-mode-paper{padding:18px 14px;}' +
-        '.fullscreen-accordion .list-mode-paper{max-width:none;}' +
+        '.fullscreen-accordion .kdf-defter{max-width:none;}' +
         /* Dar ekranda üç öbek alt alta: ortadaki (mod düğmeleri) tam
            genişlik alsın ki düğmeler ikişerli dizilsin, teker teker alt
            alta inmesin; sağdaki öbek (küçült düğmesi + liste adı) kendi
@@ -185,6 +290,202 @@ function seritKapat(key) {
 window.seritAc = seritAc;
 window.seritKapat = seritKapat;
 
+/* =====================================================================
+   LİSTE SÜTUNLARI
+   ---------------------------------------------------------------------
+   Sütun sayısı yalnız bir sınıf değiştirir (.sutun-1/2/3); asıl ölçüler
+   stilde, çünkü satır yüksekliği ile defter çizgisinin adımı AYNI
+   değişkenden beslenmek zorunda — yoksa yazılar çizgiden kayar.
+   VARSAYILAN TEK SÜTUN (Geylani): liste açılır açılmaz kelimeler en
+   büyük hâliyle gelsin. İki ve üç sütun, sağdaki seçiciden isteyen
+   içindir; seçim o liste için oturum boyunca hatırlanıyor.
+   ===================================================================== */
+const klSutunDurum = {};
+function klSutun(key) {
+    const d = klSutunDurum[key];
+    return (d && d.n) ? d.n : 1;
+}
+function klSutunKur(key, n) {
+    klSutunDurum[key] = { n: (n === 2 || n === 3) ? n : 1, elle: true };
+    const d = document.querySelector(`#grid-${key} .kdf-defter`);
+    if (d) d.className = 'kdf-defter sutun-' + klSutun(key);
+    klSutunIsaretle(key);
+    klSatirSigdir(key);
+    if (typeof SoundEngine !== "undefined") SoundEngine.playClick();
+}
+window.klSutunKur = klSutunKur;
+/* Liste çizildikten / panel açıldıktan sonra çağrılıyor: seçili sütun
+   sayısını uygular, düğmeyi işaretler ve uzun karşılıkları sığdırır.
+   Eskiden burada üçten başlayıp kırpılma bitene kadar inen bir otomatik
+   seçim vardı; artık varsayılan TEK SÜTUN, o yüzden tahmine gerek yok —
+   seçim ya kullanıcının ya da varsayılan. */
+function klOtoSutun(key) {
+    const d = document.querySelector(`#grid-${key} .kdf-defter`);
+    if (!d) return;
+    d.className = 'kdf-defter sutun-' + klSutun(key);
+    klSutunIsaretle(key);
+    /* Panel kapalıyken (display:none) ölçü alınamaz; açılışta yeniden
+       çağrılıyor. Telefon da dâhil her durumda sığdırma çalışsın. */
+    if (d.clientWidth < 220) return;
+    klSatirSigdir(key);
+}
+/* Birkaç karşılık iki satıra bile sığmıyor (uzun parantezli açıklamalar).
+   O SATIRIN puntosu kademeli küçültülüyor — bütün liste küçülmesin diye
+   yalnız o satır. Üç incelik:
+     • Emoji, karşılıkla AYNI puntoda kalmalı (Geylani), bu yüzden onunla
+       birlikte küçülüyor.
+     • Satırdaki genişliği asıl yiyen Arapça; `flex:0 0 auto` olduğu için
+       hiç kısılmıyor ve bütün açığı karşılık kapatıyordu. Karşılık dibe
+       vurmaya başlayınca Arapça da — daha yavaş, en fazla %28 —
+       küçülüp yer açıyor. Tek sütunda punto büyüdüğü için bu şart oldu.
+     • Ölçü: `-webkit-box` kutusu iki satır sığsa bile scrollHeight'i
+       birkaç piksel fazla bildiriyor; eşik "yarım satırdan çok".        */
+function klSatirSigdir(key) {
+    const d = document.querySelector(`#grid-${key} .kdf-defter`);
+    if (!d) return;
+    [].slice.call(d.querySelectorAll('.kdf-satir')).forEach(function (satir) {
+        const t = satir.querySelector('.kdf-tr');
+        if (!t) return;
+        const e = satir.querySelector('.kdf-emoji');
+        const a = satir.querySelector('.kdf-ar');
+        t.style.fontSize = ''; if (e) e.style.fontSize = ''; if (a) a.style.fontSize = '';
+        t.style.removeProperty('-webkit-line-clamp');
+        const tBas = parseFloat(getComputedStyle(t).fontSize) || 16;
+        const aBas = a ? (parseFloat(getComputedStyle(a).fontSize) || 24) : 0;
+        const satirY = satir.clientHeight || 0;
+        /* KAÇ SATIRA SARABİLİR? Defter çizgisinin adımı sabit; karşılık
+           küçüldükçe o adıma daha çok satır sığıyor. Sabit iki satır
+           bırakılırsa punto dibe vursa bile metin "…" ile kesiliyordu.
+           Sınır yükseklikten hesaplanıyor, böylece satır hiçbir zaman
+           komşusunun üstüne taşmıyor. */
+        function satirSayisi() {
+            const sy = parseFloat(getComputedStyle(t).lineHeight) || 20;
+            return Math.max(2, Math.floor((satirY - 6) / sy) || 2);
+        }
+        function tasti() {
+            const sy = parseFloat(getComputedStyle(t).lineHeight) || 20;
+            return t.scrollWidth > t.clientWidth + 1 ||
+                   (t.scrollHeight - t.clientHeight) > sy * 0.6;
+        }
+        t.style.webkitLineClamp = String(satirSayisi());
+        let k = 1;
+        for (let i = 0; i < 10; i++) {
+            if (!tasti()) break;
+            k = Math.max(0.45, k * 0.9);
+            t.style.fontSize = (tBas * k).toFixed(1) + 'px';
+            if (e) e.style.fontSize = (tBas * k).toFixed(1) + 'px';
+            if (a) a.style.fontSize = (aBas * Math.max(0.72, 1 - (1 - k) * 0.52)).toFixed(1) + 'px';
+            t.style.webkitLineClamp = String(satirSayisi());
+            if (k === 0.45) break;
+        }
+    });
+}
+
+/* =====================================================================
+   ÇALIŞMA KARTLARI: KELİME UZADIKÇA PUNTO KÜÇÜLSÜN            (Geylani)
+   ---------------------------------------------------------------------
+   Kart yüzü sabit ölçüde, punto ise stilde sabit (4rem / 2.8rem); uzun
+   Türkçe karşılıklar kartın dışına taşıyordu. Burada her yüzün BÜTÜN
+   yazıları (emoji dâhil) TEK bir katsayıyla, sığana kadar ikili aramayla
+   küçültülüyor — tek tek küçültülse emoji ile karşılığın oranı bozulurdu.
+   Kısa kelimeler hiç küçülmez: katsayı 1'in üstüne çıkmıyor.
+   İki incelik:
+     • Ortak stil puntoyu `!important` ile verdiği için yazma da
+       setProperty(..., 'important') olmak zorunda.
+     • Taşma ölçüsü kabın scrollHeight'i ile DEĞİL, çocukların
+       offsetHeight toplamıyla yapılıyor: yüz `justify-content:center`
+       olduğu için taşmanın yarısı yukarı taşıyor ve scrollHeight onu
+       göstermiyor. offsetHeight dönüşümden (rotateY) etkilenmez,
+       getBoundingClientRect etkilenirdi.                            */
+function kartYuzuSigdir(yuz) {
+    const ogeler = [].slice.call(yuz.children).filter(function (o) {
+        return o.nodeType === 1 && (o.textContent || '').trim() !== '';
+    });
+    if (!ogeler.length) return;
+    /* Temel punto bir kez okunup elemanda saklanıyor: ölçmek için
+       stile dönmek gerekirse inline `font-size:4rem` de silinirdi. */
+    ogeler.forEach(function (o) {
+        if (!o.dataset.kdfTemel) {
+            o.dataset.kdfTemel = (parseFloat(getComputedStyle(o).fontSize) || 16).toFixed(2);
+        }
+    });
+    const st = getComputedStyle(yuz);
+    const icY = yuz.clientHeight - (parseFloat(st.paddingTop) || 0) - (parseFloat(st.paddingBottom) || 0);
+    const icX = yuz.clientWidth - (parseFloat(st.paddingLeft) || 0) - (parseFloat(st.paddingRight) || 0);
+    if (icY < 40 || icX < 40) return;      /* panel kapalıyken ölçü yok */
+    function uygula(k) {
+        ogeler.forEach(function (o) {
+            o.style.setProperty('font-size',
+                (parseFloat(o.dataset.kdfTemel) * k).toFixed(1) + 'px', 'important');
+        });
+    }
+    function tasti() {
+        let h = 0;
+        for (let i = 0; i < ogeler.length; i++) {
+            const o = ogeler[i], cs = getComputedStyle(o);
+            h += o.offsetHeight + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
+            if (o.scrollWidth > icX + 2) return true;
+        }
+        return h > icY + 2;
+    }
+    uygula(1);
+    if (!tasti()) return;                  /* kısa kelime: olduğu gibi */
+    let lo = 0.28, hi = 1, iyi = 0.28;
+    for (let i = 0; i < 8; i++) {
+        const m = (lo + hi) / 2;
+        uygula(m);
+        if (tasti()) hi = m; else { iyi = m; lo = m; }
+    }
+    uygula(iyi);
+}
+function kartlariSigdir(key) {
+    const grid = document.getElementById(`grid-${key}`);
+    if (!grid || grid.classList.contains('memory-mode') ||
+        grid.classList.contains('list-mode-grid')) return;
+    [].forEach.call(grid.querySelectorAll('.memory-card-face'), kartYuzuSigdir);
+}
+window.kartlariSigdir = kartlariSigdir;
+/* Açık paneli pencere ölçüsü değişince yeniden sığdır. */
+let kdfOlcuZ = null;
+window.addEventListener('resize', function () {
+    clearTimeout(kdfOlcuZ);
+    kdfOlcuZ = setTimeout(function () {
+        [].forEach.call(document.querySelectorAll('.thematic-accordion-panel'), function (p) {
+            if (p.style.display === 'none' || !p.id) return;
+            const key = p.id.replace(/^content-/, '');
+            kartlariSigdir(key);
+            klSatirSigdir(key);
+        });
+    }, 160);
+});
+
+function klSutunIsaretle(key) {
+    const n = klSutun(key);
+    [].forEach.call(document.querySelectorAll(`#controls-${key} .kdf-sutun-t`), function (b) {
+        const secili = Number(b.getAttribute('data-sutun')) === n;
+        b.classList.toggle('aktif', secili);
+        b.setAttribute('aria-pressed', secili ? 'true' : 'false');
+    });
+}
+/* Seçici yalnız Liste Modu'nda görünür; öteki kiplerde anlamsız. */
+function klSutunGoster(key, goster) {
+    const s = document.getElementById(`sutun-sec-${key}`);
+    if (s) s.style.display = goster ? 'inline-flex' : 'none';
+}
+
+/* TAM EKRANDAN ÇIKMAK = LİSTEYİ KAPATMAK (Geylani).
+   Liste zaten yalnız tam ekranda açılıyor; küçültünce yarım bir görünüm
+   bırakmak yerine akordiyon tamamen kapanıyor ve öteki liste başlıkları
+   geri geliyor. Açık test varsa o da kapatılıyor. */
+function klListeKapat(key) {
+    const bas = document.getElementById(`header-${key}`);
+    if (bas && bas.classList.contains('active')) { toggleThematicAccordion(bas, key); return; }
+    if (window.KidefKelimeTest && KidefKelimeTest.acikMi(key)) KidefKelimeTest.kapat(key);
+    const c = document.getElementById(`content-${key}`);
+    if (c && c.classList.contains('fullscreen-accordion')) toggleAccordionFullscreen(key, null);
+}
+window.klListeKapat = klListeKapat;
+
 function showThematicView() {
     const rootsContent = document.getElementById('roots-main-content');
     const thematicContent = document.getElementById('thematic-words-content');
@@ -204,6 +505,14 @@ function showThematicView() {
    liste kapanırken. Tam ekran kalıntısı bırakmak, ekranı kaplayan ama
    içeriği gizli bir katman demek; açık bir test de kapatılıp o liste
    normal görünümüne döndürülüyor. */
+let temaSonKaydirma = 0;      /* liste açılmadan önceki sayfa konumu */
+
+function temaSonIsaretle(element) {
+    document.querySelectorAll('.thematic-accordion-item.kl-son')
+        .forEach(function (e) { e.classList.remove('kl-son'); });
+    if (element) element.classList.add('kl-son');
+}
+
 function temaAcikOlanlariTopla(haricKey) {
     document.querySelectorAll('.thematic-accordion-panel').forEach(p => {
         const k = (p.id || '').replace(/^content-/, '');
@@ -211,8 +520,6 @@ function temaAcikOlanlariTopla(haricKey) {
         if (window.KidefKelimeTest && KidefKelimeTest.acikMi(k)) KidefKelimeTest.kapat(k);
         if (p.classList.contains('fullscreen-accordion')) {
             p.classList.remove('fullscreen-accordion');
-            const b = document.getElementById(`btn-fs-${k}`);
-            if (b) b.innerHTML = '<i class="fas fa-expand"></i>';
         }
     });
     document.body.classList.remove('has-fullscreen-accordion');
@@ -225,16 +532,22 @@ function toggleThematicAccordion(element, key) {
         const content = document.getElementById(`content-${key}`);
         if (window.KidefKelimeTest && KidefKelimeTest.acikMi(key)) KidefKelimeTest.kapat(key);
         if (content && content.classList.contains('fullscreen-accordion')) {
-            toggleAccordionFullscreen(key, document.getElementById(`btn-fs-${key}`));
+            toggleAccordionFullscreen(key, null);
         }
         if(content) content.style.display = 'none';
         const icon = element.querySelector('.thematic-accordion-icon');
         if(icon) icon.className = 'fas fa-chevron-down thematic-accordion-icon';
+        /* Bıraktığı yere dön ve hangi listeden çıktığını göster. */
+        temaSonIsaretle(element);
+        requestAnimationFrame(function () { window.scrollTo(0, temaSonKaydirma); });
 
         // Hide the viewer container completely if nothing is active
         const viewerContainer = document.getElementById('thematic-viewer-container');
         if (viewerContainer) viewerContainer.style.display = 'none';
     } else {
+        /* Sayfa konumunu SAKLA: liste tam ekran açılıyor, kapanınca
+           kullanıcı bıraktığı yere dönsün — eskiden aşağı kayıyordu. */
+        temaSonKaydirma = window.pageYOffset || document.documentElement.scrollTop || 0;
         // Close all headers and contents
         const allItems = document.querySelectorAll('.thematic-accordion-item');
         allItems.forEach(item => {
@@ -260,8 +573,12 @@ function toggleThematicAccordion(element, key) {
            çıkış da oradaki küçült düğmesiyle. */
         if (content && !content.classList.contains('fullscreen-accordion') &&
             typeof toggleAccordionFullscreen === 'function') {
-            toggleAccordionFullscreen(key, document.getElementById(`btn-fs-${key}`));
+            toggleAccordionFullscreen(key, null);
         }
+        /* Sütun sayısı ve kart puntoları ancak panel görünürken
+           ölçülebilir (kapalıyken clientWidth 0). */
+        setTimeout(function () { klOtoSutun(key); kartlariSigdir(key); }, 60);
+        temaSonIsaretle(element);
 
         // Optional: Show external viewer if exists
         const viewer = document.getElementById('thematic-viewer-container');
@@ -270,8 +587,9 @@ function toggleThematicAccordion(element, key) {
             setTimeout(() => {
                 viewer.scrollIntoView({behavior: 'smooth', block: 'nearest'});
             }, 50);
-        } else {
-            // If no external viewer, scroll to the accordion item itself
+        } else if (!(content && content.classList.contains('fullscreen-accordion'))) {
+            /* Tam ekran açıldıysa kaydırmanın anlamı yok; üstelik alttaki
+               sayfayı kaydırıp kapanışta "aşağı kaymış" gibi bırakıyordu. */
             setTimeout(() => {
                 element.scrollIntoView({behavior: 'smooth', block: 'start'});
             }, 50);
@@ -612,9 +930,19 @@ function renderThematicLists() {
                                     <svg fill="#ff8787" viewBox="0 0 24 24" width="24" height="24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                                     <span id="s2-${key}" class="p-score" style="font-size: 1.5rem !important; font-weight: normal; margin-left: 8px;">0</span>
                                 </div>
+                                <!-- SÜTUN SEÇİCİ — yalnız Liste Modu'nda görünür.
+                                     Tek sütunda yazılar büyür (tahtaya yansıtmak
+                                     için), üç sütunda bütün liste tek ekrana sığar.
+                                     Seçim yapılmazsa sütun sayısı içeriğe göre
+                                     kendiliğinden ayarlanır. -->
+                                <div class="kdf-sutun" id="sutun-sec-${key}" role="group" aria-label="Sütun sayısı">
+                                    <button type="button" class="kdf-sutun-t aktif" data-sutun="1" onclick="klSutunKur('${key}',1)" title="Tek sütun — büyük yazı" aria-label="Tek sütun" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/></svg></button>
+                                    <button type="button" class="kdf-sutun-t" data-sutun="2" onclick="klSutunKur('${key}',2)" title="İki sütun" aria-label="İki sütun" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="7.4" height="15" rx="1.8"/><rect x="13.1" y="4.5" width="7.4" height="15" rx="1.8"/></svg></button>
+                                    <button type="button" class="kdf-sutun-t" data-sutun="3" onclick="klSutunKur('${key}',3)" title="Üç sütun" aria-label="Üç sütun" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="4.3" height="15" rx="1.5"/><rect x="9.85" y="4.5" width="4.3" height="15" rx="1.5"/><rect x="16.2" y="4.5" width="4.3" height="15" rx="1.5"/></svg></button>
+                                </div>
                                 <button class="memory-btn kl-tamekran" id="btn-fs-${key}" type="button"
-                                        title="Tam ekran" aria-label="Tam ekran"
-                                        onclick="toggleAccordionFullscreen('${key}', this)"><i class="fas fa-expand"></i></button>
+                                        title="Kapat — listeden çık" aria-label="Kapat"
+                                        onclick="klListeKapat('${key}')"><i class="fas fa-compress"></i></button>
                             </div>
 
                         </div>
@@ -858,6 +1186,8 @@ function initMemoryGrid(key, forceShuffle = false) {
     const isStudy = state.mode === 'study';
     const isList = state.mode === 'list';
     
+    klSutunGoster(key, isList);
+
     const lbas = document.getElementById(`lbaslik-${key}`);
     if (lbas) lbas.innerHTML = `${cat.icon || ''} ${cat.title || ''}`;
 
@@ -922,44 +1252,41 @@ function initMemoryGrid(key, forceShuffle = false) {
         grid.setAttribute('data-total', displayList.length);
     }
 
-    let listColumnsContainer = null;
+    /* ---- LİSTE MODU: ÇİZGİLİ DEFTER YAPRAĞI ----
+       Tasarım muhadese.html'deki kelime listesiyle aynı dilde (Geylani):
+       zeminde tekrarlı defter çizgileri, satırlar saydam; sıra
+       numara · TÜRKÇE · noktalı bağ · (emoji) · ARAPÇA. Arapça en sağda
+       durduğu için göz sağ sütunda tek hizada aşağı iniyor.
+       Sütunlar CSS çok-sütun (columns) ile bölünüyor: kelimeler soldan
+       sağa değil, gerçek bir listede olduğu gibi sütunu boydan boya
+       doldurup ötekine geçiyor. */
     if (isList) {
-        const titleText = (thematicCategoriesData[key] && thematicCategoriesData[key].title) ? thematicCategoriesData[key].title : 'Kelime Listesi';
-        const iconText = (thematicCategoriesData[key] && thematicCategoriesData[key].icon) ? thematicCategoriesData[key].icon : '📝';
-        
-        const paper = document.createElement('div');
-        paper.className = 'list-mode-paper';
-        
-        /* Başlık artık kâğıdın içinde değil, panelin sabit satırında
-           (#lbaslik-KEY) — her kipte aynı yerde duruyor. */
-        paper.innerHTML = `<div class="list-mode-columns"></div>`;
-        grid.appendChild(paper);
-        listColumnsContainer = paper.querySelector('.list-mode-columns');
+        grid.innerHTML =
+            '<div class="kdf-defter sutun-' + klSutun(key) + '"><ol class="kdf-izgara">' +
+            displayList.map(function (item, i) {
+                const ar = (typeof colorizeArabicWord === 'function')
+                    ? colorizeArabicWord(item.arText, item.rootKey) : (item.arText || '');
+                return '<li class="kdf-satir">' +
+                       '<span class="kdf-no">' + (i + 1) + '</span>' +
+                       (item.emoji ? '<span class="kdf-emoji">' + item.emoji + '</span>' : '') +
+                       '<span class="kdf-tr" dir="ltr" title="' +
+                       String(item.trText || '').replace(/"/g, '&quot;') + '">' +
+                       (item.trText || '') + '</span>' +
+                       '<i class="kdf-nokta" aria-hidden="true"></i>' +
+                       '<span class="kdf-ar" dir="rtl">' + ar + '</span>' +
+                       '</li>';
+            }).join('') + '</ol></div>';
+        klOtoSutun(key);
+        state.scores = [0, 0];
+        state.currentPlayer = 1;
+        state.activeFlipped = [];
+        state.isProcessing = false;
+        state.matches = 0;
+        updateScoreUI(key);
+        return;
     }
 
     displayList.forEach((item, index) => {
-        if (isList) {
-            const row = document.createElement('div');
-            row.className = 'list-mode-item';
-            let arContent = typeof colorizeArabicWord === 'function' ? colorizeArabicWord(item.arText, item.rootKey) : item.arText;
-            row.innerHTML = `
-                <div class="list-mode-num">${index + 1}.</div>
-                <div class="list-mode-tr" dir="ltr">${item.trText}</div>
-                <!-- Emojisi olmayan öğede boş kalır: eski '✨' yedeği, İmam
-                     Hatip ders listelerinde her kelimenin yanında aynı
-                     yıldızı basıyordu. Sözlükteki 661 öğenin hepsinde emoji
-                     var, o listeler etkilenmiyor (ölçüldü). -->
-                <div class="list-mode-emoji">${item.emoji || ''}</div>
-                <div class="list-mode-ar" dir="rtl">${arContent}</div>
-            `;
-            if (listColumnsContainer) {
-                listColumnsContainer.appendChild(row);
-            } else {
-                grid.appendChild(row);
-            }
-            return;
-        }
-
         const card = document.createElement('div');
         card.className = 'memory-card';
         card.dataset.id = isStudy ? item.rootKey : item.pairId;
@@ -1000,8 +1327,16 @@ function initMemoryGrid(key, forceShuffle = false) {
     state.activeFlipped = [];
     state.isProcessing = false;
     state.matches = 0;
-    
+
     updateScoreUI(key);
+
+    /* Çalışma kartlarında uzun kelimeler kartı taşırıyordu: yerleşim
+       oturduktan sonra sığdır. Panel o an kapalıysa (ölçü 0) sığdırma
+       kendini iptal eder; akordiyon açılınca yeniden çağrılıyor. */
+    if (isStudy) {
+        requestAnimationFrame(function () { kartlariSigdir(key); });
+        setTimeout(function () { kartlariSigdir(key); }, 80);
+    }
 }
 
 function handleMemoryFlip(key, card) {
@@ -1135,10 +1470,8 @@ function updateScoreUI(key) {
 function toggleAccordionFullscreen(key, btnElement) {
     const item = document.getElementById(`content-${key}`);
     if (!item) return;
-    /* Düğme verilmediyse kendisi bulunur. Hafıza oyunu iptali ve test
-       modu bu işlevi `null` ile çağırıyordu; ikon büyüt/küçült arasında
-       güncellenmeyip yanlış durumda kalıyordu. */
-    if (!btnElement) btnElement = document.getElementById(`btn-fs-${key}`);
+    /* Not: mod satırındaki düğme artık "kapat" demek, tam ekran anahtarı
+       değil — ikonu sabit kalsın diye burada aranmıyor. */
 
     if (item.classList.contains('fullscreen-accordion')) {
         item.classList.remove('fullscreen-accordion');
