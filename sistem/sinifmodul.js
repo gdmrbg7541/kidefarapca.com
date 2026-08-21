@@ -262,6 +262,56 @@
     }
   });
 
+  /* ---- 3) KELİME LİSTELERİ ----
+     Verisi: muhadese/veri/<ders>.js içindeki `words` dizileri
+             (kaliplartablosu.html → kitap ikonu → "İmam Hatip Müfredatı")
+     Hedef : kaliplartablosu.html?liste=ih-N   → o sınıfın ünite/ders ağacı
+             kitap ikonundaki listenin başında açılır.
+     Rozetteki sayı AŞAĞIDAKİ haritadan gelir; müfredat değişince
+     sarf/ihkelime.js ile birlikte burası da güncellenir. */
+  var IH_KELIME = {"5": {"unite": 4, "ders": 11, "veri": 11}, "6": {"unite": 6, "ders": 18, "veri": 12}, "7": {"unite": 4, "ders": 4, "veri": 4}, "8": {"unite": 4, "ders": 8, "veri": 0}, "9": {"unite": 4, "ders": 8, "veri": 8}, "10": {"unite": 4, "ders": 8, "veri": 8}};
+
+  function kelSvg() {
+    return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +
+      /* Defter: üstte spiral, içinde satırlar */
+      '<rect x="13" y="12" width="38" height="40" rx="4" fill="#fff" stroke="#0B7285" stroke-width="2.6"/>' +
+      '<path d="M21 12v40" stroke="#0B7285" stroke-width="2.2"/>' +
+      '<g stroke="#0B7285" stroke-width="2.4" stroke-linecap="round">' +
+        '<path d="M17 9v6"/><path d="M25 9v6"/><path d="M33 9v6"/><path d="M41 9v6"/>' +
+      '</g>' +
+      /* Arapça-Türkçe satır çiftleri sırayla beliriyor */
+      '<g stroke="#38BDF8" stroke-width="2.4" stroke-linecap="round">' +
+        '<path class="kga-satir" d="M27 23h17"/>' +
+        '<path class="kga-satir s2x" d="M27 31h12"/>' +
+        '<path class="kga-satir s3x" d="M27 39h15"/>' +
+      '</g>' +
+      '<circle cx="45" cy="45" r="7.5" fill="#0B7285"/>' +
+      '<path d="M41.6 45h6.8M45 41.6v6.8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>' +
+      '</svg>';
+  }
+
+  ekle({
+    id: 'kelimeliste',
+    ad: 'Kelime Listeleri',
+    sira: 40,
+    renk: '#0B7285',
+    svg: kelSvg,
+    aciklama: function (s) {
+      var d = IH_KELIME[String(s)];
+      return d ? (d.unite + ' ünite · ' + d.ders + ' dersin kelimeleri')
+               : (s + '. Sınıf kelime listeleri');
+    },
+    veriVar: function (s) {
+      var d = IH_KELIME[String(s)];
+      if (!d || !d.veri) return null;              /* hiç ders verisi yoksa kart çıkmaz */
+      return { rozet: d.veri + ' Ders Hazır' };
+    },
+    url: function (s) {
+      return 'kelimeler.html?liste=ih-' + encodeURIComponent(s) +
+             '&kaynak=index&yer=imam-hatip';
+    }
+  });
+
   /* ---- Sonraki kartlar buraya: aynı kalıpla ekle({...}) ---- */
 
   stilKur();

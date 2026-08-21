@@ -112,6 +112,10 @@
      ------------------------------------------------------------------ */
   var SOZLUK_SINIF = {
     5:  { cumle: 60,  kelime: 134, seviye: 3 },
+    /* 6. sınıf 1. ünite (الحَياة اليَوْمِيَّة) + 2. ünite (المَأْكولات
+       وَالمَشْروبات) muhâdese cümlelerinden üretildi; dört seviyenin de
+       olgusu bu ünitelerde geçiyor. */
+    6:  { cumle: 160, kelime: 451, seviye: 4 },
     7:  { cumle: 118, kelime: 349, seviye: 3 },
     9:  { cumle: 58,  kelime: 146, seviye: 4 },
     10: { cumle: 83,  kelime: 267, seviye: 5 }
