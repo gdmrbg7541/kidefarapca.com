@@ -157,7 +157,7 @@
     <!-- Tekil CSS Dosyası -->
     <link rel="stylesheet" href="hesap/kurslar.css">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css?v=20260809c">
+    <link rel="stylesheet" href="index.css?v=20260821b">
     <link rel="stylesheet" href="hesap/qrgiris.css?v=20260814a">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
@@ -2560,7 +2560,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Sınıf modül altyapısı: hangi sınıfta hangi modülün verisi var (tek kaynak)
          + o sınıfın kartını İmam Hatip akordiyonuna basan kayıtçı. -->
     <script src="sistem/sinifveri.js?v=20260808a"></script>
-    <script src="sistem/sinifmodul.js?v=20260821a"></script>
+    <script src="sistem/sinifmodul.js?v=20260821c"></script>
     <script>
     (function () {
       /* --- açılış/kapanış: içerik dinamik olduğu için (sınıf içindeki döküman
@@ -3587,11 +3587,24 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
       /* Kayıtlı sınıf modüllerinin kartları (Bilgi Yarışması vb.) Muhâdese
          kartının yanına eklenir. Yeni kart eklemek için YALNIZ
-         sistem/sinifmodul.js düzenlenir; burası değişmez. */
+         sistem/sinifmodul.js düzenlenir; burası değişmez.
+
+         SIRA KOLAYDAN ZORA (Geylani): harf → kelime → tanıma → çözümleme
+         → konuşma. İlk dördü sinifmodul.js'teki `sira` ile diziliyor;
+         Muhâdese kartı burada, elle basıldığı için ızgaranın başında
+         kalıyordu — modüller yerleştikten sonra SONA alınıyor. (Kartın
+         açılır ders paneli ızgaranın dışında, ayrı bir kardeş; taşımadan
+         etkilenmiyor.) */
       function modulKartlari(mount, sinif) {
         try {
           if (window.KidefSinifModul) window.KidefSinifModul.yerlestir(mount, sinif);
         } catch (e) { }
+        var grid = mount.querySelector('.game-grid');
+        /* Muhâdese, `data-smodul` taşımayan tek karttır: hem açılır listeli
+           sürümü (.mh-kart) hem de ders verisi yokken basılan düz bağlantı
+           sürümü tek seçiciyle yakalanıyor. */
+        var mh = grid && grid.querySelector('.game-card:not([data-smodul])');
+        if (mh) grid.appendChild(mh);
       }
 
       /* Muhâdese kartı = yerinde açılır liste. Tıklayınca muhadese.html'e

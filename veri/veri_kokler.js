@@ -4151,9 +4151,15 @@ const wordEasterEggs = {
                 arText: "خَلَف", 
                 trText: "Gelen / Halef.",
                 ornek: { ar: "خَيْرُ خَلَفٍ لِخَيْرِ سَلَفٍ", tr: "Hayırlı selefin (geçmişin) hayırlı halefi (geleceği)." }
-            } 
-        }, 
-        
+            }
+        },
+
+        // --- 19 Numaralı Kalıp (فَعْل) ---
+        19: {
+            base: { emoji: "⬅️", arText: "خَلْف", trText: "Arka / Geri.", ornek: { ar: "الْحَدِيقَةُ خَلْفَ الْبَيْتِ", tr: "Bahçe evin arkasındadır." } },
+           
+        },
+
         // --- 23 Numaralı Kalıp (فِعَال) ---
         23: { 
             base: { emoji: "🕌", arText: "خِلَاف", trText: "Anlaşmazlık / Hilaf (Yalın).", ornek: { ar: "حَدَثَ خِلَافٌ بَيْنَهُمَا", tr: "Aralarında bir anlaşmazlık çıktı." } },

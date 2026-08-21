@@ -191,7 +191,7 @@
   ekle({
     id: 'bilgiyarismasi',
     ad: 'Bilgi Yarışması',
-    sira: 20,
+    sira: 30,                      /* tanıma: çoktan seçmeli, kelime çalışmasından sonra */
     renk: '#EE5253',
     svg: biySvg,
     aciklama: function (s) { return 'Canlı sınıf yarışması — ' + s + '. Sınıf soruları'; },
@@ -245,7 +245,7 @@
   ekle({
     id: 'sozluk',
     ad: 'Sözlük Simülasyonu',
-    sira: 30,
+    sira: 40,                      /* çözümleme: sarf bilgisi ister, en zoru */
     renk: '#7C3AED',
     svg: sozSvg,
     aciklama: function (s) { return 'Kelimenin yalın hâlini bul — ' + s + '. Sınıf cümleleri'; },
@@ -293,7 +293,7 @@
   ekle({
     id: 'kelimeliste',
     ad: 'Kelime Listeleri',
-    sira: 40,
+    sira: 20,                      /* kelime ezberi: harften sonraki basamak */
     renk: '#0B7285',
     svg: kelSvg,
     aciklama: function (s) {
@@ -310,6 +310,45 @@
       return 'kelimeler.html?liste=ih-' + encodeURIComponent(s) +
              '&kaynak=index&yer=imam-hatip';
     }
+  });
+
+  /* ---- 4) ALFABE ----
+     Hedef : alfabe.html (yedi sekme: Harf Tanıtımı, Harf Birleştirme,
+             Dinle ve Yaz, Kartlar, Hafıza, Sınav, Yarışma)
+     Sayfa sınıfa göre değişmez — bu yüzden "?sinif=" göndermiyoruz;
+     kart YALNIZ Arapçaya alfabeden başlanan sınıflarda çıksın diye
+     aşağıdaki listeyle sınırlandı. Başka bir sınıfta da istenirse
+     ALFABE_SINIF'a o sınıf eklenir, başka hiçbir yere dokunulmaz. */
+  var ALFABE_SINIF = { '5': 1, '9': 1 };
+
+  function alfSvg() {
+    /* index.html'deki Alfabe kartının ikonuyla AYNI: öğrenci iki yerde
+       de aynı görseli görsün. Fişlerin süzülme canlandırması (.kga-yuz)
+       index.html'in kart-ikon stilinden gelir. */
+    return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +
+      '<g class="kga-yuz g3x"><rect x="9" y="8" width="13" height="13" rx="3" fill="#7C3AED"/>' +
+        '<text x="15.5" y="18.5" font-size="10" fill="#fff" text-anchor="middle">ت</text></g>' +
+      '<g class="kga-yuz g2x"><rect x="25.5" y="5" width="13" height="13" rx="3" fill="#F39C12"/>' +
+        '<text x="32" y="15.5" font-size="10" fill="#fff" text-anchor="middle">ب</text></g>' +
+      '<g class="kga-yuz"><rect x="42" y="8" width="13" height="13" rx="3" fill="#EE5253"/>' +
+        '<text x="48.5" y="18.5" font-size="10" fill="#fff" text-anchor="middle">ا</text></g>' +
+      '<path d="M8 52 V26 q12 -6 24 0 q12 -6 24 0 v26 q-12 -5 -24 0 q-12 -5 -24 0 Z" ' +
+        'fill="#fff" stroke="#16A085" stroke-width="3"/>' +
+      '<line x1="32" y1="25" x2="32" y2="52" stroke="#16A085" stroke-width="2.4"/>' +
+      '</svg>';
+  }
+
+  ekle({
+    id: 'alfabe',
+    ad: 'Alfabe',
+    sira: 10,                      /* harf: yılın ilk konusu, en kolayı */
+    renk: '#E67E22',
+    svg: alfSvg,
+    aciklama: 'Harf tanıtımı, birleştirme, oyun ve sınav',
+    veriVar: function (s) {
+      return ALFABE_SINIF[String(s)] ? { rozet: '7 Etkinlik' } : null;
+    },
+    url: function () { return 'alfabe.html'; }
   });
 
   /* ---- Sonraki kartlar buraya: aynı kalıpla ekle({...}) ---- */
