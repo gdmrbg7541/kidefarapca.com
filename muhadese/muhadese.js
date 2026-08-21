@@ -55,18 +55,43 @@ const educationData = {
                 { name: "3. Ders: Akşam Yemeğinde | في العَشاء", simultaneUrl: "muhadese.html?ders=6_2_3", aktif: true },
             ]
         },
+        /* 3. ve 4. ÜNİTE 2025 ders kitabına göre yazıldı (komisyon verisi):
+           eski başlıklar tahmindi — kitapta ünite adları الصِّحَّة ve المَلابِس,
+           her ünitede ÜÇ ders var. Veri dosyaları muhadese/veri/6_3_1..3.js
+           ve 6_4_1..3.js. */
         {
-            unitName: "3. Ünite: Vücudum | جِسْمي",
+            unitName: "3. Ünite: Sağlık | الصِّحَّة",
             lessons: [
-                { name: "1. Ders: Organlar | الأَعْضاء", simultaneUrl: "muhadese.html?ders=6_3_1" },
-                { name: "2. Ders: Duyular ve Duygular | الحَواسّ وَالمَشاعِر", simultaneUrl: "muhadese.html?ders=6_3_2" },
+                { name: "1. Ders: Vücut Organları | أَعْضاءُ الجِسْم", simultaneUrl: "muhadese.html?ders=6_3_1", aktif: true },
+                { name: "2. Ders: Hastanede | في المُسْتَشْفى", simultaneUrl: "muhadese.html?ders=6_3_2", aktif: true },
+                { name: "3. Ders: Temizlik | النَّظافَة", simultaneUrl: "muhadese.html?ders=6_3_3", aktif: true },
             ]
         },
         {
-            unitName: "4. Ünite: Bu Hafta Hava Nasıl? | كَيْفَ الجَوُّ هَذا الأُسْبوعَ؟",
+            unitName: "4. Ünite: Kıyafetler | المَلابِس",
             lessons: [
-                { name: "1. Ders: Hava Durumu | حالَةُ الطَّقْس", simultaneUrl: "muhadese.html?ders=6_4_1" },
-                { name: "2. Ders: Kıyafetler ve Renkler | المَلابِس وَالأَلْوان", simultaneUrl: "muhadese.html?ders=6_4_2" },
+                { name: "1. Ders: Mevsimler | الفُصول", simultaneUrl: "muhadese.html?ders=6_4_1", aktif: true },
+                { name: "2. Ders: Kışlık Kıyafetler | المَلابِسُ الشِّتَوِيَّة", simultaneUrl: "muhadese.html?ders=6_4_2", aktif: true },
+                { name: "3. Ders: Yazlık Kıyafetler | المَلابِسُ الصَّيْفِيَّة", simultaneUrl: "muhadese.html?ders=6_4_3", aktif: true },
+            ]
+        },
+        /* 5. ve 6. ÜNİTE: kitapta yalnız ünite ve ders adları var, içerik
+           henüz gelmedi — başlıklar kitaptaki hâliyle duruyor, dersler
+           "YAKINDA" olarak bekliyor. */
+        {
+            unitName: "5. Ünite: Kutsal Mekânlar | الأَماكِنُ المُقَدَّسَة",
+            lessons: [
+                { name: "1. Ders: Mekke-i Mükerreme'de | في مَكَّةَ المُكَرَّمَة", simultaneUrl: "muhadese.html?ders=6_5_1" },
+                { name: "2. Ders: Medine-i Münevvere'de | في المَدينَةِ المُنَوَّرَة", simultaneUrl: "muhadese.html?ders=6_5_2" },
+                { name: "3. Ders: Kudüs-i Şerif'te | في القُدْسِ الشَّريف", simultaneUrl: "muhadese.html?ders=6_5_3" },
+            ]
+        },
+        {
+            unitName: "6. Ünite: Ulaşım ve Trafik | المُواصَلات وَالمُرور",
+            lessons: [
+                { name: "1. Ders: Ulaşım Araçları | وَسائِلُ المُواصَلات", simultaneUrl: "muhadese.html?ders=6_6_1" },
+                { name: "2. Ders: Trafik | المُرور", simultaneUrl: "muhadese.html?ders=6_6_2" },
+                { name: "3. Ders: Tatil Yolumda | في طَريقي إِلى العُطْلَة", simultaneUrl: "muhadese.html?ders=6_6_3" },
             ]
         }
     ],

@@ -357,6 +357,22 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
        Emojiler yerine her karta özel, kendi animasyonu olan SVG'ler.
        Boyut em ile ölçülür: mevcut emoji font boyutlarına uyar. */
     .default-game-emoji svg, .oyun-ikon svg { width: 1.6em; height: 1.6em; display: block; overflow: visible; }
+    /* MUHÂDESE KARTI ÖTEKİLERLE AYNI HİZAYA GELSİN. Sınıf modülü kartları
+       (.sm-kart) ikonu kartın enine yayıyor; Muhâdese kartı sitenin 1.6em
+       ölçüsünde kalınca ikonu küçük, başlığı ve rozeti ~70 px yukarıda
+       duruyordu — dört kartlık satırda hiza gözle görülür kayıyordu
+       (ölçüldü: başlık 353 / 422, rozet 496 / 518). Aynı kural ikisine de. */
+    .mh-kart .kg { width: 100%; height: 100%; display: block; overflow: visible; }
+    /* ROZETLER AYNI ÇİZGİDE DURSUN. Açıklaması tek satır olan kartın
+       rozeti ötekilerden ~21 px yukarıda kalıyordu (Muhâdese 508,
+       ötekiler 529): açıklamalar bir/iki satır arasında değişiyor.
+       Kart zaten flex sütun; içerik kutusu boyu doldurup rozet alta
+       yaslanıyor, böylece açıklama kaç satır olursa olsun rozetler
+       aynı hizada duruyor. Yalnız İmam Hatip etkinlik ızgarasında. */
+    #imam-hatip .ih-kartlar .game-card .default-game-content {
+        flex: 1 1 auto; display: flex; flex-direction: column; align-items: center;
+    }
+    #imam-hatip .ih-kartlar .game-card .status-badge { margin-top: auto; }
     .kg [class^="kga-"], .kg [class*=" kga-"] { transform-box: fill-box; }
     /* Tamlama ve Cümleler: dört renkli satır sayfadaki dört yapıdır;
        büyüteç satırların üzerinde iner (sayfanın yakınlaşma kipi) ve
@@ -1250,6 +1266,30 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
+        <!-- KELİME DAĞARCIĞI — kelimeler.html. Aynı listeler kalıplar
+             tablosundaki kitap ikonundan ve İmam Hatip'ten de açılıyor;
+             motor ve veri üçünde de ortak (sarf/kelimeler.js).
+             YERİ: Kelime Çarkı'ndan sonra (Geylani). -->
+        <a href="kelimeler.html" class="game-card kss-card">
+          <div class="default-game-content">
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <path d="M32 18c-5-3.6-11-4.8-17-3.4v30c6-1.4 12-.2 17 3.4" fill="#fff" stroke="#0B7285" stroke-width="2.6" stroke-linejoin="round"/>
+              <path d="M32 18c5-3.6 11-4.8 17-3.4v30c-6-1.4-12-.2-17 3.4" fill="#E7F5F8" stroke="#0B7285" stroke-width="2.6" stroke-linejoin="round"/>
+              <path d="M32 18v30" stroke="#0B7285" stroke-width="2.2"/>
+              <g stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round">
+                <path class="kga-satir" d="M20 26h8"/>
+                <path class="kga-satir s2x" d="M20 32h10"/>
+                <path class="kga-satir s3x" d="M36 26h8"/>
+                <path class="kga-satir s2x" d="M36 32h10"/>
+              </g>
+              <text x="32" y="59" font-size="11" fill="#0B7285" text-anchor="middle" font-family="inherit">كَلِمات</text>
+            </svg></div>
+            <h3>Kelime Dağarcığı</h3>
+            <span class="game-card-description">Konu konu kelime listeleri — çalışma kartı, hafıza oyunu, test kapışması.</span>
+            <span class="status-badge available">Hemen Başla</span>
+          </div>
+        </a>
+
         <a href="sozluksimulasyonu.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
             <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
@@ -2520,24 +2560,51 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Sınıf modül altyapısı: hangi sınıfta hangi modülün verisi var (tek kaynak)
          + o sınıfın kartını İmam Hatip akordiyonuna basan kayıtçı. -->
     <script src="sistem/sinifveri.js?v=20260808a"></script>
-    <script src="sistem/sinifmodul.js?v=20260805b"></script>
+    <script src="sistem/sinifmodul.js?v=20260821a"></script>
     <script>
     (function () {
       /* --- açılış/kapanış: içerik dinamik olduğu için (sınıf içindeki döküman
          akordiyonu) açıkken max-height:none yapılır; böylece iç akordiyon
          açılınca üst panel kırpılmaz. --- */
+      /* ASILI KALAN "AÇILIŞ BİTTİ" DİNLEYİCİSİ — sınıf değiştirince panellerin
+         üst üste binmesinin sebebi buydu (Geylani: "önce düzgün görünüyor,
+         sonra tekrar karışıyor").
+         panelAc, açılış animasyonu bitsin diye panele bir transitionend
+         dinleyicisi takıyordu. Açılış yarıda kesilirse (ustPanelSerbest
+         max-height'i 'none' yapınca ya da panel hemen kapatılınca)
+         transitionend HİÇ gelmiyor, dinleyici panelin üstünde asılı kalıyordu.
+         Sonraki KAPANMA animasyonu bittiğinde o eski dinleyici ateşleniyor ve
+         yeni kapanmış paneli max-height:none yapıp GERİ AÇIYORDU. Altı sınıf
+         paneli aynı ızgara gözünde (grid-row:2) durduğu için geri açılan eski
+         panel yeni sınıfın panelinin üstüne biniyor, iki sınıfın içeriği iç
+         içe görünüyordu — kapanış 0,4 sn sürdüğü için de "önce düzgün, sonra
+         karışık" oluyordu.
+         Çözüm: dinleyici panelin üstünde saklanıyor, her açılış/kapanışta
+         siliniyor; ayrıca ateşlendiğinde panel bu arada kapatılmışsa
+         (max-height 0) hiçbir şey yapmıyor. */
+      function acilisDinleyiciSil(panel) {
+        if (!panel || !panel.__ktAcilis) return;
+        panel.removeEventListener('transitionend', panel.__ktAcilis);
+        panel.removeEventListener('transitioncancel', panel.__ktAcilis);
+        panel.__ktAcilis = null;
+      }
       function panelAc(panel) {
         if (!panel) return;
+        acilisDinleyiciSil(panel);
         panel.style.maxHeight = panel.scrollHeight + 'px';
         var f = function (e) {
           if (e.target !== panel || e.propertyName !== 'max-height') return;
+          acilisDinleyiciSil(panel);
+          if (panel.style.maxHeight === '0px') return;   /* bu arada kapandı */
           panel.style.maxHeight = 'none';
-          panel.removeEventListener('transitionend', f);
         };
+        panel.__ktAcilis = f;
         panel.addEventListener('transitionend', f);
+        panel.addEventListener('transitioncancel', f);
       }
       function panelKapat(panel) {
         if (!panel) return;
+        acilisDinleyiciSil(panel);
         if (getComputedStyle(panel).maxHeight === 'none') { panel.style.maxHeight = panel.scrollHeight + 'px'; void panel.offsetHeight; }
         panel.style.maxHeight = '0px';
       }
@@ -2608,7 +2675,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         while (p && p.nodeType === 1) {
           if (p.classList && (p.classList.contains('ih-panel') || p.classList.contains('ihsec-panel'))) {
             var m = p.style.maxHeight;
-            if (m && m !== 'none' && m !== '0px') p.style.maxHeight = 'none';
+            /* Açılış animasyonunu burada kesiyoruz; panelAc'ın beklettiği
+               dinleyici de silinsin, yoksa sonraki KAPANIŞIN sonunda
+               ateşlenip paneli geri açıyor (bkz. acilisDinleyiciSil). */
+            if (m && m !== 'none' && m !== '0px') { acilisDinleyiciSil(p); p.style.maxHeight = 'none'; }
           }
           p = p.parentNode;
         }
@@ -2621,6 +2691,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           i.classList.remove('acik');
           var p = i.querySelector('.ihsec-panel, .ihdoc-panel, .dok-panel');
           if (!p) return;
+          acilisDinleyiciSil(p);            /* asılı açılış dinleyicisi kalmasın */
           var g = p.style.transition;
           p.style.transition = 'none';
           p.style.maxHeight = '0px';
@@ -2655,6 +2726,27 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         odakGuncelle();
         if (aciliyor) bolumuYukariKaydir(btn);
       };
+      /* KELİME DAĞARCIĞINDAN DÖNÜŞ: kelimeler.html "?ihsinif=N" ile
+         geri gönderiyor; o sınıf yeniden açılıp ekrana getiriliyor,
+         öğretmen kaldığı yerden devam ediyor. */
+      (function () {
+        var n = new URLSearchParams(location.search).get('ihsinif');
+        if (!n) return;
+        function ac() {
+          /* Başlığın metni rakam SVG'siyle başlıyor; adı içinde arıyoruz. */
+          var bas = [].filter.call(document.querySelectorAll('#imam-hatip .ih-head'), function (b) {
+            var t = (b.querySelector('.ih-title') || {}).textContent || '';
+            return t.trim() === n + '. Sınıf';
+          })[0];
+          if (!bas) { setTimeout(ac, 200); return; }
+          var item = bas.closest('.ih-item');
+          if (item && !item.classList.contains('acik')) window.ihToggle(bas);
+          setTimeout(function () { bas.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(ac, 600); });
+        else setTimeout(ac, 600);
+      })();
+
       window.ihToggle = function (btn) {
         var hedefItem = btn.closest('.ih-item');
         if (hedefItem && !hedefItem.classList.contains('acik')) icleriKapat(hedefItem);
@@ -2666,7 +2758,43 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         });
         odakGuncelle();
         var item = btn.closest('.ih-item');
-        if (item && item.classList.contains('acik')) bolumuYukariKaydir(btn);
+        if (item && item.classList.contains('acik')) {
+          /* SINIF AÇILINCA ETKİNLİKLER DE AÇIK GELSİN. Öğretmen sınıfa
+             basınca en çok o bölüme giriyor; eskiden bir de "N. Sınıf
+             Etkinlikleri" başlığına basmak gerekiyordu (Geylani).
+             DIŞ PANELİN AÇILIŞI BİTMEDEN İÇERİDEKİNİ AÇMIYORUZ: iki
+             max-height animasyonu üst üste binince dış panel kendi
+             yüksekliğini içerideki daha açılmadan ölçüyor, panel önce
+             düzgün görünüp sonra içerik taşarken kayıyordu. */
+          var ilk = item.querySelector('.ihsec-item');
+          if (ilk && !ilk.classList.contains('acik')) {
+            var bas = ilk.querySelector('.ihsec-head');
+            var dis = item.querySelector('.ih-panel');
+            var acildi = false;
+            var ic = function () {
+              if (acildi || !bas) return;
+              acildi = true;
+              if (dis) dis.removeEventListener('transitionend', bitti);
+              /* Hızlı hızlı başka sınıflara basıldıysa bu sınıf artık açık
+                 değildir; beklemede kalan açılış o zaman İPTAL edilir.
+                 Yoksa kapanmış sınıfın "Etkinlikler"i açılıyor ve tek-bölüm
+                 kuralı yüzünden görünen sınıfınkini kapatıyordu. */
+              if (!item.classList.contains('acik')) return;
+              window.ihsecToggle(bas);
+            };
+            var bitti = function (e) {
+              if (e.target !== dis || e.propertyName !== 'max-height') return;
+              ic();
+            };
+            if (dis) dis.addEventListener('transitionend', bitti);
+            /* Yedek: animasyon hiç başlamazsa/iptal olursa da açılsın.
+               Süre geçişten (0,4 sn) belirgin uzun tutuldu; 420 ms iken
+               yavaş anlarda yedek transitionend'i geçiyor, iç bölüm dış
+               panel daha büyürken açılıyordu. */
+            setTimeout(ic, 620);
+          }
+          bolumuYukariKaydir(btn);
+        }
       };
       window.dokToggle = function (btn) {
         tekAcilir(btn, 'dok-item', 'dok-panel', 'dok-acc');

@@ -1092,6 +1092,14 @@ window.data = {
         {
             "tr": "buyurun",
             "ar": "تَفَضَّلْ"
+        },
+        {
+            "tr": "yok / devamsız",
+            "ar": "غائِب"
+        },
+        {
+            "tr": "yok / devamsız (dişil)",
+            "ar": "غائِبَة"
         }
     ]
 };

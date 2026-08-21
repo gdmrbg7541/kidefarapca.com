@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kelime Dağarcığı · kidefarapca.com</title>
+
+<!-- =====================================================================
+     KELİME DAĞARCIĞI                              (kelimeler.html)
+     ---------------------------------------------------------------------
+     Konu listeleri ekranının kendi sayfası. Motor kalıplar tablosuyla
+     ORTAK: sarf/kelimeler.js. Veri de ortak — veri_sozluk.js ve
+     veri_kokler.js. Burada tablo yok, o yüzden bir kelimeden köke
+     gidilmek istenirse kaliplartablosu.html?kok=… açılıyor.
+
+     ÜÇ GİRİŞ
+       1) Kalıplar tablosundaki kitap ikonu   → ?donus=tablo
+       2) index → Öğretmen Özel → Kelime Dağarcığı kartı
+       3) index → İmam Hatip → N. Sınıf Kelime Listeleri  → ?liste=ih-N
+     KAPANIŞ
+     `donus` parametresi nereye dönüleceğini söyler; İmam Hatip'ten
+     gelindiyse index'te o sınıf yeniden açılır (kalınan yere dönülür).
+     ===================================================================== -->
+
+<link rel="stylesheet" href="sarf/kaliplartablosu.css?v=253">
+<link rel="stylesheet" href="sarf/kelimetest.css?v=5">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="arakom.css?v=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    html, body { margin: 0; padding: 0; background: #EEF2F7; min-height: 100%; }
+    body { font-family: 'Inter', system-ui, sans-serif; }
+
+    /* Üst şerit: geri düğmesi + başlık. Kalıplar tablosunun araç
+       çubuğuyla aynı dili konuşsun diye aynı yuvarlak/gölge ölçüleri. */
+    .kd-bar {
+        position: sticky; top: 0; z-index: 40;
+        display: flex; align-items: center; gap: 14px;
+        padding: 12px 18px; background: rgba(255, 255, 255, .92);
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid #E3EAF3;
+    }
+    .kd-geri {
+        display: inline-flex; align-items: center; gap: 8px;
+        border: 1px solid #DDE4EE; background: #fff; color: #374151;
+        padding: 9px 16px; border-radius: 999px; cursor: pointer;
+        font-size: .95rem; font-weight: 700; font-family: inherit;
+        transition: background .15s, border-color .15s, transform .12s;
+    }
+    .kd-geri:hover { transform: translateY(-1px); border-color: #2980B9; color: #2980B9; }
+    .kd-bas { display: flex; align-items: baseline; gap: 10px; }
+    .kd-bas b { font-size: 1.08rem; color: #1F2937; letter-spacing: .01em; }
+    .kd-bas span { font-size: .86rem; color: #8A93A3; }
+    .kd-govde { padding: 18px 22px 60px; }
+
+    /* Motor, listeyi #thematic-accordion-container içine çiziyor;
+       tablo sayfasında bu bir kaplamanın içindeydi, burada sayfanın
+       kendisi. Kaplamaya ait ölçüler sıfırlanıyor. */
+    /* ---- "TELEFONU YATAY ÇEVİR" KURALI BURAYA GEÇMESİN ----
+       Ortak stil dosyası (sarf/kaliplartablosu.css) dikey ve 1024px'ten
+       dar ekranlarda `body > div:not(#mobile-portrait-warning)` ları
+       gizliyor; o uyarı KALIPLAR TABLOSU içindir — tablo dar ekrana
+       sığmadığı için oradan mobil sürüme yönlendiriliyor. Bu sayfa
+       yalnızca liste; telefonda dikey de gayet rahat okunuyor. Uyarı
+       kutusu da burada yok, o yüzden kural devrede kalınca sayfa
+       TAMAMEN BOŞ görünüyordu (telefonda ve dikey tablette).
+       Seçici, gizleyen kuralın aynısı + sınıf: `:not(#id)` kimlik
+       ağırlığı taşıdığı için düz `body > .kd-govde` yenilemiyordu. */
+    @media screen and (max-width: 1024px) and (orientation: portrait) {
+        body > div:not(#mobile-portrait-warning).kd-bar   { display: flex  !important; }
+        body > div:not(#mobile-portrait-warning).kd-govde { display: block !important; }
+    }
+
+    /* TAM EKRAN AÇIKKEN ÜST ŞERİT GİZLENİR. Hafıza oyunu ve test tam
+       ekrana geçince (.fullscreen-accordion) yapışkan şerit ekranın
+       tepesinde kalıp altındaki mod düğmelerinin üstüne biniyor,
+       "Liste Modu"na basılamıyordu. Tam ekranda zaten geri düğmesine
+       gerek yok; çıkış ✕ ve Esc ile.
+       Seçici, bir üstteki dikey-ekran kuralını da yenecek ağırlıkta
+       yazıldı; yoksa telefonda şerit tam ekranda da duruyordu. */
+    body.has-fullscreen-accordion > div:not(#mobile-portrait-warning).kd-bar {
+        display: none !important;
+    }
+
+    #thematic-words-content { width: 100%; }
+    .kd-govde .verb-close-btn { display: none; }   /* kapatma üstteki geri düğmesi */
+    @media (max-width: 820px) {
+        .kd-bar { padding: 10px 12px; }
+        .kd-govde { padding: 12px 10px 50px; }
+        .kd-bas span { display: none; }
+    }
+</style>
+</head>
+<body>
+
+<div class="kd-bar">
+    <button type="button" class="kd-geri" onclick="kdGeri()">
+        <span aria-hidden="true">←</span><span id="kd-geri-yazi">Geri</span>
+    </button>
+    <div class="kd-bas"><b>Kelime Dağarcığı</b><span id="kd-alt">konu konu kelime listeleri</span></div>
+</div>
+
+<div class="kd-govde">
+    <div id="thematic-words-content" class="thematic-words-content">
+        <div id="thematic-accordion-container" dir="rtl"></div>
+    </div>
+</div>
+
+<script src="veri/veri_kokler.js?v=1"></script>
+<script src="veri/veri_sozluk.js?v=1"></script>
+<script src="sarf/kelimeler.js?v=7"></script>
+<script src="sarf/kelimetest.js?v=7"></script>
+<script src="sarf/ihkelime.js?v=3"></script>
+<script>
+/* ---- GERİ DÖNÜŞ ----
+   donus=tablo        → kalıplar tablosuna
+   liste=ih-N…        → index'te İmam Hatip, o sınıf açık (kalınan yer)
+   ötekiler           → index'te Öğretmen Özel bölümü               */
+function kdHedef() {
+    var p = new URLSearchParams(location.search);
+    if (p.get('donus') === 'tablo') return { url: 'kaliplartablosu.html', ad: 'Kalıplar Tablosu' };
+    var l = p.get('liste') || '';
+    var m = /^ih-(\d+)/.exec(l);
+    if (m) return { url: 'index.html?ihsinif=' + m[1] + '#imam-hatip', ad: m[1] + '. Sınıf' };
+    return { url: 'index.html#ogretmen-ozel', ad: 'Ana Sayfa' };
+}
+function kdGeri() { location.href = kdHedef().url; }
+(function () {
+    var h = kdHedef();
+    var y = document.getElementById('kd-geri-yazi');
+    if (y) y.textContent = h.ad;
+    /* İmam Hatip kipinde alt başlık sınıfı söylesin */
+    var m = /^ih-(\d+)/.exec(new URLSearchParams(location.search).get('liste') || '');
+    var alt = document.getElementById('kd-alt');
+    if (m && alt) alt.textContent = m[1] + '. Sınıf müfredatı — ünite ve ders listeleri';
+    /* İmam Hatip kipi kendi açılışını yapıyor; öteki girişlerde listeyi
+       burada çiziyoruz. */
+    if (!m && typeof renderThematicLists === 'function') renderThematicLists();
+})();
+/* Motor tablo sayfasında bu ikisini kaplamayı açıp kapatmak için
+   çağırıyor; burada sayfa zaten liste, ikisi de zararsızlaşıyor. */
+window.showThematicView = window.showThematicView || function () {};
+window.openVerbModal = function () { if (typeof renderThematicLists === 'function') renderThematicLists(); };
+window.closeVerbModal = function () { kdGeri(); };
+/* Esc = geri. AMA test açıkken Esc önce TESTTEN çıkarır, sayfadan değil;
+   yoksa oyunun ortasında tuşa basan doğrudan ana sayfaya düşüyordu.
+   Testten çıkışı sarf/kelimetest.js'in kendi dinleyicisi yapıyor. */
+document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (window.KidefKelimeTest && KidefKelimeTest.acikVar && KidefKelimeTest.acikVar()) return;
+    kdGeri();
+});
+</script>
+</body>
+</html>

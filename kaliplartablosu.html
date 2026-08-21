@@ -23,7 +23,8 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
 
-    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=250">
+    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=253">
+    <link rel="stylesheet" href="sarf/kelimetest.css?v=5">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="arakom.css?v=1">
@@ -136,7 +137,7 @@
                      kitabın solunda, öteki .root-icon'larla aynı dilde
                      (2.5 kalınlıkta stroke, 22px, currentColor). -->
                 <span id="static-oyun-btn" class="root-icon" onclick="event.stopPropagation(); toggleSarfOyunlar()" title="Oyunlar" aria-label="Oyunlar" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 8h9a4.5 4.5 0 0 1 4.42 3.66l.66 3.5A2.7 2.7 0 0 1 18.93 18.4L17 16.5H7L5.07 18.4a2.7 2.7 0 0 1-4.65-3.24l.66-3.5A4.5 4.5 0 0 1 7.5 8Z"></path><line x1="7" y1="12" x2="7" y2="14"></line><line x1="6" y1="13" x2="8" y2="13"></line><circle cx="16.4" cy="12.4" r=".9" fill="currentColor" stroke="none"></circle><circle cx="18.2" cy="14.2" r=".9" fill="currentColor" stroke="none"></circle></svg></span>
-                <i class="fas fa-book root-icon" onclick="event.stopPropagation(); openVerbModal()" title="Kelime Listeleri"></i>
+                <i class="fas fa-book root-icon" onclick="event.stopPropagation(); location.href='kelimeler.html?donus=tablo'" title="Kelime Listeleri"></i>
                 <span id="root-text-display" onclick="openRootsModal()" style="cursor: pointer;"><i class="fas fa-sitemap root-icon sitemap-wave-hint" title="Kökler Listesi"></i></span>
                 <span id="static-timer-btn" class="root-icon" onclick="event.stopPropagation(); window.openMarathon()" title="Hız ve Telaffuz Testi" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg></span>
                 <span id="static-list-btn" class="root-icon" onclick="event.stopPropagation(); openFastDictionaryMode()" title="Hızlı Liste" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg></span>
@@ -213,12 +214,44 @@
         </span>
     </label>
 
+    <!-- ÖNTANIMLI KAPALI: `checked` yok. Anahtar açılırsa tarayıcı
+         belleğine yazılıyor ve elle kapatılana kadar açık kalıyor. -->
     <label class="ayar-satir">
         <span class="ayar-ad">FİİL ÇEKİMLERİ HAZIR
             <span class="ayar-not">Kök seçilince tanımlı fiillerin çekim tabloları yüzen simgede hazır dursun</span>
         </span>
         <span class="toggle-switch">
-            <input type="checkbox" id="cekimHazirCheckbox" checked>
+            <input type="checkbox" id="cekimHazirCheckbox">
+            <span class="toggle-slider"></span>
+        </span>
+    </label>
+
+    <label class="ayar-satir">
+        <span class="ayar-ad">VEZİN ÖRNEK LİSTESİ
+            <span class="ayar-not">Kök seçili değilken bir vezne dokununca o veznin bütün örnekleri listelensin</span>
+        </span>
+        <span class="toggle-switch">
+            <input type="checkbox" id="ornekListeCheckbox">
+            <span class="toggle-slider"></span>
+        </span>
+    </label>
+
+    <label class="ayar-satir">
+        <span class="ayar-ad">DİLBİLGİSİ BAŞLIKLARI
+            <span class="ayar-not">Sütun başlığına (MÂZÎ, MASTAR…) basınca o konunun dilbilgisi ekranı açılsın</span>
+        </span>
+        <span class="toggle-switch">
+            <input type="checkbox" id="gramerBaslikCheckbox" checked>
+            <span class="toggle-slider"></span>
+        </span>
+    </label>
+
+    <label class="ayar-satir">
+        <span class="ayar-ad">GÜNÜN KÖKÜ
+            <span class="ayar-not">Sayfa açılınca günün kökü penceresi gelsin</span>
+        </span>
+        <span class="toggle-switch">
+            <input type="checkbox" id="gununKokuCheckbox">
             <span class="toggle-slider"></span>
         </span>
     </label>
@@ -386,9 +419,13 @@
      `loading="lazy"` ile — kılavuz açılmadan indirilmiyorlar. -->
 <div id="kt-kilavuz" onclick="if(event.target===this) kilavuzKapat()">
   <div class="ktk-kart" role="dialog" aria-label="Kalıplar tablosu kullanım kılavuzu">
-    <button class="ktk-kapat" onclick="kilavuzKapat()" aria-label="Kapat" title="Kapat">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
+    <!-- Çarpı sıfır yükseklikli YAPIŞKAN bir yuvada: kılavuzda aşağı
+         inildikçe kartla birlikte kaybolmuyor, ekranın üstünde kalıyor. -->
+    <div class="ktk-kapat-yuva">
+      <button class="ktk-kapat" onclick="kilavuzKapat()" aria-label="Kapat" title="Kapat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
 
     <header class="ktk-tepe">
       <div class="ktk-rozet">
@@ -463,7 +500,7 @@
           <li><span class="ktk-ik"><i class="fas fa-sync-alt"></i></span><b>Yenile</b> — tabloyu boşaltır, kökü siler.</li>
           <li><span class="ktk-ik"><i class="fas fa-plus"></i></span><b>Ek Menüsü</b> — ön ve son ekler (15. adım).</li>
           <li><span class="ktk-ik"><i class="fas fa-search"></i></span><b>Arama</b> — Arapça klavyeyle kök yaz (2. adım).</li>
-          <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10.6 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg></span><b>Ayarlar</b> — BÜYÜTME, ANLAM ve FİİL ÇEKİMLERİ HAZIR anahtarları (11. adım).</li>
+          <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10.6 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg></span><b>Ayarlar</b> — BÜYÜTME, ANLAM, FİİL ÇEKİMLERİ HAZIR, VEZİN ÖRNEK LİSTESİ, DİLBİLGİSİ BAŞLIKLARI ve GÜNÜN KÖKÜ (11. adım).</li>
           <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="16.6" x2="12" y2="11.2"></line><line x1="12" y1="7.7" x2="12.01" y2="7.7"></line></svg></span><b>Kılavuz</b> — bu ekran.</li>
         </ul>
       </div>
@@ -511,7 +548,7 @@
            fiil çekimleri eksiksiz tanımlanmış örnek köklerdir
            (<span dir="rtl">كتب</span>, <span dir="rtl">علم</span>, <span dir="rtl">حكم</span>…).
            Ders anlatırken en emin yol bunlarla başlamaktır: birine dokunduğun anda tablo dolar,
-           çekim tabloları da arka planda hazırlanır (9. adım).</p>
+           çekim tabloları da (ayarlardan açtıysan) arka planda hazırlanır (9. adım).</p>
         <p class="ktk-ipucu">Şeridin solundaki rozet listedeki <b>toplam kök sayısını</b> gösterir;
            listenin gövdesinde kökler ilk harflerine göre dört sütunda toplanmıştır.</p>
       </div>
@@ -566,8 +603,9 @@
            bâbın üçlüsü (mâzî-muzâri-emir) birlikte açılır.</p>
         <p>Şerit üzerinden alfabeye, aksâm-ı seb'aya göre süzebilirsin. Kapatmak için veznin
            köşesindeki çarpıya ya da <b>Esc</b>'ye bas.</p>
-        <p class="ktk-ipucu">Liste tam ekrana geçmez; tablo aşağı süzülür, ekranı liste
-           kaplar. <b>Esc</b> ya da köşedeki çarpı listeyi kapatır.</p>
+        <p class="ktk-ipucu">Bu liste <b>ayarlardan açılır</b> (11. adım, VEZİN ÖRNEK LİSTESİ) ve
+           öntanımlı kapalıdır. Liste tam ekrana geçmez; tablo aşağı süzülür, ekranı liste kaplar.
+           <b>Esc</b> ya da köşedeki çarpı listeyi kapatır.</p>
       </div>
       <figure class="ktk-gorsel"><img src="sarf/kilavuz/liste.jpg" alt="Bir veznin örnek listesi" loading="lazy"></figure>
     </section>
@@ -605,7 +643,7 @@
            bir sütun olur ve fiiller karşılaştırılır. Açılışta düzeni fiil sayısı belirler: tek fiil
            varsa SATIR, iki ve daha fazlası varsa SÜTUN. Fiillerin arasına kalın bir ayırıcı çizgi
            çekilir; düzen değişince tablolar yeni yerlerine kayarak geçer.</p>
-        <p><b>Hazır çekimler:</b> ayarlardaki FİİL ÇEKİMLERİ HAZIR anahtarı açıkken (öntanımlı) bir
+        <p><b>Hazır çekimler:</b> ayarlardaki FİİL ÇEKİMLERİ HAZIR anahtarını açarsan bir
            kök seçtiğin anda o kökte tanımlı bütün fiillerin tabloları arka planda kurulur; ders
            sırasında tablo beklemek gerekmez. Kısa bir yükleme ekranından sonra tablolar rıhtımda
            bekler, simgeye dokununca tam ekran açılır.</p>
@@ -646,16 +684,23 @@
       <div class="ktk-yazi">
         <span class="ktk-no">11</span>
         <h3><span class="ktk-bik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10.6 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg></span><span>Ayarlar</span></h3>
-        <p>Araç çubuğundaki dişli üç anahtarı bir arada tutar:</p>
+        <p>Araç çubuğundaki dişli altı anahtarı bir arada tutar:</p>
         <ul>
           <li><b>BÜYÜTME</b> — vezne basınca kelime dev kutuda açılsın (10. adım).</li>
           <li><b>ANLAM</b> — kök vezne girince Türkçesi kutunun altında görünsün. Balon üç saniye
               sonra kendiliğinden çekilir.</li>
           <li><b>FİİL ÇEKİMLERİ HAZIR</b> — kök seçilince çekim tabloları rıhtımda hazır dursun
-              (9. adım).</li>
+              (9. adım). <b>Öntanımlı kapalı.</b></li>
+          <li><b>VEZİN ÖRNEK LİSTESİ</b> — kök seçili değilken bir vezne dokununca o veznin bütün
+              örnekleri listelensin (7. adım). <b>Öntanımlı kapalı.</b></li>
+          <li><b>DİLBİLGİSİ BAŞLIKLARI</b> — sütun başlığına basınca o konunun dilbilgisi ekranı
+              açılsın (13. adım). <b>Öntanımlı açık.</b></li>
+          <li><b>GÜNÜN KÖKÜ</b> — sayfa açılınca günün kökü penceresi gelsin.
+              <b>Öntanımlı kapalı.</b></li>
         </ul>
         <p class="ktk-ipucu">Menü, başlık satırının sağındaki <b>✕</b> ile ya da dışarı dokunarak
-           kapanır. Seçimler hatırlanır.</p>
+           kapanır. Açtığın anahtar <b>tarayıcının belleğinde kalır</b>: elle kapatana kadar
+           sonraki açılışlarda da açık gelir.</p>
       </div>
       <figure class="ktk-gorsel"><img src="sarf/kilavuz/ayarlar.jpg" alt="Ayarlar menüsü" loading="lazy"></figure>
     </section>
@@ -682,6 +727,8 @@
         <p>Sütun başlıklarına (MÂZÎ, MUZÂRİ, MASTAR…) dokunursan o konunun dilbilgisi ekranı
            açılır: tanım, çekim tablosu, örnek fiiller. Üstteki şeritten konudan konuya
            geçebilir, tam ekran tuşuyla çekimi bütün hâlinde görebilirsin.</p>
+        <p class="ktk-ipucu">Bu davranış ayarlardan kapatılabilir (11. adım, DİLBİLGİSİ BAŞLIKLARI);
+           öntanımlı açıktır. Kapalıyken başlıklar yalnız başlık olarak durur.</p>
       </div>
       <figure class="ktk-gorsel"><img src="sarf/kilavuz/gramer.jpg" alt="Dilbilgisi ekranı" loading="lazy"></figure>
     </section>
@@ -732,7 +779,7 @@
       <span><kbd>PageDown</kbd> · <kbd>→</kbd> · <kbd>boşluk</kbd> sıradaki vezin</span>
       <span><kbd>PageUp</kbd> · <kbd>←</kbd> önceki vezin</span>
       <span><kbd>←</kbd> geri tuşu: önce açık bilgi, sonra sayfa</span>
-      <span>BÜYÜTME ve ANLAM anahtarları ayarlarda (dişli)</span>
+      <span>Dört anahtar da ayarlarda (dişli); seçimler tarayıcıda hatırlanır</span>
     </footer>
   </div>
 </div>
@@ -1232,12 +1279,15 @@
      başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
      buradan okunuyor. Yan etkisi yok, yalnız sabit tanımlar. -->
 <script src="veri/veri_vezin_numaralari.js?v=1"></script>
-<script src="sarf/kaliplartablosu.js?v=229"></script>
+<script src="sarf/kaliplartablosu.js?v=232"></script>
 <script src="sarf/babodak.js?v=7"></script>
 <!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama
      evresinde devraldığı için eski davranışa karışmaz. -->
-<script src="sarf/kalipliste.js?v=79"></script>
+<script src="sarf/kalipliste.js?v=80"></script>
+<script src="sarf/kelimeler.js?v=7"></script>
+<script src="sarf/kelimetest.js?v=7"></script>
+<script src="sarf/ihkelime.js?v=3"></script>
 <!-- Sunum kumandasının İLERİ tuşuyla tanımlı vezinler arasında gezinme
      ve tıklanan veznin anlamını gösteren katman. Ana betikten SONRA
      yüklenir; handleBoxClick'i sarmalayarak bağlanır. -->
