@@ -3521,6 +3521,11 @@
     document.addEventListener('click', function (e) {
         if (!e.target || !e.target.closest) return;
         if (e.target.closest('.kl-perde')) return;      /* perdenin kendi tıklamaları */
+        /* AYARLARDAKİ "VEZİN ÖRNEK LİSTESİ" ANAHTARI — öntanımlı kapalı.
+           Kapalıyken vezne dokunmak listeyi açmıyor; sayfanın kendi kutu
+           davranışı (kalıbı açma/katlama) olduğu gibi sürüyor. */
+        if (typeof window.kidefOrnekListeAcik === 'function' &&
+            !window.kidefOrnekListeAcik()) return;
         /* Odağın kendi satırları dinlenmez — TEK İSTİSNA ara levha:
            teksirin orta dörtlüsü gövde satırında yaşar ama levhadaki
            kardeşleri gibi vezin kutusudur, dokunuşu ona da işler. */

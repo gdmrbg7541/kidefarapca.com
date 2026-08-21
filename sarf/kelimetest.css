@@ -1,0 +1,418 @@
+/* =====================================================================
+   TEST MODU — KELİME LİSTELERİ                  (sarf/kelimetest.css)
+   ---------------------------------------------------------------------
+   Her kelime listesinin dördüncü kipi: "Test Modu". Tek kişilik çalışma
+   ve iki kişilik KAPIŞMA (bölünmüş ekran, ikisi aynı anda oynar).
+   Motoru: sarf/kelimetest.js — iki sayfa da aynı ikisini yükler
+   (kelimeler.html ve kaliplartablosu.html).
+
+   RENKLER SİTENİN KENDİ RENKLERİ (index.css)
+     zemin  #F7F9FC · kutu #fff · çizgi #E9EEF5
+     başlık #27AE60 · onay/rozet #20C997 · vurgu #F39C12
+     1. oyuncu #2563EB (mavi) · 2. oyuncu #EE5253 (kırmızı)
+   Koyu tema yok; test de sitenin geri kalanı gibi açık zeminde durur.
+   Listeler zaten açık zeminde çalışıyor, kip değişince ekranın rengi
+   değişmesin diye (Geylani).
+
+   YÖN UYARISI
+   Liste kapsayıcısı dir="rtl"; buradaki her şey açıkça ltr'ye
+   çevriliyor, yalnız Arapça metinler rtl kalıyor.
+   ===================================================================== */
+
+.kt-test-alan {
+    direction: ltr;
+    --kt-zemin: #F7F9FC;
+    --kt-kutu:  #ffffff;
+    --kt-cizgi: #E9EEF5;
+    --kt-cizgi2:#DCE4F0;
+    --kt-yazi:  #2B3A4A;
+    --kt-sol:   #7A8A9C;
+    --kt-yesil: #27AE60;
+    --kt-onay:  #20C997;
+    --kt-vurgu: #F39C12;
+    --kt-p1:    #2563EB;
+    --kt-p2:    #EE5253;
+    --kt-hata:  #EE5253;
+    font-family: 'Arakom', 'Inter', system-ui, sans-serif;
+    display: block;
+    width: 100%;
+}
+/* Tam ekranda sahne boyu doldursun (grid yerine biz varız) */
+.fullscreen-accordion .kt-test-alan { flex: 1; min-height: 0; display: flex; }
+/* Üst satırlar sabitken (mod · şerit · liste başlığı) test kalan alanı
+   TAM olarak doldurur; min-height tahminine gerek kalmıyor, altta ne
+   boşluk ne kırpılma oluyor. */
+.fullscreen-accordion.kl-sabit-baslik .kt-test-alan { flex: 1 1 auto; }
+.fullscreen-accordion.kl-sabit-baslik .kt-sahne.kt-oyun { min-height: 0; }
+.fullscreen-accordion.kl-sabit-baslik .kt-sahne { min-height: 0; }
+
+.kt-sahne {
+    flex: 1;
+    display: flex; flex-direction: column;
+    background: var(--kt-kutu);
+    color: var(--kt-yazi);
+    border: 1px solid var(--kt-cizgi);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 6px 12px rgba(0,0,0,.08);
+    position: relative; overflow: hidden;
+}
+.kt-sahne * { box-sizing: border-box; }
+/* Sahne boyunu YALNIZ tur oynanırken zorluyoruz: kapsayıcı bazen esnek
+   (tam ekran) bazen blok (akordiyon içinde) olduğundan yalnız flex'e
+   güvenmek arenayı sıfır yükseklikte bırakıyor. Lobi ve sonuç ekranı
+   kendi boyunca kalsın, altta boşluk açılmasın. */
+.kt-sahne.kt-oyun { min-height: min(76vh, 700px); }
+
+/* =====================  LOBİ (kurulum)  ===================== */
+/* flex:1 + ortalama: tam ekranda lobi dikeyde ortalanır, akordiyon
+   içinde ise kendi boyunda kalır (sahnenin boyu içeriğe göre). */
+.kt-lobi { display: flex; flex: 1; flex-direction: column; align-items: center;
+           justify-content: center; gap: 22px; padding: 22px 6px 20px; }
+.kt-lobi-bas { text-align: center; }
+.kt-lobi-bas b { display: block; font-size: 1.5rem; font-weight: 800; color: var(--kt-yesil); }
+.kt-lobi-bas span { display: block; margin-top: 6px; font-size: .92rem; color: var(--kt-sol); }
+/* Seçici `.kt-lobi-bas span.kt-rozet`: bir üstteki `.kt-lobi-bas span`
+   kuralı düz `.kt-rozet`ten güçlü çıkıp rozeti blok yapıyor ve yazısını
+   soluk griye çeviriyordu. */
+.kt-lobi-bas span.kt-rozet {
+    display: inline-flex; align-items: center; gap: 7px;
+    margin-top: 0; margin-bottom: 12px;
+    padding: 6px 14px; border-radius: 20px; font-size: .8rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .04em;
+    color: #fff; background: var(--kt-vurgu);
+}
+
+.kt-bolum { width: 100%; max-width: 640px; }
+.kt-bolum > h4 {
+    margin: 0 0 10px; font-size: .82rem; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--kt-sol); text-align: center;
+}
+
+/* Oyuncu seçimi: iki büyük kart — site kartlarıyla aynı dil */
+.kt-secim { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.kt-kisi {
+    cursor: pointer; text-align: center; padding: 18px 12px 16px;
+    background: var(--kt-kutu); color: var(--kt-yazi);
+    border: 2px solid var(--kt-cizgi); border-radius: 12px;
+    font-family: inherit; box-shadow: 0 4px 8px rgba(0,0,0,.06);
+    transition: transform .16s, border-color .16s, box-shadow .16s;
+}
+.kt-kisi:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,.10); }
+.kt-kisi .kt-kisi-ic { font-size: 1.9rem; line-height: 1; margin-bottom: 8px; display: block; }
+.kt-kisi b { display: block; font-size: 1.1rem; font-weight: 700; color: var(--kt-yesil); }
+.kt-kisi span { display: block; margin-top: 3px; font-size: .8rem; color: var(--kt-sol); }
+.kt-kisi.secili { border-color: var(--kt-p1); background: #F2F7FF; box-shadow: 0 6px 14px rgba(37,99,235,.14); }
+.kt-kisi.secili.kt-ikili { border-color: var(--kt-p2); background: #FFF4F4; box-shadow: 0 6px 14px rgba(238,82,83,.14); }
+
+/* Soru sayısı: hap düğmeler */
+.kt-pilller { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.kt-pil {
+    cursor: pointer; padding: 9px 18px; border-radius: 20px; font-family: inherit;
+    font-size: .95rem; font-weight: 700; color: var(--kt-yazi);
+    background: var(--kt-zemin); border: 2px solid var(--kt-cizgi);
+    transition: background .16s, border-color .16s, color .16s;
+}
+.kt-pil:hover { border-color: var(--kt-cizgi2); }
+.kt-pil.secili { background: var(--kt-onay); border-color: var(--kt-onay); color: #fff; }
+.kt-pil:disabled { opacity: .4; cursor: not-allowed; }
+
+.kt-basla {
+    cursor: pointer; margin-top: 4px; padding: 14px 52px; border: none; border-radius: 30px;
+    font-family: inherit; font-size: 1.15rem; font-weight: 700; text-transform: uppercase;
+    color: #fff; background: var(--kt-onay);
+    box-shadow: 0 6px 16px rgba(32,201,151,.32);
+    transition: transform .16s, box-shadow .16s;
+}
+.kt-basla:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(32,201,151,.4); }
+.kt-basla:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+.kt-uyari {
+    max-width: 520px; text-align: center; font-size: .9rem; line-height: 1.5;
+    color: #8A5B00; background: #FFF8E7;
+    border: 1px solid #FADFB5; border-radius: 12px; padding: 11px 15px;
+}
+.kt-ipucu { font-size: .82rem; color: var(--kt-sol); text-align: center; line-height: 1.7; }
+.kt-ipucu kbd {
+    display: inline-block; padding: 1px 7px; margin: 0 1px; border-radius: 5px;
+    background: var(--kt-zemin); border: 1px solid var(--kt-cizgi2);
+    font-family: inherit; font-size: .76rem; font-weight: 700; color: var(--kt-yazi);
+}
+
+/* =====================  ARENA  ===================== */
+.kt-arena { flex: 1; min-height: 0; display: grid; gap: 14px; grid-template-columns: 1fr; }
+.kt-arena.kt-iki { grid-template-columns: 1fr 1fr; }
+
+.kt-oyuncu {
+    display: flex; flex-direction: column; min-height: 0; min-width: 0;
+    background: var(--kt-zemin);
+    border: 2px solid var(--kt-cizgi); border-radius: 12px; padding: 14px;
+    position: relative; overflow: hidden;
+    transition: border-color .25s, box-shadow .25s;
+}
+.kt-arena.kt-iki .kt-oyuncu.p1 { border-color: rgba(37,99,235,.36); }
+.kt-arena.kt-iki .kt-oyuncu.p2 { border-color: rgba(238,82,83,.36); }
+.kt-oyuncu.bitti { opacity: .8; }
+
+/* üst şerit: kim + puan + seri.
+   (Köşedeki ✕ kalktığı için puana ayrılan sağ boşluğa gerek kalmadı —
+   çıkış artık mod satırından.) */
+.kt-ust { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.kt-kim {
+    display: inline-flex; align-items: center; gap: 7px; padding: 6px 13px; border-radius: 20px;
+    font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: #fff;
+    background: var(--kt-onay);
+}
+.kt-oyuncu.p1 .kt-kim { background: var(--kt-p1); }
+.kt-oyuncu.p2 .kt-kim { background: var(--kt-p2); }
+.kt-puan { margin-left: auto; display: flex; align-items: baseline; gap: 5px; }
+.kt-puan b { font-size: 1.6rem; font-weight: 800; color: var(--kt-yazi); font-variant-numeric: tabular-nums; }
+.kt-puan span { font-size: .74rem; font-weight: 700; text-transform: uppercase; color: var(--kt-sol); }
+.kt-seri {
+    display: none; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px;
+    font-size: .78rem; font-weight: 700; color: #fff; background: var(--kt-vurgu);
+}
+.kt-seri.acik { display: inline-flex; }
+
+/* süre çubuğu */
+.kt-sure { height: 8px; border-radius: 99px; background: var(--kt-cizgi); overflow: hidden; margin-bottom: 12px; }
+.kt-sure i { display: block; height: 100%; width: 100%; border-radius: 99px;
+             background: var(--kt-onay); transition: width .1s linear, background .3s; }
+.kt-sure.az i { background: var(--kt-vurgu); }
+.kt-sure.kritik i { background: var(--kt-hata); }
+
+/* soru */
+.kt-soru {
+    flex: 1; min-height: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 10px 6px 14px; gap: 10px;
+    /* Geniş ekranda soru da şıklar da ortada tek sütunda kalsın; yoksa
+       1300 px'e yayılıp göz soldan sağa taranmak zorunda kalıyor. */
+    width: 100%; max-width: 920px; margin: 0 auto;
+}
+.kt-yon {
+    padding: 5px 13px; border-radius: 20px; font-size: .78rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .03em;
+    color: var(--kt-sol); background: var(--kt-kutu); border: 1px solid var(--kt-cizgi2);
+}
+.kt-kelime { font-weight: 700; line-height: 1.18; word-break: break-word; max-width: 100%; color: #1b2430; }
+.kt-kelime.ar { font-family: 'Arakom', 'Noto Naskh Arabic', serif; font-size: clamp(2.4rem, 7vw, 4.6rem); direction: rtl; }
+.kt-kelime.tr { font-size: clamp(1.5rem, 3.6vw, 2.6rem); direction: ltr; }
+.kt-emoji { font-size: clamp(1.6rem, 4vw, 2.6rem); line-height: 1; }
+
+/* şıklar */
+.kt-siklar {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 9px;
+    width: 100%; max-width: 920px; margin: 0 auto;
+}
+.kt-sik {
+    position: relative; cursor: pointer; min-height: 58px; padding: 11px 12px;
+    display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center;
+    font-family: inherit; font-size: 1.05rem; font-weight: 700; color: var(--kt-yazi);
+    background: var(--kt-kutu); border: 2px solid var(--kt-cizgi); border-radius: 12px;
+    box-shadow: 0 3px 7px rgba(0,0,0,.05);
+    transition: transform .12s, background .16s, border-color .16s, box-shadow .16s;
+    word-break: break-word;
+}
+.kt-sik.ar { font-family: 'Arakom', 'Noto Naskh Arabic', serif; font-size: 1.8rem; direction: rtl; }
+.kt-sik:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--kt-onay); box-shadow: 0 7px 14px rgba(0,0,0,.09); }
+.kt-sik:disabled { cursor: default; box-shadow: none; }
+.kt-sik .kt-tus {
+    position: absolute; top: 5px; left: 9px; font-size: .68rem; font-weight: 700;
+    color: var(--kt-sol); opacity: .8;
+}
+.kt-sik.dogru { background: #E8F9F2; border-color: var(--kt-onay); color: #0E7A5A; }
+.kt-sik.yanlis { background: #FDECEA; border-color: var(--kt-hata); color: #B3261E; }
+.kt-sik.soluk { opacity: .45; }
+
+/* nokta ilerleme */
+.kt-noktalar { display: flex; justify-content: center; gap: 5px; margin-top: 11px; }
+.kt-noktalar i {
+    width: 9px; height: 9px; border-radius: 50%; background: var(--kt-cizgi2);
+    transition: background .2s, transform .2s;
+}
+.kt-noktalar i.simdi { transform: scale(1.5); background: var(--kt-sol); }
+.kt-noktalar i.d { background: var(--kt-onay); }
+.kt-noktalar i.y { background: var(--kt-hata); }
+
+/* uçan puan — sorunun ÜSTÜNDEKİ boşlukta uçar; ortada uçarken
+   kelimenin üstüne biniyordu (açık zeminde iyice göze batıyor). */
+.kt-ucus {
+    position: absolute; left: 50%; top: 22%; transform: translateX(-50%);
+    font-size: 2rem; font-weight: 800; pointer-events: none; z-index: 5;
+    animation: ktUcus .95s ease-out forwards;
+}
+.kt-ucus.arti { color: var(--kt-yesil); text-shadow: 0 3px 10px rgba(39,174,96,.28); }
+.kt-ucus.sifir { color: var(--kt-hata); text-shadow: 0 3px 10px rgba(238,82,83,.28); }
+@keyframes ktUcus {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(12px) scale(.7); }
+    22%  { opacity: 1; transform: translateX(-50%) translateY(-4px) scale(1.12); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-58px) scale(1); }
+}
+.kt-oyuncu.carp { animation: ktCarp .34s ease; }
+@keyframes ktCarp { 0%,100% { transform: none; } 30% { transform: translateX(-5px); } 65% { transform: translateX(5px); } }
+
+/* "bitirdim, rakip oynuyor" */
+.kt-bekle {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; text-align: center; color: var(--kt-sol); font-size: .98rem;
+}
+.kt-bekle b { font-size: 2.8rem; color: var(--kt-yesil); font-variant-numeric: tabular-nums; }
+
+/* geri sayım */
+.kt-gerisayim {
+    position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
+    background: rgba(247,249,252,.94); backdrop-filter: blur(3px);
+    font-size: clamp(4rem, 16vw, 9rem); font-weight: 800; color: var(--kt-yesil);
+}
+.kt-gerisayim span { animation: ktSay .9s ease-out; display: block; }
+@keyframes ktSay { 0% { opacity: 0; transform: scale(2.1); } 40% { opacity: 1; transform: scale(1); } 100% { opacity: .9; } }
+
+/* =====================  SONUÇ  ===================== */
+/* `safe center`: sığıyorsa ortalar, taşıyorsa üstten başlar — düz
+   `center` taşan içerikte tepeyi (kupa ve skoru) ulaşılmaz kılıyor. */
+.kt-sonuc { flex: 1; min-height: 0; overflow-y: auto;
+             display: flex; flex-direction: column; align-items: center;
+             justify-content: center; justify-content: safe center;
+             gap: 16px; padding: 20px 8px; text-align: center; }
+.kt-sonuc-bas { font-size: 1.7rem; font-weight: 800; color: var(--kt-yesil); }
+.kt-yildizlar { display: flex; gap: 8px; }
+.kt-yildizlar svg { width: 46px; height: 46px; }
+.kt-yildizlar svg.dolu { fill: var(--kt-vurgu); filter: drop-shadow(0 4px 10px rgba(243,156,18,.35)); }
+.kt-yildizlar svg.bos { fill: #E3E9F2; }
+
+.kt-ozet { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.kt-kutu {
+    min-width: 112px; padding: 12px 16px; border-radius: 12px;
+    background: var(--kt-zemin); border: 1px solid var(--kt-cizgi);
+}
+.kt-kutu b { display: block; font-size: 1.7rem; font-weight: 800; color: var(--kt-yazi); font-variant-numeric: tabular-nums; }
+.kt-kutu span { display: block; margin-top: 2px; font-size: .74rem; font-weight: 700; text-transform: uppercase; color: var(--kt-sol); }
+
+/* kapışma sonucu: iki sütun */
+.kt-dueello { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: center; width: 100%; max-width: 560px; }
+.kt-dueello .kt-taraf { padding: 16px 12px; border-radius: 12px; background: var(--kt-kutu); border: 2px solid var(--kt-cizgi); }
+.kt-dueello .kt-taraf.p1 { border-color: rgba(37,99,235,.45); }
+.kt-dueello .kt-taraf.p2 { border-color: rgba(238,82,83,.45); }
+.kt-dueello .kt-taraf.kazandi { border-color: var(--kt-vurgu); box-shadow: 0 6px 16px rgba(243,156,18,.22); }
+.kt-dueello .kt-taraf .kt-ad { font-size: .76rem; font-weight: 700; text-transform: uppercase; color: var(--kt-sol); }
+.kt-dueello .kt-taraf .kt-skor { font-size: 2.5rem; font-weight: 800; color: var(--kt-yazi); font-variant-numeric: tabular-nums; }
+.kt-dueello .kt-vs { font-size: .85rem; font-weight: 800; color: var(--kt-sol); }
+.kt-kupa { font-size: 2.8rem; line-height: 1; }
+
+/* yanlışların dökümü */
+.kt-yanlis-liste { width: 100%; max-width: 560px; text-align: left; }
+.kt-yanlis-liste > h4 {
+    margin: 0 0 8px; font-size: .76rem; font-weight: 700;
+    text-transform: uppercase; color: var(--kt-sol); text-align: center;
+}
+.kt-yanlis-liste ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.kt-yanlis-liste li {
+    display: flex; align-items: center; gap: 10px; padding: 9px 13px; border-radius: 10px;
+    background: #FDF3F2; border: 1px solid #F8D7D5;
+}
+.kt-yanlis-liste .ar { font-family: 'Arakom', 'Noto Naskh Arabic', serif; font-size: 1.6rem; direction: rtl; color: #1b2430; }
+.kt-yanlis-liste .tr { margin-left: auto; font-size: .95rem; font-weight: 700; color: var(--kt-yazi); }
+.kt-yanlis-liste .em { font-size: 1.15rem; }
+.kt-yanlis-liste .kt-dahasi {
+    justify-content: center; background: none; border: none;
+    color: var(--kt-sol); font-size: .84rem; padding: 2px;
+}
+
+.kt-dugmeler { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.kt-dug {
+    cursor: pointer; padding: 11px 26px; border-radius: 30px; font-family: inherit;
+    font-size: 1rem; font-weight: 700; color: var(--kt-yazi);
+    background: var(--kt-kutu); border: 2px solid var(--kt-cizgi);
+    box-shadow: 0 3px 7px rgba(0,0,0,.05); transition: transform .15s, border-color .15s;
+}
+.kt-dug:hover { transform: translateY(-2px); border-color: var(--kt-cizgi2); }
+.kt-dug.ana { background: var(--kt-onay); border-color: var(--kt-onay); color: #fff; box-shadow: 0 6px 16px rgba(32,201,151,.3); }
+
+/* Tam ekranda üstteki başlık + düğme şeridi kadarı düşülür.
+   `.kt-oyun` koşulu YOK: test tam ekran açıldığı için lobi ve sonuç
+   ekranı da bütün alanı doldurur, altta gri bir boşluk kalmaz. */
+.fullscreen-accordion .kt-sahne { min-height: calc(100vh - 190px); }
+@media (max-width: 860px) {
+    .fullscreen-accordion .kt-sahne { min-height: calc(100vh - 168px); }
+}
+
+/* =====================  DAR EKRAN  ===================== */
+@media (max-width: 860px) {
+    .kt-sahne { padding: 14px; }
+    /* Lobi telefonda tek ekrana sığsın: BAŞLA ve klavye notu için
+       kaydırmak gerekiyordu. */
+    .kt-lobi { gap: 14px; padding: 14px 4px 12px; }
+    .kt-lobi-bas b { font-size: 1.28rem; }
+    .kt-lobi-bas span.kt-rozet { margin-bottom: 8px; }
+    .kt-kisi { padding: 12px 10px 11px; }
+    .kt-kisi .kt-kisi-ic { font-size: 1.5rem; margin-bottom: 5px; }
+    .kt-basla { padding: 13px 44px; font-size: 1.05rem; }
+    .kt-arena.kt-iki { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    .kt-oyuncu { padding: 11px; }
+    .kt-secim { grid-template-columns: 1fr; }
+    .kt-sik { min-height: 50px; font-size: .95rem; }
+    .kt-sik.ar { font-size: 1.5rem; }
+    .kt-dueello { grid-template-columns: 1fr auto 1fr; gap: 8px; }
+    .kt-yildizlar svg { width: 36px; height: 36px; }
+    /* Telefonda klavye yok: şık numaraları da klavye notu da gizlenir. */
+    .kt-sik .kt-tus { display: none; }
+    .kt-ipucu { display: none; }
+}
+@media (max-width: 520px) {
+    .kt-siklar { grid-template-columns: 1fr; gap: 7px; }
+    .kt-arena.kt-iki .kt-siklar { grid-template-columns: 1fr 1fr; }
+    .kt-kelime.ar { font-size: clamp(2rem, 12vw, 3rem); }
+    .kt-ust { gap: 7px; }
+    .kt-puan b { font-size: 1.25rem; }
+}
+/* Kapışmada tek ekranda iki panel var: yazılar bir tık küçülsün */
+.kt-arena.kt-iki .kt-kelime.ar { font-size: clamp(1.9rem, 4.6vw, 3.4rem); }
+.kt-arena.kt-iki .kt-kelime.tr { font-size: clamp(1.2rem, 2.4vw, 1.9rem); }
+.kt-arena.kt-iki .kt-sik { min-height: 50px; font-size: .95rem; }
+.kt-arena.kt-iki .kt-sik.ar { font-size: 1.5rem; }
+
+/* =====================================================================
+   KOMPAKT KURULUM ŞERİDİ
+   ---------------------------------------------------------------------
+   Test artık listeyi kaplamıyor: kişi sayısı, soru sayısı ve BAŞLA
+   mod satırıyla liste başlığı arasındaki ince şeritte duruyor, liste
+   altta görünmeye devam ediyor (Geylani). Büyük lobi ekranı kalktı.
+   ===================================================================== */
+.kt-serit {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; flex-wrap: wrap; direction: ltr;
+    font-family: 'Arakom', 'Inter', system-ui, sans-serif;
+    --kt-onay: #20C997; --kt-vurgu: #F39C12; --kt-sol: #7A8A9C;
+    --kt-cizgi: #E9EEF5; --kt-cizgi2: #DCE4F0; --kt-yazi: #2B3A4A;
+    --kt-p1: #2563EB; --kt-p2: #EE5253;
+}
+.kt-serit-rozet {
+    padding: 5px 12px; border-radius: 20px; font-size: .76rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .04em; color: #fff;
+    background: var(--kt-vurgu);
+}
+.kt-serit-grup { display: flex; gap: 6px; flex-wrap: wrap; }
+.kt-mini {
+    cursor: pointer; padding: 7px 13px; border-radius: 20px; font-family: inherit;
+    font-size: .88rem; font-weight: 700; color: var(--kt-yazi);
+    background: #F7F9FC; border: 2px solid var(--kt-cizgi);
+    transition: background .15s, border-color .15s, color .15s;
+}
+.kt-mini:hover { border-color: var(--kt-cizgi2); }
+.kt-mini.secili { background: var(--kt-onay); border-color: var(--kt-onay); color: #fff; }
+.kt-mini[data-kisi].secili { background: var(--kt-p1); border-color: var(--kt-p1); }
+.kt-mini[data-kisi="2"].secili { background: var(--kt-p2); border-color: var(--kt-p2); }
+.kt-serit-not { font-size: .8rem; color: var(--kt-sol); }
+.kt-serit-basla {
+    cursor: pointer; padding: 9px 26px; border: none; border-radius: 20px;
+    font-family: inherit; font-size: .95rem; font-weight: 700; text-transform: uppercase;
+    color: #fff; background: var(--kt-onay); box-shadow: 0 4px 10px rgba(32,201,151,.28);
+    transition: transform .15s;
+}
+.kt-serit-basla:hover { transform: translateY(-1px); }
+@media (max-width: 700px) {
+    .kt-serit { gap: 6px; }
+    .kt-mini { padding: 6px 10px; font-size: .8rem; }
+    .kt-serit-basla { padding: 8px 20px; font-size: .88rem; }
+    .kt-serit-not { display: none; }
+}

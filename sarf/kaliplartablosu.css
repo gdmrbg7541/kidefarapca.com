@@ -6412,12 +6412,27 @@ body.muc-takim:not(.muc-takim-ust) #tab1 .container { padding-top: 2px !importan
     transition: transform .26s cubic-bezier(.22, 1, .36, 1);
 }
 #kt-kilavuz.ktk-acik .ktk-kart { transform: none; }
+/* KAPATMA ÇARPISI AŞAĞI İNİLİRKEN DE DURSUN. Eskiden karta mutlak
+   konumlanıyordu; kılavuz uzun olduğu için kaydırınca yukarıda kalıp
+   gözden kayboluyor, öğretmen kapatmak için tâ başa dönmek zorunda
+   kalıyordu (Geylani: "aşağı inildikçe çarpı kaybolmasın"). Şimdi sıfır
+   yükseklikli YAPIŞKAN bir yuvanın içinde: satır kaplamıyor, kartın sağ
+   üstünde duruyor ve kaydırıldıkça ekranın üstüne yapışıyor. */
+.ktk-kapat-yuva {
+    position: sticky; top: 0; height: 0; z-index: 5;
+    display: flex; justify-content: flex-end;
+    margin-top: calc(-18px * var(--ktk-olcek));
+    margin-right: calc(-22px * var(--ktk-olcek));
+    pointer-events: none;                 /* yuva tıklamayı yutmasın */
+}
 .ktk-kapat {
-    position: absolute; top: calc(16px * var(--ktk-olcek)); right: calc(16px * var(--ktk-olcek));
+    position: relative; pointer-events: auto;
     width: calc(38px * var(--ktk-olcek)); height: calc(38px * var(--ktk-olcek));
     display: flex; align-items: center; justify-content: center;
-    border: none; border-radius: 50%; cursor: pointer; padding: 0; z-index: 2;
+    border: none; border-radius: 50%; cursor: pointer; padding: 0;
     background: #F1F3F7; color: #6B7280; transition: background .15s, color .15s;
+    /* Yazının üstünde dururken sınırı belli olsun */
+    box-shadow: 0 2px 10px rgba(15, 23, 42, .16), 0 0 0 calc(4px * var(--ktk-olcek)) #fff;
 }
 .ktk-kapat:hover { background: #FF7675; color: #fff; }
 .ktk-kapat svg { width: calc(18px * var(--ktk-olcek)); height: calc(18px * var(--ktk-olcek)); }
@@ -6587,6 +6602,8 @@ body.muc-takim:not(.muc-takim-ust) #tab1 .container { padding-top: 2px !importan
     .ktk-bolum { grid-template-columns: 1fr; }
     .ktk-bolum:nth-child(odd) .ktk-yazi { order: 0; }
     .ktk-kart { padding: 26px 20px 20px; }
+    /* Dar ekranda kartın dolgusu farklı; yuva ona göre kaydırılıyor. */
+    .ktk-kapat-yuva { margin-top: -12px; margin-right: -6px; }
 }
 @media (prefers-reduced-motion: reduce) {
     #kt-kilavuz, .ktk-kart { transition: none; }
