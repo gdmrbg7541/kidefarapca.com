@@ -95,6 +95,227 @@ const sigaSablonlari = {
 };
 
 const wordEasterEggs = {
+    /* 6. sınıf 3-4. ünite (الصِّحَّة · الْمَلَابِس) için eklenen kökler:
+       kitaptaki سَمِيك / رَقِيق / قَبِيح sıfatları ile التَّدْخِين tabloda
+       karşılıksız kalıyordu. (جدد ve خير zaten dosyada tanımlıydı;
+       صَلَاة / مُصَلٍّ / مُصَلًّى mevcut صلي köküne eklendi.) */
+    "قبح": {
+        11: {
+            base: {
+                emoji: "😖",
+                arText: "قَبُحَ",
+                trText: "Çirkinleşti",
+                ornek: [
+                    { ar: "قَبُحَ الْمَنْظَرُ", tr: "Manzara çirkinleşti." },
+                    { ar: "قَبُحَ فِعْلُهُ", tr: "Davranışı çirkinleşti." }
+                ]
+            }
+        },
+        12: {
+            base: {
+                emoji: "😖",
+                arText: "يَقْبُحُ",
+                trText: "Çirkinleşir",
+                ornek: [
+                    { ar: "يَقْبُحُ الْكَذِبُ", tr: "Yalan çirkindir." },
+                    { ar: "يَقْبُحُ الْوَسَخُ", tr: "Kirlilik çirkin görünür." }
+                ]
+            }
+        },
+        22: {
+            base: {
+                emoji: "🙁",
+                arText: "قَبَاحَة",
+                trText: "Çirkinlik",
+                ornek: [
+                    { ar: "قَبَاحَةُ الْكَذِبِ ظَاهِرَةٌ", tr: "Yalanın çirkinliği açıktır." },
+                    { ar: "لَا أُحِبُّ الْقَبَاحَةَ", tr: "Çirkinliği sevmem." }
+                ]
+            }
+        },
+        35: {
+            base: {
+                emoji: "👎",
+                arText: "قَبِيح",
+                trText: "Çirkin",
+                ornek: [
+                    { ar: "هَذَا حِذَاءٌ قَبِيحٌ", tr: "Bu çirkin bir ayakkabıdır." },
+                    { ar: "اللَّوْنُ قَبِيحٌ", tr: "Renk çirkindir." }
+                ]
+            }
+        },
+        50: {
+            base: {
+                emoji: "👎",
+                arText: "أَقْبَح",
+                trText: "Daha çirkin / En çirkin",
+                ornek: [
+                    { ar: "هَذَا أَقْبَحُ مِنْ ذَاكَ", tr: "Bu ondan daha çirkindir." },
+                    { ar: "الْكَذِبُ أَقْبَحُ الْأَفْعَالِ", tr: "Yalan davranışların en çirkinidir." }
+                ]
+            }
+        }
+    },
+    "سمك": {
+        11: {
+            base: {
+                emoji: "📏",
+                arText: "سَمُكَ",
+                trText: "Kalınlaştı",
+                ornek: [
+                    { ar: "سَمُكَ الثَّوْبُ", tr: "Elbise kalınlaştı." },
+                    { ar: "سَمُكَ الْجِدَارُ", tr: "Duvar kalınlaştı." }
+                ]
+            }
+        },
+        12: {
+            base: {
+                emoji: "📏",
+                arText: "يَسْمُكُ",
+                trText: "Kalınlaşır",
+                ornek: [
+                    { ar: "يَسْمُكُ الثَّلْجُ فِي الشِّتَاءِ", tr: "Kışın kar kalınlaşır." },
+                    { ar: "يَسْمُكُ الْوَرَقُ", tr: "Kâğıt kalınlaşır." }
+                ]
+            }
+        },
+        22: {
+            base: {
+                emoji: "📐",
+                arText: "سَمَاكَة",
+                trText: "Kalınlık",
+                ornek: [
+                    { ar: "سَمَاكَةُ الثَّوْبِ مُنَاسِبَةٌ", tr: "Elbisenin kalınlığı uygundur." },
+                    { ar: "مَا سَمَاكَةُ الْجِدَارِ؟", tr: "Duvarın kalınlığı ne kadar?" }
+                ]
+            }
+        },
+        35: {
+            base: {
+                emoji: "🧥",
+                arText: "سَمِيك",
+                trText: "Kalın",
+                ornek: [
+                    { ar: "هَذَا الثَّوْبُ سَمِيكٌ", tr: "Bu elbise kalındır." },
+                    { ar: "أَلْبَسُ مِعْطَفًا سَمِيكًا", tr: "Kalın bir palto giyerim." }
+                ]
+            }
+        },
+        50: {
+            base: {
+                emoji: "🧥",
+                arText: "أَسْمَك",
+                trText: "Daha kalın / En kalın",
+                ornek: [
+                    { ar: "هَذَا أَسْمَكُ مِنْ ذَاكَ", tr: "Bu ondan daha kalındır." },
+                    { ar: "الْمِعْطَفُ أَسْمَكُ مِنَ الْقَمِيصِ", tr: "Palto gömlekten daha kalındır." }
+                ]
+            }
+        }
+    },
+    "رقق": {
+        1: {
+            base: {
+                emoji: "🍃",
+                arText: "رَقَّ",
+                trText: "İnceldi / Yumuşadı",
+                ornek: [
+                    { ar: "رَقَّ الثَّوْبُ", tr: "Elbise inceldi." },
+                    { ar: "رَقَّ قَلْبُهُ", tr: "Kalbi yumuşadı." }
+                ]
+            }
+        },
+        4: {
+            base: {
+                emoji: "🍃",
+                arText: "يَرِقُّ",
+                trText: "İncelir / Yumuşar",
+                ornek: [
+                    { ar: "يَرِقُّ الْوَرَقُ", tr: "Kâğıt incelir." },
+                    { ar: "يَرِقُّ قَلْبُ الْأُمِّ", tr: "Annenin kalbi yumuşar." }
+                ]
+            }
+        },
+        22: {
+            base: {
+                emoji: "💗",
+                arText: "رِقَّة",
+                trText: "İncelik / Naiflik",
+                ornek: [
+                    { ar: "رِقَّةُ الْقَلْبِ نِعْمَةٌ", tr: "Kalp inceliği bir nimettir." },
+                    { ar: "تَكَلَّمَ بِرِقَّةٍ", tr: "Nazikçe konuştu." }
+                ]
+            }
+        },
+        35: {
+            base: {
+                emoji: "🧣",
+                arText: "رَقِيق",
+                trText: "İnce / Nazik",
+                ornek: [
+                    { ar: "هَذَا الثَّوْبُ رَقِيقٌ", tr: "Bu elbise incedir." },
+                    { ar: "هُوَ وَلَدٌ رَقِيقٌ", tr: "O nazik bir çocuktur." }
+                ]
+            }
+        },
+        50: {
+            base: {
+                emoji: "🧣",
+                arText: "أَرَقّ",
+                trText: "Daha ince / En ince",
+                ornek: [
+                    { ar: "هَذَا أَرَقُّ مِنْ ذَاكَ", tr: "Bu ondan daha incedir." },
+                    { ar: "الْقَمِيصُ أَرَقُّ مِنَ الْمِعْطَفِ", tr: "Gömlek paltodan daha incedir." }
+                ]
+            }
+        }
+    },
+    "دخن": {
+        58: {
+            base: {
+                emoji: "🚬",
+                arText: "دَخَّنَ",
+                trText: "Sigara içti",
+                ornek: [
+                    { ar: "دَخَّنَ الرَّجُلُ", tr: "Adam sigara içti." },
+                    { ar: "لَا تُدَخِّنْ فِي الْبَيْتِ", tr: "Evde sigara içme." }
+                ]
+            }
+        },
+        59: {
+            base: {
+                emoji: "🚬",
+                arText: "يُدَخِّنُ",
+                trText: "Sigara içer",
+                ornek: [
+                    { ar: "لَا يُدَخِّنُ أَبِي", tr: "Babam sigara içmez." },
+                    { ar: "مَنْ يُدَخِّنُ يَمْرَضُ", tr: "Sigara içen hastalanır." }
+                ]
+            }
+        },
+        60: {
+            base: {
+                emoji: "🚭",
+                arText: "دَخِّنْ",
+                trText: "Sigara iç!",
+                ornek: [
+                    { ar: "لَا تُدَخِّنْ أَبَدًا", tr: "Asla sigara içme." },
+                    { ar: "لَا تُدَخِّنْ فِي الْمُسْتَشْفَى", tr: "Hastanede sigara içme." }
+                ]
+            }
+        },
+        61: {
+            base: {
+                emoji: "🚭",
+                arText: "تَدْخِين",
+                trText: "Sigara içmek",
+                ornek: [
+                    { ar: "التَّدْخِينُ مُضِرٌّ", tr: "Sigara içmek zararlıdır." },
+                    { ar: "التَّدْخِينُ مَمْنُوعٌ هُنَا", tr: "Burada sigara içmek yasaktır." }
+                ]
+            }
+        }
+    },
     "نول": {
         33: { 
             base: { 
@@ -7161,6 +7382,28 @@ const wordEasterEggs = {
         },
         60: { 
             base: { emoji: "❗", arText: "صَلِّ", trText: "Namaz kıl!", ornek: { ar: "صَلِّ صَلَاتَكَ", tr: "Namazını kıl." } },
+        },
+        /* 6. sınıf 1. ve 3. ünitede geçen صَلَاة / مُصَلٍّ / مُصَلًّى eklendi.
+           61 KUTUSU: bâbın düzenli mastarı تَصْلِيَة'dir; dilde yerleşmiş ve
+           ders kitabının kullandığı mastar صَلَاة olduğu için kutuya o yazıldı,
+           düzenli biçim anlam satırında anılıyor. */
+        61: {
+            base: { emoji: "🕌", arText: "صَلَاة", trText: "Namaz / Dua (düzenli mastarı: تَصْلِيَة)", ornek: [
+                { ar: "الصَّلَاةُ عِمَادُ الدِّينِ", tr: "Namaz dinin direğidir." },
+                { ar: "تَوَضَّأَ لِلصَّلَاةِ", tr: "Namaz için abdest aldı." }
+            ] },
+        },
+        62: {
+            base: { emoji: "🧎", arText: "مُصَلٍّ", trText: "Namaz kılan", ornek: [
+                { ar: "الْمُصَلِّي فِي الْمَسْجِدِ", tr: "Namaz kılan kişi mesciddedir." },
+                { ar: "هُوَ مُصَلٍّ خَاشِعٌ", tr: "O, huşû içinde namaz kılan biridir." }
+            ] },
+        },
+        63: {
+            base: { emoji: "🕋", arText: "مُصَلًّى", trText: "Namazgâh / Namaz kılınan yer", ornek: [
+                { ar: "الْمُصَلَّى نَظِيفٌ وَوَاسِعٌ", tr: "Namazgâh temiz ve geniştir." },
+                { ar: "ذَهَبَ إِلَى الْمُصَلَّى", tr: "Namazgâha gitti." }
+            ] },
         }
     },
 "سوي": {
@@ -25323,12 +25566,27 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     /* 366 — خ ر ف : Sonbahar; bunama (sâlim) */
     "خرف": {
-        20: { tip: "mevsim", base: { emoji: "🍂", arText: "خَرِيف", trText: "Sonbahar", ornek: { ar: "فِي الْخَرِيفِ تَسْقُطُ الْأَوْرَاقُ", tr: "Sonbaharda yapraklar dökülür." } }, not: "SEMANTİK ÇEKİRDEK: «DEVŞİRMEK / DÖKÜLMEK». خَرَفَ meyveyi toplamaktır; خَرِيف hasat ve yaprak dökümü mevsimidir. Aynı kökten خَرِف (bunamış) gelir: aklı «dökülen» kimse." },
+        /* 20 → 35: خَرِيف فَعِيل veznidir, فِعْل (20) değil.
+           22 → 23: خِرَاف فِعَال veznidir, فَعَال (22) değil.
+           26 · 29: خَرُوف ve çoğulu خِرْفَان aynı kökten; sözlükte kelime
+           olarak vardı, tabloda kutusu yoktu. */
+        35: { tip: "mevsim", base: { emoji: "🍂", arText: "خَرِيف", trText: "Sonbahar", ornek: { ar: "فِي الْخَرِيفِ تَسْقُطُ الْأَوْرَاقُ", tr: "Sonbaharda yapraklar dökülür." } }, not: "SEMANTİK ÇEKİRDEK: «DEVŞİRMEK / DÖKÜLMEK». خَرَفَ meyveyi toplamaktır; خَرِيف hasat ve yaprak dökümü mevsimidir. Aynı kökten خَرِف (bunamış) gelir: aklı «dökülen» kimse." },
         18: { base: { emoji: "👴", arText: "خَرِف", trText: "Bunamış, aklı dağılmış" } },
         1: { base: { emoji: "🧺", arText: "خَرَفَ", trText: "(Meyve) devşirdi, topladı" } },
         4: { base: { emoji: "🔁", arText: "يَخْرِفُ", trText: "Devşirir, toplar" } },
         5: { base: { emoji: "📣", arText: "اِخْرِفْ", trText: "Devşir!" } },
-        22: { base: { emoji: "🍁", arText: "خِرَاف", trText: "Devşirme, hasat (masdar)" } }
+        23: { base: { emoji: "🍁", arText: "خِرَاف", trText: "Devşirme, hasat (masdar)", ornek: [
+                { ar: "خِرَافُ الثِّمَارِ فِي الْخَرِيفِ", tr: "Meyve devşirme sonbahardadır." },
+                { ar: "بَدَأَ خِرَافُ الْعِنَبِ", tr: "Üzüm hasadı başladı." }
+            ] } },
+        26: { base: { emoji: "🐑", arText: "خَرُوف", trText: "Koyun / Kuzu", ornek: [
+                { ar: "الْخَرُوفُ فِي الْمَرْعَى", tr: "Koyun otlaktadır." },
+                { ar: "ضَحَّى بِخَرُوفٍ", tr: "Bir koyun kurban etti." }
+            ] } },
+        29: { base: { emoji: "🐏", arText: "خِرْفَان", trText: "Koyunlar / Kuzular (خَرُوف'un çoğulu)", ornek: [
+                { ar: "الْخِرْفَانُ فِي الْحَظِيرَةِ", tr: "Kuzular ağıldadır." },
+                { ar: "يَرْعَى الرَّاعِي الْخِرْفَانَ", tr: "Çoban kuzuları otlatıyor." }
+            ] } }
     },
 
     /* 367 — و ر ق : Yaprak, kâğıt (misâl vâvî) */

@@ -3063,7 +3063,82 @@ const sozlukVerileri = {
 
     "Kalıp: Eline Sağlık": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "👏", arText: "سَلِمَتْ يَدَاكِ", trText: "Eline sağlık", ornek: { ar: "الطَّعَامُ لَذِيذٌ، سَلِمَتْ يَدَاكِ", tr: "Yemek lezzetli, eline sağlık." } } } },
 
-    "Zarf: Erkenden": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "⏰", arText: "مُبَكِّرًا", trText: "Erkenden / Erken", ornek: { ar: "أَسْتَيْقِظُ مُبَكِّرًا كُلَّ يَوْمٍ", tr: "Her gün erken kalkarım." } } } }
+    "Zarf: Erkenden": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "⏰", arText: "مُبَكِّرًا", trText: "Erkenden / Erken", ornek: { ar: "أَسْتَيْقِظُ مُبَكِّرًا كُلَّ يَوْمٍ", tr: "Her gün erken kalkarım." } } } },
+
+    /* ====================================================================
+       6. SINIF · 3-4. ÜNİTE (الصِّحَّة · الْمَلَابِس) — kitaptaki câmid
+       isimler. Bunlar kalıp tablosundan türemiyor, sözlükte durmaları
+       gerekiyor: kışlık-yazlık giysiler, temizlik eşyaları, mevsimler.
+       ==================================================================== */
+    "Giysi: Kazak": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "🧶", arText: "بُلُوفَر", trText: "Kazak", ornek: { ar: "الْبُلُوفَرُ قَدِيمٌ", tr: "Kazak eskidir." } } }, cogul: "بُلُوفَرَات", cogulTr: "Kazaklar" },
+
+    "Giysi: Başörtüsü": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "🧕", arText: "خِمَار", trText: "Başörtüsü", ornek: { ar: "خِمَارُ أُخْتِي أَبْيَضُ", tr: "Kız kardeşimin başörtüsü beyazdır." } } }, cogul: "أَخْمِرَة", cogulTr: "Başörtüleri" },
+
+    "Giysi: Elbise": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "👗", arText: "فُسْتَان", trText: "Elbise", ornek: { ar: "الْفُسْتَانُ بُرْتُقَالِيٌّ", tr: "Elbise turuncudur." } } }, cogul: "فَسَاتِين", cogulTr: "Elbiseler" },
+
+    "Giysi: Çizme": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "🥾", arText: "جَزْمَة", trText: "Çizme", ornek: { ar: "هَذِهِ الْجَزْمَةُ خَفِيفَةٌ", tr: "Bu çizme hafiftir." } } }, cogul: "جَزْمَات", cogulTr: "Çizmeler" },
+
+    "Giysi: Ceket": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "🧥", arText: "جَاكِيت", trText: "Ceket", ornek: { ar: "الْجَاكِيتُ بُنِّيٌّ", tr: "Ceket kahverengidir." } } }, cogul: "جَاكِيتَات", cogulTr: "Ceketler" },
+
+    "Giysi: Kemer": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "🎗️", arText: "حِزَام", trText: "Kemer", ornek: { ar: "حِزَامُ عَلِيٍّ أَسْوَدُ", tr: "Ali'nin kemeri siyahtır." } } }, cogul: "أَحْزِمَة", cogulTr: "Kemerler" },
+
+    "Giysi: Çorap": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "🧦", arText: "جَوْرَب", trText: "Çorap", ornek: { ar: "هَذَا الْجَوْرَبُ طَوِيلٌ", tr: "Bu çorap uzundur." } } }, cogul: "جَوَارِب", cogulTr: "Çoraplar" },
+
+    "Giysi: Eteklik": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "👘", arText: "تَنُّورَة", trText: "Eteklik", ornek: { ar: "أُرِيدُ تَنُّورَةً طَوِيلَةً", tr: "Uzun bir eteklik istiyorum." } } }, cogul: "تَنَانِير", cogulTr: "Eteklikler" },
+
+    "Giysi: Bluz": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "👚", arText: "بْلُوزَة", trText: "Bluz", ornek: { ar: "هَذِهِ الْبْلُوزَةُ وَرْدِيَّةٌ", tr: "Bu bluz pembedir." } } }, cogul: "بْلُوزَات", cogulTr: "Bluzlar" },
+
+    "Giysi: Tişört": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "👕", arText: "تِيشِيرْت", trText: "Tişört", ornek: { ar: "هَذَا تِيشِيرْتٌ أَصْفَرُ", tr: "Bu sarı bir tişörttür." } } }, cogul: "تِيشِيرْتَات", cogulTr: "Tişörtler" },
+
+    "Giysi: Terlik": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "🩴", arText: "شِبْشِب", trText: "Terlik", ornek: { ar: "الشِّبْشِبُ بُرْتُقَالِيٌّ", tr: "Terlik turuncudur." } } }, cogul: "شَبَاشِب", cogulTr: "Terlikler" },
+
+    "Giysi: Şort": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "🩳", arText: "شُورْت", trText: "Şort", ornek: { ar: "أَلْبَسُ الشُّورْتَ فِي الصَّيْفِ", tr: "Yazın şort giyerim." } } }, cogul: "شُورْتَات", cogulTr: "Şortlar" },
+
+    "Giysi: Yün": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "🐑", arText: "صُوف", trText: "Yün", ornek: { ar: "هَذَا الْبُلُوفَرُ مِنَ الصُّوفِ", tr: "Bu kazak yündendir." } } } },
+
+    "Giysi: Pamuk": { isDictOnly: true, tip: "kiyafet", tekil: { base: { emoji: "🌱", arText: "قُطْن", trText: "Pamuk", ornek: { ar: "الْقَمِيصُ مِنَ الْقُطْنِ", tr: "Gömlek pamuktandır." } } } },
+
+    "Sağlık: Baş Ağrısı": { isDictOnly: true, tip: "saglik", tekil: { base: { emoji: "🤕", arText: "صُدَاع", trText: "Baş ağrısı", ornek: { ar: "عِنْدَهُ صُدَاعٌ شَدِيدٌ", tr: "Onun şiddetli baş ağrısı var." } } } },
+
+    "Sağlık: Grip": { isDictOnly: true, tip: "saglik", tekil: { base: { emoji: "🤧", arText: "نَزْلَة", trText: "Grip / Nezle", ornek: { ar: "عِنْدَكَ نَزْلَةٌ", tr: "Sende grip var." } } } },
+
+    "Sağlık: Poliklinik": { isDictOnly: true, tip: "saglik", tekil: { base: { emoji: "🏥", arText: "عِيَادَة", trText: "Muayenehane / Poliklinik", ornek: { ar: "أَيْنَ عِيَادَةُ الطَّبِيبِ؟", tr: "Doktorun muayenehanesi nerede?" } } }, cogul: "عِيَادَات", cogulTr: "Poliklinikler" },
+
+    "Sağlık: Acil Servis": { isDictOnly: true, tip: "saglik", tekil: { base: { emoji: "🚑", arText: "قِسْمُ الطَّوَارِئِ", trText: "Acil servis", ornek: { ar: "الْعِيَادَةُ مُقَابِلَ قِسْمِ الطَّوَارِئِ", tr: "Poliklinik acil servisin karşısındadır." } } } },
+
+    "Sağlık: Reçete": { isDictOnly: true, tip: "saglik", tekil: { base: { emoji: "📝", arText: "وَصْفَة طِبِّيَّة", trText: "Reçete", ornek: { ar: "يَكْتُبُ الطَّبِيبُ وَصْفَةً طِبِّيَّةً", tr: "Doktor bir reçete yazıyor." } } } },
+
+    "Eşya: Diş Fırçası": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "🪥", arText: "فُرْشَاةُ الْأَسْنَانِ", trText: "Diş fırçası", ornek: { ar: "أُنَظِّفُ أَسْنَانِي بِفُرْشَاةِ الْأَسْنَانِ", tr: "Dişlerimi diş fırçasıyla temizlerim." } } } },
+
+    "Eşya: Süpürge": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "🧹", arText: "مِكْنَسَة", trText: "Süpürge", ornek: { ar: "تُنَظِّفُ أُمِّي الْبَيْتَ بِالْمِكْنَسَةِ", tr: "Annem evi süpürgeyle temizler." } } }, cogul: "مَكَانِس", cogulTr: "Süpürgeler" },
+
+    "Eşya: Çamaşır Makinesi": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "🧺", arText: "غَسَّالَة", trText: "Çamaşır makinesi", ornek: { ar: "تَغْسِلُ خَالَتِي الْمَلَابِسَ بِالْغَسَّالَةِ", tr: "Teyzem çamaşırları makineyle yıkar." } } }, cogul: "غَسَّالَات", cogulTr: "Çamaşır makineleri" },
+
+    "Eşya: Çöp Kutusu": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "🗑️", arText: "سَلَّةُ الْقُمَامَةِ", trText: "Çöp kutusu", ornek: { ar: "اِرْمِ الْقُمَامَةَ فِي سَلَّةِ الْقُمَامَةِ", tr: "Çöpü çöp kutusuna at." } } } },
+
+    "Eşya: Tabak": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "🍽️", arText: "طَبَق", trText: "Tabak", ornek: { ar: "يَغْسِلُ أَخِي الْأَطْبَاقَ", tr: "Kardeşim tabakları yıkıyor." } } }, cogul: "أَطْبَاق", cogulTr: "Tabaklar" },
+
+    "Eşya: Buzdolabı": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "🧊", arText: "ثَلَّاجَة", trText: "Buzdolabı", ornek: { ar: "ثَلَّاجَةُ الْبَيْتِ قَدِيمَةٌ", tr: "Evin buzdolabı eskidir." } } }, cogul: "ثَلَّاجَات", cogulTr: "Buzdolapları" },
+
+    "Doğa: Kar": { isDictOnly: true, tip: "doga", tekil: { base: { emoji: "❄️", arText: "ثَلْج", trText: "Kar", ornek: { ar: "يَسْقُطُ الثَّلْجُ فِي الشِّتَاءِ", tr: "Kışın kar yağar." } } }, cogul: "ثُلُوج", cogulTr: "Karlar" },
+
+    "Doğa: Yağmur": { isDictOnly: true, tip: "doga", tekil: { base: { emoji: "🌧️", arText: "مَطَر", trText: "Yağmur", ornek: { ar: "يَسْقُطُ الْمَطَرُ فِي كُلِّ الْفُصُولِ", tr: "Yağmur bütün mevsimlerde yağar." } } }, cogul: "أَمْطَار", cogulTr: "Yağmurlar" },
+
+    "Doğa: Yaprak": { isDictOnly: true, tip: "doga", tekil: { base: { emoji: "🍂", arText: "وَرَقَة", trText: "Yaprak", ornek: { ar: "تَتَسَاقَطُ الْأَوْرَاقُ فِي الْخَرِيفِ", tr: "Sonbaharda yapraklar dökülür." } } }, cogul: "أَوْرَاق", cogulTr: "Yapraklar" },
+
+    "Mevsim: İlkbahar": { isDictOnly: true, tip: "mevsim", tekil: { base: { emoji: "🌸", arText: "الرَّبِيع", trText: "İlkbahar", ornek: { ar: "الْجَوُّ مُعْتَدِلٌ فِي الرَّبِيعِ", tr: "İlkbaharda hava ılımandır." } } } },
+
+    "Mevsim: Yaz": { isDictOnly: true, tip: "mevsim", tekil: { base: { emoji: "☀️", arText: "الصَّيْف", trText: "Yaz", ornek: { ar: "الْجَوُّ حَارٌّ فِي الصَّيْفِ", tr: "Yazın hava sıcaktır." } } } },
+
+    "Mevsim: Sonbahar": { isDictOnly: true, tip: "mevsim", tekil: { base: { emoji: "🍁", arText: "الْخَرِيف", trText: "Sonbahar", ornek: { ar: "تَتَسَاقَطُ الْأَوْرَاقُ فِي الْخَرِيفِ", tr: "Sonbaharda yapraklar dökülür." } } } },
+
+    "Mevsim: Kış": { isDictOnly: true, tip: "mevsim", tekil: { base: { emoji: "🌨️", arText: "الشِّتَاء", trText: "Kış", ornek: { ar: "الْجَوُّ بَارِدٌ فِي الشِّتَاءِ", tr: "Kışın hava soğuktur." } } } },
+
+    "Uzuv: Burun": { isDictOnly: true, tip: "uzuv", tekil: { base: { emoji: "👃", arText: "أَنْف", trText: "Burun", ornek: { ar: "الْأَنْفُ يَشُمُّ", tr: "Burun koklar." } } }, cogul: "أُنُوف", cogulTr: "Burunlar" },
+
+    "Uzuv: Göz": { isDictOnly: true, tip: "uzuv", tekil: { base: { emoji: "👁️", arText: "عَيْن", trText: "Göz", ornek: { ar: "الْعَيْنُ تَرَى وَالْأُذُنُ تَسْمَعُ", tr: "Göz görür, kulak işitir." } } }, cogul: "عُيُون", cogulTr: "Gözler" },
+
+    "Uzuv: Diş": { isDictOnly: true, tip: "uzuv", tekil: { base: { emoji: "🦷", arText: "سِنّ", trText: "Diş", ornek: { ar: "أُنَظِّفُ أَسْنَانِي قَبْلَ النَّوْمِ", tr: "Uyumadan önce dişlerimi temizlerim." } } }, cogul: "أَسْنَان", cogulTr: "Dişler" }
 };
 
 // Kökler dosyasındaki eski sözlük verilerini yeni sözlük verileriyle birleştir
