@@ -31,7 +31,38 @@ const db = firebase.firestore();
 if (!FIREBASE_HAZIR) console.warn("[BIY] firebaseConfig eksik. Canlı yarışma çalışmaz.");
 const KOLEKSIYON = "bilgiYarismasi";
 const PDF_AKTIF = false;     // PDF'ler hazır olunca true yap → PDF önizleme/indirme geri gelir
-const SORU_SURESI = 60;      // saniye
+const SORU_SURESI = 60;      // saniye — zorluk bilinmiyorsa yedek değer
+/* ZORLUĞA GÖRE SORU SÜRESİ ------------------------------------------------
+   Kolay 30 · Orta 45 · Zor 60 saniye. Öğretmen ana ekrandaki kronometre
+   düğmesinden her seviye için hazır bir değere basabilir ya da elle saniye
+   yazabilir; seçim localStorage['biy_sure'] içinde saklanır.
+   Süre, soru odaya yazılırken zorluğuna göre belirlenir (soruSuresi alanı).
+   Puan hesabı geçmiş soruların süresini state.turSureleri'nden okur; böylece
+   öğretmen tur ortasında süreyi değiştirse bile eski cevapların puanı
+   kaymaz (bkz. _puanParca). */
+const SURE_VARSAYILAN = { 1: 30, 2: 45, 3: 60 };
+const SURE_SECENEK = [15, 20, 30, 45, 60, 90, 120];
+const SURE_ENAZ = 5, SURE_ENCOK = 300;
+const SURE_ETIKET = { 1: "Kolay", 2: "Orta", 3: "Zor" };
+
+function sureOku(){
+  const s = { 1: SURE_VARSAYILAN[1], 2: SURE_VARSAYILAN[2], 3: SURE_VARSAYILAN[3] };
+  try {
+    const k = JSON.parse(localStorage.getItem('biy_sure') || 'null');
+    if (k) [1,2,3].forEach(z => {
+      const v = parseInt(k[z], 10);
+      if (isFinite(v) && v >= SURE_ENAZ && v <= SURE_ENCOK) s[z] = v;
+    });
+  } catch(e){}
+  return s;
+}
+function sureYaz(s){ try { localStorage.setItem('biy_sure', JSON.stringify(s)); } catch(e){} }
+/* Bir sorunun süresi — zorluğu yoksa/tanınmıyorsa orta seviye sayılır. */
+function soruSuresi(q){
+  const z = q ? parseInt(q.zorluk, 10) : 0;
+  const t = (state && state.sureler) || SURE_VARSAYILAN;
+  return t[z] || t[2] || SORU_SURESI;
+}
 const TUR_SORU_SAYISI = 20;  // varsayılan soru sayısı
 const SORU_SAYI_SECENEK = [10, 20, 25, 50];
 const TOPLAM_PUAN = 1000;    // ana tur toplam puanı (yedekler hariç)
@@ -1608,6 +1639,8 @@ function tahtaIcerikHtml(soru, sonucMu){
 /* ---------------- Durum ---------------- */
 const state = {
   mod: null, uid: null,
+  sureler: sureOku(),        // {1,2,3} zorluğa göre saniye (localStorage'dan)
+  turSureleri: {},           // soruIndex → o soruya verilen süre (puan hesabı için sabit)
   bicimSecim: { "test": true, "surukle": true, "eslestir": true, "yazma": true, "bosluk": true, "dogruyanlis": true, "cumlesira": true },
   oyunModu: "takim",         // takim | birey | okul  (yarışma biçimi)
   bekleyenListe: [],         // birey modu: onay bekleyen katılımcılar
@@ -2654,6 +2687,104 @@ const BIY = {
     document.removeEventListener("mousedown", BIY._bicimDis);
   },
   _bicimDis(e){ if (!e.target.closest || !e.target.closest("#bicimSec")) BIY.bicimKapat(); },
+
+  /* ---------- ZORLUĞA GÖRE SORU SÜRESİ ----------
+     Üç seviye (kolay/orta/zor) için ayrı süre. Her satırda hazır saniye
+     düğmeleri ve bir de ELLE giriş alanı var. Değişiklik anında kaydedilir
+     (localStorage) ve bundan SONRAKİ sorulara uygulanır; verilmiş cevapların
+     puanı state.turSureleri sayesinde etkilenmez. */
+  sureAcKapat(){
+    const p = $("sureSecPanel"), b = $("sureSecBtn"); if (!p) return;
+    if (p.hidden){
+      BIY._surePanelDoldur();
+      p.hidden = false;
+      if (b) b.setAttribute("aria-expanded", "true");
+      BIY._sureKonumla();
+      window.addEventListener("resize", BIY._sureKonumla);
+      setTimeout(() => document.addEventListener("mousedown", BIY._sureDis), 0);
+    } else BIY.sureKapat();
+  },
+  sureKapat(){
+    const p = $("sureSecPanel"), b = $("sureSecBtn");
+    if (p) p.hidden = true;
+    if (b) b.setAttribute("aria-expanded", "false");
+    document.removeEventListener("mousedown", BIY._sureDis);
+    window.removeEventListener("resize", BIY._sureKonumla);
+  },
+  /* Panel düğmesinin altında ortalanır; ama düğme satırın en sağında olduğu
+     için dar ekranda ekrandan taşıp yatay kaydırma çubuğu yaratıyordu.
+     Ölçüp görünüm alanının içine çekiyoruz. */
+  _sureKonumla(){
+    const p = $("sureSecPanel"); if (!p || p.hidden) return;
+    /* Kaydırmayı TRANSFORM ile değil LEFT ile yapıyoruz: transform
+       açılış animasyonuna ait (animation-fill-mode:both onu geri yazar). */
+    p.style.left = "50%";
+    const k = p.getBoundingClientRect(), pay = 10;
+    let kay = 0;
+    if (k.right > window.innerWidth - pay) kay = (window.innerWidth - pay) - k.right;
+    if (k.left + kay < pay) kay = pay - k.left;
+    if (kay) p.style.left = "calc(50% + " + Math.round(kay) + "px)";
+  },
+  _sureDis(e){ if (!e.target.closest || !e.target.closest("#sureSec")) BIY.sureKapat(); },
+
+  _surePanelDoldur(){
+    const p = $("sureSecPanel"); if (!p) return;
+    const t = state.sureler || SURE_VARSAYILAN;
+    const yildiz = z => '<span class="biy-sr-yildiz">' + "★".repeat(z) +
+                        '<span class="biy-sr-sonuk">' + "★".repeat(3 - z) + '</span></span>';
+    const satir = z => {
+      const v = t[z];
+      const tuslar = SURE_SECENEK.map(n =>
+        '<button type="button" class="biy-sr-tus' + (n === v ? ' secili' : '') +
+        '" data-z="' + z + '" data-n="' + n + '" onclick="BIY.sureSec(' + z + ',' + n + ')">' +
+        n + '</button>').join("");
+      return '<div class="biy-sr-satir" data-z="' + z + '">' +
+        '<span class="biy-sr-ad">' + yildiz(z) + '<b>' + SURE_ETIKET[z] + '</b></span>' +
+        '<span class="biy-sr-tuslar">' + tuslar + '</span>' +
+        '<span class="biy-sr-elle">' +
+          '<input type="number" class="biy-sr-input" id="sureInput' + z + '"' +
+          ' min="' + SURE_ENAZ + '" max="' + SURE_ENCOK + '" step="1" value="' + v + '"' +
+          ' aria-label="' + SURE_ETIKET[z] + ' için saniye"' +
+          ' oninput="BIY.sureElle(' + z + ', this.value)">' +
+          '<span class="biy-sr-sn">sn</span>' +
+        '</span>' +
+      '</div>';
+    };
+    p.innerHTML =
+      '<div class="biy-sr-baslik">Soru süresi <small>zorluğa göre</small></div>' +
+      [1,2,3].map(satir).join("") +
+      '<div class="biy-sr-alt">' +
+        '<button type="button" class="biy-sr-sifirla" onclick="BIY.sureSifirla()">' +
+        'Varsayılana dön (30 · 45 · 60)</button></div>';
+  },
+  /* Hazır düğme */
+  sureSec(z, n){ BIY._sureUygula(z, n, true); },
+  /* Elle yazma — her tuşta kaydedilir, geçersiz değer yazılırken bozulmaz */
+  sureElle(z, v){
+    const n = parseInt(v, 10);
+    if (!isFinite(n) || n < SURE_ENAZ || n > SURE_ENCOK) return;   // yazım sürüyor olabilir
+    BIY._sureUygula(z, n, false);
+  },
+  _sureUygula(z, n, girdiyiTazele){
+    z = parseInt(z, 10); n = parseInt(n, 10);
+    if (!SURE_ETIKET[z] || !isFinite(n)) return;
+    n = Math.max(SURE_ENAZ, Math.min(SURE_ENCOK, n));
+    if (!state.sureler) state.sureler = sureOku();
+    state.sureler[z] = n;
+    sureYaz(state.sureler);
+    /* Hazır düğmelerin seçili hâlini ve (gerekiyorsa) elle alanı tazele.
+       Elle yazarken input'u yeniden yazmıyoruz; imleç başa atlardı. */
+    const p = $("sureSecPanel"); if (!p) return;
+    p.querySelectorAll('.biy-sr-tus[data-z="' + z + '"]').forEach(b => {
+      b.classList.toggle("secili", +b.getAttribute("data-n") === n);
+    });
+    if (girdiyiTazele){ const i = $("sureInput" + z); if (i) i.value = n; }
+  },
+  sureSifirla(){
+    state.sureler = { 1: SURE_VARSAYILAN[1], 2: SURE_VARSAYILAN[2], 3: SURE_VARSAYILAN[3] };
+    sureYaz(state.sureler);
+    BIY._surePanelDoldur();
+  },
   // hazir rakamlar akordiyonu: rakam SVG'sine tiklaninca acilir/kapanir
   sayiAcKapat(){
     const a = $("sayiAkordiyon"), b = $("soruSayiEtiket"); if (!a) return;
@@ -2931,7 +3062,7 @@ const BIY = {
   },
   // --- Kalıcılık (sayfa yenilense de oyun kaybolmasın) ---
   _kaydet(){
-    try { localStorage.setItem('biy_aktif', JSON.stringify({ oda: state.odaId, sorular: state.oyunSorulari, yedek: state.yedekSorular, yedekMap: state.yedekSoruMap, seviye: state.seviye, soruSayisi: state.soruSayisi,
+    try { localStorage.setItem('biy_aktif', JSON.stringify({ oda: state.odaId, sorular: state.oyunSorulari, yedek: state.yedekSorular, yedekMap: state.yedekSoruMap, seviye: state.seviye, soruSayisi: state.soruSayisi, turSureleri: state.turSureleri,
       ber: { hedef: state.berHedef, takimlar: state.berTakimlar, sabit: state.berSabit, no: state.berNo, sorular: state.berSorular }, ts: Date.now() })); } catch(e){}
   },
   _temizleKayit(){ try { localStorage.removeItem('biy_aktif'); } catch(e){} },
@@ -2950,6 +3081,12 @@ const BIY = {
       state.yedekSorular = Array.isArray(kayit.yedek) ? kayit.yedek : [];
       state.yedekSoruMap = kayit.yedekMap || {};
       state.soruSayisi = kayit.soruSayisi || 20;
+      /* Sayfa yenilendiyse soru süreleri de geri gelsin; yoksa puan hesabı
+         eski cevaplar için yanlış süreyle çalışırdı. */
+      state.turSureleri = (kayit.turSureleri && typeof kayit.turSureleri === 'object')
+                          ? kayit.turSureleri : {};
+      if (!Object.keys(state.turSureleri).length)
+        state.oyunSorulari.forEach((q, i) => { state.turSureleri[i] = soruSuresi(q); });
       if (kayit.ber){ state.berHedef = kayit.ber.hedef||0; state.berTakimlar = kayit.ber.takimlar||[]; state.berSabit = kayit.ber.sabit||{}; state.berNo = kayit.ber.no||0; state.berSorular = kayit.ber.sorular||[]; }
       if (state.takimAbone) state.takimAbone();
       state.takimAbone = ref.collection('takimlar').orderBy('olusturmaZamani').onSnapshot(s => BIY._takimlariCiz(s));
@@ -3168,6 +3305,10 @@ const BIY = {
       yedek = tumu.slice(secilen.length).map(soruHazirla);
     }
     state.oyunSorulari = secilen;
+    /* Her sorunun süresini TUR BAŞINDA dondur: öğretmen ayarları tur
+       ortasında değiştirse bile verilmiş cevapların puanı değişmesin. */
+    state.turSureleri = {};
+    secilen.forEach((q, i) => { state.turSureleri[i] = soruSuresi(q); });
     state.yedekSorular = yedek;   // beraberlikte yedek olarak kullanılır
     state.yedekSoruMap = {};
     state.berHedef = 0; state.berTakimlar = []; state.berSabit = {}; state.berNo = 0; state.berSorular = [];
@@ -3175,7 +3316,8 @@ const BIY = {
     await BIY._cevaplariSil();         // oda yeniden kullanılıyorsa eski cevapları temizle
     try {
       await db.collection(KOLEKSIYON).doc(state.odaId).update({
-        durum: "oyun", faz: "cevap", aktifIndex: 0, toplamSoru: secilen.length, soruSuresi: SORU_SURESI,
+        durum: "oyun", faz: "cevap", aktifIndex: 0, toplamSoru: secilen.length,
+        soruSuresi: soruSuresi(secilen[0]),
         mod: modAl(), iptal: [],
         soruIdSirasi: secilen.map(s => s.id),
         aktifSoru: temizSoru(secilen[0]),
@@ -3333,7 +3475,10 @@ const BIY = {
   _puanParca(c){
     const o = state.oda || {};
     const toplam = o.toplamSoru || state.oyunSorulari.length || state.soruSayisi || 1;
-    const sure = o.soruSuresi || SORU_SURESI;
+    /* O sorunun KENDİ süresi. Zorluğa göre süre geldiğinden odadaki güncel
+       soruSuresi ile hesaplamak eski cevapların hız payını bozardı. */
+    const sure = (state.turSureleri && state.turSureleri[c.index])
+                 || o.soruSuresi || SORU_SURESI;
     const taban = TOPLAM_PUAN / toplam;
     let hiz = (typeof c.kalan === 'number') ? (c.kalan / sure) : 1;   // eski cevaplarda kalan yoksa tam say
     hiz = Math.max(0, Math.min(1, hiz));
@@ -3746,9 +3891,14 @@ const BIY = {
       if (next >= (state.oda.toplamSoru || state.oyunSorulari.length)){
         await BIY._bitirVeyaBeraberlik();   // beraberlik varsa yedek soruya geç, yoksa bitir
       } else {
+        const sSoru = state.oyunSorulari[next];
+        /* Süre zorluğa göre; tur ortasında ayar değiştiyse SONRAKİ sorulara
+           yansır, geçmiş sorular state.turSureleri'nde donduruldu. */
+        const sSure = soruSuresi(sSoru);
+        state.turSureleri[next] = sSure;
         await db.collection(KOLEKSIYON).doc(state.odaId).update({
-          aktifIndex: next, faz: "cevap",
-          aktifSoru: temizSoru(state.oyunSorulari[next]),
+          aktifIndex: next, faz: "cevap", soruSuresi: sSure,
+          aktifSoru: temizSoru(sSoru),
           soruBaslangic: firebase.firestore.FieldValue.serverTimestamp()
         });
       }
@@ -3816,6 +3966,7 @@ const BIY = {
     state.berNo += 1;
     const index = 1000 + state.berNo;
     state.yedekSoruMap[index] = q;             // puan hesabına dahil
+    state.turSureleri[index] = soruSuresi(q);  // yedek sorunun süresi de donar
     state.berSorular.push(index);
     state.otoSonucIndex = -1; state.sonucAnimIndex = -1; state.hepsiSesIndex = -1;
     BIY._kaydet();
@@ -3823,6 +3974,7 @@ const BIY = {
       await db.collection(KOLEKSIYON).doc(state.odaId).update({
         durum: "beraberlik", berHedef: state.berHedef, berTakimlar: state.berTakimlar, berSabit: state.berSabit, berNo: state.berNo,
         aktifIndex: index, faz: "cevap", aktifSoru: temizSoru(q),
+        soruSuresi: state.turSureleri[index],
         soruBaslangic: firebase.firestore.FieldValue.serverTimestamp()
       });
     } catch(e){ console.error(e); }

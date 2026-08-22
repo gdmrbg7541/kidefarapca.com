@@ -3200,3 +3200,64 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
   .biy-hs-uyari { margin: 0 12px 8px; font-size: .84rem; flex-wrap: wrap; }
   .biy-hs-uyari-btn { width: 100%; }
 }
+
+
+/* ===================== ZORLUĞA GÖRE SORU SÜRESİ ===================== */
+/* Ana ekranda kronometre düğmesi + açılır ayar paneli. Soru tipi
+   paneliyle (.biy-bicim-sec / .biy-bs-panel) aynı yerleşim mantığı. */
+.biy-sure-sec { position: relative; display: inline-flex; }
+.biy-sure-btn { background: none; border: 0; padding: 0; cursor: pointer; line-height: 0; }
+.biy-sure-btn .biy-svg-sure { width: 66px; height: 66px; display: block; transition: transform .2s ease; }
+#ekranAnasayfa .biy-sure-btn .biy-svg-sure { width: 74px; height: 74px; }
+.biy-sure-btn:hover .biy-svg-sure { transform: scale(1.05); }
+.biy-sure-btn[aria-expanded="true"] .biy-svg-sure { transform: scale(1.08); }
+/* kronometre ibresi döner */
+.biy-sr-ibre { transform-origin: 32px 36px; animation: biySrIbre 6s linear infinite; }
+@keyframes biySrIbre { to { transform: rotate(360deg); } }
+
+.biy-sure-panel { position: absolute; z-index: 60; top: calc(100% + 10px); left: 50%;
+  transform: translateX(-50%); width: max-content; max-width: min(92vw, 520px);
+  display: flex; flex-direction: column; gap: 10px; padding: 16px 18px;
+  background: #fff; border: 2px solid #E9EEF5; border-radius: 18px;
+  box-shadow: 0 20px 44px rgba(15,23,42,.16); animation: biySrPanel .2s ease both; }
+.biy-sure-panel[hidden] { display: none; }
+/* Kendi animasyonu: biyDsPanel'in 'to' karesi transform'u tamamen yazıp
+   translateX(-50%) ortalamasını siliyor ve panel ekrandan taşıyordu. */
+@keyframes biySrPanel {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(.97); }
+  to   { opacity: 1; transform: translateX(-50%); }
+}
+.biy-sr-baslik { font-weight: 800; color: #0F2A43; font-size: 1rem; text-align: center; }
+.biy-sr-baslik small { display: block; font-weight: 600; color: #94A3B8; font-size: .82rem; }
+
+.biy-sr-satir { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 8px 10px; border: 2px solid #F1F5F9; border-radius: 14px; background: #FBFDFF; }
+.biy-sr-ad { display: inline-flex; align-items: center; gap: 7px; min-width: 104px; }
+.biy-sr-ad b { font-weight: 800; color: #334155; font-size: .95rem; }
+.biy-sr-yildiz { color: #F39C12; font-size: .9rem; letter-spacing: -1px; }
+.biy-sr-sonuk { color: #E2E8F0; }
+.biy-sr-tuslar { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.biy-sr-tus { border: 2px solid #E9EEF5; background: #fff; color: #475569; cursor: pointer;
+  padding: 6px 11px; border-radius: 999px; font-family: inherit; font-weight: 700;
+  font-size: .95rem; transition: all .15s; }
+.biy-sr-tus:hover { border-color: #cbd5e1; }
+.biy-sr-tus.secili { color: #fff; border-color: transparent; background: #16A085;
+  box-shadow: 0 4px 10px rgba(22,160,133,.25); }
+.biy-sr-elle { display: inline-flex; align-items: center; gap: 5px; margin-inline-start: auto; }
+.biy-sr-input { width: 74px; border: 2px solid #E9EEF5; border-radius: 12px; padding: 6px 8px;
+  font-family: inherit; font-size: 1rem; font-weight: 700; color: #16A085; text-align: center; }
+.biy-sr-input:focus { outline: none; border-color: #20C997; }
+.biy-sr-sn { color: #94A3B8; font-weight: 700; font-size: .88rem; }
+.biy-sr-alt { text-align: center; }
+.biy-sr-sifirla { border: 0; background: none; color: #64748B; cursor: pointer;
+  font-family: inherit; font-weight: 700; font-size: .88rem; text-decoration: underline;
+  text-underline-offset: 3px; padding: 4px 8px; }
+.biy-sr-sifirla:hover { color: #16A085; }
+
+@media (max-width: 560px){
+  .biy-sure-panel { padding: 13px 12px; }
+  .biy-sr-satir { gap: 7px; }
+  .biy-sr-elle { margin-inline-start: 0; }
+  .biy-sr-tus { padding: 6px 9px; font-size: .9rem; }
+}
+@media (prefers-reduced-motion: reduce){ .biy-sr-ibre { animation: none; } }
