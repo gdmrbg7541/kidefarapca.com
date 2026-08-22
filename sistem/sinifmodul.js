@@ -269,7 +269,7 @@
              kitap ikonundaki listenin başında açılır.
      Rozetteki sayı AŞAĞIDAKİ haritadan gelir; müfredat değişince
      sarf/ihkelime.js ile birlikte burası da güncellenir. */
-  var IH_KELIME = {"5": {"unite": 4, "ders": 11, "veri": 11}, "6": {"unite": 6, "ders": 18, "veri": 12}, "7": {"unite": 4, "ders": 4, "veri": 4}, "8": {"unite": 4, "ders": 8, "veri": 0}, "9": {"unite": 4, "ders": 8, "veri": 8}, "10": {"unite": 4, "ders": 8, "veri": 8}};
+  var IH_KELIME = {"5": {"unite": 4, "ders": 11, "veri": 11}, "6": {"unite": 6, "ders": 18, "veri": 18}, "7": {"unite": 4, "ders": 4, "veri": 4}, "8": {"unite": 4, "ders": 8, "veri": 0}, "9": {"unite": 4, "ders": 8, "veri": 8}, "10": {"unite": 4, "ders": 8, "veri": 8}};
 
   function kelSvg() {
     return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +

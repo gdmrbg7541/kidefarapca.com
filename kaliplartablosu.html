@@ -1043,7 +1043,7 @@
 
     </div>
 </div>
-    <script src="veri/veri_kokler.js?v=140"></script>
+    <script src="veri/veri_kokler.js?v=143"></script>
     </div>
     
     <!-- AKSAM-I SEB'A BİLGİ OVERLAY -->
@@ -1273,7 +1273,7 @@
         </div>
     </div>
 
-<script src="veri/veri_sozluk.js?v=124"></script>
+<script src="veri/veri_sozluk.js?v=127"></script>
 <script src="veri/veri_gramer.js?v=111"></script>
 <!-- KALIP_DATA: numara → vezin adı (1-105). Kalıp listesi perdesinin
      başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
@@ -1287,7 +1287,7 @@
 <script src="sarf/kalipliste.js?v=80"></script>
 <script src="sarf/kelimeler.js?v=12"></script>
 <script src="sarf/kelimetest.js?v=10"></script>
-<script src="sarf/ihkelime.js?v=3"></script>
+<script src="sarf/ihkelime.js?v=5"></script>
 <!-- Sunum kumandasının İLERİ tuşuyla tanımlı vezinler arasında gezinme
      ve tıklanan veznin anlamını gösteren katman. Ana betikten SONRA
      yüklenir; handleBoxClick'i sarmalayarak bağlanır. -->
@@ -1750,5 +1750,9 @@
 <script>/* SURE TAKIBI (Beceri - Ogretmen Ozel): puan degil, sayfada GORUNUR
    kalinan sure raporlanir; Etkinlikler sekmesinde saat satiri olarak gorunur. */
 try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
+<!-- YARIŞMA KÖPRÜSÜ — bilgi yarışması bu sayfayı iframe'de "canlı tahta"
+     olarak sürer. TÜM sarmalayıcılardan (vezingezinti, babodak,
+     muhadesekopru) SONRA yüklenmelidir; bu yüzden en sonda. -->
+<script src="sarf/yarismakopru.js?v=1"></script>
 </body>
 </html>

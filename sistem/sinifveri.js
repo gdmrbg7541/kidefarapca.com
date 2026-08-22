@@ -36,21 +36,29 @@
      ------------------------------------------------------------------ */
   var BIY_KONU = {
     /* sınıf konuları — kelime + cümle birlikte */
-    sinif7:      { sinif: 7,  seviye: 1, sira: 1, soru: 125 },
-    sinif9:      { sinif: 9,  seviye: 1, sira: 2, soru: 72 },
-    sinif10:     { sinif: 10, seviye: 2, sira: 3, soru: 64 },
+    /* 6. sınıf soruları muhâdese ders verisinden ÜRETİLİYOR
+       (oyunlar/uret_biy6.py); ders verisi büyürse betik yeniden
+       çalıştırılır ve buradaki sayı da güncellenir. */
+    sinif6:      { sinif: 6,  seviye: 1, sira: 1, soru: 173 },
+    sinif7:      { sinif: 7,  seviye: 1, sira: 2, soru: 125 },
+    sinif9:      { sinif: 9,  seviye: 1, sira: 3, soru: 72 },
+    sinif10:     { sinif: 10, seviye: 2, sira: 4, soru: 64 },
     /* genel konular — her sınıfta görünür */
     alfabe:      { sinif: 0,  seviye: 1, sira: 1, soru: 138 },
     kelimeler:   { sinif: 0,  seviye: 1, sira: 3, soru: 71 },
     edatlar:     { sinif: 0,  seviye: 2, sira: 3, soru: 25 },
     vezinler:    { sinif: 0,  seviye: 3, sira: 1, soru: 53 },
-    dilbilgisi1: { sinif: 0,  seviye: 3, sira: 2, soru: 20 },
-    dilbilgisi2: { sinif: 0,  seviye: 3, sira: 3, soru: 18 },
+    /* Kalıplar tablosunun okuduğu veriden ÜRETİLİYOR (oyunlar/uret_kaliplar.py);
+       sorular oyunlar/biy_kaliplar.js dosyasında durur. Veri büyürse betik
+       yeniden çalıştırılır ve buradaki sayı da güncellenir. */
+    kaliplar:    { sinif: 0,  seviye: 3, sira: 2, soru: 459 },
+    dilbilgisi1: { sinif: 0,  seviye: 3, sira: 3, soru: 20 },
+    dilbilgisi2: { sinif: 0,  seviye: 3, sira: 4, soru: 18 },
     /* tamlamavecumleler.html testinin soruları — aynı havuz burada da sorulur */
-    tamlamacumle:{ sinif: 0,  seviye: 3, sira: 4, soru: 156 },
+    tamlamacumle:{ sinif: 0,  seviye: 3, sira: 5, soru: 156 },
     /* tamlamavecumleler.html İ'RAB TESTİ — örnek havuzundan üretilen
        159 soru (hâl · görev · alâmet · lafzen/takdiren/mahallen) */
-    irab:        { sinif: 0,  seviye: 3, sira: 5, soru: 159 }
+    irab:        { sinif: 0,  seviye: 3, sira: 6, soru: 159 }
   };
 
   /* Kelime/cümle ayrımı kaldırılmadan önce paylaşılmış bağlantılar
@@ -112,10 +120,10 @@
      ------------------------------------------------------------------ */
   var SOZLUK_SINIF = {
     5:  { cumle: 60,  kelime: 134, seviye: 3 },
-    /* 6. sınıf 1. ünite (الحَياة اليَوْمِيَّة) + 2. ünite (المَأْكولات
-       وَالمَشْروبات) muhâdese cümlelerinden üretildi; dört seviyenin de
-       olgusu bu ünitelerde geçiyor. */
-    6:  { cumle: 160, kelime: 451, seviye: 4 },
+    /* 6. sınıfın ALTI ÜNİTESİNİN muhâdese cümlelerinden üretildi
+       (6_1_1 … 6_6_3); dört seviyenin de olgusu bu ünitelerde geçiyor.
+       5. ve 6. ünite eklenince 160 → 300 cümleye çıktı. */
+    6:  { cumle: 300, kelime: 1206, seviye: 4 },
     7:  { cumle: 118, kelime: 349, seviye: 3 },
     9:  { cumle: 58,  kelime: 146, seviye: 4 },
     10: { cumle: 83,  kelime: 267, seviye: 5 }

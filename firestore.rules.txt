@@ -1,0 +1,213 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    /* ------------------------------------------------------------------
+       MİSAFİR (ANONİM) KİMLİK POLİTİKASI
+       Bilgi yarışmasına karekodla katılan öğrencinin hesabı olmayabilir;
+       ona Firebase'de anonim bir kimlik açılır. Bu kimliğin yetkisi TEK
+       BİR YERE sınırlıdır: bilgiYarismasi/{oda} ve altı.
+
+       Bunu sağlamak için isSignedIn() artık anonim kimliği SAYMAZ. Böylece
+       kullanicilar, rooms, ogrenciIlerleme, davetler, mesajlar, siparisler…
+       hepsi misafire tek hamlede kapanır. (Özellikle kullanicilar/{uid}
+       create kuralı kritikti: misafir kendine role:'teacher' yazıp
+       isTeacherOrAdmin() olabilirdi.)
+
+       Misafirin DE girebildiği tek yer için ayrı yardımcı: isKatilimci().
+       ------------------------------------------------------------------ */
+    function isSignedIn() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+    // Yarışmaya katılan herkes — misafir (anonim) kimlik DAHİL
+    function isKatilimci() { return request.auth != null; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/kullanicilar/$(request.auth.uid))
+        && get(/databases/$(database)/documents/kullanicilar/$(request.auth.uid)).data.role == 'admin';
+    }
+    function isTeacherOrAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/kullanicilar/$(request.auth.uid))
+        && get(/databases/$(database)/documents/kullanicilar/$(request.auth.uid)).data.role in ['teacher', 'admin'];
+    }
+    // Kullanıcı hesapları — birleşik tek hesap sistemi
+    match /kullanicilar/{uid} {
+      allow read:   if isOwner(uid) || isAdmin();
+      // Kayıt: sadece kendi dokümanı, rol yalnız 'student' veya 'teacher' olabilir (admin olamaz)
+      allow create: if isOwner(uid) && request.resource.data.role in ['student', 'teacher'];
+      // Güncelleme: kendi dokümanı ama ROLÜNÜ değiştiremez (yetki yükseltmeyi engeller); admin her şeyi yapabilir
+      allow update: if (isOwner(uid) && request.resource.data.role == resource.data.role) || isAdmin();
+      allow delete: if isAdmin();
+    }
+    // Canlı ders odaları (misafir/anonim dahil, imzalı olsun yeter) — Aşama 3'te daraltılacak
+    match /rooms/{roomId} {
+      allow read, write: if isSignedIn();
+      match /{document=**} { allow read, write: if isSignedIn(); }
+    }
+
+    // Bilgi Yarışması — oda + takımlar + cevaplar (sınıf içi canlı yarışma)
+    match /bilgiYarismasi/{oda} {
+      // Oda bilgisini katılan herkes (misafir dahil) okur; odayı KURMAK ve
+      // soruyu ilerletmek yalnız öğretmen/yöneticidir.
+      allow read:                   if isKatilimci();
+      allow create, update, delete: if isTeacherOrAdmin();
+      // Takımlar · cevaplar · karakterler — öğrenci (misafir olabilir) kendi
+      // bağlantısını, avatarını ve cevabını buraya yazar.
+      // NOT: sınıf içi güven modeli — aynı odadaki öğrenciler birbirinin
+      // cevabını teknik olarak değiştirebilir. Oda kodu 4 harflidir ve
+      // yalnız ders süresince canlıdır; yarış bitince durum "bitti" olur.
+      match /{alt=**} {
+        allow read, write: if isKatilimci();
+      }
+    }
+    // Global uygulama durumu — GEÇİCİ (Aşama 3'te öğretmen/randevu şemasıyla daraltılacak)
+    match /global/{doc} {
+      // Okuma herkese (giris yapmis); yazma sadece ogretmen/admin - ogrenciler ortak veriyi bozamaz
+      allow read:  if isSignedIn();
+      allow write: if isTeacherOrAdmin();
+    }
+    // Ödeme siparişleri — öğrenci kendi siparişini oluşturur; yönetici okur/onaylar/reddeder
+    match /siparisler/{orderId} {
+      allow read:          if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create:        if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+    // İletişim mesajları — kullanıcı kendi mesajını yazar; yönetici herkese cevap yazar ve hepsini okur
+    match /mesajlar/{msgId} {
+      allow read:   if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isSignedIn() && (
+                       (request.resource.data.from == 'user'  && request.resource.data.uid == request.auth.uid)
+                       || (request.resource.data.from == 'admin' && isAdmin())
+                     );
+      allow update: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+    // Müfredat içeriği (kazanım adımları) — giriş yapan okur, yönetici düzenler/yazar
+    match /mufredat/{pkgId} {
+      allow read:  if isSignedIn();
+      allow write: if isAdmin();
+    }
+    // Öğretmen müsaitlik takvimleri — giriş yapan okur (öğrenci randevu için görür), öğretmen/yönetici yazar
+    match /takvimler/{teacherId} {
+      allow read:  if isSignedIn();
+      allow write: if isTeacherOrAdmin();
+    }
+
+    /* =====================================================================
+       ÖĞRENCİ HESAP SİSTEMİ  ("Kod bir kez → sonra e-posta")
+       davetler / ogrenciBaglari / ogrenciOzet / ogrenciMesaj
+       ===================================================================== */
+
+    // Davet kodları — doküman kimliği KODUN KENDİSİ (örn. TCH-4821-X8B2).
+    // Öğrenci ancak kodu BİLİYORSA tek dokümanı okuyabilir (get);
+    // listeleme (list) kapalıdır, yani kod havuzu taranamaz.
+    match /davetler/{kod} {
+      allow get:    if isSignedIn();
+      allow list:   if isSignedIn() && isTeacherOrAdmin();
+      allow create: if isTeacherOrAdmin() && request.resource.data.ogretmenUid == request.auth.uid;
+      allow update: if isSignedIn() && (
+                       // Öğretmen kendi davetini günceller
+                       (resource.data.ogretmenUid == request.auth.uid)
+                       // ya da öğrenci kodu kullandığında yalnız "kullanildi/ogrenciUid" damgalanır
+                       || (request.resource.data.ogretmenUid == resource.data.ogretmenUid
+                           && request.resource.data.kod == resource.data.kod
+                           && request.resource.data.ogrenciUid == request.auth.uid)
+                     );
+      allow delete: if isSignedIn() && resource.data.ogretmenUid == request.auth.uid;
+    }
+
+    // Öğrenci ↔ öğretmen bağlantısı. Doküman kimliği ÖĞRENCİNİN uid'idir.
+    match /ogrenciBaglari/{uid} {
+      allow get:    if isOwner(uid) || (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      // Öğretmen yalnızca KENDİ öğrencilerini listeler (sorguda ogretmenUid şartı zorunlu)
+      allow list:   if isTeacherOrAdmin();
+      // Öğrenci isteği: yalnız kendi dokümanı ve yalnız "bekliyor" durumuyla açılır
+      allow create: if isOwner(uid) && request.resource.data.durum == 'bekliyor';
+      // Onay/red yalnız hedef öğretmende; öğrenci kendi isteğini yenileyebilir ama onaylayamaz
+      allow update: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid)
+                       || (isOwner(uid) && request.resource.data.durum == 'bekliyor')
+                       || isAdmin();
+      allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+    }
+
+    // Öğretmenin yazdığı, öğrenciye özel AYNA kayıt (yalnız o öğrencinin dilimi).
+    match /ogrenciOzet/{uid} {
+      allow get:    if isOwner(uid) || (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      allow list:   if isTeacherOrAdmin();
+      allow create: if isTeacherOrAdmin() && request.resource.data.ogretmenUid == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.ogretmenUid == request.auth.uid;
+      allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+    }
+
+    // Öğrenciden öğretmene giden mesaj kutusu.
+    match /ogrenciMesaj/{msgId} {
+      allow get:    if isSignedIn() && (resource.data.ogrenciUid == request.auth.uid
+                                        || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      allow list:   if isTeacherOrAdmin();
+      // Öğrenci yalnız kendi adına, işlenmemiş mesaj oluşturur
+      allow create: if isSignedIn()
+                       && request.resource.data.ogrenciUid == request.auth.uid
+                       && request.resource.data.islendi == false;
+      // "islendi" damgasını yalnız hedef öğretmen atar
+      allow update: if isSignedIn() && resource.data.ogretmenUid == request.auth.uid;
+      allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+    }
+
+    /* =====================================================================
+       GÖREV SİSTEMİ  (gorev.js + gorevkopru.js)
+       gorevler / gorevSonuc
+       ===================================================================== */
+
+    // Görev tanımları — öğretmen kendi adına yazar; öğrenci görev kipinde okur.
+    match /gorevler/{gid} {
+      allow get, list: if isSignedIn();
+      allow create:    if isTeacherOrAdmin() && request.resource.data.ogretmenUid == request.auth.uid;
+      allow update:    if isSignedIn() && resource.data.ogretmenUid == request.auth.uid;
+      allow delete:    if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+    }
+
+    // Öğrenci ilerleme/rekor kayıtları — doküman kimliği "uid_oyun".
+    // gorevkopru.js her oynayışta yazar (görevden bağımsız süreç kaydı).
+    // Öğrenci yalnız kendi kaydını yazar; öğretmen yalnız kendi öğrencilerini okur.
+    match /ogrenciIlerleme/{iid} {
+      // get: kopru yazmadan once okur; ILK oyunda dokuman HENUZ YOK olur
+      // (resource == null). Yok-dokuman okumasi reddedilirse her kayit
+      // "izin hatasi" ile baslamadan biter — o yuzden acikca izinli.
+      allow get:    if isSignedIn() && (resource == null
+                       || resource.data.ogrenciUid == request.auth.uid
+                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      allow list:   if isSignedIn() && (resource.data.ogrenciUid == request.auth.uid
+                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      allow create: if isSignedIn() && request.resource.data.ogrenciUid == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.ogrenciUid == request.auth.uid;
+      allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+    }
+
+    // Görev sonuçları — doküman kimliği "gorevId_ogrenciUid".
+    // Öğrenci yalnız KENDİ sonucunu yazar; öğretmen yalnız KENDİ görevlerinin
+    // sonuçlarını okur (sorgu ogretmenUid şartıyla gelir, kural doğrular).
+    match /gorevSonuc/{sid} {
+      // get: kopru en iyi puani korumak icin yazmadan once okur; gorev ILK
+      // bitirildiginde dokuman HENUZ YOK olur (resource == null) — izinli
+      // olmali, yoksa ilk teslim hep "izin hatasi" ile duser.
+      allow get:    if isSignedIn() && (resource == null
+                       || resource.data.ogrenciUid == request.auth.uid
+                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      allow list:   if isSignedIn() && (resource.data.ogrenciUid == request.auth.uid
+                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+      allow create: if isSignedIn() && request.resource.data.ogrenciUid == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.ogrenciUid == request.auth.uid;
+      allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
+    }
+    /* =====================================================================
+       ayarlar — site geneli anahtarlar (or. site erisim kilidi).
+       Kilit durumunu GIRISSIZ ziyaretci de okuyabilmeli (perde karari
+       giris ekranindan ONCE verilir); yazmak YALNIZ yoneticiye aciktir. */
+    match /ayarlar/{aid} {
+      allow get, list: if true;
+      allow write:     if isAdmin();
+    }
+  }
+}
