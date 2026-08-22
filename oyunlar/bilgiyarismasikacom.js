@@ -602,6 +602,184 @@ const KONULAR = [
      "N. Sinif" olarak tek satir gorunur. Soru id'leri konu icinde
      benzersiz olmalidir (kelimeler 1..9xxx, cumleler 2xxxx araliginda).
      ------------------------------------------------------------------ */
+  /* 6. SINIF — muhadese/veri/6_1_1…6_6_3 ders verisinden ÜRETİLDİ.
+     Üretici: oyunlar/uret_biy6.py (ders verisi değişirse yeniden
+     çalıştırılır). Elle düzenlenirse betik üzerine yazar. */
+  { id: "sinif6", ad: "6. Sınıf", pdf: "", sorular: [
+    {"id": 1, "tip": "anlam", "zorluk": 1, "soru": "«هُوَ» ne demek?", "secenekler": ["şapka", "o (erkek)", "arkasında", "Selahaddin Eyyubî", "efendim"], "dogru": 1, "arapca": "هُوَ"},
+    {"id": 2, "tip": "anlam", "zorluk": 1, "soru": "«بُنَيّ» ne demek?", "secenekler": ["işitir", "içerim", "yavrum", "atar", "Asılı Taş"], "dogru": 2, "arapca": "بُنَيّ"},
+    {"id": 3, "tip": "anlam", "zorluk": 1, "soru": "«حَلْوى» ne demek?", "secenekler": ["konu", "yaklaşık", "iyiyim", "defter", "tatlı"], "dogru": 4, "arapca": "حَلْوى"},
+    {"id": 4, "tip": "anlam", "zorluk": 2, "soru": "«بْلوزَة» ne demek?", "secenekler": ["asla", "mevsim", "sürer (araç)", "hastalıklar", "bluz"], "dogru": 4, "arapca": "بْلوزَة"},
+    {"id": 5, "tip": "anlam", "zorluk": 2, "soru": "«مِعْطَف» ne demek?", "secenekler": ["büyük", "bir (dişil)", "palto", "terlik", "lira"], "dogru": 2, "arapca": "مِعْطَف"},
+    {"id": 6, "tip": "anlam", "zorluk": 1, "soru": "«صَيْف» ne demek?", "secenekler": ["yaz", "elma", "işitir (dişil)", "buzdolabı", "bilet"], "dogru": 0, "arapca": "صَيْف"},
+    {"id": 7, "tip": "anlam", "zorluk": 3, "soru": "«سُيّاح» ne demek?", "secenekler": ["bekler", "Medine-i Münevvere", "de, dahi", "turistler", "abdest alır"], "dogru": 3, "arapca": "سُيّاح"},
+    {"id": 8, "tip": "anlam", "zorluk": 1, "soru": "«لَيْرَة» ne demek?", "secenekler": ["istasyon / durak", "silgi", "lira", "aferin (çoğul)", "Filistin"], "dogru": 2, "arapca": "لَيْرَة"},
+    {"id": 9, "tip": "anlam", "zorluk": 1, "soru": "«بَيْت» ne demek?", "secenekler": ["ağır", "ev", "dükkân", "çocuk", "Kur'ân-ı Kerîm"], "dogru": 1, "arapca": "بَيْت"},
+    {"id": 10, "tip": "anlam", "zorluk": 1, "soru": "«لَحْم» ne demek?", "secenekler": ["et", "faydalı", "yeşil ışık", "sordu", "tarihî"], "dogru": 0, "arapca": "لَحْم"},
+    {"id": 11, "tip": "anlam", "zorluk": 3, "soru": "«مَصْنَع» ne demek?", "secenekler": ["çorap", "-e göre", "bu (dişil)", "fabrika", "karlı"], "dogru": 3, "arapca": "مَصْنَع"},
+    {"id": 12, "tip": "anlam", "zorluk": 3, "soru": "«يُغادِرُ» ne demek?", "secenekler": ["kalkar / ayrılır", "Kâbe", "Suudi Arabistan", "çarşı, pazar", "bilgiler"], "dogru": 0, "arapca": "يُغادِرُ"},
+    {"id": 13, "tip": "anlam", "zorluk": 2, "soru": "«يَسْمَعُ» ne demek?", "secenekler": ["şapka", "Selahaddin Eyyubî", "kalabalık", "hızlı / süratli", "işitir"], "dogru": 4, "arapca": "يَسْمَعُ"},
+    {"id": 14, "tip": "anlam", "zorluk": 1, "soru": "«نِصْف» ne demek?", "secenekler": ["Mescid-i Aksâ", "güle güle", "durak", "-e ihtiyacı var", "yarım"], "dogru": 4, "arapca": "نِصْف"},
+    {"id": 15, "tip": "anlam", "zorluk": 1, "soru": "«مَريضَة» ne demek?", "secenekler": ["sabun", "sekiz (dişil)", "basketbol", "hasta (bayan)", "bilgiler"], "dogru": 3, "arapca": "مَريضَة"},
+    {"id": 16, "tip": "anlam", "zorluk": 1, "soru": "«جَديد» ne demek?", "secenekler": ["yeni", "kışlık", "-den / -dan", "gidiş / yürüyüş", "ceket"], "dogru": 0, "arapca": "جَديد"},
+    {"id": 17, "tip": "anlam", "zorluk": 1, "soru": "«غَداء» ne demek?", "secenekler": ["Bolu", "dört", "öğle yemeği", "gemi", "ince"], "dogru": 2, "arapca": "غَداء"},
+    {"id": 18, "tip": "anlam", "zorluk": 1, "soru": "«جوعانَة» ne demek?", "secenekler": ["aç (dişil)", "-den / -dan", "sebep", "yakın", "reçete"], "dogru": 0, "arapca": "جوعانَة"},
+    {"id": 19, "tip": "anlam", "zorluk": 1, "soru": "«باب» ne demek?", "secenekler": ["yok / devamsız", "araç / vasıta", "doktor (bayan)", "kapı", "yedi (dişil)"], "dogru": 3, "arapca": "باب"},
+    {"id": 20, "tip": "anlam", "zorluk": 1, "soru": "«اِسْتَيْقَظْتُ» ne demek?", "secenekler": ["Mescid-i Aksâ", "ulaşım araçları", "uyandım", "ayakkabılar", "süt"], "dogru": 2, "arapca": "اِسْتَيْقَظْتُ"},
+    {"id": 21, "tip": "anlam", "zorluk": 2, "soru": "«شَجَرَة» ne demek?", "secenekler": ["yünlü", "ağaç", "Harem-i Kudsî", "haklı", "kitabım"], "dogru": 1, "arapca": "شَجَرَة"},
+    {"id": 22, "tip": "anlam", "zorluk": 1, "soru": "«غاضِبَة» ne demek?", "secenekler": ["kızgın (dişil)", "Ürdün", "doğru", "kantin", "bahçe"], "dogru": 0, "arapca": "غاضِبَة"},
+    {"id": 23, "tip": "anlam", "zorluk": 3, "soru": "«عاصِمَة» ne demek?", "secenekler": ["çarşı, pazar", "Kudüs", "mağara", "Kuba Mescidi", "başkent"], "dogru": 4, "arapca": "عاصِمَة"},
+    {"id": 24, "tip": "anlam", "zorluk": 2, "soru": "«لَنْ أَذْهَبَ» ne demek?", "secenekler": ["Asılı Taş", "turistler", "saç", "şapka", "gitmeyeceğim"], "dogru": 4, "arapca": "لَنْ أَذْهَبَ"},
+    {"id": 25, "tip": "anlam", "zorluk": 2, "soru": "«أَوْراق» ne demek?", "secenekler": ["deniz kıyısı", "yapraklar", "mevsim", "dükkân", "doktor (bayan)"], "dogru": 1, "arapca": "أَوْراق"},
+    {"id": 26, "tip": "anlam", "zorluk": 1, "soru": "«شَهْر» ne demek?", "secenekler": ["saç", "çirkin", "ay", "uzun", "hazır"], "dogru": 2, "arapca": "شَهْر"},
+    {"id": 27, "tip": "anlam", "zorluk": 1, "soru": "«خَمْسَة» ne demek?", "secenekler": ["az önce", "yayalar", "spor", "beş", "başarı"], "dogru": 3, "arapca": "خَمْسَة"},
+    {"id": 28, "tip": "anlam", "zorluk": 1, "soru": "«بَيْض» ne demek?", "secenekler": ["yumurta", "motosiklet", "Ankara", "pişiriyorum", "ağız"], "dogru": 0, "arapca": "بَيْض"},
+    {"id": 29, "tip": "anlam", "zorluk": 1, "soru": "«مُسْتَشْفى» ne demek?", "secenekler": ["öğle yemeği", "ağır", "hastane", "Bursa", "müzik"], "dogru": 2, "arapca": "مُسْتَشْفى"},
+    {"id": 30, "tip": "anlam", "zorluk": 1, "soru": "«كَباب» ne demek?", "secenekler": ["kebap", "çorba", "sıcak su", "sipariş", "sebzeler"], "dogru": 0, "arapca": "كَباب"},
+    {"id": 31, "tip": "anlam", "zorluk": 2, "soru": "«بُلوفَر» ne demek?", "secenekler": ["abdest alır", "terlik", "Arafat Dağı", "kazak", "-den (uzak)"], "dogru": 3, "arapca": "بُلوفَر"},
+    {"id": 32, "tip": "anlam", "zorluk": 1, "soru": "«سَأَلَ» ne demek?", "secenekler": ["ceket", "bardak", "sordu", "Kubbetü's-Sahra", "ziyaretçiler"], "dogru": 2, "arapca": "سَأَلَ"},
+    {"id": 33, "tip": "anlam", "zorluk": 2, "soru": "«دَفْتَر» ne demek?", "secenekler": ["alıcı", "sol", "yüzük", "kazak", "defter"], "dogru": 4, "arapca": "دَفْتَر"},
+    {"id": 34, "tip": "anlam", "zorluk": 3, "soru": "«قُبَّةُ الصَّخْرَة» ne demek?", "secenekler": ["sarı", "dede", "elma", "oynar", "Kubbetü's-Sahra"], "dogru": 4, "arapca": "قُبَّةُ الصَّخْرَة"},
+    {"id": 35, "tip": "anlam", "zorluk": 1, "soru": "«كِتابُهُ» ne demek?", "secenekler": ["...dığı zaman", "efendim", "ceket", "onun kitabı (erkek)", "yaparım (spor)"], "dogru": 3, "arapca": "كِتابُهُ"},
+    {"id": 36, "tip": "anlam", "zorluk": 1, "soru": "«مَدْرَسَة» ne demek?", "secenekler": ["okul", "kalp", "sırasında / esnasında", "tabak", "Kubbetü's-Sahra"], "dogru": 0, "arapca": "مَدْرَسَة"},
+    {"id": 37, "tip": "anlam", "zorluk": 1, "soru": "«خالَة» ne demek?", "secenekler": ["reçel", "teyze", "geçiyor, dönüyor", "mescitler", "Medine-i Münevvere"], "dogru": 1, "arapca": "خالَة"},
+    {"id": 38, "tip": "anlam", "zorluk": 3, "soru": "«الأَماكِنُ المُقَدَّسَة» ne demek?", "secenekler": ["diş", "istasyon / durak", "kutsal mekânlar", "yayalar", "sürer (araç)"], "dogru": 2, "arapca": "الأَماكِنُ المُقَدَّسَة"},
+    {"id": 39, "tip": "anlam", "zorluk": 3, "soru": "«الأُسْبوعُ القادِم» ne demek?", "secenekler": ["çarşı, pazar", "onun kitabı (erkek)", "Müslüman (erkek)", "gelecek hafta", "yiyecekler"], "dogru": 3, "arapca": "الأُسْبوعُ القادِم"},
+    {"id": 40, "tip": "anlam", "zorluk": 1, "soru": "«يوجَدُ» ne demek?", "secenekler": ["vardır, bulunur", "bilgi", "büyük", "Kıblî Camii", "hemşire"], "dogru": 0, "arapca": "يوجَدُ"},
+    {"id": 41, "tip": "anlam", "zorluk": 1, "soru": "«كَبير» ne demek?", "secenekler": ["Kıbleteyn Mescidi", "mavi", "büyük", "kutsal mekânlar", "durur / vakfeye durur"], "dogru": 2, "arapca": "كَبير"},
+    {"id": 42, "tip": "anlam", "zorluk": 1, "soru": "«قائِمَةُ الطَّعامِ» ne demek?", "secenekler": ["Medine-i Münevvere", "Asılı Taş", "ulaşım araçları", "gezi / yolculuk", "yemek listesi"], "dogru": 4, "arapca": "قائِمَةُ الطَّعامِ"},
+    {"id": 43, "tip": "anlam", "zorluk": 1, "soru": "«مَلابِس» ne demek?", "secenekler": ["ücret", "Uhud Dağı", "anahtar", "ulaşım araçları", "kıyafetler"], "dogru": 4, "arapca": "مَلابِس"},
+    {"id": 44, "tip": "anlam", "zorluk": 3, "soru": "«الكَعْبَةُ الشَّريفَة» ne demek?", "secenekler": ["geliyor", "geçer", "Şerefli Kâbe", "fiyat", "sebep"], "dogru": 2, "arapca": "الكَعْبَةُ الشَّريفَة"},
+    {"id": 45, "tip": "anlam", "zorluk": 2, "soru": "«سَميك» ne demek?", "secenekler": ["namaz kılar", "kalın", "Kıbleteyn Mescidi", "Kur'ân-ı Kerîm", "fiyat"], "dogru": 1, "arapca": "سَميك"},
+    {"id": 46, "tip": "anlam", "zorluk": 2, "soru": "«التَّدْخين» ne demek?", "secenekler": ["sigara içmek", "yiyecekler", "giyer", "uçar", "eski (dişil)"], "dogru": 0, "arapca": "التَّدْخين"},
+    {"id": 47, "tip": "anlam", "zorluk": 2, "soru": "«وَساخَة» ne demek?", "secenekler": ["bal", "Harem-i Kudsî", "Türk lirası", "kirlilik", "konuşma, diyalog"], "dogru": 3, "arapca": "وَساخَة"},
+    {"id": 48, "tip": "anlam", "zorluk": 3, "soru": "«شارِع» ne demek?", "secenekler": ["cadde / sokak", "Mescid-i Nebevî", "altı", "atar", "başka bir şey"], "dogru": 0, "arapca": "شارِع"},
+    {"id": 49, "tip": "anlam", "zorluk": 3, "soru": "«مُزْدَحِم» ne demek?", "secenekler": ["-den (uzak)", "kalabalık", "Nur Dağı", "on bir", "Türk lirası"], "dogru": 1, "arapca": "مُزْدَحِم"},
+    {"id": 50, "tip": "anlam", "zorluk": 2, "soru": "«عِيادَةُ الأَمْراضِ الجِلْدِيَّة» ne demek?", "secenekler": ["çiçek", "Ömer Mescidi", "cildiye polikliniği", "Hira Mağarası", "derim"], "dogru": 2, "arapca": "عِيادَةُ الأَمْراضِ الجِلْدِيَّة"},
+    {"id": 51, "tip": "anlam", "zorluk": 3, "soru": "«المَسْجِدُ الأَقْصى» ne demek?", "secenekler": ["sa'y", "yıkadı", "ayakkabılar", "Mescid-i Aksâ", "diş fırçası"], "dogru": 3, "arapca": "المَسْجِدُ الأَقْصى"},
+    {"id": 52, "tip": "anlam", "zorluk": 1, "soru": "«مَأْكولات» ne demek?", "secenekler": ["yaşadı", "lokanta", "hava", "Asılı Taş", "yiyecekler"], "dogru": 4, "arapca": "مَأْكولات"},
+    {"id": 53, "tip": "anlam", "zorluk": 3, "soru": "«سَفينَة» ne demek?", "secenekler": ["okul", "harem / kutsal alan", "mekân / yer", "büyük", "gemi"], "dogru": 4, "arapca": "سَفينَة"},
+    {"id": 54, "tip": "anlam", "zorluk": 2, "soru": "«أَفْحَصُ» ne demek?", "secenekler": ["muayene ederim", "cesur", "atar", "Ankara", "Şerefli Kâbe"], "dogru": 0, "arapca": "أَفْحَصُ"},
+    {"id": 55, "tip": "anlam", "zorluk": 1, "soru": "«صَلاة» ne demek?", "secenekler": ["az önce", "giyerim", "nereye", "namaz", "Türk lirası"], "dogru": 3, "arapca": "صَلاة"},
+    {"id": 56, "tip": "anlam", "zorluk": 1, "soru": "«اِبْدَأْ» ne demek?", "secenekler": ["arasında", "-den / -dan", "başla", "aç", "Asılı Taş"], "dogru": 2, "arapca": "اِبْدَأْ"},
+    {"id": 57, "tip": "anlam", "zorluk": 1, "soru": "«لاعِب» ne demek?", "secenekler": ["ayakkabı", "oyuncu", "altı (dişil)", "vardır / bulunur", "Selahaddin Eyyubî"], "dogru": 1, "arapca": "لاعِب"},
+    {"id": 58, "tip": "anlam", "zorluk": 2, "soru": "«مَرَض» ne demek?", "secenekler": ["hastalık", "güneş", "o (erkek)", "-e ihtiyacı var", "dede"], "dogru": 0, "arapca": "مَرَض"},
+    {"id": 59, "tip": "anlam", "zorluk": 2, "soru": "«قِسْمُ الطَّوارِئ» ne demek?", "secenekler": ["yıkar", "dört", "...dığı zaman", "acil servis", "haydi"], "dogru": 3, "arapca": "قِسْمُ الطَّوارِئ"},
+    {"id": 60, "tip": "anlam", "zorluk": 1, "soru": "«عَطْشانَة» ne demek?", "secenekler": ["susamış (dişil)", "abdest alır (dişil)", "Kudüs-i Şerif", "Kâbe", "uyur"], "dogru": 0, "arapca": "عَطْشانَة"},
+    {"id": 61, "tip": "anlam", "zorluk": 2, "soru": "«yıkarım» kelimesinin Arapçası hangisi?", "secenekler": ["الرّابِعَة", "المَسْجِدُ الأَقْصى", "أَرْتَدي", "زُبْدَة", "أَغْسِلُ"], "dogru": 4, "arSecenek": true},
+    {"id": 62, "tip": "anlam", "zorluk": 3, "soru": "«Selahaddin Eyyubî» kelimesinin Arapçası hangisi?", "secenekler": ["اِسْتَيْقَظَ", "كِتاب", "السّادِسَة", "كِتابُكَ", "صَلاحُ الدّينِ الأَيّوبِيّ"], "dogru": 4, "arSecenek": true},
+    {"id": 63, "tip": "anlam", "zorluk": 2, "soru": "«düşer / yağar» kelimesinin Arapçası hangisi?", "secenekler": ["أَحَدَ عَشَرَ", "الجامِعُ القِبْلِيّ", "شاطِئ", "يَسْقُطُ", "أَسْنان"], "dogru": 3, "arSecenek": true},
+    {"id": 64, "tip": "anlam", "zorluk": 1, "soru": "«baba» kelimesinin Arapçası hangisi?", "secenekler": ["تَتَفَتَّحُ", "لا أُريدُ", "أَب", "شَرِبَ", "الأَماكِنُ المُقَدَّسَة"], "dogru": 2, "arSecenek": true},
+    {"id": 65, "tip": "anlam", "zorluk": 1, "soru": "«o (kız)» kelimesinin Arapçası hangisi?", "secenekler": ["أَهْلًا وَسَهْلًا", "هِيَ", "تَناوُلُ الطَّعام", "الصَّلاة", "شَرِبَ"], "dogru": 1, "arSecenek": true},
+    {"id": 66, "tip": "anlam", "zorluk": 3, "soru": "«İslam» kelimesinin Arapçası hangisi?", "secenekler": ["الإِسْلام", "أُريدُ", "أَب", "تَرْمي", "جامِع"], "dogru": 0, "arSecenek": true},
+    {"id": 67, "tip": "anlam", "zorluk": 3, "soru": "«nur / ışık» kelimesinin Arapçası hangisi?", "secenekler": ["أَزْهار", "الحَجَرُ المُعَلَّق", "قَميص", "نور", "مُسْلِمات"], "dogru": 3, "arSecenek": true},
+    {"id": 68, "tip": "anlam", "zorluk": 3, "soru": "«üstünde» kelimesinin Arapçası hangisi?", "secenekler": ["عَلى", "السّادِسَة", "المَسْجِدُ الحَرام", "يَتَوَضَّأُ", "اِسْتَيْقَظْتُ"], "dogru": 0, "arSecenek": true},
+    {"id": 69, "tip": "anlam", "zorluk": 1, "soru": "«buzdolabı» kelimesinin Arapçası hangisi?", "secenekler": ["مَبْلَغ", "ثَلّاجَة", "حَجَر", "تَعْبان", "أَرْتَدي"], "dogru": 1, "arSecenek": true},
+    {"id": 70, "tip": "anlam", "zorluk": 2, "soru": "«ağır» kelimesinin Arapçası hangisi?", "secenekler": ["يَأْتي", "أَحْذِيَة", "ثَقيل", "طالِبَة", "أَبْيَض"], "dogru": 2, "arSecenek": true},
+    {"id": 71, "tip": "anlam", "zorluk": 1, "soru": "«kantin» kelimesinin Arapçası hangisi?", "secenekler": ["آكُلُ", "فُصول", "مَسْجِد", "سَلَطَة", "مَقْصَف"], "dogru": 4, "arSecenek": true},
+    {"id": 72, "tip": "anlam", "zorluk": 2, "soru": "«hoşuma gidiyor» kelimesinin Arapçası hangisi?", "secenekler": ["تُعْجِبُني", "غَضِبَ", "يَقْرَأُ", "المَرْوَة", "سَلَطَة"], "dogru": 0, "arSecenek": true},
+    {"id": 73, "tip": "anlam", "zorluk": 1, "soru": "«okul» kelimesinin Arapçası hangisi?", "secenekler": ["آكُلُ", "القُدْس", "مَدْرَسَة", "سَميك", "أَبَدًا"], "dogru": 2, "arSecenek": true},
+    {"id": 74, "tip": "anlam", "zorluk": 1, "soru": "«kek» kelimesinin Arapçası hangisi?", "secenekler": ["كَعْكَة", "حادِث", "يَلْعَبُ", "مُسْلِمات", "عَشَرَة"], "dogru": 0, "arSecenek": true},
+    {"id": 75, "tip": "anlam", "zorluk": 3, "soru": "«orta» kelimesinin Arapçası hangisi?", "secenekler": ["الجامِعُ القِبْلِيّ", "لَوْن", "جاهِزَة", "وَسَط", "أَثَر"], "dogru": 3, "arSecenek": true},
+    {"id": 76, "tip": "anlam", "zorluk": 1, "soru": "«tabak» kelimesinin Arapçası hangisi?", "secenekler": ["قاعِدَة", "أَحْسَنْتَ", "طَبَق", "أَحْمَر", "المَسْجِدُ الأَقْصى"], "dogru": 2, "arSecenek": true},
+    {"id": 77, "tip": "anlam", "zorluk": 2, "soru": "«erkek kardeş» kelimesinin Arapçası hangisi?", "secenekler": ["الوَقْفَة", "أَخ", "عَلى حَقٍّ", "كَيْفَ حالُكَ", "خَلْفَ"], "dogru": 1, "arSecenek": true},
+    {"id": 78, "tip": "anlam", "zorluk": 3, "soru": "«sürer / kullanır» kelimesinin Arapçası hangisi?", "secenekler": ["يَسوقُ", "كِتاب", "أَب", "الخَريف", "صَيْدَلِيَّة"], "dogru": 0, "arSecenek": true},
+    {"id": 79, "tip": "anlam", "zorluk": 1, "soru": "«uyandım» kelimesinin Arapçası hangisi?", "secenekler": ["أَشْعُرُ", "الخارِج", "وَرَقَة", "اِسْتَيْقَظْتُ", "أَبَدًا"], "dogru": 3, "arSecenek": true},
+    {"id": 80, "tip": "anlam", "zorluk": 1, "soru": "«oda» kelimesinin Arapçası hangisi?", "secenekler": ["حِزام", "أَماكِن", "قُمامَة", "السّابِعَة", "غُرْفَة"], "dogru": 4, "arSecenek": true},
+    {"id": 9000, "tip": "anlam", "bicim": "eslestir", "zorluk": 2, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["طَبيب", "doktor"], ["اِسْتَيْقَظْتُ", "uyandım"], ["جَوْرَب", "çorap"], ["يَسْقُطُ", "düşer / yağar"]]},
+    {"id": 9001, "tip": "anlam", "bicim": "eslestir", "zorluk": 2, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["اليَدُ اليُمْنى", "sağ el"], ["بِحاجَةٍ إِلى", "-e ihtiyacı var"], ["أَنا", "ben"], ["نَزْلَة", "nezle"]]},
+    {"id": 9002, "tip": "anlam", "bicim": "eslestir", "zorluk": 3, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["يَشْفي", "şifa verir"], ["شَمْس", "güneş"], ["بَيْت", "ev"], ["مُسْلِم", "Müslüman (erkek)"]]},
+    {"id": 9003, "tip": "anlam", "bicim": "eslestir", "zorluk": 3, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["قائِمَةُ الطَّعامِ", "yemek listesi"], ["مِنْضَدَة", "masa"], ["قَلَم", "kalem"], ["الطَّواف", "tavaf"]]},
+    {"id": 9004, "tip": "anlam", "bicim": "eslestir", "zorluk": 3, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["تُرْكِيا", "Türkiye"], ["سَأَلَ", "sordu"], ["أَلْعاب", "oyunlar"], ["صابون", "sabun"]]},
+    {"id": 9005, "tip": "anlam", "bicim": "eslestir", "zorluk": 2, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["يَغْسِلُ", "yıkar"], ["أَحْزِمَة", "kemerler"], ["تَتَفَتَّحُ", "açar (çiçek)"], ["جِدًّا", "çok"]]},
+    {"id": 9006, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «okul» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "مَدْرَسَة"},
+    {"id": 9007, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «doktor (bayan)» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "مَقْصَف"},
+    {"id": 9008, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «biliyorum» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "أَعْرِفُ"},
+    {"id": 9009, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 2, "soru": "Bu kelime «işgal altındaki» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "فَساتين"},
+    {"id": 9010, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «gitti» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "ذَهَبَ"},
+    {"id": 9011, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «yıkadı» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "شاطِئ"},
+    {"id": 9012, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «doktor (bayan)» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "طَبيبَة"},
+    {"id": 9013, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «yaparım (spor)» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "الزُّوّار"},
+    {"id": 9014, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «işgal altındaki» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "المُحْتَلَّة"},
+    {"id": 9015, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «hafta» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "حائِط"},
+    {"id": 9016, "tip": "anlam", "bicim": "surukle", "zorluk": 3, "soru": "Harfleri sırala: «tarihî»", "parcalar": ["ت", "ا", "ر", "ي", "خ", "ي"]},
+    {"id": 9017, "tip": "anlam", "bicim": "surukle", "zorluk": 3, "soru": "Harfleri sırala: «konu»", "parcalar": ["م", "و", "ض", "و", "ع"]},
+    {"id": 9018, "tip": "anlam", "bicim": "surukle", "zorluk": 3, "soru": "Harfleri sırala: «şerefli»", "parcalar": ["ش", "ر", "ي", "ف"]},
+    {"id": 9019, "tip": "anlam", "bicim": "surukle", "zorluk": 3, "soru": "Harfleri sırala: «turistler»", "parcalar": ["س", "ي", "ا", "ح"]},
+    {"id": 9020, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«tahta» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "سبورة", "tuslar": ["ب", "ة", "و", "ز", "ر", "خ", "ع", "ك", "س", "غ"]},
+    {"id": 9021, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«atar (dişil)» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "ترمي", "tuslar": ["د", "ص", "ف", "ت", "ي", "ش", "ر", "ث", "ب", "م"]},
+    {"id": 9022, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«uyandı» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "استيقظ", "tuslar": ["د", "ظ", "ق", "ش", "ذ", "ي", "س", "ت", "ا", "ل"]},
+    {"id": 9023, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«kapı» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "باب", "tuslar": ["ل", "ا", "ب", "ض", "غ", "ع", "و", "ش", "ر", "ن"]},
+    {"id": 20000, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Ben çorba pişiriyorum.", "Medine-i Münevvere Müslümanların ilk başkentidir.", "Abdullah erkenden uyandı.", "Doktor reçeteyi yazar."], "dogru": 0, "arapca": "أَنا أَطْبُخُ الحَساءَ."},
+    {"id": 20001, "tip": "cumle", "zorluk": 3, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Temizliğine Dikkat et.", "Uçak havalimanına iniyor.", "Saat on bir.", "Turist otele indi."], "dogru": 1, "arapca": "الطّائِرَةُ تَهْبِطُ في المَطارِ."},
+    {"id": 20002, "tip": "cumle", "zorluk": 3, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Geminin rengi kahverengidir.", "Yusuf öğle yemeğinde portakal suyunu tercih eder.", "Hastane buraya uzak mı?", "Okulun kapısı"], "dogru": 0, "arapca": "لَوْنُ السَّفينَةِ بُنِّيٌّ."},
+    {"id": 20003, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Ahmet aç mı yoksa tok mu? …mı?", "Şapka başımın üstünde.", "Çizmeyi kış mevsiminde Giyerim.", "O (erkek) koştu."], "dogru": 3, "arapca": "هُوَ رَكَضَ."},
+    {"id": 20004, "tip": "cumle", "zorluk": 3, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Şerefli Kâbe nerededir?", "Bahçemiz geniştir.", "Ayşe kahvaltıda sütü tercih eder mi?", "Saat on bir."], "dogru": 0, "arapca": "أَيْنَ تَقَعُ الكَعْبَةُ الشَّريفَةُ؟"},
+    {"id": 20005, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Arabanı hızlı sürme.", "Buyur.", "Ben mutfaktayım.", "Senin (erkek) adın ne?"], "dogru": 1, "arapca": "تَفَضَّلْ."},
+    {"id": 20006, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Ben tereyağı bal ile istiyorum.", "Baban akşam geldiğinde bu problemi çözecek inşallah.", "Sen ızgara tavuğu tercih eder misin? …mi?", "Annesi onu öptü ve ona sordu:"], "dogru": 0, "arapca": "أَنا أُريدُ الزُّبْدَةَ مَعَ العَسَلِ."},
+    {"id": 20007, "tip": "cumle", "zorluk": 2, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Ahmet odada.", "Bu Tarık mı?", "Nur Dağı Mekke-i Mükerreme'de mi yoksa Medine-i Münevvere'de mi?", "Kalem kulağımın arkasında."], "dogru": 3, "arapca": "القَلَمُ خَلْفَ أُذُني."},
+    {"id": 20008, "tip": "cumle", "zorluk": 2, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Bu bir baştır.", "Sınıfın tahtası", "Yarın kütüphaneye gideceğim.", "Alışveriş merkezi eve yakındır."], "dogru": 0, "arapca": "هَذا رَأْسٌ."},
+    {"id": 20009, "tip": "cumle", "zorluk": 2, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Ben kimim?", "Spor yapmam.", "Bu eldiven büyüktür.", "Abdullah evden çıktı."], "dogru": 1, "arapca": "لا أُمارِسُ الرِّياضَةَ."},
+    {"id": 20010, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Abdullah elbiselerini giydi.", "Bu bir gençtir.", "Trafik kurallarına önem ver.", "Abdullah evden çıktı."], "dogru": 0, "arapca": "لَبِسَ عَبْدُ اللهِ مَلابِسَهُ."},
+    {"id": 20011, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Ağaç evin önündedir.", "Dün televizyon seyrettim.", "Bu sese kızdı ve odasından çıktı.", "Kahvaltıyı yedi."], "dogru": 3, "arapca": "أَكَلَتِ الفَطورَ."},
+    {"id": 20012, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Yusuf öğle yemeğinde portakal suyunu tercih eder.", "Sonbaharda yapraklar dökülür.", "O (kız) evden çıktı.", "Ellerini ve yüzünü yıka."], "dogru": 0, "arapca": "يُفَضِّلُ يوسُفُ عَصيرَ البُرْتُقالِ في الغَداءِ."},
+    {"id": 20013, "tip": "cumle", "zorluk": 2, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Adam kırmızı ışıkta durur.", "Ayakkabı ayakkabılar.", "Amcam Abdest alır.", "Medine-i Münevvere'ye seyahat ediyorum."], "dogru": 1, "arapca": "حِذاءٌ أَحْذِيَةٌ."},
+    {"id": 20014, "tip": "cumle", "zorluk": 2, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Hangi mevsimde yapraklar dökülür?", "Giderim eczaneye ilaç almak için.", "Mekke-i Mükerreme nerededir?", "Müzeyi ziyaret eder."], "dogru": 0, "arapca": "في أَيِّ فَصْلٍ تَتَساقَطُ الأَوْراقُ؟"},
+    {"id": 20015, "tip": "cumle", "zorluk": 2, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Çorap çoraplar.", "Senin (erkek) adın ne?", "Uçağa bin ve İstanbul havalimanında in.", "Doktor reçeteyi yazar."], "dogru": 3, "arapca": "الطَّبيبُ يَكْتُبُ الوَصْفَةَ الطِّبِّيَّةَ."},
+    {"id": 20016, "tip": "cumle", "zorluk": 3, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Hastane buraya uzak mı?", "Ben mutfaktayım.", "Alışveriş merkezi eve yakındır.", "Ceket kahverengidir."], "dogru": 0, "arapca": "هَلِ المُسْتَشْفى بَعيدٌ عَنْ هُنا؟"},
+    {"id": 20017, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Müslüman erkekler ve kadınlar Mescid-i Haram'da Kur'ân-ı Kerîm okurlar.", "Suudi Arabistan'a gideceğim.", "Onun adı Ahmet'tir.", "Bu bir kızdır."], "dogru": 2, "arapca": "اسْمُهُ أَحْمَدُ."},
+    {"id": 20018, "tip": "cumle", "zorluk": 2, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Onun mor eldiveni var.", "Saat on iki.", "Niçin hastaneye gidiyorsun, hasta sen mısın?", "Bu bir süpürge mü yoksa çamaşır makinesi mi?"], "dogru": 0, "arapca": "عِنْدَها قُفّازٌ بَنَفْسَجِيٌّ."},
+    {"id": 20019, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Geçen ay mescide gittiler.", "Onun adı Zeynep'tir.", "Bu kim?", "Kitabım yenidir."], "dogru": 3, "arapca": "كِتابي جَديدٌ."},
+    {"id": 20020, "tip": "cumle", "zorluk": 2, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Benim siyah pantolonum var.", "Şerefli Kâbe nerededir?", "Abdullah okula gitti.", "Bu sarı bir tişörttür."], "dogru": 0, "arapca": "عِنْدي بَنْطَلونٌ أَسْوَدُ."},
+    {"id": 20021, "tip": "cumle", "zorluk": 2, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Abdullah namaz için abdest aldı.", "Amcam Abdest alır.", "Göz görür, kulak işitir.", "Ben mutfaktayım."], "dogru": 2, "arapca": "العَيْنُ تَرى وَالأُذُنُ تَسْمَعُ."},
+    {"id": 20022, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Ben ekmeğin üzerine tereyağı istiyorum.", "Kudüs Filistin'dedir.", "Öğrenci metroda kitap okuyor.", "Ahmet aç mı yoksa tok mu? …mı?"], "dogru": 0, "arapca": "أَنا أُريدُ الزُّبْدَةَ عَلى الخُبْزِ."},
+    {"id": 20023, "tip": "cumle", "zorluk": 2, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Amcam Abdest alır.", "Bu eldiven büyüktür.", "Zeyd futbolcudur.", "Leyla'nın Çantası kahverengidir."], "dogru": 3, "arapca": "حَقيبَةُ لَيْلى بُنِّيَّةٌ."},
+    {"id": 20024, "tip": "cumle", "zorluk": 3, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Yayalar yeşil ışıkta geçer.", "Cep telefonuyla konuşuyor.", "Müslüman erkekler ve kadınlar Mescid-i Haram'da Kâbe'nin önünde namaz kılarlar.", "Turist otele indi."], "dogru": 0, "arapca": "يَعْبُرُ المُشاةُ في الضَّوْءِ الأَخْضَرِ."},
+    {"id": 20025, "tip": "cumle", "zorluk": 3, "soru": "«Metroya bin ve üniversiteye git.» cümlesinin Arapçası hangisi?", "secenekler": ["عِنْدَها مَوْعِدٌ مَعَ الطَّبيبِ.", "الشَّجَرَةُ أَمامَ البَيْتِ.", "اِرْكَبِ المِتْرو وَاذْهَبْ إِلى الجامِعَةِ.", "الجَوُّ مُشْمِسٌ في الصَّيْفِ."], "dogru": 2, "arSecenek": true},
+    {"id": 20026, "tip": "cumle", "zorluk": 2, "soru": "«Hangi mevsimde hava sıcak olur?» cümlesinin Arapçası hangisi?", "secenekler": ["في السَّنَةِ أَرْبَعَةُ فُصولٍ وَهِيَ الرَّبيعُ وَالصَّيْفُ وَالخَريفُ وَالشِّتاءُ.", "في أَيِّ فَصْلٍ يَكونُ الجَوُّ حارًّا؟", "السّاعَةُ الحادِيَةَ عَشْرَةَ.", "أَنْقَرَةُ عاصِمَةُ تُرْكِيا وَهِيَ قَريبَةٌ مِنْ مَدينَةِ بولو."], "dogru": 1, "arSecenek": true},
+    {"id": 20027, "tip": "cumle", "zorluk": 1, "soru": "«O (kız) kim?» cümlesinin Arapçası hangisi?", "secenekler": ["تَتَساقَطُ الأَوْراقُ في الخَريفِ.", "بُشْرى أَمامَ المُسْتَشْفى.", "مَنْ هِيَ؟", "المَدْرَسَةُ بَعيدَةٌ عَنِ المَطْعَمِ."], "dogru": 2, "arSecenek": true},
+    {"id": 20028, "tip": "cumle", "zorluk": 2, "soru": "«Çizmeyi kış mevsiminde Giyerim.» cümlesinin Arapçası hangisi?", "secenekler": ["حَديقَةُ البَيْتِ واسِعَةٌ.", "البَنْطَلونُ أَزْرَقُ.", "ما هِيَ أَوَّلُ عاصِمَةٍ في تاريخِ الإِسْلامِ؟", "أَرْتَدي الجَزْمَةَ في فَصْلِ الشِّتاءِ."], "dogru": 3, "arSecenek": true},
+    {"id": 20029, "tip": "cumle", "zorluk": 3, "soru": "«Müslüman erkekler ve kadınlar Mescid-i Haram'da Kâbe'nin önünde namaz kılarlar.» cümlesinin Arapçası hangisi?", "secenekler": ["مَنْ فَتَحَ القُدْسَ الشَّريفَ؟", "ما هِيَ قِبْلَةُ المُسْلِمينَ؟", "يُصَلّي المُسْلِمونَ وَالمُسْلِماتُ في المَسْجِدِ الحَرامِ أَمامَ الكَعْبَةِ.", "ما لَوْنُ الطّائِرَةِ؟ لَوْنُها أَزْرَقُ."], "dogru": 2, "arSecenek": true},
+    {"id": 20030, "tip": "cumle", "zorluk": 3, "soru": "«İslam tarihindeki ilk mescit Kuba Mescidi'dir.» cümlesinin Arapçası hangisi?", "secenekler": ["أَكَلَ عَبْدُ اللهِ الفَطورَ.", "أَوَّلُ مَسْجِدٍ في تاريخِ الإِسْلامِ هُوَ مَسْجِدُ قُباءَ.", "الجَزْمَةُ جَديدَةٌ.", "أَكْمَلَ يوسُفُ واجِبَهُ قَبْلَ الغَداءِ."], "dogru": 1, "arSecenek": true},
+    {"id": 20031, "tip": "cumle", "zorluk": 2, "soru": "«Paltoyu kış mevsiminde Giyerim.» cümlesinin Arapçası hangisi?", "secenekler": ["أَنا جوعانُ.", "في أَيِّ فَصْلٍ تَتَساقَطُ الأَوْراقُ؟", "أَرْتَدي المِعْطَفَ في فَصْلِ الشِّتاءِ.", "المُسْتَشْفى بَعيدٌ عَنِ البَيْتِ."], "dogru": 2, "arSecenek": true},
+    {"id": 20032, "tip": "cumle", "zorluk": 1, "soru": "«Bahçemiz geniştir.» cümlesinin Arapçası hangisi?", "secenekler": ["ما هِيَ قِبْلَةُ المُسْلِمينَ؟", "الدَّجاجُ بِالأَرُزِّ.", "عِنْدَها صُداعٌ.", "حَديقَتُنا واسِعَةٌ."], "dogru": 3, "arSecenek": true},
+    {"id": 20033, "tip": "cumle", "zorluk": 1, "soru": "«O doktor mu?» cümlesinin Arapçası hangisi?", "secenekler": ["اِرْجِعوا مِنَ المَدْرَسَةِ بِالحافِلَةِ.", "أُسافِرُ إِلى المَدينَةِ المُنَوَّرَةِ.", "هَلْ هِيَ طَبيبَةٌ؟", "الشَّجَرَةُ أَمامَ البَيْتِ."], "dogru": 2, "arSecenek": true},
+    {"id": 20034, "tip": "cumle", "zorluk": 2, "soru": "«Giderim eczaneye ilaç almak için.» cümlesinin Arapçası hangisi?", "secenekler": ["هَذا بُلوفَرٌ قُطْنِيٌّ.", "أَذْهَبُ إِلى الصَّيْدَلِيَّةِ لِشِراءِ الدَّواءِ.", "آكُلُ كَثيرًا في العَشاءِ.", "غارُ حِراءَ هُوَ غارٌ مُهِمٌّ في مَكَّةَ المُكَرَّمَةِ."], "dogru": 1, "arSecenek": true},
+    {"id": 20035, "tip": "cumle", "zorluk": 2, "soru": "«Ayakkabı pembedir.» cümlesinin Arapçası hangisi?", "secenekler": ["غَضِبَ مِنْ هَذا الصَّوْتِ وَخَرَجَ مِنْ غُرْفَتِهِ.", "السّاعَةُ الحادِيَةَ عَشْرَةَ.", "الحِذاءُ وَرْدِيٌّ.", "حَقيبَةُ لَيْلى بُنِّيَّةٌ."], "dogru": 2, "arSecenek": true},
+    {"id": 20036, "tip": "cumle", "zorluk": 2, "soru": "«Kirlilik hastalığın sebebidir.» cümlesinin Arapçası hangisi?", "secenekler": ["تُوجَدُ في المَدينَةِ المُنَوَّرَةِ ثَلاثَةُ مَساجِدَ قَديمَةٍ وَمُهِمَّةٍ وَهِيَ المَسْجِدُ النَّبَوِيُّ وَمَسْجِدُ قُباءَ وَمَسْجِدُ القِبْلَتَيْنِ.", "اِرْجِعوا مِنَ المَدْرَسَةِ بِالحافِلَةِ.", "قُبَّةُ الصَّخْرَةِ خَلْفَ المَسْجِدِ الأَقْصى.", "الوَساخَةُ سَبَبُ المَرَضِ."], "dogru": 3, "arSecenek": true},
+    {"id": 20037, "tip": "cumle", "bicim": "cumlesira", "zorluk": 1, "soru": "Kelimeleri sırala: «Babam akşam gelir.»", "parcalar": ["والِدي", "يَأْتي", "مَساءً."]},
+    {"id": 20038, "tip": "cumle", "bicim": "cumlesira", "zorluk": 2, "soru": "Kelimeleri sırala: «Onun uzun atkısı var.»", "parcalar": ["عِنْدَهُ", "وِشاحٌ", "طَويلٌ."]},
+    {"id": 20039, "tip": "cumle", "bicim": "cumlesira", "zorluk": 1, "soru": "Kelimeleri sırala: «Kahvaltıda yumurta istiyorum, lütfen.»", "parcalar": ["أُريدُ", "البَيْضَ", "في الفَطورِ", "مِنْ فَضْلِكَ."]},
+    {"id": 20040, "tip": "cumle", "bicim": "cumlesira", "zorluk": 1, "soru": "Kelimeleri sırala: «Ben susadım, su istiyorum.»", "parcalar": ["أَنا", "عَطْشانُ،", "أُريدُ", "الماءَ."]},
+    {"id": 20041, "tip": "cumle", "bicim": "cumlesira", "zorluk": 1, "soru": "Kelimeleri sırala: «Babayla kim konuşuyor?»", "parcalar": ["مَنْ", "يَتَكَلَّمُ", "مَعَ الأَبِ؟"]},
+    {"id": 20042, "tip": "cumle", "bicim": "cumlesira", "zorluk": 1, "soru": "Kelimeleri sırala: «Akşam yemeğinden sonra kek yerim.»", "parcalar": ["آكُلُ", "الكَعْكَةَ", "بَعْدَ العَشاءِ."]},
+    {"id": 20043, "tip": "cumle", "bicim": "cumlesira", "zorluk": 2, "soru": "Kelimeleri sırala: «Yazın hava sıcaktır.»", "parcalar": ["الجَوُّ", "حارٌّ", "في الصَّيْفِ."]},
+    {"id": 20044, "tip": "cumle", "bicim": "cumlesira", "zorluk": 1, "soru": "Kelimeleri sırala: «O (kız) suyu içti.»", "parcalar": ["هِيَ", "شَرِبَتِ", "الماءَ."]},
+    {"id": 20045, "tip": "cumle", "bicim": "cumlesira", "zorluk": 1, "soru": "Kelimeleri sırala: «Ayrıca tavuk ve pilav pişireceğim.»", "parcalar": ["سَأَطْبُخُ", "الدَّجاجَ", "وَالأَرُزَّ", "أَيْضًا."]},
+    {"id": 20046, "tip": "cumle", "bicim": "cumlesira", "zorluk": 1, "soru": "Kelimeleri sırala: «İçeceklerden neyi tercih edersin?»", "parcalar": ["ماذا", "تُفَضِّلُ", "مِنَ المَشْروباتِ؟"]},
+    {"id": 20047, "tip": "cumle", "bicim": "cumlesira", "zorluk": 1, "soru": "Kelimeleri sırala: «Ahmet ekmeğin üzerine tereyağı yedi mi?»", "parcalar": ["هَلْ", "أَكَلَ", "أَحْمَدُ", "الزُّبْدَةَ", "عَلى الخُبْزِ؟"]},
+    {"id": 20048, "tip": "cumle", "bicim": "cumlesira", "zorluk": 1, "soru": "Kelimeleri sırala: «Çok ekmek yeme.»", "parcalar": ["لا تَأْكُلِ", "الخُبْزَ", "كَثيرًا."]},
+    {"id": 20049, "tip": "cumle", "bicim": "bosluk", "zorluk": 1, "soru": "Boşluğa gelecek kelimeyi seç: «هَذا الطَّعامُ لَذيذٌ ____»", "secenekler": ["جِدًّا.", "الطّالِبِ", "مُدَرِّسَةٌ.", "أَبْيَضُ."], "dogru": 0, "arSecenek": true},
+    {"id": 20050, "tip": "cumle", "bicim": "bosluk", "zorluk": 2, "soru": "Boşluğa gelecek kelimeyi seç: «عِنْدَهُ وِشاحٌ ____»", "secenekler": ["الخامِسَةُ.", "بَنَفْسَجِيٌّ.", "طَويلٌ.", "وَسَأَلَتْهُ:"], "dogru": 2, "arSecenek": true},
+    {"id": 20051, "tip": "cumle", "bicim": "bosluk", "zorluk": 1, "soru": "Boşluğa gelecek kelimeyi seç: «اللَّحْمُ لَذيذٌ ____»", "secenekler": ["جِدًّا.", "المَتْحَفَ.", "صُداعٌ.", "أَبْيَضُ."], "dogru": 0, "arSecenek": true},
+    {"id": 20052, "tip": "cumle", "bicim": "bosluk", "zorluk": 1, "soru": "Boşluğa gelecek kelimeyi seç: «تَوَضَّأَ عَبْدُ اللهِ ____»", "secenekler": ["الوَلَدِ.", "يَشُمُّ.", "صُداعٌ.", "لِلصَّلاةِ."], "dogru": 3, "arSecenek": true},
+    {"id": 20053, "tip": "cumle", "bicim": "bosluk", "zorluk": 1, "soru": "Boşluğa gelecek kelimeyi seç: «والِدي يَأْتي ____»", "secenekler": ["مَساءً.", "بِالضَّبْطِ؟", "الأَوْراقُ؟", "مَريضٌ؟"], "dogru": 0, "arSecenek": true},
+    {"id": 20054, "tip": "cumle", "bicim": "bosluk", "zorluk": 1, "soru": "Boşluğa gelecek kelimeyi seç: «لَعِبْنا مُباراةً تَمْهيدِيَّةً ____»", "secenekler": ["شابَّةٌ.", "أَصْفَرُ.", "اليَوْمَ.", "مُفيدَةٌ."], "dogru": 2, "arSecenek": true},
+    {"id": 20055, "tip": "cumle", "bicim": "bosluk", "zorluk": 1, "soru": "Boşluğa gelecek kelimeyi seç: «أَنا أُريدُ البَيْضَ ____»", "secenekler": ["وَالجُبْنَ.", "الغَداءَ؟", "وَجْهي.", "الطّالِبِ"], "dogru": 0, "arSecenek": true},
+    {"id": 20056, "tip": "cumle", "bicim": "bosluk", "zorluk": 2, "soru": "Boşluğa gelecek kelimeyi seç: «في أَيِّ فَصْلٍ يَكونُ الجَوُّ ____»", "secenekler": ["بِالضَّبْطِ؟", "أَنا؟", "الصَّفِّ", "حارًّا؟"], "dogru": 3, "arSecenek": true},
+    {"id": 20057, "tip": "cumle", "bicim": "bosluk", "zorluk": 1, "soru": "Boşluğa gelecek kelimeyi seç: «مَتى اسْتَيْقَظَ ____»", "secenekler": ["سُلَيْمانُ؟", "تَمْشي.", "أَحْزِمَةٌ.", "الحَساءَ."], "dogru": 0, "arSecenek": true},
+    {"id": 20058, "tip": "cumle", "bicim": "bosluk", "zorluk": 1, "soru": "Boşluğa gelecek kelimeyi seç: «هَذِهِ زَيْنَبُ، هِيَ ____»", "secenekler": ["أُذُني.", "الفَجْرَ.", "تِلْميذَةٌ.", "مَريضَةٌ."], "dogru": 2, "arSecenek": true},
+    {"id": 20059, "tip": "cumle", "bicim": "bosluk", "zorluk": 1, "soru": "Boşluğa gelecek kelimeyi seç: «هَلْ أَكْمَلَ يوسُفُ ____»", "secenekler": ["واجِبَهُ؟", "الحَساءَ.", "قَريبٌ.", "تَسْمَعُ."], "dogru": 0, "arSecenek": true},
+    {"id": 20060, "tip": "cumle", "bicim": "bosluk", "zorluk": 2, "soru": "Boşluğa gelecek kelimeyi seç: «هَذا رَأْسُ ____»", "secenekler": ["أَحْمَدَ", "رَأْسي.", "أَحْذِيَةٌ.", "الشّابَّةِ."], "dogru": 3, "arSecenek": true},
+    {"id": 20061, "tip": "cumle", "bicim": "dogruyanlis", "zorluk": 1, "soru": "«Saat dokuz.» çevirisi doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "السّاعَةُ التّاسِعَةُ."},
+    {"id": 20062, "tip": "cumle", "bicim": "dogruyanlis", "zorluk": 1, "soru": "«Temizliğine Dikkat et.» çevirisi doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "لَبِسَ عَبْدُ اللهِ مَلابِسَهُ."},
+    {"id": 20063, "tip": "cumle", "bicim": "dogruyanlis", "zorluk": 1, "soru": "«O (erkek) kim?» çevirisi doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "مَنْ هُوَ؟"},
+    {"id": 20064, "tip": "cumle", "bicim": "dogruyanlis", "zorluk": 1, "soru": "«Hava ilkbahar mevsiminde ılımandır.» çevirisi doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "سَيَأْكُلُ يوسُفُ في الغَداءِ الدَّجاجَ المَشْوِيَّ مَعَ السَّلَطَةِ."},
+    {"id": 20065, "tip": "cumle", "bicim": "dogruyanlis", "zorluk": 1, "soru": "«O (erkek) koştu.» çevirisi doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "هُوَ رَكَضَ."},
+    {"id": 20066, "tip": "cumle", "bicim": "dogruyanlis", "zorluk": 2, "soru": "«Bu Cemil, o müdürdür.» çevirisi doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "اِنْتَبِهْ لِنَظافَتِكَ."},
+    {"id": 20067, "tip": "cumle", "bicim": "dogruyanlis", "zorluk": 1, "soru": "«O doktor mu?» çevirisi doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "هَلْ هِيَ طَبيبَةٌ؟"},
+    {"id": 20068, "tip": "cumle", "bicim": "dogruyanlis", "zorluk": 2, "soru": "«Yumurta hazır.» çevirisi doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "الجَوُّ مُعْتَدِلٌ في فَصْلِ الرَّبيعِ."}
+  ]},
   { id: "sinif7", ad: "7. Sınıf", pdf: "", sorular: [
     /* -- kelimeler -- */
     {"id":1,"tip":"anlam","zorluk":1,"soru":"«الفَطور» ne demek?","secenekler":["Kahvaltı","Hızlı","Kahve","Kütüphane","Küçük"],"dogru":0,"arapca":"الفَطور"},
@@ -1187,6 +1365,17 @@ const EK_SORULAR = {
     {"id":80065,"tip":"anlam","bicim":"dogruyanlis","zorluk":1,"soru":"Bu kelime «-den beri» demek. Doğru mu?","secenekler":["Doğru","Yanlış"],"dogru":1,"arapca":"حَتَّى"}
   ]
 };
+/* DIŞARIDAN GELEN KONULAR — ayrı dosyada üretilen soru kümeleri.
+   Örn. oyunlar/biy_kaliplar.js (kalıplar tablosunun verisinden üretildi)
+   bu dosyadan ÖNCE yüklenir ve window.BIY_EK_KONULAR'a kendini iter.
+   Böylece üretilmiş sorular bu dosyayı şişirmez ve üretici betik yeniden
+   çalıştığında yalnız kendi dosyasının üzerine yazar. */
+if (Array.isArray(window.BIY_EK_KONULAR)) {
+  window.BIY_EK_KONULAR.forEach(k => {
+    if (k && k.id && Array.isArray(k.sorular) && !KONULAR.some(x => x.id === k.id))
+      KONULAR.push(k);
+  });
+}
 KONULAR.forEach(k => { if (EK_SORULAR[k.id] && Array.isArray(k.sorular)) k.sorular = k.sorular.concat(EK_SORULAR[k.id]); });
 
 const TIP_BILGI = {
@@ -3015,6 +3204,12 @@ const BIY = {
   _renderAdminOyun(){
     const o = state.oda, kap = $("ekranOyunAdmin");
     if (!o) return;
+    /* CANLI TAHTA — sorunun geçtiği kalıplar tablosu iframe'de sürülür.
+       Tüm iş oyunlar/biy_tahta.js'te; burada tek çağrı var. Soruda
+       "tahta" alanı yoksa modül hiçbir şey göstermez, yani diğer
+       konular bundan etkilenmez. */
+    try { if (window.BIYTahta) window.BIYTahta.durum(o, BIY._soruByIndex(o.aktifIndex || 0)); }
+    catch (e) { /* tahta düşerse yarışma devam etsin */ }
     if (o.durum === "bitti"){
       sayacDurdur(); BIY._sonucTemizle();
       // rapordan iptal yapılınca ekran baştan çizilir; okunan yer kaçmasın
@@ -4455,10 +4650,21 @@ window.addEventListener("beforeunload", function(e){
   /* Tek karekodlu modlarda (birey/okul) baglanti yalnizca ?oda= tasir; ogrenci
      kendi adini yazar ve ogretmen onayini bekler. Takim modunda ise her takimin
      kendi karekodu vardir, bu yuzden ?takim= de bulunur.                     */
-  /* Katılım için oturum. ANONİM GİRİŞ KALDIRILDI: eskiden oturumu olmayan
-     ziyaretçi için signInAnonymously çağrılıyordu. Artık Firebase'e dayanan
-     hiçbir özellik kimliksiz kullanılmıyor — yarışmaya katılmak da gerçek
-     hesap ister. Oturum yoksa null döner ve çağıran taraf uyarı gösterir. */
+  /* ÖĞRENCİ KATILIMI İÇİN OTURUM — MİSAFİR (ANONİM) GİRİŞ AÇIK.
+     -----------------------------------------------------------------------
+     Karekodu okutan öğrencinin hesabı olmak zorunda değil: oturumu yoksa
+     Firebase'de misafir (anonim) bir kimlik açılır, öğrenci adını yazar ve
+     oynar. Bu YALNIZ katılım yolu içindir (?oda= adresiyle gelenler);
+     öğretmen tarafı (sade adres) gerçek hesap istemeye devam eder ve
+     misafir kimlik oraya asla giremez (bkz. aşağıdaki isAnonymous denetimi).
+
+     Misafir kimliğin yetkisi Firestore kurallarıyla sınırlanmıştır:
+     sadece bilgiYarismasi/{oda} altına yazabilir; kullanicilar, rooms,
+     ogrenciIlerleme gibi koleksiyonlara erişemez. Kural dosyası:
+     firestore.rules.txt  (öce kuralları yayınla, SONRA konsolda Anonymous'u aç)
+
+     Not: sistem/gorevkopru.js misafir oturumları zaten eliyor, bu yüzden
+     misafir olarak oynayanın ilerleme/rekor kaydı tutulmaz — istenen davranış. */
   function biyOturumSagla(){
     return new Promise(function (coz) {
       try {
@@ -4466,26 +4672,40 @@ window.addEventListener("beforeunload", function(e){
         kes = firebase.auth().onAuthStateChanged(function (u) {
           if (bitti) return; bitti = true;
           try { if (kes) kes(); } catch (e) {}
-          coz(u || null);
+          if (u) { coz(u); return; }
+          /* Oturum yok → misafir kimlik aç. Konsolda Anonymous kapalıysa
+             auth/operation-not-allowed gelir; hatayı çağırana taşıyoruz ki
+             öğretmene "neyi açman gerekiyor" diyebilelim. */
+          firebase.auth().signInAnonymously()
+            .then(function (s) { coz((s && s.user) || firebase.auth().currentUser || null); })
+            .catch(function (e) { coz(null); biyOturumHatasi = e; });
         });
-      } catch (e) { coz(null); }
+      } catch (e) { biyOturumHatasi = e; coz(null); }
     });
   }
+  var biyOturumHatasi = null;
 
-  /* Oturumsuz katılım denemesinde tam ekran, anlaşılır bir uyarı. */
+  /* Misafir kimlik bile açılamadıysa (Anonymous kapalı / ağ yok) uyarı. */
   function biyGirisGerek(){
+    var kapali = !!(biyOturumHatasi && String(biyOturumHatasi.code || '')
+                    .indexOf('operation-not-allowed') >= 0);
     var d = document.createElement('div');
     d.id = 'biyGirisGerek';
     d.style.cssText = 'position:fixed; inset:0; z-index:999999; background:rgba(15,42,67,.94);' +
       'display:flex; align-items:center; justify-content:center; padding:20px;' +
       "font-family:'Nunito','Segoe UI',sans-serif; color:#fff; text-align:center;";
     d.innerHTML =
-      '<div style="max-width:420px; background:#fff; color:#2c3e50; border-radius:20px; padding:28px 24px;">' +
+      '<div style="max-width:440px; background:#fff; color:#2c3e50; border-radius:20px; padding:28px 24px;">' +
       '<div style="font-size:2.4rem; line-height:1; margin-bottom:10px;">🔒</div>' +
-      '<h2 style="margin:0 0 10px; font-size:1.25rem; color:#16A085;">Giriş gerekiyor</h2>' +
+      '<h2 style="margin:0 0 10px; font-size:1.25rem; color:#16A085;">Bağlanılamadı</h2>' +
       '<p style="margin:0 0 18px; font-size:.96rem; line-height:1.55; color:#5c6b78;">' +
-      'Bilgi yarışmasına katılmak için kendi hesabınla giriş yapmalısın. ' +
-      'Misafir katılımı kapatıldı.</p>' +
+      (kapali
+        ? 'Misafir katılımı sunucuda kapalı görünüyor. Öğretmenin Firebase Console → ' +
+          'Authentication → Sign-in method bölümünden <b>Anonymous</b> seçeneğini ' +
+          'açması gerekiyor. Dilersen kendi hesabınla giriş yapıp tekrar dene.'
+        : 'Bağlantı kurulamadı. İnternetini kontrol edip sayfayı yenile; ' +
+          'sorun sürerse kendi hesabınla giriş yapmayı dene.') +
+      '</p>' +
       '<a href="../index.html" style="display:inline-block; padding:13px 26px; border-radius:12px;' +
       ' background:#16A085; color:#fff; font-weight:800; text-decoration:none;">Giriş Yap</a>' +
       '</div>';
@@ -4508,7 +4728,7 @@ window.addEventListener("beforeunload", function(e){
     db.collection(KOLEKSIYON).doc(oda).collection("takimlar").onSnapshot(snap => {
       state.takimListe = []; snap.forEach(d => { const t = d.data(); state.takimListe.push({ id: d.id, ad: t.ad, puan: t.puan||0, bagli: !!t.bagli }); });
     }, () => {});
-    // kidef kuralları için oturum; hesap yoksa katılım yok (anonim kaldırıldı).
+    // kidef kuralları için oturum; hesap yoksa misafir kimlik açılır.
     biyOturumSagla().then(function (u) {
       if (!u) { biyGirisGerek(); return; }
       BIY.takimBagla(oda, takim);
@@ -4533,6 +4753,17 @@ window.addEventListener("beforeunload", function(e){
       biyEskiRolDenetimi(user); return;
     }
     if (!user){ biyGirisKapisiAc({ kaynak: "yok", misafir: true, rol: "misafir", ogretmen: false }); return; }
+    /* Misafir (anonim) kimlik yalnızca ÖĞRENCİ katılımı içindir; yönetim
+       ekranına asla giremez. Öğrenci karekodla girip sonra sade adresi
+       açarsa oturumu misafir olur — burada kesiliyor. */
+    if (user.isAnonymous){
+      /* anonim:true → KidefRol.aciklama() hazır metni verir:
+         "Misafir olarak giriş yapılmış; yönetim için öğretmen/yönetici
+          hesabı gerekli." */
+      biyGirisKapisiAc({ kaynak: "misafir", misafir: true, anonim: true,
+                         rol: "misafir", ogretmen: false, uid: user.uid });
+      return;
+    }
     state.uid = user.uid;
     window.KidefRol.coz(user, db).then(o => {
       if (!o.ogretmen){ biyGirisKapisiAc(o); return; }

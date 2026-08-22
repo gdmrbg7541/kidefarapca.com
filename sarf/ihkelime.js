@@ -200,17 +200,17 @@
                     {
                         "ad": "1. Ders: Mekke-i Mükerreme'de | في مَكَّةَ المُكَرَّمَة",
                         "id": "6_5_1",
-                        "veri": false
+                        "veri": true
                     },
                     {
                         "ad": "2. Ders: Medine-i Münevvere'de | في المَدينَةِ المُنَوَّرَة",
                         "id": "6_5_2",
-                        "veri": false
+                        "veri": true
                     },
                     {
                         "ad": "3. Ders: Kudüs-i Şerif'te | في القُدْسِ الشَّريف",
                         "id": "6_5_3",
-                        "veri": false
+                        "veri": true
                     }
                 ]
             },
@@ -220,17 +220,17 @@
                     {
                         "ad": "1. Ders: Ulaşım Araçları | وَسائِلُ المُواصَلات",
                         "id": "6_6_1",
-                        "veri": false
+                        "veri": true
                     },
                     {
                         "ad": "2. Ders: Trafik | المُرور",
                         "id": "6_6_2",
-                        "veri": false
+                        "veri": true
                     },
                     {
                         "ad": "3. Ders: Tatil Yolumda | في طَريقي إِلى العُطْلَة",
                         "id": "6_6_3",
-                        "veri": false
+                        "veri": true
                     }
                 ]
             }
