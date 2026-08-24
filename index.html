@@ -254,7 +254,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="sistem/kilit.js?v=12"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
-    <script src="sistem/erisim.js?v=3"></script>
+    <script src="sistem/erisim.js?v=4"></script>
 <style>
 /* ==== ERİŞİM KATMANI (sistem/erisim.js) ================================
    1) ÖĞRENCİ KATEGORİ KISITI — site "Sadece Girişliler" kademesindeyken
@@ -305,6 +305,23 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 #ogretmenOnayPerde .eop-tus button:hover { filter: brightness(1.07); }
 #ogretmenOnayPerde .eop-tus button.eop-cik { background: #EDF1F7; color: #4B5563; }
 #ogretmenOnayPerde .eop-dip { font-size: .88rem; color: #8A94A3; margin-top: 12px; }
+/* Onay beklerken gösterilen "ilk üç adım" ön izlemesi (sistem/erisim.js) */
+#ogretmenOnayPerde .eop-adimlar {
+    text-align: start; background: #FFF9F0; border: 1px solid #FBE3C4;
+    border-radius: 14px; padding: 14px 16px 12px; margin: 16px 0 2px;
+}
+#ogretmenOnayPerde .eop-adimlar-bas {
+    font-weight: 700; color: #B5670A; font-size: .95rem; margin-bottom: 8px;
+}
+#ogretmenOnayPerde .eop-adimlar ol { margin: 0; padding-inline-start: 20px; }
+#ogretmenOnayPerde .eop-adimlar li {
+    font-size: .95rem; line-height: 1.55; color: #4B5563; margin-bottom: 7px;
+}
+#ogretmenOnayPerde .eop-adimlar li:last-child { margin-bottom: 0; }
+#ogretmenOnayPerde .eop-adimlar li b { color: #2c3e50; }
+#ogretmenOnayPerde .eop-adimlar-dip {
+    font-size: .86rem; color: #A07A45; margin-top: 9px;
+}
 @media (max-width: 520px) {
     #ogretmenOnayPerde .eop-kutu { padding: 26px 20px 20px; }
     #ogretmenOnayPerde h2 { font-size: 1.3rem; }
@@ -2559,8 +2576,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="muhadese/muhadese.js?v=20260804d"></script>
     <!-- Sınıf modül altyapısı: hangi sınıfta hangi modülün verisi var (tek kaynak)
          + o sınıfın kartını İmam Hatip akordiyonuna basan kayıtçı. -->
-    <script src="sistem/sinifveri.js?v=20260808a"></script>
-    <script src="sistem/sinifmodul.js?v=20260821c"></script>
+    <script src="sistem/sinifveri.js?v=20260822b"></script>
+    <script src="sistem/sinifmodul.js?v=20260822a"></script>
     <script>
     (function () {
       /* --- açılış/kapanış: içerik dinamik olduğu için (sınıf içindeki döküman
@@ -5273,14 +5290,14 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>
     <script src="hesap/course-content.js"></script>
-    <script src="hesap/teacher-admin.js?v=20260815b"></script>
+    <script src="hesap/teacher-admin.js?v=20260815c"></script>
     <script src="sistem/alarm.js?v=20260814c"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
     <script src="hesap/listelerim.js?v=20260815a"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=20260815a"></script>
-    <script src="hesap/ogrencihesap.js?v=20260801f"></script>
+    <script src="hesap/ogrencihesap.js?v=20260801g"></script>
     <script src="sistem/ihoneri.js?v=20260805a"></script>
     <script src="sistem/gorev.js?v=32"></script>
 

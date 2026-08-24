@@ -109,6 +109,25 @@
               'Başvurun sıraya alındı; <b>yönetici onayladıktan sonra siteyi ' +
               'kullanabileceksin</b>. Onaylandığında bu ekran kendiliğinden kalkar — ' +
               'sayfayı açık bırakabilirsin.';
+
+        /* BEKLEYENE ÖN BİLGİ: onay gelene kadar ekranda oturan öğretmen
+           hiçbir şey deneyemiyor. Hiç değilse kendisini nelerin beklediğini
+           ve ilk gün ne yapacağını burada okusun. Reddedilene gösterilmez. */
+        var onIzleme = red ? '' : '' +
+          '<div class="eop-adimlar">' +
+            '<div class="eop-adimlar-bas">Onaylandığında ilk üç adımın:</div>' +
+            '<ol>' +
+              '<li><b>Sınıfını kur.</b> Sağ üstteki avatarına bas — <b>Listelerim</b> ' +
+                  'açılır. Kurum, seviye ve sınıflarını buradan oluşturursun.</li>' +
+              '<li><b>Öğrencilerini ekle.</b> Her öğrenciye kişisel bir giriş kodu ' +
+                  'üretilir; listede adının yanında gizli durur, dokununca görünür.</li>' +
+              '<li><b>Öğretmen kodunu dağıt.</b> Sana özel, hiç değişmeyen bir ' +
+                  '<b>TCH-…</b> kodun olur. Öğrencin kayıt olurken bu kodu girerse ' +
+                  'sana bağlanma isteği gönderir, sen onaylarsın.</li>' +
+            '</ol>' +
+            '<div class="eop-adimlar-dip">Onay mesajı geldiğinde kendi kodun da ' +
+              'içinde yazılı olacak.</div>' +
+          '</div>';
         return '' +
         '<div class="eop-kutu">' +
           '<div class="eop-ikon">' +
@@ -117,6 +136,7 @@
           '</div>' +
           '<h2>' + baslik + '</h2>' +
           '<p>' + metin + '</p>' +
+          onIzleme +
           '<div class="eop-tus">' +
             '<button type="button" onclick="KidefErisim.tazele()">Durumu yenile</button>' +
             '<button type="button" class="eop-cik" onclick="KidefErisim.cikis()">Çıkış yap</button>' +
@@ -216,9 +236,76 @@
                 return l;
             });
     };
-    E.onayla = function (uid) {
+    /* ------------------------------------------- HOŞ GELDİN MESAJI
+       Onay anında öğretmenin gelen kutusuna düşen bilgi mesajı.
+       METNİ DEĞİŞTİRMEK İSTERSEN TEK YER BURASI.
+
+       Düz metindir: gelen kutusu metni kaçırıp `white-space: pre-wrap`
+       ile basıyor, yani HTML çalışmaz ama satır sonları korunur.
+
+       Kod: öğretmen kodunu ogrencihesap.js üretiyor (OH.koduTuret).
+       Oradan alıyoruz ki kural değişirse mesaj yanlış kod söylemesin;
+       dosya yüklü değilse kod satırı metinden çıkarılır.               */
+    E.hosgeldinMetni = function (ad, kod) {
+        var isim = (ad || '').trim();
+        var selam = isim ? ('Merhaba ' + isim + ',') : 'Merhaba,';
+        return selam + '\n\n' +
+        'Öğretmen hesabın onaylandı — artık siteyi kullanabilirsin.\n\n' +
+        'Başlamak için üç adım:\n\n' +
+        '1) SINIFINI KUR\n' +
+        'Sağ üstteki avatarına bas; "Listelerim" açılır. Kurum, seviye ve ' +
+        'sınıflarını buradan oluşturuyorsun. (Avatara ikinci kez basarsan ' +
+        'profiline geçersin.)\n\n' +
+        '2) ÖĞRENCİLERİNİ EKLE\n' +
+        'Sınıfa öğrenci eklediğinde her birine kişisel bir giriş kodu ' +
+        'üretilir. Listede adının yanında gizli durur, üstüne dokununca ' +
+        'görünür.\n\n' +
+        '3) ÖĞRETMEN KODUNU DAĞIT\n' +
+        (kod
+          ? ('Sana özel kodun: ' + kod + '\n')
+          : 'Profil > Kişisel Bilgilerim bölümünde sana özel bir TCH- kodu var.\n') +
+        'Öğrencilerin kayıt olurken bu kodu girerse sana bağlanma isteği ' +
+        'gönderir. İstekleri Profil > Kişisel Bilgilerim > "İstekleri Gör" ' +
+        'ile onaylıyorsun. Kodun sabittir, hiç değişmez — rahatça ' +
+        'dağıtabilirsin.\n\n' +
+        'Sınıfın kurulduktan sonra: not ve davranış girme, görev (ödev) ' +
+        'gönderip sonuçlarını görme, öğrencilerinin oyun etkinliğini takip ' +
+        'etme, sınıfa toplu mesaj atma ve sınıf içi bilgi yarışması ' +
+        'başlatma hepsi açık olacak.\n\n' +
+        'Takıldığın yerde bu mesaja cevap yazman yeterli.';
+    };
+
+    /* Mesajı gelen kutusuna bırakır. Yönetici oturumundan çağrıldığı için
+       Firestore kuralı `from:'admin'` yazımına izin verir (bkz.
+       firestore.rules.txt → match /mesajlar). */
+    function hosgeldinYolla(uid, bilgi) {
+        bilgi = bilgi || {};
+        var kod = '';
+        try { if (window.OH && OH.koduTuret) kod = OH.koduTuret(uid); } catch (e) { kod = ''; }
+        return firebase.firestore().collection('mesajlar').add({
+            uid: uid,
+            email: bilgi.email || '',
+            ad: bilgi.ad || 'Öğretmen',
+            from: 'admin',
+            kategori: 'Hoş geldin',
+            text: E.hosgeldinMetni(bilgi.ad, kod),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            readByAdmin: true,
+            readByUser: false
+        });
+    }
+
+    /* bilgi = {ad, email} — yönetici panelindeki bekleyen kaydından gelir.
+       Mesaj yazılamazsa ONAY YİNE GEÇERLİDİR: asıl iş rol güncellemesidir,
+       mesaj ikincil. Bu yüzden hata yutulur, söz reddedilmez. */
+    E.onayla = function (uid, bilgi) {
         return firebase.firestore().collection('kullanicilar').doc(uid)
-            .update({ ogretmenOnay: 'onayli', role: 'teacher' });
+            .update({ ogretmenOnay: 'onayli', role: 'teacher' })
+            .then(function () {
+                return hosgeldinYolla(uid, bilgi).catch(function (e) {
+                    try { console.warn('Hoş geldin mesajı gönderilemedi:', e); } catch (x) {}
+                });
+            });
     };
     E.reddet = function (uid) {
         return firebase.firestore().collection('kullanicilar').doc(uid)

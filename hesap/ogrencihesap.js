@@ -1136,6 +1136,11 @@
         return 'TCH-' + n;
     }
 
+    /* Kodu ÜRETEN kural tek yerde dursun: onay mesajında öğretmene kendi
+       kodunu yazabilmek için sistem/erisim.js de bunu kullanıyor. Ayrı bir
+       kopya çıkarılırsa kural değiştiğinde mesaj yanlış kod söyler. */
+    OH.koduTuret = koduTuret;
+
     OH.ogretmenKodu = function () {
         try { return localStorage.getItem('teacher_static_code') || ''; } catch (e) { return ''; }
     };

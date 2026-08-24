@@ -812,6 +812,11 @@ function deleteStudentCard(emailEnc) {
    olur ve öğretmenin ekranındaki perde ANINDA kalkar (kendi belgesini
    onSnapshot ile dinliyor). "Reddet" hesabı silmez, yalnız kapalı tutar.
    ========================================================================== */
+/* Onay bekleyenlerin ad/e-postası. Onay mesajında kullanılıyor; adı inline
+   onclick'e gömmek tırnak kaçışı gerektirirdi (Ayşe'nin gibi bir ad HTML'i
+   kırardı), bu yüzden uid ile burada tutuluyor. */
+var _onayBekleyen = {};
+
 function loadOgretmenOnaylari() {
     var kutu = document.getElementById('admin-onay-list');
     var rozet = document.getElementById('admin-onay-badge');
@@ -827,8 +832,10 @@ function loadOgretmenOnaylari() {
             : '';
         if (!liste.length) { kutu.innerHTML = '<p>Onay bekleyen öğretmen yok.</p>'; return; }
         var html = '';
+        _onayBekleyen = {};
         liste.forEach(function (o) {
             var ad = o.name || o.email || o._id;
+            _onayBekleyen[o._id] = { ad: (o.name || ''), email: (o.email || '') };
             html += '<div style="display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #E9EEF5; border-radius:10px; padding:11px 14px; margin-bottom:8px; flex-wrap:wrap;">' +
                       '<div style="flex:1; min-width:180px;">' +
                         '<strong style="display:block; color:#2c3e50;">' + ad + '</strong>' +
@@ -848,12 +855,16 @@ function loadOgretmenOnaylari() {
 }
 window.loadOgretmenOnaylari = loadOgretmenOnaylari;
 
+/* Onaylarken öğretmenin adı/e-postası _onayBekleyen'den okunur ve hoş
+   geldin mesajına geçirilir (KidefErisim.onayla). */
 function ogretmenOnayVer(uid, onay) {
     if (!window.KidefErisim) return;
-    var islem = onay ? window.KidefErisim.onayla(uid) : window.KidefErisim.reddet(uid);
+    var islem = onay
+        ? window.KidefErisim.onayla(uid, _onayBekleyen[uid] || {})
+        : window.KidefErisim.reddet(uid);
     islem.then(function () {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert(onay ? 'Öğretmen onaylandı.' : 'Başvuru reddedildi.');
+            showCustomAlert(onay ? 'Öğretmen onaylandı, hoş geldin mesajı gönderildi.' : 'Başvuru reddedildi.');
         }
         loadOgretmenOnaylari();
     }).catch(function (e) {
