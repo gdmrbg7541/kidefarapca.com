@@ -873,37 +873,154 @@ function ogretmenOnayVer(uid, onay) {
 }
 window.ogretmenOnayVer = ogretmenOnayVer;
 
-function renderAdminTeacherList() {
-    const container = document.getElementById('admin-teacher-list');
-    if (!container) return;
-    
-    let html = `
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Ad Soyad</th>
-                    <th>ID</th>
-                    <th>E-posta</th>
-                    <th>Telefon</th>
-                </tr>
-            </thead>
-            <tbody>
-    `;
-    
-    appState.teachers.forEach((t, index) => {
-        html += `
-            <tr>
-                <td>${t.name}</td>
-                <td>${t.id}</td>
-                <td>${t.email}</td>
-                <td>${t.phone}</td>
-            </tr>
-        `;
-    });
-    
-    html += `</tbody></table><p style="font-size: 0.75rem; color: #888; margin-top: 10px;">* Eğitmen verileri <strong>js/data/ogretmen.js</strong> dosyasından yönetilmektedir.</p>`;
-    container.innerHTML = html;
+/* ===================================================================
+   ÖĞRETMENLER — GERÇEK LİSTE (Firestore)
+
+   ESKİDEN: bu tablo appState.teachers'ı yani hesap/ogretmen.js içindeki
+   SABİT DATA_OGRETMENLER dizisini basıyordu (2 demo kayıt). Yani siteye
+   kayıt olan gerçek öğretmenlerin hiçbiri burada görünmüyordu; tablonun
+   Firestore ile bağlantısı yoktu.
+
+   ŞİMDİ: kullanicilar koleksiyonundan role == 'teacher' olanlar okunur.
+   Onay durumu, öğretmen kodu ve kayıt tarihi de gösterilir; buradan
+   onaylanabilir ya da onayı kaldırılabilir (KidefErisim.onayla/reddet —
+   onaylama aynı zamanda hoş geldin mesajını da gönderir).
+
+   NOT: role alanı hiç yazılmamış eski öğretmen hesapları bu sorguya
+   düşmez; o hesaplar bir kez giriş yapınca sistem/rol.js kendiliğinden
+   role:'teacher' yazar ve listede belirirler.
+   =================================================================== */
+var _adminOgretmenler = {};      /* uid -> {ad, email} (onay mesajı için) */
+
+function _ogrDurumRozet(onay) {
+    var r = { renk: '#7f8c8d', zemin: '#EDF1F7', ad: 'Eski kayıt' };
+    if (onay === 'onayli')     r = { renk: '#1E8449', zemin: '#E8F6EF', ad: 'Onaylı' };
+    else if (onay === 'bekliyor')   r = { renk: '#B5670A', zemin: '#FEF3E2', ad: 'Bekliyor' };
+    else if (onay === 'reddedildi') r = { renk: '#B03A2E', zemin: '#FDEDEC', ad: 'Reddedildi' };
+    return '<span style="display:inline-block; padding:3px 10px; border-radius:999px; ' +
+           'font-size:.78rem; font-weight:700; color:' + r.renk + '; background:' + r.zemin + ';">' +
+           r.ad + '</span>';
 }
+
+function _ogrTarih(ts) {
+    try {
+        var d = (ts && ts.toDate) ? ts.toDate() : null;
+        if (!d) return '—';
+        return d.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    } catch (e) { return '—'; }
+}
+
+function renderAdminTeacherList() {
+    var container = document.getElementById('admin-teacher-list');
+    if (!container) return;
+
+    if (typeof firebase === 'undefined' || typeof isFirebaseReady === 'undefined' || !isFirebaseReady) {
+        container.innerHTML = '<p style="color:#7f8c8d;">Bu liste çevrimdışıyken yüklenemiyor.</p>';
+        return;
+    }
+    container.innerHTML = '<p style="color:#7f8c8d;">Yükleniyor…</p>';
+
+    firebase.firestore().collection('kullanicilar')
+        .where('role', '==', 'teacher').get()
+        .then(function (snap) {
+            var liste = [];
+            snap.forEach(function (d) { var v = d.data() || {}; v._id = d.id; liste.push(v); });
+            liste.sort(function (a, b) {
+                return String(a.name || a.email || '').localeCompare(String(b.name || b.email || ''), 'tr');
+            });
+
+            _adminOgretmenler = {};
+            if (!liste.length) {
+                container.innerHTML = '<p style="color:#7f8c8d;">Kayıtlı öğretmen yok.</p>' +
+                    '<button class="btn" onclick="renderAdminTeacherList()" ' +
+                    'style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
+                return;
+            }
+
+            var sayac = { onayli: 0, bekliyor: 0, reddedildi: 0, eski: 0 };
+            var satirlar = '';
+            liste.forEach(function (o) {
+                var uid = o._id;
+                var ad = o.name && o.name !== 'Belirtilmedi' ? o.name : '';
+                _adminOgretmenler[uid] = { ad: ad, email: o.email || '' };
+
+                var onay = o.ogretmenOnay;
+                if (onay === 'onayli') sayac.onayli++;
+                else if (onay === 'bekliyor') sayac.bekliyor++;
+                else if (onay === 'reddedildi') sayac.reddedildi++;
+                else sayac.eski++;
+
+                var kod = '—';
+                try { if (window.OH && OH.koduTuret) kod = OH.koduTuret(uid); } catch (e) {}
+
+                /* Onaylı ise "onayı kaldır", değilse "onayla". Onaylama
+                   KidefErisim.onayla üzerinden gider ki hoş geldin mesajı
+                   da otomatik gitsin. */
+                var acik = (onay === 'onayli') || (onay === undefined || onay === null || onay === '');
+                var islem = acik
+                    ? '<button class="btn btn-sm" style="background:#FDEDEC; color:#B03A2E; border:none; border-radius:8px; padding:6px 12px; font-size:.85rem; font-weight:700;" ' +
+                      'onclick="adminOgretmenDurum(\'' + uid + '\', false)">Onayı kaldır</button>'
+                    : '<button class="btn btn-sm" style="background:#E8F6EF; color:#1E8449; border:none; border-radius:8px; padding:6px 12px; font-size:.85rem; font-weight:700;" ' +
+                      'onclick="adminOgretmenDurum(\'' + uid + '\', true)">Onayla</button>';
+
+                satirlar +=
+                    '<tr>' +
+                      '<td>' + _fbEsc(ad || '(isim yok)') + '</td>' +
+                      '<td style="font-size:.88rem;">' + _fbEsc(o.email || '—') + '</td>' +
+                      '<td style="font-size:.88rem;">' + _fbEsc(o.phone && o.phone !== 'Belirtilmedi' ? o.phone : '—') + '</td>' +
+                      '<td>' + _ogrDurumRozet(onay) + '</td>' +
+                      '<td style="font-family:monospace; font-size:.85rem;">' + _fbEsc(kod) + '</td>' +
+                      '<td style="font-size:.85rem; color:#7f8c8d;">' + _ogrTarih(o.createdAt) + '</td>' +
+                      '<td>' + islem + '</td>' +
+                    '</tr>';
+            });
+
+            container.innerHTML =
+                '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">' +
+                  '<strong style="color:#2c3e50;">' + liste.length + ' öğretmen</strong>' +
+                  '<span style="font-size:.85rem; color:#7f8c8d;">' +
+                    sayac.onayli + ' onaylı · ' + sayac.bekliyor + ' bekliyor · ' +
+                    sayac.reddedildi + ' reddedildi' +
+                    (sayac.eski ? ' · ' + sayac.eski + ' eski kayıt' : '') +
+                  '</span>' +
+                  '<button class="btn" onclick="renderAdminTeacherList()" ' +
+                    'style="margin-inline-start:auto; font-size:.85rem;">🔄 Yenile</button>' +
+                '</div>' +
+                '<table class="admin-table">' +
+                  '<thead><tr><th>Ad Soyad</th><th>E-posta</th><th>Telefon</th>' +
+                  '<th>Durum</th><th>Kod</th><th>Kayıt</th><th></th></tr></thead>' +
+                  '<tbody>' + satirlar + '</tbody>' +
+                '</table>';
+        })
+        .catch(function (e) {
+            container.innerHTML = '<p style="color:#EF5350;">Liste alınamadı: ' +
+                _fbEsc((e && (e.code || e.message)) || e) + '</p>' +
+                '<button class="btn" onclick="renderAdminTeacherList()" ' +
+                'style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
+        });
+}
+
+/* Tablodan onay verme / geri alma. Onaylama KidefErisim.onayla ile gider:
+   rol + onay alanını yazar VE hoş geldin mesajını gönderir. */
+function adminOgretmenDurum(uid, onay) {
+    if (!window.KidefErisim) return;
+    var islem = onay
+        ? window.KidefErisim.onayla(uid, _adminOgretmenler[uid] || {})
+        : window.KidefErisim.reddet(uid);
+    islem.then(function () {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert(onay ? 'Öğretmen onaylandı, hoş geldin mesajı gönderildi.'
+                                 : 'Öğretmenin erişimi kapatıldı.');
+        }
+        renderAdminTeacherList();
+        if (typeof loadOgretmenOnaylari === 'function') loadOgretmenOnaylari();
+    }).catch(function (e) {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert('İşlem başarısız: ' + ((e && (e.code || e.message)) || e));
+        }
+    });
+}
+window.adminOgretmenDurum = adminOgretmenDurum;
 
 // updateTeacherData, removeTeacher, addTeacher disabled as per new architecture
 function updateTeacherData() {}

@@ -254,7 +254,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="sistem/kilit.js?v=12"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
-    <script src="sistem/erisim.js?v=4"></script>
+    <script src="sistem/erisim.js?v=5"></script>
 <style>
 /* ==== ERİŞİM KATMANI (sistem/erisim.js) ================================
    1) ÖĞRENCİ KATEGORİ KISITI — site "Sadece Girişliler" kademesindeyken
@@ -305,6 +305,19 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 #ogretmenOnayPerde .eop-tus button:hover { filter: brightness(1.07); }
 #ogretmenOnayPerde .eop-tus button.eop-cik { background: #EDF1F7; color: #4B5563; }
 #ogretmenOnayPerde .eop-dip { font-size: .88rem; color: #8A94A3; margin-top: 12px; }
+/* Hazır mesajlı WhatsApp tuşu (sistem/erisim.js) */
+#ogretmenOnayPerde .eop-wp {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    margin: 16px auto 0; padding: 13px 24px; border-radius: 14px;
+    background: #25D366; color: #fff; text-decoration: none;
+    font-weight: 800; font-size: 1.02rem; line-height: 1;
+    box-shadow: 0 6px 16px rgba(37,211,102,.32); transition: filter .15s;
+}
+#ogretmenOnayPerde .eop-wp:hover { filter: brightness(1.06); }
+#ogretmenOnayPerde .eop-wp svg { width: 21px; height: 21px; flex: 0 0 auto; }
+#ogretmenOnayPerde .eop-wp-dip {
+    font-size: .84rem; color: #8A94A3; margin-top: 7px;
+}
 /* Onay beklerken gösterilen "ilk üç adım" ön izlemesi (sistem/erisim.js) */
 #ogretmenOnayPerde .eop-adimlar {
     text-align: start; background: #FFF9F0; border: 1px solid #FBE3C4;
@@ -4885,7 +4898,23 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3><svg class="lli" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16.2" rx="2.2" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><path d="M3 5a2.2 2.2 0 0 1 2.2-2.2h13.6A2.2 2.2 0 0 1 21 5v3.6H3z" fill="#e74c3c"/><rect x="6.6" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><rect x="15.2" y="1.6" width="2.2" height="4.4" rx="1.1" fill="#c0392b"/><g fill="#bdc3c7"><rect x="6" y="11" width="3" height="2.6" rx=".6"/><rect x="10.5" y="11" width="3" height="2.6" rx=".6"/><rect x="15" y="11" width="3" height="2.6" rx=".6"/><rect x="6" y="15.4" width="3" height="2.6" rx=".6"/></g><rect class="li-gun" x="10.5" y="15.4" width="3" height="2.6" rx=".6" fill="#3498db"/></svg> Haftalık Kazanım Takibi</h3>
-            
+            <button type="button" id="llOneriTus" onclick="llOneriAc()" title="Bu seviye için haftalık kazanım tavsiyesini gör"
+                style="display:inline-flex; align-items:center; gap:8px; border:none; border-radius:12px;
+                       padding:11px 18px; cursor:pointer; background:#8E44AD; color:#fff;
+                       font-family:inherit; font-weight:700; font-size:.95rem;
+                       box-shadow:0 5px 14px rgba(142,68,173,.28);">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v2"/><path d="M12 19v2"/><path d="M5 12H3"/><path d="M21 12h-2"/><circle cx="12" cy="12" r="4.2"/><path d="M9.5 19.5h5"/></svg>
+                <span>Yöneticinin tavsiyesi</span>
+            </button>
+        </div>
+        <!-- Seviyenin yıl sonu hedefi: tavsiye aktarılınca dolar, elle de düzenlenebilir -->
+        <div id="llYilHedefKutu" style="display:none; background:#F4ECFA; border:1px solid #DCC6EC;
+             border-radius:12px; padding:12px 15px; margin-bottom:16px;">
+            <div style="font-weight:800; color:#6C3483; font-size:.9rem; margin-bottom:5px;">🎯 Yıl sonu hedefi</div>
+            <textarea id="llYilHedefMetin" rows="2" onchange="llYilHedefKaydet(this.value)"
+                placeholder="Bu seviyede yıl sonunda ulaşılacak hedef…"
+                style="width:100%; border:1px solid #DCC6EC; border-radius:9px; padding:9px 11px;
+                       font-family:inherit; font-size:.95rem; color:#4B5563; box-sizing:border-box; resize:vertical;"></textarea>
         </div>
 <table id="planTable">
     <thead>
@@ -5290,10 +5319,14 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>
     <script src="hesap/course-content.js"></script>
-    <script src="hesap/teacher-admin.js?v=20260815c"></script>
+    <script src="hesap/teacher-admin.js?v=20260815d"></script>
     <script src="sistem/alarm.js?v=20260814c"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
-    <script src="hesap/listelerim.js?v=20260815a"></script>
+    <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->
+    <script src="sistem/kazanimoneri.js?v=1"></script>
+    <!-- Öğretmen profilindeki "sitede yenilikler" şeridi -->
+    <script src="sistem/yenilikler.js?v=1"></script>
+    <script src="hesap/listelerim.js?v=20260815c"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=20260815a"></script>

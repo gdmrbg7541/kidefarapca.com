@@ -188,7 +188,247 @@ function renderPlan() {
                 </div>`;
         }
     }
+    llYilHedefTazele();
 }
+
+/* ===================================================================
+   YÖNETİCİNİN TAVSİYESİ — haftalık kazanım önerisi
+   Veri: sistem/kazanimoneri.js (window.KidefKazanimOneri)
+   Öğretmen pencerede haftaları tek tek işaretler, "Seçilenleri aktar"
+   der; yalnız işaretlenen haftalar kendi planına yazılır. Dolu bir
+   haftanın üstüne yazılacaksa önce uyarı çıkar.
+   =================================================================== */
+
+/* Yenilik şeridini kapat: hepsini okundu say ve profili yeniden çiz. */
+function llYenilikOkundu() {
+    try { if (window.KidefYenilikler) KidefYenilikler.okundu(); } catch (e) {}
+    var el = document.getElementById('tpYenilik');
+    if (el) el.remove();
+}
+window.llYenilikOkundu = llYenilikOkundu;
+
+/* Seviyenin yıl sonu hedefi kutusunu tazele (Haftalık Plan sekmesinde) */
+function llYilHedefTazele() {
+    var kutu = document.getElementById('llYilHedefKutu');
+    var alan = document.getElementById('llYilHedefMetin');
+    if (!kutu || !alan) return;
+    var lv = (curLId !== null && data.levels[curLId]) ? data.levels[curLId] : null;
+    var h = (lv && lv.yilHedefi) || '';
+    alan.value = h;
+    kutu.style.display = h ? 'block' : 'none';
+}
+window.llYilHedefTazele = llYilHedefTazele;
+
+function llYilHedefKaydet(v) {
+    if (curLId === null || !data.levels[curLId]) return;
+    data.levels[curLId].yilHedefi = String(v || '').trim();
+    save();
+}
+window.llYilHedefKaydet = llYilHedefKaydet;
+
+/* Pencerenin o anki durumu: hangi sınıfın önerisi gösteriliyor */
+var _llOneriSinif = null;
+
+function llOneriAc() {
+    if (curLId === null || !data.levels[curLId]) {
+        if (typeof showCustomAlert === 'function') showCustomAlert('Önce bir seviye seç.');
+        return;
+    }
+    if (!window.KidefKazanimOneri) {
+        if (typeof showCustomAlert === 'function') showCustomAlert('Tavsiye verisi yüklenemedi.');
+        return;
+    }
+    var lv = data.levels[curLId];
+    _llOneriSinif = KidefKazanimOneri.sinifCoz(lv.name || '');
+    llOneriCiz();
+}
+window.llOneriAc = llOneriAc;
+
+function llOneriKapat() {
+    var o = document.getElementById('llOneriPerde');
+    if (o) o.remove();
+}
+window.llOneriKapat = llOneriKapat;
+
+function llOneriSinifSec(s) { _llOneriSinif = s || null; llOneriCiz(); }
+window.llOneriSinifSec = llOneriSinifSec;
+
+function llOneriCiz() {
+    llOneriKapat();
+    var lv = data.levels[curLId];
+    var mevcut = lv.planText || {};
+    var K = KidefKazanimOneri;
+    var oneri = _llOneriSinif ? K.al(_llOneriSinif) : null;
+
+    var secenekler = K.siniflar().map(function (s) {
+        return '<option value="' + s + '"' + (s === _llOneriSinif ? ' selected' : '') + '>' +
+               s + '. Sınıf</option>';
+    }).join('');
+
+    var govde;
+    if (!oneri) {
+        govde = '<div style="padding:26px 4px; text-align:center; color:#5A4034;">' +
+                '<p style="margin:0 0 8px; font-size:1rem;">' +
+                '<b>' + behKacis(lv.name || 'Bu seviye') + '</b> adından sınıf anlaşılamadı.</p>' +
+                '<p style="margin:0; color:#8B6A57; font-size:.93rem;">' +
+                'Yukarıdan hangi sınıfın tavsiyesini görmek istediğini seç.</p></div>';
+    } else {
+        var satir = '';
+        for (var i = 1; i <= K.HAFTA_SAYISI; i++) {
+            var t = oneri.haftalar[i - 1] || '';
+            var dolu = String(mevcut[i] || '').trim();
+            /* Varsayılan: yalnız BOŞ haftalar işaretli gelir — öğretmenin
+               yazdıklarına kazara dokunulmasın. */
+            satir +=
+              '<label class="llo-satir" style="display:flex; gap:11px; align-items:flex-start;' +
+              ' padding:9px 11px; border-bottom:1px solid #F2EAE2; cursor:pointer;' +
+              (dolu ? ' background:#FFFBF5;' : '') + '">' +
+                '<input type="checkbox" class="llo-kutu" data-h="' + i + '"' +
+                  (dolu ? '' : ' checked') + ' onchange="llOneriSayacTazele()"' +
+                  ' style="margin-top:3px; width:17px; height:17px; flex:none; cursor:pointer;">' +
+                '<span style="flex:none; width:30px; font-weight:800; color:#8E44AD;">' + i + '</span>' +
+                '<span style="flex:1; min-width:0;">' +
+                  '<span style="display:block; color:#4B5563; line-height:1.45;">' + behKacis(t) + '</span>' +
+                  (dolu
+                    ? '<span style="display:block; margin-top:3px; font-size:.83rem; color:#B5670A;">' +
+                      'Şu an yazılı: ' + behKacis(dolu.length > 90 ? dolu.slice(0, 90) + '…' : dolu) +
+                      '</span>'
+                    : '') +
+                '</span>' +
+              '</label>';
+        }
+        govde =
+          '<div style="background:#F4ECFA; border:1px solid #DCC6EC; border-radius:12px;' +
+          ' padding:13px 15px; margin-bottom:14px;">' +
+            '<label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer;">' +
+              '<input type="checkbox" id="lloHedef" checked style="margin-top:3px; width:17px; height:17px; flex:none;">' +
+              '<span><b style="color:#6C3483;">🎯 Yıl sonu hedefi</b>' +
+              '<span style="display:block; margin-top:4px; color:#4B5563; line-height:1.5;">' +
+              behKacis(oneri.hedef) + '</span></span>' +
+            '</label>' +
+          '</div>' +
+          '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">' +
+            '<button type="button" onclick="llOneriSec(\'bos\')" class="llo-mini">Boş haftaları seç</button>' +
+            '<button type="button" onclick="llOneriSec(\'hepsi\')" class="llo-mini">Tümünü seç</button>' +
+            '<button type="button" onclick="llOneriSec(\'hic\')" class="llo-mini">Temizle</button>' +
+          '</div>' +
+          '<div style="border:1px solid #F2EAE2; border-radius:12px; overflow:hidden;">' + satir + '</div>';
+    }
+
+    var perde = document.createElement('div');
+    perde.id = 'llOneriPerde';
+    perde.style.cssText = 'position:fixed; inset:0; z-index:2147482000; background:rgba(30,20,10,.55);' +
+        'display:flex; align-items:center; justify-content:center; padding:18px;';
+    perde.onclick = function (e) { if (e.target === perde) llOneriKapat(); };
+    perde.innerHTML =
+      '<div style="width:min(720px,100%); max-height:92vh; display:flex; flex-direction:column;' +
+      ' background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.3);">' +
+        '<div style="display:flex; align-items:center; gap:12px; padding:15px 18px;' +
+        ' background:#8E44AD; color:#fff; flex-wrap:wrap;">' +
+          '<b style="flex:1; min-width:150px; font-size:1.05rem;">Yöneticinin tavsiyesi</b>' +
+          '<select onchange="llOneriSinifSec(this.value)" style="border:none; border-radius:9px;' +
+          ' padding:7px 10px; font-family:inherit; font-weight:700; cursor:pointer;">' +
+            '<option value="">Sınıf seç…</option>' + secenekler +
+          '</select>' +
+          '<button type="button" onclick="llOneriKapat()" style="border:none; border-radius:9px;' +
+          ' padding:7px 13px; cursor:pointer; background:rgba(255,255,255,.2); color:#fff;' +
+          ' font-family:inherit; font-weight:700;">Kapat</button>' +
+        '</div>' +
+        '<div style="padding:16px 18px; overflow-y:auto; flex:1;">' + govde + '</div>' +
+        (oneri
+          ? '<div style="padding:13px 18px; border-top:1px solid #F2EAE2; display:flex;' +
+            ' align-items:center; gap:12px; flex-wrap:wrap;">' +
+              '<span id="lloSayac" style="flex:1; min-width:160px; color:#5A4034; font-size:.93rem;"></span>' +
+              '<button type="button" onclick="llOneriAktar()" style="border:none; border-radius:11px;' +
+              ' padding:11px 20px; cursor:pointer; background:#27AE60; color:#fff;' +
+              ' font-family:inherit; font-weight:800;">Seçilenleri aktar</button>' +
+            '</div>'
+          : '') +
+      '</div>';
+    document.body.appendChild(perde);
+
+    /* mini tuş stili (bir kez) */
+    if (!document.getElementById('lloStil')) {
+        var st = document.createElement('style');
+        st.id = 'lloStil';
+        st.textContent = '.llo-mini{border:1px solid #DCC6EC; background:#fff; color:#6C3483;' +
+            'border-radius:999px; padding:6px 13px; cursor:pointer; font-family:inherit;' +
+            'font-weight:700; font-size:.86rem;} .llo-mini:hover{background:#F4ECFA;}' +
+            '.llo-satir:last-child{border-bottom:none;}';
+        document.head.appendChild(st);
+    }
+    llOneriSayacTazele();
+}
+window.llOneriCiz = llOneriCiz;
+
+function llOneriSec(ne) {
+    document.querySelectorAll('#llOneriPerde .llo-kutu').forEach(function (k) {
+        var h = k.getAttribute('data-h');
+        var dolu = String((data.levels[curLId].planText || {})[h] || '').trim();
+        k.checked = (ne === 'hepsi') ? true : (ne === 'hic') ? false : !dolu;
+    });
+    llOneriSayacTazele();
+}
+window.llOneriSec = llOneriSec;
+
+function llOneriSayacTazele() {
+    var el = document.getElementById('lloSayac');
+    if (!el) return;
+    var sec = 0, uzeri = 0;
+    document.querySelectorAll('#llOneriPerde .llo-kutu').forEach(function (k) {
+        if (!k.checked) return;
+        sec++;
+        var h = k.getAttribute('data-h');
+        if (String((data.levels[curLId].planText || {})[h] || '').trim()) uzeri++;
+    });
+    el.innerHTML = '<b>' + sec + '</b> hafta aktarılacak.' +
+        (uzeri ? ' <span style="color:#B03A2E;">' + uzeri +
+                 ' tanesi dolu — üzerine yazılacak.</span>' : '');
+}
+window.llOneriSayacTazele = llOneriSayacTazele;
+
+function llOneriAktar() {
+    if (curLId === null || !data.levels[curLId] || !_llOneriSinif) return;
+    var oneri = KidefKazanimOneri.al(_llOneriSinif);
+    if (!oneri) return;
+    var lv = data.levels[curLId];
+    if (!lv.planText) lv.planText = {};
+
+    var secili = [];
+    document.querySelectorAll('#llOneriPerde .llo-kutu').forEach(function (k) {
+        if (k.checked) secili.push(parseInt(k.getAttribute('data-h'), 10));
+    });
+    var hedefKutu = document.getElementById('lloHedef');
+    var hedefAl = hedefKutu && hedefKutu.checked;
+    if (!secili.length && !hedefAl) {
+        if (typeof showCustomAlert === 'function') showCustomAlert('Hiçbir şey seçilmedi.');
+        return;
+    }
+
+    var uzeri = secili.filter(function (h) {
+        return String(lv.planText[h] || '').trim();
+    }).length;
+
+    var yaz = function () {
+        secili.forEach(function (h) { lv.planText[h] = oneri.haftalar[h - 1] || ''; });
+        if (hedefAl) lv.yilHedefi = oneri.hedef;
+        save();
+        llOneriKapat();
+        renderPlan();
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert(secili.length + ' hafta planına aktarıldı.');
+        }
+    };
+
+    if (uzeri && typeof showCustomConfirm === 'function') {
+        showCustomConfirm('Seçtiğin haftalardan ' + uzeri +
+            ' tanesinde yazılı kazanım var. Üzerine yazılsın mı?').then(function (e) {
+            if (e) yaz();
+        });
+    } else { yaz(); }
+}
+window.llOneriAktar = llOneriAktar;
+
 function updateLevelPlanText(weekIndex, value) {
     if (curLId === null || !data.levels[curLId]) return;
     
@@ -4231,6 +4471,33 @@ function renderTeacherProfile(deneme) {
     var html = '';
 
     /* --- BILDIRIM: ogrenci gorev tamamlayinca profilin tepesinde serit --- */
+    /* --- YENİLİKLER ŞERİDİ: sitede ne değiştiyse öğretmen burada görür ---
+       Kaynak: sistem/yenilikler.js. Okundu bilgisi cihazda tutulur. */
+    try {
+        var yn = (window.KidefYenilikler && KidefYenilikler.yeniler()) || [];
+        if (yn.length) {
+            var kayitlar = yn.slice(0, 4).map(function (y) {
+                return '<li style="margin-bottom:9px; line-height:1.5;">' +
+                       '<b style="color:#6C3483;">' + behKacis(y.baslik) + '</b>' +
+                       '<span style="color:#9B8AA8; font-size:.85rem;"> · ' + behKacis(y.tarih) + '</span>' +
+                       '<span style="display:block; color:#5A4034;">' + behKacis(y.metin) + '</span></li>';
+            }).join('');
+            html += '<div id="tpYenilik" class="glass-card"' +
+                ' style="margin-bottom:25px; border-left:5px solid #8E44AD;">' +
+                '<div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:10px;">' +
+                  '<span style="display:inline-flex; width:40px; height:40px; border-radius:50%; background:#F4ECFA;' +
+                  ' align-items:center; justify-content:center; font-size:1.3rem; flex:none;">✨</span>' +
+                  '<b style="flex:1; min-width:180px; color:#6C3483;">Sitede yenilikler' +
+                  (yn.length > 4 ? ' (' + yn.length + ' kayıt)' : '') + '</b>' +
+                  '<button type="button" onclick="llYenilikOkundu()" style="padding:9px 17px; border:none;' +
+                  ' border-radius:10px; background:#8E44AD; color:#fff; font-weight:700; cursor:pointer;' +
+                  ' font-family:inherit;">Okudum</button>' +
+                '</div>' +
+                '<ul style="margin:0; padding-inline-start:20px;">' + kayitlar + '</ul>' +
+                '</div>';
+        }
+    } catch (e) { /* yenilik şeridi düşerse profil yine açılsın */ }
+
     var yb = window._gvYeniSonuc;
     if (yb && ((yb.n || 0) + (yb.etk || 0)) > 0) {
         var sonYazi = '';

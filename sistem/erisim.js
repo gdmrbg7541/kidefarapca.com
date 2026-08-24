@@ -41,6 +41,17 @@
     var OGRENCI_BOLUM = ['oyunlar', 'degerler-egitimi', 'youtube-kanallari'];
     E.OGRENCI_BOLUM = OGRENCI_BOLUM;
 
+    /* ------------------------------------------- WHATSAPP BİLDİRİMİ
+       Öğretmen kayıt olup onay perdesinde beklerken, tek dokunuşla
+       yöneticiye haber verebilsin diye hazır mesajlı bir wa.me bağlantısı
+       kuruluyor. Sunucu/API yok: bağlantı WhatsApp'ı açar, mesaj yazılı
+       gelir, öğretmen yalnız "gönder"e basar.
+
+       NUMARA DEĞİŞTİRMEK İSTERSEN TEK YER BURASI. Uluslararası biçim,
+       başında + ve boşluk olmadan (wa.me böyle istiyor).
+       Not: bu numara sayfa kaynağında görünür — gizli bir hat verme. */
+    var WP_NUMARA = '905386482614';
+
     var GOVDE_SINIF = 'erisim-ogrenci-kisit';
     var PERDE_ID = 'ogretmenOnayPerde';
 
@@ -110,6 +121,30 @@
               'kullanabileceksin</b>. Onaylandığında bu ekran kendiliğinden kalkar — ' +
               'sayfayı açık bırakabilirsin.';
 
+        /* Hazır mesajlı WhatsApp bağlantısı. Mesajı öğretmen gönderiyor,
+           bu yüzden birinci ağızdan yazılı; içinde kaydı bulmaya yetecek
+           kadar bilgi var (ad, e-posta, varsa telefon). */
+        var k = E._kisi || {};
+        var govde = red
+            ? ('Merhaba, kidefarapca.com\'a öğretmen olarak kayıt oldum ama ' +
+               'başvurum onaylanmamış görünüyor. Yardımcı olabilir misiniz?')
+            : ('Merhaba, kidefarapca.com\'a öğretmen hesabı açtım, onayınızı ' +
+               'bekliyorum.');
+        var satirlar = [govde, ''];
+        if (k.ad)    satirlar.push('Ad Soyad: ' + k.ad);
+        if (k.email) satirlar.push('E-posta: ' + k.email);
+        if (k.tel)   satirlar.push('Telefon: ' + k.tel);
+        var wpBag = 'https://wa.me/' + WP_NUMARA + '?text=' +
+                    encodeURIComponent(satirlar.join('\n'));
+        var wpTus = '' +
+          '<a class="eop-wp" href="' + wpBag + '" target="_blank" rel="noopener">' +
+            '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+              '<path d="M20 3.9A11 11 0 0 0 3.6 18.5L2.5 22.5l4.1-1.1A11 11 0 1 0 20 3.9zm-8 18a9 9 0 0 1-4.6-1.3l-.3-.2-2.7.7.7-2.7-.2-.3A9 9 0 1 1 12 21.9zm5-6.7c-.3-.1-1.6-.8-1.9-.9s-.4-.1-.6.1-.7.9-.8 1-.3.2-.5.1a7.4 7.4 0 0 1-3.7-3.2c-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5s-.6-1.5-.9-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3A3 3 0 0 0 6 10.5a5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c2.2.9 2.2.6 2.6.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/>' +
+            '</svg>' +
+            '<span>' + (red ? 'WhatsApp\'tan yaz' : 'WhatsApp\'tan haber ver') + '</span>' +
+          '</a>' +
+          '<div class="eop-wp-dip">Mesaj hazır gelir; yalnızca gönder\'e basman yeterli.</div>';
+
         /* BEKLEYENE ÖN BİLGİ: onay gelene kadar ekranda oturan öğretmen
            hiçbir şey deneyemiyor. Hiç değilse kendisini nelerin beklediğini
            ve ilk gün ne yapacağını burada okusun. Reddedilene gösterilmez. */
@@ -136,6 +171,7 @@
           '</div>' +
           '<h2>' + baslik + '</h2>' +
           '<p>' + metin + '</p>' +
+          wpTus +
           onIzleme +
           '<div class="eop-tus">' +
             '<button type="button" onclick="KidefErisim.tazele()">Durumu yenile</button>' +
@@ -193,6 +229,7 @@
     function belgeDinle(u) {
         if (dinleyici) { try { dinleyici(); } catch (e) { } dinleyici = null; }
         E._onay = undefined; E._rol = '';
+        E._kisi = {};                     /* WhatsApp mesajı için ad/e-posta/telefon */
         if (!u) { uygula(); return; }
         try {
             dinleyici = firebase.firestore().collection('kullanicilar').doc(u.uid)
@@ -200,6 +237,11 @@
                     var v = (doc.exists && doc.data()) || {};
                     E._onay = v.ogretmenOnay;
                     E._rol = v.role || '';
+                    E._kisi = {
+                        ad: (v.name && v.name !== 'Belirtilmedi') ? v.name : '',
+                        email: v.email || (u && u.email) || '',
+                        tel: (v.phone && v.phone !== 'Belirtilmedi') ? v.phone : ''
+                    };
                     uygula();
                 }, function () { /* kural/çevrimdışı: kapı açık kalır */ });
         } catch (e) { }
