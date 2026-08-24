@@ -24,6 +24,33 @@
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
         {
+            id: 10,
+            tarih: '2026-08-24',
+            baslik: 'Ders verisinin hangi öğretim yılına ait olduğu görünüyor',
+            metin: 'Sınıf kartlarında, muhâdese ünite listesinde ve bilgi yarışması ' +
+                   'konu listesinde artık öğretim yılı rozeti var; üstüne gelince ' +
+                   'hangi programdan geldiği yazıyor. Bir sınıfın iki yıla ait verisi ' +
+                   'olduğunda rozet seçiciye dönüşür, hangisiyle çalışacağını seçersin.'
+        },
+        {
+            id: 9,
+            tarih: '2026-08-24',
+            baslik: '6. sınıf haftalık tavsiyesi yeni programa geçti',
+            metin: 'Yöneticinin tavsiyesi penceresindeki 6. sınıf planı artık 2025 ' +
+                   'TYMM programının dört ünitesine göre: Akrabalarım, Haydi Okula!, ' +
+                   'Vücudum, Bu Hafta Hava Nasıl? — 36 hafta, depodaki yıllık planla ' +
+                   'aynı sırada.'
+        },
+        {
+            id: 8,
+            tarih: '2026-08-24',
+            baslik: '6. sınıf verisi kitapla karşılaştırıldı',
+            metin: '18 dersin tamamı ders kitabıyla satır satır karşılaştırıldı: ' +
+                   'kelimelerin %90\'ı kitapta birebir çıktı, eksik kalan رَصيف ' +
+                   '(kaldırım), رِسالَة (mektup) ve مُوَظَّفَة (memur) 6. ünite ' +
+                   'derslerine eklendi, bilgi yarışması yenilendi.'
+        },
+        {
             id: 7,
             tarih: '2026-08-24',
             baslik: 'Bilgi yarışmasında zorluk seçimi ve renkli soru listesi',

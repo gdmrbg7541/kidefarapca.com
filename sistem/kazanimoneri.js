@@ -12,9 +12,17 @@
    şerit olarak çizildiği için burada tatil satırı YOKTUR; 36'sı da ders
    haftasıdır.
 
-   Kaynak: sarf/ihkelime.js → MUFREDAT ünite/ders ağacı (İmam Hatip
-   Arapça müfredatı) temel alınarak yazıldı. Ders verisi büyüdüğünde bu
-   dosya kendiliğinden değişmez; elle güncellenir.
+   KAYNAK — sınıfa göre değişir:
+     · 5 ve 6. sınıf → 2025 TYMM Arapça Dersi Öğretim Programı (5-8. sınıflar)
+       ve depodaki dosyalar/yillik-plan/arapca-{5,6}-sinif-yillik-plan.docx.
+       Programın ünite adları ve hedef sözcükleri esas alındı.
+     · 7 ve üstü → sarf/ihkelime.js MUFREDAT ünite/ders ağacı.
+   Ders verisi büyüdüğünde bu dosya kendiliğinden değişmez; elle güncellenir.
+
+   DİKKAT: muhadese/veri/6_*.js ders verisi hâlâ ESKİ 6 üniteli kitaba
+   göredir (günlük hayat · yiyecek · sağlık · kıyafet · kutsal mekânlar ·
+   ulaşım). Buradaki tavsiye yeni programa göre yazıldığı için ikisi şu an
+   birebir örtüşmez; yeni 6. sınıf kitabı çıkınca ders verisi de dönecek.
    =========================================================================== */
 (function () {
     'use strict';
@@ -25,6 +33,7 @@
 
         /* ================================================== 5. SINIF ==== */
         "5": {
+            program: '2025 TYMM Arapça Programı (5-8. sınıflar)',
             hedef: 'Yıl sonunda öğrenci Arap alfabesini doğru okuyup yazabilir; ' +
                    'kendini, ailesini ve evini tanıtan basit cümleler kurabilir; ' +
                    'sınıf ve ev çevresindeki temel kelimeleri tanır.',
@@ -69,52 +78,61 @@
         },
 
         /* ================================================== 6. SINIF ==== */
+        /* 2025 TYMM Arapça (5-8) Programı — 4 ünite:
+           Akrabalarım 18 s · Haydi Okula! 16 s · Vücudum 18 s ·
+           Bu Hafta Hava Nasıl? 16 s + 4 s okul temelli planlama = 72 saat.
+           Haftalar dosyalar/yillik-plan/arapca-6-sinif-yillik-plan.docx ile
+           aynı sırayı izler; o plan 37 hafta, burada son iki hafta birleşti. */
         "6": {
-            hedef: 'Yıl sonunda öğrenci mazi ve muzari fiilleri tanıyıp basit ' +
-                   'çekimlerini yapabilir; günlük hayat, yemek, sağlık, kıyafet ' +
-                   've ulaşım konularında kısa diyaloglar kurabilir.',
+            program: '2025 TYMM Arapça Programı (5-8. sınıflar)',
+            hedef: 'Yıl sonunda öğrenci geniş ailesini ve akrabalarının ' +
+                   'mesleklerini tanıtabilir; okul günü ile ders programını ' +
+                   'anlatabilir; vücut bölümlerini ve basit sağlık ifadelerini ' +
+                   'kullanabilir; hava durumu ve mevsimlerle ilgili kısa ' +
+                   'cümleler kurabilir.',
             haftalar: [
-                'Yıla giriş: 5. sınıf tekrarı (alfabe, zamirler, ال takısı)',
-                'Okulda: okul mekânları ve günlük okul kelimeleri',
-                'Mazi fiile giriş: 3. tekil şahıs (ذَهَبَ، كَتَبَ)',
-                'Oyunlar: oyun adları ve fiilleri (لَعِبَ، رَكَضَ)',
-                'Evde: ev içi günlük etkinlikler',
-                'Mazi fiil çekimi: أَنَا، أَنْتَ، هُوَ، هِيَ',
-                '1. Ünite değerlendirmesi: günlük hayat',
-                'Kahvaltıda: kahvaltılık yiyecek ve içecekler',
-                'Öğle yemeğinde: yemek adları ve sipariş kalıpları',
-                'Akşam yemeğinde: sofra kelimeleri',
-                'Beğeni ifadeleri: أُحِبُّ / لَا أُحِبُّ + isim',
-                '2. Ünite değerlendirmesi: yiyecekler ve içecekler',
-                'Vücut organları: رَأْس، يَد، رِجْل، عَيْن، أُذُن',
-                'Hastanede: doktor–hasta diyaloğu, عِنْدِي أَلَم',
-                'Temizlik: temizlik alışkanlıkları ve fiilleri',
-                'Muzari fiile giriş ve çekimi',
-                '3. Ünite değerlendirmesi: sağlık',
-                '1. dönem genel tekrarı ve değerlendirme',
-                'Mevsimler (فُصُول السَّنَة) ve hava durumu',
-                'Kışlık kıyafetler: مِعْطَف، وِشَاح، قُفَّاز',
-                'Yazlık kıyafetler: قَمِيص، بِنْطَال، صَنْدَل',
-                'Renk, kıyafet ve sıfatı birleştirme',
-                '4. Ünite değerlendirmesi: kıyafetler',
-                'Mekke-i Mükerreme: Kâbe ve hac kelimeleri',
-                'Medine-i Münevvere: Mescid-i Nebevî',
-                'Kudüs-i Şerif: Mescid-i Aksâ',
-                'İsm-i mekân kalıbı: مَسْجِد، مَكْتَب، مَدْرَسَة',
-                '5. Ünite değerlendirmesi: kutsal mekânlar',
-                'Ulaşım araçları: سَيَّارَة، حَافِلَة، طَائِرَة، قِطَار',
-                'Trafik: trafik işaretleri ve kuralları',
-                'Tatil yolumda: yolculuk diyaloğu',
-                'Gelecek zaman: سَـ / سَوْفَ + muzari',
-                '6. Ünite değerlendirmesi: ulaşım ve trafik',
-                'Altı ünitenin kelime tekrarı (oyun ve yarışmayla)',
-                'Konuşma uygulaması: bir günümü anlatıyorum',
-                'Yıl sonu genel değerlendirmesi'
+                'Yıla giriş: 5. sınıf tekrarı (alfabe, harekeler, selamlaşma) — أُسْرَة، أَب، أُمّ، أَخ، أُخْت',
+                'Yakın akrabalar: عَمّ، عَمَّة، خال، خالَة — soru kalıbı مَنْ هَذا؟ / مَنْ هَذِهِ؟',
+                'Akrabalarımı tanıtan kısa okuma metni: قَريب، أَقارِب، زائِر، زِيارَة',
+                'Aile ağacı ve izâfe (isim tamlaması): اِبْنُ العَمّ، بَيْتُ الجَدّ',
+                'Muttasıl zamirlerin genişletilmesi: ـنا، ـكُم، ـهُم، ـهُنَّ (أُسْرَتُنا، أَقارِبُنا)',
+                'Akrabamı tanıtıyorum: هَذا عَمّي، هُوَ تاجِر — müzekker-müennes uyumu',
+                'Akraba ziyareti diyaloğu: أَيْنَ يَسْكُنُ عَمُّكَ؟ — şehir adlarıyla في; sıla-i rahim',
+                'Yazma: aile ağacı şeması ve model cümlelerden kısa tanıtım metni',
+                '1. Ünite değerlendirmesi: akrabalarım (أَقارِبي)',
+                'Okulun bölümleri: مَدْرَسَة، صَفّ، مَكْتَبَة، مَلْعَب، مُخْتَبَر، إِدارَة — في المَدْرَسَةِ',
+                'Ders adları: الرِّياضِيّات، العُلوم، اللُّغَةُ العَرَبِيَّة، التّاريخ، الجُغْرافْيا',
+                'Haftanın günleri ve ders programı: الأَحَد، الاِثْنَيْن، الثُّلاثاء، الأَرْبِعاء، الخَميس',
+                'Muzâri fiile giriş: أَذْهَبُ، أَدْرُسُ، أَكْتُبُ، أَقْرَأُ — صَباحًا، مَساءً، يَوْمِيًّا',
+                'Muzâri fiilin şahıslara göre çekimi: أَنا، أَنْتَ، أَنْتِ، هُوَ، هِيَ',
+                'Okulumu tanıtıyorum — soru kalıbı هَلْ تَذْهَبُ إِلى المَدْرَسَةِ؟',
+                'Yazma: okul günümü anlatan 4-5 cümlelik metin',
+                '2. Ünite değerlendirmesi: haydi okula! (هَيّا إِلى المَدْرَسَة)',
+                'Okul temelli planlama payı (%10) ve 1. dönem genel değerlendirmesi',
+                'Vücudun bölümleri — baş: رَأْس، وَجْه، عَيْن، أُذُن، أَنْف، فَم، لِسان',
+                'Vücudun bölümleri — gövde ve uzuvlar: يَد، رِجْل، قَدَم، إِصْبَع، ظَهْر، بَطْن (ikil sezdirme)',
+                'Vücudumu anlatan okuma metni: görsel etiketleme, metinden bilgi seçme',
+                'Sağlığım: صَحيح، مَريض، طَبيب، مُسْتَشْفى، دَواء — أَنا مَريض / أَنا بِخَيْر',
+                'Neren ağrıyor?: يُؤْلِمُني رَأْسي، عِنْدي أَلَم في… — أَلَم، صُداع، حَرارَة، كُحَّة',
+                'Doktorda diyaloğu ve emir kipi: اِفْتَحْ فَمَكَ، قُلْ: آه',
+                'Sağlıklı yaşam önerileri: يَجِبُ أَنْ… — نَظافَة، رِياضَة، غِذاء، نَوْم',
+                'Yazma: vücudumu tanıtan 4-5 cümlelik metin',
+                '3. Ünite değerlendirmesi: vücudum (جِسْمي)',
+                'Hava nasıl?: جَوّ، حارّ، بارِد، مُعْتَدِل، دافِئ — كَيْفَ الجَوُّ اليَوْمَ؟',
+                'Hava olayları: مَطَر، ثَلْج، رِياح، سَحاب، رَعْد، بَرْق — السَّماءُ صافِيَة / غائِمَة',
+                'Hava durumu bülteni ve sembolleri: دَرَجَةُ الحَرارَة، اليَوْم، غَدًا، أَمْسِ',
+                'Mevsimler: الرَّبيع، الصَّيْف، الخَريف، الشِّتاء — في فَصْلِ الصَّيْفِ yapısı',
+                'Hangi mevsimi seviyorum?: أُحِبُّ / لا أُحِبُّ — لِماذا؟ لِأَنَّ…',
+                'Bu hafta hava nasıl?: haftanın günleriyle hava durumunu birleştirme',
+                'Yazma: haftalık hava durumu tablosu hazırlama',
+                '4. Ünite değerlendirmesi: bu hafta hava nasıl? (5-6 cümlelik yazma ürünü)',
+                'Okul temelli planlama payı ve yıl sonu genel değerlendirmesi'
             ]
         },
 
         /* ================================================== 7. SINIF ==== */
         "7": {
+            program: 'Önceki program · İmam Hatip müfredat ağacı',
             hedef: 'Yıl sonunda öğrenci geçmiş ve gelecek zamanlı cümleler ' +
                    'kurabilir; alışveriş, seyahat ve yön tarifi konularında ' +
                    'iletişim kurabilir; şehrini Arapça tanıtabilir.',
@@ -160,6 +178,7 @@
 
         /* ================================================== 8. SINIF ==== */
         "8": {
+            program: 'Önceki program · İmam Hatip müfredat ağacı',
             hedef: 'Yıl sonunda öğrenci günlük programını ve hedeflerini ' +
                    'anlatabilir; sağlık ve iletişim konularında diyalog kurabilir; ' +
                    'emir–nehiy ve أَنْ sonrası fiil kullanımını bilir.',
@@ -205,6 +224,7 @@
 
         /* ================================================== 9. SINIF ==== */
         "9": {
+            program: '2026 Arapça Programı (9-10. sınıflar)',
             hedef: 'Yıl sonunda öğrenci Arap alfabesini akıcı okuyup yazabilir; ' +
                    'isim cümlesi kurabilir; kendini, ailesini, evini ve gününü ' +
                    'anlatan temel konuşmaları yapabilir.',
@@ -250,6 +270,7 @@
 
         /* ================================================= 10. SINIF ==== */
         "10": {
+            program: '2026 Arapça Programı (9-10. sınıflar)',
             hedef: 'Yıl sonunda öğrenci sarfın kök–vezin mantığını kavrar; ' +
                    'değerler, sağlık, seyahat ve alışveriş konularında ' +
                    'paragraf düzeyinde anlatım yapabilir.',
@@ -317,7 +338,7 @@
         al: function (sinif) {
             var v = VERI[String(sinif)];
             if (!v) return null;
-            return { hedef: v.hedef, haftalar: v.haftalar.slice() };
+            return { program: v.program || '', hedef: v.hedef, haftalar: v.haftalar.slice() };
         },
         sinifCoz: sinifCoz,
         /* Dosya tutarlı mı? (geliştirme sırasında sınamak için) */

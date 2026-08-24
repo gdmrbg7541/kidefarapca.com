@@ -27,7 +27,7 @@
    TUM MUHADESE DOSYALARI  muhadese/  klasorunde, ders verileri  muhadese/veri/ icinde. */
 (function(){
   var KOK = 'muhadese/';           /* klasor yolu tek yerden yonetilsin */
-  var S   = '?v=20260816f';        /* onbellek surumu */
+  var S   = '?v=20260824a';        /* onbellek surumu */
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   /* Gecerli bicimler: 10_1_1 (okul) | kalip_xxx | alan_xxx */
@@ -307,7 +307,9 @@ window.muhGeri = muhGeri;
 /* Liste modunun betikleri (oynatıcı modunda gereksiz, yüklenmez). */
 (function(){
   if (window.KIDEF_DERS) return;
-  document.write('<scr'+'ipt src="muhadese/muhadese.js?v=20260816d"><\/scr'+'ipt>');
+  /* sinifveri.js ÖNCE: ünite listesindeki öğretim yılı rozetini o besliyor. */
+  document.write('<scr'+'ipt src="sistem/sinifveri.js?v=20260824b"><\/scr'+'ipt>');
+  document.write('<scr'+'ipt src="muhadese/muhadese.js?v=20260824a"><\/scr'+'ipt>');
   document.write('<scr'+'ipt src="sistem/geri.js?v=20260808a"><\/scr'+'ipt>');
   document.write('<scr'+'ipt src="sistem/gorevkopru.js?v=7"><\/scr'+'ipt>');
 })();

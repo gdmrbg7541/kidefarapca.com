@@ -99,17 +99,42 @@
      mount = .ih-kartlar[data-sinif=N]. İçindeki .game-grid'in SONUNA
      eklenir; Muhâdese kartı ve açılır ders paneli olduğu gibi kalır.
      Aynı mount'a ikinci kez çağrılırsa önce eskiler temizlenir. */
+  /* Kart ızgarasının ÜSTÜNE o sınıfın öğretim yılı şeridi. Rozet ve
+     (birden çok yıl varsa) seçici sistem/sinifveri.js'ten gelir; burada
+     yalnız yerleştirilir. Sınıfın yıl kaydı yoksa şerit hiç basılmaz. */
+  function yilSerit(mount, n, grid) {
+    var v = window.KidefSinifVeri;
+    if (!v || !v.yilRozetHtml) return;
+    /* Doğrudan çocuk olan eski şerit (varsa) — :scope kullanmadan */
+    var eski = null, c = mount.children;
+    for (var i = 0; i < c.length; i++)
+      if (c[i].className === 'sm-yil-serit') { eski = c[i]; break; }
+    var kod = v.yilRozetHtml(n, { secici: true });
+    if (!kod) { if (eski && eski.parentNode) eski.parentNode.removeChild(eski); return; }
+    if (v.yilStilKur) v.yilStilKur();
+    if (eski) { eski.innerHTML = kod; return; }
+    var d = document.createElement('div');
+    d.className = 'sm-yil-serit';
+    d.innerHTML = kod;
+    /* Izgaranın ÜSTÜNE; ızgara yoksa kutunun başına */
+    mount.insertBefore(d, (grid && grid.parentNode === mount) ? grid : mount.firstChild);
+  }
+
   function yerlestir(mount, sinif) {
     if (!mount) return 0;
     var n = sayi(sinif != null ? sinif : mount.getAttribute('data-sinif'));
     if (!n) return 0;
     var kod = html(n);
     var grid = mount.querySelector('.game-grid');
+    yilSerit(mount, n, grid);
     if (!grid) {
       if (!kod) return 0;
       grid = document.createElement('div');
       grid.className = 'game-grid mobile-scroll-grid-single';
-      mount.insertBefore(grid, mount.firstChild);
+      /* Yıl şeridi varsa ızgara ONUN ALTINA girer, üstüne değil */
+      var ilk = mount.firstChild;
+      if (ilk && ilk.className === 'sm-yil-serit') ilk = ilk.nextSibling;
+      mount.insertBefore(grid, ilk);
     }
     [].forEach.call(grid.querySelectorAll('[data-smodul]'), function (x) {
       if (x.parentNode) x.parentNode.removeChild(x);
@@ -133,6 +158,8 @@
     var s = document.createElement('style');
     s.id = 'smStil';
     s.textContent =
+      '.sm-yil-serit{display:flex;justify-content:flex-end;margin:0 0 10px;}' +
+      '@media (max-width:600px){.sm-yil-serit{justify-content:flex-start;}}' +
       '.sm-kart{position:relative;}' +
       '.sm-kart .status-badge{white-space:nowrap;}' +
       '.sm-kart[style*="--smrenk"] .status-badge.available{background:var(--smrenk);border-color:var(--smrenk);}' +
