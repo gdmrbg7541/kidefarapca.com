@@ -362,9 +362,12 @@
        ÇOK KİŞİLİ   : iki kişilik mod / takım / sunum kumandası / sınıfça
                       uygulama kodda doğrulanan sayfalar; pay, etkileşimli
                       sayfa sayısına oranlanır.
-     Site değişince güncelle: sayfaları yeniden tara, data-hedef ve
-     data-yuzde değerlerini yaz. Son ölçüm: 67 sayfa · 63 etkileşimli ·
-     49 görsel destekli · 28 çok kişili/sınıfça. -->
+     SİTE DEĞİŞİNCE ELLE UĞRAŞMA — depo kökündeki ölçüm betiği hem sayar
+     hem de aşağıdaki data-hedef / data-yuzde değerlerini yerine yazar:
+         python3 olcum.py          → yalnız ölç, raporla
+         python3 olcum.py --yaz    → ölç ve bu dosyayı güncelle
+     Son ölçüm: 69 sayfa · 65 etkileşimli ·
+     50 görsel destekli · 27 çok kişili/sınıfça. -->
 <section id="analizPerde">
 <style>
   #analizPerde{ position:relative; min-height:100vh; display:flex; align-items:center;
@@ -466,13 +469,13 @@
           </div>
         </div>
         <div class="anz-cubuklar">
-          <div class="anz-c" data-yuzde="73">
-            <label>Görsel destekli anlatım <b><span id="anzGorsel" data-hedef="73">0</span>%</b></label>
+          <div class="anz-c" data-yuzde="72">
+            <label>Görsel destekli anlatım <b><span id="anzGorsel" data-hedef="72">0</span>%</b></label>
             <div class="anz-ray"><i class="anz-dolu"></i></div>
             <p>Konular yalnız yazıyla değil; çizim, tablo canlandırması ve animasyonla anlatılıyor.</p>
           </div>
-          <div class="anz-c c2" data-yuzde="44">
-            <label>Çok kişili · sınıfça etkileşim <b><span id="anzCok" data-hedef="44">0</span>%</b></label>
+          <div class="anz-c c2" data-yuzde="42">
+            <label>Çok kişili · sınıfça etkileşim <b><span id="anzCok" data-hedef="42">0</span>%</b></label>
             <div class="anz-ray"><i class="anz-dolu"></i></div>
             <p>Etkileşimli içeriğin bu kadarı iki kişilik, takımlı ya da tüm sınıfça oynanıyor.</p>
           </div>
@@ -483,21 +486,21 @@
       <div class="anz-dip">
         <div class="anz-dip-baslik">İçerik</div>
         <div class="anz-dip-sira">
-          <div><b><span data-hedef="439">0</span></b><span>Arapça kök</span></div>
-          <div><b><span data-hedef="4896">0</span></b><span>türetilmiş kelime</span></div>
-          <div><b><span data-hedef="2655">0</span></b><span>çekimli fiil</span></div>
+          <div><b><span data-hedef="497">0</span></b><span>Arapça kök</span></div>
+          <div><b><span data-hedef="5091">0</span></b><span>türetilmiş kelime</span></div>
+          <div><b><span data-hedef="2729">0</span></b><span>çekimli fiil</span></div>
           <div><b><span data-hedef="105">0</span></b><span>vezin / kalıp</span></div>
-          <div><b><span data-hedef="4343">0</span></b><span>örnek cümle</span></div>
-          <div><b><span data-hedef="567">0</span></b><span>sözlük kelimesi</span></div>
-          <div><b><span data-hedef="41">0</span></b><span>tematik liste</span></div>
-          <div><b><span data-hedef="151">0</span></b><span>semantik not</span></div>
+          <div><b><span data-hedef="4772">0</span></b><span>örnek cümle</span></div>
+          <div><b><span data-hedef="670">0</span></b><span>sözlük kelimesi</span></div>
+          <div><b><span data-hedef="39">0</span></b><span>tematik liste</span></div>
+          <div><b><span data-hedef="153">0</span></b><span>semantik not</span></div>
         </div>
         <div class="anz-dip-baslik">Yapı</div>
         <div class="anz-dip-sira">
-          <div><b><span data-hedef="2227">0</span></b><span>etkileşim noktası</span></div>
-          <div><b><span data-hedef="607">0</span></b><span>svg / tuval çizimi</span></div>
-          <div><b><span data-hedef="691">0</span></b><span>animasyon tanımı</span></div>
-          <div><b><span data-hedef="180032">0</span></b><span>satır kod</span></div>
+          <div><b><span data-hedef="3080">0</span></b><span>etkileşim noktası</span></div>
+          <div><b><span data-hedef="1215">0</span></b><span>svg / tuval çizimi</span></div>
+          <div><b><span data-hedef="885">0</span></b><span>animasyon tanımı</span></div>
+          <div><b><span data-hedef="292209">0</span></b><span>satır kod</span></div>
         </div>
       </div>
     </div>
