@@ -24,6 +24,15 @@
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
         {
+            id: 7,
+            tarih: '2026-08-24',
+            baslik: 'Bilgi yarışmasında zorluk seçimi ve renkli soru listesi',
+            metin: 'Zorluk seçimi artık ana ekranda, süre ve soru tipinin yanında — ' +
+                   'kapattığın zorluktaki sorular tura hiç girmez. Soru seçme ' +
+                   'ekranındaki süzgeç kaldırıldı; onun yerine her soru tipi kendi ' +
+                   'pastel renginde görünüyor.'
+        },
+        {
             id: 6,
             tarih: '2026-08-24',
             baslik: 'Haftalık plana "Yöneticinin tavsiyesi"',

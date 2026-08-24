@@ -1642,6 +1642,10 @@ const state = {
   sureler: sureOku(),        // {1,2,3} zorluğa göre saniye (localStorage'dan)
   turSureleri: {},           // soruIndex → o soruya verilen süre (puan hesabı için sabit)
   bicimSecim: { "test": true, "surukle": true, "eslestir": true, "yazma": true, "bosluk": true, "dogruyanlis": true, "cumlesira": true },
+  /* Zorluk seçimi — soru tipi seçimiyle aynı mantık: kapalı olan zorluktaki
+     sorular tura hiç girmez. Havuz penceresinde ayrı bir süzgeç yoktu artık;
+     seçim ana ekranda, süre ve soru tipi düğmelerinin yanında yapılıyor. */
+  zorlukSecim: { 1: true, 2: true, 3: true },
   oyunModu: "takim",         // takim | birey | okul  (yarışma biçimi)
   bekleyenListe: [],         // birey modu: onay bekleyen katılımcılar
   katilimId: null,           // öğrenci tarafı: kendi katılımcı kaydının id'si
@@ -1662,8 +1666,6 @@ const state = {
   soruSayiMax: 50,           // seçili konu+seviyedeki mevcut soruya göre üst sınır
   secilenSet: null,          // elle seçilen soru anahtarları (Set) — havuzdan
   soruSecArama: "",          // soru havuzu arama metni
-  hsSuzgec: {},              // havuz süzgeci { konuId: {tip:[], bicim:[], zor:[]} } — boş dizi = süzgeç yok
-  hsSuzgecKapali: {},        // süzgeç paneli katlı mı { konuId: true/false }
   otoSonucIndex: -1,         // tüm takımlar cevaplayınca otomatik sonuç kilidi
   odaId: null,               // admin: oda kodu
   odaTakim: null,            // takım: {oda, takim}
@@ -2213,8 +2215,6 @@ const BIY = {
     if ($("soruSecBtn") && $("soruSecBtn").disabled) return;
     const eski = $("biySoruSec"); if (eski) eski.remove();
     state.soruSecArama = "";
-    state.hsSuzgec = {};        // pencere her açılışta süzgeçsiz gelir
-    state.hsSuzgecKapali = {};   // süzgeç panelleri açık başlar
     // Panelin ustundeki havuz SVG'sini basliga kucultulmus olarak klonla
     const hvIkon = (function(){ const e = document.querySelector(".biy-svg-havuz");
                                 return e ? e.outerHTML : "\u{1F3AF}"; })();
@@ -2262,19 +2262,20 @@ const BIY = {
     let html = "";
     listeler.forEach(k => {
       if (!Array.isArray(k.sorular) || !k.sorular.length) return;
-      const sorular = k.sorular.filter(q => !ara || (q.soru + " " + (q.arapca||"") + " " + aramaMetni(q)).toLowerCase().indexOf(ara) >= 0);
+      /* Ana ekranda kapatılan tip/zorluk buraya hiç düşmez. */
+      const uygun = k.sorular.filter(BIY._havuzdaMi);
+      const sorular = uygun.filter(q => !ara || (q.soru + " " + (q.arapca||"") + " " + aramaMetni(q)).toLowerCase().indexOf(ara) >= 0);
       if (!sorular.length) return;
-      const seciliSay = k.sorular.filter(q => set.has(k.id + "#" + q.id)).length;
+      const seciliSay = uygun.filter(q => set.has(k.id + "#" + q.id)).length;
       const acik = ara ? true : !!(state.soruSecAcik && state.soruSecAcik[k.id]);
       html += '<div class="biy-hs-grup'+(acik?' acik':'')+'" data-konu="'+k.id+'">' +
         '<div class="biy-hs-baslik" onclick="BIY.soruSecAkordiyon(\''+k.id+'\')">' +
         '<span class="biy-hs-ok">▸</span>' +
-        '<b>'+kacis(k.ad)+'</b> <span class="biy-hs-say'+(seciliSay>0?' dolu':'')+(seciliSay===k.sorular.length?' tam':'')+'"><b>'+seciliSay+'</b><i>/</i>'+k.sorular.length+'</span>' +
+        '<b>'+kacis(k.ad)+'</b> <span class="biy-hs-say'+(seciliSay>0?' dolu':'')+(seciliSay===uygun.length?' tam':'')+'"><b>'+seciliSay+'</b><i>/</i>'+uygun.length+'</span>' +
         '<button class="biy-hs-tumu" title="Tümünü seç" aria-label="Tümünü seç" onclick="event.stopPropagation();BIY.soruSecTumu(\''+k.id+'\')">' +
           '<svg viewBox="0 0 24 24" class="biy-hs-tumu-svg" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
           '<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.5"/><path class="biy-ea-ciz" d="M7.4 12.6l3 3 6.2-7.2"/></svg></button></div>' +
-        '<div class="biy-hs-govde">' +
-        BIY._hsSuzgecHtml(k, sorular);
+        '<div class="biy-hs-govde">';
       sorular.forEach(q => {
         const key = k.id + "#" + q.id; const sec = set.has(key);
         const dogruSik = dogruCevapMetni(q);
@@ -2286,12 +2287,10 @@ const BIY = {
             ' <b class="biy-hs-dogru">✓ '+kacis(dogruSik)+'</b></span>' +
         '</label>';
       });
-      html += '<p class="biy-hs-sz-bos" hidden>Bu süzgece uyan soru yok.</p>';
       html += '</div></div>';
     });
     kap.innerHTML = html || '<p class="biy-alt" style="text-align:center">' +
       (kid ? 'Bu listede gösterilecek soru yok.' : 'Sonuç yok.') + '</p>';
-    BIY._hsSuzgecHepsi();
     BIY._soruSecSayilar();
   },
 
@@ -2312,13 +2311,6 @@ const BIY = {
        yeniden hesaplanır; 0 kalan (ve seçili olmayan) çip pasifleşir. Kolon
        düzeni sabit olduğundan sayı değişse de ikon yerinden oynamaz.
   ===================================================================== */
-  _hsSuzgecAl(konuId){
-    if (!state.hsSuzgec) state.hsSuzgec = {};
-    if (!state.hsSuzgec[konuId]) state.hsSuzgec[konuId] = { tip: [], bicim: [], zor: [] };
-    return state.hsSuzgec[konuId];
-  },
-  _hsSuzgecVarMi(sz){ return !!(sz.tip.length || sz.bicim.length || sz.zor.length); },
-  // satır başındaki küçük rozetler (hangi tip/zorluk olduğu bir bakışta görünsün)
   _hsRozetHtml(q){
     const b = bicimAl(q), z = +q.zorluk || 0;
     const bb = BICIM_BILGI[b] || { ad: b };
@@ -2327,183 +2319,20 @@ const BIY = {
       (ETIKET_ZORLUK[z] ? '<i class="biy-hs-roz-z z'+z+'" title="'+kacis(ZORLUK_AD[z] || "")+'">'+ETIKET_ZORLUK[z]+'</i>' : '') +
     '</span>';
   },
-  _hsCip(konuId, boyut, deger, ikon, ad, say){
-    const sz = BIY._hsSuzgecAl(konuId);
-    const dizi = sz[boyut] || [];
-    const on = dizi.indexOf(boyut === "zor" ? +deger : deger) >= 0;
-    const pasif = (say === 0);
-    return '<button type="button" class="biy-hs-sz-cip'+(on ? ' secili' : '')+(pasif ? ' pasif' : '')+'"' +
-      ' data-boyut="'+boyut+'" data-deger="'+kacis(String(deger))+'"' +
-      ' title="'+kacis(ad)+' · '+say+' soru" aria-label="'+kacis(ad)+' ('+say+' soru)"' +
-      ' aria-pressed="'+(on ? 'true' : 'false')+'"'+(pasif ? ' disabled' : '') +
-      ' onclick="BIY.hsSuzgecTikla(this)">' +
-      '<span class="biy-hs-sz-ikon">'+ikon+'</span>' +
-      '<span class="biy-hs-sz-ad">'+kacis(ad)+'</span>' +
-      '<span class="biy-hs-sz-say">'+say+'</span>' +
-    '</button>';
-  },
-  _hsSuzgecHtml(k, sorular){
-    const konuId = k.id;
-    const sz = BIY._hsSuzgecAl(konuId);
-    const sayB = {}, sayZ = {}, sayT = {};
-    sorular.forEach(q => {
-      const b = bicimAl(q), z = +q.zorluk || 0, t = q.tip || "";
-      sayB[b] = (sayB[b] || 0) + 1;
-      sayZ[z] = (sayZ[z] || 0) + 1;
-      if (t) sayT[t] = (sayT[t] || 0) + 1;
-    });
-    // TÜR sütunu yalnızca konu birden çok tür barındırıyorsa çıkardı; ANCAK
-    // sınıf konuları (7/10. sınıf gibi) kelime + cümle BİRLEŞTİRİLMİŞ tek konu
-    // olduğundan, bunları filtrede yeniden "Anlam / Cümle" diye bölmek anlamsız.
-    // Bu yüzden id'si "sinif" ile başlayan konularda Tür satırı gösterilmez.
-    const turler = Object.keys(sayT);
-    const turGoster = turler.length > 1 && !/^sinif/.test(konuId);
-    const sutunSayi = turGoster ? 3 : 2;
-    // Her kategori kendi SÜTUNUnda: üstte başlık, altında ikon + AÇIKLAMA + adet
-    // çipleri. Böylece her SVG'nin ne demek olduğu yanındaki yazıdan okunur.
-    const sutun = (baslik, cipler) =>
-      '<div class="biy-hs-sz-sutun"><span class="biy-hs-sz-bas">'+baslik+'</span>' +
-      '<div class="biy-hs-sz-cipler">'+cipler+'</div></div>';
-    let sutunlar = "";
-    if (turGoster){
-      sutunlar += sutun('Tür', Object.keys(TIP_BILGI).filter(t => sayT[t]).map(t =>
-        BIY._hsCip(konuId, "tip", t, ETIKET_TIP[t] || ETIKET_TIP.varsayilan, (TIP_BILGI[t] || {}).ad || t, sayT[t] || 0)
-      ).join(""));
-    }
-    sutunlar += sutun('Soru tipi', Object.keys(BICIM_BILGI).map(b =>
-      BIY._hsCip(konuId, "bicim", b, ETIKET_BICIM[b] || ETIKET_TIP.varsayilan, BICIM_BILGI[b].ad, sayB[b] || 0)
-    ).join(""));
-    sutunlar += sutun('Zorluk', [1, 2, 3].map(z =>
-      BIY._hsCip(konuId, "zor", z, ETIKET_ZORLUK[z], ZORLUK_AD[z] || ("Zorluk " + z), sayZ[z] || 0)
-    ).join(""));
-    const varMi = BIY._hsSuzgecVarMi(sz);
-    // Süzgeç kendisi de AKORDİYON: başlığa basınca 3 sütunlu gövde katlanır,
-    // böylece süzme bitince panel kapanıp ekranın tamamı sorulara kalır.
-    const kapali = !!(state.hsSuzgecKapali && state.hsSuzgecKapali[konuId]);
-    const huni = '<svg viewBox="0 0 24 24" class="biy-hs-sz-huni-svg" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5.5h17l-6.6 7.6v5.4l-3.8-2v-3.4z"/></svg>';
-    return '<div class="biy-hs-suzgec'+(kapali ? ' kapali' : '')+'" role="group" aria-label="Soru süzgeci">' +
-      '<button type="button" class="biy-hs-sz-baslik" aria-expanded="'+(kapali ? 'false' : 'true')+'"' +
-        ' onclick="BIY.hsSuzgecAcKapa(\''+konuId+'\')" title="Süzgeci aç / kapat">' +
-        '<span class="biy-hs-sz-huni">'+huni+'</span>' +
-        '<b>Süzgeç</b>' +
-        '<span class="biy-hs-sz-ozet"'+(varMi ? '' : ' hidden')+'></span>' +
-        '<span class="biy-hs-sz-ok" aria-hidden="true">▾</span>' +
-      '</button>' +
-      '<div class="biy-hs-sz-govde">' +
-        '<div class="biy-hs-sz-izgara" style="--sut:'+sutunSayi+'">'+sutunlar+'</div>' +
-        '<div class="biy-hs-sz-alt"'+(varMi ? '' : ' hidden')+'>' +
-          '<span class="biy-hs-sz-bilgi"'+(varMi ? '' : ' hidden')+'></span>' +
-          '<button type="button" class="biy-hs-sz-sifirla"'+(varMi ? '' : ' hidden')+
-            ' onclick="BIY.hsSuzgecSifirla(\''+konuId+'\')">Süzgeci temizle</button>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  },
-  // süzgeç panelini aç/kapat (akordiyon) — durum konu bazında saklanır
-  hsSuzgecAcKapa(konuId){
-    if (!state.hsSuzgecKapali) state.hsSuzgecKapali = {};
-    state.hsSuzgecKapali[konuId] = !state.hsSuzgecKapali[konuId];
-    const s = document.querySelector('.biy-hs-grup[data-konu="'+konuId+'"] .biy-hs-suzgec');
-    if (s){
-      const k = !!state.hsSuzgecKapali[konuId];
-      s.classList.toggle("kapali", k);
-      const bas = s.querySelector(".biy-hs-sz-baslik");
-      if (bas) bas.setAttribute("aria-expanded", k ? "false" : "true");
-    }
-  },
-  hsSuzgecTikla(el){
-    if (!el || el.disabled) return;
-    const g = el.closest(".biy-hs-grup"); if (!g) return;
-    const konuId = g.getAttribute("data-konu");
-    const boyut = el.getAttribute("data-boyut");
-    const ham = el.getAttribute("data-deger");
-    const deger = (boyut === "zor") ? +ham : ham;
-    const dizi = BIY._hsSuzgecAl(konuId)[boyut];
-    const i = dizi.indexOf(deger);
-    if (i >= 0) dizi.splice(i, 1); else dizi.push(deger);
-    BIY._hsSuzgecUygula(konuId);
-  },
-  hsSuzgecSifirla(konuId){
-    const sz = BIY._hsSuzgecAl(konuId);
-    sz.tip = []; sz.bicim = []; sz.zor = [];
-    BIY._hsSuzgecUygula(konuId);
-  },
-  // süzgeci satırları YENİDEN ÇİZMEDEN uygula → kaydırma ve seçimler korunur
-  _hsSuzgecUygula(konuId){
-    const g = document.querySelector('.biy-hs-grup[data-konu="'+konuId+'"]'); if (!g) return;
-    const sz = BIY._hsSuzgecAl(konuId);
-    // satırların boyut değerleri (arama süzgecinden geçmiş sorular)
-    const satirlar = [].slice.call(g.querySelectorAll(".biy-hs-satir")).map(r => ({
-      b: r.getAttribute("data-b"), z: +r.getAttribute("data-z"), t: r.getAttribute("data-t")
-    }));
-    const gecB = row => !sz.bicim.length || sz.bicim.indexOf(row.b) >= 0;
-    const gecZ = row => !sz.zor.length   || sz.zor.indexOf(row.z) >= 0;
-    const gecT = row => !sz.tip.length   || sz.tip.indexOf(row.t) >= 0;
-    /* AKILLI ÇİPLER: her çip, KENDİ boyutu HARİÇ diğer boyutların süzgecine göre
-       kaç soru bırakacağını gösterir; sayı 0 ise (ve çip seçili değilse) griye
-       döner ve tıklanamaz. Böylece bir süzgeç seçilince başka süzgeçte artık
-       seçenek kalmıyorsa o seçenekler kendiliğinden pasifleşir. */
-    g.querySelectorAll(".biy-hs-sz-cip").forEach(c => {
-      const boyut = c.getAttribute("data-boyut");
-      const ham = c.getAttribute("data-deger");
-      const deg = (boyut === "zor") ? +ham : ham;
-      const on = (sz[boyut] || []).indexOf(deg) >= 0;
-      c.classList.toggle("secili", on);
-      c.setAttribute("aria-pressed", on ? "true" : "false");
-      let say = 0;
-      for (let i = 0; i < satirlar.length; i++){
-        const row = satirlar[i];
-        const buDeger = (boyut === "bicim") ? row.b : (boyut === "zor") ? row.z : row.t;
-        if (buDeger !== deg) continue;
-        const digerGecer = (boyut === "bicim" || gecB(row)) &&
-                           (boyut === "zor"   || gecZ(row)) &&
-                           (boyut === "tip"   || gecT(row));
-        if (digerGecer) say++;
-      }
-      const sayEl = c.querySelector(".biy-hs-sz-say"); if (sayEl) sayEl.textContent = say;
-      const pasif = (say === 0) && !on;
-      c.classList.toggle("pasif", pasif);
-      c.disabled = pasif;
-      const ad = (c.querySelector(".biy-hs-sz-ad") || {}).textContent || "";
-      c.title = ad + ' · ' + say + ' soru'; c.setAttribute("aria-label", ad + ' (' + say + ' soru)');
-    });
-    let gorunen = 0;
-    g.querySelectorAll(".biy-hs-satir").forEach(r => {
-      const uy = (!sz.bicim.length || sz.bicim.indexOf(r.getAttribute("data-b")) >= 0) &&
-                 (!sz.zor.length   || sz.zor.indexOf(+r.getAttribute("data-z")) >= 0) &&
-                 (!sz.tip.length   || sz.tip.indexOf(r.getAttribute("data-t")) >= 0);
-      r.hidden = !uy; if (uy) gorunen++;
-    });
-    const varMi = BIY._hsSuzgecVarMi(sz);
-    const alt = g.querySelector(".biy-hs-sz-alt"); if (alt) alt.hidden = !varMi;
-    const bilgi = g.querySelector(".biy-hs-sz-bilgi");
-    if (bilgi){ bilgi.hidden = !varMi; bilgi.innerHTML = '<b>'+gorunen+'</b><span>soru eşleşti</span>'; }
-    const sf = g.querySelector(".biy-hs-sz-sifirla"); if (sf) sf.hidden = !varMi;
-    // süzgeç kapalıyken başlıkta etkin süzgecin kaç soru bıraktığı görünsün
-    const ozet = g.querySelector(".biy-hs-sz-ozet");
-    if (ozet){ ozet.hidden = !varMi; ozet.textContent = varMi ? (gorunen + " soru") : ""; }
-    const bos = g.querySelector(".biy-hs-sz-bos"); if (bos) bos.hidden = (gorunen > 0);
-    const tb = g.querySelector(".biy-hs-tumu");
-    if (tb){
-      tb.classList.toggle("suzgecli", varMi);
-      tb.title = varMi ? "Süzgeçten geçen soruları seç" : "Tümünü seç";
-      tb.setAttribute("aria-label", tb.title);
-    }
-  },
-  _hsSuzgecHepsi(){
-    document.querySelectorAll(".biy-hs-grup").forEach(g => BIY._hsSuzgecUygula(g.getAttribute("data-konu")));
-  },
   // sayaçları (grup başlıkları + toplam + buton) satırları yeniden çizmeden güncelle
   _soruSecSayilar(){
     const set = BIY._secSet();
     document.querySelectorAll(".biy-hs-grup").forEach(g => {
       const k = KONULAR.find(x => x.id === g.getAttribute("data-konu")); if (!k) return;
-      const sec = k.sorular.filter(q => set.has(k.id + "#" + q.id)).length;
+      /* Sayaç, ana ekrandaki tip/zorluk seçiminden GEÇEN sorulara göre;
+         listede görünmeyen soruyu paydaya katmak yanıltıcı olurdu. */
+      const uygun = k.sorular.filter(BIY._havuzdaMi);
+      const sec = uygun.filter(q => set.has(k.id + "#" + q.id)).length;
       const sp = g.querySelector(".biy-hs-say");
       if (sp){
-        sp.innerHTML = "<b>" + sec + "</b><i>/</i>" + k.sorular.length;
+        sp.innerHTML = "<b>" + sec + "</b><i>/</i>" + uygun.length;
         sp.classList.toggle("dolu", sec > 0);
-        sp.classList.toggle("tam", sec === k.sorular.length);
+        sp.classList.toggle("tam", sec === uygun.length);
       }
       // tümünü-seç: grup tam seçiliyse animasyon durur, tik yeşil kalır.
       // Süzgeç açıkken ölçüt EKRANDA GÖRÜNEN satırlardır (düğme de onlara işler).
@@ -2512,7 +2341,7 @@ const BIY = {
         const gorunen = [].slice.call(g.querySelectorAll(".biy-hs-satir")).filter(r => !r.hidden);
         const tam = gorunen.length
           ? gorunen.every(r => set.has(r.getAttribute("data-key")))
-          : (sec === k.sorular.length);
+          : (sec === uygun.length);
         tb.classList.toggle("tam", tam);
       }
     });
@@ -2619,7 +2448,7 @@ const BIY = {
     // yoksa "eşleşme yok" hâlinde tuş bütün konuyu seçerdi.
     if (!anahtarlar.length){
       if (g) return;
-      anahtarlar = k.sorular.map(q => konuId + "#" + q.id); satirlar = [];
+      anahtarlar = k.sorular.filter(BIY._havuzdaMi).map(q => konuId + "#" + q.id); satirlar = [];
     }
     const hepsiSecili = anahtarlar.every(a => set.has(a));
     if (hepsiSecili) anahtarlar.forEach(a => set.delete(a));
@@ -2650,8 +2479,17 @@ const BIY = {
   soruSecKapat(){ const ov = $("biySoruSec"); if (ov) ov.remove(); BIY._soruSecSayiGuncelle(); },
   /* ---------- soru tipi (biçim) filtresi ---------- */
   // aktif konunun sorularından yalnız seçili biçimdekiler
+  /* Ana ekrandaki soru tipi + zorluk seçiminden geçiyor mu?
+     Havuz penceresi de bunu kullanır: seçim TEK yerde yapılır, liste ona
+     uyar. (Eskiden pencerenin kendi süzgeci vardı, kaldırıldı.) */
+  _havuzdaMi(q){
+    return state.bicimSecim[bicimAl(q)] !== false &&
+           state.zorlukSecim[+q.zorluk || 2] !== false;
+  },
+  /* Tura girecek sorular: soru TİPİ ve ZORLUK seçimi birlikte uygulanır.
+     (Ad geriye dönük uyum için _bicimliSorular olarak kaldı.) */
   _bicimliSorular(){
-    return BIY._aktifSorular().filter(q => state.bicimSecim[bicimAl(q)] !== false);
+    return BIY._aktifSorular().filter(BIY._havuzdaMi);
   },
   _bicimPanelDoldur(){
     const p = $("bicimSecPanel"); if (!p) return;
@@ -2687,6 +2525,68 @@ const BIY = {
     document.removeEventListener("mousedown", BIY._bicimDis);
   },
   _bicimDis(e){ if (!e.target.closest || !e.target.closest("#bicimSec")) BIY.bicimKapat(); },
+
+  /* ---------- ZORLUK SEÇİMİ ----------
+     Eskiden havuz penceresinin içindeki süzgecin bir sütunuydu; artık ana
+     ekranda, süre ve soru tipi düğmelerinin yanında duruyor. Kapalı olan
+     zorluk turda hiç sorulmaz (bkz. _bicimliSorular). */
+  zorlukAcKapat(){
+    const p = $("zorlukSecPanel"), b = $("zorlukSecBtn"); if (!p) return;
+    if (p.hidden){
+      BIY._zorlukPanelDoldur();
+      p.hidden = false;
+      if (b) b.setAttribute("aria-expanded", "true");
+      BIY._zorlukKonumla();
+      window.addEventListener("resize", BIY._zorlukKonumla);
+      setTimeout(() => document.addEventListener("mousedown", BIY._zorlukDis), 0);
+    } else BIY.zorlukKapat();
+  },
+  zorlukKapat(){
+    const p = $("zorlukSecPanel"), b = $("zorlukSecBtn");
+    if (p) p.hidden = true;
+    if (b) b.setAttribute("aria-expanded", "false");
+    document.removeEventListener("mousedown", BIY._zorlukDis);
+    window.removeEventListener("resize", BIY._zorlukKonumla);
+  },
+  _zorlukDis(e){ if (!e.target.closest || !e.target.closest("#zorlukSec")) BIY.zorlukKapat(); },
+  _zorlukKonumla(){
+    const p = $("zorlukSecPanel"); if (!p || p.hidden) return;
+    p.style.left = "50%";
+    const k = p.getBoundingClientRect(), pay = 10;
+    let kay = 0;
+    if (k.right > window.innerWidth - pay) kay = (window.innerWidth - pay) - k.right;
+    if (k.left + kay < pay) kay = pay - k.left;
+    if (kay) p.style.left = "calc(50% + " + Math.round(kay) + "px)";
+  },
+  _zorlukPanelDoldur(){
+    const p = $("zorlukSecPanel"); if (!p) return;
+    /* Havuzdaki soru sayısı da gösterilir; öğretmen "zor yok" derse
+       kaç soru kaldığını görebilsin. */
+    const hepsi = BIY._aktifSorular();
+    const say = { 1: 0, 2: 0, 3: 0 };
+    hepsi.forEach(q => { const z = +q.zorluk || 2; if (say[z] != null) say[z]++; });
+    p.innerHTML =
+      '<div class="biy-zs-baslik">Zorluk</div>' +
+      [1, 2, 3].map(z =>
+        '<button type="button" class="biy-zs-oge' + (state.zorlukSecim[z] !== false ? ' secili' : '') + '"' +
+        ' data-z="' + z + '" aria-pressed="' + (state.zorlukSecim[z] !== false ? 'true' : 'false') + '"' +
+        ' onclick="BIY.zorlukToggle(' + z + ')">' +
+          '<span class="biy-zs-yildiz z' + z + '">' + (ETIKET_ZORLUK[z] || '') + '</span>' +
+          '<span class="biy-zs-ad">' + kacis(ZORLUK_AD[z] || ('Zorluk ' + z)) + '</span>' +
+          '<span class="biy-zs-say">' + (say[z] || 0) + '</span>' +
+        '</button>').join('') +
+      '<div class="biy-zs-dip">Kapattığın zorluktaki sorular tura girmez.</div>';
+  },
+  zorlukToggle(z){
+    z = +z;
+    const acik = state.zorlukSecim[z] !== false;
+    /* Hepsi birden kapatılamaz — kapatılırsa tura girecek soru kalmaz. */
+    if (acik && [1,2,3].filter(x => state.zorlukSecim[x] !== false).length <= 1) return;
+    state.zorlukSecim[z] = !acik;
+    BIY._zorlukPanelDoldur();
+    BIY._soruSayiSinir();
+    BIY._menuDurum();
+  },
 
   /* ---------- ZORLUĞA GÖRE SORU SÜRESİ ----------
      Üç seviye (kolay/orta/zor) için ayrı süre. Her satırda hazır saniye

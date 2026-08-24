@@ -3261,3 +3261,56 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
   .biy-sr-tus { padding: 6px 9px; font-size: .9rem; }
 }
 @media (prefers-reduced-motion: reduce){ .biy-sr-ibre { animation: none; } }
+
+/* ===================== ZORLUK SEÇİMİ (ana ekran) ===================== */
+/* Havuz penceresindeki süzgecin zorluk sütunu buraya taşındı; süre ve
+   soru tipi düğmeleriyle aynı yerleşim mantığı. */
+.biy-zorluk-sec { position: relative; display: inline-flex; }
+.biy-zorluk-btn { background: none; border: 0; padding: 0; cursor: pointer; line-height: 0; }
+.biy-zorluk-btn .biy-svg-zorluk { width: 66px; height: 66px; display: block; transition: transform .2s ease; }
+#ekranAnasayfa .biy-zorluk-btn .biy-svg-zorluk { width: 74px; height: 74px; }
+.biy-zorluk-btn:hover .biy-svg-zorluk { transform: scale(1.05); }
+.biy-zorluk-btn[aria-expanded="true"] .biy-svg-zorluk { transform: scale(1.08); }
+/* çubuklar sırayla yükselir */
+.biy-zr-cubuk rect { transform-origin: 50% 100%; animation: biyZrCubuk 3.2s ease-in-out infinite; }
+.biy-zr-cubuk rect:nth-child(2) { animation-delay: .18s; }
+.biy-zr-cubuk rect:nth-child(3) { animation-delay: .36s; }
+@keyframes biyZrCubuk { 0%,100% { transform: scaleY(1); } 45% { transform: scaleY(.72); } }
+
+.biy-zorluk-panel { position: absolute; z-index: 60; top: calc(100% + 10px); left: 50%;
+  transform: translateX(-50%); width: max-content; max-width: min(92vw, 330px);
+  display: flex; flex-direction: column; gap: 7px; padding: 15px 16px;
+  background: #fff; border: 2px solid #E9EEF5; border-radius: 18px;
+  box-shadow: 0 20px 44px rgba(15,23,42,.16); animation: biyZsPanel .2s ease both; }
+.biy-zorluk-panel[hidden] { display: none; }
+@keyframes biyZsPanel {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(.97); }
+  to   { opacity: 1; transform: translateX(-50%); }
+}
+.biy-zs-baslik { font-weight: 800; color: #0F2A43; font-size: 1rem; text-align: center; margin-bottom: 3px; }
+.biy-zs-oge { display: flex; align-items: center; gap: 11px; width: 100%;
+  border: 2px solid #E9EEF5; background: #fff; border-radius: 13px; padding: 10px 13px;
+  cursor: pointer; font-family: inherit; transition: all .15s; }
+.biy-zs-oge:hover { border-color: #cbd5e1; }
+.biy-zs-oge.secili { border-color: #16A085; background: #E9FBF4; }
+.biy-zs-oge:not(.secili) { opacity: .5; }
+.biy-zs-yildiz { flex: none; color: #F39C12; font-size: .95rem; letter-spacing: -1px; line-height: 1; }
+.biy-zs-ad { flex: 1; text-align: start; font-weight: 800; color: #334155; font-size: .97rem; }
+.biy-zs-say { flex: none; min-width: 34px; text-align: center; border-radius: 999px;
+  background: #EDF1F7; color: #5b6b80; font-weight: 700; font-size: .82rem; padding: 3px 8px; }
+.biy-zs-oge.secili .biy-zs-say { background: #16A085; color: #fff; }
+.biy-zs-dip { font-size: .83rem; color: #94A3B8; text-align: center; margin-top: 3px; }
+
+/* ============ HAVUZ: SORU TİPİNE GÖRE PASTEL DOLGU ============ */
+/* Süzgeç kaldırıldı; ayrımı artık renk yapıyor. Her biçim kendi açık
+   pastelinde, sol kenarında biraz daha doygun bir şerit var. Seçili satırın
+   kendi vurgusu bunların üstünde kalsın diye seçili hâli en sonda. */
+.biy-hs-satir[data-b]            { border-inline-start: 4px solid transparent; }
+.biy-hs-satir[data-b="test"]        { background: #EEF4FF; border-inline-start-color: #A7C3F5; }
+.biy-hs-satir[data-b="bosluk"]      { background: #FFF6E8; border-inline-start-color: #F2C98A; }
+.biy-hs-satir[data-b="dogruyanlis"] { background: #EAF9F0; border-inline-start-color: #94D7B0; }
+.biy-hs-satir[data-b="eslestir"]    { background: #F3EEFC; border-inline-start-color: #C0A9EC; }
+.biy-hs-satir[data-b="cumlesira"]   { background: #FDEFF4; border-inline-start-color: #F0A9C4; }
+.biy-hs-satir[data-b="surukle"]     { background: #E9F7FA; border-inline-start-color: #8FCFDD; }
+.biy-hs-satir[data-b="yazma"]       { background: #FFF0EF; border-inline-start-color: #F3A9A2; }
+.biy-hs-satir.secili                { background: #E9FBF4; border-inline-start-color: #16A085; }

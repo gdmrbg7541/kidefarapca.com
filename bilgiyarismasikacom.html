@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="oyunlar/bilgiyarismasikacom.css?v=133">
+<link rel="stylesheet" href="oyunlar/bilgiyarismasikacom.css?v=134">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -336,6 +336,27 @@
         <div class="biy-bs-panel" id="bicimSecPanel" aria-label="Soru tipleri" hidden></div>
       </div>
 
+      <!-- ZORLUK SEÇİMİ — hangi zorluktaki sorular tura girsin.
+           Eskiden "Soruları Seç" penceresinin içindeki süzgecin bir
+           sütunuydu; öğretmen soruları seçmeden önce karar verebilsin diye
+           ana ekrana, süre ve soru tipinin yanına alındı. -->
+      <div class="biy-zorluk-sec" id="zorlukSec">
+        <button type="button" class="biy-zorluk-btn" id="zorlukSecBtn" aria-haspopup="true"
+                aria-expanded="false" title="Zorluk seçimi" onclick="BIY.zorlukAcKapat()">
+          <svg viewBox="0 0 64 64" class="biy-svg biy-svg-zorluk" role="img" aria-label="Zorluk">
+            <title>Zorluk seçimi</title>
+            <circle class="biy-hale" cx="32" cy="32" r="26" fill="url(#biyGrTuruncu)" opacity=".14"/>
+            <g class="biy-zr-cubuk">
+              <rect x="14" y="36" width="9" height="14" rx="2.6" fill="url(#biyGrYesil)"/>
+              <rect x="27.5" y="27" width="9" height="23" rx="2.6" fill="url(#biyGrTuruncu)"/>
+              <rect x="41" y="18" width="9" height="32" rx="2.6" fill="#EE5253"/>
+            </g>
+            <path d="M11 52h42" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="biy-zorluk-panel" id="zorlukSecPanel" aria-label="Zorluk seçimi" hidden></div>
+      </div>
+
       <!-- ZORLUĞA GÖRE SORU SÜRESİ — kolay 30 · orta 45 · zor 60 sn (varsayılan).
            Her seviye için hazır değerlere basılabilir ya da elle saniye
            yazılabilir; seçim tarayıcıda saklanır (localStorage 'biy_sure'). -->
@@ -542,7 +563,7 @@ function biyGeriDon(e){
 <!-- Üretilmiş konular: motordan ÖNCE yüklenir, window.BIY_EK_KONULAR'a eklenirler.
      oyunlar/biy_kaliplar.js → kalıplar tablosunun verisinden üretilen sorular. -->
 <script src="oyunlar/biy_kaliplar.js?v=1"></script>
-<script src="oyunlar/bilgiyarismasikacom.js?v=135"></script>
+<script src="oyunlar/bilgiyarismasikacom.js?v=136"></script>
 <!-- Canlı tahta: kalıplar tablosunu iframe'de açar ve postMessage ile sürer.
      Alıcı taraf sarf/yarismakopru.js (kaliplartablosu.html içinde). -->
 <script src="oyunlar/biy_tahta.js?v=1"></script>
