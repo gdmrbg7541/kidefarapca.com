@@ -699,8 +699,8 @@
         delete oturum[key];
 
         /* TAM EKRANDAN ÇIKILMIYOR. Liste zaten tam ekran açılıyor; testten
-           çıkmak "listeye dön" demek, "küçült" demek değil. Tam ekranı
-           yalnız mod satırındaki küçült düğmesi kapatır. */
+           çıkmak "listeye dön" demek, "küçült" demek değil. Listeyi yalnız
+           mod satırındaki çarpı kapatır (eskiden küçültme simgesiydi). */
         var oy = oyunlar()[key];
         if (oy) oy.gameStarted = false;
         if (typeof oyunKilidi === 'function') oyunKilidi(key, false);

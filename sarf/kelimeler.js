@@ -79,13 +79,15 @@ function klStilKur() {
     const s = document.createElement('style');
     s.id = 'klStil';
     s.textContent =
-        /* Tam ekran düğmesi: kare, ikon ortada */
-        /* min ölçü: Font Awesome bir sebeple yüklenmezse düğme yine de
-           basılabilir bir kare kalsın, görünmez bir noktaya dönmesin. */
+        /* Kapat düğmesi: kare, çarpı ortada. İkon gömülü SVG olduğu için
+           ölçü buradan veriliyor; yanındaki sütun düğmeleriyle aynı 21 px.
+           min ölçü: ikon bir sebeple çizilmezse düğme yine de basılabilir
+           bir kare kalsın, görünmez bir noktaya dönmesin. */
         '.kl-tamekran{padding:8px 12px;line-height:1;font-size:1rem;' +
         'min-width:40px;min-height:36px;display:inline-flex;' +
         'align-items:center;justify-content:center;}' +
-        '.kl-tamekran i{pointer-events:none;}' +
+        '.kl-tamekran i,.kl-tamekran svg{pointer-events:none;}' +
+        '.kl-tamekran svg{width:21px;height:21px;display:block;}' +
         /* ---- TAM EKRANDA BAŞLIKLAR SABİT, İÇERİK KAYAR ----
            Panel bir sütun: üstte mod satırı (kaymaz), altta kayan alan.
            Eskiden panelin TAMAMI kayıyordu, uzun listede aşağı inince
@@ -919,12 +921,20 @@ function renderThematicLists() {
                             </div>
 
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                <!-- TAM EKRAN — Liste Modu ve Çalışma Kartları için.
-                                     Hafıza oyunu tam ekrana kendiliğinden geçiyordu,
-                                     test de öyle; liste ve kartlar akordiyon kutusuna
-                                     sıkışıp kalıyordu (Geylani). Düğme her kipte
-                                     duruyor, yalnız test açıkken gizleniyor — test
-                                     zaten tam ekran ve kendi ✕'i var. -->
+                                <!-- KAPAT — dört kipin de tek çıkışı. Liste ve
+                                     çalışma kartları akordiyon kutusuna sıkışıp
+                                     kalıyordu, hafıza oyunu ile test ise tam
+                                     ekrana kendiliğinden geçiyordu (Geylani);
+                                     şimdi hepsi tam ekran açılıyor ve hepsinden
+                                     buradan çıkılıyor. Testin ayrı bir kapatma
+                                     düğmesi YOK, o da bunu kullanıyor — bu yüzden
+                                     düğme her kipte duruyor.
+                                     İKON ÇARPI (Geylani): eskiden "ekranı küçült"
+                                     simgesiydi, oysa basınca liste küçülmüyor,
+                                     tamamen kapanıyor — simge yaptığı işi
+                                     anlatmıyordu. Font Awesome yerine gömülü SVG:
+                                     yanındaki sütun düğmeleri de öyle ve CDN
+                                     yüklenmezse çarpı yine görünüyor. -->
                                 <!-- 2. Oyuncu Kutusu -->
                                 <div id="p2-box-${key}" class="player-box p-score-box" style="display: none; color: #ff8787; align-items: center;">
                                     <svg fill="#ff8787" viewBox="0 0 24 24" width="24" height="24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -942,7 +952,7 @@ function renderThematicLists() {
                                 </div>
                                 <button class="memory-btn kl-tamekran" id="btn-fs-${key}" type="button"
                                         title="Kapat — listeden çık" aria-label="Kapat"
-                                        onclick="klListeKapat('${key}')"><i class="fas fa-compress"></i></button>
+                                        onclick="klListeKapat('${key}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6.6" y1="6.6" x2="17.4" y2="17.4"/><line x1="17.4" y1="6.6" x2="6.6" y2="17.4"/></svg></button>
                             </div>
 
                         </div>
@@ -1470,19 +1480,18 @@ function updateScoreUI(key) {
 function toggleAccordionFullscreen(key, btnElement) {
     const item = document.getElementById(`content-${key}`);
     if (!item) return;
-    /* Not: mod satırındaki düğme artık "kapat" demek, tam ekran anahtarı
-       değil — ikonu sabit kalsın diye burada aranmıyor. */
+    /* btnElement ARTIK KULLANILMIYOR. Mod satırındaki düğme bir tam ekran
+       anahtarı değil, "kapat" düğmesi: ikonu her zaman çarpı kalmalı.
+       Burada innerHTML yazılıyordu, oyun başlatınca (startGameAndFullscreen)
+       çarpıyı "ekranı küçült" simgesine çeviriyordu. Parametre, dışarıdaki
+       çağıranları (kelimetest.js) bozmamak için duruyor. */
 
     if (item.classList.contains('fullscreen-accordion')) {
         item.classList.remove('fullscreen-accordion');
         document.body.classList.remove('has-fullscreen-accordion');
-        if (btnElement) btnElement.innerHTML = '<i class=\"fas fa-expand\"></i>'; // Maximize icon
-        
-        
     } else {
         item.classList.add('fullscreen-accordion');
         document.body.classList.add('has-fullscreen-accordion');
-        if (btnElement) btnElement.innerHTML = '<i class=\"fas fa-compress\"></i>'; // Minimize icon
     }
 }
 
@@ -1554,10 +1563,10 @@ function startGameAndFullscreen(key) {
     startMemoryGameFlow(key);
     seritKapat(key);
     if (activeMemoryGames[key]) activeMemoryGames[key].gameStarted = true;
-    const btnFs = document.getElementById(`btn-fs-${key}`);
     const item = document.getElementById(`content-${key}`);
     if (item && !item.classList.contains('fullscreen-accordion')) {
-        toggleAccordionFullscreen(key, btnFs);
+        /* null: kapat düğmesinin çarpısına dokunulmasın. */
+        toggleAccordionFullscreen(key, null);
     }
 }
 

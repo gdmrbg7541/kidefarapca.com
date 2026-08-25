@@ -403,6 +403,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         flex: 1 1 auto; display: flex; flex-direction: column; align-items: center;
     }
     #imam-hatip .ih-kartlar .game-card .status-badge { margin-top: auto; }
+    /* NOT: İmam Hatip kartlarının masaüstü ölçüleri index.css'in sonundaki
+       "SINIF ETKİNLİKLERİ KARTLARI" bloğundadır (ortak kurallar !important
+       olduğu için oradan yönetiliyor). Burada ikinci bir kopya tutulmuyor. */
     .kg [class^="kga-"], .kg [class*=" kga-"] { transform-box: fill-box; }
     /* Tamlama ve Cümleler: dört renkli satır sayfadaki dört yapıdır;
        büyüteç satırların üzerinde iner (sayfanın yakınlaşma kipi) ve
@@ -2313,7 +2316,32 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       .ih-kartlar .game-grid { margin-top:0; }
       button.mh-kart { width:100%; font-family:inherit; font-size:1em; color:#333; text-align:center; cursor:pointer; -webkit-appearance:none; appearance:none; }
       button.mh-kart .default-game-content { width:100%; }
-      button.mh-kart.acik { border-color:#16A085; box-shadow:0 8px 22px rgba(22,160,133,.24); }
+      /* AÇIK KART — panelin hangi karta ait olduğu ilk bakışta anlaşılsın
+         (Geylani). Üç işaret birlikte çalışıyor: kartın çevresinde yeşil
+         halka + yeşile boyanmış zemin, ÖTEKİ kartların solması, ve panelin
+         tepesinden bu kartı gösteren ok (bkz. .mh-panel-in::before).
+         Halka border yerine box-shadow: kenarlık kalınlaşsaydı kart 2 px
+         uzar, satırdaki bütün kartları da uzatırdı. */
+      button.mh-kart.acik { border-color:#0E7C63;
+        box-shadow:0 0 0 3px rgba(22,160,133,.22), 0 12px 26px rgba(14,124,99,.26); }
+      /* Zemin: kartların rengi index.css'te nth-of-type ile veriliyor,
+         onu geçmek için #imam-hatip ile yazılıyor. */
+      #imam-hatip .ih-kartlar .game-grid button.mh-kart.acik {
+        background:linear-gradient(180deg,#E4FAF1 0%,#fff 72%);
+      }
+      #imam-hatip .ih-kartlar .game-grid .game-card { transition:opacity .17s ease, filter .17s ease; }
+      #imam-hatip .ih-kartlar.mh-acik .game-grid .game-card:not(.mh-kart) {
+        opacity:.5; filter:saturate(.5);
+      }
+      /* SÖNÜK KART AÇILMADAN ÖNCE UYANIR (Geylani). Sönük kartlar
+         tıklanabilir olduğuna göre sönük hâlde açılmamalılar: fareyle
+         üstüne gelince ya da parmak değince o kartın sönüklüğü kalkıyor,
+         kart normal hâline döndükten sonra açılıyor. Dokunmatikte :hover
+         yok, orada işi pointerdown yapıyor (bkz. aşağıdaki dinleyici). */
+      #imam-hatip .ih-kartlar.mh-acik .game-grid .game-card:not(.mh-kart):hover,
+      #imam-hatip .ih-kartlar.mh-acik .game-grid .game-card:not(.mh-kart):focus-visible {
+        opacity:1; filter:none;
+      }
       .mh-kart .status-badge.bekliyor { background:#CBD5E1; color:#334155; }
       .mh-kart .mh-chevron { display:block; margin-top:7px; font-size:.95rem; line-height:1; color:#5f7286; transition:transform .32s ease; }
       .mh-kart.acik .mh-chevron { transform:rotate(180deg); }
@@ -2321,9 +2349,34 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       /* Ders listesi İKİ SÜTUN: ünite başlığı iki sütunu birden kaplar,
          dersler altına ikişerli dizilir. Aralar grid boşluğuyla verilir,
          bu yüzden satırlarda margin YOK (yoksa boşluklar toplanıyor). */
-      .mh-panel-in { padding:13px 15px 15px; border:1.4px solid #d8f0e9; border-radius:14px; background:linear-gradient(180deg,#f6fffb 0%,#fff 62%);
+      .mh-panel-in { position:relative; margin-top:13px;
+                     padding:13px 15px 15px; border:1.8px solid #A8DCCD; border-radius:14px; background:linear-gradient(180deg,#f6fffb 0%,#fff 62%);
                      display:grid; grid-template-columns:1fr 1fr; gap:9px 13px; align-content:start; }
-      .mh-panel-in.bos { border-color:#e6ecf3; background:linear-gradient(180deg,#f8fafc 0%,#fff 62%); }
+      .mh-panel-in.bos { border-color:#DCE3EB; background:linear-gradient(180deg,#f8fafc 0%,#fff 62%); }
+      /* OK — panelin tepesinden Muhâdese kartını gösterir. Kartın ızgaradaki
+         sırası sınıfa göre değişiyor (5'te 4., 9'da 5. kart), bu yüzden yeri
+         CSS'ten bilinemez: mhOkHizala() açılışta ve pencere boyu değişince
+         --mh-ok değişkenini yazıyor. .mh-panel'in overflow:hidden'ı oku
+         kesmesin diye panelin üstünde margin-top:13px'lik yer bırakıldı. */
+      .mh-panel-in::before { content:''; position:absolute; top:-8px; left:var(--mh-ok, 50%);
+                     width:15px; height:15px; transform:translateX(-50%) rotate(45deg);
+                     background:#f6fffb; border-left:1.8px solid #A8DCCD; border-top:1.8px solid #A8DCCD;
+                     border-radius:3px 0 0 0; }
+      .mh-panel-in.bos::before { background:#f8fafc; border-color:#DCE3EB; }
+      /* PANEL BAŞLIĞI — kartın ikonu, adı ve hazır ders sayısı. */
+      .mh-panel-bas { grid-column:1 / -1; display:flex; align-items:center; gap:13px;
+                     padding:11px 14px; margin:0 0 5px; border-radius:12px;
+                     background:linear-gradient(90deg,#E1F7EF 0%,#F5FFFC 76%); border:1.6px solid #B7E4D7; }
+      .mh-panel-ik { flex:none; width:40px; height:40px; }
+      .mh-panel-ik svg { width:100%; height:100%; display:block; overflow:visible; }
+      .mh-panel-ad { flex:1; min-width:0; font-size:1.32rem; font-weight:800; color:#0B5F51; line-height:1.25; }
+      .mh-panel-ad b { color:#12876E; }
+      .mh-panel-say { flex:none; font-size:.84rem; font-weight:800; letter-spacing:.4px; white-space:nowrap;
+                     color:#0B5F51; background:#fff; border:1.5px solid #9FD9CB; border-radius:999px; padding:6px 14px; }
+      .mh-panel-in.bos .mh-panel-bas { background:linear-gradient(90deg,#EEF2F7 0%,#F9FBFD 76%); border-color:#DCE3EB; }
+      .mh-panel-in.bos .mh-panel-ad { color:#475569; }
+      .mh-panel-in.bos .mh-panel-ad b { color:#64748B; }
+      .mh-panel-in.bos .mh-panel-say { color:#64748b; border-color:#CBD5E1; }
       /* Ünite başlığı: küçük gri etiket değil, gerçek başlık.
          text-transform:uppercase KALDIRILDI — Türkçe'de "i" harfini "I"
          yapıyordu (İstanbul → ISTANBUL). */
@@ -2331,14 +2384,34 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
                   color:#0E7C63; margin:16px 2px 4px; line-height:1.3;
                   padding-bottom:10px; border-bottom:2.5px solid #cfeade; }
       .mh-panel-in > .mh-unite:first-child { margin-top:0; }
-      .mh-ders { display:flex; align-items:center; gap:10px; text-decoration:none; padding:10px 12px; border:1.4px solid #eef2f6; border-radius:11px; margin:0; background:#fff; color:#0f2a43; font-weight:600; font-size:.95rem; line-height:1.5; transition:.18s; }
+      /* DERS SATIRI. Ünite başlıkları büyütülünce ders adları yanlarında
+         silik kaldı: 15,2 → 19,5 px, kalınlık 600 → 700. AÇ tuşu ise
+         10,5 pxlik soluk yeşil bir etiketti, tıklanacak yer olduğu
+         anlaşılmıyordu — sitenin kırmızısıyla (#EE5253) gerçek bir
+         düğmeye çevrildi. Kırmızı YALNIZ hazır derslerde; "yakında"
+         satırları gri kalıyor ki hazır olanlar ayrışsın. */
+      .mh-ders { display:flex; align-items:center; gap:12px; text-decoration:none; padding:13px 14px; border:1.6px solid #e4ecf3; border-radius:12px; margin:0; background:#fff; color:#0f2a43; font-weight:700; font-size:1.22rem; line-height:1.45; transition:.18s; }
       .mh-ders .mh-t { flex:1; min-width:0; }
-      .mh-ders .mh-uc { flex:none; font-size:.66rem; font-weight:800; letter-spacing:.4px; color:#0E7C63; background:#E6F7F2; border-radius:6px; padding:3px 8px; }
+      .mh-ders .mh-uc { flex:none; font-size:.92rem; font-weight:800; letter-spacing:.6px; border-radius:9px; padding:8px 18px; }
+      a.mh-ders .mh-uc { color:#fff; background:#EE5253; box-shadow:0 2px 7px rgba(238,82,83,.34); }
       a.mh-ders:hover { border-color:#16A085; box-shadow:0 4px 12px rgba(22,160,133,.13); transform:translateY(-1px); }
+      a.mh-ders:hover .mh-uc { background:#C0392B; box-shadow:0 3px 10px rgba(192,57,43,.42); }
       .mh-ders.pasif { opacity:.62; background:#f8fafc; cursor:default; }
-      .mh-ders.pasif .mh-uc { color:#64748b; background:#eef2f6; }
+      .mh-ders.pasif .mh-uc { color:#64748b; background:#eef2f6; font-size:.82rem; padding:7px 14px; box-shadow:none; }
       @media (max-width:600px){ .ih-title,.dok-title{ font-size:1rem } .ih-num{ width:40px; height:40px } .ihdoc-head .dok-title{ font-size:.9rem }
-        .mh-ders{ font-size:.88rem } .mh-panel-in{ padding:10px 11px 12px; grid-template-columns:1fr; gap:8px }
+        .mh-ders{ font-size:1.02rem; padding:11px 12px; gap:9px }
+        .mh-ders .mh-uc{ font-size:.8rem; padding:6px 13px }
+        .mh-ders.pasif .mh-uc{ font-size:.72rem; padding:5px 11px }
+        .mh-panel-in{ padding:10px 11px 12px; grid-template-columns:1fr; gap:8px; margin-top:11px }
+        /* Mobilde kartlar yatay kayan bir şerit: Muhâdese kartı genelde
+           ekranın dışında kalıyor ve şerit kaydıkça yeri değişiyor. Sabit
+           bir ok orada yanlış kartı gösterirdi; kaldırıldı, işi başlık
+           yapıyor. */
+        .mh-panel-in::before{ display:none }
+        .mh-panel-bas{ padding:9px 11px; gap:10px; margin-bottom:3px }
+        .mh-panel-ik{ width:32px; height:32px }
+        .mh-panel-ad{ font-size:1.06rem }
+        .mh-panel-say{ font-size:.72rem; padding:5px 11px }
         .mh-unite{ font-size:1.45rem; padding-bottom:8px; margin:12px 2px 3px } .mh-kart .mh-chevron{ margin-top:5px } }
       /* ============================================================
          SINIF İÇİ DÖKÜMANLAR — A4 "RESMİ EVRAK" KARTLARI
@@ -3658,8 +3731,50 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         var aciliyor = !btn.classList.contains('acik');
         btn.classList.toggle('acik', aciliyor);
         btn.setAttribute('aria-expanded', aciliyor ? 'true' : 'false');
-        if (aciliyor) panelAc(panel); else panelKapat(panel);
+        /* Sınıf ızgaranın üstünde: açık kart vurgulanırken ötekiler soluyor. */
+        mount.classList.toggle('mh-acik', aciliyor);
+        if (aciliyor) { mhOkHizala(mount); panelAc(panel); } else panelKapat(panel);
       };
+
+      /* PANELİN OKU KARTIN ORTASINI GÖSTERSİN (Geylani: "listenin muhâdese
+         kartına ait olduğu belli olsun"). Kartın ızgaradaki sırası sınıfa
+         göre değişiyor — 5. sınıfta dört kartın sonuncusu, 9'da beşincisi —
+         bu yüzden okun yeri CSS'e yazılamıyor, ölçülüp --mh-ok'a konuyor.
+         Panel max-height:0 iken bile GENİŞLİĞİ doğru, ölçüm güvenli. */
+      function mhOkHizala(mount) {
+        var kart = mount.querySelector('.mh-kart');
+        var ic = mount.querySelector('.mh-panel-in');
+        if (!kart || !ic) return;
+        var k = kart.getBoundingClientRect(), p = ic.getBoundingClientRect();
+        if (!p.width || !k.width) return;
+        var x = (k.left + k.width / 2) - p.left;
+        /* köşeye yapışmasın: iki uçta 26 px pay */
+        x = Math.max(26, Math.min(p.width - 26, x));
+        ic.style.setProperty('--mh-ok', x.toFixed(1) + 'px');
+      }
+      /* Pencere boyu değişince ızgara yeniden diziliyor, kart kayıyor. */
+      window.addEventListener('resize', function () {
+        clearTimeout(window.__mhOkZaman);
+        window.__mhOkZaman = setTimeout(function () {
+          [].forEach.call(document.querySelectorAll('.ih-kartlar.mh-acik'), mhOkHizala);
+        }, 140);
+      });
+
+      /* ÖTEKİ KARTA DOKUNULDUĞU AN SÖNÜKLÜK KALKAR (Geylani: "önce pasiflik
+         kalksın sonra açılsınlar"). Parmak/fare BASILDIĞINDA çalışır, kart
+         ise BIRAKILDIĞINDA açılır — arada kalan sürede solma geri dönmüş
+         oluyor. Tıklama engellenmiyor: preventDefault edip sonradan
+         window.open denenseydi açılır pencere engelleyicisine takılırdı.
+         Muhâdese listesi açık kalıyor; hangi kartın açtığını yüzük ve ok
+         söylemeye devam ediyor. */
+      document.addEventListener('pointerdown', function (e) {
+        var t = e.target;
+        if (!t || !t.closest) return;
+        var kart = t.closest('#imam-hatip .ih-kartlar .game-grid .game-card');
+        if (!kart || kart.classList.contains('mh-kart')) return;
+        var mount = kart.closest('.ih-kartlar');
+        if (mount) mount.classList.remove('mh-acik');
+      }, true);
 
       function mhEsc(s) {
         return String(s == null ? '' : s)
@@ -3729,6 +3844,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             '</button>' +
           '</div>' +
           '<div class="mh-panel"><div class="mh-panel-in' + (liste.hazir ? '' : ' bos') + '">' +
+            /* PANEL BAŞLIĞI — listenin hangi karta ait olduğunu yazıyla da
+               söyler; kartın kendi konuşma balonu ikonu burada tekrarlanır. */
+            '<div class="mh-panel-bas">' +
+              '<span class="mh-panel-ik">' + konusmaSvg() + '</span>' +
+              '<span class="mh-panel-ad">Muhâdese <b>' + mhEsc(sinif) + '. Sınıf</b></span>' +
+              '<span class="mh-panel-say">' +
+                (liste.hazir ? liste.hazir + ' ders hazır' : 'yakında') +
+              '</span>' +
+            '</div>' +
             liste.html + '</div></div>';
         modulKartlari(mount, sinif);
       });
