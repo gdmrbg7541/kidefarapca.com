@@ -4544,8 +4544,39 @@ function resetTableOnly(isSilent = false) {
     const mobilePlus = document.getElementById('mobile-top-plus');
     if (mobilePlus) mobilePlus.classList.remove('plus-highlighted');
 
-    if (typeof highlightEasterEggBoxes === 'function') highlightEasterEggBoxes(""); 
-    
+    if (typeof highlightEasterEggBoxes === 'function') highlightEasterEggBoxes("");
+
+    /* ÇEKİM TABLOLARI DA SIFIRLANIR (Geylani: "sıfırlama tuşuna basınca
+       da çekimlenmiş fiiller sıfırlansın, kök sıfırlandığı gibi").
+       Eskiden yalnız kök ve vezin kutuları temizleniyordu; ekranda açık
+       duran çekim tahtası — hazır olsun, elle açılmış olsun — ve
+       rıhtımdaki yüzen simgesi olduğu gibi kalıyordu: kök gitmiş, o
+       kökün çekimleri duruyordu.
+       Burada AYRIM YAPILMIYOR (ayar anahtarından farklı olarak): sıfırlama
+       "her şey baştan" demek, elle açılmış tablolar da kapanır.
+       zorla=true — hazır tahtanın ✕'i normalde kapatmaz, rıhtıma indirir.
+       Sesler susturuluyor: sıfırlamanın kendi sesi (playReset) zaten
+       çaldı, üstüne bir de kapanma sesi binmesin. */
+    (function () {
+        var ses = (typeof SoundEngine !== 'undefined') ? SoundEngine : null;
+        var yedek = {};
+        if (ses) ['playClose', 'playReset'].forEach(function (ad) {
+            if (typeof ses[ad] === 'function') { yedek[ad] = ses[ad]; ses[ad] = function () {}; }
+        });
+        try {
+            if (document.getElementById('fdm-tahta') &&
+                typeof window.fdmTahtaKapat === 'function') {
+                window.fdmTahtaKapat(null, true);
+            }
+            /* Eski çekim penceresi (conjugation-overlay) açıksa o da kapansın. */
+            var ov = document.getElementById('conjugation-overlay');
+            if (ov && ov.style.display && ov.style.display !== 'none') {
+                ov.style.display = 'none';
+            }
+        } catch (x) { /* yoksay */ }
+        if (ses) Object.keys(yedek).forEach(function (ad) { ses[ad] = yedek[ad]; });
+    })();
+
     // YENİ EKLENEN: Sıfırlama bitince (herhangi bir kök açık değilken) vurguları/animasyonları yeniden başlat!
     if (typeof toggleRootHint === 'function') toggleRootHint(true);
 }
@@ -12865,7 +12896,17 @@ document.addEventListener('keydown', function (e) {
     }
     function kur() {
         bellek('kidef_cekim_hazir', 'cekimHazirCheckbox', function (acik) {
-            if (acik) window.fdmCekimHazirla();
+            if (acik) { window.fdmCekimHazirla(); return; }
+            /* ANAHTAR KAPANINCA HAZIR ÇEKİMLER DE KAPANSIN (Geylani).
+               Eskiden yalnız AÇILIŞTA iş yapılıyordu; kapatınca ekranda
+               duran hazır tahta ya da rıhtımdaki yüzen simgesi öylece
+               kalıyordu — ayar kapalı, tablolar ortada.
+               `hazir === '1'` koşulu şart: öğretmenin ELLE açtığı çekim
+               tabloları bu anahtarla ilgili değil, onlara dokunulmuyor.
+               zorla=true: hazır tahtanın ✕'i normalde kapatmaz, rıhtıma
+               indirir; burada gerçekten kapanması gerekiyor. */
+            var t = document.getElementById('fdm-tahta');
+            if (t && t.dataset.hazir === '1') window.fdmTahtaKapat(null, true);
         });
         /* Dilbilgisi başlıkları ÖNTANIMLI AÇIK: eski davranış buydu,
            ayara taşınırken varsayılan korunuyor (Geylani). */
@@ -13198,6 +13239,20 @@ window.fdmCekimHazirla = function () {
                         if (y && !y.dataset.tur) fdmYuklemeKapat();
                     }, 6000);
                 } else {
+                    /* YENİ KÖKÜN HAZIR ÇEKİMİ YOK — ÖNCEKİNİNKİ KALMASIN
+                       (Geylani: "başka bi köke geçince onun fiil çekimleri
+                       yüklensin"). Yeni kökte hazırlanacak fiil varsa
+                       fdmCekimHazirla zaten tahtayı sıfırdan kuruyor; yoksa
+                       hiç kimse dokunmuyordu ve ÖNCEKİ kökün tabloları
+                       ekranda kalıyordu (ölçüldü: كتب'den نصر'a geçince
+                       tahta hâlâ hazirKok="كتب" ile duruyordu).
+                       Elle açılmış tablolara dokunulmuyor: yalnız hazırlıkla
+                       kurulmuş VE artık başka köke ait tahta kapatılıyor. */
+                    var eskiT = document.getElementById('fdm-tahta');
+                    if (eskiT && eskiT.dataset.hazir === '1' &&
+                        eskiT.dataset.hazirKok !== k) {
+                        window.fdmTahtaKapat(null, true);
+                    }
                     fdmYuklemeKapat();       /* hazırlanacak fiil yok */
                 }
             }

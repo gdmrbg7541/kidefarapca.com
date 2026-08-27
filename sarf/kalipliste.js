@@ -2968,25 +2968,21 @@
             var ic = belirHazirla(st0.govdeTr);
             mucHizala();                      /* matris izleri: ancak şimdi ölçülebilir */
             mucLevhaBoya();
-            /* ARA LEVHADAKİLER: kopyalar varış noktalarında bekliyor;
-               asıl kutular altlarında, örneklerle birlikte beliriyor.
-               Liste tam görünür olunca kopyalar sessizce siliniyor —
-               ikisi üst üste olduğu için ekranda hiçbir şey değişmiyor.
-               (Aynı anda biri sönüp öteki belirseydi vezin ortada bir
-               parça sönük görünürdü.) */
-            /* ARA LEVHADAKİLER (cem-i teksîrin 45-48'i) İSTİSNA: onlar
-               listenin İÇİNDE yaşıyor ve liste bu anda hâlâ aşağı doğru
-               beliriyor — asıl kutu o kayışa katılıyor, kopya ise varış
-               noktasında duruyor. İkisi birden görünür olunca aralarında
-               10 px'lik bir fark doğuyor ve vezin bir saniye boyunca ÇİFT
-               görünüyordu (Geylani: "45-48. kalıplar iki kopya
-               görünüyor"). Onlar kopyalarıyla AYNI ANDA devralıyor:
-               aşağıdaki cakiliSil hem kopyayı siliyor hem asılları
-               görünür yapıyor, o anda ikisi birebir çakışık. */
-            var gvd = st0.govdeTr;
-            (st0.kutular || []).forEach(function (k) {
-                if (!(gvd && gvd.contains(k))) k.style.visibility = '';
-            });
+            /* KOPYA İLE ASIL AYNI ANDA EKRANDA DURMAZ (Geylani: "vezinler
+               dağıldıktan sonra, en son gittikleri yerde kopya bi vezin
+               daha beliriyor").
+               ESKİDEN: asıl kutular BURADA görünür yapılıyor, kopyalar ise
+               KL_LISTE_MS + 60 ms SONRA siliniyordu. Aradaki ~yarım saniye
+               boyunca ikisi de ekranda oluyordu. Liste o sırada hâlâ
+               açılmakta (yükseklik geçişi) olduğu için asıl kutunun yeri
+               kopyanınkinden kayabiliyor ve vezin ÇİFT görünüyor.
+               Bu kusur cem-i teksîrin 45-48'inde bir kez düzeltilmişti
+               ("45-48. kalıplar iki kopya görünüyor"); orada devir teslim
+               cakiliSil'e bırakılmıştı. Aynı kural artık BÜTÜN kutulara
+               uygulanıyor: erken görünür yapma kaldırıldı.
+               cakiliSil süre almadan çağrıldığı için devir teslim TEK
+               KAREDE oluyor — o an hem kopya siliniyor hem asıllar görünür
+               oluyor, ikisi birebir çakışık, ekranda hiçbir şey oynamıyor. */
             st0.zaman.push(setTimeout(function () { cakiliSil(st0); }, KL_LISTE_MS + 60));
             belirBasla(ic, KL_LISTE_MS);
         }, KL_CUBUK_MS + KL_MUC_MS + 60 + KL_MUC_ARA + KL_MUC_BELIR + KL_MUC_ARA));
