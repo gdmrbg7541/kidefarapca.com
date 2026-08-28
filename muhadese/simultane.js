@@ -903,6 +903,16 @@ function forceOpenPage() {
     }
 }
 
+/* LEHÇE DEĞİŞİNCE: lehce.js verideki parçaları yerinde çevirdikten
+   sonra burayı çağırıyor. Ekran baştan çizilir; bulunulan cümle/diyalog
+   ve açılmış adımlar korunur (sayfa bitmişse hepsi yeniden açılır). */
+window.kidefTazele = function () {
+    if (!data || !data[mode] || !data[mode].length) return;
+    var bitti = completionStatus[mode][currentIdx];
+    render();
+    if (bitti) forceOpenPage();
+};
+
 // Klavye tuşlarını changeSentence fonksiyonuna bağla[cite: 3]
 document.addEventListener('keydown', (e) => {
     if (e.key === "ArrowRight" || e.key === "ArrowDown") {
@@ -984,7 +994,10 @@ function renderContent(words, trId, arId, playerNum = null) {
            geçilir (bkz. muhadese/sarfkopru.js). Kelimenin üstüne hiçbir şey
            eklenmez — cümle temiz kalır. Kök her zaman kelimenin
            ARAPÇASINDAN bulunur; yön ne olursa olsun aynı kelimeyi gösterir. */
-        if (window.KidefSarf && w.ar) window.KidefSarf.kelimeIsaretle(span, w.ar);
+        /* Kök her zaman FUSHA aslından bulunur: lehçe seçiliyken
+           ekrandaki metin lehçe olur ama sarf köprüsü fushaya bakar. */
+        var sarfAr = w.arFus || w.ar;
+        if (window.KidefSarf && sarfAr) window.KidefSarf.kelimeIsaretle(span, sarfAr);
 
         trCont.appendChild(span);
     });
@@ -1145,12 +1158,26 @@ function undoToStep(targetOrder, trId, arId, playerNum) {
            satırlar saydam durur. Sıra soldan sağa: numara · TÜRKÇE ·
            noktalı bağ · ARAPÇA. Arapça en sağda duruyor, böylece göz
            sağ sütunda tek hizada aşağı iniyor. */
-        kap.innerHTML = '<div class="kl-defter sutun-' + sutun + '"><ol class="kl-izgara">' + allWords.map(function (w, i) {
-            return '<li class="kl-satir">' +
+        var LH = window.KIDEF_LEHCE;
+        var lehceli = !!(LH && !LH.fushaMi());
+        kap.innerHTML = '<div class="kl-defter sutun-' + sutun + (lehceli ? ' kl-lehceli' : '') +
+            '"><ol class="kl-izgara">' + allWords.map(function (w, i) {
+            /* LEHÇE: seçiliyse ana satır lehçe karşılığı olur, fusha aslı
+               altında küçük punto ile durur — öğrenci ikisini yan yana
+               görüyor. Karşılığı yazılmamışsa yalnız fusha görünür ve
+               satır "fusha ile aynı" diye işaretlenir. */
+            var k = LH ? LH.karsilik(w) : { ar: w.ar || '', fusha: w.ar || '', ayni: true };
+            var alt = '';
+            if (lehceli) {
+                alt = k.ayni
+                    ? '<span class="kl-fusha kl-ayni">fusha ile aynı</span>'
+                    : '<span class="kl-fusha" dir="rtl">' + k.fusha + '</span>';
+            }
+            return '<li class="kl-satir' + (lehceli && k.ayni ? ' kl-degismez' : '') + '">' +
                      '<span class="kl-no">' + (i + 1) + '</span>' +
                      '<span class="kl-tr">' + (w.tr || '') + '</span>' +
                      '<i class="kl-nokta" aria-hidden="true"></i>' +
-                     '<span class="kl-ar" dir="rtl">' + (w.ar || '') + '</span>' +
+                     '<span class="kl-ar" dir="rtl">' + (k.ar || '') + alt + '</span>' +
                    '</li>';
         }).join('') + '</ol></div>';
         otoSutun(kap);
@@ -1175,8 +1202,15 @@ function undoToStep(targetOrder, trId, arId, playerNum) {
             card.className = 'card';
             card.dataset.id = item.ar;
 
-            const frontText = isAr ? item.ar : item.tr;
-            const backText  = isAr ? item.tr : item.ar;
+            /* LEHÇE: kartın Arapça yüzü seçili lehçenin karşılığını
+               gösterir; fusha aslı aynı yüzde küçük bir satır olarak
+               altında durur (karşılık yoksa hiç eklenmez). */
+            const LHK = window.KIDEF_LEHCE;
+            const kars = LHK ? LHK.karsilik(item) : { ar: item.ar, fusha: item.ar, ayni: true };
+            const arYuz = kars.ar + ((LHK && !LHK.fushaMi() && !kars.ayni)
+                ? '<span class="kart-fusha" dir="rtl">' + kars.fusha + '</span>' : '');
+            const frontText = isAr ? arYuz : item.tr;
+            const backText  = isAr ? item.tr : arYuz;
             const frontLangClass = isAr ? 'lang-ar' : 'lang-tr';
             const backLangClass  = isAr ? 'lang-tr' : 'lang-ar';
             const color = cardColors[index % cardColors.length];
@@ -1269,6 +1303,65 @@ function undoToStep(targetOrder, trId, arId, playerNum) {
             b.setAttribute('aria-pressed', secili ? 'true' : 'false');
         });
     }
+
+    /* ---------- LEHÇE SEÇİCİ (oynatıcı) ----------
+       Okul derslerinde hiç görünmez: ders kimliği kalip_ / alan_ ile
+       başlamıyorsa düğme gizli kalır (Geylani: "okul hariç"). */
+    function lehceTusKur() {
+        var LH = window.KIDEF_LEHCE;
+        var kap = document.getElementById('kelLehce');
+        var menu = document.getElementById('kelLehceMenu');
+        var tus = document.getElementById('kelLehceTus');
+        if (!LH || !kap || !menu || !tus) return;
+        if (!/^(kalip|alan)_/.test(String(window.KIDEF_DERS || ''))) { kap.hidden = true; return; }
+        kap.hidden = false;
+
+        function tusYenile() {
+            var b = LH.bilgi();
+            tus.querySelector('.kl-bayrak').textContent = b.bayrak;
+            tus.querySelector('.kl-ad').textContent = b.ad;
+            kap.classList.toggle('lehcede', !LH.fushaMi());
+            Array.prototype.forEach.call(menu.querySelectorAll('.kel-lehce-oge'), function (o) {
+                o.classList.toggle('aktif', o.getAttribute('data-lh') === LH.secili());
+            });
+        }
+
+        menu.innerHTML = LH.liste.map(function (l) {
+            return '<button type="button" class="kel-lehce-oge" role="menuitem" data-lh="' + l.id + '">' +
+                   '<span class="kl-bayrak">' + l.bayrak + '</span>' +
+                   '<span class="kl-metin"><b>' + l.ad + '</b><i>' + l.alt + '</i></span></button>';
+        }).join('');
+
+        Array.prototype.forEach.call(menu.querySelectorAll('.kel-lehce-oge'), function (o) {
+            o.onclick = function (e) {
+                e.stopPropagation();
+                LH.sec(o.getAttribute('data-lh'));
+                kap.classList.remove('acik');
+                tus.setAttribute('aria-expanded', 'false');
+            };
+        });
+
+        window.kelLehceAc = function (e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            var a = kap.classList.toggle('acik');
+            tus.setAttribute('aria-expanded', a ? 'true' : 'false');
+        };
+        document.addEventListener('click', function (e) {
+            if (!kap.classList.contains('acik')) return;
+            if (e.target.closest && e.target.closest('#kelLehce')) return;
+            kap.classList.remove('acik');
+            tus.setAttribute('aria-expanded', 'false');
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') kap.classList.remove('acik');
+        });
+
+        /* Lehçe değişince kelimeler yeniden çizilir; kip ve sütun korunur. */
+        LH.dinle(function () { tusYenile(); init(); });
+        tusYenile();
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lehceTusKur);
+    else lehceTusKur();
 
   window.kelInit = init;
   window.kelSetMode = setMode;

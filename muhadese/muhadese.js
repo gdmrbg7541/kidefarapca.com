@@ -75,23 +75,25 @@ const educationData = {
                 { name: "3. Ders: Yazlık Kıyafetler | المَلابِسُ الصَّيْفِيَّة", simultaneUrl: "muhadese.html?ders=6_4_3", aktif: true },
             ]
         },
-        /* 5. ve 6. ÜNİTE: kitapta yalnız ünite ve ders adları var, içerik
-           henüz gelmedi — başlıklar kitaptaki hâliyle duruyor, dersler
-           "YAKINDA" olarak bekliyor. */
+        /* 5. ve 6. ÜNİTE 2025 ders kitabına göre güncellendi (komisyon
+           verisi): altı dersin de cümle/diyalog/kelime verisi yazıldı,
+           dosyalar muhadese/veri/6_5_1..3.js ve 6_6_1..3.js. Böylece
+           6. sınıfın ALTI ÜNİTESİ de tamamlandı. */
         {
             unitName: "5. Ünite: Kutsal Mekânlar | الأَماكِنُ المُقَدَّسَة",
             lessons: [
-                { name: "1. Ders: Mekke-i Mükerreme'de | في مَكَّةَ المُكَرَّمَة", simultaneUrl: "muhadese.html?ders=6_5_1" },
-                { name: "2. Ders: Medine-i Münevvere'de | في المَدينَةِ المُنَوَّرَة", simultaneUrl: "muhadese.html?ders=6_5_2" },
-                { name: "3. Ders: Kudüs-i Şerif'te | في القُدْسِ الشَّريف", simultaneUrl: "muhadese.html?ders=6_5_3" },
+                { name: "1. Ders: Mekke-i Mükerreme'de | في مَكَّةَ المُكَرَّمَة", simultaneUrl: "muhadese.html?ders=6_5_1", aktif: true },
+                { name: "2. Ders: Medine-i Münevvere'de | في المَدينَةِ المُنَوَّرَة", simultaneUrl: "muhadese.html?ders=6_5_2", aktif: true },
+                { name: "3. Ders: Kudüs-i Şerif'te | في القُدْسِ الشَّريف", simultaneUrl: "muhadese.html?ders=6_5_3", aktif: true },
             ]
         },
         {
-            unitName: "6. Ünite: Ulaşım ve Trafik | المُواصَلات وَالمُرور",
+            /* Kitapta ünite başlığı yalnız "المُواصَلات"; eski ad tahminliydi. */
+            unitName: "6. Ünite: Ulaşım | المُواصَلات",
             lessons: [
-                { name: "1. Ders: Ulaşım Araçları | وَسائِلُ المُواصَلات", simultaneUrl: "muhadese.html?ders=6_6_1" },
-                { name: "2. Ders: Trafik | المُرور", simultaneUrl: "muhadese.html?ders=6_6_2" },
-                { name: "3. Ders: Tatil Yolumda | في طَريقي إِلى العُطْلَة", simultaneUrl: "muhadese.html?ders=6_6_3" },
+                { name: "1. Ders: Ulaşım Araçları | وَسائِلُ المُواصَلات", simultaneUrl: "muhadese.html?ders=6_6_1", aktif: true },
+                { name: "2. Ders: Trafik | المُرور", simultaneUrl: "muhadese.html?ders=6_6_2", aktif: true },
+                { name: "3. Ders: Tatil Yolumda | في طَريقي إِلى العُطْلَة", simultaneUrl: "muhadese.html?ders=6_6_3", aktif: true },
             ]
         }
     ],
@@ -396,10 +398,40 @@ function renderSekmeler() {
     });
 }
 
+/* LEHÇE KAPISI — okul sekmesinde hiç yok, ötekilerde ÖNCE SEÇİM.
+   Geylani: "önce fusha veya lehçe seçilebilsin, seçildikten sonra
+   sadece o lehçeden açılsın." Seçim yapılana kadar başlık listesi ve
+   ünite kutusu gizli; seçilince üstte ince bir özet şerit kalıyor,
+   "Değiştir" kapıyı geri açıyor. */
+function lehceKapiTazele(katId) {
+    var kap = document.getElementById('lehce-serit');
+    var LH = window.KIDEF_LEHCE;
+    var liste = document.getElementById('class-buttons');
+    var kutu = document.getElementById('unit-container');
+    if (!kap || !LH) return;
+
+    function icerikGoster(v) {
+        if (liste) liste.hidden = !v;
+        if (kutu) kutu.hidden = !v;
+    }
+
+    if (katId === 'okul') { kap.hidden = true; icerikGoster(true); return; }
+    kap.hidden = false;
+
+    if (!LH.secildiMi()) {
+        LH.secimEkrani(kap, function () { lehceKapiTazele(_seciliKat); });
+        icerikGoster(false);
+        return;
+    }
+    LH.ozetSerit(kap, function () { lehceKapiTazele(_seciliKat); });
+    icerikGoster(true);
+}
+
 function kategoriSec(katId, kullaniciSecti) {
     _seciliKat = katId;
     try { localStorage.setItem('muhKategori', katId); } catch (e) { }
     renderSekmeler();
+    lehceKapiTazele(katId);
     var kat = _kat(katId);
     var kayitli = null;
     try { kayitli = localStorage.getItem('muhSon_' + katId); } catch (e) { }
@@ -527,6 +559,21 @@ function renderIcerik(kat, anahtar) {
     if (!uniteler.length) {
         container.innerHTML = '<div class="bos-uyari">Bu başlık için içerik hazırlanıyor.</div>';
         return;
+    }
+
+    /* ÖĞRETİM YILI ŞERİDİ — yalnız "okul" kategorisinde, çünkü anahtar orada
+       sınıf numarasıdır. Rozet/seçici sistem/sinifveri.js'ten gelir; sınıfın
+       yıl kaydı yoksa hiç basılmaz. */
+    if (kat.id === 'okul') {
+        var sv = window.KidefSinifVeri;
+        var rozet = (sv && sv.yilRozetHtml) ? sv.yilRozetHtml(anahtar, { secici: true }) : '';
+        if (rozet) {
+            if (sv.yilStilKur) sv.yilStilKur();
+            var serit = document.createElement('div');
+            serit.className = 'muh-yil-serit';
+            serit.innerHTML = rozet;
+            container.appendChild(serit);
+        }
     }
 
     uniteler.forEach(function (unit) {

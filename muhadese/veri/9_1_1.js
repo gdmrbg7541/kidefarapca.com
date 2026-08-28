@@ -60,7 +60,7 @@ window.data = {
             words: [
                 { tr: "Ben", order: 1, ar: "أَنا" },
                 { tr: "iyiyim,", order: 2, ar: "بِخَيْر،" },
-                { tr: "Allah'a şükür.", order: 3, ar: "الـحَمْد لِلّٰه" },
+                { tr: "Allah'a şükür.", order: 3, ar: "الـحَمْد لِله" },
             ]
         },
         {
@@ -75,7 +75,7 @@ window.data = {
         },
         {
             words: [
-                { tr: "Allah'a emanet ol", order: 1, ar: "في أَمان اللّٰه" },
+                { tr: "Allah'a emanet ol", order: 1, ar: "في أَمان الله" },
             ]
         },
         {
@@ -134,7 +134,7 @@ window.data = {
             p2: [
                 { tr: "Ben", order: 1, ar: "أَنا" },
                 { tr: "iyiyim,", order: 2, ar: "بِخَيْر،" },
-                { tr: "Allah'a şükür.", order: 3, ar: "الـحَمْد لِلّٰه" },
+                { tr: "Allah'a şükür.", order: 3, ar: "الـحَمْد لِله" },
             ]
         },
         {
@@ -170,7 +170,7 @@ window.data.words = [
     { tr: "Hoş Bulduk!", ar: "أَهْلًا بِك" },
     { tr: "Nasılsın?", ar: "كَيْفَ حالُك؟" },
     { tr: "İyiyim!", ar: "أَنا بِخَيْر!" },
-    { tr: "Allah’a hamdolsun!", ar: "الْـحَمْد لِلّٰه" },
+    { tr: "Allah’a hamdolsun!", ar: "الْـحَمْد لِله" },
     { tr: "Görüşmek üzere", ar: "إِلى اللِّقاء" },
     { tr: "Hoşça kal", ar: "مَع السَّلامَة" },
     { tr: "Allah’a emanet ol", ar: "في أَمان اللهِ" },

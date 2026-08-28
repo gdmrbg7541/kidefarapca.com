@@ -1373,3 +1373,68 @@ html.dusuk-guc .switch-wrapper .ik-kisi2 .ik-p2 { opacity: 1; }
     .kl-tr{ font-size: clamp(.92rem, 2.1vh, 1.14rem); }
     .kl-ar{ font-size: clamp(1.55rem, 3.9vh, 2.15rem); }
 }
+
+/* ==================== LEHÇE (oynatıcı) ====================
+   Şeritteki küçük seçici + kelime listesinde ve kartlarda fusha
+   aslının ikinci satırda gösterilmesi. */
+.kel-lehce { position: relative; flex: none; }
+.kel-lehce[hidden] { display: none; }
+.kel-lehce-tus {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 11px; border-radius: 999px; cursor: pointer;
+    background: #f4f7fb; border: 1.6px solid #e2e8f0; color: #334155;
+    font-family: 'Marhey', sans-serif; font-size: .82rem; font-weight: 600; line-height: 1;
+    transition: background .16s ease, border-color .16s ease, color .16s ease;
+}
+.kel-lehce-tus:hover { background: #e9eff6; border-color: #cbd5e1; }
+.kel-lehce.lehcede .kel-lehce-tus {
+    background: rgba(22, 160, 133, .13); border-color: #16A085; color: #0E7C63;
+}
+.kel-lehce-tus .kl-bayrak { font-size: 1rem; }
+.kel-lehce-menu {
+    display: none; position: absolute; z-index: 3000; top: calc(100% + 8px); left: 0;
+    min-width: 232px; padding: 7px; border-radius: 15px;
+    background: #fff; border: 1.6px solid #e6edf4;
+    box-shadow: 0 20px 44px rgba(15, 23, 42, .17);
+}
+.kel-lehce.acik .kel-lehce-menu { display: block; }
+.kel-lehce-oge {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 8px 10px; border: none; border-radius: 11px; cursor: pointer;
+    background: transparent; text-align: left;
+    font-family: 'Marhey', sans-serif; color: #1f2937;
+}
+.kel-lehce-oge:hover { background: #f1f5f9; }
+.kel-lehce-oge.aktif { background: rgba(22, 160, 133, .13); }
+.kel-lehce-oge .kl-bayrak { font-size: 1.15rem; }
+.kel-lehce-oge .kl-metin { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.kel-lehce-oge .kl-metin b { font-size: .86rem; font-weight: 700; }
+.kel-lehce-oge .kl-metin i { font-size: .68rem; font-style: normal; color: #64748b; }
+
+/* Listede fusha aslı: lehçe satırının ALTINDA küçük ve soluk.
+   align-items: flex-start — kap rtl olduğu için "start" SAĞ demek;
+   flex-end kullanılırsa küçük satır sola kaçıyor ve kelimenin yanında
+   duruyormuş gibi görünüyordu.
+   Satır adımı da büyüyor: defterin çizgileri iki satırlık hücreye göre
+   yeniden aralanıyor, yoksa alt satır çizgiyi aşıyor. */
+.kl-defter.kl-lehceli .kl-ar {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+}
+.kl-defter.kl-lehceli { --kl-adim: 92px; }
+.kl-defter.kl-lehceli.sutun-2 { --kl-adim: 124px; }
+.kl-defter.kl-lehceli.sutun-1 { --kl-adim: 166px; }
+.kl-fusha {
+    font-size: .58em; color: #93a3b5; line-height: 1.25; font-weight: 400;
+    text-align: right; white-space: nowrap;
+}
+.kl-fusha.kl-ayni {
+    font-family: 'Marhey', sans-serif; font-size: .42em; letter-spacing: .02em;
+    color: #b6c0cc; direction: ltr;
+}
+.kl-satir.kl-degismez .kl-ar { opacity: .86; }
+
+/* Kartın Arapça yüzünde fusha aslı. */
+.kart-fusha {
+    display: block; margin-top: 6px;
+    font-size: .42em; line-height: 1.35; opacity: .72; font-weight: 400;
+}

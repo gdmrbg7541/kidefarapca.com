@@ -80,9 +80,13 @@ header h1 {
     align-items: center;
     justify-content: center;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    color: rgba(255, 255, 255, 0.85);
+    /* BEMBEYAZ (Geylani): saydam beyaz zemin başlığın renginin üstünde
+       soluk kalıyordu, ok zor seçiliyordu. Artık düz beyaz bir kart;
+       ok da başlığın koyu tonunda. */
+    background: #fff;
+    border: 1px solid rgba(255, 255, 255, .9);
+    color: #1E7A63;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .16);
     text-decoration: none;
     transition: transform .22s ease, background .22s ease,
                 box-shadow .22s ease, color .22s ease;
@@ -95,9 +99,11 @@ header h1 {
 }
 .home-btn:hover,
 .home-btn:focus-visible {
+    /* Şerit zaten turuncu: hover'da turuncuya dönmek tuşu zeminde
+       eritiyordu. Beyaz kalıyor, yalnız biraz büyüyüp gölgeleniyor. */
     transform: translateY(-50%) scale(1.06);
-    background: var(--turuncu);
-    color: #fff;
+    background: #fff;
+    color: #C0392B;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     outline: none;
 }
@@ -668,7 +674,7 @@ html.dusuk-guc .ik-balon .ik-nokta { opacity: 1; }
         height: 34px;
         border-radius: 10px;
         z-index: 30;
-        background: rgba(255, 255, 255, 0.22);
+        background: #fff;
     }
     .home-btn svg { width: 18px; height: 18px; }
 
@@ -757,4 +763,143 @@ html.dusuk-guc .ik-balon .ik-nokta { opacity: 1; }
     .dogrudan-bilgi .db-yazi { font-size: 1.18rem; }
     .dogrudan-bilgi .db-kart { font-size: 1.06rem; padding: 12px 19px; }
     .dogrudan-bilgi .db-ikon { width: 24px; height: 24px; }
+}
+
+/* ---- ÖĞRETİM YILI ŞERİDİ ----
+   Ünite kartlarının üstünde, sağa yaslı küçük rozet/seçici. Rozetin kendi
+   görünümü sistem/sinifveri.js'ten gelir (.kd-yil); burada yalnız yeri
+   belirleniyor. */
+.muh-yil-serit {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 0 12px;
+}
+@media (max-width: 600px) {
+    .muh-yil-serit { justify-content: flex-start; }
+}
+
+/* ==================== LEHÇE SEÇİM KAPISI ====================
+   Kalıp İfadeler ve Alan Konuları sekmelerine girince önce burası
+   çıkar; başlıklar ancak bir seçim yapılınca belirir (Geylani). */
+.lehce-kapi {
+    max-width: 1180px; margin: 10px auto 0; padding: 26px 22px 22px;
+    background: #fff; border: 1.6px solid #e6edf4; border-radius: 22px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
+    font-family: 'Marhey', sans-serif;
+}
+.lehce-kapi[hidden] { display: none; }
+.lk-bas { text-align: center; margin-bottom: 20px; }
+.lk-bas h2 {
+    margin: 0 0 6px; font-size: 1.32rem; font-weight: 700; color: #123047;
+}
+.lk-bas p {
+    margin: 0 auto; max-width: 560px;
+    font-size: .84rem; line-height: 1.55; color: #64748b;
+}
+.lk-izgara {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+/* Yedi seçenek geniş ekranda TEK SIRADA dursun: auto-fit altıda kesip
+   Mağrib'i tek başına alt satıra atıyordu. */
+@media (min-width: 1080px) { .lk-izgara { grid-template-columns: repeat(7, 1fr); } }
+.lk-kart {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 18px 12px 15px; cursor: pointer;
+    background: #f6f9fc; border: 1.8px solid #e2e8f0; border-radius: 18px;
+    font-family: inherit; color: #0f2a43;
+    transition: transform .16s ease, border-color .16s ease,
+                background .16s ease, box-shadow .16s ease;
+}
+.lk-kart:hover {
+    background: #fff; border-color: #16A085; transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(22, 160, 133, .16);
+}
+.lk-kart:active { transform: translateY(-1px) scale(.98); }
+.lk-kart.onceki { border-color: #A8DCCD; background: #f2fbf8; }
+.lk-bayrak { font-size: 1.9rem; line-height: 1; }
+.lk-ad { font-size: 1.02rem; font-weight: 700; }
+.lk-ar {
+    font-family: 'Harmattan', 'Arakom', serif; font-size: 1.2rem;
+    color: #16A085; line-height: 1.2;
+}
+.lk-alt { font-size: .68rem; color: #8494a5; line-height: 1.35; text-align: center; }
+.lk-rozet {
+    position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+    padding: 3px 10px; border-radius: 999px; white-space: nowrap;
+    background: #16A085; color: #fff; font-size: .58rem; font-weight: 700;
+    letter-spacing: .06em;
+}
+.lk-not {
+    margin: 18px auto 0; max-width: 640px; text-align: center;
+    font-size: .7rem; line-height: 1.5; color: #94a3b8;
+}
+@media (max-width: 640px) {
+    .lehce-kapi { padding: 20px 14px 16px; border-radius: 18px; }
+    .lk-izgara { grid-template-columns: repeat(auto-fit, minmax(124px, 1fr)); gap: 9px; }
+    .lk-kart { padding: 14px 8px 12px; }
+    .lk-bayrak { font-size: 1.55rem; }
+    .lk-ad { font-size: .92rem; }
+    .lk-alt { display: none; }
+}
+
+/* Seçim yapıldıktan sonra üstte kalan özet */
+.lh-secili {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 7px 14px; border-radius: 999px;
+    background: rgba(22, 160, 133, .12); border: 1.6px solid #16A085; color: #0E7C63;
+}
+.lh-secili.fusha { background: rgba(41, 128, 185, .1); border-color: #2980B9; color: #1F6391; }
+.lh-secili b { font-size: .92rem; font-weight: 700; }
+.lh-secili i { font-size: .68rem; font-style: normal; opacity: .8; }
+.lh-degistir {
+    flex: none; padding: 7px 15px; border-radius: 999px; cursor: pointer;
+    background: #f1f5f9; border: 1.6px solid #e2e8f0; color: #475569;
+    font-family: 'Marhey', sans-serif; font-size: .8rem; font-weight: 600;
+    transition: background .16s ease, border-color .16s ease, color .16s ease;
+}
+.lh-degistir:hover { background: #e2e8f0; border-color: #cbd5e1; color: #0f172a; }
+
+/* ==================== LEHÇE ŞERİDİ ====================
+   Kategori sekmeleriyle konu seçici arasında duran ince şerit.
+   Yalnız Kalıp İfadeler ve Alan Konuları sekmelerinde görünür;
+   okul dersleri fushadır, orada gizlenir (Geylani). */
+.lehce-serit {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 10px 14px;
+    max-width: 1180px; margin: 4px auto 0; padding: 12px 16px;
+    background: #fff;
+    border: 1.6px solid #e6edf4; border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, .05);
+    font-family: 'Marhey', sans-serif;
+}
+.lehce-serit[hidden] { display: none; }
+.lh-etiket {
+    flex: none; font-size: .68rem; font-weight: 700; letter-spacing: .16em;
+    color: #94a3b8;
+}
+.lh-tuslar { display: flex; flex-wrap: wrap; gap: 7px; }
+.lh-tus {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 13px; border-radius: 999px; cursor: pointer;
+    background: #f4f7fb; border: 1.6px solid #e2e8f0; color: #334155;
+    font-family: inherit; font-size: .84rem; font-weight: 600; line-height: 1;
+    transition: background .16s ease, border-color .16s ease, color .16s ease, transform .12s ease;
+}
+.lh-tus:hover { background: #e9eff6; border-color: #cbd5e1; }
+.lh-tus:active { transform: scale(.96); }
+.lh-tus .lh-bayrak { font-size: 1.02rem; line-height: 1; }
+.lh-tus.aktif {
+    background: #16A085; border-color: #0E7C63; color: #fff;
+    box-shadow: 0 4px 12px rgba(22, 160, 133, .28);
+}
+.lh-not {
+    flex: 1 1 220px; min-width: 0;
+    font-size: .7rem; color: #94a3b8; line-height: 1.4;
+}
+@media (max-width: 640px) {
+    .lehce-serit { gap: 8px 10px; padding: 10px 12px; border-radius: 14px; }
+    .lh-tus { padding: 6px 11px; font-size: .78rem; }
+    .lh-not { display: none; }
 }

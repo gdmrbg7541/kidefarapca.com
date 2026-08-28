@@ -200,6 +200,15 @@
     /* ---- Kelime türü şeridi ---------------------------------------- */
     var serit = null, dugmeler = {}, etiket = null, seciliKok = null;
 
+    /* LEHÇEDE SARF KÖPRÜSÜ KAPALI (Geylani: "lehçede kalıplar tablosu
+       bağlantısı ve kelime çeşitlerinin görünmesine gerek yok").
+       Sarf motoru fusha kalıpları üzerine kurulu; lehçe biçimleri
+       (إِزَّيَّك, شْلونَك…) o kalıplara girmiyor. Lehçe seçiliyken kelimelere
+       kök işareti konmuyor ve tür şeridi hiç görünmüyor. */
+    function lehcedeMi() {
+        return !!(window.KIDEF_LEHCE && !window.KIDEF_LEHCE.fushaMi());
+    }
+
     /* Bu derste hangi türler geçiyor? Yalnız onlar gösterilir. */
     function derstekiTurler() {
         var bulunan = {}, d = window.data;
@@ -209,7 +218,9 @@
             for (var i = 0; i < kelimeler.length; i++) {
                 var w = kelimeler[i];
                 if (!w || !w.ar) continue;
-                var s = kokBul(w.ar);
+                /* Tür taraması FUSHA aslından yapılır: lehçe seçiliyken
+                   w.ar lehçe metnidir, kök haritasında karşılığı yok. */
+                var s = kokBul(w.arFus || w.ar);
                 if (s) bulunan[s.tur] = 1;
             }
         };
@@ -246,22 +257,54 @@
             });
         });
         etiket = serit.querySelector('.kidef-tur-kok');
+        seritGorunurluk();
         altBosluk();
     }
 
-    /* Şerit, Geri/İleri çubuğunun üstünde dursun: çubuğun yüksekliği
-       punto ve ekrana göre değişiyor, ölçüp değişkene yazıyoruz. */
-    function altBosluk() {
-        if (!serit) return;
-        /* Sayfada birden çok .controls olabiliyor (liste ve oynatıcı);
-           GÖRÜNEN olanı ölçeriz, yoksa 0. */
-        var y = 0, hepsi = document.querySelectorAll('.controls');
+    /* ŞERİT NEREYE OTURUR (Geylani: "bir kök göründüğünde aşağısı tam
+       görünmüyor")
+       Şerit eskiden Geri/İleri çubuğunun ÜSTÜNE konuyordu; orası alıştırma
+       kutusunun içi olduğu için kutunun sol alt köşesini örtüyordu
+       (ölçüldü: 1440×900'de kutu 761'de bitiyor, şerit 732'de başlıyordu).
+       Artık çubuğun KENDİ bandına, düğmelerin soluna yerleşiyor — orası
+       zaten boş. Yalnız dar ekranda düğmeler sola kayıp yer kalmadığında
+       eski davranışa (çubuğun üstü) dönülür. */
+    function gorunurCubuk() {
+        var hepsi = document.querySelectorAll('.controls'), en = null;
         for (var i = 0; i < hepsi.length; i++) {
             var c = hepsi[i];
             if (c.classList.contains('controls-hidden') || c.classList.contains('force-hide')) continue;
-            if (c.offsetHeight > y) y = c.offsetHeight;
+            if (!c.offsetHeight) continue;
+            if (!en || c.offsetHeight > en.offsetHeight) en = c;
         }
-        serit.style.setProperty('--alt', (y + 12) + 'px');
+        return en;
+    }
+    function altBosluk() {
+        if (!serit) return;
+        var c = gorunurCubuk();
+        if (!c) { serit.style.setProperty('--alt', '12px'); return; }
+        var rc = c.getBoundingClientRect();
+        var sh = serit.offsetHeight || 57, sw = serit.offsetWidth || 230;
+        var sol = parseFloat(getComputedStyle(serit).left) || 12;
+        /* çubuktaki en soldaki görünür düğme */
+        var enSol = Infinity, d = c.querySelectorAll('button,a');
+        for (var i = 0; i < d.length; i++) {
+            var r = d[i].getBoundingClientRect();
+            if (r.width > 0 && r.x < enSol) enSol = r.x;
+        }
+        var yerVar = (sol + sw + 16) <= enSol && rc.height >= sh - 6;
+        if (yerVar) {
+            /* çubuk bandının dikey ortasına */
+            serit.style.setProperty('--alt',
+                Math.max(8, Math.round((window.innerHeight - rc.bottom) + (rc.height - sh) / 2)) + 'px');
+        } else {
+            serit.style.setProperty('--alt', Math.round(rc.height + 12) + 'px');
+        }
+        /* Dar ekranda şerit hâlâ kutunun üstüne biniyor: o zaman alıştırma
+           kutusuna şerit boyu kadar alt pay verilir, hiçbir şey altında
+           kalmasın. Geniş ekranda pay 0'dır, yerleşim hiç değişmez. */
+        document.documentElement.style.setProperty('--kidef-serit-pay',
+            (yerVar ? 0 : (sh + 10)) + 'px');
     }
     window.addEventListener('resize', altBosluk);
     /* Yerleşim oturana kadar birkaç kez ölçülür: DOMContentLoaded anında
@@ -272,6 +315,7 @@
     function turSec(bilgi) {
         seritKur();
         if (!serit) return;
+        if (serit.style.display === 'none') return;   /* liste/kartlar kipi */
         altBosluk();          /* mod değişince çubuk gizlenip açılabiliyor */
         SIRA.forEach(function (t) {
             if (!dugmeler[t]) return;
@@ -302,6 +346,10 @@
 
     /* renderContent her kelime için çağırır: kök/tür kelimenin üstünde saklanır */
     function kelimeIsaretle(el, arapca) {
+        if (lehcedeMi()) {
+            if (el) { el.removeAttribute('data-kidef-kok'); el.removeAttribute('data-kidef-tur'); }
+            return null;
+        }
         if (!el || !arapca || !RE_ARAPCA.test(String(arapca))) return null;
         var s = kokBul(arapca);
         if (!s) { el.removeAttribute('data-kidef-kok'); return null; }
@@ -357,6 +405,10 @@
                 '.kidef-tur span{font-size:9px}.kidef-tur-kok.acik{max-width:120px}' +
                 '.kidef-tur-kok.ar{font-size:20px}}' +
             '@media (max-height:430px){.kidef-tur-serit{bottom:8px}}' +
+            /* Şerit çubuğun üstüne düşmek zorunda kaldığında (dar ekran)
+               alıştırma kutusu o kadar kısalır; şeridin altında içerik
+               kalmaz. Geniş ekranda değişken 0'dır, hiçbir etkisi yoktur. */
+            '#sentence-mode,#dialog-mode{padding-bottom:var(--kidef-serit-pay,0px)}' +
             /* geçiş perdesi */
             '.kidef-gecis{position:fixed;inset:0;z-index:2147482000;display:flex;' +
                 'align-items:center;justify-content:center;background:rgba(247,250,252,.94);' +
@@ -379,7 +431,51 @@
         document.head.appendChild(s);
     }
 
-    function baslat() { stilKur(); seritKur(); }
+    /* ŞERİT YALNIZ CÜMLE VE DİYALOG PRATİĞİNDE (Geylani)
+       İsim/Fiil/Edat/Zarf ayrımı tıklanan kelimeye ait; Liste ve Kartlar
+       kipinde tıklanacak kelime yok, şerit orada yalnız listenin sol alt
+       köşesini örtüyordu. Kip değişimini yakalamak için panellerin style
+       özniteliği izleniyor — simultane.js'e dokunmadan çalışır. */
+    function pratikAcikMi() {
+        var g = function (id) {
+            var e = document.getElementById(id);
+            return !!e && getComputedStyle(e).display !== 'none';
+        };
+        return g('sentence-mode') || g('dialog-mode');
+    }
+    function seritGorunurluk() {
+        if (!serit) return;
+        /* Lehçe seçiliyken şerit hiç açılmaz (Geylani): sarf motoru fusha
+           kalıpları üzerine kurulu, lehçe biçimleri o kalıplara girmiyor. */
+        var ac = pratikAcikMi() && !lehcedeMi();
+        serit.style.display = ac ? 'flex' : 'none';
+        if (!ac) {
+            turSec(null);                       /* kipten çıkınca kök sönsün */
+            document.documentElement.style.setProperty('--kidef-serit-pay', '0px');
+        } else {
+            altBosluk();
+        }
+    }
+    /* Lehçe değişince şerit anında açılır/kapanır. */
+    if (window.KIDEF_LEHCE && window.KIDEF_LEHCE.dinle) {
+        window.KIDEF_LEHCE.dinle(function () {
+            if (typeof seritGorunurluk === 'function') seritGorunurluk();
+        });
+    }
+
+    function kipIzle() {
+        if (typeof MutationObserver !== 'function') return;
+        var g = new MutationObserver(function () { seritGorunurluk(); });
+        ['sentence-mode', 'dialog-mode', 'kelime-mode'].forEach(function (id) {
+            var e = document.getElementById(id);
+            if (e) g.observe(e, { attributes: true, attributeFilter: ['style', 'class'] });
+        });
+    }
+
+    function baslat() {
+        stilKur(); seritKur(); seritGorunurluk(); kipIzle();
+        [120, 500, 1200].forEach(function (ms) { setTimeout(seritGorunurluk, ms); });
+    }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', baslat);
     else baslat();
 

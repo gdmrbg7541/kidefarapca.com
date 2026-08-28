@@ -27,7 +27,7 @@
    TUM MUHADESE DOSYALARI  muhadese/  klasorunde, ders verileri  muhadese/veri/ icinde. */
 (function(){
   var KOK = 'muhadese/';           /* klasor yolu tek yerden yonetilsin */
-  var S   = '?v=20260824a';        /* onbellek surumu */
+  var S   = '?v=20260828u';        /* onbellek surumu */
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   /* Gecerli bicimler: 10_1_1 (okul) | kalip_xxx | alan_xxx */
@@ -64,10 +64,16 @@
        kalıplar tablosu sekmesine geçilir. Harita küçük (35 KB), sarf motoru
        burada YÜKLENMEZ. Yeni ünite eklenince kok_haritasi.js yeniden üretilmeli. */
     y.push('<scr'+'ipt src="' + KOK + 'veri/kok_haritasi.js' + S + '"><\/scr'+'ipt>');
+    /* LEHÇE KATMANI: hem sarfkopru.js hem simultane.js'ten ÖNCE gelmeli.
+       Sarf köprüsü lehçe seçiliyken kendini kapatıyor (kök rozetleri ve
+       tür şeridi yalnız fushada anlamlı), o karara varabilmesi için
+       window.KIDEF_LEHCE yüklenmiş olmalı. */
+    y.push('<scr'+'ipt src="' + KOK + 'lehce.js' + S + '"><\/scr'+'ipt>');
     y.push('<scr'+'ipt src="' + KOK + 'sarfkopru.js' + S + '"><\/scr'+'ipt>');
     y.push('<scr'+'ipt src="' + KOK + 'simultane.js' + S + '"><\/scr'+'ipt>');
   } else {
     /* Liste modu: kalip ve alan basliklarini da bu iki dosyadan okur */
+    y.push('<scr'+'ipt src="' + KOK + 'lehce.js' + S + '"><\/scr'+'ipt>');
     y.push('<scr'+'ipt src="' + KOK + 'veri/kalip.js' + S + '"><\/scr'+'ipt>');
     y.push('<scr'+'ipt src="' + KOK + 'veri/alan.js'  + S + '"><\/scr'+'ipt>');
   }
@@ -99,6 +105,11 @@
 <!-- Üç kategori sekmesi: Okul | Kalıp İfadeler | Alan Konuları -->
 <div class="kat-sekme kd-lis" id="kat-sekme" role="tablist" aria-label="Kategoriler">
     </div>
+
+<!-- LEHÇE ŞERİDİ — yalnız Kalıp İfadeler ve Alan Konuları
+     sekmelerinde görünür; okul dersleri fusha olduğu için orada gizlenir
+     (muhadese.js -> lehceSeridiTazele). -->
+<div class="lehce-serit kd-lis" id="lehce-serit" hidden></div>
 
 <div class="class-selector kd-lis" id="class-buttons">
     </div>
@@ -148,6 +159,17 @@
                 <button class="kel-kip-t" id="btn-study" role="tab" aria-selected="false" onclick="kelSetMode('study')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.6" y="6.4" width="13" height="12.2" rx="2.4"/><path d="M7.2 4.2h11a2.4 2.4 0 0 1 2.4 2.4v9.1"/></svg>
                     Kartlar</button>
+            </div>
+            <!-- LEHÇE SEÇİCİ (oynatıcı) — dersin ortasında fusha ile
+                 lehçe arasında gidip gelmek için. Liste sayfasındaki
+                 şeritle aynı belleği kullanır. Okul derslerinde
+                 gizlenir (simultane.js -> lehceTusKur). -->
+            <div class="kel-lehce" id="kelLehce" hidden>
+                <button type="button" class="kel-lehce-tus" id="kelLehceTus"
+                        onclick="kelLehceAc(event)" aria-haspopup="true" aria-expanded="false"
+                        title="Lehçe seç"><span class="kl-bayrak">📖</span><span class="kl-ad">Fusha</span>
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5"/></svg></button>
+                <div class="kel-lehce-menu" id="kelLehceMenu" role="menu"></div>
             </div>
             <button class="btn kel-yon" id="lang-btn-main" onclick="kelToggleLang()" title="Ön yüzü değiştir">T ⇄ ع</button>
             <span class="kel-sayi" id="kelSayi"></span>
