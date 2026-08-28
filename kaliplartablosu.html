@@ -23,7 +23,7 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
 
-    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=253">
+    <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=267">
     <link rel="stylesheet" href="sarf/kelimetest.css?v=6">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -136,13 +136,19 @@
                      dağıtıyordu; yerine ÜST ÇUBUKTA sabit bir çizgi ikon:
                      kitabın solunda, öteki .root-icon'larla aynı dilde
                      (2.5 kalınlıkta stroke, 22px, currentColor). -->
-                <span id="static-oyun-btn" class="root-icon" onclick="event.stopPropagation(); toggleSarfOyunlar()" title="Oyunlar" aria-label="Oyunlar" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 8h9a4.5 4.5 0 0 1 4.42 3.66l.66 3.5A2.7 2.7 0 0 1 18.93 18.4L17 16.5H7L5.07 18.4a2.7 2.7 0 0 1-4.65-3.24l.66-3.5A4.5 4.5 0 0 1 7.5 8Z"></path><line x1="7" y1="12" x2="7" y2="14"></line><line x1="6" y1="13" x2="8" y2="13"></line><circle cx="16.4" cy="12.4" r=".9" fill="currentColor" stroke="none"></circle><circle cx="18.2" cy="14.2" r=".9" fill="currentColor" stroke="none"></circle></svg></span>
+                <span id="static-oyun-btn" class="root-icon oyun-tus" onclick="event.stopPropagation(); toggleSarfOyunlar()" title="Oyunlar" aria-label="Oyunlar" style="cursor: pointer; display: flex; align-items: center;"><span class="oyun-hale" aria-hidden="true"></span><svg class="oyun-svg" viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="oyunCizgi" gradientUnits="userSpaceOnUse" x1="3" y1="7" x2="21" y2="19"><stop offset="0%" stop-color="#7C5CE6"></stop><stop offset="52%" stop-color="#2E86DE"></stop><stop offset="100%" stop-color="#12B886"></stop></linearGradient><linearGradient id="oyunDolgu" gradientUnits="userSpaceOnUse" x1="12" y1="7" x2="12" y2="19"><stop offset="0%" stop-color="#8E7BF0" stop-opacity=".26"></stop><stop offset="100%" stop-color="#12B886" stop-opacity=".14"></stop></linearGradient></defs><path d="M7.5 8h9a4.5 4.5 0 0 1 4.42 3.66l.66 3.5A2.7 2.7 0 0 1 18.93 18.4L17 16.5H7L5.07 18.4a2.7 2.7 0 0 1-4.65-3.24l.66-3.5A4.5 4.5 0 0 1 7.5 8Z" fill="url(#oyunDolgu)" stroke="url(#oyunCizgi)"></path><line x1="7" y1="12" x2="7" y2="14" stroke="url(#oyunCizgi)"></line><line x1="6" y1="13" x2="8" y2="13" stroke="url(#oyunCizgi)"></line><circle cx="16.4" cy="12.4" r="1" fill="#F5B301" stroke="none"></circle><circle cx="18.2" cy="14.2" r="1" fill="#EE5253" stroke="none"></circle></svg><i class="oyun-sim s1" aria-hidden="true"></i><i class="oyun-sim s2" aria-hidden="true"></i><i class="oyun-sim s3" aria-hidden="true"></i><i class="oyun-sim s4" aria-hidden="true"></i></span>
                 <i class="fas fa-book root-icon" onclick="event.stopPropagation(); location.href='kelimeler.html?donus=tablo'" title="Kelime Listeleri"></i>
                 <span id="root-text-display" onclick="openRootsModal()" style="cursor: pointer;"><i class="fas fa-sitemap root-icon sitemap-wave-hint" title="Kökler Listesi"></i></span>
                 <span id="static-timer-btn" class="root-icon" onclick="event.stopPropagation(); window.openMarathon()" title="Hız ve Telaffuz Testi" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg></span>
                 <span id="static-list-btn" class="root-icon" onclick="event.stopPropagation(); openFastDictionaryMode()" title="Hızlı Liste" style="cursor: pointer; display: flex; align-items: center;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg></span>
             </div>
             <div style="display: flex; gap: 15px; align-items: center;">
+                <!-- BÜYÜTME ARAÇ ÇUBUĞUNDA (Geylani): anahtar ayar menüsünde
+                     kaldı ama günlük kullanım için çubuğa da bir büyüteç
+                     kondu. Kapalıyken merceğin ARKASINDA küçük bir harf (ف)
+                     duruyor; büyütme açılınca harf büyüyüp merceği taşıyor.
+                     Tek doğruluk kaynağı yine #zoomToggleCheckbox. -->
+                <span id="static-buyutme-btn" class="root-icon buyutec-tus" onclick="event.stopPropagation(); buyutmeTuslaDegis(event)" title="Büyütme kapalı" aria-label="Büyütme" role="button" aria-pressed="false" style="cursor: pointer; display: flex; align-items: center;"><svg class="byt-svg" viewBox="0 0 60 24" width="52" height="21" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><text class="byt-kucuk" x="9.8" y="10.6" text-anchor="middle" dominant-baseline="central" stroke="none" fill="currentColor">&#1601;&#1614;&#1575;&#1593;&#1616;&#1604;</text><circle cx="9.8" cy="10.4" r="7.3"></circle><path class="byt-sap" d="M15 15.6 L19.9 20.4"></path><path class="byt-ok" d="M23.4 12 H29.1 M27 9.8 L29.3 12 L27 14.2"></path><text class="byt-buyuk" x="45" y="12" text-anchor="middle" dominant-baseline="central" stroke="none" fill="currentColor">&#1601;&#1614;&#1575;&#1593;&#1616;&#1604;</text></svg></span>
                 <i class="fas fa-sync-alt root-icon" onclick="event.stopPropagation(); resetTableOnly()"></i>
                 <i class="fas fa-plus root-icon" onclick="event.stopPropagation(); toggleSuffixMenu(event)" title="Ek Ekle" style="font-size: 1.15rem;"></i>
                 <i class="fas fa-search root-icon" onclick="event.stopPropagation(); openKeyboard()" title="Arama"></i>
@@ -187,6 +193,12 @@
      BÜYÜTME ve ANLAM anahtarları buraya taşındı; üçüncüsü yeni:
      bir kök seçilince o kökte TANIMLI FİİLLERİN çekim tabloları
      kendiliğinden açılıp rıhtımda (yüzen simge) hazır bekliyor. -->
+<!-- BÜYÜTME ARTIK ARAÇ ÇUBUĞUNDA (Geylani): ayar menüsündeki satırı
+     kaldırıldı, ama KUTUNUN KENDİSİ DURUYOR — kaliplartablosu.js'te on
+     yerde, vezingezinti.js'te ayrıca okunuyor; tek doğruluk kaynağı bu.
+     Görünmez; yalnız çubuktaki büyüteç düğmesi çeviriyor. -->
+<input type="checkbox" id="zoomToggleCheckbox" hidden aria-hidden="true" tabindex="-1">
+
 <div id="ayar-menu" class="ayar-menu" role="dialog" aria-label="Ayarlar">
     <div class="ayar-bas">
         <span>AYARLAR</span>
@@ -194,17 +206,12 @@
                 title="Ayarları kapat" aria-label="Ayarları kapat">&#10005;</button>
     </div>
 
-    <label class="ayar-satir">
-        <span class="ayar-ad">BÜYÜTME
-            <span class="ayar-not">Vezne basınca kelime dev kutuda açılsın</span>
-        </span>
-        <span class="toggle-switch">
-            <input type="checkbox" id="zoomToggleCheckbox" checked>
-            <span class="toggle-slider"></span>
-        </span>
-    </label>
+    <!-- HER BAŞLIĞIN SOLUNDA BİR SİMGE (Geylani): satırlar yalnız yazıyla
+         ayırt ediliyordu; artık üst çubuktaki .root-icon'larla aynı dilde
+         (24 kutu, currentColor, çizgi) birer ikon var. -->
 
     <label class="ayar-satir">
+        <span class="ayar-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2.8" y1="5.6" x2="11" y2="5.6"></line><line x1="6.9" y1="3.4" x2="6.9" y2="5.6"></line><path d="M9.3 5.6c0 3.7-2.5 6.6-6.5 7.9"></path><path d="M4.4 8.6c1.3 2.5 3.4 4.2 6.7 5"></path><path d="M12.2 21.1l4.3-10.2 4.3 10.2"></path><line x1="13.8" y1="17.6" x2="19.6" y2="17.6"></line></svg></span>
         <span class="ayar-ad">ANLAM
             <span class="ayar-not">Kök vezne girince Türkçesi görünsün</span>
         </span>
@@ -217,6 +224,7 @@
     <!-- ÖNTANIMLI KAPALI: `checked` yok. Anahtar açılırsa tarayıcı
          belleğine yazılıyor ve elle kapatılana kadar açık kalıyor. -->
     <label class="ayar-satir">
+        <span class="ayar-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.8" y="4.2" width="18.4" height="15.6" rx="2.6"></rect><line x1="2.8" y1="9.4" x2="21.2" y2="9.4"></line><line x1="9" y1="9.4" x2="9" y2="19.8"></line><polyline points="12.3 14.9 14.5 17.1 18.6 12.9"></polyline></svg></span>
         <span class="ayar-ad">FİİL ÇEKİMLERİ HAZIR
             <span class="ayar-not">Kök seçilince tanımlı fiillerin çekim tabloları yüzen simgede hazır dursun</span>
         </span>
@@ -227,6 +235,7 @@
     </label>
 
     <label class="ayar-satir">
+        <span class="ayar-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="9.2" y1="6.4" x2="20.4" y2="6.4"></line><line x1="9.2" y1="12" x2="20.4" y2="12"></line><line x1="9.2" y1="17.6" x2="20.4" y2="17.6"></line><circle cx="4.6" cy="6.4" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="4.6" cy="12" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="4.6" cy="17.6" r="1.3" fill="currentColor" stroke="none"></circle></svg></span>
         <span class="ayar-ad">VEZİN ÖRNEK LİSTESİ
             <span class="ayar-not">Kök seçili değilken bir vezne dokununca o veznin bütün örnekleri listelensin</span>
         </span>
@@ -237,6 +246,7 @@
     </label>
 
     <label class="ayar-satir">
+        <span class="ayar-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.8 6.4C9.5 4.9 6.9 4.5 3.4 4.9v13.4c3.5-.4 6.1 0 8.4 1.5"></path><path d="M11.8 6.4c2.3-1.5 4.9-1.9 8.4-1.5v13.4c-3.5-.4-6.1 0-8.4 1.5"></path><line x1="11.8" y1="6.4" x2="11.8" y2="19.8"></line></svg></span>
         <span class="ayar-ad">DİLBİLGİSİ BAŞLIKLARI
             <span class="ayar-not">Sütun başlığına (MÂZÎ, MASTAR…) basınca o konunun dilbilgisi ekranı açılsın</span>
         </span>
@@ -247,6 +257,7 @@
     </label>
 
     <label class="ayar-satir">
+        <span class="ayar-ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.1"></circle><line x1="12" y1="1.9" x2="12" y2="4.2"></line><line x1="12" y1="19.8" x2="12" y2="22.1"></line><line x1="4.85" y1="4.85" x2="6.5" y2="6.5"></line><line x1="17.5" y1="17.5" x2="19.15" y2="19.15"></line><line x1="1.9" y1="12" x2="4.2" y2="12"></line><line x1="19.8" y1="12" x2="22.1" y2="12"></line><line x1="4.85" y1="19.15" x2="6.5" y2="17.5"></line><line x1="17.5" y1="6.5" x2="19.15" y2="4.85"></line></svg></span>
         <span class="ayar-ad">GÜNÜN KÖKÜ
             <span class="ayar-not">Sayfa açılınca günün kökü penceresi gelsin</span>
         </span>
@@ -497,10 +508,11 @@
           <li><span class="ktk-ik"><i class="fas fa-sitemap"></i></span><b>Kökler</b> — kök listesi (4. adım).</li>
           <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg></span><b>Kronometre</b> — hız ve telaffuz testi.</li>
           <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg></span><b>Hızlı Liste</b> — kalıpları liste hâlinde tara (12. adım).</li>
+          <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.4" cy="10.4" r="6.6"></circle><line x1="15.3" y1="15.3" x2="20.5" y2="20.5"></line><line x1="10.4" y1="7.9" x2="10.4" y2="12.9"></line><line x1="7.9" y1="10.4" x2="12.9" y2="10.4"></line></svg></span><b>Büyütme</b> — kelimeyi dev kutuda aç (10. adım).</li>
           <li><span class="ktk-ik"><i class="fas fa-sync-alt"></i></span><b>Yenile</b> — tabloyu boşaltır, kökü siler.</li>
           <li><span class="ktk-ik"><i class="fas fa-plus"></i></span><b>Ek Menüsü</b> — ön ve son ekler (15. adım).</li>
           <li><span class="ktk-ik"><i class="fas fa-search"></i></span><b>Arama</b> — Arapça klavyeyle kök yaz (2. adım).</li>
-          <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10.6 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg></span><b>Ayarlar</b> — BÜYÜTME, ANLAM, FİİL ÇEKİMLERİ HAZIR, VEZİN ÖRNEK LİSTESİ, DİLBİLGİSİ BAŞLIKLARI ve GÜNÜN KÖKÜ (11. adım).</li>
+          <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10.6 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg></span><b>Ayarlar</b> — ANLAM, FİİL ÇEKİMLERİ HAZIR, VEZİN ÖRNEK LİSTESİ, DİLBİLGİSİ BAŞLIKLARI ve GÜNÜN KÖKÜ (11. adım).</li>
           <li><span class="ktk-ik"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="16.6" x2="12" y2="11.2"></line><line x1="12" y1="7.7" x2="12.01" y2="7.7"></line></svg></span><b>Kılavuz</b> — bu ekran.</li>
         </ul>
       </div>
@@ -667,12 +679,14 @@
            sırayla geçer — kutu ekranın ortasına gelir, kelime türetilir, anlamı çıkar. Aynı işi
            donanım kumandası da yapar: ileri <kbd>PageDown</kbd> · <kbd>&rarr;</kbd> · <kbd>boşluk</kbd>,
            geri <kbd>PageUp</kbd> · <kbd>&larr;</kbd>. Tuşlar istenen yere taşınır.</p>
-        <p><b>Büyütme:</b> ayarlardaki BÜYÜTME anahtarı açıkken bir vezne dokunmak kelimeyi ekranın
-           ortasında <b>dev bir kutuda</b> açar: yanında anlamı ve örnek cümleleri, altında kökün
+        <p><b>Büyütme:</b> araç çubuğundaki <b>büyüteç düğmesi</b> — çubuğun geniş hap düğmesi;
+           kapalıyken sağdaki <span dir="rtl">فَاعِل</span> küçüktür, dokununca büyüyüp yeşile döner —
+           açıkken bir vezne dokunmak kelimeyi ekranın ortasında <b>dev bir kutuda</b> açar: yanında anlamı ve örnek cümleleri, altında kökün
            kahverengi levhası durur. Sınıfın arkasından da okunur.</p>
         <p class="ktk-ipucu">Gezinti kökün <b>en küçük numaralı</b> kalıbından başlar; aradaki bir
            vezne elle dokunursan oradan devam eder. Büyütme yalnız araç çubuğunun altındaki
-           <b>kırmızı ✕</b> ile ya da ileri/geri tuşuyla kapanır.</p>
+           <b>kırmızı ✕</b> ile ya da ileri/geri tuşuyla kapanır. Düğmenin kendisi açık kaldığı
+           sürece sonraki vezinler de dev kutuda açılmaya devam eder.</p>
       </div>
       <div class="ktk-gorsel ktk-cift">
         <figure><img src="sarf/kilavuz/buyutme.jpg" alt="Büyütülmüş kelime, anlamı ve kök levhası" loading="lazy"><figcaption>Büyütme — dev kelime, anlamı ve kırmızı ✕</figcaption></figure>
@@ -684,9 +698,10 @@
       <div class="ktk-yazi">
         <span class="ktk-no">11</span>
         <h3><span class="ktk-bik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10.6 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg></span><span>Ayarlar</span></h3>
-        <p>Araç çubuğundaki dişli altı anahtarı bir arada tutar:</p>
+        <p>Araç çubuğundaki dişli beş anahtarı bir arada tutar; her satırın solunda ne yaptığını
+           anlatan bir simge vardır. <b>BÜYÜTME</b> buradan çıkarıldı: artık çubuğun kendisinde,
+           büyüteç düğmesinde (1. ve 10. adım).</p>
         <ul>
-          <li><b>BÜYÜTME</b> — vezne basınca kelime dev kutuda açılsın (10. adım).</li>
           <li><b>ANLAM</b> — kök vezne girince Türkçesi kutunun altında görünsün. Balon üç saniye
               sonra kendiliğinden çekilir.</li>
           <li><b>FİİL ÇEKİMLERİ HAZIR</b> — kök seçilince çekim tabloları rıhtımda hazır dursun
@@ -1279,12 +1294,12 @@
      başlığı ("33 · فَاعِل · İsm-i Fâil") ve matris sütun başlıkları
      buradan okunuyor. Yan etkisi yok, yalnız sabit tanımlar. -->
 <script src="veri/veri_vezin_numaralari.js?v=1"></script>
-<script src="sarf/kaliplartablosu.js?v=234"></script>
+<script src="sarf/kaliplartablosu.js?v=235"></script>
 <script src="sarf/babodak.js?v=7"></script>
 <!-- Kök seçili DEĞİLKEN kalıba dokununca o kalıbın bütün kelimelerini
      listeleyen perde. Ana betikten SONRA yüklenir; olayı yakalama
      evresinde devraldığı için eski davranışa karışmaz. -->
-<script src="sarf/kalipliste.js?v=81"></script>
+<script src="sarf/kalipliste.js?v=82"></script>
 <script src="sarf/kelimeler.js?v=13"></script>
 <script src="sarf/kelimetest.js?v=11"></script>
 <script src="sarf/ihkelime.js?v=5"></script>
