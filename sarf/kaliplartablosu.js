@@ -12927,6 +12927,43 @@ document.addEventListener('keydown', function (e) {
     else kur();
 })();
 
+/* ============ ARAÇ ÇUBUĞUNDAKİ BÜYÜTEÇ DÜĞMESİ ============
+   Geylani: "büyütme switch'ini araç çubuğuna ekleyelim ama switch yerine
+   bi büyüteç svg'si olsun". Düğme AYRI BİR AYAR DEĞİL: tek doğruluk
+   kaynağı yine #zoomToggleCheckbox — on kadar yerde (vezingezinti.js
+   dâhil) okunan kutu bu. Düğme kutuyu çevirip 'change' yayıyor; kutu
+   ayar menüsünden çevrilirse düğme de kendini yeniliyor, ikisi asla
+   ayrı düşmüyor. */
+window.buyutmeTusYenile = function () {
+    var c = document.getElementById('zoomToggleCheckbox');
+    var b = document.getElementById('static-buyutme-btn');
+    if (!c || !b) return;
+    b.classList.toggle('acik', c.checked);
+    b.setAttribute('aria-pressed', c.checked ? 'true' : 'false');
+    b.setAttribute('title', c.checked ? 'Büyütme açık' : 'Büyütme kapalı');
+};
+window.buyutmeTuslaDegis = function (e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    var c = document.getElementById('zoomToggleCheckbox');
+    if (!c) return;
+    c.checked = !c.checked;
+    c.dispatchEvent(new Event('change', { bubbles: true }));
+    if (typeof SoundEngine !== 'undefined' && SoundEngine.playClick) SoundEngine.playClick();
+    window.buyutmeTusYenile();
+};
+(function () {
+    function kur() {
+        var c = document.getElementById('zoomToggleCheckbox');
+        if (c) c.addEventListener('change', function () { window.buyutmeTusYenile(); });
+        window.buyutmeTusYenile();
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
+    else kur();
+    /* window.onload içinde kutu false'a çekiliyor; bu dinleyici SONRA
+       kaydedildiği için düğme o son hâli yakalıyor. */
+    window.addEventListener('load', function () { window.buyutmeTusYenile(); });
+})();
+
 /* Örnek listesi açılabilir mi? kalipliste.js dokunuş dinleyicisinde
    buna bakıyor; ayar kapalıyken vezne dokunmak listeyi açmıyor. */
 window.kidefOrnekListeAcik = function () {

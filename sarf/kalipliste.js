@@ -1522,6 +1522,9 @@
     function ac(no) {
         no = parseInt(no, 10);
         if (!isFinite(no)) return false;
+        /* Önceki odaktan artakalan gizli kutu varsa burada geri açılır:
+           yeni liste temiz bir tablo üstünde kurulsun (bkz. gizliTemizle). */
+        gizliTemizle(true);
 
         /* MÜCERRED: kaydırma çubuğunun yeri daha ilk dokunuşta ayrılır.
            Tam ekrana geçiş sayfayı zaten baştan yerleştiriyor; oluk da o
@@ -1584,6 +1587,13 @@
     }
 
     function kapat() {
+        /* Kapanış hangi yoldan giderse gitsin sonunda tabloda gizli kutu
+           kalmasın: açılış çok erken kesildiğinde odakSonlandir'a hiç
+           uğranmıyordu ve o veznin kutuları görünmez kalıyordu (ölçüldü:
+           22-23-24 gizli kalıyor, o vezinlere basılamadığı için ANLAM da
+           çıkmıyordu). gizliTemizle açık odak varken kendi kendine
+           vazgeçiyor, bu yüzden gecikmeli çağrı güvenli. */
+        setTimeout(gizliTemizle, KL_MUC_MS + 250);
         if (odak) { odakKapat(); return; }
         tamEkranKapatGecikmeli();
         /* Kapanış animasyonu sürerken ikinci kez kapatmak istenirse
@@ -2047,6 +2057,11 @@
         function haber() { if (bittiCb) { var f = bittiCb; bittiCb = null; f(); } }
         if (st.bitti) { haber(); return; }
         st.bitti = true;
+        /* Kapanışın sonunda tabloda gizli kutu KALMAMALI. Kapanış
+           yollarının her biri kendi cakiliSil'ini çağırıyor ama yarıda
+           kesilen açılışlarda sahipsiz kalanlar oluyordu; süzülme
+           bitince bir de buradan süpürülüyor. */
+        setTimeout(gizliTemizle, KL_MUC_MS + 200);
         if (kapanan === st) kapanan = null;
         storSifirla();                        /* üst çubuk sınıfları temizlensin */
         kapatXSil();
@@ -3100,14 +3115,44 @@
             kl.style.height = Math.round(y.r.height) + 'px';
             kat.appendChild(kl);
             y.k.style.visibility = 'hidden';
+            /* İŞARET: bu kutuyu BİZ gizledik. Aşağıdaki gizliTemizle
+               yalnız bu işaretlileri geri açıyor — sayfanın kendi
+               gizlediği kutulara dokunmuyor. */
+            y.k.setAttribute('data-kl-gizli', '1');
         });
         return kat;
+    }
+
+    /* ARTAKALAN GİZLİ KUTU BIRAKMA (Geylani: "anlam kısmı çalışmıyor").
+       cakiliSil yalnız KENDİ st'sinin kutularını geri açıyor. Art arda
+       vezne dokunulduğunda ya da liste yarıda kesildiğinde önceki odağın
+       st'si düşüyor ve onun kutuları hiç açılmadan kalıyordu: tabloda
+       görünmez, dolayısıyla TIKLANAMAZ vezinler oluşuyordu — o vezinlere
+       basılamadığı için anlam balonu da hiç çıkmıyordu.
+       Ölçüldü: liste bir kez açılıp kapandıktan sonra 3-6 kutu gizli
+       kalıyor (1-2-3 ve 22-23-24 gibi). Burada işaretli bütün kutular
+       geri açılıyor ve sahipsiz kopya katmanları siliniyor. */
+    function gizliTemizle(zorla) {
+        /* AÇIK BİR ODAK VARSA DOKUNMA: o an bilerek gizlenmiş kutular
+           olabilir, geri açmak ekranda çift vezin doğurur. `zorla`
+           yalnız yeni bir liste kurulmadan hemen önce kullanılıyor. */
+        if (!zorla && odak) return;
+        Array.prototype.forEach.call(
+            document.querySelectorAll('.glass-box[data-kl-gizli]'), function (k) {
+                k.style.visibility = '';
+                k.removeAttribute('data-kl-gizli');
+            });
+        Array.prototype.forEach.call(
+            document.querySelectorAll('.muc-cakili'), function (e) { e.remove(); });
     }
     /* Kopyalar söner, asıllar görünürlüğüne kavuşur. sure verilmezse
        hemen silinir (kapanış / yarıda kesilme). */
     function cakiliSil(st, sure) {
         if (!st) return;
-        (st.kutular || []).forEach(function (k) { k.style.visibility = ''; });
+        (st.kutular || []).forEach(function (k) {
+            k.style.visibility = '';
+            k.removeAttribute('data-kl-gizli');
+        });
         var kat = st.cakili;
         if (!kat) return;
         st.cakili = null;
