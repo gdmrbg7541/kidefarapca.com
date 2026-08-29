@@ -214,7 +214,7 @@ window.KIDEF_ALAN = {
                 ] },
                 { words: [
                     { tr: 'Üniversitede', order: 2, ar: 'في الجامِعَةِ.' },
-                    { tr: 'edebiyat okuyorum', order: 1, ar: 'أَدْرُسُ الأَدَبَ' }
+                    { tr: 'edebiyat okuyorum.', order: 1, ar: 'أَدْرُسُ الأَدَبَ' }
                 ] },
                 { words: [
                     { tr: 'İlim', order: 1, ar: 'العِلْمُ' },
@@ -311,7 +311,7 @@ window.KIDEF_ALAN = {
                 ] },
                 { words: [
                     { tr: 'Mirasımızı', order: 2, ar: 'تُراثَنا.' },
-                    { tr: 'korumalıyız', order: 1, ar: 'يَجِبُ أَنْ نَحْفَظَ' }
+                    { tr: 'korumalıyız.', order: 1, ar: 'يَجِبُ أَنْ نَحْفَظَ' }
                 ] },
                 { words: [
                     { tr: 'Savaş', order: 1, ar: 'الحَرْبُ' },
@@ -827,7 +827,7 @@ window.KIDEF_ALAN = {
                     ],
                     p2: [
                         { tr: "Evet,", order: 1, ar: "نَعَمْ،" },
-                        { tr: "ve doğruyu söyledi.", order: 2, ar: "وَقالَ الصِّدْقَ." }
+                        { tr: "doğruyu da söyledi.", order: 2, ar: "وَقالَ الصِّدْقَ." }
                     ]
                 },
                 {
@@ -1066,7 +1066,7 @@ window.KIDEF_ALAN = {
             sentence: [
                 { words: [
                     { tr: 'Çevreyi', order: 2, ar: 'البيئَةَ.' },
-                    { tr: 'korumalıyız', order: 1, ar: 'يَجِبُ أَنْ نَحْمِيَ' }
+                    { tr: 'korumalıyız.', order: 1, ar: 'يَجِبُ أَنْ نَحْمِيَ' }
                 ] },
                 { words: [
                     { tr: 'Ağaçlar', order: 1, ar: 'الأَشْجارُ' },
@@ -1094,7 +1094,7 @@ window.KIDEF_ALAN = {
                 ] },
                 { words: [
                     { tr: 'Her yıl', order: 2, ar: 'كُلَّ عامٍ.' },
-                    { tr: 'bir ağaç dikiyorum', order: 1, ar: 'أَزْرَعُ شَجَرَةً' }
+                    { tr: 'bir ağaç dikiyorum.', order: 1, ar: 'أَزْرَعُ شَجَرَةً' }
                 ] }
             ],
             dialog: [
@@ -1166,7 +1166,7 @@ window.KIDEF_ALAN = {
                 { words: [
                     { tr: 'Yaz tatilinde', order: 2, ar: 'في العُطْلَةِ الصَّيْفِيَّةِ.',
                   lh: { mis: 'في الأَجازَة الصَّيْفي.', sam: 'بِالعُطْلِة الصَّيْفِيِّة.', hic: 'في الإِجازَة الصَّيْفِيَّة.', kor: 'في الإِجازَة الصَّيْفِيَّة.', irk: 'بِالعُطْلَة الصَّيْفِيَّة.', mag: 'فْالعُطْلَة دْيال الصّيف.' } },
-                    { tr: 'seyahat ederim', order: 1, ar: 'أُسافِرُ',
+                    { tr: 'seyahat ederim.', order: 1, ar: 'أُسافِرُ',
                   lh: { mis: 'بَسافِر', sam: 'بْسافِر', hic: 'أَسافِر', kor: 'أَسافِر', irk: 'أَسافِر', mag: 'كَنْسافَر' } }
                 ] },
                 { words: [
@@ -1204,7 +1204,7 @@ window.KIDEF_ALAN = {
                 { words: [
                     { tr: 'Denizin kıyısında', order: 2, ar: 'عَلى شاطِئِ البَحْرِ.',
                   lh: { mis: 'عَلى شَطّ البَحْر.', sam: 'عَ شَطّ البَحِر.', hic: 'عَلى شاطِئ البَحْر.', kor: 'عَلى شاطِئ البَحْر.', irk: 'عَلى شَطّ البَحَر.', mag: 'عْلى شاطئ البْحَر.' } },
-                    { tr: 'yürüdük', order: 1, ar: 'مَشَيْنا',
+                    { tr: 'yürüdük.', order: 1, ar: 'مَشَيْنا',
                   lh: { mis: 'مِشينا', sam: 'مْشينا', hic: 'مِشينا', kor: 'مِشينا', irk: 'مْشينا', mag: 'تْمْشينا' } }
                 ] },
                 { words: [
@@ -1316,7 +1316,7 @@ window.KIDEF_ALAN = {
                 { words: [
                     { tr: 'Her sabah', order: 2, ar: 'كُلَّ صَباحٍ.',
                   lh: { mis: 'كُلّ يوم الصُّبْح.', sam: 'كُلّ يوم الصُّبِح.', hic: 'كُلّ صَباح.', kor: 'كُلّ صُبْح.', irk: 'كُلّ يوم الصُّبُح.', mag: 'كُلّ صْباح.' } },
-                    { tr: 'parkta koşuyorum', order: 1, ar: 'أَجْري في الحَديقَةِ',
+                    { tr: 'parkta koşuyorum.', order: 1, ar: 'أَجْري في الحَديقَةِ',
                   lh: { mis: 'بَجْري في الجِنينَة', sam: 'بِرْكُض بِالحَديقَة', hic: 'أَجْري في الحَديقَة', kor: 'أَجْري في الحَديقَة', irk: 'أَركُض بِالحَديقَة', mag: 'كَنْجْري فْالعَرْصَة' } }
                 ] },
                 { words: [

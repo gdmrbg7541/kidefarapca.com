@@ -457,7 +457,7 @@ window.KIDEF_KALIP = {
                 { words: [
                     { tr: 'Bana yardım ettiğin için', order: 2, ar: 'لِأَنَّكَ ساعَدْتَني.',
                   lh: { mis: 'عَشان ساعِدْتِني.', sam: 'لَأَنَّك ساعَدْتْني.', hic: 'لِأَنَّك ساعَدْتْني.', kor: 'لِأَنَّك ساعَدْتْني.', irk: 'لِأَنَّك ساعَدْتْني.', mag: 'حيت عاوَنْتيني.' } },
-                    { tr: 'minnettarım', order: 1, ar: 'أَنا مُمْتَنٌّ لَكَ',
+                    { tr: 'minnettarım.', order: 1, ar: 'أَنا مُمْتَنٌّ لَكَ',
                   lh: { mis: 'أَنا مِمْتِنّ لِك', sam: 'أَنا مِمْتِنّ إِلَك', hic: 'أَنا مِمْتِنّ لَك', kor: 'أَنا مِمْتِنّ لَك', irk: 'آني مِمْتِنّ إِلَك', mag: 'أَنا مِمْتِنّ لِيك' } }
                 ] },
                 { words: [
@@ -581,7 +581,7 @@ window.KIDEF_KALIP = {
                 { words: [
                     { tr: 'Bu konuda', order: 2, ar: 'في هٰذا الأَمْرِ.',
                   lh: { mis: 'في المَوْضوع دَه.', sam: 'بِهَالمَوْضوع.', hic: 'في هٰذا المَوْضوع.', kor: 'في هٰذا المَوْضوع.', irk: 'بْهٰذا المَوْضوع.', mag: 'فْهاد المَوْضوع.' } },
-                    { tr: 'haklısın', order: 1, ar: 'مَعَكَ حَقٌّ',
+                    { tr: 'haklısın.', order: 1, ar: 'مَعَكَ حَقٌّ',
                   lh: { mis: 'مَعاك حَقّ', sam: 'مَعَك حَقّ', hic: 'مَعَك حَقّ', kor: 'مَعَك حَقّ', irk: 'وِيّاك حَقّ', mag: 'عَنْدَك الحَقّ' } }
                 ] },
                 { words: [
@@ -871,7 +871,7 @@ window.KIDEF_KALIP = {
                 { words: [
                     { tr: 'İkinci sokaktan', order: 2, ar: 'مِنَ الشّارِعِ الثّاني.',
                   lh: { mis: 'مِنْ الشّارِع التّاني.', sam: 'مِنْ الشّارِع التّاني.', hic: 'مِنْ الشّارِع الثّاني.', kor: 'مِنْ الشّارِع الثّاني.', irk: 'مِنْ الشّارِع الثّاني.', mag: 'مِنْ الزَّنْقَة التّانْيَة.' } },
-                    { tr: 'sola dön', order: 1, ar: 'اِنْعَطِفْ يَسارًا',
+                    { tr: 'sola dön.', order: 1, ar: 'اِنْعَطِفْ يَسارًا',
                   lh: { mis: 'لِفّ شِمال', sam: 'لِفّ عَالشِّمال', hic: 'لِفّ شِمال', kor: 'لِفّ يِسار', irk: 'لِفّ يَسار', mag: 'دور عْلى اليْسار' } }
                 ] },
                 { words: [
@@ -985,19 +985,19 @@ window.KIDEF_KALIP = {
                 { words: [
                     { tr: 'Yarın', order: 2, ar: 'غَدًا.',
                   lh: { mis: 'بُكْرَه.', sam: 'بُكْرا.', hic: 'بُكْرَه.', kor: 'باجِر.', irk: 'باچِر.', mag: 'غَدَّا.' } },
-                    { tr: 'okula gideceğim', order: 1, ar: 'سَأَذْهَبُ إِلى المَدْرَسَةِ',
+                    { tr: 'okula gideceğim.', order: 1, ar: 'سَأَذْهَبُ إِلى المَدْرَسَةِ',
                   lh: { mis: 'هَروح المَدْرَسَة', sam: 'رَح روح عَالمَدْرَسِة', hic: 'بَروح المَدْرَسَة', kor: 'بَروح المَدْرَسَة', irk: 'راح أَروح لِلمَدْرَسَة', mag: 'غادي نْمْشي لْلمَدْرَسَة' } }
                 ] },
                 { words: [
                     { tr: 'Dün', order: 2, ar: 'أَمْسِ.',
                   lh: { mis: 'إِمْبارِح.', sam: 'مْبارِح.', hic: 'أَمْس.', kor: 'أَمْس.', irk: 'البارْحَة.', mag: 'البارَح.' } },
-                    { tr: 'seni gördüm', order: 1, ar: 'رَأَيْتُكَ',
+                    { tr: 'seni gördüm.', order: 1, ar: 'رَأَيْتُكَ',
                   lh: { mis: 'شُفْتَك', sam: 'شِفْتَك', hic: 'شِفْتَك', kor: 'شِفْتَك', irk: 'شِفْتَك', mag: 'شْفْتَك' } }
                 ] },
                 { words: [
                     { tr: 'Her sabah', order: 2, ar: 'كُلَّ صَباحٍ.',
                   lh: { mis: 'كُلّ يوم الصُّبْح.', sam: 'كُلّ يوم الصُّبِح.', hic: 'كُلّ صَباح.', kor: 'كُلّ صُبْح.', irk: 'كُلّ يوم الصُّبُح.', mag: 'كُلّ صْباح.' } },
-                    { tr: 'erken kalkarım', order: 1, ar: 'أَسْتَيْقِظُ مُبَكِّرًا',
+                    { tr: 'erken kalkarım.', order: 1, ar: 'أَسْتَيْقِظُ مُبَكِّرًا',
                   lh: { mis: 'بَصْحى بَدْري', sam: 'بِفيق بَكّير', hic: 'أَصْحى بَدْري', kor: 'أَصْحى بَدْري', irk: 'أَصْحى مِن وَكِت', mag: 'كَنْفيق بَكْري' } }
                 ] },
                 { words: [
@@ -1129,7 +1129,7 @@ window.KIDEF_KALIP = {
                 { words: [
                     { tr: 'Sonuçtan', order: 2, ar: 'مِنَ النَّتيجَةِ.',
                   lh: { mis: 'مِنْ النَّتيجَة.', sam: 'مِنْ النَّتيجِة.', hic: 'مِنْ النَّتيجَة.', kor: 'مِنْ النَّتيجَة.', irk: 'مِنْ النَّتيجَة.', mag: 'مِنْ النَّتيجَة.' } },
-                    { tr: 'endişeliyim', order: 1, ar: 'أَنا قَلِقٌ',
+                    { tr: 'endişeliyim.', order: 1, ar: 'أَنا قَلِقٌ',
                   lh: { mis: 'أَنا قَلْقان', sam: 'أَنا قَلْقان', hic: 'أَنا قَلْقان', kor: 'أَنا قَلْقان', irk: 'آني قَلْگان', mag: 'أَنا قْلِق' } }
                 ] },
                 { words: [
@@ -1141,7 +1141,7 @@ window.KIDEF_KALIP = {
                 { words: [
                     { tr: 'Kardeşimle', order: 2, ar: 'بِأَخي.',
                   lh: { mis: 'بِأَخويا.', sam: 'بْأَخي.', hic: 'بِأَخوي.', kor: 'بِأَخوي.', irk: 'بْأَخويَ.', mag: 'بْخويا.' } },
-                    { tr: 'gurur duyuyorum', order: 1, ar: 'أَنا فَخورٌ',
+                    { tr: 'gurur duyuyorum.', order: 1, ar: 'أَنا فَخورٌ',
                   lh: { mis: 'أَنا فَخور', sam: 'أَنا فَخور', hic: 'أَنا فَخور', kor: 'أَنا فَخور', irk: 'آني فَخور', mag: 'أَنا فَخور' } }
                 ] },
                 { words: [
@@ -1266,13 +1266,13 @@ window.KIDEF_KALIP = {
                 { words: [
                     { tr: 'Şu an', order: 2, ar: 'الآنَ.',
                   lh: { mis: 'دِلْوَقْتي.', sam: 'هَلَّق.', hic: 'دَحين.', kor: 'الحين.', irk: 'هَسَّه.', mag: 'دابا.' } },
-                    { tr: 'meşgulüm', order: 1, ar: 'أَنا مَشْغولٌ',
+                    { tr: 'meşgulüm.', order: 1, ar: 'أَنا مَشْغولٌ',
                   lh: { mis: 'أَنا مَشْغول', sam: 'أَنا مَشْغول', hic: 'أَنا مَشْغول', kor: 'أَنا مَشْغول', irk: 'آني مَشْغول', mag: 'أَنا مْشْغول' } }
                 ] },
                 { words: [
                     { tr: 'Bir saat sonra', order: 2, ar: 'بَعْدَ ساعَةٍ.',
                   lh: { mis: 'بَعْد ساعَة.', sam: 'بَعْد ساعَة.', hic: 'بَعْد ساعَة.', kor: 'بَعْد ساعَة.', irk: 'بَعْد ساعَة.', mag: 'مِن بَعْد ساعَة.' } },
-                    { tr: 'seni ararım', order: 1, ar: 'سَأَتَّصِلُ بِكَ',
+                    { tr: 'seni ararım.', order: 1, ar: 'سَأَتَّصِلُ بِكَ',
                   lh: { mis: 'هَكَلِّمَك', sam: 'رَح فَيِّتْلَك', hic: 'بَتَّصِل فيك', kor: 'بَتَّصِل فيك', irk: 'راح أَتِّصِل بيك', mag: 'غادي نْعَيَّط لِك' } }
                 ] },
                 { words: [
@@ -1284,7 +1284,7 @@ window.KIDEF_KALIP = {
                 { words: [
                     { tr: 'Lütfen', order: 2, ar: 'مِنْ فَضْلِكَ.',
                   lh: { mis: 'مِنْ فَضْلَك.', sam: 'بَلا زَحْمِة.', hic: 'لَوْ سَمَحْت.', kor: 'لَوْ سَمَحْت.', irk: 'بَلا زَحْمَة.', mag: 'عافاك.' } },
-                    { tr: 'bir mesaj bırak', order: 1, ar: 'اُتْرُكْ رِسالَةً',
+                    { tr: 'bir mesaj bırak.', order: 1, ar: 'اُتْرُكْ رِسالَةً',
                   lh: { mis: 'سيب رِسالَة', sam: 'خَلّي رِسالِة', hic: 'خَلّ رِسالَة', kor: 'خَلّ رِسالَة', irk: 'خَلّي رِسالَة', mag: 'خَلّي رِسالَة' } }
                 ] },
                 { words: [
@@ -2245,8 +2245,8 @@ window.KIDEF_KALIP = {
                     { tr: "Halid hariç.", order: 3, ar: "إِلّا خالِدًا." }
                 ] },
                 { words: [
-                    { tr: "Yalnız çalışkan", order: 2, ar: "إِلّا المُجْتَهِدُ." },
-                    { tr: "başarılı oldu.", order: 1, ar: "ما نَجَحَ" }
+                    { tr: "Çalışkandan başkası", order: 2, ar: "إِلّا المُجْتَهِدُ." },
+                    { tr: "başarılı olmadı.", order: 1, ar: "ما نَجَحَ" }
                 ] },
                 { words: [
                     { tr: "Kitapları", order: 2, ar: "الكُتُبَ" },
@@ -2273,7 +2273,7 @@ window.KIDEF_KALIP = {
                 ] },
                 { words: [
                     { tr: "Her şey", order: 1, ar: "كُلُّ شَيْءٍ" },
-                    { tr: "yok olucudur,", order: 2, ar: "هالِكٌ" },
+                    { tr: "yok olacaktır,", order: 2, ar: "هالِكٌ" },
                     { tr: "O'nun zâtı hariç.", order: 3, ar: "إِلّا وَجْهَهُ." }
                 ] }
             ],
@@ -2305,7 +2305,7 @@ window.KIDEF_KALIP = {
                         { tr: "kim başardı?", order: 1, ar: "مَنْ نَجَحَ" }
                     ],
                     p2: [
-                        { tr: "Yalnız çalışkanlar", order: 2, ar: "إِلّا المُجْتَهِدونَ." },
+                        { tr: "Sadece çalışkanlar", order: 2, ar: "إِلّا المُجْتَهِدونَ." },
                         { tr: "başardı.", order: 1, ar: "ما نَجَحَ" }
                     ]
                 },
@@ -2371,7 +2371,7 @@ window.KIDEF_KALIP = {
                 ] },
                 { words: [
                     { tr: "Öğretmen", order: 2, ar: "بِالمُعَلِّمِ!" },
-                    { tr: "ne değerlidir!", order: 1, ar: "أَكْرِمْ" }
+                    { tr: "ne kadar değerli!", order: 1, ar: "أَكْرِمْ" }
                 ] },
                 { words: [
                     { tr: "Günlerin geçişi", order: 2, ar: "مُرورَ الأَيّامِ!" },
@@ -2470,9 +2470,8 @@ window.KIDEF_KALIP = {
                     { tr: "yapmadım.", order: 2, ar: "ما فَعَلْتُ" }
                 ] },
                 { words: [
-                    { tr: "Allah aşkına", order: 1, ar: "بِاللهِ" },
-                    { tr: "senden isterim,", order: 2, ar: "عَلَيْكَ،" },
-                    { tr: "doğruyu söyle.", order: 3, ar: "قُلِ الحَقَّ." }
+                    { tr: "Allah aşkına senden rica ederim,", order: 1, ar: "بِاللهِ عَلَيْكَ،" },
+                    { tr: "doğruyu söyle.", order: 2, ar: "قُلِ الحَقَّ." }
                 ] },
                 { words: [
                     { tr: "Ömrüme yemin olsun ki", order: 1, ar: "لَعَمْري" },
@@ -2483,9 +2482,9 @@ window.KIDEF_KALIP = {
                     { tr: "yemin etme.", order: 1, ar: "لا تَحْلِفْ" }
                 ] },
                 { words: [
-                    { tr: "Kim yeminini bozarsa", order: 1, ar: "مَنْ حَنِثَ" },
-                    { tr: "yemininde", order: 2, ar: "في يَمينِهِ" },
-                    { tr: "kefaret gerekir.", order: 3, ar: "فَعَلَيْهِ كَفّارَةٌ." }
+                    { tr: "Kim yeminini", order: 2, ar: "في يَمينِهِ" },
+                    { tr: "bozarsa", order: 1, ar: "مَنْ حَنِثَ" },
+                    { tr: "ona kefaret gerekir.", order: 3, ar: "فَعَلَيْهِ كَفّارَةٌ." }
                 ] }
             ],
 
@@ -2502,7 +2501,7 @@ window.KIDEF_KALIP = {
                 },
                 {
                     p1: [
-                        { tr: "Bana bunu", order: 2, ar: "بِذٰلِكَ؟" },
+                        { tr: "Bana bu konuda", order: 2, ar: "بِذٰلِكَ؟" },
                         { tr: "söz veriyor musun?", order: 1, ar: "أَتَعِدُني" }
                     ],
                     p2: [
@@ -2611,7 +2610,7 @@ window.KIDEF_KALIP = {
                         { tr: "kitapları açın.", order: 2, ar: "اِفْتَحوا الكُتُبَ." }
                     ],
                     p2: [
-                        { tr: "Baş üstüne", order: 1, ar: "حاضِرٌ" },
+                        { tr: "Baş üstüne,", order: 1, ar: "حاضِرٌ" },
                         { tr: "öğretmenim.", order: 2, ar: "يا مُعَلِّمُ." }
                     ]
                 },
@@ -2621,7 +2620,7 @@ window.KIDEF_KALIP = {
                         { tr: "çantam nerede?", order: 2, ar: "أَيْنَ حَقيبَتي؟" }
                     ],
                     p2: [
-                        { tr: "Masanın üstünde", order: 1, ar: "عَلى الطّاوِلَةِ" },
+                        { tr: "Masanın üstünde,", order: 1, ar: "عَلى الطّاوِلَةِ" },
                         { tr: "yavrum.", order: 2, ar: "يا بُنَيَّ." }
                     ]
                 },

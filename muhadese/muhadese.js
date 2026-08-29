@@ -427,6 +427,15 @@ function lehceKapiTazele(katId) {
     icerikGoster(true);
 }
 
+/* Ucuz güvence: şerit gizli kaldıysa ya da hiç çizilmediyse yeniden
+   kurar; zaten yerindeyse hiçbir şey yapmaz (yeniden çizip titretmez). */
+function lehceGorunurGaranti() {
+    var kap = document.getElementById('lehce-serit');
+    if (!kap || !window.KIDEF_LEHCE) return;
+    if (_seciliKat === 'okul') { kap.hidden = true; return; }
+    if (kap.hidden || !kap.innerHTML.trim()) lehceKapiTazele(_seciliKat);
+}
+
 function kategoriSec(katId, kullaniciSecti) {
     _seciliKat = katId;
     try { localStorage.setItem('muhKategori', katId); } catch (e) { }
@@ -442,6 +451,9 @@ function kategoriSec(katId, kullaniciSecti) {
 
 /* ---------------- KONU / SINIF SEÇİCİ ---------------- */
 function renderSecici(kat, anahtar, kullaniciSecti) {
+    /* Şerit her başlık çiziminde yeniden güvenceye alınıyor: okul dışında
+       hiçbir yolda kaybolmasın. */
+    lehceGorunurGaranti();
     var kutu = document.getElementById('class-buttons');
     if (!kutu) return;
     kutu.innerHTML = '';
@@ -641,6 +653,11 @@ function muhBaslat() {
     if (!anahtar || liste.indexOf(anahtar) === -1) {
         anahtar = (kat.id === 'okul' && liste.indexOf('10') !== -1) ? '10' : liste[0];
     }
+    /* LEHÇE ŞERİDİ AÇILIŞTA DA ÇİZİLSİN (Geylani: "bazen kayboluyor,
+       hep görünür olsun"). Burası kategoriSec'i ATLAYAN tek yol: sayfa
+       hafızadan ya da ?kat= ile doğrudan kalıp/alan sekmesinde açılınca
+       şerit HTML'deki `hidden` hâliyle kalıyordu. */
+    lehceKapiTazele(kat.id);
     renderSecici(kat, anahtar, false);
 }
 
