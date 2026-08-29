@@ -847,6 +847,299 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
 #cg-sSon .marka{margin-top:22px;font-size:26px;font-weight:900;color:#9A7C55}
 #cg-sSon .site{margin-top:4px;font-size:18px;font-weight:700;color:#B9A182}
 #ilerleme{height:100%;width:0;background:linear-gradient(90deg,var(--merfu),var(--mansub),var(--mecrur));transition:width .3s ease}
+
+/* ==========================================================
+   ARAPÇANIN ÖNEMİ — «لِمَاذَا الْعَرَبِيَّةُ؟»
+   Etkileşimli HTML sunum. Üçüncü sunum; iskelet ortak.
+   Renk kodu:
+     Gökyüzü (âyet · mana)   = zümrüt   #0E7C66
+     Yeryüzü (ticaret · iş)  = lacivert #1B3A6B
+     Vurgu                   = altın    #B4881B
+   ÖNEMLİ ÖLÇÜ NOTU: bu dosyada JS (yaziBuyut) 32px'ten küçük
+   her yazıyı 32px'e çıkarır. Bu yüzden buradaki bütün ölçüler
+   doğrudan 32px ve üstünden verildi; böylece yerleşim tahmin
+   edilebilir kalıyor. 32px'in altına HİÇBİR değer yazma.
+   ========================================================== */
+:root{
+  --ao-yesil:#0E7C66;
+  --ao-yesilK:#08503F;
+  --ao-lacivert:#1B3A6B;
+  --ao-altin:#B4881B;
+  --ao-yesilA:#E6F3EF;
+  --ao-lacivertA:#E9EFF8;
+  --ao-altinA:#FBF1DA;
+}
+
+/* --- ortak: başlık biraz daha iri, rozet 32px emojiyi taşısın --- */
+.ao .sbaslik{margin-bottom:14px;gap:16px}
+.ao .sbaslik .rozet{width:60px;height:60px;flex:0 0 60px;border-radius:18px;font-size:32px}
+.ao .sbaslik h2{font-size:40px;line-height:1.3;color:var(--ao-yesilK)}
+.ao .sbaslik .alt{font-size:32px;color:var(--gri);line-height:1.35;margin-top:2px}
+.ao .gov{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center}
+
+/* alt bilgi şeridi — her slaytın kapanış cümlesi */
+.aoNot{
+  flex:0 0 auto;margin-top:14px;border-radius:16px;padding:12px 20px;
+  font-size:32px;line-height:1.4;color:var(--ao-yesilK);background:var(--ao-yesilA);
+  text-align:center;
+}
+.aoNot.altin{background:var(--ao-altinA);color:#7A5A0C}
+.aoNot.laci{background:var(--ao-lacivertA);color:var(--ao-lacivert)}
+.aoNot .vur{color:var(--kirmizi)}
+
+/* ==========================================================
+   AO 1 — KAPAK
+   ========================================================== */
+#ao-s1{
+  padding:0;align-items:center;justify-content:center;
+  background:
+    radial-gradient(1150px 640px at 50% 116%, #CFE7DF 0%, rgba(207,231,223,0) 64%),
+    repeating-linear-gradient(135deg,#12836C 0 3px,#0C6E5A 3px 6px);
+}
+#ao-s1 .kapakKart{
+  background:#fff;border-radius:74px;padding:44px 74px;text-align:center;
+  box-shadow:0 26px 60px rgba(8,60,48,.34);max-width:1060px;
+}
+#ao-s1 .ustAr{font-size:56px;direction:rtl;color:var(--ao-yesil);line-height:1.6}
+#ao-s1 h1{font-size:62px;line-height:1.2;color:var(--ao-yesilK);margin-top:4px}
+#ao-s1 .altbaslik{margin-top:14px;font-size:32px;color:#5E7C74;line-height:1.4}
+#ao-s1 .rozetler{margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#ao-s1 .rz{padding:8px 22px;border-radius:999px;font-size:32px;background:var(--ao-yesilA);color:var(--ao-yesilK)}
+#ao-s1 .basla{margin-top:22px;font-size:32px;color:#8FA9A2}
+#ao-s1 .imza{position:absolute;bottom:20px;left:30px;color:#fff;font-size:32px;opacity:.9}
+
+/* ==========================================================
+   AO 2 — TÜRKÇEDEKİ ARAPÇA (kelime kartları)
+   ========================================================== */
+.aoKelimeIzgara{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;height:100%;align-content:space-evenly}
+.aoKelime{
+  background:#fff;border-radius:20px;box-shadow:var(--golge);
+  padding:14px 8px 16px;text-align:center;
+  display:flex;flex-direction:column;justify-content:center;gap:2px;
+}
+.aoKelime .ka{font-size:46px;direction:rtl;color:var(--ao-yesil);line-height:1.55}
+.aoKelime .ok{font-size:32px;color:#C9D3DE;line-height:1}
+.aoKelime .kt{font-size:32px;color:var(--murekkep);line-height:1.25}
+
+/* ==========================================================
+   AO 3 — SAYILARLA ARAPÇA
+   ========================================================== */
+.aoSayiIzgara{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;height:100%;grid-auto-rows:1fr}
+.aoSayi{
+  background:#fff;border-radius:24px;box-shadow:var(--golge);
+  padding:20px 14px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:10px;
+}
+.aoSayi .rak{font-size:64px;line-height:1.1;color:var(--ao-yesil)}
+.aoSayi .rak small{font-size:36px}
+.aoSayi .et{font-size:32px;line-height:1.3;color:var(--murekkep)}
+.aoSayi .ip{font-size:32px;line-height:1.3;color:var(--gri)}
+.aoSayi.s2 .rak{color:var(--ao-lacivert)}
+.aoSayi.s3 .rak{color:var(--ao-altin)}
+.aoSayi.s4 .rak{color:var(--kirmizi)}
+
+/* ==========================================================
+   AO 4 — BİRLEŞMİŞ MİLLETLER
+   ========================================================== */
+.aoBmDuzen{display:grid;grid-template-columns:400px 1fr;gap:22px;align-items:center}
+.aoBmSol{
+  border-radius:26px;padding:24px 22px;color:#fff;text-align:center;
+  background:linear-gradient(155deg,#1B3A6B,#2C5FA8);box-shadow:var(--golge2);
+}
+.aoBmSol .tarih{font-size:58px;line-height:1.15}
+.aoBmSol .karar{margin-top:10px;font-size:32px;line-height:1.35;opacity:.94}
+.aoDiller{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.aoDil{
+  background:#fff;border-radius:16px;box-shadow:var(--golge);
+  padding:10px 16px;display:flex;align-items:center;gap:12px;font-size:32px;
+}
+.aoDil .no{
+  width:44px;height:44px;flex:0 0 44px;border-radius:12px;display:grid;place-items:center;
+  font-size:32px;background:var(--ao-lacivertA);color:var(--ao-lacivert);
+}
+.aoDil.arapca{background:var(--ao-yesilA);box-shadow:0 0 0 3px #A9D8CB inset}
+.aoDil.arapca .no{background:var(--ao-yesil);color:#fff}
+.aoDil .ad{color:var(--murekkep)}
+.aoDil.arapca .ad{color:var(--ao-yesilK)}
+
+/* ==========================================================
+   AO 5-7 — TIKLANABİLİR ÂYET
+   Âyet TEK CÜMLE hâlinde durur; bir kelimeye dokununca altında
+   Türkçesi belirir, aşağıdaki panelde de yapısı çözümlenir.
+   (muhadese.html'deki cümle pratiğinin sunum karşılığı.)
+   İleri tuşu da aynı sırayla açar: dokunmak ve → aynı işi görür.
+   ========================================================== */
+.aoAyet{
+  flex:0 0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;
+  gap:6px 20px;direction:rtl;margin:4px 0 14px;
+}
+.aoK{
+  display:flex;flex-direction:column;align-items:center;gap:0;cursor:pointer;
+  border-radius:18px;padding:4px 14px 6px;transition:background .18s, box-shadow .18s;
+}
+.aoK:hover{background:#fff;box-shadow:var(--golge)}
+.aoK .ka{font-size:62px;direction:rtl;color:var(--ao-yesilK);line-height:1.6;transition:color .18s}
+.aoK .kt{font-size:32px;color:var(--ao-altin);line-height:1.25;direction:ltr;white-space:nowrap}
+.aoK.sec{background:#fff;box-shadow:0 0 0 3px #A9D8CB, var(--golge)}
+.aoK.sec .ka{color:var(--ao-yesil)}
+/* dokunmayla açılan anlam, adım sırasını beklemeden görünür */
+.aoK.acik .kt{opacity:1 !important;transform:none !important}
+
+.aoKaynak{flex:0 0 auto;text-align:center;font-size:32px;color:var(--ao-altin);margin-bottom:12px}
+
+.aoCozum{
+  flex:0 0 auto;background:#fff;border-radius:22px;box-shadow:var(--golge);
+  padding:14px 24px;min-height:164px;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;gap:6px;text-align:center;
+}
+.aoCozum .ipucu{font-size:32px;color:#AEB6C0;line-height:1.3}
+.aoCozum .dolu{display:none}
+.aoCozum.dolduruldu .ipucu{display:none}
+.aoCozum.dolduruldu .dolu{display:flex;flex-direction:column;gap:4px;align-items:center}
+.aoCozum .bas{display:flex;align-items:baseline;justify-content:center;gap:18px;direction:ltr;line-height:1.5}
+.aoCozum .bas .ar{font-size:44px;direction:rtl;unicode-bidi:isolate;color:var(--ao-yesilK)}
+.aoCozum .bas .ayrac{font-size:32px;color:#C9D3DE}
+.aoCozum .bas .tr{font-size:32px;color:var(--murekkep)}
+.aoCozum .ack{font-size:32px;color:var(--gri);line-height:1.35}
+.aoCozum .ack .kok{color:var(--kirmizi);direction:rtl;unicode-bidi:isolate}
+.aoCozum .ack .kal{background:var(--ao-altinA);color:#7A5A0C;border-radius:8px;padding:0 8px;direction:rtl;unicode-bidi:isolate}
+.aoCozum .ack b{color:var(--ao-yesilK)}
+
+/* ==========================================================
+   AO 8 — BİR ÂYETTE BÜTÜN KONULAR
+   ========================================================== */
+.aoEsIzgara{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 20px;height:100%;align-content:space-evenly}
+.aoEs{
+  background:#fff;border-radius:16px;box-shadow:var(--golge);
+  padding:10px 16px;display:flex;align-items:center;gap:14px;
+}
+.aoEs .sol{font-size:38px;direction:rtl;color:var(--ao-yesilK);flex:0 0 auto;min-width:200px;text-align:right}
+.aoEs .ok{font-size:32px;color:#C9D3DE;flex:0 0 auto}
+.aoEs .sag{font-size:32px;color:var(--ao-lacivert);line-height:1.3}
+
+/* ==========================================================
+   AO 9 — TEK KÖKTEN BİR DÜNYA (ر ح م)
+   ========================================================== */
+.aoBesmele{
+  text-align:center;font-size:52px;direction:rtl;color:var(--ao-yesilK);
+  line-height:1.6;flex:0 0 auto;margin-bottom:6px;
+}
+.aoBesmele .v1{color:var(--kirmizi)}
+.aoBesmele .v2{color:var(--ao-lacivert)}
+.aoKokSerit{
+  display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;
+  font-size:32px;color:var(--gri);flex:0 0 auto;margin-bottom:8px;
+}
+.aoKokSerit .kok{font-size:44px;direction:rtl;color:var(--kirmizi);letter-spacing:6px}
+.aoKokSerit .tur{background:#fff;border-radius:14px;box-shadow:var(--golge);padding:4px 14px;color:var(--murekkep)}
+.aoKokSerit .tur .a{font-size:34px;direction:rtl;color:var(--ao-yesil)}
+.aoIkiKalip{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1 1 auto;min-height:0;grid-auto-rows:1fr}
+.aoKalip{
+  border-radius:26px;padding:14px 22px;color:#fff;box-shadow:var(--golge2);
+  display:flex;flex-direction:column;justify-content:center;gap:6px;text-align:center;
+}
+.aoKalip.k1{background:linear-gradient(150deg,#B3202A,#D81E05)}
+.aoKalip.k2{background:linear-gradient(150deg,#123F72,#2C5FA8)}
+.aoKalip .ust{font-size:46px;direction:rtl;line-height:1.5}
+.aoKalip .vezin{
+  align-self:center;background:rgba(255,255,255,.2);border-radius:12px;
+  padding:3px 16px;font-size:32px;direction:rtl;
+}
+.aoKalip .aciklama{font-size:32px;line-height:1.35;opacity:.97}
+
+/* ==========================================================
+   AO 10 — ARAP DÜNYASI
+   ========================================================== */
+.aoBolgeIzgara{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;height:100%;grid-auto-rows:1fr}
+.aoBolge{
+  background:#fff;border-radius:20px;box-shadow:var(--golge);overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.aoBolge .bb{padding:8px 12px;text-align:center;color:#fff;font-size:32px;line-height:1.25}
+.aoBolge.b1 .bb{background:#C0791C}
+.aoBolge.b2 .bb{background:#0E7C66}
+.aoBolge.b3 .bb{background:#2C5FA8}
+.aoBolge.b4 .bb{background:#8B6034}
+.aoBolge.b5 .bb{background:#B3202A}
+.aoBolge.b6 .bb{background:#6B3FA0}
+.aoBolge .bg{padding:10px 12px;font-size:32px;color:var(--murekkep);line-height:1.35;text-align:center;
+  flex:1 1 auto;display:grid;place-items:center}
+
+/* ==========================================================
+   AO 11 — TİCARET
+   ========================================================== */
+.aoTicUst{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:0 0 auto}
+.aoTicBuyuk{
+  border-radius:26px;padding:16px 24px;color:#fff;box-shadow:var(--golge2);text-align:center;
+  background:linear-gradient(150deg,#123F72,#2C5FA8);
+}
+.aoTicBuyuk.y{background:linear-gradient(150deg,#0A5A4A,#12A183)}
+.aoTicBuyuk .rak{font-size:60px;line-height:1.15}
+.aoTicBuyuk .et{font-size:32px;line-height:1.3;opacity:.96;margin-top:4px}
+.aoOrtak{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px;flex:0 0 auto}
+.aoOrtakKart{
+  background:#fff;border-radius:18px;box-shadow:var(--golge);padding:12px 14px;text-align:center;
+}
+.aoOrtakKart .ulke{font-size:34px;color:var(--murekkep);line-height:1.25}
+.aoOrtakKart .ar{font-size:34px;direction:rtl;color:var(--ao-yesil);line-height:1.5}
+.aoOrtakKart .deger{font-size:36px;color:var(--ao-lacivert);line-height:1.3}
+
+/* ==========================================================
+   AO 12 — KURUMLAR
+   ========================================================== */
+.aoKurumIzgara{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;height:100%;align-content:space-evenly}
+.aoKurum{
+  background:#fff;border-radius:16px;box-shadow:var(--golge);
+  padding:10px 14px;display:flex;align-items:center;gap:12px;
+  font-size:32px;color:var(--murekkep);line-height:1.25;
+}
+.aoKurum .sim{
+  width:46px;height:46px;flex:0 0 46px;border-radius:13px;display:grid;place-items:center;
+  font-size:32px;background:var(--ao-yesilA);
+}
+
+/* ==========================================================
+   AO 13 — SEKTÖRLER
+   ========================================================== */
+.aoSekIzgara{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;height:100%;grid-auto-rows:1fr}
+.aoSek{
+  background:#fff;border-radius:20px;box-shadow:var(--golge);
+  padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:8px;
+  border-left:6px solid var(--ao-lacivert);
+}
+.aoSek.s2{border-left-color:var(--ao-yesil)}
+.aoSek.s3{border-left-color:var(--ao-altin)}
+.aoSek .bas{font-size:34px;color:var(--ao-lacivert);line-height:1.25}
+.aoSek.s2 .bas{color:var(--ao-yesilK)}
+.aoSek.s3 .bas{color:#7A5A0C}
+.aoSek .ack{font-size:32px;color:var(--gri);line-height:1.3}
+
+/* ==========================================================
+   AO 14 — İKİ KANAT
+   ========================================================== */
+.aoKanat{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1 1 auto;min-height:0;align-content:center}
+.aoKanatKart{
+  border-radius:28px;padding:22px 26px;color:#fff;box-shadow:var(--golge2);
+  display:flex;flex-direction:column;gap:10px;
+}
+.aoKanatKart.yer{background:linear-gradient(150deg,#123F72,#2C5FA8)}
+.aoKanatKart.gok{background:linear-gradient(150deg,#0A5A4A,#12A183)}
+.aoKanatKart h3{font-size:40px;line-height:1.2}
+.aoKanatKart .satir{
+  background:rgba(255,255,255,.18);border-radius:14px;padding:8px 16px;
+  font-size:32px;line-height:1.3;
+}
+
+/* ==========================================================
+   AO 15 — KAPANIŞ
+   ========================================================== */
+#ao-sSon{
+  align-items:center;justify-content:center;
+  background:radial-gradient(900px 520px at 50% 0%,#E6F3EF 0%,rgba(230,243,239,0) 60%),var(--zemin);
+}
+#ao-sSon .sukran{font-size:104px;color:var(--ao-yesil);direction:rtl;line-height:1.5}
+#ao-sSon .emoji{font-size:44px;margin-top:6px}
+#ao-sSon .marka{margin-top:20px;font-size:36px;color:var(--ao-yesilK)}
+#ao-sSon .site{margin-top:4px;font-size:32px;color:#8FA9A2}
 /* ==========================================================
    SUNUM MERKEZİ — tek dosyada tüm sunumlar
    ----------------------------------------------------------
@@ -897,6 +1190,11 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
 .hxsun:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .hxsun svg{width:12px;height:12px;fill:currentColor;stroke:none;flex:0 0 12px}
 .hxsun.mini{padding:2px 5px;font-size:12px;margin-inline-start:5px;border-radius:7px}
+/* Kutunun GENİŞLİĞİNİ belirlemesin: düğme akıştan çıkarılır (mutlak konumlu
+   öge içeriğin doğal genişliğine sayılmaz), altta kendisi için ayrılan
+   şeride oturur. Kutu böylece yalnız başlık kadar geniş kalır. */
+.hxb.sunumlu{padding-bottom:36px}
+.hxb.sunumlu > .hxsun{position:absolute;right:8px;bottom:7px;margin:0}
 .hxm.hxsunlu{background:#E9F8EF;color:#0A6B41;display:inline-flex;align-items:center;gap:3px}
 #liste .lizgara{display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 12px;
   scroll-snap-type:x proximity;scrollbar-width:thin}
@@ -1166,6 +1464,31 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     </div>
     <div class="lharita"><div class="hx" data-isaret="" data-sunumlu="1"></div></div>
     <div class="lizgara">
+      <button class="lkart" data-git="arapcaninonemi">
+        <div class="lust"><span class="lrozet">🌍 Niçin Arapça</span></div>
+        <span class="lsvg" aria-hidden="true"><svg viewBox="0 0 200 120">
+          <rect class="lp-golge" x="18" y="10" width="164" height="86" rx="8"/>
+          <rect class="lp-ekran" x="18" y="10" width="164" height="86" rx="8"/>
+          <g class="lp-kayan">
+            <g class="lp-slayt s1"><rect x="30" y="22" width="60" height="7" rx="3.5" fill="#0E7C66"/>
+              <rect x="30" y="36" width="120" height="5" rx="2.5" fill="#DCE3EB"/>
+              <rect x="30" y="48" width="96" height="5" rx="2.5" fill="#DCE3EB"/>
+              <text x="134" y="80" class="lp-ar" fill="#0E7C66">عَرَبِيّ</text></g>
+            <g class="lp-slayt s2"><rect x="30" y="22" width="40" height="7" rx="3.5" fill="#94A3B4"/>
+              <rect x="30" y="40" width="52" height="34" rx="5" fill="#EEF3F8"/>
+              <rect x="90" y="40" width="52" height="34" rx="5" fill="#EEF3F8"/>
+              <text x="56" y="64" class="lp-ar2" fill="#0E7C66">قُرْآنًا</text>
+              <text x="116" y="64" class="lp-ar2" fill="#1B3A6B">$</text></g>
+          </g>
+          <g class="lp-imlec"><circle cx="150" cy="88" r="4.5"/></g>
+          <path class="lp-ayak" d="M92 96 h16 v10 h-16 Z"/>
+          <rect class="lp-taban" x="62" y="106" width="76" height="6" rx="3"/>
+          <g class="lp-isik"><path d="M100 96 L54 118 h92 Z"/></g>
+        </svg></span>
+        <h3>Niçin Arapça? — Bir dil, iki dünya</h3>
+        <p>Bir âyetin kelime kelime tahlili, Arap dünyası ve ticaret, kurumlar, BM'de Arapça.</p>
+        <div class="lalt2"><span class="ladet">15 slayt · motivasyon</span><span class="lac">Aç ›</span></div>
+      </button>
       <button class="lkart" data-git="harfitarif">
         <div class="lust"><span class="lrozet">🧐 Belirlilik</span></div>
         <span class="lsvg" aria-hidden="true"><svg viewBox="0 0 200 120">
@@ -1230,6 +1553,435 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       </div>
     </div>
   </div>
+  <div class="sunum" data-s="arapcaninonemi" data-ad="Niçin Arapça?">
+<!-- ================= AO 1 · KAPAK ================= -->
+  <section class="slayt ao" id="ao-s1" data-ad="Kapak">
+    <div class="kapakKart adim" data-g="1">
+      <div class="ustAr">لِمَاذَا الْعَرَبِيَّةُ؟</div>
+      <h1>Niçin Arapça?</h1>
+      <div class="altbaslik">Bir dil, iki dünya — yeryüzünün ticareti, gökyüzünün kelâmı</div>
+      <div class="rozetler">
+        <span class="rz">400+ milyon konuşan</span>
+        <span class="rz">22 ülke</span>
+        <span class="rz">BM'nin 6 resmî dilinden biri</span>
+      </div>
+      <div class="basla">Başlamak için → tuşuna bas</div>
+    </div>
+    <div class="imza">Kidef Arapça</div>
+  </section>
+
+  <!-- ================= AO 2 · SEN ZATEN BİLİYORSUN ================= -->
+  <section class="slayt ao" data-ad="Türkçedeki Arapça — sen zaten biliyorsun">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">💡</div>
+      <div>
+        <h2>Sıfırdan başlamıyorsun</h2>
+        <div class="alt">Her gün konuştuğun Türkçenin içinde binlerce Arapça kelime var</div>
+      </div>
+    </div>
+    <div class="gov">
+      <div class="aoKelimeIzgara">
+        <div class="aoKelime adim" data-g="2"><div class="ka">كِتَاب</div><div class="ok">↓</div><div class="kt">kitap</div></div>
+        <div class="aoKelime adim" data-g="2"><div class="ka">قَلَم</div><div class="ok">↓</div><div class="kt">kalem</div></div>
+        <div class="aoKelime adim" data-g="2"><div class="ka">دَرْس</div><div class="ok">↓</div><div class="kt">ders</div></div>
+        <div class="aoKelime adim" data-g="2"><div class="ka">سَاعَة</div><div class="ok">↓</div><div class="kt">saat</div></div>
+        <div class="aoKelime adim" data-g="3"><div class="ka">إِنْسَان</div><div class="ok">↓</div><div class="kt">insan</div></div>
+        <div class="aoKelime adim" data-g="3"><div class="ka">عَقْل</div><div class="ok">↓</div><div class="kt">akıl</div></div>
+        <div class="aoKelime adim" data-g="3"><div class="ka">حَيَاة</div><div class="ok">↓</div><div class="kt">hayat</div></div>
+        <div class="aoKelime adim" data-g="3"><div class="ka">صَبْر</div><div class="ok">↓</div><div class="kt">sabır</div></div>
+      </div>
+    </div>
+    <div class="aoNot altin adim" data-g="4">
+      TDK sözlüğündeki 104.481 kelimenin <span class="vur">6.463'ü</span> Arapça kökenli.
+    </div>
+  </section>
+
+  <!-- ================= AO 3 · SAYILARLA ARAPÇA ================= -->
+  <section class="slayt ao" data-ad="Sayılarla Arapça">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🌍</div>
+      <div>
+        <h2>Sayılarla Arapça</h2>
+        <div class="alt">Dünyanın en çok konuşulan dillerinden biri</div>
+      </div>
+    </div>
+    <div class="gov">
+      <div class="aoSayiIzgara">
+        <div class="aoSayi s1 adim" data-g="2">
+          <div class="rak">400<small>+ milyon</small></div>
+          <div class="et">konuşan insan</div>
+          <div class="ip">Birleşmiş Milletler verisi</div>
+        </div>
+        <div class="aoSayi s2 adim" data-g="3">
+          <div class="rak">22</div>
+          <div class="et">ülkenin resmî dili</div>
+          <div class="ip">Arap Ligi üyeleri</div>
+        </div>
+        <div class="aoSayi s3 adim" data-g="4">
+          <div class="rak">6</div>
+          <div class="et">BM resmî dilinden biri</div>
+          <div class="ip">1973'ten beri</div>
+        </div>
+        <div class="aoSayi s4 adim" data-g="5">
+          <div class="rak">1400<small> yıl</small></div>
+          <div class="et">değişmeyen yazı dili</div>
+          <div class="ip">Bugün de aynı fusha</div>
+        </div>
+      </div>
+    </div>
+    <div class="aoNot adim" data-g="6">
+      İngilizce öğrenen milyonlarca kişi var; Arapça bilen az. <span class="vur">Az olan değerlidir.</span>
+    </div>
+  </section>
+
+  <!-- ================= AO 4 · BİRLEŞMİŞ MİLLETLER ================= -->
+  <section class="slayt ao" data-ad="Birleşmiş Milletler'de Arapça">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🕊️</div>
+      <div>
+        <h2>Birleşmiş Milletler'de Arapça</h2>
+        <div class="alt">Dünyanın en büyük masasında konuşulan altı dilden biri</div>
+      </div>
+    </div>
+    <div class="gov">
+      <div class="aoBmDuzen">
+        <div class="aoBmSol adim" data-g="2">
+          <div class="tarih">18 Aralık 1973</div>
+          <div class="karar">Genel Kurul kararı 3190 · Arapça altıncı resmî dil oldu</div>
+        </div>
+        <div class="aoDiller">
+          <div class="aoDil arapca adim" data-g="3"><span class="no">١</span><span class="ad">Arapça · العربية</span></div>
+          <div class="aoDil adim" data-g="4"><span class="no">2</span><span class="ad">İngilizce</span></div>
+          <div class="aoDil adim" data-g="4"><span class="no">3</span><span class="ad">Fransızca</span></div>
+          <div class="aoDil adim" data-g="4"><span class="no">4</span><span class="ad">Rusça</span></div>
+          <div class="aoDil adim" data-g="4"><span class="no">5</span><span class="ad">Çince</span></div>
+          <div class="aoDil adim" data-g="4"><span class="no">6</span><span class="ad">İspanyolca</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="aoNot laci adim" data-g="5">
+      UNESCO her 18 Aralık'ı <span class="vur">Dünya Arapça Dili Günü</span> olarak kutluyor.
+    </div>
+  </section>
+
+  <!-- ================= AO 5 · ÂYET 1 (tıklanabilir) ================= -->
+  <section class="slayt ao" data-ad="Âyet 1 — بِلِسَانٍ عَرَبِيٍّ مُبِينٍ">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">👆</div>
+      <div>
+        <h2>Kelimeye dokun, anlamı çıksın</h2>
+        <div class="alt">Kur'an kendi dilini tarif ediyor</div>
+      </div>
+    </div>
+    <div class="gov">
+    <div class="aoAyet">
+      <span class="aoK" data-ar="بِلِسَانٍ" data-tr="bir dille"
+            data-coz="<span class='kal'>بِ</span> cer harfi + <span class='kok'>ل س ن</span> kökünden <span class='kok'>لِسَان</span> · nekra · <b>mecrur</b> — cer harfi kendinden sonraki ismi esreli yapar">
+        <span class="ka">بِلِسَانٍ</span><span class="kt adim" data-g="2">bir dille</span>
+      </span>
+      <span class="aoK" data-ar="عَرَبِيٍّ" data-tr="Arap olan"
+            data-coz="Sıfat · mevsûfuna dört yönden uyar: nekra · mecrur · müfred · müzekker">
+        <span class="ka">عَرَبِيٍّ</span><span class="kt adim" data-g="3">Arap olan</span>
+      </span>
+      <span class="aoK" data-ar="مُبِينٍ" data-tr="apaçık"
+            data-coz="İkinci sıfat · ism-i fâil <span class='kal'>مُفْعِل</span> · kök <span class='kok'>ب ي ن</span>">
+        <span class="ka">مُبِينٍ</span><span class="kt adim" data-g="4">apaçık</span>
+      </span>
+    </div>
+    <div class="aoKaynak">Şuarâ sûresi · 195. âyet</div>
+    <div class="aoCozum">
+      <div class="ipucu">Bir kelimeye dokun — anlamı ve yapısı burada çıkar</div>
+      <div class="dolu"><div class="bas"></div><div class="ack"></div></div>
+    </div>
+    </div>
+    <div class="aoNot adim" data-g="5">
+      “… apaçık bir Arap diliyle.” — <span class="vur">Anlaşılsın diye seçilmiş bir dil.</span>
+    </div>
+  </section>
+
+  <!-- ================= AO 6 · ÂYET 2 (tıklanabilir) ================= -->
+  <section class="slayt ao" data-ad="Âyet 2 — إِنَّ مَعَ الْعُسْرِ يُسْرًا">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🌤️</div>
+      <div>
+        <h2>Bir harf, bambaşka bir anlam</h2>
+        <div class="alt">Marife ile nekranın farkını âyette görelim</div>
+      </div>
+    </div>
+    <div class="gov">
+    <div class="aoAyet">
+      <span class="aoK" data-ar="إِنَّ" data-tr="şüphesiz"
+            data-coz="Te'kid harfi · anlamı pekiştirir; kendinden sonraki ismi mansub yapar">
+        <span class="ka">إِنَّ</span><span class="kt adim" data-g="2">şüphesiz</span>
+      </span>
+      <span class="aoK" data-ar="مَعَ" data-tr="beraber"
+            data-coz="Zarf · “ile birlikte” anlamı katar; kendinden sonraki ismi mecrur yapar">
+        <span class="ka">مَعَ</span><span class="kt adim" data-g="3">beraber</span>
+      </span>
+      <span class="aoK" data-ar="الْعُسْرِ" data-tr="zorluk"
+            data-coz="Kök <span class='kok'>ع س ر</span> · <span class='kal'>اَلْ</span> ile <b>marife</b> — belli, bilinen zorluk · mecrur">
+        <span class="ka">الْعُسْرِ</span><span class="kt adim" data-g="4">zorluk</span>
+      </span>
+      <span class="aoK" data-ar="يُسْرًا" data-tr="bir kolaylık"
+            data-coz="Kök <span class='kok'>ي س ر</span> · tenvinli, yani <b>nekra</b> — belirsiz bir kolaylık · mansub">
+        <span class="ka">يُسْرًا</span><span class="kt adim" data-g="5">bir kolaylık</span>
+      </span>
+    </div>
+    <div class="aoKaynak">İnşirâh sûresi · 6. âyet</div>
+    <div class="aoCozum">
+      <div class="ipucu">Bir kelimeye dokun — anlamı ve yapısı burada çıkar</div>
+      <div class="dolu"><div class="bas"></div><div class="ack"></div></div>
+    </div>
+    </div>
+    <div class="aoNot altin adim" data-g="6">
+      “Şüphesiz zorlukla beraber bir kolaylık vardır.” — Zorluk <span class="vur">belli</span>, kolaylık <span class="vur">belirsiz</span>: yani çok.
+    </div>
+  </section>
+
+  <!-- ================= AO 7 · ÂYET 3 (tıklanabilir) ================= -->
+  <section class="slayt ao" data-ad="Âyet 3 — وَقُلْ رَبِّ زِدْنِي عِلْمًا">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">📖</div>
+      <div>
+        <h2>Artırılması istenen tek şey</h2>
+        <div class="alt">Kökü tanıyan, kelimenin ailesini tanır</div>
+      </div>
+    </div>
+    <div class="gov">
+    <div class="aoAyet">
+      <span class="aoK" data-ar="وَقُلْ" data-tr="ve de ki"
+            data-coz="<span class='kal'>وَ</span> atıf harfi + <span class='kok'>ق و ل</span> kökünden emir fiili <span class='kok'>قُلْ</span>">
+        <span class="ka">وَقُلْ</span><span class="kt adim" data-g="2">ve de ki</span>
+      </span>
+      <span class="aoK" data-ar="رَبِّ" data-tr="Rabbim"
+            data-coz="<span class='kok'>رَبّ</span> + mütekellim yâsı · münâdâ — başındaki <span class='kal'>يَا</span> gizlenmiş">
+        <span class="ka">رَبِّ</span><span class="kt adim" data-g="3">Rabbim</span>
+      </span>
+      <span class="aoK" data-ar="زِدْنِي" data-tr="bana artır"
+            data-coz="Kök <span class='kok'>ز ي د</span> · emir fiili + <span class='kok'>نِي</span> “bana” — mef'ûl zamiri">
+        <span class="ka">زِدْنِي</span><span class="kt adim" data-g="4">bana artır</span>
+      </span>
+      <span class="aoK" data-ar="عِلْمًا" data-tr="ilim"
+            data-coz="Kök <span class='kok'>ع ل م</span> · nekra · mansub — aynı kökten <span class='kok'>عَالِم · مَعْلُوم · مُعَلِّم</span>">
+        <span class="ka">عِلْمًا</span><span class="kt adim" data-g="5">ilim</span>
+      </span>
+    </div>
+    <div class="aoKaynak">Tâhâ sûresi · 114. âyet</div>
+    <div class="aoCozum">
+      <div class="ipucu">Bir kelimeye dokun — anlamı ve yapısı burada çıkar</div>
+      <div class="dolu"><div class="bas"></div><div class="ack"></div></div>
+    </div>
+    </div>
+    <div class="aoNot adim" data-g="6">
+      “De ki: Rabbim, ilmimi artır.” — <span class="vur">Artırılması emredilen tek şey ilim.</span>
+    </div>
+  </section>
+
+  <!-- ================= AO 8 · ÜÇ ÂYET, BÜTÜN KONULAR ================= -->
+  <section class="slayt ao" data-ad="Üç âyette bütün konular">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🧩</div>
+      <div>
+        <h2>Üç kısa âyet, bütün konular</h2>
+        <div class="alt">On bir kelimede, derste gördüğümüz her bahis bir kez geçti</div>
+      </div>
+    </div>
+    <div class="gov">
+      <div class="aoEsIzgara">
+        <div class="aoEs adim" data-g="2"><span class="sol">اَلْـ</span><span class="ok">→</span><span class="sag">Marife · harf-i ta'rîf</span></div>
+        <div class="aoEs adim" data-g="2"><span class="sol">ـٌ ـً ـٍ</span><span class="ok">→</span><span class="sag">Tenvin · nekra</span></div>
+        <div class="aoEs adim" data-g="3"><span class="sol">بِ · مَعَ</span><span class="ok">→</span><span class="sag">Cer harfi · mecrur</span></div>
+        <div class="aoEs adim" data-g="3"><span class="sol">إِنَّ</span><span class="ok">→</span><span class="sag">Te'kid harfi · mansub</span></div>
+        <div class="aoEs adim" data-g="4"><span class="sol">عَرَبِيٍّ مُبِينٍ</span><span class="ok">→</span><span class="sag">Sıfat · dört yönden uyum</span></div>
+        <div class="aoEs adim" data-g="4"><span class="sol">قُلْ · زِدْ</span><span class="ok">→</span><span class="sag">Emir fiili</span></div>
+      </div>
+    </div>
+    <div class="aoNot adim" data-g="5">
+      Sitedeki her bölüm, <span class="vur">üç kısa âyette</span> yan yana duruyor.
+    </div>
+  </section>
+
+  <!-- ================= AO 9 · TEK KÖKTEN BİR DÜNYA ================= -->
+  <section class="slayt ao" data-ad="Tek kökten bir dünya — ر ح م">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">💠</div>
+      <div>
+        <h2>Her gün söylediğin cümle</h2>
+        <div class="alt">Aynı kök, iki ayrı kalıp — ve müfessirlere göre iki ayrı rahmet</div>
+      </div>
+    </div>
+    <div class="gov">
+    <div class="aoBesmele adim" data-g="2">
+      بِسْمِ اللهِ <span class="v1">الرَّحْمٰنِ</span> <span class="v2">الرَّحِيمِ</span>
+    </div>
+    <div class="aoKokSerit adim" data-g="3">
+      <span class="kok">ر ح م</span>
+      <span class="tur"><span class="a">رَحْمَة</span> merhamet</span>
+      <span class="tur"><span class="a">رَحِم</span> ana rahmi</span>
+    </div>
+    <div class="aoIkiKalip">
+      <div class="aoKalip k1 adim" data-g="4">
+        <div class="ust">الرَّحْمٰن</div>
+        <div class="vezin">فَعْلَان</div>
+        <div class="aciklama">Taşan, kuşatan rahmet — bu dünyada ayrım gözetmeden herkese.</div>
+      </div>
+      <div class="aoKalip k2 adim" data-g="5">
+        <div class="ust">الرَّحِيم</div>
+        <div class="vezin">فَعِيل</div>
+        <div class="aciklama">Yerleşik, sürekli rahmet — âhirette inananlara.</div>
+      </div>
+    </div>
+    </div>
+    <div class="aoNot altin adim" data-g="6">
+      Meâl ikisine de “merhametli” der. <span class="vur">Kalıbı bilen farkı görür.</span>
+    </div>
+  </section>
+
+  <!-- ================= AO 10 · ARAP DÜNYASI ================= -->
+  <section class="slayt ao" data-ad="Arap dünyası — 22 ülke">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🗺️</div>
+      <div>
+        <h2>Atlas Okyanusu'ndan Basra Körfezi'ne</h2>
+        <div class="alt">Arap Ligi'nin 22 üyesi · yazı dili bir, konuşma dili bölge bölge</div>
+      </div>
+    </div>
+    <div class="gov">
+      <div class="aoBolgeIzgara">
+        <div class="aoBolge b1 adim" data-g="2"><div class="bb">Mağrib · 5</div><div class="bg">Fas · Cezayir · Tunus · Libya · Moritanya</div></div>
+        <div class="aoBolge b2 adim" data-g="2"><div class="bb">Nil · 2</div><div class="bg">Mısır · Sudan</div></div>
+        <div class="aoBolge b3 adim" data-g="3"><div class="bb">Şam · 4</div><div class="bg">Suriye · Lübnan · Ürdün · Filistin</div></div>
+        <div class="aoBolge b4 adim" data-g="3"><div class="bb">Irak · 1</div><div class="bg">Irak</div></div>
+        <div class="aoBolge b5 adim" data-g="4"><div class="bb">Körfez ve Yemen · 7</div><div class="bg">S. Arabistan · BAE · Katar · Kuveyt · Bahreyn · Umman · Yemen</div></div>
+        <div class="aoBolge b6 adim" data-g="4"><div class="bb">Afrika Boynuzu · 3</div><div class="bg">Somali · Cibuti · Komorlar</div></div>
+      </div>
+    </div>
+    <div class="aoNot adim" data-g="5">
+      Sitedeki <span class="vur">Muhâdese</span> bölümünde fushanın yanında altı lehçe var.
+    </div>
+  </section>
+
+  <!-- ================= AO 11 · TİCARET ================= -->
+  <section class="slayt ao" data-ad="Ticaret — rakamlarla">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">📦</div>
+      <div>
+        <h2>Rakamların dili de Arapça</h2>
+        <div class="alt">Türkiye'nin İslam İşbirliği Teşkilatı ülkeleriyle ticareti</div>
+      </div>
+    </div>
+    <div class="gov">
+      <div class="aoTicUst">
+        <div class="aoTicBuyuk adim" data-g="2">
+          <div class="rak">119,1 milyar $</div>
+          <div class="et">2025 ticaret hacmi · 2013'te 87,6 milyar dolardı</div>
+        </div>
+        <div class="aoTicBuyuk y adim" data-g="3">
+          <div class="rak">41,5 milyar $</div>
+          <div class="et">2026'nın ilk yedi ayında yapılan ihracat</div>
+        </div>
+      </div>
+      <div class="aoOrtak">
+        <div class="aoOrtakKart adim" data-g="4"><div class="ar">اَلْإِمَارَات</div><div class="ulke">B. Arap Emirlikleri</div><div class="deger">≈ 19 milyar $</div></div>
+        <div class="aoOrtakKart adim" data-g="4"><div class="ar">اَلْعِرَاق</div><div class="ulke">Irak</div><div class="deger">14,3 milyar $</div></div>
+        <div class="aoOrtakKart adim" data-g="4"><div class="ar">مِصْر</div><div class="ulke">Mısır</div><div class="deger">7,9 milyar $</div></div>
+      </div>
+    </div>
+    <div class="aoNot laci adim" data-g="5">
+      Her rakamın arkasında bir sözleşme, bir toplantı, bir yazışma var — <span class="vur">ve bir dil.</span>
+    </div>
+  </section>
+
+  <!-- ================= AO 12 · KURUMLAR ================= -->
+  <section class="slayt ao" data-ad="Arapçanın kapı açtığı kurumlar">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🏛️</div>
+      <div>
+        <h2>Arapçanın kapı açtığı kurumlar</h2>
+        <div class="alt">Alım ilanlarında Arapça ya şart ya da ek puan</div>
+      </div>
+    </div>
+    <div class="gov">
+      <div class="aoKurumIzgara">
+        <div class="aoKurum adim" data-g="2"><span class="sim">🏛️</span>Dışişleri Bakanlığı</div>
+        <div class="aoKurum adim" data-g="2"><span class="sim">📈</span>Ticaret Müşavirlikleri</div>
+        <div class="aoKurum adim" data-g="2"><span class="sim">🕌</span>Diyanet İşleri Başkanlığı</div>
+        <div class="aoKurum adim" data-g="3"><span class="sim">🤝</span>TİKA</div>
+        <div class="aoKurum adim" data-g="3"><span class="sim">📚</span>Yunus Emre Enstitüsü</div>
+        <div class="aoKurum adim" data-g="3"><span class="sim">🎓</span>Maarif Vakfı</div>
+        <div class="aoKurum adim" data-g="4"><span class="sim">📺</span>TRT Arabi</div>
+        <div class="aoKurum adim" data-g="4"><span class="sim">📰</span>Anadolu Ajansı</div>
+        <div class="aoKurum adim" data-g="4"><span class="sim">🏫</span>MEB · Arapça öğretmenliği</div>
+      </div>
+    </div>
+    <div class="aoNot adim" data-g="5">
+      Yurt dışı kadrolarında görev, <span class="vur">dil bilenlere</span> açılıyor.
+    </div>
+  </section>
+
+  <!-- ================= AO 13 · SEKTÖRLER ================= -->
+  <section class="slayt ao" data-ad="Özel sektörde Arapça">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">💼</div>
+      <div>
+        <h2>Özel sektörde Arapça</h2>
+        <div class="alt">Mesleğin üstüne binince ücreti ve fırsatı büyüten dil</div>
+      </div>
+    </div>
+    <div class="gov">
+      <div class="aoSekIzgara">
+        <div class="aoSek s1 adim" data-g="2"><div class="bas">Sağlık turizmi</div><div class="ack">2025 hedefi 12 milyar dolar gelir</div></div>
+        <div class="aoSek s2 adim" data-g="2"><div class="bas">Müteahhitlik</div><div class="ack">Körfez ve Kuzey Afrika şantiyeleri</div></div>
+        <div class="aoSek s3 adim" data-g="2"><div class="bas">Savunma sanayii</div><div class="ack">İhracat, eğitim ve satış sonrası</div></div>
+        <div class="aoSek s2 adim" data-g="3"><div class="bas">Turizm ve havacılık</div><div class="ack">Rehberlik, kabin, çağrı merkezi</div></div>
+        <div class="aoSek s3 adim" data-g="3"><div class="bas">Dış ticaret ve lojistik</div><div class="ack">İhracat temsilciliği, gümrük</div></div>
+        <div class="aoSek s1 adim" data-g="3"><div class="bas">Medya ve çeviri</div><div class="ack">Altyazı, yerelleştirme, yayıncılık</div></div>
+      </div>
+    </div>
+    <div class="aoNot laci adim" data-g="4">
+      Arapça tek başına meslek değil; <span class="vur">mesleğin kanadı.</span>
+    </div>
+  </section>
+
+  <!-- ================= AO 14 · İKİ KANAT ================= -->
+  <section class="slayt ao" data-ad="İki kanat">
+    <div class="sbaslik adim" data-g="1">
+      <div class="rozet">🕊️</div>
+      <div>
+        <h2>İki kanat</h2>
+        <div class="alt">Aynı dil, iki ayrı kazanç</div>
+      </div>
+    </div>
+    <div class="aoKanat">
+      <div class="aoKanatKart yer adim" data-g="2">
+        <h3>Yeryüzü</h3>
+        <div class="satir">22 ülkelik bir pazar</div>
+        <div class="satir">Kurum ve şirketlerde iş</div>
+        <div class="satir">Seyahat, ticaret, sözleşme</div>
+      </div>
+      <div class="aoKanatKart gok adim" data-g="3">
+        <h3>Gökyüzü</h3>
+        <div class="satir">Âyeti aracısız okumak</div>
+        <div class="satir">Namazda ne dediğini bilmek</div>
+        <div class="satir">Duanın kelimesini tanımak</div>
+      </div>
+    </div>
+    <div class="aoNot adim" data-g="4">
+      Kuş tek kanatla uçmaz. <span class="vur">Yol: Alfabe → Kelimeler → Vezinler → Muhâdese.</span>
+    </div>
+  </section>
+
+  <!-- ================= AO 15 · KAPANIŞ ================= -->
+  <section class="slayt ao" id="ao-sSon" data-ad="Kapanış">
+    <div style="text-align:center">
+      <div class="sukran adim" data-g="1">شُكْرًا</div>
+      <div class="emoji adim" data-g="2">📖 🌍 ✨</div>
+      <div class="marka adim" data-g="3">Kidef Arapça</div>
+      <div class="site adim" data-g="3">kidefarapca.com</div>
+    </div>
+  </section>
+    </div>
+
   <div class="sunum" data-s="harfitarif" data-ad="Harf-i Ta'rîf «ال»">
 <!-- ================= 1. KAPAK ================= -->
   <section class="slayt" id="hf-s1" data-ad="Kapak">
@@ -2270,8 +3022,9 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     </div>
   </section>
 
-  <!-- ================= KUMANDA ================= -->
     </div>
+
+  <!-- ================= KUMANDA ================= -->
 <div id="kumanda">
     <button class="kdug" id="dOnce" title="Önceki (←)"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
     <span id="sayac">1 / 11</span>
@@ -2454,7 +3207,8 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     '<circle class="pi" cx="12" cy="10.2" r="3.2"/></g></svg></span>';
 
   var HXA = {
-    kok:{ad:'Temel Arapça',ik:'kok',not:'Her söz üç kelime türünden kurulur; onlardan da tamlama ve cümle doğar.',
+    kok:{ad:'Temel Arapça',ik:'kok',not:'Her söz üç kelime türünden kurulur; onlardan da tamlama ve cümle doğar.',sunum:'arapcaninonemi',
+      
       g:[{ad:'Ana yapılar',d:['kelime','tamlama','cumle']}]},
 
     kelime:{ad:'Kelime',ik:'kelime',ar:'كَلِمَة',not:'Tek başına anlamı olan en küçük birim.',
@@ -2612,7 +3366,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       }).join('') + '</div>';
     }
     return '<div class="hxn d'+d+(id===isaret?' burada':'')+'" data-id="'+id+'">' +
-      '<div class="hxb s'+hxKademe(id)+'" data-id="'+id+'" tabindex="0">' + hxSim(n.ik) +
+      '<div class="hxb'+(sunumlu && n.sunum ? ' sunumlu' : '')+' s'+hxKademe(id)+'" data-id="'+id+'" tabindex="0">' + hxSim(n.ik) +
         '<span class="hxad">'+n.ad+'</span>' +
         (n.ar ? '<i class="hxar">'+n.ar+'</i>' : '') +
         (n.bag ? '<a class="hxbag" href="'+n.bag+'" target="_blank" rel="noopener" title="'+(n.bagAd||'Sayfayı aç')+'">'+
@@ -3207,6 +3961,35 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
 })();
 </script>
 
+<script>
+/* ==========================================================
+   TIKLANABİLİR ÂYET (Niçin Arapça? · 5-7. slaytlar)
+   Bir kelimeye dokununca: altında Türkçesi belirir, kelime
+   vurgulanır ve alttaki panelde yapısı çözümlenir. Tekrar
+   dokununca kapanır. İçindekiler önizlemesindeki kopyalarda
+   çalışmaz — orada bütün adımlar zaten açık gösteriliyor.
+   ========================================================== */
+(function(){
+  'use strict';
+  document.addEventListener('click', function(e){
+    if(!e.target || !e.target.closest) return;
+    var k = e.target.closest('.aoK');
+    if(!k || k.closest('.onizKutu')) return;
+    var sl = k.closest('.slayt'); if(!sl) return;
+    var acik = k.classList.toggle('acik');
+    [].forEach.call(sl.querySelectorAll('.aoK'), function(x){ x.classList.remove('sec'); });
+    if(acik) k.classList.add('sec');
+    var p = sl.querySelector('.aoCozum'); if(!p) return;
+    if(!acik){ p.classList.remove('dolduruldu'); return; }
+    p.querySelector('.bas').innerHTML =
+      '<span class="ar">' + (k.getAttribute('data-ar') || '') + '</span>' +
+      '<span class="ayrac">\u00B7</span>' +
+      '<span class="tr">' + (k.getAttribute('data-tr') || '') + '</span>';
+    p.querySelector('.ack').innerHTML = k.getAttribute('data-coz') || '';
+    p.classList.add('dolduruldu');
+  });
+})();
+</script>
 <link rel="stylesheet" href="../arakom.css?v=1">
 </body>
 </html>

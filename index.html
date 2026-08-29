@@ -157,7 +157,7 @@
     <!-- Tekil CSS Dosyası -->
     <link rel="stylesheet" href="hesap/kurslar.css">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css?v=20260821b">
+    <link rel="stylesheet" href="index.css?v=20260825a">
     <link rel="stylesheet" href="hesap/qrgiris.css?v=20260814a">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
@@ -1722,7 +1722,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></span>
             <h4>Ders Sunumları</h4>
             <p>Bütün sunumlar tek listede; tahtaya yansıt, adım adım anlat.</p>
-            <div class="sk-alt"><span class="sk-adet">2 sunum · 26 slayt</span><span class="sk-ac">Listeyi aç ›</span></div>
+            <div class="sk-alt"><span class="sk-adet">3 sunum · 41 slayt</span><span class="sk-ac">Listeyi aç ›</span></div>
           </a>
 
         </div>
@@ -2329,7 +2329,19 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       #imam-hatip .ih-kartlar .game-grid button.mh-kart.acik {
         background:linear-gradient(180deg,#E4FAF1 0%,#fff 72%);
       }
-      #imam-hatip .ih-kartlar .game-grid .game-card { transition:opacity .17s ease, filter .17s ease; }
+      /* KARTIN HER YERİ AÇAR (Geylani). Kart zaten baştan sona bağlantı,
+         ama telefonda yazıya dokunmak metin seçimini başlatıp dokunuşu
+         yutabiliyordu ve çift dokunuşla yakınlaştırma yüzünden tarayıcı
+         her dokunuşu ~300 ms bekletiyordu. Seçim kapatıldı, touch-action
+         "manipulation" yapıldı — kaydırma ve parmakla yakınlaştırma
+         duruyor, yalnız çift dokunuş gecikmesi kalkıyor. Dokunulan yer
+         belli olsun diye de hafif bir vurgu rengi verildi. */
+      #imam-hatip .ih-kartlar .game-grid .game-card {
+        transition:opacity .17s ease, filter .17s ease;
+        touch-action:manipulation;
+        -webkit-user-select:none; user-select:none;
+        -webkit-tap-highlight-color:rgba(22,160,133,.14);
+      }
       #imam-hatip .ih-kartlar.mh-acik .game-grid .game-card:not(.mh-kart) {
         opacity:.5; filter:saturate(.5);
       }
@@ -3733,8 +3745,27 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         btn.setAttribute('aria-expanded', aciliyor ? 'true' : 'false');
         /* Sınıf ızgaranın üstünde: açık kart vurgulanırken ötekiler soluyor. */
         mount.classList.toggle('mh-acik', aciliyor);
-        if (aciliyor) { mhOkHizala(mount); panelAc(panel); } else panelKapat(panel);
+        if (aciliyor) {
+          /* Telefonda "hazır" işaretli bir kart kalmışsa düşsün; yoksa
+             Muhâdese kapanırken o kart tek dokunuşla açılıveriyor. */
+          [].forEach.call(mount.querySelectorAll('.game-card.kd-hazir'),
+            function (c) { c.classList.remove('kd-hazir'); });
+          mhOkHizala(mount); panelAc(panel);
+        } else panelKapat(panel);
       };
+
+      /* Muhâdese bölümünü kapat — kart tıklamadan da kapatılabiliyor
+         (telefonda öteki karta ilk dokunuş). Zaten kapalıysa dokunmaz. */
+      function mhKapat(mount) {
+        if (!mount) return;
+        var btn = mount.querySelector('.mh-kart');
+        var panel = mount.querySelector('.mh-panel');
+        if (!btn || !btn.classList.contains('acik')) { mount.classList.remove('mh-acik'); return; }
+        btn.classList.remove('acik');
+        btn.setAttribute('aria-expanded', 'false');
+        mount.classList.remove('mh-acik');
+        panelKapat(panel);
+      }
 
       /* PANELİN OKU KARTIN ORTASINI GÖSTERSİN (Geylani: "listenin muhâdese
          kartına ait olduğu belli olsun"). Kartın ızgaradaki sırası sınıfa
@@ -3760,20 +3791,30 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         }, 140);
       });
 
-      /* ÖTEKİ KARTA DOKUNULDUĞU AN SÖNÜKLÜK KALKAR (Geylani: "önce pasiflik
-         kalksın sonra açılsınlar"). Parmak/fare BASILDIĞINDA çalışır, kart
-         ise BIRAKILDIĞINDA açılır — arada kalan sürede solma geri dönmüş
-         oluyor. Tıklama engellenmiyor: preventDefault edip sonradan
-         window.open denenseydi açılır pencere engelleyicisine takılırdı.
-         Muhâdese listesi açık kalıyor; hangi kartın açtığını yüzük ve ok
-         söylemeye devam ediyor. */
+      /* Son etkileşimin cinsi. Dokunmatikte iki aşamalı davranış var,
+         farede yok — fare kartın üstüne geldiği an sönüklük zaten
+         kalkıyor (CSS :hover), ikinci tık istemek can sıkardı. */
+      var mhSonTip = '';
       document.addEventListener('pointerdown', function (e) {
+        mhSonTip = e.pointerType || 'mouse';
+      }, true);
+      document.addEventListener('keydown', function () { mhSonTip = 'klavye'; }, true);
+
+      /* TELEFONDA ÖTEKİ KARTA DOKUNUNCA MUHÂDESE KAPANIR (Geylani).
+         Açılmayı burada ENGELLEMİYORUZ: kartların iki aşamalı dokunuş
+         düzeni index.js'te — ilk dokunuş kartı ortalayıp "hazır"
+         işaretliyor, ikinci dokunuş açıyor. Burada yalnız Muhâdese
+         bölümü kapatılıyor; preventDefault ya da stopPropagation
+         verilseydi index.js'in o düzeni hiç çalışmazdı. */
+      document.addEventListener('click', function (e) {
+        if (mhSonTip !== 'touch' && mhSonTip !== 'pen') return;
         var t = e.target;
         if (!t || !t.closest) return;
         var kart = t.closest('#imam-hatip .ih-kartlar .game-grid .game-card');
         if (!kart || kart.classList.contains('mh-kart')) return;
         var mount = kart.closest('.ih-kartlar');
-        if (mount) mount.classList.remove('mh-acik');
+        if (!mount || !mount.classList.contains('mh-acik')) return;
+        mhKapat(mount);
       }, true);
 
       function mhEsc(s) {
@@ -5570,7 +5611,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             }
         }
     </script>
-    <script src="index.js?v=20260809b"></script>
+    <script src="index.js?v=20260825a"></script>
     <script src="sistem/geri.js?v=20260808a"></script>
     <script>
     /* Baska sayfalardan "Girise git" ile gelindiginde giris-kayit penceresini ac.
