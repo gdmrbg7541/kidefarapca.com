@@ -15,7 +15,7 @@
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="arakom.css?v=1">
-<link rel="stylesheet" href="tamlamavecumleler.css?v=20260810a">
+<link rel="stylesheet" href="tamlamavecumleler.css?v=20260830b">
 </head>
 <body>
 
@@ -300,6 +300,26 @@
 <div class="tc-bas tc-bas-ust" id="tcBasUst" aria-hidden="true"></div>
 <div class="tc-bas tc-bas-sol" id="tcBasSol" aria-hidden="true"><span class="tc-bas-dik" id="tcBasSolYazi"></span></div>
 
+<!-- ============ İ'RAB KAMERASI KUMANDASI ============
+     İ'rab tablosunda bir hücreye dokununca tablo o hücreye yaklaşır.
+     Bu şerit yalnız o sırada görünür; örnek okları hücrenin kendi
+     kartında durduğu için burada yalnız çıkış düğmesi var.
+     Üst/sol rozetler yukarıdaki #tcBasUst / #tcBasSol ile ORTAK —
+     iki kamera aynı anda çalışamaz (tamlama tablosu i'rab paneli
+     açıkken gizlidir), bu yüzden ayrı kopya tutulmuyor. -->
+<div class="tc-kum" id="tcIrabKum" aria-hidden="true">
+  <button type="button" class="tc-kum-uzak" id="tcIrabUzak" title="Uzaklaş (Esc)">
+    <span class="tc-kum-ikon">⤢</span> Uzaklaş
+  </button>
+  <span class="tc-kum-sayac" id="tcIrabKumAd"></span>
+  <!-- Yakınken de اَلْ çevrilebilsin: asıl düğme yukarıda kalıyor,
+       büyüyen tablo onu örtüyor. Buradaki yalnız onu tetikliyor —
+       kelimenin nekra/marife hâli göz kutudan ayrılmadan görülsün. -->
+  <button type="button" class="tc-kum-al" id="tcIrabKumAl" hidden>
+    <span class="tc-al-yazi">اَلْ</span> <span id="tcIrabKumAlAd">takısını ekle</span>
+  </button>
+</div>
+
 
 <!-- ============ TEST (10 SORULUK TUR) ============
      Sorular 5/7/9/10. sınıf ders kelimelerinden (muhadese/veri) üretilen
@@ -483,10 +503,7 @@
     <section class="tc-bolum" data-bolum="tablolar">
       <div class="tc-alt-sek" id="tcTabloSek" role="tablist" aria-label="Tablo türü" hidden>
         <!-- Başlıklar Arapçasız: tek satırda kalsınlar, panel yüksek başlamasın. -->
-        <button type="button" class="tc-asd aktif" data-panel="isim" role="tab" aria-selected="true">İsim</button>
-        <button type="button" class="tc-asd tc-asd-h" data-panel="esma" role="tab" aria-selected="false">Esmâ-i hamse</button>
-        <button type="button" class="tc-asd" data-panel="fiil" role="tab" aria-selected="false">Fiil</button>
-        <button type="button" class="tc-asd tc-asd-h" data-panel="hamse" role="tab" aria-selected="false">Efâl-i hamse</button>
+        <button type="button" class="tc-asd aktif" data-panel="irab" role="tab" aria-selected="true">İ'râb</button>
         <span class="tc-asd-ayrac">bir kelime üzerinde</span>
         <button type="button" class="tc-asd tc-asd-k" data-panel="kelime" data-sev="lafzen" role="tab" aria-selected="false">
           Lafzen <span class="tc-i" data-terim="lafzen" title="Lafzen nedir?">i</span></button>
@@ -496,45 +513,150 @@
           Mahallen <span class="tc-i" data-terim="mahallen" title="Mahallen nedir?">i</span></button>
       </div>
 
-      <div class="tc-tablo-panel" data-panel="isim">
+      <!-- ================= İ'RÂB SONLARI — İSİM + FİİL =================
+           İki tablo TEK panelde, alt alta. Ayrı sekmelerdeyken öğrenci
+           ikisini yan yana göremiyordu; oysa öğretilecek şey tam da
+           farkları: üçüncü hâl isimde MECRUR, fiilde MECZUM.
+           Bloklar kimlikli (tcIrabIsim / tcIrabFiil): Giriş'teki keşif
+           adımı "… tablosunu aç" derken doğru tabloya kaydırıyor. -->
+      <div class="tc-tablo-panel" data-panel="irab">
+        <!-- İSİM / FİİL KARTLARI + KAYAR RAY
+             Tablolar alt alta değil YAN YANA duruyor; ray bir tam genişlik
+             kaydırılarak öbürüne geçiliyor. Karta basmak, ok tuşları ve
+             dokunmatikte kaydırma — üçü de aynı işi görür.
+             Kart renkleri rastgele değil: mor = Mecrur, kırmızı = Meczum;
+             yani kartın rengi, o tabloyu ötekinden ayıran hâlin rengi. -->
+        <div class="tc-irab-sec" id="tcIrabSec" role="tablist" aria-label="Tablo seç">
+          <button type="button" class="tc-irab-kart tik-harf" data-tablo="harf"
+                  role="tab" aria-selected="false" aria-controls="tcIrabHarf">
+            <span class="tik-ar" dir="rtl">حَرْف</span>
+            <span class="tik-ad">HARF</span>
+            <span class="tik-ayrac" aria-hidden="true">·</span>
+            <span class="tik-alt">i'râbı yok, <b>mebnî</b></span>
+          </button>
+          <button type="button" class="tc-irab-kart tik-isim aktif" data-tablo="isim"
+                  role="tab" aria-selected="true" aria-controls="tcIrabIsim">
+            <span class="tik-ar" dir="rtl">اِسْم</span>
+            <span class="tik-ad">İSİM</span>
+            <span class="tik-ayrac" aria-hidden="true">·</span>
+            <span class="tik-alt">üçüncü hâl <b>Mecrur</b></span>
+          </button>
+          <button type="button" class="tc-irab-kart tik-fiil" data-tablo="fiil"
+                  role="tab" aria-selected="false" aria-controls="tcIrabFiil">
+            <span class="tik-ar" dir="rtl">فِعْل</span>
+            <span class="tik-ad">FİİL</span>
+            <span class="tik-ayrac" aria-hidden="true">·</span>
+            <span class="tik-alt">üçüncü hâl <b>Meczum</b></span>
+          </button>
+        </div>
+
+        <div class="tc-irab-ray" id="tcIrabRay">
+          <div class="tc-irab-sahne" id="tcIrabSahne">
+            <div class="tc-irab-blok" id="tcIrabHarf" role="tabpanel">
+              <h3 class="tc-oz-bas">Harfin i'râbı — yoktur</h3>
+              <p class="tc-oz-gir">Harf <b>mebnî</b>dir: sonu hiç değişmez, alâmet almaz.
+                Ama kendinden sonrakinin hâlini <b>o belirler</b>.</p>
+              <div class="tc-irab-kutu">
+                <table class="tc-irab tc-irab-harf">
+                  <thead>
+                    <tr>
+                      <th style="width:104px"></th>
+                      <th><span class="tc-ib-ad">Ne yapar?</span></th>
+                      <th><span class="tc-ib-ad">Harfler</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="tc-h-mecrur">
+                      <td class="tc-hal">Cer</td>
+                      <td class="thn">sonraki <b>ismi</b> mecrur yapar</td>
+                      <td>مِنْ · إِلَى · عَنْ · عَلَى · فِي · بِ · لِ · كَ</td>
+                    </tr>
+                    <tr class="tc-h-mansub">
+                      <td class="tc-hal">Nasb</td>
+                      <td class="thn">sonraki <b>muzâri fiili</b> mansub yapar</td>
+                      <td>أَنْ · لَنْ · كَيْ · حَتَّى</td>
+                    </tr>
+                    <tr class="tc-h-meczum">
+                      <td class="tc-hal">Cezm</td>
+                      <td class="thn">sonraki <b>muzâri fiili</b> meczum yapar</td>
+                      <td>لَمْ · لَمَّا · لِ · لَا</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="tc-not">Satır renkleri öbür iki tablodakiyle aynı:
+                mor satır ismin <b>Mecrur</b>unun, mavi ve kırmızı satır fiilin
+                <b>Mansub</b> ve <b>Meczum</b>unun sebebidir.</p>
+            </div>
+            <div class="tc-irab-blok" id="tcIrabIsim" role="tabpanel">
+
+
         <h3 class="tc-oz-bas">İsmin i'rab sonları</h3>
         <p class="tc-oz-gir"><span dir="rtl" class="tc-ar-ic">ـ ـ ـ</span> kelimenin gövdesidir; değişen yalnız <b>son</b>dur.
-          İsim <b>meczum olmaz</b>.</p>
+          İsim <b>meczum olmaz</b>.
+          <b>Esmâ-i hamse</b> muzâf olmak zorundadır; onun için <span dir="rtl" class="tc-ar-ic">اَلْ</span> almaz.</p>
+        <!-- اَلْ ANAHTARI: tenvin ↔ tek hareke.
+             Kural iki cümleyle anlatılabilir ama GÖRÜLÜNCE akılda kalıyor:
+             düğmeye basınca dokuz hücrede birden tenvin düşüyor, yerine tek
+             hareke geliyor ve başa اَلْ oturuyor. Yalnız sonu HAREKE ile
+             değişen sütunlar bundan etkilenir; ikil ve vavlı çoğul (harf ile
+             değişenler) tenvin almadığı için oldukları gibi kalır. -->
+        <div class="tc-al-kur">
+          <button type="button" class="tc-al-tus" id="tcAlTus" aria-pressed="false">
+            <span class="tc-al-yazi" dir="rtl">اَلْ</span>
+            <span class="tc-al-durum">takısını ekle</span>
+          </button>
+          <p class="tc-al-not" id="tcAlNot"></p>
+        </div>
+        <div class="tc-ornek-kur">
+          <span class="tc-tak" hidden aria-label="Örnek takımı">
+            <button type="button" class="tc-tak-ok" data-yon="-1" title="Önceki örnek" aria-label="Önceki örnek">‹</button>
+            <span class="tc-tak-sayac">1 / 2</span>
+            <button type="button" class="tc-tak-ok" data-yon="1" title="Sonraki örnek" aria-label="Sonraki örnek">›</button>
+          </span>
+          <p class="tc-ornek-not">Bir hücreye dokun: o hücrenin
+            <b>örnek cümlesi</b> açılır; oklarla başka örneğe geçilir.</p>
+        </div>
     <div class="tc-irab-kutu">
-    <table class="tc-irab tc-irab-isim">
+    <table class="tc-irab tc-irab-isim" data-tak="0">
       <thead>
         <tr>
-          <th style="width:104px"></th>
-        <th><span class="tc-ib-ar" dir="rtl">مُفْرَد</span><span class="tc-ib-ad">Tekil</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
-        <th><span class="tc-ib-ar" dir="rtl">تَثْنِيَة</span><span class="tc-ib-ad">İkil</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span></span></th>
-        <th colspan="2"><span class="tc-ib-ar" dir="rtl">جَمْع سَالِم</span><span class="tc-ib-ad">Düzenli Çoğul</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span> <b>+</b> <span class="tc-ib-hareke">Hareke</span></span></th>
-        <th><span class="tc-ib-ar" dir="rtl">جَمْع تَكْسِير</span><span class="tc-ib-ad">Düzensiz Çoğul</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
+          <th class="tc-bos" style="width:104px"></th>
+          <th class="tc-sb"><span class="tc-ib-ar" dir="rtl">مُفْرَد</span><span class="tc-ib-ad">Tekil</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
+          <th class="tc-sb"><span class="tc-ib-ar" dir="rtl">تَثْنِيَة</span><span class="tc-ib-ad">İkil</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span></span></th>
+          <th class="tc-sb"><span class="tc-ib-ar" dir="rtl">جَمْع مُذَكَّر</span><span class="tc-ib-ad">Cem-i müzekker</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span></span></th>
+          <th class="tc-sb"><span class="tc-ib-ar" dir="rtl">جَمْع مُؤَنَّث</span><span class="tc-ib-ad">Cem-i müennes</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
+          <th class="tc-sb"><span class="tc-ib-ar" dir="rtl">جَمْع تَكْسِير</span><span class="tc-ib-ad">Kırık çoğul</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
+          <th class="tc-sb"><span class="tc-ib-ar" dir="rtl">أَسْمَاء خَمْسَة</span><span class="tc-ib-ad">Esmâ-i hamse</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span></span></th>
         </tr>
       </thead>
       <tbody>
         <tr class="tc-h-merfu">
           <td class="tc-hal">Merfu</td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــُ / ـــٌ</span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــَانِ</span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــُونَ</span></td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَاتُ</span></td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــُ / ـــٌ</span></td>
+          <td data-sut="0" tabindex="0" role="button"><span class="son tc-ib-hareke"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ <span class="tc-al-n">ـــٌ</span><span class="tc-al-m">ـــُ</span></span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="tc-al-n"><span class="oa">فِي الْبَيْتِ كِتَا<b class="ek">بٌ</b>.</span><span class="ot">Evde bir kitap var.</span></span><span class="tc-al-m"><span class="oa">اَلْكِتَا<b class="ek">بُ</b> فِي الْبَيْتِ.</span><span class="ot">Kitap evdedir.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">وَصَلَ كِتَا<b class="ek">بٌ</b>.</span><span class="ot">Bir kitap geldi.</span></span><span class="tc-al-m"><span class="oa">وَصَلَ الْكِتَا<b class="ek">بُ</b>.</span><span class="ot">Kitap geldi.</span></span></span></td>
+          <td data-sut="1" tabindex="0" role="button"><span class="son tc-ib-harf"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ ـــَانِ</span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="tc-al-n"><span class="oa">فِي الْبَيْتِ كِتَا<b class="ek">بَانِ</b>.</span><span class="ot">Evde iki kitap var.</span></span><span class="tc-al-m"><span class="oa">اَلْكِتَا<b class="ek">بَانِ</b> فِي الْبَيْتِ.</span><span class="ot">İki kitap evdedir.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">وَصَلَ كِتَا<b class="ek">بَانِ</b>.</span><span class="ot">İki kitap geldi.</span></span><span class="tc-al-m"><span class="oa">وَصَلَ الْكِتَا<b class="ek">بَانِ</b>.</span><span class="ot">İki kitap geldi.</span></span></span></td>
+          <td data-sut="2" tabindex="0" role="button"><span class="son tc-ib-harf"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ ـــُونَ</span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="tc-al-n"><span class="oa">فِي الْبَيْتِ مُسْلِ‍<b class="ek">‍مُونَ</b>.</span><span class="ot">Evde müslümanlar var.</span></span><span class="tc-al-m"><span class="oa">اَلْمُسْلِ‍<b class="ek">‍مُونَ</b> فِي الْبَيْتِ.</span><span class="ot">Müslümanlar evdedir.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">جَاءَ مُسْلِ‍<b class="ek">‍مُونَ</b>.</span><span class="ot">Müslümanlar geldi.</span></span><span class="tc-al-m"><span class="oa">جَاءَ الْمُسْلِ‍<b class="ek">‍مُونَ</b>.</span><span class="ot">Müslümanlar geldi.</span></span></span></td>
+          <td data-sut="3" tabindex="0" role="button"><span class="son tc-ib-hareke"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ <span class="tc-al-n">ـــَاتٌ</span><span class="tc-al-m">ـــَاتُ</span></span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="tc-al-n"><span class="oa">فِي الْبَيْتِ مُسْلِ‍<b class="ek">‍مَاتٌ</b>.</span><span class="ot">Evde müslüman kadınlar var.</span></span><span class="tc-al-m"><span class="oa">اَلْمُسْلِ‍<b class="ek">‍مَاتُ</b> فِي الْبَيْتِ.</span><span class="ot">Müslüman kadınlar evdedir.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">جَاءَتْ مُسْلِ‍<b class="ek">‍مَاتٌ</b>.</span><span class="ot">Müslüman kadınlar geldi.</span></span><span class="tc-al-m"><span class="oa">جَاءَتِ الْمُسْلِ‍<b class="ek">‍مَاتُ</b>.</span><span class="ot">Müslüman kadınlar geldi.</span></span></span></td>
+          <td data-sut="4" tabindex="0" role="button"><span class="son tc-ib-hareke"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ <span class="tc-al-n">ـــٌ</span><span class="tc-al-m">ـــُ</span></span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="tc-al-n"><span class="oa">فِي الْبَيْتِ كُتُ‍<b class="ek">‍بٌ</b>.</span><span class="ot">Evde kitaplar var.</span></span><span class="tc-al-m"><span class="oa">اَلْكُتُ‍<b class="ek">‍بُ</b> فِي الْبَيْتِ.</span><span class="ot">Kitaplar evdedir.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">وَصَلَتْ كُتُ‍<b class="ek">‍بٌ</b>.</span><span class="ot">Kitaplar geldi.</span></span><span class="tc-al-m"><span class="oa">وَصَلَتِ الْكُتُ‍<b class="ek">‍بُ</b>.</span><span class="ot">Kitaplar geldi.</span></span></span></td>
+          <td data-sut="5" tabindex="0" role="button"><span class="son tc-ib-harf"><span class="si">ـ ـ ـ ـــُو</span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="oa">أَ<b class="ek">بُو</b> عَلِيٍّ فِي الْبَيْتِ.</span><span class="ot">Ali’nin babası evdedir.</span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="oa">جَاءَ أَ<b class="ek">بُو</b> عَلِيٍّ.</span><span class="ot">Ali’nin babası geldi.</span></span></td>
         </tr>
         <tr class="tc-h-mansub">
           <td class="tc-hal">Mansub</td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَ / ـــًا</span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــَيْنِ</span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــِينَ</span></td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَاتِ</span></td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَ / ـــًا</span></td>
+          <td data-sut="0" tabindex="0" role="button"><span class="son tc-ib-hareke"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ <span class="tc-al-n">ـــًا</span><span class="tc-al-m">ـــَ</span></span></span><span class="orn" data-tak="0" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">وَجَدْتُ كِتَا<b class="ek">بًا</b>.</span><span class="ot">Bir kitap buldum.</span></span><span class="tc-al-m"><span class="oa">وَجَدْتُ الْكِتَا<b class="ek">بَ</b>.</span><span class="ot">Kitabı buldum.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">قَرَأْتُ كِتَا<b class="ek">بًا</b>.</span><span class="ot">Bir kitap okudum.</span></span><span class="tc-al-m"><span class="oa">قَرَأْتُ الْكِتَا<b class="ek">بَ</b>.</span><span class="ot">Kitabı okudum.</span></span></span></td>
+          <td data-sut="1" tabindex="0" role="button"><span class="son tc-ib-harf"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ ـــَيْنِ</span></span><span class="orn" data-tak="0" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">وَجَدْتُ كِتَا<b class="ek">بَيْنِ</b>.</span><span class="ot">İki kitap buldum.</span></span><span class="tc-al-m"><span class="oa">وَجَدْتُ الْكِتَا<b class="ek">بَيْنِ</b>.</span><span class="ot">İki kitabı buldum.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">قَرَأْتُ كِتَا<b class="ek">بَيْنِ</b>.</span><span class="ot">İki kitap okudum.</span></span><span class="tc-al-m"><span class="oa">قَرَأْتُ الْكِتَا<b class="ek">بَيْنِ</b>.</span><span class="ot">İki kitabı okudum.</span></span></span></td>
+          <td data-sut="2" tabindex="0" role="button"><span class="son tc-ib-harf"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ ـــِينَ</span></span><span class="orn" data-tak="0" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">سَأَلْتُ مُسْلِ‍<b class="ek">‍مِينَ</b>.</span><span class="ot">Bazı müslümanlara sordum.</span></span><span class="tc-al-m"><span class="oa">سَأَلْتُ الْمُسْلِ‍<b class="ek">‍مِينَ</b>.</span><span class="ot">Müslümanlara sordum.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">رَأَيْتُ مُسْلِ‍<b class="ek">‍مِينَ</b>.</span><span class="ot">Müslümanlar gördüm.</span></span><span class="tc-al-m"><span class="oa">رَأَيْتُ الْمُسْلِ‍<b class="ek">‍مِينَ</b>.</span><span class="ot">Müslümanları gördüm.</span></span></span></td>
+          <td data-sut="3" tabindex="0" role="button"><span class="son tc-ib-hareke"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ <span class="tc-al-n">ـــَاتٍ</span><span class="tc-al-m">ـــَاتِ</span></span></span><span class="orn" data-tak="0" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">سَأَلْتُ مُسْلِ‍<b class="ek">‍مَاتٍ</b>.</span><span class="ot">Bazı müslüman kadınlara sordum.</span></span><span class="tc-al-m"><span class="oa">سَأَلْتُ الْمُسْلِ‍<b class="ek">‍مَاتِ</b>.</span><span class="ot">Müslüman kadınlara sordum.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">رَأَيْتُ مُسْلِ‍<b class="ek">‍مَاتٍ</b>.</span><span class="ot">Müslüman kadınlar gördüm.</span></span><span class="tc-al-m"><span class="oa">رَأَيْتُ الْمُسْلِ‍<b class="ek">‍مَاتِ</b>.</span><span class="ot">Müslüman kadınları gördüm.</span></span></span></td>
+          <td data-sut="4" tabindex="0" role="button"><span class="son tc-ib-hareke"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ <span class="tc-al-n">ـــًا</span><span class="tc-al-m">ـــَ</span></span></span><span class="orn" data-tak="0" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">وَجَدْتُ كُتُ‍<b class="ek">‍بًا</b>.</span><span class="ot">Bazı kitaplar buldum.</span></span><span class="tc-al-m"><span class="oa">وَجَدْتُ الْكُتُ‍<b class="ek">‍بَ</b>.</span><span class="ot">Kitapları buldum.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">قَرَأْتُ كُتُ‍<b class="ek">‍بًا</b>.</span><span class="ot">Kitaplar okudum.</span></span><span class="tc-al-m"><span class="oa">قَرَأْتُ الْكُتُ‍<b class="ek">‍بَ</b>.</span><span class="ot">Kitapları okudum.</span></span></span></td>
+          <td data-sut="5" tabindex="0" role="button"><span class="son tc-ib-harf"><span class="si">ـ ـ ـ ـــَا</span></span><span class="orn" data-tak="0" data-ad="Fiil cümlesi"><span class="oa">زُرْتُ أَ<b class="ek">بَا</b> عَلِيٍّ.</span><span class="ot">Ali’nin babasını ziyaret ettim.</span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="oa">رَأَيْتُ أَ<b class="ek">بَا</b> عَلِيٍّ.</span><span class="ot">Ali’nin babasını gördüm.</span></span></td>
         </tr>
         <tr class="tc-h-mecrur">
           <td class="tc-hal">Mecrur</td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــِ / ـــٍ</span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــَيْنِ</span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــِينَ</span></td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَاتِ</span></td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــِ / ـــٍ</span></td>
+          <td data-sut="0" tabindex="0" role="button"><span class="son tc-ib-hareke"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ <span class="tc-al-n">ـــٍ</span><span class="tc-al-m">ـــِ</span></span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="tc-al-n"><span class="oa">اَلْفَائِدَةُ فِي كِتَا<b class="ek">بٍ</b>.</span><span class="ot">Fayda bir kitaptadır.</span></span><span class="tc-al-m"><span class="oa">اَلْفَائِدَةُ فِي الْكِتَا<b class="ek">بِ</b>.</span><span class="ot">Fayda kitaptadır.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">نَظَرْتُ إِلَى كِتَا<b class="ek">بٍ</b>.</span><span class="ot">Bir kitaba baktım.</span></span><span class="tc-al-m"><span class="oa">نَظَرْتُ إِلَى الْكِتَا<b class="ek">بِ</b>.</span><span class="ot">Kitaba baktım.</span></span></span></td>
+          <td data-sut="1" tabindex="0" role="button"><span class="son tc-ib-harf"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ ـــَيْنِ</span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="tc-al-n"><span class="oa">اَلْفَائِدَةُ فِي كِتَا<b class="ek">بَيْنِ</b>.</span><span class="ot">Fayda iki kitaptadır.</span></span><span class="tc-al-m"><span class="oa">اَلْفَائِدَةُ فِي الْكِتَا<b class="ek">بَيْنِ</b>.</span><span class="ot">Fayda iki kitaptadır.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">نَظَرْتُ إِلَى كِتَا<b class="ek">بَيْنِ</b>.</span><span class="ot">İki kitaba baktım.</span></span><span class="tc-al-m"><span class="oa">نَظَرْتُ إِلَى الْكِتَا<b class="ek">بَيْنِ</b>.</span><span class="ot">İki kitaba baktım.</span></span></span></td>
+          <td data-sut="2" tabindex="0" role="button"><span class="son tc-ib-harf"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ ـــِينَ</span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="tc-al-n"><span class="oa">اَلْخَيْرُ فِي مُسْلِ‍<b class="ek">‍مِينَ</b>.</span><span class="ot">Hayır müslümanlardadır.</span></span><span class="tc-al-m"><span class="oa">اَلْخَيْرُ فِي الْمُسْلِ‍<b class="ek">‍مِينَ</b>.</span><span class="ot">Hayır müslümanlardadır.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">سَلَّمْتُ عَلَى مُسْلِ‍<b class="ek">‍مِينَ</b>.</span><span class="ot">Müslümanlara selam verdim.</span></span><span class="tc-al-m"><span class="oa">سَلَّمْتُ عَلَى الْمُسْلِ‍<b class="ek">‍مِينَ</b>.</span><span class="ot">Müslümanlara selam verdim.</span></span></span></td>
+          <td data-sut="3" tabindex="0" role="button"><span class="son tc-ib-hareke"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ <span class="tc-al-n">ـــَاتٍ</span><span class="tc-al-m">ـــَاتِ</span></span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="tc-al-n"><span class="oa">اَلْخَيْرُ فِي مُسْلِ‍<b class="ek">‍مَاتٍ</b>.</span><span class="ot">Hayır müslüman kadınlardadır.</span></span><span class="tc-al-m"><span class="oa">اَلْخَيْرُ فِي الْمُسْلِ‍<b class="ek">‍مَاتِ</b>.</span><span class="ot">Hayır müslüman kadınlardadır.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">سَلَّمْتُ عَلَى مُسْلِ‍<b class="ek">‍مَاتٍ</b>.</span><span class="ot">Müslüman kadınlara selam verdim.</span></span><span class="tc-al-m"><span class="oa">سَلَّمْتُ عَلَى الْمُسْلِ‍<b class="ek">‍مَاتِ</b>.</span><span class="ot">Müslüman kadınlara selam verdim.</span></span></span></td>
+          <td data-sut="4" tabindex="0" role="button"><span class="son tc-ib-hareke"><span class="si"><span class="tc-al-ek">اَلْـ</span>ـ ـ ـ <span class="tc-al-n">ـــٍ</span><span class="tc-al-m">ـــِ</span></span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="tc-al-n"><span class="oa">اَلْفَائِدَةُ فِي كُتُ‍<b class="ek">‍بٍ</b>.</span><span class="ot">Fayda kitaplardadır.</span></span><span class="tc-al-m"><span class="oa">اَلْفَائِدَةُ فِي الْكُتُ‍<b class="ek">‍بِ</b>.</span><span class="ot">Fayda kitaplardadır.</span></span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="tc-al-n"><span class="oa">نَظَرْتُ إِلَى كُتُ‍<b class="ek">‍بٍ</b>.</span><span class="ot">Kitaplara baktım.</span></span><span class="tc-al-m"><span class="oa">نَظَرْتُ إِلَى الْكُتُ‍<b class="ek">‍بِ</b>.</span><span class="ot">Kitaplara baktım.</span></span></span></td>
+          <td data-sut="5" tabindex="0" role="button"><span class="son tc-ib-harf"><span class="si">ـ ـ ـ ـــِي</span></span><span class="orn" data-tak="0" data-ad="İsim cümlesi"><span class="oa">اَلْكِتَابُ لِأَ<b class="ek">بِي</b> عَلِيٍّ.</span><span class="ot">Kitap Ali’nin babasınındır.</span></span><span class="orn" data-tak="1" data-ad="Fiil cümlesi"><span class="oa">سَلَّمْتُ عَلَى أَ<b class="ek">بِي</b> عَلِيٍّ.</span><span class="ot">Ali’nin babasına selam verdim.</span></span></td>
         </tr>
       </tbody>
     </table>
@@ -544,35 +666,8 @@
           <span class="tc-ib-hareke"><b>Pembe</b></span> olanlar <b>hareke</b> ile,
           <span class="tc-ib-harf"><b>mavi</b></span> olanlar <b>harf</b> ile değişir.
         </p>
-      </div>
-
-      <!-- ================= ESMÂ-İ HAMSE =================
-           Efâl-i hamsenin isimdeki karşılığı: alâmet hareke değil HARF.
-           Aynı kök üç hâlde üç ayrı harf alıyor — kural tek satırla
-           anlatılabildiği için tablo betikten üretiliyor:
-             merfu = kök + ُو · mansub = kök + َا · mecrur = kök + ِي
-           Beş ismin beşinde de aynı işliyor; tabloyu elle yazmak bu
-           düzenliliği gizlerdi. -->
-      <div class="tc-tablo-panel" data-panel="esma" hidden>
-        <h3 class="tc-oz-bas">Esmâ-i hamse — beş isim</h3>
-        <p class="tc-oz-gir">Bu beş isimde alâmet <b>hareke değil harftir</b>:
-          merfuda <b>vâv</b>, mansubda <b>elif</b>, mecrurda <b>yâ</b>.
-          Efâl-i hamsede nûn ne yapıyorsa, burada bu üç harf onu yapar.</p>
-        <div class="esm-kutu">
-          <table class="esm-tablo">
-            <thead>
-              <tr>
-                <th class="esm-bas">İsim</th>
-                <th class="esm-s-merfu"><span class="esm-harf" dir="rtl">ـُو</span><span class="esm-ad">Merfu</span></th>
-                <th class="esm-s-mansub"><span class="esm-harf" dir="rtl">ـَا</span><span class="esm-ad">Mansub</span></th>
-                <th class="esm-s-mecrur"><span class="esm-harf" dir="rtl">ـِي</span><span class="esm-ad">Mecrur</span></th>
-              </tr>
-            </thead>
-            <tbody id="esmGovde"></tbody>
-          </table>
-        </div>
-        <div class="esm-ik" id="esmIk" hidden></div>
-
+              <div class="tc-irab-ek" id="tcIrabEsma">
+                <div class="tc-irab-ayrac" aria-hidden="true"></div>
         <h3 class="tc-oz-bas" style="margin-top:22px">Dört şart</h3>
         <p class="tc-oz-gir">Şartlardan biri bozulursa bu isimler <b>sıradan isim gibi hareke alır</b>.</p>
         <div class="esm-sart">
@@ -602,43 +697,58 @@
           (<span dir="rtl" class="tc-ar-ic">فُو الطِّفْلِ</span>);
           <span dir="rtl" class="tc-ar-ic">ذُو</span> ise <b>yalnız açık isme</b> muzâf olur,
           zamire eklenmez ve “sahip” anlamındadır.</p>
-      </div>
+      
+              </div>
 
-      <div class="tc-tablo-panel" data-panel="fiil" hidden>
+        
+            </div>
+            <div class="tc-irab-blok" id="tcIrabFiil" role="tabpanel">
+
+
         <h3 class="tc-oz-bas">Muzari fiilin i'rab sonları</h3>
         <p class="tc-oz-gir">Fiilde <b>mecrur yoktur</b>, yerine <b>meczum</b> vardır.
           Üstü çizili nûnlar o hâlde <b>düşer</b>.</p>
+        <div class="tc-ornek-kur">
+          <span class="tc-tak" hidden aria-label="Örnek takımı">
+            <button type="button" class="tc-tak-ok" data-yon="-1" title="Önceki örnek" aria-label="Önceki örnek">‹</button>
+            <span class="tc-tak-sayac">1 / 2</span>
+            <button type="button" class="tc-tak-ok" data-yon="1" title="Sonraki örnek" aria-label="Sonraki örnek">›</button>
+          </span>
+          <p class="tc-ornek-not">Bir hücreye dokun: o hücrenin
+            <b>örnek cümlesi</b> açılır; oklarla başka örneğe geçilir.</p>
+        </div>
     <div class="tc-irab-kutu">
-    <table class="tc-irab tc-irab-fiil">
+    <table class="tc-irab tc-irab-fiil" data-tak="0">
       <thead>
         <tr>
-          <th style="width:104px"></th>
-        <th><span class="tc-ib-ar" dir="rtl">مُفْرَد</span><span class="tc-ib-ad">Tekil</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
-        <th><span class="tc-ib-ar" dir="rtl">تَثْنِيَة</span><span class="tc-ib-ad">İkil</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span></span></th>
-        <th colspan="2"><span class="tc-ib-ar" dir="rtl">جَمْع</span><span class="tc-ib-ad">Çoğul</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span> <b>+</b> <span class="tc-ib-hareke">Hareke</span></span></th>
+          <th class="tc-bos" style="width:104px"></th>
+          <th class="tc-sb"><span class="tc-ib-ar" dir="rtl">مُفْرَد</span><span class="tc-ib-ad">Tekil</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
+          <th class="tc-sb"><span class="tc-ib-ar" dir="rtl">تَثْنِيَة</span><span class="tc-ib-ad">İkil</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span></span></th>
+          <th class="tc-sb"><span class="tc-ib-ar" dir="rtl">جَمْع</span><span class="tc-ib-ad">Çoğul</span><span class="tc-ib-alt"><span class="tc-ib-harf">Harf</span></span></th>
+          <th class="tc-sb"><span class="tc-ib-ar" dir="rtl">نُونُ النِّسْوَة</span><span class="tc-ib-ad">Nûn-i nisve</span><span class="tc-ib-alt"><span class="tc-ib-hareke">Hareke</span></span></th>
         </tr>
       </thead>
       <tbody>
         <tr class="tc-h-merfu">
           <td class="tc-hal">Merfu</td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــُ</span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــَانِ</span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــُونَ</span></td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــْنَ</span></td>
+          <td data-sut="0" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-hareke">ـــُ</span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">يَكْتُ‍<b class="ek">‍بُ</b> فِي الدَّفْتَرِ.</span><span class="ot">Deftere yazıyor.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">يَذْهَ‍<b class="ek">‍بُ</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">Okula gidiyor.</span></span></td>
+          <td data-sut="1" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-harf">ـــَانِ</span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">يَكْتُ‍<b class="ek">‍بَانِ</b> فِي الدَّفْتَرِ.</span><span class="ot">(İkisi) deftere yazıyor.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">يَذْهَ‍<b class="ek">‍بَانِ</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">(İkisi) okula gidiyor.</span></span></td>
+          <td data-sut="2" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-harf">ـــُونَ</span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">يَكْتُ‍<b class="ek">‍بُونَ</b> فِي الدَّفْتَرِ.</span><span class="ot">(Onlar) deftere yazıyor.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">يَذْهَ‍<b class="ek">‍بُونَ</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">(Onlar) okula gidiyor.</span></span></td>
+          <td data-sut="3" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-hareke">ـــْنَ</span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">يَكْتُ‍<b class="ek">‍بْنَ</b> فِي الدَّفْتَرِ.</span><span class="ot">(Kadınlar) deftere yazıyor.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">يَذْهَ‍<b class="ek">‍بْنَ</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">(Kadınlar) okula gidiyor.</span></span></td>
         </tr>
         <tr class="tc-h-mansub">
           <td class="tc-hal">Mansub</td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــَ</span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــَا&zwnj;<span class="tc-dusen">نِ</span></span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــُوا&zwnj;<span class="tc-dusen">نَ</span></span></td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــْنَ</span></td>
+          <td data-sut="0" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-hareke">ـــَ</span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">لَنْ يَكْتُ‍<b class="ek">‍بَ</b> فِي الدَّفْتَرِ.</span><span class="ot">Deftere yazmayacak.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">لَنْ يَذْهَ‍<b class="ek">‍بَ</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">Okula gitmeyecek.</span></span></td>
+          <td data-sut="1" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-harf">ـــَا&zwnj;<span class="tc-dusen">نِ</span></span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">لَنْ يَكْتُ‍<b class="ek">‍بَا</b> فِي الدَّفْتَرِ.</span><span class="ot">(İkisi) deftere yazmayacak.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">لَنْ يَذْهَ‍<b class="ek">‍بَا</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">(İkisi) okula gitmeyecek.</span></span></td>
+          <td data-sut="2" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-harf">ـــُوا&zwnj;<span class="tc-dusen">نَ</span></span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">لَنْ يَكْتُ‍<b class="ek">‍بُوا</b> فِي الدَّفْتَرِ.</span><span class="ot">(Onlar) deftere yazmayacak.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">لَنْ يَذْهَ‍<b class="ek">‍بُوا</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">(Onlar) okula gitmeyecek.</span></span></td>
+          <td data-sut="3" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-hareke">ـــْنَ</span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">لَنْ يَكْتُ‍<b class="ek">‍بْنَ</b> فِي الدَّفْتَرِ.</span><span class="ot">(Kadınlar) deftere yazmayacak.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">لَنْ يَذْهَ‍<b class="ek">‍بْنَ</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">(Kadınlar) okula gitmeyecek.</span></span></td>
         </tr>
         <tr class="tc-h-meczum">
           <td class="tc-hal">Meczum</td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــْ</span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــَا&zwnj;<span class="tc-dusen">نِ</span></span></td>
-          <td><span class="tc-ib-harf">ـ ـ ـ ـــُوا&zwnj;<span class="tc-dusen">نَ</span></span></td>
-          <td><span class="tc-ib-hareke">ـ ـ ـ ـــْنَ</span></td>
+          <td data-sut="0" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-hareke">ـــْ</span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">لَمْ يَكْتُ‍<b class="ek">‍بْ</b> فِي الدَّفْتَرِ.</span><span class="ot">Deftere yazmadı.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">لَمْ يَذْهَ‍<b class="ek">‍بْ</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">Okula gitmedi.</span></span></td>
+          <td data-sut="1" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-harf">ـــَا&zwnj;<span class="tc-dusen">نِ</span></span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">لَمْ يَكْتُ‍<b class="ek">‍بَا</b> فِي الدَّفْتَرِ.</span><span class="ot">(İkisi) deftere yazmadı.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">لَمْ يَذْهَ‍<b class="ek">‍بَا</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">(İkisi) okula gitmedi.</span></span></td>
+          <td data-sut="2" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-harf">ـــُوا&zwnj;<span class="tc-dusen">نَ</span></span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">لَمْ يَكْتُ‍<b class="ek">‍بُوا</b> فِي الدَّفْتَرِ.</span><span class="ot">(Onlar) deftere yazmadı.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">لَمْ يَذْهَ‍<b class="ek">‍بُوا</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">(Onlar) okula gitmedi.</span></span></td>
+          <td data-sut="3" tabindex="0" role="button"><span class="son"><span class="si">ـ ـ ـ <span class="tc-ib-hareke">ـــْنَ</span></span></span><span class="orn" data-tak="0" data-ad="كَتَبَ · yazmak"><span class="oa">لَمْ يَكْتُ‍<b class="ek">‍بْنَ</b> فِي الدَّفْتَرِ.</span><span class="ot">(Kadınlar) deftere yazmadı.</span></span><span class="orn" data-tak="1" data-ad="ذَهَبَ · gitmek"><span class="oa">لَمْ يَذْهَ‍<b class="ek">‍بْنَ</b> إِلَى الْمَدْرَسَةِ.</span><span class="ot">(Kadınlar) okula gitmedi.</span></span></td>
         </tr>
       </tbody>
     </table>
@@ -649,19 +759,9 @@
           Son sütun üç satırda da aynı: <span dir="rtl" class="tc-ar-ic">نَ</span> alan fiil <b>mebnî</b> olur,
           hâli <b>mahallen</b> okunur.
         </p>
-      </div>
+              <div class="tc-irab-ek" id="tcIrabHamse">
+                <div class="tc-irab-ayrac" aria-hidden="true"></div>
 
-      <!-- ================= EFÂL-İ HAMSE — CANLI TABLO =================
-           Beş fiil, anlatılarak değil ÇEVRİLEREK öğreniliyor: öğrenci
-           üstteki Merfu / Mansub / Meczum kutusuna basar, tablodaki yedi
-           fiilin sonu gözünün önünde değişir. Mansub ve meczumda seçilen
-           edat her fiilin başına eklenir; nûn düşerken aşağı kayıp
-           söner, yeni son yerine oturur.
-           Alttaki tek satırlık örnek, oklarla kişiler arasında gezer ve
-           tabloda o kişinin satırını vurgular — tablo ile cümle arasındaki
-           bağ hep görünür kalsın diye. Her şey elle: kendiliğinden hiçbir
-           şey değişmez. -->
-      <div class="tc-tablo-panel" data-panel="hamse" hidden>
         <div class="efh-kumanda">
           <!-- Üç fiil AYNI ANDA görünmez: seçilen tablo tek başına ve BÜYÜK
                gelir. Muzari canlı tablodur; mâzi ile emir mebnî başvuru. -->
@@ -759,7 +859,21 @@
             merfuda <b>nûn durur</b>, mansub ve meczumda <b>düşer</b>.
             Mansub ya da Meczum'a basınca önce <b>edat seçilir</b>; dönüşüm, seçtiğin edatla ilk fiilde başlar, kalanlar <b>dokunuldukça</b> dönüşür — altın nabız sıranın sende olduğunu söyler. Hâl kutusuna ikinci basış tümünü bitirir; sonunda <b>harf değişen beş fiil</b>, sen başka yere geçinceye kadar mavi nabızla vurgulu kalır. Mâzi ve Emir kendi sekmelerinde tam boy durur — ikisi de mebnîdir, edat işlemez.</p>
         </div>
+      
+              </div>
+
+        
+            </div>
+          </div>
+        </div>
+
+        <p class="tc-irab-kopru">Üçünün özeti: <b>isim meczum olmaz</b>,
+          <b>fiil mecrur olmaz</b>, <b>harfin i'râbı hiç olmaz</b> — ama hâli o verir.</p>
       </div>
+
+
+
+
 
       <div class="tc-tablo-panel" data-panel="kelime" hidden>
         <!-- Üç basamak artık kendi tablosunun başında: şerit birleşmelerden
@@ -1024,7 +1138,7 @@
   </div>
 </aside>
 
-<script src="tamlamavecumleler.js?v=20260810a"></script>
+<script src="tamlamavecumleler.js?v=20260830b"></script>
 <script src="sistem/geri.js?v=20260808a"></script>
 <!-- Görev/ilerleme köprüsü: Test turu bitince 0-100 puan buluta yazılır. -->
 <script src="sistem/gorevkopru.js?v=7"></script>

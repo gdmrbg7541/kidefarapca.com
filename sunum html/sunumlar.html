@@ -357,6 +357,17 @@ h1,h2,h3,h4,p{margin:0}
 /* Satır, sütunun en genişine göre yayılmasın; yoksa Fiil/Harf gibi dar dallar
    İsim kadar geniş ölçülüp kamera bomboş alanı çerçeveliyordu. */
 .hxg>.hxn{align-self:flex-start}
+/* --- YATAY AYIRICI ---
+   Kendi dalı olan kardeş düğümlerin (Kelime · Tamlama · Cümle ve
+   İsim · Fiil · Harf) arasına ince bir çizgi girer; şema bantlara
+   ayrılır. Yaprak listelerde (Marife/Nekra gibi) dal olmadığı için
+   çizgi de çıkmaz — orada gereksiz kalabalık olurdu.
+   Çizgi AYRI BİR ÖGE: .hxn'in genişliğine karışmaz. (Düğüme border/
+   stretch vermek, yukarıdaki uyarıdaki hatayı geri getiriyordu —
+   dar dallar İsim kadar geniş ölçülüp kamera boş alanı çerçeveliyor.)
+   İçeriği olmadığı için sütunu genişletmez, yalnız sütun kadar uzar. */
+.hxay{flex:0 0 auto;align-self:stretch;height:0;min-width:0;
+  border-top:2px dashed #E2D6C2;margin:10px 0 4px}
 .hxgad{align-self:flex-start;font-size:15px;font-weight:900;color:#B49468;
   letter-spacing:.4px;white-space:nowrap;padding-inline-start:1px}
 
@@ -1154,7 +1165,10 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
    ========================================================== */
 #liste{position:absolute;inset:0;z-index:70;background:
   radial-gradient(1200px 700px at 50% -10%, #FFF3DF 0%, rgba(255,243,223,0) 60%), var(--zemin);
-  display:none;flex-direction:column;padding:18px 44px 18px;overflow:auto}
+  /* Yan dolgu DEĞİŞKENDE: başlık şeridi onu ters işaretle geri alıp
+     kenarlara yapışıyor (aşağıya bak). İki yerde ayrı sayı tutmayalım. */
+  --lpad:44px; --lust:18px;
+  display:none;flex-direction:column;padding:var(--lust) var(--lpad) 18px;overflow:auto}
 #liste.acik{display:flex;animation:gir .32s ease both}
 #liste .lizgara{align-content:start}
 /* Başlık satırı: dönüş tuşu · başlık · Liste/Harita anahtarı — hepsi tek satır.
@@ -1194,8 +1208,35 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
    öge içeriğin doğal genişliğine sayılmaz), altta kendisi için ayrılan
    şeride oturur. Kutu böylece yalnız başlık kadar geniş kalır. */
 .hxb.sunumlu{padding-bottom:36px}
-.hxb.sunumlu > .hxsun{position:absolute;right:8px;bottom:7px;margin:0}
+.hxb.sunumlu > .hxsun{position:absolute;left:50%;bottom:7px;margin:0;transform:translateX(-50%)}
+/* .hxsun:hover kendi transform'unu yazdığı için ortalama burada korunur */
+.hxb.sunumlu > .hxsun:hover{transform:translate(-50%,-1px)}
 .hxm.hxsunlu{background:#E9F8EF;color:#0A6B41;display:inline-flex;align-items:center;gap:3px}
+/* ================= KÖK KUTUSU DİKEY =================
+   "Temel Arapça" adı AŞAĞIDAN YUKARIYA okunur — kitap sırtı gibi.
+   Yatayken kutu haritanın sol ucunda 180px'lik bir blok tutuyordu ve
+   dar ekranda kenardan taşıyordu; dikeyken bir şerit kadar yer kaplıyor,
+   haritanın kendisine o kadar yer kalıyor.
+   rotate(180deg) şart: yalnız vertical-rl yazıyı YUKARIDAN AŞAĞIYA
+   çevirir; istenen yön onun tersi. */
+.hxn.d0 > .hxb{
+  flex-direction:column; flex-wrap:nowrap; align-items:center; gap:12px;
+  max-width:none; width:max-content; padding:18px 13px;
+}
+.hxn.d0 > .hxb .hxad{
+  writing-mode:vertical-rl; transform:rotate(180deg);
+  line-height:1.55; letter-spacing:.02em;
+}
+/* Kök kutusunda düğme akışta durur: kutu artık dar ve uzun, altındaki
+   mutlak şerit orada yerine oturmuyordu. Yazısı da dikey ki şerit
+   düğme yüzünden genişlemesin. */
+.hxn.d0 > .hxb.sunumlu{ padding-bottom:18px; }
+.hxn.d0 > .hxb.sunumlu > .hxsun,
+.hxn.d0 > .hxb.sunumlu > .hxsun:hover{
+  position:static; left:auto; bottom:auto; margin:0; transform:none;
+}
+.hxn.d0 > .hxb .hxsun span{ writing-mode:vertical-rl; transform:rotate(180deg); }
+.hxn.d0 > .hxb .hxsun{ flex-direction:column; padding:9px 5px; gap:4px; }
 #liste .lizgara{display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 12px;
   scroll-snap-type:x proximity;scrollbar-width:thin}
 #liste .lizgara::-webkit-scrollbar{height:9px}
@@ -1227,10 +1268,18 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
    yeşil) DEĞİŞMEZ — burada yalnız kabuk siteye benzetildi.
    ========================================================== */
 #liste{background:#F7F9FC;background-image:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cg fill-rule="evenodd"%3E%3Cg fill="%234D96FF" fill-opacity="0.05"%3E%3Cpath opacity=".5" d="M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z"/%3E%3Cpath d="M6 5V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h4V0h1v5h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-5v4h5v1h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5h-1v-5h-4v5H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6v-1h4v-4H6V5z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')}
+/* BAŞLIK ŞERİDİ TEPEYE YAPIŞIK, TAM GENİŞLİK.
+   Eskiden 14px yuvarlatılmış, dört yanında dolgu boşluğu olan bir kutu
+   gibi duruyordu — üstünde ve sağında kalan krem şerit onu "yüzen bir
+   kutu" gösteriyordu. Kabın dolgusu ters marjla geri alınıp aynı ölçü
+   kendi dolgusuna veriliyor: şerit kenarlara değiyor, içindekiler ise
+   alttaki kartlarla aynı hizada kalıyor. */
 #liste .lbas{
   background:linear-gradient(90deg,#FFC107 0%,#F39C12 50%,#EF5350 100%);
-  border-bottom:2px solid #E53935;border-radius:14px;
-  padding:6px 12px 6px 7px;box-shadow:0 5px 14px rgba(229,57,53,.18);
+  border-bottom:2px solid #E53935;border-radius:0;
+  margin:calc(-1 * var(--lust)) calc(-1 * var(--lpad)) 14px;
+  padding:12px var(--lpad);
+  box-shadow:0 5px 14px rgba(229,57,53,.18);
 }
 #liste h2{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.12)}
 .lsite{background:rgba(255,255,255,.22);box-shadow:none;width:38px;height:38px;border-radius:11px}
@@ -3309,8 +3358,10 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       bag:'../tamlamavecumleler.html',bagAd:'Tamlama ve Cümleler'},
     sifatt:{ad:'Sıfat tamlaması',ik:'yildiz',ar:'نَعْت',not:'Sıfat, mevsûfuna dört yönden uyar.',
       bag:'../tamlamavecumleler.html',bagAd:'Tamlama ve Cümleler'},
-    isimc:{ad:'İsim cümlesi',ik:'cumle',ar:'اِسْمِيَّة',not:'İsimle başlar.',g:[{ad:'Ögeleri',d:['mubteda','haber']}]},
-    fiilc:{ad:'Fiil cümlesi',ik:'fiil',ar:'فِعْلِيَّة',not:'Fiille başlar.',g:[{ad:'Ögeleri',d:['fiilo','fail','meful']}]},
+    isimc:{ad:'İsim cümlesi',ik:'cumle',ar:'اِسْمِيَّة',not:'İsimle başlar.',
+      bag:'../tamlamavecumleler.html',bagAd:'Tamlama ve Cümleler',g:[{ad:'Ögeleri',d:['mubteda','haber']}]},
+    fiilc:{ad:'Fiil cümlesi',ik:'fiil',ar:'فِعْلِيَّة',not:'Fiille başlar.',
+      bag:'../tamlamavecumleler.html',bagAd:'Tamlama ve Cümleler',g:[{ad:'Ögeleri',d:['fiilo','fail','meful']}]},
     mubteda:{ad:'Mübteda',ik:'isim',ar:'مُبْتَدَأ',not:'Cümlenin başındaki merfu isim.'},
     haber:{ad:'Haber',ik:'isim',ar:'خَبَر',not:'Mübteda hakkında verilen hüküm; merfudur.'},
     fiilo:{ad:'Fiil',ik:'fiil',ar:'فِعْل',not:'Cümlenin yüklemi.'},
@@ -3360,9 +3411,17 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     var n = HXA[id]; if(!n) return '';
     var dal = '';
     if (n.g && n.g.length && d < 3){
+      var cd = d + 1;
+      /* Çocuğun kendi dalı var mı? (ayırıcı yalnız dallı kardeşler arasına) */
+      var dalli = function(c){ var x = HXA[c]; return !!(x && x.g && x.g.length && cd < 3); };
       dal = '<div class="hxgs">' + n.g.map(function(g){
+        var ic = '';
+        g.d.forEach(function(c, i){
+          if (i && dalli(c) && dalli(g.d[i-1])) ic += '<div class="hxay" aria-hidden="true"></div>';
+          ic += hxDugum(c, cd, isaret, sunumlu);
+        });
         return '<div class="hxg" data-ad="'+g.ad+'" data-ust="'+n.ad+'"><span class="hxgad">'+g.ad+'</span>' +
-               g.d.map(function(c){ return hxDugum(c, d+1, isaret, sunumlu); }).join('') + '</div>';
+               ic + '</div>';
       }).join('') + '</div>';
     }
     return '<div class="hxn d'+d+(id===isaret?' burada':'')+'" data-id="'+id+'">' +

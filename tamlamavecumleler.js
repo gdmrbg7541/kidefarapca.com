@@ -27,6 +27,9 @@
   }
   function govde(ad) {
     if (ad !== 'tablo' && window.tcUzaklas) window.tcUzaklas();
+    /* Gövde değişince i'rab büyütmesi de bırakılır: kumanda şeridi
+       sabit konumlu, yoksa tablo sayfasının üstünde asılı kalıyor. */
+    if (ad !== 'irab' && window.tcIrabKapat) window.tcIrabKapat();
     ac(irab, ad === 'irab');
     ac(test, ad === 'test');
     if (sar) sar.hidden = (ad !== 'tablo');
@@ -361,17 +364,23 @@
   var MENU = {
     giris:  { bolum:'giris', ad:'Giriş' },
     tahlil: { bolum:'tahlil', ad:'Tahlil' },
-    isim:   { bolum:'tablolar', panel:'isim',   ad:'İsmin sonları' },
-    esma:   { bolum:'tablolar', panel:'esma',   ad:'Esmâ-i hamse', pil:'isim' },
-    fiil:   { bolum:'tablolar', panel:'fiil',   ad:'Fiilin sonları' },
-    hamse:  { bolum:'tablolar', panel:'hamse',  ad:'Efâl-i hamse', pil:'fiil' },
+    irab:   { bolum:'tablolar', panel:'irab',   ad:'İsmin ve fiilin sonları' },
+    /* 'isim' ve 'fiil' kodları DURUYOR: iki tablo tek panelde birleşti ama
+       Giriş'teki keşif adımı hâlâ "İsim tablosunu aç" / "Fiil tablosunu aç"
+       diyor. Bu iki kod aynı paneli açar, kaydir ile doğru bloğa götürür. */
+    isim:   { bolum:'tablolar', panel:'irab',   ad:'İsmin sonları',  pil:'irab', tablo:'isim' },
+    fiil:   { bolum:'tablolar', panel:'irab',   ad:'Fiilin sonları', pil:'irab', tablo:'fiil' },
+    /* Esmâ ve efâl-i hamse artık ayrı pano değil: ait oldukları tablonun
+       ALTINDA duruyorlar. Kod önce panoyu çevirir, sonra oraya kaydırır. */
+    esma:   { bolum:'tablolar', panel:'irab', ad:'Esmâ-i hamse', pil:'irab', tablo:'isim', kaydir:'tcIrabEsma' },
+    hamse:  { bolum:'tablolar', panel:'irab', ad:'Efâl-i hamse', pil:'irab', tablo:'fiil', kaydir:'tcIrabHamse' },
     kelime: { bolum:'tablolar', panel:'kelime', sev:'lafzen', ad:'Kelime üzerinde', pil:'ozet' },
     havuz:  { bolum:'havuz',  ad:'Örnekler', pil:'ozet' },
     ozet:   { bolum:'ozet',   ad:'Özet' }
   };
   /* Şeritte hangi pilin yanacağını tutar: bir kod başka bir pilin altında
      yaşıyor olabilir (esmâ → isim). */
-  var aktifKod = 'isim';
+  var aktifKod = 'irab';
   /* Şeritte o an yanan pil; her başlığın KENDİ katlanma durumu ve
      KENDİ son alt ögesi. Alt grup kendiliğinden kapanmaz (kapatan tek
      şey aynı başlığa ikinci dokunuş) ve başka başlığa uğrayıp dönmek
@@ -393,9 +402,9 @@
      tamlama tablosunun kopyası ise büsbütün kalktı — asıl tablo sayfa
      başlığına basınca geliyor. Bu beşi SAYFA BAŞLIĞINDA duruyor: şerit
      panelin değil, sayfanın gezinme aracı. */
-  var SERIT_SIRA = ['giris', 'tahlil', 'isim', 'fiil', 'ozet', 'test'];
+  var SERIT_SIRA = ['giris', 'tahlil', 'irab', 'ozet', 'test'];
   var SERIT_AD = {
-    giris:'Giriş', tahlil:'Tahlil', isim:'İsim', fiil:'Fiil', ozet:'Özet', test:'Test'
+    giris:'Giriş', tahlil:'Tahlil', irab:'İ\'râb', ozet:'Özet', test:'Test'
   };
   var SERIT_KISA = {};
   var ALT = {
@@ -403,13 +412,14 @@
     giris: { tip:'kesif', ogeler:[
       { deger:'isim', ad:'1 · İsim' },
       { deger:'fiil', ad:'2 · Fiil' } ] },
-    /* Birleşen başlıklar artık alt öge olarak yaşıyor. */
-    isim: { tip:'git', ogeler:[
-      { deger:'isim', ad:'Sonlar' },
-      { deger:'esma', ad:'Esmâ-i hamse' } ] },
-    fiil: { tip:'git', ogeler:[
-      { deger:'fiil',  ad:'Sonlar' },
-      { deger:'hamse', ad:'Efâl-i hamse' } ] },
+    /* İ'RÂB'IN ALT ÖGESİ YOK.
+       Bir ara "Sonlar · Esmâ-i hamse · Efâl-i hamse" diye üç alt pil
+       vardı; o zaman üçü ayrı panoydu. Şimdi üçü tek panoda: esmâ-i
+       hamse ismin tablosunda BİR SÜTUN, efâl-i hamse de fiil tablosunun
+       hemen altında. Ayrı ayrı gidilecek yer kalmadığı için pil de
+       kalktı — İ'râb'a basmak yetiyor, gerisi kaydırmayla geliyor.
+       (MENU'deki 'esma' / 'hamse' kodları duruyor: haritadan ya da
+       giriş adımlarından doğrudan çağrılabiliyorlar.) */
     /* "Özet" alt ögelerde TEKRARLANMIYOR: başlığın kendisi zaten oraya
        götürüyor. Alt öge seçiliyken pile basmak özete geri döndürür. */
     ozet: { tip:'git', ogeler:[
@@ -621,6 +631,9 @@
   /* sessiz: yalnızca durumu kurar, i'rab gövdesini AÇMAZ. Sayfa ilk
      yüklendiğinde tablonun karşımıza çıkması için gerekli. */
   function menuGit(kod, sessiz) {
+    /* Bölüm değişirken i'rab büyütmesi bırakılır: yakınlaşmış tablo
+       ve alttaki kumanda şeridi başka bölümün üstünde asılı kalıyordu. */
+    if (window.tcIrabKapat) window.tcIrabKapat();
     /* Test i'rab bölümlerinden biri değil, kardeşi: kendi gövdesi var. */
     if (kod === 'test') {
       if (!sessiz && window.tcGovde) window.tcGovde('test');
@@ -634,6 +647,17 @@
       var d = tabloSek && tabloSek.querySelector('.tc-asd[data-panel="' + m.panel + '"]' +
               (m.sev ? '[data-sev="' + m.sev + '"]' : ''));
       if (d) panelAc(d);
+    }
+    /* Birleşik i'rab panelinde hangi tablonun açılacağı kodda yazar. */
+    if (m.tablo && window.tcIrabTablo) window.tcIrabTablo(m.tablo);
+    /* Alt bölüm (esmâ / efâl-i hamse) istendiyse oraya kaydırılır —
+       ray kayma animasyonunu bitirsin diye küçük bir gecikmeyle. */
+    if (m.kaydir) {
+      var hedef = document.getElementById(m.kaydir);
+      if (hedef) setTimeout(function () {
+        try { hedef.scrollIntoView({ block:'start', behavior:'smooth' }); }
+        catch (e) { hedef.scrollIntoView(); }
+      }, 420);
     }
     if (sessiz) { seritTazele(null); return; }
     /* Bir başlığa ilk kez uğrayan (dışarıdan gelen bağlantılar dâhil)
@@ -659,7 +683,7 @@
   /* Açılış: SAYFA TABLOYLA açılır — asıl iş orada. Şerit hazır durur;
      ilk kez gelen için Giriş, daha önce başlamış olan için İsim
      "kalınan yer" sayılır ama hiçbiri kendiliğinden açılmaz. */
-  menuGit(kesifBaslanmis() ? 'isim' : 'giris', true);
+  menuGit(kesifBaslanmis() ? 'irab' : 'giris', true);
   /* Kelime tablosunun kendi basamak şeridi: üç basamak, birleşmelerden
      sonra şeride sığmıyordu; kontrolü ait olduğu tablonun başına aldık. */
   var klSev = document.getElementById('klSev');
@@ -2626,7 +2650,7 @@
    çoğul çekimi cümlede gösteremezdik.
    ============================================================ */
 (function () {
-  var panel = document.querySelector('.tc-tablo-panel[data-panel="hamse"]');
+  var panel = document.getElementById('tcIrabHamse');   /* Fiil panosunun alt bölümü */
   if (!panel) return;
 
   var elHal      = document.getElementById('efhHal');
@@ -3913,4 +3937,479 @@
     goster(false);
   }, true);
   window.tcOyun = { ac: function () { goster(true); }, kapat: function () { goster(false); } };
+})();
+
+/* ==================== اَلْ ANAHTARI ====================
+   İsim sonları tablosunda "tenvin mi, tek hareke mi?" sorusunun cevabı
+   anlatılarak değil ÇEVRİLEREK veriliyor: düğmeye basınca dokuz hücrede
+   birden tenvin düşer, tek hareke kalır ve başa اَلْ oturur. Yalnız sonu
+   hareke ile değişen sütunlar etkilenir — ikil ve vavlı çoğul tenvin
+   almadığı için yerinde durur, fark böylece kendiliğinden görünür. */
+(function () {
+  'use strict';
+  var tus  = document.getElementById('tcAlTus');
+  var blok = document.getElementById('tcIrabIsim');
+  if (!tus || !blok) return;
+  var not = document.getElementById('tcAlNot');
+  var METIN = {
+    kapali: { tus:'takısını ekle',
+              not:'Şu an <b>nekra</b>: son <b>tenvinli</b>. <span dir="rtl" class="tc-ar-ic">اَلْ</span> gelince tenvin düşer.' },
+    acik:   { tus:'takısını kaldır',
+              not:'Şu an <b>marife</b>: <span dir="rtl" class="tc-ar-ic">اَلْ</span> geldi, tenvin düştü, <b>tek hareke</b> kaldı. '
+                + 'İkil ve vavlı çoğul zaten tenvin almaz — onların sonu değişmedi.' }
+  };
+  function ciz(acik) {
+    blok.classList.toggle('al-acik', acik);
+    tus.setAttribute('aria-pressed', acik ? 'true' : 'false');
+    var m = acik ? METIN.acik : METIN.kapali;
+    var y = tus.querySelector('.tc-al-durum');
+    if (y) y.textContent = m.tus;
+    if (not) not.innerHTML = m.not;
+  }
+  tus.addEventListener('click', function () {
+    ciz(!blok.classList.contains('al-acik'));
+  });
+  ciz(false);
+})();
+
+/* ==================== İSİM / FİİL RAYI ====================
+   İki tablo yan yana duruyor; ray bir tam genişlik kaydırılarak öbürüne
+   geçiliyor. Üç yol da aynı kapıya çıkar: karta basmak, ok tuşları,
+   dokunmatikte yana kaydırmak. Rayın yüksekliği açık tablonunkine
+   eşitlenir — yoksa kısa tablo, uzun olanın boşluğunu taşırdı. */
+(function () {
+  'use strict';
+  var sec  = document.getElementById('tcIrabSec');
+  var ray  = document.getElementById('tcIrabRay');
+  if (!sec || !ray) return;
+  /* Görsel sıra soldan sağa: harf · isim · fiil. Ok tuşu ve kaydırma
+     bu sırayı izler ki hareket yönüyle ekrandaki yön aynı olsun. */
+  var SIRA = ['harf', 'isim', 'fiil'];
+  var blok = { isim:document.getElementById('tcIrabIsim'),
+               fiil:document.getElementById('tcIrabFiil'),
+               harf:document.getElementById('tcIrabHarf') };
+  var acik = 'isim';
+
+  function boyAyarla() {
+    var b = blok[acik];
+    if (b) ray.style.height = b.offsetHeight + 'px';
+  }
+  function ac(ad, odak) {
+    if (SIRA.indexOf(ad) < 0) return;
+    /* Pano değişirken kamera bırakılır: yakınlaşmış bir tablo rayla
+       birlikte yana kaydırılırsa ekran dışına savruluyor. */
+    if (window.tcIrabKapat) window.tcIrabKapat();
+    acik = ad;
+    ray.classList.toggle('fiilde', ad === 'fiil');
+    ray.classList.toggle('harfte', ad === 'harf');
+    [].forEach.call(sec.querySelectorAll('.tc-irab-kart'), function (k) {
+      var s = k.getAttribute('data-tablo') === ad;
+      k.classList.toggle('aktif', s);
+      k.setAttribute('aria-selected', s ? 'true' : 'false');
+      if (s && odak) k.focus();
+    });
+    boyAyarla();
+  }
+  window.tcIrabTablo = ac;
+  window.tcIrabBoy = boyAyarla;   /* örnek modu tabloyu büyütünce ray da uzasın */
+
+  sec.addEventListener('click', function (e) {
+    var k = e.target.closest ? e.target.closest('.tc-irab-kart') : null;
+    if (k) ac(k.getAttribute('data-tablo'));
+  });
+  /* Ok tuşları üç pano arasında sırayla gezer; uçlarda döner. */
+  function kaydir(yon, odak) {
+    var i = (SIRA.indexOf(acik) + yon + SIRA.length) % SIRA.length;
+    ac(SIRA[i], odak);
+  }
+  sec.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); kaydir(1, true); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); kaydir(-1, true); }
+  });
+
+  /* Dokunmatik: yana kaydırma. Dikey kaydırmayı engellememek için
+     yatay hareket dikeyden belirgin biçimde büyük olmalı. */
+  var bx = 0, by = 0;
+  ray.addEventListener('touchstart', function (e) {
+    bx = e.changedTouches[0].clientX; by = e.changedTouches[0].clientY;
+  }, { passive:true });
+  ray.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - bx, dy = e.changedTouches[0].clientY - by;
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+      var i = SIRA.indexOf(acik) + (dx < 0 ? 1 : -1);
+      if (i >= 0 && i < SIRA.length) ac(SIRA[i]);   /* uçlarda dönmez: kaydırma yönü belli olsun */
+    }
+  }, { passive:true });
+
+  /* Yükseklik: açılışta, pencere değişince ve اَلْ anahtarı tabloyu
+     büyütüp küçülttüğünde yeniden ölçülür. */
+  window.addEventListener('resize', boyAyarla);
+  var alTus = document.getElementById('tcAlTus');
+  if (alTus) alTus.addEventListener('click', function () { setTimeout(boyAyarla, 40); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(boyAyarla);
+  /* Panel GİZLİYKEN ölçü sıfır çıkar; ray da sıfır kalırdı. Gözlemci,
+     blok gerçek boyuna kavuştuğu anda (panel açılınca, yazı tipi
+     yüklenince, اَلْ anahtarı çevrilince) yüksekliği tazeler. */
+  if (window.ResizeObserver) {
+    var goz = new ResizeObserver(function () { boyAyarla(); });
+    SIRA.forEach(function (k) { if (blok[k]) goz.observe(blok[k]); });
+  } else {
+    setInterval(function () {
+      var b = blok[acik]; if (!b) return;
+      var h = b.offsetHeight;
+      if (h && Math.abs(h - parseFloat(ray.style.height || 0)) > 1) boyAyarla();
+    }, 500);
+  }
+  setTimeout(boyAyarla, 60);
+  setTimeout(boyAyarla, 400);
+
+  /* --- ÜST ŞERİDİN YÜKSEKLİĞİ ---
+     Dar ekranda sayfanın kendisi kayar ve .tc-ust en üste yapışır.
+     İsim/fiil/harf kartları da yapışkan olduğu için onun ALTINA
+     oturmalı, yoksa şeridin arkasında kalıyor. Ölçü koda gömülemez
+     (yazı tipi, satır sarması ve tarayıcı çubuğu değiştiriyor), o
+     yüzden gerçek yükseklik bir CSS değişkenine yazılıyor. */
+  (function () {
+    var ust = document.querySelector('.tc-ust');
+    if (!ust) return;
+    function yaz() {
+      var h = ust.offsetParent === null ? 0 : Math.round(ust.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--tc-ust-h', h + 'px');
+    }
+    yaz();
+    window.addEventListener('resize', yaz);
+    if (window.ResizeObserver) new ResizeObserver(yaz).observe(ust);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(yaz);
+    setTimeout(yaz, 400);
+  })();
+
+  ac('isim');
+})();
+
+/* ==================== ÖRNEK CÜMLE AÇMA ====================
+   Soyut ek ile gerçek cümle arasındaki bağ, anlatarak değil AÇARAK
+   kuruluyor: bir hücreye dokununca YALNIZ o hücrenin örnek cümlesi
+   belirir, ek küçülüp üste çekilir. Aynı anda tek hücre açık kalır —
+   göz nereye bakacağını şaşırmasın. Açık hücrenin içinde beliren
+   oklarla o kelimenin başka bir örneğine geçilir.
+   İsim ve Fiil tabloları birbirinden bağımsız çalışır. */
+(function () {
+  'use strict';
+
+  /* ==================== İ'RAB KAMERASI ====================
+     Tamlama tablosundaki büyütmenin aynısı. Eskiden açılan sütun
+     genişliyor, öbür eklerin puntosu kısılıyordu: tablo her dokunuşta
+     yeniden diziliyordu. Artık hücrelerin ölçüsü HİÇ değişmiyor —
+     tablo bütün olarak ölçeklenip dokunulan hücreyi ekranın ortasına
+     getiriyor. Ölçü alırken transform kaldırılır, yoksa ikinci
+     yakınlaşma birincinin üstüne biner ve ölçek katlanır.
+
+     Örnek kartı hücreye MUTLAK konumlu oturduğu için ölçüsü akışa
+     girmiyor; çerçeveye katılması gerektiğinden offsetWidth/Height ile
+     (transform'suz layout ölçüsü) ayrıca hesaba alınıyor. */
+  var kumEl  = document.getElementById('tcIrabKum');
+  var uzakEl = document.getElementById('tcIrabUzak');
+  var kumAd  = document.getElementById('tcIrabKumAd');
+  var basUst = document.getElementById('tcBasUst');
+  var basSol = document.getElementById('tcBasSol');
+  var basSolYazi = document.getElementById('tcBasSolYazi');
+  var BOSLUK = 24, ALT = 84, ARA = 16;
+  var EN_COK = 4.2;
+  var yakinTablo = null;   /* şu an yakınlaşılan tablo (tek olabilir) */
+  var katmanZaman = 0;
+
+  function sure() {
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--tc-sure').trim();
+    var n = parseFloat(v) || .75;
+    return /ms$/.test(v) ? n : n * 1000;
+  }
+  function darMi() { return window.innerWidth <= 900; }
+  function azaltMi() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  /* Sahne = panelin görünen kutusunun EKRANLA KESİŞİMİ. Dar ekranda
+     gövde kaymıyor, sayfanın kendisi kayıyor; orada gövde ekrandan
+     kat kat uzun oluyor ve kesişim alınmazsa kamera görünmeyen bir
+     yere odaklıyor. Üstten yapışkan kartlar da düşülür: rozet onların
+     altına oturmalı, yoksa "İkil" yazısı İSİM kartının üstüne biniyor. */
+  function sahneKutu() {
+    var g = document.querySelector('#tcPerde .tc-pop-govde');
+    var r = g ? g.getBoundingClientRect()
+              : { left:0, top:0, width:innerWidth, height:innerHeight };
+    var sol = Math.max(0, r.left), sag = Math.min(innerWidth, r.left + r.width);
+    var ust = Math.max(0, r.top),  alt = Math.min(innerHeight, r.top + r.height);
+    var sec = document.querySelector('.tc-irab-sec');
+    if (sec) {
+      var s = sec.getBoundingClientRect();
+      if (s.height && s.bottom > ust && s.top < alt) ust = s.bottom + 6;
+    }
+    return { left:sol, top:ust,
+             width:Math.max(160, sag - sol), height:Math.max(120, alt - ust) };
+  }
+  /* Hareket boyunca GPU katmanı; bitince bırakılır ki tarayıcı son
+     ölçekte yeniden tarasın — yakınken yazı o zaman netleşiyor. */
+  function katmanAc(tablo) {
+    tablo.classList.add('tc-hareket');
+    if (katmanZaman) clearTimeout(katmanZaman);
+    katmanZaman = setTimeout(function () {
+      katmanZaman = 0;
+      tablo.classList.remove('tc-hareket');
+    }, sure() + 90);
+  }
+  function rozetKoy(el, x, y, anisiz) {
+    if (!el) return;
+    el.classList.toggle('tc-anisiz', !!anisiz);
+    el.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
+  }
+  function kameraGeri() {
+    var t = yakinTablo; yakinTablo = null;
+    document.body.classList.remove('tc-yakin');
+    document.body.classList.remove('tc-irab-yakin');
+    if (kumEl) { kumEl.classList.remove('gor'); kumEl.setAttribute('aria-hidden', 'true'); }
+    if (!t) return;
+    katmanAc(t);
+    t.style.transform = '';
+    t.style.removeProperty('--z');
+    var blok = t.closest('.tc-irab-blok'); if (blok) blok.classList.remove('tc-yakin');
+    var ray = t.closest('.tc-irab-ray');  if (ray)  ray.classList.remove('tc-yakin');
+  }
+
+  function kamera(tablo, td) {
+    if (!td) { kameraGeri(); return; }
+    var blok = tablo.closest('.tc-irab-blok');
+    var ray  = tablo.closest('.tc-irab-ray');
+    yakinTablo = tablo;
+    if (blok) blok.classList.add('tc-yakin');
+    if (ray)  ray.classList.add('tc-yakin');
+    if (kumEl) { kumEl.classList.add('gor'); kumEl.setAttribute('aria-hidden', 'false'); }
+
+    /* Rozet yazıları: üstte sütun adı, solda hâl adı (satırın rengiyle). */
+    var basHucre = tablo.querySelectorAll('thead th')[td.cellIndex];
+    var halHucre = td.parentNode.querySelector('.tc-hal');
+    if (basUst && basHucre) {
+      var ad = basHucre.querySelector('.tc-ib-ad');
+      basUst.textContent = ad ? ad.textContent.trim() : '';
+    }
+    if (basSolYazi && halHucre) basSolYazi.textContent = halHucre.textContent.trim();
+    if (basSol && halHucre) {
+      basSol.style.setProperty('--odak-renk',
+        getComputedStyle(halHucre).backgroundColor);
+    }
+    if (kumAd) {
+      kumAd.textContent = ((halHucre ? halHucre.textContent.trim() : '') + ' · ' +
+                           (basUst ? basUst.textContent : '')).trim();
+    }
+    alTazele(tablo);
+
+    /* --- ölçüler: transform KALDIRILARAK --- */
+    var onceki = tablo.style.transform;
+    tablo.classList.add('tc-anisiz');
+    tablo.style.transform = 'none';
+    var t = tablo.getBoundingClientRect();
+    var r = td.getBoundingClientRect();
+    var kart = td.querySelector('.orn.gor');
+    var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    var sh = sahneKutu();
+    /* Dar ekranda rozetlere yer yok: satır/sütun başlığı zaten ekranda
+       kalıyor (ölçek küçük). Paylar da kısılır, yoksa 354px'lik sahnede
+       büyütmeye hiç yer kalmıyor. */
+    var dar = darMi();
+    var UST_PAY = (!dar && basUst) ? basUst.offsetHeight + ARA : 0;
+    var SOL_PAY = (!dar && basSol) ? basSol.offsetWidth + ARA : 0;
+    var bos = dar ? 8 : BOSLUK, altPay = dar ? 74 : ALT;
+    var enG = sh.width  - 2 * bos - SOL_PAY;
+    var enY = sh.height - bos - altPay - UST_PAY;
+
+    /* YİNELEMELİ ÖLÇÜ. Karttaki oklar --z ile ters ölçekleniyor, yani
+       kartın boyu ölçeğe BAĞLI; ölçek de kartın boyuna. Döngü birkaç
+       turda oturuyor (cümle genişliği baskın olur olmaz sabitleniyor).
+       Son tur ayrıca GÜVENLİK turudur: yalnız küçültebilir, çünkü
+       büyütmek kartı sahnenin dışına taşırabilir. */
+    var o = parseFloat(tablo.style.getPropertyValue('--z')) || 1;
+    var kw = r.width, kh = r.height, tur, oy;
+    function olc() {
+      tablo.style.setProperty('--z', o);
+      void tablo.offsetWidth;
+      kw = r.width; kh = r.height;
+      if (kart) {                     /* kart hücrenin ortasına çakılı */
+        kw = Math.max(kw, kart.offsetWidth);
+        kh = Math.max(kh, kart.offsetHeight);
+      }
+      return kw && kh
+        ? Math.max(1, Math.min(EN_COK, Math.min(enG / kw, enY / kh)))
+        : 0;
+    }
+    for (tur = 0; tur < 4; tur++) {
+      oy = olc();
+      if (!oy) break;
+      if (Math.abs(oy - o) < .01) { o = oy; break; }
+      o = oy;
+    }
+    oy = olc();                        /* güvenlik: yalnız küçült */
+    if (oy && oy < o) { o = oy; olc(); }
+    var x1 = cx - kw / 2, y1 = cy - kh / 2;
+    tablo.style.transform = onceki;
+    void tablo.offsetWidth;
+    if (!azaltMi()) tablo.classList.remove('tc-anisiz');
+
+    /* Panel gizliyken ölçü sıfır çıkar (ör. sekme değişimi sırasında);
+       yarım bir "yakın" durumda kalmayalım — tamamen bırakılır. */
+    if (!kw || !kh) {
+      tablo.classList.remove('tc-anisiz');
+      yakinTablo = tablo;
+      kameraGeri();
+      return;
+    }
+
+    var mx = sh.left + sh.width / 2 + SOL_PAY / 2;
+    var my = sh.top + bos + UST_PAY + enY / 2;
+    var dx = mx - t.left - o * (cx - t.left);
+    var dy = my - t.top  - o * (cy - t.top);
+
+    tablo.style.setProperty('--z', o);
+    katmanAc(tablo);
+    tablo.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + o + ')';
+    /* Dar ekranda gövde değil SAYFA kayıyor: ötelenen tablo belgeyi
+       yatayda genişletip sayfaya kaydırma çubuğu ekliyor. */
+    document.body.classList.add('tc-irab-yakin');
+    document.body.classList.toggle('tc-yakin', !dar);   /* rozetler yalnız geniş ekranda */
+    if (azaltMi()) { void tablo.offsetWidth; tablo.classList.remove('tc-anisiz'); }
+
+    /* Rozetler kutunun VARACAĞI yere şimdiden konur: transform-origin
+       0 0 olduğu için son köşeler doğrudan hesaplanabiliyor, böylece
+       rozetler tabloyla aynı geçişte kayıyor. */
+    var sx1 = t.left + dx + o * (x1 - t.left), sx2 = sx1 + o * kw;
+    var sy1 = t.top  + dy + o * (y1 - t.top),  sy2 = sy1 + o * kh;
+    if (basUst) rozetKoy(basUst, (sx1 + sx2) / 2 - basUst.offsetWidth / 2,
+                                 sy1 - ARA - basUst.offsetHeight, azaltMi());
+    if (basSol) {
+      basSol.style.height = Math.round(Math.min(sy2 - sy1, sh.height - 2 * BOSLUK)) + 'px';
+      rozetKoy(basSol, sx1 - ARA - basSol.offsetWidth,
+                       (sy1 + sy2) / 2 - basSol.offsetHeight / 2, azaltMi());
+    }
+  }
+
+  /* اَلْ düğmesi yalnız İSİM tablosunda anlamlı: fiilde takı yok. */
+  var kumAl   = document.getElementById('tcIrabKumAl');
+  var kumAlAd = document.getElementById('tcIrabKumAlAd');
+  function alTazele(tablo) {
+    if (!kumAl) return;
+    var isimMi = tablo && tablo.classList.contains('tc-irab-isim');
+    kumAl.hidden = !isimMi;
+    if (!isimMi) return;
+    var pano = document.getElementById('tcIrabIsim');
+    var acikMi = pano && pano.classList.contains('al-acik');
+    kumAl.classList.toggle('acik', !!acikMi);
+    if (kumAlAd) kumAlAd.textContent = acikMi ? 'takısını kaldır' : 'takısını ekle';
+  }
+  if (kumAl) kumAl.addEventListener('click', function () {
+    var t = document.getElementById('tcAlTus');
+    if (t) t.click();
+    if (yakinTablo) { alTazele(yakinTablo); if (window.tcIrabTazele) window.tcIrabTazele(); }
+  });
+
+  if (uzakEl) uzakEl.addEventListener('click', function () {
+    if (window.tcIrabKapat) window.tcIrabKapat();
+  });
+  /* Escape ÖNCE yakınlığı bırakır, panel açık kalır. Yakalama
+     evresinde dinleniyor: sayfanın kendi Escape'i (bkz. dosya başı —
+     i'rab panelini kapatan kural) bizden önce kayıtlı olduğu için
+     kabarma evresinde dinleseydik panel tek dokunuşta kapanıyor,
+     büyütme hiç bırakılmıyordu. İkinci Escape paneli kapatır. */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || !yakinTablo) return;
+    if (window.tcIrabKapat) window.tcIrabKapat();
+    e.stopPropagation();
+    e.preventDefault();
+  }, true);
+  window.addEventListener('resize', function () {
+    if (yakinTablo && window.tcIrabTazele) window.tcIrabTazele();
+  });
+
+  /* Kapatma/tazeleme her tablo için ayrı kaydediliyor; kumandadaki tek
+     düğme hangisi açıksa onu kapatsın diye. */
+  var kapatanlar = [], tazeleyenler = [];
+  window.tcIrabKapat  = function () { kapatanlar.forEach(function (f) { f(); }); };
+  window.tcIrabTazele = function () { tazeleyenler.forEach(function (f) { f(); }); };
+
+  function kur(tablo) {
+    var kap  = tablo.closest('.tc-irab-blok') || tablo.parentNode.parentNode;
+    var okKap = kap.querySelector('.tc-tak');
+    var sayac = kap.querySelector('.tc-tak-sayac');
+    var ilkHucre = tablo.querySelector('td[data-sut]');
+    var TAKIM = ilkHucre ? ilkHucre.querySelectorAll('.orn[data-tak]').length : 1;
+    if (!TAKIM) TAKIM = 1;
+    var takim = 0;      /* açık örnek takımı */
+    var acik  = null;   /* açık hücre */
+
+    /* Takım bütün hücrelerde birden değişir: aynı kelimenin üç hâli
+       birbirinden kopmasın diye. */
+    function takimCiz() {
+      [].forEach.call(tablo.querySelectorAll('td .orn'), function (o) {
+        o.classList.toggle('gor', +o.getAttribute('data-tak') === takim);
+      });
+      adYaz();
+      okYerlestir();
+    }
+    /* Sayaç yerine takımın ADI: "İsim cümlesi" / "Fiil cümlesi" — okla
+       neye geçtiğin rakamdan değil, adından anlaşılsın.
+       Ad AÇIK HÜCREDEN okunur, tablonun ilkinden değil: mansub satırında
+       isim cümlesi kurulamıyor (إنّ olmadan mansub bir kelime isim
+       cümlesinde bulunmaz), o satırda iki takım da fiil cümlesi. Ad
+       tablo geneli olsaydı o hücrede yanlış yazardı. */
+    function adYaz() {
+      if (!sayac) return;
+      var k = (acik || tablo).querySelector('.orn[data-tak="' + takim + '"]');
+      var ad = k && k.getAttribute('data-ad');
+      sayac.textContent = ad || ((takim + 1) + ' / ' + TAKIM);
+    }
+    /* Ok kutusu tek tane: AÇIK KARTIN içine, cümlenin altına taşınır.
+       Karta konuyor, hücreye değil — kart mutlak konumlu olduğu için
+       hücreye konsaydı oklar sönmüş ekin altında kalırdı. */
+    function okYerlestir() {
+      if (!okKap) return;
+      var kart = acik ? acik.querySelector('.orn.gor') : null;
+      if (!kart || TAKIM < 2) { okKap.hidden = true; return; }
+      if (okKap.parentNode !== kart) kart.appendChild(okKap);
+      okKap.hidden = false;
+    }
+    function ciz() {
+      [].forEach.call(tablo.querySelectorAll('td[data-sut]'), function (td) {
+        td.classList.toggle('acik', td === acik);
+      });
+      tablo.classList.toggle('acik-var', !!acik);
+      adYaz();
+      okYerlestir();
+      /* Kartın ölçüsü ancak açıldıktan sonra doğru okunur; kamera
+         bu yüzden sınıflar yazıldıktan SONRA çağrılıyor. */
+      kamera(tablo, acik);
+    }
+    function cevir(td) {
+      acik = (acik === td) ? null : td;
+      ciz();
+    }
+    /* Uzaklaş düğmesi ve Esc, hangi tablo açıksa onu kapatsın. */
+    kapatanlar.push(function () { if (acik) { acik = null; ciz(); } });
+    tazeleyenler.push(function () { if (acik) kamera(tablo, acik); });
+
+    tablo.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('.tc-tak')) return;   /* oklar hücreyi kapatmasın */
+      var td = e.target.closest ? e.target.closest('td[data-sut]') : null;
+      if (td) cevir(td);
+    });
+    tablo.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      if (e.target.closest && e.target.closest('.tc-tak')) return;
+      var td = e.target.closest ? e.target.closest('td[data-sut]') : null;
+      if (td) { e.preventDefault(); cevir(td); }
+    });
+    if (okKap) okKap.addEventListener('click', function (e) {
+      var o = e.target.closest ? e.target.closest('.tc-tak-ok') : null;
+      if (!o) return;
+      takim = (takim + (+o.getAttribute('data-yon')) + TAKIM) % TAKIM;
+      takimCiz();
+      if (acik) kamera(tablo, acik);   /* yeni cümle daha uzun/kısa olabilir */
+    });
+    takimCiz();
+    ciz();
+  }
+  [].forEach.call(document.querySelectorAll('.tc-irab-isim, .tc-irab-fiil'), kur);
 })();
