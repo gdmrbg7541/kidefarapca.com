@@ -364,7 +364,10 @@
   var MENU = {
     giris:  { bolum:'giris', ad:'Giriş' },
     tahlil: { bolum:'tahlil', ad:'Tahlil' },
-    irab:   { bolum:'tablolar', panel:'irab',   ad:'İsmin ve fiilin sonları' },
+    /* İ'RAB'a basınca HER ZAMAN İSİM tablosu açılır. Eskiden hangi
+       tabloda kalınmışsa (harf ya da fiil) oraya dönüyordu; ders
+       hep isimden başladığı için varsayılan isim yapıldı. */
+    irab:   { bolum:'tablolar', panel:'irab',   ad:'İsmin ve fiilin sonları', tablo:'isim' },
     /* 'isim' ve 'fiil' kodları DURUYOR: iki tablo tek panelde birleşti ama
        Giriş'teki keşif adımı hâlâ "İsim tablosunu aç" / "Fiil tablosunu aç"
        diyor. Bu iki kod aynı paneli açar, kaydir ile doğru bloğa götürür. */
@@ -374,7 +377,9 @@
        ALTINDA duruyorlar. Kod önce panoyu çevirir, sonra oraya kaydırır. */
     esma:   { bolum:'tablolar', panel:'irab', ad:'Esmâ-i hamse', pil:'irab', tablo:'isim', kaydir:'tcIrabEsma' },
     hamse:  { bolum:'tablolar', panel:'irab', ad:'Efâl-i hamse', pil:'irab', tablo:'fiil', kaydir:'tcIrabHamse' },
-    kelime: { bolum:'tablolar', panel:'kelime', sev:'lafzen', ad:'Kelime üzerinde', pil:'ozet' },
+    /* Üç basamak artık i'râb panelinin filtresi; 'sev' hangi
+       basamağın açılacağını söyler (bkz. tcBasamakAc). */
+    kelime: { bolum:'tablolar', panel:'irab', sev:'lafzen', ad:'Kelime üzerinde', pil:'ozet' },
     havuz:  { bolum:'havuz',  ad:'Örnekler', pil:'ozet' },
     ozet:   { bolum:'ozet',   ad:'Özet' }
   };
@@ -644,11 +649,18 @@
     aktifKod = kod;
     bolumAc(m.bolum);
     if (m.panel) {
-      var d = tabloSek && tabloSek.querySelector('.tc-asd[data-panel="' + m.panel + '"]' +
-              (m.sev ? '[data-sev="' + m.sev + '"]' : ''));
+      /* Basamak artık ayrı bir panel değil, i'râbın filtresi: sekme
+         seçilirken data-sev aranmaz, basamak aşağıda ayrıca kurulur. */
+      var d = tabloSek && tabloSek.querySelector('.tc-asd[data-panel="' + m.panel + '"]');
       if (d) panelAc(d);
     }
-    /* Birleşik i'rab panelinde hangi tablonun açılacağı kodda yazar. */
+    /* Birleşik i'rab panelinde hangi tablonun açılacağı kodda yazar.
+       Basamak da sıfırlanır: i'râba dönen öğrenci asıl alâmet
+       tablosunu bulsun, takdiren/mahallen'de kalmasın. */
+    if (m.panel === 'irab') {
+      if (m.sev && window.tcBasamakSec) window.tcBasamakSec(m.sev);
+      else if (window.tcBasamakSifirla) window.tcBasamakSifirla();
+    }
     if (m.tablo && window.tcIrabTablo) window.tcIrabTablo(m.tablo);
     /* Alt bölüm (esmâ / efâl-i hamse) istendiyse oraya kaydırılır —
        ray kayma animasyonunu bitirsin diye küçük bir gecikmeyle. */
@@ -686,24 +698,53 @@
   menuGit(kesifBaslanmis() ? 'irab' : 'giris', true);
   /* Kelime tablosunun kendi basamak şeridi: üç basamak, birleşmelerden
      sonra şeride sığmıyordu; kontrolü ait olduğu tablonun başına aldık. */
-  var klSev = document.getElementById('klSev');
-  if (klSev) klSev.addEventListener('click', function (e) {
-    var b = e.target.closest ? e.target.closest('.kl-s') : null;
-    if (!b) return;
-    [].forEach.call(klSev.children, function (x) {
-      var sec = (x === b);
-      x.classList.toggle('aktif', sec);
-      x.setAttribute('aria-selected', sec ? 'true' : 'false');
+  /* ---------- BASAMAK FİLTRESİ (Lafzen · Takdiren · Mahallen) ----------
+     Eskiden Özet'in altında ayrı bir "Kelime üzerinde" paneliydi; oraya
+     bakmak için i'râbdan çıkmak gerekiyordu. Artık i'râb panelinin
+     başında bir filtre:
+       lafzen   -> ALÂMET tablosu (harf/isim/fiil rayı) — alâmet görünür.
+       takdiren -> sonu elif/yâ olan kelimelerin tablosu — alâmet gizli.
+       mahallen -> mebnî kelimelerin tablosu — kelimenin sonu hiç değişmez.
+     Alâmet tablosu doğası gereği "lafzen"dir; öbür iki basamakta
+     gösterilecek bir EK yoktur, o yüzden tablo değişir, süzülmez. */
+  var bsmSec = document.getElementById('tcBsmSec');
+  var bsmKel = document.getElementById('tcBsmKel');
+  var irabSec = document.getElementById('tcIrabSec');
+  var irabRay = document.getElementById('tcIrabRay');
+  var bsmAcik = 'lafzen';
+
+  function basamakAc(sv, sessizce) {
+    if (['lafzen', 'takdiren', 'mahallen'].indexOf(sv) < 0) sv = 'lafzen';
+    bsmAcik = sv;
+    var lafzenMi = (sv === 'lafzen');
+    /* Kamera açık kalırsa gizlenen tablo ekranda asılı kalıyor. */
+    if (window.tcIrabKapat) window.tcIrabKapat();
+    if (bsmSec) [].forEach.call(bsmSec.children, function (x) {
+      var s2 = x.getAttribute('data-bsm') === sv;
+      x.classList.toggle('aktif', s2);
+      x.setAttribute('aria-selected', s2 ? 'true' : 'false');
     });
-    if (window.tcSeviyeSec) window.tcSeviyeSec(b.getAttribute('data-sev'), 0);
-  });
+    if (irabSec) irabSec.hidden = !lafzenMi;
+    if (irabRay) irabRay.hidden = !lafzenMi;
+    if (bsmKel)  bsmKel.hidden  =  lafzenMi;
+    if (!lafzenMi && window.tcSeviyeSec) window.tcSeviyeSec(sv, 0);
+    if (lafzenMi && window.tcIrabBoy) setTimeout(window.tcIrabBoy, 30);
+    if (!sessizce && govde) govde.scrollTop = 0;
+  }
   window.tcBasamakAc = function (sv) {
-    aktifKod = 'kelime';
+    aktifKod = 'irab';
     bolumAc('tablolar');
-    var d = tabloSek && tabloSek.querySelector('.tc-asd[data-sev="' + sv + '"]');
-    if (d) panelAc(d);
     if (window.tcIrabGoster) window.tcIrabGoster(true);
+    basamakAc(sv);
   };
+  if (bsmSec) bsmSec.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('[data-terim]')) return;
+    var b2 = e.target.closest ? e.target.closest('.tc-bsm-t') : null;
+    if (b2) basamakAc(b2.getAttribute('data-bsm'));
+  });
+  /* İ'râb'a her dönüşte lafzen (asıl tablo) açık gelsin. */
+  window.tcBasamakSifirla = function () { basamakAc('lafzen', true); };
+  window.tcBasamakSec = basamakAc;
 
   /* ---------- (2) terim balonu ----------
      Öğrenci "mahallen" kelimesini ilk gördüğünde takılıyor. Her
@@ -4136,7 +4177,10 @@
               : { left:0, top:0, width:innerWidth, height:innerHeight };
     var sol = Math.max(0, r.left), sag = Math.min(innerWidth, r.left + r.width);
     var ust = Math.max(0, r.top),  alt = Math.min(innerHeight, r.top + r.height);
-    var sec = document.querySelector('.tc-irab-sec');
+    /* Yapışkan kap (basamak şeridi + kartlar) — kamera onun altına
+       odaklanmalı, yoksa rozet ve hücre şeridin arkasında kalıyor. */
+    var sec = document.querySelector('.tc-irab-ust') ||
+              document.querySelector('.tc-irab-sec');
     if (sec) {
       var s = sec.getBoundingClientRect();
       if (s.height && s.bottom > ust && s.top < alt) ust = s.bottom + 6;

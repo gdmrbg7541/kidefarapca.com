@@ -129,8 +129,12 @@ body{
   padding:5px 6px; border:1px solid var(--cerceve);
   vertical-align:middle; height:1px;   /* başlık satırı içeriği kadar kalsın */
 }
-.tc-tablo th:first-child{ border-radius:9px 0 0 9px; }
 .tc-tablo th:last-child{ border-radius:0 9px 9px 0; }
+/* SOL ÜST KÖŞE BOŞ: kutusu da olmasın — boş bir çerçeve göz yoruyordu.
+   Kenarlık rengi saydam yapıldı (kaldırılmadı) ki sütun hizası kaymasın;
+   başlık şeridinin yuvarlak sol köşesi ikinci hücreye geçti. */
+.tc-tablo th.tc-w-tur{ background:transparent; border-color:transparent; border-radius:0; }
+.tc-tablo th.tc-w-tur + th{ border-radius:9px 0 0 9px; }
 .tc-w-tur{ width:11%; }
 .tc-w-ne{ width:17%; }
 .tc-w-oge{ width:14%; }
@@ -490,8 +494,201 @@ main.tc-sar[hidden]{ display:none !important; }
   font-size:clamp(.8rem,1.85vh,1.1rem); font-weight:700;
 }
 .tc-irab th .tc-ib-alt b{ color:#9AA5B1; font-weight:700; }
-.tc-ib-hareke{ color:#D6199B; }
-.tc-ib-harf{ color:#1D6FD0; }
+/* Başlık şeridi de kartın rengini taşısın. Öğrenci ekrana sonradan
+   baksa bile hangi tabloda olduğunu tek renkten anlar — kart, başlık
+   ve üçüncü satır aynı rengi söyler.
+   RENKLER SİTE GENELİNDE ORTAK: isim mavisi ve fiil yeşili birebir
+   kaliplartablosu.html'deki .baslik-isim / .baslik-fiil ile aynı
+   (bkz. sarf/kaliplartablosu.css). İki sayfada aynı kavram aynı
+   renkte olmalı; biri değişirse öbürü de değişmeli. */
+.tc-irab-isim th{ background:linear-gradient(135deg,#3B82F6,#2563EB); border-color:#2563EB; }
+.tc-irab-fiil th{ background:linear-gradient(135deg,#22C55E,#16A34A); border-color:#16A34A; }
+/* "Hareke / Harf" rozeti iki tabloda da NÖTR gri. Fiil tablosundaki
+   pembe zemin, fiilin kırmızı olduğu eski düzenden kalmıştı; yeşil
+   şeritte pembe rozet yamalı duruyordu. */
+/* Bu iki sınıf bazen <i> içine düşüyordu; yazı hiçbir yerde yatık olmasın. */
+.tc-ib-hareke{ color:#D6199B; font-style:normal; }
+.tc-ib-harf{ color:#1D6FD0; font-style:normal; }
+.tc-irab td, .tc-irab th{ font-style:normal; }
+/* BOŞ KÖŞE. Başlık şeridinin hâl etiketleri hizasındaki hücresinin
+   içi yok — renkli/çerçeveli durunca tablonun köşesinde anlamsız bir
+   blok gibi görünüyordu. Yer kaplamaya devam ediyor (sütun genişliği
+   ondan geliyor), yalnız görünmüyor. */
+.tc-irab th.tc-bos{
+  background:none; border-color:transparent; box-shadow:none;
+  padding:0; border-radius:0;
+}
+/* ================= اَلْ ANAHTARI =================
+   İsim sonları tablosunda tenvin ile tek harekenin karşılaştırması.
+   اَلْ hücrede HER ZAMAN durur, yalnız saydamdır: yeri ayrıldığı için
+   anahtar açılıp kapanırken tablo zıplamaz, göz sonda kalır. */
+.tc-al-kur{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:0 0 14px; }
+.tc-al-tus{
+  display:inline-flex; align-items:center; gap:10px; cursor:pointer;
+  font-family:'Marhey',system-ui,sans-serif; font-weight:700;
+  background:#fff; color:#41505F; border:2px solid var(--cerceve); border-radius:999px;
+  padding:5px 16px; font-size:clamp(.82rem,1.85vh,1.05rem); transition:.16s;
+}
+.tc-al-tus:hover{ border-color:#E11D2E; color:#1F2937; }
+.tc-al-tus:focus-visible{ outline:3px solid #E11D2E; outline-offset:2px; }
+.tc-al-tus .tc-al-yazi{
+  font-family:'Arakom','Traditional Arabic',serif; font-size:1.8em; line-height:1; color:#E11D2E;
+}
+#tcIrabIsim.al-acik .tc-al-tus{ background:#FDECEE; border-color:#E11D2E; color:#1F2937; }
+.tc-al-not{ margin:0; color:#41505F; line-height:1.5; font-size:clamp(.82rem,1.85vh,1.05rem); }
+.tc-al-not b{ color:#1F2937; }
+/* Pasifken اَلْ hiç yer kaplamaz: tablo eskisi gibi ortalı ve temiz durur.
+   Açılınca yerine oturur — kayma, "takı geldi" duygusunun kendisi. */
+.tc-al-ek{ color:#E11D2E; display:none; }
+#tcIrabIsim.al-acik .tc-al-ek{ display:inline; animation:tcAlGel .3s ease both; }
+@keyframes tcAlGel{ from{ opacity:0 } to{ opacity:1 } }
+.tc-al-m{ display:none; }
+/* ================= ÖRNEK MODU · SÜTUN AÇMA =================
+   Her hücrede iki katman var: SON (soyut ek) ve ÖRNEK (gerçek kelime).
+   Sütuna dokununca örnek katmanı açılır, ek küçülüp üste çekilir —
+   böylece "bu ek şu kelimede böyle görünüyor" bağı gözle kurulur. */
+/* --- TABLO GEOMETRİSİ DONDURULMUŞTUR ---
+   Önce açılan hücrenin sütunu genişliyor, öbür eklerin puntosu
+   kısılıyordu: tablo her dokunuşta yeniden ölçülüyor, sütunlar oynuyordu
+   — amatörce duruyordu. Artık HİÇBİR hücrenin ölçüsü değişmiyor.
+   Örnek cümle akışın DIŞINDA, hücrenin üstünde duran mutlak konumlu bir
+   katmanda; büyütmeyi tamlama tablosundaki gibi KAMERA yapıyor
+   (bkz. tamlamavecumleler.js · i'rab kamerası). Kural şudur: bu bölümde
+   hiçbir şey width/height/font-size ile oynamaz, yalnız transform ve
+   opacity ile oynar — kamera hesabı ancak öyle tutar. */
+.tc-irab td{ position:relative; }
+/* Ek yerinde kalır, yalnız söner: yeri boş kalsın ki satır yüksekliği
+   sabit dursun. */
+.tc-irab td .son{ display:block; opacity:1; transition:opacity .3s ease; }
+.tc-irab td.acik .son{ opacity:0; }
+
+/* ÖRNEK KATMANI — hücrenin ortasına çakılı, akışa girmez.
+   KUTU YOK. Önce kartın kendi zemini, çerçevesi ve gölgesi vardı;
+   yakınlaşınca tablonun üstünde ayrı bir kutu gibi duruyordu —
+   özellikle hücreleri geniş olan fiil tablosunda "kutu içinde kutu"
+   görünüyordu. Artık cümle doğrudan HÜCRENİN İÇERİĞİ: çerçevesi
+   hücrenin kendi çerçevesi. Taşan kısımda arkada komşu hücreler
+   var ama onlar %6 opaklıkta, yazının okunmasına engel değil. */
+.tc-irab td .orn{ display:none; }
+.tc-irab td .orn.gor{
+  display:block; position:absolute; z-index:3;
+  left:50%; top:50%; width:max-content; max-width:none;
+  padding:0 6px;
+  opacity:0; pointer-events:none;
+  transform:translate(-50%,-50%) scale(.42);
+  transform-origin:center center;
+  transition:transform .34s cubic-bezier(.22,.9,.3,1), opacity .26s ease;
+}
+/* Cümle yoktan belirmiyor: ekin durduğu ölçekten büyüyerek geliyor. */
+.tc-irab td.acik .orn.gor{
+  opacity:1; pointer-events:auto;
+  transform:translate(-50%,-50%) scale(1);
+}
+/* اَلْ İKİ KEZ YAZILMASIN. Sütun açıkken alttaki örnek zaten takılı hâli
+   gösteriyor; üstteki küçük ek yalın kalır, yoksa aynı takı üst üste
+   iki kere okunuyordu. */
+#tcIrabIsim.al-acik .tc-irab td.acik .tc-al-ek{ display:none; }
+/* Örnek cümleler İKİ HÂLDE yazılı: takısız (nekra) ve اَلْ'lı (marife).
+   Hangisinin görüneceğini yukarıdaki اَلْ anahtarı belirler — ek ile cümle
+   böylece hep aynı şeyi söyler. */
+.tc-irab td .orn .tc-al-n, .tc-irab td .orn .tc-al-m{ display:block; }
+.tc-irab td .orn .tc-al-m{ display:none; }
+#tcIrabIsim.al-acik .tc-irab td .orn .tc-al-n{ display:none; }
+#tcIrabIsim.al-acik .tc-irab td .orn .tc-al-m{ display:block; }
+/* Cümle puntosu KUTUNUN puntosundan bağımsız: kartı olabildiğince
+   küçük tutup büyütmeyi kameraya bırakıyoruz — kart ne kadar küçükse
+   kamera o kadar yaklaşabiliyor, yazı da o kadar iri çıkıyor.
+   nowrap: kart akışın dışında olduğu için genişlemesi kimseyi
+   itmiyor; cümle hiçbir ekranda satır sarmıyor. */
+.tc-irab td .orn .oa{
+  display:block; line-height:1.75; color:#1F2937; white-space:nowrap;
+  font-size:clamp(1.9rem,4.4vh,2.9rem);
+}
+.tc-irab td .orn .ot{
+  display:block; margin-top:4px; direction:ltr; unicode-bidi:isolate;
+  font-family:'Marhey',system-ui,sans-serif; font-weight:700; white-space:nowrap;
+  font-size:clamp(.72rem,1.6vh,1rem); line-height:1.35; color:#7C8794;
+}
+/* CÜMLE SİYAH, EK RENKLİ.
+   Bütün cümle renkliyken göz nereye bakacağını seçemiyordu; oysa
+   öğretilen şey cümlenin tamamı değil, TEK BİR EK. Artık cümle
+   olağan siyah okunuyor, renk yalnız ekte — tablodaki hücrede hangi
+   ek yazıyorsa cümlede de o boyanıyor (işaretleme HTML'de <b class="ek">
+   ile yapıldı; ek dizisi hücrenin kendi .son'undan alındı). */
+.tc-irab td .orn .oa{ color:#111827; }
+.tc-irab td .orn .oa .ek{
+  font-weight:inherit;   /* <b> Arapça'yı sahte kalınlaştırmasın */
+  color:inherit;
+}
+.tc-irab-isim td.acik .orn .oa .ek{ color:#2563EB; }
+.tc-irab-fiil td.acik .orn .oa .ek{ color:#16A34A; }
+/* SON HARF RENKLENMEZ — yalnız EK renklenir.
+   Ek işareti çoğu kez gövdenin SON HARFİNİ de içine alır; almasa
+   Arapça bitişik yazısı kırılır (harf yalnız kalınca ayrı biçimde
+   çizilir, hareke harfinden kopar). Çözüm: son harf .ekh ile <b>'nin
+   İÇİNDE ayrı bir span'a alındı ve siyaha sabitlendi. Tarayıcı
+   satır içi sınırlar boyunca biçimlendirmeyi sürdürdüğü için yazı
+   hiç bozulmuyor (ölçüldü: bölünmüş ve bölünmemiş satır aynı
+   genişlikte), buna karşılık renk yalnız harekede/ekte kalıyor. */
+.tc-irab td .orn .oa .ek .ekh{ color:#111827; }
+/* Dar ekranda kamera yaklaşamıyor (kart zaten ekran kadar geniş);
+   orada cümle sarabilsin, kart ekrandan taşmasın. */
+@media (max-width:900px){
+  .tc-irab td .orn.gor{ max-width:min(300px,78vw); }
+  .tc-irab td .orn .oa{ white-space:normal; }
+  .tc-irab td .orn .ot{ white-space:normal; }
+}
+
+/* Örnek YALNIZ dokunulan hücrede açılır; başlıklar tıklanmaz. */
+.tc-irab td[data-sut]{ cursor:pointer; }
+.tc-irab td[data-sut]:hover{ background:#F7F9FC; }
+.tc-irab td[data-sut]:focus-visible{ outline:3px solid #1F2937; outline-offset:-3px; }
+.tc-ornek-kur{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:0 0 12px; }
+.tc-ornek-not{ margin:0; color:#41505F; line-height:1.5; font-size:clamp(.82rem,1.85vh,1.05rem); }
+/* Örnek takımı okları: yalnız bir sütun açıkken görünür. */
+/* Oklar araç çubuğunda değil, AÇIK SÜTUNUN kendi kutusunda durur:
+   örnek cümlelerin hemen yanında. Betik onu açık sütunun ilk hücresine
+   taşır (bkz. tamlamavecumleler.js · okYerlestir). */
+.tc-tak{ display:inline-flex; align-items:center; gap:5px; }
+/* Kart kamerayla büyütülüyor; oklar onunla birlikte devleşmesin diye
+   TERS ölçekleniyor. transform ile DEĞİL, ölçüleri --tak birimiyle
+   vererek: transform görüntüyü küçültür ama layout kutusu yerinde
+   kalır, kartın altında kocaman bir boşluk bırakıyordu.
+   --tak = 1px / kamera ölçeği; kamera geri çarpınca hepsi tasarım
+   ölçüsüne oturuyor (yakın değilken --z yok, --tak = 1px). */
+/* display:flex — inline-flex DEĞİL. Satır içi bir kutu, kabın satır
+   yüksekliği kadar (burada 62px punto × 1.5 = 94px) bir "strut"
+   doğuruyor ve kartın altında o kadar boşluk kalıyordu. */
+.tc-irab td .tc-tak{
+  --tak:calc(1px / var(--z, 1));
+  display:flex;
+  margin-top:calc(10 * var(--tak));
+  gap:calc(6 * var(--tak));
+  width:100%; justify-content:center; line-height:1;
+}
+.tc-irab td .tc-tak-ok{
+  width:calc(34 * var(--tak)); height:calc(34 * var(--tak));
+  font-size:calc(21 * var(--tak)); border-width:calc(2 * var(--tak));
+}
+.tc-irab td .tc-tak-sayac{
+  font-size:calc(15 * var(--tak)); min-width:calc(104 * var(--tak));
+}
+.tc-tak[hidden]{ display:none !important; }
+.tc-tak-ok{
+  cursor:pointer; font-family:inherit; line-height:1;
+  background:#fff; color:#41505F; border:2px solid var(--cerceve); border-radius:50%;
+  width:clamp(28px,3.4vh,34px); height:clamp(28px,3.4vh,34px);
+  font-size:clamp(1rem,2.3vh,1.3rem); transition:.15s;
+}
+.tc-tak-ok:hover{ border-color:#1F2937; color:#1F2937; }
+.tc-tak-ok:focus-visible{ outline:3px solid #1F2937; outline-offset:2px; }
+.tc-tak-sayac{
+  font-family:'Marhey',system-ui,sans-serif; font-weight:700; color:#7C8794;
+  font-size:clamp(.76rem,1.7vh,.95rem); min-width:96px; text-align:center; white-space:nowrap;
+}
+.tc-ornek-not b{ color:#1F2937; }
+#tcIrabIsim.al-acik .tc-al-n{ display:none; }
+#tcIrabIsim.al-acik .tc-al-m{ display:inline; }
 .tc-irab td{
   background:#fff; border:1px solid var(--cerceve);
   padding:14px 10px; text-align:center;
@@ -524,6 +721,210 @@ main.tc-sar[hidden]{ display:none !important; }
    gövdesi yana kayıyordu — metinler de kayıyordu. Artık YALNIZ tablo
    kendi kutusunda kayar; açıklamalar yerinde durur. */
 .tc-irab-kutu{ overflow-x:auto; overflow-y:hidden; padding-bottom:2px; }
+
+/* ==========================================================================
+   İ'RAB KAMERASI — tamlama tablosundakinin aynısı
+   --------------------------------------------------------------------------
+   Bir hücreye dokununca tablo BÜTÜN olarak ölçeklenip o hücreyi ekranın
+   ortasına getirir. Hücrelerin kendi ölçüsü hiç değişmez; değişen tek şey
+   tablonun transform'u. Çevredeki hücreler soluklaşır, başlık satırı söner
+   (display:none DEĞİL — geometri bozulursa kamera hesabı kayar).
+   ========================================================================== */
+.tc-irab{ transform-origin:0 0; transition:transform var(--tc-sure,1s) cubic-bezier(.22,1,.36,1); }
+.tc-irab.tc-anisiz{ transition:none; }
+.tc-irab.tc-hareket{ will-change:transform; }
+/* Yakınken kırpan atalar serbest bırakılır, yoksa büyüyen tablo
+   kutusunun kenarından kesiliyor. Ray'ın yatay kaydırması da durur. */
+.tc-irab-blok.tc-yakin .tc-irab-kutu{ overflow:visible; }
+.tc-irab-ray.tc-yakin{ overflow:visible; }
+/* Dar ekranda gövde değil SAYFA kayıyor; yana ötelenen tablo belgeyi
+   genişletip alta yatay kaydırma çubuğu koyuyordu. */
+body.tc-irab-yakin{ overflow-x:hidden; }
+.tc-irab-blok.tc-yakin td{
+  transition:opacity var(--tc-sure,1s) ease-out, filter var(--tc-sure,1s) ease-out;
+}
+/* Örnek kartının kendi zemini kalktığı için komşular DAHA çok
+   soluklaşıyor: taşan cümlenin arkasından ek sızmasın. */
+.tc-irab-blok.tc-yakin td:not(.acik){ opacity:.06; filter:saturate(.25); }
+.tc-irab-blok.tc-yakin thead{ opacity:0; transition:opacity var(--tc-sure,1s) ease-out; }
+.tc-irab td.acik{ position:relative; z-index:4; }
+/* Yakınken açık hücrenin ÇERÇEVESİ de kalkar. Cümle hücreden geniş
+   olabildiği için (ismin uzun örnekleri) çizgiyi kesip taşıyordu;
+   kutu izlenimi veren son çizgi de böylece gidiyor. Hangi satır-sütun
+   olduğunu zaten kenardaki rozetler söylüyor. */
+.tc-irab-blok.tc-yakin td.acik{
+  border-color:transparent;
+  transition:border-color var(--tc-sure,1s) ease-out;
+}
+.tc-irab-blok.tc-yakin td.acik{
+  -webkit-font-smoothing:antialiased; text-rendering:geometricPrecision;
+}
+.tc-irab-blok.tc-yakin td[data-sut]{ cursor:zoom-out; }
+/* Yakınken tablonun ALTINDAKİ bölümler (esmâ/efâl-i hamse, notlar)
+   büyüyen tablonun üstüne binmesin diye söner. */
+.tc-irab-blok.tc-yakin > *:not(.tc-irab-kutu){ opacity:0; pointer-events:none;
+  transition:opacity var(--tc-sure,1s) ease-out; }
+/* اَلْ anahtarının kumandadaki kopyası — yukarıdaki asıl düğme yakınken
+   sönüyor, takı yine de çevrilebilsin diye. */
+.tc-kum-al{
+  display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+  font:inherit; font-weight:700; font-size:clamp(.72rem,1.7vh,.92rem);
+  background:#fff; color:#41505F;
+  border:2px solid var(--cerceve); border-radius:999px; padding:5px 13px;
+  transition:background .16s, border-color .16s, color .16s;
+}
+.tc-kum-al .tc-al-yazi{
+  font-family:'Arakom','Traditional Arabic',serif; font-size:1.7em;
+  line-height:1; color:#E11D2E;
+}
+.tc-kum-al:hover{ border-color:#E11D2E; color:#1F2937; }
+.tc-kum-al:focus-visible{ outline:3px solid #E11D2E; outline-offset:2px; }
+.tc-kum-al.acik{ background:#FDECEE; border-color:#E11D2E; color:#1F2937; }
+.tc-kum-al[hidden]{ display:none !important; }
+/* ================= İSİM / FİİL — KARTLAR VE KAYAR RAY =================
+   Üç tablo YAN YANA durur, ray kaydırılarak geçilir; ekranda hep biri
+   tam genişlikte olur. Her kartın kendi rengi var — isim mavi, fiil
+   yeşil, harf kehribar — ve o tablonun başlık bandı da aynı renkte;
+   böylece hangi tabloda olduğun bir bakışta anlaşılır.
+   Esmâ-i hamse ismin, efâl-i hamse fiilin ALTINDA durur: ayrı sekme
+   değil, aynı panonun devamı — kaydırınca geliyorlar. */
+/* Kartlar YAPIŞKAN: tablo uzun, aşağı inince de panolar arası geçiş
+   elin altında kalsın. Zemin gövdeyle aynı ki altından tablo geçmesin. */
+/* YAPIŞKAN OLAN ARTIK KAP: basamak şeridi + isim/fiil/harf kartları
+   birlikte yapışır. Eskiden yalnız kartlar yapışkandı, sayfa kayınca
+   yukarı çıkıp Lafzen satırının üstüne biniyordu. */
+.tc-irab-ust{
+  position:sticky; top:0; z-index:6; margin:0 0 12px;
+  padding:8px 0 10px; background:var(--zemin, #F7F9FC);
+  box-shadow:0 10px 14px -10px rgba(15,23,42,.18);
+}
+.tc-irab-sec{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(10px,1vw,26px);
+}
+/* Gövdenin üst dolgusundan tablo sızmasın: aynı zemin yukarı uzatılır.
+   Dolgu ölçüsünü koda gömmemek için kendi üstüne yapışan bir katman. */
+.tc-irab-ust::before{
+  content:''; position:absolute; left:0; right:0; bottom:100%; height:26px;
+  background:var(--zemin, #F7F9FC);
+}
+/* DAR EKRANDA YAPIŞKANLIK. Geniş ekranda kayan kutu .tc-pop-govde'dir,
+   kartlar ona yapışır. Dar ekranda ise (bkz. max-width:900px) sayfanın
+   kendisi kayıyor; govde ile .tc-pop'un overflow'u ise hâlâ birer
+   "kayma kutusu" sayıldığı için kartlar hiç kaymayan o kutuya yapışıp
+   ekrandan çıkıyordu. Dar ekranda bu iki kırpma kaldırılır — kartlar
+   sayfaya yapışır. Üstteki şerit de yapışkan olduğu için altına konur. */
+@media (max-width:900px){
+  #tcPerde .tc-pop, #tcPerde .tc-pop-govde{ overflow:visible; }
+  .tc-irab-ust{ top:var(--tc-ust-h, 0px); }
+  .tc-irab-ust::before{ height:calc(26px + var(--tc-ust-h, 0px)); }
+}
+/* AKILLI TAHTA ÖLÇÜSÜ.
+   Kartlar 4K'da da ekranın tamamına yayılıyordu (ölçüldü: 3840px'te
+   kart 1261px), AMA yazı 26px'te takılı kalıyordu: kocaman kutunun
+   ortasında minicik harfler. Punto artık ekranla birlikte büyüyor.
+   Ölçek min(vh,vw) ile alınıyor: alçak ama geniş bir tahtada yükseklik,
+   dar ama uzun bir ekranda genişlik sınırı tutuyor — hiçbirinde taşmıyor. */
+.tc-irab-kart{
+  display:flex; flex-flow:row wrap; align-items:baseline; justify-content:center;
+  gap:clamp(2px,.4vh,8px) clamp(9px,1vw,22px);
+  cursor:pointer; font-family:'Marhey',system-ui,sans-serif;
+  background:#fff; border:2px solid var(--cerceve); border-radius:clamp(13px,1vw,20px);
+  padding:clamp(8px,1.6vh,22px) clamp(12px,1.2vw,30px); color:#7C8794;
+  transition:transform .16s, box-shadow .16s, background .2s, border-color .2s, color .2s;
+}
+.tc-irab-kart:hover{ transform:translateY(-2px); }
+.tc-irab-kart:focus-visible{ outline:3px solid #1F2937; outline-offset:3px; }
+.tc-irab-kart .tik-ar{
+  font-family:'Arakom','Traditional Arabic',serif; line-height:1.25;
+  font-size:clamp(1.25rem,min(3.4vh,1.9vw),3.1rem);
+}
+.tc-irab-kart .tik-ad{
+  font-weight:700; letter-spacing:.06em; line-height:1.15;
+  font-size:clamp(.92rem,min(2.5vh,1.35vw),2.2rem);
+}
+.tc-irab-kart .tik-alt{
+  font-weight:700; opacity:.85; line-height:1.25;
+  font-size:clamp(.78rem,min(2.1vh,1.1vw),1.8rem);
+}
+/* Ad ile alt yazı YAN YANA durur; ayraç ikisini ayırır. Dar ekranda
+   satır kendiliğinden alta sarar, ayraç o zaman gizlenir. */
+.tc-irab-kart .tik-ayrac{ opacity:.5; font-size:clamp(.75rem,min(2vh,1.1vw),1.7rem); }
+@media (max-width:820px){
+  .tc-irab-kart{ flex-direction:column; align-items:center; gap:3px; }
+  .tc-irab-kart .tik-ayrac{ display:none; }
+}
+.tik-harf{ border-color:#F0DDB4; color:#9A6800; }
+.tik-harf:hover{ border-color:#C77800; }
+.tik-harf.aktif{ background:#C77800; border-color:#C77800; color:#fff;
+  box-shadow:0 6px 16px rgba(199,120,0,.28); }
+.tc-irab-harf th{ background:#9A6800; border-color:#7F5600; }
+/* Tablo RTL olduğu için Latin metnin sonundaki noktalama sola atlıyordu
+   ("Ne yapar?" → "?Ne yapar"). Türkçe hücreler kendi yönlerine izole edildi. */
+.tc-irab-harf th .tc-ib-ad{ direction:ltr; unicode-bidi:isolate; }
+/* Harf tablosunda ortadaki sütun Türkçe: Arapça puntosu ve nowrap yok. */
+.tc-irab-harf td.thn{
+  direction:ltr; unicode-bidi:isolate;
+  font-family:'Marhey',system-ui,sans-serif; font-weight:700;
+  font-size:clamp(.85rem,2.1vh,1.3rem); line-height:1.4; white-space:normal;
+  color:#41505F; text-align:center;
+}
+.tc-irab-harf td.thn b{ color:#1F2937; }
+.tc-irab-harf td{ font-size:clamp(1.5rem,4.4vh,3rem); }
+/* KART DOLGUSU = KALIPLAR TABLOSUNUN RENGİ.
+   Dolgu, kaliplartablosu.html'deki .baslik-isim / .baslik-fiil ile
+   birebir aynı gradyan: aynı kavram iki sayfada aynı renk.
+   Pasif hâldeki kenar ve yazı da o gradyanın kendi tonlarından
+   seçildi — kenar 200, yazı 700 tonu; beyaz üstünde yazı kontrastı
+   mavide ~5.9:1, yeşilde ~4.6:1 (aktif hâlin 500–600 tonu yazı
+   olarak kullanılsaydı yeşil 3:1'in altına düşüyordu). */
+.tik-isim{ border-color:#BFDBFE; color:#1D4ED8; }
+.tik-fiil{ border-color:#BBF7D0; color:#15803D; }
+.tik-isim:hover{ border-color:#2563EB; }
+.tik-fiil:hover{ border-color:#16A34A; }
+.tik-isim.aktif{ background:linear-gradient(135deg,#3B82F6,#2563EB);
+  border-color:#2563EB; color:#fff; box-shadow:0 6px 16px rgba(37,99,235,.28); }
+.tik-fiil.aktif{ background:linear-gradient(135deg,#22C55E,#16A34A);
+  border-color:#16A34A; color:#fff; box-shadow:0 6px 16px rgba(22,163,74,.28); }
+.tc-irab-kart.aktif .tik-alt{ opacity:.95; }
+
+.tc-irab-ray{ overflow:hidden; transition:height .38s cubic-bezier(.22,.9,.3,1); }
+.tc-irab-sahne{
+  display:flex; align-items:flex-start; width:300%;
+  transition:transform .38s cubic-bezier(.22,.9,.3,1);
+}
+.tc-irab-sahne > .tc-irab-blok{ flex:0 0 33.3333%; min-width:0; }
+/* Pano sırası soldan sağa: HARF · İSİM · FİİL. Varsayılan pano isim
+   olduğu için ray açılışta bir adım kaymış durur. */
+.tc-irab-sahne{ transform:translateX(-33.3333%); }
+.tc-irab-ray.fiilde .tc-irab-sahne{ transform:translateX(-66.6667%); }
+.tc-irab-ray.harfte .tc-irab-sahne{ transform:translateX(0); }
+/* Görünmeyen tablolar klavye ve ekran okuyucu için de kapalı olsun. */
+.tc-irab-ray .tc-irab-blok{ visibility:hidden; }
+.tc-irab-ray:not(.fiilde):not(.harfte) #tcIrabIsim,
+.tc-irab-ray.fiilde #tcIrabFiil,
+.tc-irab-ray.harfte #tcIrabHarf{ visibility:visible; }
+@media (prefers-reduced-motion:reduce){
+  .tc-irab-sahne, .tc-irab-ray{ transition:none; }
+}
+.tc-irab-blok{ scroll-margin-top:10px; }
+/* Panonun altındaki ikinci tablo (esmâ / efâl-i hamse) için ayraç. */
+.tc-irab-ek{ margin-top:26px; scroll-margin-top:10px; }
+.tc-irab-ayrac{
+  display:flex; align-items:center; gap:12px; margin:0 0 14px;
+  font-family:'Marhey',system-ui,sans-serif; font-weight:700; color:#8794A3;
+  font-size:clamp(.82rem,1.9vh,1.1rem);
+}
+.tc-irab-ayrac::before, .tc-irab-ayrac::after{
+  content:""; flex:1 1 auto; height:0; border-top:2px dashed #DCE3EB;
+}
+.tc-irab-ayrac span{ flex:0 0 auto; white-space:nowrap; }
+.tc-irab-ayrac:empty{ margin:0 0 20px; }
+.tc-irab-kopru{
+  margin:20px 0 18px; padding:11px 16px; border-radius:12px;
+  background:#F4F6FA; border-inline-start:4px solid #7C3AED;
+  color:#41505F; line-height:1.55; font-size:clamp(.82rem,1.85vh,1.05rem);
+}
+.tc-irab-kopru b{ color:#1F2937; }
 .tc-not{ margin:12px 2px 0; font-size:clamp(.86rem,1.95vh,1.18rem); color:#5C6672; line-height:1.55; }
 
 /* ============================================================
@@ -1680,7 +2081,7 @@ main.tc-sar[hidden]{ display:none !important; }
 .tc-sr{
   flex:0 0 auto; cursor:pointer; font-family:inherit; font-weight:700;
   white-space:nowrap; border:2px solid var(--cerceve); background:#fff; color:#4B5563;
-  border-radius:999px; padding:7px 16px; font-size:clamp(.78rem,1.9vh,1rem);
+  border-radius:999px; padding:8px 18px; font-size:clamp(.84rem,2.05vh,1.1rem); line-height:1.35;
   transition:border-color .15s, color .15s, background .15s,
              padding .2s ease, max-width .2s ease, opacity .2s ease;
 }
@@ -1690,7 +2091,7 @@ main.tc-sar[hidden]{ display:none !important; }
 /* AKORDİYON: bir başlığın altı açıkken öbürleri kapanır — daralır,
    soluklaşır ve uzun adlar kısa karşılığına düşer (kırpılmaz). */
 .tc-sr-kis{ display:none; }
-.tc-serit.acilmis .tc-sr:not(.aktif){ padding:7px 11px; opacity:.58; }
+.tc-serit.acilmis .tc-sr:not(.aktif){ padding:8px 12px; opacity:.58; }
 .tc-serit.acilmis .tc-sr:not(.aktif) .tc-sr-tam{ display:none; }
 .tc-serit.acilmis .tc-sr:not(.aktif) .tc-sr-kis{ display:inline; }
 .tc-serit-alt{
@@ -1701,7 +2102,7 @@ main.tc-sar[hidden]{ display:none !important; }
 .tc-sra{
   flex:0 0 auto; cursor:pointer; font-family:inherit; font-weight:700; white-space:nowrap;
   border:0; background:none; color:#55606D; border-radius:999px;
-  padding:5px 12px; font-size:clamp(.72rem,1.75vh,.92rem);
+  padding:6px 14px; font-size:clamp(.78rem,1.85vh,1rem); line-height:1.35;
   transition:background .15s, color .15s;
 }
 .tc-sra:hover{ color:var(--kirmizi); }
@@ -1711,8 +2112,8 @@ main.tc-sar[hidden]{ display:none !important; }
 .tc-sra:focus-visible{ outline:2px solid var(--kirmizi); outline-offset:1px; }
 @media (max-width:620px){
   .tc-serit-ray{ gap:6px; }
-  .tc-sr{ padding:6px 13px; }
-  .tc-serit.acilmis .tc-sr:not(.aktif){ padding:6px 10px; }
+  .tc-sr{ padding:7px 14px; }
+  .tc-serit.acilmis .tc-sr:not(.aktif){ padding:7px 11px; }
 }
 
 #tcUstSek[hidden], #tcTabloSek[hidden]{ display:none !important; }
@@ -2100,6 +2501,48 @@ main.tc-sar[hidden]{ display:none !important; }
 @media (max-width:900px){ .tc-gez{ flex:1 0 100%; } }
 
 /* Kelime tablosunun kendi basamak şeridi */
+/* ==================== BASAMAK FİLTRESİ ====================
+   İ'râb panelinin başında duran üçlü: Lafzen · Takdiren · Mahallen.
+   İsim/Fiil/Harf kartlarıyla aynı ölçü mantığı — akıllı tahtada
+   okunsun diye punto ekranla büyür, üç tuş ekrana yayılır. */
+.tc-bsm-sec{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(8px,.8vw,20px);
+  margin:0 0 clamp(8px,1vh,14px);
+}
+.tc-bsm-t{
+  display:flex; flex-flow:row wrap; align-items:baseline; justify-content:center;
+  gap:clamp(2px,.4vh,7px) clamp(8px,.9vw,18px);
+  cursor:pointer; font-family:'Marhey',system-ui,sans-serif; font-weight:700;
+  background:#fff; border:2px dashed #D8DEE7; border-radius:clamp(11px,.8vw,17px);
+  padding:clamp(6px,1.2vh,16px) clamp(10px,1vw,24px); color:#7C8794;
+  transition:transform .16s, background .2s, border-color .2s, color .2s;
+}
+.tc-bsm-t:hover{ transform:translateY(-2px); }
+.tc-bsm-t:focus-visible{ outline:3px solid #1F2937; outline-offset:3px; }
+.tc-bsm-t .bsm-ar{
+  font-family:'Arakom','Traditional Arabic',serif; font-weight:400; line-height:1.25;
+  font-size:clamp(1rem,min(2.6vh,1.45vw),2.3rem);
+}
+.tc-bsm-t .bsm-ad{ font-size:clamp(.86rem,min(2.1vh,1.15vw),1.85rem); letter-spacing:.04em; }
+.tc-bsm-t .bsm-alt{ font-weight:600; opacity:.8; font-size:clamp(.72rem,min(1.8vh,.95vw),1.5rem); }
+/* Seçili basamağın rengi kendi kimliği: yeşil lafzen, turuncu takdiren,
+   mor mahallen — terim balonundaki renklerin aynısı. */
+.tc-bsm-t[data-bsm="lafzen"].aktif{   background:#12A05F; border-color:#12A05F; color:#fff;
+  box-shadow:0 6px 16px rgba(18,160,95,.26); border-style:solid; }
+.tc-bsm-t[data-bsm="takdiren"].aktif{ background:#C77800; border-color:#C77800; color:#fff;
+  box-shadow:0 6px 16px rgba(199,120,0,.26); border-style:solid; }
+.tc-bsm-t[data-bsm="mahallen"].aktif{ background:#6D4AA8; border-color:#6D4AA8; color:#fff;
+  box-shadow:0 6px 16px rgba(109,74,168,.26); border-style:solid; }
+.tc-bsm-t.aktif .bsm-alt{ opacity:.92; }
+.tc-bsm-t .tc-i{ vertical-align:baseline; }
+@media (max-width:820px){
+  .tc-bsm-t{ flex-direction:column; align-items:center; gap:2px; }
+}
+/* [hidden] TEK BAŞINA YETMEZ: bu iki kabın kendi display'i var,
+   satır içi display kuralı tarayıcının [hidden] kuralını eziyor.
+   Basamak değişince kartlar/ray gerçekten kalksın diye açık yazıldı. */
+.tc-bsm-kel[hidden], .tc-irab-sec[hidden], .tc-irab-ray[hidden]{ display:none !important; }
+
 .kl-sev{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; }
 .kl-s{
   cursor:pointer; font-family:inherit; font-weight:700; border:2px solid var(--cerceve);
