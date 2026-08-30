@@ -1475,6 +1475,363 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
 .lp-isik path{fill:#F39C12;opacity:.10;animation:lpIsik 6s ease-in-out infinite}
 @keyframes lpIsik{0%,100%{opacity:.10}50%{opacity:.20}}
 .lkart:hover .lp-ekran{stroke:var(--kahve)}
+
+/* ==========================================================
+   MT · MÜFRED · TESNİYE · CEM' İSİMLER
+   ----------------------------------------------------------
+   Kaynak: "🧐 Müfred, Tesniye ve Cem' İsimler.pptx". Sunuda
+   animasyonlar SAYFA ÇOĞALTILARAK yapılmıştı (65 sayfa, 10 gerçek
+   slayt); burada gerçek adım animasyonuna çevrildi.
+   Renkler sunudan birebir alındı:
+     koyu kırmızı #C00000 · kırmızı #FF0000 (işaret) · mavi #0070C0
+     (eril) · pembe #FF33CC (dişil) · yeşil #00B050 (ikil ـانِ)
+     gri #BFBFBF (SÖNÜK yan)
+   Sönük yan opaklıkla değil RENKLE yapılır — sunuda da öyle: yazı
+   gri, çizgi gri; kutu ve düzen yerinde kalır.
+   ========================================================== */
+.mt{ --mt-kirmizi:#C00000; --mt-al:#FF0000; --mt-mavi:#0070C0;
+     --mt-pembe:#FF33CC; --mt-yesil:#00B050; --mt-gri:#BFBFBF;
+     --mt-lacivert:#002060; }
+.mt .mt-bas{ margin:0 0 6px; text-align:center; color:var(--mt-kirmizi);
+  font-weight:900; font-size:44px; line-height:1.2; }
+.mt .mt-alt{ margin:0 0 10px; text-align:center; color:#1F2937; font-size:32px; line-height:1.35; }
+.mt .mt-u{ text-decoration:underline; }
+.mt .ar{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl; unicode-bidi:isolate; }
+.mt .mv{ color:var(--mt-mavi); }
+.mt .pm{ color:var(--mt-pembe); }
+.mt .ys{ color:var(--mt-yesil); }
+.mt .al{ color:var(--mt-al); }
+.mt .kr{ color:var(--mt-kirmizi); }
+.mt .lc{ color:var(--mt-lacivert); }
+.mt .sol-gri{ color:var(--mt-gri); }
+
+/* --- 6×2 kelime ızgarası (müfred / tesniye / cem' tabloları) --- */
+.mt-izgara{ display:grid; grid-template-columns:repeat(6,1fr); gap:0;
+  border-top:1px solid #E3E7ED; }
+.mt-izgara .h{ padding:10px 6px; text-align:center; border-bottom:1px solid #E3E7ED;
+  border-inline-end:1px solid #E3E7ED; display:flex; flex-direction:column; gap:4px;
+  justify-content:center; }
+.mt-izgara .h:nth-child(6n){ border-inline-end:0; }
+.mt-izgara .h .a{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl;
+  font-size:40px; line-height:1.55; color:#111827; }
+.mt-izgara .h .t{ font-size:26px; line-height:1.25; }
+
+/* --- III. TESNİYE TÜRETİMİ (adım adım) --- */
+.mt-turet{ flex:1 1 auto; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:18px; }
+.mt-turet .satir{ display:flex; align-items:center; justify-content:center; gap:16px;
+  font-family:'Arakom','Traditional Arabic',serif; direction:rtl; font-size:76px; line-height:1.7; }
+.mt-turet .tr{ font-size:34px; color:#41505F; }
+.mt-turet .isaret{ position:relative; display:inline-block; }
+/* Kırmızı halka: sonu göstermek için. Yazının ölçüsünü değiştirmez. */
+.mt-halka::after{ content:''; position:absolute; inset:-6px -10px; border:3px solid var(--mt-al);
+  border-radius:50%; pointer-events:none; }
+.mt-kesik::after{ border-style:dashed; }
+.mt-turet .ok{ color:var(--mt-al); font-size:52px; line-height:1; }
+
+/* --- KURAL KUTUSU (ikil ekleri) --- */
+/* Kutu SOLDAN SAĞA dizilir: Arapça örnek ve ekler SOLDA, Türkçe kural
+   cümlesi SAĞDA. (Önce kutunun tamamı rtl'di, Türkçe sola düşüyordu.)
+   Hücrelerin kendi içindeki Arapça yönü aşağıda ayrıca veriliyor. */
+.mt-kural{ border:2px solid var(--mt-al); border-radius:10px; padding:6px 10px;
+  display:grid; grid-template-columns:1.1fr 120px 165px 1.25fr; align-items:center;
+  gap:4px 12px; direction:ltr; }
+.mt-kural .cum{ font-size:25px; line-height:1.32; direction:ltr; text-align:left; }
+.mt-kural .hrk, .mt-kural .ek, .mt-kural .orn{
+  font-family:'Arakom','Traditional Arabic',serif; direction:rtl; text-align:center; }
+.mt-kural .hrk{ font-size:34px; } .mt-kural .ek{ font-size:40px; } .mt-kural .orn{ font-size:34px; }
+.mt-kural .y{ color:var(--mt-yesil); } .mt-kural .m{ color:var(--mt-mavi); }
+.mt-kural .cizgi{ grid-column:1/-1; height:1px; background:#F0D4D4; }
+/* İşaretli hücre: kırmızı yuvarlak çerçeve — sunudaki gibi. */
+.mt-im{ box-shadow:0 0 0 2.5px var(--mt-al); border-radius:9px; }
+
+/* --- ALIŞTIRMA (ikil yapalım / düzenli mi) --- */
+.mt-soru{ display:grid; grid-template-columns:repeat(6,1fr); gap:6px 10px; text-align:center; }
+.mt-soru .k{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl; font-size:40px; }
+.mt-soru .c{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl; font-size:40px;
+  min-height:1.6em; }
+.mt-soru .no{ color:#7C8794; font-size:26px; }
+
+/* ================= CEM' — İKİ YANLI KARŞILAŞTIRMA =================
+   Sunudaki en kritik slayt (28-37. sayfalar). İki yan sırayla
+   canlanır: biri anlatılırken öbürü GRİYE düşer, sonra yer değişir.
+   Durum adım numarasından okunur; öge eklemekle değil. */
+.mt-iki{ flex:1 1 auto; min-height:0; overflow:hidden; display:grid; grid-template-columns:1fr 1px 1fr;
+  gap:0 22px; align-items:start; }
+.mt-iki .mt-yan{ transition:color .45s ease; }
+.mt-iki .mt-ayrac{ background:#111827; align-self:stretch; transition:background .45s ease; }
+.mt-yan h3{ margin:0 0 8px; font-size:27px; line-height:1.28; font-weight:900; text-align:center; }
+.mt-liste{ display:flex; flex-direction:column; gap:4px; }
+.mt-liste .sat{ display:flex; align-items:center; gap:10px; justify-content:flex-end;
+  font-family:'Arakom','Traditional Arabic',serif; direction:rtl; font-size:36px; line-height:1.45; }
+.mt-liste .nk{ font-size:20px; line-height:1; }
+.mt-sol-ic{ display:grid; grid-template-columns:auto 1fr; gap:0 14px; align-items:center; }
+.mt-etiket{ text-align:center; font-size:30px; line-height:1.3; }
+.mt-etiket .ler{ color:var(--mt-al); text-decoration:underline; font-weight:900; }
+.mt-bag{ display:flex; flex-direction:row; justify-content:center; gap:26px; margin-top:4px; }
+.mt-bag .b{ display:flex; align-items:center; gap:6px; font-size:24px; font-weight:900; }
+.mt-bag .b i{ font-style:normal; width:34px; height:2px; background:currentColor; display:block; }
+.mt-sag-ic{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+.mt-kalip{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl; font-weight:900;
+  font-size:50px; line-height:1.5; position:relative; }
+.mt-hrk{ color:var(--mt-al); font-size:34px; letter-spacing:6px; line-height:1; }
+.mt-ornek{ display:flex; align-items:flex-end; gap:18px; }
+.mt-ornek .kl{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl; font-size:36px; }
+.mt-ornek .kl .sonuk{ color:#A6A6A6; }
+.mt-ornek .tr{ font-size:26px; text-align:center; }
+.mt-orta{ font-size:25px; line-height:1.35; padding-inline-start:16px; }
+
+/* --- SÖNÜK YAN: renk değişir, düzen yerinde kalır --- */
+.mt-cogul .mt-yan.pasif, .mt-cogul .mt-yan.pasif *{ color:var(--mt-gri) !important; }
+.mt-cogul .mt-yan.pasif .sonuk{ color:var(--mt-gri) !important; }
+.mt-cogul .mt-bag.pasif, .mt-cogul .mt-bag.pasif *{ color:var(--mt-gri) !important; }
+/* 1-3. adım: SOL canlı, SAĞ sönük. 4-6: yer değişir. 7: sol geri döner,
+   bağlantı köşebentleri sunudaki gibi gri kalır. 8: iki yan da canlı. */
+.mt-cogul[data-a="1"] .mt-sag, .mt-cogul[data-a="2"] .mt-sag,
+.mt-cogul[data-a="3"] .mt-sag, .mt-cogul[data-a="7"] .mt-sag{ color:var(--mt-gri); }
+.mt-cogul[data-a="1"] .mt-sag *, .mt-cogul[data-a="2"] .mt-sag *,
+.mt-cogul[data-a="3"] .mt-sag *, .mt-cogul[data-a="7"] .mt-sag *{ color:var(--mt-gri) !important; }
+.mt-cogul[data-a="4"] .mt-sol, .mt-cogul[data-a="5"] .mt-sol, .mt-cogul[data-a="6"] .mt-sol{ color:var(--mt-gri); }
+.mt-cogul[data-a="4"] .mt-sol *, .mt-cogul[data-a="5"] .mt-sol *,
+.mt-cogul[data-a="6"] .mt-sol *{ color:var(--mt-gri) !important; }
+/* Köşebentler 7. adımdan sonra hep gri — sunuda da öyle kalıyor. */
+.mt-cogul[data-a="7"] .mt-bag *, .mt-cogul[data-a="8"] .mt-bag *{ color:var(--mt-gri) !important; }
+/* Üstteki iki kıvrık ok: hangi yan anlatılıyorsa o kırmızı. */
+.mt-oklar{ display:grid; grid-template-columns:1fr 1fr; height:40px; margin:0 0 10px; flex:0 0 auto; }
+.mt-oklar svg{ width:100%; height:100%; overflow:hidden; }
+/* preserveAspectRatio="none" çizgiyi de eziyor: kalemi ölçekten muaf
+   tutuyoruz, yoksa ok kalın bir şerit gibi çıkıp başlığın üstüne biniyor. */
+.mt-oklar path, .mt-oklar polygon{ vector-effect:non-scaling-stroke; }
+.mt-oklar path{ fill:none; stroke:var(--mt-gri); stroke-width:2; transition:stroke .45s ease; }
+.mt-oklar .bas{ fill:var(--mt-gri); stroke:none; transition:fill .45s ease; }
+.mt-cogul[data-a="1"] .ok-sol path, .mt-cogul[data-a="2"] .ok-sol path,
+.mt-cogul[data-a="3"] .ok-sol path, .mt-cogul[data-a="7"] .ok-sol path,
+.mt-cogul[data-a="8"] .ok-sol path{ stroke:var(--mt-al); }
+.mt-cogul[data-a="1"] .ok-sol .bas, .mt-cogul[data-a="2"] .ok-sol .bas,
+.mt-cogul[data-a="3"] .ok-sol .bas, .mt-cogul[data-a="7"] .ok-sol .bas,
+.mt-cogul[data-a="8"] .ok-sol .bas{ fill:var(--mt-al); }
+.mt-cogul[data-a="4"] .ok-sag path, .mt-cogul[data-a="5"] .ok-sag path,
+.mt-cogul[data-a="6"] .ok-sag path, .mt-cogul[data-a="8"] .ok-sag path{ stroke:var(--mt-al); }
+.mt-cogul[data-a="4"] .ok-sag .bas, .mt-cogul[data-a="5"] .ok-sag .bas,
+.mt-cogul[data-a="6"] .ok-sag .bas, .mt-cogul[data-a="8"] .ok-sag .bas{ fill:var(--mt-al); }
+/* Sonuç satırları */
+.mt-sonuc{ margin-top:6px; flex:0 0 auto; display:flex; flex-direction:column; gap:6px; }
+.mt-sonuc .s{ display:flex; gap:10px; align-items:flex-start; font-size:24px; line-height:1.3; }
+.mt-sonuc .s .im{ color:var(--mt-al); flex:0 0 auto; }
+
+/* --- DÜZENLİ Mİ? alıştırması --- */
+.mt-dm{ display:grid; grid-template-columns:1fr 1fr; gap:6px 26px; flex:1 1 auto; align-content:center; }
+.mt-dm .sat{ display:grid; grid-template-columns:150px 1fr; align-items:center; gap:12px;
+  border-bottom:1px solid #EEF1F5; padding:2px 0; }
+.mt-dm .sor{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl; font-size:36px;
+  text-align:right; line-height:1.5; }
+.mt-dm .cev{ color:var(--mt-al); font-size:30px; font-weight:900; }
+.mt-dm .sat.simdi .sor{ box-shadow:0 0 0 2.5px var(--mt-al); border-radius:9px; }
+
+/* --- KAPANIŞ --- */
+.mt-kapak{ flex:1 1 auto; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:10px; }
+.mt-kapak .sk{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl;
+  font-size:180px; line-height:1.35; color:#009999; }
+.mt-kapak .im{ font-size:32px; color:var(--mt-kirmizi); font-weight:900; }
+
+
+/* ==========================================================
+   TEKİLDEN İKİLE — YENİDEN YAZILDI (2026-08)
+   ----------------------------------------------------------
+   ESKİSİ NEDEN KÖTÜYDÜ:
+     1) Kareler yan yana değil ALT ALTA diziliyordu: genel
+        .kare kuralı flex-direction:column veriyor, .mt-tur .kare
+        bunu ezmiyordu. Parçalar dikey yığılıp başlığa biniyordu.
+     2) Oklar ↗ / ↑ metin karakteriydi; Chrome bunları RENKLİ
+        EMOJİ olarak çiziyor -> ekranda mavi kutu görünüyordu.
+     3) 58px yazı x 1.9 satır, 180px'lik kutuya sığmıyordu.
+     4) Türkçe karşılık 1. adımdan itibaren duruyordu (sürpriz yok).
+     5) ة → ت değişimi kelimeden KOPUK, havada duran bir ـتـ ile
+        anlatılıyordu; göz neyin neye dönüştüğünü izleyemiyordu.
+
+   YENİSİ: kelime TEK YERDE durur, adım adım kendi üstünde değişir.
+   Altındaki kırmızı "işlem şeridi" o adımda ne olduğunu söyler.
+   Arapça parçalar hep TAM ve DOĞRU BİÇİMLİ metin olarak yazılır;
+   harf biçimi bozulmasın diye kelimenin içi span'lara bölünmez.
+   Tek bölme yeri ة'den sonrasıdır — ة zaten kendinden sonrakine
+   BAĞLANMAZ, dolayısıyla orada bölmek biçimi bozmaz.
+   ========================================================== */
+.tsn{ flex:1 1 auto; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:26px; }
+
+/* --- sahne: bütün durumlar üst üste, çapraz geçişle --- */
+.tsn-sahne{ position:relative; display:grid; place-items:center;
+  min-height:120px; width:100%; }
+.tsn-d{ grid-area:1/1; display:flex; align-items:center; justify-content:center;
+  gap:18px; white-space:nowrap; opacity:0; transform:scale(.97); direction:rtl;
+  transition:opacity .45s ease, transform .45s ease; }
+.tsn-d .kl{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl;
+  font-size:64px; line-height:1.6; color:#111827; }
+.tsn-d .ek{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl;
+  font-size:64px; line-height:1.6; color:var(--mt-yesil); font-weight:900; }
+.tsn-d .arti{ font-size:40px; color:#8A94A3; font-weight:700; }
+.mt-tur[data-a="1"] .tsn-d[data-d="1"],
+.mt-tur[data-a="2"] .tsn-d[data-d="2"],
+.mt-tur[data-a="3"] .tsn-d[data-d="3"],
+.mt-tur[data-a="4"] .tsn-d[data-d="5"],
+.mt-tur[data-a="5"] .tsn-d[data-d="5"]{ opacity:1; transform:scale(1); }
+/* 5. adımda sonuç biraz büyür: "oldu" hissi */
+.mt-tur[data-a="5"] .tsn-d[data-d="5"] .kl{ font-size:76px; }
+
+/* --- işlem şeridi: o adımda ne oluyor --- */
+.tsn-islem{ position:relative; display:grid; place-items:center;
+  min-height:64px; width:100%; }
+.tsn-i{ grid-area:1/1; display:flex; align-items:center; gap:14px;
+  opacity:0; transform:translateY(6px);
+  transition:opacity .4s ease, transform .4s ease;
+  font-size:27px; color:#41505F; }
+.tsn-i b{ color:var(--mt-al); }
+.tsn-i .im{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl;
+  font-size:44px; line-height:1; color:var(--mt-al); font-weight:900;
+  background:#FFF1F1; border:2px solid #FFD2D2; border-radius:10px;
+  padding:2px 14px; }
+.tsn-i .im.ys{ color:var(--mt-yesil); background:#EFFBF3; border-color:#C6EED8; }
+/* Yalnız hareke taşıyan fişler: tenvin/fetha tek başına çok küçük kalıyor. */
+.tsn-i .im.hrk{ font-size:58px; padding:0 22px; line-height:1.3; }
+/* ok: metin karakteri DEĞİL, çizilmiş SVG — emoji kutusu çıkmasın */
+.tsn-ok{ width:34px; height:18px; flex:0 0 auto; color:var(--mt-al); }
+.mt-tur[data-a="1"] .tsn-i[data-i="1"],
+.mt-tur[data-a="2"] .tsn-i[data-i="2"],
+.mt-tur[data-a="3"] .tsn-i[data-i="3"],
+.mt-tur[data-a="4"] .tsn-i[data-i="4"],
+.mt-tur[data-a="5"] .tsn-i[data-i="5"]{ opacity:1; transform:translateY(0); }
+
+/* --- Türkçe karşılık: yalnız son adımda --- */
+.tsn .tr{ font-size:34px; color:#41505F; opacity:0;
+  transition:opacity .45s ease .15s; }
+.mt-tur[data-a="5"] .tsn .tr{ opacity:1; }
+
+/* --- İKİL YAPALIM: 6 kelime x 3 adım --- */
+.mt-ikil .mt-soru .c{opacity:0;transition:opacity .35s ease}
+.mt-ikil .mt-soru .k{border-radius:9px;transition:box-shadow .3s ease;padding:2px 6px}
+.mt-kural .hrk,.mt-kural .ek{border-radius:9px;transition:box-shadow .3s ease;padding:2px 4px}
+.mt-ikil[data-a="2"] .s1,.mt-ikil[data-a="3"] .s1{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="3"] .kut-ek-m,.mt-ikil[data-a="3"] .kut-hrk-e{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="4"] .c1,.mt-ikil[data-a="5"] .c1,.mt-ikil[data-a="6"] .c1,.mt-ikil[data-a="7"] .c1,.mt-ikil[data-a="8"] .c1,.mt-ikil[data-a="9"] .c1,.mt-ikil[data-a="10"] .c1,.mt-ikil[data-a="11"] .c1,.mt-ikil[data-a="12"] .c1,.mt-ikil[data-a="13"] .c1,.mt-ikil[data-a="14"] .c1,.mt-ikil[data-a="15"] .c1,.mt-ikil[data-a="16"] .c1,.mt-ikil[data-a="17"] .c1,.mt-ikil[data-a="18"] .c1,.mt-ikil[data-a="19"] .c1{opacity:1}
+.mt-ikil[data-a="5"] .s2,.mt-ikil[data-a="6"] .s2{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="6"] .kut-ek-y,.mt-ikil[data-a="6"] .kut-hrk-y{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="7"] .c2,.mt-ikil[data-a="8"] .c2,.mt-ikil[data-a="9"] .c2,.mt-ikil[data-a="10"] .c2,.mt-ikil[data-a="11"] .c2,.mt-ikil[data-a="12"] .c2,.mt-ikil[data-a="13"] .c2,.mt-ikil[data-a="14"] .c2,.mt-ikil[data-a="15"] .c2,.mt-ikil[data-a="16"] .c2,.mt-ikil[data-a="17"] .c2,.mt-ikil[data-a="18"] .c2,.mt-ikil[data-a="19"] .c2{opacity:1}
+.mt-ikil[data-a="8"] .s3,.mt-ikil[data-a="9"] .s3{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="9"] .kut-ek-y,.mt-ikil[data-a="9"] .kut-hrk-y{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="10"] .c3,.mt-ikil[data-a="11"] .c3,.mt-ikil[data-a="12"] .c3,.mt-ikil[data-a="13"] .c3,.mt-ikil[data-a="14"] .c3,.mt-ikil[data-a="15"] .c3,.mt-ikil[data-a="16"] .c3,.mt-ikil[data-a="17"] .c3,.mt-ikil[data-a="18"] .c3,.mt-ikil[data-a="19"] .c3{opacity:1}
+.mt-ikil[data-a="11"] .s4,.mt-ikil[data-a="12"] .s4{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="12"] .kut-ek-m,.mt-ikil[data-a="12"] .kut-hrk-e{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="13"] .c4,.mt-ikil[data-a="14"] .c4,.mt-ikil[data-a="15"] .c4,.mt-ikil[data-a="16"] .c4,.mt-ikil[data-a="17"] .c4,.mt-ikil[data-a="18"] .c4,.mt-ikil[data-a="19"] .c4{opacity:1}
+.mt-ikil[data-a="14"] .s5,.mt-ikil[data-a="15"] .s5{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="15"] .kut-ek-m,.mt-ikil[data-a="15"] .kut-hrk-u{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="16"] .c5,.mt-ikil[data-a="17"] .c5,.mt-ikil[data-a="18"] .c5,.mt-ikil[data-a="19"] .c5{opacity:1}
+.mt-ikil[data-a="17"] .s6,.mt-ikil[data-a="18"] .s6{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="18"] .kut-ek-y,.mt-ikil[data-a="18"] .kut-hrk-y{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-ikil[data-a="19"] .c6{opacity:1}
+
+/* --- DÜZENLİ Mİ: 10 madde x 2 adım --- */
+.mt-dmg .mt-dm .cev{opacity:0;transition:opacity .35s ease}
+.mt-dmg .mt-dm .sor{border-radius:9px;transition:box-shadow .3s ease;padding:2px 8px}
+.mt-dmg[data-a="2"] .s1 .sor,.mt-dmg[data-a="3"] .s1 .sor{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-dmg[data-a="3"] .c1,.mt-dmg[data-a="4"] .c1,.mt-dmg[data-a="5"] .c1,.mt-dmg[data-a="6"] .c1,.mt-dmg[data-a="7"] .c1,.mt-dmg[data-a="8"] .c1,.mt-dmg[data-a="9"] .c1,.mt-dmg[data-a="10"] .c1,.mt-dmg[data-a="11"] .c1,.mt-dmg[data-a="12"] .c1,.mt-dmg[data-a="13"] .c1,.mt-dmg[data-a="14"] .c1,.mt-dmg[data-a="15"] .c1,.mt-dmg[data-a="16"] .c1,.mt-dmg[data-a="17"] .c1,.mt-dmg[data-a="18"] .c1,.mt-dmg[data-a="19"] .c1,.mt-dmg[data-a="20"] .c1,.mt-dmg[data-a="21"] .c1{opacity:1}
+.mt-dmg[data-a="4"] .s2 .sor,.mt-dmg[data-a="5"] .s2 .sor{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-dmg[data-a="5"] .c2,.mt-dmg[data-a="6"] .c2,.mt-dmg[data-a="7"] .c2,.mt-dmg[data-a="8"] .c2,.mt-dmg[data-a="9"] .c2,.mt-dmg[data-a="10"] .c2,.mt-dmg[data-a="11"] .c2,.mt-dmg[data-a="12"] .c2,.mt-dmg[data-a="13"] .c2,.mt-dmg[data-a="14"] .c2,.mt-dmg[data-a="15"] .c2,.mt-dmg[data-a="16"] .c2,.mt-dmg[data-a="17"] .c2,.mt-dmg[data-a="18"] .c2,.mt-dmg[data-a="19"] .c2,.mt-dmg[data-a="20"] .c2,.mt-dmg[data-a="21"] .c2{opacity:1}
+.mt-dmg[data-a="6"] .s3 .sor,.mt-dmg[data-a="7"] .s3 .sor{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-dmg[data-a="7"] .c3,.mt-dmg[data-a="8"] .c3,.mt-dmg[data-a="9"] .c3,.mt-dmg[data-a="10"] .c3,.mt-dmg[data-a="11"] .c3,.mt-dmg[data-a="12"] .c3,.mt-dmg[data-a="13"] .c3,.mt-dmg[data-a="14"] .c3,.mt-dmg[data-a="15"] .c3,.mt-dmg[data-a="16"] .c3,.mt-dmg[data-a="17"] .c3,.mt-dmg[data-a="18"] .c3,.mt-dmg[data-a="19"] .c3,.mt-dmg[data-a="20"] .c3,.mt-dmg[data-a="21"] .c3{opacity:1}
+.mt-dmg[data-a="8"] .s4 .sor,.mt-dmg[data-a="9"] .s4 .sor{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-dmg[data-a="9"] .c4,.mt-dmg[data-a="10"] .c4,.mt-dmg[data-a="11"] .c4,.mt-dmg[data-a="12"] .c4,.mt-dmg[data-a="13"] .c4,.mt-dmg[data-a="14"] .c4,.mt-dmg[data-a="15"] .c4,.mt-dmg[data-a="16"] .c4,.mt-dmg[data-a="17"] .c4,.mt-dmg[data-a="18"] .c4,.mt-dmg[data-a="19"] .c4,.mt-dmg[data-a="20"] .c4,.mt-dmg[data-a="21"] .c4{opacity:1}
+.mt-dmg[data-a="10"] .s5 .sor,.mt-dmg[data-a="11"] .s5 .sor{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-dmg[data-a="11"] .c5,.mt-dmg[data-a="12"] .c5,.mt-dmg[data-a="13"] .c5,.mt-dmg[data-a="14"] .c5,.mt-dmg[data-a="15"] .c5,.mt-dmg[data-a="16"] .c5,.mt-dmg[data-a="17"] .c5,.mt-dmg[data-a="18"] .c5,.mt-dmg[data-a="19"] .c5,.mt-dmg[data-a="20"] .c5,.mt-dmg[data-a="21"] .c5{opacity:1}
+.mt-dmg[data-a="12"] .s6 .sor,.mt-dmg[data-a="13"] .s6 .sor{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-dmg[data-a="13"] .c6,.mt-dmg[data-a="14"] .c6,.mt-dmg[data-a="15"] .c6,.mt-dmg[data-a="16"] .c6,.mt-dmg[data-a="17"] .c6,.mt-dmg[data-a="18"] .c6,.mt-dmg[data-a="19"] .c6,.mt-dmg[data-a="20"] .c6,.mt-dmg[data-a="21"] .c6{opacity:1}
+.mt-dmg[data-a="14"] .s7 .sor,.mt-dmg[data-a="15"] .s7 .sor{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-dmg[data-a="15"] .c7,.mt-dmg[data-a="16"] .c7,.mt-dmg[data-a="17"] .c7,.mt-dmg[data-a="18"] .c7,.mt-dmg[data-a="19"] .c7,.mt-dmg[data-a="20"] .c7,.mt-dmg[data-a="21"] .c7{opacity:1}
+.mt-dmg[data-a="16"] .s8 .sor,.mt-dmg[data-a="17"] .s8 .sor{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-dmg[data-a="17"] .c8,.mt-dmg[data-a="18"] .c8,.mt-dmg[data-a="19"] .c8,.mt-dmg[data-a="20"] .c8,.mt-dmg[data-a="21"] .c8{opacity:1}
+.mt-dmg[data-a="18"] .s9 .sor,.mt-dmg[data-a="19"] .s9 .sor{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-dmg[data-a="19"] .c9,.mt-dmg[data-a="20"] .c9,.mt-dmg[data-a="21"] .c9{opacity:1}
+.mt-dmg[data-a="20"] .s10 .sor,.mt-dmg[data-a="21"] .s10 .sor{box-shadow:0 0 0 2.5px var(--mt-al)}
+.mt-dmg[data-a="21"] .c10{opacity:1}
+
+/* Tesniye örnekleri SAĞDAN başlar: Arapça okuma yönü. Izgaranın
+   yönünü çevirmek yeter — hücre içindeki Türkçe kendi yönünde kalsın
+   diye ayrıca yalıtılıyor. */
+.mt-izgara.mt-sagdan{ direction:rtl; }
+.mt-izgara.mt-sagdan .t{ direction:ltr; unicode-bidi:isolate; }
+
+/* --- VEZİNDEN KÖKE HAREKE AKTARIMI ---
+   Sunuda bu iş iki ayrı sayfada, kalıbın üstüne ve altına kırmızı ötre
+   KOYARAK anlatılmıştı. Burada gerçek hareket var: ötreler kalıbın
+   üstünde belirir, sonra köke iner ve çıplak iskelet harekeli hâline döner. */
+.mt-vezin{ position:relative; display:flex; flex-direction:column;
+  align-items:center; gap:22px; padding:16px 0 4px; }
+.mt-vezin .vz{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl;
+  font-weight:900; font-size:50px; line-height:1.4; }
+.mt-vezin .vzok{ color:var(--mt-al); font-size:24px; line-height:1; }
+.mt-vezin .kok{ position:relative; font-family:'Arakom','Traditional Arabic',serif;
+  direction:rtl; font-size:42px; line-height:1.5; }
+.mt-vezin .kok .ham, .mt-vezin .kok .dolu{ transition:opacity .45s ease; }
+.mt-vezin .kok .dolu{ position:absolute; inset:0; opacity:0; white-space:nowrap; }
+.mt-cogul[data-a="6"] .mt-vezin .kok .ham{ opacity:0; }
+.mt-cogul[data-a="6"] .mt-vezin .kok .dolu{ opacity:1; }
+.mt-vezin .hrk{ position:absolute; top:6px; color:var(--mt-al);
+  font-family:'Arakom','Traditional Arabic',serif; font-size:30px; line-height:1;
+  transition:transform .65s cubic-bezier(.5,0,.2,1), opacity .45s ease; }
+.mt-vezin .hrk1{ left:calc(50% - 24px); }
+.mt-vezin .hrk2{ left:calc(50% + 6px); }
+.mt-cogul[data-a="6"] .mt-vezin .hrk{ transform:translateY(104px); opacity:0; }
+
+/* --- "ler" BENZETMESİ: üç dirsek üç eke gider ---
+   Sunuda "Öğretmen-ler"den çıkan üç köşebent üç çoğul ekini tek tek
+   gösteriyor: iki mavi (eril ـُونَ / ـِينَ), bir pembe (dişil ـات).
+   Düz çizgi değil DİRSEK — hangi "ler"in hangi eke denk geldiği ancak
+   böyle okunuyor. 4. adımdan sonra sunudaki gibi gri kalırlar. */
+.mt-sol-ic{ position:relative; }
+.mt-koseb{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.mt-koseb .kb{ fill:none; stroke:currentColor; stroke-width:1.6;
+  vector-effect:non-scaling-stroke; }
+.mt-koseb .kb.mv{ color:var(--mt-mavi); }
+.mt-koseb .kb.pm{ color:var(--mt-pembe); }
+.mt-lbl{ position:absolute; left:8%; top:var(--y); font-size:22px; font-weight:900; }
+.mt-cogul[data-a="4"] .mt-koseb .kb, .mt-cogul[data-a="5"] .mt-koseb .kb,
+.mt-cogul[data-a="6"] .mt-koseb .kb, .mt-cogul[data-a="7"] .mt-koseb .kb,
+.mt-cogul[data-a="8"] .mt-koseb .kb{ color:var(--mt-gri) !important; }
+
+/* --- "ler" DENKLEMİ ---
+   Sunuda bu bağ elle çizilmiş üç köşebentti; hiçbir hizaya oturmadığı
+   için burada aynı FİKİR daha derli toplu anlatılıyor: Türkçenin tek
+   çoğul eki "ler", Arapçada üç ayrı ek demek. Önce ERİL iki ek gelir
+   (ـُونَ · ـِينَ), sonra DİŞİL tek ek (ـات) — aşağıdaki ❖ satırının
+   söylediği "eril iki, dişil bir" kuralı böylece gözle kuruluyor. */
+.mt-denk{ display:flex; align-items:center; justify-content:center;
+  gap:12px; margin-top:14px; flex-wrap:nowrap; }
+.mt-denk .lr{ color:var(--mt-al); font-weight:900; font-size:30px;
+  text-decoration:underline; }
+.mt-denk .es{ color:#41505F; font-size:28px; font-weight:900; }
+.mt-denk .ek{ font-family:'Arakom','Traditional Arabic',serif; direction:rtl;
+  font-size:38px; line-height:1.5; font-weight:900; }
+.mt-denk .nk{ font-size:24px; opacity:.6; }
+/* Ekler kayarak değil, "yerine oturarak" gelsin. */
+.mt-denk .adim{ transform:translateY(10px) scale(.86); }
+.mt-denk .adim.gor{ transform:none; }
+
+/* Kök üç HÂLDE yazılı, üçü üst üste; adım numarası hangisinin
+   görüneceğini söyler:
+     4 → كِتَاب  (elif soluk: birazdan düşecek olan harf)
+     5 → كــتب   (harekeler ve elif çıktı, KÖK kaldı)
+     6 → كُتُبٌ   (vezindeki ötreler köke indi)
+   Harfleri tek tek parçalayıp uçurmak yerine bütün kelime çapraz
+   geçişle değişiyor: Arapça'da harf ayırmak bitişmeyi bozuyor. */
+.mt-vezin .kok{ min-width:190px; min-height:66px; }
+.mt-vezin .kd{ position:absolute; left:0; right:0; top:0; text-align:center;
+  opacity:0; transition:opacity .5s ease; }
+.mt-cogul[data-a="1"] .kd.k1, .mt-cogul[data-a="2"] .kd.k1,
+.mt-cogul[data-a="3"] .kd.k1, .mt-cogul[data-a="4"] .kd.k1{ opacity:1; }
+.mt-cogul[data-a="5"] .kd.k2{ opacity:1; }
+.mt-cogul[data-a="6"] .kd.k3, .mt-cogul[data-a="7"] .kd.k3,
+.mt-cogul[data-a="8"] .kd.k3{ opacity:1; }
+.mt-vezin .kd .sonuk{ color:#A6A6A6; }
 </style>
 </head>
 <body>
@@ -1536,7 +1893,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
         </svg></span>
         <h3>Niçin Arapça? — Bir dil, iki dünya</h3>
         <p>Bir âyetin kelime kelime tahlili, Arap dünyası ve ticaret, kurumlar, BM'de Arapça.</p>
-        <div class="lalt2"><span class="ladet">15 slayt · motivasyon</span><span class="lac">Aç ›</span></div>
+        <div class="lalt2"><span class="ladet">12 slayt · motivasyon</span><span class="lac">Aç ›</span></div>
       </button>
       <button class="lkart" data-git="harfitarif">
         <div class="lust"><span class="lrozet">🧐 Belirlilik</span></div>
@@ -1588,6 +1945,31 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
         <p>Düzenli eril/dişil ve kırık çoğulda hareke ve harf değişimi, üç hâlin özet tablosu.</p>
         <div class="lalt2"><span class="ladet">16 slayt · alıştırmalı</span><span class="lac">Aç ›</span></div>
       </button>
+      <button class="lkart" data-git="sayiisimleri">
+        <div class="lust"><span class="lrozet">🧐 Sayı</span></div>
+        <span class="lsvg" aria-hidden="true"><svg viewBox="0 0 200 120">
+          <rect class="lp-golge" x="18" y="10" width="164" height="86" rx="8"/>
+          <rect class="lp-ekran" x="18" y="10" width="164" height="86" rx="8"/>
+          <g class="lp-kayan">
+            <g class="lp-slayt s1"><rect x="30" y="22" width="60" height="7" rx="3.5" fill="#C00000"/>
+              <rect x="30" y="36" width="120" height="5" rx="2.5" fill="#DCE3EB"/>
+              <rect x="30" y="48" width="96" height="5" rx="2.5" fill="#DCE3EB"/>
+              <text x="150" y="80" class="lp-ar" fill="#00B050">ـَانِ</text></g>
+            <g class="lp-slayt s2"><rect x="30" y="22" width="40" height="7" rx="3.5" fill="#94A3B4"/>
+              <rect x="30" y="40" width="52" height="34" rx="5" fill="#EEF3F8"/>
+              <rect x="90" y="40" width="52" height="34" rx="5" fill="#EEF3F8"/>
+              <text x="56" y="64" class="lp-ar2" fill="#0070C0">ـُونَ</text>
+              <text x="116" y="64" class="lp-ar2" fill="#FF33CC">ات</text></g>
+          </g>
+          <g class="lp-imlec"><circle cx="150" cy="88" r="4.5"/></g>
+          <path class="lp-ayak" d="M92 96 h16 v10 h-16 Z"/>
+          <rect class="lp-taban" x="62" y="106" width="76" height="6" rx="3"/>
+          <g class="lp-isik"><path d="M100 96 L54 118 h92 Z"/></g>
+        </svg></span>
+        <h3>Müfred, Tesniye ve Cem&#8217; İsimler</h3>
+        <p>İsimler sayı bakımından tekil, ikil ve çoğul; ikil eki nasıl gelir, düzenli ve düzensiz çoğul ayrımı.</p>
+        <div class="lalt2"><span class="ladet">9 slayt · alıştırmalı</span><span class="lac">Aç &#8250;</span></div>
+      </button>
     </div>
   </div>
 
@@ -1617,7 +1999,8 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       <div class="basla">Başlamak için → tuşuna bas</div>
     </div>
     <div class="imza">Kidef Arapça</div>
-  </section>
+  <span class="adim" data-g="21" hidden></span>
+</section>
 
   <!-- ================= AO 2 · SEN ZATEN BİLİYORSUN ================= -->
   <section class="slayt ao" data-ad="Türkçedeki Arapça — sen zaten biliyorsun">
@@ -1714,141 +2097,29 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
   </section>
 
   <!-- ================= AO 5 · ÂYET 1 (tıklanabilir) ================= -->
-  <section class="slayt ao" data-ad="Âyet 1 — بِلِسَانٍ عَرَبِيٍّ مُبِينٍ">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">👆</div>
-      <div>
-        <h2>Kelimeye dokun, anlamı çıksın</h2>
-        <div class="alt">Kur'an kendi dilini tarif ediyor</div>
-      </div>
-    </div>
-    <div class="gov">
-    <div class="aoAyet">
-      <span class="aoK" data-ar="بِلِسَانٍ" data-tr="bir dille"
-            data-coz="<span class='kal'>بِ</span> cer harfi + <span class='kok'>ل س ن</span> kökünden <span class='kok'>لِسَان</span> · nekra · <b>mecrur</b> — cer harfi kendinden sonraki ismi esreli yapar">
-        <span class="ka">بِلِسَانٍ</span><span class="kt adim" data-g="2">bir dille</span>
-      </span>
-      <span class="aoK" data-ar="عَرَبِيٍّ" data-tr="Arap olan"
-            data-coz="Sıfat · mevsûfuna dört yönden uyar: nekra · mecrur · müfred · müzekker">
-        <span class="ka">عَرَبِيٍّ</span><span class="kt adim" data-g="3">Arap olan</span>
-      </span>
-      <span class="aoK" data-ar="مُبِينٍ" data-tr="apaçık"
-            data-coz="İkinci sıfat · ism-i fâil <span class='kal'>مُفْعِل</span> · kök <span class='kok'>ب ي ن</span>">
-        <span class="ka">مُبِينٍ</span><span class="kt adim" data-g="4">apaçık</span>
-      </span>
-    </div>
-    <div class="aoKaynak">Şuarâ sûresi · 195. âyet</div>
-    <div class="aoCozum">
-      <div class="ipucu">Bir kelimeye dokun — anlamı ve yapısı burada çıkar</div>
-      <div class="dolu"><div class="bas"></div><div class="ack"></div></div>
-    </div>
-    </div>
-    <div class="aoNot adim" data-g="5">
-      “… apaçık bir Arap diliyle.” — <span class="vur">Anlaşılsın diye seçilmiş bir dil.</span>
-    </div>
-  </section>
 
   <!-- ================= AO 6 · ÂYET 2 (tıklanabilir) ================= -->
-  <section class="slayt ao" data-ad="Âyet 2 — إِنَّ مَعَ الْعُسْرِ يُسْرًا">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">🌤️</div>
-      <div>
-        <h2>Bir harf, bambaşka bir anlam</h2>
-        <div class="alt">Marife ile nekranın farkını âyette görelim</div>
-      </div>
-    </div>
-    <div class="gov">
-    <div class="aoAyet">
-      <span class="aoK" data-ar="إِنَّ" data-tr="şüphesiz"
-            data-coz="Te'kid harfi · anlamı pekiştirir; kendinden sonraki ismi mansub yapar">
-        <span class="ka">إِنَّ</span><span class="kt adim" data-g="2">şüphesiz</span>
-      </span>
-      <span class="aoK" data-ar="مَعَ" data-tr="beraber"
-            data-coz="Zarf · “ile birlikte” anlamı katar; kendinden sonraki ismi mecrur yapar">
-        <span class="ka">مَعَ</span><span class="kt adim" data-g="3">beraber</span>
-      </span>
-      <span class="aoK" data-ar="الْعُسْرِ" data-tr="zorluk"
-            data-coz="Kök <span class='kok'>ع س ر</span> · <span class='kal'>اَلْ</span> ile <b>marife</b> — belli, bilinen zorluk · mecrur">
-        <span class="ka">الْعُسْرِ</span><span class="kt adim" data-g="4">zorluk</span>
-      </span>
-      <span class="aoK" data-ar="يُسْرًا" data-tr="bir kolaylık"
-            data-coz="Kök <span class='kok'>ي س ر</span> · tenvinli, yani <b>nekra</b> — belirsiz bir kolaylık · mansub">
-        <span class="ka">يُسْرًا</span><span class="kt adim" data-g="5">bir kolaylık</span>
-      </span>
-    </div>
-    <div class="aoKaynak">İnşirâh sûresi · 6. âyet</div>
-    <div class="aoCozum">
-      <div class="ipucu">Bir kelimeye dokun — anlamı ve yapısı burada çıkar</div>
-      <div class="dolu"><div class="bas"></div><div class="ack"></div></div>
-    </div>
-    </div>
-    <div class="aoNot altin adim" data-g="6">
-      “Şüphesiz zorlukla beraber bir kolaylık vardır.” — Zorluk <span class="vur">belli</span>, kolaylık <span class="vur">belirsiz</span>: yani çok.
-    </div>
-  </section>
 
   <!-- ================= AO 7 · ÂYET 3 (tıklanabilir) ================= -->
-  <section class="slayt ao" data-ad="Âyet 3 — وَقُلْ رَبِّ زِدْنِي عِلْمًا">
+  <section class="slayt ao" data-ad="Âyet — وَقُلْ رَبِّ زِدْنِي عِلْمًا">
     <div class="sbaslik adim" data-g="1">
       <div class="rozet">📖</div>
       <div>
-        <h2>Artırılması istenen tek şey</h2>
-        <div class="alt">Kökü tanıyan, kelimenin ailesini tanır</div>
+        <h2>İlmin dili</h2>
+        <div class="alt">Tâhâ sûresi, 114</div>
       </div>
     </div>
-    <div class="gov">
-    <div class="aoAyet">
-      <span class="aoK" data-ar="وَقُلْ" data-tr="ve de ki"
-            data-coz="<span class='kal'>وَ</span> atıf harfi + <span class='kok'>ق و ل</span> kökünden emir fiili <span class='kok'>قُلْ</span>">
-        <span class="ka">وَقُلْ</span><span class="kt adim" data-g="2">ve de ki</span>
-      </span>
-      <span class="aoK" data-ar="رَبِّ" data-tr="Rabbim"
-            data-coz="<span class='kok'>رَبّ</span> + mütekellim yâsı · münâdâ — başındaki <span class='kal'>يَا</span> gizlenmiş">
-        <span class="ka">رَبِّ</span><span class="kt adim" data-g="3">Rabbim</span>
-      </span>
-      <span class="aoK" data-ar="زِدْنِي" data-tr="bana artır"
-            data-coz="Kök <span class='kok'>ز ي د</span> · emir fiili + <span class='kok'>نِي</span> “bana” — mef'ûl zamiri">
-        <span class="ka">زِدْنِي</span><span class="kt adim" data-g="4">bana artır</span>
-      </span>
-      <span class="aoK" data-ar="عِلْمًا" data-tr="ilim"
-            data-coz="Kök <span class='kok'>ع ل م</span> · nekra · mansub — aynı kökten <span class='kok'>عَالِم · مَعْلُوم · مُعَلِّم</span>">
-        <span class="ka">عِلْمًا</span><span class="kt adim" data-g="5">ilim</span>
-      </span>
-    </div>
-    <div class="aoKaynak">Tâhâ sûresi · 114. âyet</div>
-    <div class="aoCozum">
-      <div class="ipucu">Bir kelimeye dokun — anlamı ve yapısı burada çıkar</div>
-      <div class="dolu"><div class="bas"></div><div class="ack"></div></div>
-    </div>
-    </div>
-    <div class="aoNot adim" data-g="6">
-      “De ki: Rabbim, ilmimi artır.” — <span class="vur">Artırılması emredilen tek şey ilim.</span>
+    <div class="gov" style="align-items:center;justify-content:center">
+      <div class="aoAyet adim" data-g="1" style="font-size:64px;line-height:2;text-align:center">
+        وَقُلْ رَبِّ زِدْنِي عِلْمًا
+      </div>
+      <div class="aoNot altin adim" data-g="2" style="text-align:center">
+        “De ki: <span class="vur">Rabbim, ilmimi artır.</span>”
+      </div>
     </div>
   </section>
 
   <!-- ================= AO 8 · ÜÇ ÂYET, BÜTÜN KONULAR ================= -->
-  <section class="slayt ao" data-ad="Üç âyette bütün konular">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">🧩</div>
-      <div>
-        <h2>Üç kısa âyet, bütün konular</h2>
-        <div class="alt">On bir kelimede, derste gördüğümüz her bahis bir kez geçti</div>
-      </div>
-    </div>
-    <div class="gov">
-      <div class="aoEsIzgara">
-        <div class="aoEs adim" data-g="2"><span class="sol">اَلْـ</span><span class="ok">→</span><span class="sag">Marife · harf-i ta'rîf</span></div>
-        <div class="aoEs adim" data-g="2"><span class="sol">ـٌ ـً ـٍ</span><span class="ok">→</span><span class="sag">Tenvin · nekra</span></div>
-        <div class="aoEs adim" data-g="3"><span class="sol">بِ · مَعَ</span><span class="ok">→</span><span class="sag">Cer harfi · mecrur</span></div>
-        <div class="aoEs adim" data-g="3"><span class="sol">إِنَّ</span><span class="ok">→</span><span class="sag">Te'kid harfi · mansub</span></div>
-        <div class="aoEs adim" data-g="4"><span class="sol">عَرَبِيٍّ مُبِينٍ</span><span class="ok">→</span><span class="sag">Sıfat · dört yönden uyum</span></div>
-        <div class="aoEs adim" data-g="4"><span class="sol">قُلْ · زِدْ</span><span class="ok">→</span><span class="sag">Emir fiili</span></div>
-      </div>
-    </div>
-    <div class="aoNot adim" data-g="5">
-      Sitedeki her bölüm, <span class="vur">üç kısa âyette</span> yan yana duruyor.
-    </div>
-  </section>
 
   <!-- ================= AO 9 · TEK KÖKTEN BİR DÜNYA ================= -->
   <section class="slayt ao" data-ad="Tek kökten bir dünya — ر ح م">
@@ -3073,6 +3344,175 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
 
     </div>
 
+<div class="sunum" data-s="sayiisimleri" data-ad="Müfred, Tesniye, Cem’">
+<section class="slayt mt" data-ad="Sayı bakımından isimler">
+  <h2 class="mt-bas adim" data-g="1">🧐 Müfred, Tesniye ve Cem’ İsimler</h2>
+  <p class="mt-alt adim" data-g="1">Arapçada isimler sayı bakımından;</p>
+  <div class="mt-izgara" style="grid-template-columns:repeat(3,1fr)">
+    <div class="h adim" data-g="2"><span class="t kr" style="font-size:34px;font-weight:900">• Müfret (Tekil)</span><span class="a">x</span></div>
+    <div class="h adim" data-g="3"><span class="t kr" style="font-size:34px;font-weight:900">• Tesniye (İkil)</span><span class="a"><span class="ys">ـَـانِ</span> / <span class="ys">ـَـيْنِ</span></span></div>
+    <div class="h adim" data-g="4"><span class="t kr" style="font-size:34px;font-weight:900">• Cem’ (Çoğul)</span><span class="a"><span class="mv">ـُـونَ</span> / <span class="mv">ـِـينَ</span> / <span class="pm">ات</span></span></div>
+  </div>
+  <p class="mt-alt adim" data-g="5" style="margin-top:14px">olmak üzere <b>üçe</b> ayrılır.</p>
+  <p class="mt-alt adim" data-g="6" style="font-size:27px;line-height:1.45;text-align:left">
+    › Arapça’da bir kelimeye <b>iki</b> sayısını getirmeden de ikil manası verilebilir. Yani
+    “tekil ve çoğul” tabirine ek olarak <b>“ikil”</b> tabiri de vardır. Böylece “çoğul”
+    tabiri <b>en az üç</b> sayıdan oluşmalıdır.</p>
+</section>
+
+<section class="slayt mt" data-ad="I. Müfred (Tekil) İsimler">
+  <h2 class="mt-bas adim" data-g="1"><span class="mt-u">I. Müfred (Tekil) İsimler:</span></h2>
+  <p class="mt-alt adim" data-g="1">Genellikle ikil ve çoğul eklerini almayan kelimeler tekil sayılırlar.</p>
+  <div class="mt-izgara"><div class="h adim" data-g="2"><span class="a">اَلْفَلَّاحُ</span><span class="t mv">Çiftçi</span></div><div class="h adim" data-g="2"><span class="a">طَبِيبَ<span class="pm">ةً</span></span><span class="t pm">(Bir) Doktor</span></div><div class="h adim" data-g="2"><span class="a">اَلْكِتَابَ</span><span class="t mv">Kitap</span></div><div class="h adim" data-g="2"><span class="a">اَلْأَرِيكَ<span class="pm">ةَ</span></span><span class="t pm">Koltuk</span></div><div class="h adim" data-g="2"><span class="a">مُهَنْدِسٍ</span><span class="t mv">(Bir) Mühendis</span></div><div class="h adim" data-g="2"><span class="a">مُدَرِّسَ<span class="pm">ةٌ</span></span><span class="t pm">(Bir) Öğretmen</span></div><div class="h adim" data-g="3"><span class="a">وَالِدٌ</span><span class="t mv">(Bir) Baba</span></div><div class="h adim" data-g="3"><span class="a">مُمَرِّضَ<span class="pm">ةٍ</span></span><span class="t pm">(Bir) Hemşire</span></div><div class="h adim" data-g="3"><span class="a">اَلسَّائِقِ</span><span class="t mv">Şöför</span></div><div class="h adim" data-g="3"><span class="a">اَلْوَالِدَ<span class="pm">ةُ</span></span><span class="t pm">Anne</span></div><div class="h adim" data-g="3"><span class="a">طَالِبًا</span><span class="t mv">(Bir) Öğrenci</span></div><div class="h adim" data-g="3"><span class="a">اَلْمَدْرَسَ<span class="pm">ةِ</span></span><span class="t pm">Okul</span></div></div>
+</section>
+
+<section class="slayt mt mt-tur" data-ad="Tesniye nasıl yapılır?">
+  <h2 class="mt-bas adim" data-g="1"><span class="mt-u">II. Tesniye (İkil) İsimler:</span></h2>
+  <p class="mt-alt adim" data-g="1" style="font-size:27px;line-height:1.45;text-align:left">
+    ✓ İsmi ikil yapmak için ismin sonuna <b class="ys">«ـَـانِ»</b> veya <b class="ys">«ـَـيْنِ»</b> ekleri getirilir.<br>
+    ✓ Bu işlem yapılırken tekil olan kelimenin sonundaki hareke <b class="al">fethaya “ـَـ”</b> çevrilir.</p>
+
+  <!-- SAHNE: kelime tek yerde durur, adım adım kendi üstünde değişir.
+       Her Arapça parça TAM bir metindir; harf biçimi bozulmasın diye
+       kelimenin içi bölünmez. Tek bölme ة'den sonradır (ة zaten
+       kendinden sonrakine bağlanmaz). -->
+  <div class="tsn">
+    <div class="tsn-sahne">
+      <div class="tsn-d" data-d="1"><span class="kl">مُدَرِّسَةٌ</span></div>
+      <div class="tsn-d" data-d="2"><span class="kl">مُدَرِّسَةَ</span></div>
+      <div class="tsn-d" data-d="3"><span class="kl">مُدَرِّسَةَ</span><span class="arti">+</span><span class="ek">ـانِ</span></div>
+      <div class="tsn-d" data-d="5"><span class="kl">مُدَرِّسَتَانِ</span></div>
+    </div>
+
+    <div class="tsn-islem">
+      <div class="tsn-i" data-i="1"><span>Tekil isim — sonu tenvinli:</span><span class="im hrk">ـٌ</span></div>
+      <div class="tsn-i" data-i="2"><span class="im hrk">ـٌ</span><svg class="tsn-ok" viewBox="0 0 34 18" aria-hidden="true"><path d="M1 9h28M23 3l7 6-7 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="im hrk">ـَ</span><span>Tenvin düşer, hareke <b>fetha</b> olur.</span></div>
+      <div class="tsn-i" data-i="3"><span>Sonuna ikil eki gelir:</span><span class="im ys">ـَانِ</span></div>
+      <div class="tsn-i" data-i="4"><span class="im">ة</span><svg class="tsn-ok" viewBox="0 0 34 18" aria-hidden="true"><path d="M1 9h28M23 3l7 6-7 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="im">ت</span><span>Kapalı <b>tâ’ marbûta</b> açılır, <b>tâ’</b> olur.</span></div>
+      <div class="tsn-i" data-i="5"><span>Tekil</span><span class="im">مُدَرِّسَةٌ</span><svg class="tsn-ok" viewBox="0 0 34 18" aria-hidden="true"><path d="M1 9h28M23 3l7 6-7 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="im ys">مُدَرِّسَتَانِ</span><span>İkil</span></div>
+    </div>
+
+    <div class="tr">İki öğretmen</div>
+  </div>
+
+  <span class="adim" data-g="2" hidden></span><span class="adim" data-g="3" hidden></span>
+  <span class="adim" data-g="4" hidden></span><span class="adim" data-g="5" hidden></span>
+</section>
+
+<section class="slayt mt" data-ad="Tesniye örnekleri">
+  <h2 class="mt-bas adim" data-g="1"><span class="mt-u">II. Tesniye (İkil) İsimler</span></h2>
+  <p class="mt-alt adim" data-g="1">Sonuna <b class="ys">ـَـانِ</b> / <b class="ys">ـَـيْنِ</b> gelir; önceki hareke <b>fetha</b> olur.</p>
+  <div class="mt-izgara mt-sagdan"><div class="h adim" data-g="2"><span class="a">اَلْفَلَّاحَ<span class="ys">انِ</span></span><span class="t"><span class="ys">İki</span> çiftçi</span></div><div class="h adim" data-g="2"><span class="a">طَبِيبَتَ<span class="ys">يْنِ</span></span><span class="t"><span class="ys">İki</span> doktor</span></div><div class="h adim" data-g="2"><span class="a">اَلْكِتَابَ<span class="ys">يْنِ</span></span><span class="t"><span class="ys">İki</span> kitap</span></div><div class="h adim" data-g="2"><span class="a">اَلْأَرِيكَتَ<span class="ys">يْنِ</span></span><span class="t"><span class="ys">İki</span> koltuk</span></div><div class="h adim" data-g="2"><span class="a">مُهَنْدِسَ<span class="ys">يْنِ</span></span><span class="t"><span class="ys">İki</span> mühendis</span></div><div class="h adim" data-g="2"><span class="a">مُدَرِّسَتَ<span class="ys">انِ</span></span><span class="t"><span class="ys">İki</span> öğretmen</span></div><div class="h adim" data-g="3"><span class="a">وَالِدَ<span class="ys">انِ</span></span><span class="t"><span class="ys">İki</span> baba</span></div><div class="h adim" data-g="3"><span class="a">مُمَرِّضَتَ<span class="ys">يْنِ</span></span><span class="t"><span class="ys">İki</span> hemşire</span></div><div class="h adim" data-g="3"><span class="a">اَلسَّائِقَ<span class="ys">يْنِ</span></span><span class="t"><span class="ys">İki</span> şöför</span></div><div class="h adim" data-g="3"><span class="a">اَلْوَالِدَتَ<span class="ys">انِ</span></span><span class="t"><span class="ys">İki</span> anne</span></div><div class="h adim" data-g="3"><span class="a">طَالِبَ<span class="ys">يْنِ</span></span><span class="t"><span class="ys">İki</span> öğrenci</span></div><div class="h adim" data-g="3"><span class="a">اَلْمَدْرَسَتَ<span class="ys">يْنِ</span></span><span class="t"><span class="ys">İki</span> okul</span></div></div>
+</section>
+
+<section class="slayt mt mt-ikil" data-ad="İkil Yapalım">
+  <div class="mt-kural adim" data-g="1">
+    <div class="orn y">طَالِبٌ ‹ طَالِبَ<span class="al">انِ</span></div>
+    <div class="ek y kut-ek-y">ـَـانِ</div><div class="hrk y kut-hrk-y">ـ ـ ـُ / ـ ـ ـٌ</div>
+    <div class="cum y">Kelime sonu <b>ötre</b> veya <b>iki ötre</b> olan isim “ـانِ” ile biter.</div>
+    <div class="cizgi"></div>
+    <div class="orn m">طَالِبً<span class="al">ا</span> ‹ طَالِبَ<span class="al">يْنِ</span></div>
+    <div class="ek m kut-ek-m">ـَـيْنِ</div><div class="hrk m kut-hrk-u">ـ ـ ـَ / ـ ـ ـًا</div>
+    <div class="cum m" style="grid-row:span 3">Kelime sonu <b>üstün‑iki üstün</b> veya <b>esre‑iki esre</b> olan isim “ـَـيْنِ” ile biter.</div>
+    <div class="cizgi"></div>
+    <div class="orn m">طَالِبٍ ‹ طَالِبَ<span class="al">يْنِ</span></div>
+    <div class="ek m"></div><div class="hrk m kut-hrk-e">ـ ـ ـِ / ـ ـ ـٍ</div>
+  </div>
+  <h3 class="mt-bas" style="font-size:34px;margin:12px 0 6px"><span class="al">İkil Yapalım:</span>
+    <span style="color:#1F2937;font-size:26px;font-weight:400">Unutma! Kelimenin sonundaki tenvinlerin yerine fetha
+    <b class="al">“ـَـ”</b> yazmalısın!</span></h3>
+  <div class="mt-soru"><div class="k s6"><span class="no">٦.</span> مَدِينَةٌ</div><div class="k s5"><span class="no">٥.</span> عَاصِمَةً</div><div class="k s4"><span class="no">٤.</span> عَالَمٍ</div><div class="k s3"><span class="no">٣.</span> اِسْمٌ</div><div class="k s2"><span class="no">٢.</span> مَكَانٌ</div><div class="k s1"><span class="no">١.</span> بَلَدٍ</div><div class="c c6">مَدِينَتَ<span class="ys">انِ</span></div><div class="c c5">عَاصِمَتَ<span class="mv">يْنِ</span></div><div class="c c4">عَالَمَ<span class="mv">يْنِ</span></div><div class="c c3">اِسْمَ<span class="ys">انِ</span></div><div class="c c2">مَكَانَ<span class="ys">انِ</span></div><div class="c c1">بَلَدَ<span class="mv">يْنِ</span></div></div>
+  <span class="adim" data-g="2" hidden></span><span class="adim" data-g="3" hidden></span><span class="adim" data-g="4" hidden></span><span class="adim" data-g="5" hidden></span><span class="adim" data-g="6" hidden></span><span class="adim" data-g="7" hidden></span><span class="adim" data-g="8" hidden></span><span class="adim" data-g="9" hidden></span><span class="adim" data-g="10" hidden></span><span class="adim" data-g="11" hidden></span><span class="adim" data-g="12" hidden></span><span class="adim" data-g="13" hidden></span><span class="adim" data-g="14" hidden></span><span class="adim" data-g="15" hidden></span><span class="adim" data-g="16" hidden></span><span class="adim" data-g="17" hidden></span><span class="adim" data-g="18" hidden></span><span class="adim" data-g="19" hidden></span>
+</section>
+
+<section class="slayt mt mt-cogul" data-ad="Cem’ (Çoğul) İsimler">
+  <h2 class="mt-bas adim" data-g="1">Cem’ (Çoğul) İsimler</h2>
+  <div class="mt-oklar">
+    <svg class="ok-sol" viewBox="0 0 300 40" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M292 7 C240 7 200 29 52 29"/><polygon class="bas" points="52,23 34,29 52,35"/></svg>
+    <svg class="ok-sag" viewBox="0 0 300 40" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M8 7 C60 7 100 29 248 29"/><polygon class="bas" points="248,23 266,29 248,35"/></svg>
+  </div>
+  <div class="mt-iki">
+    <div class="mt-yan mt-sol">
+      <h3>1. Düzenli <span class="mt-u">(Salim)</span> Çoğullar : bazı eklerle oluşturulur.</h3>
+      <div class="mt-sol-ic">
+        <div>
+          <div class="mt-etiket">Öğretmen<br><span class="ler">ler</span></div>
+        </div>
+        <div>
+          <div class="mt-liste">
+            <div class="sat"><span class="ar">مُعَلِّمٌ ‹ مُعَلِّمُ<span class="mv">ونَ</span></span><span class="nk mv">●</span></div>
+            <div class="sat"><span class="ar">مُعَلِّمٍ ‹ مُعَلِّمِ<span class="mv">ينَ</span></span><span class="nk mv">●</span></div>
+            <div class="sat"><span class="ar">مُعَلِّمَ<span class="pm">ة</span> ‹ مُعَلِّمَ<span class="pm">ات</span></span><span class="nk pm">●</span></div>
+          </div>
+      </div>
+      <div class="mt-denk">
+        <span class="lr">ler</span><span class="es">=</span>
+        <span class="ek mv adim" data-g="2">ـُونَ</span>
+        <span class="nk mv adim" data-g="2">·</span>
+        <span class="ek mv adim" data-g="2">ـِينَ</span>
+        <span class="nk pm adim" data-g="3">·</span>
+        <span class="ek pm adim" data-g="3">ـات</span>
+      </div>
+
+      </div>
+      </div>
+    <div class="mt-ayrac"></div>
+    <div class="mt-yan mt-sag">
+      <h3>2. Düzensiz <span class="mt-u">(Teksir)</span> Çoğullar: Bazı kalıplarla oluşturulur.</h3>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:0 16px;align-items:start">
+        <div class="mt-orta">Düzensiz olan çoğul kelimeleri <b>ezberlememiz</b> gerekir.</div>
+        <div class="mt-sag-ic">
+          <div class="mt-vezin">
+            <div class="vz">فُعُل</div>
+            <div class="vzok adim" data-g="6">↓</div>
+            <div class="kok"><span class="kd k1">كِت<span class="sonuk">ا</span>ب</span><span class="kd k2">كــتب</span><span class="kd k3">كُتُبٌ</span></div>
+            <span class="hrk hrk1 adim" data-g="4">ُ</span>
+            <span class="hrk hrk2 adim" data-g="4">ُ</span>
+            <span class="adim" data-g="5" hidden></span>
+          </div>
+          <div class="mt-ornek">
+            <div style="text-align:center">
+              <div class="tr">Kitap<span class="al">lar</span></div>
+            </div>
+            <div style="text-align:center">
+              <div class="kl">كِت<span class="sonuk">ا</span>ب</div>
+              <div class="tr">Kitap</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-sonuc">
+    <div class="s adim" data-g="7"><span class="im">❖</span><span><span class="mv">Arapça’da çoğulu düzenli olan <b>eril</b> kelimelerin iki tane çoğul eki,</span>
+      <span class="pm">çoğulu düzenli olan <b>dişil</b> kelimelerin ise bir tane çoğul eki vardır.</span></span></div>
+    <div class="s adim" data-g="8"><span class="im">❖</span><span>Bir ismin çoğulunun düzenli olup olmadığını ancak <b>ezberleyerek</b> bilebiliriz.</span></div>
+  </div>
+</section>
+
+<section class="slayt mt" data-ad="Çoğul örnekleri">
+  <h2 class="mt-bas adim" data-g="1">Cem’ (Çoğul) örnekleri</h2>
+  <p class="mt-alt adim" data-g="1">Düzenli çoğullar <b class="mv">ـُونَ / ـِينَ</b> ve <b class="pm">ات</b> ile;
+    düzensiz (teksir) çoğullar <b>kalıpla</b> yapılır.</p>
+  <div class="mt-izgara"><div class="h adim" data-g="2"><span class="a">اَلْفَلَّاحُ<span class="mv">ونَ</span></span><span class="t">Çiftçi<span class="mv">ler</span></span></div><div class="h adim" data-g="2"><span class="a"><span class="lc">طَبِيبَ</span><span class="pm">اتٍ</span></span><span class="t">Doktor<span class="pm">lar</span></span></div><div class="h adim" data-g="2"><span class="a">اَلْكُتُبَ</span><span class="t">Kitap<span class="mv">lar</span></span></div><div class="h adim" data-g="2"><span class="a">اَلْأَرَائِكَ</span><span class="t">Koltuk<span class="pm">lar</span></span></div><div class="h adim" data-g="2"><span class="a">مُهَنْدِس<span class="mv">ِينَ</span></span><span class="t">Mühendis<span class="mv">ler</span></span></div><div class="h adim" data-g="2"><span class="a"><span class="lc">مُدَرِّسَ</span><span class="pm">اتٌ</span></span><span class="t">Öğretmen<span class="pm">ler</span></span></div><div class="h adim" data-g="3"><span class="a">وَالِد<span class="mv">ُونَ</span></span><span class="t">Baba<span class="mv">lar</span></span></div><div class="h adim" data-g="3"><span class="a"><span class="lc">مُمَرِّضَ</span><span class="pm">اتٍ</span></span><span class="t">Hemşire<span class="pm">ler</span></span></div><div class="h adim" data-g="3"><span class="a">اَلسَّائِقِ<span class="mv">ينَ</span></span><span class="t">Şöför<span class="mv">ler</span></span></div><div class="h adim" data-g="3"><span class="a"><span class="lc">اَلْوَالِدَ</span><span class="pm">اتُ</span></span><span class="t">Anne<span class="pm">ler</span></span></div><div class="h adim" data-g="3"><span class="a">طُلَّابًا</span><span class="t">Öğrenci<span class="mv">ler</span></span></div><div class="h adim" data-g="3"><span class="a"><span class="pm">اَلْمَدَارِسِ</span></span><span class="t">Okul<span class="pm">lar</span></span></div></div>
+</section>
+
+<section class="slayt mt mt-dmg" data-ad="Düzenli mi, Düzensiz mi?">
+  <h2 class="mt-bas al adim" data-g="1" style="font-size:46px">Düzenli mi, Düzensiz mi?</h2>
+  <div class="mt-dm"><div class="sat s1"><span class="cev c1">Düzenli</span><span class="sor"><span class="no">١.</span> مُعَلِّم ج مُعَلِّمُ<span class="mv">ونَ</span></span></div><div class="sat s2"><span class="cev c2">Düzensiz</span><span class="sor"><span class="no">٢.</span> طَالِب ج طُلَّاب</span></div><div class="sat s3"><span class="cev c3">Düzensiz</span><span class="sor"><span class="no">٣.</span> وَرَقَ<span class="pm">ة</span> ج <span class="al">أَ</span>وْرَ<span class="al">ا</span>ق</span></div><div class="sat s4"><span class="cev c4">Düzenli</span><span class="sor"><span class="no">٤.</span> مُهَنْدِسَ<span class="pm">ة</span> ج مُهَنْدِسَ<span class="pm">ات</span></span></div><div class="sat s5"><span class="cev c5">Düzensiz</span><span class="sor"><span class="no">٥.</span> عَالَم ج عَ<span class="al">وَا</span>لِم</span></div><div class="sat s6"><span class="cev c6">Düzenli</span><span class="sor"><span class="no">٦.</span> نَظَّارَ<span class="pm">ة</span> ج نَظَّارَ<span class="pm">ات</span></span></div><div class="sat s7"><span class="cev c7">Düzenli</span><span class="sor"><span class="no">٧.</span> مُدَرِّس ج مُدَرِّسِ<span class="mv">ينَ</span></span></div><div class="sat s8"><span class="cev c8">Düzensiz</span><span class="sor"><span class="no">٨.</span> دَفْتَر ج دَفَ<span class="al">ا</span>تِر</span></div><div class="sat s9"><span class="cev c9">Düzenli</span><span class="sor"><span class="no">٩.</span> سَابِق ج سَابِقُ<span class="mv">ونَ</span></span></div><div class="sat s10"><span class="cev c10">Düzensiz</span><span class="sor"><span class="no">١٠.</span> جَبَل ج جِبَ<span class="al">ا</span>ل</span></div></div>
+  <span class="adim" data-g="2" hidden></span><span class="adim" data-g="3" hidden></span><span class="adim" data-g="4" hidden></span><span class="adim" data-g="5" hidden></span><span class="adim" data-g="6" hidden></span><span class="adim" data-g="7" hidden></span><span class="adim" data-g="8" hidden></span><span class="adim" data-g="9" hidden></span><span class="adim" data-g="10" hidden></span><span class="adim" data-g="11" hidden></span><span class="adim" data-g="12" hidden></span><span class="adim" data-g="13" hidden></span><span class="adim" data-g="14" hidden></span><span class="adim" data-g="15" hidden></span><span class="adim" data-g="16" hidden></span><span class="adim" data-g="17" hidden></span><span class="adim" data-g="18" hidden></span><span class="adim" data-g="19" hidden></span><span class="adim" data-g="20" hidden></span>
+</section>
+
+<section class="slayt mt" data-ad="Kapanış">
+  <div class="mt-kapak">
+    <div class="sk adim" data-g="1">شُكْرًا</div>
+    <div class="im adim" data-g="2">Kidef Arapça</div>
+  </div>
+</section>
+</div>
+
   <!-- ================= KUMANDA ================= -->
 <div id="kumanda">
     <button class="kdug" id="dOnce" title="Önceki (←)"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
@@ -3190,10 +3630,17 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     return g;
   }
   function adimUygula(){
-    gruplar(slaytlar[s]).forEach(function(grup, i){
+    var sl = slaytlar[s];
+    gruplar(sl).forEach(function(grup, i){
       grup.forEach(function(el){ el.classList.toggle('gor', i < a); });
     });
-    hxAdim(slaytlar[s]);
+    /* ADIM NUMARASI da slayta yazılır. Bazı adımlarda yeni bir şey
+       BELİRMİYOR, var olanın DURUMU değişiyor: bir yan griye düşüp
+       öbürü canlanıyor, bir ok rengini değiştiriyor. Bunlar .adim ile
+       anlatılamaz (o yalnız ekler); CSS [data-a="4"] ile o adımın
+       görünümünü kurar. */
+    sl.setAttribute('data-a', a);
+    hxAdim(sl);
   }
 
   /* ==========================================================
@@ -3859,6 +4306,9 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       klon.classList.add('aktif');
       klon.style.animation = 'none';
       [].forEach.call(klon.querySelectorAll('.adim'), function(e){ e.classList.add('gor'); });
+      /* Önizlemede slayt SON adımında görünsün: durum değiştiren
+         adımlar (griye düşme, yan değiştirme) da son hâliyle çıksın. */
+      klon.setAttribute('data-a', gruplar(sl).length || 1);
       [].forEach.call(klon.querySelectorAll('.soru,.ozet'), function(e){ e.classList.add('acik'); });
       kutu.appendChild(klon);
       var et = document.createElement('span');
