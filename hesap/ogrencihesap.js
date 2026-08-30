@@ -365,19 +365,51 @@
 
     OH.rozetGuncelle = function () {
         var n = OH.istekler.length;
+
+        /* 1) Listelerim perdesindeki eski tus (varsa) */
         var b = document.getElementById('ohIstekTus');
-        if (!b) return;
-        var r = document.getElementById('ohIstekRozet');
-        if (r) {
-            r.textContent = n ? String(n) : '';
-            r.style.display = n ? 'inline-flex' : 'none';
+        if (b) {
+            var r = document.getElementById('ohIstekRozet');
+            if (r) {
+                r.textContent = n ? String(n) : '';
+                r.style.display = n ? 'inline-flex' : 'none';
+            }
+            b.style.display = 'flex';
         }
-        b.style.display = 'flex';
+
+        /* 2) BASLIKTAKI ZIL — sitenin her sayfasinda gorunur.
+              Ogretmen/yonetici degilse hic gosterilmez. */
+        var z = document.getElementById('tab-istekler');
+        if (z) {
+            if (!ogretmenMi()) { z.style.display = 'none'; }
+            else {
+                z.style.display = 'inline-flex';
+                z.title = n ? (n + ' öğrenci hesabını sınıfına bağlamak istiyor')
+                            : 'Bekleyen öğrenci isteği yok';
+                if (n) z.classList.add('kd-var'); else z.classList.remove('kd-var');
+                var zr = document.getElementById('tab-istek-rozet');
+                if (zr) {
+                    zr.textContent = n ? String(n) : '';
+                    zr.style.display = n ? 'block' : 'none';
+                }
+            }
+        }
+
+        /* 3) Panel aciksa listeyi de tazele (yonetici yeni istek tanimlamis
+              olabilir; ogretmen paneli acikken sayinin degismesi yetmez). */
+        try {
+            var m = document.getElementById('ohIstekModal');
+            if (m && m.style.display !== 'none' && document.getElementById('ohIstekGovde')) OH.istekCiz();
+        } catch (e) { }
     };
 
-    /* Sidebar'a "Bekleyen Istekler" tusunu yerlestirir. */
+    /* Sidebar'a "Bekleyen Istekler" tusunu yerlestirir.
+       NOT: Basliktaki zil (#tab-istekler) index.html'de HAZIR duruyor; onun
+       gorunurlugunu rozetGuncelle yonetir. Bu yuzden Listelerim perdesi hic
+       acilmasa bile once rozeti tazeliyoruz. */
     OH.tusYerlestir = function () {
         if (!ogretmenMi()) return;
+        OH.rozetGuncelle();
         var nav = document.getElementById('levelNav');
         if (!nav || document.getElementById('ohIstekTus')) return;
         var b = document.createElement('button');
@@ -419,9 +451,13 @@
             '<strong style="font-size:1.02rem;">Hesap Bağlama İstekleri</strong>' +
             '<span id="ohIstekKapat" style="cursor:pointer; font-size:26px; line-height:1;">&times;</span></div>' +
             '<div id="ohIstekGovde" style="flex:1; overflow-y:auto; padding:16px; background:#FFF8F2;"></div>' +
+            '<div id="ohIstekAlt" style="display:none; padding:11px 16px; background:#fff;' +
+            'border-top:1px solid #F3E2D3; gap:9px; align-items:center;"></div>' +
             '</div>';
         document.body.appendChild(k);
         k.querySelector('#ohIstekKapat').onclick = function () { OH.istekPaneliKapat(); };
+        /* Bosluga basinca kapansin + Escape */
+        k.addEventListener('click', function (e) { if (e.target === k) OH.istekPaneliKapat(); });
         return k;
     }
 
@@ -429,62 +465,174 @@
         var k = istekKatman();
         OH.istekCiz();
         k.style.display = 'flex';
+        if (!OH._escBagli) {
+            OH._escBagli = true;
+            document.addEventListener('keydown', function (e) {
+                if (e.key !== 'Escape') return;
+                var m = document.getElementById('ohIstekModal');
+                if (m && m.style.display === 'flex') { e.stopPropagation(); OH.istekPaneliKapat(); }
+            }, true);
+        }
     };
     OH.istekPaneliKapat = function () {
         var k = document.getElementById('ohIstekModal');
         if (k) k.style.display = 'none';
     };
 
+    /* Ogretmenin EN SON onayladigi sinif; yeni istekte hazir secili gelir.
+       Bir sinif dolduruluyorsa her istekte listeyi tekrar tarama derdi biter. */
+    function sonSinif() {
+        try { return localStorage.getItem('oh_son_sinif') || ''; } catch (e) { return ''; }
+    }
+    function sonSinifYaz(v) {
+        try { if (v) localStorage.setItem('oh_son_sinif', v); } catch (e) { }
+    }
+    OH._sonSinifYaz = sonSinifYaz;
+
+    /* Istegin sinif kutusunda hangi secenek acik gelmeli?
+         1) yonetici bir sinif onerdiyse o,
+         2) istegin kendi koordinati varsa o,
+         3) yoksa ogretmenin en son kullandigi sinif.                        */
+    function onSecim(it) {
+        if (it.onerilenLId && it.onerilenCId) return it.onerilenLId + '|||' + it.onerilenCId;
+        if (it.lId && it.cId) return it.lId + '|||' + it.cId;
+        return sonSinif();
+    }
+
+    function istekTarih(it) {
+        try {
+            var t = it.istekTarih;
+            var d = (t && t.toDate) ? t.toDate() : (typeof t === 'number' ? new Date(t) : null);
+            return d ? tarihYaz(d) : '';
+        } catch (e) { return ''; }
+    }
+
+    /* Sitenin kendi bilgi penceresi varsa onu kullan; yoksa alert. */
+    OH.bilgi = function (m) {
+        if (typeof window.llBilgi === 'function') return window.llBilgi(m);
+        if (typeof window.showCustomAlert === 'function') return window.showCustomAlert(m);
+        alert(m);
+    };
+
     OH.istekCiz = function () {
         var g = document.getElementById('ohIstekGovde');
+        var alt = document.getElementById('ohIstekAlt');
         if (!g) return;
         if (!OH.istekler.length) {
             g.innerHTML =
                 '<div style="text-align:center; padding:34px 12px; color:#8B6A57;">' +
                 '<div style="opacity:.5;">' + ikon('kullanici', 'lli-xxl') + '</div>' +
                 '<p style="margin:14px 0 6px; font-size:1rem;">Bekleyen istek yok.</p>' +
-                '<p style="margin:0; font-size:.86rem; color:#A6836E;">Öğrenciniz e-posta ile kayıt olup kendi ' +
-                'giriş kodunu girdiğinde isteği burada görünür.</p></div>';
+                '<p style="margin:0 0 4px; font-size:.86rem; color:#A6836E;">Öğrencin e-posta ile kayıt olup ' +
+                'kodunu girdiğinde ya da yönetici seni bir öğrenciye tanımladığında isteği burada belirir.</p>' +
+                '<p style="margin:10px 0 0; font-size:.82rem; color:#B99A86;">Kodun: <b>' +
+                esc(OH.ogretmenKodu() || '—') + '</b></p></div>';
+            if (alt) alt.style.display = 'none';
             return;
         }
+
+        var secenekler = siniflarSecenek();   /* bir kez uret, her karta ver */
+
         g.innerHTML = OH.istekler.map(function (it) {
-            /* Ogretmen koduyla gelen istekte ogrenci satiri hensuz yok:
-               ogretmen once sinifi secer, satir onayda olusur. */
+            /* Ogretmen koduyla / yonetici eliyle gelen istekte ogrenci satiri
+               henuz YOK: ogretmen sinifi secer, satir onayda olusur.
+               Kisisel kodla gelende satir vardir ama ogretmen yine de baska
+               bir sinifa alabilsin diye kutu HER kartta duruyor.            */
             var yeniMi = (it.tur === 'ogretmen' || !it.lId);
-            var secim = !yeniMi ? '' :
-                '<div style="margin:0 0 10px; padding:9px 10px; background:#FFF6EC; border:1px dashed #F0C9A6;' +
-                'border-radius:10px;">' +
-                '<div style="font-size:.78rem; color:#A6836E; margin-bottom:5px;">Bu \u00f6\u011frenci ' +
-                '<b>\u00f6\u011fretmen kodunu</b> kulland\u0131 \u2014 hangi s\u0131n\u0131fa eklensin?</div>' +
-                '<select id="ohSinifSec_' + esc(it._id) + '" style="width:100%; box-sizing:border-box; padding:9px;' +
-                'border:1px solid #E8A87C; border-radius:9px; font-family:inherit; font-size:.88rem;' +
-                'color:#B34700; background:#fff;">' + siniflarSecenek() + '</select></div>';
+            var sec = onSecim(it);
+            var kaynak = it.yoneticiTanimli
+                ? '<span style="display:inline-block; padding:2px 9px; border-radius:999px; background:#EAF3FF;' +
+                  'color:#1B4F9C; font-size:.72rem; font-weight:700;">Yönetici tanımladı</span>'
+                : (yeniMi
+                    ? '<span style="display:inline-block; padding:2px 9px; border-radius:999px; background:#FFF1E2;' +
+                      'color:#B5670A; font-size:.72rem; font-weight:700;">Öğretmen kodu</span>'
+                    : '<span style="display:inline-block; padding:2px 9px; border-radius:999px; background:#E8F6EF;' +
+                      'color:#1E8449; font-size:.72rem; font-weight:700;">Kendi kodu</span>');
+
+            var trh = istekTarih(it);
+            var yer = yeniMi ? '' : (esc(it.seviyeAd || '') + (it.sinifAd ? ' / ' + esc(it.sinifAd) : ''));
+
+            /* Secenek listesinde on secimi isaretle (yalniz ilk esleme). */
+            var opts = sec ? secenekler.replace('value="' + esc(sec) + '"',
+                                                'value="' + esc(sec) + '" selected') : secenekler;
+
             return '' +
-                '<div style="background:#fff; border:1px solid #F3E2D3; border-radius:13px; padding:13px 15px;' +
-                'margin-bottom:11px; box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
-                '<div style="font-size:1rem; color:#9C3B0C; margin-bottom:3px;">' + esc(it.ad || 'Öğrenci') + '</div>' +
+                '<div id="ohKart_' + esc(it._id) + '" style="background:#fff; border:1px solid #F3E2D3; border-radius:13px;' +
+                'padding:13px 15px; margin-bottom:11px; box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
+                '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">' +
+                '<strong style="font-size:1.02rem; color:#9C3B0C;">' + esc(it.ad || 'Öğrenci') + '</strong>' + kaynak +
+                '</div>' +
                 '<div style="font-size:.84rem; color:#6B4A38; margin-bottom:2px;">' + esc(it.email || '') + '</div>' +
-                '<div style="font-size:.79rem; color:#A6836E; margin-bottom:10px;">' +
-                esc(it.seviyeAd || '') + (it.sinifAd ? ' / ' + esc(it.sinifAd) : '') +
-                ' &nbsp;·&nbsp; Kod: ' + esc(it.kod || '') + '</div>' +
-                secim +
+                '<div style="font-size:.78rem; color:#A6836E; margin-bottom:10px;">' +
+                (yer ? yer + ' &nbsp;·&nbsp; ' : '') +
+                (it.kod ? 'Kod: ' + esc(it.kod) : 'Kod: onayda üretilecek') +
+                (trh ? ' &nbsp;·&nbsp; ' + esc(trh) : '') + '</div>' +
+
+                /* Sinif kutusu YALNIZ satiri henuz olmayan istekte cikar.
+                   Kendi kisisel koduyla gelen ogrencinin satiri zaten belli
+                   bir sinifta duruyor; oradan tasimak diger ogrencilerin
+                   sIdx sirasini kaydiracagi icin burada sinif degistirilmez
+                   (baska sinifa da eklemek icin: Listelerim > Kodla Ekle). */
+                (yeniMi
+                  ? '<div style="margin:0 0 10px; padding:9px 10px; background:#FFF6EC; border:1px dashed #F0C9A6;' +
+                    'border-radius:10px;">' +
+                    '<div style="font-size:.78rem; color:#A6836E; margin-bottom:5px;">Hangi sınıfa eklensin?</div>' +
+                    '<select id="ohSinifSec_' + esc(it._id) + '" style="width:100%; box-sizing:border-box; padding:9px;' +
+                    'border:1px solid #E8A87C; border-radius:9px; font-family:inherit; font-size:.88rem;' +
+                    'color:#B34700; background:#fff;">' + opts + '</select></div>'
+                  : '') +
+
                 '<div style="display:flex; gap:8px;">' +
                 '<button type="button" onclick="OH.istekOnayla(\'' + esc(it._id) + '\')" ' +
-                'style="flex:1; padding:9px; border:none; border-radius:9px; cursor:pointer; font-family:inherit;' +
+                'style="flex:1; padding:10px; border:none; border-radius:9px; cursor:pointer; font-family:inherit;' +
                 'font-weight:700; color:#fff; background:linear-gradient(135deg,#20C997,#16A085);">Onayla</button>' +
                 '<button type="button" onclick="OH.istekReddet(\'' + esc(it._id) + '\')" ' +
-                'style="padding:9px 16px; border:1px solid #F0DACA; border-radius:9px; cursor:pointer;' +
+                'style="padding:10px 16px; border:1px solid #F0DACA; border-radius:9px; cursor:pointer;' +
                 'font-family:inherit; font-weight:700; color:#B34700; background:#fff;">Reddet</button>' +
                 '</div></div>';
         }).join('');
+
+        /* Alt serit: birden fazla istek varsa toplu onay. */
+        if (alt) {
+            if (OH.istekler.length > 1) {
+                alt.style.display = 'flex';
+                alt.innerHTML =
+                    '<span style="flex:1; font-size:.82rem; color:#8B6A57;">' + OH.istekler.length +
+                    ' bekleyen istek</span>' +
+                    '<button type="button" onclick="OH.hepsiniOnayla()" ' +
+                    'style="padding:9px 16px; border:none; border-radius:9px; cursor:pointer; font-family:inherit;' +
+                    'font-weight:700; color:#fff; background:linear-gradient(135deg,#20C997,#16A085);">' +
+                    'Hepsini Onayla</button>';
+            } else { alt.style.display = 'none'; alt.innerHTML = ''; }
+        }
     };
 
-    /* Onay: hesap ogrenci satirina kalici baglanir, kod tuketilir. */
-    OH.istekOnayla = function (uid) {
+    /* Sirayla onaylar; sinifi secilmemis olan atlanir ve sonunda soylenir. */
+    OH.hepsiniOnayla = function () {
+        var liste = OH.istekler.slice();
+        var atlanan = 0, i = 0;
+        (function sonraki() {
+            if (i >= liste.length) {
+                if (atlanan) OH.bilgi(atlanan + ' istek için sınıf seçilmediğinden atlandı.');
+                return;
+            }
+            var it = liste[i++];
+            var yeniMi = (it.tur === 'ogretmen' || !it.lId);
+            var s = document.getElementById('ohSinifSec_' + it._id);
+            /* Satiri olmayan istek sinifsiz onaylanamaz; onu atla. */
+            if (yeniMi && (!s || !s.value)) { atlanan++; return sonraki(); }
+            var p = OH.istekOnayla(it._id, true);
+            if (p && p.then) p.then(sonraki, sonraki); else setTimeout(sonraki, 40);
+        })();
+    };
+
+    /* Onay: hesap ogrenci satirina kalici baglanir, kod tuketilir.
+       toplu=true iken pencere acmaz, yalniz Promise doner (Hepsini Onayla). */
+    OH.istekOnayla = function (uid, toplu) {
         var u = oturum(), D = veri();
-        if (!u || !D) return;
+        if (!u || !D) return Promise.resolve(false);
         var it = OH.istekler.filter(function (x) { return x._id === uid; })[0];
-        if (!it) return;
+        if (!it) return Promise.resolve(false);
 
         var d = (typeof data !== 'undefined' && data) ? data : null;
         var satir = null;
@@ -495,10 +643,17 @@
         if (it.tur === 'ogretmen' || !it.lId) {
             var sec = document.getElementById('ohSinifSec_' + it._id);
             var deg = (sec && sec.value) || '';
-            if (!deg) { alert('\u00d6nce \u00f6\u011frencinin eklenece\u011fi seviye/s\u0131n\u0131f\u0131 se\u00e7.'); return; }
+            if (!deg) {
+                if (!toplu) OH.bilgi('\u00d6nce \u00f6\u011frencinin eklenece\u011fi seviye/s\u0131n\u0131f\u0131 se\u00e7.');
+                return Promise.resolve(false);
+            }
             var pr = deg.split('|||'), nlId = pr[0], ncId = pr[1], ncls = null;
             try { ncls = d.levels[nlId].classes[ncId]; } catch (e) { ncls = null; }
-            if (!ncls) { alert('Se\u00e7ilen s\u0131n\u0131f bulunamad\u0131.'); return; }
+            if (!ncls) {
+                if (!toplu) OH.bilgi('Se\u00e7ilen s\u0131n\u0131f bulunamad\u0131.');
+                return Promise.resolve(false);
+            }
+            sonSinifYaz(deg);   /* bir sonraki istekte hazir secili gelsin */
             if (!Array.isArray(ncls.students)) ncls.students = [];
 
             var tKod = kodDuzelt(OH.ogretmenKodu() || 'TCH');
@@ -541,8 +696,8 @@
                 });
             } catch (e) { }
             if (!bulundu) {
-                alert('Bu koda ait öğrenci satırı listenizde bulunamadı. Öğrenci silinmiş olabilir.');
-                return;
+                if (!toplu) OH.bilgi('Bu koda ait öğrenci satırı listenizde bulunamadı. Öğrenci silinmiş olabilir.');
+                return Promise.resolve(false);
             }
             satir = bulundu.s; it.lId = bulundu.lId; it.cId = bulundu.cId; it.sIdx = bulundu.sIdx;
         }
@@ -576,13 +731,43 @@
                 kullanildi: true, ogrenciUid: uid, guncelleme: Date.now()
             }, { merge: true })
         ];
-        Promise.all(yaz).then(function () {
+        return Promise.all(yaz).then(function () {
             return OH.ozetleriYaz();
         }).then(function () {
             OH.istekCiz();
+            if (!toplu) {
+                OH.mujde((satir.name || 'Öğrenci') + ' · ' + (it.sinifAd || '') +
+                         ' sınıfına bağlandı. Kodu: ' + (it.kod || ''));
+            }
+            return true;
         }).catch(function (e) {
-            alert('Onay kaydedilemedi: ' + (e && (e.message || e.code)));
+            if (!toplu) OH.bilgi('Onay kaydedilemedi: ' + (e && (e.message || e.code)));
+            return false;
         });
+    };
+
+    /* Kisa, kendiliginden sonen yesil bildirim (onay sonrasi). */
+    OH.mujde = function (m) {
+        var t = document.getElementById('ohMujde');
+        if (!t) {
+            t = document.createElement('div');
+            t.id = 'ohMujde';
+            t.setAttribute('style',
+                'position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(14px);' +
+                'z-index:2147483001; max-width:min(520px,92vw); padding:12px 18px; border-radius:12px;' +
+                'background:linear-gradient(135deg,#20C997,#16A085); color:#fff; font-family:inherit;' +
+                'font-size:.92rem; font-weight:700; box-shadow:0 10px 28px rgba(22,160,133,.35);' +
+                'opacity:0; transition:opacity .25s ease, transform .25s ease; pointer-events:none;');
+            document.body.appendChild(t);
+        }
+        t.textContent = m;
+        requestAnimationFrame(function () {
+            t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+        });
+        clearTimeout(OH._mujdeSaat);
+        OH._mujdeSaat = setTimeout(function () {
+            t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(14px)';
+        }, 3400);
     };
 
     OH.istekReddet = function (uid) {

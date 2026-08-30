@@ -123,8 +123,11 @@ service cloud.firestore {
       allow get:    if isOwner(uid) || (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
       // Öğretmen yalnızca KENDİ öğrencilerini listeler (sorguda ogretmenUid şartı zorunlu)
       allow list:   if isTeacherOrAdmin();
-      // Öğrenci isteği: yalnız kendi dokümanı ve yalnız "bekliyor" durumuyla açılır
-      allow create: if isOwner(uid) && request.resource.data.durum == 'bekliyor';
+      // Öğrenci isteği: yalnız kendi dokümanı ve yalnız "bekliyor" durumuyla açılır.
+      // YÖNETİCİ de bir öğrenciyi bir öğretmene tanımlayabilir (Yönetici Paneli →
+      // "Öğrenciyi Öğretmene Tanımla"); o da yine yalnız "bekliyor" açar, onayı
+      // öğretmen verir. Böylece yönetici hiçbir zaman doğrudan "onayli" yazamaz.
+      allow create: if (isOwner(uid) || isAdmin()) && request.resource.data.durum == 'bekliyor';
       // Onay/red yalnız hedef öğretmende; öğrenci kendi isteğini yenileyebilir ama onaylayamaz
       allow update: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid)
                        || (isOwner(uid) && request.resource.data.durum == 'bekliyor')

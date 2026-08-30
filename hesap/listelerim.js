@@ -297,7 +297,21 @@ function llOneriCiz() {
                 '</span>' +
               '</label>';
         }
-        govde =
+        /* HANGİ PROGRAMIN PLANI — öğretmen hangi müfredata bakıyor, görsün.
+           Metin sistem/kazanimoneri.js'teki `program` alanından gelir; alan
+           boşsa şerit hiç basılmaz. */
+        var programSerit = oneri.program
+          ? '<div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;' +
+            ' padding:9px 13px; border-radius:10px; background:#F1F5F9; color:#475569;' +
+            ' font-size:.88rem; line-height:1.4;">' +
+              '<span aria-hidden="true" style="flex:none; width:7px; height:7px;' +
+              ' border-radius:50%; background:#8E44AD;"></span>' +
+              '<span><b style="color:#334155;">Kaynak program:</b> ' +
+              behKacis(oneri.program) + '</span>' +
+            '</div>'
+          : '';
+
+        govde = programSerit +
           '<div style="background:#F4ECFA; border:1px solid #DCC6EC; border-radius:12px;' +
           ' padding:13px 15px; margin-bottom:14px;">' +
             '<label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer;">' +

@@ -61,15 +61,17 @@
         { d: 'yenisozlukdedektifi.html',  ad: 'Sözlük Dedektifi',                        tur: 'sure' },
         { d: 'muhadese.html',             ad: 'Muhadese',                                tur: 'sure' }
     ];
-    /* ============ BASARI YUZDESININ PAYDASI ============
-       Ogrencinin basari yuzdesi, SADECE actigi dosyalara gore degil,
-       SISTEMDE PUAN URETEN TUM dosyalara gore hesaplanir.
-       Ornek: 9 puanli dosya var, ogrenci yalniz birinden %80 aldi ->
-       genel basari %80 degil, (80 / 9) = %9'dur. Hic girilmeyen dosya
-       0 sayilir; boylece "bir oyundan yuksek alip genel ortalamayi
-       sisirme" durumu ortadan kalkar.
+    /* ============ PUANLI DOSYA SAYISI ============
+       Sistemde puan ureten (tur != 'sure') dosya adedi. "3/48 puanli
+       dosya" gibi KAPSAM bilgisinde kullanilir.
+       ONEMLI — 2026-08 degisikligi: bu sayi artik BOLEN DEGILDIR.
+       Eskiden ogrencinin basarisi rekorToplam / puanliSayisi olarak
+       hesaplaniyordu; acilmamis her dosya 0 sayildigi icin bir oyundan
+       %70 alan ogrenci ekranda %4 gorunuyordu. Ogretmenin istegi uzerine
+       ekranlarda artik ORTALAMA degil EN YUKSEK REKOR gosteriliyor
+       (Etkinlikler halkasi, sinif ozeti, Genel Sonuc kartlari).
        Not: 'sure' turundeki icerikler (konu anlatimi/simulasyon) puan
-       uretmez, bu yuzden paydaya GIRMEZ. */
+       uretmez, bu yuzden bu sayiya GIRMEZ. */
     GV.puanliSayisi = function () {
         var n = 0;
         for (var i = 0; i < GV.OYUNLAR.length; i++)
@@ -220,7 +222,9 @@
             '<h3 style="margin:0 0 6px; display:flex; align-items:center; gap:10px;">' + gIkon('kosucu') + ' Etkinlikler — Öğrenci Gelişimi</h3>' +
             '<p style="margin:0 0 14px; font-size:.85rem; color:#8B6A57;">BU SINIFA kayıtlı, hesabı bağlı öğrencilerin ' +
             'ölçülebilir oyunlardaki bütün etkinliği görevden bağımsız olarak buraya düşer: rekorlar, gelişim çizgisi, ' +
-            'son oynanış ve 30 günlük ilerleme. Öğrenci oynadıkça tablo kendiliğinden güncellenir.</p>' +
+            'son oynanış ve 30 günlük ilerleme. Öğrenci oynadıkça tablo kendiliğinden güncellenir.<br>' +
+            '<b>Halkadaki yüzde öğrencinin en yüksek rekorudur</b> — ortalama değil. Bir oyunu 50 alıp sonra 70 alan ' +
+            'öğrenci %70 görünür.</p>' +
             '<div id="gvEtkOzet" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;"></div>' +
             '<div id="gvEtkGovde"><p style="color:#A6836E; font-size:.85rem;">Yükleniyor…</p></div>';
         GV.ilerlemeDinle();
@@ -284,31 +288,49 @@
             return;
         }
 
-        /* ozet istatistikler */
+        /* ozet istatistikler
+           ORTALAMA DEGIL REKOR: eskiden buradaki yuzde "butun puanli dosyalar
+           uzerinden ortalama" idi; ogrencinin acmadigi her dosya 0 sayildigi
+           icin 50 alip sonra 70 alan ogrenci bile ekranda %3 gorunuyordu.
+           Artik sinifin EN YUKSEK rekoru yaziliyor; ortalama yalniz ipucu
+           balonunda duruyor. */
         var simdi = Date.now(), hafta = 7 * 24 * 60 * 60 * 1000;
-        var uidler = {}, toplamOyun = 0, rekorTop = 0, puanN = 0, sonHafta = {};
+        var uidler = {}, toplamOyun = 0, sonHafta = {};
+        var sinifRekor = 0, sinifRekorKim = '', enIyiler = {};
         kayitlar.forEach(function (r) {
             uidler[r.ogrenciUid] = 1;
             toplamOyun += (r.oynama || 0);
-            if (r.tur !== 'sure') { rekorTop += (r.rekor || 0); puanN++; }   /* sure kayitlari ortalamaya girmez */
+            if (r.tur !== 'sure') {
+                var y = r.rekor || 0;
+                if (y > (enIyiler[r.ogrenciUid] || 0)) enIyiler[r.ogrenciUid] = y;
+                if (y > sinifRekor) {
+                    sinifRekor = y;
+                    sinifRekorKim = (sinif[r.ogrenciUid] || 'Öğrenci') + ' · ' + oyunAdi(r.oyun);
+                }
+            }
             if ((r.sonTarih || 0) > simdi - hafta) sonHafta[r.ogrenciUid] = 1;
         });
-        var kutu = function (deger, etiket, renk) {
-            return '<div style="flex:1; min-width:130px; background:#fff; border:1px solid #F3E2D3; border-radius:13px;' +
+        var kutu = function (deger, etiket, renk, ipucu) {
+            return '<div' + (ipucu ? ' title="' + esc(ipucu) + '"' : '') +
+                ' style="flex:1; min-width:130px; background:#fff; border:1px solid #F3E2D3; border-radius:13px;' +
                 'padding:13px; text-align:center; box-shadow:0 2px 7px rgba(216,67,21,.05);">' +
                 '<div style="font-size:1.7rem; font-weight:800; color:' + renk + ';">' + deger + '</div>' +
                 '<div style="font-size:.76rem; color:#8B6A57; margin-top:3px;">' + etiket + '</div></div>';
         };
-        /* Payda: sinifta kaydi olan ogrenci sayisi x sistemdeki puanli dosya
-           sayisi. Boylece sinif ortalamasi da "acilan dosya" degil "tum
-           dosyalar" uzerinden cikar. */
         var puanliTum = GV.puanliSayisi(), ogrN = Object.keys(uidler).length;
         var sinifN = sinifUidler.length;   /* hic oynamamis ogrenci de paydadadir */
+        /* Ipucu icin: ogrencilerin KENDI en iyilerinin ortalamasi (oynamayan
+           ogrenci 0 sayilir) — buyuk rakam degil, yalnizca ek bilgi. */
+        var eiTop = 0;
+        sinifUidler.forEach(function (u) { eiTop += (enIyiler[u] || 0); });
+        var eiOrt = sinifN ? Math.round(eiTop / sinifN) : 0;
         if (ozet) ozet.innerHTML =
             kutu(ogrN + '/' + sinifN, 'etkin öğrenci', '#D84315') +
             kutu(toplamOyun, 'toplam oynama', '#B7950B') +
-            kutu(sinifN && puanliTum ? '%' + Math.round(rekorTop / (sinifN * puanliTum)) : '—',
-                 'genel başarı (' + puanliTum + ' dosya üzerinden)', '#16A085') +
+            kutu(sinifRekor ? '%' + sinifRekor : '—', 'sınıf rekoru', '#16A085',
+                 (sinifRekorKim ? 'Rekor: ' + sinifRekorKim + '\n' : '') +
+                 'Öğrencilerin kendi en iyi rekorlarının ortalaması: %' + eiOrt +
+                 ' (' + sinifN + ' öğrenci üzerinden)') +
             kutu(Object.keys(sonHafta).length, 'son 7 günde oynayan', '#7B1FA2');
 
         /* ogrenci kartlari (ad, sinif listesindeki satirdan gelir) */
@@ -336,6 +358,7 @@
                 return (b.sonTarih || 0) - (a.sonTarih || 0);
             });
             var tOyun = 0, rTop = 0, ayTop = 0, sonT = 0, puanOyun = 0, sureGercek = 0;
+            var enIyi = 0, enIyiOyun = '';   /* ogrencinin EN YUKSEK rekoru ve hangi oyunda */
             var satirlar = o.oyunlar.map(function (r) {
                 tOyun += (r.oynama || 0);
                 if ((r.sonTarih || 0) > sonT) sonT = r.sonTarih;
@@ -367,6 +390,7 @@
                         (r.oynama || 0) + ' oturum · son giriş: ' + trTarih(r.sonTarih) + '</span></div>';
                 }
                 rTop += (r.rekor || 0); puanOyun++;
+                if ((r.rekor || 0) > enIyi) { enIyi = r.rekor || 0; enIyiOyun = oyunAdi(r.oyun); }
                 var fark = sonAyFarki(r.gecmis, r.rekor);
                 ayTop += fark;
                 var renk = r.rekor >= 85 ? '#1E8449' : (r.rekor >= 50 ? '#B7950B' : '#C0392B');
@@ -383,13 +407,16 @@
                     '<span style="width:96px; text-align:right; font-size:.73rem; color:#A6836E;">' + (r.oynama || 0) + ' oyun' +
                     (fark > 0 ? ' · <b style="color:#16A085;">+' + fark + '</b>' : '') + '</span></div>';
             }).join('');
-            /* payda = sistemdeki TUM puanli dosyalar (girilmeyenler 0 sayilir) */
+            /* HALKA = ORTALAMA DEGIL, EN YUKSEK REKOR.
+               Eskiden burada rTop/puanliTumO vardi: ogrencinin hic acmadigi
+               dosyalar da 0 puanla paydaya giriyordu, dolayisiyla %70 alan
+               ogrenci bile halkada %4 gorunuyordu. Artik halka ogrencinin
+               en iyi rekorunu gosteriyor; kac dosya oynadigi alt satirda. */
             var puanliTumO = GV.puanliSayisi();
-            var ortRekor = puanliTumO ? Math.round(rTop / puanliTumO) : 0;
-            var oRenk = ortRekor >= 85 ? '#1E8449' : (ortRekor >= 50 ? '#B7950B' : '#C0392B');
+            var oRenk = enIyi >= 85 ? '#1E8449' : (enIyi >= 50 ? '#B7950B' : '#C0392B');
             /* Saat ikonu SADECE gercekten yalniz sure takipli kaydi olan
                ogrenci icindir. Hic kaydi olmayan ogrenci %0 halkasi gorur. */
-            var ozetGorsel = (puanOyun || !sureGercek) ? pastaHalka(ortRekor, oRenk)
+            var ozetGorsel = (puanOyun || !sureGercek) ? pastaHalka(enIyi, oRenk, 'En iyi rekor')
                 : '<span style="display:inline-flex; width:46px; height:46px; align-items:center;' +
                   ' justify-content:center; font-size:1.9rem; flex:none;" title="Yalnız süre takipli içerik">' + gIkon('saat') + '</span>';
             return '<details class="profile-accordion gv-etk-akor" data-uid="' + uid + '"' + (GV._etkAcik[uid] ? ' open' : '') +
@@ -400,8 +427,10 @@
                 '<span style="flex:1; min-width:150px;">' +
                 '<span style="display:block; font-size:1.02rem; font-weight:700; color:#9C3B0C;">' + esc(o.ad) + '</span>' +
                 '<span style="display:block; font-size:.76rem; color:#A6836E; margin-top:2px;" ' +
-                'title="Başarı yüzdesi sistemdeki ' + puanliTumO + ' puanlı dosyanın tamamı üzerinden hesaplanır; ' +
-                'girilmeyen dosya 0 sayılır.">' + puanOyun + '/' + puanliTumO + ' puanlı dosya · ' +
+                'title="Halkadaki yüzde öğrencinin EN YÜKSEK rekorudur (ortalama değil). ' +
+                'Sistemde ' + puanliTumO + ' puanlı dosya var.">' +
+                (enIyiOyun ? 'en iyi: ' + esc(enIyiOyun) + ' · ' : '') +
+                puanOyun + '/' + puanliTumO + ' puanlı dosya · ' +
                 tOyun + ' oynama · son etkinlik ' + trTarih(sonT) + '</span></span>' +
                 (ayTop > 0 ? '<span title="Son 30 günde rekor gelişimi" style="background:#E8F8F2; color:#16A085; font-weight:800;' +
                     ' font-size:.74rem; padding:4px 9px; border-radius:20px; white-space:nowrap;">30 günde +' + ayTop + '</span>' : '') +
@@ -1177,7 +1206,7 @@
     function pastaHalka(yuzde, renk, etiket) {
         var y = Math.max(0, Math.min(100, Math.round(yuzde || 0)));
         return '<svg width="46" height="46" viewBox="0 0 36 36" style="flex:none;">' +
-            '<title>' + (etiket || 'Ortalama rekor') + ': %' + y + '</title>' +
+            '<title>' + (etiket || 'Rekor') + ': %' + y + '</title>' +
             '<circle cx="18" cy="18" r="15.915" fill="none" stroke="#F6E8DC" stroke-width="3.8"/>' +
             (y > 0 ? '<circle cx="18" cy="18" r="15.915" fill="none" stroke="' + renk + '" stroke-width="3.8"' +
                 ' stroke-linecap="round" stroke-dasharray="' + y + ' ' + (100 - y) + '" transform="rotate(-90 18 18)"/>' : '') +
@@ -1239,9 +1268,13 @@
             var o = grup[uid];
             o.oyunlar.sort(function (a, b) { return (b.sonTarih || 0) - (a.sonTarih || 0); });
             var toplamOyun = 0, rekorToplam = 0, ayToplam = 0;
+            var enIyiI = 0, enIyiAdI = '';   /* ogrencinin EN YUKSEK rekoru */
             var satirlar = o.oyunlar.map(function (r) {
                 toplamOyun += (r.oynama || 0);
-                if ((r.tur || 'puan') !== 'sure') rekorToplam += (r.rekor || 0);
+                if ((r.tur || 'puan') !== 'sure') {
+                    rekorToplam += (r.rekor || 0);
+                    if ((r.rekor || 0) > enIyiI) { enIyiI = r.rekor || 0; enIyiAdI = oyunAdi(r.oyun); }
+                }
                 var fark = sonAyFarki(r.gecmis, r.rekor);
                 ayToplam += fark;
                 var renk = r.rekor >= 85 ? '#1E8449' : (r.rekor >= 50 ? '#B7950B' : '#C0392B');
@@ -1253,17 +1286,21 @@
                     '<span style="width:88px; text-align:right; font-size:.74rem; color:#A6836E;">' +
                     (r.oynama || 0) + ' oyun' + (fark > 0 ? ' · <b style="color:#16A085;">+' + fark + '</b>' : '') + '</span></div>';
             }).join('');
-            /* payda = sistemdeki TUM puanli dosyalar (bkz. GV.puanliSayisi) */
+            /* ORTALAMA DEGIL EN YUKSEK REKOR — Etkinlikler sekmesiyle ayni
+               kural. Eskiden rekorToplam/puanliTumI yaziliyordu; acilmamis
+               dosyalar 0 sayildigi icin rakam gercegi yansitmiyordu. */
             var puanliTumI = GV.puanliSayisi();
-            var ortRekor = puanliTumI ? Math.round(rekorToplam / puanliTumI) : 0;
+            var eiRenk = enIyiI >= 85 ? '#1E8449' : (enIyiI >= 50 ? '#B7950B' : '#C0392B');
             return '<div style="background:#fff; border:1px solid #F3E2D3; border-radius:13px; padding:13px 15px;' +
                 'margin-bottom:12px; box-shadow:0 2px 7px rgba(216,67,21,.06);">' +
                 '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px;">' +
                 '<span style="font-size:1rem; font-weight:700; color:#9C3B0C;">' + esc(o.ad) + '</span>' +
-                '<span style="font-size:.76rem; color:#A6836E;" title="' + puanliTumI +
-                ' puanlı dosyanın tamamı üzerinden; girilmeyen dosya 0 sayılır.">genel başarı ' +
-                '<b style="color:#B34700;">%' + ortRekor +
-                '</b> · ' + toplamOyun + ' oynama' +
+                '<span style="font-size:.76rem; color:#A6836E;" title="Öğrencinin bütün ' +
+                'oyunlardaki EN YÜKSEK rekoru (ortalama değil). Sistemde ' + puanliTumI +
+                ' puanlı dosya var.">en iyi rekor ' +
+                '<b style="color:' + eiRenk + ';">%' + enIyiI + '</b>' +
+                (enIyiAdI ? ' <span style="color:#B9987F;">(' + esc(enIyiAdI) + ')</span>' : '') +
+                ' · ' + toplamOyun + ' oynama' +
                 (ayToplam > 0 ? ' · 30 günde <b style="color:#16A085;">+' + ayToplam + '</b> puan' : '') + '</span></div>' +
                 satirlar + '</div>';
         }).join('');
@@ -1271,6 +1308,7 @@
         g.innerHTML =
             '<p style="margin:0 0 12px; font-size:.8rem; color:#A6836E;">Bu tablo görevden bağımsızdır: bağlı öğrencilerin ' +
             'ölçülebilir oyunlardaki <b>rekorları</b> ve gelişim çizgileri her oynayışta kendiliğinden güncellenir. ' +
+            'Başlıktaki yüzde öğrencinin <b>en yüksek rekorudur</b>, ortalama değildir. ' +
             'Yeşil nokta son rekoru, <b style="color:#16A085;">+X</b> son 30 günlük ilerlemeyi gösterir.</p>' + kartlar;
     };
 

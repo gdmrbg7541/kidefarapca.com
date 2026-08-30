@@ -160,6 +160,18 @@ function renderAdminPanel() {
 
 
 
+            <details class="admin-details" name="admin-accordion" id="admin-baglama-details" ontoggle="if(this.open) adminBaglamaYukle()">
+                <summary class="admin-summary">🔗 Öğrenciyi Öğretmene Tanımla <span id="admin-baglama-badge"></span></summary>
+                <div style="padding:10px 0;">
+                    <p style="font-size:0.86rem; color:#7f8c8d; margin:0 0 12px;">
+                        Sisteme e-posta ile giriş yapmış öğrencileri seç, bir öğretmen (istersen sınıfını da) seç
+                        ve tanımla. Öğrencilerin <b>öğretmenin “Bekleyen İstekler” penceresine</b> düşer; öğretmen
+                        tek tuşla onaylar ve öğrenci sınıf listesine girer.
+                    </p>
+                    <div id="admin-baglama">Bölümü açınca yüklenir…</div>
+                </div>
+            </details>
+
             <details class="admin-details" name="admin-accordion">
                 <summary class="admin-summary">Kayıtlı Öğrenciler (Alfabetik)</summary>
                 <div id="admin-student-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;"></div>
@@ -1735,3 +1747,385 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+
+/* ==========================================================================
+   ÖĞRENCİYİ ÖĞRETMENE TANIMLA  (yalnız yönetici)
+
+   NEDEN: Öğrencinin öğretmene bağlanmasının tek yolu, öğrencinin kodu
+   kendi elleriyle girmesiydi. Kodu bilmeyen / girmeyen öğrenci sistemde
+   duruyor ama hiçbir öğretmene bağlı olmuyordu. Artık yönetici bu işi
+   öğrencinin yerine yapabiliyor.
+
+   NASIL: Yönetici, öğrencinin ogrenciBaglari/{uid} belgesini "bekliyor"
+   durumuyla açar (yoneticiTanimli:true). Bu belge öğretmenin canlı
+   dinleyicisine (OH.istekleriDinle) anında düşer; öğretmen başlıktaki
+   zilden görür, sınıfı seçer, onaylar.
+
+   NİÇİN DOĞRUDAN "onayli" YAZMIYORUZ: Öğrenci satırı (adı, kodu, notları)
+   öğretmenin KENDİ userData'sının içinde yaşar. Yönetici oraya yazarsa,
+   öğretmenin tarayıcısındaki kopya bir sonraki save()'te üzerine yazar ve
+   öğrenci kaybolur. Bu yüzden satırı her zaman öğretmenin kendisi açar.
+   Yönetici yalnızca sınıfı ÖNERİR (onerilenLId/onerilenCId); öğretmenin
+   penceresinde o sınıf hazır seçili gelir, tek tuş kalır.
+   ========================================================================== */
+
+var _abVeri = { ogrenciler: [], ogretmenler: [], baglar: {}, zaman: 0 };
+
+function _abAd(v, uid) {
+    var a = (v && v.name && v.name !== 'Belirtilmedi') ? v.name : '';
+    return a || (v && v.email) || uid || '';
+}
+
+/* Öğretmenin userData'sındaki seviye/sınıf ağacını seçenek listesine çevirir. */
+function _abSiniflar(v) {
+    var cikti = [];
+    try {
+        var d = v && v.userData ? JSON.parse(v.userData) : null;
+        if (!d || !d.levels) return cikti;
+        var sira = (d.levelOrder && d.levelOrder.length) ? d.levelOrder : Object.keys(d.levels);
+        sira.forEach(function (lId) {
+            var lvl = d.levels[lId];
+            if (!lvl || !lvl.classes) return;
+            Object.keys(lvl.classes).forEach(function (cId) {
+                var cls = lvl.classes[cId] || {};
+                cikti.push({
+                    lId: lId, cId: cId,
+                    ad: (lvl.name || lId) + ' / ' + (cls.name || cId),
+                    mevcut: (cls.students || []).length
+                });
+            });
+        });
+    } catch (e) { }
+    return cikti;
+}
+
+function adminBaglamaYukle(zorla) {
+    var kap = document.getElementById('admin-baglama');
+    if (!kap) return;
+    if (typeof firebase === 'undefined' || typeof isFirebaseReady === 'undefined' || !isFirebaseReady) {
+        kap.innerHTML = '<p style="color:#7f8c8d;">Bu bölüm çevrimdışıyken kullanılamaz.</p>';
+        return;
+    }
+    /* 60 sn'lik önbellek: aynı bölümü açıp kapamak koleksiyonu tekrar okumasın. */
+    if (!zorla && _abVeri.zaman && (Date.now() - _abVeri.zaman) < 60000) { _abCiz(); return; }
+
+    kap.innerHTML = '<p style="color:#7f8c8d;">Yükleniyor…</p>';
+    var db2 = firebase.firestore();
+
+    Promise.all([
+        db2.collection('kullanicilar').get(),
+        db2.collection('ogrenciBaglari').get().catch(function () { return { forEach: function () { } }; })
+    ]).then(function (r) {
+        var ogr = [], ogt = [];
+        r[0].forEach(function (doc) {
+            var v = doc.data() || {};
+            v._id = doc.id;
+            if (v.role === 'teacher' || v.role === 'admin') {
+                ogt.push({ uid: doc.id, ad: _abAd(v, doc.id), email: v.email || '',
+                           onay: v.ogretmenOnay || '', siniflar: _abSiniflar(v) });
+            }
+            /* Rolü hiç yazılmamış eski hesaplar da öğrenci sayılır. */
+            if (v.role === 'student' || !v.role) {
+                ogr.push({ uid: doc.id, ad: _abAd(v, doc.id), email: v.email || '',
+                           cinsiyet: v.cinsiyet || '' });
+            }
+        });
+        var baglar = {};
+        r[1].forEach(function (doc) { baglar[doc.id] = doc.data() || {}; });
+
+        ogr.sort(function (a, b) { return String(a.ad).localeCompare(String(b.ad), 'tr'); });
+        /* Onayı bekleyen/reddedilen öğretmen siteye giremez; ona tanımlamak
+           boşa gider. Bu yüzden onaylı olanlar (ve rolü eski kayıt olanlar)
+           listenin başına, geri kalanlar sonuna alınır. */
+        ogt.sort(function (a, b) {
+            var ak = (a.onay === 'bekliyor' || a.onay === 'reddedildi') ? 1 : 0;
+            var bk = (b.onay === 'bekliyor' || b.onay === 'reddedildi') ? 1 : 0;
+            if (ak !== bk) return ak - bk;
+            return String(a.ad).localeCompare(String(b.ad), 'tr');
+        });
+
+        _abVeri = { ogrenciler: ogr, ogretmenler: ogt, baglar: baglar, zaman: Date.now() };
+        _abCiz();
+    }).catch(function (e) {
+        kap.innerHTML = '<p style="color:#EF5350;">Liste alınamadı: ' +
+            _fbEsc((e && (e.code || e.message)) || e) + '</p>' +
+            '<button class="btn" onclick="adminBaglamaYukle(true)" style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
+    });
+}
+window.adminBaglamaYukle = adminBaglamaYukle;
+
+/* Bir öğrencinin şu anki bağı: rozet + açıklama */
+function _abDurum(uid) {
+    var b = _abVeri.baglar[uid];
+    if (!b || !b.durum || b.durum === 'red') {
+        return { renk: '#9aa5b1', zemin: '#F0F3F7', ad: 'Bağlı değil', not: '' };
+    }
+    var ogtAd = b.ogretmenAd || '';
+    if (!ogtAd) {
+        for (var i = 0; i < _abVeri.ogretmenler.length; i++) {
+            if (_abVeri.ogretmenler[i].uid === b.ogretmenUid) { ogtAd = _abVeri.ogretmenler[i].ad; break; }
+        }
+    }
+    var yer = (b.seviyeAd || '') + (b.sinifAd ? ' / ' + b.sinifAd : '');
+    if (b.durum === 'onayli') {
+        return { renk: '#1E8449', zemin: '#E8F6EF', ad: 'Onaylı',
+                 not: (ogtAd || '—') + (yer ? ' · ' + yer : '') };
+    }
+    return { renk: '#B5670A', zemin: '#FEF3E2', ad: 'Bekliyor', not: (ogtAd || '—') };
+}
+
+function _abCiz() {
+    var kap = document.getElementById('admin-baglama');
+    if (!kap) return;
+
+    if (!_abVeri.ogretmenler.length) {
+        kap.innerHTML = '<p style="color:#7f8c8d;">Sistemde kayıtlı öğretmen yok.</p>' +
+            '<button class="btn" onclick="adminBaglamaYukle(true)" style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
+        return;
+    }
+
+    var ogtSec = _abVeri.ogretmenler.map(function (t) {
+        return '<option value="' + _fbEsc(t.uid) + '">' + _fbEsc(t.ad) +
+               (t.email ? ' — ' + _fbEsc(t.email) : '') +
+               (t.onay === 'bekliyor' ? '  (onay bekliyor)' : '') + '</option>';
+    }).join('');
+
+    var bekleyen = 0;
+    Object.keys(_abVeri.baglar).forEach(function (k) {
+        if (_abVeri.baglar[k] && _abVeri.baglar[k].durum === 'bekliyor') bekleyen++;
+    });
+    var rozet = document.getElementById('admin-baglama-badge');
+    if (rozet) rozet.innerHTML = bekleyen
+        ? '<span style="background:#F39C12; color:#fff; border-radius:999px; padding:2px 10px; font-size:0.8rem; margin-left:8px;">' +
+          bekleyen + ' onay bekliyor</span>' : '';
+
+    var kut = 'padding:9px 11px; border:1px solid #cbd5e1; border-radius:9px; background:#fff; font-family:inherit; font-size:.92rem;';
+
+    kap.innerHTML =
+        '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:14px;">' +
+          '<label style="flex:1 1 260px; min-width:0;">' +
+            '<span style="display:block; font-size:.78rem; font-weight:700; color:#16A085; margin-bottom:4px;">ÖĞRETMEN</span>' +
+            '<select id="abOgretmen" onchange="_abSinifTazele()" style="width:100%; box-sizing:border-box; ' + kut + '">' +
+            ogtSec + '</select></label>' +
+          '<label style="flex:1 1 240px; min-width:0;">' +
+            '<span style="display:block; font-size:.78rem; font-weight:700; color:#16A085; margin-bottom:4px;">SINIF (isteğe bağlı)</span>' +
+            '<select id="abSinif" style="width:100%; box-sizing:border-box; ' + kut + '"></select></label>' +
+        '</div>' +
+
+        '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">' +
+          '<input id="abAra" type="search" placeholder="Öğrenci ara (ad ya da e-posta)…" oninput="_abSuz()" ' +
+            'style="flex:1 1 240px; min-width:0; ' + kut + '">' +
+          '<button class="btn" onclick="_abHepsi(true)" style="font-size:.85rem;">Tümünü seç</button>' +
+          '<button class="btn" onclick="_abHepsi(false)" style="font-size:.85rem;">Temizle</button>' +
+          '<button class="btn" onclick="adminBaglamaYukle(true)" style="font-size:.85rem;">🔄 Yenile</button>' +
+        '</div>' +
+
+        '<div id="abListe" style="max-height:360px; overflow-y:auto; border:1px solid #E9EEF5; border-radius:12px; background:#fff;"></div>' +
+
+        '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px;">' +
+          '<span id="abSayac" style="flex:1; font-size:.86rem; color:#7f8c8d;">0 öğrenci seçildi</span>' +
+          '<button class="btn" onclick="adminBagiKaldir()" ' +
+            'style="background:#FDEDEC; color:#B03A2E; font-size:.9rem;">Bağı kaldır</button>' +
+          '<button class="btn btn-primary" onclick="adminOgrenciTanimla()" style="font-size:.95rem;">' +
+            'Seçilenleri bu öğretmene tanımla</button>' +
+        '</div>';
+
+    _abSinifTazele();
+    _abSuz();
+}
+
+/* Seçili öğretmenin sınıfları — yönetici istersen sınıfı da önerir. */
+function _abSinifTazele() {
+    var s = document.getElementById('abOgretmen');
+    var k = document.getElementById('abSinif');
+    if (!s || !k) return;
+    var t = null;
+    for (var i = 0; i < _abVeri.ogretmenler.length; i++) {
+        if (_abVeri.ogretmenler[i].uid === s.value) { t = _abVeri.ogretmenler[i]; break; }
+    }
+    var opt = '<option value="" data-ad="">— öğretmen kendisi seçsin —</option>';
+    if (t && t.siniflar.length) {
+        /* data-ad: sınıfın SADE adı. Seçenek metninde "(3 öğrenci)" de var;
+           öneri kaydına o mevcut sayısı sızmasın diye ad ayrı taşınıyor. */
+        opt += t.siniflar.map(function (c) {
+            return '<option value="' + _fbEsc(c.lId + '|||' + c.cId) + '" data-ad="' + _fbEsc(c.ad) + '">' +
+                   _fbEsc(c.ad) + ' (' + c.mevcut + ' öğrenci)</option>';
+        }).join('');
+    } else {
+        opt = '<option value="">— bu öğretmenin sınıfı görünmüyor —</option>';
+    }
+    k.innerHTML = opt;
+}
+window._abSinifTazele = _abSinifTazele;
+
+function _abSuz() {
+    var l = document.getElementById('abListe');
+    if (!l) return;
+    var q = (document.getElementById('abAra') || {}).value || '';
+    q = q.toLocaleLowerCase('tr').trim();
+
+    var secili = _abSecilenler();
+    var satir = '';
+    var n = 0;
+    _abVeri.ogrenciler.forEach(function (o) {
+        var metin = (o.ad + ' ' + o.email).toLocaleLowerCase('tr');
+        if (q && metin.indexOf(q) === -1) return;
+        n++;
+        var d = _abDurum(o.uid);
+        var emj = o.cinsiyet === 'kadin' ? '👩‍🎓' : (o.cinsiyet === 'erkek' ? '👨‍🎓' : '👤');
+        satir +=
+            '<label style="display:flex; align-items:center; gap:10px; padding:9px 12px; border-bottom:1px solid #F2F5F9; cursor:pointer;">' +
+              '<input type="checkbox" class="ab-tik" value="' + _fbEsc(o.uid) + '" onchange="_abSayacYaz()"' +
+                (secili.indexOf(o.uid) > -1 ? ' checked' : '') + ' style="width:17px; height:17px; flex:0 0 auto;">' +
+              '<span style="flex:0 0 auto; font-size:1.05rem;">' + emj + '</span>' +
+              '<span style="flex:1 1 auto; min-width:0;">' +
+                '<b style="display:block; color:#2c3e50; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' +
+                  _fbEsc(o.ad) + '</b>' +
+                '<span style="font-size:.82rem; color:#8a94a3;">' + _fbEsc(o.email) +
+                  (d.not ? ' · ' + _fbEsc(d.not) : '') + '</span>' +
+              '</span>' +
+              '<span style="flex:0 0 auto; padding:3px 10px; border-radius:999px; font-size:.76rem; font-weight:700; ' +
+                'color:' + d.renk + '; background:' + d.zemin + ';">' + d.ad + '</span>' +
+            '</label>';
+    });
+
+    l.innerHTML = satir || '<p style="padding:16px; color:#8a94a3; margin:0;">Eşleşen öğrenci yok.</p>';
+    _abSayacYaz();
+}
+window._abSuz = _abSuz;
+
+function _abSecilenler() {
+    var a = [];
+    var t = document.querySelectorAll('#abListe .ab-tik');
+    for (var i = 0; i < t.length; i++) if (t[i].checked) a.push(t[i].value);
+    return a;
+}
+
+function _abSayacYaz() {
+    var s = document.getElementById('abSayac');
+    if (s) {
+        var n = _abSecilenler().length;
+        s.textContent = n ? (n + ' öğrenci seçildi') : 'Listeden öğrenci seç';
+    }
+}
+window._abSayacYaz = _abSayacYaz;
+
+function _abHepsi(ac) {
+    var t = document.querySelectorAll('#abListe .ab-tik');
+    for (var i = 0; i < t.length; i++) t[i].checked = !!ac;
+    _abSayacYaz();
+}
+window._abHepsi = _abHepsi;
+
+/* --- ASIL İŞ: seçili öğrencileri seçili öğretmene tanımla --- */
+function adminOgrenciTanimla() {
+    var uidler = _abSecilenler();
+    if (!uidler.length) { _abUyar('Önce listeden en az bir öğrenci seç.'); return; }
+
+    var sOgt = document.getElementById('abOgretmen');
+    var ogtUid = sOgt && sOgt.value;
+    if (!ogtUid) { _abUyar('Önce bir öğretmen seç.'); return; }
+
+    var ogt = null;
+    for (var i = 0; i < _abVeri.ogretmenler.length; i++) {
+        if (_abVeri.ogretmenler[i].uid === ogtUid) { ogt = _abVeri.ogretmenler[i]; break; }
+    }
+    if (!ogt) { _abUyar('Öğretmen bulunamadı, listeyi yenile.'); return; }
+
+    var sSnf = document.getElementById('abSinif');
+    var snf = (sSnf && sSnf.value) || '';
+    var snfAd = '';
+    if (snf && sSnf.selectedIndex > -1) {
+        var o = sSnf.options[sSnf.selectedIndex];
+        snfAd = o.getAttribute('data-ad') || o.text;
+    }
+
+    /* Zaten başka bir öğretmene ONAYLI bağlı olanları ayrıca söyle. */
+    var cakisan = uidler.filter(function (u) {
+        var b = _abVeri.baglar[u];
+        return b && b.durum === 'onayli' && b.ogretmenUid && b.ogretmenUid !== ogtUid;
+    }).length;
+
+    var soru = uidler.length + ' öğrenci "' + ogt.ad + '" öğretmenine tanımlansın mı?' +
+        (snf ? '\nÖnerilen sınıf: ' + snfAd : '\nSınıfı öğretmen kendisi seçecek.') +
+        (cakisan ? '\n\nDİKKAT: ' + cakisan + ' öğrenci şu an BAŞKA bir öğretmene onaylı bağlı; bağları bu öğretmene taşınacak.' : '');
+
+    _abSor(soru, function () { _abYaz(uidler, ogt, snf, snfAd); });
+}
+window.adminOgrenciTanimla = adminOgrenciTanimla;
+
+function _abYaz(uidler, ogt, snf, snfAd) {
+    var db2 = firebase.firestore();
+    var damga;
+    try { damga = firebase.firestore.FieldValue.serverTimestamp(); } catch (e) { damga = Date.now(); }
+
+    var isler = uidler.map(function (uid) {
+        var o = null;
+        for (var i = 0; i < _abVeri.ogrenciler.length; i++) {
+            if (_abVeri.ogrenciler[i].uid === uid) { o = _abVeri.ogrenciler[i]; break; }
+        }
+        var kayit = {
+            uid: uid,
+            email: (o && o.email) || '',
+            ad: (o && o.ad) || '',
+            tur: 'ogretmen',              /* satır öğretmen onaylarken açılacak */
+            ogretmenUid: ogt.uid,
+            ogretmenAd: ogt.ad,
+            durum: 'bekliyor',
+            yoneticiTanimli: true,
+            istekTarih: damga
+        };
+        if (snf) {
+            var pr = snf.split('|||');
+            kayit.onerilenLId = pr[0];
+            kayit.onerilenCId = pr[1];
+            kayit.onerilenAd = snfAd || '';
+        }
+        return db2.collection('ogrenciBaglari').doc(uid).set(kayit, { merge: true });
+    });
+
+    Promise.all(isler).then(function () {
+        _abUyar(uidler.length + ' öğrenci "' + ogt.ad +
+                '" öğretmenine tanımlandı. Öğretmen kendi panelindeki zilden onaylayacak.');
+        adminBaglamaYukle(true);
+    }).catch(function (e) {
+        _abUyar('Tanımlama başarısız: ' + ((e && (e.code || e.message)) || e) +
+                '\n(Firestore kuralları güncel mi? ogrenciBaglari için yöneticiye create izni gerekiyor.)');
+    });
+}
+
+/* Seçili öğrencilerin bağını tamamen siler — öğrenci yeniden kod girebilir. */
+function adminBagiKaldir() {
+    var uidler = _abSecilenler();
+    if (!uidler.length) { _abUyar('Önce listeden en az bir öğrenci seç.'); return; }
+    _abSor(uidler.length + ' öğrencinin öğretmen bağı kaldırılsın mı?\n' +
+           'Öğrencinin notları silinmez; yalnız bağ kaydı kalkar ve öğrenci yeniden kod girebilir.',
+    function () {
+        var db2 = firebase.firestore();
+        Promise.all(uidler.map(function (uid) {
+            return db2.collection('ogrenciBaglari').doc(uid).delete();
+        })).then(function () {
+            _abUyar(uidler.length + ' öğrencinin bağı kaldırıldı.');
+            adminBaglamaYukle(true);
+        }).catch(function (e) {
+            _abUyar('Kaldırılamadı: ' + ((e && (e.code || e.message)) || e));
+        });
+    });
+}
+window.adminBagiKaldir = adminBagiKaldir;
+
+/* Sitenin kendi pencereleri varsa onlar, yoksa tarayıcınınki. */
+function _abUyar(m) {
+    if (typeof showCustomAlert === 'function') return showCustomAlert(m);
+    alert(m);
+}
+function _abSor(m, evet) {
+    if (typeof showCustomConfirm === 'function') {
+        var r = showCustomConfirm(m);
+        if (r && r.then) { r.then(function (o) { if (o) evet(); }); return; }
+        if (r) evet();
+        return;
+    }
+    if (confirm(m)) evet();
+}
