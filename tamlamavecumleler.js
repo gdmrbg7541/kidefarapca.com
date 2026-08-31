@@ -34,6 +34,17 @@
     ac(test, ad === 'test');
     if (sar) sar.hidden = (ad !== 'tablo');
     if (ad === 'test' && window.tcTestHazirla) window.tcTestHazirla();
+    /* BAŞLIĞIN DURUMU: tablodayken "buradasın" vurgusu, başka
+       bölümdeyken "‹ Tabloya dön" tuşu. Sayfa tabloyla açıldığı için
+       ilk hâl vurgulu olan. */
+    if (don) {
+      don.classList.toggle('tc-burada', ad === 'tablo');
+      don.classList.toggle('tc-donus',  ad !== 'tablo');
+      don.title = (ad === 'tablo')
+        ? 'Tamlama ve cümleler tablosu — buradasın'
+        : 'Tamlama ve cümleler tablosuna dön';
+      don.setAttribute('aria-label', don.title);
+    }
     if (window.tcPilTazele) window.tcPilTazele(ad);
   }
   /* BAŞLIK = ÇIKIŞ. Ayrı bir çarpı yok: sayfanın adı zaten hep orada
@@ -45,6 +56,8 @@
     if ((irab && irab.classList.contains('acik')) ||
         (test && test.classList.contains('acik'))) govde('tablo');
   });
+  /* Açılış: sayfa tabloyla geliyor — başlık da o durumu göstersin. */
+  govde('tablo');
   window.tcGovde = govde;
   window.tcIrabGoster = function (a) { govde(a ? 'irab' : 'tablo'); };
 })();
@@ -67,6 +80,24 @@
      penceresi). Kapsamsız seçici sınavınkini buluyordu; i'rab
      panelinin gövdesi #tcPerde altındakidir. */
   var govde = document.querySelector('#tcPerde .tc-pop-govde');
+  /* ---------- TAHLİL GÖRÜNÜMLERİ ----------
+     'hik' hikâye, 'kesif' ismin sonları animasyonu, 'cumle' beş cümle.
+     Üçü de tam sayfa; hangisinin açık olduğu bölümün data-th'inde durur. */
+  function thBolum() { return document.querySelector('.tc-bolum[data-bolum="tahlil"]'); }
+  function thGorunumHangi() {
+    var b = thBolum();
+    return (b && b.getAttribute('data-th')) || 'hik';
+  }
+  function thGorunum(g) {
+    var b = thBolum();
+    if (!b || ['hik','kesif','cumle'].indexOf(g) < 0) return;
+    b.setAttribute('data-th', g);
+    if (g === 'kesif') kesifGiris();
+    if (govde) govde.scrollTop = 0;   /* her sekme baştan okunur */
+    seritTazele('tahlil');
+  }
+  window.tcTahlilGorunum = thGorunum;
+
   function bolumAc(ad) {
     bolumler.forEach(function (b) { b.hidden = (b.getAttribute('data-bolum') !== ad); });
     [].forEach.call(ustSek.children, function (d) {
@@ -74,7 +105,7 @@
       d.classList.toggle('aktif', s);
       d.setAttribute('aria-selected', s ? 'true' : 'false');
     });
-    if (ad === 'giris') kesifGiris();
+    /* Keşif yalnız kendi sekmesinde kurulur (bkz. thGorunum). */
     seritTazele(pilKodu(aktifKod));
     if (govde) govde.scrollTop = 0;
   }
@@ -245,115 +276,165 @@
     return false;
   }
 
-  var kUst   = document.getElementById('tcKesifUst');
-  var kVeri  = document.getElementById('tcKesifVeri');
+  var kGovde = document.getElementById('tcKesifGovde');
   var kNot   = document.getElementById('tcKesifNot');
-  var kDevam = document.getElementById('tcKesifDevam');
-  var kTablo = document.getElementById('tcKesifTablo');
-  var kGecit = document.getElementById('tcKesifGecit');
+  var kKar   = document.getElementById('tcKesif');
   var kAd = KESIF_SIRA[0], kCizili = false;
 
-  function veriYaz(satirlar) {
-    if (!kVeri) return;
-    kVeri.innerHTML = satirlar.map(function (x) {
-      var p = x.split('|');
-      var yan = '<span class="tc-kesif-yan">' +
-        (p[2] && SAHNE[p[2]]
-          ? '<span class="tc-kesif-sahne tcs-' + (p[3] || 'merfu') + '" aria-hidden="true">' + SAHNE[p[2]] + '</span>'
-          : '') +
-        '<span class="tc-kesif-tr">' + (p[1] || '') + '</span></span>';
-      /* Satır hâlini sınıf olarak taşır: vurgulu son (tc-kesif-son)
-         rengini buradan alır — sahneyle aynı renk, aynı kaynak. */
-      return '<div class="tc-kesif-cumle tc-kh-' + (p[3] || 'merfu') + '">' +
-             '<span class="tc-kesif-ar">' + p[0] + '</span>' + yan + '</div>';
-    }).join('');
+  /* ---------- SONLAR: İSİM ile FİİL YAN YANA ----------
+     Üç satır, iki sütun. İlk iki satırda isim ve fiil AYNI alâmeti
+     alır (ötre, üstün); üçüncü satırda ayrışırlar — isimde mecrur
+     (esre), fiilde meczum (sükûn). Ders bu farkın üstüne kurulu,
+     o yüzden üçüncü satır ayrı bir başlıkla ve vurguyla geliyor.
+     Satırlar adım adım açılır (data-a). */
+  var HAL_SIRA = [
+    { hal:'merfu',  ad:'Merfu',  isimAl:'ötre',  fiilAl:'ötre'  },
+    { hal:'mansub', ad:'Mansub', isimAl:'üstün', fiilAl:'üstün' },
+    { hal:'ucuncu', ad:'Üçüncü hâl',
+      isimHal:'mecrur', isimAd:'Mecrur', isimAl:'esre',
+      fiilHal:'meczum', fiilAd:'Meczum', fiilAl:'sükûn' }
+  ];
+
+  /* "جَاءَ ...|Öğretmen geldi|gel|merfu" -> parçalar */
+  function ayir(x) {
+    var p = String(x || '').split('|');
+    return { ar:p[0] || '', tr:p[1] || '', sahne:p[2] || '', hal:p[3] || 'merfu' };
   }
-  /* Geçit: üç kopya üst üste, çapraz geçişle döner; Türkçesi ve hâl
-     rozeti de aynı ritimle değişir. Kopya TAM kelimedir, tek satırda
-     durur; değişen son satır İÇİNDE <b>'ye sarılıdır — satır içi <b>
-     bitişmeyi bozmaz, rengi hâlden alır.
-     DİKKAT — .tc-kg-kopya bir FLEX kutusudur (ortalama için). Flex
-     kutuda çıplak metin ile <b> AYRI birer flex ögesi olur; ayrı öge
-     demek ayrı biçimleme koşusu demektir, yani son harf bitişmez
-     (ölçüldü: 195px'e karşı 180px, mim tek başına yazılıyordu).
-     Bu yüzden kelime tek bir satır içi kaba (.tc-kg-ic) sarılıyor:
-     flex ögesi O oluyor, metin ile <b> onun içinde satır içi kalıyor. */
-  function gecitYaz(g) {
-    if (!kGecit) return;
-    if (!g) { kGecit.hidden = true; kGecit.innerHTML = ''; return; }
-    var ar = '', tr = '', rz = '';
-    g.ogeler.forEach(function (o, n) {
-      ar += '<span class="tc-kg-kopya tc-kg-s' + n + ' tcs-' + o.hal + '" dir="rtl">' +
-            '<span class="tc-kg-ic">' + o.ar + '</span></span>';
-      tr += '<span class="tc-kg-kopya tc-kg-s' + n + '">' + o.tr + '</span>';
-      rz += '<span class="tc-kg-kopya tc-kg-s' + n + '"><i class="tc-kg-pil tcs-z-' + o.hal + '">' + o.rozet + '</i></span>';
-    });
-    kGecit.innerHTML =
-      '<p class="tc-kg-baslik">' + g.baslik + '</p>' +
-      '<div class="tc-kg-ar">' + ar + '</div>' +
-      '<div class="tc-kg-tr">' + tr + '</div>' +
-      '<div class="tc-kg-rozet">' + rz + '</div>';
-    kGecit.hidden = false;
+  /* Hâl künyesi kutunun İÇİNDE ve EN SAĞDA: cümlenin üstünde ayrı bir
+     satır tutmuyor, çapraz duran bir etiket gibi cümleye iliştiriliyor. */
+  function hucre(veri, yan, etiket) {
+    var d = ayir(veri);
+    return '<div class="ks-h ks-' + yan + ' tc-kh-' + d.hal + '">' +
+      (SAHNE[d.sahne]
+        ? '<span class="ks-sahne tcs-' + d.hal + '" aria-hidden="true">' + SAHNE[d.sahne] + '</span>'
+        : '') +
+      '<span class="ks-ar" dir="rtl">' + d.ar + '</span>' +
+      '<span class="ks-tr">' + d.tr + '</span>' +
+      (etiket || '') + '</div>';
   }
-  /* Adım TEK ekrandır: veri + geçit + kuralın tek cümlelik hâli.
-     Soru-şık yok, görmek tamamlamaktır — ama GERÇEKTEN görmek: sayfa
-     açılışında adım kapalı gövdede sessizce hazırlanır, o an ✓
-     İŞLENMEZ. İşaret, bölüm ekrana girdiği an düşer (gözcü aşağıda);
-     adım zaten ekrandayken çizilirse hemen düşer. Şeritteki
-     "1 · İsim" pili işaretini buradan alır. */
+
+  /* Görüldü işareti: şeritteki "Sonlar" pilinin ✓'i ve açılışta hangi
+     başlığa gidileceği (kesifBaslanmis) bundan besleniyor. */
   function kesifIsaretle() {
-    if (!kAd || kesifGecti[kAd]) return;
-    kesifGecti[kAd] = 1; kesifYaz();
-    seritTazele('giris');
+    if (kesifGecti.isim && kesifGecti.fiil) return;
+    kesifGecti.isim = 1; kesifGecti.fiil = 1;
+    kesifYaz();
   }
-  var kGozcu = ('IntersectionObserver' in window) && kUst
-    ? new IntersectionObserver(function (girdiler) {
-        girdiler.forEach(function (g) { if (g.isIntersecting && kCizili) kesifIsaretle(); });
-      })
-    : null;
-  if (kGozcu) kGozcu.observe(document.getElementById('tcKesif'));
+
   function kesifCiz() {
-    var k = KESIF[kAd]; if (!k || !kUst) return;
+    if (!kGovde) return;
     kCizili = true;
-    /* Gözcü yoksa eski usul: çizmek işaretlemektir. */
-    if (!kGozcu || kUst.getBoundingClientRect().width > 0) kesifIsaretle();
-    kUst.textContent = k.ad;
-    veriYaz(k.veri);
-    gecitYaz(k.gecit);
-    kNot.className = 'tc-kesif-not tc-kesif-kapanis';
-    kNot.innerHTML = k.metin; kNot.hidden = false;
-    var s = KESIF_SIRA[KESIF_SIRA.indexOf(kAd) + 1];
-    kDevam.hidden = !s;
-    if (s) kDevam.textContent = 'Sıradaki: ' + KESIF[s].ad + ' ❯';
-    kTablo.textContent = k.ad + ' tablosunu aç';
-    kTablo.hidden = false;
-    /* Yeni adım baştan okunur: önceki adımın kaydırması kalmasın. */
-    if (govde) govde.scrollTop = 0;
-    seritTazele('giris');
+    var iv = KESIF.isim.veri, fv = KESIF.fiil.veri;
+    kGovde.innerHTML = HAL_SIRA.map(function (h, i) {
+      var sonMu = (h.hal === 'ucuncu');
+      var etiket = function (yan) {
+        var ad = sonMu ? (yan === 'i' ? h.isimAd : h.fiilAd) : h.ad;
+        var al = (yan === 'i') ? h.isimAl : h.fiilAl;
+        var hl = sonMu ? (yan === 'i' ? h.isimHal : h.fiilHal) : h.hal;
+        return '<span class="ks-et tc-kh-' + hl + '"><b>' + ad + '</b>' +
+               '<small>' + al + '</small></span>';
+      };
+      return (sonMu
+        ? '<div class="ks-ayrim adim" data-g="' + (i + 1) + '">' +
+          '<span>Üçüncü hâlde <b>yollar ayrılır</b></span></div>'
+        : '') +
+        '<div class="ks-sat adim' + (sonMu ? ' ks-son' : '') + '" data-g="' + (i + 1) + '">' +
+        '<div class="ks-yan ks-yan-i">' + hucre(iv[i], 'i', etiket('i')) + '</div>' +
+        '<div class="ks-orta" aria-hidden="true"></div>' +
+        '<div class="ks-yan ks-yan-f">' + hucre(fv[i], 'f', etiket('f')) + '</div>' +
+        '</div>';
+    }).join('');
+    /* Açıklama duruşa göre değişiyor (bkz. KES_NOT). */
+    if (kNot) kNot.innerHTML = KES_NOT[kesifYakinHangi()];
+    kesifIsaretle();
   }
-  function kesifIlerle() {
-    var s = KESIF_SIRA[KESIF_SIRA.indexOf(kAd) + 1];
-    if (s) kesifBasla(s);
+
+  /* ---------- YAKINLAŞMA ----------
+     Üç örnek de baştan açık (adım adım açılış kalktı). Üç duruş var:
+       ''  karşılaştırma — isim ve fiil yan yana,
+       'i' yalnız isim  — üç hâl tek sütunda, iri,
+       'f' yalnız fiil.
+     Ders bu sırayla ilerliyor: önce ismin KENDİ İÇİNDE ne değiştiği
+     (ötre → üstün → esre), sonra aynı sorunun fiildeki karşılığı,
+     en sonunda ikisinin karşılaştırması. */
+  /* KISA TUTULUYOR: ayrıntı tabloların işi. Burada yalnız iki şey
+     vurgulanıyor — değişenin SON olduğu (i'rab) ve üçüncü hâlde
+     isimle fiilin AYRILDIĞI. */
+  var KES_NOT = {
+    '': 'Gövde değişmiyor, değişen yalnız <b>son</b> — bunun adı <b>i\'rab</b>. ' +
+        'İlk iki hâl isimde de fiilde de aynı; ayrım üçüncüde: ' +
+        '<b>isimde mecrur, fiilde meczum</b>.',
+    i:  'Aynı kelime, üç ayrı <b>son</b>: ötre · üstün · esre. ' +
+        'Kelimenin görevini söyleyen şey o son harekedir.',
+    f:  'Aynı fiil, üç ayrı <b>son</b>: ötre · üstün · sükûn. ' +
+        'Fiilin sonunu, başına gelen edat değiştirir.'
+  };
+  /* Kumandanın gezindiği sıra: isim → karşılaştırma → fiil, uçlarda döner. */
+  var KES_SIRA = ['i', '', 'f'];
+  function kesifYakinHangi() {
+    return (kKar && kKar.getAttribute('data-yak')) || '';
   }
+  function kesifYakin(v) {
+    if (!kKar) return;
+    if (!kCizili) kesifCiz();
+    if (v === 'i' || v === 'f') kKar.setAttribute('data-yak', v);
+    else { kKar.removeAttribute('data-yak'); v = ''; }
+    if (kBasI) kBasI.setAttribute('aria-pressed', v === 'i' ? 'true' : 'false');
+    if (kBasF) kBasF.setAttribute('aria-pressed', v === 'f' ? 'true' : 'false');
+    if (kNot) kNot.innerHTML = KES_NOT[v];
+    seritTazele('tahlil');
+  }
+  /* SEKME MANTIĞI — iki başlık iki sekme, ikisi birden açık olabilir:
+       ikisi de açıkken bir başlığa basmak  -> yalnız o yan kalır,
+       tek yan açıkken ÖBÜR başlığa basmak  -> ikisi de açılır,
+       tek yan açıkken AYNI başlığa basmak  -> seçim kalkar, ikisi açılır.
+     Yani yakınlaşmış hâldeyken hangi başlığa basılırsa basılsın
+     karşılaştırmaya dönülür; kapanıp içerik kaybolan bir durum yok. */
+  function kesifCevir(v) { kesifYakin(kesifYakinHangi() ? '' : v); }
+  /* Eski çağrılar sürsün: kesifBasla('isim'|'fiil') artık o yana yakınlaşır. */
   function kesifBasla(ad) {
-    if (!KESIF[ad]) return;
-    kAd = ad;
-    kesifCiz();
+    if (!kCizili) kesifCiz();
+    kAd = (ad === 'fiil') ? 'fiil' : 'isim';
+    kesifYakin(kAd === 'fiil' ? 'f' : 'i');
   }
-  /* Giriş bölümü açılınca: görülmemiş ilk adım gelir; bir adım zaten
-     ekrandaysa yerinde kalır (Giriş piline ikinci basış seni taşımaz). */
+  /* SONLAR SEKMESİ HER AÇILDIĞINDA yalnız İSİM açık gelir. Ders
+     oradan başlıyor: önce ismin kendi içinde ne değiştiği (ötre →
+     üstün → esre), sonra fiil, en sonunda karşılaştırma. Sekmeden
+     çıkıp dönen de dersin başına dönmüş olur.
+     (Şeritten "Sonlar"a basmak da buradan geçiyor.) */
   function kesifGiris() {
-    if (kCizili) return;
-    for (var i = 0; i < KESIF_SIRA.length; i++) {
-      if (!kesifGecti[KESIF_SIRA[i]]) { kesifBasla(KESIF_SIRA[i]); return; }
-    }
-    kesifBasla(kAd || KESIF_SIRA[0]);
+    if (!kCizili) kesifCiz();
+    kesifYakin('i');
   }
-  if (kDevam) kDevam.addEventListener('click', kesifIlerle);
-  if (kTablo) kTablo.addEventListener('click', function () { menuGit(kAd); });
-  /* Öğretmen sıfırlamak isterse: konsoldan tcKesifSifirla() */
-  window.tcKesifSifirla = function () { kesifGecti = {}; kesifYaz(); kesifBasla(KESIF_SIRA[0]); };
+  var kBasI = document.getElementById('tcKesifBasI');
+  var kBasF = document.getElementById('tcKesifBasF');
+  if (kBasI) kBasI.addEventListener('click', function () { kesifCevir('i'); });
+  if (kBasF) kBasF.addEventListener('click', function () { kesifCevir('f'); });
+
+  /* Klavye okları üç duruş arasında gezer, uçlarda döner. Sekmeden
+     çıkarmaz: cümlelere geçiş şeritten yapılıyor. */
+  function kesifKaydir(yon) {
+    var i = KES_SIRA.indexOf(kesifYakinHangi());
+    if (i < 0) i = 1;
+    i = (i + yon + KES_SIRA.length) % KES_SIRA.length;
+    kesifYakin(KES_SIRA[i]);
+  }
+  /* Ekranda ileri/geri tuşu YOK: gezinme başlıkların kendisinde.
+     kesifKaydir yalnız KLAVYE okları için duruyor (tahta kumandası). */
+  window.tcKesifKaydir = kesifKaydir;
+  /* Sütunun kendisine dokunmak da yakınlaştırır: akıllı tahtada
+     başlığa nişan almak yerine örneğin üstüne basmak yetsin. */
+  if (kGovde) kGovde.addEventListener('click', function (e) {
+    var y = e.target.closest ? e.target.closest('.ks-yan') : null;
+    if (!y) return;
+    kesifCevir(y.classList.contains('ks-yan-f') ? 'f' : 'i');
+  });
+  window.tcKesifSifirla = function () { kesifGecti = {}; kesifYaz(); kesifYakin(''); };
   window.tcKesifGit = kesifBasla;
+  window.tcKesifYakin = kesifYakin;
+  /* Eski ad: adım yerine artık duruş kuruyor (1→isim, 2→karşılaştırma,
+     3→fiil). Dışarıdaki çağrılar ve testler kırılmasın diye duruyor. */
+  window.tcKesifAdim = function (a) { kesifYakin(KES_SIRA[Math.max(0, Math.min(2, (a || 1) - 1))]); };
 
   /* Tablonun kopyasını tutan "tamlama" sekmesi kaldırıldı: kopya durağandı,
      dokununca yakınlaşmıyordu. Asıl tablo artık bir dokunuş ötede — sayfa
@@ -362,8 +443,11 @@
   /* ---------- MENÜ ----------
      Her kart doğrudan hedefe gider; başlıkta o hedefin adı yazar. */
   var MENU = {
-    giris:  { bolum:'giris', ad:'Giriş' },
-    tahlil: { bolum:'tahlil', ad:'Tahlil' },
+    /* 'th' alanı Tahlil'in hangi görünümüyle açılacağını söyler. */
+    /* Eski 'giris' kodu: haritadan/dış bağlantıdan Sonlar'a girer. */
+    giris:  { bolum:'tahlil', ad:'Sonlar', th:'kesif' },
+    /* Başlığa basmak hikâyeyi açar: pilin adı da o (bkz. SERIT_AD). */
+    tahlil: { bolum:'tahlil', ad:'Başlarken', th:'hik' },
     /* İ'RAB'a basınca HER ZAMAN İSİM tablosu açılır. Eskiden hangi
        tabloda kalınmışsa (harf ya da fiil) oraya dönüyordu; ders
        hep isimden başladığı için varsayılan isim yapıldı. */
@@ -407,16 +491,23 @@
      tamlama tablosunun kopyası ise büsbütün kalktı — asıl tablo sayfa
      başlığına basınca geliyor. Bu beşi SAYFA BAŞLIĞINDA duruyor: şerit
      panelin değil, sayfanın gezinme aracı. */
-  var SERIT_SIRA = ['giris', 'tahlil', 'irab', 'ozet', 'test'];
+  /* GİRİŞ BAŞLIĞI KALKTI: keşif adımları Tahlil'in içinde, en başta
+     hikâyeyle birlikte duruyor. İki başlık aynı işi yapıyordu. */
+  var SERIT_SIRA = ['tahlil', 'irab', 'ozet', 'test'];
+  /* Bölümün adı "Tahlil" değil "BAŞLARKEN": pilin kendisi zaten ilk
+     durak (hikâye). Eskiden Tahlil'in altında ayrı bir "Başlarken"
+     pili vardı; aynı yeri iki tuş gösteriyordu. Şimdi tek tuş:
+     başlığa basmak hikâyeyi açar, yanındaki alt piller Sonlar ve
+     beş cümle olarak kalır. */
   var SERIT_AD = {
-    giris:'Giriş', tahlil:'Tahlil', irab:'İ\'râb', ozet:'Özet', test:'Test'
+    tahlil:'Başlarken', irab:'İ\'râb', ozet:'Özet', test:'Test'
   };
   var SERIT_KISA = {};
   var ALT = {
     /* Adımlar NUMARALI: aynı adı taşıyan pillerle karışmasın; bitenlere ✓. */
-    giris: { tip:'kesif', ogeler:[
-      { deger:'isim', ad:'1 · İsim' },
-      { deger:'fiil', ad:'2 · Fiil' } ] },
+    /* Keşif adımlarının pilleri kalktı: artık Tahlil'in içinde, kendi
+       "devam" tuşlarıyla ilerliyor. (MENU'deki kodlar duruyor —
+       haritadan doğrudan çağrılabiliyorlar.) */
     /* İ'RÂB'IN ALT ÖGESİ YOK.
        Bir ara "Sonlar · Esmâ-i hamse · Efâl-i hamse" diye üç alt pil
        vardı; o zaman üçü ayrı panoydu. Şimdi üçü tek panoda: esmâ-i
@@ -444,9 +535,15 @@
     var a = ALT[kod];
     if (!a) return null;
     if (a.tip === 'cumle') {
-      if (!window.tcTahlil) return null;
-      var l = [];
-      for (var i = 0; i < window.tcTahlil.sayi; i++) l.push({ deger:String(i), ad:String(i + 1) });
+      /* Cümlelerden ÖNCE iki sekme: hikâye ve keşif. Üçü de tam sayfa;
+         hangisinin açık olduğunu bölümün data-th'i söyler. */
+      /* "Sonlar": isim ve fiil artık tek ekranda yan yana — sekme adı
+         hiçbir adımda yanlış kalmıyor. */
+      /* "Başlarken" alt pili KALKTI: başlığın kendisi oraya götürüyor. */
+      var l = [ { deger:'kesif', ad:'Sonlar' } ];
+      if (window.tcTahlil) {
+        for (var i = 0; i < window.tcTahlil.sayi; i++) l.push({ deger:String(i), ad:String(i + 1) });
+      }
       return l;
     }
     return a.ogeler;
@@ -488,8 +585,12 @@
   }
   function altSecili(kod) {
     if (kod === 'test') return window.tcTestHangiKip ? window.tcTestHangiKip() : 'tamlama';
-    if (kod === 'tahlil') return window.tcTahlil ? String(window.tcTahlil.hangi()) : null;
-    if (kod === 'giris') return kAd;
+    if (kod === 'tahlil') {
+      var g = thGorunumHangi();
+      if (g !== 'cumle') return g;
+      return window.tcTahlil ? String(window.tcTahlil.hangi()) : null;
+    }
+    if (kod === 'giris') return kAd;   /* eski keşif kodu; tahlil yukarıda döner */
     if (ALT[kod] && ALT[kod].tip === 'git') return aktifKod;
     return null;
   }
@@ -583,7 +684,11 @@
           seritTazele('test');
         } else if (k === 'tahlil') {
           menuGit('tahlil');
-          if (window.tcTahlil) window.tcTahlil.basla(+v);
+          if (v === 'hik' || v === 'kesif') { thGorunum(v); }
+          else {
+            thGorunum('cumle');
+            if (window.tcTahlil) window.tcTahlil.basla(+v, true);
+          }
           seritTazele('tahlil');
         } else if (ALT[k] && ALT[k].tip === 'git') {
           sonAlt[k] = v;   /* bu başlığa dönünce gene buraya gelinsin */
@@ -610,7 +715,11 @@
       if (kod === seritKod) {
         /* Zaten bu başlıktayız. Alt ögedeysen ilk basış üst başlığa
            götürür; başlığın kendisindeysen basış grubu kapatır/açar. */
-        var kendinde = (kod === 'test') || (aktifKod === kod);
+        /* "Başlarken" hem bölümün adı hem ilk durağı: Sonlar'dayken ya
+           da bir cümledeyken basmak seni Başlarken'e GÖTÜRÜR; zaten
+           oradayken basmak alt ögeleri katlar. */
+        var kendinde = (kod === 'test') ||
+          (aktifKod === kod && (kod !== 'tahlil' || thGorunumHangi() === 'hik'));
         if (kendinde && ALT[kod]) { acik[kod] = !acik[kod]; seritTazele(kod); return; }
         sonAlt[kod] = kod;   /* üst başlığa döndük: hatırlanan yer de burası */
         menuGit(kod);
@@ -648,6 +757,7 @@
     if (!m) return;
     aktifKod = kod;
     bolumAc(m.bolum);
+    if (m.th) thGorunum(m.th);
     if (m.panel) {
       /* Basamak artık ayrı bir panel değil, i'râbın filtresi: sekme
          seçilirken data-sev aranmaz, basamak aşağıda ayrıca kurulur. */
@@ -695,7 +805,7 @@
   /* Açılış: SAYFA TABLOYLA açılır — asıl iş orada. Şerit hazır durur;
      ilk kez gelen için Giriş, daha önce başlamış olan için İsim
      "kalınan yer" sayılır ama hiçbiri kendiliğinden açılmaz. */
-  menuGit(kesifBaslanmis() ? 'irab' : 'giris', true);
+  menuGit(kesifBaslanmis() ? 'irab' : 'tahlil', true);
   /* Kelime tablosunun kendi basamak şeridi: üç basamak, birleşmelerden
      sonra şeride sığmıyordu; kontrolü ait olduğu tablonun başına aldık. */
   /* ---------- BASAMAK FİLTRESİ (Lafzen · Takdiren · Mahallen) ----------
@@ -3450,7 +3560,6 @@
   var elListe = document.getElementById('thListe');
   var elSoru = document.getElementById('thSoru');
   var elNot = document.getElementById('thNot');
-  var elBul = document.getElementById('thBulunan');
   var elHal = document.getElementById('thHal');
   var elSonraki = document.getElementById('thSonraki');
   var elBastan = document.getElementById('thBastan');
@@ -3629,6 +3738,18 @@
                     '<span class="th-etiket"></span>';
       elCumle.appendChild(b);
     });
+    /* CÜMLE SONU NOKTASI. Kelimeler ayrı ayrı tuş olduğu için nokta
+       hiçbirinin içinde duramaz (tıklanınca o kelimenin notunu açardı
+       ve boyandığında noktayı da boyardı). Bu yüzden en sona TIKLANMAZ
+       bir işaret olarak konuyor; kap rtl olduğu için soldaki uçta,
+       yani cümlenin gerçek sonunda çıkıyor.
+       DİZİN GÜVENLİ: boya() elCumle.children[i]'yi kelime sırasına göre
+       okuyor; nokta en SONA eklendiği için o sıralamayı bozmuyor. */
+    var nk = document.createElement('span');
+    nk.className = 'th-nokta';
+    nk.setAttribute('aria-hidden', 'true');
+    nk.textContent = '.';
+    elCumle.appendChild(nk);
   }
   /* Türkçe satırı parçalardan kurulur; her parça ait olduğu Arapça
      kelimenin numarasını taşır ki rengi onunla birlikte değişsin. */
@@ -3703,16 +3824,23 @@
                        '</span> ' + KAT[n].soru + ' <span class="th-ipuc">— cümleden dokun</span>';
     elHal.hidden = true;
   }
-  function basla(yeni) {
+  /* HER CÜMLENİN İLERLEMESİ AYRI TUTULUYOR.
+     Sekmeler arasında gidip gelmek (Başlarken → Sonlar → 3. cümle)
+     bulunmuş ögeleri sıfırlıyordu; artık kaldığın yerden devam ediyor.
+     Sıfırlamak isteyen "Baştan" tuşuna basar. */
+  var ilerleme = {};
+  function durumYaz() { ilerleme[c] = { adim:adim, bitti:bitti }; }
+
+  function basla(yeni, surdur) {
     if (typeof yeni === 'number') c = yeni;
     var C = CUMLE[c];
+    var eski = (surdur && ilerleme[c]) ? ilerleme[c] : { adim:0, bitti:false };
     bitti = false; adim = 0;
     adimlar = SIRA.filter(function (n) {
       return C.kelime.some(function (w) { return w.k === n; });
     });
     elUst.innerHTML = 'Cümle <b>' + (c + 1) + ' / ' + CUMLE.length + '</b>' +
                       ' <span class="th-sayac">' + adimlar.length + ' soru</span>';
-    elBul.innerHTML = ''; elBul.hidden = true;
     /* Uzun cümle sayfayı taşırmasın: punto kelime sayısına göre ölçekleniyor.
        Beş kelimeye kadar tam boy; sonrası her kelimede %3,5 küçülüyor,
        %70'in altına inmiyor. */
@@ -3722,9 +3850,22 @@
       kutu.style.setProperty('--olcek',
         (kn <= 5 ? 1 : Math.max(0.7, 1 - (kn - 5) * 0.035)).toFixed(3));
     }
-    kelimeCiz(); trCiz(); listeCiz(); listeTazele(); soruYaz();
+    kelimeCiz(); trCiz(); listeCiz();
+    /* Kaldığı yerden devam: bulunmuş kategoriler yeniden boyanır. */
+    adim = Math.max(0, Math.min(eski.adim, adimlar.length));
+    for (var q = 0; q < adim; q++) {
+      (function (n) {
+        C.kelime.forEach(function (x, j) {
+          if (x.k === n) boya(j, KAT[n].renk, KAT[n].kisa);
+        });
+      })(adimlar[q]);
+    }
+    listeTazele(); soruYaz();
     elSonraki.hidden = true;
     elBastan.hidden = true;
+    /* Hâlleri açılmış hâlde bırakıldıysa o görünüm de geri gelir. */
+    if (eski.bitti) halGoster();
+    durumYaz();
     /* Şeridi YALNIZ tahlil ekrandayken tazele: açılıştaki basla(0) çağrısı
        yoksa şeridin aktif pilini çalıp İsim/Giriş yerine Tahlil'i yakıyor. */
     var bol = document.querySelector('.tc-bolum[data-bolum="tahlil"]');
@@ -3746,21 +3887,12 @@
     C.kelime.forEach(function (x, j) {
       if (x.k === n) boya(j, KAT[n].renk, KAT[n].kisa);
     });
-    /* Onay için koca bir kutu açmıyoruz: bulunan, alttaki tek satıra
-       kendi renginde ekleniyor. Aynı kategoriden birden fazla kelime
-       varsa hepsi yazılıyor — tekrar edenler bir kez. */
-    var trler = [];
-    C.kelime.forEach(function (x) {
-      if (x.k === n && trler.indexOf(x.tr) < 0) trler.push(x.tr);
-    });
-    var sp = document.createElement('span');
-    sp.className = 'th-bul';
-    sp.style.setProperty('--kat', KAT[n].renk);
-    sp.innerHTML = '<b>' + KAT[n].kisa + '</b> — ' + trler.join(', ');
-    elBul.appendChild(sp);
-    elBul.hidden = false;
+    /* Ayrıca bir "bulunanlar" satırı yazılmıyor: öge adı kelimenin
+       altında zaten duruyor, aynı şeyi ikinci kez listelemek ekranı
+       harcıyordu. */
     elNot.hidden = true;
     adim++;
+    durumYaz();
     listeTazele();
     if (adim >= adimlar.length) { bitti = false; }
     setTimeout(soruYaz, 10);
@@ -3791,9 +3923,9 @@
     elHal.hidden = true;
     elSonraki.hidden = (CUMLE.length < 2);
     elBastan.hidden = false;
-    elBul.hidden = true;
     elNot.hidden = true;
     listeTazele();
+    durumYaz();
   }
   elCumle.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('.th-kelime') : null;
@@ -3812,8 +3944,9 @@
     if (b) kunyeAc(+b.getAttribute('data-n'));
   });
   elHal.addEventListener('click', halGoster);
-  elBastan.addEventListener('click', function () { basla(c); });
-  elSonraki.addEventListener('click', function () { basla((c + 1) % CUMLE.length); });
+  /* "Baştan" TEK sıfırlama yolu; "Sıradaki" o cümlede kalınan yeri açar. */
+  elBastan.addEventListener('click', function () { delete ilerleme[c]; basla(c); });
+  elSonraki.addEventListener('click', function () { basla((c + 1) % CUMLE.length, true); });
 
   window.tcTahlil = { basla: basla, sayi: CUMLE.length, hangi: function () { return c; } };
   basla(0);
@@ -4456,4 +4589,136 @@
     ciz();
   }
   [].forEach.call(document.querySelectorAll('.tc-irab-isim, .tc-irab-fiil'), kur);
+})();
+
+
+/* ============================================================
+   HİKÂYE MOTORU — harekenin doğuşu (Tahlil bölümünün başı)
+   ------------------------------------------------------------
+   Beş adım; ileri/geri, noktalar ve klavye okları. Animasyonların
+   hepsi CSS'te ve sahnenin data-h değerine bağlı, bu yüzden burada
+   yapılan tek iş o değeri yazmak. Birinci adımdaki "sonu değiştir"
+   ayrı bir durum (data-oku): aynı iskeletin iki okunuşu.
+   ============================================================ */
+(function () {
+  'use strict';
+  var sah = document.getElementById('tcHik');
+  if (!sah) return;
+  var ADET = sah.querySelectorAll('.hik-a').length || 5;
+  var geri = document.getElementById('tcHikGeri');
+  var ileri = document.getElementById('tcHikIleri');
+  var puan = document.getElementById('tcHikPuan');
+  var atla = document.getElementById('tcHikAtla');
+  var n = 1;
+
+  /* Noktalar: adım sayısı kadar, tıklanabilir. */
+  if (puan && !puan.childElementCount) {
+    for (var i = 1; i <= ADET; i++) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'hik-p1';
+      b.setAttribute('data-n', i);
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-label', i + '. adım');
+      puan.appendChild(b);
+    }
+    puan.addEventListener('click', function (e) {
+      var t = e.target.closest ? e.target.closest('.hik-p1') : null;
+      if (t) git(parseInt(t.getAttribute('data-n'), 10));
+    });
+  }
+
+  /* UÇLARDA DÖNER, KİLİTLENMEZ.
+     Eskiden 1. adımda "geri", son adımda "ileri" disabled oluyordu;
+     hikâye 1. adımda açıldığı için ilk basılan tuş ölü çıkıyor,
+     "tuşlar çalışmıyor" gibi görünüyordu. Artık iki tuş da her zaman
+     çalışır: son adımdan ileri başa, ilk adımdan geri sona gider. */
+  function git(k) {
+    if (ADET < 1) return;
+    if (k < 1) k = ADET;
+    if (k > ADET) k = 1;
+    n = k;
+    sah.setAttribute('data-h', String(n));
+    if (geri)  geri.disabled  = false;
+    if (ileri) ileri.disabled = false;
+    if (puan) [].forEach.call(puan.children, function (b, i) {
+      var s2 = (i + 1 === n);
+      b.classList.toggle('aktif', s2);
+      b.setAttribute('aria-selected', s2 ? 'true' : 'false');
+    });
+    /* Son adımda "Tahlile geç" tuşu asıl davete dönüşür. */
+    if (atla) atla.textContent = (n === ADET) ? 'Sonlara başla \u276F' : 'Sonlara geç \u276F';
+    /* İki okunuş yalnız 1. adımda dönüyor; başka adımda sayaç boşa işlemesin. */
+    if (n === 1) { sah.setAttribute('data-oku', '1'); okuBasla(); } else okuDur();
+  }
+
+  if (geri)  geri.addEventListener('click',  function () { git(n - 1); });
+  if (ileri) ileri.addEventListener('click', function () { git(n + 1); });
+  /* Oklar: hikâye ekrandayken sayfanın neresine basılmış olursa olsun
+     çalışır (akıllı tahtada kumandanın okları da buraya düşüyor).
+     Yazı alanına odaklanılmışsa karışmasın diye o durum dışlanıyor. */
+  function yaziAlani(el) {
+    if (!el) return false;
+    var t = (el.tagName || '').toUpperCase();
+    return t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT' || el.isContentEditable;
+  }
+  /* Tahlil'in hangi görünümü ekranda? ('hik' | 'kesif' | 'cumle' | '') */
+  function thAcikGorunum() {
+    var b2 = document.querySelector('.tc-bolum[data-bolum="tahlil"]');
+    if (!b2 || b2.hidden || !b2.getBoundingClientRect().width) return '';
+    return b2.getAttribute('data-th') || '';
+  }
+  /* OKLAR ÜÇ YERDE ÇALIŞIR:
+       Başlarken → hikâyenin adımları arasında,
+       Sonlar    → üç hâl satırı arasında,
+       Cümleler  → beş tahlil cümlesi arasında.
+     Üçü de uçlarda döner. Yazı alanına odaklanılmışsa karışmaz. */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    if (yaziAlani(e.target)) return;
+    var g = thAcikGorunum();
+    var ileriMi = (e.key === 'ArrowRight');
+    if (g === 'hik') {
+      e.preventDefault(); e.stopPropagation();
+      git(ileriMi ? n + 1 : n - 1);
+      return;
+    }
+    if (g === 'kesif' && window.tcKesifKaydir) {
+      e.preventDefault(); e.stopPropagation();
+      window.tcKesifKaydir(ileriMi ? 1 : -1);
+      return;
+    }
+    if (g === 'cumle' && window.tcTahlil) {
+      var say = window.tcTahlil.sayi || 0;
+      if (say < 2) return;
+      e.preventDefault(); e.stopPropagation();
+      var c2 = window.tcTahlil.hangi();
+      c2 = (c2 + (ileriMi ? 1 : -1) + say) % say;
+      window.tcTahlil.basla(c2, true);
+      if (window.tcSeritTazele) window.tcSeritTazele('tahlil');
+    }
+  }, true);
+
+  /* 1. ADIM: AYNI İSKELET, İKİ OKUNUŞ — kendiliğinden değişir.
+     "Sonu değiştir" tuşu kalktı: hikâyenin geri kalanı kendi kendine
+     oynuyor, tek bu adım el istiyordu. İki saniyede bir hareke
+     değişiyor, CSS geçişi de yumuşak geçirdiği için fark ediliyor.
+     Sayaç YALNIZ 1. adım ekrandayken dönüyor (bkz. git). */
+  sah.setAttribute('data-oku', '1');
+  var okuSaat = 0;
+  function okuDur() { if (okuSaat) { clearInterval(okuSaat); okuSaat = 0; } }
+  function okuBasla() {
+    okuDur();
+    okuSaat = setInterval(function () {
+      sah.setAttribute('data-oku', sah.getAttribute('data-oku') === '1' ? '2' : '1');
+    }, 2000);
+  }
+
+  /* "Tahlile geç": hikâyeyi bırakıp keşif/cümle kısmına kaydırır. */
+  /* "Tahlile geç": kaydırmaz — bir sonraki SEKMEYİ açar. */
+  if (atla) atla.addEventListener('click', function () {
+    if (window.tcTahlilGorunum) window.tcTahlilGorunum('kesif');
+  });
+
+  git(1);
+  window.tcHikGit = git;
 })();

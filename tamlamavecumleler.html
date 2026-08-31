@@ -14,8 +14,8 @@
   gtag('config', 'G-FV9JD15KLW');
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="arakom.css?v=1">
-<link rel="stylesheet" href="tamlamavecumleler.css?v=20260830d">
+<link rel="stylesheet" href="arakom.css?v=2">
+<link rel="stylesheet" href="tamlamavecumleler.css?v=20260831f">
 </head>
 <body>
 
@@ -29,6 +29,9 @@
    <button type="button" class="tc-ustad-don" id="tcTabloDon"
            title="Tamlama ve cümleler tablosuna dön"
            aria-label="Tamlama ve cümleler tablosuna dön">
+    <!-- Adın önünde geri oku YOK: tuş öbür başlıklarla birebir aynı
+         görünsün istendi. Hangi durumda olduğunu zaten dolgusu söylüyor
+         (kırmızı = buradasın, beyaz = oraya götürür). -->
     <!-- Emoji yerine kendi SVG'miz: her işletim sisteminde aynı çizilir,
          satır yüksekliğiyle oynamaz ve hafifçe canlanır. -->
     <svg class="tc-ikon tc-ik-guc" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -42,7 +45,7 @@
       <path class="tci-kivilcim" fill="#F1A208"
             d="M19.6 2.2l.72 1.62 1.62.72-1.62.72-.72 1.62-.72-1.62-1.62-.72 1.62-.72z"/>
     </svg>
-    <span class="tc-ustad-yazi">Pekiştirelim – Tamlama ve Cümleler</span>
+    <span class="tc-ustad-yazi">Tamlama ve Cümleler</span>
    </button>
   </h1>
   <!-- İ'RAB VE TEST TEK ŞERİTTE — SAYFANIN TEK GEZİNME ARACI.
@@ -484,21 +487,6 @@
          Fiil aynı ilkeyi başka takıma taşır.
          Metinler betikte (KESIF): sırası da öğrettiği için elle
          yazıldı, havuzdan üretilmiyor. -->
-    <section class="tc-bolum" data-bolum="giris" hidden>
-      <div class="tc-kesif" id="tcKesif">
-        <p class="tc-kesif-ust" id="tcKesifUst"></p>
-        <div class="tc-kesif-veri" id="tcKesifVeri" dir="rtl"></div>
-        <!-- AYNI kelime, ÜÇ yazılış. Üç kopya üst üste durur, çapraz
-             geçişle döner (dâd ikonundaki teknik). -->
-        <div class="tc-kesif-gecit" id="tcKesifGecit" hidden></div>
-        <div class="tc-kesif-not" id="tcKesifNot" hidden></div>
-        <div class="tc-kesif-alt">
-          <button type="button" class="tc-kesif-devam" id="tcKesifDevam" hidden></button>
-          <button type="button" class="tc-kesif-tablo" id="tcKesifTablo" hidden></button>
-        </div>
-      </div>
-    </section>
-
     <!-- ================= 1 · TABLOLAR ================= -->
     <section class="tc-bolum" data-bolum="tablolar">
       <div class="tc-alt-sek" id="tcTabloSek" role="tablist" aria-label="Tablo türü" hidden>
@@ -935,7 +923,507 @@
          soruluyor: sunumdaki hâliyle 2/3/7 ile çakışıyordu — harfi
          sordurmak hem tek doğru cevap bırakıyor hem de asıl öğretilecek
          şeyi öğretiyor: mecrur yapan şey o harftir. -->
-    <section class="tc-bolum" data-bolum="tahlil" hidden>
+    <!-- GİRİŞ ile TAHLİL BİRLEŞTİ: iki ayrı başlık aynı işi yapıyordu —
+         önce keşif (aynı kelimenin üç sonu), sonra cümle tahlili. Artık
+         tek başlık: "Tahlil". Sıra: hikâye → keşif → cümle tahlili. -->
+    <section class="tc-bolum" data-bolum="tahlil" hidden data-th="hik">
+      <!-- TAHLİL ÜÇE AYRILDI: her biri kendi sekmesi, hepsi TAM SAYFA.
+           Eskiden hikâye + keşif + cümleler alt alta tek sayfadaydı;
+           cümleye ulaşmak için aşağı kaydırmak gerekiyordu. Artık
+           şeritteki alt pillerden (Başlarken · İsmin sonları · 1..5)
+           doğrudan açılıyor; görünen her zaman bir tanesi. -->
+      <div class="th-gorunum" data-g="hik">
+      <!-- ================= HİKÂYE: NOKTASIZ HAREKESİZ BİR MUSHAF =================
+           Dersin başında DURAN SORU: "i'râb niye var?" Kuru bir tanım
+           yerine olayın kendisi anlatılıyor — Ebü'l-Esved'in kızının tek
+           cümlesi, Kur'ân'ın harekelenmesi ve noktalanması. Beş adım,
+           her adımda kendi çizimi; ileri/geri ile dolaşılır.
+           Anlatı kısmı RİVAYETTİR, teknik kısım (nakt-ı i'râb, i'câm,
+           Halîl'in işaretleri) tarihtir; metinde ikisi ayrı söyleniyor. -->
+      <section class="tc-hik" id="tcHik" data-h="1" aria-label="Hikâye: harekenin doğuşu">
+        <div class="hik-bas">
+          <span class="hik-etiket">Başlarken</span>
+          <h2 class="hik-ad">Bir harekenin değiştirdiği cümle</h2>
+        </div>
+
+        <div class="hik-sahne">
+          <!-- 1 · GÖKYÜZÜ: aynı iskelet, iki okuyuş -->
+          <article class="hik-a" data-a="1">
+            <div class="hik-gorsel">
+              <!-- 1 · GECE GÖĞÜ — baba ile kızı.
+                   Figürler YÜZSÜZ çizildi: eğitim malzemesinde yerleşik,
+                   saygılı olan biçim bu. Kız gökyüzünü işaret ediyor,
+                   yıldızlar kırpışıyor, bir yıldız kayıyor. -->
+              <svg viewBox="0 0 220 170" class="hik-svg hik-gok" aria-hidden="true">
+                <defs>
+                  <radialGradient id="hikGokG" cx="50%" cy="12%" r="105%">
+                    <stop offset="0%" stop-color="#33456F"/>
+                    <stop offset="55%" stop-color="#1B2647"/>
+                    <stop offset="100%" stop-color="#0C1327"/>
+                  </radialGradient>
+                  <clipPath id="hikGokK"><rect x="0" y="0" width="220" height="170" rx="14"/></clipPath>
+                </defs>
+                <g clip-path="url(#hikGokK)">
+                  <rect x="0" y="0" width="220" height="170" fill="url(#hikGokG)"/>
+                  <!-- hilal -->
+                  <path d="M182 24a19 19 0 1 0 13 28 15 15 0 1 1-13-28z" fill="#F7E3A1"/>
+                  <!-- yıldızlar -->
+                  <g class="hik-yildiz" fill="#FFF6D8">
+                    <circle cx="28" cy="30" r="2.1"/><circle cx="62" cy="18" r="1.5"/>
+                    <circle cx="97" cy="36" r="2.5"/><circle cx="46" cy="58" r="1.7"/>
+                    <circle cx="124" cy="20" r="1.4"/><circle cx="18" cy="76" r="1.8"/>
+                    <circle cx="86" cy="68" r="1.4"/><circle cx="146" cy="60" r="2"/>
+                    <circle cx="204" cy="82" r="1.6"/><circle cx="112" cy="52" r="1.2"/>
+                    <circle cx="160" cy="34" r="1.3"/><circle cx="70" cy="44" r="1.1"/>
+                  </g>
+                  <!-- kayan yıldız -->
+                  <g transform="translate(150 14)"><g class="hik-kayan">
+                    <line x1="0" y1="0" x2="26" y2="13" stroke="#FFF6D8" stroke-width="1.8"
+                          stroke-linecap="round" opacity=".85"/>
+                    <circle cx="26" cy="13" r="2" fill="#FFFDF2"/>
+                  </g></g>
+                  <!-- ufuk: kum tepesi + hurma ağaçları -->
+                  <path d="M0 132 Q46 118 96 130 Q150 142 220 124 L220 170 L0 170 Z" fill="#141C33"/>
+                  <g fill="#0B1024" class="hik-hurma">
+                    <rect x="30" y="96" width="3" height="38" rx="1.5"/>
+                    <path d="M31.5 98q-13-7-19 1 9-2 19 4zM31.5 98q13-7 19 1-9-2-19 4zM31.5 96q-4-13 3-17-1 8-1 17zM31.5 97q9-10 16-6-8 2-16 8z"/>
+                    <rect x="196" y="104" width="2.6" height="30" rx="1.3"/>
+                    <path d="M197 106q-11-6-16 1 8-2 16 3zM197 106q11-6 16 1-8-2-16 3zM197 104q-3-11 3-14-1 6-1 14z"/>
+                  </g>
+                  <!-- BABA (yüzsüz): cübbe, sarık, sakal -->
+                  <g transform="translate(78 96)"><g class="hik-baba">
+                    <ellipse cx="0" cy="42" rx="16" ry="3.2" fill="#000" opacity=".28"/>
+                    <path d="M-12 42 L-8.5 8 Q0 4 8.5 8 L12 42 Z" fill="#3B5F86"/>
+                    <path d="M-8.5 10 L-13.5 28 L-9.5 29 L-5.5 13 Z" fill="#33547A"/>
+                    <path d="M8.5 10 L13.5 28 L9.5 29 L5.5 13 Z" fill="#33547A"/>
+                    <rect x="-2.6" y="-3" width="5.2" height="8" fill="#D2A177"/>
+                    <circle cx="0" cy="-8" r="7.4" fill="#E6BC92"/>
+                    <path d="M-5.6 -6 Q0 4 5.6 -6 Q0 0 -5.6 -6 Z" fill="#4E3B2C"/>
+                    <path d="M-8.4 -11 Q0 -21 8.4 -11 Q0 -16 -8.4 -11 Z" fill="#F4EFE4"/>
+                    <path d="M-8.8 -10.4 Q0 -15.4 8.8 -10.4 Q0 -6.6 -8.8 -10.4 Z" fill="#E4DCC8"/>
+                  </g></g>
+                  <!-- KIZ (yüzsüz): başörtüsü + uzun elbise, kolu göğe uzanıyor -->
+                  <g transform="translate(120 106)" class="hik-kiz">
+                    <ellipse cx="0" cy="32" rx="12" ry="2.6" fill="#000" opacity=".28"/>
+                    <path d="M-9.5 32 L-6.5 6 Q0 2 6.5 6 L9.5 32 Z" fill="#7E4C79"/>
+                    <path d="M-8.4 -4 Q0 -14 8.4 -4 L10.4 12 Q0 8 -10.4 12 Z" fill="#B96E9E"/>
+                    <circle cx="0" cy="-4" r="6" fill="#EEC29D"/>
+                    <path d="M-8.4 -4 Q0 -14 8.4 -4 Q0 -8.5 -8.4 -4 Z" fill="#B96E9E"/>
+                    <!-- işaret eden kol -->
+                    <g class="kiz-kol">
+                      <path d="M5 6 L15 -12 L18.4 -10.2 L8.6 8 Z" fill="#B96E9E"/>
+                      <circle cx="17" cy="-12.5" r="2.6" fill="#EEC29D"/>
+                    </g>
+                  </g>
+                  <!-- konuşma halkası -->
+                  <g class="hik-ses" fill="none" stroke="#FFF6D8" stroke-width="1.4" opacity=".55">
+                    <circle cx="120" cy="96" r="12"/><circle cx="120" cy="96" r="20"/>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <div class="hik-metin">
+              <p class="hik-p"><b>Rivayet edilir ki</b> Ebü'l-Esved ed-Düelî'nin kızı bir akşam
+                göğe bakar ve babasına şöyle der:</p>
+              <div class="hik-cumle">
+                <span class="hc-ar hc-1" dir="rtl">مَا أَجْمَلُ السَّمَاءِ</span>
+                <span class="hc-ar hc-2" dir="rtl">مَا أَجْمَلَ السَّمَاءَ</span>
+              </div>
+              <div class="hik-oku">
+                <span class="ho ho-1"><b>Soru olur:</b> “Gökyüzünün <i>en güzel yanı</i> nedir?”</span>
+                <span class="ho ho-2"><b>Hayret olur:</b> “Gökyüzü <i>ne güzel!</i>”</span>
+              </div>
+              <p class="hik-p hik-kucuk">Babası soru sanıp cevap verir:
+                <span dir="rtl" class="tc-ar-ic">نُجُومُهَا</span> — “Yıldızları.”
+                Kız: “Ben soru sormadım, <b>hayret ettim</b>.”
+                Baba: “Öyleyse sonunu değiştir.”</p>
+            </div>
+          </article>
+
+          <!-- 2 · NAHVİN DOĞUŞU -->
+          <article class="hik-a" data-a="2">
+            <div class="hik-gorsel">
+              <!-- 2 · NAHVİN DOĞUŞU — Ebü'l-Esved eline geçen sayfayı okuyor.
+                   Hz. Ali ÇİZİLMEDİ: sahabe/ehl-i beyt tasviri yerine yalnız
+                   verilen sayfa gösteriliyor. Sayfa açılıyor, üç kelime türü
+                   sırayla yükseliyor. -->
+              <svg viewBox="0 0 220 170" class="hik-svg hik-tomar" aria-hidden="true">
+                <defs><clipPath id="hikTmrK"><rect x="0" y="0" width="220" height="170" rx="14"/></clipPath></defs>
+                <g clip-path="url(#hikTmrK)">
+                  <rect x="0" y="0" width="220" height="170" fill="#F6EEDD"/>
+                  <!-- duvar kemeri: mekân duygusu -->
+                  <path d="M40 108V56a30 30 0 0 1 60 0v52z" fill="#EFE4CE"/>
+                  <path d="M40 108V56a30 30 0 0 1 60 0v52" fill="none" stroke="#DCCCA9" stroke-width="2"/>
+                  <!-- yerdeki kilim -->
+                  <path d="M8 150h204l-14 12H22z" fill="#C4A277"/>
+                  <path d="M8 150h204" stroke="#A9855A" stroke-width="2"/>
+                  <!-- yükselen kelime türleri -->
+                  <g class="tmr-uc" fill="#9C3B0C" font-family="serif" font-size="13" text-anchor="middle">
+                    <text class="tu tu-1" x="150" y="52">اِسْم</text>
+                    <text class="tu tu-2" x="176" y="72">فِعْل</text>
+                    <text class="tu tu-3" x="150" y="92">حَرْف</text>
+                  </g>
+                  <!-- OKUYAN FİGÜR (yüzsüz) -->
+                  <g transform="translate(70 74)">
+                    <ellipse cx="0" cy="66" rx="20" ry="4" fill="#000" opacity=".12"/>
+                    <path d="M-15 66 L-10 16 Q0 11 10 16 L15 66 Z" fill="#4E7A5E"/>
+                    <path d="M-10 18 L-17 40 L-12 42 L-6 22 Z" fill="#456C53"/>
+                    <path d="M10 18 L17 40 L12 42 L6 22 Z" fill="#456C53"/>
+                    <rect x="-2.8" y="2" width="5.6" height="9" fill="#D2A177"/>
+                    <circle cx="0" cy="-4" r="8" fill="#E6BC92"/>
+                    <path d="M-6 -2 Q0 9 6 -2 Q0 4 -6 -2 Z" fill="#4E3B2C"/>
+                    <path d="M-9 -7 Q0 -18 9 -7 Q0 -12.5 -9 -7 Z" fill="#F4EFE4"/>
+                    <path d="M-9.4 -6.4 Q0 -11.6 9.4 -6.4 Q0 -2.4 -9.4 -6.4 Z" fill="#E4DCC8"/>
+                  </g>
+                  <!-- ELİNDEKİ AÇILAN SAYFA -->
+                  <g class="tmr" transform="translate(0 6)">
+                    <rect class="tmr-kagit" x="86" y="94" width="104" height="56" rx="5"
+                          fill="#FFFBF0" stroke="#D8C7A4" stroke-width="2"/>
+                    <g class="tmr-satir" stroke="#C9B896" stroke-width="2.8" stroke-linecap="round">
+                      <line x1="98" y1="110" x2="178" y2="110"/>
+                      <line x1="112" y1="124" x2="178" y2="124"/>
+                      <line x1="98" y1="138" x2="162" y2="138"/>
+                    </g>
+                    <rect x="80" y="90" width="10" height="64" rx="5" fill="#B5895A"/>
+                    <rect x="186" y="90" width="10" height="64" rx="5" fill="#B5895A"/>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <div class="hik-metin">
+              <p class="hik-p">Ebü'l-Esved bu karışıklığı <b>Hz. Ali</b>'ye götürür. Ali ona bir
+                sayfa verir; sayfada kelimenin üçe ayrıldığı yazılıdır:</p>
+              <div class="hik-uclu">
+                <span class="hu hu-1"><span dir="rtl">اِسْم</span><small>isim</small></span>
+                <span class="hu hu-2"><span dir="rtl">فِعْل</span><small>fiil</small></span>
+                <span class="hu hu-3"><span dir="rtl">حَرْف</span><small>harf</small></span>
+              </div>
+              <p class="hik-p">Ve şunu söyler: <b dir="rtl" class="tc-ar-ic">اُنْحُ هَذَا النَّحْوَ</b>
+                — “<b>bu yolu izle</b>”. Dilin kurallarını toplayan ilme
+                <b>nahiv</b> denmesi buradan gelir.</p>
+            </div>
+          </article>
+
+          <!-- 3 · KIRMIZI NOKTA = HAREKE -->
+          <article class="hik-a" data-a="3">
+            <div class="hik-gorsel">
+              <!-- 3 · KÂTİP — solda Ebü'l-Esved söylüyor, sağda kâtip
+                   rahledeki sayfaya kırmızı mürekkeple noktalıyor.
+                   Kalem KOLUN İÇİNDE: el hareket edince kalem de gider,
+                   havada ayrı durmaz. -->
+              <svg viewBox="0 0 220 170" class="hik-svg hik-kalem" aria-hidden="true">
+                <defs><clipPath id="hikKlmK"><rect x="0" y="0" width="220" height="170" rx="14"/></clipPath></defs>
+                <g clip-path="url(#hikKlmK)">
+                  <rect x="0" y="0" width="220" height="170" fill="#FBF4F4"/>
+                  <!-- zemin çizgisi -->
+                  <path d="M0 152h220v18H0z" fill="#F2E6E6"/>
+                  <!-- asılı kandil -->
+                  <g class="klm-kandil">
+                    <circle cx="190" cy="30" r="24" fill="#FFE9B8" opacity=".38"/>
+                    <line x1="190" y1="0" x2="190" y2="16" stroke="#8C6A3F" stroke-width="2"/>
+                    <path d="M184 16h12l-3 7h-6z" fill="#8C6A3F"/>
+                    <path d="M190 23c7 0 11 5 11 10s-5 8-11 8-11-3-11-8 4-10 11-10z" fill="#C79A57"/>
+                    <path d="M190 19c2 3 3 5 0 8-3-3-2-5 0-8z" fill="#FFC24D"/>
+                  </g>
+
+                  <!-- SÖYLEYEN (ayakta, yüzsüz) -->
+                  <g transform="translate(36 44)">
+                    <ellipse cx="0" cy="82" rx="17" ry="3.4" fill="#000" opacity=".1"/>
+                    <path d="M-13 82 L-9 18 Q0 13 9 18 L13 82 Z" fill="#8A5A3C"/>
+                    <path d="M9 20 L24 32 L21 36 L6 24 Z" fill="#7B4F33"/>
+                    <path d="M-9 20 L-15 46 L-11 47 L-6 24 Z" fill="#7B4F33"/>
+                    <circle cx="25" cy="34" r="3.2" fill="#E6BC92"/>
+                    <rect x="-2.6" y="4" width="5.2" height="9" fill="#D2A177"/>
+                    <circle cx="0" cy="-2" r="7.6" fill="#E6BC92"/>
+                    <path d="M-5.8 0 Q0 10 5.8 0 Q0 5 -5.8 0 Z" fill="#4E3B2C"/>
+                    <path d="M-8.6 -5 Q0 -15.4 8.6 -5 Q0 -10.4 -8.6 -5 Z" fill="#F4EFE4"/>
+                    <path d="M-9 -4.4 Q0 -9.4 9 -4.4 Q0 -0.6 -9 -4.4 Z" fill="#E4DCC8"/>
+                  </g>
+
+                  <!-- HOKKA -->
+                  <g transform="translate(30 132)">
+                    <ellipse cx="0" cy="22" rx="19" ry="4" fill="#000" opacity=".1"/>
+                    <path d="M-16 20h32a6 6 0 0 0 6-6V4h-44v10a6 6 0 0 0 6 6z" fill="#3C2F2F"/>
+                    <ellipse cx="0" cy="4" rx="22" ry="6" fill="#C00000"/>
+                  </g>
+
+                  <!-- KÂTİP (oturuyor, yüzsüz) -->
+                  <g transform="translate(162 96)">
+                    <ellipse cx="0" cy="50" rx="30" ry="5" fill="#000" opacity=".1"/>
+                    <path d="M-26 50 Q-22 18 0 15 Q22 18 26 50 Z" fill="#5B6E8C"/>
+                    <rect x="-2.6" y="3" width="5.2" height="9" fill="#D2A177"/>
+                    <circle cx="0" cy="-3" r="7.4" fill="#E6BC92"/>
+                    <path d="M-5.6 -1 Q0 8 5.6 -1 Q0 3.6 -5.6 -1 Z" fill="#4E3B2C"/>
+                    <path d="M-8.4 -6 Q0 -16.4 8.4 -6 Q0 -11.4 -8.4 -6 Z" fill="#F4EFE4"/>
+                    <path d="M-8.8 -5.4 Q0 -10.4 8.8 -5.4 Q0 -6.6 -8.8 -5.4 Z" fill="#E4DCC8"/>
+                  </g>
+
+                  <!-- RAHLE + SAYFA -->
+                  <g transform="translate(104 134)">
+                    <path d="M-8 16 L8 16 L13 30 L-13 30 Z" fill="#8C6A3F"/>
+                    <g transform="rotate(-8)">
+                      <rect x="-42" y="-16" width="84" height="32" rx="3"
+                            fill="#FFFDF6" stroke="#E0D2B4" stroke-width="2"/>
+                      <g stroke="#B9A88A" stroke-width="2.4" stroke-linecap="round">
+                        <line x1="-30" y1="-4" x2="30" y2="-4"/>
+                        <line x1="-18" y1="7"  x2="30" y2="7"/>
+                      </g>
+                      <g fill="#C00000">
+                        <circle class="klm-nk klm-n1" cx="-20" cy="-10" r="2.8"/>
+                        <circle class="klm-nk klm-n2" cx="0"   cy="1"   r="2.8"/>
+                        <circle class="klm-nk klm-n3" cx="20"  cy="-10" r="2.8"/>
+                      </g>
+                    </g>
+                  </g>
+
+                  <!-- YAZAN KOL + KAMIŞ KALEM (kâtibin omzundan sayfaya) -->
+                  <g transform="translate(162 96)">
+                    <g class="klm-kol">
+                      <path d="M-14 20 L-42 38 L-38 44 L-10 26 Z" fill="#51637E"/>
+                      <path d="M-46 44 L-26 8 L-20 11 L-40 47 Z" fill="#D9A15B"/>
+                      <path d="M-46 44 L-40 47 L-43 51 Z" fill="#3C2F2F"/>
+                      <circle cx="-42" cy="41" r="3.4" fill="#E6BC92"/>
+                    </g>
+                  </g>
+                  <!-- hokkadan damlayan kırmızı -->
+                  <circle class="klm-damla" cx="118" cy="122" r="4" fill="#C00000"/>
+                </g>
+              </svg>
+            </div>
+            <div class="hik-metin">
+              <p class="hik-p">Ebü'l-Esved bir kâtip tutar ve ona <b>tek bir kural</b> öğretir —
+                metin <b>siyah</b>, işaret <b>kırmızı</b> mürekkeple:</p>
+              <div class="hik-nokta">
+                <!-- Noktalar SON HARFE bağlı: kelime "كتاب" yazılıp son ب
+                     kendi kabına alındı. Elif zaten sonrasına bağlanmadığı
+                     için bu bölme yazıyı bozmuyor; nokta da harften
+                     kaymıyor, ne kadar büyütülse yerinde duruyor. -->
+                <div class="hn-kelime" dir="rtl">
+                  <span class="hn-govde">كتا<span class="hn-son">ب<span
+                    class="hn-dot hn-ust"></span><span
+                    class="hn-dot hn-alt"></span><span
+                    class="hn-dot hn-on"></span></span></span>
+                </div>
+                <ul class="hn-liste">
+                  <li class="hn-l1"><b>Üstünde</b> bir nokta → ötre <i>(merfu)</i></li>
+                  <li class="hn-l2"><b>Altında</b> bir nokta → esre <i>(mecrur)</i></li>
+                  <li class="hn-l3"><b>Önünde</b> bir nokta → üstün <i>(mansub)</i></li>
+                  <li class="hn-l4"><b>İki nokta</b> → tenvin</li>
+                </ul>
+              </div>
+              <p class="hik-p hik-kucuk">Bu işarete <b>nakt-ı i'râb</b> denir: harfin kendisini
+                değil, <b>sonundaki hâli</b> gösterir.</p>
+            </div>
+          </article>
+
+          <!-- 4 · SİYAH NOKTA = HARFİ AYIRAN NOKTA -->
+          <article class="hik-a" data-a="4">
+            <div class="hik-gorsel">
+              <!-- 4 · İ'CÂM — aynı iskelete bakan iki âlim; büyüteç sayfada
+                   geziyor, noktalar sırayla yerine oturuyor. -->
+              <svg viewBox="0 0 220 170" class="hik-svg hik-buyut" aria-hidden="true">
+                <defs><clipPath id="hikBytK"><rect x="0" y="0" width="220" height="170" rx="14"/></clipPath></defs>
+                <g clip-path="url(#hikBytK)">
+                  <rect x="0" y="0" width="220" height="170" fill="#F2F5FA"/>
+                  <!-- raf: kitaplar -->
+                  <g>
+                    <rect x="8" y="18" width="72" height="6" rx="2" fill="#B49B76"/>
+                    <rect x="12" y="-2" width="9" height="20" rx="2" fill="#7C5E8C"/>
+                    <rect x="23" y="2"  width="8" height="16" rx="2" fill="#4E7A5E"/>
+                    <rect x="33" y="-4" width="10" height="22" rx="2" fill="#B5533F"/>
+                    <rect x="45" y="1"  width="8" height="17" rx="2" fill="#3B5F86"/>
+                    <rect x="55" y="-3" width="9" height="21" rx="2" fill="#8C6A3F"/>
+                  </g>
+                  <!-- İKİ ÂLİM (yüzsüz), sayfaya eğilmiş -->
+                  <g transform="translate(40 74)">
+                    <ellipse cx="0" cy="66" rx="17" ry="3.4" fill="#000" opacity=".1"/>
+                    <path d="M-13 66 L-9 16 Q0 11 9 16 L13 66 Z" fill="#3B5F86"/>
+                    <path d="M9 18 L19 30 L16 34 L6 22 Z" fill="#33547A"/>
+                    <rect x="-2.6" y="2" width="5.2" height="8" fill="#D2A177"/>
+                    <circle cx="0" cy="-3" r="7.2" fill="#E6BC92"/>
+                    <path d="M-5.6 -1 Q0 8 5.6 -1 Q0 3.6 -5.6 -1 Z" fill="#4E3B2C"/>
+                    <path d="M-8.2 -6 Q0 -16 8.2 -6 Q0 -11 -8.2 -6 Z" fill="#F4EFE4"/>
+                    <path d="M-8.6 -5.4 Q0 -10.2 8.6 -5.4 Q0 -1.8 -8.6 -5.4 Z" fill="#E4DCC8"/>
+                  </g>
+                  <g transform="translate(186 80)">
+                    <ellipse cx="0" cy="60" rx="16" ry="3.2" fill="#000" opacity=".1"/>
+                    <path d="M-12 60 L-8.4 14 Q0 9 8.4 14 L12 60 Z" fill="#4E7A5E"/>
+                    <path d="M-8.4 16 L-19 28 L-16 32 L-5.4 20 Z" fill="#456C53"/>
+                    <rect x="-2.4" y="0" width="4.8" height="8" fill="#D2A177"/>
+                    <circle cx="0" cy="-5" r="6.8" fill="#E6BC92"/>
+                    <path d="M-5.2 -3 Q0 5.6 5.2 -3 Q0 1.2 -5.2 -3 Z" fill="#4E3B2C"/>
+                    <path d="M-7.8 -8 Q0 -17.4 7.8 -8 Q0 -12.8 -7.8 -8 Z" fill="#F4EFE4"/>
+                  </g>
+                  <!-- SAYFA: aynı iskelet üç kez -->
+                  <g transform="translate(110 96)">
+                    <rect x="-52" y="-30" width="104" height="66" rx="4"
+                          fill="#FFFDF6" stroke="#DCE3EC" stroke-width="2"/>
+                    <g font-family="serif" font-size="26" text-anchor="middle" fill="#1E2A38">
+                      <text x="-30" y="6">ٮ</text><text x="0" y="6">ٮ</text><text x="30" y="6">ٮ</text>
+                    </g>
+                    <!-- noktalar sırayla oturur -->
+                    <g fill="#111827">
+                      <circle class="byt-n byt-n1" cx="-30" cy="14" r="2.8"/>
+                      <circle class="byt-n byt-n2" cx="-4"  cy="-12" r="2.8"/>
+                      <circle class="byt-n byt-n2" cx="4"   cy="-12" r="2.8"/>
+                      <circle class="byt-n byt-n3" cx="24"  cy="-12" r="2.8"/>
+                      <circle class="byt-n byt-n3" cx="30"  cy="-18" r="2.8"/>
+                      <circle class="byt-n byt-n3" cx="36"  cy="-12" r="2.8"/>
+                    </g>
+                    <g stroke="#C7D0DC" stroke-width="2" stroke-linecap="round">
+                      <line x1="-40" y1="24" x2="40" y2="24"/>
+                    </g>
+                  </g>
+                  <!-- BÜYÜTEÇ: sayfa üstünde gezinir -->
+                  <g class="byt">
+                    <circle cx="70" cy="92" r="28" fill="#FFFFFF" opacity=".55"/>
+                    <circle cx="70" cy="92" r="28" fill="none" stroke="#41505F" stroke-width="4.5"/>
+                    <circle cx="70" cy="92" r="28" fill="#8FB4E8" opacity=".16"/>
+                    <rect x="88" y="110" width="10" height="32" rx="5" fill="#41505F"
+                          transform="rotate(-42 93 126)"/>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <div class="hik-metin">
+              <p class="hik-p">Bir sorun daha vardı: bazı harflerin <b>iskeleti aynıydı</b>.
+                Aynı çizgi üç harfe birden bakıyordu.</p>
+              <div class="hik-iskelet">
+                <span class="hi hi-0"><span dir="rtl">ٮ</span><small>iskelet</small></span>
+                <span class="hi-ok" aria-hidden="true">→</span>
+                <span class="hi hi-1"><span dir="rtl">بـ</span><small>bir nokta altta</small></span>
+                <span class="hi hi-2"><span dir="rtl">تـ</span><small>iki nokta üstte</small></span>
+                <span class="hi hi-3"><span dir="rtl">ثـ</span><small>üç nokta üstte</small></span>
+              </div>
+              <p class="hik-p"><b>Nasr b. Âsım</b> ile <b>Yahyâ b. Ya'mer</b>, Haccâc'ın isteğiyle
+                bu noktaları koydu. Buna <b>i'câm</b> denir: harfi harften ayırır.
+                <span class="hik-ayrim">Kırmızı nokta <b>hâli</b> söyler, siyah nokta
+                <b>harfi</b> söyler — ikisi ayrı iştir.</span></p>
+            </div>
+          </article>
+
+          <!-- 5 · BUGÜNKÜ HAREKELER -->
+          <article class="hik-a" data-a="5">
+            <div class="hik-gorsel">
+              <!-- 5 · HALÎL B. AHMED — kırmızı noktalar sönüp yerlerini
+                   bugünkü işaretlere bırakıyor; masada eski ve yeni sayfa
+                   yan yana duruyor. -->
+              <svg viewBox="0 0 220 170" class="hik-svg hik-donus" aria-hidden="true">
+                <defs><clipPath id="hikDnsK"><rect x="0" y="0" width="220" height="170" rx="14"/></clipPath></defs>
+                <g clip-path="url(#hikDnsK)">
+                  <rect x="0" y="0" width="220" height="170" fill="#F3F9F5"/>
+                  <!-- arkada dönen halka: "aktarım" -->
+                  <circle class="dns-halka" cx="110" cy="70" r="52" fill="none"
+                          stroke="#12A05F" stroke-width="3.5" stroke-dasharray="9 11" opacity=".4"/>
+                  <!-- ESKİ SAYFA: kırmızı noktalar -->
+                  <g transform="translate(58 62) rotate(-6)">
+                    <rect x="-30" y="-26" width="60" height="52" rx="4"
+                          fill="#FFFDF6" stroke="#E4D9BE" stroke-width="2"/>
+                    <g stroke="#D8CBAC" stroke-width="2" stroke-linecap="round">
+                      <line x1="-20" y1="-8" x2="20" y2="-8"/>
+                      <line x1="-20" y1="4"  x2="14" y2="4"/>
+                      <line x1="-20" y1="16" x2="20" y2="16"/>
+                    </g>
+                    <g class="dns-eski" fill="#C00000">
+                      <circle cx="-8" cy="-14" r="3"/><circle cx="10" cy="10" r="3"/>
+                      <circle cx="-14" cy="10" r="3"/><circle cx="16" cy="-14" r="3"/>
+                    </g>
+                  </g>
+                  <!-- OK: eskiden yeniye -->
+                  <g class="dns-ok" stroke="#12A05F" stroke-width="4" fill="none" stroke-linecap="round">
+                    <path d="M96 62h22" /><path d="M112 55l8 7-8 7"/>
+                  </g>
+                  <!-- YENİ SAYFA: harekeler -->
+                  <g transform="translate(164 62) rotate(5)">
+                    <rect x="-30" y="-26" width="60" height="52" rx="4"
+                          fill="#FFFFFF" stroke="#C6E7D5" stroke-width="2"/>
+                    <g stroke="#D8CBAC" stroke-width="2" stroke-linecap="round">
+                      <line x1="-20" y1="-8" x2="20" y2="-8"/>
+                      <line x1="-20" y1="4"  x2="14" y2="4"/>
+                      <line x1="-20" y1="16" x2="20" y2="16"/>
+                    </g>
+                    <g class="dns-yeni" stroke="#12A05F" stroke-width="3.4" fill="none" stroke-linecap="round">
+                      <line x1="-13" y1="-13" x2="-3" y2="-18"/>
+                      <line x1="6"   y1="-13" x2="16" y2="-18"/>
+                      <line x1="-14" y1="14"  x2="-4" y2="9"/>
+                      <circle cx="12" cy="10" r="3.6"/>
+                    </g>
+                  </g>
+                  <!-- HALÎL (yüzsüz), masada -->
+                  <g transform="translate(110 108)">
+                    <ellipse cx="0" cy="52" rx="26" ry="4.4" fill="#000" opacity=".1"/>
+                    <path d="M-22 52 Q-18 22 0 20 Q18 22 22 52 Z" fill="#2F7B57"/>
+                    <path d="M-18 26 L-30 38 L-27 42 L-15 31 Z" fill="#2A6E4E"/>
+                    <path d="M18 26 L30 38 L27 42 L15 31 Z" fill="#2A6E4E"/>
+                    <circle cx="-31" cy="40" r="3" fill="#E6BC92"/>
+                    <circle cx="31" cy="40" r="3" fill="#E6BC92"/>
+                    <rect x="-2.6" y="8" width="5.2" height="9" fill="#D2A177"/>
+                    <circle cx="0" cy="2" r="7.6" fill="#E6BC92"/>
+                    <path d="M-5.8 4 Q0 14 5.8 4 Q0 9 -5.8 4 Z" fill="#4E3B2C"/>
+                    <path d="M-8.6 -1 Q0 -11.4 8.6 -1 Q0 -6.4 -8.6 -1 Z" fill="#F4EFE4"/>
+                    <path d="M-9 -0.4 Q0 -5.4 9 -0.4 Q0 3.4 -9 -0.4 Z" fill="#E4DCC8"/>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <div class="hik-metin">
+              <p class="hik-p">Kırmızı noktalar yıllarca iş gördü ama sayfayı kalabalıklaştırdı.
+                <b>Halîl b. Ahmed el-Ferâhîdî</b>, noktaların yerine bugün kullandığımız
+                <b>işaretleri</b> koydu — her biri bir <b>harften</b> türetildi:</p>
+              <div class="hik-turet">
+                <span class="ht"><b dir="rtl">ـَ</b> üstün <small>elif’ten</small></span>
+                <span class="ht"><b dir="rtl">ـِ</b> esre <small>yâ’dan</small></span>
+                <span class="ht"><b dir="rtl">ـُ</b> ötre <small>vav’dan</small></span>
+                <span class="ht"><b dir="rtl">ـّ</b> şedde <small>ش’den (شَدِيد)</small></span>
+                <span class="ht"><b dir="rtl">ـْ</b> sükûn <small>خ’den (خَفِيف)</small></span>
+              </div>
+              <p class="hik-p hik-kapanis">İşte <b>i'râb</b> bir süs değil: aynı iskeletin
+                hangi anlamı taşıdığını söyleyen şey. Şimdi o sonlara bakalım.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="hik-kum">
+          <button type="button" class="hik-tus" id="tcHikGeri" aria-label="Önceki adım">&#10094;</button>
+          <div class="hik-puan" id="tcHikPuan" role="tablist" aria-label="Adımlar"></div>
+          <button type="button" class="hik-tus hik-ileri" id="tcHikIleri" aria-label="Sonraki adım">&#10095;</button>
+          <button type="button" class="hik-atla" id="tcHikAtla">Sonlara geç &#10095;</button>
+        </div>
+      </section>
+
+      </div>
+
+      <div class="th-gorunum" data-g="kesif">
+      <!-- SONLAR — İSİM ile FİİL YAN YANA.
+           Eskiden iki ayrı adımdı ("İsmin sonları" → "Fiilin sonları");
+           fiile geçilince sekme adı yanlış kalıyordu. Asıl öğretilecek
+           şey zaten ikisinin FARKI: ilk iki hâl aynı (ötre, üstün),
+           ÜÇÜNCÜ hâlde yollar ayrılıyor — isimde mecrur (esre),
+           fiilde meczum (sükûn). O yüzden tek ekranda, iki sütun.
+           Satırlar adım adım açılır; üçüncü satır vurgulu gelir. -->
+      <div class="tc-kesif-sar">
+      <div class="ks-kar" id="tcKesif" data-yak="i">
+        <!-- Başlıklar artık TUŞ: basınca o yan yakınlaşır (üç örneği de
+             tam genişlikte gösterir), ikinci basışta karşılaştırmaya
+             döner. Önce kendi içinde, sonra karşılıklı bakılsın diye. -->
+        <div class="ks-bas">
+          <button type="button" class="ks-b ks-b-i" id="tcKesifBasI" aria-pressed="true"
+                  title="İsmi yakınlaştır"><span class="ar" dir="rtl">اِسْم</span><b>İSİM</b></button>
+          <button type="button" class="ks-b ks-b-f" id="tcKesifBasF" aria-pressed="false"
+                  title="Fiili yakınlaştır"><span class="ar" dir="rtl">فِعْل</span><b>FİİL</b></button>
+        </div>
+        <div class="ks-govde" id="tcKesifGovde"></div>
+        <p class="ks-not" id="tcKesifNot"></p>
+        <!-- ALT KUMANDA SATIRI KALKTI. "İsim/Fiil tablosunu aç" tuşları
+             gereksizdi (tablolara İ'râb başlığından gidiliyor), ileri/geri
+             de öyle: gezinmenin tamamı başlıkların kendisinde. Boşalan
+             yer punto olarak geri verildi. Klavye okları çalışmayı
+             sürdürüyor — tahta kumandası oradan geliyor. -->
+      </div>
+          </div>
+      </div>
+
+      <div class="th-gorunum" data-g="cumle">
       <p class="th-ust" id="thUst"></p>
       <!-- Arapça cümle ve Türkçesi AYNI kutuda: karşılıklı kelimeler aynı
            rengi alınca göz ikisini tek bakışta eşleştiriyor. Ayrı kutularda
@@ -947,10 +1435,10 @@
       <div class="th-govde">
         <div class="th-sag">
           <p class="th-soru" id="thSoru"></p>
-          <!-- Bulunanlar TEK SATIRDA birikiyor: "Olay — gitti · Özne — öğretmen".
-               Her doğru cevapta koca bir yeşil kutu açmak, ekranın yarısını
-               tek bir onay için harcıyordu. -->
-          <p class="th-bulunan" id="thBulunan" hidden></p>
+          <!-- ALTTAKİ "bulunanlar" SATIRI KALKTI ("Olay — gitti · Mekân — okul").
+               Doğru cevapta o kategorinin bütün kelimeleri zaten renkleniyor
+               ve öge adı kelimenin ALTINA yazılıyor; aynı bilgiyi bir de
+               listelemek ekranı boşuna dolduruyordu. -->
           <div class="th-not" id="thNot" hidden></div>
           <div class="th-alt">
             <button type="button" class="th-dugme" id="thHal" hidden>Hâlleri göster &#10095;</button>
@@ -961,6 +1449,7 @@
         <!-- Sekiz soruluk liste EN ALTTA ve İKİ SÜTUN: yöntemin tamamı
              tek bakışta görünsün ama cümlenin yerini daraltmasın. -->
         <div class="th-liste" id="thListe" role="list"></div>
+      </div>
       </div>
     </section>
 
@@ -1161,7 +1650,7 @@
   </div>
 </aside>
 
-<script src="tamlamavecumleler.js?v=20260830d"></script>
+<script src="tamlamavecumleler.js?v=20260831f"></script>
 <script src="sistem/geri.js?v=20260808a"></script>
 <!-- Görev/ilerleme köprüsü: Test turu bitince 0-100 puan buluta yazılır. -->
 <script src="sistem/gorevkopru.js?v=7"></script>

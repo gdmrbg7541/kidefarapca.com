@@ -27,7 +27,7 @@
    TUM MUHADESE DOSYALARI  muhadese/  klasorunde, ders verileri  muhadese/veri/ icinde. */
 (function(){
   var KOK = 'muhadese/';           /* klasor yolu tek yerden yonetilsin */
-  var S   = '?v=20260828u';        /* onbellek surumu */
+  var S   = '?v=20260829a';        /* onbellek surumu */
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   /* Gecerli bicimler: 10_1_1 (okul) | kalip_xxx | alan_xxx */
@@ -57,7 +57,7 @@
     y.push('<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&family=Harmattan:wght@400;700&display=swap" rel="stylesheet">');
     y.push('<link rel="stylesheet" href="' + KOK + 'muhadese.css' + S + '">');
   }
-  y.push('<link rel="stylesheet" href="arakom.css?v=1">');
+  y.push('<link rel="stylesheet" href="arakom.css?v=2">');
   if (d){
     y.push('<scr'+'ipt src="' + veri + S + '"><\/scr'+'ipt>');
     /* SARF KÖPRÜSÜ: kökü bilinen kelimelerin altına rozet konur, tıklanınca

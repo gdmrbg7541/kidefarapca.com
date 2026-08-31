@@ -23,13 +23,18 @@
    ============================================================ */
 
 /* --- Yazı tipi dosyası (sitenin kök klasöründe) --- */
-@font-face { font-family:'Arakom'; src:url('arakom.ttf') format('truetype'); font-display:swap; }
+@font-face { font-family:'Arakom'; src:url('arakom.ttf?v=2') format('truetype'); font-display:swap; }
 /* GitHub Pages büyük/küçük harfe duyarlı olduğu için küçük harfli yazım da tanımlı */
-@font-face { font-family:'arakom'; src:url('arakom.ttf') format('truetype'); font-display:swap; }
+@font-face { font-family:'arakom'; src:url('arakom.ttf?v=2') format('truetype'); font-display:swap; }
 
 /* --- 1) HER ŞEY ARAKOM ---------------------------------------
-   Arakom'da bulunmayan işaretler (emoji, ▾ oku, Â Î Û gibi
-   birkaç harf) otomatik olarak zincirdeki yedeklerden gelir. */
+   Arakom'da bulunmayan işaretler (emoji, ▾ oku gibi) otomatik
+   olarak zincirdeki yedeklerden gelir.
+   NOT: Â Î Û (ve ā ú) fontta YOKTU; yedek yazı tipinden geldikleri
+   için "İ'RÂB" gibi kelimelerde harf uyumsuz görünüyordu. Bunlar
+   arakom.ttf'ye fontun KENDİ kuralıyla eklendi: büyük harf aksanı
+   işaretin 432 birim üstünde (Scaron nasılsa öyle), küçük harfte
+   işaret kendi yerinde; yatayda taban harfin tam ortasında. */
 html:not(#yok1):not(#yok2),
 body:not(#yok1):not(#yok2),
 body *:not(#yok1):not(#yok2),
