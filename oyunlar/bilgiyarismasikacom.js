@@ -637,110 +637,110 @@ const KONULAR = [
      Üretici: oyunlar/uret_biy6.py (ders verisi değişirse yeniden
      çalıştırılır). Elle düzenlenirse betik üzerine yazar. */
   { id: "sinif6", ad: "6. Sınıf", pdf: "", sorular: [
-    {"id": 1, "tip": "anlam", "zorluk": 1, "soru": "«هُوَ» ne demek?", "secenekler": ["şapka", "o (erkek)", "arkasında", "Selahaddin Eyyubî", "efendim"], "dogru": 1, "arapca": "هُوَ"},
-    {"id": 2, "tip": "anlam", "zorluk": 1, "soru": "«بُنَيّ» ne demek?", "secenekler": ["işitir", "içerim", "yavrum", "atar", "Asılı Taş"], "dogru": 2, "arapca": "بُنَيّ"},
-    {"id": 3, "tip": "anlam", "zorluk": 1, "soru": "«حَلْوى» ne demek?", "secenekler": ["konu", "yaklaşık", "iyiyim", "defter", "tatlı"], "dogru": 4, "arapca": "حَلْوى"},
-    {"id": 4, "tip": "anlam", "zorluk": 2, "soru": "«بْلوزَة» ne demek?", "secenekler": ["asla", "mevsim", "sürer (araç)", "hastalıklar", "bluz"], "dogru": 4, "arapca": "بْلوزَة"},
-    {"id": 5, "tip": "anlam", "zorluk": 2, "soru": "«مِعْطَف» ne demek?", "secenekler": ["büyük", "bir (dişil)", "palto", "terlik", "lira"], "dogru": 2, "arapca": "مِعْطَف"},
-    {"id": 6, "tip": "anlam", "zorluk": 1, "soru": "«صَيْف» ne demek?", "secenekler": ["yaz", "elma", "işitir (dişil)", "buzdolabı", "bilet"], "dogru": 0, "arapca": "صَيْف"},
-    {"id": 7, "tip": "anlam", "zorluk": 3, "soru": "«سُيّاح» ne demek?", "secenekler": ["bekler", "Medine-i Münevvere", "de, dahi", "turistler", "abdest alır"], "dogru": 3, "arapca": "سُيّاح"},
-    {"id": 8, "tip": "anlam", "zorluk": 1, "soru": "«لَيْرَة» ne demek?", "secenekler": ["istasyon / durak", "silgi", "lira", "aferin (çoğul)", "Filistin"], "dogru": 2, "arapca": "لَيْرَة"},
-    {"id": 9, "tip": "anlam", "zorluk": 1, "soru": "«بَيْت» ne demek?", "secenekler": ["ağır", "ev", "dükkân", "çocuk", "Kur'ân-ı Kerîm"], "dogru": 1, "arapca": "بَيْت"},
-    {"id": 10, "tip": "anlam", "zorluk": 1, "soru": "«لَحْم» ne demek?", "secenekler": ["et", "faydalı", "yeşil ışık", "sordu", "tarihî"], "dogru": 0, "arapca": "لَحْم"},
-    {"id": 11, "tip": "anlam", "zorluk": 3, "soru": "«مَصْنَع» ne demek?", "secenekler": ["çorap", "-e göre", "bu (dişil)", "fabrika", "karlı"], "dogru": 3, "arapca": "مَصْنَع"},
-    {"id": 12, "tip": "anlam", "zorluk": 3, "soru": "«يُغادِرُ» ne demek?", "secenekler": ["kalkar / ayrılır", "Kâbe", "Suudi Arabistan", "çarşı, pazar", "bilgiler"], "dogru": 0, "arapca": "يُغادِرُ"},
-    {"id": 13, "tip": "anlam", "zorluk": 2, "soru": "«يَسْمَعُ» ne demek?", "secenekler": ["şapka", "Selahaddin Eyyubî", "kalabalık", "hızlı / süratli", "işitir"], "dogru": 4, "arapca": "يَسْمَعُ"},
-    {"id": 14, "tip": "anlam", "zorluk": 1, "soru": "«نِصْف» ne demek?", "secenekler": ["Mescid-i Aksâ", "güle güle", "durak", "-e ihtiyacı var", "yarım"], "dogru": 4, "arapca": "نِصْف"},
-    {"id": 15, "tip": "anlam", "zorluk": 1, "soru": "«مَريضَة» ne demek?", "secenekler": ["sabun", "sekiz (dişil)", "basketbol", "hasta (bayan)", "bilgiler"], "dogru": 3, "arapca": "مَريضَة"},
-    {"id": 16, "tip": "anlam", "zorluk": 1, "soru": "«جَديد» ne demek?", "secenekler": ["yeni", "kışlık", "-den / -dan", "gidiş / yürüyüş", "ceket"], "dogru": 0, "arapca": "جَديد"},
-    {"id": 17, "tip": "anlam", "zorluk": 1, "soru": "«غَداء» ne demek?", "secenekler": ["Bolu", "dört", "öğle yemeği", "gemi", "ince"], "dogru": 2, "arapca": "غَداء"},
-    {"id": 18, "tip": "anlam", "zorluk": 1, "soru": "«جوعانَة» ne demek?", "secenekler": ["aç (dişil)", "-den / -dan", "sebep", "yakın", "reçete"], "dogru": 0, "arapca": "جوعانَة"},
-    {"id": 19, "tip": "anlam", "zorluk": 1, "soru": "«باب» ne demek?", "secenekler": ["yok / devamsız", "araç / vasıta", "doktor (bayan)", "kapı", "yedi (dişil)"], "dogru": 3, "arapca": "باب"},
-    {"id": 20, "tip": "anlam", "zorluk": 1, "soru": "«اِسْتَيْقَظْتُ» ne demek?", "secenekler": ["Mescid-i Aksâ", "ulaşım araçları", "uyandım", "ayakkabılar", "süt"], "dogru": 2, "arapca": "اِسْتَيْقَظْتُ"},
-    {"id": 21, "tip": "anlam", "zorluk": 2, "soru": "«شَجَرَة» ne demek?", "secenekler": ["yünlü", "ağaç", "Harem-i Kudsî", "haklı", "kitabım"], "dogru": 1, "arapca": "شَجَرَة"},
-    {"id": 22, "tip": "anlam", "zorluk": 1, "soru": "«غاضِبَة» ne demek?", "secenekler": ["kızgın (dişil)", "Ürdün", "doğru", "kantin", "bahçe"], "dogru": 0, "arapca": "غاضِبَة"},
-    {"id": 23, "tip": "anlam", "zorluk": 3, "soru": "«عاصِمَة» ne demek?", "secenekler": ["çarşı, pazar", "Kudüs", "mağara", "Kuba Mescidi", "başkent"], "dogru": 4, "arapca": "عاصِمَة"},
-    {"id": 24, "tip": "anlam", "zorluk": 2, "soru": "«لَنْ أَذْهَبَ» ne demek?", "secenekler": ["Asılı Taş", "turistler", "saç", "şapka", "gitmeyeceğim"], "dogru": 4, "arapca": "لَنْ أَذْهَبَ"},
-    {"id": 25, "tip": "anlam", "zorluk": 2, "soru": "«أَوْراق» ne demek?", "secenekler": ["deniz kıyısı", "yapraklar", "mevsim", "dükkân", "doktor (bayan)"], "dogru": 1, "arapca": "أَوْراق"},
-    {"id": 26, "tip": "anlam", "zorluk": 1, "soru": "«شَهْر» ne demek?", "secenekler": ["saç", "çirkin", "ay", "uzun", "hazır"], "dogru": 2, "arapca": "شَهْر"},
-    {"id": 27, "tip": "anlam", "zorluk": 1, "soru": "«خَمْسَة» ne demek?", "secenekler": ["az önce", "yayalar", "spor", "beş", "başarı"], "dogru": 3, "arapca": "خَمْسَة"},
-    {"id": 28, "tip": "anlam", "zorluk": 1, "soru": "«بَيْض» ne demek?", "secenekler": ["yumurta", "motosiklet", "Ankara", "pişiriyorum", "ağız"], "dogru": 0, "arapca": "بَيْض"},
-    {"id": 29, "tip": "anlam", "zorluk": 1, "soru": "«مُسْتَشْفى» ne demek?", "secenekler": ["öğle yemeği", "ağır", "hastane", "Bursa", "müzik"], "dogru": 2, "arapca": "مُسْتَشْفى"},
-    {"id": 30, "tip": "anlam", "zorluk": 1, "soru": "«كَباب» ne demek?", "secenekler": ["kebap", "çorba", "sıcak su", "sipariş", "sebzeler"], "dogru": 0, "arapca": "كَباب"},
-    {"id": 31, "tip": "anlam", "zorluk": 2, "soru": "«بُلوفَر» ne demek?", "secenekler": ["abdest alır", "terlik", "Arafat Dağı", "kazak", "-den (uzak)"], "dogru": 3, "arapca": "بُلوفَر"},
-    {"id": 32, "tip": "anlam", "zorluk": 1, "soru": "«سَأَلَ» ne demek?", "secenekler": ["ceket", "bardak", "sordu", "Kubbetü's-Sahra", "ziyaretçiler"], "dogru": 2, "arapca": "سَأَلَ"},
-    {"id": 33, "tip": "anlam", "zorluk": 2, "soru": "«دَفْتَر» ne demek?", "secenekler": ["alıcı", "sol", "yüzük", "kazak", "defter"], "dogru": 4, "arapca": "دَفْتَر"},
-    {"id": 34, "tip": "anlam", "zorluk": 3, "soru": "«قُبَّةُ الصَّخْرَة» ne demek?", "secenekler": ["sarı", "dede", "elma", "oynar", "Kubbetü's-Sahra"], "dogru": 4, "arapca": "قُبَّةُ الصَّخْرَة"},
-    {"id": 35, "tip": "anlam", "zorluk": 1, "soru": "«كِتابُهُ» ne demek?", "secenekler": ["...dığı zaman", "efendim", "ceket", "onun kitabı (erkek)", "yaparım (spor)"], "dogru": 3, "arapca": "كِتابُهُ"},
-    {"id": 36, "tip": "anlam", "zorluk": 1, "soru": "«مَدْرَسَة» ne demek?", "secenekler": ["okul", "kalp", "sırasında / esnasında", "tabak", "Kubbetü's-Sahra"], "dogru": 0, "arapca": "مَدْرَسَة"},
-    {"id": 37, "tip": "anlam", "zorluk": 1, "soru": "«خالَة» ne demek?", "secenekler": ["reçel", "teyze", "geçiyor, dönüyor", "mescitler", "Medine-i Münevvere"], "dogru": 1, "arapca": "خالَة"},
-    {"id": 38, "tip": "anlam", "zorluk": 3, "soru": "«الأَماكِنُ المُقَدَّسَة» ne demek?", "secenekler": ["diş", "istasyon / durak", "kutsal mekânlar", "yayalar", "sürer (araç)"], "dogru": 2, "arapca": "الأَماكِنُ المُقَدَّسَة"},
-    {"id": 39, "tip": "anlam", "zorluk": 3, "soru": "«الأُسْبوعُ القادِم» ne demek?", "secenekler": ["çarşı, pazar", "onun kitabı (erkek)", "Müslüman (erkek)", "gelecek hafta", "yiyecekler"], "dogru": 3, "arapca": "الأُسْبوعُ القادِم"},
-    {"id": 40, "tip": "anlam", "zorluk": 1, "soru": "«يوجَدُ» ne demek?", "secenekler": ["vardır, bulunur", "bilgi", "büyük", "Kıblî Camii", "hemşire"], "dogru": 0, "arapca": "يوجَدُ"},
-    {"id": 41, "tip": "anlam", "zorluk": 1, "soru": "«كَبير» ne demek?", "secenekler": ["Kıbleteyn Mescidi", "mavi", "büyük", "kutsal mekânlar", "durur / vakfeye durur"], "dogru": 2, "arapca": "كَبير"},
-    {"id": 42, "tip": "anlam", "zorluk": 1, "soru": "«قائِمَةُ الطَّعامِ» ne demek?", "secenekler": ["Medine-i Münevvere", "Asılı Taş", "ulaşım araçları", "gezi / yolculuk", "yemek listesi"], "dogru": 4, "arapca": "قائِمَةُ الطَّعامِ"},
-    {"id": 43, "tip": "anlam", "zorluk": 1, "soru": "«مَلابِس» ne demek?", "secenekler": ["ücret", "Uhud Dağı", "anahtar", "ulaşım araçları", "kıyafetler"], "dogru": 4, "arapca": "مَلابِس"},
-    {"id": 44, "tip": "anlam", "zorluk": 3, "soru": "«الكَعْبَةُ الشَّريفَة» ne demek?", "secenekler": ["geliyor", "geçer", "Şerefli Kâbe", "fiyat", "sebep"], "dogru": 2, "arapca": "الكَعْبَةُ الشَّريفَة"},
-    {"id": 45, "tip": "anlam", "zorluk": 2, "soru": "«سَميك» ne demek?", "secenekler": ["namaz kılar", "kalın", "Kıbleteyn Mescidi", "Kur'ân-ı Kerîm", "fiyat"], "dogru": 1, "arapca": "سَميك"},
-    {"id": 46, "tip": "anlam", "zorluk": 2, "soru": "«التَّدْخين» ne demek?", "secenekler": ["sigara içmek", "yiyecekler", "giyer", "uçar", "eski (dişil)"], "dogru": 0, "arapca": "التَّدْخين"},
-    {"id": 47, "tip": "anlam", "zorluk": 2, "soru": "«وَساخَة» ne demek?", "secenekler": ["bal", "Harem-i Kudsî", "Türk lirası", "kirlilik", "konuşma, diyalog"], "dogru": 3, "arapca": "وَساخَة"},
-    {"id": 48, "tip": "anlam", "zorluk": 3, "soru": "«شارِع» ne demek?", "secenekler": ["cadde / sokak", "Mescid-i Nebevî", "altı", "atar", "başka bir şey"], "dogru": 0, "arapca": "شارِع"},
-    {"id": 49, "tip": "anlam", "zorluk": 3, "soru": "«مُزْدَحِم» ne demek?", "secenekler": ["-den (uzak)", "kalabalık", "Nur Dağı", "on bir", "Türk lirası"], "dogru": 1, "arapca": "مُزْدَحِم"},
-    {"id": 50, "tip": "anlam", "zorluk": 2, "soru": "«عِيادَةُ الأَمْراضِ الجِلْدِيَّة» ne demek?", "secenekler": ["çiçek", "Ömer Mescidi", "cildiye polikliniği", "Hira Mağarası", "derim"], "dogru": 2, "arapca": "عِيادَةُ الأَمْراضِ الجِلْدِيَّة"},
-    {"id": 51, "tip": "anlam", "zorluk": 3, "soru": "«المَسْجِدُ الأَقْصى» ne demek?", "secenekler": ["sa'y", "yıkadı", "ayakkabılar", "Mescid-i Aksâ", "diş fırçası"], "dogru": 3, "arapca": "المَسْجِدُ الأَقْصى"},
-    {"id": 52, "tip": "anlam", "zorluk": 1, "soru": "«مَأْكولات» ne demek?", "secenekler": ["yaşadı", "lokanta", "hava", "Asılı Taş", "yiyecekler"], "dogru": 4, "arapca": "مَأْكولات"},
-    {"id": 53, "tip": "anlam", "zorluk": 3, "soru": "«سَفينَة» ne demek?", "secenekler": ["okul", "harem / kutsal alan", "mekân / yer", "büyük", "gemi"], "dogru": 4, "arapca": "سَفينَة"},
-    {"id": 54, "tip": "anlam", "zorluk": 2, "soru": "«أَفْحَصُ» ne demek?", "secenekler": ["muayene ederim", "cesur", "atar", "Ankara", "Şerefli Kâbe"], "dogru": 0, "arapca": "أَفْحَصُ"},
-    {"id": 55, "tip": "anlam", "zorluk": 1, "soru": "«صَلاة» ne demek?", "secenekler": ["az önce", "giyerim", "nereye", "namaz", "Türk lirası"], "dogru": 3, "arapca": "صَلاة"},
-    {"id": 56, "tip": "anlam", "zorluk": 1, "soru": "«اِبْدَأْ» ne demek?", "secenekler": ["arasında", "-den / -dan", "başla", "aç", "Asılı Taş"], "dogru": 2, "arapca": "اِبْدَأْ"},
-    {"id": 57, "tip": "anlam", "zorluk": 1, "soru": "«لاعِب» ne demek?", "secenekler": ["ayakkabı", "oyuncu", "altı (dişil)", "vardır / bulunur", "Selahaddin Eyyubî"], "dogru": 1, "arapca": "لاعِب"},
-    {"id": 58, "tip": "anlam", "zorluk": 2, "soru": "«مَرَض» ne demek?", "secenekler": ["hastalık", "güneş", "o (erkek)", "-e ihtiyacı var", "dede"], "dogru": 0, "arapca": "مَرَض"},
-    {"id": 59, "tip": "anlam", "zorluk": 2, "soru": "«قِسْمُ الطَّوارِئ» ne demek?", "secenekler": ["yıkar", "dört", "...dığı zaman", "acil servis", "haydi"], "dogru": 3, "arapca": "قِسْمُ الطَّوارِئ"},
-    {"id": 60, "tip": "anlam", "zorluk": 1, "soru": "«عَطْشانَة» ne demek?", "secenekler": ["susamış (dişil)", "abdest alır (dişil)", "Kudüs-i Şerif", "Kâbe", "uyur"], "dogru": 0, "arapca": "عَطْشانَة"},
-    {"id": 61, "tip": "anlam", "zorluk": 2, "soru": "«yıkarım» kelimesinin Arapçası hangisi?", "secenekler": ["الرّابِعَة", "المَسْجِدُ الأَقْصى", "أَرْتَدي", "زُبْدَة", "أَغْسِلُ"], "dogru": 4, "arSecenek": true},
-    {"id": 62, "tip": "anlam", "zorluk": 3, "soru": "«Selahaddin Eyyubî» kelimesinin Arapçası hangisi?", "secenekler": ["اِسْتَيْقَظَ", "كِتاب", "السّادِسَة", "كِتابُكَ", "صَلاحُ الدّينِ الأَيّوبِيّ"], "dogru": 4, "arSecenek": true},
-    {"id": 63, "tip": "anlam", "zorluk": 2, "soru": "«düşer / yağar» kelimesinin Arapçası hangisi?", "secenekler": ["أَحَدَ عَشَرَ", "الجامِعُ القِبْلِيّ", "شاطِئ", "يَسْقُطُ", "أَسْنان"], "dogru": 3, "arSecenek": true},
-    {"id": 64, "tip": "anlam", "zorluk": 1, "soru": "«baba» kelimesinin Arapçası hangisi?", "secenekler": ["تَتَفَتَّحُ", "لا أُريدُ", "أَب", "شَرِبَ", "الأَماكِنُ المُقَدَّسَة"], "dogru": 2, "arSecenek": true},
-    {"id": 65, "tip": "anlam", "zorluk": 1, "soru": "«o (kız)» kelimesinin Arapçası hangisi?", "secenekler": ["أَهْلًا وَسَهْلًا", "هِيَ", "تَناوُلُ الطَّعام", "الصَّلاة", "شَرِبَ"], "dogru": 1, "arSecenek": true},
-    {"id": 66, "tip": "anlam", "zorluk": 3, "soru": "«İslam» kelimesinin Arapçası hangisi?", "secenekler": ["الإِسْلام", "أُريدُ", "أَب", "تَرْمي", "جامِع"], "dogru": 0, "arSecenek": true},
-    {"id": 67, "tip": "anlam", "zorluk": 3, "soru": "«nur / ışık» kelimesinin Arapçası hangisi?", "secenekler": ["أَزْهار", "الحَجَرُ المُعَلَّق", "قَميص", "نور", "مُسْلِمات"], "dogru": 3, "arSecenek": true},
-    {"id": 68, "tip": "anlam", "zorluk": 3, "soru": "«üstünde» kelimesinin Arapçası hangisi?", "secenekler": ["عَلى", "السّادِسَة", "المَسْجِدُ الحَرام", "يَتَوَضَّأُ", "اِسْتَيْقَظْتُ"], "dogru": 0, "arSecenek": true},
-    {"id": 69, "tip": "anlam", "zorluk": 1, "soru": "«buzdolabı» kelimesinin Arapçası hangisi?", "secenekler": ["مَبْلَغ", "ثَلّاجَة", "حَجَر", "تَعْبان", "أَرْتَدي"], "dogru": 1, "arSecenek": true},
-    {"id": 70, "tip": "anlam", "zorluk": 2, "soru": "«ağır» kelimesinin Arapçası hangisi?", "secenekler": ["يَأْتي", "أَحْذِيَة", "ثَقيل", "طالِبَة", "أَبْيَض"], "dogru": 2, "arSecenek": true},
-    {"id": 71, "tip": "anlam", "zorluk": 1, "soru": "«kantin» kelimesinin Arapçası hangisi?", "secenekler": ["آكُلُ", "فُصول", "مَسْجِد", "سَلَطَة", "مَقْصَف"], "dogru": 4, "arSecenek": true},
-    {"id": 72, "tip": "anlam", "zorluk": 2, "soru": "«hoşuma gidiyor» kelimesinin Arapçası hangisi?", "secenekler": ["تُعْجِبُني", "غَضِبَ", "يَقْرَأُ", "المَرْوَة", "سَلَطَة"], "dogru": 0, "arSecenek": true},
-    {"id": 73, "tip": "anlam", "zorluk": 1, "soru": "«okul» kelimesinin Arapçası hangisi?", "secenekler": ["آكُلُ", "القُدْس", "مَدْرَسَة", "سَميك", "أَبَدًا"], "dogru": 2, "arSecenek": true},
-    {"id": 74, "tip": "anlam", "zorluk": 1, "soru": "«kek» kelimesinin Arapçası hangisi?", "secenekler": ["كَعْكَة", "حادِث", "يَلْعَبُ", "مُسْلِمات", "عَشَرَة"], "dogru": 0, "arSecenek": true},
-    {"id": 75, "tip": "anlam", "zorluk": 3, "soru": "«orta» kelimesinin Arapçası hangisi?", "secenekler": ["الجامِعُ القِبْلِيّ", "لَوْن", "جاهِزَة", "وَسَط", "أَثَر"], "dogru": 3, "arSecenek": true},
-    {"id": 76, "tip": "anlam", "zorluk": 1, "soru": "«tabak» kelimesinin Arapçası hangisi?", "secenekler": ["قاعِدَة", "أَحْسَنْتَ", "طَبَق", "أَحْمَر", "المَسْجِدُ الأَقْصى"], "dogru": 2, "arSecenek": true},
-    {"id": 77, "tip": "anlam", "zorluk": 2, "soru": "«erkek kardeş» kelimesinin Arapçası hangisi?", "secenekler": ["الوَقْفَة", "أَخ", "عَلى حَقٍّ", "كَيْفَ حالُكَ", "خَلْفَ"], "dogru": 1, "arSecenek": true},
-    {"id": 78, "tip": "anlam", "zorluk": 3, "soru": "«sürer / kullanır» kelimesinin Arapçası hangisi?", "secenekler": ["يَسوقُ", "كِتاب", "أَب", "الخَريف", "صَيْدَلِيَّة"], "dogru": 0, "arSecenek": true},
-    {"id": 79, "tip": "anlam", "zorluk": 1, "soru": "«uyandım» kelimesinin Arapçası hangisi?", "secenekler": ["أَشْعُرُ", "الخارِج", "وَرَقَة", "اِسْتَيْقَظْتُ", "أَبَدًا"], "dogru": 3, "arSecenek": true},
-    {"id": 80, "tip": "anlam", "zorluk": 1, "soru": "«oda» kelimesinin Arapçası hangisi?", "secenekler": ["حِزام", "أَماكِن", "قُمامَة", "السّابِعَة", "غُرْفَة"], "dogru": 4, "arSecenek": true},
-    {"id": 9000, "tip": "anlam", "bicim": "eslestir", "zorluk": 2, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["طَبيب", "doktor"], ["اِسْتَيْقَظْتُ", "uyandım"], ["جَوْرَب", "çorap"], ["يَسْقُطُ", "düşer / yağar"]]},
-    {"id": 9001, "tip": "anlam", "bicim": "eslestir", "zorluk": 2, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["اليَدُ اليُمْنى", "sağ el"], ["بِحاجَةٍ إِلى", "-e ihtiyacı var"], ["أَنا", "ben"], ["نَزْلَة", "nezle"]]},
-    {"id": 9002, "tip": "anlam", "bicim": "eslestir", "zorluk": 3, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["يَشْفي", "şifa verir"], ["شَمْس", "güneş"], ["بَيْت", "ev"], ["مُسْلِم", "Müslüman (erkek)"]]},
-    {"id": 9003, "tip": "anlam", "bicim": "eslestir", "zorluk": 3, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["قائِمَةُ الطَّعامِ", "yemek listesi"], ["مِنْضَدَة", "masa"], ["قَلَم", "kalem"], ["الطَّواف", "tavaf"]]},
-    {"id": 9004, "tip": "anlam", "bicim": "eslestir", "zorluk": 3, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["تُرْكِيا", "Türkiye"], ["سَأَلَ", "sordu"], ["أَلْعاب", "oyunlar"], ["صابون", "sabun"]]},
-    {"id": 9005, "tip": "anlam", "bicim": "eslestir", "zorluk": 2, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["يَغْسِلُ", "yıkar"], ["أَحْزِمَة", "kemerler"], ["تَتَفَتَّحُ", "açar (çiçek)"], ["جِدًّا", "çok"]]},
-    {"id": 9006, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «okul» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "مَدْرَسَة"},
-    {"id": 9007, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «doktor (bayan)» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "مَقْصَف"},
-    {"id": 9008, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «biliyorum» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "أَعْرِفُ"},
-    {"id": 9009, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 2, "soru": "Bu kelime «işgal altındaki» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "فَساتين"},
-    {"id": 9010, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «gitti» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "ذَهَبَ"},
-    {"id": 9011, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «yıkadı» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "شاطِئ"},
-    {"id": 9012, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «doktor (bayan)» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "طَبيبَة"},
-    {"id": 9013, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «yaparım (spor)» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "الزُّوّار"},
-    {"id": 9014, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «işgal altındaki» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "المُحْتَلَّة"},
-    {"id": 9015, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «hafta» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "حائِط"},
-    {"id": 9016, "tip": "anlam", "bicim": "surukle", "zorluk": 3, "soru": "Harfleri sırala: «tarihî»", "parcalar": ["ت", "ا", "ر", "ي", "خ", "ي"]},
-    {"id": 9017, "tip": "anlam", "bicim": "surukle", "zorluk": 3, "soru": "Harfleri sırala: «konu»", "parcalar": ["م", "و", "ض", "و", "ع"]},
-    {"id": 9018, "tip": "anlam", "bicim": "surukle", "zorluk": 3, "soru": "Harfleri sırala: «şerefli»", "parcalar": ["ش", "ر", "ي", "ف"]},
-    {"id": 9019, "tip": "anlam", "bicim": "surukle", "zorluk": 3, "soru": "Harfleri sırala: «turistler»", "parcalar": ["س", "ي", "ا", "ح"]},
-    {"id": 9020, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«tahta» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "سبورة", "tuslar": ["ب", "ة", "و", "ز", "ر", "خ", "ع", "ك", "س", "غ"]},
-    {"id": 9021, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«atar (dişil)» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "ترمي", "tuslar": ["د", "ص", "ف", "ت", "ي", "ش", "ر", "ث", "ب", "م"]},
-    {"id": 9022, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«uyandı» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "استيقظ", "tuslar": ["د", "ظ", "ق", "ش", "ذ", "ي", "س", "ت", "ا", "ل"]},
-    {"id": 9023, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«kapı» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "باب", "tuslar": ["ل", "ا", "ب", "ض", "غ", "ع", "و", "ش", "ر", "ن"]},
+    {"id": 1, "tip": "anlam", "zorluk": 1, "soru": "«فَريق» ne demek?", "secenekler": ["mağara", "takım", "kulak", "sen (erkek)", "-den / -dan"], "dogru": 1, "arapca": "فَريق"},
+    {"id": 2, "tip": "anlam", "zorluk": 3, "soru": "«اِتَّجِهْ إِلى اليَسار» ne demek?", "secenekler": ["araç / vasıta", "yaz", "sola dön", "Nur Dağı", "bisiklet"], "dogru": 2, "arapca": "اِتَّجِهْ إِلى اليَسار"},
+    {"id": 3, "tip": "anlam", "zorluk": 1, "soru": "«مَشْوِيّ» ne demek?", "secenekler": ["uyandı", "kırmızı", "meblağ / para", "sırasında / esnasında", "ızgara"], "dogru": 4, "arapca": "مَشْوِيّ"},
+    {"id": 4, "tip": "anlam", "zorluk": 2, "soru": "«خَفيف» ne demek?", "secenekler": ["Müslüman (erkek)", "hoşuma gidiyor", "büyük", "aferin", "hafif"], "dogru": 4, "arapca": "خَفيف"},
+    {"id": 5, "tip": "anlam", "zorluk": 1, "soru": "«سَأَلَ» ne demek?", "secenekler": ["atar", "durur / vakfeye durur", "sordu", "bilgisayar", "küçük (dişil)"], "dogru": 2, "arapca": "سَأَلَ"},
+    {"id": 6, "tip": "anlam", "zorluk": 1, "soru": "«ثَلاثَة» ne demek?", "secenekler": ["üç", "insanlar", "Mescid-i Haram", "Bolu", "Kur'ân-ı Kerîm"], "dogru": 0, "arapca": "ثَلاثَة"},
+    {"id": 7, "tip": "anlam", "zorluk": 1, "soru": "«جوعانَة» ne demek?", "secenekler": ["temizler", "süt", "Safa", "aç (dişil)", "uzun"], "dogru": 3, "arapca": "جوعانَة"},
+    {"id": 8, "tip": "anlam", "zorluk": 1, "soru": "«صَفّ» ne demek?", "secenekler": ["satıcı", "defter", "sınıf", "mevsimler", "dağ"], "dogru": 2, "arapca": "صَفّ"},
+    {"id": 9, "tip": "anlam", "zorluk": 2, "soru": "«مَريض» ne demek?", "secenekler": ["Hira Mağarası", "hasta", "israf etme", "kutsal", "-den / -dan"], "dogru": 1, "arapca": "مَريض"},
+    {"id": 10, "tip": "anlam", "zorluk": 1, "soru": "«مَدْرَسَة» ne demek?", "secenekler": ["okul", "kulak", "ayak", "...dığı zaman", "at"], "dogru": 0, "arapca": "مَدْرَسَة"},
+    {"id": 11, "tip": "anlam", "zorluk": 2, "soru": "«تَخْتارينَ» ne demek?", "secenekler": ["temiz", "-e ihtiyacı var", "pilot", "seçersin (dişil)", "el"], "dogru": 3, "arapca": "تَخْتارينَ"},
+    {"id": 12, "tip": "anlam", "zorluk": 1, "soru": "«كوب» ne demek?", "secenekler": ["bardak", "sürer (zaman alır)", "araba", "bu (eril)", "haklı"], "dogru": 0, "arapca": "كوب"},
+    {"id": 13, "tip": "anlam", "zorluk": 1, "soru": "«صَغيرَة» ne demek?", "secenekler": ["Kıblî Camii", "beş", "okul", "ayakkabılar", "küçük (dişil)"], "dogru": 4, "arapca": "صَغيرَة"},
+    {"id": 14, "tip": "anlam", "zorluk": 1, "soru": "«أَهْلًا وَسَهْلًا» ne demek?", "secenekler": ["hastane", "biletler", "eteklik", "diş", "hoş geldiniz"], "dogru": 4, "arapca": "أَهْلًا وَسَهْلًا"},
+    {"id": 15, "tip": "anlam", "zorluk": 2, "soru": "«دَواء» ne demek?", "secenekler": ["kızma", "görür (dişil)", "gezinir / dolaşır", "ilaç", "dinleniyorum"], "dogru": 3, "arapca": "دَواء"},
+    {"id": 16, "tip": "anlam", "zorluk": 1, "soru": "«نافِذَة» ne demek?", "secenekler": ["pencere", "hoş geldiniz", "konuşma, diyalog", "-den (uzak)", "muayenehane / poliklinik"], "dogru": 0, "arapca": "نافِذَة"},
+    {"id": 17, "tip": "anlam", "zorluk": 1, "soru": "«كُرَةُ القَدَمِ» ne demek?", "secenekler": ["altında", "çiçekler", "futbol", "tişört", "iyiyim"], "dogru": 2, "arapca": "كُرَةُ القَدَمِ"},
+    {"id": 18, "tip": "anlam", "zorluk": 2, "soru": "«جاكيت» ne demek?", "secenekler": ["ceket", "eczane", "...dığı zaman", "beyaz", "Ankara"], "dogru": 0, "arapca": "جاكيت"},
+    {"id": 19, "tip": "anlam", "zorluk": 1, "soru": "«يَد» ne demek?", "secenekler": ["Filistin", "Asılı Taş", "altında", "el", "şort"], "dogru": 3, "arapca": "يَد"},
+    {"id": 20, "tip": "anlam", "zorluk": 1, "soru": "«طالِبَة» ne demek?", "secenekler": ["otobüs", "hafta", "öğrenci (kız)", "doktor (bayan)", "hangi"], "dogru": 2, "arapca": "طالِبَة"},
+    {"id": 21, "tip": "anlam", "zorluk": 3, "soru": "«هُنا» ne demek?", "secenekler": ["lütfen (izin verirsen)", "burada / burası", "bilgisayar", "ağrı", "öksürük"], "dogru": 1, "arapca": "هُنا"},
+    {"id": 22, "tip": "anlam", "zorluk": 3, "soru": "«سَفينَة» ne demek?", "secenekler": ["gemi", "evin bahçesi", "...dığı zaman", "başla", "-e göre"], "dogru": 0, "arapca": "سَفينَة"},
+    {"id": 23, "tip": "anlam", "zorluk": 1, "soru": "«صَوْت» ne demek?", "secenekler": ["işitir (dişil)", "hasta (bayan)", "aç (dişil)", "acil servis", "ses"], "dogru": 4, "arapca": "صَوْت"},
+    {"id": 24, "tip": "anlam", "zorluk": 2, "soru": "«لِيرات» ne demek?", "secenekler": ["yol", "başla", "istemiyorum", "üç (dişil)", "liralar"], "dogru": 4, "arapca": "لِيرات"},
+    {"id": 25, "tip": "anlam", "zorluk": 1, "soru": "«صَيْف» ne demek?", "secenekler": ["ağır", "yaz", "et", "buzdolabı", "şapka"], "dogru": 1, "arapca": "صَيْف"},
+    {"id": 26, "tip": "anlam", "zorluk": 1, "soru": "«وَلَد» ne demek?", "secenekler": ["okul", "...dığı zaman", "çocuk", "giydi", "söyle bana"], "dogru": 2, "arapca": "وَلَد"},
+    {"id": 27, "tip": "anlam", "zorluk": 3, "soru": "«وَسَط» ne demek?", "secenekler": ["süpürge", "siyah", "çözecek", "orta", "et"], "dogru": 3, "arapca": "وَسَط"},
+    {"id": 28, "tip": "anlam", "zorluk": 2, "soru": "«أَلَم» ne demek?", "secenekler": ["ağrı", "pilot", "Medine-i Münevvere", "pantolonlar", "bir"], "dogru": 0, "arapca": "أَلَم"},
+    {"id": 29, "tip": "anlam", "zorluk": 3, "soru": "«القُدْسُ الشَّريف» ne demek?", "secenekler": ["taş", "öyleyse", "Kudüs-i Şerif", "Müslümanlar (erkek)", "dakika"], "dogru": 2, "arapca": "القُدْسُ الشَّريف"},
+    {"id": 30, "tip": "anlam", "zorluk": 2, "soru": "«خَلْفَ» ne demek?", "secenekler": ["arkasında", "kızgın (dişil)", "nur / ışık", "Harem-i Kudsî", "Mescid-i Haram"], "dogru": 0, "arapca": "خَلْفَ"},
+    {"id": 31, "tip": "anlam", "zorluk": 2, "soru": "«لِماذا» ne demek?", "secenekler": ["aferin (çoğul)", "palto", "dökülür", "niçin", "gelecek"], "dogru": 3, "arapca": "لِماذا"},
+    {"id": 32, "tip": "anlam", "zorluk": 1, "soru": "«عُضْو» ne demek?", "secenekler": ["Merve", "akşam yemeği", "üye", "sarı", "mevsimler"], "dogru": 2, "arapca": "عُضْو"},
+    {"id": 33, "tip": "anlam", "zorluk": 1, "soru": "«لاعِب» ne demek?", "secenekler": ["garson", "okul", "dış, dışarı", "Müslüman (kadın)", "oyuncu"], "dogru": 4, "arapca": "لاعِب"},
+    {"id": 34, "tip": "anlam", "zorluk": 1, "soru": "«يوجَدُ» ne demek?", "secenekler": ["aferin", "buldu", "abdest alır", "deniz kıyısı", "vardır, bulunur"], "dogru": 4, "arapca": "يوجَدُ"},
+    {"id": 35, "tip": "anlam", "zorluk": 3, "soru": "«يَقودُ» ne demek?", "secenekler": ["kutsal", "biliyorum", "satın almak için", "sürer (araç)", "bahçe"], "dogru": 3, "arapca": "يَقودُ"},
+    {"id": 36, "tip": "anlam", "zorluk": 3, "soru": "«جِبال» ne demek?", "secenekler": ["dağlar", "bilir", "derim", "Türk lirası", "yıkarım"], "dogru": 0, "arapca": "جِبال"},
+    {"id": 37, "tip": "anlam", "zorluk": 1, "soru": "«مَوْعِد» ne demek?", "secenekler": ["aferin", "randevu", "güneş", "yıkar (dişil)", "onun kitabı (erkek)"], "dogru": 1, "arapca": "مَوْعِد"},
+    {"id": 38, "tip": "anlam", "zorluk": 3, "soru": "«فُنْدُق» ne demek?", "secenekler": ["muayenehane / poliklinik", "gitmeyeceğim", "otel", "araba", "baba"], "dogru": 2, "arapca": "فُنْدُق"},
+    {"id": 39, "tip": "anlam", "zorluk": 2, "soru": "«أَسْوَد» ne demek?", "secenekler": ["Müslüman (kadın)", "yeşil ışık", "önce / ilk olarak", "siyah", "harem / kutsal alan"], "dogru": 3, "arapca": "أَسْوَد"},
+    {"id": 40, "tip": "anlam", "zorluk": 2, "soru": "«مَبْلَغ» ne demek?", "secenekler": ["meblağ / para", "Arafat Dağı", "Mescid-i Haram", "Bolu", "durak"], "dogru": 0, "arapca": "مَبْلَغ"},
+    {"id": 41, "tip": "anlam", "zorluk": 3, "soru": "«يَتَعامَلُ» ne demek?", "secenekler": ["gidiş-dönüş", "eteklik", "davranır / muamele eder", "ev", "Hira Mağarası"], "dogru": 2, "arapca": "يَتَعامَلُ"},
+    {"id": 42, "tip": "anlam", "zorluk": 3, "soru": "«ضَوْء» ne demek?", "secenekler": ["Harem-i Kudsî", "otobüs", "gitmeyeceğim", "Bolu", "ışık"], "dogru": 4, "arapca": "ضَوْء"},
+    {"id": 43, "tip": "anlam", "zorluk": 1, "soru": "«لَبَن» ne demek?", "secenekler": ["-e ihtiyacı var", "inşallah", "cadde / sokak", "Asılı Taş", "süt (ayran)"], "dogru": 4, "arapca": "لَبَن"},
+    {"id": 44, "tip": "anlam", "zorluk": 1, "soru": "«مِمْحاة» ne demek?", "secenekler": ["...dığı zaman", "Merve", "silgi", "sekiz", "vakfe"], "dogru": 2, "arapca": "مِمْحاة"},
+    {"id": 45, "tip": "anlam", "zorluk": 2, "soru": "«صوفِيّ» ne demek?", "secenekler": ["-den / -dan", "yünlü", "karşısında", "Kudüs-i Şerif", "Burak Duvarı"], "dogru": 1, "arapca": "صوفِيّ"},
+    {"id": 46, "tip": "anlam", "zorluk": 3, "soru": "«بَعيد» ne demek?", "secenekler": ["uzak", "tren", "Bursa", "ama", "az önce"], "dogru": 0, "arapca": "بَعيد"},
+    {"id": 47, "tip": "anlam", "zorluk": 2, "soru": "«جِسْم» ne demek?", "secenekler": ["sürer (zaman alır)", "memur", "elbiseler", "vücut", "zeytin"], "dogru": 3, "arapca": "جِسْم"},
+    {"id": 48, "tip": "anlam", "zorluk": 1, "soru": "«اثْنا عَشَرَ» ne demek?", "secenekler": ["on iki", "-e göre", "bir (dişil)", "gemi", "...dığı zaman"], "dogru": 0, "arapca": "اثْنا عَشَرَ"},
+    {"id": 49, "tip": "anlam", "zorluk": 1, "soru": "«ساعَة» ne demek?", "secenekler": ["Müslüman (erkek)", "saat", "üç", "-e ihtiyacı var", "alışveriş merkezi"], "dogru": 1, "arapca": "ساعَة"},
+    {"id": 50, "tip": "anlam", "zorluk": 2, "soru": "«مُعْتَدِل» ne demek?", "secenekler": ["mağara", "Uhud Dağı", "ılıman", "hastane", "baş"], "dogru": 2, "arapca": "مُعْتَدِل"},
+    {"id": 51, "tip": "anlam", "zorluk": 2, "soru": "«تَتَوَضَّأُ» ne demek?", "secenekler": ["kız", "adam", "az önce", "abdest alır (dişil)", "nezle"], "dogru": 3, "arapca": "تَتَوَضَّأُ"},
+    {"id": 52, "tip": "anlam", "zorluk": 1, "soru": "«غَدًا» ne demek?", "secenekler": ["misket, bilye", "elbise / giysi", "başla", "kırmızı", "yarın"], "dogru": 4, "arapca": "غَدًا"},
+    {"id": 53, "tip": "anlam", "zorluk": 1, "soru": "«كُرَةُ اليَدِ» ne demek?", "secenekler": ["Mescid-i Aksâ", "Kıblî Camii", "kızgın", "Asılı Taş", "hentbol"], "dogru": 4, "arapca": "كُرَةُ اليَدِ"},
+    {"id": 54, "tip": "anlam", "zorluk": 1, "soru": "«مُفيد» ne demek?", "secenekler": ["faydalı", "geliyor", "Mescid-i Aksâ", "pamuklu", "banyo"], "dogru": 0, "arapca": "مُفيد"},
+    {"id": 55, "tip": "anlam", "zorluk": 3, "soru": "«مُمارَسَةُ الرِّياضَة» ne demek?", "secenekler": ["Kur'ân-ı Kerîm", "atar", "nezle", "spor yapma", "çay"], "dogru": 3, "arapca": "مُمارَسَةُ الرِّياضَة"},
+    {"id": 56, "tip": "anlam", "zorluk": 1, "soru": "«وَجْه» ne demek?", "secenekler": ["ilerler / gider", "dinleniyorum", "yüz", "beş (dişil)", "konuşma, diyalog"], "dogru": 2, "arapca": "وَجْه"},
+    {"id": 57, "tip": "anlam", "zorluk": 3, "soru": "«مُسْلِمات» ne demek?", "secenekler": ["insanlar", "Müslümanlar (kadın)", "hissediyorum", "-e ihtiyacı var", "uyandı"], "dogru": 1, "arapca": "مُسْلِمات"},
+    {"id": 58, "tip": "anlam", "zorluk": 2, "soru": "«بارِد» ne demek?", "secenekler": ["soğuk", "sabun", "acil servis", "deniz kıyısı", "çanta"], "dogru": 0, "arapca": "بارِد"},
+    {"id": 59, "tip": "anlam", "zorluk": 3, "soru": "«الكَعْبَةُ الشَّريفَة» ne demek?", "secenekler": ["amca", "-e ihtiyacı var", "makarna", "Şerefli Kâbe", "el"], "dogru": 3, "arapca": "الكَعْبَةُ الشَّريفَة"},
+    {"id": 60, "tip": "anlam", "zorluk": 1, "soru": "«قَريب» ne demek?", "secenekler": ["yakın", "susamış", "Selahaddin Eyyubî", "acil servis", "hastalık"], "dogru": 0, "arapca": "قَريب"},
+    {"id": 61, "tip": "anlam", "zorluk": 1, "soru": "«oyuncu» kelimesinin Arapçası hangisi?", "secenekler": ["مَريضَة", "مَشْوِيّ", "مِنْ فَضْلِكَ", "إِلى أَيْنَ", "لاعِب"], "dogru": 4, "arSecenek": true},
+    {"id": 62, "tip": "anlam", "zorluk": 1, "soru": "«sordu» kelimesinin Arapçası hangisi?", "secenekler": ["أَرْتَدي", "كِتاب", "شَوارِع", "أَخ", "سَأَلَ"], "dogru": 4, "arSecenek": true},
+    {"id": 63, "tip": "anlam", "zorluk": 3, "soru": "«ücret» kelimesinin Arapçası hangisi?", "secenekler": ["إِنْ شاءَ اللهُ", "فاتِح", "وَسَط", "أُجْرَة", "سائِح"], "dogru": 3, "arSecenek": true},
+    {"id": 64, "tip": "anlam", "zorluk": 1, "soru": "«oda» kelimesinin Arapçası hangisi?", "secenekler": ["لَعِبَ", "أَحْسَنْتُمْ", "غُرْفَة", "كِتاب", "أَنْتَ"], "dogru": 2, "arSecenek": true},
+    {"id": 65, "tip": "anlam", "zorluk": 1, "soru": "«yıka» kelimesinin Arapçası hangisi?", "secenekler": ["عُضْو", "اِغْسِلْ", "يَقَعُ", "رَصيف", "حِذاء"], "dogru": 1, "arSecenek": true},
+    {"id": 66, "tip": "anlam", "zorluk": 1, "soru": "«çatal» kelimesinin Arapçası hangisi?", "secenekler": ["شَوْكَة", "أَبَدًا", "اِنْتَبِهْ", "الصَّلاة", "باب"], "dogru": 0, "arSecenek": true},
+    {"id": 67, "tip": "anlam", "zorluk": 1, "soru": "«oyunlar» kelimesinin Arapçası hangisi?", "secenekler": ["أَحْذِيَة", "طائِرَة", "مَبْلَغ", "أَلْعاب", "وَسيلَة"], "dogru": 3, "arSecenek": true},
+    {"id": 68, "tip": "anlam", "zorluk": 1, "soru": "«evimiz» kelimesinin Arapçası hangisi?", "secenekler": ["بَيْتُنا", "أَحَدَ عَشَرَ", "عامِل", "هَيّا", "كَثيرًا"], "dogru": 0, "arSecenek": true},
+    {"id": 69, "tip": "anlam", "zorluk": 3, "soru": "«sa'y eder / koşar» kelimesinin Arapçası hangisi?", "secenekler": ["مُمارَسَةُ الرِّياضَة", "يَسْعى", "أَب", "خُضْرَوات", "حَساء"], "dogru": 1, "arSecenek": true},
+    {"id": 70, "tip": "anlam", "zorluk": 1, "soru": "«de, dahi» kelimesinin Arapçası hangisi?", "secenekler": ["أَطْباق", "العُطْلَةُ الصَّيْفِيَّة", "أَيْضًا", "أَشْعُرُ", "سِنّ"], "dogru": 2, "arSecenek": true},
+    {"id": 71, "tip": "anlam", "zorluk": 1, "soru": "«onun kitabı (erkek)» kelimesinin Arapçası hangisi?", "secenekler": ["بُنَيّ", "مَمْنوعُ الوُقوف", "بولو", "شُرْطِيَّة", "كِتابُهُ"], "dogru": 4, "arSecenek": true},
+    {"id": 72, "tip": "anlam", "zorluk": 3, "soru": "«her zaman / daima» kelimesinin Arapçası hangisi?", "secenekler": ["دائِمًا", "الصَّخْرَة", "أَبَدًا", "مُشْتَرٍ", "أَمْسِ"], "dogru": 0, "arSecenek": true},
+    {"id": 73, "tip": "anlam", "zorluk": 1, "soru": "«lezzetli» kelimesinin Arapçası hangisi?", "secenekler": ["المَدينَةُ المُنَوَّرَة", "مَطَر", "لَذيذ", "يَمْشي", "أُمّ"], "dogru": 2, "arSecenek": true},
+    {"id": 74, "tip": "anlam", "zorluk": 1, "soru": "«yavrum» kelimesinin Arapçası hangisi?", "secenekler": ["بُنَيّ", "المَرْوَة", "أَبَدًا", "السّابِعَة", "هَذِهِ"], "dogru": 0, "arSecenek": true},
+    {"id": 75, "tip": "anlam", "zorluk": 1, "soru": "«misket, bilye» kelimesinin Arapçası hangisi?", "secenekler": ["تُوجَدُ", "تَرْمي", "حَسَبَ", "دُعْبُلَة", "مَكان"], "dogru": 3, "arSecenek": true},
+    {"id": 76, "tip": "anlam", "zorluk": 1, "soru": "«kapı» kelimesinin Arapçası hangisi?", "secenekler": ["أَعْرِفُ", "سَيِّدي", "باب", "الأَكْل", "أَحْزِمَة"], "dogru": 2, "arSecenek": true},
+    {"id": 77, "tip": "anlam", "zorluk": 1, "soru": "«on bir» kelimesinin Arapçası hangisi?", "secenekler": ["القُدْسُ الشَّريف", "أَحَدَ عَشَرَ", "أَثْناءَ", "الأُسْبوعُ القادِم", "شاي"], "dogru": 1, "arSecenek": true},
+    {"id": 78, "tip": "anlam", "zorluk": 1, "soru": "«sağlık» kelimesinin Arapçası hangisi?", "secenekler": ["صِحَّة", "إِنْ شاءَ اللهُ", "المَسْجِدُ الحَرام", "مَكْتَبَة", "أَطْباق"], "dogru": 0, "arSecenek": true},
+    {"id": 79, "tip": "anlam", "zorluk": 1, "soru": "«tereyağı» kelimesinin Arapçası hangisi?", "secenekler": ["أَحَدَ عَشَرَ", "أَماكِن", "الأَماكِنُ المُقَدَّسَة", "زُبْدَة", "ناجِح"], "dogru": 3, "arSecenek": true},
+    {"id": 80, "tip": "anlam", "zorluk": 2, "soru": "«yürür» kelimesinin Arapçası hangisi?", "secenekler": ["مُشْكِلَة", "وِشاح", "صَلاة", "لا أُريدُ", "يَمْشي"], "dogru": 4, "arSecenek": true},
+    {"id": 9000, "tip": "anlam", "bicim": "eslestir", "zorluk": 1, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["مَرْكَزُ التَّسَوُّقِ", "alışveriş merkezi"], ["مَدْرَسَة", "okul"], ["وَلِذَلِكَ", "bu yüzden"], ["حِوار", "konuşma, diyalog"]]},
+    {"id": 9001, "tip": "anlam", "bicim": "eslestir", "zorluk": 1, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["طَبيبَة", "doktor (bayan)"], ["تَعْبان", "yorgun"], ["ثَلّاجَة", "buzdolabı"], ["ذَهَبَ", "gitti"]]},
+    {"id": 9002, "tip": "anlam", "bicim": "eslestir", "zorluk": 3, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["جَوْرَب", "çorap"], ["هِيَ", "o (kız)"], ["يَسيرُ", "ilerler / gider"], ["حَقيبَة", "çanta"]]},
+    {"id": 9003, "tip": "anlam", "bicim": "eslestir", "zorluk": 3, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["يَقَعُ", "bulunur / yer alır"], ["يَسْمَعُ", "işitir"], ["لا تُسْرِفْ", "israf etme"], ["طَلَب", "sipariş"]]},
+    {"id": 9004, "tip": "anlam", "bicim": "eslestir", "zorluk": 3, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["قَريب", "yakın"], ["قِبْلَة", "kıble"], ["أَبْيَض", "beyaz"], ["كوب", "bardak"]]},
+    {"id": 9005, "tip": "anlam", "bicim": "eslestir", "zorluk": 2, "soru": "Kelimeleri anlamlarıyla eşleştir.", "ciftler": [["مُسْتَشْفى", "hastane"], ["الفَجْر", "sabah namazı"], ["قُمامَة", "çöp"], ["وَلَد", "çocuk"]]},
+    {"id": 9006, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 2, "soru": "Bu kelime «öyleyse» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "إِذَنْ"},
+    {"id": 9007, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «uzak» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "المُواصَلات"},
+    {"id": 9008, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «uyur» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "يَنامُ"},
+    {"id": 9009, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «öğretmen (bayan)» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "تَفَضَّلْ"},
+    {"id": 9010, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «ev» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "بَيْت"},
+    {"id": 9011, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «yıkarım» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "صالَةُ الرِّياضَةِ"},
+    {"id": 9012, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 3, "soru": "Bu kelime «uzak» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "بَعيد"},
+    {"id": 9013, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «kızgın (dişil)» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "خَرَجَ"},
+    {"id": 9014, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 1, "soru": "Bu kelime «öğretmen (bayan)» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 0, "arapca": "مُعَلِّمَة"},
+    {"id": 9015, "tip": "anlam", "bicim": "dogruyanlis", "zorluk": 2, "soru": "Bu kelime «çamaşır makinesi» demek. Doğru mu?", "secenekler": ["Doğru", "Yanlış"], "dogru": 1, "arapca": "أَصْفَر"},
+    {"id": 9016, "tip": "anlam", "bicim": "surukle", "zorluk": 2, "soru": "Harfleri sırala: «şimdi»", "parcalar": ["ا", "ل", "آ", "ن"]},
+    {"id": 9017, "tip": "anlam", "bicim": "surukle", "zorluk": 1, "soru": "Harfleri sırala: «kitap»", "parcalar": ["ك", "ت", "ا", "ب"]},
+    {"id": 9018, "tip": "anlam", "bicim": "surukle", "zorluk": 2, "soru": "Harfleri sırala: «kulak»", "parcalar": ["أ", "ذ", "ن"]},
+    {"id": 9019, "tip": "anlam", "bicim": "surukle", "zorluk": 2, "soru": "Harfleri sırala: «altında»", "parcalar": ["ت", "ح", "ت"]},
+    {"id": 9020, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«şapka» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "قبعة", "tuslar": ["ب", "ة", "غ", "ز", "ع", "ك", "ت", "س", "ق", "خ"]},
+    {"id": 9021, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«asla» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "أبدا", "tuslar": ["ر", "ص", "ش", "أ", "د", "ك", "ا", "ث", "ف", "ب"]},
+    {"id": 9022, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«duydu» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "سمع", "tuslar": ["ش", "ا", "ذ", "ز", "ل", "ت", "م", "ع", "س", "د"]},
+    {"id": 9023, "tip": "anlam", "bicim": "yazma", "zorluk": 3, "soru": "«kız» kelimesinin Arapçasını harflerle yaz.", "cevapYazi": "بنت", "tuslar": ["ل", "ب", "ت", "ن", "غ", "ع", "ض", "ش", "ر", "و"]},
     {"id": 20000, "tip": "cumle", "zorluk": 1, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Ben çorba pişiriyorum.", "Medine-i Münevvere Müslümanların ilk başkentidir.", "Abdullah erkenden uyandı.", "Doktor reçeteyi yazar."], "dogru": 0, "arapca": "أَنا أَطْبُخُ الحَساءَ."},
     {"id": 20001, "tip": "cumle", "zorluk": 3, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Temizliğine Dikkat et.", "Uçak havalimanına iniyor.", "Saat on bir.", "Turist otele indi."], "dogru": 1, "arapca": "الطّائِرَةُ تَهْبِطُ في المَطارِ."},
     {"id": 20002, "tip": "cumle", "zorluk": 3, "soru": "Bu cümlenin anlamı nedir?", "secenekler": ["Geminin rengi kahverengidir.", "Yusuf öğle yemeğinde portakal suyunu tercih eder.", "Hastane buraya uzak mı?", "Okulun kapısı"], "dogru": 0, "arapca": "لَوْنُ السَّفينَةِ بُنِّيٌّ."},
@@ -1424,6 +1424,48 @@ const TIP_BILGI = {
   "irab":       { ad: "İ'rab",           emoji: "📐" }
 };
 const ZORLUK_AD = { 1: "Kolay", 2: "Orta", 3: "Zor" };
+/* SÜZGEÇ PANELİ AÇIKLAMALARI ------------------------------------------
+   Panelde her seçeneğin altında bir cümlelik açıklama var: öğretmen ikonu
+   çözmeye çalışmasın, ne kapattığını okusun. */
+const BICIM_ACIKLAMA = {
+  "test":       "Şıklardan doğru olanı işaretlenir.",
+  "surukle":    "Karışık kelimeler doğru sıraya dizilir.",
+  "eslestir":   "Arapça kelime Türkçe karşılığıyla birleştirilir.",
+  "yazma":      "Cevap harf harf klavyeyle yazılır.",
+  "bosluk":     "Cümledeki boşluğa uyan seçenek bulunur.",
+  "dogruyanlis":"Verilen yargı doğru mu yanlış mı seçilir.",
+  "cumlesira":  "Cümlenin kelimeleri doğru sıraya dizilir."
+};
+const ZORLUK_ACIKLAMA = {
+  1: "Tek kelime, doğrudan anlam soruları.",
+  2: "Cümle kurma ve çeviri soruları.",
+  3: "Uzun cümle, dilbilgisi ve ayrıntı soruları."
+};
+/* SORU İÇERİĞİ — üçüncü süzgeç ekseni.
+   Komisyon sürümü içeriği metinden SEZGİSEL olarak çıkarıyor; burada buna
+   gerek yok, çünkü ka.com sorularının hepsinde zaten `tip` alanı var
+   (TIP_BILGI). Yani içerik ekseni tahmine değil, veriye dayanıyor. */
+const ICERIK_SIRA = ["anlam","cumle","harf","edat","kok","vezin","ters-vezin","gramer","irab","bosluk","dogruyanlis","ayet"];
+const ICERIK_NOT = {
+  "harf":"Harf tanıma, sıra, ses.",
+  "bosluk":"Cümlede eksik parça.",
+  "dogruyanlis":"Yargı doğrulama.",
+  "edat":"Harf-i cer ve edatlar.",
+  "kok":"Kelimenin kökü.",
+  "vezin":"Kelimenin kalıbı.",
+  "anlam":"Kelime ve ifade anlamı.",
+  "ters-vezin":"Kalıptan kelime üretme.",
+  "ayet":"Âyet ya da örnek metin.",
+  "cumle":"Cümle kurma ve çeviri.",
+  "gramer":"Dilbilgisi kuralı.",
+  "irab":"Cümle çözümlemesi."
+};
+/* Sorunun içerik kategorisi. Tanımsız/bilinmeyen tip "anlam" sayılır ki
+   hiçbir soru süzgecin dışında kaybolmasın. */
+function icerikAl(q){
+  const t = (q && q.tip) || "";
+  return ICERIK_SIRA.indexOf(t) >= 0 ? t : "anlam";
+}
 const SIK_RENK = ["#E74C3C", "#3498DB", "#F1C40F", "#27AE60", "#9B59B6"]; // A B C D E
 
 /* =====================================================================
@@ -1547,6 +1589,30 @@ const BIY_SINIFLAR = (function () {
 const SEVIYE_BASLIK = { 1: "Temel · Alfabe ve Kelimeler", 2: "Orta · Cümleler ve Kalıplar", 3: "İleri · Sarf ve Dilbilgisi" };
 /* Sinif konulari tek baslik altinda toplanir (kelime + cumle ayrimi yok) */
 const SINIF_BASLIK = "Sınıflar · kelime ve cümleler bir arada";
+
+/* ===================================================================
+   ÜNİTE UYUM KATMANI (çevrimdışı modül için)
+   -------------------------------------------------------------------
+   cevrimdisi.js dersleri "ünite" başlıkları altında gruplar. ka.com'da
+   ünite kavramı yok; ama listeler ZATEN dört küme hâlinde gösteriliyor:
+   Sınıflar + üç seviye. Bu dört küme burada ünite yerine geçiyor, böylece
+   çevrimdışı modülün 3300 satırlık kodunda tek satır değiştirmeye gerek
+   kalmıyor. Ünite adları Türkçe olduğu için cevrimdisi.js'teki UNITE_TR
+   sözlüğü boş bırakıldı; adlar doğrudan buradan okunuyor.
+   =================================================================== */
+const UNITELER = [
+  { no: 1, ad: "Sınıflar",  alt: "kelime ve cümleler bir arada" },
+  { no: 2, ad: "Temel",     alt: "Alfabe ve Kelimeler" },
+  { no: 3, ad: "Orta",      alt: "Cümleler ve Kalıplar" },
+  { no: 4, ad: "İleri",     alt: "Sarf ve Dilbilgisi" }
+];
+/* Her listeye kümesinin numarası yazılır: sınıf listeleri 1, seviye 1/2/3
+   olanlar sırasıyla 2/3/4. */
+KONULAR.forEach(k => { k.unite = k.sinif ? 1 : (1 + (Math.min(3, Math.max(1, +k.seviye || 1)))); });
+/* ka.com dosyası tek; kilit yok, dört küme de görünür. */
+function gorunurUniteNolar(){ return [1, 2, 3, 4]; }
+function kapsamTumKonu(){ return null; }
+function uniteAdiTr(no){ const u = UNITELER.find(x => x.no === no); return u ? (u.ad + " · " + u.alt) : ""; }
 /* ---------------------------------------------------------------------
    "HEPSİ" — konu listesinin en ustundeki SANAL baslik.
    Gercek bir KONULAR kaydi degildir; secilince butun konularin sorulari
@@ -1646,6 +1712,15 @@ const state = {
      sorular tura hiç girmez. Havuz penceresinde ayrı bir süzgeç yoktu artık;
      seçim ana ekranda, süre ve soru tipi düğmelerinin yanında yapılıyor. */
   zorlukSecim: { 1: true, 2: true, 3: true },
+  /* Üçüncü eksen: soru İÇERİĞİ (ne soruluyor). Anahtarlar TIP_BILGI'den;
+     hepsi açık başlar, kapatılanın soruları havuzda soluk görünür. */
+  icerikSecim: (function(){ const o = {}; ICERIK_SIRA.forEach(k => o[k] = true); return o; })(),
+  /* --- çevrimdışı modülün beklediği alanlar (ünite uyum katmanı) --- */
+  uniteNo: 1,          // açık küme
+  uniteAcik: null,     // akordiyonda açık olan küme
+  uniteKilit: null,    // ka.com'da kilit yok
+  /* Çevrimdışı elle puanlama ayarları; canlı modda kullanılmaz. */
+  puanlama: { yon: "esit", dogru: 10, kolay: 10, orta: 20, zor: 30, yanlisAc: false, yanlis: 0 },
   oyunModu: "takim",         // takim | birey | okul  (yarışma biçimi)
   bekleyenListe: [],         // birey modu: onay bekleyen katılımcılar
   katilimId: null,           // öğrenci tarafı: kendi katılımcı kaydının id'si
@@ -2035,6 +2110,14 @@ const BIY = {
      null doner -> havuzda butun listeler gorunur. */
   _sinirKonuId(){ return (state.konuId && state.konuId !== HEPSI_ID) ? state.konuId : null; },
   _aktifSorular(){ const k = BIY._aktifKonu(); return (k && k.sorular) || []; },
+  /* Süzgeç panellerinin saydığı havuz: bir liste seçilmişse o liste, hiçbir
+     şey seçilmemişse BÜTÜN sorular. Yoksa açılışta bütün sayaçlar 0 çıkıyor
+     ve öğretmen "hiç soru yok" sanıyordu. */
+  _suzgecHavuzu(){
+    const k = BIY._aktifKonu();
+    if (k && Array.isArray(k.sorular) && k.sorular.length) return k.sorular;
+    return KONULAR.reduce((t, x) => t.concat(x.sorular || []), []);
+  },
   _konuVurgu(){
     const sel = $("konuSecim"); if (sel){ sel.classList.toggle("secili", !!state.konuId); sel.value = state.konuId || ""; }
     const k = BIY._aktifKonu();
@@ -2067,6 +2150,19 @@ const BIY = {
   _konuListeDis(e){ if (!e.target.closest || !e.target.closest("#konuSecici")) BIY.konuListeKapat(); },
   _konuListeTus(e){ if (e.key === "Escape" || e.key === "Esc") BIY.konuListeKapat(); },
   // tüm konulardaki soruların havuzu (elle seçim için)
+  /* Konu satırındaki ÖĞRETİM YILI rozeti. Satırın kendisi bir <button>
+     olduğu için burada yalnız DURAĞAN rozet basılır (seçiciyi iç içe
+     tıklanabilir öğe yapmamak için); yıl seçimi index kartlarından ve
+     muhâdese ünite listesinden yapılır. Sınıf konusu değilse veya sınıfın
+     yıl kaydı yoksa boş döner. */
+  _yilRozet(sinif){
+    const v = window.KidefSinifVeri;
+    if (!sinif || !v || !v.yilRozetHtml) return "";
+    const r = v.yilRozetHtml(sinif, { secici: false, sinif: "biy-ds-yilroz" });
+    if (r && v.yilStilKur) v.yilStilKur();
+    return r || "";
+  },
+
   _soruHavuzu(){
     const havuz = [];
     KONULAR.forEach(k => { if (Array.isArray(k.sorular)) k.sorular.forEach(q => havuz.push({ key: k.id + "#" + q.id, konuId: k.id, konuAd: k.ad, soru: q })); });
@@ -2109,6 +2205,7 @@ const BIY = {
           + '<span class="biy-ds-nokta" aria-hidden="true"></span>'
           + '<span class="biy-ds-ad2">'+kacis(k.ad)+'</span>'
           + '<span class="biy-ds-rozet biy-ds-sinifroz'+(k.sinif ? '' : ' genel')+'">'+(k.sinif || 'Genel')+'</span>'
+          + BIY._yilRozet(k.sinif)
           + '<span class="biy-ds-rozet biy-ds-say">'+((k.sorular||[]).length)+'</span>'
           + (k.pasif ? '<span class="biy-ds-yakinda">yakında</span>'
                      : '<svg class="biy-ds-tik" viewBox="0 0 24 24" aria-hidden="true" fill="none"'
@@ -2200,6 +2297,53 @@ const BIY = {
 
   /* ---------- Soru Havuzu (elle seçim) ---------- */
   _secSet(){ if (!state.secilenSet) state.secilenSet = new Set(); return state.secilenSet; },
+
+  /* ===================================================================
+     ÇEVRİMDIŞI MODÜL KÖPRÜSÜ
+     cevrimdisi.js bu altı üyeyi çağırıyor; ka.com sürümünde karşılıkları
+     başka adlarla vardı ya da hiç yoktu. Hepsi ince sarmalayıcı: iş
+     mantığı yine tek yerde (süzgeç, süre, liste seçimi).
+     =================================================================== */
+  _konuSorulari(k){ return (k && Array.isArray(k.sorular)) ? k.sorular.filter(BIY._havuzdaMi) : []; },
+  _konuTumSorulari(k){ return (k && Array.isArray(k.sorular)) ? k.sorular.slice() : []; },
+  _soruSuresi(q){ return soruSuresi(q); },
+  /* Küme (ünite yerine geçen grup) seçimi — akordiyon başlığı. */
+  uniteSec(no){
+    no = +no; if (!no) return;
+    if (no === state.uniteNo && state.uniteAcik === no) return;
+    state.uniteNo = no; state.uniteAcik = no;
+    state.konuId = null;                       // küme değişti → liste ve havuz sıfırlanır
+    const set = BIY._secSet(); if (set.size) set.clear();
+    state.soruSayisi = null; state.soruSayiHavuzdan = false;
+    BIY._konulariHazirla();
+    BIY._soruSecSayiGuncelle();
+    BIY._soruSayiSinir();
+    BIY._menuDurum();
+  },
+  uniteAc(no){
+    no = +no;
+    if (state.uniteAcik === no){ state.uniteAcik = null; BIY._konulariHazirla(); return; }
+    state.uniteAcik = no;
+    if (no !== state.uniteNo) BIY.uniteSec(no); else BIY._konulariHazirla();
+  },
+  kilidiAc(){ state.uniteKilit = null; BIY._konulariHazirla(); },
+
+  /* ---- KURULUM SAYFASI ----------------------------------------------
+     Ayrı bir "mod kapısı" ekranı YOK. Öğretmen doğrudan kurulum
+     sihirbazına girer; canlı ⇄ çevrimdışı seçimi orada bir bölüm olarak
+     durur (cevrimdisi.js · COFF.modSec). Böylece mod, katılım biçimi,
+     liste ve soru sayısı tek sayfada seçiliyor.
+     Çevrimdışı modül yüklenmemişse eski canlı kurulum ekranına düşülür. */
+  _modKapisi(){
+    if (window.COFF && COFF.ac){ try { COFF.ac(); return; } catch(e){ console.warn("[BIY] COFF:", e); } }
+    ekranGoster("ekranAnasayfa");
+  },
+  modSec(hangi){
+    /* İki mod da aynı kuruluma girer; fark yalnız son adımda. */
+    if (window.COFF && COFF.ac){ COFF.ac(hangi === "canli" ? "canli" : "cevrimdisi"); return; }
+    ekranGoster("ekranAnasayfa");
+  },
+  modaDon(){ BIY._modKapisi(); },
   _soruSecSayiGuncelle(){
     const n = BIY._secSet().size;
     /* ESKIDEN: havuzdan soru secilince konu secimi kalkardi (tek kaynak
@@ -2240,9 +2384,11 @@ const BIY = {
         '</div>' +
         '<div class="biy-soru-sec-liste" id="soruSecListe"></div>' +
         '<div class="biy-soru-sec-alt">' +
-          '<button class="biy-btn biy-onay-hayir" onclick="BIY.soruSecTemizle()">Tümünü temizle</button>' +
-          '<span class="biy-soru-sec-sepet" id="soruSecSepet" aria-live="polite"></span>' +
-          '<button class="biy-btn biy-btn-yesil" onclick="BIY.soruSecKapat()">Bitti</button>' +
+          BIY._sepetHtml() +
+          '<div class="biy-soru-sec-butonlar">' +
+            '<button class="biy-btn biy-onay-hayir" onclick="BIY.soruSecTemizle()">Tümünü temizle</button>' +
+            '<button class="biy-btn biy-btn-yesil" onclick="BIY.soruSecKapat()">Bitti</button>' +
+          '</div>' +
         '</div>' +
       '</div>';
     document.body.appendChild(ov);
@@ -2251,27 +2397,134 @@ const BIY = {
     BIY._soruSecRender();
   },
   soruSecAra(v){ state.soruSecArama = (v||"").toLowerCase(); BIY._soruSecRender(); },
+  /* ---------- havuz sınırı (tavan) ----------
+     Öğretmen aşağıdan bir soru sayısı seçtiyse o sayı TAVAN olur; sepet
+     "n / tavan" gösterir, tavan dolunca seçilmemiş satırlar soluklaşır. */
+  _havuzSinir(){ return BIY._hsTavan(); },
+  _havuzKalan(){ const s = BIY._havuzSinir(); return s ? Math.max(0, s - BIY._secSet().size) : Infinity; },
+  _havuzDoluMu(){ const s = BIY._havuzSinir(); return !!s && BIY._secSet().size >= s; },
+  /* Süzgeç dışı sorular listeden ATILMAZ, soluk gösterilir: öğretmen neyin
+     neden seçilemediğini görsün diye. Anahtarla da korunur (soruSecTik). */
+  _suzgecDisiMi(key){
+    const p = String(key).split("#");
+    const k = KONULAR.find(x => x.id === p[0]); if (!k) return false;
+    const q = (k.sorular || []).find(x => String(x.id) === p[1]);
+    return q ? !BIY._havuzdaMi(q) : false;
+  },
+  /* ---------- SEPET: seçilen sorular gözle görülür şekilde birikir ----------
+     Alt bardaki düz sayı hapı yerine dolan bir sepet: SVG içindeki dolgu
+     seviyesi ve ilerleme çubuğu, seçimin tavana ne kadar yaklaştığını tek
+     bakışta gösterir. Tavan yoksa çubuk yalnız "biriktiğini" anlatır. */
+  _sepetHtml(){
+    return '<div class="biy-sepet" id="soruSepet">'
+      + '<span class="biy-sepet-ikon" aria-hidden="true">'
+        + '<svg viewBox="0 0 52 52">'
+          + '<defs><clipPath id="biySepetKirp"><path d="M8 20h36l-4.5 22a4 4 0 0 1-4 3.2H16.5a4 4 0 0 1-4-3.2z"/></clipPath></defs>'
+          + '<g clip-path="url(#biySepetKirp)">'
+            + '<rect class="biy-sepet-dolgu" id="sepetDolgu" x="6" y="46" width="40" height="30"/>'
+          + '</g>'
+          + '<path class="biy-sepet-kulp" d="M18 20V15a8 8 0 0 1 16 0v5" fill="none" stroke="currentColor"'
+          + ' stroke-width="3" stroke-linecap="round"/>'
+          + '<path d="M8 20h36l-4.5 22a4 4 0 0 1-4 3.2H16.5a4 4 0 0 1-4-3.2z" fill="none" stroke="currentColor"'
+          + ' stroke-width="3" stroke-linejoin="round"/>'
+          + '<path d="M5.5 20h41" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>'
+        + '</svg>'
+        + '<i class="biy-sepet-dusen" id="sepetDusen"></i>'
+      + '</span>'
+      + '<div class="biy-sepet-bilgi">'
+        + '<div class="biy-sepet-sayi"><b id="sepetSayi">0</b><span id="sepetHedef"></span></div>'
+        + '<div class="biy-sepet-bar"><i id="sepetBar"></i></div>'
+        + '<span class="biy-sepet-not" id="sepetNot"></span>'
+      + '</div>'
+    + '</div>';
+  },
+  _sepetGuncelle(dusenVar){
+    const kap = $("soruSepet"); if (!kap) return;
+    const n = BIY._secSet().size, hedef = BIY._havuzSinir();
+    const oran = hedef ? Math.min(100, (n / hedef) * 100) : (n ? Math.min(100, n * 4) : 0);
+    const dolu = BIY._havuzDoluMu();
+    const sy = $("sepetSayi"); if (sy) sy.textContent = n;
+    const hd = $("sepetHedef"); if (hd) hd.textContent = hedef ? (" / " + hedef) : " soru";
+    const br = $("sepetBar"); if (br) br.style.width = oran + "%";
+    const dg = $("sepetDolgu"); if (dg) dg.setAttribute("y", String(46 - (oran / 100) * 26));
+    const nt = $("sepetNot");
+    if (nt) nt.textContent = !hedef ? "" : (dolu ? "Sayı tamamlandı" : ("Daha seçebilirsin: " + (hedef - n) + " tane"));
+    kap.classList.toggle("dolu", dolu);
+    kap.classList.toggle("bos", n === 0);
+    if (dusenVar){
+      const d = $("sepetDusen");
+      if (d){ d.classList.remove("biy-dus"); void d.offsetWidth; d.classList.add("biy-dus"); }
+      kap.classList.remove("biy-zipla"); void kap.offsetWidth; kap.classList.add("biy-zipla");
+    }
+  },
+  _sinirUyar(){
+    const kap = $("soruSepet"); if (!kap) return;
+    kap.classList.remove("biy-salla"); void kap.offsetWidth; kap.classList.add("biy-salla");
+    const nt = $("sepetNot");
+    if (nt){
+      nt.textContent = "Belirlenen sayıya ulaştın (" + BIY._havuzSinir() + ")";
+      nt.classList.add("uyari");
+      setTimeout(() => { nt.classList.remove("uyari"); BIY._sepetGuncelle(); }, 1800);
+    }
+  },
+  _kapsamSvg(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"'
+         + ' stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5h18M6 12h12M9.5 17.5h5"/></svg>';
+  },
+  /* Listenin başındaki renk açıklaması: hangi renk hangi soru tipi.
+     Süzgeçte kapalı tip burada da üstü çizili ve soluk görünür — böylece
+     "bu sorular neden pasif?" sorusunun cevabı listenin başında duruyor. */
+  _tipEfsanesi(){
+    return '<div class="biy-hs-tipler">' + Object.keys(BICIM_BILGI).map(b => {
+      const kapali = state.bicimSecim[b] === false;
+      return '<span class="biy-hs-tip biy-hs-b-' + b + (kapali ? ' kapali' : '') + '"'
+        + (kapali ? ' title="Bu tür süzgeçte kapalı"' : '') + '>' + (ETIKET_BICIM[b] || "")
+        + kacis(BICIM_BILGI[b].ad) + '</span>';
+    }).join("") + '</div>';
+  },
   _soruSecRender(){
     const kap = $("soruSecListe"); if (!kap) return;
     const set = BIY._secSet();
     const ara = state.soruSecArama;
-    const zorAd = { 1:"Kolay", 2:"Orta", 3:"Zor" };
+    const doluMu = BIY._havuzDoluMu();
     /* C-1: konu secildiyse havuzda YALNIZ o listenin sorulari cikar. */
     const kid = BIY._sinirKonuId();
-    const listeler = kid ? KONULAR.filter(k => k.id === kid) : KONULAR;
-    let html = "";
+    const listeler = (kid ? KONULAR.filter(k => k.id === kid) : KONULAR)
+                       .filter(k => Array.isArray(k.sorular) && k.sorular.length);
+    const kapsamAd = kid ? ((KONULAR.find(k => k.id === kid) || {}).ad || "") : "Bütün listeler";
+    let html = '<div class="biy-hs-kapsam">' + BIY._kapsamSvg()
+             + '<span>' + kacis(kapsamAd) + '</span></div>'
+             + BIY._tipEfsanesi();
+    /* Havuz birden çok listeyi kapsıyorsa araya küme başlığı gir: sınıflar
+       ayrı, seviye seviye konular ayrı. Ana ekrandaki liste ile aynı dil. */
+    const cokKume = listeler.length > 1;
+    let sonKume = null;
     listeler.forEach(k => {
-      if (!Array.isArray(k.sorular) || !k.sorular.length) return;
-      /* Ana ekranda kapatılan tip/zorluk buraya hiç düşmez. */
-      const uygun = k.sorular.filter(BIY._havuzdaMi);
-      const sorular = uygun.filter(q => !ara || (q.soru + " " + (q.arapca||"") + " " + aramaMetni(q)).toLowerCase().indexOf(ara) >= 0);
+      const hepsi = k.sorular.slice();                       // süzgeç dışı da listelenir
+      const uygun = k.sorular.filter(BIY._havuzdaMi);         // seçilebilir olanlar
+      const sorular = hepsi.filter(q => !ara || (q.soru + " " + (q.arapca||"") + " " + aramaMetni(q)).toLowerCase().indexOf(ara) >= 0);
       if (!sorular.length) return;
       const seciliSay = uygun.filter(q => set.has(k.id + "#" + q.id)).length;
+      const disiSay = hepsi.length - uygun.length;
+      const kume = k.sinif ? "sinif" : ("seviye" + k.seviye);
+      if (cokKume && kume !== sonKume){
+        sonKume = kume;
+        const kumeAd = k.sinif ? SINIF_BASLIK : (SEVIYE_BASLIK[k.seviye] || "");
+        const kumeIm = k.sinif ? "▦" : "●".repeat(k.seviye || 1);
+        const kumeSay = listeler.filter(x => (x.sinif ? "sinif" : ("seviye" + x.seviye)) === kume)
+                                .reduce((t, x) => t + x.sorular.length, 0);
+        html += '<div class="biy-hs-kume">'
+          + '<span class="biy-hs-kume-im">' + kumeIm + '</span>'
+          + '<span class="biy-hs-kume-ad">' + kacis(kumeAd) + '</span>'
+          + '<span class="biy-hs-kume-say">' + kumeSay + ' soru</span>'
+          + '</div>';
+      }
       const acik = ara ? true : !!(state.soruSecAcik && state.soruSecAcik[k.id]);
       html += '<div class="biy-hs-grup'+(acik?' acik':'')+'" data-konu="'+k.id+'">' +
         '<div class="biy-hs-baslik" onclick="BIY.soruSecAkordiyon(\''+k.id+'\')">' +
         '<span class="biy-hs-ok">▸</span>' +
-        '<b>'+kacis(k.ad)+'</b> <span class="biy-hs-say'+(seciliSay>0?' dolu':'')+(seciliSay===uygun.length?' tam':'')+'"><b>'+seciliSay+'</b><i>/</i>'+uygun.length+'</span>' +
+        '<b>'+kacis(k.ad)+'</b> <span class="biy-hs-say'+(seciliSay>0?' dolu':'')+((seciliSay===uygun.length&&uygun.length)?' tam':'')+'"><b>'+seciliSay+'</b><i>/</i>'+uygun.length+'</span>' +
+        (disiSay ? '<span class="biy-hs-disi-say" title="Süzgeç dışında kaldığı için seçilemeyen soru">'+disiSay+' pasif</span>' : '') +
         '<button class="biy-hs-tumu" title="Tümünü seç" aria-label="Tümünü seç" onclick="event.stopPropagation();BIY.soruSecTumu(\''+k.id+'\')">' +
           '<svg viewBox="0 0 24 24" class="biy-hs-tumu-svg" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
           '<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.5"/><path class="biy-ea-ciz" d="M7.4 12.6l3 3 6.2-7.2"/></svg></button></div>' +
@@ -2279,18 +2532,30 @@ const BIY = {
       sorular.forEach(q => {
         const key = k.id + "#" + q.id; const sec = set.has(key);
         const dogruSik = dogruCevapMetni(q);
-        html += '<label class="biy-hs-satir'+(sec?' secili':'')+'" data-key="'+key+'"' +
-            ' data-b="'+bicimAl(q)+'" data-z="'+(+q.zorluk || 0)+'" data-t="'+kacis(q.tip || "")+'">' +
-          '<input type="checkbox" '+(sec?'checked':'')+' onchange="BIY.soruSecTik(\''+key+'\', this)">' +
+        const b = bicimAl(q), z = +q.zorluk || 0;
+        const disi = !BIY._havuzdaMi(q);            // süzgeç dışı: soluk ve seçilemez
+        const kapali = disi || (!sec && doluMu);
+        const ipucu = disi
+          ? (state.bicimSecim[b] === false
+              ? (BICIM_BILGI[b] || {}).ad + " türü süzgeçte kapalı"
+              : (ZORLUK_AD[z] || "Bu zorlukta") + " sorular süzgeçte kapalı")
+          : ((BICIM_BILGI[b] || {}).ad || "") + (ZORLUK_AD[z] ? " · " + ZORLUK_AD[z] : "");
+        html += '<label class="biy-hs-satir biy-hs-b-'+b+' biy-hs-z'+z+(sec?' secili':'')+(disi?' biy-hs-disi':'')+(kapali?' biy-hs-kapali':'')+'" data-key="'+key+'"' +
+            ' data-b="'+b+'" data-z="'+z+'" data-t="'+kacis(q.tip || "")+'" title="'+kacis(ipucu)+'">' +
+          '<input type="checkbox" '+(sec?'checked':'')+(kapali?' disabled':'')+' onchange="BIY.soruSecTik(\''+key+'\', this)">' +
           BIY._hsRozetHtml(q) +
+          (ZORLUK_AD[z] ? '<span class="biy-hs-zor z'+z+'">'+kacis(ZORLUK_AD[z])+'</span>' : '') +
           '<span class="biy-hs-metin">'+soruHtml(q)+(q.arapca?' <i>'+kacis(q.arapca)+'</i>':'')+
             ' <b class="biy-hs-dogru">✓ '+kacis(dogruSik)+'</b></span>' +
+          (disi ? '<span class="biy-hs-disi-not">süzgeç dışı</span>' : '') +
         '</label>';
       });
       html += '</div></div>';
     });
-    kap.innerHTML = html || '<p class="biy-alt" style="text-align:center">' +
-      (kid ? 'Bu listede gösterilecek soru yok.' : 'Sonuç yok.') + '</p>';
+    kap.innerHTML = html;
+    if (!kap.querySelector(".biy-hs-grup"))
+      kap.insertAdjacentHTML("beforeend", '<p class="biy-alt" style="text-align:center">' +
+        (kid ? 'Bu listede gösterilecek soru yok.' : 'Sonuç yok.') + '</p>');
     BIY._soruSecSayilar();
   },
 
@@ -2312,15 +2577,16 @@ const BIY = {
        düzeni sabit olduğundan sayı değişse de ikon yerinden oynamaz.
   ===================================================================== */
   _hsRozetHtml(q){
-    const b = bicimAl(q), z = +q.zorluk || 0;
+    const b = bicimAl(q);
     const bb = BICIM_BILGI[b] || { ad: b };
+    /* Zorluk artık satırda METİN hapıyla ("Kolay/Orta/Zor") yazıyor;
+       burada ikonunu da basmak aynı şeyi iki kez söylemek olurdu. */
     return '<span class="biy-hs-roz" aria-hidden="true">' +
       '<i class="biy-hs-roz-b" title="'+kacis(bb.ad)+'">'+(ETIKET_BICIM[b] || ETIKET_TIP.varsayilan)+'</i>' +
-      (ETIKET_ZORLUK[z] ? '<i class="biy-hs-roz-z z'+z+'" title="'+kacis(ZORLUK_AD[z] || "")+'">'+ETIKET_ZORLUK[z]+'</i>' : '') +
     '</span>';
   },
   // sayaçları (grup başlıkları + toplam + buton) satırları yeniden çizmeden güncelle
-  _soruSecSayilar(){
+  _soruSecSayilar(dusenVar){
     const set = BIY._secSet();
     document.querySelectorAll(".biy-hs-grup").forEach(g => {
       const k = KONULAR.find(x => x.id === g.getAttribute("data-konu")); if (!k) return;
@@ -2356,14 +2622,21 @@ const BIY = {
         tv.title = "Aşağıdan " + tavan + " soru seçtin; havuzdan en çok o kadar soru işaretlenebilir.";
       }
     }
-    // Alt bardaki SEPET: hangi listeden seçilirse seçilsin toplam burada güncellenir
-    const sepet = $("soruSecSepet");
-    if (sepet){
-      const n = set.size;
-      sepet.classList.toggle("dolu", n > 0);
-      sepet.innerHTML = '<svg viewBox="0 0 24 24" class="biy-sepet-svg" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 7h15l-1.3 9.2a2.2 2.2 0 0 1-2.2 1.9H8a2.2 2.2 0 0 1-2.2-1.9z"/><path d="M4.5 7 3.4 3.6H1.4"/><circle cx="9" cy="20.4" r="1.3"/><circle cx="16" cy="20.4" r="1.3"/><path d="M9 11.2h6"/></svg>' +
-        '<b>' + n + '</b> soru seçildi';
-    }
+    /* Tavan dolunca seçilmemiş satırlar kapanır; süzgeç dışı olanlar
+       zaten hep kapalı. Satırları yeniden çizmeden sınıf/disabled güncelle. */
+    const dolu = BIY._havuzDoluMu();
+    document.querySelectorAll("#soruSecListe .biy-hs-satir").forEach(r => {
+      const cb = r.querySelector("input"); if (!cb) return;
+      if (r.classList.contains("biy-hs-disi")){
+        r.classList.add("biy-hs-kapali"); cb.disabled = true; return;
+      }
+      const kapali = !cb.checked && dolu;
+      cb.disabled = kapali; r.classList.toggle("biy-hs-kapali", kapali);
+    });
+    document.querySelectorAll("#soruSecListe .biy-hs-tumu")
+            .forEach(b => b.classList.toggle("biy-hs-tumu-kapali", dolu));
+    // Alt bardaki SEPET: hangi listeden seçilirse seçilsin toplam burada birikir
+    BIY._sepetGuncelle(dusenVar);
     BIY._soruSecSayiGuncelle();
   },
   /* =====================================================================
@@ -2405,18 +2678,23 @@ const BIY = {
   // tek satır: yeniden çizmeden aç/kapa (kaydırma korunur)
   soruSecTik(key, cb){
     const set = BIY._secSet();
+    /* Süzgeç dışı satır artık listede duruyor (soluk); yanlışlıkla
+       işaretlenmesin diye anahtar üzerinden de korunuyor. */
+    if (!set.has(key) && BIY._suzgecDisiMi(key)){ if (cb) cb.checked = false; return; }
+    let eklendi = false;
     if (set.has(key)) set.delete(key);
     else {
       const tavan = BIY._hsTavan();
       if (tavan && set.size >= tavan){
         if (cb) cb.checked = false;                      // isaret geri alinir
+        BIY._sinirUyar();
         BIY._soruSecUyar("Aşağıdan " + tavan + " soru seçtin; daha fazlasını işaretleyemezsin.");
         return;
       }
-      set.add(key);
+      set.add(key); eklendi = true;
     }
     if (cb){ const row = cb.closest(".biy-hs-satir"); if (row) row.classList.toggle("secili", cb.checked); }
-    BIY._soruSecSayilar();
+    BIY._soruSecSayilar(eklendi);
   },
   // akordiyon: başlığa tıkla → aç/kapa (yeniden çizmeden, kaydırma korunur)
   soruSecAkordiyon(konuId){
@@ -2441,7 +2719,10 @@ const BIY = {
     const set = BIY._secSet();
     const k = KONULAR.find(x => x.id === konuId); if (!k) return;
     const g = document.querySelector('.biy-hs-grup[data-konu="'+konuId+'"]');
-    let satirlar = g ? [].slice.call(g.querySelectorAll(".biy-hs-satir")).filter(r => !r.hidden) : [];
+    /* Süzgeç dışı satırlar listede duruyor ama seçilemez — toplu seçim de
+       onları atlar, yoksa "tümünü seç" süzgeci delerdi. */
+    let satirlar = g ? [].slice.call(g.querySelectorAll(".biy-hs-satir"))
+                         .filter(r => !r.hidden && !r.classList.contains("biy-hs-disi")) : [];
     let anahtarlar = satirlar.map(r => r.getAttribute("data-key"));
     // Grup ekranda yoksa (hiç çizilmemişse) konunun tamamına düş; ama grup
     // ÇİZİLMİŞ ve süzgeç hiçbir soru bırakmamışsa hiçbir şey yapma —
@@ -2476,7 +2757,27 @@ const BIY = {
     } else BIY._soruSecRender();
   },
   soruSecTemizle(){ BIY._secSet().clear(); BIY._soruSecRender(); BIY._soruSecSayiGuncelle(); },
-  soruSecKapat(){ const ov = $("biySoruSec"); if (ov) ov.remove(); BIY._soruSecSayiGuncelle(); },
+  /* Tavan belirlenmiş ama sepet dolmamışsa kapanışta bir kez uyar: öğretmen
+     "20 soru" deyip 12 seçmiş olarak çıkmasın. İkinci basışta kapanır. */
+  _havuzEksikUyar(){
+    const kutu = document.querySelector("#biySoruSec .biy-soru-sec-kutu"); if (!kutu) return;
+    const eski = kutu.querySelector(".biy-havuz-eksik"); if (eski) eski.remove();
+    const kalan = BIY._havuzKalan();
+    const d = document.createElement("div");
+    d.className = "biy-havuz-eksik";
+    d.innerHTML = '<span><b>' + kalan + '</b> soru daha seçebilirsin.</span>'
+      + '<button type="button" class="biy-he-tus" onclick="BIY.soruSecKapat(true)">Yine de kapat</button>';
+    kutu.appendChild(d);
+    setTimeout(() => { d.classList.add("biy-gec"); setTimeout(() => d.remove(), 500); }, 4200);
+  },
+  soruSecKapat(zorla){
+    const ov = $("biySoruSec"); if (!ov) return;
+    const sinir = BIY._havuzSinir();
+    if (!zorla && sinir && BIY._secSet().size > 0 && BIY._secSet().size < sinir){
+      BIY._havuzEksikUyar(); BIY._sinirUyar(); return;
+    }
+    ov.remove(); BIY._soruSecSayiGuncelle();
+  },
   /* ---------- soru tipi (biçim) filtresi ---------- */
   // aktif konunun sorularından yalnız seçili biçimdekiler
   /* Ana ekrandaki soru tipi + zorluk seçiminden geçiyor mu?
@@ -2484,37 +2785,126 @@ const BIY = {
      uyar. (Eskiden pencerenin kendi süzgeci vardı, kaldırıldı.) */
   _havuzdaMi(q){
     return state.bicimSecim[bicimAl(q)] !== false &&
-           state.zorlukSecim[+q.zorluk || 2] !== false;
+           state.zorlukSecim[+q.zorluk || 2] !== false &&
+           (!state.icerikSecim || state.icerikSecim[icerikAl(q)] !== false);
   },
+  /* Tek eksen tek başına — panel sayaçları "bu eksen hariç kaç soru kalır"
+     diye hesaplanır, böylece öğretmen kapatmadan önce sonucu görür. */
+  _bicimGecti(q){ return state.bicimSecim[bicimAl(q)] !== false; },
+  _zorlukGecti(q){ return state.zorlukSecim[+q.zorluk || 2] !== false; },
+  _icerikGecti(q){ return !state.icerikSecim || state.icerikSecim[icerikAl(q)] !== false; },
   /* Tura girecek sorular: soru TİPİ ve ZORLUK seçimi birlikte uygulanır.
      (Ad geriye dönük uyum için _bicimliSorular olarak kaldı.) */
   _bicimliSorular(){
     return BIY._aktifSorular().filter(BIY._havuzdaMi);
   },
+  /* SÜZGEÇ PANELİ — iki sütun: solda soru TİPİ (nasıl cevaplanır),
+     sağda soru İÇERİĞİ (ne soruluyor). Sayılar ÇAPRAZ hesaplanır: bir
+     seçeneğin yanındaki rakam, DİĞER eksenlerden geçen soru adedidir —
+     yani "bunu açarsam kaç soru gelir" doğrudan okunur. */
+  /* Panelde yalnız BANKADA KARŞILIĞI OLAN içerik kategorileri gösterilir.
+     Boş kategori hem yer kaplıyor hem de bazı adlar (Boşluk doldurma,
+     Doğru/Yanlış) soru TİPİ sütunundakilerle karışıyordu. */
+  _icerikListesi(){
+    if (BIY._icListe) return BIY._icListe;
+    const var_ = {};
+    KONULAR.forEach(k => (k.sorular || []).forEach(q => { var_[icerikAl(q)] = true; }));
+    BIY._icListe = ICERIK_SIRA.filter(k => TIP_BILGI[k] && var_[k]);
+    return BIY._icListe;
+  },
   _bicimPanelDoldur(){
     const p = $("bicimSecPanel"); if (!p) return;
-    p.innerHTML = Object.keys(BICIM_BILGI).map(b =>
-      '<button type="button" class="biy-bs-oge'+(state.bicimSecim[b] ? ' secili' : '')+'" data-b="'+b+'"' +
-      ' title="'+kacis(BICIM_BILGI[b].ad)+'" aria-pressed="'+(state.bicimSecim[b] ? 'true' : 'false')+'"' +
-      ' onclick="BIY.bicimToggle(\''+b+'\')">' + (ETIKET_BICIM[b] || "") +
-      '<span class="biy-bs-tik" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12.5l4 4 8-9"/></svg></span></button>'
-    ).join("");
+    const tik = '<span class="biy-bs-tik" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"'
+      + ' stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">'
+      + '<path d="M6 12.5l4 4 8-9"/></svg></span>';
+    const havuz = BIY._suzgecHavuzu();
+    const bicimSay = {}, icerikSay = {};
+    havuz.forEach(q => {
+      if (BIY._zorlukGecti(q) && BIY._icerikGecti(q)){ const b = bicimAl(q); bicimSay[b] = (bicimSay[b]||0)+1; }
+      if (BIY._zorlukGecti(q) && BIY._bicimGecti(q)){ const i = icerikAl(q); icerikSay[i] = (icerikSay[i]||0)+1; }
+    });
+    const sayi = n => '<em class="biy-bs-sayi">' + (n || 0) + '</em>';
+    p.innerHTML =
+      '<div class="biy-bs-bas">Soru süzgeci'
+      + '<button type="button" class="biy-bs-kapat" title="Kapat" aria-label="Kapat"'
+      + ' onclick="BIY.bicimKapat()">✕</button></div>'
+      + '<div class="biy-bs-iki">'
+      + '<div class="biy-bs-sutun biy-bs-sutun-tip">'
+      +   '<div class="biy-pn-grup">Soru tipi <small>nasıl cevaplanır</small></div>'
+      +   Object.keys(BICIM_BILGI).map(b =>
+        '<button type="button" class="biy-bs-oge biy-hs-b-'+b+(state.bicimSecim[b] ? ' secili' : '')+'" data-b="'+b+'"' +
+        ' title="'+kacis(BICIM_BILGI[b].ad)+'" aria-pressed="'+(state.bicimSecim[b] ? 'true' : 'false')+'"' +
+        ' onclick="BIY.bicimToggle(\''+b+'\')">' + (ETIKET_BICIM[b] || "") +
+        '<span class="biy-bs-yazi"><b>'+kacis(BICIM_BILGI[b].ad)+sayi(bicimSay[b])+'</b>' +
+          '<small>'+kacis(BICIM_ACIKLAMA[b] || "")+'</small></span>' + tik + '</button>'
+      ).join("")
+      + '</div>'
+      + '<div class="biy-bs-sutun biy-bs-sutun-icerik">'
+      +   '<div class="biy-pn-grup">Soru içeriği <small>ne soruluyor</small></div>'
+      +   '<div class="biy-ic-izgara">'
+      +   BIY._icerikListesi().map(k => {
+        const bi = TIP_BILGI[k], ac = state.icerikSecim[k] !== false, n = icerikSay[k] || 0;
+        return '<button type="button" class="biy-bs-oge biy-ic-oge'+(ac ? ' secili' : '')+(n ? '' : ' biy-bs-bos')+'" data-ic="'+k+'"' +
+        ' title="'+kacis(bi.ad)+'" aria-pressed="'+(ac ? 'true' : 'false')+'"' +
+        ' onclick="BIY.icerikToggle(\''+k+'\')">' +
+        '<span class="biy-ic-rozet" aria-hidden="true">'+bi.emoji+'</span>' +
+        '<span class="biy-bs-yazi"><b>'+kacis(bi.ad)+sayi(n)+'</b>' +
+          '<small>'+kacis(ICERIK_NOT[k] || "")+'</small></span>' + tik + '</button>'; }).join("")
+      +   '</div>'
+      + '</div></div>'
+      + '<p class="biy-bs-not">Kapattığın tip ya da içerikteki sorular havuzda soluk görünür, seçilemez. Her başlıkta en az bir seçenek açık kalır.</p>';
   },
   bicimToggle(b){
     const sec = state.bicimSecim;
     // en az bir tip secili kalmali
     if (sec[b] && Object.keys(sec).filter(x => sec[x]).length <= 1) return;
     sec[b] = !sec[b];
+    BIY._suzgecDegisti();
+  },
+  icerikToggle(k){
+    const sec = state.icerikSecim;
+    // en az bir icerik acik kalmali
+    if (sec[k] !== false && BIY._icerikListesi().filter(x => sec[x] !== false).length <= 1) return;
+    sec[k] = (sec[k] === false);
+    BIY._suzgecDegisti();
+  },
+  /* Üç eksenin ortak dönüşü: sayaçlar çapraz bağımlı olduğu için hangi
+     eksen değişirse değişsin HEPSİ yeniden hesaplanır. Ayrıca süzgeç dışına
+     düşen seçili sorular sepetten atılır — yoksa listede görünmeyen soru
+     sessizce tura girerdi. */
+  _suzgecDegisti(){
     BIY._bicimPanelDoldur();
+    BIY._zorlukPanelDoldur();
+    const set = BIY._secSet();
+    if (set.size){
+      const gecerli = {};
+      KONULAR.forEach(k => (k.sorular || []).forEach(q => {
+        if (BIY._havuzdaMi(q)) gecerli[k.id + "#" + q.id] = true; }));
+      [...set].forEach(a => { if (!gecerli[a]) set.delete(a); });
+    }
+    if ($("soruSecListe")) BIY._soruSecRender();
     BIY._soruSayiSinir();
+    BIY._soruSecSayiGuncelle();
     BIY._menuDurum();
+  },
+  /* Aynı anda tek ayar paneli açık kalsın — üst üste binmesinler. */
+  _ayarlariKapat(haric){
+    if (haric !== "bicim") BIY.bicimKapat();
+    if (haric !== "zorluk") BIY.zorlukKapat();
+    if (haric !== "sure" && BIY.sureKapat) BIY.sureKapat();
   },
   bicimAcKapat(){
     const p = $("bicimSecPanel"), b = $("bicimSecBtn"); if (!p) return;
     if (p.hidden){
+      BIY._ayarlariKapat("bicim");
       BIY._bicimPanelDoldur();
       p.hidden = false;
       if (b) b.setAttribute("aria-expanded", "true");
+      BIY._bicimKonumla();
+      /* Panelin giriş animasyonu bitmeden ölçülen kutu birkaç piksel
+         şaşıyor; animasyon bitince bir kez daha hizala. */
+      setTimeout(BIY._bicimKonumla, 230);
+      window.addEventListener("resize", BIY._bicimKonumla);
       setTimeout(() => document.addEventListener("mousedown", BIY._bicimDis), 0);
     } else BIY.bicimKapat();
   },
@@ -2523,8 +2913,20 @@ const BIY = {
     if (p) p.hidden = true;
     if (b) b.setAttribute("aria-expanded", "false");
     document.removeEventListener("mousedown", BIY._bicimDis);
+    window.removeEventListener("resize", BIY._bicimKonumla);
   },
   _bicimDis(e){ if (!e.target.closest || !e.target.closest("#bicimSec")) BIY.bicimKapat(); },
+  /* Süzgeç paneli iki sütunlu olduğu için geniş; dar ekranda sağdan/soldan
+     taşmasın diye açılışta ve pencere boyu değişince yatayda kaydırılır. */
+  _bicimKonumla(){
+    const p = $("bicimSecPanel"); if (!p || p.hidden) return;
+    p.style.left = "50%";
+    const k = p.getBoundingClientRect(), pay = 10;
+    let kay = 0;
+    if (k.right > window.innerWidth - pay) kay = (window.innerWidth - pay) - k.right;
+    if (k.left + kay < pay) kay = pay - k.left;
+    if (kay) p.style.left = "calc(50% + " + Math.round(kay) + "px)";
+  },
 
   /* ---------- ZORLUK SEÇİMİ ----------
      Eskiden havuz penceresinin içindeki süzgecin bir sütunuydu; artık ana
@@ -2533,10 +2935,12 @@ const BIY = {
   zorlukAcKapat(){
     const p = $("zorlukSecPanel"), b = $("zorlukSecBtn"); if (!p) return;
     if (p.hidden){
+      BIY._ayarlariKapat("zorluk");
       BIY._zorlukPanelDoldur();
       p.hidden = false;
       if (b) b.setAttribute("aria-expanded", "true");
       BIY._zorlukKonumla();
+      setTimeout(BIY._zorlukKonumla, 230);
       window.addEventListener("resize", BIY._zorlukKonumla);
       setTimeout(() => document.addEventListener("mousedown", BIY._zorlukDis), 0);
     } else BIY.zorlukKapat();
@@ -2558,24 +2962,32 @@ const BIY = {
     if (k.left + kay < pay) kay = pay - k.left;
     if (kay) p.style.left = "calc(50% + " + Math.round(kay) + "px)";
   },
+  /* Zorluk paneli, süzgeç paneliyle AYNI görsel dili konuşur: ikon +
+     kalın ad + sayı rozeti + bir cümlelik açıklama + tik. Sayı burada da
+     çaprazdır (tip ve içerik süzgecinden geçenler). */
   _zorlukPanelDoldur(){
     const p = $("zorlukSecPanel"); if (!p) return;
-    /* Havuzdaki soru sayısı da gösterilir; öğretmen "zor yok" derse
-       kaç soru kaldığını görebilsin. */
-    const hepsi = BIY._aktifSorular();
+    const tik = '<span class="biy-bs-tik" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"'
+      + ' stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">'
+      + '<path d="M6 12.5l4 4 8-9"/></svg></span>';
     const say = { 1: 0, 2: 0, 3: 0 };
-    hepsi.forEach(q => { const z = +q.zorluk || 2; if (say[z] != null) say[z]++; });
+    BIY._suzgecHavuzu().forEach(q => {
+      if (!BIY._bicimGecti(q) || !BIY._icerikGecti(q)) return;
+      const z = +q.zorluk || 2; if (say[z] != null) say[z]++;
+    });
     p.innerHTML =
-      '<div class="biy-zs-baslik">Zorluk</div>' +
-      [1, 2, 3].map(z =>
-        '<button type="button" class="biy-zs-oge' + (state.zorlukSecim[z] !== false ? ' secili' : '') + '"' +
-        ' data-z="' + z + '" aria-pressed="' + (state.zorlukSecim[z] !== false ? 'true' : 'false') + '"' +
-        ' onclick="BIY.zorlukToggle(' + z + ')">' +
-          '<span class="biy-zs-yildiz z' + z + '">' + (ETIKET_ZORLUK[z] || '') + '</span>' +
-          '<span class="biy-zs-ad">' + kacis(ZORLUK_AD[z] || ('Zorluk ' + z)) + '</span>' +
-          '<span class="biy-zs-say">' + (say[z] || 0) + '</span>' +
-        '</button>').join('') +
-      '<div class="biy-zs-dip">Kapattığın zorluktaki sorular tura girmez.</div>';
+      '<div class="biy-bs-bas">Zorluk'
+      + '<button type="button" class="biy-bs-kapat" title="Kapat" aria-label="Kapat"'
+      + ' onclick="BIY.zorlukKapat()">✕</button></div>'
+      + [1,2,3].map(z =>
+        '<button type="button" class="biy-bs-oge biy-bs-zor biy-hs-z'+z+(state.zorlukSecim[z] !== false ? ' secili' : '')+'"' +
+        ' data-z="'+z+'" aria-pressed="'+(state.zorlukSecim[z] !== false ? 'true' : 'false')+'"' +
+        ' onclick="BIY.zorlukToggle('+z+')">' + (ETIKET_ZORLUK[z] || "") +
+        '<span class="biy-bs-yazi"><b>'+kacis(ZORLUK_AD[z] || ("Zorluk "+z))
+          + '<em class="biy-bs-sayi">'+(say[z] || 0)+'</em></b>' +
+          '<small>'+kacis(ZORLUK_ACIKLAMA[z] || "")+'</small></span>' + tik + '</button>'
+      ).join("")
+      + '<p class="biy-bs-not">Kapattığın zorluktaki sorular havuzda soluk görünür, seçilemez.</p>';
   },
   zorlukToggle(z){
     z = +z;
@@ -2583,9 +2995,7 @@ const BIY = {
     /* Hepsi birden kapatılamaz — kapatılırsa tura girecek soru kalmaz. */
     if (acik && [1,2,3].filter(x => state.zorlukSecim[x] !== false).length <= 1) return;
     state.zorlukSecim[z] = !acik;
-    BIY._zorlukPanelDoldur();
-    BIY._soruSayiSinir();
-    BIY._menuDurum();
+    BIY._suzgecDegisti();
   },
 
   /* ---------- ZORLUĞA GÖRE SORU SÜRESİ ----------
@@ -4871,7 +5281,9 @@ BIY._girisSonrasi = function(){
     // sayfa yenilenmişse aktif odaya/oyuna dön
     let kayit = null; try { kayit = JSON.parse(localStorage.getItem('biy_aktif') || 'null'); } catch(e){}
     if (kayit && kayit.oda){ BIY._devamEt(kayit); }
-    else ekranGoster("ekranAnasayfa");
+    /* Yarım kalan canlı oyun yoksa MOD KAPISI açılır: öğretmen önce
+       "canlı mı, çevrimdışı mı" der, kurulum ondan sonra gelir. */
+    else BIY._modKapisi();
   } catch(err){
     console.error("[BIY] Açılış hatası:", err);
     const not = $("girisRolNot");

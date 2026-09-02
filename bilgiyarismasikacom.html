@@ -17,7 +17,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="oyunlar/bilgiyarismasikacom.css?v=135">
+<link rel="stylesheet" href="oyunlar/bilgiyarismasikacom.css?v=138">
+<link rel="stylesheet" href="oyunlar/cevrimdisi.css?v=1">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -180,6 +181,13 @@
   </section>
 
   <!-- ADMIN — Ana sayfa -->
+  <!-- MOD SEÇİMİ artık ayrı bir kapı ekranı değil: kurulum sihirbazının
+       içinde "Canlı / Çevrimdışı" bölümü olarak duruyor (bkz. cevrimdisi.js
+       COFF.modSec). Öğretmen tek sayfada hem modu hem ayarları seçiyor. -->
+  <!-- ================= ÇEVRİMDIŞI =================
+       Bütün çevrimdışı arayüzü cevrimdisi.js tarafından buraya basılır. -->
+  <section id="ekranCevrimdisi" class="biy-ekran gizli"></section>
+
   <section id="ekranAnasayfa" class="biy-ekran gizli">
     <header class="biy-header">
       <div class="biy-header-sol">
@@ -319,7 +327,7 @@
       </div>
       <div class="biy-bicim-sec" id="bicimSec">
         <button type="button" class="biy-bicim-btn" id="bicimSecBtn" aria-haspopup="true"
-                aria-expanded="false" title="Soru tipleri" onclick="BIY.bicimAcKapat()">
+                aria-expanded="false" title="Soru süzgeci: tip ve içerik" onclick="BIY.bicimAcKapat()">
           <svg viewBox="0 0 64 64" class="biy-svg biy-svg-bicim" role="img" aria-label="Soru tipleri">
             <title>Soru tipleri</title>
             <circle class="biy-hale" cx="32" cy="32" r="26" fill="url(#biyGrMavi)" opacity=".14"/>
@@ -333,7 +341,7 @@
             <circle class="biy-bf-k3" cx="30" cy="44" r="5.6" fill="url(#biyGrMor)" stroke="#fff" stroke-width="2.2"/>
           </svg>
         </button>
-        <div class="biy-bs-panel" id="bicimSecPanel" aria-label="Soru tipleri" hidden></div>
+        <div class="biy-bs-panel biy-bs-genis" id="bicimSecPanel" aria-label="Soru süzgeci" hidden></div>
       </div>
 
       <!-- ZORLUK SEÇİMİ — hangi zorluktaki sorular tura girsin.
@@ -354,7 +362,7 @@
             <path d="M11 52h42" stroke="#CBD5E1" stroke-width="3" stroke-linecap="round"/>
           </svg>
         </button>
-        <div class="biy-zorluk-panel" id="zorlukSecPanel" aria-label="Zorluk seçimi" hidden></div>
+        <div class="biy-bs-panel biy-zorluk-panel" id="zorlukSecPanel" aria-label="Zorluk seçimi" hidden></div>
       </div>
 
       <!-- ZORLUĞA GÖRE SORU SÜRESİ — kolay 30 · orta 45 · zor 60 sn (varsayılan).
@@ -563,7 +571,11 @@ function biyGeriDon(e){
 <!-- Üretilmiş konular: motordan ÖNCE yüklenir, window.BIY_EK_KONULAR'a eklenirler.
      oyunlar/biy_kaliplar.js → kalıplar tablosunun verisinden üretilen sorular. -->
 <script src="oyunlar/biy_kaliplar.js?v=1"></script>
-<script src="oyunlar/bilgiyarismasikacom.js?v=137"></script>
+<script src="oyunlar/bilgiyarismasikacom.js?v=141"></script>
+<!-- ÇEVRİMDIŞI MOD — jsPDF + html2canvas dosyanın içinde gömülü,
+     internet gerekmez. Ana dosyadan SONRA yüklenmeli. -->
+<script src="oyunlar/cevrimdisi_pdf.js?v=1" defer></script>
+<script src="oyunlar/cevrimdisi.js?v=1"></script>
 <!-- Canlı tahta: kalıplar tablosunu iframe'de açar ve postMessage ile sürer.
      Alıcı taraf sarf/yarismakopru.js (kaliplartablosu.html içinde). -->
 <script src="oyunlar/biy_tahta.js?v=1"></script>

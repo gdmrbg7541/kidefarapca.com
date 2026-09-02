@@ -2035,6 +2035,15 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
   font-weight: 800; line-height: 1.3; }
 .biy-ds-sinifroz { background: #EEF2FF; color: #4F46E5; min-width: 2em; text-align: center; }
 .biy-ds-sinifroz.genel { background: #F1F5F9; color: #64748B; }
+
+/* ÖĞRETİM YILI rozeti (konu satırı) — ortak .kd-yil görünümünü sistem/
+   sinifveri.js veriyor; burada yalnız satıra sığması için küçültülüyor.
+   Dar ekranda gizlenir: satırda ad + sınıf + soru sayısı önceliklidir. */
+.biy-ds-oge .kd-yil.biy-ds-yilroz {
+  font-size: 10.5px; padding: 3px 7px; gap: 4px; flex: none;
+}
+.biy-ds-oge .kd-yil.biy-ds-yilroz .kd-yil-nokta { width: 5px; height: 5px; }
+@media (max-width: 560px) { .biy-ds-oge .kd-yil.biy-ds-yilroz { display: none; } }
 .biy-ds-say { background: #E9FBF4; color: #0E9E86; }
 .biy-ds-oge[hidden] { display: none; }
 
@@ -3314,3 +3323,263 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
 .biy-hs-satir[data-b="surukle"]     { background: #E9F7FA; border-inline-start-color: #8FCFDD; }
 .biy-hs-satir[data-b="yazma"]       { background: #FFF0EF; border-inline-start-color: #F3A9A2; }
 .biy-hs-satir.secili                { background: #E9FBF4; border-inline-start-color: #16A085; }
+
+/* =====================================================================
+   SORU SEÇME PENCERESİ — komisyon sürümünden taşınan tasarım
+   ---------------------------------------------------------------------
+   Üç yenilik:
+   1) Satırlar SORU TİPİNE göre renkleniyor; listenin başında hangi
+      rengin hangi tip olduğunu söyleyen bir efsane şeridi var.
+   2) Süzgeç dışı kalan sorular listeden ATILMIYOR, soluk ve kesik
+      çerçeveli duruyor + başlıkta "N pasif" sayacı. Öğretmen neyin
+      neden seçilemediğini görüyor (satırın title'ı gerekçeyi yazar).
+   3) Alt bardaki düz sayı hapının yerini DOLAN SEPET aldı: SVG dolgu
+      seviyesi + ilerleme çubuğu + "n / tavan" + kalan sayısı.
+   ===================================================================== */
+
+/* --- 1. satır renkleri: tip başına bir pastel palet --- */
+.biy-hs-satir{
+  --tip-arka:#FBFDFF; --tip-kenar:#E7EEF6; --tip-koyu:#94A6B8; --tip-secili:#F1F6FC;
+}
+.biy-hs-b-test       { --tip-arka:#F3F8FE; --tip-kenar:#D6E6F8; --tip-koyu:#5B9BD5; --tip-secili:#E2EEFB } /* mavi */
+.biy-hs-b-bosluk     { --tip-arka:#F2F9FB; --tip-kenar:#D2E9F0; --tip-koyu:#3E9BB5; --tip-secili:#E0F2F7 } /* camgöbeği */
+.biy-hs-b-dogruyanlis{ --tip-arka:#F1FAF3; --tip-kenar:#D0EBD8; --tip-koyu:#46A05E; --tip-secili:#E0F4E6 } /* yeşil */
+.biy-hs-b-surukle    { --tip-arka:#FFF8EF; --tip-kenar:#F8E4C8; --tip-koyu:#DB9B34; --tip-secili:#FBEBD3 } /* şeftali */
+.biy-hs-b-cumlesira  { --tip-arka:#FFF6F0; --tip-kenar:#F9DEC9; --tip-koyu:#D97E3B; --tip-secili:#FCE9DC } /* turuncu */
+.biy-hs-b-eslestir   { --tip-arka:#F8F4FE; --tip-kenar:#E3D9F8; --tip-koyu:#8E6FD0; --tip-secili:#ECE3FB } /* lila */
+.biy-hs-b-yazma      { --tip-arka:#F0FAF6; --tip-kenar:#CAEDDD; --tip-koyu:#2FAF8B; --tip-secili:#DDF5EC } /* nane */
+
+#soruSecListe .biy-hs-satir{
+  background:var(--tip-arka);
+  border:1px solid var(--tip-kenar);
+  border-inline-start:6px solid var(--tip-koyu);
+  transition:background .14s, border-color .14s;
+}
+#soruSecListe .biy-hs-satir:hover{ background:var(--tip-secili) }
+#soruSecListe .biy-hs-satir.secili{
+  background:var(--tip-secili);
+  border-color:var(--tip-koyu);
+  border-inline-start-width:8px;
+  box-shadow:0 2px 10px rgba(31,56,100,.07);
+}
+#soruSecListe .biy-hs-satir input{ accent-color:var(--tip-koyu) }
+
+/* liste başındaki renk açıklaması */
+.biy-hs-tipler{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px }
+.biy-hs-tip{ display:inline-flex; align-items:center; gap:7px; padding:6px 12px 6px 9px;
+  border-radius:99px; font-size:13px; font-weight:800;
+  background:var(--tip-arka); color:var(--tip-koyu);
+  border:1px solid var(--tip-kenar); border-inline-start:5px solid var(--tip-koyu) }
+.biy-hs-tip svg{ width:17px; height:17px; display:block; flex:0 0 auto }
+@media (max-width:620px){ .biy-hs-tip{ font-size:12px; padding:5px 10px 5px 8px } }
+
+/* hangi havuzdayız */
+.biy-hs-kapsam{ display:flex; align-items:center; gap:8px; margin:0 0 10px;
+  padding:9px 14px; border-radius:12px; background:#EEF2FF; color:#4338CA;
+  font-family:'Marhey',sans-serif; font-weight:700; font-size:1.02rem }
+.biy-hs-kapsam svg{ width:20px; height:20px; flex:0 0 auto }
+
+/* --- küme başlığı: sınıflar / seviye seviye konular --- */
+.biy-hs-kume{ display:flex; align-items:center; gap:clamp(9px,1.2vw,14px);
+  margin:clamp(14px,2.4vh,26px) 2px clamp(8px,1.2vh,14px);
+  padding:clamp(9px,1.4vh,15px) clamp(12px,1.4vw,20px);
+  background:linear-gradient(90deg,#EEF3FB,#F7FAFD 70%);
+  border:1.5px solid #DCE6F3; border-inline-start:6px solid #5B9BD5; border-radius:14px }
+.biy-hs-kume:first-child{ margin-top:0 }
+.biy-hs-kume-im{ flex:0 0 auto; min-width:clamp(28px,3.4vh,36px); height:clamp(28px,3.4vh,36px);
+  padding:0 8px; border-radius:99px; background:#5B9BD5; color:#fff; font-weight:900;
+  font-size:clamp(11px,1.5vh,14px); letter-spacing:.06em;
+  display:flex; align-items:center; justify-content:center }
+.biy-hs-kume-ad{ flex:1 1 auto; min-width:0; font-size:clamp(13px,1.8vh,17px); font-weight:900;
+  color:#1F3864; line-height:1.3; text-align:start }
+.biy-hs-kume-say{ flex:0 0 auto; font-size:clamp(11px,1.5vh,13.5px); font-weight:800;
+  color:#5B9BD5; background:#fff; border:1.5px solid #DCE6F3; border-radius:99px;
+  padding:3px 11px; white-space:nowrap }
+
+/* --- 2. zorluk hapı + süzgeç dışı satır --- */
+#soruSecListe .biy-hs-zor{ flex:0 0 auto; align-self:center; font-size:11px; font-weight:900;
+  letter-spacing:.04em; padding:4px 10px; border-radius:99px; white-space:nowrap;
+  background:#F0FAF6; color:#2FAF8B; border:1.5px solid #CAEDDD }
+#soruSecListe .biy-hs-zor.z2{ background:#FFF8EF; color:#B87914; border-color:#F8E4C8 }
+#soruSecListe .biy-hs-zor.z3{ background:#FEF3F2; color:#C0392B; border-color:#F8D5D2 }
+@media (max-width:640px){ #soruSecListe .biy-hs-zor{ display:none } }
+
+#soruSecListe .biy-hs-satir.biy-hs-disi{
+  background:#F7F9FB; border-style:dashed; border-color:#D9E1EA;
+  border-inline-start-color:#C3CFDC; opacity:.55; cursor:not-allowed }
+#soruSecListe .biy-hs-satir.biy-hs-disi:hover{ background:#F7F9FB }
+#soruSecListe .biy-hs-satir.biy-hs-disi .biy-hs-metin{ color:#8C97A3 }
+#soruSecListe .biy-hs-satir.biy-hs-disi input{ cursor:not-allowed }
+.biy-hs-disi-not{ flex:0 0 auto; align-self:center; font-size:10.5px; font-weight:900;
+  letter-spacing:.06em; text-transform:uppercase; color:#8C97A3;
+  background:#EEF2F7; border-radius:99px; padding:4px 10px; white-space:nowrap }
+.biy-hs-disi-say{ flex:0 0 auto; font-size:11.5px; font-weight:800; color:#8C97A3;
+  background:#EEF2F7; border-radius:99px; padding:3px 10px; margin-inline-start:6px }
+@media (max-width:560px){ .biy-hs-disi-not{ display:none } }
+
+/* sınıra gelince seçilemeyen satırlar */
+.biy-hs-satir.biy-hs-kapali{ opacity:.38; cursor:not-allowed }
+.biy-hs-satir.biy-hs-kapali input{ cursor:not-allowed }
+.biy-hs-tumu.biy-hs-tumu-kapali{ opacity:.35 }
+
+/* --- 3. dolan sepet --- */
+.biy-sepet{ display:flex; align-items:center; gap:14px; flex:1 1 260px; min-width:240px;
+  padding:10px 16px; border-radius:16px;
+  background:#EEF2FF; border:2px solid #C7D2FE; color:#4338CA;
+  transition:background .25s, border-color .25s, color .25s }
+.biy-sepet.bos{ background:#F8FAFC; border-color:#E2E8F0; color:#94A3B8 }
+.biy-sepet.dolu{ background:#DCFCE7; border-color:#86EFAC; color:#15803D }
+.biy-sepet-ikon{ position:relative; flex:0 0 auto; width:52px; height:52px; line-height:0 }
+.biy-sepet-ikon svg{ width:52px; height:52px; display:block }
+.biy-sepet-dolgu{ fill:currentColor; opacity:.28; transition:y .45s cubic-bezier(.34,1.4,.64,1) }
+.biy-sepet.dolu .biy-sepet-dolgu{ opacity:.42 }
+.biy-sepet-kulp{ transition:transform .3s ease; transform-origin:26px 20px }
+.biy-sepet.dolu .biy-sepet-kulp{ transform:scaleY(1.06) }
+.biy-sepet-dusen{ position:absolute; top:-2px; inset-inline-start:21px; width:10px; height:10px;
+  border-radius:3px; background:currentColor; opacity:0; pointer-events:none }
+.biy-sepet-dusen.biy-dus{ animation:biySepetDus .5s cubic-bezier(.5,.05,.6,1) 1 }
+@keyframes biySepetDus{
+  0%  { opacity:0; transform:translateY(-14px) scale(.7) rotate(0deg) }
+  25% { opacity:1 }
+  85% { opacity:1; transform:translateY(22px) scale(1) rotate(140deg) }
+  100%{ opacity:0; transform:translateY(24px) scale(.6) rotate(160deg) } }
+.biy-sepet.biy-zipla{ animation:biySepetZipla .34s ease }
+@keyframes biySepetZipla{ 0%,100%{ transform:none } 40%{ transform:translateY(-3px) scale(1.015) } }
+.biy-sepet.biy-salla{ animation:biySepetSalla .38s ease }
+@keyframes biySepetSalla{ 0%,100%{ transform:translateX(0) }
+  20%{ transform:translateX(-6px) } 45%{ transform:translateX(5px) } 70%{ transform:translateX(-3px) } }
+.biy-sepet-bilgi{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:5px }
+.biy-sepet-sayi{ display:flex; align-items:baseline; gap:4px; direction:ltr;
+  font-family:'Marhey',sans-serif; font-weight:800; line-height:1 }
+.biy-sepet-sayi b{ font-size:1.85rem; font-variant-numeric:tabular-nums }
+.biy-sepet-sayi span{ font-size:1.1rem; opacity:.72 }
+.biy-sepet-bar{ height:8px; border-radius:999px; background:rgba(15,23,42,.10); overflow:hidden }
+.biy-sepet-bar i{ display:block; height:100%; width:0; border-radius:999px; background:currentColor;
+  transition:width .35s cubic-bezier(.34,1.3,.64,1) }
+.biy-sepet-not{ font-size:.84rem; opacity:.85; min-height:1em }
+.biy-sepet-not.uyari{ color:#B45309; font-weight:700; opacity:1 }
+.biy-sepet.dolu .biy-sepet-not{ font-weight:700 }
+.biy-soru-sec-butonlar{ display:flex; gap:10px; margin-inline-start:auto; flex:0 0 auto }
+
+/* kapanışta "biraz daha seçebilirsin" şeridi */
+.biy-havuz-eksik{ position:absolute; left:50%; bottom:clamp(104px,15vh,150px); transform:translateX(-50%);
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center;
+  background:#FDF3E2; border:2px solid #F0C674; color:#946200; border-radius:14px;
+  padding:10px 16px; font-size:14px; font-weight:700; line-height:1.35;
+  box-shadow:0 10px 26px rgba(148,98,0,.18); max-width:min(92vw,560px); z-index:5;
+  animation:biyHeGir .22s ease both }
+.biy-havuz-eksik b{ font-weight:900 }
+.biy-havuz-eksik.biy-gec{ opacity:0; transition:opacity .45s ease }
+.biy-he-tus{ flex:0 0 auto; font:inherit; font-size:13px; font-weight:900; border:0; border-radius:999px;
+  padding:7px 14px; cursor:pointer; background:#946200; color:#fff }
+.biy-he-tus:hover{ background:#7A5200 }
+@keyframes biyHeGir{ from{ opacity:0; transform:translate(-50%,8px) } to{ opacity:1; transform:translate(-50%,0) } }
+
+@media (max-width:640px){
+  .biy-soru-sec-alt{ gap:10px }
+  .biy-sepet{ flex:1 1 100%; min-width:0; padding:8px 12px; gap:10px }
+  .biy-sepet-ikon, .biy-sepet-ikon svg{ width:42px; height:42px }
+  .biy-sepet-sayi b{ font-size:1.5rem }
+  .biy-soru-sec-butonlar{ width:100%; margin-inline-start:0 }
+  .biy-soru-sec-butonlar .biy-btn{ flex:1 1 0 }
+}
+@media (prefers-reduced-motion:reduce){
+  .biy-sepet-dusen.biy-dus, .biy-sepet.biy-zipla, .biy-sepet.biy-salla,
+  .biy-havuz-eksik{ animation:none }
+  .biy-sepet-dolgu, .biy-sepet-bar i{ transition:none }
+}
+/* süzgeçte kapalı tip: efsanede de üstü çizili ve soluk */
+.biy-hs-tip.kapali{ opacity:.42; text-decoration:line-through; text-decoration-thickness:1.5px;
+  background:#F4F6F9; color:#8C97A3; border-color:#E2E8F0; border-inline-start-color:#C3CFDC }
+
+/* =====================================================================
+   SÜZGEÇ PANELLERİ — komisyon sürümünden taşınan tasarım
+   ---------------------------------------------------------------------
+   Eskiden soru tipi paneli 60×60 ikon kareleriydi; ne olduğunu anlamak
+   için ikonu çözmek gerekiyordu. Artık her seçenek: ikon + kalın ad +
+   ÇAPRAZ sayı rozeti + bir cümlelik açıklama + tik.
+   İki sütun: solda TİP (nasıl cevaplanır), sağda İÇERİK (ne soruluyor).
+   Zorluk paneli de aynı dili konuşur.
+   ===================================================================== */
+/* Taban .biy-bs-panel bir SATIR (ikon kareleri yan yana dizilirdi). Yeni
+   süzgeç paneli başlık + iki sütun + dipnot olduğu için SÜTUNA çevriliyor;
+   uzun ekranlarda dibi taşmasın diye kendi içinde kayar. */
+.biy-bs-panel.biy-bs-genis{ width:min(94vw,860px); max-width:94vw;
+  flex-direction:column; align-items:stretch; gap:0;
+  max-height:min(78vh,720px); overflow-y:auto; overscroll-behavior:contain }
+#zorlukSecPanel{ max-height:min(78vh,620px); overflow-y:auto; overscroll-behavior:contain }
+.biy-bs-iki{ display:flex; gap:18px; align-items:flex-start }
+.biy-bs-sutun{ display:flex; flex-direction:column; gap:9px; min-width:0 }
+.biy-bs-sutun-tip{ flex:0 0 330px }
+.biy-bs-sutun-icerik{ flex:1 1 auto }
+
+.biy-bs-bas{ font-size:14px; font-weight:900; letter-spacing:.12em; text-transform:uppercase;
+  color:#8C97A3; padding:2px 4px 5px; display:flex; align-items:center; justify-content:space-between; gap:10px }
+.biy-bs-kapat{ flex:0 0 auto; width:26px; height:26px; border-radius:99px; border:0;
+  background:#EEF2F7; color:#6B7A8C; font-size:13px; font-weight:900; line-height:1;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.14s }
+.biy-bs-kapat:hover{ background:#DDE5EE; color:#1F3864 }
+#bicimSecPanel .biy-pn-grup{ display:flex; align-items:baseline; gap:8px;
+  font-size:13px; font-weight:900; letter-spacing:.06em; text-transform:uppercase;
+  color:#5B6B7C; padding:2px 4px 2px }
+#bicimSecPanel .biy-pn-grup small{ font-size:12px; font-weight:700; letter-spacing:0;
+  text-transform:none; color:#A5B0BC }
+
+/* seçenek düğmesi — iki panelde de aynı */
+#bicimSecPanel .biy-bs-oge, #zorlukSecPanel .biy-bs-oge{
+  display:flex; align-items:center; gap:14px; width:100%;
+  height:auto; padding:12px 15px; border-radius:15px; text-align:start;
+  background:var(--tip-arka,#F7FAFC); border:1.5px solid var(--tip-kenar,#E7EEF6);
+  border-inline-start:5px solid var(--tip-koyu,#94A6B8); cursor:pointer; transition:.14s }
+#bicimSecPanel .biy-bs-oge:hover, #zorlukSecPanel .biy-bs-oge:hover{ background:var(--tip-secili,#EEF3F8) }
+#bicimSecPanel .biy-bs-oge:not(.secili), #zorlukSecPanel .biy-bs-oge:not(.secili){ opacity:.5; filter:saturate(.35) }
+#bicimSecPanel .biy-bs-oge.secili, #zorlukSecPanel .biy-bs-oge.secili{ background:var(--tip-secili,#EAF2FB) }
+#bicimSecPanel .biy-bs-oge svg, #zorlukSecPanel .biy-bs-oge svg{
+  flex:0 0 auto; width:34px; height:34px; color:var(--tip-koyu,#5B9BD5) }
+.biy-bs-yazi{ flex:1 1 auto; min-width:0; display:grid;
+  grid-template-columns:minmax(0,1fr) auto; align-items:baseline; column-gap:8px }
+.biy-bs-yazi b{ font-size:18px; font-weight:900; color:#1F3864; line-height:1.25;
+  display:flex; align-items:center; gap:6px }
+.biy-bs-yazi small{ grid-column:1 / -1; font-size:14px; font-weight:600; color:#6B7A8C;
+  line-height:1.4; margin-top:3px }
+.biy-bs-sayi{ font-style:normal; font-size:12px; font-weight:800; color:#5B6B7C;
+  background:#E8EEF5; border-radius:99px; padding:1px 8px; margin-inline-start:4px }
+.biy-bs-oge.secili .biy-bs-sayi{ background:#fff }
+.biy-bs-oge.biy-bs-bos .biy-bs-sayi{ opacity:.55 }
+#bicimSecPanel .biy-bs-tik, #zorlukSecPanel .biy-bs-tik{
+  position:static; flex:0 0 auto; width:28px; height:28px; border-radius:99px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--tip-koyu,#5B9BD5); color:#fff; opacity:0; transition:opacity .14s }
+#bicimSecPanel .biy-bs-oge.secili .biy-bs-tik, #zorlukSecPanel .biy-bs-oge.secili .biy-bs-tik{ opacity:1 }
+#bicimSecPanel .biy-bs-tik svg, #zorlukSecPanel .biy-bs-tik svg{ width:19px; height:19px; color:#fff }
+
+/* içerik sütunu — iki kolon, emoji rozetli */
+.biy-ic-izgara{ display:grid; grid-template-columns:1fr 1fr; gap:8px }
+#bicimSecPanel .biy-ic-oge{ padding:9px 11px; gap:10px; border-radius:13px;
+  --tip-arka:#F7FAFC; --tip-kenar:#E7EEF6; --tip-koyu:#7C6FCD; --tip-secili:#F0EDFB }
+#bicimSecPanel .biy-ic-oge .biy-bs-yazi{ display:flex; flex-direction:column; gap:2px }
+#bicimSecPanel .biy-ic-oge .biy-bs-yazi b{ font-size:15px }
+#bicimSecPanel .biy-ic-oge .biy-bs-yazi small{ font-size:12px; margin-top:0; line-height:1.3 }
+#bicimSecPanel .biy-ic-oge .biy-bs-tik{ width:22px; height:22px }
+#bicimSecPanel .biy-ic-oge .biy-bs-tik svg{ width:15px; height:15px }
+.biy-ic-rozet{ flex:0 0 auto; width:36px; height:36px; border-radius:11px; background:#fff;
+  border:1.5px solid #E7EEF6; display:flex; align-items:center; justify-content:center;
+  font-size:20px; line-height:1 }
+
+/* zorluk renkleri yalnız paneldeki düğmelerde */
+.biy-bs-oge.biy-hs-z1{ --tip-arka:#F0FAF6; --tip-kenar:#CAEDDD; --tip-koyu:#2FAF8B; --tip-secili:#DDF5EC }
+.biy-bs-oge.biy-hs-z2{ --tip-arka:#FFF8EF; --tip-kenar:#F8E4C8; --tip-koyu:#DB9B34; --tip-secili:#FBEBD3 }
+.biy-bs-oge.biy-hs-z3{ --tip-arka:#FEF3F2; --tip-kenar:#F8D5D2; --tip-koyu:#D9534F; --tip-secili:#FCE3E1 }
+#zorlukSecPanel{ display:flex; flex-direction:column; gap:9px; width:min(94vw,380px) }
+/* id seçicisi .biy-bs-panel[hidden] kuralını yeniyor; kapalıyken gerçekten
+   kapansın diye ayrıca yazılıyor (yoksa panel süzgecin üstünde duruyordu). */
+#zorlukSecPanel[hidden], .biy-bs-panel.biy-bs-genis[hidden]{ display:none }
+
+.biy-bs-not{ margin:10px 4px 2px; font-size:14px; font-weight:600; color:#8C97A3; line-height:1.45 }
+
+@media (max-width:900px){
+  .biy-bs-iki{ flex-direction:column }
+  .biy-bs-sutun-tip{ flex:0 0 auto; width:100% }
+  .biy-ic-izgara{ grid-template-columns:1fr }
+  .biy-bs-panel.biy-bs-genis{ width:min(96vw,460px) }
+}
