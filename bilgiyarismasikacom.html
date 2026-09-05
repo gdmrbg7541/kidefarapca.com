@@ -135,7 +135,7 @@
       </div>
       <div class="biy-giris-bilgi">
         <h2 class="biy-giris-bilgi-bas">Neden giriş yapmak gerekiyor?</h2>
-        <p class="biy-giris-bilgi-metin">Öğrenciler kendi telefonundan katılır; odayı açıp yöneten bir <b>öğretmen hesabı</b> gerekir.</p>
+        <p class="biy-giris-bilgi-metin">Öğrenciler kendi cihazından katılır (telefon, tablet ya da bilgisayar); odayı açıp yöneten bir <b>öğretmen hesabı</b> gerekir.</p>
         <ul class="biy-giris-neden">
           <li><span class="biy-neden-ik" aria-hidden="true"><svg class="biy-nik" viewBox="0 0 40 40" fill="none">
             <rect x="3" y="3" width="34" height="34" rx="7" fill="#FFF6E8" stroke="#F39C12" stroke-width="2"/>
@@ -571,11 +571,45 @@ function biyGeriDon(e){
 <!-- Üretilmiş konular: motordan ÖNCE yüklenir, window.BIY_EK_KONULAR'a eklenirler.
      oyunlar/biy_kaliplar.js → kalıplar tablosunun verisinden üretilen sorular. -->
 <script src="oyunlar/biy_kaliplar.js?v=1"></script>
-<script src="oyunlar/bilgiyarismasikacom.js?v=141"></script>
+<!-- MAARİF SEMİNERİ soru bankası: YALNIZ ?set=ara1|ara2|ara3|final ile gelindiğinde
+     yüklenir (sunum html/maarif.html'deki düğmeler). Normal açılışta konu
+     listesine karışmaz. Motordan önce yüklenmeli. -->
+<script>
+(function(){
+  var m = /[?&]set=(ara1|ara2|ara3|final)(?:&|$)/.exec(location.search);
+  if (m){ window.MAARIF_SET = m[1]; document.write('<script src="oyunlar/biy_maarif.js?v=1"><\/script>'); }
+})();
+</script>
+<script src="oyunlar/bilgiyarismasikacom.js?v=142"></script>
 <!-- ÇEVRİMDIŞI MOD — jsPDF + html2canvas dosyanın içinde gömülü,
      internet gerekmez. Ana dosyadan SONRA yüklenmeli. -->
 <script src="oyunlar/cevrimdisi_pdf.js?v=1" defer></script>
-<script src="oyunlar/cevrimdisi.js?v=1"></script>
+<script src="oyunlar/cevrimdisi.js?v=3"></script>
+<script>
+/* MAARİF SEMİNERİ — ?set= ile gelindiğinde: öğretmen girişi tamamlanınca
+   ilgili set hazır seçili, bütün soruları havuzda işaretli, Bireysel Yarış
+   biçiminde ve doğrudan kurulum sayfasında açılır. */
+(function(){
+  var set = window.MAARIF_SET; if (!set) return;
+  var konu = set === "final" ? "m_final" : ("m_" + set);
+  try { if (window.MAARIF_TIPLER && typeof TIP_BILGI !== "undefined") Object.assign(TIP_BILGI, window.MAARIF_TIPLER); } catch(e){}
+  function kur(){
+    var D = window.__CDD, K = (typeof KONULAR !== "undefined") ? KONULAR.find(function(k){ return k.id === konu; }) : null;
+    if (!D || !K || !window.COFF || !window.BIY) return;
+    try {
+      D.karsilama = false; D.mod = "canli";
+      BIY.konuSec(konu);
+      var s = BIY._secSet(); s.clear();
+      K.sorular.forEach(function(q){ s.add(konu + "#" + q.id); });
+      BIY.setSoruSayisi(K.sorular.length);
+      BIY._soruSecSayiGuncelle(); BIY._menuDurum();
+      COFF.bicimSec("kisi");   // bütün seminer yarışmaları bireysel
+    } catch(e){ console.warn("[MAARIF] set kurulumu:", e); }
+  }
+  var orj = BIY._girisSonrasi;
+  BIY._girisSonrasi = function(){ var r = orj.apply(this, arguments); setTimeout(kur, 300); return r; };
+})();
+</script>
 <!-- Canlı tahta: kalıplar tablosunu iframe'de açar ve postMessage ile sürer.
      Alıcı taraf sarf/yarismakopru.js (kaliplartablosu.html içinde). -->
 <script src="oyunlar/biy_tahta.js?v=1"></script>

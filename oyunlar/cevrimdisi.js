@@ -288,7 +288,7 @@ function setKur(){
   const havuz = yarismaHavuzu();
   if (!havuz.length) return false;
   const n = hedefSoru();
-  D.sorular = karis(havuz).slice(0, Math.min(n, havuz.length)).map(soruHazirla);
+  D.sorular = (havuz.every(q => q.sabitSira) ? havuz.slice() : karis(havuz)).slice(0, Math.min(n, havuz.length)).map(soruHazirla);
   D.turImza = turImza();
   D.aktif = 0; D.cevapAcik = false; D.turPuan = {}; D.siralamaAcik = false; D.bitti = false;
   D.katilim.forEach(k => k.puan = 0);
@@ -876,7 +876,7 @@ CIZ.swCevrimdisi = `<svg viewBox="0 0 45 32" class="cdw-sw-ciz" aria-hidden="tru
         stroke-linecap="round" fill="none"/>
 </svg>`;
 CIZ.swCanli = `<svg viewBox="0 0 45 32" class="cdw-sw-ciz" aria-hidden="true">
-  <!-- karekod: telefonla okutup girilir -->
+  <!-- karekod: telefon/tabletle okutulur, bilgisayarda yanındaki bağlantıyla girilir -->
   <rect x="2" y="6" width="20" height="20" rx="2.6" fill="#EEF2FF"/>
   <rect x="2" y="6" width="20" height="20" rx="2.6" fill="none" stroke="#4C5FD5" stroke-width="2"/>
   <g fill="none" stroke="#4C5FD5" stroke-width="1.9">
@@ -902,7 +902,7 @@ CIZ.swCanli = `<svg viewBox="0 0 45 32" class="cdw-sw-ciz" aria-hidden="true">
 
 function switchHtml(aktif, pasif){
   /* Canlı solda ve varsayılan; çevrimdışı sağda. */
-  const yol = [["canli","Canlı","Telefonla katılım", CIZ.swCanli],
+  const yol = [["canli","Canlı","Kendi cihazından katılım", CIZ.swCanli],
                ["cevrimdisi","Çevrimdışı","Kâğıt ve tahta", CIZ.swCevrimdisi]];
   const ipucu = pasif ? "Mod 1. adımda seçilir" : "";
   return `<div class="cdw-switch${pasif?" pasif":""}" role="group" aria-label="Yarışma modu"
@@ -1479,8 +1479,8 @@ function akisAdimlariMod(mod){
   if (mod === "canli") return [
     { ik:AKIS_IK.ders,    bas:"Ders ve sorular",   alt:"Süzgeç ve havuzdan soru seçimi" },
     { ik:AKIS_IK.kimler,  bas:"Kimler yarışacak?", alt:"Takım, sınıf ya da bireysel" },
-    { ik:AKIS_IK.karekod, bas:"Karekod",           alt:"Öğrenciler telefonla katılır" },
-    { ik:AKIS_IK.yarisma, bas:"Yarışma",           alt:"Soru tahtada, cevap telefonda" },
+    { ik:AKIS_IK.karekod, bas:"Karekod",           alt:"Öğrenciler kendi cihazından katılır" },
+    { ik:AKIS_IK.yarisma, bas:"Yarışma",           alt:"Soru tahtada, cevap öğrencide" },
     { ik:AKIS_IK.sonuc,   bas:"Sonuç",             alt:"Sıralama ve kupa" }
   ];
   const kim = D.bicim === "sinif" ? "Sınıflar" : "Takımlar";
@@ -1526,8 +1526,8 @@ function karsilamaHtml(){
     <div class="cdw-govde cdw-govde-karsilama">
       <div class="cdw-sahne cdw-genis cdw-kars-sahne">
         <p class="cdw-kars-ust">Nasıl yarışacağız?</p>
-        ${[["canli", "Canlı", "Telefonla katılım · internet gerekir",
-             "Öğrenciler karekodu okutur, cevaplar telefondan gelir, puanlar kendiliğinden işlenir.", CIZ.modCanli],
+        ${[["canli", "Canlı", "Kendi cihazından katılım · internet gerekir",
+             "Öğrenciler telefon, tablet ya da bilgisayardan katılır; cevaplar kendi cihazlarından gelir, puanlar kendiliğinden işlenir.", CIZ.modCanli],
            ["cevrimdisi", "Çevrimdışı", "Kâğıt ve tahta · internet gerekmez",
              "Sorular tahtaya yansır, öğrenciler defterine yazar, puanı sen verirsin.", CIZ.modCevrimdisi]
           ].map(([m, ad, kisa, uzun, ciz]) => `
@@ -1626,10 +1626,10 @@ function anlatimPerdeleri(){
       alt: "1. sekmede dersi seç, süzgeçleri ayarla ve havuzdan soruları işaretle. 2. sekmede takım, sınıf ya da bireysel yarışa karar ver.",
       ciz: CIZ.liste, sinif: "p0" },
     { bas: "Karekodu aç, öğrenciler katılsın",
-      alt: "3. sekmede karekod ekranı açılır. Öğrenciler EBA'ya giriş yapıp telefonlarıyla karekodu okutur ve takımına katılır.",
+      alt: "3. sekmede karekod ekranı açılır. Öğrenciler EBA'ya giriş yapıp karekodu telefon ya da tabletle okutur; bilgisayarda karekodun yanındaki bağlantıyı açar ve takımına katılır.",
       ciz: CIZ.karekod, sinif: "p2" },
-    { bas: "Soru tahtada, cevap telefonda",
-      alt: "Yarışmayı başlatınca soru tahtaya yansır, geri sayım işler. Öğrenciler cevabı kendi telefonlarından işaretler.",
+    { bas: "Soru tahtada, cevap öğrencide",
+      alt: "Yarışmayı başlatınca soru tahtaya yansır, geri sayım işler. Öğrenciler cevabı kendi cihazından işaretler.",
       ciz: CIZ.tahta, sinif: "p2" },
     { bas: "Puanlar kendiliğinden işlenir",
       alt: "Süre bitince doğru cevap ve puan tablosu ekrana gelir; senin puan girmene gerek yok.",
@@ -1769,9 +1769,9 @@ function adimCanliBas(){
       <button type="button" class="cdw-kart cdw-is-kart" onclick="COFF.canliBaslat()">
         ${CIZ.karekod}
         <b>${odaVar ? "Odaya geri dön" : "Karekodu aç"}</b>
-        <small>${kacisi(D.bicim === "takim" ? "Takım adlarını yaz, her takıma bir karekod çıksın. Öğrenciler telefonlarıyla okutup katılır."
-                      : D.bicim === "sinif" ? "Sınıf adlarını yaz, her sınıfa bir karekod çıksın. Öğrenciler telefonlarıyla okutup katılır."
-                      : "Tek karekod ekranda durur; öğrenciler okutup adını yazar, sen onaylarsın.")}</small>
+        <small>${kacisi(D.bicim === "takim" ? "Takım adlarını yaz, her takıma bir karekod çıksın. Öğrenciler telefon ya da tabletle okutur, bilgisayarda bağlantıyı açar."
+                      : D.bicim === "sinif" ? "Sınıf adlarını yaz, her sınıfa bir karekod çıksın. Öğrenciler telefon ya da tabletle okutur, bilgisayarda bağlantıyı açar."
+                      : "Tek karekod ekranda durur; öğrenciler okutup ya da bağlantıyı açıp adını yazar, sen onaylarsın.")}</small>
         <span class="cdw-is-tus">▶ ${odaVar ? "Devam et" : "Başlat"}</span>
       </button>
     </div>

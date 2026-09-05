@@ -2017,6 +2017,7 @@ function temizSoru(s){  // takıma gidecek hâli — DOĞRU CEVAP YOK
   return o;
 }
 function soruHazirla(s){  // biçime göre karıştırma (doğru cevap hep aynı yerde olmasın)
+  if (s && s.sabitSira) return Object.assign({}, s);   // sabit sıralı set (ör. Maarif 50 soruluk test): şıklar karıştırılmaz
   const b = bicimAl(s);
   if (siraGibiMi(b)){
     const p = s.parcalar || [];
@@ -3600,6 +3601,7 @@ const BIY = {
     if (elle.length){
       // MANUEL: yalnızca öğretmenin görüp seçtiği sorular sorulur
       let hv = elle.slice();
+      if (!hv.every(q => q.sabitSira))   // sabit sıralı set karıştırılmaz
       for (let i = hv.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const g = hv[i]; hv[i] = hv[j]; hv[j] = g; }
       /* asagidan secilen sayi tavandir: havuz daha kalabalik kaldiysa kirp */
       const tavanB = BIY._hsTavan();
