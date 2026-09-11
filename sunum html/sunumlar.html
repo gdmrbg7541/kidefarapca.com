@@ -2321,9 +2321,43 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       <!-- MAARİF MODELİ — seminer desteleri; listenin en altında. -->
       <section class="lkume">
         <div class="lkbas"><span class="lkim" aria-hidden="true">🏫</span>
-          <h3>Maarif Modeli</h3><span class="lknot">öğretmen seminerleri</span>
+          <h3>Maarif Modeli</h3><span class="lknot">öğretmen seminerleri · konu haritalı</span>
           <i class="lcizgi" aria-hidden="true"></i><span class="lksay"></span></div>
         <div class="lkizgara">
+          <!-- SEMİNER MERKEZİ: iki günün konu haritası (maarif.html). Haritadan
+               bir başlığa dokununca ilgili günün ilgili SLAYDI açılır; iki gün
+               kartı aşağıda ayrıca duruyor, baştan izlemek isteyen oradan girer. -->
+          <button class="lkart" data-dis="maarif.html">
+            <div class="lust"><span class="lrozet">🗺️ Seminer haritası</span></div>
+            <span class="lsvg" aria-hidden="true"><svg viewBox="0 0 200 120">
+              <rect class="lp-golge" x="18" y="10" width="164" height="86" rx="8"/>
+              <rect class="lp-ekran" x="18" y="10" width="164" height="86" rx="8"/>
+              <g class="lp-kayan">
+                <g class="lp-slayt s1">
+                  <rect x="28" y="48" width="26" height="14" rx="4" fill="#1B3A6B"/>
+                  <path d="M54 55h14M68 42v26M68 42h12M68 55h12M68 68h12" stroke="#C9D4E0" stroke-width="2.4" fill="none"/>
+                  <rect x="80" y="35" width="30" height="14" rx="4" fill="#E8F4F1"/>
+                  <rect x="80" y="48" width="30" height="14" rx="4" fill="#FDF3E0"/>
+                  <rect x="80" y="61" width="30" height="14" rx="4" fill="#F5EEE6"/>
+                  <path d="M110 42h10M110 55h10M110 68h10" stroke="#C9D4E0" stroke-width="2.4"/>
+                  <rect x="120" y="36" width="24" height="12" rx="4" fill="#EEF3F8"/>
+                  <rect x="120" y="49" width="24" height="12" rx="4" fill="#EEF3F8"/>
+                  <rect x="120" y="62" width="24" height="12" rx="4" fill="#EEF3F8"/>
+                  <rect x="146" y="50" width="22" height="10" rx="5" fill="#00A651"/></g>
+                <g class="lp-slayt s2"><rect x="30" y="22" width="44" height="7" rx="3.5" fill="#94A3B4"/>
+                  <rect x="30" y="40" width="118" height="6" rx="3" fill="#DCE3EB"/>
+                  <rect x="30" y="54" width="88" height="6" rx="3" fill="#DCE3EB"/>
+                  <rect x="30" y="68" width="104" height="6" rx="3" fill="#0E7C66"/></g>
+              </g>
+              <g class="lp-imlec"><circle cx="150" cy="88" r="4.5"/></g>
+              <path class="lp-ayak" d="M92 96 h16 v10 h-16 Z"/>
+              <rect class="lp-taban" x="62" y="106" width="76" height="6" rx="3"/>
+              <g class="lp-isik"><path d="M100 96 L54 118 h92 Z"/></g>
+            </svg></span>
+            <h3>Seminerin Konu Haritası</h3>
+            <p>İki gün, dokuz bölüm tek şemada. Bir başlığa dokun, o konunun anlatıldığı slayt doğrudan açılsın.</p>
+            <div class="lalt2"><span class="ladet">78 slayt · 60 başlık</span><span class="lac">Haritayı aç &#8250;</span></div>
+          </button>
           <!-- MAARİF SEMİNERİ 1. gün: ayrı dosya (maarif1.html); yeni sekmede DOĞRUDAN slaytlar açılır, çıkış buraya döner -->
           <button class="lkart" data-dis="maarif1.html?s=maarif1">
           <div class="lust"><span class="lrozet">🎓 Seminer · 1. gün</span></div>
@@ -2400,7 +2434,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
           </svg></span>
           <h3>Dengeyi Kuran Öğretmen — Problemler, Çözümler, Yöntemler</h3>
           <p>Profesyonel kimlik, insanlık hâli ve sebat: materyal, iletişim, kuşak, puanlama, yapay zekâ ve oyunda iki aşırılık, bir doğru konum. Arapça sınıfından örneklerle.</p>
-          <div class="lalt2"><span class="ladet">41 slayt · 6 denge · yarım gün</span><span class="lac">Aç ›</span></div>
+          <div class="lalt2"><span class="ladet">30 slayt · 6 denge · yarım gün</span><span class="lac">Aç ›</span></div>
           </button>
         </div>
       </section>
@@ -4916,6 +4950,32 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
   document.addEventListener('webkitfullscreenchange', tamEkranIsaretle);
   tamEkranIsaretle();
 
+  /* TAM EKRANDAN ÇIKILDIYSA, EKRANA DOKUNUNCA GERİ GİR.
+     ------------------------------------------------------------------
+     Sunum açılırken tam ekrana giriliyor; ama öğretmen Esc'e basınca,
+     tahtanın kendi tuşuna dokununca ya da tarayıcı kendiliğinden çıkınca
+     sunum pencere kipinde kalıyor ve geri dönmenin tek yolu F tuşu / kumanda
+     oluyordu. Artık slayda bir kez dokunmak yetiyor.
+
+     NEDEN 'click' ÜZERİNDEN: tarayıcı tam ekranı yalnız bir kullanıcı
+     hareketinin İÇİNDE verir; sonradan çağrılırsa sessizce reddedilir.
+     Kaydırma (swipe) 'click' üretmediği için slayt değiştirirken tetiklenmez.
+
+     DIŞARIDA KALANLAR: kumanda tuşları ve çıkış onayı. Özellikle "tam ekran"
+     tuşu — onunla çıkan kişi aynı tıklamayla geri alınmasın. Dokunuş
+     engellenmiyor: kavram baloncuğu, alıştırma kartı gibi şeyler aynı
+     dokunuşta normal işini yapmayı sürdürür. */
+  document.addEventListener('click', function(e){
+    if(!aktif) return;                    /* liste ekranındayken karışma */
+    if(document.fullscreenElement || document.webkitFullscreenElement) return;
+    if(onayEl && onayEl.classList.contains('acik')) return;
+    var t = e.target;
+    if(t && t.closest && t.closest('#kumanda, #dCikis, #onay')) return;
+    tamEkranGir();
+  }, true);   /* YAKALAMA EVRESİ: kavram terimi gibi bazı ögeler tıklamayı
+                 stopPropagation ile durduruyor; yakalamada dinlersek dokunuş
+                 hangi ögeye gelirse gelsin tam ekran geri gelir. */
+
   /* ---------- fare hareketiyle kumanda ---------- */
   var zaman;
   var cikisDug = document.getElementById('dCikis');
@@ -4989,6 +5049,13 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
   });
 })();
 </script>
+<!-- OTURUM GÜVENLİĞİ — 40 dakika boşta kalma sayacı.
+     Bu sayfa index'ten YENİ SEKMEDE açılıyor. Dosya burada da yüklü olmazsa
+     buradaki dokunuşlar sayaca yazılmaz; index sekmesi öğretmeni "masadan
+     kalkmış" sayıp 40. dakikada oturumu kapatır (sunum ortasında atılma).
+     Sayaç localStorage üzerinden sekmeler arası ortaktır. Firebase yüklü
+     olmayan sayfalarda dosya yalnız hareket yazar, kimseyi çıkarmaz. -->
+<script src="../hesap/oturumguvenlik.js?v=20260911a"></script>
 <link rel="stylesheet" href="../arakom.css?v=2">
 </body>
 </html>

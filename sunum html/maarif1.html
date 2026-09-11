@@ -3949,6 +3949,32 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
   document.addEventListener('webkitfullscreenchange', tamEkranIsaretle);
   tamEkranIsaretle();
 
+  /* TAM EKRANDAN ÇIKILDIYSA, EKRANA DOKUNUNCA GERİ GİR.
+     ------------------------------------------------------------------
+     Sunum açılırken tam ekrana giriliyor; ama öğretmen Esc'e basınca,
+     tahtanın kendi tuşuna dokununca ya da tarayıcı kendiliğinden çıkınca
+     sunum pencere kipinde kalıyor ve geri dönmenin tek yolu F tuşu / kumanda
+     oluyordu. Artık slayda bir kez dokunmak yetiyor.
+
+     NEDEN 'click' ÜZERİNDEN: tarayıcı tam ekranı yalnız bir kullanıcı
+     hareketinin İÇİNDE verir; sonradan çağrılırsa sessizce reddedilir.
+     Kaydırma (swipe) 'click' üretmediği için slayt değiştirirken tetiklenmez.
+
+     DIŞARIDA KALANLAR: kumanda tuşları ve çıkış onayı. Özellikle "tam ekran"
+     tuşu — onunla çıkan kişi aynı tıklamayla geri alınmasın. Dokunuş
+     engellenmiyor: kavram baloncuğu, alıştırma kartı gibi şeyler aynı
+     dokunuşta normal işini yapmayı sürdürür. */
+  document.addEventListener('click', function(e){
+    if(!aktif) return;                    /* liste ekranındayken karışma */
+    if(document.fullscreenElement || document.webkitFullscreenElement) return;
+    if(onayEl && onayEl.classList.contains('acik')) return;
+    var t = e.target;
+    if(t && t.closest && t.closest('#kumanda, #dCikis, #onay')) return;
+    tamEkranGir();
+  }, true);   /* YAKALAMA EVRESİ: kavram terimi gibi bazı ögeler tıklamayı
+                 stopPropagation ile durduruyor; yakalamada dinlersek dokunuş
+                 hangi ögeye gelirse gelsin tam ekran geri gelir. */
+
   /* ---------- fare hareketiyle kumanda ---------- */
   var zaman;
   var cikisDug = document.getElementById('dCikis');
@@ -4063,5 +4089,12 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
 })();
 </script>
 
+<!-- OTURUM GÜVENLİĞİ — 40 dakika boşta kalma sayacı.
+     Bu sayfa index'ten YENİ SEKMEDE açılıyor. Dosya burada da yüklü olmazsa
+     buradaki dokunuşlar sayaca yazılmaz; index sekmesi öğretmeni "masadan
+     kalkmış" sayıp 40. dakikada oturumu kapatır (sunum ortasında atılma).
+     Sayaç localStorage üzerinden sekmeler arası ortaktır. Firebase yüklü
+     olmayan sayfalarda dosya yalnız hareket yazar, kimseyi çıkarmaz. -->
+<script src="../hesap/oturumguvenlik.js?v=20260911a"></script>
 </body>
 </html>
