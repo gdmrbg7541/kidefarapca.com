@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kidef Arapça — Hangi ihtiyaç için hangi araç?</title>
 <meta name="description" content="kidefarapca.com'daki bütün uygulamalar, sunumlar ve öğretmen dokümanları; her biri hangi sınıf ihtiyacını karşıladığıyla birlikte.">
+<script>
+/* Çerçeve (iframe) içindeyiz: geri/ev tuşu gizlensin — pencerenin kendi
+   kapatma tuşu var. <head>'de çalışır ki tuş bir an görünüp kaybolmasın. */
+try{ if (window.top !== window.self) document.documentElement.className += ' cerceve'; }catch(e){}
+</script>
 <style>
 /* ==========================================================
    KIDEF ARAPÇA · ARAÇ KATALOĞU
@@ -144,6 +149,16 @@ body{padding-top:52px}
 .ust-serit{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;
   gap:12px;padding:8px 16px;background:rgba(255,255,255,.93);backdrop-filter:blur(8px);
   border-bottom:1px solid #E2E8F0;box-shadow:0 2px 10px rgba(31,36,48,.07)}
+.ust-serit .geri-alan{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+.ust-serit .geri-alan button{font-family:inherit;line-height:1;color:var(--kahve);
+  background:#F7F1E7;border:1.5px solid #E3D6C2;border-radius:10px;width:36px;height:36px;
+  display:grid;place-items:center;cursor:pointer;padding:0}
+.ust-serit .geri-alan svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.ust-serit .geri-alan button:hover{background:#F0E5D4}
+/* Katalog index'teki açılır pencerede ÇERÇEVE içinde de gösteriliyor.
+   Orada geri/ev tuşu işe yaramaz (pencerenin kendi ✕'i var) — gizlenir. */
+html.cerceve .ust-serit .geri-alan{display:none}
 .ust-serit .ad{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10pt;
   font-weight:800;color:var(--kahve);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ust-serit .ad span{color:var(--soluk);font-weight:600}
@@ -170,9 +185,16 @@ body{padding-top:52px}
   body{padding-top:0 !important}
   a{color:var(--vurgu) !important}
 }
+/* EKRANDA pencereye sığsın — yeni sekmede açınca yakınlaştırmaya gerek
+   kalmasın. Kâğıt ölçüsü (210mm) YALNIZ baskıda geçerli; ekranda sayfa
+   pencerenin genişliğini alır ve kartlar boşluğa göre 2-4 sütuna yayılır.
+   Baskı kuralları aşağıda ayrı: orada ızgara yine tam 2 sütun. */
+@media screen{
+  .sayfa{width:100%;max-width:1280px;padding:22px 26px 26px}
+  .kgrid,.av{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+}
 @media screen and (max-width:820px){
-  .sayfa{width:auto;max-width:210mm;padding:18px 14px}
-  .kgrid,.av{grid-template-columns:1fr}
+  .sayfa{padding:16px 13px}
   .bbas .bnot{display:none}
 }
 </style>
@@ -180,6 +202,16 @@ body{padding-top:52px}
 <body>
 
 <div class="ust-serit">
+  <div class="geri-alan">
+    <button type="button" onclick="katalogGeri(event)" aria-label="Geri" title="Geri">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5.4"/><path d="M11.8 5.6 5 12l6.8 6.4"/></svg>
+    </button>
+    <button type="button" onclick="katalogAnasayfa(event)" aria-label="Ana sayfa" title="Ana sayfa">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 10.5 12 3.5l8.6 7"/>
+        <path d="M5.4 9.4V19a1.5 1.5 0 0 0 1.5 1.5h10.2a1.5 1.5 0 0 0 1.5-1.5V9.4"/>
+        <path d="M9.6 20.5v-5a1.3 1.3 0 0 1 1.3-1.3h2.2a1.3 1.3 0 0 1 1.3 1.3v5"/></svg>
+    </button>
+  </div>
   <div class="ad">Araç Kataloğu <span>· kidefarapca.com</span></div>
   <div class="tuslar">
     <a class="tus ikincil" href="#" onclick="window.print();return false;" title="Kendi yazıcından dök (⌘P)">
@@ -775,6 +807,42 @@ body{padding-top:52px}
 
 </div>
 
+
+<script>
+/* GERİ ve ANASAYFA — sitenin sistem/geri.js kuralının alt klasöre uyarlanmışı.
+   geri.js doğrudan kullanılamadı: o, index.html'i BULUNDUĞU dizine göre
+   çözüyor; katalog bir alt klasörde olduğu için «index.html» kendisine,
+   yani katalog/index.html'e çıkıyordu. Burada adres açıkça ../index.html.
+
+   YENİ SEKMEDE AÇILDIYSA (window.opener yaşıyorsa) geri tuşu SEKMEYİ KAPATIR.
+   Tarayıcı kapatmaya izin vermezse 250 ms sonra ana sayfaya döner. */
+function katalogGeri(e){
+  if (e && e.preventDefault) e.preventDefault();
+  try{
+    if (window.opener && !window.opener.closed){
+      window.close();
+      setTimeout(function(){ if(!window.closed) location.href = '../index.html'; }, 250);
+      return false;
+    }
+  }catch(_){}
+  var ref = document.referrer || '';
+  if (ref && ref.indexOf(location.host) !== -1 && history.length > 1){ history.back(); return false; }
+  location.href = '../index.html';
+  return false;
+}
+function katalogAnasayfa(e){
+  if (e && e.preventDefault) e.preventDefault();
+  try{
+    if (window.opener && !window.opener.closed){
+      window.close();
+      setTimeout(function(){ if(!window.closed) location.href = '../index.html'; }, 250);
+      return false;
+    }
+  }catch(_){}
+  location.href = '../index.html';
+  return false;
+}
+</script>
 
 </body>
 </html>

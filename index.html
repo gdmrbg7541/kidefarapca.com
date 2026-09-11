@@ -957,7 +957,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         <div class="kp-bas">
           <b>Araç Kataloğu</b>
           <span class="kp-ara">
-            <a class="kp-bag" href="katalog/" target="_blank" rel="noopener">Yeni sekmede aç</a>
+            <!-- rel="opener" BİLEREK: katalogdaki geri tuşu yeni sekmeyi kapatabilsin diye
+                   window.opener bağı korunur (sitenin geri.js kuralı). -->
+              <a class="kp-bag" href="katalog/" target="_blank" rel="opener">Yeni sekmede aç</a>
             <a class="kp-bag" href="katalog/katalog.pdf" target="_blank" rel="noopener">PDF indir</a>
             <button type="button" class="kp-kapat" id="katKapatTus" aria-label="Kapat">&times;</button>
           </span>
