@@ -883,6 +883,116 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         <!-- ANA MENÜ (index kart menüsü) -->
         <section id="home-hub-section" class="app-section" style="display:block;">
 
+    <!-- ══════════════════════════════════════════════════════════════════════
+         ARAÇ KATALOĞU — açılır pencere
+         Sitede 40'tan fazla araç var; öğretmen hangisinin hangi derde iyi
+         geldiğini bilmiyorsa hiçbiri işe yaramıyor. Bu şerit katalog sayfasını
+         (katalog/) sayfadan ayrılmadan bir çerçevede açar. Katalog AYRI bir
+         dosyadır: burada kopyası tutulmaz, orada değişen burada da değişir.
+         Kendi stilini ve betiğini kendi yazar, sitedeki hiçbir fonksiyona
+         dokunmaz. ══════════════════════════════════════════════════════════ -->
+    <div class="katSerit" id="katSerit">
+      <style>
+        #katSerit{ margin:20px 0 4px; }
+        #katSerit .ks-kutu{ display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+          background:linear-gradient(120deg,#F3FAF8,#FFFFFF 62%); border:2px solid #BFE6DE;
+          border-radius:18px; padding:14px 18px; box-shadow:0 6px 18px rgba(14,158,134,.10); }
+        #katSerit .ks-ikon{ flex:0 0 auto; width:46px; height:46px; border-radius:15px; display:grid;
+          place-items:center; background:#DCF3EE; }
+        #katSerit .ks-ikon svg{ width:26px; height:26px; display:block; }
+        #katSerit .ks-yazi{ flex:1 1 260px; min-width:0; }
+        #katSerit .ks-yazi h3{ margin:0 0 2px; font-size:1.06rem; color:#0B6F5E; }
+        #katSerit .ks-yazi p{ margin:0; font-size:.92rem; color:#5B6471; line-height:1.45; }
+        #katSerit .ks-tus{ flex:0 0 auto; font-family:inherit; font-size:.95rem; font-weight:800;
+          color:#fff; background:linear-gradient(90deg,#16A085,#0E9E86); border:0; border-radius:12px;
+          padding:11px 20px; cursor:pointer; box-shadow:0 4px 12px rgba(14,158,134,.30); transition:.16s; }
+        #katSerit .ks-tus:hover{ filter:brightness(1.07); transform:translateY(-1px); }
+
+        /* --- açılır pencere --- */
+        #katPerde{ position:fixed; inset:0; z-index:99998; display:none;
+          align-items:center; justify-content:center; padding:22px;
+          background:rgba(16,22,30,.62); backdrop-filter:blur(3px); }
+        #katPerde.acik{ display:flex; }
+        #katPerde .kp-kutu{ background:#fff; border-radius:18px; width:min(980px,100%);
+          height:min(88vh,900px); display:flex; flex-direction:column; overflow:hidden;
+          box-shadow:0 26px 70px rgba(0,0,0,.38); animation:kpGel .22s ease both; }
+        @keyframes kpGel{ from{opacity:0;transform:translateY(16px) scale(.985)} to{opacity:1;transform:none} }
+        #katPerde .kp-bas{ display:flex; align-items:center; gap:12px; padding:12px 16px;
+          border-bottom:1px solid #E6ECF3; flex:0 0 auto; }
+        #katPerde .kp-bas b{ font-size:1rem; color:#1F2430; }
+        #katPerde .kp-bas .kp-ara{ margin-inline-start:auto; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+        #katPerde .kp-bag{ font-size:.86rem; font-weight:700; text-decoration:none; color:#0E7C66;
+          border:1px solid #BFE6DE; border-radius:9px; padding:7px 12px; background:#F3FAF8; }
+        #katPerde .kp-bag:hover{ background:#E4F5F1; }
+        #katPerde .kp-kapat{ font-family:inherit; font-size:1.15rem; line-height:1; color:#5B6471;
+          background:#EEF2F7; border:0; border-radius:9px; width:34px; height:34px; cursor:pointer; }
+        #katPerde .kp-kapat:hover{ background:#E53935; color:#fff; }
+        #katPerde iframe{ flex:1 1 auto; width:100%; border:0; background:#EEF1F5; }
+        @media (max-width:640px){
+          #katPerde{ padding:0; }
+          #katPerde .kp-kutu{ height:100vh; border-radius:0; }
+        }
+      </style>
+
+      <div class="ks-kutu">
+        <span class="ks-ikon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0E9E86" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4.6h6.2a2.4 2.4 0 0 1 2.4 2.4v12a1.8 1.8 0 0 0-1.8-1.8H4z"/>
+            <path d="M20 4.6h-5.4a2.4 2.4 0 0 0-2 1.1"/>
+            <path d="M16.4 11.4h4.2M16.4 14.6h3"/>
+          </svg>
+        </span>
+        <div class="ks-yazi">
+          <h3>Hangi ihtiyaç için hangi araç?</h3>
+          <p>Sınıfta karşılaştığın durumu bul, karşısındaki aracı aç. Bütün oyunlar,
+             uygulamalar, sunumlar ve öğretmen dokümanları tek listede.</p>
+        </div>
+        <button type="button" class="ks-tus" id="katAcTus">Kataloğu aç</button>
+      </div>
+    </div>
+
+    <div id="katPerde" role="dialog" aria-modal="true" aria-label="Araç kataloğu" hidden>
+      <div class="kp-kutu">
+        <div class="kp-bas">
+          <b>Araç Kataloğu</b>
+          <span class="kp-ara">
+            <a class="kp-bag" href="katalog/" target="_blank" rel="noopener">Yeni sekmede aç</a>
+            <a class="kp-bag" href="katalog/katalog.pdf" target="_blank" rel="noopener">PDF indir</a>
+            <button type="button" class="kp-kapat" id="katKapatTus" aria-label="Kapat">&times;</button>
+          </span>
+        </div>
+        <iframe id="katCerceve" title="Araç kataloğu" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <script>
+    /* Katalog penceresi — kendi başına çalışır, sitedeki hiçbir şeye bağlı değil.
+       Çerçevenin src'si İLK AÇILIŞTA verilir: sayfa yüklenirken boşuna indirilmesin. */
+    (function(){
+      var perde = document.getElementById('katPerde');
+      var cer   = document.getElementById('katCerceve');
+      if (!perde || !cer) return;
+      function ac(){
+        if (!cer.getAttribute('src')) cer.setAttribute('src','katalog/');
+        perde.hidden = false; perde.classList.add('acik');
+        document.body.style.overflow = 'hidden';
+      }
+      function kapat(){
+        perde.classList.remove('acik'); perde.hidden = true;
+        document.body.style.overflow = '';
+      }
+      var t = document.getElementById('katAcTus');
+      if (t) t.addEventListener('click', ac);
+      var k = document.getElementById('katKapatTus');
+      if (k) k.addEventListener('click', kapat);
+      perde.addEventListener('click', function(e){ if (e.target === perde) kapat(); });
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && perde.classList.contains('acik')) kapat();
+      });
+    })();
+    </script>
+
     <!-- SIRA: İmam Hatip en üstte; sayfayı açan öğretmenin
          ilk gördüğü kategori bu olsun diye buraya alındı. -->
     <section id="imam-hatip" class="content-section">
@@ -1749,115 +1859,6 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         </div>
       </div>
 
-      <!-- ══════════════════════════════════════════════════════════════════════
-           ARAÇ KATALOĞU — açılır pencere
-           Sitede 40'tan fazla araç var; öğretmen hangisinin hangi derde iyi
-           geldiğini bilmiyorsa hiçbiri işe yaramıyor. Bu şerit katalog sayfasını
-           (katalog/) sayfadan ayrılmadan bir çerçevede açar. Katalog AYRI bir
-           dosyadır: burada kopyası tutulmaz, orada değişen burada da değişir.
-           Kendi stilini ve betiğini kendi yazar, sitedeki hiçbir fonksiyona
-           dokunmaz. ══════════════════════════════════════════════════════════ -->
-      <div class="katSerit" id="katSerit">
-        <style>
-          #katSerit{ margin:20px 0 4px; }
-          #katSerit .ks-kutu{ display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-            background:linear-gradient(120deg,#F3FAF8,#FFFFFF 62%); border:2px solid #BFE6DE;
-            border-radius:18px; padding:14px 18px; box-shadow:0 6px 18px rgba(14,158,134,.10); }
-          #katSerit .ks-ikon{ flex:0 0 auto; width:46px; height:46px; border-radius:15px; display:grid;
-            place-items:center; background:#DCF3EE; }
-          #katSerit .ks-ikon svg{ width:26px; height:26px; display:block; }
-          #katSerit .ks-yazi{ flex:1 1 260px; min-width:0; }
-          #katSerit .ks-yazi h3{ margin:0 0 2px; font-size:1.06rem; color:#0B6F5E; }
-          #katSerit .ks-yazi p{ margin:0; font-size:.92rem; color:#5B6471; line-height:1.45; }
-          #katSerit .ks-tus{ flex:0 0 auto; font-family:inherit; font-size:.95rem; font-weight:800;
-            color:#fff; background:linear-gradient(90deg,#16A085,#0E9E86); border:0; border-radius:12px;
-            padding:11px 20px; cursor:pointer; box-shadow:0 4px 12px rgba(14,158,134,.30); transition:.16s; }
-          #katSerit .ks-tus:hover{ filter:brightness(1.07); transform:translateY(-1px); }
-
-          /* --- açılır pencere --- */
-          #katPerde{ position:fixed; inset:0; z-index:99998; display:none;
-            align-items:center; justify-content:center; padding:22px;
-            background:rgba(16,22,30,.62); backdrop-filter:blur(3px); }
-          #katPerde.acik{ display:flex; }
-          #katPerde .kp-kutu{ background:#fff; border-radius:18px; width:min(980px,100%);
-            height:min(88vh,900px); display:flex; flex-direction:column; overflow:hidden;
-            box-shadow:0 26px 70px rgba(0,0,0,.38); animation:kpGel .22s ease both; }
-          @keyframes kpGel{ from{opacity:0;transform:translateY(16px) scale(.985)} to{opacity:1;transform:none} }
-          #katPerde .kp-bas{ display:flex; align-items:center; gap:12px; padding:12px 16px;
-            border-bottom:1px solid #E6ECF3; flex:0 0 auto; }
-          #katPerde .kp-bas b{ font-size:1rem; color:#1F2430; }
-          #katPerde .kp-bas .kp-ara{ margin-inline-start:auto; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-          #katPerde .kp-bag{ font-size:.86rem; font-weight:700; text-decoration:none; color:#0E7C66;
-            border:1px solid #BFE6DE; border-radius:9px; padding:7px 12px; background:#F3FAF8; }
-          #katPerde .kp-bag:hover{ background:#E4F5F1; }
-          #katPerde .kp-kapat{ font-family:inherit; font-size:1.15rem; line-height:1; color:#5B6471;
-            background:#EEF2F7; border:0; border-radius:9px; width:34px; height:34px; cursor:pointer; }
-          #katPerde .kp-kapat:hover{ background:#E53935; color:#fff; }
-          #katPerde iframe{ flex:1 1 auto; width:100%; border:0; background:#EEF1F5; }
-          @media (max-width:640px){
-            #katPerde{ padding:0; }
-            #katPerde .kp-kutu{ height:100vh; border-radius:0; }
-          }
-        </style>
-
-        <div class="ks-kutu">
-          <span class="ks-ikon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#0E9E86" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4.6h6.2a2.4 2.4 0 0 1 2.4 2.4v12a1.8 1.8 0 0 0-1.8-1.8H4z"/>
-              <path d="M20 4.6h-5.4a2.4 2.4 0 0 0-2 1.1"/>
-              <path d="M16.4 11.4h4.2M16.4 14.6h3"/>
-            </svg>
-          </span>
-          <div class="ks-yazi">
-            <h3>Hangi ihtiyaç için hangi araç?</h3>
-            <p>Sınıfta karşılaştığın durumu bul, karşısındaki aracı aç. Bütün oyunlar,
-               uygulamalar, sunumlar ve öğretmen dokümanları tek listede.</p>
-          </div>
-          <button type="button" class="ks-tus" id="katAcTus">Kataloğu aç</button>
-        </div>
-      </div>
-
-      <div id="katPerde" role="dialog" aria-modal="true" aria-label="Araç kataloğu" hidden>
-        <div class="kp-kutu">
-          <div class="kp-bas">
-            <b>Araç Kataloğu</b>
-            <span class="kp-ara">
-              <a class="kp-bag" href="katalog/" target="_blank" rel="noopener">Yeni sekmede aç</a>
-              <a class="kp-bag" href="katalog/katalog.pdf" target="_blank" rel="noopener">PDF indir</a>
-              <button type="button" class="kp-kapat" id="katKapatTus" aria-label="Kapat">&times;</button>
-            </span>
-          </div>
-          <iframe id="katCerceve" title="Araç kataloğu" loading="lazy"></iframe>
-        </div>
-      </div>
-
-      <script>
-      /* Katalog penceresi — kendi başına çalışır, sitedeki hiçbir şeye bağlı değil.
-         Çerçevenin src'si İLK AÇILIŞTA verilir: sayfa yüklenirken boşuna indirilmesin. */
-      (function(){
-        var perde = document.getElementById('katPerde');
-        var cer   = document.getElementById('katCerceve');
-        if (!perde || !cer) return;
-        function ac(){
-          if (!cer.getAttribute('src')) cer.setAttribute('src','katalog/');
-          perde.hidden = false; perde.classList.add('acik');
-          document.body.style.overflow = 'hidden';
-        }
-        function kapat(){
-          perde.classList.remove('acik'); perde.hidden = true;
-          document.body.style.overflow = '';
-        }
-        var t = document.getElementById('katAcTus');
-        if (t) t.addEventListener('click', ac);
-        var k = document.getElementById('katKapatTus');
-        if (k) k.addEventListener('click', kapat);
-        perde.addEventListener('click', function(e){ if (e.target === perde) kapat(); });
-        document.addEventListener('keydown', function(e){
-          if (e.key === 'Escape' && perde.classList.contains('acik')) kapat();
-        });
-      })();
-      </script>
 
 
     </section>
