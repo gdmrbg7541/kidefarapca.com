@@ -502,10 +502,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     .kga-hafiza { transform-origin: 50% 50%; animation: kgFlip 2.8s ease-in-out infinite; }
     .kga-hyuzA { animation: kgYuzA 2.8s step-end infinite; }
     .kga-hyuzB { animation: kgYuzB 2.8s step-end infinite; }
-    /* Renkler: boya damlaları sırayla nabız atar */
-    .kga-renk { transform-box: fill-box; transform-origin: 50% 50%; animation: kgRenk 2s ease-in-out infinite; }
-    .kga-renk.g2x { animation-delay: .5s; } .kga-renk.g3x { animation-delay: 1s; } .kga-renk.g4x { animation-delay: 1.5s; }
-    @keyframes kgRenk { 0%,45%,100%{transform:scale(1)} 18%{transform:scale(1.55)} }
+    /* (Renkler kartının boya-damlası animasyonu kaldırıldı: kart artık
+       Oyunlar bölümünde değil, kuralları kullanan SVG de kalmadı.) */
     /* İsim x4: dörtlü parçalar ayrılıp birleşir */
     .kga-q1 { animation: kgQ1 2.2s ease-in-out infinite; } .kga-q2 { animation: kgQ2 2.2s ease-in-out infinite; }
     .kga-q3 { animation: kgQ3 2.2s ease-in-out infinite; } .kga-q4 { animation: kgQ4 2.2s ease-in-out infinite; }
@@ -884,13 +882,17 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         <section id="home-hub-section" class="app-section" style="display:block;">
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         ARAÇ KATALOĞU — açılır pencere
+         ARAÇ KATALOĞU — yeni sekmede tam sayfa
          Sitede 40'tan fazla araç var; öğretmen hangisinin hangi derde iyi
          geldiğini bilmiyorsa hiçbiri işe yaramıyor. Bu şerit katalog sayfasını
-         (katalog/) sayfadan ayrılmadan bir çerçevede açar. Katalog AYRI bir
-         dosyadır: burada kopyası tutulmaz, orada değişen burada da değişir.
-         Kendi stilini ve betiğini kendi yazar, sitedeki hiçbir fonksiyona
-         dokunmaz. ══════════════════════════════════════════════════════════ -->
+         (katalog/) YENİ SEKMEDE, tam sayfa açar.
+
+         Önce açılır pencerede (iframe) açılıyordu; katalog sekmeli hâle gelince
+         dar çerçeve iş görmez oldu — sekme şeridi ve kartlar sıkışıyordu.
+         rel="opener" BİLEREK duruyor: katalogdaki geri tuşu, window.opener
+         yaşıyorsa sekmeyi kapatıp buraya döner (sitenin geri.js kuralı).
+         Katalog AYRI bir dosyadır: burada kopyası tutulmaz, orada değişen
+         burada da değişir. ══════════════════════════════════════════════ -->
     <div class="katSerit" id="katSerit">
       <style>
         #katSerit{ margin:20px 0 4px; }
@@ -907,31 +909,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           color:#fff; background:linear-gradient(90deg,#16A085,#0E9E86); border:0; border-radius:12px;
           padding:11px 20px; cursor:pointer; box-shadow:0 4px 12px rgba(14,158,134,.30); transition:.16s; }
         #katSerit .ks-tus:hover{ filter:brightness(1.07); transform:translateY(-1px); }
-
-        /* --- açılır pencere --- */
-        #katPerde{ position:fixed; inset:0; z-index:99998; display:none;
-          align-items:center; justify-content:center; padding:22px;
-          background:rgba(16,22,30,.62); backdrop-filter:blur(3px); }
-        #katPerde.acik{ display:flex; }
-        #katPerde .kp-kutu{ background:#fff; border-radius:18px; width:min(980px,100%);
-          height:min(88vh,900px); display:flex; flex-direction:column; overflow:hidden;
-          box-shadow:0 26px 70px rgba(0,0,0,.38); animation:kpGel .22s ease both; }
-        @keyframes kpGel{ from{opacity:0;transform:translateY(16px) scale(.985)} to{opacity:1;transform:none} }
-        #katPerde .kp-bas{ display:flex; align-items:center; gap:12px; padding:12px 16px;
-          border-bottom:1px solid #E6ECF3; flex:0 0 auto; }
-        #katPerde .kp-bas b{ font-size:1rem; color:#1F2430; }
-        #katPerde .kp-bas .kp-ara{ margin-inline-start:auto; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-        #katPerde .kp-bag{ font-size:.86rem; font-weight:700; text-decoration:none; color:#0E7C66;
-          border:1px solid #BFE6DE; border-radius:9px; padding:7px 12px; background:#F3FAF8; }
-        #katPerde .kp-bag:hover{ background:#E4F5F1; }
-        #katPerde .kp-kapat{ font-family:inherit; font-size:1.15rem; line-height:1; color:#5B6471;
-          background:#EEF2F7; border:0; border-radius:9px; width:34px; height:34px; cursor:pointer; }
-        #katPerde .kp-kapat:hover{ background:#E53935; color:#fff; }
-        #katPerde iframe{ flex:1 1 auto; width:100%; border:0; background:#EEF1F5; }
-        @media (max-width:640px){
-          #katPerde{ padding:0; }
-          #katPerde .kp-kutu{ height:100vh; border-radius:0; }
-        }
+        /* Ana tuş artık <a>: düğme gibi görünsün diye hizalama eklendi. */
+        #katSerit a.ks-tus{ display:inline-flex; align-items:center; gap:8px;
+          text-decoration:none; }
+        #katSerit a.ks-tus svg{ width:17px; height:17px; flex:0 0 auto; }
+        /* İkinci sıradaki küçük bağ: hazır PDF */
+        #katSerit .ks-pdf{ flex:0 0 auto; font-size:.88rem; font-weight:700;
+          text-decoration:none; color:#0E7C66; border:1px solid #BFE6DE;
+          border-radius:11px; padding:10px 15px; background:#F3FAF8; }
+        #katSerit .ks-pdf:hover{ background:#E4F5F1; }
       </style>
 
       <div class="ks-kutu">
@@ -948,52 +934,21 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           <p>Sınıfta karşılaştığın durumu bul, karşısındaki aracı aç. Bütün oyunlar,
              uygulamalar, sunumlar ve öğretmen dokümanları tek listede.</p>
         </div>
-        <button type="button" class="ks-tus" id="katAcTus">Kataloğu aç</button>
+        <!-- rel="opener" BİLEREK: katalogdaki geri tuşu, window.opener yaşıyorsa
+             sekmeyi kapatıp buraya döner (sitenin geri.js kuralı). noopener
+             yazılırsa geri tuşu sekmeyi kapatamaz. -->
+        <a class="ks-tus" href="katalog/" target="_blank" rel="opener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/>
+            <path d="M18.5 14v4.5a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5H10"/>
+          </svg>
+          Kataloğu aç
+        </a>
+        <a class="ks-pdf" href="katalog/katalog.pdf" target="_blank" rel="noopener"
+           download="Kidef-Arapca-Arac-Katalogu.pdf">PDF indir</a>
       </div>
     </div>
-
-    <div id="katPerde" role="dialog" aria-modal="true" aria-label="Araç kataloğu" hidden>
-      <div class="kp-kutu">
-        <div class="kp-bas">
-          <b>Araç Kataloğu</b>
-          <span class="kp-ara">
-            <!-- rel="opener" BİLEREK: katalogdaki geri tuşu yeni sekmeyi kapatabilsin diye
-                   window.opener bağı korunur (sitenin geri.js kuralı). -->
-              <a class="kp-bag" href="katalog/" target="_blank" rel="opener">Yeni sekmede aç</a>
-            <a class="kp-bag" href="katalog/katalog.pdf" target="_blank" rel="noopener">PDF indir</a>
-            <button type="button" class="kp-kapat" id="katKapatTus" aria-label="Kapat">&times;</button>
-          </span>
-        </div>
-        <iframe id="katCerceve" title="Araç kataloğu" loading="lazy"></iframe>
-      </div>
-    </div>
-
-    <script>
-    /* Katalog penceresi — kendi başına çalışır, sitedeki hiçbir şeye bağlı değil.
-       Çerçevenin src'si İLK AÇILIŞTA verilir: sayfa yüklenirken boşuna indirilmesin. */
-    (function(){
-      var perde = document.getElementById('katPerde');
-      var cer   = document.getElementById('katCerceve');
-      if (!perde || !cer) return;
-      function ac(){
-        if (!cer.getAttribute('src')) cer.setAttribute('src','katalog/');
-        perde.hidden = false; perde.classList.add('acik');
-        document.body.style.overflow = 'hidden';
-      }
-      function kapat(){
-        perde.classList.remove('acik'); perde.hidden = true;
-        document.body.style.overflow = '';
-      }
-      var t = document.getElementById('katAcTus');
-      if (t) t.addEventListener('click', ac);
-      var k = document.getElementById('katKapatTus');
-      if (k) k.addEventListener('click', kapat);
-      perde.addEventListener('click', function(e){ if (e.target === perde) kapat(); });
-      document.addEventListener('keydown', function(e){
-        if (e.key === 'Escape' && perde.classList.contains('acik')) kapat();
-      });
-    })();
-    </script>
 
     <!-- SIRA: İmam Hatip en üstte; sayfayı açan öğretmenin
          ilk gördüğü kategori bu olsun diye buraya alındı. -->
@@ -1974,17 +1929,18 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </div>
           </a>
 
-          <a href="renkler.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-pembe">
+          <!-- "Renkler" kartı BURADAN KALDIRILDI: katalogda da "Uygulama" olarak
+               geçiyor, oyun değil; Oyunlar kategorisinde durması tutarsızdı.
+               Sayfanın kendisi (renkler.html) duruyor, katalogdan açılıyor. -->
+
+          <!-- Bilgi Yarışması burada DA duruyor: öğretmen "oyun" ararken ilk
+               baktığı yer bu kategori. İnteraktivite bölümündeki kart da yerinde
+               kalır (orada canlı/etkileşimli araçlar toplanıyor). -->
+          <a href="bilgiyarismasikacom.html" target="_blank" rel="opener" class="game-card kss-card oyun-card oyun-camgobegi">
             <div class="default-game-content">
-              <div class="oyun-ikon"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
-                <path d="M32 8 a24 24 0 1 0 0 48 c5 0 6 -3.4 4 -6.6 -2.4 -3.8 -.6 -8.4 4.6 -8.4 h6.8 A24 24 0 0 0 32 8 Z" fill="#fff"/>
-                <circle class="kga-renk" cx="21" cy="22" r="4.6" fill="#EE5253"/>
-                <circle class="kga-renk g2x" cx="34" cy="16" r="4.6" fill="#2563EB"/>
-                <circle class="kga-renk g3x" cx="45" cy="24" r="4.6" fill="#F39C12"/>
-                <circle class="kga-renk g4x" cx="17" cy="36" r="4.6" fill="#27AE60"/>
-              </svg></div>
-              <h3>Renkler</h3>
-              <span class="game-card-description">Renkleri öğren.</span>
+              <div class="oyun-ikon"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true"><path d="M12 14 l5 0 -3.4 6 5 0 -8 9 2.6 -7 -4.4 0 Z" fill="#ffe082"/><path d="M50 12 l4.6 0 -3 5.4 4.4 0 -7.2 8 2.4 -6.2 -4 0 Z" fill="#ffe082"/><path d="M30 18 a8 8 0 0 0 -8 8 a7 7 0 0 0 -4 12 a7.5 7.5 0 0 0 7 10 a8 8 0 0 0 5 2 Z" fill="#fff"/><path d="M34 18 a8 8 0 0 1 8 8 a7 7 0 0 1 4 12 a7.5 7.5 0 0 1 -7 10 a8 8 0 0 1 -5 2 Z" fill="rgba(255,255,255,.8)"/><path d="M27 26 q-3 3 0 6 M37 26 q3 3 0 6 M26 40 q3 2 6 0" stroke="rgba(14,158,134,.55)" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+              <h3>Bilgi Yarışması</h3>
+              <span class="game-card-description">Sınıflar, takımlar ve öğrenciler canlı yarışsın!</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
