@@ -567,6 +567,13 @@ function biyGeriDon(e){
      index.html de aynı dosyayı okur; bu yüzden bilgi yarışmasının
      TEK html dosyası kalır, veriler sınıfa göre değişir. -->
 <script src="sistem/sinifveri.js?v=20260824b"></script>
+<!-- OTURUM GÜVENLİĞİ — 40 dakika boşta kalma sayacı.
+     Bu sayfa index'ten YENİ SEKMEDE açılıyor. Dosya burada da yüklü olmazsa
+     buradaki dokunuşlar sayaca yazılmaz; index sekmesi öğretmeni "masadan
+     kalkmış" sayıp 40. dakikada oturumu kapatır (sunum ortasında atılma).
+     Sayaç localStorage üzerinden sekmeler arası ortaktır. Firebase yüklü
+     olmayan sayfalarda dosya yalnız hareket yazar, kimseyi çıkarmaz. -->
+<script src="hesap/oturumguvenlik.js?v=20260911a"></script>
 <script src="sistem/rol.js?v=20260805a"></script>
 <!-- Üretilmiş konular: motordan ÖNCE yüklenir, window.BIY_EK_KONULAR'a eklenirler.
      oyunlar/biy_kaliplar.js → kalıplar tablosunun verisinden üretilen sorular. -->

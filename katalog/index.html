@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kidef Arapça — Hangi ihtiyaç için hangi araç?</title>
+<meta name="description" content="kidefarapca.com'daki bütün uygulamalar, sunumlar ve öğretmen dokümanları; her biri hangi sınıf ihtiyacını karşıladığıyla birlikte.">
+<style>
+/* ==========================================================
+   KIDEF ARAPÇA · ARAÇ KATALOĞU
+   ----------------------------------------------------------
+   Ekranda A4 sayfası gibi durur, yazdırınca (Cmd+P → PDF) aynı
+   düzende çıkar. Sağ altta iki tuş: hazır PDF'i indirmek ve
+   sayfayı kendi yazıcından dökmek — ikisi de baskıda görünmez.
+
+   DÜZEN: her araç bir KART. Kart = renkli simge karosu + ad +
+   etiket + ihtiyaç cümlesi + adres. Renk kategoriden gelir;
+   bir kartı başka bölüme taşırken k-<renk> sınıfını da değiştir.
+   Oyunlarda sarı «ders başı ısınma» rozeti bulunur.
+   ========================================================== */
+
+:root{
+  --murekkep:#1F2430; --gri:#5B6471; --soluk:#8A93A0;
+  --cizgi:#DCE3EB; --kahve:#8B6034; --zemin:#fff; --vurgu:#0E7C66; --sari:#F39C12;
+}
+*{box-sizing:border-box} html,body{margin:0;padding:0}
+body{background:#EEF1F5;color:var(--murekkep);line-height:1.4;
+  font-family:"Georgia","Iowan Old Style","Times New Roman",serif;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sayfa{width:210mm;min-height:297mm;margin:14px auto;padding:15mm 14mm 13mm;
+  background:var(--zemin);box-shadow:0 10px 34px rgba(31,36,48,.16)}
+
+/* ---------- başlık ---------- */
+.bas{border-bottom:3px solid var(--kahve);padding-bottom:10px;margin-bottom:12px}
+.bas .ust{font-size:9pt;letter-spacing:.16em;text-transform:uppercase;color:var(--kahve);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:700}
+.bas h1{margin:4px 0 5px;font-size:25pt;line-height:1.1;font-weight:400;letter-spacing:-.01em}
+.bas .alt{font-size:10.5pt;color:var(--gri);margin:0}
+.bas .site{margin-top:8px;font-size:10.5pt;color:var(--vurgu);font-weight:600;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+
+/* ---------- not kutuları ---------- */
+.not{background:#F7F9FC;border-left:3px solid var(--sari);padding:7px 12px;
+  font-size:9pt;color:var(--gri);margin:0 0 9px;line-height:1.45}
+.not b{color:var(--murekkep)} .not em{font-style:italic;color:var(--murekkep)}
+.oyun-not{border-left-color:var(--vurgu);background:#F3FAF8}
+
+/* ---------- kategori başlığı ---------- */
+.bbas{display:flex;align-items:center;gap:9px;margin:0 0 7px;padding:5px 10px;
+  border-radius:8px;break-after:avoid;page-break-after:avoid}
+.bbas .bno{font-family:system-ui,-apple-system,sans-serif;font-size:8.5pt;font-weight:800;
+  color:#fff;width:17px;height:17px;border-radius:5px;display:grid;place-items:center;flex:0 0 auto}
+.bbas h2{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10.5pt;
+  font-weight:800;margin:0;letter-spacing:.01em;white-space:nowrap}
+.bbas .bnot{font-size:8.5pt;color:var(--gri);font-style:italic;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bbas .bsay{margin-inline-start:auto;font-family:system-ui,-apple-system,sans-serif;
+  font-size:8pt;font-weight:700;color:var(--soluk);white-space:nowrap;flex:0 0 auto}
+
+/* ---------- kart ızgarası ---------- */
+.kgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:0 0 13px}
+.kart{display:grid;grid-template-columns:31px 1fr;gap:0 9px;align-items:start;
+  border:1px solid var(--cizgi);border-radius:10px;padding:8px 10px 9px;background:#fff;
+  break-inside:avoid;page-break-inside:avoid}
+.kart.genis{grid-column:1 / -1}
+.karo{width:31px;height:31px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto}
+.karo svg{width:18px;height:18px;display:block}
+.govde{min-width:0}
+.govde h3{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10pt;
+  font-weight:800;margin:0;line-height:1.2;color:var(--murekkep)}
+.govde .etiket{font-family:system-ui,-apple-system,sans-serif;font-size:7pt;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--soluk);margin:2px 0 4px}
+.govde p{margin:0 0 4px;font-size:9pt;color:var(--gri);line-height:1.38}
+.govde p em{font-style:italic;color:var(--murekkep)}
+.govde > a{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:7.5pt;
+  color:var(--vurgu);text-decoration:none;border-bottom:1px solid rgba(14,124,102,.32);
+  word-break:break-all}
+.isin{display:inline-block;margin-inline-start:6px;vertical-align:2px;
+  font-family:system-ui,-apple-system,sans-serif;font-size:6.5pt;font-weight:800;
+  letter-spacing:.05em;text-transform:uppercase;color:#8A6412;background:#FDF1D9;
+  border-radius:999px;padding:2px 6px}
+
+/* ---------- çipler (sınıf ve belge bağlantıları) ---------- */
+.cipler{display:flex;flex-wrap:wrap;gap:4px 5px;align-items:baseline;margin-top:2px}
+.cip-on{font-family:system-ui,-apple-system,sans-serif;font-size:7.5pt;font-weight:700;color:var(--soluk)}
+.cip{font-family:system-ui,-apple-system,sans-serif;font-size:7.5pt;font-weight:700;
+  color:var(--vurgu);text-decoration:none;border:1px solid rgba(14,124,102,.3);
+  background:#F5FBF9;border-radius:5px;padding:2px 7px}
+.cip:hover{background:#E4F5F1}
+.cip,.govde h3{unicode-bidi:isolate}   /* Arapça terim yanındaki sayıyı ters çevirmesin */
+.b-mavi{background:#EAF3FC} .b-mavi h2{color:#2E86DE} .b-mavi .bno{background:#2E86DE}
+.k-mavi .karo{background:#EAF3FC;color:#2E86DE} .k-mavi{border-color:#EAF3FC}
+.b-mor{background:#F3EAF8} .b-mor h2{color:#8E44AD} .b-mor .bno{background:#8E44AD}
+.k-mor .karo{background:#F3EAF8;color:#8E44AD} .k-mor{border-color:#F3EAF8}
+.b-yesil{background:#E7F5F2} .b-yesil h2{color:#0E9E86} .b-yesil .bno{background:#0E9E86}
+.k-yesil .karo{background:#E7F5F2;color:#0E9E86} .k-yesil{border-color:#E7F5F2}
+.b-turuncu{background:#FDF1E4} .b-turuncu h2{color:#E67E22} .b-turuncu .bno{background:#E67E22}
+.k-turuncu .karo{background:#FDF1E4;color:#E67E22} .k-turuncu{border-color:#FDF1E4}
+.b-kirmizi{background:#FCEDEA} .b-kirmizi h2{color:#E8735E} .b-kirmizi .bno{background:#E8735E}
+.k-kirmizi .karo{background:#FCEDEA;color:#E8735E} .k-kirmizi{border-color:#FCEDEA}
+.b-lacivert{background:#E9EEF6} .b-lacivert h2{color:#1B3A6B} .b-lacivert .bno{background:#1B3A6B}
+.k-lacivert .karo{background:#E9EEF6;color:#1B3A6B} .k-lacivert{border-color:#E9EEF6}
+.b-amber{background:#FDF3E0} .b-amber h2{color:#E08A00} .b-amber .bno{background:#E08A00}
+.k-amber .karo{background:#FDF3E0;color:#E08A00} .k-amber{border-color:#FDF3E0}
+.b-kahve{background:#F5EEE6} .b-kahve h2{color:#8B6034} .b-kahve .bno{background:#8B6034}
+.k-kahve .karo{background:#F5EEE6;color:#8B6034} .k-kahve{border-color:#F5EEE6}
+.b-gri{background:#EDF0F4} .b-gri h2{color:#5B6471} .b-gri .bno{background:#5B6471}
+.k-gri .karo{background:#EDF0F4;color:#5B6471} .k-gri{border-color:#EDF0F4}
+.b-teal{background:#E8F4F1} .b-teal h2{color:#0E7C66} .b-teal .bno{background:#0E7C66}
+.k-teal .karo{background:#E8F4F1;color:#0E7C66} .k-teal{border-color:#E8F4F1}
+
+/* ---------- kayıt avantajları ---------- */
+.av{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px}
+.av-k{border:1px solid var(--cizgi);border-radius:10px;padding:8px 10px 9px;background:#FCFDFE;
+  break-inside:avoid;page-break-inside:avoid}
+.av-k h3{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:9.5pt;
+  font-weight:800;color:var(--murekkep);margin:0 0 2px}
+.av-k .rol{font-family:system-ui,-apple-system,sans-serif;font-size:7pt;font-weight:800;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--vurgu);margin:0 0 5px}
+.av-k .rol.ogr{color:#B4690E}
+.av-gorsel{display:block;margin:0 0 6px;border:1px solid #E7EDF3;border-radius:6px;
+  background:#fff;overflow:hidden}
+.av-gorsel svg{display:block;width:100%;height:auto}
+.av-k p{margin:0;font-size:9pt;color:var(--gri);line-height:1.38}
+.av-giris{font-size:9.5pt;color:var(--gri);margin:0 0 8px;line-height:1.45}
+.av-giris b{color:var(--murekkep)}
+.av-kapa{margin-top:8px;border:1px solid #CFE6DF;background:#F3FAF8;border-radius:9px;
+  padding:8px 12px;font-size:9.5pt;color:var(--gri);line-height:1.45;break-inside:avoid}
+.av-kapa b{color:var(--vurgu)}
+
+/* ---------- alt bilgi ---------- */
+.dip{margin-top:12px;padding-top:8px;border-top:1px solid var(--cizgi);break-inside:avoid;
+  display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  font-family:system-ui,-apple-system,sans-serif;font-size:8.5pt;color:var(--soluk)}
+.dip b{color:var(--kahve)}
+
+/* ---------- ekrandaki tuşlar ---------- */
+.tuslar{position:fixed;right:18px;bottom:18px;z-index:9;display:flex;gap:9px;align-items:center}
+.tus{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10.5pt;font-weight:700;
+  color:#fff;background:var(--kahve);border:0;border-radius:11px;padding:11px 18px;cursor:pointer;
+  box-shadow:0 8px 22px rgba(139,96,52,.34);text-decoration:none;display:inline-flex;
+  align-items:center;gap:8px;line-height:1}
+.tus:hover{filter:brightness(1.08)}
+.tus svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+.tus.ikincil{background:#fff;color:var(--kahve);border:1.5px solid #E3D6C2;
+  box-shadow:0 6px 16px rgba(31,36,48,.14)}
+.tus.ikincil:hover{background:#FDF8F1;filter:none}
+
+/* ---------- yazdırma ---------- */
+@page{size:A4;margin:12mm 11mm}
+@media print{
+  body{background:#fff}
+  .sayfa{width:auto;min-height:0;margin:0;padding:0;box-shadow:none}
+  /* !important şart: .tuslar kuralı yukarıda display:flex diyor,
+     aynı özgüllükte olduğu için bu blok onu ezemiyordu. */
+  .tuslar{display:none !important}
+  a{color:var(--vurgu) !important}
+}
+@media screen and (max-width:820px){
+  .sayfa{width:auto;max-width:210mm;padding:18px 14px}
+  .kgrid,.av{grid-template-columns:1fr}
+  .bbas .bnot{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="sayfa">
+
+  <header class="bas">
+    <div class="ust">Arapça Öğretmenleri İçin · Araç Kataloğu</div>
+    <h1>Hangi ihtiyaç için hangi araç?</h1>
+    <p class="alt">Sınıfta karşılaştığınız durumu bulun, kartın altındaki adrese dokunun.</p>
+    <div class="site">kidefarapca.com</div>
+  </header>
+
+  <p class="not">
+    Her kartta <b>araç adı</b>, <b>hangi ihtiyacı karşıladığı</b> ve <b>doğrudan adresi</b> vardır.
+    Bağlantılar PDF'e çevrildiğinde de tıklanabilir kalır; kâğıda basarsanız adresler yazılı olduğu
+    için tarayıcıya elle de yazabilirsiniz. Hepsi ücretsizdir, kurulum istemez, akıllı tahtada ve
+    telefonda açılır.
+  </p>
+
+  <p class="not oyun-not">
+    <b>«Oyun» etiketli araçlar dersin başı içindir.</b> Zil çaldıktan sonraki ilk beş dakika:
+    sınıfın dikkatini derse çeker, geçen haftanın kelimesini tazeler, sonraki anlatıma ısınmış
+    bir sınıf bırakır. Konu anlatımının yerine değil, <em>önüne</em> konur — «Uygulama» ve
+    «Başvuru» etiketlileri ders ortasında, sunumlar anlatımda kullanılır.
+  </p>
+
+  <section>
+    <div class="bbas b-mavi">
+      <span class="bno">1</span>
+      <h2>Harf, okuma ve yazı</h2>
+      <span class="bnot">Yılın ilk haftaları ve okumaya geçemeyen öğrenciler için</span>
+      <span class="bsay">5 araç</span>
+    </div>
+    <div class="kgrid">
+      <div class="kart k-mavi">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19L12 5l7 14"/><path d="M8 14h8"/></svg></span>
+        <div class="govde">
+          <h3>Alfabe</h3>
+          <div class="etiket">Uygulama</div>
+          <p>Sınıf harfleri karıştırıyor, okumaya geçemiyorsa: harf harf tanıma ve pekiştirme.</p>
+          <a href="https://kidefarapca.com/alfabe.html">kidefarapca.com/alfabe.html</a>
+        </div>
+      </div>
+      <div class="kart k-mavi">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg></span>
+        <div class="govde">
+          <h3>Hangi Harf?<span class="isin">ders başı ısınma</span></h3>
+          <div class="etiket">Oyun</div>
+          <p>Benzeyen harfleri (ب ت ث · ج ح خ) ayırt edemiyorlarsa: hızlı tanıma çalışması.</p>
+          <a href="https://kidefarapca.com/hangiharf.html">kidefarapca.com/hangiharf.html</a>
+        </div>
+      </div>
+      <div class="kart k-mavi">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16h16"/><circle cx="9" cy="7" r="1.6"/><path d="M14 5l3 4"/></svg></span>
+        <div class="govde">
+          <h3>Hareke Avcısı<span class="isin">ders başı ısınma</span></h3>
+          <div class="etiket">Oyun</div>
+          <p>Harekeyi görmezden gelip kelimeyi yanlış okuyorlarsa: doğru harekeyi yakalama.</p>
+          <a href="https://kidefarapca.com/harekeavcisi.html">kidefarapca.com/harekeavcisi.html</a>
+        </div>
+      </div>
+      <div class="kart k-mavi">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 4.8 7.4 4.4 4 5v13c3.4-.6 6 0 8 1.6"/><path d="M12 6.5C14 4.8 16.6 4.4 20 5v13c-3.4-.6-6 0-8 1.6"/></svg></span>
+        <div class="govde">
+          <h3>Okuma</h3>
+          <div class="etiket">Uygulama</div>
+          <p>Harfleri bilip metin okumaya geçemiyorlarsa: seviyeli okuma pratiği.</p>
+          <a href="https://kidefarapca.com/okuma.html">kidefarapca.com/okuma.html</a>
+        </div>
+      </div>
+      <div class="kart k-mavi">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M9.5 10h.01M13 10h.01M16.5 10h.01M8 14h8"/></svg></span>
+        <div class="govde">
+          <h3>Klavye Oyunu<span class="isin">ders başı ısınma</span></h3>
+          <div class="etiket">Oyun</div>
+          <p>Arapça klavyede harf aramakla vakit geçiyorsa: tuş yerlerini oyunla öğrenme.</p>
+          <a href="https://kidefarapca.com/klavyeoyunu.html">kidefarapca.com/klavyeoyunu.html</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="bbas b-mor">
+      <span class="bno">2</span>
+      <h2>Kelime ve sözlük</h2>
+      <span class="bnot">Ünite kelimesi, ezberin kalıcılığı ve sözlük kullanımı</span>
+      <span class="bsay">7 araç</span>
+    </div>
+    <div class="kgrid">
+      <div class="kart k-mor">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5V4.5h4v16zM10 20.5V7h4v13.5z"/><path d="M16.4 8.6l3.9 1.2-2.9 10.3-3.9-1.2z"/></svg></span>
+        <div class="govde">
+          <h3>Kelime Dağarcığı</h3>
+          <div class="etiket">Uygulama</div>
+          <p>Ünitenin kelimelerini toplu vermek gerekiyorsa: konu konu listeler, çalışma kartı, hafıza oyunu ve test aynı yerde.</p>
+          <a href="https://kidefarapca.com/kelimeler.html">kidefarapca.com/kelimeler.html</a>
+        </div>
+      </div>
+      <div class="kart k-mor">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="11" height="14" rx="2"/><path d="M8 6V4.6A1.6 1.6 0 0 1 9.6 3h9.8A1.6 1.6 0 0 1 21 4.6v11.8"/></svg></span>
+        <div class="govde">
+          <h3>Hafıza Kartları<span class="isin">ders başı ısınma</span></h3>
+          <div class="etiket">Oyun</div>
+          <p>Ezberlenen kelime ertesi hafta uçuyorsa: eşleştirmeli tekrar.</p>
+          <a href="https://kidefarapca.com/hafizakartlari.html">kidefarapca.com/hafizakartlari.html</a>
+        </div>
+      </div>
+      <div class="kart k-mor">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 20c.6-4 2.8-6 5.5-6s4.9 2 5.5 6"/><path d="M13.5 14.6c.9-.4 1.7-.6 2.5-.6 2.7 0 4.9 2 5.5 6"/></svg></span>
+        <div class="govde">
+          <h3>Test Kapışması<span class="isin">ders başı ısınma</span></h3>
+          <div class="etiket">Oyun · iki kişilik</div>
+          <p>Tekrarı sınıfça oyuna çevirmek istiyorsanız: iki öğrenci tahtada yarışır.</p>
+          <a href="https://kidefarapca.com/testkapismasi.html">kidefarapca.com/testkapismasi.html</a>
+        </div>
+      </div>
+      <div class="kart k-mor">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/><path d="M8 10.5h5"/></svg></span>
+        <div class="govde">
+          <h3>Sözlük Dedektifi<span class="isin">ders başı ısınma</span></h3>
+          <div class="etiket">Oyun</div>
+          <p>Çekimli fiilin sözlükteki hâlini bulamıyorlarsa: yalın hâle gitme alıştırması.</p>
+          <a href="https://kidefarapca.com/yenisozlukdedektifi.html">kidefarapca.com/yenisozlukdedektifi.html</a>
+        </div>
+      </div>
+      <div class="kart k-mor">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/><path d="M8 10.5h5"/></svg></span>
+        <div class="govde">
+          <h3>Sözlük Simülasyonu</h3>
+          <div class="etiket">Uygulama</div>
+          <p>Sözlük kullanmayı adım adım göstermek gerekiyorsa: aramanın nasıl yapıldığı ekranda canlanır.</p>
+          <a href="https://kidefarapca.com/sozluksimulasyonu.html">kidefarapca.com/sozluksimulasyonu.html</a>
+        </div>
+      </div>
+      <div class="kart k-mor">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="4" width="18.8" height="12.5" rx="2"/><path d="M12 16.5v3.5M8.5 20h7"/><path d="M6.6 8.4h7M6.6 11.6h4.4"/></svg></span>
+        <div class="govde">
+          <h3>Kelimenin Serüveni</h3>
+          <div class="etiket">Sunum + etkinlik · 6 seviye</div>
+          <p>Kelimeyi köküyle, hikâyesiyle öğretmek istiyorsanız: anlatım ve etkinlik bir arada.</p>
+          <a href="https://kidefarapca.com/kssi.html">kidefarapca.com/kssi.html</a>
+        </div>
+      </div>
+      <div class="kart k-mor">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><circle cx="9" cy="9.6" r="1.4"/><circle cx="14.8" cy="9.6" r="1.4"/><circle cx="15.4" cy="14.6" r="1.4"/></svg></span>
+        <div class="govde">
+          <h3>Renkler</h3>
+          <div class="etiket">Uygulama</div>
+          <p>Renk kelimelerini ilk kez veriyorsanız: görselle eşleşen kısa bir ünite.</p>
+          <a href="https://kidefarapca.com/renkler.html">kidefarapca.com/renkler.html</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="bbas b-yesil">
+      <span class="bno">3</span>
+      <h2>Sarf — kök, vezin ve türeme</h2>
+      <span class="bnot">Kökten kelimenin nasıl türediğini göstermek için</span>
+      <span class="bsay">8 araç</span>
+    </div>
+    <div class="kgrid">
+      <div class="kart k-yesil">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3M5.4 5.4l2.1 2.1M16.5 16.5l2.1 2.1M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1"/></svg></span>
+        <div class="govde">
+          <h3>Kelime Fabrikası</h3>
+          <div class="etiket">Uygulama</div>
+          <p>Kökten kelimenin nasıl türediğini gösteremiyorsanız: kök girilir, vezinler tek tek işler.</p>
+          <a href="https://kidefarapca.com/sarf.html">kidefarapca.com/sarf.html</a>
+        </div>
+      </div>
+      <div class="kart k-yesil">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3M5.4 5.4l2.1 2.1M16.5 16.5l2.1 2.1M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1"/></svg></span>
+        <div class="govde">
+          <h3>Kelime Çarkı</h3>
+          <div class="etiket">Uygulama</div>
+          <p>Kök sabitken veznin neyi değiştirdiğini canlı göstermek için: çark döner, kelime türer.</p>
+          <a href="https://kidefarapca.com/kelimecarki.html">kidefarapca.com/kelimecarki.html</a>
+        </div>
+      </div>
+      <div class="kart k-yesil">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M12 11c-3 0-5 2-5 5v3M12 11c3 0 5 2 5 5v3"/><circle cx="12" cy="3.2" r="1.4"/></svg></span>
+        <div class="govde">
+          <h3>Kökü Tanı<span class="isin">ders başı ısınma</span></h3>
+          <div class="etiket">Oyun</div>
+          <p>Kelimenin kökünü ayıklamakta zorlanıyorlarsa: aynı kökten türeyenleri bulma.</p>
+          <a href="https://kidefarapca.com/kokutani.html">kidefarapca.com/kokutani.html</a>
+        </div>
+      </div>
+      <div class="kart k-yesil">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5h4.5v4.5H7z"/><path d="M14 15h4.5v4.5H14z"/><path d="M11.5 6.8h4a3 3 0 0 1 3 3v5"/><path d="M16.5 12.6l2 2.4 2-2.4"/></svg></span>
+        <div class="govde">
+          <h3>Kökten Gövdeye<span class="isin">ders başı ısınma</span></h3>
+          <div class="etiket">Oyun · sürükle-bırak</div>
+          <p>Kökü doğru kalıba yerleştirme alıştırması gerekiyorsa: kök sürüklenir, vezne oturur.</p>
+          <a href="https://kidefarapca.com/koktengovdeye.html">kidefarapca.com/koktengovdeye.html</a>
+        </div>
+      </div>
+      <div class="kart k-yesil">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 8.5V13l3 2"/><path d="M9 2.5h6"/></svg></span>
+        <div class="govde">
+          <h3>Zamanla Yarış<span class="isin">ders başı ısınma</span></h3>
+          <div class="etiket">Oyun · süreli</div>
+          <p>Türetmeyi hıza bağlayıp tekrarı canlandırmak için: süre dolmadan gövdeyi kur.</p>
+          <a href="https://kidefarapca.com/zamanlayaris.html">kidefarapca.com/zamanlayaris.html</a>
+        </div>
+      </div>
+      <div class="kart k-yesil">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 20c.6-4 2.8-6 5.5-6s4.9 2 5.5 6"/><path d="M13.5 14.6c.9-.4 1.7-.6 2.5-.6 2.7 0 4.9 2 5.5 6"/></svg></span>
+        <div class="govde">
+          <h3>İkiki<span class="isin">ders başı ısınma</span></h3>
+          <div class="etiket">Oyun · iki kişilik</div>
+          <p>Sınıfı ikili yarışmayla türetmeye sokmak için: kelimeyi ilk kim türetecek?</p>
+          <a href="https://kidefarapca.com/ikikidijital.html">kidefarapca.com/ikikidijital.html</a>
+        </div>
+      </div>
+      <div class="kart k-yesil">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M3 9.5h18M3 14.5h18M9 4.5v15M15 4.5v15"/></svg></span>
+        <div class="govde">
+          <h3>Vezinler Tablosu</h3>
+          <div class="etiket">Başvuru tablosu</div>
+          <p>Bütün vezinleri tek ekranda göstermek gerekiyorsa: tahtaya yansıtmalık başvuru tablosu.</p>
+          <a href="https://kidefarapca.com/kaliplartablosu.html">kidefarapca.com/kaliplartablosu.html</a>
+        </div>
+      </div>
+      <div class="kart k-yesil">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M3 9.5h18M3 14.5h18M9 4.5v15M15 4.5v15"/></svg></span>
+        <div class="govde">
+          <h3>Fiil Çekim Atlası</h3>
+          <div class="etiket">Başvuru</div>
+          <p>Mazi, muzari ve emir çekimi tahtada tek tek yazılıyorsa: üç çekim hazır ve karşılaştırmalı.</p>
+          <a href="https://kidefarapca.com/fiiller.html">kidefarapca.com/fiiller.html</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="bbas b-turuncu">
+      <span class="bno">4</span>
+      <h2>Nahiv — isim, tamlama ve cümle</h2>
+      <span class="bnot">İ'râb ve cümle yapısı</span>
+      <span class="bsay">2 araç</span>
+    </div>
+    <div class="kgrid">
+      <div class="kart k-turuncu">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M7 9.5h4M7 13h7M15.5 9.5h1.5"/></svg></span>
+        <div class="govde">
+          <h3>İsim x 4</h3>
+          <div class="etiket">Uygulama</div>
+          <p>İsmin dört özelliğini (marife-nekra, cinsiyet, sayı, i'râb) birlikte sormak için: tek kelime, dört pencere.</p>
+          <a href="https://kidefarapca.com/isimx4.html">kidefarapca.com/isimx4.html</a>
+        </div>
+      </div>
+      <div class="kart k-turuncu">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span>
+        <div class="govde">
+          <h3>Tamlama ve Cümleler</h3>
+          <div class="etiket">Başvuru tablosu</div>
+          <p>Dört yapıyı ve i'râbı karşılaştırmak gerekiyorsa: isim tamlaması, sıfat tamlaması, isim ve fiil cümlesi tek tabloda.</p>
+          <a href="https://kidefarapca.com/tamlamavecumleler.html">kidefarapca.com/tamlamavecumleler.html</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="bbas b-kirmizi">
+      <span class="bno">5</span>
+      <h2>Konuşma, dinleme ve ezber</h2>
+      <span class="bnot">Sözlü beceri ve ezber takibi</span>
+      <span class="bsay">3 araç</span>
+    </div>
+    <div class="kgrid">
+      <div class="kart k-kirmizi">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5h11v8h-7l-4 3z"/><path d="M9.5 9.5h11v7h-3l-3 2.5V16.5h-5z"/></svg></span>
+        <div class="govde">
+          <h3>Muhadese</h3>
+          <div class="etiket">Uygulama · sınıf seçimli</div>
+          <p>Konuşma dersinde hazır kalıp ve diyalog lazımsa: kelime, cümle, diyalog ve kalıp pratiği.</p>
+          <a href="https://kidefarapca.com/muhadese.html">kidefarapca.com/muhadese.html</a>
+        </div>
+      </div>
+      <div class="kart k-kirmizi">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-8-4.6-8-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 8 2.7c0 5.6-8 10.2-8 10.2z"/></svg></span>
+        <div class="govde">
+          <h3>Kısa Sureler</h3>
+          <div class="etiket">Uygulama</div>
+          <p>Ezber takibi yapmanız gerekiyorsa: sûreleri dinleyerek ve tekrarlayarak çalışma.</p>
+          <a href="https://kidefarapca.com/kisasureler.html">kidefarapca.com/kisasureler.html</a>
+        </div>
+      </div>
+      <div class="kart k-kirmizi">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-8-4.6-8-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 8 2.7c0 5.6-8 10.2-8 10.2z"/></svg></span>
+        <div class="govde">
+          <h3>Namaz</h3>
+          <div class="etiket">Uygulama</div>
+          <p>Namaz sûre ve duâlarını çalıştırmak için: okunuş ve anlamıyla birlikte.</p>
+          <a href="https://kidefarapca.com/namaz.html">kidefarapca.com/namaz.html</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="bbas b-lacivert">
+      <span class="bno">6</span>
+      <h2>Ölçme, sınav ve kitap</h2>
+      <span class="bnot">Ders sonunda kanıt toplamak ve sınava hazırlık</span>
+      <span class="bsay">4 araç</span>
+    </div>
+    <div class="kgrid">
+      <div class="kart k-lacivert">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4h9v5.5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 5.5H5a2 2 0 0 0 2.5 4.2M16.5 5.5H19a2 2 0 0 1-2.5 4.2"/><path d="M10.5 14h3v3.5h-3zM8 20.5h8"/></svg></span>
+        <div class="govde">
+          <h3>Bilgi Yarışması</h3>
+          <div class="etiket">Canlı · çevrimdışı da çalışır</div>
+          <p>Ders sonunda öğrenme kanıtı toplamak ya da sınıfları canlı yarıştırmak istiyorsanız: öğrenciler telefon, tablet ya da bilgisayarla karekodu okutup katılır. <em>İnternet yoksa kâğıt ve tahtayla çevrimdışı kipi yürür.</em></p>
+          <a href="https://kidefarapca.com/bilgiyarismasikacom.html">kidefarapca.com/bilgiyarismasikacom.html</a>
+        </div>
+      </div>
+      <div class="kart k-lacivert">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h9l4 4v13H6z"/><path d="M15 3.5v4h4"/><path d="M9 12h6M9 15.5h4"/></svg></span>
+        <div class="govde">
+          <h3>YDT Arapça</h3>
+          <div class="etiket">Sınav hazırlık</div>
+          <p>YDT'ye hazırlanan öğrenciniz varsa: sınav mantığına göre soru pratikleri.</p>
+          <a href="https://kidefarapca.com/ydtarapca.html">kidefarapca.com/ydtarapca.html</a>
+        </div>
+      </div>
+      <div class="kart k-lacivert">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 4.8 7.4 4.4 4 5v13c3.4-.6 6 0 8 1.6"/><path d="M12 6.5C14 4.8 16.6 4.4 20 5v13c-3.4-.6-6 0-8 1.6"/></svg></span>
+        <div class="govde">
+          <h3>Kidef Arapça</h3>
+          <div class="etiket">Dijital kitap</div>
+          <p>Basılı kitabı ekrandan açmak istiyorsanız: sayfa çevirmeli dijital sürüm.</p>
+          <a href="https://kidefarapca.com/flipbookkidef.html">kidefarapca.com/flipbookkidef.html</a>
+        </div>
+      </div>
+      <div class="kart k-lacivert">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h8l4.5 4.5V20.5H6z"/><path d="M14 3.5V8h4.5"/><path d="M9 12.5h7M9 16h5"/></svg></span>
+        <div class="govde">
+          <h3>Pratik Sayfalar</h3>
+          <div class="etiket">Dijital defter</div>
+          <p>Alıştırma sayfalarını tahtaya yansıtmak için: hazır pratik sayfa seti.</p>
+          <a href="https://kidefarapca.com/flipbooks/pratiksayfalar/flipbookpratiksayfalar.html">kidefarapca.com/flipbooks/pratiksayfalar/…</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="bbas b-amber">
+      <span class="bno">7</span>
+      <h2>Ders sunumları</h2>
+      <span class="bnot">Konuyu adım adım anlatan, kumandayla ilerleyen slaytlar</span>
+      <span class="bsay">4 deste · 47 slayt</span>
+    </div>
+    <div class="kgrid">
+      <div class="kart k-amber genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="4" width="18.8" height="12.5" rx="2"/><path d="M12 16.5v3.5M8.5 20h7"/><path d="M6.6 8.4h7M6.6 11.6h4.4"/></svg></span>
+        <div class="govde">
+          <h3>Sunum Merkezi</h3>
+          <div class="etiket">Kumandayla ilerler · tam ekran</div>
+          <p>Konuyu adım adım anlatacak hazır slayt lazımsa: dört deste tek sayfada, kart listesi
+             ya da konu haritası olarak. Slaytlar tek tuşla ilerler, alıştırmanın cevabı bir
+             sonraki adımda açılır.</p>
+          <div class="cipler"><span class="cip-on">Destelere doğrudan:</span><a class="cip" href="https://kidefarapca.com/sunum%20html/sunumlar.html?s=arapcaninonemi">Niçin Arapça? · 12 slayt</a><a class="cip" href="https://kidefarapca.com/sunum%20html/sunumlar.html?s=harfitarif">Harf-i Ta'rîf <bdi>«ال»</bdi> · 10 slayt</a><a class="cip" href="https://kidefarapca.com/sunum%20html/sunumlar.html?s=cogulirab">Çoğul İsimlerin İ'râbı · 16 slayt</a><a class="cip" href="https://kidefarapca.com/sunum%20html/sunumlar.html?s=sayiisimleri">Müfred, Tesniye, Cem' · 9 slayt</a></div>
+          <a href="https://kidefarapca.com/sunum%20html/sunumlar.html?don=liste">kidefarapca.com/sunum html/sunumlar.html</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="bbas b-kahve">
+      <span class="bno">8</span>
+      <h2>Öğretmen seminerleri</h2>
+      <span class="bnot">Meslektaşlarla paylaşmak için hazır yarım günlük anlatımlar</span>
+      <span class="bsay">3 sunum</span>
+    </div>
+    <div class="kgrid">
+      <div class="kart k-kahve">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 5l9 4.5-9 4.5z"/><path d="M7 11.8V16c0 1.6 2.2 3 5 3s5-1.4 5-3v-4.2"/><path d="M21 9.5V15"/></svg></span>
+        <div class="govde">
+          <h3>Dengeyi Kuran Öğretmen</h3>
+          <div class="etiket">30 slayt · yarım gün</div>
+          <p>Materyal, iletişim, kuşak, puanlama, yapay zekâ ve oyun: her başlıkta iki aşırılık, bir doğru konum.</p>
+          <a href="https://kidefarapca.com/sunum%20html/denge.html?s=denge">kidefarapca.com/sunum html/denge.html</a>
+        </div>
+      </div>
+      <div class="kart k-kahve">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 5l9 4.5-9 4.5z"/><path d="M7 11.8V16c0 1.6 2.2 3 5 3s5-1.4 5-3v-4.2"/><path d="M21 9.5V15"/></svg></span>
+        <div class="govde">
+          <h3>Maarif Modeli · 1. Gün</h3>
+          <div class="etiket">44 slayt</div>
+          <p>Türkiye Yüzyılı Maarif Modeli'nin çerçevesi: erdem-değer-eylem, beceri ve öğrenme çıktıları.</p>
+          <a href="https://kidefarapca.com/sunum%20html/maarif1.html">kidefarapca.com/sunum html/maarif1.html</a>
+        </div>
+      </div>
+      <div class="kart k-kahve">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 5l9 4.5-9 4.5z"/><path d="M7 11.8V16c0 1.6 2.2 3 5 3s5-1.4 5-3v-4.2"/><path d="M21 9.5V15"/></svg></span>
+        <div class="govde">
+          <h3>Maarif Modeli · 2. Gün</h3>
+          <div class="etiket">34 slayt</div>
+          <p>«Kâğıttan sınıfa»: modelin yıllık plana, ders akışına ve ölçmeye nasıl döküleceği.</p>
+          <a href="https://kidefarapca.com/sunum%20html/maarif2.html">kidefarapca.com/sunum html/maarif2.html</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="bbas b-gri">
+      <span class="bno">9</span>
+      <h2>Öğretmen dokümanları</h2>
+      <span class="bnot">Plan, sınav, form ve tutanak — doldurulmuş ve çoğaltmaya hazır</span>
+      <span class="bsay">PDF · 5-10. sınıf</span>
+    </div>
+    <div class="kgrid">
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M7.5 14h3v3h-3z"/></svg></span>
+        <div class="govde">
+          <h3>Ünitelendirilmiş Yıllık Plan</h3>
+          <div class="etiket">2026-2027 · 37 hafta</div>
+          <p>Yıllık planı sıfırdan yazmak istemiyorsanız: MEB 2026/68 genelgesinin takvimine göre, A4 yatay 10 sütunlu, ara tatiller ve yazılı haftaları işaretli.</p>
+          <div class="cipler"><span class="cip-on">Sınıf:</span><a class="cip" href="https://kidefarapca.com/dosyalar/yillik-plan/arapca-5-sinif-yillik-plan.pdf">5</a><a class="cip" href="https://kidefarapca.com/dosyalar/yillik-plan/arapca-6-sinif-yillik-plan.pdf">6</a><a class="cip" href="https://kidefarapca.com/dosyalar/yillik-plan/arapca-7-sinif-yillik-plan.pdf">7</a><a class="cip" href="https://kidefarapca.com/dosyalar/yillik-plan/arapca-8-sinif-yillik-plan.pdf">8</a><a class="cip" href="https://kidefarapca.com/dosyalar/yillik-plan/arapca-9-sinif-yillik-plan.pdf">9</a><a class="cip" href="https://kidefarapca.com/dosyalar/yillik-plan/arapca-10-sinif-yillik-plan.pdf">10</a></div>
+        </div>
+      </div>
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M7.5 14h3v3h-3z"/></svg></span>
+        <div class="govde">
+          <h3>Günlük Ders Planı</h3>
+          <div class="etiket">Word ve PDF</div>
+          <p>Denetim ya da zümre için günlük plan isteniyorsa: doldurulmuş örnek plan.</p>
+          <div class="cipler"><span class="cip-on">Sınıf:</span><a class="cip" href="https://kidefarapca.com/dosyalar/gunluk-plan/arapca-5-sinif-gunluk-plan.pdf">5</a><a class="cip" href="https://kidefarapca.com/dosyalar/gunluk-plan/arapca-6-sinif-gunluk-plan.pdf">6</a><a class="cip" href="https://kidefarapca.com/dosyalar/gunluk-plan/arapca-7-sinif-gunluk-plan.pdf">7</a><a class="cip" href="https://kidefarapca.com/dosyalar/gunluk-plan/arapca-8-sinif-gunluk-plan.pdf">8</a><a class="cip" href="https://kidefarapca.com/dosyalar/gunluk-plan/arapca-9-sinif-gunluk-plan.pdf">9</a><a class="cip" href="https://kidefarapca.com/dosyalar/gunluk-plan/arapca-10-sinif-gunluk-plan.pdf">10</a><a class="cip" href="https://kidefarapca.com/dosyalar/gunluk-plan/arapca-gunluk-ders-planlari-5-10.pdf">hepsi bir arada</a></div>
+        </div>
+      </div>
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8.5h8M8 12h8M8 15.5h4"/></svg></span>
+        <div class="govde">
+          <h3>Sınıf Dosyası</h3>
+          <div class="etiket">Yıl boyu kullanılır</div>
+          <p>Sınıfın yıllık kaydını düzenli tutmak için: liste, takip ve değerlendirme formları.</p>
+          <div class="cipler"><span class="cip-on">Sınıf:</span><a class="cip" href="https://kidefarapca.com/dosyalar/sinif-dosyasi/arapca-5-sinif-dosyasi.pdf">5</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinif-dosyasi/arapca-6-sinif-dosyasi.pdf">6</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinif-dosyasi/arapca-7-sinif-dosyasi.pdf">7</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinif-dosyasi/arapca-8-sinif-dosyasi.pdf">8</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinif-dosyasi/arapca-9-sinif-dosyasi.pdf">9</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinif-dosyasi/arapca-10-sinif-dosyasi.pdf">10</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinif-dosyasi/arapca-sinif-dosyalari-5-10.pdf">hepsi bir arada</a></div>
+        </div>
+      </div>
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h8l4.5 4.5V20.5H6z"/><path d="M14 3.5V8h4.5"/><path d="M9 12.5h7M9 16h5"/></svg></span>
+        <div class="govde">
+          <h3>Çalışma Kâğıtları</h3>
+          <div class="etiket">Çoğaltmaya hazır</div>
+          <p>Derste dağıtacak hazır alıştırma lazımsa: sınıf başına iki kâğıt ve toplu set.</p>
+          <div class="cipler"><span class="cip-on">Sınıf:</span><a class="cip" href="https://kidefarapca.com/dosyalar/calisma-kagitlari/5-sinif/arapca-5-sinif-calisma-kagitlari.pdf">5</a><a class="cip" href="https://kidefarapca.com/dosyalar/calisma-kagitlari/6-sinif/arapca-6-sinif-calisma-kagitlari.pdf">6</a><a class="cip" href="https://kidefarapca.com/dosyalar/calisma-kagitlari/7-sinif/arapca-7-sinif-calisma-kagitlari.pdf">7</a><a class="cip" href="https://kidefarapca.com/dosyalar/calisma-kagitlari/8-sinif/arapca-8-sinif-calisma-kagitlari.pdf">8</a><a class="cip" href="https://kidefarapca.com/dosyalar/calisma-kagitlari/9-sinif/arapca-9-sinif-calisma-kagitlari.pdf">9</a><a class="cip" href="https://kidefarapca.com/dosyalar/calisma-kagitlari/10-sinif/arapca-10-sinif-calisma-kagitlari.pdf">10</a></div>
+        </div>
+      </div>
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 3v18"/><path d="M6.5 4.2h12l-2.4 3.8 2.4 3.8h-12z"/></svg></span>
+        <div class="govde">
+          <h3>Etkinlikler</h3>
+          <div class="etiket">Sınıf içi uygulama</div>
+          <p>Ünitenin uygulama bloğunu doldurmak için: hazır etkinlik yönergeleri.</p>
+          <div class="cipler"><span class="cip-on">Sınıf:</span><a class="cip" href="https://kidefarapca.com/dosyalar/etkinlikler/5-sinif/arapca-5-sinif-etkinlikler.pdf">5</a><a class="cip" href="https://kidefarapca.com/dosyalar/etkinlikler/6-sinif/arapca-6-sinif-etkinlikler.pdf">6</a><a class="cip" href="https://kidefarapca.com/dosyalar/etkinlikler/7-sinif/arapca-7-sinif-etkinlikler.pdf">7</a><a class="cip" href="https://kidefarapca.com/dosyalar/etkinlikler/8-sinif/arapca-8-sinif-etkinlikler.pdf">8</a><a class="cip" href="https://kidefarapca.com/dosyalar/etkinlikler/9-sinif/arapca-9-sinif-etkinlikler.pdf">9</a><a class="cip" href="https://kidefarapca.com/dosyalar/etkinlikler/10-sinif/arapca-10-sinif-etkinlikler.pdf">10</a></div>
+        </div>
+      </div>
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h9l4 4v13H6z"/><path d="M15 3.5v4h4"/><path d="M9 12h6M9 15.5h4"/></svg></span>
+        <div class="govde">
+          <h3>Yazılı Sınavlar</h3>
+          <div class="etiket">Klasik ve beceri temelli</div>
+          <p>Yazılı hazırlamaya vaktiniz yoksa: her dönem iki yazılı, iki ayrı biçimde.</p>
+          <div class="cipler"><span class="cip-on">Sınıf:</span><a class="cip" href="https://kidefarapca.com/dosyalar/sinavlar/5-sinif/arapca-5-sinif-yazili-sinavlar.pdf">5</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinavlar/6-sinif/arapca-6-sinif-yazili-sinavlar.pdf">6</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinavlar/7-sinif/arapca-7-sinif-yazili-sinavlar.pdf">7</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinavlar/8-sinif/arapca-8-sinif-yazili-sinavlar.pdf">8</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinavlar/9-sinif/arapca-9-sinif-yazili-sinavlar.pdf">9</a><a class="cip" href="https://kidefarapca.com/dosyalar/sinavlar/10-sinif/arapca-10-sinif-yazili-sinavlar.pdf">10</a></div>
+        </div>
+      </div>
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4h9v5.5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 5.5H5a2 2 0 0 0 2.5 4.2M16.5 5.5H19a2 2 0 0 1-2.5 4.2"/><path d="M10.5 14h3v3.5h-3zM8 20.5h8"/></svg></span>
+        <div class="govde">
+          <h3>Proje ve Performans</h3>
+          <div class="etiket">Ölçütleriyle birlikte</div>
+          <p>Performans görevi ve proje ödevi vermeniz gerekiyorsa: yönerge ve puanlama ölçeği hazır.</p>
+          <div class="cipler"><span class="cip-on">Sınıf:</span><a class="cip" href="https://kidefarapca.com/dosyalar/performans-proje/5-sinif/arapca-5-sinif-performans-proje.pdf">5</a><a class="cip" href="https://kidefarapca.com/dosyalar/performans-proje/6-sinif/arapca-6-sinif-performans-proje.pdf">6</a><a class="cip" href="https://kidefarapca.com/dosyalar/performans-proje/7-sinif/arapca-7-sinif-performans-proje.pdf">7</a><a class="cip" href="https://kidefarapca.com/dosyalar/performans-proje/8-sinif/arapca-8-sinif-performans-proje.pdf">8</a><a class="cip" href="https://kidefarapca.com/dosyalar/performans-proje/9-sinif/arapca-9-sinif-performans-proje.pdf">9</a><a class="cip" href="https://kidefarapca.com/dosyalar/performans-proje/10-sinif/arapca-10-sinif-performans-proje.pdf">10</a><a class="cip" href="https://kidefarapca.com/dosyalar/performans-proje/arapca-performans-proje-5-10.pdf">hepsi bir arada</a></div>
+        </div>
+      </div>
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8.5h8M8 12h8M8 15.5h4"/></svg></span>
+        <div class="govde">
+          <h3>Öğretmen Dosyası</h3>
+          <div class="etiket">Form seti</div>
+          <p>Öğretmen dosyanızı eksiksiz kurmak için: değerlendirme ölçekleri, sınav analizi, veli görüşme formları, nöbet çizelgeleri.</p>
+          <div class="cipler"><a class="cip" href="https://kidefarapca.com/dosyalar/ogretmen-dosyasi/ogretmen-dosyasi-form-seti.pdf">form seti</a><a class="cip" href="https://kidefarapca.com/dosyalar/ogretmen-dosyasi/arapca-degerlendirme-olcekleri.pdf">değerlendirme ölçekleri</a><a class="cip" href="https://kidefarapca.com/dosyalar/ogretmen-dosyasi/sinav-analiz-formlari.pdf">sınav analizi</a><a class="cip" href="https://kidefarapca.com/dosyalar/ogretmen-dosyasi/veli-gorusme-formlari.pdf">veli görüşmesi</a><a class="cip" href="https://kidefarapca.com/dosyalar/ogretmen-dosyasi/sinif-ve-nobet-cizelgeleri.pdf">nöbet çizelgesi</a></div>
+        </div>
+      </div>
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M5 20c.5-4.4 3.3-6.6 7-6.6s6.5 2.2 7 6.6"/><path d="M3 11.5h2M19 11.5h2"/></svg></span>
+        <div class="govde">
+          <h3>Zümre Tutanakları</h3>
+          <div class="etiket">Okul · ilçe · il</div>
+          <p>Zümre toplantısı yaklaştıysa: üç kademe için sene başı, ikinci dönem ve sene sonu tutanakları.</p>
+          <div class="cipler"><a class="cip" href="https://kidefarapca.com/dosyalar/zumre/okul-zumre-1-sene-basi.pdf">okul · sene başı</a><a class="cip" href="https://kidefarapca.com/dosyalar/zumre/okul-zumre-2-ikinci-donem.pdf">okul · 2. dönem</a><a class="cip" href="https://kidefarapca.com/dosyalar/zumre/okul-zumre-3-sene-sonu.pdf">okul · sene sonu</a><a class="cip" href="https://kidefarapca.com/dosyalar/zumre/ilce-zumre-1-sene-basi.pdf">ilçe · sene başı</a><a class="cip" href="https://kidefarapca.com/dosyalar/zumre/ilce-zumre-2-ikinci-donem.pdf">ilçe · 2. dönem</a><a class="cip" href="https://kidefarapca.com/dosyalar/zumre/ilce-zumre-3-sene-sonu.pdf">ilçe · sene sonu</a><a class="cip" href="https://kidefarapca.com/dosyalar/zumre/il-zumre-1-sene-basi.pdf">il · sene başı</a><a class="cip" href="https://kidefarapca.com/dosyalar/zumre/il-zumre-2-ikinci-donem.pdf">il · 2. dönem</a><a class="cip" href="https://kidefarapca.com/dosyalar/zumre/il-zumre-3-sene-sonu.pdf">il · sene sonu</a></div>
+        </div>
+      </div>
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 3v18"/><path d="M6.5 4.2h12l-2.4 3.8 2.4 3.8h-12z"/></svg></span>
+        <div class="govde">
+          <h3>Belirli Gün ve Haftalar</h3>
+          <div class="etiket">Rapor ve çizelge</div>
+          <p>Belirli gün-hafta görevi size düştüyse: görev dağılım çizelgesi ve etkinlik raporu.</p>
+          <div class="cipler"><a class="cip" href="https://kidefarapca.com/dosyalar/belirli-gun/gorev-dagilim-cizelgesi.pdf">görev dağılımı</a><a class="cip" href="https://kidefarapca.com/dosyalar/belirli-gun/etkinlik-raporu.pdf">etkinlik raporu</a></div>
+        </div>
+      </div>
+      <div class="kart k-gri genis">
+        <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M5 20c.5-4.4 3.3-6.6 7-6.6s6.5 2.2 7 6.6"/><path d="M3 11.5h2M19 11.5h2"/></svg></span>
+        <div class="govde">
+          <h3>Veli Toplantısı Tutanağı</h3>
+          <div class="etiket">Doldurmaya hazır</div>
+          <p>Veli toplantısının kaydını tutmanız gerekiyorsa: hazır tutanak şablonu.</p>
+          <div class="cipler"><a class="cip" href="https://kidefarapca.com/dosyalar/tutanak/veli-toplantisi-tutanagi.pdf">tutanak</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 ============ -->
+  <section>
+    <h2>Kayıt olunca ne kazanırsınız? <span class="sayi">Ücretsiz · öğretmen hesabı</span></h2>
+
+    <p class="av-giris">
+      Yukarıdaki her şey <b>kayıt olmadan</b> da açılır. Hesap açmak tek bir şey ekler ama büyüğünü ekler:
+      <b>sınıfınızı tanıyan bir sistem</b>. Öğrenci listesi bir kez girilir, yıl boyu durur; öğrencinin
+      oynadığı oyun, yaptığı görev ve aldığı puan kendiliğinden size düşer.
+    </p>
+
+    <div class="av">
+      <div class="av-k">
+        <div class="rol">Öğretmen</div>
+        <h3>Kurum · seviye · şube ağacı</h3>
+        <span class="av-gorsel"><svg viewBox="0 0 300 86" role="img"><rect x="0" y="0" width="300" height="86" fill="#fff"/><rect x="0" y="0" width="300" height="13" fill="#EEF2F7"/><circle cx="8" cy="6.5" r="2.2" fill="#E06C5E"/><circle cx="15" cy="6.5" r="2.2" fill="#E8B84B"/><circle cx="22" cy="6.5" r="2.2" fill="#7FBF7F"/><rect x="30" y="3.5" width="120" height="6" rx="3" fill="#DDE4EC"/><text x="10" y="26" font-family="system-ui" font-size="8" font-weight="700" fill="#0E7C66">KURUM</text><rect x="10" y="30" width="128" height="15" rx="3" fill="#E8F4F1" stroke="#BFE0D8"/><text x="16" y="40.5" font-family="system-ui" font-size="7.5" fill="#1F2430">İmam Hatip Ortaokulu</text><path d="M20 46v8h8" stroke="#C3CCD6" stroke-width="1" fill="none"/><rect x="30" y="48" width="108" height="14" rx="3" fill="#FFF6E6" stroke="#EDD9AE"/><text x="36" y="58" font-family="system-ui" font-size="7.5" fill="#1F2430">5. Seviye</text><path d="M40 63v8h8" stroke="#C3CCD6" stroke-width="1" fill="none"/><rect x="50" y="65" width="88" height="14" rx="3" fill="#F2F6FB" stroke="#D6E2EE"/><text x="56" y="75" font-family="system-ui" font-size="7.5" fill="#1F2430">5-A · 24 öğrenci</text><rect x="152" y="26" width="138" height="53" rx="4" fill="#FBFCFE" stroke="#E3EAF2"/><text x="158" y="36" font-family="system-ui" font-size="7" font-weight="700" fill="#8A93A0">ÖĞRENCİLER</text><circle cx="163" cy="44" r="3" fill="#9AC6B8"/><rect x="170" y="41" width="86" height="4.6" rx="2.3" fill="#E4EAF1"/><circle cx="163" cy="55" r="3" fill="#E8C48B"/><rect x="170" y="52" width="72" height="4.6" rx="2.3" fill="#E4EAF1"/><circle cx="163" cy="66" r="3" fill="#B9C7DC"/><rect x="170" y="63" width="94" height="4.6" rx="2.3" fill="#E4EAF1"/></svg></span>
+        <p>Okulunuzu bir kez kurun: kurum, seviyeler ve şubeler. Öğrenci listesini bir kez girin,
+           yıl boyu her ekranda hazır gelsin.</p>
+      </div>
+
+      <div class="av-k">
+        <div class="rol">Öğretmen</div>
+        <h3>Haftalık görevler</h3>
+        <span class="av-gorsel"><svg viewBox="0 0 300 86" role="img"><rect x="0" y="0" width="300" height="86" fill="#fff"/><rect x="0" y="0" width="300" height="13" fill="#EEF2F7"/><circle cx="8" cy="6.5" r="2.2" fill="#E06C5E"/><circle cx="15" cy="6.5" r="2.2" fill="#E8B84B"/><circle cx="22" cy="6.5" r="2.2" fill="#7FBF7F"/><rect x="30" y="3.5" width="120" height="6" rx="3" fill="#DDE4EC"/><text x="10" y="26" font-family="system-ui" font-size="8" font-weight="700" fill="#0E7C66">HAFTALIK GÖREVLER</text><rect x="10" y="32" width="280" height="15" rx="3" fill="#F1FAF7" stroke="#CDE8E0"/><text x="17" y="42" font-family="system-ui" font-size="7.5" fill="#1F2430">20 kelime · Ünite 3</text><rect x="238" y="35" width="46" height="9" rx="4.5" fill="#16A085"/><text x="261" y="41" font-family="system-ui" font-size="6.5" font-weight="700" fill="#fff" text-anchor="middle">24 yaptı</text><rect x="10" y="49" width="280" height="15" rx="3" fill="#F1FAF7" stroke="#CDE8E0"/><text x="17" y="59" font-family="system-ui" font-size="7.5" fill="#1F2430">Hafıza Kartları · 3 tur</text><rect x="238" y="52" width="46" height="9" rx="4.5" fill="#16A085"/><text x="261" y="58" font-family="system-ui" font-size="6.5" font-weight="700" fill="#fff" text-anchor="middle">21 yaptı</text><rect x="10" y="66" width="280" height="15" rx="3" fill="#FFF7F2" stroke="#F3D8C9"/><text x="17" y="76" font-family="system-ui" font-size="7.5" fill="#1F2430">Diyalog ezberi</text><rect x="238" y="69" width="46" height="9" rx="4.5" fill="#E8894B"/><text x="261" y="75" font-family="system-ui" font-size="6.5" font-weight="700" fill="#fff" text-anchor="middle">9 eksik</text></svg></span>
+        <p>Sınıfa haftalık görev verin — «20 kelime çalış», «Hafıza Kartları'nda 3 tur».
+           Kim yaptı kim yapmadı listede görünür; defter toplamaya gerek kalmaz.</p>
+      </div>
+
+      <div class="av-k">
+        <div class="rol">Öğretmen</div>
+        <h3>Artı · eksi puan, otomatik geçmiş</h3>
+        <span class="av-gorsel"><svg viewBox="0 0 300 92" role="img"><rect x="0" y="0" width="300" height="92" fill="#fff"/><rect x="0" y="0" width="300" height="13" fill="#EEF2F7"/><circle cx="8" cy="6.5" r="2.2" fill="#E06C5E"/><circle cx="15" cy="6.5" r="2.2" fill="#E8B84B"/><circle cx="22" cy="6.5" r="2.2" fill="#7FBF7F"/><rect x="30" y="3.5" width="120" height="6" rx="3" fill="#DDE4EC"/><text x="10" y="26" font-family="system-ui" font-size="8" font-weight="700" fill="#0E7C66">PUAN DURUMU</text><text x="10" y="41" font-family="system-ui" font-size="7.5" fill="#1F2430">Ahmet Y.</text><rect x="96" y="35" width="118" height="7" rx="3.5" fill="#16A085"/><rect x="216" y="35" width="10" height="7" rx="3.5" fill="#E8735E"/><text x="270" y="41" font-family="system-ui" font-size="7.5" font-weight="700" fill="#1F2430" text-anchor="end">+12</text><text x="10" y="56" font-family="system-ui" font-size="7.5" fill="#1F2430">Fatma K.</text><rect x="96" y="50" width="96" height="7" rx="3.5" fill="#16A085"/><rect x="194" y="50" width="0" height="7" rx="3.5" fill="#E8735E"/><text x="270" y="56" font-family="system-ui" font-size="7.5" font-weight="700" fill="#1F2430" text-anchor="end">+9</text><text x="10" y="71" font-family="system-ui" font-size="7.5" fill="#1F2430">Mehmet D.</text><rect x="96" y="65" width="54" height="7" rx="3.5" fill="#16A085"/><rect x="152" y="65" width="34" height="7" rx="3.5" fill="#E8735E"/><text x="270" y="71" font-family="system-ui" font-size="7.5" font-weight="700" fill="#1F2430" text-anchor="end">+2</text><text x="10" y="86" font-family="system-ui" font-size="7.5" fill="#1F2430">Zeynep A.</text><rect x="96" y="80" width="132" height="7" rx="3.5" fill="#16A085"/><rect x="230" y="80" width="6" height="7" rx="3.5" fill="#E8735E"/><text x="270" y="86" font-family="system-ui" font-size="7.5" font-weight="700" fill="#1F2430" text-anchor="end">+14</text></svg></span>
+        <p>Derste verdiğiniz artı-eksi anında işlenir, geçmişi kendiliğinden tutulur.
+           Veli sorduğunda «şu tarihte şu yüzden» diyebilirsiniz.</p>
+      </div>
+
+      <div class="av-k">
+        <div class="rol">Öğretmen</div>
+        <h3>Ödev ve sınav ağırlıkları</h3>
+        <span class="av-gorsel"><svg viewBox="0 0 300 106" role="img"><rect x="0" y="0" width="300" height="106" fill="#fff"/><rect x="0" y="0" width="300" height="13" fill="#EEF2F7"/><circle cx="8" cy="6.5" r="2.2" fill="#E06C5E"/><circle cx="15" cy="6.5" r="2.2" fill="#E8B84B"/><circle cx="22" cy="6.5" r="2.2" fill="#7FBF7F"/><rect x="30" y="3.5" width="120" height="6" rx="3" fill="#DDE4EC"/><text x="10" y="26" font-family="system-ui" font-size="8" font-weight="700" fill="#0E7C66">AĞIRLIKLAR</text><text x="10" y="40" font-family="system-ui" font-size="7.5" font-weight="700" fill="#5B6471">Ödevler</text><rect x="10" y="45" width="58" height="16" rx="3" fill="#F2F6FB" stroke="#D6E2EE"/><text x="39" y="55.5" font-family="system-ui" font-size="7" fill="#1F2430" text-anchor="middle">1. Ödev %25</text><rect x="72" y="45" width="58" height="16" rx="3" fill="#F2F6FB" stroke="#D6E2EE"/><text x="101" y="55.5" font-family="system-ui" font-size="7" fill="#1F2430" text-anchor="middle">2. Ödev %25</text><rect x="134" y="45" width="58" height="16" rx="3" fill="#F2F6FB" stroke="#D6E2EE"/><text x="163" y="55.5" font-family="system-ui" font-size="7" fill="#1F2430" text-anchor="middle">3. Ödev %25</text><rect x="196" y="45" width="58" height="16" rx="3" fill="#F2F6FB" stroke="#D6E2EE"/><text x="225" y="55.5" font-family="system-ui" font-size="7" fill="#1F2430" text-anchor="middle">4. Ödev %25</text><text x="10" y="76" font-family="system-ui" font-size="7.5" font-weight="700" fill="#5B6471">Sınavlar</text><rect x="10" y="81" width="76" height="16" rx="3" fill="#FFF6E6" stroke="#EDD9AE"/><text x="48" y="91.5" font-family="system-ui" font-size="7" fill="#1F2430" text-anchor="middle">Dinleme %25</text><rect x="90" y="81" width="76" height="16" rx="3" fill="#FFF6E6" stroke="#EDD9AE"/><text x="128" y="91.5" font-family="system-ui" font-size="7" fill="#1F2430" text-anchor="middle">Konuşma %25</text><rect x="170" y="81" width="76" height="16" rx="3" fill="#FFF6E6" stroke="#EDD9AE"/><text x="208" y="91.5" font-family="system-ui" font-size="7" fill="#1F2430" text-anchor="middle">Yazılı %50</text></svg></span>
+        <p>Ödev ve sınav yüzdelerini kendiniz tanımlayın; ortalama kendiliğinden hesaplansın.
+           Dinleme, konuşma ve yazılı ayrı ayrı ağırlıklandırılır.</p>
+      </div>
+
+      <div class="av-k">
+        <div class="rol">Öğretmen</div>
+        <h3>Beceri izleme</h3>
+        <span class="av-gorsel"><svg viewBox="0 0 300 106" role="img"><rect x="0" y="0" width="300" height="106" fill="#fff"/><rect x="0" y="0" width="300" height="13" fill="#EEF2F7"/><circle cx="8" cy="6.5" r="2.2" fill="#E06C5E"/><circle cx="15" cy="6.5" r="2.2" fill="#E8B84B"/><circle cx="22" cy="6.5" r="2.2" fill="#7FBF7F"/><rect x="30" y="3.5" width="120" height="6" rx="3" fill="#DDE4EC"/><text x="10" y="26" font-family="system-ui" font-size="8" font-weight="700" fill="#0E7C66">ÖĞRENCİ BECERİLERİ</text><text x="10" y="40" font-family="system-ui" font-size="7.5" fill="#1F2430">Konuşma</text><rect x="78" y="34" width="180" height="7" rx="3.5" fill="#EDF1F6"/><rect x="78" y="34" width="126" height="7" rx="3.5" fill="#4E9AD6"/><text x="288" y="40" font-family="system-ui" font-size="7" font-weight="700" fill="#5B6471" text-anchor="end">7</text><text x="10" y="54" font-family="system-ui" font-size="7.5" fill="#1F2430">Yazma</text><rect x="78" y="48" width="180" height="7" rx="3.5" fill="#EDF1F6"/><rect x="78" y="48" width="90" height="7" rx="3.5" fill="#4E9AD6"/><text x="288" y="54" font-family="system-ui" font-size="7" font-weight="700" fill="#5B6471" text-anchor="end">5</text><text x="10" y="68" font-family="system-ui" font-size="7.5" fill="#1F2430">Okuma</text><rect x="78" y="62" width="180" height="7" rx="3.5" fill="#EDF1F6"/><rect x="78" y="62" width="144" height="7" rx="3.5" fill="#4E9AD6"/><text x="288" y="68" font-family="system-ui" font-size="7" font-weight="700" fill="#5B6471" text-anchor="end">8</text><text x="10" y="82" font-family="system-ui" font-size="7.5" fill="#1F2430">Vezin</text><rect x="78" y="76" width="180" height="7" rx="3.5" fill="#EDF1F6"/><rect x="78" y="76" width="108" height="7" rx="3.5" fill="#4E9AD6"/><text x="288" y="82" font-family="system-ui" font-size="7" font-weight="700" fill="#5B6471" text-anchor="end">6</text><text x="10" y="96" font-family="system-ui" font-size="7.5" fill="#1F2430">Sözlük</text><rect x="78" y="90" width="180" height="7" rx="3.5" fill="#EDF1F6"/><rect x="78" y="90" width="162" height="7" rx="3.5" fill="#4E9AD6"/><text x="288" y="96" font-family="system-ui" font-size="7" font-weight="700" fill="#5B6471" text-anchor="end">9</text></svg></span>
+        <p>Konuşma, yazma, okuma, vezin, sözlük ve tercüme ayrı ayrı izlenir.
+           Karne notunun arkasında ne olduğunu tek bakışta görürsünüz.</p>
+      </div>
+
+      <div class="av-k">
+        <div class="rol ogr">Öğrenci ve öğretmen</div>
+        <h3>Sınıf kodu ile bağlanma</h3>
+        <span class="av-gorsel"><svg viewBox="0 0 300 86" role="img"><rect x="0" y="0" width="300" height="86" fill="#fff"/><rect x="0" y="0" width="300" height="13" fill="#EEF2F7"/><circle cx="8" cy="6.5" r="2.2" fill="#E06C5E"/><circle cx="15" cy="6.5" r="2.2" fill="#E8B84B"/><circle cx="22" cy="6.5" r="2.2" fill="#7FBF7F"/><rect x="30" y="3.5" width="120" height="6" rx="3" fill="#DDE4EC"/><text x="10" y="26" font-family="system-ui" font-size="8" font-weight="700" fill="#0E7C66">ÖĞRENCİ İSTEKLERİ</text><rect x="10" y="31" width="132" height="48" rx="5" fill="#F3FAF8" stroke="#CDE8E0"/><text x="76" y="45" font-family="system-ui" font-size="7" fill="#5B6471" text-anchor="middle">Sınıf kodun</text><text x="76" y="63" font-family="ui-monospace,monospace" font-size="13" font-weight="700" fill="#0E7C66" text-anchor="middle">TCH-4821</text><rect x="152" y="31" width="138" height="15" rx="3" fill="#fff" stroke="#E3EAF2"/><circle cx="161" cy="38" r="3.4" fill="#9AC6B8"/><text x="169" y="41" font-family="system-ui" font-size="7.5" fill="#1F2430">Ahmet Yılmaz</text><rect x="248" y="34" width="36" height="9" rx="4.5" fill="#16A085"/><text x="266" y="40" font-family="system-ui" font-size="6.5" font-weight="700" fill="#fff" text-anchor="middle">onayla</text><rect x="152" y="48" width="138" height="15" rx="3" fill="#fff" stroke="#E3EAF2"/><circle cx="161" cy="55" r="3.4" fill="#E8C48B"/><text x="169" y="58" font-family="system-ui" font-size="7.5" fill="#1F2430">Fatma Kaya</text><rect x="248" y="51" width="36" height="9" rx="4.5" fill="#16A085"/><text x="266" y="57" font-family="system-ui" font-size="6.5" font-weight="700" fill="#fff" text-anchor="middle">onayla</text><rect x="152" y="65" width="138" height="15" rx="3" fill="#fff" stroke="#E3EAF2"/><circle cx="161" cy="72" r="3.4" fill="#B9C7DC"/><text x="169" y="75" font-family="system-ui" font-size="7.5" fill="#1F2430">Mehmet Demir</text><rect x="248" y="68" width="36" height="9" rx="4.5" fill="#8A93A0"/><text x="266" y="74" font-family="system-ui" font-size="6.5" font-weight="700" fill="#fff" text-anchor="middle">onaylı</text></svg></span>
+        <p>Öğrenci sınıf kodunu bir kez girer, sonra kendi e-postasıyla girer. Siz onaylarsınız;
+           o andan sonra oyunlardaki ilerlemesi ve görev sonuçları size düşer.</p>
+      </div>
+    </div>
+
+    <p class="av-kapa">
+      <b>Kayıt ücretsizdir ve iki dakika sürer.</b> Öğretmen hesabı yönetici onayından geçer —
+      öğrenci verisi rastgele kimseye açılmasın diye. Öğrenci hesabı için e-posta yeter;
+      sınıf kodunu siz verirsiniz. Başlamak için: <a href="https://kidefarapca.com/">kidefarapca.com</a>
+      → sağ üstten <b>Giriş / Kayıt</b>.
+    </p>
+  </section>
+
+  <footer class="dip">
+    <span>Hepsi tek adreste: <b>kidefarapca.com</b> — ücretsiz, kurulumsuz, akıllı tahtada ve telefonda çalışır.</span>
+    <span>Kidef Arapça</span>
+  </footer>
+
+</div>
+
+<div class="tuslar">
+  <a class="tus ikincil" href="#" onclick="window.print();return false;" title="Kendi yazıcından dök (⌘P)">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M7 17h10v4H7z"/></svg>
+    Yazdır
+  </a>
+  <a class="tus" href="katalog.pdf" download="Kidef-Arapca-Arac-Katalogu.pdf" title="Hazır PDF'i indir">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+    PDF indir
+  </a>
+</div>
+
+</body>
+</html>
