@@ -136,6 +136,8 @@ body{background:#EEF1F5;color:var(--murekkep);line-height:1.4;
   .sektus.secili b{color:#fff}
   .sektus.secili small{color:#fff;opacity:.85}
   .seksay{font-size:10.5pt;color:var(--soluk);margin:0 0 16px;padding-inline-start:2px}
+  /* «Hepsi»de metin boş kalıyor; boş <p> yine de 16px boşluk bırakıyordu */
+  .seksay:empty{display:none}
   section.sek-gizli, .kart.sek-gizli, .avbolum.sek-gizli{display:none}
 }
 /* ORTA EKRAN: şerit sabit durduğu için yüksekliği doğrudan ekrandan yiyor.
@@ -328,6 +330,20 @@ html.cerceve .ust-serit .geri-alan{display:none}
 
 <div class="sayfa">
 
+  <!-- SEKME ŞERİDİ SAYFANIN EN BAŞINDA: açıklama metinlerinin altında
+       kalınca, katalog açılır açılmaz kategoriler görünmüyordu ve şerit
+       ancak iki paragraf kaydırdıktan sonra üste yapışıyordu. Kâğıtta
+       gizlendiği için (bkz. @media print) PDF'in düzeni değişmiyor. -->
+  <nav class="seksrt" aria-label="Katalog bölümleri">
+    <button type="button" class="sektus secili" data-sek="hepsi" aria-pressed="true" style="--sr:#0E7C66;--sy:#0C7A64;--sa:#E8F4F1;--sg:14,124,102"><b>Hepsi</b><small>bütün araçlar</small></button>
+    <button type="button" class="sektus" data-sek="isinma" aria-pressed="false" style="--sr:#E08A00;--sy:#9D6100;--sa:#FDF3E0;--sg:224,138,0"><b>Isınma oyunları</b><small>dersin ilk beş dakikası</small></button>
+    <button type="button" class="sektus" data-sek="dil" aria-pressed="false" style="--sr:#8E44AD;--sy:#8F42AF;--sa:#F3EAF8;--sg:142,68,173"><b>Dilbilgisi ve sözlük</b><small>kelime · sarf · nahiv</small></button>
+    <button type="button" class="sektus" data-sek="okuma" aria-pressed="false" style="--sr:#2E86DE;--sy:#1B6EC0;--sa:#EAF3FC;--sg:46,134,222"><b>Okuma-yazma ve konuşma</b><small>harf, metin, konuşma, ezber</small></button>
+    <button type="button" class="sektus" data-sek="sunum" aria-pressed="false" style="--sr:#E8735E;--sy:#C8341A;--sa:#FCEDEA;--sg:232,115,94"><b>Sunumlar</b><small>ders anlatımı ve seminer</small></button>
+    <button type="button" class="sektus" data-sek="olcme" aria-pressed="false" style="--sr:#1B3A6B;--sy:#1A3A6C;--sa:#E9EEF6;--sg:27,58,107"><b>Ölçme ve dokümanlar</b><small>sınav, kitap, form ve plan</small></button>
+  </nav>
+  <p class="seksay" id="seksay"></p>
+
   <header class="bas">
     <div class="ust">Arapça Öğretmenleri İçin · Araç Kataloğu</div>
     <h1>Hangi ihtiyaç için hangi araç?</h1>
@@ -348,16 +364,6 @@ html.cerceve .ust-serit .geri-alan{display:none}
     bir sınıf bırakır. Konu anlatımının yerine değil, <em>önüne</em> konur — «Uygulama» ve
     «Başvuru» etiketlileri ders ortasında, sunumlar anlatımda kullanılır.
   </p>
-
-  <nav class="seksrt" aria-label="Katalog bölümleri">
-    <button type="button" class="sektus secili" data-sek="hepsi" aria-pressed="true" style="--sr:#0E7C66;--sy:#0C7A64;--sa:#E8F4F1;--sg:14,124,102"><b>Hepsi</b><small>bütün araçlar</small></button>
-    <button type="button" class="sektus" data-sek="isinma" aria-pressed="false" style="--sr:#E08A00;--sy:#9D6100;--sa:#FDF3E0;--sg:224,138,0"><b>Isınma oyunları</b><small>dersin ilk beş dakikası</small></button>
-    <button type="button" class="sektus" data-sek="dil" aria-pressed="false" style="--sr:#8E44AD;--sy:#8F42AF;--sa:#F3EAF8;--sg:142,68,173"><b>Dilbilgisi ve sözlük</b><small>kelime · sarf · nahiv</small></button>
-    <button type="button" class="sektus" data-sek="okuma" aria-pressed="false" style="--sr:#2E86DE;--sy:#1B6EC0;--sa:#EAF3FC;--sg:46,134,222"><b>Okuma-yazma ve konuşma</b><small>harf, metin, konuşma, ezber</small></button>
-    <button type="button" class="sektus" data-sek="sunum" aria-pressed="false" style="--sr:#E8735E;--sy:#C8341A;--sa:#FCEDEA;--sg:232,115,94"><b>Sunumlar</b><small>ders anlatımı ve seminer</small></button>
-    <button type="button" class="sektus" data-sek="olcme" aria-pressed="false" style="--sr:#1B3A6B;--sy:#1A3A6C;--sa:#E9EEF6;--sg:27,58,107"><b>Ölçme ve dokümanlar</b><small>sınav, kitap, form ve plan</small></button>
-  </nav>
-  <p class="seksay" id="seksay"></p>
 
   <section data-sek="okuma">
     <div class="bbas b-mavi">
@@ -1004,7 +1010,9 @@ function katalogGeri(e){
         : gorunen + ' araç gösteriliyor · «Hepsi» sekmesi kataloğun tamamını açar.';
     }
     try{ history.replaceState(null, '', k === 'hepsi' ? location.pathname : '#' + k); }catch(_){}
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    /* SAYFA BAŞINA DÖNÜLMÜYOR: şerit zaten üste yapışık durduğu için
+       sekme değiştirmek artık okuduğun yeri kaybettirmemeli. Süzgeç
+       sayfayı kısaltırsa tarayıcı konumu kendiliğinden sınırlıyor. */
   }
 
   srt.addEventListener('click', function(e){
