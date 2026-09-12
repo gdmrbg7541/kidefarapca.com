@@ -70,7 +70,14 @@
         } catch (e) { return null; }
     }
     function girisliMi() {
-        if (!kullanici()) return false;
+        var u = kullanici();
+        if (!u) return false;
+        /* MİSAFİR (ANONİM) KİMLİK SAYILMAZ. Bilgi yarışmasına karekodla
+           katılan öğrencinin Firebase'de anonim bir kimliği olur; bu dosya
+           öğretmenin açık unuttuğu oturumu kapatmak içindir. Öğrenci
+           yarışma ortasında 40 dakika kıpırdamadıysa bile atılmamalı —
+           üstelik uyarı penceresi onun telefonunda çıkardı. */
+        try { if (u.isAnonymous) return false; } catch (e) { }
         try { if (appState && appState.currentUser === 'Misafir Öğrenci') return false; } catch (e) { }
         return true;
     }

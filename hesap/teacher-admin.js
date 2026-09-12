@@ -975,6 +975,18 @@ function renderAdminTeacherList() {
                     : '<button class="btn btn-sm" style="background:#E8F6EF; color:#1E8449; border:none; border-radius:8px; padding:6px 12px; font-size:.85rem; font-weight:700;" ' +
                       'onclick="adminOgretmenDurum(\'' + uid + '\', true)">Onayla</button>';
 
+                /* SİL yalnız ERİŞİMİ KAPALI kayıtta çıkar (bekliyor /
+                   reddedildi). Sebebi kasıtlı: silme iki adımlı olsun, yanlış
+                   tuşa basınca çalışan bir hesap yok olmasın. Yani sıra
+                   "Onayı kaldır" → "Sil". Onaylı ya da eski (alanı boş)
+                   kayıtta bu tuş hiç basılmaz. */
+                if (!acik) {
+                    islem += ' <button class="btn btn-sm" title="Kaydı Firestore\'dan tamamen sil" ' +
+                      'style="background:#fff; color:#B03A2E; border:1.5px solid #F3C7C1; border-radius:8px; ' +
+                      'padding:6px 12px; font-size:.85rem; font-weight:700; margin-inline-start:6px;" ' +
+                      'onclick="adminOgretmenSil(\'' + uid + '\')">Sil</button>';
+                }
+
                 satirlar +=
                     '<tr>' +
                       '<td>' + _fbEsc(ad || '(isim yok)') + '</td>' +
@@ -988,6 +1000,15 @@ function renderAdminTeacherList() {
             });
 
             container.innerHTML =
+                /* Firebase Authentication'dan kullanıcı silmek bu tabloyu
+                   DEĞİŞTİRMEZ: tablo kullanicilar koleksiyonundan okunuyor,
+                   Authentication'dan değil. Konsolda hesabı silip satırın
+                   durmasının sebebi budur — satır buradaki "Sil" ile gider. */
+                '<p style="font-size:.82rem; color:#8A94A3; margin:0 0 10px; line-height:1.5;">' +
+                  'Liste Firestore\'daki <code>kullanicilar</code> koleksiyonundan gelir. ' +
+                  'Firebase konsolunda <b>Authentication</b>\'dan hesabı silmek bu satırı ' +
+                  'kaldırmaz; satırı kaldırmak için önce <b>Onayı kaldır</b>, sonra <b>Sil</b>.' +
+                '</p>' +
                 '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">' +
                   '<strong style="color:#2c3e50;">' + liste.length + ' öğretmen</strong>' +
                   '<span style="font-size:.85rem; color:#7f8c8d;">' +
@@ -1033,6 +1054,75 @@ function adminOgretmenDurum(uid, onay) {
     });
 }
 window.adminOgretmenDurum = adminOgretmenDurum;
+
+/* ===================================================================
+   ÖĞRETMEN KAYDINI SİLME  (yalnız yönetici, yalnız kapalı kayıt)
+
+   NE SİLER: kullanicilar/{uid} belgesi. Tablo bu koleksiyondan
+   okunduğu için satır listeden kalkar.
+
+   NE SİLMEZ: Firebase Authentication hesabını. Tarayıcıdan başka bir
+   kullanıcının kimlik hesabı silinemez — bunun için Admin SDK, yani
+   konsol ya da Cloud Function gerekir. Bu yüzden onay kutusunda
+   "hesabı konsoldan da sil" yazıyor: yoksa kişi tekrar giriş
+   yapabilir. Girerse yeni belgesi kurallar gereği
+   ogretmenOnay:'bekliyor' ile açılır (bkz. firestore.rules →
+   kullanicilar/create), yani erişimi yine kapalı olur; onay
+   bekleyenler listesinde yeniden belirir.
+
+   Öğretmene ait diğer kayıtlar (mesajlar, sınıf listeleri, siparişler)
+   bilerek ELLENMİYOR: tarayıcıdan toplu silme yarı yolda kalırsa
+   veriyi tutarsız bırakır. Onlar gerekiyorsa konsoldan temizlenmeli.
+   =================================================================== */
+function adminOgretmenSil(uid) {
+    var bilgi = _adminOgretmenler[uid] || {};
+    var kim = bilgi.ad || bilgi.email || uid;
+
+    /* Panel zaten yönetici sekmesinde ama silme geri alınamaz:
+       rolü burada bir daha doğruluyoruz. */
+    var rol = '';
+    try { rol = (typeof appState !== 'undefined' && appState && appState.userRole) || ''; } catch (e) {}
+    if (rol && rol !== 'admin') {
+        _abUyar('Bu işlem yalnız yöneticiye açıktır.');
+        return;
+    }
+    if (typeof firebase === 'undefined' || typeof isFirebaseReady === 'undefined' || !isFirebaseReady) {
+        _abUyar('Silme çevrimdışıyken yapılamaz.');
+        return;
+    }
+
+    var soru = kim + ' kaydı tamamen silinsin mi?\n\n' +
+        'Bu işlem GERİ ALINAMAZ.\n\n' +
+        '• Firestore\'daki öğretmen kaydı silinir, satır listeden kalkar.\n' +
+        '• Firebase Authentication hesabı SİLİNMEZ — onu Firebase konsolundan\n' +
+        '  ayrıca silmen gerekir, yoksa kişi tekrar giriş yapıp yeniden\n' +
+        '  onay isteyebilir.\n' +
+        '• Mesajları ve sınıf listeleri silinmez.';
+
+    /* _abSor: varsa sitenin kendi onay kutusunu, yoksa confirm'i kullanır
+       (bkz. dosya sonu). Onay verilmezse hiçbir şey yazılmaz. */
+    _abSor(soru, function () {
+        firebase.firestore().collection('kullanicilar').doc(uid).delete()
+            .then(function () {
+                delete _adminOgretmenler[uid];
+                _abUyar(kim + ' kaydı silindi. Kimlik hesabını Firebase konsolundan da silmeyi unutma.');
+                renderAdminTeacherList();
+                if (typeof loadOgretmenOnaylari === 'function') loadOgretmenOnaylari();
+            })
+            .catch(function (e) {
+                var kod = (e && (e.code || e.message)) || e;
+                /* permission-denied neredeyse her zaman tek bir şeydir: canlı
+                   kurallarda kullanicilar/{uid} için "allow delete: if isAdmin()"
+                   yok. Yerel firestore.rules'ta var; yayınlanmamış olabilir. */
+                var ek = (String(kod).indexOf('permission-denied') >= 0)
+                    ? '\n\nFirestore kurallarında kullanicilar/{uid} için ' +
+                      '"allow delete: if isAdmin();" satırı canlıda yayınlanmış olmalı.'
+                    : '';
+                _abUyar('Silinemedi: ' + kod + ek);
+            });
+    });
+}
+window.adminOgretmenSil = adminOgretmenSil;
 
 // updateTeacherData, removeTeacher, addTeacher disabled as per new architecture
 function updateTeacherData() {}
