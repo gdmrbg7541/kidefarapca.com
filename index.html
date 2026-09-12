@@ -952,6 +952,66 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
     <!-- SIRA: İmam Hatip en üstte; sayfayı açan öğretmenin
          ilk gördüğü kategori bu olsun diye buraya alındı. -->
+<style id="mrfEtiketCss">
+  /* ═══════════════ MAARİF ETİKETLERİ ═══════════════
+     İki ayrı iş yapıyor:
+       · #imam-hatip .ih-maarif — o sınıfın verisi Maarif Modeli'ne göre
+         güncel. Etiketi OLMAYAN sınıf, verisi henüz güncellenmemiş sınıftır.
+       · .mrf — kartın farklılaştırmadaki yönü: zenginleştirme (ileri giden
+         öğrenci) ya da destekleme (pekiştirmeye ihtiyacı olan öğrenci).
+     Renkler sitenin kendi paletinden; yeni renk uydurulmadı. Yazı renkleri
+     kendi zeminlerinde 4.5:1 kontrastın üstünde. */
+
+  /* --- sınıf rozeti: numara ve başlığın altına küçük çip --- */
+  #imam-hatip .ih-maarif{
+    display:inline-block; font-size:.56rem; font-weight:800; letter-spacing:.06em;
+    text-transform:uppercase; line-height:1; white-space:nowrap;
+    color:#9D6100; background:#FDF3E0; border:1px solid rgba(224,138,0,.42);
+    border-radius:999px; padding:3px 7px;
+    transition:color .2s, background .2s, border-color .2s;
+  }
+  /* Sınıf açılınca kutu sınıf rengiyle doluyor (bkz. .ih-item.acik > .ih-head):
+     amber çip o zeminde okunmaz, cam rozete dönüyor. */
+  #imam-hatip .ih-item.acik > .ih-head .ih-maarif{
+    color:#fff; background:rgba(255,255,255,.22); border-color:rgba(255,255,255,.55);
+  }
+  @media (max-width:768px){
+    #imam-hatip .ih-maarif{ font-size:.46rem; padding:2px 5px; letter-spacing:.04em; }
+  }
+  @media (max-width:420px){
+    #imam-hatip .ih-maarif{ font-size:.4rem; padding:2px 4px; letter-spacing:0; }
+  }
+
+  /* --- kart etiketi: açıklamanın altında, alt rozetin üstünde ---
+     Ölçüler index.css'teki .game-card-description ile aynı kademeleri
+     izliyor (kart yazıları em ile ölçekleniyor): .85em → .3em → .75em. */
+  .game-card .mrf{
+    display:inline-block; font-size:.7em; font-weight:800; line-height:1.25;
+    border-radius:999px; padding:4px 10px; margin:2px 0 0; white-space:nowrap;
+    max-width:100%; overflow:hidden; text-overflow:ellipsis;
+  }
+  .game-card .mrf i{ font-style:normal; opacity:.82; }
+  .game-card .mrf i::after{ content:' · '; }
+  .game-card .mrf-zen{ color:#7B2FA8; background:#F3EAF8; border:1px solid rgba(142,68,173,.34); }
+  .game-card .mrf-des{ color:#1B6EC0; background:#EAF3FC; border:1px solid rgba(46,134,222,.34); }
+  /* Oyunlar kategorisinde kart zemini canlı gradyan: açık tonlu çip orada
+     kaybolur. Beyaz cam rozet de olmuyor — en açık kartta (amber #FFB84D)
+     beyaz yazı 1.9:1 kalıyor, üstelik beyaz rozet alttaki «HEMEN OYNA»
+     tuşuyla karışıyor. Bu yüzden KOYU cam: %55 lacivert örtü en açık
+     gradyanda bile beyaz yazıya 5:1 veriyor ve etiket tuş gibi durmuyor. */
+  #oyunlar .oyun-card .mrf{
+    color:#fff; background:rgba(28,33,44,.55);
+    border:1px solid rgba(255,255,255,.30);
+  }
+  /* Dar ekranda kart 112px: tam etiket sığmıyor, «Maarif ·» öneki
+     gizleniyor ve yalnız farklılaştırma yönü kalıyor. */
+  @media (max-width:768px){
+    .game-card .mrf{ font-size:.26em; padding:3px 7px; }
+    .game-card .mrf i{ display:none; }
+    .mobile-scroll-grid-single .game-card .mrf{ font-size:.6em; padding:3px 8px; }
+  }
+</style>
+
     <section id="imam-hatip" class="content-section">
       <h2>
         <svg class="kbas" viewBox="0 0 64 64" aria-hidden="true">
@@ -978,6 +1038,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               </svg>
             </span>
             <span class="ih-title">5. Sınıf</span>
+            <span class="ih-maarif">Maarif</span>
             <span class="ih-chevron">▾</span>
           </button>
           <div class="ih-panel"><div class="ih-panel-in">
@@ -1073,6 +1134,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               </svg>
             </span>
             <span class="ih-title">7. Sınıf</span>
+            <span class="ih-maarif">Maarif</span>
             <span class="ih-chevron">▾</span>
           </button>
           <div class="ih-panel"><div class="ih-panel-in">
@@ -1168,6 +1230,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               </svg>
             </span>
             <span class="ih-title">9. Sınıf</span>
+            <span class="ih-maarif">Maarif</span>
             <span class="ih-chevron">▾</span>
           </button>
           <div class="ih-panel"><div class="ih-panel-in">
@@ -1215,6 +1278,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               </svg>
             </span>
             <span class="ih-title">10. Sınıf</span>
+            <span class="ih-maarif">Maarif</span>
             <span class="ih-chevron">▾</span>
           </button>
           <div class="ih-panel"><div class="ih-panel-in">
@@ -1326,6 +1390,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Alfabe</h3>
             <span class="game-card-description">Harfleri Pekiştir.</span>
+            <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -1346,6 +1411,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Okuma</h3>
             <span class="game-card-description">Arapça metin okuma pratiği.</span>
+            <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -1384,6 +1450,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Kelime Çarkı</h3>
             <span class="game-card-description">Kök sabit, vezin dönsün: yeni kelime türesin!</span>
+            <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -1407,6 +1474,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Kelime Dağarcığı</h3>
             <span class="game-card-description">Konu konu kelime listeleri — çalışma kartı, hafıza oyunu, test kapışması.</span>
+            <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -1423,6 +1491,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Sözlük Simülasyonu</h3>
             <span class="game-card-description">Kelimenin yalın halini bul!</span>
+            <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -1437,6 +1506,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Fiil Çekim Atlası</h3>
             <span class="game-card-description">Mazi, muzari ve emir çekimlerini keşfet!</span>
+            <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -1455,6 +1525,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Kelime Fabrikası</h3>
             <span class="game-card-description">Kelimeyi öğüt, kökten yeni kelimeler döv!</span>
+            <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -1474,6 +1545,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Sözlük Dedektifi</h3>
             <span class="game-card-description">Çekimli fiilin sözlük hâlini bul!</span>
+            <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -1490,6 +1562,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Muhadese</h3>
             <span class="game-card-description">Kelime, cümle, diyalog ve kalıp pratiği.</span>
+            <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
             <span class="status-badge available">İncele!</span>
           </div>
         </a>
@@ -1549,6 +1622,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Vezinler Tablosu</h3>
             <span class="game-card-description">Bütün vezinler tek tabloda!</span>
+            <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -1574,6 +1648,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             </svg></div>
             <h3>Tamlama ve Cümleler</h3>
             <span class="game-card-description">Dört yapı ve i'rab tek tabloda.</span>
+            <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -1885,6 +1960,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               </svg></div>
               <h3>Hangi Harf?</h3>
               <span class="game-card-description">Hızlıca doğru harfi bul.</span>
+              <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
@@ -1913,6 +1989,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               </svg></div>
               <h3>Test Kapışması</h3>
               <span class="game-card-description">İki kişilik kelime testi.</span>
+              <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
@@ -1925,6 +2002,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               </svg></div>
               <h3>Hafıza Kartları</h3>
               <span class="game-card-description">Kelime kartlarını eşleştir.</span>
+              <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
@@ -1941,6 +2019,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               <div class="oyun-ikon"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true"><path d="M12 14 l5 0 -3.4 6 5 0 -8 9 2.6 -7 -4.4 0 Z" fill="#ffe082"/><path d="M50 12 l4.6 0 -3 5.4 4.4 0 -7.2 8 2.4 -6.2 -4 0 Z" fill="#ffe082"/><path d="M30 18 a8 8 0 0 0 -8 8 a7 7 0 0 0 -4 12 a7.5 7.5 0 0 0 7 10 a8 8 0 0 0 5 2 Z" fill="#fff"/><path d="M34 18 a8 8 0 0 1 8 8 a7 7 0 0 1 4 12 a7.5 7.5 0 0 1 -7 10 a8 8 0 0 1 -5 2 Z" fill="rgba(255,255,255,.8)"/><path d="M27 26 q-3 3 0 6 M37 26 q3 3 0 6 M26 40 q3 2 6 0" stroke="rgba(14,158,134,.55)" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
               <h3>Bilgi Yarışması</h3>
               <span class="game-card-description">Sınıflar, takımlar ve öğrenciler canlı yarışsın!</span>
+              <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
@@ -1955,6 +2034,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               </svg></div>
               <h3>İsim x 4</h3>
               <span class="game-card-description">İsmin 4 özelliğini analiz et!</span>
+              <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
               <span class="status-badge available">🕹️ Hemen Oyna</span>
             </div>
           </a>
@@ -1968,6 +2048,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               <div class="oyun-ikon"><svg class="kg" viewBox="0 0 64 64" aria-hidden="true"><g class="spa-halka"><circle cx="28" cy="36" r="20" fill="#fff"/><circle cx="28" cy="36" r="13.5" fill="#EE5253"/><circle cx="28" cy="36" r="7" fill="#fff"/><circle cx="28" cy="36" r="2.8" fill="#EE5253"/></g><g class="spa-ok"><line x1="28" y1="36" x2="46" y2="18" stroke="#ffd54f" stroke-width="3.6" stroke-linecap="round" transform="rotate(-45 28 36)"/><path d="M46 18 l-7 1.5 M46 18 l-1.5 7" stroke="#ffd54f" stroke-width="3.6" stroke-linecap="round" transform="rotate(-45 28 36)"/></g></svg></div>
               <h3>Hareke Avcısı</h3>
               <span class="game-card-description">Doğru harekeleri yakala.</span>
+              <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
               <span class="status-badge available">&#127918; Hemen Oyna</span>
             </div>
           </a>
@@ -1977,6 +2058,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               <div class="oyun-ikon"><svg class="kg" viewBox="0 0 64 64" aria-hidden="true"><g class="spa-carpisma"><path d="M32 16 l2.6 6.5 6.6 2.5 -6.6 2.5 -2.6 6.5 -2.6 -6.5 -6.6 -2.5 6.6 -2.5 Z" fill="#ffe082"/></g><g class="spa-kilicL"><rect x="12.4" y="16" width="4.4" height="26" rx="2.2" fill="#fff"/><rect x="8.5" y="41" width="12" height="3.6" rx="1.8" fill="#ffd54f"/><rect x="12.9" y="44" width="3.4" height="8" rx="1.7" fill="rgba(255,255,255,.75)"/></g><g class="spa-kilicR"><rect x="47.2" y="16" width="4.4" height="26" rx="2.2" fill="#fff"/><rect x="43.5" y="41" width="12" height="3.6" rx="1.8" fill="#ffd54f"/><rect x="47.7" y="44" width="3.4" height="8" rx="1.7" fill="rgba(255,255,255,.75)"/></g></svg></div>
               <h3>İkiki</h3>
               <span class="game-card-description">Kelimeleri ilk sen türet!</span>
+              <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
               <span class="status-badge available">&#127918; Hemen Oyna</span>
             </div>
           </a>
@@ -1986,6 +2068,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               <div class="oyun-ikon"><svg class="kg" viewBox="0 0 64 64" aria-hidden="true"><text x="32" y="40" font-size="17" fill="rgba(255,255,255,.9)" text-anchor="middle">ك ت ب</text><g class="spa-mercek"><circle cx="30" cy="33" r="10.5" fill="rgba(255,255,255,.2)" stroke="#fff" stroke-width="3.6"/><line x1="38" y1="41" x2="46" y2="49" stroke="#fff" stroke-width="4.6" stroke-linecap="round"/></g></svg></div>
               <h3>Kökü Tanı</h3>
               <span class="game-card-description">Kökten türeyen kelimeleri bul!</span>
+              <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
               <span class="status-badge available">&#127918; Hemen Oyna</span>
             </div>
           </a>
@@ -1995,6 +2078,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               <div class="oyun-ikon"><svg class="kg" viewBox="0 0 64 64" aria-hidden="true"><polygon points="32,27 39.5,31.3 39.5,39.9 32,44.2 24.5,39.9 24.5,31.3" fill="rgba(255,255,255,.85)"/><circle cx="32" cy="35.6" r="3.2" fill="rgba(0,0,0,.25)"/><g class="spa-somun"><path d="M32 36 L47 49 a5.2 5.2 0 1 1 -6.6 5.6 l-12.4 -13" fill="none" stroke="#fff" stroke-width="5.6" stroke-linecap="round"/></g></svg></div>
               <h3>Kökten Gövdeye</h3>
               <span class="game-card-description">Kökü doğru kalıba sürükle!</span>
+              <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
               <span class="status-badge available">&#127918; Hemen Oyna</span>
             </div>
           </a>
@@ -2004,6 +2088,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               <div class="oyun-ikon"><svg class="kg" viewBox="0 0 64 64" aria-hidden="true"><g class="spa-dugme"><rect x="28.6" y="8" width="6.8" height="6" rx="2" fill="#fff"/></g><line x1="43" y1="15" x2="48" y2="20" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="38" r="18" fill="#fff"/><circle cx="32" cy="38" r="14" fill="rgba(255,45,117,.15)"/><line class="spa-ibre" x1="32" y1="38" x2="32" y2="27" stroke="#FF2D75" stroke-width="3.2" stroke-linecap="round"/><circle cx="32" cy="38" r="2.4" fill="#FF2D75"/></svg></div>
               <h3>Zamanla Yarış</h3>
               <span class="game-card-description">Kök&kalıptan gövdeye!</span>
+              <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
               <span class="status-badge available">&#127918; Hemen Oyna</span>
             </div>
           </a>
