@@ -24,13 +24,21 @@ try{ if (window.top !== window.self) document.documentElement.className += ' cer
    Oyunlarda sarı «ders başı ısınma» rozeti bulunur.
    ========================================================== */
 
+/* ———————————————— YAZI TİPİ ————————————————
+   Sitenin kendi yazı tipi. arakom.css site genelinde !important ile
+   dayatıyor; katalog kendi <style>'ında durduğu için burada @font-face
+   ile doğrudan tanımlanıyor (katalog/ alt klasörde → ../arakom.ttf).
+   Tek ağırlık (400) var; 700-900 isteyen yerleri tarayıcı kalınlaştırıyor. */
+@font-face{font-family:'Arakom';src:url('../arakom.ttf?v=2') format('truetype');
+  font-display:swap}
+
 :root{
   --murekkep:#1F2430; --gri:#5B6471; --soluk:#8A93A0;
   --cizgi:#DCE3EB; --kahve:#8B6034; --zemin:#fff; --vurgu:#0E7C66; --sari:#F39C12;
 }
 *{box-sizing:border-box} html,body{margin:0;padding:0}
 body{background:#EEF1F5;color:var(--murekkep);line-height:1.4;
-  font-family:"Georgia","Iowan Old Style","Times New Roman",serif;
+  font-family:'Arakom',"Georgia","Iowan Old Style",serif;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
 .sayfa{width:210mm;min-height:297mm;margin:14px auto;padding:15mm 14mm 13mm;
   background:var(--zemin);box-shadow:0 10px 34px rgba(31,36,48,.16)}
@@ -38,11 +46,11 @@ body{background:#EEF1F5;color:var(--murekkep);line-height:1.4;
 /* ---------- başlık ---------- */
 .bas{border-bottom:3px solid var(--kahve);padding-bottom:10px;margin-bottom:12px}
 .bas .ust{font-size:9pt;letter-spacing:.16em;text-transform:uppercase;color:var(--kahve);
-  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:700}
+  font-family:'Arakom',system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:700}
 .bas h1{margin:4px 0 5px;font-size:25pt;line-height:1.1;font-weight:400;letter-spacing:-.01em}
 .bas .alt{font-size:10.5pt;color:var(--gri);margin:0}
 .bas .site{margin-top:8px;font-size:10.5pt;color:var(--vurgu);font-weight:600;
-  font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+  font-family:'Arakom',system-ui,-apple-system,"Segoe UI",sans-serif}
 
 /* ---------- not kutuları ---------- */
 .not{background:#F7F9FC;border-left:3px solid var(--sari);padding:7px 12px;
@@ -53,13 +61,13 @@ body{background:#EEF1F5;color:var(--murekkep);line-height:1.4;
 /* ---------- kategori başlığı ---------- */
 .bbas{display:flex;align-items:center;gap:9px;margin:0 0 7px;padding:5px 10px;
   border-radius:8px;break-after:avoid;page-break-after:avoid}
-.bbas .bno{font-family:system-ui,-apple-system,sans-serif;font-size:8.5pt;font-weight:800;
+.bbas .bno{font-family:'Arakom',system-ui,-apple-system,sans-serif;font-size:8.5pt;font-weight:800;
   color:#fff;width:17px;height:17px;border-radius:5px;display:grid;place-items:center;flex:0 0 auto}
-.bbas h2{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10.5pt;
+.bbas h2{font-family:'Arakom',system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10.5pt;
   font-weight:800;margin:0;letter-spacing:.01em;white-space:nowrap}
 .bbas .bnot{font-size:8.5pt;color:var(--gri);font-style:italic;min-width:0;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bbas .bsay{margin-inline-start:auto;font-family:system-ui,-apple-system,sans-serif;
+.bbas .bsay{margin-inline-start:auto;font-family:'Arakom',system-ui,-apple-system,sans-serif;
   font-size:8pt;font-weight:700;color:var(--soluk);white-space:nowrap;flex:0 0 auto}
 
 /* ---------- kart ızgarası ---------- */
@@ -71,24 +79,24 @@ body{background:#EEF1F5;color:var(--murekkep);line-height:1.4;
 .karo{width:31px;height:31px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto}
 .karo svg{width:18px;height:18px;display:block}
 .govde{min-width:0}
-.govde h3{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10pt;
+.govde h3{font-family:'Arakom',system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10pt;
   font-weight:800;margin:0;line-height:1.2;color:var(--murekkep)}
-.govde .etiket{font-family:system-ui,-apple-system,sans-serif;font-size:7pt;font-weight:700;
+.govde .etiket{font-family:'Arakom',system-ui,-apple-system,sans-serif;font-size:7pt;font-weight:700;
   letter-spacing:.07em;text-transform:uppercase;color:var(--soluk);margin:2px 0 4px}
 .govde p{margin:0 0 4px;font-size:9pt;color:var(--gri);line-height:1.38}
 .govde p em{font-style:italic;color:var(--murekkep)}
-.govde > a{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:7.5pt;
+.govde > a{font-family:'Arakom',ui-monospace,"SF Mono",monospace;font-size:7.5pt;
   color:var(--vurgu);text-decoration:none;border-bottom:1px solid rgba(14,124,102,.32);
   word-break:break-all}
 .isin{display:inline-block;margin-inline-start:6px;vertical-align:2px;
-  font-family:system-ui,-apple-system,sans-serif;font-size:6.5pt;font-weight:800;
+  font-family:'Arakom',system-ui,-apple-system,sans-serif;font-size:6.5pt;font-weight:800;
   letter-spacing:.05em;text-transform:uppercase;color:#8A6412;background:#FDF1D9;
   border-radius:999px;padding:2px 6px}
 
 /* ---------- çipler (sınıf ve belge bağlantıları) ---------- */
 .cipler{display:flex;flex-wrap:wrap;gap:4px 5px;align-items:baseline;margin-top:2px}
-.cip-on{font-family:system-ui,-apple-system,sans-serif;font-size:7.5pt;font-weight:700;color:var(--soluk)}
-.cip{font-family:system-ui,-apple-system,sans-serif;font-size:7.5pt;font-weight:700;
+.cip-on{font-family:'Arakom',system-ui,-apple-system,sans-serif;font-size:7.5pt;font-weight:700;color:var(--soluk)}
+.cip{font-family:'Arakom',system-ui,-apple-system,sans-serif;font-size:7.5pt;font-weight:700;
   color:var(--vurgu);text-decoration:none;border:1px solid rgba(14,124,102,.3);
   background:#F5FBF9;border-radius:5px;padding:2px 7px}
 .cip:hover{background:#E4F5F1}
@@ -99,23 +107,50 @@ body{background:#EEF1F5;color:var(--murekkep);line-height:1.4;
    PDF'e dökülen çıktıda şerit gizlenir ve gizlenmiş bölümler geri gelir —
    elindeki PDF her zaman kataloğun TAMAMIDIR. */
 @media screen{
-  .seksrt{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px;
-    padding:12px 13px;background:#F4F6F9;border:1px solid #E3E8EF;border-radius:14px}
+  /* SEKME ŞERİDİ EN ÜSTTE SABİT: katalog uzun; aşağı inince kategoriler
+     gözden kayboluyordu, başka sekmeye geçmek için başa dönmek gerekiyordu.
+     top:52px — üstteki sabit şeridin yüksekliği (body{padding-top:52px}). */
+  .seksrt{position:sticky;top:52px;z-index:15;
+    display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px;
+    padding:12px 13px;background:#F4F6F9;border:1px solid #E3E8EF;border-radius:14px;
+    box-shadow:0 8px 20px rgba(31,36,48,.09)}
+  /* HER SEKME KENDİ RENGİNDE: sekme, süzdüğü bölümlerin rengini taşıyor —
+     böylece şeritteki renk aşağıdaki bölüm başlığıyla eşleşiyor. Renkler
+     RENK sözlüğünden, yani sitenin mevcut paletinden geliyor.
+       --sr  canlı ton  — kenarlık ve gölge (okunurluk aranmayan yerler)
+       --sy  derin ton  — yazı rengi ve seçili sekmenin zemini (bkz. derin())
+       --sa  açık ton   — seçili olmayan sekmenin zemini
+       --sg  canlı tonun «r,g,b» üçlüsü — rgba() gölge/kenarlık için
+     Dördü de butonun style özniteliğinde; CSS renk bilmiyor. */
   .sektus{flex:1 1 150px;font-family:inherit;text-align:start;cursor:pointer;
-    background:#fff;border:1px solid #DFE5EC;border-radius:11px;padding:9px 13px 10px;
-    color:var(--murekkep);transition:border-color .15s,box-shadow .15s,background .15s}
-  .sektus b{display:block;font-size:11.5pt;font-weight:800;line-height:1.25}
-  .sektus small{display:block;font-size:9.5pt;color:var(--soluk);margin-top:1px;line-height:1.3}
-  .sektus:hover{border-color:#B9C6D6}
-  .sektus.secili{background:#0E7C66;border-color:#0E7C66;box-shadow:0 3px 10px rgba(14,124,102,.25)}
+    background:var(--sa);border:1px solid rgba(var(--sg),.45);border-radius:11px;
+    padding:9px 13px 10px;color:var(--sy);
+    transition:border-color .15s,box-shadow .15s,background .15s,transform .15s}
+  .sektus b{display:block;font-size:11.5pt;font-weight:800;line-height:1.25;color:var(--sy)}
+  .sektus small{display:block;font-size:9.5pt;color:var(--sy);opacity:.78;
+    margin-top:1px;line-height:1.3}
+  .sektus:hover{border-color:var(--sr);box-shadow:0 3px 10px rgba(var(--sg),.22);
+    transform:translateY(-1px)}
+  .sektus.secili{background:var(--sy);border-color:var(--sy);
+    box-shadow:0 3px 12px rgba(var(--sg),.34)}
   .sektus.secili b{color:#fff}
   .sektus.secili small{color:#fff;opacity:.85}
   .seksay{font-size:10.5pt;color:var(--soluk);margin:0 0 16px;padding-inline-start:2px}
   section.sek-gizli, .kart.sek-gizli, .avbolum.sek-gizli{display:none}
 }
-@media screen and (max-width:560px){
-  .seksrt{gap:6px;padding:9px}
-  .sektus{flex:1 1 100%;padding:8px 11px}
+/* ORTA EKRAN: şerit sabit durduğu için yüksekliği doğrudan ekrandan yiyor.
+   1200px altında alt açıklamalar kalkıyor, sekmeler tek satıra iniyor. */
+@media screen and (max-width:1200px){
+  .sektus{padding:8px 13px}
+  .sektus small{display:none}
+}
+/* DAR EKRAN: sekmeler alt alta dizilince şerit 6 satır oluyor ve sabitlenince
+   ekranın yarısını yiyordu. Tek satırda yan yana durup yatay kaydırılıyor. */
+@media screen and (max-width:900px){
+  .seksrt{flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:8px 9px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .seksrt::-webkit-scrollbar{height:0}
+  .sektus{flex:0 0 auto;padding:7px 13px;white-space:nowrap}
   .sektus small{display:none}
 }
 @media print{
@@ -151,9 +186,9 @@ body{background:#EEF1F5;color:var(--murekkep);line-height:1.4;
 .av{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px}
 .av-k{border:1px solid var(--cizgi);border-radius:10px;padding:8px 10px 9px;background:#FCFDFE;
   break-inside:avoid;page-break-inside:avoid}
-.av-k h3{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:9.5pt;
+.av-k h3{font-family:'Arakom',system-ui,-apple-system,"Segoe UI",sans-serif;font-size:9.5pt;
   font-weight:800;color:var(--murekkep);margin:0 0 2px}
-.av-k .rol{font-family:system-ui,-apple-system,sans-serif;font-size:7pt;font-weight:800;
+.av-k .rol{font-family:'Arakom',system-ui,-apple-system,sans-serif;font-size:7pt;font-weight:800;
   letter-spacing:.08em;text-transform:uppercase;color:var(--vurgu);margin:0 0 5px}
 .av-k .rol.ogr{color:#B4690E}
 .av-gorsel{display:block;margin:0 0 6px;border:1px solid #E7EDF3;border-radius:6px;
@@ -169,7 +204,7 @@ body{background:#EEF1F5;color:var(--murekkep);line-height:1.4;
 /* ---------- alt bilgi ---------- */
 .dip{margin-top:12px;padding-top:8px;border-top:1px solid var(--cizgi);break-inside:avoid;
   display:flex;justify-content:space-between;align-items:baseline;gap:10px;
-  font-family:system-ui,-apple-system,sans-serif;font-size:8.5pt;color:var(--soluk)}
+  font-family:'Arakom',system-ui,-apple-system,sans-serif;font-size:8.5pt;color:var(--soluk)}
 .dip b{color:var(--kahve)}
 
 /* ---------- üst şerit: sayfa kaysa da yerinde durur ----------
@@ -192,11 +227,11 @@ body{padding-top:52px}
 /* Katalog index'teki açılır pencerede ÇERÇEVE içinde de gösteriliyor.
    Orada geri/ev tuşu işe yaramaz (pencerenin kendi ✕'i var) — gizlenir. */
 html.cerceve .ust-serit .geri-alan{display:none}
-.ust-serit .ad{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10pt;
+.ust-serit .ad{font-family:'Arakom',system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10pt;
   font-weight:800;color:var(--kahve);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ust-serit .ad span{color:var(--soluk);font-weight:600}
 .tuslar{margin-inline-start:auto;display:flex;gap:8px;align-items:center;flex:0 0 auto}
-.tus{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10pt;font-weight:700;
+.tus{font-family:'Arakom',system-ui,-apple-system,"Segoe UI",sans-serif;font-size:10pt;font-weight:700;
   color:#fff;background:var(--kahve);border:0;border-radius:10px;padding:9px 15px;cursor:pointer;
   box-shadow:0 3px 10px rgba(139,96,52,.26);text-decoration:none;display:inline-flex;
   align-items:center;gap:7px;line-height:1;white-space:nowrap}
@@ -277,11 +312,6 @@ html.cerceve .ust-serit .geri-alan{display:none}
     <button type="button" onclick="katalogGeri(event)" aria-label="Geri" title="Geri">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5.4"/><path d="M11.8 5.6 5 12l6.8 6.4"/></svg>
     </button>
-    <button type="button" onclick="katalogAnasayfa(event)" aria-label="Ana sayfa" title="Ana sayfa">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 10.5 12 3.5l8.6 7"/>
-        <path d="M5.4 9.4V19a1.5 1.5 0 0 0 1.5 1.5h10.2a1.5 1.5 0 0 0 1.5-1.5V9.4"/>
-        <path d="M9.6 20.5v-5a1.3 1.3 0 0 1 1.3-1.3h2.2a1.3 1.3 0 0 1 1.3 1.3v5"/></svg>
-    </button>
   </div>
   <div class="ad">Araç Kataloğu <span>· kidefarapca.com</span></div>
   <div class="tuslar">
@@ -320,12 +350,12 @@ html.cerceve .ust-serit .geri-alan{display:none}
   </p>
 
   <nav class="seksrt" aria-label="Katalog bölümleri">
-    <button type="button" class="sektus secili" data-sek="hepsi" aria-pressed="true"><b>Hepsi</b><small>bütün araçlar</small></button>
-    <button type="button" class="sektus" data-sek="isinma" aria-pressed="false"><b>Isınma oyunları</b><small>dersin ilk beş dakikası</small></button>
-    <button type="button" class="sektus" data-sek="dil" aria-pressed="false"><b>Dilbilgisi ve sözlük</b><small>kelime · sarf · nahiv</small></button>
-    <button type="button" class="sektus" data-sek="okuma" aria-pressed="false"><b>Okuma-yazma ve konuşma</b><small>harf, metin, konuşma, ezber</small></button>
-    <button type="button" class="sektus" data-sek="sunum" aria-pressed="false"><b>Sunumlar</b><small>ders anlatımı ve seminer</small></button>
-    <button type="button" class="sektus" data-sek="olcme" aria-pressed="false"><b>Ölçme ve dokümanlar</b><small>sınav, kitap, form ve plan</small></button>
+    <button type="button" class="sektus secili" data-sek="hepsi" aria-pressed="true" style="--sr:#0E7C66;--sy:#0C7A64;--sa:#E8F4F1;--sg:14,124,102"><b>Hepsi</b><small>bütün araçlar</small></button>
+    <button type="button" class="sektus" data-sek="isinma" aria-pressed="false" style="--sr:#E08A00;--sy:#9D6100;--sa:#FDF3E0;--sg:224,138,0"><b>Isınma oyunları</b><small>dersin ilk beş dakikası</small></button>
+    <button type="button" class="sektus" data-sek="dil" aria-pressed="false" style="--sr:#8E44AD;--sy:#8F42AF;--sa:#F3EAF8;--sg:142,68,173"><b>Dilbilgisi ve sözlük</b><small>kelime · sarf · nahiv</small></button>
+    <button type="button" class="sektus" data-sek="okuma" aria-pressed="false" style="--sr:#2E86DE;--sy:#1B6EC0;--sa:#EAF3FC;--sg:46,134,222"><b>Okuma-yazma ve konuşma</b><small>harf, metin, konuşma, ezber</small></button>
+    <button type="button" class="sektus" data-sek="sunum" aria-pressed="false" style="--sr:#E8735E;--sy:#C8341A;--sa:#FCEDEA;--sg:232,115,94"><b>Sunumlar</b><small>ders anlatımı ve seminer</small></button>
+    <button type="button" class="sektus" data-sek="olcme" aria-pressed="false" style="--sr:#1B3A6B;--sy:#1A3A6C;--sa:#E9EEF6;--sg:27,58,107"><b>Ölçme ve dokümanlar</b><small>sınav, kitap, form ve plan</small></button>
   </nav>
   <p class="seksay" id="seksay"></p>
 
@@ -677,20 +707,20 @@ html.cerceve .ust-serit .geri-alan{display:none}
       <span class="bno">8</span>
       <h2>Öğretmen seminerleri</h2>
       <span class="bnot">Meslektaşlarla paylaşmak için hazır, testleriyle birlikte gelen anlatımlar</span>
-      <span class="bsay">2 seminer · 117 slayt</span>
+      <span class="bsay">2 seminer · 117 konu</span>
     </div>
     <div class="kgrid">
       <div class="kart k-kahve genis">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 5l9 4.5-9 4.5z"/><path d="M7 11.8V16c0 1.6 2.2 3 5 3s5-1.4 5-3v-4.2"/><path d="M21 9.5V15"/></svg></span>
         <div class="govde">
           <h3>Maarif Modeli Semineri</h3>
-          <div class="etiket">Tek deste · dokuz bölüm · 87 slayt · konu haritalı · 4 test</div>
+          <div class="etiket">Gezilebilir pano · dokuz bölüm · 87 konu · 4 test</div>
           <p>Türkiye Yüzyılı Maarif Modeli'ni meslektaşlarınıza anlatmanız gerekiyorsa: seminerin
-             tamamı tek destede. Merkez <em>konu haritasıyla</em> açılır — erdem-değer-eylemden ünite
-             kartına kadar her başlığa dokunup ilgili slayda doğrudan girersiniz. Dört testin her biri
-             10 soru; karekodla telefondan yarıştırabilir ya da sunumun içindeki test slaytlarından
+             tamamı <em>tek panoda</em>. İleri tuşu yok — panoyu sürükleyip bir konuya dokunuyorsunuz,
+             kamera oraya yaklaşıyor; konu sayfalara bölünmeden bütün hâlinde duruyor. Dört testin
+             her biri 10 soru; karekodla telefondan yarıştırabilir ya da panodaki test konularından
              tahtadan sorabilirsiniz.</p>
-          <div class="cipler"><span class="cip-on">Doğrudan:</span><a class="cip" href="https://kidefarapca.com/sunum%20html/maarifsunum.html">Desteyi baştan aç · 87 slayt</a><a class="cip" href="https://kidefarapca.com/bilgiyarismasikacom.html?set=ara1">Ara yarışma 1 · 10 soru</a><a class="cip" href="https://kidefarapca.com/bilgiyarismasikacom.html?set=ara2">Ara yarışma 2 · 10 soru</a><a class="cip" href="https://kidefarapca.com/bilgiyarismasikacom.html?set=ara3">Ara yarışma 3 · 10 soru</a><a class="cip" href="https://kidefarapca.com/bilgiyarismasikacom.html?set=final">Kapanış testi · 10 soru</a></div>
+          <div class="cipler"><span class="cip-on">Doğrudan:</span><a class="cip" href="https://kidefarapca.com/bilgiyarismasikacom.html?set=ara1">Ara yarışma 1 · 10 soru</a><a class="cip" href="https://kidefarapca.com/bilgiyarismasikacom.html?set=ara2">Ara yarışma 2 · 10 soru</a><a class="cip" href="https://kidefarapca.com/bilgiyarismasikacom.html?set=ara3">Ara yarışma 3 · 10 soru</a><a class="cip" href="https://kidefarapca.com/bilgiyarismasikacom.html?set=final">Kapanış testi · 10 soru</a></div>
           <a href="https://kidefarapca.com/sunum%20html/maarif.html">kidefarapca.com/sunum html/maarif.html</a>
         </div>
       </div>
@@ -916,18 +946,8 @@ function katalogGeri(e){
   location.href = '../index.html';
   return false;
 }
-function katalogAnasayfa(e){
-  if (e && e.preventDefault) e.preventDefault();
-  try{
-    if (window.opener && !window.opener.closed){
-      window.close();
-      setTimeout(function(){ if(!window.closed) location.href = '../index.html'; }, 250);
-      return false;
-    }
-  }catch(_){}
-  location.href = '../index.html';
-  return false;
-}
+/* Ana sayfa tuşu KALDIRILDI: geri tuşu zaten sekmeyi kapatıp siteye
+   dönüyor, iki tuş aynı işi yapıyordu. */
 
 /* ————————————————————— SEKMELER —————————————————————
    Tek sayfa, altı sekme. Süzme EKRANDA olur; yazdırırken her şey geri
