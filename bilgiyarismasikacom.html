@@ -128,7 +128,14 @@
         <div class="biy-giris-ust-metin">
         <h1>Bilgi Yarışması</h1>
         <p class="biy-alt">Yarışmayı yönetmek için <b>öğretmen/yönetici</b> hesabıyla giriş yapmalısın.</p>
-        <a class="biy-btn biy-btn-mavi biy-btn-giris" href="index.html?giris=1&amp;rol=ogretmen">Girişe git</a>
+        <!-- GİRİŞ ARTIK BU SAYFADA: eskiden index.html'e gidiyordu ve
+             öğretmen sunumun ortasında ana sayfaya düşüyordu. Panel
+             hesap/biygiris.js'te; giriş bitince onAuthStateChanged kapıyı
+             kendisi kaldırıyor, sekme hiç değişmiyor. -->
+        <button type="button" class="biy-btn biy-btn-mavi biy-btn-giris"
+                onclick="if(window.BiyGiris) BiyGiris.ac('giris'); else location.href='index.html?giris=1&amp;rol=ogretmen';">Giriş yap</button>
+        <button type="button" class="biy-btn biy-btn-kayit"
+                onclick="if(window.BiyGiris) BiyGiris.ac('kayit'); else location.href='index.html?giris=1&amp;rol=ogretmen';">Hesabım yok, kayıt olayım</button>
         <p id="girisRolNot" class="biy-not"></p>
         <p id="girisRolAyrinti" class="biy-not biy-rol-ayrinti" style="display:none;"></p>
       </div>
@@ -554,13 +561,21 @@
 
 </div>
 
-<script src="sistem/geri.js?v=20260808a"></script>
+<script src="sistem/geri.js?v=20260915a"></script>
 <script>
 /* Ev (anasayfa) tusunun otomatik eklenmemesi icin onclick icinde "kidefGeriDon" gecmiyor. */
 function biyGeriDon(e){
   if (typeof kidefGeriDon === "function") return kidefGeriDon(e);
   if (e) e.preventDefault();
-  if (history.length > 1) history.back(); else location.href = "index.html";
+  /* GEÇMİŞ YOKSA INDEX'E GİTMİYOR. Bu sayfa sunumdan target="_blank" ile
+     açılıyor; yeni sekmede geçmiş olmadığı için geri tuşu öğretmeni ana
+     sayfaya atıyordu — sunum öteki sekmede duruyorken buna gerek yok.
+     Şimdi sekme kapanıyor ve öğretmen sunumun üstüne düşüyor. Tarayıcı
+     kapatmaya izin vermezse (kullanıcı kendi açtıysa window.close()
+     çalışmaz) sayfa olduğu yerde kalır: yanlış yere gitmektense kalmak
+     daha iyi. */
+  if (history.length > 1) { history.back(); return; }
+  try { window.close(); } catch (x) {}
 }
 </script>
 <!-- Sınıf veri kaydı (tek kaynak): hangi konu hangi sınıfa ait.
@@ -575,6 +590,11 @@ function biyGeriDon(e){
      olmayan sayfalarda dosya yalnız hareket yazar, kimseyi çıkarmaz. -->
 <script src="hesap/oturumguvenlik.js?v=20260911a"></script>
 <script src="sistem/rol.js?v=20260805a"></script>
+<!-- YERİNDE GİRİŞ / KAYIT — giriş kapısındaki iki düğme bunu açar.
+     kayitalani.js kayıt alanlarının ve kullanicilar belgesinin TEK
+     kaynağıdır; index'teki kayıt formu da aynı dosyayı okur. -->
+<script src="hesap/kayitalani.js?v=1"></script>
+<script src="hesap/biygiris.js?v=1"></script>
 <!-- Üretilmiş konular: motordan ÖNCE yüklenir, window.BIY_EK_KONULAR'a eklenirler.
      oyunlar/biy_kaliplar.js → kalıplar tablosunun verisinden üretilen sorular. -->
 <script src="oyunlar/biy_kaliplar.js?v=1"></script>

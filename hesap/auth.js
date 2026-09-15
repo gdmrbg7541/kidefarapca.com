@@ -370,24 +370,36 @@ function authIslemi() {
         const regRole = (selectedRole === 'admin' ? 'student' : selectedRole);
         isRegistering = true;
         firebase.auth().createUserWithEmailAndPassword(email, pass)
-        .then((userCredential) => { 
+        .then((userCredential) => {
             // Firestore'a kaydet
-            /* ÖĞRETMEN ONAY KAPISI: öğretmen kaydı doğrudan açılmaz, yönetici
-               onayına düşer. Alan 'bekliyor' kaldıkça sistem/erisim.js perdeyi
-               indirir. Öğrenci kaydında bu alan hiç yazılmaz. */
-            var _kayit = {
-                email: email,
-                role: regRole,
-                name: sName || "Belirtilmedi",
-                meslek: sProf || "",
-                cinsiyet: sGender || "",
-                phone: phone ? ("+90" + phone) : "",
-                packages: [],
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            if (regRole === 'teacher') {
-                _kayit.ogretmenOnay = 'bekliyor';
-                _kayit.onayIstekTarihi = firebase.firestore.FieldValue.serverTimestamp();
+            /* BELGE BİÇİMİ TEK YERDE: hesap/kayitalani.js.
+               Kayıt formu artık iki ekranda açılıyor (burası ve bilgi
+               yarışmasındaki yerinde panel — hesap/biygiris.js); ikisi de
+               kullanicilar/{uid} belgesini aynı biçimde yazmalı, yoksa
+               Firestore kuralı reddediyor (öğretmen kaydında
+               ogretmenOnay:'bekliyor' zorunlu). Dosya yüklenmemişse eski
+               satır içi biçim yedek olarak duruyor. */
+            var _kayit;
+            if (window.KidefKayit && window.KidefKayit.belge) {
+                _kayit = window.KidefKayit.belge({
+                    email: email, ad: sName, meslek: sProf,
+                    cinsiyet: sGender, tel: phone
+                }, regRole);
+            } else {
+                _kayit = {
+                    email: email,
+                    role: regRole,
+                    name: sName || "Belirtilmedi",
+                    meslek: sProf || "",
+                    cinsiyet: sGender || "",
+                    phone: phone ? ("+90" + phone) : "",
+                    packages: [],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                if (regRole === 'teacher') {
+                    _kayit.ogretmenOnay = 'bekliyor';
+                    _kayit.onayIstekTarihi = firebase.firestore.FieldValue.serverTimestamp();
+                }
             }
             return db.collection('kullanicilar').doc(userCredential.user.uid).set(_kayit).then(() => {
                 // Yaris onleme: dokuman yazildiktan sonra dogru rolle girisi tamamla
