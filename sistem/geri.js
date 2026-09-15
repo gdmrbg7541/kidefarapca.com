@@ -39,14 +39,39 @@ function kidefAnasayfa(e) {
     return false;
 }
 
+// Gelinen adres bu sitenin bir sayfasi mi? (ve sayfanin kendisi degil mi)
+function _kidefAyniSite(ref) {
+    if (!ref) return false;
+    try {
+        var u = new URL(ref, window.location.href);
+        if (u.origin !== window.location.origin) return false;
+        if (u.href === window.location.href) return false;   // kendisi: geri sayilmaz
+        return true;
+    } catch (_) {
+        var host = window.location.host || '';
+        return !!(host && ref.indexOf(host) !== -1);
+    }
+}
+
 function kidefGeri(e) {
     if (e && e.preventDefault) e.preventDefault();
     if (_kidefKapatVeyaIndex()) return false;   // yeni sekme -> kapat
     var ref = document.referrer || '';
-    var host = window.location.host || '';
-    var ayniSite = !!ref && ((host && ref.indexOf(host) !== -1) || ref.indexOf('index.html') !== -1);
+    var ayniSite = _kidefAyniSite(ref);
     if (ayniSite && window.history.length > 1) {
-        window.history.back();          // bir onceki sayfaya (genelde index)
+        window.history.back();          // bir onceki sayfaya
+        return false;
+    }
+    /* GECMIS YOK AMA AYNI SITEDEN GELINMIS -> GELDIGI SAYFAYA DON.
+       Sunum icindeki baglantilar rel="noopener" ile YENI SEKMEDE aciliyor:
+       o sekmede gecmis tek adim (history.length === 1) ve window.opener da
+       yok, dolayisiyla ne history.back ne de sekme kapatma isliyordu; geri
+       tusu ogretmeni index'e atiyordu (Geylani: "sunumlar kismina gitsin
+       index e falan gitmesin"). Referrer bu durumda geldigi sunumun adresini
+       tasiyor -- geri artik oraya donuyor. Disaridan gelinmisse (referrer
+       baska site ya da bos) eskisi gibi index'e dusuluyor. */
+    if (ayniSite) {
+        window.location.href = ref;
         return false;
     }
     return kidefAnasayfa(e);             // gecmis yok / dis kaynak -> index
