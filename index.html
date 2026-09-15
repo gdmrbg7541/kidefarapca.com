@@ -5729,7 +5729,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         <script src="hesap/paketler.js"></script>
         <script src="sistem/state.js"></script>
     <script src="sistem/rol.js?v=20260805a"></script>
-    <script src="hesap/auth.js?v=20260815c"></script>
+    <!-- Kayıt alanlarının ve kullanicilar belgesinin tek kaynağı; auth.js'ten
+         ÖNCE yüklenmeli. Aynı dosyayı bilgi yarışmasındaki yerinde kayıt
+         paneli de okuyor (hesap/biygiris.js). -->
+    <script src="hesap/kayitalani.js?v=1"></script>
+    <script src="hesap/auth.js?v=20260915a"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
     <script src="hesap/qrgiris.js?v=20260815a"></script>
     <script>
@@ -5866,7 +5870,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         }
     </script>
     <script src="index.js?v=20260825a"></script>
-    <script src="sistem/geri.js?v=20260808a"></script>
+    <script src="sistem/geri.js?v=20260915a"></script>
     <script>
     /* Baska sayfalardan "Girise git" ile gelindiginde giris-kayit penceresini ac.
        Kullanim: index.html?giris=1  ya da  index.html#giris
