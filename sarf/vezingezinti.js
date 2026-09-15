@@ -348,9 +348,16 @@
         if (zincir) { clearTimeout(zincir); zincir = null; }
         if (typeof handleBoxClick !== 'function') { mesgul = false; return; }
 
-        /* Daha önce türetilmemiş kutuyu sıfırdan başlat: aşama sayacı
-           eski bir ziyaretten kalmış olabilir. */
-        if (!kutu.classList.contains('kok-turendi')) kutu.removeAttribute('data-tiklama-sayisi');
+        /* GEZİNTİ BİR VEZNE VARDIĞINDA O KUTU HER ZAMAN BAŞTAN OYNAR.
+           Eskiden sayaç yalnız "kok-turendi" olmayan kutularda sıfırlanıyordu;
+           kutu başka bir yoldan zaten dolmuşsa (hızlı sözlük kipi bütün
+           kelimeleri arka planda türetiyor, bkz. openFastDictionaryMode)
+           sayaç "bitmiş" kalıyor, dokunuş hiçbir şey yapmıyordu: öğretmen
+           ileri tuşuna basıyor, ekranda hiçbir şey olmuyor, sıra sonuna
+           gelince de kutunun çevresinde kırmızı "vezin kalmadı" uyarısı
+           yanıp sönüyordu. Sayaç artık koşulsuz sıfırlanıyor — kelime
+           hangi yoldan gelmiş olursa olsun adım adım yeniden gösteriliyor. */
+        kutu.removeAttribute('data-tiklama-sayisi');
 
         handleBoxClick(kutu);
         mesgul = false;
@@ -366,7 +373,7 @@
        KENARINA yaslanıyor: el aynı bölgede kalsın, hem çubuğa hem
        tuşlara uzanılabilsin. Saydam duruyor, üstüne gelinince
        belirginleşiyor; tutamağından tutulup istenen yere taşınıyor ve
-       yeri hatırlanıyor. Sayfa sağdan sola aktığı için İLERİ SOLDA. */
+       yeri hatırlanıyor. Tuş sırası GERİ(←) · İLERİ(→) — gerekçe aşağıda. */
     var KUMANDA_YER = 'kidef_kumanda_yer';
     var kumanda = null, kumandaKok = '', kumandaVezin = 0, kumandaSolma = null;
 
@@ -423,12 +430,22 @@
         kumanda.id = 'vg-kumanda';
         kumanda.setAttribute('role', 'group');
         kumanda.setAttribute('aria-label', 'Vezin kumandası');
+        /* TUŞ SIRASI: GERİ solda (←), İLERİ sağda (→).
+           Eskiden tersiydi — "sayfa sağdan sola akıyor" diye İLERİ sola
+           konmuştu. Ama kumandanın yazıları ve sitenin tamamı Türkçe, yani
+           soldan sağa okunuyor: sağdaki → oklu tuş herkese "ileri" diye
+           görünüyordu. Sağdaki tuş GERİ olduğu için ilk vezinde basılınca
+           «daha geri gidilmez» uyarısı çalışıyor, kutunun çevresi kırmızı
+           yanıp sönüyor ve hiçbir şey ilerlemiyordu (Geylani: "ileri tuşuna
+           basınca ilk vezin çevresinde kırmızı hat yanıp sönüyor,
+           ilerleme çalışmıyor"). Ok yönleriyle yazılar artık aynı şeyi
+           söylüyor. */
         kumanda.innerHTML =
-            '<button type="button" class="vg-k-tus vg-k-ileri" aria-label="Sonraki vezin" ' +
-            'title="Sonraki vezin (kumanda: ileri · boşluk · PageDown)">' + OK_SOL + '<span>İLERİ</span></button>' +
-            '<span class="vg-k-tut" title="Tutup taşı" aria-hidden="true"></span>' +
             '<button type="button" class="vg-k-tus vg-k-geri" aria-label="Önceki vezin" ' +
-            'title="Önceki vezin (kumanda: geri · PageUp)"><span>GERİ</span>' + OK_SAG + '</button>';
+            'title="Önceki vezin (kumanda: geri · PageUp)">' + OK_SOL + '<span>GERİ</span></button>' +
+            '<span class="vg-k-tut" title="Tutup taşı" aria-hidden="true"></span>' +
+            '<button type="button" class="vg-k-tus vg-k-ileri" aria-label="Sonraki vezin" ' +
+            'title="Sonraki vezin (kumanda: ileri · boşluk · PageDown)"><span>İLERİ</span>' + OK_SAG + '</button>';
         document.body.appendChild(kumanda);
 
         /* Dokunmatik tahtada "hover" yok: her dokunuşta kumanda kısa

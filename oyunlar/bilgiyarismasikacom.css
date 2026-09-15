@@ -2131,6 +2131,20 @@ button.biy-sayi-etiket .biy-svg-sayi { transition: transform .2s ease; }
   0%, 100% { box-shadow: 0 4px 10px rgba(52,152,219,.28); }
   50%      { box-shadow: 0 6px 20px rgba(52,152,219,.62); }
 }
+/* «Hesabım yok, kayıt olayım» — giriş tuşunun altında ikinci yol.
+   Ana tuşla yarışmasın diye çerçeveli ve sönük; ikisi de artık sayfadan
+   çıkmıyor, hesap/biygiris.js panelini açıyor. */
+.biy-btn-kayit {
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-top: 10px; font-family: 'Marhey', sans-serif; cursor: pointer;
+  background: #fff; color: #2c6fa8; border: 1.8px solid #BBD9F0;
+  padding: 11px 24px; border-radius: 12px; font-size: .98rem; font-weight: 700;
+  box-shadow: none; transition: background .14s ease, transform .12s ease;
+}
+.biy-btn-kayit:hover { background: #F2F8FD; transform: translateY(-1px); }
+@media screen and (min-height: 560px) {
+  .biy-btn-kayit { font-size: clamp(.94rem, 2.2vh, 1.24rem); padding: clamp(9px,1.7vh,16px) clamp(24px,2.8vw,42px); }
+}
 
 /* ---- sahnedeki karekod karti + tarama cizgisi ---- */
 .bg-qr { opacity: 0; animation: biyQrGir 3.6s ease-out infinite; animation-delay: .8s; }

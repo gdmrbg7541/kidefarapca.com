@@ -4405,10 +4405,31 @@ function highlightKey(char) {
 
 function confirmRoot() {
     if (currentRoot.length === 3) {
-        window.activeConfirmedRoot = currentRoot;
+        /* ÖNCE TABLOYU TEMİZLE — yoksa ileri tuşu yeni kökte tıkanıyor.
+           Hazır kök listesinden seçince selectReadyVerb() en başta
+           resetTableOnly() çağırıyor; klavyeden kök yazıp onaylayınca
+           bu yapılmıyordu. Eski kökün kutuları «kok-turendi» etiketiyle
+           tabloda kalıyor, vezin gezintisi (sarf/vezingezinti.js) o
+           kutulara varınca «bu kutunun döngüsü zaten bitmiş» deyip
+           hiçbir şey üretmiyordu: öğretmen ileri tuşuna basıyor, iki üç
+           kelimeden sonra tuş sessizleşiyordu. Ölçülen örnek: كتب ile
+           sona gidip klavyeden نصر yazılınca, نصر'in dört vezninden
+           yalnız ikisi geliyor (33 ve 36 كتب'den kalma olduğu için
+           atlanıyordu).
+           resetTableOnly() currentRoot'u da siliyor — yeni kök geçici
+           olarak saklanıp sonra geri yazılıyor. */
+        var yeniKok = currentRoot;
         SoundEngine.playReset();
 
         toggleKB(false);
+        if (typeof resetTableOnly === 'function') resetTableOnly(true);
+        currentRoot = yeniKok;
+        window.activeConfirmedRoot = yeniKok;
+        /* Gezinti imleci başa alınsın: ilk basışta yeni kökün en küçük
+           numaralı vezni gelsin, önceki kökün sırasından devam etmesin. */
+        if (window.KidefVezinGezinti && window.KidefVezinGezinti.sifirla) {
+            try { window.KidefVezinGezinti.sifirla(); } catch (e) { /* yoksay */ }
+        }
         currentEggIndex = 0;
         
         // KESİN ÇÖZÜM: Klavyeden 3 harfli kök girilip onaylanınca vurguyu zorla kapat!
