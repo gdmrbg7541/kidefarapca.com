@@ -22,15 +22,30 @@ function _kidefGotoIndex() {
         .catch(function () { window.location.href = indexUrl; });
 }
 
-// Yeni sekmede acildiysa SEKMEYI KAPAT; tarayici izin vermezse index'e don.
-function _kidefKapatVeyaIndex() {
+// Yeni sekmede acildiysa SEKMEYI KAPAT.
+// KAPATILAMAZSA ne olacagi cagirana gore degisir:
+//   GERI     -> geldigi sayfaya (ayni siteyse), yoksa index
+//   ANASAYFA -> her hâlükârda index
+// Onceden ikisi de index'e dusuyordu; Safari gibi sekme kapatmaya izin
+// vermeyen tarayicilarda sunumdan gelen ogretmen geri tusuna basinca ana
+// sayfaya atiliyordu (Geylani: "sunumlardan acilmissa ... sunumlara
+// gitsin"). Kapatma calistiginda zaten alttaki sekme kaldigi yerde durur.
+function _kidefKapatVeya(sonra) {
     if (_kidefYeniSekme()) {
         try { window.close(); } catch (_) {}
-        setTimeout(function () { if (!window.closed) _kidefGotoIndex(); }, 250);
+        setTimeout(function () { if (!window.closed) (sonra || _kidefGotoIndex)(); }, 250);
         return true;
     }
     return false;
 }
+// Kapatilamadi: once GELDIGI ayni-site sayfasi, o da yoksa index.
+function _kidefGeriKaynak() {
+    var ref = document.referrer || '';
+    if (_kidefAyniSite(ref)) { window.location.href = ref; return; }
+    _kidefGotoIndex();
+}
+// Geriye donuk ad: eski cagrilar index'e dusmeye devam etsin.
+function _kidefKapatVeyaIndex() { return _kidefKapatVeya(_kidefGotoIndex); }
 
 function kidefAnasayfa(e) {
     if (e && e.preventDefault) e.preventDefault();
@@ -55,7 +70,8 @@ function _kidefAyniSite(ref) {
 
 function kidefGeri(e) {
     if (e && e.preventDefault) e.preventDefault();
-    if (_kidefKapatVeyaIndex()) return false;   // yeni sekme -> kapat
+    // yeni sekme -> kapat; kapanmazsa GELDIGI sayfaya don (index'e degil)
+    if (_kidefKapatVeya(_kidefGeriKaynak)) return false;
     var ref = document.referrer || '';
     var ayniSite = _kidefAyniSite(ref);
     if (ayniSite && window.history.length > 1) {

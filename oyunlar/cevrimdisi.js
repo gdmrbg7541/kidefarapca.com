@@ -1513,8 +1513,8 @@ function karsilamaHtml(){
   return `
   <div class="cdw cdw-karsilama" dir="ltr">
     <div class="cdw-ust">
-      <button type="button" class="cdw-geri-tus" onclick="location.href='index.html'"
-              title="Oyunlara dön" aria-label="Oyunlara dön">
+      <button type="button" class="cdw-geri-tus" onclick="COFF.disariCik()"
+              title="Geri dön" aria-label="Geri dön">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
@@ -2521,6 +2521,29 @@ const COFF = {
   },
   /* Karşılamadaki iki bölüm: tıklayınca mod seçilir, düğmeler kuruluma
      ya da anlatıma götürür. */
+  /* KARŞILAMA EKRANININ GERİ OKU — sitenin ortak kuralına bağlı.
+     ÖNCEDEN burada "location.href='index.html'" YAZIYORDU: bu ekran
+     yarışmanın İLK ekranı olduğu için, sunumdan açan öğretmen geri
+     tuşuna bastığında doğrudan ana sayfaya düşüyordu (Geylani: "sunumlar
+     içindeki bilgi yarışması kartını açınca ve çıkınca sunumlarda
+     kalmıyor, indexe gidiyor"). kidefGeri yeni sekmeyi kapatır — altta
+     sunumlar/index kaldığı yerde durur; tarayıcı kapatmaya izin vermezse
+     geldiği sayfaya döner. */
+  /* AD: "geri" DEĞİL. COFF'ta zaten iki tane var — geriCik() sihirbazda bir
+     adım geri, geri() sunumda bir önceki soru. Nesne değişmezinde aynı ad
+     iki kez geçince SONRAKİ kazanıyor; bu yüzden "geri" adıyla eklenen bu
+     işlev hiç çalışmadı, düğme sessizce sunumun geri'sini çağırdı (ölçüldü). */
+  disariCik(){
+    if (typeof window.kidefGeri === "function"){ window.kidefGeri(); return; }
+    try {
+      var r = document.referrer || "";
+      if (r){
+        var u = new URL(r, location.href);
+        if (u.origin === location.origin && u.href !== location.href){ location.href = r; return; }
+      }
+    } catch(e){}
+    location.href = "index.html";
+  },
   modSec(m){ if (D.mod !== m) COFF.modDegis(m); },
   modBasla(m){ if (D.mod !== m) COFF.modDegis(m); COFF.basla(); },
   modAkis(m){ if (D.mod !== m) COFF.modDegis(m); COFF.akisAc(); },

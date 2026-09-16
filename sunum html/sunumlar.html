@@ -4750,7 +4750,13 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       /* İki tür kart var: SUNUM (data-git → içerideki slayt destesi) ve
          UYGULAMA (data-dis → ayrı sayfa, yeni sekmede açılır). */
       var dis = b.getAttribute('data-dis');
-      if (dis){ window.open(dis, '_blank', 'noopener'); return; }
+      /* 'noopener' KALDIRILDI. Onunla acilan sekmede window.opener yok;
+         geri tusu sekmeyi kapatamiyor, sunumlari BASTAN yukluyor ve
+         ogretmen listenin en ustune dusuyordu (Geylani: "geri cikinca
+         index e degil sunumlar.html de kalinan yere gitmeli"). Opener
+         varken geri tusu bu sekmeyi kapatiyor ve alttaki sunumlar sekmesi
+         kaldigi yerde duruyor. Adresler sitenin kendi sayfalari. */
+      if (dis){ window.open(dis, '_blank'); return; }
       sunumAc(b.dataset.git, 1);
     });
   });

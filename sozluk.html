@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sözlük — Kidef Arapça</title>
+<!--
+  SÖZLÜK — vezinler tablosundaki sözlük panelinin tek başına hâli.
+  Aynı veriyi okur (veri/veri_sozluk.js); kök çipi, "vezinlere bak",
+  kök arama ve tabloya atlama YOKTUR. Klavye tablodakiyle aynı düzen
+  ve aynı harf renkleridir.
+
+  İki yerden açılır:
+    · index.html başlığındaki animasyonlu sözlük simgesi -> açılır
+      pencerede (iframe), büyütülebilir
+    · "Öğretmen Özel" kategorisindeki Sözlük kartı -> yeni sekmede
+
+  FAVORİLER: her kartın yıldızı. Liste tarayıcıda, öğrenci giriş
+  yapmışsa ayrıca hesabında durur (sarf/sozlukfavori.js).
+-->
+<script>
+/* Çerçeve içinde mi? EN BAŞTA bilinsin ki pencerenin kendi başlığı
+   varken buradaki yeşil şerit bir an görünüp kaybolmasın. */
+try { if (window.parent !== window) document.documentElement.className += ' szk-cerceve'; } catch (e) {}
+/* Geri tuşu YALNIZ tam sayfada gerekli; açılır pencerenin kendi ✕'i var.
+   Çerçevedeyken sitenin geri yardımcısı hiç yüklenmesin. */
+(function () {
+  if (document.documentElement.className.indexOf('szk-cerceve') >= 0) return;
+  var s = document.createElement('script');
+  s.src = 'sistem/geri.js?v=20260916a';
+  document.head.appendChild(s);
+})();
+/* GOOGLE ANALYTICS — sitenin geri kalanıyla aynı ölçüm kimliği (GA4).
+   ÇERÇEVEDE YÜKLENMEZ: açılır sözlük index'in içinde açılıyor, index'in
+   kendi sayfa görüntülemesi zaten sayılıyor; ikisi birden çalışsaydı her
+   pencere açılışı çift sayılırdı. */
+(function () {
+  if (document.documentElement.className.indexOf('szk-cerceve') >= 0) return;
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW';
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="arakom.css?v=1">
+<style>
+  :root{
+    --mur:#1F2430; --gri:#5B6471; --soluk:#8A93A0; --cizgi:#E3E8EF;
+    --yesil:#16A085; --yesilK:#0C7A64; --sari:#F39C12;
+    --altin:#F5B301; --altinK:#C98A00;
+
+    /* ===== SINIF ÖLÇEĞİ =================================================
+       Bütün ölçüler görüntü alanına bağlı (clamp + vw/vh). Kart üzerinden
+       TAM SAYFA açıldığında — öğretmen tahtaya yansıtıyor — klavye tuşları
+       ve sonuç kartları arka sıradan okunacak kadar büyür; telefonda ve
+       dar açılır pencerede bugünkü rahat ölçüde kalır. Tek yerde durur ki
+       ileride sınıfa göre tek satırla ayarlanabilsin.
+       küçük değer = alt sınır (telefon) · orta = ekranla büyür · son = üst sınır */
+    --sz-giris:clamp(1.4rem,2.2vw,2.9rem);    /* arama kutusu       */
+    --sz-ar:clamp(1.85rem,3.7vw,4.9rem);      /* öneri: Arapça      */
+    --sz-tr:clamp(.95rem,1.42vw,1.9rem);      /* öneri: Türkçe      */
+    --sz-tur:clamp(.72rem,.85vw,1.15rem);     /* öneri: tür rozeti  */
+    --kart-en:clamp(230px,27vw,560px);        /* öneri kartı eni    */
+    --kart-ara:clamp(8px,.6vw,13px);
+    /* Klavye DİKEYDE büyük, harf büyük (Geylani: "klavye dikey olarak daha
+       büyük olsun harfler daha büyük olsun"). Arama kutusu da büyütüldü
+       ("yazma kısmı da büyük olsun"). Üç satırlık öneri alanı kalandan pay
+       ediliyor, bu yüzden kart ölçüsü buna göre ayarlandı. */
+    --tus-y:clamp(44px,8vh,98px);             /* tuş yüksekliği     */
+    --tus-en:clamp(62px,6.6vw,138px);         /* tuş eni (üst sınır)*/
+    --tus-yz:clamp(1.4rem,3.4vw,4.2rem);      /* tuş harfi          */
+    /* .69 ölçülerek bulundu: .70'te harf, tuş kutusunun 2px dışına taşıyor
+       (Arakom'un alt uzantısı). Harf büyüsün ama tuştan çıkmasın. */
+    --tus-oran:.69;                           /* harf / tuş yüksekliği */
+    --tus-ara:clamp(5px,.62vw,12px);
+    --yildiz:clamp(26px,2.3vw,46px);          /* favori yıldızı     */
+    --satir:3;                                /* görünen öneri satırı */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    background:#EEF1F5; color:var(--mur);
+    font-family:'Nunito',system-ui,-apple-system,sans-serif;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+
+  /* ---------- üst şerit ---------- */
+  .szk-ust{
+    flex:0 0 auto; display:flex; align-items:center; gap:12px;
+    padding:clamp(8px,.6vw,12px) clamp(16px,1.5vw,30px);
+    background:linear-gradient(120deg,#16A085,#0E7C66);
+    color:#fff; box-shadow:0 2px 12px rgba(14,124,102,.28); z-index:5;
+  }
+  .szk-ust h1{
+    margin:0; font-family:'Marhey',sans-serif;
+    font-size:clamp(1.25rem,1.5vw,2rem); font-weight:700;
+    display:flex; align-items:center; gap:9px;
+  }
+  .szk-ust h1 svg{width:1.15em;height:1.15em;display:block}
+  /* GERİ — index'ten karta tıklayıp gelen öğretmen/öğrenci geri dönebilsin.
+     Davranış sitenin ortak kuralına bırakıldı (sistem/geri.js): yeni
+     sekmede açıldıysa sekme kapanır (altta index zaten duruyor), aynı
+     sekmedeyse index'e döner. */
+  .szk-geri{
+    flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center;
+    width:clamp(38px,2.7vw,54px); height:clamp(38px,2.7vw,54px);
+    border:0; border-radius:12px; cursor:pointer; font-size:1.25rem;
+    background:rgba(255,255,255,.18); color:#fff; transition:background .15s;
+  }
+  .szk-geri:hover{background:rgba(255,255,255,.34)}
+  .szk-sayac{
+    margin-inline-start:auto; font-size:clamp(.86rem,.95vw,1.25rem);
+    opacity:.9; font-weight:700; white-space:nowrap;
+  }
+
+  /* ---------- arama ---------- */
+  .szk-arama{
+    flex:0 0 auto; display:flex; align-items:center; gap:clamp(8px,.8vw,14px);
+    padding:clamp(9px,.75vw,13px) clamp(16px,1.5vw,30px) clamp(8px,.62vw,11px);
+    background:#fff; border-bottom:1px solid var(--cizgi);
+  }
+  #szkGiris{
+    flex:1 1 auto; min-width:0; font-family:'Arakom','Nunito',sans-serif;
+    font-size:var(--sz-giris); padding:.42em .6em; border:2px solid var(--cizgi);
+    border-radius:.42em; background:#FBFCFE; color:var(--mur); text-align:center;
+  }
+  #szkGiris:focus{outline:none;border-color:var(--yesil);background:#fff}
+  .szk-temizle{
+    flex:0 0 auto; border:0; background:#EDF1F7; color:#5b6b80; cursor:pointer;
+    width:calc(var(--sz-giris) * 1.55); height:calc(var(--sz-giris) * 1.55);
+    border-radius:.28em; font-size:calc(var(--sz-giris) * .62); font-family:inherit;
+  }
+  .szk-temizle:hover{background:#E3E9F1}
+  /* FAVORİLERİM anahtarı — arama satırında durur, çünkü açılır pencerede
+     yeşil şerit gizli; oradan da erişilebilsin. */
+  .szk-favtus{
+    flex:0 0 auto; display:inline-flex; align-items:center; gap:.4em;
+    border:2px solid #F0D9A0; background:#FFF8E6; color:#8A6400; cursor:pointer;
+    height:calc(var(--sz-giris) * 1.55); padding:0 .7em; border-radius:.35em;
+    font-family:inherit; font-weight:800; font-size:calc(var(--sz-giris) * .5);
+    white-space:nowrap; transition:background .15s,border-color .15s;
+  }
+  .szk-favtus:hover{background:#FFF1CC}
+  .szk-favtus svg{width:1.25em;height:1.25em;fill:var(--altin);stroke:var(--altinK);stroke-width:1.3}
+  .szk-favtus.acik{background:var(--altin);border-color:var(--altinK);color:#3A2A00}
+  .szk-favtus.acik svg{fill:#fff;stroke:#fff}
+  .szk-favtus .szk-favad{display:none}
+  @media (min-width:760px){.szk-favtus .szk-favad{display:inline}}
+
+  /* ---------- sonuçlar (öneriler) + favori listesi ---------- */
+  #szkSonuc,.szk-fav-liste{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(min(var(--kart-en),100%),1fr));
+    gap:var(--kart-ara); align-content:start;
+  }
+  #szkSonuc{
+    flex:1 1 auto; min-height:0;
+    /* YATAY KAYDIRMA KAPALI. overflow-y:auto tek başına yazılınca öbür
+       eksen "visible" kalamaz, tarayıcı onu da AUTO'ya çeviriyor; kartlar
+       zaten genişliğe göre diziliyor, yani yatay çubuk hiçbir işe yaramadan
+       klavyenin üstünde beliriyordu (Geylani: "klavye üstünde yatay scroll
+       çıkmasın"). İki eksen de açıkça yazıldı. */
+    overflow-x:hidden; overflow-y:auto;
+    padding:clamp(8px,.55vw,11px) clamp(14px,1.3vw,26px);
+  }
+  /* ÜÇ SATIR (Geylani: "çıkan öneriler ... 3 satır olsun").
+     Satır yüksekliği alandan pay edilir; böylece dördüncü satır yarım
+     görünüp kesilmez, üç satır alanı tam doldurur. Yalnız geniş ekranda:
+     telefonda üç satır kartları gereksiz uzatırdı, orada içerik kadar. */
+  @media (min-width:1024px){
+    #szkSonuc{
+      grid-auto-rows:calc((100% - (var(--satir) - 1) * var(--kart-ara)) / var(--satir));
+    }
+    /* overflow SADECE burada: satır yüksekliği sabitken taşma kesilsin.
+       Tabanda olamaz — kendiliğinden boyutlanan satırda tarayıcı kartın
+       DOLGUSUNU hesaba katmıyor, kart 12px kısa çıkıp harekeleri kırpıyordu
+       (ölçüldü: içerik 70.5px, kart 60.7px). */
+    .szk-kart{overflow:hidden}
+  }
+  .szk-bos{
+    grid-column:1/-1; text-align:center; color:var(--soluk);
+    font-size:clamp(1rem,1.25vw,1.6rem); margin:26px 0; line-height:1.6;
+  }
+  .szk-kart{
+    position:relative;
+    background:#fff; border:1px solid var(--cizgi); border-radius:clamp(15px,1.2vw,24px);
+    padding:clamp(4px,.32vw,7px) clamp(10px,.9vw,18px);
+    text-align:center; box-shadow:0 3px 10px rgba(31,36,48,.07);
+    display:flex; flex-direction:column; justify-content:center;
+    gap:clamp(2px,.16vw,4px); min-width:0;
+  }
+  .szk-ar{
+    /* satır aralığı 1.5 -> 1.25: harekeler yine sığıyor, kart daha çok
+       yazıya yer bırakıyor (üç satır bütçesi buradan çıktı) */
+    font-family:'Arakom',serif; font-size:var(--sz-ar); line-height:1.22; color:#111;
+    word-break:break-word;
+  }
+  .szk-tr{font-size:var(--sz-tr);color:var(--gri);line-height:1.2;word-break:break-word}
+  /* Tür rozeti akıştan çıktı: sabit satır yüksekliğinde altta yer yiyip
+     kartı taşırıyordu. Yıldızın karşı köşesinde duruyor. */
+  .szk-tur{
+    position:absolute; inset-inline-end:clamp(8px,.6vw,14px); top:clamp(8px,.6vw,14px);
+    font-size:var(--sz-tur); font-weight:800; letter-spacing:.04em;
+    text-transform:uppercase; color:var(--yesilK); background:#E8F4F1;
+    border-radius:999px; padding:.28em .85em; max-width:55%;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  /* ---------- yıldız ---------- */
+  .szk-yildiz{
+    position:absolute; inset-inline-start:clamp(6px,.5vw,12px); top:clamp(6px,.5vw,12px);
+    width:var(--yildiz); height:var(--yildiz); padding:0; border:0; cursor:pointer;
+    background:none; display:grid; place-items:center; border-radius:50%;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .szk-yildiz svg{
+    width:100%; height:100%; fill:none; stroke:#B9C2CE; stroke-width:1.7;
+    stroke-linejoin:round; transition:fill .15s, stroke .15s, transform .15s;
+  }
+  .szk-yildiz:hover svg{stroke:var(--altinK);transform:scale(1.08)}
+  .szk-yildiz.dolu svg{fill:var(--altin);stroke:var(--altinK);animation:szkPat .28s ease}
+  @keyframes szkPat{0%{transform:scale(.6)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){.szk-yildiz.dolu svg{animation:none}}
+
+  /* ---------- FAVORİLERİM bölümü ---------- */
+  #szkFav{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+  #szkFav[hidden]{display:none}
+  .szk-fav-arac{
+    flex:0 0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:8px;
+    padding:clamp(10px,.9vw,18px) clamp(16px,1.5vw,30px);
+    background:#FFFDF6; border-bottom:1px solid #F0E4C4;
+  }
+  .szk-fav-arac button{
+    border:1px solid #DCE3EC; background:#fff; color:#3B4654; cursor:pointer;
+    font-family:inherit; font-weight:700; font-size:clamp(.88rem,.95vw,1.2rem);
+    padding:.5em 1em; border-radius:10px; transition:background .15s,border-color .15s;
+  }
+  .szk-fav-arac button:hover{background:#F3F6FA}
+  .szk-fav-arac button.aktif{background:var(--yesil);border-color:var(--yesilK);color:#fff}
+  .szk-fav-arac .szk-tehlike{margin-inline-start:auto;color:#B03030;border-color:#EFD0D0}
+  .szk-fav-arac .szk-tehlike:hover{background:#FDF0F0}
+  .szk-fav-arac .szk-tehlike.sor{background:#B03030;border-color:#8E2323;color:#fff}
+  .szk-fav-not{font-size:clamp(.85rem,.9vw,1.1rem);color:var(--soluk);font-weight:700}
+  .szk-fav-liste{
+    flex:1 1 auto; min-height:0; overflow-x:hidden; overflow-y:auto;
+    padding:clamp(14px,1.3vw,26px) clamp(16px,1.5vw,30px) clamp(20px,1.8vw,34px);
+  }
+  /* TEST — Arapçası açık, Türkçesi kapalı; karta dokununca açılır. */
+  #szkFav.test .szk-kart{cursor:pointer}
+  #szkFav.test .szk-kart .szk-tr{
+    color:transparent; background:#E6EBF2; border-radius:8px; user-select:none;
+  }
+  #szkFav.test .szk-kart .szk-tur{visibility:hidden}
+  #szkFav.test .szk-kart.acik .szk-tr{color:var(--gri);background:none}
+  #szkFav.test .szk-kart.acik .szk-tur{visibility:visible}
+  #szkYaziBas{display:none}
+
+  /* ---------- klavye ---------- */
+  #szkKlavye{
+    flex:0 0 auto; background:#DFE6EE; border-top:1px solid #CBD5E0;
+    padding:var(--tus-ara) var(--tus-ara) calc(var(--tus-ara) + 2px); user-select:none;
+  }
+  .szk-satir{display:flex;justify-content:center;gap:var(--tus-ara);margin-bottom:var(--tus-ara)}
+  .szk-satir:last-child{margin-bottom:0}
+  .szk-tus{
+    flex:1 1 0; min-width:0; max-width:var(--tus-en); height:var(--tus-y);
+    font-family:'Arakom',serif; line-height:1;
+    /* Yazı hiçbir ekran oranında tuştan taşmasın: tuş alçaldığında harf de
+       alçalır (geniş ama kısa pencerede taşıyordu — ölçülerek bağlandı). */
+    font-size:min(var(--tus-yz), calc(var(--tus-y) * var(--tus-oran)));
+    background:var(--szk-bg,#fff); color:#111; cursor:pointer;
+    border:0; border-radius:clamp(9px,.7vw,16px); box-shadow:0 1px 2px rgba(0,0,0,.28);
+    transition:transform .08s ease, filter .12s ease;
+  }
+  .szk-tus:active{transform:translateY(1px);filter:brightness(.94)}
+  .szk-sil{
+    background:#B0BEC5; max-width:clamp(88px,8.2vw,180px);
+    font-size:min(calc(var(--tus-yz) * .82), calc(var(--tus-y) * .62));
+  }
+  .szk-bosluk{
+    flex:0 0 46%; max-width:clamp(320px,34vw,660px);
+    height:calc(var(--tus-y) * .88); background:#fff;
+  }
+
+  /* ---------- klavye boyutu: TAM / DAR ----------
+     Geylani: "iki farklı klavye boyutu olsun, biri tam diğeri yatay olarak
+     daha küçük olsun ama harfleri çok küçültmeden, dokunarak yazması kolay
+     olsun". DAR'da yalnız EN daralır: tuş yüksekliği aynı kalır, harf ancak
+     bir tık iner (1920'de 46px -> 39px), parmak az yol gider.
+     Yalnız geniş ekranda: dar ekranda klavye zaten toplu, daha da daraltmak
+     tuşu küçültür — dokunmayı zorlaştırırdı. */
+  .szk-boyut{display:none}
+  @media (min-width:1024px){
+    /* Alt sınır 680px: 1024'lük ekranda dar klavye 46px'lik tuş veriyor.
+       620'de tuş 42px'e iniyordu — dokunmak için fazla ince. */
+    :root{--klv-dar:clamp(680px,56vw,1040px)}
+    .szk-boyut{
+      flex:0 0 auto; display:inline-flex; align-items:center; gap:.45em;
+      height:calc(var(--tus-y) * .88); padding:0 clamp(12px,.85vw,20px);
+      border:0; border-radius:clamp(9px,.7vw,16px); cursor:pointer;
+      background:#C6D0DC; color:#2D3948; font-family:inherit; font-weight:800;
+      font-size:min(calc(var(--tus-yz) * .5), calc(var(--tus-y) * .3));
+      box-shadow:0 1px 2px rgba(0,0,0,.28);
+      transition:transform .08s ease, background .12s ease;
+    }
+    .szk-boyut:hover{background:#B7C3D2}
+    .szk-boyut:active{transform:translateY(1px)}
+    .szk-bik{width:1.55em;height:1.55em;display:block;flex:0 0 auto}
+    .szk-boyut .bi-dis{display:none}
+    #szkKlavye.dar .szk-boyut .bi-ic{display:none}
+    #szkKlavye.dar .szk-boyut .bi-dis{display:block}
+
+    /* Satır enini kıs; tuşlar flex:1 1 0 olduğu için kendiliğinden daralır.
+       Tuş üst sınırı da kısılmalı: yoksa 11 ve 10 tuşluk alt satırlar aynı
+       eni paylaşıp üst satırdan geniş tuşlar çıkarırdı. */
+    #szkKlavye.dar{--tus-yz:clamp(1.05rem,2.45vw,3.1rem)}
+    #szkKlavye.dar .szk-satir{max-width:var(--klv-dar);margin-inline:auto}
+    #szkKlavye.dar .szk-tus{max-width:calc((var(--klv-dar) - 12 * var(--tus-ara)) / 13)}
+    #szkKlavye.dar .szk-sil{max-width:calc((var(--klv-dar) - 12 * var(--tus-ara)) / 9)}
+    #szkKlavye.dar .szk-bosluk{max-width:calc(var(--klv-dar) * .42)}
+  }
+
+  /* Favori listesi açıkken arama sonuçları ve klavye yer kaplamasın */
+  body.szk-fav-acik #szkSonuc,
+  body.szk-fav-acik #szkKlavye{display:none}
+
+  /* Telefon: 13 tuşluk sıra 25px'lik tuşlara iniyor; "هـ" iki glif olduğu
+     için 18.9px harf tuştan taşıyordu (ölçüldü: 2 tuş). Harfi ekran enine
+     bağla, sınıf ölçeğine dokunma. */
+  @media (max-width:620px){
+    :root{
+      --tus-yz:clamp(.92rem,4vw,1.18rem);
+      /* Dar ekranda tuş eni 25px'e iniyor; sınıf yüksekliği burada
+         ince-uzun tuş demek olurdu — yüksekliği de sınırla. */
+      --tus-y:clamp(44px,6.4vh,62px);
+    }
+    .szk-bosluk{flex:0 0 52%}
+  }
+  /* Açılır pencerede (iframe) üst şerit yer kaplamasın */
+  html.szk-cerceve .szk-ust{display:none}
+
+  /* ---------- YAZDIR / ÇALIŞMA KÂĞIDI ----------
+     Yalnız favori listesi basılır. "Test" açıkken yazdırılırsa Türkçe
+     sütunu noktalı boşluk olarak çıkar: öğrencinin dolduracağı kelime
+     kâğıdı. Ayrı bir düğmeye gerek kalmıyor. */
+  @media print{
+    @page{margin:14mm}
+    html,body{height:auto;overflow:visible;background:#fff;display:block}
+    .szk-ust,.szk-arama,#szkSonuc,#szkKlavye,.szk-fav-arac,.szk-yildiz{display:none!important}
+    #szkFav{display:block!important;overflow:visible}
+    #szkYaziBas{
+      display:block!important; margin:0 0 6mm; font-family:'Marhey',sans-serif;
+      font-size:15pt; border-bottom:2px solid #222; padding-bottom:2mm;
+    }
+    #szkYaziBas span{float:right;font-size:10pt;font-weight:400;color:#444}
+    .szk-fav-liste{
+      display:block!important; overflow:visible; padding:0;
+      column-count:2; column-gap:10mm; counter-reset:kel;
+    }
+    .szk-kart{
+      break-inside:avoid; -webkit-column-break-inside:avoid;
+      /* flex-direction TAŞINIYOR: ekran kartı sütun; satıra çevrilmezse
+         numara / Türkçe / Arapça alt alta dizilir (ölçüldü). */
+      display:flex; flex-direction:row; align-items:baseline; gap:4mm; text-align:start;
+      box-shadow:none; border:0; border-bottom:1px solid #C9D2DD; border-radius:0;
+      padding:2.2mm 0; margin:0;
+    }
+    .szk-kart::before{
+      counter-increment:kel; content:counter(kel) "."; order:0;
+      min-width:7mm; font-size:9pt; color:#667;
+    }
+    .szk-tr{order:1;flex:1 1 auto;font-size:11pt;color:#000;text-align:start}
+    .szk-ar{order:2;font-size:18pt;line-height:1.5;color:#000;text-align:right;min-width:32mm}
+    .szk-tur{display:none}
+    #szkFav.test .szk-kart .szk-tr{
+      color:transparent!important; background:none!important;
+      border-bottom:1px dotted #8A93A0; min-height:1.2em;
+    }
+    #szkFav.test .szk-kart.acik .szk-tr{color:#000!important;border-bottom:0}
+    #szkFav.test #szkYaziBas::after{content:" — çalışma kâğıdı";font-size:11pt;color:#555}
+  }
+</style>
+</head>
+<body>
+
+<header class="szk-ust">
+  <button type="button" class="szk-geri" onclick="return kidefGeri(event)"
+          title="Geri" aria-label="Geri">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" stroke-linejoin="round" style="width:1.15em;height:1.15em"
+         aria-hidden="true"><path d="M20 12H5.4"></path><path d="M11.8 5.6 5 12l6.8 6.4"></path></svg>
+  </button>
+  <h1>
+    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <path d="M8 10a4 4 0 0 1 4-4h10a5 5 0 0 1 5 5v29a4 4 0 0 0-4-4H12a4 4 0 0 1-4-4z" fill="#fff" opacity=".92"/>
+      <path d="M40 10a4 4 0 0 0-4-4H26a5 5 0 0 0-5 5v29a4 4 0 0 1 4-4h11a4 4 0 0 0 4-4z" fill="#fff" opacity=".7"/>
+      <circle cx="33" cy="30" r="8" fill="none" stroke="#F39C12" stroke-width="3.2"/>
+      <line x1="39" y1="36" x2="45" y2="42" stroke="#F39C12" stroke-width="3.6" stroke-linecap="round"/>
+    </svg>
+    Sözlük
+  </h1>
+  <span class="szk-sayac" id="szkSayac"></span>
+</header>
+
+<div class="szk-arama">
+  <input id="szkGiris" type="text" dir="rtl" autocomplete="off" spellcheck="false"
+         aria-label="Sözlükte ara">
+  <button type="button" class="szk-temizle" id="szkTemizle" aria-label="Temizle">✕</button>
+  <button type="button" class="szk-favtus" id="szkFavTus" aria-pressed="false"
+          title="Favori kelimelerim">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 3.4l2.65 5.37 5.93.86-4.29 4.18 1.01 5.9L12 16.92l-5.3 2.79 1.01-5.9L3.42 9.63l5.93-.86z"/>
+    </svg>
+    <span class="szk-favad">Favorilerim</span>
+    <span id="szkFavSay">0</span>
+  </button>
+</div>
+
+<div id="szkSonuc" aria-live="polite"></div>
+
+<section id="szkFav" hidden aria-label="Favori kelimelerim">
+  <div class="szk-fav-arac">
+    <button type="button" id="szkFavTest" aria-pressed="false">Test</button>
+    <button type="button" id="szkFavKar">Karıştır</button>
+    <button type="button" id="szkFavYaz">Yazdır</button>
+    <span class="szk-fav-not" id="szkFavNot"></span>
+    <button type="button" id="szkFavSil" class="szk-tehlike">Tümünü sil</button>
+  </div>
+  <h2 id="szkYaziBas">Favori Kelimelerim <span id="szkYaziNot"></span></h2>
+  <div class="szk-fav-liste" id="szkFavListe"></div>
+</section>
+
+<div id="szkKlavye" aria-label="Arapça klavye"></div>
+
+<!-- SIRA ÖNEMLİ: sözlüğün gövdesi (fiil kökleri) veri_kokler.js
+     içindeki wordEasterEggs'te duruyor; veri_sozluk.js sonunda
+     onu sozlukVerileri'ne katıyor. Kökler dosyası ÖNCE yüklenmezse
+     sözlük 786 kelimede kalıyor (ölçüldü) — tabloyla aynı sıra. -->
+<script src="veri/veri_kokler.js?v=143"></script>
+<script src="veri/veri_sozluk.js?v=127"></script>
+<script src="sarf/sozlukfavori.js?v=1"></script>
+<script src="sarf/sozlukmotor.js?v=2"></script>
+<script>
+(function () {
+  var S = window.KidefSozluk, F = window.KidefFavori;
+  var giris  = document.getElementById('szkGiris');
+  var sonuc  = document.getElementById('szkSonuc');
+  var sayac  = document.getElementById('szkSayac');
+  var favTus = document.getElementById('szkFavTus');
+  var favSay = document.getElementById('szkFavSay');
+  var favBol = document.getElementById('szkFav');
+  var favKap = document.getElementById('szkFavListe');
+  var favNot = document.getElementById('szkFavNot');
+  var yaziNot= document.getElementById('szkYaziNot');
+  var silTus = document.getElementById('szkFavSil');
+  var testTus= document.getElementById('szkFavTest');
+  var _karisik = null;      /* "Karıştır" sonrası gösterim sırası */
+  var _silSor  = null;
+  var cercevede = document.documentElement.className.indexOf('szk-cerceve') >= 0;
+
+  /* ---------------- arama ---------------- */
+  function tazele() {
+    var q = giris.value.trim();
+    var liste = q ? S.ara(q, 60) : [];
+    S.sonucCiz(sonuc, liste, q);
+    sayac.textContent = q ? (liste.length + (liste.length >= 60 ? '+' : '') + ' sonuç') : '';
+  }
+
+  /* ESC — açılır pencerede kapatma tuşu pencerenin kendisinde (üst sayfada)
+     dinleniyor; kullanıcı çerçeve içindeki kutuya yazdıktan sonra tuş bu
+     belgeye gidiyor ve pencere kapanmıyordu (ölçüldü). Aynı kökendeyiz,
+     üst sayfanın kapatıcısını doğrudan çağır. */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || !cercevede) return;
+    try {
+      if (window.parent && window.parent.SozlukPop) window.parent.SozlukPop.kapat();
+    } catch (h) { }
+  });
+
+  giris.addEventListener('input', function () { favKapat(); tazele(); });
+  giris.addEventListener('focus', favKapat);
+  document.getElementById('szkTemizle').addEventListener('click', function () {
+    favKapat(); giris.value = ''; tazele(); giris.focus();
+  });
+
+  S.klavyeCiz(document.getElementById('szkKlavye'),
+    function (h) { giris.value += h; tazele(); },
+    function () { giris.value = giris.value.slice(0, -1); tazele(); });
+
+  /* ---------------- favoriler ---------------- */
+  function favCiz() {
+    var l = F.liste();
+    if (_karisik) {                       /* karışık sıra korunsun, silinen düşsün */
+      var kal = {};
+      for (var i = 0; i < l.length; i++) kal[F.kimlik(l[i].ar, l[i].tr)] = 1;
+      _karisik = _karisik.filter(function (o) { return kal[F.kimlik(o.ar, o.tr)]; });
+      if (_karisik.length === l.length) l = _karisik;
+      else _karisik = null;               /* yeni kelime eklenmiş: sıra tazelensin */
+    }
+    if (!l.length) {
+      favKap.innerHTML = '<p class="szk-bos">Henüz favori kelimen yok.<br>' +
+        'Sözlükte bir kelime bul, kartın köşesindeki yıldıza dokun.</p>';
+    } else {
+      var h = '';
+      for (var j = 0; j < l.length; j++) h += S.kartCiz(l[j]);
+      favKap.innerHTML = h;
+      F.yildizTazele(favKap);
+    }
+    var n = F.sayi();
+    favNot.textContent = n ? (n + ' kelime') : '';
+    yaziNot.textContent = n ? (n + ' kelime · ' + new Date().toLocaleDateString('tr-TR')) : '';
+  }
+
+  function favAc() {
+    document.body.classList.add('szk-fav-acik');
+    favBol.hidden = false;
+    favTus.classList.add('acik');
+    favTus.setAttribute('aria-pressed', 'true');
+    favCiz();
+  }
+  function favKapat() {
+    if (!document.body.classList.contains('szk-fav-acik')) return;
+    document.body.classList.remove('szk-fav-acik');
+    favBol.hidden = true;
+    favTus.classList.remove('acik');
+    favTus.setAttribute('aria-pressed', 'false');
+    silSifirla();
+  }
+  favTus.addEventListener('click', function () {
+    if (document.body.classList.contains('szk-fav-acik')) favKapat(); else favAc();
+  });
+
+  /* Yıldızlar: aramada da favori listesinde de aynı dinleyici. */
+  F.bagla(sonuc);
+  F.bagla(favKap, function (kart, dolu) {
+    if (!dolu) { kart.remove(); favCiz(); }      /* listeden çıkarıldı */
+  });
+  F.dinle(function (n) {
+    favSay.textContent = n;
+    favTus.setAttribute('title', n ? (n + ' favori kelime') : 'Favori kelimelerim');
+    /* Hesaptaki liste sonradan iner (bulut birleştirmesi). Panel o sırada
+       açıksa sayı değişip kartlar eski kalıyordu — ölçüldü: sayı 3, ekranda
+       1 kart. Sayı her değiştiğinde açık panel yeniden çizilsin. */
+    if (document.body.classList.contains('szk-fav-acik')) favCiz();
+  });
+
+  /* TEST: Türkçesi kapalı, karta dokununca açılır */
+  function testKip(acik) {
+    favBol.classList.toggle('test', acik);
+    testTus.classList.toggle('aktif', acik);
+    testTus.setAttribute('aria-pressed', acik ? 'true' : 'false');
+    var k = favKap.querySelectorAll('.szk-kart.acik');
+    for (var i = 0; i < k.length; i++) k[i].classList.remove('acik');
+  }
+  testTus.addEventListener('click', function () {
+    testKip(!favBol.classList.contains('test'));
+  });
+  favKap.addEventListener('click', function (e) {
+    if (!favBol.classList.contains('test')) return;
+    if (e.target.closest('[data-fav]')) return;          /* yıldız kendi işini yapsın */
+    var kart = e.target.closest('.szk-kart');
+    if (kart) kart.classList.toggle('acik');
+  });
+
+  document.getElementById('szkFavKar').addEventListener('click', function () {
+    var l = F.liste();
+    for (var i = l.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), t = l[i]; l[i] = l[j]; l[j] = t;
+    }
+    _karisik = l;
+    favCiz();
+  });
+
+  /* YAZDIR — açılır pencereden basılırsa tarayıcıya göre ALTTAKİ index
+     sayfası basılabiliyor (iframe içinden print güvenilmez). Çerçevedeyken
+     liste tam sayfada yeni sekmede açılıp orada bastırılıyor. */
+  document.getElementById('szkFavYaz').addEventListener('click', function () {
+    if (!F.sayi()) return;
+    if (cercevede) {
+      window.open('sozluk.html?fav=1&yaz=1' +
+                  (favBol.classList.contains('test') ? '&test=1' : ''), '_blank');
+      return;
+    }
+    window.print();
+  });
+
+  /* "Tümünü sil" iki basışta: yanlışlıkla bütün listeyi silmesin. */
+  function silSifirla() {
+    clearTimeout(_silSor); _silSor = null;
+    silTus.classList.remove('sor');
+    silTus.textContent = 'Tümünü sil';
+  }
+  silTus.addEventListener('click', function () {
+    if (!F.sayi()) return;
+    if (!silTus.classList.contains('sor')) {
+      silTus.classList.add('sor');
+      silTus.textContent = 'Emin misin? Sil';
+      _silSor = setTimeout(silSifirla, 4000);
+      return;
+    }
+    silSifirla();
+    F.hepsiniSil();
+    _karisik = null;
+    favCiz();
+  });
+
+  /* Adresten: ?q=كتاب arama · ?fav=1 favori listesi · ?test=1 kapalı Türkçe
+     · ?yaz=1 açılır açılmaz yazdır (açılır pencerenin Yazdır'ı buraya atar) */
+  var acFav = false, acTest = false, acYaz = false;
+  try {
+    var p = new URLSearchParams(location.search);
+    var q0 = p.get('q');
+    if (q0) giris.value = q0;
+    acFav  = p.get('fav')  === '1';
+    acTest = p.get('test') === '1';
+    acYaz  = p.get('yaz')  === '1';
+  } catch (e) {}
+
+  tazele();
+  F.basla();
+  if (acFav || acYaz) favAc();
+  if (acTest) testKip(true);
+  if (acYaz) setTimeout(function () { window.print(); }, 700);
+  /* Dizini boş anda kur: ilk tuşa basıldığında bekletmesin. */
+  if (window.requestIdleCallback) requestIdleCallback(function () { S.dizin(); }, { timeout: 2500 });
+  else setTimeout(function () { S.dizin(); }, 800);
+})();
+</script>
+</body>
+</html>

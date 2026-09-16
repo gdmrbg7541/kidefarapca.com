@@ -2077,16 +2077,33 @@ const BIY = {
       try { if (state.odaAboneAdmin) state.odaAboneAdmin(); if (state.cevapAbone) state.cevapAbone(); if (state.takimAbone) state.takimAbone(); } catch(e){}
       BIY._temizleKayit();
     }
-    /* kidefarapca.com: bu sayfa index.html'den YENI SEKMEDE aciliyor
-       (target="_blank" rel="opener"). Ilk sayfadaki geri tusu:
-       - yeni sekmede acildiysa index sekmesine odaklan ve BU SEKMEYI KAPAT
-       - kapatmaya izin verilmezse / dogrudan acildiysa index.html'e don      */
+    /* GERI: sitenin ortak kuralina birakildi (sistem/geri.js).
+       ONCEDEN burada "index.html" YAZILIYDI ve sunumdan gelen ogretmeni
+       index'e atiyordu (Geylani: "sunumlar icindeki bilgi yarismasi
+       kartinda geri tusuna basinca index e degil sunumlara geri donsun").
+       Sebep: sunumlar.html bu sayfayi window.open(..., 'noopener') ile
+       aciyor -> window.opener YOK, yeni sekmede gecmis de tek adim, yani
+       ne sekme kapanabiliyor ne history.back isliyordu; kod da dogrudan
+       index'e dusuyordu. kidefGeri() ayni durumda REFERRER'a bakip
+       geldigi sayfaya (sunumlara) donuyor; index'ten gelindiyse eskisi
+       gibi o sekmeyi kapatiyor. */
+    if (typeof window.kidefGeri === "function"){ window.kidefGeri(); return; }
+    /* geri.js yuklenmediyse: once geldigi ayni-site sayfasi, sonra index */
     try {
       if (window.opener && !window.opener.closed){
         try { window.opener.focus(); } catch(e){}
         window.close();
         setTimeout(function(){ if (!window.closed) location.href = "index.html"; }, 250);
         return;
+      }
+    } catch(e){}
+    try {
+      var _ref = document.referrer || "";
+      if (_ref){
+        var _u = new URL(_ref, location.href);
+        if (_u.origin === location.origin && _u.href !== location.href){
+          location.href = _ref; return;
+        }
       }
     } catch(e){}
     location.href = "index.html";
@@ -5170,7 +5187,8 @@ window.addEventListener("beforeunload", function(e){
         : 'Bağlantı kurulamadı. İnternetini kontrol edip sayfayı yenile; ' +
           'sorun sürerse kendi hesabınla giriş yapmayı dene.') +
       '</p>' +
-      '<a href="../index.html" style="display:inline-block; padding:13px 26px; border-radius:12px;' +
+      /* ../index.html site kökünün DIŞINA çıkıyordu: bu sayfa zaten kökte. */
+      '<a href="index.html" style="display:inline-block; padding:13px 26px; border-radius:12px;' +
       ' background:#16A085; color:#fff; font-weight:800; text-decoration:none;">Giriş Yap</a>' +
       '</div>';
     document.body.appendChild(d);
