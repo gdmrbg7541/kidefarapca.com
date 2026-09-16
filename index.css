@@ -445,7 +445,10 @@ body{
 .floating-tool-button{
   position:fixed;bottom:25px;right:25px;z-index:1000;background:#2ECC71;color:#fff;
   padding:12px 20px;text-decoration:none;font-weight:700;font-size:1em;border-radius:30px;
-  box-shadow:0 4px 12px rgba(0,0,0,.2);transition:.3s
+  /* geçiş "all" değil: yüzen yığın yerine otururken bottom animasyonu
+     gözle görülür kaymaya yol açıyordu. */
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+  transition:transform .3s ease, background-color .3s ease, box-shadow .3s ease
 }
 .floating-tool-button:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 6px 16px rgba(0,0,0,.25);background:#1ABC9C}
 
@@ -1435,46 +1438,100 @@ body.admin-dock-collapsed #admin-dock-tab{ display:flex; align-items:center; gap
 }
 
 /* ======================================================================
-   MOBİL — KART YAZILARI KÜÇÜLDÜ, GÖRSELLER AYNI KALDI
-   Telefonda kart 112px genişken başlık 20.8px, açıklama 13.6px, rozet
-   12.8px idi: yazı kartı dolduruyor, üç satıra iniyordu. Yalnız YAZI
-   ölçüleri düşürüldü; SVG/ikon ve kitap kapağı ölçülerine DOKUNULMADI
-   (.default-game-emoji, .kss-level-emoji, .book-cover-img ve bunlardan
-   türeyen svg boyutları aynen duruyor).
-
-   NOT — sıralama: yukarıdaki "@media (max-width:768px)" bloğunun kart
-   yazısı kuralları, ondan SONRA gelen ".kss-level-name, .default-game-
-   content h3{font-size:1.3em}" gibi medya dışı kurallara yeniliyordu
-   (aynı özgüllük, sonraki kazanır). Bu blok dosyanın EN SONUNDA durduğu
-   için o kuralları da geçer.
+   MASAÜSTÜ — SINIF ETKİNLİKLERİ KARTLARI GENİŞ             (Geylani)
+   Bu ızgara ortak kuraldan ötürü YATAY KAYDIRAN bir flex şeridiydi;
+   önce saran bir ızgaraya çevrildi ve kartlar 126 pxe kadar küçültüldü.
+   Kartlar tahtada uzaktan okunmadığı için ölçü BÜYÜTÜLDÜ: sütun alt
+   sınırı 250 px, yazılar ve ikon buna göre ayarlandı. Bir satıra daha az
+   ama okunur kart giriyor.
+   Ortak kuralların hepsi !important olduğu için burada da gerekiyor.
+   İkonun SVG boyu em ile türer (svg = 1.6em), font-size büyüyünce
+   görsel de büyür. Mobil blok (768px ve altı) aynen duruyor.
    ====================================================================== */
-@media (max-width: 768px) {
-  .game-card h3,
-  .default-game-content h3,
-  .kss-level-name {
-    font-size: 0.95em;
-    line-height: 1.22;
-    margin-bottom: 3px;
+@media (min-width: 769px) {
+  #imam-hatip .ih-kartlar .mobile-scroll-grid-single {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+    grid-auto-rows: minmax(0, 1fr);
+    overflow: visible !important;
+    scroll-snap-type: none !important;
+    padding: 10px 2px 12px !important;
+    gap: 18px !important;
+  }
+  #imam-hatip .ih-kartlar .mobile-scroll-grid-single .game-card {
+    flex: initial !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    scroll-snap-align: none;
     min-height: 0;
+    /* Alt boşluk 26: Muhâdese kartının açılır oku bu boşluğa oturuyor,
+       20 px iken okun altında 1 px kalıp kart 3 px taşıyordu. Boşluk
+       YALNIZ o karta verilirse rozeti 6 px yukarı kaçıyor — bu yüzden
+       hepsine aynı ölçü veriliyor, rozetler aynı çizgide kalıyor. */
+    padding: 20px 16px 26px !important;
+    border-radius: 14px;
   }
-  .game-card-description {
-    font-size: 0.68em;
-    line-height: 1.32;
-    min-height: 0;
+  /* İkon kutusu: kart genişledikçe SVG de büyüyordu (.kg width:100%),
+     240 pxe çıkıp kartı yutuyordu. Kutuya sabit ölçü verildi; SVG onun
+     %100'ü olduğu için ikon da bu ölçüde kalıyor. */
+  #imam-hatip .ih-kartlar .mobile-scroll-grid-single .default-game-emoji,
+  #imam-hatip .ih-kartlar .mobile-scroll-grid-single .kss-level-emoji {
+    font-size: 3.15em !important;
+    width: 94px !important;
+    height: 94px !important;
+    min-height: 0 !important;
+    margin: 0 auto 10px !important;
+    flex: none !important;
   }
-  .status-badge {
-    font-size: 0.64em;
-    padding: 4px 9px;
-    margin-top: 6px;
+  #imam-hatip .ih-kartlar .mobile-scroll-grid-single .game-card h3 {
+    font-size: 1.52em !important;
+    min-height: 0 !important;
+    line-height: 1.25;
+    margin: 0 0 7px;
   }
-  .game-card .level-info {
-    font-size: 0.74em;
+  /* Kart daralınca açıklama beş satıra çıkıp kartı yeniden uzatıyordu:
+     en fazla dört satır gösterilir. */
+  #imam-hatip .ih-kartlar .mobile-scroll-grid-single .game-card-description {
+    font-size: 1.02em !important;
+    min-height: 0 !important;
+    line-height: 1.4 !important;
     margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
   }
-  .game-card-soon {
-    font-size: 0.68em;
+  #imam-hatip .ih-kartlar .mobile-scroll-grid-single .status-badge {
+    font-size: .92em;
+    padding: 7px 14px;
+    white-space: nowrap;
+    line-height: 1.35;
+    margin-top: 11px;
   }
-  /* Öne çıkan kart bilinçli olarak büyük; yalnız bir tık kısıldı. */
-  #one-cikan-card .default-game-content h3 { font-size: 1.15em; }
-  #one-cikan-card .game-card-description { font-size: 0.85em; }
+  /* Muhâdese kartının açılır oku ROZETİN ALTINDA akışta duruyordu:
+     rozet ötekilerden 17 px yukarıda kalıyor, küçülen kartlarda bu
+     kayma gözle görülüyordu (ölçüldü: 445 / 462). Ok akıştan çıkarıldı,
+     kartın alt boşluğuna oturuyor — rozetler aynı çizgide. */
+  #imam-hatip .ih-kartlar .mobile-scroll-grid-single .mh-kart .mh-chevron {
+    position: absolute;
+    left: 0; right: 0; bottom: 5px;
+    margin-top: 0;
+    font-size: .95rem;
+    line-height: 1;
+  }
+}
+
+
+/* ======================================================================
+   DOKUNMATİKTE "HAZIR" KARTI                               (Geylani)
+   Telefonda karta ilk dokunuş kartı ortalar ve hazır işaretler, ikinci
+   dokunuş açar (index.js). İşaretli kartın çevresinde kırmızı bir halka
+   duruyor: renk, ders listesindeki AÇ tuşlarıyla aynı — kırmızı "aç"
+   demek. Halka border değil box-shadow, yoksa kart 3 px büyüyüp
+   satırdaki bütün kartları uzatırdı.
+   ====================================================================== */
+.game-card.kd-hazir {
+  box-shadow: 0 0 0 3px rgba(238, 82, 83, .45), 0 10px 24px rgba(192, 57, 43, .22) !important;
+  border-color: #EE5253 !important;
 }
