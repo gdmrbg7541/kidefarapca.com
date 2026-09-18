@@ -1464,6 +1464,14 @@ const wordEasterEggs = {
                 }
             }, 
             suggestsPlus: true, 
+            /* Tekil biçim 6. sınıf 6. ünitede geçiyor:
+               "هَلْ عِنْدَكَ مَعْلُومَةٌ عَنْ إِشَارَاتِ الْمُرُورِ؟" */
+            "ة": {
+                emoji: "📌",
+                arText: "مَعْلُومَة",
+                trText: "Bilgi / Bir bilgi kırıntısı.",
+                ornek: { ar: "هَلْ عِنْدَكَ مَعْلُومَةٌ عَنْ إِشَارَاتِ الْمُرُورِ؟", tr: "Trafik işaretleri hakkında bir bilgin var mı?" }
+            },
             "ات": { 
                 emoji: "ℹ️", 
                 arText: "مَعْلُومَات", 
@@ -2634,9 +2642,25 @@ const wordEasterEggs = {
                 emoji: "🤲", 
                 arText: "مُسْلِم", 
                 trText: "Müslüman.",
+                cogul: "مُسْلِمُون",
                 ornek: { ar: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِن لِّسَانِهِ وَيَدِهِ", tr: "Müslüman, diğer Müslümanların onun dilinden ve elinden güvende (salim) olduğu kimsedir. (Hadis-i Şerif)" }
-            } 
-        }, 
+            },
+            /* 6. sınıf 5. ünite (Kutsal Mekânlar) dersinde ikisi birlikte
+               geçiyor: "يَطُوفُ الْمُسْلِمُونَ وَالْمُسْلِمَاتُ حَوْلَ الْكَعْبَةِ". */
+            suggestsPlus: true,
+            "ة": {
+                emoji: "🧕",
+                arText: "مُسْلِمَة",
+                trText: "Müslüman kadın.",
+                ornek: { ar: "الْمُسْلِمَةُ تُصَلِّي فِي بَيْتِهَا", tr: "Müslüman kadın evinde namaz kılar." }
+            },
+            "ات": {
+                emoji: "👥",
+                arText: "مُسْلِمَات",
+                trText: "Müslüman kadınlar.",
+                ornek: { ar: "تَطُوفُ الْمُسْلِمَاتُ حَوْلَ الْكَعْبَةِ", tr: "Müslüman kadınlar Kâbe'nin etrafında tavaf eder." }
+            }
+        },
         
         // --- 61 Numaralı Kalıp (تَفْعِيل) ---
         61: { base: { emoji: "📦", arText: "تَسْلِيم", trText: "Teslim.", ornek: { ar: "تَمَّ تَسْلِيمُ الرِّسَالَةِ", tr: "Mesajın teslimi yapıldı." } } },
@@ -3189,6 +3213,9 @@ const wordEasterEggs = {
                 emoji: "🕌", 
                 arText: "مَسْجِد", 
                 trText: "Mescit / Cami.",
+                /* Çoğulu مَفَاعِل vezninde; bu vezin numaralı kalıplar
+                   arasında yok, o yüzden tabanın kendi `cogul` alanında. */
+                cogul: "مَسَاجِد",
                 ornek: { ar: "أَحَبُّ الْبِلَادِ إِلَى اللهِ مَسَاجِدُهَا", tr: "Allah'a beldelerin en sevimlisi mescitleridir (camileridir). (Hadis-i Şerif)" }
             } 
         }
@@ -4157,7 +4184,13 @@ const wordEasterEggs = {
         // --- 19 Numaralı Kalıp (فَعْل) ---
         19: {
             base: { emoji: "⬅️", arText: "خَلْف", trText: "Arka / Geri.", ornek: { ar: "الْحَدِيقَةُ خَلْفَ الْبَيْتِ", tr: "Bahçe evin arkasındadır." } },
-           
+            suggestsPlus: true,
+            "ة": {
+                emoji: "🔚",
+                arText: "خَلْفَة",
+                trText: "Arka taraf / Geride kalan kısım.",
+                ornek: { ar: "خَلْفَةُ الْبَيْتِ وَاسِعَةٌ", tr: "Evin arka tarafı geniştir." }
+            }
         },
 
         // --- 23 Numaralı Kalıp (فِعَال) ---
@@ -4422,6 +4455,9 @@ const wordEasterEggs = {
         64: { base: { emoji: "🤲", arText: "عَامَلَ", trText: "Muamele etti / Davrandı.", ornek: { ar: "عَامَلَ النَّاسَ بِاحْتِرَامٍ", tr: "İnsanlara saygıyla muamele etti." } } },
         65: { base: { emoji: "🤲", arText: "يُعَامِلُ", trText: "Muamele eder / Davranır.", ornek: { ar: "يُعَامِلُ الْجَمِيعَ بِلُطْفٍ", tr: "Herkese nezaketle davranır." } } },
         66: { base: { emoji: "🤲", arText: "عَامِلْ", trText: "Muamele et! / Davran!", ornek: { ar: "عَامِلِ النَّاسَ بِالْحُسْنَى", tr: "İnsanlara güzellikle muamele et." } } },
+        // --- 94/95 Numaralı Kalıp (تَفَاعَلَ Babı) ---
+        94: { base: { emoji: "🤝", arText: "تَعَامَلَ", trText: "Muamele etti / Karşılıklı iş yaptı.", ornek: { ar: "تَعَامَلَ مَعَ النَّاسِ مُعَامَلَةً حَسَنَةً", tr: "İnsanlara güzel muamele etti." } } },
+        95: { base: { emoji: "👥", arText: "يَتَعَامَلُ", trText: "Muamele eder / Davranır.", ornek: { ar: "يَتَعَامَلُ مَعَ النَّاسِ بِأَدَبٍ", tr: "İnsanlara nezaketle davranır." } } },
         100: { base: { emoji: "🔧", arText: "اِسْتَعْمَلَ", trText: "Kullandı / İstimal etti.", ornek: { ar: "اِسْتَعْمَلَ هَاتِفَهُ الْجَدِيدَ", tr: "Yeni telefonunu kullandı." } } },
         101: { base: { emoji: "🔧", arText: "يَسْتَعْمِلُ", trText: "Kullanır / İstimal eder.", ornek: { ar: "يَسْتَعْمِلُ الْأَدَوَاتِ بِحَذَرٍ", tr: "Aletleri dikkatlice kullanır." } } },
         102: { base: { emoji: "🔧", arText: "اِسْتَعْمِلْ", trText: "Kullan! / İstimal et!", ornek: { ar: "اِسْتَعْمِلْ وَقْتَكَ جَيِّدًا", tr: "Vaktini iyi kullan." } } },
@@ -6914,7 +6950,13 @@ const wordEasterEggs = {
             }
         },
         36: {
-            base: { emoji: "👤", arText: "مَسْؤُول", trText: "Sorumlu / Mesul (İsm-i Meful).", ornek: { ar: "هُوَ مَسْؤُولٌ عَنِ الْمَشْرُوعِ", tr: "O projeden sorumludur." } }
+            base: { emoji: "👤", arText: "مَسْؤُول", trText: "Sorumlu / Mesul (İsm-i Meful).", ornek: { ar: "هُوَ مَسْؤُولٌ عَنِ الْمَشْرُوعِ", tr: "O projeden sorumludur." } },
+            suggestsPlus: true,
+            /* 8. sınıf 1. ünite: «Sınıfın temizliğinden ben sorumluyum»
+               cümlesinde müennes biçim ve مَسْؤُولِيَّة masdarı geçiyor. */
+            "ة": { emoji: "👩", arText: "مَسْؤُولَة", trText: "Sorumlu (kadın).", ornek: { ar: "أَنَا مَسْؤُولَةٌ عَنْ نَظَافَةِ الصَّفِّ", tr: "Ben sınıfın temizliğinden sorumluyum." } },
+            "ونَ": { emoji: "👥", arText: "مَسْؤُولُونَ", trText: "Sorumlular.", ornek: { ar: "نَحْنُ مَسْؤُولُونَ عَنْ نَادِينَا", tr: "Kulübümüzden biz sorumluyuz." } },
+            "يَّة": { emoji: "🎯", arText: "مَسْؤُولِيَّة", trText: "Sorumluluk / Mesuliyet.", ornek: { ar: "أَقُومُ بِمَسْؤُولِيَّاتِي دَائِمًا", tr: "Sorumluluklarımı her zaman yerine getiririm." }, cogul: "مَسْؤُولِيَّات" }
         },
         38: { "base": { "emoji": "📄", "arText": "مَسْأَلَة", "trText": "Mesele / Sorun." } }
     },
@@ -10764,6 +10806,17 @@ const wordEasterEggs = {
         },
 
         // --- 38 Numaralı Kalıp (مَفْعَل - İsm-i Mekân) ---
+        /* --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) --- */
+        33: {
+            base: {
+                emoji: "🧳",
+                arText: "زَائِر",
+                trText: "Ziyaretçi / Ziyaret eden.",
+                cogul: "زُوَّار",
+                ornek: { ar: "يُسَافِرُ الزُّوَّارُ إِلَى الْمَدِينَةِ الْمُنَوَّرَةِ", tr: "Ziyaretçiler Medine-i Münevvere'ye gider." }
+            }
+        },
+
         38: { 
             base: { 
                 emoji: "🪦", 
@@ -12585,6 +12638,15 @@ const wordEasterEggs = {
                         tr: "Tecvid Notu: Kur'an okurken anlamı bozmamak için nefesi ve sesi keserek durmaya 'Vakıf' denir. Kur'an'daki duraklama işaretlerine de 'Vakıf İşaretleri' (Secavend) adı verilir."
                     }
                 ]
+            },
+            /* Hac/umre dersinde geçen "vakfe" (Arafat'ta durma) bu
+               tabanın ة'li tekil biçimidir — 6. sınıf 5. ünite. */
+            suggestsPlus: true,
+            "ة": {
+                emoji: "🕋",
+                arText: "وَقْفَة",
+                trText: "Vakfe / Bir kez durma (Arafat'ta durma).",
+                ornek: { ar: "الْوَقْفَةُ عَلَى جَبَلِ عَرَفَاتٍ رُكْنُ الْحَجِّ", tr: "Arafat Dağı'nda vakfe haccın rüknüdür." }
             }
         },
 
@@ -21686,6 +21748,8 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             suggestsPlus: true,
             "ة": { emoji: "✈️", arText: "طَائِرَة", trText: "Uçak." }
         },
+        // --- 34 Numaralı Kalıp (فَعَّال - Meslek / Mübalağa) ---
+        34: { base: { emoji: "🧑‍✈️", arText: "طَيَّار", trText: "Pilot.", ornek: { ar: "نَعَمْ هُوَ طَيَّارٌ", tr: "Evet, o bir pilottur." } } },
         38: { base: { emoji: "🛬", arText: "مَطَار", trText: "Havaalanı.", ornek: { ar: "ذَهَبَ إِلَى الْمَطَارِ", tr: "Havaalanına gitti." } } },
         43: { 
             tekilId: 33,
@@ -22550,6 +22614,14 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
                 arText: "تَارِيخ",
                 trText: "Tarih / Geçmiş.",
                 ornek: { ar: "تَارِيخُ الإِسْلامِ", tr: "İslam tarihi.", not: "Semantik Not: 'Tarih' kelimesi aslen (أَرَّخَ) fiilinin Tef'îl babından masdarıdır. Telaffuz kolaylığı için (تَأْرِيخ) kelimesindeki hemze elife dönüşmüştür." }
+            },
+            /* Nisbet biçimi 6. sınıf 6. ünitede: الآثار التاريخية */
+            suggestsPlus: true,
+            "ي": {
+                emoji: "🏛️",
+                arText: "تَارِيخِيّ",
+                trText: "Tarihî / Tarihe ait.",
+                ornek: { ar: "رَأَيْتُ الْآثَارَ التَّارِيخِيَّةَ فِي بُورْصَةَ", tr: "Bursa'da tarihî eserleri gördüm." }
             }
         },
         "61_cogul": {
@@ -26062,7 +26134,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         1: { base: { emoji: "🐑", arText: "سَرَحَ", trText: "Salıverdi, otlağa saldı; dalıp gitti", ornek: { ar: "سَرَحَ الرَّاعِي الْغَنَمَ", tr: "Çoban koyunları otlağa saldı." } }, not: "SEMANTİK ÇEKİRDEK: «SERBEST BIRAKMA». Hayvanın otlağa salınması سَرْح'tır; zihnin serbest kalması «سَرَحَ فِي أَفْكَارِهِ» (dalıp gitti) olur. مَسْرَح oyuncuların serbestçe hareket ettiği alan: sahne, tiyatro." },
         6: { base: { emoji: "🔁", arText: "يَسْرَحُ", trText: "Salıverir; dalar" } },
         7: { base: { emoji: "📣", arText: "اِسْرَحْ", trText: "Salıver!" } },
-        38: { base: { emoji: "🎭", arText: "مَسْرَح", trText: "Tiyatro, sahne", ornek: { ar: "نَذْهَبُ إِلَى الْمَسْرَحِ فِي الْعُطْلَةِ", tr: "Tatilde tiyatroya gideriz." }, cogul: "مَسَارِح" }, suggestsPlus: true, "يّ": { emoji: "🎬", arText: "مَسْرَحِيّ", trText: "Tiyatroya ait, sahne ile ilgili" } },
+        38: { base: { emoji: "🎭", arText: "مَسْرَح", trText: "Tiyatro, sahne", ornek: { ar: "نَذْهَبُ إِلَى الْمَسْرَحِ فِي الْعُطْلَةِ", tr: "Tatilde tiyatroya gideriz." }, cogul: "مَسَارِح" }, suggestsPlus: true, "يّ": { emoji: "🎬", arText: "مَسْرَحِيّ", trText: "Tiyatroya ait, sahne ile ilgili" }, "يَّة": { emoji: "🎭", arText: "مَسْرَحِيَّة", trText: "Tiyatro oyunu, piyes", ornek: { ar: "صَدِيقَتِي تَخْتَارُ نَادِيَ الْمَسْرَحِيَّةِ", tr: "Arkadaşım tiyatro kulübünü seçiyor." }, cogul: "مَسْرَحِيَّات" } },
         58: { base: { emoji: "💇", arText: "سَرَّحَ", trText: "(Saç) taradı; işten çıkardı" } },
         61: { base: { emoji: "📘", arText: "تَسْرِيح", trText: "Tarama; salıverme, terhis (masdar)" } }
     },
@@ -26116,7 +26188,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
 
     /* 411 — ر و ض : Bahçe, spor, terbiye (ecvef vâvî) */
     "روض": {
-        22: { base: { emoji: "🏃‍♂️", arText: "رِيَاضَة", trText: "Spor; riyazet, nefsi terbiye", ornek: { ar: "الرِّيَاضَةُ مُفِيدَةٌ لِلْجَسَدِ", tr: "Spor beden için faydalıdır." }, cogul: "رِيَاضَات" }, suggestsPlus: true, "يّ": { emoji: "⚽", arText: "رِيَاضِيّ", trText: "Sporcu; sportif; matematiksel" }, not: "SEMANTİK ÇEKİRDEK: «YABANİYİ EVCİLLEŞTİRME». رَاضَ الْفَرَسَ atı terbiye etmektir; oradan hem bedeni terbiye eden «spor» hem nefsi terbiye eden «riyazet» hem de zihni terbiye eden «riyaziye (matematik)» doğmuştur. رَوْضَة ise bakımlı bahçedir." },
+        22: { base: { emoji: "🏃‍♂️", arText: "رِيَاضَة", trText: "Spor; riyazet, nefsi terbiye", ornek: { ar: "الرِّيَاضَةُ مُفِيدَةٌ لِلْجَسَدِ", tr: "Spor beden için faydalıdır." }, cogul: "رِيَاضَات" }, suggestsPlus: true, "يّ": { emoji: "⚽", arText: "رِيَاضِيّ", trText: "Sporcu; sportif; matematiksel" }, "يَّة": { emoji: "🏅", arText: "رِيَاضِيَّة", trText: "Sportif (müennes); matematiksel", ornek: { ar: "أَنَا مَسْؤُولٌ عَنِ الْأَدَوَاتِ الرِّيَاضِيَّةِ", tr: "Spor aletlerinden ben sorumluyum." } }, not: "SEMANTİK ÇEKİRDEK: «YABANİYİ EVCİLLEŞTİRME». رَاضَ الْفَرَسَ atı terbiye etmektir; oradan hem bedeni terbiye eden «spor» hem nefsi terbiye eden «riyazet» hem de zihni terbiye eden «riyaziye (matematik)» doğmuştur. رَوْضَة ise bakımlı bahçedir." },
         19: { base: { emoji: "🌷", arText: "رَوْضَة", trText: "Bahçe, çayır; anaokulu (رَوْضَةُ الْأَطْفَالِ)", cogul: "رِيَاض" } },
         1: { base: { emoji: "🐎", arText: "رَاضَ", trText: "Terbiye etti, alıştırdı (at)" } },
         2: { base: { emoji: "🔁", arText: "يَرُوضُ", trText: "Terbiye eder" } },
@@ -26613,5 +26685,155 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         58: { base: { emoji: "🎊", arText: "هَنَّأَ", trText: "Tebrik etti / Kutladı", ornek: { ar: "هَنَّأَ صَدِيقَهُ بِالنَّجَاحِ", tr: "Arkadaşını başarısı için tebrik etti." } } },
         59: { base: { emoji: "👏", arText: "يُهَنِّئُ", trText: "Tebrik eder", ornek: { ar: "يُهَنِّئُ الْمُعَلِّمُ الطُّلَّابَ", tr: "Öğretmen öğrencileri tebrik eder." } } },
         61: { base: { emoji: "💌", arText: "تَهْنِئَة", trText: "Tebrik", ornek: { ar: "أَرْسَلْتُ لَهُ تَهْنِئَةً", tr: "Ona bir tebrik gönderdim." } } }
+    }
+,
+
+    /* =================================================================
+       6. SINIF 5. ÜNİTE — HAC/UMRE FİİLLERİ
+       Kutsal Mekânlar ünitesinde geçen iki fiil kökü tabloda yoktu:
+       "يَطُوفُ الْمُسْلِمُونَ حَوْلَ الْكَعْبَةِ" ve
+       "يَسْعَى الْمُسْلِمُونَ بَيْنَ الصَّفَا وَالْمَرْوَةِ".
+       ================================================================= */
+
+    "طوف": {
+        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / Ecvef Vâvî) ---
+        1: { base: { emoji: "🕋", arText: "طَافَ", trText: "Tavaf etti / Etrafında döndü.", ornek: { ar: "طَافَ الْحَاجُّ حَوْلَ الْكَعْبَةِ", tr: "Hacı Kâbe'nin etrafında tavaf etti." } } },
+        // --- 2 Numaralı Kalıp (يَفْعُلُ - Muzari) ---
+        2: { base: { emoji: "🔄", arText: "يَطُوفُ", trText: "Tavaf eder / Etrafında döner.", ornek: { ar: "يَطُوفُ الْمُسْلِمُونَ وَالْمُسْلِمَاتُ حَوْلَ الْكَعْبَةِ", tr: "Müslüman erkekler ve kadınlar Kâbe'nin etrafında tavaf eder." } } },
+        // --- 3 Numaralı Kalıp (أُفْعُلْ - Emir) ---
+        3: { base: { emoji: "❗", arText: "طُفْ", trText: "Tavaf et!", ornek: { ar: "طُفْ حَوْلَ الْكَعْبَةِ سَبْعَ مَرَّاتٍ", tr: "Kâbe'nin etrafında yedi kez tavaf et." } } },
+        // --- 22 Numaralı Kalıp (فَعَال - Masdar) ---
+        22: { base: { emoji: "🕋", arText: "طَوَاف", trText: "Tavaf / Kâbe'nin etrafında dönme ibadeti.", ornek: { ar: "الطَّوَافُ رُكْنٌ مِنْ أَرْكَانِ الْحَجِّ", tr: "Tavaf, haccın rükünlerinden biridir." } } },
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { base: { emoji: "🚶", arText: "طَائِف", trText: "Tavaf eden / Dolaşan.", ornek: { ar: "الطَّائِفُ حَوْلَ الْبَيْتِ", tr: "Beytin (Kâbe'nin) etrafında tavaf eden." } } }
+    },
+
+    "سعي": {
+        // --- 1 Numaralı Kalıp (فَعَلَ - Mazi / Nâkıs Yâî) ---
+        1: { base: { emoji: "🏃", arText: "سَعَى", trText: "Sa'y etti / Koştu, gayret etti.", ornek: { ar: "سَعَى بَيْنَ الصَّفَا وَالْمَرْوَةِ", tr: "Safa ile Merve arasında sa'y etti." } } },
+        // --- 6 Numaralı Kalıp (يَفْعَلُ - Muzari / 3. Bab) ---
+        6: { base: { emoji: "🏃‍♂️", arText: "يَسْعَى", trText: "Sa'y eder / Koşar, gayret eder.", ornek: { ar: "يَسْعَى الْمُسْلِمُونَ وَالْمُسْلِمَاتُ بَيْنَ الصَّفَا وَالْمَرْوَةِ", tr: "Müslüman erkekler ve kadınlar Safa ile Merve arasında sa'y eder." } } },
+        // --- 7 Numaralı Kalıp (اِفْعَلْ - Emir) ---
+        7: { base: { emoji: "❗", arText: "اِسْعَ", trText: "Sa'y et / Gayret et!", ornek: { ar: "اِسْعَ فِي طَلَبِ الْعِلْمِ", tr: "İlim talebinde gayret et." } } },
+        // --- 19 Numaralı Kalıp (فَعْل - Masdar) ---
+        19: { base: { emoji: "🕋", arText: "سَعْي", trText: "Sa'y / Safa ile Merve arasında gidip gelme; gayret.", ornek: { ar: "السَّعْيُ بَيْنَ الصَّفَا وَالْمَرْوَةِ", tr: "Safa ile Merve arasında sa'y." } } },
+        // --- 33 Numaralı Kalıp (فَاعِل - İsm-i Fâil) ---
+        33: { base: { emoji: "💪", arText: "سَاعٍ", trText: "Sa'y eden / Çalışan, gayret gösteren.", ornek: { ar: "السَّاعِي إِلَى الْخَيْرِ كَفَاعِلِهِ", tr: "Hayra koşan, onu yapan gibidir." } } }
+    }
+,
+
+    /* =================================================================
+       6. SINIF 6. ÜNİTE — ULAŞIM VE TRAFİK
+       Ünitede geçen ve tabloda hiç bulunmayan yedi kök. Hepsi çocuğun
+       günlük dilde de kullandığı çekirdek kelimeler: renk, yasak,
+       sürmek, inmek, cesaret, polis, ücret.
+       ================================================================= */
+
+    "لون": {
+        // --- 19 Numaralı Kalıp (فَعْل - Masdar) ---
+        19: { cogulId: 41, base: { emoji: "🎨", arText: "لَوْن", trText: "Renk.", ornek: { ar: "ما لَوْنُ الطَّائِرَةِ؟ لَوْنُهَا أَزْرَقُ", tr: "Uçağın rengi nedir? Rengi mavidir." } } },
+        // --- 41 Numaralı Kalıp (أَفْعَال - Cemi Teksir) ---
+        41: { tekilId: 19, base: { emoji: "🌈", arText: "أَلْوَان", trText: "Renkler.", ornek: { ar: "أَلْوَانُ قَوْسِ قُزَحٍ جَمِيلَةٌ", tr: "Gökkuşağının renkleri güzeldir." } } },
+        // --- 58/59/61 (تَفْعِيل Babı) ---
+        58: { base: { emoji: "🖌️", arText: "لَوَّنَ", trText: "Renklendirdi / Boyadı.", ornek: { ar: "لَوَّنَ الطِّفْلُ الصُّورَةَ", tr: "Çocuk resmi boyadı." } } },
+        59: { base: { emoji: "✏️", arText: "يُلَوِّنُ", trText: "Renklendirir / Boyar.", ornek: { ar: "يُلَوِّنُ الرَّسْمَ بِالْأَحْمَرِ", tr: "Çizimi kırmızıyla boyuyor." } } },
+        63: { base: { emoji: "🌈", arText: "مُلَوَّن", trText: "Renkli / Boyanmış.", ornek: { ar: "قَلَمٌ مُلَوَّنٌ", tr: "Renkli kalem." } } }
+    },
+
+    "منع": {
+        1:  { base: { emoji: "🚫", arText: "مَنَعَ", trText: "Engelledi / Yasakladı.", ornek: { ar: "مَنَعَ الشُّرْطِيُّ الْوُقُوفَ هُنَا", tr: "Polis burada durmayı yasakladı." } } },
+        6:  { base: { emoji: "✋", arText: "يَمْنَعُ", trText: "Engeller / Yasaklar.", ornek: { ar: "يَمْنَعُ الْقَانُونُ اسْتِخْدَامَ الْجَوَّالِ أَثْنَاءَ السَّيْرِ", tr: "Kanun, sürüş sırasında cep telefonu kullanmayı yasaklar." } } },
+        7:  { base: { emoji: "❗", arText: "اِمْنَعْ", trText: "Engelle / Yasakla!", ornek: { ar: "اِمْنَعْ نَفْسَكَ عَنِ السُّرْعَةِ", tr: "Kendini hızdan alıkoy." } } },
+        19: { base: { emoji: "⛔", arText: "مَنْع", trText: "Men / Engelleme, yasaklama.", ornek: { ar: "مَنْعُ الْوُقُوفِ أَمَامَ الْمُسْتَشْفَى", tr: "Hastanenin önünde park etmenin yasaklanması." } } },
+        36: { base: { emoji: "🚷", arText: "مَمْنُوع", trText: "Yasak / Engellenmiş.", ornek: { ar: "مَمْنُوعُ الْوُقُوفِ أَمَامَ الْمُسْتَشْفَى", tr: "Hastanenin önünde park etmek yasaktır." } } }
+    },
+
+    "قود": {
+        1:  { base: { emoji: "🚗", arText: "قَادَ", trText: "Sürdü / Yönetti, sevk etti.", ornek: { ar: "قَادَ السَّائِقُ الْحَافِلَةَ بِهُدُوءٍ", tr: "Şoför otobüsü sakince sürdü." } } },
+        2:  { base: { emoji: "🛞", arText: "يَقُودُ", trText: "Sürer / Yönetir.", ornek: { ar: "لَا تَقُدْ سَيَّارَتَكَ بِسُرْعَةٍ", tr: "Arabanı hızlı sürme." } } },
+        3:  { base: { emoji: "❗", arText: "قُدْ", trText: "Sür / Yönet!", ornek: { ar: "قُدْ بِحَذَرٍ", tr: "Dikkatli sür." } } },
+        23: { base: { emoji: "🚦", arText: "قِيَادَة", trText: "Sürüş / Liderlik, yönetim.", ornek: { ar: "رُخْصَةُ الْقِيَادَةِ", tr: "Sürücü belgesi (ehliyet)." } } },
+        33: { base: { emoji: "🎖️", arText: "قَائِد", trText: "Komutan / Lider, sürücü.", ornek: { ar: "الْقَائِدُ يَسِيرُ أَمَامَ جُنُودِهِ", tr: "Komutan askerlerinin önünde yürür." } } }
+    },
+
+    "هبط": {
+        1:  { base: { emoji: "🛬", arText: "هَبَطَ", trText: "İndi / Alçaldı.", ornek: { ar: "هَبَطَتِ الطَّائِرَةُ فِي الْمَطَارِ", tr: "Uçak havalimanına indi." } } },
+        4:  { base: { emoji: "✈️", arText: "يَهْبِطُ", trText: "İner / Alçalır.", ornek: { ar: "تَهْبِطُ الطَّائِرَةُ فِي الْمَطَارِ", tr: "Uçak havalimanına iniyor." } } },
+        5:  { base: { emoji: "❗", arText: "اِهْبِطْ", trText: "İn / Alçal!", ornek: { ar: "اِهْبِطْ مِنَ الْجَبَلِ", tr: "Dağdan in." } } },
+        25: { base: { emoji: "🛩️", arText: "هُبُوط", trText: "İniş / Alçalma.", ornek: { ar: "هُبُوطُ الطَّائِرَةِ آمِنٌ", tr: "Uçağın inişi güvenlidir." } } }
+    },
+
+    "شجع": {
+        11: { base: { emoji: "🦁", arText: "شَجُعَ", trText: "Cesur oldu.", ornek: { ar: "شَجُعَ الْوَلَدُ وَأَنْقَذَ صَدِيقَهُ", tr: "Çocuk cesaret gösterdi ve arkadaşını kurtardı." } } },
+        22: { base: { emoji: "💪", arText: "شَجَاعَة", trText: "Cesaret / Yiğitlik.", ornek: { ar: "الشَّجَاعَةُ صِفَةٌ حَسَنَةٌ", tr: "Cesaret güzel bir sıfattır." } } },
+        24: { base: { emoji: "🦸", arText: "شُجَاع", trText: "Cesur / Yiğit.", ornek: { ar: "الرَّجُلُ الشُّجَاعُ أَنْقَذَ الْوَلَدَ", tr: "Cesur adam çocuğu kurtardı." } } },
+        58: { base: { emoji: "👏", arText: "شَجَّعَ", trText: "Cesaretlendirdi / Teşvik etti.", ornek: { ar: "شَجَّعَ الْمُعَلِّمُ طُلَّابَهُ", tr: "Öğretmen öğrencilerini teşvik etti." } } },
+        61: { base: { emoji: "📣", arText: "تَشْجِيع", trText: "Teşvik / Cesaretlendirme.", ornek: { ar: "تَشْجِيعُ الطُّلَّابِ مُهِمٌّ", tr: "Öğrencileri teşvik etmek önemlidir." } } }
+    },
+
+    "شرط": {
+        1:  { base: { emoji: "📝", arText: "شَرَطَ", trText: "Şart koştu.", ornek: { ar: "شَرَطَ عَلَيْهِ الْحُضُورَ", tr: "Ona gelmeyi şart koştu." } } },
+        19: { cogulId: 43, base: { emoji: "⚖️", arText: "شَرْط", trText: "Şart / Koşul.", ornek: { ar: "الطَّهَارَةُ شَرْطٌ لِلصَّلَاةِ", tr: "Temizlik namazın şartıdır." } } },
+        43: { tekilId: 19, base: { emoji: "📋", arText: "شُرُوط", trText: "Şartlar / Koşullar.", ornek: { ar: "شُرُوطُ الْمُسَابَقَةِ وَاضِحَةٌ", tr: "Yarışmanın şartları açıktır." } } },
+        21: {
+            base: { emoji: "🚓", arText: "شُرْطَة", trText: "Polis (teşkilatı).", ornek: { ar: "مَرْكَزُ الشُّرْطَةِ قَرِيبٌ", tr: "Polis merkezi yakındır." } },
+            suggestsPlus: true,
+            "ي": { emoji: "👮", arText: "شُرْطِيّ", trText: "Polis memuru.", ornek: { ar: "هَذَا الرَّجُلُ شُرْطِيٌّ", tr: "Bu adam bir polistir." } },
+            "ية": { emoji: "👮‍♀️", arText: "شُرْطِيَّة", trText: "Kadın polis.", ornek: { ar: "هَذِهِ شُرْطِيَّةُ الْمُرُورِ", tr: "Bu, trafik polisi (kadın)." } }
+        }
+    },
+
+    "أجر": {
+        1:  { base: { emoji: "🤝", arText: "أَجَرَ", trText: "Kiraya verdi / Ücretle tuttu.", ornek: { ar: "أَجَرَ بَيْتَهُ لِلطُّلَّابِ", tr: "Evini öğrencilere kiraya verdi." } } },
+        19: { base: { emoji: "🎁", arText: "أَجْر", trText: "Ecir / Sevap, karşılık.", ornek: { ar: "لَهُ أَجْرٌ عَظِيمٌ عِنْدَ اللهِ", tr: "Allah katında büyük bir ecri vardır." } } },
+        21: { base: { emoji: "💵", arText: "أُجْرَة", trText: "Ücret / Kira bedeli.", ornek: { ar: "أُجْرَةُ التَّذَاكِرِ رَخِيصَةٌ جِدًّا", tr: "Bilet ücretleri çok ucuzdur." } } },
+        43: { base: { emoji: "🧾", arText: "أُجُور", trText: "Ücretler / Maaşlar.", ornek: { ar: "أُجُورُ الْعُمَّالِ مُرْتَفِعَةٌ", tr: "İşçilerin ücretleri yüksektir." } } }
+    },
+
+    /* ── 8. SINIF 1. ÜNİTE 1. DERS (الأَنْدِيَة) İÇİN EKLENEN KÖKLER ──────────
+       Dersin başlık kelimesi نَادٍ (kulüp) ile مُلْصَق (afiş) sözlükte
+       karşılıksızdı; muhâdesede kelimeye dokunulduğunda kök şeridi
+       boş kalıyordu. İkisi de gerçek üç harfli kök; çekimleri
+       VerbGenerator ile tarayıcıda denenip doğrulandı. */
+
+    /* ن د و : Çağırmak, seslenmek (nâkıs vâvî) — نَادٍ «kulüp» de buradan */
+    "ندو": {
+        1:  { base: { emoji: "📣", arText: "نَدَا", trText: "Çağırdı, davet etti; toplandı.", ornek: { ar: "نَدَا الْقَوْمَ إِلَى الْمَجْلِسِ", tr: "Topluluğu meclise çağırdı." } } },
+        2:  { base: { emoji: "🔁", arText: "يَنْدُو", trText: "Çağırır, davet eder." } },
+        33: {
+            base: { emoji: "🏛️", arText: "نَادٍ", trText: "Kulüp, dernek; toplantı yeri (İsm-i Fâil). Belirli hâli: النَّادِي", ornek: { ar: "سَنَخْتَارُ الْأَنْدِيَةَ الْيَوْمَ", tr: "Bugün kulüpleri seçeceğiz." }, cogul: "أَنْدِيَة" },
+            /* Çoğul NESNE olarak yazıldı: sözlük dizini (KidefSozlukDizin.kur)
+               yalnız 'arText' taşıyan dalları tarıyor; metin hâlindeki 'cogul'
+               aranabilir olmuyordu. Kutu çizimi 'cogul' anahtarını zaten
+               yok sayıyor, ek rozeti çıkmıyor. */
+            cogul: { emoji: "🏛️", arText: "أَنْدِيَة", trText: "Kulüpler (nâdî'nin kırık çoğulu: أَفْعِلَة)", ornek: { ar: "مَتَى سَنَخْتَارُ الْأَنْدِيَةَ؟", tr: "Kulüpleri ne zaman seçeceğiz?" } },
+            suggestsPlus: true,
+            "ي": { emoji: "🎯", arText: "نَادِي", trText: "…kulübü (tamlamada): نَادِي الرِّيَاضَةِ", ornek: { ar: "أَنَا أَخْتَارُ نَادِيَ الرِّيَاضَةِ", tr: "Ben spor kulübünü seçiyorum." } },
+            not: "SEMANTİK ÇEKİRDEK: «SESLENİP TOPLAMAK». نَدَا çağırmak, نَادَى karşılıklı seslenmektir; نِدَاء nahivde «yâ» ile seslenme üslûbudur. نَادٍ ise seslenilip toplanılan yer — yani KULÜP. Çoğulu أَنْدِيَة'dir."
+        },
+        64: { base: { emoji: "🗣️", arText: "نَادَى", trText: "Seslendi, nida etti.", ornek: { ar: "نَادَى الْمُعَلِّمُ التِّلْمِيذَ", tr: "Öğretmen öğrenciye seslendi." } } },
+        65: { base: { emoji: "🔁", arText: "يُنَادِي", trText: "Seslenir, çağırır." } },
+        66: { base: { emoji: "❗", arText: "نَادِ", trText: "Seslen! Çağır!" } },
+        67: { base: { emoji: "📘", arText: "مُنَادَاة", trText: "Seslenme, çağırma (masdar)." } },
+        68: { base: { emoji: "📢", arText: "نِدَاء", trText: "Nida, çağrı; (nahivde) seslenme üslûbu.", ornek: { ar: "يَا مُحَمَّدُ! هَذَا أُسْلُوبُ النِّدَاءِ", tr: "Ey Muhammed! Bu, nida üslûbudur." } } },
+        69: { base: { emoji: "🙋", arText: "مُنَادٍ", trText: "Münadi / Seslenen, çağıran." } }
+    },
+
+    /* ل ص ق : Yapışmak — مُلْصَق «afiş, poster» (sâlim) */
+    "لصق": {
+        8:  { base: { emoji: "🩹", arText: "لَصِقَ", trText: "Yapıştı, bitişti.", ornek: { ar: "لَصِقَ الْوَرَقُ بِالْجِدَارِ", tr: "Kâğıt duvara yapıştı." } } },
+        9:  { base: { emoji: "🔁", arText: "يَلْصَقُ", trText: "Yapışır." } },
+        33: {
+            base: { emoji: "🧲", arText: "لَاصِق", trText: "Yapışan, yapışkan; yara bandı.", ornek: { ar: "أَعْطِنِي شَرِيطًا لَاصِقًا", tr: "Bana bir yapışkan bant ver." } },
+            suggestsPlus: true,
+            "ة": { emoji: "🩹", arText: "لَاصِقَة", trText: "Yapışkan bant, plaster." }
+        },
+        52: { base: { emoji: "📌", arText: "أَلْصَقَ", trText: "Yapıştırdı.", ornek: { ar: "أَلْصَقَ الْمُلْصَقَ عَلَى اللَّوْحَةِ", tr: "Afişi panoya yapıştırdı." } } },
+        53: { base: { emoji: "🔁", arText: "يُلْصِقُ", trText: "Yapıştırır." } },
+        55: { base: { emoji: "📘", arText: "إِلْصَاق", trText: "Yapıştırma (masdar)." } },
+        57: {
+            base: { emoji: "🖼️", arText: "مُلْصَق", trText: "Afiş, poster (İsm-i Mef'ûl).", ornek: { ar: "نُعِدُّ مُلْصَقًا عَنْ نَادِي الطَّبِيعَةِ", tr: "Doğa kulübü hakkında bir afiş hazırlıyoruz." }, cogul: "مُلْصَقَات" },
+            not: "Sarf Notu: مُلْصَق, İf'âl bâbının İsm-i Mef'ûl'üdür (مُفْعَل) — «yapıştırılan şey», yani duvara asılan afiş. İsm-i Fâil'i مُلْصِق «yapıştıran»dır."
+        }
     }
 };

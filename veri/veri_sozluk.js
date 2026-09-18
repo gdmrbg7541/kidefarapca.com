@@ -62,6 +62,9 @@ const kategoriTanimlari = {
     "ulke":     { title: "Ülkeler", arTitle: "الْبُلْدان", icon: "🌍", grup: "dunya", items: [] },
     "sehir":    { title: "Şehirler", arTitle: "الْمُدُن", icon: "🏙️", grup: "dunya", items: [] },
     "kita":     { title: "Kıtalar", arTitle: "الْقارّات", icon: "🌐", grup: "dunya", items: [] },
+    /* 6. sınıf 5. ünitesi (الأَماكِن المُقَدَّسَة) buraya dayanıyor: Mekke,
+       Medine ve Kudüs'teki mekânlar tek listede toplandı. */
+    "mukaddes": { title: "Kutsal Mekânlar", arTitle: "الأَماكِن المُقَدَّسَة", icon: "🕋", grup: "dunya", items: [] },
 
     "renk":     { title: "Renkler", arTitle: "الأَلْوان", icon: "🎨", grup: "genel", items: [] },
     "sifat":    { title: "Sıfatlar", arTitle: "الصِّفات", icon: "✨", grup: "genel", items: [] },
@@ -3085,7 +3088,110 @@ const sozlukVerileri = {
 
     "Uzuv: Göz": { isDictOnly: true, tip: "uzuv", tekil: { base: { emoji: "👁️", arText: "عَيْن", trText: "Göz", ornek: { ar: "الْعَيْنُ تَرَى وَالْأُذُنُ تَسْمَعُ", tr: "Göz görür, kulak işitir." } } }, cogul: "عُيُون", cogulTr: "Gözler" },
 
-    "Uzuv: Diş": { isDictOnly: true, tip: "uzuv", tekil: { base: { emoji: "🦷", arText: "سِنّ", trText: "Diş", ornek: { ar: "أُنَظِّفُ أَسْنَانِي قَبْلَ النَّوْمِ", tr: "Uyumadan önce dişlerimi temizlerim." } } }, cogul: "أَسْنَان", cogulTr: "Dişler" }
+    "Uzuv: Diş": { isDictOnly: true, tip: "uzuv", tekil: { base: { emoji: "🦷", arText: "سِنّ", trText: "Diş", ornek: { ar: "أُنَظِّفُ أَسْنَانِي قَبْلَ النَّوْمِ", tr: "Uyumadan önce dişlerimi temizlerim." } } }, cogul: "أَسْنَان", cogulTr: "Dişler" },
+
+    /* ==================================================================
+       6. SINIF 5. ÜNİTE — KUTSAL MEKÂNLAR              (komisyon verisi)
+       Kaynak: 6. Sınıf Arapça ders kitabı 2025, 5. Ünite, s. 129-156.
+       Ders verileri: muhadese/veri/6_5_1..3.js
+       Kökü kalıplar tablosunda bulunan kelimeler (جامِع، حَرَم، فاتِح،
+       عاصِمَة، تاريخ، الهِجْرَة، مُسْلِم…) buraya YAZILMADI; onlar kendi
+       köklerinden geliyor, ikinci kayıt aramada çift sonuç yapardı.
+       ================================================================== */
+    "Mekân: Mescid-i Haram": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🕋", arText: "المَسْجِدُ الحَرام", trText: "Mescid-i Haram (Mekke)", ornek: { ar: "المَسْجِدُ الحَرَامُ فِي مَكَّةَ الْمُكَرَّمَةِ", tr: "Mescid-i Haram Mekke-i Mükerreme'dedir." } } } },
+    "Mekân: Kâbe": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🕋", arText: "الكَعْبَة", trText: "Kâbe / Şerefli Kâbe", ornek: { ar: "الْكَعْبَةُ الشَّرِيفَةُ قِبْلَةُ الْمُسْلِمِينَ", tr: "Şerefli Kâbe Müslümanların kıblesidir." } } } },
+    "Mekân: Arafat Dağı": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "⛰️", arText: "جَبَلُ عَرَفات", trText: "Arafat Dağı", ornek: { ar: "يَقِفُ الْمُسْلِمُونَ عَلَى جَبَلِ عَرَفَاتٍ", tr: "Müslümanlar Arafat Dağı'nda vakfeye durur." } } } },
+    "Mekân: Nur Dağı": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🌄", arText: "جَبَلُ النّور", trText: "Nur Dağı", ornek: { ar: "جَبَلُ النُّورِ جَبَلٌ مُهِمٌّ فِي مَكَّةَ", tr: "Nur Dağı Mekke'de önemli bir dağdır." } } } },
+    "Mekân: Hira Mağarası": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🕳️", arText: "غارُ حِراء", trText: "Hira Mağarası", ornek: { ar: "غَارُ حِرَاءَ فِي جَبَلِ النُّورِ", tr: "Hira Mağarası Nur Dağı'ndadır." } } } },
+    "Mekân: Safa ve Merve": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🏃", arText: "الصَّفا وَالمَرْوَة", trText: "Safa ve Merve", ornek: { ar: "يَسْعَى الْمُسْلِمُونَ بَيْنَ الصَّفَا وَالْمَرْوَةِ", tr: "Müslümanlar Safa ile Merve arasında sa'y eder." } } } },
+    "Mekân: Mescid-i Nebevî": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🕌", arText: "المَسْجِدُ النَّبَوِيّ", trText: "Mescid-i Nebevî (Medine)", ornek: { ar: "الْمَسْجِدُ النَّبَوِيُّ فِي الْمَدِينَةِ الْمُنَوَّرَةِ", tr: "Mescid-i Nebevî Medine-i Münevvere'dedir." } } } },
+    "Mekân: Kuba Mescidi": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🕌", arText: "مَسْجِدُ قُباء", trText: "Kuba Mescidi", ornek: { ar: "أَوَّلُ مَسْجِدٍ فِي الْإِسْلَامِ هُوَ مَسْجِدُ قُبَاءَ", tr: "İslam'daki ilk mescit Kuba Mescidi'dir." } } } },
+    "Mekân: Kıbleteyn Mescidi": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🕌", arText: "مَسْجِدُ القِبْلَتَيْن", trText: "Kıbleteyn Mescidi", ornek: { ar: "مَسْجِدُ الْقِبْلَتَيْنِ مَسْجِدٌ قَدِيمٌ وَمُهِمٌّ", tr: "Kıbleteyn Mescidi eski ve önemli bir mescittir." } } } },
+    "Mekân: Uhud Dağı": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "⛰️", arText: "جَبَلُ أُحُد", trText: "Uhud Dağı", ornek: { ar: "جَبَلُ أُحُدٍ فِي الْمَدِينَةِ الْمُنَوَّرَةِ", tr: "Uhud Dağı Medine-i Münevvere'dedir." } } } },
+    "Mekân: Mescid-i Aksâ": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🕌", arText: "المَسْجِدُ الأَقْصى", trText: "Mescid-i Aksâ (Kudüs)", ornek: { ar: "أَوَّلُ قِبْلَةٍ فِي الْإِسْلَامِ هُوَ الْمَسْجِدُ الْأَقْصَى", tr: "İslam'daki ilk kıble Mescid-i Aksâ'dır." } } } },
+    "Mekân: Kubbetü's-Sahra": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🟡", arText: "قُبَّةُ الصَّخْرَة", trText: "Kubbetü's-Sahra", ornek: { ar: "قُبَّةُ الصَّخْرَةِ فِي وَسَطِ الْحَرَمِ الْقُدْسِيِّ", tr: "Kubbetü's-Sahra Harem-i Kudsî'nin ortasındadır." } } } },
+    "Mekân: Harem-i Kudsî": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🕌", arText: "الحَرَمُ القُدْسِيّ", trText: "Harem-i Kudsî", ornek: { ar: "الْحَرَمُ الْقُدْسِيُّ فِي الْقُدْسِ الشَّرِيفِ", tr: "Harem-i Kudsî Kudüs-i Şerif'tedir." } } } },
+    "Mekân: Kıblî Camii": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🕌", arText: "الجامِعُ القِبْلِيّ", trText: "Kıblî Camii (Mescid-i Aksâ)", ornek: { ar: "الْجَامِعُ الْقِبْلِيُّ دَاخِلَ الْحَرَمِ الْقُدْسِيِّ", tr: "Kıblî Camii Harem-i Kudsî'nin içindedir." } } } },
+    "Mekân: Ömer Mescidi": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🕌", arText: "مَسْجِدُ عُمَرَ", trText: "Ömer Mescidi", ornek: { ar: "مَسْجِدُ عُمَرَ فِي الْقُدْسِ الشَّرِيفِ", tr: "Ömer Mescidi Kudüs-i Şerif'tedir." } } } },
+    "Mekân: Burak Duvarı": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🧱", arText: "حائِطُ البُراق", trText: "Burak Duvarı", ornek: { ar: "حَائِطُ الْبُرَاقِ عَلَى يَسَارِ الْمَسْجِدِ الْأَقْصَى", tr: "Burak Duvarı Mescid-i Aksâ'nın solundadır." } } } },
+    "Mekân: Asılı Taş": { isDictOnly: true, tip: "mukaddes", tekil: { base: { emoji: "🪨", arText: "الحَجَرُ المُعَلَّق", trText: "Asılı Taş (Kudüs)", ornek: { ar: "الْحَجَرُ الْمُعَلَّقُ مِنْ مَعَالِمِ الْحَرَمِ الْقُدْسِيِّ", tr: "Asılı Taş, Harem-i Kudsî'nin simgelerindendir." } } } },
+    "Şehir: Mekke-i Mükerreme": { isDictOnly: true, tip: "sehir", tekil: { base: { emoji: "🕋", arText: "مَكَّةُ المُكَرَّمَة", trText: "Mekke-i Mükerreme", ornek: { ar: "مَكَّةُ الْمُكَرَّمَةُ فِي السُّعُودِيَّةِ", tr: "Mekke-i Mükerreme Suudi Arabistan'dadır." } } } },
+    "Şehir: Medine-i Münevvere": { isDictOnly: true, tip: "sehir", tekil: { base: { emoji: "🕌", arText: "المَدينَةُ المُنَوَّرَة", trText: "Medine-i Münevvere", ornek: { ar: "الْمَدِينَةُ الْمُنَوَّرَةُ أَوَّلُ عَاصِمَةٍ لِلْمُسْلِمِينَ", tr: "Medine-i Münevvere Müslümanların ilk başkentidir." } } } },
+    "Şehir: Kudüs": { isDictOnly: true, tip: "sehir", tekil: { base: { emoji: "🕌", arText: "القُدْسُ الشَّريف", trText: "Kudüs-i Şerif", ornek: { ar: "الْقُدْسُ تَقَعُ فِي فِلَسْطِينَ", tr: "Kudüs Filistin'dedir." } } } },
+    "Şehir: Bolu": { isDictOnly: true, tip: "sehir", tekil: { base: { emoji: "🌲", arText: "بولو", trText: "Bolu", ornek: { ar: "أَنْقَرَةُ قَرِيبَةٌ مِنْ مَدِينَةِ بُولُو", tr: "Ankara Bolu şehrine yakındır." } } } },
+    "İsim: Kıble": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🧭", arText: "قِبْلَة", trText: "Kıble", ornek: { ar: "الْكَعْبَةُ قِبْلَةُ الْمُسْلِمِينَ", tr: "Kâbe Müslümanların kıblesidir." } } } },
+    "İsim: Mağara": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🕳️", arText: "غار", trText: "Mağara", ornek: { ar: "غَارُ حِرَاءَ غَارٌ مُهِمٌّ", tr: "Hira Mağarası önemli bir mağaradır." } } } },
+    "İsim: Kubbe": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🛕", arText: "قُبَّة", trText: "Kubbe", ornek: { ar: "قُبَّةُ الْمَسْجِدِ زَرْقَاءُ", tr: "Mescidin kubbesi mavidir." } } } },
+    "İsim: Kaya": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🪨", arText: "صَخْرَة", trText: "Kaya", ornek: { ar: "الصَّخْرَةُ كَبِيرَةٌ", tr: "Kaya büyüktür." } } } },
+    "İsim: Duvar": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🧱", arText: "حائِط", trText: "Duvar", ornek: { ar: "الصُّورَةُ عَلَى الْحَائِطِ", tr: "Resim duvardadır." } } } },
+    "İsim: Peygamber": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "☪️", arText: "نَبِيّ", trText: "Peygamber / Nebî", ornek: { ar: "عَاشَ النَّبِيُّ فِي الْمَدِينَةِ بَعْدَ الْهِجْرَةِ", tr: "Peygamber hicretten sonra Medine'de yaşadı." } } } },
+    "İsim: Kur'ân-ı Kerîm": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "📖", arText: "القُرْآنُ الكَريم", trText: "Kur'ân-ı Kerîm", ornek: { ar: "يَقْرَأُ الْمُسْلِمُونَ الْقُرْآنَ الْكَرِيمَ", tr: "Müslümanlar Kur'ân-ı Kerîm okur." } } } },
+    "İsim: Selahaddin Eyyubî": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🗡️", arText: "صَلاحُ الدّينِ الأَيّوبِيّ", trText: "Selahaddin Eyyubî", ornek: { ar: "فَتَحَ صَلَاحُ الدِّينِ الْأَيُّوبِيُّ الْقُدْسَ", tr: "Kudüs'ü Selahaddin Eyyubî fethetti." } } } },
+    "Eşya: Sehpa": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "🪑", arText: "مِنْضَدَة", trText: "Sehpa / Küçük masa", ornek: { ar: "الْحَاسُوبُ عَلَى الْمِنْضَدَةِ", tr: "Bilgisayar sehpanın üstündedir." } } } },
+    "Sıfat: Mükemmel": { isDictOnly: true, tip: "sifat", tekil: { base: { emoji: "⭐", arText: "مُمْتاز", trText: "Mükemmel / Üstün", ornek: { ar: "عَمَلٌ مُمْتَازٌ", tr: "Mükemmel bir iş." } } } },
+    "Sıfat: İşgal Altında": { isDictOnly: true, tip: "sifat", tekil: { base: { emoji: "🚧", arText: "مُحْتَلّ", trText: "İşgal altındaki", ornek: { ar: "فِلَسْطِينُ الْمُحْتَلَّةُ", tr: "İşgal altındaki Filistin." } } } },
+    "Kalıp: İnşallah": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🤲", arText: "إِنْ شاءَ الله", trText: "İnşallah / Allah dilerse", ornek: { ar: "سَأُسَافِرُ إِنْ شَاءَ اللهُ", tr: "İnşallah seyahat edeceğim." } } } },
+    "Kalıp: Aferin": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "👏", arText: "أَحْسَنْتَ", trText: "Aferin / Ne güzel yaptın", ornek: { ar: "أَحْسَنْتَ يَا صَدِيقِي", tr: "Aferin dostum." } } } },
+    "Kalıp: Tam Olarak": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🎯", arText: "بِالضَّبْطِ", trText: "Tam olarak / Tam anlamıyla", ornek: { ar: "أَيْنَ يَقَعُ بِالضَّبْطِ؟", tr: "Tam olarak nerededir?" } } } },
+    "Kalıp: Söyle Bana": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "💬", arText: "قُلْ لي", trText: "Söyle bana", ornek: { ar: "قُلْ لِي مِنْ فَضْلِكَ", tr: "Lütfen bana söyle." } } } },
+
+    /* ==================================================================
+       6. SINIF 6. ÜNİTE — ULAŞIM VE TRAFİK             (komisyon verisi)
+       Kaynak: 6. Sınıf Arapça ders kitabı 2025, 6. Ünite, s. 157-190.
+       Ders verileri: muhadese/veri/6_6_1..3.js
+       Kökü kalıplar tablosundan gelen kelimeler (لَوْن، مَمْنوع، يَقودُ،
+       يَهْبِطُ، شُجاع، شُرْطِيّ، أُجْرَة، طَيّار، مَعْلومَة، تاريخِيّ،
+       يَتَعامَلُ…) buraya YAZILMADI; onlar köklerinden geliyor.
+       ================================================================== */
+    "Ulaşım: Araçları": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🚦", arText: "وَسائِلُ المُواصَلات", trText: "Ulaşım araçları", ornek: { ar: "الْحَافِلَةُ وَالْقِطَارُ مِنْ وَسَائِلِ الْمُوَاصَلَاتِ", tr: "Otobüs ve tren ulaşım araçlarındandır." } } } },
+    "Ulaşım: Vasıta": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🚌", arText: "وَسيلَة", trText: "Araç / Vasıta", ornek: { ar: "الْحَافِلَةُ وَسِيلَةُ مُوَاصَلَاتٍ مُرِيحَةٌ", tr: "Otobüs rahat bir ulaşım aracıdır." } } } },
+    "Trafik: Yaya Geçidi": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🚸", arText: "عُبورُ المُشاة", trText: "Yaya geçidi", ornek: { ar: "يَعْبُرُ الْمُشَاةُ مِنْ عُبُورِ الْمُشَاةِ", tr: "Yayalar yaya geçidinden geçer." } } } },
+    "Trafik: Karşıdan Karşıya Geçme": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🚶", arText: "عُبورُ الطَّريق", trText: "Yoldan (karşıdan karşıya) geçme", ornek: { ar: "عُبُورُ الطَّرِيقِ فِي الضَّوْءِ الْأَخْضَرِ", tr: "Yoldan yeşil ışıkta geçmek." } } } },
+    "Trafik: İşaretleri": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🛑", arText: "إِشاراتُ المُرور", trText: "Trafik işaretleri", ornek: { ar: "هَلْ عِنْدَكَ مَعْلُومَاتٌ عَنْ إِشَارَاتِ الْمُرُورِ؟", tr: "Trafik işaretleri hakkında bilgin var mı?" } } } },
+    "Trafik: Kırmızı Işık": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🔴", arText: "الضَّوْءُ الأَحْمَر", trText: "Kırmızı ışık", ornek: { ar: "يَقِفُ الْمُشَاةُ فِي الضَّوْءِ الْأَحْمَرِ", tr: "Yayalar kırmızı ışıkta durur." } } } },
+    "Trafik: Yeşil Işık": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🟢", arText: "الضَّوْءُ الأَخْضَر", trText: "Yeşil ışık", ornek: { ar: "يَعْبُرُ الْمُشَاةُ فِي الضَّوْءِ الْأَخْضَرِ", tr: "Yayalar yeşil ışıkta geçer." } } } },
+    "Trafik: Sarı Işık": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🟡", arText: "الضَّوْءُ الأَصْفَر", trText: "Sarı ışık", ornek: { ar: "يَسْتَعِدُّ السَّائِقُ فِي الضَّوْءِ الْأَصْفَرِ", tr: "Sürücü sarı ışıkta hazırlanır." } } } },
+    "Trafik: Park Yasağı": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "⛔", arText: "مَمْنوعُ الوُقوف", trText: "Park etmek yasaktır", ornek: { ar: "مَمْنُوعُ الْوُقُوفِ أَمَامَ الْمُسْتَشْفَى", tr: "Hastanenin önünde park etmek yasaktır." } } } },
+    "Trafik: Kaza": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "💥", arText: "حادِثُ المُرور", trText: "Trafik kazası", ornek: { ar: "أَنْقَذَ الرَّجُلُ الْوَلَدَ مِنْ حَادِثِ الْمُرُورِ", tr: "Adam çocuğu trafik kazasından kurtardı." } } } },
+    "Trafik: Emniyet Kemeri": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🔗", arText: "حِزامُ الأَمان", trText: "Emniyet kemeri", ornek: { ar: "يَجِبُ اسْتِخْدَامُ حِزَامِ الْأَمَانِ أَثْنَاءَ السَّيْرِ", tr: "Sürüş sırasında emniyet kemeri kullanılmalıdır." } } } },
+    "Trafik: Sola Dön": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "⬅️", arText: "اِتَّجِهْ إِلى اليَسار", trText: "Sola dön", ornek: { ar: "اِتَّجِهْ إِلَى الْيَسَارِ لَا إِلَى الْيَمِينِ", tr: "Sola dön, sağa değil." } } } },
+    "Trafik: Sağa Dön": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "➡️", arText: "اِتَّجِهْ إِلى اليَمين", trText: "Sağa dön", ornek: { ar: "اِتَّجِهْ إِلَى الْيَمِينِ عِنْدَ الْمَسْجِدِ", tr: "Camide sağa dön." } } } },
+    "Ulaşım: Gidiş-Dönüş": { isDictOnly: true, tip: "ulasim", tekil: { base: { emoji: "🔁", arText: "ذَهاب وَإِياب", trText: "Gidiş-dönüş", ornek: { ar: "أُرِيدُ تَذْكِرَةَ ذَهَابٍ وَإِيَابٍ", tr: "Gidiş-dönüş bileti istiyorum." } } } },
+    "Zaman: Yaz Tatili": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "🏖️", arText: "العُطْلَةُ الصَّيْفِيَّة", trText: "Yaz tatili", ornek: { ar: "ذَهَبْتُ إِلَى الْأُرْدُنِّ فِي الْعُطْلَةِ الصَّيْفِيَّةِ", tr: "Yaz tatilinde Ürdün'e gittim." } } } },
+    "Zaman: Gelecek Hafta": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "📅", arText: "الأُسْبوعُ القادِم", trText: "Gelecek hafta", ornek: { ar: "سَأَلْعَبُ كُرَةَ الْقَدَمِ فِي الْأُسْبُوعِ الْقَادِمِ", tr: "Gelecek hafta futbol oynayacağım." } } } },
+    "Zaman: Geçen Ay": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "🗓️", arText: "الشَّهْرُ الماضي", trText: "Geçen ay", ornek: { ar: "ذَهَبُوا إِلَى الْمَسْجِدِ فِي الشَّهْرِ الْمَاضِي", tr: "Geçen ay mescide gittiler." } } } },
+    "Zaman: Gelecek Yıl": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "📆", arText: "السَّنَةُ القادِمَة", trText: "Gelecek yıl", ornek: { ar: "سَأُسَافِرُ فِي السَّنَةِ الْقَادِمَةِ", tr: "Gelecek yıl seyahat edeceğim." } } } },
+    "Zaman: Esnasında": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "⏳", arText: "أَثْناءَ", trText: "Sırasında / Esnasında", ornek: { ar: "مَمْنُوعٌ اسْتِخْدَامُ الْجَوَّالِ أَثْنَاءَ السَّيْرِ", tr: "Sürüş sırasında cep telefonu kullanmak yasaktır." } } } },
+    "Zaman: Geçmiş": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "⏮️", arText: "ماضٍ", trText: "Geçmiş / Geçen", ornek: { ar: "فِي الْأُسْبُوعِ الْمَاضِي", tr: "Geçen hafta." } } } },
+    "Mekân: Deniz Kıyısı": { isDictOnly: true, tip: "doga", tekil: { base: { emoji: "🏝️", arText: "شاطِئُ البَحْر", trText: "Deniz kıyısı / Sahil", ornek: { ar: "شَاطِئُ الْبَحْرِ جَمِيلٌ فِي الصَّيْفِ", tr: "Deniz kıyısı yazın güzeldir." } } } },
+    "İsim: Tarihî Eserler": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🏺", arText: "الآثارُ التّاريخِيَّة", trText: "Tarihî eserler", ornek: { ar: "رَأَيْتُ الْآثَارَ التَّارِيخِيَّةَ فِي بُورْصَةَ", tr: "Bursa'da tarihî eserleri gördüm." } } } },
+    "İsim: Spor Yapma": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🏃", arText: "مُمارَسَةُ الرِّياضَة", trText: "Spor yapma", ornek: { ar: "مُمَارَسَةُ الرِّيَاضَةِ مُفِيدَةٌ لِلصِّحَّةِ", tr: "Spor yapmak sağlığa faydalıdır." } } } },
+    "İsim: Cep Telefonu": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "📱", arText: "الهاتِفُ الجَوّال", trText: "Cep telefonu", ornek: { ar: "تَتَكَلَّمُ بِالْهَاتِفِ الْجَوَّالِ", tr: "Cep telefonuyla konuşuyor." } } } },
+    "İsim: İnsan": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🧍", arText: "إِنْسان", trText: "İnsan", ornek: { ar: "الْإِنْسَانُ يَتَعَامَلُ مَعَ النَّاسِ", tr: "İnsan, insanlarla iletişim kurar." } } } },
+    "Kalıp: İyi Yolculuklar": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🧳", arText: "رِحْلَةً سَعيدَةً", trText: "İyi yolculuklar", ornek: { ar: "شُكْرًا، رِحْلَةً سَعِيدَةً", tr: "Teşekkürler, iyi yolculuklar." } } } },
+    "Kalıp: Yaklaşık": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "≈", arText: "تَقْريبًا", trText: "Yaklaşık / Neredeyse", ornek: { ar: "ثَلَاثُ سَاعَاتٍ تَقْرِيبًا", tr: "Yaklaşık üç saat." } } } },
+    "Kalıp: Aferin (Çoğul)": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "👏", arText: "أَحْسَنْتُمْ", trText: "Aferin size / Ne güzel yaptınız", ornek: { ar: "أَحْسَنْتُمْ يَا طُلَّابُ", tr: "Aferin size öğrenciler." } } } },
+    "Zarf: Yanında (Bitişik)": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "↔️", arText: "بِجانِبِ", trText: "Yanında / Bitişiğinde", ornek: { ar: "السَّيَّارَةُ بِجَانِبِ الْبَيْتِ", tr: "Araba evin yanındadır." } } } },
+    "Para: Türk Lirası": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "💴", arText: "لِيرَة تُرْكِيَّة", trText: "Türk lirası", ornek: { ar: "ثَمَنُهَا مِئَتَانِ وَعَشْرُ لِيرَاتٍ تُرْكِيَّةً", tr: "Fiyatı iki yüz on Türk lirası." } } } },
+    /* Kökü tabloda bulunmayan dört kelime (غدر · ضوأ · نقذ · خطط kökleri
+       tabloda yok) sözlük kaydı olarak duruyor. */
+    "Fiil: Ayrılmak": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🚉", arText: "يُغادِرُ", trText: "(Tren, uçak) kalkar / Ayrılır", ornek: { ar: "مَتَى سَيُغَادِرُ قِطَارُ إِسْطَنْبُولَ؟", tr: "İstanbul treni ne zaman kalkacak?" } } } },
+    "Fiil: Kurtarmak": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🦸", arText: "أَنْقَذَ", trText: "Kurtardı", ornek: { ar: "الرَّجُلُ الشُّجَاعُ أَنْقَذَ الْوَلَدَ", tr: "Cesur adam çocuğu kurtardı." } } } },
+    "Sıfat: Işıklı": { isDictOnly: true, tip: "sifat", tekil: { base: { emoji: "💡", arText: "ضَوْئِيّ", trText: "Işıklı", ornek: { ar: "إِشَارَاتُ الْمُرُورِ الضَّوْئِيَّةُ", tr: "Işıklı trafik işaretleri." } } } },
+    "İsim: Çizgi": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "➖", arText: "خَطّ", trText: "Çizgi / Hat, yazı", ornek: { ar: "مَا لَوْنُ الْخَطِّ؟ لَوْنُهُ أَصْفَرُ", tr: "Çizginin rengi nedir? Rengi sarıdır." } } } },
+
+    /* ── 8. SINIF 1. ÜNİTE 1. DERS (الأَنْدِيَة) ─────────────────────────────
+       Türetilemeyen (câmid) ve yabancı asıllı kelimeler ile ders
+       kitabındaki özel isimler. نَادٍ ve مُلْصَق kök olarak
+       veri_kokler.js'e eklendi, burada tekrar edilmedi. */
+    "Oyun: Satranç": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "♟️", arText: "شَطْرَنْج", trText: "Satranç", ornek: { ar: "بُشْرَى تَخْتَارُ نَادِيَ الشَّطْرَنْجِ", tr: "Büşra satranç kulübünü seçiyor." } } } },
+    "İsim: Teknoloji": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "💻", arText: "تَكْنُولُوجْيَا", trText: "Teknoloji (yabancı asıllı, çekimsiz)", ornek: { ar: "عُمَرُ يَخْتَارُ نَادِيَ التَّكْنُولُوجْيَا", tr: "Ömer teknoloji kulübünü seçiyor." } } } },
+    "İsim: Meral": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👧", arText: "مَرَال", trText: "Meral (özel isim)", ornek: { ar: "مَرَالُ تُحِبُّ الرِّيَاضَةَ", tr: "Meral sporu seviyor." } } } },
+    "İsim: Elif": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👧", arText: "أَلِيف", trText: "Elif (özel isim)", ornek: { ar: "أَلِيفُ مَسْؤُولَةٌ عَنْ نَظَافَةِ الصَّفِّ", tr: "Elif sınıfın temizliğinden sorumludur." } } } },
+    "İsim: Merve": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👧", arText: "مَرْوَة", trText: "Merve (özel isim; Mekke'deki Merve tepesi)", ornek: { ar: "صَدِيقَتِي مَرْوَةُ تَخْتَارُ نَادِيَ الْمَكْتَبَةِ", tr: "Arkadaşım Merve kütüphane kulübünü seçiyor." } } } },
+    "İsim: Sümeyye": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👧", arText: "سُمَيَّة", trText: "Sümeyye (özel isim)", ornek: { ar: "سُمَيَّةُ تُحِبُّ الشَّطْرَنْجَ", tr: "Sümeyye satrancı seviyor." } } } },
+    "İsim: Meryem": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "👧", arText: "مَرْيَم", trText: "Meryem (özel isim)", ornek: { ar: "صَدِيقَتِي مَرْيَمُ تُحِبُّ الْمُوسِيقَى", tr: "Arkadaşım Meryem müziği seviyor." } } } },
+
 };
 
 // Kökler dosyasındaki eski sözlük verilerini yeni sözlük verileriyle birleştir
