@@ -26835,5 +26835,125 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
             base: { emoji: "🖼️", arText: "مُلْصَق", trText: "Afiş, poster (İsm-i Mef'ûl).", ornek: { ar: "نُعِدُّ مُلْصَقًا عَنْ نَادِي الطَّبِيعَةِ", tr: "Doğa kulübü hakkında bir afiş hazırlıyoruz." }, cogul: "مُلْصَقَات" },
             not: "Sarf Notu: مُلْصَق, İf'âl bâbının İsm-i Mef'ûl'üdür (مُفْعَل) — «yapıştırılan şey», yani duvara asılan afiş. İsm-i Fâil'i مُلْصِق «yapıştıran»dır."
         }
+    },
+
+    /* ── 8. SINIF (18 DERS) İÇİN EKLENEN KÖKLER ─────────────────────────
+       Muhâdesede kelimeye dokunulduğunda kök şeridi boş kalan, gerçek
+       üç harfli köklerden en çok geçenleri. Çekimler VerbGenerator ile
+       tarayıcıda denenip doğrulandı. */
+
+    /* م ث ل : Benzemek — مُمَثِّل «oyuncu», تَمْثيل «temsil, oyunculuk» */
+    "مثل": {
+        1:  { base: { emoji: "🪞", arText: "مَثَلَ", trText: "Benzedi; temsil etti.", ornek: { ar: "مَثَلَ الطّالِبُ صَفَّهُ", tr: "Öğrenci sınıfını temsil etti." } } },
+        19: { base: { emoji: "📖", arText: "مَثَل", trText: "Örnek; atasözü, mesel.", ornek: { ar: "اِقْرَأْ كَما في المِثالِ", tr: "Örnekteki gibi oku." }, cogul: "أَمْثال" } },
+        20: { base: { emoji: "🔁", arText: "مِثْل", trText: "…gibi, benzeri.", ornek: { ar: "أُحِبُّ الحَيَواناتِ الكَبيرَةَ مِثْلَ الفيلِ", tr: "Fil gibi büyük hayvanları severim." } } },
+        40: { base: { emoji: "📐", arText: "مِثال", trText: "Misal, örnek.", cogul: "أَمْثِلة" } },
+        58: { base: { emoji: "🎭", arText: "مَثَّلَ", trText: "Rol yaptı, canlandırdı.", ornek: { ar: "مَثَّلَ دَوْرَهُ في المَسْرَحِيَّةِ", tr: "Tiyatro oyununda rolünü canlandırdı." } } },
+        59: { base: { emoji: "🔁", arText: "يُمَثِّلُ", trText: "Rol yapar; temsil eder." } },
+        61: { base: { emoji: "📘", arText: "تَمْثيل", trText: "Temsil; oyunculuk (masdar).", ornek: { ar: "قُمْ بِتَمْثيلِ النُّكْتَةِ مَعَ صَديقِكَ", tr: "Fıkrayı arkadaşınla canlandır." } } },
+        62: {
+            base: { emoji: "🎬", arText: "مُمَثِّل", trText: "Oyuncu, aktör (İsm-i Fâil).", ornek: { ar: "أَنا مُمَثِّلٌ في المَسْرَحِيَّةِ", tr: "Ben tiyatro oyununda oyuncuyum." } },
+            suggestsPlus: true,
+            "ة": { emoji: "👩‍🎤", arText: "مُمَثِّلة", trText: "Oyuncu (kadın), aktris.", ornek: { ar: "سُمَيَّةُ مُمَثِّلةٌ في المَسْرَحِيَّةِ", tr: "Sümeyye tiyatro oyununda oyuncudur." } },
+            "ونَ": { emoji: "👥", arText: "مُمَثِّلونَ", trText: "Oyuncular." }
+        }
+    },
+
+    /* د ر ب : Alışmak, eğitmek — تَدْريب «prova, antrenman» */
+    "درب": {
+        58: { base: { emoji: "🏋️", arText: "دَرَّبَ", trText: "Eğitti, antrenman yaptırdı.", ornek: { ar: "دَرَّبَ المُعَلِّمُ الطُّلّابَ", tr: "Öğretmen öğrencileri çalıştırdı." } } },
+        59: { base: { emoji: "🔁", arText: "يُدَرِّبُ", trText: "Eğitir, çalıştırır." } },
+        61: { base: { emoji: "🎭", arText: "تَدْريب", trText: "Prova, antrenman, eğitim (masdar).", ornek: { ar: "قامَتْ بِالتَّدْريبِ عَلى المَشْهَدِ", tr: "Sahnenin provasını yaptı." }, cogul: "تَدْريبات" } },
+        62: { base: { emoji: "🧑‍🏫", arText: "مُدَرِّب", trText: "Antrenör, eğitmen." } },
+        88: { base: { emoji: "🤸", arText: "تَدَرَّبَ", trText: "Alıştırma yaptı, çalıştı." } },
+        91: { base: { emoji: "📘", arText: "تَدَرُّب", trText: "Alışma, çalışma (masdar)." } }
+    },
+
+    /* ق ص ص : Anlatmak — قِصّة «hikâye» */
+    "قصص": {
+        1:  { base: { emoji: "🗣️", arText: "قَصَّ", trText: "Anlattı; kesti.", ornek: { ar: "قَصَّ عَلَيْنا قِصَّةً جَميلةً", tr: "Bize güzel bir hikâye anlattı." } } },
+        20: {
+            base: { emoji: "📖", arText: "قِصّة", trText: "Hikâye, kıssa.", ornek: { ar: "أَقْرَأُ قِصّةَ أَلْفِ لَيْلةٍ ولَيْلةٍ", tr: "Binbir Gece Masalı'nı okuyorum." }, cogul: "قِصَص" },
+            cogul: { emoji: "📚", arText: "قِصَص", trText: "Hikâyeler.", ornek: { ar: "تَحْكي لَهُ قِصَصًا", tr: "Ona hikâyeler anlatır." } }
+        },
+        33: { base: { emoji: "✂️", arText: "قاصّ", trText: "Hikâyeci, anlatan." } }
+    },
+
+    /* ن ك ت : Nükte — نُكْتة «fıkra» */
+    "نكت": {
+        21: {
+            base: { emoji: "😄", arText: "نُكْتة", trText: "Fıkra, nükte, espri.", ornek: { ar: "أَقْرَأُ كِتابَ نُكْتَةِ جُحا", tr: "Cuha Fıkraları kitabını okuyorum." }, cogul: "نُكَت" },
+            cogul: { emoji: "😂", arText: "نُكَت", trText: "Fıkralar, espriler." }
+        }
+    },
+
+    /* أ د ب : Edep, edebiyat — الأَدَب */
+    "أدب": {
+        17: {
+            base: { emoji: "📚", arText: "أَدَب", trText: "Edebiyat; edep, terbiye.", ornek: { ar: "جُحا مَشْهورٌ في الأَدَبِ التُّرْكِيِّ", tr: "Cuha Türk edebiyatında meşhurdur." }, cogul: "آداب" },
+            suggestsPlus: true,
+            "يّ": { emoji: "✒️", arText: "أَدَبِيّ", trText: "Edebî." }
+        },
+        58: { base: { emoji: "🎓", arText: "أَدَّبَ", trText: "Terbiye etti, edep öğretti." } },
+        62: { base: { emoji: "🧑‍🏫", arText: "مُؤَدِّب", trText: "Terbiye eden, edep öğreten." } }
+    },
+
+    /* ع ذ ر : Özür — اِعْتِذار, أَعْتَذِرُ */
+    "عذر": {
+        1:  { base: { emoji: "🙏", arText: "عَذَرَ", trText: "Mazur gördü, bağışladı." } },
+        24: { base: { emoji: "📝", arText: "عُذْر", trText: "Özür, mazeret.", cogul: "أَعْذار" } },
+        77: { base: { emoji: "🙇", arText: "اِعْتَذَرَ", trText: "Özür diledi.", ornek: { ar: "اِتَّصَلْتُ بِهِ واعْتَذَرْتُ مِنْهُ", tr: "Onu aradım ve ondan özür diledim." } } },
+        78: { base: { emoji: "🔁", arText: "يَعْتَذِرُ", trText: "Özür diler." } },
+        80: { base: { emoji: "📘", arText: "اِعْتِذار", trText: "Özür dileme (masdar)." } }
+    },
+
+    /* ن ظ ف zaten var — و ز ع : Dağıtmak — تَوْزيع */
+    "وزع": {
+        58: { base: { emoji: "🎁", arText: "وَزَّعَ", trText: "Dağıttı.", ornek: { ar: "وَزَّعَ الحَلْوى عَلى الأَطْفالِ", tr: "Çocuklara tatlı dağıttı." } } },
+        59: { base: { emoji: "🔁", arText: "يُوَزِّعُ", trText: "Dağıtır." } },
+        61: { base: { emoji: "📘", arText: "تَوْزيع", trText: "Dağıtma, dağıtım (masdar).", ornek: { ar: "تَوْزيعُ الحَلْوى في العيدِ", tr: "Bayramda tatlı dağıtma." } } }
+    },
+
+    /* ل و ث : Kirletmek — تَلَوُّث «kirlilik» */
+    "لوث": {
+        58: { base: { emoji: "🏭", arText: "لَوَّثَ", trText: "Kirletti." } },
+        59: { base: { emoji: "🔁", arText: "يُلَوِّثُ", trText: "Kirletir." } },
+        63: { base: { emoji: "🌫️", arText: "مُلَوَّث", trText: "Kirli, kirletilmiş.", ornek: { ar: "أَعيشُ في مَدينةٍ مُلَوَّثةٍ", tr: "Kirli bir şehirde yaşıyorum." } } },
+        88: { base: { emoji: "☣️", arText: "تَلَوَّثَ", trText: "Kirlendi." } },
+        91: { base: { emoji: "💨", arText: "تَلَوُّث", trText: "Kirlilik (masdar).", ornek: { ar: "تَلَوُّثُ الجَوِّ وتَلَوُّثُ المِياهِ", tr: "Hava kirliliği ve su kirliliği." } } }
+    },
+
+    /* ح ر ق : Yakmak — حَريق «yangın» */
+    "حرق": {
+        1:  { base: { emoji: "🔥", arText: "حَرَقَ", trText: "Yaktı." } },
+        6:  { base: { emoji: "🔁", arText: "يَحْرَقُ", trText: "Yakar." } },
+        35: { base: { emoji: "🔥", arText: "حَريق", trText: "Yangın.", ornek: { ar: "حَريقُ الغاباتِ كارِثةٌ طَبيعِيّةٌ", tr: "Orman yangını bir doğal afettir." }, cogul: "حَرائِق" } },
+        77: { base: { emoji: "🕯️", arText: "اِحْتَرَقَ", trText: "Yandı." } }
+    },
+
+    /* ف ي ض : Taşmak — فَيَضان «sel» */
+    "فيض": {
+        1:  { base: { emoji: "🌊", arText: "فاضَ", trText: "Taştı, doldu taştı." } },
+        2:  { base: { emoji: "🔁", arText: "يَفيضُ", trText: "Taşar." } },
+        28: {
+            base: { emoji: "🏘️", arText: "فَيَضان", trText: "Sel, su baskını.", ornek: { ar: "تَحْدُثُ الفَيَضاناتُ كَثيرًا", tr: "Seller sık olur." }, cogul: "فَيَضانات" },
+            cogul: { emoji: "🌊", arText: "فَيَضانات", trText: "Seller." }
+        }
+    },
+
+    /* ص ي د : Avlamak — صَيْد الأَسْماك «balık tutma» */
+    "صيد": {
+        1:  { base: { emoji: "🎣", arText: "صادَ", trText: "Avladı, tuttu." } },
+        2:  { base: { emoji: "🔁", arText: "يَصيدُ", trText: "Avlar." } },
+        19: { base: { emoji: "🐟", arText: "صَيْد", trText: "Av, avlanma.", ornek: { ar: "سَأَذْهَبُ إِلى صَيْدِ الأَسْماكِ", tr: "Balık tutmaya gideceğim." } } },
+        33: { base: { emoji: "🧑‍🌾", arText: "صائِد", trText: "Avcı." } }
+    },
+
+    /* ل ق ط : Toplamak — اِلْتِقاط الصُّوَر «fotoğraf çekme» */
+    "لقط": {
+        1:  { base: { emoji: "🤏", arText: "لَقَطَ", trText: "Yerden aldı, topladı." } },
+        77: { base: { emoji: "📷", arText: "اِلْتَقَطَ", trText: "(Fotoğraf) çekti; kaptı.", ornek: { ar: "أَلْتَقِطُ صُوَرًا في كُلِّ رِحْلةٍ", tr: "Her gezide fotoğraf çekerim." } } },
+        78: { base: { emoji: "🔁", arText: "يَلْتَقِطُ", trText: "Çeker, kapar." } },
+        80: { base: { emoji: "📸", arText: "اِلْتِقاط", trText: "Çekme, yakalama (masdar).", ornek: { ar: "اِلْتِقاطُ الصُّوَرِ هِوايَتي", tr: "Fotoğraf çekmek hobimdir." } } }
     }
 };
