@@ -117,56 +117,58 @@ const educationData = {
     ],
     /* 8. SINIF — 2026-2027 programı (komisyon dosyası:
        "8. Sınıf Verileri 2026-2027.txt"). Önceki 4 ünite × 2 ders yerine
-       6 ünite × 3 ders. İçeriği hazır olan derste aktif:true yazar
-       (şu an yalnız 8_1_1); diğerlerinin başlığı listede görünür ama
-       derse girilmez. İçerik geldikçe ilgili derse aktif:true eklenecek. */
+       6 ünite × 3 ders. ON SEKİZ DERSİN TAMAMI ders kitabından
+       (Arapça 8, s.10-168) çıkarıldı ve aktif; veri dosyaları
+       muhadese/veri/8_1_1 … 8_6_3.js. */
     "8": [
         {
             unitName: "1. Ünite: Etkinlikler | الأَنْشِطَة",
             lessons: [
                 { name: "1. Ders: Kulüpler | الأَنْدِيَة", simultaneUrl: "muhadese.html?ders=8_1_1", aktif: true },
-                { name: "2. Ders: Tiyatro | المَسْرَحِيَّة", simultaneUrl: "muhadese.html?ders=8_1_2" },
-                { name: "3. Ders: Gezi | التَّجَوُّل", simultaneUrl: "muhadese.html?ders=8_1_3" },
+                { name: "2. Ders: Tiyatro | المَسْرَحِيَّة", simultaneUrl: "muhadese.html?ders=8_1_2", aktif: true },
+                { name: "3. Ders: Gezi | التَّجَوُّل", simultaneUrl: "muhadese.html?ders=8_1_3", aktif: true },
             ]
         },
         {
             unitName: "2. Ünite: Kültür ve Sanat | الثَّقافَة وَالفَنّ",
             lessons: [
-                { name: "1. Ders: Edebiyat | الأَدَب", simultaneUrl: "muhadese.html?ders=8_2_1" },
-                { name: "2. Ders: Kitap Fuarında | في مَعْرِضِ الكِتاب", simultaneUrl: "muhadese.html?ders=8_2_2" },
-                { name: "3. Ders: El Sanatları | الأَعْمالُ اليَدَوِيَّة", simultaneUrl: "muhadese.html?ders=8_2_3" },
+                { name: "1. Ders: Edebiyat | الأَدَب", simultaneUrl: "muhadese.html?ders=8_2_1", aktif: true },
+                { name: "2. Ders: Kitap Fuarında | في مَعْرِضِ الكِتاب", simultaneUrl: "muhadese.html?ders=8_2_2", aktif: true },
+                /* Kitaptaki ad الفُنون اليَدَوِيّة (s.52); komisyon dosyasındaki
+                   «الأعمال اليدوية» yerine kitabın adı esas alındı. */
+                { name: "3. Ders: El Sanatları | الفُنونُ اليَدَوِيَّة", simultaneUrl: "muhadese.html?ders=8_2_3", aktif: true },
             ]
         },
         {
             unitName: "3. Ünite: Değerlerim | قِيَمي",
             lessons: [
-                { name: "1. Ders: Arkadaşlık | الصَّداقَة", simultaneUrl: "muhadese.html?ders=8_3_1" },
-                { name: "2. Ders: Yardımlaşma | التَّعاوُن", simultaneUrl: "muhadese.html?ders=8_3_2" },
-                { name: "3. Ders: Bayramlar | الأَعْياد", simultaneUrl: "muhadese.html?ders=8_3_3" },
+                { name: "1. Ders: Arkadaşlık | الصَّداقَة", simultaneUrl: "muhadese.html?ders=8_3_1", aktif: true },
+                { name: "2. Ders: Yardımlaşma | التَّعاوُن", simultaneUrl: "muhadese.html?ders=8_3_2", aktif: true },
+                { name: "3. Ders: Bayramlar | الأَعْياد", simultaneUrl: "muhadese.html?ders=8_3_3", aktif: true },
             ]
         },
         {
             unitName: "4. Ünite: Doğa | الطَّبيعَة",
             lessons: [
-                { name: "1. Ders: Çevrenin Önemi | أَهَمِّيَّةُ البِيئَة", simultaneUrl: "muhadese.html?ders=8_4_1" },
-                { name: "2. Ders: Hayvan Sevgisi | حُبُّ الحَيَوانات", simultaneUrl: "muhadese.html?ders=8_4_2" },
-                { name: "3. Ders: Doğal Afetler | الكَوارِثُ الطَّبيعِيَّة", simultaneUrl: "muhadese.html?ders=8_4_3" },
+                { name: "1. Ders: Çevrenin Önemi | أَهَمِّيَّةُ البِيئَة", simultaneUrl: "muhadese.html?ders=8_4_1", aktif: true },
+                { name: "2. Ders: Hayvan Sevgisi | حُبُّ الحَيَوانات", simultaneUrl: "muhadese.html?ders=8_4_2", aktif: true },
+                { name: "3. Ders: Doğal Afetler | الكَوارِثُ الطَّبيعِيَّة", simultaneUrl: "muhadese.html?ders=8_4_3", aktif: true },
             ]
         },
         {
             unitName: "5. Ünite: Spor | الرِّياضَة",
             lessons: [
-                { name: "1. Ders: Sporun Tarihi | تاريخُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_1" },
-                { name: "2. Ders: Sporun Önemi | أَهَمِّيَّةُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_2" },
-                { name: "3. Ders: Spor Türleri | أَنْواعُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_3" },
+                { name: "1. Ders: Sporun Tarihi | تاريخُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_1", aktif: true },
+                { name: "2. Ders: Sporun Önemi | أَهَمِّيَّةُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_2", aktif: true },
+                { name: "3. Ders: Spor Türleri | أَنْواعُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_3", aktif: true },
             ]
         },
         {
             unitName: "6. Ünite: Okula Veda | وَداعُ المَدْرَسَة",
             lessons: [
-                { name: "1. Ders: Mezuniyet | التَّخَرُّج", simultaneUrl: "muhadese.html?ders=8_6_1" },
-                { name: "2. Ders: Arkadaşlara Veda | وَداعُ الأَصْدِقاء", simultaneUrl: "muhadese.html?ders=8_6_2" },
-                { name: "3. Ders: Yaz Tatili | العُطْلَةُ الصَّيْفِيَّة", simultaneUrl: "muhadese.html?ders=8_6_3" },
+                { name: "1. Ders: Mezuniyet | التَّخَرُّج", simultaneUrl: "muhadese.html?ders=8_6_1", aktif: true },
+                { name: "2. Ders: Arkadaşlara Veda | وَداعُ الأَصْدِقاء", simultaneUrl: "muhadese.html?ders=8_6_2", aktif: true },
+                { name: "3. Ders: Yaz Tatili | العُطْلَةُ الصَّيْفِيَّة", simultaneUrl: "muhadese.html?ders=8_6_3", aktif: true },
             ]
         }
     ],
