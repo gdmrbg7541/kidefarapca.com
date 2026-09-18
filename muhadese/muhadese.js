@@ -115,33 +115,58 @@ const educationData = {
             lessons: [{ name: "Şehrim ve Ülkem | المَدينَة وَالبَلَد", simultaneUrl: "muhadese.html?ders=7_4", aktif: true } ]
         }
     ],
+    /* 8. SINIF — 2026-2027 programı (komisyon dosyası:
+       "8. Sınıf Verileri 2026-2027.txt"). Önceki 4 ünite × 2 ders yerine
+       6 ünite × 3 ders. İçeriği hazır olan derste aktif:true yazar
+       (şu an yalnız 8_1_1); diğerlerinin başlığı listede görünür ama
+       derse girilmez. İçerik geldikçe ilgili derse aktif:true eklenecek. */
     "8": [
         {
-            unitName: "1. Ünite: Güzel Bir Günüm | يَوْمي الجَميل",
+            unitName: "1. Ünite: Etkinlikler | الأَنْشِطَة",
             lessons: [
-                { name: "1. Ders: Günlük Etkinliklerim | أَنْشِطَتي اليَوْمِيَّة", simultaneUrl: "muhadese.html?ders=8_1_1" },
-                { name: "2. Ders: Zaman ve Saat İfadeleri | تَعْبيراتُ الوَقْتِ وَالسّاعَة", simultaneUrl: "muhadese.html?ders=8_1_2" },
+                { name: "1. Ders: Kulüpler | الأَنْدِيَة", simultaneUrl: "muhadese.html?ders=8_1_1", aktif: true },
+                { name: "2. Ders: Tiyatro | المَسْرَحِيَّة", simultaneUrl: "muhadese.html?ders=8_1_2" },
+                { name: "3. Ders: Gezi | التَّجَوُّل", simultaneUrl: "muhadese.html?ders=8_1_3" },
             ]
         },
         {
-            unitName: "2. Ünite: Sağlıklı Hayatım | حَياتي الصِّحِّيَّة",
+            unitName: "2. Ünite: Kültür ve Sanat | الثَّقافَة وَالفَنّ",
             lessons: [
-                { name: "1. Ders: Sağlık | الصِّحَّة", simultaneUrl: "muhadese.html?ders=8_2_1" },
-                { name: "2. Ders: Spor | الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_2_2" },
+                { name: "1. Ders: Edebiyat | الأَدَب", simultaneUrl: "muhadese.html?ders=8_2_1" },
+                { name: "2. Ders: Kitap Fuarında | في مَعْرِضِ الكِتاب", simultaneUrl: "muhadese.html?ders=8_2_2" },
+                { name: "3. Ders: El Sanatları | الأَعْمالُ اليَدَوِيَّة", simultaneUrl: "muhadese.html?ders=8_2_3" },
             ]
         },
         {
-            unitName: "3. Ünite: İletişim Günlüğüm | يَوْمِيَّتي الاِتِّصالِيَّة",
+            unitName: "3. Ünite: Değerlerim | قِيَمي",
             lessons: [
-                { name: "1. Ders: İletişim Araçları | وَسائِلُ الاِتِّصال", simultaneUrl: "muhadese.html?ders=8_3_1" },
-                { name: "2. Ders: İletişim İfadeleri | عِباراتُ الاِتِّصال", simultaneUrl: "muhadese.html?ders=8_3_2" },
+                { name: "1. Ders: Arkadaşlık | الصَّداقَة", simultaneUrl: "muhadese.html?ders=8_3_1" },
+                { name: "2. Ders: Yardımlaşma | التَّعاوُن", simultaneUrl: "muhadese.html?ders=8_3_2" },
+                { name: "3. Ders: Bayramlar | الأَعْياد", simultaneUrl: "muhadese.html?ders=8_3_3" },
             ]
         },
         {
-            unitName: "4. Ünite: Mezun Oluyorum | أَتَخَرَّجُ",
+            unitName: "4. Ünite: Doğa | الطَّبيعَة",
             lessons: [
-                { name: "1. Ders: Meslekler | المِهَن", simultaneUrl: "muhadese.html?ders=8_4_1" },
-                { name: "2. Ders: Mezuniyet Sonrası Hedeflerim | أَهْدافي بَعْدَ التَّخَرُّج", simultaneUrl: "muhadese.html?ders=8_4_2" },
+                { name: "1. Ders: Çevrenin Önemi | أَهَمِّيَّةُ البِيئَة", simultaneUrl: "muhadese.html?ders=8_4_1" },
+                { name: "2. Ders: Hayvan Sevgisi | حُبُّ الحَيَوانات", simultaneUrl: "muhadese.html?ders=8_4_2" },
+                { name: "3. Ders: Doğal Afetler | الكَوارِثُ الطَّبيعِيَّة", simultaneUrl: "muhadese.html?ders=8_4_3" },
+            ]
+        },
+        {
+            unitName: "5. Ünite: Spor | الرِّياضَة",
+            lessons: [
+                { name: "1. Ders: Sporun Tarihi | تاريخُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_1" },
+                { name: "2. Ders: Sporun Önemi | أَهَمِّيَّةُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_2" },
+                { name: "3. Ders: Spor Türleri | أَنْواعُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_3" },
+            ]
+        },
+        {
+            unitName: "6. Ünite: Okula Veda | وَداعُ المَدْرَسَة",
+            lessons: [
+                { name: "1. Ders: Mezuniyet | التَّخَرُّج", simultaneUrl: "muhadese.html?ders=8_6_1" },
+                { name: "2. Ders: Arkadaşlara Veda | وَداعُ الأَصْدِقاء", simultaneUrl: "muhadese.html?ders=8_6_2" },
+                { name: "3. Ders: Yaz Tatili | العُطْلَةُ الصَّيْفِيَّة", simultaneUrl: "muhadese.html?ders=8_6_3" },
             ]
         }
     ],
