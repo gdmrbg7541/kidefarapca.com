@@ -9015,7 +9015,18 @@ function getSortedRefsForRoot(root) {
     if (!sozlukVerileri[root]) return [];
     const keys = Object.keys(sozlukVerileri[root]);
     const nums = keys.map(Number).filter(n => !isNaN(n)).sort((a, b) => a - b);
-    const extras = keys.filter(k => isNaN(Number(k)) && !(sozlukVerileri[root][k] && sozlukVerileri[root][k].isHiddenInList));  // joker anahtarlar (ör. "?"), gizli anahtarlar hariç
+    /* Joker anahtarlar (ör. "cogul", "22_cogul"): numaralı kutusu olmayan
+       KIRIK ÇOĞULLAR. Bunlar "?" kutusu olarak çizilir, tıklanınca kelime
+       açılır. AMA anahtarın değeri bir METİN ise (ör. kök seviyesine
+       yazılmış `not:` açıklaması) arkasında gösterilecek kelime yoktur;
+       o zaman "?" kutusu çıkar ama basınca hiçbir şey görünmez. Bu yüzden
+       yalnız NESNE değerli anahtarlar joker sayılır. */
+    const extras = keys.filter(k => {
+        if (!isNaN(Number(k))) return false;
+        const d = sozlukVerileri[root][k];
+        if (!d || typeof d !== 'object') return false;   // metin/not → joker değil
+        return !d.isHiddenInList;                         // gizli anahtarlar hariç
+    });
     return nums.concat(extras);
 }
 
