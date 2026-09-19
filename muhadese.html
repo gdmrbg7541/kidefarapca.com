@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arapça Konuşma Modülü</title>
+    <!-- sinifveri.js BURADA, aşağıdaki yükleyiciden ÖNCE: ders dosyasının
+         yolunu (öğretim yılı öneki) o belirliyor. Liste kipinde de
+         gerekiyordu, oyun kipinde de — bu yüzden ikisinin de üstünde. -->
+    <script src="sistem/sinifveri.js?v=20260919c"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -39,7 +43,13 @@
   var veri = '';
   if (d){
     var t = /^(kalip|alan)_/.exec(d);
-    veri = KOK + 'veri/' + (t ? t[1] : d) + '.js';
+    /* Öğretim yılı seçimi burada uygulanır: sınıfın seçili yılının öneki
+       KidefSinifVeri.dersYolu() ile yola girer. kalip_/alan_ dosyaları
+       yıla bağlı değildir, eski yolda kalır. */
+    veri = t ? (KOK + 'veri/' + t[1] + '.js')
+             : ((window.KidefSinifVeri && KidefSinifVeri.dersYolu)
+                 ? KidefSinifVeri.dersYolu(d, KOK + 'veri/')
+                 : KOK + 'veri/' + d + '.js');
   }
 
   var y = [];
@@ -329,9 +339,9 @@ window.muhGeri = muhGeri;
 /* Liste modunun betikleri (oynatıcı modunda gereksiz, yüklenmez). */
 (function(){
   if (window.KIDEF_DERS) return;
-  /* sinifveri.js ÖNCE: ünite listesindeki öğretim yılı rozetini o besliyor. */
-  document.write('<scr'+'ipt src="sistem/sinifveri.js?v=20260919b"><\/scr'+'ipt>');
-  document.write('<scr'+'ipt src="muhadese/muhadese.js?v=20260918h"><\/scr'+'ipt>');
+  /* sinifveri.js artık BELGENİN BAŞINDA yükleniyor (ders dosyasının yolunu
+     o belirliyor); burada ikinci kez istenmiyor. */
+  document.write('<scr'+'ipt src="muhadese/muhadese.js?v=20260919a"><\/scr'+'ipt>');
   document.write('<scr'+'ipt src="sistem/geri.js?v=20260915a"><\/scr'+'ipt>');
   document.write('<scr'+'ipt src="sistem/gorevkopru.js?v=8"><\/scr'+'ipt>');
 })();

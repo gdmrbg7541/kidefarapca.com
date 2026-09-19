@@ -2943,11 +2943,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
     
 
-    <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
-    <script src="muhadese/muhadese.js?v=20260804d"></script>
     <!-- Sınıf modül altyapısı: hangi sınıfta hangi modülün verisi var (tek kaynak)
-         + o sınıfın kartını İmam Hatip akordiyonuna basan kayıtçı. -->
-    <script src="sistem/sinifveri.js?v=20260919b"></script>
+         + o sınıfın kartını İmam Hatip akordiyonuna basan kayıtçı.
+         muhadese.js'TEN ÖNCE: educationData ağacı artık seçili öğretim
+         yılına göre değişiyor, yılı bu dosya söylüyor. -->
+    <script src="sistem/sinifveri.js?v=20260919c"></script>
+    <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
+    <script src="muhadese/muhadese.js?v=20260919a"></script>
     <script src="sistem/sinifmodul.js?v=20260919a"></script>
     <script>
     (function () {
