@@ -524,6 +524,52 @@
             }
         ]
     };
+    /* Yıla göre değişen müfredat — muhadese.js'teki educationDataYil ile
+       AYNI ağaç. 6. sınıfın 2026-2027 kitabı 4 ünite × 2 ders. */
+    var MUFREDAT_YIL = {
+        "6": {
+            "2026-2027": [
+                {
+                    "ad": "1. Ünite: Akrabalarım | أَقارِبي",
+                    "dersler": [
+                        { "ad": "1. Ders: Akrabalar | اَلْأَقارِب", "id": "6_1_1", "veri": true },
+                        { "ad": "2. Ders: Meslekler | اَلْمِهَن", "id": "6_1_2", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "2. Ünite: Haydi Okula | هَيّا إلى الْمَدْرَسَة",
+                    "dersler": [
+                        { "ad": "1. Ders: Okulun Bölümleri ve Araçları | أَقْسامُ الْمَدْرَسَة وَأَدَواتُها", "id": "6_2_1", "veri": true },
+                        { "ad": "2. Ders: Sıra Sayıları | اَلْأَعْدادُ التَّرْتيبِيَّة", "id": "6_2_2", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "3. Ünite: Vücudum | جِسْمي",
+                    "dersler": [
+                        { "ad": "1. Ders: Organlar | اَلْأَعْضاء", "id": "6_3_1", "veri": true },
+                        { "ad": "2. Ders: Hisler ve Duygular | اَلْإِحْساس وَالْمَشاعِر", "id": "6_3_2", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "4. Ünite: Bu Hafta Hava Nasıl? | كَيْفَ الْجَوّ هَذا الْأُسْبوع؟",
+                    "dersler": [
+                        { "ad": "1. Ders: Hava Durumu | اَلْأَحْوالُ الْجَوِّيَّة", "id": "6_4_1", "veri": true },
+                        { "ad": "2. Ders: Renkler | اَلْأَلْوان", "id": "6_4_2", "veri": true },
+                    ]
+                },
+            ]
+        }
+    };
+    /* Sınıfın o an seçili yılına ait ağaç; yoksa varsayılan. */
+    function mufredat(sinif) {
+        var k = String(sinif), t = MUFREDAT_YIL[k];
+        if (t && window.KidefSinifVeri && KidefSinifVeri.seciliVeriYili) {
+            var y = KidefSinifVeri.seciliVeriYili(k);
+            if (y && t[y.yil]) return t[y.yil];
+        }
+        return MUFREDAT[k] || [];
+    }
+
     var SINIFLAR = Object.keys(MUFREDAT);
     var IKON = ['\ud83c\udf1f', '\ud83c\udf40', '\ud83c\udfaf', '\ud83e\udded', '\ud83d\udd11', '\ud83c\udf08'];
 
@@ -540,7 +586,12 @@
     /* ---------- ders dosyalarını yükle ---------- */
     function dosyaYukle(id, bitti) {
         var s = document.createElement('script');
-        s.src = 'muhadese/veri/' + id + '.js?v=1';
+        /* Öğretim yılı seçimi: sınıfın seçili yılının öneki yola girer
+           (KidefSinifVeri.dersYolu). Dosya yoksa onerror boş liste yazar,
+           sayfa bozulmaz. */
+        s.src = ((window.KidefSinifVeri && KidefSinifVeri.dersYolu)
+                  ? KidefSinifVeri.dersYolu(id)
+                  : 'muhadese/veri/' + id + '.js') + '?v=1';
         s.onload = function () {
             var d = window.data;
             _kelime[id] = (d && Array.isArray(d.words)) ? d.words.slice() : [];
@@ -552,7 +603,7 @@
     }
     function sinifYukle(sinif, bitti) {
         var idler = [];
-        (MUFREDAT[sinif] || []).forEach(function (u) {
+        mufredat(sinif).forEach(function (u) {
             u.dersler.forEach(function (d) { if (d.veri && d.id && !_kelime[d.id]) idler.push(d.id); });
         });
         if (!idler.length) { bitti(); return; }
@@ -570,7 +621,7 @@
         if (!_kip) return;
         var sinif = _kip.sinif;
         for (var k in kategoriler) kategoriler[k].items = [];      /* sadece bu sınıf görünsün */
-        (MUFREDAT[sinif] || []).forEach(function (u, ui) {
+        mufredat(sinif).forEach(function (u, ui) {
             u.dersler.forEach(function (d, di) {
                 var kel = (d.id && _kelime[d.id]) ? _kelime[d.id] : [];
                 if (!kel.length) return;                            /* verisi yoksa liste açılmaz */
@@ -591,7 +642,7 @@
        küresel tablolarına yazılıyor — sıralama ve gruplama oradan okunuyor. */
     function tablolariHazirla(sinif) {
         if (typeof kategoriGruplari === 'undefined' || typeof kategoriTanimlari === 'undefined') return;
-        (MUFREDAT[sinif] || []).forEach(function (u, ui) {
+        mufredat(sinif).forEach(function (u, ui) {
             var ua = ayir(u.ad);
             kategoriGruplari[grupAnahtar(sinif, ui)] = {
                 title: ua.tr + (ua.ar ? '  ' + ua.ar : ''), icon: IKON[ui % IKON.length]
@@ -609,7 +660,7 @@
     /* ---------- derin bağlantı ---------- */
     function baslat() {
         var m = /[?&]liste=ih-(\d+)(?:-(\d+))?(?:-(\d+))?/.exec(location.search);
-        if (!m || !MUFREDAT[m[1]]) return;
+        if (!m || !mufredat(m[1]).length) return;
         _kip = { sinif: m[1], ders: (m[2] ? anahtar(m[1], +m[2] - 1, (+(m[3] || 1)) - 1) : null) };
         sinifYukle(_kip.sinif, function () {
             tablolariHazirla(_kip.sinif);
