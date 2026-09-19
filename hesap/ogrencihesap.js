@@ -1387,6 +1387,65 @@
         return h;
     }
 
+    /* ÖĞRETMENLERİM LİSTESİ — tek kaynak.
+       Ayni liste iki yerde gorunur: ogrenci panelinde (listelerim.js
+       renderStudentDashboardContent) ve ogrenci profilinde (gorev.js
+       profilKartiGuncelle). Ikisi de burayi cagirir ki metin, renk ve
+       davranis tek yerden degissin.
+       Bos dizge donerse cagiran taraf kartini HIC cizmez.
+       sec.ekle === false -> "+ Baska ogretmen" tusu cizilmez.           */
+    OH.ogretmenlerHtml = function (sec) {
+        try {
+            sec = sec || {};
+            if (ogretmenMi()) return '';
+            var onayli = OH.onayliBaglar();
+            var bekleyen = OH.bekleyenBaglar();
+            if (!onayli.length && !bekleyen.length) return '';
+
+            var aktif = String((OH.bag && OH.bag.ogretmenUid) || '');
+            var cokluMu = OH.seciciBaglar().length > 1;
+            var satirlar = onayli.map(function (b) {
+                var acik = !!b.ogretmenUid && String(b.ogretmenUid) === aktif;
+                /* Baska ogretmene GECIS ancak secilebilir birden cok bag
+                   varsa anlamlidir; tek ogretmenlide satir sadece bilgi. */
+                var gecilir = cokluMu && b.ogretmenUid && !acik;
+                return '<div' +
+                    (gecilir ? ' onclick="event.stopPropagation(); OH.ogretmenSec(\'' +
+                        String(b.ogretmenUid).replace(/'/g, "\\'") + '\')"' : '') +
+                    ' style="display:flex; align-items:center; justify-content:space-between; gap:8px;' +
+                    'padding:9px 13px; margin-top:8px; border-radius:12px; border:1px solid ' +
+                    (acik ? '#16A085; background:#16A085; color:#fff;' : '#F0DACA; background:#fff; color:#6B4A38;') +
+                    (gecilir ? ' cursor:pointer;' : '') + '">' +
+                    '<span style="font-weight:700; font-size:.92rem;">' + esc(kisaAd(b)) +
+                    (b.sinifAd ? '<span style="font-weight:600; opacity:.8;"> · ' + esc(b.sinifAd) + '</span>' : '') +
+                    '</span>' +
+                    '<span style="font-size:.74rem; opacity:.85; white-space:nowrap;">' +
+                    (acik ? 'açık' : (gecilir ? 'geç →' : '')) + '</span></div>';
+            }).join('');
+
+            var bekNot = bekleyen.length
+                ? '<div style="margin-top:8px; padding:9px 13px; border-radius:12px; background:#FEF5E7;' +
+                  'border:1px solid #F5D9A8; color:#B9770E; font-size:.82rem;">' +
+                  bekleyen.length + ' katılım isteğin onay bekliyor.</div>'
+                : '';
+
+            var ekleTus = (sec.ekle === false)
+                ? ''
+                : '<button type="button" onclick="event.stopPropagation(); OH.baskaOgretmenEkle()"' +
+                  ' style="width:100%; margin-top:12px; padding:11px; border:1px dashed #E2A879;' +
+                  'border-radius:12px; background:#fff; color:#B34700; cursor:pointer;' +
+                  'font-family:inherit; font-weight:700; font-size:.9rem;">+ Başka öğretmen</button>';
+
+            var ipucu = cokluMu
+                ? '<p style="margin:10px 0 0; font-size:.75rem; color:#A6836E;">' +
+                  'Bir öğretmene dokununca onun sınıfı açılır.</p>'
+                : '<p style="margin:10px 0 0; font-size:.75rem; color:#A6836E;">' +
+                  'Aynı anda birden çok öğretmenin öğrencisi olabilirsin.</p>';
+
+            return satirlar + bekNot + ekleTus + ipucu;
+        } catch (e) { return ''; }
+    };
+
     /* Serit her durumda tek yerden cizilir. */
     OH.bannerGuncelle = function () {
         var b = document.getElementById('ohBanner');

@@ -1703,10 +1703,18 @@ function addLevel(oncedenKurum) {
                 db.collection('ogrenciBaglari').doc(llBagKimlik(st.hesapUid, _ogtUid))
                     .set({ durum: durum, uid: st.hesapUid, guncelleme: Date.now() }, { merge: true })
                     .catch(() => { });
-                if (durum === 'kopuk' && st.loginCode) {
-                    db.collection('davetler').doc(String(st.loginCode).toUpperCase())
-                        .set({ kullanildi: false, ogrenciUid: null, guncelleme: Date.now() }, { merge: true })
-                        .catch(() => { });
+                if (durum === 'kopuk') {
+                    /* Sinif SILINDI: ayna ozet de gitsin, yoksa ogrenci
+                       ekraninda artik var olmayan sinifin notlari/gorevleri
+                       bir sure daha durur. (Arsivde SILINMEZ: sinif geri
+                       yuklenince ogrenci kaldigi yerden devam etsin.)     */
+                    db.collection('ogrenciOzet').doc(llBagKimlik(st.hesapUid, _ogtUid))
+                        .delete().catch(() => { });
+                    if (st.loginCode) {
+                        db.collection('davetler').doc(String(st.loginCode).toUpperCase())
+                            .set({ kullanildi: false, ogrenciUid: null, guncelleme: Date.now() }, { merge: true })
+                            .catch(() => { });
+                    }
                 }
             });
         } catch (e) { }
@@ -2351,6 +2359,146 @@ function closeNoteModal() {
         save();
     }
 
+/* ÇOK SEÇENEKLİ ONAY PENCERESİ.
+   llOnay iki tuşludur (Evet / Vazgeç). Burada her seçenek kendi rengi ve
+   açıklamasıyla ayrı bir tuş olur; "sil" ile "bağı kopar" gibi birbirine
+   benzemeyen iki işlem aynı pencerede karışmadan sorulabilir.
+   ayar: { baslik, mesaj, ton:'normal'|'tehlike', vazgec,
+           secenekler:[{ etiket, aciklama, ton, calis }] }              */
+function llSecim(ayar) {
+    ayar = ayar || {};
+    let k = document.getElementById('llSecimModal');
+    if (!k) {
+        k = document.createElement('div');
+        k.id = 'llSecimModal';
+        k.setAttribute('style', 'display:none; position:fixed; inset:0; z-index:1000095; background:rgba(0,0,0,.55);' +
+            'backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;');
+        k.innerHTML = `
+            <div style="background:#fff; width:100%; max-width:470px; border-radius:16px; overflow:hidden; box-shadow:0 18px 46px rgba(0,0,0,.35);">
+                <div id="llSecimBaslik" style="color:#fff; padding:12px 16px; font-weight:700;"></div>
+                <div style="padding:18px 16px;">
+                    <p id="llSecimMetin" style="margin:0 0 14px; color:#6B4A38; line-height:1.6; white-space:pre-line;"></p>
+                    <div id="llSecimTuslar" style="display:flex; flex-direction:column; gap:9px;"></div>
+                    <button type="button" id="llSecimVazgec" style="width:100%; margin-top:11px; padding:12px;
+                        border:1px solid #F0DACA; border-radius:11px; cursor:pointer; font-family:inherit;
+                        font-weight:700; color:#B34700; background:#fff;">Vazgeç</button>
+                </div>
+            </div>`;
+        document.body.appendChild(k);
+    }
+    const tehlike = ayar.ton !== 'normal';
+    k.querySelector('#llSecimBaslik').textContent = ayar.baslik || '❓ Ne yapılsın?';
+    k.querySelector('#llSecimBaslik').style.background = tehlike
+        ? 'linear-gradient(135deg,#E74C3C,#C0392B)' : 'linear-gradient(135deg,#F39C12,#D84315)';
+    k.querySelector('#llSecimMetin').textContent = String(ayar.mesaj == null ? '' : ayar.mesaj);
+
+    const kap = k.querySelector('#llSecimTuslar');
+    kap.innerHTML = '';
+    (ayar.secenekler || []).forEach(sec => {
+        const t = document.createElement('button');
+        t.type = 'button';
+        const kirmizi = sec.ton === 'tehlike';
+        t.setAttribute('style', 'width:100%; padding:12px 14px; border:none; border-radius:11px; cursor:pointer;' +
+            'font-family:inherit; text-align:right; color:#fff; line-height:1.45; background:' +
+            (kirmizi ? 'linear-gradient(135deg,#E74C3C,#C0392B)' : 'linear-gradient(135deg,#20C997,#16A085)') + ';');
+        t.innerHTML = '<span style="font-weight:700; font-size:.98rem;">' + behKacis(sec.etiket || '') + '</span>' +
+            (sec.aciklama ? '<span style="display:block; margin-top:3px; font-size:.78rem; opacity:.92;">' +
+                behKacis(sec.aciklama) + '</span>' : '');
+        t.onclick = () => { k.style.display = 'none'; try { sec.calis && sec.calis(); } catch (e) { console.warn(e); } };
+        kap.appendChild(t);
+    });
+
+    const vz = k.querySelector('#llSecimVazgec');
+    vz.textContent = ayar.vazgec || 'Vazgeç';
+    vz.onclick = () => { k.style.display = 'none'; };
+    k.style.display = 'flex';
+    /* Esc ve perdeye tıklamak = VAZGEÇ; hiçbir seçeneği çalıştırmaz. */
+    if (!k._llKacis) {
+        k._llKacis = true;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && k.style.display !== 'none') { k.style.display = 'none'; e.preventDefault(); }
+        });
+        k.addEventListener('click', (e) => { if (e.target === k) k.style.display = 'none'; });
+    }
+    setTimeout(() => { try { vz.focus(); } catch (e) { } }, 60);
+}
+window.llSecim = llSecim;
+
+/* HESAP ROZETİ — öğretmen listede kimin HESAPLA girdiğini görsün.
+   hesapUid varsa öğrenci gerçek bir hesapla bağlanmıştır: görevler,
+   sonuçlar ve mesajlaşma bulut üzerinden çalışır. Yoksa öğrenci listede
+   yalnız bir isimdir; sınıfa ancak giriş koduyla girer, bulutta kaydı
+   yoktur (bu yüzden "girdi mi" bilgisi de tutulmaz).                   */
+function llHesapRozeti(s) {
+    const ortak = 'flex:none; display:inline-block; padding:2px 9px; border-radius:999px;' +
+        'font-size:.68rem; font-weight:700; white-space:nowrap; cursor:default;';
+    if (s && s.hesapUid) {
+        const eposta = s.hesapEmail ? String(s.hesapEmail) : '';
+        return '<span title="' + behKacis('Hesapla bağlı' + (eposta ? ' — ' + eposta : '') +
+            '. Görevler, sonuçlar ve mesajlaşma bu öğrencide çalışır.') + '" style="' + ortak +
+            ' background:#E8F8F0; color:#16A085; border:1px solid #A9DFCB;">✓ Hesaplı</span>';
+    }
+    return '<span title="' + behKacis('Hesap bağlı değil — listede yalnız isim olarak duruyor. ' +
+        'Sınıfa giriş koduyla girer; bulut görevleri ve mesajlaşma çalışmaz.') + '" style="' + ortak +
+        ' background:#F4F1EE; color:#9B8577; border:1px solid #E6DCD3;">Kod ile</span>';
+}
+window.llHesapRozeti = llHesapRozeti;
+
+/* ÖĞRENCİ–ÖĞRETMEN BAĞINI KOPARIR (bulut + yerel).
+   İki yerden çağrılır: öğrenci silinirken ve "yalnız bağı kopar" denince.
+     1) ogrenciBaglari/{ogrenci__ogretmen} -> durum 'kopuk'
+     2) ogrenciOzet (ayna kayıt) silinir   -> öğrenci eski sınıfı görmez
+     3) davet kodu yeniden kullanılabilir olur
+     4) YEREL satırdaki hesapUid/hesapEmail temizlenir
+   4. madde ŞART: OH.bagTemizligi öğretmen girişinde "kopuk ama öğrenci
+   hâlâ sınıfta" gördüğünde bağı KENDİLİĞİNDEN ONARIYOR. hesapUid satırda
+   kalırsa kopardığımız bağ bir sonraki girişte geri bağlanır.
+   Bulut yazması başarısız olsa bile yerel temizlik yapılır; o durumda
+   bagTemizligi bir sonraki girişte aynı sonuca götürür.
+   ESKİ TEK KİMLİKLİ kayda yalnız ogretmenUid'si BİZ isek dokunulur —
+   o kimlik eskiden öğrenci başına tekti, başka öğretmenin bağı olabilir. */
+function llBagiKopar(st) {
+    if (!st || !st.hesapUid) return;
+    const ogrUid = String(st.hesapUid), kod = st.loginCode;
+    delete st.hesapUid;
+    delete st.hesapEmail;
+    try {
+        if (typeof db === 'undefined' || !db) return;
+        if (typeof firebase === 'undefined' || !firebase.auth || !firebase.auth().currentUser) return;
+        const ogtUid = firebase.auth().currentUser.uid;
+        const bagId = llBagKimlik(ogrUid, ogtUid);
+
+        db.collection('ogrenciBaglari').doc(bagId).set(
+            { durum: 'kopuk', uid: ogrUid, ogretmenUid: ogtUid, guncelleme: Date.now() },
+            { merge: true }).catch(() => { });
+        db.collection('ogrenciOzet').doc(bagId).delete().catch(() => { });
+
+        if (bagId !== ogrUid) {
+            /* Eski kimlik: BAŞKA öğretmenin bağı olabilir, önce bakılır. */
+            db.collection('ogrenciBaglari').doc(ogrUid).get().then(d => {
+                if (!d.exists) return;
+                const v = d.data() || {};
+                if (String(v.ogretmenUid || '') !== String(ogtUid)) return;
+                return db.collection('ogrenciBaglari').doc(ogrUid)
+                    .set({ durum: 'kopuk', guncelleme: Date.now() }, { merge: true });
+            }).catch(() => { });
+            db.collection('ogrenciOzet').doc(ogrUid).get().then(d => {
+                if (!d.exists) return;
+                const v = d.data() || {};
+                if (String(v.ogretmenUid || '') !== String(ogtUid)) return;
+                return db.collection('ogrenciOzet').doc(ogrUid).delete();
+            }).catch(() => { });
+        }
+
+        /* Giriş kodu yeniden kullanılabilir olsun: öğrenci isterse aynı
+           kodla yeniden bağlanabilir, öğretmen de kodu başkasına verebilir. */
+        if (kod) db.collection('davetler').doc(String(kod).toUpperCase())
+            .set({ kullanildi: false, ogrenciUid: null, guncelleme: Date.now() }, { merge: true })
+            .catch(() => { });
+    } catch (e) { console.warn('bağ koparma:', e && (e.code || e.message)); }
+}
+window.llBagiKopar = llBagiKopar;
+
 function renderStudents() {
     if (!curLId || !curCId || !data.levels[curLId] || !data.levels[curLId].classes[curCId]) return;
     
@@ -2390,10 +2538,14 @@ function renderStudents() {
         row.innerHTML = `
             <td style="text-align:center; font-weight:bold; font-size:1.2rem;">${i + 1}</td>
             <td>
-                <input type="text" value="${behKacis(s.name || '')}"
-                       onchange="updateStudentName(${i}, this.value)"
-                       class="student-name-input"
-                       placeholder="Öğrenci Adı">
+                <div style="display:flex; align-items:center; gap:7px;">
+                    <input type="text" value="${behKacis(s.name || '')}"
+                           onchange="updateStudentName(${i}, this.value)"
+                           class="student-name-input"
+                           placeholder="Öğrenci Adı"
+                           style="flex:1; min-width:60px;">
+                    ${llHesapRozeti(s)}
+                </div>
             </td>
             <td style="text-align:center;">
                 <input type="text" value="${behKacis(s.numara == null ? '' : String(s.numara))}"
@@ -2498,12 +2650,58 @@ function updateStudentNo(i, val) {
 window.updateStudentNo = updateStudentNo;
 
 /* Ogrenci silme de sifre ister (kurum/seviye/sinif silme ile ayni kural). */
+/* SİLME: satır ile BAĞ ayrı şeylerdir.
+   - Hesapsız öğrenci: eski sade onay penceresi (değişmedi).
+   - Hesaplı öğrenci: öğretmen ikisini ayrı ayrı seçer —
+       * "Bağı kopar"   -> satır ve notlar kalır, bulut bağı kesilir
+       * "Tamamen sil"  -> satır gider, bağ da kesilir
+   Eskiden satır silinince bulut bağı OLDUĞU GİBİ kalıyordu; öğrenci
+   silindiği sınıfı görmeye devam ediyordu (ancak bir sonraki öğretmen
+   girişinde OH.bagTemizligi fark edip koparıyordu).                    */
 function deleteStu(i) {
     const devam = function () {
-        showConfirm("Öğrenci Sil", "Bu öğrenciyi silmek istediğinize emin misiniz?", llIcon('cop','lli-xl'), () => {
-            data.levels[curLId].classes[curCId].students.splice(i, 1);
-            save();
-            renderStudents();
+        const liste = (((data.levels[curLId] || {}).classes || {})[curCId] || {}).students;
+        if (!Array.isArray(liste)) return;
+        const st = liste[i];
+        const ad = (st && st.name) ? st.name : 'Bu öğrenci';
+
+        if (!st || !st.hesapUid) {
+            showConfirm("Öğrenci Sil", "Bu öğrenciyi silmek istediğinize emin misiniz?", llIcon('cop','lli-xl'), () => {
+                liste.splice(i, 1);
+                save();
+                renderStudents();
+            });
+            return;
+        }
+
+        llSecim({
+            baslik: '⚠️ ' + ad,
+            mesaj: 'Bu öğrencinin bağlı bir hesabı var' +
+                   (st.hesapEmail ? ' (' + st.hesapEmail + ')' : '') + '. Ne yapılsın?',
+            secenekler: [
+                {
+                    etiket: 'Bağı kopar — öğrenci listede kalsın',
+                    aciklama: 'Notları, davranış kayıtları ve giriş kodu durur. Öğrenci bu sınıfı artık görmez; ' +
+                              'isterse aynı kodla yeniden bağlanabilir.',
+                    ton: 'normal',
+                    calis: function () {
+                        llBagiKopar(st);
+                        save(); renderStudents();
+                        llBilgi('"' + ad + '" hesap bağı koparıldı. Öğrenci listede duruyor.');
+                    }
+                },
+                {
+                    etiket: 'Öğrenciyi tamamen sil',
+                    aciklama: 'Satır listeden kalkar, bu sınıftaki notları da gider. Hesap bağı da koparılır.',
+                    ton: 'tehlike',
+                    calis: function () {
+                        llBagiKopar(st);
+                        liste.splice(i, 1);
+                        save(); renderStudents();
+                        llBilgi('"' + ad + '" silindi; hesap bağı da koparıldı.');
+                    }
+                }
+            ]
         });
     };
     if (typeof islemSifresiSor === 'function') islemSifresiSor(devam); else devam();
@@ -5465,25 +5663,11 @@ function switchView(role) {
         isStudentViewOpen = true; // Global değişkeni güncelle
         llRootEl().classList.add('role-student');
         
-        // Öğrenciye özel kartları yerleştir
-        studentContent.innerHTML = `
-            <div class="student-card" onclick="alert('Satranç Dünyam Açılıyor...')" style="background: #FFF9C4; padding: 40px; border-radius: 25px; cursor: pointer; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                <div>${llIcon('piyon','lli-xxl')}</div>
-                <h3 style="margin-top:15px;">Satranç Dünyam</h3>
-            </div>
-            
-            <div class="student-card" style="background: #C8E6C9; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                <div>${llIcon('kupa','lli-xxl')}</div>
-                <h3 style="margin-top:15px;">Puan Durumum</h3>
-                <p style="font-size: 32px; font-weight: bold; color: #2E7D32;">Giriş Başarılı ${llIcon('onay')}</p>
-            </div>
-
-            <div class="student-card" style="background: #E3F2FD; padding: 40px; border-radius: 25px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                <div>${llIcon('takvim','lli-xxl')}</div>
-                <h3 style="margin-top:15px;">Haftalık Görevler</h3>
-                <p style="font-size: 14px; color: #666;">Görevlerini buradan takip edebilirsin.</p>
-            </div>
-        `;
+        /* Kartlar TEK yerden cizilir: renderStudentDashboardContent().
+           Burada ikinci bir kopya duruyordu ve uc kart cizdigi icin
+           "Ogretmenimden Mesajlar" ile "Ogretmenlerim" kartlari panel
+           bu yoldan acildiginda hic gorunmuyordu. Kopya kaldirildi. */
+        if (typeof renderStudentDashboardContent === 'function') renderStudentDashboardContent();
     } else {
         // --- ÇIKIŞ MANTIĞI ---
         
@@ -5520,21 +5704,31 @@ function switchView(role) {
 }
 
 
-function renderStudentDashboard(container) {
-    container.innerHTML = `
-        <div class="student-card marhey-text" style="padding: 20px; background: #fffde7; border-radius: 15px;">
-            <h2 style="color: #fbc02d;">Benim Dünyam</h2>
-            <div class="game-links" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-                <div class="game-item" style="background: white; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #fff9c4;">
-                    <span>${llIcon('piyon','lli-b')}</span><br>Satranç Dünyam
-                </div>
-                <div class="game-item" style="background: white; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #fff9c4;">
-                    <span>${llIcon('not','lli-b')}</span><br>Ödevlerim
-                </div>
-            </div>
-        </div>
-    `;
-} 
+
+/* ÖĞRETMENLERİM KARTI — öğrenci panelinde görünür.
+   Bir öğrenci birden çok öğretmenin öğrencisi olabilir; bu kart
+   öğretmenlerini listeler, aralarında geçiş yaptırır ve yenisini
+   eklemeyi başlatır.
+   Listenin KENDİSİ OH.ogretmenlerHtml() içinde — aynı liste öğrenci
+   profilinde de (sistem/gorev.js) çizildiği için tek kaynaktan gelir.
+   OH yoksa ya da öğrencinin hiç bağı yoksa kart HİÇ çizilmez; panel
+   eskisi gibi kalır. */
+function llOgretmenKarti() {
+    try {
+        if (!(window.OH && OH.ogretmenlerHtml)) return '';
+        var ic = OH.ogretmenlerHtml();
+        if (!ic) return '';
+        var coklu = (OH.seciciBaglar ? OH.seciciBaglar().length : 0) > 1;
+        return '' +
+            '<div class="student-card" style="background:#D7CCC8; padding:28px 24px; border-radius:25px;' +
+            'text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.05);">' +
+            '<div>' + llIcon('okul', 'lli-xxl') + '</div>' +
+            '<h3 style="margin-top:12px;">' + (coklu ? 'Öğretmenlerim' : 'Öğretmenim') + '</h3>' +
+            '<div style="text-align:left;">' + ic + '</div>' +
+            '</div>';
+    } catch (e) { return ''; }
+}
+window.llOgretmenKarti = llOgretmenKarti;
 
 function renderStudentDashboardContent() {
     const studentContent = document.getElementById('student-dynamic-content');
@@ -5565,6 +5759,8 @@ function renderStudentDashboardContent() {
             <h3 style="margin-top:15px;">Öğretmenimden Mesajlar${okunmamisMesaj ? `<span id="ogrMesajRozet" class="ogr-mesaj-rozet">${okunmamisMesaj}</span>` : ''}</h3>
             <p style="font-size: 14px; color: #666;">Sadece sen ve öğretmenin görebilir.</p>
         </div>
+
+        ${llOgretmenKarti()}
     `;
 }
 

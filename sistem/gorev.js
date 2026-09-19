@@ -1532,12 +1532,27 @@
               '<span style="width:11px; height:11px; border-radius:50%; background:#E67E22; flex:none;' +
               ' animation:llNoktaNabiz 1.7s infinite;"></span></div>'
             : '';
+        /* ÖĞRETMENLERİM: bir ogrenci birden cok ogretmenin ogrencisi
+           olabilir. Zaten bagli olan ogrenci ikinci bir ogretmene
+           BURADAN katilir; listenin kendisi OH.ogretmenlerHtml() ile
+           tek yerden gelir (ogrenci panelindeki kartla ayni cizim). */
+        var ogtIc = (window.OH && OH.ogretmenlerHtml) ? OH.ogretmenlerHtml() : '';
+        var ogtBek = 0;
+        try { ogtBek = (window.OH && OH.bekleyenBaglar) ? OH.bekleyenBaglar().length : 0; } catch (e) { }
+        var ogtAkordiyon = ogtIc
+            ? akordiyon('prfOgretmenler', '#16A085', '<span>🎓 Öğretmenlerim</span>' +
+                (ogtBek ? '<span style="font-size:.72rem; font-weight:700; padding:2px 9px; border-radius:999px;' +
+                    'background:#FEF5E7; color:#B9770E;">onay bekleniyor</span>' : ''),
+                ogtIc, ogtBek > 0)
+            : '';
+
         kart.innerHTML = bildirimSeridi + mesajSeridi +
             akordiyon('prfGorevler', '#D84315', gorevBaslik, ogrListeHTML(6), bekleyen > 0) +
             akordiyon('prfSonuclar', '#7B1FA2', '<span>🏆 Genel Sonuçlarım</span>',
                 notOzetiHTML() +
                 '<div style="font-weight:800; color:#7B1FA2; margin:0 0 8px; font-size:.95rem;">🎮 Etkinlik Sonuçlarım</div>' +
                 '<div id="gvPrfProfilSonuc"><p style="margin:0; font-size:.85rem; color:#A6836E;">Yükleniyor…</p></div>', false) +
+            ogtAkordiyon +
             akordiyon('prfKodum', '#F39C12', '<span>🎫 Öğrenci Kodum</span>', kodIcerik, false);
 
         GV.sonuclariDoldur('gvPrfProfilSonuc');
@@ -1711,142 +1726,15 @@
         if (g) g.innerHTML = ogrListeHTML(0);
     };
 
-    /* ================================================================ OGRENCI PROFILI ("Ogrenci Dunyam")
+    /* NOT: burada "Ogrenci Dunyam" ekrani vardi (GV.profilAc / profilCiz /
+       profilKapat / profilVerileriYukle). Basliktaki ROKET simgesinden
+       aciliyordu; roket kaldirilinca profilAc hicbir yerden cagrilmaz
+       oldu, yani ekran ulasilamaz olu koda dondu ve silindi.
+       Ogrencinin gercekten gordugu profil GV.profilKartiGuncelle()
+       ile cizilen #student-profile-section kartidir.                    */
 
-       Basliktaki roket simgesi (tab-ogrenciprofil) buraya baglanir.
-       Mevcut #student-overlay ("Ogrenci Dunyasi") gercek verilerle doldurulur:
-         - kimlik: ad, ogretmen, seviye/sinif, GIRIS KODU (kopyalanabilir)
-         - satin alinan dersler (paketler)
-         - ogretmenin verdigi gorevler (bekleyen/biten)
-         - genel sonuclar: oyun rekorlari + mini gelisim cizgisi              */
-
-    GV._profilEskiTus = null;
-
-    GV.profilAc = function (e) {
-        if (e && e.preventDefault) e.preventDefault();
-        var overlay = document.getElementById('student-overlay');
-        if (!overlay) return false;
-        /* Katman listelerim bolumunun ICINDE durur; o bolum gizliyken
-           (ogrenci ana sayfada) position:fixed bile olsa GORUNMEZ kalir.
-           Ilk aciliste govdeye tasinir — ogretmen onizlemesi etkilenmez,
-           cunku switchView elemani id ile bulur.                          */
-        if (overlay.parentElement !== document.body) document.body.appendChild(overlay);
-        if (!(window.OH && OH.bagliMi && OH.bagliMi())) {
-            /* bagli degilse once kod ekrani */
-            if (window.OH && typeof OH.kodModalAc === 'function') OH.kodModalAc();
-            return false;
-        }
-        /* "Cikis Yap" tusunu profil kipinde "Kapat"a cevir (eski hali saklanir) */
-        var tus = overlay.querySelector('button[onclick*="switchView"]');
-        if (tus) {
-            GV._profilEskiTus = { el: tus, onclick: tus.getAttribute('onclick'), metin: tus.textContent };
-            tus.removeAttribute('onclick');
-            tus.onclick = function () { GV.profilKapat(); };
-            tus.textContent = 'Kapat';
-        }
-        overlay.style.display = 'block';
-        GV.profilCiz();
-        GV.profilVerileriYukle();
-        return false;
-    };
-
-    GV.profilKapat = function () {
-        var overlay = document.getElementById('student-overlay');
-        if (overlay) overlay.style.display = 'none';
-        var h = GV._profilEskiTus;
-        if (h && h.el) {
-            h.el.onclick = null;
-            if (h.onclick) h.el.setAttribute('onclick', h.onclick);
-            h.el.textContent = h.metin || 'Çıkış Yap';
-        }
-        GV._profilEskiTus = null;
-    };
-
-    function profilKart(baslik, ic, arka) {
-        return '<div class="student-card" style="background:' + (arka || '#fff') + '; padding:22px; border-radius:22px;' +
-            'box-shadow:0 4px 15px rgba(0,0,0,.05); text-align:left;">' +
-            '<h3 style="margin:0 0 12px; color:#9C3B0C; font-size:1.05rem;">' + baslik + '</h3>' + ic + '</div>';
-    }
-
-    GV.profilCiz = function () {
-        var g = document.getElementById('student-dynamic-content');
-        if (!g) return;
-        var bag = (window.OH && OH.bag) || {};
-        var ad = bag.ad || ((typeof appState !== 'undefined' && appState.currentUserName) || 'Öğrenci');
-
-        /* kimlik + giris kodu */
-        var satir = function (et, deg) {
-            return '<div style="display:flex; justify-content:space-between; gap:10px; padding:6px 0;' +
-                'border-bottom:1px dashed #F3E2D3; font-size:.92rem;">' +
-                '<span style="color:#A6836E;">' + et + '</span><span style="color:#6B4A38; font-weight:700;' +
-                'text-align:right;">' + deg + '</span></div>';
-        };
-        /* COKLU OGRETMEN: ogrenci birden cok ogretmenin ogrencisi olabilir.
-           Hepsi listelenir (aktif olan isaretli) ve buradan yeni ogretmen
-           eklenebilir — serit yalnizca mesaj kutusunun icinde durdugu icin
-           ogrencinin bu yolu bulabilecegi ASIL yer burasi. */
-        var ogtSatiri = function () {
-            var hepsi = (window.OH && OH.onayliBaglar) ? OH.onayliBaglar() : [];
-            var bekleyen = (window.OH && OH.bekleyenBaglar) ? OH.bekleyenBaglar() : [];
-            var ekle = (window.OH && OH.baskaOgretmenEkle)
-                ? '<button type="button" onclick="OH.baskaOgretmenEkle()" style="margin-left:8px;' +
-                  'padding:4px 10px; border:1px solid #F0DACA; border-radius:8px; background:#FFF6EC;' +
-                  'color:#B34700; cursor:pointer; font-family:inherit; font-size:.72rem; font-weight:700;">' +
-                  '+ Başka öğretmen</button>' : '';
-            if (hepsi.length < 2) {
-                return satir('Öğretmen', esc((hepsi[0] && hepsi[0].ogretmenAd) || bag.ogretmenAd || '—') + ekle) +
-                       (bekleyen.length ? satir('Onay bekleyen', bekleyen.length + ' istek') : '');
-            }
-            var liste = hepsi.map(function (x) {
-                var aktif = bag && String(x.ogretmenUid) === String(bag.ogretmenUid);
-                return (aktif ? '<b>' : '') + esc(x.ogretmenAd || 'Öğretmen') +
-                       (x.sinifAd ? ' <span style="color:#A6836E; font-weight:600;">· ' + esc(x.sinifAd) + '</span>' : '') +
-                       (aktif ? '</b> <span style="color:#16A085; font-size:.75rem;">(açık)</span>' : '');
-            }).join('<br>');
-            return satir('Öğretmenlerin', liste + ekle) +
-                   (bekleyen.length ? satir('Onay bekleyen', bekleyen.length + ' istek') : '');
-        };
-        var kimlik =
-            satir('Ad', esc(ad)) +
-            ogtSatiri() +
-            satir('Seviye / Sınıf', esc((bag.seviyeAd || '—') + (bag.sinifAd ? ' / ' + bag.sinifAd : ''))) +
-            '<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 0 2px;">' +
-            '<span style="color:#A6836E; font-size:.92rem;">Giriş kodun</span>' +
-            '<span style="display:flex; align-items:center; gap:8px;">' +
-            '<b style="letter-spacing:1px; color:#D84315;">' + esc(bag.kod || '—') + '</b>' +
-            '<button type="button" onclick="GV.koduKopyala(this)" style="padding:5px 10px; border:1px solid #F0DACA;' +
-            'border-radius:8px; background:#FFF6EC; color:#B34700; cursor:pointer; font-family:inherit; font-size:.74rem;' +
-            'font-weight:700;">Kopyala</button></span></div>' +
-            '<p style="margin:8px 0 0; font-size:.74rem; color:#B9A08D;">Bu kod hesabını öğretmenine bağlayan koddur; bir daha girmen gerekmez.</p>';
-
-        /* satin alinan dersler */
-        var paketler = [];
-        try {
-            var sahip = (appState.purchasedPackages || []);
-            [].concat(appState.packages || [], appState.onlinePackages || []).forEach(function (p) {
-                if (p && sahip.indexOf(p.id) >= 0) paketler.push(p.title || p.name || ('Paket ' + p.id));
-            });
-        } catch (e2) { }
-        var dersler = paketler.length
-            ? paketler.map(function (t) {
-                return '<div style="display:flex; align-items:center; gap:8px; padding:7px 0;' +
-                    'border-bottom:1px dashed #E8F6F1; font-size:.9rem; color:#0E6655;">✓ ' + esc(t) + '</div>';
-            }).join('')
-            : '<p style="margin:0; font-size:.88rem; color:#A6836E;">Henüz satın alınmış ders paketi yok.</p>';
-
-        g.innerHTML =
-            profilKart('👤 Kimliğim', kimlik, '#FFF8F2') +
-            profilKart('📚 Satın Aldığım Dersler', dersler, '#F0FBF7') +
-            profilKart('📋 Görevlerim', '<div id="gvPrfGorev"><p style="margin:0; font-size:.85rem; color:#A6836E;">Yükleniyor…</p></div>', '#FFF6EC') +
-            profilKart('🏆 Genel Sonuçlarım', '<div id="gvPrfSonuc"><p style="margin:0; font-size:.85rem; color:#A6836E;">Yükleniyor…</p></div>', '#F4F0FF') +
-            (typeof window.ogrMesajAc === 'function'
-                ? '<div class="student-card" onclick="ogrMesajAc()" style="background:#FFE0B2; padding:22px; border-radius:22px;' +
-                'cursor:pointer; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,.05);">' +
-                '<h3 style="margin:0; color:#9C3B0C;">✉️ Öğretmenimden Mesajlar</h3>' +
-                '<p style="margin:8px 0 0; font-size:.82rem; color:#8B6A57;">Sadece sen ve öğretmenin görebilir.</p></div>'
-                : '');
-    };
-
+    /* CANLI: profilKartiGuncelle icindeki "Ogrenci Kodum" akordiyonu
+       bu islevi cagirir (silinmez). */
     GV.koduKopyala = function (btn) {
         var kod = (window.OH && OH.bag && OH.bag.kod) || '';
         if (!kod) return;
@@ -1868,59 +1756,7 @@
         } catch (e) { }
     };
 
-    GV.profilVerileriYukle = function () {
-        var u = oturum(), D = veri();
-        if (!u || !D) return;
-
-        /* 1) gorevler (mevcut ogrenci yukleyicisini kullan, sonra ozetle) */
-        var gorevBitti = function () {
-            var el = document.getElementById('gvPrfGorev');
-            if (!el) return;
-            if (!GV.ogrGorevler.length) {
-                el.innerHTML = '<p style="margin:0; font-size:.88rem; color:#A6836E;">Öğretmenin henüz görev göndermedi.</p>';
-                return;
-            }
-            var simdi = Date.now();
-            var bekleyen = GV.ogrGorevler.filter(function (v) { return !GV.ogrSonuclar[v._id]; });
-            var satirlar = GV.ogrGorevler.slice(0, 5).map(function (v) {
-                var r = GV.ogrSonuclar[v._id];
-                var doldu = !!(v.sonTarih && simdi > v.sonTarih);
-                var durum = r ? '<b style="color:#1E8449;">✓ %' + (r.yuzde || 0) + '</b>'
-                    : (doldu ? '<b style="color:#E74C3C;">süresi doldu</b>' : '<b style="color:#B34700;">bekliyor</b>');
-                return '<a href="' + esc(v.oyun) + '?gorev=' + esc(v._id) + '" target="_blank" rel="opener" ' +
-                    'style="display:flex; justify-content:space-between; gap:8px; padding:7px 0; text-decoration:none;' +
-                    'border-bottom:1px dashed #F0DACA; font-size:.88rem; color:#6B4A38;">' +
-                    '<span>' + esc(v.baslik || oyunAdi(v.oyun)) + '</span>' + durum + '</a>';
-            }).join('');
-            el.innerHTML =
-                '<p style="margin:0 0 8px; font-size:.82rem; color:#8B6A57;"><b style="color:#D84315;">' + bekleyen.length +
-                '</b> bekleyen görevin var.</p>' + satirlar +
-                (GV.ogrGorevler.length > 5
-                    ? '<button type="button" onclick="GV.ogrPanelAc()" style="margin-top:10px; width:100%; padding:9px;' +
-                    'border:1px solid #F0DACA; border-radius:9px; background:#fff; color:#B34700; cursor:pointer;' +
-                    'font-family:inherit; font-weight:700; font-size:.8rem;">Tümünü gör (' + GV.ogrGorevler.length + ')</button>'
-                    : '');
-        };
-        var bag = (window.OH && OH.bag) || null;
-        if (bag && bag.ogretmenUid) {
-            /* ogrYukle zaten filtre + sonuc getiriyor; bitince ozet cizilir */
-            var _eski = GV.ogrGorevler.length;
-            GV.ogrYukle();
-            var deneme = 0;
-            var bekle = setInterval(function () {
-                deneme++;
-                if (GV.ogrGorevler.length !== _eski || deneme > 20) { clearInterval(bekle); gorevBitti(); }
-                if (deneme > 20) clearInterval(bekle);
-            }, 250);
-            setTimeout(gorevBitti, 5200);   /* emniyet: her durumda ciz */
-        } else gorevBitti();
-
-        /* 2) genel sonuclar: kendi rekorlari */
-        GV.sonuclariDoldur('gvPrfSonuc');
-    };
-
-    /* Kendi rekorlarini verilen elemana cizer (hem profil sayfasi hem
-       Ogrenci Dunyam ekrani ayni cizimi kullanir). */
+    /* Kendi rekorlarini verilen elemana cizer. */
     GV.sonuclariDoldur = function (elId) {
         var u = oturum(), D = veri();
         if (!u || !D || !document.getElementById(elId)) return;
