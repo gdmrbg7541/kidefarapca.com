@@ -962,6 +962,16 @@
     OH.kodModalKapat = function () {
         var k = document.getElementById('ohKodModal');
         if (k) k.style.display = 'none';
+        OH._ekleKipi = false;          /* pencere kapaninca kip sifirlanir */
+    };
+
+    /* BASKA BIR OGRETMENE KATIL.
+       Bagli bir ogrencide kod penceresi normalde "Hesabin bagli" der ve
+       giris kutusunu gostermez; bu kip o erken donusu atlar.            */
+    OH._ekleKipi = false;
+    OH.baskaOgretmenEkle = function () {
+        OH._ekleKipi = true;
+        OH.kodModalAc();
     };
 
     OH.kodCiz = function (mesaj, hataMi) {
@@ -978,6 +988,33 @@
             return;
         }
 
+        /* EKLEME KIPI: ogrenci zaten bagli olsa da kod kutusu gosterilir. */
+        if (OH._ekleKipi) {
+            var mevcut = OH.onayliBaglar().map(function (x) {
+                return esc(x.ogretmenAd || '\u00d6\u011fretmen');
+            }).join(', ');
+            g.innerHTML =
+                '<p style="margin:0 0 6px; color:#6B4A38; line-height:1.6;">' +
+                (mevcut ? '\u015eu an <b>' + mevcut + '</b> ile \u00e7al\u0131\u015f\u0131yorsun. ' : '') +
+                'Ba\u015fka bir \u00f6\u011fretmenin sana verdi\u011fi kodu buraya gir; o \u00f6\u011fretmene de ' +
+                'kat\u0131l\u0131m iste\u011fi gider. <b>Eski \u00f6\u011fretmenin ve s\u0131n\u0131f\u0131n aynen kal\u0131r.</b></p>' +
+                '<p style="margin:0 0 14px; color:#A6836E; font-size:.82rem;">\u0130ki kod da ge\u00e7erlidir: sana \u00f6zel kod ' +
+                '(\u00f6rn. <b>TCH-4582-X8B2</b>) ya da \u00f6\u011fretmeninin kodu (\u00f6rn. <b>TCH-4582</b>).</p>' +
+                '<input type="text" id="ohKodGiris" maxlength="40" placeholder="YEN\u0130 \u00d6\u011eRETMEN KODU" autocomplete="off" ' +
+                'style="width:100%; box-sizing:border-box; padding:14px; border:1px solid #E8A87C; border-radius:12px;' +
+                'font-family:inherit; font-size:1.05rem; letter-spacing:1px; text-transform:uppercase; text-align:center;' +
+                'color:#B34700; background:#fff;">' +
+                '<p id="ohKodNot" style="min-height:18px; margin:9px 0; font-size:.85rem; color:' +
+                (hataMi ? '#E74C3C' : '#16A085') + ';">' + esc(mesaj || '') + '</p>' +
+                '<button type="button" id="ohKodTus" onclick="OH.kodGonder()" ' +
+                'style="width:100%; padding:13px; border:none; border-radius:12px; cursor:pointer; font-family:inherit;' +
+                'font-weight:700; font-size:1rem; color:#fff;' +
+                'background:linear-gradient(135deg,#20C997,#16A085);">\u0130stek G\u00f6nder</button>';
+            var gr = document.getElementById('ohKodGiris');
+            if (gr) setTimeout(function () { try { gr.focus(); } catch (e) { } }, 60);
+            return;
+        }
+
         if (OH.bagliMi()) {
             g.innerHTML =
                 '<div style="text-align:center; padding:10px 0 4px;">' + ikon('onay', 'lli-xxl') + '</div>' +
@@ -985,8 +1022,12 @@
                 '<p style="margin:0 0 16px; text-align:center; color:#6B4A38; font-size:.9rem;">' +
                 esc(OH.bag.seviyeAd || '') + (OH.bag.sinifAd ? ' / ' + esc(OH.bag.sinifAd) : '') +
                 '<br>Öğretmenin: ' + esc(OH.bag.ogretmenAd || '') + '</p>' +
-                '<p style="margin:0; text-align:center; color:#A6836E; font-size:.83rem;">Bundan sonra sadece ' +
-                'e-posta ile giriş yapman yeterli; kod bir daha sorulmaz.</p>';
+                '<p style="margin:0 0 14px; text-align:center; color:#A6836E; font-size:.83rem;">Bundan sonra sadece ' +
+                'e-posta ile giriş yapman yeterli; kod bir daha sorulmaz.</p>' +
+                '<button type="button" onclick="OH.baskaOgretmenEkle()" ' +
+                'style="width:100%; padding:12px; border:1px solid #F0DACA; border-radius:12px; cursor:pointer;' +
+                'font-family:inherit; font-weight:700; color:#B34700; background:#FFF6EC;">' +
+                '+ Başka bir öğretmene de katıl</button>';
             return;
         }
 
@@ -1147,8 +1188,28 @@
         var el = document.getElementById('ohKodGiris');
         var not = document.getElementById('ohKodNot');
         if (not) { not.style.color = '#16A085'; not.textContent = 'Kod kontrol ediliyor\u2026'; }
+        var ekleme = OH._ekleKipi;
         OH.kodIstekGonder((el && el.value) || '').then(function (r) {
-            if (r && r.ok) { OH.kodCiz(); OH.bannerGuncelle(); }
+            if (r && r.ok) {
+                OH._ekleKipi = false;
+                if (ekleme) {
+                    /* Aktif bag hala ESKI ogretmende oldugu icin kodCiz
+                       "Hesabin bagli" derdi; ikinci istegin gonderildigini
+                       ayrica soylemek gerekiyor. */
+                    var g2 = document.getElementById('ohKodGovde');
+                    var son = OH.bekleyenBaglar();
+                    var kim = son.length ? (son[son.length - 1].ogretmenAd || 'öğretmenine') : 'öğretmenine';
+                    if (g2) g2.innerHTML =
+                        '<div style="text-align:center; padding:10px 0 4px;">' + ikon('bekle', 'lli-xxl') + '</div>' +
+                        '<p style="margin:12px 0 6px; text-align:center; color:#B34700; font-size:1.05rem;">İstek gönderildi</p>' +
+                        '<p style="margin:0 0 6px; text-align:center; color:#6B4A38; font-size:.9rem;">' +
+                        'Katılım isteğin iletildi: <b>' + esc(kim) + '</b>. Onaylandığında ekranın ' +
+                        'üstünde iki öğretmen arasında geçiş yapabileceğin bir seçici çıkar.</p>' +
+                        '<p style="margin:14px 0 0; text-align:center; color:#A6836E; font-size:.82rem;">' +
+                        'Eski öğretmenin ve sınıfın aynen duruyor.</p>';
+                } else OH.kodCiz();
+                OH.bannerGuncelle();
+            }
             else OH.kodCiz((r && r.mesaj) || '\u0130stek g\u00f6nderilemedi.', true);
         });
     };
@@ -1333,7 +1394,7 @@
                    '; color:' + yazi + '; font-size:.86rem; line-height:1.5; display:flex; gap:12px;' +
                    'align-items:center; flex-wrap:wrap;">' + ic + '</div>';
         };
-        var katilTus = '<span onclick="OH.kodModalAc()" style="cursor:pointer; color:#D84315; font-weight:700;' +
+        var katilTus = '<span onclick="OH.baskaOgretmenEkle()" style="cursor:pointer; color:#D84315; font-weight:700;' +
                        'text-decoration:underline; white-space:nowrap;">Ba\u015fka \u00f6\u011fretmene kat\u0131l</span>';
 
         /* 1) Hic bagi yok -> kod cagrisi (eski davranis) */
@@ -1358,18 +1419,14 @@
         /* 3) En az bir onayli bag var. Tek ogretmenliyse serit yalniz
               "baska ogretmene katil" baglantisini tasir; iki ve uzerinde
               secici de cizilir. */
+        /* Secici yalniz iki ve uzeri onayli bagda cizilir; tek
+           ogretmenlide serit yine kimin sinifinda oldugunu soylesin. */
         var ic = seciciHtml();
+        if (!ic) ic = '<span style="font-size:.82rem;">\u00d6\u011fretmenin: <b>' +
+                      esc(kisaAd(OH.bag || onayli[0])) + '</b></span>';
         var bekNot = bekleyen.length
             ? '<span style="font-size:.8rem; color:#B34700;">' + bekleyen.length +
               ' istek onay bekliyor</span>' : '';
-        if (!ic && !bekNot) {
-            /* Tek ogretmen, bekleyen yok: serit sade bir satir olur. */
-            b.style.display = 'block';
-            b.innerHTML = kutu('#F4FBF8', '#D6EFE6', '#2C6B5B',
-                '<span style="flex:1; font-size:.82rem;">\u00d6\u011fretmenin: <b>' +
-                esc(kisaAd(OH.bag || onayli[0])) + '</b></span>' + katilTus);
-            return;
-        }
         b.style.display = 'block';
         b.innerHTML = kutu('#F4FBF8', '#D6EFE6', '#2C6B5B',
             '<span style="flex:1;">' + ic + '</span>' + bekNot + katilTus);
