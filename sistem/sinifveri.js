@@ -41,7 +41,11 @@
        çalıştırılır ve buradaki sayı da güncellenir. */
     sinif6:      { sinif: 6,  seviye: 1, sira: 1, soru: 173 },
     sinif7:      { sinif: 7,  seviye: 1, sira: 2, soru: 125 },
-    sinif9:      { sinif: 9,  seviye: 1, sira: 3, soru: 72 },
+    /* 8. sınıf soruları da muhâdese ders verisinden ÜRETİLİYOR
+       (oyunlar/uret_biy8.py); ders verisi büyürse betik yeniden
+       çalıştırılır ve buradaki sayı da güncellenir. */
+    sinif8:      { sinif: 8,  seviye: 1, sira: 3, soru: 173 },
+    sinif9:      { sinif: 9,  seviye: 1, sira: 4, soru: 72 },
     sinif10:     { sinif: 10, seviye: 2, sira: 4, soru: 64 },
     /* genel konular — her sınıfta görünür */
     alfabe:      { sinif: 0,  seviye: 1, sira: 1, soru: 138 },
@@ -162,6 +166,9 @@
     5:  [{ yil: '2025-2026', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '' }],
     6:  [{ yil: '2025-2026', program: 'Önceki program · 2025 ders kitabı (6 ünite)', onek: '' }],
     7:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '' }],
+    /* 8. sınıfın ders verisi 6 ünite × 3 ders (8_1_1 … 8_6_3) olarak
+       yeni kitaptan çıkarıldı; 7. sınıfla aynı programa ait. */
+    8:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '' }],
     9:  [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '' }],
     10: [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '' }]
   };

@@ -279,62 +279,122 @@
         ],
         "8": [
             {
-                "ad": "1. Ünite: Güzel Bir Günüm | يَوْمي الجَميل",
+                "ad": "1. Ünite: Etkinlikler | الأَنْشِطَة",
                 "dersler": [
                     {
-                        "ad": "1. Ders: Günlük Etkinliklerim | أَنْشِطَتي اليَوْمِيَّة",
+                        "ad": "1. Ders: Kulüpler | الأَنْدِيَة",
                         "id": "8_1_1",
-                        "veri": false
+                        "veri": true
                     },
                     {
-                        "ad": "2. Ders: Zaman ve Saat İfadeleri | تَعْبيراتُ الوَقْتِ وَالسّاعَة",
+                        "ad": "2. Ders: Tiyatro | المَسْرَحِيَّة",
                         "id": "8_1_2",
-                        "veri": false
+                        "veri": true
+                    },
+                    {
+                        "ad": "3. Ders: Gezi | التَّجَوُّل",
+                        "id": "8_1_3",
+                        "veri": true
                     }
                 ]
             },
             {
-                "ad": "2. Ünite: Sağlıklı Hayatım | حَياتي الصِّحِّيَّة",
+                "ad": "2. Ünite: Kültür ve Sanat | الثَّقافَة وَالفَنّ",
                 "dersler": [
                     {
-                        "ad": "1. Ders: Sağlık | الصِّحَّة",
+                        "ad": "1. Ders: Edebiyat | الأَدَب",
                         "id": "8_2_1",
-                        "veri": false
+                        "veri": true
                     },
                     {
-                        "ad": "2. Ders: Spor | الرِّياضَة",
+                        "ad": "2. Ders: Kitap Fuarında | في مَعْرِضِ الكِتاب",
                         "id": "8_2_2",
-                        "veri": false
+                        "veri": true
+                    },
+                    {
+                        "ad": "3. Ders: El Sanatları | الفُنونُ اليَدَوِيَّة",
+                        "id": "8_2_3",
+                        "veri": true
                     }
                 ]
             },
             {
-                "ad": "3. Ünite: İletişim Günlüğüm | يَوْمِيَّتي الاِتِّصالِيَّة",
+                "ad": "3. Ünite: Değerlerim | قِيَمي",
                 "dersler": [
                     {
-                        "ad": "1. Ders: İletişim Araçları | وَسائِلُ الاِتِّصال",
+                        "ad": "1. Ders: Arkadaşlık | الصَّداقَة",
                         "id": "8_3_1",
-                        "veri": false
+                        "veri": true
                     },
                     {
-                        "ad": "2. Ders: İletişim İfadeleri | عِباراتُ الاِتِّصال",
+                        "ad": "2. Ders: Yardımlaşma | التَّعاوُن",
                         "id": "8_3_2",
-                        "veri": false
+                        "veri": true
+                    },
+                    {
+                        "ad": "3. Ders: Bayramlar | الأَعْياد",
+                        "id": "8_3_3",
+                        "veri": true
                     }
                 ]
             },
             {
-                "ad": "4. Ünite: Mezun Oluyorum | أَتَخَرَّجُ",
+                "ad": "4. Ünite: Doğa | الطَّبيعَة",
                 "dersler": [
                     {
-                        "ad": "1. Ders: Meslekler | المِهَن",
+                        "ad": "1. Ders: Çevrenin Önemi | أَهَمِّيَّةُ البِيئَة",
                         "id": "8_4_1",
-                        "veri": false
+                        "veri": true
                     },
                     {
-                        "ad": "2. Ders: Mezuniyet Sonrası Hedeflerim | أَهْدافي بَعْدَ التَّخَرُّج",
+                        "ad": "2. Ders: Hayvan Sevgisi | حُبُّ الحَيَوانات",
                         "id": "8_4_2",
-                        "veri": false
+                        "veri": true
+                    },
+                    {
+                        "ad": "3. Ders: Doğal Afetler | الكَوارِثُ الطَّبيعِيَّة",
+                        "id": "8_4_3",
+                        "veri": true
+                    }
+                ]
+            },
+            {
+                "ad": "5. Ünite: Spor | الرِّياضَة",
+                "dersler": [
+                    {
+                        "ad": "1. Ders: Sporun Tarihi | تاريخُ الرِّياضَة",
+                        "id": "8_5_1",
+                        "veri": true
+                    },
+                    {
+                        "ad": "2. Ders: Sporun Önemi | أَهَمِّيَّةُ الرِّياضَة",
+                        "id": "8_5_2",
+                        "veri": true
+                    },
+                    {
+                        "ad": "3. Ders: Spor Türleri | أَنْواعُ الرِّياضَة",
+                        "id": "8_5_3",
+                        "veri": true
+                    }
+                ]
+            },
+            {
+                "ad": "6. Ünite: Okula Veda | وَداعُ المَدْرَسَة",
+                "dersler": [
+                    {
+                        "ad": "1. Ders: Mezuniyet | التَّخَرُّج",
+                        "id": "8_6_1",
+                        "veri": true
+                    },
+                    {
+                        "ad": "2. Ders: Arkadaşlara Veda | وَداعُ الأَصْدِقاء",
+                        "id": "8_6_2",
+                        "veri": true
+                    },
+                    {
+                        "ad": "3. Ders: Yaz Tatili | العُطْلَةُ الصَّيْفِيَّة",
+                        "id": "8_6_3",
+                        "veri": true
                     }
                 ]
             }
