@@ -36,8 +36,43 @@
     var KG = window.KidefGorev = window.KidefGorev || {};
     KG.aktif = false;          /* en az bir kayit kanali acik mi?           */
     KG.gorev = null;           /* gorev kipi dokumani                       */
-    KG.bag = null;             /* ogrenciBaglari/{uid} (onayli ise)         */
+    KG.bag = null;             /* AKTIF ogrenciBaglari kaydi (onayli ise)   */
     KG.bildir = function () { return Promise.resolve(false); };
+
+    /* ---- ÇOKLU ÖĞRETMEN ------------------------------------------------
+       Bir öğrenci birden çok öğretmenin öğrencisi olabilir; bağ belgesinin
+       kimliği artık {ogrenciUid}__{ogretmenUid}. Tek doküman okumak
+       yetmediği için 'uid' alanına göre sorgulanır ve öğrencinin seçtiği
+       öğretmen (oh_aktif_ogretmen) tercih edilir. Eski tek kimlikli kayıt
+       da gözden kaçmaz.
+       Kuralın tek kaynağı hesap/ogrencihesap.js'tir; burada yalnız okuma
+       yapıldığı için kimlik üretilmez, sorguyla bulunur.                  */
+    KG.bagiBul = function (db, uid) {
+        var secili = '';
+        try { secili = localStorage.getItem('oh_aktif_ogretmen') || ''; } catch (e) { }
+        var sec = function (liste) {
+            var onayli = [];
+            (liste || []).forEach(function (v) {
+                if (v && v.durum === 'onayli' && v.ogretmenUid) onayli.push(v);
+            });
+            if (!onayli.length) return null;
+            for (var i = 0; i < onayli.length; i++) {
+                if (String(onayli[i].ogretmenUid) === secili) return onayli[i];
+            }
+            return onayli[0];
+        };
+        return db.collection('ogrenciBaglari').where('uid', '==', uid).get()
+            .then(function (snap) {
+                var liste = [];
+                snap.forEach(function (doc) { liste.push(doc.data() || {}); });
+                var v = sec(liste);
+                if (v) return v;
+                /* çok eski kayıt: kimliği sadece öğrencinin uid'i */
+                return db.collection('ogrenciBaglari').doc(uid).get()
+                    .then(function (doc) { return sec([(doc.exists && doc.data()) || null]); });
+            });
+    };
+
 
     var gorevId = '';
     try { gorevId = (new URLSearchParams(location.search)).get('gorev') || ''; } catch (e) { }
@@ -124,9 +159,9 @@
                 return;
             }
             var isler = [];
-            /* 1) ogrenci baglantisi (surec kaydi icin) */
-            isler.push(db.collection('ogrenciBaglari').doc(u.uid).get().then(function (doc) {
-                var v = (doc.exists && doc.data()) || null;
+            /* 1) ogrenci baglantisi (surec kaydi icin) — ogrenci birden
+                  cok ogretmene bagli olabilir, AKTIF olan alinir. */
+            isler.push(KG.bagiBul(db, u.uid).then(function (v) {
                 if (v && v.durum === 'onayli' && v.ogretmenUid) KG.bag = v;
             }).catch(function () { }));
             /* 2) gorev dokumani (gorev kipi) */

@@ -89,16 +89,34 @@
       '<div>' + kacis(u.email) + ' <span class="kucuk">(' + u.uid.slice(0, 8) + '…)</span></div></div>';
     var isler = [];
 
-    /* Ogrenci bagi (varsa) */
-    isler.push(db.collection('ogrenciBaglari').doc(u.uid).get().then(function (doc) {
-      if (doc.exists) {
-        var v = doc.data() || {};
-        html += '<div class="kart"><div class="baslik">🎓 Öğrenci Bağı</div>' +
-          '<div>Durum: <b>' + kacis(v.durum) + '</b> · Öğretmen: ' + kacis(v.ogretmenAd || v.ogretmenUid || '—') +
-          ' · Sınıf: ' + kacis((v.seviyeAd || '') + ' / ' + (v.sinifAd || '')) + '</div>' +
-          (v.durum !== 'onayli' ? '<div class="uyari">Bağ <b>onaylı değil</b> — köprü bu hesap için kayıt YAZMAZ.</div>'
-            : '<div class="iyi">Bağ onaylı — köprü bu hesap için kayıt yazabilir.</div>') + '</div>';
-      }
+    /* Ogrenci baglari — bir ogrenci birden cok ogretmene bagli olabilir,
+       HEPSI listelenir; hangisinin secili oldugu de yazilir. */
+    isler.push(db.collection('ogrenciBaglari').where('uid', '==', u.uid).get().then(function (snap) {
+      var liste = [];
+      snap.forEach(function (doc) { var v = doc.data() || {}; v._id = doc.id; liste.push(v); });
+      return db.collection('ogrenciBaglari').doc(u.uid).get().then(function (doc) {
+        /* eski tek kimlikli kayit (sorguda cikmadiysa) */
+        if (doc.exists && !liste.some(function (x) { return x._id === u.uid; })) {
+          var e = doc.data() || {}; e._id = u.uid; e._eski = true; liste.push(e);
+        }
+        return liste;
+      }).catch(function () { return liste; });
+    }).then(function (liste) {
+      if (!liste.length) return;
+      var secili = '';
+      try { secili = localStorage.getItem('oh_aktif_ogretmen') || ''; } catch (e) { }
+      html += '<div class="kart"><div class="baslik">🎓 Öğrenci Bağları (' + liste.length + ')</div>';
+      liste.forEach(function (v) {
+        var aktif = String(v.ogretmenUid || '') === secili;
+        html += '<div style="margin-top:6px;">' + (aktif ? '▶ ' : '') +
+          'Durum: <b>' + kacis(v.durum) + '</b> · Öğretmen: ' + kacis(v.ogretmenAd || v.ogretmenUid || '—') +
+          ' · Sınıf: ' + kacis((v.seviyeAd || '') + ' / ' + (v.sinifAd || '')) +
+          (v._eski ? ' <span class="kucuk">(eski kimlik)</span>' : '') + '</div>';
+      });
+      var onayli = liste.filter(function (v) { return v.durum === 'onayli'; }).length;
+      html += (onayli ? '<div class="iyi">' + onayli + ' bağ onaylı — köprü kayıt yazabilir.</div>'
+                      : '<div class="uyari">Hiçbir bağ <b>onaylı değil</b> — köprü kayıt YAZMAZ.</div>') +
+              '</div>';
     }).catch(function () { }));
 
     /* Kendi kayitlarim (ogrenci gozu) */
