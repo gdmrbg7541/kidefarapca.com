@@ -155,6 +155,12 @@
     OH.onayliBaglar = function () {
         return (OH.baglar || []).filter(function (b) { return b && b.durum === 'onayli'; });
     };
+    /* Secicide gosterilebilecek baglar: ogretmeni BELLI olanlar.
+       (ogretmenUid'i olmayan eski kayit bagli sayilir ama secicide yer
+       almaz; tiklaninca gidilecek bir ogretmen yok.)                  */
+    OH.seciciBaglar = function () {
+        return OH.onayliBaglar().filter(function (b) { return !!b.ogretmenUid; });
+    };
     /* Bekleyen istekler (ogrenci gozunden). */
     OH.bekleyenBaglar = function () {
         return (OH.baglar || []).filter(function (b) { return b && b.durum === 'bekliyor'; });
@@ -1362,7 +1368,7 @@
        sinifini gordugunu buradan degistirir. Tek ogretmen varsa secici
        cizilmez — ekran eskisi gibi durur. */
     function seciciHtml() {
-        var onayli = OH.onayliBaglar();
+        var onayli = OH.seciciBaglar();
         if (onayli.length < 2) return '';
         var h = '<div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">' +
                 '<span style="font-size:.78rem; color:#6B4A38; font-weight:700;">\u00d6\u011fretmenin:</span>';
@@ -1528,18 +1534,34 @@
                kayitlar da gozden kacmasin.
            Ayni ogretmene ait iki kayit varsa YENI kimlikli olan kazanir;
            boylece tasima sirasinda ogrenci cift satir gormez.            */
+        var okundu = { sorgu: false, eski: false };
         var sorgu = D.collection(C_BAG).where('uid', '==', u.uid).get()
-            .catch(function () { return { forEach: function () { } }; });
+            .then(function (r) { okundu.sorgu = true; return r; })
+            .catch(function (e) {
+                /* Kurallar henuz yayimlanmadiysa bu sorgu REDDEDILIR;
+                   bu "bag yok" demek degildir. */
+                console.warn('OH bag sorgusu:', e && (e.code || e.message));
+                return { forEach: function () { } };
+            });
         var eski = D.collection(C_BAG).doc(u.uid).get()
+            .then(function (r) { okundu.eski = true; return r; })
             .catch(function () { return { exists: false }; });
 
         return Promise.all([sorgu, eski]).then(function (r) {
             var harita = {};       /* ogretmenUid -> bag */
             var koy = function (id, v) {
-                if (!v || !v.ogretmenUid) return;
+                if (!v) return;
                 v._id = id;
                 v._eski = OH.eskiKimlikMi(id, u.uid);
-                var t = String(v.ogretmenUid);
+                /* ogretmenUid ALANI OLMAYAN kayit da tutulur.
+                   listelerim.js'in bazi yollari baga yalniz
+                   {durum, lId, cId, ...} yaziyor; o kayit tek basina
+                   olusmussa ogretmenUid tasimaz. Eski kod boyle bir sart
+                   aramadigi icin bu ogrenciler bagli gorunuyordu; elemek
+                   onlari birden "bagsiz" yapar ve iletisim penceresi
+                   ogretmen kutusu yerine yonetici yazismasini acardi.
+                   Anahtar olarak belge kimligi kullanilir — cakismaz. */
+                var t = v.ogretmenUid ? String(v.ogretmenUid) : ('?' + id);
                 var onceki = harita[t];
                 /* Yeni kimlikli kayit eskisini ezer. */
                 if (!onceki || (onceki._eski && !v._eski)) harita[t] = v;
@@ -1554,8 +1576,11 @@
             } else {
                 /* Onaysiz/kopuk/arsiv kullanicida ESKI SINIFTAN KALAN hicbir
                    sey gorunmesin: yerel ogrenci oturumu, ayna okul verisi ve
-                   ozet dinleyicisi temizlenir. */
-                var g = yerelOgrenci();
+                   ozet dinleyicisi temizlenir.
+                   AMA yalniz veriyi GERCEKTEN okuyabildiysek. Okuma basarisiz
+                   olduysa (ag koptu, kural reddetti) "bag yok" sonucu
+                   cikarilamaz; silersek ogrencinin ekrani bos kalir. */
+                var g = (okundu.sorgu || okundu.eski) ? yerelOgrenci() : null;
                 if (g && g.bulut) {
                     try { localStorage.removeItem('logged_student'); } catch (e) { }
                     try { localStorage.removeItem('schoolData'); } catch (e) { }
