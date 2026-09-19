@@ -1,3 +1,16 @@
+
+/* ==========================================================================
+   BAĞ BELGESİ KİMLİĞİ  —  bir öğrenci birden çok öğretmenin öğrencisi
+   olabildiği için ogrenciBaglari / ogrenciOzet belgelerinin kimliği
+   ÖĞRENCİ + ÖĞRETMEN çiftidir:  {ogrenciUid}__{ogretmenUid}
+   Kuralın tek kaynağı hesap/ogrencihesap.js (OH.bagId). Bu dosya ondan
+   önce yüklenebildiği için aynı kural burada yedeklenir — değiştirirsen
+   İKİSİNİ de değiştir.
+   ========================================================================== */
+function taBagKimlik(ogrenciUid, ogretmenUid) {
+    try { if (window.OH && OH.bagId) return OH.bagId(ogrenciUid, ogretmenUid); } catch (e) { }
+    return String(ogrenciUid || '') + '__' + String(ogretmenUid || '');
+}
 /* ==========================================
    YÖNETİCİ YAN PANELİ (kalıcı dock)
    ========================================== */
@@ -2172,7 +2185,8 @@ function _abYaz(uidler, ogt, snf, snfAd) {
             kayit.onerilenCId = pr[1];
             kayit.onerilenAd = snfAd || '';
         }
-        return db2.collection('ogrenciBaglari').doc(uid).set(kayit, { merge: true });
+        return db2.collection('ogrenciBaglari')
+                  .doc(taBagKimlik(uid, ogt.uid)).set(kayit, { merge: true });
     });
 
     Promise.all(isler).then(function () {
@@ -2193,8 +2207,16 @@ function adminBagiKaldir() {
            'Öğrencinin notları silinmez; yalnız bağ kaydı kalkar ve öğrenci yeniden kod girebilir.',
     function () {
         var db2 = firebase.firestore();
+        /* Ogrencinin BUTUN baglari kaldirilir (birden cok ogretmeni olabilir);
+           eski tek kimlikli kayit da silinir. */
         Promise.all(uidler.map(function (uid) {
-            return db2.collection('ogrenciBaglari').doc(uid).delete();
+            return db2.collection('ogrenciBaglari').where('uid', '==', uid).get()
+                .then(function (snap) {
+                    var sil = [];
+                    snap.forEach(function (doc) { sil.push(doc.ref.delete()); });
+                    sil.push(db2.collection('ogrenciBaglari').doc(uid).delete().catch(function () { }));
+                    return Promise.all(sil);
+                });
         })).then(function () {
             _abUyar(uidler.length + ' öğrencinin bağı kaldırıldı.');
             adminBaglamaYukle(true);

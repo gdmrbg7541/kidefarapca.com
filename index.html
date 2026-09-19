@@ -1622,7 +1622,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         <!-- SÖZLÜK — vezinler tablosundaki sözlüğün tek başına hâli:
              kök yok, vezin yok, yalnız kelime araması. Masaüstünde
              başlıktaki simgeden açılır pencerede de açılıyor. -->
-        <a href="sozluk.html?v=2" target="_blank" rel="opener" class="game-card kss-card">
+        <a href="sozluk.html?v=3" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
             <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
               <path class="kga-szkapak" d="M10 12 a4 4 0 0 1 4 -4 h14 a6 6 0 0 1 6 6 v38 a5 5 0 0 0 -5 -5 H14 a4 4 0 0 1 -4 -4 Z" fill="#eafaf3" stroke="#16A085" stroke-width="2.6"/>
@@ -5744,7 +5744,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/kayitalani.js?v=1"></script>
     <script src="hesap/auth.js?v=20260915a"></script>
     <!-- Başlıktaki sözlük simgesinin açtığı pencere -->
-    <script src="sarf/sozlukpop.js?v=1"></script>
+    <script src="sarf/sozlukpop.js?v=2"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
     <script src="hesap/qrgiris.js?v=20260815a"></script>
     <script>
@@ -5763,18 +5763,18 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>
     <script src="hesap/course-content.js"></script>
-    <script src="hesap/teacher-admin.js?v=20260912a"></script>
+    <script src="hesap/teacher-admin.js?v=20260919a"></script>
     <script src="sistem/alarm.js?v=20260814c"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
     <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->
     <script src="sistem/kazanimoneri.js?v=20260824a"></script>
     <!-- Öğretmen profilindeki "sitede yenilikler" şeridi -->
     <script src="sistem/yenilikler.js?v=20260824a"></script>
-    <script src="hesap/listelerim.js?v=20260824a"></script>
+    <script src="hesap/listelerim.js?v=20260919a"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=20260815a"></script>
-    <script src="hesap/ogrencihesap.js?v=20260830a"></script>
+    <script src="hesap/ogrencihesap.js?v=20260919a"></script>
     <script src="sistem/ihoneri.js?v=20260805a"></script>
     <script src="sistem/gorev.js?v=33"></script>
 
@@ -6127,7 +6127,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 <!-- KAMUS (sözlük): yüzen düğme yığınında Sarf Motoru ile İletişim
      arasında. Konumu positionFeedbackFab() hesaplıyor; biçimi
      sarf/sozlukpop.js içindeki stilde. -->
-<a href="sozluk.html?v=2" id="kamusFab" class="floating-tool-button kamus-btn"
+<a href="sozluk.html?v=3" id="kamusFab" class="floating-tool-button kamus-btn"
    title="Kamus — Arapça/Türkçe sözlük" aria-label="Kamus"
    onclick="if(window.SozlukPop){SozlukPop.ac();event.preventDefault();}"><span class="kb-govde"><svg class="szp-ik" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path class="szp-sayfa" d="M8 10a4 4 0 0 1 4-4h10a5 5 0 0 1 5 5v29a4 4 0 0 0-4-4H12a4 4 0 0 1-4-4z" fill="currentColor" opacity=".95"/><path d="M40 10a4 4 0 0 0-4-4H26a5 5 0 0 0-5 5v29a4 4 0 0 1 4-4h11a4 4 0 0 0 4-4z" fill="currentColor" opacity=".62"/><g class="szp-mercek"><circle cx="33" cy="30" r="8" fill="none" stroke="#F7C948" stroke-width="3.2"/><line x1="39" y1="36" x2="45" y2="42" stroke="#F7C948" stroke-width="3.6" stroke-linecap="round"/></g><g class="szp-parilti" fill="#ffe082"><circle cx="15" cy="14" r="1.7"/><circle cx="19" cy="20" r="1.2"/></g></svg><span class="kb-oluk" aria-hidden="true"></span><span class="szp-ad" aria-hidden="true"><i>K</i><i>a</i><i>m</i><i>u</i><i>s</i></span><span class="kb-arayan" aria-hidden="true"></span></span></a>
 

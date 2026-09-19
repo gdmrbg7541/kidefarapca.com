@@ -22,15 +22,21 @@ kidefarapca.com/
 │   ├── mucerred/             konuanlatimi, kurandanornekler,
 │   │                         telaffuzaksamiseba, sozlukdedektifi
 │   ├── mezid/                mezidfiiller ve mezid sayfaları
-│   ├── oyun/                 harekeavcisi, zamanlayaris, ikikidijital
+│   ├── oyun/                 zamanlayaris, ikikidijital
+│   │                         (harekeavcisi okumayazma/ klasörüne taşındı)
 │   └── ses/                 yonergesarf.mp3 (yönerge sesi)
 │
 ├── sozluk/                   Sözlük dedektifi & simülasyon
 ├── veri/                     Ortak veri dosyaları (veri_*.js)
-├── alfabe/                   Alfabe, okuma, dinle-yaz
-│   └── ses/                 dinle-yaz kelime sesleri (l<seviye>v<sıra>.wav)
+├── okumayazma/               OKUMA-YAZMA: harf, hareke, hece, okuma
+│   ├── alfabe.*  alfabe_birlestir.js  alfabe_sinav.js  alfabe_harf_detay.js
+│   ├── okuma.*  dinleveyaz.*
+│   ├── hangiharf.*  klavyeoyunu.*  harekeavcisi.*   (harf/hareke oyunları)
+│   ├── ses/                 dinle-yaz kelime sesleri (l<seviye>v<sıra>.wav)
+│   └── _eski/               30.07 tarihli eski alfabe kopyaları (kullanılmıyor)
 ├── dilbilgisi/               Dilbilgisi konuları, harf-i cer
-├── oyunlar/                  Hangi harf, klavye, test kapışması, hafıza…
+├── oyunlar/                  Test kapışması, hafıza kartları, renkler, kavram…
+│                             (hangiharf ve klavyeoyunu okumayazma/'ya taşındı)
 ├── ydt/                      YDT Arapça ve alt çalışmaları
 ├── degerler/                 Kısa sureler, namaz, KSSİ
 ├── kitap/                    Flipbook (FlipHTML5 köprüsü)
@@ -42,7 +48,7 @@ kidefarapca.com/
 │
 ├── javascript/ style/ slide_javascript/ flipbooks/ files/
 │                             ← FlipHTML5 hazır paketi, DOKUNULMADI
-└── dosyalar/ "alfabe github"/ "Gizem Sandığı"/  ← olduğu gibi bırakıldı
+└── dosyalar/ "Gizem Sandığı"/   ← olduğu gibi bırakıldı
 ```
 
 ## Kural
@@ -72,15 +78,33 @@ Yeni slayt eklerken PDF'i `sunum/` içine at ve adını `index.js` içindeki
 Ses dosyaları da CSS/JS gibi kategori klasörünün altında, `ses/` adlı bir
 alt klasörde durur:
 
-    alfabe/ses/l1v1.wav … l8v16.wav   ← dinle-yaz oyununun 103 kelime sesi
+    okumayazma/ses/l1v1.wav … l8v16.wav ← dinle-yaz oyununun 103 kelime sesi
     sarf/ses/yonergesarf.mp3          ← sarf yönerge sesi
 
 Sayfalar kökte durduğu için JS içindeki adresler köke göre yazılır
-(`alfabe/ses/...`), başına `../` **konmaz**. `dinleveyaz.js` yolu tek yerden
+(`okumayazma/ses/...`), başına `../` **konmaz**. `dinleveyaz.js` yolu tek yerden
 üretir:
 
-    const SES_KLASORU = 'alfabe/ses/';
+    const SES_KLASORU = 'okumayazma/ses/';
     word.audioSrc = `${SES_KLASORU}l${level}v${voiceNumber}.wav`;
 
 Seviyeye yeni kelime eklerken ses dosyasının adı sırayı izler: seviyenin
-kaçıncı kelimesiyse `l<seviye>v<sıra>.wav` adıyla `alfabe/ses/` içine atılır.
+kaçıncı kelimesiyse `l<seviye>v<sıra>.wav` adıyla `okumayazma/ses/` içine atılır.
+
+## Okuma-yazma klasörü (19.09.2026)
+
+Harf–hareke–hece düzeyindeki, yani **okuma yazma öğretimiyle** ilgili bütün
+CSS/JS/ses dosyaları tek klasörde toplandı: `okumayazma/`.
+
+| Sayfa (kökte durur) | Dosyaları |
+|---|---|
+| alfabe.html · alfabesinav.html | okumayazma/alfabe.css, alfabe.js, alfabe_birlestir.js, alfabe_sinav.js, alfabe_harf_detay.js |
+| okuma.html | okumayazma/okuma.css, okuma.js |
+| dinleveyaz.html | okumayazma/dinleveyaz.css, dinleveyaz.js + okumayazma/ses/ |
+| hangiharf.html | okumayazma/hangiharf.css, hangiharf.js |
+| klavyeoyunu.html | okumayazma/klavyeoyunu.css, klavyeoyunu.js |
+| harekeavcisi.html | okumayazma/harekeavcisi.css, harekeavcisi.js |
+
+Sayfaların kendisi kökte kaldı, adresler değişmedi. `hizlioku.html` (hızlı
+okuma) `ydt/` klasöründe bırakıldı: sınav hazırlığı içeriğidir, harf öğretimi
+değil.

@@ -1,3 +1,16 @@
+
+/* ==========================================================================
+   BAĞ BELGESİ KİMLİĞİ  —  bir öğrenci birden çok öğretmenin öğrencisi
+   olabildiği için ogrenciBaglari / ogrenciOzet belgelerinin kimliği
+   ÖĞRENCİ + ÖĞRETMEN çiftidir:  {ogrenciUid}__{ogretmenUid}
+   Kuralın tek kaynağı hesap/ogrencihesap.js (OH.bagId). Bu dosya ondan
+   önce yüklenebildiği için aynı kural burada yedeklenir — değiştirirsen
+   İKİSİNİ de değiştir.
+   ========================================================================== */
+function llBagKimlik(ogrenciUid, ogretmenUid) {
+    try { if (window.OH && OH.bagId) return OH.bagId(ogrenciUid, ogretmenUid); } catch (e) { }
+    return String(ogrenciUid || '') + '__' + String(ogretmenUid || '');
+}
 /* ============================================================
    LL IKON SISTEMI - ozel animasyonlu SVG ikonlar (emoji yerine)
    Kullanim: llIcon('klasor')  ->  <svg class="lli">...</svg>
@@ -1684,10 +1697,11 @@ function addLevel(oncedenKurum) {
         try {
             if (typeof db === 'undefined' || !db) return;
             if (typeof firebase === 'undefined' || !firebase.auth || !firebase.auth().currentUser) return;
+            const _ogtUid = firebase.auth().currentUser.uid;
             (ogrenciler || []).forEach(st => {
                 if (!st || !st.hesapUid) return;
-                db.collection('ogrenciBaglari').doc(st.hesapUid)
-                    .set({ durum: durum, guncelleme: Date.now() }, { merge: true })
+                db.collection('ogrenciBaglari').doc(llBagKimlik(st.hesapUid, _ogtUid))
+                    .set({ durum: durum, uid: st.hesapUid, guncelleme: Date.now() }, { merge: true })
                     .catch(() => { });
                 if (durum === 'kopuk' && st.loginCode) {
                     db.collection('davetler').doc(String(st.loginCode).toUpperCase())
@@ -1800,8 +1814,8 @@ function addLevel(oncedenKurum) {
             Object.keys(lvl.classes || {}).forEach(cId => {
                 (lvl.classes[cId].students || []).forEach((st, ix) => {
                     if (!st || !st.hesapUid) return;
-                    db.collection('ogrenciBaglari').doc(st.hesapUid).set({
-                        durum: 'onayli', lId: lId, cId: cId, sIdx: ix,
+                    db.collection('ogrenciBaglari').doc(llBagKimlik(st.hesapUid, firebase.auth().currentUser.uid)).set({
+                        durum: 'onayli', uid: st.hesapUid, lId: lId, cId: cId, sIdx: ix,
                         seviyeAd: lvl.name || lId, sinifAd: lvl.classes[cId].name || cId,
                         guncelleme: Date.now()
                     }, { merge: true }).catch(() => { });
@@ -1922,8 +1936,8 @@ function addLevel(oncedenKurum) {
             if (typeof db !== 'undefined' && db && firebase.auth().currentUser) {
                 (data.levels[hedefL].classes[yeniC].students || []).forEach((st, ix) => {
                     if (!st || !st.hesapUid) return;
-                    db.collection('ogrenciBaglari').doc(st.hesapUid).set({
-                        durum: 'onayli', lId: hedefL, cId: yeniC, sIdx: ix,
+                    db.collection('ogrenciBaglari').doc(llBagKimlik(st.hesapUid, firebase.auth().currentUser.uid)).set({
+                        durum: 'onayli', uid: st.hesapUid, lId: hedefL, cId: yeniC, sIdx: ix,
                         seviyeAd: data.levels[hedefL].name || hedefL,
                         sinifAd: data.levels[hedefL].classes[yeniC].name || yeniC,
                         guncelleme: Date.now()
@@ -4998,8 +5012,17 @@ function llBildirimGit() {
     var D = null;
     try { D = (typeof db !== 'undefined' && db) ? db : ((typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) ? firebase.firestore() : null); } catch (e) { }
     if (uid && D) {
-        D.collection('ogrenciBaglari').doc(uid).get().then(function (doc) {
-            var v = (doc.exists && doc.data()) || {};
+        /* Ogrencinin BU ogretmenle olan bagi okunur; ayni ogrenci baska
+           ogretmenlere de bagli olabilir. Eski tek kimlikli kayit varsa
+           ona dusulur. */
+        var _ogt = '';
+        try { _ogt = firebase.auth().currentUser.uid; } catch (e) { }
+        var _oku = function (kimlik) { return D.collection('ogrenciBaglari').doc(kimlik).get(); };
+        _oku(llBagKimlik(uid, _ogt)).then(function (doc) {
+            if (doc && doc.exists) return doc;
+            return _oku(uid);
+        }).then(function (doc) {
+            var v = (doc && doc.exists && doc.data()) || {};
             ac(v.lId || null, v.cId || null);
         }).catch(function () { ac(null, null); });
     } else ac(null, null);

@@ -13,10 +13,19 @@
    E-POSTA ILE GIRIS YAPMAMIS HIC KIMSE MESAJ GONDEREMEZ.
 
    FIRESTORE KOLEKSIYONLARI
-     davetler/{KOD}          -> ogretmenin yayinladigi davet
-     ogrenciBaglari/{uid}    -> ogrencinin istegi / kalici baglantisi
-     ogrenciOzet/{uid}       -> ogretmenin yazdigi, ogrenciye ozel ayna kayit
-     ogrenciMesaj/{otoId}    -> ogrenciden ogretmene giden mesaj kutusu
+     davetler/{KOD}                       -> ogretmenin yayinladigi davet
+     ogrenciBaglari/{ogrUid}__{ogtUid}    -> ogrencinin istegi / kalici baglantisi
+     ogrenciOzet/{ogrUid}__{ogtUid}       -> ogretmenin yazdigi ayna kayit
+     ogrenciMesaj/{otoId}                 -> ogrenciden ogretmene giden mesaj
+
+   COKLU OGRETMEN
+     Bir ogrenci BIRDEN COK ogretmenin ogrencisi olabilir. Bu yuzden bag ve
+     ozet belgelerinin kimligi yalniz ogrencinin uid'i DEGIL, ogrenci+ogretmen
+     ciftidir. Ogrenci bir ogretmene baglandiktan sonra ikinci bir ogretmene
+     de kod girip istek gonderebilir; ekraninda kucuk bir SECICI ile hangi
+     ogretmenin sinifini gordugunu degistirir.
+     Eski (tek kimlikli) belgeler okunmaya devam eder; ogretmen girisinde
+     bagTemizligi() onlari sessizce yeni kimlige tasir.
 
    NOT: Bu dosya listelerim.js'e DOKUNMADAN calisir; gerekli yerlerde
    mevcut fonksiyonlari sarmalar (save, ogrenciYeniMesaj, renderSidebar...).
@@ -119,12 +128,88 @@
         try { return JSON.parse(localStorage.getItem('logged_student') || 'null'); } catch (e) { return null; }
     }
 
-    OH.bag = null;          // ogrenciBaglari/{uid} onbellegi
+    OH.bag = null;          // AKTIF bag (ekranda hangi ogretmen gorunuyorsa o)
+    OH.baglar = [];         // ogrencinin BUTUN baglari (birden cok ogretmen)
     OH.istekler = [];       // ogretmen: bekleyen istekler
     OH._kurulum = false;
 
+    /* ---- COKLU OGRETMEN: belge kimligi ---------------------------------
+       Kimlik ogrenci+ogretmen ciftidir. Kuralin TEK kaynagi burasidir;
+       listelerim.js, teacher-admin.js, gorevkopru.js ve surekontrol.html
+       bu dosyadan once yuklenebildigi icin ayni satiri kendi iclerinde de
+       tasirlar — degistirirsen HEPSINI degistir.                          */
+    var AYRAC = '__';
+    OH.bagId  = function (ogrenciUid, ogretmenUid) {
+        return String(ogrenciUid || '') + AYRAC + String(ogretmenUid || '');
+    };
+    OH.ozetId = function (ogrenciUid, ogretmenUid) {
+        return OH.bagId(ogrenciUid, ogretmenUid);
+    };
+    /* Eski kayitlarda kimlik yalnizca ogrencinin uid'iydi. */
+    OH.eskiKimlikMi = function (id, ogrenciUid) { return String(id) === String(ogrenciUid); };
+
     OH.bagliMi = function () { return !!(OH.bag && OH.bag.durum === 'onayli'); };
     OH.bekliyorMu = function () { return !!(OH.bag && OH.bag.durum === 'bekliyor'); };
+
+    /* Ogrencinin ONAYLI baglari (ogretmen secicisi bunlari gosterir). */
+    OH.onayliBaglar = function () {
+        return (OH.baglar || []).filter(function (b) { return b && b.durum === 'onayli'; });
+    };
+    /* Bekleyen istekler (ogrenci gozunden). */
+    OH.bekleyenBaglar = function () {
+        return (OH.baglar || []).filter(function (b) { return b && b.durum === 'bekliyor'; });
+    };
+    /* Belirli bir ogretmene bagi var mi? (ayni ogretmene ikinci istek atilmasin) */
+    OH.ogretmeneBag = function (ogretmenUid) {
+        var t = String(ogretmenUid || '');
+        var bulunan = null;
+        (OH.baglar || []).forEach(function (b) {
+            if (b && String(b.ogretmenUid || '') === t && !bulunan) bulunan = b;
+        });
+        return bulunan;
+    };
+
+    /* Ogrencinin sectigi ogretmen (tarayicida saklanir). */
+    function aktifSecim() {
+        try { return localStorage.getItem('oh_aktif_ogretmen') || ''; } catch (e) { return ''; }
+    }
+    function aktifSecimYaz(v) {
+        try { if (v) localStorage.setItem('oh_aktif_ogretmen', v);
+              else localStorage.removeItem('oh_aktif_ogretmen'); } catch (e) { }
+    }
+    OH.aktifOgretmenUid = function () { return (OH.bag && OH.bag.ogretmenUid) || ''; };
+
+    /* Hangi bag aktif olsun? Once ogrencinin secimi, sonra ilk onayli,
+       en sonunda ilk bekleyen. */
+    function aktifiSec() {
+        var liste = OH.baglar || [];
+        var secili = aktifSecim(), bulunan = null;
+        if (secili) {
+            liste.forEach(function (b) {
+                if (!bulunan && b.durum === 'onayli' && String(b.ogretmenUid) === secili) bulunan = b;
+            });
+        }
+        if (!bulunan) liste.forEach(function (b) { if (!bulunan && b.durum === 'onayli') bulunan = b; });
+        if (!bulunan) liste.forEach(function (b) { if (!bulunan && b.durum === 'bekliyor') bulunan = b; });
+        if (!bulunan && liste.length) bulunan = liste[0];
+        OH.bag = bulunan || null;
+        if (bulunan && bulunan.durum === 'onayli') aktifSecimYaz(bulunan.ogretmenUid);
+        return OH.bag;
+    }
+    OH._aktifiSec = aktifiSec;
+
+    /* Secici tusu: ogrenci ogretmen degistirir. */
+    OH.ogretmenSec = function (ogretmenUid) {
+        var b = OH.ogretmeneBag(ogretmenUid);
+        if (!b || b.durum !== 'onayli') return;
+        if (OH.bag && OH.bag.ogretmenUid === ogretmenUid) return;
+        aktifSecimYaz(ogretmenUid);
+        OH.bag = b;
+        /* Ekrandaki ayna veri SECILEN ogretmene gore yeniden kurulur. */
+        if (OH._ozetAbone) { try { OH._ozetAbone(); } catch (e) { } OH._ozetAbone = null; }
+        OH.ozetiDinle();
+        OH.bannerGuncelle();
+    };
 
     /* E-posta ile gercek bir oturum var mi? (anonim/misafir sayilmaz) */
     OH.epostaGirisiVar = function () {
@@ -296,7 +381,10 @@
                             cevaplar: (m.cevaplar || []).filter(function (c) { return c.k === K; })
                         };
                     });
-                    isler.push(D.collection(C_OZET).doc(s.hesapUid).set({
+                    /* Ayna kaydin kimligi de ogrenci+ogretmen ciftidir:
+                       ayni ogrenci iki ogretmenin ogrencisiyse iki ayri
+                       ozet belgesi olur, biri digerini ezmez. */
+                    isler.push(D.collection(C_OZET).doc(OH.ozetId(s.hesapUid, u.uid)).set({
                         ogretmenUid: u.uid,
                         ogretmenAd: tAd,
                         ogrenciUid: s.hesapUid,
@@ -628,11 +716,15 @@
 
     /* Onay: hesap ogrenci satirina kalici baglanir, kod tuketilir.
        toplu=true iken pencere acmaz, yalniz Promise doner (Hepsini Onayla). */
-    OH.istekOnayla = function (uid, toplu) {
+    /* bagKimlik: ogrenciBaglari BELGESININ kimligi (ogrenci uid'i DEGIL).
+       Ogrencinin uid'i istegin 'uid' alanindan okunur — kimlik artik
+       ogrenci+ogretmen cifti oldugu icin ikisi ayni sey degil.          */
+    OH.istekOnayla = function (bagKimlik, toplu) {
         var u = oturum(), D = veri();
         if (!u || !D) return Promise.resolve(false);
-        var it = OH.istekler.filter(function (x) { return x._id === uid; })[0];
+        var it = OH.istekler.filter(function (x) { return x._id === bagKimlik; })[0];
         if (!it) return Promise.resolve(false);
+        var ogrUid = it.uid || bagKimlik;
 
         var d = (typeof data !== 'undefined' && data) ? data : null;
         var satir = null;
@@ -702,7 +794,7 @@
             satir = bulundu.s; it.lId = bulundu.lId; it.cId = bulundu.cId; it.sIdx = bulundu.sIdx;
         }
 
-        satir.hesapUid = uid;
+        satir.hesapUid = ogrUid;
         satir.hesapEmail = it.email || '';
         if (typeof save === 'function') save();
 
@@ -711,7 +803,7 @@
         if (!tAdO || tAdO === 'Belirtilmedi') tAdO = (u.email || '\u00d6\u011fretmen');
 
         var yaz = [
-            D.collection(C_BAG).doc(uid).set({
+            D.collection(C_BAG).doc(bagKimlik).set({
                 durum: 'onayli', lId: it.lId, cId: it.cId, sIdx: it.sIdx,
                 kod: it.kod, tur: 'ogrenci',
                 seviyeAd: it.seviyeAd || '', sinifAd: it.sinifAd || '',
@@ -728,7 +820,7 @@
                 ad: satir.name || '',
                 seviyeAd: it.seviyeAd || '',
                 sinifAd: it.sinifAd || '',
-                kullanildi: true, ogrenciUid: uid, guncelleme: Date.now()
+                kullanildi: true, ogrenciUid: ogrUid, guncelleme: Date.now()
             }, { merge: true })
         ];
         return Promise.all(yaz).then(function () {
@@ -770,11 +862,12 @@
         }, 3400);
     };
 
-    OH.istekReddet = function (uid) {
+    /* bagKimlik: belgenin kimligi (bkz. istekOnayla). */
+    OH.istekReddet = function (bagKimlik) {
         var D = veri();
         if (!D) return;
         var devam = function () {
-            D.collection(C_BAG).doc(uid).set({ durum: 'red', onayTarih: zamanDamga() }, { merge: true })
+            D.collection(C_BAG).doc(bagKimlik).set({ durum: 'red', onayTarih: zamanDamga() }, { merge: true })
                 .then(function () { OH.istekCiz(); })
                 .catch(function (e) { alert('İşlem yapılamadı: ' + (e && (e.message || e.code))); });
         };
@@ -982,6 +1075,18 @@
             }
             var v = doc.data() || {};
             var gercekKod = kodDuzelt(v.kod || doc.id);
+
+            /* COKLU OGRETMEN: baska bir ogretmene istek gondermek serbesttir;
+               yalniz AYNI ogretmene ikinci kez gonderilmez.                */
+            var oncekiBag = OH.ogretmeneBag(v.ogretmenUid);
+            if (oncekiBag && oncekiBag.durum === 'onayli') {
+                return { ok: false, mesaj: 'Zaten ' +
+                    ((oncekiBag.ogretmenAd || v.ogretmenAd || 'bu \u00f6\u011fretmenin')) +
+                    ' s\u0131n\u0131f\u0131ndas\u0131n. Ba\u015fka bir \u00f6\u011fretmenin kodunu girebilirsin.' };
+            }
+            if (oncekiBag && oncekiBag.durum === 'bekliyor') {
+                return { ok: false, mesaj: 'Bu \u00f6\u011fretmene g\u00f6nderdi\u011fin istek zaten onay bekliyor.' };
+            }
             /* Ogretmen kodu daveti YA "tur" alanindan YA DA koordinat
                yoklugundan anlasilir: lId'siz bir davete koordinat yazilmaz
                (undefined alan Firestore'da gecersizdir).                    */
@@ -1011,15 +1116,25 @@
             /* Ogretmen kodunda koordinat yoktur; undefined yazmak Firestore'da hatadir. */
             if (!ogretmenKoduIle) { kayit.lId = v.lId; kayit.cId = v.cId; kayit.sIdx = v.sIdx; }
 
-            return D.collection(C_BAG).doc(u.uid).set(kayit, { merge: true }).then(function () {
-                OH.bag = {
+            /* Kimlik ogrenci+ogretmen cifti: ayni ogrenci baska bir
+               ogretmene istek gonderdiginde onceki bag EZILMEZ.          */
+            var kimlik = OH.bagId(u.uid, v.ogretmenUid);
+            return D.collection(C_BAG).doc(kimlik).set(kayit, { merge: true }).then(function () {
+                var yeni = {
                     uid: u.uid, email: u.email || '', ad: ad, kod: gercekKod,
                     tur: kayit.tur,
                     ogretmenUid: v.ogretmenUid, ogretmenAd: v.ogretmenAd || '',
                     lId: kayit.lId, cId: kayit.cId, sIdx: kayit.sIdx,
                     seviyeAd: v.seviyeAd || '', sinifAd: v.sinifAd || '',
-                    durum: 'bekliyor'
+                    durum: 'bekliyor', _id: kimlik, _eski: false
                 };
+                OH.baglar = (OH.baglar || []).filter(function (b) {
+                    return String(b.ogretmenUid) !== String(v.ogretmenUid);
+                });
+                OH.baglar.push(yeni);
+                /* Onayli bir ogretmen varsa ekran ONDA kalsin; yeni istek
+                   onaylanana kadar ogrencinin gordugu sinif degismemeli. */
+                if (!OH.onayliBaglar().length) OH.bag = yeni;
                 return { ok: true };
             });
         }).catch(function (e) {
@@ -1046,10 +1161,9 @@
         try { kod = localStorage.getItem('oh_beklenen_kod') || ''; } catch (e) { }
         if (!kod) return;
         if (ogretmenMi() || !OH.epostaGirisiVar()) return;
-        if (OH.bagliMi() || OH.bekliyorMu()) {
-            try { localStorage.removeItem('oh_beklenen_kod'); } catch (e) { }
-            return;
-        }
+        /* Ogrenci zaten bir ogretmene bagli olsa bile bekleyen kod islenir:
+           kod BASKA bir ogretmene ait olabilir. Ayni ogretmenin kodu ise
+           kodIstekGonder zaten kibarca reddeder. */
         OH.kodIstekGonder(kod).then(function (r) {
             try { localStorage.removeItem('oh_beklenen_kod'); } catch (e) { }
             OH.bannerGuncelle();
@@ -1128,11 +1242,24 @@
         var u = oturum(), D = veri();
         if (!u || !D || !OH.bagliMi()) return;
         if (OH._ozetAbone) { try { OH._ozetAbone(); } catch (e) { } OH._ozetAbone = null; }
-        try {
-            OH._ozetAbone = D.collection(C_OZET).doc(u.uid).onSnapshot(function (doc) {
+        var ogt = OH.bag.ogretmenUid;
+        var yeniKimlik = OH.ozetId(u.uid, ogt);
+        /* AKTIF ogretmenin ayna kaydi dinlenir. Ogretmen henuz yeni kimlikle
+           kaydetmediyse eski tek kimlikli belgeye duseriz; ogretmen bir kez
+           kaydettiginde yeni belge olusur ve dinleyici ona gecer. */
+        var kur = function (kimlik) {
+            OH._ozetAbone = D.collection(C_OZET).doc(kimlik).onSnapshot(function (doc) {
                 if (!doc.exists) return;
-                OH.ogrenciVeriKur(doc.data());
+                var v = doc.data() || {};
+                /* Eski belge baska bir ogretmene aitse kullanma. */
+                if (v.ogretmenUid && ogt && String(v.ogretmenUid) !== String(ogt)) return;
+                OH.ogrenciVeriKur(v);
             }, function (e) { console.warn('OH ozet dinleyici:', e && (e.code || e.message)); });
+        };
+        try {
+            D.collection(C_OZET).doc(yeniKimlik).get().then(function (doc) {
+                kur(doc && doc.exists ? yeniKimlik : u.uid);
+            }).catch(function () { kur(u.uid); });
         } catch (e) { }
     };
 
@@ -1164,24 +1291,88 @@
 
     /* ================================================================ 8. BANNER (ILETISIM POP-UP) */
 
+    /* Ogretmen adi kisa gosterim (secicide sigsin). */
+    function kisaAd(b) {
+        var a = String((b && (b.ogretmenAd || b.sinifAd)) || '\u00d6\u011fretmen').trim();
+        return a.length > 22 ? a.slice(0, 21) + '\u2026' : a;
+    }
+
+    /* OGRETMEN SECICI: ogrenci birden cok ogretmene bagliysa hangisinin
+       sinifini gordugunu buradan degistirir. Tek ogretmen varsa secici
+       cizilmez — ekran eskisi gibi durur. */
+    function seciciHtml() {
+        var onayli = OH.onayliBaglar();
+        if (onayli.length < 2) return '';
+        var h = '<div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">' +
+                '<span style="font-size:.78rem; color:#6B4A38; font-weight:700;">\u00d6\u011fretmenin:</span>';
+        onayli.forEach(function (b) {
+            var secili = OH.bag && String(OH.bag.ogretmenUid) === String(b.ogretmenUid);
+            h += '<button type="button" onclick="OH.ogretmenSec(\'' +
+                 String(b.ogretmenUid).replace(/'/g, "\\'") + '\')" ' +
+                 'style="padding:5px 12px; border-radius:999px; cursor:pointer; font-family:inherit;' +
+                 'font-size:.8rem; font-weight:700; border:1px solid ' +
+                 (secili ? '#16A085; background:#16A085; color:#fff;' : '#E2CDBC; background:#fff; color:#6B4A38;') +
+                 '">' + esc(kisaAd(b)) +
+                 (b.sinifAd ? ' <span style="opacity:.75; font-weight:600;">\u00b7 ' + esc(b.sinifAd) + '</span>' : '') +
+                 '</button>';
+        });
+        h += '</div>';
+        return h;
+    }
+
+    /* Serit her durumda tek yerden cizilir. */
     OH.bannerGuncelle = function () {
         var b = document.getElementById('ohBanner');
         if (!b) return;
-        if (ogretmenMi() || !OH.epostaGirisiVar() || OH.bagliMi()) { b.style.display = 'none'; return; }
-        b.style.display = 'block';
-        if (OH.bekliyorMu()) {
-            b.innerHTML =
-                '<div style="padding:11px 14px; background:#FFF1E6; border-bottom:1px solid #F3DCC9;' +
-                'color:#B34700; font-size:.86rem; line-height:1.5;">Öğretmenine gönderdiğin katılım isteği ' +
-                '<b>onay bekliyor</b>.</div>';
+        if (ogretmenMi() || !OH.epostaGirisiVar()) { b.style.display = 'none'; return; }
+
+        var onayli = OH.onayliBaglar();
+        var bekleyen = OH.bekleyenBaglar();
+        var kutu = function (renk, kenar, yazi, ic) {
+            return '<div style="padding:10px 14px; background:' + renk + '; border-bottom:1px solid ' + kenar +
+                   '; color:' + yazi + '; font-size:.86rem; line-height:1.5; display:flex; gap:12px;' +
+                   'align-items:center; flex-wrap:wrap;">' + ic + '</div>';
+        };
+        var katilTus = '<span onclick="OH.kodModalAc()" style="cursor:pointer; color:#D84315; font-weight:700;' +
+                       'text-decoration:underline; white-space:nowrap;">Ba\u015fka \u00f6\u011fretmene kat\u0131l</span>';
+
+        /* 1) Hic bagi yok -> kod cagrisi (eski davranis) */
+        if (!onayli.length && !bekleyen.length) {
+            b.style.display = 'block';
+            b.innerHTML = kutu('#FFF1E6', '#F3DCC9', '#6B4A38',
+                '<span style="flex:1;">\u00d6\u011fretmeninin verdi\u011fi kodu girerek s\u0131n\u0131f\u0131na kat\u0131labilirsin.</span>' +
+                '<span onclick="OH.kodModalAc()" style="cursor:pointer; color:#D84315; font-weight:700;' +
+                'text-decoration:underline;">Kodu gir</span>');
             return;
         }
-        b.innerHTML =
-            '<div style="padding:11px 14px; background:#FFF1E6; border-bottom:1px solid #F3DCC9;' +
-            'color:#6B4A38; font-size:.86rem; line-height:1.5;">Öğretmeninin verdiği kodu girerek sınıfına ' +
-            'katılabilirsin. ' +
-            '<span onclick="OH.kodModalAc()" style="cursor:pointer; color:#D84315; font-weight:700;' +
-            'text-decoration:underline;">Kodu gir</span></div>';
+
+        /* 2) Onayli yok ama bekleyen var -> eski bekleme yazisi */
+        if (!onayli.length) {
+            b.style.display = 'block';
+            b.innerHTML = kutu('#FFF1E6', '#F3DCC9', '#B34700',
+                '<span style="flex:1;">\u00d6\u011fretmenine g\u00f6nderdi\u011fin kat\u0131l\u0131m iste\u011fi <b>onay bekliyor</b>.</span>' +
+                katilTus);
+            return;
+        }
+
+        /* 3) En az bir onayli bag var. Tek ogretmenliyse serit yalniz
+              "baska ogretmene katil" baglantisini tasir; iki ve uzerinde
+              secici de cizilir. */
+        var ic = seciciHtml();
+        var bekNot = bekleyen.length
+            ? '<span style="font-size:.8rem; color:#B34700;">' + bekleyen.length +
+              ' istek onay bekliyor</span>' : '';
+        if (!ic && !bekNot) {
+            /* Tek ogretmen, bekleyen yok: serit sade bir satir olur. */
+            b.style.display = 'block';
+            b.innerHTML = kutu('#F4FBF8', '#D6EFE6', '#2C6B5B',
+                '<span style="flex:1; font-size:.82rem;">\u00d6\u011fretmenin: <b>' +
+                esc(kisaAd(OH.bag || onayli[0])) + '</b></span>' + katilTus);
+            return;
+        }
+        b.style.display = 'block';
+        b.innerHTML = kutu('#F4FBF8', '#D6EFE6', '#2C6B5B',
+            '<span style="flex:1;">' + ic + '</span>' + bekNot + katilTus);
     };
 
     /* ================================================================ 9. SARMALAMALAR */
@@ -1269,11 +1460,38 @@
 
     OH.baglantiyiYukle = function () {
         var u = oturum(), D = veri();
-        OH.bag = null;
+        OH.bag = null; OH.baglar = [];
         if (!u || !D) { OH.bannerGuncelle(); return Promise.resolve(null); }
         if (ogretmenMi()) { OH.bannerGuncelle(); return Promise.resolve(null); }
-        return D.collection(C_BAG).doc(u.uid).get().then(function (doc) {
-            OH.bag = doc.exists ? doc.data() : null;
+
+        /* IKI KAYNAK BIRDEN okunur:
+             - uid alanina gore sorgu  -> yeni ({ogr}__{ogt}) ve alani olan
+               eski belgelerin hepsi,
+             - dogrudan doc(uid)       -> 'uid' alani yazilmamis cok eski
+               kayitlar da gozden kacmasin.
+           Ayni ogretmene ait iki kayit varsa YENI kimlikli olan kazanir;
+           boylece tasima sirasinda ogrenci cift satir gormez.            */
+        var sorgu = D.collection(C_BAG).where('uid', '==', u.uid).get()
+            .catch(function () { return { forEach: function () { } }; });
+        var eski = D.collection(C_BAG).doc(u.uid).get()
+            .catch(function () { return { exists: false }; });
+
+        return Promise.all([sorgu, eski]).then(function (r) {
+            var harita = {};       /* ogretmenUid -> bag */
+            var koy = function (id, v) {
+                if (!v || !v.ogretmenUid) return;
+                v._id = id;
+                v._eski = OH.eskiKimlikMi(id, u.uid);
+                var t = String(v.ogretmenUid);
+                var onceki = harita[t];
+                /* Yeni kimlikli kayit eskisini ezer. */
+                if (!onceki || (onceki._eski && !v._eski)) harita[t] = v;
+            };
+            r[0].forEach(function (doc) { koy(doc.id, doc.data() || {}); });
+            if (r[1] && r[1].exists) koy(u.uid, r[1].data() || {});
+
+            OH.baglar = Object.keys(harita).map(function (k) { return harita[k]; });
+            aktifiSec();
             if (OH.bagliMi()) {
                 OH.ozetiDinle();
             } else {
@@ -1456,6 +1674,29 @@
             snap.forEach(function (doc) {
                 var v = doc.data() || {};
                 if (v.durum !== 'onayli' && v.durum !== 'kopuk') return;
+                /* Ogrencinin uid'i ALANDAN okunur; belge kimligi artik
+                   ogrenci+ogretmen ciftidir (eski kayitlarda ikisi aynidir). */
+                var ogrUid = v.uid || doc.id;
+                var ozetKimlik = OH.ozetId(ogrUid, u.uid);
+
+                /* ESKI KIMLIKLI KAYDI YENIYE TASI: bir kez calisir, sonra
+                   dosyadaki butun okuma/yazmalar yeni kimligi kullanir.
+                   Once yeni belge yazilir, sonra eskisi silinir; arada
+                   kesinti olsa bile ogrenci bagsiz kalmaz. */
+                if (OH.eskiKimlikMi(doc.id, ogrUid) && ogrUid) {
+                    var tasinan = {};
+                    Object.keys(v).forEach(function (k) { tasinan[k] = v[k]; });
+                    tasinan.uid = ogrUid;
+                    tasinan.tasindi = Date.now();
+                    D.collection(C_BAG).doc(OH.bagId(ogrUid, u.uid)).set(tasinan, { merge: true })
+                        .then(function () { return D.collection(C_BAG).doc(doc.id).delete(); })
+                        .then(function () {
+                            console.log('OH: "' + (v.ad || ogrUid) + '" bagi yeni kimlige tasindi.');
+                        }).catch(function (e) {
+                            console.warn('OH bag tasima:', e && (e.code || e.message));
+                        });
+                }
+
                 /* Ogrenci su an hangi sinifta? (varsa yerini de al) */
                 var yer = null;
                 try {
@@ -1463,7 +1704,7 @@
                         var cl = d.levels[lId].classes || {};
                         Object.keys(cl).forEach(function (cId) {
                             (cl[cId].students || []).forEach(function (st) {
-                                if (st && st.hesapUid === doc.id && !yer) {
+                                if (st && st.hesapUid === ogrUid && !yer) {
                                     yer = { lId: lId, cId: cId,
                                             seviyeAd: d.levels[lId].name || lId,
                                             sinifAd: (cl[cId].name || cId) };
@@ -1476,7 +1717,9 @@
                 if (v.durum === 'onayli' && !yer) {
                     /* onayli ama hicbir sinifta yok -> bagi kopar */
                     D.collection(C_BAG).doc(doc.id).set({ durum: 'kopuk', guncelleme: Date.now() }, { merge: true }).catch(function () { });
-                    D.collection(C_OZET).doc(doc.id).delete().catch(function () { });
+                    /* Ayna kayit iki kimlikte de olabilir (tasima oncesi/sonrasi) */
+                    D.collection(C_OZET).doc(ozetKimlik).delete().catch(function () { });
+                    if (ozetKimlik !== ogrUid) D.collection(C_OZET).doc(ogrUid).delete().catch(function () { });
                     if (v.kod) D.collection(C_DAVET).doc(String(v.kod).toUpperCase())
                         .set({ kullanildi: false, ogrenciUid: null, guncelleme: Date.now() }, { merge: true }).catch(function () { });
                     console.log('OH: "' + (v.ad || doc.id) + '" hiçbir sınıfta bulunamadı — bağı koparıldı.');
@@ -1492,8 +1735,8 @@
                         guncelleme: Date.now()
                     }, { merge: true }).catch(function () { });
                     if (v.kod) D.collection(C_DAVET).doc(String(v.kod).toUpperCase())
-                        .set({ kullanildi: true, ogrenciUid: doc.id, guncelleme: Date.now() }, { merge: true }).catch(function () { });
-                    console.log('OH: "' + (v.ad || doc.id) + '" sınıfta bulundu — bağ yeniden ONARILDI (' + yer.seviyeAd + '/' + yer.sinifAd + ').');
+                        .set({ kullanildi: true, ogrenciUid: ogrUid, guncelleme: Date.now() }, { merge: true }).catch(function () { });
+                    console.log('OH: "' + (v.ad || ogrUid) + '" sınıfta bulundu — bağ yeniden ONARILDI (' + yer.seviyeAd + '/' + yer.sinifAd + ').');
                 } else if (v.durum === 'onayli' && yer && (v.lId !== yer.lId || v.cId !== yer.cId)) {
                     /* sinif degismis/tasinmis -> koordinatlari tazele */
                     D.collection(C_BAG).doc(doc.id).set({

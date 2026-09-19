@@ -52,6 +52,9 @@
      Bir klasörün satırları kırmızıysa <b>o klasör sunucuya hiç yüklenmemiş</b> demektir.
      En alttaki kutudan eksik klasör listesini kopyalayıp bana gönderebilirsin.</p>
 
+  <div class="sonuc" id="nerede" style="background:#eef3fa;border-color:#cfe0f0">
+    <b>Hangi kopya inceleniyor?</b><span id="adres">—</span></div>
+
   <div class="ozet">
     <span class="rozet" id="rz-top">— dosya denendi</span>
     <span class="rozet iyi" id="rz-ok">— bulundu</span>
@@ -86,7 +89,7 @@
     ["hesap",           ["hesap/auth.js","hesap/kurslar.css","hesap/listelerim.css","hesap/paketler.js"]],
     ["sistem",          ["sistem/router.js","sistem/state.js","sistem/kilit.js","sistem/geri.js"]],
     ["muhadese",        ["muhadese/muhadese.js","muhadese/kelime/kelime_7_1.js"]],
-    ["alfabe",          ["alfabe/okuma.js"]],
+    ["alfabe",          ["okumayazma/okuma.js"]],
     ["alfabe github",   ["alfabe github/alfabe.js"]],
     ["degerler",        ["degerler/kssi.js","degerler/kssi.css"]],
     ["dilbilgisi",      ["dilbilgisi/Dilbilgisi Konuları.js","dilbilgisi/Dilbilgisi Konuları.css"]],
@@ -110,6 +113,55 @@
   var iyi = 0, kotu = 0, toplam = 0, biten = 0;
   var klasorDurum = {};
 
+  /* ---- hangi kopya? -------------------------------------------------- */
+  var YEREL = location.protocol === 'file:';
+  document.getElementById('adres').innerHTML = YEREL
+    ? 'Bilgisayarındaki klasör (dosya olarak açılmış).<br><span style="font-weight:400">' +
+      decodeURI(location.pathname) + '</span>'
+    : 'İnternetteki site: <u>' + location.host + '</u><br><span style="font-weight:400">' +
+      'Yani GitHub\'a yüklenmiş olan kopya.</span>';
+
+  /* ---- dosya var mı? -------------------------------------------------- */
+  /* http(s) üzerinde fetch kullanıyoruz. Dosya olarak açıldığında fetch
+     tarayıcı tarafından engellendiği için <link rel=preload> ile deniyoruz;
+     preload dosyayı sadece indirir, ÇALIŞTIRMAZ — sayfayı bozmaz.        */
+  var fontSayac = 0;
+  function dene(yol, bitti) {
+    var u = encodeURI(yol);
+    if (!YEREL) {
+      fetch(u + '?kontrol=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { bitti(r.ok, r.ok ? 'var (' + r.status + ')' : 'YOK (' + r.status + ')'); })
+        .catch(function () { bitti(false, 'ULAŞILAMADI'); });
+      return;
+    }
+    var uz = (yol.split('.').pop() || '').toLowerCase();
+    if (uz === 'ttf' || uz === 'woff' || uz === 'woff2') {
+      try {
+        new FontFace('Deneme' + (++fontSayac), 'url(' + u + ')').load()
+          .then(function () { bitti(true, 'var'); })
+          .catch(function () { bitti(false, 'YOK'); });
+      } catch (e) { bitti(null, 'denenemedi'); }
+      return;
+    }
+    var tur = uz === 'css' ? 'style'
+            : uz === 'js' ? 'script'
+            : /^(png|jpg|jpeg|gif|webp|svg)$/.test(uz) ? 'image'
+            : uz === 'html' ? 'document' : '';
+    if (tur === 'image') {
+      var im = new Image();
+      im.onload = function () { bitti(true, 'var'); };
+      im.onerror = function () { bitti(false, 'YOK'); };
+      im.src = u;
+      return;
+    }
+    if (tur !== 'style' && tur !== 'script') { bitti(null, 'denenemedi'); return; }
+    var el = document.createElement('link');
+    el.rel = 'preload'; el.as = tur; el.href = u;
+    el.onload = function () { bitti(true, 'var'); el.remove(); };
+    el.onerror = function () { bitti(false, 'YOK'); el.remove(); };
+    document.head.appendChild(el);
+  }
+
   GRUPLAR.forEach(function (g) { toplam += g[1].length; });
 
   function ozetle() {
@@ -128,7 +180,8 @@
     var s = document.getElementById('sonuc');
     if (!eksikTam.length && !eksikKismi.length) {
       s.style.color = '#128a5a';
-      s.innerHTML = '<b>✓ Her şey yerinde</b>Denenen ' + toplam + ' dosyanın hepsi sunucuda var.';
+      s.innerHTML = '<b>✓ Her şey yerinde</b>Denenen ' + toplam + ' dosyanın hepsi ' +
+                    (YEREL ? 'bilgisayarında' : 'sunucuda') + ' var.';
     } else {
       s.style.color = '#c62828';
       s.innerHTML = '<b>Eksik klasörler bulundu</b>' +
@@ -137,7 +190,8 @@
     }
 
     document.getElementById('metin').value =
-      'KİDEF yol kontrolü — ' + iyi + ' var / ' + kotu + ' yok\n' +
+      'KİDEF yol kontrolü — ' + (YEREL ? 'BİLGİSAYAR kopyası' : 'SİTE (' + location.host + ')') + '\n' +
+      iyi + ' var / ' + kotu + ' yok\n' +
       'Tamamen eksik klasörler: ' + (eksikTam.join(', ') || 'yok') + '\n' +
       'Kısmen eksik klasörler: ' + (eksikKismi.join(', ') || 'yok') + '\n' +
       'Arakom: ' + (document.getElementById('fontdurum').textContent || '?');
@@ -145,7 +199,7 @@
 
   GRUPLAR.forEach(function (g) {
     var ad = g[0], liste = g[1];
-    klasorDurum[ad] = { var: 0, yok: 0 };
+    klasorDurum[ad] = { "var": 0, yok: 0, pas: 0 };
 
     var bas = document.createElement('div');
     bas.className = 'klasor';
@@ -165,21 +219,20 @@
 
       function bitir(varMi, etiket) {
         biten++;
-        if (varMi) { iyi++; klasorDurum[ad]["var"]++; hucre.className = 's ok'; }
+        if (varMi === null) { klasorDurum[ad].pas++; hucre.className = 's bek'; }
+        else if (varMi) { iyi++; klasorDurum[ad]["var"]++; hucre.className = 's ok'; }
         else { kotu++; klasorDurum[ad].yok++; hucre.className = 's yok'; }
         hucre.textContent = etiket;
         var d2 = klasorDurum[ad];
-        if (d2["var"] + d2.yok === liste.length) {
-          if (d2.yok === 0) { rozet.className = 'durum iyi'; rozet.textContent = 'tamam'; }
+        if (d2["var"] + d2.yok + d2.pas === liste.length) {
+          if (d2.yok === 0) { rozet.className = 'durum iyi'; rozet.textContent = d2.pas === liste.length ? 'denenemedi' : 'tamam'; }
           else if (d2["var"] === 0) { rozet.className = 'durum kotu'; rozet.textContent = 'KLASÖR YOK'; }
           else { rozet.className = 'durum kotu'; rozet.textContent = 'eksik dosya var'; }
         }
         ozetle();
       }
 
-      fetch(encodeURI(d) + '?kontrol=' + Date.now(), { cache: 'no-store' })
-        .then(function (r) { bitir(r.ok, r.ok ? 'var (' + r.status + ')' : 'YOK (' + r.status + ')'); })
-        .catch(function () { bitir(false, 'ULAŞILAMADI'); });
+      dene(d, bitir);
     });
   });
 
