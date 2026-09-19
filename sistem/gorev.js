@@ -1781,9 +1781,34 @@
                 '<span style="color:#A6836E;">' + et + '</span><span style="color:#6B4A38; font-weight:700;' +
                 'text-align:right;">' + deg + '</span></div>';
         };
+        /* COKLU OGRETMEN: ogrenci birden cok ogretmenin ogrencisi olabilir.
+           Hepsi listelenir (aktif olan isaretli) ve buradan yeni ogretmen
+           eklenebilir — serit yalnizca mesaj kutusunun icinde durdugu icin
+           ogrencinin bu yolu bulabilecegi ASIL yer burasi. */
+        var ogtSatiri = function () {
+            var hepsi = (window.OH && OH.onayliBaglar) ? OH.onayliBaglar() : [];
+            var bekleyen = (window.OH && OH.bekleyenBaglar) ? OH.bekleyenBaglar() : [];
+            var ekle = (window.OH && OH.baskaOgretmenEkle)
+                ? '<button type="button" onclick="OH.baskaOgretmenEkle()" style="margin-left:8px;' +
+                  'padding:4px 10px; border:1px solid #F0DACA; border-radius:8px; background:#FFF6EC;' +
+                  'color:#B34700; cursor:pointer; font-family:inherit; font-size:.72rem; font-weight:700;">' +
+                  '+ Başka öğretmen</button>' : '';
+            if (hepsi.length < 2) {
+                return satir('Öğretmen', esc((hepsi[0] && hepsi[0].ogretmenAd) || bag.ogretmenAd || '—') + ekle) +
+                       (bekleyen.length ? satir('Onay bekleyen', bekleyen.length + ' istek') : '');
+            }
+            var liste = hepsi.map(function (x) {
+                var aktif = bag && String(x.ogretmenUid) === String(bag.ogretmenUid);
+                return (aktif ? '<b>' : '') + esc(x.ogretmenAd || 'Öğretmen') +
+                       (x.sinifAd ? ' <span style="color:#A6836E; font-weight:600;">· ' + esc(x.sinifAd) + '</span>' : '') +
+                       (aktif ? '</b> <span style="color:#16A085; font-size:.75rem;">(açık)</span>' : '');
+            }).join('<br>');
+            return satir('Öğretmenlerin', liste + ekle) +
+                   (bekleyen.length ? satir('Onay bekleyen', bekleyen.length + ' istek') : '');
+        };
         var kimlik =
             satir('Ad', esc(ad)) +
-            satir('Öğretmen', esc(bag.ogretmenAd || '—')) +
+            ogtSatiri() +
             satir('Seviye / Sınıf', esc((bag.seviyeAd || '—') + (bag.sinifAd ? ' / ' + bag.sinifAd : ''))) +
             '<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 0 2px;">' +
             '<span style="color:#A6836E; font-size:.92rem;">Giriş kodun</span>' +
