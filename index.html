@@ -3354,15 +3354,23 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          Altı sınıfın da yıllık planı "Planlar" kartının içindedir. Planlar
          MEB 2026/68 sayılı Genelge’nin çalışma takvimine göre 37 ders haftası
          üzerinden (1. dönem 18, 2. dönem 19 hafta) kurgulanmıştır.
-         Arapça Maarif Modeli kademeli geçişi gereği 2026-2027’de
-         5, 6, 9 ve 10. sınıflar 2025 programını; 7 ve 8. sınıflar hâlâ
-         2016 programını uygular — planlar buna göre yazılmıştır. */
+         Altı sınıfın da planı 2025 programına göredir. 7 ve 8. sınıfın
+         etiketi önce "2016 programı" diyordu; bu, sitenin KENDİ ders
+         verisiyle çelişiyordu (sistem/sinifveri.js -> VERI_YILI: ikisi de
+         "2025 TYMM Arapça Programı (5-8. sınıflar)") ve 8. sınıfın sınav
+         ile çalışma kâğıdı tema adları ders ağacıyla zaten BİREBİR aynı.
+         Etiket ders verisiyle hizalandı.
+         ⚠️ 7. SINIFTA FARK SÜRÜYOR: ders ağacı yeni kitabın DÖRT ünitesi,
+         sınav ve çalışma kâğıdı belgeleri ise önceki programın ALTI teması
+         üzerinden yazılmış. Bu, "Sınavlar" kartının açıklamasında öğretmene
+         yazılı olarak söyleniyor; belgeler yenilenince hem o not hem
+         GUNLUK[7] / SINAV[7] / KAGIT[7] güncellenmeli. */
       (function () {
         var YP = {
           5:  { prg: '2025 programı', st: '2 saat/hafta · 74 saat',  ek: '4 ünite (18+16+18+16 saat) + okul temelli planlama 4 saat' },
           6:  { prg: '2025 programı', st: '2 saat/hafta · 74 saat',  ek: '4 ünite (18+16+18+16 saat) + okul temelli planlama 4 saat' },
-          7:  { prg: '2016 programı', st: '2 saat/hafta · 74 saat',  ek: '6 tema × 12 saat (Maarif Modeli 7. sınıfa 2027-2028’de gelir)' },
-          8:  { prg: '2016 programı', st: '2 saat/hafta · 74 saat',  ek: '6 tema × 12 saat (Maarif Modeli 8. sınıfa 2028-2029’da gelir)' },
+          7:  { prg: '2025 programı', st: '2 saat/hafta · 74 saat',  ek: '4 ünite · 2025 TYMM Arapça Programı (5-8. sınıflar)' },
+          8:  { prg: '2025 programı', st: '2 saat/hafta · 74 saat',  ek: '6 ünite · 2025 TYMM Arapça Programı (5-8. sınıflar)' },
           9:  { prg: '2025 programı', st: '4 saat/hafta · 148 saat', ek: '4 tema (40+28+36+32 saat) + okul temelli planlama 8 saat' },
           10: { prg: '2025 programı', st: '3 saat/hafta · 111 saat', ek: '4 tema (27+24+27+24 saat) + okul temelli planlama 6 saat' }
         };
@@ -3697,7 +3705,16 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             'değiştirebilirsin.</li>' +
             '</ul></div>' +
             '<div class="dok-not">Sınavlar <b>örnektir</b>; okulunun ders kitabına, işlenen konulara ve zümre ' +
-            'kararlarına göre uyarlanmalıdır. Son kontrol: Ağustos 2026.</div>';
+            'kararlarına göre uyarlanmalıdır. Son kontrol: Ağustos 2026.</div>' +
+            /* 7. sınıfta belgeler ile ders verisi FARKLI programın konu
+               adlarını kullanıyor; öğretmen indirmeden ÖNCE bilsin. */
+            (String(s) === '7'
+              ? '<div class="dok-not"><b>Not:</b> Bu sınavların tema adları <b>önceki programın altı ' +
+                'teması</b>na göredir (Meslekler · Alışveriş · Hava Durumu · Vatanım · İbadetler · İletişim). ' +
+                'Sitedeki 7. sınıf <b>ders verisi</b> ise yeni kitabın <b>dört ünitesini</b> izler ' +
+                '(Bugün Ne Yaptım? · Alışveriş Zamanı · Nereye Seyahat Edelim? · Şehrim ve Ülkem). ' +
+                'Sınavları kullanmadan önce konu adlarını kendi işlediğin üniteye göre uyarla.</div>'
+              : '');
         });
         SINIFLAR_.forEach(function (s) {
           SINIF_GIRIS[s]['Çalışma Kâğıtları & Etkinlikler'] =
