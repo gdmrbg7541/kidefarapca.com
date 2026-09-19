@@ -129,6 +129,12 @@
        5. ve 6. ünite eklenince 160 → 300 cümleye çıktı. */
     6:  { cumle: 300, kelime: 1206, seviye: 4 },
     7:  { cumle: 118, kelime: 349, seviye: 3 },
+    /* 8. sınıfın ALTI ÜNİTESİNİN muhâdese cümlelerinden üretildi
+       (8_1_1 … 8_6_3). Kelimelerin "aranan yalın biçimi" elle değil,
+       sitenin kendi sözlük/kök verisinden türetildi
+       (sozluk/cozumleyici.py); bir kelimesi çözülemeyen cümle
+       alınmadı — 531 cümlenin 444'ü oyuna girdi. */
+    8:  { cumle: 444, kelime: 1924, seviye: 4 },
     9:  { cumle: 58,  kelime: 146, seviye: 4 },
     10: { cumle: 83,  kelime: 267, seviye: 5 }
   };
