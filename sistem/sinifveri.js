@@ -170,7 +170,10 @@
      ------------------------------------------------------------------ */
   var VERI_YILI = {
     5:  [{ yil: '2025-2026', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '' }],
-    6:  [{ yil: '2025-2026', program: 'Önceki program · 2025 ders kitabı (6 ünite)', onek: '' }],
+    /* 6. sınıfın YENİ kitabı 4 ünite × 2 ders; ders verisi y2627/ altında.
+       Önceki kitap (6 ünite × 3 ders) yerinde duruyor, öneki boş. */
+    6:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı · yeni kitap (4 ünite)', onek: 'y2627/' },
+         { yil: '2025-2026', program: 'Önceki program · 2025 ders kitabı (6 ünite)', onek: '' }],
     7:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '' }],
     /* 8. sınıfın ders verisi 6 ünite × 3 ders (8_1_1 … 8_6_3) olarak
        yeni kitaptan çıkarıldı; 7. sınıfla aynı programa ait. */
@@ -222,6 +225,30 @@
     k[String(n)] = yil;
     yilKaydiYaz(k);
     return bulundu;
+  }
+
+  /* ------------------------------------------------------------------
+     DERS DOSYASININ YOLU — öğretim yılı seçimi TEK YERDE uygulanır.
+
+     `onek` alanı bu dosyada baştan beri vardı ama HİÇBİR yükleyici
+     okumuyordu: seçici çıkıyor, yılı değiştirmek veriyi değiştirmiyordu.
+     Artık ders dosyasını açan herkes (muhadese.html oynatıcısı ve
+     sarf/ihkelime.js kelime listeleri) buradan geçiyor.
+
+       6_1_1 · yıl 2025-2026 (onek '')        -> muhadese/veri/6_1_1.js
+       6_1_1 · yıl 2026-2027 (onek 'y2627/')  -> muhadese/veri/y2627/6_1_1.js
+
+     Ders kimliğinin başındaki sayı sınıfı verir; kalip_/alan_ gibi
+     sınıfa bağlı olmayan dosyalar önek almaz (boş dizge döner).
+     ------------------------------------------------------------------ */
+  function dersOneki(dersId) {
+    var m = /^(\d+)_/.exec(String(dersId == null ? '' : dersId));
+    if (!m) return '';
+    var y = seciliVeriYili(m[1]);
+    return (y && y.onek) || '';
+  }
+  function dersYolu(dersId, kok) {
+    return (kok == null ? 'muhadese/veri/' : kok) + dersOneki(dersId) + dersId + '.js';
   }
 
   function kacis(s) {
@@ -321,6 +348,8 @@
     sozlukSiniflari: sozlukSiniflari,
     /* öğretim yılı */
     veriYiliKayit:   VERI_YILI,
+    dersOneki:       dersOneki,
+    dersYolu:        dersYolu,
     veriYillari:     veriYillari,
     veriYili:        veriYili,
     seciliVeriYili:  seciliVeriYili,
