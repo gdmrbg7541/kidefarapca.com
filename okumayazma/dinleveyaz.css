@@ -1,0 +1,739 @@
+@font-face{ font-family:'Arakom'; src:url('../arakom.ttf') format('truetype'); font-display:swap; }
+/* Hiçbir yerde KALIN (bold) yazı olmasın — başlıklar dahil, tarayıcı da kalınlaştırmasın */
+*, *::before, *::after{ font-weight:400 !important; }
+:root {
+            --font-poppins: 'Poppins', sans-serif;
+            --font-harmattan: 'Arakom', 'Harmattan', Arial, sans-serif;
+            /* Renkler önceki gibi */
+            --color-bg: #f0f7ff;
+            --color-surface: #ffffff;
+            --color-shadow-light: #ffffff;
+            --color-shadow-dark: #c2d9f0;
+            --color-text-primary: #2d3142;
+            --color-text-secondary: #7b88a1;
+            --color-accent-1: #f3722c;
+            --color-accent-2: #f8961e;
+            --color-selected-bg: var(--color-accent-1);
+            --color-selected-text: #ffffff;
+            --color-correct: #90be6d;
+            --color-error: #f94144;
+            --color-correct-light: #edf7e7;
+            --color-error-light: #feeaea;
+            --color-score: #fca311;
+            --border-radius-main: 1.2rem;
+            --border-radius-small: 0.8rem;
+        }
+
+        html {
+            font-size: min(calc(100vw / 120), calc(100dvh / 67.5));
+            overflow: hidden;
+        }
+
+        body {
+            font-family: var(--font-poppins); background: var(--color-bg); color: var(--color-text-primary); margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; height: 100dvh; overflow: hidden;
+        }
+
+        /* Sabit 16:9 tuval; kenar boşlukları (letterbox) arka planla aynı renk
+           olduğundan görünür bir "kutu"/çerçeve kalmaz. */
+        body { background:
+            radial-gradient(120% 120% at 50% 0%, #f7fbff 0%, var(--color-bg) 60%); }
+        #gameWrapper {
+            width: 120rem; height: 67.5rem; position: relative;
+            overflow: hidden; background: transparent; box-shadow: none;
+        }
+
+        .screen {
+            width: 100%; height: 100%; max-width: none; max-height: none;
+            position: absolute; top: 0; left: 0; margin: auto;
+            background-color: transparent; border-radius: 0; box-shadow: none; border: none;
+            padding: 2rem; box-sizing: border-box;
+            display: none; flex-direction: column; align-items: center; justify-content: flex-start;
+        }
+        .screen.active { display: flex; }
+
+        #gameScreen, #scoreScreen { flex-grow: 1; min-height: 0; width: 100%; justify-content: space-between; overflow: hidden; }
+        #homeScreen { text-align: center; justify-content: center; }
+
+        .title-container { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem; margin-bottom: 2rem; flex-shrink: 0;}
+        .title-text h1 { font-size: 4.5rem; color: var(--color-accent-1); margin: 0; font-family: var(--font-poppins); text-shadow: 1px 1px 2px var(--color-shadow-dark); }
+        .title-text h2 { font-size: 3.5rem; font-weight: 700; color: var(--color-text-primary); margin: 0; text-shadow: 1px 1px 1px var(--color-shadow-light); font-family: var(--font-harmattan); }
+        #homeScreen h3 { font-size: 2.2rem; font-family: var(--font-poppins); color: var(--color-text-secondary); padding-bottom: 0.5rem; margin-top: 1rem; font-weight: 600; border-bottom: 2px solid var(--color-accent-1); margin-bottom: 1.5rem; flex-shrink: 0; width: auto; display: inline-block;}
+       #levelSelect {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 sütunlu düzene geçirildi */
+            gap: 1.3rem;
+            width: 100%;
+            max-width: 60rem;
+            margin: 0 auto 1rem;
+        }
+
+        .key-button {
+            padding: 0.8rem 1rem; font-size: 1rem; font-weight: 600; font-family: inherit;
+            border: none; border-radius: var(--border-radius-small); cursor: pointer;
+            transition: all 0.2s ease-out; color: var(--color-text-primary);
+            background: var(--color-surface);
+            box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+            display: inline-flex; justify-content: center; align-items: center;
+            line-height: 1.2; vertical-align: middle; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
+        }
+        .key-button:active:not(:disabled) { box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); transform: scale(0.98); }
+        .key-button:hover:not(:disabled) { color: var(--color-accent-1); }
+        .level-btn { font-size: 2.3rem; padding: 1.9rem 2rem; font-weight: 700;}
+        /* Seviye tuşunda turuncu hover olmasın */
+        .level-btn:hover:not(:disabled) { color: var(--color-text-primary); }
+        .level-btn.selected, .level-btn.selected:hover { background: var(--color-selected-bg); color: var(--color-selected-text); box-shadow: inset 3px 3px 6px #d15a1a, inset -3px -3px 6px #ff8a3e; transform: none; }
+        .action-btn { font-size: 1.3rem; border-radius: var(--border-radius-small); padding: 0.8rem 1.5rem; }
+
+        .back-button {
+            font-size: 1.5rem; width: 4rem; height: 4rem; padding: 0; color: var(--color-text-secondary); background: var(--color-surface);
+            border: none; display: inline-flex; justify-content: center; align-items: center; cursor: pointer; border-radius: var(--border-radius-small);
+            box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light); transition: all 0.2s ease-out;
+        }
+        .back-button::before { content: ''; display: inline-block; width: 0.8em; height: 0.8em; border-top: 0.3em solid currentColor; border-left: 0.3em solid currentColor; transform: rotate(-45deg); margin-right: 0.2em; }
+        .back-button:active:not(:disabled) { box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); transform: scale(0.98); }
+        .back-button:hover:not(:disabled) { color: var(--color-accent-1); }
+
+        #scoreToHomeButton { font-size: 1.5rem; width: auto; min-width: 5rem; height: 4rem; padding: 0 1.5rem; margin: 1.5rem auto 0; display: block; color: var(--color-text-secondary); background: var(--color-surface); }
+        #scoreToHomeButton:hover:not(:disabled) { color: var(--color-accent-1); }
+
+        #gameHeader { position: relative; display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.5rem; border-bottom: none; margin-bottom: 0.5rem; flex-shrink: 0; padding-left: 0; padding-right: 0; width: 100%; max-width: 45rem; margin-left: auto; margin-right: auto; }
+        .header-info { font-size: 1.5rem; font-weight: 600; font-family: var(--font-poppins); background: var(--color-surface); padding: 0.5rem 1rem; border-radius: var(--border-radius-small); box-shadow: 2px 2px 4px var(--color-shadow-dark), -2px -2px 4px var(--color-shadow-light);}
+        #levelScoreDisplay { color: var(--color-score); font-weight: 700; }
+        #timerDisplay { color: var(--color-error); font-weight: 700; font-size: 1.7rem;}
+        #mistakeCounter { color: var(--color-error); font-size: 2rem; letter-spacing: 2px; margin-left: 0.5rem; margin-right: 0.5rem; background: none; box-shadow: none; padding: 0;}
+        .game-main { text-align: center; flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 0; padding: 0; width: 100%; overflow: hidden; }
+        #gameContent { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem; width: 100%; max-width: 40rem; margin: auto; }
+        #turkishWord, #arabicOutputContainer { padding: 0.5rem 1rem; min-height: auto; display: flex; align-items: center; position: relative; background: var(--color-surface); border: none; border-radius: var(--border-radius-main); box-shadow: inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light); width: 100%; text-align: center; justify-content: center; flex-basis: auto; box-sizing: border-box; flex-shrink: 0; line-height: 1.3; overflow: hidden; word-break: break-all; }
+        #turkishWord { order: 3; font-size: 4rem; margin-top: 0; margin-bottom: 0; font-family: var(--font-poppins); font-weight: 600; color: var(--color-text-primary); }
+        #arabicOutputContainer { order: 1; gap: 0.5rem; direction: rtl; background: var(--color-surface); margin-bottom: 0; }
+        
+        #arabicOutputDisplay { width: auto; max-width: 100%; white-space: normal; font-family: var(--font-harmattan); font-weight: 700; line-height: 1.3; border: none; background: none; padding: 0; box-shadow: none; direction: rtl; cursor: default; font-size: 6rem; transition: none; color: var(--color-text-primary); }
+        
+        #arabicOutputDisplay[lang="ar"] { font-family: var(--font-harmattan); /* Ekstra güvence */ }
+        #arabicOutputDisplay.empty::before { content: '...'; color: var(--color-text-secondary); font-weight: normal; font-size: 1.5rem; opacity: 0.8; width: 100%; text-align: center;}
+        #correctAnswerContainer, #correctAnswerDisplay, #helperGrid, .char-btn, .separator, .tool-btn-danger, #checkButton { display: none !important; }
+
+        #letterBankContainer { order: 2; overflow-y: auto; padding: 0.2rem; margin: 0; width: 100%; box-sizing: border-box; max-width: 100%; display: flex; align-items: center; justify-content: center; min-height: auto; flex-shrink: 0; }
+        #letterBank { display: flex; flex-direction: row; flex-wrap: wrap; gap: 0.4rem; align-items: center; justify-content: center; padding: 0; max-width: 100%; margin: 0 auto; }
+        
+        /* GÜNCELLENDİ: Buton boyutu yatayda 7rem'e büyütüldü */
+        .letter-bank-btn { font-family: var(--font-harmattan); font-weight: 700; font-size: 5rem; width: 7rem; height: 7rem; padding: 0.3rem 0; margin: 0.2rem; background: var(--color-surface); color: var(--color-text-primary); border: none; box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light); border-radius: 0.8rem; transition: all 0.1s ease-out; line-height: 1; vertical-align: middle; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; cursor: pointer; flex-shrink: 0; box-sizing: border-box; }
+        
+        .letter-bank-btn[lang="ar"] { font-family: var(--font-harmattan); /* Ekstra güvence */ }
+        .letter-bank-btn:active:not(:disabled) { box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); transform: scale(0.97); }
+        
+        .letter-bank-btn.hareke-char { font-size: 4rem; }
+        
+        .letter-bank-btn.correct-form { background-color: var(--color-correct-light) !important; color: var(--color-correct) !important; box-shadow: inset 2px 2px 4px #76b198, inset -2px -2px 4px #baffa0 !important; cursor: default; transform: none !important; }
+        .letter-bank-btn.error-form { background-color: var(--color-error-light) !important; color: var(--color-error) !important; box-shadow: inset 2px 2px 4px #d35f61, inset -2px -2px 4px #ff8386 !important; animation: shake 0.3s ease-in-out; transform: none !important; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+        #audioControl { display: flex; position: relative; width: 4.5rem; height: 4rem; /* Sabit boyut */ }
+        #audioControl button, #nextButton {
+             position: absolute; /* Butonları üst üste bindir */
+             top: 0; left: 0; /* Aynı konuma yerleştir */
+             font-size: 2.5rem; width: 100%; height: 100%; padding: 0; /* Konteyneri doldur */
+             color: var(--color-selected-text); background: var(--color-accent-1);
+             border: none; border-radius: var(--border-radius-small);
+             box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+             transition: all 0.2s ease-out, opacity 0.3s, visibility 0.3s;
+             display: inline-flex; justify-content: center; align-items: center; /* İçeriği ortala */
+        }
+        #audioControl button:hover:not(:disabled), #nextButton:hover:not(:disabled) { background: var(--color-accent-2); color: var(--color-selected-text); }
+        #audioControl button:active:not(:disabled), #nextButton:active:not(:disabled) { box-shadow: inset 2px 2px 4px #d15a1a, inset -2px -2px 4px #ff8a3e; transform: scale(0.98); }
+        #audioControl button.hidden, #nextButton.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        @keyframes blink { 0% { opacity: 1; transform: scale(1); box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light), 0 0 10px var(--color-accent-2); } 50% { opacity: 0.8; transform: scale(1.03); box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light), 0 0 20px 5px var(--color-accent-1); } 100% { opacity: 1; transform: scale(1); box-shadow: 4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light), 0 0 10px var(--color-accent-2); } }
+        .blinking-button { animation: blink 1.2s infinite ease-in-out; }
+        :disabled { background: var(--color-surface) !important; color: var(--color-text-secondary) !important; box-shadow: inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light) !important; cursor: not-allowed !important; transform: none !important; opacity: 0.7 !important; }
+        .letter-bank-btn.correct-form:disabled { background-color: var(--color-correct-light) !important; color: var(--color-correct) !important; box-shadow: inset 2px 2px 4px #76b198, inset -2px -2px 4px #baffa0 !important; opacity: 0.8 !important; }
+        #gameFooter { text-align: center; flex-shrink: 0; padding-top: 0.8rem; margin-top: 0.5rem; border-top: none; display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 0; padding-right: 0; max-width: 45rem; margin-left: auto; margin-right: auto; }
+        #pointsBurst { position: absolute; top: 0.5rem; left: 5.5rem; font-size: 1.2rem; font-weight: bold; color: var(--color-score); opacity: 0; pointer-events: none; white-space: nowrap; background: var(--color-surface); padding: 0.3rem 0.6rem; border-radius: 5px; box-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        #pointsBurst.active { animation: points-burst 0.8s ease-out forwards; }
+        @keyframes points-burst { 0% { transform: translateY(0) scale(0.8); opacity: 1; } 50% { transform: translateY(-15px) scale(1.1); opacity: 0.9; } 100% { transform: translateY(-30px) scale(0.9); opacity: 0; } }
+        #scoreScreen { align-items: center; justify-content: center; text-align: center; padding: 1.5rem; }
+        #scoreScreen h2 { font-size: 2.5rem; color: var(--color-accent-1); margin-bottom: 1rem; text-shadow: 1px 1px 2px var(--color-shadow-dark);}
+        #scoreScreen p { font-size: 1.8rem; color: var(--color-text-primary); margin-bottom: 1.5rem; }
+        #finalScoreValue { font-weight: bold; color: var(--color-score); } #totalPossibleScore { color: var(--color-text-secondary); }
+        #incorrectList { width: 100%; max-width: 25rem; margin-top: 1rem; border-top: 1px solid var(--color-shadow-dark); padding-top: 1rem; text-align: left; }
+        #incorrectList h3 { font-size: 1.3rem; color: var(--color-error); margin-bottom: 0.5rem; text-align: center; }
+        #incorrectList ul { list-style: none; padding: 0; margin: 0; max-height: 150px; overflow-y: auto; }
+        #incorrectList li { font-size: 1.1rem; color: var(--color-text-primary); padding: 0.3rem 0.5rem; border-bottom: 1px dashed var(--color-shadow-dark); display: flex; justify-content: space-between; align-items: center; }
+        #incorrectList li span:first-child { font-size: 1rem; color: var(--color-text-secondary); }
+        #incorrectList li span:last-child { font-family: var(--font-harmattan); font-size: 1.5rem; font-weight: bold; margin-left: 0.5rem; direction: rtl; }
+        #incorrectList li span:last-child[lang="ar"] { font-family: var(--font-harmattan); /* Ekstra güvence */ }
+
+
+        /* --- GÜNCELLENDİ: Dinamik Harf Satırı Genişlikleri (Yatay/Varsayılan - Yeni 7rem Buton Boyutuna Göre) --- */
+        /* Yatay Buton: 7rem + 0.4rem gap = ~7.4rem */
+        #letterBankContainer.rows-2 #letterBank { max-width: 30rem; } /* 4/satır (5-8 harf) */
+        #letterBankContainer.rows-3 #letterBank { max-width: 38rem; } /* 5/satır (9-10, 12-14 harf) */
+        #letterBankContainer.rows-4 #letterBank { max-width: 38rem; } /* 5/satır (16+ harf) */
+        #letterBankContainer.rows-5 #letterBank { max-width: 23rem; } /* 3/satır (15 harf) */
+        #letterBankContainer.rows-11 #letterBank { max-width: 30rem; } /* 4/satır (11 harf -> 4-4-3) */
+        /* --- --- */
+
+        /* --- DİKEY EKRAN (Telefon/Tablet) 540x960 ORANI --- */
+        @media (orientation: portrait) {
+            /* NEDEN düzeltmesi: Sabit 1:2.015 tuval (33.75×68) min() ile ölçeklenince,
+               cihaz bu orandan daha "az uzun" olduğunda (kısa telefonlar, tabletler ve
+               tarayıcı çubuğu dvh'yi kısaltınca) YÜKSEKLİK kısıtlı olur → yanlarda dar
+               boş bantlar çıkar. Çözüm: genişliği HER ZAMAN tam kullan (font yalnız
+               genişliğe göre), yükseklik cihaza göre esnesin (100dvh). */
+            html { font-size: calc(100vw / 33.75); }
+            #gameWrapper { width: 100vw; height: 100dvh; }
+            .screen { padding: 1rem; }
+            /* Uzun telefonlarda ana menü içeriği tuvalden taşarsa kaydırılabilsin
+               (Başla düğmesi her zaman erişilebilir kalır) */
+            #homeScreen{ overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+                justify-content:flex-start; padding-bottom:2rem; }
+            .title-text h1 { font-size: 3.5rem; } .title-text h2 { font-size: 2.8rem; }
+            #homeScreen h3 { font-size: 1.8rem; }
+            #levelSelect { max-width: 100%; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .level-btn { font-size: 1.5rem; padding: 1rem; }
+            #gameHeader { max-width: 100%; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+            .header-info { font-size: 1.2rem; } #timerDisplay { font-size: 1.4rem; } #mistakeCounter { font-size: 1.5rem; }
+            
+            #gameContent { 
+                max-width: 100%; 
+                gap: 1rem; /* Minimum boşluk */
+                flex-grow: 1; /* Dikey alanı doldur */
+                justify-content: space-evenly; /* Öğeleri dikeyde eşit dağıt */
+            }
+            #turkishWord { font-size: 3rem; }
+            #arabicOutputDisplay { font-size: 5rem; } 
+
+            #letterBankContainer { margin: 0; padding: 0.1rem; }
+            #letterBank { gap: 0.2rem; max-width: 100%; }
+            
+            /* GÜNCELLENDİ: Buton boyutu dikeyde 4.5rem'e büyütüldü */
+            .letter-bank-btn { font-size: 3.5rem; width: 4.5rem; height: 4.5rem; margin: 0.1rem; border-radius: 0.5rem; padding: 0.2rem 0; }
+            
+            /* GÜNCELLENDİ: Hareke font boyutu dikeyde 3rem'e büyütüldü */
+            .letter-bank-btn.hareke-char { font-size: 3rem; }
+            
+            .back-button { width: 3.5rem; height: 3.2rem; font-size: 1.2rem; }
+            .back-button::before{ width: 0.7em; height: 0.7em; border-width: 0.25em; }
+            #audioControl { width: 3.5rem; height: 3.2rem; /* Boyutu eşitle */}
+            #audioControl button, #nextButton { font-size: 2rem; width: 100%; height: 100%; } /* Konteyneri doldur */
+            #scoreScreen h2 { font-size: 2rem; } #scoreScreen p { font-size: 1.5rem; }
+            #incorrectList { max-width: 100%; }
+            #incorrectList li { font-size: 1rem; } #incorrectList li span:last-child { font-size: 1.3rem; }
+
+            /* --- GÜNCELLENDİ: Dikey için dinamik satır genişlikleri (Yeni 4.5rem Buton Boyutuna Göre) --- */
+            /* Dikey Buton: 4.5rem + 0.2rem gap = ~4.7rem */
+            #letterBankContainer.rows-2 #letterBank { max-width: 19rem; } /* 4/satır (5-8 harf) */
+            #letterBankContainer.rows-3 #letterBank { max-width: 24rem; } /* 5/satır (9-10, 12-14 harf) */
+            #letterBankContainer.rows-4 #letterBank { max-width: 24rem; } /* 5/satır (16+ harf) */
+            #letterBankContainer.rows-5 #letterBank { max-width: 15rem; } /* 3/satır (15 harf) */
+            #letterBankContainer.rows-11 #letterBank { max-width: 19rem; } /* 4/satır (11 harf -> 4-4-3) */
+            
+            #homeScreen {
+                justify-content: space-evenly;
+            }
+        }
+/* ===================================================================
+   SLAYT TAHTASI + SINAV MODU  (Dinle ve Yaz — birleşik sürüm)
+   =================================================================== */
+
+/* Seviye akordiyonu (mobilde açılır/kapanır; masaüstünde grid hep açık) */
+.seviye-akordiyon{ width:100%; max-width:60rem; margin:1rem auto 0; }
+.seviye-baslik{ display:flex; align-items:center; gap:0.8rem; width:100%;
+    background:none; border:none; cursor:pointer; padding:0 0 0.5rem;
+    font-family:var(--font-poppins); font-size:2.2rem; font-weight:600;
+    color:var(--color-text-secondary); border-bottom:2px solid var(--color-accent-1);
+    margin-bottom:1.5rem; }
+.seviye-baslik .sb-metin{ flex:0 0 auto; }
+.seviye-baslik .sb-secili{ flex:1 1 auto; text-align:right; font-size:1.5rem; color:var(--color-accent-1); }
+.seviye-baslik .sb-ok{ width:1.6rem; height:1.6rem; flex:0 0 auto; color:var(--color-text-secondary);
+    transition:transform .25s ease; display:none; }
+.seviye-akordiyon.acik .sb-ok{ transform:rotate(180deg); }
+/* Akordiyon YALNIZ mobilde açılıp kapanır; masaüstünde grid her zaman görünür */
+@media (orientation: portrait), (max-height: 520px){
+    .seviye-baslik .sb-ok{ display:inline-block; }
+    .seviye-akordiyon:not(.acik) #levelSelect{ display:none; }
+    .seviye-akordiyon:not(.acik) .seviye-baslik{ margin-bottom:0; }
+}
+
+/* Modlar: YAN YANA 3 SÜTUN, yalnız içeriği yansıtan SVG'ler (metin yok) */
+.mod-secim{ display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;
+    width:100%; max-width:34rem; margin:0.8rem auto 1.4rem; }
+.mod-btn{ display:flex; align-items:center; justify-content:center; cursor:pointer;
+    padding:1rem 0.6rem; border-radius:var(--border-radius-small);
+    background:var(--color-surface);
+    box-shadow:4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+    transition:background .2s, box-shadow .15s; user-select:none; -webkit-user-select:none; }
+.mod-btn input{ display:none; }
+.mod-btn .ico{ width:2.7rem; height:2.7rem; color:var(--color-accent-1); }
+.mod-btn:active{ transform:scale(0.98); }
+/* Seçili mod: turuncu dolgulu (radyo gibi belli olur) */
+.mod-btn:has(input:checked){ background:var(--color-accent-1);
+    box-shadow:inset 3px 3px 6px #d15a1a, inset -3px -3px 6px #ff8a3e; }
+.mod-btn:has(input:checked) .ico{ color:#fff; }
+
+/* Ana ekran: harf başına zaman/tekrar ayarları (seviyeye göre hazır, elle değişir) */
+.ayarlar{ display:flex; flex-direction:column; gap:0.9rem; margin:1.3rem auto 0; width:100%; max-width:28rem; }
+.ayar-satir{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.ayar-label{ font-family:var(--font-poppins); font-weight:600; font-size:1.2rem; color:var(--color-text-secondary); }
+.stepper{ display:flex; align-items:center; gap:0.5rem; flex:0 0 auto; }
+.step-btn{ width:2.8rem; height:2.8rem; border:none; border-radius:var(--border-radius-small);
+    background:var(--color-surface); color:var(--color-accent-1); font-size:1.7rem; font-weight:700; cursor:pointer;
+    box-shadow:3px 3px 6px var(--color-shadow-dark), -3px -3px 6px var(--color-shadow-light);
+    display:flex; align-items:center; justify-content:center; line-height:1; }
+.step-btn:active{ box-shadow:inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); }
+.ayar-input{ width:3.8rem; height:2.8rem; text-align:center; font-family:var(--font-poppins); font-weight:700;
+    font-size:1.35rem; color:var(--color-text-primary); border:none; border-radius:var(--border-radius-small);
+    background:var(--color-surface); -moz-appearance:textfield;
+    box-shadow:inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light); }
+.ayar-input::-webkit-outer-spin-button, .ayar-input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+#baslaButton{ margin:1.4rem auto 0; display:block; font-size:1.6rem; font-weight:700; padding:0.9rem 2.6rem;
+    background:var(--color-accent-1); color:#fff;
+    box-shadow:4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light); }
+#baslaButton:disabled{ opacity:0.55; cursor:not-allowed; background:var(--color-surface); color:var(--color-text-secondary); }
+
+/* Oyun ekranı yeni düzen: üstte slayt, altta etkileşim */
+#gameScreen .game-main{ justify-content:flex-start; gap:1.2rem; }
+#slideBoard{ width:100%; max-width:104rem; flex:0 0 auto; height:23rem;
+    display:flex; gap:1.4rem; box-sizing:border-box; }
+#gameScreen #gameContent{ max-width:70rem; flex:1 1 auto; justify-content:center; }
+
+.slide-col{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center;
+    background:var(--color-surface); border-radius:var(--border-radius-main); padding:1rem 1.2rem;
+    box-shadow:inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light);
+    box-sizing:border-box; overflow:hidden; }
+.slide-col-title{ font-size:1.5rem; font-weight:700; color:var(--color-accent-1);
+    margin-bottom:0.7rem; flex-shrink:0; }
+
+/* Harf hâlleri ızgarası */
+.slide-forms{ display:flex; flex-wrap:wrap; gap:0.7rem; align-items:flex-start; justify-content:center;
+    width:100%; overflow-y:auto; flex:1 1 auto; align-content:flex-start; padding:0.2rem; }
+.lf-card{ display:grid; grid-template-columns:repeat(4,1fr); gap:0.15rem;
+    background:var(--color-bg); border-radius:0.7rem; padding:0.4rem;
+    box-shadow:3px 3px 6px var(--color-shadow-dark), -3px -3px 6px var(--color-shadow-light); }
+.lf-cell{ display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    min-width:3.4rem; padding:0.1rem 0.15rem; }
+.lf-form{ font-family:var(--font-harmattan); font-weight:700; font-size:3rem; line-height:1.1;
+    color:var(--color-text-primary); }
+.lf-cap{ font-size:0.85rem; color:var(--color-text-secondary); margin-top:0.1rem; }
+
+/* Harekeler şeridi (ilk seviyeler) */
+.slide-hareke{ display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center; width:100%;
+    margin-top:0.6rem; flex-shrink:0; }
+.slide-hareke:empty{ display:none; }
+.hk-cell{ display:flex; flex-direction:column; align-items:center;
+    background:var(--color-bg); border-radius:0.6rem; padding:0.25rem 0.55rem;
+    box-shadow:2px 2px 4px var(--color-shadow-dark), -2px -2px 4px var(--color-shadow-light); }
+.hk-mark{ font-family:var(--font-harmattan); font-weight:700; font-size:2.2rem; line-height:1;
+    color:var(--color-accent-1); }
+.hk-name{ font-size:0.8rem; color:var(--color-text-secondary); margin-top:0.1rem; }
+
+/* Doğru kelime tarafı */
+.slide-answer{ justify-content:center; }
+.slide-answer-word{ font-family:var(--font-harmattan); font-weight:700;
+    font-size:7rem; line-height:1.25; color:var(--color-text-primary); text-align:center;
+    flex:1 1 auto; display:flex; align-items:center; justify-content:center; width:100%; }
+.slide-exam-note{ display:none; font-size:1.3rem; color:var(--color-text-secondary);
+    font-weight:600; text-align:center; }
+
+/* SINAV MODU: harf ve harekelere tıklanamaz (sadece izlenir/dinlenir) */
+#gameMain.exam-mode #tusKonteyner{ pointer-events:none; }
+/* SINAV MODU: cevap tarafı gizlenir, harfler kalır */
+#slideBoard.exam-mode .slide-answer-word{ display:none; }
+#slideBoard.exam-mode .slide-exam-note{ display:flex; align-items:center; justify-content:center;
+    flex:1 1 auto; opacity:.75; }
+
+/* Birleşik düzende (slayt + oyun) yatay ekranda etkileşim alanı sığsın */
+@media (orientation: landscape){
+    #gameScreen #gameContent .letter-bank-btn{ font-size:3.6rem; width:5rem; height:5rem; }
+    #gameScreen #gameContent .letter-bank-btn.hareke-char{ font-size:3rem; }
+    #gameScreen #turkishWord{ font-size:3rem; }
+    #gameScreen #arabicOutputDisplay{ font-size:4.5rem; }
+    #gameScreen .game-main{ overflow:hidden; }
+    #gameScreen #letterBankContainer{ max-height:16rem; }
+}
+
+/* TELEFON YATAY (kısa yükseklik): harf kartları da ALT ALTA dizilsin (portre gibi).
+   Masaüstü/tablet yatay (uzun yükseklik) 3 sütunlu düzende kalır. */
+@media (orientation: landscape) and (max-height: 520px){
+    /* #gameMain öznitelik özgüllüğü, sonraki taban grid kuralını ezmek için gerekli.
+       Kartlar sınırlı genişlikte (64rem) tek sütun; kapsayıcı ana eksende ortalanır. */
+    #gameMain .tus-grup.harfler{ display:flex; flex-direction:column; flex-wrap:nowrap; align-items:stretch;
+        gap:0.6rem; overflow-y:auto; overflow-x:hidden; width:100%; max-width:64rem; }
+    #gameMain .harf-tus{ width:100%; gap:0.5rem; padding:0.4rem 1.1rem; overflow:hidden; }
+    #gameMain .harf-tus .ht-form{ flex:1 1 0; min-width:0; font-size:4.6rem; }
+}
+
+/* DOKUNMATİK cihazlar (mobil + tablet), HER YÖNDE: her HARF grubu TEK satır —
+   asla iki grup yan yana, asla yatay kaydırıp aramak gerekmez. Hareke grupları da
+   alt satıra sarar (yatay kaydırma yok). Masaüstü (pointer:fine) 3 sütunda kalır. */
+@media (pointer: coarse){
+    /* flex-wrap:nowrap ŞART: yoksa sütun taşınca kartlar ikinci sütuna sarar
+       (yan yana). nowrap ile tek sütun kalır, taşarsa DİKEY kaydırılır. */
+    #gameMain .tus-grup.harfler{ display:flex; flex-direction:column; flex-wrap:nowrap;
+        align-items:stretch; gap:0.6rem; width:100%; max-width:64rem;
+        overflow-x:hidden; overflow-y:auto; }
+    #gameMain .harf-tus{ width:100%; gap:0.5rem; padding:0.4rem 1rem 0.7rem; overflow:hidden; }
+    /* line-height 1.45: ع gibi kuyruklu (alt uzantılı) harflerin kuyruğu satır
+       kutusuna sığar, kutudan taşıp kırpılmaz. */
+    #gameMain .harf-tus .ht-form{ flex:1 1 0; min-width:0; line-height:1.45; }
+    #gameMain .tus-grup.harekeler{ flex-wrap:wrap; overflow-x:hidden;
+        row-gap:0.5rem; justify-content:center; }
+}
+
+/* --- Dikey ekran (telefon) uyarlaması --- */
+@media (orientation: portrait){
+    .exam-label{ font-size:1.2rem; }
+    #gameScreen .game-main{ justify-content:flex-start; gap:0.8rem; overflow:hidden; }
+    #slideBoard{ height:24rem; flex:0 0 auto; flex-direction:column; gap:0.6rem; max-width:100%; }
+    .slide-col{ padding:0.6rem 0.7rem; }
+    .slide-letters{ flex:1 1 auto; min-height:0; }
+    .slide-answer{ flex:0 0 auto; height:6.5rem; }
+    .slide-col-title{ font-size:1.2rem; margin-bottom:0.35rem; }
+    .slide-forms{ gap:0.4rem; flex:1 1 auto; min-height:0; }
+    .lf-cell{ min-width:2.5rem; }
+    .lf-form{ font-size:2.1rem; }
+    .lf-cap{ font-size:0.72rem; }
+    .slide-hareke{ margin-top:0.35rem; }
+    .hk-mark{ font-size:1.7rem; } .hk-name{ font-size:0.72rem; }
+    .slide-answer-word{ font-size:4rem; }
+    #gameScreen #gameContent{ flex:1 1 auto; gap:0.6rem; justify-content:center; }
+    #gameScreen #letterBankContainer{ max-height:15rem; }
+}
+
+/* ===================================================================
+   SLAYT/KLAVYE DÜZENİ (birleşik tuşlar + Türkçe kelime listesi)
+   =================================================================== */
+#gameScreen .game-main.slayt-mod{
+    justify-content:flex-start; align-items:center; gap:1rem; padding-top:0.5rem; overflow:hidden;
+}
+
+/* 2) İki sütun DEFTER listesi (kutusuz): her satır çizgili bir defter satırı;
+      solda Türkçe, sağda Arapça yazım. Ekranın en çok ~yarısını kaplar; kelimeler
+      yazıldıkça liste kayar, en üst ve en alt kelimeler görülebilir. */
+.kelime-liste{
+    position:relative; box-sizing:border-box;
+    display:grid; grid-template-columns:1fr 1fr; column-gap:5rem; row-gap:0;
+    width:100%; max-width:112rem; margin:0 auto; align-content:start;
+    flex:0 1 auto; max-height:26rem; min-height:0; overflow-y:auto;
+    padding:1rem 1.4rem 0.4rem 2.6rem;
+    /* Defter: ortada dikey ayraç + solda kırmızı kenar çizgisi */
+    background:
+      linear-gradient(to right, transparent calc(50% - 1px),
+          rgba(60,80,140,0.14) 50%, transparent calc(50% + 1px)),
+      linear-gradient(to right, transparent 1.5rem,
+          rgba(210,70,70,0.35) 1.5rem, rgba(210,70,70,0.35) calc(1.5rem + 2px),
+          transparent calc(1.5rem + 2px));
+    background-attachment:local;
+}
+/* Satırlar BÜYÜK: yaklaşık yarım ekranlık listede ~4 kelime (2 satır × 2 sütun)
+   görünür; gerisi için kaydırılır, baştaki (üstteki) kelimeler görünmez olur. */
+.kelime-satir{
+    display:flex; align-items:center; gap:1rem; min-height:6.5rem; max-height:12rem; overflow:hidden;
+    scroll-margin-top:1rem;
+    /* Aktif kırmızı kutunun halkası (box-shadow) kenarlara değmesin diye satırlar
+       yatayda içeri alınır; kaydırılabilir kapsayıcı kenardan kırpmaz. */
+    margin-inline:0.9rem;
+    padding:0.35rem 0.3rem 0.8rem; border-bottom:2px solid rgba(60,80,140,0.16);
+    transition:opacity .45s ease, max-height .45s ease, min-height .45s ease, margin .45s ease,
+               padding .45s ease, transform .45s ease, border-color .2s;
+}
+.kelime-satir.cikiyor{ opacity:0; min-height:0; max-height:0; overflow:hidden; margin:0; padding-top:0; padding-bottom:0;
+    border-bottom-color:transparent; transform:translateY(-0.4rem); }
+.ks-no{
+    flex:0 0 auto; align-self:center; min-width:2.4rem; text-align:right;
+    font-family:var(--font-poppins); font-size:1.6rem; color:var(--color-text-secondary); opacity:0.6;
+}
+.ks-turkce{
+    flex:0 0 auto; text-align:left; white-space:nowrap;
+    font-family:var(--font-poppins); font-weight:700; font-size:2.8rem;
+    color:var(--color-text-secondary); background:none; padding:0; box-shadow:none;
+    transition:color .2s;
+}
+.ks-arapca{
+    flex:1 1 0; position:relative; min-height:3.4rem; text-align:left; direction:rtl;
+    background:none; box-shadow:none; overflow:visible; display:flex; align-items:center;
+}
+/* Tıklayınca yazılan kısım kırmızı; doğru tamamlanınca yeşile döner (aşağıda) */
+.ks-typed{ direction:rtl; display:inline-block;
+    font-family:var(--font-harmattan); font-weight:700; font-size:5.6rem; line-height:1.15;
+    color:var(--color-error); }
+/* Masaüstünde (fare = pointer:fine) yazılan Arapça çok daha büyük; satır içeriğe
+   göre büyüdüğü için (aşağıda overflow düzeltmesi) kelime kutuya sığar. */
+@media (pointer: fine){
+    .ks-typed{ font-size:8rem; }
+    /* Büyük Arapça sığsın diye satır yüksekliği artırıldı (grid izi sabit
+       yükseklik kullandığından min-height ile garanti ediyoruz). */
+    .kelime-satir{ min-height:10rem; max-height:18rem; }
+}
+/* Seslendirilen (aktif) kelime: hafif yuvarlatılmış KIRMIZI KUTU ile vurgulanır */
+.kelime-satir.aktif{ border-bottom-color:transparent; border-radius:0.9rem;
+    box-shadow:0 0 0 3px var(--color-error); }
+.kelime-satir.aktif .ks-turkce{ color:var(--color-error); }
+/* Doğru tamamlandı: yeşil yazı */
+.kelime-satir.tamamlandi .ks-turkce{ color:var(--color-correct); }
+.kelime-satir.tamamlandi .ks-typed{ color:var(--color-correct); }
+
+/* 0) Ses zaman çizgisi — kronometreyle birleşik, UZUN (widget'ı doldurur) */
+.ses-cizelgesi{ display:flex; align-items:center; flex:1 1 auto; min-width:0; padding:0; margin:0; }
+.sc-bar{ position:relative; width:100%; height:2.2rem; }
+/* Gri zaman çizgisi (hoparlörden sonuna kadar) */
+.sc-track{ position:absolute; left:2.1rem; right:0.3rem; top:50%; height:0.35rem;
+    background:var(--color-shadow-dark); border-radius:3px; transform:translateY(-50%); z-index:0; }
+/* Kırmızı zaman ilerlemesi — gri çizginin ÜSTÜNDE, süre boyunca soldan sağa dolar */
+.sc-progress{ position:absolute; left:2.1rem; right:0.3rem; top:50%; height:0.55rem;
+    background:var(--color-error); border-radius:3px; z-index:0;
+    transform:translateY(-50%) scaleX(0); transform-origin:left center; }
+.sc-basla{ position:absolute; left:0; top:50%; transform:translateY(-50%);
+    display:flex; align-items:center; justify-content:center; color:var(--color-accent-1); z-index:2; }
+.sc-basla svg{ width:1.6rem !important; height:1.6rem !important; }
+.sc-dot{ position:absolute; top:50%; transform:translate(-50%,-50%); width:2rem; height:2rem; border-radius:50%;
+    background:var(--color-surface); color:var(--color-text-secondary);
+    box-shadow:inset 2px 2px 4px var(--color-shadow-dark), inset -2px -2px 4px var(--color-shadow-light);
+    display:flex; align-items:center; justify-content:center; z-index:1; transition:background .2s, color .2s; }
+.sc-dot .sc-num{ font-family:var(--font-poppins); font-size:0.9rem; }
+
+/* 3-2-1 geri sayım katmanı (kelime seçilince) */
+#gameScreen{ position:relative; }
+.geri-sayim{ position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+    z-index:80; pointer-events:none; font-family:var(--font-poppins); font-weight:800;
+    color:var(--color-accent-1); font-size:18rem; line-height:1;
+    text-shadow:0 6px 24px rgba(0,0,0,0.18); }
+.geri-sayim.aktif{ display:flex; }
+.geri-sayim.pop{ animation:geriPop 1s ease-out; }
+@keyframes geriPop{
+    0%{ transform:scale(0.3); opacity:0; }
+    25%{ transform:scale(1.15); opacity:1; }
+    100%{ transform:scale(0.95); opacity:0.85; } }
+/* Çalınmış tekrarlar */
+.sc-dot.done{ background:var(--color-accent-1); color:#fff;
+    box-shadow:2px 2px 5px var(--color-shadow-dark), -2px -2px 5px var(--color-shadow-light); }
+.sc-dot.done::before, .sc-dot.playing::before{ background:var(--color-accent-1); }
+/* Şu an çalan tekrar — nabız gibi atar */
+.sc-dot.playing{ background:var(--color-accent-1); color:#fff; transform:translate(-50%,-50%) scale(1.15);
+    animation:scPulse 0.7s ease-out infinite; }
+@keyframes scPulse{
+    0%{ box-shadow:0 0 0 0 rgba(230,120,40,0.55); }
+    100%{ box-shadow:0 0 0 1.1rem rgba(230,120,40,0); } }
+
+/* 3) Birleşik tuş konteynırı */
+.slayt-tuslar{ display:flex; flex-direction:column; align-items:center; gap:1rem;
+    width:100%; max-width:112rem; flex:1 1 auto; min-height:0; overflow-y:auto; padding:0.4rem; }
+.tus-grup{ display:flex; flex-wrap:wrap; gap:0.8rem; justify-content:center; align-items:stretch;
+    width:100%; box-sizing:border-box; padding:0.5rem; border-radius:1.3rem;
+    transition:box-shadow .2s ease, background-color .2s ease; }
+/* SIRA VURGUSU: yalnız sıradaki HARF TUŞU / HAREKE GRUBU vurgulanır. Yalnızca
+   çerçeve (outline) + hafif zemin — tuşların boyutu ya da gölgesi DEĞİŞMEZ. */
+.harf-tus.sira-aktif{ outline:3px solid var(--color-accent-1); outline-offset:-3px; }
+.hareke-grup.sira-aktif{ border-radius:0.8rem;
+    outline:3px solid var(--color-accent-1); outline-offset:-2px; }
+/* Harf grubu: bir satırda 3 harf, RTL (ilk harf sağda). Konteynır dikey olarak
+   kalan alanı doldurur (ekranın aşağısına kadar); satırlar yükseklikçe büyür. */
+/* Masaüstü: SABİT yükseklikli kartlar (satırlar dikeyde uzayıp gerilmez);
+   align-content:start ile üstten dizilir, kalan boşluk altta kalır. */
+.tus-grup.harfler{ display:grid; grid-template-columns:repeat(3,1fr); grid-auto-rows:9rem;
+    direction:rtl; gap:1.2rem; width:100%; flex:1 1 0; min-height:0; overflow-y:auto; align-content:start; }
+/* Hareke grubu: RTL sıralı tek satır, 5 alt grup (kısa · tenvin · şedde/cezim ·
+   uzatma · tâ marbûta) aralarında dikey ayraç ile — sabit, en altta */
+.tus-grup.harekeler{ flex-wrap:nowrap; justify-content:center; gap:0; overflow-x:auto;
+    flex:0 0 auto; align-items:center; direction:rtl; }
+.hareke-grup{ display:flex; align-items:center; gap:0.7rem; padding:0 1.1rem; }
+.hareke-grup + .hareke-grup{ border-inline-start:3px solid rgba(60,80,140,0.25); }
+/* Uzatma (med) harfleri — harakatlardan ayırmak için koyu ve kalın */
+.hareke-tus.uzatma-tus .uzatma-mark{ color:var(--color-text-primary); font-weight:700; }
+.hareke-tus.uzatma-tus{ box-shadow:5px 5px 10px var(--color-shadow-dark),
+    -5px -5px 10px var(--color-shadow-light), inset 0 0 0 2px rgba(60,80,140,0.20); }
+
+/* Harf tuşu: 4 hâl yan yana, TEK buton */
+.slayt-tus{ background:var(--color-surface); border:none; border-radius:var(--border-radius-small);
+    box-shadow:5px 5px 10px var(--color-shadow-dark), -5px -5px 10px var(--color-shadow-light);
+    cursor:pointer; transition:all .12s ease-out; padding:0.6rem 0.8rem;
+    display:flex; align-items:center; justify-content:center; }
+.slayt-tus:active:not(:disabled){ box-shadow:inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light); transform:scale(0.97); }
+.harf-tus{ gap:0.8rem; width:100%; direction:rtl; padding:0.4rem 0.6rem; overflow:hidden; }
+.harf-tus .ht-form{ font-family:var(--font-harmattan); font-weight:700; font-size:6.6rem; line-height:1.1;
+    color:var(--color-text-primary); min-width:3.4rem; text-align:center; flex:1 1 0; }
+.harf-tus .ht-form + .ht-form{ border-right:1px solid rgba(60,80,140,0.15); padding-right:0.6rem; }
+/* Harf hâlleri renkleri: baş yeşil, orta mavi, son mor, normal siyah */
+.harf-tus .ht-bas{ color:#1f9d55; }
+.harf-tus .ht-orta{ color:#2b6cb0; }
+.harf-tus .ht-son{ color:#7b3fa0; }
+.harf-tus .ht-yalin{ color:var(--color-text-primary); }
+/* Kendinden sonrakiyle BİRLEŞMEYEN harfler: hepsi kırmızı (harf + uzatma + tâ marbûta) */
+.harf-tus.harf-baglanmaz .ht-form{ color:var(--color-error); }
+.hareke-tus.uzatma-tus.uz-baglanmaz .uzatma-mark{ color:var(--color-error); }
+
+/* Hareke tuşu: işaret + ad */
+/* align-items:center (yukarıda) sayesinde tuşlar satır boyunca UZAMAZ — yükseklik
+   içeriğe göre kompakt kalır. Yalın harekeler baseline'a göre üstte/altta durduğu
+   için ölçülü bir satır yüksekliği + küçük dikey boşluk yeterli: üsttekiler üstten,
+   alttakiler alttan az bir payla durur, taşmaz; kutu da uzamaz. */
+.hareke-tus{ flex-direction:column; gap:0.1rem; min-width:6rem; padding:0.55rem 0.8rem; overflow:visible; }
+.hareke-tus .hk-mark{ font-family:var(--font-harmattan); font-weight:400; line-height:1.5; }
+/* Harekeler (üstün/esre/ötre, tenvin, şedde/cezim): SİYAH; boyut ölçülü tutulur ki
+   satır kutusu (dolayısıyla tuş) gereksiz uzamasın, kutu kareye yakın kalsın. */
+.hareke-tus:not(.uzatma-tus) .hk-mark{ font-size:3.6rem; color:var(--color-text-primary); }
+/* Uzatma harfleri (ا و ي): harf boyutunda, koyu */
+.hareke-tus.uzatma-tus .uzatma-mark{ font-size:6.2rem; color:var(--color-text-primary); font-weight:700; }
+/* Tâ marbûta: PEMBE */
+.hareke-tus.uzatma-tus.tamarbuta-tus .uzatma-mark{ color:#e84e8a; }
+/* Alt tuşlardaki Türkçe adlar gösterilmez (üstün/esre/uzatma/bitişik vb.) */
+.hareke-tus .hk-name{ display:none; }
+
+/* Çakma geribildirimleri (tekrar kullanılan tuşlar) */
+.slayt-tus.dogru-flash{ box-shadow:inset 3px 3px 6px #76b198, inset -3px -3px 6px #baffa0 !important; }
+.slayt-tus.error-form{ box-shadow:inset 3px 3px 6px #d35f61, inset -3px -3px 6px #ff8386 !important; animation:shake 0.3s ease-in-out; }
+
+/* Dikey ekran (telefon) */
+@media (orientation: portrait){
+    /* Telefonda tek sütun defter: ortadaki ayraç yok, yalnız kırmızı kenar */
+    .kelime-liste{ grid-template-columns:1fr; column-gap:0; max-width:60rem; padding:0.3rem 1rem 0.3rem 2.2rem;
+        background:linear-gradient(to right, transparent 1.3rem,
+            rgba(210,70,70,0.35) 1.3rem, rgba(210,70,70,0.35) calc(1.3rem + 2px),
+            transparent calc(1.3rem + 2px)); background-attachment:local; }
+    /* Telefonda satırlar daha kompakt: dikey boşluk azaltıldı */
+    .kelime-satir{ min-height:4rem; padding:0.3rem 0.3rem 0.6rem; }
+    .ks-turkce{ font-size:1.9rem; }
+    .ks-arapca{ min-height:2.8rem; }
+    .ks-typed{ font-size:4.2rem; }
+    /* Harf tuşları: telefonda TAM GENİŞLİK tek sütun — ekranı yatayda dengeli
+       kullanır. Her kart tek bir tuştur; 4 hâl kartın enine eşit yayılır (bol
+       yer → taşma/kırpılma olmaz). Dikeyde uzamaz (yükseklik içeriğe göre). */
+    .tus-grup.harfler{ display:flex; flex-direction:column; flex-wrap:nowrap; align-items:stretch;
+        gap:0.6rem; overflow-y:auto; overflow-x:hidden; }
+    .harf-tus{ width:100%; gap:0.4rem; padding:0.5rem 1rem; overflow:hidden; }
+    .harf-tus .ht-form{ font-size:3.8rem; min-width:0; flex:1 1 0; line-height:1.15; }
+    .harf-tus .ht-form + .ht-form{ padding-right:0.5rem; }
+    /* Hareke satırı ekrana sığsın: gerekirse alt satıra sarsın, yatay kaydırma olmasın */
+    .tus-grup.harekeler{ flex-wrap:wrap; overflow-x:visible; row-gap:0.5rem; }
+    .hareke-grup{ padding:0 0.5rem; gap:0.3rem; }
+    .hareke-tus{ min-width:3.8rem; padding:0.45rem 0.4rem; }
+    /* :not(.uzatma-tus) ile aynı özgüllük — yoksa taban 3.6rem'i ezemezdi ve kutu uzardı */
+    .hareke-tus:not(.uzatma-tus) .hk-mark{ font-size:2.9rem; line-height:1.5; } .hareke-tus .hk-name{ font-size:0.8rem; }
+    .slayt-tuslar{ gap:0.7rem; }
+    /* Ana alanı ORANSAL böl: liste ~%38, klavye ~%62. Tam-genişlik dolgusuyla
+       birlikte rem bütçesi cihaza göre değiştiğinden, sabit yükseklikler yerine
+       oran kullanınca harf kartları asla sıfıra inmez (gerekirse liste/klavye
+       kendi içinde kayar). #gameMain.slayt-mod özgüllüğü sonraki taban kuralını ezer. */
+    #gameMain.slayt-mod .kelime-liste{ flex:1 1 26%; max-height:none; min-height:0; }
+    #gameMain.slayt-mod .slayt-tuslar{ flex:1 1 74%; min-height:0; }
+}
+
+/* Slayt modunda dikey sıra: KELİME LİSTESİ ÜSTTE (tüm sınıf görür), tuşlar
+   (harf + hareke) ALTTA — basması kolay, klavye gibi. */
+.slayt-mod .kelime-liste{ order:1; flex:0 0 auto; max-height:23rem; margin-top:0; }
+/* Tuşlar: kelime listesinin hemen altından ekranın en altına kadar uzanır;
+   harf konteynırı büyür, hareke satırı en altta tam görünür (kesilmez). */
+.slayt-mod .slayt-tuslar{ order:2; flex:1 1 auto; min-height:0; max-height:none;
+    justify-content:flex-start; overflow:hidden; margin-top:0; }
+/* Tuşlara yer açmak için altbilgi kompakt (headphone kaldırıldı, sadece ileri tuşu) */
+#gameScreen #gameFooter{ padding-top:0.3rem; margin-top:0.2rem; }
+#gameScreen #audioControl{ width:3.4rem; height:3.2rem; }
+
+/* Simetrik header: geri (EN SOL) · zaman widget (orta, uzun) · puan (sağ).
+   Tam genişlik → geri tuşu her zaman en solda sabit kalır (ortalanmış değil). */
+#gameHeader{ max-width:none; width:100%; padding-left:0; justify-content:space-between; gap:1rem; }
+#gameHeader .back-button{ position:static; width:3.4rem; height:3.4rem; font-size:1.2rem; flex-shrink:0; margin-right:0; }
+#gameHeader .back-button::before{ margin-right:0; }
+#gameHeader #levelScoreDisplay{ flex:0 0 auto; }
+/* Duraklat / Devam tuşu — geri tuşunun hemen yanında */
+.pause-button{ position:static; width:3.4rem; height:3.4rem; padding:0; flex-shrink:0;
+    color:var(--color-accent-1); }
+.pause-button .ico{ width:1.7rem; height:1.7rem; }
+.pause-button .ico-resume{ display:none; }
+.pause-button.is-paused .ico-pause{ display:none; }
+.pause-button.is-paused .ico-resume{ display:inline-block; }
+/* Kronometre + ses çizgisi birleşik widget */
+.zaman-widget{ display:flex; align-items:center; gap:0.9rem; flex:1 1 auto; min-width:0; }
+.zw-timer{ font-family:var(--font-poppins); font-weight:700; font-size:1.5rem; color:var(--color-error);
+    background:var(--color-surface); padding:0.4rem 0.9rem; border-radius:var(--border-radius-small);
+    box-shadow:2px 2px 4px var(--color-shadow-dark), -2px -2px 4px var(--color-shadow-light); flex:0 0 auto; }
+/* Footer: ileri/geri gezinme */
+#gameFooter{ justify-content:center; gap:1.5rem; }
+.nav-btn{ font-size:1.7rem; width:4.2rem; height:3.6rem; color:var(--color-text-secondary);
+    background:var(--color-surface); border:none; border-radius:var(--border-radius-small); cursor:pointer;
+    box-shadow:4px 4px 8px var(--color-shadow-dark), -4px -4px 8px var(--color-shadow-light);
+    display:inline-flex; align-items:center; justify-content:center; transition:all .15s; }
+.nav-btn:active:not(:disabled){ box-shadow:inset 3px 3px 6px var(--color-shadow-dark), inset -3px -3px 6px var(--color-shadow-light); transform:scale(0.97); }
+.nav-btn:hover:not(:disabled){ color:var(--color-accent-1); }
+.nav-btn:disabled{ opacity:0.45; cursor:default; }
+.kelime-gosterge{ font-family:var(--font-poppins); font-weight:700; font-size:1.4rem;
+    color:var(--color-text-secondary); min-width:6rem; text-align:center; }
+@media (orientation: portrait){
+    #gameHeader .back-button{ width:3rem; height:3rem; font-size:1rem; }
+}
+/* MOBİL header: ÜST satır = geri + duraklat/oynat + puan; ALT satır = yalnız
+   zaman çizgisi (tam genişlik). Masaüstünde tek satırda kalır. */
+@media (orientation: portrait), (max-height: 520px){
+    #gameHeader{ flex-wrap:wrap; justify-content:flex-start; align-items:center;
+        gap:0.5rem; row-gap:0.6rem; }
+    #gameHeader #levelScoreDisplay{ margin-left:auto; }
+    #gameHeader .zaman-widget{ order:10; flex:1 1 100%; width:100%; }
+}
+
+/* ===================================================================
+   ÖZEL SVG İKONLAR + ANİMASYONLAR (emoji yerine) — site renkleriyle uyumlu
+   =================================================================== */
+.ico{ display:inline-block; vertical-align:middle; flex:0 0 auto; width:1.4rem; height:1.4rem; }
+
+/* Saat (kronometre) — akrep tık tık döner */
+.ico-clock{ color:var(--color-error); }
+.ico-clock .clock-hand{ transform-origin:12px 12px; animation:ico-tick 6s steps(12) infinite; }
+@keyframes ico-tick{ to{ transform:rotate(360deg); } }
+
+/* Hoparlör — ses dalgaları nabız gibi */
+.ico-speaker{ color:var(--color-accent-1); }
+.ico-speaker .wave{ animation:ico-wave 1.7s ease-in-out infinite; }
+.ico-speaker .w2{ animation-delay:0.28s; }
+@keyframes ico-wave{ 0%,100%{ opacity:0.2; } 50%{ opacity:1; } }
+
+/* Kalem (sınav) — ara ara kıpırdar */
+.ico-pencil{ color:var(--color-accent-1); animation:ico-pen 3.8s ease-in-out infinite; transform-origin:62% 62%; }
+.ico-pencil path{ fill:currentColor; }
+.ico-pencil .pen-tip{ opacity:0.65; }
+@keyframes ico-pen{ 0%,86%,100%{ transform:rotate(0); } 90%{ transform:rotate(-9deg); } 94%{ transform:rotate(7deg); } }
+
+/* Ok (ileri/geri) — hoverda kayar */
+.ico-chevron{ transition:transform .16s ease; }
+/* Oynat üçgeni (Başla) — buton yazı rengini alır */
+.ico-play{ color:inherit; }
+
+/* Kronometre widget */
+.zw-timer{ display:inline-flex !important; align-items:center; gap:0.35rem; }
+.zw-timer .ico-clock{ width:1.5rem; height:1.5rem; }
+.zw-timer .zw-unit{ opacity:0.65; }
+
+/* Etiket ikon hizaları */
+.exam-label{ display:inline-flex; align-items:center; gap:0.5rem; }
+.exam-label .ico-pencil{ width:1.6rem; height:1.6rem; }
+.ayar-label{ display:inline-flex; align-items:center; gap:0.55rem; }
+.ayar-label .ico{ width:1.8rem; height:1.8rem; }
+
+/* Başla tuşu + oynat ikonu */
+#baslaButton{ display:inline-flex; align-items:center; gap:0.6rem; }
+#baslaButton .ico-play{ width:1.5rem; height:1.5rem; }
+
+/* İleri/geri okları */
+#prevWordButton .ico-chevron, #nextWordButton .ico-chevron{ width:1.8rem; height:1.8rem; }
+#prevWordButton:hover:not(:disabled) .ico-chevron{ transform:translateX(-3px); }
+#nextWordButton:hover:not(:disabled) .ico-chevron{ transform:translateX(3px); }
+
+/* Harf hâli renkleri — site paletiyle daha uyumlu (yumuşak) */
+.harf-tus .ht-bas{ color:#2a9d8f; }   /* baş: teal-yeşil */
+.harf-tus .ht-orta{ color:#277da1; }  /* orta: mavi */
+.harf-tus .ht-son{ color:#8e5cd9; }   /* son: mor */
+
+/* OTOMATİK YAZIM: klavyeye tıklanmaz (harfler kendiliğinden çıkar) */
+#gameMain.auto-mode #tusKonteyner{ pointer-events:none; }
+/* DURAKLATILDIĞINDA: harf ve hareke tuşları tıklanamaz */
+#gameMain.duraklatildi #tusKonteyner{ pointer-events:none; }
+/* Otomatik mod ikonu — hafif parıldar */
+.ico-auto{ color:var(--color-accent-1); animation:ico-auto 2.4s ease-in-out infinite; transform-origin:50% 50%; }
+@keyframes ico-auto{ 0%,100%{ opacity:0.85; transform:scale(1) rotate(0); } 50%{ opacity:1; transform:scale(1.08) rotate(6deg); } }
+
+/* ALIŞTIRMA (tıklama) modu ikonu — imleç dokunur gibi hafif itilir, ışıltılar çakar */
+.ico-click{ color:var(--color-accent-1); animation:ico-click 2.2s ease-in-out infinite; transform-origin:40% 20%; }
+@keyframes ico-click{ 0%,70%,100%{ transform:translate(0,0); } 82%{ transform:translate(1px,1px); } 90%{ transform:translate(0,0); } }
+.ico-click .click-spark{ opacity:0; animation:ico-click-spark 2.2s ease-in-out infinite; }
+@keyframes ico-click-spark{ 0%,74%,100%{ opacity:0; } 84%{ opacity:0.9; } }

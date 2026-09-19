@@ -1,0 +1,578 @@
+:root {
+            --vh: 1vh; 
+            --p1-color: #d63384;
+            --p2-color: #0d6efd;
+            --correct-color: #198754;
+            --wrong-color: #dc3545;
+        }
+
+        html, body {
+            height: calc(var(--vh, 1vh) * 100);
+            min-height: calc(var(--vh, 1vh) * 100);
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+            font-family: 'Marhey', sans-serif;
+            background-color: #000;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            box-sizing: border-box; 
+        }
+        
+        .screen {
+            display: none; 
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            position: absolute;
+            top: 0; left: 0;
+            padding: 1.5vmin; 
+            box-sizing: border-box;
+            text-align: center;
+        }
+        #start-screen, #game-over-screen {
+             justify-content: center; /* Sadece bu ekranlar ortalansın */
+             align-items: center;
+        }
+        #game-wrapper-2p {
+            /* 2P ekranı dikey ortalanmasın, tam doldursun */
+            justify-content: flex-start;
+            align-items: stretch;
+        }
+
+        #start-screen {
+            display: flex; 
+        }
+        .mode-button {
+            font-family: inherit;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-weight: bold;
+            padding: clamp(1rem, 4vw, 2rem) clamp(1.5rem, 6vw, 3rem);
+            margin: 1rem;
+            border: none;
+            border-radius: 1.5rem;
+            cursor: pointer;
+            background-color: var(--p1-color);
+            color: white;
+            transition: transform 0.2s;
+        }
+        .mode-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* GERİ TUŞU (SVG) */
+        .back-button {
+            position: absolute;
+            top: clamp(10px, 3vh, 20px); 
+            left: clamp(10px, 3vw, 20px);
+            background: #f0f0f0;
+            color: #555;
+            border: 1px solid #ccc;
+            border-radius: 1.5vmin;
+            cursor: pointer;
+            width: clamp(40px, 8vmin, 55px); 
+            height: clamp(40px, 8vmin, 55px);
+            padding: 0;
+            z-index: 1001; 
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-button:hover {
+            background: #e0e0e0;
+        }
+        .back-button svg {
+            width: clamp(24px, 5vmin, 30px);
+            height: clamp(24px, 5vmin, 30px);
+            fill: currentColor;
+        }
+       
+        /* --- TEK KİŞİLİK OYUN ALANI --- */
+        #game-container-1p {
+            display: flex;
+            width: 98%;
+            height: 98%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        
+       /* --- 1P: DİKEY (PORTRAIT) / MOBİL --- */
+        @media (orientation: portrait) {
+            #game-container-1p { flex-direction: column; }
+            
+            /* GÜNCELLEME: Üst kutu küçültüldü (1 pay) ve çizgi kaldırıldı */
+            #game-container-1p .question-area { 
+                flex: 1 1 0; /* Oranı 1 yap */
+                border: none; /* Çizgiyi kaldır */
+            } 
+            
+            /* GÜNCELLEME: Alt kutu büyütüldü (3 pay) */
+            #game-container-1p .right-panel { 
+                flex: 2 1 0; /* Oranı 3 yap (1:2'den 1:3'e) */
+            } 
+            
+            #game-container-1p .word-display { font-size: clamp(3rem, 15vw, 5rem); }
+            #game-container-1p .player-info { font-size: clamp(1.8rem, 8vw, 2.4rem); }
+            /* 1P Dikey Şıklar (Grid) */
+            #game-container-1p .options-area {
+                gap: clamp(0.5rem, 2vmin, 1rem);
+                padding: 0 1vmin;
+            }
+            #game-container-1p .option-button {
+                font-size: clamp(1rem, 3.5vw, 1.5rem);
+                padding: clamp(0.8rem, 2.5vh, 1.2rem); 
+                font-weight: 500;
+            }
+        }
+        
+       
+       /* --- 1P: YATAY (LANDSCAPE) / MASAÜSTÜ --- */
+        @media (orientation: landscape) {
+            
+            /* GÜNCELLEME: Yön "column" (dikey) olarak değiştirildi */
+            #game-container-1p { flex-direction: column; gap: 0; }
+            
+            /* GÜNCELLEME: Üst kutu (Kelime) 1 pay aldı */
+            #game-container-1p .question-area { 
+                flex: 1 1 0; 
+                border: none; 
+            } 
+            
+            /* GÜNCELLEME: Alt kutu (Şıklar) 2 pay aldı */
+            #game-container-1p .right-panel { 
+                flex: 2 1 0; 
+            } 
+
+            /* GÜNCELLEME: Font boyutları dikey düzene göre ayarlandı */
+            #game-container-1p .word-display { font-size: clamp(4rem, 15vh, 7rem); } 
+            #game-container-1p .player-info { font-size: clamp(1.5rem, 4vh, 2.2rem); } 
+            
+            /* 1P Yatay Şıklar (Grid) */
+            #game-container-1p .options-area {
+                gap: clamp(0.5rem, 2vmin, 1rem);
+                padding: 0 1vmin;
+            }
+            
+            /* Başlık (H1) ayarları */
+             #game-container-1p .question-area h1 {
+                padding-top: 0; 
+                font-size: clamp(1.2rem, 4vh, 2rem); 
+                margin-bottom: 1.5vmin; 
+            }
+
+            /* GÜNCELLEME: Şıkların boyutu (padding) dikey düzene göre ayarlandı */
+            #game-container-1p .option-button {
+                font-size: clamp(1.1rem, 3.5vh, 1.8rem); 
+                padding: clamp(0.8rem, 3vh, 1.3rem);   
+                font-weight: 700;   
+            }
+        }
+            
+            /* GÜNCELLEME: Sağ panel (şıklar) %60 yer kaplasın */
+            #game-container-1p .right-panel { flex: 3 1 0; } 
+
+            #game-container-1p .word-display { font-size: clamp(4.5rem, 20vh, 8rem); } 
+            #game-container-1p .player-info { font-size: clamp(1.5rem, 4vw, 2.2rem); } 
+            
+            /* 1P Yatay Şıklar (Grid) - DOKUNULMADI */
+            #game-container-1p .options-area {
+                gap: clamp(0.5rem, 2vmin, 1rem);
+                padding: 0 1vmin;
+            }
+             #game-container-1p .question-area h1 {
+                padding-top: 0; 
+                font-size: clamp(1.2rem, 4vh, 2rem); 
+                margin-bottom: 1.5vmin; 
+            }
+
+            /* GÜNCELLEME: Şıkların boyutu da büyütüldü */
+            #game-container-1p .option-button {
+                font-size: clamp(1.1rem, 3.5vh, 1.8rem); /* BÜYÜTÜLDÜ */
+                padding: clamp(1rem, 4vh, 1.5rem);   /* BÜYÜTÜLDÜ */
+                font-weight: 700;   
+            }
+        }
+
+        /* --- İKİ KİŞİLİK BÖLÜNMÜŞ EKRAN --- */
+        #game-wrapper-2p {
+            display: flex; 
+            flex-direction: column; 
+            width: 100%;
+            height: 100%;
+            background: #333; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        #player1-area, #player2-area {
+            flex: 1; 
+            background: #fff;
+            padding: 1.5vmin; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column; 
+            overflow: hidden; 
+            min-height: 0; 
+        }
+        
+        /* 2P: YATAY (LANDSCAPE) / MASAÜSTÜ MEDYA SORGUSU */
+        @media (orientation: landscape) {
+            #game-wrapper-2p {
+                flex-direction: row; /* Yan yana iki oyuncu */
+                gap: 2px; /* Oyuncu alanları arasında küçük boşluk */
+            }
+            #player1-area .game-content-2p,
+            #player2-area .game-content-2p {
+                flex-direction: column; /* İçerik dikey kalsın */
+                gap: 1vmin;
+            }
+            /* 2P Yatay Puan/Kelime Boyutları */
+            .word-display-2p {
+                font-size: clamp(4rem, 15vh, 7rem) !important; 
+            }
+            /* Değiştirin: */
+            .player-title {
+                font-size: clamp(2rem, 5vh, 4rem) !important; /* BÜYÜTÜLDÜ */
+            }
+            
+            /* 2P Yatay Şıklar (Grid) */
+            .options-area-2p {
+                gap: clamp(0.3rem, 1.5vmin, 0.8rem);
+                padding: 0 1vmin;
+            }
+            .option-button-2p {
+                font-size: clamp(1.5rem, 4.5vh, 2rem) !important; 
+                padding: clamp(0.5rem, 2.2vh, 1rem) !important; 
+                font-weight: 700 !important;   
+            }
+            .progress-container-2p {
+                gap: 0.8vmin !important;
+            }
+            .progress-dot-2p {
+                width: clamp(8px, 1.5vh, 12px) !important;
+                height: clamp(8px, 1.5vh, 12px) !important;
+            }
+            /* YILDIZ/KELİME SATIRININ ÜSTÜNE BOŞLUK EKLE */
+            #player1-area .question-area-2p,
+            #player2-area .question-area-2p {
+                margin-top: 5vh; /* "Çok boşluk" - Bu değeri artırıp azaltabilirsiniz */
+            }
+        }
+
+        /* 2P: DİKEY (PORTRAIT) / MOBİL MEDYA SORGUSU */
+        @media (orientation: portrait) {
+            #game-wrapper-2p {
+                flex-direction: column;
+                gap: 2px;
+            }
+            #player1-area .game-content-2p,
+            #player2-area .game-content-2p {
+                flex-direction: column; 
+                gap: 1.5vmin; 
+            }
+            /* 2P Dikey Puan/Kelime Boyutları */
+            .word-display-2p {
+                font-size: clamp(2.5rem, 12vw, 4rem) !important;
+            }
+            .player-title {
+                 font-size: clamp(1rem, 4.5vw, 1.5rem) !important;
+            }
+
+            /* 2P Dikey Şıklar (Grid) */
+            .options-area-2p {
+                gap: clamp(0.3rem, 1.5vmin, 0.8rem);
+                padding: 0 1vmin;
+            }
+            .option-button-2p {
+                font-size: clamp(0.9rem, 2.8vw, 1.3rem) !important; 
+                padding: clamp(0.5rem, 2vh, 1rem) !important; 
+                font-weight: 500 !important;
+            }
+            .progress-container-2p {
+                gap: 1.0vmin !important; 
+            }
+            .progress-dot-2p {
+                width: clamp(8px, 1.8vw, 12px) !important;
+                height: clamp(8px, 1.8vw, 12px) !important;
+            }
+        }
+
+        .game-content-2p {
+            display: flex;
+            flex-grow: 1;
+            width: 100%;
+            height: 100%; 
+            min-height: 0; 
+            flex-direction: column; 
+        }
+
+        /* --- ORTAK STİLLER --- */
+        h1 {
+            color: var(--p1-color);
+            margin: 0 0 1vmin 0;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            padding-top: clamp(20px, 8vh, 50px); 
+        }
+        /* 1P Puan Stili (Kelimenin üstünde) */
+        .player-info {
+            font-size: clamp(1.2rem, 4.5vw, 2.2rem); 
+            font-weight: 700;
+            min-height: 0; 
+            margin-bottom: 0.5vmin; /* 1P modunda kelime ile arasında boşluk */
+            padding: 0;
+            text-align: center;
+        }
+        /* 2P Puan Stili (Kelimeyle yanyana) */
+        .player-title {
+            font-size: clamp(1.2rem, 4.5vw, 2.2rem); 
+            font-weight: 700;
+            min-height: 0; 
+            margin-bottom: 0; /* 2P'de alt boşluk istemiyoruz */
+            padding: 0;
+            text-align: center;
+            flex-shrink: 0; /* Puanın sıkışmasını engelle */
+        }
+        
+        /* P1 (Pembe) Takım Renkleri */
+        #player-info-1p { color: var(--p1-color); }
+        #score-display-p1 { color: var(--p1-color); } 
+        #player1-area .word-display { color: var(--p1-color); }
+        #player1-area .option-button { border-color: var(--p1-color); color: var(--p1-color); }
+        #player1-area .option-button:hover:not(:disabled) { background-color: rgba(214, 51, 132, 0.1); }
+        /* 1P Modu da P1 Rengini alsın */
+        #game-wrapper-1p .option-button { border-color: var(--p1-color); color: var(--p1-color); }
+        #game-wrapper-1p .option-button:hover:not(:disabled) { background-color: rgba(214, 51, 132, 0.1); }
+        #game-wrapper-1p .word-display { color: #000; } 
+
+        /* P2 (Mavi) Takım Renkleri */
+        #score-display-p2 { color: var(--p2-color); } 
+        #player2-area .word-display { color: var(--p2-color); }
+        #player2-area .option-button { border-color: var(--p2-color); color: var(--p2-color); }
+        #player2-area .option-button:hover:not(:disabled) { background-color: rgba(13, 110, 253, 0.1); }
+
+        .question-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed #e0e0e0; /* Varsayılan 1P için kalsın */
+            border-radius: 1.5vmin;
+            padding: 0.5vmin;
+            position: relative;
+        }
+        
+        /* Değiştirin: */
+        .question-area-2p {
+            border: none !important; 
+            flex: 0 1 auto; 
+            padding: 1vmin 0.5vmin; 
+            
+            /* GÜNCELLEME: Dikey Hizalama */
+            display: flex;
+            flex-direction: column; /* DİKEY HİZALAMA */
+            justify-content: center; /* İçerik dikeyde ortalansın */
+            align-items: center; 
+            gap: 0.5vmin; /* Aradaki boşluk azaltıldı */
+        }
+
+        .word-display {
+            font-family: 'Harmattan', 'Arial', 'Tahoma', sans-serif;
+            font-weight: 700; 
+            direction: rtl;
+            width: 100%;
+            text-align: center; 
+            line-height: 1.1;
+        }
+        
+        /* GÜNCELLEME: 2P Kelime Stili */
+        .word-display-2p {
+            flex-grow: 1; /* Kelime ortada kalan alanı doldursun */
+            text-align: center; /* ve kendini ortalasın */
+            width: auto; /* width: 100% kuralını ez */
+            min-width: 0; /* Esnek küçülmeye izin ver */
+        }
+        
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; 
+            overflow: hidden;
+            min-height: 0; 
+        }
+        
+        
+       /* GÜNCELLEME: ŞIKLAR ALANI (2x2 GRID) */
+        .options-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 Sütun */
+            grid-template-rows: 1fr 1fr; /* YENİ: 2 Satır (Dikeyde doldurmak için) */
+            gap: clamp(0.5rem, 2vmin, 1rem); /* Genel boşluk */
+            
+            flex-grow: 1; /* Dikey alanı doldur */
+            
+            /* GÜNCELLEME: 'center' yerine 'stretch' (veya silin) */
+            align-content: stretch; 
+            
+            overflow-y: auto; 
+            min-height: 0;
+            padding: 0 1vmin; /* Yatayda kenar boşlukları */
+            box-sizing: border-box;
+        }
+        
+        .option-button {
+            font-family: inherit;
+            border-radius: 1.5vmin;
+            background: none;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.1s;
+            width: 100%; 
+            box-sizing: border-box;
+            height: 100%; /* Yüksekliği 1fr'ye bırakmak daha iyi olabilir */
+        }
+        
+        .option-button:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        .option-button:disabled { 
+            cursor: not-allowed;
+        }
+        
+        .option-button.correct-option {
+            background-color: var(--correct-color) !important; 
+            border-color: var(--correct-color) !important;
+            color: white !important;
+        }
+        .option-button.wrong-option {
+            background-color: var(--wrong-color) !important;
+            border-color: var(--wrong-color) !important;
+            color: white !important;
+        }
+        
+        @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+        }
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .progress-container {
+            flex-shrink: 0; 
+            margin-top: auto; /* Dikey mobilde dibe itsin */
+            padding-top: 1.0vmin; 
+            margin-bottom: 0.5vmin; 
+            display: flex;
+            justify-content: center;
+            gap: clamp(0.25rem, 1.5vw, 0.75rem);
+        }
+        .progress-dot {
+            width: clamp(10px, 2.5vw, 18px);
+            height: clamp(10px, 2.5vw, 18px); 
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            transition: background-color 0.3s;
+        }
+        .progress-dot.correct { background-color: var(--correct-color); }
+        .progress-dot.wrong { background-color: var(--wrong-color); }
+        
+        .feedback-area {
+            display: none; 
+            min-height: 0; 
+        }
+        
+        #game-over-screen {
+            display: none; 
+        }
+        #final-score {
+            font-size: clamp(1.2rem, 5vw, 2.2rem);
+            font-weight: bold;
+            margin-bottom: 3vmin;
+            line-height: 1.5;
+        }
+        #restart-button {
+            font-family: inherit; 
+            font-size: clamp(1.1rem, 4vw, 1.8rem);
+            font-weight: bold;
+            padding: clamp(0.8rem, 3vh, 1.2rem) clamp(1.5rem, 5vw, 2.5rem);
+            background-color: var(--p1-color);
+            color: white;
+            border: none;
+            border-radius: 1.5vmin;
+            cursor: pointer;
+        }
+        
+        /* Değiştirin: */
+        .point-particle, .speed-particle {
+            position: fixed; 
+            opacity: 1;
+            z-index: 2000; 
+            user-select: none;
+            pointer-events: none;
+            font-size: clamp(1.5rem, 4vmin, 2rem);
+            
+            /* EKSİK SATIR: Animasyonu uygula */
+            animation: float-up 1.5s ease-out forwards;
+        }
+        /* Değiştirin: */
+        .speed-particle {
+            font-size: clamp(1.2rem, 5vmin, 2.2rem); 
+            
+            /* EKSİK SATIR: Hızlı animasyonu uygula (diğerini ezer) */
+            animation: float-up-fast 1.2s ease-out forwards;
+        }
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-8vh) translateX(var(--random-x)) scale(0.5); 
+                opacity: 0;
+            }
+        }
+        @keyframes float-up-fast {
+            0% {
+                transform: translateY(0) translateX(0) scale(1.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(var(--random-x)) scale(0.5); 
+                opacity: 0;
+            }
+        }
+
+        /* * --- SON DÜZELTME: YATAY (LANDSCAPE) DİKEY DENGELEME ---
+         * Bu kurallar en sonda olmalı ki diğerlerini ezebilsin.
+        */
+        
+        /* 1P YATAY (LANDSCAPE) DİKEY DENGELEME */
+        @media (orientation: landscape) {
+            #game-container-1p .right-panel {
+                /* İçeriği (şıklar + ilerleme) bir bütün olarak dikeyde ortala */
+                justify-content: center; 
+            
+            }
+            #game-container-1p .question-area h1 {
+                padding-top: 0; /* Büyük boşluğu ezer */
+                font-size: clamp(1.2rem, 4vh, 2rem); /* Başlığı da küçültelim */
+                margin-bottom: 1.5vmin; /* Puan ile arasına yeni boşluk verelim */
+            }
+            #game-container-1p .options-area {
+                /* Şık alanının gereksiz yere dikey büyümesini durdur */
+                flex-grow: 0; 
+            }
+            #game-container-1p .progress-container {
+                /* Üstten otomatik boşluğu kaldır, dibe yapışmayı bırak */
+                margin-top: 0;
+                /* Şıklarla arasına makul bir boşluk koy */
+                padding-top: 2vmin; 
+            }
+            #game-container-1p .question-area h1 {
+                padding-top: 0; /* clamp(20px, 8vh, 50px) kuralını ezer */
+                font-size: clamp(1.2rem, 4vh, 2rem); /* Başlığı da küçültelim */
+                margin-bottom: 1.5vmin; /* Puan ile arasına yeni boşluk verelim */
+            }
+        }
