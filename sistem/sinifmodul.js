@@ -120,6 +120,24 @@
     mount.insertBefore(d, (grid && grid.parentNode === mount) ? grid : mount.firstChild);
   }
 
+  /* ---------------- «Maarif» etiketi ----------------
+     Etiket sınıf başlığında (button.ih-head) duruyor ama DOĞRUSU seçili
+     öğretim yılına bağlı: 6. sınıfın önceki kitabı Maarif Modeli'ne ait
+     değil, o yıl seçiliyken etiket kalkar. Kaydı olmayan sınıfa hiç
+     dokunulmaz — elle konmuş etiketler olduğu gibi kalır. */
+  function maarifEtiket(mount, n) {
+    var v = window.KidefSinifVeri;
+    if (!v || !v.maarifMi) return;
+    var durum = v.maarifMi(n);
+    if (durum === null) return;
+    var kutu = mount.closest ? mount.closest('.ih-item') : null;
+    if (!kutu) return;
+    var et = kutu.querySelector('.ih-maarif');
+    if (!et) return;
+    et.style.display = durum ? '' : 'none';
+    et.setAttribute('aria-hidden', durum ? 'false' : 'true');
+  }
+
   function yerlestir(mount, sinif) {
     if (!mount) return 0;
     var n = sayi(sinif != null ? sinif : mount.getAttribute('data-sinif'));
@@ -127,6 +145,7 @@
     var kod = html(n);
     var grid = mount.querySelector('.game-grid');
     yilSerit(mount, n, grid);
+    maarifEtiket(mount, n);
     if (!grid) {
       if (!kod) return 0;
       grid = document.createElement('div');
@@ -178,6 +197,15 @@
       '.sm-kart .kga-satir,.sm-kart .kga-mercek{animation:none;}' +
       '.sm-kart .kga-satir{opacity:1;}}';
     (document.head || document.documentElement).appendChild(s);
+  }
+
+  /* Öğretim yılı değişince kartlar ve «Maarif» etiketi tazelenir.
+     Olay sistem/sinifveri.js'ten geliyor; bu dosya ilk dinleyicisi. */
+  if (!document.__smYilBagli) {
+    document.__smYilBagli = 1;
+    document.addEventListener('kidef:veriyili', function () {
+      try { kur(); } catch (e) {}
+    }, false);
   }
 
   window.KidefSinifModul = {
@@ -376,6 +404,58 @@
       return ALFABE_SINIF[String(s)] ? { rozet: '7 Etkinlik' } : null;
     },
     url: function () { return 'alfabe.html'; }
+  });
+
+  /* ---- MESLEKLER ----
+     Sınıfta tahtaya yansıtılan dört oyun (ة ikizleri · مَنْ أَنا؟ ·
+     cümle treni · meslek çarkı). Kelime havuzu 5. sınıfın «الْمِهَن»
+     dersiyle yeni 6. sınıf kitabının «اَلْمِهَن» dersinin birleşimi:
+     16 meslek, hepsinin erkek/kadın çifti var.
+
+     YALNIZ 7. SINIFTA çıkıyor. Sebebi pedagojik: oyun 5 ve 6'nın
+     kelimelerini birlikte kullanıyor, 7. sınıf ikisini de görmüş
+     oluyor — onlar için tekrar, alt sınıflar için görülmemiş kelime
+     olurdu. Ayrıca 7'nin 3. ünitesi (Ulaşım ve Seyahat) meslekleri
+     araçlarla birlikte kullanıyor; cümle treni tam o kalıbı çalıştırır. */
+  function meslekSvg() {
+    var n = 8, ic = '', i, a0, a1, r = 26, cx = 32, cy = 32;
+    var renkler = ['#2563EB', '#EE5253', '#F39C12', '#0E9E86',
+                   '#8E44AD', '#16A085', '#E84393', '#D35400'];
+    for (i = 0; i < n; i++) {
+      a0 = (360 / n) * i - 90; a1 = (360 / n) * (i + 1) - 90;
+      var x0 = cx + r * Math.cos(a0 * Math.PI / 180), y0 = cy + r * Math.sin(a0 * Math.PI / 180);
+      var x1 = cx + r * Math.cos(a1 * Math.PI / 180), y1 = cy + r * Math.sin(a1 * Math.PI / 180);
+      ic += '<path d="M' + cx + ' ' + cy + ' L' + x0.toFixed(1) + ' ' + y0.toFixed(1) +
+            ' A' + r + ' ' + r + ' 0 0 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Z" fill="' +
+            renkler[i] + '"/>';
+    }
+    return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +
+      '<g>' + ic +
+        '<animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32"' +
+        ' dur="14s" repeatCount="indefinite"/></g>' +
+      '<circle cx="32" cy="32" r="11" fill="#fff"/>' +
+      /* ortada ة — oyunun çekirdek kuralı */
+      '<text x="32" y="38.5" text-anchor="middle" font-size="17" font-weight="700"' +
+      ' font-family="Arakom,Harmattan,serif" fill="#E84393">ة</text>' +
+      '<path d="M32 3 l3.5 6 h-7 Z" fill="#E74C3C"/>' +
+      '</svg>';
+  }
+
+  ekle({
+    id: 'meslekler',
+    ad: 'Meslekler',
+    sira: 25,                      /* kelime çalışmasıyla yarışma arasında */
+    renk: '#8E44AD',
+    svg: meslekSvg,
+    aciklama: 'Tahtaya yansıt, sınıfça oyna — 4 oyun, 16 meslek',
+    veriVar: function (s) {
+      /* Kart yalnız 7. sınıfta; veri dosyası da sayfanın kendisinde. */
+      return String(s) === '7' ? { rozet: '16 Meslek · 4 Oyun' } : null;
+    },
+    url: function (s) {
+      return 'meslekler.html?sinif=' + encodeURIComponent(s) +
+             '&kaynak=index&yer=imam-hatip';
+    }
   });
 
   /* ---- Sonraki kartlar buraya: aynı kalıpla ekle({...}) ---- */

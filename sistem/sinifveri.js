@@ -168,18 +168,23 @@
      sınav evrakları ayrı ilerler — 6. sınıfta evraklar 2026-2027
      programına göre, ders verisi ise hâlâ 2025-2026 kitabına göredir.
      ------------------------------------------------------------------ */
+  /* `maarif`: o yılın verisi Maarif Modeli programına göre mi?
+     index.html'deki «Maarif» etiketi BU alandan besleniyor; etiket artık
+     elle açılıp kapatılmıyor. 6. sınıfın iki yılı var ve YALNIZ yeni
+     kitap Maarif'e ait — öğretmen eski yıla geçince etiket kendiliğinden
+     kalkar, yoksa etiket yalan söylerdi. */
   var VERI_YILI = {
-    5:  [{ yil: '2025-2026', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '' }],
+    5:  [{ yil: '2025-2026', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '', maarif: true }],
     /* 6. sınıfın YENİ kitabı 4 ünite × 2 ders; ders verisi y2627/ altında.
        Önceki kitap (6 ünite × 3 ders) yerinde duruyor, öneki boş. */
-    6:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı · yeni kitap (4 ünite)', onek: 'y2627/' },
-         { yil: '2025-2026', program: 'Önceki program · 2025 ders kitabı (6 ünite)', onek: '' }],
-    7:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '' }],
+    6:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı · yeni kitap (4 ünite)', onek: 'y2627/', maarif: true },
+         { yil: '2025-2026', program: 'Önceki program · 2025 ders kitabı (6 ünite)', onek: '', maarif: false }],
+    7:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '', maarif: true }],
     /* 8. sınıfın ders verisi 6 ünite × 3 ders (8_1_1 … 8_6_3) olarak
        yeni kitaptan çıkarıldı; 7. sınıfla aynı programa ait. */
-    8:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '' }],
-    9:  [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '' }],
-    10: [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '' }]
+    8:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '', maarif: true }],
+    9:  [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '', maarif: true }],
+    10: [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '', maarif: true }]
   };
 
   var YIL_ANAHTAR = 'kidef_veri_yili';   /* localStorage: { "6": "2026-2027" } */
@@ -241,6 +246,13 @@
      Ders kimliğinin başındaki sayı sınıfı verir; kalip_/alan_ gibi
      sınıfa bağlı olmayan dosyalar önek almaz (boş dizge döner).
      ------------------------------------------------------------------ */
+  /* Sınıfın O AN seçili yılı Maarif Modeli'ne mi ait? Kaydı olmayan
+     sınıf için null döner (çağıran yer etiketi hiç oynatmasın diye). */
+  function maarifMi(sinif) {
+    var y = seciliVeriYili(sinif);
+    return y ? !!y.maarif : null;
+  }
+
   function dersOneki(dersId) {
     var m = /^(\d+)_/.exec(String(dersId == null ? '' : dersId));
     if (!m) return '';
@@ -348,6 +360,7 @@
     sozlukSiniflari: sozlukSiniflari,
     /* öğretim yılı */
     veriYiliKayit:   VERI_YILI,
+    maarifMi:        maarifMi,
     dersOneki:       dersOneki,
     dersYolu:        dersYolu,
     veriYillari:     veriYillari,
