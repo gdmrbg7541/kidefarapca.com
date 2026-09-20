@@ -32,14 +32,43 @@
     'use strict';
     if (window.AlfabeAkordiyon) return;
 
-    var SORU_SAYISI = 5;          /* bir mini turda kaç soru */
+    /* Bir turda kaç soru — öğretmen seçer, seçim saklanır.
+       Hazır üç seçenek: kısa yoklama (3), normal (5), uzun tur (10). */
+    var SORU_SECENEK = [3, 5, 10];
+    var SORU_ANAHTAR = 'kidef_ak_soru';
+    var soruSayisi = 5;
+    try {
+        var _sv = parseInt(localStorage.getItem(SORU_ANAHTAR), 10);
+        if (SORU_SECENEK.indexOf(_sv) >= 0) soruSayisi = _sv;
+    } catch (e) {}
+    function soruSayisiYaz(n) {
+        if (SORU_SECENEK.indexOf(n) < 0) return;
+        soruSayisi = n;
+        try { localStorage.setItem(SORU_ANAHTAR, String(n)); } catch (e) {}
+    }
+
+    var GERI_SAY_MS  = 900;    /* 3-2-1 arası                        */
+    var CEVAP_BEKLE  = 1600;   /* cevaplar açıkken bakılacak süre     */
+    var HAZIR_MS     = 1500;   /* «Hazır ol» perdesi                  */
+    var DOGRU_PUAN  = 10;         /* iki kişilik: her doğru           */
+    var HIZ_PUAN    = 5;          /* iki kişilik: doğru bilenden önce */
+    var MOD_ANAHTAR = 'kidef_ak_mod';
+
+    /* Tek kişilik mi iki kişilik mi? Öğretmen bir kez seçsin, her
+       açılışta baştan seçmesin diye saklanıyor. */
+    var mod = 1;
+    try { mod = (localStorage.getItem(MOD_ANAHTAR) === '2') ? 2 : 1; } catch (e) {}
+    function modYaz(n) {
+        mod = (n === 2) ? 2 : 1;
+        try { localStorage.setItem(MOD_ANAHTAR, String(mod)); } catch (e) {}
+    }
 
     /* Hangi başlık hangi tipleri sorar. */
     var BOLUMLER = [
         {
             anahtar: 'p1',
             baslik: 'Harf Tanıtımı',
-            not: SORU_SAYISI + ' soru · okunuşu ve yazılışı benzeyen harfler',
+            not: function () { return soruSayisi + ' soru · okunuşu ve yazılışı benzeyen harfler'; },
             tipler: [1, 2, 3, 4, 7, 8],
             ikon: '<svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
                   '<rect x="2.6" y="3.4" width="18.8" height="17.2" rx="2.6" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/>' +
@@ -52,7 +81,7 @@
         {
             anahtar: 'p5',
             baslik: 'Harf Birleştirme',
-            not: SORU_SAYISI + ' soru · çizgideki yazılışlar ve boşluk doldurma',
+            not: function () { return soruSayisi + ' soru · çizgideki yazılışlar ve boşluk doldurma'; },
             tipler: [5, 6, 9],
             ikon: '<svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
                   '<path d="M3 15.6h18" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/>' +
@@ -78,6 +107,14 @@
         if (typeof window.playWrong === 'function') { try { window.playWrong(); } catch (e) {} }
     }
     function S() { return window.AlfabeSinav; }
+    function karistir(a) {
+        var i, j, t;
+        for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
+    }
 
     /* Verilen tiplerden, tipleri sırayla gezerek soru havuzu kurar.
        Her soru AlfabeSinav.denetle()'den geçer; geçmeyen atılır. */
@@ -102,16 +139,132 @@
        as-ic, as-es…): alfabe.css bu sayfada zaten yüklü, biçim oradan
        geliyor. Puntolar #ak-tam içinde tahtaya göre BÜYÜTÜLÜYOR. */
 
+    /* --- 9. TİP: KELİME KUTUSU ---------------------------------------
+       Kelime AYRIK GÖSTERİLMEZ. Harfler bitişik dursun ki çocuk "şu
+       harfin ortadaki yazılışı" derken kelimeyi gerçek hâliyle görsün.
+
+       Üç çizim durumu var:
+         dolu=false            eksik harfin yeri boş kutu; kalan harfler
+                               bağlam biçimleriyle (tatvilli) YAN YANA,
+                               aralarında boşluk YOK → bitişik görünür.
+         dolu=true,  bitisik=false  harf yerine oturdu, hâlâ tatvilli.
+         dolu=true,  bitisik=true   spanlar display:inline ve harfler YALIN;
+                               tarayıcının kendi şekillendiricisi kelimeyi
+                               gerçekten birleştirir. Son hâl budur.
+
+       inline-block ŞEKİLLENDİRMEYİ BÖLER — "ayrık" hâl bundan yararlanır;
+       "bitişik" hâlde inline'a dönülmesinin sebebi de budur. */
+    var TATVIL = 'ـ';
+
+    function kelimeIc(s, dolu, bitisik) {
+        var c = s.cozum, p = [], i, t;
+        for (i = 0; i < c.length; i++) {
+            if (i === s.kelime.b && !dolu) {
+                p.push('<span class="ak-bos" data-rol="bosluk">' + TATVIL + '</span>');
+            } else {
+                t = bitisik ? c[i].harf : c[i].bicim;
+                p.push('<span class="ak-par' + (i === s.kelime.b ? ' ak-yeni' : '') +
+                       '">' + kacis(t) + '</span>');
+            }
+        }
+        return '<span class="ak-kelime' + (bitisik ? ' ak-bitisik' : '') + '">' +
+               p.join('') + '</span>' +
+               '<span class="ak-anlam">(' + kacis(s.kelime.anlam) + ')</span>';
+    }
+
     function kelimeKutusu(s) {
         if (s.tip !== 9 || !s.kelime || !s.cozum) return '';
-        var p = [], i;
-        for (i = 0; i < s.cozum.length; i++) {
-            p.push(i === s.kelime.b
-                ? '<span class="ak-bos">؟</span>'
-                : '<span class="ak-par">' + kacis(s.cozum[i].bicim) + '</span>');
-        }
-        return '<div class="ak-kelime">' + p.join('') +
-               '<span class="ak-anlam">(' + kacis(s.kelime.anlam) + ')</span></div>';
+        return '<div class="ak-kelimekutu" data-rol="kelimekutu">' +
+               kelimeIc(s, false, false) + '</div>';
+    }
+
+    /* Doğru harf şıktan KOPARAK boşluğa uçar, oraya oturur, sonra kelime
+       yavaşça birleşir. Süreler bilerek uzun: sınıfta gözle takip edilecek. */
+    var UCUS_MS = 1400, OTURMA_MS = 1500, BIRLESME_MS = 900;
+
+    function ucus(s, bit) {
+        var kutu = sahne.querySelector('[data-rol="kelimekutu"]');
+        var hedef = sahne.querySelector('[data-rol="bosluk"]');
+        var kaynak = sahne.querySelector('.as-sik.as-dogru .as-bic') ||
+                     sahne.querySelector('.as-sik.as-dogru .as-ic');
+        if (!kutu || !hedef || !kaynak) { if (bit) bit(); return; }
+        var a = kaynak.getBoundingClientRect(), b = hedef.getBoundingClientRect();
+        var k = kutu.getBoundingClientRect();
+        var ucan = document.createElement('span');
+        ucan.className = 'ak-ucan';
+        ucan.textContent = s.dogruBicim;
+        ucan.style.left = (a.left - k.left) + 'px';
+        ucan.style.top = (a.top - k.top) + 'px';
+        ucan.style.width = a.width + 'px';
+        ucan.style.height = a.height + 'px';
+        kutu.appendChild(ucan);
+        var dx = (b.left + b.width / 2) - (a.left + a.width / 2);
+        var dy = (b.top + b.height / 2) - (a.top + a.height / 2);
+        /* YENİDEN AKIŞ ZORLANIYOR: öge daha yeni eklendi; başlangıç konumu
+           henüz hesaplanmadan dönüşüm yazılırsa tarayıcı ikisini tek
+           değişiklik sayıp geçişi HİÇ oynatmıyor — harf doğrudan hedefte
+           beliriyordu (ölçüldü: 14 karede x hiç değişmedi). offsetWidth
+           okuması başlangıç konumunu kesinleştiriyor.
+           Not: rAF tek başına yetmedi, bu yüzden ikisi birlikte. */
+        void ucan.offsetWidth;
+        requestAnimationFrame(function () {
+            ucan.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+        });
+        setTimeout(function () {
+            ucan.style.opacity = '0';
+            kutu.innerHTML = kelimeIc(s, true, false);     /* harf yerine oturdu */
+            setTimeout(function () {
+                kutu.innerHTML = kelimeIc(s, true, true);  /* kelime birleşti */
+                if (bit) bit();
+            }, BIRLESME_MS);
+        }, OTURMA_MS);
+    }
+
+    /* Cevap sonrası: 9. tipte önce uçuş oynar, İleri ondan sonra açılır. */
+    function ileriAc(s) {
+        var ileri = sahne.querySelector('[data-rol="sonraki"]');
+        if (s && s.tip === 9) {
+            if (ileri) ileri.hidden = true;
+            ucus(s, function () { if (ileri) ileri.hidden = false; });
+        } else if (ileri) { ileri.hidden = false; }
+    }
+
+    /* Şıkları BİR OYUNCU İÇİN çizer. İki kişilikte her oyuncuya ayrı
+       karıştırılmış kopya verilir: yandaki ekrana bakıp konumdan kopya
+       çekilemesin. Doğruluk metinden değil data-d bayrağından okunur —
+       şıkların içi HTML, iki şıkkın düz metni aynı çıkabilir. */
+    function siklarHtml(siklar) {
+        var g = '<div class="as-siklar ak-siklar">';
+        siklar.forEach(function (x, i) {
+            g += '<button type="button" class="as-sik" data-i="' + i +
+                 '" data-d="' + (x.dogru ? 1 : 0) + '">' +
+                 '<span class="as-mark">' + 'ABCD'.charAt(i) + '</span>' +
+                 '<span class="as-ic">' + x.html + '</span></button>';
+        });
+        return g + '</div>';
+    }
+
+    function ikiliHtml(s) {
+        /* İKİ OYUNCUYA AYRI SIRA. İki bağımsız karıştırma dört şıkta 1/24
+           ihtimalle AYNI diziyi veriyor; o soruda yandaki ekrandan konuma
+           bakıp kopya çekilebiliyor. Çakışırsa yeniden karıştırılıyor,
+           takılmasın diye sayaçlı; son çare bir kaydırma. */
+        var imza = function (a) { return a.map(function (x) { return x.html; }).join('|'); };
+        var s1 = karistir(s.siklar.slice());
+        var s2 = karistir(s.siklar.slice()), kac = 0;
+        while (imza(s1) === imza(s2) && kac++ < 20) s2 = karistir(s.siklar.slice());
+        if (imza(s1) === imza(s2)) s2 = s2.slice(1).concat(s2.slice(0, 1));
+        var sira = { 1: s1, 2: s2 };
+        var g = '<div class="ak-ikili">';
+        [1, 2].forEach(function (n) {
+            g += '<section class="ak-oy ak-o' + n + '" data-oyuncu="' + n + '">' +
+                 '  <header class="ak-oybas"><span class="ak-oyad">' + n + '. Oyuncu</span>' +
+                 '    <span class="ak-oypuan" data-rol="puan' + n + '">0</span></header>' +
+                 siklarHtml(sira[n]) +
+                 '  <div class="ak-oydurum" data-rol="durum' + n + '"></div>' +
+                 '</section>';
+        });
+        return g + '</div>';
     }
 
     function soruHtml(s, no, toplam) {
@@ -119,6 +272,18 @@
         g += kelimeKutusu(s);
         g += '<div class="as-metin ak-metin">' + s.metin + '</div>';
         g += s.ustlik || '';
+        if (mod === 2) {
+            /* İki kişilikte soru ORTAK, şıklar ayrı. Eşleştirme soruları
+               bu kipe hiç girmiyor (bkz. turBaslat): dört çift eşleştirmek
+               bir yarış değil, ekranı da ikiye bölünce sığmıyor. */
+            g += ikiliHtml(s);
+            g += '<div class="as-geri-bildirim ak-bildirim" data-rol="bildirim"></div>';
+            /* Sonraki düğmesi yok: geçiş otomatik (bkz. otomatikGec). */
+            g += '<div class="ak-alt">' +
+                 '<button type="button" class="ak-t ak-ikincil" data-rol="coz">Cevapları aç</button>' +
+                 '</div>';
+            return g;
+        }
         if (s.bicim === 'eslestir') {
             g += '<div class="as-esalan"><div class="as-sutun" data-yan="sol">';
             s.ciftler.forEach(function (c, i) {
@@ -132,19 +297,34 @@
             });
             g += '</div></div>';
         } else {
-            g += '<div class="as-siklar ak-siklar">';
-            s.siklar.forEach(function (x, i) {
-                g += '<button type="button" class="as-sik" data-i="' + i + '">' +
-                     '<span class="as-mark">' + 'ABCD'.charAt(i) + '</span>' +
-                     '<span class="as-ic">' + x.html + '</span></button>';
-            });
-            g += '</div>';
+            g += siklarHtml(s.siklar);
         }
         g += '<div class="as-geri-bildirim ak-bildirim" data-rol="bildirim"></div>';
         g += '<div class="ak-alt">' +
              '<button type="button" class="ak-t" data-rol="sonraki" hidden>Sonraki ›</button>' +
              '</div>';
         return g;
+    }
+
+    function ikiliSonucHtml(puan, toplam) {
+        var t1 = puan[1].dogru + puan[1].hiz, t2 = puan[2].dogru + puan[2].hiz;
+        var soz = t1 > t2 ? '1. Oyuncu kazandı!' : (t2 > t1 ? '2. Oyuncu kazandı!' : 'Berabere!');
+        var yan = function (n, t) {
+            return '<div class="ak-sonoy ak-o' + n + '">' +
+                   '  <div class="ak-sonoyad">' + n + '. Oyuncu</div>' +
+                   '  <div class="ak-sonoytop">' + t + '</div>' +
+                   '  <div class="ak-sonoyayr">doğruluk ' + puan[n].dogru +
+                   '    · hız ' + puan[n].hiz + '</div></div>';
+        };
+        return '<div class="ak-sonuc">' +
+               '  <div class="ak-sonsay">' + soz + '</div>' +
+               '  <div class="ak-sonikili">' + yan(1, t1) + yan(2, t2) + '</div>' +
+               '  <div class="ak-sonsoz">' + toplam + ' soru · her doğru ' + DOGRU_PUAN +
+               ' puan, önce bilene ' + HIZ_PUAN + ' puan hız</div>' +
+               '  <div class="ak-alt">' +
+               '    <button type="button" class="ak-t" data-rol="yeniden">Yeniden dene</button>' +
+               '    <button type="button" class="ak-t ak-ikincil" data-rol="kapat">Kapat</button>' +
+               '  </div></div>';
     }
 
     function sonucHtml(dogru, toplam) {
@@ -173,6 +353,7 @@
     /* ---------------- tam ekran katman ---------------- */
 
     var katman = null, sahne = null, basEl = null, notEl = null;
+    var seritAcikti = false;   /* test açılırken kumanda şeridi açık mıydı? */
     var aktif = null;          /* o an açık bölümün durumu */
     var durumlar = {};         /* {p1: {...}, p5: {...}} */
 
@@ -186,9 +367,20 @@
             '  <header class="ak-bas">' +
             '    <span class="ak-bas-yazi"><b data-rol="baslik">Kendini Dene</b>' +
             '      <span class="ak-not" data-rol="not"></span></span>' +
+            '    <div class="ak-mod" role="group" aria-label="Soru sayısı">' +
+            SORU_SECENEK.map(function (n) {
+                return '<button type="button" class="ak-adetb" data-adet="' + n + '">' + n + '</button>';
+            }).join('') +
+            '    </div>' +
+            '    <div class="ak-mod" role="group" aria-label="Oyuncu sayısı">' +
+            '      <button type="button" class="ak-modb" data-mod="1">Tek kişilik</button>' +
+            '      <button type="button" class="ak-modb" data-mod="2">İki kişilik</button>' +
+            '    </div>' +
             '    <button type="button" class="ak-kapa" data-rol="kapat" aria-label="Kapat">✕</button>' +
             '  </header>' +
             '  <div class="ak-sahne" data-rol="sahne"></div>' +
+            '  <div class="ak-ortu" data-rol="ortu" hidden>' +
+            '    <div class="ak-ortuic" data-rol="ortuic"></div></div>' +
             '</div>';
         document.body.appendChild(katman);
         sahne = katman.querySelector('[data-rol="sahne"]');
@@ -202,8 +394,24 @@
             if (rol === 'kapat')   { tik(); kapat(); return; }
             if (rol === 'sonraki') { tik(); aktif.i++; soruGoster(); return; }
             if (rol === 'yeniden') { tik(); turBaslat(); return; }
+            var mb = t.closest('.ak-modb');
+            if (mb) { tik(); modYaz(+mb.dataset.mod); modIsaretle(); turBaslat(); return; }
+            var ab = t.closest('.ak-adetb');
+            if (ab) {
+                tik(); soruSayisiYaz(+ab.dataset.adet); modIsaretle();
+                if (notEl && aktif) {
+                    var bb = null, q;
+                    for (q = 0; q < BOLUMLER.length; q++)
+                        if (BOLUMLER[q].anahtar === aktif.anahtar) bb = BOLUMLER[q];
+                    if (bb) notEl.textContent = bb.not();
+                }
+                turBaslat(); return;
+            }
             var s = aktif && aktif.havuz[aktif.i];
             if (!s) return;
+            /* «Cevapları aç»: iki kişilikte biri cevap vermezse tur burada
+               takılmasın — cevaplamayan boş sayılır. */
+            if (rol === 'coz') { tik(); ikiliCoz(s); return; }
             var dg;
             if ((dg = t.closest('.as-sik')) && s.bicim === 'test')      { tik(); testCevap(s, dg); return; }
             if ((dg = t.closest('.as-es'))  && s.bicim === 'eslestir')  { tik(); esCevap(s, dg); return; }
@@ -219,27 +427,111 @@
         }, true);
     }
 
+    /* --- PERDE: 3-2-1 geri sayımı ve «Hazır ol» -----------------------
+       Zamanlayıcılar tek yerde toplanıyor: tur yenilenince, kip değişince
+       ya da katman kapanınca hepsi iptal ediliyor. Yoksa eski bir sayım
+       yeni turun üstüne düşüyor. */
+    var zaman = [];
+    function zamanKur(f, ms) { var t = setTimeout(f, ms); zaman.push(t); return t; }
+    function zamanTemizle() {
+        for (var i = 0; i < zaman.length; i++) clearTimeout(zaman[i]);
+        zaman = [];
+    }
+    function perdeAc(ic, sinif) {
+        if (!katman) return;
+        var o = katman.querySelector('[data-rol="ortu"]');
+        var k = katman.querySelector('[data-rol="ortuic"]');
+        if (!o || !k) return;
+        o.className = 'ak-ortu' + (sinif ? ' ' + sinif : '');
+        k.innerHTML = ic;
+        o.hidden = false;
+    }
+    function perdeKapat() {
+        if (!katman) return;
+        var o = katman.querySelector('[data-rol="ortu"]');
+        if (o) o.hidden = true;
+    }
+
+    /* 3'ten geriye: başlarken sorular hemen gelmesin, sınıf hazırlansın. */
+    function geriSay(bit) {
+        var n = 3;
+        var adim = function () {
+            if (n <= 0) { perdeKapat(); if (bit) bit(); return; }
+            perdeAc('<span class="ak-sayi">' + n + '</span>', 'sayim');
+            /* Her sayıda animasyon baştan oynasın diye yeniden akış. */
+            var e = katman.querySelector('.ak-sayi');
+            if (e) { e.classList.remove('oyna'); void e.offsetWidth; e.classList.add('oyna'); }
+            tik();
+            n--;
+            zamanKur(adim, GERI_SAY_MS);
+        };
+        adim();
+    }
+
+    /* İki soru arası: «hazır ol, sıradaki geliyor». */
+    function hazirOl(bit) {
+        perdeAc('<span class="ak-hazir">Hazır ol!</span>' +
+                '<span class="ak-hazirnot">Sıradaki soru geliyor…</span>', 'hazir');
+        zamanKur(function () { perdeKapat(); if (bit) bit(); }, HAZIR_MS);
+    }
+
+    function modIsaretle() {
+        if (!katman) return;
+        var d = katman.querySelectorAll('.ak-modb'), i;
+        for (i = 0; i < d.length; i++) {
+            d[i].classList.toggle('secili', +d[i].dataset.mod === mod);
+            d[i].setAttribute('aria-pressed', (+d[i].dataset.mod === mod) ? 'true' : 'false');
+        }
+        var a = katman.querySelectorAll('.ak-adetb');
+        for (i = 0; i < a.length; i++) {
+            a[i].classList.toggle('secili', +a[i].dataset.adet === soruSayisi);
+            a[i].setAttribute('aria-pressed', (+a[i].dataset.adet === soruSayisi) ? 'true' : 'false');
+        }
+    }
+
     /* ---------------- tur mantığı ---------------- */
 
     function soruGoster() {
         var s = aktif.havuz[aktif.i];
-        if (!s) { sahne.innerHTML = sonucHtml(aktif.dogru, aktif.havuz.length || SORU_SAYISI); return; }
+        if (!s) {
+            sahne.innerHTML = (mod === 2)
+                ? ikiliSonucHtml(aktif.puan, aktif.havuz.length || soruSayisi)
+                : sonucHtml(aktif.dogru, aktif.havuz.length || soruSayisi);
+            return;
+        }
         aktif.cevapli = false; aktif.esSol = null; aktif.esDogru = 0; aktif.esHata = 0;
+        aktif.cevap = {}; aktif.bas = Date.now();
         sahne.innerHTML = soruHtml(s, aktif.i + 1, aktif.havuz.length);
+        if (mod === 2) {
+            [1, 2].forEach(function (n) {
+                var e = sahne.querySelector('[data-rol="puan' + n + '"]');
+                if (e) e.textContent = aktif.puan[n].dogru + aktif.puan[n].hiz;
+            });
+        }
     }
 
     function turBaslat() {
-        aktif.havuz = havuz(aktif.tipler, SORU_SAYISI);
+        /* İKİ KİŞİLİKTE EŞLEŞTİRME YOK (tip 7-8): dört çifti eşleştirmek
+           bir hız yarışı değil, ekranı ikiye bölünce de sığmıyor. */
+        var tipler = (mod === 2)
+            ? aktif.tipler.filter(function (t) { return t !== 7 && t !== 8; })
+            : aktif.tipler;
+        zamanTemizle(); perdeKapat();
+        aktif.havuz = havuz(tipler, soruSayisi);
         aktif.i = 0; aktif.dogru = 0;
+        aktif.puan = { 1: { dogru: 0, hiz: 0 }, 2: { dogru: 0, hiz: 0 } };
         if (!aktif.havuz.length) {
             sahne.innerHTML = '<div class="ak-sonuc"><div class="ak-sonsoz">' +
                 'Soru üretilemedi — sayfayı yenileyip tekrar dener misin?</div></div>';
             return;
         }
-        soruGoster();
+        /* İki kişilikte başlarken 3-2-1: iki öğrenci de tahtaya hazırlansın. */
+        if (mod === 2) { sahne.innerHTML = ''; geriSay(soruGoster); }
+        else soruGoster();
     }
 
     function testCevap(s, dugme) {
+        if (mod === 2) { ikiliCevap(s, dugme); return; }
         if (aktif.cevapli) return;
         aktif.cevapli = true;
         var secilen = s.siklar[+dugme.getAttribute('data-i')];
@@ -251,8 +543,79 @@
         if (!secilen.dogru) dugme.classList.add('as-yanlis');
         if (secilen.dogru) { aktif.dogru++; dogruSes(); } else { yanlisSes(); }
         bildir(sahne, secilen.dogru ? 'iyi' : 'kotu');
-        var ileri = sahne.querySelector('[data-rol="sonraki"]');
-        if (ileri) ileri.hidden = false;
+        ileriAc(s);
+    }
+
+    /* --- İKİ KİŞİLİK --------------------------------------------------
+       Cevap alınır ama RENK VERİLMEZ: rakip hâlâ düşünüyor, yandaki yarıya
+       bakıp cevabı görmesin. İki cevap da gelince (ya da «Cevapları aç»)
+       birlikte çözülür. Puan: her doğru +10, doğru bilenlerden önce basana
+       +5 hız — Dinle ve Yaz yarışmasıyla aynı kural. */
+    function ikiliCevap(s, dugme) {
+        var yan = dugme.closest('.ak-oy'); if (!yan) return;
+        var n = +yan.dataset.oyuncu;
+        if (aktif.cevap[n]) return;
+        aktif.cevap[n] = { dogruMu: dugme.dataset.d === '1',
+                           ms: Date.now() - aktif.bas, dugme: dugme };
+        dugme.classList.add('ak-secili');
+        yan.querySelectorAll('.as-sik').forEach(function (b) { b.disabled = true; });
+        yan.classList.add('bekliyor');
+        var dr = sahne.querySelector('[data-rol="durum' + n + '"]');
+        if (dr) dr.textContent = 'Cevabın alındı…';
+        if (aktif.cevap[1] && aktif.cevap[2]) ikiliCoz(s);
+    }
+
+    function ikiliCoz(s) {
+        if (aktif.cevapli) return;
+        aktif.cevapli = true;
+        [1, 2].forEach(function (n) {
+            if (!aktif.cevap[n]) aktif.cevap[n] = { dogruMu: false, ms: 0, dugme: null, bos: true };
+        });
+        var c1 = aktif.cevap[1], c2 = aktif.cevap[2];
+        var hizli = 0;
+        if (c1.dogruMu && c2.dogruMu) hizli = (c1.ms < c2.ms) ? 1 : (c2.ms < c1.ms ? 2 : 0);
+        else if (c1.dogruMu) hizli = 1;
+        else if (c2.dogruMu) hizli = 2;
+
+        [1, 2].forEach(function (n) {
+            var c = aktif.cevap[n];
+            var yan = sahne.querySelector('.ak-o' + n);
+            if (!yan) return;
+            yan.classList.remove('bekliyor');
+            yan.querySelectorAll('.as-sik').forEach(function (b) {
+                b.disabled = true;
+                b.classList.remove('ak-secili');
+                if (b.dataset.d === '1') b.classList.add('as-dogru');
+                else if (c.dugme === b) b.classList.add('as-yanlis');
+            });
+            if (c.dogruMu) aktif.puan[n].dogru += DOGRU_PUAN;
+            if (hizli === n) aktif.puan[n].hiz += HIZ_PUAN;
+            var pe = sahne.querySelector('[data-rol="puan' + n + '"]');
+            if (pe) pe.textContent = aktif.puan[n].dogru + aktif.puan[n].hiz;
+            var dr = sahne.querySelector('[data-rol="durum' + n + '"]');
+            if (dr) dr.textContent = c.bos ? 'Cevap yok'
+                : (c.dogruMu ? ('✔ +' + DOGRU_PUAN + (hizli === n ? '   ⚡ +' + HIZ_PUAN : '') +
+                                '   (' + (c.ms / 1000).toFixed(1) + ' sn)')
+                             : '✘   (' + (c.ms / 1000).toFixed(1) + ' sn)');
+        });
+        if (c1.dogruMu || c2.dogruMu) dogruSes(); else yanlisSes();
+        bildir(sahne, (c1.dogruMu || c2.dogruMu) ? 'iyi' : 'kotu',
+               hizli ? (hizli + '. Oyuncu önce bildi.') : '');
+        var cz = sahne.querySelector('[data-rol="coz"]');
+        if (cz) cz.hidden = true;
+        otomatikGec(s);
+    }
+
+    /* İki kişilikte SONRAKİ DÜĞMESİ YOK: cevaplar bir süre açık kalır,
+       sonra «Hazır ol» perdesi iner ve sıradaki soru kendiliğinden gelir.
+       9. tipte önce uçuş bitsin. */
+    function otomatikGec(s) {
+        var sonra = function () {
+            zamanKur(function () {
+                hazirOl(function () { aktif.i++; soruGoster(); });
+            }, CEVAP_BEKLE);
+        };
+        if (s && s.tip === 9) ucus(s, sonra); else sonra();
     }
 
     /* Eşleştirme kuralı Sınav sekmesindekiyle aynı: dördünü de bulmak
@@ -284,8 +647,7 @@
                     aktif.esHata ? ('Dördünü de buldun ama ' + aktif.esHata +
                                     ' hatalı denemen oldu; bu soru puan getirmedi.')
                                  : 'Dört eşleşmenin hepsi doğru.');
-                var ileri = sahne.querySelector('[data-rol="sonraki"]');
-                if (ileri) ileri.hidden = false;
+                ileriAc(s);
             }
         } else {
             aktif.esHata++; yanlisSes();
@@ -309,16 +671,34 @@
         }
         aktif = durumlar[anahtar];
         basEl.textContent = 'Kendini Dene — ' + b.baslik;
-        notEl.textContent = b.not;
+        notEl.textContent = b.not();
+        /* KUMANDA ŞERİDİ: alfabe.html'de sayfanın herhangi bir yerine
+           dokununca şerit katlanıyor (navKapat). Test açılınca ilk dokunuş
+           katmanın içine olduğu için şerit kapanıyordu ve ✕'e basınca
+           kapalı kalıyordu. Açılıştaki hâli not edilip kapanışta geri
+           konuyor — öğretmen testten çıkınca kumandayı yeniden açmasın. */
+        var ana = document.querySelector('.main-app');
+        seritAcikti = !!(ana && !ana.classList.contains('nav-gizli'));
         katman.hidden = false;
         document.body.classList.add('ak-acik');
+        modIsaretle();
         turBaslat();
         return true;
+    }
+    function seridiGeriAc() {
+        if (!seritAcikti) return;
+        var ana = document.querySelector('.main-app');
+        if (ana) ana.classList.remove('nav-gizli');
+        var m = document.getElementById('navMini');
+        if (m) m.classList.remove('nm-donuk');
+        if (typeof window.navAdYaz === 'function') { try { window.navAdYaz(); } catch (e) {} }
     }
     function kapat() {
         if (!katman) return;
         katman.hidden = true;
+        zamanTemizle(); perdeKapat();
         document.body.classList.remove('ak-acik');
+        seridiGeriAc();
         if (sahne) sahne.innerHTML = '';
     }
 
@@ -379,14 +759,113 @@
             '#ak-tam .as-es{font-size:clamp(30px,8vh,96px);min-width:clamp(80px,12vw,180px);',
             '  padding:.6vh 1.2vw}',
 
-            /* ---- 9. tip: boşluklu kelime ---- */
-            '.ak-kelime{display:flex;flex-direction:row;direction:rtl;unicode-bidi:isolate;',
-            '  align-items:center;justify-content:center;gap:.22em;',
-            '  font-size:clamp(34px,10vh,120px);flex:none;flex-wrap:wrap}',
-            '.ak-par{display:inline-block}',
-            '.ak-bos{display:inline-block;color:#16A085;opacity:.65}',
-            '.ak-anlam{font-size:clamp(13px,2vh,24px);color:#7b8b97;direction:ltr;',
-            '  unicode-bidi:isolate;margin-inline-start:.5em}',
+            /* ---- 9. tip: kelime kutusu ----
+               ARALIK YOK: tatvilli biçimler uç uca gelince kelime bitişik
+               görünür. Ayrık dizmek (gap) sorunun kendisini bozuyordu —
+               çocuk "ortadaki yazılış" derken kelimeyi gerçek hâliyle
+               görmeli. Son adımda spanlar inline'a dönüyor ve harfler
+               yalın yazılıyor; şekillendirmeyi tarayıcı yapıyor. */
+            '.ak-kelimekutu{position:relative;flex:none;text-align:center;',
+            '  padding:.5vh 1.2vw .9vh;border-radius:16px;background:#E6FAF5;',
+            '  border:2px dashed #16A085}',
+            '.ak-kelime{display:inline-block;direction:rtl;unicode-bidi:isolate;',
+            '  font-size:clamp(34px,10vh,120px);line-height:1.35}',
+            '.ak-par{display:inline-block;margin:0}',
+            '.ak-bitisik .ak-par{display:inline;margin:0}',
+            '.ak-yeni{animation:akGel .55s ease}',
+            '@keyframes akGel{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}',
+            /* Boşluk: harfin oturacağı yer. İçindeki tatvil yalnız GENİŞLİK
+               versin diye saydam — komşu harfler ona göre şekillenir. */
+            '.ak-bos{display:inline-block;width:1.05em;height:.58em;margin:0 .03em;',
+            '  vertical-align:-.02em;overflow:hidden;color:transparent;line-height:0;',
+            '  background:rgba(230,126,34,.14);border:3px dashed #E67E22;border-radius:10px;',
+            '  animation:akYanip 1.6s ease-in-out infinite}',
+            '@keyframes akYanip{0%,100%{background:rgba(230,126,34,.14)}',
+            '  50%{background:rgba(230,126,34,.30)}}',
+            '.ak-ucan{position:absolute;z-index:5;pointer-events:none;display:flex;',
+            '  align-items:center;justify-content:center;color:#E67E22;',
+            '  font-size:clamp(30px,8vh,96px);line-height:1;opacity:.98;',
+            '  transition:transform 1.4s cubic-bezier(.32,.86,.3,1),opacity .35s ease}',
+            '.ak-anlam{display:block;font-size:clamp(13px,2vh,24px);color:#7b8b97;',
+            '  direction:ltr;unicode-bidi:isolate;margin-top:.2em}',
+
+            /* ---- başlıktaki oyuncu sayısı seçici ---- */
+            '.ak-mod{display:flex;gap:.25rem;flex:none;background:#e8f2f6;',
+            '  border-radius:999px;padding:.25rem}',
+            '.ak-modb{font-family:inherit;font-size:clamp(12px,1.9vh,20px);',
+            '  padding:.6vh 1.4vw;border:none;border-radius:999px;background:transparent;',
+            '  color:#5b7183;cursor:pointer;white-space:nowrap}',
+            '.ak-modb.secili{background:#16A085;color:#fff}',
+            '.ak-adetb{font-family:inherit;font-size:clamp(12px,1.9vh,20px);',
+            '  min-width:clamp(30px,3.4vw,52px);padding:.6vh .6vw;border:none;border-radius:999px;',
+            '  background:transparent;color:#5b7183;cursor:pointer}',
+            '.ak-adetb.secili{background:#0E6655;color:#fff}',
+
+            /* ---- PERDE: 3-2-1 ve «Hazır ol» ----
+               Katmanın tamamını kaplar; arkadaki soru görünmesin diye
+               bulanık değil DOLU zemin — tahtadan bakınca kesin okunsun. */
+            '.ak-cerceve{position:relative}',
+            '.ak-ortu{position:absolute;inset:0;z-index:40;display:flex;',
+            '  align-items:center;justify-content:center;background:#f4f9fb}',
+            '.ak-ortu[hidden]{display:none}',
+            '.ak-ortuic{display:flex;flex-direction:column;align-items:center;gap:1.4vh;',
+            '  text-align:center}',
+            '.ak-sayi{display:block;font-size:clamp(90px,34vh,400px);line-height:1;',
+            '  color:#16A085}',
+            '.ak-sayi.oyna{animation:akSayim .9s cubic-bezier(.2,.8,.3,1) both}',
+            '@keyframes akSayim{0%{transform:scale(.45);opacity:0}',
+            /* Sayı uzun süre TAM OPAK kalsın: tahtadan bakınca soluk
+               görünüyordu — solma yalnız son çeyrekte. */
+            '  18%{transform:scale(1.06);opacity:1}72%{transform:scale(1);opacity:1}',
+            '  100%{transform:scale(.88);opacity:.3}}',
+            '.ak-hazir{display:block;font-size:clamp(34px,11vh,130px);line-height:1.1;',
+            '  color:#0E6655;animation:akHazir 1.5s ease-in-out both}',
+            '.ak-hazirnot{display:block;font-size:clamp(14px,2.6vh,32px);color:#7b8b97;',
+            '  animation:akHazirNot 1.5s ease-in-out both}',
+            '@keyframes akHazir{0%{transform:scale(.7) translateY(14px);opacity:0}',
+            '  25%{transform:scale(1.04) translateY(0);opacity:1}',
+            '  70%{transform:scale(1);opacity:1}100%{transform:scale(1.12);opacity:0}}',
+            '@keyframes akHazirNot{0%,12%{opacity:0}35%,72%{opacity:1}100%{opacity:0}}',
+
+            /* ---- iki kişilik: ekran ikiye bölünür, soru ORTAK ---- */
+            '.ak-ikili{display:flex;flex-direction:row;gap:2vw;width:100%;flex:1 1 auto;',
+            '  min-height:0;position:relative}',
+            '.ak-ikili::after{content:"";position:absolute;top:2%;bottom:2%;left:50%;',
+            '  width:2px;transform:translateX(-50%);background:rgba(0,0,0,.08);border-radius:2px}',
+            '.ak-oy{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:.8vh;',
+            '  border-radius:16px;padding:1vh 1vw;box-sizing:border-box}',
+            '.ak-o1{background:rgba(47,122,214,.07)}',
+            '.ak-o2{background:rgba(224,82,82,.07)}',
+            '.ak-oybas{display:flex;align-items:center;justify-content:space-between;flex:none}',
+            '.ak-oyad{font-size:clamp(13px,2.1vh,26px)}',
+            '.ak-o1 .ak-oyad{color:#2f7ad6}',
+            '.ak-o2 .ak-oyad{color:#e05252}',
+            '.ak-oypuan{font-size:clamp(18px,3.2vh,40px)}',
+            '.ak-o1 .ak-oypuan{color:#2f7ad6}',
+            '.ak-o2 .ak-oypuan{color:#e05252}',
+            '.ak-oydurum{flex:none;min-height:2.4vh;text-align:center;direction:ltr;',
+            '  unicode-bidi:isolate;font-size:clamp(12px,2vh,24px);color:#7b8b97}',
+            /* Rakip düşünürken cevabı görmesin. */
+            '.ak-oy.bekliyor .as-siklar{opacity:.3}',
+            '.ak-o1 .as-sik.ak-secili{border-color:#2f7ad6}',
+            '.ak-o2 .as-sik.ak-secili{border-color:#e05252}',
+            '#ak-tam .ak-oy .as-siklar{width:100%;gap:1vh 1vw;grid-template-columns:1fr}',
+            '#ak-tam .ak-oy .as-h{font-size:clamp(26px,6vh,72px)}',
+            '#ak-tam .ak-oy .as-uclu,#ak-tam .ak-oy .as-bic{font-size:clamp(24px,5.4vh,64px)}',
+            '#ak-tam .ak-oy .as-bic-b{font-size:clamp(28px,6.4vh,76px)}',
+            '#ak-tam .ak-oy .as-sik{padding:.8vh 1vw;gap:1vw}',
+
+            /* ---- iki kişilik sonuç kartı ---- */
+            '.ak-sonikili{display:flex;gap:2.4vw;justify-content:center;margin:1vh 0}',
+            '.ak-sonoy{min-width:clamp(140px,18vw,280px);padding:1.4vh 2vw;border-radius:16px;',
+            '  box-shadow:0 2px 10px rgba(0,0,0,.06)}',
+            '.ak-sonoy.ak-o1{background:#fff}',
+            '.ak-sonoy.ak-o2{background:#fff}',
+            '.ak-sonoyad{font-size:clamp(12px,2vh,24px);color:#7b8b97}',
+            '.ak-sonoytop{font-size:clamp(30px,7vh,84px);line-height:1.1}',
+            '.ak-sonoy.ak-o1 .ak-sonoytop{color:#2f7ad6}',
+            '.ak-sonoy.ak-o2 .ak-sonoytop{color:#e05252}',
+            '.ak-sonoyayr{font-size:clamp(11px,1.8vh,20px);color:#7b8b97}',
 
             /* ---- geri bildirim + düğmeler ---- */
             '.ak-bildirim{min-height:1.4em;text-align:center;flex:none;',
@@ -404,19 +883,17 @@
             '.ak-sonsoz{font-size:clamp(15px,2.6vh,32px);color:#7b8b97}',
 
             /* ---- kumandadaki başlık ---- */
-            /* KUMANDADAKİ TEST DÜĞMELERİ — konunun ALT MADDESİ gibi durur:
-               içeri girintili, daha sönük zeminli ve soluna küçük bir
-               bağlantı çizgisi konmuş. Panel sekmeleriyle karışmasın
-               diye bilerek farklı; .active de almıyorlar. */
-            '.nav-tabs .ak-tetik{position:relative;margin-left:20px;width:calc(100% - 20px);',
-            /* Zemin ana sekmeden (.62) biraz sönük ama okunur: .42 denendi,
-               arkadaki harf tablosunun üstünde yazı zor seçiliyordu. */
-            '  background:rgba(6,62,51,.56);font-size:.95rem;padding-top:5px;padding-bottom:5px}',
-            '.nav-tabs .ak-tetik:hover{background:rgba(6,62,51,.72)}',
-            '.nav-tabs .ak-tetik::before{content:"";position:absolute;left:-13px;top:50%;',
-            '  width:11px;height:2px;background:rgba(255,255,255,.45);border-radius:1px}',
-            '.nav-tabs .ak-tetik .tab-ikon{width:19px;height:19px}',
-            '.nav-tabs .ak-tetik .tab-ad{opacity:.92}',
+            /* KUMANDADAKİ YAN TUŞLAR — ayrı sekme değil, konu sekmesinin
+               SAĞINDA küçük birer tuş. Satır kabına direction:ltr şart:
+               şerit rtl olduğu için aksi hâlde yan tuş sola düşüyor. */
+            '.nav-tabs .tab-satir{display:flex;direction:ltr;align-items:stretch;gap:4px}',
+            '.nav-tabs .tab-satir > .tab-trigger:not(.ak-yan){flex:1 1 auto;width:auto;min-width:0}',
+            '.nav-tabs .ak-yan{flex:0 0 auto;width:auto;min-width:0;gap:6px;',
+            '  padding:6px 10px;justify-content:center;text-decoration:none;',
+            '  background:rgba(6,62,51,.56)}',
+            '.nav-tabs .ak-yan:hover{background:rgba(6,62,51,.82)}',
+            '.nav-tabs .ak-yan .tab-ikon{width:19px;height:19px;flex:none}',
+            '.nav-tabs .ak-yanad{font-size:.82rem;line-height:1.1;white-space:nowrap;opacity:.95}',
             /* Dar ekranda tek sütun: iki büyük şık yan yana sığmıyor. */
             '@media (max-width:820px){',
             '  #ak-tam .as-siklar{grid-template-columns:1fr}',
@@ -427,49 +904,90 @@
     }
 
     /* ---------------- kumandaya yerleştir ----------------
-       Testler ALFABE bölümünün İÇİNDE durur — ayrı bir başlık altında
-       değil. Her test KENDİ konusunun hemen altına giriyor:
+       Testler AYRI BİR SEKME DEĞİL: her konu sekmesinin SAĞINA iliştirilmiş
+       küçük birer tuş. Sekme satırı ikiye bölünüyor —
 
-         Harf Tanıtımı
-         └ Kendini Dene            (tip 1-4, 7-8)
-         Harf Birleştirme
-         └ Kendini Dene            (tip 5-6, 9)
-         Dinle ve Yaz
+         [ Harf Tanıtımı              ][ Dene ]
+         [ Harf Birleştirme           ][ Dene ]
+         [ Dinle ve Yaz               ][ PDF  ]
 
-       Böylece öğretmen konuyu anlattığı yerden, listede aşağı inmeden
-       sınayabiliyor. Bu düğmeler ui.tab ÇAĞIRMAZ: panel değiştirmezler,
-       tam ekran katmanı açarlar — bu yüzden .active işareti de almazlar
-       ve konunun kendi sekmesi seçili kalır. */
+       Satır kabına direction:ltr veriliyor: şerit rtl olduğu için aksi
+       hâlde yan tuş SOLA düşüyor.
+
+       Yan tuşlar ui.tab ÇAĞIRMAZ; panel değiştirmez, katmanı açarlar —
+       bu yüzden .active işareti de almazlar, konunun kendi sekmesi seçili
+       kalır. PDF tuşu ise düz bir indirme bağlantısıdır. */
+
+    var DENE_IKON =
+        '<svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<rect x="3" y="2.6" width="14" height="18.8" rx="2.4" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.4"/>' +
+        '<path d="M6.2 7.4h7.4M6.2 11h7.4M6.2 14.6h4.4" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/>' +
+        '<circle cx="17.4" cy="16.6" r="4.6" fill="#2ecc71"/>' +
+        '<path d="M15.3 16.7l1.5 1.5 2.8-3" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    var PDF_IKON =
+        '<svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path d="M5.4 2.6h8.2l5 5v13.8a1 1 0 0 1-1 1H5.4a1 1 0 0 1-1-1V3.6a1 1 0 0 1 1-1z" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.4"/>' +
+        '<path d="M13.6 2.6v5h5" fill="none" stroke="#0E6655" stroke-width="1.4" stroke-linejoin="round"/>' +
+        '<path d="M12 11.4v5.4" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round"/>' +
+        '<path d="M9.4 14.6L12 17.2l2.6-2.6" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path d="M8 19.6h8" stroke="#e74c3c" stroke-width="2" stroke-linecap="round"/></svg>';
+
     function seritKur() {
         var serit = document.querySelector('.nav-tabs');
         if (!serit) return;
         var gruplar = serit.querySelectorAll('.tab-grup');
         if (!gruplar.length) return;
-        var alfabe = gruplar[0];                    /* ilk bölüm: «Alfabe» */
-        for (var i = 0; i < gruplar.length; i++) {
+        var alfabe = gruplar[0], i;
+        for (i = 0; i < gruplar.length; i++) {
             var ad = gruplar[i].querySelector('.tab-grup-ad');
             if (ad && ad.textContent.trim() === 'Alfabe') { alfabe = gruplar[i]; break; }
         }
         var sira = alfabe.querySelector('.tab-grup-sira') || alfabe;
-        if (sira.querySelector('.ak-tetik')) return;
+        if (sira.querySelector('.ak-yan')) return;
+
+        /* Konunun kendi sekmesi: ui.tab(event,'p1') / 'p5' / 'p7'. */
+        function konuBul(panel) {
+            var hepsi = sira.querySelectorAll('.tab-trigger'), j;
+            for (j = 0; j < hepsi.length; j++) {
+                var t = hepsi[j].getAttribute('onclick') || '';
+                if (t.indexOf("'" + panel + "'") >= 0) return hepsi[j];
+            }
+            return null;
+        }
+        function sar(konu, tus) {
+            if (!konu || !konu.parentNode || !tus) return false;
+            var satir = document.createElement('div');
+            satir.className = 'tab-satir';
+            konu.parentNode.insertBefore(satir, konu);
+            satir.appendChild(konu);
+            satir.appendChild(tus);
+            return true;
+        }
 
         BOLUMLER.forEach(function (b) {
             var d = document.createElement('button');
             d.type = 'button';
-            d.className = 'tab-trigger ak-tetik';
+            d.className = 'tab-trigger ak-yan ak-tetik';
             d.dataset.ak = b.anahtar;
             d.title = 'Kendini Dene — ' + b.baslik;
-            d.setAttribute('aria-label', 'Kendini Dene — ' + b.baslik);
-            d.innerHTML = b.ikon + '<span class="tab-ad">Kendini Dene</span>';
-            /* Konunun kendi sekmesini bul: ui.tab(event,'p1') / 'p5'. */
-            var konu = null, hepsi = sira.querySelectorAll('.tab-trigger');
-            for (var j = 0; j < hepsi.length; j++) {
-                var t = hepsi[j].getAttribute('onclick') || '';
-                if (t.indexOf("'" + b.anahtar + "'") >= 0) { konu = hepsi[j]; break; }
-            }
-            if (konu && konu.parentNode) konu.parentNode.insertBefore(d, konu.nextSibling);
-            else sira.appendChild(d);
+            d.setAttribute('aria-label', d.title);
+            d.innerHTML = DENE_IKON + '<span class="ak-yanad">Dene</span>';
+            sar(konuBul(b.anahtar), d);
         });
+
+        /* Dinle ve Yaz'ın yanına kelime listesi PDF'i: tek dosyada önce boş
+           çalışma kâğıdı, sonra cevap anahtarı. */
+        var a = document.createElement('a');
+        a.className = 'tab-trigger ak-yan ak-pdf';
+        a.href = 'okumayazma/dinleveyaz_kelimeler.pdf';
+        a.setAttribute('download', 'dinleveyaz-kelimeler.pdf');
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.title = 'Kelime listesi PDF — boş çalışma kâğıdı + cevap anahtarı';
+        a.setAttribute('aria-label', a.title);
+        a.innerHTML = PDF_IKON + '<span class="ak-yanad">PDF</span>';
+        sar(konuBul('p7'), a);
 
         sira.addEventListener('click', function (e) {
             var d = e.target.closest ? e.target.closest('.ak-tetik') : null;
@@ -486,7 +1004,7 @@
         var kac = 0;
         var saat = setInterval(function () {
             seritKur();
-            if (++kac > 10 || document.querySelector('.nav-tabs .ak-tetik')) clearInterval(saat);
+            if (++kac > 10 || document.querySelector('.nav-tabs .ak-yan')) clearInterval(saat);
         }, 400);
     }
 
@@ -500,7 +1018,7 @@
         havuz: havuz,
         durumlar: durumlar,      /* {p1: {...}, p5: {...}} — açılınca dolar */
         bolumler: BOLUMLER,
-        soruSayisi: SORU_SAYISI,
+        soruSayisi: soruSayisi,
         katman: function () { return katman; }
     };
 })();

@@ -32,12 +32,28 @@
     'use strict';
     if (window.DvyKapisma) return;
 
-    var SORU        = 6;      /* bir yarışmadaki soru sayısı          */
+    /* Bir turda kaç soru — öğretmen ana ekrandan seçer, seçim saklanır.
+       Hazır üç seçenek: kısa (3), normal (5), uzun (10). */
+    var SORU_SECENEK = [3, 5, 10];
+    var SORU_ANAHTAR = 'kidef_dk_soru';
+    var soruSayisi = 5;
+    try {
+        var _sv = parseInt(localStorage.getItem(SORU_ANAHTAR), 10);
+        if (SORU_SECENEK.indexOf(_sv) >= 0) soruSayisi = _sv;
+    } catch (e) {}
+    function soruSayisiYaz(n) {
+        if (SORU_SECENEK.indexOf(n) < 0) return;
+        soruSayisi = n;
+        try { localStorage.setItem(SORU_ANAHTAR, String(n)); } catch (e) {}
+    }
+
     var SIK         = 4;      /* şık sayısı                            */
     var TEKRAR_ARA  = 900;    /* iki dinletme arasındaki sessizlik (ms) */
     var DOGRU_PUAN  = 10;
     var HIZ_PUAN    = 5;
-    var BEKLE_MS    = 1900;   /* cevaplar açıkken beklenen süre        */
+    var BEKLE_MS    = 1700;   /* cevaplar açıkken bakılacak süre        */
+    var GERI_SAY_MS = 900;    /* 3-2-1 arası                            */
+    var HAZIR_MS    = 1500;   /* «Hazır ol» perdesi                     */
 
     /* gameData dinleveyaz.js'in kapsamında; burada güvenli okuma. */
     function veri() {
@@ -91,7 +107,7 @@
         var g = veri(); if (!g || !g[seviye]) return [];
         var kelimeler = (g[seviye].words || []).filter(function (w) { return w && w.ar; });
         if (kelimeler.length < SIK) return [];
-        var secilen = karistir(kelimeler.slice()).slice(0, Math.min(SORU, kelimeler.length));
+        var secilen = karistir(kelimeler.slice()).slice(0, Math.min(soruSayisi, kelimeler.length));
         return secilen.map(function (dogru) {
             var baskalari = kelimeler.filter(function (w) { return w.ar !== dogru.ar; });
             var celdirici = karistir(baskalari.slice()).slice(0, SIK - 1);
@@ -119,7 +135,7 @@
         return '' +
         '<div class="dk-ust">' +
         '  <button type="button" class="dk-geri key-button" data-rol="cik" title="Menüye dön">‹</button>' +
-        '  <div class="dk-sayac"><span data-rol="no">1</span> / <span data-rol="toplam">' + SORU + '</span></div>' +
+        '  <div class="dk-sayac"><span data-rol="no">1</span> / <span data-rol="toplam">' + soruSayisi + '</span></div>' +
         '  <button type="button" class="dk-dinle key-button" data-rol="dinle">' +
         '    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/>' +
         '    <path d="M16 8.7a4 4 0 010 6.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' +
@@ -199,12 +215,41 @@
         birKezCal(kelime, D.tur);
     }
 
+    /* --- PERDE: 3-2-1, «Hazır ol», sonuç — hepsi aynı katmanı kullanır. */
+    function perdeAc(ic, sinif) {
+        var o = el(ekran, 'ortu'), k = el(ekran, 'ortuic');
+        if (!o || !k) return;
+        o.className = 'dk-ortu' + (sinif ? ' ' + sinif : '');
+        k.innerHTML = ic;
+        o.hidden = false;
+    }
+    function perdeKapat() { var o = el(ekran, 'ortu'); if (o) o.hidden = true; }
+
+    function geriSay(bit) {
+        var n = 3;
+        var adim = function () {
+            if (n <= 0) { perdeKapat(); if (bit) bit(); return; }
+            perdeAc('<span class="dk-sayi">' + n + '</span>', 'sayim');
+            var e = ekran.querySelector('.dk-sayi');
+            if (e) { e.classList.remove('oyna'); void e.offsetWidth; e.classList.add('oyna'); }
+            blip('touch');
+            n--;
+            D.saat = setTimeout(adim, GERI_SAY_MS);
+        };
+        adim();
+    }
+    function hazirOl(bit) {
+        perdeAc('<span class="dk-hazir">Hazır ol!</span>' +
+                '<span class="dk-hazirnot">Sıradaki ses geliyor…</span>', 'hazir');
+        D.saat = setTimeout(function () { perdeKapat(); if (bit) bit(); }, HAZIR_MS);
+    }
+
     function soruGoster() {
         var s = D.sorular[D.i];
         if (!s) { bitir(); return; }
         D.cevap = {};
         el(ekran, 'no').textContent = (D.i + 1);
-        el(ekran, 'ortu').hidden = true;
+        perdeKapat();
 
         [1, 2].forEach(function (n) {
             var yan = ekran.querySelector('.dk-y' + n);
@@ -307,8 +352,12 @@
         });
         blip(c1.dogruMu || c2.dogruMu ? 'correct' : 'incorrect');
 
+        /* Cevaplar bir süre açık kalır, sonra «Hazır ol» perdesi iner ve
+           sıradaki soru kendiliğinden gelir — kimse düğmeye basmaz. */
         clearTimeout(D.saat);
-        D.saat = setTimeout(function () { D.i++; soruGoster(); }, BEKLE_MS);
+        D.saat = setTimeout(function () {
+            hazirOl(function () { D.i++; soruGoster(); });
+        }, BEKLE_MS);
     }
 
     function bitir() {
@@ -323,14 +372,12 @@
                    '  <div class="dk-son-ayr">doğruluk ' + D.puan[n].dogru +
                    '    · hız ' + D.puan[n].hiz + '</div></div>';
         };
-        el(ekran, 'ortuic').innerHTML =
-            '<div class="dk-son-bas">' + soz + '</div>' +
-            '<div class="dk-son-alan">' + satir(1, t1) + satir(2, t2) + '</div>' +
-            '<div class="dk-son-dugme">' +
-            '  <button type="button" class="dk-t" data-rol="tekrar">Tekrar oyna</button>' +
-            '  <button type="button" class="dk-t dk-ikincil" data-rol="cik">Menü</button>' +
-            '</div>';
-        el(ekran, 'ortu').hidden = false;
+        perdeAc('<div class="dk-son-bas">' + soz + '</div>' +
+                '<div class="dk-son-alan">' + satir(1, t1) + satir(2, t2) + '</div>' +
+                '<div class="dk-son-dugme">' +
+                '  <button type="button" class="dk-t" data-rol="tekrar">Tekrar oyna</button>' +
+                '  <button type="button" class="dk-t dk-ikincil" data-rol="cik">Menü</button>' +
+                '</div>', 'son');
     }
 
     function basla(seviye) {
@@ -346,7 +393,15 @@
             el(ekran, 'puan', ekran.querySelector('.dk-y' + n)).textContent = '0';
         });
         ekranAc();
-        soruGoster();
+        /* Başlarken sorular hemen gelmesin: iki öğrenci de tahtaya
+           hazırlansın diye 3'ten geriye sayılıyor. */
+        [1, 2].forEach(function (n) {
+            var yan = ekran.querySelector('.dk-y' + n);
+            el(ekran, 'siklar', yan).innerHTML = '';
+            el(ekran, 'durum', yan).textContent = '';
+        });
+        clearTimeout(D.saat);
+        geriSay(soruGoster);
         return true;
     }
 
@@ -359,7 +414,7 @@
     }
     function cik() {
         clearTimeout(D.saat); clearTimeout(D.sureSaat);
-        D.tur++; sesDurdur();
+        D.tur++; sesDurdur(); perdeKapat();
         ekran.classList.remove('active');
         var h = document.getElementById('homeScreen');
         if (h) h.classList.add('active');
@@ -461,7 +516,34 @@
             '#kapismaBaslaButton .dk-iki{display:inline-flex;gap:.25rem}',
             '#kapismaBaslaButton .dk-iki i{width:.9rem;height:.9rem;border-radius:50%;display:block}',
             '#kapismaBaslaButton .dk-iki i:first-child{background:var(--dk-p1)}',
-            '#kapismaBaslaButton .dk-iki i:last-child{background:var(--dk-p2)}'
+            '#kapismaBaslaButton .dk-iki i:last-child{background:var(--dk-p2)}',
+            '.dk-adet{display:flex;align-items:center;justify-content:center;gap:.6rem;',
+            '  margin-top:.8rem;flex-wrap:wrap}',
+            '.dk-adetad{font-size:1.3rem;color:var(--color-text-secondary)}',
+            '.dk-adetb{font-family:inherit;font-size:1.3rem;padding:.55rem 1.4rem;border:none;',
+            '  border-radius:999px;background:var(--color-surface);color:var(--color-text-secondary);',
+            '  cursor:pointer;box-shadow:2px 2px 4px var(--color-shadow-dark),',
+            '  -2px -2px 4px var(--color-shadow-light)}',
+            '.dk-adetb.secili{background:var(--color-accent-1);color:#fff;box-shadow:none}',
+
+            /* ---- PERDE: 3-2-1 ve «Hazır ol» ----
+               Sonuç kartıyla aynı katmanı kullanır; sınıfı değişir. */
+            '.dk-ortu.sayim,.dk-ortu.hazir{background:rgba(240,247,255,.97)}',
+            '.dk-sayi{display:block;font-size:26rem;line-height:1;color:var(--color-accent-1)}',
+            '.dk-sayi.oyna{animation:dkSayim .9s cubic-bezier(.2,.8,.3,1) both}',
+            '@keyframes dkSayim{0%{transform:scale(.45);opacity:0}',
+            /* Sayı uzun süre TAM OPAK kalsın: tahtadan bakınca soluk
+               görünüyordu — solma yalnız son çeyrekte. */
+            '  18%{transform:scale(1.06);opacity:1}72%{transform:scale(1);opacity:1}',
+            '  100%{transform:scale(.88);opacity:.3}}',
+            '.dk-hazir{display:block;font-size:7rem;line-height:1.1;color:var(--color-accent-1);',
+            '  animation:dkHazir 1.5s ease-in-out both}',
+            '.dk-hazirnot{display:block;font-size:2rem;color:var(--color-text-secondary);',
+            '  animation:dkHazirNot 1.5s ease-in-out both}',
+            '@keyframes dkHazir{0%{transform:scale(.7) translateY(1.4rem);opacity:0}',
+            '  25%{transform:scale(1.04) translateY(0);opacity:1}',
+            '  70%{transform:scale(1);opacity:1}100%{transform:scale(1.12);opacity:0}}',
+            '@keyframes dkHazirNot{0%,12%{opacity:0}35%,72%{opacity:1}100%{opacity:0}}'
         ].join('\n');
         document.head.appendChild(st);
     }
@@ -507,6 +589,30 @@
             baslaDugme.parentNode.insertBefore(d2, baslaDugme.nextSibling);
         } else { anaEkran.appendChild(d2); }
 
+        /* Tur uzunluğu: yarışma düğmesinin hemen altında üç hazır seçenek. */
+        var adet = document.createElement('div');
+        adet.id = 'kapismaAdet';
+        adet.className = 'dk-adet';
+        adet.innerHTML = '<span class="dk-adetad">Tur:</span>' +
+            SORU_SECENEK.map(function (n) {
+                return '<button type="button" class="dk-adetb" data-adet="' + n + '">' +
+                       n + ' soru</button>';
+            }).join('');
+        d2.parentNode.insertBefore(adet, d2.nextSibling);
+        function adetIsaretle() {
+            [].forEach.call(adet.querySelectorAll('.dk-adetb'), function (x) {
+                var se = +x.dataset.adet === soruSayisi;
+                x.classList.toggle('secili', se);
+                x.setAttribute('aria-pressed', se ? 'true' : 'false');
+            });
+        }
+        adetIsaretle();
+        adet.addEventListener('click', function (e) {
+            var x = e.target.closest ? e.target.closest('.dk-adetb') : null;
+            if (!x) return;
+            blip('touch'); soruSayisiYaz(+x.dataset.adet); adetIsaretle();
+        });
+
         /* Seviye seçilince «Başla» açılıyor; yarışma düğmesi de onunla
            birlikte açılsın. Seviye seçici kendi dinleyicisini kullanıyor,
            burada ondan SONRA çalışacak ikinci bir dinleyici var. */
@@ -541,8 +647,10 @@
     window.DvyKapisma = {
         kur: kur, basla: basla, cik: cik,
         durum: D, sorularKur: sorularKur,
-        ayar: { soru: SORU, sik: SIK, tekrarAra: TEKRAR_ARA,
-                dogruPuan: DOGRU_PUAN, hizPuan: HIZ_PUAN },
+        ayar: { sik: SIK, tekrarAra: TEKRAR_ARA, secenek: SORU_SECENEK,
+                dogruPuan: DOGRU_PUAN, hizPuan: HIZ_PUAN,
+                geriSayMs: GERI_SAY_MS, hazirMs: HAZIR_MS, bekleMs: BEKLE_MS },
+        soruSayisi: function () { return soruSayisi; },
         sureHesapla: sureHesapla, tekrarOku: tekrarOku
     };
 })();
