@@ -147,21 +147,42 @@
       ' keyTimes="0;0.45;0.58;0.72;0.85;1" repeatCount="indefinite"/></g>', r);
   };
 
-  /* EMEKLİ — buharı tüten çay bardağı */
+  /* EMEKLİ — bastonuna yaslanmış yaşlı bir kişi, elinde çayı.
+     Önce yalnız çay bardağı vardı; sahne mesleği değil içeceği
+     anlatıyordu. Şimdi kişi var: kambur duruş, sakal, baston —
+     çay yanında duruyor ve buharı tütüyor. */
   S.emekli = function (r) {
     function buhar(x, gec) {
-      return '<path d="M' + x + ' 42 q6 -8 0 -16 q-6 -8 0 -14" fill="none" stroke="' + r +
-             '" stroke-width="3.4" stroke-linecap="round" opacity=".55">' +
-             '<animate attributeName="opacity" values="0;.6;0" dur="2.6s" begin="' + gec +
+      return '<path d="M' + x + ' 64 q5 -7 0 -13" fill="none" stroke="' + r +
+             '" stroke-width="3" stroke-linecap="round">' +
+             '<animate attributeName="opacity" values="0;.7;0" dur="2.6s" begin="' + gec +
              's" repeatCount="indefinite"/>' +
-             '<animateTransform attributeName="transform" type="translate" values="0 6;0 -8"' +
+             '<animateTransform attributeName="transform" type="translate" values="0 5;0 -7"' +
              ' dur="2.6s" begin="' + gec + 's" repeatCount="indefinite"/></path>';
     }
     return svg(
-      buhar(50, 0) + buhar(62, .8) + buhar(72, 1.5) +
-      '<path d="M42 50 l6 38 a4 4 0 0 0 4 3 h16 a4 4 0 0 0 4-3 l6-38 Z" fill="#C0392B" opacity=".85"/>' +
-      '<path d="M42 50 l6 38 a4 4 0 0 0 4 3 h16 a4 4 0 0 0 4-3 l6-38 Z" fill="none" stroke="' + r + '" stroke-width="4"/>' +
-      '<rect x="38" y="94" width="44" height="7" rx="3.5" fill="' + r + '"/>', r);
+      /* --- yaşlı kişi (ayak ucundan hafif sallanır) --- */
+      '<g><animateTransform attributeName="transform" type="rotate"' +
+      ' values="-1.6 48 92;1.6 48 92;-1.6 48 92" dur="3.4s" repeatCount="indefinite"/>' +
+      '<circle cx="48" cy="34" r="13" fill="#F3D2B3"/>' +               /* baş */
+      '<path d="M36 30 a12 9 0 0 1 24 0 a12 5 0 0 0-24 0 Z" fill="#B9C3CC"/>' +  /* saç */
+      '<path d="M38 38 a10 12 0 0 0 20 0 a10 16 0 0 1-20 0 Z" fill="#E8EDF1"/>' + /* sakal */
+      '<circle cx="43.5" cy="34" r="1.8" fill="#3A4A5A"/>' +
+      '<circle cx="53" cy="34" r="1.8" fill="#3A4A5A"/>' +
+      /* gözlük */
+      '<g fill="none" stroke="#6B7A8D" stroke-width="1.7">' +
+        '<circle cx="43.5" cy="34" r="5"/><circle cx="53.5" cy="34" r="5"/>' +
+        '<path d="M48.5 34 h-0.2 M38.5 33 l-3-1.5 M58.5 33 l3-1.5"/></g>' +
+      /* gövde — hafif öne eğik */
+      '<path d="M34 92 q2-30 14-34 q12 4 14 34 Z" fill="' + r + '"/>' +
+      /* baston */
+      '<path d="M70 52 q7 0 7 7 v33" fill="none" stroke="#8D6E63" stroke-width="5"' +
+        ' stroke-linecap="round"/>' + '</g>' +
+      /* --- çay --- */
+      buhar(90, 0) + buhar(97, 1.1) +
+      '<path d="M84 68 l3 22 a4 4 0 0 0 4 3 h6 a4 4 0 0 0 4-3 l3-22 Z" fill="#fff"' +
+        ' stroke="#C0392B" stroke-width="3"/>' +
+      '<path d="M86 76 l2 14 a4 4 0 0 0 4 3 h4 a4 4 0 0 0 4-3 l2-14 Z" fill="#C0392B" opacity=".8"/>', r);
   };
 
   /* POLİS — kasket ve dönen tepe lambası */

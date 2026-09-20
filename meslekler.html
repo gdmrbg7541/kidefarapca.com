@@ -41,7 +41,7 @@
     background:var(--zemin); color:var(--yazi);
     display:flex; flex-direction:column; overflow:hidden;
   }
-  .ar{font-family:'Arakom','Harmattan',serif; direction:rtl}
+  .ar{font-family:'Arakom','Harmattan',serif; direction:rtl; unicode-bidi:isolate}
 
   /* ---------------- üst şerit ---------------- */
   .ust{
@@ -74,6 +74,7 @@
     border-radius:10px;border:1px solid var(--cizgi);background:var(--kart);color:var(--yazi);
   }
   .kucuk:hover{background:var(--zemin)}
+  #ses{display:inline-flex;align-items:center;justify-content:center;min-width:42px}
 
   /* ---------------- sahne ---------------- */
   .sahne{flex:1;display:flex;align-items:center;justify-content:center;padding:14px;min-height:0}
@@ -82,11 +83,58 @@
   .kip.acik{display:flex;justify-content:center}
 
   .msn{width:clamp(150px,23vh,290px);height:clamp(150px,23vh,290px)}
-  .devar{font-family:'Arakom','Harmattan',serif;direction:rtl;font-weight:700;line-height:1.22;
+  .devar{font-family:'Arakom','Harmattan',serif;direction:rtl;unicode-bidi:isolate;
+         font-weight:700;line-height:1.22;
          font-size:clamp(54px,15vh,190px)}
-  .ortaar{font-family:'Arakom','Harmattan',serif;direction:rtl;font-weight:700;font-size:clamp(30px,7vh,86px)}
+  .ortaar{font-family:'Arakom','Harmattan',serif;direction:rtl;unicode-bidi:isolate;
+          font-weight:700;font-size:clamp(30px,7vh,86px)}
   .devtr{font-family:'Arakom','Marhey',system-ui;font-weight:700;font-size:clamp(24px,5vh,62px)}
-  .etiket{font-size:clamp(15px,2.3vh,26px);color:var(--soluk);font-weight:600}
+  .etiket{font-size:clamp(18px,3vh,36px);color:var(--soluk);font-weight:600;
+          display:flex;gap:.35em;align-items:baseline;flex-wrap:wrap;justify-content:center}
+
+  /* Aşağıdan yukarı geliş — ögeler yerine "otururken" yükselir.
+     Sırayla gecikmeli tetiklenince ekran canlı, takip etmesi kolay olur. */
+  @keyframes yukselt{from{opacity:0;transform:translateY(34px) scale(.96)}
+                       to{opacity:1;transform:translateY(0) scale(1)}}
+  .yuksel{animation:yukselt .5s cubic-bezier(.2,.8,.25,1) both}
+
+  /* Ana eylem tuşları: tahtadan parmakla basılacak, büyük olmalı.
+     .kucuk üst şeritteki yardımcı tuşlar için kaldı. */
+  .buyuk{font:inherit;font-weight:700;cursor:pointer;
+         font-size:clamp(19px,2.9vh,32px);padding:clamp(10px,1.7vh,18px) clamp(22px,3vw,40px);
+         border-radius:999px;border:3px solid var(--cizgi);background:var(--kart);
+         color:var(--yazi);transition:transform .12s ease,background .12s ease}
+  .buyuk:hover{background:var(--zemin)}
+  .buyuk:active{transform:scale(.95)}
+  .buyuk.ana{background:var(--vurgu);border-color:var(--vurgu);color:#fff}
+
+  /* tüm meslekler — üç sütun, aşağı kayar; sahne üstte, kelime altta */
+  #kipTum{justify-content:flex-start;align-items:stretch;padding-top:4px}
+  .tumzg{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,1.6vw,22px);
+         width:100%;max-width:1500px;margin:0 auto}
+  @media (max-width:760px){ .tumzg{grid-template-columns:repeat(2,1fr)} }
+  .tumh{background:var(--kart);border:3px solid var(--cizgi);border-radius:20px;
+        padding:clamp(12px,2vh,24px) 12px;text-align:center;
+        display:flex;flex-direction:column;align-items:center;gap:4px}
+  .tumh .msn{width:clamp(90px,12vh,150px);height:clamp(90px,12vh,150px)}
+  /* İki biçim ALT ALTA: tek satıra sığdırmaya çalışınca punto küçük
+     kalmak zorundaydı (مُتَقاعِد / مُتَقاعِدَة sütuna sığmıyordu).
+     Ayrı satırlar hem çok daha büyük yazıya izin veriyor hem de
+     müzekker/müennes ayrımını görsel olarak netleştiriyor. */
+  .tumh .ad{font-family:'Arakom','Harmattan',serif;direction:rtl;unicode-bidi:isolate;
+            font-weight:700;font-size:clamp(38px,7vh,86px);line-height:1.22;
+            color:var(--takimA)}
+  .tumh .adk{display:block;font-family:'Arakom','Harmattan',serif;direction:rtl;
+             unicode-bidi:isolate;font-weight:700;color:#E84393;
+             font-size:clamp(31px,5.8vh,72px);line-height:1.22}
+  .tumh .tr{font-family:'Arakom','Marhey',system-ui;font-weight:700;
+            font-size:clamp(22px,3.4vh,44px);color:var(--yazi);margin-top:2px}
+  /* Vezin satırı: tahtada uzaktan okunması için taban punto yükseltildi.
+     (Düşük puntoda 'فاعِل'in son ل'i ekran görüntüsünde ا gibi
+     görünüyordu — 2x çözünürlükte bakınca fontun değil, görüntünün
+     kırılması olduğu anlaşıldı; yine de ferah dursun.) */
+  .tumh .kal{font-family:'Arakom','Harmattan',serif;direction:rtl;unicode-bidi:isolate;
+             font-size:clamp(20px,2.9vh,34px);color:var(--soluk);opacity:.9}
 
   /* ة ikizleri */
   .ikizkutu{display:flex;align-items:center;gap:clamp(18px,5vw,70px);flex-wrap:wrap;justify-content:center}
@@ -112,11 +160,23 @@
   @keyframes parla{0%{background:#FFF3C4}100%{background:var(--kart)}}
   .parla{animation:parla 1.1s ease-out}
 
+  /* «مَنْ أَنا؟» TEK EKRANA SIĞAR — kaydırma yok.
+     Kip dikeyde bölüşülüyor: sahne esner, öbür satırlar kendi
+     boylarında kalır. Cevap satırı da yüksekliğe göre sınırlı. */
+  #kipKim{overflow:hidden;justify-content:space-evenly;gap:.8vh;padding:2px 0}
+  #kipKim .msn{width:clamp(110px,26vh,300px);height:clamp(110px,26vh,300px)}
+  #kipKim #kimCevap{font-size:clamp(34px,10vh,120px)}
+  #kipKim .devtr{font-size:clamp(18px,3.4vh,44px)}
+  #kipKim .ipucu{font-size:clamp(18px,3.6vh,44px);padding:clamp(7px,1.2vh,15px) clamp(14px,2.2vw,28px)}
+
   /* مَنْ أَنا؟ */
   .ipuclari{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-  .ipucu{padding:10px 18px;border-radius:999px;background:var(--kart);border:2px solid var(--cizgi);
-         font-weight:700;font-size:clamp(15px,2.4vh,28px)}
-  .ipucu .ar{font-size:1.25em}
+  .ipucu{padding:clamp(10px,1.8vh,20px) clamp(18px,2.6vw,34px);border-radius:999px;
+         background:var(--kart);border:3px solid var(--cizgi);font-weight:700;
+         font-size:clamp(24px,5vh,56px);line-height:1.15}
+  .ipucu .ar{font-size:1.35em}
+  /* ipucu etiketi ("İlk harf", "Kalıp") değerin yanında küçük kalsın */
+  .ipucu .et{color:var(--soluk);font-size:.5em;font-weight:600;margin-inline-end:.4em}
 
   /* cümle treni */
   .secimler{display:flex;gap:clamp(8px,1.4vw,18px);flex-wrap:wrap;justify-content:center;flex:none}
@@ -129,15 +189,16 @@
        padding:7px 10px;border-radius:9px;border:2px solid transparent;background:transparent;
        cursor:pointer;color:var(--yazi);text-align:center}
   .sec[aria-pressed="true"]{background:var(--vurgu);color:#fff}
-  .vagonlar{display:flex;direction:rtl;gap:clamp(6px,1vw,14px);flex-wrap:wrap;justify-content:center;align-items:center}
+  .vagonlar{display:flex;direction:rtl;unicode-bidi:isolate;gap:clamp(6px,1vw,14px);flex-wrap:wrap;justify-content:center;align-items:center}
   .vagon{background:var(--kart);border:3px solid var(--cizgi);border-radius:16px;
+         direction:rtl;unicode-bidi:isolate;
          padding:clamp(8px,1.6vh,18px) clamp(12px,1.8vw,26px);
          font-family:'Arakom','Harmattan',serif;font-weight:700;font-size:clamp(24px,5.6vh,64px);
          opacity:0;transform:translateX(30px)}
   @keyframes vagongel{to{opacity:1;transform:translateX(0)}}
   .vagon.gel{animation:vagongel .45s ease-out forwards}
   .vagon .alt{display:block;font-family:'Arakom','Marhey',system-ui;font-size:clamp(11px,1.5vh,17px);
-              color:var(--soluk);font-weight:600;direction:ltr}
+              color:var(--soluk);font-weight:600;direction:ltr;unicode-bidi:isolate}
 
   #kipTren .devtr{font-size:clamp(18px,3.4vh,40px);text-align:center;padding:0 10px}
   #kipTren .vagon{font-size:clamp(20px,4.6vh,52px)}
@@ -166,7 +227,8 @@
 <header class="ust">
   <a class="geri" href="index.html">‹ Kidef</a>
   <nav class="modlar" role="tablist" aria-label="Oyun kipleri">
-    <button class="mod" role="tab" data-kip="ikiz"  aria-selected="true">ة İkizleri</button>
+    <button class="mod" role="tab" data-kip="tum"   aria-selected="true">Tüm Meslekler</button>
+    <button class="mod" role="tab" data-kip="ikiz"  aria-selected="false">ة İkizleri</button>
     <button class="mod" role="tab" data-kip="kim"   aria-selected="false">مَنْ أَنا؟</button>
     <button class="mod" role="tab" data-kip="tren"  aria-selected="false">Cümle Treni</button>
     <button class="mod" role="tab" data-kip="cark"  aria-selected="false">Meslek Çarkı</button>
@@ -176,6 +238,7 @@
     <button class="takim b" id="skorB" title="B takımına puan (2)">B <b>0</b></button>
   </div>
   <div class="araclar">
+    <button class="kucuk" id="ses" title="Sesi aç/kapa" aria-pressed="true"></button>
     <button class="kucuk" id="sifirla">Sıfırla</button>
     <button class="kucuk" id="tamekran">⛶ Tam ekran</button>
   </div>
@@ -183,39 +246,44 @@
 
 <main class="sahne">
 
+  <!-- ══════════ 0 · TÜM MESLEKLER ══════════ -->
+  <section class="kip acik" id="kipTum">
+    <div class="tumzg" id="tumZg"></div>
+  </section>
+
   <!-- ══════════ 1 · ة İKİZLERİ ══════════ -->
-  <section class="kip acik" id="kipIkiz">
+  <section class="kip" id="kipIkiz">
     <div class="etiket" id="ikizSoru">Bu mesleğin <b>kadını</b> nasıl söylenir?</div>
     <div class="ikizkutu">
       <div class="yan e">
-        <span class="rol">مُذَكَّر · ERKEK</span>
+        <span class="rol"><bdi dir="rtl" class="ar">مُذَكَّر</bdi><bdi dir="ltr"> · ERKEK</bdi></span>
         <span class="devar" id="ikizE">—</span>
       </div>
       <div id="ikizSahne"></div>
       <div class="yan k" style="position:relative">
-        <span class="rol">مُؤَنَّث · KADIN</span>
+        <span class="rol"><bdi dir="rtl" class="ar">مُؤَنَّث</bdi><bdi dir="ltr"> · KADIN</bdi></span>
         <span class="devar" id="ikizK">؟</span>
         <span class="ucanta" id="ucanTa">ة</span>
       </div>
     </div>
     <div class="devtr" id="ikizTr">—</div>
     <div class="ipuclari">
-      <button class="kucuk" id="ikizAc">Göster <kbd>Boşluk</kbd></button>
-      <button class="kucuk" id="ikizSonraki">Sonraki ›</button>
+      <button class="buyuk ana" id="ikizAc">Göster</button>
+      <button class="buyuk" id="ikizSonraki">Sonraki ›</button>
     </div>
   </section>
 
   <!-- ══════════ 2 · مَنْ أَنا؟ ══════════ -->
   <section class="kip" id="kipKim">
-    <div class="etiket">مَنْ أَنا؟ — Bu meslek hangisi?</div>
+    <div class="etiket"><bdi dir="rtl" class="ar">مَنْ أَنا؟</bdi><bdi dir="ltr"> — Bu meslek hangisi?</bdi></div>
     <div id="kimSahne"></div>
     <div class="ipuclari" id="kimIpuclari"></div>
     <div class="devar" id="kimCevap">؟</div>
     <div class="devtr" id="kimTr"></div>
     <div class="ipuclari">
-      <button class="kucuk" id="kimIpucu">İpucu ver</button>
-      <button class="kucuk" id="kimAc">Cevabı göster <kbd>Boşluk</kbd></button>
-      <button class="kucuk" id="kimSonraki">Sonraki ›</button>
+      <button class="buyuk" id="kimIpucu">İpucu ver</button>
+      <button class="buyuk ana" id="kimAc">Cevabı göster</button>
+      <button class="buyuk" id="kimSonraki">Sonraki ›</button>
     </div>
   </section>
 
@@ -230,8 +298,8 @@
     </div>
     <div class="vagonlar" id="trenVagon"></div>
     <div class="devtr" id="trenTr"></div>
-    <div class="ipuclari"><button class="kucuk" id="trenKur">Cümleyi kur <kbd>Boşluk</kbd></button>
-      <button class="kucuk" id="trenRastgele">Rastgele seç</button></div>
+    <div class="ipuclari"><button class="buyuk ana" id="trenKur">Cümleyi kur</button>
+      <button class="buyuk" id="trenRastgele">Rastgele seç</button></div>
   </section>
 
   <!-- ══════════ 4 · MESLEK ÇARKI ══════════ -->
@@ -241,7 +309,7 @@
       <svg class="cark" id="cark" viewBox="0 0 400 400" aria-hidden="true"></svg>
     </div>
     <div class="ortaar" id="carkCumle">&nbsp;</div>
-    <div class="ipuclari"><button class="kucuk" id="carkDondur">Çarkı çevir <kbd>Boşluk</kbd></button></div>
+    <div class="ipuclari"><button class="buyuk ana" id="carkDondur">Çarkı çevir</button></div>
   </section>
 
 </main>
@@ -252,10 +320,14 @@
 
 <script src="meslek/veri_meslek.js?v=1"></script>
 <script src="meslek/sahne.js?v=1"></script>
+<script src="meslek/ses.js?v=1"></script>
 <script>
 (function () {
   'use strict';
   var M = window.KidefMeslek, SH = window.KidefMeslekSahne;
+  var SES = window.KidefSes || { tik:function(){}, sec:function(){}, ucus:function(){},
+    konsun:function(){}, dogru:function(){}, carkTik:function(){}, carkDur:function(){},
+    puan:function(){}, gelis:function(){}, acikMi:function(){return false;}, ayarla:function(){} };
   var $ = function (i) { return document.getElementById(i); };
   function karistir(a) {
     a = a.slice();
@@ -266,7 +338,7 @@
   }
 
   /* ---------------- kip anahtarı ---------------- */
-  var kip = 'ikiz';
+  var kip = 'tum';
   function kipAc(ad) {
     kip = ad;
     [].forEach.call(document.querySelectorAll('.mod'), function (b) {
@@ -275,22 +347,60 @@
     [].forEach.call(document.querySelectorAll('.kip'), function (s) { s.classList.remove('acik'); });
     $('kip' + ad.charAt(0).toUpperCase() + ad.slice(1)).classList.add('acik');
     if (ad === 'cark') carkCiz();
+    if (ad === 'tum') tumCiz();
   }
   [].forEach.call(document.querySelectorAll('.mod'), function (b) {
-    b.addEventListener('click', function () { kipAc(b.dataset.kip); });
+    b.addEventListener('click', function () { SES.tik(); kipAc(b.dataset.kip); });
   });
 
   /* ---------------- takım skoru ---------------- */
   var skor = { a: 0, b: 0 };
   function skorYaz() { $('skorA').querySelector('b').textContent = skor.a;
                        $('skorB').querySelector('b').textContent = skor.b; }
-  $('skorA').addEventListener('click', function () { skor.a++; skorYaz(); });
-  $('skorB').addEventListener('click', function () { skor.b++; skorYaz(); });
+  $('skorA').addEventListener('click', function () { skor.a++; skorYaz(); SES.puan(); });
+  $('skorB').addEventListener('click', function () { skor.b++; skorYaz(); SES.puan(); });
   $('sifirla').addEventListener('click', function () { skor.a = skor.b = 0; skorYaz(); });
+  function sesSvg(acik) {
+    return '<svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" fill="none"' +
+      ' stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none"/>' +
+      (acik ? '<path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/>'
+            : '<path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/>') + '</svg>';
+  }
+  function sesYaz() {
+    var a = SES.acikMi();
+    $('ses').innerHTML = sesSvg(a);
+    $('ses').setAttribute('aria-pressed', String(a));
+    $('ses').style.color = a ? 'var(--vurgu)' : 'var(--soluk)';
+  }
+  $('ses').addEventListener('click', function () { SES.ayarla(!SES.acikMi()); sesYaz(); });
   $('tamekran').addEventListener('click', tamEkran);
   function tamEkran() {
     if (document.fullscreenElement) document.exitFullscreen();
     else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+  }
+
+  /* ══════════ 0 · TÜM MESLEKLER ══════════ */
+  /* Dosyanın açılış sekmesi: bütün meslekler tek ekranda, sahne
+     üstte kelime altta. Öğretmen dersе buradan giriyor, sonra
+     oyunlara geçiyor. */
+  function tumCiz() {
+    var k = $('tumZg');
+    if (k.childElementCount) return;             /* bir kez çizilir */
+    M.hepsi.forEach(function (m, i) {
+      var d = document.createElement('div');
+      d.className = 'tumh';
+      d.innerHTML =
+        SH.sahne(m.id, m.renk) +
+        '<div class="ad">' + (m.e || m.k) + '</div>' +
+        (m.e ? '<div class="adk">' + m.k + '</div>' : '') +
+        '<div class="tr">' + m.tr + '</div>' +
+        '<div class="kal">' + m.kalip + '</div>';
+      k.appendChild(d);
+      /* sıra sıra yükselerek gelir — hepsi birden patlamasın */
+      d.style.animationDelay = (i * 45) + 'ms';
+      d.classList.add('yuksel');
+    });
   }
 
   /* ══════════ 1 · ة İKİZLERİ ══════════ */
@@ -305,6 +415,16 @@
     $('ucanTa').classList.remove('oyna');
     $('ucanTa').style.opacity = 0;
     ikizAcik = false;
+    yukselt([$('ikizSahne'), $('ikizE').parentNode, $('ikizTr')]);
+  }
+  /* verilen ögeleri sırayla aşağıdan yukarı getirir */
+  function yukselt(ogeler) {
+    ogeler.forEach(function (e, i) {
+      if (!e) return;
+      e.classList.remove('yuksel'); void e.offsetWidth;
+      e.style.animationDelay = (i * 70) + 'ms';
+      e.classList.add('yuksel');
+    });
   }
   function ikizGoster() {
     if (ikizAcik) { ikizNo++; ikizCiz(); return; }
@@ -312,6 +432,7 @@
     /* ة önce uçarak gelir, sonra kelime tamamlanmış hâliyle yerine oturur */
     var ta = $('ucanTa');
     ta.classList.remove('oyna'); void ta.offsetWidth; ta.classList.add('oyna');
+    SES.ucus();
     setTimeout(function () {
       $('ikizK').textContent = m.k;
       $('ikizK').parentNode.classList.remove('parla'); void $('ikizK').offsetWidth;
@@ -320,11 +441,12 @@
          son karedeki opacity:1'i satır içi stilden üstün tutuyor,
          ta.style.opacity=0 yazmak ة'yi kaybetmiyordu. */
       ta.classList.remove('oyna');
+      SES.konsun(); SES.dogru();
     }, 640);
     ikizAcik = true;
   }
   $('ikizAc').addEventListener('click', ikizGoster);
-  $('ikizSonraki').addEventListener('click', function () { ikizNo++; ikizCiz(); });
+  $('ikizSonraki').addEventListener('click', function () { SES.tik(); ikizNo++; ikizCiz(); });
 
   /* ══════════ 2 · مَنْ أَنا؟ ══════════ */
   var kimSira = karistir(M.hepsi), kimNo = 0, kimKat = 0, kimAcik = false;
@@ -335,6 +457,7 @@
     $('kimTr').textContent = '';
     $('kimIpuclari').innerHTML = '';
     kimKat = 0; kimAcik = false;
+    yukselt([$('kimSahne')]);
   }
   function kimIpucuVer() {
     var m = kimSira[kimNo % kimSira.length];
@@ -348,19 +471,23 @@
     var k = kat[kimKat++];
     var d = document.createElement('div');
     d.className = 'ipucu';
-    d.innerHTML = '<span style="color:var(--soluk);font-size:.62em">' + k.et + '</span> ' + k.d;
+    d.innerHTML = '<span class="et">' + k.et + '</span>' + k.d;
+    d.classList.add('yuksel');
     $('kimIpuclari').appendChild(d);
+    SES.sec();
   }
   function kimGoster() {
     if (kimAcik) { kimNo++; kimCiz(); return; }
     var m = kimSira[kimNo % kimSira.length];
     $('kimCevap').textContent = m.e ? (m.e + ' / ' + m.k) : m.k;
     $('kimTr').textContent = m.tr;
+    yukselt([$('kimCevap'), $('kimTr')]);
+    SES.dogru();
     kimAcik = true;
   }
   $('kimIpucu').addEventListener('click', kimIpucuVer);
   $('kimAc').addEventListener('click', kimGoster);
-  $('kimSonraki').addEventListener('click', function () { kimNo++; kimCiz(); });
+  $('kimSonraki').addEventListener('click', function () { SES.tik(); kimNo++; kimCiz(); });
 
   /* ══════════ 3 · CÜMLE TRENİ ══════════ */
   var sec = { kisi: 0, meslek: 0, arac: 0, yer: 0 };
@@ -374,6 +501,7 @@
       b.addEventListener('click', function () {
         sec[alan] = i;
         [].forEach.call(k.children, function (c, j) { c.setAttribute('aria-pressed', String(j === i)); });
+        SES.sec();
         trenKur();
       });
       k.appendChild(b);
@@ -409,7 +537,7 @@
       d.className = 'vagon';
       d.innerHTML = p.ar + '<span class="alt">' + p.tr + '</span>';
       k.appendChild(d);
-      setTimeout(function () { d.classList.add('gel'); }, i * 170);
+      setTimeout(function () { d.classList.add('gel'); SES.konsun(); }, i * 170);
     });
     $('trenTr').textContent = ki.tr + ' ' + ekle(me.tr.toLocaleLowerCase('tr')) + ', o ' +
       ye.tr + "'ya " + ar.tr + ' yolculuk eder.';
@@ -472,6 +600,12 @@
     carkAci = hedef;
     $('cark').style.transform = 'rotate(' + carkAci + 'deg)';
     $('carkCumle').innerHTML = '&nbsp;';
+    /* Dönüş yavaşladıkça tıkırtılar seyrekleşir — çark hissi bundan gelir. */
+    (function tikirdat(t, ara) {
+      if (t > 4100) return;
+      SES.carkTik();
+      setTimeout(function () { tikirdat(t + ara, ara * 1.17); }, ara);
+    })(0, 70);
     setTimeout(function () {
       var m = carkListe[secilen];
       /* Müzekker biçimi OLMAYAN meslekte هُوَ denemez: رَبَّةُ الْبَيْت
@@ -483,6 +617,8 @@
         : '<span class="ar">هِيَ ' + m.k + '</span>';
       $('carkCumle').innerHTML = cumle +
         ' <span class="trad" style="font-size:.62em;color:var(--soluk)">' + m.tr + '</span>';
+      SES.carkDur();
+      yukselt([$('carkCumle')]);
       carkDonuyor = false;
     }, 4300);
   }
@@ -506,17 +642,17 @@
       e.preventDefault();
       if (kip === 'ikiz') { ikizNo = (ikizNo + ikizSira.length - 1) % ikizSira.length; ikizCiz(); }
       else if (kip === 'kim') { kimNo = (kimNo + kimSira.length - 1) % kimSira.length; kimCiz(); }
-    } else if (k === '1') { skor.a++; skorYaz(); }
-    else if (k === '2') { skor.b++; skorYaz(); }
+    } else if (k === '1') { skor.a++; skorYaz(); SES.puan(); }
+    else if (k === '2') { skor.b++; skorYaz(); SES.puan(); }
     else if (k === 'h' || k === 'H') { if (kip === 'kim') kimIpucuVer(); }
     else if (k === 'f' || k === 'F') { tamEkran(); }
   });
 
   /* ---------------- açılış ---------------- */
-  ikizCiz(); kimCiz(); trenKurDugmeler(); trenKur(); skorYaz();
+  tumCiz(); ikizCiz(); kimCiz(); trenKurDugmeler(); trenKur(); skorYaz(); sesYaz();
   /* kip=… ile doğrudan bir oyuna açılabilir (kart bağlantısı bunu kullanır) */
   var p = new URLSearchParams(location.search).get('kip');
-  if (p && /^(ikiz|kim|tren|cark)$/.test(p)) kipAc(p);
+  if (p && /^(tum|ikiz|kim|tren|cark)$/.test(p)) kipAc(p);
 })();
 </script>
 </body>
