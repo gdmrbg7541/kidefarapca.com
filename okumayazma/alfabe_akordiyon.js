@@ -894,6 +894,14 @@
             '.nav-tabs .ak-yan:hover{background:rgba(6,62,51,.82)}',
             '.nav-tabs .ak-yan .tab-ikon{width:19px;height:19px;flex:none}',
             '.nav-tabs .ak-yanad{font-size:.82rem;line-height:1.1;white-space:nowrap;opacity:.95}',
+            /* Hat Atölyesi: sekme değil indirme satırı — altın tonu onu
+               sekmelerden ayırıyor, sağ ucunda ne olduğu yazılı. */
+            '.nav-tabs .ak-defter{margin-top:6px;text-decoration:none;',
+            '  background:rgba(120,85,10,.62);border:1px solid rgba(255,225,170,.35)}',
+            '.nav-tabs .ak-defter:hover{background:rgba(120,85,10,.82)}',
+            '.nav-tabs .ak-defter .tab-ikon{flex:none}',
+            '.nav-tabs .ak-defternot{margin-left:auto;font-size:.74rem;line-height:1.1;',
+            '  white-space:nowrap;opacity:.8}',
             /* Dar ekranda tek sütun: iki büyük şık yan yana sığmıyor. */
             '@media (max-width:820px){',
             '  #ak-tam .as-siklar{grid-template-columns:1fr}',
@@ -910,6 +918,7 @@
          [ Harf Tanıtımı              ][ Dene ]
          [ Harf Birleştirme           ][ Dene ]
          [ Dinle ve Yaz               ][ PDF  ]
+         [ Hat Atölyesi · Öğrenci Defteri      ]   ← indirme satırı
 
        Satır kabına direction:ltr veriliyor: şerit rtl olduğu için aksi
        hâlde yan tuş SOLA düşüyor.
@@ -924,6 +933,15 @@
         '<path d="M6.2 7.4h7.4M6.2 11h7.4M6.2 14.6h4.4" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/>' +
         '<circle cx="17.4" cy="16.6" r="4.6" fill="#2ecc71"/>' +
         '<path d="M15.3 16.7l1.5 1.5 2.8-3" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    /* Hat Atölyesi defteri: kalem ucu bir sayfaya yazıyor. */
+    var DEFTER_IKON =
+        '<svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path d="M4.2 2.8h9.4l4.2 4.2v14a1 1 0 0 1-1 1H4.2a1 1 0 0 1-1-1V3.8a1 1 0 0 1 1-1z" fill="#FFF8EC" stroke="#B8860B" stroke-width="1.35"/>' +
+        '<path d="M13.6 2.8v4.2h4.2" fill="none" stroke="#B8860B" stroke-width="1.35" stroke-linejoin="round"/>' +
+        '<path d="M6.4 17.4h9" stroke="#E8C88A" stroke-width="1.5" stroke-linecap="round"/>' +
+        '<path d="M6.6 14.6c2.6-4.4 6.2-6.6 9.4-8" fill="none" stroke="#D9A441" stroke-width="1.6" stroke-linecap="round"/>' +
+        '<path d="M16.6 5.4l2.6-1.2-1 2.7-1.6-1.5z" fill="#0E6655"/></svg>';
 
     var PDF_IKON =
         '<svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
@@ -988,6 +1006,25 @@
         a.setAttribute('aria-label', a.title);
         a.innerHTML = PDF_IKON + '<span class="ak-yanad">PDF</span>';
         sar(konuBul('p7'), a);
+
+        /* HAT ATÖLYESİ ÖĞRENCİ DEFTERİ — sekme değil, indirme satırı.
+           Alfabe bölümünün sonuna, tam genişlikte. Dosya öğretmenin kendi
+           hazırladığı defter; burada yalnız duyuruluyor ve indiriliyor.
+           DOSYA ADI ASCII: macOS dosya adlarını ayrıştırılmış (NFD) tutuyor,
+           git ise birleştirilmiş (NFC) kaydedebiliyor — Türkçe harfli bir ad
+           GitHub Pages'te 404 verebilirdi. Bu yüzden ad sadeleştirildi. */
+        var defter = document.createElement('a');
+        defter.className = 'tab-trigger ak-defter';
+        defter.href = 'okumayazma/hat-atolyesi-ogrenci-defteri.pdf';
+        defter.setAttribute('download', 'hat-atolyesi-ogrenci-defteri.pdf');
+        defter.target = '_blank';
+        defter.rel = 'noopener';
+        defter.title = 'Hat Atölyesi — Öğrenci Defteri · Rik\'a ile güzel yazı · 24 sayfa PDF';
+        defter.setAttribute('aria-label', defter.title);
+        defter.innerHTML = DEFTER_IKON +
+            '<span class="tab-ad">Hat Atölyesi</span>' +
+            '<span class="ak-defternot">Defter · 24 s. PDF</span>';
+        sira.appendChild(defter);
 
         sira.addEventListener('click', function (e) {
             var d = e.target.closest ? e.target.closest('.ak-tetik') : null;
