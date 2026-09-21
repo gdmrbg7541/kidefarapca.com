@@ -5024,11 +5024,39 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
+
+        <!-- TECVİD: animasyonlu sunum + PDF ders notu (tecvid.html, dosyaları degerler/ içinde) -->
+        <a href="tecvid.html" target="_blank" rel="opener" class="game-card kss-card">
+          <div class="default-game-content">
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <path class="kga-dalga" d="M25 13.5 q7 -5.5 14 0" fill="none" stroke="#F39C12" stroke-width="2.6" stroke-linecap="round"/>
+              <path class="kga-dalga g2x" d="M20 8.5 q12 -9 24 0" fill="none" stroke="#F6C344" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M21 41 L43 59 M43 41 L21 59" stroke="#B7773E" stroke-width="4.4" stroke-linecap="round"/>
+              <path d="M32 40 C26 35.5 18 34.5 9 35.6 V20.8 C18 19.8 26 20.8 32 25 Z" fill="#fff" stroke="#16A085" stroke-width="2.6" stroke-linejoin="round"/>
+              <path d="M32 40 C38 35.5 46 34.5 55 35.6 V20.8 C46 19.8 38 20.8 32 25 Z" fill="#fff" stroke="#16A085" stroke-width="2.6" stroke-linejoin="round"/>
+              <path d="M14 26.5 q5 -1.4 10 .6 M14 31 q4 -1.2 8 .4 M40 27.1 q5 -2 10 -.6 M42 31.4 q4 -1.6 8 -.4" fill="none" stroke="#9DCFC5" stroke-width="1.8" stroke-linecap="round"/>
+              <path class="kga-parla" d="M54 8 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6 Z" fill="#f6c344"/>
+            </svg></div>
+            <h3>Tecvid</h3>
+            <span class="game-card-description">Kur’ân’ı güzel okumanın kuralları: sunum ve PDF.</span>
+            <span class="status-badge available">Hemen Başla</span>
+          </div>
+        </a>
       </div>
     </section>
 
     <section id="youtube-kanallari" class="content-section">
       <h2><svg class="kbas" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#e8f4fd" stroke="#2563EB" stroke-width="3"/><g class="kb-meridyen"><ellipse cx="32" cy="32" rx="10" ry="24" fill="none" stroke="#5AB4FF" stroke-width="2.2"/><ellipse cx="32" cy="32" rx="19" ry="24" fill="none" stroke="rgba(90,180,255,.5)" stroke-width="1.8"/></g><line x1="8" y1="32" x2="56" y2="32" stroke="#5AB4FF" stroke-width="2.2"/><path d="M13 19 a24 24 0 0 1 38 0 M13 45 a24 24 0 0 0 38 0" fill="none" stroke="rgba(90,180,255,.55)" stroke-width="1.8"/></svg> Sosyal Hesaplar</h2>
+      <!-- MASAÜSTÜ (769px+): bu bölüm kategori olarak görünmez; sol kenarda duran
+           ok sekmesine basınca soldan açılan pencere olur (4 hesap). Mobilde
+           eskisi gibi kategori. Sekme bölümün İÇİNDE: bölüm ana sayfa dışında
+           gizlendiğinde (changeView) sekme de kendiliğinden gizlenir. -->
+      <button type="button" class="sosyal-ok" aria-expanded="false" aria-controls="youtube-kanallari" title="Sosyal hesaplar">
+        <span class="so-sim" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="#fff"/><path d="M10 9.2 L15 12 L10 14.8 Z" fill="#E1306C"/></svg></span>
+        <span class="so-sim" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5" fill="none" stroke="#fff" stroke-width="2.2"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="#fff" stroke-width="2.2"/><circle cx="16.6" cy="7.4" r="1.2" fill="#fff"/></svg></span>
+        <span class="so-yazi">Sosyal</span>
+        <span class="so-ok" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </button>
       <!-- Sosyal hesap kartlari: marka renkleriyle (YouTube kirmizi, Instagram
            gradyan) ozel tasarim. Grid/mobil kaydirma davranisi icin mevcut
            game-card/kss-card siniflari korunur; gorunum .sosyal-card ile ezilir. -->
@@ -5056,7 +5084,106 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         @media (min-width:769px){
           #youtube-kanallari .game-grid{ justify-content:center !important; }
         }
+        /* ---- MASAÜSTÜ: SOL KENARDA AÇILIR PENCERE ----
+           Bölüm akıştan çıkar (sayfada kategori olarak görünmez), sol kenara
+           yapışık bir pencere olur. Kapalıyken pencere ekranın solunda gizli,
+           yalnız ok sekmesi görünür; basınca 4 hesap soldan kayarak gelir.
+           Öğrenci kısıtı (erisim) bölümü display:block yapar; bu kurallar
+           onunla çakışmaz. */
+        .sosyal-ok{ display:none; }
+        @media (min-width:769px){
+          #youtube-kanallari{
+            position:fixed !important; left:0; top:50%; z-index:940; width:360px;
+            max-height:calc(100vh - 2 * var(--header-height, 70px)); overflow:visible;
+            margin:0 !important; padding:14px 16px 16px !important;
+            border-radius:0 22px 22px 0 !important; border:1px solid #E9EEF5 !important; border-left:0 !important;
+            background:#fff !important; box-shadow:0 22px 60px rgba(15,23,42,.28) !important;
+            transform:translate(-100%, -50%); visibility:hidden;
+            transition:transform .5s cubic-bezier(.22,1,.36,1), visibility 0s linear .5s;
+          }
+          #youtube-kanallari.sosyal-acik{
+            transform:translate(0, -50%); visibility:visible;
+            transition:transform .5s cubic-bezier(.22,1,.36,1), visibility 0s;
+          }
+          #youtube-kanallari > h2{
+            position:static !important; font-size:1.3em !important; margin:0 0 12px !important; padding:2px 6px 10px !important;
+            background:none !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+            border:0 !important; border-bottom:1px dashed #E0E6ED !important; border-radius:0 !important;
+            box-shadow:none !important; animation:none !important;
+          }
+          #youtube-kanallari .game-grid{
+            display:flex !important; flex-direction:column !important; flex-wrap:nowrap !important;
+            overflow:visible !important; padding:0 !important; margin:0 !important; gap:10px !important;
+            scroll-snap-type:none !important; justify-content:flex-start !important;
+          }
+          #youtube-kanallari .game-grid .game-card{
+            flex:0 0 auto !important; min-height:0 !important; padding:10px 14px !important; border-radius:16px !important;
+          }
+          #youtube-kanallari .default-game-content{
+            display:grid !important; grid-template-columns:56px 1fr auto; grid-template-rows:auto auto;
+            column-gap:12px; row-gap:2px; align-items:center; text-align:left !important; width:100%;
+          }
+          #youtube-kanallari .sosyal-ikon{ grid-row:1 / span 2; width:56px; height:56px; margin:0; }
+          #youtube-kanallari .sosyal-ikon svg{ width:42px; height:42px; }
+          #youtube-kanallari .game-card h3{ grid-column:2; margin:0 !important; font-size:1.02em !important; min-height:0 !important; text-align:left; }
+          #youtube-kanallari .sosyal-kullanici{ grid-column:2; justify-self:start; margin:0; font-size:.8em; }
+          #youtube-kanallari .game-card-description{ display:none !important; }
+          #youtube-kanallari .status-badge{ grid-column:3; grid-row:1 / span 2; margin:0 !important;
+            font-size:.72em !important; padding:6px 10px !important; white-space:nowrap; }
+          /* ok sekmesi: pencerenin sağ kenarına yapışık; pencere kapalıyken ekranın sol kenarında görünür */
+          .sosyal-ok{
+            position:absolute; left:100%; top:50%; transform:translateY(-50%); visibility:visible;
+            display:flex; flex-direction:column; align-items:center; gap:8px; width:46px; padding:12px 0 12px;
+            border:0; border-radius:0 16px 16px 0; cursor:pointer; color:#fff; font-family:inherit;
+            background:linear-gradient(180deg,#FF4E45 0%,#DD2A7B 55%,#8134AF 100%);
+            box-shadow:5px 8px 20px rgba(0,0,0,.22); transition:width .2s, box-shadow .2s;
+          }
+          .sosyal-ok:hover{ width:52px; box-shadow:6px 10px 24px rgba(0,0,0,.28); }
+          .sosyal-ok:focus-visible{ outline:3px solid #FFC107; outline-offset:2px; }
+          .sosyal-ok .so-sim svg{ width:22px; height:22px; display:block; }
+          .sosyal-ok .so-yazi{ writing-mode:vertical-rl; transform:rotate(180deg); font-size:13px; font-weight:700; letter-spacing:1.5px; }
+          .sosyal-ok .so-ok{ width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.25);
+            display:grid; place-items:center; transition:transform .45s cubic-bezier(.22,1,.36,1);
+            animation:soDurt 2.8s ease-in-out infinite; }
+          .sosyal-ok .so-ok svg{ width:18px; height:18px; display:block; }
+          #youtube-kanallari.sosyal-acik .sosyal-ok .so-ok{ transform:rotate(180deg); animation:none; }
+          @keyframes soDurt{ 0%,62%,100%{ transform:translateX(0) } 72%{ transform:translateX(5px) } 82%{ transform:translateX(0) } 90%{ transform:translateX(3px) } }
+        }
+        html.dusuk-guc .sosyal-ok .so-ok{ animation:none !important; }
+        @media (prefers-reduced-motion:reduce){
+          .sosyal-ok .so-ok{ animation:none !important; }
+          #youtube-kanallari, #youtube-kanallari.sosyal-acik{ transition:none !important; }
+        }
       </style>
+      <script>
+      /* Sosyal hesaplar penceresi (yalnız masaüstü): ok sekmesi açar/kapatır;
+         dışarı dokununca, Esc ile ya da bir hesaba gidilince kapanır. */
+      (function () {
+        var bolum = document.getElementById('youtube-kanallari');
+        var dug = bolum && bolum.querySelector('.sosyal-ok');
+        if (!dug) return;
+        function ac(evet) {
+          bolum.classList.toggle('sosyal-acik', evet);
+          dug.setAttribute('aria-expanded', evet ? 'true' : 'false');
+          dug.title = evet ? 'Kapat' : 'Sosyal hesaplar';
+        }
+        dug.addEventListener('click', function (e) { e.stopPropagation(); ac(!bolum.classList.contains('sosyal-acik')); });
+        document.addEventListener('click', function (e) {
+          if (bolum.classList.contains('sosyal-acik') && !bolum.contains(e.target)) ac(false);
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && bolum.classList.contains('sosyal-acik')) ac(false);
+        });
+        bolum.addEventListener('click', function (e) {
+          if (e.target.closest && e.target.closest('a[href]')) setTimeout(function () { ac(false); }, 200);
+        });
+        try {
+          var mq = window.matchMedia('(min-width:769px)');
+          var degis = function () { if (!mq.matches) ac(false); };
+          if (mq.addEventListener) mq.addEventListener('change', degis); else if (mq.addListener) mq.addListener(degis);
+        } catch (e) {}
+      })();
+      </script>
       <div class="game-grid mobile-scroll-grid-single">
 
         <a href="https://www.youtube.com/@kidefarapca" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-yt">
