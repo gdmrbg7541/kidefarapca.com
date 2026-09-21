@@ -170,9 +170,18 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
             });
             
             this.dom.lessonSelect.addEventListener('change', async e => {
+                 /* 5-8. sınıf: ders dosyası seçildiği an arkadan yüklenmeye başlar */
+                 if (this.ortaokulDersMi(e.target.value)) window.TKOrtaokul.yukle(e.target.value);
                  try { await this.initAudio(); } catch (err) { console.warn("Ses başlatılamadı."); }
                 this.playSound('touch');
                 this.state.selectedLessonId = e.target.value; this.checkStartButtonState();
+            });
+
+            /* 6. sınıfın kitabı (öğretim yılı) değişince 5-8 dersleri yenilenir */
+            document.addEventListener('tk:ortaokul', () => {
+                if (!this.state.selectedPlayers) return;
+                this.populateLessonSelector();
+                this.state.selectedLessonId = null; this.dom.lessonSelect.value = ""; this.checkStartButtonState();
             });
 
             this.dom.startGameBtn.onclick = async () => {
@@ -184,6 +193,8 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
                 if (!selectedPlayers || !selectedLessonId) return;
 
                 this.yeniAlfabeHavuzu();          /* her oyun taze soru */
+                /* 5-8. sınıf: kelimeler muhadese/veri'deki ders dosyasından gelir */
+                if (this.ortaokulDersMi(selectedLessonId)) { try { await window.TKOrtaokul.yukle(selectedLessonId); } catch (e) {} }
                 const words = this.getWords(selectedLessonId);
                 let wordsForGame;
 
@@ -193,6 +204,8 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
                          return;
                     }
                     wordsForGame = Utils.shuffleArray(words);
+                    /* 5-8. sınıf dersleri 21-127 kelime: her oyunda rastgele 20 soru */
+                    if (this.ortaokulDersMi(selectedLessonId)) wordsForGame = wordsForGame.slice(0, 20);
                 } else {
                     const questionCount = 5;
                     if (!words || words.length < 10) {
@@ -233,18 +246,37 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
             if (!this.dom.lessonSelect) return;
             this.dom.lessonSelect.innerHTML = '<option value="" disabled selected>Ders Seçin</option>';
             const allLessonIds = this.getAllLessonIdsOrdered();
-             allLessonIds.forEach(lessonId => {
+            /* GÖRÜNÜM SIRASI: harflerle ilgili alıştırmalar (alfabe) listenin
+               EN BAŞINDA. Kilit zinciri getAllLessonIdsOrdered()'daki sırayı
+               korur; yalnız listedeki yerleri değişti. */
+            const alfabeIds = window.TKAlfabe ? window.TKAlfabe.dersler.map(d => d.id) : [];
+            /* 5-8. SINIF (oyunlar/tk_ortaokul.js): Harflerin ardından, 9. sınıftan
+               önce. Kilit zincirinde yoklar, HEP AÇIKLAR. */
+            const ortaDersler = window.TKOrtaokul ? window.TKOrtaokul.dersler() : [];
+            const gosterimSirasi = alfabeIds.filter(id => allLessonIds.includes(id))
+                .concat(ortaDersler.map(d => d.id))
+                .concat(allLessonIds.filter(id => !alfabeIds.includes(id)));
+             gosterimSirasi.forEach(lessonId => {
                  /* Alfabe dersleri: her zaman açık. Ölçme aracı bunlar,
                     ödül değil — öğretmen istediği an açabilmeli. */
                  const alfabeDers = window.TKAlfabe
                      ? window.TKAlfabe.dersler.find(d => d.id === lessonId) : null;
-                 const isUnlocked = alfabeDers ? true : this.state.unlockedLessons.includes(lessonId);
+                 const ortaDers = window.TKOrtaokul ? window.TKOrtaokul.bul(lessonId) : null;
+                 const isUnlocked = (alfabeDers || ortaDers) ? true : this.state.unlockedLessons.includes(lessonId);
                  const parts = lessonId.split('-'); const gradeKey = parts[0]; const unitKey = parts[1]; const lessonKey = parts[2];
-                 const lessonDesc = alfabeDers ? alfabeDers.ad
+                 const lessonDesc = alfabeDers ? alfabeDers.ad : ortaDers ? ortaDers.ad
                      : (Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.description?.tr || lessonKey);
 const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görünür
                  const option = document.createElement('option');
                  option.value = lessonId;
+                 /* Ders listesi (oyunlar/tk_liste.js) için: sınıf grubu ve ünite satırı */
+                 if (ortaDers) {
+                     option.dataset.grup = 'g' + ortaDers.sinif;
+                     option.dataset.alt = ortaDers.unite + '. Ünite · ' + ortaDers.uniteAd;
+                 } else if (!alfabeDers) {
+                     const u = Data[gradeKey]?.words[unitKey];
+                     if (u) option.dataset.alt = [u.title?.tr, u.description?.tr].filter(Boolean).join(' · ');
+                 }
 
                  if (this.state.selectedPlayers === 1 && !isUnlocked) {
                       option.textContent = `🔒 ${optionText}`;
@@ -262,6 +294,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
            kişilik mod da soru başına tam 10 puan ediyor. */
         alfabeHavuz: {},
         yeniAlfabeHavuzu() { this.alfabeHavuz = {}; },
+        ortaokulDersMi(lessonId) { return !!(window.TKOrtaokul && window.TKOrtaokul.mi(lessonId)); },
         alfabeDersMi(lessonId) {
             return !!(window.TKAlfabe && window.TKAlfabe.dersler.some(d => d.id === lessonId));
         },
@@ -270,6 +303,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                 if (!this.alfabeHavuz[lessonId]) this.alfabeHavuz[lessonId] = window.TKAlfabe.uret(lessonId, 10);
                 return this.alfabeHavuz[lessonId];
             }
+            if (this.ortaokulDersMi(lessonId)) return window.TKOrtaokul.kelimeler(lessonId);
             try { const parts = lessonId.split('-'); const gradeKey = parts[0]; const unitKey = parts[1]; const lessonKey = parts[2]; return Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.words || []; } catch (e) { console.error("Kelime alınırken hata:", e); return []; } },
         getAllWords() { return Object.values(Data).flatMap(grade => Object.values(grade.words).flatMap(unit => Object.values(unit.lessons).flatMap(lesson => lesson.words || []))); },
         initNavigation() {

@@ -1,0 +1,400 @@
+/* ==========================================================================
+   TEST KAPIŞMASI · DERS LİSTESİ (oyunlar/tk_liste.css)
+   tk_liste.js'in kurduğu seçici: düğme + açılır liste + ders simgeleri.
+   Asıl <select id="lesson-select"> görünmez ama yerinde durur.
+   ========================================================================== */
+
+#lesson-select.tkl-yerel { display: none !important; }
+
+.tkl { position: relative; width: 100%; }
+
+/* ---------------------------------------------------------------- DÜĞME
+   Eski <select> ile aynı görünüm: beyaz, yuvarlak köşe, alt gölge. */
+.tkl-dug {
+    position: relative; width: 100%; min-height: calc(1.44rem + 24px);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 6px 46px; border: none; border-radius: var(--border-radius-md, 12px);
+    background: var(--button-bg, #fff); color: var(--text-color, #2c3e50);
+    box-shadow: var(--button-shadow, 0 3px #d8dee9);
+    font-size: 1.2rem; font-weight: 500; line-height: 1.2; cursor: pointer;
+    transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.tkl-dug:hover:not(:disabled) { background: var(--button-hover-bg, #eceff4); transform: translateY(-1px); box-shadow: 0 4px #cdd3db; }
+.tkl-dug:focus-visible { outline: 3px solid rgba(22, 160, 133, .45); outline-offset: 2px; }
+.tkl.acik .tkl-dug { box-shadow: 0 0 0 3px var(--primary-color, #16A085), 0 3px #d8dee9; transform: none; }
+.tkl-dug:disabled { background: #eceff4; opacity: .7; cursor: not-allowed; }
+.tkl-dug .tkl-ad, .tkl-dug .tkl-yer { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tkl-dug .tkl-yer { color: var(--text-color, #2c3e50); }
+.tkl-ok { position: absolute; right: 12px; top: 50%; width: 24px; height: 24px; margin-top: -12px; color: #5E81AC; transition: transform .25s ease; }
+.tkl.acik .tkl-ok { transform: rotate(180deg); }
+.tkl-dug .tki.buyuk { width: 40px; height: 40px; animation: tkl-pop .5s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes tkl-pop { from { transform: scale(.4) rotate(-12deg); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ---------------------------------------------------------------- LİSTE */
+.tkl-panel {
+    position: absolute; left: 0; right: 0; top: calc(100% + 8px); z-index: 400;
+    max-height: min(60vh, 470px); overflow-y: auto; overscroll-behavior: contain;
+    background: #fff; border-radius: 16px; padding: 0 6px 8px; text-align: left;
+    box-shadow: 0 16px 44px rgba(46, 52, 64, .2), 0 0 0 1px rgba(46, 52, 64, .07);
+    transform-origin: 50% 0; animation: tkl-ac .2s ease-out;
+    -webkit-overflow-scrolling: touch; scrollbar-width: thin;
+}
+.tkl-panel[hidden] { display: none !important; }
+.tkl.yukari .tkl-panel { top: auto; bottom: calc(100% + 8px); transform-origin: 50% 100%; animation-name: tkl-ac-yukari; }
+@keyframes tkl-ac { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes tkl-ac-yukari { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+
+/* grup başlığı: kaydırırken üstte yapışık kalır */
+.tkl-grup {
+    position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 10px;
+    margin: 0 -6px 4px; padding: 9px 14px 7px; font-size: 1rem; font-weight: 700; letter-spacing: .02em;
+    border-bottom: 1px solid rgba(46, 52, 64, .07);
+}
+.tkl-grup .tki { width: 34px; height: 34px; }
+.tkl-g-harf { background: #FFF6E3; color: #B7650B; }
+.tkl-g-g9   { background: #FDEEEE; color: #C62828; }
+.tkl-g-g10  { background: #E7F5F1; color: #0E7C66; }
+.tkl-g-diger { background: #F1F4F8; color: #5E81AC; }
+
+.tkl-oge {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    margin: 0; padding: 5px 12px 5px 8px; border: none; border-radius: 14px; background: transparent;
+    color: var(--text-color, #2c3e50); font-size: 1.05rem; font-weight: 500; line-height: 1.25;
+    text-align: left; cursor: pointer; transition: background-color .15s ease;
+}
+.tkl-bolum.acik .tkl-oge { animation: tkl-gir .32s ease-out both; animation-delay: calc(var(--i, 0) * 22ms); }
+@keyframes tkl-gir { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+.tkl-oge .tki { width: 50px; height: 50px; transition: transform .2s cubic-bezier(.34, 1.56, .64, 1); }
+.tkl-oge .tkl-ad { flex: 1; min-width: 0; }
+.tkl-oge:not(.kilitli):hover { background: #F2F6FA; }
+.tkl-oge:not(.kilitli):hover .tki { transform: scale(1.12); }
+.tkl-oge:focus-visible { outline: 3px solid rgba(22, 160, 133, .45); outline-offset: -3px; }
+.tkl-oge.secili { background: #E6F5F1; color: #0E6655; box-shadow: inset 4px 0 0 var(--primary-color, #16A085); }
+.tkl-onay { width: 22px; height: 22px; flex: none; color: var(--primary-color, #16A085); }
+.tkl-kilit { width: 20px; height: 20px; flex: none; }
+.tkl-oge.kilitli { cursor: not-allowed; color: #8A96A3; }
+.tkl-oge.kilitli .tki { filter: grayscale(1); opacity: .45; }
+.tkl-oge.kilitli .tki * { animation: none !important; }
+
+/* ---------------------------------------------------------------- SİMGELER */
+.tki { display: block; flex: none; overflow: visible; }
+
+@keyframes tka-don { to { transform: rotate(360deg); } }
+
+/* Harf Birleştirme: ب ile ا kartları yaklaşır → «با» kartı belirir → geri ayrılır */
+@keyframes tka-sol {
+    0%, 10% { transform: translateX(0); opacity: 1; }
+    34% { transform: translateX(4.5px); opacity: 1; }
+    42%, 80% { transform: translateX(4.5px); opacity: 0; }
+    92%, 100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes tka-sag {
+    0%, 10% { transform: translateX(0); opacity: 1; }
+    34% { transform: translateX(-4.5px); opacity: 1; }
+    42%, 80% { transform: translateX(-4.5px); opacity: 0; }
+    92%, 100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes tka-birlesik {
+    0%, 33% { transform: scale(.7); opacity: 0; }
+    44% { transform: scale(1.1); opacity: 1; }
+    52%, 78% { transform: scale(1); opacity: 1; }
+    88%, 100% { transform: scale(.85); opacity: 0; }
+}
+.tka-sol { animation: tka-sol 3.4s ease-in-out infinite; }
+.tka-sag { animation: tka-sag 3.4s ease-in-out infinite; }
+.tka-birlesik { transform-box: fill-box; transform-origin: center; opacity: 0; animation: tka-birlesik 3.4s ease-in-out infinite; }
+@keyframes tka-parla {
+    0%, 36% { transform: scale(0) rotate(0); opacity: 0; }
+    50% { transform: scale(1.25) rotate(60deg); opacity: 1; }
+    66% { transform: scale(.9) rotate(90deg); opacity: 1; }
+    80%, 100% { transform: scale(0) rotate(120deg); opacity: 0; }
+}
+.tka-parla { transform-box: fill-box; transform-origin: center; animation: tka-parla 3.4s ease-in-out infinite; }
+.tka-parla.p3 { animation-delay: .25s; }
+.tka-parla.p2 { animation-duration: 2.6s; animation-delay: -1.3s; }
+
+/* Çizgideki Yazılış: kalem ب'yi çizer (uç, çizginin ucunu izler), noktayı koyar */
+@keyframes tka-kalem {
+    0%, 6% { transform: translate(0, 0); }
+    12% { transform: translate(.7px, 5.5px); }
+    18% { transform: translate(-.9px, 10.8px); }
+    24% { transform: translate(-5.4px, 14px); }
+    30% { transform: translate(-10.8px, 15px); }
+    36% { transform: translate(-16.3px, 14.8px); }
+    42% { transform: translate(-21.7px, 13.3px); }
+    48% { transform: translate(-25.5px, 9.5px); }
+    54% { transform: translate(-26px, 4px); }
+    60% { transform: translate(-20px, 12px); }
+    65% { transform: translate(-13px, 20px); }
+    68% { transform: translate(-13px, 22.5px); }
+    72% { transform: translate(-13px, 19.5px); }
+    90%, 100% { transform: translate(0, 0); }
+}
+.tka-kalem { animation: tka-kalem 4s linear infinite; }
+@keyframes tka-ciz {
+    0%, 6% { stroke-dashoffset: 101; opacity: 1; }
+    54%, 86% { stroke-dashoffset: 0; opacity: 1; }
+    94% { stroke-dashoffset: 0; opacity: 0; }
+    100% { stroke-dashoffset: 101; opacity: 0; }
+}
+.tka-ciz { stroke-dasharray: 100 110; animation: tka-ciz 4s linear infinite; }
+@keyframes tka-nokta {
+    0%, 66% { transform: scale(0); }
+    70% { transform: scale(1.4); }
+    74%, 86% { transform: scale(1); opacity: 1; }
+    94% { transform: scale(1); opacity: 0; }
+    100% { transform: scale(0); opacity: 0; }
+}
+.tka-nokta { transform-box: fill-box; transform-origin: center; animation: tka-nokta 4s ease-out infinite; }
+
+/* Selamlaşma: el sallanır, yanında dalgalar */
+@keyframes tka-el { 0%, 55%, 100% { transform: rotate(0); } 10% { transform: rotate(14deg); } 20% { transform: rotate(-9deg); } 30% { transform: rotate(13deg); } 40% { transform: rotate(-5deg); } }
+.tka-el { transform-box: fill-box; transform-origin: 50% 100%; animation: tka-el 2.2s ease-in-out infinite; }
+@keyframes tka-dalga { 0%, 100% { opacity: 0; transform: scale(.7); } 15%, 45% { opacity: 1; transform: scale(1); } 60% { opacity: 0; transform: scale(1.15); } }
+.tka-dalga { transform-box: fill-box; transform-origin: 0% 100%; animation: tka-dalga 2.2s ease-out infinite; }
+.tka-dalga.d2 { transform-origin: 100% 100%; animation-delay: -.15s; }
+
+/* Tanışma: iki kişi sırayla konuşur */
+@keyframes tka-balon { 0% { transform: scale(0); opacity: 0; } 8% { transform: scale(1.12); opacity: 1; } 13%, 40% { transform: scale(1); opacity: 1; } 48%, 100% { transform: scale(0); opacity: 0; } }
+.tka-balon1, .tka-balon2 { transform-box: fill-box; animation: tka-balon 3.2s ease-in-out infinite; }
+.tka-balon1 { transform-origin: 40% 100%; }
+.tka-balon2 { transform-origin: 45% 100%; animation-delay: -1.6s; }
+
+/* Sınıf Eşyaları: kalem defterde yazar */
+@keyframes tka-kalem2 { 0%, 100% { transform: translate(0, 0) rotate(0); } 25% { transform: translate(-2px, 1.5px) rotate(-5deg); } 50% { transform: translate(-4px, 0) rotate(0); } 75% { transform: translate(-2px, -1px) rotate(4deg); } }
+.tka-kalem2 { transform-box: fill-box; transform-origin: 20% 90%; animation: tka-kalem2 1.4s ease-in-out infinite; }
+
+/* Yönler ve Eylemler: tabela okları sağa-sola gösterir */
+@keyframes tka-sagok { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+@keyframes tka-solok { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-3px); } }
+.tka-sagok { animation: tka-sagok 1.6s ease-in-out infinite; }
+.tka-solok { animation: tka-solok 1.6s ease-in-out infinite; animation-delay: -.8s; }
+
+/* Evdeyim: pencerelerde ışık yanıp söner, bacadan duman */
+@keyframes tka-pencere { 0%, 40% { fill: #F7DC6F; } 48%, 90% { fill: #7F8C8D; } 98%, 100% { fill: #F7DC6F; } }
+.tka-pencere { animation: tka-pencere 3.2s ease-in-out infinite; }
+.tka-pencere.p2 { animation-delay: -1.6s; }
+@keyframes tka-duman { 0% { transform: translate(0, 2px) scale(.5); opacity: 0; } 25% { opacity: .95; } 100% { transform: translate(2.5px, -5px) scale(1.35); opacity: 0; } }
+.tka-duman { transform-box: fill-box; transform-origin: center; animation: tka-duman 2.2s ease-out infinite; }
+.tka-duman.d2 { animation-delay: -1.1s; }
+
+/* Odamda: uyku z'leri yükselir */
+@keyframes tka-z { 0% { transform: translate(-2px, 4px) scale(.6); opacity: 0; } 30% { opacity: 1; } 100% { transform: translate(3px, -5px) scale(1.15); opacity: 0; } }
+.tka-z { transform-box: fill-box; transform-origin: center; animation: tka-z 2.6s ease-out infinite; }
+.tka-z.z2 { animation-delay: -1.3s; }
+
+/* Bir Günüm: güneş tepelerin ardından doğar, ışınları parlar */
+@keyframes tka-gunes { 0% { transform: translateY(9px); } 40%, 82% { transform: translateY(0); } 100% { transform: translateY(9px); } }
+.tka-gunes { animation: tka-gunes 4s ease-in-out infinite; }
+@keyframes tka-isin { 0%, 100% { transform: scale(.88); opacity: .5; } 50% { transform: scale(1.12); opacity: 1; } }
+.tka-isin { transform-box: view-box; transform-origin: 24px 27px; animation: tka-isin 1.6s ease-in-out infinite; }
+
+/* Günlük Rutin: saat kolları döner */
+.tka-akrep { transform-box: view-box; transform-origin: 24px 25px; animation: tka-don 12s linear infinite; }
+.tka-yelkovan { transform-box: view-box; transform-origin: 24px 25px; animation: tka-don 2s linear infinite; }
+
+/* Güzel Davranışlar / Vücut Organları: kalp atar */
+@keyframes tka-kalp { 0%, 100% { transform: scale(1); } 14% { transform: scale(1.14); } 28% { transform: scale(.97); } 42% { transform: scale(1.09); } 60% { transform: scale(1); } }
+.tka-kalp { transform-box: fill-box; transform-origin: center; animation: tka-kalp 1.3s ease-in-out infinite; }
+
+/* Mutlu Aile: ailenin üstünde süzülen kalp */
+@keyframes tka-kalp2 { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2.5px) scale(1.12); } }
+.tka-kalp2 { transform-box: fill-box; transform-origin: center; animation: tka-kalp2 1.6s ease-in-out infinite; }
+
+/* Ben Kimim?: soru işareti zıplar, sallanır */
+@keyframes tka-soru { 0%, 100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-3px) rotate(-12deg); } 50% { transform: translateY(0) rotate(0); } 70% { transform: translateY(-1.5px) rotate(9deg); } }
+.tka-soru { transform-box: fill-box; transform-origin: 50% 100%; animation: tka-soru 2s ease-in-out infinite; }
+
+/* Hobilerim: top seker, gölgesi büyüyüp küçülür */
+@keyframes tka-top {
+    0%, 100% { transform: translateY(-2px); animation-timing-function: cubic-bezier(.5, 0, 1, .6); }
+    48% { transform: translateY(12.4px); animation-timing-function: linear; }
+    52% { transform: translateY(12.8px) scale(1.1, .9); animation-timing-function: cubic-bezier(0, .4, .5, 1); }
+}
+.tka-top { transform-box: fill-box; transform-origin: 50% 100%; animation: tka-top 1.1s infinite; }
+@keyframes tka-golge {
+    0%, 100% { transform: scale(.55); opacity: .45; animation-timing-function: cubic-bezier(.5, 0, 1, .6); }
+    50% { transform: scale(1.05); opacity: 1; animation-timing-function: cubic-bezier(0, .4, .5, 1); }
+}
+.tka-golge { transform-box: fill-box; transform-origin: center; animation: tka-golge 1.1s infinite; }
+
+/* Zamanım ve Hayatım: kum akar, saat ters döner (döngü dikişsiz) */
+@keyframes tka-kum { 0%, 70% { transform: rotate(0); } 90%, 100% { transform: rotate(180deg); } }
+.tka-kum { transform-box: view-box; transform-origin: 24px 24px; animation: tka-kum 4.4s ease-in-out infinite; }
+@keyframes tka-kumust { 0% { transform: scale(1); } 68%, 100% { transform: scale(0); } }
+@keyframes tka-kumalt { 0% { transform: scale(0); } 68%, 100% { transform: scale(1); } }
+.tka-kumust { transform-box: fill-box; transform-origin: 50% 100%; transform: scale(.55); animation: tka-kumust 4.4s linear infinite; }
+.tka-kumalt { transform-box: fill-box; transform-origin: 50% 100%; transform: scale(.6); animation: tka-kumalt 4.4s linear infinite; }
+@keyframes tka-akis { to { stroke-dashoffset: -7.6; } }
+@keyframes tka-akisgor { 0%, 64% { opacity: 1; } 68%, 100% { opacity: 0; } }
+.tka-dusen { animation: tka-akis .5s linear infinite, tka-akisgor 4.4s linear infinite; }
+
+/* Zamanımı Değerlendiriyorum: takvime onay işareti çizilir */
+@keyframes tka-onay { 0%, 12% { stroke-dashoffset: 101; opacity: 1; } 40%, 80% { stroke-dashoffset: 0; opacity: 1; } 92%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+.tka-onay { stroke-dasharray: 100 110; animation: tka-onay 2.8s ease-in-out infinite; }
+
+/* Sağlıklı Yaşam: nabız çizgisi akar */
+@keyframes tka-nabiz { 0% { stroke-dashoffset: 101; } 55% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -101; } }
+.tka-nabiz { stroke-dasharray: 100 110; animation: tka-nabiz 2.2s linear infinite; }
+
+/* Sağlıklı Beslenme: elma sapından sallanır, yaprak kıpırdar */
+@keyframes tka-elma { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+.tka-elma { transform-box: fill-box; transform-origin: 50% 0%; animation: tka-elma 2.4s ease-in-out infinite; }
+@keyframes tka-yaprak { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-16deg); } }
+.tka-yaprak { transform-box: fill-box; transform-origin: 0% 100%; animation: tka-yaprak 1.2s ease-in-out infinite; }
+
+/* Meslekler: dişli döner */
+.tka-disli { transform-box: view-box; transform-origin: 37px 33px; animation: tka-don 4s linear infinite; }
+
+/* Hava Durumu: güneş döner, bulut kayar, yağmur yağar */
+.tka-gunes2 { transform-box: view-box; transform-origin: 15px 15px; animation: tka-don 10s linear infinite; }
+@keyframes tka-bulut { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-3.5px); } }
+.tka-bulut { animation: tka-bulut 3.2s ease-in-out infinite; }
+@keyframes tka-damla { 0% { transform: translateY(-2px); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateY(4px); opacity: 0; } }
+.tka-damla { animation: tka-damla .9s linear infinite; }
+
+/* Grup: Harfler — ikinci kart eğilip doğrulur */
+@keyframes tka-kart2 { 0%, 100% { transform: rotate(0) translate(0, 0); } 50% { transform: rotate(6deg) translate(1px, -1.5px); } }
+.tka-kart2 { transform-box: fill-box; transform-origin: 0% 100%; animation: tka-kart2 2.6s ease-in-out infinite; }
+/* Grup: 9. / 10. Sınıf — rozet nabız, kesikli halka döner */
+@keyframes tka-rozet { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+.tka-rozet { transform-box: fill-box; transform-origin: center; animation: tka-rozet 1.8s ease-in-out infinite; }
+.tka-halka { transform-box: view-box; transform-origin: 24px 24px; animation: tka-don 9s linear infinite; }
+
+/* ---------------------------------------------------------------- HAREKETİ AZALT */
+@media (prefers-reduced-motion: reduce) {
+    .tki, .tki *, .tkl-panel, .tkl-oge { animation: none !important; }
+    .tkl-oge .tki, .tkl-ok { transition: none; }
+}
+html.dusuk-guc .tki, html.dusuk-guc .tki * { animation: none !important; }
+
+/* ================================================================ 5-8. SINIF EKLERİ (21.09.2026) */
+/* ünite satırı: ders adının altında küçük gri yazı */
+.tkl-alt { display: block; margin-top: 2px; font-size: .74em; font-weight: 400; line-height: 1.2; color: #7F8C9A;
+           white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tkl-oge.secili .tkl-alt { color: #3E8E7E; }
+.tkl-dug .tkl-ad { display: block; line-height: 1.12; }
+.tkl-dug .tkl-alt { font-size: .6em; margin-top: 3px; }
+
+/* grup renkleri (başlık) — --gr: açık bölümün koyu rengi */
+.tkl-g-g5 { background: #FFF4DC; color: #A85F00; }
+.tkl-g-g6 { background: #E6F1FC; color: #1B65AA; }
+.tkl-g-g7 { background: #F3EAFB; color: #7A3A96; }
+.tkl-g-g8 { background: #E4F7EC; color: #1C7C44; }
+
+/* 6. sınıf başlığında sitenin öğretim yılı seçicisi (sistem/sinifveri.js) */
+.tkl-yil { display: inline-flex; letter-spacing: 0; cursor: auto; }
+.tkl-grup .kd-yil { background: #E6F7F2; color: #0B5F51; border-color: #9FD9CB; font-size: 12px; padding: 5px 9px; }
+.tkl-grup .kd-yil-etiket { color: #3F6F65; }
+.tkl-grup .kd-yil-sec select { color: #0B5F51; font-size: 12px; }
+.tkl-grup .kd-yil-etiket { display: none; }   /* listede yer dar: yalnız yıl ve seçici */
+
+/* ---------------------------------------------------------------- GENEL HAREKETLER (5-8. sınıf simgeleri)
+   Süre, genlik, merkez ve gecikme simgenin içinde satır içi değişkenle verilir:
+   --t süre · --g gecikme · --a açı · --x/--y kayma · --s ölçek · --o merkez · --m en düşük saydamlık */
+.tkg-sallan, .tkg-zipla, .tkg-nabiz, .tkg-don, .tkg-yorunge, .tkg-yanip, .tkg-kay,
+.tkg-yuksel, .tkg-dus, .tkg-titre, .tkg-ciz, .tkg-belir, .tkg-ucus { animation-delay: var(--g, 0s); animation-fill-mode: both; }
+.tkg-sallan { transform-box: fill-box; transform-origin: var(--o, 50% 0%); animation-name: tkg-sallan; animation-duration: var(--t, 2.4s); animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+@keyframes tkg-sallan { 0%, 100% { transform: rotate(calc(var(--a, 8deg) * -1)); } 50% { transform: rotate(var(--a, 8deg)); } }
+.tkg-zipla { transform-box: fill-box; transform-origin: 50% 100%; animation-name: tkg-zipla; animation-duration: var(--t, 1.2s); animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+@keyframes tkg-zipla { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(calc(var(--y, 3px) * -1)); } }
+.tkg-nabiz { transform-box: fill-box; transform-origin: var(--o, 50% 50%); animation-name: tkg-nabiz; animation-duration: var(--t, 1.6s); animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+@keyframes tkg-nabiz { 0%, 100% { transform: scale(1); } 50% { transform: scale(var(--s, 1.12)); } }
+.tkg-don { transform-box: fill-box; transform-origin: 50% 50%; animation-name: tka-don; animation-duration: var(--t, 3s); animation-timing-function: linear; animation-iteration-count: infinite; animation-direction: var(--yon, normal); }
+.tkg-yorunge { transform-box: view-box; transform-origin: var(--o, 24px 24px); animation-name: tka-don; animation-duration: var(--t, 4s); animation-timing-function: linear; animation-iteration-count: infinite; animation-direction: var(--yon, normal); }
+.tkg-yanip { animation-name: tkg-yanip; animation-duration: var(--t, 1.6s); animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+@keyframes tkg-yanip { 0%, 100% { opacity: 1; } 50% { opacity: var(--m, .2); } }
+.tkg-kay { animation-name: tkg-kay; animation-duration: var(--t, 2s); animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+@keyframes tkg-kay { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(var(--x, 3px), var(--y, 0px)); } }
+.tkg-yuksel { transform-box: fill-box; transform-origin: center; animation-name: tkg-yuksel; animation-duration: var(--t, 2.2s); animation-timing-function: ease-out; animation-iteration-count: infinite; }
+@keyframes tkg-yuksel { 0% { transform: translate(0, 2px) scale(.5); opacity: 0; } 25% { opacity: .95; } 100% { transform: translate(var(--x, 0px), calc(var(--y, 8px) * -1)) scale(1.2); opacity: 0; } }
+.tkg-dus { animation-name: tkg-dus; animation-duration: var(--t, 1.4s); animation-timing-function: linear; animation-iteration-count: infinite; }
+@keyframes tkg-dus { 0% { transform: translate(0, calc(var(--y, 6px) * -1)); opacity: 0; } 20%, 80% { opacity: 1; } 100% { transform: translate(var(--x, 0px), var(--y, 6px)); opacity: 0; } }
+.tkg-titre { animation-name: tkg-titre; animation-duration: var(--t, 1s); animation-timing-function: linear; animation-iteration-count: infinite; }
+@keyframes tkg-titre { 0%, 40%, 100% { transform: translate(0, 0); } 5% { transform: translate(-1.3px, 0); } 10% { transform: translate(1.3px, 0); } 15% { transform: translate(-1px, 0); } 20% { transform: translate(1px, 0); } 25% { transform: translate(-.6px, 0); } 30% { transform: translate(.6px, 0); } }
+.tkg-ciz { stroke-dasharray: 100 110; animation-name: tkg-ciz; animation-duration: var(--t, 3s); animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+@keyframes tkg-ciz { 0%, 10% { stroke-dashoffset: 101; opacity: 1; } 50%, 82% { stroke-dashoffset: 0; opacity: 1; } 94%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+.tkg-belir { transform-box: fill-box; transform-origin: var(--o, 50% 50%); animation-name: tkg-belir; animation-duration: var(--t, 3s); animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+@keyframes tkg-belir { 0%, 8% { transform: scale(0); opacity: 0; } 16% { transform: scale(1.15); opacity: 1; } 22%, 78% { transform: scale(1); opacity: 1; } 88%, 100% { transform: scale(0); opacity: 0; } }
+.tkg-ucus { animation-name: tkg-ucus; animation-duration: var(--t, 3s); animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+@keyframes tkg-ucus { 0% { transform: translate(calc(var(--x, 14px) * -1), var(--y0, 0px)); opacity: 0; } 15%, 85% { opacity: 1; } 100% { transform: translate(var(--x, 14px), var(--y1, 0px)); opacity: 0; } }
+
+/* ---------------------------------------------------------------- 5-8. SINIF: SİMGEYE ÖZEL HAREKETLER */
+/* göz kırpma (Organlar, kedi) */
+@keyframes tka-goz { 0%, 44%, 52%, 100% { transform: scaleY(1); } 48% { transform: scaleY(.1); } }
+.tka-goz { transform-box: fill-box; transform-origin: center; animation: tka-goz 3.2s ease-in-out infinite; }
+/* Hisler ve Duygular: sevinç ↔ üzüntü */
+@keyframes tka-mutlu { 0%, 42%, 100% { opacity: 1; } 50%, 92% { opacity: 0; } }
+@keyframes tka-uzgun { 0%, 42%, 100% { opacity: 0; } 50%, 92% { opacity: 1; } }
+.tka-mutlu { animation: tka-mutlu 3.6s ease-in-out infinite; }
+.tka-uzgun { opacity: 0; animation: tka-uzgun 3.6s ease-in-out infinite; }
+/* meşale alevi */
+@keyframes tka-alev { 0%, 100% { transform: scale(1, 1); } 25% { transform: scale(.9, 1.08); } 50% { transform: scale(1.06, .95); } 75% { transform: scale(.95, 1.05); } }
+.tka-alev { transform-box: fill-box; transform-origin: 50% 100%; animation: tka-alev .9s ease-in-out infinite; }
+.tka-alev.a2 { animation-duration: .7s; animation-delay: -.3s; }
+/* basketbol: kavis çizip potadan geçer */
+@keyframes tka-atis {
+    0% { transform: translate(0, 0); opacity: 1; }
+    12% { transform: translate(5px, -11px); } 24% { transform: translate(11px, -19px); }
+    36% { transform: translate(17px, -23px); } 48% { transform: translate(22px, -23px); }
+    58% { transform: translate(26px, -19px); } 68% { transform: translate(26px, -10px); }
+    76% { transform: translate(26px, -4px); opacity: 1; }
+    84%, 100% { transform: translate(26px, -2px); opacity: 0; }
+}
+.tka-atis { animation: tka-atis 2.4s linear infinite; }
+/* mezuniyet kepi havaya */
+@keyframes tka-kep { 0%, 100% { transform: translate(0, 3px) rotate(0); } 40% { transform: translate(0, -5px) rotate(-12deg); } 60% { transform: translate(0, -6px) rotate(8deg); } 80% { transform: translate(0, 2px) rotate(0); } }
+.tka-kep { transform-box: fill-box; transform-origin: center; animation: tka-kep 2.2s ease-in-out infinite; }
+/* mevsimler: ağacın rengi, düşen yaprak, kar */
+@keyframes tka-mevsim { 0%, 20% { fill: #F1948A; } 25%, 45% { fill: #27AE60; } 50%, 70% { fill: #E67E22; } 75%, 95% { fill: #D6EAF8; } 100% { fill: #F1948A; } }
+.tka-mevsim { fill: #27AE60; animation: tka-mevsim 8s linear infinite; }
+@keyframes tka-yaprakdus { 0%, 50% { transform: translate(0, 0) rotate(0); opacity: 0; } 53% { opacity: 1; } 70% { transform: translate(3px, 12px) rotate(100deg); opacity: 1; } 73%, 100% { transform: translate(3px, 12px) rotate(100deg); opacity: 0; } }
+.tka-yaprakdus { transform-box: fill-box; transform-origin: center; animation: tka-yaprakdus 8s linear infinite; }
+@keyframes tka-kar { 0%, 74% { transform: translateY(-4px); opacity: 0; } 77% { opacity: 1; } 95% { transform: translateY(8px); opacity: 1; } 100% { transform: translateY(9px); opacity: 0; } }
+.tka-kar { animation: tka-kar 8s linear infinite; }
+.tka-kar.k2 { animation-delay: .3s; } .tka-kar.k3 { animation-delay: .6s; }
+/* yol çizgileri geriye akar (araç ileri gidiyor) */
+@keyframes tka-yol { to { stroke-dashoffset: 18; } }
+.tka-yol { animation: tka-yol .8s linear infinite; }
+/* trafik ışığı: kırmızı → yeşil → sarı */
+@keyframes tka-isik1 { 0%, 38% { opacity: 1; } 42%, 100% { opacity: .1; } }
+@keyframes tka-isik2 { 0%, 84% { opacity: .1; } 88%, 98% { opacity: 1; } 100% { opacity: .1; } }
+@keyframes tka-isik3 { 0%, 40% { opacity: .1; } 44%, 84% { opacity: 1; } 88%, 100% { opacity: .1; } }
+.tka-isik1 { animation: tka-isik1 4s linear infinite; }
+.tka-isik2 { opacity: .1; animation: tka-isik2 4s linear infinite; }
+.tka-isik3 { opacity: .1; animation: tka-isik3 4s linear infinite; }
+
+/* ================================================================ AKORDİYON (sınıf bölümleri) */
+.tkl-panel { padding-top: 6px; }
+.tkl-bolum { --gr: #5E81AC; margin-bottom: 5px; }
+.tkl-bolum[data-g="harf"] { --gr: #F39C12; }
+.tkl-bolum[data-g="g5"] { --gr: #F5A623; }  .tkl-bolum[data-g="g6"] { --gr: #3498DB; }
+.tkl-bolum[data-g="g7"] { --gr: #9B59B6; }  .tkl-bolum[data-g="g8"] { --gr: #27AE60; }
+.tkl-bolum[data-g="g9"] { --gr: #EF5350; }  .tkl-bolum[data-g="g10"] { --gr: #16A085; }
+/* başlık: kutucuk gibi, yuvarlak köşeli; açık bölüm kendi rengine boyanır */
+.tkl-grup { margin: 0; padding: 0 12px 0 0; border: 0; border-radius: 12px; gap: 8px; cursor: pointer;
+            transition: background-color .25s ease, color .25s ease, box-shadow .25s ease; }
+.tkl-grup-dug { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; margin: 0;
+                padding: 8px 6px 8px 10px; border: 0; background: transparent; color: inherit; cursor: pointer;
+                font: inherit; font-weight: 700; letter-spacing: .02em; text-align: left; border-radius: 12px; }
+.tkl-grup-dug:focus-visible { outline: 3px solid rgba(22, 160, 133, .45); outline-offset: -3px; }
+.tkl-grup-ad { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.tkl-grup .tki, .tkl-sayi, .tkl-grup-ok, .tkl-yil { flex: none; }
+.tkl-sayi { padding: 2px 9px; border-radius: 999px; background: rgba(255, 255, 255, .7);
+            font-size: .72rem; font-weight: 600; letter-spacing: 0; white-space: nowrap; }
+.tkl-grup-ok { flex: none; width: 20px; height: 20px; transition: transform .3s ease; }
+.tkl-grup:hover { box-shadow: inset 0 0 0 2px var(--gr); }
+.tkl-bolum.acik > .tkl-grup { background: var(--gr); color: #fff; box-shadow: 0 6px 16px rgba(46, 52, 64, .16); border-radius: 12px 12px 6px 6px; }
+.tkl-bolum.acik .tkl-grup-ok { transform: rotate(180deg); }
+.tkl-bolum.acik .tkl-sayi { background: rgba(255, 255, 255, .25); color: #fff; }
+/* açık başlıkta rozet ters döner: disk beyaz, rakam sınıf renginde */
+.tkl-bolum.acik > .tkl-grup .tka-rozet, .tkl-bolum.acik > .tkl-grup circle[fill]:not(.tka-halka) { fill: #fff; }
+.tkl-bolum.acik > .tkl-grup .tka-halka { stroke: rgba(255, 255, 255, .85); }
+.tkl-bolum.acik > .tkl-grup text { fill: var(--gr); }
+/* gövde: yükseklik yumuşak açılır (0fr → 1fr); kapalıyken içindekiler odaklanmaz, simgeler durur */
+.tkl-govde { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .32s cubic-bezier(.4, 0, .2, 1); }
+.tkl-bolum.acik > .tkl-govde { grid-template-rows: 1fr; }
+.tkl-govde-ic { min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 0s linear .32s; }
+.tkl-bolum.acik .tkl-govde-ic { visibility: visible; transition-delay: 0s; padding: 4px 0 2px; }
+.tkl-bolum:not(.acik) .tkl-govde .tki * { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .tkl-govde, .tkl-grup-ok, .tkl-grup { transition: none; } }

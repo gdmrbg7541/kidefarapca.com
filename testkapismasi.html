@@ -16,6 +16,7 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="oyunlar/testkapismasi.css?v=6">
+<link rel="stylesheet" href="oyunlar/tk_liste.css?v=3">
 </head>
 <body>
 <div id="game-wrapper">
@@ -73,7 +74,14 @@
          ekler. testkapismasi.js'ten ÖNCE yüklenmeli — ders listesi kurulurken
          window.TKAlfabe hazır olmalı. -->
     <script src="oyunlar/tk_alfabe.js?v=1"></script>
-    <script src="oyunlar/testkapismasi.js?v=9"></script>
+    <!-- 5-8. SINIF: ders ağacı + kelimeler muhadese/veri'den (öğretim yılı seçimi
+         sistem/sinifveri.js'ten). testkapismasi.js'ten ÖNCE yüklenmeli. -->
+    <script src="sistem/sinifveri.js?v=20260919d"></script>
+    <script src="oyunlar/tk_ortaokul.js?v=1"></script>
+    <script src="oyunlar/testkapismasi.js?v=11"></script>
+    <!-- DERS LİSTESİ: her dersin kendi animasyonlu simgesiyle açılır liste.
+         Asıl <select> yerinde kalır (gizli); bu betik onun üstüne kurulur. -->
+    <script src="oyunlar/tk_liste.js?v=3"></script>
     <script src="sistem/geri.js?v=20260915a"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.

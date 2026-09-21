@@ -36,9 +36,13 @@ kidefarapca.com/
 │   └── _eski/               30.07 tarihli eski alfabe kopyaları (kullanılmıyor)
 ├── dilbilgisi/               Dilbilgisi konuları, harf-i cer
 ├── oyunlar/                  Test kapışması, hafıza kartları, renkler, kavram…
+│                             (test kapışması: tk_alfabe.js harf soruları,
+│                              tk_ortaokul.js 5-8. sınıf dersleri — kelimeler
+│                              muhadese/veri'den, tk_liste.js/css simgeli ders listesi)
 │                             (hangiharf ve klavyeoyunu okumayazma/'ya taşındı)
 ├── ydt/                      YDT Arapça ve alt çalışmaları
-├── degerler/                 Kısa sureler, namaz, KSSİ
+├── degerler/                 Kısa sureler, namaz, KSSİ, tecvid
+│                             (tecvid.css/js + tecvid.pdf; tecvid.html kökte)
 ├── kitap/                    Flipbook (FlipHTML5 köprüsü)
 ├── sunum/                    Slayt görüntüleyici: sunum.css/js
 │                             + slayt PDF'leri (sunum.html kökte)
@@ -108,3 +112,36 @@ CSS/JS/ses dosyaları tek klasörde toplandı: `okumayazma/`.
 Sayfaların kendisi kökte kaldı, adresler değişmedi. `hizlioku.html` (hızlı
 okuma) `ydt/` klasöründe bırakıldı: sınav hazırlığı içeriğidir, harf öğretimi
 değil.
+
+## Kitap etkinlikleri klasörü (21.09.2026)
+
+İmam Hatip 7, 9 ve 10. sınıf **ders kitabına giren dijital etkinlikler**
+(📖Komisyon çalışmaları) `kitapetkinlikleri/` klasöründe durur. Bunlar
+FlipHTML5 paketi gibi **hazır paketlerdir**: her biri kendi `index.html`'i,
+sesleri ve görselleriyle birlikte klasör yapısı korunarak kopyalandı. Bu
+yüzden "HTML kökte durur" kuralının **bilinçli istisnasıdır**; paketlerin
+içindeki göreli adresler (`index.html`, `1.png`, `yonerge.mp3`) olduğu gibi
+çalışır.
+
+    kitapetkinlikleri/
+    ├── 7/   unite_1_oyunlar … unite_4_oyunlar      (ünite oyun menüleri)
+    │        unitesonudeger_1 … unitesonudeger_4     (ünite sonu değerlendirme)
+    ├── 9/   arp09.0N_sXXX_unitesonudeger_N          (ünite sonu, kitap sayfasıyla)
+    │        arp09.0N.M_sXXX_hafizakarti_K           (hafıza kartları)
+    │        ek_kelime_oyunlari, ek_harf_yarisi      (1. ünite ek etkinlikleri)
+    └── 10/  unitesonudeger_1 … _4, 10.N.M_hafizakarti,
+             arp10NN_sXX_eYY_…  (kitap sayfası + etkinlik numarası), 10.1_harf_avi, 10.1_bas_harf
+
+Ana sayfadaki liste `sistem/kitapetkinlik.js` içindeki `KITAP` verisinden
+basılır (sınıf → ünite → etkinlik, sayfa numarasıyla). **Yeni etkinlik:**
+paketi ilgili sınıf klasörüne kopyala, `KITAP[sınıf].uniteler[i].etk`
+dizisine bir satır ekle.
+
+Kopyalarken yapılanlar (asıllar değişmedi):
+* 1000 px'ten büyük görseller aynı ad ve biçimle küçültüldü (108 → 74 MB).
+* Yazı tipi adları harfe duyarlı sunucu için düzeltildi (`ARAKOM.TTF` →
+  `arakom.ttf`; Mac'te fark edilmiyor, sitede 404 veriyordu).
+* Üç betik yazım hatası düzeltildi (9. sınıf 3. ünite Sürükle-Bırak,
+  4. ünite Boşluk Doldurma) — asıllarında da düzeltilmesi gerekir.
+* 9/1 `yeni test.html` → `test.html`, 10/1 `suruklebirak.txt` → `.html`
+  (menüler bu adları arıyordu).
