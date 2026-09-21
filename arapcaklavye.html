@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Arapça Klavye — Kidef Arapça</title>
+  <meta name="description" content="Dokunarak ya da fareyle harekeli Arapça yaz; mühürler, Kur'an işaretleri, tatvil. Word, Google Dokümanlar ve Not Defteri'ne okunaklı yazı tipiyle aktar.">
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FV9JD15KLW');
+  </script>
+  <link rel="stylesheet" href="sinifici/arapcaklavye.css?v=3">
+  <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
+  <link rel="stylesheet" href="arakom.css?v=2">
+</head>
+<body>
+
+<header class="ust">
+  <div class="ust-ic">
+    <a href="index.html" class="ust-geri" onclick="return kidefAnasayfa(event)" title="Ana sayfaya dön" aria-label="Ana sayfaya dön">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5.4"/><path d="M11.8 5.6 5 12l6.8 6.4"/></svg><span>Ana sayfa</span>
+    </a>
+    <div class="ust-sol">
+      <h1>Arapça Klavye</h1>
+      <p>Harfe dokun, harekeyi üstteki hareke alanından ekle. Yazdığını tek tuşla Word'e, Dokümanlar'a ya da mesaja aktar.</p>
+    </div>
+    <button type="button" class="ust-dug" id="tamEkran" title="Tam ekran (akıllı tahta)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Tam ekran</span>
+    </button>
+  </div>
+</header>
+
+<main id="ak">
+  <!-- ===================== YAZI ALANI ===================== -->
+  <section class="yazi" aria-label="Yazı alanı">
+    <div class="arac">
+      <div class="kopya-grup">
+        <button type="button" id="kopyala" class="ana">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2.2"/><path d="M16 8V5.8A1.8 1.8 0 0 0 14.2 4H5.8A1.8 1.8 0 0 0 4 5.8v8.4A1.8 1.8 0 0 0 5.8 16H8"/></svg>
+          <span>Kopyala</span>
+        </button>
+        <button type="button" id="hedefDug" class="hedef-dug" aria-haspopup="true" aria-expanded="false" title="Nereye yapıştıracaksın?">
+          <span id="hedefAd">Word</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </div>
+      <button type="button" id="indirDug" aria-haspopup="true" aria-expanded="false" title="Dosya olarak kaydet">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg><span>Kaydet</span>
+      </button>
+      <span class="ayrac"></span>
+      <button type="button" id="geriAl" title="Geri al (Ctrl+Z)" aria-label="Geri al"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
+      <button type="button" id="yinele" title="Yinele (Ctrl+Y)" aria-label="Yinele"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></svg></button>
+      <button type="button" id="harekesiz" title="Harekeleri kaldır (seçili kısımdan ya da tümünden)">
+        <span class="ar-ik" dir="rtl">كَ→ك</span><span class="yazi-k">Harekeyi kaldır</span>
+      </button>
+      <span class="ayrac"></span>
+      <button type="button" id="kucult" title="Yazıyı küçült" aria-label="Yazıyı küçült">A−</button>
+      <button type="button" id="buyut" title="Yazıyı büyüt" aria-label="Yazıyı büyüt">A+</button>
+      <div class="yazi-tipi" role="group" aria-label="Yazı tipi">
+        <button type="button" data-yt="arakom" aria-pressed="true" title="Sitenin yazı tipi">Arakom</button>
+        <button type="button" data-yt="amiri" aria-pressed="false" title="Kur'an işaretlerini de gösteren klasik nesih">Amiri</button>
+      </div>
+      <button type="button" id="temizle" class="tehlike" title="Hepsini sil">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg><span class="yazi-k">Temizle</span>
+      </button>
+    </div>
+
+    <div class="metin-kutu">
+      <textarea id="metin" dir="rtl" lang="ar" inputmode="none" autocomplete="off" autocorrect="off" autocapitalize="off"
+                spellcheck="false" placeholder="اُكْتُبْ هُنا…" aria-label="Arapça metin"></textarea>
+    </div>
+
+    <div class="alt-cubuk">
+      <span id="sayac" aria-live="polite"></span>
+      <label class="cihaz-kl" title="Tabletin kendi klavyesini de aç (Türkçe yazmak için)">
+        <input type="checkbox" id="cihazKlavye"> Cihaz klavyesi
+      </label>
+      <span class="imlec" aria-label="İmleci taşı">
+        <button type="button" id="imlecSag" title="İmleç sağa (önceki harf)" aria-label="İmleç sağa">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button type="button" id="imlecSol" title="İmleç sola (sonraki harf)" aria-label="İmleç sola">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      </span>
+    </div>
+  </section>
+
+  <!-- ===================== SEKMELER (hep açık) · HAREKE ALANI · KLAVYE ===================== -->
+  <nav class="kl-sekmeler" id="klSekmeler" aria-label="Klavye sayfaları"></nav>
+  <section class="kl-alan" aria-label="Klavye">
+    <div class="panel" id="panel" role="group" aria-label="Harekeler"></div>
+    <div class="klavye" id="klavye">
+      <div class="kl-govde" id="klGovde"></div>
+    </div>
+  </section>
+</main>
+
+<!-- açılır menüler -->
+<div id="hedefMenu" class="acilir" role="menu" hidden></div>
+<div id="indirMenu" class="acilir" role="menu" hidden></div>
+<div id="uzunMenu" class="uzun-menu" hidden></div>
+
+<!-- bilgi penceresi -->
+<div id="bilgi" class="perde" hidden>
+  <div class="bilgi-kutu" role="dialog" aria-modal="true" aria-labelledby="bilgiBaslik">
+    <button type="button" class="bilgi-kapat" id="bilgiKapat" aria-label="Kapat">✕</button>
+    <div class="bilgi-svg" id="bilgiSvg"></div>
+    <h2 id="bilgiBaslik"></h2>
+    <div class="bilgi-metin" id="bilgiMetin"></div>
+    <div class="bilgi-alt" id="bilgiAlt"></div>
+  </div>
+</div>
+
+<div id="bildirim" class="bildirim" role="status" aria-live="polite" hidden></div>
+
+<script src="sinifici/arapcaklavye.js?v=3"></script>
+<script src="sistem/geri.js?v=20260915a"></script>
+</body>
+</html>
