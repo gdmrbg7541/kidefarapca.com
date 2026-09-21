@@ -1,0 +1,4740 @@
+/* ==========================================================================
+   TAMLAMA VE CÜMLELER — tamlamavecumleler.js
+   --------------------------------------------------------------------------
+   Sayfanın iki gömülü <script> bloğu buraya AYNEN taşındı; sıraları korundu:
+       1) Büyütme (zoom) motoru + İ'rab penceresi
+       2) Test paneli (10 soruluk tur, 100 puan) + görev köprüsü raporu
+   Dosya gövdenin sonunda, sistem/geri.js ve sistem/gorevkopru.js'ten ÖNCE
+   yüklenir; böylece eski gömülü hâliyle aynı anda çalışır.
+   ========================================================================== */
+
+/* ==================== 1) BÜYÜTME MOTORU + İ'RAB ==================== */
+/* ============================================================
+   1) İ'RAB POPUP
+   ============================================================ */
+(function () {
+  var irab = document.getElementById('tcPerde');
+  var test = document.getElementById('tcSinavPerde');
+  var sar  = document.querySelector('main.tc-sar');
+  var don  = document.getElementById('tcTabloDon');
+  /* SAYFANIN ALTINDA TEK GÖVDE DURUR: ya tablo, ya i'rab, ya test.
+     Hiçbiri "pencere" değil — üstteki başlık satırı her üçünde de aynı
+     yerde kalıyor, değişen yalnız altı. */
+  function ac(el, a) {
+    if (!el) return;
+    el.classList.toggle('acik', a);
+    el.setAttribute('aria-hidden', a ? 'false' : 'true');
+  }
+  function govde(ad) {
+    if (ad !== 'tablo' && window.tcUzaklas) window.tcUzaklas();
+    /* Gövde değişince i'rab büyütmesi de bırakılır: kumanda şeridi
+       sabit konumlu, yoksa tablo sayfasının üstünde asılı kalıyor. */
+    if (ad !== 'irab' && window.tcIrabKapat) window.tcIrabKapat();
+    ac(irab, ad === 'irab');
+    ac(test, ad === 'test');
+    if (sar) sar.hidden = (ad !== 'tablo');
+    if (ad === 'test' && window.tcTestHazirla) window.tcTestHazirla();
+    /* BAŞLIĞIN DURUMU: tablodayken "buradasın" vurgusu, başka
+       bölümdeyken "‹ Tabloya dön" tuşu. Sayfa tabloyla açıldığı için
+       ilk hâl vurgulu olan. */
+    if (don) {
+      don.classList.toggle('tc-burada', ad === 'tablo');
+      don.classList.toggle('tc-donus',  ad !== 'tablo');
+      don.title = (ad === 'tablo')
+        ? 'Tamlama ve cümleler tablosu — buradasın'
+        : 'Tamlama ve cümleler tablosuna dön';
+      don.setAttribute('aria-label', don.title);
+    }
+    if (window.tcPilTazele) window.tcPilTazele(ad);
+  }
+  /* BAŞLIK = ÇIKIŞ. Ayrı bir çarpı yok: sayfanın adı zaten hep orada
+     duruyor ve ona dokunmak dokunmatik büyütmesi çalışan asıl tabloya
+     döndürüyor. */
+  if (don) don.addEventListener('click', function () { govde('tablo'); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if ((irab && irab.classList.contains('acik')) ||
+        (test && test.classList.contains('acik'))) govde('tablo');
+  });
+  /* Açılış: sayfa tabloyla geliyor — başlık da o durumu göstersin. */
+  govde('tablo');
+  window.tcGovde = govde;
+  window.tcIrabGoster = function (a) { govde(a ? 'irab' : 'tablo'); };
+})();
+
+/* ============================================================
+   1c) PANEL BÖLÜMLERİ · TERİM BİLGİSİ · ÖRNEK HAVUZU FİLTRESİ
+   ------------------------------------------------------------
+   Üç iş bir arada:
+     (1) üst sekmeler bölümler arasında geçiş yapar;
+     (2) ⓘ tuşları terim balonunu açar;
+     (3) filtre üç eksende havuzu süzer ve kartları basar.
+   ============================================================ */
+(function () {
+  var ustSek = document.getElementById('tcUstSek');
+  if (!ustSek) return;
+
+  /* ---------- (1) bölüm sekmeleri ---------- */
+  var bolumler = [].slice.call(document.querySelectorAll('.tc-bolum'));
+  /* DİKKAT: sayfada iki .tc-pop-govde var (sınav penceresi + i'rab
+     penceresi). Kapsamsız seçici sınavınkini buluyordu; i'rab
+     panelinin gövdesi #tcPerde altındakidir. */
+  var govde = document.querySelector('#tcPerde .tc-pop-govde');
+  /* ---------- TAHLİL GÖRÜNÜMLERİ ----------
+     'hik' hikâye, 'kesif' ismin sonları animasyonu, 'cumle' beş cümle.
+     Üçü de tam sayfa; hangisinin açık olduğu bölümün data-th'inde durur. */
+  function thBolum() { return document.querySelector('.tc-bolum[data-bolum="tahlil"]'); }
+  function thGorunumHangi() {
+    var b = thBolum();
+    return (b && b.getAttribute('data-th')) || 'hik';
+  }
+  function thGorunum(g) {
+    var b = thBolum();
+    if (!b || ['hik','kesif','cumle'].indexOf(g) < 0) return;
+    b.setAttribute('data-th', g);
+    if (g === 'kesif') kesifGiris();
+    if (govde) govde.scrollTop = 0;   /* her sekme baştan okunur */
+    seritTazele('tahlil');
+  }
+  window.tcTahlilGorunum = thGorunum;
+
+  function bolumAc(ad) {
+    bolumler.forEach(function (b) { b.hidden = (b.getAttribute('data-bolum') !== ad); });
+    [].forEach.call(ustSek.children, function (d) {
+      var s = d.getAttribute('data-bolum') === ad;
+      d.classList.toggle('aktif', s);
+      d.setAttribute('aria-selected', s ? 'true' : 'false');
+    });
+    /* Keşif yalnız kendi sekmesinde kurulur (bkz. thGorunum). */
+    seritTazele(pilKodu(aktifKod));
+    if (govde) govde.scrollTop = 0;
+  }
+  ustSek.addEventListener('click', function (e) {
+    var d = e.target.closest ? e.target.closest('.tc-us') : null;
+    if (d) bolumAc(d.getAttribute('data-bolum'));
+  });
+  window.tcBolumAc = bolumAc;
+
+  /* ---------- alt sekme: İsim / Fiil tablosu ---------- */
+  /* Alt sekme beş düğme: iki genel tablo + üç basamağın kelime tablosu.
+     Basamak düğmeleri aynı paneli açıp içindeki kelimeyi değiştirir. */
+  var tabloSek = document.getElementById('tcTabloSek');
+  function panelAc(d) {
+    var ad = d.getAttribute('data-panel');
+    [].forEach.call(tabloSek.querySelectorAll('.tc-asd'), function (x) {
+      x.classList.toggle('aktif', x === d);
+      x.setAttribute('aria-selected', x === d ? 'true' : 'false');
+    });
+    document.querySelectorAll('.tc-tablo-panel').forEach(function (x) {
+      x.hidden = (x.getAttribute('data-panel') !== ad);
+    });
+    var sv = d.getAttribute('data-sev');
+    if (sv && window.tcSeviyeSec) window.tcSeviyeSec(sv, 0);
+    seritTazele(pilKodu(aktifKod));
+  }
+  if (tabloSek) {
+    tabloSek.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('[data-terim]')) return;
+      var d = e.target.closest ? e.target.closest('.tc-asd') : null;
+      if (d) panelAc(d);
+    });
+  }
+  window.tcPanelAc = function (ad) {
+    var d = tabloSek && tabloSek.querySelector('.tc-asd[data-panel="' + ad + '"]');
+    if (d) panelAc(d);
+  };
+
+  /* ==================================================================
+     KEŞİF PERDESİ — Giriş, gösterim basamağı
+     ------------------------------------------------------------------
+     Tablo, dersin başlangıcı değil SONUCU olsun diye: başlık açılınca
+     önce VERİ gelir — üç cümle, üçünde de AYNI kelime, yalnız sonu
+     değişmiş. Değişen son hâl renginde, yanında anlamı canlandıran
+     sahne; altında aynı kelimenin üç yazılışını döndüren geçit, en
+     altta kuralın tek cümlelik hâli. SORU-ŞIK YOK: burası test değil
+     gösterim — sınama işi şeritteki Test penceresinin.
+     İki adım şeritteki sırayla: İsim çekirdek karşıtlığı kurar → Fiil
+     aynı ilkeyi başka takıma taşır (merfu · mansub · meczum).
+     ================================================================== */
+  var KESIF = {
+    isim: {
+      ad: 'İsmin sonları',
+      /* Son harf harekesiyle BİRLİKTE sarılı: çıplak hareke tek başına
+         sarılınca noktalı daire çiziliyor. Satır içi <b> bitişmeyi
+         bozmaz (ölçüldü); rengi satırın hâlinden alır (tc-kh-*). */
+      veri: ['جَاءَ الْمُعَلِّ<b class="tc-kesif-son">مُ</b>|Öğretmen geldi|gel|merfu',
+             'رَأَيْتُ الْمُعَلِّ<b class="tc-kesif-son">مَ</b>|Öğretmeni gördüm|gor|mansub',
+             'مَرَرْتُ بِالْمُعَلِّ<b class="tc-kesif-son">مِ</b>|Öğretmene uğradım|ugra|mecrur'],
+      metin:'Gövde üç cümlede de aynı: <b>م ع ل م</b>. Değişen yalnız <b>son</b> — bu değişmenin adı ' +
+            '<b>i\'rab</b>. Yapan ötre alır (<b>merfu</b>), yapılan üstün alır (<b>mansub</b>), ' +
+            'harf-i cerden sonra esre gelir (<b>mecrur</b>). Tekilde, ikilde ve çoğulda nasıl ' +
+            'göründüğü tabloda.',
+      gecit: { baslik:'Aynı kelime — üç yazılış', ogeler:[
+        { ar:'الْمُعَلِّ<b class="tc-kg-son">مُ</b>', tr:'öğretmen — yapan',              rozet:'Merfu · ötre',  hal:'merfu'  },
+        { ar:'الْمُعَلِّ<b class="tc-kg-son">مَ</b>', tr:'öğretmeni — yapılan',           rozet:'Mansub · üstün', hal:'mansub' },
+        { ar:'الْمُعَلِّ<b class="tc-kg-son">مِ</b>', tr:'öğretmene — harf-i cerden sonra', rozet:'Mecrur · esre',  hal:'mecrur' } ] }
+    },
+    fiil: {
+      ad: 'Fiilin sonları',
+      veri: ['يَكْتُ<b class="tc-kesif-son">بُ</b>|yazıyor|yaz|merfu',
+             'لَنْ يَكْتُ<b class="tc-kesif-son">بَ</b>|yazmayacak|yazmaz|mansub',
+             'لَمْ يَكْتُ<b class="tc-kesif-son">بْ</b>|yazmadı|yazmadi|meczum'],
+      metin:'Aynı ilke fiilde de işliyor, yalnız takım farklı: esre fiile girmez — <b>mecrur yalnız ' +
+            'isimde</b> olur. Onun yerine sonu sükûnla biten <b>meczum</b> var; o da yalnız muzari ' +
+            'fiilde. <span dir="rtl" class="tc-ic">لَنْ</span> nasb eder, <span dir="rtl" class="tc-ic">لَمْ</span> ' +
+            'cezm eder. Fiilin takımı: <b>merfu · mansub · meczum</b>. Tamamı tabloda.',
+      gecit: { baslik:'Aynı fiil — üç yazılış', ogeler:[
+        { ar:'يَكْتُ<b class="tc-kg-son">بُ</b>',      tr:'yazıyor',         rozet:'Merfu · ötre',   hal:'merfu'  },
+        { ar:'لَنْ يَكْتُ<b class="tc-kg-son">بَ</b>', tr:'asla yazmayacak', rozet:'Mansub · üstün', hal:'mansub' },
+        { ar:'لَمْ يَكْتُ<b class="tc-kg-son">بْ</b>', tr:'yazmadı',         rozet:'Meczum · sükûn', hal:'meczum' } ] }
+    }
+  };
+
+  /* ---------- CÜMLE SAHNELERİ ----------
+     Her cümlenin yanında anlamını CANLANDIRAN küçük bir sahne durur:
+     "geldi" gelir, "gördüm" bakar, "uğradım" yanına uğrayıp geçer;
+     "yazıyor" yazar, "لَنْ" kalemi daha yolda keser, "لَمْ" yazılmış
+     hiçbir şey bırakmaz. Renk, satırın HÂLİNİN rengidir — tabloda
+     karşılaşacağı renkler burada sessizce tanıtılır. */
+  var SAHNE = {
+    gel:
+      '<svg viewBox="0 0 120 76" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M6 68h108"/>' +
+      '<path d="M92 68V26a12 12 0 0 1 24 0v42" opacity=".55"/>' +
+      '<g class="tcs-gel-adam"><circle cx="24" cy="26" r="7"/>' +
+      '<path d="M24 33v18M24 39l-8 6M24 39l9 5M24 51l-7 13M24 51l8 13"/></g>' +
+      '<path class="tcs-gel-iz" d="M6 34h9M3 44h9" opacity="0"/>' +
+      '</svg>',
+    gor:
+      '<svg viewBox="0 0 120 76" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M5 38c8-10 24-10 32 0c-8 10-24 10-32 0z"/>' +
+      '<circle class="tcs-gor-bebek" cx="21" cy="38" r="4.4" fill="currentColor" stroke="none"/>' +
+      '<path class="tcs-gor-bakis" d="M42 38H72" stroke-dasharray="4 7" pathLength="1"/>' +
+      '<circle class="tcs-gor-halo" cx="94" cy="38" r="25" stroke-width="1.6" opacity="0"/>' +
+      '<g><circle cx="94" cy="24" r="7"/><path d="M94 31v18M94 37l-8 5M94 37l8 5M94 49l-7 13M94 49l7 13"/></g>' +
+      '</svg>',
+    ugra:
+      '<svg viewBox="0 0 120 76" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M6 68h108"/>' +
+      '<g opacity=".85"><circle cx="88" cy="24" r="7"/><path d="M88 31v18M88 37l-9 4M88 37l9 4M88 49l-7 14M88 49l7 14"/></g>' +
+      '<g class="tcs-ugra-adam"><circle cx="0" cy="26" r="7"/>' +
+      '<path d="M0 33v18M0 39l-8 5M0 39l8 5M0 51l-7 13M0 51l7 13"/></g>' +
+      '<path class="tcs-ugra-selam" d="M70 18l5-5M75 24l7-3" opacity="0"/>' +
+      '</svg>',
+    /* Yazı sahnelerinde kalem TEK kalıptır (uç kaması + gövde + kapak):
+       üç sahnede aynı el, aynı kalem. "Yazıyor"da çizgi düz bant değil
+       EL YAZISI dalgasıdır ve Arapça gibi SAĞDAN SOLA akar; satır
+       bitince kalem alt satıra iner, kısa bir başlangıç yazar, kalkar.
+       Çizgi dashoffset ile kalemin ucundan akar (bkz. tcsYaz* CSS). */
+    yaz:
+      '<svg viewBox="0 0 120 76" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="10" y="12" width="100" height="54" rx="7" opacity=".55"/>' +
+      '<path d="M22 28h76M22 52h76" opacity=".18"/>' +
+      '<path class="tcs-yaz-cizgi" pathLength="1" d="M98 39c-3.5-6.5-7 4.5-11 1.5c-3-2.2-2.5-6.5-6.5-6c-4 .5-4.5 6.8-9 6.3c-4.5-.5-4-7-9-6.2c-5 .8-5 7.4-10 6.6c-5-.8-4.5-6.8-9.5-6c-5 .8-6.5 6.3-11 4.3c-3-1.3-4.5-4-10-2.5"/>' +
+      '<path class="tcs-yaz-cizgi2" pathLength="1" d="M98 52c-4-5-8 3.5-12 1c-3.5-2-4-5-8-3.5c-3 1.2-4 3.8-6 3"/>' +
+      '<g class="tcs-yaz-kalem"><g class="tcs-yaz-el">' +
+      '<path d="M98 39L102.5 35.8L99.4 33.6z"/>' +
+      '<path d="M101 34.7L108.3 24M108.3 24l4.3 2.9"/>' +
+      '</g></g>' +
+      '</svg>',
+    yazmaz:
+      '<svg viewBox="0 0 120 76" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="10" y="12" width="100" height="54" rx="7" opacity=".55"/>' +
+      '<path d="M22 40h76" opacity=".15" stroke-dasharray="3 8"/>' +
+      '<g class="tcs-yasak-kalem">' +
+      '<path d="M30 44L34.5 40.8L31.4 38.6z"/>' +
+      '<path d="M33 39.7L40.3 29M40.3 29l4.3 2.9"/>' +
+      '</g>' +
+      '<g class="tcs-yasak"><circle cx="62" cy="39" r="17"/><path d="M50 51 74 27"/></g>' +
+      '</svg>',
+    yazmadi:
+      '<svg viewBox="0 0 120 76" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="10" y="12" width="100" height="54" rx="7" opacity=".55"/>' +
+      '<path class="tcs-hayal" d="M22 34h76" stroke-dasharray="4 7" opacity="0"/>' +
+      '<g opacity=".8">' +
+      '<path d="M40 61L45.5 61.5L44.5 57.8z"/>' +
+      '<path d="M45 59.7L66 54M66 54l4.6 2.7"/>' +
+      '</g>' +
+      '</svg>'
+  };
+
+
+  /* Giriş İKİ adım: isim ve fiil. Hamse ile kelime buradan çıkarıldı —
+     zincirin kurduğu kural (sonu göreve göre değişir) bu ikisinde zaten
+     kuruluyor; kalan ikisi keşif değil, tablonun kendi konusuydu. */
+  var KESIF_SIRA = ['isim', 'fiil'];
+  var KESIF_ANAHTAR = 'kaIrabKesif';
+  var kesifGecti = {};
+  try {
+    kesifGecti = JSON.parse(localStorage.getItem(KESIF_ANAHTAR) || '{}') || {};
+  } catch (e) { kesifGecti = {}; }
+  function kesifYaz() {
+    try { localStorage.setItem(KESIF_ANAHTAR, JSON.stringify(kesifGecti)); } catch (e) {}
+  }
+  function kesifBaslanmis() {
+    for (var i = 0; i < KESIF_SIRA.length; i++) if (kesifGecti[KESIF_SIRA[i]]) return true;
+    return false;
+  }
+
+  var kGovde = document.getElementById('tcKesifGovde');
+  var kNot   = document.getElementById('tcKesifNot');
+  var kKar   = document.getElementById('tcKesif');
+  var kAd = KESIF_SIRA[0], kCizili = false;
+
+  /* ---------- SONLAR: İSİM ile FİİL YAN YANA ----------
+     Üç satır, iki sütun. İlk iki satırda isim ve fiil AYNI alâmeti
+     alır (ötre, üstün); üçüncü satırda ayrışırlar — isimde mecrur
+     (esre), fiilde meczum (sükûn). Ders bu farkın üstüne kurulu,
+     o yüzden üçüncü satır ayrı bir başlıkla ve vurguyla geliyor.
+     Satırlar adım adım açılır (data-a). */
+  var HAL_SIRA = [
+    { hal:'merfu',  ad:'Merfu',  isimAl:'ötre',  fiilAl:'ötre'  },
+    { hal:'mansub', ad:'Mansub', isimAl:'üstün', fiilAl:'üstün' },
+    { hal:'ucuncu', ad:'Üçüncü hâl',
+      isimHal:'mecrur', isimAd:'Mecrur', isimAl:'esre',
+      fiilHal:'meczum', fiilAd:'Meczum', fiilAl:'sükûn' }
+  ];
+
+  /* "جَاءَ ...|Öğretmen geldi|gel|merfu" -> parçalar */
+  function ayir(x) {
+    var p = String(x || '').split('|');
+    return { ar:p[0] || '', tr:p[1] || '', sahne:p[2] || '', hal:p[3] || 'merfu' };
+  }
+  /* Hâl künyesi kutunun İÇİNDE ve EN SAĞDA: cümlenin üstünde ayrı bir
+     satır tutmuyor, çapraz duran bir etiket gibi cümleye iliştiriliyor. */
+  function hucre(veri, yan, etiket) {
+    var d = ayir(veri);
+    return '<div class="ks-h ks-' + yan + ' tc-kh-' + d.hal + '">' +
+      (SAHNE[d.sahne]
+        ? '<span class="ks-sahne tcs-' + d.hal + '" aria-hidden="true">' + SAHNE[d.sahne] + '</span>'
+        : '') +
+      '<span class="ks-ar" dir="rtl">' + d.ar + '</span>' +
+      '<span class="ks-tr">' + d.tr + '</span>' +
+      (etiket || '') + '</div>';
+  }
+
+  /* Görüldü işareti: şeritteki "Sonlar" pilinin ✓'i ve açılışta hangi
+     başlığa gidileceği (kesifBaslanmis) bundan besleniyor. */
+  function kesifIsaretle() {
+    if (kesifGecti.isim && kesifGecti.fiil) return;
+    kesifGecti.isim = 1; kesifGecti.fiil = 1;
+    kesifYaz();
+  }
+
+  function kesifCiz() {
+    if (!kGovde) return;
+    kCizili = true;
+    var iv = KESIF.isim.veri, fv = KESIF.fiil.veri;
+    kGovde.innerHTML = HAL_SIRA.map(function (h, i) {
+      var sonMu = (h.hal === 'ucuncu');
+      var etiket = function (yan) {
+        var ad = sonMu ? (yan === 'i' ? h.isimAd : h.fiilAd) : h.ad;
+        var al = (yan === 'i') ? h.isimAl : h.fiilAl;
+        var hl = sonMu ? (yan === 'i' ? h.isimHal : h.fiilHal) : h.hal;
+        return '<span class="ks-et tc-kh-' + hl + '"><b>' + ad + '</b>' +
+               '<small>' + al + '</small></span>';
+      };
+      return (sonMu
+        ? '<div class="ks-ayrim adim" data-g="' + (i + 1) + '">' +
+          '<span>Üçüncü hâlde <b>yollar ayrılır</b></span></div>'
+        : '') +
+        '<div class="ks-sat adim' + (sonMu ? ' ks-son' : '') + '" data-g="' + (i + 1) + '">' +
+        '<div class="ks-yan ks-yan-i">' + hucre(iv[i], 'i', etiket('i')) + '</div>' +
+        '<div class="ks-orta" aria-hidden="true"></div>' +
+        '<div class="ks-yan ks-yan-f">' + hucre(fv[i], 'f', etiket('f')) + '</div>' +
+        '</div>';
+    }).join('');
+    /* Açıklama duruşa göre değişiyor (bkz. KES_NOT). */
+    if (kNot) kNot.innerHTML = KES_NOT[kesifYakinHangi()];
+    kesifIsaretle();
+  }
+
+  /* ---------- YAKINLAŞMA ----------
+     Üç örnek de baştan açık (adım adım açılış kalktı). Üç duruş var:
+       ''  karşılaştırma — isim ve fiil yan yana,
+       'i' yalnız isim  — üç hâl tek sütunda, iri,
+       'f' yalnız fiil.
+     Ders bu sırayla ilerliyor: önce ismin KENDİ İÇİNDE ne değiştiği
+     (ötre → üstün → esre), sonra aynı sorunun fiildeki karşılığı,
+     en sonunda ikisinin karşılaştırması. */
+  /* KISA TUTULUYOR: ayrıntı tabloların işi. Burada yalnız iki şey
+     vurgulanıyor — değişenin SON olduğu (i'rab) ve üçüncü hâlde
+     isimle fiilin AYRILDIĞI. */
+  var KES_NOT = {
+    '': 'Gövde değişmiyor, değişen yalnız <b>son</b> — bunun adı <b>i\'rab</b>. ' +
+        'İlk iki hâl isimde de fiilde de aynı; ayrım üçüncüde: ' +
+        '<b>isimde mecrur, fiilde meczum</b>.',
+    i:  'Aynı kelime, üç ayrı <b>son</b>: ötre · üstün · esre. ' +
+        'Kelimenin görevini söyleyen şey o son harekedir.',
+    f:  'Aynı fiil, üç ayrı <b>son</b>: ötre · üstün · sükûn. ' +
+        'Fiilin sonunu, başına gelen edat değiştirir.'
+  };
+  /* Kumandanın gezindiği sıra: isim → karşılaştırma → fiil, uçlarda döner. */
+  var KES_SIRA = ['i', '', 'f'];
+  function kesifYakinHangi() {
+    return (kKar && kKar.getAttribute('data-yak')) || '';
+  }
+  function kesifYakin(v) {
+    if (!kKar) return;
+    if (!kCizili) kesifCiz();
+    if (v === 'i' || v === 'f') kKar.setAttribute('data-yak', v);
+    else { kKar.removeAttribute('data-yak'); v = ''; }
+    if (kBasI) kBasI.setAttribute('aria-pressed', v === 'i' ? 'true' : 'false');
+    if (kBasF) kBasF.setAttribute('aria-pressed', v === 'f' ? 'true' : 'false');
+    if (kNot) kNot.innerHTML = KES_NOT[v];
+    seritTazele('tahlil');
+  }
+  /* SEKME MANTIĞI — iki başlık iki sekme, ikisi birden açık olabilir:
+       ikisi de açıkken bir başlığa basmak  -> yalnız o yan kalır,
+       tek yan açıkken ÖBÜR başlığa basmak  -> ikisi de açılır,
+       tek yan açıkken AYNI başlığa basmak  -> seçim kalkar, ikisi açılır.
+     Yani yakınlaşmış hâldeyken hangi başlığa basılırsa basılsın
+     karşılaştırmaya dönülür; kapanıp içerik kaybolan bir durum yok. */
+  function kesifCevir(v) { kesifYakin(kesifYakinHangi() ? '' : v); }
+  /* Eski çağrılar sürsün: kesifBasla('isim'|'fiil') artık o yana yakınlaşır. */
+  function kesifBasla(ad) {
+    if (!kCizili) kesifCiz();
+    kAd = (ad === 'fiil') ? 'fiil' : 'isim';
+    kesifYakin(kAd === 'fiil' ? 'f' : 'i');
+  }
+  /* SONLAR SEKMESİ HER AÇILDIĞINDA yalnız İSİM açık gelir. Ders
+     oradan başlıyor: önce ismin kendi içinde ne değiştiği (ötre →
+     üstün → esre), sonra fiil, en sonunda karşılaştırma. Sekmeden
+     çıkıp dönen de dersin başına dönmüş olur.
+     (Şeritten "Sonlar"a basmak da buradan geçiyor.) */
+  function kesifGiris() {
+    if (!kCizili) kesifCiz();
+    kesifYakin('i');
+  }
+  var kBasI = document.getElementById('tcKesifBasI');
+  var kBasF = document.getElementById('tcKesifBasF');
+  if (kBasI) kBasI.addEventListener('click', function () { kesifCevir('i'); });
+  if (kBasF) kBasF.addEventListener('click', function () { kesifCevir('f'); });
+
+  /* Klavye okları üç duruş arasında gezer, uçlarda döner. Sekmeden
+     çıkarmaz: cümlelere geçiş şeritten yapılıyor. */
+  function kesifKaydir(yon) {
+    var i = KES_SIRA.indexOf(kesifYakinHangi());
+    if (i < 0) i = 1;
+    i = (i + yon + KES_SIRA.length) % KES_SIRA.length;
+    kesifYakin(KES_SIRA[i]);
+  }
+  /* Ekranda ileri/geri tuşu YOK: gezinme başlıkların kendisinde.
+     kesifKaydir yalnız KLAVYE okları için duruyor (tahta kumandası). */
+  window.tcKesifKaydir = kesifKaydir;
+  /* Sütunun kendisine dokunmak da yakınlaştırır: akıllı tahtada
+     başlığa nişan almak yerine örneğin üstüne basmak yetsin. */
+  if (kGovde) kGovde.addEventListener('click', function (e) {
+    var y = e.target.closest ? e.target.closest('.ks-yan') : null;
+    if (!y) return;
+    kesifCevir(y.classList.contains('ks-yan-f') ? 'f' : 'i');
+  });
+  window.tcKesifSifirla = function () { kesifGecti = {}; kesifYaz(); kesifYakin(''); };
+  window.tcKesifGit = kesifBasla;
+  window.tcKesifYakin = kesifYakin;
+  /* Eski ad: adım yerine artık duruş kuruyor (1→isim, 2→karşılaştırma,
+     3→fiil). Dışarıdaki çağrılar ve testler kırılmasın diye duruyor. */
+  window.tcKesifAdim = function (a) { kesifYakin(KES_SIRA[Math.max(0, Math.min(2, (a || 1) - 1))]); };
+
+  /* Tablonun kopyasını tutan "tamlama" sekmesi kaldırıldı: kopya durağandı,
+     dokununca yakınlaşmıyordu. Asıl tablo artık bir dokunuş ötede — sayfa
+     başlığına basmak yetiyor. */
+
+  /* ---------- MENÜ ----------
+     Her kart doğrudan hedefe gider; başlıkta o hedefin adı yazar. */
+  var MENU = {
+    /* 'th' alanı Tahlil'in hangi görünümüyle açılacağını söyler. */
+    /* Eski 'giris' kodu: haritadan/dış bağlantıdan Sonlar'a girer. */
+    giris:  { bolum:'tahlil', ad:'Sonlar', th:'kesif' },
+    /* Başlığa basmak hikâyeyi açar: pilin adı da o (bkz. SERIT_AD). */
+    tahlil: { bolum:'tahlil', ad:'Başlarken', th:'hik' },
+    /* İ'RAB'a basınca HER ZAMAN İSİM tablosu açılır. Eskiden hangi
+       tabloda kalınmışsa (harf ya da fiil) oraya dönüyordu; ders
+       hep isimden başladığı için varsayılan isim yapıldı. */
+    irab:   { bolum:'tablolar', panel:'irab',   ad:'İsmin ve fiilin sonları', tablo:'isim' },
+    /* 'isim' ve 'fiil' kodları DURUYOR: iki tablo tek panelde birleşti ama
+       Giriş'teki keşif adımı hâlâ "İsim tablosunu aç" / "Fiil tablosunu aç"
+       diyor. Bu iki kod aynı paneli açar, kaydir ile doğru bloğa götürür. */
+    isim:   { bolum:'tablolar', panel:'irab',   ad:'İsmin sonları',  pil:'irab', tablo:'isim' },
+    fiil:   { bolum:'tablolar', panel:'irab',   ad:'Fiilin sonları', pil:'irab', tablo:'fiil' },
+    /* Esmâ ve efâl-i hamse artık ayrı pano değil: ait oldukları tablonun
+       ALTINDA duruyorlar. Kod önce panoyu çevirir, sonra oraya kaydırır. */
+    esma:   { bolum:'tablolar', panel:'irab', ad:'Esmâ-i hamse', pil:'irab', tablo:'isim', kaydir:'tcIrabEsma' },
+    hamse:  { bolum:'tablolar', panel:'irab', ad:'Efâl-i hamse', pil:'irab', tablo:'fiil', kaydir:'tcIrabHamse' },
+    /* Üç basamak artık i'râb panelinin filtresi; 'sev' hangi
+       basamağın açılacağını söyler (bkz. tcBasamakAc). */
+    kelime: { bolum:'tablolar', panel:'irab', sev:'lafzen', ad:'Kelime üzerinde', pil:'ozet' },
+    havuz:  { bolum:'havuz',  ad:'Örnekler', pil:'ozet' },
+    ozet:   { bolum:'ozet',   ad:'Özet' }
+  };
+  /* Şeritte hangi pilin yanacağını tutar: bir kod başka bir pilin altında
+     yaşıyor olabilir (esmâ → isim). */
+  var aktifKod = 'irab';
+  /* Şeritte o an yanan pil; her başlığın KENDİ katlanma durumu ve
+     KENDİ son alt ögesi. Alt grup kendiliğinden kapanmaz (kapatan tek
+     şey aynı başlığa ikinci dokunuş) ve başka başlığa uğrayıp dönmek
+     hiçbir şeyi sıfırlamaz: hangi alt ögedeysen oraya dönersin. */
+  var seritKod = null;
+  var acik = {};     /* başlık → alt grubu AÇIK mı (birden çoğu açık kalabilir) */
+  var sonAlt = {};   /* başlık → en son açtığın alt öge */
+  /* ---------- YATAY BAŞLIK ŞERİDİ (akordiyonlu) ----------
+     Yedi başlık tek satırda, yana kaydırılabilir hâlde hep yukarıda
+     durur: bir bölümden başka bir bölüme geçmek tek dokunuş.
+     Seçilen başlığın ALT SEKMESİ ya da ALT BAŞLIĞI varsa hemen yanında
+     açılır; o an öbür başlıklar akordiyon gibi büzülür (kısalır, soluklaşır)
+     ki açılan grup öne çıksın ve satır tek satır kalsın.
+     Alt öge iki türlü olabilir:
+       sev    → aynı panelde basamağı değiştirir (Lafzen/Takdiren/Mahallen)
+       kaydir → bölümün içindeki başlığa kaydırır (Özet'in beş başlığı) */
+  /* ON BİRDEN BEŞE. Esmâ-i hamse İsim'in, efâl-i hamse Fiil'in içine;
+     kelime ve örnekler Özet'in altına girdi; test Test penceresine taşındı;
+     tamlama tablosunun kopyası ise büsbütün kalktı — asıl tablo sayfa
+     başlığına basınca geliyor. Bu beşi SAYFA BAŞLIĞINDA duruyor: şerit
+     panelin değil, sayfanın gezinme aracı. */
+  /* GİRİŞ BAŞLIĞI KALKTI: keşif adımları Tahlil'in içinde, en başta
+     hikâyeyle birlikte duruyor. İki başlık aynı işi yapıyordu. */
+  var SERIT_SIRA = ['tahlil', 'irab', 'ozet', 'test'];
+  /* Bölümün adı "Tahlil" değil "BAŞLARKEN": pilin kendisi zaten ilk
+     durak (hikâye). Eskiden Tahlil'in altında ayrı bir "Başlarken"
+     pili vardı; aynı yeri iki tuş gösteriyordu. Şimdi tek tuş:
+     başlığa basmak hikâyeyi açar, yanındaki alt piller Sonlar ve
+     beş cümle olarak kalır. */
+  var SERIT_AD = {
+    tahlil:'Başlarken', irab:'İ\'râb', ozet:'Özet', test:'Test'
+  };
+  var SERIT_KISA = {};
+  var ALT = {
+    /* Adımlar NUMARALI: aynı adı taşıyan pillerle karışmasın; bitenlere ✓. */
+    /* Keşif adımlarının pilleri kalktı: artık Tahlil'in içinde, kendi
+       "devam" tuşlarıyla ilerliyor. (MENU'deki kodlar duruyor —
+       haritadan doğrudan çağrılabiliyorlar.) */
+    /* İ'RÂB'IN ALT ÖGESİ YOK.
+       Bir ara "Sonlar · Esmâ-i hamse · Efâl-i hamse" diye üç alt pil
+       vardı; o zaman üçü ayrı panoydu. Şimdi üçü tek panoda: esmâ-i
+       hamse ismin tablosunda BİR SÜTUN, efâl-i hamse de fiil tablosunun
+       hemen altında. Ayrı ayrı gidilecek yer kalmadığı için pil de
+       kalktı — İ'râb'a basmak yetiyor, gerisi kaydırmayla geliyor.
+       (MENU'deki 'esma' / 'hamse' kodları duruyor: haritadan ya da
+       giriş adımlarından doğrudan çağrılabiliyorlar.) */
+    /* "Özet" alt ögelerde TEKRARLANMIYOR: başlığın kendisi zaten oraya
+       götürüyor. Alt öge seçiliyken pile basmak özete geri döndürür. */
+    ozet: { tip:'git', ogeler:[
+      { deger:'kelime', ad:'Kelime üzerinde' },
+      { deger:'havuz',  ad:'Örnekler' } ] },
+    /* Tahlil cümleleri: hangi cümlede olduğun görünsün, atlanabilsin. */
+    tahlil: { tip:'cumle' },
+    /* Testin iki kipi de bir alt öge: ayrı bir şeride gerek yok. */
+    test: { tip:'test', ogeler:[
+      { deger:'tamlama', ad:'Tamlama ve cümleler' },
+      { deger:'irab',    ad:'İ\'rab' } ] }
+  };
+  var serit = document.getElementById('tcSerit');
+  var seritRay = document.getElementById('tcSeritRay');
+
+  function altOgeler(kod) {
+    var a = ALT[kod];
+    if (!a) return null;
+    if (a.tip === 'cumle') {
+      /* Cümlelerden ÖNCE iki sekme: hikâye ve keşif. Üçü de tam sayfa;
+         hangisinin açık olduğunu bölümün data-th'i söyler. */
+      /* "Sonlar": isim ve fiil artık tek ekranda yan yana — sekme adı
+         hiçbir adımda yanlış kalmıyor. */
+      /* "Başlarken" alt pili KALKTI: başlığın kendisi oraya götürüyor. */
+      var l = [ { deger:'kesif', ad:'Sonlar' } ];
+      if (window.tcTahlil) {
+        for (var i = 0; i < window.tcTahlil.sayi; i++) l.push({ deger:String(i), ad:String(i + 1) });
+      }
+      return l;
+    }
+    return a.ogeler;
+    var b = document.querySelector('.tc-bolum[data-bolum="' + a.kaynak + '"]');
+    if (!b) return null;
+    var basliklar = [].slice.call(b.querySelectorAll('h3.tc-oz-bas[id]'));
+    if (!basliklar.length) return null;
+    return basliklar.map(function (h) {
+      return { deger:h.id, ad:(h.getAttribute('data-kisa') || h.textContent).trim() };
+    });
+  }
+  /* Hangi başlık açık? Bölüm adı yetmez: "tablolar" dört başlığın ortak
+     kabıdır, o yüzden alt sekmedeki aktif panele bakılıyor. */
+  /* Şeritte hangi pil yanacak: kod bir alt öge olabilir (esmâ → isim). */
+  function pilKodu(kod) {
+    var m = MENU[kod];
+    return (m && m.pil) ? m.pil : kod;
+  }
+  function seritKur() {
+    if (!seritRay || seritRay.children.length) return;
+    SERIT_SIRA.forEach(function (kod) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'tc-sr';
+      b.setAttribute('data-git', kod);
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', 'false');
+      b.innerHTML = '<span class="tc-sr-tam"></span><span class="tc-sr-kis"></span>';
+      b.firstChild.textContent = SERIT_AD[kod];
+      b.lastChild.textContent = SERIT_KISA[kod] || SERIT_AD[kod];
+      seritRay.appendChild(b);
+      /* Her başlığın alt yuvası kendi ardında durur: açılınca alt ögeler
+         tam da ait oldukları başlığın yanında belirir. */
+      var yuva = document.createElement('span');
+      yuva.className = 'tc-serit-alt';
+      yuva.setAttribute('data-alt', kod);
+      yuva.hidden = true;
+      seritRay.appendChild(yuva);
+    });
+  }
+  function altSecili(kod) {
+    if (kod === 'test') return window.tcTestHangiKip ? window.tcTestHangiKip() : 'tamlama';
+    if (kod === 'tahlil') {
+      var g = thGorunumHangi();
+      if (g !== 'cumle') return g;
+      return window.tcTahlil ? String(window.tcTahlil.hangi()) : null;
+    }
+    if (kod === 'giris') return kAd;   /* eski keşif kodu; tahlil yukarıda döner */
+    if (ALT[kod] && ALT[kod].tip === 'git') return aktifKod;
+    return null;
+  }
+  function altDoldur(yuva, kod, buradayiz) {
+    var ler = altOgeler(kod);
+    if (!ler) return false;
+    if (yuva.getAttribute('data-dolu') !== kod) {
+      yuva.innerHTML = '';
+      ler.forEach(function (o) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'tc-sra';
+        b.setAttribute('data-alt-kod', kod);
+        b.setAttribute('data-deger', o.deger);
+        b.textContent = o.ad;
+        yuva.appendChild(b);
+      });
+      yuva.setAttribute('data-dolu', kod);
+    }
+    var simdi = buradayiz ? altSecili(kod) : null;
+    [].forEach.call(yuva.children, function (b) {
+      var v = b.getAttribute('data-deger');
+      b.classList.toggle('aktif', !!simdi && v === simdi);
+      /* Girişte biten adım işaretli kalsın: nerede olduğun görünsün. */
+      if (kod === 'giris') b.classList.toggle('tamam', !!kesifGecti[v]);
+    });
+    return true;
+  }
+  /* Aktif başlık — ve sığıyorsa açılan alt grubu — şeridin dışında kalmasın.
+     Hesap kaydırma düzleminde yapılıyor, ölçüm bir kere alınıyor: yumuşak
+     kaydırma yüzünden scrollLeft'i yazdıktan sonra yeniden ölçmek yanıltır.
+     Sıra önemli: önce sağ uç içeri alınır, SONRA sol uç — dar ekranda grup
+     şeride sığmıyorsa peşine düşüp aktif başlığı soldan kaçırmayalım. */
+  function seritKaydir(a) {
+    if (!seritRay || !a) return;
+    var yuva = (a.nextElementSibling && !a.nextElementSibling.hidden) ? a.nextElementSibling : null;
+    var r = seritRay.getBoundingClientRect(), b = a.getBoundingClientRect();
+    var k = seritRay.scrollLeft;
+    var sol = k + (b.left - r.left);
+    var sag = k + ((yuva ? yuva.getBoundingClientRect().right : b.right) - r.left);
+    var hedef = k;
+    if (sag > hedef + r.width - 6) hedef = sag - r.width + 6;
+    if (sol < hedef + 6) hedef = sol - 6;
+    hedef = Math.max(0, Math.min(hedef, seritRay.scrollWidth - r.width));
+    if (Math.abs(hedef - k) > 1) seritRay.scrollLeft = hedef;
+  }
+  function seritTazele(kod) {
+    if (!seritRay) return;
+    seritKod = kod;
+    var acilmis = false;
+    [].forEach.call(seritRay.children, function (el) {
+      if (el.classList.contains('tc-sr')) {
+        var s = el.getAttribute('data-git') === kod;
+        el.classList.toggle('aktif', s);
+        el.setAttribute('aria-selected', s ? 'true' : 'false');
+        return;
+      }
+      var k = el.getAttribute('data-alt');
+      /* AÇIK KALAN GRUPLAR: başka bir başlığa geçmek öncekini KAPATMAZ.
+         Şerit uzarsa yatay kayar (bkz. .tc-serit-ray overflow-x). Tabloya
+         dönüldüğünde (kod null) hepsi gizlenir ama hangileri açıktı
+         unutulmaz. */
+      var goster = (kod !== null) && !!acik[k] && altDoldur(el, k, k === kod);
+      el.hidden = !goster;
+      if (goster) acilmis = true;
+      var pil = el.previousElementSibling;
+      if (pil && ALT[k]) pil.setAttribute('aria-expanded', goster ? 'true' : 'false');
+    });
+    if (serit) serit.classList.toggle('acilmis', acilmis);
+    seritKaydir(seritRay.querySelector('.tc-sr.aktif'));
+  }
+  if (seritRay) {
+    seritKur();
+    seritRay.addEventListener('click', function (e) {
+      var alt = e.target.closest ? e.target.closest('.tc-sra') : null;
+      if (alt) {
+        var k = alt.getAttribute('data-alt-kod'), v = alt.getAttribute('data-deger');
+        /* ALT ÖGE = ÜST BAŞLIK + O DURAK. Gruplar açık kaldığı için
+           (akordiyon kendiliğinden kapanmıyor) İsim'deyken Tahlil'in
+           "3"üne basmak olağan bir hareket — o zaman bölümün de
+           GERÇEKTEN değişmesi gerekir. Önceden yalnız iç durum
+           değişiyordu: pil Tahlil'e geçiyor, ekranda İsim tablosu
+           kalıyordu. Bu yüzden önce menuGit ile başlığa gidiliyor,
+           sonra durak seçiliyor. ('git' ve 'test' dalları bunu zaten
+           kendi yollarıyla yapıyordu.) */
+        if (k === 'giris') {
+          menuGit('giris');
+          kesifBasla(v);             /* kesifCiz kendi seritTazele'sini yapar */
+        } else if (k === 'test') {
+          if (window.tcGovde) window.tcGovde('test');
+          if (window.tcTestKip) window.tcTestKip(v);
+          seritTazele('test');
+        } else if (k === 'tahlil') {
+          menuGit('tahlil');
+          if (v === 'hik' || v === 'kesif') { thGorunum(v); }
+          else {
+            thGorunum('cumle');
+            if (window.tcTahlil) window.tcTahlil.basla(+v, true);
+          }
+          seritTazele('tahlil');
+        } else if (ALT[k] && ALT[k].tip === 'git') {
+          sonAlt[k] = v;   /* bu başlığa dönünce gene buraya gelinsin */
+          menuGit(v);
+        } else {
+          var h = document.getElementById(v);
+          if (h && govde) {
+            govde.scrollTop += h.getBoundingClientRect().top -
+                               govde.getBoundingClientRect().top - 8;
+          }
+          [].forEach.call(alt.parentNode.children, function (x) {
+            x.classList.toggle('aktif', x === alt);
+          });
+        }
+        return;
+      }
+      var p = e.target.closest ? e.target.closest('.tc-sr') : null;
+      if (!p) return;
+      var kod = p.getAttribute('data-git');
+      /* AYNI BAŞLIĞA İKİNCİ BASIŞ: alt ögeler katlanır, üçüncüde açılır.
+         "Başlığın kendisinde miyiz" diye bakılıyor: Özet açıkken Kelime
+         üzerindeysen ilk basış seni özete geri getirir (eski davranış),
+         katlama ancak oradayken ikinci basışla olur. */
+      if (kod === seritKod) {
+        /* Zaten bu başlıktayız. Alt ögedeysen ilk basış üst başlığa
+           götürür; başlığın kendisindeysen basış grubu kapatır/açar. */
+        /* "Başlarken" hem bölümün adı hem ilk durağı: Sonlar'dayken ya
+           da bir cümledeyken basmak seni Başlarken'e GÖTÜRÜR; zaten
+           oradayken basmak alt ögeleri katlar. */
+        var kendinde = (kod === 'test') ||
+          (aktifKod === kod && (kod !== 'tahlil' || thGorunumHangi() === 'hik'));
+        if (kendinde && ALT[kod]) { acik[kod] = !acik[kod]; seritTazele(kod); return; }
+        sonAlt[kod] = kod;   /* üst başlığa döndük: hatırlanan yer de burası */
+        menuGit(kod);
+        return;
+      }
+      /* Başka başlıktan geliyoruz: grubu açılır, ÖNCEKİLER KAPANMAZ,
+         ve bıraktığın alt öge geri gelir. Daha önce elinle kapattıysan
+         kapalı kalır — kapatma da bir tercihtir. */
+      if (ALT[kod] && acik[kod] === undefined) acik[kod] = true;
+      var git = (ALT[kod] && ALT[kod].tip === 'git' && sonAlt[kod]) ? sonAlt[kod] : kod;
+      menuGit(git);
+    });
+    /* Ekran döndüğünde/daraldığında aktif başlık gene göz önüne gelsin. */
+    var srZaman = 0;
+    window.addEventListener('resize', function () {
+      if (srZaman) clearTimeout(srZaman);
+      srZaman = setTimeout(function () {
+        srZaman = 0;
+        seritKaydir(seritRay.querySelector('.tc-sr.aktif'));
+      }, 140);
+    });
+  }
+  /* sessiz: yalnızca durumu kurar, i'rab gövdesini AÇMAZ. Sayfa ilk
+     yüklendiğinde tablonun karşımıza çıkması için gerekli. */
+  function menuGit(kod, sessiz) {
+    /* Bölüm değişirken i'rab büyütmesi bırakılır: yakınlaşmış tablo
+       ve alttaki kumanda şeridi başka bölümün üstünde asılı kalıyordu. */
+    if (window.tcIrabKapat) window.tcIrabKapat();
+    /* Test i'rab bölümlerinden biri değil, kardeşi: kendi gövdesi var. */
+    if (kod === 'test') {
+      if (!sessiz && window.tcGovde) window.tcGovde('test');
+      return;
+    }
+    var m = MENU[kod];
+    if (!m) return;
+    aktifKod = kod;
+    bolumAc(m.bolum);
+    if (m.th) thGorunum(m.th);
+    if (m.panel) {
+      /* Basamak artık ayrı bir panel değil, i'râbın filtresi: sekme
+         seçilirken data-sev aranmaz, basamak aşağıda ayrıca kurulur. */
+      var d = tabloSek && tabloSek.querySelector('.tc-asd[data-panel="' + m.panel + '"]');
+      if (d) panelAc(d);
+    }
+    /* Birleşik i'rab panelinde hangi tablonun açılacağı kodda yazar.
+       Basamak da sıfırlanır: i'râba dönen öğrenci asıl alâmet
+       tablosunu bulsun, takdiren/mahallen'de kalmasın. */
+    if (m.panel === 'irab') {
+      if (m.sev && window.tcBasamakSec) window.tcBasamakSec(m.sev);
+      else if (window.tcBasamakSifirla) window.tcBasamakSifirla();
+    }
+    if (m.tablo && window.tcIrabTablo) window.tcIrabTablo(m.tablo);
+    /* Alt bölüm (esmâ / efâl-i hamse) istendiyse oraya kaydırılır —
+       ray kayma animasyonunu bitirsin diye küçük bir gecikmeyle. */
+    if (m.kaydir) {
+      var hedef = document.getElementById(m.kaydir);
+      if (hedef) setTimeout(function () {
+        try { hedef.scrollIntoView({ block:'start', behavior:'smooth' }); }
+        catch (e) { hedef.scrollIntoView(); }
+      }, 420);
+    }
+    if (sessiz) { seritTazele(null); return; }
+    /* Bir başlığa ilk kez uğrayan (dışarıdan gelen bağlantılar dâhil)
+       o başlığın alt ögelerini açık bulsun. */
+    var pil = pilKodu(kod);
+    if (ALT[pil] && acik[pil] === undefined) acik[pil] = true;
+    /* Şeritten bir başlığa basmak, o bölümü sayfada AÇAR. */
+    if (window.tcIrabGoster) window.tcIrabGoster(true);
+    seritTazele(pil);
+  }
+  window.tcMenuGit = menuGit;
+  window.tcSeritTazele = seritTazele;
+  /* Gövde açılıp kapandıkça şeridin yanan pili: açıkken kalınan başlık,
+     kapalıyken hiçbiri (tablodayken hiçbir i'rab başlığı seçili değil). */
+  window.tcPilTazele = function (g) {
+    var kod = (g === 'test') ? 'test' : (g === 'irab' ? pilKodu(aktifKod) : null);
+    /* Gövde bir başlığa basmadan geri çağrıldıysa (Escape sonrası, dış
+       bağlantı, sınavdan dönüş) o başlığın alt ögeleri ilk kez açık
+       gelsin — "üstündeyim ama altı boş" hâli olmasın. */
+    if (kod && ALT[kod] && acik[kod] === undefined) acik[kod] = true;
+    seritTazele(kod);
+  };
+  /* Açılış: SAYFA TABLOYLA açılır — asıl iş orada. Şerit hazır durur;
+     ilk kez gelen için Giriş, daha önce başlamış olan için İsim
+     "kalınan yer" sayılır ama hiçbiri kendiliğinden açılmaz. */
+  menuGit(kesifBaslanmis() ? 'irab' : 'tahlil', true);
+  /* Kelime tablosunun kendi basamak şeridi: üç basamak, birleşmelerden
+     sonra şeride sığmıyordu; kontrolü ait olduğu tablonun başına aldık. */
+  /* ---------- BASAMAK FİLTRESİ (Lafzen · Takdiren · Mahallen) ----------
+     Eskiden Özet'in altında ayrı bir "Kelime üzerinde" paneliydi; oraya
+     bakmak için i'râbdan çıkmak gerekiyordu. Artık i'râb panelinin
+     başında bir filtre:
+       lafzen   -> ALÂMET tablosu (harf/isim/fiil rayı) — alâmet görünür.
+       takdiren -> sonu elif/yâ olan kelimelerin tablosu — alâmet gizli.
+       mahallen -> mebnî kelimelerin tablosu — kelimenin sonu hiç değişmez.
+     Alâmet tablosu doğası gereği "lafzen"dir; öbür iki basamakta
+     gösterilecek bir EK yoktur, o yüzden tablo değişir, süzülmez. */
+  var bsmSec = document.getElementById('tcBsmSec');
+  var bsmKel = document.getElementById('tcBsmKel');
+  var irabSec = document.getElementById('tcIrabSec');
+  var irabRay = document.getElementById('tcIrabRay');
+  var bsmAcik = 'lafzen';
+
+  function basamakAc(sv, sessizce) {
+    if (['lafzen', 'takdiren', 'mahallen'].indexOf(sv) < 0) sv = 'lafzen';
+    bsmAcik = sv;
+    var lafzenMi = (sv === 'lafzen');
+    /* Kamera açık kalırsa gizlenen tablo ekranda asılı kalıyor. */
+    if (window.tcIrabKapat) window.tcIrabKapat();
+    if (bsmSec) [].forEach.call(bsmSec.children, function (x) {
+      var s2 = x.getAttribute('data-bsm') === sv;
+      x.classList.toggle('aktif', s2);
+      x.setAttribute('aria-selected', s2 ? 'true' : 'false');
+    });
+    if (irabSec) irabSec.hidden = !lafzenMi;
+    if (irabRay) irabRay.hidden = !lafzenMi;
+    if (bsmKel)  bsmKel.hidden  =  lafzenMi;
+    if (!lafzenMi && window.tcSeviyeSec) window.tcSeviyeSec(sv, 0);
+    if (lafzenMi && window.tcIrabBoy) setTimeout(window.tcIrabBoy, 30);
+    if (!sessizce && govde) govde.scrollTop = 0;
+  }
+  window.tcBasamakAc = function (sv) {
+    aktifKod = 'irab';
+    bolumAc('tablolar');
+    if (window.tcIrabGoster) window.tcIrabGoster(true);
+    basamakAc(sv);
+  };
+  if (bsmSec) bsmSec.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('[data-terim]')) return;
+    var b2 = e.target.closest ? e.target.closest('.tc-bsm-t') : null;
+    if (b2) basamakAc(b2.getAttribute('data-bsm'));
+  });
+  /* İ'râb'a her dönüşte lafzen (asıl tablo) açık gelsin. */
+  window.tcBasamakSifirla = function () { basamakAc('lafzen', true); };
+  window.tcBasamakSec = basamakAc;
+
+  /* ---------- (2) terim balonu ----------
+     Öğrenci "mahallen" kelimesini ilk gördüğünde takılıyor. Her
+     terimin yanındaki ⓘ üç şey verir: TANIM, NASIL ANLARIM, ÖRNEK. */
+  var TERIM = {
+    lafzen: { ad:'Lafzen', ar:'لَفْظًا', renk:'#12A05F',
+      tanim:'Alâmet kelimenin sonunda <b>yazılır ve okunur</b>. Ötreyi görürsün, üstünü görürsün, esreyi görürsün.',
+      nasil:'Kelimenin son harfine bak: <b>hareke ya da i\'rab harfi görünüyorsa</b> lafzîdir. Sonu sahih harf olan bütün mu\'reb isimler ve çoğu muzari fiil böyledir.',
+      ornek:'جَاءَ الْمُعَلِّمُ &nbsp;·&nbsp; رَأَيْتُ الْمُعَلِّمَ',
+      ornekTr:'Ötre de üstün de göz önünde: <b>lafzen merfu</b>, <b>lafzen mansub</b>.' },
+    takdiren: { ad:'Takdiren', ar:'تَقْدِيرًا', renk:'#C77800',
+      tanim:'Kelime mu\'rebdir, hâli de vardır; ama son harfi hareke <b>taşıyamadığı</b> için alâmet yazılamaz. Alâmet yok değildir — <b>takdir edilir</b>, yani var sayılır.',
+      nasil:'Üç yerde olur: sonu <b>elif</b> olan isim (maksûr), sonu <b>ya</b> olan isim (menkûs) ve <b>mütekellim ya\'sına muzâf</b> olan isim. Fiilde de sonu elif ya da vav olan muzari böyledir.',
+      ornek:'جَاءَ الْفَتَى &nbsp;·&nbsp; رَأَيْتُ الْفَتَى &nbsp;·&nbsp; هَذَا كِتَابِي',
+      ornekTr:'Üç hâlde de yazılış aynı; hâli ancak <b>görevden</b> anlarız.' },
+    mahallen: { ad:'Mahallen', ar:'مَحَلًّا', renk:'#6D4AA8',
+      tanim:'Kelime <b>mebnîdir</b>: sonu hiç değişmez, alâmet diye bir şey yoktur. Ama görevi vardır; hâli, kelimenin <b>durduğu yerden</b> okunur.',
+      nasil:'Kelime mebnî mi? Zamir, ism-i işâret, ism-i mevsûl, soru isimleri, mâzi ve emir fiil, bütün harfler mebnîdir. Mebnî bir kelimenin hâlini söylerken başına <b>“mahallen”</b> eklersin.',
+      ornek:'هَذَا كِتَابٌ &nbsp;·&nbsp; إِيَّاكَ نَعْبُدُ',
+      ornekTr:'<span dir="rtl" class="tc-ic">هَذَا</span> mübteda ama mebnî → <b>mahallen merfu</b>. <span dir="rtl" class="tc-ic">إِيَّاكَ</span> mef\'ul ama mebnî → <b>mahallen mansub</b>.' },
+    mureb: { ad:'Mu\'reb', ar:'مُعْرَب', renk:'#2C7BE5',
+      tanim:'Cümledeki görevine göre <b>sonu değişen</b> kelimeye mu\'reb denir. İ\'rab dediğimiz şey zaten bu değişmedir.',
+      nasil:'Aynı kelimeyi üç cümlede dene: fâil yap, mef\'ul yap, harf-i cerden sonra koy. <b>Sonu değişiyorsa</b> mu\'rebdir. İsimlerin çoğu ve muzari fiil mu\'rebdir.',
+      ornek:'الْمُعَلِّمُ &nbsp;·&nbsp; الْمُعَلِّمَ &nbsp;·&nbsp; الْمُعَلِّمِ',
+      ornekTr:'Aynı kelime, üç ayrı son: mu\'reb olduğunun ispatı budur.' },
+    mebni: { ad:'Mebnî', ar:'مَبْنِيّ', renk:'#5B6B7B',
+      tanim:'Cümledeki görevi ne olursa olsun <b>sonu hiç değişmeyen</b> kelimeye mebnî denir. “Binası sabit” demektir.',
+      nasil:'Şunlar her zaman mebnîdir: <b>zamirler</b>, <b>ism-i işâretler</b> (ikil hâriç), <b>ism-i mevsûller</b> (ikil hâriç), <b>soru isimleri</b>, <b>mâzi ve emir fiil</b>, <b>bütün harfler</b>. Muzari fiil de nûn-u nisveye bitişince mebnî olur.',
+      ornek:'هَذَا &nbsp;·&nbsp; الَّذِي &nbsp;·&nbsp; مَنْ &nbsp;·&nbsp; كَتَبَ &nbsp;·&nbsp; يَكْتُبْنَ',
+      ornekTr:'Mebnî kelimenin hâli yok değildir; yalnız <b>mahallen</b> okunur.' }
+  };
+
+  var bpPerde = document.getElementById('tcBpPerde');
+  var bpBas   = document.getElementById('tcBpBas');
+  var bpGovde = document.getElementById('tcBpGovde');
+  function terimAc(kod) {
+    var t = TERIM[kod]; if (!t) return;
+    document.getElementById('tcBp').className = 'tc-bp';
+    document.getElementById('tcBp').style.setProperty('--bp-renk', t.renk);
+    bpBas.querySelector('span').innerHTML =
+      t.ad + ' &nbsp;<span class="tc-bp-ar" dir="rtl">' + t.ar + '</span>';
+    bpGovde.innerHTML =
+      '<p><span class="tc-bp-etiket">Nedir?</span><br>' + t.tanim + '</p>' +
+      '<p><span class="tc-bp-etiket">Nasıl anlarım?</span><br>' + t.nasil + '</p>' +
+      '<span class="tc-bp-etiket">Örnek</span>' +
+      '<div class="tc-bp-ornek">' + t.ornek + '</div>' +
+      '<p>' + t.ornekTr + '</p>';
+    bpPerde.classList.add('acik');
+    bpPerde.setAttribute('aria-hidden', 'false');
+  }
+  function terimKapa() {
+    bpPerde.classList.remove('acik');
+    bpPerde.setAttribute('aria-hidden', 'true');
+  }
+  document.addEventListener('click', function (e) {
+    var d = e.target.closest ? e.target.closest('[data-terim]') : null;
+    if (d) { e.preventDefault(); e.stopPropagation(); terimAc(d.getAttribute('data-terim')); }
+  }, true);
+  document.getElementById('tcBpKapat').addEventListener('click', terimKapa);
+  bpPerde.addEventListener('click', function (e) { if (e.target === bpPerde) terimKapa(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && bpPerde.classList.contains('acik')) { terimKapa(); e.stopPropagation(); }
+  }, true);
+  window.tcTerimAc = terimAc;
+  /* Balon dışarıdan da kullanılabilsin: Tahlil'deki sekiz kategori kendi
+     hâl/alâmet künyesini bu aynı pencerede açıyor — sayfada tek balon
+     biçimi olsun diye ikinci bir pencere yazılmadı. */
+  window.tcBaloncukAc = function (renk, baslikHtml, govdeHtml, sinif) {
+    var bp = document.getElementById('tcBp');
+    /* sinif: balonun kendi punto ölçeğini seçer (bkz. .tc-bp.th-balon). */
+    bp.className = 'tc-bp' + (sinif ? ' ' + sinif : '');
+    bp.style.setProperty('--bp-renk', renk);
+    bpBas.querySelector('span').innerHTML = baslikHtml;
+    bpGovde.innerHTML = govdeHtml;
+    bpPerde.classList.add('acik');
+    bpPerde.setAttribute('aria-hidden', 'false');
+  };
+
+  /* ---------- (3) örnek havuzu ---------- */
+  /* ------------------------------------------------------------
+     ÖRNEK HAVUZU — filtreye göre süzülen etiketli örnekler.
+     Her kayıt üç eksende etiketlidir:
+       tur     : kelime | cumle
+       hal     : merfu | mansub | mecrur | meczum
+       basamak : lafzen | takdiren | mahallen
+     Cümlelerde birden çok hâl ve basamak bulunabildiği için
+     etiketler dizi tutulur; filtre "içeriyor mu?" diye bakar.
+     ------------------------------------------------------------ */
+  var HAVUZ = [
+    /* ---------- İSİM · LAFZEN ---------- */
+    { tur:'kelime', tip:'İsim', ar:'الْمُعَلِّمُ', tr:'öğretmen', hal:['merfu'], basamak:['lafzen'],
+      gorev:'Fâil', alamet:'Zamme (ötre)',
+      baglam:'جَاءَ الْمُعَلِّمُ', baglamTr:'Öğretmen geldi.',
+      irab:'Fâil olduğu için <b>merfudur</b>; alâmeti sonunda görünen <b>zammedir</b> — yani <b>lafzen</b> merfu.' },
+    { tur:'kelime', tip:'İsim', ar:'الْكِتَابَ', tr:'kitabı', hal:['mansub'], basamak:['lafzen'],
+      gorev:'Mef\'ul', alamet:'Fetha (üstün)',
+      baglam:'قَرَأْتُ الْكِتَابَ', baglamTr:'Kitabı okudum.',
+      irab:'Mef\'ul olduğu için <b>mansubdur</b>; alâmeti görünen <b>fethadır</b> — <b>lafzen</b> mansub.' },
+    { tur:'kelime', tip:'İsim', ar:'الْبَيْتِ', tr:'ev', hal:['mecrur'], basamak:['lafzen'],
+      gorev:'Harf-i cerden sonra', alamet:'Kesra (esre)',
+      baglam:'فِي الْبَيْتِ', baglamTr:'Evde.',
+      irab:'Harf-i cerden sonra geldiği için <b>mecrurdur</b>; alâmeti görünen <b>kesradır</b> — <b>lafzen</b> mecrur.' },
+    { tur:'kelime', tip:'İsim', ar:'الْمُعَلِّمُونَ', tr:'öğretmenler', hal:['merfu'], basamak:['lafzen'],
+      gorev:'Fâil · cem-i müzekker sâlim', alamet:'Vav (harf)',
+      baglam:'جَاءَ الْمُعَلِّمُونَ', baglamTr:'Öğretmenler geldi.',
+      irab:'Fâil olduğu için <b>merfudur</b>; ama alâmeti hareke değil <b>vav</b>dır. Harf de görünür — yine <b>lafzen</b> merfu.' },
+    { tur:'kelime', tip:'İsim', ar:'الْمُعَلِّمِينَ', tr:'öğretmenleri', hal:['mansub'], basamak:['lafzen'],
+      gorev:'Mef\'ul · cem-i müzekker sâlim', alamet:'Ya (harf)',
+      baglam:'رَأَيْتُ الْمُعَلِّمِينَ', baglamTr:'Öğretmenleri gördüm.',
+      irab:'Mef\'ul olduğu için <b>mansubdur</b>; alâmeti <b>ya</b>dır — <b>lafzen</b> mansub.' },
+    { tur:'kelime', tip:'İsim', ar:'الْمُعَلِّمَيْنِ', tr:'iki öğretmen', hal:['mecrur'], basamak:['lafzen'],
+      gorev:'Harf-i cerden sonra · ikil', alamet:'Ya (harf)',
+      baglam:'مَرَرْتُ بِالْمُعَلِّمَيْنِ', baglamTr:'İki öğretmenin yanından geçtim.',
+      irab:'Harf-i cerden sonra geldiği için <b>mecrurdur</b>; ikilde alâmet <b>ya</b>dır — <b>lafzen</b> mecrur.' },
+    { tur:'kelime', tip:'İsim', ar:'الْمُعَلِّمَاتِ', tr:'öğretmenleri (bayan)', hal:['mansub'], basamak:['lafzen'],
+      gorev:'Mef\'ul · cem-i müennes sâlim', alamet:'Kesra (istisna!)',
+      baglam:'رَأَيْتُ الْمُعَلِّمَاتِ', baglamTr:'Bayan öğretmenleri gördüm.',
+      irab:'<b>İstisna:</b> cem-i müennes sâlim mansubda üstün değil <b>esre</b> alır. Hâli mansub, alâmeti kesra — yine <b>lafzen</b>.' },
+    { tur:'kelime', tip:'İsim', ar:'مَدَارِسَ', tr:'okullar', hal:['mecrur'], basamak:['lafzen'],
+      gorev:'Harf-i cerden sonra · gayr-i munsarif', alamet:'Fetha (istisna!)',
+      baglam:'مَرَرْتُ بِمَدَارِسَ', baglamTr:'Okulların yanından geçtim.',
+      irab:'<b>İstisna:</b> gayr-i munsarif tenvin almaz ve mecrurda esre yerine <b>üstün</b> alır. Alâmet yine görünür — <b>lafzen</b> mecrur.' },
+
+    /* ---------- İSİM · TAKDİREN ---------- */
+    { tur:'kelime', tip:'İsim · maksûr', ar:'الْفَتَى', tr:'genç', hal:['merfu'], basamak:['takdiren'],
+      gorev:'Fâil', alamet:'Takdir edilen zamme',
+      baglam:'جَاءَ الْفَتَى', baglamTr:'Genç geldi.',
+      irab:'Fâil olduğu için <b>merfudur</b>; ama sonu <b>elif</b>, hareke taşıyamaz. Zamme <b>takdir edilir</b> — <b>takdiren</b> merfu.' },
+    { tur:'kelime', tip:'İsim · maksûr', ar:'الْفَتَى', tr:'genci', hal:['mansub'], basamak:['takdiren'],
+      gorev:'Mef\'ul', alamet:'Takdir edilen fetha',
+      baglam:'رَأَيْتُ الْفَتَى', baglamTr:'Genci gördüm.',
+      irab:'Mef\'ul olduğu için <b>mansubdur</b>; yazılışı hiç değişmedi. Fetha <b>takdir edilir</b> — <b>takdiren</b> mansub.' },
+    { tur:'kelime', tip:'İsim · maksûr', ar:'الْفَتَى', tr:'gencin', hal:['mecrur'], basamak:['takdiren'],
+      gorev:'Harf-i cerden sonra', alamet:'Takdir edilen kesra',
+      baglam:'مَرَرْتُ بِالْفَتَى', baglamTr:'Gencin yanından geçtim.',
+      irab:'Harf-i cerden sonra <b>mecrurdur</b>; elif kesrayı da taşıyamaz — <b>takdiren</b> mecrur. Üç hâlde de yazılış aynı!' },
+    { tur:'kelime', tip:'İsim · menkûs', ar:'الْقَاضِي', tr:'hâkim', hal:['merfu'], basamak:['takdiren'],
+      gorev:'Fâil', alamet:'Takdir edilen zamme',
+      baglam:'جَاءَ الْقَاضِي', baglamTr:'Hâkim geldi.',
+      irab:'Sonu <b>ya</b>; ya ötreyi taşıyamaz. Fâil olduğu için merfu, alâmeti <b>takdirîdir</b>.' },
+    { tur:'kelime', tip:'İsim · menkûs', ar:'الْقَاضِيَ', tr:'hâkimi', hal:['mansub'], basamak:['lafzen'],
+      gorev:'Mef\'ul', alamet:'Fetha (görünür!)',
+      baglam:'رَأَيْتُ الْقَاضِيَ', baglamTr:'Hâkimi gördüm.',
+      irab:'Menkûsun tek görünen hâli: ya <b>üstünü taşır</b>. Bu yüzden mansubu <b>lafzîdir</b>, merfu ve mecruru takdirî.' },
+    { tur:'kelime', tip:'İsim · mütekellim ya\'sı', ar:'كِتَابِي', tr:'kitabım', hal:['merfu'], basamak:['takdiren'],
+      gorev:'Haber', alamet:'Takdir edilen zamme',
+      baglam:'هَذَا كِتَابِي', baglamTr:'Bu benim kitabım.',
+      irab:'Mütekellim ya\'sına muzâf olduğu için sonu <b>esreye kilitlenmiştir</b>. Haber olduğu için merfu, alâmeti <b>takdirîdir</b>.' },
+
+    /* ---------- MEBNÎ · MAHALLEN ---------- */
+    { tur:'kelime', tip:'İsm-i işâret · mebnî', ar:'هَذَا', tr:'bu', hal:['merfu'], basamak:['mahallen'],
+      gorev:'Mübteda', alamet:'Yok — mebnî',
+      baglam:'هَذَا كِتَابٌ', baglamTr:'Bu bir kitaptır.',
+      irab:'Mübteda olduğu için merfu olması gerekir; ama <b>mebnîdir</b>, sonu değişemez — <b>mahallen</b> merfu.' },
+    { tur:'kelime', tip:'İsm-i mevsûl · mebnî', ar:'الَّذِي', tr:'…(ki) o', hal:['mansub'], basamak:['mahallen'],
+      gorev:'Mef\'ul', alamet:'Yok — mebnî',
+      baglam:'قَرَأْتُ الَّذِي كَتَبْتَ', baglamTr:'Yazdığını okudum.',
+      irab:'Mef\'ul olduğu için mansub olması gerekir; <b>mebnî</b> olduğundan <b>mahallen</b> mansubdur.' },
+    { tur:'kelime', tip:'İsm-i işâret · mebnî', ar:'هَؤُلَاءِ', tr:'bunlar', hal:['mecrur'], basamak:['mahallen'],
+      gorev:'Harf-i cerden sonra', alamet:'Yok — mebnî',
+      baglam:'مَرَرْتُ بِهَؤُلَاءِ', baglamTr:'Bunların yanından geçtim.',
+      irab:'Harf-i cerden sonra mecrur olması gerekir; <b>mebnî</b> olduğundan <b>mahallen</b> mecrurdur.' },
+    { tur:'kelime', tip:'Zamir · mebnî', ar:'إِيَّاكَ', tr:'sana/seni', hal:['mansub'], basamak:['mahallen'],
+      gorev:'Mef\'ul (öne alınmış)', alamet:'Yok — mebnî',
+      baglam:'إِيَّاكَ نَعْبُدُ', baglamTr:'Yalnız sana kulluk ederiz.',
+      irab:'Ayrık mansub zamirdir; mef\'ul olduğu için <b>mahallen</b> mansubdur. Fiilden önce gelmesi tahsis (yalnızlık) bildirir.' },
+
+    /* ---------- FİİL · LAFZEN ---------- */
+    { tur:'kelime', tip:'Muzari fiil', ar:'يَكْتُبُ', tr:'yazıyor', hal:['merfu'], basamak:['lafzen'],
+      gorev:'Başında edat yok', alamet:'Zamme (ötre)',
+      baglam:'يَكْتُبُ الْمُعَلِّمُ', baglamTr:'Öğretmen yazıyor.',
+      irab:'Muzari fiilin aslı <b>merfudur</b>; başında nasb ya da cezm edatı yok. Alâmeti görünen <b>zammedir</b>.' },
+    { tur:'kelime', tip:'Muzari fiil', ar:'يَكْتُبَ', tr:'yazması', hal:['mansub'], basamak:['lafzen'],
+      gorev:'لَنْ edatından sonra', alamet:'Fetha (üstün)',
+      baglam:'لَنْ يَكْتُبَ', baglamTr:'Asla yazmayacak.',
+      irab:'<span dir="rtl">لَنْ</span> nasb edatıdır; fiili <b>mansub</b> yapar. Alâmeti görünen <b>fethadır</b>.' },
+    { tur:'kelime', tip:'Muzari fiil', ar:'يَكْتُبْ', tr:'yazmadı', hal:['meczum'], basamak:['lafzen'],
+      gorev:'لَمْ edatından sonra', alamet:'Sükûn',
+      baglam:'لَمْ يَكْتُبْ', baglamTr:'Yazmadı.',
+      irab:'<span dir="rtl">لَمْ</span> cezm edatıdır; fiili <b>meczum</b> yapar. Alâmeti <b>sükûndur</b>. Cezm yalnız muzari fiilde olur.' },
+    { tur:'kelime', tip:'Muzari fiil · efâl-i hamse', ar:'يَكْتُبُونَ', tr:'yazıyorlar', hal:['merfu'], basamak:['lafzen'],
+      gorev:'Başında edat yok', alamet:'Nûnun durması',
+      baglam:'الطُّلَّابُ يَكْتُبُونَ', baglamTr:'Öğrenciler yazıyorlar.',
+      irab:'Efâl-i hamsede alâmet harekede değil <b>nûndadır</b>: merfuda <b>nûn durur</b>.' },
+    { tur:'kelime', tip:'Muzari fiil · efâl-i hamse', ar:'يَكْتُبُوا', tr:'yazmaları', hal:['mansub','meczum'], basamak:['lafzen'],
+      gorev:'لَنْ / لَمْ edatından sonra', alamet:'Nûnun düşmesi',
+      baglam:'لَنْ يَكْتُبُوا · لَمْ يَكْتُبُوا', baglamTr:'Asla yazmayacaklar · Yazmadılar.',
+      irab:'Efâl-i hamse mansub ve meczum olunca <b>nûnu düşer</b>. Alâmet yine görünür (nûnun yokluğu) — <b>lafzen</b>.' },
+
+    /* ---------- FİİL · TAKDİREN ---------- */
+    { tur:'kelime', tip:'Muzari fiil · sonu elif', ar:'يَسْعَى', tr:'çabalıyor', hal:['merfu'], basamak:['takdiren'],
+      gorev:'Başında edat yok', alamet:'Takdir edilen zamme',
+      baglam:'يَسْعَى الطَّالِبُ', baglamTr:'Öğrenci çabalıyor.',
+      irab:'Merfudur; ama sonu <b>elif</b>, ötreyi taşıyamaz — <b>takdiren</b> merfu.' },
+    { tur:'kelime', tip:'Muzari fiil · sonu vav', ar:'يَدْعُو', tr:'çağırıyor', hal:['merfu'], basamak:['takdiren'],
+      gorev:'Başında edat yok', alamet:'Takdir edilen zamme',
+      baglam:'يَدْعُو الْمُؤْمِنُ', baglamTr:'Mümin dua ediyor.',
+      irab:'Sonu <b>vav</b>; vav ötreyi taşıyamaz — <b>takdiren</b> merfu. Ama <span dir="rtl">لَنْ يَدْعُوَ</span> derken fetha görünür: orası lafzî.' },
+    { tur:'kelime', tip:'Muzari fiil · sonu elif', ar:'يَسْعَى', tr:'çabalaması', hal:['mansub'], basamak:['takdiren'],
+      gorev:'لَنْ edatından sonra', alamet:'Takdir edilen fetha',
+      baglam:'لَنْ يَسْعَى', baglamTr:'Asla çabalamayacak.',
+      irab:'Mansubdur; elif fethayı da taşıyamaz — <b>takdiren</b> mansub. Yazılış merfu hâliyle aynı kalır.' },
+
+    /* ---------- FİİL · MAHALLEN (nûn-u nisve) ---------- */
+    { tur:'kelime', tip:'Muzari fiil · nûn-u nisve', ar:'يَكْتُبْنَ', tr:'yazıyorlar (bayanlar)', hal:['merfu'], basamak:['mahallen'],
+      gorev:'Haber', alamet:'Yok — mebnî',
+      baglam:'الْمُعَلِّمَاتُ يَكْتُبْنَ', baglamTr:'Bayan öğretmenler yazıyorlar.',
+      irab:'Muzari fiil <b>nûn-u nisveye</b> bitişince <b>mebnî</b> olur; sonu artık değişmez. Haber olduğu için <b>mahallen</b> merfudur.' },
+    { tur:'kelime', tip:'Muzari fiil · nûn-u nisve', ar:'يَكْتُبْنَ', tr:'yazmaları (bayanlar)', hal:['mansub'], basamak:['mahallen'],
+      gorev:'لَنْ edatından sonra', alamet:'Yok — mebnî',
+      baglam:'لَنْ يَكْتُبْنَ', baglamTr:'Asla yazmayacaklar.',
+      irab:'Nasb edatı geldi ama fiil mebnî; şekli hiç değişmedi — <b>mahallen</b> mansub. Tabloda bu sütun üç satırda da aynıdır.' },
+    { tur:'kelime', tip:'Muzari fiil · nûn-u nisve', ar:'يَكْتُبْنَ', tr:'yazmadılar (bayanlar)', hal:['meczum'], basamak:['mahallen'],
+      gorev:'لَمْ edatından sonra', alamet:'Yok — mebnî',
+      baglam:'لَمْ يَكْتُبْنَ', baglamTr:'Yazmadılar.',
+      irab:'Cezm edatı geldi, fiil yine değişmedi — <b>mahallen</b> meczum. Mebnîlik cezmi de görünmez kılar.' },
+
+    /* ================= CÜMLELER ================= */
+    { tur:'cumle', ar:'جَاءَ الْمُعَلِّمُ إِلَى الْمَدْرَسَةِ.', tr:'Öğretmen okula geldi.',
+      hal:['merfu','mecrur'], basamak:['lafzen'],
+      cozum:[
+        { k:'جَاءَ', g:'Fiil', h:'—', b:'mebnî', not:'Mâzi fiildir; mebnîdir, i\'rab almaz.' },
+        { k:'الْمُعَلِّمُ', g:'Fâil', h:'merfu', b:'lafzen', not:'Alâmeti görünen zammedir.' },
+        { k:'إِلَى', g:'Harf-i cer', h:'—', b:'mebnî', not:'Harftir; mebnîdir.' },
+        { k:'الْمَدْرَسَةِ', g:'Mecrur isim', h:'mecrur', b:'lafzen', not:'Harf-i cerden sonra geldi; alâmeti kesradır.' }
+      ] },
+    { tur:'cumle', ar:'قَرَأَ الطَّالِبُ الْكِتَابَ.', tr:'Öğrenci kitabı okudu.',
+      hal:['merfu','mansub'], basamak:['lafzen'],
+      cozum:[
+        { k:'قَرَأَ', g:'Fiil', h:'—', b:'mebnî', not:'Mâzi fiil; mebnîdir.' },
+        { k:'الطَّالِبُ', g:'Fâil', h:'merfu', b:'lafzen', not:'Fâil daima merfudur; alâmeti zammedir.' },
+        { k:'الْكِتَابَ', g:'Mef\'ul', h:'mansub', b:'lafzen', not:'Mef\'ul daima mansubdur; alâmeti fethadır.' }
+      ] },
+    { tur:'cumle', ar:'الْكِتَابُ مُفِيدٌ.', tr:'Kitap faydalıdır.',
+      hal:['merfu'], basamak:['lafzen'],
+      cozum:[
+        { k:'الْكِتَابُ', g:'Mübteda', h:'merfu', b:'lafzen', not:'Marifedir; alâmeti zammedir.' },
+        { k:'مُفِيدٌ', g:'Haber', h:'merfu', b:'lafzen', not:'Nekradır; alâmeti tenvinli zammedir.' }
+      ] },
+    { tur:'cumle', ar:'هَذَا كِتَابُ الْمُعَلِّمِ.', tr:'Bu, öğretmenin kitabıdır.',
+      hal:['merfu','mecrur'], basamak:['lafzen','mahallen'],
+      cozum:[
+        { k:'هَذَا', g:'Mübteda', h:'merfu', b:'mahallen', not:'İsm-i işârettir, mebnîdir; mahallen merfudur.' },
+        { k:'كِتَابُ', g:'Haber · muzâf', h:'merfu', b:'lafzen', not:'Muzâf olduğu için ال ve tenvin almadı; alâmeti zammedir.' },
+        { k:'الْمُعَلِّمِ', g:'Muzâfun ileyh', h:'mecrur', b:'lafzen', not:'Muzâfun ileyh daima mecrurdur; alâmeti kesradır.' }
+      ] },
+    { tur:'cumle', ar:'لَمْ يَكْتُبِ الطَّالِبُ الدَّرْسَ.', tr:'Öğrenci dersi yazmadı.',
+      hal:['meczum','merfu','mansub'], basamak:['lafzen'],
+      cozum:[
+        { k:'لَمْ', g:'Cezm edatı', h:'—', b:'mebnî', not:'Harftir; kendisi i\'rab almaz, fiili meczum yapar.' },
+        { k:'يَكْتُبِ', g:'Muzari fiil', h:'meczum', b:'lafzen', not:'Alâmeti sükûndur; iki sâkin yan yana gelmesin diye esreyle okundu.' },
+        { k:'الطَّالِبُ', g:'Fâil', h:'merfu', b:'lafzen', not:'Alâmeti zammedir.' },
+        { k:'الدَّرْسَ', g:'Mef\'ul', h:'mansub', b:'lafzen', not:'Alâmeti fethadır.' }
+      ] },
+    { tur:'cumle', ar:'جَاءَ الْفَتَى وَالْقَاضِي.', tr:'Genç ile hâkim geldi.',
+      hal:['merfu'], basamak:['takdiren'],
+      cozum:[
+        { k:'جَاءَ', g:'Fiil', h:'—', b:'mebnî', not:'Mâzi fiil; mebnîdir.' },
+        { k:'الْفَتَى', g:'Fâil', h:'merfu', b:'takdiren', not:'Maksûrdur; zamme elif üzerine takdir edilir.' },
+        { k:'الْقَاضِي', g:'Ma\'tûf (fâile bağlı)', h:'merfu', b:'takdiren', not:'Menkûstur; zamme ya üzerine takdir edilir.' }
+      ] },
+    { tur:'cumle', ar:'الْمُعَلِّمَاتُ يَكْتُبْنَ الدَّرْسَ.', tr:'Bayan öğretmenler dersi yazıyorlar.',
+      hal:['merfu','mansub'], basamak:['lafzen','mahallen'],
+      cozum:[
+        { k:'الْمُعَلِّمَاتُ', g:'Mübteda', h:'merfu', b:'lafzen', not:'Cem-i müennes sâlim; alâmeti zammedir.' },
+        { k:'يَكْتُبْنَ', g:'Haber (fiil cümlesi)', h:'merfu', b:'mahallen', not:'Nûn-u nisve yüzünden mebnîdir; haber olduğu için mahallen merfudur.' },
+        { k:'الدَّرْسَ', g:'Mef\'ul', h:'mansub', b:'lafzen', not:'Alâmeti fethadır.' }
+      ] },
+    { tur:'cumle', ar:'لَنْ يَنْجَحَ الْكَسُولُ.', tr:'Tembel asla başarılı olamaz.',
+      hal:['mansub','merfu'], basamak:['lafzen'],
+      cozum:[
+        { k:'لَنْ', g:'Nasb edatı', h:'—', b:'mebnî', not:'Harftir; fiili mansub yapar.' },
+        { k:'يَنْجَحَ', g:'Muzari fiil', h:'mansub', b:'lafzen', not:'Alâmeti görünen fethadır.' },
+        { k:'الْكَسُولُ', g:'Fâil', h:'merfu', b:'lafzen', not:'Alâmeti zammedir.' }
+      ] }
+  ];
+
+  var HAL_AD = { merfu:'Merfu', mansub:'Mansub', mecrur:'Mecrur', meczum:'Meczum' };
+  var BAS_AD = { lafzen:'Lafzen', takdiren:'Takdiren', mahallen:'Mahallen', 'mebnî':'Mebnî' };
+  var secim = { tur:'hepsi', hal:'hepsi', basamak:'hepsi' };
+  var filtreEl = document.getElementById('tcFiltre');
+  var sonucEl  = document.getElementById('tcSonuc');
+  var sayiEl   = document.getElementById('tcFlSayi');
+
+  function uyar(k) {
+    if (secim.tur !== 'hepsi' && k.tur !== secim.tur) return false;
+    if (secim.hal !== 'hepsi' && k.hal.indexOf(secim.hal) < 0) return false;
+    if (secim.basamak !== 'hepsi' && k.basamak.indexOf(secim.basamak) < 0) return false;
+    return true;
+  }
+
+  function rozetBas(k) {
+    var r = k.hal.map(function (h) {
+      return '<span class="tc-rz tc-rz-hal">' + (HAL_AD[h] || h) + '</span>';
+    }).join('');
+    r += k.basamak.map(function (b) {
+      return '<span class="tc-rz tc-rz-bas tc-b-' + b + '">' + (BAS_AD[b] || b) + '</span>';
+    }).join('');
+    return r;
+  }
+
+  function kartHtml(k) {
+    var ana = k.hal[0] || 'merfu';
+    if (k.tur === 'cumle') {
+      return '<article class="tc-sk-kart tc-k-' + ana + '">' +
+        '<div class="tc-sk-cumle" dir="rtl">' + k.ar + '</div>' +
+        '<div class="tc-sk-tr">' + k.tr + '</div>' +
+        '<div class="tc-sk-rozetler">' + rozetBas(k) + '</div>' +
+        '<div class="tc-coz">' + k.cozum.map(function (c) {
+          return '<div class="tc-coz-sat">' +
+                   '<span class="tc-coz-k" dir="rtl">' + c.k + '</span>' +
+                   '<span class="tc-coz-g">' + c.g +
+                     (c.h === '—' ? '' : ' · ' + (HAL_AD[c.h] || c.h)) +
+                     ' · ' + (BAS_AD[c.b] || c.b) + '</span>' +
+                   '<span class="tc-coz-n">' + c.not + '</span>' +
+                 '</div>';
+        }).join('') + '</div>' +
+      '</article>';
+    }
+    /* Rozet sayısı ikiye indi: hâl ve basamak. Görev ile alâmet
+       zaten i'rab cümlesinde geçiyor, ayrıca rozet olmasına gerek yok. */
+    return '<article class="tc-sk-kart tc-k-' + ana + '">' +
+      '<div class="tc-sk-ar" dir="rtl">' + k.ar + '</div>' +
+      '<div class="tc-sk-rozetler">' + rozetBas(k) + '</div>' +
+      '<div class="tc-sk-tr">“' + k.tr + '” · ' + k.tip + ' · ' + k.gorev + '</div>' +
+      '<div class="tc-sk-cumle" dir="rtl">' + k.baglam + '</div>' +
+      '<div class="tc-sk-tr">' + k.baglamTr + '</div>' +
+      '<p class="tc-sk-irab">' + k.irab + '</p>' +
+    '</article>';
+  }
+
+  function suz() {
+    var liste = HAVUZ.filter(uyar);
+    sayiEl.innerHTML = '<b>' + liste.length + '</b> / ' + HAVUZ.length + ' örnek';
+    sonucEl.innerHTML = liste.length
+      ? liste.map(kartHtml).join('')
+      : '<p class="tc-bos">Bu üçlü birleşimin örneği yok. Örneğin isim <b>meczum</b> olmaz, ' +
+        'fiil de <b>mecrur</b> olmaz — bir filtreyi gevşetmeyi dene.</p>';
+  }
+
+  filtreEl.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('[data-terim]')) return;   /* ⓘ filtreyi değiştirmesin */
+    var d = e.target.closest ? e.target.closest('.tc-fl') : null;
+    if (!d) return;
+    var g = d.parentNode.getAttribute('data-grup');
+    secim[g] = d.getAttribute('data-deger');
+    [].forEach.call(d.parentNode.querySelectorAll('.tc-fl'), function (x) {
+      x.classList.toggle('aktif', x === d);
+    });
+    suz();
+  });
+  suz();
+  window.tcSuz = function (a) { if (a) { for (var k in a) secim[k] = a[k]; } suz(); return sonucEl.children.length; };
+  /* İ'rab testi aynı havuzdan beslensin diye dışarı açılıyor; havuz
+     tek yerde kalsın, test ile örnekler asla ayrı düşmesin. */
+  window.TC_HAVUZ = HAVUZ;
+})();
+
+/* ============================================================
+   1b) ÜÇ BASAMAK SEKMELERİ — KELİME ÜZERİNDE İ'RAB
+   ------------------------------------------------------------
+   Üstteki tablo alâmetlerin listesi; burası aynı tablonun somut
+   bir kelimeyle doldurulmuş hâli. Üç sekme = i'rabın üç görünme
+   biçimi. Her sekmede o biçimi temsil eden kelimeler var:
+
+     LAFZEN   قَلَم (sahih sonlu) · مُعَلِّم (sâlim çoğullu) · بِنَاء (memdûd)
+     TAKDİREN الْفَتَى (maksûr) · الْقَاضِي (menkûs) · كِتَابِي (mütekellim ya'sı)
+     MAHALLEN هَذَا (işâret) · الَّذِي (mevsûl) · هُوَ (zamir)
+
+   Hücre rengi alâmetin CİNSİNİ söyler:
+     pembe = hareke · mavi = harf · kehribar (kesik çizgi) = takdir
+     mor (noktalı çizgi) = mahal (alâmet yok)
+
+   Hücre biçimi: ['marife', 'nekra'(ops.), 'tip'(ops.)]
+   Tip verilmezse sütunun tipi kullanılır — menkûsun mansubu gibi
+   sütundan sapan tek tük hücre için üçüncü eleman yazılır.
+   ============================================================ */
+(function () {
+  var seritEl  = document.getElementById('tcKelSerit');
+  if (!seritEl) return;
+  var kartEl   = document.getElementById('tcKelKart');
+  var tabloEl  = document.getElementById('tcKelTablo');
+  var okumaEl  = document.getElementById('tcSevOkuma');
+  var sevBolum = seritEl.parentNode;
+
+  var HAREKE = { ad:'Hareke', tip:'hareke' };
+  var HARF   = { ad:'Harf',   tip:'harf' };
+  var TAKDIR = { ad:'Takdirî', tip:'takdir' };
+  var MAHAL  = { ad:'Alâmet yok', tip:'mahal' };
+
+  var SEVIYELER = [
+    /* ---------------------------------------------------- 1 */
+    {
+      kod:'lafzen', no:'1', ad:'Lafzen', ozet:'Alâmet yazılır ve okunur', renk:'#12A05F',
+      tanim:'Alâmet kelimenin sonunda <b>görünür</b>: yazılır, okunur, duyulur. ' +
+            'Sonu <b>sahih harf</b> olan — yani hareke taşımasına engel bulunmayan — ' +
+            'her mu\'reb isim böyledir. Yukarıdaki tablo doğrudan bu basamağı anlatır.',
+      kelimeler:[
+        {
+          ar:'قَلَم', tr:'kalem', etiket:'Sonu sahih harf',
+          ack:'Sonu <b dir="rtl">م</b>, yani sahih bir harf. Hareke taşımasına hiçbir engel yok; ' +
+              'bu yüzden üç hâlin alâmeti de açıkça görünür. Küçük yazı, marifesiz (nekra) biçimdir.',
+          sutun:[ {ad:'Tekil', alt:HAREKE}, {ad:'İkil', alt:HARF}, {ad:'Düzensiz Çoğul', alt:HAREKE} ],
+          satir:[
+            [ ['الْقَلَمُ','قَلَمٌ'],  ['الْقَلَمَانِ','قَلَمَانِ'],  ['الْأَقْلَـامُ','أَقْلَامٌ'] ],
+            [ ['الْقَلَمَ','قَلَمًا'], ['الْقَلَمَيْنِ','قَلَمَيْنِ'], ['الْأَقْلَامَ','أَقْلَامًا'] ],
+            [ ['الْقَلَمِ','قَلَمٍ'],  ['الْقَلَمَيْنِ','قَلَمَيْنِ'], ['الْأَقْلَامِ','أَقْلَامٍ'] ]
+          ],
+          uyari:'Tekilde ve düzensiz çoğulda alâmet <b>harekedir</b>; ikile geçince ' +
+                'alâmet <b>harfe</b> döner: ötrenin yerini elif, esrenin yerini ya alır.',
+          okumaAr:'رَأَيْتُ الْقَلَمَ', okumaTr:'<i>الْقَلَمَ</i> mef\'uldür, bu yüzden mansubdur; ' +
+                'alâmeti sonunda <i>görünen fethadır</i> — yani <i>lafzen</i> mansubdur.'
+        },
+        {
+          ar:'مُعَلِّم', tr:'öğretmen', etiket:'Düzenli çoğulu var',
+          ack:'Akıllı varlık olduğu için <b>düzenli (sâlim) çoğulu</b> vardır. ' +
+              'Müzekker sâlim çoğulda alâmet <b>harfe</b> döner (vav – ya); ' +
+              'müennes sâlim çoğulda hareke kalır ama <b>mansubu esreye</b> kaçar.',
+          sutun:[ {ad:'Tekil', alt:HAREKE}, {ad:'İkil', alt:HARF},
+                  {ad:'Cem-i Müzekker Sâlim', alt:HARF}, {ad:'Cem-i Müennes Sâlim', alt:HAREKE} ],
+          satir:[
+            [ ['الْمُعَلِّمُ','مُعَلِّمٌ'],  ['الْمُعَلِّمَانِ'],  ['الْمُعَلِّمُونَ'], ['الْمُعَلِّمَاتُ','مُعَلِّمَاتٌ'] ],
+            [ ['الْمُعَلِّمَ','مُعَلِّمًا'], ['الْمُعَلِّمَيْنِ'], ['الْمُعَلِّمِينَ'], ['الْمُعَلِّمَاتِ','مُعَلِّمَاتٍ'] ],
+            [ ['الْمُعَلِّمِ','مُعَلِّمٍ'],  ['الْمُعَلِّمَيْنِ'], ['الْمُعَلِّمِينَ'], ['الْمُعَلِّمَاتِ','مُعَلِّمَاتٍ'] ]
+          ],
+          uyari:'Son sütuna dikkat: cem-i müennes sâlim mansub hâlinde <b>üstün değil esre</b> alır. ' +
+                'Bu yüzden mansub ile mecrur satırı birbirinin aynıdır — hâli ancak görevden ayırt ederiz.',
+          okumaAr:'جَاءَ الْمُعَلِّمُونَ', okumaTr:'<i>الْمُعَلِّمُونَ</i> fâildir, bu yüzden merfudur; ' +
+                'alâmeti ötre değil <i>vav</i>dır — yine <i>lafzen</i>, çünkü vav yazılıp okunuyor.'
+        },
+        {
+          ar:'بِنَاء', tr:'yapı, bina', etiket:'Memdûd — sonu hemze',
+          ack:'Elifin ardından <b>hemze</b> gelirse bu isme <b>memdûd</b> denir. ' +
+              'Hemze sahih bir harftir, hareke taşır; bu yüzden memdûdun i\'rabı <b>lafzîdir</b>. ' +
+              'Maksûr ile menkûstan ayrıldığı yer tam burasıdır — onlar takdirî, memdûd lafzî.',
+          sutun:[ {ad:'Tekil', alt:HAREKE}, {ad:'Düzensiz Çoğul', alt:HAREKE} ],
+          satir:[
+            [ ['الْبِنَاءُ','بِنَاءٌ'],  ['الْأَبْنِيَةُ','أَبْنِيَةٌ'] ],
+            [ ['الْبِنَاءَ','بِنَاءً'],  ['الْأَبْنِيَةَ','أَبْنِيَةً'] ],
+            [ ['الْبِنَاءِ','بِنَاءٍ'],  ['الْأَبْنِيَةِ','أَبْنِيَةٍ'] ]
+          ],
+          uyari:'İstisna: <span dir="rtl">صَحْرَاء</span> gibi sonundaki hemze <b>müenneslik</b> ' +
+                'içinse o memdûd <b>gayr-i munsariftir</b> — tenvin almaz, mecrurda esre değil ' +
+                '<b>üstün</b> alır: <span dir="rtl">فِي صَحْرَاءَ</span>. Alâmet yine görünür, yani lafzîdir.',
+          okumaAr:'مَرَرْتُ بِالْبِنَاءِ', okumaTr:'<i>الْبِنَاءِ</i> harf-i cerden sonra geldiği için mecrurdur; ' +
+                'alâmeti hemzenin üzerinde <i>görünen kesradır</i> — <i>lafzen</i> mecrur.'
+        }
+      ]
+    },
+    /* ---------------------------------------------------- 2 */
+    {
+      kod:'takdiren', no:'2', ad:'Takdiren', ozet:'Alâmet vardır ama yazılamaz', renk:'#C77800',
+      tanim:'Kelime mu\'rebdir, hâli de vardır; ama sonundaki harf hareke <b>taşıyamadığı</b> için ' +
+            'alâmet yazılamaz. Alâmet yok değildir — <b>takdir edilir</b>, yani var sayılır. ' +
+            'Üç kelime türü böyledir: <b>maksûr</b>, <b>menkûs</b> ve <b>mütekellim ya\'sına muzâf</b> olan isim.',
+      kelimeler:[
+        {
+          ar:'الْفَتَى', tr:'genç, delikanlı', etiket:'Maksûr — sonu elif',
+          ack:'Sonu <b>elif</b> olan isme <b>maksûr</b> denir. Elif hiçbir hareke taşımaz; ' +
+              'bu yüzden üç hâlin alâmeti de takdirîdir. Tekilde üç satır <b>aynı yazılır</b> — ' +
+              'hâli ancak kelimenin cümledeki görevinden anlarız.',
+          sutun:[ {ad:'Tekil', alt:TAKDIR}, {ad:'İkil', alt:HARF}, {ad:'Düzensiz Çoğul', alt:HAREKE} ],
+          satir:[
+            [ ['الْفَتَى','فَتًى'], ['الْفَتَيَانِ'],  ['الْفِتْيَانُ','فِتْيَانٌ'] ],
+            [ ['الْفَتَى','فَتًى'], ['الْفَتَيَيْنِ'], ['الْفِتْيَانَ','فِتْيَانًا'] ],
+            [ ['الْفَتَى','فَتًى'], ['الْفَتَيَيْنِ'], ['الْفِتْيَانِ','فِتْيَانٍ'] ]
+          ],
+          uyari:'İkile ve çoğula geçince i\'rab yeniden <b>görünür</b> hâle gelir. ' +
+                'Demek ki takdir kelimenin kaderi değil, yalnız <b>o biçimin</b> hâlidir.',
+          okumaAr:'جَاءَ الْفَتَى', okumaTr:'<i>الْفَتَى</i> fâildir, bu yüzden merfudur; ' +
+                'alâmeti elifin üzerinde <i>takdir edilen zammedir</i> — <i>takdiren</i> merfu.'
+        },
+        {
+          ar:'الْقَاضِي', tr:'hâkim, yargıç', etiket:'Menkûs — sonu ya',
+          ack:'Sonu <b>ya</b> olan isme <b>menkûs</b> denir. Ya, ötre ile esreyi taşıyamaz ' +
+              'ama <b>üstünü taşır</b>. Bu yüzden menkûs yarı takdirî yarı lafzîdir: ' +
+              'merfu ile mecrur takdirî, <b>mansub lafzîdir</b>. Satırlara bakınca fark hemen görülür.',
+          sutun:[ {ad:'Tekil', alt:TAKDIR}, {ad:'İkil', alt:HARF}, {ad:'Cem-i Müzekker Sâlim', alt:HARF} ],
+          satir:[
+            [ ['الْقَاضِي','قَاضٍ'],              ['الْقَاضِيَانِ'],  ['الْقَاضُونَ'] ],
+            [ ['الْقَاضِيَ','قَاضِيًا','hareke'], ['الْقَاضِيَيْنِ'], ['الْقَاضِينَ'] ],
+            [ ['الْقَاضِي','قَاضٍ'],              ['الْقَاضِيَيْنِ'], ['الْقَاضِينَ'] ]
+          ],
+          uyari:'Ortadaki satır <b>pembedir</b>: menkûsun mansubu takdirî değil, <b>lafzîdir</b> — ' +
+                'fetha ya\'nın üzerinde açıkça görünür. Ayrıca nekra hâlde menkûsun ya\'sı düşer, ' +
+                'yerini tenvin alır (<span dir="rtl">قَاضٍ</span>); yalnız mansubda geri gelir ' +
+                '(<span dir="rtl">قَاضِيًا</span>).',
+          okumaAr:'رَأَيْتُ الْقَاضِيَ', okumaTr:'<i>الْقَاضِيَ</i> mef\'uldür, bu yüzden mansubdur; ' +
+                'alâmeti <i>görünen fethadır</i> — burada <i>lafzen</i> mansub. Ama ' +
+                '<span dir="rtl">جَاءَ الْقَاضِي</span> derken zamme yazılamaz, orada <i>takdiren</i> merfudur.'
+        },
+        {
+          ar:'كِتَابِي', tr:'kitabım', etiket:'Mütekellim ya\'sına muzâf',
+          ack:'Bir isim “benim” anlamındaki <b>ya</b>\'ya muzâf olunca sonu daima <b>esreli</b> okunur. ' +
+              'Kelimenin hâli değişse de bu esre değişmez; çünkü esre i\'rab alâmeti değil, ' +
+              'ya\'nın <b>istediği harekedir</b>. Üç hâlin alâmeti de takdirîdir.',
+          sutun:[ {ad:'Tekil', alt:TAKDIR}, {ad:'Düzensiz Çoğul', alt:TAKDIR} ],
+          satir:[
+            [ ['كِتَابِي'], ['كُتُبِي'] ],
+            [ ['كِتَابِي'], ['كُتُبِي'] ],
+            [ ['كِتَابِي'], ['كُتُبِي'] ]
+          ],
+          uyari:'Altı hücrenin altısı da aynı — çünkü sonu ya\'ya kilitlenmiştir. ' +
+                'İkil ve cem-i müzekker sâlimde ise i\'rab yine harfle görünür: ' +
+                '<span dir="rtl">كِتَابَايَ</span> (merfu) · <span dir="rtl">كِتَابَيَّ</span> (mansub – mecrur).',
+          okumaAr:'هَذَا كِتَابِي', okumaTr:'<i>كِتَابِي</i> haberdir, bu yüzden merfudur; ' +
+                'alâmeti mütekellim ya\'sı yüzünden yazılamayan, <i>takdir edilen zammedir</i>.'
+        }
+      ]
+    },
+    /* ---------------------------------------------------- 3 */
+    {
+      kod:'mahallen', no:'3', ad:'Mahallen', ozet:'Alâmet hiç yoktur, hâl yerden okunur', renk:'#6D4AA8',
+      tanim:'Kelime <b>mebnîdir</b>: sonu hiçbir zaman değişmez, alâmet diye bir şey yoktur. ' +
+            'Ama <b>görevi vardır</b>. Görevin gerektirdiği hâli kelimenin <b>durduğu yere</b> veririz: ' +
+            'mahallen merfu, mahallen mansub, mahallen mecrur. Aşağıdaki tablolarda satırlar arasında ' +
+            'değişen şey alâmet değil, kelimenin <b>bulunduğu görevdir</b>.',
+      kelimeler:[
+        {
+          ar:'هَذَا', tr:'bu', etiket:'İsm-i işâret — mebnî',
+          ack:'<b dir="rtl">هَذَا</b> sükûn üzere mebnîdir; cümlenin neresine girerse girsin şekli değişmez. ' +
+              'Çoğulu <span dir="rtl">هَؤُلَاءِ</span> de mebnîdir. <b>Tek istisna ikildir</b>: ' +
+              '<span dir="rtl">هَذَانِ / هَذَيْنِ</span> diye mu\'reb gibi çekilir.',
+          sutun:[ {ad:'Tekil', alt:MAHAL}, {ad:'İkil', alt:HARF}, {ad:'Çoğul', alt:MAHAL} ],
+          satir:[
+            [ ['هَذَا'], ['هَذَانِ'],  ['هَؤُلَاءِ'] ],
+            [ ['هَذَا'], ['هَذَيْنِ'], ['هَؤُلَاءِ'] ],
+            [ ['هَذَا'], ['هَذَيْنِ'], ['هَؤُلَاءِ'] ]
+          ],
+          uyari:'Tekil ve çoğul sütunlarında üç satır da <b>aynı</b>. Yalnız ikil değişiyor — ' +
+                'çünkü ikilin elifi ile ya\'sı i\'rab harfidir, mebnîlik oraya işlemez.',
+          okumaAr:'هَذَا كِتَابٌ', okumaTr:'<i>هَذَا</i> mübtedadır, bu yüzden merfu olması gerekir; ' +
+                'ama mebnî olduğu için sonu değişemez — <i>mahallen</i> merfudur.'
+        },
+        {
+          ar:'الَّذِي', tr:'ki o, o kimse', etiket:'İsm-i mevsûl — mebnî',
+          ack:'Bütün mevsûller mebnîdir; <span dir="rtl">الَّذِي</span> ve ' +
+              '<span dir="rtl">الَّذِينَ</span> hiç değişmez. ' +
+              'Yine <b>tek istisna ikildir</b>: <span dir="rtl">اللَّذَانِ / اللَّذَيْنِ</span>.',
+          sutun:[ {ad:'Tekil', alt:MAHAL}, {ad:'İkil', alt:HARF}, {ad:'Çoğul', alt:MAHAL} ],
+          satir:[
+            [ ['الَّذِي'], ['اللَّذَانِ'],  ['الَّذِينَ'] ],
+            [ ['الَّذِي'], ['اللَّذَيْنِ'], ['الَّذِينَ'] ],
+            [ ['الَّذِي'], ['اللَّذَيْنِ'], ['الَّذِينَ'] ]
+          ],
+          uyari:'<span dir="rtl">الَّذِينَ</span>\'in sonundaki ya–nûn i\'rab harfi <b>değildir</b>; ' +
+                'kelimenin aslındandır. Bu yüzden mebnî kalır ve çoğul sütunu üç satırda da aynıdır.',
+          okumaAr:'قَرَأْتُ الَّذِي كَتَبْتَ', okumaTr:'<i>الَّذِي</i> mef\'uldür, bu yüzden mansub olması gerekir; ' +
+                'mebnî olduğu için <i>mahallen</i> mansubdur.'
+        },
+        {
+          ar:'هُوَ', tr:'o', etiket:'Zamir — mebnî',
+          ack:'Zamirlerin <b>hepsi</b> mebnîdir. Burada satırlar arasında değişen şey alâmet değil, ' +
+              '<b>zamirin türüdür</b>: ayrık merfu zamir yalnız merfu mahalde, ayrık mansub zamir ' +
+              '(<span dir="rtl">إِيَّا</span>) yalnız mansub mahalde bulunur; bitişik zamir ise ' +
+              'mansub ve mecrur mahalde durur.',
+          sutun:[ {ad:'Tekil', alt:MAHAL}, {ad:'İkil', alt:MAHAL}, {ad:'Çoğul', alt:MAHAL} ],
+          satir:[
+            [ ['هُوَ'],     ['هُمَا'],      ['هُمْ'] ],
+            [ ['إِيَّاهُ'],   ['إِيَّاهُمَا'],  ['إِيَّاهُمْ'] ],
+            [ ['بِهِ'],      ['بِهِمَا'],     ['بِهِمْ'] ]
+          ],
+          uyari:'Mebnî kelimenin sonu değişemediği için tablo <b>çekim tablosu değil, görev tablosudur</b>. ' +
+                'Merfu satırında <span dir="rtl">هُوَ</span> mübteda ya da fâil olur; ' +
+                'mecrur satırında zamir tek başına duramaz, ancak harf-i cere bitişir.',
+          okumaAr:'إِيَّاكَ نَعْبُدُ', okumaTr:'<i>إِيَّاكَ</i> mef\'uldür, bu yüzden mansub olması gerekir; ' +
+                'mebnî olduğu için <i>mahallen</i> mansubdur — üstelik fiilden <i>önce</i> gelmiştir.'
+        }
+      ]
+    }
+  ];
+
+  var HAL_AD = ['Merfu','Mansub','Mecrur'];
+  var HAL_SN = ['tc-h-merfu','tc-h-mansub','tc-h-mecrur'];
+  var TIP_SN = { hareke:'tc-ib-hareke', harf:'tc-ib-harf', takdir:'tc-ib-takdir', mahal:'tc-ib-mahal' };
+
+  var sevSira = 0, kelSira = 0;
+
+  function sec(si, ki) {
+    if (typeof si === 'string') {                 /* 'lafzen' gibi kod da kabul */
+      var n = 0;
+      SEVIYELER.forEach(function (x, i) { if (x.kod === si) n = i; });
+      si = n;
+    }
+    ki = ki || 0;
+    sevSira = si; kelSira = ki;
+    var s = SEVIYELER[si], k = s.kelimeler[ki];
+    sevBolum.style.setProperty('--sk-renk', s.renk);
+
+    /* kelime şeridi */
+    seritEl.innerHTML = '';
+    s.kelimeler.forEach(function (kl, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tc-kl' + (i === ki ? ' aktif' : '');
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', i === ki ? 'true' : 'false');
+      b.innerHTML = '<span class="tc-kl-ar">' + kl.ar + '</span>' +
+                    '<span class="tc-kl-tr">' + kl.etiket + '</span>';
+      b.addEventListener('click', function () { sec(si, i); });
+      seritEl.appendChild(b);
+    });
+
+    /* kelime kartı */
+    kartEl.innerHTML =
+      '<span class="tc-kel-buyuk" dir="rtl">' + k.ar + '</span>' +
+      '<span class="tc-kel-sag">' +
+        '<span class="tc-kel-etiket">' + k.etiket + '</span>' +
+        '<span class="tc-kel-tr"> &nbsp;“' + k.tr + '”</span>' +
+        '<p class="tc-kel-ack">' + k.ack + '</p>' +
+      '</span>';
+
+    /* tablo: üstteki tablonun aynısı, bu kelimeyle doldurulmuş */
+    var bas = '<tr><th style="width:104px"></th>' + k.sutun.map(function (c) {
+      return '<th><span class="tc-ib-ad">' + c.ad + '</span>' +
+             '<span class="tc-ib-alt ' + TIP_SN[c.alt.tip] + '">' + c.alt.ad + '</span></th>';
+    }).join('') + '</tr>';
+
+    var govde = k.satir.map(function (sat, i) {
+      return '<tr class="' + HAL_SN[i] + '"><td class="tc-hal">' + HAL_AD[i] + '</td>' +
+        sat.map(function (h, j) {
+          var sn = TIP_SN[h[2] || k.sutun[j].alt.tip];
+          var ic = '<span class="' + sn + '">' + h[0] + '</span>';
+          if (h[1]) ic += '<span class="tc-kel-nekra ' + sn + '">' + h[1] + '</span>';
+          return '<td>' + ic + '</td>';
+        }).join('') + '</tr>';
+    }).join('');
+
+    tabloEl.querySelector('thead').innerHTML = bas;
+    tabloEl.querySelector('tbody').innerHTML = govde;
+
+    /* Okuma ile uyarı tek kutuda: iki ayrı kutu göz yoruyordu. */
+    okumaEl.innerHTML = '<span class="tc-okuma-ar">' + k.okumaAr + '</span>' + k.okumaTr +
+      '<span class="tc-okuma-dikkat"><b>Dikkat —</b> ' + k.uyari + '</span>';
+  }
+
+  /* özetteki basamak şeridi Tablolar bölümüne kısayol */
+  document.querySelectorAll('.tc-bsm[data-sev]').forEach(function (d) {
+    d.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('[data-terim]')) return;
+      if (window.tcBasamakAc) window.tcBasamakAc(d.getAttribute('data-sev'));
+    });
+  });
+
+  sec(0, 0);
+  window.tcSeviyeSec = sec;
+})();
+
+/* ============================================================
+   2) YAKINLAŞMA (ZOOM) MOTORU
+   ------------------------------------------------------------
+   Tablonun 4 satırı x 5 alanı düz bir listeye çevrilir; İleri
+   tuşu bu listede ilerler. Her adımda SAHNE o hücreye yaklaşır:
+   tablo transform ile ölçeklenip kaydırılır, hücre ekranı doldurur.
+   Ayrı bir kart YOKTUR — öğrenci hücrenin tablodaki yerini hiç
+   kaybetmez. İleri'ye basınca yakınlık aynı satırda yana kayar.
+
+   Ölçüler her adımda transform KALDIRILARAK alınır; yoksa ikinci
+   yakınlaşma birincinin üstüne biner ve ölçek katlanır.
+
+   ÖRNEK alanında ayrıca ÇEŞİT gezintisi vardır: yukarı/aşağı
+   oklarla tekil → ikil → çoğul örnekleri dolaşılır. Bu gezinti
+   artık kartta değil, HÜCRENİN İÇİNDE yaşar; hücre seçiliyken
+   okları ve notu görünür olur.
+
+   DAR EKRAN: tablo dikey yığına döndüğü için ölçekleme anlamsız;
+   orada yakınlaşma yerine hücre görünüre kaydırılır.
+   ============================================================ */
+(function () {
+  var sahne  = document.querySelector('.tc-sar');
+  var tablo  = document.querySelector('.tc-tablo');
+  var kum    = document.getElementById('tcKum');
+  var sayacEl= document.getElementById('tcOdakSayac');
+  var basUst = document.getElementById('tcBasUst');
+  var basSol = document.getElementById('tcBasSol');
+  var basSolYazi = document.getElementById('tcBasSolYazi');
+  var uzak   = document.getElementById('tcUzak');
+  var ileri  = document.getElementById('tcSonraki');
+  var geri   = document.getElementById('tcOnceki');
+
+  var satirlar = [].slice.call(document.querySelectorAll('.tc-satir'));
+  if (!satirlar.length || !sahne || !tablo) return;
+
+  /* Düz gezinti listesi: her satırın 5 içerik hücresi, sırayla. */
+  var adimlar = [];
+  satirlar.forEach(function (sr, si) {
+    [].slice.call(sr.querySelectorAll('td[data-bas]')).forEach(function (td, ci2) {
+      adimlar.push({ satir: si, sutun: ci2, td: td, tr: sr, asil: td.innerHTML });
+    });
+  });
+
+  var CESIT = [
+    [ /* 1 · İsim Tamlaması */
+      { ad:'Tekil', k:[['<span class="tc-el-yok">ال</span>&zwnj;قَلَمُ','Muzaf'],['الْمُعَلِّمِ','Muzafun ileyh']],
+        tr:'Öğretmen<span class="tc-ek">in</span> kalem<span class="tc-ek">i</span>',
+        not:'Muzâf <b>ötre</b> ile merfu, muzâfun ileyh <b>esre</b> ile mecrur.' },
+      /* İKİL ÖRNEĞİ GÜNLÜK DİLDEN: "öğretmenin iki kalemi" kurgu bir
+         ifadeydi. وَالِدَان (anne-baba) Arapçada gerçekten ikil olarak
+         kullanılan bir kelime; nûnun düşmesi de aynı derste görünüyor. */
+      { ad:'İkil', k:[['<span class="tc-el-yok">ال</span>&zwnj;وَالِدَ<span class="tc-son">ا</span>','Muzaf'],['الطَّالِبِ','Muzafun ileyh']],
+        tr:'Öğrenci<span class="tc-ek">nin</span> anne baba<span class="tc-ek">sı</span>',
+        not:'Muzâf ikil: <b>elif</b> ile merfu. Dikkat — izâfet yüzünden ikilin <b>nûnu düştü</b> (وَالِدَانِ → وَالِدَا).' },
+      { ad:'Çoğul', k:[['<span class="tc-el-yok">ال</span>&zwnj;أَقْلَـامُ','Muzaf'],['الْمُعَلِّمِ<span class="tc-son">ينَ</span>','Muzafun ileyh']],
+        tr:'Öğretmen<span class="tc-ek">lerin</span> kalem<span class="tc-ek">leri</span>',
+        not:'Muzâfun ileyh cem-i müzekker sâlim: esre değil <b>ya</b> ile mecrur.' }
+    ],
+    [ /* 2 · Sıfat Tamlaması */
+      { ad:'Tekil', k:[['<span class="tc-el">اَلْ</span>قَلَمُ','Mevsuf'],['<span class="tc-el">الْ</span>جَمِيلُ','Sıfat']],
+        tr:'Güzel kalem',
+        not:'Sıfat mevsûfa uyar: ikisi de marife, ikisi de <b>ötre</b> ile merfu.' },
+      { ad:'İkil', k:[['<span class="tc-el">اَلْ</span>قَلَمَ<span class="tc-son">انِ</span>','Mevsuf'],['<span class="tc-el">الْ</span>جَمِيلَـ<span class="tc-son">انِ</span>','Sıfat']],
+        tr:'İki güzel kalem',
+        not:'İkilde ikisi de <b>elif</b> alır; uyum sayıda da sürer.' },
+      { ad:'Çoğul', k:[['<span class="tc-el">اَلْ</span>أَقْلَـامُ','Mevsuf'],['<span class="tc-el">الْ</span>جَمِيلَةُ','Sıfat']],
+        tr:'Güzel kalemler',
+        not:'<b>İstisna:</b> kalem akılsız (gayr-i âkil). Akılsızların çoğulu <b>müfred müennes</b> sayılır, sıfatı da öyle gelir.' }
+    ],
+    [ /* 3 · İsim Cümlesi */
+      { ad:'Tekil', k:[['<span class="tc-el">اَلْ</span>كِتَابُ','Mübteda'],['<span class="tc-el-yok">ال</span>&zwnj;مُفِيدٌ.','Haber']],
+        tr:'Kitap faydalıdır.',
+        not:'Mübteda marife, haber nekra; ikisi de <b>ötre</b> ile merfu.' },
+      { ad:'İkil', k:[['<span class="tc-el">اَلْ</span>كِتَابَ<span class="tc-son">انِ</span>','Mübteda'],['<span class="tc-el-yok">ال</span>&zwnj;مُفِيدَ<span class="tc-son">انِ</span>.','Haber']],
+        tr:'İki kitap faydalıdır.',
+        not:'İkilde ikisi de <b>elif</b> ile merfu olur.' },
+      { ad:'Çoğul', k:[['<span class="tc-el">اَلْ</span>كُتُبُ','Mübteda'],['<span class="tc-el-yok">ال</span>&zwnj;مُفِيدَةٌ.','Haber']],
+        tr:'Kitaplar faydalıdır.',
+        not:'<b>İstisna:</b> kitap akılsız; çoğulunun haberi <b>müfred müennes</b> gelir.' }
+    ],
+    [ /* 4 · Fiil Cümlesi */
+      { ad:'Tekil', k:[['<span class="tc-el">كَتَبَ</span>','Fiil'],['الْمُعَلِّمُ','Fail'],['الدَّرْسَ.','Mef\'ul']],
+        tr:'Öğretmen dersi yazdı.',
+        not:'Fâil <b>ötre</b> ile merfu, mef\'ul <b>üstün</b> ile mansub.' },
+      { ad:'İkil', k:[['<span class="tc-el">كَتَبَ</span>','Fiil'],['الْمُعَلِّمَ<span class="tc-son">انِ</span>','Fail'],['الدَّرْسَ.','Mef\'ul']],
+        tr:'İki öğretmen dersi yazdı.',
+        not:'Fâil ikil (<b>elif</b> ile merfu) ama fiil <b>yine tekil</b> kaldı.' },
+      { ad:'Çoğul', k:[['<span class="tc-el">كَتَبَ</span>','Fiil'],['الْمُعَلِّمُ<span class="tc-son">ونَ</span>','Fail'],['الدَّرْسَ.','Mef\'ul']],
+        tr:'Öğretmenler dersi yazdı.',
+        not:'Fâil cem-i müzekker sâlim: <b>vav</b> ile merfu. Fiil başta olduğu için <b>yine tekil</b>.' }
+    ]
+  ];
+
+  var i = -1;        /* geçerli adım */
+  var bekleyen = -1; /* satır sonu durağında sıradaki adım (-1: durak yok) */
+  var ci = 0;        /* geçerli örnek çeşidi */
+  var EN_COK = 4.2;  /* ölçek tavanı — okunaklılık bozulmasın */
+  var BOSLUK = 26;   /* hücrenin kenarında bırakılan pay (px) */
+  var ALT    = 86;   /* altta kumanda şeridine ayrılan yer (px) */
+
+  /* Başlık ile kutu çizgisi arasındaki pay. Sol rozet dolu renkli bir
+     blok olduğu için aynı payda çizgiye yapışmış gibi duruyor; ona bir
+     tık daha yer veriliyor ki iki başlık da çizgiden ayrı okunsun. */
+  /* Hareket süresi CSS'teki --tc-sure ile aynı olmalı; oradan okunuyor
+     ki iki yerde ayrı ayrı güncellemek gerekmesin. */
+  function sure() {
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--tc-sure').trim();
+    var n = parseFloat(v) || .75;
+    return /ms$/.test(v) ? n : n * 1000;
+  }
+  var katmanZaman = 0;
+  /* Tabloyu yalnız hareket boyunca GPU katmanına al; bitince bırak ki
+     tarayıcı son ölçekte yeniden tarasın (yakınken yazı netleşir). */
+  function katmanAc() {
+    tablo.classList.add('tc-hareket');
+    if (katmanZaman) clearTimeout(katmanZaman);
+    katmanZaman = setTimeout(function () {
+      katmanZaman = 0;
+      tablo.classList.remove('tc-hareket');
+    }, sure() + 90);
+  }
+
+  var ARA = 18;
+  var ARA_SOL = 26;
+  var darZaman = 0;  /* dar ekranda kaydırma bitişini bekleyen sayaç */
+
+  function darMi() { return window.innerWidth <= 900; }
+  function azaltMi() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  function renk(tr) { return getComputedStyle(tr).getPropertyValue('--satir-renk').trim(); }
+  function turAdi(tr) { return (tr.querySelector('.tc-turad') || {}).innerText.replace(/\s+/g, ' ').trim(); }
+
+  /* ---- kamerayı n. hücreye götür ----
+     Ölçüler her seferinde transform KALDIRILARAK alınır; yoksa ikinci
+     yakınlaşma birincinin üstüne biner ve ölçek katlanır. Ölçüye
+     hücrenin ÇOCUKLARI da katılır: örnek hücresinde çeşit oku ve not
+     hücre kutusunun dışına taşıyor, çerçeve onları da içine almalı. */
+  function kamera(n, anisiz) {
+    if (darMi()) {                       /* dar ekranda ölçekleme yok */
+      tablo.style.transform = '';
+      tablo.style.removeProperty('--z');
+      adimlar[n].td.scrollIntoView({ behavior: azaltMi() ? 'auto' : 'smooth', block:'center' });
+      /* kaydırma bitince başlığı kutunun yeni yerine taşı */
+      etiketleriTazele(true);
+      if (darZaman) clearTimeout(darZaman);
+      darZaman = setTimeout(function () { darZaman = 0; etiketleriTazele(true); }, sure());
+      return;
+    }
+    var td = adimlar[n].td;
+
+    var oncekiDonusum = tablo.style.transform;
+    tablo.classList.add('tc-anisiz');
+    tablo.style.transform = 'none';
+    var t = tablo.getBoundingClientRect();
+    var r = td.getBoundingClientRect();
+    var x1 = r.left, y1 = r.top, x2 = r.right, y2 = r.bottom;
+    [].forEach.call(td.children, function (c) {
+      var b = c.getBoundingClientRect();
+      if (!b.width && !b.height) return;
+      if (b.left < x1) x1 = b.left;
+      if (b.top < y1) y1 = b.top;
+      if (b.right > x2) x2 = b.right;
+      if (b.bottom > y2) y2 = b.bottom;
+    });
+    var sh = sahne.getBoundingClientRect();
+    tablo.style.transform = oncekiDonusum;
+    void tablo.offsetWidth;              /* eski durum yazılsın, geçiş oradan başlasın */
+    if (!(anisiz || azaltMi())) tablo.classList.remove('tc-anisiz');
+
+    var kw = x2 - x1, kh = y2 - y1;
+    if (!kw || !kh) { tablo.classList.remove('tc-anisiz'); return; }
+
+    /* Çerçeve altta kumanda şeridine yer bırakır; hücre onun ÜSTÜNDE
+       ortalanır, yoksa örnek kutusunun alt oku şeridin altında kalıyor.
+       Ayrıca ÜSTTE sütun başlığına, SOLDA satır başlığına pay ayrılır —
+       yoksa büyüyen kutu ekranı doldurup başlıkların altına giriyor.
+       Paylar başlıkların o anki gerçek ölçüsünden okunuyor. */
+    var UST_PAY = (basUst && getComputedStyle(basUst).display !== 'none')
+                  ? basUst.offsetHeight + ARA + 6 : 0;
+    var SOL_PAY = basSol ? basSol.offsetWidth + ARA_SOL + 6 : 0;
+
+    var enG = sh.width - 2 * BOSLUK - SOL_PAY;
+    var enY = sh.height - BOSLUK - ALT - UST_PAY;
+    var o = Math.min(enG / kw, enY / kh);
+    o = Math.max(1, Math.min(EN_COK, o));
+
+    var hx = (x1 + x2) / 2 - t.left, hy = (y1 + y2) / 2 - t.top;
+    var mx = sh.left + sh.width / 2 + SOL_PAY / 2;
+    var my = sh.top + BOSLUK + UST_PAY + enY / 2;
+    var dx = mx - t.left - o * hx;
+    var dy = my - t.top  - o * hy;
+
+    tablo.style.setProperty('--z', o);
+    katmanAc();
+    tablo.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + o + ')';
+    if (anisiz || azaltMi()) { void tablo.offsetWidth; tablo.classList.remove('tc-anisiz'); }
+
+    /* Başlıklar kutunun VARACAĞI yere şimdiden konur. transform-origin
+       0 0 olduğu için son köşeler doğrudan hesaplanabiliyor; böylece
+       başlıklar tabloyla aynı geçişte, aynı anda kayıyor. */
+    etiketleriKoy(
+      t.left + dx + o * (x1 - t.left),
+      t.top  + dy + o * (y1 - t.top),
+      t.left + dx + o * (x2 - t.left),
+      t.top  + dy + o * (y2 - t.top),
+      anisiz || azaltMi(),
+      t.top + dy + o * (r.top    - t.top),      /* şerit boyu: kutunun kendi */
+      t.top + dy + o * (r.bottom - t.top)
+    );
+  }
+
+  function kameraGeri() {
+    katmanAc();
+    tablo.style.transform = '';
+    tablo.style.removeProperty('--z');
+  }
+
+  /* ---- BÜYÜTME BAŞLIKLARI ----
+     Kutunun EKRANDAKİ son köşeleri veriliyor; üst başlık kutunun
+     üstüne yatayda ortalı, sol başlık soluna dikeyde ortalı konur.
+     İkisi de sahnenin dışına taşmayacak şekilde kırpılır — büyütülen
+     kutu ekranı neredeyse doldurduğu için bu sınır sık devreye girer. */
+  /* x1..y2 = kutunun TAŞAN ÇOCUKLARI dahil sınırları (başlıklar onlara
+     da çarpmasın diye). kY1/kY2 verilirse şeridin BOYU bunlardan değil,
+     kutunun kendi çerçevesinden alınır — göz neyi görüyorsa o. */
+  function etiketleriKoy(x1, y1, x2, y2, anisiz, kY1, kY2) {
+    if (kY1 == null) { kY1 = y1; kY2 = y2; }
+    if (!basUst || !basSol) return;
+    basUst.classList.toggle('tc-anisiz', !!anisiz);
+    basSol.classList.toggle('tc-anisiz', !!anisiz);
+    var sh = sahne.getBoundingClientRect();
+    var ust = sh.top;
+    var bar = document.querySelector('.tc-ust');
+    if (bar) ust = Math.max(ust, bar.getBoundingClientRect().bottom);
+
+    if (getComputedStyle(basUst).display !== 'none') {
+      var uw = basUst.offsetWidth, uh = basUst.offsetHeight;
+      var ux = (x1 + x2) / 2 - uw / 2;
+      ux = Math.max(sh.left + 6, Math.min(ux, sh.right - uw - 6));
+      var uy = Math.max(ust + 4, y1 - uh - ARA);
+      basUst.style.transform = 'translate(' + Math.round(ux) + 'px,' + Math.round(uy) + 'px)';
+    }
+
+    /* Sol rozet, etiketlediği KUTUNUN BOYUNDA bir şerit olsun.
+       İçeriğe göre boyutlanınca satır adı uzunluğuna göre kısalıp
+       uzuyor ("dolgu daralıyor"); kutuya eşitlenince hep aynı şeyi
+       kaplıyor ve yazı ortasında duruyor. Ekrandan taşmasın diye
+       sahne sınırlarına kırpılır. */
+    var enUst = ust + 4, enAlt = sh.bottom - 4;
+    var sYuk = Math.min(kY2 - kY1, enAlt - enUst);
+    basSol.style.height = Math.round(sYuk) + 'px';
+    var sw = basSol.offsetWidth;
+    var sx = Math.max(sh.left + 4, x1 - sw - ARA_SOL);
+    var sy = (kY1 + kY2) / 2 - sYuk / 2;
+    sy = Math.max(enUst, Math.min(sy, enAlt - sYuk));
+    basSol.style.transform = 'translate(' + Math.round(sx) + 'px,' + Math.round(sy) + 'px)';
+  }
+
+  /* Dar ekranda ölçekleme yok; kutunun gerçek yerinden okunur. */
+  function etiketleriTazele(anisiz) {
+    var a = adimlar[i]; if (!a) return;
+    var r = a.td.getBoundingClientRect();
+    etiketleriKoy(r.left, r.top, r.right, r.bottom, anisiz);
+  }
+
+  /* ---- örnek çeşidi: hücrenin İÇİNE yazılır ---- */
+  function cesitHtml(si) {
+    var c = CESIT[si][ci];
+    var ar = c.k.map(function (x) {
+      return '<span class="tc-oge"><span class="tc-kelime">' + x[0] + '</span>' +
+             '<span class="tc-etiket">' + x[1] + '</span></span>';
+    }).join('');
+    /* Tekil/İkil/Çoğul etiketi KUTUNUN KÖŞESİNDE: üstteki şeritte
+       ortada dururken örneğin başlığı gibi görünüyor ve yer kaplıyordu;
+       köşeye iliştirilince kartın kendi künyesi oluyor. */
+    return '<div class="tc-cesit-serit">' +
+             '<button type="button" class="tc-ok" data-yon="-1" title="Önceki örnek">&#9650;</button>' +
+           '</div>' +
+           '<div class="tc-ornek">' +
+             '<span class="tc-cesit-ad">' + c.ad + '</span>' +
+             '<div class="tc-ar">' + ar + '</div>' +
+             '<div class="tc-ceviri">' + c.tr + '</div>' +
+           '</div>' +
+           '<div class="tc-cesit-serit">' +
+             '<button type="button" class="tc-ok" data-yon="1" title="Sonraki örnek">&#9660;</button>' +
+           '</div>' +
+           '<p class="tc-cesit-not">' + c.not + '</p>';
+  }
+
+  function asillariGeriKoy(haric) {
+    adimlar.forEach(function (a) {
+      if (a !== haric && a.td.innerHTML !== a.asil && a.td.querySelector('.tc-cesit-serit')) {
+        a.td.innerHTML = a.asil;
+      }
+    });
+  }
+
+  function ciz(anisiz) {
+    var a = adimlar[i];
+    document.querySelectorAll('.tc-tablo td.tc-secili').forEach(function (t) { t.classList.remove('tc-secili'); });
+    a.td.classList.add('tc-secili');
+
+    var r = renk(a.tr);
+    kum.style.setProperty('--odak-renk', r);
+    sayacEl.textContent = (i + 1) + ' / ' + adimlar.length;
+
+    /* Üstte sütun (kutunun kendi başlığı), solda satır (tamlama türü). */
+    if (basUst) basUst.textContent = a.td.getAttribute('data-bas') || '';
+    if (basSolYazi) basSolYazi.textContent = turAdi(a.tr);
+    if (basSol) basSol.style.setProperty('--odak-renk', r);
+
+    /* Son sütun ÖRNEK: hücrenin içeriği çeşitle değiştirilir. */
+    var ornekMi = a.asil.indexOf('tc-ornek') >= 0;
+    asillariGeriKoy(a);
+    if (ornekMi) a.td.innerHTML = cesitHtml(a.satir);
+    else if (a.td.innerHTML !== a.asil) a.td.innerHTML = a.asil;
+
+    /* Uçlarda da etkin: ilk kutuda Geri, son kutuda İleri küçültme yapar. */
+    geri.disabled = false;
+    ileri.disabled = false;
+    document.body.classList.add('tc-yakin');
+    kum.classList.add('gor');
+    kum.setAttribute('aria-hidden', 'false');
+    kamera(i, anisiz);
+  }
+
+  function git(n) {
+    if (n < 0 || n >= adimlar.length) return;
+    /* SATIR SONU DURAĞI — bir satırın son sütunundayken İleri önce
+       uzaklaştırır; öğrenci tabloyu bütün olarak yeniden görür. İkinci
+       dokunuşta sonraki satırın ilk sütunu büyür. Sütun sayısına değil,
+       adımın satırının değişmesine bakıyoruz. */
+    if (i >= 0 && n === i + 1 && adimlar[n].satir !== adimlar[i].satir) {
+      araVer(n);
+      return;
+    }
+    bekleyen = -1;
+    if (i !== n) ci = 0;          /* yeni hücrede çeşit başa döner */
+    i = n;
+    ciz(false);
+  }
+
+  /* Satır sonu durağı: yakınlık kalkar ama KUMANDA açık kalır, yoksa
+     İleri'ye ikinci kez basılamaz. Sıradaki adım "bekleyen"de tutulur. */
+  function araVer(n) {
+    bekleyen = n;
+    kameraGeri();
+    document.body.classList.remove('tc-yakin');
+    document.querySelectorAll('.tc-tablo td.tc-secili').forEach(function (t) { t.classList.remove('tc-secili'); });
+    asillariGeriKoy(null);
+    i = -1; ci = 0;
+    kum.classList.add('gor');
+    kum.setAttribute('aria-hidden', 'false');
+    kum.style.setProperty('--odak-renk', renk(adimlar[n].tr));
+    sayacEl.textContent = (n + 1) + ' / ' + adimlar.length;
+    geri.disabled = false;
+    ileri.disabled = false;
+  }
+
+  function uzaklas() {
+    if (i < 0 && bekleyen < 0) return;
+    bekleyen = -1;
+    kameraGeri();
+    document.body.classList.remove('tc-yakin');
+    kum.classList.remove('gor');
+    kum.setAttribute('aria-hidden', 'true');
+    document.querySelectorAll('.tc-tablo td.tc-secili').forEach(function (t) { t.classList.remove('tc-secili'); });
+    asillariGeriKoy(null);
+    i = -1; ci = 0;
+  }
+
+  /* Duraktayken İleri sıradaki satırı açar, Geri bırakılan hücreye döner.
+     UÇLAR: ilk kutunun öncesinde, son kutunun sonrasında başka kutu yok —
+     oralarda düğme devre dışı kalmak yerine ekranı küçültür. */
+  function ileriGit() {
+    if (bekleyen >= 0) { var n = bekleyen; bekleyen = -1; git(n); return; }
+    if (i === adimlar.length - 1) { uzaklas(); return; }
+    git(i < 0 ? 0 : i + 1);
+  }
+  function geriGit() {
+    if (bekleyen >= 0) { var n = bekleyen; bekleyen = -1; git(n - 1); return; }
+    if (i === 0) { uzaklas(); return; }
+    git(i - 1);
+  }
+
+  /* Adım ÖRNEK hücresinde mi? Çeşit gezintisi yalnız orada anlamlı. */
+  function ornekAdimMi() {
+    var a = adimlar[i];
+    return !!(a && a.asil.indexOf('tc-ornek') >= 0);
+  }
+  /* Yukarı/aşağı BAŞKA bir kutudayken örnekleri açmasın: eskiden
+     cesitHtml hangi hücre odaktaysa oraya yazılıyordu, "Uyum"a
+     bakarken ok'a basınca hücrenin içi örnekle değişiyordu. */
+  function cesitGit(y) {
+    if (!ornekAdimMi()) return false;
+    var a = adimlar[i]; if (!a) return false;
+    var n = CESIT[a.satir].length;
+    ci = (ci + y + n) % n;
+    a.td.innerHTML = cesitHtml(a.satir);
+    kamera(i, false);   /* not uzunluğu değişebilir; çerçeve tazelenir */
+    return true;
+  }
+
+  /* Hücreye dokunmak: kapalıysa yaklaş, o hücredeysen uzaklaş. */
+  adimlar.forEach(function (a, n) {
+    a.td.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('.tc-ok')) return;
+      if (i !== n) { git(n); return; }
+      /* Odaktaki kutuya tekrar dokunmak KÜÇÜLTÜR ama gezintiyi bitirmez:
+         satır sonundaki gibi bir DURAĞA geçilir. Böylece İleri baştan
+         başlamak yerine kalınan yerden devam eder, Geri de bırakılan
+         kutuyu geri açar. Son kutuda devam edecek adım yok, tamamen çıkılır. */
+      if (n >= adimlar.length - 1) uzaklas(); else araVer(n + 1);
+    });
+  });
+  tablo.addEventListener('click', function (e) {
+    var ok = e.target.closest ? e.target.closest('.tc-ok') : null;
+    if (ok) { e.stopPropagation(); cesitGit(+ok.getAttribute('data-yon')); }
+  });
+
+  ileri.addEventListener('click', function () { ileriGit(); });
+  geri.addEventListener('click', function () { geriGit(); });
+  uzak.addEventListener('click', uzaklas);
+
+  /* ---------- SÜRÜKLEYEREK GEZİNME (4 yön) ----------
+     Yakınlaşma açıkken parmakla sürükleme haritada gezer gibi çalışır:
+     içerik parmağı izler — SAĞA çekince soldaki, SOLA çekince sağdaki,
+     YUKARI çekince alttaki, AŞAĞI çekince üstteki kutu açılır.
+     Satır atlarken satır-sonu durağına uğramaz: sürükleme akıcı kalmalı.
+     Uçlarda (ilk/son satır ya da sütun) kayma yok sayılır, kutu yerinde
+     kalır. Dar ekranda devre dışıdır — orada parmak zaten sayfayı
+     kaydırıyor, iki hareket birbiriyle yarışmasın. */
+  var syBas = null, sonSurukleme = 0;
+  function komsuGit(dSatir, dSutun) {
+    if (i < 0) return;
+    var a = adimlar[i], hedef = -1;
+    adimlar.forEach(function (x, k) {
+      if (x.satir === a.satir + dSatir && x.sutun === a.sutun + dSutun) hedef = k;
+    });
+    if (hedef < 0) return;                 /* uçtayız: olduğumuz yerde kal */
+    bekleyen = -1; ci = 0; i = hedef;
+    ciz(false);
+  }
+  sahne.addEventListener('pointerdown', function (e) {
+    syBas = (i >= 0) ? { x: e.clientX, y: e.clientY } : null;
+  });
+  /* pointerup DOCUMENT'ta: parmak sahnenin dışında kalksa da yakalanır. */
+  document.addEventListener('pointerup', function (e) {
+    if (!syBas) return;
+    var dx = e.clientX - syBas.x, dy = e.clientY - syBas.y;
+    syBas = null;
+    if (i < 0) return;
+    var ax = Math.abs(dx), ay = Math.abs(dy);
+    if (Math.max(ax, ay) < 48) return;     /* kısa dokunuş: tıklama sayılır */
+    /* Uzun sürükleme HER ekranda tıklama sayılmaz — dar ekranda da yanlış
+       hücreye tıklanmış olmasın. Gezinme ise yalnız geniş ekranda. */
+    sonSurukleme = Date.now();
+    if (darMi()) return;
+    if (ax > ay) komsuGit(0, dx < 0 ? 1 : -1);   /* sola çek → sağdaki */
+    else         komsuGit(dy < 0 ? 1 : -1, 0);   /* yukarı çek → alttaki */
+  });
+  document.addEventListener('pointercancel', function () { syBas = null; });
+  /* Sürüklemenin bıraktığı tıklama, hücre aç/kapa işlemini tetiklemesin —
+     yoksa her kaydırma sonunda odaktaki kutu küçülürdü. */
+  sahne.addEventListener('click', function (e) {
+    if (Date.now() - sonSurukleme < 500) { e.stopPropagation(); e.preventDefault(); }
+  }, true);
+
+  /* ---------- GERİ TUŞU: iki aşamalı ----------
+     Yakınlaşma (ya da satır durağı) açıkken üst şeritteki Geri önce
+     yalnızca yakınlaşmayı kapatır; sayfadan çıkmaz. Kapalıyken bağlantı
+     kendi işine bakar ve index'e döner. Belge düzeyinde YAKALAMA evresi:
+     bu betik sistem/geri.js'ten önce yüklendiği için buradaki dinleyici
+     ondan önce çalışır ve gerektiğinde onu da susturur. */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('#tcGeri') : null;
+    if (!a) return;
+    if (i >= 0 || bekleyen >= 0) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      uzaklas();
+    }
+  }, true);
+
+  var boyZaman = 0;
+  window.addEventListener('resize', function () {
+    if (boyZaman) clearTimeout(boyZaman);
+    boyZaman = setTimeout(function () {
+      boyZaman = 0;
+      if (i >= 0) kamera(i, true);
+    }, 160);
+  });
+
+  /* Dar ekranda sayfa kaydıkça başlık kutuyla birlikte yürüsün. */
+  function kaymaTazele() { if (i >= 0 && darMi()) etiketleriTazele(true); }
+  window.addEventListener('scroll', kaymaTazele, { passive: true });
+  sahne.addEventListener('scroll', kaymaTazele, { passive: true });
+
+  document.addEventListener('keydown', function (e) {
+    /* İ'rab paneli açıksa klavye ona ait; burası karışmaz. */
+    if (document.getElementById('tcPerde').classList.contains('acik')) return;
+    var acik = (i >= 0 || bekleyen >= 0);
+    if (e.key === 'Escape' && acik) { uzaklas(); e.preventDefault(); return; }
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      ileriGit(); e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      if (acik) { geriGit(); e.preventDefault(); }
+    } else if (acik && (e.key === 'ArrowDown')) { if (cesitGit(1)) e.preventDefault(); }
+    else if (acik && (e.key === 'ArrowUp')) { if (cesitGit(-1)) e.preventDefault(); }
+  });
+
+  window.tcYakinlas = git;
+  window.tcUzaklas = uzaklas;
+})();
+
+/* ==================== 2) TEST PANELİ ==================== */
+/* ============================================================
+   TEST — 10 SORULUK TUR, 100 PUAN ÜZERİNDEN
+   ------------------------------------------------------------
+   Havuz: muhadese/veri/sinav.js — bu sayfanın öğrettiği dört yapı
+   (isim tamlaması, sıfat tamlaması, isim cümlesi, fiil cümlesi).
+   İçindeki örnekler kalip.js üzerinden 5-10. sınıf ders verilerine
+   dayanıyor; sınav için ayrıca Arapça yazılmadı.
+
+   İki soru tipi:
+     ANLAM : öbeğin/cümlenin Türkçe karşılığı nedir?
+     ÖGE   : işaretli kelime hangi ögedir? (Muzâf, Sıfat, Fâil …)
+
+   Çeldiriciler AYNI TÜRDEN seçilir; öge sorularında ise gerçekten
+   karışabilecek öge adları verilir, yoksa soru kendini ele veriyor.
+   Havuz ilk "Test" dokunuşunda yükleniyor.
+   ============================================================ */
+(function () {
+  /* ==== SORU HAVUZU (gömülü) : BAŞ ====
+     Havuz eskiden muhadese/veri/sinav.js'ten <script> ile çekiliyordu;
+     o dosya siteye yüklenmediğinde panel "Soru havuzu yüklenemedi."
+     diyordu. Artık veri burada: ağ isteği yok, yüklenmesi gereken
+     fazladan dosya yok, çevrimdışı da çalışıyor.
+     KAYNAK DEĞİŞMEDİ: içerik muhadese/veri/sinav.js'ten üretilir
+     (/tmp/gomu_havuz.js). O dosya sayfada ayrıca duruyorsa (window.
+     KIDEF_SINAV) onunki kullanılır, böylece tek yerden güncellenebilir.
+     Bu Arapçaların hiçbiri elle yazılmadı: kalip.js üzerinden 5-10.
+     sınıf ders verilerinden geliyor.
+     ==================================================== */
+  var GOMULU_HAVUZ = {
+    tur: {"izafet":"İsim Tamlaması","sifattam":"Sıfat Tamlaması","isimcum":"İsim Cümlesi","fiilcum":"Fiil Cümlesi"},
+    ogeler: ["Muzâf","Muzâfun ileyh","Mevsûf","Sıfat","Mübteda","Haber","Fiil","Fâil","Mef’ûl"],
+    maddeler: [
+      {"t":"izafet","ar":"يَوْم الجُمُعَة","tr":"Cuma günü","oge":[["يَوْم","Muzâf"],["الجُمُعَة","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"يَوْم الثُّلاثاء","tr":"Salı günü","oge":[["يَوْم","Muzâf"],["الثُّلاثاء","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"كُرَة القَدَم","tr":"Futbol (ayak topu)","oge":[["كُرَة","Muzâf"],["القَدَم","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"مَمَرّ المُشاة","tr":"Yaya geçidi","oge":[["مَمَرّ","Muzâf"],["المُشاة","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"غُرْفَةُ الجُلوسِ","tr":"Oturma odası","oge":[["غُرْفَةُ","Muzâf"],["الجُلوسِ","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"رَبَّة البَيْت","tr":"Ev hanımı","oge":[["رَبَّة","Muzâf"],["البَيْت","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"قَلْعَة الْفَتَاة","tr":"Kız Kalesi","oge":[["قَلْعَة","Muzâf"],["الْفَتَاة","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"مُتْحَف مَوْلَانَا","tr":"Mevlana Müzesi","oge":[["مُتْحَف","Muzâf"],["مَوْلَانَا","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"عاصِمَة تُرْكِيا","tr":"Türkiye başkenti","oge":[["عاصِمَة","Muzâf"],["تُرْكِيا","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"قِراءَة الكُتُب","tr":"Kitap okuma","oge":[["قِراءَة","Muzâf"],["الكُتُب","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"مَدِينَة قُونْيَا","tr":"Konya şehri","oge":[["مَدِينَة","Muzâf"],["قُونْيَا","Muzâfun ileyh"]]},
+      {"t":"izafet","ar":"مُشاهَدَة السّينَما","tr":"Sinema izleme","oge":[["مُشاهَدَة","Muzâf"],["السّينَما","Muzâfun ileyh"]]},
+      {"t":"sifattam","ar":"الضَّوْء الأَحْمَر","tr":"Kırmızı ışık","oge":[["الضَّوْء","Mevsûf"],["الأَحْمَر","Sıfat"]]},
+      {"t":"sifattam","ar":"الضَّوْء الأَخْضَر","tr":"Yeşil ışık","oge":[["الضَّوْء","Mevsûf"],["الأَخْضَر","Sıfat"]]},
+      {"t":"sifattam","ar":"القِطار السَّريع","tr":"Hızlı tren","oge":[["القِطار","Mevsûf"],["السَّريع","Sıfat"]]},
+      {"t":"sifattam","ar":"الشّارِع الواسِع","tr":"Geniş cadde","oge":[["الشّارِع","Mevsûf"],["الواسِع","Sıfat"]]},
+      {"t":"sifattam","ar":"الصَّيْدَلِيَّة الجَديدَة","tr":"Yeni eczane","oge":[["الصَّيْدَلِيَّة","Mevsûf"],["الجَديدَة","Sıfat"]]},
+      {"t":"sifattam","ar":"السّوق القَديم","tr":"Eski çarşı","oge":[["السّوق","Mevsûf"],["القَديم","Sıfat"]]},
+      {"t":"sifattam","ar":"الغِذاء الصِّحِّيّ","tr":"Sağlıklı gıda","oge":[["الغِذاء","Mevsûf"],["الصِّحِّيّ","Sıfat"]]},
+      {"t":"sifattam","ar":"الأُسْبوع القادِم","tr":"Gelecek hafta","oge":[["الأُسْبوع","Mevsûf"],["القادِم","Sıfat"]]},
+      {"t":"sifattam","ar":"السّاعَة السّابِعَة","tr":"Yedinci saat","oge":[["السّاعَة","Mevsûf"],["السّابِعَة","Sıfat"]]},
+      {"t":"sifattam","ar":"أَخي الكَبيرُ","tr":"Büyük kardeşim","oge":[["أَخي","Mevsûf"],["الكَبيرُ","Sıfat"]]},
+      {"t":"isimcum","ar":"أَنْتَ مُتَقاعِد.","tr":"Sen emeklisin.","oge":[["أَنْتَ","Mübteda"],["مُتَقاعِد","Haber"]]},
+      {"t":"isimcum","ar":"هُو مُتَعَجِّب.","tr":"O şaşkındır.","oge":[["هُو","Mübteda"],["مُتَعَجِّب","Haber"]]},
+      {"t":"isimcum","ar":"هِي قَلِقَة.","tr":"O endişelidir.","oge":[["هِي","Mübteda"],["قَلِقَة","Haber"]]},
+      {"t":"isimcum","ar":"الرِّياضَة مُفيدَة لِلصِّحَّة.","tr":"Spor sağlık için faydalıdır.","oge":[["الرِّياضَة","Mübteda"],["مُفيدَة","Haber"]]},
+      {"t":"isimcum","ar":"الفُنْدُق قَريب مِنْ هُنا.","tr":"Otel buraya yakındır.","oge":[["الفُنْدُق","Mübteda"],["قَريب","Haber"]]},
+      {"t":"isimcum","ar":"مَدْرَسَتي بَعيدَة عَن بَيْتي.","tr":"Okulum evimden uzaktır.","oge":[["مَدْرَسَتي","Mübteda"],["بَعيدَة","Haber"]]},
+      {"t":"isimcum","ar":"الطَّقْسُ حارٌّ فِي الصَّيْفِ.","tr":"Yazın hava sıcaktır.","oge":[["الطَّقْسُ","Mübteda"],["حارٌّ","Haber"]]},
+      {"t":"isimcum","ar":"الجَوُّ جَميلٌ فِي الرَّبيعِ.","tr":"İlkbaharda hava güzeldir.","oge":[["الجَوُّ","Mübteda"],["جَميلٌ","Haber"]]},
+      {"t":"isimcum","ar":"الشّارِع مُزْدَحِم بِالمُواصَلات.","tr":"Cadde ulaşım araçlarıyla kalabalıktır.","oge":[["الشّارِع","Mübteda"],["مُزْدَحِم","Haber"]]},
+      {"t":"isimcum","ar":"مَدْرَسَتي خَلْف المَسْجِد.","tr":"Okulum caminin arkasındadır.","oge":[["مَدْرَسَتي","Mübteda"],["خَلْف","Haber"]]},
+      {"t":"fiilcum","ar":"يَلْعَبُ أَحْمَد كُرَة القَدَم.","tr":"Ahmet futbol oynuyor.","oge":[["يَلْعَبُ","Fiil"],["أَحْمَد","Fâil"],["كُرَة القَدَم","Mef’ûl"]]},
+      {"t":"fiilcum","ar":"تَجَوَّلَتْ مَرْوَة في إِسْطَنْبُول.","tr":"Merve İstanbulda gezindi.","oge":[["تَجَوَّلَتْ","Fiil"],["مَرْوَة","Fâil"]]},
+      {"t":"fiilcum","ar":"يَعِيشُ يُونُس فِي قُونْيَا.","tr":"Yunus Konya'da yaşıyor.","oge":[["يَعِيشُ","Fiil"],["يُونُس","Fâil"]]},
+      {"t":"fiilcum","ar":"أَشْعُرُ بِأَلَم في حَلْقي.","tr":"Boğazımda ağrı hissediyorum.","oge":[["أَشْعُرُ","Fiil"]]},
+      {"t":"fiilcum","ar":"آكُلُ الخَضْرَوات وَالفَواكِه.","tr":"Sebze ve meyve yiyorum.","oge":[["آكُلُ","Fiil"],["الخَضْرَوات","Mef’ûl"]]},
+      {"t":"fiilcum","ar":"أَلْعَبُ كُرَة القَدَم.","tr":"Futbol oynuyorum.","oge":[["أَلْعَبُ","Fiil"],["كُرَة القَدَم","Mef’ûl"]]},
+      {"t":"fiilcum","ar":"أُنَظِّفُ غُرْفَتي.","tr":"Odamı temizlerim.","oge":[["أُنَظِّفُ","Fiil"],["غُرْفَتي","Mef’ûl"]]},
+      {"t":"fiilcum","ar":"أَذْهَبُ إِلى الطَّبيب.","tr":"Doktora giderim.","oge":[["أَذْهَبُ","Fiil"]]},
+      {"t":"fiilcum","ar":"أَسْتَمِعُ إِلى الموسيقى.","tr":"Müzik dinliyorum.","oge":[["أَسْتَمِعُ","Fiil"]]},
+      {"t":"fiilcum","ar":"أَعِيشُ فِي مَدِينَة قُونْيَا.","tr":"Konya şehrinde yaşıyorum.","oge":[["أَعِيشُ","Fiil"]]}
+    ]
+  };
+  /* Havuzu genel ada da bağla: sayfada ayrıca sinav.js yüklüyse ONUNKI
+     kazanır, yoksa gömülü kopya kullanılır. Tek bir okuma noktası kalsın. */
+  if (!(window.KIDEF_SINAV && window.KIDEF_SINAV.maddeler && window.KIDEF_SINAV.maddeler.length))
+    window.KIDEF_SINAV = GOMULU_HAVUZ;
+  /* ==== SORU HAVUZU (gömülü) : SON ==== */
+  var SORU = 10, PUAN = 10;
+
+  var perde   = document.getElementById('tcSinavPerde');
+  if (!perde) return;
+  var eAcilis = document.getElementById('svAcilis');
+  var eSoru   = document.getElementById('svSoru');
+  var eSonuc  = document.getElementById('svSonuc');
+  var elHavuz = document.getElementById('svHavuz');
+  var elBasla = document.getElementById('svBasla');
+  var elAdim  = document.getElementById('svAdim');
+  var elDolu  = document.getElementById('svDolu');
+  var elPuan  = document.getElementById('svPuan');
+  var elYon   = document.getElementById('svYonerge');
+  var elMetin = document.getElementById('svMetin');
+  var elSik   = document.getElementById('svSiklar');
+  var elSon   = document.getElementById('svSonraki');
+  var elHalka = document.getElementById('svHalka');
+  var elSkor  = document.getElementById('svSkor');
+  var elMesaj = document.getElementById('svMesaj');
+  var elOzet  = document.getElementById('svOzet');
+
+  var havuz = null, yukleniyor = false;
+  var sorular = [], adim = 0, dogru = 0, cevapVerildi = false;
+  var turNo = 0, turBas = 0, bildirildi = false;
+  var HARF = ['A', 'B', 'C', 'D', 'E'];
+
+  /* Aynı yapıda birlikte geçen, yani gerçekten karışabilecek öge adları. */
+  var YAKIN = {
+    'Muzâf':         ['Muzâfun ileyh', 'Mevsûf', 'Sıfat', 'Mübteda'],
+    'Muzâfun ileyh': ['Muzâf', 'Sıfat', 'Mevsûf', 'Haber'],
+    'Mevsûf':        ['Sıfat', 'Muzâf', 'Muzâfun ileyh', 'Mübteda'],
+    'Sıfat':         ['Mevsûf', 'Muzâfun ileyh', 'Muzâf', 'Haber'],
+    'Mübteda':       ['Haber', 'Fâil', 'Mevsûf', 'Muzâf'],
+    'Haber':         ['Mübteda', 'Sıfat', 'Mef’ûl', 'Fâil'],
+    'Fiil':          ['Fâil', 'Mef’ûl', 'Mübteda', 'Haber'],
+    'Fâil':          ['Mef’ûl', 'Fiil', 'Mübteda', 'Haber'],
+    'Mef’ûl':        ['Fâil', 'Fiil', 'Haber', 'Muzâfun ileyh']
+  };
+
+  function karistir(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function havuzYaz() {
+    if (!havuz) { elHavuz.textContent = 'Soru havuzu yükleniyor…'; elBasla.disabled = true; return; }
+    if (!tablo) tablo = tabloyuOku();
+    var t = tablo.reduce(function (n, k) { return n + k.maddeler.length; }, 0);
+    var o = havuz.maddeler.reduce(function (n, x) { return n + x.oge.length; }, 0);
+    elHavuz.textContent = t + ' tablo · ' + o + ' öge sorusu havuzda';
+    elBasla.disabled = (t + o < SORU);
+  }
+  function havuzYukle() {
+    if (havuz) { havuzYaz(); return; }
+    /* Havuz gömülü (yukarıdaki blok window.KIDEF_SINAV'e bağlar):
+       ağ isteği yok, bekleme yok, eksik dosya yüzünden hata yok. */
+    var h = window.KIDEF_SINAV;
+    havuz = (h && h.maddeler && h.maddeler.length) ? h : null;
+    if (!havuz) { elHavuz.textContent = 'Soru havuzu boş.'; elBasla.disabled = true; return; }
+    havuzYaz();
+  }
+
+  /* ---- soru üretimi ---- */
+  /* ---- TABLO SORULARI ----
+     Sorular sayfanın KENDİ tablosundan okunuyor: "Ne işe yarar", "Ögeleri
+     nelerdir", "Uyum", "Dikkat edilmesi gerekenler" sütunlarının hücreleri.
+     Böylece tablo değişince sorular da kendiliğinden güncellenir; ayrı bir
+     soru dosyası tutup ikisini elde eşitlemek gerekmez.
+     Çeldiriciler AYNI SÜTUNUN öteki satırlarından gelir — yani "İsim
+     Cümlesi"nin uyumu sorulduğunda şıklarda "Fiil Cümlesi"nin uyumu da
+     bulunur. En çok karışan şey tam olarak budur. */
+  var tablo = null;
+  function tabloyuOku() {
+    var satirlar = [].slice.call(document.querySelectorAll('.tc-satir'));
+    var kayit = [];
+    satirlar.forEach(function (tr) {
+      var adEl = tr.querySelector('.tc-turad');
+      if (!adEl) return;
+      var ad = adEl.innerText.replace(/\s+/g, ' ').trim();
+      [].slice.call(tr.querySelectorAll('td[data-bas]')).forEach(function (td) {
+        if (td.querySelector('.tc-ornek')) return;        /* Örnek sütunu öge sorularının işi */
+        var mad = [].slice.call(td.querySelectorAll('li'))
+          .map(function (li) { return li.innerText.replace(/\s+/g, ' ').trim(); })
+          .filter(function (x) { return x.length > 3; });
+        if (mad.length) kayit.push({ ad: ad, sutun: td.getAttribute('data-bas'), maddeler: mad });
+      });
+    });
+    return kayit;
+  }
+  function tabloSorusu(h) {
+    /* aynı sütun, başka satır → en güçlü çeldirici */
+    var ayniSutun = [];
+    tablo.forEach(function (k) {
+      if (k.sutun === h.sutun && k.ad !== h.ad) ayniSutun = ayniSutun.concat(k.maddeler);
+    });
+    var digerleri = [];
+    tablo.forEach(function (k) {
+      if (k.sutun !== h.sutun) digerleri = digerleri.concat(k.maddeler);
+    });
+    var aday = karistir(ayniSutun).concat(karistir(digerleri));
+    /* Aynı hücrenin ÖTEKİ maddeleri çeldirici olamaz: onlar da o yapı için
+       doğrudur, sorunun iki doğru cevabı olurdu. Başka satırda birebir aynı
+       metin geçiyorsa o da elenir. */
+    var secili = [], gor = {};
+    h.tumMaddeler.forEach(function (x) { gor[x] = 1; });
+    for (var i = 0; i < aday.length && secili.length < 4; i++) {
+      if (gor[aday[i]]) continue;
+      gor[aday[i]] = 1; secili.push(aday[i]);
+    }
+    return {
+      tip: 'tablo',
+      yonerge: h.sutun,
+      metin: h.ad, arapca: false, isaret: null,
+      dogru: h.madde,
+      siklar: karistir(secili.concat([h.madde]))
+    };
+  }
+
+  function ogeSorusu(m, o) {
+    var kelime = o[0], rol = o[1];
+    /* En güçlü çeldirici, AYNI örnekte geçen öteki ögedir: "الضَّوْء الأَحْمَر"
+       sorulurken Mevsûf ile Sıfat gerçekten karışır. Sonra o role yakın
+       öge adları, en sonda havuzun kalanı gelir. */
+    var ayniOrnek = m.oge.map(function (x) { return x[1]; }).filter(function (x) { return x !== rol; });
+    var aday = ayniOrnek
+      .concat(karistir((YAKIN[rol] || []).slice()))
+      .concat(karistir(havuz.ogeler.filter(function (x) { return x !== rol; })));
+    var secili = [], gor = {};
+    for (var i = 0; i < aday.length && secili.length < 4; i++) {
+      if (gor[aday[i]] || aday[i] === rol) continue;
+      gor[aday[i]] = 1; secili.push(aday[i]);
+    }
+    return {
+      tip: 'oge',
+      yonerge: 'İşaretli kelime hangi ögedir?',
+      metin: m.ar, arapca: true, isaret: kelime,
+      dogru: rol,
+      siklar: karistir(secili.concat([rol]))
+    };
+  }
+  function turKur() {
+    if (!tablo) tablo = tabloyuOku();
+    /* TABLO havuzu: her satır-sütun-madde üçlüsü bir soru */
+    var tabloHavuz = [];
+    tablo.forEach(function (k) {
+      k.maddeler.forEach(function (m) {
+        tabloHavuz.push({ ad: k.ad, sutun: k.sutun, madde: m, tumMaddeler: k.maddeler });
+      });
+    });
+    /* ÖGE havuzu: örneklerin ögeleri */
+    var ogeHavuz = [];
+    havuz.maddeler.forEach(function (m) {
+      m.oge.forEach(function (o) { ogeHavuz.push({ m: m, o: o }); });
+    });
+    karistir(tabloHavuz); karistir(ogeHavuz);
+
+    var kacTablo = Math.min(Math.round(SORU / 2), tabloHavuz.length);
+    var secilen = [], kul = {};
+    function doldur(kaynak, adet, anahtar) {
+      for (var i = 0; i < kaynak.length && adet > 0; i++) {
+        var k = anahtar(kaynak[i]);
+        if (kul[k]) continue;
+        kul[k] = 1; secilen.push(kaynak[i]); adet--;
+      }
+    }
+    doldur(tabloHavuz, kacTablo, function (x) { return 'T|' + x.ad + '|' + x.sutun; });
+    doldur(ogeHavuz, SORU - secilen.length, function (x) { return 'O|' + x.m.ar; });
+    doldur(tabloHavuz, SORU - secilen.length, function (x) { return 'T2|' + x.madde; });
+
+    sorular = karistir(secilen).map(function (x) {
+      return x.madde ? tabloSorusu(x) : ogeSorusu(x.m, x.o);
+    });
+    adim = 0; dogru = 0;
+  }
+
+  function ekran(hangi) {
+    eAcilis.hidden = (hangi !== 'acilis');
+    eSoru.hidden   = (hangi !== 'soru');
+    eSonuc.hidden  = (hangi !== 'sonuc');
+  }
+
+  /* İşaret ÇOK KELİMELİ olabilir: "كُرَة القَدَم" gibi bir mef'ûl kendi
+     içinde tamlamadır. Bu yüzden tek tek kelime değil, ardışık kelime
+     dizisi eşleştiriliyor; yoksa öge sorusu işaretsiz kalıyordu. */
+  function metinYaz(q) {
+    var ar = !!q.arapca;
+    elMetin.className = 'sv-soru' + (ar ? ' sv-ar' : ' sv-tr');
+    elMetin.setAttribute('dir', ar ? 'rtl' : 'ltr');
+    elMetin.innerHTML = '';
+    if (!ar) { elMetin.textContent = q.metin; return; }
+    var kelime = q.metin.split(' ');
+    var im = q.isaret ? q.isaret.split(' ') : [];
+    var kok = function (x) { return x.replace(/[.،؟!]+$/, ''); };
+    var basla = -1;
+    if (im.length) {
+      for (var i = 0; i + im.length <= kelime.length; i++) {
+        var uyar = true;
+        for (var j = 0; j < im.length; j++) if (kok(kelime[i + j]) !== kok(im[j])) { uyar = false; break; }
+        if (uyar) { basla = i; break; }
+      }
+    }
+    kelime.forEach(function (k, n) {
+      if (n) elMetin.appendChild(document.createTextNode(' '));
+      var e = document.createElement('span');
+      if (basla >= 0 && n >= basla && n < basla + im.length) e.className = 'sv-isaret';
+      e.textContent = k;
+      elMetin.appendChild(e);
+    });
+  }
+
+  function soruCiz() {
+    var q = sorular[adim];
+    cevapVerildi = false;
+    elAdim.textContent = 'Soru ' + (adim + 1) + ' / ' + SORU;
+    elDolu.style.width = (adim / SORU * 100) + '%';
+    elPuan.textContent = (dogru * PUAN) + ' puan';
+    elYon.textContent = q.yonerge;
+    metinYaz(q);
+
+    elSik.innerHTML = '';
+    q.siklar.forEach(function (metin, n) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'sv-sik';
+      b.innerHTML = '<span class="sv-harf">' + HARF[n] + '</span><span class="sv-yazi"></span>';
+      b.querySelector('.sv-yazi').textContent = metin;
+      b.addEventListener('click', function () { cevapla(b, metin); });
+      elSik.appendChild(b);
+    });
+    elSon.hidden = true;
+    elSon.textContent = (adim === SORU - 1) ? 'Sonucu Gör' : 'Sonraki ❯';
+  }
+
+  function cevapla(dugme, metin) {
+    if (cevapVerildi) return;
+    cevapVerildi = true;
+    var q = sorular[adim];
+    if (metin === q.dogru) dogru++;
+    [].forEach.call(elSik.children, function (b) {
+      b.disabled = true;
+      var y = b.querySelector('.sv-yazi').textContent;
+      if (y === q.dogru) b.classList.add('dogru');
+      else if (b === dugme) b.classList.add('yanlis');
+    });
+    elPuan.textContent = (dogru * PUAN) + ' puan';
+    elDolu.style.width = ((adim + 1) / SORU * 100) + '%';
+    elSon.hidden = false;
+    elSon.focus();
+  }
+
+  function sonraki() {
+    if (!cevapVerildi) return;
+    if (adim < SORU - 1) { adim++; soruCiz(); return; }
+    sonucCiz();
+  }
+
+  function sonucCiz() {
+    var puan = dogru * PUAN;
+    /* Görev/ilerleme köprüsüne BİR KEZ rapor et (tur başına). Öğrenci
+       öğretmenine bağlı değilse ya da giriş yoksa köprü sessiz kalır. */
+    if (!bildirildi) {
+      bildirildi = true;
+      try {
+        if (window.KidefGorev && KidefGorev.aktif) {
+          var ogeN = sorular.filter(function (q) { return q.tip === 'oge'; }).length;
+          KidefGorev.bildir({
+            dogru: dogru, toplam: SORU, mod: 'tur',
+            detay: turNo + '. tur · ' + ogeN + ' öge/' + (SORU - ogeN) + ' tablo',
+            sureSn: turBas ? Math.round((Date.now() - turBas) / 1000) : null
+          });
+        }
+      } catch (e) { }
+    }
+    elSkor.textContent = puan;
+    elHalka.style.setProperty('--yuzde', puan);
+    elMesaj.textContent =
+      puan === 100 ? 'Tam isabet! 🎯' :
+      puan >= 80  ? 'Çok iyi!' :
+      puan >= 60  ? 'İyi gidiyorsun.' :
+      puan >= 40  ? 'Biraz daha tekrar iyi olur.' :
+                    'Yapıları bir kez daha gözden geçirelim.';
+    var ogeSay = sorular.filter(function (q) { return q.tip === 'oge'; }).length;
+    elOzet.textContent = SORU + ' sorudan ' + dogru + ' doğru · ' +
+      ogeSay + ' öge, ' + (SORU - ogeSay) + ' tablo sorusu';
+    ekran('sonuc');
+  }
+
+  function basla() {
+    if (elBasla.disabled || !havuz) return;
+    turKur();
+    if (!sorular.length) return;
+    turNo++; turBas = Date.now(); bildirildi = false;
+    ekran('soru');
+    soruCiz();
+  }
+
+  /* ---- olaylar ----
+     Açma/kapama artık burada değil: sayfanın altındaki gövdeyi tcGovde
+     yönetiyor (bkz. modül 1). Buranın işi yalnız hazırlık — ve o da bir
+     kez, yoksa şeritte başka bir başlığa uğrayıp dönen öğretmen yarım
+     kalan turunu kaybederdi. */
+  var kuruldu = false;
+  window.tcTestHazirla = function () {
+    if (kuruldu) return;
+    kuruldu = true;
+    ekran('acilis');
+    havuzYukle();
+  };
+  function kapatt() { if (window.tcGovde) window.tcGovde('tablo'); }
+  document.getElementById('svBitir').addEventListener('click', function () {
+    ekran('acilis'); havuzYaz(); kapatt();
+  });
+  elBasla.addEventListener('click', basla);
+  document.getElementById('svTekrar').addEventListener('click', function () {
+    ekran('acilis'); havuzYaz();
+  });
+  elSon.addEventListener('click', sonraki);
+
+  document.addEventListener('keydown', function (e) {
+    if (!perde.classList.contains('acik')) return;
+    if (eSoru.hidden) return;
+    if (!cevapVerildi && /^[1-5]$/.test(e.key)) {
+      var b = elSik.children[+e.key - 1];
+      if (b) { b.click(); e.preventDefault(); }
+    } else if (cevapVerildi && (e.key === 'Enter' || e.key === ' ')) {
+      sonraki(); e.preventDefault();
+    }
+  });
+
+  window.tcTestAc = function () { if (window.tcGovde) window.tcGovde('test'); };
+
+  /* GÖREV KİPİ: sayfa "?gorev=<id>" ile açıldıysa öğrenci anlatım
+     ekranını aramasın — Test paneli kendiliğinden açılsın. */
+  try {
+    if ((new URLSearchParams(location.search)).get('gorev')) {
+      setTimeout(function () { ac.click(); }, 600);
+    }
+  } catch (e) { }
+})();
+
+/* ==================== 3) İ'RAB TESTİ ==================== */
+/* ============================================================
+   İ'RAB TESTİ — 10 SORULUK TUR, 100 PUAN
+   ------------------------------------------------------------
+   Bu test için AYRI bir soru havuzu yazılmadı. Sorular, i'rab
+   penceresindeki ÖRNEK HAVUZU'nun (window.TC_HAVUZ) kendisinden
+   üretilir. Sebebi basit: havuza yeni bir örnek eklendiğinde soru
+   da kendiliğinden oluşsun; iki ayrı liste zamanla birbirinden
+   sapmasın.
+
+   Havuzdaki her kaydın dört etiketi vardır; dört soru tipi de
+   bunlara karşılık gelir:
+       hal      → "Bu kelimenin hâli nedir?"        (merfu/mansub/mecrur/meczum)
+       basamak  → "Alâmet nasıl görünüyor?"         (lafzen/takdiren/mahallen)
+       alamet   → "Alâmeti nedir?"                  (zamme/fetha/vav/…)
+       gorev    → "Cümledeki görevi nedir?"         (fâil/mef'ul/muzâfun ileyh/…)
+   Cümle kayıtlarında ise çözümün her kelimesi ayrı soru olur.
+
+   ÇELDİRİCİLER aynı eksenden seçilir: hâl sorusuna hâl adları,
+   görev sorusuna görev adları verilir. Böylece soru kendini ele
+   vermez. "Meczum" isim sorularında da seçenek olarak durur —
+   çünkü "isim meczum olmaz" kuralının kendisi sınanıyor.
+
+   Cevap işaretlenince havuzdaki i'rab cümlesi açıklama olarak
+   açılır; yanlış cevap da öğretsin diye. Tur bitince yanlışlar
+   tek tek listelenir.
+   ============================================================ */
+(function () {
+  /* Test artık i'rab panelinde değil, Test penceresinin ikinci kipinde. */
+  var bolum = document.getElementById('svKipIrab');
+  if (!bolum) return;
+
+  var elAcilis = document.getElementById('tiAcilis');
+  var elSoru   = document.getElementById('tiSoru');
+  var elSonuc  = document.getElementById('tiSonuc');
+  var elSecim  = document.getElementById('tiSecim');
+  var elHavuz  = document.getElementById('tiHavuz');
+  var elBasla  = document.getElementById('tiBasla');
+  var elAdim   = document.getElementById('tiAdim');
+  var elDolu   = document.getElementById('tiDolu');
+  var elPuan   = document.getElementById('tiPuan');
+  var elYonerge= document.getElementById('tiYonerge');
+  var elSahne  = document.getElementById('tiSahne');
+  var elSiklar = document.getElementById('tiSiklar');
+  var elAcikla = document.getElementById('tiAciklama');
+  var elSonraki= document.getElementById('tiSonraki');
+  var elHalka  = document.getElementById('tiHalka');
+  var elSkor   = document.getElementById('tiSkor');
+  var elMesaj  = document.getElementById('tiMesaj');
+  var elOzet   = document.getElementById('tiOzet');
+  var elYanlis = document.getElementById('tiYanlislar');
+  var elTekrar = document.getElementById('tiTekrar');
+  var elOrnek  = document.getElementById('tiOrnek');
+
+  var SORU = 10, PUAN = 10;
+  var HAL_AD = { merfu:'Merfu', mansub:'Mansub', mecrur:'Mecrur', meczum:'Meczum' };
+  var BAS_AD = { lafzen:'Lafzen', takdiren:'Takdiren', mahallen:'Mahallen' };
+  var HAL_LISTE = ['merfu', 'mansub', 'mecrur', 'meczum'];
+  var BAS_LISTE = ['lafzen', 'takdiren', 'mahallen'];
+
+  var kip = 'hepsi';
+  var sorular = [], adim = 0, dogru = 0, cevapVerildi = false;
+  var yanlislar = [], turNo = 0, turBas = 0, bildirildi = false;
+
+  /* ---------- yardımcılar ---------- */
+  function karistir(a) {
+    var d = a.slice();
+    for (var i = d.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = d[i]; d[i] = d[j]; d[j] = t;
+    }
+    return d;
+  }
+  function tekille(a) {
+    var g = {}, s = [];
+    a.forEach(function (x) { if (x && !g[x]) { g[x] = 1; s.push(x); } });
+    return s;
+  }
+  /* Sorulan kelimeyi bağlam içinde sarı zemine alır. Bulunamazsa
+     bağlam olduğu gibi kalır; kelime ayrıca etikette gösterilir. */
+  function vurgula(baglam, kelime) {
+    var y = baglam.indexOf(kelime);
+    if (y < 0) return { html: baglam, bulundu: false };
+    return {
+      html: baglam.slice(0, y) + '<span class="ti-hedef">' + kelime + '</span>' +
+            baglam.slice(y + kelime.length),
+      bulundu: true
+    };
+  }
+  function celdirici(dogruCevap, kaynak, kac) {
+    var havuzu = karistir(tekille(kaynak).filter(function (x) { return x !== dogruCevap; }));
+    return havuzu.slice(0, kac);
+  }
+
+  /* ---------- soru üretimi ---------- */
+  function tumSorular() {
+    var havuz = window.TC_HAVUZ || [];
+    var kelimeler = havuz.filter(function (k) { return k.tur === 'kelime'; });
+    var tumAlamet = tekille(kelimeler.map(function (k) { return k.alamet; }));
+    var tumGorev  = tekille(kelimeler.map(function (k) { return k.gorev; }));
+    havuz.forEach(function (k) {
+      if (k.tur === 'cumle' && k.cozum) {
+        k.cozum.forEach(function (c) { if (c.g) tumGorev.push(c.g); });
+      }
+    });
+    tumGorev = tekille(tumGorev);
+
+    var liste = [];
+
+    kelimeler.forEach(function (k) {
+      var sahne = {
+        etiket: k.tip, ar: k.baglam, tr: k.baglamTr, hedef: k.ar,
+        acikla: k.irab, kaynakAr: k.ar
+      };
+      /* Tek hâlli / tek basamaklı kayıtlar sorulur; çok etiketli
+         olanlarda "tek doğru" yoktur, o tipte soru üretilmez. */
+      if (k.hal.length === 1) {
+        liste.push({ tip:'hal', sahne:sahne,
+          yonerge:'İşaretli kelimenin <b>hâli</b> nedir?',
+          dogru: HAL_AD[k.hal[0]],
+          secenek: HAL_LISTE.map(function (h) { return HAL_AD[h]; }), arapca:false });
+      }
+      if (k.basamak.length === 1) {
+        liste.push({ tip:'basamak', sahne:sahne,
+          yonerge:'Bu kelimede i\'rab <b>nasıl görünüyor</b>?',
+          dogru: BAS_AD[k.basamak[0]],
+          secenek: BAS_LISTE.map(function (b) { return BAS_AD[b]; }), arapca:false });
+      }
+      if (k.alamet) {
+        liste.push({ tip:'alamet', sahne:sahne,
+          yonerge:'İşaretli kelimenin <b>alâmeti</b> nedir?',
+          dogru: k.alamet,
+          secenek: [k.alamet].concat(celdirici(k.alamet, tumAlamet, 3)), arapca:false });
+      }
+      if (k.gorev) {
+        liste.push({ tip:'gorev', sahne:sahne,
+          yonerge:'İşaretli kelimenin cümledeki <b>görevi</b> nedir?',
+          dogru: k.gorev,
+          secenek: [k.gorev].concat(celdirici(k.gorev, tumGorev, 3)), arapca:false });
+      }
+    });
+
+    havuz.forEach(function (k) {
+      if (k.tur !== 'cumle' || !k.cozum) return;
+      k.cozum.forEach(function (c) {
+        var sahne = {
+          etiket:'Cümle', ar:k.ar, tr:k.tr, hedef:c.k,
+          acikla: c.not, kaynakAr: c.k
+        };
+        if (c.h && c.h !== '—' && HAL_AD[c.h]) {
+          liste.push({ tip:'hal', sahne:sahne,
+            yonerge:'İşaretli kelimenin <b>hâli</b> nedir?',
+            dogru: HAL_AD[c.h],
+            secenek: HAL_LISTE.map(function (h) { return HAL_AD[h]; }), arapca:false });
+        }
+        if (c.g) {
+          liste.push({ tip:'gorev', sahne:sahne,
+            yonerge:'İşaretli kelimenin cümledeki <b>görevi</b> nedir?',
+            dogru: c.g,
+            secenek: [c.g].concat(celdirici(c.g, tumGorev, 3)), arapca:false });
+        }
+      });
+    });
+
+    return liste;
+  }
+
+  function kipeGore() {
+    var hepsi = tumSorular();
+    if (kip === 'hepsi') return hepsi;
+    return hepsi.filter(function (q) { return q.tip === kip; });
+  }
+
+  function havuzYaz() {
+    var n = kipeGore().length;
+    elHavuz.innerHTML = '<b>' + n + '</b> soru üretilebiliyor · her turda ' +
+      Math.min(SORU, n) + ' tanesi karışık sorulur.';
+    elBasla.disabled = n < 4;
+    if (n < 4) elHavuz.innerHTML += ' <span style="color:var(--kirmizi)">Bu tip için yeterli örnek yok.</span>';
+  }
+
+  /* ---------- ekranlar ---------- */
+  function ekran(ad) {
+    elAcilis.hidden = ad !== 'acilis';
+    elSoru.hidden   = ad !== 'soru';
+    elSonuc.hidden  = ad !== 'sonuc';
+    var govde = document.querySelector('#tcPerde .tc-pop-govde');
+    if (govde) govde.scrollTop = 0;
+  }
+
+  function turKur() {
+    var h = karistir(kipeGore());
+    /* Bir turda her BAĞLAM bir kez çıksın. Anahtar yalnız cümle/bağlam:
+       aynı cümlenin iki ayrı kelimesini üst üste sormak turu tekdüze
+       yapıyordu. Havuzda 45'ten çok bağlam var, 10 soru rahat çıkar. */
+    var gorulen = {}, secili = [];
+    h.forEach(function (q) {
+      var anahtar = q.sahne.ar;
+      if (gorulen[anahtar] || secili.length >= SORU) return;
+      gorulen[anahtar] = 1; secili.push(q);
+    });
+    /* Havuz dar kaldıysa (tek tipte) tekrar izinli olarak tamamla. */
+    if (secili.length < SORU) {
+      h.forEach(function (q) { if (secili.length < SORU && secili.indexOf(q) < 0) secili.push(q); });
+    }
+    sorular = secili.slice(0, SORU);
+    adim = 0; dogru = 0; yanlislar = [];
+  }
+
+  function soruCiz() {
+    var q = sorular[adim];
+    cevapVerildi = false;
+    elSonraki.hidden = true;
+    elAcikla.hidden = true;
+    elAdim.textContent = 'Soru ' + (adim + 1) + ' / ' + sorular.length;
+    elPuan.textContent = (dogru * PUAN) + ' puan';
+    elDolu.style.width = (adim / sorular.length * 100) + '%';
+    elYonerge.innerHTML = q.yonerge;
+
+    var v = vurgula(q.sahne.ar, q.sahne.hedef);
+    elSahne.innerHTML =
+      '<span class="ti-etiket">' + q.sahne.etiket + (v.bulundu ? '' : ' · ' + q.sahne.hedef) + '</span>' +
+      '<div class="ti-ar" dir="rtl">' + v.html + '</div>' +
+      '<div class="ti-tr">' + (q.sahne.tr || '') + '</div>';
+
+    var harfler = ['A', 'B', 'C', 'D', 'E'];
+    var siklar = karistir(tekille(q.secenek)).slice(0, 4);
+    if (siklar.indexOf(q.dogru) < 0) { siklar[siklar.length - 1] = q.dogru; siklar = karistir(siklar); }
+    elSiklar.innerHTML = '';
+    siklar.forEach(function (metin, i) {
+      var d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'ti-sik' + (q.arapca ? ' ti-arapca' : '');
+      d.innerHTML = '<span class="ti-harf">' + harfler[i] + '</span><span class="ti-yazi">' + metin + '</span>';
+      d.addEventListener('click', function () { cevapla(d, metin, q); });
+      elSiklar.appendChild(d);
+    });
+  }
+
+  function cevapla(dugme, metin, q) {
+    if (cevapVerildi) return;
+    cevapVerildi = true;
+    var dogruMu = metin === q.dogru;
+    if (dogruMu) dogru++;
+    else yanlislar.push({ q: q, verilen: metin });
+
+    [].forEach.call(elSiklar.children, function (d) {
+      d.disabled = true;
+      var yazi = d.querySelector('.ti-yazi').textContent;
+      if (yazi === q.dogru) d.classList.add('dogru');
+      else if (d === dugme) d.classList.add('yanlis');
+    });
+
+    elPuan.textContent = (dogru * PUAN) + ' puan';
+    elDolu.style.width = ((adim + 1) / sorular.length * 100) + '%';
+    elAcikla.innerHTML =
+      '<span class="ti-ac-bas">' + (dogruMu ? 'Doğru — ' : 'Doğrusu: ') + q.dogru + '</span>' +
+      (q.sahne.acikla || '') +
+      (q.sahne.tr ? '<br><span style="color:#8A94A3">' + q.sahne.tr + '</span>' : '');
+    elAcikla.hidden = false;
+    elSonraki.hidden = false;
+    elSonraki.textContent = (adim < sorular.length - 1) ? 'Sonraki ❯' : 'Sonucu gör ❯';
+  }
+
+  function sonraki() {
+    if (!cevapVerildi) return;
+    if (adim < sorular.length - 1) { adim++; soruCiz(); return; }
+    sonucCiz();
+  }
+
+  function sonucCiz() {
+    var puan = Math.round(dogru / sorular.length * 100);
+    /* Görev köprüsüne tur başına BİR kez rapor. Öğrenci öğretmenine
+       bağlı değilse köprü sessizce yok sayar. */
+    if (!bildirildi) {
+      bildirildi = true;
+      try {
+        if (window.KidefGorev && KidefGorev.aktif) {
+          KidefGorev.bildir({
+            dogru: dogru, toplam: sorular.length, mod: 'irab',
+            detay: turNo + '. i\'rab turu · ' +
+                   (kip === 'hepsi' ? 'karışık' : kip) + ' soruları',
+            sureSn: turBas ? Math.round((Date.now() - turBas) / 1000) : null
+          });
+        }
+      } catch (e) { }
+    }
+    elSkor.textContent = puan;
+    elHalka.style.setProperty('--yuzde', puan);
+    elMesaj.textContent =
+      puan === 100 ? 'Tam isabet!' :
+      puan >= 80  ? 'Çok iyi!' :
+      puan >= 60  ? 'İyi gidiyorsun.' :
+      puan >= 40  ? 'Tabloları bir kez daha gözden geçirelim.' :
+                    'Önce Tablolar ve Örnekler bölümüne bakalım.';
+    elOzet.textContent = sorular.length + ' sorudan ' + dogru + ' doğru.';
+
+    if (!yanlislar.length) {
+      elYanlis.innerHTML = '';
+    } else {
+      elYanlis.innerHTML = '<p class="ti-ozet" style="margin:0 0 4px">Yanlış yaptıkların:</p>' +
+        yanlislar.map(function (y) {
+          var v = vurgula(y.q.sahne.ar, y.q.sahne.hedef);
+          return '<div class="ti-yanlis">' +
+            '<span class="ti-y-ar" dir="rtl">' + v.html + '</span>' +
+            '<span class="ti-y-sat">Senin cevabın: <span class="ti-y-yanlis">' + y.verilen + '</span>' +
+            ' · Doğrusu: <span class="ti-y-dogru">' + y.q.dogru + '</span></span>' +
+            '<span class="ti-y-sat">' + (y.q.sahne.acikla || '') + '</span>' +
+          '</div>';
+        }).join('');
+    }
+    ekran('sonuc');
+  }
+
+  function basla() {
+    turKur();
+    if (!sorular.length) return;
+    turNo++; turBas = Date.now(); bildirildi = false;
+    ekran('soru');
+    soruCiz();
+  }
+
+  /* ---------- olaylar ---------- */
+  elSecim.addEventListener('click', function (e) {
+    var d = e.target.closest ? e.target.closest('.ti-sec') : null;
+    if (!d) return;
+    kip = d.getAttribute('data-kip');
+    [].forEach.call(elSecim.querySelectorAll('.ti-sec'), function (x) {
+      x.classList.toggle('aktif', x === d);
+    });
+    havuzYaz();
+  });
+  elBasla.addEventListener('click', basla);
+  elTekrar.addEventListener('click', basla);
+  elSonraki.addEventListener('click', sonraki);
+  elOrnek.addEventListener('click', function () {
+    ekran('acilis');
+    /* Ayrı pencere yok: gövde doğrudan Örnekler'e geçiyor. */
+    if (window.tcMenuGit) window.tcMenuGit('havuz');
+    else if (window.tcBolumAc) window.tcBolumAc('havuz');
+    if (window.tcIrabGoster) window.tcIrabGoster(true);
+  });
+
+  havuzYaz();
+  ekran('acilis');
+  window.tcIrabTest = { basla: basla, havuzYaz: havuzYaz };
+})();
+
+/* ==================== 4) EFÂL-İ HAMSE — CANLI TABLO ==================== */
+/* ============================================================
+   EFÂL-İ HAMSE (BEŞ FİİL)
+   ------------------------------------------------------------
+   "Merfuda nûn durur, mansub ve meczumda düşer" cümlesi doğru ama
+   soyut. Burada öğrenci hâli KENDİSİ değiştiriyor ve nûnun düşüşünü
+   görüyor: eski son aşağı kayıp söner, yeni son yerine oturur.
+
+   Tablo muzari fiilin tam çekim ızgarası: 5 kişi (gâib · gâibe ·
+   muhâtab · muhâtaba · mütekellim) × 3 sayı (tekil · ikil · çoğul)
+   = 15 kutu. Kutuların içinde yalnız fiil var; adlar kenarda başlık.
+   Beş fiilin hangi kutulara düştüğü renkle görünür — "hangi çekim nûn
+   alır" sorusunun cevabı tablonun kendisidir.
+
+   Mansub ve meczumda seçilen edat tablodaki HER fiilin başına gelir;
+   edat oklarla değişir. Böylece öğrenci "لَنْ gelince ne oluyor,
+   لَمْ gelince ne oluyor" sorusunu tek tabloda deniyor.
+
+   Alttaki tek satırlık örnek oklarla kişiler arasında gezer ve
+   tabloda o satırı vurgular; cümle ile çekim arasındaki bağ görünür
+   kalsın diye. HİÇBİR ŞEY KENDİLİĞİNDEN OYNAMAZ: her değişim bir
+   dokunuşun sonucudur.
+
+   Özneler zamir seçildi (هُوَ، أَنْتِ، هُمْ …). Sebep dil bilgisel:
+   açık isim özne olsaydı "fiil başta tekil kalır" kuralı yüzünden
+   çoğul çekimi cümlede gösteremezdik.
+   ============================================================ */
+(function () {
+  var panel = document.getElementById('tcIrabHamse');   /* Fiil panosunun alt bölümü */
+  if (!panel) return;
+
+  var elHal      = document.getElementById('efhHal');
+  var elEdat     = document.getElementById('efhEdat');
+  var elEdatAd   = document.getElementById('efhEdatAd');
+  var elEdatListe = document.getElementById('efhEdatListe');
+  var elNot      = document.getElementById('efhNot');
+  var elGovde    = document.getElementById('efhGovde');
+  var elOrnekAr  = document.getElementById('efhOrnekAr');
+  var elOrnekTr  = document.getElementById('efhOrnekTr');
+  var elOrnekKisi= document.getElementById('efhOrnekKisi');
+
+  /* ---------- Türkçe çekim kalıpları ----------
+     Dört kişi tipi yeter: o · sen · onlar · siz. İkil Türkçede
+     çoğulla aynı çekimi aldığı için ayrı kalıp yazılmadı. */
+  var TR = {
+    o:     { simdi:'yazıyor',      lan:'asla yazmayacak',       an:'yazması',
+             kay:'yazması için',   hatta:'yazıncaya kadar',     lem:'yazmadı',
+             lemma:'henüz yazmadı',la:'yazmasın',               lam:'yazsın' },
+    sen:   { simdi:'yazıyorsun',   lan:'asla yazmayacaksın',    an:'yazman',
+             kay:'yazman için',    hatta:'yazıncaya kadar',     lem:'yazmadın',
+             lemma:'henüz yazmadın', la:'yazma',                lam:'yaz' },
+    onlar: { simdi:'yazıyorlar',   lan:'asla yazmayacaklar',    an:'yazmaları',
+             kay:'yazmaları için', hatta:'yazıncaya kadar',     lem:'yazmadılar',
+             lemma:'henüz yazmadılar', la:'yazmasınlar',        lam:'yazsınlar' },
+    siz:   { simdi:'yazıyorsunuz', lan:'asla yazmayacaksınız',  an:'yazmanız',
+             kay:'yazmanız için',  hatta:'yazıncaya kadar',     lem:'yazmadınız',
+             lemma:'henüz yazmadınız', la:'yazmayın',           lam:'yazın' },
+    ben:   { simdi:'yazıyorum',    lan:'asla yazmayacağım',     an:'yazmam',
+             kay:'yazmam için',    hatta:'yazıncaya kadar',     lem:'yazmadım',
+             lemma:'henüz yazmadım', la:'yazmayayım',           lam:'yazayım' },
+    biz:   { simdi:'yazıyoruz',    lan:'asla yazmayacağız',     an:'yazmamız',
+             kay:'yazmamız için',  hatta:'yazıncaya kadar',     lem:'yazmadık',
+             lemma:'henüz yazmadık', la:'yazmayalım',           lam:'yazalım' }
+  };
+
+  /* ---------- 15 kutu: 5 kişi × 3 sayı ----------
+     govde : hiç değişmeyen kısım
+     son   : hâle göre değişen son (animasyon yalnız buna uygulanır)
+     tur   : harf (beş fiil) · hareke · mebni
+     Not: تَفْعَلَانِ üç satırda birden geçer; kalıp olarak beş fiil
+     BEŞTİR ama tabloda nûn taşıyan yedi kutu vardır. */
+  var SATIR = [
+    { ad:'Gâib', alt:'o (eril)', hucre:[
+      { govde:'يَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'هُوَ',      zamirTr:'O',          trK:'o' },
+      { govde:'يَكْتُبَ', son:{merfu:'انِ', mansub:'ا', meczum:'ا'},   tur:'harf',   zamir:'هُمَا',     zamirTr:'O ikisi',    trK:'onlar' },
+      { govde:'يَكْتُبُ', son:{merfu:'ونَ', mansub:'وا', meczum:'وا'}, tur:'harf',   zamir:'هُمْ',      zamirTr:'Onlar',      trK:'onlar' }
+    ]},
+    { ad:'Gâibe', alt:'o (dişil)', hucre:[
+      /* تَكْتُبُ gâibe ile muhâtabda birdir → iki satırı kaplayan tek kutu. */
+      { govde:'تَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'أَنْتَ',    zamirTr:'Sen',        trK:'sen',
+        kapsar:2, adOzel:'Gâibe · Muhâtab', altOzel:'tekil — ikisinde aynı' },
+      /* تَكْتُبَانِ üç kişide birdir (gâibe · muhâtab · muhâtaba ikilleri);
+         üç kutu yerine TEK kutu (rowspan) — böylece nûn taşıyan kutu
+         sayısı beşe iner ve "beş fiil" adıyla örtüşür. */
+      { govde:'تَكْتُبَ', son:{merfu:'انِ', mansub:'ا', meczum:'ا'},   tur:'harf',   zamir:'أَنْتُمَا', zamirTr:'Siz ikiniz', trK:'siz',
+        kapsar:3, adOzel:'Gâibe · Muhâtab · Muhâtaba', altOzel:'ikil — üçünde aynı' },
+      { govde:'يَكْتُبْ', son:{merfu:'نَ', mansub:'نَ', meczum:'نَ'},   tur:'mebni',  zamir:'هُنَّ',     zamirTr:'Onlar',      trK:'onlar' }
+    ]},
+    { ad:'Muhâtab', alt:'sen (eril)', hucre:[
+      { atla:true },
+      { atla:true },
+      { govde:'تَكْتُبُ', son:{merfu:'ونَ', mansub:'وا', meczum:'وا'}, tur:'harf',   zamir:'أَنْتُمْ',  zamirTr:'Siz',        trK:'siz' }
+    ]},
+    { ad:'Muhâtaba', alt:'sen (dişil)', hucre:[
+      { govde:'تَكْتُبِ', son:{merfu:'ينَ', mansub:'ي', meczum:'ي'},   tur:'harf',   zamir:'أَنْتِ',    zamirTr:'Sen',        trK:'sen' },
+      { atla:true },
+      { govde:'تَكْتُبْ', son:{merfu:'نَ', mansub:'نَ', meczum:'نَ'},   tur:'mebni',  zamir:'أَنْتُنَّ', zamirTr:'Siz',        trK:'siz' }
+    ]},
+    { ad:'Mütekellim', alt:'ben / biz', hucre:[
+      { govde:'أَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'أَنَا',     zamirTr:'Ben',        trK:'ben' },
+      /* نَكْتُبُ ikil ile çoğulda birdir → iki sütunu kaplayan tek kutu. */
+      { govde:'نَكْتُب',  son:{merfu:'ُ', mansub:'َ', meczum:'ْ'},     tur:'hareke', zamir:'نَحْنُ',    zamirTr:'Biz',        trK:'biz',
+        yatayKapsar:2, altOzel:'ikil · çoğul — aynı' },
+      { atla:true }
+    ]}
+  ];
+  var SAYI_AD = ['Tekil', 'İkil', 'Çoğul'];
+  /* Yan tablolar — ikisi de MEBNÎ, hâl/edat onlara işlemez.
+     Emir yalnız muhâtab ve muhâtabada çekilir; kalan 9 kutu — (tire). */
+  /* Yan tablolar — ikisi de MEBNÎ. Aynı formlar ORTAK kutuda:
+     rs = rowspan, cs = colspan, atla = kaplanan yer, t = tire.
+     Her kutuda kendi İ'RAB künyesi var: bina (neyin üzerine mebnî),
+     fail (fâili kim), tr (örnek cümlenin Türkçesi). Kutuya dokununca
+     bu künye alttaki karta basılır. */
+  var BINA = {
+    feth:  { ad:'Fetha üzere mebnî',      ar:'مَبْنِيٌّ عَلَى الْفَتْحِ',
+             neden:'Sonuna müteharrik ref\' zamiri ya da vâv-ı cemâa bitişmedi.' },
+    damm:  { ad:'Damme üzere mebnî',      ar:'مَبْنِيٌّ عَلَى الضَّمِّ',
+             neden:'Sonuna <b>vâv-ı cemâa</b> bitişti.' },
+    sukun: { ad:'Sükûn üzere mebnî',      ar:'مَبْنِيٌّ عَلَى السُّكُونِ',
+             neden:'Sonuna <b>müteharrik ref\' zamiri</b> ya da <b>nûn-u nisve</b> bitişti.' },
+    hazf:  { ad:'Nûnun hazfi üzere mebnî', ar:'مَبْنِيٌّ عَلَى حَذْفِ النُّونِ',
+             neden:'<b>Efâl-i hamseden</b> olduğu için emirde nûnu düşer — muzarideki <span dir="rtl">تَكْتُبُونَ</span> ile karşılaştır.' }
+  };
+  var MAZI_TABLO = [
+    [{m:'كَتَبَ',   b:'feth',  f:'Müstetir zamir (<span dir="rtl">هُوَ</span>)', tr:'Bir ders yazdı.', g:'yazdı'},
+     {m:'كَتَبَا',  b:'feth',  f:'Tesniye elifi — fâil',                          tr:'(O ikisi) bir ders yazdı.', g:'(o ikisi) yazdı'},
+     {m:'كَتَبُوا', b:'damm',  f:'Vâv-ı cemâa — fâil',                            tr:'(Onlar) bir ders yazdılar.', g:'(onlar) yazdılar'}],
+    [{m:'كَتَبَتْ', b:'feth',  f:'Müstetir zamir (<span dir="rtl">هِيَ</span>)', tr:'(O, kadın) bir ders yazdı.', g:'(o, kadın) yazdı',
+      not:'Sondaki <span dir="rtl">تْ</span> <b>te\'nîs tâsı</b>dır; fâil değildir, harekesi de yoktur.'},
+     {m:'كَتَبَتَا', b:'feth', f:'Tesniye elifi — fâil',                          tr:'(O iki kadın) bir ders yazdı.', g:'(o iki kadın) yazdı'},
+     {m:'كَتَبْنَ',  b:'sukun', f:'Nûn-u nisve — fâil',                            tr:'(Onlar, kadınlar) bir ders yazdılar.', g:'(onlar, kadınlar) yazdılar'}],
+    [{m:'كَتَبْتَ',   b:'sukun', f:'<span dir="rtl">تَ</span> — fâil',            tr:'(Sen) bir ders yazdın.', g:'(sen) yazdın'},
+     {m:'كَتَبْتُمَا', b:'sukun', f:'<span dir="rtl">تُمَا</span> — fâil',        tr:'(Siz ikiniz) bir ders yazdınız.', g:'(siz ikiniz) yazdınız',
+      ad:'Muhâtab · Muhâtaba — ikil', rs:2},
+     {m:'كَتَبْتُمْ',  b:'sukun', f:'<span dir="rtl">تُمْ</span> — fâil',          tr:'(Siz) bir ders yazdınız.', g:'(siz) yazdınız'}],
+    [{m:'كَتَبْتِ',   b:'sukun', f:'<span dir="rtl">تِ</span> — fâil',            tr:'(Sen, kadın) bir ders yazdın.', g:'(sen, kadın) yazdın'},
+     {atla:true},
+     {m:'كَتَبْتُنَّ', b:'sukun', f:'<span dir="rtl">تُنَّ</span> — fâil',        tr:'(Siz, kadınlar) bir ders yazdınız.', g:'(siz, kadınlar) yazdınız'}],
+    [{m:'كَتَبْتُ',  b:'sukun', f:'<span dir="rtl">تُ</span> — fâil',             tr:'(Ben) bir ders yazdım.', g:'(ben) yazdım'},
+     {m:'كَتَبْنَا', b:'sukun', f:'<span dir="rtl">نَا</span> — fâil',            tr:'(Biz) bir ders yazdık.', g:'(biz) yazdık',
+      ad:'Mütekellim — ikil · çoğul', cs:2},
+     {atla:true}]
+  ];
+  var EMIR_TABLO = [
+    [{t:1}, {t:1}, {t:1}],
+    [{t:1}, {t:1}, {t:1}],
+    [{m:'اُكْتُبْ',   b:'sukun', f:'Müstetir zamir (<span dir="rtl">أَنْتَ</span>)', tr:'Bir ders yaz.', g:'yaz'},
+     {m:'اُكْتُبَا',  b:'hazf',  f:'Tesniye elifi — fâil',                            tr:'(İkiniz) bir ders yazın.', g:'(ikiniz) yazın',
+      ad:'Muhâtab · Muhâtaba — ikil', rs:2},
+     {m:'اُكْتُبُوا', b:'hazf',  f:'Vâv-ı cemâa — fâil',                              tr:'(Siz) bir ders yazın.', g:'(siz) yazın'}],
+    [{m:'اُكْتُبِي',  b:'hazf',  f:'Muhâtaba yâsı — fâil',                            tr:'(Sen, kız) bir ders yaz.', g:'(sen, kız) yaz'},
+     {atla:true},
+     {m:'اُكْتُبْنَ', b:'sukun', f:'Nûn-u nisve — fâil',                              tr:'(Siz, kızlar) bir ders yazın.', g:'(siz, kızlar) yazın'}],
+    [{t:1}, {t:1}, {t:1}]
+  ];
+
+  var KUTU = [];
+  SATIR.forEach(function (sr, si) {
+    sr.hucre.forEach(function (h, hi) {
+      if (h.atla) return;   /* birleşik kutunun kapladığı yerler */
+      KUTU.push({ h:h, si:si, hi:hi, ad:h.adOzel || sr.ad, alt:h.altOzel || SAYI_AD[hi] });
+    });
+  });
+
+  /* ---------- edatlar ----------
+     bitisik : fiile bitişik yazılan edat (lâm)
+     kalip   : örnek cümle kalıbı — {Z} zamir, {F} fiil
+     trKalip : Türkçe kalıp — {ZT} zamirin Türkçesi, {V} kişiye göre fiil */
+  var EDAT = {
+    merfu: [
+      { ar:'', tr:'edatsız', anahtar:'simdi',
+        kalip:'{Z} {F} الدَّرْسَ.', trKalip:'{ZT} dersi {V}.',
+        not:'Muzari fiilin <b>aslı merfudur</b>: başında nasb ya da cezm edatı yoksa merfu okunur. Beş fiilde alâmet <b>nûnun durmasıdır</b>.' }
+    ],
+    mansub: [
+      { ar:'لَنْ', tr:'asla …mayacak', anahtar:'lan',
+        kalip:'{Z} لَنْ {F} الدَّرْسَ.', trKalip:'{ZT} dersi {V}.',
+        not:'<b>لَنْ</b> gelecek zamanı kesin olarak olumsuzlar; fiili <b>mansub</b> yapar.' },
+      { ar:'أَنْ', tr:'…ması', anahtar:'an',
+        kalip:'يَجِبُ أَنْ {F} الدَّرْسَ.', trKalip:'{ZT2} dersi {V} gerekir.',
+        not:'<b>أَنْ</b> masdar edatıdır: fiili isme çevirir ve <b>mansub</b> yapar.' },
+      { ar:'كَيْ', tr:'…mak için', anahtar:'kay',
+        kalip:'… كَيْ {F} الدَّرْسَ.', trKalip:'… dersi {V}.',
+        not:'<b>كَيْ</b> sebep bildirir: “…mak için”. Fiili <b>mansub</b> yapar.' },
+      { ar:'حَتَّى', tr:'…ıncaya kadar', anahtar:'hatta',
+        kalip:'… حَتَّى {F} الدَّرْسَ.', trKalip:'… dersi {V}.',
+        not:'<b>حَتَّى</b> gaye bildirir: “…ıncaya kadar”. Fiili <b>mansub</b> yapar.' }
+    ],
+    meczum: [
+      { ar:'لَمْ', tr:'…madı', anahtar:'lem',
+        kalip:'{Z} لَمْ {F} الدَّرْسَ.', trKalip:'{ZT} dersi {V}.',
+        not:'<b>لَمْ</b> muzari fiili <b>geçmiş zamanda olumsuzlar</b> ve <b>meczum</b> yapar.' },
+      { ar:'لَمَّا', tr:'henüz …madı', anahtar:'lemma',
+        kalip:'{Z} لَمَّا {F} الدَّرْسَ.', trKalip:'{ZT} dersi {V}.',
+        not:'<b>لَمَّا</b> “henüz olmadı, ama beklenir” anlamı katar; fiili <b>meczum</b> yapar.' },
+      { ar:'لَا', tr:'…masın (nehiy)', anahtar:'la',
+        kalip:'لَا {F} الدَّرْسَ!', trKalip:'{ZT} dersi {V}!',
+        not:'Nehiy <b>لَا</b>’sı yasaklama bildirir; fiili <b>meczum</b> yapar. Olumsuzluk لَا’sıyla karıştırma — o cezm etmez.' },
+      { ar:'لِـ', tr:'…sın (emir)', anahtar:'lam', bitisik:true,
+        kalip:'لِ{F} الدَّرْسَ.', trKalip:'{ZT} dersi {V}.',
+        not:'Emir <b>lâm</b>ı fiile <b>bitişik</b> yazılır ve onu <b>meczum</b> yapar.' }
+    ]
+  };
+
+  var ALAMET = {
+    harf:   { merfu:'Nûn durur',    mansub:'Nûn düşer',     meczum:'Nûn düşer' },
+    hareke: { merfu:'Zamme (ötre)', mansub:'Fetha (üstün)', meczum:'Sükûn' },
+    mebni:  { merfu:'mahallen merfu', mansub:'mahallen mansub', meczum:'mahallen meczum' }
+  };
+
+  /* ARAPÇA BİTİŞİKLİĞİ.
+     Fiili "gövde + son" diye iki span'e bölünce tarayıcı iki ayrı metin
+     kutusu görüyor ve harfler birbirine BAĞLANMIYOR: تَكْتُبِينَ,
+     تَكْتُبِ ينَ gibi kopuk çıkıyordu. İki çözüm birlikte kullanıldı:
+       • duruş hâlinde kelime TEK metin düğümü olarak yazılıyor —
+         şekillendirme kusursuz;
+       • yalnız animasyon anında bölünüyor ve iki parçanın arasına
+         ZWJ (U+200D) konuyor, böylece o anda da bitişik görünüyor.
+     Animasyon biter bitmez hücre yeniden tek parça hâlinde çiziliyor. */
+  var ZWJ = '\u200D';
+  function harfMi(x) { return /^[\u0621-\u064A\u0671-\u06D3]/.test(x); }
+
+  /* İlk açılışta seçili kutu tablonun İLK fiili: Gâib · Tekil يَكْتُبُ */
+  var hal = 'merfu', edatNo = 0, kutuNo = 0, oncekiHal = null, fiilSecili = 'muzari';
+  var edatBekleniyor = false;   /* mansub/meczumda dönüşüm, EDAT seçilince başlar */
+
+  function edatSimdi() { return EDAT[hal][edatNo] || EDAT[hal][0]; }
+
+  /* ---------- tablo ----------
+     ETKİLEŞİMLİ AKIŞ: hâl değişince yalnız İLK fiil kendiliğinden
+     dönüşür (merfuya dönüşte: SON fiil). Kalanlar eski hâlleriyle
+     bekler ve DOKUNULDUKÇA tek tek dönüşür — öğrenci animasyonu kutu
+     kutu kendi eliyle yaşar. İlk dönüşüm bitince bekleyen kutular
+     altın bir nabızla "bana dokun" der. Bütün kutular dönüşünce nûn
+     taşıyan beş fiil mavi bir parıltıyla vurgulanır: sonunda HARF
+     değişenler bunlardı. Aynı hâl kutusuna ikinci basış her şeyi
+     bitirir; edat seçimi de tabloyu tamamlar. */
+  var EDAT_SURE = 1300;  /* edatın gelişi */
+  var CIK_SURE  = 800;   /* edatın gidişi */
+  var SON_BAS   = 1500;  /* son, edat yerleştikten sonra değişmeye başlar */
+  var SON_SURE  = 1900;  /* eski düşer, yeni oturur */
+  var SON_SURE_GEC = 3200; /* nûn düşer, sonra elif iner */
+  var HIZLI_ADIM = 160;  /* edat dalgasında kutular arası kayma */
+  var zamanlar = [];
+  function zamanTemizle() {
+    zamanlar.forEach(function (z) { window.clearTimeout(z); });
+    zamanlar = [];
+  }
+  function bekle(fn, ms) { zamanlar.push(window.setTimeout(fn, ms)); }
+
+  var bekleyenler = null;  /* {kutuNo:true} — hâl değişiminde dokunulmayı bekleyenler */
+  var akisEski = null;     /* bekleyen kutuların ekrandaki eski hâli {hal, edat} */
+
+  /* Eski ve yeni sonun ORTAK baş harfleri yerinde kalır; yalnız farklı
+     olan kuyruk oynar. Böylece انِ → ا'da elif durur, sadece nûn düşer;
+     ونَ → وا'da vâv durur, nûn düşer ve ardından elif iner.
+     gec: ikisi de doluysa (nûn düşüp elif gelmesi) yeni kuyruk, eskisinin
+     düşüşü BİTTİKTEN sonra yukarıdan inecek demektir. */
+  /* Arapçada bu harfler KENDİNDEN SONRAKİNE bağlanmaz. Düşen parçaya
+     körü körüne ZWJ konursa elif/vâvdan sonra olmayan bir bağ çizgisi
+     çıkıyordu: نَ yerine ـنَ görünüyordu. Bağ, ancak önceki harf gerçekten
+     bağlanan bir harfse (muhâtaba müfreddeki يـ gibi) konur. */
+  var BAGLANMAZ = 'اأإآٱؤءةدذرزوى';
+  function sonHarfBaglar(metin) {
+    for (var i = metin.length - 1; i >= 0; i--) {
+      var c = metin.charAt(i);
+      if (c === ZWJ) continue;
+      if (c >= '\u064B' && c <= '\u0652') continue;   /* hareke/şedde atla */
+      return BAGLANMAZ.indexOf(c) < 0;
+    }
+    return false;
+  }
+
+  function kuyrukAyir(eskiSon, yeniSon) {
+    if (!(harfMi(eskiSon) || harfMi(yeniSon))) return null;   /* hareke sonu */
+    var i = 0;
+    while (i < eskiSon.length && i < yeniSon.length && eskiSon.charAt(i) === yeniSon.charAt(i)) i++;
+    var e = eskiSon.slice(i), y = yeniSon.slice(i);
+    return { ortak: eskiSon.slice(0, i), eski: e, yeni: y, gec: !!(e && y) };
+  }
+
+  /* Kelimeyi yaz. eskiSon verilirse iki parçalı (animasyonlu) yazım;
+     verilmezse tek metin düğümü — harfler doğal olarak bitişir.
+     HAREKE SONLARI: yalın hareke çizilemez, son harf de taşınır
+     (بُ düşer, بَ oturur) — hareke hep harfinin üstünde kalır. */
+  function kelimeYaz(el, h, halX, eskiSon) {
+    /* BİTİŞİK EDAT (emir lâmı) kelimenin KENDİ metnine giriyor: ayrı bir
+       kutuda dursaydı Arapça bitişmesi kurulmaz, لِ يَكْتُبْ diye kopuk
+       çıkardı. Rengi <b> ile veriliyor — satır içi olduğu için harf bağı
+       bozulmaz (inline-block bozardı). */
+    var on = el.getAttribute('data-on') || '';
+    var onHtml = on ? '<b class="efh-lam">' + on + '</b>' : '';
+    var yeniSon = h.son[halX];
+    if (!eskiSon) { el.innerHTML = onHtml + h.govde + yeniSon; return; }
+
+    var govde, eskiK, yeniK, gec = false;
+    var k = kuyrukAyir(eskiSon, yeniSon);
+    if (k) {
+      govde = h.govde + k.ortak; eskiK = k.eski; yeniK = k.yeni; gec = k.gec;
+    } else {
+      var sonHarf = h.govde.slice(-1);
+      govde = h.govde.slice(0, -1);
+      eskiK = sonHarf + eskiSon;
+      yeniK = sonHarf + yeniSon;
+    }
+
+    /* Bağ yalnız gövdenin son harfi gerçekten bağlanıyorsa konur:
+       ikil (ـَا) ve çoğulda (ـُو) elif ile vâv bağlanmaz → düşen nûn ve
+       inen elif ÇİZGİSİZ; muhâtaba müfredde (ـِي) yâ bağlanır → çizgili. */
+    var baglar = sonHarfBaglar(govde);
+    var bag = (baglar && yeniK && harfMi(yeniK)) ? ZWJ : '';
+    var eskiBag = (baglar && harfMi(eskiK)) ? ZWJ : '';
+    el.innerHTML = onHtml +
+      '<span class="efh-govde">' + govde + (bag || eskiBag) + '</span>' +
+      '<span class="efh-son">' +
+        (eskiK ? '<span class="efh-eski">' + eskiBag + eskiK + '</span>' : '') +
+        (yeniK ? '<span class="efh-yeni ' + (gec ? 'efh-in' : 'efh-gel') + '">' + bag + yeniK + '</span>' : '') +
+      '</span>';
+  }
+
+  /* Kutunun Türkçesi hâle ve edata göre değişir: merfuda "yazıyor",
+     لَنْ ile "asla yazmayacak"… */
+  function trYaz(el, h, edatObj) {
+    if (!el) return;
+    var anahtar = (edatObj && edatObj.anahtar) || 'simdi';
+    el.textContent = (TR[h.trK] || TR.o)[anahtar] || '';
+  }
+
+  function edatYaz(el, e, durum) {
+    var bit = !!(e && e.ar && e.bitisik);
+    el.className = 'efh-edat-ek' + (bit ? ' efh-bitisik' : '') + (durum ? ' ' + durum : '');
+    /* Bitişik edat bu kutuya YAZILMAZ; fiilin metnine girer. */
+    el.textContent = (e && e.ar && !bit) ? e.ar : '';
+    var kel = el.parentNode && el.parentNode.querySelector('.efh-kelime');
+    if (kel) onEkYaz(kel, bit ? 'لِ' : '', durum === 'efh-gir');
+  }
+  /* Fiilin başındaki bitişik harfi kur/kaldır. Kelimenin ilk çocuğu olarak
+     giriyor: kutu rtl olduğu için ilk çocuk en sağdaki, yani baştaki harf. */
+  function onEkYaz(kel, on, gir) {
+    var b = kel.querySelector('.efh-lam');
+    if (!on) {
+      if (b) b.parentNode.removeChild(b);
+      kel.removeAttribute('data-on');
+      return;
+    }
+    kel.setAttribute('data-on', on);
+    if (!b) { b = document.createElement('b'); kel.insertBefore(b, kel.firstChild); }
+    b.className = 'efh-lam' + (gir ? ' efh-gir' : '');
+    b.textContent = on;
+  }
+  /* Edat çıkışı: ayrı kutudaki de fiile yapışık olan da birlikte sönsün. */
+  function edatCikar(td) {
+    var e = td.querySelector('.efh-edat-ek'); if (e) e.classList.add('efh-cik');
+    var l = td.querySelector('.efh-lam');     if (l) l.classList.add('efh-cik');
+  }
+
+  function hucreTd(a) {
+    return elGovde.querySelector('.efh-hucre[data-si="' + a.si + '"][data-hi="' + a.hi + '"]');
+  }
+  function hucreGez(fn) {
+    KUTU.forEach(function (a, n) { fn(hucreTd(a), a.h, n); });
+  }
+
+  function lejantYaz() {
+    var k = KUTU[kutuNo];
+    document.getElementById('efhLejantNot').innerHTML =
+      'Seçili kutu: <b>' + k.ad + ' · ' + k.alt + '</b> — alâmeti <b>' + ALAMET[k.h.tur][hal] + '</b>';
+  }
+
+  function secimGuncelle() {
+    [].forEach.call(elGovde.querySelectorAll('.efh-hucre.efh-secili'), function (x) {
+      x.classList.remove('efh-secili');
+    });
+    var td = hucreTd(KUTU[kutuNo]);
+    if (td) td.classList.add('efh-secili');
+    lejantYaz();
+  }
+
+  /* Duruş çizimi: verilen hâlin sonları + verilen edatla, tek parça. */
+  function tabloCiz(gosterHal, edatObj) {
+    elGovde.innerHTML = '';
+    SATIR.forEach(function (sr, si) {
+      var tr = document.createElement('tr');
+      var html = '<td class="efh-satirbas">' + sr.ad + '<span>' + sr.alt + '</span></td>';
+      sr.hucre.forEach(function (h, hi) {
+        if (h.atla) return;   /* birleşik kutunun kapladığı yer */
+        var secili = (KUTU[kutuNo].si === si && KUTU[kutuNo].hi === hi);
+        html += '<td class="efh-hucre efh-t-' + h.tur + (secili ? ' efh-secili' : '') + '"' +
+                (h.kapsar ? ' rowspan="' + h.kapsar + '"' : '') +
+                (h.yatayKapsar ? ' colspan="' + h.yatayKapsar + '"' : '') +
+                ' data-si="' + si + '" data-hi="' + hi + '"' +
+                ' title="' + (h.adOzel || sr.ad) + ' · ' + (h.altOzel || SAYI_AD[hi]) + '">' +
+                '<span class="efh-ic"><span class="efh-edat-ek"></span><span class="efh-kelime"></span></span>' +
+                '<span class="efh-tr"></span></td>';
+      });
+      tr.innerHTML = html;
+      elGovde.appendChild(tr);
+    });
+    hucreGez(function (td, h) {
+      edatYaz(td.querySelector('.efh-edat-ek'), edatObj, '');
+      kelimeYaz(td.querySelector('.efh-kelime'), h, gosterHal, '');
+      trYaz(td.querySelector('.efh-tr'), h, edatObj);
+    });
+    lejantYaz();
+  }
+
+  /* Bütün kutular dönüşünce: sonunda HARF değişen beş fiil parıldar. */
+  function parlat() {
+    bekle(function () {
+      hucreGez(function (td, h) {
+        if (h.tur === 'harf' && td) {
+          td.classList.remove('efh-parla');
+          void td.offsetWidth;
+          td.classList.add('efh-parla');
+        }
+      });
+    }, 80);
+  }
+
+  /* Bekleyen kutulara "bana dokun" nabzı. */
+  function davetVer() {
+    var k = 0;
+    hucreGez(function (td, h, n) {
+      if (bekleyenler && bekleyenler[n] && td) {
+        td.style.setProperty('--dv', k++);
+        td.classList.add('efh-davet');
+      }
+    });
+  }
+
+  /* Akışı kes, bugünkü hâli göster. Bekleyen varken kesildiyse
+     tamamlanma vurgusu (beş fiil parıltısı) yine verilir. */
+  function sonDurum() {
+    zamanTemizle();
+    var yarim = !!bekleyenler;
+    bekleyenler = null; akisEski = null; edatBekleniyor = false;
+    tabloCiz(hal, edatSimdi());
+    if (yarim) parlat();
+  }
+
+  /* TEK kutunun dönüşümü: edat gelir/gider, sonra son değişir. */
+  function hucreAnimasyon(n, ilkMi) {
+    if (!bekleyenler || !bekleyenler[n] || !akisEski) return;
+    delete bekleyenler[n];
+    var a = KUTU[n], td = hucreTd(a);
+    if (!td) return;
+    td.classList.remove('efh-davet');
+    var edatEl = td.querySelector('.efh-edat-ek');
+    var kelEl  = td.querySelector('.efh-kelime');
+    var e = edatSimdi();
+    var eskiSon = a.h.son[akisEski.hal], yeniSon = a.h.son[hal];
+    var eskiAr = akisEski.edat && akisEski.edat.ar, yeniAr = e.ar;
+
+    if (!eskiAr && yeniAr) {                          /* merfu → : edat gelir */
+      bekle(function () { edatYaz(edatEl, e, 'efh-gir'); }, 0);
+    } else if (eskiAr && !yeniAr) {                   /* → merfu : edat gider */
+      bekle(function () { edatCikar(td); }, 0);
+      bekle(function () { edatYaz(edatEl, null, ''); }, CIK_SURE);
+    } else if (eskiAr && yeniAr && eskiAr !== yeniAr) {    /* mansub ↔ meczum */
+      bekle(function () { edatCikar(td); }, 0);
+      bekle(function () { edatYaz(edatEl, e, 'efh-gir'); }, CIK_SURE);
+    }
+    /* NÛN-U NİSVE: buradaki nûn i'rab nûnu değil FÂİLDİR, düşmez.
+       Kutu, edat gelince "bana işlemez" der gibi sallanır — öğrenci
+       düşmeyişi bir eksiklik değil, kuralın kendisi olarak görsün. */
+    var sonDegisir = (eskiSon !== yeniSon);
+    if (!sonDegisir && a.h.tur === 'mebni') {
+      bekle(function () {
+        td.classList.remove('efh-salla');
+        void td.offsetWidth;
+        td.classList.add('efh-salla');
+      }, SON_BAS);
+    }
+    var kY = sonDegisir ? kuyrukAyir(eskiSon, yeniSon) : null;
+    var oturma = (kY && kY.gec) ? SON_SURE_GEC : SON_SURE;
+    var trEl = td.querySelector('.efh-tr');
+    if (sonDegisir) {
+      bekle(function () { kelimeYaz(kelEl, a.h, hal, eskiSon); }, SON_BAS);
+      bekle(function () { kelimeYaz(kelEl, a.h, hal, ''); }, SON_BAS + oturma);
+    }
+    bekle(function () { trYaz(trEl, a.h, e); }, sonDegisir ? SON_BAS + oturma : EDAT_SURE);
+    var bitis = sonDegisir ? (SON_BAS + oturma) : (EDAT_SURE + 200);
+    bekle(function () {
+      if (n === kutuNo || ilkMi) ornekCiz(true);
+      if (ilkMi) davetVer();
+      if (bekleyenler && !Object.keys(bekleyenler).length) {
+        bekleyenler = null; akisEski = null;
+        parlat();
+      }
+    }, bitis + 80);
+  }
+
+  /* Hâl değişimi: İLK fiil kendiliğinden (merfuya dönüşte SON fiil),
+     kalanlar dokunuldukça. */
+  function halAkis(eskiHal, eskiEdat) {
+    zamanTemizle();
+    edatBekleniyor = false;
+    tabloCiz(eskiHal, eskiEdat);
+    bekleyenler = {};
+    KUTU.forEach(function (x, n) { bekleyenler[n] = true; });
+    akisEski = { hal: eskiHal, edat: eskiEdat };
+    if (hal === 'merfu') { hucreAnimasyon(KUTU.length - 1, true); return; }
+    /* Mansub/Meczum: hiçbir şey kendiliğinden başlamaz — önce EDAT
+       seçilir; ilk dönüşüm, öğrencinin seçtiği edatla başlar. */
+    edatBekleniyor = true;
+    edatCiz();
+  }
+
+  /* "Yalnız edat değişimi" diye ayrı bir hızlı dalga yok artık:
+     edat değişimi de tam sıfırlamadır (yukarıdaki tıklama yöneticisi). */
+
+  /* ---------- örnek satırı ---------- */
+  function ornekCiz(tazele) {
+    var k = KUTU[kutuNo], h = k.h, e = edatSimdi();
+    var fiil = '<span class="efh-vurgu">' + h.govde + h.son[hal] + '</span>';
+    var ar = e.kalip.replace('{Z}', h.zamir).replace('{F}', fiil);
+    var v = (TR[h.trK] || TR.o)[e.anahtar] || '';
+    var iyelik = { 'O':'Onun', 'O ikisi':'O ikisinin', 'Onlar':'Onların', 'Sen':'Senin',
+                   'Siz ikiniz':'İkinizin', 'Siz':'Sizin', 'Ben':'Benim', 'Biz':'Bizim' };
+    var trc = e.trKalip
+      .replace('{ZT}', h.zamirTr)
+      .replace('{ZT2}', iyelik[h.zamirTr] || h.zamirTr)
+      .replace('{V}', v);
+    elOrnekAr.innerHTML = ar;
+    elOrnekTr.textContent = trc;
+    elOrnekKisi.textContent = '· ' + k.ad + ' · ' + k.alt;
+    if (tazele) {
+      var ic = elOrnekAr.parentNode;
+      ic.classList.remove('efh-tazele');
+      void ic.offsetWidth;
+      ic.classList.add('efh-tazele');
+    }
+  }
+
+  function edatCiz() {
+    var liste = EDAT[hal];
+    var cok = liste.length > 1;
+    elEdat.hidden = !cok || fiilSecili !== 'muzari';
+    elEdatAd.textContent = hal === 'mansub' ? 'Nasb edatları' : 'Cezm edatları';
+    if (cok) {
+      elEdatListe.classList.toggle('efh-sec-bekle', edatBekleniyor);
+      elEdatListe.innerHTML = '';
+      liste.forEach(function (e2, k) {
+        var d = document.createElement('button');
+        d.type = 'button';
+        var aktif = !edatBekleniyor && k === edatNo;
+        d.className = 'efh-edat-sec' + (aktif ? ' aktif' : '');
+        d.setAttribute('data-edat-no', k);
+        d.setAttribute('role', 'tab');
+        d.setAttribute('aria-selected', aktif ? 'true' : 'false');
+        d.innerHTML = '<b dir="rtl">' + e2.ar + '</b><small>' + e2.tr + '</small>';
+        elEdatListe.appendChild(d);
+      });
+    }
+    elNot.innerHTML = edatBekleniyor
+      ? 'Önce bir <b>edat seç</b> — dönüşüm, seçtiğin edatla <b>ilk fiilde</b> başlar; kalan fiillere sen dokunursun.'
+      : edatSimdi().not;
+  }
+
+  function ciz(mod, eskiHal, eskiEdat) {
+    edatCiz();
+    if (mod === 'hal') halAkis(eskiHal, eskiEdat);
+    else { sonDurum(); ornekCiz(false); }
+    oncekiHal = hal;
+  }
+
+  /* ---------- olaylar ---------- */
+  elHal.addEventListener('click', function (ev) {
+    var d = ev.target.closest ? ev.target.closest('.efh-h') : null;
+    if (!d) return;
+    var yeni = d.getAttribute('data-hal');
+    [].forEach.call(elHal.querySelectorAll('.efh-h'), function (x) {
+      var s = x === d;
+      x.classList.toggle('aktif', s);
+      x.setAttribute('aria-selected', s ? 'true' : 'false');
+    });
+    /* HER BASIŞ TABLOYU SIFIRLAR.
+       Eskiden aynı hâle ikinci basış akışı KESİYOR (her şeyi bitmiş
+       gösteriyor), mansub↔meczum geçişi de tabloyu dönüşmüş hâliyle
+       çiziyordu; gösteriyi baştan oynatmak için başka bir hâle uğrayıp
+       dönmek gerekiyordu — "iki kere basmak" bundandı.
+       Artık mansub ya da meczuma her basışta tablo TEMEL (merfu) hâline
+       döner ve edat seçimini yeniden bekler: dönüşüm hep baştan
+       yaşanır. Merfuya basışta ise gösterilecek olan zaten geri
+       dönüşümdür, o yüzden çıkış noktası bulunduğun hâldir. */
+    var temele = (yeni !== 'merfu');
+    var eskiHalDeger  = temele ? 'merfu' : hal;
+    var eskiEdatDeger = temele ? EDAT.merfu[0] : edatSimdi();
+    hal = yeni; edatNo = 0;
+    ciz('hal', eskiHalDeger, eskiEdatDeger);
+  });
+
+  panel.addEventListener('click', function (ev) {
+    var d = ev.target.closest ? ev.target.closest('.efh-ok, .efh-edat-sec') : null;
+    if (!d) return;
+    if (d.hasAttribute('data-edat-no')) {
+      var no = parseInt(d.getAttribute('data-edat-no'), 10);
+      if (edatBekleniyor) {
+        /* İlk seçim: animasyonu bu edat başlatır. */
+        edatNo = no;
+        edatBekleniyor = false;
+        edatCiz();
+        hucreAnimasyon(0, true);
+        return;
+      }
+      if (no === edatNo) return;
+      /* EDAT DEĞİŞİMİ DE SIFIRLAR (hâl tuşları gibi): tablo temel hâle
+         döner ve dönüşüm YENİ edatla baştan yaşanır. Eskiden hızlı bir
+         dalgayla yalnız edat yazıları değişiyordu; dönüşümün kendisi
+         görünmüyordu. Seçim bu dokunuşla zaten yapıldığı için beklenmez:
+         ilk kutu hemen yeni edatla dönüşür, kalanlar dokunuşla. */
+      zamanTemizle();
+      edatNo = no;
+      edatBekleniyor = false;
+      tabloCiz('merfu', EDAT.merfu[0]);
+      bekleyenler = {};
+      KUTU.forEach(function (x, i2) { bekleyenler[i2] = true; });
+      akisEski = { hal: 'merfu', edat: EDAT.merfu[0] };
+      edatCiz();
+      hucreAnimasyon(0, true);
+      return;
+    }
+    if (d.hasAttribute('data-ornek')) {
+      kutuNo = (kutuNo + parseInt(d.getAttribute('data-ornek'), 10) + KUTU.length) % KUTU.length;
+      secimGuncelle();
+      if (edatBekleniyor) return;
+      if (bekleyenler && bekleyenler[kutuNo]) hucreAnimasyon(kutuNo, false);
+      else ornekCiz(true);
+    }
+  });
+
+  /* Kutuya dokunmak: bekleyen kutuysa DÖNÜŞÜMÜNÜ başlatır (animasyon
+     dokunarak yaşanır), dönüşmüş kutuysa yalnız örneği oraya taşır. */
+  elGovde.addEventListener('click', function (ev) {
+    var td = ev.target.closest ? ev.target.closest('.efh-hucre') : null;
+    if (!td) return;
+    var si = +td.getAttribute('data-si'), hi = +td.getAttribute('data-hi');
+    for (var i = 0; i < KUTU.length; i++) {
+      if (KUTU[i].si === si && KUTU[i].hi === hi) { kutuNo = i; break; }
+    }
+    secimGuncelle();
+    if (edatBekleniyor) return;          /* önce edat: kutular edat seçilince açılır */
+    if (bekleyenler && bekleyenler[kutuNo]) hucreAnimasyon(kutuNo, false);
+    else ornekCiz(true);
+  });
+
+  /* Yan tablolar bir kez kurulur: aynı veriden (MAZI_TABLO / EMIR_TABLO),
+     muzariyle aynı boy puntoda. */
+  (function yanTablolariKur() {
+    var m = document.getElementById('efhMaziGovde');
+    var em = document.getElementById('efhEmirGovde');
+    SATIR.forEach(function (sr, si) {
+      var bas = '<td class="efh-satirbas">' + sr.ad + '<span>' + sr.alt + '</span></td>';
+      function yanHtml(h, tablo, hi) {
+        if (h.atla) return '';
+        var kaps = (h.rs ? ' rowspan="' + h.rs + '"' : '') + (h.cs ? ' colspan="' + h.cs + '"' : '');
+        if (h.t) return '<td class="efh-b"' + kaps + '><span class="efh-tire">—</span></td>';
+        return '<td class="efh-b efh-b-tik"' + kaps +
+               ' data-tablo="' + tablo + '" data-yi="' + si + '" data-yj="' + hi + '"' +
+               ' tabindex="0" role="button" title="İ\'rabını gör">' + h.m +
+               '<span class="efh-b-tr">' + (h.g || '') + '</span></td>';
+      }
+      var r1 = bas, r2 = bas;
+      MAZI_TABLO[si].forEach(function (x, hi) { r1 += yanHtml(x, 'mazi', hi); });
+      EMIR_TABLO[si].forEach(function (x, hi) { r2 += yanHtml(x, 'emir', hi); });
+      m.insertAdjacentHTML('beforeend', '<tr>' + r1 + '</tr>');
+      em.insertAdjacentHTML('beforeend', '<tr>' + r2 + '</tr>');
+    });
+  })();
+
+  /* ---------- YAN TABLO İ'RABI ----------
+     Mâzi ve emir kutuları tıklanabilir: dokunulan fiilin künyesi
+     alttaki karta basılır. Mebnî fiilde "i'rab" sorusunun cevabı
+     üç parçadır: neyin üzerine mebnî, fâili kim, cümlede mahalli ne.
+     Bu üçü karttadır. */
+  function yanIrabGoster(tablo, si, hi) {
+    var kaynak = (tablo === 'mazi' ? MAZI_TABLO : EMIR_TABLO)[si][hi];
+    if (!kaynak || !kaynak.m) return;
+    var kap = document.getElementById(tablo === 'mazi' ? 'efhMaziIrab' : 'efhEmirIrab');
+    var govde = document.getElementById(tablo === 'mazi' ? 'efhMaziGovde' : 'efhEmirGovde');
+    [].forEach.call(govde.querySelectorAll('.efh-b-tik'), function (x) { x.classList.remove('efh-b-secili'); });
+    var td = govde.querySelector('.efh-b-tik[data-yi="' + si + '"][data-yj="' + hi + '"]');
+    if (td) td.classList.add('efh-b-secili');
+
+    var b = BINA[kaynak.b];
+    var kisi = kaynak.ad || (SATIR[si].ad + ' · ' + SAYI_AD[hi]);
+    var tur = (tablo === 'mazi') ? 'Mâzi fiil' : 'Emir fiil';
+    kap.innerHTML =
+      '<div class="efh-ik-bas">' +
+        '<span class="efh-ik-fiil" dir="rtl">' + kaynak.m + '</span>' +
+        '<span class="efh-ik-kisi">' + kisi + '<small>' + tur + ' · mebnî</small></span>' +
+      '</div>' +
+      '<div class="efh-ik-sat"><span class="efh-ik-et">Binâ</span>' +
+        '<span><b>' + b.ad + '</b> <span dir="rtl" class="efh-ik-ar">' + b.ar + '</span><br>' +
+        '<span class="efh-ik-neden">' + b.neden + '</span></span></div>' +
+      '<div class="efh-ik-sat"><span class="efh-ik-et">Fâil</span><span>' + kaynak.f + '</span></div>' +
+      '<div class="efh-ik-sat"><span class="efh-ik-et">Örnek</span>' +
+        '<span><span class="efh-ik-cumle" dir="rtl"><b>' + kaynak.m + '</b> دَرْسًا.</span>' +
+        '<span class="efh-ik-tr">' + kaynak.tr + '</span></span></div>' +
+      (kaynak.not ? '<div class="efh-ik-sat"><span class="efh-ik-et">Dikkat</span><span>' + kaynak.not + '</span></div>' : '') +
+      '<p class="efh-ik-son">Mebnî olduğu için sonu <b>değişmez</b>; nasb ve cezm edatları işlemez. ' +
+        'Cümledeki görevine göre yalnız <b>mahallen</b> i\'rab edilir.</p>';
+    kap.hidden = false;
+  }
+
+  function yanIrabSifirla(tablo) {
+    var kap = document.getElementById(tablo === 'mazi' ? 'efhMaziIrab' : 'efhEmirIrab');
+    if (kap) kap.hidden = true;
+  }
+
+  ['mazi', 'emir'].forEach(function (tablo) {
+    var govde = document.getElementById(tablo === 'mazi' ? 'efhMaziGovde' : 'efhEmirGovde');
+    if (!govde) return;
+    govde.addEventListener('click', function (ev) {
+      var td = ev.target.closest ? ev.target.closest('.efh-b-tik') : null;
+      if (td) yanIrabGoster(tablo, +td.getAttribute('data-yi'), +td.getAttribute('data-yj'));
+    });
+    govde.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Enter' && ev.key !== ' ') return;
+      var td = ev.target.closest ? ev.target.closest('.efh-b-tik') : null;
+      if (td) { ev.preventDefault(); yanIrabGoster(tablo, +td.getAttribute('data-yi'), +td.getAttribute('data-yj')); }
+    });
+  });
+
+  /* Fiil tablosu sekmeleri: üçü birden değil, seçilen TEK ve BÜYÜK. */
+  var elFiiller = document.getElementById('efhFiiller');
+  function fiilTabloSec(ad) {
+    fiilSecili = ad;
+    [].forEach.call(elFiiller.querySelectorAll('.efh-f'), function (x) {
+      var sec = x.getAttribute('data-fiil') === ad;
+      x.classList.toggle('aktif', sec);
+      x.setAttribute('aria-selected', sec ? 'true' : 'false');
+    });
+    document.getElementById('efhTabloMuzari').hidden = ad !== 'muzari';
+    document.getElementById('efhTabloMazi').hidden  = ad !== 'mazi';
+    document.getElementById('efhTabloEmir').hidden  = ad !== 'emir';
+    /* Hâl, edat, örnek ve ayrıntılar muzariye aittir; mebnî tablolarda
+       anlamları yok — kafa karıştırmasınlar. */
+    elHal.hidden = ad !== 'muzari';
+    document.getElementById('efhOrnekBlok').hidden = ad !== 'muzari';
+    document.getElementById('efhDetay').hidden = ad !== 'muzari';
+    edatCiz();
+    /* Sekme değişince önceki fiilin künyesi kalmasın. */
+    yanIrabSifirla('mazi'); yanIrabSifirla('emir');
+  }
+  elFiiller.addEventListener('click', function (ev) {
+    var d = ev.target.closest ? ev.target.closest('.efh-f') : null;
+    if (d) fiilTabloSec(d.getAttribute('data-fiil'));
+  });
+
+  ciz();
+  fiilTabloSec('muzari');
+  window.tcHamse = {
+    halSec: function (h) {
+      var d = elHal.querySelector('.efh-h[data-hal="' + h + '"]');
+      if (d) d.click();
+    },
+    durum: function () { return { hal: hal, edat: edatSimdi().ar, fiil: fiilSecili, kutu: KUTU[kutuNo].ad + ' ' + KUTU[kutuNo].alt }; },
+    fiilSec: fiilTabloSec
+  };
+})();
+
+/* ==================== 5) TAHLİL — SEKİZ SORULUK AYRIŞTIRMA ==================== */
+/* ============================================================
+   Tablolar kuralı GÖSTERİR, burası kuralı İŞLETİR.
+   Sekiz soru sırayla sorulur; öğrenci cevabı cümlenin üstünde
+   DOKUNARAK verir. Doğru dokunuşta kelime o sorunun rengini alır ve
+   altına etiketi yazılır. Sekizi bitince hâller açılır — kategoriden
+   hâle geçiş burada kuruluyor.
+
+   İKİ TASARIM KARARI:
+   1) Hâl, kategoriden MEKANİK türetilmiyor; her kelimede ayrı yazılı.
+      Çünkü eşleşme birebir değil: mekân ve zaman cer harfi alırsa
+      mecrur, almazsa mansub olur. Mekanik eşleme bu ayrımı gizler —
+      oysa asıl öğretilecek şey tam da odur.
+   2) Sekizinci soru cer HARFİNİ soruyor. Sunumdaki "ek almış bir isim"
+      hâliyle 2/3/7 ile çakışıyor, tek doğru cevap kalmıyordu.
+   ============================================================ */
+(function () {
+  var elCumle = document.getElementById('thArSatir');
+  if (!elCumle) return;
+  var elUst = document.getElementById('thUst');
+  var elTr = document.getElementById('thTrSatir');
+  var elListe = document.getElementById('thListe');
+  var elSoru = document.getElementById('thSoru');
+  var elNot = document.getElementById('thNot');
+  var elHal = document.getElementById('thHal');
+  var elSonraki = document.getElementById('thSonraki');
+  var elBastan = document.getElementById('thBastan');
+
+  /* Sekiz renk birbirinden AYIRT EDİLEBİLİR olmalı: önceki takımda
+     mekân/zaman (mavi/turkuaz) ve nesne/ek (turuncu/kahve) yan yana
+     gelince ayrılmıyordu. Şimdiki set renk çemberinde daha aralıklı;
+     ek ise kahverengi ama nesnenin turuncusundan çok daha koyu. */
+  var KAT = {
+    1: { ad:'Bir olay-eylem?',        soru:'Olay-eylem hangisi?',            kisa:'Olay',   renk:'#1A1A2E' },
+    2: { ad:'Bir mekân?',             soru:'Mekân bildiren kelime hangisi?', kisa:'Mekân',  renk:'#1565C0' },
+    3: { ad:'Bir zaman?',             soru:'Zaman bildiren kelime hangisi?', kisa:'Zaman',  renk:'#00ACC1' },
+    4: { ad:'Bir nesne?',             soru:'Nesne hangisi?',                 kisa:'Nesne',  renk:'#EF6C00' },
+    5: { ad:'Bir özne?',              soru:'Özne hangisi?',                  kisa:'Özne',   renk:'#2E9E33' },
+    6: { ad:'Bir durum?',             soru:'Durum bildiren kelime hangisi?', kisa:'Durum',  renk:'#D81B60' },
+    7: { ad:'Bir aitlik?',            soru:'Aitlik bildiren kelime hangisi?',kisa:'Aitlik', renk:'#7B1FA2' },
+    8: { ad:'Ek almış bir isim?',     soru:'Cer harfi (ek) hangisi?',        kisa:'Ek',     renk:'#795548' }
+  };
+  var SIRA = [1, 2, 3, 4, 5, 6, 7, 8];
+
+  /* Sekiz ögenin künyesi: hangi hâli alır, alâmeti nedir, örneği ne.
+     Bu bilgi eskiden hâl ekranında uzun bir metin olarak yazılıyordu;
+     artık numaraya dokununca kendi balonunda açılıyor — ekran temiz
+     kalıyor, bilgi aranınca geliyor. */
+  var KUNYE = {
+    1: { ozet:'Fiilin hâli türüne göre değişir.', satir:[
+      ['Mâzi', 'mebnî — hâl almaz', '{كَتَبَ}'],
+      ['Emir', 'mebnî — hâl almaz', '{اُكْتُبْ}'],
+      ['Muzari', 'merfu (asıl hâli)', '{يَكْتُبُ}'],
+      ['Muzari + nasb edatı', 'mansub', 'لَنْ {يَكْتُبَ}'],
+      ['Muzari + cezm edatı', 'meczum', 'لَمْ {يَكْتُبْ}'] ],
+      dip:'Efâl-i hamsede alâmet hareke değil <b>nûn</b>dur: merfuda durur, mansub ve meczumda düşer.' },
+    2: { ozet:'Mekân kelimesinin hâlini <b>cer harfi</b> belirler.', satir:[
+      ['Cer harfi <b>yok</b>', 'mansub — zarf', 'ذَهَبْتُ {الْمَقْصِفَ}'],
+      ['Cer harfi <b>var</b>', 'mecrur', 'فِي {الْبَيْتِ}'],
+      ['Cer harfi <b>var</b>', 'mecrur', 'خَرَجْتُ مِنَ {الْمَدِينَةِ}'] ],
+      dip:'Kategori kelimenin ne olduğunu söyler; hâli belirleyen şey cümledeki bağıdır.' },
+    3: { ozet:'Zaman kelimesinin hâlini de <b>cer harfi</b> belirler.', satir:[
+      ['Cer harfi <b>yok</b>', 'mansub — zarf', '{مَسَاءً}'],
+      ['Cer harfi <b>yok</b>', 'mansub — zarf', 'اِسْتَيْقَظْتُ {صَبَاحًا}'],
+      ['Cer harfi <b>var</b>', 'mecrur', 'فِي {السَّاعَةِ}'] ],
+      dip:'Aynı cümlede ikisi birden olabilir: <span dir="rtl" class="tc-ic">فِي السَّاعَةِ</span> mecrur, ' +
+          '<span dir="rtl" class="tc-ic">مَسَاءً</span> mansub.' },
+    4: { ozet:'Nesne (mef\'ûl) <b>daima mansub</b>tur; değişen yalnız alâmeti.', satir:[
+      ['Müfred', 'fetha', 'رَأَيْتُ {الْكِتَابَ}'],
+      ['İkil', 'yâ', 'رَأَيْتُ {الْكِتَابَيْنِ}'],
+      ['Cem-i müzekker sâlim', 'yâ', 'رَأَيْتُ {الْمُعَلِّمِينَ}'],
+      ['Cem-i müennes sâlim', '<b>kesra</b>', 'رَأَيْتُ {الْمُعَلِّمَاتِ}'] ],
+      dip:'Dikkat: cem-i müennes sâlim mansub olunca fetha değil <b>kesra</b> alır.' },
+    5: { ozet:'Özne (fâil ya da mübteda) <b>daima merfu</b>dur.', satir:[
+      ['Müfred', 'damme', 'جَاءَ {الْمُعَلِّمُ}'],
+      ['İkil', 'elif', 'جَاءَ {الْمُعَلِّمَانِ}'],
+      ['Cem-i müzekker sâlim', 'vâv', 'جَاءَ {الْمُعَلِّمُونَ}'],
+      ['Cem-i müennes sâlim', 'damme', 'جَاءَتِ {الْمُعَلِّمَاتُ}'] ],
+      dip:'Özne ayrı bir kelime olmayabilir: fiilin içindeki zamir de fâildir — o zaman <b>mahallen merfu</b>.' },
+    6: { ozet:'Durum (hâl) <b>daima mansub</b>tur.', satir:[
+      ['Nekra hâl', 'fetha / tenvin fetha', 'جَاءَ {مَسْرُورًا}'],
+      ['Nekra hâl', 'fetha / tenvin fetha', 'رَجَعَ {رَاكِبًا}'] ],
+      dip:'Hâlin sahibi (zül-hâl) genellikle <b>marife</b>, hâlin kendisi <b>nekra</b>dır.' },
+    7: { ozet:'Tamlayan (muzâfun ileyh) <b>daima mecrur</b>dur — hem de cer harfi olmadan.', satir:[
+      ['Müfred', 'kesra', 'بَابُ {الْبَيْتِ}'],
+      ['İkil', 'yâ', 'كِتَابُ {الْمُعَلِّمَيْنِ}'],
+      ['Cem-i müzekker sâlim', 'yâ', 'كِتَابُ {الْمُعَلِّمِينَ}'] ],
+      dip:'Mecrurun iki yolu var: <b>cer harfi</b> ve <b>tamlama</b>. Bu ikincisidir.' },
+    8: { ozet:'Cer harfinin kendisi <b>mebnî</b>dir, hâli yoktur; ama ardındaki ismi <b>mecrur</b> yapar.', satir:[
+      ['<span dir="rtl" class="tc-ic">مِنْ · إِلَى · عَنْ</span>', 'sonraki isim mecrur', '{مِنَ} الْبَيْتِ'],
+      ['<span dir="rtl" class="tc-ic">عَلَى · فِي</span>', 'sonraki isim mecrur', '{فِي} الصَّفِّ'],
+      ['<span dir="rtl" class="tc-ic">بِ · لِ · كَ</span>', 'sonraki isim mecrur', '{بِ}الْقَلَمِ'] ],
+      dip:'Bir kelime mekân ya da zaman bildirse bile, önünde cer harfi varsa <b>mecrur</b> olur.' }
+  };
+  /* Örnekteki kategoriye AİT kelime {süslü parantez} içinde yazılıyor;
+     burada kategorinin rengine boyanıyor. Vurgu satır içi <b> ile
+     yapılıyor — inline-block olsaydı Arapça bitişmesi kırılırdı. */
+  function orasi(metin) {
+    return metin.replace(/\{([^}]*)\}/g, '<b class="th-kunye-vur">$1</b>');
+  }
+  function kunyeAc(n) {
+    var k = KUNYE[n]; if (!k || !window.tcBaloncukAc) return;
+    var govde = '<p>' + k.ozet + '</p><div class="th-kunye">' +
+      k.satir.map(function (r) {
+        return '<div class="th-kunye-s">' +
+               '<span class="th-kunye-o" dir="rtl">' + orasi(r[2]) + '</span>' +
+               '<span class="th-kunye-sol"><span class="th-kunye-a">' + r[0] + '</span>' +
+               '<span class="th-kunye-h">' + r[1] + '</span></span></div>';
+      }).join('') + '</div>' +
+      (k.dip ? '<p class="th-kunye-dip">' + k.dip + '</p>' : '');
+    window.tcBaloncukAc(KAT[n].renk,
+      '<span class="th-kunye-no" style="background:' + KAT[n].renk + '">' + n + '</span> ' +
+      KAT[n].kisa, govde, 'th-balon');
+  }
+
+  /* k: kategori · h: hâl · n: hâl açılınca yazılan not · 0 = sorulmaz */
+  var CUMLE = [
+    /* tr: [metin, hangi Arapça kelimeye ait] — null ise bağlantısız.
+       Türkçedeki hâl eki, karşılığı olan cer harfinin rengini alsın diye
+       kelimeden ayrı parça: “okul” + “a”. */
+    { ar:'ذَهَبَ الْمُعَلِّمُ إِلَى الْمَدْرَسَةِ',
+      tr:[['Öğretmen',1],[' ',null],['okul',3],['a',2],[' ',null],['gitti',0],['.',null]],
+      not:{},
+      kelime:[
+        { ar:'ذَهَبَ',       tr:'gitti',    k:1, h:'fiil',   n:'Mâzi fiil. Mebnîdir — merfu/mansub/mecrur olmaz.' },
+        { ar:'الْمُعَلِّمُ', tr:'öğretmen', k:5, h:'merfu',  n:'Fâil (özne) daima merfu; alâmeti ötre.' },
+        { ar:'إِلَى',        tr:'-a, -e',   k:8, h:'harf',   n:'Cer harfi. Kendi mebnîdir ama arkasındakini mecrur yapar.' },
+        { ar:'الْمَدْرَسَةِ', tr:'okul',    k:2, h:'mecrur', n:'Mekân bildiriyor <b>ama</b> cer harfi aldı: mansub değil, <b>mecrur</b>.' }
+      ] },
+
+    { ar:'رَأَيْتُ الْمُعَلِّمَ صَبَاحًا',
+      tr:[['Sabah',2],[' ',null],['öğretmeni',1],[' ',null],['gördüm',0],['.',null]],
+      /* d: listede ne yazacağı · a: yanına düşülen not. Not liste ögesinin
+         ALTINDA duruyor — soru akışının arasına sıkıştırılsaydı, sırası
+         gelmeyen kategorinin notu hiç görünmezdi. */
+      not:{ 5:{ d:'gizli', a:'Özne ayrı bir kelime değil: <span dir="rtl" class="tc-ic">رَأَيْتُ</span> içindeki <b>تُ</b> zamiri — mebnî olduğu için <b>mahallen merfu</b>.' } },
+      kelime:[
+        { ar:'رَأَيْتُ',      tr:'gördüm',   k:1, h:'fiil',   n:'Mâzi fiil + fâil zamiri. Fiil mebnî, zamir mahallen merfu.' },
+        { ar:'الْمُعَلِّمَ', tr:'öğretmeni',k:4, h:'mansub', n:'Mef\'ûl (nesne) daima mansub; alâmeti üstün.' },
+        { ar:'صَبَاحًا',      tr:'sabah',    k:3, h:'mansub', n:'Zaman zarfı, cer harfi almadı — <b>mansub</b>. Tenvinli olduğu için sonunda elif var.' }
+      ] },
+
+    { ar:'كَتَبَ عَلِيٌّ الدَّرْسَ مَسَاءً',
+      tr:[['Ali',1],[' ',null],['akşam',3],[' ',null],['dersi',2],[' ',null],['yazdı',0],['.',null]],
+      not:{},
+      kelime:[
+        { ar:'كَتَبَ',    tr:'yazdı', k:1, h:'fiil',   n:'Mâzi fiil, mebnî.' },
+        { ar:'عَلِيٌّ',   tr:'Ali',   k:5, h:'merfu',  n:'Fâil: merfu. Marifesiz olduğu için ötre değil <b>iki ötre</b>.' },
+        { ar:'الدَّرْسَ', tr:'ders',  k:4, h:'mansub', n:'Mef\'ûl: mansub.' },
+        { ar:'مَسَاءً',   tr:'akşam', k:3, h:'mansub', n:'Zaman zarfı: mansub, iki üstünle.' }
+      ] },
+
+    { ar:'جَاءَ مُدِيرُ الْمَدْرَسَةِ مَسْرُورًا',
+      tr:[['Okul',2],[' ',null],['müdürü',1],[' ',null],['sevinçli',3],[' ',null],['geldi',0],['.',null]],
+      not:{},
+      kelime:[
+        { ar:'جَاءَ',        tr:'geldi',    k:1, h:'fiil',   n:'Mâzi fiil, mebnî.' },
+        { ar:'مُدِيرُ',      tr:'müdür',    k:5, h:'merfu',  n:'Fâil: merfu. Aynı zamanda <b>muzâf</b> — o yüzden ne <span dir="rtl" class="tc-ic">ال</span> aldı ne tenvin.' },
+        { ar:'الْمَدْرَسَةِ', tr:'okul',    k:7, h:'mecrur', n:'Muzâfun ileyh: <b>cer harfi olmadan</b> mecrur. Mecrurun ikinci yolu budur.' },
+        { ar:'مَسْرُورًا',   tr:'sevinçli', k:6, h:'mansub', n:'Hâl (durum): mansub.' }
+      ] },
+
+    { ar:'أَكَلَ عَلِيٌّ الْعَشَاءَ فِي الْبَيْتِ فِي غُرْفَةِ الْجُلُوسِ فِي السَّاعَةِ التَّاسِعَةِ مَسَاءً',
+      tr:[['Ali',1],[' ',null],['akşam',11],[', ',null],['ev',4],['de',3],[' ',null],
+          ['oturma',7],[' ',null],['oda',6],['sında',5],[' ',null],['saat',9],[' ',null],
+          ['dokuz',10],['da',8],[' ',null],['akşam yemeğini',2],[' ',null],['yedi',0],['.',null]],
+      not:{ 6:{ d:'yok', a:'İşin <b>nasıl</b> yapıldığını söyleyen bir kelime bu cümlede geçmiyor.' } },
+      kelime:[
+        { ar:'أَكَلَ',        tr:'yedi',        k:1, h:'fiil',   n:'Mâzi fiil, mebnî.' },
+        { ar:'عَلِيٌّ',       tr:'Ali',         k:5, h:'merfu',  n:'Fâil: merfu.' },
+        { ar:'الْعَشَاءَ',    tr:'akşam yemeği',k:4, h:'mansub', n:'Mef\'ûl: mansub.' },
+        { ar:'فِي',           tr:'-de, -da',    k:8, h:'harf',   n:'Cer harfi. Cümlede üç kez geçiyor; üçü de arkasındakini mecrur yapıyor.' },
+        { ar:'الْبَيْتِ',     tr:'ev',          k:2, h:'mecrur', n:'Mekân ama cer harfi aldı: <b>mecrur</b>.' },
+        { ar:'فِي',           tr:'-de, -da',    k:8, h:'harf',   n:'Cer harfi.' },
+        { ar:'غُرْفَةِ',      tr:'oda',         k:2, h:'mecrur', n:'Mekân, cer harfi aldı: mecrur. Aynı zamanda muzâf.' },
+        { ar:'الْجُلُوسِ',    tr:'oturma',      k:7, h:'mecrur', n:'Muzâfun ileyh: mecrur.' },
+        { ar:'فِي',           tr:'-de, -da',    k:8, h:'harf',   n:'Cer harfi.' },
+        { ar:'السَّاعَةِ',    tr:'saat',        k:3, h:'mecrur', n:'Zaman <b>ama</b> cer harfi aldı: mansub değil, <b>mecrur</b>.' },
+        { ar:'التَّاسِعَةِ',  tr:'dokuzuncu',   k:0, h:'mecrur', n:'Sıfat: mevsûfuna uyar. <span dir="rtl" class="tc-ic">السَّاعَةِ</span> mecrur olduğu için bu da mecrur.' },
+        { ar:'مَسَاءً',       tr:'akşam',       k:3, h:'mansub', n:'Bu zaman kelimesi cer harfi <b>almadı</b>: mansub. Bir üstteki <span dir="rtl" class="tc-ic">السَّاعَةِ</span> ile karşılaştır.' }
+      ] }
+  ];
+
+  var c = 0, adimlar = [], adim = 0, bitti = false;
+
+  /* Cümle AÇILIR AÇILMAZ renkli geliyor: her Arapça kelime ve Türkçedeki
+     karşılığı aynı rengi taşıyor, böylece hangi kelimenin neye denk
+     düştüğü ilk bakışta okunuyor. Bu ilk hâl SOLUK — soru çözülünce
+     kelime tam rengine, kutusuna ve etiketine kavuşuyor. */
+  function katRenk(w) { return w.k ? KAT[w.k].renk : '#8A94A3'; }
+  function kelimeCiz() {
+    var C = CUMLE[c];
+    elCumle.innerHTML = '';
+    C.kelime.forEach(function (w, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'th-kelime th-on';
+      b.setAttribute('data-i', i);
+      b.style.setProperty('--kat', katRenk(w));
+      b.innerHTML = '<span class="th-ar">' + w.ar + '</span>' +
+                    '<span class="th-etiket"></span>';
+      elCumle.appendChild(b);
+    });
+    /* CÜMLE SONU NOKTASI. Kelimeler ayrı ayrı tuş olduğu için nokta
+       hiçbirinin içinde duramaz (tıklanınca o kelimenin notunu açardı
+       ve boyandığında noktayı da boyardı). Bu yüzden en sona TIKLANMAZ
+       bir işaret olarak konuyor; kap rtl olduğu için soldaki uçta,
+       yani cümlenin gerçek sonunda çıkıyor.
+       DİZİN GÜVENLİ: boya() elCumle.children[i]'yi kelime sırasına göre
+       okuyor; nokta en SONA eklendiği için o sıralamayı bozmuyor. */
+    var nk = document.createElement('span');
+    nk.className = 'th-nokta';
+    nk.setAttribute('aria-hidden', 'true');
+    nk.textContent = '.';
+    elCumle.appendChild(nk);
+  }
+  /* Türkçe satırı parçalardan kurulur; her parça ait olduğu Arapça
+     kelimenin numarasını taşır ki rengi onunla birlikte değişsin. */
+  function trCiz() {
+    var C = CUMLE[c];
+    elTr.innerHTML = '';
+    C.tr.forEach(function (p) {
+      var sp = document.createElement('span');
+      sp.className = 'th-tr-p';
+      if (p[1] !== null && p[1] !== undefined) {
+        sp.setAttribute('data-i', p[1]);
+        sp.classList.add('th-on');
+        sp.style.setProperty('--kat', katRenk(C.kelime[p[1]]));
+      }
+      sp.textContent = p[0];
+      elTr.appendChild(sp);
+    });
+  }
+  /* Bir kelimeyi ve Türkçedeki karşılığını birlikte boya. */
+  function boya(i, renk, etiket) {
+    var d = elCumle.children[i];
+    if (d) {
+      d.classList.add('th-secili');
+      d.style.setProperty('--kat', renk);
+      if (etiket !== null) d.querySelector('.th-etiket').textContent = etiket;
+    }
+    [].forEach.call(elTr.querySelectorAll('.th-tr-p[data-i="' + i + '"]'), function (sp) {
+      sp.classList.add('th-secili');
+      sp.style.setProperty('--kat', renk);
+    });
+  }
+  function listeCiz() {
+    var C = CUMLE[c];
+    elListe.innerHTML = '';
+    SIRA.forEach(function (n) {
+      var li = document.createElement('button');
+      li.type = 'button'; li.setAttribute('role', 'listitem');
+      li.className = 'th-oge'; li.setAttribute('data-n', n);
+      li.title = KAT[n].kisa + ' — hâli ve alâmeti';
+      li.style.setProperty('--kat', KAT[n].renk);
+      var yok = adimlar.indexOf(n) < 0;
+      var nt = C.not && C.not[n];
+      li.innerHTML = '<span class="th-no">' + n + '</span>' +
+                     '<span class="th-govde-ad"><span class="th-ad">' + KAT[n].ad + '</span>' +
+                     (nt ? '<span class="th-aciklama">' + nt.a + '</span>' : '') + '</span>' +
+                     '<span class="th-durum"></span>';
+      if (yok) li.classList.add(nt && nt.d === 'gizli' ? 'gizli' : 'yok');
+      elListe.appendChild(li);
+    });
+  }
+  function listeTazele() {
+    [].forEach.call(elListe.children, function (li) {
+      var n = +li.getAttribute('data-n');
+      var y = adimlar.indexOf(n);
+      li.classList.toggle('simdi', !bitti && y === adim);
+      li.classList.toggle('tamam', y >= 0 && y < adim);
+      var d = li.querySelector('.th-durum');
+      if (li.classList.contains('yok')) d.textContent = 'yok';
+      else if (li.classList.contains('gizli')) d.textContent = 'gizli';
+      else d.textContent = (y < adim) ? '✓' : '';
+    });
+  }
+  function soruYaz() {
+    var C = CUMLE[c];
+    if (adim >= adimlar.length) {
+      elSoru.innerHTML = 'Sekiz soru bitti. Şimdi bu kelimelerin <b>hâllerine</b> bakalım.';
+      elHal.hidden = false;
+      return;
+    }
+    var n = adimlar[adim];
+    elSoru.innerHTML = '<span class="th-soru-no" style="background:' + KAT[n].renk + '">' + n +
+                       '</span> ' + KAT[n].soru + ' <span class="th-ipuc">— cümleden dokun</span>';
+    elHal.hidden = true;
+  }
+  /* HER CÜMLENİN İLERLEMESİ AYRI TUTULUYOR.
+     Sekmeler arasında gidip gelmek (Başlarken → Sonlar → 3. cümle)
+     bulunmuş ögeleri sıfırlıyordu; artık kaldığın yerden devam ediyor.
+     Sıfırlamak isteyen "Baştan" tuşuna basar. */
+  var ilerleme = {};
+  function durumYaz() { ilerleme[c] = { adim:adim, bitti:bitti }; }
+
+  function basla(yeni, surdur) {
+    if (typeof yeni === 'number') c = yeni;
+    var C = CUMLE[c];
+    var eski = (surdur && ilerleme[c]) ? ilerleme[c] : { adim:0, bitti:false };
+    bitti = false; adim = 0;
+    adimlar = SIRA.filter(function (n) {
+      return C.kelime.some(function (w) { return w.k === n; });
+    });
+    elUst.innerHTML = 'Cümle <b>' + (c + 1) + ' / ' + CUMLE.length + '</b>' +
+                      ' <span class="th-sayac">' + adimlar.length + ' soru</span>';
+    /* Uzun cümle sayfayı taşırmasın: punto kelime sayısına göre ölçekleniyor.
+       Beş kelimeye kadar tam boy; sonrası her kelimede %3,5 küçülüyor,
+       %70'in altına inmiyor. */
+    var kutu = elCumle.parentNode;
+    if (kutu) {
+      var kn = C.kelime.length;
+      kutu.style.setProperty('--olcek',
+        (kn <= 5 ? 1 : Math.max(0.7, 1 - (kn - 5) * 0.035)).toFixed(3));
+    }
+    kelimeCiz(); trCiz(); listeCiz();
+    /* Kaldığı yerden devam: bulunmuş kategoriler yeniden boyanır. */
+    adim = Math.max(0, Math.min(eski.adim, adimlar.length));
+    for (var q = 0; q < adim; q++) {
+      (function (n) {
+        C.kelime.forEach(function (x, j) {
+          if (x.k === n) boya(j, KAT[n].renk, KAT[n].kisa);
+        });
+      })(adimlar[q]);
+    }
+    listeTazele(); soruYaz();
+    elSonraki.hidden = true;
+    elBastan.hidden = true;
+    /* Hâlleri açılmış hâlde bırakıldıysa o görünüm de geri gelir. */
+    if (eski.bitti) halGoster();
+    durumYaz();
+    /* Şeridi YALNIZ tahlil ekrandayken tazele: açılıştaki basla(0) çağrısı
+       yoksa şeridin aktif pilini çalıp İsim/Giriş yerine Tahlil'i yakıyor. */
+    var bol = document.querySelector('.tc-bolum[data-bolum="tahlil"]');
+    if (window.tcSeritTazele && bol && !bol.hidden) window.tcSeritTazele('tahlil');
+  }
+  function dokun(b) {
+    if (bitti || adim >= adimlar.length) return;
+    var C = CUMLE[c], i = +b.getAttribute('data-i'), w = C.kelime[i];
+    var n = adimlar[adim];
+    if (w.k !== n) {
+      b.classList.remove('th-yanlis'); void b.offsetWidth; b.classList.add('th-yanlis');
+      elNot.className = 'th-not th-ipucu';
+      elNot.innerHTML = ipucu(n, w);
+      elNot.hidden = false;
+      return;
+    }
+    /* Doğru: bu kategorinin BÜTÜN kelimeleri birden renklenir — üç ayrı
+       "فِي" varken birini bulup ötekileri görmemek olmaz. */
+    C.kelime.forEach(function (x, j) {
+      if (x.k === n) boya(j, KAT[n].renk, KAT[n].kisa);
+    });
+    /* Ayrıca bir "bulunanlar" satırı yazılmıyor: öge adı kelimenin
+       altında zaten duruyor, aynı şeyi ikinci kez listelemek ekranı
+       harcıyordu. */
+    elNot.hidden = true;
+    adim++;
+    durumYaz();
+    listeTazele();
+    if (adim >= adimlar.length) { bitti = false; }
+    setTimeout(soruYaz, 10);
+  }
+  function ipucu(n, w) {
+    var s = { 1:'Olay-eylem <b>fiildir</b>: cümlede iş olarak ne yapılıyorsa o.',
+              2:'Mekân, <b>nerede/nereye</b> sorusunun karşılığıdır.',
+              3:'Zaman, <b>ne zaman</b> sorusunun karşılığıdır.',
+              4:'Nesne, <b>neyi/kimi</b> sorusunun karşılığıdır.',
+              5:'Özne, işi <b>kim yapıyor</b> onu söyler.',
+              6:'Durum, işi <b>nasıl</b> yaptığını söyler.',
+              7:'Aitlik: bir isim başka bir isme ait olunca ikincisi aitlik bildirir — <b>kimin/neyin</b>.',
+              8:'Cer harfi tek başına duran küçük bir <b>harf</b>tir: <span dir="rtl" class="tc-ic">فِي · مِنْ · إِلَى · عَلَى · بِ · لِ</span>' }[n];
+    return s + '<br><span class="th-ek">«' + w.tr + '» aradığın bu değil.</span>';
+  }
+  function halGoster() {
+    var C = CUMLE[c];
+    bitti = true;
+    C.kelime.forEach(function (w, j) {
+      boya(j, w.k ? KAT[w.k].renk : '#8A94A3',
+           w.h === 'fiil' ? 'fiil' : w.h === 'harf' ? 'harf' : w.h);
+    });
+    /* Kural metni ekrana YAZILMIYOR: aşağıdaki numaralara dokununca her
+       ögenin hâl ve alâmet künyesi kendi balonunda açılıyor. Ekran
+       cümlenin kendisine kalsın. */
+    elSoru.innerHTML = 'Hâller açıldı. <b>Aşağıdaki numaralara dokun:</b> ' +
+                       'her ögenin hangi hâli aldığını ve alâmetini gösterir.';
+    elHal.hidden = true;
+    elSonraki.hidden = (CUMLE.length < 2);
+    elBastan.hidden = false;
+    elNot.hidden = true;
+    listeTazele();
+    durumYaz();
+  }
+  elCumle.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.th-kelime') : null;
+    if (!b) return;
+    if (bitti) {
+      var w = CUMLE[c].kelime[+b.getAttribute('data-i')];
+      elNot.className = 'th-not th-dogru';
+      elNot.innerHTML = '<span dir="rtl" class="tc-ic">' + w.ar + '</span> — <b>' + w.h + '</b><br>' + w.n;
+      elNot.hidden = false;
+      return;
+    }
+    dokun(b);
+  });
+  elListe.addEventListener('click', function (ev) {
+    var b = ev.target.closest ? ev.target.closest('.th-oge') : null;
+    if (b) kunyeAc(+b.getAttribute('data-n'));
+  });
+  elHal.addEventListener('click', halGoster);
+  /* "Baştan" TEK sıfırlama yolu; "Sıradaki" o cümlede kalınan yeri açar. */
+  elBastan.addEventListener('click', function () { delete ilerleme[c]; basla(c); });
+  elSonraki.addEventListener('click', function () { basla((c + 1) % CUMLE.length, true); });
+
+  window.tcTahlil = { basla: basla, sayi: CUMLE.length, hangi: function () { return c; } };
+  basla(0);
+})();
+
+/* ==================== 6) ESMÂ-İ HAMSE ==================== */
+/* ============================================================
+   Efâl-i hamsenin isimdeki karşılığı. Tablo elle yazılmadı, çünkü
+   kuralın kendisi tek satır: aynı kök üç hâlde üç ayrı HARF alır.
+       merfu = kök + ُو   ·   mansub = kök + َا   ·   mecrur = kök + ِي
+   Beşinde de birebir işliyor; tabloyu elle dizmek bu düzenliliği
+   gizlerdi. Kutuya dokununca o biçimin künyesi açılıyor.
+   ============================================================ */
+(function () {
+  var govde = document.getElementById('esmGovde');
+  if (!govde) return;
+  var ik = document.getElementById('esmIk');
+
+  var SON = { merfu:'ُو', mansub:'َا', mecrur:'ِي' };
+  var HARF = { merfu:'vâv', mansub:'elif', mecrur:'yâ' };
+  var GOREV = {
+    merfu:'fâil / mübteda gibi merfu bir görevde',
+    mansub:'mef\'ûl gibi mansub bir görevde',
+    mecrur:'harf-i cerden sonra ya da tamlayan olarak'
+  };
+  /* Türkçe karşılıklar üç hâl için AYRI yazılı: ek türetmeye kalkınca
+     ünlü uyumu tutmuyordu ("sahibinı" gibi). On beş kısa metin, sıfır kurnazlık. */
+  var ESMA = [
+    { kok:'أَب', ad:'أَبٌ', tr:'baba',       muzaf:'عَلِيٍّ',   trH:['Ali’nin babası','Ali’nin babasını','Ali’nin babasına'] },
+    { kok:'أَخ', ad:'أَخٌ', tr:'kardeş',     muzaf:'عَلِيٍّ',   trH:['Ali’nin kardeşi','Ali’nin kardeşini','Ali’nin kardeşine'] },
+    { kok:'حَم', ad:'حَمٌ', tr:'kayınpeder', muzaf:'فَاطِمَةَ', trH:['Fâtıma’nın kayınpederi','Fâtıma’nın kayınpederini','Fâtıma’nın kayınpederine'] },
+    { kok:'ف',   ad:'فَمٌ', tr:'ağız',       muzaf:'الطِّفْلِ', trH:['çocuğun ağzı','çocuğun ağzını','çocuğun ağzına'],
+      not:'Bu gruba <b>mîm düşerse</b> girer: <span dir="rtl" class="tc-ic">فَمٌ</span> değil ' +
+          '<span dir="rtl" class="tc-ic">فُو</span>. Mecrur hâli <span dir="rtl" class="tc-ic">فِي</span>, ' +
+          'harf-i cer <span dir="rtl" class="tc-ic">فِي</span> ile aynı yazılır — ayıran şey <b>muzâf olmasıdır</b>.' },
+    { kok:'ذ',   ad:'ذُو', tr:'sahip',       muzaf:'مَالٍ',     trH:['mal sahibi','mal sahibini','mal sahibine'],
+      not:'Yalnız <b>açık isme</b> muzâf olur, zamire eklenmez. Anlamı “sahip”tir.' }
+  ];
+  var HAL = ['merfu', 'mansub', 'mecrur'];
+
+  function bicim(e, h) { return e.kok + SON[h]; }
+
+  ESMA.forEach(function (e, si) {
+    var tr = document.createElement('tr');
+    var th = document.createElement('th');
+    th.setAttribute('scope', 'row');
+    th.className = 'esm-satirbas';
+    th.innerHTML = '<span class="esm-kok" dir="rtl">' + e.ad + '</span>' +
+                   '<span class="esm-kok-tr">' + e.tr + '</span>';
+    tr.appendChild(th);
+    HAL.forEach(function (h, hi) {
+      var td = document.createElement('td');
+      td.className = 'esm-hucre esm-s-' + h;
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'esm-b';
+      b.setAttribute('data-si', si); b.setAttribute('data-hal', h);
+      b.innerHTML = '<span class="esm-ar" dir="rtl">' +
+                    bicim(e, h) + ' ' + e.muzaf + '</span>' +
+                    '<span class="esm-tr">' + e.trH[hi] + '</span>';
+      td.appendChild(b);
+      tr.appendChild(td);
+    });
+    govde.appendChild(tr);
+  });
+
+  govde.addEventListener('click', function (ev) {
+    var b = ev.target.closest ? ev.target.closest('.esm-b') : null;
+    if (!b) return;
+    var e = ESMA[+b.getAttribute('data-si')], h = b.getAttribute('data-hal');
+    [].forEach.call(govde.querySelectorAll('.esm-b'), function (x) {
+      x.classList.toggle('secili', x === b);
+    });
+    ik.className = 'esm-ik esm-s-' + h;
+    ik.innerHTML =
+      '<div class="esm-ik-bas"><span dir="rtl" class="esm-ik-ar">' +
+        bicim(e, h) + ' ' + e.muzaf + '</span>' +
+        '<span class="esm-ik-hal">' + h + '</span></div>' +
+      /* Arapça kelime yalıtılmış bir koşu olarak veriliyor: Türkçe cümlenin
+         başında çıplak bırakılırsa iki yönlü metin kuralları onu satırın
+         öbür ucuna atıyor. */
+      '<p><b dir="rtl" class="tc-ic">' + e.ad + '</b> (' + e.tr + ') burada <b>muzâf</b>tır ve ' + GOREV[h] + ' bulunuyor. ' +
+        'Bu yüzden <b>' + h + '</b>; alâmeti hareke değil <b>' + HARF[h] + '</b> harfidir: ' +
+        '<span dir="rtl" class="tc-ic">' + bicim(e, h) + '</span>.</p>' +
+      '<p class="esm-ik-alt">Muzâfun ileyh <span dir="rtl" class="tc-ic">' + e.muzaf +
+        '</span> ise her hâlde <b>mecrur</b> kalır — değişen yalnız birinci kelimedir.' +
+        (e.not ? '<br>' + e.not : '') + '</p>';
+    ik.hidden = false;
+  });
+
+  window.tcEsma = { sayi: ESMA.length };
+})();
+
+/* ==================== 7) TEST PENCERESİ — İKİ KİP ==================== */
+/* ============================================================
+   Tamlama/cümle testi ile i'rab testi artık aynı pencerede.
+   Her ikisi de kendi motoruyla çalışıyor; burada yalnız hangi
+   ekranın görüneceği seçiliyor.
+   ============================================================ */
+(function () {
+  var kip = document.getElementById('svKip');
+  if (!kip) return;
+  var ekran = { tamlama: document.getElementById('svKipTamlama'),
+                irab:    document.getElementById('svKipIrab') };
+  var simdiki = 'tamlama';
+  function kipSec(ad) {
+    if (!ekran[ad]) return;
+    simdiki = ad;
+    Object.keys(ekran).forEach(function (k) { ekran[k].hidden = (k !== ad); });
+    [].forEach.call(kip.children, function (b) {
+      var s = b.getAttribute('data-kip') === ad;
+      b.classList.toggle('aktif', s);
+      b.setAttribute('aria-selected', s ? 'true' : 'false');
+    });
+    var g = document.querySelector('#tcSinavPerde .tc-pop-govde');
+    if (g) g.scrollTop = 0;
+  }
+  kip.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.sv-k') : null;
+    if (b) kipSec(b.getAttribute('data-kip'));
+  });
+  window.tcTestKip = kipSec;
+  window.tcTestHangiKip = function () { return simdiki; };
+})();
+
+/* ==================== 8) OYUN ÇEKMECESİ ==================== */
+/* ============================================================
+   Sayfanın oyun rafı: çekmece sağdan kayar, içinde oyun KARTI
+   durur. Karta tıklamak İsim x 4'ü YENİ SEKMEDE açar — ders
+   sayfası olduğu gibi kalır. Escape önce çekmeceyi kapatır.
+   ============================================================ */
+(function () {
+  var ac      = document.getElementById('tcOyunAc');
+  var ort     = document.getElementById('tcOyunOrt');
+  var cekmece = document.getElementById('tcOyunCek');
+  var kapat   = document.getElementById('tcOyunKapat');
+  var kart    = document.getElementById('tcOyunKart');
+  if (!ac || !cekmece) return;
+
+  function goster(a) {
+    if (a) ort.hidden = false;
+    /* Örtünün geçişi hidden kalkmadan başlarsa görünmez; bir kare bekle. */
+    requestAnimationFrame(function () {
+      ort.classList.toggle('acik', a);
+      cekmece.classList.toggle('acik', a);
+    });
+    cekmece.setAttribute('aria-hidden', a ? 'false' : 'true');
+    ac.setAttribute('aria-expanded', a ? 'true' : 'false');
+    if (!a) setTimeout(function () { ort.hidden = true; }, 260);
+  }
+
+  ac.addEventListener('click', function () { goster(true); });
+  kapat.addEventListener('click', function () { goster(false); });
+  ort.addEventListener('click', function () { goster(false); });
+  /* Kart yeni sekmeye gider; çekmece arkada açık beklemesin. */
+  if (kart) kart.addEventListener('click', function () { goster(false); });
+  /* Escape önce çekmeceyi kapatır; sayfanın kendi Escape'i (tabloya
+     dönüş) çekmece açıkken devreye girmesin diye yakalama evresinde
+     dinlenir ve olay orada durdurulur. */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || !cekmece.classList.contains('acik')) return;
+    e.stopPropagation();
+    goster(false);
+  }, true);
+  window.tcOyun = { ac: function () { goster(true); }, kapat: function () { goster(false); } };
+})();
+
+/* ==================== اَلْ ANAHTARI ====================
+   İsim sonları tablosunda "tenvin mi, tek hareke mi?" sorusunun cevabı
+   anlatılarak değil ÇEVRİLEREK veriliyor: düğmeye basınca dokuz hücrede
+   birden tenvin düşer, tek hareke kalır ve başa اَلْ oturur. Yalnız sonu
+   hareke ile değişen sütunlar etkilenir — ikil ve vavlı çoğul tenvin
+   almadığı için yerinde durur, fark böylece kendiliğinden görünür. */
+(function () {
+  'use strict';
+  var tus  = document.getElementById('tcAlTus');
+  var blok = document.getElementById('tcIrabIsim');
+  if (!tus || !blok) return;
+  var not = document.getElementById('tcAlNot');
+  var METIN = {
+    kapali: { tus:'takısını ekle',
+              not:'Şu an <b>nekra</b>: son <b>tenvinli</b>. <span dir="rtl" class="tc-ar-ic">اَلْ</span> gelince tenvin düşer.' },
+    acik:   { tus:'takısını kaldır',
+              not:'Şu an <b>marife</b>: <span dir="rtl" class="tc-ar-ic">اَلْ</span> geldi, tenvin düştü, <b>tek hareke</b> kaldı. '
+                + 'İkil ve vavlı çoğul zaten tenvin almaz — onların sonu değişmedi.' }
+  };
+  function ciz(acik) {
+    blok.classList.toggle('al-acik', acik);
+    tus.setAttribute('aria-pressed', acik ? 'true' : 'false');
+    var m = acik ? METIN.acik : METIN.kapali;
+    var y = tus.querySelector('.tc-al-durum');
+    if (y) y.textContent = m.tus;
+    if (not) not.innerHTML = m.not;
+  }
+  tus.addEventListener('click', function () {
+    ciz(!blok.classList.contains('al-acik'));
+  });
+  ciz(false);
+})();
+
+/* ==================== İSİM / FİİL RAYI ====================
+   İki tablo yan yana duruyor; ray bir tam genişlik kaydırılarak öbürüne
+   geçiliyor. Üç yol da aynı kapıya çıkar: karta basmak, ok tuşları,
+   dokunmatikte yana kaydırmak. Rayın yüksekliği açık tablonunkine
+   eşitlenir — yoksa kısa tablo, uzun olanın boşluğunu taşırdı. */
+(function () {
+  'use strict';
+  var sec  = document.getElementById('tcIrabSec');
+  var ray  = document.getElementById('tcIrabRay');
+  if (!sec || !ray) return;
+  /* Görsel sıra soldan sağa: harf · isim · fiil. Ok tuşu ve kaydırma
+     bu sırayı izler ki hareket yönüyle ekrandaki yön aynı olsun. */
+  var SIRA = ['harf', 'isim', 'fiil'];
+  var blok = { isim:document.getElementById('tcIrabIsim'),
+               fiil:document.getElementById('tcIrabFiil'),
+               harf:document.getElementById('tcIrabHarf') };
+  var acik = 'isim';
+
+  function boyAyarla() {
+    var b = blok[acik];
+    if (b) ray.style.height = b.offsetHeight + 'px';
+  }
+  function ac(ad, odak) {
+    if (SIRA.indexOf(ad) < 0) return;
+    /* Pano değişirken kamera bırakılır: yakınlaşmış bir tablo rayla
+       birlikte yana kaydırılırsa ekran dışına savruluyor. */
+    if (window.tcIrabKapat) window.tcIrabKapat();
+    acik = ad;
+    ray.classList.toggle('fiilde', ad === 'fiil');
+    ray.classList.toggle('harfte', ad === 'harf');
+    [].forEach.call(sec.querySelectorAll('.tc-irab-kart'), function (k) {
+      var s = k.getAttribute('data-tablo') === ad;
+      k.classList.toggle('aktif', s);
+      k.setAttribute('aria-selected', s ? 'true' : 'false');
+      if (s && odak) k.focus();
+    });
+    boyAyarla();
+  }
+  window.tcIrabTablo = ac;
+  window.tcIrabBoy = boyAyarla;   /* örnek modu tabloyu büyütünce ray da uzasın */
+
+  sec.addEventListener('click', function (e) {
+    var k = e.target.closest ? e.target.closest('.tc-irab-kart') : null;
+    if (k) ac(k.getAttribute('data-tablo'));
+  });
+  /* Ok tuşları üç pano arasında sırayla gezer; uçlarda döner. */
+  function kaydir(yon, odak) {
+    var i = (SIRA.indexOf(acik) + yon + SIRA.length) % SIRA.length;
+    ac(SIRA[i], odak);
+  }
+  sec.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); kaydir(1, true); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); kaydir(-1, true); }
+  });
+
+  /* Dokunmatik: yana kaydırma. Dikey kaydırmayı engellememek için
+     yatay hareket dikeyden belirgin biçimde büyük olmalı. */
+  var bx = 0, by = 0;
+  ray.addEventListener('touchstart', function (e) {
+    bx = e.changedTouches[0].clientX; by = e.changedTouches[0].clientY;
+  }, { passive:true });
+  ray.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - bx, dy = e.changedTouches[0].clientY - by;
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+      var i = SIRA.indexOf(acik) + (dx < 0 ? 1 : -1);
+      if (i >= 0 && i < SIRA.length) ac(SIRA[i]);   /* uçlarda dönmez: kaydırma yönü belli olsun */
+    }
+  }, { passive:true });
+
+  /* Yükseklik: açılışta, pencere değişince ve اَلْ anahtarı tabloyu
+     büyütüp küçülttüğünde yeniden ölçülür. */
+  window.addEventListener('resize', boyAyarla);
+  var alTus = document.getElementById('tcAlTus');
+  if (alTus) alTus.addEventListener('click', function () { setTimeout(boyAyarla, 40); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(boyAyarla);
+  /* Panel GİZLİYKEN ölçü sıfır çıkar; ray da sıfır kalırdı. Gözlemci,
+     blok gerçek boyuna kavuştuğu anda (panel açılınca, yazı tipi
+     yüklenince, اَلْ anahtarı çevrilince) yüksekliği tazeler. */
+  if (window.ResizeObserver) {
+    var goz = new ResizeObserver(function () { boyAyarla(); });
+    SIRA.forEach(function (k) { if (blok[k]) goz.observe(blok[k]); });
+  } else {
+    setInterval(function () {
+      var b = blok[acik]; if (!b) return;
+      var h = b.offsetHeight;
+      if (h && Math.abs(h - parseFloat(ray.style.height || 0)) > 1) boyAyarla();
+    }, 500);
+  }
+  setTimeout(boyAyarla, 60);
+  setTimeout(boyAyarla, 400);
+
+  /* --- ÜST ŞERİDİN YÜKSEKLİĞİ ---
+     Dar ekranda sayfanın kendisi kayar ve .tc-ust en üste yapışır.
+     İsim/fiil/harf kartları da yapışkan olduğu için onun ALTINA
+     oturmalı, yoksa şeridin arkasında kalıyor. Ölçü koda gömülemez
+     (yazı tipi, satır sarması ve tarayıcı çubuğu değiştiriyor), o
+     yüzden gerçek yükseklik bir CSS değişkenine yazılıyor. */
+  (function () {
+    var ust = document.querySelector('.tc-ust');
+    if (!ust) return;
+    function yaz() {
+      var h = ust.offsetParent === null ? 0 : Math.round(ust.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--tc-ust-h', h + 'px');
+    }
+    yaz();
+    window.addEventListener('resize', yaz);
+    if (window.ResizeObserver) new ResizeObserver(yaz).observe(ust);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(yaz);
+    setTimeout(yaz, 400);
+  })();
+
+  ac('isim');
+})();
+
+/* ==================== ÖRNEK CÜMLE AÇMA ====================
+   Soyut ek ile gerçek cümle arasındaki bağ, anlatarak değil AÇARAK
+   kuruluyor: bir hücreye dokununca YALNIZ o hücrenin örnek cümlesi
+   belirir, ek küçülüp üste çekilir. Aynı anda tek hücre açık kalır —
+   göz nereye bakacağını şaşırmasın. Açık hücrenin içinde beliren
+   oklarla o kelimenin başka bir örneğine geçilir.
+   İsim ve Fiil tabloları birbirinden bağımsız çalışır. */
+(function () {
+  'use strict';
+
+  /* ==================== İ'RAB KAMERASI ====================
+     Tamlama tablosundaki büyütmenin aynısı. Eskiden açılan sütun
+     genişliyor, öbür eklerin puntosu kısılıyordu: tablo her dokunuşta
+     yeniden diziliyordu. Artık hücrelerin ölçüsü HİÇ değişmiyor —
+     tablo bütün olarak ölçeklenip dokunulan hücreyi ekranın ortasına
+     getiriyor. Ölçü alırken transform kaldırılır, yoksa ikinci
+     yakınlaşma birincinin üstüne biner ve ölçek katlanır.
+
+     Örnek kartı hücreye MUTLAK konumlu oturduğu için ölçüsü akışa
+     girmiyor; çerçeveye katılması gerektiğinden offsetWidth/Height ile
+     (transform'suz layout ölçüsü) ayrıca hesaba alınıyor. */
+  var kumEl  = document.getElementById('tcIrabKum');
+  var uzakEl = document.getElementById('tcIrabUzak');
+  var kumAd  = document.getElementById('tcIrabKumAd');
+  var basUst = document.getElementById('tcBasUst');
+  var basSol = document.getElementById('tcBasSol');
+  var basSolYazi = document.getElementById('tcBasSolYazi');
+  var BOSLUK = 24, ALT = 84, ARA = 16;
+  var EN_COK = 4.2;
+  var yakinTablo = null;   /* şu an yakınlaşılan tablo (tek olabilir) */
+  var katmanZaman = 0;
+
+  function sure() {
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--tc-sure').trim();
+    var n = parseFloat(v) || .75;
+    return /ms$/.test(v) ? n : n * 1000;
+  }
+  function darMi() { return window.innerWidth <= 900; }
+  function azaltMi() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  /* Sahne = panelin görünen kutusunun EKRANLA KESİŞİMİ. Dar ekranda
+     gövde kaymıyor, sayfanın kendisi kayıyor; orada gövde ekrandan
+     kat kat uzun oluyor ve kesişim alınmazsa kamera görünmeyen bir
+     yere odaklıyor. Üstten yapışkan kartlar da düşülür: rozet onların
+     altına oturmalı, yoksa "İkil" yazısı İSİM kartının üstüne biniyor. */
+  function sahneKutu() {
+    var g = document.querySelector('#tcPerde .tc-pop-govde');
+    var r = g ? g.getBoundingClientRect()
+              : { left:0, top:0, width:innerWidth, height:innerHeight };
+    var sol = Math.max(0, r.left), sag = Math.min(innerWidth, r.left + r.width);
+    var ust = Math.max(0, r.top),  alt = Math.min(innerHeight, r.top + r.height);
+    /* Yapışkan kap (basamak şeridi + kartlar) — kamera onun altına
+       odaklanmalı, yoksa rozet ve hücre şeridin arkasında kalıyor. */
+    var sec = document.querySelector('.tc-irab-ust') ||
+              document.querySelector('.tc-irab-sec');
+    if (sec) {
+      var s = sec.getBoundingClientRect();
+      if (s.height && s.bottom > ust && s.top < alt) ust = s.bottom + 6;
+    }
+    return { left:sol, top:ust,
+             width:Math.max(160, sag - sol), height:Math.max(120, alt - ust) };
+  }
+  /* Hareket boyunca GPU katmanı; bitince bırakılır ki tarayıcı son
+     ölçekte yeniden tarasın — yakınken yazı o zaman netleşiyor. */
+  function katmanAc(tablo) {
+    tablo.classList.add('tc-hareket');
+    if (katmanZaman) clearTimeout(katmanZaman);
+    katmanZaman = setTimeout(function () {
+      katmanZaman = 0;
+      tablo.classList.remove('tc-hareket');
+    }, sure() + 90);
+  }
+  function rozetKoy(el, x, y, anisiz) {
+    if (!el) return;
+    el.classList.toggle('tc-anisiz', !!anisiz);
+    el.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
+  }
+  function kameraGeri() {
+    var t = yakinTablo; yakinTablo = null;
+    document.body.classList.remove('tc-yakin');
+    document.body.classList.remove('tc-irab-yakin');
+    if (kumEl) { kumEl.classList.remove('gor'); kumEl.setAttribute('aria-hidden', 'true'); }
+    if (!t) return;
+    katmanAc(t);
+    t.style.transform = '';
+    t.style.removeProperty('--z');
+    var blok = t.closest('.tc-irab-blok'); if (blok) blok.classList.remove('tc-yakin');
+    var ray = t.closest('.tc-irab-ray');  if (ray)  ray.classList.remove('tc-yakin');
+  }
+
+  function kamera(tablo, td) {
+    if (!td) { kameraGeri(); return; }
+    var blok = tablo.closest('.tc-irab-blok');
+    var ray  = tablo.closest('.tc-irab-ray');
+    yakinTablo = tablo;
+    if (blok) blok.classList.add('tc-yakin');
+    if (ray)  ray.classList.add('tc-yakin');
+    if (kumEl) { kumEl.classList.add('gor'); kumEl.setAttribute('aria-hidden', 'false'); }
+
+    /* Rozet yazıları: üstte sütun adı, solda hâl adı (satırın rengiyle). */
+    var basHucre = tablo.querySelectorAll('thead th')[td.cellIndex];
+    var halHucre = td.parentNode.querySelector('.tc-hal');
+    if (basUst && basHucre) {
+      var ad = basHucre.querySelector('.tc-ib-ad');
+      basUst.textContent = ad ? ad.textContent.trim() : '';
+    }
+    if (basSolYazi && halHucre) basSolYazi.textContent = halHucre.textContent.trim();
+    if (basSol && halHucre) {
+      basSol.style.setProperty('--odak-renk',
+        getComputedStyle(halHucre).backgroundColor);
+    }
+    if (kumAd) {
+      kumAd.textContent = ((halHucre ? halHucre.textContent.trim() : '') + ' · ' +
+                           (basUst ? basUst.textContent : '')).trim();
+    }
+    alTazele(tablo);
+
+    /* --- ölçüler: transform KALDIRILARAK --- */
+    var onceki = tablo.style.transform;
+    tablo.classList.add('tc-anisiz');
+    tablo.style.transform = 'none';
+    var t = tablo.getBoundingClientRect();
+    var r = td.getBoundingClientRect();
+    var kart = td.querySelector('.orn.gor');
+    var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    var sh = sahneKutu();
+    /* Dar ekranda rozetlere yer yok: satır/sütun başlığı zaten ekranda
+       kalıyor (ölçek küçük). Paylar da kısılır, yoksa 354px'lik sahnede
+       büyütmeye hiç yer kalmıyor. */
+    var dar = darMi();
+    var UST_PAY = (!dar && basUst) ? basUst.offsetHeight + ARA : 0;
+    var SOL_PAY = (!dar && basSol) ? basSol.offsetWidth + ARA : 0;
+    var bos = dar ? 8 : BOSLUK, altPay = dar ? 74 : ALT;
+    var enG = sh.width  - 2 * bos - SOL_PAY;
+    var enY = sh.height - bos - altPay - UST_PAY;
+
+    /* YİNELEMELİ ÖLÇÜ. Karttaki oklar --z ile ters ölçekleniyor, yani
+       kartın boyu ölçeğe BAĞLI; ölçek de kartın boyuna. Döngü birkaç
+       turda oturuyor (cümle genişliği baskın olur olmaz sabitleniyor).
+       Son tur ayrıca GÜVENLİK turudur: yalnız küçültebilir, çünkü
+       büyütmek kartı sahnenin dışına taşırabilir. */
+    var o = parseFloat(tablo.style.getPropertyValue('--z')) || 1;
+    var kw = r.width, kh = r.height, tur, oy;
+    function olc() {
+      tablo.style.setProperty('--z', o);
+      void tablo.offsetWidth;
+      kw = r.width; kh = r.height;
+      if (kart) {                     /* kart hücrenin ortasına çakılı */
+        kw = Math.max(kw, kart.offsetWidth);
+        kh = Math.max(kh, kart.offsetHeight);
+      }
+      return kw && kh
+        ? Math.max(1, Math.min(EN_COK, Math.min(enG / kw, enY / kh)))
+        : 0;
+    }
+    for (tur = 0; tur < 4; tur++) {
+      oy = olc();
+      if (!oy) break;
+      if (Math.abs(oy - o) < .01) { o = oy; break; }
+      o = oy;
+    }
+    oy = olc();                        /* güvenlik: yalnız küçült */
+    if (oy && oy < o) { o = oy; olc(); }
+    var x1 = cx - kw / 2, y1 = cy - kh / 2;
+    tablo.style.transform = onceki;
+    void tablo.offsetWidth;
+    if (!azaltMi()) tablo.classList.remove('tc-anisiz');
+
+    /* Panel gizliyken ölçü sıfır çıkar (ör. sekme değişimi sırasında);
+       yarım bir "yakın" durumda kalmayalım — tamamen bırakılır. */
+    if (!kw || !kh) {
+      tablo.classList.remove('tc-anisiz');
+      yakinTablo = tablo;
+      kameraGeri();
+      return;
+    }
+
+    var mx = sh.left + sh.width / 2 + SOL_PAY / 2;
+    var my = sh.top + bos + UST_PAY + enY / 2;
+    var dx = mx - t.left - o * (cx - t.left);
+    var dy = my - t.top  - o * (cy - t.top);
+
+    tablo.style.setProperty('--z', o);
+    katmanAc(tablo);
+    tablo.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + o + ')';
+    /* Dar ekranda gövde değil SAYFA kayıyor: ötelenen tablo belgeyi
+       yatayda genişletip sayfaya kaydırma çubuğu ekliyor. */
+    document.body.classList.add('tc-irab-yakin');
+    document.body.classList.toggle('tc-yakin', !dar);   /* rozetler yalnız geniş ekranda */
+    if (azaltMi()) { void tablo.offsetWidth; tablo.classList.remove('tc-anisiz'); }
+
+    /* Rozetler kutunun VARACAĞI yere şimdiden konur: transform-origin
+       0 0 olduğu için son köşeler doğrudan hesaplanabiliyor, böylece
+       rozetler tabloyla aynı geçişte kayıyor. */
+    var sx1 = t.left + dx + o * (x1 - t.left), sx2 = sx1 + o * kw;
+    var sy1 = t.top  + dy + o * (y1 - t.top),  sy2 = sy1 + o * kh;
+    if (basUst) rozetKoy(basUst, (sx1 + sx2) / 2 - basUst.offsetWidth / 2,
+                                 sy1 - ARA - basUst.offsetHeight, azaltMi());
+    if (basSol) {
+      basSol.style.height = Math.round(Math.min(sy2 - sy1, sh.height - 2 * BOSLUK)) + 'px';
+      rozetKoy(basSol, sx1 - ARA - basSol.offsetWidth,
+                       (sy1 + sy2) / 2 - basSol.offsetHeight / 2, azaltMi());
+    }
+  }
+
+  /* اَلْ düğmesi yalnız İSİM tablosunda anlamlı: fiilde takı yok. */
+  var kumAl   = document.getElementById('tcIrabKumAl');
+  var kumAlAd = document.getElementById('tcIrabKumAlAd');
+  function alTazele(tablo) {
+    if (!kumAl) return;
+    var isimMi = tablo && tablo.classList.contains('tc-irab-isim');
+    kumAl.hidden = !isimMi;
+    if (!isimMi) return;
+    var pano = document.getElementById('tcIrabIsim');
+    var acikMi = pano && pano.classList.contains('al-acik');
+    kumAl.classList.toggle('acik', !!acikMi);
+    if (kumAlAd) kumAlAd.textContent = acikMi ? 'takısını kaldır' : 'takısını ekle';
+  }
+  if (kumAl) kumAl.addEventListener('click', function () {
+    var t = document.getElementById('tcAlTus');
+    if (t) t.click();
+    if (yakinTablo) { alTazele(yakinTablo); if (window.tcIrabTazele) window.tcIrabTazele(); }
+  });
+
+  if (uzakEl) uzakEl.addEventListener('click', function () {
+    if (window.tcIrabKapat) window.tcIrabKapat();
+  });
+  /* Escape ÖNCE yakınlığı bırakır, panel açık kalır. Yakalama
+     evresinde dinleniyor: sayfanın kendi Escape'i (bkz. dosya başı —
+     i'rab panelini kapatan kural) bizden önce kayıtlı olduğu için
+     kabarma evresinde dinleseydik panel tek dokunuşta kapanıyor,
+     büyütme hiç bırakılmıyordu. İkinci Escape paneli kapatır. */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || !yakinTablo) return;
+    if (window.tcIrabKapat) window.tcIrabKapat();
+    e.stopPropagation();
+    e.preventDefault();
+  }, true);
+  window.addEventListener('resize', function () {
+    if (yakinTablo && window.tcIrabTazele) window.tcIrabTazele();
+  });
+
+  /* Kapatma/tazeleme her tablo için ayrı kaydediliyor; kumandadaki tek
+     düğme hangisi açıksa onu kapatsın diye. */
+  var kapatanlar = [], tazeleyenler = [];
+  window.tcIrabKapat  = function () { kapatanlar.forEach(function (f) { f(); }); };
+  window.tcIrabTazele = function () { tazeleyenler.forEach(function (f) { f(); }); };
+
+  function kur(tablo) {
+    var kap  = tablo.closest('.tc-irab-blok') || tablo.parentNode.parentNode;
+    var okKap = kap.querySelector('.tc-tak');
+    var sayac = kap.querySelector('.tc-tak-sayac');
+    var ilkHucre = tablo.querySelector('td[data-sut]');
+    var TAKIM = ilkHucre ? ilkHucre.querySelectorAll('.orn[data-tak]').length : 1;
+    if (!TAKIM) TAKIM = 1;
+    var takim = 0;      /* açık örnek takımı */
+    var acik  = null;   /* açık hücre */
+
+    /* Takım bütün hücrelerde birden değişir: aynı kelimenin üç hâli
+       birbirinden kopmasın diye. */
+    function takimCiz() {
+      [].forEach.call(tablo.querySelectorAll('td .orn'), function (o) {
+        o.classList.toggle('gor', +o.getAttribute('data-tak') === takim);
+      });
+      adYaz();
+      okYerlestir();
+    }
+    /* Sayaç yerine takımın ADI: "İsim cümlesi" / "Fiil cümlesi" — okla
+       neye geçtiğin rakamdan değil, adından anlaşılsın.
+       Ad AÇIK HÜCREDEN okunur, tablonun ilkinden değil: mansub satırında
+       isim cümlesi kurulamıyor (إنّ olmadan mansub bir kelime isim
+       cümlesinde bulunmaz), o satırda iki takım da fiil cümlesi. Ad
+       tablo geneli olsaydı o hücrede yanlış yazardı. */
+    function adYaz() {
+      if (!sayac) return;
+      var k = (acik || tablo).querySelector('.orn[data-tak="' + takim + '"]');
+      var ad = k && k.getAttribute('data-ad');
+      sayac.textContent = ad || ((takim + 1) + ' / ' + TAKIM);
+    }
+    /* Ok kutusu tek tane: AÇIK KARTIN içine, cümlenin altına taşınır.
+       Karta konuyor, hücreye değil — kart mutlak konumlu olduğu için
+       hücreye konsaydı oklar sönmüş ekin altında kalırdı. */
+    function okYerlestir() {
+      if (!okKap) return;
+      var kart = acik ? acik.querySelector('.orn.gor') : null;
+      if (!kart || TAKIM < 2) { okKap.hidden = true; return; }
+      if (okKap.parentNode !== kart) kart.appendChild(okKap);
+      okKap.hidden = false;
+    }
+    function ciz() {
+      [].forEach.call(tablo.querySelectorAll('td[data-sut]'), function (td) {
+        td.classList.toggle('acik', td === acik);
+      });
+      tablo.classList.toggle('acik-var', !!acik);
+      adYaz();
+      okYerlestir();
+      /* Kartın ölçüsü ancak açıldıktan sonra doğru okunur; kamera
+         bu yüzden sınıflar yazıldıktan SONRA çağrılıyor. */
+      kamera(tablo, acik);
+    }
+    function cevir(td) {
+      acik = (acik === td) ? null : td;
+      ciz();
+    }
+    /* Uzaklaş düğmesi ve Esc, hangi tablo açıksa onu kapatsın. */
+    kapatanlar.push(function () { if (acik) { acik = null; ciz(); } });
+    tazeleyenler.push(function () { if (acik) kamera(tablo, acik); });
+
+    tablo.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('.tc-tak')) return;   /* oklar hücreyi kapatmasın */
+      var td = e.target.closest ? e.target.closest('td[data-sut]') : null;
+      if (td) cevir(td);
+    });
+    tablo.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      if (e.target.closest && e.target.closest('.tc-tak')) return;
+      var td = e.target.closest ? e.target.closest('td[data-sut]') : null;
+      if (td) { e.preventDefault(); cevir(td); }
+    });
+    if (okKap) okKap.addEventListener('click', function (e) {
+      var o = e.target.closest ? e.target.closest('.tc-tak-ok') : null;
+      if (!o) return;
+      takim = (takim + (+o.getAttribute('data-yon')) + TAKIM) % TAKIM;
+      takimCiz();
+      if (acik) kamera(tablo, acik);   /* yeni cümle daha uzun/kısa olabilir */
+    });
+    takimCiz();
+    ciz();
+  }
+  [].forEach.call(document.querySelectorAll('.tc-irab-isim, .tc-irab-fiil'), kur);
+})();
+
+
+/* ============================================================
+   HİKÂYE MOTORU — harekenin doğuşu (Tahlil bölümünün başı)
+   ------------------------------------------------------------
+   Beş adım; ileri/geri, noktalar ve klavye okları. Animasyonların
+   hepsi CSS'te ve sahnenin data-h değerine bağlı, bu yüzden burada
+   yapılan tek iş o değeri yazmak. Birinci adımdaki "sonu değiştir"
+   ayrı bir durum (data-oku): aynı iskeletin iki okunuşu.
+   ============================================================ */
+(function () {
+  'use strict';
+  var sah = document.getElementById('tcHik');
+  if (!sah) return;
+  var ADET = sah.querySelectorAll('.hik-a').length || 5;
+  var geri = document.getElementById('tcHikGeri');
+  var ileri = document.getElementById('tcHikIleri');
+  var puan = document.getElementById('tcHikPuan');
+  var atla = document.getElementById('tcHikAtla');
+  var n = 1;
+
+  /* Noktalar: adım sayısı kadar, tıklanabilir. */
+  if (puan && !puan.childElementCount) {
+    for (var i = 1; i <= ADET; i++) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'hik-p1';
+      b.setAttribute('data-n', i);
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-label', i + '. adım');
+      puan.appendChild(b);
+    }
+    puan.addEventListener('click', function (e) {
+      var t = e.target.closest ? e.target.closest('.hik-p1') : null;
+      if (t) git(parseInt(t.getAttribute('data-n'), 10));
+    });
+  }
+
+  /* UÇLARDA DÖNER, KİLİTLENMEZ.
+     Eskiden 1. adımda "geri", son adımda "ileri" disabled oluyordu;
+     hikâye 1. adımda açıldığı için ilk basılan tuş ölü çıkıyor,
+     "tuşlar çalışmıyor" gibi görünüyordu. Artık iki tuş da her zaman
+     çalışır: son adımdan ileri başa, ilk adımdan geri sona gider. */
+  function git(k) {
+    if (ADET < 1) return;
+    if (k < 1) k = ADET;
+    if (k > ADET) k = 1;
+    n = k;
+    sah.setAttribute('data-h', String(n));
+    if (geri)  geri.disabled  = false;
+    if (ileri) ileri.disabled = false;
+    if (puan) [].forEach.call(puan.children, function (b, i) {
+      var s2 = (i + 1 === n);
+      b.classList.toggle('aktif', s2);
+      b.setAttribute('aria-selected', s2 ? 'true' : 'false');
+    });
+    /* Son adımda "Tahlile geç" tuşu asıl davete dönüşür. */
+    if (atla) atla.textContent = (n === ADET) ? 'Sonlara başla \u276F' : 'Sonlara geç \u276F';
+    /* İki okunuş yalnız 1. adımda dönüyor; başka adımda sayaç boşa işlemesin. */
+    if (n === 1) { sah.setAttribute('data-oku', '1'); okuBasla(); } else okuDur();
+  }
+
+  if (geri)  geri.addEventListener('click',  function () { git(n - 1); });
+  if (ileri) ileri.addEventListener('click', function () { git(n + 1); });
+  /* Oklar: hikâye ekrandayken sayfanın neresine basılmış olursa olsun
+     çalışır (akıllı tahtada kumandanın okları da buraya düşüyor).
+     Yazı alanına odaklanılmışsa karışmasın diye o durum dışlanıyor. */
+  function yaziAlani(el) {
+    if (!el) return false;
+    var t = (el.tagName || '').toUpperCase();
+    return t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT' || el.isContentEditable;
+  }
+  /* Tahlil'in hangi görünümü ekranda? ('hik' | 'kesif' | 'cumle' | '') */
+  function thAcikGorunum() {
+    var b2 = document.querySelector('.tc-bolum[data-bolum="tahlil"]');
+    if (!b2 || b2.hidden || !b2.getBoundingClientRect().width) return '';
+    return b2.getAttribute('data-th') || '';
+  }
+  /* OKLAR ÜÇ YERDE ÇALIŞIR:
+       Başlarken → hikâyenin adımları arasında,
+       Sonlar    → üç hâl satırı arasında,
+       Cümleler  → beş tahlil cümlesi arasında.
+     Üçü de uçlarda döner. Yazı alanına odaklanılmışsa karışmaz. */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    if (yaziAlani(e.target)) return;
+    var g = thAcikGorunum();
+    var ileriMi = (e.key === 'ArrowRight');
+    if (g === 'hik') {
+      e.preventDefault(); e.stopPropagation();
+      git(ileriMi ? n + 1 : n - 1);
+      return;
+    }
+    if (g === 'kesif' && window.tcKesifKaydir) {
+      e.preventDefault(); e.stopPropagation();
+      window.tcKesifKaydir(ileriMi ? 1 : -1);
+      return;
+    }
+    if (g === 'cumle' && window.tcTahlil) {
+      var say = window.tcTahlil.sayi || 0;
+      if (say < 2) return;
+      e.preventDefault(); e.stopPropagation();
+      var c2 = window.tcTahlil.hangi();
+      c2 = (c2 + (ileriMi ? 1 : -1) + say) % say;
+      window.tcTahlil.basla(c2, true);
+      if (window.tcSeritTazele) window.tcSeritTazele('tahlil');
+    }
+  }, true);
+
+  /* 1. ADIM: AYNI İSKELET, İKİ OKUNUŞ — kendiliğinden değişir.
+     "Sonu değiştir" tuşu kalktı: hikâyenin geri kalanı kendi kendine
+     oynuyor, tek bu adım el istiyordu. İki saniyede bir hareke
+     değişiyor, CSS geçişi de yumuşak geçirdiği için fark ediliyor.
+     Sayaç YALNIZ 1. adım ekrandayken dönüyor (bkz. git). */
+  sah.setAttribute('data-oku', '1');
+  var okuSaat = 0;
+  function okuDur() { if (okuSaat) { clearInterval(okuSaat); okuSaat = 0; } }
+  function okuBasla() {
+    okuDur();
+    okuSaat = setInterval(function () {
+      sah.setAttribute('data-oku', sah.getAttribute('data-oku') === '1' ? '2' : '1');
+    }, 2000);
+  }
+
+  /* "Tahlile geç": hikâyeyi bırakıp keşif/cümle kısmına kaydırır. */
+  /* "Tahlile geç": kaydırmaz — bir sonraki SEKMEYİ açar. */
+  if (atla) atla.addEventListener('click', function () {
+    if (window.tcTahlilGorunum) window.tcTahlilGorunum('kesif');
+  });
+
+  git(1);
+  window.tcHikGit = git;
+})();

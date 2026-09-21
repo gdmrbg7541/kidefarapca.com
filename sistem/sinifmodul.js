@@ -458,6 +458,46 @@
     }
   });
 
+  /* ---- TEST KAPIŞMASI ----
+     Hedef : testkapismasi.html?sinif=N → listede YALNIZ o sınıfın dersleri
+             (tek ya da iki kişilik; 21.09.2026'dan beri bütün dersler açık).
+     Ders sayısı: 5-8 → oyunlar/tk_ortaokul.js (index'te yüklü; 6. sınıfta
+     seçili öğretim yılına göre değişir). 9-10 → oyunun kendi verisi
+     (oyunlar/testkapismasi.js → Data); sayısı aşağıda, oraya ders
+     eklenince burası da güncellenir. */
+  var TK_DERS_9_10 = { '9': 8, '10': 11 };
+
+  function tkSvg() {
+    /* index.html'deki Test Kapışması kartının çarpışan kılıçları (.kga-kilicL/R,
+       .kga-carp canlandırmaları index.html'den). Ana kart kırmızı zeminde
+       beyaz kılıç; sınıf kartının zemini açık olduğu için kılıçlar çizgili. */
+    return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +
+      '<g class="kga-kilicL"><rect x="12.4" y="16" width="4.4" height="26" rx="2.2" fill="#E3EAF2" stroke="#5E6B7D" stroke-width="1.4"/>' +
+        '<rect x="8.5" y="41" width="12" height="3.6" rx="1.8" fill="#F4B400"/><rect x="12.9" y="44" width="3.4" height="8" rx="1.7" fill="#8D6E63"/></g>' +
+      '<g class="kga-kilicR"><rect x="47.2" y="16" width="4.4" height="26" rx="2.2" fill="#E3EAF2" stroke="#5E6B7D" stroke-width="1.4"/>' +
+        '<rect x="43.5" y="41" width="12" height="3.6" rx="1.8" fill="#F4B400"/><rect x="47.7" y="44" width="3.4" height="8" rx="1.7" fill="#8D6E63"/></g>' +
+      '<g class="kga-carp"><path d="M32 18 l2.6 6.5 6.6 2.5 -6.6 2.5 -2.6 6.5 -2.6 -6.5 -6.6 -2.5 6.6 -2.5 Z" fill="#F39C12"/></g>' +
+      '</svg>';
+  }
+
+  ekle({
+    id: 'testkapismasi',
+    ad: 'Test Kapışması',
+    sira: 22,                      /* kelime listelerinden sonra: öğrendiğini sına */
+    renk: '#E74C3C',
+    svg: tkSvg,
+    aciklama: function (s) { return s + '. Sınıf kelimeleriyle tek ya da iki kişilik test'; },
+    veriVar: function (s) {
+      var n = TK_DERS_9_10[String(s)] || 0;
+      if (!n && window.TKOrtaokul && window.TKOrtaokul.dersSayisi) n = window.TKOrtaokul.dersSayisi(s);
+      return n ? { rozet: n + ' Ders Hazır' } : null;
+    },
+    url: function (s) {
+      return 'testkapismasi.html?sinif=' + encodeURIComponent(s) +
+             '&kaynak=index&yer=imam-hatip';
+    }
+  });
+
   /* ---- Sonraki kartlar buraya: aynı kalıpla ekle({...}) ---- */
 
   stilKur();

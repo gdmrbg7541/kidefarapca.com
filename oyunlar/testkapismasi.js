@@ -159,6 +159,12 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
             const sounds = { flip: { f: 200, t: 'triangle', d: 0.1 }, match: { f: 440, t: 'sine', d: 0.2 }, menuClick: { f: 600, t: 'square', d: 0.08 }, touch: { f: 300, t: 'sine', d: 0.05 }, correct: { f: 523.25, t: 'sine', d: 0.2 }, incorrect: { f: 164.81, t: 'square', d: 0.2 }, countdown: { f: 880, t: 'sine', d: 0.15 } }; const sound = sounds[soundKey]; if (!sound) return; const g = this.state.audioCtx.createGain(); g.connect(this.state.audioCtx.destination); g.gain.setValueAtTime(0, this.state.audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.1, this.state.audioCtx.currentTime + 0.01); g.gain.linearRampToValueAtTime(0, this.state.audioCtx.currentTime + sound.d); const o = this.state.audioCtx.createOscillator(); o.type = sound.t; o.frequency.value = sound.f; o.connect(g); o.start(0); o.stop(this.state.audioCtx.currentTime + sound.d);
         },
         initStartScreenListeners() {
+            const sf = this.sinifFiltresi();
+            if (sf) {
+                const lb = document.querySelector('label[for="lesson-picker"], label[for="lesson-select"]');
+                if (lb) lb.textContent = sf + '. Sınıf Dersleri:';
+                document.title = 'Test Kapışması · ' + sf + '. Sınıf';
+            }
             this.dom.playerSelect.addEventListener('click', async e => {
                 const button = e.target.closest('.player-button'); if (!button) return;
                 try { await this.initAudio(); } catch (err) { console.warn("Ses başlatılamadı."); }
@@ -256,13 +262,21 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
             const gosterimSirasi = alfabeIds.filter(id => allLessonIds.includes(id))
                 .concat(ortaDersler.map(d => d.id))
                 .concat(allLessonIds.filter(id => !alfabeIds.includes(id)));
-             gosterimSirasi.forEach(lessonId => {
+            /* SINIF KARTI (index → İmam Hatip → N. Sınıf → Test Kapışması):
+               ?sinif=N ile gelinince listede YALNIZ o sınıfın dersleri. O sınıfın
+               dersi yoksa süzgeç yok sayılır, bütün liste gelir. */
+            const sinif = this.sinifFiltresi();
+            let liste = gosterimSirasi;
+            if (sinif) { const f = gosterimSirasi.filter(id => this.dersSinifi(id) === sinif); if (f.length) liste = f; }
+             liste.forEach(lessonId => {
                  /* Alfabe dersleri: her zaman açık. Ölçme aracı bunlar,
                     ödül değil — öğretmen istediği an açabilmeli. */
                  const alfabeDers = window.TKAlfabe
                      ? window.TKAlfabe.dersler.find(d => d.id === lessonId) : null;
                  const ortaDers = window.TKOrtaokul ? window.TKOrtaokul.bul(lessonId) : null;
-                 const isUnlocked = (alfabeDers || ortaDers) ? true : this.state.unlockedLessons.includes(lessonId);
+                 /* 21.09.2026: BÜTÜN KİLİTLER KALDIRILDI (öğretmen kararı) — tek kişilikte de
+                    her ders seçilebilir. İlerleme yine kaydediliyor (unlockNextLesson). */
+                 const isUnlocked = true;
                  const parts = lessonId.split('-'); const gradeKey = parts[0]; const unitKey = parts[1]; const lessonKey = parts[2];
                  const lessonDesc = alfabeDers ? alfabeDers.ad : ortaDers ? ortaDers.ad
                      : (Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.description?.tr || lessonKey);
@@ -295,6 +309,18 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
         alfabeHavuz: {},
         yeniAlfabeHavuzu() { this.alfabeHavuz = {}; },
         ortaokulDersMi(lessonId) { return !!(window.TKOrtaokul && window.TKOrtaokul.mi(lessonId)); },
+        /* ?sinif=N (5-10): sınıf kartından gelindiyse o sınıf, yoksa 0 */
+        sinifFiltresi() {
+            const m = /[?&]sinif=(\d+)/.exec(location.search || '');
+            const n = m ? parseInt(m[1], 10) : 0;
+            return (n >= 5 && n <= 10) ? n : 0;
+        },
+        dersSinifi(lessonId) {
+            const o = window.TKOrtaokul ? window.TKOrtaokul.bul(lessonId) : null;
+            if (o) return o.sinif;
+            const m = /^grade(\d+)-/.exec(String(lessonId || ''));
+            return m ? parseInt(m[1], 10) : 0;
+        },
         alfabeDersMi(lessonId) {
             return !!(window.TKAlfabe && window.TKAlfabe.dersler.some(d => d.id === lessonId));
         },
@@ -372,7 +398,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
 
                  if (starCount === 3) {
                      title = "Mükemmel!";
-                     if (data.nextLessonUnlocked) { messageHtml = `<p class="unlocked-message">Bir sonraki seviyeye geçtiniz!</p>`; } else { messageHtml = `<p>Tebrikler! Tüm dersleri tamamladınız!</p>`; }
+                     messageHtml = `<p class="unlocked-message">Tebrikler! Bu dersi başarıyla tamamladın.</p>`;   /* kilit kalktı: "sonraki seviye" iletisi yok */
                  } else if (starCount === 2) { title = "İyi İş!"; messageHtml = `<p>Biraz daha gayretle 3 yıldıza ulaşabilirsin!</p>`; } else if (starCount === 1) { title = "Fena Değil!"; messageHtml = `<p>Tekrar deneyerek puanını yükseltebilirsin.</p>`; } else { title = "Tekrar Deneyin!"; messageHtml = `<p>Daha iyi bir sonuç için tekrar oyna.</p>`; }
 
                  htmlContent += `
@@ -392,7 +418,8 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                      App.yeniAlfabeHavuzu();      /* tekrar oynarken sorular yenilensin */
                      const words = App.getWords(App.state.selectedLessonId);
                      const questionCount = words.length; if(words.length < 4) { App.showScreen('start-screen'); return; }
-                     QuizGame.start(Utils.shuffleArray(words), 1); App.showScreen('quiz-screen');
+                     const karisik = Utils.shuffleArray(words);   /* 5-8 dersi: yine rastgele 20 soru */
+                     QuizGame.start(App.ortaokulDersMi(App.state.selectedLessonId) ? karisik.slice(0, 20) : karisik, 1); App.showScreen('quiz-screen');
                  };
                  resultsScreen.querySelector('#back-to-start-btn').onclick = () => { App.playSound('menuClick'); App.showScreen('start-screen'); };
 

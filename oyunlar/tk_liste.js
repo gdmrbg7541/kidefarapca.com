@@ -678,6 +678,9 @@
                  ikon(o.value) + '<span class="tkl-ad">' + esc(temizAd(o.textContent)) + alt + '</span>' + (kilitli ? KILIT : (secili ? ONAY : '')) + '</button>');
         });
         if (acikGrup && !gruplar.some(function (b) { return b.g === acikGrup; })) acikGrup = null;
+        /* Sınıf kartından gelindiyse (?sinif=N) listede tek bölüm var: kapalı tek
+           başlık göstermenin anlamı yok, o bölüm açık gelir. */
+        if (gruplar.length === 1) acikGrup = gruplar[0].g;
         panel.innerHTML = gruplar.map(function (b) {
             var acik = b.g === acikGrup;
             var rozet = (b.g === 'g6' && window.TKOrtaokul && window.TKOrtaokul.yilRozet) ? window.TKOrtaokul.yilRozet(6) : '';

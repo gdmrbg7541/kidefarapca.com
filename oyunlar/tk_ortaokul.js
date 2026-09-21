@@ -18,7 +18,11 @@
 
    KİMLİK : ortaokul-<dosya>        ör. ortaokul-5_1_1, ortaokul-8_6_3
             ortaokul-<yıl>-<dosya>  ör. ortaokul-y2627-6_1_1 (öneki olan yıl)
-   KİLİT  : bu dersler HEP AÇIK (öğretmen kararı, 21.09.2026).
+   KİLİT  : bu dersler HEP AÇIK (öğretmen kararı, 21.09.2026; sonra bütün
+            dersler için kilit kaldırıldı).
+   SINIF KARTI: index → İmam Hatip → N. Sınıf → Test Kapışması kartı
+            (sistem/sinifmodul.js) testkapismasi.html?sinif=N açar; bu dosya
+            index'te de yüklenir, kartın ders sayısı dersSayisi(N)'den gelir.
    SORU   : tek kişilikte her oyun dersten rastgele 20 kelime
             (testkapismasi.js); şıklar dersin bütün kelimelerinden.
    ========================================================================== */
@@ -266,7 +270,17 @@
         try { if (kv.yilStilKur) kv.yilStilKur(); return kv.yilRozetHtml(sinif); } catch (e) { return ''; }
     }
 
+    /* Sınıfın o an seçili yılındaki ders sayısı — index'teki sınıf kartının
+       rozeti için. Her çağrıda yeniden hesaplanır: 6. sınıfın yılı değişince
+       sayı da değişir (olay sırasına bağlı değil). */
+    function dersSayisi(sinif) {
+        var y = yilKaydi(String(sinif)), n = 0;
+        if (y) y.u.forEach(function (u) { n += u.d.length; });
+        return n;
+    }
+
     window.TKOrtaokul = {
+        dersSayisi: dersSayisi,
         dersler: function () { return _dersler.slice(); },
         bul: function (id) { return _harita[id] || null; },
         mi: function (id) { return /^ortaokul-/.test(String(id || '')); },

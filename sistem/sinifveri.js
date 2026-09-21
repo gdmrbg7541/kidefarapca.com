@@ -181,8 +181,10 @@
          { yil: '2025-2026', program: 'Önceki program · 2025 ders kitabı (6 ünite)', onek: '', maarif: false }],
     7:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '', maarif: true }],
     /* 8. sınıfın ders verisi 6 ünite × 3 ders (8_1_1 … 8_6_3) olarak
-       yeni kitaptan çıkarıldı; 7. sınıfla aynı programa ait. */
-    8:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '', maarif: true }],
+       yeni kitaptan çıkarıldı. MAARİF DEĞİL: 2026-2027'de Türkiye Yüzyılı
+       Maarif Modeli ortaokulda 5, 6 ve 7. sınıflarda uygulanıyor; 8. sınıf
+       önceki öğretim programıyla devam ediyor (21.09.2026, Geylani). */
+    8:  [{ yil: '2026-2027', program: 'Önceki öğretim programı (Maarif Modeli 8. sınıfta henüz uygulanmıyor)', onek: '', maarif: false }],
     9:  [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '', maarif: true }],
     10: [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '', maarif: true }]
   };
