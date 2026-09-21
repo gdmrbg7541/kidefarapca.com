@@ -183,6 +183,7 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
                 const { selectedPlayers, selectedLessonId } = this.state;
                 if (!selectedPlayers || !selectedLessonId) return;
 
+                this.yeniAlfabeHavuzu();          /* her oyun taze soru */
                 const words = this.getWords(selectedLessonId);
                 let wordsForGame;
 
@@ -211,7 +212,12 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
         checkStartButtonState() { this.dom.startGameBtn.disabled = !(this.state.selectedPlayers && this.state.selectedLessonId); },
         loadProgress() { const savedProgress = localStorage.getItem('unlockedQuizLessons'); if (savedProgress) { try { this.state.unlockedLessons = JSON.parse(savedProgress); if (!Array.isArray(this.state.unlockedLessons) || this.state.unlockedLessons.length === 0) { this.state.unlockedLessons = ['grade9-unit1-lesson1']; } } catch (e) { console.error("İlerleme yüklenirken hata:", e); this.state.unlockedLessons = ['grade9-unit1-lesson1']; } } else { this.state.unlockedLessons = ['grade9-unit1-lesson1']; } },
         saveProgress() { try { localStorage.setItem('unlockedQuizLessons', JSON.stringify(this.state.unlockedLessons)); } catch (e) { console.error("İlerleme kaydedilirken hata:", e); } },
-        getAllLessonIdsOrdered() { const orderedIds = []; ['grade9', 'grade10'].forEach(gradeKey => { if (Data[gradeKey]?.words) { Object.keys(Data[gradeKey].words).sort().forEach(unitKey => { if (Data[gradeKey].words[unitKey]?.lessons) { Object.keys(Data[gradeKey].words[unitKey].lessons).sort().forEach(lessonKey => { orderedIds.push(`${gradeKey}-${unitKey}-${lessonKey}`); }); } }); } }); return orderedIds; },
+        getAllLessonIdsOrdered() { const orderedIds = []; ['grade9', 'grade10'].forEach(gradeKey => { if (Data[gradeKey]?.words) { Object.keys(Data[gradeKey].words).sort().forEach(unitKey => { if (Data[gradeKey].words[unitKey]?.lessons) { Object.keys(Data[gradeKey].words[unitKey].lessons).sort().forEach(lessonKey => { orderedIds.push(`${gradeKey}-${unitKey}-${lessonKey}`); }); } }); } });
+            /* ALFABE DERSLERİ — kilit zincirinin SONUNDA dururlar ama
+               hiçbir zaman kilitli görünmezler (bkz. populateLessonSelector).
+               Soruları Data'da durmaz, oyunlar/tk_alfabe.js anında üretir. */
+            if (window.TKAlfabe) window.TKAlfabe.dersler.forEach(d => orderedIds.push(d.id));
+            return orderedIds; },
         unlockNextLesson(completedLessonId) {
             const allLessonIds = this.getAllLessonIdsOrdered(); const completedIndex = allLessonIds.indexOf(completedLessonId);
             if (completedIndex > -1 && completedIndex < allLessonIds.length - 1) {
@@ -228,9 +234,14 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
             this.dom.lessonSelect.innerHTML = '<option value="" disabled selected>Ders Seçin</option>';
             const allLessonIds = this.getAllLessonIdsOrdered();
              allLessonIds.forEach(lessonId => {
-                 const isUnlocked = this.state.unlockedLessons.includes(lessonId);
+                 /* Alfabe dersleri: her zaman açık. Ölçme aracı bunlar,
+                    ödül değil — öğretmen istediği an açabilmeli. */
+                 const alfabeDers = window.TKAlfabe
+                     ? window.TKAlfabe.dersler.find(d => d.id === lessonId) : null;
+                 const isUnlocked = alfabeDers ? true : this.state.unlockedLessons.includes(lessonId);
                  const parts = lessonId.split('-'); const gradeKey = parts[0]; const unitKey = parts[1]; const lessonKey = parts[2];
-                 const lessonDesc = Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.description?.tr || lessonKey;
+                 const lessonDesc = alfabeDers ? alfabeDers.ad
+                     : (Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.description?.tr || lessonKey);
 const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görünür
                  const option = document.createElement('option');
                  option.value = lessonId;
@@ -244,7 +255,22 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                  this.dom.lessonSelect.appendChild(option);
              });
         },
-        getWords(lessonId) { if (!lessonId) return []; try { const parts = lessonId.split('-'); const gradeKey = parts[0]; const unitKey = parts[1]; const lessonKey = parts[2]; return Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.words || []; } catch (e) { console.error("Kelime alınırken hata:", e); return []; } },
+        /* ALFABE HAVUZU: sorular üretiliyor, Data'da durmuyor. Bir oyun
+           boyunca AYNI on soru kalsın diye havuz önbelleğe alınır; yeni
+           oyuna başlarken yeniAlfabeHavuzu() ile temizlenir. On sayısı
+           keyfî değil: iki kişilik mod 5+5 ayrık soru istiyor, tek
+           kişilik mod da soru başına tam 10 puan ediyor. */
+        alfabeHavuz: {},
+        yeniAlfabeHavuzu() { this.alfabeHavuz = {}; },
+        alfabeDersMi(lessonId) {
+            return !!(window.TKAlfabe && window.TKAlfabe.dersler.some(d => d.id === lessonId));
+        },
+        getWords(lessonId) { if (!lessonId) return [];
+            if (this.alfabeDersMi(lessonId)) {
+                if (!this.alfabeHavuz[lessonId]) this.alfabeHavuz[lessonId] = window.TKAlfabe.uret(lessonId, 10);
+                return this.alfabeHavuz[lessonId];
+            }
+            try { const parts = lessonId.split('-'); const gradeKey = parts[0]; const unitKey = parts[1]; const lessonKey = parts[2]; return Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.words || []; } catch (e) { console.error("Kelime alınırken hata:", e); return []; } },
         getAllWords() { return Object.values(Data).flatMap(grade => Object.values(grade.words).flatMap(unit => Object.values(unit.lessons).flatMap(lesson => lesson.words || []))); },
         initNavigation() {
             // Tam Ekran Butonu
@@ -328,7 +354,9 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                  resultsScreen.innerHTML = htmlContent;
                  resultsScreen.querySelector('#results-back-btn').onclick = () => { App.playSound('menuClick'); App.showScreen('start-screen'); }; // Üst sol geri tuşu
                  resultsScreen.querySelector('#play-again-btn').onclick = async () => {
-                     await App.initAudio(); App.playSound('menuClick'); const words = App.getWords(App.state.selectedLessonId);
+                     await App.initAudio(); App.playSound('menuClick');
+                     App.yeniAlfabeHavuzu();      /* tekrar oynarken sorular yenilensin */
+                     const words = App.getWords(App.state.selectedLessonId);
                      const questionCount = words.length; if(words.length < 4) { App.showScreen('start-screen'); return; }
                      QuizGame.start(Utils.shuffleArray(words), 1); App.showScreen('quiz-screen');
                  };
@@ -351,7 +379,9 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                  resultsScreen.innerHTML = htmlContent;
                  resultsScreen.querySelector('#results-back-btn').onclick = () => { App.playSound('menuClick'); App.showScreen('start-screen'); };
                  resultsScreen.querySelector('#play-again-btn').onclick = async () => {
-                     await App.initAudio(); App.playSound('menuClick'); const words = App.getWords(App.state.selectedLessonId);
+                     await App.initAudio(); App.playSound('menuClick');
+                     App.yeniAlfabeHavuzu();      /* tekrar oynarken sorular yenilensin */
+                     const words = App.getWords(App.state.selectedLessonId);
                      const questionCount = 5; if(words.length < 10) { App.showScreen('start-screen'); return; }
                      QuizGame.start(Utils.shuffleArray(words).slice(0, questionCount), 2); App.showScreen('quiz-screen');
                  };
@@ -516,6 +546,45 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
             const segments = playerDom.progressBar?.children;
             if(segments) { Array.from(segments).forEach(seg => seg.classList.remove('active')); if(segments[playerState.i]) segments[playerState.i].classList.add('active'); }
 
+/* ================= ALFABE SORUSU =================
+   Kelime sorusundan iki farkı var: soru ve şıklar HTML (harf biçimleri
+   span'lerle diziliyor) ve dört şık kendi içinde geliyor — çeldirici
+   aranmıyor. Bu yüzden aşağıdaki şık toplama / canvas ile sığdırma
+   düzeneğinin tamamı atlanıyor. */
+if (word && word.tip === 'alfabe') {
+    playerDom.question.classList.add('tka');
+    /* Türkçe cümle soruları küçük ve soldan sağa, Arapça soru kutuları
+       büyük ve sağdan sola dizilir — ikisi tek puntoda birlikte iyi
+       durmuyordu (cümle dört satıra taşıyordu). */
+    playerDom.question.classList.toggle('tka-cumle', word.soruTuru === 'cumle');
+    playerDom.question.innerHTML =
+        '<span class="tka-govde">' + word.soruHtml + '</span>' +
+        (word.ustlik ? '<span class="tka-ustlik">' + word.ustlik + '</span>' : '');
+    if (playerDom.options) {
+        playerDom.options.innerHTML = '';
+        playerDom.options.classList.remove('five-options');
+        playerDom.options.classList.add('tka');
+    }
+    word.siklar.forEach((sik) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        /* Doğruluk METİNDEN değil bu bayraktan okunuyor: şıkların içi
+           HTML, iki şıkkın düz metni aynı çıkabilir. */
+        btn.dataset.dogru = sik.dogru ? '1' : '0';
+        /* Sarmalayıcı span sütun düzenini KENDİSİ taşır: düğmeye verilen
+           flex-direction'ın sıralayacağı ikinci bir çocuk yok. */
+        const sp = document.createElement('span');
+        sp.className = 'tka-sik';
+        sp.innerHTML = sik.html;
+        btn.appendChild(sp);
+        btn.onclick = (e) => this.checkAnswer(e.currentTarget, word, playerNum);
+        if (playerDom.options) playerDom.options.appendChild(btn);
+    });
+    if (playerNum === 1) this.state.p1StartTime = Date.now(); else this.state.p2StartTime = Date.now();
+    return;
+}
+playerDom.question.classList.remove('tka');
+if (playerDom.options) playerDom.options.classList.remove('tka');
 playerDom.question.textContent = word.arabic;
 
 // Şık sayısını tüm seviyeler için 5 olarak sabitledik
@@ -554,7 +623,7 @@ const options = Utils.shuffleArray([word.turkish, ...wrongAnswers]);
                 playerDom.options.innerHTML = '';
                 if (optionCount === 5) { playerDom.options.classList.add('five-options'); } else { playerDom.options.classList.remove('five-options'); }
             }
-            options.forEach((text) => { const btn = document.createElement('button'); btn.className = 'quiz-option-btn'; const sp = document.createElement('span'); sp.textContent = text; btn.appendChild(sp); btn.onclick = (e) => this.checkAnswer(e.currentTarget, word.turkish, playerNum); if(playerDom.options) playerDom.options.appendChild(btn); });
+            options.forEach((text) => { const btn = document.createElement('button'); btn.className = 'quiz-option-btn'; const sp = document.createElement('span'); sp.textContent = text; btn.appendChild(sp); btn.onclick = (e) => this.checkAnswer(e.currentTarget, word, playerNum); if(playerDom.options) playerDom.options.appendChild(btn); });
             /* AKILLI SIĞDIRMA: uzun (2-3+ kelimelik) şıklar kutuya orantılı
                olarak küçültülerek sığdırılır; kısa şıklar olduğu gibi kalır.
                Ölçüm canvas ile yapılır (ellipsis/scrollWidth tuzaklarından
@@ -599,8 +668,17 @@ const options = Utils.shuffleArray([word.turkish, ...wrongAnswers]);
 
             if(playerNum === 1) this.state.p1StartTime = Date.now(); else this.state.p2StartTime = Date.now();
         },
-        checkAnswer(button, correctAnswer, playerNum) {
+        /* soru: kelime sorusunda {id,arabic,turkish}, alfabe sorusunda
+           {tip:'alfabe',...}. Eski çağrı biçimi (düz metin) de çalışsın
+           diye tür denetimi var. */
+        checkAnswer(button, soru, playerNum) {
             App.playSound('touch');
+            const alfabeSoru = !!(soru && soru.tip === 'alfabe');
+            const correctAnswer = alfabeSoru ? null
+                : (typeof soru === 'string' ? soru : (soru && soru.turkish));
+            const dogruMu = (btn) => alfabeSoru
+                ? btn.dataset.dogru === '1'
+                : btn.textContent.trim() === correctAnswer;
 
             const timeTaken = (playerNum === 1) ? (Date.now() - this.state.p1StartTime) : (Date.now() - this.state.p2StartTime);
             const playerDom = (playerNum === 1) ? this.dom.p1 : this.dom.p2;
@@ -609,7 +687,7 @@ const options = Utils.shuffleArray([word.turkish, ...wrongAnswers]);
 
             Array.from(playerDom.options.children).forEach(btn => { btn.disabled = true; });
             button.classList.add('selected');
-            const isCorrect = button.textContent.trim() === correctAnswer;
+            const isCorrect = dogruMu(button);
 
             if (this.state.playerMode === 1) {
                 if (isCorrect) {
@@ -621,7 +699,7 @@ const options = Utils.shuffleArray([word.turkish, ...wrongAnswers]);
                 else {
                     App.playSound('incorrect');
                     button.classList.add('incorrect', 'shake');
-                    Array.from(playerDom.options.children).forEach(btn => { if (btn.textContent.trim() === correctAnswer) btn.classList.add('correct'); });
+                    Array.from(playerDom.options.children).forEach(btn => { if (dogruMu(btn)) btn.classList.add('correct'); });
                 }
 
                 const segments = playerDom.progressBar?.children;
@@ -639,9 +717,19 @@ const options = Utils.shuffleArray([word.turkish, ...wrongAnswers]);
             const p1Answer = this.state.answerLog[roundIndex]?.[1]; const p2Answer = this.state.answerLog[roundIndex]?.[2]; const p1Dom = this.dom.p1; const p2Dom = this.dom.p2;
             if(!p1Answer || !p2Answer || !p1Dom || !p2Dom) return;
             p1Answer.button.classList.remove('selected'); p2Answer.button.classList.remove('selected');
-            const p1CorrectAnswerText = this.state.p1Questions[roundIndex]?.turkish; const p2CorrectAnswerText = this.state.p2Questions[roundIndex]?.turkish;
-            if(p1Dom.options && p1CorrectAnswerText) Array.from(p1Dom.options.children).forEach(btn => { if (btn.textContent.trim() === p1CorrectAnswerText) btn.classList.add('correct'); });
-            if(p2Dom.options && p2CorrectAnswerText) Array.from(p2Dom.options.children).forEach(btn => { if (btn.textContent.trim() === p2CorrectAnswerText) btn.classList.add('correct'); });
+            /* Doğru şıkkı işaretleme: alfabe sorusunda metin karşılaştırması
+               yapılamaz (şıklar HTML), data-dogru bayrağına bakılır. */
+            const dogruyuIsaretle = (dom, soru) => {
+                if (!dom.options || !soru) return;
+                const alfabe = soru.tip === 'alfabe';
+                if (!alfabe && !soru.turkish) return;
+                Array.from(dom.options.children).forEach(btn => {
+                    if (alfabe ? btn.dataset.dogru === '1'
+                               : btn.textContent.trim() === soru.turkish) btn.classList.add('correct');
+                });
+            };
+            dogruyuIsaretle(p1Dom, this.state.p1Questions[roundIndex]);
+            dogruyuIsaretle(p2Dom, this.state.p2Questions[roundIndex]);
             if(p1Dom.options) p1Dom.options.classList.add('answered'); if(p2Dom.options) p2Dom.options.classList.add('answered');
             if(!p1Answer.isCorrect) p1Answer.button.classList.add('incorrect', 'shake'); if(!p2Answer.isCorrect) p2Answer.button.classList.add('incorrect', 'shake');
             if (p1Answer.isCorrect) { this.state.p1Score += 10; this.showScoreEffect(1, 10); } if (p2Answer.isCorrect) { this.state.p2Score += 10; this.showScoreEffect(2, 10); }
