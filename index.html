@@ -5,16 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>kidefarapca.com</title>
     <script>
-    /* Vitrin kapısı: siteye her yeni girişte önce indeks.html (vitrin) açılır.
-       Vitrin açılınca oturum işareti bırakır; aynı oturumda index'e dönüş ve site içi
-       gezinme vitrine bir daha düşmez. Kaldırmak için bu script'i silmen yeterli.
+    /* Vitrin kapısı: siteye yeni girişte önce indeks.html (vitrin) açılır — ama bir
+       tarayıcıda EN ÇOK 3 KEZ. Vitrin her yeni oturumda açılış sayacını bir artırır
+       (indeks.html başı, localStorage 'kidefVitrinSayac'); sayaç 3 olunca index artık
+       vitrine yönlendirmez, doğrudan açılır (22.09.2026, öğretmen isteği).
+       Vitrin açılınca oturum işareti de bırakır (indeks.js); aynı oturumda index'e
+       dönüş ve site içi gezinme vitrine bir daha düşmez. Kaldırmak için bu script'i
+       silmen yeterli.
        İSTİSNA: karekod onay bağlantısı (?qr=...) telefonun kamerasından YENİ bir
        sekmede açılır, o sekmede vitrin işareti yoktur. Yönlendirilirse onay
        parametresi kaybolurdu; bu yüzden ?qr= varsa kapı açılır. */
-    try{
-      if(/[?&]qr=/.test(location.search)) sessionStorage.setItem('kidefVitrin','1');
-      if(!sessionStorage.getItem('kidefVitrin')) location.replace('indeks.html');
-    }catch(e){}
+    (function(){
+      try{
+        if(/[?&]qr=/.test(location.search)) sessionStorage.setItem('kidefVitrin','1');
+        if(sessionStorage.getItem('kidefVitrin')) return;
+        var acilis = 0;
+        try{ acilis = parseInt(localStorage.getItem('kidefVitrinSayac'), 10) || 0; }catch(e){}
+        if(acilis < 3) location.replace('indeks.html');
+      }catch(e){}
+    })();
     </script>
 
     <script id="guc-algilayici">
@@ -227,14 +236,6 @@
     html.dusuk-guc .a4-satirlar b::after { opacity: 0 !important; }
     html.dusuk-guc .a4-muhur-g, html.dusuk-guc .ik-damga { opacity: .95 !important; }
     </style>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-FV9JD15KLW');
-    </script>
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2320C997' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/></svg>">
     <!-- Tekil CSS Dosyası -->
@@ -3085,10 +3086,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + o sınıfın kartını İmam Hatip akordiyonuna basan kayıtçı.
          muhadese.js'TEN ÖNCE: educationData ağacı artık seçili öğretim
          yılına göre değişiyor, yılı bu dosya söylüyor. -->
-    <script src="sistem/sinifveri.js?v=20260919d"></script>
+    <script src="sistem/sinifveri.js?v=20260921a"></script>
+    <!-- Test Kapışması 5-8. sınıf ders ağacı: sınıf kartlarının ders sayısı (sistem/sinifmodul.js) -->
+    <script src="oyunlar/tk_ortaokul.js?v=2"></script>
     <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
     <script src="muhadese/muhadese.js?v=20260919a"></script>
-    <script src="sistem/sinifmodul.js?v=20260920a"></script>
+    <script src="sistem/sinifmodul.js?v=20260921a"></script>
     <!-- İmam Hatip 7/9/10 «Kitap Etkinlikleri» ünite akordiyonu -->
     <script src="sistem/kitapetkinlik.js?v=20260921a"></script>
     <script>
