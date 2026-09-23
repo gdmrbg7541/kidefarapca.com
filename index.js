@@ -120,8 +120,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (card.getAttribute('target') === '_blank') {
         if (isTouchDevice) {
-          // Mobil: ilk dokunuş kartı ortalar; açmak için rozete ("Aç/Başla") basılır
+          /* MOBİL — İKİ AŞAMA (Geylani: "ikinci tıklayışta açılsınlar ve
+             kartların her yeri açmak için yeterli olsun").
+             1. dokunuş : kart ortalanır ve "hazır" işaretlenir (kırmızı
+                          halka — listedeki AÇ tuşlarıyla aynı renk).
+             2. dokunuş : kart açılır ve kartın HER YERİ geçerli.
+             Eskiden ikinci dokunuşun yalnız küçük rozete gelmesi
+             gerekiyordu; kartın gövdesi hiç açmıyordu, yalnız yeniden
+             ortalıyordu. Rozete dokunmak eskisi gibi tek dokunuşta açar
+             (yukarıdaki erken dönüş). Başka bir karta dokununca önceki
+             kartın işareti düşer, yanlışlıkla açılmasın. */
+          if (card.classList.contains('kd-hazir')) {
+            card.classList.remove('kd-hazir');
+            return true;                 /* varsayılan davranış: yeni sekmede aç */
+          }
           e.preventDefault();
+          document.querySelectorAll('.game-card.kd-hazir')
+            .forEach(function (c) { c.classList.remove('kd-hazir'); });
+          card.classList.add('kd-hazir');
+          playHaptics('card-select');
           card.scrollIntoView({
               behavior: 'smooth',
               block: 'nearest',
