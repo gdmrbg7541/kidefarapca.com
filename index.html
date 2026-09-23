@@ -3086,12 +3086,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + o sınıfın kartını İmam Hatip akordiyonuna basan kayıtçı.
          muhadese.js'TEN ÖNCE: educationData ağacı artık seçili öğretim
          yılına göre değişiyor, yılı bu dosya söylüyor. -->
-    <script src="sistem/sinifveri.js?v=20260921a"></script>
+    <script src="sistem/sinifveri.js?v=20260922m"></script>
     <!-- Test Kapışması 5-8. sınıf ders ağacı: sınıf kartlarının ders sayısı (sistem/sinifmodul.js) -->
-    <script src="oyunlar/tk_ortaokul.js?v=2"></script>
+    <script src="oyunlar/tk_ortaokul.js?v=3"></script>
     <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
-    <script src="muhadese/muhadese.js?v=20260919a"></script>
-    <script src="sistem/sinifmodul.js?v=20260921a"></script>
+    <script src="muhadese/muhadese.js?v=20260922m"></script>
+    <script src="sistem/sinifmodul.js?v=20260922m"></script>
     <!-- İmam Hatip 7/9/10 «Kitap Etkinlikleri» ünite akordiyonu -->
     <script src="sistem/kitapetkinlik.js?v=20260921a"></script>
     <script>
@@ -4262,7 +4262,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
                '<span class="mh-uc">yakında</span></span>';
       }
       function mhListe(sinif) {
-        var uniteler = (typeof educationData !== 'undefined' && educationData) ? educationData[sinif] : null;
+        /* Seçili öğretim yılının (kitabın) ağacı: 6 ve 7. sınıfın iki kitabı var.
+           _sinifAgaci muhadese.js'te; o yoksa varsayılan ağaç. */
+        var uniteler = (typeof _sinifAgaci === 'function') ? _sinifAgaci(sinif)
+          : ((typeof educationData !== 'undefined' && educationData) ? educationData[sinif] : null);
         if (!uniteler || !uniteler.length) return null;
         var html = '', hazir = 0;
         uniteler.forEach(function (u) {
@@ -4283,7 +4286,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         });
         return html ? { html: html, hazir: hazir } : null;
       }
-      [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar'), function (mount) {
+      function mhKur(mount) {
         var sinif = mount.getAttribute('data-sinif');
         var liste = mhListe(sinif);
         if (!liste) { /* veri okunamazsa eski davranış: muhadese.html'e git */
@@ -4321,6 +4324,19 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             '</div>' +
             liste.html + '</div></div>';
         modulKartlari(mount, sinif);
+      }
+      [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar'), mhKur);
+      /* Öğretim yılı / kitap değişince (6 ve 7. sınıf) o sınıfın Muhâdese listesi
+         seçilen kitabın derslerine döner; açık olan panel açık kalır. */
+      document.addEventListener('kidef:veriyili', function (e) {
+        var n = e && e.detail ? String(e.detail.sinif) : '';
+        if (!n) return;
+        [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar[data-sinif="' + n + '"]'), function (m) {
+          var acik = !!m.querySelector('.mh-kart.acik');
+          mhKur(m);
+          var b = acik ? m.querySelector('.mh-kart') : null;
+          if (b) window.mhToggle(b);
+        });
       });
 
       /* === DÖKÜMANLAR — okul geneli başlıklar (sınıfa özel olanlar sınıflara taşındı) === */
