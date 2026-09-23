@@ -377,6 +377,118 @@ var MUH_IKON = {
         '</svg>'
 };
 
+
+/* =====================================================================
+   YILA GÖRE DEĞİŞEN MÜFREDAT AĞACI
+   ---------------------------------------------------------------------
+   Yukarıdaki educationData, her sınıfın VARSAYILAN (en eski) ağacıdır.
+   Bir sınıfın ders kitabı değişince yeni ağaç buraya, yılıyla birlikte
+   yazılır; hangi yılın geçerli olduğunu sistem/sinifveri.js söyler.
+   6. sınıf: 2026-2027 kitabı 4 ünite × 2 ders (önceki 6 ünite × 3 ders).
+   ===================================================================== */
+const educationDataYil = {
+    /* >>> 7. SINIF MEKTEP YAYINLARI (yama7.py üretti; elle düzenlemeyin, yeniden üretin) */
+    /* 7. sınıf: 2026-2027'de okutulan Mektep Yayınları kitabı 6 ünite × 3 ders
+       (muhadese/veri/y2627/7_1_1 … 7_6_3). 2027-2028 MEB kitabı (4 ünite) yukarıdaki
+       educationData["7"] ağacıdır; o yıl seçilince oraya düşülür. */
+    "7": {
+        "2026-2027": [
+            {
+                unitName: "1. Ünite: Meslekler | المِهَن",
+                lessons: [
+                    { name: "1. Ders: Mesleğin Ne? | ما مِهْنَتُك؟", simultaneUrl: "muhadese.html?ders=7_1_1", aktif: true },
+                    { name: "2. Ders: Öğretmenim | مُدَرِّسي", simultaneUrl: "muhadese.html?ders=7_1_2", aktif: true },
+                    { name: "3. Ders: Hayalim | خَيالي", simultaneUrl: "muhadese.html?ders=7_1_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "2. Ünite: Alışveriş | التَّسَوُّق",
+                lessons: [
+                    { name: "1. Ders: Bakkalda | في البَقّالة", simultaneUrl: "muhadese.html?ders=7_2_1", aktif: true },
+                    { name: "2. Ders: Kırtasiyede | في القِرْطاسِيّة", simultaneUrl: "muhadese.html?ders=7_2_2", aktif: true },
+                    { name: "3. Ders: Semt Pazarında | في السّوق الشَّعْبي", simultaneUrl: "muhadese.html?ders=7_2_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "3. Ünite: Hava Durumu | الطَّقْس",
+                lessons: [
+                    { name: "1. Ders: Hava Yağmurlu | الجَوّ مُمْطِر", simultaneUrl: "muhadese.html?ders=7_3_1", aktif: true },
+                    { name: "2. Ders: Hava Karlı | الجَوّ مُثْلِج", simultaneUrl: "muhadese.html?ders=7_3_2", aktif: true },
+                    { name: "3. Ders: Hava Güneşli | الجَوّ مُشْمِس", simultaneUrl: "muhadese.html?ders=7_3_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "4. Ünite: Vatanım | وَطَني",
+                lessons: [
+                    { name: "1. Ders: Tarihî Yerler | الأَماكِن التّاريخِيّة", simultaneUrl: "muhadese.html?ders=7_4_1", aktif: true },
+                    { name: "2. Ders: Vatanımı Seviyorum | أُحِبُّ وَطَني", simultaneUrl: "muhadese.html?ders=7_4_2", aktif: true },
+                    { name: "3. Ders: Örnek Şahsiyetler | الشَّخْصِيّات المِثالِيّة", simultaneUrl: "muhadese.html?ders=7_4_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "5. Ünite: İbadetler | العِبادات",
+                lessons: [
+                    { name: "1. Ders: Beş Vakit Namaz | الصَّلوات الخَمْس", simultaneUrl: "muhadese.html?ders=7_5_1", aktif: true },
+                    { name: "2. Ders: Oruç | الصَّوْم", simultaneUrl: "muhadese.html?ders=7_5_2", aktif: true },
+                    { name: "3. Ders: Dinî Bayramlar | الأَعْياد الدّينِيّة", simultaneUrl: "muhadese.html?ders=7_5_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "6. Ünite: İletişim | الاِتِّصالات",
+                lessons: [
+                    { name: "1. Ders: Cep Telefonu | الهاتِف الجَوّال", simultaneUrl: "muhadese.html?ders=7_6_1", aktif: true },
+                    { name: "2. Ders: Bilgisayar | الحاسوب", simultaneUrl: "muhadese.html?ders=7_6_2", aktif: true },
+                    { name: "3. Ders: Mektup | الرِّسالة", simultaneUrl: "muhadese.html?ders=7_6_3", aktif: true },
+                ]
+            },
+        ]
+    },
+    /* <<< 7. SINIF MEKTEP YAYINLARI */
+    "6": {
+        "2026-2027": [
+            {
+                unitName: "1. Ünite: Akrabalarım | أَقارِبي",
+                lessons: [
+                    { name: "1. Ders: Akrabalar | اَلْأَقارِب", simultaneUrl: "muhadese.html?ders=6_1_1", aktif: true },
+                    { name: "2. Ders: Meslekler | اَلْمِهَن", simultaneUrl: "muhadese.html?ders=6_1_2", aktif: true },
+                ]
+            },
+            {
+                unitName: "2. Ünite: Haydi Okula | هَيّا إلى الْمَدْرَسَة",
+                lessons: [
+                    { name: "1. Ders: Okulun Bölümleri ve Araçları | أَقْسامُ الْمَدْرَسَة وَأَدَواتُها", simultaneUrl: "muhadese.html?ders=6_2_1", aktif: true },
+                    { name: "2. Ders: Sıra Sayıları | اَلْأَعْدادُ التَّرْتيبِيَّة", simultaneUrl: "muhadese.html?ders=6_2_2", aktif: true },
+                ]
+            },
+            {
+                unitName: "3. Ünite: Vücudum | جِسْمي",
+                lessons: [
+                    { name: "1. Ders: Organlar | اَلْأَعْضاء", simultaneUrl: "muhadese.html?ders=6_3_1", aktif: true },
+                    { name: "2. Ders: Hisler ve Duygular | اَلْإِحْساس وَالْمَشاعِر", simultaneUrl: "muhadese.html?ders=6_3_2", aktif: true },
+                ]
+            },
+            {
+                unitName: "4. Ünite: Bu Hafta Hava Nasıl? | كَيْفَ الْجَوّ هَذا الْأُسْبوع؟",
+                lessons: [
+                    { name: "1. Ders: Hava Durumu | اَلْأَحْوالُ الْجَوِّيَّة", simultaneUrl: "muhadese.html?ders=6_4_1", aktif: true },
+                    { name: "2. Ders: Renkler | اَلْأَلْوان", simultaneUrl: "muhadese.html?ders=6_4_2", aktif: true },
+                ]
+            },
+        ]
+    }
+};
+
+/* Sınıfın O AN seçili yılına ait ağaç; yıl kaydı yoksa varsayılan ağaç. */
+function _sinifAgaci(sinif) {
+    var k = String(sinif);
+    var t = educationDataYil[k];
+    if (t && window.KidefSinifVeri && KidefSinifVeri.seciliVeriYili) {
+        var y = KidefSinifVeri.seciliVeriYili(k);
+        if (y && t[y.yil]) return t[y.yil];
+    }
+    return educationData[k] || [];
+}
+
 /* Sekme tanımları */
 const KATEGORILER = [
     {
@@ -385,9 +497,9 @@ const KATEGORILER = [
         ipucu: 'Turkuaz olanları kullanabilirsiniz',
         anahtarlar: function () { return Object.keys(educationData); },
         etiket: function (k) { return { ad: k + '. Sınıf', ar: '' }; },
-        uniteler: function (k) { return educationData[k] || []; },
+        uniteler: function (k) { return _sinifAgaci(k); },
         hazir: function (k) {
-            return (educationData[k] || []).some(function (u) {
+            return _sinifAgaci(k).some(function (u) {
                 return (u.lessons || []).some(function (d) { return d.aktif; });
             });
         },
