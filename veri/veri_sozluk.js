@@ -65,6 +65,9 @@ const kategoriTanimlari = {
     /* 6. sınıf 5. ünitesi (الأَماكِن المُقَدَّسَة) buraya dayanıyor: Mekke,
        Medine ve Kudüs'teki mekânlar tek listede toplandı. */
     "mukaddes": { title: "Kutsal Mekânlar", arTitle: "الأَماكِن المُقَدَّسَة", icon: "🕋", grup: "dunya", items: [] },
+    /* 7. sınıf Mektep kitabındaki mekân isimleri (dükkân, kilise, kule…) için.
+       "zarf" listesi mekân ZARFLARI (أمام/خلف) içindir, mekân İSİMLERİ değil. */
+    "mekan":    { title: "Mekânlar", arTitle: "الأَماكِن", icon: "🏛️", grup: "dunya", items: [] },
 
     "renk":     { title: "Renkler", arTitle: "الأَلْوان", icon: "🎨", grup: "genel", items: [] },
     "sifat":    { title: "Sıfatlar", arTitle: "الصِّفات", icon: "✨", grup: "genel", items: [] },
@@ -199,6 +202,9 @@ const sozlukVerileri = {
     // --- Zaman İfadeleri ---
     "Zaman: Bugün": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "📅", arText: "الْيَوْمَ", trText: "Bugün" } } },
     "Zaman: Dün": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "⏪", arText: "أَمْسِ", trText: "Dün" } } },
+    /* سَنَة câmid isimdir: س ن و diye üretken bir kök yoktur, çoğulu
+       ve nisbeti kelimenin kendisinden gider. */
+    "Zaman: Yıl": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "📅", arText: "سَنَة", trText: "Yıl, sene", ornek: { ar: "قُلْتَ أَرْبَعونَ قَبْلَ عَشْرِ سَنَواتٍ", tr: "On yıl önce de kırk demiştin." } }, "يّ": { emoji: "📆", arText: "سَنَوِيّ", trText: "Yıllık, senelik (nisbet)." } }, cogul: { base: { emoji: "🗓️", arText: "سَنَوات", trText: "Yıllar, seneler", ornek: { ar: "دَرَسْنا مَعًا ثَلاثَ سَنَواتٍ", tr: "Üç yıl birlikte okuduk." } } } },
     "Zaman: Yarın": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "⏩", arText: "غَداً", trText: "Yarın" } } },
     "Zaman: Şimdi": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "⏱️", arText: "الْآنَ", trText: "Şimdi / Şu an" } } },
     "Zaman: Sabah": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "🌅", arText: "صَبَاحاً", trText: "Sabah" } } },
@@ -1317,14 +1323,20 @@ const sozlukVerileri = {
     // ==================================================================
     // EL KELİMESİ
     // ==================================================================
+        /* يَد câmid bir isimdir (türetilmemiştir); bu yüzden kökler dosyasında
+       değil burada durur. Nisbeti يَدَوِيّ ve ikinci çoğulu أَيادي de
+       kelimenin kendi girdisine bağlıdır. */
     "يد": {
         "isDictOnly": true,
         "tip": "uzuv",
         "tekil": {
-            base: { emoji: "✋", arText: "يَد", trText: "El" }
+            base: { emoji: "✋", arText: "يَد", trText: "El" },
+            "يّ": { emoji: "🖐️", arText: "يَدَوِيّ", trText: "El ile yapılan, el işi (nisbet).", ornek: { ar: "التَّجْليدُ عَمَلٌ يَدَوِيٌّ", tr: "Ciltleme bir el işidir." } },
+            "يَّة": { emoji: "🧶", arText: "يَدَوِيَّة", trText: "El ile yapılan (müennes).", ornek: { ar: "مَعْرِضُ الفُنونِ اليَدَوِيَّةِ", tr: "El sanatları fuarı." } }
         },
-        "cogul": { 
-            base: { emoji: "✋", arText: "أَيْدٍ", trText: "Eller" }
+        "cogul": {
+            base: { emoji: "✋", arText: "أَيْدٍ", trText: "Eller" },
+            "ثاني": { emoji: "🙌", arText: "أَيادي", trText: "Eller (ikinci çoğul).", ornek: { ar: "تَقْبيلُ الأَيادي", tr: "El öpme." } }
         }
     },
 
@@ -1728,7 +1740,9 @@ const sozlukVerileri = {
     "Yiyecek: Bisküvi": { isDictOnly: true, tip: "yiyecek", tekil: { base: { emoji: "🍪", arText: "بَسْكَوِيت", trText: "Bisküvi" } } },
 
     // --- İÇECEKLER ---
-    "İçecek: Su": { isDictOnly: true, tip: "icecek", tekil: { base: { emoji: "💧", arText: "مَاء", trText: "Su", ornek: { ar: "شَرِبْتُ الْمَاءَ", tr: "Su içtim." } } }, cogul: { base: { emoji: "💧", arText: "مِيَاه", trText: "Sular" } } },
+    /* ماء da câmiddir; مائِيّ onun nisbetidir. م و ه diye bir kök
+       açıp «su sporları»nı oradan türetmek doğru olmaz. */
+    "İçecek: Su": { isDictOnly: true, tip: "icecek", tekil: { base: { emoji: "💧", arText: "مَاء", trText: "Su", ornek: { ar: "شَرِبْتُ الْمَاءَ", tr: "Su içtim." } }, "يّ": { emoji: "🚤", arText: "مائِيّ", trText: "Suya ait, su …ı (nisbet)." }, "يَّة": { emoji: "🏊", arText: "مائِيَّة", trText: "Suya ait (müennes).", ornek: { ar: "السِّباحَةُ رِياضَةٌ مائِيَّةٌ", tr: "Yüzme bir su sporudur." } } }, cogul: { base: { emoji: "💧", arText: "مِيَاه", trText: "Sular" } } },
     "İçecek: Çay": { isDictOnly: true, tip: "icecek", tekil: { base: { emoji: "🍵", arText: "شَاي", trText: "Çay" } } },
     "İçecek: Kahve": { isDictOnly: true, tip: "icecek", tekil: { base: { emoji: "☕", arText: "قَهْوَة", trText: "Kahve" } } },
     "İçecek: Süt": { isDictOnly: true, tip: "icecek", tekil: { base: { emoji: "🥛", arText: "حَلِيب", trText: "Süt" } } },
@@ -3262,8 +3276,55 @@ const sozlukVerileri = {
     "İsim: Afetzede": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🆘", arText: "مَنْكوب", trText: "Afetzede" } }, cogul: { emoji: "🤝", arText: "المَنْكوبون", trText: "Afetzedeler" } },
     "İsim: Bayramlaşma": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🤗", arText: "مُعايَدة", trText: "Bayramlaşma" } } },
     "İsim: Bayram Harçlığı": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "💵", arText: "عيدِيّة", trText: "Bayram harçlığı" } }, cogul: { emoji: "🧧", arText: "عيدِيّات", trText: "Bayram harçlıkları" } },
-    "İsim: Ebru Tepsisi": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🖼️", arText: "مُلْصَقات", trText: "Afişler", ornek: { ar: "جَهَّزْنا مُلْصَقاتٍ عَنِ المَسْرَحِيّةِ", tr: "Tiyatro oyunu hakkında afişler hazırladık." } } } },
+    "İsim: Mevlânâ": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🕌", arText: "مَوْلانا", trText: "Mevlânâ — Konya'daki Mevlânâ Müzesi bu adı taşır", ornek: { ar: "مُتْحَفُ مَوْلانا في قونْيَة", tr: "Mevlânâ Müzesi Konya'dadır." } } } },
 
+    /* >>> 7. sınıf Mektep kitabından eklenen câmid maddeler (23.09.2026) */
+    "Sebze: Maydanoz": { isDictOnly: true, tip: "sebze", tekil: { base: { emoji: "🌿", arText: "بَقْدونِس", trText: "Maydanoz", ornek: { ar: "أنا أُريد البَقْدونِس.", tr: "Ben maydanoz istiyorum." } } } },
+    "Sebze: Nane": { isDictOnly: true, tip: "sebze", tekil: { base: { emoji: "🍃", arText: "نَعْناع", trText: "Nane", ornek: { ar: "أنا أُريد النَّعْناع.", tr: "Ben nane istiyorum." } } } },
+    "Eşya: Zarf": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "✉️", arText: "ظَرْف", trText: "Zarf (mektup)", ornek: { ar: "كُنْتُ أَضَع الرِّسالة في الظَّرْف وأَلْصَق طابَعًا عَلَيْها.", tr: "Mektubu zarfa koyardım ve üzerine pul yapıştırırdım." } } }, cogul: "ظُروف", cogulTr: "Zarflar" },
+    "Eşya: Sim Kart": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "📱", arText: "شَريحة", trText: "SIM kart" } }, cogul: "شَرائِح", cogulTr: "SIM kartlar" },
+    "Eşya: Mikrofon": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "🎤", arText: "ميكْروفون", trText: "Mikrofon", ornek: { ar: "أَتَكَلَّم مع الآخَرين بِواسِطة المِيكْروفون.", tr: "Başkalarıyla mikrofon aracılığıyla konuşurum." } } } },
+    "Eşya: İnternet": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "🌐", arText: "إنْتْرَنَت", trText: "İnternet", ornek: { ar: "أَتَراسَل مع الأَصْدِقاء بِواسِطة شَبَكة الإِنْتَرْنَت.", tr: "Arkadaşlarla internet ağı aracılığıyla yazışırım." } } } },
+    "Eşya: Sofra": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "🍽️", arText: "مائِدة", trText: "Sofra", ornek: { ar: "يَنْتَظِرُ أَحْمَد وَقْت الإفْطار في المائِدة.", tr: "Ahmet sofrada iftar vaktini bekliyor." } } }, cogul: "مَوائِد", cogulTr: "Sofralar" },
+    "Mekân: Dükkân": { isDictOnly: true, tip: "mekan", tekil: { base: { emoji: "🏪", arText: "دُكّان", trText: "Dükkân" } }, cogul: "دَكاكين", cogulTr: "Dükkânlar" },
+    "Mekân: Kilise": { isDictOnly: true, tip: "mekan", tekil: { base: { emoji: "⛪", arText: "كَنيسة", trText: "Kilise" } }, cogul: "كَنائِس", cogulTr: "Kiliseler" },
+    "Mekân: Kule": { isDictOnly: true, tip: "mekan", tekil: { base: { emoji: "🗼", arText: "بُرْج", trText: "Kule", ornek: { ar: "ونَزور بُرْج الفَتاة، ومَسْجِد فاتِح ونُصَلّي فيه يَوْم الجُمُعة.", tr: "Kız Kulesi'ni ve Fatih Camii'ni ziyaret ederiz, cuma günü orada namaz kılarız." } } }, cogul: "أَبْراج", cogulTr: "Kuleler" },
+    "Mekân: Sümela": { isDictOnly: true, tip: "mekan", tekil: { base: { emoji: "🏔️", arText: "سومَلا", trText: "Sümela", ornek: { ar: "سومَلا في طِرابْزون.", tr: "Sümela Trabzon'dadır." } } } },
+    "Doğa: Sis": { isDictOnly: true, tip: "doga", tekil: { base: { emoji: "🌫️", arText: "ضَباب", trText: "Sis", ornek: { ar: "سَيَكون الجَوّ ضَبابِيًّا غَدًا.", tr: "Yarın hava sisli olacak." } } } },
+    "Zaman: Şevval": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "🌙", arText: "شَوّال", trText: "Şevval (hicrî ay)", ornek: { ar: "عيد الفِطْر في شَهْر شَوّال.", tr: "Ramazan Bayramı Şevval ayındadır." } } } },
+    "Zaman: Bazen": { isDictOnly: true, tip: "zaman", tekil: { base: { emoji: "⏱️", arText: "أَحْيانًا", trText: "Bazen", ornek: { ar: "الإِنْتَرْنَت سَريع عِنْدَنا، ولكن يَنْقَطع أَحْيانًا.", tr: "Bizde internet hızlı, ama bazen kesiliyor." } } } },
+    "Okul: Satır": { isDictOnly: true, tip: "okul", tekil: { base: { emoji: "📝", arText: "سَطْر", trText: "Satır, dize", ornek: { ar: "مُعَلِّمتي، مِن المُمْكِن أَنْ أَقْرَأ سَطْرًا مِن نَشيد الاسْتِقْلال", tr: "Öğretmenim, İstiklal Marşı'ndan bir dize okuyabilir miyim?" } } }, cogul: "سُطور", cogulTr: "Satırlar" },
+    "Meslek: Kaptan": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "⚓", arText: "قُبْطان", trText: "Kaptan", ornek: { ar: "ما مِهْنَتُكِ، ماشِطة أم قُبْطانة؟", tr: "Senin mesleğin ne, kuaför mü yoksa kaptan mı?" } } } },
+    "Meslek: Asker": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "🪖", arText: "جُنْد", trText: "Asker" } }, cogul: "جُنود", cogulTr: "Askerler" },
+    "Şehir: Kapadokya": { isDictOnly: true, tip: "sehir", tekil: { base: { emoji: "🎈", arText: "كابادوكْيا", trText: "Kapadokya" } } },
+    "Şehir: Efes": { isDictOnly: true, tip: "sehir", tekil: { base: { emoji: "🏛️", arText: "أَفَس", trText: "Efes", ornek: { ar: "أَفَس في إِزْمير.", tr: "Efes İzmir'dedir." } } } },
+    "Zarf: Belki": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "🤔", arText: "رُبَّما", trText: "Belki", ornek: { ar: "رُبَّما أنا سَأُصْبِح رَبّة البَيْت وسَأَعْمَل في بَيْتي.", tr: "Belki ben ev hanımı olacağım ve evimde çalışacağım." } } } },
+    "Zarf: Önce": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "1️⃣", arText: "أَوَّلًا", trText: "Önce, ilk olarak", ornek: { ar: "أَوَّلًا نَرْسُم السَّماء، ثُمّ الشَّمْس.", tr: "Önce gökyüzünü, sonra güneşi çizeriz." } } } },
+    "Zarf: Hemen": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "⚡", arText: "فَوْرًا", trText: "Hemen", ornek: { ar: "أكْتُبُ قائِمة اللَّوازِم فَوْرًا.", tr: "Malzeme listesini hemen yazıyorum." } } } },
+    "Zarf: Birlikte": { isDictOnly: true, tip: "zarf", tekil: { base: { emoji: "🤝", arText: "مَعًا", trText: "Birlikte", ornek: { ar: "هل نَلْعَب مَعًا؟", tr: "Birlikte oynayalım mı?" } } } },
+    "Kalıp: Elbette": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "✅", arText: "طَبْعًا", trText: "Elbette, tabii ki", ornek: { ar: "طَبْعًا يا حُسَيْن! تَفَضَّلْ!", tr: "Tabii ki Hüseyin! Buyur!" } } } },
+    "Kalıp: Aracılığıyla": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "🔗", arText: "بِواسِطة", trText: "Aracılığıyla, ile", ornek: { ar: "أَنْقُر المَلَفّات بِواسِطة الفَأْرة.", tr: "Dosyalara fare ile tıklarım." } } } },
+    "Kalıp: Hızlıca": { isDictOnly: true, tip: "kalip", tekil: { base: { emoji: "💨", arText: "بِسُرْعة", trText: "Hızlıca", ornek: { ar: "أُريدُ أَنْ أُرْسِل رِسالة قَصيرة إلى أَصْدِقائي وأَتَجَوَّل في إنْتْرَنَت بِسُرْعة.", tr: "Arkadaşlarıma kısa mesaj göndermek ve internette hızlıca gezinmek istiyorum." } } } },
+    "Bağlaç: Bu Yüzden": { isDictOnly: true, tip: "baglac", tekil: { base: { emoji: "➡️", arText: "لِذَلِك", trText: "Bu yüzden", ornek: { ar: "اليَوْم عيد الفِطر لِذَلِك نَزور أَقارِبَنا.", tr: "Bugün Ramazan Bayramı, bu yüzden akrabalarımızı ziyaret ederiz." } } } },
+    /* <<< 7. sınıf Mektep câmid maddeleri */
+
+    /* >>> 7. sınıf Mektep kitabından eklenen kelimeler — rubâî/yabancı kök (23.09.2026) */
+    "Meslek: Eczacı": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "💊", arText: "صَيْدَلانِيّ", trText: "Eczacı" } }, cogul: "صَيادِلة", cogulTr: "Eczacılar" },
+    "Meslek: Veteriner": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "🐾", arText: "بَيْطَرِيّ", trText: "Veteriner" } }, cogul: "بَياطِرة", cogulTr: "Veterinerler" },
+    "Meslek: Kimyager": { isDictOnly: true, tip: "meslek", tekil: { base: { emoji: "🧪", arText: "كيميائِيّ", trText: "Kimyager" } }, cogul: "كيميائِيّون", cogulTr: "Kimyagerler" },
+    "Okul: Kırtasiye": { isDictOnly: true, tip: "okul", tekil: { base: { emoji: "✏️", arText: "قِرْطاسِيّة", trText: "Kırtasiye (malzemeleri)" } } },
+    "İsim: Sohbet": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "💬", arText: "دَرْدَشة", trText: "Sohbet, yazışma (chat)", ornek: { ar: "أَتَدَرْدَش مع أَصْدِقائي بِواسِطة الجَوّال.", tr: "Arkadaşlarımla telefon aracılığıyla yazışırım." } } } },
+    /* <<< 7. sınıf Mektep ek maddeleri */
+
+    /* >>> Sınırda maddeler — sözlükleşmiş sayılanlar (23.09.2026) */
+    "Eşya: Pul": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "📮", arText: "طابَع", trText: "Pul (posta)", ornek: { ar: "أَلْصَقْتُ طابَعًا عَلى الظَّرْفِ", tr: "Zarfa bir pul yapıştırdım." } } }, cogul: "طَوابِع", cogulTr: "Pullar" },
+    "Eşya: Telgraf": { isDictOnly: true, tip: "esya", tekil: { base: { emoji: "📡", arText: "بَرْقِيّة", trText: "Telgraf" } }, cogul: "بَرْقِيّات", cogulTr: "Telgraflar" },
+    "Yiyecek: Un": { isDictOnly: true, tip: "yiyecek", tekil: { base: { emoji: "🌾", arText: "طَحين", trText: "Un" } } },
+    "Okul: Dosya": { isDictOnly: true, tip: "okul", tekil: { base: { emoji: "🗂️", arText: "مَلَفّ", trText: "Dosya", ornek: { ar: "أَنْقُرُ المَلَفّاتِ بِواسِطةِ الفَأْرةِ", tr: "Dosyalara fare ile tıklıyorum." } } }, cogul: "مَلَفّات", cogulTr: "Dosyalar" },
+    "Okul: Ders (Madde)": { isDictOnly: true, tip: "okul", tekil: { base: { emoji: "📚", arText: "مادّة", trText: "Ders, madde" } }, cogul: "مَوادّ", cogulTr: "Dersler, maddeler" },
+    "İsim: Son": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🔚", arText: "نِهايَة", trText: "Son, bitiş", ornek: { ar: "في نِهايةِ الأُسْبوعِ نَزورُ جَدّي", tr: "Hafta sonunda dedemi ziyaret ederiz." } } } },
+    "İsim: Örnek Şahsiyet": { isDictOnly: true, tip: "isim", tekil: { base: { emoji: "🌟", arText: "قُدْوة", trText: "Örnek alınan kişi, rol model", ornek: { ar: "الرَّسولُ ﷺ قُدْوةٌ لَنا", tr: "Peygamberimiz ﷺ bizim için örnektir." } } } },
+    /* <<< Sınırda maddeler */
 };
 
 // Kökler dosyasındaki eski sözlük verilerini yeni sözlük verileriyle birleştir

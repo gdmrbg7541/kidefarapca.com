@@ -2327,6 +2327,38 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           </div>
         </a>
 
+        <!-- >>> ÖĞRENME ÇIKTISINA GÖRE SINAV (23.09.2026) -->
+        <!-- MEB Arapça öğretim programının ÖĞRENME ÇIKTILARINA ve SÜREÇ
+             BİLEŞENLERİNE göre soru seçtiren sayfa. Çıktıya tıklayınca havuz
+             o beceriye süzülür; soru seçilince çıktısı kendiliğinden atanır.
+             Sonunda çıktı-soru dağılım tablosu yazdırılır ve seçim Soru Kâğıdı
+             Hazırla sayfasına aktarılır.
+             Dosyalar: ciktisoru.html + sinifici/ciktisoru.{js,css}
+                       + veri/veri_ciktilar.js (programdan ayıklanmış veri) -->
+        <a href="ciktisoru.html" target="_blank" rel="opener" class="game-card kss-card">
+          <div class="default-game-content">
+            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
+              <path d="M12 6 h30 l10 10 v42 a2.8 2.8 0 0 1 -2.8 2.8 H12 A2.8 2.8 0 0 1 9.2 58 V8.8 A2.8 2.8 0 0 1 12 6 Z" fill="#fff" stroke="#4F46E5" stroke-width="2.6" stroke-linejoin="round"/>
+              <path d="M42 6 v8 a2.8 2.8 0 0 0 2.8 2.8 H53" fill="#EEF0FE" stroke="#4F46E5" stroke-width="2.4" stroke-linejoin="round"/>
+              <rect x="15" y="21" width="21" height="5.4" rx="2.7" fill="#EEF0FE"/>
+              <g stroke="#C7CBF7" stroke-width="2.6" stroke-linecap="round">
+                <line x1="24" y1="34" x2="47" y2="34"/><line x1="24" y1="43" x2="45" y2="43"/><line x1="24" y1="52" x2="41" y2="52"/>
+              </g>
+              <g fill="none" stroke="#16A085" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path class="kga-cs-t1" d="M14.6 33.6 l2.6 2.8 l4.4 -5.4"/>
+                <path class="kga-cs-t2" d="M14.6 42.6 l2.6 2.8 l4.4 -5.4"/>
+                <path class="kga-cs-t3" d="M14.6 51.6 l2.6 2.8 l4.4 -5.4"/>
+              </g>
+              <g class="kga-cs-kod"><rect x="33" y="10" width="26" height="11" rx="3.4" fill="#4F46E5"/>
+                <text x="46" y="18.6" font-size="7.4" font-weight="700" fill="#fff" text-anchor="middle" font-family="system-ui,sans-serif">ARP</text></g>
+            </svg></div>
+            <h3>Öğrenme Çıktısına Göre Sınav</h3>
+            <span class="game-card-description">Çıktı ve süreç bileşenine göre soru seç; dağılım tablosunu yazdır.</span>
+            <span class="status-badge available">Seç!</span>
+          </div>
+        </a>
+        <!-- <<< ÖĞRENME ÇIKTISINA GÖRE SINAV -->
+
         <!-- ARAPÇA KLAVYE — dokunarak/fareyle harekeli Arapça yazma. Harf dizilimi
              kaliplartablosu klavyesiyle aynı; sağda hareke paneli, semboller, mühürler.
              Word/Dokümanlar/Not Defteri için yazı tipi kodlu kopyalama. Dosyalar:
@@ -3950,6 +3982,131 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             'Son kontrol: Eylül 2026.</div>';
         });
       })();
+      /* >>> 10. SINIF SEÇMELİ ARAPÇA BELGELERİ (23.09.2026) */
+      /* Mektep Yayınları "Ortaöğretim Seçmeli Arapça" kitabı (2017 Ortaöğretim
+         İkinci Yabancı Dil Arapça 9-12 programı) için hazırlanan belgeler.
+         10. sınıf kartlarındaki MEB kitabı listelerinin SONUNA eklenir; var olan
+         satırlar değişmez. Belgelerdeki bütün Arapça, sitenin kendi ders
+         verisinden (muhadese/veri/sec10) üretilmiş ve kitapla karşılaştırılmıştır. */
+      (function () {
+        var D = 'dosyalar/', ETI = 'SEÇMELİ ARAPÇA · ';
+        function ikili(ad, kok, kaynak) {
+          return [
+            { ad: ETI + ad + ' — düzenlenebilir (Word)', tur: 'doc', kaynak: kaynak, url: kok + '.docx' },
+            { ad: ETI + ad + ' — yazdırmaya hazır (PDF)', url: kok + '.pdf' }
+          ];
+        }
+        function ek(tur, satirlar) {
+          var liste = SINIF_PDF[10][tur] || (SINIF_PDF[10][tur] = []);
+          satirlar.forEach(function (x) { liste.push(x); });
+        }
+        function giris(tur, html) {
+          SINIF_GIRIS[10][tur] = (SINIF_GIRIS[10][tur] || '') + html;
+        }
+        var KITAP = '<div class="dok-not"><b>Seçmeli Arapça belgeleri.</b> Aşağıdaki son belgeler ' +
+          '10. sınıfın <b>zorunlu</b> Arapça kitabına değil, <b>Mektep Yayınları “Ortaöğretim Seçmeli ' +
+          'Arapça”</b> kitabına göredir (2017 Ortaöğretim İkinci Yabancı Dil Arapça 9-12 programı, ' +
+          '<b>2 saat/hafta · 74 saat</b>). Bu kitap sitede <b>10. sınıf → kitap seçimi → Seçmeli Arapça</b> ' +
+          'bölümünde işlenir. Ders <b>4 saat</b> seçildiyse her ünitenin saati ikiye katlanır.</div>';
+
+        ek('Planlar', ikili('Ünitelendirilmiş Yıllık Plan (2026-2027)',
+              D + 'yillik-plan/arapca-10-sinif-secmeli-yillik-plan',
+              '2017 İkinci Yabancı Dil programı · 2 saat/hafta · 74 saat · A4 yatay, 10 sütun')
+            .concat(ikili('Günlük Ders Planları (12 ders)',
+              D + 'gunluk-plan/arapca-10-sinif-secmeli-gunluk-plan',
+              'Kitabın 12 dersi için birer plan · 2 ders saati · hedef sözcükler ve örnek cümleler kitaptan')));
+        giris('Planlar', KITAP);
+
+        var SNV = [['1d1y', '1. Dönem 1. Yazılı', '1. Ünite 1-2. Ders — Okula Hazırlık / Eve Dönüş'],
+                   ['1d2y', '1. Dönem 2. Yazılı', '1.Ü 3. Ders + 2.Ü 1-2. Ders — Hafta Sonu / Dinimi Seviyorum / Güzel Ahlak'],
+                   ['2d1y', '2. Dönem 1. Yazılı', '3. Ünite 1-2. Ders — Vücudun Bölümleri / Yiyecekler ve İçecekler'],
+                   ['2d2y', '2. Dönem 2. Yazılı', '3.Ü 3. Ders + 4.Ü 1-2. Ders — Spor / Türk-İslam Eserleri / Mekke, Medine, Kudüs']];
+        SNV.forEach(function (v) {
+          ek('Sınavlar', ikili(v[1], D + 'sinavlar/10-sinif-secmeli/arapca-10-secmeli-' + v[0],
+            v[2] + ' · klasik + beceri temelli bölüm · cevap anahtarı ve puanlama dosyanın içinde'));
+        });
+        giris('Sınavlar', KITAP + '<div class="dok-not">Dört yazılının her biri <b>tek dosyadır</b>: ' +
+          'A sözcük eşleştirme, B boşluk doldurma, C çeviri, D Arapça cevap yazma, E <b>beceri temelli</b> ' +
+          'okuma bölümü; son sayfada <b>cevap anahtarı ve puanlama tablosu</b> vardır. Sınav haftaları ' +
+          'yıllık plandaki <b>8.</b> ve <b>17.</b> haftalardır.</div>');
+
+        ek('Çalışma Kâğıtları & Etkinlikler',
+           ikili('Çalışma Kâğıtları (4 ünite)',
+             D + 'calisma-kagitlari/10-sinif-secmeli/arapca-10-sinif-secmeli-calisma-kagitlari',
+             'Her ünite için bir kâğıt: eşleştirme, boşluk doldurma, çeviri, cümle yazma · cevap anahtarı sonda'));
+        giris('Çalışma Kâğıtları & Etkinlikler', KITAP);
+
+        ek('Proje & Performans Görevleri',
+           ikili('Performans Çalışmaları ve Proje Görevi',
+             D + 'performans-proje/10-sinif-secmeli/arapca-10-sinif-secmeli-performans-proje',
+             'İki dönem performans çalışması + proje görevi · dereceli puanlama anahtarları'));
+        giris('Proje & Performans Görevleri', KITAP);
+      })();
+      /* <<< 10. SINIF SEÇMELİ ARAPÇA BELGELERİ */
+      /* >>> 8. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ (23.09.2026) */
+      /* Öğretmenin kendi hazırladığı, sınıfta uygulanan sınav seti:
+         dört eşdeğer grup (A-D) + kaynaştırma öğrencisi için Temel Düzey
+         dört grup + cevap anahtarları + konu-soru dağılım tabloları +
+         1. ünite çalışma kâğıdı. Dosyalar
+         dosyalar/sinavlar/8-sinif/2026-2027-1d1y/ altındadır.
+         8. sınıfın var olan sınav satırlarına DOKUNULMAZ; bunlar listenin
+         sonuna eklenir. */
+      (function () {
+        var Y = 'dosyalar/sinavlar/8-sinif/2026-2027-1d1y/';
+        var T = Y + 'temel-duzey/';
+        function ikili(ad, kok, kaynak) {
+          return [
+            { ad: ad + ' — düzenlenebilir (Word)', tur: 'doc', kaynak: kaynak, url: kok + '.docx' },
+            { ad: ad + ' — yazdırmaya hazır (PDF)', url: kok + '.pdf' }
+          ];
+        }
+        function ek(tur, satirlar) {
+          var liste = SINIF_PDF[8][tur] || (SINIF_PDF[8][tur] = []);
+          satirlar.forEach(function (x) { liste.push(x); });
+        }
+        var ETI = '2026-2027 1. DÖNEM 1. YAZILI · ';
+        var KAPSAM = '1. Ünite — Kulüpler · Tiyatro · Gezi  (kitap s. 10-34)';
+        var d = [];
+        d.push({ ad: ETI + 'Dört grup tek dosyada — yazdırmaya hazır (PDF)',
+                 url: Y + 'arapca-8-1d1y-tum-gruplar.pdf' });
+        ['a', 'b', 'c', 'd'].forEach(function (g) {
+          ikili(ETI + g.toLocaleUpperCase('tr') + ' Grubu', Y + 'arapca-8-1d1y-' + g + '-grubu',
+            KAPSAM + '  ·  eşdeğer dört gruptan biri').forEach(function (x) { d.push(x); });
+        });
+        ikili(ETI + 'Cevap Anahtarı ve Puanlama (A-D)', Y + 'arapca-8-1d1y-cevap-anahtari',
+          'Dört grubun anahtarı ve puanlama ölçeği').forEach(function (x) { d.push(x); });
+        ikili(ETI + 'Konu-Soru Dağılım Tablosu', Y + 'arapca-8-1d1y-konu-soru-dagilim',
+          'Hangi sorunun hangi konuyu ve beceriyi ölçtüğü').forEach(function (x) { d.push(x); });
+        /* Temel Düzey — kaynaştırma/bütünleştirme öğrencisi için uyarlanmış */
+        d.push({ ad: ETI + 'TEMEL DÜZEY · Dört grup tek dosyada (PDF)',
+                 url: T + 'arapca-8-1d1y-temel-tum-gruplar.pdf' });
+        ['a', 'b', 'c', 'd'].forEach(function (g) {
+          ikili(ETI + 'TEMEL DÜZEY · ' + g.toLocaleUpperCase('tr') + ' Grubu',
+            T + 'arapca-8-1d1y-temel-' + g + '-grubu',
+            'Kaynaştırma/bütünleştirme öğrencisi için uyarlanmış sürüm').forEach(function (x) { d.push(x); });
+        });
+        ikili(ETI + 'TEMEL DÜZEY · Cevap Anahtarı (A-D)', T + 'arapca-8-1d1y-temel-cevap-anahtari',
+          'Uyarlanmış sürümün anahtarı').forEach(function (x) { d.push(x); });
+        ikili(ETI + 'TEMEL DÜZEY · Konu-Soru Dağılım Tablosu', T + 'arapca-8-1d1y-temel-konu-soru-dagilim',
+          'Uyarlanmış sürümün soru analizi').forEach(function (x) { d.push(x); });
+        ek('Sınavlar', d);
+        SINIF_GIRIS[8]['Sınavlar'] = (SINIF_GIRIS[8]['Sınavlar'] || '') +
+          '<div class="dok-not"><b>2026-2027 1. dönem 1. yazılı.</b> Listenin sonundaki belgeler ' +
+          'sınıfta <b>uygulanmış</b> sınavdır: kopya önlemek için <b>dört eşdeğer grup</b> (A-D) ' +
+          'hazırlanmıştır; sorular aynı konuları ölçer, yalnız sıraları ve seçenekleri değişir. ' +
+          'Ayrıca kaynaştırma/bütünleştirme öğrencisi için <b>Temel Düzey</b> dört grup vardır. ' +
+          'Her setin <b>cevap anahtarı</b> ve <b>konu-soru dağılım tablosu</b> (hangi soru hangi ' +
+          'konuyu ve beceriyi ölçüyor) ayrı dosyadadır. Kapsam: <b>1. Ünite — Kulüpler, Tiyatro, Gezi</b> ' +
+          '(kitap s. 10-34). Sorular <b>yalnız açık uçlu ve kısa cevaplıdır</b> (Yazılı ve Uygulamalı Sınavlar ' +
+          'Yönergesi m.5/1-e); her sorunun yanında beceri etiketi vardır.</div>';
+
+        ek('Çalışma Kâğıtları & Etkinlikler',
+          ikili('1. Ünite Çalışma Kâğıdı (2026-2027)', Y + 'arapca-8-1-unite-calisma-kagidi',
+            '1. Ünite — Kulüpler, Tiyatro, Gezi · yazılı öncesi tekrar kâğıdı')
+          .concat(ikili('1. Ünite Çalışma Kâğıdı — Cevaplar', Y + 'arapca-8-1-unite-calisma-kagidi-cevaplar',
+            'Öğretmen için cevaplı sürüm')));
+      })();
+      /* <<< 8. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ */
       /* === A4 "RESMİ EVRAK" KARTLARI ===================================
          Sınıf akordiyonlarındaki "Dökümanlar" bölümü artık akordiyon değil,
          A4 sayfa oranında kartlardan oluşan bir ızgara. Bir karta tıklanınca
