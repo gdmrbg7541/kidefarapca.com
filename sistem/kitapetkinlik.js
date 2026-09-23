@@ -12,11 +12,18 @@
    KLASOR-DUZENI.md). Asılları 📖Komisyon klasöründe durur.
 
    NASIL ÇALIŞIR
-   index.html'de her sınıfın «Kitap Etkinlikleri» bölümünde
-   <div class="ih-kitap" data-sinif="N"></div> kutusu vardır. Bu dosya
-   KITAP[N] verisinden o kutuya ünite akordiyonunu basar. Ünite satırları
-   sınıf dökümanlarıyla aynı akordiyon sınıflarını (ihdoc-item /
-   ihdocToggle) kullanır; açılıp kapanma index.html'deki koddan gelir.
+   Etkinlikler AYRI BİR AKORDİYON BÖLÜMÜ DEĞİL, sınıfın kart ızgarasında
+   («N. Sınıf Etkinlikleri» → .ih-kartlar[data-sinif=N]) bir KARTTIR.
+   Kart sistem/sinifmodul.js kayıtçısına yazılır (dugme:true), tıklanınca
+   ünite listesi kartın ALTINDA açılır — Muhâdese kartındaki düzen.
+   Ünite satırları sınıf dökümanlarıyla aynı akordiyon sınıflarını
+   (ihdoc-item / ihdocToggle) kullanır; açılıp kapanma index.html'den.
+
+   7. sınıfın İKİ kitabı olduğu için (bkz. sistem/sinifveri.js → VERI_YILI)
+   kart yalnız KITAP[7].yil ile seçili yıl aynıyken basılır; kitap
+   seçilince kart belirme animasyonuyla girer (gorunurMu → belir).
+
+   Etkinlik bağlantıları AYNI SEKMEDE açılır (Geylani).
 
    ⚠️ YENİ ETKİNLİK EKLEMEK — tek satır:
       KITAP[sınıf].uniteler[i].etk dizisine
@@ -32,6 +39,7 @@
   if (window.KidefKitapEtkinlik) return;
 
   var KOK = 'kitapetkinlikleri/';
+  var KRENK = '#4F46E5';          /* kartın ve panelin rengi (kitap = indigo) */
 
   /* ---------------- simgeler (24×24) ---------------- */
   function svg(ic) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ic + '</svg>'; }
@@ -106,6 +114,11 @@
   var KITAP = {
     7: {
       kitap: 'İHO Arapça 7',
+      /* Bu etkinlikler MEB'in 2027-2028'de okutulacak 7. sınıf kitabına
+         (Maarif Modeli) girmiştir. 7. sınıfın İKİ kitabı olduğu için
+         (bkz. sistem/sinifveri.js → VERI_YILI) bölüm yalnız bu kitap
+         seçiliyken görünür; Mektep Yayınları 2026-2027 seçiliyken gizlenir. */
+      yil: '2027-2028',
       uniteler: [
         { no: 1, ad: 'Bugün Ne Yaptım?', ar: 'ماذا فَعَلْتُ اليَوْم؟', etk: [
           oyunlar('7/unite_1_oyunlar/', [O.yaz, O.kelime, O.ses, O.evet, O.hafiza, O.zamir, O.saat]),
@@ -194,7 +207,9 @@
 
   function etkHtml(e) {
     var t = TUR[e.tur] || TUR.sayfa, renk = t.renk, ic = (SIMGE[e.tur] || SIMGE.sayfa)(renk);
-    var h = '<a class="ke-etk" href="' + esc(adres(e.url)) + '" target="_blank" rel="opener" style="--ket:' + renk + '">' +
+    /* AYNI SEKMEDE AÇILIR (Geylani: "yeni sekme olmasın"). Etkinlikler
+       sitenin kendi sayfaları; geri tuşu listeye döndürür. */
+    var h = '<a class="ke-etk" href="' + esc(adres(e.url)) + '" style="--ket:' + renk + '">' +
       '<span class="ke-ic">' + ic + '</span>' +
       '<span class="ke-metin"><b>' + esc(e.ad) + '</b>' + (e.alt ? '<small>' + esc(e.alt) + '</small>' : '') + '</span>' +
       (e.sayfa ? '<span class="ke-sayfa" title="Kitaptaki sayfası">s. ' + esc(e.sayfa) + '</span>' : '') +
@@ -202,7 +217,7 @@
     if (e.parca && e.parca.length) {
       h += '<div class="ke-parcalar" style="--ket:' + renk + '">' + e.parca.map(function (p) {
         var pdf = /\.pdf$/i.test(p[0]);
-        return '<a href="' + esc(klasor(e.url) + p[0]) + '" target="_blank" rel="' + (pdf ? 'noopener' : 'opener') + '"' +
+        return '<a href="' + esc(klasor(e.url) + p[0]) + '"' +
           (pdf ? ' class="ke-pdf"' : '') + '>' + esc(p[1]) + '</a>';
       }).join('') + '</div>';
     }
@@ -261,24 +276,295 @@
         'border:1.2px solid #e5eaf0;border-radius:999px;padding:4px 11px;transition:border-color .15s,color .15s,background .15s;touch-action:manipulation}' +
       '.ke-parcalar a:hover{border-color:var(--ket);color:var(--ket);background:#fff}' +
       '.ke-parcalar a.ke-pdf::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;background:#EE5253;margin-right:6px;vertical-align:1px}' +
+      /* ---------------- kart ---------------- */
+      '.ke-kart{position:relative}' +
+      '.ke-kart .ke-chevron{display:block;margin-top:7px;font-size:.95rem;line-height:1;color:#5f7286;transition:transform .32s ease}' +
+      '.ke-kart.acik .ke-chevron{transform:rotate(180deg)}' +
+      /* Açık kart: panelin hangi karta ait olduğu belli olsun diye halka +
+         boyalı zemin, ötekiler soluyor (Muhâdese kartıyla aynı dil). */
+      '.ke-kart.acik{border-color:#3730A3;box-shadow:0 0 0 3px rgba(79,70,229,.22),0 12px 26px rgba(55,48,163,.26)}' +
+      '#imam-hatip .ih-kartlar .game-grid button.ke-kart.acik{background:linear-gradient(180deg,#EDEEFF 0%,#fff 72%)}' +
+      '#imam-hatip .ih-kartlar.ke-acik .game-grid .game-card:not(.ke-kart){opacity:.5;filter:saturate(.5)}' +
+      '#imam-hatip .ih-kartlar.ke-acik .game-grid .game-card:not(.ke-kart):hover,' +
+      '#imam-hatip .ih-kartlar.ke-acik .game-grid .game-card:not(.ke-kart):focus-visible{opacity:1;filter:none}' +
+      /* Kart ikonu: sayfa satırları sırayla beliriyor, oynat düğmesi nefes alıyor */
+      '.ke-kart .kea-satir{animation:keSatir 3.2s ease-in-out infinite}' +
+      '.ke-kart .kea-satir.s2x{animation-delay:.32s}.ke-kart .kea-satir.s3x{animation-delay:.64s}' +
+      '@keyframes keSatir{0%,100%{opacity:.25}45%,65%{opacity:1}}' +
+      '.ke-kart .kea-oyna{transform-origin:43px 30px;animation:keOyna 3.2s ease-in-out infinite}' +
+      '@keyframes keOyna{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}' +
+      /* ---------------- belirme (kitap seçilince) ----------------
+         Geylani: "maarif seçilince farkedilsin". Kart aşağıdan süzülüp
+         gelir, sonra iki kez halkalanır. */
+      '.ke-kart.ke-belir{animation:keBelir .62s cubic-bezier(.22,1,.36,1) both,keHalka 1.15s ease-out .25s 2}' +
+      '@keyframes keBelir{0%{opacity:0;transform:translateY(16px) scale(.93)}' +
+        '60%{opacity:1;transform:translateY(-3px) scale(1.03)}100%{opacity:1;transform:none}}' +
+      '@keyframes keHalka{0%{box-shadow:0 0 0 0 rgba(79,70,229,.55)}' +
+        '70%{box-shadow:0 0 0 15px rgba(79,70,229,0)}100%{box-shadow:0 0 0 0 rgba(79,70,229,0)}}' +
+      /* ---------------- kartın altında açılan panel ---------------- */
+      '.ke-panel{max-height:0;overflow:hidden;transition:max-height .34s cubic-bezier(.4,0,.2,1)}' +
+      '.ke-panel-in{position:relative;margin-top:13px;padding:13px 15px 15px;' +
+        'border:1.8px solid #C3C8F7;border-radius:14px;background:linear-gradient(180deg,#F6F7FF 0%,#fff 62%)}' +
+      /* Ok — panelin tepesinden kartı gösterir; kartın ızgaradaki yeri
+         sınıfa göre değiştiği için okHizala() ölçüp --ke-ok'a yazar. */
+      '.ke-panel-in::before{content:"";position:absolute;top:-8px;left:var(--ke-ok,50%);width:15px;height:15px;' +
+        'transform:translateX(-50%) rotate(45deg);background:#F6F7FF;' +
+        'border-left:1.8px solid #C3C8F7;border-top:1.8px solid #C3C8F7;border-radius:3px 0 0 0}' +
+      '.ke-panel-bas{display:flex;align-items:center;gap:13px;padding:11px 14px;margin:0 0 11px;border-radius:12px;' +
+        'background:linear-gradient(90deg,#E7E9FF 0%,#F7F8FF 76%);border:1.6px solid #C3C8F7}' +
+      '.ke-panel-ik{flex:none;width:40px;height:40px}.ke-panel-ik svg{width:100%;height:100%;display:block;overflow:visible}' +
+      '.ke-panel-ad{flex:1;min-width:0;font-size:1.22rem;font-weight:800;color:#312E81;line-height:1.25}' +
+      '.ke-panel-ad b{color:#4F46E5}' +
+      '.ke-panel-say{flex:none;font-size:.82rem;font-weight:800;letter-spacing:.3px;white-space:nowrap;' +
+        'color:#312E81;background:#fff;border:1.5px solid #B4BAF5;border-radius:999px;padding:6px 14px}' +
       '@media (max-width:600px){.ke-etk{padding:9px 10px;gap:9px}.ke-ic{width:26px;height:26px}' +
-        '.ke-metin b{font-size:.9rem}.ke-parcalar{margin-left:0}.ke-ac{display:none}}';
+        '.ke-metin b{font-size:.9rem}.ke-parcalar{margin-left:0}.ke-ac{display:none}' +
+        '.ke-panel-in{padding:10px 11px 12px;margin-top:11px}.ke-panel-in::before{display:none}' +
+        '.ke-panel-bas{padding:9px 11px;gap:10px}.ke-panel-ik{width:32px;height:32px}' +
+        '.ke-panel-ad{font-size:1.02rem}.ke-panel-say{font-size:.72rem;padding:5px 11px}}' +
+      '@media (prefers-reduced-motion:reduce){.ke-kart.ke-belir{animation:none}' +
+        '.ke-kart .kea-satir,.ke-kart .kea-oyna{animation:none}.ke-kart .kea-satir{opacity:1}}';
     (document.head || document.documentElement).appendChild(s);
   }
 
-  function kur(kok) {
-    stilKur();
-    var n = 0;
-    [].forEach.call((kok || document).querySelectorAll('#imam-hatip .ih-kitap[data-sinif]'), function (m) {
-      var kod = html(m.getAttribute('data-sinif'));
-      if (!kod) return;
-      m.innerHTML = kod; n++;
+  /* ---------------- öğretim yılı (kitap) süzgeci ----------------
+     KITAP[sınıf].yil doluysa etkinlikler o yılın kitabına aittir; başka
+     kitap seçiliyken bölüm gizlenir. Yıl bilgisi yoksa (5, 9, 10 …) her
+     zaman görünür — eski davranış. */
+  function gorunurMu(sinif) {
+    var k = KITAP[String(sinif)];
+    if (!k) return false;
+    if (!k.yil) return true;
+    var v = window.KidefSinifVeri;
+    if (!v || !v.seciliVeriYili) return true;
+    var y = v.seciliVeriYili(sinif);
+    return !y || y.yil === k.yil;
+  }
+
+  /* =====================================================================
+     KART + KARTIN ALTINDA AÇILAN PANEL
+     ===================================================================== */
+
+  function etkSayisi(sinif) {
+    var k = KITAP[String(sinif)], n = 0;
+    if (!k) return 0;
+    k.uniteler.forEach(function (u) {
+      u.etk.forEach(function (e) { n += (e.parca && e.tur !== 'ek') ? e.parca.length : 1; });
     });
     return n;
   }
 
-  window.KidefKitapEtkinlik = { veri: KITAP, html: html, kur: kur, adres: adres };
+  /* Kart ikonu (64×64): açık kitap + oynat düğmesi — bölüm ikonunun büyüğü. */
+  function kartSvg() {
+    return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +
+      '<path d="M32 16c-6-4.2-13-5.4-20-3.8v31.4c7-1.6 14-.4 20 3.8" fill="#EEF2FF" stroke="' + KRENK + '" stroke-width="2.6" stroke-linejoin="round"/>' +
+      '<path d="M32 16c6-4.2 13-5.4 20-3.8v31.4c-7-1.6-14-.4-20 3.8" fill="#fff" stroke="' + KRENK + '" stroke-width="2.6" stroke-linejoin="round"/>' +
+      '<path d="M32 16v31.4" stroke="' + KRENK + '" stroke-width="2.2"/>' +
+      '<g stroke="#A5B4FC" stroke-width="2.1" stroke-linecap="round">' +
+        '<path class="kea-satir" d="M17 26h9"/><path class="kea-satir s2x" d="M17 32h11"/>' +
+        '<path class="kea-satir s3x" d="M17 38h8"/></g>' +
+      '<g class="kea-oyna"><circle cx="43" cy="30" r="8.8" fill="#F39C12"/>' +
+        '<path d="M40.3 25.4 47.8 30l-7.5 4.6z" fill="#fff"/></g>' +
+      '</svg>';
+  }
 
+  function panelHtml(sinif) {
+    var k = KITAP[String(sinif)];
+    if (!k) return '';
+    return '<div class="ke-panel-in">' +
+      '<div class="ke-panel-bas">' +
+        '<span class="ke-panel-ik">' + kartSvg() + '</span>' +
+        '<span class="ke-panel-ad">Kitap Etkinlikleri <b>' + esc(sinif) + '. Sınıf</b></span>' +
+        '<span class="ke-panel-say">' + k.uniteler.length + ' ünite · ' + etkSayisi(sinif) + ' etkinlik</span>' +
+      '</div>' + html(sinif) + '</div>';
+  }
+
+  /* Panel, kart ızgarasının ALTINDA tam genişlikte kardeştir; ilk tıklamada
+     kurulur. Izgara yeniden yazıldığında (kitap değişince) silinir. */
+  function panelBul(mount, olustur) {
+    var c = mount.children, i, p = null;
+    for (i = 0; i < c.length; i++)
+      if (c[i].classList && c[i].classList.contains('ke-panel')) { p = c[i]; break; }
+    if (p || !olustur) return p;
+    var kod = panelHtml(mount.getAttribute('data-sinif'));
+    if (!kod) return null;
+    p = document.createElement('div');
+    p.className = 'ke-panel';
+    p.innerHTML = kod;
+    mount.appendChild(p);
+    return p;
+  }
+  function panelSil(mount) {
+    var p = panelBul(mount, false);
+    if (p && p.parentNode) p.parentNode.removeChild(p);
+    mount.classList.remove('ke-acik');
+  }
+
+  /* --- açılış/kapanış (index.html'deki panelAc/panelKapat'ın eşi; o
+         işlevler oradaki kapalı kutuda, buradan görünmüyor) --- */
+  function acilisSil(p) {
+    if (!p || !p.__keAc) return;
+    p.removeEventListener('transitionend', p.__keAc);
+    p.removeEventListener('transitioncancel', p.__keAc);
+    p.__keAc = null;
+  }
+  function panelAc(p) {
+    if (!p) return;
+    acilisSil(p);
+    p.style.maxHeight = p.scrollHeight + 'px';
+    var f = function (e) {
+      if (e.target !== p || e.propertyName !== 'max-height') return;
+      acilisSil(p);
+      if (p.style.maxHeight === '0px') return;        /* bu arada kapandı */
+      p.style.maxHeight = 'none';                     /* ünite açılınca kırpılmasın */
+    };
+    p.__keAc = f;
+    p.addEventListener('transitionend', f);
+    p.addEventListener('transitioncancel', f);
+  }
+  function panelKapat(p) {
+    if (!p) return;
+    acilisSil(p);
+    if (getComputedStyle(p).maxHeight === 'none') { p.style.maxHeight = p.scrollHeight + 'px'; void p.offsetHeight; }
+    p.style.maxHeight = '0px';
+  }
+  /* Üstteki sınıf panelleri ölçülü yükseklikteyse büyüyen içerik kırpılır. */
+  function ustSerbest(el) {
+    var p = el.parentNode;
+    while (p && p.nodeType === 1) {
+      if (p.classList && (p.classList.contains('ih-panel') || p.classList.contains('ihsec-panel'))) {
+        var m = p.style.maxHeight;
+        if (m && m !== 'none' && m !== '0px') p.style.maxHeight = 'none';
+      }
+      p = p.parentNode;
+    }
+  }
+  /* Panelin oku kartın ortasını gösterir (kartın sırası sınıfa göre değişir). */
+  function okHizala(mount) {
+    var kart = mount.querySelector('.ke-kart'), ic = mount.querySelector('.ke-panel-in');
+    if (!kart || !ic) return;
+    var k = kart.getBoundingClientRect(), p = ic.getBoundingClientRect();
+    if (!p.width || !k.width) return;
+    var x = (k.left + k.width / 2) - p.left;
+    x = Math.max(26, Math.min(p.width - 26, x));
+    ic.style.setProperty('--ke-ok', x.toFixed(1) + 'px');
+  }
+  window.addEventListener('resize', function () {
+    clearTimeout(window.__keOkZaman);
+    window.__keOkZaman = setTimeout(function () {
+      [].forEach.call(document.querySelectorAll('.ih-kartlar.ke-acik'), okHizala);
+    }, 140);
+  });
+
+  /* Kart tıklanınca: liste kartın altında açılır, sayfa değişmez. */
+  window.keKartTik = function (btn) {
+    var mount = btn.closest ? btn.closest('.ih-kartlar') : null;
+    if (!mount) return;
+    var p = panelBul(mount, true);
+    if (!p) return;
+    var aciliyor = !btn.classList.contains('acik');
+    /* Muhâdese listesi açıksa kapanır: iki panel birden açıkken kartlar
+       iki kez soluyor, hangi panelin kime ait olduğu karışıyor. */
+    if (aciliyor && window.mhToggle) {
+      var mh = mount.querySelector('.mh-kart.acik');
+      if (mh) { try { window.mhToggle(mh); } catch (e) {} }
+    }
+    btn.classList.toggle('acik', aciliyor);
+    btn.setAttribute('aria-expanded', aciliyor ? 'true' : 'false');
+    mount.classList.toggle('ke-acik', aciliyor);
+    if (aciliyor) { ustSerbest(p); okHizala(mount); panelAc(p); }
+    else panelKapat(p);
+  };
+
+  /* --- belirme: kitap seçilince kart farkedilsin --- */
+  function belir(kart) {
+    if (!kart) return;
+    kart.classList.remove('ke-belir');
+    void kart.offsetWidth;                       /* animasyon baştan başlasın */
+    kart.classList.add('ke-belir');
+    var bitir = function (e) {
+      if (e && e.animationName && e.animationName !== 'keHalka') return;
+      kart.classList.remove('ke-belir');
+      kart.removeEventListener('animationend', bitir);
+    };
+    kart.addEventListener('animationend', bitir);
+    setTimeout(function () { bitir(); }, 2800);   /* hareket kapalıysa da temizlensin */
+  }
+
+  /* --- kartı kayıtçıya yaz (sistem/sinifmodul.js) --- */
+  function kartKur() {
+    var M = window.KidefSinifModul;
+    if (!M || kartKur.kuruldu) return;
+    kartKur.kuruldu = 1;
+    M.ekle({
+      id: 'kitapetkinlik',
+      ad: 'Kitap Etkinlikleri',
+      sira: 5,            /* ızgaranın başı: kitabın kendi etkinlikleri, kitapla birlikte gelir */
+      renk: KRENK,
+      dugme: true, tikla: 'keKartTik', eksinif: 'ke-kart',
+      ekic: function () { return '<span class="ke-chevron">▾</span>'; },
+      svg: kartSvg,
+      aciklama: function (s) { return 'Ders kitabındaki dijital etkinlikler — ' + s + '. Sınıf'; },
+      /* Kitabı olmayan sınıfta ve başka kitap seçiliyken kart hiç basılmaz */
+      veriVar: function (s) {
+        if (!KITAP[String(s)] || !gorunurMu(s)) return null;
+        return { rozet: etkSayisi(s) + ' Etkinlik' };
+      },
+      url: function () { return '#'; }
+    });
+  }
+
+  /* Eski düzen: ayrı bölümdeki <div class="ih-kitap"> kutusu. index.html'de
+     kalmadı; başka bir sayfada kullanılırsa çalışmaya devam etsin diye
+     duruyor. */
+  function eskiKutu(m) {
+    var sinif = m.getAttribute('data-sinif');
+    var bolum = m.closest ? m.closest('.ihsec-item') : null;
+    if (!gorunurMu(sinif)) { m.innerHTML = ''; if (bolum) bolum.style.display = 'none'; return 0; }
+    if (bolum) bolum.style.display = '';
+    var kod = html(sinif);
+    if (!kod) return 0;
+    m.innerHTML = kod;
+    return 1;
+  }
+
+  function kur(kok) {
+    stilKur(); kartKur();
+    var alan = kok || document, n = 0;
+    [].forEach.call(alan.querySelectorAll('#imam-hatip .ih-kitap[data-sinif]'), function (m) { n += eskiKutu(m); });
+    /* Kartı normalde index.html'deki ızgara kurulumu basar; basılmadıysa
+       (örn. modül bu dosyadan sonra yüklendiyse) burada tamamlanır. */
+    var M = window.KidefSinifModul;
+    if (M) [].forEach.call(alan.querySelectorAll('#imam-hatip .ih-kartlar[data-sinif]'), function (m) {
+      var s = m.getAttribute('data-sinif');
+      if (!KITAP[String(s)] || !gorunurMu(s) || m.querySelector('.ke-kart')) return;
+      M.yerlestir(m, s); n++;
+    });
+    return n;
+  }
+
+  window.KidefKitapEtkinlik = {
+    veri: KITAP, html: html, kur: kur, adres: adres,
+    gorunurMu: gorunurMu, etkSayisi: etkSayisi
+  };
+
+  /* Kitap seçicisi değişince kartlar yeniden basılıyor: bu olayın
+     dinleyicileri sırayla çalışır, sinifmodul.js ve index.html'deki
+     ızgara kurulumu BİZDEN ÖNCE bağlı — iş sıraya alınıyor (setTimeout 0),
+     o zamana kadar ızgara yerine oturmuş olur. */
+  document.addEventListener('kidef:veriyili', function (e) {
+    var n = e && e.detail ? String(e.detail.sinif) : '';
+    if (!n) return;
+    setTimeout(function () {
+      [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar[data-sinif="' + n + '"]'), function (m) {
+        panelSil(m);                    /* içerik kitaba göre değişir, yeniden kurulur */
+        belir(m.querySelector('.ke-kart'));
+      });
+      [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kitap[data-sinif="' + n + '"]'), eskiKutu);
+    }, 0);
+  });
+
+  stilKur(); kartKur();          /* kart ızgara kurulmadan ÖNCE kayıtlı olmalı */
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { kur(); });
   else kur();
 })();

@@ -195,7 +195,14 @@
        önceki öğretim programıyla devam ediyor (21.09.2026, Geylani). */
     8:  [{ yil: '2026-2027', program: 'Önceki öğretim programı (Maarif Modeli 8. sınıfta henüz uygulanmıyor)', onek: '', maarif: false }],
     9:  [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '', maarif: true }],
-    10: [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '', maarif: true }]
+    /* 10. sınıfın İKİ KİTABI var (23.09.2026, Geylani): MEB Maarif kitabı
+       (4 tema × 2 ders, ders verisi kökte 10_1_1 … 10_4_2) ve Ortaöğretim
+       SEÇMELİ ARAPÇA kitabı (4 ünite × 3 ders, ders verisi sec10/ altında).
+       Ders kimlikleri aynı biçimde (10_ü_d); hangi kitabın okunacağını `onek`
+       belirler — 6. sınıftaki düzenin aynısı. Seçmeli kitap 2017 programına
+       göre yazıldığı için Maarif etiketi yalnız Maarif kitabında görünür. */
+    10: [{ yil: '2026-2027', ad: '2026-2027 (Maarif)', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '', maarif: true },
+         { yil: 'secmeli', ad: 'Seçmeli Arapça', program: 'Ortaöğretim Seçmeli Arapça ders kitabı (4 ünite × 3 ders)', onek: 'sec10/', maarif: false }]
   };
 
   var YIL_ANAHTAR = 'kidef_veri_yili';   /* localStorage: { "6": "2026-2027" } */

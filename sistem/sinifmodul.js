@@ -26,6 +26,14 @@
       });
       Kart otomatik olarak İmam Hatip akordiyonundaki tüm sınıflarda
       denenir; yalnız verisi olan sınıflarda görünür.
+
+   İSTEĞE BAĞLI ALANLAR
+      yeniSekme:false                  // bağlantı aynı sekmede açılsın
+      dugme:true, tikla:'keKartTik'    // kart bağlantı DEĞİL düğme olur;
+                                       // tıklayınca adı verilen genel işlev
+                                       // çağrılır (yerinde açılan panel)
+      eksinif:'ke-kart'                // karta ek sınıf adı
+      ekic: function(s){ return '<span …>▾</span>'; }   // kart içine ek HTML
    ===================================================================== */
 (function () {
   'use strict';
@@ -73,6 +81,15 @@
         renk:     v.renk || t.renk || '',
         svg:      cagir(t.svg, n) || '',
         url:      cagir(t.url, n) || '#',
+        /* YERİNDE AÇILAN KART (Kitap Etkinlikleri): bağlantı yerine <button>
+           basılır, tıklayınca modül kendi panelini kartın ALTINDA açar —
+           Muhâdese kartındaki düzen. yeniSekme:false ise bağlantı kart aynı
+           sekmede açılır. */
+        dugme:    !!t.dugme,
+        tikla:    t.tikla || '',
+        ekic:     cagir(t.ekic, n) || '',
+        eksinif:  t.eksinif || '',
+        yeniSekme: t.yeniSekme !== false,
         veri:     v
       });
     });
@@ -82,14 +99,20 @@
   /* ---------------- HTML ---------------- */
   function kartHtml(k) {
     var stil = k.renk ? ' style="--smrenk:' + esc(k.renk) + '"' : '';
-    return '<a href="' + esc(k.url) + '" target="_blank" rel="opener"' + stil +
-      ' class="game-card kss-card sm-kart" data-smodul="' + esc(k.id) + '">' +
-      '<div class="default-game-content">' +
+    var ortak = stil + ' class="game-card kss-card sm-kart' + (k.eksinif ? ' ' + esc(k.eksinif) : '') +
+      '" data-smodul="' + esc(k.id) + '"';
+    var ic = '<div class="default-game-content">' +
       '<div class="default-game-emoji">' + (k.svg || '') + '</div>' +
       '<h3>' + esc(k.ad) + '</h3>' +
       '<span class="game-card-description">' + esc(k.aciklama) + '</span>' +
       '<span class="status-badge ' + (k.pasif ? 'bekliyor' : 'available') + '">' + esc(k.rozet) + '</span>' +
-      '</div></a>';
+      (k.ekic || '') + '</div>';
+    if (k.dugme) {
+      return '<button type="button"' + ortak + ' aria-expanded="false"' +
+        (k.tikla ? ' onclick="' + esc(k.tikla) + '(this)"' : '') + '>' + ic + '</button>';
+    }
+    return '<a href="' + esc(k.url) + '"' + (k.yeniSekme ? ' target="_blank" rel="opener"' : '') +
+      ortak + '>' + ic + '</a>';
   }
   function html(sinif) {
     return kartlar(sinif).map(kartHtml).join('');
@@ -180,6 +203,11 @@
       '.sm-yil-serit{display:flex;justify-content:flex-end;margin:0 0 10px;}' +
       '@media (max-width:600px){.sm-yil-serit{justify-content:flex-start;}}' +
       '.sm-kart{position:relative;}' +
+      /* Düğme kart (dugme:true) da bağlantı kartlarla aynı görünsün:
+         tarayıcının <button> varsayılanları siliniyor. */
+      'button.sm-kart{width:100%;font-family:inherit;font-size:1em;color:#333;text-align:center;' +
+        'cursor:pointer;-webkit-appearance:none;appearance:none;}' +
+      'button.sm-kart .default-game-content{width:100%;}' +
       '.sm-kart .status-badge{white-space:nowrap;}' +
       '.sm-kart[style*="--smrenk"] .status-badge.available{background:var(--smrenk);border-color:var(--smrenk);}' +
       '.sm-kart .kg{width:100%;height:100%;display:block;overflow:visible;}' +
