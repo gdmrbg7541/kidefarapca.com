@@ -7,7 +7,8 @@
    eklenince oyun da onu sorar. Dosya, ders seçildiği an arkadan yüklenir.
 
    ÖĞRETİM YILI: 6. sınıfın iki kitabı var (2026-2027 yeni kitap y2627/
-   altında, 2025-2026 eski kitap kökte). Hangisinin oynanacağını
+   altında, 2025-2026 eski kitap kökte). 7. sınıfın da iki kitabı var
+   (2026-2027 Mektep Yayınları y2627/ altında, 2027-2028 MEB kitabı kökte). Hangisinin oynanacağını
    sistem/sinifveri.js'teki seçim belirler (KidefSinifVeri.seciliVeriYili);
    seçim yoksa en yeni yıl. Seçim değişince 'tk:ortaokul' olayı yayılır,
    ders listesi yeniden kurulur.
@@ -110,7 +111,41 @@
             ] }
         ],
         "7": [
-            { yil: "2026-2027", onek: "", u: [
+            /* >>> 7. SINIF MEKTEP YAYINLARI (yama7.py üretti; elle düzenlemeyin, yeniden üretin) */
+            { yil: "2026-2027", onek: "y2627/", u: [
+                { no: 1, ad: "Meslekler", ar: "المِهَن", d: [
+                    ["7_1_1", "Mesleğin Ne?", "ما مِهْنَتُك؟"],
+                    ["7_1_2", "Öğretmenim", "مُدَرِّسي"],
+                    ["7_1_3", "Hayalim", "خَيالي"]
+                ] },
+                { no: 2, ad: "Alışveriş", ar: "التَّسَوُّق", d: [
+                    ["7_2_1", "Bakkalda", "في البَقّالة"],
+                    ["7_2_2", "Kırtasiyede", "في القِرْطاسِيّة"],
+                    ["7_2_3", "Semt Pazarında", "في السّوق الشَّعْبي"]
+                ] },
+                { no: 3, ad: "Hava Durumu", ar: "الطَّقْس", d: [
+                    ["7_3_1", "Hava Yağmurlu", "الجَوّ مُمْطِر"],
+                    ["7_3_2", "Hava Karlı", "الجَوّ مُثْلِج"],
+                    ["7_3_3", "Hava Güneşli", "الجَوّ مُشْمِس"]
+                ] },
+                { no: 4, ad: "Vatanım", ar: "وَطَني", d: [
+                    ["7_4_1", "Tarihî Yerler", "الأَماكِن التّاريخِيّة"],
+                    ["7_4_2", "Vatanımı Seviyorum", "أُحِبُّ وَطَني"],
+                    ["7_4_3", "Örnek Şahsiyetler", "الشَّخْصِيّات المِثالِيّة"]
+                ] },
+                { no: 5, ad: "İbadetler", ar: "العِبادات", d: [
+                    ["7_5_1", "Beş Vakit Namaz", "الصَّلوات الخَمْس"],
+                    ["7_5_2", "Oruç", "الصَّوْم"],
+                    ["7_5_3", "Dinî Bayramlar", "الأَعْياد الدّينِيّة"]
+                ] },
+                { no: 6, ad: "İletişim", ar: "الاِتِّصالات", d: [
+                    ["7_6_1", "Cep Telefonu", "الهاتِف الجَوّال"],
+                    ["7_6_2", "Bilgisayar", "الحاسوب"],
+                    ["7_6_3", "Mektup", "الرِّسالة"]
+                ] }
+            ] },
+            /* <<< 7. SINIF MEKTEP YAYINLARI */
+            { yil: "2027-2028", onek: "", u: [
                 { no: 1, ad: "Bugün Ne Yaptım?", ar: "ماذا فَعَلْتُ اليَوْمَ؟", d: [
                     ["7_1", "Günlük Etkinlikler ve Saatler", "الأَنْشِطَةُ اليَوْمِيَّة وَالسّاعات"]
                 ] },
