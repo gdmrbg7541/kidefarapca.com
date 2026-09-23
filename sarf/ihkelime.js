@@ -527,6 +527,60 @@
     /* Yıla göre değişen müfredat — muhadese.js'teki educationDataYil ile
        AYNI ağaç. 6. sınıfın 2026-2027 kitabı 4 ünite × 2 ders. */
     var MUFREDAT_YIL = {
+        /* >>> 7. SINIF MEKTEP YAYINLARI (yama7.py üretti; elle düzenlemeyin, yeniden üretin) */
+        "7": {
+            "2026-2027": [
+                {
+                    "ad": "1. Ünite: Meslekler | المِهَن",
+                    "dersler": [
+                        { "ad": "1. Ders: Mesleğin Ne? | ما مِهْنَتُك؟", "id": "7_1_1", "veri": true },
+                        { "ad": "2. Ders: Öğretmenim | مُدَرِّسي", "id": "7_1_2", "veri": true },
+                        { "ad": "3. Ders: Hayalim | خَيالي", "id": "7_1_3", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "2. Ünite: Alışveriş | التَّسَوُّق",
+                    "dersler": [
+                        { "ad": "1. Ders: Bakkalda | في البَقّالة", "id": "7_2_1", "veri": true },
+                        { "ad": "2. Ders: Kırtasiyede | في القِرْطاسِيّة", "id": "7_2_2", "veri": true },
+                        { "ad": "3. Ders: Semt Pazarında | في السّوق الشَّعْبي", "id": "7_2_3", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "3. Ünite: Hava Durumu | الطَّقْس",
+                    "dersler": [
+                        { "ad": "1. Ders: Hava Yağmurlu | الجَوّ مُمْطِر", "id": "7_3_1", "veri": true },
+                        { "ad": "2. Ders: Hava Karlı | الجَوّ مُثْلِج", "id": "7_3_2", "veri": true },
+                        { "ad": "3. Ders: Hava Güneşli | الجَوّ مُشْمِس", "id": "7_3_3", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "4. Ünite: Vatanım | وَطَني",
+                    "dersler": [
+                        { "ad": "1. Ders: Tarihî Yerler | الأَماكِن التّاريخِيّة", "id": "7_4_1", "veri": true },
+                        { "ad": "2. Ders: Vatanımı Seviyorum | أُحِبُّ وَطَني", "id": "7_4_2", "veri": true },
+                        { "ad": "3. Ders: Örnek Şahsiyetler | الشَّخْصِيّات المِثالِيّة", "id": "7_4_3", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "5. Ünite: İbadetler | العِبادات",
+                    "dersler": [
+                        { "ad": "1. Ders: Beş Vakit Namaz | الصَّلوات الخَمْس", "id": "7_5_1", "veri": true },
+                        { "ad": "2. Ders: Oruç | الصَّوْم", "id": "7_5_2", "veri": true },
+                        { "ad": "3. Ders: Dinî Bayramlar | الأَعْياد الدّينِيّة", "id": "7_5_3", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "6. Ünite: İletişim | الاِتِّصالات",
+                    "dersler": [
+                        { "ad": "1. Ders: Cep Telefonu | الهاتِف الجَوّال", "id": "7_6_1", "veri": true },
+                        { "ad": "2. Ders: Bilgisayar | الحاسوب", "id": "7_6_2", "veri": true },
+                        { "ad": "3. Ders: Mektup | الرِّسالة", "id": "7_6_3", "veri": true },
+                    ]
+                },
+            ]
+        },
+        /* <<< 7. SINIF MEKTEP YAYINLARI */
         "6": {
             "2026-2027": [
                 {
