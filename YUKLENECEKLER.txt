@@ -33,6 +33,8 @@ böylece belge sınıfın adının hemen altına geliyor. Kartlar silinmiyor:
 üstlerine gelen "ETKİNLİK KARTLARI (n) ▾" şeridinden geri açılıyor.
 
   · şerit    → .ihkart-bar (JS ile her .ih-kartlar'ın üstüne ekleniyor)
+               rengi sitenin yeşili #16A085; kapalıyken dolgun (#E6F7F2),
+               açıkken hafif. Karanlık kipte de yeşil.
   · kanca    → a4Toggle içinden window.ihKartOto(btn)
   · işaret   → .ih-kartlar[data-oto="1"] yalnız BİZİM topladığımızı söyler;
                son belge kapanınca kartlar kendiliğinden geri gelir.

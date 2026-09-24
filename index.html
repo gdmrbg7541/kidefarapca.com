@@ -512,18 +512,24 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
        belgeler sınıfın adının hemen altına geliyor. Şerit hem "burada kartlar
        var" der hem de okuyla kartları geri açar. Kartların kendisi silinmiyor,
        yalnız yüksekliği sıfıra iniyor. */
+    /* Şerit sitenin kendi yeşiliyle (#16A085 — İmam Hatip başlığının ve 5.
+       sınıfın rengi). Kapalıyken dolgun yeşil: "burada kartlar var, aç" der;
+       açıkken daha hafif durur, kartların önüne geçmez. */
     #imam-hatip .ihkart-bar{
       display:flex; align-items:center; gap:8px; width:100%;
       padding:7px 11px; margin:0 0 10px;
-      border:1.3px solid #e8eef5; border-radius:10px; background:#f7fafd;
+      border:1.3px solid rgba(22,160,133,.22); border-radius:10px;
+      background:rgba(22,160,133,.07);
       font-family:inherit; font-size:.74rem; font-weight:800; letter-spacing:.7px;
-      text-transform:uppercase; color:#7c8b99; text-align:left; cursor:pointer;
+      text-transform:uppercase; color:#0E7A68; text-align:left; cursor:pointer;
+      transition:background .25s ease, border-color .25s ease;
       -webkit-appearance:none; appearance:none;
     }
-    #imam-hatip .ihkart-bar:hover{ filter:brightness(.98); }
-    #imam-hatip .ihkart-bar:focus-visible{ outline:3px solid #2563EB; outline-offset:-3px; }
-    #imam-hatip .ihkart-say{ font-weight:700; letter-spacing:0; text-transform:none; color:#a3b1bf; }
-    #imam-hatip .ihkart-ok{ margin-left:auto; font-size:.95rem; color:#94a3b8; transition:transform .3s ease; }
+    #imam-hatip .ihkart-bar.kapali,
+    #imam-hatip .ihkart-bar:hover{ background:#E6F7F2; border-color:rgba(22,160,133,.42); }
+    #imam-hatip .ihkart-bar:focus-visible{ outline:3px solid #16A085; outline-offset:-3px; }
+    #imam-hatip .ihkart-say{ font-weight:700; letter-spacing:0; text-transform:none; color:#177F6D; }
+    #imam-hatip .ihkart-ok{ margin-left:auto; font-size:.95rem; color:#16A085; transition:transform .3s ease; }
     #imam-hatip .ihkart-bar.kapali .ihkart-ok{ transform:rotate(-90deg); }
     #imam-hatip .ih-kartlar{
       transition:max-height .34s cubic-bezier(.4,0,.2,1), margin .34s ease, opacity .22s ease;
@@ -531,12 +537,17 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     #imam-hatip .ih-kartlar.kapali{ max-height:0; margin:0; opacity:0; overflow:hidden; }
     #imam-hatip .ihsec-ayirac.gizli{ display:none; }
     @media (prefers-color-scheme: dark){
-      #imam-hatip .ihkart-bar{ background:#16222E; border-color:#2B3A48; color:#8FA3B5; }
-      #imam-hatip .ihkart-say{ color:#6F8399; }
-      #imam-hatip .ihkart-ok{ color:#8FA3B5; }
+      #imam-hatip .ihkart-bar{ background:rgba(22,160,133,.12);
+                               border-color:rgba(22,160,133,.30); color:#7FD9C4; }
+      #imam-hatip .ihkart-bar.kapali,
+      #imam-hatip .ihkart-bar:hover{ background:rgba(22,160,133,.22);
+                                     border-color:rgba(22,160,133,.48); }
+      #imam-hatip .ihkart-say{ color:#5FBFA8; }
+      #imam-hatip .ihkart-ok{ color:#8FEAD5; }
     }
     @media (prefers-reduced-motion: reduce){
-      #imam-hatip .ih-kartlar, #imam-hatip .ihkart-ok{ transition:none; }
+      #imam-hatip .ih-kartlar, #imam-hatip .ihkart-ok,
+      #imam-hatip .ihkart-bar{ transition:none; }
     }
     #imam-hatip .ih-kartlar .game-card .default-game-content {
         flex: 1 1 auto; display: flex; flex-direction: column; align-items: center;
