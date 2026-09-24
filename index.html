@@ -3484,28 +3484,33 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       /* Sınıf kartlarına, dosya listesinin ÜSTÜNDE görünecek açıklama metni.
          SINIF_GIRIS[sınıf][tür adı] = HTML. Boş bırakılırsa hiçbir şey yazılmaz. */
       var SINIF_GIRIS = { 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {} };
+        /* 10. sınıfın İKİNCİ kitabı (Mektep Yayınları "Ortaöğretim Seçmeli
+           Arapça") için ayrı depo. Kitap seçicisinde "Seçmeli Arapça" seçiliyken
+           belge kartları SINIF_PDF[10] yerine buradan beslenir; burada karşılığı
+           olmayan tür (Sınıf Dosyası, BEP) her iki kitapta da ortaktır. */
+        var SEC10_PDF = {}, SEC10_GIRIS = {};
 
       /* --- ÜNİTELENDİRİLMİŞ YILLIK PLANLAR (2026-2027) -------------------
          Altı sınıfın da yıllık planı "Planlar" kartının içindedir. Planlar
          MEB 2026/68 sayılı Genelge’nin çalışma takvimine göre 37 ders haftası
          üzerinden (1. dönem 18, 2. dönem 19 hafta) kurgulanmıştır.
-         Altı sınıfın da planı 2025 programına göredir. 7 ve 8. sınıfın
-         etiketi önce "2016 programı" diyordu; bu, sitenin KENDİ ders
-         verisiyle çelişiyordu (sistem/sinifveri.js -> VERI_YILI: ikisi de
-         "2025 TYMM Arapça Programı (5-8. sınıflar)") ve 8. sınıfın sınav
-         ile çalışma kâğıdı tema adları ders ağacıyla zaten BİREBİR aynı.
-         Etiket ders verisiyle hizalandı.
-         ⚠️ 7. SINIFTA FARK SÜRÜYOR: ders ağacı yeni kitabın DÖRT ünitesi,
-         sınav ve çalışma kâğıdı belgeleri ise önceki programın ALTI teması
-         üzerinden yazılmış. Bu, "Sınavlar" kartının açıklamasında öğretmene
-         yazılı olarak söyleniyor; belgeler yenilenince hem o not hem
-         GUNLUK[7] / SINAV[7] / KAGIT[7] güncellenmeli. */
+         5, 6, 9 ve 10. sınıfın planı 2025 programına göredir.
+         7 ve 8. SINIF 2016 PROGRAMINDADIR (24.09.2026 düzeltmesi): bir ara
+         "2025 programı" yazılmıştı, oysa belgelerin kendisi "2016 İlköğretim
+         Arapça Dersi Öğretim Programı" diyor ve altı TEMA üzerinden kurulu
+         (7: Alışveriş · Hava · Vatanım · İletişim…, 8: Kültür · Doğa · Spor ·
+         Okula Veda…). sistem/sinifveri.js de aynı şeyi söylüyor: 7. sınıfın
+         varsayılan kitabı Mektep Yayınları (önceki program), 8. sınıfta Maarif
+         Modeli henüz uygulanmıyor. Etiket belgelerle ve ders verisiyle
+         hizalandı; üçü de artık aynı kitabı anlatıyor. 7. sınıf 2027-2028 MEB
+         kitabına (4 ünite) geçince bu satır ve GUNLUK[7]/SINAV[7]/KAGIT[7]
+         güncellenmeli. */
       (function () {
         var YP = {
           5:  { prg: '2025 programı', st: '2 saat/hafta · 74 saat',  ek: '4 ünite (18+16+18+16 saat) + okul temelli planlama 4 saat' },
           6:  { prg: '2025 programı', st: '2 saat/hafta · 74 saat',  ek: '4 ünite (18+16+18+16 saat) + okul temelli planlama 4 saat' },
-          7:  { prg: '2025 programı', st: '2 saat/hafta · 74 saat',  ek: '4 ünite · 2025 TYMM Arapça Programı (5-8. sınıflar)' },
-          8:  { prg: '2025 programı', st: '2 saat/hafta · 74 saat',  ek: '6 ünite · 2025 TYMM Arapça Programı (5-8. sınıflar)' },
+          7:  { prg: '2016 programı', st: '2 saat/hafta · 74 saat',  ek: '6 tema · Mektep Yayınları ders kitabı · 2016 İlköğretim Arapça Programı' },
+          8:  { prg: '2016 programı', st: '2 saat/hafta · 74 saat',  ek: '6 tema · 2016 İlköğretim Arapça Dersi Öğretim Programı' },
           9:  { prg: '2025 programı', st: '4 saat/hafta · 148 saat', ek: '4 tema (40+28+36+32 saat) + okul temelli planlama 8 saat' },
           10: { prg: '2025 programı', st: '3 saat/hafta · 111 saat', ek: '4 tema (27+24+27+24 saat) + okul temelli planlama 6 saat' }
         };
@@ -3997,13 +4002,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           ];
         }
         function ek(tur, satirlar) {
-          var liste = SINIF_PDF[10][tur] || (SINIF_PDF[10][tur] = []);
+          var liste = SEC10_PDF[tur] || (SEC10_PDF[tur] = []);
           satirlar.forEach(function (x) { liste.push(x); });
         }
         function giris(tur, html) {
-          SINIF_GIRIS[10][tur] = (SINIF_GIRIS[10][tur] || '') + html;
+          SEC10_GIRIS[tur] = (SEC10_GIRIS[tur] || '') + html;
         }
-        var KITAP = '<div class="dok-not"><b>Seçmeli Arapça belgeleri.</b> Aşağıdaki son belgeler ' +
+        var KITAP = '<div class="dok-not"><b>Seçmeli Arapça belgeleri.</b> Bu karttaki belgeler ' +
           '10. sınıfın <b>zorunlu</b> Arapça kitabına değil, <b>Mektep Yayınları “Ortaöğretim Seçmeli ' +
           'Arapça”</b> kitabına göredir (2017 Ortaöğretim İkinci Yabancı Dil Arapça 9-12 programı, ' +
           '<b>2 saat/hafta · 74 saat</b>). Bu kitap sitede <b>10. sınıf → kitap seçimi → Seçmeli Arapça</b> ' +
@@ -4283,13 +4288,68 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         ustPanelSerbest(btn);
         kartBolumunuYukariKaydir(btn);
       };
-      [].forEach.call(document.querySelectorAll('#imam-hatip .ihdoc-acc'), function (mount) {
+      /* === BELGELER ↔ KİTAP SEÇİMİ (24.09.2026) =========================
+         Sınıf panelindeki kitap/yıl seçicisi (sistem/sinifveri.js) değişince
+         belge kartları da yenilenir. Önceden yenilenmiyordu: seçici yalnız
+         Muhâdese'yi, sınıf kartlarını ve Kitap Etkinlikleri'ni etkiliyordu.
+           · 10. sınıf → "Seçmeli Arapça" seçiliyken o kitabın belgeleri
+             (SEC10_PDF) gösterilir, Maarif kitabındayken MEB belgeleri.
+             Sınıf Dosyası ve BEP kitaba göre değişmez; ikisinde de aynıdır.
+           · 6 ve 7. sınıf → tek belge seti var. Öğretmen belgelerin yazıldığı
+             kitaptan BAŞKASINI seçerse kartın başına uyarı düşer.
+         Yeni bir kitaba ayrı belge seti gelirse: BELGE_KITABI'na satır ekle
+         ya da 10. sınıftaki SEC10 düzenini örnek al. */
+      var BELGE_KITABI = { '6': '2026-2027', '7': '2026-2027' };
+      function seciliKitap(sinif) {
+        try {
+          var v = window.KidefSinifVeri;
+          if (v && v.seciliVeriYili) { var y = v.seciliVeriYili(sinif); return y ? y.yil : ''; }
+        } catch (e) {}
+        return '';
+      }
+      function kitapAdi(sinif, yil) {
+        try {
+          var v = window.KidefSinifVeri, l = (v && v.veriYillari) ? v.veriYillari(sinif) : [];
+          for (var i = 0; i < l.length; i++) if (l[i].yil === yil) return l[i].ad || l[i].yil;
+        } catch (e) {}
+        return yil;
+      }
+      function kitapUyarisi(sinif) {
+        var beklenen = BELGE_KITABI[sinif]; if (!beklenen) return '';
+        var secili = seciliKitap(sinif); if (!secili || secili === beklenen) return '';
+        return '<div class="dok-not"><b>Dikkat — kitap uyuşmuyor.</b> Şu an <b>' +
+          kitapAdi(sinif, secili) + '</b> kitabı seçili, ama bu karttaki belgeler <b>' +
+          kitapAdi(sinif, beklenen) + '</b> kitabına göre hazırlandı. Seçili kitabın ' +
+          'belgeleri henüz hazırlanmadı.</div>';
+      }
+      function ihdocKur(mount) {
         var sinif = mount.getAttribute('data-sinif');
+        var sec = (sinif === '10' && seciliKitap('10') === 'secmeli');
         a4IzgaraKur(mount, sinif + '. SINIF · BELGE', 'sinif', SINIF_TURLERI, function (t) {
+          if (sec && SEC10_PDF[t.ad]) return SEC10_PDF[t.ad];
           return (SINIF_PDF[sinif] && SINIF_PDF[sinif][t.ad]) || [];
         }, function (t) {
-          return (SINIF_GIRIS[sinif] && SINIF_GIRIS[sinif][t.ad]) || '';
+          if (sec && SEC10_PDF[t.ad]) return SEC10_GIRIS[t.ad] || '';
+          return kitapUyarisi(sinif) + ((SINIF_GIRIS[sinif] && SINIF_GIRIS[sinif][t.ad]) || '');
         });
+      }
+      /* Kitap değişince açık olan kategori açık kalsın. */
+      function ihdocTazele(mount) {
+        var k = mount.querySelectorAll('.a4-kart'), acik = -1, i;
+        for (i = 0; i < k.length; i++) if (k[i].classList.contains('acik')) { acik = i; break; }
+        ihdocKur(mount);
+        if (acik >= 0 && window.a4Toggle) {
+          var y = mount.querySelectorAll('.a4-kart')[acik];
+          if (y) window.a4Toggle(y);
+        }
+      }
+      [].forEach.call(document.querySelectorAll('#imam-hatip .ihdoc-acc'), ihdocKur);
+      document.addEventListener('kidef:veriyili', function (e) {
+        var n = e && e.detail ? String(e.detail.sinif) : '';
+        if (!n) return;
+        [].forEach.call(
+          document.querySelectorAll('#imam-hatip .ihdoc-acc[data-sinif="' + n + '"]'),
+          ihdocTazele);
       });
 
       /* === SINIF KARTLARI (dökümanların ÜSTÜNDE) ===
