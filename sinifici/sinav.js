@@ -142,6 +142,9 @@
     /* --- iki yol --- */
     yol: '',              // '' açılış · 'sinav' · 'temrin'
     klasikTur: null,      // açık klasik soru türleri (null = varsayılan küme)
+    kitapYil: '',         // birden çok kitabı olan sınıflarda seçili kitap
+    dersSuz: '',          // ders süzgeci: '' = ünitenin tamamı · '8_2_1' tek ders
+                          // (ayar.ders ANTETTEKİ ders adıdır — karıştırma)
     sinifNo: '',          // öğrenme çıktısı için sınıf (5..10)
     unite: '1',           // seçili ünite
     ciktiKodu: true,      // soruların yanında çıktı numarası yazsın mı
@@ -413,6 +416,7 @@
          Yazılı ve Uygulamalı Sınavlar Yönergesi m.5/1-e. Temrinde ikisi de. */
       if (ayar.yol === 'sinav' && !o.klasik) return false;
       if (o.klasik && acikTurler.indexOf(o.q.tip) < 0) return false;
+      if (o.klasik && ayar.dersSuz && o.q.ders !== ayar.dersSuz) return false;
       if (odakAlan && soruAlanAnahtari(o) !== odakAlan) return false;
       if (haric !== 'konu' && suz.konu.size && !suz.konu.has(o.konu)) return false;
       if (haric !== 'tip' && suz.tip.size && !suz.tip.has(o.q.tip)) return false;
@@ -903,8 +907,10 @@
     klasikYukleniyor = true;
     var bilgi = $('#klasikDurum');
     if (bilgi) bilgi.textContent = 'Ünitenin soruları hazırlanıyor…';
-    var ad = uniteAdi(ayar.sinifNo, ayar.unite);
-    return window.KidefKlasik.uret(ayar.sinifNo, ayar.unite, ad).then(function (liste) {
+    var u = seciliUnite();
+    var ad = (u && u.ad) || uniteAdi(ayar.sinifNo, ayar.unite);
+    var dersIdleri = u ? u.dersler.map(function (d) { return d.id; }) : null;
+    return window.KidefKlasik.uret(ayar.sinifNo, ayar.unite, ad, dersIdleri).then(function (liste) {
       klasikTemizle();
       liste.forEach(function (q) {
         var o = {
@@ -924,6 +930,8 @@
           : 'Bu ünitenin ders verisi bulunamadı; klasik soru üretilemedi.';
       }
       klasikCipleri();
+      son_dersler = liste.dersler || null;
+      dersCipleri(son_dersler);
       return liste;
     }).catch(function (e) {
       klasikYukleniyor = false;
@@ -931,6 +939,26 @@
       console.error('[sinav] klasik', e);
     });
   }
+  /* Ders çipleri: ünite içindeki dersler. "Tüm ünite" + her ders.
+     Ünite başına tek dosyası olan kitaplarda (7. sınıf Mektep) tek ders çıkar,
+     o zaman satır hiç gösterilmez. */
+  function dersCipleri(dersler) {
+    var kutu = $('#suz-ders'); if (!kutu) return;
+    var sat = $('#dersSatir');
+    if (!dersler || dersler.length < 2) { if (sat) sat.hidden = true; kutu.innerHTML = ''; return; }
+    if (sat) sat.hidden = false;
+    var say = {};
+    V.sorular.forEach(function (o) { if (o.klasik) say[o.q.ders || ''] = (say[o.q.ders || ''] || 0) + 1; });
+    var toplam = V.sorular.filter(function (o) { return o.klasik; }).length;
+    kutu.innerHTML = '<button type="button" class="cip' + (ayar.dersSuz ? '' : ' acik') +
+        '" data-ders="" aria-pressed="' + !ayar.dersSuz + '">Tüm ünite<small>' + toplam + '</small></button>' +
+      dersler.map(function (d) {
+        var v = ayar.dersSuz === d.id;
+        return '<button type="button" class="cip' + (v ? ' acik' : '') + '" data-ders="' + kac(d.id) +
+          '" aria-pressed="' + v + '">' + kac(d.ad) + '<small>' + (say[d.id] || 0) + '</small></button>';
+      }).join('');
+  }
+
   /* Klasik tür çipleri — hangi soru türleri görünsün */
   function klasikCipleri() {
     var kutu = $('#suz-klasik'); if (!kutu || !window.KidefKlasik) return;
@@ -950,6 +978,7 @@
      9b) İKİ YOL · ÇIKTI AĞACI · OKUL BİLGİSİ · DAĞILIM TABLOSU
      ===================================================================== */
   var odak = '';                                  // ağaçta seçili çıktı kodu
+  var son_dersler = null;                         // son yüklenen ünitenin dersleri
 
   function odakCikti() { return odak; }
   function odakAlanKodu() { return odak ? odak.split('.').slice(0, 3).join('.') : ''; }
@@ -975,7 +1004,11 @@
     if (y === 'alistirma') y = 'temrin';
     ayar.yol = y;
     document.body.setAttribute('data-yol', y);
-    $('#yolSec').hidden = !!y;
+    $$('[data-yol-sec]').forEach(function (d) {
+      var s = d.getAttribute('data-yol-sec') === y;
+      d.setAttribute('aria-selected', s ? 'true' : 'false');
+      d.classList.toggle('acik', s);
+    });
     $('#uygulama').hidden = !y;
     $('#okulPaneli').hidden = y !== 'sinav';
     $('#agacPaneli').hidden = y !== 'sinav';
@@ -997,12 +1030,13 @@
     var ya = $('#yolAdi');
     if (ya) ya.textContent = y === 'sinav' ? 'Sınav — öğrenme çıktılarına göre, yalnız klasik sorular'
                            : y === 'temrin' ? 'Temrin — alıştırma ve çalışma kâğıdı' : '';
-    var yd2 = $('#yolDegis'); if (yd2) yd2.hidden = !y;
+    /* "Yolu değiştir" düğmesi kalktı: yol artık üstteki sekmelerden seçiliyor. */
     if (!sessiz) {
       formDoldur(); cipler(); klasikCipleri(); liste(); kagidim();
-      sinifSecKur();
-      if (y === 'sinav') cizAgac();
-      if (ayar.sinifNo) klasikYukle().then(function () { cipler(); liste(); if (y === 'sinav') cizAgac(); });
+      Promise.resolve(sinifSecKur()).then(function () {
+        if (y === 'sinav') cizAgac();
+        if (ayar.sinifNo) return klasikYukle();
+      }).then(function () { cipler(); liste(); if (y === 'sinav') cizAgac(); });
     }
     kaydet();
   }
@@ -1030,28 +1064,78 @@
   }
 
   /* --- sınıf ve ünite seçici --- */
+  /* Sınıf seçici: BİRDEN ÇOK KİTABI OLAN SINIFLAR AYRI SATIR (24.09.2026).
+     6, 7 ve 10. sınıfın iki kitabı var; ünite sayıları, ders verisi klasörü ve
+     çıktı eşlemesi kitaba göre değiştiği için tek "7. sınıf" satırı yanıltıcıydı.
+     Kitap listesi sistem/sinifveri.js'ten (veriYillari) gelir; seçilince
+     veriYiliSec ile sitenin kendi kitap seçimi de güncellenir, böylece ders
+     verisi doğru klasörden okunur. */
+  function kitapListesi(sinif) {
+    try {
+      var v = window.KidefSinifVeri;
+      if (v && v.veriYillari) return v.veriYillari(sinif) || [];
+    } catch (e) {}
+    return [];
+  }
   function sinifSecKur() {
     var s = $('#sinifSec'); if (!s) return;
     if (!s.options.length) {
-      s.innerHTML = '<option value="">Sınıf…</option>' +
-        [5, 6, 7, 8, 9, 10].map(function (x) { return '<option value="' + x + '">' + x + '. sınıf</option>'; }).join('');
+      var ic = ['<option value="">Sınıf ve kitap…</option>'];
+      [5, 6, 7, 8, 9, 10].forEach(function (x) {
+        var ks = kitapListesi(x);
+        if (ks.length < 2) { ic.push('<option value="' + x + '|">' + x + '. sınıf</option>'); return; }
+        ic.push('<optgroup label="' + x + '. sınıf">');
+        ks.forEach(function (k) {
+          ic.push('<option value="' + x + '|' + kac(k.yil) + '">' + x + '. sınıf — ' +
+                  kac(k.ad || k.yil) + (k.maarif ? ' (Maarif)' : '') + '</option>');
+        });
+        ic.push('</optgroup>');
+      });
+      s.innerHTML = ic.join('');
     }
-    s.value = ayar.sinifNo || '';
-    uniteSecKur();
+    s.value = ayar.sinifNo ? (ayar.sinifNo + '|' + (ayar.kitapYil || '')) : '';
+    if (!s.value && ayar.sinifNo) {                 // kayıtlı kitap listede yoksa ilkine düş
+      var ilk = kitapListesi(ayar.sinifNo)[0];
+      ayar.kitapYil = ilk ? ilk.yil : '';
+      s.value = ayar.sinifNo + '|' + (ayar.kitapYil || '');
+    }
+    kitabiUygula();
+    return uniteSecKur();
   }
+  /* Sitenin kitap seçimini de güncelle: dersYolu buna bakıyor. */
+  function kitabiUygula() {
+    try {
+      var v = window.KidefSinifVeri;
+      if (v && v.veriYiliSec && ayar.sinifNo && ayar.kitapYil) v.veriYiliSec(ayar.sinifNo, ayar.kitapYil);
+    } catch (e) {}
+  }
+  /* Üniteler SEÇİLİ KİTAPTAN gelir (muhadese.js müfredat ağacı), öğretim
+     programından değil: 7. sınıf Mektep kitabı 6 ünite, MEB kitabı 4 ünite.
+     Program ünitesi (veri_ciktilar.js) yalnız çıktı ağacı için kullanılır. */
+  var son_uniteler = [];
   function uniteSecKur() {
     var u = $('#uniteSec'); if (!u) return;
-    var n = ayar.sinifNo ? uniteSayisi(ayar.sinifNo) : 0;
-    if (!n) { u.innerHTML = '<option value="">—</option>'; u.disabled = true; return; }
-    u.disabled = false;
-    var liste_ = [];
-    for (var i = 1; i <= n; i++) {
-      var ad = uniteAdi(ayar.sinifNo, i);
-      liste_.push('<option value="' + i + '">' + i + '. ünite' + (ad ? ' — ' + kac(ad) : '') + '</option>');
+    if (!ayar.sinifNo || !window.KidefKlasik || !window.KidefKlasik.uniteler) {
+      u.innerHTML = '<option value="">—</option>'; u.disabled = true; son_uniteler = []; return;
     }
-    u.innerHTML = liste_.join('');
-    if (+ayar.unite > n) ayar.unite = '1';
-    u.value = ayar.unite;
+    return window.KidefKlasik.uniteler(ayar.sinifNo, ayar.kitapYil).then(function (us) {
+      son_uniteler = us || [];
+      if (!son_uniteler.length) {                    /* ağaç okunamazsa programa düş */
+        var n = uniteSayisi(ayar.sinifNo);
+        for (var i = 1; i <= n; i++) son_uniteler.push({ no: i, ad: uniteAdi(ayar.sinifNo, i), dersler: [] });
+      }
+      if (!son_uniteler.length) { u.innerHTML = '<option value="">—</option>'; u.disabled = true; return; }
+      u.disabled = false;
+      u.innerHTML = son_uniteler.map(function (x) {
+        return '<option value="' + x.no + '">' + x.no + '. ünite' + (x.ad ? ' — ' + kac(x.ad) : '') + '</option>';
+      }).join('');
+      if (+ayar.unite > son_uniteler.length) ayar.unite = '1';
+      u.value = ayar.unite;
+    });
+  }
+  function seciliUnite() {
+    for (var i = 0; i < son_uniteler.length; i++) if (String(son_uniteler[i].no) === String(ayar.unite)) return son_uniteler[i];
+    return null;
   }
 
   /* --- çıktı ağacı --- */
@@ -1147,7 +1231,7 @@
     document.addEventListener('click', function (e) {
       /* Klasik tür çipleri de .cip sınıfını taşıyor ama başka eksende
          çalışıyor (data-klasik); genel süzgeç onları yutmasın. */
-      var c = e.target.closest('.cip:not([data-klasik])');
+      var c = e.target.closest('.cip:not([data-klasik]):not([data-ders])');
       if (c) {
         var alan = c.getAttribute('data-alan'), d = c.getAttribute('data-deger');
         if (alan === 'zorluk') d = +d;
@@ -1156,6 +1240,14 @@
       }
       var yol = e.target.closest('[data-yol-sec]');
       if (yol) { yolKur(yol.getAttribute('data-yol-sec')); window.scrollTo(0, 0); return; }
+      var dc = e.target.closest('[data-ders]');
+      if (dc) {
+        var yeni = dc.getAttribute('data-ders');
+        ayar.dersSuz = (ayar.dersSuz === yeni) ? '' : yeni;
+        gosterilen = LISTE_ADIM;
+        dersCipleri((V.sorular.filter(function (o) { return o.klasik; }).length ? son_dersler : null));
+        cipler(); liste(); kaydet(); return;
+      }
       var kc = e.target.closest('[data-klasik]');
       if (kc) {
         var tip = kc.getAttribute('data-klasik');
@@ -1222,23 +1314,23 @@
     });
     var ss = $('#sinifSec');
     if (ss) ss.addEventListener('change', function () {
-      ayar.sinifNo = this.value; odak = '';
-      uniteSecKur(); anteteAktar(); formDoldur();
-      gosterilen = LISTE_ADIM; cizAgac(); cipler(); liste(); kagidim();
-      klasikYukle().then(function () { cipler(); liste(); cizAgac(); });
+      var p2 = String(this.value).split('|');
+      ayar.sinifNo = p2[0] || ''; ayar.kitapYil = p2[1] || '';
+      ayar.dersSuz = ''; odak = '';
+      kitabiUygula();                       /* dersYolu doğru klasöre baksın */
+      anteteAktar(); formDoldur();
+      Promise.resolve(uniteSecKur()).then(function () {
+        gosterilen = LISTE_ADIM; cizAgac(); cipler(); liste(); kagidim();
+        return klasikYukle();
+      }).then(function () { cipler(); liste(); cizAgac(); });
     });
     var us = $('#uniteSec');
     if (us) us.addEventListener('change', function () {
-      ayar.unite = this.value; odak = '';
+      ayar.unite = this.value; ayar.dersSuz = ''; odak = '';
       gosterilen = LISTE_ADIM; cizAgac(); cipler(); liste(); kagidim();
       klasikYukle().then(function () { cipler(); liste(); cizAgac(); });
     });
     var bd = $('#btnDagilim'); if (bd) bd.addEventListener('click', dagilimAc);
-    var yd = $('#yolDegis');
-    if (yd) yd.addEventListener('click', function () {
-      ayar.yol = ''; document.body.removeAttribute('data-yol');
-      $('#yolSec').hidden = false; $('#uygulama').hidden = true; kaydet(); window.scrollTo(0, 0);
-    });
     $('#btnOnizle').addEventListener('click', onizle);
     $('#btnPdf').addEventListener('click', pdfIndir);
     $('#btnYazdir').addEventListener('click', yazdir);
@@ -1315,7 +1407,7 @@
     Promise.all([havuzuOku(), ciktiVerisiniYukle()]).then(function (r) {
       hazirla(r[0]);
       $('#yukleniyor').hidden = true;
-      if (ayar.yol) { yolKur(ayar.yol); } else { $('#yolSec').hidden = false; }
+      yolKur(ayar.yol || 'sinav');            /* sekmeli: açılışta Sınav Hazırla */
       cipler(); liste(); kagidim();
     }).catch(function (e) {
       console.error('[sorukagidi]', e);

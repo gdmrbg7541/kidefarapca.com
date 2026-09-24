@@ -59,7 +59,20 @@
     });
   }
 
-  function dosyaOku(yol) {
+  /* Ders adı dosyanın ilk satırındaki künyede duruyor:
+       "8. sınıf — 8_2_1 (2. Ünite 1. Ders: Edebiyat | الأَدَب)"
+     Ayrı bir ad listesi tutmamak için oradan okunuyor. */
+  function dersAdiCikar(kaynak, id) {
+    var m = /\(([^)]*?\d+\.\s*Ders[^)]*)\)/.exec(String(kaynak).slice(0, 400));
+    if (m) {
+      var s = m[1].split('|')[0].replace(/^.*?(\d+\.\s*Ders)/, '$1').trim();
+      if (s) return s.replace(/\s*:\s*/, ': ');
+    }
+    var d = /_(\d+)$/.exec(id);
+    return d ? d[1] + '. Ders' : 'Ders';
+  }
+
+  function dosyaOku(yol, id) {
     return fetch(yol, { cache: 'no-cache' }).then(function (r) {
       if (!r.ok) return null;
       return r.text();
@@ -71,7 +84,10 @@
       try {
         Function.apply(null, adlar.concat([kaynak + '\n;return null;'])).apply(null, degerler);
       } catch (e) { return null; }
-      return W.data || null;
+      if (!W.data) return null;
+      W.data.__id = id;
+      W.data.__ad = dersAdiCikar(kaynak, id);
+      return W.data;
     }).catch(function () { return null; });
   }
 
@@ -89,11 +105,65 @@
     } catch (e) {}
     return 'muhadese/veri/' + id + '.js';
   }
-  function uniteVerisi(sinif, unite) {
-    var kimlikler = [sinif + '_' + unite];
-    for (var d = 1; d <= 6; d++) kimlikler.push(sinif + '_' + unite + '_' + d);
-    return Promise.all(kimlikler.map(function (id) { return dosyaOku(dersYolu(id)); }))
+  function uniteVerisi(sinif, unite, dersIdleri) {
+    var kimlikler = (dersIdleri && dersIdleri.length) ? dersIdleri.slice() : null;
+    if (!kimlikler) {
+      kimlikler = [sinif + '_' + unite];
+      for (var d = 1; d <= 6; d++) kimlikler.push(sinif + '_' + unite + '_' + d);
+    }
+    return Promise.all(kimlikler.map(function (id) { return dosyaOku(dersYolu(id), id); }))
       .then(function (ds) { return ds.filter(Boolean); });
+  }
+
+  /* ---------- kitabın ünite ve ders ağacı ----------
+     muhadese/muhadese.js içindeki educationData (varsayılan ağaç) ve
+     educationDataYil (kitaba göre ağaç) okunur. Dosya, veri dosyalarıyla
+     aynı yöntemle sanal ortamda çalıştırılır; DOM'a dokunmaz.
+     Neden buradan: ünite SAYISI ve ADI kitaba göre değişiyor (7. sınıf
+     Mektep 6 ünite, MEB kitabı 4); öğretim programının ünite listesi
+     (veri_ciktilar.js) kitabı değil PROGRAMI anlatır. */
+  var AGAC = null;
+  function agaciOku() {
+    if (AGAC) return Promise.resolve(AGAC);
+    return fetch('muhadese/muhadese.js', { cache: 'no-cache' }).then(function (r) {
+      return r.ok ? r.text() : '';
+    }).then(function (kaynak) {
+      if (!kaynak) { AGAC = { d: {}, y: {} }; return AGAC; }
+      var kuyruk = '\n;return {d: typeof educationData !== "undefined" ? educationData : {},' +
+                   ' y: typeof educationDataYil !== "undefined" ? educationDataYil : {}};';
+      var adlar = ['window', 'self', 'globalThis', 'document', 'localStorage', 'console',
+                   'alert', 'setTimeout', 'addEventListener', 'fetch', 'location'];
+      var W = {};
+      var degerler = [W, W, W, yapay(), yapay(), yapay(), yapay(), yapay(), yapay(), yapay(),
+                      { search: '', href: '', hash: '' }];
+      try {
+        AGAC = Function.apply(null, adlar.concat([kaynak + kuyruk])).apply(null, degerler) || { d: {}, y: {} };
+      } catch (e) { AGAC = { d: {}, y: {} }; }
+      return AGAC;
+    }).catch(function () { AGAC = { d: {}, y: {} }; return AGAC; });
+  }
+
+  /* Seçili kitabın ünite listesi: [{no, ad, dersler:[{id, ad}]}] */
+  function uniteler(sinif, yil) {
+    return agaciOku().then(function (a) {
+      var s = String(sinif);
+      var dal = (a.y && a.y[s] && yil && a.y[s][yil]) || (a.d && a.d[s]) || null;
+      if (!Array.isArray(dal)) return [];
+      return dal.map(function (u, i) {
+        return {
+          no: i + 1,
+          ad: kisaAd(u.unitName || ''),
+          dersler: (u.lessons || []).map(function (l) {
+            var m = /ders=([\w-]+)/.exec(String(l.simultaneUrl || ''));
+            return { id: m ? m[1] : '', ad: kisaAd(l.name || '') };
+          }).filter(function (d) { return d.id; })
+        };
+      });
+    });
+  }
+  /* "1. Ünite: Meslekler | المِهَن" → "Meslekler" */
+  function kisaAd(s) {
+    return String(s).split('|')[0].replace(/^\s*\d+\.\s*(Ünite|Ders)\s*:\s*/, '').trim();
   }
 
   /* ---------- yardımcılar ---------- */
@@ -128,25 +198,27 @@
   }
 
   /* ---------- üretim ---------- */
-  function uret(sinif, unite, uniteAd) {
-    var anahtar = sinif + '_' + unite;
+  function uret(sinif, unite, uniteAd, dersIdleri) {
+    var anahtar = sinif + '_' + unite + '|' + ((dersIdleri || []).join(',') || '?');
     if (ONBELLEK[anahtar]) return Promise.resolve(ONBELLEK[anahtar]);
 
-    return uniteVerisi(sinif, unite).then(function (dersler) {
-      var cumleler = [], diyaloglar = [], sozcukler = [];
+    return uniteVerisi(sinif, unite, dersIdleri).then(function (dersler) {
+      var cumleler = [], diyaloglar = [], sozcukler = [], dersListesi = [];
       dersler.forEach(function (d) {
+        var ders = { id: d.__id, ad: d.__ad };
+        dersListesi.push(ders);
         (d.sentence || []).forEach(function (c) {
           if (!c || !c.words || c.words.length < 2) return;
           var ar = arCumle(c.words), tr = trCumle(c.words);
-          if (ar && tr) cumleler.push({ ar: ar, tr: tr, words: c.words });
+          if (ar && tr) cumleler.push({ ar: ar, tr: tr, words: c.words, ders: ders });
         });
         (d.dialog || []).forEach(function (g) {
           if (!g || !g.p1 || !g.p2) return;
-          var s = { sAr: arCumle(g.p1), sTr: trCumle(g.p1), cAr: arCumle(g.p2), cTr: trCumle(g.p2) };
+          var s = { sAr: arCumle(g.p1), sTr: trCumle(g.p1), cAr: arCumle(g.p2), cTr: trCumle(g.p2), ders: ders };
           if (s.sAr && s.cAr) diyaloglar.push(s);
         });
         (d.words || []).forEach(function (w) {
-          if (w && w.ar && w.tr) sozcukler.push({ ar: String(w.ar).trim(), tr: String(w.tr).trim() });
+          if (w && w.ar && w.tr) sozcukler.push({ ar: String(w.ar).trim(), tr: String(w.tr).trim(), ders: ders });
         });
       });
       /* sözcükleri tekille */
@@ -160,11 +232,15 @@
 
       var out = [], n = 0;
       var ad = uniteAd || (unite + '. ünite');
-      function ekle(tur, zorluk, q) {
+      /* kaynak: sorunun çıktığı ders (varsa). Ders seçiciyle süzmek için. */
+      function ekle(tur, zorluk, q, kaynak) {
         q.id = 'kl' + (++n);
         q.tip = tur;
         q.zorluk = zorluk;
         q.klasik = true;
+        var ders = kaynak && kaynak.ders;
+        q.ders = ders ? ders.id : '';
+        q.dersAd = ders ? ders.ad : '';
         out.push(q);
       }
 
@@ -174,7 +250,7 @@
           ekle('kl-ceviri-ar', 2, {
             soru: 'Aşağıdaki cümleyi Türkçeye çeviriniz.',
             arapca: c.ar, cevapYazi: c.tr, satir: 2
-          });
+          }, c);
         });
 
       /* 2 — Türkçeden Arapçaya çeviri */
@@ -183,7 +259,7 @@
           ekle('kl-ceviri-tr', 3, {
             soru: 'Aşağıdaki cümleyi Arapçaya çeviriniz: “' + c.tr + '”',
             cevapYazi: c.ar, satir: 2
-          });
+          }, c);
         });
 
       /* 3 — Boşluk doldurma: cümleden bir sözcük çıkarılır */
@@ -197,7 +273,7 @@
           ekle('kl-bosluk', 2, {
             soru: 'Boşluğa uygun sözcüğü yazınız. (Cümlenin Türkçesi: “' + c.tr + '”)',
             arapca: kopya.join(' '), cevapYazi: eksik, satir: 1
-          });
+          }, c);
         });
 
       /* 4 — Karışık sözcüklerden cümle kurma (motor sözcükleri karıştırır) */
@@ -206,7 +282,7 @@
           ekle('kl-kurma', 2, {
             soru: 'Sözcükleri doğru sıraya koyarak cümleyi yazınız. (Anlamı: “' + c.tr + '”)',
             parcalar: arSozcukler(c.words), bicim: 'surukle', cevapYazi: c.ar
-          });
+          }, c);
         });
 
       /* 5 — Sözcüğün karşılığı */
@@ -214,7 +290,7 @@
         ekle('kl-sozcuk', 1, {
           soru: 'Aşağıdaki sözcüğün Türkçe karşılığını yazınız.',
           arapca: w.ar, cevapYazi: w.tr, satir: 1
-        });
+        }, w);
       });
 
       /* 6 — Eşleştirme: beşerli öbekler */
@@ -223,7 +299,7 @@
         ekle('kl-eslestirme', 1, {
           soru: 'Sözcükleri Türkçe karşılıklarıyla eşleştiriniz.',
           ciftler: es.slice(i, i + 5).map(function (w) { return [w.ar, w.tr]; })
-        });
+        }, es[i]);
       }
 
       /* 7 — Diyalogdan kısa cevaplı anlama */
@@ -232,7 +308,7 @@
           ekle('kl-anlama', 2, {
             soru: 'Aşağıdaki soruyu Arapça cevaplayınız.',
             arapca: g.sAr, cevapYazi: g.cAr, satir: 2
-          });
+          }, g);
         });
 
       /* 8 — Yazma */
@@ -248,7 +324,7 @@
         ekle('kl-yazma', 3, {
           soru: 'Aşağıdaki soruya yazılı olarak Arapça cevap veriniz.',
           arapca: dd.sAr, cevapYazi: dd.cAr, satir: 3
-        });
+        }, dd);
       }
 
       /* 9 — Konuşma görevi (uygulamalı sınav) */
@@ -265,7 +341,7 @@
           arapca: ik[0].sAr,
           cevapYazi: '(Karşılıklı konuşma — örnek cevap: ' + ik[0].cAr + ')',
           satir: 0
-        });
+        }, ik[0]);
       }
 
       /* 10 — Dinleme görevi: öğretmen okur, öğrenci cevaplar */
@@ -275,7 +351,7 @@
                 '(Okunacak metin cevap anahtarındadır.)',
           cevapYazi: 'Okunacak: ' + g.sAr + '  —  Beklenen cevap: ' + g.cAr,
           satir: 2
-        });
+        }, g);
       });
 
       /* ---- varsayılan KAPALI türler ---- */
@@ -286,7 +362,7 @@
           ekle('kl-hareke', 3, {
             soru: 'Aşağıdaki cümleyi harekeleyiniz. (Anlamı: “' + c.tr + '”)',
             arapca: c.ar.replace(HAREKE, ''), cevapYazi: c.ar, satir: 1
-          });
+          }, c);
         });
 
       /* 12 — Doğru/yanlış + düzeltme: bir sözcük başka cümleden değiştirilir */
@@ -303,7 +379,7 @@
           soru: 'Aşağıdaki cümle anlamca doğru mu? Yanlışsa düzeltip yeniden yazınız. ' +
                 '(Olması gereken anlam: “' + c.tr + '”)',
           arapca: bozuk.join(' '), cevapYazi: c.ar, satir: 2
-        });
+        }, c);
       });
 
       /* 13 — Verilen sözcüklerle özgün cümle */
@@ -315,9 +391,10 @@
           arapca: grup.map(function (w) { return w.ar; }).join('  ·  '),
           cevapYazi: '(Öğrenci üretimi — sözcükler: ' + grup.map(function (w) { return w.tr; }).join(', ') + ')',
           satir: 3
-        });
+        }, grup[0]);
       }
 
+      out.dersler = dersListesi;
       ONBELLEK[anahtar] = out;
       return out;
     });
@@ -325,6 +402,7 @@
 
   window.KidefKlasik = {
     uret: uret,
+    uniteler: uniteler,
     /* Varsayılan açık türler: temel set + yazma/üretim (öğretmen seçimi).
        Öteki türler sayfadaki "Soru türleri" kutusundan açılır. */
     VARSAYILAN: ['kl-ceviri-ar', 'kl-ceviri-tr', 'kl-bosluk', 'kl-kurma', 'kl-sozcuk',

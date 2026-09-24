@@ -184,3 +184,36 @@ bu üçü de doldu (ünite başına 4 / 2 / 7 soru), yani hemen her öğrenme
     Artık iki kipte de aynı görünüyor.
 Yedek: _kaynak/yedekler/sinav_2026-09-24_klasik-oncesi.js
 ──────────────────────────────────────────────────────────────
+
+24.09.2026 · SORU HAZIRLA — sekmeler, kitap ayrımı, ünite ve ders seçimi
+  · Başlangıç ekranı kalktı, yerine SEKME geldi: "Sınav Hazırla" ve
+    "Temrin (Alıştırma) Hazırla". Sayfa Sınav sekmesiyle açılıyor,
+    seçim hatırlanıyor. "Yolu değiştir" düğmesi gereksizleşti, kaldırıldı.
+  · SINIF SEÇİCİSİ KİTAP BAZLI: birden çok kitabı olan sınıflar ayrı
+    satır — 6 (2026-2027 Maarif / 2025-2026), 7 (Mektep Yayınları /
+    2027-2028 Maarif), 10 (2026-2027 Maarif / Seçmeli Arapça). Seçilince
+    sitenin kitap seçimi de güncelleniyor (veriYiliSec), böylece ders
+    verisi doğru klasörden okunuyor.
+  · ÜNİTE LİSTESİ ARTIK KİTAPTAN geliyor, programdan değil. Sebep: 7.
+    sınıf Mektep kitabı 6 ünite, MEB kitabı 4 ünite; öğretim programının
+    ünite listesi (veri_ciktilar.js) kitabı değil PROGRAMI anlatıyor.
+    klasik.js muhadese/muhadese.js içindeki educationData/educationDataYil
+    ağacını sanal ortamda okuyup ünite ve ders adlarını alıyor.
+  · DERS SEÇİMİ: ünite içinde ders varsa çip satırı çıkıyor
+    ("Tüm ünite · 1. Ders: Edebiyat · 2. Ders: Kitap Fuarında · …");
+    seçilince sorular o derse süzülüyor. Ünite başına tek dosyası olan
+    kitapta (7. sınıf MEB) satır hiç görünmüyor.
+  · SEÇİM SIRASI: okul bilgileri → sınıf+kitap → ünite → ders → soru
+    türleri → öğrenme çıktıları. Panel sırası buna göre değişti.
+
+  DİKKAT (tuzak): ayar.ders zaten ANTETTEKİ ders adı ("Arapça"). Ders
+  süzgeci önce aynı ada yazılmış, sınav listesi boşalmıştı; süzgeç
+  ayar.dersSuz oldu. Ayrıca ders ve klasik tür çipleri .cip sınıfını
+  taşıdığı için genel süzgeç seçicisi
+  ".cip:not([data-klasik]):not([data-ders])" olarak daraltıldı.
+
+  Ölçüm: 7 Mektep 6 ünite/3 ders → 107 soru · 7 MEB 4 ünite → 106 ·
+  8 → 107 (ders süzgeciyle 45/30/29) · 10 Seçmeli 4 ünite/3 ders → 106
+  Yedekler: _kaynak/yedekler/sinav_2026-09-24_sekme-oncesi.js
+            _kaynak/yedekler/klasik_2026-09-24_ders-oncesi.js
+──────────────────────────────────────────────────────────────

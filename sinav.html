@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-FV9JD15KLW');
   </script>
-  <link rel="stylesheet" href="sinifici/sinav.css?v=3">
+  <link rel="stylesheet" href="sinifici/sinav.css?v=4">
   <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
   <link rel="stylesheet" href="arakom.css?v=2">
 </head>
@@ -36,46 +36,22 @@
       <p><span id="yolAdi"></span> <span id="havuzBilgi"></span></p>
     </div>
     <div class="ust-sag">
-      <button type="button" id="yolDegis" hidden>↺ Yolu değiştir</button>
       <div class="ust-say"><b class="say-secili">0</b> soru seçili</div>
     </div>
   </div>
 </header>
 
-<!-- ===================== YOL SEÇİMİ ===================== -->
-<section id="yolSec" hidden aria-label="Ne hazırlayacaksın?">
-  <h2>Ne hazırlayacaksın?</h2>
-  <div class="yollar">
-    <button type="button" class="yol-kart yol-okul" data-yol-sec="sinav">
-      <span class="yol-ik" aria-hidden="true">
-        <svg viewBox="0 0 48 48"><rect x="8" y="6" width="32" height="36" rx="4" fill="#E6F7F2" stroke="#16A085" stroke-width="2.2"/><path d="M15 16h18M15 23h18M15 30h11" stroke="#16A085" stroke-width="2.2" stroke-linecap="round"/><circle cx="35" cy="34" r="7.5" fill="#fff" stroke="#16A085" stroke-width="2.2"/><path d="M31.6 34.2l2.4 2.4 4.4-4.6" fill="none" stroke="#16A085" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </span>
-      <b>Sınav</b>
-      <span class="yol-alt">Öğrenme çıktılarına göre · yalnız klasik sorular</span>
-      <ul>
-        <li>Yalnız açık uçlu sorular — çoktan seçmeli kapalı <i>(Yönerge m.5/1-e)</i></li>
-        <li>Sorular ünitenin kendi ders cümlelerinden üretilir</li>
-        <li>Sınıf ve ünite seç, çıktı ağacından çıktıyı işaretle</li>
-        <li>Her sorunun yanına çıktı numarası yazılır <i>(8.2.1.1)</i></li>
-        <li>Antet okul bilgilerinden kurulur, dağılım tablosu çıkar</li>
-      </ul>
-    </button>
-    <button type="button" class="yol-kart yol-alistirma" data-yol-sec="temrin">
-      <span class="yol-ik" aria-hidden="true">
-        <svg viewBox="0 0 48 48"><rect x="7" y="9" width="34" height="30" rx="4" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.2"/><path d="M14 18h9M14 25h20M14 32h14" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"/><circle cx="31" cy="18" r="3.2" fill="#2563EB"/></svg>
-      </span>
-      <b>Temrin</b>
-      <span class="yol-alt">Alıştırma ve çalışma kâğıdı</span>
-      <ul>
-        <li>Hem klasik sorular hem havuzdaki çoktan seçmeliler</li>
-        <li>Konu, içerik, biçim ve zorluğa göre süz; tek tek ekle</li>
-        <li>Başlık serbest, çıktı numarası isteğe bağlı</li>
-        <li>A ve B kitapçığı, cevap anahtarı yine var</li>
-      </ul>
-    </button>
-  </div>
-  <p class="yol-not">Seçimin hatırlanır; üstteki <b>↺ Yolu değiştir</b> ile her an geri dönebilirsin.</p>
-</section>
+<!-- ===================== YOL SEKMELERİ ===================== -->
+<nav class="yol-sekmeler" role="tablist" aria-label="Ne hazırlanıyor">
+  <button type="button" role="tab" class="yol-sekme sek-sinav" data-yol-sec="sinav" aria-selected="true">
+    <span class="ys-ik" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="5" y="3" width="18" height="22" rx="2.6" fill="#E6F7F2" stroke="#16A085" stroke-width="1.8"/><path d="M9.5 9h9M9.5 13.5h9M9.5 18h5" stroke="#16A085" stroke-width="1.8" stroke-linecap="round"/><circle cx="22.5" cy="21" r="6" fill="#fff" stroke="#16A085" stroke-width="1.8"/><path d="M19.9 21.1l1.8 1.8 3.3-3.5" fill="none" stroke="#16A085" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <span class="ys-yazi"><b>Sınav Hazırla</b><small>Öğrenme çıktılarına göre · yalnız klasik sorular</small></span>
+  </button>
+  <button type="button" role="tab" class="yol-sekme sek-temrin" data-yol-sec="temrin" aria-selected="false">
+    <span class="ys-ik" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="2.6" fill="#EAF1FE" stroke="#2563EB" stroke-width="1.8"/><path d="M9 12h6M9 16.5h14M9 21h10" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"/><circle cx="21" cy="12" r="2.4" fill="#2563EB"/></svg></span>
+    <span class="ys-yazi"><b>Temrin (Alıştırma) Hazırla</b><small>Klasik sorular + havuzdaki çoktan seçmeliler</small></span>
+  </button>
+</nav>
 
 <nav class="sekmeler" aria-label="Bölümler">
   <button type="button" class="sekme" data-sekme="havuz" aria-selected="true">Soru havuzu</button>
@@ -108,13 +84,8 @@
       </div>
     </details>
 
-    <!-- OKUL SINAVI: çıktı ağacı -->
-    <section id="agacPaneli" class="kutu agac-panel" hidden aria-label="Öğrenme çıktıları">
-      <p id="agacDurum" class="agac-durum"></p>
-      <div id="agac"></div>
-      <p class="agac-not">Çıktı numarası bir <b>öneridir</b>: havuzda sorunun ünitesi yazmaz, ünite senin üstten seçtiğindir. Kâğıdım listesinden her soru için değiştirebilirsin.</p>
-    </section>
-
+    <!-- SEÇİM SIRASI: önce sınıf+kitap, sonra ünite ve (varsa) ders,
+         en sonda o ünitenin öğrenme çıktıları. Öğretmen böyle çalışıyor. -->
     <section id="klasikPaneli" class="kutu klasik-panel" hidden aria-label="Klasik soru türleri">
       <h3>Sınıf, ünite ve soru türleri</h3>
       <div class="agac-ust">
@@ -122,10 +93,22 @@
         <select id="uniteSec" aria-label="Ünite" disabled></select>
       </div>
       <p id="klasikDurum" class="klasik-durum"></p>
+      <div id="dersSatir" class="ders-satir" hidden>
+        <h4>Ders</h4>
+        <div id="suz-ders" class="cipler"></div>
+      </div>
       <div id="suz-klasik" class="cipler"></div>
       <p class="klasik-not">Sorular seçili <b>sınıf ve ünitenin kendi ders cümlelerinden</b> üretilir
         (<code>muhadese/veri/</code>); Arapça elle yazılmaz. Kapalı türleri açmak için üstlerine bas.</p>
     </section>
+
+    <!-- OKUL SINAVI: çıktı ağacı -->
+    <section id="agacPaneli" class="kutu agac-panel" hidden aria-label="Öğrenme çıktıları">
+      <p id="agacDurum" class="agac-durum"></p>
+      <div id="agac"></div>
+      <p class="agac-not">Çıktı numarası bir <b>öneridir</b>: havuzda sorunun ünitesi yazmaz, ünite senin üstten seçtiğindir. Kâğıdım listesinden her soru için değiştirebilirsin.</p>
+    </section>
+
 
     <div class="suzgec kutu">
       <div class="ara-kutu">
@@ -240,8 +223,8 @@
      (dersYolu) — 7. sınıf Mektep, 6/7 y2627, 10 seçmeli. klasik.js buna
      bakarak doğru üniteyi okur. -->
 <script src="sistem/sinifveri.js?v=20260924j"></script>
-<script src="sinifici/klasik.js?v=2"></script>
-<script src="sinifici/sinav.js?v=2"></script>
+<script src="sinifici/klasik.js?v=3"></script>
+<script src="sinifici/sinav.js?v=3"></script>
 <script src="sistem/geri.js?v=20260915a"></script>
 </body>
 </html>
