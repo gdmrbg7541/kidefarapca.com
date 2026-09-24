@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-FV9JD15KLW');
   </script>
-  <link rel="stylesheet" href="sinifici/sinav.css?v=1">
+  <link rel="stylesheet" href="sinifici/sinav.css?v=2">
   <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
   <link rel="stylesheet" href="arakom.css?v=2">
 </head>
@@ -21,6 +21,16 @@
 
 <header class="ust">
   <div class="ust-ic">
+    <!-- Geri tuşu DOĞRUDAN index.html'e gider (kidefAnasayfa). Bilerek
+         "kidefGeriDon" kullanılmadı: o, tarayıcı geçmişine bakıp bir önceki
+         sayfaya döner ve siteye vitrinden (indeks.html) girilmişse oraya
+         düşebilir. Ayrıca sistem/geri.js yalnız kidefGeriDon'lu tuşun yanına
+         ikinci bir "ev" tuşu ekliyor; tek tuş kalsın diye bu seçildi. -->
+    <a href="index.html" onclick="return kidefAnasayfa(event)" class="sv-geri" title="Siteye dön" aria-label="Siteye dön">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+    </a>
     <div class="ust-sol">
       <h1>Sınav Hazırla</h1>
       <p><span id="yolAdi"></span> <span id="havuzBilgi"></span></p>

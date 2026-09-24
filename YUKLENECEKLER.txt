@@ -115,3 +115,19 @@ Eskiler
 
 Yedek: _kaynak/yedekler/index_2026-09-24_sinav-karti-oncesi.html
 ──────────────────────────────────────────────────────────────
+
+24.09.2026 · SINAV HAZIRLA — geri tuşu + site renkleri
+  · sinav.html başına geri tuşu (.sv-geri) — doğrudan index.html'e gider
+    (kidefAnasayfa). Bilerek kidefGeriDon kullanılmadı: o, tarayıcı
+    geçmişine bakar ve siteye vitrinden girilmişse indeks.html'e düşebilir;
+    ayrıca sistem/geri.js onun yanına ikinci bir "ev" tuşu ekliyor,
+    ikisi başlığın üstüne biniyordu. Index kartından yeni sekmede
+    açıldıysa geri.js sekmeyi kapatıp index'e döner (site düzeni).
+  · Yeni bölümlerin renkleri sayfanın kendi değişkenlerine bağlandı
+    (--yesil, --yesil-k, --yesil-a, --murekkep, --gri, --cizgi, --zemin).
+    Eklediğim slate/gri paleti ve KARANLIK KİP kuralları kaldırıldı:
+    taban sorukagidi.css'te karanlık kip yok, o yüzden sayfanın yalnız
+    yeni bölümleri koyu görünüyordu.
+  · sinifici/sinav.css yeniden üretildi (?v=2): sorukagidi.css +
+    _kaynak/gecici/sinav-ek2.css
+──────────────────────────────────────────────────────────────
