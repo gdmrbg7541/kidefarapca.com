@@ -527,6 +527,44 @@
     /* Yıla göre değişen müfredat — muhadese.js'teki educationDataYil ile
        AYNI ağaç. 6. sınıfın 2026-2027 kitabı 4 ünite × 2 ders. */
     var MUFREDAT_YIL = {
+        /* >>> 10. SINIF SEÇMELİ ARAPÇA (yama_sec10.py üretti; elle düzenlemeyin, yeniden üretin) */
+        "10": {
+            "secmeli": [
+                {
+                    "ad": "1. Ünite: Hayattan | مِن الحَياة",
+                    "dersler": [
+                        { "ad": "1. Ders: Okula Hazırlık | الاسْتِعْداد لِلْمَدْرَسة", "id": "10_1_1", "veri": true },
+                        { "ad": "2. Ders: Eve Dönüş | الرُّجوع إلى البَيْت", "id": "10_1_2", "veri": true },
+                        { "ad": "3. Ders: Hafta Sonu | نِهاية الأُسْبوع", "id": "10_1_3", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "2. Ünite: Değerlerim | قِيَمي",
+                    "dersler": [
+                        { "ad": "1. Ders: Dinimi Seviyorum | أُحِبُّ ديني", "id": "10_2_1", "veri": true },
+                        { "ad": "2. Ders: Güzel Ahlak | الأَخْلاق الحَسَنة", "id": "10_2_2", "veri": true },
+                        { "ad": "3. Ders: Vatanımı Seviyorum | أُحِبُّ وَطَني", "id": "10_2_3", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "3. Ünite: Sağlık | الصِّحّة",
+                    "dersler": [
+                        { "ad": "1. Ders: Vücudun Bölümleri | أَجْزاء الجِسْم", "id": "10_3_1", "veri": true },
+                        { "ad": "2. Ders: Yiyecekler ve İçecekler | المَأْكولات والمَشْروبات", "id": "10_3_2", "veri": true },
+                        { "ad": "3. Ders: Spor | الرِّياضة", "id": "10_3_3", "veri": true },
+                    ]
+                },
+                {
+                    "ad": "4. Ünite: Önemli Yerler | الأَماكِن المُهِمّة",
+                    "dersler": [
+                        { "ad": "1. Ders: Dünyadaki Türk-İslam Eserleri | الآثار التُّرْكِيّة-الإِسْلامِيّة في العالَم", "id": "10_4_1", "veri": true },
+                        { "ad": "2. Ders: Mekke, Medine ve Kudüs | مَكّة المُكَرَّمة، المَدينة المُنَوَّرة، القُدْس الشَّريف", "id": "10_4_2", "veri": true },
+                        { "ad": "3. Ders: Türkiye’deki Önemli Yerler | الأَماكِن المُهِمّة في تُرْكِيا", "id": "10_4_3", "veri": true },
+                    ]
+                },
+            ]
+        },
+        /* <<< 10. SINIF SEÇMELİ ARAPÇA */
         /* >>> 7. SINIF MEKTEP YAYINLARI (yama7.py üretti; elle düzenlemeyin, yeniden üretin) */
         "7": {
             "2026-2027": [

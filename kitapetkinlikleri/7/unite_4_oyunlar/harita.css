@@ -1,0 +1,468 @@
+h1, h2, h3, h4, h5, h6, strong, b { font-weight: normal !important; }
+
+@font-face {
+    font-family: 'Arakom';
+    src: url('arakom.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root { 
+    --primary: #2c3e50; 
+    --success: #27ae60; 
+    --danger: #e74c3c; 
+    --bg: #f4f7f6; 
+}
+
+body { 
+    font-family: 'Arakom', sans-serif; 
+    background: var(--bg); 
+    margin: 0; 
+    padding: 0;
+    overflow: hidden; 
+    height: 100dvh;
+    width: 100vw;
+}
+
+button, h1, h2, p, a {
+    font-family: 'Arakom', serif !important;
+}
+.hidden { display: none !important; }
+
+.overlay-container {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100dvh;
+    background: rgba(44, 62, 80, 0.95);
+    z-index: 99999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.container { 
+    width: 100vw; 
+    height: 100dvh; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    align-items: center; 
+    position: relative;
+    padding: 0;
+    background: white;
+}
+
+/* Harita SVG Tasarımı */
+svg {
+    width: 100vw;
+    height: auto;
+    max-height: 75vh; 
+    margin-top: auto; 
+    margin-bottom: 35px; 
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.08));
+    z-index: 1;
+}
+
+path {
+    cursor: pointer;
+    transition: fill 0.3s ease;
+    fill: #6f9c76;
+    stroke: #ffffff;
+    stroke-width: 0.5;
+    pointer-events: all;
+}
+
+path:hover {
+    fill: #3498db !important;
+    cursor: pointer;
+}
+
+.arabic-word {
+    position: absolute;
+    bottom: 80px; 
+    left: 0;
+    right: 314px; 
+    font-size: 4.5rem; 
+    color: var(--primary);
+    direction: rtl;
+    z-index: 10;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+    text-align: center;
+    margin: 0;
+    padding: 0 20px;
+    pointer-events: none; 
+}
+
+.progress-bg { 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #eee; 
+    height: 10px; 
+    overflow: hidden; 
+    z-index: 100;
+}
+.progress-bar { width: 0%; height: 100dvh; background: var(--success); transition: width 0.4s ease; }
+
+.back-btn {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 55px;
+    height: 55px;
+    background: white;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.back-btn:hover {
+    transform: scale(1.1);
+    color: var(--success);
+}
+
+.hero-wrapper {
+    height: 100dvh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, #ffffff 0%, #f4f7f6 100%);
+}
+
+.hero-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.hero-title {
+    font-size: 7rem !important; 
+    color: var(--primary);
+    margin: 0;
+    line-height: 1.2;
+    text-shadow: 0 10px 20px rgba(44, 62, 80, 0.1);
+}
+
+.hero-divider { width: 150px; height: 6px; background: var(--success); border-radius: 10px; }
+
+.hero-btn-large {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 30px 120px;
+    font-size: 4rem !important; 
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 20px 40px rgba(44, 62, 80, 0.2);
+    transition: all 0.3s ease;
+}
+
+.hero-btn-large:hover {
+    transform: scale(1.05) translateY(-5px);
+    background: var(--success);
+    box-shadow: 0 25px 50px rgba(39, 174, 96, 0.3);
+}
+
+/* TF Mode Selection Buttons */
+.tf-mode-wrapper {
+    background: var(--success) !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+.tf-mode-wrapper:hover {
+    box-shadow: 0 25px 50px rgba(39, 174, 96, 0.4);
+}
+.tf-mode-text {
+    font-size: inherit;
+    pointer-events: none;
+}
+.tf-sub-container {
+    display: none;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.tf-sub-btn {
+    font-size: clamp(2.5rem, 5vw, 4rem) !important;
+    padding: clamp(5px, 1vw, 10px) clamp(15px, 3vw, 30px);
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+}
+.tf-sub-btn:hover {
+    transform: scale(1.1);
+}
+.tf-single { background: var(--info) !important; }
+.tf-multi { background: var(--warning) !important; }
+
+.hidden { display: none !important; }
+
+/* Pusula */
+.compass-box {
+    position: absolute;
+    bottom: 35px;
+    right: 30px; 
+    width: 400px;  
+    height: 254px; 
+    background: rgba(255, 255, 255, 0.95);
+    border: 3px solid var(--primary);
+    border-radius: 40px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 20;
+}
+
+.compass-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.compass-axis-h { position: absolute; left: 12px; right: 12px; height: 2px; background: #cbd5e0; }
+.compass-axis-v { position: absolute; top: 12px; bottom: 12px; width: 2px; background: #cbd5e0; }
+
+.compass-grid {
+    display: grid;
+    grid-template-areas: ". north ." "west center east" ". south .";
+    gap: 10px; 
+    z-index: 2;
+}
+
+.dir-item {
+    display: flex; align-items: center; justify-content: center; font-weight: normal; color: var(--primary); background: white; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-size: 2.5rem; padding: 4px 10px;
+}
+.dir-north { grid-area: north;}
+.dir-south { grid-area: south; }
+.dir-east { grid-area: east; }
+.dir-west { grid-area: west; }
+
+.highlight-city {
+    fill: #ffdfba !important; 
+    stroke: #f39c12 !important; 
+    stroke-width: 0.5px;
+    animation: gentlePulse 2s infinite ease-in-out;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+
+.no-hover { pointer-events: none !important; }
+
+.wrong-answer {
+    fill: #e74c3c !important;
+    animation: shakeGrow 0.5s ease-in-out;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+
+@keyframes gentlePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); } 
+    100% { transform: scale(1); }
+}
+
+@keyframes shakeGrow {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.2) rotate(2deg); }
+    50% { transform: scale(1.2) rotate(-2deg); }
+    100% { transform: scale(1); }
+}
+
+#student-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: rgba(20, 30, 40, 0.98); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; 
+}
+.overlay-content { background: white; padding: 40px 80px; border-radius: 30px; text-align: center; color: var(--primary); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+.overlay-title { font-size: 3rem; margin-bottom: 35px; color: var(--success); }
+.overlay-text { font-size: 3.5rem; margin-bottom: 30px; }
+.next-btn { background: var(--primary); color: white; border: none; padding: 15px 50px; font-size: 2rem; border-radius: 15px; cursor: pointer; }
+
+.answered-active { fill: #ffdfba !important; animation: none !important; stroke: #f39c12 !important; stroke-width: 2px !important; }
+.answered-correct-fixed { fill: #ffdfba !important; animation: none !important; }
+
+/* Doğru/Yanlış Alanı */
+#tf-screen { width: 100vw; height: 100dvh; display: flex; flex-direction: column; background: var(--bg); }
+.tf-header { text-align: center; padding: 15px; font-size: 3rem; color: var(--primary); font-weight: normal; text-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.tf-arena { display: flex; flex: 1; gap: 40px; padding: 0 40px 20px 40px; }
+.tf-panel { flex: 1; background: white; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; padding: 40px; border: 4px solid #e2e8f0; }
+.tf-player-title { font-size: 3.5rem; color: #95a5a6; }
+.tf-question { font-size: 4rem; color: var(--primary); text-align: center; direction: rtl; line-height: 1.4; }
+.tf-actions { display: flex; gap: 30px; width: 100%; justify-content: center; }
+.tf-btn { font-size: 4rem; padding: 20px 0; width: 45%; border-radius: 20px; border: 4px solid #cbd5e0; background: white; color: var(--primary); cursor: pointer; transition: all 0.3s ease; }
+.tf-btn:hover:not(:disabled) { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.tf-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.tf-correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; box-shadow: 0 0 20px rgba(39, 174, 96, 0.4); }
+.tf-wrong { background: var(--danger) !important; color: white !important; border-color: var(--danger) !important; box-shadow: 0 0 20px rgba(231, 76, 60, 0.4); }
+.tf-footer { display: flex; justify-content: center; padding: 20px 40px 40px 40px; }
+.tf-next-btn { background: #cbd5e0; color: white; border: none; padding: 20px 80px; font-size: 3rem; border-radius: 20px; transition: all 0.3s ease; }
+.tf-next-btn.active { background: var(--primary); cursor: pointer; box-shadow: 0 10px 25px rgba(44, 62, 80, 0.2); }
+.tf-next-btn.active:hover { background: var(--success); transform: scale(1.05); }
+.tf-nav-btn { background: #cbd5e0; color: white; border: none; padding: 15px 40px; font-size: 2.2rem; border-radius: 15px; transition: all 0.3s ease; }
+.tf-nav-btn.active { background: var(--primary); cursor: pointer; box-shadow: 0 5px 15px rgba(44, 62, 80, 0.2); }
+.tf-nav-btn.active:hover { background: var(--success); transform: scale(1.05); }
+
+/* --- MOBİL UYUMLULUK (RESPONSIVE) --- */
+@media (max-width: 900px) {
+    /* Genel ve Geri Butonu */
+    .container { height: 100dvh !important; overflow: hidden !important; }
+    .back-btn { top: 25px; left: 10px; width: 40px; height: 40px; }
+    .back-btn svg { width: 20px; height: 20px; }
+
+    /* Açılış Ekranı */
+    .hero-title { font-size: clamp(3rem, 10vw, 7rem) !important; }
+    .hero-btn-large { padding: 15px 40px; font-size: clamp(2rem, 6vw, 4rem) !important; width: 90%; }
+    .hero-content > div { flex-direction: column !important; align-items: center; }
+    
+    /* Şehir Avı Ekranı */
+    #game-screen:not(.hidden) {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 60px 0 20px 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+    }
+    #map-container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        flex: 0 1 auto !important;
+    }
+    #map-container svg, svg {
+        max-height: 55vh !important;
+        max-width: 95vw !important;
+        margin: 0 auto !important;
+    }
+    .arabic-word {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        font-size: clamp(2.5rem, 8vw, 4.5rem) !important;
+        padding: 10px !important;
+        text-align: center !important;
+        margin: 30px 0 20px 0 !important;
+    }
+    #game-screen .compass-box, .compass-box {
+        display: none !important;
+    }
+
+    /* Doğru / Yanlış Ekranı */
+    #tf-screen:not(.hidden) { 
+        display: flex !important; 
+        flex-direction: column !important; 
+        justify-content: space-evenly !important; 
+        align-items: center !important;
+        flex: 1 !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+    .tf-header { font-size: clamp(1.5rem, 5vw, 3rem) !important; padding: 10px !important; margin: 0 !important; }
+    .tf-arena { flex: 0 1 auto !important; flex-direction: column !important; gap: 10px !important; padding: 10px !important; }
+    .tf-panel { padding: 15px !important; border-width: 2px !important; border-radius: 20px !important; gap: 10px !important; margin: 0 !important; }
+    .tf-question { font-size: clamp(2rem, 6vw, 4rem) !important; margin-bottom: 5px !important; }
+    .tf-btn { font-size: clamp(2rem, 6vw, 4rem) !important; padding: 10px 0 !important; border-width: 2px !important; border-radius: 10px !important; }
+    .tf-actions { gap: 10px !important; margin: 0 !important; }
+    .tf-footer { padding: 10px !important; margin: 0 !important; }
+    .tf-nav-btn, .tf-next-btn { padding: 10px 20px !important; font-size: clamp(1.5rem, 5vw, 3rem) !important; border-radius: 10px !important; }
+
+    /* Overlay / Popup */
+    .overlay-content { padding: 20px !important; width: 90% !important; border-radius: 20px !important; }
+    .overlay-title { font-size: clamp(3rem, 12vw, 7rem) !important; margin-bottom: 35px !important; }
+    .overlay-text { font-size: clamp(2rem, 8vw, 3.5rem) !important; margin-bottom: 35px !important; }
+    .next-btn { font-size: 1.5rem !important; padding: 10px 30px !important; }
+}
+
+/* --- MOBİL YATAY UYUMLULUK (LANDSCAPE) --- */
+@media screen and (max-height: 500px), screen and (max-width: 950px) and (orientation: landscape) {
+    /* Genel */
+    .container { height: 100dvh !important; overflow: hidden !important; }
+
+    /* Açılış Ekranı (İlk Sayfa) */
+    .hero-title { font-size: clamp(2rem, 8vh, 4rem) !important; margin-bottom: 5px !important; }
+    .hero-content { gap: 10px !important; }
+    .hero-content > div { flex-direction: row !important; }
+    .hero-btn-large { padding: 10px 20px !important; font-size: clamp(1.5rem, 5vh, 2.5rem) !important; width: auto !important; }
+    
+    /* Şehir Avı Ekranı */
+    #game-screen:not(.hidden) {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex: 1 !important;
+        width: 100% !important;
+        height: 100% !important;
+        gap: 15px !important;
+        padding: 5px !important;
+    }
+    svg {
+        max-height: 55vh !important;
+        max-width: 90vw !important;
+        margin: 0 !important;
+        flex: unset !important;
+    }
+    .arabic-word {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        font-size: clamp(1.5rem, 8vh, 3.5rem) !important;
+        line-height: 1.2 !important;
+        flex: unset !important;
+        margin: 0 !important;
+    }
+    .compass-box {
+        display: none !important;
+    }
+    
+    /* Doğru/Yanlış Ekranı */
+    #tf-screen:not(.hidden) { 
+        display: flex !important; 
+        flex-direction: column !important; 
+        justify-content: center !important; 
+        align-items: center !important;
+        flex: 1 !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+    .tf-header { font-size: clamp(1.2rem, 5vh, 2rem) !important; padding: 5px !important; margin: 0 !important; }
+    .tf-arena { flex-direction: row !important; gap: 10px !important; padding: 5px 10px !important; flex: 1 !important; width: 100% !important; margin: 0 !important; }
+    .tf-panel { padding: 5px 10px !important; border-width: 1px !important; justify-content: space-around !important; gap: 5px !important; flex: 1 !important; }
+    
+    .tf-panel > div:first-child > div {
+        width: 30% !important;
+        max-width: 100px !important;
+    }
+
+    .tf-question { font-size: clamp(1.5rem, 6vh, 2.5rem) !important; margin-bottom: 0 !important; }
+    .tf-btn { font-size: clamp(1.5rem, 6vh, 2.5rem) !important; padding: 5px 0 !important; width: 48% !important; border-width: 1px !important; }
+    .tf-actions { justify-content: space-between !important; margin: 0 !important; }
+    .tf-footer { padding: 5px !important; margin: 0 !important; }
+    .tf-nav-btn, .tf-next-btn { padding: 5px 15px !important; font-size: clamp(1.2rem, 5vh, 2rem) !important; }
+
+    /* Overlay / Popup */
+    .overlay-content { padding: 15px !important; width: 90% !important; }
+    .overlay-title { font-size: clamp(2rem, 8vh, 4rem) !important; margin-bottom: 5px !important; }
+    .overlay-text { font-size: clamp(1.8rem, 8vh, 4rem) !important; margin-bottom: 35px !important; line-height: 1.2 !important; }
+    .next-btn { font-size: 1.5rem !important; padding: 5px 30px !important; }
+}

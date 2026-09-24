@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <title>لُعْبَة صَيْد المُدُن</title>
+    <link rel="stylesheet" href="harita.css">
+
+    
+
+    
+</head>
+<body>
+
+    <!-- CİHAZ DÖNDÜRME UYARISI (TÜM OYUNLAR ORTAK) -->
+    <div id="rotate-message" style="display: none;">
+        <div class="phone-animation"></div>
+        <div class="rotate-text">يُرْجى تَدْوير الجِهاز</div> 
+    </div>
+
+
+<a href="index.html" id="nav-btn" class="back-btn" title="Anasayfa">
+    <svg id="nav-icon" viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+</a>
+
+<div id="student-overlay" class="hidden">
+    <div class="overlay-content">
+        <div class="overlay-title" id="overlay-msg" style="font-size: 7rem !important;">أَحْسَنْت</div>
+        <p class="overlay-text" id="overlay-sub" style="font-size: 3.5rem !important;">إِجابَة صَحيحَة</p>
+        <button class="next-btn" onclick="closeOverlay()">حَسَنًا</button>
+    </div>
+</div>
+
+<div class="container">
+    
+    <div id="start-screen" class="hero-wrapper">
+        <div class="hero-content">
+            <h1 class="hero-title">لُعْبَة صَيْد المُدُن</h1>
+            <div class="hero-divider"></div>
+            <div style="display: flex; gap: 30px; margin-top: 25px; align-items: center; flex-wrap: wrap; justify-content: center;">
+                <button class="hero-btn-large" onclick="startGame()">خَريطَة المُدُن</button>
+                <div id="tf-btn-wrapper" class="hero-btn-large tf-mode-wrapper" onclick="splitTFButtons(this)">
+                    <span id="tf-main-text" class="tf-mode-text">صَحّ أَم خَطَأ</span>
+                    <div id="tf-sub-btns" class="tf-sub-container">
+                        <button class="tf-sub-btn tf-single" onclick="startTFGame(1); event.stopPropagation();">👤</button>
+                        <button class="tf-sub-btn tf-multi" onclick="startTFGame(2); event.stopPropagation();">👥</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tf-screen" class="hidden">
+        <div class="tf-header">اِقْرَأ المَعْلومَة وَاخْتَرْ (صَحّ) أَم (خَطَأ)‫.‬</div>
+        <div class="tf-arena">
+            <div class="tf-panel" id="p2-panel">
+                <div style="display: flex; gap: 15px; justify-content: center; width: 100%; margin-bottom: 35px; direction: rtl;">
+                    <div id="p1-bar-1" style="width: 100px; height: 15px; background: #e2e8f0; border-radius: 10px; transition: 0.4s ease;"></div>
+                    <div id="p1-bar-2" style="width: 100px; height: 15px; background: #e2e8f0; border-radius: 10px; transition: 0.4s ease;"></div>
+                    <div id="p1-bar-3" style="width: 100px; height: 15px; background: #e2e8f0; border-radius: 10px; transition: 0.4s ease;"></div>
+                </div>
+                <div class="tf-question" id="p2-question">...</div>
+                <div class="tf-actions">
+                    <button class="tf-btn tf-false" onclick="answerTF(2, false)">خَطَأ</button>
+                    <button class="tf-btn tf-true" onclick="answerTF(2, true)"> صَحّ </button>
+                </div>
+            </div>
+            <div class="tf-panel" id="p1-panel">
+                <div style="display: flex; gap: 15px; justify-content: center; width: 100%; margin-bottom: 35px; direction: rtl;">
+                    <div id="p2-bar-1" style="width: 100px; height: 15px; background: #e2e8f0; border-radius: 10px; transition: 0.4s ease;"></div>
+                    <div id="p2-bar-2" style="width: 100px; height: 15px; background: #e2e8f0; border-radius: 10px; transition: 0.4s ease;"></div>
+                    <div id="p2-bar-3" style="width: 100px; height: 15px; background: #e2e8f0; border-radius: 10px; transition: 0.4s ease;"></div>
+                </div>
+                <div class="tf-question" id="p1-question">...</div>
+                <div class="tf-actions">
+                    <button class="tf-btn tf-false" onclick="answerTF(1, false)">خَطَأ</button>
+                    <button class="tf-btn tf-true" onclick="answerTF(1, true)">صَحّ</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tf-footer" style="gap: 20px;">
+            <button id="tf-prev-btn" class="tf-nav-btn" disabled onclick="prevTFTurn()">السَّابِق</button>
+            <button id="tf-next-btn" class="tf-nav-btn" disabled onclick="nextTFTurn()">التَّالي</button>
+        </div>
+    </div> 
+    
+    <div id="game-screen" class="hidden">
+        <div class="progress-bg">
+            <div id="progress" class="progress-bar"></div>
+        </div>
+ 
+        <div id="map-container"></div>
+
+        <div class="compass-box">
+            <div class="compass-wrapper">
+                <div class="compass-axis-h"></div>
+                <div class="compass-axis-v"></div>
+                
+                <div class="compass-grid">
+                    <div class="dir-item dir-north"><span class="dir-text">الشَّمال</span></div>
+                    <div class="dir-item dir-west"><span class="dir-text">الغَرْب</span></div>
+                    <div class="dir-item dir-east"><span class="dir-text">الشَّرْق</span></div>
+                    <div class="dir-item dir-south"><span class="dir-text">الجَنوب</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arabic-word" id="target-word">...</div>
+    </div> 
+</div> 
+
+
+<audio id="tf-ses" src="yonergedogruyanlis.mp3" preload="auto"></audio>
+
+<script src="haritasvg.js"></script>
+<script src="harita.js"></script>
+
+
+    <div id="end-screen" class="hidden" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100dvh; background: var(--bg-light); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;">
+        <div class="bitti-mesaj" style="font-size: 3rem; color: var(--primary); margin-bottom: 35px;">!أَحْسَنْتَ (Tebrikler)</div>
+        <div id="final-score" style="font-size: 2rem; margin-bottom: 35px;"></div>
+        <button class="main-btn" onclick="location.reload()" style="font-size: 2rem; padding: 15px 40px; border-radius: 15px; border: none; background: var(--secondary); color: white;">إلعب مرة أخرى (Tekrar Oyna)</button>
+    </div>
+
+</body>
+</html>

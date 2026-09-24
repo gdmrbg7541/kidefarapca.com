@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mowgli: The Jungle Code</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Jolly+Lodger&family=Cinzel+Decorative:wght@700&display=swap');
+
+        :root {
+            --jungle-green: #0d1f0d;
+            --leaf-light: #4caf50;
+            --wood-brown: #5d4037;
+            --tiger-orange: #ff6f00;
+            --stone-gray: #4a4a4a;
+            --firefly-glow: #e6ff00;
+        }
+
+        body {
+            background-color: var(--jungle-green);
+            color: #e8f5e9;
+            font-family: 'Cinzel Decorative', cursive;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* --- ARKA PLAN (DERİN ORMAN) --- */
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 50% 0%, rgba(255, 165, 0, 0.1), transparent 60%), /* Güneş ışığı */
+                linear-gradient(0deg, #000 0%, var(--jungle-green) 100%),
+                url('https://www.transparenttextures.com/patterns/dark-matter.png');
+            z-index: -2;
+        }
+
+        /* Sallanan Sarmaşıklar (CSS Çizim) */
+        .vine {
+            position: absolute; top: -50px; width: 4px; background: #2e7d32;
+            border-radius: 0 0 10px 10px; z-index: -1;
+            transform-origin: top center;
+            animation: swingVine 5s infinite ease-in-out;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+        }
+        .vine::after { /* Yaprak */
+            content: ""; position: absolute; bottom: 10%; left: -10px;
+            width: 20px; height: 20px; background: #388e3c;
+            border-radius: 20px 0 20px 0; transform: rotate(45deg);
+        }
+        /* Rastgele Sarmaşıklar */
+        .v1 { height: 30vh; left: 10%; animation-duration: 6s; }
+        .v2 { height: 50vh; left: 25%; animation-duration: 7s; background: #1b5e20; width: 6px; }
+        .v3 { height: 40vh; left: 80%; animation-duration: 5s; }
+        .v4 { height: 20vh; left: 90%; animation-duration: 8s; background: #33691e; }
+
+        @keyframes swingVine { 0%,100% { transform: rotate(2deg); } 50% { transform: rotate(-2deg); } }
+
+        /* Ateş Böcekleri */
+        .firefly {
+            position: absolute; width: 4px; height: 4px; background: var(--firefly-glow);
+            border-radius: 50%; box-shadow: 0 0 10px var(--firefly-glow);
+            animation: flyAround 10s infinite linear; pointer-events: none; opacity: 0;
+        }
+        @keyframes flyAround {
+            0% { transform: translate(0,0); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translate(var(--fly-x), var(--fly-y)); opacity: 0; }
+        }
+
+        /* --- MENÜ (AHŞAP TABELA STİLİ) --- */
+        nav {
+            display: flex; justify-content: center; gap: 20px; padding: 25px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: url('https://www.transparenttextures.com/patterns/wood-pattern.png'), var(--wood-brown);
+            color: #d7ccc8;
+            border: 2px solid #3e2723;
+            padding: 12px 25px;
+            font-family: 'Jolly Lodger', cursive;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.6);
+            transform: rotate(-1deg); /* Hafif yamuk doğal görünüm */
+            transition: 0.3s;
+            position: relative;
+        }
+        /* İp ile asılmış efekti */
+        .nav-btn::before {
+            content: ""; position: absolute; top: -15px; left: 50%; width: 2px; height: 15px;
+            background: #a1887f; transform: translateX(-50%);
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            transform: rotate(1deg) translateY(5px);
+            background-color: #4e342e;
+            color: var(--tiger-orange);
+            border-color: var(--tiger-orange);
+            box-shadow: 0 0 15px var(--tiger-orange);
+        }
+
+        /* --- OYUN ALANLARI --- */
+        .game-area {
+            flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: center;
+            width: 100%; position: relative; animation: fadeIn 1s;
+        }
+        .game-area.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* =========================================
+           OYUN 1: ANTİK HARABELER (TAŞ TABLETLER)
+           ========================================= */
+        .ruins-wrapper {
+            display: flex; gap: 100px; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.3); padding: 40px; border-radius: 20px; border: 2px solid #3e2723;
+        }
+        
+        .col { display: flex; flex-direction: column; gap: 25px; }
+
+        /* Taş Tablet (Sürüklenecek) */
+        .stone-tablet {
+            padding: 20px 40px;
+            background: url('https://www.transparenttextures.com/patterns/concrete-wall.png'), #555;
+            color: #e0e0e0;
+            border: 3px solid #333;
+            border-radius: 10px 25px 5px 20px; /* Kırık taş şekli */
+            font-size: 1.8rem;
+            cursor: grab;
+            text-shadow: 1px 1px 2px #000;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .stone-tablet:active { cursor: grabbing; transform: scale(0.95); }
+
+        /* Duvar Oyuğu (Hedef) */
+        .stone-slot {
+            padding: 20px 40px;
+            background: rgba(0,0,0,0.5);
+            border: 3px inset #333;
+            border-radius: 10px;
+            min-width: 120px;
+            text-align: center;
+            color: #888;
+            font-family: 'Cinzel Decorative';
+        }
+        .stone-slot.drag-over { background: rgba(76, 175, 80, 0.2); border-color: var(--leaf-light); }
+
+        .engraved {
+            background: #2e7d32 !important; border-color: #1b5e20 !important; color: #fff !important;
+            box-shadow: 0 0 15px #2e7d32; pointer-events: none;
+        }
+
+        /* =========================================
+           OYUN 2: KAA'NIN YOLU (SARMAŞIK YOLU)
+           ========================================= */
+        .snake-path {
+            display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-top: 40px;
+            max-width: 800px;
+        }
+        
+        .leaf-step {
+            width: 120px; height: 120px;
+            background: radial-gradient(circle, #66bb6a 0%, #2e7d32 100%);
+            border-radius: 50% 0 50% 50%; /* Yaprak şekli */
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; color: #fff; cursor: pointer;
+            transform: rotate(-45deg);
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .leaf-step span { transform: rotate(45deg); /* Yazıyı düzelt */ }
+        
+        .leaf-step:hover { transform: rotate(-45deg) scale(1.1); background: #81c784; }
+        
+        .leaf-step.correct { background: #ffca28; color: #3e2723; pointer-events: none; animation: pop 0.3s; }
+        .leaf-step.wrong { background: #c62828; animation: shake 0.4s; }
+
+        .snake-display {
+            font-size: 2rem; color: var(--leaf-light); min-height: 50px;
+            text-shadow: 0 0 10px #000; border-bottom: 2px solid #2e7d32; padding: 10px;
+        }
+
+        /* =========================================
+           OYUN 3: KIZIL ÇİÇEK (REFLEKS)
+           ========================================= */
+        .jungle-arena {
+            width: 600px; height: 400px;
+            border: 4px solid #3e2723;
+            border-radius: 20px;
+            background: radial-gradient(circle, rgba(0,0,0,0.6) 20%, #000 100%);
+            position: relative; overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        /* Sağ Taraf: Ateş (Shere Khan) */
+        .zone-fire {
+            position: absolute; right: 0; top: 0; width: 50%; height: 100%;
+            background: linear-gradient(to left, rgba(255, 69, 0, 0.1), transparent);
+            border-left: 1px dashed rgba(255, 69, 0, 0.3);
+        }
+        /* Sol Taraf: Orman (Bagheera) */
+        .zone-forest {
+            position: absolute; left: 0; top: 0; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(0, 100, 0, 0.1), transparent);
+        }
+
+        .zone-label {
+            position: absolute; top: 20px; font-size: 2rem; font-weight: bold; opacity: 0.7;
+        }
+        
+        .falling-prey {
+            font-size: 3.5rem; color: #fff; font-family: 'Amiri', serif;
+            position: absolute; left: 50%; top: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            text-shadow: 0 0 10px #000; z-index: 10;
+        }
+
+        .score-board {
+            margin-top: 20px; font-size: 2rem; color: var(--tiger-orange);
+            background: rgba(0,0,0,0.6); padding: 5px 20px; border-radius: 10px;
+        }
+
+        /* Mobil Kontroller */
+        .paw-btn {
+            width: 80px; height: 80px; border-radius: 50%; border: none;
+            font-size: 2.5rem; cursor: pointer; background: rgba(0,0,0,0.5);
+            border: 2px solid #555; transition: 0.2s;
+        }
+        .paw-btn:active { transform: scale(0.9); }
+
+        /* Animasyonlar */
+        @keyframes pop { 0% { transform: rotate(-45deg) scale(1); } 50% { transform: rotate(-45deg) scale(1.2); } 100% { transform: rotate(-45deg) scale(1); } }
+        @keyframes shake { 0% { transform: rotate(-45deg) translateX(0); } 25% { transform: rotate(-45deg) translateX(-5px); } 75% { transform: rotate(-45deg) translateX(5px); } }
+        .arabic-text { font-family: 'Amiri', serif; direction: rtl; }
+
+        .victory-banner {
+            position: absolute; font-size: 3rem; color: var(--tiger-orange);
+            text-shadow: 2px 2px 0 #000; font-family: 'Jolly Lodger';
+            background: rgba(0,0,0,0.9); padding: 20px 50px; border: 2px solid var(--tiger-orange);
+            display: none; z-index: 50; transform: rotate(-2deg);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="vine v1"></div><div class="vine v2"></div>
+    <div class="vine v3"></div><div class="vine v4"></div>
+
+    <nav>
+        <button class="nav-btn active" onclick="switchGame('ruins')">ANTİK HARABELER</button>
+        <button class="nav-btn" onclick="switchGame('vines')">SARMAŞIK YOLU</button>
+        <button class="nav-btn" onclick="switchGame('jungle')">KIZIL ÇİÇEK</button>
+    </nav>
+
+    <div id="ruins" class="game-area active">
+        <h2 style="color:#a1887f; font-family:'Jolly Lodger'; font-size:3rem; margin-bottom:10px;">KAYIP TABLETLER</h2>
+        <div class="ruins-wrapper">
+            <div class="col" id="drag-col"></div>
+            <div class="col" id="drop-col"></div>
+        </div>
+        <div class="victory-banner" id="vic-ruins">ORMANIN KANUNU TAMAMLANDI!</div>
+    </div>
+
+    <div id="vines" class="game-area">
+        <h2 style="color:var(--leaf-light); font-family:'Jolly Lodger'; font-size:3rem;">YILANIN YOLU</h2>
+        <div class="snake-display arabic-text" id="snake-text">...</div>
+        <div class="snake-path" id="snake-container"></div>
+        <button class="nav-btn" id="next-snake-btn" onclick="nextSnakeLevel()" style="margin-top:30px; display:none; border-color:var(--leaf-light);">SONRAKİ YOL</button>
+    </div>
+
+    <div id="jungle" class="game-area">
+        <h2 style="color:var(--tiger-orange); font-family:'Jolly Lodger'; font-size:3rem;">AVCILAR VE AVLAR</h2>
+        
+        <div class="jungle-arena">
+            <div class="zone-forest"></div>
+            <div class="zone-fire"></div>
+            
+            <div class="zone-label" style="left:30px; color:#4caf50;">BAGHEERA<br><small>(İSİM)</small></div>
+            <div class="zone-label" style="right:30px; color:orangered; text-align:right;">SHERE KHAN<br><small>(FİİL)</small></div>
+            
+            <div id="prey-word" class="falling-prey">HAZIR</div>
+        </div>
+        
+        <div class="score-board">AV PUANI: <span id="hunt-score">0</span></div>
+        
+        <div style="display:flex; gap:50px; margin-top:20px;">
+            <button class="paw-btn" onclick="handleHunt('left')" style="color:#4caf50;">🐾</button>
+            <button class="nav-btn" onclick="startHunt()" id="start-hunt-btn">AVA BAŞLA</button>
+            <button class="paw-btn" onclick="handleHunt('right')" style="color:orangered;">🔥</button>
+        </div>
+    </div>
+
+    <script>
+        // --- EFEKT: Ateş Böcekleri ---
+        function spawnFireflies() {
+            const body = document.body;
+            for(let i=0; i<30; i++){
+                const f = document.createElement('div');
+                f.className = 'firefly';
+                f.style.left = Math.random() * 100 + 'vw';
+                f.style.top = Math.random() * 100 + 'vh';
+                f.style.setProperty('--fly-x', (Math.random()*200 - 100) + 'px');
+                f.style.setProperty('--fly-y', (Math.random()*200 - 100) + 'px');
+                f.style.animationDelay = Math.random() * 5 + 's';
+                f.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                body.appendChild(f);
+            }
+        }
+        spawnFireflies();
+
+        function switchGame(id) {
+            document.querySelectorAll('.game-area').forEach(g => g.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // ==========================
+        // GAME 1: ANTİK HARABELER
+        // ==========================
+        const ruinData = [
+            { ar: "ذِئْب", tr: "Kurt" }, { ar: "نَمِر", tr: "Kaplan" },
+            { ar: "نَار", tr: "Ateş" }, { ar: "غَابَة", tr: "Orman" }
+        ];
+        let ruinCount = 0;
+
+        function initRuins() {
+            const dragCol = document.getElementById('drag-col');
+            const dropCol = document.getElementById('drop-col');
+            dragCol.innerHTML = ""; dropCol.innerHTML = "";
+            let drags = [...ruinData].sort(()=>Math.random()-0.5);
+            let drops = [...ruinData].sort(()=>Math.random()-0.5);
+
+            drags.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'stone-tablet arabic-text';
+                div.innerText = item.ar;
+                div.draggable = true;
+                div.id = 'tablet-' + item.tr;
+                div.ondragstart = (e) => { e.dataTransfer.setData('text', item.tr); div.style.opacity = '0.5'; };
+                div.ondragend = () => div.style.opacity = '1';
+                dragCol.appendChild(div);
+            });
+
+            drops.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'stone-slot';
+                div.innerText = item.tr;
+                div.dataset.match = item.tr;
+                div.ondragover = (e) => { e.preventDefault(); div.classList.add('drag-over'); };
+                div.ondragleave = () => div.classList.remove('drag-over');
+                div.ondrop = (e) => {
+                    e.preventDefault(); div.classList.remove('drag-over');
+                    const data = e.dataTransfer.getData('text');
+                    if(data === div.dataset.match) {
+                        div.classList.add('engraved');
+                        div.innerText = "🏛 " + div.innerText;
+                        document.getElementById('tablet-' + data).style.visibility = 'hidden';
+                        ruinCount++;
+                        if(ruinCount === ruinData.length) document.getElementById('vic-ruins').style.display = 'block';
+                    }
+                };
+                dropCol.appendChild(div);
+            });
+        }
+        initRuins();
+
+        // ==========================
+        // GAME 2: SARMAŞIK YOLU
+        // ==========================
+        const snakeSentences = [
+            { parts: ["أَنَا", "أُحِبُّ", "الْغَابَةَ"], full: "أَنَا أُحِبُّ الْغَابَةَ" },
+            { parts: ["الذِّئْبُ", "صَدِيقُ", "الْإِنْسَانِ"], full: "الذِّئْبُ صَدِيقُ الْإِنْسَانِ" }
+        ];
+        let sLvl = 0; let sProg = [];
+
+        function loadSnakeLevel() {
+            if(sLvl >= snakeSentences.length) {
+                document.getElementById('snake-text').innerText = "ORMAN SENİ KABUL ETTİ";
+                document.getElementById('snake-container').innerHTML = "";
+                document.getElementById('next-snake-btn').style.display = 'none';
+                return;
+            }
+            const data = snakeSentences[sLvl];
+            const con = document.getElementById('snake-container');
+            con.innerHTML = ''; sProg = [];
+            document.getElementById('snake-text').innerText = "...";
+
+            let parts = [...data.parts].sort(()=>Math.random()-0.5);
+            parts.forEach(word => {
+                let div = document.createElement('div');
+                div.className = 'leaf-step';
+                div.innerHTML = `<span class="arabic-text">${word}</span>`;
+                div.onclick = () => {
+                    const correct = data.parts[sProg.length];
+                    if(word === correct) {
+                        div.classList.add('correct');
+                        sProg.push(word);
+                        document.getElementById('snake-text').innerText = sProg.join(" ");
+                        if(sProg.length === data.parts.length) document.getElementById('next-snake-btn').style.display = 'inline-block';
+                    } else {
+                        div.classList.add('wrong');
+                        setTimeout(() => div.classList.remove('wrong'), 400);
+                    }
+                };
+                con.appendChild(div);
+            });
+        }
+        function nextSnakeLevel() { sLvl++; loadSnakeLevel(); }
+        loadSnakeLevel();
+
+        // ==========================
+        // GAME 3: KIZIL ÇİÇEK
+        // ==========================
+        const huntData = [
+            { w: "دُبّ", type: "left" }, { w: "يَرْكُضُ", type: "right" },
+            { w: "شَجَرَة", type: "left" }, { w: "يَأْكُلُ", type: "right" },
+            { w: "قِرْد", type: "left" }, { w: "يَنَامُ", type: "right" }
+        ];
+        let hIdx = 0; let hScore = 0; let huntOn = false;
+        const preyDiv = document.getElementById('prey-word');
+
+        function startHunt() {
+            hIdx = 0; hScore = 0;
+            document.getElementById('hunt-score').innerText = "0";
+            document.getElementById('start-hunt-btn').style.display = 'none';
+            huntOn = true;
+            spawnPrey();
+            document.addEventListener('keydown', handleHuntKey);
+        }
+
+        function spawnPrey() {
+            if(hIdx >= huntData.length) {
+                huntOn = false;
+                preyDiv.style.transform = 'translate(-50%, -50%) scale(0)';
+                document.getElementById('start-hunt-btn').innerText = "TEKRAR AVLAN";
+                document.getElementById('start-hunt-btn').style.display = 'inline-block';
+                return;
+            }
+            preyDiv.style.transition = 'none';
+            preyDiv.style.transform = 'translate(-50%, -50%) scale(0)';
+            preyDiv.innerText = huntData[hIdx].w;
+            preyDiv.style.color = "#fff";
+            
+            setTimeout(() => {
+                preyDiv.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                preyDiv.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            }, 50);
+        }
+
+        function handleHunt(dir) {
+            if(!huntOn) return;
+            const type = huntData[hIdx].type;
+            
+            if(dir === type) {
+                hScore += 10;
+                preyDiv.style.color = '#4caf50'; // Yeşil (Doğru)
+                // Yana kaçma efekti
+                const moveX = dir === 'left' ? '-150%' : '150%';
+                preyDiv.style.transform = `translate(${moveX}, -50%) scale(0)`;
+            } else {
+                hScore -= 5;
+                preyDiv.style.color = '#ff3333'; // Kırmızı (Yanlış)
+                preyDiv.style.transform = 'translate(-50%, -50%) scale(1.5) rotate(10deg)';
+                setTimeout(()=>preyDiv.style.transform = 'translate(-50%, -50%) scale(1.5) rotate(-10deg)', 100);
+            }
+            document.getElementById('hunt-score').innerText = hScore;
+            hIdx++;
+            setTimeout(spawnPrey, 400);
+        }
+
+        function handleHuntKey(e) {
+            if(e.key === "ArrowLeft") { e.preventDefault(); handleHunt('left'); }
+            else if(e.key === "ArrowRight") { e.preventDefault(); handleHunt('right'); }
+        }
+
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

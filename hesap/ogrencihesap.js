@@ -471,22 +471,39 @@
             b.style.display = 'flex';
         }
 
-        /* 2) BASLIKTAKI ZIL — sitenin her sayfasinda gorunur.
-              Ogretmen/yonetici degilse hic gosterilmez. */
+        /* 2) BASLIKTAKI ZIL — sitenin her sayfasinda gorunur. UC HAL:
+              ogretmen/yonetici -> bekleyen ogrenci istekleri
+              ogrenci (hesapli) -> KENDI ogretmenleri + "baska ogretmene katil"
+              digerleri         -> hic gorunmez
+              DIKKAT: ogrenci dalinin olmasi sart. Eskiden zil yalniz
+              ogretmende cizilir, ogrenci girisinde ise HIC DOKUNULMAZDI;
+              ayni sekmede once ogretmen girdiyse zil ogretmenin sayisiyla
+              ekranda kalip tiklandiginda ogretmen panelini aciyordu.     */
         var z = document.getElementById('tab-istekler');
-        if (z) {
-            if (!ogretmenMi()) { z.style.display = 'none'; }
-            else {
-                z.style.display = 'inline-flex';
-                z.title = n ? (n + ' öğrenci hesabını sınıfına bağlamak istiyor')
-                            : 'Bekleyen öğrenci isteği yok';
-                if (n) z.classList.add('kd-var'); else z.classList.remove('kd-var');
-                var zr = document.getElementById('tab-istek-rozet');
-                if (zr) {
-                    zr.textContent = n ? String(n) : '';
-                    zr.style.display = n ? 'block' : 'none';
-                }
+        var zr = document.getElementById('tab-istek-rozet');
+        var zilYaz = function (goster, baslik, sayi) {
+            if (!z) return;
+            z.style.display = goster ? 'inline-flex' : 'none';
+            if (!goster) { z.classList.remove('kd-var'); if (zr) zr.style.display = 'none'; return; }
+            z.title = baslik;
+            z.setAttribute('aria-label', baslik);
+            if (sayi) z.classList.add('kd-var'); else z.classList.remove('kd-var');
+            if (zr) {
+                zr.textContent = sayi ? String(sayi) : '';
+                zr.style.display = sayi ? 'block' : 'none';
             }
+        };
+        if (ogretmenMi()) {
+            zilYaz(true, n ? (n + ' öğrenci hesabını sınıfına bağlamak istiyor')
+                           : 'Bekleyen öğrenci isteği yok', n);
+        } else if (OH.epostaGirisiVar()) {
+            var bek = 0, ony = 0;
+            try { bek = OH.bekleyenBaglar().length; ony = OH.onayliBaglar().length; } catch (e) { }
+            zilYaz(true, bek ? (bek + ' katılım isteğin onay bekliyor — öğretmenlerin için tıkla')
+                             : (ony ? 'Öğretmenlerim — başka bir öğretmene katılmak için tıkla'
+                                    : 'Bir öğretmene katıl — kodunu buraya gir'), bek);
+        } else {
+            zilYaz(false);
         }
 
         /* 3) Panel aciksa listeyi de tazele (yonetici yeni istek tanimlamis
@@ -556,6 +573,10 @@
     }
 
     OH.istekPaneliAc = function () {
+        /* Zil ogretmende de ogrencide de ayni <a> — panel role gore ayrilir.
+           Ogretmen olmayan biri bu paneli HICBIR sekilde gormemeli: icinde
+           ogretmenin ogrenci adlari/e-postalari var. */
+        if (!ogretmenMi()) { OH.ogretmenPaneliAc(); return; }
         var k = istekKatman();
         OH.istekCiz();
         k.style.display = 'flex';
@@ -570,6 +591,92 @@
     };
     OH.istekPaneliKapat = function () {
         var k = document.getElementById('ohIstekModal');
+        if (k) k.style.display = 'none';
+    };
+
+    /* ================================================================ 3b. OGRENCININ ZIL PANELI
+
+       Basliktaki zile basan OGRENCI burayi gorur: hangi ogretmenlerin
+       ogrencisi oldugu, bekleyen istekleri ve BASKA BIR OGRETMENIN KODUNU
+       girip istek gonderme tusu. Liste OH.ogretmenlerHtml() ile tek
+       yerden gelir (ogrenci paneli ve profildeki kartla ayni cizim).   */
+    function ogtKatman() {
+        var k = document.getElementById('ohOgtModal');
+        if (k) return k;
+        k = document.createElement('div');
+        k.id = 'ohOgtModal';
+        k.setAttribute('style',
+            'display:none; position:fixed; inset:0; z-index:10050; background:rgba(0,0,0,.55);' +
+            'backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;');
+        k.innerHTML =
+            '<div style="background:#fff; width:100%; max-width:470px; max-height:86vh; border-radius:18px;' +
+            'overflow:hidden; display:flex; flex-direction:column; box-shadow:0 18px 46px rgba(0,0,0,.35);">' +
+            '<div style="background:linear-gradient(135deg,#F39C12 0%,#E67E22 48%,#D84315 100%); color:#fff;' +
+            'padding:14px 18px; display:flex; align-items:center; justify-content:space-between;">' +
+            '<strong id="ohOgtBaslik" style="font-size:1.02rem;">Öğretmenlerim</strong>' +
+            '<span id="ohOgtKapat" style="cursor:pointer; font-size:26px; line-height:1;">&times;</span></div>' +
+            '<div id="ohOgtGovde" style="flex:1; overflow-y:auto; padding:16px; background:#FFF8F2;"></div>' +
+            '</div>';
+        document.body.appendChild(k);
+        k.querySelector('#ohOgtKapat').onclick = function () { OH.ogretmenPaneliKapat(); };
+        k.addEventListener('click', function (e) { if (e.target === k) OH.ogretmenPaneliKapat(); });
+        return k;
+    }
+
+    OH.ogretmenPaneliCiz = function () {
+        var g = document.getElementById('ohOgtGovde');
+        if (!g) return;
+        var b = document.getElementById('ohOgtBaslik');
+
+        if (!OH.epostaGirisiVar()) {
+            if (b) b.textContent = 'Öğretmene Katıl';
+            g.innerHTML =
+                '<p style="margin:0 0 14px; color:#6B4A38; line-height:1.6;">Bir öğretmenin sınıfına ' +
+                'katılmak için önce <b>e-posta ile giriş</b> yapmalısın.</p>' +
+                '<button type="button" onclick="OH.ogretmenPaneliKapat(); ' +
+                'if(typeof showLoginModal===\'function\') showLoginModal();" ' +
+                'style="width:100%; padding:13px; border:none; border-radius:12px; cursor:pointer;' +
+                'font-family:inherit; font-weight:700; font-size:1rem; color:#fff;' +
+                'background:linear-gradient(135deg,#F39C12,#D84315);">E-posta ile giriş yap</button>';
+            return;
+        }
+
+        var ic = OH.ogretmenlerHtml ? OH.ogretmenlerHtml() : '';
+        if (ic) {
+            var coklu = 0;
+            try { coklu = OH.seciciBaglar().length; } catch (e) { }
+            if (b) b.textContent = coklu > 1 ? 'Öğretmenlerim' : 'Öğretmenim';
+            g.innerHTML = ic;
+            return;
+        }
+
+        /* Hic bagi yok: dogrudan kod cagrisi. */
+        if (b) b.textContent = 'Öğretmene Katıl';
+        g.innerHTML =
+            '<p style="margin:0 0 14px; color:#6B4A38; line-height:1.6;">Henüz bir öğretmene bağlı değilsin. ' +
+            'Öğretmeninin sana verdiği <b>kodu</b> girerek sınıfına katılma isteği gönderebilirsin. ' +
+            'Öğretmenin onaylayınca görevler, sonuçlar ve mesajlaşma açılır.</p>' +
+            '<button type="button" onclick="OH.ogretmenPaneliKapat(); OH.kodModalAc();" ' +
+            'style="width:100%; padding:13px; border:none; border-radius:12px; cursor:pointer;' +
+            'font-family:inherit; font-weight:700; font-size:1rem; color:#fff;' +
+            'background:linear-gradient(135deg,#F39C12,#D84315);">🎫 Kodu gir</button>';
+    };
+
+    OH.ogretmenPaneliAc = function () {
+        var k = ogtKatman();
+        OH.ogretmenPaneliCiz();
+        k.style.display = 'flex';
+        if (!OH._ogtEsc) {
+            OH._ogtEsc = true;
+            document.addEventListener('keydown', function (e) {
+                if (e.key !== 'Escape') return;
+                var m = document.getElementById('ohOgtModal');
+                if (m && m.style.display === 'flex') { e.stopPropagation(); OH.ogretmenPaneliKapat(); }
+            }, true);
+        }
+    };
+    OH.ogretmenPaneliKapat = function () {
+        var k = document.getElementById('ohOgtModal');
         if (k) k.style.display = 'none';
     };
 
@@ -1448,6 +1555,14 @@
 
     /* Serit her durumda tek yerden cizilir. */
     OH.bannerGuncelle = function () {
+        /* Zil de baglara bakiyor (bekleyen istek sayisi); serit ne zaman
+           tazeleniyorsa zil de o anda tazelensin — ayri cagri yeri aramaya
+           gerek kalmasin. Banner elemani olmasa bile zil guncellenir.   */
+        try { OH.rozetGuncelle(); } catch (e) { }
+        try {
+            var op = document.getElementById('ohOgtModal');
+            if (op && op.style.display === 'flex') OH.ogretmenPaneliCiz();
+        } catch (e) { }
         var b = document.getElementById('ohBanner');
         if (!b) return;
         if (ogretmenMi() || !OH.epostaGirisiVar()) { b.style.display = 'none'; return; }
@@ -1907,6 +2022,9 @@
             if (OH._ozetAbone) { try { OH._ozetAbone(); } catch (e) { } OH._ozetAbone = null; }
             if (OH._istekAbone) { try { OH._istekAbone(); } catch (e) { } OH._istekAbone = null; }
             if (OH._msgAbone) { try { OH._msgAbone(); } catch (e) { } OH._msgAbone = null; }
+            OH.istekler = [];
+            try { OH.istekPaneliKapat(); OH.ogretmenPaneliKapat(); } catch (e) { }
+            try { OH.rozetGuncelle(); } catch (e) { }   /* zil sonmeli */
             return;
         }
         if (ogretmenMi()) {
@@ -1933,6 +2051,16 @@
             });
             setTimeout(function () { OH.tusYerlestir(); }, 900);
         } else {
+            /* OGRETMEN KALINTISI: ayni sekmede once ogretmen girdiyse istek
+               dinleyicisi hala calisiyor, OH.istekler dolu ve basliktaki ZIL
+               ogretmenin sayisini gosteriyor olur. Ogrenci ogretmenin
+               verisini bir an bile gormemeli -> dinleyici kapanir, liste
+               bosalir, acik kalmis ogretmen paneli kapanir, zil tazelenir. */
+            if (OH._istekAbone) { try { OH._istekAbone(); } catch (e) { } OH._istekAbone = null; }
+            OH.istekler = [];
+            try { OH.istekPaneliKapat(); } catch (e) { }
+            try { OH.rozetGuncelle(); } catch (e) { }
+
             var p = OH.baglantiyiYukle();
             /* Baglanti durumu OGRENILDIKTEN sonra kayittan kalan kod islenir;
                boylece zaten bagli/bekleyen hesaba ikinci istek atilmaz. */

@@ -1,25 +1,25 @@
 /* =====================================================================
    SÖZLÜK SİMÜLASYONU — 6. SINIF VERİSİ            (üretilmiş dosya)
    ---------------------------------------------------------------------
-   KAYNAK: muhadese/veri/6_1_*.js ders cümleleri (1. Ünite · الحَياة
-   اليَوْمِيَّة). Arapça ELLE YAZILMADI; ders verisinden alındı.
+   KAYNAK: muhadese/veri/6_1_1 … 6_6_3 ders cümleleri — 6. sınıfın
+   ALTI ÜNİTESİ de kapsanıyor. Arapça ELLE YAZILMADI; ders verisinden
+   alındı.
    KÖK: üç harfli sarf kökü değil, SÖZLÜKTE ARANAN yalın biçim
    (ال atılır, bitişik zamir atılır, çoğul tekile döner, fiil maziye).
    SEVİYELER: bu sınıfın verisinde gerçekten geçen olgulara göre
-   kuruldu; olgusu bulunmayan seviye açılmadı. İpuçları da o seviyenin
-   KENDİ örnekleriyle yazıldı.
-   ÜRETİCİ: /tmp/uret_sozluk6.py — ders verisi değişirse yeniden üretilmeli.
+   kuruldu; ipuçları da o seviyenin KENDİ örnekleriyle yazıldı.
+   ÜRETİCİ: sozluk/uret_sozluk6.py — ders verisi değişirse yeniden üretilmeli.
    ===================================================================== */
 window.SOZLUK_SINIF = window.SOZLUK_SINIF || {};
 window.SOZLUK_SINIF["6"] = {
   "sinif": 6,
-  "cumle": 160,
-  "kelime": 451,
+  "cumle": 300,
+  "kelime": 1206,
   "seviyeler": [
     {
       "level": 1,
       "anahtar": "al",
-      "hint": "<h3 dir=\"ltr\">Seviye 1 · <bdi class=\"ip-ar\">ال</bdi> takısı ve yalın isim</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Vurgulanan kelimenin <b>sözlükte aranacak yalın hâlini</b> (harekesiz) yazın.</li><li>İsmin başındaki <b><bdi class=\"ip-ar\">ال</bdi></b> takısı atılır.</li><li>Zamir, işaret ismi ve özel adlar aranmaz: onlar <b>geçilir</b>.</li><li>Dişil sıfat eril hâliyle aranır: <bdi class=\"ip-ar\">واسِعَةٌ</bdi> → <bdi class=\"ip-ar\">واسع</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المَدْرَسَةِ</bdi> → <bdi class=\"ip-ar\"><b>مدرسة</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الطّالِبِ</bdi> → <bdi class=\"ip-ar\"><b>طالب</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الصَّفِّ</bdi> → <bdi class=\"ip-ar\"><b>صف</b></bdi> <i>(isim (ال takılı))</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 1 · <bdi class=\"ip-ar\">ال</bdi> takısı ve yalın isim</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Vurgulanan kelimenin <b>sözlükte aranacak yalın hâlini</b> (harekesiz) yazın.</li><li>İsmin başındaki <b><bdi class=\"ip-ar\">ال</bdi></b> takısı atılır.</li><li>Zamir, işaret ismi ve özel adlar aranmaz: onlar <b>geçilir</b>.</li><li>Dişil sıfat eril hâliyle aranır: <bdi class=\"ip-ar\">واسِعَةٌ</bdi> → <bdi class=\"ip-ar\">واسع</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المَدْرَسَةِ</bdi> → <bdi class=\"ip-ar\"><b>مدرسة</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الطّالِبِ</bdi> → <bdi class=\"ip-ar\"><b>طالب</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الصَّفِّ</bdi> → <bdi class=\"ip-ar\"><b>صف</b></bdi> <i>(isim (ال takılı))</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المَسْجِدُ</bdi> → <bdi class=\"ip-ar\"><b>مسجد</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الحَرامُ</bdi> → <bdi class=\"ip-ar\"><b>حرام</b></bdi> <i>(isim (sıfat · ال takılı))</i></li><li><bdi class=\"ip-ar\">النّورِ</bdi> → <bdi class=\"ip-ar\"><b>نور</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">المَدينَةِ</bdi> → <bdi class=\"ip-ar\"><b>مدينة</b></bdi> <i>(isim (ال takılı · dişil))</i></li><li><bdi class=\"ip-ar\">البَيْتُ</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">المَدْرَسَةُ</bdi> → <bdi class=\"ip-ar\"><b>مدرسة</b></bdi> <i>(ال takılı · isim)</i></li></ul>",
       "sentences": [
         {
           "arabic": [
@@ -873,13 +873,1095 @@ window.SOZLUK_SINIF["6"] = {
             "efendim."
           ],
           "turkishFull": "Hoş geldiniz efendim."
+        },
+        {
+          "arabic": [
+            {
+              "text": "مَكَّةُ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "المُكَرَّمَةِ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "السُّعودِيَّةِ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "وَهِيَ",
+              "root": "هي",
+              "category": "atıf harfi + zamir"
+            },
+            {
+              "text": "مَدينَةٌ",
+              "root": "مدينة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "مُقَدَّسَةٌ.",
+              "root": "مقدس",
+              "category": "isim (sıfat · dişil)"
+            }
+          ],
+          "turkish": [
+            "Mekke",
+            "(Mükerreme)",
+            "…da",
+            "Suudi Arabistan",
+            "ve o",
+            "şehir",
+            "kutsal"
+          ],
+          "turkishFull": "Mekke-i Mükerreme Suudi Arabistan'dadır ve o kutsal bir şehirdir.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الحَرامُ",
+              "root": "حرام",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "مَكَّةَ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "المُكَرَّمَةِ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "وَهُوَ",
+              "root": "هو",
+              "category": "atıf harfi + zamir"
+            },
+            {
+              "text": "مُقَدَّسٌ",
+              "root": "مقدس",
+              "category": "isim (sıfat)"
+            },
+            {
+              "text": "أَيْضًا.",
+              "root": "أيضا",
+              "category": "zarf"
+            }
+          ],
+          "turkish": [
+            "mescit",
+            "Haram",
+            "…da",
+            "Mekke",
+            "(Mükerreme)",
+            "ve o",
+            "kutsaldır",
+            "Ayrıca"
+          ],
+          "turkishFull": "Mescid-i Haram Mekke-i Mükerreme'dedir ve o da kutsaldır.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "جَبَلُ",
+              "root": "جبل",
+              "category": "isim"
+            },
+            {
+              "text": "النّورِ",
+              "root": "نور",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "جَبَلٌ",
+              "root": "جبل",
+              "category": "isim"
+            },
+            {
+              "text": "مُهِمٌّ",
+              "root": "مهم",
+              "category": "isim (sıfat)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "مَكَّةَ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "المُكَرَّمَةِ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "dağ",
+            "Nurlu",
+            "dağ",
+            "önemli",
+            "…da",
+            "Mekke",
+            "(Mükerreme)"
+          ],
+          "turkishFull": "Nur Dağı önemli bir dağdır Mekke-i Mükerreme'de.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "غارُ",
+              "root": "غار",
+              "category": "isim"
+            },
+            {
+              "text": "حِراءَ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "هُوَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "غارٌ",
+              "root": "غار",
+              "category": "isim"
+            },
+            {
+              "text": "مُهِمٌّ",
+              "root": "مهم",
+              "category": "isim (sıfat)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "مَكَّةَ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "المُكَرَّمَةِ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "mağara",
+            "Hira",
+            "O",
+            "mağara",
+            "önemli",
+            "…da",
+            "Mekke",
+            "(Mükerreme)"
+          ],
+          "turkishFull": "Hira Mağarası önemli bir mağaradır Mekke-i Mükerreme'de.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "هَلْ",
+              "root": "هل",
+              "category": "soru edatı"
+            },
+            {
+              "text": "جَبَلُ",
+              "root": "جبل",
+              "category": "isim"
+            },
+            {
+              "text": "النّورِ",
+              "root": "نور",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "مَكَّةَ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "المُكَرَّمَةِ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "أَمْ",
+              "root": "أم",
+              "category": "bağlaç"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَدينَةِ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةِ؟",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "…mi?",
+            "dağ",
+            "Nurlu",
+            "…da",
+            "Mekke",
+            "(Mükerreme)",
+            "yoksa",
+            "…da",
+            "Medine",
+            "(Münevvere)"
+          ],
+          "turkishFull": "Nur Dağı Mekke-i Mükerreme'de mi yoksa Medine-i Münevvere'de mi?",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المَدينَةُ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةُ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "هِيَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "مَدينَةٌ",
+              "root": "مدينة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "مُقَدَّسَةٌ.",
+              "root": "مقدس",
+              "category": "isim (sıfat · dişil)"
+            }
+          ],
+          "turkish": [
+            "Medine",
+            "(Münevvere)",
+            "O",
+            "şehir",
+            "kutsal"
+          ],
+          "turkishFull": "Medine-i Münevvere kutsal bir şehirdir.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "جَبَلُ",
+              "root": "جبل",
+              "category": "isim"
+            },
+            {
+              "text": "أُحُدٍ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَدينَةِ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةِ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "dağ",
+            "Uhud",
+            "…da",
+            "Medine",
+            "(Münevvere)"
+          ],
+          "turkishFull": "Uhud Dağı Medine-i Münevvere'dedir.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَيْنَ",
+              "root": "أين",
+              "category": "soru ismi"
+            },
+            {
+              "text": "جَبَلُ",
+              "root": "جبل",
+              "category": "isim"
+            },
+            {
+              "text": "أُحُدٍ؟",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "nerede?",
+            "dağ",
+            "Uhud"
+          ],
+          "turkishFull": "Uhud Dağı nerededir?",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "البَيْتُ",
+              "root": "بيت",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "قَريبٌ",
+              "root": "قريب",
+              "category": "isim (sıfat)"
+            },
+            {
+              "text": "مِنَ",
+              "root": "من",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَسْجِدِ.",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "Ev",
+            "yakındır",
+            "…den",
+            "mescit"
+          ],
+          "turkishFull": "Ev mescide yakındır.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المَدْرَسَةُ",
+              "root": "مدرسة",
+              "category": "ال takılı · isim"
+            },
+            {
+              "text": "بَعيدَةٌ",
+              "root": "بعيد",
+              "category": "isim (sıfat · dişil)"
+            },
+            {
+              "text": "عَنِ",
+              "root": "عن",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَطْعَمِ.",
+              "root": "مطعم",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "Okul",
+            "uzaktır",
+            "-den",
+            "lokanta"
+          ],
+          "turkishFull": "Okul lokantaya uzaktır.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المَدينَةُ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةُ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "بَعيدَةٌ",
+              "root": "بعيد",
+              "category": "isim (sıfat · dişil)"
+            },
+            {
+              "text": "عَنْ",
+              "root": "عن",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "أَنْقَرَةَ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "Medine",
+            "(Münevvere)",
+            "uzaktır",
+            "-den",
+            "Ankara"
+          ],
+          "turkishFull": "Medine-i Münevvere Ankara'ya uzaktır.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَنْقَرَةُ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "عاصِمَةُ",
+              "root": "عاصمة",
+              "category": "isim (ism-i fâil · dişil)"
+            },
+            {
+              "text": "تُرْكِيا",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "وَهِيَ",
+              "root": "هي",
+              "category": "atıf harfi + zamir"
+            },
+            {
+              "text": "قَريبَةٌ",
+              "root": "قريب",
+              "category": "isim (sıfat · dişil)"
+            },
+            {
+              "text": "مِنْ",
+              "root": "من",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "مَدينَةِ",
+              "root": "مدينة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "بولو.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "Ankara",
+            "başkent",
+            "Türkiye",
+            "ve o",
+            "yakındır",
+            "…den",
+            "şehir",
+            "Bolu"
+          ],
+          "turkishFull": "Ankara Türkiye'nin başkentidir ve o Bolu şehrine yakındır.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "قَريبٌ",
+              "root": "قريب",
+              "category": "isim (sıfat)"
+            },
+            {
+              "text": "مِنَ",
+              "root": "من",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "البَيْتِ.",
+              "root": "بيت",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "mescit",
+            "yakındır",
+            "…den",
+            "Ev"
+          ],
+          "turkishFull": "Mescit eve yakındır.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "هَلِ",
+              "root": "هل",
+              "category": "soru edatı"
+            },
+            {
+              "text": "المَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الحَرامُ",
+              "root": "حرام",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَدينَةِ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةِ؟",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "…mi?",
+            "mescit",
+            "Haram",
+            "…da",
+            "Medine",
+            "(Münevvere)"
+          ],
+          "turkishFull": "Mescid-i Haram Medine-i Münevvere'de midir?",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الحَرَمُ",
+              "root": "حرم",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "القُدْسِيُّ",
+              "root": "قدسي",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "القُدْسِ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "الشَّريفِ.",
+              "root": "شريف",
+              "category": "isim (sıfat · ال takılı)"
+            }
+          ],
+          "turkish": [
+            "Harem",
+            "Kudsî",
+            "…da",
+            "Kudüs",
+            "Şerif"
+          ],
+          "turkishFull": "Harem-i Kudsî Kudüs-i Şerif'tedir.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الحاسوبُ",
+              "root": "حاسوب",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "عَلى",
+              "root": "على",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المِنْضَدَةِ.",
+              "root": "منضدة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "bilgisayar",
+            "…a",
+            "masa"
+          ],
+          "turkishFull": "Bilgisayar masanın üstündedir.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الكُرَةُ",
+              "root": "كرة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "تَحْتَ",
+              "root": "تحت",
+              "category": "zarf (mekân)"
+            },
+            {
+              "text": "المِنْضَدَةِ.",
+              "root": "منضدة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "top",
+            "altında",
+            "masa"
+          ],
+          "turkishFull": "Top masanın altındadır.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الرَّجُلُ",
+              "root": "رجل",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "خَلْفَ",
+              "root": "خلف",
+              "category": "zarf (mekân)"
+            },
+            {
+              "text": "البابِ.",
+              "root": "باب",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "adam",
+            "arkasında",
+            "kapı"
+          ],
+          "turkishFull": "Adam kapının arkasındadır.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الشَّجَرَةُ",
+              "root": "شجرة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "أَمامَ",
+              "root": "أمام",
+              "category": "zarf"
+            },
+            {
+              "text": "البَيْتِ.",
+              "root": "بيت",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "ağaç",
+            "önünde",
+            "Ev"
+          ],
+          "turkishFull": "Ağaç evin önündedir.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "السَّفينَةُ",
+              "root": "سفينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "البَحْرِ.",
+              "root": "بحر",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "gemi",
+            "…da",
+            "deniz"
+          ],
+          "turkishFull": "Gemi denizdedir.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الأُسْتاذُ",
+              "root": "أستاذ",
+              "category": "isim (ال takılı · meslek)"
+            },
+            {
+              "text": "ذاهِبٌ",
+              "root": "ذاهب",
+              "category": "isim (ism-i fâil)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الجامِعَةِ.",
+              "root": "جامعة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "öğretmen",
+            "gidiyor",
+            "…a",
+            "üniversite"
+          ],
+          "turkishFull": "Öğretmen üniversiteye gidiyor.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "السَّيّارَةُ",
+              "root": "سيارة",
+              "category": "ال takılı · isim"
+            },
+            {
+              "text": "جَديدَةٌ.",
+              "root": "جديد",
+              "category": "isim (sıfat · dişil)"
+            }
+          ],
+          "turkish": [
+            "Araba",
+            "yenidir."
+          ],
+          "turkishFull": "Araba yenidir.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المِتْرو",
+              "root": "مترو",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "قَريبٌ.",
+              "root": "قريب",
+              "category": "isim (sıfat)"
+            }
+          ],
+          "turkish": [
+            "metro",
+            "yakındır"
+          ],
+          "turkishFull": "Metro yakındır.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الشّاحِنَةُ",
+              "root": "شاحنة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "كَبيرَةٌ.",
+              "root": "كبير",
+              "category": "isim (sıfat · dişil)"
+            }
+          ],
+          "turkish": [
+            "kamyon",
+            "büyüktür."
+          ],
+          "turkishFull": "Kamyon büyüktür.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الحافِلَةُ",
+              "root": "حافلة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "طَويلَةٌ.",
+              "root": "طويل",
+              "category": "isim (sıfat · dişil)"
+            }
+          ],
+          "turkish": [
+            "Otobüs",
+            "uzundur"
+          ],
+          "turkishFull": "Otobüs uzundur.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "هَذا",
+              "root": "SKIP",
+              "category": "işaret/mevsul ismi"
+            },
+            {
+              "text": "الرَّجُلُ",
+              "root": "رجل",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "شُرْطِيٌّ.",
+              "root": "شرطي",
+              "category": "isim (meslek)"
+            }
+          ],
+          "turkish": [
+            "Bu",
+            "adam",
+            "polistir"
+          ],
+          "turkishFull": "Bu adam bir polistir.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "نَعَمْ،",
+              "root": "نعم",
+              "category": "cevap harfi"
+            },
+            {
+              "text": "هُوَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "طَيّارٌ.",
+              "root": "طيار",
+              "category": "isim (meslek)"
+            }
+          ],
+          "turkish": [
+            "Evet,",
+            "O",
+            "pilottur"
+          ],
+          "turkishFull": "Evet, o bir pilottur.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "لَوْنُ",
+              "root": "لون",
+              "category": "isim"
+            },
+            {
+              "text": "السَّفينَةِ",
+              "root": "سفينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "بُنِّيٌّ.",
+              "root": "بني",
+              "category": "isim (sıfat · renk)"
+            }
+          ],
+          "turkish": [
+            "rengi",
+            "gemi",
+            "kahverengidir"
+          ],
+          "turkishFull": "Geminin rengi kahverengidir.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "تَذْكِرَةُ",
+              "root": "تذكرة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "الطّائِرَةِ",
+              "root": "طائرة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "رَخيصَةٌ.",
+              "root": "رخيص",
+              "category": "isim (sıfat · dişil)"
+            }
+          ],
+          "turkish": [
+            "bileti",
+            "Uçak",
+            "ucuzdur"
+          ],
+          "turkishFull": "Uçak bileti ucuzdur.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "شاطِئُ",
+              "root": "شاطئ",
+              "category": "isim (mehmuz)"
+            },
+            {
+              "text": "البَحْرِ",
+              "root": "بحر",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "جَميلٌ",
+              "root": "جميل",
+              "category": "isim"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الصَّيْفِ.",
+              "root": "صيف",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "kıyısı",
+            "deniz",
+            "güzeldir.",
+            "…da",
+            "yaz"
+          ],
+          "turkishFull": "Deniz kıyısı yazın güzeldir.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "اِسْتِخْدامُ",
+              "root": "استخدام",
+              "category": "isim (mastar · mezid)"
+            },
+            {
+              "text": "الهاتِفِ",
+              "root": "هاتف",
+              "category": "isim (ism-i fâil · ال takılı)"
+            },
+            {
+              "text": "الجَوّالِ",
+              "root": "جوال",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "أَثْناءَ",
+              "root": "أثناء",
+              "category": "zarf (zaman)"
+            },
+            {
+              "text": "السَّيْرِ",
+              "root": "سير",
+              "category": "isim (ال takılı · mastar)"
+            },
+            {
+              "text": "مَمْنوعٌ.",
+              "root": "ممنوع",
+              "category": "isim (ism-i mef'ûl)"
+            }
+          ],
+          "turkish": [
+            "kullanmak",
+            "telefonu",
+            "cep",
+            "sırasında",
+            "sürüş",
+            "yasaktır"
+          ],
+          "turkishFull": "Sürüş sırasında cep telefonu kullanmak yasaktır.",
+          "ders": "6_6_3"
         }
       ]
     },
     {
       "level": 2,
       "anahtar": "zamir",
-      "hint": "<h3 dir=\"ltr\">Seviye 2 · Bitişik zamir, sayı ve çoğul</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyenin kuralları geçerlidir.</li><li>Kelimenin sonundaki <b>bitişik zamir</b> (<bdi class=\"ip-ar\">ـي، ـكَ، ـكِ، ـهُ، ـها، ـنا</bdi>) atılır.</li><li>Harf-i cer bir <b>zamire</b> bitişmişse birlikte aranır: <bdi class=\"ip-ar\">بِكِ</bdi> → <bdi class=\"ip-ar\">بك</bdi>.</li><li><b>İkil ve çoğul</b> tekile döner: <bdi class=\"ip-ar\">أَقْلامٍ</bdi> → <bdi class=\"ip-ar\">قلم</bdi>، <bdi class=\"ip-ar\">كِتابانِ</bdi> → <bdi class=\"ip-ar\">كتاب</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">اسْمُهُ؟</bdi> → <bdi class=\"ip-ar\"><b>اسم</b></bdi> <i>(isim + bitişik zamir (o))</i></li><li><bdi class=\"ip-ar\">كِتابي</bdi> → <bdi class=\"ip-ar\"><b>كتاب</b></bdi> <i>(isim + bitişik zamir (ben))</i></li><li><bdi class=\"ip-ar\">بَيْتُنا</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim + bitişik zamir (biz))</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 2 · Bitişik zamir, sayı ve çoğul</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyenin kuralları geçerlidir.</li><li>Kelimenin sonundaki <b>bitişik zamir</b> (<bdi class=\"ip-ar\">ـي، ـكَ، ـكِ، ـهُ، ـها، ـنا</bdi>) atılır.</li><li>Harf-i cer bir <b>zamire</b> bitişmişse birlikte aranır: <bdi class=\"ip-ar\">بِكِ</bdi> → <bdi class=\"ip-ar\">بك</bdi>.</li><li><b>İkil ve çoğul</b> tekile döner: <bdi class=\"ip-ar\">أَقْلامٍ</bdi> → <bdi class=\"ip-ar\">قلم</bdi>، <bdi class=\"ip-ar\">كِتابانِ</bdi> → <bdi class=\"ip-ar\">كتاب</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">اسْمُهُ؟</bdi> → <bdi class=\"ip-ar\"><b>اسم</b></bdi> <i>(isim + bitişik zamir (o))</i></li><li><bdi class=\"ip-ar\">كِتابي</bdi> → <bdi class=\"ip-ar\"><b>كتاب</b></bdi> <i>(isim + bitişik zamir (ben))</i></li><li><bdi class=\"ip-ar\">بَيْتُنا</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim + bitişik zamir (biz))</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المُسْلِمينَ</bdi> → <bdi class=\"ip-ar\"><b>مسلم</b></bdi> <i>(isim (düzenli çoğul · ال takılı))</i></li><li><bdi class=\"ip-ar\">جِبالٌ.</bdi> → <bdi class=\"ip-ar\"><b>جبل</b></bdi> <i>(isim (kırık çoğul))</i></li><li><bdi class=\"ip-ar\">مَساجِدُ.</bdi> → <bdi class=\"ip-ar\"><b>مسجد</b></bdi> <i>(isim (kırık çoğul))</i></li><li><bdi class=\"ip-ar\">مُسْلِماتٌ.</bdi> → <bdi class=\"ip-ar\"><b>مسلمة</b></bdi> <i>(isim (dişil çoğul))</i></li><li><bdi class=\"ip-ar\">الأَماكِنُ</bdi> → <bdi class=\"ip-ar\"><b>مكان</b></bdi> <i>(isim (kırık çoğul · ال takılı))</i></li><li><bdi class=\"ip-ar\">التَّذاكِرِ</bdi> → <bdi class=\"ip-ar\"><b>تذكرة</b></bdi> <i>(isim (kırık çoğul · ال takılı))</i></li></ul>",
       "sentences": [
         {
           "arabic": [
@@ -1862,13 +2944,1101 @@ window.SOZLUK_SINIF["6"] = {
             "sağ"
           ],
           "turkishFull": "Yemeğimi sağ elimle yerim."
+        },
+        {
+          "arabic": [
+            {
+              "text": "الكَعْبَةُ",
+              "root": "كعبة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "الشَّريفَةُ",
+              "root": "شريف",
+              "category": "isim (sıfat · ال takılı · dişil)"
+            },
+            {
+              "text": "قِبْلَةُ",
+              "root": "قبلة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "المُسْلِمينَ",
+              "root": "مسلم",
+              "category": "isim (düzenli çoğul · ال takılı)"
+            },
+            {
+              "text": "وَهِيَ",
+              "root": "هي",
+              "category": "atıf harfi + zamir"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَسْجِدِ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الحَرامِ.",
+              "root": "حرام",
+              "category": "isim (sıfat · ال takılı)"
+            }
+          ],
+          "turkish": [
+            "Kâbe",
+            "Şerefli",
+            "kıble",
+            "Müslümanların",
+            "ve o",
+            "…da",
+            "mescit",
+            "Haram"
+          ],
+          "turkishFull": "Şerefli Kâbe Müslümanların kıblesidir ve o Mescid-i Haram'dadır.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "ما",
+              "root": "ما",
+              "category": "soru ismi"
+            },
+            {
+              "text": "هِيَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "قِبْلَةُ",
+              "root": "قبلة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "المُسْلِمينَ؟",
+              "root": "مسلم",
+              "category": "isim (düzenli çoğul · ال takılı)"
+            }
+          ],
+          "turkish": [
+            "ne?",
+            "O",
+            "kıble",
+            "Müslümanların"
+          ],
+          "turkishFull": "Müslümanların kıblesi nedir?",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "جَبَلٌ",
+              "root": "جبل",
+              "category": "isim"
+            },
+            {
+              "text": "جِبالٌ.",
+              "root": "جبل",
+              "category": "isim (kırık çoğul)"
+            }
+          ],
+          "turkish": [
+            "dağ",
+            "dağlar"
+          ],
+          "turkishFull": "Dağ — dağlar.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "مَسْجِدٌ",
+              "root": "مسجد",
+              "category": "isim"
+            },
+            {
+              "text": "مَساجِدُ.",
+              "root": "مسجد",
+              "category": "isim (kırık çoğul)"
+            }
+          ],
+          "turkish": [
+            "mescit",
+            "mescitler"
+          ],
+          "turkishFull": "Mescit — mescitler.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "مُسْلِمٌ",
+              "root": "مسلم",
+              "category": "isim"
+            },
+            {
+              "text": "مُسْلِمونَ.",
+              "root": "مسلم",
+              "category": "isim (düzenli çoğul)"
+            }
+          ],
+          "turkish": [
+            "Müslüman erkek",
+            "Müslümanlar"
+          ],
+          "turkishFull": "Müslüman erkek — Müslüman erkekler.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "مُسْلِمَةٌ",
+              "root": "مسلمة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "مُسْلِماتٌ.",
+              "root": "مسلمة",
+              "category": "isim (dişil çoğul)"
+            }
+          ],
+          "turkish": [
+            "Müslüman kadın",
+            "Müslüman kadınlar"
+          ],
+          "turkishFull": "Müslüman kadın — Müslüman kadınlar.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَوَّلُ",
+              "root": "أول",
+              "category": "isim (sıra sayı)"
+            },
+            {
+              "text": "مَسْجِدٍ",
+              "root": "مسجد",
+              "category": "isim"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الإِسْلامِ",
+              "root": "إسلام",
+              "category": "isim (ال takılı · mastar)"
+            },
+            {
+              "text": "هُوَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "مَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim"
+            },
+            {
+              "text": "قُباءَ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "ilk",
+            "mescit",
+            "…da",
+            "İslam",
+            "O",
+            "mescit",
+            "Kuba"
+          ],
+          "turkishFull": "İslam'daki ilk mescit Kuba Mescidi'dir.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المَدينَةُ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةُ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "أَوَّلُ",
+              "root": "أول",
+              "category": "isim (sıra sayı)"
+            },
+            {
+              "text": "عاصِمَةٍ",
+              "root": "عاصمة",
+              "category": "isim (ism-i fâil · dişil)"
+            },
+            {
+              "text": "لِلْمُسْلِمينَ.",
+              "root": "مسلم",
+              "category": "harf-i cer + isim (düzenli çoğul)"
+            }
+          ],
+          "turkish": [
+            "Medine",
+            "(Münevvere)",
+            "ilk",
+            "başkent",
+            "Müslümanlar için"
+          ],
+          "turkishFull": "Medine-i Münevvere Müslümanların ilk başkentidir.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَوَّلُ",
+              "root": "أول",
+              "category": "isim (sıra sayı)"
+            },
+            {
+              "text": "مَسْجِدٍ",
+              "root": "مسجد",
+              "category": "isim"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "تاريخِ",
+              "root": "تاريخ",
+              "category": "isim (mastar)"
+            },
+            {
+              "text": "الإِسْلامِ",
+              "root": "إسلام",
+              "category": "isim (ال takılı · mastar)"
+            },
+            {
+              "text": "هُوَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "مَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim"
+            },
+            {
+              "text": "قُباءَ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "ilk",
+            "mescit",
+            "…da",
+            "tarihi",
+            "İslam",
+            "O",
+            "mescit",
+            "Kuba"
+          ],
+          "turkishFull": "İslam tarihindeki ilk mescit Kuba Mescidi'dir.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "ما",
+              "root": "ما",
+              "category": "soru ismi"
+            },
+            {
+              "text": "هِيَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "أَوَّلُ",
+              "root": "أول",
+              "category": "isim (sıra sayı)"
+            },
+            {
+              "text": "عاصِمَةٍ",
+              "root": "عاصمة",
+              "category": "isim (ism-i fâil · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "تاريخِ",
+              "root": "تاريخ",
+              "category": "isim (mastar)"
+            },
+            {
+              "text": "الإِسْلامِ؟",
+              "root": "إسلام",
+              "category": "isim (ال takılı · mastar)"
+            }
+          ],
+          "turkish": [
+            "ne?",
+            "O",
+            "ilk",
+            "başkent",
+            "…da",
+            "tarihi",
+            "İslam"
+          ],
+          "turkishFull": "İslam tarihindeki ilk başkent neresidir?",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المُسْتَشْفى",
+              "root": "مستشفى",
+              "category": "isim (ال takılı · maksûr)"
+            },
+            {
+              "text": "بَعيدٌ",
+              "root": "بعيد",
+              "category": "isim (sıfat)"
+            },
+            {
+              "text": "عَنِ",
+              "root": "عن",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "البَيْتِ.",
+              "root": "بيت",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "Hastane",
+            "uzaktır",
+            "-den",
+            "Ev"
+          ],
+          "turkishFull": "Hastane eve uzaktır.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المَدْرَسَةُ",
+              "root": "مدرسة",
+              "category": "ال takılı · isim"
+            },
+            {
+              "text": "قَريبَةٌ",
+              "root": "قريب",
+              "category": "isim (sıfat · dişil)"
+            },
+            {
+              "text": "مِنَ",
+              "root": "من",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المُسْتَشْفى.",
+              "root": "مستشفى",
+              "category": "isim (ال takılı · maksûr)"
+            }
+          ],
+          "turkish": [
+            "Okul",
+            "yakındır",
+            "…den",
+            "Hastane"
+          ],
+          "turkishFull": "Okul hastaneye yakındır.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "هَلِ",
+              "root": "هل",
+              "category": "soru edatı"
+            },
+            {
+              "text": "المُسْتَشْفى",
+              "root": "مستشفى",
+              "category": "isim (ال takılı · maksûr)"
+            },
+            {
+              "text": "بَعيدٌ",
+              "root": "بعيد",
+              "category": "isim (sıfat)"
+            },
+            {
+              "text": "عَنْ",
+              "root": "عن",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "هُنا؟",
+              "root": "هنا",
+              "category": "zarf (mekân)"
+            }
+          ],
+          "turkish": [
+            "…mi?",
+            "Hastane",
+            "uzaktır",
+            "-den",
+            "burası"
+          ],
+          "turkishFull": "Hastane buraya uzak mı?",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "ما",
+              "root": "ما",
+              "category": "soru ismi"
+            },
+            {
+              "text": "هِيَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "الأَماكِنُ",
+              "root": "مكان",
+              "category": "isim (kırık çoğul · ال takılı)"
+            },
+            {
+              "text": "المُقَدَّسَةُ",
+              "root": "مقدس",
+              "category": "isim (sıfat · ال takılı · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَدينَةِ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةِ؟",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "ne?",
+            "O",
+            "mekânları",
+            "kutsal",
+            "…da",
+            "Medine",
+            "(Münevvere)"
+          ],
+          "turkishFull": "Medine-i Münevvere'deki kutsal mekânlar nelerdir?",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَقْصى",
+              "root": "أقصى",
+              "category": "isim (ال takılı · maksûr)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "القُدْسِ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "mescit",
+            "Aksâ",
+            "…da",
+            "Kudüs"
+          ],
+          "turkishFull": "Mescid-i Aksâ Kudüs'tedir.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَوَّلُ",
+              "root": "أول",
+              "category": "isim (sıra sayı)"
+            },
+            {
+              "text": "قِبْلَةٍ",
+              "root": "قبلة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الإِسْلامِ",
+              "root": "إسلام",
+              "category": "isim (ال takılı · mastar)"
+            },
+            {
+              "text": "هُوَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "المَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَقْصى.",
+              "root": "أقصى",
+              "category": "isim (ال takılı · maksûr)"
+            }
+          ],
+          "turkish": [
+            "ilk",
+            "kıble",
+            "…da",
+            "İslam",
+            "O",
+            "mescit",
+            "Aksâ"
+          ],
+          "turkishFull": "İslam'daki ilk kıble Mescid-i Aksâ'dır.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الأَماكِنُ",
+              "root": "مكان",
+              "category": "isim (kırık çoğul · ال takılı)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الحَرَمِ",
+              "root": "حرم",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "القُدْسِيِّ",
+              "root": "قدسي",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "هِيَ:",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "المَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَقْصى",
+              "root": "أقصى",
+              "category": "isim (ال takılı · maksûr)"
+            },
+            {
+              "text": "وَالجامِعُ",
+              "root": "جامع",
+              "category": "atıf harfi + isim (ال takılı)"
+            },
+            {
+              "text": "القِبْلِيُّ",
+              "root": "قبلي",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "وَقُبَّةُ",
+              "root": "قبة",
+              "category": "atıf harfi + isim (dişil)"
+            },
+            {
+              "text": "الصَّخْرَةِ",
+              "root": "صخرة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "وَالحَجَرُ",
+              "root": "حجر",
+              "category": "atıf harfi + isim (ال takılı)"
+            },
+            {
+              "text": "المُعَلَّقُ.",
+              "root": "معلق",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "mekânları",
+            "…da",
+            "Harem",
+            "Kudsî",
+            "O",
+            "mescit",
+            "Aksâ",
+            "ve cami",
+            "Kıblî",
+            "ve kubbesi",
+            "Sahra (kaya)",
+            "ve taş",
+            "Asılı"
+          ],
+          "turkishFull": "Harem-i Kudsî'deki mekânlar şunlardır: Mescid-i Aksâ, Kıblî Camii, Kubbetü's-Sahra ve Asılı Taş.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَقْصى",
+              "root": "أقصى",
+              "category": "isim (ال takılı · maksûr)"
+            },
+            {
+              "text": "أَمامَ",
+              "root": "أمام",
+              "category": "zarf"
+            },
+            {
+              "text": "قُبَّةِ",
+              "root": "قبة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "الصَّخْرَةِ.",
+              "root": "صخرة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "mescit",
+            "Aksâ",
+            "önünde",
+            "kubbe",
+            "Sahra (kaya)"
+          ],
+          "turkishFull": "Mescid-i Aksâ Kubbetü's-Sahra'nın önündedir.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "قُبَّةُ",
+              "root": "قبة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "الصَّخْرَةِ",
+              "root": "صخرة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "خَلْفَ",
+              "root": "خلف",
+              "category": "zarf (mekân)"
+            },
+            {
+              "text": "المَسْجِدِ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَقْصى.",
+              "root": "أقصى",
+              "category": "isim (ال takılı · maksûr)"
+            }
+          ],
+          "turkish": [
+            "kubbe",
+            "Sahra (kaya)",
+            "arkasında",
+            "mescit",
+            "Aksâ"
+          ],
+          "turkishFull": "Kubbetü's-Sahra Mescid-i Aksâ'nın arkasındadır.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أُجْرَةُ",
+              "root": "أجرة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "التَّذاكِرِ",
+              "root": "تذكرة",
+              "category": "isim (kırık çoğul · ال takılı)"
+            },
+            {
+              "text": "رَخيصَةٌ",
+              "root": "رخيص",
+              "category": "isim (sıfat · dişil)"
+            },
+            {
+              "text": "جِدًّا.",
+              "root": "جدا",
+              "category": "zarf"
+            }
+          ],
+          "turkish": [
+            "ücreti",
+            "biletlerin",
+            "ucuzdur",
+            "çok"
+          ],
+          "turkishFull": "Bilet ücretleri çok ucuzdur.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "شَوارِعُ",
+              "root": "شارع",
+              "category": "isim (kırık çoğul)"
+            },
+            {
+              "text": "المَدينَةِ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "مُزْدَحِمَةٌ.",
+              "root": "مزدحم",
+              "category": "isim (ism-i fâil · dişil)"
+            }
+          ],
+          "turkish": [
+            "caddeleri",
+            "Medine",
+            "kalabalıktır"
+          ],
+          "turkishFull": "Şehrin caddeleri kalabalıktır.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "مَمْنوعُ",
+              "root": "ممنوع",
+              "category": "isim (ism-i mef'ûl)"
+            },
+            {
+              "text": "الوُقوفِ",
+              "root": "وقوف",
+              "category": "isim (ال takılı · mastar)"
+            },
+            {
+              "text": "أَمامَ",
+              "root": "أمام",
+              "category": "zarf"
+            },
+            {
+              "text": "المُسْتَشْفى.",
+              "root": "مستشفى",
+              "category": "isim (ال takılı · maksûr)"
+            }
+          ],
+          "turkish": [
+            "yasaktır",
+            "durmak",
+            "önünde",
+            "Hastane"
+          ],
+          "turkishFull": "Hastanenin önünde park etmek yasaktır.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "هَلْ",
+              "root": "هل",
+              "category": "soru edatı"
+            },
+            {
+              "text": "عِنْدَكَ",
+              "root": "عند",
+              "category": "zarf + bitişik zamir (sen)"
+            },
+            {
+              "text": "مَعْلوماتٌ",
+              "root": "معلومة",
+              "category": "isim (dişil çoğul)"
+            },
+            {
+              "text": "عَنْ",
+              "root": "عن",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "إِشاراتِ",
+              "root": "إشارة",
+              "category": "isim (dişil çoğul)"
+            },
+            {
+              "text": "المُرورِ؟",
+              "root": "مرور",
+              "category": "isim (ال takılı · mastar)"
+            }
+          ],
+          "turkish": [
+            "…mi?",
+            "Sende … var",
+            "bilgi",
+            "-den",
+            "işaretleri",
+            "trafik"
+          ],
+          "turkishFull": "Trafik işaretleri hakkında bilgin var mı?",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "نَعَمْ",
+              "root": "نعم",
+              "category": "cevap harfi"
+            },
+            {
+              "text": "عِنْدي",
+              "root": "عند",
+              "category": "zarf + bitişik zamir (ben)"
+            },
+            {
+              "text": "مَعْلوماتٌ",
+              "root": "معلومة",
+              "category": "isim (dişil çoğul)"
+            },
+            {
+              "text": "عَنْ",
+              "root": "عن",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "إِشاراتِ",
+              "root": "إشارة",
+              "category": "isim (dişil çoğul)"
+            },
+            {
+              "text": "المُرورِ.",
+              "root": "مرور",
+              "category": "isim (ال takılı · mastar)"
+            }
+          ],
+          "turkish": [
+            "Evet,",
+            "bende … var",
+            "bilgi",
+            "-den",
+            "işaretleri",
+            "trafik"
+          ],
+          "turkishFull": "Evet, trafik işaretleri hakkında bilgim var.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "ما",
+              "root": "ما",
+              "category": "soru ismi"
+            },
+            {
+              "text": "لَوْنُ",
+              "root": "لون",
+              "category": "isim"
+            },
+            {
+              "text": "القِطارِ؟",
+              "root": "قطار",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "لَوْنُهُ",
+              "root": "لون",
+              "category": "isim + bitişik zamir (o)"
+            },
+            {
+              "text": "أَبْيَضُ.",
+              "root": "أبيض",
+              "category": "isim (sıfat · renk)"
+            }
+          ],
+          "turkish": [
+            "ne?",
+            "rengi",
+            "tren",
+            "rengi",
+            "beyazdır"
+          ],
+          "turkishFull": "Trenin rengi nedir? Rengi beyazdır.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "ما",
+              "root": "ما",
+              "category": "soru ismi"
+            },
+            {
+              "text": "لَوْنُ",
+              "root": "لون",
+              "category": "isim"
+            },
+            {
+              "text": "السَّيّارَةِ؟",
+              "root": "سيارة",
+              "category": "ال takılı · isim"
+            },
+            {
+              "text": "لَوْنُها",
+              "root": "لون",
+              "category": "isim + bitişik zamir (o · dişil)"
+            },
+            {
+              "text": "أَحْمَرُ.",
+              "root": "أحمر",
+              "category": "isim (sıfat · renk)"
+            }
+          ],
+          "turkish": [
+            "ne?",
+            "rengi",
+            "Araba",
+            "rengi",
+            "kırmızıdır"
+          ],
+          "turkishFull": "Arabanın rengi nedir? Rengi kırmızıdır.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "ما",
+              "root": "ما",
+              "category": "soru ismi"
+            },
+            {
+              "text": "لَوْنُ",
+              "root": "لون",
+              "category": "isim"
+            },
+            {
+              "text": "الخَطِّ؟",
+              "root": "خط",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "لَوْنُهُ",
+              "root": "لون",
+              "category": "isim + bitişik zamir (o)"
+            },
+            {
+              "text": "أَصْفَرُ.",
+              "root": "أصفر",
+              "category": "isim (sıfat · renk)"
+            }
+          ],
+          "turkish": [
+            "ne?",
+            "rengi",
+            "çizginin",
+            "rengi",
+            "sarıdır"
+          ],
+          "turkishFull": "Çizginin rengi nedir? Rengi sarıdır.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "ما",
+              "root": "ما",
+              "category": "soru ismi"
+            },
+            {
+              "text": "لَوْنُ",
+              "root": "لون",
+              "category": "isim"
+            },
+            {
+              "text": "الطّائِرَةِ؟",
+              "root": "طائرة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "لَوْنُها",
+              "root": "لون",
+              "category": "isim + bitişik zamir (o · dişil)"
+            },
+            {
+              "text": "أَزْرَقُ.",
+              "root": "أزرق",
+              "category": "isim (sıfat · renk)"
+            }
+          ],
+          "turkish": [
+            "ne?",
+            "rengi",
+            "Uçak",
+            "rengi",
+            "mavidir"
+          ],
+          "turkishFull": "Uçağın rengi nedir? Rengi mavidir.",
+          "ders": "6_6_2"
         }
       ]
     },
     {
       "level": 3,
       "anahtar": "fiil",
-      "hint": "<h3 dir=\"ltr\">Seviye 3 · Fiiller: muzariden maziye</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin kuralları geçerlidir.</li><li>Fiil, sözlükte <b>mazi</b> (geçmiş zaman) biçimiyle aranır: <bdi class=\"ip-ar\">نَلْعَبُ</bdi> → <bdi class=\"ip-ar\">لعب</bdi>.</li><li>Şahıs ekleri atılır: <bdi class=\"ip-ar\">غَسَلْتُ، غَسَلْتَ، غَسَلَتْ</bdi> → <bdi class=\"ip-ar\">غسل</bdi>.</li><li>Fiile bitişen <b>mef'ûl zamiri</b> (<bdi class=\"ip-ar\">ـهُ، ـها</bdi>) atılır: <bdi class=\"ip-ar\">قَبَّلَتْهُ</bdi> → <bdi class=\"ip-ar\">قبل</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">نَلْعَبُ</bdi> → <bdi class=\"ip-ar\"><b>لعب</b></bdi> <i>(fiil (muzari · mütekellim))</i></li><li><bdi class=\"ip-ar\">تَذْهَبُ</bdi> → <bdi class=\"ip-ar\"><b>ذهب</b></bdi> <i>(fiil (muzari · muhatap))</i></li><li><bdi class=\"ip-ar\">تَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\"><b>استيقظ</b></bdi> <i>(fiil (muzari · mezid · muhatap))</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 3 · Fiiller: muzariden maziye</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin kuralları geçerlidir.</li><li>Fiil, sözlükte <b>mazi</b> (geçmiş zaman) biçimiyle aranır: <bdi class=\"ip-ar\">نَلْعَبُ</bdi> → <bdi class=\"ip-ar\">لعب</bdi>.</li><li>Şahıs ekleri atılır: <bdi class=\"ip-ar\">غَسَلْتُ، غَسَلْتَ، غَسَلَتْ</bdi> → <bdi class=\"ip-ar\">غسل</bdi>.</li><li>Fiile bitişen <b>mef'ûl zamiri</b> (<bdi class=\"ip-ar\">ـهُ، ـها</bdi>) atılır: <bdi class=\"ip-ar\">قَبَّلَتْهُ</bdi> → <bdi class=\"ip-ar\">قبل</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">نَلْعَبُ</bdi> → <bdi class=\"ip-ar\"><b>لعب</b></bdi> <i>(fiil (muzari · mütekellim))</i></li><li><bdi class=\"ip-ar\">تَذْهَبُ</bdi> → <bdi class=\"ip-ar\"><b>ذهب</b></bdi> <i>(fiil (muzari · muhatap))</i></li><li><bdi class=\"ip-ar\">تَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\"><b>استيقظ</b></bdi> <i>(fiil (muzari · mezid · muhatap))</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">سَأَذْهَبُ</bdi> → <bdi class=\"ip-ar\"><b>ذهب</b></bdi> <i>(fiil (muzari · istikbal · mütekellim))</i></li><li><bdi class=\"ip-ar\">سَأَرْجِعُ</bdi> → <bdi class=\"ip-ar\"><b>رجع</b></bdi> <i>(fiil (muzari · istikbal · mütekellim))</i></li><li><bdi class=\"ip-ar\">تَعْرِفُ</bdi> → <bdi class=\"ip-ar\"><b>عرف</b></bdi> <i>(fiil (muzari · muhatap))</i></li><li><bdi class=\"ip-ar\">فَتَحَ</bdi> → <bdi class=\"ip-ar\"><b>فتح</b></bdi> <i>(fiil (mazi))</i></li><li><bdi class=\"ip-ar\">اِرْكَبِ</bdi> → <bdi class=\"ip-ar\"><b>ركب</b></bdi> <i>(fiil (emir))</i></li><li><bdi class=\"ip-ar\">وَانْزِلْ</bdi> → <bdi class=\"ip-ar\"><b>نزل</b></bdi> <i>(atıf harfi + fiil (emir))</i></li></ul>",
       "sentences": [
         {
           "arabic": [
@@ -3256,13 +5426,861 @@ window.SOZLUK_SINIF["6"] = {
             "ve salata"
           ],
           "turkishFull": "Ben ızgara tavuk ve salata pişirdim."
+        },
+        {
+          "arabic": [
+            {
+              "text": "سَأَذْهَبُ",
+              "root": "ذهب",
+              "category": "fiil (muzari · istikbal · mütekellim)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "السُّعودِيَّةِ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "gideceğim",
+            "…a",
+            "Suudi Arabistan"
+          ],
+          "turkishFull": "Suudi Arabistan'a gideceğim.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "سَأَرْجِعُ",
+              "root": "رجع",
+              "category": "fiil (muzari · istikbal · mütekellim)"
+            },
+            {
+              "text": "مِنَ",
+              "root": "من",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "السُّعودِيَّةِ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "döneceğim",
+            "…den",
+            "Suudi Arabistan"
+          ],
+          "turkishFull": "Suudi Arabistan'dan döneceğim.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "ماذا",
+              "root": "ماذا",
+              "category": "soru ismi"
+            },
+            {
+              "text": "تَعْرِفُ",
+              "root": "عرف",
+              "category": "fiil (muzari · muhatap)"
+            },
+            {
+              "text": "عَنِ",
+              "root": "عن",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الأَماكِنِ",
+              "root": "مكان",
+              "category": "isim (kırık çoğul · ال takılı)"
+            },
+            {
+              "text": "المُهِمَّةِ",
+              "root": "مهم",
+              "category": "isim (sıfat · ال takılı · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "القُدْسِ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "الشَّريفِ؟",
+              "root": "شريف",
+              "category": "isim (sıfat · ال takılı)"
+            }
+          ],
+          "turkish": [
+            "ne",
+            "biliyorsun",
+            "-den",
+            "mekânları",
+            "önemli",
+            "…da",
+            "Kudüs",
+            "Şerif"
+          ],
+          "turkishFull": "Kudüs-i Şerif'teki önemli mekânlar hakkında ne biliyorsun?",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "مَنْ",
+              "root": "من",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "فَتَحَ",
+              "root": "فتح",
+              "category": "fiil (mazi)"
+            },
+            {
+              "text": "القُدْسَ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "الشَّريفَ؟",
+              "root": "شريف",
+              "category": "isim (sıfat · ال takılı)"
+            }
+          ],
+          "turkish": [
+            "…den",
+            "fethetti",
+            "Kudüs",
+            "Şerif"
+          ],
+          "turkishFull": "Kudüs-i Şerif'i kim fethetti?",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "اِرْجِعوا",
+              "root": "رجع",
+              "category": "fiil (emir · cemi)"
+            },
+            {
+              "text": "مِنَ",
+              "root": "من",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَدْرَسَةِ",
+              "root": "مدرسة",
+              "category": "ال takılı · isim"
+            },
+            {
+              "text": "بِالحافِلَةِ.",
+              "root": "حافلة",
+              "category": "harf-i cer + isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "dönün",
+            "…den",
+            "Okul",
+            "otobüsle"
+          ],
+          "turkishFull": "Okuldan otobüsle dönün.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "اِذْهَبْ",
+              "root": "ذهب",
+              "category": "fiil (muzari)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "قونْيا",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "بِالقِطارِ.",
+              "root": "قطار",
+              "category": "harf-i cer + isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "git.",
+            "…a",
+            "Konya",
+            "trenle"
+          ],
+          "turkishFull": "Konya'ya trenle git.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "اِرْكَبِ",
+              "root": "ركب",
+              "category": "fiil (emir)"
+            },
+            {
+              "text": "الحافِلَةَ",
+              "root": "حافلة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "وَانْزِلْ",
+              "root": "نزل",
+              "category": "atıf harfi + fiil (emir)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَحَطَّةِ",
+              "root": "محطة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "الرّابِعَةِ.",
+              "root": "رابعة",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "bin",
+            "Otobüs",
+            "ve in",
+            "…da",
+            "istasyon",
+            "dört."
+          ],
+          "turkishFull": "Otobüse bin ve dördüncü durakta in.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "اِرْكَبِ",
+              "root": "ركب",
+              "category": "fiil (emir)"
+            },
+            {
+              "text": "الدَّرّاجَةَ",
+              "root": "دراجة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "وَاذْهَبْ",
+              "root": "ذهب",
+              "category": "atıf harfi + fiil (emir)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الحَديقَةِ.",
+              "root": "حديقة",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "bin",
+            "Bisiklet",
+            "ve git",
+            "…a",
+            "bahçe"
+          ],
+          "turkishFull": "Bisiklete bin ve parka git.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "اِرْكَبِ",
+              "root": "ركب",
+              "category": "fiil (emir)"
+            },
+            {
+              "text": "الطّائِرَةَ",
+              "root": "طائرة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "وَانْزِلْ",
+              "root": "نزل",
+              "category": "atıf harfi + fiil (emir)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "مَطارِ",
+              "root": "مطار",
+              "category": "isim"
+            },
+            {
+              "text": "إِسْطَنْبولَ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "bin",
+            "Uçak",
+            "ve in",
+            "…da",
+            "havalimanı",
+            "İstanbul"
+          ],
+          "turkishFull": "Uçağa bin ve İstanbul havalimanında in.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "اِرْكَبِ",
+              "root": "ركب",
+              "category": "fiil (emir)"
+            },
+            {
+              "text": "المِتْرو",
+              "root": "مترو",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "وَاذْهَبْ",
+              "root": "ذهب",
+              "category": "atıf harfi + fiil (emir)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الجامِعَةِ.",
+              "root": "جامعة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "bin",
+            "metro",
+            "ve git",
+            "…a",
+            "üniversite"
+          ],
+          "turkishFull": "Metroya bin ve üniversiteye git.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَعْبُرُ",
+              "root": "عبر",
+              "category": "fiil (muzari)"
+            },
+            {
+              "text": "الطّالِبُ",
+              "root": "طالب",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الطَّريقَ.",
+              "root": "طريق",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "geçer",
+            "Öğrencinin",
+            "yol"
+          ],
+          "turkishFull": "Öğrenci yoldan geçer.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَعْبُرُ",
+              "root": "عبر",
+              "category": "fiil (muzari)"
+            },
+            {
+              "text": "المُشاةُ",
+              "root": "مشاة",
+              "category": "isim (ال takılı · çoğul)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الضَّوْءِ",
+              "root": "ضوء",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَخْضَرِ.",
+              "root": "أخضر",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "geçer",
+            "yayalar",
+            "…da",
+            "ışık(ta)",
+            "Yeşil"
+          ],
+          "turkishFull": "Yayalar yeşil ışıkta geçer.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الطّائِرَةُ",
+              "root": "طائرة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "تَهْبِطُ",
+              "root": "هبط",
+              "category": "fiil (muzari · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَطارِ.",
+              "root": "مطار",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "Uçak",
+            "iniyor",
+            "…da",
+            "havalimanı"
+          ],
+          "turkishFull": "Uçak havalimanına iniyor.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَعْبُرُ",
+              "root": "عبر",
+              "category": "fiil (muzari)"
+            },
+            {
+              "text": "العامِلُ",
+              "root": "عامل",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الطَّريقَ.",
+              "root": "طريق",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "geçer",
+            "İşçi",
+            "yol"
+          ],
+          "turkishFull": "İşçi yoldan geçiyor.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "تَرْكَبُ",
+              "root": "ركب",
+              "category": "fiil (muzari · dişil)"
+            },
+            {
+              "text": "الطّالِبَةُ",
+              "root": "طالبة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "القِطارَ.",
+              "root": "قطار",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "biniyor",
+            "Öğrencinin (kız)",
+            "tren"
+          ],
+          "turkishFull": "Kız öğrenci trene biniyor.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "نَزَلَ",
+              "root": "نزل",
+              "category": "fiil (mazi)"
+            },
+            {
+              "text": "السّائِحُ",
+              "root": "سائح",
+              "category": "isim (ism-i fâil · ال takılı)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الفُنْدُقِ.",
+              "root": "فندق",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "indi",
+            "turist",
+            "…a",
+            "otele"
+          ],
+          "turkishFull": "Turist otele indi.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "ذَهَبْتُ",
+              "root": "ذهب",
+              "category": "fiil (mazi · dişil)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الأُرْدُنِّ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "العُطْلَةِ",
+              "root": "عطلة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الصَّيْفِيَّةِ.",
+              "root": "صيفي",
+              "category": "isim (sıfat · ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "gitti",
+            "…a",
+            "Ürdün",
+            "…da",
+            "Tatili",
+            "yaz"
+          ],
+          "turkishFull": "Yaz tatilinde Ürdün'e gittim.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "سَأَذْهَبُ",
+              "root": "ذهب",
+              "category": "fiil (muzari · istikbal · mütekellim)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "العُمْرَةِ.",
+              "root": "عمرة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "gideceğim",
+            "…a",
+            "umreye"
+          ],
+          "turkishFull": "Umreye gideceğim.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "سَأَعْمَلُ",
+              "root": "عمل",
+              "category": "fiil (muzari · istikbal · mütekellim)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "شَرِكَةٍ.",
+              "root": "شركة",
+              "category": "isim (dişil)"
+            }
+          ],
+          "turkish": [
+            "çalışacağım",
+            "…da",
+            "şirkette"
+          ],
+          "turkishFull": "Bir şirkette çalışacağım.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَذْهَبُ",
+              "root": "ذهب",
+              "category": "fiil (muzari)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَصْنَعِ.",
+              "root": "مصنع",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "gidiyor",
+            "…a",
+            "fabrikaya"
+          ],
+          "turkishFull": "Fabrikaya gidiyor.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "سَتَذْهَبُ",
+              "root": "ذهب",
+              "category": "fiil (muzari · istikbal · muhatap)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "مَكَّةَ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "المُكَرَّمَةِ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "gideceksin",
+            "…a",
+            "Mekke",
+            "(Mükerreme)"
+          ],
+          "turkishFull": "Mekke-i Mükerreme'ye gideceksin.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "اليَوْمَ",
+              "root": "يوم",
+              "category": "zarf (zaman · ال takılı)"
+            },
+            {
+              "text": "كَتَبْتُ",
+              "root": "كتب",
+              "category": "fiil (mazi · mütekellim)"
+            },
+            {
+              "text": "واجِبي.",
+              "root": "واجب",
+              "category": "isim + bitişik zamir (ben)"
+            }
+          ],
+          "turkish": [
+            "bugün",
+            "yazdım",
+            "ödevimi"
+          ],
+          "turkishFull": "Bugün ödevimi yazdım.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "غَدًا",
+              "root": "غدا",
+              "category": "zarf (zaman)"
+            },
+            {
+              "text": "سَأَذْهَبُ",
+              "root": "ذهب",
+              "category": "fiil (muzari · istikbal · mütekellim)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَكْتَبَةِ.",
+              "root": "مكتبة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "yarın",
+            "gideceğim",
+            "…a",
+            "kütüphaneye"
+          ],
+          "turkishFull": "Yarın kütüphaneye gideceğim.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الأُسْبوعِ",
+              "root": "أسبوع",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "القادِمِ",
+              "root": "قادم",
+              "category": "isim (ism-i fâil · ال takılı)"
+            },
+            {
+              "text": "سَأَلْعَبُ",
+              "root": "لعب",
+              "category": "fiil (muzari · istikbal · mütekellim)"
+            },
+            {
+              "text": "كُرَةَ",
+              "root": "كرة",
+              "category": "isim"
+            },
+            {
+              "text": "القَدَمِ.",
+              "root": "قدم",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "…da",
+            "hafta?",
+            "gelecek",
+            "oynayacağım",
+            "topu",
+            "Ayak"
+          ],
+          "turkishFull": "Gelecek hafta futbol oynayacağım.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الشَّهْرِ",
+              "root": "شهر",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الماضي",
+              "root": "ماضي",
+              "category": "isim (ism-i fâil · ال takılı · nakıs)"
+            },
+            {
+              "text": "ذَهَبوا",
+              "root": "ذهب",
+              "category": "fiil (mazi · cemi)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَسْجِدِ.",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "…da",
+            "ay",
+            "geçen",
+            "gittiler",
+            "…a",
+            "mescit"
+          ],
+          "turkishFull": "Geçen ay mescide gittiler.",
+          "ders": "6_6_3"
         }
       ]
     },
     {
       "level": 4,
       "anahtar": "illetli",
-      "hint": "<h3 dir=\"ltr\">Seviye 4 · İlletli, mehmuz ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin tümü geçerlidir.</li><li><b>Mehmuz</b> (hemzeli): <bdi class=\"ip-ar\">قَرَأَ</bdi> → <bdi class=\"ip-ar\">قرأ</bdi> &nbsp;·&nbsp; <b>Misal</b> (başı illetli): <bdi class=\"ip-ar\">وَجَدْتُ</bdi> → <bdi class=\"ip-ar\">وجد</bdi></li><li><b>Nâkıs</b> (sonu illetli): <bdi class=\"ip-ar\">يَأْتي</bdi> → <bdi class=\"ip-ar\">أتى</bdi> &nbsp;·&nbsp; <b>Mudâaf</b> (şeddeli): <bdi class=\"ip-ar\">سَيَحُلُّ</bdi> → <bdi class=\"ip-ar\">حل</bdi></li><li><b>Mezid</b> fiil kendi mazisiyle aranır: <bdi class=\"ip-ar\">أَتُفَضِّلُ</bdi> → <bdi class=\"ip-ar\">فضل</bdi>، <bdi class=\"ip-ar\">تَوَضَّأَ</bdi> → <bdi class=\"ip-ar\">توضأ</bdi></li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">أَتَمَنّى</bdi> → <bdi class=\"ip-ar\"><b>تمنى</b></bdi> <i>(fiil (muzari · mezid · nakıs · mütekellim))</i></li><li><bdi class=\"ip-ar\">يَأْتي</bdi> → <bdi class=\"ip-ar\"><b>أتى</b></bdi> <i>(fiil (muzari · misal · nakıs))</i></li><li><bdi class=\"ip-ar\">يَشْفيها.</bdi> → <bdi class=\"ip-ar\"><b>شفى</b></bdi> <i>(fiil (muzari · nakıs) + mef'ûl zamiri)</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 4 · İlletli, mehmuz ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin tümü geçerlidir.</li><li><b>Mehmuz</b> (hemzeli): <bdi class=\"ip-ar\">قَرَأَ</bdi> → <bdi class=\"ip-ar\">قرأ</bdi> &nbsp;·&nbsp; <b>Misal</b> (başı illetli): <bdi class=\"ip-ar\">وَجَدْتُ</bdi> → <bdi class=\"ip-ar\">وجد</bdi></li><li><b>Nâkıs</b> (sonu illetli): <bdi class=\"ip-ar\">يَأْتي</bdi> → <bdi class=\"ip-ar\">أتى</bdi> &nbsp;·&nbsp; <b>Mudâaf</b> (şeddeli): <bdi class=\"ip-ar\">سَيَحُلُّ</bdi> → <bdi class=\"ip-ar\">حل</bdi></li><li><b>Mezid</b> fiil kendi mazisiyle aranır: <bdi class=\"ip-ar\">أَتُفَضِّلُ</bdi> → <bdi class=\"ip-ar\">فضل</bdi>، <bdi class=\"ip-ar\">تَوَضَّأَ</bdi> → <bdi class=\"ip-ar\">توضأ</bdi></li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">أَتَمَنّى</bdi> → <bdi class=\"ip-ar\"><b>تمنى</b></bdi> <i>(fiil (muzari · mezid · nakıs · mütekellim))</i></li><li><bdi class=\"ip-ar\">يَأْتي</bdi> → <bdi class=\"ip-ar\"><b>أتى</b></bdi> <i>(fiil (muzari · misal · nakıs))</i></li><li><bdi class=\"ip-ar\">يَشْفيها.</bdi> → <bdi class=\"ip-ar\"><b>شفى</b></bdi> <i>(fiil (muzari · nakıs) + mef'ûl zamiri)</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">تَقَعُ</bdi> → <bdi class=\"ip-ar\"><b>وقع</b></bdi> <i>(fiil (muzari · misal · dişil))</i></li><li><bdi class=\"ip-ar\">يَسْعى</bdi> → <bdi class=\"ip-ar\"><b>سعى</b></bdi> <i>(fiil (muzari · nakıs))</i></li><li><bdi class=\"ip-ar\">يَطوفُ</bdi> → <bdi class=\"ip-ar\"><b>طاف</b></bdi> <i>(fiil (muzari · ecvef))</i></li><li><bdi class=\"ip-ar\">يَقِفُ</bdi> → <bdi class=\"ip-ar\"><b>وقف</b></bdi> <i>(fiil (muzari · misal))</i></li><li><bdi class=\"ip-ar\">يُصَلّي</bdi> → <bdi class=\"ip-ar\"><b>صلى</b></bdi> <i>(fiil (muzari · nakıs))</i></li><li><bdi class=\"ip-ar\">يَقْرَأُ</bdi> → <bdi class=\"ip-ar\"><b>قرأ</b></bdi> <i>(fiil (muzari · mehmuz))</i></li></ul>",
       "sentences": [
         {
           "arabic": [
@@ -4365,6 +7383,2140 @@ window.SOZLUK_SINIF["6"] = {
             "ile Fatih"
           ],
           "turkishFull": "Konuşma garson ile Fatih arasında geçiyor."
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَيْنَ",
+              "root": "أين",
+              "category": "soru ismi"
+            },
+            {
+              "text": "تَقَعُ",
+              "root": "وقع",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "الكَعْبَةُ",
+              "root": "كعبة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "الشَّريفَةُ؟",
+              "root": "شريف",
+              "category": "isim (sıfat · ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "nerede?",
+            "bulunur",
+            "Kâbe",
+            "Şerefli"
+          ],
+          "turkishFull": "Şerefli Kâbe nerededir?",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَيْنَ",
+              "root": "أين",
+              "category": "soru ismi"
+            },
+            {
+              "text": "تَقَعُ",
+              "root": "وقع",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "مَكَّةُ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "المُكَرَّمَةِ؟",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "nerede?",
+            "bulunur",
+            "Mekke",
+            "(Mükerreme)"
+          ],
+          "turkishFull": "Mekke-i Mükerreme nerededir?",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَسْعى",
+              "root": "سعى",
+              "category": "fiil (muzari · nakıs)"
+            },
+            {
+              "text": "المُسْلِمونَ",
+              "root": "مسلم",
+              "category": "isim (düzenli çoğul · ال takılı)"
+            },
+            {
+              "text": "وَالمُسْلِماتُ",
+              "root": "مسلمة",
+              "category": "atıf harfi + isim (dişil çoğul · ال takılı)"
+            },
+            {
+              "text": "بَيْنَ",
+              "root": "بين",
+              "category": "zarf (mekân)"
+            },
+            {
+              "text": "الصَّفا",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "وَالمَرْوَةِ.",
+              "root": "SKIP",
+              "category": "atıf harfi + isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "sa'y eder",
+            "Müslüman erkekler",
+            "ve Müslüman kadınlar",
+            "arasında",
+            "Safa",
+            "ve Merve"
+          ],
+          "turkishFull": "Müslüman erkekler ve kadınlar Safa ile Merve arasında sa'y ederler.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَطوفُ",
+              "root": "طاف",
+              "category": "fiil (muzari · ecvef)"
+            },
+            {
+              "text": "المُسْلِمونَ",
+              "root": "مسلم",
+              "category": "isim (düzenli çoğul · ال takılı)"
+            },
+            {
+              "text": "وَالمُسْلِماتُ",
+              "root": "مسلمة",
+              "category": "atıf harfi + isim (dişil çoğul · ال takılı)"
+            },
+            {
+              "text": "حَوْلَ",
+              "root": "حول",
+              "category": "zarf (mekân)"
+            },
+            {
+              "text": "الكَعْبَةِ.",
+              "root": "كعبة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "tavaf eder",
+            "Müslüman erkekler",
+            "ve Müslüman kadınlar",
+            "etrafında",
+            "Kâbe"
+          ],
+          "turkishFull": "Müslüman erkekler ve kadınlar Kâbe'nin etrafında tavaf ederler.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَقِفُ",
+              "root": "وقف",
+              "category": "fiil (muzari · misal)"
+            },
+            {
+              "text": "المُسْلِمونَ",
+              "root": "مسلم",
+              "category": "isim (düzenli çoğul · ال takılı)"
+            },
+            {
+              "text": "وَالمُسْلِماتُ",
+              "root": "مسلمة",
+              "category": "atıf harfi + isim (dişil çoğul · ال takılı)"
+            },
+            {
+              "text": "عَلى",
+              "root": "على",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "جَبَلِ",
+              "root": "جبل",
+              "category": "isim"
+            },
+            {
+              "text": "عَرَفاتٍ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "durur",
+            "Müslüman erkekler",
+            "ve Müslüman kadınlar",
+            "…a",
+            "dağ",
+            "Arafat"
+          ],
+          "turkishFull": "Müslüman erkekler ve kadınlar Arafat Dağı'nda vakfeye dururlar.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يُصَلّي",
+              "root": "صلى",
+              "category": "fiil (muzari · nakıs)"
+            },
+            {
+              "text": "المُسْلِمونَ",
+              "root": "مسلم",
+              "category": "isim (düzenli çoğul · ال takılı)"
+            },
+            {
+              "text": "وَالمُسْلِماتُ",
+              "root": "مسلمة",
+              "category": "atıf harfi + isim (dişil çoğul · ال takılı)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَسْجِدِ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الحَرامِ",
+              "root": "حرام",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "أَمامَ",
+              "root": "أمام",
+              "category": "zarf"
+            },
+            {
+              "text": "الكَعْبَةِ.",
+              "root": "كعبة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "kılıyor.",
+            "Müslüman erkekler",
+            "ve Müslüman kadınlar",
+            "…da",
+            "mescit",
+            "Haram",
+            "önünde",
+            "Kâbe"
+          ],
+          "turkishFull": "Müslüman erkekler ve kadınlar Mescid-i Haram'da Kâbe'nin önünde namaz kılarlar.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَقْرَأُ",
+              "root": "قرأ",
+              "category": "fiil (muzari · mehmuz)"
+            },
+            {
+              "text": "المُسْلِمونَ",
+              "root": "مسلم",
+              "category": "isim (düzenli çoğul · ال takılı)"
+            },
+            {
+              "text": "وَالمُسْلِماتُ",
+              "root": "مسلمة",
+              "category": "atıf harfi + isim (dişil çoğul · ال takılı)"
+            },
+            {
+              "text": "القُرْآنَ",
+              "root": "قرآن",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الكَريمَ",
+              "root": "كريم",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَسْجِدِ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الحَرامِ",
+              "root": "حرام",
+              "category": "isim (sıfat · ال takılı)"
+            }
+          ],
+          "turkish": [
+            "okuyor.",
+            "Müslüman erkekler",
+            "ve Müslüman kadınlar",
+            "Kur'ân",
+            "Kerîm",
+            "…da",
+            "mescit",
+            "Haram"
+          ],
+          "turkishFull": "Müslüman erkekler ve kadınlar Mescid-i Haram'da Kur'ân-ı Kerîm okurlar.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَزورُ",
+              "root": "زار",
+              "category": "fiil (muzari · ecvef)"
+            },
+            {
+              "text": "المُسْلِمونَ",
+              "root": "مسلم",
+              "category": "isim (düzenli çoğul · ال takılı)"
+            },
+            {
+              "text": "وَالمُسْلِماتُ",
+              "root": "مسلمة",
+              "category": "atıf harfi + isim (dişil çoğul · ال takılı)"
+            },
+            {
+              "text": "الأَماكِنَ",
+              "root": "مكان",
+              "category": "isim (kırık çoğul · ال takılı)"
+            },
+            {
+              "text": "المُقَدَّسَةَ.",
+              "root": "مقدس",
+              "category": "isim (sıfat · ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "ziyaret eder",
+            "Müslüman erkekler",
+            "ve Müslüman kadınlar",
+            "mekânları",
+            "kutsal"
+          ],
+          "turkishFull": "Müslüman erkekler ve kadınlar kutsal mekânları ziyaret ederler.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يُصَلّي",
+              "root": "صلى",
+              "category": "fiil (muzari · nakıs)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "البَيْتِ.",
+              "root": "بيت",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "kılıyor.",
+            "…da",
+            "Ev"
+          ],
+          "turkishFull": "Evde namaz kılar.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَطوفُ",
+              "root": "طاف",
+              "category": "fiil (muzari · ecvef)"
+            },
+            {
+              "text": "حَوْلَ",
+              "root": "حول",
+              "category": "zarf (mekân)"
+            },
+            {
+              "text": "الكَعْبَةِ.",
+              "root": "كعبة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "tavaf eder",
+            "etrafında",
+            "Kâbe"
+          ],
+          "turkishFull": "Kâbe'nin etrafında tavaf eder.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَقْرَأُ",
+              "root": "قرأ",
+              "category": "fiil (muzari · mehmuz)"
+            },
+            {
+              "text": "القُرْآنَ",
+              "root": "قرآن",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الكَريمَ.",
+              "root": "كريم",
+              "category": "isim (sıfat · ال takılı)"
+            }
+          ],
+          "turkish": [
+            "okuyor.",
+            "Kur'ân",
+            "Kerîm"
+          ],
+          "turkishFull": "Kur'ân-ı Kerîm okur.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَزورُ",
+              "root": "زار",
+              "category": "fiil (muzari · ecvef)"
+            },
+            {
+              "text": "المَتْحَفَ.",
+              "root": "متحف",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "ziyaret eder",
+            "müzeyi"
+          ],
+          "turkishFull": "Müzeyi ziyaret eder.",
+          "ders": "6_5_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "تُوجَدُ",
+              "root": "وجد",
+              "category": "fiil (muzari · meçhul · misal · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَدينَةِ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةِ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "ثَلاثَةُ",
+              "root": "ثلاثة",
+              "category": "isim (sayı)"
+            },
+            {
+              "text": "مَساجِدَ",
+              "root": "مسجد",
+              "category": "isim (kırık çoğul)"
+            },
+            {
+              "text": "قَديمَةٍ",
+              "root": "قديم",
+              "category": "isim (sıfat · dişil)"
+            },
+            {
+              "text": "وَمُهِمَّةٍ",
+              "root": "مهم",
+              "category": "atıf harfi + isim (sıfat · dişil)"
+            },
+            {
+              "text": "وَهِيَ",
+              "root": "هي",
+              "category": "atıf harfi + zamir"
+            },
+            {
+              "text": "المَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "النَّبَوِيُّ",
+              "root": "نبوي",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "وَمَسْجِدُ",
+              "root": "مسجد",
+              "category": "atıf harfi + isim"
+            },
+            {
+              "text": "قُباءَ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "وَمَسْجِدُ",
+              "root": "مسجد",
+              "category": "atıf harfi + isim"
+            },
+            {
+              "text": "القِبْلَتَيْنِ.",
+              "root": "قبلة",
+              "category": "isim (ikil · ال takılı)"
+            }
+          ],
+          "turkish": [
+            "bulunur",
+            "…da",
+            "Medine",
+            "(Münevvere)",
+            "üç",
+            "mescitler",
+            "eskidir.",
+            "ve önemli",
+            "ve o",
+            "mescit",
+            "Nebevî",
+            "ve mescidi",
+            "Kuba",
+            "ve mescidi",
+            "iki kıble"
+          ],
+          "turkishFull": "Medine-i Münevvere'de eski ve önemli üç mescit vardır: Mescid-i Nebevî, Kuba Mescidi ve Kıbleteyn Mescidi.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَيْنَ",
+              "root": "أين",
+              "category": "soru ismi"
+            },
+            {
+              "text": "تَقَعُ",
+              "root": "وقع",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "المَدينَةُ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةُ؟",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "nerede?",
+            "bulunur",
+            "Medine",
+            "(Münevvere)"
+          ],
+          "turkishFull": "Medine-i Münevvere nerededir?",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "عاشَ",
+              "root": "عاش",
+              "category": "fiil (mazi · ecvef)"
+            },
+            {
+              "text": "النَّبِيُّ",
+              "root": "نبي",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "صَلَّى",
+              "root": "صلى",
+              "category": "fiil (mazi · nakıs · mezid)"
+            },
+            {
+              "text": "اللهُ",
+              "root": "SKIP",
+              "category": "isim (özel)"
+            },
+            {
+              "text": "عَلَيْهِ",
+              "root": "SKIP",
+              "category": "harf-i cer + bitişik zamir"
+            },
+            {
+              "text": "وَسَلَّمَ",
+              "root": "SKIP",
+              "category": "atıf harfi + fiil (mazi · mezid)"
+            },
+            {
+              "text": "فيها",
+              "root": "في",
+              "category": "isim + bitişik zamir (o · dişil)"
+            },
+            {
+              "text": "بَعْدَ",
+              "root": "بعد",
+              "category": "zarf (zaman)"
+            },
+            {
+              "text": "الهِجْرَةِ.",
+              "root": "هجرة",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "yaşadı",
+            "Peygamber",
+            "salât etsin",
+            "(Abdullah)",
+            "ona",
+            "ve selam versin",
+            "İçinde",
+            "sonra",
+            "hicret"
+          ],
+          "turkishFull": "Peygamber sallallahu aleyhi ve sellem hicretten sonra orada yaşadı.",
+          "ders": "6_5_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "القُدْسُ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "تَقَعُ",
+              "root": "وقع",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "فِلَسْطينَ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "Kudüs",
+            "bulunur",
+            "…da",
+            "Filistin"
+          ],
+          "turkishFull": "Kudüs Filistin'dedir.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "القُدْسُ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "الشَّريفُ",
+              "root": "شريف",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "تَقَعُ",
+              "root": "وقع",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "فِلَسْطينَ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "Kudüs",
+            "Şerif",
+            "bulunur",
+            "…da",
+            "Filistin"
+          ],
+          "turkishFull": "Kudüs-i Şerif Filistin'dedir.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "حائِطُ",
+              "root": "حائط",
+              "category": "isim (ism-i fâil)"
+            },
+            {
+              "text": "البُراقِ",
+              "root": "SKIP",
+              "category": "isim (özel)"
+            },
+            {
+              "text": "يَقَعُ",
+              "root": "وقع",
+              "category": "fiil (muzari · misal)"
+            },
+            {
+              "text": "عَلى",
+              "root": "على",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "يَسارِ",
+              "root": "يسار",
+              "category": "isim"
+            },
+            {
+              "text": "المَسْجِدِ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَقْصى.",
+              "root": "أقصى",
+              "category": "isim (ال takılı · maksûr)"
+            }
+          ],
+          "turkish": [
+            "duvarı",
+            "Burak",
+            "bulunur",
+            "…a",
+            "solunda",
+            "mescit",
+            "Aksâ"
+          ],
+          "turkishFull": "Burak Duvarı Mescid-i Aksâ'nın solundadır.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَيْنَ",
+              "root": "أين",
+              "category": "soru ismi"
+            },
+            {
+              "text": "تَقَعُ",
+              "root": "وقع",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "مَدينَةُ",
+              "root": "مدينة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "القُدْسِ؟",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "nerede?",
+            "bulunur",
+            "şehir",
+            "Kudüs"
+          ],
+          "turkishFull": "Kudüs şehri nerededir?",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَيْنَ",
+              "root": "أين",
+              "category": "soru ismi"
+            },
+            {
+              "text": "تَقَعُ",
+              "root": "وقع",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "قُبَّةُ",
+              "root": "قبة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "الصَّخْرَةِ",
+              "root": "صخرة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "بِالضَّبْطِ؟",
+              "root": "ضبط",
+              "category": "harf-i cer + isim (mastar)"
+            }
+          ],
+          "turkish": [
+            "nerede?",
+            "bulunur",
+            "kubbe",
+            "Sahra (kaya)",
+            "tam olarak"
+          ],
+          "turkishFull": "Kubbetü's-Sahra tam olarak nerededir?",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "القُدْسُ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "لا",
+              "root": "لا",
+              "category": "nefiy harfi"
+            },
+            {
+              "text": "تَقَعُ",
+              "root": "وقع",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "السُّعودِيَّةِ؛",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "هِيَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "فِلَسْطينَ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "Kudüs",
+            "Hayır,",
+            "bulunur",
+            "…da",
+            "Suudi Arabistan",
+            "O",
+            "…da",
+            "Filistin"
+          ],
+          "turkishFull": "Kudüs Suudi Arabistan'da değildir; Filistin'dedir.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَوَّلُ",
+              "root": "أول",
+              "category": "isim (sıra sayı)"
+            },
+            {
+              "text": "قِبْلَةٍ",
+              "root": "قبلة",
+              "category": "isim (dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الإِسْلامِ",
+              "root": "إسلام",
+              "category": "isim (ال takılı · mastar)"
+            },
+            {
+              "text": "لَيْسَتِ",
+              "root": "ليس",
+              "category": "nakıs fiil (dişil)"
+            },
+            {
+              "text": "الكَعْبَةَ",
+              "root": "كعبة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "الشَّريفَةَ؛",
+              "root": "شريف",
+              "category": "isim (sıfat · ال takılı · dişil)"
+            },
+            {
+              "text": "هِيَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "المَسْجِدُ",
+              "root": "مسجد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَقْصى.",
+              "root": "أقصى",
+              "category": "isim (ال takılı · maksûr)"
+            }
+          ],
+          "turkish": [
+            "ilk",
+            "kıble",
+            "…da",
+            "İslam",
+            "değildir",
+            "Kâbe",
+            "Şerefli",
+            "O",
+            "mescit",
+            "Aksâ"
+          ],
+          "turkishFull": "İslam'daki ilk kıble Şerefli Kâbe değildir; Mescid-i Aksâ'dır.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "المَدينَةُ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةُ",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "لا",
+              "root": "لا",
+              "category": "nefiy harfi"
+            },
+            {
+              "text": "تَقَعُ",
+              "root": "وقع",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "فِلَسْطينَ؛",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            },
+            {
+              "text": "هِيَ",
+              "root": "SKIP",
+              "category": "zamir"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "السُّعودِيَّةِ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "Medine",
+            "(Münevvere)",
+            "Hayır,",
+            "bulunur",
+            "…da",
+            "Filistin",
+            "O",
+            "…da",
+            "Suudi Arabistan"
+          ],
+          "turkishFull": "Medine-i Münevvere Filistin'de değildir; Suudi Arabistan'dadır.",
+          "ders": "6_5_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "رَأَيْتُ",
+              "root": "رأى",
+              "category": "fiil (mazi · mehmuz · nakıs · mütekellim)"
+            },
+            {
+              "text": "الطّائِرَةَ",
+              "root": "طائرة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَطارِ.",
+              "root": "مطار",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "gördüm",
+            "Uçak",
+            "…da",
+            "havalimanı"
+          ],
+          "turkishFull": "Uçağı havalimanında gördüm.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "شاهَدْتُ",
+              "root": "شاهد",
+              "category": "fiil (mazi · mezid · mütekellim)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الطَّريقِ",
+              "root": "طريق",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "حادِثًا.",
+              "root": "حادث",
+              "category": "isim (tenvinli)"
+            }
+          ],
+          "turkish": [
+            "gördüm",
+            "…da",
+            "yol",
+            "bir kaza"
+          ],
+          "turkishFull": "Yolda bir kaza gördüm.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الرَّجُلُ",
+              "root": "رجل",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "يَسوقُ",
+              "root": "ساق",
+              "category": "fiil (muzari · ecvef)"
+            },
+            {
+              "text": "سَيّارَتَهُ.",
+              "root": "سيارة",
+              "category": "isim (dişil) + bitişik zamir (o)"
+            }
+          ],
+          "turkish": [
+            "adam",
+            "sürüyor",
+            "arabasını"
+          ],
+          "turkishFull": "Adam arabasını sürüyor.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "هَلْ",
+              "root": "هل",
+              "category": "soru edatı"
+            },
+            {
+              "text": "تُفَضِّلُ",
+              "root": "تفضل",
+              "category": "fiil (emir · mezid)"
+            },
+            {
+              "text": "السَّيّارَةَ",
+              "root": "سيارة",
+              "category": "ال takılı · isim"
+            },
+            {
+              "text": "أَمِ",
+              "root": "أم",
+              "category": "bağlaç"
+            },
+            {
+              "text": "الحافِلَةَ؟",
+              "root": "حافلة",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "…mi?",
+            "Buyurun,",
+            "Araba",
+            "yoksa",
+            "Otobüs"
+          ],
+          "turkishFull": "Arabayı mı yoksa otobüsü mü tercih edersin?",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أُفَضِّلُ",
+              "root": "فضل",
+              "category": "fiil (muzari · mezid · mütekellim)"
+            },
+            {
+              "text": "الحافِلَةَ.",
+              "root": "حافلة",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "tercih ederim",
+            "Otobüs"
+          ],
+          "turkishFull": "Otobüsü tercih ederim.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "هَلْ",
+              "root": "هل",
+              "category": "soru edatı"
+            },
+            {
+              "text": "تُفَضِّلُ",
+              "root": "تفضل",
+              "category": "fiil (emir · mezid)"
+            },
+            {
+              "text": "الطّائِرَةَ",
+              "root": "طائرة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "أَمِ",
+              "root": "أم",
+              "category": "bağlaç"
+            },
+            {
+              "text": "القِطارَ؟",
+              "root": "قطار",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "…mi?",
+            "Buyurun,",
+            "Uçak",
+            "yoksa",
+            "tren"
+          ],
+          "turkishFull": "Uçağı mı yoksa treni mi tercih edersin?",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "السَّفينَةُ",
+              "root": "سفينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "تَسيرُ",
+              "root": "سار",
+              "category": "fiil (muzari · ecvef · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "البَحْرِ.",
+              "root": "بحر",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "gemi",
+            "ilerler",
+            "…da",
+            "deniz"
+          ],
+          "turkishFull": "Gemi denizde ilerler.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الطّائِرَةُ",
+              "root": "طائرة",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "تَطيرُ",
+              "root": "طار",
+              "category": "fiil (muzari · ecvef · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "السَّماءِ.",
+              "root": "سماء",
+              "category": "isim (ال takılı · dişil)"
+            }
+          ],
+          "turkish": [
+            "Uçak",
+            "uçar",
+            "…da",
+            "gökyüzü"
+          ],
+          "turkishFull": "Uçak gökyüzünde uçar.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "السَّيّارَةُ",
+              "root": "سيارة",
+              "category": "ال takılı · isim"
+            },
+            {
+              "text": "تَسيرُ",
+              "root": "سار",
+              "category": "fiil (muzari · ecvef · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الطَّريقِ.",
+              "root": "طريق",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "Araba",
+            "ilerler",
+            "…da",
+            "yol"
+          ],
+          "turkishFull": "Araba yolda ilerler.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَيْنَ",
+              "root": "أين",
+              "category": "soru ismi"
+            },
+            {
+              "text": "تُوجَدُ",
+              "root": "وجد",
+              "category": "fiil (muzari · meçhul · misal · dişil)"
+            },
+            {
+              "text": "السَّيّارَةُ؟",
+              "root": "سيارة",
+              "category": "ال takılı · isim"
+            },
+            {
+              "text": "السَّيّارَةُ",
+              "root": "سيارة",
+              "category": "ال takılı · isim"
+            },
+            {
+              "text": "بِجانِبِ",
+              "root": "جانب",
+              "category": "harf-i cer + isim"
+            },
+            {
+              "text": "البَيْتِ.",
+              "root": "بيت",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "nerede?",
+            "bulunur",
+            "Araba",
+            "Araba",
+            "yanındadır",
+            "Ev"
+          ],
+          "turkishFull": "Araba nerededir? Araba evin yanındadır.",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "مَنْ",
+              "root": "من",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "يَسوقُ",
+              "root": "ساق",
+              "category": "fiil (muzari · ecvef)"
+            },
+            {
+              "text": "الدَّرّاجَةَ؟",
+              "root": "دراجة",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "…den",
+            "sürüyor",
+            "Bisiklet"
+          ],
+          "turkishFull": "Bisikleti kim sürüyor?",
+          "ders": "6_6_1"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَقِفُ",
+              "root": "وقف",
+              "category": "fiil (muzari · misal)"
+            },
+            {
+              "text": "الرَّجُلُ",
+              "root": "رجل",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الضَّوْءِ",
+              "root": "ضوء",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَحْمَرِ.",
+              "root": "أحمر",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "durur",
+            "adam",
+            "…da",
+            "ışık(ta)",
+            "Kırmızı"
+          ],
+          "turkishFull": "Adam kırmızı ışıkta durur.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "اِتَّجِهْ",
+              "root": "اتجه",
+              "category": "fiil (emir · mezid · misal)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "اليَسارِ",
+              "root": "يسار",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "لا",
+              "root": "لا",
+              "category": "nefiy harfi"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "اليَمينِ.",
+              "root": "يمين",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "dön",
+            "…a",
+            "sola",
+            "Hayır,",
+            "…a",
+            "sağa"
+          ],
+          "turkishFull": "Sola dön, sağa değil.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَسْتَعِدُّ",
+              "root": "استعد",
+              "category": "fiil (muzari · mezid · mudâaf)"
+            },
+            {
+              "text": "الرَّجُلُ",
+              "root": "رجل",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "لِلْعُبورِ",
+              "root": "عبور",
+              "category": "harf-i cer + isim (ال takılı · mastar)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الضَّوْءِ",
+              "root": "ضوء",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَصْفَرِ.",
+              "root": "أصفر",
+              "category": "isim (sıfat · renk · ال takılı)"
+            }
+          ],
+          "turkish": [
+            "hazırlanır",
+            "adam",
+            "geçmeye",
+            "…da",
+            "ışık(ta)",
+            "sarı"
+          ],
+          "turkishFull": "Adam sarı ışıkta geçmeye hazırlanır.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَقِفُ",
+              "root": "وقف",
+              "category": "fiil (muzari · misal)"
+            },
+            {
+              "text": "المُشاةُ",
+              "root": "مشاة",
+              "category": "isim (ال takılı · çoğul)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الضَّوْءِ",
+              "root": "ضوء",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَحْمَرِ.",
+              "root": "أحمر",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "durur",
+            "yayalar",
+            "…da",
+            "ışık(ta)",
+            "Kırmızı"
+          ],
+          "turkishFull": "Yayalar kırmızı ışıkta durur.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَسْتَعِدُّ",
+              "root": "استعد",
+              "category": "fiil (muzari · mezid · mudâaf)"
+            },
+            {
+              "text": "السّائِقُ",
+              "root": "سائق",
+              "category": "isim (ism-i fâil · ال takılı · meslek)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الضَّوْءِ",
+              "root": "ضوء",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَصْفَرِ.",
+              "root": "أصفر",
+              "category": "isim (sıfat · renk · ال takılı)"
+            }
+          ],
+          "turkish": [
+            "hazırlanır",
+            "sürücü",
+            "…da",
+            "ışık(ta)",
+            "sarı"
+          ],
+          "turkishFull": "Sürücü sarı ışıkta hazırlanır.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "هَلْ",
+              "root": "هل",
+              "category": "soru edatı"
+            },
+            {
+              "text": "تَقِفُ",
+              "root": "وقف",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الضَّوْءِ",
+              "root": "ضوء",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَحْمَرِ",
+              "root": "أحمر",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "أَمْ",
+              "root": "أم",
+              "category": "bağlaç"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الضَّوْءِ",
+              "root": "ضوء",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَخْضَرِ؟",
+              "root": "أخضر",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "…mi?",
+            "durur",
+            "…da",
+            "ışık(ta)",
+            "Kırmızı",
+            "yoksa",
+            "…da",
+            "ışık(ta)",
+            "Yeşil"
+          ],
+          "turkishFull": "Kırmızı ışıkta mı yoksa yeşil ışıkta mı durursun?",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَقِفُ",
+              "root": "وقف",
+              "category": "fiil (muzari · misal · mütekellim)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الضَّوْءِ",
+              "root": "ضوء",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَحْمَرِ.",
+              "root": "أحمر",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "dururum",
+            "…da",
+            "ışık(ta)",
+            "Kırmızı"
+          ],
+          "turkishFull": "Kırmızı ışıkta dururum.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "الرَّجُلُ",
+              "root": "رجل",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الشُّجاعُ",
+              "root": "شجاع",
+              "category": "isim (sıfat · ال takılı)"
+            },
+            {
+              "text": "أَنْقَذَ",
+              "root": "أنقذ",
+              "category": "fiil (mazi · mezid)"
+            },
+            {
+              "text": "الوَلَدَ",
+              "root": "ولد",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "مِنْ",
+              "root": "من",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "حادِثِ",
+              "root": "حادث",
+              "category": "isim"
+            },
+            {
+              "text": "المُرورِ.",
+              "root": "مرور",
+              "category": "isim (ال takılı · mastar)"
+            }
+          ],
+          "turkish": [
+            "adam",
+            "cesur",
+            "kurtardı",
+            "çocuğu",
+            "…den",
+            "kazası",
+            "trafik"
+          ],
+          "turkishFull": "Cesur adam çocuğu trafik kazasından kurtardı.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَنْتَظِرُ",
+              "root": "انتظر",
+              "category": "fiil (muzari · mezid)"
+            },
+            {
+              "text": "المُوَظَّفُ",
+              "root": "موظف",
+              "category": "isim (ال takılı · meslek)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَوْقِفِ.",
+              "root": "موقف",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "bekliyor",
+            "memur",
+            "…da",
+            "durak"
+          ],
+          "turkishFull": "Memur durakta bekliyor.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "تَقِفُ",
+              "root": "وقف",
+              "category": "fiil (muzari · misal · dişil)"
+            },
+            {
+              "text": "السَّيّارَةُ",
+              "root": "سيارة",
+              "category": "ال takılı · isim"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الضَّوْءِ",
+              "root": "ضوء",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الأَحْمَرِ.",
+              "root": "أحمر",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "durur",
+            "Araba",
+            "…da",
+            "ışık(ta)",
+            "Kırmızı"
+          ],
+          "turkishFull": "Araba kırmızı ışıkta duruyor.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَقْرَأُ",
+              "root": "قرأ",
+              "category": "fiil (muzari · mehmuz)"
+            },
+            {
+              "text": "الطّالِبُ",
+              "root": "طالب",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "الكِتابَ",
+              "root": "كتاب",
+              "category": "isim (ال takılı)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المِتْرو.",
+              "root": "مترو",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "okuyor.",
+            "Öğrencinin",
+            "kitabı.",
+            "…da",
+            "metro"
+          ],
+          "turkishFull": "Öğrenci metroda kitap okuyor.",
+          "ders": "6_6_2"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أُسافِرُ",
+              "root": "سافر",
+              "category": "fiil (muzari · mezid · mütekellim)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَدينَةِ",
+              "root": "مدينة",
+              "category": "isim (ال takılı · dişil)"
+            },
+            {
+              "text": "المُنَوَّرَةِ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "seyahat ediyorum",
+            "…a",
+            "Medine",
+            "(Münevvere)"
+          ],
+          "turkishFull": "Medine-i Münevvere'ye seyahat ediyorum.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "رَأَيْتُ",
+              "root": "رأى",
+              "category": "fiil (mazi · mehmuz · nakıs · mütekellim)"
+            },
+            {
+              "text": "الآثارَ",
+              "root": "أثر",
+              "category": "isim (kırık çoğul · ال takılı)"
+            },
+            {
+              "text": "التّاريخِيَّةَ",
+              "root": "تاريخي",
+              "category": "isim (sıfat · ال takılı · dişil)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "بورصَةَ.",
+              "root": "SKIP",
+              "category": "isim (özel · yer)"
+            }
+          ],
+          "turkish": [
+            "gördüm",
+            "eserleri",
+            "tarihî",
+            "…da",
+            "Bursa"
+          ],
+          "turkishFull": "Bursa'da tarihî eserleri gördüm.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "أَمْسِ",
+              "root": "أمس",
+              "category": "zarf (zaman)"
+            },
+            {
+              "text": "شاهَدْتُ",
+              "root": "شاهد",
+              "category": "fiil (mazi · mezid · mütekellim)"
+            },
+            {
+              "text": "التِّلْفازَ.",
+              "root": "تلفاز",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "dün",
+            "gördüm",
+            "televizyon"
+          ],
+          "turkishFull": "Dün televizyon seyrettim.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "السّائِحُ",
+              "root": "سائح",
+              "category": "isim (ism-i fâil · ال takılı)"
+            },
+            {
+              "text": "يَتَجَوَّلُ",
+              "root": "تجول",
+              "category": "fiil (muzari · mezid · ecvef)"
+            },
+            {
+              "text": "في",
+              "root": "في",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَتْحَفِ.",
+              "root": "متحف",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "turist",
+            "geziniyor",
+            "…da",
+            "müzeyi"
+          ],
+          "turkishFull": "Turist müzede geziniyor.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "اِهْتَمَّ",
+              "root": "اهتم",
+              "category": "fiil (emir · mezid · mudâaf)"
+            },
+            {
+              "text": "بِقَواعِدِ",
+              "root": "قاعدة",
+              "category": "harf-i cer + isim (kırık çoğul)"
+            },
+            {
+              "text": "المُرورِ.",
+              "root": "مرور",
+              "category": "isim (ال takılı · mastar)"
+            }
+          ],
+          "turkish": [
+            "önem ver",
+            "kurallarına",
+            "trafik"
+          ],
+          "turkishFull": "Trafik kurallarına önem ver.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "لا",
+              "root": "لا",
+              "category": "nefiy harfi"
+            },
+            {
+              "text": "تَقُدْ",
+              "root": "قاد",
+              "category": "fiil (nehiy · ecvef · muhatap)"
+            },
+            {
+              "text": "سَيّارَتَكَ",
+              "root": "سيارة",
+              "category": "isim (dişil) + bitişik zamir (sen)"
+            },
+            {
+              "text": "بِسُرْعَةٍ.",
+              "root": "سرعة",
+              "category": "harf-i cer + isim (dişil)"
+            }
+          ],
+          "turkish": [
+            "Hayır,",
+            "sürme",
+            "arabanı",
+            "hızlı"
+          ],
+          "turkishFull": "Arabanı hızlı sürme.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَجِبُ",
+              "root": "وجب",
+              "category": "fiil (muzari · misal)"
+            },
+            {
+              "text": "اِسْتِخْدامُ",
+              "root": "استخدام",
+              "category": "isim (mastar · mezid)"
+            },
+            {
+              "text": "حِزامِ",
+              "root": "حزام",
+              "category": "isim"
+            },
+            {
+              "text": "الأَمانِ",
+              "root": "أمان",
+              "category": "isim (ال takılı · mastar)"
+            },
+            {
+              "text": "أَثْناءَ",
+              "root": "أثناء",
+              "category": "zarf (zaman)"
+            },
+            {
+              "text": "السَّيْرِ.",
+              "root": "سير",
+              "category": "isim (ال takılı · mastar)"
+            }
+          ],
+          "turkish": [
+            "gerekir",
+            "kullanmak",
+            "kemeri",
+            "emniyet",
+            "sırasında",
+            "sürüş"
+          ],
+          "turkishFull": "Sürüş sırasında emniyet kemeri kullanılmalıdır.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَنامُ",
+              "root": "نام",
+              "category": "fiil (muzari · ecvef)"
+            },
+            {
+              "text": "عَلى",
+              "root": "على",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "المَقْعَدِ.",
+              "root": "مقعد",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "uyuyor",
+            "…a",
+            "koltukta"
+          ],
+          "turkishFull": "Koltukta uyuyor.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَسْتَمِعُ",
+              "root": "استمع",
+              "category": "fiil (muzari · mezid)"
+            },
+            {
+              "text": "إِلى",
+              "root": "إلى",
+              "category": "harf-i cer"
+            },
+            {
+              "text": "الموسيقى.",
+              "root": "موسيقى",
+              "category": "isim (ال takılı · maksûr)"
+            }
+          ],
+          "turkish": [
+            "dinliyor",
+            "…a",
+            "müzik"
+          ],
+          "turkishFull": "Müzik dinliyor.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "تَتَكَلَّمُ",
+              "root": "تكلم",
+              "category": "fiil (muzari · mezid · dişil)"
+            },
+            {
+              "text": "بِالجَوّالِ.",
+              "root": "جوال",
+              "category": "harf-i cer + isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "konuşuyor",
+            "cep telefonuyla"
+          ],
+          "turkishFull": "Cep telefonuyla konuşuyor.",
+          "ders": "6_6_3"
+        },
+        {
+          "arabic": [
+            {
+              "text": "يَسوقُ",
+              "root": "ساق",
+              "category": "fiil (muzari · ecvef)"
+            },
+            {
+              "text": "الحافِلَةَ.",
+              "root": "حافلة",
+              "category": "isim (ال takılı)"
+            }
+          ],
+          "turkish": [
+            "sürüyor",
+            "Otobüs"
+          ],
+          "turkishFull": "Otobüsü sürüyor.",
+          "ders": "6_6_3"
         }
       ]
     }

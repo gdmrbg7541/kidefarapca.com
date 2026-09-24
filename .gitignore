@@ -1,0 +1,46 @@
+# =====================================================================
+#  kidefarapca.com — YAYINA GİTMEYECEKLER
+#  ---------------------------------------------------------------------
+#  Buradaki satırlara uyan dosyalar git'e hiç girmez, dolayısıyla
+#  GitHub'a ve siteye de gitmez. Klasörün içinde durmaya devam ederler.
+#
+#  KURAL: siteye gitmeyecek her şey `_kaynak/` altında dursun.
+#         Ayrı ayrı satır yazmaya gerek kalmaz.
+# =====================================================================
+
+# --- yapay zekâ / hazırlık çalışma alanı (yedekler, betikler, kitaplar) ---
+_kaynak/
+
+# --- eski geçici klasörler (artık _kaynak/gecici altında) ---
+_kidef_tmp/
+_to_delete/
+_YUKLE_*/
+
+# --- bağımlılıklar: kaynaktan yeniden kurulur, depoda durmasına gerek yok ---
+node_modules/
+functions/node_modules/
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+npm-debug.log*
+pglite-debug.log
+
+# --- macOS ve Office artıkları ---
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+~$*
+*.tmp
+Thumbs.db
+desktop.ini
+
+# --- git'in yarım kalmış kilit dosyaları ---
+*.lock.[a-z]3x
+
+# --- FUSE bağlama artıkları (klasör ağdan bağlıyken oluşur) ---
+.fuse_hidden*
+
+# --- kullanıcının silmek üzere kenara aldığı dosyalar ---
+_SILINECEK/

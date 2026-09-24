@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korsanların Laneti: 4 Efsane</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel+Decorative:wght@700&family=Rye&display=swap');
+
+        :root {
+            --wood-dark: #2c1e14;
+            --wood-light: #5d4037;
+            --parchment: #d4c59a;
+            --blood-red: #8a0000;
+            --ghost-green: #80ffdb;
+            --cursed-gold: #ffd700;
+            --deep-sea: #001e2b;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            color: var(--parchment);
+            font-family: 'Rye', serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Arka plan dokusu */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/black-felt.png');
+            opacity: 0.4;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- NAVIGASYON --- */
+        nav {
+            background: var(--wood-dark);
+            border-bottom: 4px solid #3e2723;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 20px #000;
+            z-index: 100;
+        }
+
+        .tab-btn {
+            background: var(--wood-light);
+            color: var(--parchment);
+            border: 2px solid #3e2723;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1rem;
+            transition: 0.3s;
+            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background: var(--blood-red);
+            color: var(--cursed-gold);
+            border-color: var(--cursed-gold);
+            transform: scale(1.05);
+        }
+
+        /* --- İÇERİK --- */
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            height: 100%;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .tab-content.active { display: flex; }
+
+        .arabic-text { font-family: 'Amiri', serif; direction: rtl; }
+        
+        h2 {
+            font-family: 'Cinzel Decorative';
+            color: var(--cursed-gold);
+            text-shadow: 2px 2px 0 #000;
+            margin: 10px 0;
+            font-size: 1.8rem;
+        }
+
+        /* PROGRESS BAR */
+        .progress-container {
+            width: 300px;
+            height: 10px;
+            background: #222;
+            border: 1px solid #555;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--cursed-gold);
+            width: 0%;
+            transition: width 0.5s;
+            box-shadow: 0 0 10px var(--cursed-gold);
+        }
+
+        /* --- TAB 1: HAYALET HARİTA --- */
+        .parchment-box {
+            background: var(--parchment);
+            color: #3e2723;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 30px #000;
+            text-align: center;
+            transform: rotate(-1deg);
+            width: 80%;
+            position: relative;
+        }
+        .ghost-text {
+            font-size: 3rem;
+            margin: 20px 0;
+            color: rgba(62, 39, 35, 0.05);
+            text-shadow: 0 0 15px var(--ghost-green);
+            filter: blur(10px);
+            transition: 0.5s;
+            cursor: help;
+        }
+        .ghost-text:hover {
+            color: #3e2723; text-shadow: none; filter: blur(0);
+        }
+
+        /* --- TAB 2: SANDIK (DRAG DROP) --- */
+        .cabin-scene {
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+        }
+        .aztec-coin {
+            width: 90px; height: 90px;
+            background: radial-gradient(#ffd700, #b8860b);
+            border: 3px dashed #8a6000; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; color: #3e2723; cursor: grab;
+            animation: shine 3s infinite;
+        }
+        .chest-zone {
+            width: 180px; height: 120px;
+            background: linear-gradient(#5d4037, #3e2723);
+            border: 4px solid var(--cursed-gold);
+            border-radius: 10px 10px 0 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; transition: 0.3s;
+        }
+        .chest-zone.drag-over { box-shadow: 0 0 30px var(--ghost-green); }
+
+        /* --- TAB 3: DÜMEN (TEST) --- */
+        .helm-container {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;
+        }
+        .plank-btn {
+            background: var(--wood-light);
+            border: 2px solid #3e2723;
+            color: var(--parchment);
+            padding: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-family: 'Amiri', serif;
+            position: relative;
+            transition: 0.2s;
+        }
+        .plank-btn::before, .plank-btn::after {
+            content: "•"; color: #222; position: absolute; top: 50%; transform: translateY(-50%);
+        }
+        .plank-btn::before { left: 10px; } .plank-btn::after { right: 10px; }
+        
+        .plank-btn:hover { background: #6d4c41; }
+        .plank-btn.correct { background: #2e7d32; border-color: #4caf50; }
+        .plank-btn.wrong { background: #c62828; border-color: #ff5252; }
+
+        /* --- TAB 4: ŞİŞEDEKİ MESAJ (SIRALAMA) --- */
+        .bottle-area {
+            display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 20px;
+        }
+        .word-piece {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--ghost-green);
+            color: var(--ghost-green);
+            padding: 10px 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .word-piece:hover { background: rgba(128, 255, 219, 0.2); }
+        .word-piece.selected { background: var(--ghost-green); color: #000; }
+
+        /* GENEL BUTONLAR */
+        .action-btn {
+            margin-top: 20px;
+            background: var(--blood-red);
+            color: var(--cursed-gold);
+            border: none; padding: 10px 30px;
+            font-family: 'Rye'; font-size: 1.2rem;
+            cursor: pointer; display: none;
+        }
+        .result-text {
+            font-size: 2rem; color: var(--cursed-gold); margin-top: 20px; min-height: 50px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes shine { 50% { filter: brightness(1.3); } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <button class="tab-btn active" onclick="switchTab('map')">🗺️ HARİTA</button>
+        <button class="tab-btn" onclick="switchTab('chest')">🏴‍☠️ SANDIK</button>
+        <button class="tab-btn" onclick="switchTab('helm')">☸️ DÜMEN</button>
+        <button class="tab-btn" onclick="switchTab('bottle')">🍾 ŞİŞE</button>
+    </nav>
+
+    <div class="content-area">
+
+        <div id="map" class="tab-content active">
+            <h2>Kayıp Parşömenler</h2>
+            <div class="progress-container"><div class="progress-bar" id="prog-map"></div></div>
+            
+            <div class="parchment-box">
+                <div class="ghost-text arabic-text" id="map-text"></div>
+                <hr style="opacity:0.3">
+                <p id="map-clue" style="font-family:'Courier Prime'; font-weight:bold;"></p>
+            </div>
+            <button class="action-btn" id="btn-map-next" onclick="nextMap()">Sonraki Parça ➔</button>
+        </div>
+
+        <div id="chest" class="tab-content">
+            <h2>Lanetli Altınlar</h2>
+            <div class="progress-container"><div class="progress-bar" id="prog-chest"></div></div>
+            <p style="color:#aaa;">Altını sandığa atıp kelimeyi dönüştür.</p>
+
+            <div class="cabin-scene">
+                <div class="aztec-coin arabic-text" draggable="true" id="dragCoin"></div>
+                <div style="font-size: 2rem; color: #5d4037;">⬇</div>
+                <div class="chest-zone" id="dropZone">⚱️</div>
+                <div class="result-text arabic-text" id="chest-result"></div>
+            </div>
+            <button class="action-btn" id="btn-chest-next" onclick="nextChest()">Sıradaki Altın ➔</button>
+        </div>
+
+        <div id="helm" class="tab-content">
+            <h2>Doğru Rotayı Seç</h2>
+            <div class="progress-container"><div class="progress-bar" id="prog-helm"></div></div>
+            
+            <h3 id="helm-question" style="margin: 20px 0; color: #fff;">Soru Geliyor...</h3>
+            <div class="helm-container" id="helm-options">
+                </div>
+            <button class="action-btn" id="btn-helm-next" onclick="nextHelm()">Rotayı Koru ➔</button>
+        </div>
+
+        <div id="bottle" class="tab-content">
+            <h2>Mesajı Birleştir</h2>
+            <div class="progress-container"><div class="progress-bar" id="prog-bottle"></div></div>
+            <p>Kelimelere doğru sırayla tıkla.</p>
+
+            <div id="bottle-sentence" class="parchment-box" style="padding:15px; min-height:50px; font-size:1.5rem;">
+                </div>
+            
+            <div class="bottle-area" id="bottle-pool">
+                </div>
+            
+            <div class="result-text" id="bottle-result"></div>
+            <button class="action-btn" id="btn-bottle-next" onclick="nextBottle()">Yeni Şişe ➔</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- VERİ HAVUZU (HER BÖLÜM İÇİN 5 SORU) ---
+        
+        const dataMap = [
+            { text: "الْعِلْمُ نُورٌ", clue: "İlim ışıktır." },
+            { text: "الْوَقْتُ ذَهَبٌ", clue: "Vakit nakittir (altındır)." },
+            { text: "مَنْ جَدَّ وَجَدَ", clue: "Çalışan bulur." },
+            { text: "الصَّبْرُ مِفْتَاحُ الْفَرَجِ", clue: "Sabır kurtuluşun anahtarıdır." },
+            { text: "النَّظَافَةُ مِنَ الْإِيمَانِ", clue: "Temizlik imandandır." }
+        ];
+
+        const dataChest = [
+            { root: "ك ت ب", result: "مَكْتَب", type: "Ofis" },
+            { root: "ع ل م", result: "مُعَلِّم", type: "Öğretmen" },
+            { root: "د ر س", result: "مَدْرَسَة", type: "Okul" },
+            { root: "ل ع ب", result: "مَلْعَب", type: "Stadyum" },
+            { root: "ج ل س", result: "مَجْلِس", type: "Meclis" }
+        ];
+
+        const dataHelm = [
+            { q: "'Kitap' kelimesinin çoğulu nedir?", options: ["كُتُب", "كَاتِب", "مَكْتَبَة"], ans: 0 },
+            { q: "'Gidiyor' fiilinin Arapçası?", options: ["ذَهَبَ", "يَذْهَبُ", "اذْهَبْ"], ans: 1 },
+            { q: "'Hangi' soru edatı?", options: ["مَا", "أَيُّ", "هَلْ"], ans: 1 },
+            { q: "Müennes (Dişil) kelimeyi bul.", options: ["قَلَم", "بَاب", "سَيَّارَة"], ans: 2 },
+            { q: "'Ben' zamiri?", options: ["أَنْتَ", "أَنَا", "هُوَ"], ans: 1 }
+        ];
+
+        const dataBottle = [
+            { parts: ["الطَّالِبُ", "فِي", "الصَّفِّ"], full: "الطَّالِبُ فِي الصَّفِّ" },
+            { parts: ["الْكِتَابُ", "عَلَى", "الْمَكْتَبِ"], full: "الْكِتَابُ عَلَى الْمَكْتَبِ" },
+            { parts: ["هَذَا", "بَيْتٌ", "جَمِيلٌ"], full: "هَذَا بَيْتٌ جَمِيلٌ" },
+            { parts: ["أَنَا", "أُحِبُّ", "الْعَرَبِيَّةَ"], full: "أَنَا أُحِبُّ الْعَرَبِيَّةَ" },
+            { parts: ["الشَّمْسُ", "مُشْرِقَةٌ", "الْيَوْمَ"], full: "الشَّمْسُ مُشْرِقَةٌ الْيَوْمَ" }
+        ];
+
+        // --- OYUN DURUMU ---
+        let state = {
+            map: 0, chest: 0, helm: 0, bottle: 0
+        };
+
+        // --- BAŞLANGIÇ ---
+        window.onload = () => {
+            loadMap();
+            loadChest();
+            loadHelm();
+            loadBottle();
+        };
+
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById(id).style.display = 'flex';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function updateProgress(id, current, total) {
+            document.getElementById('prog-'+id).style.width = ((current / total) * 100) + '%';
+        }
+
+        // --- 1. HARİTA MANTIĞI ---
+        function loadMap() {
+            if(state.map >= dataMap.length) return showEnd('map');
+            const q = dataMap[state.map];
+            document.getElementById('map-text').innerText = q.text;
+            document.getElementById('map-clue').innerText = q.clue;
+            document.getElementById('btn-map-next').style.display = 'block';
+            updateProgress('map', state.map, dataMap.length);
+        }
+        function nextMap() {
+            state.map++;
+            loadMap();
+        }
+
+        // --- 2. SANDIK MANTIĞI ---
+        const coin = document.getElementById('dragCoin');
+        const chest = document.getElementById('dropZone');
+        
+        function loadChest() {
+            if(state.chest >= dataChest.length) return showEnd('chest');
+            coin.style.display = 'flex';
+            coin.style.opacity = '1';
+            coin.style.transform = 'none';
+            coin.innerText = dataChest[state.chest].root;
+            chest.innerHTML = '⚱️';
+            chest.style.borderColor = 'var(--cursed-gold)';
+            document.getElementById('chest-result').innerText = '';
+            document.getElementById('chest-result').style.opacity = '0';
+            document.getElementById('btn-chest-next').style.display = 'none';
+            updateProgress('chest', state.chest, dataChest.length);
+        }
+
+        coin.addEventListener('dragstart', () => coin.style.opacity = '0.5');
+        coin.addEventListener('dragend', () => coin.style.opacity = '1');
+        chest.addEventListener('dragover', (e) => { e.preventDefault(); chest.classList.add('drag-over'); });
+        chest.addEventListener('dragleave', () => chest.classList.remove('drag-over'));
+        
+        chest.addEventListener('drop', (e) => {
+            e.preventDefault();
+            chest.classList.remove('drag-over');
+            coin.style.display = 'none';
+            chest.innerHTML = '✨';
+            chest.style.borderColor = '#fff';
+            
+            const q = dataChest[state.chest];
+            const resBox = document.getElementById('chest-result');
+            resBox.innerHTML = `${q.result} <br> <span style='font-size:1rem; color:#aaa'>(${q.type})</span>`;
+            resBox.style.opacity = '1';
+            
+            document.getElementById('btn-chest-next').style.display = 'inline-block';
+        });
+
+        function nextChest() {
+            state.chest++;
+            loadChest();
+        }
+
+        // --- 3. DÜMEN MANTIĞI ---
+        function loadHelm() {
+            if(state.helm >= dataHelm.length) return showEnd('helm');
+            const q = dataHelm[state.helm];
+            document.getElementById('helm-question').innerText = q.q;
+            const container = document.getElementById('helm-options');
+            container.innerHTML = '';
+            document.getElementById('btn-helm-next').style.display = 'none';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('div');
+                btn.className = 'plank-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkHelm(btn, idx, q.ans);
+                container.appendChild(btn);
+            });
+            updateProgress('helm', state.helm, dataHelm.length);
+        }
+
+        function checkHelm(btn, idx, correct) {
+            if(document.getElementById('btn-helm-next').style.display === 'inline-block') return; // Zaten cevaplandı
+            
+            if(idx === correct) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+                // Doğruyu göster
+                document.getElementsByClassName('plank-btn')[correct].classList.add('correct');
+            }
+            document.getElementById('btn-helm-next').style.display = 'inline-block';
+        }
+
+        function nextHelm() {
+            state.helm++;
+            loadHelm();
+        }
+
+        // --- 4. ŞİŞE MANTIĞI ---
+        let currentBottleOrder = [];
+        function loadBottle() {
+            if(state.bottle >= dataBottle.length) return showEnd('bottle');
+            const q = dataBottle[state.bottle];
+            const pool = document.getElementById('bottle-pool');
+            const sentence = document.getElementById('bottle-sentence');
+            
+            pool.innerHTML = '';
+            sentence.innerHTML = '';
+            currentBottleOrder = [];
+            document.getElementById('bottle-result').innerText = '';
+            document.getElementById('btn-bottle-next').style.display = 'none';
+
+            // Kelimeleri karıştır
+            let shuffled = [...q.parts].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(word => {
+                const span = document.createElement('div');
+                span.className = 'word-piece arabic-text';
+                span.innerText = word;
+                span.onclick = () => {
+                    sentence.innerHTML += word + ' ';
+                    span.style.visibility = 'hidden';
+                    currentBottleOrder.push(word);
+                    checkBottle(q);
+                };
+                pool.appendChild(span);
+            });
+            updateProgress('bottle', state.bottle, dataBottle.length);
+        }
+
+        function checkBottle(q) {
+            if(currentBottleOrder.length === q.parts.length) {
+                const attempt = currentBottleOrder.join(' ');
+                const res = document.getElementById('bottle-result');
+                if(attempt.trim() === q.full.trim()) {
+                    res.innerHTML = "✅ DOĞRU!";
+                    res.style.color = "#00ff00";
+                } else {
+                    res.innerHTML = "❌ YANLIŞ: " + q.full;
+                    res.style.color = "red";
+                }
+                document.getElementById('btn-bottle-next').style.display = 'inline-block';
+            }
+        }
+
+        function nextBottle() {
+            state.bottle++;
+            loadBottle();
+        }
+
+        // --- BİTİŞ EKRANI ---
+        function showEnd(id) {
+            document.getElementById(id).innerHTML = `
+                <div style="text-align:center; animation:fadeIn 1s;">
+                    <h1 style="font-size:4rem; color:var(--cursed-gold)">☠️ GÖREV TAMAM!</h1>
+                    <p>Mürettebatın saygısını kazandın.</p>
+                    <button class="tab-btn active" onclick="location.reload()">YENİDEN BAŞLA</button>
+                </div>
+            `;
+        }
+
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

@@ -7,7 +7,56 @@
     <title>Listelerim</title>
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
+<div id="login-modal" style="display:flex; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: #F7F9FC; align-items: center; justify-content: center; backdrop-filter: blur(12px);">
+    <div class="auth-card">
+        
+        <div class="auth-header-area">
+            <h2 id="auth-title">Giriş Paneli</h2>
+            <p class="marhey-text" id="auth-desc" style="font-weight:400;">Lütfen giriş yapmak istediğiniz rolü seçin.</p>
+        </div>
 
+        <div class="role-selector" style="display: flex; gap: 8px; margin-bottom: 20px;">
+            <button onclick="setRole('teacher')" id="btn-teacher" class="role-btn active-role">Öğretmen</button>
+            <button onclick="setRole('student')" id="btn-student" class="role-btn">Öğrenci</button>
+        </div>
+
+        <div class="input-container">
+            <div style="margin-bottom: 15px;">
+                <div class="input-group" style="width: 100%; margin-bottom: 0;">
+                    <input type="email" id="email" placeholder=" " required>
+                    <label id="primary-label" class="marhey-text">E-posta Adresi</label>
+                </div>
+            </div>
+
+            <div id="password-main-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                    <input type="password" id="password" placeholder=" " required>
+                    <label id="password-label" class="marhey-text">Şifre</label>
+                </div>
+                <span class="toggle-pass-btn" onclick="togglePassword('password')">👁️</span>
+            </div>
+
+            <div id="re-password-group" style="display: none; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                    <input type="password" id="re-password" placeholder=" ">
+                    <label class="marhey-text">Şifreyi Onayla</label>
+                </div>
+                <span class="toggle-pass-btn" onclick="togglePassword('re-password')">👁️</span>
+            </div>
+        </div>
+        
+        <button id="auth-action-btn" class="index-btn-style marhey-text" onclick="authIslemi()">Giriş Yap</button>
+        
+        <p id="hata-mesaji" class="marhey-text" style="color:red; font-size:12px; height: 15px;"></p>
+
+        <div class="auth-footer marhey-text" id="auth-footer-links">
+            <span id="auth-switch-text">Hesabınız yok mu?</span> 
+            <a href="javascript:void(0)" id="auth-switch-link" onclick="moduDegistir()">Kayıt Ol</a>
+        </div>
+            
+        </div>
+    </div>
+</div>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
@@ -902,21 +951,13 @@ body.role-student button[onclick*="switchView"] {
 </style>
 
 <div id="sidebar">
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0;">
-        <button onclick="window.close(); window.location.href='index.html';" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; color: #34495e; transition: 0.3s;" title="Ana Sayfaya Dön" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-        </button>
-        <h2 style="margin:0;">🏫 Listelerim</h2>
-    </div>
+    <div style="position:relative; display:flex; align-items:center; justify-content:center; min-height:1.8em; margin-bottom:0;"><a href="index.html" id="listelerim-home-ico" title="Ana Sayfa" aria-label="Ana Sayfa" style="position:absolute; left:0; color:#fff; display:inline-flex; align-items:center; text-decoration:none; opacity:0.9;"><svg viewBox="0 0 24 24" fill="currentColor" style="width:1.6em; height:1.6em; pointer-events:none;"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></a><h2 style="margin:0; text-align:center;">🏫 Listelerim</h2></div>
     <div id="teacher-code-display" style="font-size: 0.8rem; color: #f1c40f; margin-bottom: 15px; font-weight: bold; opacity: 0.8;"></div>
     
     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
       <button class="btn-add" id="login-nav-btn" onclick="loginButonTikla()" style="background: #34495e; color: white; margin-bottom: 8px;">
-          🔑 Öğretmen Girişi
-      </button>
+    🔑 Öğretmen Girişi
+</button>
    <button class="btn-add" onclick="openTatiller()" style="background: var(--warning); color: #333; margin-bottom:0;">🗓️ Tatiller</button>
         <button class="btn-add" onclick="addLevel()" style="margin-bottom:0;">+ Seviye Ekle</button>
 
@@ -967,7 +1008,7 @@ body.role-student button[onclick*="switchView"] {
     <button class="tab" onclick="switchTab(2)">Sınavlar</button>
     <button class="tab" onclick="switchTab(3)">Genel Sonuç</button>
     <button class="tab" onclick="switchTab(4)">Kurayla Seç!</button>
-    <button class="tab" onclick="switchTab(5)">Görev Gönder | Beta </button> <button class="tab" onclick="switchTab(6)">Geri Sayım</button>
+    <button class="tab" onclick="switchTab(5)">Görev Gönder</button> <button class="tab" onclick="switchTab(6)">Geri Sayım</button>
     <button class="tab" onclick="switchTab(7)">Kronometre</button>
     <button class="tab" onclick="switchTab(8)">Takım Oluştur</button>
     <button class="tab" onclick="switchTab(9)">📅 Haftalık Plan</button>
@@ -1629,9 +1670,21 @@ function updateActivityTable() {
         });
     }
 }
-function modalAc() {}
-window.onclick = null;
-function modalKapat() {}
+function modalAc() {
+    document.getElementById('login-modal').style.display = 'flex';
+}
+
+
+// Modalın dışına tıklanarak kapanmasını engelleyen yapı
+window.onclick = function(event) {
+    let modal = document.getElementById("login-modal");
+    // Bu kısmı boş bırakıyoruz veya dış tıklama kontrolünü siliyoruz.
+    // Böylece sadece modalKapat() fonksiyonu tetiklendiğinde kapanacaktır.
+}
+
+function modalKapat() {
+    document.getElementById('login-modal').style.display = 'none';
+}
 
 async function login() {
     const email = document.getElementById('email').value;
@@ -2651,12 +2704,16 @@ function addConfigRow(t) {
 function loginButonTikla() {
     const user = firebase.auth().currentUser;
     if (user) {
+        // Eğer kullanıcı varsa çıkış onayı iste
         if(confirm("Çıkış yapmak istediğinize emin misiniz?")) {
-            firebase.auth().signOut();
+            firebase.auth().signOut().then(() => {
+                alert("Başarıyla çıkış yapıldı.");
+                location.reload(); // Sayfayı yenileyerek temiz bir başlangıç yapın
+            });
         }
     } else {
-        window.close();
-        window.location.replace("index.html");
+        // Kullanıcı yoksa giriş modalını aç
+        modalAc(); 
     }
 }
    
@@ -3071,7 +3128,7 @@ firebase.auth().onAuthStateChanged((user) => {
         
         // Giriş yapıldığında arayüzü hazırla
         document.body.classList.add('logged-in');
-        
+        modalKapat(); 
         
         // Buton görünümünü güncelle
         loginBtn.innerHTML = `🚪 Çıkış Yap (${user.email})`;
@@ -3084,8 +3141,32 @@ firebase.auth().onAuthStateChanged((user) => {
 
     } else {
         console.log("Kullanıcı giriş yapmamış veya çıkış yapıldı.");
-        window.close();
-        window.location.replace("index.html");
+        
+        // --- KRİTİK TEMİZLİK: GÜVENLİK VE VERİ SIZINTISI ÖNLEME ---
+        
+        // 1. RAM üzerindeki verileri sıfırla
+        data = { levels: {}, levelOrder: [] }; 
+        curLId = null; 
+        curCId = null;
+        
+        // 2. Sidebar'ı boş veriyle temizle
+        if (typeof renderSidebar === "function") {
+            renderSidebar(); 
+        }
+
+        
+
+        // 4. Arayüz kısıtlamalarını geri getir
+        document.body.classList.remove('logged-in');
+        
+        // 5. Giriş butonunu eski haline getir
+        loginBtn.innerHTML = `🔑 Öğretmen Girişi`;
+        loginBtn.style.background = "#34495e"; 
+        
+        // Kullanıcı giriş yapmamışsa modalı otomatik aç
+        setTimeout(() => { 
+            if(!firebase.auth().currentUser) modalAc(); 
+        }, 1000);
     }
 });
 
@@ -3155,6 +3236,7 @@ function misafirGiris() {
     loadDataFromLocal();
     
     // 2. Modalı gizle ve kilitleri aç
+    document.getElementById('login-modal').style.display = 'none';
     document.body.classList.add('logged-in');
     
     // 3. Misafir modunu hafızaya al

@@ -9,6 +9,19 @@
 /* Çerçeve (iframe) içindeyiz: geri/ev tuşu gizlensin — pencerenin kendi
    kapatma tuşu var. <head>'de çalışır ki tuş bir an görünüp kaybolmasın. */
 try{ if (window.top !== window.self) document.documentElement.className += ' cerceve'; }catch(e){}
+/* GOOGLE ANALYTICS — sitenin geri kalanıyla aynı ölçüm kimliği (GA4).
+   Çerçevedeyken yüklenmez: katalog index'in içinde açıldığında index'in
+   sayfa görüntülemesi zaten sayılıyor, ikisi birden çift sayardı. */
+(function(){
+  if (document.documentElement.className.indexOf('cerceve') >= 0) return;
+  var s=document.createElement('script');
+  s.async=true; s.src='https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW';
+  document.head.appendChild(s);
+  window.dataLayer=window.dataLayer||[];
+  window.gtag=function(){window.dataLayer.push(arguments);};
+  gtag('js', new Date());
+  gtag('config','G-FV9JD15KLW');
+})();
 </script>
 <style>
 /* ==========================================================

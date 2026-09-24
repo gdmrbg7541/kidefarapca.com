@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar: Pandora Language Protocol (Redesign)</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
+
+        :root {
+            --biolum-blue: #00f0ff;
+            --biolum-pink: #d500f9;
+            --leaf-green: #00ff6a;
+            --jungle-bg: #00050a; /* Daha derin siyah */
+        }
+
+        body {
+            background-color: var(--jungle-bg);
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* =========================================
+           YENİ ARKA PLAN TASARIMI (LIVING JUNGLE)
+           ========================================= */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            
+            /* KATMAN 1: Derinlik ve Renk Geçişleri */
+            background: 
+                /* Hareketli Mor Sis */
+                radial-gradient(circle at 80% 20%, rgba(213, 0, 249, 0.15) 0%, transparent 50%),
+                /* Hareketli Mavi Sis */
+                radial-gradient(circle at 20% 80%, rgba(0, 240, 255, 0.15) 0%, transparent 50%),
+                /* Organik Damarlar / Sinir Ağı Dokusu */
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(0, 240, 255, 0.03) 0px,
+                    rgba(0, 240, 255, 0.03) 1px,
+                    transparent 1px,
+                    transparent 10px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    rgba(213, 0, 249, 0.03) 0px,
+                    rgba(213, 0, 249, 0.03) 1px,
+                    transparent 1px,
+                    transparent 15px
+                );
+                
+            background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
+            animation: breatheBackground 10s ease-in-out infinite alternate;
+        }
+
+        /* KATMAN 2: Işık Süzmeleri (Vignette) */
+        body::after {
+            content: "";
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, #00050a 90%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Arka Plan "Nefes Alma" Animasyonu */
+        @keyframes breatheBackground {
+            0% { filter: brightness(1) hue-rotate(0deg); background-position: 0% 0%; }
+            100% { filter: brightness(1.2) hue-rotate(10deg); background-position: 10px 10px; }
+        }
+
+        /* Atokirina (Kutsal Tohum) Parçacıkları */
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            filter: blur(2px);
+            box-shadow: 0 0 10px #fff, 0 0 20px var(--biolum-pink);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 50;
+        }
+
+        /* --- NAVIGASYON (HUD STYLE) --- */
+        nav {
+            display: flex; justify-content: center; gap: 15px; padding: 20px;
+            background: linear-gradient(180deg, rgba(0, 40, 60, 0.8) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: rgba(0, 20, 40, 0.4);
+            color: var(--biolum-blue);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 10px 30px;
+            font-family: inherit; font-weight: bold; font-size: 1.1rem;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
+            clip-path: polygon(15% 0, 100% 0, 100% 70%, 85% 100%, 0 100%, 0 30%);
+            transition: 0.3s;
+            backdrop-filter: blur(4px);
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(0, 240, 255, 0.15);
+            color: #fff;
+            border-color: var(--biolum-blue);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            text-shadow: 0 0 8px var(--biolum-blue);
+        }
+
+        /* --- OYUN ALANLARI --- */
+        .game-area {
+            flex-grow: 1; display: none; flex-direction: column; align-items: center; justify-content: center;
+            width: 100%; position: relative;
+        }
+        .game-area.active { display: flex; animation: holoFade 0.8s ease-out; }
+
+        @keyframes holoFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- OYUN 1: TSAHEYLU --- */
+        .tsaheylu-wrapper { display: flex; gap: 150px; align-items: center; justify-content: center; }
+        .col { display: flex; flex-direction: column; gap: 25px; }
+
+        .neural-node {
+            padding: 15px 40px; color: #fff;
+            border: 2px solid var(--biolum-pink);
+            border-radius: 50px;
+            background: rgba(213, 0, 249, 0.05);
+            cursor: grab; position: relative; font-size: 1.6rem;
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(213, 0, 249, 0.1);
+        }
+        .neural-node::after {
+            content: ""; position: absolute; right: -30px; top: 50%; width: 30px; height: 2px;
+            background: linear-gradient(90deg, var(--biolum-pink), transparent);
+            transform: translateY(-50%);
+        }
+        .neural-node:active { cursor: grabbing; transform: scale(0.95); }
+
+        .neural-socket {
+            padding: 15px 40px; color: rgba(255,255,255,0.6);
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 50px; min-width: 120px; text-align: center;
+            position: relative; transition: 0.3s;
+        }
+        .neural-socket::before {
+            content: ""; position: absolute; left: -30px; top: 50%; width: 30px; height: 2px;
+            background: linear-gradient(-90deg, #555, transparent);
+            transform: translateY(-50%);
+        }
+
+        .neural-socket.drag-over {
+            border-color: var(--biolum-blue); background: rgba(0, 240, 255, 0.1); transform: scale(1.1);
+        }
+
+        .bond-established {
+            border-color: var(--leaf-green) !important; color: var(--leaf-green) !important;
+            background: rgba(0, 255, 106, 0.15) !important;
+            box-shadow: 0 0 25px var(--leaf-green); pointer-events: none;
+        }
+
+        /* --- OYUN 2: YÜZEN ADALAR --- */
+        .sky-path { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; margin-top: 50px; }
+        
+        .floating-rock {
+            background: linear-gradient(145deg, #2b2b2b, #1a1a1a);
+            padding: 15px 30px;
+            border-radius: 10px;
+            border-top: 3px solid var(--leaf-green);
+            color: #ccc; font-size: 1.8rem; cursor: pointer; position: relative;
+            animation: hoverRock 4s infinite ease-in-out;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        /* Sarmaşık Efekti */
+        .floating-rock::after {
+            content: ""; position: absolute; bottom: -15px; left: 50%; width: 2px; height: 15px;
+            background: var(--leaf-green); opacity: 0.6; box-shadow: -10px 5px 0 var(--leaf-green);
+        }
+
+        .floating-rock:hover { transform: translateY(-5px); border-top-color: var(--biolum-blue); color: #fff; }
+        .floating-rock.stepped {
+            background: var(--biolum-blue); color: #000; box-shadow: 0 0 20px var(--biolum-blue); animation: none;
+        }
+
+        /* --- OYUN 3: ELEMENTLER --- */
+        .totem-arena {
+            width: 700px; height: 400px;
+            border: 2px solid rgba(0, 240, 255, 0.2);
+            border-radius: 20px; position: relative;
+            background: radial-gradient(circle, rgba(0,20,40,0.4) 0%, rgba(0,5,10,0.8) 100%);
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        /* Arenadaki silik semboller */
+        .arena-bg-icon {
+            position: absolute; font-size: 10rem; opacity: 0.05; pointer-events: none;
+        }
+        
+        .falling-word {
+            font-size: 4rem; color: #fff; font-family: 'Amiri', serif;
+            text-shadow: 0 0 20px var(--biolum-blue); z-index: 10; transition: transform 0.2s;
+        }
+
+        /* Genel */
+        .score-hud {
+            font-size: 1.5rem; color: var(--biolum-blue); margin-top: 20px;
+            border: 1px solid var(--biolum-blue); padding: 5px 20px; background: rgba(0, 240, 255, 0.05);
+        }
+        .victory-msg {
+            position: absolute; font-size: 2.5rem; color: var(--leaf-green);
+            text-shadow: 0 0 20px var(--leaf-green); background: rgba(0,0,0,0.9);
+            padding: 30px; border: 1px solid var(--leaf-green); border-radius: 15px;
+            display: none; z-index: 50;
+        }
+
+        @keyframes hoverRock { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .arabic-text { font-family: 'Amiri', serif; direction: rtl; }
+
+        /* Mobil */
+        .mobile-controls { display: flex; gap: 40px; margin-top: 20px; }
+        .m-btn {
+            width: 70px; height: 70px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2);
+            background: transparent; color: #fff; font-size: 2rem; cursor: pointer; transition: 0.2s;
+        }
+        .m-btn:active { background: rgba(255,255,255,0.2); transform: scale(0.9); }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <button class="nav-btn active" onclick="switchGame('tsaheylu')">BAĞ KUR (TSAHEYLU)</button>
+        <button class="nav-btn" onclick="switchGame('islands')">YÜZEN ADALAR</button>
+        <button class="nav-btn" onclick="switchGame('elements')">ELEMENTLER</button>
+    </nav>
+
+    <div id="tsaheylu" class="game-area active">
+        <h2 style="color:var(--biolum-pink); margin-bottom: 40px;">SİNİRSEL BAĞ OLUŞTUR</h2>
+        <div class="tsaheylu-wrapper">
+            <div class="col" id="drag-col"></div>
+            <div style="width:2px; height:300px; background:linear-gradient(to bottom, transparent, rgba(213, 0, 249, 0.5), transparent); border-radius:50%;"></div>
+            <div class="col" id="drop-col"></div>
+        </div>
+        <div class="victory-msg" id="vic-tsa">BAĞLANTI KURULDU</div>
+    </div>
+
+    <div id="islands" class="game-area">
+        <h2 style="color:var(--leaf-green)">YÜZEN ADALAR GEÇİŞİ</h2>
+        <div class="score-hud arabic-text" id="bridge-text" style="border-color:var(--leaf-green); color:var(--leaf-green); width:60%; text-align:center;">...</div>
+        <div class="sky-path" id="island-container"></div>
+        <button class="nav-btn" id="next-island-btn" onclick="nextIslandLevel()" style="margin-top:30px; display:none; border-color:var(--leaf-green); color:var(--leaf-green);">SONRAKİ BÖLGE</button>
+    </div>
+
+    <div id="elements" class="game-area">
+        <h2 style="color:var(--biolum-blue)">ELEMENTLERİN DENGESİ</h2>
+        <div class="totem-arena">
+            <div class="arena-bg-icon" style="left:20px; color:var(--leaf-green);">🍃</div>
+            <div class="arena-bg-icon" style="right:20px; color:#ff3333;">🔥</div>
+            
+            <div style="position:absolute; top:20px; left:40px; color:var(--leaf-green); font-weight:bold; letter-spacing:2px;">İSİM</div>
+            <div style="position:absolute; top:20px; right:40px; color:#ff3333; font-weight:bold; letter-spacing:2px;">FİİL</div>
+            
+            <div id="current-element" class="falling-word" style="opacity:0">HAZIR</div>
+        </div>
+        <div class="score-hud">SKOR: <span id="elem-score">0</span></div>
+        
+        <div class="mobile-controls">
+            <button class="m-btn" onclick="handleInput('left')" style="border-color:var(--leaf-green)">🍃</button>
+            <button class="nav-btn" onclick="startElementGame()" id="start-elem-btn">BAŞLAT</button>
+            <button class="m-btn" onclick="handleInput('right')" style="border-color:#ff3333">🔥</button>
+        </div>
+    </div>
+
+    <script>
+        // --- EFEKT: Atokirina (Işıklı Tohumlar) ---
+        function spawnAtokirina(x, y) {
+            const seed = document.createElement('div');
+            seed.className = 'particle';
+            seed.style.left = x + 'px';
+            seed.style.top = y + 'px';
+            seed.style.width = '8px'; seed.style.height = '8px';
+            seed.style.opacity = '1';
+            
+            // Süzülme Animasyonu
+            const duration = 1500 + Math.random() * 1000;
+            seed.animate([
+                { transform: 'translate(0,0) scale(1)', opacity: 1 },
+                { transform: `translate(${Math.random()*60-30}px, -150px) scale(0)`, opacity: 0 }
+            ], { duration: duration, easing: 'cubic-bezier(0.25, 1, 0.5, 1)' });
+
+            document.body.appendChild(seed);
+            setTimeout(() => seed.remove(), duration);
+        }
+
+        // --- GLOBAL ---
+        function switchGame(id) {
+            document.querySelectorAll('.game-area').forEach(g => g.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // ==========================
+        // GAME 1: TSAHEYLU
+        // ==========================
+        const tsaData = [
+            { ar: "قَلْب", tr: "Kalp" }, { ar: "رُوح", tr: "Ruh" },
+            { ar: "مَاء", tr: "Su" }, { ar: "شَجَرَة", tr: "Ağaç" }
+        ];
+        let matchedCount = 0;
+
+        function initTsaheylu() {
+            const dragCol = document.getElementById('drag-col');
+            const dropCol = document.getElementById('drop-col');
+            dragCol.innerHTML = ""; dropCol.innerHTML = "";
+            let drags = [...tsaData].sort(()=>Math.random()-0.5);
+            let drops = [...tsaData].sort(()=>Math.random()-0.5);
+
+            drags.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'neural-node arabic-text';
+                div.innerText = item.ar;
+                div.draggable = true;
+                div.id = 'drag-' + item.tr;
+                
+                div.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text', item.tr);
+                    div.style.opacity = '0.5';
+                });
+                div.addEventListener('dragend', () => div.style.opacity = '1');
+                dragCol.appendChild(div);
+            });
+
+            drops.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'neural-socket';
+                div.innerText = item.tr;
+                div.dataset.match = item.tr;
+
+                div.addEventListener('dragover', (e) => { e.preventDefault(); div.classList.add('drag-over'); });
+                div.addEventListener('dragleave', () => div.classList.remove('drag-over'));
+                
+                div.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    div.classList.remove('drag-over');
+                    const data = e.dataTransfer.getData('text');
+                    
+                    if(data === div.dataset.match) {
+                        div.classList.add('bond-established');
+                        div.innerText = "✔ " + div.innerText;
+                        const source = document.getElementById('drag-' + data);
+                        if(source) source.classList.add('bond-established');
+                        
+                        // Efekt
+                        const rect = div.getBoundingClientRect();
+                        for(let i=0; i<6; i++) spawnAtokirina(rect.left + rect.width/2, rect.top);
+
+                        matchedCount++;
+                        if(matchedCount === tsaData.length) document.getElementById('vic-tsa').style.display = 'block';
+                    } else {
+                        div.style.borderColor = 'red';
+                        setTimeout(() => div.style.borderColor = 'rgba(255,255,255,0.2)', 500);
+                    }
+                });
+                dropCol.appendChild(div);
+            });
+        }
+        initTsaheylu();
+
+        // ==========================
+        // GAME 2: ADALAR
+        // ==========================
+        const islandSentences = [
+            { parts: ["الطَّبِيعَةُ", "أُمُّنَا", "الْجَمِيلَةُ"], full: "الطَّبِيعَةُ أُمُّنَا الْجَمِيلَةُ" },
+            { parts: ["نَحْنُ", "نَحْمِي", "الْغَابَةَ"], full: "نَحْنُ نَحْمِي الْغَابَةَ" }
+        ];
+        let iLvl = 0; let iProg = [];
+
+        function loadIslandLevel() {
+            if(iLvl >= islandSentences.length) {
+                document.getElementById('bridge-text').innerText = "GÖREV TAMAMLANDI";
+                document.getElementById('island-container').innerHTML = "";
+                document.getElementById('next-island-btn').style.display = 'none';
+                return;
+            }
+            const data = islandSentences[iLvl];
+            const container = document.getElementById('island-container');
+            container.innerHTML = '';
+            document.getElementById('bridge-text').innerText = "...";
+            iProg = [];
+
+            let parts = [...data.parts].sort(()=>Math.random()-0.5);
+            parts.forEach(word => {
+                let div = document.createElement('div');
+                div.className = 'floating-rock arabic-text';
+                div.style.animationDelay = Math.random() + 's';
+                div.innerText = word;
+                div.onclick = (e) => stepIsland(div, word, data, e);
+                container.appendChild(div);
+            });
+        }
+
+        function stepIsland(div, word, data, e) {
+            const correctNext = data.parts[iProg.length];
+            if(word === correctNext) {
+                div.classList.add('stepped');
+                iProg.push(word);
+                document.getElementById('bridge-text').innerText = iProg.join(" ");
+                spawnAtokirina(e.clientX, e.clientY);
+                if(iProg.length === data.parts.length) document.getElementById('next-island-btn').style.display = 'inline-block';
+            } else {
+                div.style.backgroundColor = '#ff3333';
+                setTimeout(() => div.style.backgroundColor = '', 500); // Rengi CSS'e bırak
+            }
+        }
+        function nextIslandLevel() { iLvl++; loadIslandLevel(); }
+        loadIslandLevel();
+
+        // ==========================
+        // GAME 3: ELEMENTLER
+        // ==========================
+        const elemData = [
+            { w: "كِتَاب", type: "left" }, { w: "يَكْتُبُ", type: "right" },
+            { w: "شَمْس", type: "left" }, { w: "ذَهَبَ", type: "right" },
+            { w: "قَمَر", type: "left" }, { w: "جَلَسَ", type: "right" }
+        ];
+        let eIdx = 0; let eScore = 0; let gameOn = false;
+        const elemDiv = document.getElementById('current-element');
+
+        function startElementGame() {
+            eIdx = 0; eScore = 0;
+            document.getElementById('elem-score').innerText = "0";
+            document.getElementById('start-elem-btn').style.display = 'none';
+            gameOn = true;
+            spawnWord();
+            document.removeEventListener('keydown', handleKey);
+            document.addEventListener('keydown', handleKey);
+        }
+
+        function spawnWord() {
+            if(eIdx >= elemData.length) {
+                gameOn = false;
+                elemDiv.style.opacity = '0';
+                document.getElementById('start-elem-btn').innerText = "TEKRAR";
+                document.getElementById('start-elem-btn').style.display = 'inline-block';
+                return;
+            }
+            elemDiv.style.transition = 'none';
+            elemDiv.style.transform = 'scale(0)';
+            elemDiv.style.opacity = '0';
+            elemDiv.innerText = elemData[eIdx].w;
+            elemDiv.style.color = "#fff"; 
+            
+            setTimeout(() => {
+                elemDiv.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s';
+                elemDiv.style.transform = 'scale(1)';
+                elemDiv.style.opacity = '1';
+            }, 50);
+        }
+
+        function handleInput(dir) {
+            if(!gameOn) return;
+            const type = elemData[eIdx].type;
+            const rect = elemDiv.getBoundingClientRect();
+
+            if(dir === type) {
+                eScore += 10;
+                elemDiv.style.color = 'var(--leaf-green)';
+                elemDiv.style.opacity = '0';
+                for(let i=0; i<6; i++) spawnAtokirina(rect.left + rect.width/2, rect.top + rect.height/2);
+            } else {
+                eScore -= 5;
+                elemDiv.style.color = '#ff3333';
+                elemDiv.style.transform = 'translateX(10px)';
+                setTimeout(() => elemDiv.style.transform = 'translateX(0)', 100);
+            }
+            document.getElementById('elem-score').innerText = eScore;
+            eIdx++;
+            setTimeout(spawnWord, 400);
+        }
+
+        function handleKey(e) {
+            if(!gameOn) return;
+            if(e.key === "ArrowLeft") { e.preventDefault(); handleInput('left'); }
+            else if(e.key === "ArrowRight") { e.preventDefault(); handleInput('right'); }
+        }
+
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

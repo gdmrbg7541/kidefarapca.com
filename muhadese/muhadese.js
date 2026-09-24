@@ -387,6 +387,47 @@ var MUH_IKON = {
    6. sınıf: 2026-2027 kitabı 4 ünite × 2 ders (önceki 6 ünite × 3 ders).
    ===================================================================== */
 const educationDataYil = {
+    /* >>> 10. SINIF SEÇMELİ ARAPÇA (yama_sec10.py üretti; elle düzenlemeyin, yeniden üretin) */
+    /* 10. sınıfın İKİNCİ kitabı: Ortaöğretim Seçmeli Arapça (4 ünite × 3 ders,
+       ders verisi muhadese/veri/sec10/10_1_1 … 10_4_3). Maarif kitabı yukarıdaki
+       educationData["10"] ağacıdır. Dersler veri gelene kadar pasiftir. */
+    "10": {
+        "secmeli": [
+            {
+                unitName: "1. Ünite: Hayattan | مِن الحَياة",
+                lessons: [
+                    { name: "1. Ders: Okula Hazırlık | الاسْتِعْداد لِلْمَدْرَسة", simultaneUrl: "muhadese.html?ders=10_1_1", aktif: true },
+                    { name: "2. Ders: Eve Dönüş | الرُّجوع إلى البَيْت", simultaneUrl: "muhadese.html?ders=10_1_2", aktif: true },
+                    { name: "3. Ders: Hafta Sonu | نِهاية الأُسْبوع", simultaneUrl: "muhadese.html?ders=10_1_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "2. Ünite: Değerlerim | قِيَمي",
+                lessons: [
+                    { name: "1. Ders: Dinimi Seviyorum | أُحِبُّ ديني", simultaneUrl: "muhadese.html?ders=10_2_1", aktif: true },
+                    { name: "2. Ders: Güzel Ahlak | الأَخْلاق الحَسَنة", simultaneUrl: "muhadese.html?ders=10_2_2", aktif: true },
+                    { name: "3. Ders: Vatanımı Seviyorum | أُحِبُّ وَطَني", simultaneUrl: "muhadese.html?ders=10_2_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "3. Ünite: Sağlık | الصِّحّة",
+                lessons: [
+                    { name: "1. Ders: Vücudun Bölümleri | أَجْزاء الجِسْم", simultaneUrl: "muhadese.html?ders=10_3_1", aktif: true },
+                    { name: "2. Ders: Yiyecekler ve İçecekler | المَأْكولات والمَشْروبات", simultaneUrl: "muhadese.html?ders=10_3_2", aktif: true },
+                    { name: "3. Ders: Spor | الرِّياضة", simultaneUrl: "muhadese.html?ders=10_3_3", aktif: true },
+                ]
+            },
+            {
+                unitName: "4. Ünite: Önemli Yerler | الأَماكِن المُهِمّة",
+                lessons: [
+                    { name: "1. Ders: Dünyadaki Türk-İslam Eserleri | الآثار التُّرْكِيّة-الإِسْلامِيّة في العالَم", simultaneUrl: "muhadese.html?ders=10_4_1", aktif: true },
+                    { name: "2. Ders: Mekke, Medine ve Kudüs | مَكّة المُكَرَّمة، المَدينة المُنَوَّرة، القُدْس الشَّريف", simultaneUrl: "muhadese.html?ders=10_4_2", aktif: true },
+                    { name: "3. Ders: Türkiye’deki Önemli Yerler | الأَماكِن المُهِمّة في تُرْكِيا", simultaneUrl: "muhadese.html?ders=10_4_3", aktif: true },
+                ]
+            },
+        ]
+    },
+    /* <<< 10. SINIF SEÇMELİ ARAPÇA */
     /* >>> 7. SINIF MEKTEP YAYINLARI (yama7.py üretti; elle düzenlemeyin, yeniden üretin) */
     /* 7. sınıf: 2026-2027'de okutulan Mektep Yayınları kitabı 6 ünite × 3 ders
        (muhadese/veri/y2627/7_1_1 … 7_6_3). 2027-2028 MEB kitabı (4 ünite) yukarıdaki

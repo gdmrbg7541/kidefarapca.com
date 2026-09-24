@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operasyon: Kayıp Bilgelik</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Courier+Prime:wght@400;700&display=swap');
+
+        /* --- TEMEL AYARLAR --- */
+        :root {
+            --font-main: 'Courier Prime', monospace;
+            --font-arabic: 'Amiri', serif;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: var(--font-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+
+        /* --- ÜST NAVİGASYON (GÖREV ÇUBUĞU) --- */
+        nav {
+            background: #111;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            border-bottom: 2px solid #333;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: #222;
+            color: #888;
+            border: 1px solid #444;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-weight: bold;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .nav-btn:hover { color: #fff; border-color: #fff; }
+        .nav-btn.active { border-color: gold; color: gold; background: #222; }
+
+        /* --- OYUN ALANI (SAHNE) --- */
+        .stage {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s;
+        }
+
+        .room.active { display: flex; animation: fadeIn 0.5s; }
+
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+
+        /* --- ORTAK NESNELER --- */
+        h2 { font-size: 2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 5px; text-align: center; }
+        p { max-width: 600px; text-align: center; line-height: 1.5; margin-bottom: 30px; }
+        .arabic { font-family: var(--font-arabic); direction: rtl; }
+        
+        /* GİZLİ ŞİFRE POP-UP */
+        .secret-found {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            border: 2px solid gold;
+            color: gold;
+            padding: 30px;
+            text-align: center;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+        }
+        .digit { font-size: 4rem; font-weight: bold; display: block; margin: 10px 0; }
+        .btn-collect { background: gold; color: black; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        /* ---------------------------------------------------- */
+        /* MEKAN 1: ANA MERKEZ (LOBİ) - Matrix Style */
+        /* ---------------------------------------------------- */
+        #room-hub {
+            background-color: #000;
+            background-image: radial-gradient(#112211 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #0f0;
+        }
+        
+        .vault-panel {
+            background: #111;
+            border: 2px solid #0f0;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 20px #0f0;
+        }
+        
+        .input-display {
+            background: #000;
+            color: #0f0;
+            font-size: 2rem;
+            padding: 10px;
+            letter-spacing: 10px;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+            min-height: 40px;
+        }
+
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .key { background: #001100; border: 1px solid #0f0; color: #0f0; padding: 15px; cursor: pointer; font-size: 1.2rem; }
+        .key:hover { background: #0f0; color: #000; }
+        .enter-btn { grid-column: span 3; background: #0f0; color: #000; border: none; font-weight: bold; }
+
+        /* ---------------------------------------------------- */
+        /* MEKAN 2: ARKEOLOG (ÇÖL) - Texture Style */
+        /* ---------------------------------------------------- */
+        #room-arch {
+            background: #d2b48c; /* Tan */
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23b89e78' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/svg%3E");
+            color: #4b3621;
+        }
+
+        .dig-area {
+            position: relative;
+            width: 300px;
+            height: 150px;
+            border: 4px solid #8b4513;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
+            background: #333; /* Tabletin alt rengi */
+        }
+        
+        .stone-tablet {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            color: gold; font-size: 3rem; user-select: none;
+        }
+
+        canvas#sandCanvas { position: absolute; top: 0; left: 0; cursor: crosshair; }
+
+        /* ---------------------------------------------------- */
+        /* MEKAN 3: ADLİ TIP (LAB) - Clinical Style */
+        /* ---------------------------------------------------- */
+        #room-forensics {
+            background: #001f3f;
+            background: linear-gradient(to bottom, #001f3f, #001122);
+            color: #7fdbff;
+        }
+
+        .microscope-view {
+            border: 5px solid #7fdbff;
+            border-radius: 50%;
+            width: 300px; height: 300px;
+            display: flex; align-items: center; justify-content: center;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px #7fdbff;
+        }
+
+        .uv-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 10px;
+            background: rgba(127, 219, 255, 0.5);
+            box-shadow: 0 0 10px #7fdbff;
+            animation: scan 2s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes scan { 0% {top:0} 100% {top:100%} }
+
+        .suspect-word { cursor: pointer; padding: 5px; transition: 0.3s; font-size: 2.5rem; }
+        .suspect-word:hover { color: red; text-shadow: 0 0 10px red; }
+        
+        /* ---------------------------------------------------- */
+        /* MEKAN 4: SİMYA (MAHZEN) - Mystic Style */
+        /* ---------------------------------------------------- */
+        #room-alchemy {
+            background: #2d1b4e;
+            background: radial-gradient(circle at center, #4b2c85 0%, #1a0b2e 100%);
+            color: #d8b4e2;
+        }
+
+        .cauldron-area { display: flex; align-items: center; gap: 40px; margin-top: 30px; }
+        
+        .ingredient {
+            width: 80px; height: 80px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #d8b4e2;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+            cursor: grab;
+            box-shadow: 0 0 15px rgba(216, 180, 226, 0.3);
+        }
+
+        .cauldron {
+            width: 140px; height: 120px;
+            border-bottom: 60px solid #5a3d99;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: relative;
+            display: flex; justify-content: center;
+        }
+        .cauldron::after {
+            content: "VEZİN";
+            position: absolute; top: 40px; color: #fff; font-size: 0.8rem;
+        }
+        .cauldron.glow { filter: drop-shadow(0 0 20px gold); }
+
+        /* ---------------------------------------------------- */
+        /* MEKAN 5: KARANLIK ODA - Spot Style */
+        /* ---------------------------------------------------- */
+        #room-dark {
+            background: black;
+            cursor: none;
+        }
+        .dark-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle 100px at var(--x) var(--y), transparent 0%, rgba(0,0,0,0.98) 20%, black 100%);
+            pointer-events: none; z-index: 10;
+        }
+        .hidden-item {
+            position: absolute;
+            font-size: 2rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <button class="nav-btn active" onclick="goRoom('hub')">ÜS</button>
+        <button class="nav-btn" onclick="goRoom('arch')">ARKEOLOG</button>
+        <button class="nav-btn" onclick="goRoom('forensics')">LAB</button>
+        <button class="nav-btn" onclick="goRoom('alchemy')">SİMYA</button>
+        <button class="nav-btn" onclick="goRoom('dark')">DEPO</button>
+    </nav>
+
+    <div class="stage">
+        
+        <div id="room-hub" class="room active">
+            <h2>KASA KİLİTLİ</h2>
+            <p>Erişim için 4 farklı odadan şifre parçalarını topla.<br>Sırayla: Arkeolog - Lab - Simya - Depo</p>
+            
+            <div class="vault-panel">
+                <div class="input-display" id="codeDisplay">_ _ _ _</div>
+                <div class="keypad">
+                    <div class="key" onclick="pressKey(1)">1</div>
+                    <div class="key" onclick="pressKey(2)">2</div>
+                    <div class="key" onclick="pressKey(3)">3</div>
+                    <div class="key" onclick="pressKey(4)">4</div>
+                    <div class="key" onclick="pressKey(5)">5</div>
+                    <div class="key" onclick="pressKey(6)">6</div>
+                    <div class="key" onclick="pressKey(7)">7</div>
+                    <div class="key" onclick="pressKey(8)">8</div>
+                    <div class="key" onclick="pressKey(9)">9</div>
+                    <button class="enter-btn" onclick="checkCode()">GİRİŞ</button>
+                    <button class="key" style="grid-column: span 3; color:red; border-color:red;" onclick="clearCode()">SİL</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="room-arch" class="room">
+            <h2>KAZI ALANI</h2>
+            <p>Tablet kumların altında. Farenle kazı ve ilk rakamı bul.</p>
+            <div class="dig-area">
+                <div class="stone-tablet arabic">ج - ذ - ر</div>
+                <canvas id="sandCanvas" width="300" height="150"></canvas>
+            </div>
+        </div>
+
+        <div id="room-forensics" class="room">
+            <h2>HATA ANALİZİ</h2>
+            <p>Cümlede bir i'rab hatası var. Üzerine tıkla.</p>
+            <div class="microscope-view">
+                <div class="uv-line"></div>
+                <div class="arabic" style="font-size: 2rem; text-align: center;">
+                    <span style="color:#fff">كَتَبَ</span><br>
+                    <span class="suspect-word" onclick="foundSecret(2, '9')">الطَّالِبَ</span><br> <span style="color:#fff">الدَّرْسَ</span>
+                </div>
+            </div>
+            <p><small>(İpucu: Fail merfu olmalı)</small></p>
+        </div>
+
+        <div id="room-alchemy" class="room">
+            <h2>KELİME TÜRETME</h2>
+            <p>'İlim' (ع ل م) kökünü al, 'İsm-i Fail' kazanına at.</p>
+            <div class="cauldron-area">
+                <div class="ingredient arabic" draggable="true" id="dragItem">ع ل م</div>
+                <div class="cauldron" id="dropZone"></div>
+            </div>
+        </div>
+
+        <div id="room-dark" class="room">
+            <div class="dark-overlay"></div>
+            <div class="hidden-item arabic" style="top:20%; left:30%">قَلَم</div>
+            <div class="hidden-item arabic" style="top:70%; left:20%">بَاب</div>
+            <div class="hidden-item arabic" style="top:40%; left:60%;" onclick="foundSecret(4, '5')">مِفْتَاح</div> 
+            
+            <p style="position: absolute; bottom: 20px; color:#555;">Karanlıkta "Anahtar" (Miftah) kelimesini bul ve tıkla.</p>
+        </div>
+
+    </div>
+
+    <div id="secretModal" class="secret-found">
+        <h3>PARÇA BULUNDU!</h3>
+        <p>Şifrenin <span id="digitIndex">1</span>. hanesi:</p>
+        <span class="digit" id="digitValue">?</span>
+        <button class="btn-collect" onclick="closeModal()">AL VE DEVAM ET</button>
+    </div>
+
+    <script>
+        // --- GAME STATE ---
+        let currentInput = "";
+        const correctCode = "1975";
+        
+        // --- NAVIGATION ---
+        function goRoom(roomId) {
+            // Aktif odayı değiştir
+            document.querySelectorAll('.room').forEach(r => r.classList.remove('active'));
+            document.getElementById('room-' + roomId).classList.add('active');
+            
+            // Buton durumunu güncelle
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Arkeolog odası açılırsa canvası hazırla
+            if(roomId === 'arch') initSand();
+        }
+
+        // --- MOUSE TRACKING (Dark Room) ---
+        const darkRoom = document.getElementById('room-dark');
+        darkRoom.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY - 60; // Navigasyon payı
+            darkRoom.style.setProperty('--x', x + 'px');
+            darkRoom.style.setProperty('--y', y + 'px');
+        });
+
+        // --- PUZZLE 1: SAND (Canvas) ---
+        let canvas, ctx, isDrawing = false;
+        let scratchedPixels = 0;
+        let puzzle1Solved = false;
+
+        function initSand() {
+            if(puzzle1Solved) return; // Zaten çözüldüyse resetleme
+            canvas = document.getElementById('sandCanvas');
+            ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#d2b48c';
+            ctx.fillRect(0,0,300,150);
+            
+            // Mouse Events
+            canvas.onmousedown = () => isDrawing = true;
+            canvas.onmouseup = () => isDrawing = false;
+            canvas.onmousemove = scratch;
+        }
+
+        function scratch(e) {
+            if(!isDrawing || puzzle1Solved) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 15, 0, Math.PI * 2);
+            ctx.fill();
+
+            scratchedPixels++;
+            if(scratchedPixels > 100 && !puzzle1Solved) { // Basit bir eşik
+                puzzle1Solved = true;
+                setTimeout(() => foundSecret(1, '1'), 500);
+            }
+        }
+
+        // --- PUZZLE 3: ALCHEMY (Drag Drop) ---
+        const dragItem = document.getElementById('dragItem');
+        const dropZone = document.getElementById('dropZone');
+
+        dragItem.addEventListener('dragstart', (e) => e.dataTransfer.setData('text', 'root'));
+        dropZone.addEventListener('dragover', (e) => e.preventDefault());
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('glow');
+            dropZone.innerHTML = "<span class='arabic' style='font-size:2rem; color:gold; margin-top:-20px'>عَالِم</span>";
+            dragItem.style.display = 'none';
+            setTimeout(() => foundSecret(3, '7'), 800);
+        });
+
+        // --- KEYPAD LOGIC ---
+        function pressKey(num) {
+            if(currentInput.length < 4) {
+                currentInput += num;
+                updateDisplay();
+            }
+        }
+        function clearCode() { currentInput = ""; updateDisplay(); }
+        function updateDisplay() {
+            document.getElementById('codeDisplay').innerText = currentInput.padEnd(4, '_').split('').join(' ');
+        }
+        function checkCode() {
+            if(currentInput === correctCode) {
+                alert("🎉 TEBRİKLER! KASA AÇILDI. \n\n'İlim Çin'de de olsa gidip alınız.'");
+                document.querySelector('.vault-panel').style.borderColor = "gold";
+                document.querySelector('.vault-panel').style.boxShadow = "0 0 50px gold";
+            } else {
+                alert("⛔ ERİŞİM REDDEDİLDİ. Şifre yanlış.");
+                currentInput = "";
+                updateDisplay();
+            }
+        }
+
+        // --- REWARD SYSTEM ---
+        function foundSecret(index, val) {
+            const modal = document.getElementById('secretModal');
+            document.getElementById('digitIndex').innerText = index;
+            document.getElementById('digitValue').innerText = val;
+            modal.style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('secretModal').style.display = 'none';
+        }
+
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

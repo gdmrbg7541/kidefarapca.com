@@ -107,15 +107,6 @@ window.colorizeAffixes = function(word, stage, index) {
 };
 
 window.displayVerbsMap = {
-    'قرأ': 'قَرَأَ',
-    'ظنّ': 'ظَنَّ',
-    'وجد': 'وَجَدَ',
-    'قال': 'قَالَ',
-    'نسي': 'نَسِيَ',
-    'علّم': 'عَلَّمَ',
-    'اعترف': 'اِعْتَرَفَ',
-    'انقلب': 'اِنْقَلَبَ',
-
     'كتب': 'كَتَبَ',
     'دخل': 'دَخَلَ',
     'خرج': 'خَرَجَ',
@@ -1245,13 +1236,7 @@ window.onload = function() {
             handleSwipeGesture();
         }, { passive: true });
 
-        /* Eski surumde lastWheelTime/wheelCooldown hic tanimlanmamisti:
-           her yatay tekerlek olayi sessiz ReferenceError firlatiyor ve
-           mucerred<->mezid tekerlek gecisi HIC calismiyordu. Tanimlandi. */
-        let lastWheelTime = 0;
-        const wheelCooldown = 600;
         sliderContainer.addEventListener('wheel', (e) => {
-            if (window.isAtlasMode) return;   /* atlas acikken tablo kaydirici karismasin */
             const zoomCheckbox = document.getElementById('zoomToggleCheckbox');
             if (zoomCheckbox && zoomCheckbox.checked) return; // Büyüme açıkken sekme değiştirmeyi iptal et
             
@@ -1281,8 +1266,13 @@ function closeIfOutside(e) {
                      e.target.closest('#suffix-dropdown');
                      
     if (!isInside) {
-        // COKLU POPUP: disariya tiklayinca fiil popuplari KAPANMASIN (sadece X ile kapanir).
-        // Sadece buyumus kutu (zoom) varsa kapat.
+        // Tabloları Kapat
+        document.querySelectorAll('.glass-box.matrix-opened').forEach(box => {
+            const closeBtn = box.querySelector('.matrix-close-btn');
+            if (closeBtn) closeInlineMatrix(null, closeBtn);
+        });
+        
+        // Boşluğa tıklanınca/dokunulunca Büyümüş Kutu (Zoom) Varsa Kapat
         if (typeof closeAllZoomedBoxes === 'function') {
             closeAllZoomedBoxes();
         }
@@ -1428,7 +1418,10 @@ function clearOtherActiveBoxes(currentBox) {
             box.style.transform = "";
             void box.offsetWidth;
             
-            // COKLU POPUP: baska fiil popuplarini KAPATMA (sadece X ile kapanir).
+            if (box.classList.contains('matrix-opened')) {
+                const closeBtn = box.querySelector('.matrix-close-btn');
+                if (closeBtn) closeInlineMatrix(null, closeBtn);
+            }
             
             setTimeout(() => {
                 if (box) box.classList.remove('no-transition');
@@ -2085,8 +2078,13 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         else if (sozlukVerileri[kok][6]) numBab = 3;
     }
 
-    // COKLU POPUP: acik fiil popuplari otomatik KAPANMASIN (sadece kendi X'i ile kapanir).
-    document.querySelectorAll('.glass-box:not(.matrix-opened)').forEach(box => { box.style.zIndex = "1"; });
+    document.querySelectorAll('.glass-box').forEach(box => { box.style.zIndex = "1"; });
+    document.querySelectorAll('.glass-box.matrix-opened').forEach(openBox => {
+        if (openBox !== boxElement) {
+            const openCloseBtn = openBox.querySelector('.matrix-close-btn');
+            if (openCloseBtn) closeInlineMatrix(null, openCloseBtn);
+        }
+    });
 
     boxElement.classList.add('no-transition'); 
     boxElement.classList.remove("pulse-highlight");
@@ -2178,7 +2176,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
             else if (pluralFem.includes(wordIndex)) coreWord = clean; 
             else {
                 if (/[\u0651]/.test(clean.slice(-2))) {
-                    coreWord = clean.replace(/[\u064B-\u0652]+$/, '\u0651\u064E'); // Kusursuz لَمْ يَضُرَّ
+                    coreWord = clean.replace(/[\u064B-\u0652]+$/, '\u0651\u064E'); // Kusursuz لَمْ يَضُرَّ
                 }
                 else if (/ُ$/.test(clean)) {
                     coreWord = clean.replace(/ُ$/, 'ْ');
@@ -2214,25 +2212,6 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                 coreWord = coreWord.replace("تَمُر", "تَأْمُر");
             }
         }
-        else if (tableType === 'len') {
-            prefix = "لَنْ";
-            const duals = [1, 4, 7, 10];
-            const pluralMasc = [2, 8];
-            const singFem = [9];
-            const pluralFem = [5, 11];
-            if (duals.includes(wordIndex)) coreWord = clean.replace(/نِ?$/, '');
-            else if (pluralMasc.includes(wordIndex)) coreWord = clean.replace(/نَ?$/, 'ا');
-            else if (singFem.includes(wordIndex)) coreWord = clean.replace(/نَ?$/, '');
-            else if (pluralFem.includes(wordIndex)) coreWord = clean;
-            else {
-                if (/[\u0651]/.test(clean.slice(-2))) coreWord = clean.replace(/[\u064B-\u0652]+$/, '\u0651\u064E');
-                else if (/ُ$/.test(clean)) coreWord = clean.replace(/ُ$/, 'َ');
-                else if (/ِي$/.test(clean)) coreWord = clean + 'َ';
-                else if (/ُو$/.test(clean)) coreWord = clean + 'َ';
-                else if (/َى$/.test(clean)) coreWord = clean;
-                else coreWord = clean;
-            }
-        }
 
         let coloredCore = (isColorActive && !coreWord.includes('<')) ? ColorEngine.colorize(coreWord, kok.split("")) : coreWord;
         
@@ -2243,7 +2222,7 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
     let tablesToRender = [];
     if (isVerb && typeof kelimeListesi[0] !== 'object') {
         if (tip === 'mazi') tablesToRender = ['olumlu', 'ma', 'lam', 'la'];
-        else if (tip === 'muzari') tablesToRender = ['olumlu', 'la', 'len'];
+        else if (tip === 'muzari') tablesToRender = ['olumlu', 'la'];
         else if (tip === 'emir') tablesToRender = ['olumlu', 'nehiy'];
     }
 
@@ -2304,11 +2283,6 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                     headBg = "#d35400"; 
                     subBg = "#fdf2e9";
                     subColor = "#ba4a00";
-                } else if (tableType === 'len') {
-                    theadText = "Nefy-i İstikbal (لَنْ / Gelecek Olumsuz)";
-                    headBg = "#16a085";
-                    subBg = "#e8f8f5";
-                    subColor = "#0e6655";
                 } else if (tableType === 'nehiy') {
                     theadText = "Nehiy (Olumsuz Emir)";
                     headBg = "#e74c3c"; subBg = "#fcf1f1"; subColor = "#a94442";
@@ -2336,8 +2310,6 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
                         bgColor = (rowIndex % 2 === 0) ? '#f4ecf7' : '#f5eef8';
                     } else if (tableType === 'lam') {
                         bgColor = (rowIndex % 2 === 0) ? '#fdf2e9' : '#fae5d3';
-                    } else if (tableType === 'len') {
-                        bgColor = (rowIndex % 2 === 0) ? '#e8f8f5' : '#d1f2eb';
                     }
                     
                     let currentList = (tableType === 'lam') ? muzariListesi : kelimeListesi;
@@ -2539,24 +2511,8 @@ function openConjugationPopup(kok, babNo, tip, anaVezin) {
         document.removeEventListener('touchmove', onPopupDragMove); document.removeEventListener('touchend', onPopupDragEnd);
     };
     dragBar.addEventListener('mousedown', onPopupDragStart); dragBar.addEventListener('touchstart', onPopupDragStart, { passive: false });
-    boxElement.style.zIndex = '';  // kutu stacking context olusturmasin (kalip popuplarin ustune cikmasin)
-    boxElement.classList.add('matrix-opened');
-    if (inlineContainer) inlineContainer.style.setProperty('z-index', String(window._fdmPopupZ = (window._fdmPopupZ || 2000000) + 1), 'important');
+    boxElement.style.zIndex = "999999"; boxElement.classList.add('matrix-opened');
 }
-
-// COKLU POPUP: bir popup'a (matrix-opened kutu) tiklandiginda EN ONE gelsin
-(function(){
-    function _raisePopup(e){
-        var t = e.target;
-        var box = (t && t.closest) ? t.closest('.glass-box.matrix-opened') : null;
-        if (box) {
-            var cont = box.querySelector('.conjugation-inline-container');
-            if (cont) cont.style.setProperty('z-index', String(window._fdmPopupZ = (window._fdmPopupZ || 2000000) + 1), 'important');
-        }
-    }
-    document.addEventListener('mousedown', _raisePopup, true);
-    document.addEventListener('touchstart', _raisePopup, { passive: true, capture: true });
-})();
 
 // Global tıklama (kapatma) event listener'ı aynen kalıyor
 document.addEventListener('click', function(e) {
@@ -2566,7 +2522,15 @@ document.addEventListener('click', function(e) {
     const fullscreenOverlay = e.target.closest('#matrix-fullscreen-overlay');
 
     if (!conjugationContainer && !glassBox && !fullscreenOverlay) {
-        // COKLU POPUP: disariya tiklayinca fiil popuplari KAPANMASIN (sadece X ile kapanir).
+        const openedBoxes = document.querySelectorAll('.glass-box.matrix-opened');
+        if (openedBoxes.length > 0) {
+            openedBoxes.forEach(box => {
+                const closeBtn = box.querySelector('.matrix-close-btn');
+                if (closeBtn) closeInlineMatrix(e, closeBtn);
+            });
+            e.preventDefault();
+            e.stopPropagation();
+        }
     }
 }, true);
 
@@ -2903,10 +2867,10 @@ function updateSuffixHighlights(currentBox) {
         original = original.replace(/[یى]/g, 'ي');
         let pure = original.replace(/[\u0640\u064B-\u0652]/g, ''); 
         if (pure === 'ا') return 'ا';
-        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
-        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
+        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
+        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
         if (pure === 'ي') return 'يّ';
-        if (pure === 'يا') return 'يًّا'; 
+        if (pure === 'يا') return 'يًّا'; 
         return original.replace(/\u064E\u0651/g, '\u0651\u064E');
     }
 
@@ -2922,8 +2886,8 @@ function updateSuffixHighlights(currentBox) {
     }
 
     const possibleSuffixes = [
-        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
-        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 'يًّا', 
+        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
+        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 'يًّا', 
         'انِ', 'يْنِ', 'ونَ', 'ينَ', 'ات', 'يّ', 'ة', 'ا'
     ];
 
@@ -2945,17 +2909,17 @@ function updateSuffixHighlights(currentBox) {
     }
 
     const targetMap = {
-        'يَّة': ['يّ', 'ة'],
-        'يَّات': ['يّ', 'ات'],
-        'يًّا': ['يّ', 'ا'], 
-        'يَّانِ': ['يّ', 'انِ'],
-        'يَّيْنِ': ['يّ', 'يْنِ'],
-        'يُّونَ': ['يّ', 'ونَ'],
-        'يِّينَ': ['يّ', 'ينَ'],
+        'يَّة': ['يّ', 'ة'],
+        'يَّات': ['يّ', 'ات'],
+        'يًّا': ['يّ', 'ا'], 
+        'يَّانِ': ['يّ', 'انِ'],
+        'يَّيْنِ': ['يّ', 'يْنِ'],
+        'يُّونَ': ['يّ', 'ونَ'],
+        'يِّينَ': ['يّ', 'ينَ'],
         'تَانِ': ['ة', 'انِ'],
         'تَيْنِ': ['ة', 'يْنِ'],
-        'يَّتَانِ': ['يّ', 'ة', 'انِ'],
-        'يَّتَيْنِ': ['يّ', 'ة', 'يْنِ']
+        'يَّتَانِ': ['يّ', 'ة', 'انِ'],
+        'يَّتَيْنِ': ['يّ', 'ة', 'يْنِ']
     };
 
     let fulfilledSuffixes = [];
@@ -3249,10 +3213,10 @@ function applySuffix(rawSuffix) {
         original = original.replace(/[یى]/g, 'ي');
         let pure = original.replace(/[\u0640\u064B-\u0652]/g, ''); 
         if (pure === 'ا') return 'ا';
-        if (pure === 'ية' || pure === 'يه') return 'يَّة';
-        if (pure === 'يات') return 'يَّات';
+        if (pure === 'ية' || pure === 'يه') return 'يَّة';
+        if (pure === 'يات') return 'يَّات';
         if (pure === 'ي') return 'يّ';
-        if (pure === 'يا') return 'يًّا'; 
+        if (pure === 'يا') return 'يًّا'; 
         return original.replace(/\u064E\u0651/g, '\u0651\u064E');
     }
 
@@ -3281,8 +3245,8 @@ function applySuffix(rawSuffix) {
     }
 
     const possibleSuffixes = [
-        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
-        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 'يًّا', 
+        'يَّتَانِ', 'يَّتَيْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 
+        'يُّونَ', 'يِّينَ', 'يَّات', 'يَّة', 'يًّا', 
         'انِ', 'يْنِ', 'ونَ', 'ينَ', 'ات', 'يّ', 'ة', 'ا'
     ];
 
@@ -3310,47 +3274,47 @@ function applySuffix(rawSuffix) {
         else if (suffix === 'يْنِ') suffix = 'تَيْنِ';
     }
     else if (existingSuffix === 'يّ') {
-        if (suffix === 'ة') suffix = 'يَّة';
-        else if (suffix === 'ات') suffix = 'يَّات';
-        else if (suffix === 'انِ') suffix = 'يَّانِ';
-        else if (suffix === 'يْنِ') suffix = 'يَّيْنِ';
-        else if (suffix === 'ونَ') suffix = 'يُّونَ';
-        else if (suffix === 'ينَ') suffix = 'يِّينَ';
-        else if (suffix === 'ا') suffix = 'يًّا'; 
+        if (suffix === 'ة') suffix = 'يَّة';
+        else if (suffix === 'ات') suffix = 'يَّات';
+        else if (suffix === 'انِ') suffix = 'يَّانِ';
+        else if (suffix === 'يْنِ') suffix = 'يَّيْنِ';
+        else if (suffix === 'ونَ') suffix = 'يُّونَ';
+        else if (suffix === 'ينَ') suffix = 'يِّينَ';
+        else if (suffix === 'ا') suffix = 'يًّا'; 
     }
-    else if (existingSuffix === 'يَّة' || existingSuffix === 'يَّات') {
-        if (suffix === 'انِ') suffix = 'يَّتَانِ';
-        else if (suffix === 'يْنِ') suffix = 'يَّتَيْنِ';
-        else if (suffix === 'ونَ') suffix = 'يُّونَ';
-        else if (suffix === 'ينَ') suffix = 'يِّينَ';
-        else if (suffix === 'ة') suffix = 'يَّة';
-        else if (suffix === 'ات') suffix = 'يَّات';
+    else if (existingSuffix === 'يَّة' || existingSuffix === 'يَّات') {
+        if (suffix === 'انِ') suffix = 'يَّتَانِ';
+        else if (suffix === 'يْنِ') suffix = 'يَّتَيْنِ';
+        else if (suffix === 'ونَ') suffix = 'يُّونَ';
+        else if (suffix === 'ينَ') suffix = 'يِّينَ';
+        else if (suffix === 'ة') suffix = 'يَّة';
+        else if (suffix === 'ات') suffix = 'يَّات';
         else if (suffix === 'يّ') suffix = 'يّ';
     }
-    else if (['انِ', 'يْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 'يَّتَانِ', 'يَّتَيْنِ'].includes(existingSuffix)) {
+    else if (['انِ', 'يْنِ', 'تَانِ', 'تَيْنِ', 'يَّانِ', 'يَّيْنِ', 'يَّتَانِ', 'يَّتَيْنِ'].includes(existingSuffix)) {
         if (suffix === 'انِ' || suffix === 'يْنِ') {
-            if (existingSuffix.includes('يَّتَ')) suffix = suffix === 'انِ' ? 'يَّتَانِ' : 'يَّتَيْنِ';
-            else if (existingSuffix.includes('يَّ')) suffix = suffix === 'انِ' ? 'يَّانِ' : 'يَّيْنِ';
+            if (existingSuffix.includes('يَّتَ')) suffix = suffix === 'انِ' ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            else if (existingSuffix.includes('يَّ')) suffix = suffix === 'انِ' ? 'يَّانِ' : 'يَّيْنِ';
             else if (existingSuffix.includes('تَ')) suffix = suffix === 'انِ' ? 'تَانِ' : 'تَيْنِ';
         } else if (suffix === 'ة') {
-            if (existingSuffix.includes('يَّ')) suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            if (existingSuffix.includes('يَّ')) suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
             else suffix = existingSuffix.includes('انِ') ? 'تَانِ' : 'تَيْنِ';
         } else if (suffix === 'يّ') { 
-            if (existingSuffix.includes('تَ')) suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
-            else suffix = existingSuffix.includes('انِ') ? 'يَّانِ' : 'يَّيْنِ';
+            if (existingSuffix.includes('تَ')) suffix = existingSuffix.includes('انِ') ? 'يَّتَانِ' : 'يَّتَيْنِ';
+            else suffix = existingSuffix.includes('انِ') ? 'يَّانِ' : 'يَّيْنِ';
         }
     }
-    else if (['ونَ', 'ينَ', 'يُّونَ', 'يِّينَ'].includes(existingSuffix)) {
+    else if (['ونَ', 'ينَ', 'يُّونَ', 'يِّينَ'].includes(existingSuffix)) {
         if (suffix === 'ونَ' || suffix === 'ينَ') {
-            if (existingSuffix.includes('يُّ') || existingSuffix.includes('يِّ')) {
-                suffix = suffix === 'ونَ' ? 'يُّونَ' : 'يِّينَ';
+            if (existingSuffix.includes('يُّ') || existingSuffix.includes('يِّ')) {
+                suffix = suffix === 'ونَ' ? 'يُّونَ' : 'يِّينَ';
             }
         } else if (suffix === 'يّ') {
-            suffix = existingSuffix.includes('ونَ') ? 'يُّونَ' : 'يِّينَ';
+            suffix = existingSuffix.includes('ونَ') ? 'يُّونَ' : 'يِّينَ';
         }
     }
-    else if (existingSuffix === 'يًّا') { 
-        if (suffix === 'ا') suffix = 'يًّا'; 
+    else if (existingSuffix === 'يًّا') { 
+        if (suffix === 'ا') suffix = 'يًّا'; 
     }
 
     // ===============================================================
@@ -3528,7 +3492,7 @@ function applySuffix(suffix) {
             if (suffix === 'انِ' || suffix === 'يْنِ') {
                 actualLastChar.innerHTML = actualLastChar.innerHTML.replace('ة', 'ت');
                 actualLastChar.classList.add('changed-te');
-            } else if (suffix === 'ات' || suffix === 'يَّة' || suffix === 'يَّات') {
+            } else if (suffix === 'ات' || suffix === 'يَّة' || suffix === 'يَّات') {
                 actualLastChar.style.display = 'none';
                 actualLastChar.classList.add('hidden-te');
                 actualLastChar = coreChars.length > 1 ? coreChars[coreChars.length - 2] : actualLastChar;
@@ -3605,10 +3569,10 @@ function applySuffix(suffix) {
                 let original = t.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().replace(/[یى]/g, 'ي');
                 let pure = original.replace(/[\u0640\u064B-\u0652]/g, '');
                 if (pure === 'ا') return 'ا';
-                if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
-                if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
+                if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
+                if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
                 if (pure === 'ي') return 'يّ';
-                if (pure === 'يا') return 'يًّا';
+                if (pure === 'يا') return 'يًّا';
                 return original.replace(/\u064E\u0651/g, '\u0651\u064E');
             };
             checkWordEasterEgg(currentBox, standardize(suffix));
@@ -3706,8 +3670,7 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
 
     const refEl = boxElement.querySelector('.ref');
     if (!refEl) return;
-    let refId = parseInt(refEl.innerText);
-    if (isNaN(refId)) refId = (refEl.innerText || '').trim();
+    const refId = parseInt(refEl.innerText);
     const isVerb = boxElement.classList.contains('fiil-box');
 
     // ===============================================================
@@ -3739,10 +3702,10 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
         let original = t.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().replace(/[یى]/g, 'ي');
         let pure = original.replace(/[\u0640\u064B-\u0652]/g, '');
         if (pure === 'ا') return 'ا';
-        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
-        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
+        if (pure === 'ية' || pure === 'يه' || pure === 'يّة') return 'يَّة';
+        if (pure === 'يات' || pure === 'يَّات') return 'يَّات';
         if (pure === 'ي') return 'يّ';
-        if (pure === 'يا') return 'يًّا';
+        if (pure === 'يا') return 'يًّا';
         return original.replace(/\u064E\u0651/g, '\u0651\u064E');
     };
 
@@ -3760,9 +3723,9 @@ function checkWordEasterEgg(boxElement, incomingSuffix = null, silentEmoji = fal
     
     if (matchedKey) {
         searchKey = matchedKey;
-    } else if (activeSuffix === "يَّة" && eggObj["ة"]) {
+    } else if (activeSuffix === "يَّة" && eggObj["ة"]) {
         searchKey = "ة";
-    } else if (activeSuffix === "يَّات" && eggObj["ات"]) {
+    } else if (activeSuffix === "يَّات" && eggObj["ات"]) {
         searchKey = "ات";
     }
 
@@ -4466,8 +4429,8 @@ const VerbGenerator = {
         if (rId === 2 || rId === 12) return "ُ"; // 1. ve 5. Bab Muzari -> Kesin Ötre (يَقُولُ, يَعْظُمُ)
 
         let h = "ُ"; 
-        if ([2, 6, 7, 8, 9, 10, 11, 15].includes(bNo) || vezin.includes("يَفْعِلُ") || vezin.includes("يُفْعِلُ") || vezin.includes("يُفَعِّلُ") || vezin.includes("يُفَاعِلُ") || vezin.includes("يَنْفَعِلُ") || vezin.includes("يَفْتَعِلُ") || vezin.includes("يَسْتَفْعِلُ")) h = "ِ"; 
-        else if ([3, 4, 12, 13, 14].includes(bNo) || vezin.includes("يَفْعَلُ") || vezin.includes("يَفْعَلُّ") || vezin.includes("يَتَفَعَّلُ") || vezin.includes("يَتَفَاعَلُ")) h = "َ"; 
+        if ([2, 6, 7, 8, 9, 10, 11, 15].includes(bNo) || vezin.includes("يَفْعِلُ") || vezin.includes("يُفْعِلُ") || vezin.includes("يُفَعِّلُ") || vezin.includes("يُفَاعِلُ") || vezin.includes("يَنْفَعِلُ") || vezin.includes("يَفْتَعِلُ") || vezin.includes("يَسْتَفْعِلُ")) h = "ِ"; 
+        else if ([3, 4, 12, 13, 14].includes(bNo) || vezin.includes("يَفْعَلُ") || vezin.includes("يَفْعَلُّ") || vezin.includes("يَتَفَعَّلُ") || vezin.includes("يَتَفَاعَلُ")) h = "َ"; 
 
         let foundInJson = false;
         if (typeof sozlukVerileri !== 'undefined' && sozlukVerileri[kokArr.join("")]) {
@@ -4507,12 +4470,12 @@ const VerbGenerator = {
         let i_t = "تَ";
 
         if (r1 === 'و' || r1 === 'ي' || r1 === 'ث' || r1 === 'ت') {
-            i_r1 = ""; i_t = "تَّ";
+            i_r1 = ""; i_t = "تَّ";
         } else if (['ص', 'ض', 'ط', 'ظ'].includes(r1)) {
-            if (r1 === 'ط') { i_r1 = ""; i_t = "طَّ"; }
+            if (r1 === 'ط') { i_r1 = ""; i_t = "طَّ"; }
             else { i_t = "طَ"; }
         } else if (['د', 'ذ', 'ز'].includes(r1)) {
-            if (r1 === 'د' || r1 === 'ذ') { i_r1 = ""; i_t = "دَّ"; }
+            if (r1 === 'د' || r1 === 'ذ') { i_r1 = ""; i_t = "دَّ"; }
             else { i_t = "دَ"; } 
         }
         return i_r1 + i_t + r2 + aynHareke + r3;
@@ -5762,7 +5725,7 @@ function updateMainKeyboardPredictions() {
 
         if (matchCount === 0 && rootMatches.length === 0) {
             dictResults.style.display = "block";
-            dictResults.innerHTML = "<div dir='ltr' style='direction:ltr; text-align:center; opacity:0.7; color:#000;'>Sonuç bulunamadı...</div>";
+            dictResults.innerHTML = "<div style='text-align:center; opacity:0.7; color:#000;'>Sonuç bulunamadı...</div>";
         } else {
             if (resultsHTML === "") {
                 dictResults.style.display = "none";
@@ -6006,10 +5969,10 @@ function getReadyRoots() {
 
 function getSortedRefsForRoot(root) {
     if (!sozlukVerileri[root]) return [];
-    const keys = Object.keys(sozlukVerileri[root]);
-    const nums = keys.map(Number).filter(n => !isNaN(n)).sort((a, b) => a - b);
-    const extras = keys.filter(k => isNaN(Number(k)) && !(sozlukVerileri[root][k] && sozlukVerileri[root][k].isHiddenInList));  // joker anahtarlar (ör. "?"), gizli anahtarlar hariç
-    return nums.concat(extras);
+    return Object.keys(sozlukVerileri[root])
+        .map(Number)
+        .filter(n => !isNaN(n))
+        .sort((a, b) => a - b);
 }
 
 // ==================================================================
@@ -6478,7 +6441,7 @@ function getBabInfo(rawName) {
             title: "İf'ılal", 
             harf: "اِ ـ ـ ـّ", num: 5,
             desc: `
-            <p>• <b>Renkler:</b> Renk bildiren fiillerde kullanılır. <br>Örn: <span class="arabic-sample">اِحْمَرَّ</span> (Kızardı), <span class="arabic-sample">اِصْفَرَّ</span> (Sarardı)</p>
+            <p>• <b>Renkler:</b> Renk bildiren fiillerde kullanılır. <br>Örn: <span class="arabic-sample">اِحْمَرَّ</span> (Kızardı), <span class="arabic-sample">اِصْفَرَّ</span> (Sarardı)</p>
             <p>• <b>Kusurlar:</b> Sakatlık ve noksanlık belirtir. <br>Örn: <span class="arabic-sample">اِعْرَجَّ</span> (Topalladı)</p>
             ` 
         },
@@ -6659,14 +6622,54 @@ setInterval(() => {
         const mySvg = '<svg viewBox="0 0 24 24" width="24" height="24" stroke="#334155" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><polyline points="12 9 12 13 14 15"></polyline><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="2" x2="12" y2="5"></line><line x1="18" y1="6" x2="16.5" y2="7.5"></line></svg>';
         const listSvg = '<svg viewBox="0 0 24 24" width="24" height="24" stroke="#334155" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="16" y2="6"></line><line x1="3" y1="12" x2="16" y2="12"></line><line x1="3" y1="18" x2="16" y2="18"></line><line x1="21" y1="6" x2="21.01" y2="6"></line><line x1="21" y1="12" x2="21.01" y2="12"></line><line x1="21" y1="18" x2="21.01" y2="18"></line></svg>';
         
-        // A. KAHVERENGİ LEVHA: timer/liste SVG'leri header'a sabitlendi, buradan kaldırıldı
+        // A. TAŞINABİLİR TAHTALAR İÇİN (Kahverengi Kutu)
         document.querySelectorAll('.draggable-root-clone').forEach(box => {
-            const wrapper = box.querySelector('.root-clone-buttons');
-            if (wrapper) wrapper.remove();
-            const oldBtn = box.querySelector('.kutu-timer-btn');
-            if (oldBtn) oldBtn.remove();
-            const oldListBtn = box.querySelector('.kutu-list-btn');
-            if (oldListBtn) oldListBtn.remove();
+            let boxRootSafe = box.dataset.root || "";
+            const boxCanShowTimer = hasVerbsToRead(boxRootSafe);
+            
+            let wrapper = box.querySelector('.root-clone-buttons');
+            let btn = box.querySelector('.kutu-timer-btn');
+            let listBtn = box.querySelector('.kutu-list-btn');
+            
+            if (boxCanShowTimer && (!btn || !listBtn)) {
+                if(btn) btn.remove();
+                if(listBtn) listBtn.remove();
+                if(!wrapper) {
+                    wrapper = document.createElement('div');
+                    wrapper.className = 'root-clone-buttons';
+                    box.appendChild(wrapper);
+                } else {
+                    wrapper.innerHTML = ''; // Clear contents
+                }
+                
+                let newBtn = document.createElement('div');
+                newBtn.className = 'kutu-timer-btn';
+                newBtn.innerHTML = mySvg;
+                newBtn.title = 'Hız ve Telaffuz Testi';
+                
+                newBtn.onmousedown = (e) => { e.stopPropagation(); };
+                newBtn.ontouchstart = (e) => { e.stopPropagation(); };
+                newBtn.onclick = (e) => { e.stopPropagation(); window.openMarathon(); };
+
+                let newListBtn = document.createElement('div');
+                newListBtn.className = 'kutu-list-btn';
+                newListBtn.innerHTML = listSvg;
+                newListBtn.title = 'Hızlı Sözlük Modu';
+                newListBtn.onmousedown = (e) => { e.stopPropagation(); };
+                newListBtn.ontouchstart = (e) => { e.stopPropagation(); };
+                newListBtn.onclick = (e) => { e.stopPropagation(); openFastDictionaryMode(); };
+                
+                // Üstte liste, altta kronometre
+                wrapper.appendChild(newListBtn);
+                wrapper.appendChild(newBtn);
+                
+            } else if (!boxCanShowTimer && wrapper) {
+                wrapper.remove();
+            } else if (!boxCanShowTimer && btn) {
+                // Eger wrapper yoksa ama butonlar varsa (eski yapi kalmissa)
+                btn.remove();
+                if(listBtn) listBtn.remove();
+            }
         });
 
         // Block B was removed to statically keep the icons in the HTML top bar
@@ -6674,17 +6677,12 @@ setInterval(() => {
         const staticList = document.getElementById('static-list-btn');
         const staticTimer = document.getElementById('static-timer-btn');
         if (staticList) {
-            staticList.classList.remove('svg-wave-active');
-            staticList.classList.toggle('svg-wave-red', canShowTimer);
+            staticList.classList.toggle('svg-wave-active', canShowTimer);
             staticList.style.opacity = canShowTimer ? '1' : '0.4';
             staticList.style.pointerEvents = canShowTimer ? 'auto' : 'none';
         }
         if (staticTimer) {
-            // Kronometrenin dalga vurgusu YEŞİL: sayfa açılışında (kök seçilmemişken)
-            // ve fiilli bir kök seçiliyken de yeşil dalga ile vurgulanır.
-            const noRootSelected = !currentRootSafe || currentRootSafe.length !== 3;
-            staticTimer.classList.remove('svg-wave-active');
-            staticTimer.classList.toggle('svg-wave-green', noRootSelected || canShowTimer);
+            staticTimer.classList.toggle('svg-wave-active', canShowTimer);
         }
 
         // C. MOBİL ÜST BAR İÇİN
@@ -7194,9 +7192,9 @@ window.attachMarathonSwipe = window.attachMarathonSwipe || function(el) {
         const dx = e.clientX - sx, dy = e.clientY - sy;
         if (Math.abs(dx) > THRESH && Math.abs(dx) > Math.abs(dy) * 1.3) {
             swiped = true;
-            // Yon ters cevrildi (kullanici istegi): sola kaydir = geri (dir=-1), saga kaydir = ileri (dir=1)
-            if (dx < 0) { if (window.mCurrentStage > 0) window.changeMarathonStage(-1); }
-            else { if (window.mCurrentStage < 2) window.changeMarathonStage(1); }
+            // Oklarla ayni yon: sola kaydir = ileri (❮ / dir=1), saga kaydir = geri (❯ / dir=-1)
+            if (dx < 0) { if (window.mCurrentStage < 2) window.changeMarathonStage(1); }
+            else { if (window.mCurrentStage > 0) window.changeMarathonStage(-1); }
         }
     });
     el.addEventListener('pointerup', function() { down = false; });
@@ -8273,15 +8271,6 @@ window.openGrammarOverlay = function(stage) {
 window.isAtlasMode = false;
 
 window.atlasVerbsData = {
-    "قرأ": { trMean: { mazi: "okudu", muzari: "okuyor", emir: "oku" }, mazi: ["قَرَأَ", "قَرَآ", "قَرَأُوا", "قَرَأَتْ", "قَرَأَتَا", "قَرَأْنَ", "قَرَأْتَ", "قَرَأْتُمَا", "قَرَأْتُمْ", "قَرَأْتِ", "قَرَأْتُمَا", "قَرَأْتُنَّ", "قَرَأْتُ", "قَرَأْنَا", "قَرَأْنَا"], muzari: ["يَقْرَأُ", "يَقْرَآنِ", "يَقْرَأُونَ", "تَقْرَأُ", "تَقْرَآنِ", "يَقْرَأْنَ", "تَقْرَأُ", "تَقْرَآنِ", "تَقْرَأُونَ", "تَقْرَئِينَ", "تَقْرَآنِ", "تَقْرَأْنَ", "أَقْرَأُ", "نَقْرَأُ", "نَقْرَأُ"], emir: ["اِقْرَأْ", "اِقْرَآ", "اِقْرَأُوا", "اِقْرَئِي", "اِقْرَآ", "اِقْرَأْنَ"] },
-    "ظنّ": { trMean: { mazi: "sandı", muzari: "sanıyor", emir: "san" }, mazi: ["ظَنَّ", "ظَنَّا", "ظَنُّوا", "ظَنَّتْ", "ظَنَّتَا", "ظَنَنَّ", "ظَنَنْتَ", "ظَنَنْتُمَا", "ظَنَنْتُمْ", "ظَنَنْتِ", "ظَنَنْتُمَا", "ظَنَنْتُنَّ", "ظَنَنْتُ", "ظَنَنَّا", "ظَنَنَّا"], muzari: ["يَظُنُّ", "يَظُنَّانِ", "يَظُنُّونَ", "تَظُنُّ", "تَظُنَّانِ", "يَظْنُنَّ", "تَظُنُّ", "تَظُنَّانِ", "تَظُنُّونَ", "تَظُنِّينَ", "تَظُنَّانِ", "تَظْنُنَّ", "أَظُنُّ", "نَظُنُّ", "نَظُنُّ"], emir: ["ظُنَّ", "ظُنَّا", "ظُنُّوا", "ظُنِّي", "ظُنَّا", "اُظْنُنَّ"] },
-    "وجد": { trMean: { mazi: "buldu", muzari: "buluyor", emir: "bul" }, mazi: ["وَجَدَ", "وَجَدَا", "وَجَدُوا", "وَجَدَتْ", "وَجَدَتَا", "وَجَدْنَ", "وَجَدْتَ", "وَجَدْتُمَا", "وَجَدْتُمْ", "وَجَدْتِ", "وَجَدْتُمَا", "وَجَدْتُنَّ", "وَجَدْتُ", "وَجَدْنَا", "وَجَدْنَا"], muzari: ["يَجِدُ", "يَجِدَانِ", "يَجِدُونَ", "تَجِدُ", "تَجِدَانِ", "يَجِدْنَ", "تَجِدُ", "تَجِدَانِ", "تَجِدُونَ", "تَجِدِينَ", "تَجِدَانِ", "تَجِدْنَ", "أَجِدُ", "نَجِدُ", "نَجِدُ"], emir: ["جِدْ", "جِدَا", "جِدُوا", "جِدِي", "جِدَا", "جِدْنَ"] },
-    "قال": { trMean: { mazi: "söyledi", muzari: "söylüyor", emir: "söyle" }, mazi: ["قَالَ", "قَالَا", "قَالُوا", "قَالَتْ", "قَالَتَا", "قُلْنَ", "قُلْتَ", "قُلْتُمَا", "قُلْتُمْ", "قُلْتِ", "قُلْتُمَا", "قُلْتُنَّ", "قُلْتُ", "قُلْنَا", "قُلْنَا"], muzari: ["يَقُولُ", "يَقُولَانِ", "يَقُولُونَ", "تَقُولُ", "تَقُولَانِ", "يَقُلْنَ", "تَقُولُ", "تَقُولَانِ", "تَقُولُونَ", "تَقُولِينَ", "تَقُولَانِ", "تَقُلْنَ", "أَقُولُ", "نَقُولُ", "نَقُولُ"], emir: ["قُلْ", "قُولَا", "قُولُوا", "قُولِي", "قُولَا", "قُلْنَ"] },
-    "نسي": { trMean: { mazi: "unuttu", muzari: "unutuyor", emir: "unut" }, mazi: ["نَسِيَ", "نَسِيَا", "نَسُوا", "نَسِيَتْ", "نَسِيَتَا", "نَسِينَ", "نَسِيتَ", "نَسِيتُمَا", "نَسِيتُمْ", "نَسِيتِ", "نَسِيتُمَا", "نَسِيتُنَّ", "نَسِيتُ", "نَسِينَا", "نَسِينَا"], muzari: ["يَنْسَى", "يَنْسَيَانِ", "يَنْسَوْنَ", "تَنْسَى", "تَنْسَيَانِ", "يَنْسَيْنَ", "تَنْسَى", "تَنْسَيَانِ", "تَنْسَوْنَ", "تَنْسَيْنَ", "تَنْسَيَانِ", "تَنْسَيْنَ", "أَنْسَى", "نَنْسَى", "نَنْسَى"], emir: ["اِنْسَ", "اِنْسَيَا", "اِنْسَوْا", "اِنْسَيْ", "اِنْسَيَا", "اِنْسَيْنَ"] },
-    "علّم": { trMean: { mazi: "öğretti", muzari: "öğretiyor", emir: "öğret" }, mazi: ["عَلَّمَ", "عَلَّمَا", "عَلَّمُوا", "عَلَّمَتْ", "عَلَّمَتَا", "عَلَّمْنَ", "عَلَّمْتَ", "عَلَّمْتُمَا", "عَلَّمْتُمْ", "عَلَّمْتِ", "عَلَّمْتُمَا", "عَلَّمْتُنَّ", "عَلَّمْتُ", "عَلَّمْنَا", "عَلَّمْنَا"], muzari: ["يُعَلِّمُ", "يُعَلِّمَانِ", "يُعَلِّمُونَ", "تُعَلِّمُ", "تُعَلِّمَانِ", "يُعَلِّمْنَ", "تُعَلِّمُ", "تُعَلِّمَانِ", "تُعَلِّمُونَ", "تُعَلِّمِينَ", "تُعَلِّمَانِ", "تُعَلِّمْنَ", "أُعَلِّمُ", "نُعَلِّمُ", "نُعَلِّمُ"], emir: ["عَلِّمْ", "عَلِّمَا", "عَلِّمُوا", "عَلِّمِي", "عَلِّمَا", "عَلِّمْنَ"] },
-    "اعترف": { trMean: { mazi: "itiraf etti", muzari: "itiraf ediyor", emir: "itiraf et" }, mazi: ["اِعْتَرَفَ", "اِعْتَرَفَا", "اِعْتَرَفُوا", "اِعْتَرَفَتْ", "اِعْتَرَفَتَا", "اِعْتَرَفْنَ", "اِعْتَرَفْتَ", "اِعْتَرَفْتُمَا", "اِعْتَرَفْتُمْ", "اِعْتَرَفْتِ", "اِعْتَرَفْتُمَا", "اِعْتَرَفْتُنَّ", "اِعْتَرَفْتُ", "اِعْتَرَفْنَا", "اِعْتَرَفْنَا"], muzari: ["يَعْتَرِفُ", "يَعْتَرِفَانِ", "يَعْتَرِفُونَ", "تَعْتَرِفُ", "تَعْتَرِفَانِ", "يَعْتَرِفْنَ", "تَعْتَرِفُ", "تَعْتَرِفَانِ", "تَعْتَرِفُونَ", "تَعْتَرِفِينَ", "تَعْتَرِفَانِ", "تَعْتَرِفْنَ", "أَعْتَرِفُ", "نَعْتَرِفُ", "نَعْتَرِفُ"], emir: ["اِعْتَرِفْ", "اِعْتَرِفَا", "اِعْتَرِفُوا", "اِعْتَرِفِي", "اِعْتَرِفَا", "اِعْتَرِفْنَ"] },
-    "انقلب": { trMean: { mazi: "devrildi", muzari: "devriliyor", emir: "devril" }, mazi: ["اِنْقَلَبَ", "اِنْقَلَبَا", "اِنْقَلَبُوا", "اِنْقَلَبَتْ", "اِنْقَلَبَتَا", "اِنْقَلَبْنَ", "اِنْقَلَبْتَ", "اِنْقَلَبْتُمَا", "اِنْقَلَبْتُمْ", "اِنْقَلَبْتِ", "اِنْقَلَبْتُمَا", "اِنْقَلَبْتُنَّ", "اِنْقَلَبْتُ", "اِنْقَلَبْنَا", "اِنْقَلَبْنَا"], muzari: ["يَنْقَلِبُ", "يَنْقَلِبَانِ", "يَنْقَلِبُونَ", "تَنْقَلِبُ", "تَنْقَلِبَانِ", "يَنْقَلِبْنَ", "تَنْقَلِبُ", "تَنْقَلِبَانِ", "تَنْقَلِبُونَ", "تَنْقَلِبِينَ", "تَنْقَلِبَانِ", "تَنْقَلِبْنَ", "أَنْقَلِبُ", "نَنْقَلِبُ", "نَنْقَلِبُ"], emir: ["اِنْقَلِبْ", "اِنْقَلِبَا", "اِنْقَلِبُوا", "اِنْقَلِبِي", "اِنْقَلِبَا", "اِنْقَلِبْنَ"] },
-
         "استيقظ": {"trMean": {"mazi": "uyandı", "muzari": "uyanıyor", "emir": "uyan"}, "mazi": ["اِسْتَيْقَظَ", "اِسْتَيْقَظَا", "اِسْتَيْقَظُوا", "اِسْتَيْقَظَتْ", "اِسْتَيْقَظَتَا", "اِسْتَيْقَظْنَ", "اِسْتَيْقَظْتَ", "اِسْتَيْقَظْتُمَا", "اِسْتَيْقَظْتُمْ", "اِسْتَيْقَظْتِ", "اِسْتَيْقَظْتُمَا", "اِسْتَيْقَظْتُنَّ", "اِسْتَيْقَظْتُ", "اِسْتَيْقَظْنَا", "اِسْتَيْقَظْنَا"], "muzari": ["يَسْتَيْقِظُ", "يَسْتَيْقِظَانِ", "يَسْتَيْقِظُونَ", "تَسْتَيْقِظُ", "تَسْتَيْقِظَانِ", "يَسْتَيْقِظْنَ", "تَسْتَيْقِظُ", "تَسْتَيْقِظَانِ", "تَسْتَيْقِظُونَ", "تَسْتَيْقِظِينَ", "تَسْتَيْقِظَانِ", "تَسْتَيْقِظْنَ", "أَسْتَيْقِظُ", "نَسْتَيْقِظُ", "نَسْتَيْقِظُ"], "emir": ["اِسْتَيْقِظْ", "اِسْتَيْقِظَا", "اِسْتَيْقِظُوا", "اِسْتَيْقِظِي", "اِسْتَيْقِظَا", "اِسْتَيْقِظْنَ"]},
     "توضأ": {"trMean": {"mazi": "abdest aldı", "muzari": "abdest alıyor", "emir": "abdest al"}, "mazi": ["تَوَضَّأَ", "تَوَضَّآ", "تَوَضَّؤُوا", "تَوَضَّأَتْ", "تَوَضَّأَتَا", "تَوَضَّأْنَ", "تَوَضَّأْتَ", "تَوَضَّأْتُمَا", "تَوَضَّأْتُمْ", "تَوَضَّأْتِ", "تَوَضَّأْتُمَا", "تَوَضَّأْتُنَّ", "تَوَضَّأْتُ", "تَوَضَّأْنَا", "تَوَضَّأْنَا"], "muzari": ["يَتَوَضَّأُ", "يَتَوَضَّآنِ", "يَتَوَضَّأُونَ", "تَتَوَضَّأُ", "تَتَوَضَّآنِ", "يَتَوَضَّأْنَ", "تَتَوَضَّأُ", "تَتَوَضَّآنِ", "تَتَوَضَّأُونَ", "تَتَوَضَّأِينَ", "تَتَوَضَّآنِ", "تَتَوَضَّأْنَ", "أَتَوَضَّأُ", "نَتَوَضَّأُ", "نَتَوَضَّأُ"], "emir": ["تَوَضَّأْ", "تَوَضَّآ", "تَوَضَّؤُوا", "تَوَضَّئِي", "تَوَضَّآ", "تَوَضَّأْنَ"]},
     "صلى": {"trMean": {"mazi": "namaz kıldı", "muzari": "namaz kılıyor", "emir": "namaz kıl"}, "mazi": ["صَلَّى", "صَلَّيَا", "صَلَّوْا", "صَلَّتْ", "صَلَّتَا", "صَلَّيْنَ", "صَلَّيْتَ", "صَلَّيْتُمَا", "صَلَّيْتُمْ", "صَلَّيْتِ", "صَلَّيْتُمَا", "صَلَّيْتُنَّ", "صَلَّيْتُ", "صَلَّيْنَا", "صَلَّيْنَا"], "muzari": ["يُصَلِّي", "يُصَلِّياَنِ", "يُصَلُّونَ", "تُصَلِّي", "تُصَلِّياَنِ", "يُصَلِّينَ", "تُصَلِّي", "تُصَلِّياَنِ", "تُصَلُّونَ", "تُصَلِّينَ", "تُصَلِّياَنِ", "تُصَلِّينَ", "أُصَلِّي", "نُصَلِّي", "نُصَلِّي"], "emir": ["صَلِّ", "صَلِّياَ", "صَلُّوا", "صَلِّي", "صَلِّياَ", "صَلِّينَ"]},
@@ -8335,9 +8324,6 @@ window.atlasEPats = [
 ];
 
 window.openAtlasOverlay = function(stage) {
-    /* SEKME HAFIZASI: baska sekmeye gecmeden once acik sekmenin durumu
-       (secili fiil + turetilen/acilan hucreler) kaydedilir. */
-    try { if (window._atlasDurumKaydet) window._atlasDurumKaydet(); } catch (e) { }
     window.isAtlasMode = true;
     window.isAtlasFullscreen = false;
     let _sa = document.getElementById('screen-atlas');
@@ -8400,7 +8386,6 @@ window.openAtlasOverlay = function(stage) {
 
     
     
-    window._atlasAcikStage = stage;   /* kaydirma gezintisi icin acik baslik */
     window.currentStage = stage.replace('_mezid', '').toLowerCase();
     let arTitle, trTitle, desc, descBottom = "";
     let hasTable = false;
@@ -8416,7 +8401,7 @@ window.openAtlasOverlay = function(stage) {
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Kur'an'da ve Klasik Arapça'da Farklı Kullanımları:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 8px;"><strong>1. Dua ve Beddua (Temenni):</strong> Mazi fiil çok sık olarak dua veya beddua bildirmek için kullanılır. "رَضِيَ اللهُ عَنْهُ" (Allah ondan razı olsun - Geçmiş zaman değil duadır). Veya "تَبَّتْ يَدَا أَبِي لَهَبٍ" (Ebu Leheb'in elleri kurusun).</li>
-                    <li style="margin-bottom: 8px;"><strong>2. Kesin Gelecek Zaman (Mazi-i Muhakkak):</strong> Kur'an'da kıyamet sahneleri veya Allah'ın kesin vaatleri, <em>"gerçekleşmesi o kadar kesindir ki sanki geçmişte olmuş bitmiş gibidir"</em> vurgusu vermek için Mazi kipiyle anlatılır. Örn: "أَتَىٰ أَمْرُ اللَّهِ" (Allah'ın emri geldi/gelecek).</li>
+                    <li style="margin-bottom: 8px;"><strong>2. Kesin Gelecek Zaman (Mazi-i Muhakkak):</strong> Kur'an'da kıyamet sahneleri veya Allah'ın kesin vaatleri, <em>"gerçekleşmesi o kadar kesindir ki sanki geçmişte olmuş bitmiş gibidir"</em> vurgusu vermek için Mazi kipiyle anlatılır. Örn: "أَتَىٰ أَمْرُ اللَّهِ" (Allah'ın emri geldi/gelecek).</li>
                     <li><strong>3. Şart (Koşul) Cümlelerinde:</strong> Şart edatlarından sonra mazi fiil gelse de anlam geleceğe dönüktür. Örn: "مَنْ دَخَلَ..." (Kim girerse...).</li>
                 </ul>
             </div>
@@ -8710,11 +8695,10 @@ window.openAtlasOverlay = function(stage) {
     if(elAr) {
         elAr.innerText = arTitle;
         let isNoun = ['mastar', 'ismi_fail', 'ismi_meful', 'zaman_mekan', 'ismi_alet', 'cemi_teksir', 'ismi_tasgir', 'ismi_tafdil', 'mastar_mezid', 'ismi_fail_mezid', 'ismi_meful_mezid'].includes(stage);
-        elAr.style.color = isNoun ? '#2563eb' : '#16a34a'; // Isimler MAVI, fiiller YESIL (tablo ve serit ile ayni dil)
+        elAr.style.color = isNoun ? '#16a34a' : '#2563eb'; // Green for Nouns, Blue for Verbs
     }
 
     if(elTr) elTr.innerText = trTitle;
-    try { window._atlasKonuSeritCiz(stage); } catch (e) { }
     if(elDesc) elDesc.innerHTML = desc;
     if (elDescBottom) elDescBottom.innerHTML = descBottom;
     
@@ -8730,16 +8714,13 @@ window.openAtlasOverlay = function(stage) {
     if (verbList) {
         verbList.innerHTML = '';
         let isMezidStage = stage.includes('_mezid');
-        let mucerredKeys = ["كتب", "قرأ", "ظنّ", "أكل", "وجد", "قال", "نسي", "درس", "ذهب"];
-        let mucerredIcons = ["✍️", "📖", "🤔", "🍏", "🔍", "🗣️", "🤷", "📚", "🚶"];
-        let mezidKeys = ["استيقظ", "توضأ", "صلى", "تناول", "ساعد", "أراد", "علّم", "اعترف", "انقلب"];
-        let mezidIcons = ["⏰", "💧", "🤲", "🍽️", "🤝", "🎯", "👨‍🏫", "💬", "🔄"];
+        let mucerredKeys = ["كتب", "دخل", "خرج", "جلس", "فتح", "لبس", "ذهب", "رجع", "درس", "nam", "شرب", "أكل", "غسل"];
+        let mucerredIcons = ["✍️", "🚪", "🏃‍♂️", "🪑", "🔓", "👕", "🚶", "↩️", "📚", "🛏️", "🥛", "🍏", "🧼"];
+        let mezidKeys = ["استيقظ", "توضأ", "صلى", "تناول", "ساعد", "نظف", "أراد", "سافر"];
+        let mezidIcons = ["⏰", "💧", "🤲", "🍽️", "🤝", "🧹", "🎯", "✈️"];
         
         let activeKeys = isMezidStage ? mezidKeys : mucerredKeys;
         let activeIcons = isMezidStage ? mezidIcons : mucerredIcons;
-        /* SEKME HAFIZASI: bu sekme daha once acildiysa o zamanki fiil secili doner */
-        let _hatira = (window._atlasDurum || {})[stage];
-        let _seciliFiil = (_hatira && activeKeys.indexOf(_hatira.fiil) >= 0) ? _hatira.fiil : activeKeys[0];
         
         activeKeys.forEach((k, idx) => {
             let icon = activeIcons[idx];
@@ -8747,7 +8728,7 @@ window.openAtlasOverlay = function(stage) {
             
             let btn = document.createElement('button');
             btn.className = 'atlas-verb-btn';
-            if (k === _seciliFiil) btn.classList.add('active');
+            if (idx === 0) btn.classList.add('active');
             
             btn.innerHTML = `<span>${icon}</span> <span class="arabic" style="font-family: 'Arakom', sans-serif !important; font-size: 1.4rem;">${voweled}</span>`;
             
@@ -8758,7 +8739,7 @@ window.openAtlasOverlay = function(stage) {
             verbList.appendChild(btn);
         });
         
-        window.currentAtlasVerbKey = _seciliFiil;
+        window.currentAtlasVerbKey = activeKeys[0];
     }
 
     let flexContainer = document.querySelector('#screen-atlas > div:first-of-type');
@@ -8767,9 +8748,7 @@ window.openAtlasOverlay = function(stage) {
         if(tableView) tableView.style.display = 'none';
         if(sidebar) sidebar.style.display = 'none';
         if(flexContainer) {
-            // Baslik ASLA kirpilmasin: her tarayicida guvenilir sekilde uste hizala.
-            // (safe center bazi gomulu/akilli-tahta tarayicilarinda dogru calismiyor, o yuzden kullanmiyoruz)
-            flexContainer.style.justifyContent = 'flex-start';
+            flexContainer.style.justifyContent = 'center';
             flexContainer.style.alignItems = 'center';
         }
         let _fBtn = document.getElementById('atlas-fs-btn');
@@ -8781,55 +8760,8 @@ window.openAtlasOverlay = function(stage) {
             flexContainer.style.justifyContent = 'flex-start';
             flexContainer.style.alignItems = 'center';
         }
-        /* SEKME HAFIZASI: ayni fiil geri geldiyse turetilen hucreler de geri acilir */
-        var _hatira2 = (window._atlasDurum || {})[stage];
-        if (_hatira2 && _hatira2.fiil === window.currentAtlasVerbKey &&
-            _hatira2.acilan && _hatira2.acilan.length)
-            window._atlasGeriYukle = _hatira2.acilan.slice();
         window.handleAtlasVerbChange();
     }
-
-    /* SEKME BAGIMSIZ GERI YUKLEME (her konu icin):
-       - Tam ekran YALNIZ o sekmenin kendi hafizasindan doner; baska
-         sekmede acilmis olmasi bu sekmeyi ETKILEMEZ.
-       - Kaydirma (scroll) konumu da sekmeye ozel geri gelir. */
-    var _hat3 = (window._atlasDurum || {})[stage];
-    var _cs3 = stage.replace('_mezid', '');
-    if (_hat3 && _hat3.tamEkran && !window.isAtlasFullscreen &&
-        (_cs3 === 'mazi' || _cs3 === 'muzari')) {
-        window.toggleAtlasFullscreen();
-    }
-    if (_hat3) {
-        var _kayan3 = document.querySelector('#screen-atlas > div:first-of-type');
-        if (_kayan3 && _hat3.kaydir) _kayan3.scrollTop = _hat3.kaydir;
-        var _mo3 = document.getElementById('marathon-overlay');
-        if (_mo3 && _hat3.kaydirUst) _mo3.scrollTop = _hat3.kaydirUst;
-        if (_hat3.kaydirPencere) {
-            /* icerik yerlesimini bekleyip pencereyi eski konuma getir */
-            var _hedefY = _hat3.kaydirPencere;
-            requestAnimationFrame(function () { window.scrollTo(0, _hedefY); });
-        }
-    }
-};
-
-/* Sekme basina durum: { fiil, acilan[] } — atlas acikken sekme degisiminde yazilir. */
-window._atlasDurum = {};
-window._atlasDurumKaydet = function () {
-    var k = window._atlasAcikStage;
-    if (!k || !window.isAtlasMode) return;
-    var kap = document.getElementById('atlas-table-view');
-    var acilan = [];
-    if (kap) kap.querySelectorAll('.marathon-cell').forEach(function (c, i) {
-        if (c.classList.contains('atlas-revealed')) acilan.push(i);
-    });
-    var kayan = document.querySelector('#screen-atlas > div:first-of-type');
-    var mo = document.getElementById('marathon-overlay');
-    window._atlasDurum[k] = { fiil: window.currentAtlasVerbKey, acilan: acilan,
-                              tamEkran: !!window.isAtlasFullscreen,
-                              kaydir: kayan ? kayan.scrollTop : 0,
-                              kaydirUst: mo ? mo.scrollTop : 0,
-                              /* asil kaydirici cogu duzende PENCEREdir */
-                              kaydirPencere: (document.scrollingElement || document.documentElement).scrollTop || 0 };
 };
 
 window.changeAtlasVerb = function(key, btnEl) {
@@ -8873,11 +8805,6 @@ window.handleAtlasVerbChange = function(keepState = false) {
                 window._tempRevealedIndices.push(idx);
             }
         });
-    }
-
-    if (window._atlasGeriYukle) {   /* sekme hafizasindan geri acilis */
-        window._tempRevealedIndices = window._atlasGeriYukle;
-        window._atlasGeriYukle = null;
     }
 
     container.innerHTML = '';
@@ -9439,11 +9366,6 @@ function showRootOfDay() {
         "#4B5563", // Havalı Gri
         "#4338CA"  // Koyu Lacivert
     ];
-    // Soru isareti (kapali) yuzu icin daha yumusak / dinlendirici tonlar
-    const softPalette = [
-        "#7E9AB8","#83AB87","#A98CB6","#C09A70","#74A5A2","#BC8794","#8E93A8","#AC9877",
-        "#8BA4C0","#95B08C","#B58C9A","#7AA1B2","#BFA079","#9AA6BE","#A6AE8C"
-    ];
     
     let derivedWordsHTML = "";
     for (let i = 0; i < wordsArray.length; i++) {
@@ -9451,19 +9373,11 @@ function showRootOfDay() {
         // Renklendirme kapatıldı (zaid harf renklendirmesi iptal), kelimenin tamamı tek renk olacak
         let rawArText = w.arText; 
         let cardColor = colorPalette[i % colorPalette.length];
-        let softColor = softPalette[i % softPalette.length];
         
         derivedWordsHTML += `
-            <div class="rod-card" data-idx="${i}" style="flex: 0 1 200px; min-width: 160px; max-width: 260px; height: 168px; perspective: 900px; cursor: pointer;">
-              <div class="rod-card-inner" style="position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4,0.2,0.2,1); transform-style: preserve-3d;">
-                <div class="rod-face" style="position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: ${softColor}; color: rgba(255,255,255,0.95); box-shadow: 0 4px 10px rgba(0,0,0,0.10);">
-                  <span style="font-size: 64px; font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,0.18);">?</span>
-                </div>
-                <div class="rod-face" style="position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; background: #ffffff; border: 2px solid ${cardColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.06); padding: 10px;">
-                  <div style="font-family: 'Arakom', sans-serif; font-size: 46px; color: ${cardColor}; line-height: 1.2;" dir="rtl">${rawArText}</div>
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; color: #555555; font-weight: 600; margin-top: 8px;" dir="ltr">${w.trText}</div>
-                </div>
-              </div>
+            <div style="background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 20px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-align: center; transition: transform 0.2s, border-color 0.2s; flex: 0 1 200px; min-width: 160px; max-width: 260px;" onmouseover="this.style.borderColor='${cardColor}'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='translateY(0)'">
+                <div style="font-family: 'Arakom', sans-serif; font-size: 52px; color: ${cardColor}; margin-bottom: 12px; line-height: 1.2;" dir="rtl">${rawArText}</div>
+                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; color: #555555; font-weight: 600;" dir="ltr">${w.trText}</div>
             </div>
         `;
     }
@@ -9504,7 +9418,7 @@ function showRootOfDay() {
     
     // iOS/Apple-like professional design
     modalOverlay.innerHTML = `
-        <div id="rod-panel" style="background: #f5f5f7; width: 95%; max-width: 1100px; max-height: 90vh; overflow-y: auto; border-radius: 28px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <div style="background: #f5f5f7; width: 95%; max-width: 1100px; max-height: 90vh; overflow-y: auto; border-radius: 28px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
             
             <button onclick="closeRootOfDay()" style="position: absolute; top: 20px; right: 20px; background: #e2e8f0; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 16px; color: #1d1d1f; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='#cbd5e1'" onmouseout="this.style.background='#e2e8f0'">
                 <i class="fas fa-times"></i>
@@ -9559,50 +9473,6 @@ function showRootOfDay() {
         modalOverlay.style.opacity = "1";
         modalOverlay.firstElementChild.style.transform = "scale(1) translateY(0)";
     }, 50);
-
-    // ==== GUNUN KOKU OYUNU: akici kirmizi kenar geri sayimi (20sn/kelime) + kart cevirme ====
-    (function(){
-      var panel = modalOverlay.querySelector('#rod-panel');
-      var cards = Array.prototype.slice.call(modalOverlay.querySelectorAll('.rod-card'));
-      var n = cards.length; if(n===0 || !panel) return;
-      var totalMs = n*20000, remaining = totalMs, ended=false;
-      var svg=null, rect=null, P=0, NS='http://www.w3.org/2000/svg';
-      var drainStart=0, endTimer=null;
-      function isFlipped(c){ return c.getAttribute('data-flipped')==='1'; }
-      function flip(c){ if(isFlipped(c)) return false; c.setAttribute('data-flipped','1'); var inner=c.querySelector('.rod-card-inner'); if(inner) inner.style.transform='rotateY(180deg)'; return true; }
-      function curRemaining(){ return Math.max(0, remaining - (Date.now()-drainStart)); }
-      function buildTimer(){
-        var w=panel.offsetWidth, h=panel.offsetHeight, r=26, sw=6;
-        svg=document.createElementNS(NS,'svg'); svg.style.position='absolute'; svg.style.pointerEvents='none'; svg.style.zIndex='6';
-        rect=document.createElementNS(NS,'rect'); rect.setAttribute('fill','none'); rect.setAttribute('stroke','#FF3B30'); rect.setAttribute('stroke-width',sw); rect.setAttribute('stroke-linecap','round'); rect.style.filter='drop-shadow(0 0 5px rgba(255,59,48,.5))'; rect.style.willChange='stroke-dashoffset';
-        svg.appendChild(rect); modalOverlay.appendChild(svg);
-        svg.setAttribute('width',w); svg.setAttribute('height',h); svg.style.left=panel.offsetLeft+'px'; svg.style.top=panel.offsetTop+'px';
-        rect.setAttribute('x',sw/2); rect.setAttribute('y',sw/2); rect.setAttribute('width',w-sw); rect.setAttribute('height',h-sw); rect.setAttribute('rx',r); rect.setAttribute('ry',r);
-        var ww=w-sw, hh=h-sw; P = 2*((ww-2*r)+(hh-2*r)) + 2*Math.PI*r;
-        rect.style.strokeDasharray = P; rect.style.strokeDashoffset = '0';
-      }
-      function startDrain(){
-        if(!rect) return; var rem = remaining; var frac = rem/totalMs;
-        rect.style.transition='none';
-        rect.style.strokeDashoffset = (P*(1-frac)).toFixed(1);
-        void rect.getBoundingClientRect(); // reflow
-        rect.style.transition = 'stroke-dashoffset '+rem+'ms linear';
-        rect.style.strokeDashoffset = P.toFixed(1);
-        drainStart = Date.now();
-        if(endTimer) clearTimeout(endTimer);
-        endTimer = setTimeout(endGame, rem);
-      }
-      function endGame(){ if(ended) return; ended=true; if(endTimer) clearTimeout(endTimer);
-        if(rect){ rect.style.transition='stroke-dashoffset .3s linear'; rect.style.strokeDashoffset = P.toFixed(1); }
-        var rest=cards.filter(function(c){return !isFlipped(c);}); rest.forEach(function(c,i){ setTimeout(function(){ flip(c); }, i*280); }); }
-      cards.forEach(function(c){ c.addEventListener('click', function(){
-        if(ended){ flip(c); return; }
-        if(flip(c)){ var rem=curRemaining()-20000; remaining=Math.max(0,rem); if(remaining<=0){ endGame(); } else { startDrain(); } }
-      }); });
-      function reposition(){ if(svg && panel && rect){ svg.style.left=panel.offsetLeft+'px'; svg.style.top=panel.offsetTop+'px'; var w=panel.offsetWidth,h=panel.offsetHeight,sw=6; svg.setAttribute('width',w); svg.setAttribute('height',h); rect.setAttribute('width',w-sw); rect.setAttribute('height',h-sw); } }
-      window.addEventListener('resize', reposition);
-      setTimeout(function(){ buildTimer(); startDrain(); }, 550);
-    })();
 }
 
 
@@ -9748,7 +9618,7 @@ function applyTelaffuzFilter() {
     resContainer.innerHTML = `
         <div style="grid-column: 1 / -1; text-align:center; padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center;" dir="ltr">
             <i class="fas fa-spinner fa-pulse" style="font-size: 4rem; color: #3498db; margin-bottom: 20px;"></i>
-            <div style="font-size: 1.4rem; color: #2c3e50; font-weight: 700; direction: ltr; unicode-bidi: isolate;">Maraton Fiilleri Yükleniyor...</div>
+            <div style="font-size: 1.4rem; color: #2c3e50; font-weight: 700;">Maraton Fiilleri Yükleniyor...</div>
         </div>
     `;
     
@@ -9859,288 +9729,3 @@ function launchTelaffuzMarathon(root, refId) {
     if (typeof prepareMarathonPlay === 'function') prepareMarathonPlay();
 }
 
-
-/* ================= ATLAS KAYDIRMA GEZINTISI =================
-   Mavi/yesil baslik detayi (atlas) ACIKKEN ekrani SOLA kaydir ->
-   ayni tablonun SIRADAKI basligi; SAGA kaydir -> onceki. Klavye sag/sol
-   ok da calisir. IKI DIZI BIRBIRINE GECMEZ:
-   - Mucerred: mazi -> ... -> ismi_tafdil (sonda durur, mezide GECMEZ)
-   - Mezid   : mazi_mezid -> ... -> ismi_meful_mezid
-   Maraton oyunu acikken (isAtlasMode false) kaydirma HIC calismaz. */
-window._atlasSiraMucerred = ['mazi', 'muzari', 'emir', 'mastar', 'ismi_fail',
-    'zaman_mekan', 'ismi_meful', 'ismi_alet', 'cemi_teksir', 'ismi_tasgir', 'ismi_tafdil'];
-window._atlasSiraMezid = ['mazi_mezid', 'muzari_mezid', 'emir_mezid',
-    'mastar_mezid', 'ismi_fail_mezid', 'ismi_meful_mezid'];
-window.atlasKomsuAc = function (adim) {
-    if (!window.isAtlasMode) return;
-    var k = window._atlasAcikStage;
-    var dizi = null;
-    if (window._atlasSiraMucerred.indexOf(k) >= 0) dizi = window._atlasSiraMucerred;
-    else if (window._atlasSiraMezid.indexOf(k) >= 0) dizi = window._atlasSiraMezid;
-    if (!dizi) return;
-    var i = dizi.indexOf(k) + adim;
-    if (i < 0 || i >= dizi.length) return;      /* uctan tasilmaz, tablolar birbirine gecmez */
-    window._atlasGecisYap(dizi[i], adim);
-};
-
-/* YONLU GECIS ANIMASYONU (Arapca sayfa cevirme duzeni):
-   - SIRADAKI yonu (adim=+1): eski icerik SAGA cikar, yeni ekran SOLDAN gelir.
-   - ONCEKI yonu (adim=-1): eski icerik SOLA cikar, yeni ekran SAGDAN gelir. */
-window._atlasGecisYap = function (hedef, adim) {
-    /* CIFT KATMANLI KESINTISIZ GECIS:
-       - SAHNE (screen-atlas) HIC oynatilmaz -> icindeki sabit carpi ve tam
-         ekran tusu yerinden kipirdamaz (transform, fixed ogenin capasini
-         degistirdigi icin eski yontem tuslari titretiyordu).
-       - Eski sayfanin goruntu kopyasi (klon) ayni yere serilir; yeni sayfa
-         hemen kurulur; IKISI AYNI ANDA kayar: eski disari suzulurken yeni
-         iceri girer. Arada bos kare / durma ani / beyaz flas olmaz. */
-    var sahne = document.getElementById('screen-atlas');
-    var sarici = document.querySelector('#screen-atlas > div:first-of-type');
-    if (!sahne || !sarici) { window.openAtlasOverlay(hedef); return; }
-    var gecisNo = (window._atlasGecisSayac = (window._atlasGecisSayac || 0) + 1);
-
-    /* onceki gecisten kalan klon varsa aninda kaldir (hizli ardisik jest) */
-    var eskiKlon = document.getElementById('atlasGecisKlon');
-    if (eskiKlon) eskiKlon.remove();
-
-    /* 1) simdiki sayfanin kopyasi tam ayni konuma serilir */
-    var klon = sarici.cloneNode(true);
-    klon.id = 'atlasGecisKlon';
-    var kayS = sarici.scrollTop;
-    klon.style.position = 'absolute';
-    klon.style.top = sarici.offsetTop + 'px';
-    klon.style.left = sarici.offsetLeft + 'px';
-    klon.style.width = sarici.clientWidth + 'px';
-    klon.style.height = sarici.clientHeight + 'px';
-    klon.style.margin = '0';
-    klon.style.overflow = 'hidden';
-    klon.style.pointerEvents = 'none';
-    klon.style.zIndex = '40';   /* icerigin ustunde, sabit tuslarin (60) altinda */
-    sahne.appendChild(klon);
-    klon.scrollTop = kayS;
-
-    /* 2) yeni sayfa hemen kurulur (sekme hafizasi + serit dahil) */
-    window.openAtlasOverlay(hedef);
-
-    /* 3) iki katman BIRLIKTE kayar — siradaki SOLDAN girer (RTL) */
-    var E = 'cubic-bezier(.25,.1,.25,1)';
-    sarici.style.transition = 'none';
-    sarici.style.transform = 'translateX(' + (adim > 0 ? '-84px' : '84px') + ')';
-    sarici.style.opacity = '0.55';
-    void sarici.offsetWidth;
-    sarici.style.transition = 'transform .3s ' + E + ', opacity .3s ' + E;
-    klon.style.transition = 'transform .3s ' + E + ', opacity .3s ' + E;
-    sarici.style.transform = 'translateX(0)';
-    sarici.style.opacity = '1';
-    klon.style.transform = 'translateX(' + (adim > 0 ? '84px' : '-84px') + ')';
-    klon.style.opacity = '0';
-
-    /* 4) temizlik — yalniz EN SON gecis yapar */
-    setTimeout(function () {
-        if (window._atlasGecisSayac !== gecisNo) { klon.remove(); return; }
-        klon.remove();
-        sarici.style.transition = '';
-        sarici.style.transform = '';
-        sarici.style.opacity = '';
-    }, 340);
-};
-
-/* KONU SERIDINDEN dogrudan gecis: hedef konum mevcut konumdan ileriyse
-   siradaki yonunde, geriyse onceki yonunde animasyonla acilir. */
-window.atlasKonuyaGit = function (k) {
-    if (!k || k === window._atlasAcikStage) return;
-    var dizi = (window._atlasSiraMucerred.indexOf(k) >= 0) ? window._atlasSiraMucerred
-             : (window._atlasSiraMezid.indexOf(k) >= 0) ? window._atlasSiraMezid : null;
-    if (!dizi) return;
-    var eski = dizi.indexOf(window._atlasAcikStage);
-    var yeniIdx = dizi.indexOf(k);
-    window._atlasGecisYap(k, (eski >= 0 && yeniIdx < eski) ? -1 : 1);
-};
-
-/* KONU SERIDI: Turkce basligin altinda YATAY kaydirmali mavi/yesil konu
-   haplari — istenen basliga tek dokunusla gidilir. Fiil konulari MAVI,
-   isim konulari YESIL (tablodaki baslik renkleriyle ayni dil). */
-window._atlasKonuAd = {
-    mazi: 'MAZİ', muzari: 'MUZARİ', emir: 'EMİR', mastar: 'MASTAR & S.MÜŞ',
-    ismi_fail: 'İSMİ FAİL', zaman_mekan: 'ZAMAN MEKAN', ismi_meful: "İSMİ MEF'UL",
-    ismi_alet: 'İSMİ ALET', cemi_teksir: 'CEMİ TEKSİR', ismi_tasgir: 'İSMİ TASGİR',
-    ismi_tafdil: 'İSMİ TAFDİL', mazi_mezid: 'MAZİ', muzari_mezid: 'MUZARİ',
-    emir_mezid: 'EMİR', mastar_mezid: 'MASTAR', ismi_fail_mezid: 'İSMİ FAİL',
-    ismi_meful_mezid: "İSMİ MEF'UL"
-};
-window._atlasKonuSeritCiz = function (stage) {
-    var baslik = document.getElementById('atlas-title-tr');
-    if (!baslik) return;
-    /* Cift baslik olmasin: renksiz gri Turkce baslik gizlenir —
-       seritteki BUYUK renkli aktif hap basligin kendisidir. */
-    baslik.style.display = 'none';
-    if (!document.getElementById('atlasKonuStil')) {
-        var st = document.createElement('style');
-        st.id = 'atlasKonuStil';
-        st.textContent =
-            /* KARUSEL: aktif hap ORTADA ve BUYUK; komsular orta boy, uzaktakiler kucuk.
-               Kenar dolgusu sayesinde ilk/son baslik da tam ortaya gelebilir. */
-            /* KAPATMA CARPISI PENCEREYE sabitlenir: normal kipte kapsayicisi
-               ekrandan genis oldugu icin sagdan tasiyordu — fixed ile hicbir
-               kipte tasamaz. Serit de ustte gereksiz bosluksuz baslar. */
-            '#screen-atlas > button[onclick="closeMarathon()"]{position:fixed !important;' +
-            ' top:14px !important; right:14px !important; z-index:60 !important;}' +
-            /* TAM EKRAN TUSU da ayni hizada: carpiyla AYNI ust cizgide (14px),
-               hemen solunda (14+45+14=73) — dikey simetri her kipte korunur. */
-            '#screen-atlas > #atlas-fs-btn{position:fixed !important; top:14px !important;' +
-            ' right:73px !important; left:auto !important; z-index:60 !important;}' +
-            '#atlasKonuSerit{display:flex; align-items:center; gap:9px; overflow-x:auto; direction:rtl;' +
-            ' -webkit-overflow-scrolling:touch; padding:6px max(16px, calc(50% - 100px)) 10px;' +
-            ' margin:8px auto 4px; max-width:100%; scrollbar-width:none; scroll-behavior:smooth;}' +
-            '#atlasKonuSerit::-webkit-scrollbar{display:none}' +
-            /* KOSELI + DOLGULU + 3D TUS: tablodaki th-3d-btn ile AYNI hissiyat —
-               alt kenar golgesi + ust ic isik; basinca 4px coker, golge yatar. */
-            '.atlas-konu-hap{flex:none; border-radius:9px; font-family:sans-serif; font-weight:700;' +
-            ' cursor:pointer; white-space:nowrap; border:none; color:#fff; user-select:none;' +
-            ' box-shadow:0 4px 0 rgba(0,0,0,.2), inset 0 2px 0 rgba(255,255,255,.4);' +
-            ' transform:translateY(0);' +
-            ' transition:font-size .2s, padding .2s, opacity .2s, transform .1s ease, box-shadow .1s ease, filter .1s;}' +
-            '.atlas-konu-hap:hover{filter:brightness(1.1)}' +
-            '.atlas-konu-hap:active{transform:translateY(4px);' +
-            ' box-shadow:0 0 0 rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.2)}' +
-            '.atlas-konu-hap.u0{font-size:1.45rem; padding:12px 26px;}' +
-            '.atlas-konu-hap.u1{font-size:1.05rem; padding:8px 16px; opacity:.9}' +
-            '.atlas-konu-hap.u2{font-size:.88rem; padding:6px 13px; opacity:.72}' +
-            '.atlas-konu-hap.fiil{background:#16a34a}' +
-            '.atlas-konu-hap.isim{background:#2563eb}' +
-            '.atlas-konu-hap.aktif{opacity:1;' +
-            ' box-shadow:0 4px 0 rgba(0,0,0,.25), inset 0 2px 0 rgba(255,255,255,.45), 0 7px 14px rgba(0,0,0,.2)}';
-        document.head.appendChild(st);
-    }
-    var serit = document.getElementById('atlasKonuSerit');
-    if (!serit) {
-        serit = document.createElement('div');
-        serit.id = 'atlasKonuSerit';
-        baslik.insertAdjacentElement('afterend', serit);
-    }
-    var dizi = (window._atlasSiraMezid.indexOf(stage) >= 0) ? window._atlasSiraMezid : window._atlasSiraMucerred;
-    var aktifIdx = dizi.indexOf(stage);
-    var html = '';
-    for (var i = 0; i < dizi.length; i++) {
-        var k = dizi[i];
-        var kok = k.replace('_mezid', '');
-        var tur = (kok === 'mazi' || kok === 'muzari' || kok === 'emir') ? 'fiil' : 'isim';
-        var uzak = Math.min(2, Math.abs(i - aktifIdx));   /* 0=aktif, 1=komsu, 2=uzak */
-        html += '<button type="button" class="atlas-konu-hap ' + tur + ' u' + uzak +
-            (k === stage ? ' aktif' : '') + '"' +
-            ' onclick="atlasKonuyaGit(\'' + k + '\')">' + (window._atlasKonuAd[k] || k) + '</button>';
-    }
-    serit.innerHTML = html;
-    /* aktif hap tam ORTAYA gelsin — YALNIZ YATAY kaydirilir (scrollIntoView
-       pencereyi dikey de oynatip sekmenin scroll hafizasini bozuyordu). */
-    var seritOrtala = function () {
-        var a2 = serit.querySelector('.atlas-konu-hap.aktif');
-        if (!a2) return;
-        var sr = serit.getBoundingClientRect(), ar = a2.getBoundingClientRect();
-        serit.scrollLeft += (ar.left + ar.width / 2) - (sr.left + sr.width / 2);
-    };
-    seritOrtala();
-    setTimeout(seritOrtala, 240);   /* boyut gecisi bitince bir kez daha */
-};
-(function () {
-    /* DIKKAT: dinleyiciler BELGE duzeyindedir. Atlas acikken dokunus/tekerlek
-       olaylari marathon-overlay'in DISINDAKI ust katmanlara (or. verb-overlay)
-       dusebiliyor; belge duzeyi hepsini yakalar. Tum yollar isAtlasMode +
-       overlay .active kontrolluyle korunur — maraton oyununa karismaz. */
-    function atlasAcikMi() {
-        if (!window.isAtlasMode) return false;
-        var o = document.getElementById('marathon-overlay');
-        return !!(o && o.classList.contains('active'));
-    }
-    /* Icinde YATAY kayabilen bir kutu (or. genis cekim tablosu) varsa
-       jest ona birakilir — baslik degistirilmez. */
-    function yatayKayanIcinde(el) {
-        while (el && el !== document.body && el.nodeType === 1) {
-            if (el.scrollWidth - el.clientWidth > 8) {
-                var ox = '';
-                try { ox = getComputedStyle(el).overflowX; } catch (e) { }
-                if (ox === 'auto' || ox === 'scroll') return true;
-            }
-            el = el.parentElement;
-        }
-        return false;
-    }
-    function atlasKaydirmaKur() {
-        if (window._atlasKaydirmaKuruldu) return;
-        window._atlasKaydirmaKuruldu = 1;
-
-        /* DOKUNMATIK: sola kaydir = siradaki, saga = onceki */
-        var dX = 0, dY = 0, dTut = false;
-        document.addEventListener('touchstart', function (e) {
-            if (!atlasAcikMi() || !e.touches || !e.touches.length) return;
-            dX = e.touches[0].clientX; dY = e.touches[0].clientY; dTut = true;
-        }, { passive: true });
-        document.addEventListener('touchend', function (e) {
-            if (!dTut || !atlasAcikMi() || !e.changedTouches || !e.changedTouches.length) return;
-            dTut = false;
-            var dx = e.changedTouches[0].clientX - dX;
-            var dy = e.changedTouches[0].clientY - dY;
-            if (Math.abs(dx) < 70 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
-            if (yatayKayanIcinde(e.target)) return;
-            /* Dokunmatik mantigi: SIRADAKI sayfa SOLDA durur; parmaklar
-               SOLDAN SAGA kayinca o sayfa cekilip gelir. */
-            window.atlasKomsuAc(dx > 0 ? 1 : -1);
-        }, { passive: true });
-
-        /* KLAVYE: sag ok = siradaki, sol ok = onceki */
-        document.addEventListener('keydown', function (e) {
-            if (!atlasAcikMi()) return;
-            /* RTL sayfa duzeni: SIRADAKI sayfa SOLDA -> SOL ok siradakine,
-               SAG ok oncekine gider (animasyonla ayni yon). */
-            if (e.key === 'ArrowLeft') { e.preventDefault(); window.atlasKomsuAc(1); }
-            else if (e.key === 'ArrowRight') { e.preventDefault(); window.atlasKomsuAc(-1); }
-        });
-
-        /* TRACKPAD (wheel) JESTI — Mac atalet (momentum) uyumlu:
-           Tetikten sonra 450 ms SOGUMA: bu surede gelen tum olaylar yutulur
-           (atalet kuyrugu ust uste tetiklemesin). Sogumadan sonra kucuk
-           atalet kirintilari (|deltaX| < 8) sayilmaz; 300 ms aralik yeni
-           jest sayilip birikim sifirlanir. Boylece pes pese kac kez
-           kaydirirsan kaydir, her guclu jest TEK adim atar ve kilitlenmez. */
-        var wBirikim = 0, wSonTetik = 0, wSonOlay = 0;
-        document.addEventListener('wheel', function (e) {
-            if (!atlasAcikMi()) return;
-            if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) * 1.2) return;   /* dikey okuma */
-            if (yatayKayanIcinde(e.target)) return;
-            e.preventDefault();
-            var simdi = Date.now();
-            if (simdi - wSonOlay > 300) wBirikim = 0;      /* yeni jest basladi */
-            wSonOlay = simdi;
-            if (simdi - wSonTetik < 450) return;           /* soguma: atalet yutulur */
-            if (Math.abs(e.deltaX) < 8) return;            /* atalet kirintisi sayilmaz */
-            wBirikim += e.deltaX;
-            if (Math.abs(wBirikim) >= 110) {
-                wSonTetik = simdi;
-                /* Dogal kaydirmada parmaklar SOLDAN SAGA gidince deltaX
-                   NEGATIF gelir -> SIRADAKI (soldaki sayfa cekilir). */
-                var yon = wBirikim < 0 ? 1 : -1;
-                wBirikim = 0;
-                window.atlasKomsuAc(yon);
-            }
-        }, { passive: false });
-
-        /* FARE SURUKLEME: basili tutup 80px yatay cekmek de gecis yapar */
-        var fX = 0, fY = 0, fTut = false;
-        document.addEventListener('pointerdown', function (e) {
-            if (!atlasAcikMi() || e.pointerType !== 'mouse') return;
-            if (e.target && e.target.closest && e.target.closest('button, a, input, select, textarea')) return;
-            fX = e.clientX; fY = e.clientY; fTut = true;
-        });
-        document.addEventListener('pointerup', function (e) {
-            if (!fTut || !atlasAcikMi() || e.pointerType !== 'mouse') return;
-            fTut = false;
-            var dx = e.clientX - fX, dy = e.clientY - fY;
-            if (Math.abs(dx) < 80 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
-            if (yatayKayanIcinde(e.target)) return;
-            /* Saga surukleme = SIRADAKI (soldaki sayfa cekilir) */
-            window.atlasKomsuAc(dx > 0 ? 1 : -1);
-        });
-    }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', atlasKaydirmaKur);
-    else atlasKaydirmaKur();
-})();

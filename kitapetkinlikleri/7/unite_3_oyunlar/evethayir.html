@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة نعم أو لا</title>
+    <style>
+    h1, h2, h3, h4, h5, h6, strong, b { font-weight: normal !important; }
+
+        /* Arakom Fontu Tanımlaması */
+        @font-face {
+            font-family: 'Arakom';
+            src: url('arakom.ttf') format('truetype');
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arakom', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100dvh;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+
+        /* Ortak Dinamik SVG Butonu (Anasayfa / Geri) - SOL TARAFA ALINDI */
+        .nav-svg {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        .nav-svg:hover {
+            transform: scale(1.1);
+        }
+
+        /* Başlangıç Ekranı */
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100dvh;
+            background-color: #e3f2fd;
+        }
+
+        h1 {
+            font-size: 5rem;
+            color: #1565c0;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .main-btn {
+            font-family: 'Arakom', sans-serif;
+            font-size: 3.5rem;
+            padding: 20px 80px;
+            background-color: #3498db; /* Güzel bir mavi tonu */
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+        }
+
+        .main-btn:hover {
+            background-color: #2980b9; /* Fareyle üzerine gelince daha koyu bir mavi */
+        }
+
+         .start-buttons {
+            display: flex;
+            gap: 30px; /* Butonlar arası boşluk */
+            justify-content: center;
+        }
+
+        /* Oyun Ekranı Ana Kapsayıcı */
+        #game-screen {
+            display: none;
+            width: 100%;
+            height: 100dvh;
+            flex-direction: column; /* Üst yönerge ve alt oyuncular için dikey dizilim */
+        }
+
+        /* Oyun Ekranı Üst Yönerge ve Sinüs Dalgası Çubuğu */
+        #game-header {
+            width: 100%;
+            height: 100px;
+            background-color: #ffffff;
+            border-bottom: 3px solid #bdc3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .instruction-text {
+            font-size: 3.5rem;
+            color: #2980b9;
+            font-weight: normal;
+        }
+
+        /* Sinüs Dalgası Animasyon CSS */
+        .sine-wave-container {
+            width: 120px;
+            height: 40px;
+            overflow: hidden;
+            opacity: 0.2; /* Ses çalmazken soluk */
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .sine-wave-container.active {
+            opacity: 1; /* Ses çalarken net ve parlak */
+        }
+
+        .sine-wave-container svg {
+            width: 200%;
+            height: 100dvh;
+        }
+
+        /* RTL (Arapça) sayfa yönünde translation için 50% sağa/sola hareket */
+        .sine-wave-container.active svg {
+            animation: moveWave 1.5s linear infinite;
+        }
+
+        @keyframes moveWave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50%); } /* RTL uyumlu kaydırma */
+        }
+
+        /* Oyuncuların Olduğu Alt Alan */
+        #players-container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+        }
+
+        .player-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        #p1-side {
+            border-left: 4px dashed #bdc3c7;
+            background-color: #ffffff;
+        }
+
+        #p2-side {
+            background-color: #fdfefe;
+        }
+        
+        #p1-content, #p2-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Emoji Gösterimi - Tamamen Ortalı ve Sabit Yükseklik */
+        .emoji-display {
+            font-size: 10rem;
+            margin-bottom: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 120px;
+        }
+
+        /* Soru Cümlesi - SABİT YÜKSEKLİK (Butonların kaymasını engeller) */
+        .question-text {
+            font-size: 5rem;
+            text-align: center;
+            font-weight: normal;
+            color: #2c3e50;
+            margin-bottom: 50px;
+            height: 250px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.3;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 30px;
+            height: 90px;
+            align-items: center;
+        }
+
+        .btn {
+            font-family: 'Arakom', sans-serif;
+            font-size: 3rem;
+            padding: 20px 50px;
+            cursor: pointer;
+            border: none;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: white;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+            transition: transform 0.1s;
+        }
+        
+        .btn:active {
+            transform: translateY(5px);
+        }
+
+        .btn-yes { background-color: #2ecc71; }
+        .btn-no { background-color: #e74c3c; }
+
+        /* İlerleme Çubuğu */
+        .progress-bar {
+            display: flex;
+            gap: 15px;
+            position: absolute;
+            bottom: 40px;
+        }
+
+        .progress-step {
+            width: 60px;
+            height: 20px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            border: 2px solid #bdc3c7;
+        }
+
+        .progress-step.correct { background-color: #2ecc71; border-color: #27ae60; }
+        .progress-step.wrong { background-color: #e74c3c; border-color: #c0392b; }
+
+        /* Bitiş Ekranı */
+        #end-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100dvh;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 10;
+        }
+
+        .bitti-mesaj {
+            font-size: 5rem;
+            color: #2980b9;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+    
+        /* --- CİHAZ DÖNDÜRME UYARISI VE MOBİL YATAY KLAVYE DESTEĞİ --- */
+        #rotate-message {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100dvh;
+            background-color: #2c3e50; 
+            z-index: 99999; 
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            color: white; text-align: center;
+        }
+        .phone-animation {
+            width: 60px; height: 100px;
+            border: 4px solid white; border-radius: 10px;
+            animation: rotate-phone 2s infinite ease-in-out;
+            margin-bottom: 35px; position: relative;
+        }
+        .phone-animation::before {
+            content: ''; position: absolute;
+            top: 25px; left: 50%; transform: translateX(-50%);
+            width: 20%; height: 4px; background: white; border-radius: 2px;
+        }
+        @keyframes rotate-phone {
+            0% { transform: rotate(0deg); opacity: 1; }
+            25% { transform: rotate(90deg); opacity: 1; }
+            70% { transform: rotate(90deg); opacity: 1; }
+            100% { transform: rotate(90deg); opacity: 0; }
+        }
+        .rotate-text { font-size: 2.5rem; font-family: 'Arakom', Tahoma, sans-serif; }
+
+        /* MOBİL DİKEY EKRAN (KARŞILIKLI MASADA OYNAMA) */
+        @media only screen and (max-width: 950px) and (orientation: portrait) {
+            body { overflow: hidden !important; }
+            #rotate-message { display: none !important; } /* Eskiden portrait engelliydi, şimdi serbest */
+            
+            #game-screen { position: relative; }
+            #players-container {
+                flex-direction: column-reverse !important; /* P2 ÜSTTE P1 ALTTA */
+            }
+            .player-side {
+                padding: 2px 5px !important;
+                justify-content: space-evenly !important; /* Dikeyde öğeleri tam ekrana sığacak şekilde dengeli dağıt */
+            }
+            #p2-side {
+                transform: rotate(180deg);
+                border-bottom: 2px dashed #bdc3c7; /* Ayıraç */
+                border-left: none !important;
+            }
+            #p1-side { border-left: none !important; }
+            
+            /* 2 Kişilik oyunda Header ortada olur */
+            .mode-2p #game-header {
+                position: absolute;
+                top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+                height: 50px;
+                border: none;
+                background-color: rgba(255,255,255,0.9);
+                border-top: 2px solid #bdc3c7;
+                border-bottom: 2px solid #bdc3c7;
+                z-index: 50;
+            }
+            /* 1 Kişilik oyunda Header en üstte (normal) olur */
+            .mode-1p #game-header {
+                position: relative;
+                top: 0; left: 0;
+                transform: none;
+                height: 50px;
+                border: none;
+                border-bottom: 2px solid #bdc3c7;
+                z-index: 50;
+            }
+            .instruction-text { font-size: 2.5vh !important; }
+            .sine-wave-container { height: 30px !important; }
+
+            /* Elementleri Dikey Ekrana Göre İyice Küçült (Taşma Engelleme) */
+            .emoji-display { font-size: 10vh !important; height: auto !important; margin-bottom: 2px !important; }
+            .question-text { font-size: 3.5vh !important; height: auto !important; margin-bottom: 5px !important; line-height: 1.1 !important; }
+            .btn-container { height: auto !important; gap: 10px !important; margin-bottom: 25px !important; /* Alttaki progress-bar'a yer aç */ }
+            .btn { font-size: 3vh !important; padding: 1vh 4vw !important; gap: 5px !important; }
+            .progress-bar { bottom: 5px !important; gap: 8px !important; }
+            .progress-step { width: 30px !important; height: 8px !important; }
+            
+            /* Başlangıç Ekranı Optimize */
+            .start-buttons { flex-direction: column !important; align-items: center !important; gap: 15px !important; }
+            #start-screen h1 { font-size: clamp(3rem, 10vw, 5rem) !important; text-align: center; margin-bottom: 35px !important; }
+            .main-btn { font-size: clamp(2rem, 6vw, 3.5rem) !important; padding: 15px 40px !important; width: 80% !important; }
+            .nav-svg { width: 40px !important; height: 40px !important; top: 25px !important; left: 10px !important; }
+        }
+
+        /* MOBİL YATAY VE DAR EKRANLAR (YAN YANA SIKIŞIK) */
+        @media screen and (max-height: 500px), screen and (max-width: 950px) and (orientation: landscape) {
+            body { overflow: hidden !important; }
+            #rotate-message { display: none !important; }
+            
+            #game-header { height: 40px !important; gap: 15px !important; }
+            .instruction-text { font-size: 4vh !important; }
+            .sine-wave-container { height: 25px !important; width: 60px !important; }
+            
+            .player-side { padding: 5px !important; justify-content: flex-start !important; padding-top: 25px !important; }
+            .emoji-display { font-size: 15vh !important; height: auto !important; margin-bottom: 5px !important; }
+            .question-text { font-size: 8vh !important; height: auto !important; margin-bottom: 5px !important; line-height: 1.1 !important; }
+            .btn-container { height: auto !important; gap: 15px !important; margin-top: 5px !important; }
+            .btn { font-size: 6vh !important; padding: 1vh 2vw !important; }
+            .progress-bar { bottom: 5px !important; gap: 5px !important; }
+            .progress-step { width: 30px !important; height: 8px !important; }
+            
+            #start-screen h1 { font-size: clamp(2.5rem, 8vw, 4rem) !important; margin-bottom: 35px !important;}
+            .main-btn { font-size: clamp(1.5rem, 5vw, 3rem) !important; padding: 10px 30px !important; }
+            .nav-svg { width: 35px !important; height: 35px !important; top: 25px !important; left: 10px !important; }
+        }
+
+    
+    /* VS Tag Resize Fix */
+    .price-vs {
+        width: clamp(40px, 8vw, 60px) !important;
+        height: clamp(40px, 8vw, 60px) !important;
+        flex-shrink: 0;
+        margin: 0 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    
+
+    
+</head>
+<body>
+
+    <!-- CİHAZ DÖNDÜRME UYARISI (TÜM OYUNLAR ORTAK) -->
+    <div id="rotate-message" style="display: none;">
+        <div class="phone-animation"></div>
+        <div class="rotate-text">يُرْجى تَدْوير الجِهاز</div> 
+    </div>
+
+
+    <audio id="yonergeAudio" src="yonergeevethayir.mp3" preload="auto"></audio>
+
+    <svg id="nav-btn" class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="#1565c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="handleNav()">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+
+  <div id="start-screen">
+        <h1>مُسابَقَة نَعَمْ أَوْ لا</h1>
+        <div class="start-buttons">
+            <button class="main-btn" onclick="startGame(1)">👤 لاعِب واحِد</button>
+            <button class="main-btn" onclick="startGame(2)">👥 لاعِبان</button>
+        </div>
+    </div>
+
+    <div id="game-screen">
+        
+        <div id="game-header">
+            <div class="instruction-text">اُنْظُرْ إِلى الصّورَة وَالجُمْلَة ثُمَّ أَجِبْ.</div> <div class="sine-wave-container" id="sineWave">
+                <svg viewBox="0 0 200 20" preserveAspectRatio="none">
+                    <path d="M 0 10 Q 12.5 0 25 10 T 50 10 T 75 10 T 100 10 T 125 10 T 150 10 T 175 10 T 200 10" fill="none" stroke="#e74c3c" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+
+        <div id="players-container">
+            <div id="p1-side" class="player-side">
+                <div id="p1-content">
+                    <div id="p1-emoji" class="emoji-display">❓</div>
+                    <div id="p1-text" class="question-text">جاري التحميل...</div>
+                    <div id="p1-btn-container" class="btn-container">
+                        <button class="btn btn-yes" onclick="checkAnswer('p1', true)">نَعَمْ 👍</button>
+                        <button class="btn btn-no" onclick="checkAnswer('p1', false)">لا 👎</button>
+                    </div>
+                </div>
+                <div class="progress-bar" id="p1-progress">
+                    <div class="progress-step" id="p1-step-0"></div>
+                    <div class="progress-step" id="p1-step-1"></div>
+                    <div class="progress-step" id="p1-step-2"></div>
+                </div>
+            </div>
+
+            <div id="p2-side" class="player-side">
+                <div id="p2-content">
+                    <div id="p2-emoji" class="emoji-display">❓</div>
+                    <div id="p2-text" class="question-text">جاري التحميل...</div>
+                    <div id="p2-btn-container" class="btn-container">
+                        <button class="btn btn-yes" onclick="checkAnswer('p2', true)">نَعَمْ 👍</button>
+                        <button class="btn btn-no" onclick="checkAnswer('p2', false)">لا 👎</button>
+                    </div>
+                </div>
+                <div class="progress-bar" id="p2-progress">
+                    <div class="progress-step" id="p2-step-0"></div>
+                    <div class="progress-step" id="p2-step-1"></div>
+                    <div class="progress-step" id="p2-step-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="end-screen">
+        <div id="score-text" style="font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 35px; color: var(--primary); text-align: center; white-space: pre-line;"></div>
+        <div class="bitti-mesaj">دَوْر الطُّلّاب الجُدُد</div>
+        <button class="main-btn" onclick="resetGame()">اِبْدَأْ جَوْلَة جَديدَة</button>
+    </div>
+
+    <script>
+const allQuestions = [
+    // --- NORMAL (EMOJİ EŞLEŞTİRME) SORULARI ---
+
+    // Mevcut Sorularınız
+    { text: "أَسْكُنُ في إِسْطَنْبول.", trueEmoji: "🌉", falseEmoji: "⛺", isFixed: false },
+    { text: "أَرْكَبُ الدَّرّاجَة.", trueEmoji: "🚲", falseEmoji: "🚗", isFixed: false },
+    { text: "أُسافِرُ بِالطّائِرَة.", trueEmoji: "✈️", falseEmoji: "🚌", isFixed: false },
+    { text: "أَرْجِعُ بِالقِطار.", trueEmoji: "🚆", falseEmoji: "🚢", isFixed: false },
+
+    // Yeni Eklenenler: Ulaşım ve Mekanlar
+    // Kütüphaneye yürüyerek mi gidersin? [cite: 128]
+    { text: "أَذْهَبُ إِلى المَكْتَبَة مَشْيًا.", trueEmoji: "🚶", falseEmoji: "🚕", isFixed: false },
+    // Hastaneye arabayla mı gidersin? [cite: 125]
+    { text: "أَذْهَبُ إِلى المُسْتَشْفى بِالسَّيّارَة.", trueEmoji: "🚗", falseEmoji: "✈️", isFixed: false },
+    // Bursa'ya gemiyle mi seyahat edersin? [cite: 126]
+    { text: "أُسافِرُ إِلى بورْصَة بِالسَّفينَة.", trueEmoji: "🚢", falseEmoji: "🚆", isFixed: false },
+    // Kütüphaneye metroyla mı gidersin? (Dişil) [cite: 128]
+    { text: "أَذْهَبُ إِلى المَكْتَبَة بِالمِتْرو.", trueEmoji: "🚇", falseEmoji: "🚲", isFixed: false },
+    // İzmir'e deniz yoluyla mı seyahat edersin? [cite: 128]
+    { text: "أُسافِرُ إِلى إِزْمير بَحْرًا.", trueEmoji: "🌊", falseEmoji: "🛣️", isFixed: false },
+    // Mardin'e kara yoluyla mı ulaşırsın? [cite: 129]
+    { text: "أَصِلُ إِلى مارْدين بَرًّا.", trueEmoji: "🛣️", falseEmoji: "✈️", isFixed: false },
+    // Otobüs eski mi? [cite: 129]
+
+    // Araba modern/yeni mi? [cite: 129]
+    { text: "السَّيّارَة حَديثَة.", trueEmoji: "✨", falseEmoji: "🏚️", isFixed: false },
+
+
+    // --- SABİT CEVAPLI (MANTIK / BİLGİ) SORULARI ---
+
+    // Mevcut Sorularınız
+    // Kırmızı ışıkta geçer misin? -> Kesinlikle HAYIR (false) [cite: 134]
+    { text: "أَعْبُرُ عِنْد الضَّوء الأَحْمَر.", emoji: "🛑", isFixed: true, fixedAnswer: false },
+    // Yeşil ışıkta geçer misin? -> Kesinlikle EVET (true) [cite: 134]
+    { text: "أَعْبُرُ عِنْد الضَّوء الأَخْضَر.", emoji: "✅", isFixed: true, fixedAnswer: true },
+    // Kırmızı ışıkta durur musun? -> Kesinlikle EVET (true) [cite: 134]
+    { text: "أَقِفُ عِنْد الضَّوء الأَحْمَر.", emoji: "🛑", isFixed: true, fixedAnswer: true },
+
+    // Yeni Eklenenler: Trafik Kuralları ve Karşılaştırmalar
+    // Sarı ışıkta geçer misin? -> Kesinlikle HAYIR (false) [cite: 134]
+    { text: "أَعْبُرُ عِنْد الضَّوْء الأَصْفَر.", emoji: "🟡", isFixed: true, fixedAnswer: false },
+    // Trafik işaretleri önemli midir? -> Kesinlikle EVET (true) [cite: 134]
+    { text: "إِشارات المُرور مُهِمَّة.", emoji: "🚦", isFixed: true, fixedAnswer: true },
+    // Uçak gemiden daha mı hızlıdır? -> Kesinlikle EVET (true) [cite: 130]
+    { text: "الطّائِرَة أَسْرَع مِن السَّفينَة.", emoji: "✈️", isFixed: true, fixedAnswer: true },
+    // Bisiklet trenden daha mı yavaştır? -> Kesinlikle EVET (true) [cite: 130]
+    { text: "الدَّرّاجَة أَبْطَأ مِن القِطار.", emoji: "🚲", isFixed: true, fixedAnswer: true },
+    // Tren otobüsten daha mı eskidir? -> Metne göre EVET (true) [cite: 129]
+    { text: "القِطار أَقْدَم مِن الحافِلَة.", emoji: "🚆", isFixed: true, fixedAnswer: true },
+    // Metro arabadan daha mı yenidir/moderndir? -> Metne göre EVET (true) [cite: 130]
+    { text: "المِتْرو أَسْرَع مِن الدَّرّاجَة.", emoji: "🚇", isFixed: true, fixedAnswer: true }
+];
+
+        let p1State = { index: 0, questions: [], currentAnswer: null };
+        let p2State = { index: 0, questions: [], currentAnswer: null };
+        let currentScreenMode = 'home'; 
+        let currentGameMode = 2; // YENİ: Varsayılan oyun modu (1 veya 2)
+        
+        // Ses durumu yönetimi
+        let audio = document.getElementById('yonergeAudio');
+        let sineWave = document.getElementById('sineWave');
+
+        // Ses çalmaya başladığında dalgayı aktif et
+        audio.addEventListener('playing', () => {
+            sineWave.classList.add('active');
+        });
+
+        // Ses duraklatıldığında veya bittiğinde dalgayı pasif et
+        audio.addEventListener('pause', () => {
+            sineWave.classList.remove('active');
+        });
+        
+        audio.addEventListener('ended', () => {
+            sineWave.classList.remove('active');
+        });
+
+        function playAudio() {
+            if(audio) {
+                audio.currentTime = 0; 
+                let playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Tarayıcı sesi engelledi: ", error);
+                    });
+                }
+            }
+        }
+
+        
+        function playSound(type) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.type = 'sine';
+                if (type === 'success') {
+                    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.2);
+                    oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.2);
+                } else {
+                    oscillator.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.3);
+                    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
+                    oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.4);
+                }
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+            } catch(e) { console.log("Ses sistemi hatası."); }
+        }
+
+        function handleNav() {
+            if (currentScreenMode === 'home') {
+                // Anasayfadayken butona basılırsa index.html dosyasına gider
+                window.location.href = 'index.html'; 
+            } else {
+                goBackToHome(); // Oyun esnasında basılırsa oyunun başlangıç ekranına döner
+            }
+        }
+
+        function updateNavIcon(mode) {
+            const svg = document.getElementById('nav-btn');
+            if (mode === 'home') {
+                svg.innerHTML = `
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>`;
+                currentScreenMode = 'home';
+            } else if (mode === 'back') {
+                svg.innerHTML = `
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>`;
+                currentScreenMode = 'game';
+            }
+        }
+
+        function goBackToHome() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'none';
+            document.getElementById('start-screen').style.display = 'flex';
+            
+            if(audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+
+            updateNavIcon('home');
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function startGame(mode) {
+            if (mode) currentGameMode = mode; // Seçilen modu kaydet
+
+            playAudio(); 
+
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+            
+            updateNavIcon('back'); 
+
+            // YENİ: Tek kişi veya iki kişi moduna göre ekranı ayarla
+            const p1Side = document.getElementById('p1-side');
+            const p2Side = document.getElementById('p2-side');
+
+            if (currentGameMode === 1) {
+                p2Side.style.display = 'none'; // İkinci oyuncuyu gizle
+                p1Side.style.borderLeft = 'none'; // Ortadaki kesik çizgiyi kaldır
+            } else {
+                p2Side.style.display = 'flex'; // İkinci oyuncuyu göster
+                p1Side.style.borderLeft = '4px dashed #bdc3c7'; // Çizgiyi geri getir
+            }
+
+            let shuffledAll = shuffle([...allQuestions]);
+            let roundQuestions = shuffledAll.slice(0, 3);
+            
+            let c0 = Math.random() > 0.5;
+            let c1 = Math.random() > 0.5;
+            let c2 = Math.random() > 0.5;
+
+            // 1. Oyuncu ayarları
+            p1State.questions = [
+                { ...roundQuestions[0], expectedAnswer: roundQuestions[0].isFixed ? roundQuestions[0].fixedAnswer : c0 }, 
+                { ...roundQuestions[1], expectedAnswer: roundQuestions[1].isFixed ? roundQuestions[1].fixedAnswer : c1 }, 
+                { ...roundQuestions[2], expectedAnswer: roundQuestions[2].isFixed ? roundQuestions[2].fixedAnswer : c2 }
+            ];
+            p1State.index = 0;
+            document.getElementById('p1-text').style.color = '#2c3e50';
+            document.getElementById('p1-btn-container').style.visibility = 'visible';
+            for(let i=0; i<3; i++){
+                document.getElementById(`p1-step-${i}`).className = 'progress-step';
+            }
+            loadQuestion('p1');
+
+            // 2. Oyuncu ayarları
+            if (currentGameMode === 2) {
+                p2State.questions = [
+                    // Eğer sabit soruysa 2. oyuncu için de cevap aynı kalır, rastgele bir soruysa 1. oyuncunun zıttı atanır.
+                    { ...roundQuestions[2], expectedAnswer: roundQuestions[2].isFixed ? roundQuestions[2].fixedAnswer : !c2 }, 
+                    { ...roundQuestions[0], expectedAnswer: roundQuestions[0].isFixed ? roundQuestions[0].fixedAnswer : !c0 }, 
+                    { ...roundQuestions[1], expectedAnswer: roundQuestions[1].isFixed ? roundQuestions[1].fixedAnswer : !c1 }
+                ];
+                p2State.index = 0;
+                document.getElementById('p2-text').style.color = '#2c3e50';
+                document.getElementById('p2-btn-container').style.visibility = 'visible';
+                for(let i=0; i<3; i++){
+                    document.getElementById(`p2-step-${i}`).className = 'progress-step';
+                }
+                loadQuestion('p2');
+            }
+        }
+
+        function loadQuestion(playerStr) {
+            let state = playerStr === 'p1' ? p1State : p2State;
+            
+            if (state.index >= 3) {
+                document.getElementById(`${playerStr}-emoji`).innerText = "⏳";
+                document.getElementById(`${playerStr}-text`).innerText = "في الاِنْتِظار...";
+                document.getElementById(`${playerStr}-text`).style.color = "#27ae60";
+                document.getElementById(`${playerStr}-btn-container`).style.visibility = "hidden";
+                
+                checkRoundEnd();
+                return;
+            }
+
+            let q = state.questions[state.index];
+            state.currentAnswer = q.expectedAnswer;
+
+            // YENİ: Soru sabitse doğrudan kendi emojisini göster, değilse rastgele duruma göre göster
+            if (q.isFixed) {
+                document.getElementById(`${playerStr}-emoji`).innerText = q.emoji;
+            } else {
+                document.getElementById(`${playerStr}-emoji`).innerText = q.expectedAnswer ? q.trueEmoji : q.falseEmoji;
+            }
+            
+            document.getElementById(`${playerStr}-text`).innerText = q.text;
+        }
+
+        function checkAnswer(playerStr, userSelection) {
+            let state = playerStr === 'p1' ? p1State : p2State;
+            let stepDiv = document.getElementById(`${playerStr}-step-${state.index}`);
+            
+            if (userSelection === state.currentAnswer) {
+                stepDiv.classList.add('correct');
+                playSound('success');
+            } else {
+                stepDiv.classList.add('wrong');
+                playSound('error');
+            }
+
+            state.index++;
+            loadQuestion(playerStr);
+        }
+
+                        function checkRoundEnd() {
+            let isRoundOver = false;
+            
+            if (currentGameMode === 1) {
+                isRoundOver = p1State.index >= 3;
+            } else {
+                isRoundOver = (p1State.index >= 3 && p2State.index >= 3);
+            }
+
+            if (isRoundOver) {
+                if (currentGameMode === 1) {
+                    setTimeout(() => {
+                        document.getElementById('game-screen').style.display = 'none';
+                        let scoreDisp = document.getElementById('score-text');
+                        if (scoreDisp) scoreDisp.innerText = ''; // Clear for single player
+                        document.getElementById('end-screen').style.display = 'flex';
+                        updateNavIcon('home');
+                    }, 800);
+                } else {
+                    let p1Score = document.querySelectorAll('#p1-step-0.correct, #p1-step-1.correct, #p1-step-2.correct').length;
+                    let p2Score = document.querySelectorAll('#p2-step-0.correct, #p2-step-1.correct, #p2-step-2.correct').length;
+                    
+                    let originX = 0.5; 
+                    
+                    if (p1Score > p2Score) {
+                        originX = 0.8; 
+                    } else if (p2Score > p1Score) {
+                        originX = 0.2; 
+                    }
+
+                    if (typeof confetti === 'function') {
+                        confetti({
+                            particleCount: 150,
+                            spread: 70,
+                            origin: { x: originX, y: 0.5 },
+                            colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+                        });
+                        try { playSound('success'); } catch(e){}
+                    }
+                    
+                    let scoreDisplay = document.getElementById('score-text');
+                    if(scoreDisplay) {
+                        let winMsg = "";
+                        if (p1Score > p2Score) winMsg = "اللاعب 1 فاز! 🏆"; 
+                        else if (p2Score > p1Score) winMsg = "اللاعب 2 فاز! 🏆";
+                        else winMsg = "تَعادُل! 🤝"; 
+                        scoreDisplay.innerText = `${p1Score} - ${p2Score}
+${winMsg}`;
+                    }
+                    
+                    setTimeout(() => {
+                        document.getElementById('game-screen').style.display = 'none';
+                        document.getElementById('end-screen').style.display = 'flex';
+                        updateNavIcon('home');
+                    }, 2500);
+                }
+            }
+        }
+
+        function resetGame() {
+            startGame(); 
+        }
+    </script>
+</body>
+</html>

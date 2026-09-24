@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interstellar: Arapça Misyonu</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        /* Fütüristik ve Arapça Fontlar */
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
+
+        :root {
+            --void-black: #000000;
+            --space-blue: #0b0d17;
+            --accretion-orange: #ff9f43; /* Gargantua ışığı */
+            --hud-cyan: #00f2ff; /* HUD ekranları */
+            --starlight: #ffffff;
+            --glass-panel: rgba(11, 13, 23, 0.85);
+        }
+
+        body {
+            background-color: var(--void-black);
+            color: var(--starlight);
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Arka Plan: Yıldızlar ve Uzay */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(1px 1px at 10% 10%, #fff 100%, transparent),
+                radial-gradient(1px 1px at 20% 20%, #fff 100%, transparent),
+                radial-gradient(2px 2px at 30% 30%, #fff 100%, transparent),
+                radial-gradient(circle at center, rgba(255, 159, 67, 0.1) 0%, transparent 70%);
+            background-size: 550px 550px, 350px 350px, 250px 250px, 100% 100%;
+            animation: starsMove 100s linear infinite;
+            z-index: -1;
+        }
+
+        /* --- HUD NAVIGASYON --- */
+        nav {
+            border-bottom: 1px solid var(--hud-cyan);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            z-index: 100;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--hud-cyan);
+            border: 1px solid var(--hud-cyan);
+            padding: 10px 25px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn::before {
+            content: "";
+            position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .tab-btn:hover::before { left: 100%; }
+        .tab-btn:hover, .tab-btn.active {
+            background: var(--hud-cyan);
+            color: var(--void-black);
+            box-shadow: 0 0 15px var(--hud-cyan);
+        }
+
+        /* --- İÇERİK --- */
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            height: 100%;
+            animation: hudBoot 0.6s ease-out;
+        }
+        .tab-content.active { display: flex; }
+
+        .arabic-text { font-family: 'Amiri', serif; direction: rtl; }
+
+        h2 {
+            font-family: 'Orbitron';
+            color: var(--accretion-orange);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            border-bottom: 1px solid var(--accretion-orange);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--accretion-orange);
+        }
+
+        /* PROGRESS BAR (HUD STYLE) */
+        .hud-progress {
+            width: 300px; height: 6px;
+            background: #222;
+            border: 1px solid #444;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .hud-bar {
+            height: 100%; background: var(--accretion-orange); width: 0%;
+            transition: width 0.5s;
+            box-shadow: 0 0 10px var(--accretion-orange);
+        }
+
+        /* --- TAB 1: OLAY UFKU (READING) --- */
+        .singularity-box {
+            position: relative;
+            padding: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #000 40%, rgba(255, 159, 67, 0.2) 100%);
+            box-shadow: 0 0 50px rgba(255, 159, 67, 0.3);
+            text-align: center;
+            width: 300px; height: 300px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            border: 1px solid rgba(255, 159, 67, 0.3);
+        }
+        
+        .blurred-text {
+            font-size: 3.5rem;
+            color: var(--starlight);
+            filter: blur(15px); /* Kütleçekimsel Merceklenme */
+            transition: filter 0.8s ease, transform 0.8s;
+            cursor: help;
+            text-shadow: 0 0 20px var(--accretion-orange);
+        }
+        .blurred-text:hover {
+            filter: blur(0px);
+            transform: scale(1.1);
+        }
+
+        /* --- TAB 2: KENETLENME (DRAG DROP) --- */
+        .docking-bay {
+            display: flex; flex-direction: column; align-items: center; gap: 40px; position: relative;
+        }
+        
+        /* Ranger Aracı (Sürüklenecek) */
+        .ranger-module {
+            width: 100px; height: 60px;
+            border: 2px solid var(--starlight);
+            background: rgba(255,255,255,0.1);
+            color: var(--starlight);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; cursor: grab;
+            clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+            transition: 0.3s;
+        }
+        .ranger-module:active { cursor: grabbing; border-color: var(--hud-cyan); }
+
+        /* Endurance İstasyonu (Hedef) */
+        .endurance-station {
+            width: 200px; height: 200px;
+            border: 4px dashed var(--hud-cyan);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+            animation: spin 20s linear infinite; /* Dönme efekti */
+            position: relative;
+            background: rgba(0, 242, 255, 0.05);
+        }
+        
+        /* İstasyonun içindeki sabit yazı (Dönmemesi için) */
+        .station-core {
+            animation: spinReverse 20s linear infinite; /* Ters dönerek sabit kalır */
+            text-align: center;
+        }
+
+        .endurance-station.drag-over {
+            border-style: solid;
+            box-shadow: 0 0 40px var(--hud-cyan);
+            background: rgba(0, 242, 255, 0.2);
+            animation-duration: 2s; /* Kenetlenme sırasında hızlan */
+        }
+        .endurance-station.drag-over .station-core { animation-duration: 2s; }
+
+        /* --- TAB 3: SOLUCAN DELİĞİ (QUIZ) --- */
+        .wormhole-hud {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;
+        }
+        .coord-btn {
+            background: rgba(0, 242, 255, 0.05);
+            border: 1px solid var(--hud-cyan);
+            color: var(--hud-cyan);
+            padding: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-family: 'Amiri', serif;
+            transition: 0.3s;
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+        }
+        .coord-btn:hover { background: rgba(0, 242, 255, 0.2); letter-spacing: 1px; }
+        .coord-btn.correct { background: var(--hud-cyan); color: #000; box-shadow: 0 0 20px var(--hud-cyan); }
+        .coord-btn.wrong { border-color: red; color: red; opacity: 0.5; }
+
+        /* --- TAB 4: TESSERACT (ORDERING) --- */
+        .tesseract-zone {
+            display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-top: 30px;
+            perspective: 1000px;
+        }
+        .gravity-data {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid var(--starlight);
+            color: var(--starlight);
+            padding: 10px 25px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: 0.5s;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+            /* Kitaplık çizgileri efekti */
+            background-image: linear-gradient(90deg, transparent 50%, rgba(255,255,255,0.05) 50%);
+            background-size: 4px 4px;
+        }
+        .gravity-data:hover {
+            transform: translateZ(20px) scale(1.1);
+            border-color: var(--accretion-orange);
+            color: var(--accretion-orange);
+        }
+        
+        .message-line {
+            min-height: 60px; width: 100%;
+            border-bottom: 1px solid var(--accretion-orange);
+            display: flex; gap: 10px; justify-content: center; alignItems: center;
+            font-size: 1.8rem; margin-bottom: 20px;
+            color: var(--accretion-orange);
+            text-shadow: 0 0 10px var(--accretion-orange);
+        }
+
+        /* ORTAK */
+        .action-btn {
+            margin-top: 30px;
+            background: transparent;
+            border: 2px solid var(--accretion-orange);
+            color: var(--accretion-orange);
+            padding: 10px 40px;
+            font-family: 'Orbitron'; font-weight: bold;
+            cursor: pointer; display: none;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .action-btn:hover {
+            background: var(--accretion-orange); color: #000; box-shadow: 0 0 20px var(--accretion-orange);
+        }
+        
+        .feedback-text {
+            font-size: 1.5rem; margin-top: 15px; min-height: 40px; text-shadow: 0 0 10px;
+        }
+
+        @keyframes starsMove { from { background-position: 0 0; } to { background-position: 1000px 1000px; } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spinReverse { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+        @keyframes hudBoot { from { opacity: 0; transform: scaleY(0); } to { opacity: 1; transform: scaleY(1); } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <button class="tab-btn active" onclick="switchTab('horizon')">OLAY UFKU</button>
+        <button class="tab-btn" onclick="switchTab('docking')">KENETLENME</button>
+        <button class="tab-btn" onclick="switchTab('wormhole')">SOLUCAN DELİĞİ</button>
+        <button class="tab-btn" onclick="switchTab('tesseract')">TESSERACT</button>
+    </nav>
+
+    <div class="content-area">
+
+        <div id="horizon" class="tab-content active">
+            <h2>Singularity Verisi</h2>
+            <div class="hud-progress"><div class="hud-bar" id="prog-horizon"></div></div>
+            
+            <div class="singularity-box">
+                <div class="blurred-text arabic-text" id="horizon-text"></div>
+            </div>
+            <p id="horizon-clue" style="margin-top:20px; color:#888; letter-spacing:2px;"></p>
+            
+            <button class="action-btn" id="btn-horizon-next" onclick="nextHorizon()">VERİYİ AKTAR</button>
+        </div>
+
+        <div id="docking" class="tab-content">
+            <h2>Kenetlenme Prosedürü</h2>
+            <div class="hud-progress"><div class="hud-bar" id="prog-docking"></div></div>
+            <p style="color:var(--hud-cyan); opacity:0.7;">Kök modülünü istasyona hizala.</p>
+
+            <div class="docking-bay">
+                <div class="ranger-module arabic-text" draggable="true" id="dragRanger"></div>
+                
+                <div style="font-size: 1.5rem; color: #444;">|||</div>
+
+                <div class="endurance-station" id="dropStation">
+                    <div class="station-core">
+                        <span style="font-size:2rem; display:block;">Endurance</span>
+                        <small style="color:var(--accretion-orange)" id="wazan-hint"></small>
+                    </div>
+                </div>
+
+                <div class="feedback-text arabic-text" id="docking-result" style="color:var(--accretion-orange)"></div>
+            </div>
+            <button class="action-btn" id="btn-docking-next" onclick="nextDocking()">SONRAKİ MODÜL</button>
+        </div>
+
+        <div id="wormhole" class="tab-content">
+            <h2>Rota Hesaplama</h2>
+            <div class="hud-progress"><div class="hud-bar" id="prog-wormhole"></div></div>
+            
+            <h3 id="wormhole-q" style="margin: 30px 0; color: #fff; font-weight:300;"></h3>
+            
+            <div class="wormhole-hud" id="wormhole-options">
+                </div>
+            <button class="action-btn" id="btn-wormhole-next" onclick="nextWormhole()">ATLAYIŞI BAŞLAT</button>
+        </div>
+
+        <div id="tesseract" class="tab-content">
+            <h2>Kuantum Verisi</h2>
+            <div class="hud-progress"><div class="hud-bar" id="prog-tesseract"></div></div>
+            <p style="color:#aaa;">Yerçekimi dalgalarını doğru sırayla gönder.</p>
+
+            <div id="tesseract-line" class="message-line arabic-text"></div>
+            
+            <div class="tesseract-zone" id="tesseract-pool">
+                </div>
+            
+            <div class="feedback-text" id="tesseract-result"></div>
+            <button class="action-btn" id="btn-tesseract-next" onclick="nextTesseract()">ZAMAN ATLAMASI</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA HAVUZU (5'er Soru) ---
+        
+        const dataHorizon = [
+            { text: "السَّمَاءُ جَمِيلَةٌ", clue: "Gökyüzü güzeldir." },
+            { text: "الْكَوَاكِبُ بَعِيدَةٌ", clue: "Gezegenler uzaktır." },
+            { text: "الشَّمْسُ نَجْمٌ", clue: "Güneş bir yıldızdır." },
+            { text: "رَائِدُ الْفَضَاءِ", clue: "Astronot (Uzay öncüsü)." },
+            { text: "سَفِينَةُ الْفَضَاءِ", clue: "Uzay gemisi." }
+        ];
+
+        const dataDocking = [
+            { root: "ك ت ب", result: "مَكْتَب", hint: "İsm-i Mekan (Ofis)" },
+            { root: "ع ل م", result: "عَالِم", hint: "İsm-i Fail (Bilen)" },
+            { root: "س ج د", result: "مَسْجِد", hint: "İsm-i Mekan (Cami)" },
+            { root: "ن ظ ر", result: "مَنْظَر", hint: "İsm-i Mekan (Manzara)" },
+            { root: "ح م ل", result: "مَحْمُول", hint: "İsm-i Meful (Taşınan)" }
+        ];
+
+        const dataWormhole = [
+            { q: "'Güneş' kelimesinin Arapçası?", options: ["القَمَر", "الشَّمْس", "النَّجْم"], ans: 1 },
+            { q: "'Büyük' sıfatı hangisidir?", options: ["صَغِير", "جَدِيد", "كَبِير"], ans: 2 },
+            { q: "Hangi kelime 'Fiil'dir?", options: ["كِتَاب", "يَكْتُبُ", "فِي"], ans: 1 },
+            { q: "'Yıldızlar' (Çoğul)?", options: ["نَجْم", "نُجُوم", "نَجْمَة"], ans: 1 },
+            { q: "Cümleyi tamamla: .... وَاسِعٌ (Ev geniştir)", options: ["الْبَيْتُ", "بَيْتًا", "الْبَيْتِ"], ans: 0 }
+        ];
+
+        const dataTesseract = [
+            { parts: ["الْأَرْضُ", "كَوْكَبٌ", "أَزْرَقُ"], full: "الْأَرْضُ كَوْكَبٌ أَزْرَقُ" },
+            { parts: ["رَائِدُ", "الْفَضَاءِ", "فِي", "الْمَرْكَبَةِ"], full: "رَائِدُ الْفَضَاءِ فِي الْمَرْكَبَةِ" },
+            { parts: ["نَحْنُ", "نُسَافِرُ", "إِلَى", "الْمَرِّيخِ"], full: "نَحْنُ نُسَافِرُ إِلَى الْمَرِّيخِ" },
+            { parts: ["هَلْ", "تُحِبُّ", "النُّجُومَ", "؟"], full: "هَلْ تُحِبُّ النُّجُومَ ؟" },
+            { parts: ["العِلْمُ", "نُورٌ", "فِي", "الظَّلَامِ"], full: "العِلْمُ نُورٌ فِي الظَّلَامِ" }
+        ];
+
+        // --- STATE ---
+        let state = { horizon: 0, docking: 0, wormhole: 0, tesseract: 0 };
+
+        window.onload = () => {
+            loadHorizon(); loadDocking(); loadWormhole(); loadTesseract();
+        };
+
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById(id).style.display = 'flex';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function updateProgress(id, curr, total) {
+            document.getElementById('prog-'+id).style.width = ((curr / total) * 100) + '%';
+        }
+
+        // --- 1. HORIZON (Reading) ---
+        function loadHorizon() {
+            if(state.horizon >= dataHorizon.length) return showEnd('horizon');
+            const d = dataHorizon[state.horizon];
+            const el = document.getElementById('horizon-text');
+            el.innerText = d.text;
+            el.style.filter = 'blur(15px)'; // Reset blur
+            document.getElementById('horizon-clue').innerText = d.clue;
+            document.getElementById('btn-horizon-next').style.display = 'block';
+            updateProgress('horizon', state.horizon, dataHorizon.length);
+        }
+        function nextHorizon() { state.horizon++; loadHorizon(); }
+
+        // --- 2. DOCKING (Drag Drop) ---
+        const ranger = document.getElementById('dragRanger');
+        const station = document.getElementById('dropStation');
+        
+        function loadDocking() {
+            if(state.docking >= dataDocking.length) return showEnd('docking');
+            const d = dataDocking[state.docking];
+            
+            ranger.style.display = 'flex';
+            ranger.innerText = d.root;
+            
+            station.classList.remove('drag-over');
+            station.style.background = 'rgba(0, 242, 255, 0.05)';
+            station.style.borderStyle = 'dashed';
+            
+            document.querySelector('.station-core span').innerText = "Endurance";
+            document.getElementById('wazan-hint').innerText = d.hint;
+            document.getElementById('docking-result').innerText = "";
+            document.getElementById('btn-docking-next').style.display = 'none';
+            
+            updateProgress('docking', state.docking, dataDocking.length);
+        }
+
+        ranger.addEventListener('dragstart', () => ranger.style.opacity = '0.4');
+        ranger.addEventListener('dragend', () => ranger.style.opacity = '1');
+        
+        station.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            station.classList.add('drag-over');
+        });
+        station.addEventListener('dragleave', () => station.classList.remove('drag-over'));
+        
+        station.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const d = dataDocking[state.docking];
+            
+            ranger.style.display = 'none';
+            
+            // Success Visuals
+            document.querySelector('.station-core span').innerText = "LOCKED";
+            document.querySelector('.station-core span').style.color = "var(--accretion-orange)";
+            
+            const res = document.getElementById('docking-result');
+            res.innerText = d.result;
+            res.style.fontSize = "3rem";
+            
+            document.getElementById('btn-docking-next').style.display = 'inline-block';
+        });
+        function nextDocking() { state.docking++; loadDocking(); }
+
+        // --- 3. WORMHOLE (Quiz) ---
+        function loadWormhole() {
+            if(state.wormhole >= dataWormhole.length) return showEnd('wormhole');
+            const d = dataWormhole[state.wormhole];
+            document.getElementById('wormhole-q').innerText = d.q;
+            const con = document.getElementById('wormhole-options');
+            con.innerHTML = '';
+            document.getElementById('btn-wormhole-next').style.display = 'none';
+
+            d.options.forEach((opt, idx) => {
+                const btn = document.createElement('div');
+                btn.className = 'coord-btn arabic-text';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    if(document.getElementById('btn-wormhole-next').style.display === 'inline-block') return;
+                    if(idx === d.ans) {
+                        btn.classList.add('correct');
+                        document.getElementById('btn-wormhole-next').style.display = 'inline-block';
+                    } else {
+                        btn.classList.add('wrong');
+                    }
+                };
+                con.appendChild(btn);
+            });
+            updateProgress('wormhole', state.wormhole, dataWormhole.length);
+        }
+        function nextWormhole() { state.wormhole++; loadWormhole(); }
+
+        // --- 4. TESSERACT (Ordering) ---
+        let currentOrder = [];
+        function loadTesseract() {
+            if(state.tesseract >= dataTesseract.length) return showEnd('tesseract');
+            const d = dataTesseract[state.tesseract];
+            const pool = document.getElementById('tesseract-pool');
+            const line = document.getElementById('tesseract-line');
+            
+            pool.innerHTML = ''; line.innerHTML = ''; currentOrder = [];
+            document.getElementById('tesseract-result').innerText = '';
+            document.getElementById('btn-tesseract-next').style.display = 'none';
+
+            let shuffled = [...d.parts].sort(()=>Math.random()-0.5);
+            shuffled.forEach(w => {
+                const p = document.createElement('div');
+                p.className = 'gravity-data arabic-text';
+                p.innerText = w;
+                p.onclick = () => {
+                    line.innerText += w + ' ';
+                    p.style.display = 'none';
+                    currentOrder.push(w);
+                    if(currentOrder.length === d.parts.length) checkTesseract(d);
+                };
+                pool.appendChild(p);
+            });
+            updateProgress('tesseract', state.tesseract, dataTesseract.length);
+        }
+
+        function checkTesseract(d) {
+            const attempt = currentOrder.join(' ');
+            const res = document.getElementById('tesseract-result');
+            if(attempt.trim() === d.full.trim()) {
+                res.innerHTML = "KUANTUM VERİSİ DOĞRULANDI";
+                res.style.color = "var(--hud-cyan)";
+                document.getElementById('btn-tesseract-next').style.display = 'inline-block';
+            } else {
+                res.innerHTML = "VERİ HATASI - TEKRAR DENEYİN";
+                res.style.color = "red";
+                setTimeout(loadTesseract, 1500);
+            }
+        }
+        function nextTesseract() { state.tesseract++; loadTesseract(); }
+
+        // --- END SCREEN ---
+        function showEnd(id) {
+            document.getElementById(id).innerHTML = `
+                <div style="text-align:center; animation:hudBoot 1s;">
+                    <h1 style="font-size:3rem; color:var(--starlight)">GÖREV TAMAMLANDI</h1>
+                    <p style="color:var(--accretion-orange)">Eve dönme zamanı, Murphy.</p>
+                    <button class="action-btn" onclick="location.reload()" style="display:inline-block">YENİDEN BAŞLAT</button>
+                </div>
+            `;
+        }
+
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

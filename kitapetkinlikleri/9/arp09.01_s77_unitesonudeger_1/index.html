@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقييم اللغة العربية للصَّف التّاسع</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* --- TARAYICI VARSAYILAN KALINLAŞTIRMALARINI SIFIRLAMA --- */
+        h1, h2, h3, h4, h5, h6, strong, b, th, td {
+            font-weight: 400 !important;
+        }
+
+        @font-face {
+            font-family: 'Arakom';
+            src: url('arakom.ttf') format('truetype'),
+                 url('arakom.ttf') format('truetype'),
+                 url('arakom.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* Temel Sayfa Ayarları */
+        body {
+            font-family: 'Arakom', serif; 
+            background-color: #f4f7f6;
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='20' y='50' font-size='40' opacity='0.06'%3E📝%3C/text%3E%3Ctext x='130' y='70' font-size='45' opacity='0.06'%3E❌%3C/text%3E%3Ctext x='60' y='170' font-size='50' opacity='0.06'%3E💯%3C/text%3E%3Ctext x='150' y='180' font-size='35' opacity='0.06'%3E✅%3C/text%3E%3Ctext x='80' y='110' font-size='40' opacity='0.06'%3E📊%3C/text%3E%3C/svg%3E");
+            background-size: 350px 350px;
+            color: #333;
+            margin: 0;
+            line-height: 1.2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100 * var(--dvh));
+            width: calc(100 * var(--dvw));
+            overflow: hidden; 
+            padding: calc(1.5 * var(--dvh)) 2vmin; 
+            box-sizing: border-box;
+        }
+
+        /* Ana İçerik Konteyneri */
+        .container {
+            max-width: 1150px; 
+            width: 100%;
+            max-height: calc(98 * var(--dvh));
+            margin: auto; 
+            padding: 0; 
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: calc(1.5 * var(--dvh));
+        }
+        
+        .header-section {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: calc(1.5 * var(--dvh));
+        }
+
+        /* En Üstteki '10' Rakamı Stili */
+        .top-grade-number {
+            text-align: center;
+            font-size: clamp(4rem, calc(9 * var(--dvh)), 7.5rem); 
+            color: #0056b3;
+            line-height: 1;
+            margin-bottom: 0px;
+        }
+
+        /* Ana Başlık (Değerlendirme) */
+        h1 {
+            text-align: center;
+            color: #0056b3; 
+            margin-bottom: calc(0.5 * var(--dvh));
+            margin-top: calc(0.5 * var(--dvh));
+            font-size: clamp(3.5rem, calc(8 * var(--dvh)), 6.5rem); 
+        }
+
+        /* Alt Başlık (Sınıf) */
+        .sub-title {
+            text-align: center;
+            font-size: clamp(3rem, calc(6.5 * var(--dvh)), 5.5rem);
+            color: #0056b3;
+            margin-top: 0;
+            margin-bottom: 0; 
+        }
+
+        /* Etkinlik Kartları (CSS Grid) */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: clamp(15px, calc(2.5 * var(--dvh)), 30px) clamp(15px, 2vmin, 30px); 
+            width: 100%;
+        }
+
+        /* Tekil Etkinlik Kartı (Link) */
+        .activity-card {
+            background: linear-gradient(145deg, #ffffff, #f7f9fc);
+            border: 1px solid #e0e4e8;
+            border-radius: 16px;
+            padding: clamp(12px, calc(2.5 * var(--dvh)), 25px); 
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            text-decoration: none;
+            color: #343a40;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            min-height: clamp(125px, calc(20 * var(--dvh)), 185px);
+            height: auto;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-4px) scale(1.02); 
+            box-shadow: 0 10px 30px rgba(0, 86, 179, 0.12);
+        }
+
+        /* Simgeler */
+        .activity-card i {
+            font-size: clamp(2.2rem, calc(4 * var(--dvh)), 4rem); 
+            margin-bottom: calc(1.5 * var(--dvh));
+            transition: transform 0.3s ease;
+        }
+        .activity-card:nth-child(1) i { color: #28a745; }
+        .activity-card:nth-child(2) i { color: #17a2b8; }
+        .activity-card:nth-child(3) i { color: #ffc107; }
+        .activity-card:nth-child(4) i { color: #fd7e14; }
+        .activity-card:nth-child(5) i { color: #6f42c1; }
+        .activity-card:nth-child(6) i { color: #dc3545; }
+
+        /* Yazılar */
+        .activity-card h3 {
+            font-size: clamp(2.8rem, calc(6 * var(--dvh)), 4.8rem); 
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .activity-card::before {
+            content: attr(data-num);
+            position: absolute;
+            bottom: -5%;
+            left: 3%; 
+            font-size: clamp(3.5rem, calc(11 * var(--dvh)), 7rem); 
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+            color: rgba(0, 86, 179, 0.05);
+            z-index: 0; 
+            line-height: 0.8;
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+
+        .activity-card:hover::before {
+            transform: translateY(-10px) scale(1.05) rotate(-5deg);
+            color: rgba(0, 86, 179, 0.1);
+        }
+
+        /* Tablet (Dikey) Görünümü */
+        @media (max-aspect-ratio: 1/1), (max-width: 900px) {
+            .activity-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+            }
+            .activity-card { height: clamp(110px, calc(15 * var(--dvh)), 160px); }
+            .activity-card i { font-size: clamp(2.2rem, calc(3.5 * var(--dvh)), 3.5rem); }
+            .activity-card h3 { font-size: clamp(2.2rem, calc(4.5 * var(--dvh)), 4rem); }
+        }
+    
+        /* Telefon (Dar) Görünümü */
+        @media (max-width: 500px) {
+            .top-grade-number { font-size: clamp(2.8rem, calc(7 * var(--dvh)), 5rem); }
+            h1 { font-size: clamp(2.5rem, calc(6 * var(--dvh)), 4.2rem); margin-bottom: calc(0.5 * var(--dvh)); }
+            .sub-title { font-size: clamp(2rem, calc(4.5 * var(--dvh)), 3.5rem); margin-bottom: calc(1 * var(--dvh)); }
+            
+            .header-section { margin-bottom: calc(1 * var(--dvh)); }
+
+            .activity-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(6, 1fr);
+                gap: calc(1.5 * var(--dvh));
+            }
+            
+            .activity-card {
+                flex-direction: row;
+                text-align: right;
+                justify-content: flex-start;
+                gap: 5vmin;
+                padding: calc(1 * var(--dvh)) 5vmin;
+                height: clamp(65px, calc(11 * var(--dvh)), 100px);
+            }
+            .activity-card i {
+                margin-bottom: 0;
+                font-size: clamp(2rem, calc(4 * var(--dvh)), 3.5rem);
+                width: 35px; 
+            }
+            .activity-card h3 {
+                font-size: clamp(2.2rem, calc(5 * var(--dvh)), 3.8rem);
+            }
+            .activity-card::before {
+                font-size: clamp(3rem, calc(8 * var(--dvh)), 5rem);
+                bottom: auto;
+                top: 50%;
+                transform: translateY(-50%);
+                left: 5%;
+            }
+            .activity-card:hover::before {
+                transform: translateY(-50%) scale(1.05);
+            }
+        }
+    
+</style>
+
+<script>
+    // E-Öğrenme Mükemmel Ölçekleme Mantığı
+    function updateDynamicUnits() {
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        var effectiveWidth = w;
+        
+        if (w / h > 1.5) {
+            effectiveWidth = h * 1.5;
+        }
+        
+        document.documentElement.style.setProperty('--dvw', (effectiveWidth / 100) + 'px');
+        document.documentElement.style.setProperty('--dvh', (h / 100) + 'px');
+    }
+    window.addEventListener('resize', updateDynamicUnits);
+    document.addEventListener('DOMContentLoaded', updateDynamicUnits);
+    updateDynamicUnits();
+</script>
+
+
+<style>
+/* Sağa kaymayı önlemek için kapsayıcıları tam genişliğe zorla */
+body, .activity-container, #game-container, #start-overlay, #start-screen, .feedback-overlay, .overlay {
+    width: 100vw !important;
+    max-width: 100vw !important;
+}
+
+/* Header alanındaki sabit genişliklerin butonları bozmasını (üst üste binmesini) engelle */
+.header {
+    grid-template-columns: minmax(100px, auto) 1fr minmax(100px, auto) !important;
+    gap: 8px !important;
+    padding: 10px 15px !important;
+}
+.progress-container {
+    width: auto !important;
+}
+
+/* Boşluk doldurma ve Cümle sıralama yazıları büyütme */
+.key {
+    font-size: clamp(1.5rem, calc(2.2 * var(--dvw)), 2.5rem) !important;
+}
+.question-text, .sentence-container, .drop-zone {
+    font-size: clamp(2.5rem, calc(7 * var(--dvw)), 7rem) !important;
+    line-height: 1.8 !important;
+}
+.word-item, .choice-btn {
+    font-size: clamp(2.5rem, calc(5 * var(--dvw)), 5rem) !important;
+}
+</style>
+
+
+<style>
+/* Test dosyalarındaki aşırı büyümeyi düzelt */
+.question {
+    font-size: clamp(2.5rem, calc(5.5 * var(--dvw)), 5rem) !important;
+    margin-bottom: 10px !important;
+}
+.option {
+    font-size: clamp(2rem, calc(4 * var(--dvw)), 3.5rem) !important;
+    padding: 5px 15px !important;
+}
+.options {
+    gap: 8px !important;
+}
+</style>
+
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="header-section">
+        <div class="top-grade-number">٧</div>
+        <h1>تَقْييم نِهايَة الوَحْدَة الأولى</h1>
+        <h2 class="sub-title">لِلصَّفّ التّاسِع</h2>
+        </div>
+
+        
+        <div class="activity-grid">
+
+            <a href="hangiharf.html" class="activity-card">
+                <i class="fa-solid fa-book-quran"></i>
+                <h3>مُسابَقَة الحَرْف</h3>
+            </a>
+
+            <a href="cumlesirala.html" class="activity-card">
+                <i class="fa-solid fa-shuffle"></i>
+                <h3>تَرْتيب الكَلِمات</h3>
+            </a>
+
+        <a href="dinlevesec.html" class="activity-card">
+    <i class="fa-solid fa-headphones"></i>
+    <h3>اِسْتَمِعْ وَاخْتَرْ</h3>
+</a>
+
+            <a href="kelimeavi.html" class="activity-card">
+                <i class="fa-solid fa-search"></i>
+                <h3>البَحْث عَن الكَلِمات</h3>
+            </a>
+
+            <a href="suruklebirak.html" class="activity-card">
+                <i class="fa-solid fa-hand-pointer"></i>
+                <h3>السَّحْب وَالإِفْلات</h3>
+            </a>
+
+            <a href="test.html" class="activity-card">
+                <i class="fa-solid fa-list-check"></i>
+                <h3>اِخْتِبار</h3>
+            </a>
+
+        </div> 
+    </div> 
+</body>
+</html>

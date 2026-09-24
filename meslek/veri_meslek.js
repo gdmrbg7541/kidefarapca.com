@@ -50,6 +50,9 @@
       kalip: 'فَعّال',    yer: '',            renk: '#27AE60', ikiz: true },
     { id: 'sofor',    e: 'سائِق',      k: 'سائِقَة',      tr: 'Şoför',
       kalip: 'فاعِل',     yer: '',            renk: '#0984E3', ikiz: true },
+    /* «Zabıta» değil «Subay»: kitabın kendi kâmûsu (s.199) ضابِط'ı
+       Subay diye veriyor ve شُرْطِيّ'yi ayrıca Polis diye yazıyor —
+       ikisini bilerek ayırmış. Zabıta bambaşka bir görev. */
     { id: 'subay',    e: 'ضابِط',      k: 'ضابِطَة',      tr: 'Subay',
       kalip: 'فاعِل',     yer: '',            renk: '#555F6B', ikiz: true },
     { id: 'veteriner',e: 'بَيْطَرِيّ', k: 'بَيْطَرِيَّة', tr: 'Veteriner',

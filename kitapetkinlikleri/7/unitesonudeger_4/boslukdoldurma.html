@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> تمرين ملء الفراغ </title>
+    <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+
+        /* --- TARAYICI VARSAYILAN KALINLAŞTIRMALARINI SIFIRLAMA --- */
+        h1, h2, h3, h4, h5, h6, strong, b, th, td {
+            font-weight: 400 !important;
+        }
+
+        /* 1. ARAKOM.TTF dosyasını sisteme tanıtıyoruz */
+        @font-face {
+            font-family: 'Arakom';
+            src: url('arakom.ttf') format('truetype'),
+                 url('arakom.ttf') format('truetype'),
+                 url('arakom.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* 2. Değişkenleri tanımlıyoruz */
+        :root {
+            --accent-color: #007bff;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --bg-light: #f8f9fa;
+            --font-arabic: 'Arakom', 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
+        }
+
+        /* 3. ÖNEMLİ: Body ve TÜM BUTONLAR için fontu zorluyoruz */
+        body, button, input, .key, .answer-input {
+            font-family: var(--font-arabic) !important;
+            font-weight: 400;
+        }
+
+        body {
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100 * var(--dvh));
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* --- Ana Etkinlik Alanı (Masaüstü İyileştirmesi) --- */
+        .activity-container {
+    position: relative;
+    background: #ffffff;
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    width: calc(100 * var(--dvw));
+    height: calc(100 * var(--dvh));
+    max-width: calc(100 * var(--dvw));
+    max-height: calc(100 * var(--dvh));
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0;
+}
+
+        /* --- Soru Metni (Tam Blok Yapısı) --- */
+        .question-text {
+            font-size: clamp(2rem, calc(6 * var(--dvw)), 4.5rem); 
+            font-weight: 400;
+            color: #212529;
+            margin-bottom: 25px;
+            display: block; 
+            line-height: 1.6; 
+            white-space: pre-line; 
+            text-align: center;
+            direction: rtl;
+            width: 100%;
+        }
+
+        /* --- Cevap Kutusu --- */
+        .answer-input {
+            font-family: var(--font-arabic);
+            border: 2px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 5px 15px;
+            width: clamp(220px, calc(25 * var(--dvw)), 350px);
+            height: clamp(80px, calc(9 * var(--dvh)), 100px);
+            background: #f8f9fa;
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle; 
+            margin: 5px 10px;
+            font-weight: 400;
+            font-size: 0.9em;
+        }
+
+        
+
+        /* OYUN BAŞLAMADAN ANA EKRAN ELEMENTLERİNİ GİZLEME */
+        .header, .activity-area {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s 0.3s;
+        }
+        /* OYUN BAŞLAYINCA GÖSTERME */
+        body.game-started .header, body.game-started .activity-area {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0s;
+        }
+
+        .back-button-container {
+            grid-area: back;
+            display: flex;
+            justify-content: flex-end; 
+            align-items: center; 
+            gap: 10px;           
+        }
+        .back-button {
+            background: #f0f0f0;
+            color: #555;
+            border: 1px solid #ccc;
+            border-radius: calc(1.5 * var(--dvw));
+            cursor: pointer;
+            width: clamp(40px, calc(8 * var(--dvw)), 55px);
+            height: clamp(40px, calc(8 * var(--dvw)), 55px);
+            padding: 0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-button:hover { background: #e0e0e0; }
+        .back-button svg {
+            width: clamp(24px, calc(5 * var(--dvw)), 30px);
+            height: clamp(24px, calc(5 * var(--dvw)), 30px);
+            fill: currentColor;
+        }
+
+        /* --- Başlık ve İlerleme --- */
+        .header {
+            padding: 15px 25px;
+            border-bottom: 1px solid #dee2e6;
+            display: grid;
+            grid-template-areas: "progress instruction back"; 
+            grid-template-columns: 310px 1fr 310px;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        #instruction-text { 
+            grid-area: instruction;
+            text-align: center; 
+            font-size: clamp(1.8rem, calc(2.2 * var(--dvw)), 3rem); 
+            font-weight: 400;
+            color: #555;
+        }
+        
+        .progress-container { 
+            grid-area: progress;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            justify-content: space-evenly;
+            width: 310px;
+            direction: ltr; 
+        }
+        #progress-display {
+            font-size: 1.5rem; 
+            font-weight: normal;
+            color: var(--accent-color);
+            flex-shrink: 0;
+        }
+        .progress-bar-container {
+            flex-grow: 1;
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-color);
+            transition: width 0.4s ease, background-color 0.4s ease;
+        }
+
+        #fullscreen-btn {
+            background: #f0f0f0;
+            color: #555;
+            border: 1px solid #ccc;
+            border-radius: calc(1.5 * var(--dvw));
+            cursor: pointer;
+            width: clamp(40px, calc(8 * var(--dvw)), 55px);
+            height: clamp(40px, calc(8 * var(--dvw)), 55px);
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        #fullscreen-btn:hover { background: #e0e0e0; }
+        #fullscreen-btn svg {
+            width: clamp(24px, calc(5 * var(--dvw)), 30px);
+            height: clamp(24px, calc(5 * var(--dvw)), 30px);
+            fill: currentColor;
+        }
+        #fullscreen-btn .icon-open { display: block; }
+        #fullscreen-btn .icon-close { display: none; }
+        body.fullscreen #fullscreen-btn .icon-open { display: none; }
+        body.fullscreen #fullscreen-btn .icon-close { display: block; }
+
+        /* --- Etkinlik Alanı --- */
+        .activity-area {
+            flex-grow: 1;
+            padding: 10px 20px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly; 
+            overflow-y: auto;
+            padding-top: 15px; 
+        }
+
+        .fill-in-blank-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            justify-content: center; 
+            padding-bottom: 20px; 
+        }
+        
+        /* --- Klavye Stilleri --- */
+        .keyboard-container {
+            width: 100%;
+            margin-top: 10px;
+            direction: rtl; 
+            user-select: none;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+        .key-row {
+            display: flex;
+            justify-content: center;
+            gap: calc(0.8 * var(--dvw)); 
+            margin-bottom: calc(0.8 * var(--dvw));
+        }
+
+        .key-container {
+            position: relative;
+            flex-grow: 1;
+            flex-basis: 0;
+            max-width: 80px;
+            height: clamp(60px, calc(8 * var(--dvh)), 85px);
+        }
+
+        .key {
+            font-family: var(--font-arabic);
+            font-size: clamp(2rem, calc(3 * var(--dvw)), 3.5rem);
+            font-weight: 400;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease;
+            border: none;
+            position: absolute;
+            top: 0; left: 0;
+        }
+        .key:active { transform: scale(0.95); }
+        .key.backspace { font-size: 1.5rem; color: white; }
+
+        /* Uzun Basma Popup */
+        .long-press-popup {
+            position: absolute;
+            bottom: 115%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            gap: 5px;
+            padding: 8px;
+            z-index: 1000;
+        }
+        
+        .long-press-popup.show {
+            display: flex;
+            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .variant-key {
+            font-family: var(--font-arabic);
+            font-size: clamp(2rem, calc(3 * var(--dvw)), 3.5rem);
+            font-weight: normal;
+            width: clamp(60px, calc(8 * var(--dvh)), 85px);
+            height: clamp(60px, calc(8 * var(--dvh)), 85px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #333;
+            box-shadow: 0 4px 5px rgba(0,0,0,0.1);
+        }
+        .variant-key:hover { background: var(--accent-color); color: white; }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translateX(-50%) scale(0.5); }
+            to { opacity: 1; transform: translateX(-50%) scale(1); }
+        }
+
+        /* --- Kontrol Butonları --- */
+        #check-scramble-btn, #reset-scramble-btn {
+            padding: 15px 30px;
+            font-size: 2rem; 
+            font-family: var(--font-arabic);
+            font-weight: 400;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, opacity 0.2s;
+            margin: 5px;
+        }
+        #check-scramble-btn { background-color: var(--success-color); color: white; }
+        #reset-scramble-btn { background-color: var(--danger-color); color: white; }
+        
+        #check-scramble-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+        }
+
+        .scramble-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        /* --- Geri Bildirim --- */
+        .feedback-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: center; align-items: center;
+            font-size: 10rem;
+            z-index: 200;
+            visibility: hidden; opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .feedback-overlay.show { visibility: visible; opacity: 1; }
+        .feedback-overlay .correct { color: var(--success-color); }
+        .feedback-overlay .incorrect { color: var(--danger-color); }
+        
+        #feedback-details {
+            display: none; 
+            flex-direction: column; align-items: center;
+            position: absolute; bottom: 5%; width: 100%;
+        }
+        #feedback-correct-answer {
+            font-size: 4rem; 
+            font-weight: 400; color: #333;
+            background: #fff; padding: 10px 20px;
+            border-radius: 10px; border: 2px solid #ccc;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 90%;
+            text-align: center;
+        }
+        #feedback-ok-button {
+            font-size: 2.5rem; font-weight: 400; color: white;
+            background-color: var(--success-color);
+            border: none; border-radius: 50%;
+            width: 70px; height: 70px;
+            cursor: pointer; margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        /* --- Bitiş --- */
+        #finish-screen {
+            text-align: center; font-weight: 400; color: var(--accent-color);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            height: 100%;
+        }
+        #finish-screen p { font-size: 3.5rem; margin: 10px 0; }
+        .score-display {
+            display: flex; gap: 30px; font-size: 2.8rem; 
+            margin: 10px 0; direction: ltr;
+        }
+        .score-item { font-weight: 400; }
+        .score-correct { color: var(--success-color); }
+        .score-incorrect { color: var(--danger-color); }
+        #replay-button {
+            font-size: 4.5rem; background: none; border: none;
+            cursor: pointer; padding: 10px; border-radius: 50%;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        #replay-button:hover { transform: rotate(-90deg); background-color: #f0f0f0; }
+        
+        #start-screen {
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            width: calc(100 * var(--dvw)); 
+            height: calc(100 * var(--dvh));
+            background: #e9ecef; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; 
+        }
+        
+        #start-button {
+            padding: 20px 40px; 
+            font-size: 3rem; 
+            font-weight: 400; 
+            background-color: var(--accent-color); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        #start-button:hover {
+            background-color: #0056b3; 
+        }
+
+        /* YALNIZCA DİKEY (PORTRAIT) MOD KONTROLÜ */
+        @media only screen and (orientation: portrait) {
+             
+            .activity-container { display: none; } 
+        }
+
+        /* --- MOBİL YATAY (LANDSCAPE) MOD KÜÇÜLTME YAMASI --- */
+        @media only screen and (max-height: 900px) and (orientation: landscape) {
+    /* Yükseklik sığmama ve klavye/cümle kesilme sorunu yaması (Body kaydırma aktif) */
+    body {
+        overflow-y: auto !important;
+        height: auto !important;
+        min-height: calc(100 * var(--dvh)) !important;
+    }
+    .activity-container {
+        height: auto !important;
+        min-height: calc(100 * var(--dvh)) !important;
+        overflow-y: visible !important;
+    }
+
+    .header {
+                padding: 5px 10px;
+                gap: 10px;
+                grid-template-columns: 200px 1fr 200px; 
+                border-bottom: 1px solid #eee;
+            }
+            #instruction-text {
+                font-size: clamp(1.2rem, calc(1.8 * var(--dvw)), 2rem); 
+            }
+            .progress-container { 
+                width: 180px; 
+                gap: 8px; 
+            }
+            #progress-display { font-size: 1rem; }
+            .progress-bar-container { height: 6px; }
+            .back-button, #fullscreen-btn {
+                width: 35px;
+                height: 35px;
+            }
+            .back-button svg, #fullscreen-btn svg {
+                 width: 20px;
+                 height: 20px;
+            }
+            .activity-area {
+                padding-top: 5px;
+            }
+            .question-text {
+                 font-size: clamp(1.5rem, calc(4 * var(--dvw)), 2.6rem) !important; 
+                 margin-bottom: 8px;
+            }
+            .answer-input {
+                width: 140px; 
+                height: 45px !important; 
+                line-height: 1.2 !important; 
+                padding: 5px 10px;
+                margin: 0 8px;
+                font-size: 1.5rem;
+            }
+            .keyboard-container {
+                padding: 0 2px;
+                margin-top: 2px;
+            }
+            .key-row {
+                gap: 8px; 
+                margin-bottom: 8px; 
+                justify-content: center;
+            }
+            .key-container {
+                max-width: 55px;
+                height: clamp(35px, calc(9 * var(--dvh)), 50px); 
+            }
+            .key, .variant-key { 
+                font-size: clamp(1.1rem, calc(1.5 * var(--dvw)), 1.8rem); 
+                border-radius: 6px; 
+            }
+            .key.backspace { font-size: 1rem; }
+            #check-scramble-btn, #reset-scramble-btn {
+                padding: 8px 20px;
+                font-size: 1.1rem;
+                margin-top: 5px;
+            }
+            .feedback-overlay {
+                flex-direction: column; 
+                justify-content: center; 
+                align-items: center;    
+                padding-top: 0;         
+                background: rgba(255, 255, 255, 0.98);
+            }
+            #feedback-icon {
+                font-size: calc(18 * var(--dvh)); 
+                margin-bottom: 10px;
+                line-height: 1;
+                display: block;
+                text-align: center;
+            }
+            #feedback-details {
+                position: relative;
+                bottom: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                margin-top: 0;
+            }
+            #feedback-correct-answer {
+                font-size: clamp(1.1rem, calc(5 * var(--dvh)), 2rem) !important; 
+                padding: 8px 20px;
+                white-space: nowrap; 
+                overflow: hidden;
+                text-overflow: ellipsis; 
+                max-width: 90%;
+                margin-bottom: 15px;
+                border-width: 1px;
+                display: block;
+            }
+            #feedback-ok-button {
+                width: 55px !important; 
+                height: 55px !important; 
+                font-size: 2rem !important; 
+                margin-top: 0 !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                line-height: 1;
+            }
+        }
+    
+        /* --- YATAY MOD UYARISI STANDART TASARIMI --- */
+        #rotate-message {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0;
+            width: calc(100 * var(--dvw)); height: calc(100 * var(--dvh));
+            background-color: #2c3e50; 
+            z-index: 9999; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .phone-animation {
+            width: 60px;
+            height: 100px;
+            border: 4px solid white;
+            border-radius: 10px;
+            animation: rotate-phone 2s infinite ease-in-out;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .rotate-text {
+            font-size: clamp(2rem, calc(5 * var(--dvw)), 4rem);
+            margin: 15px 0;
+            line-height: 1.5;
+            font-weight: 400;
+            font-family: var(--font-arabic);
+        }
+
+        @keyframes rotate-phone {
+            0%, 100% { transform: rotate(0deg); opacity: 1; }
+            50% { transform: rotate(90deg); opacity: 0.8; }
+        }
+
+        @media only screen and (orientation: portrait) {
+            #rotate-message { display: flex !important; }
+            .activity-container { display: none !important; } 
+            #start-screen { display: none !important; }
+        }
+
+    
+</style>
+
+<script>
+    // E-Öğrenme Mükemmel Ölçekleme Mantığı
+    function updateDynamicUnits() {
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        var effectiveWidth = w;
+        
+        if (w / h > 1.5) {
+            effectiveWidth = h * 1.5;
+        }
+        
+        document.documentElement.style.setProperty('--dvw', (effectiveWidth / 100) + 'px');
+        document.documentElement.style.setProperty('--dvh', (h / 100) + 'px');
+    }
+    window.addEventListener('resize', updateDynamicUnits);
+    document.addEventListener('DOMContentLoaded', updateDynamicUnits);
+    updateDynamicUnits();
+</script>
+
+
+<style>
+/* Sağa kaymayı önlemek için kapsayıcıları tam genişliğe zorla */
+body, .activity-container, #game-container, #start-overlay, #start-screen, .feedback-overlay, .overlay {
+    width: 100vw !important;
+    max-width: 100vw !important;
+}
+
+/* Header alanındaki sabit genişliklerin butonları bozmasını (üst üste binmesini) engelle */
+.header {
+    grid-template-columns: minmax(100px, auto) 1fr minmax(100px, auto) !important;
+    gap: 8px !important;
+    padding: 10px 15px !important;
+}
+.progress-container {
+    width: auto !important;
+}
+
+/* Boşluk doldurma ve Cümle sıralama yazıları büyütme */
+.key {
+    font-size: clamp(1.5rem, calc(2.2 * var(--dvw)), 2.5rem) !important;
+}
+.question-text, .sentence-container, .drop-zone {
+    font-size: clamp(2.5rem, calc(7 * var(--dvw)), 7rem) !important;
+    line-height: 1.8 !important;
+}
+.word-item, .choice-btn {
+    font-size: clamp(2.5rem, calc(5 * var(--dvw)), 5rem) !important;
+}
+</style>
+
+
+<style>
+/* Test dosyalarındaki aşırı büyümeyi düzelt */
+.question {
+    font-size: clamp(2.5rem, calc(5.5 * var(--dvw)), 5rem) !important;
+    margin-bottom: 10px !important;
+}
+.option {
+    font-size: clamp(2rem, calc(4 * var(--dvw)), 3.5rem) !important;
+    padding: 5px 15px !important;
+}
+.options {
+    gap: 8px !important;
+}
+</style>
+
+</head>
+<body>
+
+    <div id="rotate-message">
+        <div class="phone-animation"></div>
+        <div class="rotate-text">يُرْجى تَدْوير الجِهاز</div> 
+    </div>
+
+    <div class="activity-container" id="main-container" style="display: none;">
+        <div class="header">
+            <div class="progress-container">
+                <div id="progress-display">...</div> 
+                <div class="progress-bar-container">
+                    <div id="progress-bar"></div>
+                </div>
+            </div>
+            
+            <div id="instruction-text">...</div>
+
+            <div class="back-button-container">
+                <button id="fullscreen-btn">
+                    <svg class="icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M5 10h2V7h3V5H5v5zM14 5v2h3v3h2V5h-5zM5 19v-5h2v3h3v2H5zM14 19v-2h3v-3h2v5h-5z"/>
+                    </svg>
+                    <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                    </svg>
+                </button>
+
+                <a href="javascript:void(0);" onclick="exitToHome()" class="back-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="activity-area" id="activity-area"></div>
+
+        <div class="feedback-overlay" id="feedback-overlay">
+            <span id="feedback-icon"></span>
+            <div id="feedback-details">
+                <div id="feedback-correct-answer"></div>
+                <button id="feedback-ok-button">✔</button>
+            </div>
+        </div>
+    </div> 
+    
+    <div id="start-screen">
+        <a href="javascript:void(0);" onclick="exitToHome()" style="position: absolute; top: 15px; left: 15px; z-index: 2001; background: #f0f0f0; color: #555; border: 1px solid #ccc; border-radius: 8px; width: clamp(40px, 8vw, 55px); height: clamp(40px, 8vw, 55px); display: flex; align-items: center; justify-content: center; text-decoration: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: clamp(24px, 5vw, 30px); height: clamp(24px, 5vw, 30px); fill: currentColor;">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+        </a>
+        <button id="start-button">اِبْدَأْ</button>
+    </div>
+    
+    
+
+    <script>
+        // --- KLAVYE TASARIMI ---
+        const colorMap = {
+            'ب':'#a0c4ff','ت':'#a0c4ff','ث':'#a0c4ff','ن':'#a0c4ff','ي':'#a0c4ff',
+            'ج':'#caffbf','ح':'#caffbf','خ':'#caffbf',
+            'د':'#fdffb6','ذ':'#fdffb6',
+            'ر':'#ffd6a5','ز':'#ffd6a5',
+            'س':'#ffadad','ش':'#ffadad',
+            'ص':'#bdb2ff','ض':'#bdb2ff',
+            'ط':'#9bf6ff','ظ':'#9bf6ff',
+            'ع':'#ffc6ff','غ':'#ffc6ff',
+            'ف':'#b9f6ca','ق':'#b9f6ca',
+            'ه':'#b3e5fc','ة':'#b3e5fc',
+            'ء':'#ffccbc','ؤ':'#ffccbc','ئ':'#ffccbc',
+            'ا':'#e0e0e0','ل':'#e0e0e0',
+            'ك':'#d1c4e9',
+            'm':'#f8bbd0', 
+            'م':'#f8bbd0',
+            'o':'#c5cae9',
+            'و':'#c5cae9'
+        };
+        const defaultColor='#FFFFFF';
+        const backspaceBg = '#E53935';
+        
+        // --- UZUN BASMA VERİSİ ---
+        const longPressData = {
+            'ا': ['أ', 'إ', 'آ'], 
+            'ي': ['ى', 'ئ'] 
+        };
+        
+        function getDarkerColor(hex) {
+            if (!hex || hex === '#FFFFFF') hex = '#CCCCCC'; 
+            if (hex.length === 4) { 
+                hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`;
+            }
+            let r = parseInt(hex.slice(1, 3), 16);
+            let g = parseInt(hex.slice(3, 5), 16);
+            let b = parseInt(hex.slice(5, 7), 16);
+            r = Math.floor(r * 0.85); 
+            g = Math.floor(g * 0.85);
+            b = Math.floor(b * 0.85);
+            return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        }
+        
+        const backspaceShadow = getDarkerColor(backspaceBg);
+        
+        const keyRows = [
+            ["د","ج","ح","خ","ه","ع","غ","ف","ق","ث","ص","ض"],
+            ["ط","ك","م","ن","ت","ا","ل","ب","ي","س","ش","ذ"],
+            ["Backspace", "ظ","ز","و","ة","ى","ر","ؤ","ء","ئ"],
+            ["Space"] // YENİ: Boşluk tuşu satırı eklendi
+        ];
+
+const activitiesData = [
+    // 1. Ankara - Başkent
+    { 
+        pre: "أَنْقَرَة مَدينَة كَبيرَة، وَهِي ", 
+        post: "تُرْكِيا ( عاصِمَة / مُدُن )", 
+        a: ["عاصِمَة"], 
+        hint: "Ankara Türkiye'nin ...'dir." 
+    },
+    // 2. Mersin ve Ankara Karşılaştırması
+    { 
+        pre: "مَرْسين ", 
+        post: "مِنْ أَنْقَرَةَ ( أَصْغَر / أَكْبَر )", 
+        a: ["أَصْغَر"], 
+        hint: "Mersin Ankara'dan daha ...'dür." 
+    },
+    // 3. Bursa - İskender Kebap
+    { 
+        pre: "تَشْتَهِرُ مَدينَة بورْصَة بِـ", 
+        post: " ( كَباب إِسْكَنْدَر / بَحْر )", 
+        a: ["جامِع أولو","كَباب إِسْكَنْدَر", "تاريخِها"], 
+        hint: "Bursa bu yemeğiyle meşhurdur." 
+    },
+    // 4. Sinop - Kuzey
+    { 
+        pre: "تَقَعُ سينوب في ", 
+        post: "تُرْكِيا ( شَمال / جَنوب )", 
+        a: ["شَمال"], 
+        hint: "Sinop Türkiye'nin ...'sindedir." 
+    },
+    // 5. Mersin - Güney
+    { 
+        pre: "تَقَعُ مَرْسين في ", 
+        post: "تُرْكِيا ( جَنوب / شَرْق )", 
+        a: ["جَنوب"], 
+        hint: "Mersin Türkiye'nin ...'sindedir." 
+    },
+    // 6. Van - Doğu
+    { 
+        pre: "تَقَعُ وان في ", 
+        post: "تُرْكِيا ( شَرْق / غَرْب )", 
+        a: ["شَرْق"], 
+        hint: "Van Türkiye'nin ...'sundadır." 
+    },
+    // 7. İzmir - Batı
+    { 
+        pre: "تَقَعُ إِزْمير في ", 
+        post: "تُرْكِيا ( غَرْب / وَسَط )", 
+        a: ["غَرْب"], 
+        hint: "İzmir Türkiye'nin ...'sundadır." 
+    },
+    // 8. Konya - Orta
+    { 
+        pre: "تَقَعُ قونْيا في ", 
+        post: "تُرْكِيا ( وَسَط / شَمال )", 
+        a: ["وَسَط"], 
+        hint: "Konya Türkiye'nin ...'sındadır." 
+    },
+    // 9. Batman - Hasankeyf
+    { 
+        pre: "تَشْتَهِرُ باطْمان بِـ", 
+        post: " ( حَسَن كَيْف / المانْتي )", 
+        a: ["حَسَن كَيْف", "حَسَن كَيْف"], 
+        hint: "Batman bu tarihi yeriyle meşhurdur." 
+    },
+    // 10. Van - Tarihi Kalesi
+    { 
+        pre: "تَشْتَهِرُ وان بِـ", 
+        post: "التّاريخِيَّة ( قَلْعَتِها / أَسْوارِها )", 
+        a: ["قَلْعَتِها"], 
+        hint: "Van tarihi ...si ile meşhurdur." 
+    },
+    // 11. Diyarbakır - Surları
+    { 
+        pre: "دِيار بَكْر مَشْهورَة بِـ", 
+        post: "التّاريخِيَّة ( أَسْوارِها / كَبابِها )", 
+        a: ["الأَماكِن","أَسْوارِها"], 
+        hint: "Diyarbakır tarihi ...ı ile meşhurdur." 
+    },
+    // 12. İstanbul - Ayasofya
+    { 
+        pre: "مَسْجِد آياصوفْيا الكَبير في", 
+        post: " ( إِسْطَنْبول / أَنْقَرَة )", 
+        a: ["إِسْطَنْبول"], 
+        hint: "Ayasofya Camii hangi şehirdedir?" 
+    },
+    // 13. Erzurum - Cağ Kebabı
+    { 
+        pre: "تَشْتَهِرُ أَرْضُروم بِـ", 
+        post: " ( كَباب جاغ / القِشْطَة )", 
+        a: ["كَباب جاغ"], 
+        hint: "Erzurum'un meşhur kebabı." 
+    },
+    // 14. Kayseri - Mantı
+    { 
+        pre: "تَشْتَهِرُ قَيْصَري بِـ", 
+        post: " ( المانْتي / كَباب جاغ )", 
+        a: ["المانْتي"], 
+        hint: "Kayseri'nin meşhur yemeği." 
+    },
+    // 15. Mersin - Tantuni
+    { 
+        pre: "مَرْسين مَشْهورَة بِـ", 
+        post: " ( التّانْتوني / القِشْطَة )", 
+        a: ["التّانْتوني"], 
+        hint: "Mersin'in meşhur yemeği." 
+    },
+    // 16. Afyon - Kaymak
+    { 
+        pre: "آفْيون مَشْهورَة بِـ", 
+        post: " ( القِشْطَة / المانْتي )", 
+        a: ["القِشْطَة"], 
+        hint: "Afyon bu ürünüyle meşhurdur." 
+    },
+    // 17. Murad'ın Mahallesi - Uzaklık
+    { 
+        pre: "حَيّ مُراد ", 
+        post: "عَنْ مُتْحَف مَوْلانا ( بَعيد / قَريب )", 
+        a: ["بَعيد"], 
+        hint: "Uzak (Mevlana Müzesi'ne göre konumu)." 
+    },
+    // 18. Mahalle Nüfusu
+    { 
+        pre: "حَيّ مُراد ", 
+        post: "بِالسُّكّان ( مُزْدَحِم / كَبير )", 
+        a: ["مُزْدَحِم"], 
+        hint: "Nüfus bakımından mahallenin durumu (Kalabalık)." 
+    },
+    // 19. Günlük Rutin - Kahvaltı
+    { 
+        pre: "- تَناوَلْتُ ", 
+        post: "صَباحًا ( الفَطور / الفَجْر )", 
+        a: ["الفَطور"], 
+        hint: "Saat 7'de yapılan eylem." 
+    },
+    // 20. Günlük Rutin - Sabah Namazı 
+    { 
+        pre: "- تَوَضَّأْتُ وَ", 
+        post: "الفَجْر ( صَلَّيْتُ / خَرَجْتُ )", 
+        a: ["صَلَّيْتُ"], 
+        hint: "Abdest aldım ve sabah namazını ... (kıldım)." 
+    }
+];
+
+        // --- Gerekli Elementler ---
+        const activityArea = document.getElementById('activity-area');
+        const instructionText = document.getElementById('instruction-text');
+        const progressDisplay = document.getElementById('progress-display');
+        const progressBar = document.getElementById('progress-bar');
+        const feedbackOverlay = document.getElementById('feedback-overlay');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackDetails = document.getElementById('feedback-details');
+        const feedbackCorrectAnswer = document.getElementById('feedback-correct-answer');
+        const feedbackOkButton = document.getElementById('feedback-ok-button');
+        const fullscreenButton = document.getElementById('fullscreen-btn');
+        const startScreen = document.getElementById('start-screen');
+        const startButton = document.getElementById('start-button');
+
+        // --- Ses ---
+        let audioCtx = null;
+        function initAudioContext() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        function playSound(type) {
+            if (!audioCtx) return; 
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.type = 'sine';
+            const now = audioCtx.currentTime;
+
+            if (type === 'touch') {
+                oscillator.frequency.setValueAtTime(200, now);
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+                oscillator.start(now);
+                oscillator.stop(now + 0.1);
+            } else if (type === 'correct') {
+                oscillator.frequency.setValueAtTime(440, now);
+                oscillator.frequency.linearRampToValueAtTime(880, now + 0.2);
+                gainNode.gain.setValueAtTime(0.15, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+                oscillator.start(now);
+                oscillator.stop(now + 0.2);
+            } else if (type === 'incorrect') {
+                oscillator.frequency.setValueAtTime(300, now);
+                oscillator.frequency.linearRampToValueAtTime(150, now + 0.3);
+                gainNode.gain.setValueAtTime(0.15, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+                oscillator.start(now);
+                oscillator.stop(now + 0.3);
+            }
+        }
+        document.body.addEventListener('click', () => initAudioContext(), { once: true });
+
+        // --- Oyun Durum Değişkenleri ---
+        let allActivitiesData = [];     
+        let activityQueue = [];         
+        let currentActivityIndex = 0;   
+        let grandTotalActivities = 0;   
+        let currentRound = 0;           
+        const questionsPerRound = 10;   
+        let totalRounds = 0;            
+        let totalQuestionsInGame = 0;   
+        let scoreCorrect = 0;      
+        let scoreIncorrect = 0; 
+
+        // --- Tam Ekran ---
+                function toggleFullScreen() {
+            try {
+                const docElm = document.documentElement;
+                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                    if (docElm.requestFullscreen) {
+                        docElm.requestFullscreen().catch(err => console.log(err));
+                    } else if (docElm.webkitRequestFullscreen) {
+                        docElm.webkitRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                }
+            } catch (e) {
+                console.log("Fullscreen error:", e);
+            }
+        }
+        function checkFullScreen() {
+             if (document.fullscreenElement || document.webkitFullscreenElement) {
+                 document.body.classList.add('fullscreen');
+             } else {
+                 document.body.classList.remove('fullscreen');
+             }
+        }
+        if(fullscreenButton) fullscreenButton.addEventListener('click', toggleFullScreen);
+        document.addEventListener('fullscreenchange', checkFullScreen);
+
+        // --- Yardımcı Fonksiyonlar ---
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // **********************************************
+// *** NORMALİZASYON FONKSİYONU ***
+// **********************************************
+function normalizeForCheck(text) {
+    if (!text) return "";
+    
+    // 1. Hareke ve Tanvinleri Kaldır
+    let newText = text.replace(/[\u064B-\u065F]/g, ""); 
+    
+    // 2. Hemzeli Elifleri (أ, إ, آ) standart Elif'e (ا) çevir
+    newText = newText.replace(/[أإآ]/g, "ا");
+    
+    return newText.trim(); 
+}
+
+        // --- ETKİNLİK YÜKLEME ---
+        function loadActivity() {
+            activityArea.innerHTML = '';
+            updateProgress(); 
+            const activityData = activityQueue[currentActivityIndex]; 
+            instructionText.textContent = "اِمْلَأ الفَراغ بِالكَلِمَة المُناسِبَة.";
+            buildFillInTheBlank(activityData);
+        }
+        
+        function buildFillInTheBlank(data) {
+            const container = document.createElement('div');
+            container.className = 'fill-in-blank-container';
+
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            
+            const answerInput = document.createElement('div');
+            answerInput.id = 'answer-input';
+            answerInput.className = 'answer-input';
+            
+            let postContent = data.post; 
+            let choicesContent = "";
+            const match = postContent.match(/(.*?)\s*(\(.*?\))\s*$/);
+            if (match) {
+                postContent = match[1];
+                choicesContent = match[2];
+            }
+
+            if (postContent.trim() === "") postContent = "."; 
+            else {
+                const trimmedPost = postContent.trim();
+                if (trimmedPost !== "") {
+                    const lastChar = trimmedPost.charAt(trimmedPost.length - 1);
+                    if (['؟','?','!'].includes(lastChar)) postContent = " " + postContent;
+                    else postContent = " " + postContent + "."; 
+                } else {
+                    postContent = ".";
+                }
+            }
+
+            // GÜNCELLEME: EĞER METİNDE SATIR KIRILMASI (\n) VARSA (Diyalog Durumu)
+            if (data.pre.includes('\n')) {
+                const lines = data.pre.split('\n'); 
+                
+                // 1. Satır: Soru kısmı (Örn: - بِكَم الفاصولْيا؟)
+                const firstLine = document.createElement('div');
+                firstLine.textContent = lines[0];
+                questionText.appendChild(firstLine);
+                
+                // 2. Satır: Cevap çizgisi, input kutusu ve cümlenin devamı (Örn: - بِـ [ ] ليرات (٩).)
+                const secondLine = document.createElement('div');
+                secondLine.style.marginTop = "10px"; 
+                
+                const preSpan = document.createElement('span');
+                preSpan.textContent = lines[1]; 
+                
+                const postSpan = document.createElement('span');
+                postSpan.textContent = postContent;
+                
+                secondLine.appendChild(preSpan);
+                secondLine.appendChild(answerInput);
+                secondLine.appendChild(postSpan);
+                
+                questionText.appendChild(secondLine);
+            } else {
+                // EĞER DİYALOG DEĞİLSE (Normal tek satırlık düz cümle yapısı)
+                const preText = document.createElement('span');
+                preText.textContent = data.pre;
+                
+                const postText = document.createElement('span');
+                postText.textContent = postContent;
+                
+                questionText.appendChild(preText);
+                questionText.appendChild(answerInput);
+                questionText.appendChild(postText);
+            }
+            
+            if (choicesContent) {
+                if (data.pre && data.pre.includes('\n')) {
+                    const choicesSpan = document.createElement('span');
+                    choicesSpan.style.color = '#495057';
+                    choicesSpan.style.fontSize = '0.9em';
+                    choicesSpan.style.marginRight = '10px'; // Arabic is RTL, so marginRight pushes it away from the text
+                    choicesSpan.textContent = choicesContent;
+                    questionText.lastChild.appendChild(choicesSpan);
+                } else {
+                    const choicesDiv = document.createElement('div');
+                    choicesDiv.style.width = '100%';
+                    choicesDiv.style.marginTop = '15px';
+                    choicesDiv.style.color = '#495057';
+                    choicesDiv.style.fontSize = '0.9em';
+                    choicesDiv.style.textAlign = 'center';
+                    choicesDiv.textContent = choicesContent;
+                    questionText.appendChild(choicesDiv);
+                }
+            }
+            container.appendChild(questionText);
+            container.appendChild(buildKeyboard()); 
+            
+            const controls = document.createElement('div');
+            controls.className = 'scramble-controls'; 
+            
+            const checkButton = document.createElement('button');
+            checkButton.id = 'check-scramble-btn';
+            checkButton.textContent = '✔ تَحَقَّقْ';
+            checkButton.disabled = true; 
+            checkButton.onclick = () => {
+                playSound('touch');
+                checkFillInBlankAnswer(data.a); 
+            };
+            
+            const resetButton = document.createElement('button');
+            resetButton.id = 'reset-scramble-btn'; 
+            resetButton.textContent = '🔄 اِمْسَحْ'; 
+            resetButton.onclick = () => {
+                playSound('touch');
+                const input = document.getElementById('answer-input');
+                if(input) input.textContent = ''; 
+                const checkBtn = document.getElementById('check-scramble-btn');
+                if (checkBtn) checkBtn.disabled = true;
+            };
+
+            controls.appendChild(checkButton);
+            controls.appendChild(resetButton);
+            
+            container.appendChild(controls);
+            activityArea.appendChild(container);
+        }
+
+        // --- KLAVYE OLUŞTURUCU ---
+        function buildKeyboard() {
+            const keyboardContainer = document.createElement('div');
+            keyboardContainer.className = 'keyboard-container';
+
+            keyRows.forEach(row => {
+                const keyRow = document.createElement('div');
+                keyRow.className = 'key-row';
+                
+                row.forEach(keyText => {
+                    const keyContainer = document.createElement('div');
+                    keyContainer.className = 'key-container';
+                    
+                    // Boşluk ve Backspace tuşu genişlik ayarları
+                    if (keyText === 'Backspace') {
+                        keyContainer.style.maxWidth = '110px';
+                    } else if (keyText === 'Space') {
+                        keyContainer.style.maxWidth = '300px'; 
+                        keyContainer.style.flexGrow = '4';
+                    }
+
+                    const key = document.createElement('div');
+                    key.className = 'key';
+                    key.textContent = keyText;
+                    
+                    if (keyText === 'Backspace') {
+                        key.classList.add('backspace');
+                        key.innerHTML = '⌫'; 
+                        key.style.backgroundColor = backspaceBg;
+                        key.style.boxShadow = `0 4px ${backspaceShadow}`;
+                    } else if (keyText === 'Space') {
+                        key.innerHTML = '␣'; // Boşluk tuşu simgesi
+                        key.style.backgroundColor = '#e0e0e0';
+                        key.style.boxShadow = `0 4px ${getDarkerColor('#e0e0e0')}`;
+                    } else {
+                        const keyChar = keyText[0]; 
+                        const color = colorMap[keyChar] || defaultColor;
+                        key.style.backgroundColor = color;
+                        key.style.boxShadow = `0 4px ${getDarkerColor(color)}`;
+                    }
+
+                    let pressTimer;
+                    let isLongPress = false;
+
+                    const startPress = (e) => {
+                        e.preventDefault(); 
+                        closeAllPopups(); // YENİ: Başka tuşa dokunulduğunda açık pop-up'ı kapat
+                        isLongPress = false;
+                        
+                        if (longPressData[keyText]) {
+                            pressTimer = setTimeout(() => {
+                                isLongPress = true;
+                                showVariants(keyText, keyContainer);
+                                playSound('touch'); 
+                            }, 500); 
+                        }
+                    };
+
+                    const cancelPress = (e) => {
+                        clearTimeout(pressTimer);
+                        if (!isLongPress && e.type !== 'mouseleave') {
+                            if (!document.querySelector('.long-press-popup.show')) {
+                                handleKeyInput(keyText);
+                            }
+                        }
+                    };
+                    
+                    if (keyText === 'Backspace') {
+                        key.onclick = () => handleKeyInput('Backspace');
+                    } else if (keyText === 'Space') {
+                        key.onclick = () => handleKeyInput(' '); // YENİ: Boşluk karakteri gönder
+                    } else {
+                        key.addEventListener('mousedown', startPress);
+                        key.addEventListener('touchstart', startPress, {passive: false});
+                        
+                        key.addEventListener('mouseup', cancelPress);
+                        key.addEventListener('touchend', cancelPress);
+                        key.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+                    }
+
+                    keyContainer.appendChild(key);
+                    keyRow.appendChild(keyContainer);
+                });
+                keyboardContainer.appendChild(keyRow);
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.key-container')) {
+                    closeAllPopups();
+                }
+            });
+
+            return keyboardContainer;
+        }
+
+        function showVariants(mainKey, container) {
+            closeAllPopups();
+            const variants = longPressData[mainKey];
+            const popup = document.createElement('div');
+            popup.className = 'long-press-popup show';
+            
+            variants.forEach(char => {
+                const vKey = document.createElement('div');
+                vKey.className = 'variant-key';
+                vKey.textContent = char;
+                
+                vKey.onclick = (e) => {
+                    e.stopPropagation();
+                    handleKeyInput(char);
+                    closeAllPopups();
+                };
+                
+                popup.appendChild(vKey);
+            });
+            container.appendChild(popup);
+        }
+
+        function handleKeyInput(char) {
+            playSound('touch');
+            const answerInput = document.getElementById('answer-input');
+            if (!answerInput) return;
+
+            if (char === 'Backspace') {
+                answerInput.textContent = answerInput.textContent.slice(0, -1);
+            } else {
+                answerInput.textContent += char;
+            }
+
+            const checkBtn = document.getElementById('check-scramble-btn');
+            if (checkBtn) {
+                checkBtn.disabled = answerInput.textContent.trim().length === 0;
+            }
+        }
+
+        function closeAllPopups() {
+            document.querySelectorAll('.long-press-popup').forEach(p => p.remove());
+        }
+
+        // --- Cevap Kontrolü ---
+        function checkFillInBlankAnswer(correctAnswer) {
+            const answerInput = document.getElementById('answer-input');
+            const userAnswer = answerInput.textContent.trim();
+            const normalizedUserAnswer = normalizeForCheck(userAnswer); 
+
+            let isCorrect = false;
+            const correctAnswers = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
+
+                        for (const correct of correctAnswers) {
+                const normalizedCorrect = normalizeForCheck(correct); 
+                
+                if (normalizedUserAnswer === normalizedCorrect) { 
+                    isCorrect = true; break;
+                }
+                
+                // El takısı esnekliği
+                const hasElPrefix = normalizedCorrect.startsWith('ال');
+                const userHasElPrefix = normalizedUserAnswer.startsWith('ال');
+
+                if (hasElPrefix && !userHasElPrefix) {
+                    if ("ال" + normalizedUserAnswer === normalizedCorrect) {
+                        isCorrect = true; break;
+                    }
+                }
+                if (!hasElPrefix && userHasElPrefix) {
+                    if (normalizedUserAnswer === "ال" + normalizedCorrect) {
+                        isCorrect = true; break;
+                    }
+                }
+            }
+
+            showFeedback(isCorrect, correctAnswer); 
+            if (isCorrect) {
+                scoreCorrect++;
+                globalScoreCorrect++;
+            }
+            else {
+                scoreIncorrect++;
+                globalScoreIncorrect++;
+            }
+        }
+
+        function showFeedback(isCorrect, correctAnswer) {
+            feedbackOverlay.classList.add('show');
+            if (isCorrect) {
+                feedbackIcon.textContent = '✔';
+                feedbackIcon.className = 'correct';
+                playSound('correct');
+                feedbackDetails.style.display = 'none'; 
+                setTimeout(nextActivity, 1200); 
+            } else {
+                feedbackIcon.textContent = '❌';
+                feedbackIcon.className = 'incorrect';
+                playSound('incorrect');
+                
+                const variantsToExclude = ["اسمع","اربعة","اجلس","اصfer", "اكتب", " احmer", "عشر", " azraq","انت","اغلى","اربع","ارخص","اصغر","","انا","الى","انت"];
+                const canonicalAnswers = Array.isArray(correctAnswer) 
+                    ? correctAnswer.filter(answer => !variantsToExclude.includes(answer))
+                    : [correctAnswer];
+
+                const answerToShow = canonicalAnswers.join(' / ');
+                
+                feedbackCorrectAnswer.textContent = `الجَواب الصَّحيح: ${answerToShow}`;
+                feedbackDetails.style.display = 'flex'; 
+                feedbackOkButton.onclick = () => nextActivity(); 
+            }
+        }
+
+        function nextActivity() {
+            feedbackOverlay.classList.remove('show');
+            feedbackDetails.style.display = 'none'; 
+            currentActivityIndex++; 
+
+            if (currentActivityIndex === grandTotalActivities) {
+                if (currentRound === totalRounds) showFinishScreen();
+                else showRoundCompleteScreen();
+            } else {
+                loadActivity();
+            }
+        }
+
+        function showFinishScreen() {
+            activityArea.innerHTML = `
+                <div id="finish-screen">
+                    <p>أَحْسَنْت! لَقَد أَكْمَلْتَ جَميع الأَنْشِطَة‫.‬</p>
+                    <p style="font-size: 2.5rem; color: #555; margin-bottom: 0;">النَّتيجَة النِّهائِيَّة:</p>
+                    <div class="score-display">
+                        <span class="score-item score-correct">✔ ${globalScoreCorrect}</span>
+                        <span class="score-item score-incorrect">❌ ${globalScoreIncorrect}</span>
+                    </div>
+                    <button id="replay-button" onclick="restartGame()">🔄</button>
+                </div>
+            `;
+            instructionText.textContent = ""; 
+            progressDisplay.textContent = "";
+            progressBar.style.width = '100%';
+            progressBar.style.backgroundColor = 'var(--success-color)';
+        }
+
+        function showRoundCompleteScreen() {
+            activityArea.innerHTML = `
+                <div id="finish-screen" style="justify-content: center;">
+                    <p>أَحْسَنْت!</p>
+                    <p style="font-size: 2.5rem; color: #555; margin-bottom: 0;">نَتيجَة هَذِه الجَوْلَة</p>
+                    <div class="score-display">
+                        <span class="score-item score-correct">✔ ${scoreCorrect}</span>
+                        <span class="score-item score-incorrect">❌ ${scoreIncorrect}</span>
+                    </div>
+                    <button id="check-scramble-btn" onclick="startNextRound()" style="font-size: 1.8rem; margin-top: 20px;">
+                        التّالي
+                    </button>
+                </div>
+            `;
+            instructionText.textContent = ""; 
+            progressDisplay.textContent = ""; 
+            progressBar.style.width = '100%';
+            progressBar.style.backgroundColor = 'var(--success-color)';
+        }
+
+        function startNextRound() {
+            playSound('touch');
+            scoreCorrect = 0;
+            scoreIncorrect = 0;
+            globalScoreCorrect = 0;
+            globalScoreIncorrect = 0;
+            currentRound++;
+            currentActivityIndex = 0;
+            
+            const roundStartIndex = (currentRound - 1) * questionsPerRound;
+            const roundEndIndex = Math.min(currentRound * questionsPerRound, totalQuestionsInGame);
+            activityQueue = allActivitiesData.slice(roundStartIndex, roundEndIndex);
+            grandTotalActivities = activityQueue.length;
+            
+            progressBar.style.width = '0%';
+            progressBar.style.backgroundColor = 'var(--accent-color)';
+            loadActivity(); 
+        }
+
+        function restartGame() {
+            playSound('touch');
+            scoreCorrect = 0;
+            scoreIncorrect = 0;
+            globalScoreCorrect = 0;
+            globalScoreIncorrect = 0;
+            progressBar.style.width = '0%';
+            progressBar.style.backgroundColor = 'var(--accent-color)';
+            allActivitiesData = shuffle([...activitiesData]);
+            totalQuestionsInGame = allActivitiesData.length;
+            totalRounds = Math.ceil(totalQuestionsInGame / questionsPerRound);
+            currentRound = 0; 
+            startNextRound(); 
+        }
+
+        function updateProgress() {
+            if (grandTotalActivities === 0) {
+                 progressDisplay.textContent = `0 / ${grandTotalActivities}`;
+                 return;
+            }
+            const currentTotal = currentActivityIndex + 1;
+            const percentage = (currentActivityIndex / grandTotalActivities) * 100;
+            progressDisplay.textContent = `${currentTotal} / ${grandTotalActivities}`;
+            progressBar.style.width = `${percentage}%`;
+        }
+        
+        function startGame() {
+            playSound('touch');
+            const startScreen = document.getElementById('start-screen');
+            startScreen.style.display = 'none';
+
+            const container = document.querySelector('.activity-container');
+            if (container) {
+                container.style.display = 'flex'; 
+            }
+
+            document.body.classList.add('game-started');
+            toggleFullScreen(); 
+            
+            allActivitiesData = shuffle([...activitiesData]);
+            totalQuestionsInGame = allActivitiesData.length;
+            totalRounds = Math.ceil(totalQuestionsInGame / questionsPerRound);
+            currentRound = 0; 
+            startNextRound(); 
+
+            setTimeout(() => {
+                const audio = new Audio('yonergebosluk.wav');
+                audio.play().catch(err => {
+                    console.log("Ses çalma hatası:", err);
+                });
+            }, 600); 
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (startButton) startButton.addEventListener('click', startGame);
+            checkFullScreen();
+        });
+    </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const backBtns = document.querySelectorAll('.back-button');
+    backBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = btn.getAttribute('href') || 'index.html';
+            try {
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                }
+            } catch(err) {}
+            setTimeout(() => { window.location.href = target; }, 150);
+        });
+    });
+});
+</script>
+
+<script>
+function exitToHome() {
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+        let isNavigating = false;
+        function goHome() {
+            if (!isNavigating) {
+                isNavigating = true;
+                window.location.href = 'index.html';
+            }
+        }
+        
+        document.addEventListener("fullscreenchange", goHome);
+        document.addEventListener("webkitfullscreenchange", goHome);
+        
+        setTimeout(goHome, 500);
+
+        try {
+            if (document.exitFullscreen) {
+                let promise = document.exitFullscreen();
+                if (promise) promise.catch(goHome);
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        } catch (e) {
+            goHome();
+        }
+    } else {
+        window.location.href = 'index.html';
+    }
+}
+</script>
+
+</body>
+</html>

@@ -195,8 +195,22 @@ exports.qrOturumSor = onCall(async (istek) => {
   const kalanSn = Math.max(0, Math.round((v.sonKullanma.toMillis() - Date.now()) / 1000));
   if (v.durum !== 'onayli') return { durum: v.durum, kalanSn };
 
-  /* Onaylı: jetonu üret, kaydı hemen kapat (tek kullanım). */
-  const jeton = await admin.auth().createCustomToken(v.uid);
+  /* Onaylı: jetonu üret, kaydı hemen kapat (tek kullanım).
+     DIKKAT: createCustomToken, Cloud Functions 2. nesilde anahtar dosyası
+     olmadığı için IAM "signBlob" çağrısı yapar. Çalıştığı servis hesabına
+     "Service Account Token Creator" rolü verilmemişse burası patlar ve
+     tahta sonsuza kadar "onay bekleniyor"da kalırdı. Hata artık yutulmuyor,
+     nedeni istemciye AÇIKÇA dönüyor. */
+  let jeton;
+  try {
+    jeton = await admin.auth().createCustomToken(v.uid);
+  } catch (e) {
+    console.error('createCustomToken basarisiz', e);
+    const ayrinti = (e && e.message) ? String(e.message).slice(0, 300) : String(e);
+    throw new HttpsError('internal',
+      'Giriş jetonu üretilemedi. Sunucu hesabına “Service Account Token Creator” ' +
+      'yetkisi verilmemiş olabilir. Sunucu mesajı: ' + ayrinti);
+  }
   await ref.update({ durum: 'kullanildi', kullanimZamani: admin.firestore.FieldValue.serverTimestamp() });
   return { durum: 'onayli', jeton, ad: v.onayAd || '', eposta: v.onayEposta || '' };
 });

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar: Pandora Language Protocol</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@400;700&display=swap');
+
+        :root {
+            --biolum-blue: #00f0ff;
+            --biolum-purple: #bc13fe;
+            --jungle-dark: #020b14;
+            --leaf-green: #0aff60;
+            --text-glow: 0 0 10px var(--biolum-blue);
+        }
+
+        body {
+            background-color: var(--jungle-dark);
+            color: #fff;
+            font-family: 'Cinzel', serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* ARKA PLAN (Pandora Ormanı Hissi) */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(188, 19, 254, 0.15), transparent 40%),
+                        radial-gradient(circle at 80% 20%, rgba(0, 240, 255, 0.15), transparent 40%);
+            z-index: -1;
+        }
+        
+        /* Hareketli Sporlar (Atokirina) */
+        .spore {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            box-shadow: 0 0 10px #fff, 0 0 20px var(--biolum-purple);
+            animation: floatUp linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.8; }
+            to { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* --- NAVIGASYON --- */
+        nav {
+            display: flex; justify-content: center; gap: 30px; padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--biolum-blue);
+            border: 1px solid var(--biolum-blue);
+            padding: 10px 25px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 20px 0 20px 0;
+            transition: 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--biolum-blue);
+            color: var(--jungle-dark);
+            box-shadow: 0 0 20px var(--biolum-blue);
+        }
+
+        /* --- OYUN ALANLARI --- */
+        .game-area {
+            flex-grow: 1;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+            animation: fadeIn 0.8s ease;
+        }
+        .game-area.active { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- OYUN 1: TSAHEYLU (BAĞ KURMA) --- */
+        .tsaheylu-container {
+            display: flex; gap: 100px; position: relative;
+        }
+        
+        .column { display: flex; flex-direction: column; gap: 20px; }
+
+        .node-item {
+            padding: 15px 30px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            min-width: 120px;
+            background: rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        /* Bağlantı noktaları (saç örgüleri) */
+        .node-item::after {
+            content: ""; position: absolute; top: 50%; width: 10px; height: 10px; background: #555; border-radius: 50%;
+            transform: translateY(-50%); transition: 0.3s;
+        }
+        /* Sol sütun noktası sağda */
+        .col-left .node-item::after { right: -15px; }
+        /* Sağ sütun noktası solda */
+        .col-right .node-item::after { left: -15px; }
+
+        .node-item:hover { border-color: var(--biolum-purple); box-shadow: 0 0 15px var(--biolum-purple); }
+        
+        .node-item.selected {
+            border-color: var(--leaf-green); background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 20px var(--leaf-green);
+        }
+        .node-item.selected::after { background: var(--leaf-green); box-shadow: 0 0 10px var(--leaf-green); }
+
+        .node-item.matched {
+            border-color: var(--biolum-blue); opacity: 0.5; pointer-events: none;
+        }
+
+        /* --- OYUN 2: YÜZEN ADALAR (PARKUR) --- */
+        .sky-path {
+            display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 50px;
+        }
+
+        .floating-island {
+            background: url('https://www.transparenttextures.com/patterns/rocky-wall.png'), #2a2a2a;
+            padding: 15px 25px;
+            border-radius: 10px 10px 30px 30px; /* Ada şekli */
+            border-top: 3px solid var(--leaf-green); /* Çimen */
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+            animation: floatIsland 3s infinite ease-in-out;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .floating-island:hover { transform: translateY(-10px) scale(1.1); }
+        .floating-island.stepped { background: var(--biolum-blue); color: black; border-top-color: #fff; pointer-events: none; }
+        .floating-island.fallen { background: #ff3333; animation: shake 0.5s; }
+
+        .bridge-display {
+            font-size: 2rem; color: var(--biolum-blue); min-height: 50px;
+            border-bottom: 1px solid rgba(255,255,255,0.1); width: 80%; text-align: center;
+            text-shadow: 0 0 10px var(--biolum-blue); margin-bottom: 20px;
+        }
+
+        /* --- OYUN 3: ELEMENTLER (REFLEKS) --- */
+        .element-arena {
+            width: 600px; height: 400px;
+            border: 2px solid rgba(255,255,255,0.1);
+            position: relative;
+            background: linear-gradient(90deg, rgba(0,0,50,0.5) 50%, rgba(50,0,50,0.5) 50%);
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .arena-divider {
+            position: absolute; left: 50%; height: 100%; width: 2px; background: rgba(255,255,255,0.2);
+        }
+
+        .side-label {
+            position: absolute; top: 20px; font-size: 2rem; opacity: 0.5; font-weight: bold;
+        }
+        .left-label { left: 50px; color: var(--biolum-blue); } /* İSİM */
+        .right-label { right: 50px; color: var(--biolum-purple); } /* FİİL */
+
+        .falling-element {
+            position: absolute; left: 50%; top: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 3rem;
+            color: #fff;
+            font-family: 'Amiri', serif;
+            transition: transform 0.2s;
+            text-shadow: 0 0 10px #fff;
+        }
+
+        /* ANİMASYONLAR */
+        @keyframes floatIsland { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+        .arabic-text { font-family: 'Amiri', serif; }
+        
+        .victory-msg {
+            position: absolute; font-size: 3rem; color: var(--leaf-green);
+            text-shadow: 0 0 20px var(--leaf-green); display: none; z-index: 20;
+            background: rgba(0,0,0,0.8); padding: 20px; border-radius: 20px;
+            border: 2px solid var(--leaf-green);
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <button class="nav-btn active" onclick="switchGame('tsaheylu')">TSAHEYLU (BAĞ)</button>
+        <button class="nav-btn" onclick="switchGame('islands')">YÜZEN ADALAR</button>
+        <button class="nav-btn" onclick="switchGame('elements')">ELEMENTLER</button>
+    </nav>
+
+    <div id="tsaheylu" class="game-area active">
+        <h2 style="color:var(--biolum-purple)">TSAHEYLU: SİNİRSEL BAĞ</h2>
+        <p style="opacity:0.7">Anlamı eşleşen kelimeleri seçerek bağı kur.</p>
+        
+        <div class="tsaheylu-container">
+            <div class="column col-left" id="tsa-left">
+                </div>
+            
+            <div class="column col-right" id="tsa-right">
+                </div>
+        </div>
+        <div class="victory-msg" id="vic-tsa">BAĞ KURULDU!</div>
+    </div>
+
+    <div id="islands" class="game-area">
+        <h2 style="color:var(--leaf-green)">YÜZEN ADALAR: KÖPRÜYÜ KUR</h2>
+        <p style="opacity:0.7">Ikran'ın karşıya geçmesi için kelimelere doğru sırayla bas.</p>
+
+        <div class="bridge-display arabic-text" id="bridge-text">...</div>
+        
+        <div class="sky-path" id="island-container">
+            </div>
+        
+        <button class="nav-btn" id="next-island-btn" onclick="nextIslandLevel()" style="margin-top:30px; display:none;">SONRAKİ BÖLGE</button>
+    </div>
+
+    <div id="elements" class="game-area">
+        <h2 style="color:var(--biolum-blue)">ELEMENTLERİN YOLU</h2>
+        <p style="opacity:0.7">Kelime belirdiğinde: İSİM ise SOL OK (←), FİİL ise SAĞ OK (→) tuşuna bas.</p>
+        
+        <div class="element-arena">
+            <div class="arena-divider"></div>
+            <div class="side-label left-label">İSİM (←)</div>
+            <div class="side-label right-label">FİİL (→)</div>
+            
+            <div id="current-element" class="falling-element"></div>
+        </div>
+        <div style="margin-top:20px; font-size:1.5rem;">SKOR: <span id="elem-score">0</span></div>
+        <button class="nav-btn" onclick="startElementGame()" id="start-elem-btn" style="margin-top:20px;">BAŞLAT</button>
+    </div>
+
+    <script>
+        // --- ORTAK FONKSİYONLAR ---
+        function switchGame(id) {
+            document.querySelectorAll('.game-area').forEach(g => g.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- ARKA PLAN SPORES ---
+        function createSpores() {
+            const body = document.body;
+            for(let i=0; i<20; i++){
+                const s = document.createElement('div');
+                s.className = 'spore';
+                s.style.left = Math.random() * 100 + 'vw';
+                s.style.width = s.style.height = (Math.random() * 5 + 2) + 'px';
+                s.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                s.style.animationDelay = Math.random() * 5 + 's';
+                body.appendChild(s);
+            }
+        }
+        createSpores();
+
+        // ==========================================
+        // OYUN 1: TSAHEYLU (BAĞLAMA)
+        // ==========================================
+        const tsaData = [
+            { ar: "قَلْب", tr: "Kalp" },
+            { ar: "رُوح", tr: "Ruh" },
+            { ar: "شَجَرَة", tr: "Ağaç" },
+            { ar: "مَاء", tr: "Su" }
+        ];
+
+        let selectedLeft = null;
+        let selectedRight = null;
+        let matchedCount = 0;
+
+        function initTsaheylu() {
+            const lContainer = document.getElementById('tsa-left');
+            const rContainer = document.getElementById('tsa-right');
+            
+            // Veriyi karıştır (sadece görünüm için)
+            let lefts = [...tsaData].sort(()=>Math.random()-0.5);
+            let rights = [...tsaData].sort(()=>Math.random()-0.5);
+
+            lefts.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'node-item arabic-text';
+                div.innerText = item.ar;
+                div.dataset.val = item.tr; // Eşleşme anahtarı
+                div.onclick = () => selectNode(div, 'left');
+                lContainer.appendChild(div);
+            });
+
+            rights.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'node-item';
+                div.innerText = item.tr;
+                div.dataset.val = item.tr;
+                div.onclick = () => selectNode(div, 'right');
+                rContainer.appendChild(div);
+            });
+        }
+
+        function selectNode(el, side) {
+            if(el.classList.contains('matched')) return;
+
+            // Görsel seçim
+            if(side === 'left') {
+                if(selectedLeft) selectedLeft.classList.remove('selected');
+                selectedLeft = el;
+            } else {
+                if(selectedRight) selectedRight.classList.remove('selected');
+                selectedRight = el;
+            }
+            el.classList.add('selected');
+
+            // Kontrol
+            if(selectedLeft && selectedRight) {
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            if(selectedLeft.dataset.val === selectedRight.dataset.val) {
+                // EŞLEŞME
+                selectedLeft.classList.add('matched');
+                selectedRight.classList.add('matched');
+                selectedLeft.style.boxShadow = "0 0 30px var(--biolum-blue)";
+                selectedRight.style.boxShadow = "0 0 30px var(--biolum-blue)";
+                matchedCount++;
+                
+                // Ses efekti eklenebilir
+                if(matchedCount === tsaData.length) {
+                    document.getElementById('vic-tsa').style.display = 'block';
+                }
+            } else {
+                // HATA
+                selectedLeft.classList.add('fallen'); // Kırmızı efekt için class reuse
+                selectedRight.classList.add('fallen');
+                setTimeout(() => {
+                    selectedLeft.classList.remove('selected', 'fallen');
+                    selectedRight.classList.remove('selected', 'fallen');
+                    selectedLeft = null;
+                    selectedRight = null;
+                }, 500);
+                return; // Seçimleri sıfırla ama hemen null yapma (animasyon için)
+            }
+            // Başarılıysa seçimi temizle
+            selectedLeft = null;
+            selectedRight = null;
+        }
+
+        initTsaheylu();
+
+        // ==========================================
+        // OYUN 2: YÜZEN ADALAR (SIRALAMA)
+        // ==========================================
+        const islandSentences = [
+            { parts: ["الطَّبِيعَةُ", "أُمُّنَا", "الْجَمِيلَةُ"], full: "الطَّبِيعَةُ أُمُّنَا الْجَمِيلَةُ" },
+            { parts: ["نَحْنُ", "نَحْمِي", "الْغَابَةَ"], full: "نَحْنُ نَحْمِي الْغَابَةَ" }
+        ];
+        let currentIslandLevel = 0;
+        let islandProgress = [];
+
+        function loadIslandLevel() {
+            if(currentIslandLevel >= islandSentences.length) {
+                document.getElementById('bridge-text').innerText = "YOLCULUK TAMAMLANDI - OEL NGATI KAMEIE";
+                document.getElementById('island-container').innerHTML = "";
+                document.getElementById('next-island-btn').style.display = 'none';
+                return;
+            }
+
+            const data = islandSentences[currentIslandLevel];
+            const container = document.getElementById('island-container');
+            container.innerHTML = '';
+            document.getElementById('bridge-text').innerText = "...";
+            islandProgress = [];
+
+            // Karıştır
+            let parts = [...data.parts].sort(()=>Math.random()-0.5);
+
+            parts.forEach(word => {
+                let div = document.createElement('div');
+                div.className = 'floating-island arabic-text';
+                div.style.animationDelay = Math.random() + 's'; // Rastgele süzülme
+                div.innerText = word;
+                div.onclick = () => stepIsland(div, word, data);
+                container.appendChild(div);
+            });
+        }
+
+        function stepIsland(div, word, data) {
+            // Doğru sıradaki kelime mi?
+            const correctNextWord = data.parts[islandProgress.length];
+            
+            if(word === correctNextWord) {
+                // DOĞRU ADIM
+                div.classList.add('stepped');
+                div.style.animation = 'none';
+                islandProgress.push(word);
+                document.getElementById('bridge-text').innerText = islandProgress.join(" ");
+                
+                if(islandProgress.length === data.parts.length) {
+                    document.getElementById('next-island-btn').style.display = 'inline-block';
+                }
+            } else {
+                // YANLIŞ ADIM (Düşme Efekti)
+                div.classList.add('fallen');
+                setTimeout(() => div.classList.remove('fallen'), 500);
+            }
+        }
+
+        function nextIslandLevel() {
+            currentIslandLevel++;
+            document.getElementById('next-island-btn').style.display = 'none';
+            loadIslandLevel();
+        }
+
+        loadIslandLevel();
+
+        // ==========================================
+        // OYUN 3: ELEMENTLER (REFLEKS)
+        // ==========================================
+        const elemData = [
+            { w: "كِتَاب", type: "isim" }, { w: "يَكْتُبُ", type: "fiil" },
+            { w: "شَمْس", type: "isim" }, { w: "ذَهَبَ", type: "fiil" },
+            { w: "قَمَر", type: "isim" }, { w: "جَلَسَ", type: "fiil" }
+        ];
+        
+        let elemIndex = 0;
+        let elemScore = 0;
+        let gameRunning = false;
+        const elemDiv = document.getElementById('current-element');
+
+        function startElementGame() {
+            elemIndex = 0;
+            elemScore = 0;
+            document.getElementById('elem-score').innerText = "0";
+            document.getElementById('start-elem-btn').style.display = 'none';
+            gameRunning = true;
+            showNextElement();
+            
+            // Klavye dinleyicisi
+            document.addEventListener('keydown', handleKey);
+        }
+
+        function showNextElement() {
+            if(elemIndex >= elemData.length) {
+                gameRunning = false;
+                elemDiv.style.transform = "translate(-50%, -50%) scale(0)";
+                document.getElementById('start-elem-btn').innerText = "TEKRAR OYNA";
+                document.getElementById('start-elem-btn').style.display = 'inline-block';
+                return;
+            }
+            
+            // Kelimeyi merkeze getir (Spawn)
+            elemDiv.innerText = elemData[elemIndex].w;
+            elemDiv.style.transition = 'none';
+            elemDiv.style.transform = "translate(-50%, -50%) scale(0)";
+            
+            setTimeout(() => {
+                elemDiv.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                elemDiv.style.transform = "translate(-50%, -50%) scale(1.5)";
+            }, 50);
+        }
+
+        function handleKey(e) {
+            if(!gameRunning) return;
+
+            const currentType = elemData[elemIndex].type;
+            let choice = null;
+
+            if(e.key === "ArrowLeft") choice = "isim";
+            if(e.key === "ArrowRight") choice = "fiil";
+
+            if(choice) {
+                if(choice === currentType) {
+                    // DOĞRU
+                    elemScore += 10;
+                    // Efekt: Doğru yöne uçup kaybolsun
+                    const moveX = choice === 'isim' ? '-150%' : '150%';
+                    elemDiv.style.transform = `translate(${moveX}, -50%) scale(0)`;
+                } else {
+                    // YANLIŞ
+                    elemScore -= 5;
+                    elemDiv.style.color = "red";
+                    setTimeout(()=> elemDiv.style.color="white", 200);
+                }
+                
+                document.getElementById('elem-score').innerText = elemScore;
+                elemIndex++;
+                setTimeout(showNextElement, 300);
+            }
+        }
+
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

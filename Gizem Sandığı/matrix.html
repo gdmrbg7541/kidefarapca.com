@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Matrix: Arabic Simulation</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Share+Tech+Mono&family=VT323&display=swap');
+
+        :root {
+            --matrix-green: #00ff41;
+            --matrix-dark: #008f11;
+            --matrix-black: #0d0208;
+            --error-red: #ff0000;
+            --bg-overlay: rgba(0, 0, 0, 0.85);
+        }
+
+        body {
+            background-color: black;
+            color: var(--matrix-green);
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* DIGITAL RAIN CANVAS */
+        #matrixCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            z-index: -1;
+        }
+
+        /* --- NAVIGASYON (OPERATOR MENU) --- */
+        nav {
+            border-bottom: 1px solid var(--matrix-dark);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+        }
+
+        .tab-btn {
+            background: #000;
+            color: var(--matrix-dark);
+            border: 1px solid var(--matrix-dark);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            background: var(--matrix-dark);
+            color: #000;
+            box-shadow: 0 0 10px var(--matrix-green);
+        }
+
+        .tab-btn.active {
+            background: var(--matrix-green);
+            color: #000;
+            border-color: var(--matrix-green);
+            box-shadow: 0 0 15px var(--matrix-green);
+            font-weight: bold;
+        }
+        
+        .tab-btn.active::before { content: "> "; }
+
+        /* --- İÇERİK --- */
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            background: var(--bg-overlay);
+            border: 1px solid var(--matrix-dark);
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+            animation: glitchFade 0.3s ease-out;
+            position: relative;
+        }
+        
+        /* Köşe süsleri */
+        .tab-content::before {
+            content: ""; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px;
+            border-top: 2px solid var(--matrix-green); border-left: 2px solid var(--matrix-green);
+        }
+        .tab-content::after {
+            content: ""; position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px;
+            border-bottom: 2px solid var(--matrix-green); border-right: 2px solid var(--matrix-green);
+        }
+
+        .tab-content.active { display: flex; }
+
+        .arabic-text { font-family: 'Amiri', serif; direction: rtl; }
+
+        h2 {
+            font-family: 'VT323';
+            font-size: 2rem;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+            border-bottom: 1px dashed var(--matrix-dark);
+            width: 100%;
+            text-align: center;
+            padding-bottom: 10px;
+            text-shadow: 0 0 5px var(--matrix-green);
+        }
+
+        /* PROGRESS BAR */
+        .system-status {
+            width: 100%; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 0.8rem;
+        }
+        .prog-track { flex-grow: 1; height: 10px; background: #111; border: 1px solid #333; }
+        .prog-fill { height: 100%; background: var(--matrix-green); width: 0%; transition: 0.5s; }
+
+        /* --- TAB 1: THE SOURCE (Reading) --- */
+        .code-block {
+            font-size: 3rem;
+            color: var(--matrix-green);
+            text-shadow: 0 0 10px var(--matrix-green);
+            margin: 30px 0;
+            cursor: help;
+            transition: 0.2s;
+        }
+        
+        /* Blur Effect Class */
+        .encrypted {
+            filter: blur(12px);
+            opacity: 0.7;
+        }
+        .code-block:hover { filter: blur(0); opacity: 1; }
+
+        .typing-cursor::after {
+            content: "_";
+            animation: blink 1s infinite;
+        }
+
+        /* --- TAB 2: CONSTRUCT (Drag Drop) --- */
+        .loading-program {
+            display: flex; flex-direction: column; align-items: center; gap: 30px; width: 100%;
+        }
+        
+        .data-disc {
+            width: 100px; height: 100px;
+            border: 2px solid var(--matrix-green);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+            background: radial-gradient(circle, #003300 0%, #000 70%);
+            box-shadow: 0 0 15px var(--matrix-green);
+            cursor: grab;
+            z-index: 10;
+        }
+
+        .upload-port {
+            width: 200px; height: 100px;
+            border: 2px dashed var(--matrix-dark);
+            background: rgba(0, 20, 0, 0.5);
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+            transition: 0.3s;
+        }
+        .upload-port.drag-over {
+            border-color: var(--matrix-green);
+            box-shadow: 0 0 20px var(--matrix-green) inset;
+        }
+
+        /* --- TAB 3: SIMULATION (Quiz) --- */
+        .terminal-options {
+            display: grid; grid-template-columns: 1fr; gap: 10px; width: 80%;
+        }
+        
+        .term-btn {
+            background: black;
+            border: 1px solid var(--matrix-dark);
+            color: var(--matrix-green);
+            padding: 15px;
+            font-family: 'Share Tech Mono';
+            font-size: 1.2rem;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .term-btn:hover {
+            background: var(--matrix-dark); color: black;
+        }
+        .term-btn.correct { border-color: var(--matrix-green); background: var(--matrix-green); color: black; }
+        .term-btn.wrong { border-color: var(--error-red); color: var(--error-red); }
+
+        /* --- TAB 4: GLITCH (Ordering) --- */
+        .glitch-container {
+            display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px;
+        }
+        .code-fragment {
+            background: #001100;
+            border: 1px solid var(--matrix-dark);
+            padding: 8px 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-family: 'Amiri';
+        }
+        .code-fragment:hover {
+            background: var(--matrix-green); color: black;
+        }
+        
+        .system-line {
+            min-height: 50px; width: 100%;
+            border-bottom: 2px solid var(--matrix-dark);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-size: 2rem; color: #fff; text-shadow: 0 0 5px #fff;
+            margin-bottom: 20px;
+        }
+
+        /* COMMON BUTTONS */
+        .next-btn {
+            margin-top: 20px;
+            background: black;
+            border: 2px solid var(--matrix-green);
+            color: var(--matrix-green);
+            padding: 10px 30px;
+            font-family: 'VT323'; font-size: 1.5rem;
+            cursor: pointer; display: none;
+            text-transform: uppercase;
+        }
+        .next-btn:hover { background: var(--matrix-green); color: black; }
+
+        .console-log {
+            font-size: 1rem; color: #ccc; min-height: 30px; margin-top: 10px;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes glitchFade { 
+            0% { clip-path: inset(50% 0 50% 0); transform: skew(10deg); }
+            100% { clip-path: inset(0 0 0 0); transform: skew(0deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="matrixCanvas"></canvas>
+
+    <nav>
+        <button class="tab-btn active" onclick="switchTab('source')">THE SOURCE</button>
+        <button class="tab-btn" onclick="switchTab('construct')">CONSTRUCT</button>
+        <button class="tab-btn" onclick="switchTab('simulation')">SIMULATION</button>
+        <button class="tab-btn" onclick="switchTab('glitch')">GLITCH</button>
+    </nav>
+
+    <div class="content-area">
+
+        <div id="source" class="tab-content active">
+            <h2>Source Code: Decrypt</h2>
+            <div class="system-status"><span>LOADING:</span> <div class="prog-track"><div class="prog-fill" id="prog-source"></div></div></div>
+            
+            <p>Sistem veriyi gizliyor. İmleci üzerine getirerek şifreyi çöz.</p>
+            
+            <div class="code-block encrypted arabic-text" id="source-text"></div>
+            
+            <div class="console-log typing-cursor" id="source-clue"></div>
+            <button class="next-btn" id="btn-source" onclick="nextSource()">PROCEED >></button>
+        </div>
+
+        <div id="construct" class="tab-content">
+            <h2>Construct: Loading Program</h2>
+            <div class="system-status"><span>UPLOAD:</span> <div class="prog-track"><div class="prog-fill" id="prog-construct"></div></div></div>
+            
+            <div class="loading-program">
+                <div class="data-disc arabic-text" draggable="true" id="dragData"></div>
+                
+                <div style="color:var(--matrix-dark)">|| DATA STREAM ||</div>
+
+                <div class="upload-port" id="dropPort">
+                    <span style="font-size:0.8rem;">[INSERT ROOT DISK]</span>
+                    <span style="color:#fff; font-size:1.2rem; margin-top:5px;" id="construct-hint"></span>
+                </div>
+
+                <div class="console-log arabic-text" id="construct-result" style="font-size:2rem; color:#fff;"></div>
+            </div>
+            <button class="next-btn" id="btn-construct" onclick="nextConstruct()">NEXT PROGRAM >></button>
+        </div>
+
+        <div id="simulation" class="tab-content">
+            <h2>System Check</h2>
+            <div class="system-status"><span>STATUS:</span> <div class="prog-track"><div class="prog-fill" id="prog-sim"></div></div></div>
+            
+            <p id="sim-q" style="font-size:1.2rem; margin-bottom:20px; color:#fff;"></p>
+            
+            <div class="terminal-options" id="sim-options">
+                </div>
+            <button class="next-btn" id="btn-sim" onclick="nextSim()">ACCEPT >></button>
+        </div>
+
+        <div id="glitch" class="tab-content">
+            <h2>System Failure: Déjà Vu</h2>
+            <div class="system-status"><span>REPAIR:</span> <div class="prog-track"><div class="prog-fill" id="prog-glitch"></div></div></div>
+            <p>Kod parçalanmış. Sıralamayı düzelt.</p>
+
+            <div class="system-line arabic-text" id="glitch-line"></div>
+            
+            <div class="glitch-container" id="glitch-pool">
+                </div>
+            
+            <div class="console-log" id="glitch-log"></div>
+            <button class="next-btn" id="btn-glitch" onclick="nextGlitch()">REBOOT >></button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- MATRIX RAIN EFFECT ---
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "أبتثجحخدذرزسشصضطظعغفقكلمنهوي١٢٣٤٥٦٧٨٩٠";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for(let x=0; x<columns; x++) drops[x] = 1;
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; // Trail effect
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#0F0";
+            ctx.font = fontSize + "px arial";
+
+            for(let i=0; i<drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+
+                if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 35);
+        window.addEventListener('resize', () => { canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+
+        // --- GAME DATA (5 Items Each) ---
+        const dataSource = [
+            { text: "لَا إِلَهَ إِلَّا اللهُ", clue: "İlah yoktur, ancak Allah vardır." },
+            { text: "مُحَمَّدٌ رَسُولُ اللهِ", clue: "Muhammed (s.a.v) Allah'ın elçisidir." },
+            { text: "الْحَمْدُ لِلَّهِ", clue: "Hamd Allah'a mahsustur." },
+            { text: "بِسْمِ اللهِ", clue: "Allah'ın adıyla." },
+            { text: "اللهُ أَكْبَرُ", clue: "Allah en büyüktür." }
+        ];
+
+        const dataConstruct = [
+            { root: "ح م د", res: "مَحْمُود", hint: "İsm-i Meful (Övülen)" },
+            { root: "س ج د", res: "سَاجِد", hint: "İsm-i Fail (Secde eden)" },
+            { root: "ك ت ب", res: "مَكْتُوب", hint: "İsm-i Meful (Yazılan)" },
+            { root: "ش ر ب", res: "مَشْرُوب", hint: "İsm-i Meful (İçecek)" },
+            { root: "ف ت ح", res: "مِفْتَاح", hint: "İsm-i Alet (Anahtar)" }
+        ];
+
+        const dataSim = [
+            { q: "'Kırmızı Hap' (Gerçek) hangisidir? (Fiil)", opts: ["بَيْت", "ذَهَبَ", "فِي"], ans: 1 },
+            { q: "Sistemdeki 'Özne'yi bul: كَتَبَ عَلِيٌّ", opts: ["كَتَبَ", "عَلِيٌّ", "الدرس"], ans: 1 },
+            { q: "Hangisi 'Gelecek Zaman' kodudur?", opts: ["سَيَذْهَبُ", "ذَهَبَ", "يَذْهَبُ"], ans: 0 },
+            { q: "'Simülasyon' (Resim) kelimesinin Arapçası?", opts: ["صُورَة", "كِتَاب", "قَلَم"], ans: 0 },
+            { q: "Sistemi kapat: 'Hoşçakal'", opts: ["مَرْحَبًا", "مَعَ السَّلَامَةِ", "شُكْرًا"], ans: 1 }
+        ];
+
+        const dataGlitch = [
+            { p: ["الْعِلْمُ", "قُوَّةٌ", "عَظِيمَةٌ"], f: "الْعِلْمُ قُوَّةٌ عَظِيمَةٌ" },
+            { p: ["نَحْنُ", "فِي", "الْمَطْبَخِ"], f: "نَحْنُ فِي الْمَطْبَخِ" },
+            { p: ["هَذَا", "هَاتِفٌ", "جَدِيدٌ"], f: "هَذَا هَاتِفٌ جَدِيدٌ" },
+            { p: ["أَيْنَ", "مِفْتَاحُ", "الْبَابِ"], f: "أَيْنَ مِفْتَاحُ الْبَابِ" },
+            { p: ["السَّيَّارَةُ", "سَرِيعَةٌ", "جِدًّا"], f: "السَّيَّارَةُ سَرِيعَةٌ جِدًّا" }
+        ];
+
+        let state = { src:0, cons:0, sim:0, glt:0 };
+
+        // --- TAB LOGIC ---
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById(id).style.display = 'flex';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Init logic on tab switch if needed
+            if(id === 'source') loadSource();
+            if(id === 'construct') loadConstruct();
+            if(id === 'simulation') loadSim();
+            if(id === 'glitch') loadGlitch();
+        }
+
+        function updateBar(id, val, max) {
+            document.getElementById(id).style.width = ((val/max)*100) + "%";
+        }
+
+        // --- 1. SOURCE ---
+        function loadSource() {
+            if(state.src >= dataSource.length) return showEnd('source');
+            const d = dataSource[state.src];
+            const el = document.getElementById('source-text');
+            el.innerText = d.text;
+            el.classList.add('encrypted'); // Re-encrypt
+            document.getElementById('source-clue').innerText = "Analyzing: " + d.clue;
+            document.getElementById('btn-source').style.display = 'block';
+            updateBar('prog-source', state.src, dataSource.length);
+        }
+        function nextSource() { state.src++; loadSource(); }
+
+        // --- 2. CONSTRUCT ---
+        const disc = document.getElementById('dragData');
+        const port = document.getElementById('dropPort');
+        
+        function loadConstruct() {
+            if(state.cons >= dataConstruct.length) return showEnd('construct');
+            const d = dataConstruct[state.cons];
+            
+            disc.style.display = 'flex';
+            disc.innerText = d.root;
+            port.classList.remove('drag-over');
+            port.style.borderColor = 'var(--matrix-dark)';
+            document.getElementById('construct-hint').innerText = d.hint;
+            document.getElementById('construct-result').innerText = "";
+            document.getElementById('btn-construct').style.display = 'none';
+            updateBar('prog-construct', state.cons, dataConstruct.length);
+        }
+
+        disc.addEventListener('dragstart', ()=>disc.style.opacity='0.5');
+        disc.addEventListener('dragend', ()=>disc.style.opacity='1');
+        port.addEventListener('dragover', (e)=>{e.preventDefault(); port.classList.add('drag-over');});
+        port.addEventListener('dragleave', ()=>port.classList.remove('drag-over'));
+        
+        port.addEventListener('drop', (e)=>{
+            e.preventDefault();
+            const d = dataConstruct[state.cons];
+            disc.style.display = 'none';
+            port.classList.remove('drag-over');
+            port.style.borderColor = '#0F0';
+            
+            const res = document.getElementById('construct-result');
+            res.innerText = d.res;
+            res.style.textShadow = "0 0 20px #FFF";
+            
+            document.getElementById('btn-construct').style.display = 'block';
+        });
+        function nextConstruct() { state.cons++; loadConstruct(); }
+
+        // --- 3. SIMULATION ---
+        function loadSim() {
+            if(state.sim >= dataSim.length) return showEnd('simulation');
+            const d = dataSim[state.sim];
+            document.getElementById('sim-q').innerText = "QUERY: " + d.q;
+            const box = document.getElementById('sim-options');
+            box.innerHTML = '';
+            document.getElementById('btn-sim').style.display = 'none';
+
+            d.opts.forEach((o, i)=>{
+                const btn = document.createElement('div');
+                btn.className = 'term-btn arabic-text';
+                btn.innerText = "> " + o;
+                btn.onclick = () => {
+                    if(document.getElementById('btn-sim').style.display==='block') return;
+                    if(i === d.ans) {
+                        btn.classList.add('correct');
+                        document.getElementById('btn-sim').style.display='block';
+                    } else {
+                        btn.classList.add('wrong');
+                        btn.innerText += " [ERROR]";
+                    }
+                };
+                box.appendChild(btn);
+            });
+            updateBar('prog-sim', state.sim, dataSim.length);
+        }
+        function nextSim() { state.sim++; loadSim(); }
+
+        // --- 4. GLITCH ---
+        let glitchOrder = [];
+        function loadGlitch() {
+            if(state.glt >= dataGlitch.length) return showEnd('glitch');
+            const d = dataGlitch[state.glt];
+            const pool = document.getElementById('glitch-pool');
+            const line = document.getElementById('glitch-line');
+            
+            pool.innerHTML = ''; line.innerText = ''; glitchOrder=[];
+            document.getElementById('glitch-log').innerText = "Waiting for input...";
+            document.getElementById('btn-glitch').style.display = 'none';
+
+            let parts = [...d.p].sort(()=>Math.random()-0.5);
+            parts.forEach(w => {
+                const el = document.createElement('div');
+                el.className = 'code-fragment';
+                el.innerText = w;
+                el.onclick = () => {
+                    line.innerText += w + " ";
+                    el.style.display = 'none';
+                    glitchOrder.push(w);
+                    if(glitchOrder.length === d.p.length) checkGlitch(d);
+                };
+                pool.appendChild(el);
+            });
+            updateBar('prog-glitch', state.glt, dataGlitch.length);
+        }
+
+        function checkGlitch(d) {
+            const txt = glitchOrder.join(' ');
+            if(txt.trim() === d.f.trim()) {
+                document.getElementById('glitch-log').innerText = "SYSTEM RESTORED.";
+                document.getElementById('glitch-log').style.color = "#0F0";
+                document.getElementById('btn-glitch').style.display = 'block';
+            } else {
+                document.getElementById('glitch-log').innerText = "FATAL ERROR. RELOADING...";
+                document.getElementById('glitch-log').style.color = "red";
+                setTimeout(loadGlitch, 1500);
+            }
+        }
+        function nextGlitch() { state.glt++; loadGlitch(); }
+
+        function showEnd(id) {
+            document.getElementById(id).innerHTML = `
+                <h1 style="color:#FFF">MISSION ACCOMPLISHED</h1>
+                <p>The One has risen.</p>
+                <button class="next-btn" style="display:block" onclick="location.reload()">RELOAD MATRIX</button>
+            `;
+        }
+
+        // Init
+        window.onload = () => {
+            loadSource(); loadConstruct(); loadSim(); loadGlitch();
+        }
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

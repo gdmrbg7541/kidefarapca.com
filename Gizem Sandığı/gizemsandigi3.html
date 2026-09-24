@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gizem Sandığı 3 — Zaman Kapısı</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+b{ font-weight:normal; color:#ff9f43; }
+@font-face{ font-family:'Arakom'; src:url('../arakom.ttf') format('truetype'); font-display:swap; }
+:root{ --uzay:#0b0d17; --turuncu:#ff9f43; --cyan:#00f2ff; --yildiz:#e8ecff; }
+*{ box-sizing:border-box; }
+body{ margin:0; min-height:100vh; background:radial-gradient(ellipse at 30% 10%, #17203a 0%, var(--uzay) 60%); font-family:'Arakom', sans-serif; color:var(--yildiz); display:flex; flex-direction:column; overflow-x:hidden; }
+canvas#yildizlar{ position:fixed; inset:0; z-index:0; }
+.arabic{ font-family:'Amiri', serif; direction:rtl; }
+.ust{ position:relative; z-index:2; display:flex; flex-direction:column; min-height:100vh; }
+
+header{ text-align:center; padding:14px 10px 4px; }
+header h1{ font-family:'Orbitron'; margin:0; font-size:clamp(1.1rem,3.2vw,1.9rem); letter-spacing:6px; color:var(--cyan); text-shadow:0 0 18px rgba(0,242,255,.6); }
+header p{ margin:5px 0 0; font-size:1.15rem; opacity:.85;  }
+
+.progress-wrap{ width:min(680px,92%); margin:10px auto; background:#131a30; border:1px solid #2a3556; border-radius:20px; height:14px; overflow:hidden; }
+.progress{ height:100%; width:0%; background:linear-gradient(90deg,var(--turuncu),var(--cyan)); transition:width .6s; }
+
+nav{ display:flex; justify-content:center; gap:8px; flex-wrap:wrap; padding:6px; }
+.nav-btn{ font-family:'Orbitron'; background:#131a30; color:#5c6b94; border:1px solid #2a3556; padding:8px 14px; cursor:pointer; font-size:.68rem; letter-spacing:2px; border-radius:6px; transition:.3s; text-transform:uppercase; }
+.nav-btn.active{ color:var(--cyan); border-color:var(--cyan); box-shadow:0 0 14px rgba(0,242,255,.35); }
+.nav-btn.done{ color:var(--turuncu); border-color:var(--turuncu); }
+.nav-btn:disabled{ opacity:.3; cursor:not-allowed; }
+
+.stage{ flex:1; }
+.room{ display:none; width:100%; padding:14px 12px 30px; flex-direction:column; align-items:center; animation:fadeIn .5s; }
+.room.active{ display:flex; }
+@keyframes fadeIn{ from{opacity:0; transform:scale(.99);} to{opacity:1; transform:none;} }
+h2{ font-family:'Orbitron'; margin:4px 0 2px; font-size:1rem; letter-spacing:5px; text-align:center; color:var(--turuncu); }
+.gorev-not{ font-size:1.4rem;  max-width:780px; text-align:center; opacity:.93; margin:6px 0 16px; line-height:1.5; }
+
+.panel{ background:rgba(19,26,48,.85); border:1px solid #2a3556; border-radius:12px; box-shadow:0 0 30px rgba(0,242,255,.08); padding:18px 22px; width:min(600px,94%); text-align:center; backdrop-filter:blur(3px); }
+.panel .bas{ font-family:'Orbitron'; font-size:.8rem; letter-spacing:2px; opacity:.55; text-align:left; border-bottom:1px solid #2a3556; padding-bottom:6px; margin-bottom:12px; }
+.panel .buyuk-ar{ font-size:clamp(2.8rem,8.5vw,4.4rem); line-height:1.35; color:#fff; text-shadow:0 0 22px rgba(255,159,67,.55); }
+.panel .kok-goster{ font-size:clamp(2.2rem,7vw,3.4rem); letter-spacing:14px; color:var(--turuncu); }
+.panel .hedef{ font-family:'Arakom';  font-size:1.2rem; color:var(--cyan); letter-spacing:2px; margin-top:8px; }
+
+.secenekler{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:16px; }
+.sec-btn{ font-family:'Arakom';  font-size:1.45rem; background:#131a30; color:var(--yildiz); border:1px solid #2a3556; border-radius:8px; padding:12px 20px; cursor:pointer; min-width:110px; transition:.2s; }
+.sec-btn.arabic{ font-family:'Amiri', serif; font-size:2.3rem; padding:8px 26px; }
+.sec-btn:hover{ border-color:var(--cyan); box-shadow:0 0 12px rgba(0,242,255,.35); }
+.sec-btn.yanlis{ animation:shake .4s; border-color:#ff5252; color:#ff5252; }
+.sec-btn.dogru{ border-color:var(--turuncu); color:var(--turuncu); }
+@keyframes shake{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+.sayac{ margin-top:12px; font-family:'Arakom';  font-size:1.05rem; opacity:.7; letter-spacing:1px; }
+
+.harf-dizi{ display:flex; flex-direction:row-reverse; gap:12px; justify-content:center; margin:14px 0 4px; flex-wrap:wrap; }
+.harf-tas{ background:#131a30; border:1px solid #2a3556; border-radius:10px; width:82px; padding:8px 4px; cursor:pointer; text-align:center; transition:.2s; }
+.harf-tas:hover{ border-color:var(--cyan); }
+.harf-tas .h{ font-family:'Amiri', serif; font-size:2.5rem; color:#fff; line-height:1.15; }
+.harf-tas .v{ font-size:1.3rem; color:var(--turuncu); min-height:1.35em; }
+.harf-tas .v.gizli{ color:#3a4a75; }
+
+.hesap-alan{ display:flex; gap:10px; align-items:center; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+.hesap-giris{ font-family:'Orbitron'; font-size:1.35rem; width:150px; text-align:center; background:#0b0d17; color:var(--cyan); border:1px solid #2a3556; border-radius:8px; padding:10px; }
+.hesap-giris:focus{ outline:none; border-color:var(--cyan); box-shadow:0 0 12px rgba(0,242,255,.4); }
+.btn-cyan{ font-family:'Orbitron'; background:linear-gradient(90deg,var(--turuncu),#ffb56b); color:#0b0d17; border:none; border-radius:8px; padding:13px 22px; font-size:.78rem;  cursor:pointer; letter-spacing:2px; }
+.btn-cyan:active{ transform:translateY(2px); }
+
+/* solucan deliği final animasyonu */
+.kapi{ width:150px; height:150px; border-radius:50%; margin:8px auto; border:3px solid var(--cyan);
+  background:radial-gradient(circle, #000 30%, #17203a 60%, transparent 70%); box-shadow:0 0 40px rgba(0,242,255,.45), inset 0 0 40px rgba(0,242,255,.35); transition:1.2s; }
+.kapi.acildi{ transform:scale(1.25) rotate(180deg); box-shadow:0 0 120px var(--turuncu), inset 0 0 80px var(--turuncu); border-color:var(--turuncu); }
+
+.parsomen-btn{ position:fixed; right:14px; bottom:14px; z-index:60; background:#131a30; color:var(--cyan); border:1px solid var(--cyan); border-radius:8px; padding:10px 14px; font-family:'Orbitron'; font-size:.66rem; letter-spacing:2px; cursor:pointer; box-shadow:0 0 14px rgba(0,242,255,.3); }
+.parsomen-modal{ position:fixed; inset:0; background:rgba(4,6,14,.9); display:none; align-items:center; justify-content:center; z-index:70; }
+.parsomen-modal.acik{ display:flex; }
+.parsomen-ic{ background:#0b0d17; color:var(--yildiz); border:1px solid var(--cyan); border-radius:12px; padding:20px 26px; width:min(500px,92%); max-height:82vh; overflow:auto; box-shadow:0 0 50px rgba(0,242,255,.3); }
+.parsomen-ic h3{ font-family:'Orbitron'; margin:0 0 12px; text-align:center; letter-spacing:4px; color:var(--cyan); }
+.ebced-tablo{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; direction:rtl; }
+.ebced-tablo div{ border:1px solid #2a3556; border-radius:6px; text-align:center; padding:5px 2px; }
+.ebced-tablo .eh{ font-family:'Amiri'; font-size:1.5rem; line-height:1.2; color:#fff; }
+.ebced-tablo .ev{ font-size:.85rem; color:var(--turuncu); }
+.kapat-x{ display:block; margin:14px auto 0; background:var(--cyan); color:#0b0d17; border:none; border-radius:8px; padding:8px 22px; font-family:'Orbitron'; font-size:.7rem; letter-spacing:2px; cursor:pointer; }
+
+.zafer{ position:fixed; inset:0; background:rgba(4,6,14,.92); display:none; align-items:center; justify-content:center; z-index:80; }
+.zafer.acik{ display:flex; }
+.zafer-ic{ background:#0b0d17; border:1px solid var(--turuncu); border-radius:14px; padding:26px 30px; text-align:center; width:min(560px,92%); box-shadow:0 0 70px rgba(255,159,67,.4); }
+.zafer-ic h3{ font-family:'Orbitron'; color:var(--turuncu); letter-spacing:3px; margin:0 0 8px; }
+.zafer-ic .parca-ar{ font-family:'Amiri'; font-size:2.4rem; color:#fff; direction:rtl; margin:10px 0 2px; text-shadow:0 0 20px var(--turuncu); }
+.zafer-ic .tam-soz{ font-family:'Amiri'; font-size:1.9rem; color:var(--cyan); direction:rtl; margin:12px 0 4px; line-height:1.8; text-shadow:0 0 16px rgba(0,242,255,.5); }
+.zafer-ic p{ line-height:1.55; font-size:1.3rem;  }
+@media (max-width:480px){ .harf-tas{ width:64px; } .harf-tas .h{ font-size:1.9rem; } .panel .kok-goster{ letter-spacing:8px; } }
+</style>
+</head>
+<body>
+<canvas id="yildizlar"></canvas>
+
+<div class="ust">
+<header>
+  <h1>ZAMAN KAPISI</h1>
+  <p>Sözün son parçası bir kara deliğin ardında. Sarf ilmini bilmeyen bu yerçekiminden kurtulamaz…</p>
+</header>
+
+<div class="progress-wrap"><div class="progress" id="ilerleme"></div></div>
+
+<nav>
+  <button class="nav-btn active" id="nb0" onclick="git(0)">Yerçekimi</button>
+  <button class="nav-btn" id="nb1" onclick="git(1)" disabled>Kenetlenme</button>
+  <button class="nav-btn" id="nb2" onclick="git(2)" disabled>Anomali</button>
+  <button class="nav-btn" id="nb3" onclick="git(3)" disabled>Tesseract</button>
+</nav>
+
+<div class="stage">
+
+  <!-- 1: vezin bulma -->
+  <div class="room active" id="oda0">
+    <h2>YERÇEKİMİ DENGESİ</h2>
+    <p class="gorev-not">Gemiyi dengede tutmak için her kelimenin <b>veznini</b> (kalıbını) doğru hesaplamalısın. Kelime hangi vezinde?</p>
+    <div class="panel">
+      <div class="bas">GRAVITY ANALYSIS — KELIME <span id="s0no">1</span></div>
+      <div class="buyuk-ar arabic" id="s0kelime"></div>
+      <div class="hedef" id="s0anlam"></div>
+    </div>
+    <div class="secenekler" id="s0sec"></div>
+    <div class="sayac" id="s0sayac"></div>
+  </div>
+
+  <!-- 2: kökten türetme -->
+  <div class="room" id="oda1">
+    <h2>KENETLENME PROSEDÜRÜ</h2>
+    <p class="gorev-not">Kök harfleri istasyona kenetle: verilen <b>kökten</b>, istenen <b>kalıba</b> uyan kelimeyi seç.</p>
+    <div class="panel">
+      <div class="bas">DOCKING — KÖK <span id="s1no">1</span></div>
+      <div class="kok-goster arabic" id="s1kok"></div>
+      <div class="hedef" id="s1hedef"></div>
+    </div>
+    <div class="secenekler" id="s1sec"></div>
+    <div class="sayac" id="s1sayac"></div>
+  </div>
+
+  <!-- 3: dilbilgisi -->
+  <div class="room" id="oda2">
+    <h2>ANOMALİ RAPORU</h2>
+    <p class="gorev-not">TARS'ın veri bankasında sarf/nahiv soruları beliriyor. Yanlış cevap, gemiyi kara deliğe yaklaştırır!</p>
+    <div class="panel">
+      <div class="bas">TARS DATABASE — SORU <span id="s2no">1</span></div>
+      <div style="font-size:1.6rem;  line-height:1.5" id="s2soru"></div>
+      <div class="buyuk-ar arabic" id="s2ar" style="font-size:clamp(2rem,6vw,3rem)"></div>
+    </div>
+    <div class="secenekler" id="s2sec"></div>
+    <div class="sayac" id="s2sayac"></div>
+  </div>
+
+  <!-- 4: final -->
+  <div class="room" id="oda3">
+    <h2>TESSERACT</h2>
+    <p class="gorev-not">Kapıyı yalnızca <b>ışık</b> açar:
+      <span class="arabic" style="font-size:2rem; color:#fff; text-shadow:0 0 14px var(--turuncu)">نُور</span> (nûr).
+      Ebced toplamını hesapla ve kapıya gir. (İpucu: bu sayı büyük — tablo sağ altta.)</p>
+    <div class="kapi" id="kapi"></div>
+    <div class="harf-dizi" id="s3harfler"></div>
+    <div class="hesap-alan">
+      <input type="number" class="hesap-giris" id="s3giris" placeholder="###">
+      <button class="btn-cyan" onclick="kapiDene()">KAPIYI AÇ</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<button class="parsomen-btn" onclick="parsomen(true)">EBCED TABLOSU</button>
+<div class="parsomen-modal" id="parsomenModal" onclick="if(event.target===this)parsomen(false)">
+  <div class="parsomen-ic">
+    <h3>EBCED MATRİSİ</h3>
+    <div class="ebced-tablo" id="ebcedTablo"></div>
+    <button class="kapat-x" onclick="parsomen(false)">KAPAT</button>
+  </div>
+</div>
+
+<div class="zafer" id="zafer"><div class="zafer-ic" id="zaferIc"></div></div>
+
+<script>
+const EBCED = {'ا':1,'ب':2,'ج':3,'د':4,'ه':5,'و':6,'ز':7,'ح':8,'ط':9,'ي':10,'ك':20,'ل':30,'م':40,'ن':50,'س':60,'ع':70,'ف':80,'ص':90,'ق':100,'ر':200,'ش':300,'ت':400,'ث':500,'خ':600,'ذ':700,'ض':800,'ظ':900,'غ':1000};
+
+// yıldız alanı
+(function(){
+  const c = document.getElementById('yildizlar'), x = c.getContext('2d');
+  function boyut(){ c.width = innerWidth; c.height = innerHeight; }
+  boyut(); addEventListener('resize', boyut);
+  const yildizlar = Array.from({length:120}, ()=>({ x:Math.random()*innerWidth, y:Math.random()*innerHeight, r:Math.random()*1.4+.3, p:Math.random() }));
+  setInterval(()=>{
+    x.clearRect(0,0,c.width,c.height);
+    yildizlar.forEach(s=>{ s.p += .02; x.globalAlpha = .35 + Math.abs(Math.sin(s.p))*.55;
+      x.fillStyle = '#e8ecff'; x.beginPath(); x.arc(s.x, s.y, s.r, 0, 7); x.fill(); });
+    x.globalAlpha = 1;
+  }, 70);
+})();
+
+let tamam = [false,false,false,false];
+function git(i){
+  document.querySelectorAll('.room').forEach(r=>r.classList.remove('active'));
+  document.getElementById('oda'+i).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,j)=>b.classList.toggle('active', j===i));
+}
+function ilerlemeGuncelle(){
+  document.getElementById('ilerleme').style.width = (tamam.filter(Boolean).length/4*100)+'%';
+  tamam.forEach((t,i)=>{ if(t) document.getElementById('nb'+i).classList.add('done'); });
+}
+function gorevBitti(i, mesaj){
+  tamam[i] = true; ilerlemeGuncelle();
+  if(i < 3){
+    document.getElementById('nb'+(i+1)).disabled = false;
+    zaferGoster('<h3>GÖREV TAMAM 🛰️</h3><p>'+mesaj+'</p><button class="btn-cyan" onclick="zaferKapat();git('+(i+1)+')">DEVAM ➤</button>');
+  }
+}
+function zaferGoster(h){ document.getElementById('zaferIc').innerHTML = h; document.getElementById('zafer').classList.add('acik'); }
+function zaferKapat(){ document.getElementById('zafer').classList.remove('acik'); }
+function parsomen(ac){ document.getElementById('parsomenModal').classList.toggle('acik', ac); }
+function karistir(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+(function(){ document.getElementById('ebcedTablo').innerHTML = Object.entries(EBCED).map(([h,v])=>'<div><div class="eh">'+h+'</div><div class="ev">'+v+'</div></div>').join(''); })();
+
+// ---------- 1: vezin ----------
+const VEZINLER = ['فاعِل','مَفْعول','فَعيل','تَفْعيل','مُفَعِّل','فَعّال'];
+const G0 = karistir([ {a:'كاتِب', anlam:'kâtip / yazar', v:'فاعِل'},
+  {a:'مَكْتوب', anlam:'mektup / yazılmış', v:'مَفْعول'},
+  {a:'كَريم', anlam:'kerîm / cömert', v:'فَعيل'},
+  {a:'تَفْسير', anlam:'tefsir', v:'تَفْعيل'},
+  {a:'مُدَرِّس', anlam:'müderris', v:'مُفَعِّل'},
+  {a:'نَجّار', anlam:'neccar / marangoz', v:'فَعّال'} ]);
+let g0i = 0;
+function g0Goster(){
+  const q = G0[g0i];
+  document.getElementById('s0no').textContent = g0i+1;
+  document.getElementById('s0kelime').textContent = q.a;
+  document.getElementById('s0anlam').textContent = '('+q.anlam+') — hangi vezinde?';
+  document.getElementById('s0sayac').textContent = 'KELIME ' + (g0i+1) + ' / ' + G0.length;
+  const secler = karistir([q.v, ...karistir(VEZINLER.filter(v=>v!==q.v)).slice(0,3)]);
+  document.getElementById('s0sec').innerHTML = secler.map(v=>'<button class="sec-btn arabic" onclick="g0Cevap(this,\''+v+'\')">'+v+'</button>').join('');
+}
+function g0Cevap(btn, v){
+  if(v === G0[g0i].v){ btn.classList.add('dogru');
+    setTimeout(()=>{ g0i++; if(g0i>=G0.length) gorevBitti(0,'Yerçekimi dengelendi. Şimdi kök harfleri istasyona kenetleyeceğiz.'); else g0Goster(); }, 420);
+  } else { btn.classList.add('yanlis'); setTimeout(()=>btn.classList.remove('yanlis'), 420); }
+}
+g0Goster();
+
+// ---------- 2: kökten türetme ----------
+const G1 = [ {kok:'ك ت ب', hedef:"İsm-i Fâil (yapan)", dogru:'كاتِب', sec:['كاتِب','مَكْتوب','كِتاب','مَكْتَب']},
+  {kok:'ع ل م', hedef:"İsm-i Fâil (yapan)", dogru:'عالِم', sec:['عالِم','مَعْلوم','عِلْم','تَعْليم']},
+  {kok:'ف ت ح', hedef:"İsm-i Mef'ûl (yapılan)", dogru:'مَفْتوح', sec:['مَفْتوح','فاتِح','مِفْتاح','فَتْح']},
+  {kok:'ن ص ر', hedef:"İsm-i Fâil (yapan)", dogru:'ناصِر', sec:['ناصِر','مَنْصور','نَصْر','نَصير']},
+  {kok:'ش ر ب', hedef:"İsm-i Mef'ûl (yapılan)", dogru:'مَشْروب', sec:['مَشْروب','شارِب','شُرْب','شَراب']} ];
+let g1i = 0;
+function g1Goster(){
+  const q = G1[g1i];
+  document.getElementById('s1no').textContent = g1i+1;
+  document.getElementById('s1kok').textContent = q.kok;
+  document.getElementById('s1hedef').textContent = 'HEDEF KALIP: ' + q.hedef;
+  document.getElementById('s1sayac').textContent = 'KÖK ' + (g1i+1) + ' / ' + G1.length;
+  document.getElementById('s1sec').innerHTML = karistir(q.sec).map(s=>'<button class="sec-btn arabic" onclick="g1Cevap(this,\''+s+'\')">'+s+'</button>').join('');
+}
+function g1Cevap(btn, s){
+  if(s === G1[g1i].dogru){ btn.classList.add('dogru');
+    setTimeout(()=>{ g1i++; if(g1i>=G1.length) gorevBitti(1,'Kenetlenme başarılı! TARS veri bankası şimdi seni sorguya çekecek.'); else g1Goster(); }, 420);
+  } else { btn.classList.add('yanlis'); setTimeout(()=>btn.classList.remove('yanlis'), 420); }
+}
+g1Goster();
+
+// ---------- 3: dilbilgisi ----------
+const G2 = [ {soru:'Mazi fiil hangi zamanı bildirir?', ar:'كَتَبَ', dogru:"Görülen (di'li) geçmiş zaman", sec:["Görülen (di'li) geçmiş zaman","Şimdiki / geniş zaman","Gelecek zaman","Emir (buyruk)"]},
+  {soru:'Muzari fiil hangi zamanları bildirir?', ar:'يَكْتُبُ', dogru:'Şimdiki, geniş ve gelecek zaman', sec:['Şimdiki, geniş ve gelecek zaman','Sadece geçmiş zaman','Sadece emir','Duyulan geçmiş zaman']},
+  {soru:'Sülasi mücerret fiilin kaç babı vardır?', ar:'', dogru:'6', sec:['6','3','8','10']},
+  {soru:'Bu cümledeki İ\'RAB HATASI hangi kelimede? (Fail merfû olmalı!)', ar:'كَتَبَ الطَّالِبَ الدَّرْسَ', dogru:'الطَّالِبَ', sec:['الطَّالِبَ','كَتَبَ','الدَّرْسَ']},
+  {soru:'Sülasi mücerredin ism-i fâili hangi vezinde gelir?', ar:'', dogru:'فاعِل', sec:['فاعِل','مَفْعول','مُفَعِّل','مِفْعال']} ];
+let g2i = 0;
+function g2Goster(){
+  const q = G2[g2i];
+  document.getElementById('s2no').textContent = g2i+1;
+  document.getElementById('s2soru').textContent = q.soru;
+  document.getElementById('s2ar').textContent = q.ar;
+  document.getElementById('s2ar').style.display = q.ar ? '' : 'none';
+  document.getElementById('s2sayac').textContent = 'SORU ' + (g2i+1) + ' / ' + G2.length;
+  const arapcaMi = /[؀-ۿ]/.test(q.sec[0]);
+  document.getElementById('s2sec').innerHTML = karistir(q.sec).map(s=>
+    '<button class="sec-btn'+(arapcaMi?' arabic':'')+'" onclick="g2Cevap(this,\''+s.replace(/'/g,"\\'")+'\')">'+s+'</button>').join('');
+}
+function g2Cevap(btn, s){
+  if(s === G2[g2i].dogru){ btn.classList.add('dogru');
+    setTimeout(()=>{ g2i++; if(g2i>=G2.length) gorevBitti(2,'TARS: "Analiz tamamlandı. İnsan, beklediğimden zekisin." Tesseract açılıyor…'); else g2Goster(); }, 420);
+  } else { btn.classList.add('yanlis'); setTimeout(()=>btn.classList.remove('yanlis'), 420); }
+}
+g2Goster();
+
+// ---------- 4: final — نُور = 50+6+200 = 256 ----------
+const ISIK = 256;
+(function(){
+  document.getElementById('s3harfler').innerHTML = ['ن','و','ر'].map(h=>
+    '<div class="harf-tas" onclick="this.querySelector(\'.v\').textContent=\''+EBCED[h]+'\';this.querySelector(\'.v\').classList.remove(\'gizli\')">' +
+    '<div class="h">'+h+'</div><div class="v gizli">?</div></div>').join('');
+})();
+function kapiDene(){
+  const v = parseInt(document.getElementById('s3giris').value, 10);
+  if(v === ISIK){
+    tamam[3] = true; ilerlemeGuncelle();
+    document.getElementById('kapi').classList.add('acildi');
+    setTimeout(()=>{
+      zaferGoster('<h3>KAPI AÇILDI 🌌</h3>' +
+        '<p>Son parça ışığın içinden süzülüyor:</p>' +
+        '<div class="parca-ar">إِلَى اللَّحْدِ</div>' +
+        '<p><b>"…mezara kadar."</b></p>' +
+        '<p>Üç görevin parçaları birleşti ve kayıp söz tamamlandı:</p>' +
+        '<div class="tam-soz">اُطْلُبُوا الْعِلْمَ مِنَ الْمَهْدِ إِلَى اللَّحْدِ</div>' +
+        '<p><b>"Beşikten mezara kadar ilmi isteyin."</b></p>' +
+        '<p style="opacity:.75">Görev tamamlandı, kâşif. Artık ebced ilmini biliyorsun — ve bu daha başlangıç. 🚀</p>');
+    }, 1100);
+  } else {
+    const g = document.getElementById('s3giris'); g.style.borderColor = '#ff5252';
+    setTimeout(()=>g.style.borderColor = '', 500);
+  }
+}
+</script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

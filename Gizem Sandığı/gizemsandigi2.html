@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gizem Sandığı 2 — Şifreli Mesaj</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+b{ font-weight:normal; color:#aeea00; }
+@font-face{ font-family:'Arakom'; src:url('../arakom.ttf') format('truetype'); font-display:swap; }
+:root{ --yesil:#00ff41; --koyu:#008f11; --zemin:#0d0208; }
+*{ box-sizing:border-box; }
+body{ margin:0; min-height:100vh; background:var(--zemin); font-family:'Arakom', sans-serif; color:var(--yesil); display:flex; flex-direction:column; }
+canvas#yagmur{ position:fixed; inset:0; z-index:0; opacity:.16; }
+.arabic{ font-family:'Amiri', serif; direction:rtl; }
+.ust{ position:relative; z-index:2; }
+
+header{ text-align:center; padding:14px 10px 4px; }
+header h1{ font-family:'Share Tech Mono', monospace; margin:0; font-size:clamp(1.2rem,3.4vw,2rem); letter-spacing:4px; text-shadow:0 0 12px var(--yesil); }
+header p{ margin:5px 0 0; font-size:1.15rem; opacity:.85;  }
+
+.progress-wrap{ width:min(680px,92%); margin:10px auto; background:#001a05; border:1px solid var(--koyu); height:14px; overflow:hidden; }
+.progress{ height:100%; width:0%; background:var(--yesil); box-shadow:0 0 10px var(--yesil); transition:width .6s; }
+
+nav{ display:flex; justify-content:center; gap:8px; flex-wrap:wrap; padding:6px; }
+.nav-btn{ font-family:'Share Tech Mono', monospace; background:#001a05; color:#2e7d32; border:1px solid var(--koyu); padding:8px 14px; cursor:pointer; font-size:.78rem; letter-spacing:1px; transition:.3s; text-transform:uppercase; }
+.nav-btn.active{ color:var(--yesil); border-color:var(--yesil); box-shadow:0 0 12px rgba(0,255,65,.35); }
+.nav-btn.done{ color:#aeea00; border-color:#aeea00; }
+.nav-btn:disabled{ opacity:.3; cursor:not-allowed; }
+
+.stage{ flex:1; }
+.room{ display:none; width:100%; padding:14px 12px 30px; flex-direction:column; align-items:center; animation:fadeIn .5s; }
+.room.active{ display:flex; }
+@keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+h2{ margin:4px 0 2px; font-size:1.05rem; letter-spacing:5px; text-align:center; text-shadow:0 0 8px var(--yesil); }
+.gorev-not{ font-size:1.4rem;  max-width:780px; text-align:center; opacity:.92; margin:6px 0 16px; line-height:1.5; }
+
+.terminal{ background:#000; border:1px solid var(--koyu); box-shadow:0 0 24px rgba(0,255,65,.15), inset 0 0 40px rgba(0,255,65,.05); padding:18px 22px; width:min(580px,94%); text-align:center; }
+.terminal .bas{ font-family:'Share Tech Mono', monospace; font-size:.95rem; opacity:.6; text-align:left; border-bottom:1px dashed var(--koyu); padding-bottom:6px; margin-bottom:12px; }
+.terminal .buyuk-ar{ font-size:clamp(2.8rem,8.5vw,4.2rem); line-height:1.35; color:#eaffea; text-shadow:0 0 16px rgba(0,255,65,.5); }
+.terminal .eksik{ color:#ff5252; text-shadow:0 0 12px #ff5252; }
+
+.secenekler{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:16px; }
+.sec-btn{ font-family:'Arakom', sans-serif;  font-size:1.45rem; background:#001a05; color:var(--yesil); border:1px solid var(--koyu); padding:12px 20px; cursor:pointer; min-width:104px; transition:.2s; }
+.sec-btn.arabic{ font-family:'Amiri', serif; font-size:2.3rem; padding:8px 26px; }
+.sec-btn:hover{ border-color:var(--yesil); box-shadow:0 0 10px rgba(0,255,65,.4); }
+.sec-btn.yanlis{ animation:shake .4s; border-color:#ff5252; color:#ff5252; }
+.sec-btn.dogru{ border-color:#aeea00; color:#aeea00; }
+@keyframes shake{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+.sayac{ margin-top:12px; font-size:1.05rem;  opacity:.7; letter-spacing:1px; }
+
+.hesap-alan{ display:flex; gap:10px; align-items:center; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+.hesap-giris{ font-family:'Arakom'; font-size:1.7rem; width:140px; text-align:center; background:#000; color:var(--yesil); border:1px solid var(--koyu); padding:10px; }
+.hesap-giris:focus{ outline:none; border-color:var(--yesil); box-shadow:0 0 10px rgba(0,255,65,.4); }
+.btn-yesil{ font-family:'Arakom';  background:var(--yesil); color:#000; border:none; padding:13px 22px; font-size:.9rem; cursor:pointer; letter-spacing:2px; }
+.btn-yesil:active{ transform:translateY(2px); }
+
+.harf-dizi{ display:flex; flex-direction:row-reverse; gap:12px; justify-content:center; margin:14px 0 4px; flex-wrap:wrap; }
+.harf-tas{ background:#001a05; border:1px solid var(--koyu); width:80px; padding:8px 4px; cursor:pointer; text-align:center; transition:.2s; }
+.harf-tas:hover{ border-color:var(--yesil); }
+.harf-tas .h{ font-family:'Amiri', serif; font-size:2.4rem; color:#eaffea; line-height:1.15; }
+.harf-tas .v{ font-size:1.3rem; color:var(--yesil); min-height:1.35em; }
+.harf-tas .v.gizli{ color:#1b5e20; }
+
+.parsomen-btn{ position:fixed; right:14px; bottom:14px; z-index:60; background:#000; color:var(--yesil); border:1px solid var(--yesil); padding:12px 18px; font-family:'Share Tech Mono', monospace; font-size:1rem; cursor:pointer; letter-spacing:1px; box-shadow:0 0 12px rgba(0,255,65,.3); }
+.parsomen-modal{ position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; z-index:70; }
+.parsomen-modal.acik{ display:flex; }
+.parsomen-ic{ background:#000; color:var(--yesil); border:1px solid var(--yesil); padding:20px 26px; width:min(500px,92%); max-height:82vh; overflow:auto; box-shadow:0 0 40px rgba(0,255,65,.3); }
+.parsomen-ic h3{ margin:0 0 12px; text-align:center; letter-spacing:4px; }
+.ebced-tablo{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; direction:rtl; }
+.ebced-tablo div{ border:1px solid var(--koyu); text-align:center; padding:5px 2px; }
+.ebced-tablo .eh{ font-family:'Amiri'; font-size:1.5rem; line-height:1.2; color:#eaffea; }
+.ebced-tablo .ev{ font-size:.82rem; }
+.kapat-x{ display:block; margin:14px auto 0; background:var(--yesil); color:#000; border:none; padding:10px 26px; font-family:'Arakom';  font-size:1.05rem; cursor:pointer; letter-spacing:2px; }
+
+.zafer{ position:fixed; inset:0; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; z-index:80; }
+.zafer.acik{ display:flex; }
+.zafer-ic{ background:#000; border:1px solid var(--yesil); padding:26px 30px; text-align:center; width:min(520px,92%); box-shadow:0 0 60px rgba(0,255,65,.35); }
+.zafer-ic h3{ color:var(--yesil); letter-spacing:4px; margin:0 0 8px; }
+.zafer-ic .parca-ar{ font-family:'Amiri'; font-size:2.6rem; color:#eaffea; direction:rtl; margin:10px 0 2px; text-shadow:0 0 18px var(--yesil); }
+.zafer-ic p{ line-height:1.55; font-size:1.3rem;  }
+.dekod{ font-family:inherit; text-align:left; margin:10px auto 0; width:fit-content; min-height:1.3em; }
+@media (max-width:480px){ .harf-tas{ width:64px; } .harf-tas .h{ font-size:1.9rem; } }
+</style>
+</head>
+<body>
+<canvas id="yagmur"></canvas>
+
+<div class="ust">
+<header>
+  <h1>&gt; ŞİFRELİ MESAJ_</h1>
+  <p>// korsan parşömeninin devamı bu sistemde saklı. giriş: sadece bilenler.</p>
+</header>
+
+<div class="progress-wrap"><div class="progress" id="ilerleme"></div></div>
+
+<nav>
+  <button class="nav-btn active" id="nb0" onclick="git(0)">01 Kod Çözme</button>
+  <button class="nav-btn" id="nb1" onclick="git(1)" disabled>02 Eksik Bit</button>
+  <button class="nav-btn" id="nb2" onclick="git(2)" disabled>03 Anomali</button>
+  <button class="nav-btn" id="nb3" onclick="git(3)" disabled>04 Anahtar</button>
+</nav>
+
+<div class="stage">
+
+  <div class="room active" id="oda0">
+    <h2>KAYNAK KODU ÇÖZ</h2>
+    <p class="gorev-not">Sistemdeki Arapça veri paketlerini çöz: kelimenin doğru anlamını seç. Her doğru çözüm bir kapı açar.</p>
+    <div class="terminal">
+      <div class="bas">&gt; decrypt --paket <span id="s0no">1</span></div>
+      <div class="buyuk-ar arabic" id="s0kelime"></div>
+    </div>
+    <div class="secenekler" id="s0sec"></div>
+    <div class="sayac" id="s0sayac"></div>
+  </div>
+
+  <div class="room" id="oda1">
+    <h2>EKSİK BİT ONARIMI</h2>
+    <p class="gorev-not">Veri bozulmuş: kelimeden bir harf silinmiş. <span class="eksik" style="color:#ff5252">▢</span> yerine gelecek doğru harfi seç.</p>
+    <div class="terminal">
+      <div class="bas">&gt; repair --bit <span id="s1no">1</span> <span id="s1anlam" style="float:right"></span></div>
+      <div class="buyuk-ar arabic" id="s1kelime"></div>
+    </div>
+    <div class="secenekler" id="s1sec"></div>
+    <div class="sayac" id="s1sayac"></div>
+  </div>
+
+  <div class="room" id="oda2">
+    <h2>ANOMALİ TESPİTİ</h2>
+    <p class="gorev-not">Ajan Smith aralarına sızdı! Dört kelimeden üçü aynı gruptan, biri <b>farklı</b>. Sızıntıyı bul, üzerine tıkla.</p>
+    <div class="terminal">
+      <div class="bas">&gt; scan --grup <span id="s2no">1</span> — <span id="s2grup"></span></div>
+    </div>
+    <div class="secenekler" id="s2sec"></div>
+    <div class="sayac" id="s2sayac"></div>
+  </div>
+
+  <div class="room" id="oda3">
+    <h2>ANA ANAHTAR</h2>
+    <p class="gorev-not">Sistemin ana anahtarı bir kelimenin ebced toplamı:
+      <span class="arabic" style="font-size:1.9rem; color:#eaffea; text-shadow:0 0 12px var(--yesil)">عِلْم</span> (ilim).
+      Harflere dokun, değerleri gör, topla ve sisteme gir.</p>
+    <div class="harf-dizi" id="s3harfler"></div>
+    <div class="hesap-alan">
+      <input type="number" class="hesap-giris" id="s3giris" placeholder="####">
+      <button class="btn-yesil" onclick="anahtarDene()">ENTER ⏎</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<button class="parsomen-btn" onclick="parsomen(true)">[ EBCED TABLOSU ]</button>
+<div class="parsomen-modal" id="parsomenModal" onclick="if(event.target===this)parsomen(false)">
+  <div class="parsomen-ic">
+    <h3>EBCED.SYS</h3>
+    <div class="ebced-tablo" id="ebcedTablo"></div>
+    <button class="kapat-x" onclick="parsomen(false)">KAPAT</button>
+  </div>
+</div>
+
+<div class="zafer" id="zafer"><div class="zafer-ic" id="zaferIc"></div></div>
+
+<script>
+const EBCED = {'ا':1,'ب':2,'ج':3,'د':4,'ه':5,'و':6,'ز':7,'ح':8,'ط':9,'ي':10,'ك':20,'ل':30,'م':40,'ن':50,'س':60,'ع':70,'ف':80,'ص':90,'ق':100,'ر':200,'ش':300,'ت':400,'ث':500,'خ':600,'ذ':700,'ض':800,'ظ':900,'غ':1000};
+
+// matrix yağmuru
+(function(){
+  const c = document.getElementById('yagmur'), x = c.getContext('2d');
+  function boyut(){ c.width = innerWidth; c.height = innerHeight; }
+  boyut(); addEventListener('resize', boyut);
+  const harfler = 'ابجدهوزحطيكلمنسعفصقرشتثخذضظغ01'.split('');
+  const kolon = Math.floor(innerWidth/18), dizi = Array(kolon).fill(1);
+  setInterval(()=>{
+    x.fillStyle = 'rgba(13,2,8,.06)'; x.fillRect(0,0,c.width,c.height);
+    x.fillStyle = '#00ff41'; x.font = '15px monospace';
+    dizi.forEach((y,i)=>{
+      x.fillText(harfler[Math.floor(Math.random()*harfler.length)], i*18, y*18);
+      if(y*18 > c.height && Math.random() > .975) dizi[i] = 0;
+      dizi[i]++;
+    });
+  }, 66);
+})();
+
+let tamam = [false,false,false,false];
+function git(i){
+  document.querySelectorAll('.room').forEach(r=>r.classList.remove('active'));
+  document.getElementById('oda'+i).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,j)=>b.classList.toggle('active', j===i));
+}
+function ilerlemeGuncelle(){
+  document.getElementById('ilerleme').style.width = (tamam.filter(Boolean).length/4*100)+'%';
+  tamam.forEach((t,i)=>{ if(t) document.getElementById('nb'+i).classList.add('done'); });
+}
+function gorevBitti(i, mesaj){
+  tamam[i] = true; ilerlemeGuncelle();
+  if(i < 3){
+    document.getElementById('nb'+(i+1)).disabled = false;
+    zaferGoster('<h3>&gt; GÖREV TAMAM_</h3><p>'+mesaj+'</p><button class="btn-yesil" onclick="zaferKapat();git('+(i+1)+')">DEVAM ➤</button>');
+  }
+}
+function zaferGoster(h){ document.getElementById('zaferIc').innerHTML = h; document.getElementById('zafer').classList.add('acik'); }
+function zaferKapat(){ document.getElementById('zafer').classList.remove('acik'); }
+function parsomen(ac){ document.getElementById('parsomenModal').classList.toggle('acik', ac); }
+function karistir(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+(function(){ document.getElementById('ebcedTablo').innerHTML = Object.entries(EBCED).map(([h,v])=>'<div><div class="eh">'+h+'</div><div class="ev">'+v+'</div></div>').join(''); })();
+
+// ---------- 01: kelime → anlam (orta seviye kelimeler) ----------
+const G0H = [ {a:'مُسْتَشْفَى',t:'Hastane'},{a:'مَكْتَبَة',t:'Kütüphane'},{a:'غَسَّالَة',t:'Çamaşır makinesi'},{a:'مَصْنَع',t:'Fabrika'},{a:'شَرِكَة',t:'Şirket'},{a:'ثَلَّاجَة',t:'Buzdolabı'} ];
+const G0 = karistir(G0H); let g0i = 0;
+function g0Goster(){
+  const q = G0[g0i];
+  document.getElementById('s0no').textContent = g0i+1;
+  document.getElementById('s0kelime').textContent = q.a;
+  document.getElementById('s0sayac').textContent = 'PAKET ' + (g0i+1) + ' / ' + G0.length;
+  const secler = karistir([q.t, ...karistir(G0H.map(x=>x.t).filter(t=>t!==q.t)).slice(0,3)]);
+  document.getElementById('s0sec').innerHTML = secler.map(t=>'<button class="sec-btn" onclick="g0Cevap(this,\''+t.replace(/'/g,"\\'")+'\')">'+t+'</button>').join('');
+}
+function g0Cevap(btn, t){
+  if(t === G0[g0i].t){ btn.classList.add('dogru');
+    setTimeout(()=>{ g0i++; if(g0i>=G0.length) gorevBitti(0,'Veri paketleri çözüldü. Şimdi bozulan bitleri onaracaksın.'); else g0Goster(); }, 420);
+  } else { btn.classList.add('yanlis'); setTimeout(()=>btn.classList.remove('yanlis'), 420); }
+}
+g0Goster();
+
+// ---------- 02: eksik harf ----------
+const G1S = [ {parcali:'مَدْرَ▢َة', dogru:'س', sec:['س','ص','ش','ز'], anlam:'Okul'},
+              {parcali:'مُسْتَشْ▢ى', dogru:'ف', sec:['ف','ق','غ','ع'], anlam:'Hastane'},
+              {parcali:'▢َليب', dogru:'ح', sec:['ح','خ','ج','هـ'], anlam:'Süt'},
+              {parcali:'خُ▢ْز', dogru:'ب', sec:['ب','ت','ث','ن'], anlam:'Ekmek'},
+              {parcali:'مِفْ▢اح', dogru:'ت', sec:['ت','ط','د','ض'], anlam:'Anahtar'} ];
+let g1i = 0;
+function g1Goster(){
+  const q = G1S[g1i];
+  document.getElementById('s1no').textContent = g1i+1;
+  document.getElementById('s1anlam').textContent = '['+q.anlam+']';
+  document.getElementById('s1kelime').innerHTML = q.parcali.replace('▢','<span class="eksik">▢</span>');
+  document.getElementById('s1sayac').textContent = 'BİT ' + (g1i+1) + ' / ' + G1S.length;
+  document.getElementById('s1sec').innerHTML = karistir(q.sec).map(h=>'<button class="sec-btn arabic" onclick="g1Cevap(this,\''+h+'\')">'+h+'</button>').join('');
+}
+function g1Cevap(btn, h){
+  if(h === G1S[g1i].dogru){ btn.classList.add('dogru');
+    setTimeout(()=>{ g1i++; if(g1i>=G1S.length) gorevBitti(1,'Bitler onarıldı. Sırada: aramıza sızan anomaliyi bulmak.'); else g1Goster(); }, 420);
+  } else { btn.classList.add('yanlis'); setTimeout(()=>btn.classList.remove('yanlis'), 420); }
+}
+g1Goster();
+
+// ---------- 03: hangisi farklı ----------
+const G2S = [ {grup:'Meyveler', k:[['تُفَّاح','Elma',0],['مَوْز','Muz',0],['عِنَب','Üzüm',0],['قِطار','Tren',1]]},
+              {grup:'Taşıtlar', k:[['سَيَّارَة','Araba',0],['حافِلَة','Otobüs',0],['دَرَّاجَة','Bisiklet',0],['جُبْن','Peynir',1]]},
+              {grup:'Evin bölümleri', k:[['مَطْبَخ','Mutfak',0],['غُرْفَة','Oda',0],['حَمَّام','Banyo',0],['سَمَك','Balık',1]]},
+              {grup:'Meslekler', k:[['مُدَرِّس','Öğretmen',0],['طَبِيب','Doktor',0],['مُهَنْدِس','Mühendis',0],['نافِذَة','Pencere',1]]} ];
+let g2i = 0;
+function g2Goster(){
+  const q = G2S[g2i];
+  document.getElementById('s2no').textContent = g2i+1;
+  document.getElementById('s2grup').textContent = 'ipucu: ' + q.grup;
+  document.getElementById('s2sayac').textContent = 'GRUP ' + (g2i+1) + ' / ' + G2S.length;
+  document.getElementById('s2sec').innerHTML = karistir(q.k).map(k=>
+    '<button class="sec-btn arabic" style="min-width:130px" onclick="g2Cevap(this,'+k[2]+')">'+k[0]+'</button>').join('');
+}
+function g2Cevap(btn, sizinti){
+  if(sizinti === 1){ btn.classList.add('dogru');
+    setTimeout(()=>{ g2i++; if(g2i>=G2S.length) gorevBitti(2,'Bütün anomaliler temizlendi. Artık ana anahtara erişebilirsin.'); else g2Goster(); }, 420);
+  } else { btn.classList.add('yanlis'); setTimeout(()=>btn.classList.remove('yanlis'), 420); }
+}
+g2Goster();
+
+// ---------- 04: final — عِلْم = 70+30+40 = 140 ----------
+const ANAHTAR = 140;
+(function(){
+  document.getElementById('s3harfler').innerHTML = ['ع','ل','م'].map(h=>
+    '<div class="harf-tas" onclick="this.querySelector(\'.v\').textContent=\''+EBCED[h]+'\';this.querySelector(\'.v\').classList.remove(\'gizli\')">' +
+    '<div class="h">'+h+'</div><div class="v gizli">?</div></div>').join('');
+})();
+function anahtarDene(){
+  const v = parseInt(document.getElementById('s3giris').value, 10);
+  if(v === ANAHTAR){
+    tamam[3] = true; ilerlemeGuncelle();
+    zaferGoster('<h3>&gt; SİSTEM ÇÖZÜLDÜ_</h3>' +
+      '<p>Gizli mesajın ikinci parçası ekranda beliriyor:</p>' +
+      '<div class="parca-ar">مِنَ الْمَهْدِ</div>' +
+      '<p><b>"…beşikten…"</b></p>' +
+      '<div class="dekod" id="dekod"></div>' +
+      '<p style="opacity:.75">Parşömendeki söz hâlâ eksik. Son parça <b>yıldızların ötesinde</b>: zor seviye seni bekliyor. 🚀</p>');
+    const mesaj = '> parça 1+2: اُطْلُبُوا الْعِلْمَ مِنَ الْمَهْدِ ...';
+    let k = 0; const d = document.getElementById('dekod');
+    const t = setInterval(()=>{ d.textContent += mesaj[k]; k++; if(k>=mesaj.length) clearInterval(t); }, 45);
+  } else {
+    const g = document.getElementById('s3giris'); g.style.borderColor = '#ff5252';
+    setTimeout(()=>g.style.borderColor = '', 500);
+  }
+}
+</script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

@@ -1,346 +1,41 @@
 rules_version = '2';
-
-/* ==========================================================================
-   KIDEF ARAPÇA · FIRESTORE KURALLARI            proje: kidefarapca-98f9c
-   --------------------------------------------------------------------------
-   YAYIN: Firebase Console > Firestore Database > Rules > yapıştır > Publish.
-   (Makinede firebase CLI kurulu değil; firebase.json yine de bu dosyayı
-   gösteriyor, ileride CLI kurulursa "firebase deploy --only firestore:rules"
-   çalışır.)
-
-   ÜÇ TEMEL KAPI
-   ----------------------------------------------------------------------
-   1) MİSAFİR (ANONİM) KİMLİK — yalnız yarışmaya katılım içindir.
-      Karekodu okutan öğrencinin hesabı olmayabilir; ona Firebase'de anonim
-      bir kimlik açılır (oyunlar/bilgiyarismasikacom.js). Bu kimliğin yetkisi
-      TEK BİR YERE sınırlı: bilgiYarismasi/{oda} ve altı.
-      Bunu sağlayan şey, isSignedIn()'in anonimi SAYMAMASI. Böylece
-      kullanicilar, rooms, ogrenciIlerleme, davetler, mesajlar, siparisler…
-      hepsi misafire tek hamlede kapanır. (Özellikle kullanicilar/{uid}
-      create kuralı kritikti: misafir kendine role:'teacher' yazıp
-      isTeacherOrAdmin() olabilirdi.)
-      Misafirin DE girebildiği tek yer için ayrı yardımcı: isKatilimci().
-      NOT: bilgiYarismasi bloğunda isSignedIn() KULLANILMAZ — kullanılırsa
-      karekodla katılım komple kırılır.
-
-   2) ÖĞRETMEN ONAYI — yetkinin kendisine bağlıdır, yalnız kayda değil.
-      Öğretmen kaydı kullanicilar/{uid}.ogretmenOnay = 'bekliyor' ile açılır
-      (hesap/auth.js). sistem/erisim.js perdeyi indirir ama o İSTEMCİ
-      tarafıdır; asıl kilit burada: isTeacherOrAdmin() onaylanmamış hesabı
-      öğretmen SAYMAZ. Aksi hâlde onay bekleyen biri yarışma odası açabilir,
-      davet üretebilir, başka öğretmenlerin öğrenci listelerini okuyabilirdi.
-      Alanı hiç olmayan ESKİ öğretmen hesapları geçmeye devam eder —
-      erisim.js de aynı üç durumu böyle sayıyor:
-          alan yok  -> eski öğretmen, geçer
-          'onayli'  -> geçer
-          'bekliyor' / 'reddedildi' -> geçmez
-      Ayrıca kullanıcı ogretmenOnay alanına DOKUNAMAZ (onay/red yalnız
-      yöneticide) ve rol.js'in "teacherStaticCode / userData varsa
-      öğretmendir" çıkarımı yüzünden bu iki alanı YOKTAN açamaz.
-
-   3) YÖNETİCİ TANIMLAMASI — Yönetici Paneli'ndeki "Öğrenciyi Öğretmene
-      Tanımla" (hesap/teacher-admin.js) ogrenciBaglari/{uid} belgesini
-      yönetici adına açar; o yüzden create'te isAdmin() da var. Yönetici
-      yine yalnız 'bekliyor' açabilir, onayı öğretmen verir.
-
-   AYRI PROJE: sarf/sarf.js ikinci bir projeye (sarf-ddee5) bağlanır;
-   onun kuralları firestore.rules.vezinlerbilgiyarismasi dosyasındadır ve
-   ayrıca yayınlanır. Bu dosya yalnız kidefarapca-98f9c içindir.
-
-   YAYINDAN ÖNCE "Kural oyun alanı"nda dene: öğrenci kaydı · öğretmen kaydı ·
-   öğretmenin sınıf listesi kaydetmesi (kullanicilar/{uid} içine userData) ·
-   misafir kimlikle bilgiYarismasi/{oda}/takimlar yazma.
-   ========================================================================== */
-
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ÇOKLU ÖĞRETMEN — bağ belgesi bu öğrenciye mi ait?
-    // Yeni kimlik {ogrenciUid}__{ogretmenUid} olduğu için 'uid' alanına
-    // bakılır; kimliği yalnız öğrenci uid'i olan eski belgeler de geçer.
-    function benimBagim(bagId) {
-      return isSignedIn() && (
-        bagId == request.auth.uid ||
-        (resource != null && resource.data.uid == request.auth.uid) ||
-        (request.resource != null && request.resource.data.uid == request.auth.uid)
-      );
-    }
-
-    /* QR giriş oturumları — YALNIZ Cloud Functions (functions/index.js).
-       Admin SDK kuralları atlar; istemciye tamamen kapalı. */
-    match /qrGirisleri/{oturum} {
-      allow read, write: if false;
-    }
-
-    /* ---------------------------------------------------------------- */
-    /* YARDIMCILAR                                                      */
-    /* ---------------------------------------------------------------- */
-
-    // Gerçek hesapla giriş — MİSAFİR (anonim) kimlik SAYILMAZ.
-    function isSignedIn() {
-      return request.auth != null
-        && request.auth.token.firebase.sign_in_provider != 'anonymous';
-    }
-    // Yarışmaya katılan herkes — misafir (anonim) kimlik DAHİL.
-    function isKatilimci() { return request.auth != null; }
-
+    function isSignedIn() { return request.auth != null; }
     function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
-
-    // Kendi kullanicilar belgesi. exists() ve get() aynı yola yapıldığında
-    // Firestore bunları tek okumada önbelleğe alır, tekrar tekrar ücret yok.
-    function kayitVar() {
-      return isSignedIn()
-        && exists(/databases/$(database)/documents/kullanicilar/$(request.auth.uid));
-    }
-    function benimKayit() {
-      return get(/databases/$(database)/documents/kullanicilar/$(request.auth.uid)).data;
-    }
-
     function isAdmin() {
-      return kayitVar() && benimKayit().role == 'admin';
-    }
-
-    // Öğretmen YETKİSİ onaya bağlıdır (yukarıda 2. kapı).
-    function onayliOgretmen() {
-      return !benimKayit().keys().hasAny(['ogretmenOnay'])
-          || benimKayit().ogretmenOnay == 'onayli';
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/kullanicilar/$(request.auth.uid))
+        && get(/databases/$(database)/documents/kullanicilar/$(request.auth.uid)).data.role == 'admin';
     }
     function isTeacherOrAdmin() {
-      return kayitVar()
-        && benimKayit().role in ['teacher', 'admin']
-        && (benimKayit().role == 'admin' || onayliOgretmen());
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/kullanicilar/$(request.auth.uid))
+        && get(/databases/$(database)/documents/kullanicilar/$(request.auth.uid)).data.role in ['teacher', 'admin'];
     }
-
-    // Bu güncellemede hangi alanlar değişiyor? (yalnız update'te kullanılır;
-    // create'te resource null olduğu için diff() hata verir)
-    function degisen() {
-      return request.resource.data.diff(resource.data).affectedKeys();
-    }
-
-    /* ---------------------------------------------------------------- */
 
     // Kullanıcı hesapları — birleşik tek hesap sistemi
     match /kullanicilar/{uid} {
       allow read:   if isOwner(uid) || isAdmin();
-      // Kayıt: sadece kendi dokümanı, rol yalnız 'student' veya 'teacher'
-      // olabilir (admin olamaz). Rol 'teacher' ise ogretmenOnay ZORUNLU
-      // 'bekliyor' — kimse kendini onaylı öğretmen kaydedemez.
-      allow create: if isOwner(uid) && request.resource.data.role in ['student', 'teacher']
-                    && (request.resource.data.role != 'teacher'
-                        || request.resource.data.ogretmenOnay == 'bekliyor');
-      // Güncelleme: kendi dokümanı ama ROLÜNÜ değiştiremez (yetki yükseltme),
-      // ogretmenOnay alanına DOKUNAMAZ, teacherStaticCode / userData
-      // alanlarını da YOKTAN açamaz. Bu izler belgesinde zaten duran eski
-      // öğretmen ile onaylı öğretmen eskisi gibi yazmaya devam eder.
-      allow update: if isAdmin()
-                    || (isOwner(uid)
-                        && request.resource.data.role == resource.data.role
-                        && !degisen().hasAny(['ogretmenOnay'])
-                        && (!degisen().hasAny(['teacherStaticCode', 'userData'])
-                            || resource.data.keys().hasAny(['teacherStaticCode', 'userData'])
-                            || isTeacherOrAdmin()));
+      // Kayıt: sadece kendi dokümanı, rol yalnız 'student' veya 'teacher' olabilir (admin olamaz)
+      allow create: if isOwner(uid) && request.resource.data.role in ['student', 'teacher'];
+      // Güncelleme: kendi dokümanı ama ROLÜNÜ değiştiremez (yetki yükseltmeyi engeller); admin her şeyi yapabilir
+      allow update: if (isOwner(uid) && request.resource.data.role == resource.data.role) || isAdmin();
       allow delete: if isAdmin();
     }
 
-    // Canlı ders odaları — misafir katılımı sistem/router.js'te kaldırıldı,
-    // bu yüzden burada da gerçek hesap şartı var. (Aşama 3'te daraltılacak.)
+    // Canlı ders odaları (misafir/anonim dahil, imzalı olsun yeter) — Aşama 3'te daraltılacak
     match /rooms/{roomId} {
       allow read, write: if isSignedIn();
       match /{document=**} { allow read, write: if isSignedIn(); }
     }
 
-    // Bilgi Yarışması — oda + takımlar + cevaplar (sınıf içi canlı yarışma)
-    match /bilgiYarismasi/{oda} {
-      // Oda bilgisini katılan herkes (misafir dahil) okur; odayı KURMAK ve
-      // soruyu ilerletmek yalnız onaylı öğretmen/yöneticidir.
-      allow read:                   if isKatilimci();
-      allow create, update, delete: if isTeacherOrAdmin();
-      // Takımlar · cevaplar · karakterler — öğrenci (misafir olabilir) kendi
-      // bağlantısını, avatarını ve cevabını buraya yazar.
-      // NOT: sınıf içi güven modeli — aynı odadaki öğrenciler birbirinin
-      // cevabını teknik olarak değiştirebilir. Oda kodu 4 harflidir ve
-      // yalnız ders süresince canlıdır; yarış bitince durum "bitti" olur.
-      match /{alt=**} {
-        allow read, write: if isKatilimci();
-      }
-    }
-
-    // Global uygulama durumu — GEÇİCİ (Aşama 3'te daraltılacak)
+    // Global uygulama durumu — GEÇİCİ (Aşama 3'te öğretmen/randevu şemasıyla daraltılacak)
     match /global/{doc} {
-      // Okuma girişliye; yazma sadece öğretmen/admin — öğrenciler ortak
-      // veriyi bozamaz.
+      // Okuma herkese (giris yapmis); yazma sadece ogretmen/admin - ogrenciler ortak veriyi bozamaz
       allow read:  if isSignedIn();
       allow write: if isTeacherOrAdmin();
-    }
-
-    // Ödeme siparişleri — öğrenci kendi siparişini oluşturur; yönetici okur/onaylar/reddeder
-    match /siparisler/{orderId} {
-      allow read:          if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
-      allow create:        if isSignedIn() && request.resource.data.uid == request.auth.uid;
-      allow update, delete: if isAdmin();
-    }
-
-    // İletişim mesajları — kullanıcı kendi mesajını yazar; yönetici herkese cevap yazar ve hepsini okur
-    match /mesajlar/{msgId} {
-      allow read:   if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
-      allow create: if isSignedIn() && (
-                       (request.resource.data.from == 'user'  && request.resource.data.uid == request.auth.uid)
-                       || (request.resource.data.from == 'admin' && isAdmin())
-                     );
-      allow update: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
-      allow delete: if isAdmin();
-    }
-
-    // Müfredat içeriği (kazanım adımları) — giriş yapan okur, yönetici düzenler/yazar
-    match /mufredat/{pkgId} {
-      allow read:  if isSignedIn();
-      allow write: if isAdmin();
-    }
-
-    // Öğretmen müsaitlik takvimleri — giriş yapan okur (öğrenci randevu için görür), öğretmen/yönetici yazar
-    match /takvimler/{teacherId} {
-      allow read:  if isSignedIn();
-      allow write: if isTeacherOrAdmin();
-    }
-
-    /* =====================================================================
-       ÖĞRENCİ HESAP SİSTEMİ  ("Kod bir kez → sonra e-posta")
-       davetler / ogrenciBaglari / ogrenciOzet / ogrenciMesaj
-       ===================================================================== */
-
-    // Davet kodları — doküman kimliği KODUN KENDİSİ (örn. TCH-4821-X8B2).
-    // Öğrenci ancak kodu BİLİYORSA tek dokümanı okuyabilir (get);
-    // listeleme (list) kapalıdır, yani kod havuzu taranamaz.
-    match /davetler/{kod} {
-      allow get:    if isSignedIn();
-      allow list:   if isTeacherOrAdmin();
-      allow create: if isTeacherOrAdmin() && request.resource.data.ogretmenUid == request.auth.uid;
-      allow update: if isSignedIn() && (
-                       // Öğretmen kendi davetini günceller
-                       (resource.data.ogretmenUid == request.auth.uid)
-                       // ya da öğrenci kodu kullandığında yalnız "kullanildi/ogrenciUid" damgalanır
-                       || (request.resource.data.ogretmenUid == resource.data.ogretmenUid
-                           && request.resource.data.kod == resource.data.kod
-                           && request.resource.data.ogrenciUid == request.auth.uid)
-                     );
-      allow delete: if isSignedIn() && resource.data.ogretmenUid == request.auth.uid;
-    }
-
-    // Öğrenci ↔ öğretmen bağlantısı. Doküman kimliği ÖĞRENCİNİN uid'idir.
-    // ÇOKLU ÖĞRETMEN: bir öğrenci birden çok öğretmenin öğrencisi olabilir.
-    // Bu yüzden belge kimliği artık {ogrenciUid}__{ogretmenUid} biçimindedir
-    // ve SAHİPLİK kimlikten değil 'uid' ALANINDAN doğrulanır. Kimliği yalnız
-    // öğrenci uid'i olan ESKİ belgeler de geçsin diye iki koşul birden yazılı
-    // (öğretmen girişinde ogrencihesap.js bunları yeni kimliğe taşır).
-    match /ogrenciBaglari/{bagId} {
-      allow get:    if benimBagim(bagId) || (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-      // Öğretmen KENDİ öğrencilerini listeler; öğrenci de KENDİ bağlarını
-      // ('uid' alanına göre) listeleyebilir — kural her belge için ayrı
-      // işlediğinden başkasının kaydı sorguya karışırsa sorgu komple düşer.
-      allow list:   if isTeacherOrAdmin() || benimBagim(bagId);
-      // Öğrenci isteği: yalnız kendi dokümanı ve yalnız "bekliyor" durumuyla açılır.
-      // YÖNETİCİ de bir öğrenciyi bir öğretmene tanımlayabilir (Yönetici Paneli →
-      // "Öğrenciyi Öğretmene Tanımla"); o da yine yalnız "bekliyor" açar, onayı
-      // öğretmen verir. Böylece yönetici hiçbir zaman doğrudan "onayli" yazamaz.
-      allow create: if ((isSignedIn() && request.resource.data.uid == request.auth.uid) || isAdmin())
-                       && request.resource.data.durum == 'bekliyor';
-      // Onay/red yalnız hedef öğretmende; öğrenci kendi isteğini yenileyebilir ama onaylayamaz
-      allow update: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid)
-                       || (benimBagim(bagId) && request.resource.data.durum == 'bekliyor')
-                       || isAdmin();
-      allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-    }
-
-    // Öğretmenin yazdığı, öğrenciye özel AYNA kayıt (yalnız o öğrencinin dilimi).
-    // Kimlik burada da {ogrenciUid}__{ogretmenUid}; öğrenci kendini
-    // 'ogrenciUid' alanından tanır (eski belgelerde kimlik = öğrenci uid'i).
-    match /ogrenciOzet/{ozetId} {
-      allow get:    if (isSignedIn() && (resource.data.ogrenciUid == request.auth.uid || ozetId == request.auth.uid))
-                       || (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-      allow list:   if isTeacherOrAdmin();
-      allow create: if isTeacherOrAdmin() && request.resource.data.ogretmenUid == request.auth.uid;
-      allow update: if isSignedIn() && resource.data.ogretmenUid == request.auth.uid;
-      allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-    }
-
-    // Öğrenciden öğretmene giden mesaj kutusu.
-    match /ogrenciMesaj/{msgId} {
-      allow get:    if isSignedIn() && (resource.data.ogrenciUid == request.auth.uid
-                                        || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-      allow list:   if isTeacherOrAdmin();
-      // Öğrenci yalnız kendi adına, işlenmemiş mesaj oluşturur
-      allow create: if isSignedIn()
-                       && request.resource.data.ogrenciUid == request.auth.uid
-                       && request.resource.data.islendi == false;
-      // "islendi" damgasını yalnız hedef öğretmen atar
-      allow update: if isSignedIn() && resource.data.ogretmenUid == request.auth.uid;
-      allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-    }
-
-    /* =====================================================================
-       GÖREV SİSTEMİ  (gorev.js + gorevkopru.js)
-       gorevler / gorevSonuc
-       ===================================================================== */
-
-    // Görev tanımları — öğretmen kendi adına yazar; öğrenci görev kipinde okur.
-    match /gorevler/{gid} {
-      allow get, list: if isSignedIn();
-      allow create:    if isTeacherOrAdmin() && request.resource.data.ogretmenUid == request.auth.uid;
-      allow update:    if isSignedIn() && resource.data.ogretmenUid == request.auth.uid;
-      allow delete:    if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-    }
-
-    // Öğrenci ilerleme/rekor kayıtları — doküman kimliği "uid_oyun".
-    // gorevkopru.js her oynayışta yazar (görevden bağımsız süreç kaydı).
-    // Öğrenci yalnız kendi kaydını yazar; öğretmen yalnız kendi öğrencilerini okur.
-    match /ogrenciIlerleme/{iid} {
-      // get: kopru yazmadan once okur; ILK oyunda dokuman HENUZ YOK olur
-      // (resource == null). Yok-dokuman okumasi reddedilirse her kayit
-      // "izin hatasi" ile baslamadan biter — o yuzden acikca izinli.
-      allow get:    if isSignedIn() && (resource == null
-                       || resource.data.ogrenciUid == request.auth.uid
-                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-      allow list:   if isSignedIn() && (resource.data.ogrenciUid == request.auth.uid
-                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-      allow create: if isSignedIn() && request.resource.data.ogrenciUid == request.auth.uid;
-      allow update: if isSignedIn() && resource.data.ogrenciUid == request.auth.uid;
-      allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-    }
-
-    // Görev sonuçları — doküman kimliği "gorevId_ogrenciUid".
-    // Öğrenci yalnız KENDİ sonucunu yazar; öğretmen yalnız KENDİ görevlerinin
-    // sonuçlarını okur (sorgu ogretmenUid şartıyla gelir, kural doğrular).
-    match /gorevSonuc/{sid} {
-      // get: kopru en iyi puani korumak icin yazmadan once okur; gorev ILK
-      // bitirildiginde dokuman HENUZ YOK olur (resource == null) — izinli
-      // olmali, yoksa ilk teslim hep "izin hatasi" ile duser.
-      allow get:    if isSignedIn() && (resource == null
-                       || resource.data.ogrenciUid == request.auth.uid
-                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-      allow list:   if isSignedIn() && (resource.data.ogrenciUid == request.auth.uid
-                       || resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-      allow create: if isSignedIn() && request.resource.data.ogrenciUid == request.auth.uid;
-      allow update: if isSignedIn() && resource.data.ogrenciUid == request.auth.uid;
-      allow delete: if (isSignedIn() && resource.data.ogretmenUid == request.auth.uid) || isAdmin();
-    }
-
-    /* SINIF DUYURULARI — hesap/listelerim.js duyuru ve toplu mesajı buraya
-       yazıyor (satır 6002 ve 6686, ikisi de ogretmenUid ile). Koleksiyon
-       kurallarda hiç yoktu; Firestore varsayılanı RET olduğu için o yazmalar
-       sessizce düşüyordu. Kodda okuyan yer yok, o yüzden yalnız "kendi adına
-       oluşturma" açık. */
-    match /sinifMesajlari/{mid} {
-      allow read:   if isAdmin();
-      allow create: if isTeacherOrAdmin() && request.resource.data.ogretmenUid == request.auth.uid;
-      allow update, delete: if false;
-    }
-
-    /* ayarlar — site geneli anahtarlar (ör. site erişim kilidi).
-       Kilit durumunu GİRİŞSİZ ziyaretçi de okuyabilmeli (perde kararı giriş
-       ekranından ÖNCE verilir); yazmak YALNIZ yöneticiye açıktır. */
-    match /ayarlar/{aid} {
-      allow get, list: if true;
-      allow write:     if isAdmin();
     }
   }
 }

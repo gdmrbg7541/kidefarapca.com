@@ -33,45 +33,45 @@
   :root{
     --zemin:#F5F8FC; --kart:#fff; --yazi:#1F2A37; --soluk:#6B7A8D;
     --cizgi:#E2E8F0; --vurgu:#0E9E86;
-    --takimA:#2563EB; --takimB:#EE5253;
+    --takimA:#2563EB; --takimB:#EE5253
   }
   html,body{height:100%}
   body{
     font-family:'Arakom','Marhey',system-ui,sans-serif;
     background:var(--zemin); color:var(--yazi);
-    display:flex; flex-direction:column; overflow:hidden;
+    display:flex; flex-direction:column; overflow:hidden
   }
   .ar{font-family:'Arakom','Harmattan',serif; direction:rtl; unicode-bidi:isolate}
 
   /* ---------------- üst şerit ---------------- */
   .ust{
     flex:none; display:flex; align-items:center; gap:14px;
-    padding:10px 16px; background:var(--kart); border-bottom:1px solid var(--cizgi);
+    padding:10px 16px; background:var(--kart); border-bottom:1px solid var(--cizgi)
   }
   .geri{
     display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--yazi);
-    font-weight:600;font-size:15px;padding:8px 12px;border-radius:10px;border:1px solid var(--cizgi);
+    font-size:15px;padding:8px 12px;border-radius:10px;border:1px solid var(--cizgi)
   }
   .geri:hover{background:var(--zemin)}
   .modlar{display:flex;gap:8px;flex:1;flex-wrap:wrap}
   .mod{
-    font:inherit;font-weight:700;font-size:15px;cursor:pointer;
+    font:inherit;font-size:15px;cursor:pointer;
     padding:9px 16px;border-radius:999px;border:2px solid var(--cizgi);
-    background:var(--kart);color:var(--soluk);
+    background:var(--kart);color:var(--soluk)
   }
   .mod[aria-selected="true"]{background:var(--vurgu);border-color:var(--vurgu);color:#fff}
   .skorlar{display:flex;gap:8px}
   .takim{
     display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:12px;
-    border:2px solid var(--cizgi);background:var(--kart);cursor:pointer;font:inherit;font-weight:700;
+    border:2px solid var(--cizgi);background:var(--kart);cursor:pointer;font:inherit
   }
   .takim b{font-size:22px;min-width:26px;text-align:center}
   .takim.a{border-color:var(--takimA);color:var(--takimA)}
   .takim.b{border-color:var(--takimB);color:var(--takimB)}
   .araclar{display:flex;gap:8px}
   .kucuk{
-    font:inherit;font-weight:600;font-size:14px;cursor:pointer;padding:9px 13px;
-    border-radius:10px;border:1px solid var(--cizgi);background:var(--kart);color:var(--yazi);
+    font:inherit;font-size:14px;cursor:pointer;padding:9px 13px;
+    border-radius:10px;border:1px solid var(--cizgi);background:var(--kart);color:var(--yazi)
   }
   .kucuk:hover{background:var(--zemin)}
   #ses{display:inline-flex;align-items:center;justify-content:center;min-width:42px}
@@ -84,12 +84,12 @@
 
   .msn{width:clamp(150px,23vh,290px);height:clamp(150px,23vh,290px)}
   .devar{font-family:'Arakom','Harmattan',serif;direction:rtl;unicode-bidi:isolate;
-         font-weight:700;line-height:1.22;
+         line-height:1.22;
          font-size:clamp(54px,15vh,190px)}
   .ortaar{font-family:'Arakom','Harmattan',serif;direction:rtl;unicode-bidi:isolate;
-          font-weight:700;font-size:clamp(30px,7vh,86px)}
-  .devtr{font-family:'Arakom','Marhey',system-ui;font-weight:700;font-size:clamp(24px,5vh,62px)}
-  .etiket{font-size:clamp(18px,3vh,36px);color:var(--soluk);font-weight:600;
+          font-size:clamp(30px,7vh,86px)}
+  .devtr{font-family:'Arakom','Marhey',system-ui;font-size:clamp(24px,5vh,62px)}
+  .etiket{font-size:clamp(18px,3vh,36px);color:var(--soluk);
           display:flex;gap:.35em;align-items:baseline;flex-wrap:wrap;justify-content:center}
 
   /* Aşağıdan yukarı geliş — ögeler yerine "otururken" yükselir.
@@ -100,7 +100,7 @@
 
   /* Ana eylem tuşları: tahtadan parmakla basılacak, büyük olmalı.
      .kucuk üst şeritteki yardımcı tuşlar için kaldı. */
-  .buyuk{font:inherit;font-weight:700;cursor:pointer;
+  .buyuk{font:inherit;cursor:pointer;
          font-size:clamp(19px,2.9vh,32px);padding:clamp(10px,1.7vh,18px) clamp(22px,3vw,40px);
          border-radius:999px;border:3px solid var(--cizgi);background:var(--kart);
          color:var(--yazi);transition:transform .12s ease,background .12s ease}
@@ -122,41 +122,42 @@
      Ayrı satırlar hem çok daha büyük yazıya izin veriyor hem de
      müzekker/müennes ayrımını görsel olarak netleştiriyor. */
   .tumh .ad{font-family:'Arakom','Harmattan',serif;direction:rtl;unicode-bidi:isolate;
-            font-weight:700;font-size:clamp(38px,7vh,86px);line-height:1.22;
+            font-size:clamp(38px,7vh,86px);line-height:1.22;
             color:var(--takimA)}
   .tumh .adk{display:block;font-family:'Arakom','Harmattan',serif;direction:rtl;
-             unicode-bidi:isolate;font-weight:700;color:#E84393;
+             unicode-bidi:isolate;color:#E84393;
              font-size:clamp(31px,5.8vh,72px);line-height:1.22}
-  .tumh .tr{font-family:'Arakom','Marhey',system-ui;font-weight:700;
+  .tumh .tr{font-family:'Arakom','Marhey',system-ui;
             font-size:clamp(22px,3.4vh,44px);color:var(--yazi);margin-top:2px}
-  /* Vezin satırı: tahtada uzaktan okunması için taban punto yükseltildi.
-     (Düşük puntoda 'فاعِل'in son ل'i ekran görüntüsünde ا gibi
-     görünüyordu — 2x çözünürlükte bakınca fontun değil, görüntünün
-     kırılması olduğu anlaşıldı; yine de ferah dursun.) */
-  .tumh .kal{font-family:'Arakom','Harmattan',serif;direction:rtl;unicode-bidi:isolate;
-             font-size:clamp(20px,2.9vh,34px);color:var(--soluk);opacity:.9}
-
   /* ة ikizleri */
   .ikizkutu{display:flex;align-items:center;gap:clamp(18px,5vw,70px);flex-wrap:wrap;justify-content:center}
   .yan{display:flex;flex-direction:column;align-items:center;gap:6px;
        padding:clamp(12px,2.4vh,26px) clamp(18px,3vw,44px);border-radius:22px;background:var(--kart);
        border:3px solid var(--cizgi);min-width:clamp(230px,30vw,460px)}
   .yan.e{border-color:var(--takimA)} .yan.k{border-color:#E84393}
-  .yan .rol{font-size:clamp(13px,1.9vh,20px);font-weight:700;letter-spacing:.04em}
+  .yan .rol{font-size:clamp(13px,1.9vh,20px);letter-spacing:.04em}
   .yan.e .rol{color:var(--takimA)} .yan.k .rol{color:#E84393}
   .gizli{visibility:hidden}
+  /* ة'nin inmeden önce yerini tutan görünmez kopya */
+  .tayeri{visibility:hidden}
   /* uçan ة */
   .ucanta{
-    position:absolute;font-family:'Arakom','Harmattan',serif;font-weight:700;color:#E84393;
-    font-size:clamp(50px,11vh,140px);pointer-events:none;opacity:0;
+    position:absolute;font-family:'Arakom','Harmattan',serif;color:#E84393;
+    font-size:clamp(50px,11vh,140px);pointer-events:none;opacity:0
   }
-  @keyframes tauc{
-    0%{opacity:0;transform:translate(0,-42vh) scale(.5) rotate(-25deg)}
-    55%{opacity:1;transform:translate(0,6px) scale(1.35) rotate(6deg)}
-    75%{transform:translate(0,0) scale(.95)}
-    100%{opacity:1;transform:translate(0,0) scale(1)}
+  /* ة İNİŞİ — yavaş ve DİK.
+     Kelime önce ة'siz beliriyor; ة yukarıdan, tam birleşeceği noktanın
+     üstünden süzülüp iniyor. Yatay kayma YOK: sol/üst konumu JS
+     ölçerek veriyor, canlandırma yalnız dikeyde çalışıyor. Sona doğru
+     hafif yaylanma, "oturdu" hissi için. */
+  @keyframes tainis{
+      0%{opacity:0;  transform:translateY(-32vh) scale(1.45)}
+     14%{opacity:1}
+     72%{            transform:translateY(4px)   scale(1.06)}
+     88%{            transform:translateY(-3px)  scale(.99)}
+    100%{opacity:1;  transform:translateY(0)     scale(1)}
   }
-  .ucanta.oyna{animation:tauc .95s cubic-bezier(.2,.9,.3,1.2) forwards}
+  .ucanta.oyna{animation:tainis 1.45s cubic-bezier(.38,.02,.3,1) forwards}
   @keyframes parla{0%{background:#FFF3C4}100%{background:var(--kart)}}
   .parla{animation:parla 1.1s ease-out}
 
@@ -172,11 +173,11 @@
   /* مَنْ أَنا؟ */
   .ipuclari{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
   .ipucu{padding:clamp(10px,1.8vh,20px) clamp(18px,2.6vw,34px);border-radius:999px;
-         background:var(--kart);border:3px solid var(--cizgi);font-weight:700;
+         background:var(--kart);border:3px solid var(--cizgi);
          font-size:clamp(24px,5vh,56px);line-height:1.15}
   .ipucu .ar{font-size:1.35em}
   /* ipucu etiketi ("İlk harf", "Kalıp") değerin yanında küçük kalsın */
-  .ipucu .et{color:var(--soluk);font-size:.5em;font-weight:600;margin-inline-end:.4em}
+  .ipucu .et{color:var(--soluk);font-size:.5em;margin-inline-end:.4em}
 
   /* cümle treni */
   .secimler{display:flex;gap:clamp(8px,1.4vw,18px);flex-wrap:wrap;justify-content:center;flex:none}
@@ -185,7 +186,7 @@
   .grup{background:var(--kart);border:2px solid var(--cizgi);border-radius:16px;padding:8px;
         min-width:132px;max-height:38vh;overflow-y:auto}
   .grup h3{font-size:12.5px;color:var(--soluk);text-align:center;margin-bottom:6px;letter-spacing:.03em}
-  .sec{display:block;width:100%;font:inherit;font-weight:700;font-size:clamp(14px,2vh,22px);
+  .sec{display:block;width:100%;font:inherit;font-size:clamp(14px,2vh,22px);
        padding:7px 10px;border-radius:9px;border:2px solid transparent;background:transparent;
        cursor:pointer;color:var(--yazi);text-align:center}
   .sec[aria-pressed="true"]{background:var(--vurgu);color:#fff}
@@ -193,12 +194,12 @@
   .vagon{background:var(--kart);border:3px solid var(--cizgi);border-radius:16px;
          direction:rtl;unicode-bidi:isolate;
          padding:clamp(8px,1.6vh,18px) clamp(12px,1.8vw,26px);
-         font-family:'Arakom','Harmattan',serif;font-weight:700;font-size:clamp(24px,5.6vh,64px);
+         font-family:'Arakom','Harmattan',serif;font-size:clamp(24px,5.6vh,64px);
          opacity:0;transform:translateX(30px)}
   @keyframes vagongel{to{opacity:1;transform:translateX(0)}}
   .vagon.gel{animation:vagongel .45s ease-out forwards}
   .vagon .alt{display:block;font-family:'Arakom','Marhey',system-ui;font-size:clamp(11px,1.5vh,17px);
-              color:var(--soluk);font-weight:600;direction:ltr;unicode-bidi:isolate}
+              color:var(--soluk);direction:ltr;unicode-bidi:isolate}
 
   #kipTren .devtr{font-size:clamp(18px,3.4vh,40px);text-align:center;padding:0 10px}
   #kipTren .vagon{font-size:clamp(20px,4.6vh,52px)}
@@ -213,7 +214,36 @@
   .alt{flex:none;text-align:center;padding:7px;color:var(--soluk);font-size:13px;
        background:var(--kart);border-top:1px solid var(--cizgi)}
   kbd{background:var(--zemin);border:1px solid var(--cizgi);border-bottom-width:2px;
-      border-radius:6px;padding:1px 7px;font:inherit;font-size:12px;font-weight:700}
+      border-radius:6px;padding:1px 7px;font:inherit;font-size:12px}
+
+  /* ================== KALINLIK YOK ==================
+     Arakom'un TEK yüzü var: usWeightClass 400, fontun bold biti kapalı,
+     ailede ikinci bir dosya yok. Bir yerde font-weight:700 görünce
+     tarayıcı harfi KENDİ şişiriyor (sentetik/sahte kalın). Tarayıcıda
+     ölçtük: aynı metin, aynı punto, %65.85 daha fazla mürekkep —
+     Arapça'da bu, harekeleri ve ince kuyrukları yutuyor.
+
+     İki katman:
+       1) Hiçbir ögede kalınlık istemiyoruz  → font-weight:400
+       2) Yine de bir yerden 700 sızarsa (SVG'nin font-weight="700"
+          sunum özniteliği, tarayıcının <b>/<strong>/<h1> öntanımı…)
+          tarayıcı sahte kalın ÜRETMESİN → font-synthesis:none.
+          Ölçüldü: sentez kapalıyken mürekkep 400 ile birebir aynı.
+     font-synthesis-weight ayrıca yazıldı: Safari kısaltmayı değil
+     uzun biçimi tanıyor. Eğik yazı bu sayfada hiç kullanılmıyor,
+     kısaltmanın eğikliği de kapatması bir şeyi bozmuyor.
+     ================================================== */
+  html, body, body *, body *::before, body *::after {
+    font-weight:400 !important;
+    font-synthesis-weight:none !important;
+    font-synthesis:none !important;
+  }
+  /* Vurgu kaybolmasın: öğretici <b>'ler artık kalınlıkla değil RENKLE
+     ayrılıyor («…mesleğin kadını…», «kişi kadınsa meslek de kadın olur»).
+     Takım düğmelerindeki sayı <b>'si kendi rengini korur. */
+  b, strong{ color:var(--vurgu) }
+  .takim b{ color:inherit }
+
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.01ms !important;transition-duration:.01ms !important}
   }
@@ -394,8 +424,7 @@
         SH.sahne(m.id, m.renk) +
         '<div class="ad">' + (m.e || m.k) + '</div>' +
         (m.e ? '<div class="adk">' + m.k + '</div>' : '') +
-        '<div class="tr">' + m.tr + '</div>' +
-        '<div class="kal">' + m.kalip + '</div>';
+        '<div class="tr">' + m.tr + '</div>';
       k.appendChild(d);
       /* sıra sıra yükselerek gelir — hepsi birden patlamasın */
       d.style.animationDelay = (i * 45) + 'ms';
@@ -414,6 +443,7 @@
     $('ikizSahne').innerHTML = SH.sahne(m.id, m.renk);
     $('ucanTa').classList.remove('oyna');
     $('ucanTa').style.opacity = 0;
+    $('ucanTa').style.left = ''; $('ucanTa').style.top = '';
     ikizAcik = false;
     yukselt([$('ikizSahne'), $('ikizE').parentNode, $('ikizTr')]);
   }
@@ -426,24 +456,50 @@
       e.classList.add('yuksel');
     });
   }
+  /* Üç perdelik açılış:
+       1) kelime ة'SİZ belirir (gövde = müzekker biçim),
+       2) ة, kelimenin SONUNA (RTL'de sol ucuna) doğru yavaşça iner,
+       3) inince kelime tamamlanır ve parlar.
+     ة'nin ineceği nokta ÖLÇÜLEREK bulunuyor; sabit bir yere düşseydi
+     uzun kelimede kelimenin ortasına, kısa kelimede dışına konardı. */
+  var IKIZ_BEKLE = 300, IKIZ_INIS = 1450;
   function ikizGoster() {
     if (ikizAcik) { ikizNo++; ikizCiz(); return; }
+    ikizAcik = true;
     var m = ikizSira[ikizNo % ikizSira.length];
-    /* ة önce uçarak gelir, sonra kelime tamamlanmış hâliyle yerine oturur */
-    var ta = $('ucanTa');
-    ta.classList.remove('oyna'); void ta.offsetWidth; ta.classList.add('oyna');
-    SES.ucus();
+    var kutu = $('ikizK'), ta = $('ucanTa');
+
+    /* 1) kelime belirir — henüz ة yok. Ama ة'nin YERİ baştan ayrılıyor:
+       sona görünmez bir ة konuyor. İki faydası var — inen ة kartın
+       dışına taşmıyor, ve birleşme anında kelime yana zıplamıyor. */
+    kutu.innerHTML = m.e + '<span class="tayeri">ة</span>';
+    kutu.classList.remove('yuksel'); void kutu.offsetWidth; kutu.classList.add('yuksel');
+    SES.sec();
+
+    /* 2) ة'yi TAM o ayrılmış yerin üstüne koyup indir */
     setTimeout(function () {
-      $('ikizK').textContent = m.k;
-      $('ikizK').parentNode.classList.remove('parla'); void $('ikizK').offsetWidth;
-      $('ikizK').parentNode.classList.add('parla');
+      var kap = kutu.parentNode.getBoundingClientRect();
+      var yer = kutu.querySelector('.tayeri');
+      var hedef = (yer || kutu).getBoundingClientRect();
+      ta.style.font = getComputedStyle(kutu).font;
+      ta.classList.remove('oyna'); ta.style.opacity = 1;
+      ta.style.left = (hedef.left - kap.left) + 'px';
+      ta.style.top  = (hedef.top - kap.top) + 'px';
+      void ta.offsetWidth; ta.classList.add('oyna');
+      SES.ucus();
+    }, IKIZ_BEKLE);
+
+    /* 3) birleşme */
+    setTimeout(function () {
+      kutu.textContent = m.k;
+      kutu.parentNode.classList.remove('parla'); void kutu.offsetWidth;
+      kutu.parentNode.classList.add('parla');
       /* Sınıfı KALDIRMAK gerekiyor: animasyonun `forwards` dolgusu
          son karedeki opacity:1'i satır içi stilden üstün tutuyor,
          ta.style.opacity=0 yazmak ة'yi kaybetmiyordu. */
-      ta.classList.remove('oyna');
+      ta.classList.remove('oyna'); ta.style.opacity = 0;
       SES.konsun(); SES.dogru();
-    }, 640);
-    ikizAcik = true;
+    }, IKIZ_BEKLE + IKIZ_INIS);
   }
   $('ikizAc').addEventListener('click', ikizGoster);
   $('ikizSonraki').addEventListener('click', function () { SES.tik(); ikizNo++; ikizCiz(); });
@@ -580,8 +636,11 @@
       var ry = r * 0.90;
       var tx = cx + ry * Math.cos(am * Math.PI / 180),
           ty = cy + ry * Math.sin(am * Math.PI / 180);
+      /* font-weight yazılmıyor: Arakom'un kalın yüzü yok, 700 istenince
+         tarayıcı sahte kalın üretiyordu. Beyaz yazı zaten renkli dilimin
+         üstünde; kalınlığa ihtiyacı yok. */
       ic += '<text x="' + tx.toFixed(1) + '" y="' + ty.toFixed(1) + '" fill="#fff" font-size="15.5"' +
-            ' font-weight="700" text-anchor="' + (ters ? 'start' : 'end') +
+            ' text-anchor="' + (ters ? 'start' : 'end') +
             '" dominant-baseline="middle" font-family="Arakom,Marhey,system-ui"' +
             ' transform="rotate(' + (ters ? am + 180 : am).toFixed(1) +
             ' ' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ')">' + carkListe[i].tr + '</text>';

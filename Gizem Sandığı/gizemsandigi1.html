@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gizem Sandığı 1 — Korsanın Şifresi</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Cinzel+Decorative:wght@700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+b{ font-weight:normal; color:#ffd700; }
+@font-face{ font-family:'Arakom'; src:url('../arakom.ttf') format('truetype'); font-display:swap; }
+:root{ --kahve:#3e2723; --acik:#5d4037; --altin:#ffd700; --parsomen:#e8d5a9; --murekkep:#3b2b17; }
+*{ box-sizing:border-box; }
+body{ margin:0; min-height:100vh; background:radial-gradient(ellipse at center, #4a352a 0%, #241610 75%); font-family:'Arakom', sans-serif; color:var(--parsomen); display:flex; flex-direction:column; }
+.arabic{ font-family:'Amiri', serif; direction:rtl; }
+
+header{ text-align:center; padding:14px 10px 6px; }
+header h1{ font-family:'Rye', serif; color:var(--altin); margin:0; font-size:clamp(1.3rem,3.5vw,2.2rem); letter-spacing:2px; text-shadow:2px 2px 0 #000; }
+header p{ margin:6px 0 0; font-size:1.15rem; opacity:.9;  }
+
+.progress-wrap{ width:min(680px,92%); margin:10px auto; background:#241610; border:2px solid var(--acik); border-radius:10px; height:16px; overflow:hidden; }
+.progress{ height:100%; width:0%; background:linear-gradient(90deg,#b8860b,var(--altin)); transition:width .6s; }
+
+nav{ display:flex; justify-content:center; gap:8px; flex-wrap:wrap; padding:6px; }
+.nav-btn{ font-family:'Cinzel Decorative', serif; background:#2c1e14; color:#a1887f; border:2px solid var(--acik); padding:8px 14px; cursor:pointer; font-size:.8rem; border-radius:6px; transition:.3s; }
+.nav-btn.active{ color:var(--altin); border-color:var(--altin); box-shadow:0 0 12px rgba(255,215,0,.4); }
+.nav-btn.done{ color:#8bc34a; border-color:#8bc34a; }
+.nav-btn:disabled{ opacity:.35; cursor:not-allowed; }
+
+.stage{ flex:1; position:relative; }
+.room{ display:none; width:100%; padding:14px 12px 30px; flex-direction:column; align-items:center; animation:fadeIn .5s; }
+.room.active{ display:flex; }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+h2{ margin:4px 0 2px; color:var(--altin); font-size:1.15rem; letter-spacing:3px; text-align:center; }
+.gorev-not{ font-size:1.4rem;  max-width:760px; text-align:center; opacity:.95; margin:6px 0 16px; line-height:1.5; }
+
+.soru-kutu{ background:linear-gradient(#f3e3bb,#e2cd97); color:var(--murekkep); border:3px solid #8b5a2b; border-radius:8px; box-shadow:6px 6px 0 rgba(0,0,0,.35); padding:18px 22px; width:min(560px,94%); text-align:center; }
+.soru-kutu .buyuk-ar{ font-size:clamp(3rem,9vw,4.6rem); line-height:1.3;  }
+.soru-kutu .kucuk{ font-size:1.3rem;  opacity:.85; }
+
+.secenekler{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:16px; }
+.sec-btn{ font-family:'Arakom', sans-serif;  font-size:1.5rem; background:#2c1e14; color:var(--parsomen); border:2px solid var(--acik); border-radius:8px; padding:12px 22px; cursor:pointer; min-width:110px; transition:.2s; }
+.sec-btn.arabic{ font-family:'Amiri', serif; font-size:2.2rem; }
+.sec-btn:hover{ border-color:var(--altin); color:var(--altin); }
+.sec-btn.yanlis{ animation:shake .4s; border-color:#e53935; color:#e53935; }
+.sec-btn.dogru{ border-color:#8bc34a; color:#8bc34a; }
+@keyframes shake{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+
+.sayac{ margin-top:12px; font-size:1.1rem;  opacity:.75; }
+
+/* ebced hesap: harfler tıklanınca değer görünür */
+.harf-dizi{ display:flex; flex-direction:row-reverse; gap:14px; justify-content:center; margin:14px 0 4px; flex-wrap:wrap; }
+.harf-tas{ background:#2c1e14; border:2px solid var(--acik); border-radius:10px; width:84px; padding:10px 6px 8px; cursor:pointer; text-align:center; transition:.2s; }
+.harf-tas:hover{ border-color:var(--altin); }
+.harf-tas .h{ font-family:'Amiri', serif; font-size:2.6rem; color:var(--parsomen); line-height:1.15; }
+.harf-tas .v{ font-size:1.35rem; color:var(--altin); min-height:1.4em; }
+.harf-tas .v.gizli{ color:#6d4c41; }
+
+.hesap-alan{ display:flex; gap:10px; align-items:center; justify-content:center; margin-top:14px; flex-wrap:wrap; }
+.hesap-giris{ font-family:'Arakom'; font-size:1.8rem; width:120px; text-align:center; background:#241610; color:var(--altin); border:2px solid var(--acik); border-radius:8px; padding:8px; }
+.hesap-giris:focus{ outline:none; border-color:var(--altin); }
+.btn-altin{ font-family:'Cinzel Decorative', serif; background:linear-gradient(#ffd700,#b8860b); color:#241610; border:none; border-radius:8px; padding:12px 20px; font-size:.95rem; cursor:pointer; }
+.btn-altin:active{ transform:translateY(2px); }
+
+/* final sandık */
+.sandik{ font-size:6rem; filter:drop-shadow(0 6px 12px rgba(0,0,0,.6)); margin:6px 0; transition:transform .3s; }
+.sandik.titre{ animation:shake .4s; }
+.keypad{ display:grid; grid-template-columns:repeat(3,72px); gap:8px; justify-content:center; margin-top:10px; }
+.tus{ background:#2c1e14; border:2px solid var(--acik); color:var(--parsomen); font-family:Georgia; font-size:1.4rem; padding:12px 0; border-radius:8px; cursor:pointer; }
+.tus:hover{ border-color:var(--altin); color:var(--altin); }
+.kod-goster{ font-family:Georgia; font-size:2rem; letter-spacing:12px; background:#241610; border:2px solid var(--acik); border-radius:8px; padding:8px 4px 8px 16px; min-width:170px; text-align:center; color:var(--altin); margin-top:10px; }
+
+/* ipucu parşömeni */
+.parsomen-btn{ position:fixed; right:14px; bottom:14px; z-index:60; background:linear-gradient(#f3e3bb,#d9c188); color:var(--murekkep); border:2px solid #8b5a2b; border-radius:10px; padding:12px 18px; font-family:'Arakom'; font-size:1.1rem;  cursor:pointer; box-shadow:3px 3px 0 rgba(0,0,0,.4); }
+.parsomen-modal{ position:fixed; inset:0; background:rgba(0,0,0,.75); display:none; align-items:center; justify-content:center; z-index:70; }
+.parsomen-modal.acik{ display:flex; }
+.parsomen-ic{ background:linear-gradient(#f6e8c5,#e2cd97); color:var(--murekkep); border:4px solid #8b5a2b; border-radius:10px; padding:20px 26px; width:min(480px,92%); max-height:82vh; overflow:auto; }
+.parsomen-ic h3{ margin:0 0 10px; text-align:center; font-family:'Rye'; letter-spacing:2px; }
+.ebced-tablo{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; direction:rtl; }
+.ebced-tablo div{ background:rgba(255,255,255,.5); border:1px solid #b89d6b; border-radius:6px; text-align:center; padding:5px 2px; }
+.ebced-tablo .eh{ font-family:'Amiri'; font-size:1.5rem; line-height:1.2; }
+.ebced-tablo .ev{ font-family:Georgia; font-size:.85rem; }
+.kapat-x{ display:block; margin:14px auto 0; background:#3e2723; color:var(--parsomen); border:none; border-radius:8px; padding:8px 22px; font-family:Georgia; cursor:pointer; }
+
+/* başarı modalı */
+.zafer{ position:fixed; inset:0; background:rgba(0,0,0,.82); display:none; align-items:center; justify-content:center; z-index:80; }
+.zafer.acik{ display:flex; }
+.zafer-ic{ background:#241610; border:3px solid var(--altin); border-radius:12px; padding:26px 30px; text-align:center; width:min(500px,92%); box-shadow:0 0 60px rgba(255,215,0,.35); }
+.zafer-ic h3{ color:var(--altin); font-family:'Rye'; letter-spacing:2px; margin:0 0 8px; }
+.zafer-ic .parca-ar{ font-family:'Amiri'; font-size:2.6rem; color:var(--altin); direction:rtl; margin:10px 0 2px; }
+.zafer-ic p{ line-height:1.55; font-size:1.3rem;  }
+@media (max-width:480px){ .harf-tas{ width:68px; } .harf-tas .h{ font-size:2rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚓ KORSANIN ŞİFRESİ</h1>
+  <p>Kaptanın sandığı kilitli. Eski harf ilmini (EBCED) çözen, hazineye ulaşır…</p>
+</header>
+
+<div class="progress-wrap"><div class="progress" id="ilerleme"></div></div>
+
+<nav>
+  <button class="nav-btn active" id="nb0" onclick="git(0)">🗺️ Harita</button>
+  <button class="nav-btn" id="nb1" onclick="git(1)" disabled>📦 Sandıklar</button>
+  <button class="nav-btn" id="nb2" onclick="git(2)" disabled>🧭 Pusula</button>
+  <button class="nav-btn" id="nb3" onclick="git(3)" disabled>🔒 Kilit</button>
+</nav>
+
+<div class="stage">
+
+  <!-- GÖREV 1: harf → değer -->
+  <div class="room active" id="oda0">
+    <h2>KAYIP HARİTA</h2>
+    <p class="gorev-not">Korsanlar mesajlarını <b>ebced</b> ile şifrelerdi: her Arap harfinin bir sayı değeri vardır.
+    Haritayı okumak için harflerin değerini öğren. Sağ alttaki <b>parşömen</b> her zaman yanında!</p>
+    <div class="soru-kutu">
+      <div class="kucuk">Bu harfin ebced değeri kaç?</div>
+      <div class="buyuk-ar arabic" id="s0harf"></div>
+    </div>
+    <div class="secenekler" id="s0sec"></div>
+    <div class="sayac" id="s0sayac"></div>
+  </div>
+
+  <!-- GÖREV 2: kelime → anlam -->
+  <div class="room" id="oda1">
+    <h2>LANETLİ SANDIKLAR</h2>
+    <p class="gorev-not">Kumsalda sandıklar var ama sadece <b>doğru anlamı</b> bilen açabilir. Kelimeyi oku, Türkçesini seç.</p>
+    <div class="soru-kutu">
+      <div class="kucuk">Bu kelimenin anlamı nedir?</div>
+      <div class="buyuk-ar arabic" id="s1kelime"></div>
+    </div>
+    <div class="secenekler" id="s1sec"></div>
+    <div class="sayac" id="s1sayac"></div>
+  </div>
+
+  <!-- GÖREV 3: ebced hesabı -->
+  <div class="room" id="oda2">
+    <h2>PUSULANIN SIRRI</h2>
+    <p class="gorev-not">Pusula ancak doğru sayıyla döner. Harflere <b>tek tek dokun</b>, değerlerini gör; sonra topla ve yaz.</p>
+    <div class="soru-kutu">
+      <div class="kucuk" id="s2anlam"></div>
+      <div class="buyuk-ar arabic" id="s2kelime"></div>
+    </div>
+    <div class="harf-dizi" id="s2harfler"></div>
+    <div class="hesap-alan">
+      <input type="number" class="hesap-giris" id="s2giris" placeholder="?">
+      <button class="btn-altin" onclick="s2kontrol()">DÖNDÜR ➤</button>
+    </div>
+    <div class="sayac" id="s2sayac"></div>
+  </div>
+
+  <!-- GÖREV 4: final kilit -->
+  <div class="room" id="oda3">
+    <h2>KAPTANIN KİLİDİ</h2>
+    <p class="gorev-not">Sandığın şifresi, korsanların en sevdiği kelimenin ebced toplamı:
+      <span class="arabic" style="font-size:1.9rem; color:var(--altin)">كَنْز</span> (hazine).
+      Parşömene bak, hesapla, kilidi aç!</p>
+    <div class="sandik" id="sandik">🧰</div>
+    <div class="kod-goster" id="kodGoster">_ _</div>
+    <div class="keypad">
+      <button class="tus" onclick="tus(1)">1</button><button class="tus" onclick="tus(2)">2</button><button class="tus" onclick="tus(3)">3</button>
+      <button class="tus" onclick="tus(4)">4</button><button class="tus" onclick="tus(5)">5</button><button class="tus" onclick="tus(6)">6</button>
+      <button class="tus" onclick="tus(7)">7</button><button class="tus" onclick="tus(8)">8</button><button class="tus" onclick="tus(9)">9</button>
+      <button class="tus" onclick="tusSil()">⌫</button><button class="tus" onclick="tus(0)">0</button><button class="tus" style="color:var(--altin)" onclick="kilitDene()">⏎</button>
+    </div>
+  </div>
+
+</div>
+
+<button class="parsomen-btn" onclick="parsomen(true)">📜 Parşömen</button>
+<div class="parsomen-modal" id="parsomenModal" onclick="if(event.target===this)parsomen(false)">
+  <div class="parsomen-ic">
+    <h3>EBCED PARŞÖMENİ</h3>
+    <div class="ebced-tablo" id="ebcedTablo"></div>
+    <button class="kapat-x" onclick="parsomen(false)">Kapat</button>
+  </div>
+</div>
+
+<div class="zafer" id="zafer">
+  <div class="zafer-ic" id="zaferIc"></div>
+</div>
+
+<script>
+const EBCED = {'ا':1,'ب':2,'ج':3,'د':4,'ه':5,'و':6,'ز':7,'ح':8,'ط':9,'ي':10,'ك':20,'ل':30,'م':40,'ن':50,'س':60,'ع':70,'ف':80,'ص':90,'ق':100,'ر':200,'ش':300,'ت':400,'ث':500,'خ':600,'ذ':700,'ض':800,'ظ':900,'غ':1000};
+
+// ---------- durum ----------
+let oda = 0, tamam = [false,false,false,false];
+function git(i){
+  document.querySelectorAll('.room').forEach(r=>r.classList.remove('active'));
+  document.getElementById('oda'+i).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,j)=>b.classList.toggle('active', j===i));
+  oda = i;
+}
+function ilerlemeGuncelle(){
+  const n = tamam.filter(Boolean).length;
+  document.getElementById('ilerleme').style.width = (n/4*100)+'%';
+  tamam.forEach((t,i)=>{ const b=document.getElementById('nb'+i); if(t) b.classList.add('done'); });
+}
+function gorevBitti(i, sonrakiMesaj){
+  tamam[i] = true; ilerlemeGuncelle();
+  if(i < 3){
+    const nb = document.getElementById('nb'+(i+1)); nb.disabled = false;
+    zaferGoster('<h3>GÖREV TAMAM! ⚓</h3><p>'+sonrakiMesaj+'</p><button class="btn-altin" onclick="zaferKapat();git('+(i+1)+')">Devam ➤</button>');
+  }
+}
+function zaferGoster(html){ document.getElementById('zaferIc').innerHTML = html; document.getElementById('zafer').classList.add('acik'); }
+function zaferKapat(){ document.getElementById('zafer').classList.remove('acik'); }
+function parsomen(ac){ document.getElementById('parsomenModal').classList.toggle('acik', ac); }
+function karistir(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+// parşömen tablosu
+(function(){
+  const t = document.getElementById('ebcedTablo');
+  t.innerHTML = Object.entries(EBCED).map(([h,v])=>'<div><div class="eh">'+h+'</div><div class="ev">'+v+'</div></div>').join('');
+})();
+
+// ---------- GÖREV 1: harf değeri ----------
+const G1 = karistir([ {h:'ا',v:1},{h:'ب',v:2},{h:'ج',v:3},{h:'د',v:4},{h:'و',v:6},{h:'م',v:40} ]);
+let g1i = 0;
+function g1Goster(){
+  const q = G1[g1i];
+  document.getElementById('s0harf').textContent = q.h;
+  document.getElementById('s0sayac').textContent = 'Harf ' + (g1i+1) + ' / ' + G1.length;
+  const yanlislar = karistir(Object.values(EBCED).filter(v=>v!==q.v)).slice(0,2);
+  const secler = karistir([q.v, ...yanlislar]);
+  document.getElementById('s0sec').innerHTML = secler.map(v=>'<button class="sec-btn" onclick="g1Cevap(this,'+v+')">'+v+'</button>').join('');
+}
+function g1Cevap(btn, v){
+  if(v === G1[g1i].v){
+    btn.classList.add('dogru');
+    setTimeout(()=>{ g1i++; if(g1i>=G1.length) gorevBitti(0,'Haritayı okudun! Şimdi kumsaldaki lanetli sandıklara gidiyoruz.'); else g1Goster(); }, 450);
+  } else { btn.classList.add('yanlis'); setTimeout(()=>btn.classList.remove('yanlis'), 450); }
+}
+g1Goster();
+
+// ---------- GÖREV 2: kelime → anlam ----------
+const G2H = [ {a:'بَاب',t:'Kapı'},{a:'بَيْت',t:'Ev'},{a:'كِتَاب',t:'Kitap'},{a:'مَدْرَسَة',t:'Okul'},{a:'خُبْز',t:'Ekmek'},{a:'تُفَّاح',t:'Elma'} ];
+const G2 = karistir(G2H);
+let g2i = 0;
+function g2Goster(){
+  const q = G2[g2i];
+  document.getElementById('s1kelime').textContent = q.a;
+  document.getElementById('s1sayac').textContent = 'Sandık ' + (g2i+1) + ' / ' + G2.length;
+  const yanlislar = karistir(G2H.map(x=>x.t).filter(t=>t!==q.t)).slice(0,3);
+  const secler = karistir([q.t, ...yanlislar]);
+  document.getElementById('s1sec').innerHTML = secler.map(t=>'<button class="sec-btn" onclick="g2Cevap(this,\''+t+'\')">'+t+'</button>').join('');
+}
+function g2Cevap(btn, t){
+  if(t === G2[g2i].t){
+    btn.classList.add('dogru');
+    setTimeout(()=>{ g2i++; if(g2i>=G2.length) gorevBitti(1,'Bütün sandıklar açıldı! Sıra pusulanın sırrında: artık ebced hesabı yapacaksın.'); else g2Goster(); }, 450);
+  } else { btn.classList.add('yanlis'); setTimeout(()=>btn.classList.remove('yanlis'), 450); }
+}
+g2Goster();
+
+// ---------- GÖREV 3: ebced hesabı ----------
+const G3 = [ {a:'أَب', harfler:['ا','ب'], anlam:'Baba', top:3},
+             {a:'بَاب', harfler:['ب','ا','ب'], anlam:'Kapı', top:5},
+             {a:'يَد', harfler:['ي','د'], anlam:'El', top:14},
+             {a:'وَلَد', harfler:['و','ل','د'], anlam:'Çocuk', top:40} ];
+let g3i = 0;
+function g3Goster(){
+  const q = G3[g3i];
+  document.getElementById('s2anlam').textContent = q.anlam + ' — harflerin değerini topla:';
+  document.getElementById('s2kelime').textContent = q.a;
+  document.getElementById('s2sayac').textContent = 'Hesap ' + (g3i+1) + ' / ' + G3.length;
+  document.getElementById('s2giris').value = '';
+  document.getElementById('s2harfler').innerHTML = q.harfler.map(h=>
+    '<div class="harf-tas" onclick="this.querySelector(\'.v\').textContent=\''+EBCED[h]+'\';this.querySelector(\'.v\').classList.remove(\'gizli\')">' +
+      '<div class="h">'+h+'</div><div class="v gizli">?</div></div>').join('');
+}
+function s2kontrol(){
+  const q = G3[g3i];
+  const v = parseInt(document.getElementById('s2giris').value, 10);
+  if(v === q.top){
+    g3i++;
+    if(g3i >= G3.length) gorevBitti(2,'Pusula döndü ve kaptanın kamarasını gösterdi. Son kapı: KİLİT!');
+    else { zaferGoster('<h3>DOĞRU! 🧭</h3><p>'+q.a+' = '+q.top+'</p><button class="btn-altin" onclick="zaferKapat();g3Goster()">Sıradaki ➤</button>'); }
+  } else {
+    const g = document.getElementById('s2giris'); g.classList.add('yanlis'); g.style.borderColor = '#e53935';
+    setTimeout(()=>{ g.classList.remove('yanlis'); g.style.borderColor = ''; }, 500);
+  }
+}
+g3Goster();
+
+// ---------- GÖREV 4: final ----------
+const KOD = '77'; // كَنْز = ك20 + ن50 + ز7
+let girilen = '';
+function kodYaz(){ document.getElementById('kodGoster').textContent = (girilen.padEnd(2,'_')).split('').join(' '); }
+function tus(n){ if(girilen.length < 2){ girilen += n; kodYaz(); } }
+function tusSil(){ girilen = girilen.slice(0,-1); kodYaz(); }
+function kilitDene(){
+  if(girilen === KOD){
+    tamam[3] = true; ilerlemeGuncelle();
+    document.getElementById('sandik').textContent = '🏆';
+    zaferGoster('<h3>SANDIK AÇILDI! 🏆</h3>' +
+      '<p>İçinden altın değil, altından değerli bir söz parçası çıktı:</p>' +
+      '<div class="parca-ar">اُطْلُبُوا الْعِلْمَ</div>' +
+      '<p><b>"İlmi isteyin…"</b></p>' +
+      '<p style="opacity:.8">Ama söz yarım! Devamı <b>Matrix simülasyonunda</b> şifreli. Orta seviye görevde buluşuruz, korsan! 🏴‍☠️</p>');
+  } else {
+    const s = document.getElementById('sandik'); s.classList.add('titre');
+    setTimeout(()=>s.classList.remove('titre'), 450);
+    girilen = ''; kodYaz();
+  }
+}
+kodYaz();
+</script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الدَّليل السِّياحِيّ</title>
+    <style>
+    h1, h2, h3, h4, h5, h6, strong, b { font-weight: normal !important; }
+
+        @font-face { 
+            font-family: 'Arakom'; 
+            src: url('arakom.ttf') format('truetype'); 
+        }
+
+        :root {
+            --primary: #8b5cf6;
+            --secondary: #d8b4fe;
+            --accent: #f97316;
+            --bg-color: #faf5ff;
+            --text-dark: #3b0764;
+            --cell-size: 16.5vh;
+            --cell-gap: 1vh;
+            --move-step: calc(var(--cell-size) + var(--cell-gap));
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Arakom', 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-dark);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- ÜST BAR (Top Navigation) --- */
+        .top-nav {
+            position: absolute;
+            top: 25px;
+            left: 20px;
+            z-index: 50;
+        }
+        
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            color: var(--primary);
+        }
+        
+        .nav-btn:hover { transform: scale(1.1); }
+        .nav-btn svg { width: 40px; height: 40px; }
+
+        /* Üst Durum Çubuğu (Level ve Can Bir Arada) */
+        .top-status-bar {
+            position: absolute;
+            top: 25px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 30px;
+            border-radius: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 50;
+            gap: 20px;
+            direction: rtl; /* Arapça içerik dizilimi */
+        }
+
+        .level-badge {
+            font-size: 2rem;
+            color: var(--primary);
+            font-weight: normal;
+            border-left: 2px solid #e2e8f0;
+            padding-left: 20px;
+        }
+
+        .lives-badge {
+            display: flex;
+            gap: 10px;
+            font-size: 2.5rem;
+        }
+
+        .heart { transition: all 0.3s; }
+        .heart.lost { opacity: 0.2; filter: grayscale(100%); transform: scale(0.8); }
+
+        /* --- İLK EKRAN (Start Screen) --- */
+        #start-screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
+            z-index: 40;
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        #start-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.1);
+        }
+
+        .title-box {
+            text-align: center;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+        }
+
+        .title-box h1 {
+            font-size: clamp(4rem, 8vw, 7rem);
+            color: #ffffff;
+            text-shadow: 0 10px 30px rgba(139, 92, 246, 0.6);
+            margin-bottom: 35px;
+            font-weight: normal;
+            line-height: 1.2;
+        }
+
+        .title-box p {
+            font-size: clamp(3rem, 6vw, 5rem);
+            color: var(--text-dark);
+            margin-bottom: 60px;
+            font-weight: normal;
+        }
+
+        .btn-start {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 20px 70px;
+            font-size: clamp(3rem, 6vw, 6rem);
+            font-family: 'Arakom', sans-serif;
+            border-radius: 80px;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(249, 115, 22, 0.5);
+            transition: all 0.2s;
+        }
+        
+        .btn-start:hover { transform: scale(1.05); }
+
+        /* --- OYUN EKRANI (Game Screen) --- */
+        #game-screen {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100dvh;
+            gap: 8vw;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+            direction: ltr; /* Layout sabitleme */
+        }
+
+        #game-screen.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* SOL TARAF: Harita */
+        .map-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            direction: rtl; /* İç metinler için RTL */
+        }
+
+        .question-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 30px 60px;
+            border-radius: 50px;
+            font-size: clamp(3rem, 8vw, 8rem);
+            color: var(--text-dark);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            text-align: center;
+            border: 8px solid var(--primary);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .question-box.pop-animate {
+            animation: popupAnim 3s forwards;
+        }
+
+        @keyframes popupAnim {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            10% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            15% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            85% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+        }
+
+        .grid-map {
+            display: grid;
+            grid-template-columns: repeat(5, var(--cell-size));
+            grid-template-rows: repeat(5, var(--cell-size));
+            gap: var(--cell-gap);
+            background: rgba(255, 255, 255, 0.6);
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: inset 0 0 30px rgba(139, 92, 246, 0.2);
+            direction: ltr; /* Hücrelerin soldan sağa dizilimi için kritik */
+            position: relative;
+        }
+
+        .cell {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6vh;
+        }
+
+        .cell.road { background: #cbd5e1; }
+        .cell.tree { background: #86efac; font-size: 5vh; }
+
+        .player {
+            font-size: 9.5vh;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 5;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 0;
+            padding-bottom: 1vh; /* Emojilerin dikey hizalanmasındaki taşmayı toparlar */
+        }
+
+        /* SAĞ TARAF: Yön Kontrolleri (2x2) */
+        .controls-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(2, 20vh);
+            grid-template-rows: repeat(2, 20vh);
+            gap: 3vh;
+            direction: ltr; 
+        }
+
+        .btn-move {
+            border-radius: 30px;
+            width: 100%;
+            height: 100dvh;
+            font-size: 7vh;
+            font-family: 'Arakom', sans-serif;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid rgba(255,255,255,0.4);
+        }
+
+        .btn-move:active {
+            transform: scale(0.95);
+        }
+
+        /* Renkli Tuşlar */
+        #btn-up { background-color: #3b82f6; border-color: #2563eb; }    /* Mavi */
+        #btn-down { background-color: #ef4444; border-color: #dc2626; }  /* Kırmızı */
+        #btn-right { background-color: #eab308; border-color: #ca8a04; } /* Sarı */
+        #btn-left { background-color: #10b981; border-color: #059669; }  /* Yeşil */
+
+        /* Ara Başarı Ekranı (Level Geçişi) */
+        .level-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100dvh;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .level-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .level-icon { font-size: 8rem; animation: bounce 1s infinite alternate; }
+        .level-text { font-size: 4rem; color: var(--primary); margin-top: 25px; }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+
+    
+        /* --- MOBIL UYUMLULUK --- */
+        @media (max-width: 900px) and (orientation: portrait) {
+            :root {
+                --cell-size: 15vw;
+                --cell-gap: 1.5vw;
+                --move-step: calc(var(--cell-size) + var(--cell-gap));
+            }
+            body { min-height: 100dvh; }
+            .title-box h1 { font-size: clamp(2.5rem, 8vw, 5rem) !important; margin-bottom: 35px !important; }
+            .title-box p { font-size: clamp(1.5rem, 6vw, 3rem) !important; margin-bottom: 30px !important; }
+            .btn-start { padding: 12px 40px !important; font-size: clamp(1.8rem, 6vw, 3.5rem) !important; width: 80% !important; }
+
+            #game-screen {
+                flex-direction: column !important;
+                gap: 5px !important;
+                padding-top: 65px !important; 
+                padding-bottom: 35px !important;
+                justify-content: center !important;
+            }
+
+            .top-nav { top: 25px !important; left: 10px !important; }
+            .nav-btn { width: 50px !important; height: 50px !important; }
+            .nav-btn svg { width: 25px !important; height: 25px !important; }
+            .top-status-bar { top: 25px !important; right: 10px !important; padding: 5px 15px !important; gap: 10px !important; }
+            .level-badge { font-size: 1.5rem !important; padding-left: 10px !important; }
+            .lives-badge { font-size: 1.5rem !important; gap: 5px !important; }
+
+            .grid-map { padding: 5px !important; border-radius: 10px !important; margin-bottom: 5px !important; }
+            .cell { font-size: 8vw !important; border-radius: 8px !important; }
+            .cell.tree { font-size: 7vw !important; }
+            .player { font-size: 10vw !important; padding-bottom: 0.5vw !important; }
+            
+            .question-box {
+                font-size: clamp(2rem, 6vw, 4rem) !important;
+                padding: 15px 30px !important;
+                border-width: 4px !important;
+            }
+
+            .controls-section { margin-top: 0 !important; }
+            .controls {
+                grid-template-columns: repeat(2, 22vw) !important;
+                grid-template-rows: repeat(2, 22vw) !important;
+                gap: 2vw !important;
+            }
+            .btn-move { font-size: 8vw !important; border-radius: 15px !important; border-width: 2px !important; }
+        }
+
+        @media screen and (max-height: 500px), screen and (max-width: 950px) and (orientation: landscape) {
+            :root {
+                --cell-size: 15vh;
+                --cell-gap: 1.5vh;
+                --move-step: calc(var(--cell-size) + var(--cell-gap));
+            }
+            body { min-height: 100dvh; }
+            .title-box h1 { font-size: clamp(1.8rem, 6vh, 3.5rem) !important; margin-bottom: 5px !important; }
+            .title-box p { font-size: clamp(1.2rem, 5vh, 2rem) !important; margin-bottom: 35px !important; }
+            .btn-start { padding: 8px 30px !important; font-size: clamp(1.2rem, 5vh, 2.5rem) !important; }
+
+            #game-screen {
+                flex-direction: row !important;
+                gap: 5vw !important;
+                padding-top: 25px !important; 
+            }
+
+            .top-nav { top: 5px !important; left: 5px !important; }
+            .nav-btn { width: 40px !important; height: 40px !important; }
+            .nav-btn svg { width: 20px !important; height: 20px !important; }
+            .top-status-bar { top: 5px !important; right: 5px !important; padding: 5px 10px !important; gap: 5px !important; }
+            .level-badge { font-size: 1.2rem !important; padding-left: 5px !important; }
+            .lives-badge { font-size: 1.2rem !important; gap: 2px !important; }
+
+            .grid-map { padding: 5px !important; border-radius: 10px !important; }
+            .cell { font-size: 8vh !important; border-radius: 8px !important; }
+            .cell.tree { font-size: 7vh !important; }
+            .player { font-size: 10vh !important; padding-bottom: 0.5vh !important; }
+            
+            .question-box {
+                font-size: clamp(1.5rem, 6vh, 3rem) !important;
+                padding: 10px 20px !important;
+                border-width: 3px !important;
+            }
+
+            .controls {
+                grid-template-columns: repeat(2, 20vh) !important;
+                grid-template-rows: repeat(2, 20vh) !important;
+                gap: 2vh !important;
+            }
+            .btn-move { font-size: 8vh !important; border-radius: 15px !important; border-width: 2px !important; }
+        }
+
+    </style>
+
+    
+
+    
+</head>
+<body>
+
+    <!-- CİHAZ DÖNDÜRME UYARISI (TÜM OYUNLAR ORTAK) -->
+    <div id="rotate-message" style="display: none;">
+        <div class="phone-animation"></div>
+        <div class="rotate-text">يُرْجى تَدْوير الجِهاز</div> 
+    </div>
+
+
+    <div class="top-nav">
+        <button class="nav-btn" id="nav-btn" onclick="handleNavClick()">
+            <svg id="svg-home" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <svg id="svg-back" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </button>
+    </div>
+
+    <div class="top-status-bar" id="status-bar" style="display: none;">
+        <div class="level-badge">
+            المَرْحَلَة <span id="lbl-level-number">1</span>
+        </div>
+        <div class="lives-badge" id="lives-badge">
+            <span class="heart" id="heart-1">❤️</span>
+            <span class="heart" id="heart-2">❤️</span>
+            <span class="heart" id="heart-3">❤️</span>
+        </div>
+    </div>
+
+    <div id="start-screen">
+        <div class="title-box">
+            <h1>الدَّليل السِّياحِيّ</h1>
+            <p>
+                اِسْتَخْدِم الِاتِّجاهات لِلْوُصول إِلى الهَدَف.
+            </p>
+            <button class="btn-start" onclick="startGame()">اِبْدَأْ</button>
+        </div>
+    </div>
+
+    <div id="game-screen">
+        <div class="map-section">
+            <div class="question-box" id="question-text">اِذْهَبْ إِلى المُسْتَشْفى</div>
+            <div class="grid-map" id="map"></div>
+        </div>
+
+        <div class="controls-section">
+            <div class="controls" id="btn-container">
+                <button class="btn-move" id="btn-up" onclick="move('up')">شَمال</button>
+                <button class="btn-move" id="btn-down" onclick="move('down')">جَنوب</button>
+                <button class="btn-move" id="btn-right" onclick="move('right')">شَرْق</button>
+                <button class="btn-move" id="btn-left" onclick="move('left')">غَرْب</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ara Level Ekranı / Başarı Ekranı -->
+    <div class="level-overlay" id="level-screen">
+        <div class="level-icon" id="success-icon">🎯</div>
+        <div class="level-text" id="success-text">أَحْسَنْت!</div>
+        <button class="btn-start" id="btn-next-level" style="margin-top: 30px;" onclick="nextLevel()">التّالي</button>
+    </div>
+
+    <script>
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const levelScreen = document.getElementById('level-screen');
+        const svgHome = document.getElementById('svg-home');
+        const svgBack = document.getElementById('svg-back');
+        const levelBadge = document.getElementById('level-badge');
+        const mapEl = document.getElementById('map');
+        const playerEl = document.createElement('div');
+        playerEl.className = 'player';
+        playerEl.innerHTML = '🚶‍♂️';
+        
+        // --- Web Audio API & Sesler ---
+        let currentAudio = new Audio();
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playSine(freq, duration, type = 'sine') {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playTouch() { playSine(600, 0.1); }
+        function playError() { 
+            playSine(150, 0.3, 'square'); 
+            setTimeout(() => playSine(120, 0.3, 'square'), 100); 
+        }
+        function playSuccess() { 
+            playSine(440, 0.1); 
+            setTimeout(() => playSine(554, 0.1), 100); 
+            setTimeout(() => playSine(659, 0.3), 200); 
+        }
+
+        // Level Verileri (Tüm yönlerin kullanılmasını zorunlu kılan tasarımlar)
+        const levels = [
+            { 
+                title: 'اِذْهَبْ إِلى المُسْتَشْفى.', 
+                targetIcon: '🩺', 
+                audioFile: 'hastane.mp3',
+                playerStartX: 0, playerStartY: 4, 
+                targetX: 2, targetY: 2,
+                mapLayout: [
+                    [0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [0, 1, 2, 1, 0],
+                    [0, 1, 0, 1, 0],
+                    [0, 1, 0, 0, 0]
+                ]
+            },
+            { 
+                title: 'اِذْهَبْ إِلى المَدْرَسَة.', 
+                targetIcon: '🏫', 
+                audioFile: 'okul.mp3',
+                playerStartX: 0, playerStartY: 4, 
+                targetX: 0, targetY: 0,
+                mapLayout: [
+                    [2, 0, 0, 1, 0],
+                    [1, 1, 0, 1, 0],
+                    [0, 0, 0, 1, 0],
+                    [0, 1, 0, 1, 0],
+                    [0, 1, 0, 0, 0]
+                ]
+            },
+            { 
+                title: 'اِذْهَبْ إِلى المَسْجِد.', 
+                targetIcon: '🕌', 
+                audioFile: 'mescit.mp3',
+                playerStartX: 4, playerStartY: 4, 
+                targetX: 2, targetY: 0,
+                mapLayout: [
+                    [0, 1, 2, 1, 0],
+                    [0, 1, 0, 1, 0],
+                    [0, 0, 0, 1, 0],
+                    [0, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0]
+                ]
+            },
+            { 
+                title: 'اِذْهَبْ إِلى السّوق.', 
+                targetIcon: '🛒', 
+                audioFile: 'çarşı.mp3',
+                playerStartX: 0, playerStartY: 4, 
+                targetX: 3, targetY: 2,
+                mapLayout: [
+                    [0, 0, 0, 1, 1],
+                    [0, 1, 0, 1, 1],
+                    [0, 1, 0, 2, 0],
+                    [0, 1, 0, 1, 0],
+                    [0, 1, 0, 0, 0]
+                ]
+            }
+        ];
+
+        let currentLevelIndex = 0;
+        let playerX = 0;
+        let playerY = 0;
+        let lives = 3;
+        const cellSize = 108; // 100px genişlik + 8px gap
+
+        function handleNavClick() {
+            if (!startScreen.classList.contains('hidden')) {
+                window.location.href = 'index.html';
+            } else {
+                location.reload(); 
+            }
+        }
+
+        function updateLivesUI() {
+            for(let i=1; i<=3; i++) {
+                const h = document.getElementById('heart-' + i);
+                if(i <= lives) h.classList.remove('lost');
+                else h.classList.add('lost');
+            }
+        }
+
+        function loseLife() {
+            playError();
+            lives--;
+            updateLivesUI();
+            
+            if(lives <= 0) {
+                setTimeout(() => {
+                    const iconEl = document.getElementById('success-icon');
+                    const textEl = document.getElementById('success-text');
+                    const btnNext = document.getElementById('btn-next-level');
+
+                    iconEl.innerText = '💔';
+                    textEl.innerText = 'اِنْتَهَتِ اللُّعْبَة';
+                    btnNext.innerText = 'حاوِلْ مَرَّةً أُخْرى';
+                    btnNext.onclick = () => location.reload();
+                    
+                    levelScreen.classList.add('active');
+                }, 300);
+            }
+        }
+
+        function shuffleButtons() {
+            const container = document.getElementById('btn-container');
+            for (let i = container.children.length; i >= 0; i--) {
+                container.appendChild(container.children[Math.random() * i | 0]);
+            }
+        }
+
+        function loadLevel(index) {
+            const levelData = levels[index];
+            document.getElementById('lbl-level-number').innerText = index + 1;
+            
+            // Eğer yeni levele geçildiyse canları fulleyebiliriz, veya oyun boyunca 3 hak diyebiliriz.
+            // Kullanıcı "3 kalp 3 hak" dediğine göre oyun geneli 3 hak olsun. (Full'lemiyoruz).
+
+            // Soru alanını güncelle ve Popup'ı göster
+            const qBox = document.getElementById('question-text');
+            qBox.innerText = levelData.title;
+            qBox.classList.remove('pop-animate');
+            void qBox.offsetWidth; // Reflow
+            qBox.classList.add('pop-animate');
+
+            // Bölüme ait MP3 sesini çal
+            currentAudio.pause();
+            currentAudio.src = levelData.audioFile;
+            currentAudio.play().catch(e => console.log('Bölüm sesi çalınamadı.', e));
+
+            // Haritayı temizle ve yeniden çiz
+            mapEl.innerHTML = '';
+            for(let y=0; y<5; y++) {
+                for(let x=0; x<5; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.style.gridColumn = x + 1;
+                    cell.style.gridRow = y + 1;
+                    if(levelData.mapLayout[y][x] === 0) cell.classList.add('road');
+                    if(levelData.mapLayout[y][x] === 1) {
+                        cell.classList.add('tree');
+                        cell.innerText = '🌲';
+                    }
+                    if(levelData.mapLayout[y][x] === 2) {
+                        cell.innerText = levelData.targetIcon;
+                    }
+                    mapEl.appendChild(cell);
+                }
+            }
+            
+            // Oyuncuyu yerleştir
+            playerX = levelData.playerStartX;
+            playerY = levelData.playerStartY;
+            mapEl.appendChild(playerEl);
+            playerEl.style.gridColumn = playerX + 1;
+            playerEl.style.gridRow = playerY + 1;
+            playerEl.style.transform = 'scaleX(1)';
+
+            // SADECE her level başladığında butonları karıştır
+            shuffleButtons();
+        }
+
+        function startGame() {
+            initAudio(); // Kullanıcı ilk etkileşimi: AudioContext Başlatılır
+            startScreen.classList.add('hidden');
+            gameScreen.classList.add('active');
+            document.getElementById('status-bar').style.display = 'flex';
+            svgHome.style.display = 'none';
+            svgBack.style.display = 'block';
+
+            lives = 3;
+            updateLivesUI();
+            currentLevelIndex = 0;
+            loadLevel(currentLevelIndex);
+        }
+
+        function nextLevel() {
+            levelScreen.classList.remove('active');
+            currentLevelIndex++;
+            
+            if(currentLevelIndex < levels.length) {
+                loadLevel(currentLevelIndex);
+            } else {
+                // Tüm leveller bittiğinde sayfayı yenileyerek başa dönsün (veya başarı ekranı kalsın)
+                location.reload();
+            }
+        }
+
+        function move(dir) {
+            playTouch(); // Tuşa dokunma sesi
+            const levelData = levels[currentLevelIndex];
+            let nextX = playerX;
+            let nextY = playerY;
+
+            if(dir === 'up') nextY -= 1;
+            if(dir === 'down') nextY += 1;
+            if(dir === 'right') nextX += 1;
+            if(dir === 'left') nextX -= 1;
+
+            // HARİTA DIŞINA ÇIKMA KONTROLÜ
+            if(nextX < 0 || nextX > 4 || nextY < 0 || nextY > 4) {
+                playerEl.style.transition = '0.1s';
+                playerEl.style.filter = 'drop-shadow(0 0 10px red)';
+                setTimeout(() => { playerEl.style.filter = 'none'; }, 300);
+                
+                mapEl.style.transform = 'translate(15px, 0)';
+                setTimeout(() => { mapEl.style.transform = 'translate(-15px, 0)'; }, 100);
+                setTimeout(() => { mapEl.style.transform = 'translate(0, 0)'; }, 200);
+                loseLife();
+                return;
+            }
+            
+            // AĞACA ÇARPMA KONTROLÜ
+            if(levelData.mapLayout[nextY][nextX] === 1) {
+                playerEl.style.transition = '0.1s';
+                playerEl.style.filter = 'drop-shadow(0 0 10px red)';
+                setTimeout(() => { playerEl.style.filter = 'none'; }, 300);
+                
+                mapEl.style.transform = 'translate(10px, 0)';
+                setTimeout(() => { mapEl.style.transform = 'translate(-10px, 0)'; }, 100);
+                setTimeout(() => { mapEl.style.transform = 'translate(0, 0)'; }, 200);
+                loseLife();
+                return;
+            }
+
+            playerX = nextX;
+            playerY = nextY;
+
+            playerEl.style.gridColumn = playerX + 1;
+            playerEl.style.gridRow = playerY + 1;
+            
+            if(dir === 'left') {
+                playerEl.style.transform = 'scaleX(1)';
+            } else {
+                playerEl.style.transform = 'scaleX(-1)';
+            }
+
+            // Hedefe ulaşıldı mı?
+            if(playerX === levelData.targetX && playerY === levelData.targetY) {
+                playSuccess(); // Başarı sesi
+                setTimeout(() => {
+                    const iconEl = document.getElementById('success-icon');
+                    const textEl = document.getElementById('success-text');
+                    const btnNext = document.getElementById('btn-next-level');
+
+                    iconEl.innerText = levelData.targetIcon;
+                    
+                    if (currentLevelIndex === levels.length - 1) {
+                        textEl.innerText = 'أَنْهَيْتَ اللُّعْبَةَ!';
+                        btnNext.innerText = 'إِلْعَبْ مَرَّةً أُخْرى';
+                        btnNext.onclick = () => location.reload();
+                    } else {
+                        textEl.innerText = 'مُمْتاز!';
+                        btnNext.innerText = 'التّالي';
+                        btnNext.onclick = nextLevel;
+                    }
+
+                    levelScreen.classList.add('active');
+                }, 400);
+            }
+        }
+    </script>
+</body>
+</html>

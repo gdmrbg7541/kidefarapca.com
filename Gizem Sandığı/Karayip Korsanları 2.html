@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korsanların Laneti: Arapça Hazinesi</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        /* Korsan ve Arapça Fontları */
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel+Decorative:wght@700&family=Rye&display=swap');
+
+        :root {
+            --wood-dark: #2c1e14;
+            --wood-light: #5d4037;
+            --parchment: #d4c59a;
+            --blood-red: #580000;
+            --ghost-green: #80ffdb; /* Hayalet efekti */
+            --cursed-gold: #ffd700;
+            --black-pearl: #0f0f0f;
+        }
+
+        body {
+            background-color: var(--black-pearl);
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
+            color: var(--parchment);
+            font-family: 'Rye', serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Arka plan sis efekti */
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/black-felt.png');
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* --- NAVIGASYON (DÜMEN) --- */
+        nav {
+            background: var(--wood-dark);
+            border-bottom: 4px solid var(--wood-light);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            z-index: 10;
+        }
+
+        .tab-btn {
+            background: var(--wood-light);
+            color: var(--parchment);
+            border: 2px solid #3e2723;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            transition: 0.3s;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); /* Eski tahta şekli */
+        }
+
+        .tab-btn:hover {
+            color: var(--cursed-gold);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: var(--blood-red);
+            color: var(--cursed-gold);
+            border-color: var(--cursed-gold);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+        }
+
+        /* --- İÇERİK ALANI --- */
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .tab-content.active { display: flex; }
+
+        .arabic-text { font-family: 'Amiri', serif; direction: rtl; }
+
+        h2 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: var(--cursed-gold);
+            text-shadow: 2px 2px 0px #000;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* --- MODÜL 1: LANETLİ PARŞÖMEN (ŞİFRE) --- */
+        .parchment-box {
+            background: var(--parchment);
+            color: #3e2723;
+            padding: 40px 60px;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8) inset, 0 0 30px #000;
+            position: relative;
+            transform: rotate(-1deg);
+            max-width: 600px;
+            text-align: center;
+            border: 1px solid #8d6e63;
+        }
+
+        /* Yırtık kağıt efekti */
+        .parchment-box::before {
+            content: "☠️";
+            position: absolute;
+            top: -25px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            text-shadow: 0 5px 10px rgba(0,0,0,0.5);
+        }
+
+        .ghost-text {
+            font-size: 3.5rem;
+            margin: 20px 0;
+            color: rgba(62, 39, 35, 0.1); /* Neredeyse görünmez */
+            text-shadow: 0 0 15px var(--ghost-green); /* Hayalet parlaklığı */
+            filter: blur(8px);
+            transition: all 0.6s ease;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="gold"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>'), auto;
+        }
+
+        .ghost-text:hover {
+            color: #3e2723;
+            text-shadow: none;
+            filter: blur(0);
+            transform: scale(1.05);
+        }
+
+        /* --- MODÜL 2: KAPTAN KAMARASI (DRAG DROP) --- */
+        .cabin-scene {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .chest-zone {
+            width: 200px;
+            height: 140px;
+            background: url('https://img.icons8.com/emoji/96/coffin-emoji.png') no-repeat center; /* Sandık bulamazsak tabut da olur ama CSS ile sandık çizelim */
+            background: linear-gradient(to bottom, #5d4037 0%, #3e2723 100%);
+            border: 4px solid var(--cursed-gold);
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px #000;
+        }
+
+        /* Sandık Kapağı */
+        .chest-zone::before {
+            content: "HAZİNE";
+            position: absolute;
+            top: -30px;
+            font-family: 'Cinzel Decorative';
+            color: var(--cursed-gold);
+            font-size: 1.2rem;
+        }
+
+        .chest-zone.drag-over {
+            box-shadow: 0 0 30px var(--cursed-gold);
+            border-color: #fff;
+        }
+
+        /* Aztek Altını (Sürüklenecek) */
+        .aztec-coin {
+            width: 100px; height: 100px;
+            background: radial-gradient(circle, #ffd700 0%, #b8860b 100%);
+            border: 3px dashed #8a6000;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem;
+            color: #3e2723;
+            cursor: grab;
+            font-weight: bold;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+            animation: shine 3s infinite;
+        }
+        
+        .aztec-coin::after {
+            content: "☠️"; /* Kurukafa filigranı */
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0.1;
+        }
+
+        .result-word {
+            font-size: 4rem;
+            color: var(--ghost-green);
+            text-shadow: 0 0 20px var(--ghost-green);
+            opacity: 0;
+            transition: 1s;
+            font-family: 'Amiri', serif;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes shine { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.3); } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <button class="tab-btn active" onclick="openTab('map')">🧭 LANETLİ HARİTA</button>
+        <button class="tab-btn" onclick="openTab('treasure')">🏴‍☠️ KAPTANIN SANDIĞI</button>
+    </nav>
+
+    <div class="content-area">
+
+        <div id="map" class="tab-content active">
+            <h2>Kayıp Parşömen</h2>
+            <p style="color:#aaa; font-style:italic;">"Sadece gerçek bir kaptan sislerin ardını görebilir..."</p>
+            
+            <div class="parchment-box">
+                <div class="ghost-text arabic-text">السَّفِينَةُ فِي الْمِينَاءِ آمِنَةٌ</div>
+                <hr style="border-color:#8d6e63; opacity:0.5;">
+                <p style="font-family:'Courier New'; font-weight:bold; font-size:0.9rem;">
+                    Gemi limanda güvendedir (ama gemiler bunun için yapılmamıştır).
+                </p>
+            </div>
+            <p style="margin-top:20px; color:#666;">(Fareyi yazının üzerinde gezdir)</p>
+        </div>
+
+        <div id="treasure" class="tab-content">
+            <h2>Laneti Boz!</h2>
+            <p style="color:#aaa;">Aztek altınını sandığa at ve kelimeyi serbest bırak.</p>
+
+            <div class="cabin-scene">
+                <div class="aztec-coin arabic-text" draggable="true" id="dragCoin">
+                    س ف ر
+                </div>
+
+                <div style="font-size: 2rem; color: #5d4037;">⬇</div>
+
+                <div class="chest-zone" id="dropZone">
+                    <span style="font-size:3rem; opacity:0.3;">⚱️</span>
+                </div>
+
+                <div class="result-word" id="finalWord">مُسَافِر</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => {
+                t.style.display = 'none';
+                t.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            const selected = document.getElementById(tabId);
+            selected.style.display = 'flex';
+            setTimeout(() => selected.classList.add('active'), 10);
+            
+            // Buton kontrolü
+            const btns = document.querySelectorAll('.tab-btn');
+            if(tabId === 'map') btns[0].classList.add('active');
+            else btns[1].classList.add('active');
+        }
+
+        /* --- SÜRÜKLE BIRAK (HAZİNE) --- */
+        const coin = document.getElementById('dragCoin');
+        const chest = document.getElementById('dropZone');
+        const result = document.getElementById('finalWord');
+
+        coin.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text', 'coin');
+            coin.style.opacity = '0.5';
+        });
+
+        coin.addEventListener('dragend', () => {
+            coin.style.opacity = '1';
+        });
+
+        chest.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            chest.classList.add('drag-over');
+        });
+
+        chest.addEventListener('dragleave', () => {
+            chest.classList.remove('drag-over');
+        });
+
+        chest.addEventListener('drop', (e) => {
+            e.preventDefault();
+            chest.classList.remove('drag-over');
+            
+            // Altın kaybolur
+            coin.style.transition = 'transform 0.5s, opacity 0.5s';
+            coin.style.transform = 'translateY(100px) scale(0.1)';
+            coin.style.opacity = '0';
+
+            // Sandık tepki verir
+            chest.style.borderColor = 'var(--ghost-green)';
+            chest.innerHTML = '<span style="font-size:3rem;">👻</span>'; // Hayalet çıkar
+            
+            // Kelime ortaya çıkar
+            setTimeout(() => {
+                coin.style.display = 'none';
+                result.style.opacity = '1';
+                // Korkunç ama havalı bir ses efekti buraya eklenebilir
+            }, 600);
+        });
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

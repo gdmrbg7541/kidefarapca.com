@@ -14,6 +14,9 @@ kidefarapca.com/
 ├── muhadese/                 Muhâdese (simültane çeviri)
 │   ├── muhadese.css/js  simultane.css/js
 │   ├── veri/                 ders verileri + kalip.js + alan.js
+│   │   └── y2627/            2026-2027 kitaplarının dersleri (6. sınıf 6_*,
+│   │                         7. sınıf Mektep Yayınları 7_*). Hangi kitabın
+│   │                         okunacağı sistem/sinifveri.js → VERI_YILI
 │   └── kelime/               kelime_*.css/js, yeni kelimeler.*
 │
 ├── sarf/                     Kelime bilgisi (sarf)
@@ -34,7 +37,8 @@ kidefarapca.com/
 │   ├── hangiharf.*  klavyeoyunu.*  harekeavcisi.*   (harf/hareke oyunları)
 │   ├── ses/                 dinle-yaz kelime sesleri (l<seviye>v<sıra>.wav)
 │   └── _eski/               30.07 tarihli eski alfabe kopyaları (kullanılmıyor)
-├── dilbilgisi/               Dilbilgisi konuları, harf-i cer
+├── dilbilgisi/               Dilbilgisi konuları, harf-i cer, tamlama ve cümleler
+│                             (tamlamavecumleler.css/js; 21.09.2026'da kökten taşındı)
 ├── oyunlar/                  Test kapışması, hafıza kartları, renkler, kavram…
 │                             (test kapışması: tk_alfabe.js harf soruları,
 │                              tk_ortaokul.js 5-8. sınıf dersleri — kelimeler
@@ -145,3 +149,53 @@ Kopyalarken yapılanlar (asıllar değişmedi):
   4. ünite Boşluk Doldurma) — asıllarında da düzeltilmesi gerekir.
 * 9/1 `yeni test.html` → `test.html`, 10/1 `suruklebirak.txt` → `.html`
   (menüler bu adları arıyordu).
+
+
+## Öğretmen belgeleri — `dosyalar/`
+İmam Hatip bölümündeki «Dökümanlar» kartlarının Word/PDF dosyaları. Kart
+listeleri `index.html` içindeki `SINIF_PDF` / `SINIF_GIRIS` bloklarından gelir.
+
+```
+dosyalar/
+├── yillik-plan/        ünitelendirilmiş yıllık planlar (6 sınıf, docx+pdf)
+├── gunluk-plan/        günlük ders planları
+├── sinavlar/<sınıf>/   yazılı sınavlar ve cevap anahtarları
+├── calisma-kagitlari/  çalışma kâğıtları ve etkinlikler
+├── performans-proje/   performans görevi ve proje ödevleri
+├── sinif-dosyasi/      sınıf dosyaları
+├── ogretmen-dosyasi/   okul geneli formlar (öğretmen dosyası, ölçekler…)
+├── zumre/ tutanak/ belirli-gun/
+└── bep/                BEP & Destek Eğitim (23 Eylül 2026): sınıf başına
+                        bep-plani · bep-performans · bep-yazili ·
+                        bep-izleme-formlar · bep-destek-egitim-odasi
+                        (Word + PDF). Üretimi: _yedek_kidef/betikler/bep/
+```
+
+---
+
+## 23.09.2026 — Çalışma alanı ayrıldı: `_kaynak/`
+
+Siteye gitmeyecek ne varsa artık tek yerde: **`_kaynak/`**. Site kökündeki
+`.gitignore` bu klasörü (ve `node_modules`, `.DS_Store`, `_YUKLE_*` gibi
+artıkları) yayından tamamen çıkarır.
+
+```
+kidefarapca.com/
+├── .gitignore                ← yayına gitmeyecekler burada tanımlı
+├── _kaynak/                  ← SİTEYE GİTMEZ (OKU.md dosyası anlatıyor)
+│   ├── yedekler/             eski _yedek_kidef  (değişiklik öncesi kopyalar)
+│   │   └── betikler/         belgeleri üreten betikler, iş iş
+│   ├── kitaplar/             ders kitapları ve programlar — Meb'e KISAYOL
+│   │   ├── 5-sinif … 10-sinif  →  Meb/5️⃣-🔟/…
+│   │   └── program/            →  TYMM 5-8 · AİHL 9-10 · sınav yönergesi
+│   └── gecici/               ara dosyalar (her zaman silinebilir)
+└── … (sitenin kendisi, eskisi gibi)
+```
+
+**Tek dosya, iki yerden görünür.** `_kaynak/kitaplar/` içindekiler kopya değil,
+Meb klasöründeki dosyaların kendisidir (göreli kısayol). Ters yönde
+`Meb/_SITE-belgeleri` kısayolu da site belgelerini açar. Bir dosya iki yerde
+görünür ama tektir; birini değiştirmek ötekini de değiştirir.
+
+**Yükleme:** `ka.com/GitHub/yayinla.command` → çift tıkla, değişenleri gösterir,
+onay ister, GitHub'a gönderir. İlk seferde bir kez `bir-kerelik-temizlik.command`.

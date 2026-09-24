@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9. Sınıf Kelime Oyunları - Hafıza Kartları</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #F0F4F8;
+            --card-color: #4DB6AC;
+            --accent-color: #FFCA28;
+            --text-color: #37474F;
+            --text-light-color: #FFFFFF;
+            --card-back-color: #FFFFFF;
+            --player1-color: #42A5F5;
+            --player2-color: #EF5350;
+            --shadow-color: #B0BEC5;
+            --correct-color: #4CAF50;
+            --incorrect-color: #F44336;
+        }
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Markazi Text', serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g fill="none" stroke="%23e9eef2" stroke-width="1.5"><rect x="15" y="15" width="30" height="40" rx="5" transform="rotate(10 30 35)" /><rect x="60" y="55" width="30" height="40" rx="5" transform="rotate(-15 75 75)" /></g></svg>');
+            color: var(--text-color);
+            text-align: center;
+            overflow: hidden;
+        }
+        .screen { 
+            display: none; 
+            width: 100%; 
+            height: 100vh; 
+            padding: 20px; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            transition: opacity 0.5s; 
+            overflow-y: auto; 
+        }
+        .screen.active { 
+            display: flex; 
+        }
+
+        button, input {
+            font-family: 'Markazi Text', serif;
+        }
+
+        .main-title { font-size: clamp(3.5rem, 10vw, 5.5rem); color: var(--text-color); text-shadow: 2px 2px 4px rgba(0,0,0,0.1); margin: 0; line-height: 1.2; }
+        .sub-heading { font-size: clamp(2.5rem, 6vw, 4rem); color: var(--card-color); margin-top: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .grade-numeral {
+            font-size: clamp(5rem, 15vw, 8rem);
+            font-weight: 700;
+            color: var(--card-color);
+            line-height: 1;
+            margin: 10px 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.15);
+        }
+        
+        #start-screen {
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+            gap: 50px;
+            padding: 40px;
+        }
+
+        #start-left-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            gap: 40px;
+        }
+        #start-right-column {
+            flex: 1.3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            gap: 40px;
+        }
+
+
+        .sub-title { font-size: clamp(2.5rem, 6vw, 4rem); color: #00796B; margin-bottom: 40px; }
+        .menu-container { 
+            display: grid; 
+            gap: 30px; 
+            width: 90%; 
+            max-width: 1400px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        }
+        
+        #rules-container {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 30px 50px;
+            border-radius: 20px;
+            width: 100%;
+            text-align: right;
+            border: 1px solid #CFD8DC;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        #rules-container h2 {
+            font-size: 2.8rem;
+            color: var(--card-color);
+            margin-top: 0;
+            border-bottom: 2px solid #CFD8DC;
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        #rules-container ul {
+            padding-right: 0;
+            font-size: 2.4rem;
+            line-height: 2.2;
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        #rules-container li {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rule-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+        }
+        
+        .start-btn { 
+            font-family: inherit;
+            font-size: 3.5rem; 
+            padding: 25px 80px; 
+            border-radius: 20px; 
+            background-color: var(--card-color); 
+            color: var(--text-light-color); 
+            border: none; 
+            cursor: pointer; 
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 6px 0 #26A69A;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: pulse-glow 2s infinite ease-in-out;
+            flex-shrink: 0;
+        }
+        .start-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 0 #26A69A;
+        }
+        .start-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #26A69A;
+        }
+
+        .menu-btn {
+            background-color: var(--card-back-color);
+            color: var(--text-color);
+            border: 1px solid #CFD8DC;
+            border-bottom: 8px solid var(--shadow-color);
+            padding: 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.1s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+            position: relative;
+            gap: 15px;
+        }
+        .menu-btn:hover {
+            background-color: #ECEFF1;
+            transform: translateY(-3px);
+            border-bottom-width: 10px;
+        }
+        .menu-btn:active {
+            transform: translateY(4px);
+            border-bottom-width: 4px;
+        }
+        
+        .menu-btn > div {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .menu-btn .menu-title {
+            font-size: 3rem;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        .menu-btn .description { 
+            font-size: 3.2rem;
+            font-weight: 500;
+            color: #546E7A;
+        }
+        .menu-btn .emoji {
+            font-size: 2.8rem;
+        }
+        
+        .header-navigation { position: absolute; top: 20px; left: 20px; z-index: 200; }
+        .back-btn { background: none; border: none; cursor: pointer; padding: 5px; }
+        .back-btn svg { width: 40px; height: 40px; fill: #000; transition: all 0.2s; opacity: 0.8; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)); }
+        .back-btn:hover svg { fill: var(--accent-color); opacity: 1; transform: scale(1.1); }
+        .hidden { display: none !important; }
+
+        
+        #game-screen { flex-direction: row; justify-content: space-between; padding: 20px; align-items: center; overflow: hidden; }
+        .score-display { 
+            flex: 0 0 150px;
+            height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            font-size: clamp(3.5rem, 7vw, 5rem);
+            font-weight: bold;
+            transition: all 0.4s ease;
+            opacity: 0.9;
+            border-radius: 25px;
+            color: rgba(255,255,255,0.9);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        #player1-display { background: linear-gradient(180deg, #42A5F5, #1E88E5); }
+        #player2-display { background: linear-gradient(180deg, #EF5350, #E53935); }
+        .score-display svg { width: 100px; height: 100px; fill: rgba(255,255,255,0.8); }
+        
+        .score-display.active { 
+            opacity: 1; 
+            transform: scale(1.05);
+            border-color: rgba(255,255,255,0.9);
+        }
+        #player1-display.active { box-shadow: inset 0 0 20px rgba(0,0,0,0.4), 0 0 30px 8px var(--player1-color); }
+        #player2-display.active { box-shadow: inset 0 0 20px rgba(0,0,0,0.4), 0 0 30px 8px var(--player2-color); }
+
+        #game-board { 
+            flex-grow: 1; 
+            width: auto; 
+            max-width: 1500px; 
+            margin: 0 20px; 
+            display: grid; 
+            gap: 15px; 
+            perspective: 1200px; 
+            grid-template-columns: repeat(5, 1fr); 
+            grid-template-rows: repeat(4, 1fr); 
+            height: calc(100vh - 40px);
+        }
+        .card { background-color: transparent; cursor: pointer; container-type: inline-size; }
+        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+            word-break: break-word;
+            font-size: clamp(1.5rem, 20cqw, 5rem);
+            text-align: center;
+            line-height: 1.1;
+        }
+        .card-front { background-color: #B2DFDB; }
+        .card-back { color: var(--text-light-color); transform: rotateY(180deg); background-color: var(--card-color);}
+        .card.p1-turn .card-back { background-color: var(--player1-color); }
+        .card.p2-turn .card-back { background-color: var(--player2-color); }
+        .card.p1-match .card-face.card-back { background-color: var(--player1-color); }
+        .card.p2-match .card-face.card-back { background-color: var(--player2-color); }
+        
+        .game-over-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--card-back-color);
+            padding: 30px 50px;
+            border-radius: 20px;
+            border: 3px solid var(--accent-color);
+            z-index: 200;
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .game-over-overlay h2 { font-size: 2.5rem; margin: 0; }
+        #winner-icon-container { display: flex; justify-content: center; gap: 10px; }
+        #winner-icon-container svg { width: 80px; height: 80px; }
+        #memory-win-text.p1-win { color: var(--player1-color); }
+        #winner-icon-container.p1-win svg { fill: var(--player1-color); }
+        #memory-win-text.p2-win { color: var(--player2-color); }
+        #winner-icon-container.p2-win svg { fill: var(--player2-color); }
+        #memory-win-text.draw { color: var(--accent-color); }
+        #winner-icon-container.draw svg { width: 60px; height: 60px; }
+        #winner-icon-container.draw svg:first-child { fill: var(--player1-color); }
+        #winner-icon-container.draw svg:last-child { fill: var(--player2-color); }
+
+        .win-buttons { display: flex; gap: 40px; margin-top: 20px; }
+        .win-buttons .icon-btn { background-color: transparent; border: none; cursor: pointer; transition: all 0.3s ease; }
+        .win-buttons .icon-btn:hover { transform: scale(1.1); }
+        .win-buttons .icon-btn svg { width: 56px; height: 56px; fill: var(--accent-color); }
+        
+        @keyframes pulse-glow { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(77, 182, 172, 0.2)); } 50% { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(77, 182, 172, 0.6));} }
+        
+        @media (max-width: 1024px) {
+            #start-screen {
+                flex-direction: column;
+                padding: 20px;
+            }
+            #start-left-column {
+                order: 1;
+            }
+            #start-right-column {
+                order: 2;
+            }
+            #rules-container {
+                margin-bottom: 40px;
+            }
+        }
+        
+        @media (max-width: 800px) { 
+            #game-screen { flex-direction: column; padding-top: 20px; } 
+            .score-display { flex-direction: row; height: 80px; width: 100%; } 
+            #game-board { 
+                flex-grow: 1; 
+                margin: 10px 0;
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: repeat(5, 1fr);
+                gap: 8px;
+            } 
+        }
+    </style>
+</head>
+
+<body>
+    <div id="start-screen" class="screen active">
+        <div id="start-left-column">
+             <h1 class="main-title">لُعْبَة الكَلِمات لِلصَّفّ ٩</h1>
+             <h2 class="sub-heading">بِطاقات الذّاكِرَة</h2>
+            <button id="start-game-btn" class="start-btn">الوَحْدَة الأولى</button>
+        </div>
+        <div id="start-right-column">
+             <div id="rules-container">
+                <h2>
+                    <span>قَواعِد لُعْبَة بِطاقات الذّاكِرَة</span>
+                </h2>
+                <ul>
+                    <li>
+                        <svg class="rule-icon" style="fill: var(--text-color);" viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10Z" /></svg>
+                        <span>الهَدَف هُوَ إيجاد أَزْواج الكَلِمات العَرَبِيَّة وَالتُّرْكِيَّة المُتَطابِقَة.</span>
+                    </li>
+                    <li>
+                        <svg class="rule-icon" style="fill: var(--text-color);" viewBox="0 0 24 24"><path d="M7,3H17C18.1,3 19,3.9 19,5V15C19,16.1 18.1,17 17,17H7C5.9,17 5,16.1 5,15V5C5,3.9 5.9,3 7,3M3,7V19C3,20.1 3.9,21 5,21H15V19H5V7H3Z" /></svg>
+                        <span>في كُلّ دَوْر، اِقْلِبْ بِطاقَتَيْن.</span>
+                    </li>
+                    <li>
+                        <svg class="rule-icon" style="fill: var(--correct-color);" viewBox="0 0 24 24"><path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" /></svg>
+                        <span>إذا كانَت البِطاقات مُتَطابِقَة، فَإِنَّها تَبْقى مَقْلُوبَة وَتَحْصُلُ عَلى نُقْطَة.</span>
+                    </li>
+                    <li>
+                        <svg class="rule-icon" style="fill: var(--incorrect-color);" viewBox="0 0 24 24"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
+                        <span>إذا لَمْ تَكُنْ مُتَطابِقَة، سَيَتِمُّ قَلْبُها مَرَّة أُخْرى.</span>
+                    </li>
+                    <li>
+                        <svg class="rule-icon" style="fill: var(--player1-color);" viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" /></svg>
+                        <span>تَنَاوَبوا عَلى الأَدْوار حَتّى يَتِمَّ العُثور عَلى جَميع الأَزْواج.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="lesson-choice-screen" class="screen">
+        <div class="header-navigation"><button class="back-btn" data-target="start-screen"><svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"/></svg></button></div>
+        <h2 class="sub-title" dir="rtl">اِخْتَرْ &nbsp; دَرْسًا</h2>
+
+        <div id="lesson-choice-container" class="menu-container">
+           <button class="menu-btn" data-lesson="lesson1">
+               <div>
+                   <span class="menu-title">الدَّرْس الأَوَّل</span>
+                   <span class="description">التَّحِيَّة</span>
+                   <span class="emoji">👋</span>
+               </div>
+           </button>
+           <button class="menu-btn" data-lesson="lesson2">
+               <div>
+                   <span class="menu-title">الدَّرْس الثّاني</span>
+                   <span class="description">التَّعارُف</span>
+                   <span class="emoji">🤝</span>
+               </div>
+           </button>
+        </div>
+   </div>
+    
+    <div id="game-screen" class="screen">
+        <div class="header-navigation"><button class="back-btn" data-target="lesson-choice-screen"><svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"/></svg></button></div>
+        <div id="player1-display" class="score-display">
+            <svg viewBox="0 0 24 24" style="fill:var(--text-light-color);"><path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"></path></svg>
+            <span id="score1">0</span>
+        </div>
+        <div id="game-board"></div>
+        <div id="player2-display" class="score-display">
+            <svg viewBox="0 0 24 24" style="fill:var(--text-light-color);"><path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"></path></svg>
+            <span id="score2">0</span>
+        </div>
+        <div id="memory-game-over" class="game-over-overlay hidden">
+            <div id="winner-icon-container"></div>
+            <h2 id="memory-win-text"></h2>
+            <div class="win-buttons">
+                <button class="icon-btn" id="play-again-memory-btn" title="العب مرة أخرى"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/></svg></button>
+                <button class="icon-btn" id="main-menu-memory-btn" title="القائمة الرئيسية"><svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/></svg></button>
+            </div>
+        </div>
+    </div>
+   
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+    // --- VERİ MODÜLÜ ---
+    const Data = {
+        grade9_words: {
+            unit1: {
+                title: "الوَحْدَة الأولى",
+                description: "التَّحِيَّة وَالتَّعارُف",
+                lessons: {
+                    lesson1: {
+                        title: "الدَّرْس الأَوَّل",
+                        description: "التَّحِيَّة",
+                        words: [
+                            { id: 1, arabic: 'السَّلام عَلَيْكُم', turkish: 'Selam üzerinize olsun!' },
+                            { id: 2, arabic: 'وَعَلَيْكُم السَّلام', turkish: 'Selam sizin de üzerinize olsun!' },
+                            { id: 3, arabic: 'صَباح الخَيْر', turkish: 'Günaydın!' },
+                            { id: 5, arabic: 'مَساء الخَيْر', turkish: 'Hayırlı akşamlar!' },
+                            { id: 7, arabic: 'مَرْحَبًا', turkish: 'Merhaba!' },
+                            { id: 8, arabic: 'أَهْلًا وَسَهْلًا', turkish: 'Hoş geldiniz!' },
+                            { id: 9, arabic: 'أَهْلًا بِك', turkish: 'Hoş bulduk!' },
+                            { id: 10, arabic: 'كَيْفَ حالُك؟', turkish: 'Nasılsın?' },
+                            { id: 11, arabic: 'أَنا بِخَيْر', turkish: 'İyiyim!' },
+                            { id: 42, arabic: 'الحَمْد لِله', turkish: 'Allah\'a hamdolsun!' },
+                            { id: 12, arabic: 'إِلى اللِّقاء', turkish: 'Görüşmek üzere!' },
+                            { id: 13, arabic: 'مَع السَّلامَة', turkish: 'Selametle!' },
+                            { id: 14, arabic: 'في أَمان الله', turkish: 'Allah\'a emanet ol!' },
+                            { id: 15, arabic: 'اِقْرَأْ', turkish: 'Oku!' },
+                            { id: 16, arabic: 'اُكْتُبْ', turkish: 'Yaz!' },
+                            { id: 17, arabic: 'أَعِدْ', turkish: 'Tekrar et!' },
+                            { id: 18, arabic: 'اِسْتَمِعْ', turkish: 'Dinle!' }
+                        ]
+                    },
+                    lesson2: {
+                        title: "الدَّرْس الثّاني",
+                        description: "التَّعارُف",
+                        words: [
+                            { id: 19, arabic: 'طالِب', turkish: 'Erkek öğrenci' },
+                            { id: 20, arabic: 'طالِبَة', turkish: 'Kız öğrenci' },
+                            { id: 21, arabic: 'مُدَرِّس', turkish: 'Erkek öğretmen' },
+                            { id: 22, arabic: 'مُدَرِّسَة', turkish: 'Kadın öğretmen' },
+                            { id: 23, arabic: 'مُدير', turkish: 'Müdür' },
+                            { id: 24, arabic: 'مُديرَة', turkish: 'Müdire' },
+                            { id: 25, arabic: 'صَديق', turkish: 'Erkek arkadaş' },
+                            { id: 26, arabic: 'صَديقَة', turkish: 'Kız arkadaş' },
+                            { id: 27, arabic: 'ما اسْمُك؟', turkish: 'Adın ne?' },
+                            { id: 29, arabic: 'اِسْمي', turkish: 'Benim adım' },
+                            { id: 30, arabic: 'مِن أَيْن أَنْتَ؟', turkish: 'Nerelisin? (e)' },
+                            { id: 31, arabic: 'مِن أَيْن أَنْتِ؟', turkish: 'Nerelisin? (k)' },
+                            { id: 32, arabic: 'أَنا مِن أَنْقَرَة', turkish: 'Ben Ankara\'lıyım' },
+                            { id: 33, arabic: 'تَشَرَّفْتُ', turkish: 'Memnun oldum!' },
+                            { id: 34, arabic: 'فُرْصَة سَعيدَة', turkish: 'Memnun oldum!' },
+                            { id: 35, arabic: 'شُكْرًا', turkish: 'Teşekkürler!' },
+                            { id: 36, arabic: 'عَفْوًا', turkish: 'Rica ederim!' },
+                            { id: 37, arabic: 'وَأَنا أَيْضًا', turkish: 'Ben de' },
+                            { id: 38, arabic: 'تَكَلَّمْ', turkish: 'Konuş!' },
+                            { id: 39, arabic: 'اُسْكُتْ', turkish: 'Sus!' },
+                            { id: 40, arabic: 'تَعَالَ', turkish: 'Gel!' },
+                            { id: 41, arabic: 'اِذْهَبْ', turkish: 'Git!' }
+                        ]
+                    }
+                }
+            }
+        }
+    };
+
+    // --- YARDIMCI MODÜL ---
+    const Utils = {
+        shuffleArray: (arr) => [...arr].sort(() => 0.5 - Math.random()),
+    };
+
+    // --- UYGULAMA MODÜLÜ ---
+    const App = {
+        state: {
+            currentLesson: null,
+            isAudioInitialized: false,
+            audioCtx: null, 
+        },
+        dom: {
+            screens: document.querySelectorAll('.screen'),
+        },
+        init() {
+            this.initNavigation();
+            MemoryGame.init();
+        },
+        showScreen(screenId) {
+            this.dom.screens.forEach(screen => screen.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        },
+        initAudio() {
+            if (this.state.isAudioInitialized) return;
+            try {
+                this.state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                this.state.audioCtx.resume(); // SES DÜZELTMESİ: Kullanıcı etkileşiminden sonra ses bağlamını başlat/sürdür.
+                this.state.isAudioInitialized = true;
+            } catch (e) {
+                console.error("Web Audio API bu tarayıcıda desteklenmiyor.");
+            }
+        },
+        playSound(soundKey) {
+            if (!this.state.audioCtx) return;
+            switch(soundKey) {
+                case 'correct':
+                case 'match': this.playCorrectSound(); break;
+                case 'incorrect': this.playIncorrectSound(); break;
+                case 'flip': this.playFlipSound(); break;
+                case 'touch': this.playTouchSound(); break;
+                case 'menuClick': this.playMenuClickSound(); break;
+            }
+        },
+        playCorrectSound() {
+            const audioCtx = this.state.audioCtx;
+            if (!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.01);
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.2);
+        },
+        playIncorrectSound() {
+            const audioCtx = this.state.audioCtx;
+            if (!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.01);
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.2);
+        },
+        playFlipSound() { 
+            const audioCtx = this.state.audioCtx;
+            if (!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.01); 
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.08);
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(250, audioCtx.currentTime);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.08);
+        },
+        playTouchSound() { 
+            const audioCtx = this.state.audioCtx;
+            if (!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.08);
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(250, audioCtx.currentTime);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.08);
+        },
+        playMenuClickSound() { 
+            const audioCtx = this.state.audioCtx;
+            if (!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.08);
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(500, audioCtx.currentTime);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.08);
+        },
+        getWords(lessonKey) {
+            if (Data.grade9_words.unit1.lessons[lessonKey]) {
+                return Data.grade9_words.unit1.lessons[lessonKey].words;
+            }
+            return [];
+        },
+        initNavigation() {
+            document.getElementById('start-game-btn').onclick = () => {
+                this.initAudio(); // SES DÜZELTMESİ: Ses sistemi ilk tıklamada başlatılıyor.
+                this.playSound('menuClick');
+                this.showScreen('lesson-choice-screen');
+            };
+
+            document.querySelectorAll('.back-btn').forEach(button => {
+                button.onclick = (e) => {
+                    this.playSound('menuClick');
+                    const target = e.currentTarget.dataset.target;
+                    this.showScreen(target);
+                };
+            });
+
+            document.getElementById('lesson-choice-container').onclick = (e) => {
+                const button = e.target.closest('.menu-btn');
+                if (!button) return;
+                
+                this.playSound('menuClick');
+
+                const lessonKey = button.dataset.lesson;
+                this.state.currentLesson = lessonKey;
+                
+                MemoryGame.start(lessonKey);
+                this.showScreen('game-screen');
+            };
+        },
+    };
+    
+    // --- HAFIZA OYUNU MODÜLÜ ---
+    const MemoryGame = {
+        screenId: 'game-screen',
+        state: {},
+        dom: {},
+        init() {
+            this.dom.board = document.getElementById('game-board');
+            this.dom.p1Display = document.getElementById('player1-display');
+            this.dom.p2Display = document.getElementById('player2-display');
+            this.dom.score1 = document.getElementById('score1');
+            this.dom.score2 = document.getElementById('score2');
+            this.dom.gameOverContainer = document.getElementById('memory-game-over');
+            this.dom.winText = document.getElementById('memory-win-text');
+            this.dom.winnerIcon = document.getElementById('winner-icon-container');
+            
+            document.getElementById('play-again-memory-btn').onclick = () => { 
+                App.playSound('menuClick'); 
+                this.start(App.state.currentLesson); // Tekrar oynatırken mevcut dersi kullan
+            };
+            document.getElementById('main-menu-memory-btn').onclick = () => {
+                App.playSound('menuClick');
+                App.showScreen('lesson-choice-screen'); // Ana menü yerine ders seçimine dön
+            };
+        },
+        start(lessonKey) {
+            this.state = { f: [], p: 0, l: false, c: 1, s1: 0, s2: 0, w: [], flipTimeout: null };
+            this.dom.score1.textContent = '0';
+            this.dom.score2.textContent = '0';
+            this.dom.gameOverContainer.classList.add('hidden');
+            this.updateTurnIndicator();
+            
+            let wordsForGame = App.getWords(lessonKey);
+            this.state.w = Utils.shuffleArray(wordsForGame).slice(0, 10);
+
+            const pairs = this.state.w.flatMap(w => [{ content: w.arabic, id: w.id, lang: 'ar' }, { content: w.turkish, id: w.id, lang: 'tr' }]);
+            this.populateBoard(Utils.shuffleArray(pairs));
+        },
+        stop() {
+            if (this.state.flipTimeout) clearTimeout(this.state.flipTimeout);
+        },
+        populateBoard(cards) {
+            this.dom.board.innerHTML = '';
+            this.dom.board.style.gridTemplateColumns = 'repeat(5, 1fr)';
+            this.dom.board.style.gridTemplateRows = 'repeat(4, 1fr)';
+            
+            cards.forEach(cardData => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card';
+                cardEl.dataset.id = cardData.id;
+                const formattedContent = cardData.content;
+                cardEl.innerHTML = `<div class="card-inner"><div class="card-face card-front"></div><div class="card-face card-back" dir="${cardData.lang === 'tr' ? 'ltr' : 'rtl'}">${formattedContent}</div></div>`;
+                cardEl.onclick = () => this.flipCard(cardEl);
+                this.dom.board.appendChild(cardEl);
+            });
+        },
+        flipCard(card) {
+            if (this.state.l || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+            App.playSound('flip');
+            card.classList.add('flipped');
+            card.classList.add(this.state.c === 1 ? 'p1-turn' : 'p2-turn');
+            this.state.f.push(card);
+
+            if (this.state.f.length === 2) {
+                this.state.l = true;
+                const [c1, c2] = this.state.f;
+
+                if (c1.dataset.id === c2.dataset.id) {
+                    App.playSound('match');
+                    const matchClass = this.state.c === 1 ? 'p1-match' : 'p2-match';
+                    if (this.state.c === 1) this.dom.score1.textContent = ++this.state.s1;
+                    else this.dom.score2.textContent = ++this.state.s2;
+                    
+                    this.state.f.forEach(c => {
+                        c.classList.remove('p1-turn', 'p2-turn');
+                        c.classList.add('matched', matchClass);
+                    });
+                    
+                    this.state.p++;
+                    this.state.f = [];
+                    this.state.l = false;
+
+                    if (this.state.p === this.state.w.length) {
+                        setTimeout(() => this.showEndUI(), 700);
+                    }
+                } else {
+                    this.state.flipTimeout = setTimeout(() => {
+                        this.state.f.forEach(c => {
+                            c.classList.remove('flipped', 'p1-turn', 'p2-turn');
+                        });
+                        this.state.f = [];
+                        this.state.c = this.state.c === 1 ? 2 : 1;
+                        this.updateTurnIndicator();
+                        this.state.l = false;
+                    }, 1200);
+                }
+            }
+        },
+        updateTurnIndicator() {
+            this.dom.p1Display.classList.toggle('active', this.state.c === 1);
+            this.dom.p2Display.classList.toggle('active', this.state.c !== 1);
+        },
+        showEndUI() {
+            let text;
+            let winner = 0; 
+            if (this.state.s1 > this.state.s2) { text = 'الفائِز اللّاعِب ١'; winner = 1; } 
+            else if (this.state.s2 > this.state.s1) { text = 'الفائِز اللّاعِب ٢'; winner = 2; } 
+            else { text = 'تَعادُل!'; }
+            
+            this.dom.winText.innerText = text;
+            
+            this.dom.winText.className = '';
+            this.dom.winnerIcon.className = '';
+            this.dom.winnerIcon.innerHTML = '';
+
+            let winnerClass = '';
+            const iconSVG = `<svg viewBox="0 0 24 24"><path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" /></svg>`;
+
+            if (winner === 1) winnerClass = 'p1-win';
+            else if (winner === 2) winnerClass = 'p2-win';
+            else winnerClass = 'draw';
+
+            this.dom.winText.classList.add(winnerClass);
+            this.dom.winnerIcon.classList.add('winner-icon', winnerClass);
+
+            if(winner > 0) {
+                this.dom.winnerIcon.innerHTML = iconSVG;
+            } else {
+                this.dom.winnerIcon.innerHTML = iconSVG + iconSVG;
+            }
+
+            this.dom.gameOverContainer.classList.remove('hidden');
+        }
+    };
+    
+    App.init();
+
+    });
+    </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arapça Gizem Timi: 7 Farklı Disiplin</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Courier+Prime:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #050505;
+            --terminal-green: #33ff33;
+            --alert-red: #ff3333;
+            --gold: #ffd700;
+            --sand: #c2b280;
+            --dim-gray: #444;
+            --flashlight-x: 50%;
+            --flashlight-y: 50%;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--terminal-green);
+            font-family: 'Courier Prime', monospace;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* --- NAVIGASYON (ÜST MENÜ - Çoklu Satır) --- */
+        nav {
+            border-bottom: 2px solid var(--dim-gray);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Butonlar sığmazsa alt satıra geçsin */
+            background: #111;
+            z-index: 100;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            background: #0f0f0f;
+            color: var(--dim-gray);
+            border: 1px solid var(--dim-gray);
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--terminal-green);
+            color: #fff;
+        }
+
+        .tab-btn.active {
+            background: var(--terminal-green);
+            color: black;
+            border-color: var(--terminal-green);
+            box-shadow: 0 0 10px var(--terminal-green);
+        }
+
+        /* --- ANA İÇERİK --- */
+        .content-area {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .tab-content.active {
+            display: flex;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .arabic-text { font-family: 'Amiri', serif; direction: rtl; font-size: 2.5rem; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- TAB 1, 2, 3, 4 STİLLERİ (Eski Stiller) --- */
+        .typewriter h1 {
+            overflow: hidden; border-right: .15em solid var(--terminal-green);
+            white-space: nowrap; margin: 0 auto; letter-spacing: .15em;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+        }
+        
+        /* Karanlık Oda */
+        .dark-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle 120px at var(--flashlight-x) var(--flashlight-y), transparent 0%, rgba(0,0,0,0.98) 20%, black 100%);
+            z-index: 10; pointer-events: none;
+        }
+        .clue { font-size: 3rem; color: #fff; position: absolute; }
+
+        /* Kriptolog */
+        .cipher-container { filter: blur(10px); transition: filter 0.8s ease; cursor: crosshair; }
+        .cipher-container:hover { filter: blur(0px); }
+
+        /* Sinyal */
+        .waveform { display: flex; gap: 5px; height: 100px; align-items: center; }
+        .bar { width: 10px; background: var(--terminal-green); animation: wave 1s infinite ease-in-out; }
+
+        /* --- YENİ TAB 5: ARKEOLOG (Canvas) --- */
+        #tab5 { position: relative; }
+        .dig-site {
+            position: relative;
+            width: 300px;
+            height: 150px;
+            margin-top: 20px;
+        }
+        .buried-text {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; color: var(--gold);
+            background: #222;
+            border: 2px solid #444;
+            user-select: none;
+        }
+        canvas#scratchPad {
+            position: absolute;
+            top: 0; left: 0;
+            cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.5 3.5L20.5 5.5L7.5 18.5L3.5 20.5L5.5 16.5L18.5 3.5Z" stroke="white" stroke-width="2"/></svg>'), auto;
+        }
+
+        /* --- YENİ TAB 6: ADLİ TIP (Error Spotting) --- */
+        .crime-scene-text {
+            font-size: 2.5rem;
+            color: #ccc;
+            position: relative;
+            cursor: help;
+        }
+        .suspect {
+            position: relative;
+            transition: 0.3s;
+            padding: 0 5px;
+        }
+        /* Mouse üzerine gelince UV Işığı etkisi */
+        .suspect:hover {
+            color: var(--alert-red);
+            text-shadow: 0 0 10px var(--alert-red);
+            font-weight: bold;
+        }
+        .suspect:hover::after {
+            content: " [HATA!]";
+            font-size: 1rem;
+            color: var(--alert-red);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-family: 'Courier Prime', monospace;
+        }
+
+        /* --- YENİ TAB 7: SİMYA (Drag Drop) --- */
+        .lab-bench {
+            display: flex;
+            gap: 50px;
+            align-items: center;
+            margin-top: 30px;
+        }
+        
+        .element {
+            width: 80px; height: 80px;
+            background: var(--dim-gray);
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+            cursor: grab;
+            user-select: none;
+        }
+        
+        .flask {
+            width: 120px; height: 150px;
+            border: 3px dashed var(--terminal-green);
+            border-radius: 0 0 20px 20px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            color: var(--terminal-green);
+            transition: 0.3s;
+        }
+
+        .flask.drag-over {
+            background: rgba(51, 255, 51, 0.2);
+            border-style: solid;
+        }
+
+        .alchemy-result {
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 0 0 20px var(--gold);
+            opacity: 0;
+            transition: opacity 1s;
+            margin-top: 20px;
+        }
+
+        /* Animasyonlar */
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--terminal-green); } }
+        @keyframes wave { 0%, 100% { height: 20px; opacity: 0.5; } 50% { height: 60px; opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <button class="tab-btn active" onclick="openTab('tab1')">GÖREV</button>
+        <button class="tab-btn" onclick="openTab('tab2')">KARANLIK ODA</button>
+        <button class="tab-btn" onclick="openTab('tab3')">KRİPTOLOG</button>
+        <button class="tab-btn" onclick="openTab('tab4')">SİNYAL</button>
+        <button class="tab-btn" onclick="openTab('tab5')" style="color:var(--sand)">ARKEOLOG</button>
+        <button class="tab-btn" onclick="openTab('tab6')" style="color:var(--alert-red)">ADLİ TIP</button>
+        <button class="tab-btn" onclick="openTab('tab7')" style="color:var(--gold)">SİMYACI</button>
+    </nav>
+
+    <div class="content-area">
+
+        <div id="tab1" class="tab-content active">
+            <div class="typewriter"><h1>OPERASYON BAŞLIYOR</h1></div>
+            <p>7 farklı uzmanlık alanında Arapça yeteneklerini test et.</p>
+        </div>
+
+        <div id="tab2" class="tab-content" style="background:black; cursor:none;">
+            <div class="dark-layer"></div>
+            <div class="clue arabic-text" style="top:20%; left:30%">قَلَم</div>
+            <div class="clue arabic-text" style="top:70%; left:60%">كِتَاب</div>
+            <div class="clue arabic-text" style="top:40%; left:80%">مَكْتَب</div>
+        </div>
+
+        <div id="tab3" class="tab-content" style="background:#0a0a0a;">
+            <h2>ŞİFRE ÇÖZÜCÜ</h2>
+            <div class="cipher-container arabic-text">أَلْعِلْمُ صَيْدٌ وَالْكِتَابَةُ قَيْدٌ</div>
+            <p><small>Görüntüyü netleştirmek için imleci üzerinde tut.</small></p>
+        </div>
+
+        <div id="tab4" class="tab-content">
+            <div class="waveform">
+                <div class="bar" style="animation-duration: 0.8s"></div>
+                <div class="bar" style="animation-duration: 0.5s"></div>
+                <div class="bar" style="animation-duration: 1.2s"></div>
+            </div>
+            <p>Sinyal alınıyor... (Ses dosyası alanı)</p>
+        </div>
+
+        <div id="tab5" class="tab-content">
+            <h2>KAZI ALANI</h2>
+            <p>Kumu kazı ve alttaki antik kökü bul.</p>
+            
+            <div class="dig-site">
+                <div class="buried-text arabic-text">ك - ت - ب</div>
+                <canvas id="scratchPad" width="300" height="150"></canvas>
+            </div>
+            <p><small>(Kazımak için fareye basılı tutarak gezdir)</small></p>
+        </div>
+
+        <div id="tab6" class="tab-content">
+            <h2>OLAY YERİ İNCELEME</h2>
+            <p>Cümledeki gramer (i'rab) hatasını bulmak için şüphelilerin üzerinde gez.</p>
+            <br>
+            <div class="crime-scene-text arabic-text">
+                <span class="suspect-ok">ذَهَبَ</span> 
+                <span class="suspect">الطُّلَّابَ</span> <span class="suspect-ok">إِلَى</span>
+                <span class="suspect-ok">الْمَدْرَسَةِ</span>
+            </div>
+        </div>
+
+        <div id="tab7" class="tab-content">
+            <h2>SİMYA LABORATUVARI</h2>
+            <p>Elementi vezin tüpüne at ve dönüşümü izle.</p>
+            
+            <div class="lab-bench">
+                <div class="element arabic-text" draggable="true" id="dragElement">ع ل م</div>
+                
+                <div class="flask" id="dropZone">
+                    <span>İsm-i Fail</span>
+                    <small>(Fâilun)</small>
+                </div>
+            </div>
+
+            <div class="alchemy-result arabic-text" id="alchemyResult">عَالِم</div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- SEKME GEÇİŞİ ---
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => {
+                t.style.display = 'none';
+                t.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            const selected = document.getElementById(tabId);
+            selected.style.display = 'flex';
+            
+            // Canvas sorunu için özel kontrol (Tab 5 açılınca canvası resetle)
+            if(tabId === 'tab5') initArchaeology();
+            
+            setTimeout(() => selected.classList.add('active'), 10);
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- TAB 2: KARANLIK ODA ---
+        const tab2 = document.getElementById('tab2');
+        tab2.addEventListener('mousemove', (e) => {
+            const rect = tab2.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            document.documentElement.style.setProperty('--flashlight-x', x + 'px');
+            document.documentElement.style.setProperty('--flashlight-y', y + 'px');
+        });
+
+        // --- TAB 5: ARKEOLOG (CANVAS) ---
+        let canvas, ctx;
+        let isDrawing = false;
+
+        function initArchaeology() {
+            canvas = document.getElementById('scratchPad');
+            ctx = canvas.getContext('2d');
+            
+            // Kumu doldur (Sıfırla)
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = '#c2b280'; // Kum rengi
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Kum dokusu ekle (Basit noise)
+            for(let i=0; i<500; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#b0a070' : '#d4c490';
+                ctx.fillRect(Math.random()*300, Math.random()*150, 2, 2);
+            }
+
+            // Çizim olayları
+            canvas.onmousedown = () => isDrawing = true;
+            canvas.onmouseup = () => isDrawing = false;
+            canvas.onmousemove = scratch;
+        }
+
+        function scratch(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.globalCompositeOperation = 'destination-out'; // Silme modu
+            ctx.beginPath();
+            ctx.arc(x, y, 15, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // --- TAB 7: SİMYACI (DRAG DROP) ---
+        const dragEl = document.getElementById('dragElement');
+        const dropZone = document.getElementById('dropZone');
+        const result = document.getElementById('alchemyResult');
+
+        dragEl.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', 'root');
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Drop'a izin ver
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            
+            // Animasyon ve Sonuç
+            dropZone.style.borderColor = 'gold';
+            dropZone.innerHTML = '⚡'; // Tepkime
+            
+            setTimeout(() => {
+                result.style.opacity = '1'; // Sonucu göster
+                dropZone.innerHTML = 'TAMAMLANDI';
+            }, 500);
+        });
+
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

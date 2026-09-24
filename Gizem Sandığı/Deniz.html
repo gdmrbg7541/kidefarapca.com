@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derin Deniz: Kelime Operasyonu</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Courier+Prime:wght@400;700&display=swap');
+
+        :root {
+            --deep-sea: #001219; /* En derin siyah-mavi */
+            --ocean-blue: #005f73;
+            --aqua-neon: #00fff5; /* Radar yeşili/mavisi */
+            --foam: #e0fbfc;
+            --gold-sand: #ee9b00;
+            --glass-bg: rgba(0, 30, 60, 0.8);
+        }
+
+        body {
+            background: radial-gradient(circle at center, #0a9396 0%, var(--deep-sea) 80%);
+            color: var(--foam);
+            font-family: 'Courier Prime', monospace;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Arka plan dalgaları (Süsleme) */
+        body::before {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.3) 1px, transparent 1px);
+            background-size: 50px 50px; /* Radar ızgarası */
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* --- NAVIGASYON --- */
+        nav {
+            border-bottom: 2px solid var(--ocean-blue);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            background: rgba(0, 18, 25, 0.9);
+            box-shadow: 0 0 20px var(--ocean-blue);
+            z-index: 10;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--ocean-blue);
+            border: 1px solid var(--ocean-blue);
+            padding: 10px 25px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: 0.4s;
+            text-transform: uppercase;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 255, 245, 0.1);
+            color: var(--aqua-neon);
+            border-color: var(--aqua-neon);
+            text-shadow: 0 0 8px var(--aqua-neon);
+        }
+
+        .tab-btn.active {
+            background: var(--ocean-blue);
+            color: var(--foam);
+            border-color: var(--foam);
+            box-shadow: 0 0 15px var(--aqua-neon);
+        }
+
+        /* --- İÇERİK --- */
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            animation: emerge 0.8s ease-out;
+        }
+        .tab-content.active { display: flex; }
+
+        .arabic-text { font-family: 'Amiri', serif; direction: rtl; }
+        
+        h2 {
+            color: var(--aqua-neon);
+            text-shadow: 0 0 10px var(--ocean-blue);
+            border-bottom: 2px solid var(--ocean-blue);
+            padding-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* --- MODÜL 1: SONAR (ŞİFRE) --- */
+        .sonar-screen {
+            position: relative;
+            width: 80%;
+            max-width: 600px;
+            padding: 40px;
+            border: 2px solid var(--ocean-blue);
+            border-radius: 50%; /* Radar şekli */
+            background: radial-gradient(circle, rgba(0, 255, 245, 0.05) 0%, rgba(0,0,0,0.8) 70%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(0, 255, 245, 0.1);
+        }
+
+        /* Dönen Radar Çubuğu */
+        .sonar-screen::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 50%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--aqua-neon));
+            transform-origin: 0% 0%;
+            animation: radar-spin 4s infinite linear;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .cipher-text {
+            font-size: 3.5rem;
+            color: var(--aqua-neon);
+            filter: blur(18px); /* Derin su bulanıklığı */
+            transition: filter 0.8s ease, transform 0.3s;
+            cursor: help;
+            z-index: 2;
+        }
+
+        .cipher-text:hover {
+            filter: blur(0px); /* Yüzeye çıktı */
+            transform: scale(1.05);
+            text-shadow: 0 0 20px var(--aqua-neon);
+        }
+
+        /* --- MODÜL 2: KURTARMA VİNCİ (DRAG DROP) --- */
+        .ocean-bed {
+            width: 90%;
+            max-width: 700px;
+            height: 400px;
+            border: 2px dashed var(--ocean-blue);
+            border-radius: 15px;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 100%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Üstte gemi, altta sandık */
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Gemi (Hedef) */
+        .ship-zone {
+            width: 180px;
+            height: 80px;
+            border-bottom: 4px solid var(--foam);
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--foam);
+            transition: 0.3s;
+            position: relative;
+        }
+        .ship-zone::before { content: "⚓"; font-size: 2rem; position: absolute; top: -30px; }
+        
+        .ship-zone.drag-over {
+            background: rgba(0, 255, 245, 0.2);
+            box-shadow: 0 0 30px var(--aqua-neon);
+            transform: scale(1.1);
+        }
+
+        /* Sandık (Sürüklenecek) */
+        .cargo-crate {
+            width: 100px; height: 100px;
+            background: #4a3b2a; /* Ahşap rengi */
+            border: 3px solid var(--gold-sand);
+            color: var(--gold-sand);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem;
+            border-radius: 10px;
+            cursor: grab;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            animation: float 3s ease-in-out infinite; /* Suda yüzme efekti */
+            z-index: 5;
+        }
+        .cargo-crate:active { cursor: grabbing; }
+
+        /* Vinç Halatı (Süs) */
+        .rope {
+            position: absolute;
+            top: 80px; left: 50%;
+            width: 2px; height: 0;
+            background: var(--foam);
+            transition: height 0.5s;
+            transform: translateX(-50%);
+        }
+
+        .result-bubble {
+            font-size: 4rem;
+            color: var(--gold-sand);
+            position: absolute;
+            top: 50%;
+            opacity: 0;
+            transform: scale(0);
+            transition: 0.5s;
+            text-shadow: 0 0 20px black;
+        }
+
+        /* --- ANİMASYONLAR --- */
+        @keyframes radar-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes emerge { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <button class="tab-btn active" onclick="openTab('sonar')">📡 SONAR</button>
+        <button class="tab-btn" onclick="openTab('kurtarma')">🏗️ VİNÇ</button>
+    </nav>
+
+    <div class="content-area">
+
+        <div id="sonar" class="tab-content active">
+            <h2>DERİN SİNYAL TESPİTİ</h2>
+            <p style="color:#aaa;">Dipteki bulanık yazıyı okumak için sonar (mouse) ile odaklan.</p>
+            
+            <div class="sonar-screen">
+                <div class="cipher-text arabic-text">أَلْعِلْمُ بَحْرٌ لَا سَاحِلَ لَهُ</div>
+                <div style="margin-top:20px; color:var(--aqua-neon); font-size:0.8rem;">
+                    [SİNYAL GÜCÜ: %20]
+                </div>
+            </div>
+            <p><small>(Anlamı: İlim, kıyısı olmayan bir denizdir)</small></p>
+        </div>
+
+        <div id="kurtarma" class="tab-content">
+            <h2>BATIK KELİME ÇIKARMA</h2>
+            <p style="color:#aaa;">"Kök" sandığını gemiye çekerek anlamlı kelimeye dönüştür.</p>
+
+            <div class="ocean-bed">
+                <div class="ship-zone" id="dropZone">
+                    <span>GÜVERTE</span>
+                </div>
+
+                <div class="rope" id="craneRope"></div>
+
+                <div class="result-bubble arabic-text" id="finalWord">مَكْتَب</div>
+
+                <div class="cargo-crate arabic-text" draggable="true" id="dragElement">
+                    ك ت ب
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => {
+                t.style.display = 'none';
+                t.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            const selected = document.getElementById(tabId);
+            selected.style.display = 'flex';
+            setTimeout(() => selected.classList.add('active'), 10);
+            
+            // Buton aktifliği
+            const btns = document.querySelectorAll('.tab-btn');
+            if(tabId === 'sonar') btns[0].classList.add('active');
+            else btns[1].classList.add('active');
+        }
+
+        /* --- SÜRÜKLE BIRAK MANTIĞI --- */
+        const dragEl = document.getElementById('dragElement');
+        const dropZone = document.getElementById('dropZone');
+        const rope = document.getElementById('craneRope');
+        const finalWord = document.getElementById('finalWord');
+        const oceanBed = document.querySelector('.ocean-bed');
+
+        dragEl.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text', 'crate');
+            dragEl.style.opacity = '0.5';
+        });
+
+        dragEl.addEventListener('dragend', () => {
+            dragEl.style.opacity = '1';
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+            // İp efekti: gemiden aşağı uzansın
+            rope.style.height = '200px'; 
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+            rope.style.height = '0';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            
+            // Animasyon Zinciri
+            dragEl.style.transition = 'all 1s ease';
+            dragEl.style.transform = 'translateY(-250px) scale(0.5)'; // Yukarı gemiye çekilme
+            dragEl.style.opacity = '0';
+            rope.style.height = '0'; // İpi geri çek
+
+            setTimeout(() => {
+                dragEl.style.display = 'none'; // Sandığı yok et
+                
+                // Sonucu Patlat
+                finalWord.style.opacity = '1';
+                finalWord.style.transform = 'scale(1)';
+                
+                dropZone.innerHTML = '✅ YÜKLENDİ';
+                dropZone.style.background = 'var(--ocean-blue)';
+                dropZone.style.borderBottomColor = 'var(--gold-sand)';
+            }, 800);
+        });
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>

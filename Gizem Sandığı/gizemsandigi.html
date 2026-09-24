@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Arabic Chat Keyboard</title>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FV9JD15KLW');
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Helvetica+Neue&display=swap');
+
+        :root {
+            --teal-header: #008069;
+            --msg-out: #d9fdd3;
+            --msg-in: #ffffff;
+            --bg-doodle: #efe7dd;
+            --key-bg: #ffffff;
+            --key-shadow: #888888;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow: hidden; background-color: var(--bg-doodle);
+            display: flex; flex-direction: column;
+        }
+
+        /* ARKA PLAN */
+        .doodle-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.6; z-index: -1;
+            /* Küçük gri ikonlar */
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10h5v5h-5zm15 0h5v5h-5zm15 0h5v5h-5zm-30 15h5v5h-5zm15 0h5v5h-5zm15 0h5v5h-5z' fill='%239ca3af' fill-opacity='0.2'/%3E%3C/svg%3E");
+            background-size: 40px 40px;
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--teal-header); color: white; padding: 10px 15px;
+            display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            flex-shrink: 0; height: 60px; z-index: 10;
+        }
+        .avatar { font-size: 1.8rem; margin-right: 15px; background: #fff; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+        .chat-info h3 { margin: 0; font-size: 1.1rem; }
+        .chat-info p { margin: 0; font-size: 0.8rem; opacity: 0.9; }
+
+        /* CHAT AKIŞI */
+        .chat-body {
+            flex-grow: 1; overflow-y: auto; padding: 20px;
+            display: flex; flex-direction: column; gap: 10px;
+            padding-bottom: 20px;
+        }
+
+        .msg-row { display: flex; width: 100%; margin-bottom: 5px; }
+        .msg-row.in { justify-content: flex-start; }
+        .msg-row.out { justify-content: flex-end; }
+
+        .bubble {
+            max-width: 80%; padding: 10px 15px; border-radius: 10px; position: relative;
+            font-size: 1.4rem; /* YAZI BOYUTU BÜYÜK */
+            color: #111; box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+        }
+        .bubble.in { background-color: var(--msg-in); border-top-left-radius: 0; }
+        .bubble.out { background-color: var(--msg-out); border-top-right-radius: 0; }
+
+        .arabic-text { font-family: 'Amiri', serif; line-height: 1.6; }
+
+        /* SİHİRLİ DÜZELTME EFEKTİ */
+        @keyframes magicFlash {
+            0% { background-color: #ffcccc; transform: scale(1); }
+            50% { background-color: #fffacd; transform: scale(1.1); box-shadow: 0 0 20px gold; }
+            100% { background-color: var(--msg-out); transform: scale(1); }
+        }
+        .magic-fix { animation: magicFlash 1s ease-in-out; }
+
+        /* INPUT ALANI & KLAVYE */
+        .input-zone {
+            background: #f0f2f5; border-top: 1px solid #ccc;
+            display: flex; flex-direction: column; z-index: 20;
+        }
+
+        .text-display {
+            background: #fff; margin: 10px; padding: 10px; border-radius: 20px;
+            min-height: 40px; display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid #ddd;
+        }
+        .typed-text {
+            font-family: 'Amiri', serif; font-size: 1.8rem; color: #333; flex-grow: 1;
+            direction: rtl; padding-right: 10px;
+        }
+        .cursor { display: inline-block; width: 2px; height: 25px; background: #008069; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* ARAPÇA KLAVYE IZGARASI */
+        .keyboard {
+            display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px;
+            padding: 5px; background: #d1d5db; user-select: none;
+            padding-bottom: 20px; /* iPhone home bar payı */
+            display: none; /* Başlangıçta gizli */
+        }
+        .keyboard.active { display: grid; }
+
+        .key {
+            background: var(--key-bg); border-radius: 5px;
+            height: 45px; display: flex; align-items: center; justify-content: center;
+            font-family: 'Amiri', serif; font-size: 1.4rem;
+            box-shadow: 0 1px 0 var(--key-shadow); cursor: pointer;
+            color: #333;
+        }
+        .key:active { background: #e5e7eb; transform: translateY(2px); }
+        
+        .key-wide { grid-column: span 2; font-size: 1rem; font-family: sans-serif; background: #aebac1; color: #fff; }
+        .key-space { grid-column: span 6; }
+        .key-enter { grid-column: span 2; background: var(--teal-header); color: #fff; }
+        .key-back { grid-column: span 2; background: #e57373; color: white; }
+
+        /* Mobil uyumluluk için tuşları sıkıştırma */
+        @media (max-width: 400px) {
+            .key { font-size: 1.2rem; height: 40px; }
+            .keyboard { gap: 3px; padding: 3px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="doodle-bg"></div>
+
+    <header>
+        <div class="avatar">🤖</div>
+        <div class="chat-info">
+            <h3>Muallim Bot</h3>
+            <p id="status">çevrimiçi</p>
+        </div>
+    </header>
+
+    <div class="chat-body" id="chat">
+        </div>
+
+    <div class="input-zone">
+        <div class="text-display">
+            <span class="cursor"></span>
+            <span class="typed-text" id="input-field"></span>
+        </div>
+        
+        <div class="keyboard" id="kb">
+            <div class="key" onclick="typeKey('ض')">ض</div>
+            <div class="key" onclick="typeKey('ص')">ص</div>
+            <div class="key" onclick="typeKey('ث')">ث</div>
+            <div class="key" onclick="typeKey('ق')">ق</div>
+            <div class="key" onclick="typeKey('ف')">ف</div>
+            <div class="key" onclick="typeKey('غ')">غ</div>
+            <div class="key" onclick="typeKey('ع')">ع</div>
+            <div class="key" onclick="typeKey('ه')">ه</div>
+            <div class="key" onclick="typeKey('خ')">خ</div>
+            <div class="key" onclick="typeKey('ح')">ح</div>
+            
+            <div class="key" onclick="typeKey('ج')">ج</div>
+            <div class="key" onclick="typeKey('د')">د</div>
+            <div class="key" onclick="typeKey('ش')">ش</div>
+            <div class="key" onclick="typeKey('س')">س</div>
+            <div class="key" onclick="typeKey('ي')">ي</div>
+            <div class="key" onclick="typeKey('ب')">ب</div>
+            <div class="key" onclick="typeKey('ل')">ل</div>
+            <div class="key" onclick="typeKey('ا')">ا</div>
+            <div class="key" onclick="typeKey('ت')">ت</div>
+            <div class="key" onclick="typeKey('ن')">ن</div>
+            
+            <div class="key" onclick="typeKey('م')">م</div>
+            <div class="key" onclick="typeKey('ك')">ك</div>
+            <div class="key" onclick="typeKey('ط')">ط</div>
+            <div class="key" onclick="typeKey('ز')">ز</div>
+            <div class="key" onclick="typeKey('ر')">ر</div>
+            <div class="key" onclick="typeKey('ذ')">ذ</div>
+            <div class="key" onclick="typeKey('و')">و</div>
+            <div class="key" onclick="typeKey('ة')">ة</div>
+            <div class="key" onclick="typeKey('ى')">ى</div>
+            <div class="key" onclick="typeKey('ء')">ء</div>
+
+            <div class="key key-back key-wide" onclick="backspace()">⌫</div>
+            <div class="key key-space" onclick="typeKey(' ')"></div>
+            <div class="key key-enter" onclick="sendMessage()">GÖNDER ➤</div>
+        </div>
+        
+        <button id="start-btn" onclick="startScenario()" style="width:100%; padding:15px; background:var(--teal-header); color:#fff; border:none; font-size:1.2rem; cursor:pointer;">Sohbeti Başlat</button>
+    </div>
+
+    <script>
+        const chat = document.getElementById('chat');
+        const inputField = document.getElementById('input-field');
+        const status = document.getElementById('status');
+        const keyboard = document.getElementById('kb');
+        const startBtn = document.getElementById('start-btn');
+        const sndPop = new Audio('https://upload.wikimedia.org/wikipedia/commons/e/e4/Sound_pop.wav');
+
+        let currentInput = "";
+        let currentStep = 0;
+        let isKeyboardLocked = true;
+
+        // --- SENARYO ---
+        // target: Beklenen cevap (Harekeli olabilir, biz temizleyip bakacağız)
+        const scenario = [
+            { intro: "Selamunaleyküm! 👋", delay: 800, q: "Arapça öğrenmeye hazır mısın? (Evet: نَعَم)", target: "نَعَم" },
+            { intro: "Süper! Hadi başlayalım.", delay: 1000, q: "Bana 'KİTAP' (كِتَاب) yaz.", target: "كِتَاب" },
+            { intro: "Çok iyisin.", delay: 1200, q: "Peki resimdeki 'KAPI' (بَاب) kelimesini yazabilir misin?", target: "بَاب" },
+            { intro: "Gramer vakti!", delay: 1500, q: "Evi belirterek yaz: 'EV' (El-Beyt - الْبَيْت)", target: "الْبَيْت" },
+            { intro: "Son soru!", delay: 1000, q: "'KALEM' (قَلَم) yazıp bitirelim.", target: "قَلَم" }
+        ];
+
+        // --- TEMİZLEME & TOLERANS ALGORİTMASI ---
+        function cleanText(text) {
+            if (!text) return "";
+            return text
+                .replace(/[\u064B-\u065F]/g, '') // Harekeleri kaldır
+                .replace(/^ال/, '')              // Baştaki El takısını kaldır
+                .replace(/[أإآ]/g, 'ا')          // Elif varyasyonlarını düzelt
+                .trim();
+        }
+
+        // Levenshtein Mesafesi (Harf hatası sayacı)
+        function getEditDistance(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+            const matrix = [];
+            for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+            for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) == a.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1));
+                    }
+                }
+            }
+            return matrix[b.length][a.length];
+        }
+
+        // --- CHAT MOTORU ---
+        function addBubble(text, side, id=null) {
+            const div = document.createElement('div');
+            div.className = `msg-row ${side}`;
+            div.innerHTML = `<div class="bubble ${side} arabic-text" id="${id || ''}">${text}</div>`;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+            if(side === 'in') sndPop.play().catch(e=>{});
+        }
+
+        function botType(text, delay, callback) {
+            status.innerText = "yazıyor...";
+            setTimeout(() => {
+                addBubble(text, 'in');
+                status.innerText = "çevrimiçi";
+                if(callback) callback();
+            }, delay);
+        }
+
+        function runStep() {
+            if(currentStep >= scenario.length) {
+                keyboard.classList.remove('active');
+                addBubble("🎉 Harika! Tüm testi geçtin.", 'in');
+                return;
+            }
+
+            const step = scenario[currentStep];
+            isKeyboardLocked = true; // Bot konuşurken klavye kilitli
+            
+            // 1. Sohbet Mesajı
+            botType(step.intro, 500, () => {
+                // 2. Soru Mesajı (Milisaniye gecikmeli)
+                setTimeout(() => {
+                    botType(step.q, step.delay, () => {
+                        // Klavye açılır
+                        isKeyboardLocked = false;
+                        if (!keyboard.classList.contains('active')) {
+                            keyboard.classList.add('active');
+                            startBtn.style.display = 'none';
+                        }
+                    });
+                }, 800);
+            });
+        }
+
+        function startScenario() {
+            startBtn.style.display = 'none';
+            runStep();
+        }
+
+        // --- KLAVYE İŞLEMLERİ ---
+        function typeKey(char) {
+            if(isKeyboardLocked) return;
+            currentInput += char;
+            inputField.innerText = currentInput;
+        }
+
+        function backspace() {
+            currentInput = currentInput.slice(0, -1);
+            inputField.innerText = currentInput;
+        }
+
+        function sendMessage() {
+            if(isKeyboardLocked || currentInput.trim() === "") return;
+
+            const userText = currentInput;
+            const bubbleId = "msg-" + Date.now(); // Balona ID veriyoruz ki değiştirebilelim
+            
+            // Kullanıcı mesajını ekrana bas
+            addBubble(userText, 'out', bubbleId);
+            
+            // Inputu temizle
+            currentInput = "";
+            inputField.innerText = "";
+            
+            // --- DOĞRULAMA & SİHİR ---
+            const targetRaw = scenario[currentStep].target;
+            
+            const cleanUser = cleanText(userText);
+            const cleanTarget = cleanText(targetRaw);
+            
+            const distance = getEditDistance(cleanUser, cleanTarget);
+            const bubbleEl = document.getElementById(bubbleId);
+
+            // Mantık: 
+            // 0 Hata -> Mükemmel
+            // 1 Hata -> Kabul et ve düzelt
+            // Çok Hata -> Yine de düzelt (Prompt isteği: "Tamamen hatalıysa da düzeltilsin")
+            
+            // Kullanıcı ne yazarsa yazsın, kısa bir süre sonra "Doğrusuna" dönüşecek
+            isKeyboardLocked = true; // İşlem bitene kadar kilitle
+
+            setTimeout(() => {
+                // Sihirli Düzeltme Efekti
+                bubbleEl.classList.add('magic-fix');
+                bubbleEl.innerText = targetRaw; // Hedef kelimeye dönüş (Harekeli haliyle)
+                
+                // Bot Tepkisi
+                setTimeout(() => {
+                    if(distance === 0) {
+                        // Tam doğruydu zaten
+                    } else if(distance <= 1) {
+                        // Ufak hata vardı, düzeltildi
+                    } else {
+                        // Çok yanlıştı ama düzeltildi
+                    }
+                    
+                    currentStep++;
+                    runStep(); // Sonraki aşamaya geç
+                }, 1000); // Animasyon süresi kadar bekle
+
+            }, 600); // Mesaj gittikten az sonra düzelsin
+        }
+
+    </script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>
