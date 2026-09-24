@@ -1104,7 +1104,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          burada da değişir. ══════════════════════════════════════════════ -->
     <div class="katSerit" id="katSerit">
       <style>
-        #katSerit{ margin:20px 0 4px; }
+        /* 24.09.2026: başlık şeridiyle arası fazla açıktı. Üstteki 20px kaldırıldı;
+           kutu, .container'ın kendi üst payının (8+15px) hemen altına oturuyor. */
+        #katSerit{ margin:0 0 6px; }
         #katSerit .ks-kutu{ display:flex; align-items:center; gap:14px; flex-wrap:wrap;
           background:linear-gradient(120deg,#F3FAF8,#FFFFFF 62%); border:2px solid #BFE6DE;
           border-radius:18px; padding:14px 18px; box-shadow:0 6px 18px rgba(14,158,134,.10); }

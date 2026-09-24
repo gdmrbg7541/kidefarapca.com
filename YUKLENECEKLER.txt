@@ -354,3 +354,16 @@ KATALOG GÜNCELLENDİ (24.09.2026)
     6 sayfa, 1,2 MB. Önceki PDF 12 Eylül'dendi; sayfa 15 Eylül'de değişmişti.
   · Katalogdaki 103 iç bağlantının hepsi denetlendi, kırık yok.
   · Eski hâli yedekte: _kaynak/yedekler/katalog-index-*.html
+  · Üst şerit ile beyaz kutu arasındaki boşluk kısaldı (yalnız EKRANDA):
+    .sayfa margin-top 14 → 4, padding-top 24 → 12 (geniş ekranda 30 → 14,
+    dar ekranda 16 → 8). Masaüstünde 43 px → 17 px, telefonda 29 px → 11 px.
+    @media print bloğuna dokunulmadı; PDF yerleşimi aynı (6 sayfa).
+
+ANA SAYFA — KATALOG ŞERİDİ BAŞLIĞA YAKLAŞTI (24.09.2026)
+  index.html · #katSerit{ margin:20px 0 4px } → { margin:0 0 6px }
+  · Turuncu başlık ile "Hangi ihtiyaç için hangi araç?" kutusu arası
+    masaüstünde 43 px → 23 px, telefonda 38 px → 18 px.
+  · Kalan boşluk .container'ın kendi üst payıdır (8 px margin + 15 px padding);
+    ona dokunulmadı, sayfanın geri kalanı aynı.
+  · Katalog sayfasındaki (katalog/index.html) üst boşluk ayrı olarak
+    kısaltılmıştı; ikisi karıştırılmasın.
