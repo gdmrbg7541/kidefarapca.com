@@ -268,3 +268,19 @@ Yedek: _kaynak/yedekler/index_2026-09-24_yan-serit-oncesi.html
     eklendi (aynı işaretli blok içinde), 8. sınıf sınav notu güncellendi.
   · Betikler: _kaynak/yedekler/betikler/sinav8/ (ek.py, ornek.js,
     calisma_temel.js, ek_denetim.py, spec_ek.json, OKU-ek.txt) — git'e gitmez.
+
+8. SINIF — DİLBİLGİSİ ÖZETİ, 2 SAYFA (24.09.2026)
+  Yeni 2 dosya: dosyalar/calisma-kagitlari/8-sinif/
+    arapca-8-dilbilgisi-ozeti.docx / .pdf
+  · 1. sayfa: ayrık zamirler (tekil altı kişi + "biz") · bitişik zamirler
+    (ي نا كَ كِ هُ ها) · mâzi-muzâri çekimi iki fiille (ذهب ve سافر) ·
+    ek/önek kutuları · iki örnek cümle.
+  · 2. sayfa: on soru edatı (kitaptan örnek sorularla) · A/B/C alıştırmaları ·
+    cevap tablosu.
+  · Arapçanın tamamı kaynaktan: çekimler sarf/fiiller.js, zamirler
+    sarf/hazine.js, bitişik zamir ekleri sarf/kaliplartablosu.js, cümleler
+    8. Sınıf Kitap Verileri (18 Ders).tsv. 236 sözcüğün hepsi denetlendi.
+  · Okul adı ve öğretmen adı yok. Yazı tipleri: Arakom + Carlito.
+  · index.html: 8. sınıf Çalışma Kâğıtları listesine ayrı işaretli blokla eklendi
+    (>>> 8. SINIF DİLBİLGİSİ ÖZETİ).
+  · Betikler: _kaynak/yedekler/betikler/gramer8/ — git'e gitmez.

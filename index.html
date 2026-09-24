@@ -4214,6 +4214,22 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             'Uyarlanmış çalışma kâğıdının cevapları')));
       })();
       /* <<< 8. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ */
+      /* >>> 8. SINIF DİLBİLGİSİ ÖZETİ (24.09.2026) */
+      /* İki sayfalık özet: ayrık ve bitişik zamirler, mâzi-muzâri çekimi
+         (tekil kişiler ve "biz"), soru edatları + kısa alıştırma ve cevaplar.
+         Bütün Arapça örnekler 8. sınıf ders kitabından; çekim tabloları
+         sitenin kendi sarf/fiiller.js verisinden üretildi.
+         Dosyalar: dosyalar/calisma-kagitlari/8-sinif/ */
+      (function () {
+        var G = 'dosyalar/calisma-kagitlari/8-sinif/arapca-8-dilbilgisi-ozeti';
+        var ad = 'Dilbilgisi Özeti (2 sayfa)';
+        var kaynak = 'Zamirler · mâzi-muzâri çekimi (tekil ve "biz") · soru edatları · alıştırma ve cevaplar';
+        var liste = SINIF_PDF[8]['Çalışma Kâğıtları & Etkinlikler'] ||
+                    (SINIF_PDF[8]['Çalışma Kâğıtları & Etkinlikler'] = []);
+        liste.push({ ad: ad + ' — düzenlenebilir (Word)', tur: 'doc', kaynak: kaynak, url: G + '.docx' });
+        liste.push({ ad: ad + ' — yazdırmaya hazır (PDF)', url: G + '.pdf' });
+      })();
+      /* <<< 8. SINIF DİLBİLGİSİ ÖZETİ */
       /* === A4 "RESMİ EVRAK" KARTLARI ===================================
          Sınıf akordiyonlarındaki "Dökümanlar" bölümü artık akordiyon değil,
          A4 sayfa oranında kartlardan oluşan bir ızgara. Bir karta tıklanınca
