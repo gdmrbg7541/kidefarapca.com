@@ -384,5 +384,11 @@ SEKMEDEN SEVİYE AYARINA KISA YOL (24.09.2026)
     eski adlarda kalıyordu; artık "Havuz Durumu" da seviye kurasından besleniyor
     (llKuraListesi).
   · Sınıf seçili değilken düğme uyarı kutusu gösterir, hata vermez.
+  · 24.09.2026 akşam: dişli ikonu büyütüldü ve belirginleşti — eski çok uçlu
+    yıldız 17 px'te bulanık görünüyordu; yerine klasik dişli (turuncu gövde,
+    koyu kenar, açık merkez deliği) kondu, 23 px (dar ekranda 21 px). Düğme
+    yazısı .88 rem ve daha koyu (#8A4B12), kenar rengi koyulaştı.
+  · index.html'deki sürüm etiketleri tazelendi: listelerim.css ve .js artık
+    ?v=20260924a — tarayıcı eski kopyayı göstermesin.
   · Denetim: dört düğme de doğru panelde, fonksiyonlar global, dört odak
     denemesi de hatasız; vurgu ve yeşil halka çalışıyor; 16 satır içi betik temiz.
