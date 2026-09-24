@@ -341,3 +341,16 @@ BÜTÜN BELGE KARTLARINDA AÇIKLAMALAR KISALTILDI (24.09.2026)
   · Dosya adları, bağlantılar ve kart sayıları değişmedi.
   · index.html 590 KB → 572 KB (yaklaşık 12.000 karakter açıklama metni).
   · Eski metinler yedekte: _kaynak/yedekler/index-*-tum-aciklamalar.html
+
+KATALOG GÜNCELLENDİ (24.09.2026)
+  Dosyalar: katalog/index.html · katalog/katalog.pdf
+  · Yeni kart — SORU HAZIRLA (Ölçme bölümü): sinav.html; sınav kipinde öğrenme
+    çıktısı kodlu, temrin kipinde soru tipi seçmeli. Bölüm sayacı 4 → 5 araç.
+  · Yeni kart — BEP & DESTEK EĞİTİM (öğretmen dokümanları): beş belge, sınıf
+    çipleri 5-10 → dosyalar/bep/arapca-<s>-sinif-bep-plani.pdf
+  · Yeni kart — MEVZUAT & YÖNETMELİKLER: üç resmî bağlantı (ortaöğretim yön.,
+    ilköğretim yön., meslek kanunu); belgeler sitede tutulmuyor.
+  · PDF yeniden basıldı (başsız Chrome, A4, sayfanın kendi @page ayarıyla):
+    6 sayfa, 1,2 MB. Önceki PDF 12 Eylül'dendi; sayfa 15 Eylül'de değişmişti.
+  · Katalogdaki 103 iç bağlantının hepsi denetlendi, kırık yok.
+  · Eski hâli yedekte: _kaynak/yedekler/katalog-index-*.html
