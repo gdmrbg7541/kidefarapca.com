@@ -535,6 +535,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       transition:max-height .34s cubic-bezier(.4,0,.2,1), margin .34s ease, opacity .22s ease;
     }
     #imam-hatip .ih-kartlar.kapali{ max-height:0; margin:0; opacity:0; overflow:hidden; }
+    /* Belgeye dokununca kartlar AĞIR AĞIR toplansın: kullanıcı neyin
+       kapandığını görsün, belge sessizce yerine geçmesin. Şeritten elle
+       açıp kapatmak daha çevik (yukarıdaki .34s). */
+    #imam-hatip .ih-kartlar.yavas{
+      transition:max-height .62s cubic-bezier(.33,0,.2,1),
+                 margin .62s cubic-bezier(.33,0,.2,1),
+                 opacity .5s ease;
+    }
+    #imam-hatip .ihkart-bar.yavas .ihkart-ok{ transition:transform .62s cubic-bezier(.33,0,.2,1); }
     #imam-hatip .ihsec-ayirac.gizli{ display:none; }
     @media (prefers-color-scheme: dark){
       #imam-hatip .ihkart-bar{ background:rgba(22,160,133,.12);
@@ -546,8 +555,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       #imam-hatip .ihkart-ok{ color:#8FEAD5; }
     }
     @media (prefers-reduced-motion: reduce){
-      #imam-hatip .ih-kartlar, #imam-hatip .ihkart-ok,
-      #imam-hatip .ihkart-bar{ transition:none; }
+      #imam-hatip .ih-kartlar, #imam-hatip .ih-kartlar.yavas,
+      #imam-hatip .ihkart-ok, #imam-hatip .ihkart-bar{ transition:none; }
     }
     #imam-hatip .ih-kartlar .game-card .default-game-content {
         flex: 1 1 auto; display: flex; flex-direction: column; align-items: center;
@@ -3219,10 +3228,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         [].forEach.call(kok.querySelectorAll('.ih-kartlar.kapali'), function (m) {
           if (m.getAttribute('data-oto') !== '1') return;
           var g = m.style.transition; m.style.transition = 'none';
-          m.classList.remove('kapali'); m.style.maxHeight = 'none';
+          m.classList.remove('kapali', 'yavas'); m.style.maxHeight = 'none';
           m.removeAttribute('data-oto');
           var b = m.previousElementSibling;
-          if (b && b.classList.contains('ihkart-bar')) b.classList.remove('kapali');
+          if (b && b.classList.contains('ihkart-bar')) b.classList.remove('kapali', 'yavas');
           var a = m.nextElementSibling;
           if (a && a.classList.contains('ihsec-ayirac')) a.classList.remove('gizli');
           void m.offsetHeight; m.style.transition = g;
@@ -4294,9 +4303,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           return;
         }
         btn.classList.add('acik'); btn.setAttribute('aria-expanded', 'true');
-        /* Belge açıldı: üstteki etkinlik kartları toplansın ki belge sınıfın
-           adının hemen altına gelsin. Aşağıdaki kaydırma bu yeni yüksekliğe
-           göre hesaplansın diye kartlar ÖNCE toplanıyor. */
+        /* Belge açıldı: üstteki etkinlik kartları yavaşça toplansın ki belge
+           sınıfın adının hemen altına gelsin. */
         if (window.ihKartOto) window.ihKartOto(btn);
         var d = btn._a4 || {};
         wrap.style.setProperty('--a4c', d.renk || '#dbe3ec');
@@ -4611,14 +4619,17 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         return (a && a.classList.contains('ihsec-ayirac')) ? a : null;
       }
       /* ac: true → aç, false → topla · oto: kararı biz mi verdik
-         Kararı biz verdiysek animasyon YOK: kullanıcı belgeye tıklamışken
-         kartların ağır ağır kapanması tıkladığı kartı altından kaydırıyor.
-         Şeride kendi eliyle bastıysa animasyon var. */
+         Kararı biz verdiysek geçiş YAVAŞ (.yavas sınıfı): öğretmen belgeye
+         dokunduğunda kartların ağır ağır toplandığını görsün. Şeride kendi
+         eliyle bastıysa normal hız. Sayfa kaydırması bundan etkilenmiyor:
+         kartBolumunuYukariKaydir sınıf BAŞLIĞINI hedefliyor, başlık da
+         kartların üstünde, yüksekliği değişmiyor. */
       function kartlariAyarla(kartlar, ac, oto) {
         var bar = kartlar.previousElementSibling;
         var ayr = kartAyirac(kartlar);
-        var eskiGecis = kartlar.style.transition;
-        if (oto) kartlar.style.transition = 'none';
+        var sure = oto ? 700 : 380;
+        kartlar.classList.toggle('yavas', !!oto);
+        if (bar && bar.classList.contains('ihkart-bar')) bar.classList.toggle('yavas', !!oto);
         if (ac) {
           /* önce 0'a sabitle, sonra hedefe: aksi hâlde "none"dan geçiş
              animasyonu çalışmaz, kartlar birden zıplar */
@@ -4629,7 +4640,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           /* animasyon bitince sınır kalksın, yoksa içerik büyüyünce kırpılır */
           setTimeout(function () {
             if (!kartlar.classList.contains('kapali')) kartlar.style.maxHeight = 'none';
-          }, 380);
+          }, sure);
           if (ayr) ayr.classList.remove('gizli');
         } else {
           kartlar.style.maxHeight = kartlar.scrollHeight + 'px';
@@ -4638,7 +4649,6 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           kartlar.style.maxHeight = '';
           if (ayr) ayr.classList.add('gizli');
         }
-        if (oto) { void kartlar.offsetHeight; kartlar.style.transition = eskiGecis; }
         if (oto && !ac) kartlar.setAttribute('data-oto', '1');
         else kartlar.removeAttribute('data-oto');
         if (bar && bar.classList.contains('ihkart-bar')) {
