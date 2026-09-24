@@ -176,7 +176,11 @@ bu üçü de doldu (ünite başına 4 / 2 / 7 soru), yani hemen her öğrenme
     sinav.html?sinif=N&yol=sinav
   · Eski yönlendirmeler: sorukagidi.html → ?yol=temrin,
     ciktisoru.html → ?yol=sinav
-  · index.html: etkinlik kartları şeridinin yazısı siyah (#111827);
-    sayı ve ok yeşil kaldı.
+  · index.html: etkinlik kartları şeridi — yazı siyah (#111827), dolgu
+    belirgin (#EAF7F3 açıkken, #CFEEE4 kapalıyken), kenarlık koyulaştı.
+    KARANLIK KİP KURALI KALDIRILDI: İmam Hatip paneli karanlık kipte de
+    beyaz zeminde duruyor (.ih-panel .ihsec-head gradyanı #fff'e gidiyor),
+    şeride karanlık kip verilince BEYAZ YAZI BEYAZ ZEMİNE düşüyordu.
+    Artık iki kipte de aynı görünüyor.
 Yedek: _kaynak/yedekler/sinav_2026-09-24_klasik-oncesi.js
 ──────────────────────────────────────────────────────────────

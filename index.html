@@ -518,8 +518,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     #imam-hatip .ihkart-bar{
       display:flex; align-items:center; gap:8px; width:100%;
       padding:7px 11px; margin:0 0 10px;
-      border:1.3px solid rgba(22,160,133,.22); border-radius:10px;
-      background:rgba(22,160,133,.07);
+      border:1.5px solid rgba(22,160,133,.38); border-radius:10px;
+      background:#EAF7F3;
       font-family:inherit; font-size:.74rem; font-weight:800; letter-spacing:.7px;
       /* Yazı siyah: açık yeşil zeminde yeşil yazı sönük duruyordu. Sayı ve
          ok yeşil kaldı, şerit yine yeşil ailesinden okunuyor. */
@@ -528,10 +528,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       -webkit-appearance:none; appearance:none;
     }
     #imam-hatip .ihkart-bar.kapali,
-    #imam-hatip .ihkart-bar:hover{ background:#E6F7F2; border-color:rgba(22,160,133,.42); }
+    #imam-hatip .ihkart-bar:hover{ background:#CFEEE4; border-color:rgba(22,160,133,.62); }
     #imam-hatip .ihkart-bar:focus-visible{ outline:3px solid #16A085; outline-offset:-3px; }
-    #imam-hatip .ihkart-say{ font-weight:700; letter-spacing:0; text-transform:none; color:#177F6D; }
-    #imam-hatip .ihkart-ok{ margin-left:auto; font-size:.95rem; color:#16A085; transition:transform .3s ease; }
+    #imam-hatip .ihkart-say{ font-weight:700; letter-spacing:0; text-transform:none; color:#0B6353; }
+    #imam-hatip .ihkart-ok{ margin-left:auto; font-size:1.05rem; color:#0E8C75; transition:transform .3s ease; }
     #imam-hatip .ihkart-bar.kapali .ihkart-ok{ transform:rotate(-90deg); }
     #imam-hatip .ih-kartlar{
       transition:max-height .34s cubic-bezier(.4,0,.2,1), margin .34s ease, opacity .22s ease;
@@ -547,15 +547,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     }
     #imam-hatip .ihkart-bar.yavas .ihkart-ok{ transition:transform .62s cubic-bezier(.33,0,.2,1); }
     #imam-hatip .ihsec-ayirac.gizli{ display:none; }
-    @media (prefers-color-scheme: dark){
-      #imam-hatip .ihkart-bar{ background:rgba(22,160,133,.12);
-                               border-color:rgba(22,160,133,.30); color:#F1F5F9; }
-      #imam-hatip .ihkart-bar.kapali,
-      #imam-hatip .ihkart-bar:hover{ background:rgba(22,160,133,.22);
-                                     border-color:rgba(22,160,133,.48); }
-      #imam-hatip .ihkart-say{ color:#5FBFA8; }
-      #imam-hatip .ihkart-ok{ color:#8FEAD5; }
-    }
+    /* KARANLIK KİP KURALI YOK — bilerek. İmam Hatip paneli karanlık kipte
+       de beyaz zeminde duruyor (.ih-panel .ihsec-head gradyanı #fff'e gidiyor);
+       şeride karanlık kip verilince beyaz yazı beyaz zemine düşüyordu. */
     @media (prefers-reduced-motion: reduce){
       #imam-hatip .ih-kartlar, #imam-hatip .ih-kartlar.yavas,
       #imam-hatip .ihkart-ok, #imam-hatip .ihkart-bar{ transition:none; }
