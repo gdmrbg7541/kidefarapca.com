@@ -521,7 +521,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       border:1.3px solid rgba(22,160,133,.22); border-radius:10px;
       background:rgba(22,160,133,.07);
       font-family:inherit; font-size:.74rem; font-weight:800; letter-spacing:.7px;
-      text-transform:uppercase; color:#0E7A68; text-align:left; cursor:pointer;
+      /* Yazı siyah: açık yeşil zeminde yeşil yazı sönük duruyordu. Sayı ve
+         ok yeşil kaldı, şerit yine yeşil ailesinden okunuyor. */
+      text-transform:uppercase; color:#111827; text-align:left; cursor:pointer;
       transition:background .25s ease, border-color .25s ease;
       -webkit-appearance:none; appearance:none;
     }
@@ -547,7 +549,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     #imam-hatip .ihsec-ayirac.gizli{ display:none; }
     @media (prefers-color-scheme: dark){
       #imam-hatip .ihkart-bar{ background:rgba(22,160,133,.12);
-                               border-color:rgba(22,160,133,.30); color:#7FD9C4; }
+                               border-color:rgba(22,160,133,.30); color:#F1F5F9; }
       #imam-hatip .ihkart-bar.kapali,
       #imam-hatip .ihkart-bar:hover{ background:rgba(22,160,133,.22);
                                      border-color:rgba(22,160,133,.48); }
@@ -2296,12 +2298,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           </div>
         </a>
 
-        <!-- SINAV HAZIRLA (24.09.2026) — "Soru Kâğıdı Hazırla" ile "Öğrenme
+        <!-- SORU HAZIRLA (24.09.2026) — "Soru Kâğıdı Hazırla" ile "Öğrenme
              Çıktısına Göre Sınav" burada BİRLEŞTİ. Sayfa açılışta iki yol sorar:
-               · Okul sınavı  → öğrenme çıktılarına göre; antet okul bilgilerinden
-                 kendiliğinden kurulur, her sorunun yanında çıktı numarası (8.2.1.1)
-                 yazar, konu-kazanım dağılım tablosu çıkar.
-               · Alıştırma    → öğretmen soru tipini kendi seçer, başlık serbest.
+               · Sınav   → öğrenme çıktılarına göre; YALNIZ klasik (açık uçlu)
+                 sorular — Yazılı ve Uygulamalı Sınavlar Yönergesi m.5/1-e.
+                 Sorular ünitenin kendi ders cümlelerinden üretilir
+                 (sinifici/klasik.js). Antet okul bilgilerinden kurulur, her
+                 sorunun yanında çıktı numarası (8.2.1.1) yazar, dağılım
+                 tablosu çıkar.
+               · Temrin  → klasik + havuzdaki çoktan seçmeliler, başlık serbest.
              Okul ve öğretmen adı YALNIZ tarayıcıda saklanır, depoya yazılmaz.
              Dosyalar: sinav.html + sinifici/sinav.{js,css} + veri/veri_ciktilar.js
              Eski iki sayfa yönlendirmeye çevrildi (eski yer imleri bozulmasın). -->
@@ -2322,8 +2327,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               <g class="kga-cs-kod"><rect x="34" y="47" width="27" height="13.5" rx="3.4" fill="#0E9E86"/>
                 <text x="47.5" y="56.6" font-size="7.6" font-weight="700" fill="#fff" text-anchor="middle" font-family="system-ui,sans-serif">8.2.1</text></g>
             </svg></div>
-            <h3>Sınav Hazırla</h3>
-            <span class="game-card-description">Okul sınavı öğrenme çıktılarına göre, alıştırma serbest; cevap anahtarlı A4 kâğıt.</span>
+            <h3>Soru Hazırla</h3>
+            <span class="game-card-description">Sınav: öğrenme çıktılarına göre klasik sorular. Temrin: serbest alıştırma. Cevap anahtarlı A4 kâğıt.</span>
             <span class="status-badge available">Hazırla!</span>
           </div>
         </a>
@@ -4395,7 +4400,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          saklanır, depoya yazılmaz. */
       function sinavYollari(sinif) {
         return '<div class="ihsv-sec">' +
-          '<a class="ihsv-dug" href="sinav.html?sinif=' + sinif + '&yol=okul" target="_blank" rel="noopener">' +
+          '<a class="ihsv-dug" href="sinav.html?sinif=' + sinif + '&yol=sinav" target="_blank" rel="noopener">' +
             '<span class="ihsv-ik" aria-hidden="true"><svg viewBox="0 0 40 40">' +
               '<rect x="6" y="4" width="24" height="30" rx="3.2" fill="#E6F7F2" stroke="#16A085" stroke-width="2"/>' +
               '<path d="M12 12h12M12 18h12M12 24h7" stroke="#16A085" stroke-width="2" stroke-linecap="round"/>' +
@@ -4403,7 +4408,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               '<path d="M28.5 23.5v8M24.5 27.5h8" stroke="#16A085" stroke-width="2.2" stroke-linecap="round"/>' +
             '</svg></span>' +
             '<span class="ihsv-yazi"><b>Sınav Oluştur</b>' +
-            '<small>Öğrenme çıktılarına göre · antet ve çıktı numaraları hazır</small></span>' +
+            '<small>Klasik sorular · öğrenme çıktılarına göre · antet hazır</small></span>' +
             '<span class="ihsv-ok" aria-hidden="true">↗</span>' +
           '</a>' +
           '<div class="ihsv-hazir"><b>Hazır sınavlar</b>' +

@@ -421,3 +421,11 @@ body[data-yol="alistirma"] #yolAdi { color: var(--mavi); }
   font-style: normal; font-family: ui-monospace, Menlo, Consolas, monospace;
   font-size: 7.5pt; color: #0B5F51; margin-left: 2mm; white-space: nowrap;
 }
+
+/* ---------- klasik soru türleri ---------- */
+.klasik-panel { padding: 12px 14px 10px; margin-bottom: 14px; border-left: 4px solid var(--yesil); }
+.klasik-panel h3 { margin: 0 0 6px; font-size: .78rem; font-weight: 800; letter-spacing: .6px;
+                   text-transform: uppercase; color: var(--yesil-k); }
+.klasik-durum { margin: 0 0 9px; font-size: .82rem; color: var(--gri); }
+.klasik-not { margin: 9px 0 0; font-size: .78rem; color: var(--gri); line-height: 1.5; }
+.klasik-not code { font-size: .92em; background: var(--yesil-a); padding: 1px 4px; border-radius: 4px; color: var(--yesil-k); }

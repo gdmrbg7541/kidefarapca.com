@@ -131,3 +131,52 @@ Yedek: _kaynak/yedekler/index_2026-09-24_sinav-karti-oncesi.html
   · sinifici/sinav.css yeniden üretildi (?v=2): sorukagidi.css +
     _kaynak/gecici/sinav-ek2.css
 ──────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────
+24.09.2026 · SORU HAZIRLA — klasik soru üretimi + Sınav/Temrin
+Sayfanın adı "Sınav Hazırla" → "SORU HAZIRLA". İki yol yeniden adlandı:
+  · SINAV   (eski "okul sınavı")  — YALNIZ klasik/açık uçlu sorular.
+    Çoktan seçmeli havuz bu yolda hiç görünmez: Yazılı ve Uygulamalı
+    Sınavlar Yönergesi m.5/1-e.
+  · TEMRİN  (eski "alıştırma")    — klasik sorular + havuzdaki 1.706
+    çoktan seçmeli birlikte.
+Eski depo değerleri (okul/alistirma) açılışta yeni adlara taşınıyor.
+
+YENİ: sinifici/klasik.js (15,4 KB) — KLASİK SORU ÜRETECİ
+Seçili sınıf+ünitenin KENDİ ders verisinden soru üretir. Arapça elle
+yazılmaz; cümleler, diyaloglar ve sözcükler muhadese/veri/ altından gelir.
+Dosya yolu sitenin kendi çözücüsüyle bulunur (KidefSinifVeri.dersYolu), bu
+yüzden kitap seçimi değişince doğru klasöre gider: 7. sınıf Mektep
+"7_1.js", 2027-2028 "y2627/7_1_1.js", 10. seçmeli "sec10/...".
+İki adlandırma da denenir: <sınıf>_<ünite>_<ders>.js ve <sınıf>_<ünite>.js
+
+13 tür (varsayılan AÇIK olanlar ★):
+  ★ Çeviri Ar→Tr · ★ Çeviri Tr→Ar · ★ Boşluk doldurma · ★ Cümle kurma
+  ★ Sözcük karşılığı · ★ Eşleştirme · ★ Okuma-anlama · ★ Yazma
+  ★ Konuşma (uygulamalı) · ★ Dinleme (uygulamalı)
+    Harekeleme · Yanlışı düzeltme · Sözcüklerle cümle kurma
+Kapalı olanlar sayfadaki "Sınıf, ünite ve soru türleri" kutusundan açılır.
+
+Üretim ölçümü (tarayıcıda):
+  5/1 → 53 · 6/3 → 107 · 7/1 → 106 · 8/2 → 107 · 9/1 → 65 · 10/1 → 106
+
+ÇIKTI KAPSAMI — asıl kazanç
+Havuzda yalnız SÖZCÜK, OKUMA, DİL BİLGİSİ ve SESLETİM soruları vardı;
+DİNLEME, KONUŞMA ve YAZMA çıktılarının karşılığı YOKTU. Klasik üretimle
+bu üçü de doldu (ünite başına 4 / 2 / 7 soru), yani hemen her öğrenme
+çıktısının karşılığında soru var.
+
+Öteki değişiklikler
+  · Sınıf ve ünite seçicileri çıktı ağacından alınıp klasik panele taşındı;
+    böylece TEMRİN yolunda da ünite seçilebiliyor.
+  · Kâğıt motoru: q.satir ile cevap için birden çok çizgi (çeviri 2,
+    paragraf yazma 4-6, uygulamalı sorularda 0).
+  · sinav.html artık sistem/sinifveri.js'i de yüklüyor (dersYolu için).
+  · index.html kartı "Soru Hazırla"; Sınavlar kartındaki bağlantı
+    sinav.html?sinif=N&yol=sinav
+  · Eski yönlendirmeler: sorukagidi.html → ?yol=temrin,
+    ciktisoru.html → ?yol=sinav
+  · index.html: etkinlik kartları şeridinin yazısı siyah (#111827);
+    sayı ve ok yeşil kaldı.
+Yedek: _kaynak/yedekler/sinav_2026-09-24_klasik-oncesi.js
+──────────────────────────────────────────────────────────────
