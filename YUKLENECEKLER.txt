@@ -51,3 +51,67 @@ böylece belge sınıfın adının hemen altına geliyor. Kartlar silinmiyor:
 
 Yedek: _kaynak/yedekler/index_2026-09-24_kart-serit-oncesi.html
 ──────────────────────────────────────────────────────────────
+
+24.09.2026 · KİTAP SEÇİCİ YUKARI ALINDI + SOSYAL POPUP SADELEŞTİ
+  · sistem/sinifmodul.js → yilSerit() artık şeridi .ih-kartlar'ın İÇİNE
+    değil, .ihsec-item içinde başlık düğmesinin YANINA koyuyor; şerit
+    "N. Sınıf Etkinlikleri" ile AYNI SATIRDA. Belge açılıp kartlar
+    toplanınca kaybolmuyor; seçilen kitap hem etkinlikleri hem belgeleri
+    belirlediği için hep görünmeli.
+    index.html'de .ihsec-item.yil-var ızgarası: başlık 1. sütun, şerit
+    2. sütun, panel iki sütunu birden kaplıyor. Izgara seçildi çünkü şerit
+    <button> olan başlığın içine konamaz (<select> düğme içinde geçersiz);
+    ızgarada başlık DOĞRUDAN çocuk kalıyor, ".ihsec-item > .ihsec-head"
+    seçicileri bozulmuyor. 640px altında şerit başlığın altına, tam
+    genişlikte ikinci satıra düşüyor.
+    .ihsec-item bulunmayan sayfalarda eski davranış sürüyor.
+    Yedek: _kaynak/yedekler/sinifmodul_2026-09-24_yil-serit-oncesi.js
+    index.html'de sinifmodul.js?v=20260924j olarak tazelendi.
+  · index.html → sosyal popupta yalnız Kidef Arapça hesapları kaldı;
+    @geylanidemirbag (YouTube) ve gylndmrbg (Instagram) kartları
+    kaldırıldı. Yalnız o karta ait igGradB degradesi de onunla gitti.
+    Yedek: _kaynak/yedekler/index_2026-09-24_sosyal-oncesi.html
+──────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────
+24.09.2026 · SINAV HAZIRLA — iki sayfa tek sayfada birleşti
+"Soru Kâğıdı Hazırla" (sorukagidi.html) ile "Öğrenme Çıktısına Göre Sınav"
+(ciktisoru.html) YENİ tek sayfada birleşti: sinav.html.
+
+Yeni dosyalar
+  · sinav.html                 (12,4 KB)
+  · sinifici/sinav.js          (62,7 KB) — sorukagidi.js'in denenmiş kâğıt
+    motoru (sayfalama, şık karıştırma, A/B kitapçığı, cevap anahtarı, PDF)
+    korunarak üstüne iki yol, çıktı ağacı ve okul anteti eklendi.
+  · sinifici/sinav.css         (27,3 KB) — sorukagidi.css + yeni bölümler
+
+İki yol
+  · OKUL SINAVI  — sınıf + ünite seç, çıktı ağacından çıktıya bas, havuz o
+    ALAN BECERİSİNE süzülür. Eklenen soruya çıktı kendiliğinden atanır,
+    Kâğıdım listesinden değiştirilebilir (süreç bileşeni de seçilebilir).
+    Antet okul bilgilerinden kurulur: ders yılı + okul + "8. SINIF ARAPÇA
+    DERSİ 1. DÖNEM 1. YAZILI SINAVI" + öğrenci kutusu + AÇIKLAMALAR.
+    Her sorunun sağ üstünde çıktı numarası (8.2.3.1) yazar; cevap
+    anahtarında ve konu-kazanım dağılım tablosunda da görünür.
+  · ALIŞTIRMA    — eski Soru Kâğıdı Hazırla davranışı; başlık serbest,
+    okul adı yok, açıklama yok, çıktı numarası kapalı (istenirse açılır).
+
+OKUL VE ÖĞRETMEN ADI DEPOYA YAZILMAZ — yalnız o tarayıcıda
+(localStorage 'kidef-sinav-okul-v1'). Bir kez yazılır, sonraki sınavlarda
+kendiliğinden dolar.
+
+index.html
+  · Sınıfiçi Materyaller'deki İKİ kart TEK "Sınav Hazırla" kartına indi.
+  · Belge ızgarasındaki "Sınavlar" kartı açılınca üstte iki yol çıkıyor:
+    "Sınav Oluştur" (sinav.html?sinif=N&yol=okul) ve "Hazır sınavlar"
+    (altındaki dosya listesi). Yeni kart eklenmedi.
+
+Eskiler
+  · sorukagidi.html ve ciktisoru.html YÖNLENDİRMEYE çevrildi (eski yer
+    imleri bozulmasın): sinav.html?yol=alistirma / ?yol=okul.
+  · sinifici/{sorukagidi,ciktisoru}.{js,css} yayın kümesinden çıkarıldı →
+    _kaynak/site-disi/eski-sinav/ ; tam kopya
+    _kaynak/yedekler/eski-sinav-sayfalari/ altında.
+
+Yedek: _kaynak/yedekler/index_2026-09-24_sinav-karti-oncesi.html
+──────────────────────────────────────────────────────────────

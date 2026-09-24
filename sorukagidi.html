@@ -1,149 +1,29 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soru Kâğıdı Hazırla — Kidef Arapça</title>
-  <meta name="description" content="Kidef Arapça soru havuzundan soru seç, çıktıya hazır A4 soru kâğıdını PDF olarak indir.">
-  <!-- Google Analytics (GA4) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FV9JD15KLW');
-  </script>
-  <link rel="stylesheet" href="sinifici/sorukagidi.css?v=1">
-  <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
-  <link rel="stylesheet" href="arakom.css?v=2">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soru Kâğıdı Hazırla — Sınav Hazırla'ya taşındı</title>
+<!-- 24.09.2026: "Soru Kâğıdı Hazırla" sayfası "Sınav Hazırla" (sinav.html) içinde birleşti.
+     Bu dosya yalnız eski yer imleri ve bağlantılar bozulmasın diye duruyor;
+     hemen yeni sayfaya gönderir. Eski sürüm:
+     _kaynak/yedekler/eski-sinav-sayfalari/ -->
+<meta http-equiv="refresh" content="0; url=sinav.html?yol=alistirma">
+<link rel="canonical" href="sinav.html">
+<style>body{font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;
+min-height:100vh;display:grid;place-items:center;background:#f7fafd;color:#0f2a43;padding:24px}
+.k{max-width:460px;text-align:center;background:#fff;border:1.4px solid #e8eef5;
+border-radius:16px;padding:26px 24px;box-shadow:0 10px 30px rgba(15,42,67,.07)}
+a{color:#0E7A68;font-weight:700}
+@media (prefers-color-scheme:dark){body{background:#0E1A24;color:#E2E8F0}
+.k{background:#16222E;border-color:#2B3A48}a{color:#8FEAD5}}</style>
 </head>
-<body data-sekme="havuz">
-
-<header class="ust">
-  <div class="ust-ic">
-    <div class="ust-sol">
-      <h1>Soru Kâğıdı Hazırla</h1>
-      <p>Soruları süz, tek tek seç, çıktıya hazır A4 kâğıdı indir. <span id="havuzBilgi"></span></p>
-    </div>
-    <div class="ust-say"><b class="say-secili">0</b> soru seçili</div>
-  </div>
-</header>
-
-<nav class="sekmeler" aria-label="Bölümler">
-  <button type="button" class="sekme" data-sekme="havuz" aria-selected="true">Soru havuzu</button>
-  <button type="button" class="sekme" data-sekme="kagit" aria-selected="false">Kâğıdım (<span class="say-secili">0</span>)</button>
-</nav>
-
-<div id="yukleniyor"><div class="cark"></div>Soru havuzu yükleniyor…</div>
-
-<main id="uygulama" hidden>
-  <!-- ===================== SORU HAVUZU ===================== -->
-  <section class="havuz" aria-label="Soru havuzu">
-    <div class="suzgec kutu">
-      <div class="ara-kutu">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-        <input id="ara" type="search" placeholder="Soruda ara — Türkçe ya da Arapça (harekesiz de olur)" autocomplete="off">
-      </div>
-      <div class="suz-grup"><h3>Konu / sınıf</h3><div id="suz-konu" class="cipler"></div></div>
-      <div class="suz-grup"><h3>Soru içeriği</h3><div id="suz-tip" class="cipler"></div></div>
-      <div class="suz-grup"><h3>Soru biçimi</h3><div id="suz-bicim" class="cipler"></div></div>
-      <div class="suz-grup"><h3>Zorluk</h3><div id="suz-zorluk" class="cipler"></div></div>
-      <button type="button" id="suzTemizle" hidden>✕ Süzgeçleri temizle</button>
-    </div>
-
-    <div class="liste-ust">
-      <b id="bulunan">0 soru</b>
-      <div class="toplu">
-        <button type="button" id="hepsiniEkle" title="Listede görünen soruların hepsini kâğıda ekle">Görünenleri ekle</button>
-        <span>Rastgele</span>
-        <input id="rastgeleSayi" type="number" min="1" max="50" value="10" aria-label="Rastgele eklenecek soru sayısı">
-        <button type="button" id="rastgeleEkle">soru ekle</button>
-      </div>
-    </div>
-    <div id="liste" aria-live="polite"></div>
-    <button type="button" id="dahaFazla" hidden></button>
-  </section>
-
-  <!-- ===================== KÂĞIDIM ===================== -->
-  <aside class="kagit-panel kutu" aria-label="Kâğıdım">
-    <div class="panel-bas">
-      <h2>Kâğıdım <span class="say-secili">0</span></h2>
-      <button type="button" id="kagitTemizle">Temizle</button>
-    </div>
-    <p id="kagitBos">Henüz soru yok.<br>Havuzdan <b>+ Kâğıda ekle</b> ile başla.</p>
-    <ol id="kagit"></ol>
-    <div id="kagitAraclar"><span id="puanOzet"></span></div>
-
-    <details class="ayarlar">
-      <summary>Kâğıt ayarları</summary>
-      <label class="alan">Sınav / etkinlik başlığı<input type="text" data-ayar="baslik" maxlength="80"></label>
-      <label class="alan">Okul adı<input type="text" data-ayar="okul" maxlength="90" placeholder="(isteğe bağlı)"></label>
-      <div class="iki">
-        <label class="alan">Ders<input type="text" data-ayar="ders" maxlength="40"></label>
-        <label class="alan">Sınıf<input type="text" data-ayar="sinif" maxlength="20" placeholder="ör. 7/A"></label>
-      </div>
-      <div class="iki">
-        <label class="alan">Tarih<input type="text" data-ayar="tarih" maxlength="20"></label>
-        <label class="alan">Toplam puan<input type="number" data-ayar="toplam" min="1" max="1000"></label>
-      </div>
-      <label class="onay"><input type="checkbox" data-ayar="ogrenci"> Öğrenci bilgi kutusu <small>(ad, numara, sınıf, puan)</small></label>
-      <label class="onay"><input type="checkbox" data-ayar="puan"> Soru puanlarını göster</label>
-      <label class="onay"><input type="checkbox" data-ayar="anahtar"> Cevap anahtarı ekle <small>(son sayfa)</small></label>
-
-      <div class="secenek-grup"><span>Kitapçık</span>
-        <div class="dilim">
-          <label><input type="radio" name="kitapcik" data-ayar="kitapcik" value="tek"><span>Tek</span></label>
-          <label><input type="radio" name="kitapcik" data-ayar="kitapcik" value="AB"><span>A ve B</span></label>
-        </div>
-      </div>
-      <div class="secenek-grup karisim"><span>Şık sırası</span>
-        <p>Doğru şıklar A–E arasında dengeli dağıtılır; aynı harf üst üste en çok iki kez gelir.</p>
-        <div class="karisim-sat">
-          <button type="button" id="yenidenKaristir"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h3.5c2.2 0 3.6 1 4.8 3l1.4 2.4c1.2 2 2.6 3 4.8 3H21M3 17h3.5c1.6 0 2.8-.6 3.8-1.8M13.7 8.8c1-1.2 2.2-1.8 3.8-1.8H21M18 4l3 3-3 3M18 14l3 3-3 3"/></svg>Yeniden karıştır</button>
-          <small id="karisimNo"></small>
-        </div>
-      </div>
-      <div class="secenek-grup"><span>Yazı boyu</span>
-        <div class="dilim">
-          <label><input type="radio" name="boyut" data-ayar="boyut" value="normal"><span>Normal</span></label>
-          <label><input type="radio" name="boyut" data-ayar="boyut" value="buyuk"><span>Büyük</span></label>
-        </div>
-      </div>
-      <div class="secenek-grup"><span>PDF kalitesi</span>
-        <div class="dilim">
-          <label><input type="radio" name="kalite" data-ayar="kalite" value="keskin"><span>Baskı (keskin)</span></label>
-          <label><input type="radio" name="kalite" data-ayar="kalite" value="normal"><span>Paylaşım (küçük)</span></label>
-        </div>
-      </div>
-    </details>
-
-    <div class="eylemler">
-      <button type="button" id="btnOnizle" disabled>Önizle</button>
-      <button type="button" id="btnYazdir" disabled title="Tarayıcının baskı penceresi — en keskin çıktı, 'PDF olarak kaydet' de buradan">Yazdır</button>
-      <button type="button" id="btnPdf" class="ana" disabled>PDF İndir</button>
-    </div>
-    <div id="durum" class="durum" hidden role="status"></div>
-  </aside>
-</main>
-
-<!-- ===================== ÖNİZLEME ===================== -->
-<div id="onizleme" hidden role="dialog" aria-modal="true" aria-labelledby="onizlemeBaslik">
-  <div class="oz-ust">
-    <h2 id="onizlemeBaslik">Önizleme</h2>
-    <span id="onizlemeBilgi"></span>
-    <button type="button" id="onizlemeYazdir">Yazdır</button>
-    <button type="button" id="onizlemePdf" class="ana">PDF İndir</button>
-    <button type="button" id="onizlemeKapat" aria-label="Önizlemeyi kapat">✕</button>
-  </div>
-  <div id="onizlemeSayfalar"></div>
+<body>
+<div class="k">
+  <h1 style="font-size:1.1rem;margin:0 0 8px">Soru Kâğıdı Hazırla artık <b>Sınav Hazırla</b> içinde</h1>
+  <p style="margin:0 0 14px;color:#64748b">Sayfa birkaç saniye içinde yeni adrese gidecek.</p>
+  <p style="margin:0"><a href="sinav.html?yol=alistirma">Hemen geç →</a></p>
 </div>
-
-<!-- kâğıt burada ölçeksiz kurulur ve ölçülür (ekran dışı); PDF de buradan çekilir -->
-<div id="sahne" aria-hidden="true"></div>
-<!-- yazdırılırken yalnız bu alan görünür -->
-<div id="baskiAlani" aria-hidden="true"></div>
-
-<script src="sinifici/sorukagidi.js?v=1"></script>
-<script src="sistem/geri.js?v=20260915a"></script>
+<script>location.replace('sinav.html?yol=alistirma');</script>
 </body>
 </html>

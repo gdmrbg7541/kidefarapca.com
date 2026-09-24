@@ -2296,11 +2296,16 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           </div>
         </a>
 
-        <!-- SORU KÂĞIDI HAZIRLA — bilgi yarışmasının soru havuzundan
-             (oyunlar/biy_kaliplar.js + oyunlar/bilgiyarismasikacom.js)
-             öğretmen soru seçer; A4 kâğıt, A/B kitapçığı ve cevap anahtarı
-             PDF iner ya da yazdırılır. Dosyalar: sorukagidi.html + sinifici/ -->
-        <a href="sorukagidi.html" target="_blank" rel="opener" class="game-card kss-card">
+        <!-- SINAV HAZIRLA (24.09.2026) — "Soru Kâğıdı Hazırla" ile "Öğrenme
+             Çıktısına Göre Sınav" burada BİRLEŞTİ. Sayfa açılışta iki yol sorar:
+               · Okul sınavı  → öğrenme çıktılarına göre; antet okul bilgilerinden
+                 kendiliğinden kurulur, her sorunun yanında çıktı numarası (8.2.1.1)
+                 yazar, konu-kazanım dağılım tablosu çıkar.
+               · Alıştırma    → öğretmen soru tipini kendi seçer, başlık serbest.
+             Okul ve öğretmen adı YALNIZ tarayıcıda saklanır, depoya yazılmaz.
+             Dosyalar: sinav.html + sinifici/sinav.{js,css} + veri/veri_ciktilar.js
+             Eski iki sayfa yönlendirmeye çevrildi (eski yer imleri bozulmasın). -->
+        <a href="sinav.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
             <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
               <path d="M14 5 h24 l12 12 v39 a3 3 0 0 1 -3 3 H14 a3 3 0 0 1 -3 -3 V8 a3 3 0 0 1 3 -3 Z" fill="#fff" stroke="#16A085" stroke-width="2.6" stroke-linejoin="round"/>
@@ -2314,45 +2319,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
                 <g fill="none" stroke="#9aa6b3" stroke-width="1.8"><circle cx="18.5" cy="43.5" r="2.6"/><circle cx="26" cy="43.5" r="2.6"/><circle cx="33.5" cy="43.5" r="2.6"/></g>
                 <circle class="kga-sk-isaret2" cx="33.5" cy="43.5" r="2.6" fill="#16A085"/>
               </g>
-              <g class="kga-sk-pdf"><rect x="37" y="47" width="24" height="13.5" rx="3.5" fill="#EE5253"/><text x="49" y="57" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">PDF</text></g>
+              <g class="kga-cs-kod"><rect x="34" y="47" width="27" height="13.5" rx="3.4" fill="#0E9E86"/>
+                <text x="47.5" y="56.6" font-size="7.6" font-weight="700" fill="#fff" text-anchor="middle" font-family="system-ui,sans-serif">8.2.1</text></g>
             </svg></div>
-            <h3>Soru Kâğıdı Hazırla</h3>
-            <span class="game-card-description">Soru havuzundan seç; cevap anahtarlı A4 kâğıdı PDF indir ya da yazdır.</span>
+            <h3>Sınav Hazırla</h3>
+            <span class="game-card-description">Okul sınavı öğrenme çıktılarına göre, alıştırma serbest; cevap anahtarlı A4 kâğıt.</span>
             <span class="status-badge available">Hazırla!</span>
           </div>
         </a>
 
-        <!-- >>> ÖĞRENME ÇIKTISINA GÖRE SINAV (23.09.2026) -->
-        <!-- MEB Arapça öğretim programının ÖĞRENME ÇIKTILARINA ve SÜREÇ
-             BİLEŞENLERİNE göre soru seçtiren sayfa. Çıktıya tıklayınca havuz
-             o beceriye süzülür; soru seçilince çıktısı kendiliğinden atanır.
-             Sonunda çıktı-soru dağılım tablosu yazdırılır ve seçim Soru Kâğıdı
-             Hazırla sayfasına aktarılır.
-             Dosyalar: ciktisoru.html + sinifici/ciktisoru.{js,css}
-                       + veri/veri_ciktilar.js (programdan ayıklanmış veri) -->
-        <a href="ciktisoru.html" target="_blank" rel="opener" class="game-card kss-card">
-          <div class="default-game-content">
-            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
-              <path d="M12 6 h30 l10 10 v42 a2.8 2.8 0 0 1 -2.8 2.8 H12 A2.8 2.8 0 0 1 9.2 58 V8.8 A2.8 2.8 0 0 1 12 6 Z" fill="#fff" stroke="#4F46E5" stroke-width="2.6" stroke-linejoin="round"/>
-              <path d="M42 6 v8 a2.8 2.8 0 0 0 2.8 2.8 H53" fill="#EEF0FE" stroke="#4F46E5" stroke-width="2.4" stroke-linejoin="round"/>
-              <rect x="15" y="21" width="21" height="5.4" rx="2.7" fill="#EEF0FE"/>
-              <g stroke="#C7CBF7" stroke-width="2.6" stroke-linecap="round">
-                <line x1="24" y1="34" x2="47" y2="34"/><line x1="24" y1="43" x2="45" y2="43"/><line x1="24" y1="52" x2="41" y2="52"/>
-              </g>
-              <g fill="none" stroke="#16A085" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <path class="kga-cs-t1" d="M14.6 33.6 l2.6 2.8 l4.4 -5.4"/>
-                <path class="kga-cs-t2" d="M14.6 42.6 l2.6 2.8 l4.4 -5.4"/>
-                <path class="kga-cs-t3" d="M14.6 51.6 l2.6 2.8 l4.4 -5.4"/>
-              </g>
-              <g class="kga-cs-kod"><rect x="33" y="10" width="26" height="11" rx="3.4" fill="#4F46E5"/>
-                <text x="46" y="18.6" font-size="7.4" font-weight="700" fill="#fff" text-anchor="middle" font-family="system-ui,sans-serif">ARP</text></g>
-            </svg></div>
-            <h3>Öğrenme Çıktısına Göre Sınav</h3>
-            <span class="game-card-description">Çıktı ve süreç bileşenine göre soru seç; dağılım tablosunu yazdır.</span>
-            <span class="status-badge available">Seç!</span>
-          </div>
-        </a>
-        <!-- <<< ÖĞRENME ÇIKTISINA GÖRE SINAV -->
 
         <!-- ARAPÇA KLAVYE — dokunarak/fareyle harekeli Arapça yazma. Harf dizilimi
              kaliplartablosu klavyesiyle aynı; sağda hareke paneli, semboller, mühürler.
@@ -2653,7 +2628,44 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
                     -webkit-appearance:none; appearance:none; }
       .ihsec-head:hover { filter:brightness(.98); }
       .ihsec-head:focus-visible { outline:3px solid #2563EB; outline-offset:-3px; }
-      .ihsec-chevron { flex:none; margin-left:auto; font-size:1rem; color:#94a3b8; transition:transform .32s ease; }
+      /* Aç/kapa oku satırın EN SAĞINDA ve iri: uzaktan da görünsün. */
+      .ihsec-chevron { flex:none; margin-left:auto; font-size:1.5rem; line-height:1;
+                       color:#94a3b8; transition:transform .32s ease; }
+      /* ÖĞRETİM YILI ŞERİDİ BAŞLIK SATIRINDA (24.09.2026)
+         Seçilen kitap hem etkinlikleri hem belgeleri belirliyor, bu yüzden
+         "N. Sınıf Etkinlikleri" başlığıyla AYNI satırda duruyor ve belgeye
+         basılıp kartlar toplanınca kaybolmuyor.
+         Neden ızgara: şerit <button> olan başlığın İÇİNE konamaz (seçici bir
+         <select>, düğme içinde geçersiz ve tıklaması akordiyonu açardı).
+         Izgara sayesinde başlık DOĞRUDAN çocuk kalıyor, aşağıdaki
+         ".ihsec-item > .ihsec-head" seçicileri bozulmuyor. */
+      .ihsec-item.yil-var { display:grid; grid-template-columns:1fr; }
+      /* Başlık düğmesi SATIRIN TAMAMINI kaplar — böylece içindeki aç/kapa oku
+         (margin-left:auto ile) en sağda kalır. Şerit aynı ızgara gözünde, okun
+         hemen solunda, düğmenin ÜSTÜNDE durur: <select> düğmenin içinde
+         olmadığı için tıklaması akordiyonu açmaz. */
+      .ihsec-item.yil-var > .ihsec-head { grid-column:1; grid-row:1; }
+      .ihsec-item.yil-var > .ihsec-panel { grid-column:1; grid-row:2; }
+      .ihsec-item.yil-var > .sm-yil-serit {
+        grid-column:1; grid-row:1; align-self:center; justify-self:end;
+        display:flex; align-items:center; margin:0 46px 0 0; padding:0;
+        background:none; border:0; z-index:2;
+      }
+      /* Dar ekranda başlıkla yan yana sığmaz: şerit başlığın ALTINA, tam
+         genişlikte ikinci bir satır olur; yine panelin dışında, hep görünür. */
+      @media (max-width:640px) {
+        .ihsec-item.yil-var { display:block; }
+        .ihsec-item.yil-var > .sm-yil-serit {
+          justify-self:auto; justify-content:flex-start; margin:0; padding:7px 12px;
+          background:linear-gradient(180deg,#f7fafd,#f1f6fb);
+          border-bottom:1.5px solid #e8eef5;
+        }
+        #imam-hatip .ih-panel .ihsec-item.yil-var > .sm-yil-serit {
+          background:linear-gradient(180deg,var(--ihcy),#fff);
+          border-bottom-color:var(--ihcb);
+        }
+        .ihsec-item.yil-var:not(.acik) > .sm-yil-serit { border-bottom-color:transparent; }
+      }
       .ihsec-item.acik > .ihsec-head .ihsec-chevron { transform:rotate(180deg); }
       .ihsec-item:not(.acik) > .ihsec-head { border-bottom-color:transparent; }
       #imam-hatip .ihsec-item:not(.acik) > .ihsec-head { border-bottom-color:transparent; }
@@ -2673,6 +2685,33 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         .ihsec-head { padding:10px 12px; }
         .ihsec-head .ihsec-ic { width:26px; height:26px; }
         .ihsec-panel-in { padding:11px 10px 14px; }
+      }
+      /* --- Sınavlar kartının başındaki iki yol (24.09.2026) --- */
+      .ihsv-sec { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:2px 0 14px; }
+      @media (max-width:640px){ .ihsv-sec { grid-template-columns:1fr; } }
+      .ihsv-dug, .ihsv-hazir {
+        display:flex; align-items:center; gap:11px; padding:11px 13px;
+        border-radius:12px; border:1.4px solid rgba(22,160,133,.30); background:#F6FDFB;
+        text-decoration:none; color:inherit;
+      }
+      .ihsv-dug { transition:border-color .18s, box-shadow .18s, transform .18s; }
+      .ihsv-dug:hover { border-color:#16A085; transform:translateY(-1px);
+                        box-shadow:0 8px 20px rgba(22,160,133,.16); }
+      .ihsv-dug:focus-visible { outline:3px solid #16A085; outline-offset:2px; }
+      .ihsv-ik { flex:none; width:38px; height:38px; }
+      .ihsv-ik svg { width:100%; height:100%; display:block; }
+      .ihsv-yazi { display:flex; flex-direction:column; gap:2px; min-width:0; }
+      .ihsv-sec b { font-size:.95rem; font-weight:800; color:#0B5F51; }
+      .ihsv-sec small { font-size:.76rem; color:#5C7D76; line-height:1.4; }
+      .ihsv-ok { margin-left:auto; font-size:1.1rem; color:#16A085; }
+      .ihsv-hazir { flex-direction:column; align-items:flex-start; gap:2px;
+                    background:#fff; border-style:dashed; }
+      @media (prefers-color-scheme: dark){
+        .ihsv-dug { background:rgba(22,160,133,.12); border-color:rgba(22,160,133,.32); }
+        .ihsv-hazir { background:#16222E; border-color:#2B3A48; }
+        .ihsv-sec b { color:#8FEAD5; }
+        .ihsv-sec small { color:#67C7B2; }
+        .ihsv-ok { color:#8FEAD5; }
       }
       /* --- sınıf içi döküman akordiyonu (iç içe) --- */
       .ihdoc-acc { display:flex; flex-direction:column; gap:9px; }
@@ -3067,7 +3106,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="oyunlar/tk_ortaokul.js?v=20260924h"></script>
     <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
     <script src="muhadese/muhadese.js?v=20260924h"></script>
-    <script src="sistem/sinifmodul.js?v=20260924h"></script>
+    <script src="sistem/sinifmodul.js?v=20260924j"></script>
     <!-- İmam Hatip 7/9/10 «Kitap Etkinlikleri» kartı: sınıfın kart
          ızgarasına girer, ünite listesi kartın altında açılır. 7. sınıfta
          yalnız MEB 2027-2028 kitabı seçiliyken görünür. -->
@@ -4350,6 +4389,27 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           kitapAdi(sinif, beklenen) + '</b> kitabına göre hazırlandı. Seçili kitabın ' +
           'belgeleri henüz hazırlanmadı.</div>';
       }
+      /* Sınavlar kartının başındaki iki yol. Sınav Oluştur sayfayı o sınıfla
+         ve "okul sınavı" yoluyla açar; öğretmen ünite seçip çıktı ağacından
+         soru seçer. Okul adı ve öğretmen bilgisi yalnız kendi tarayıcısında
+         saklanır, depoya yazılmaz. */
+      function sinavYollari(sinif) {
+        return '<div class="ihsv-sec">' +
+          '<a class="ihsv-dug" href="sinav.html?sinif=' + sinif + '&yol=okul" target="_blank" rel="noopener">' +
+            '<span class="ihsv-ik" aria-hidden="true"><svg viewBox="0 0 40 40">' +
+              '<rect x="6" y="4" width="24" height="30" rx="3.2" fill="#E6F7F2" stroke="#16A085" stroke-width="2"/>' +
+              '<path d="M12 12h12M12 18h12M12 24h7" stroke="#16A085" stroke-width="2" stroke-linecap="round"/>' +
+              '<circle cx="28.5" cy="27.5" r="8" fill="#fff" stroke="#16A085" stroke-width="2"/>' +
+              '<path d="M28.5 23.5v8M24.5 27.5h8" stroke="#16A085" stroke-width="2.2" stroke-linecap="round"/>' +
+            '</svg></span>' +
+            '<span class="ihsv-yazi"><b>Sınav Oluştur</b>' +
+            '<small>Öğrenme çıktılarına göre · antet ve çıktı numaraları hazır</small></span>' +
+            '<span class="ihsv-ok" aria-hidden="true">↗</span>' +
+          '</a>' +
+          '<div class="ihsv-hazir"><b>Hazır sınavlar</b>' +
+          '<small>Aşağıdaki listede — indir, Word\'de düzenle, yazdır</small></div>' +
+          '</div>';
+      }
       function ihdocKur(mount) {
         var sinif = mount.getAttribute('data-sinif');
         var sec = (sinif === '10' && seciliKitap('10') === 'secmeli');
@@ -4357,8 +4417,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           if (sec && SEC10_PDF[t.ad]) return SEC10_PDF[t.ad];
           return (SINIF_PDF[sinif] && SINIF_PDF[sinif][t.ad]) || [];
         }, function (t) {
-          if (sec && SEC10_PDF[t.ad]) return SEC10_GIRIS[t.ad] || '';
-          return kitapUyarisi(sinif) + ((SINIF_GIRIS[sinif] && SINIF_GIRIS[sinif][t.ad]) || '');
+          /* Sınavlar kartı iki şey sunar: HAZIR sınav dosyaları (hemen altta
+             listelenir) ve SINAV OLUŞTUR (sinav.html — öğrenme çıktılarına
+             göre yeni sınav). 24.09.2026'da eklendi. */
+          var bas = (t.ad === 'Sınavlar') ? sinavYollari(sinif) : '';
+          if (sec && SEC10_PDF[t.ad]) return bas + (SEC10_GIRIS[t.ad] || '');
+          return bas + kitapUyarisi(sinif) + ((SINIF_GIRIS[sinif] && SINIF_GIRIS[sinif][t.ad]) || '');
         });
       }
       /* Kitap değişince açık olan kategori açık kalsın. */
@@ -5586,21 +5650,6 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           </div>
         </a>
 
-        <a href="https://www.youtube.com/@geylanidemirbag" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-yt">
-          <div class="default-game-content">
-            <div class="sosyal-ikon"><svg viewBox="0 0 64 64" aria-hidden="true" style="overflow:visible">
-              <g class="kga-zil"><path d="M50 6 q6 1 6 8 v3 l2.4 3 h-16.8 l2.4 -3 v-3 q0 -7 6 -8 Z" fill="#F59E0B"/><circle cx="50" cy="21.5" r="2.2" fill="#F59E0B"/></g>
-              <g class="kga-begen"><path d="M6 44 h4.6 v11 H6 Z M12 44 l4 -7.6 q2.6 .6 2 3.6 l-.8 4 h6.4 q2.8 0 2.2 2.8 l-1.6 6.4 q-.5 1.8 -2.4 1.8 h-9.8 Z" fill="#64748B"/><text x="30" y="49" font-size="8.5" fill="#F59E0B" font-weight="bold">+1</text></g>
-              <rect x="15" y="20" width="34" height="24" rx="8" fill="#FF0000"/>
-              <path class="kga-ucgen" d="M28.5 26.5 L38.5 32 L28.5 37.5 Z" fill="#fff"/>
-            </svg></div>
-            <h3>Geylani Demirbağ</h3>
-            <span class="sosyal-kullanici">@geylanidemirbag</span>
-            <span class="game-card-description">Geliştirici kanalımız.</span>
-            <span class="status-badge available">▶ Abone Ol</span>
-          </div>
-        </a>
-
         <a href="https://www.instagram.com/kidefarapca/" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-ig">
           <div class="default-game-content">
             <div class="sosyal-ikon"><svg viewBox="0 0 64 64" aria-hidden="true" style="overflow:visible"><defs><linearGradient id="igGradA" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F58529"/><stop offset=".45" stop-color="#DD2A7B"/><stop offset=".8" stop-color="#8134AF"/><stop offset="1" stop-color="#515BD4"/></linearGradient></defs>
@@ -5624,28 +5673,6 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           </div>
         </a>
 
-        <a href="https://www.instagram.com/gylndmrbg/" target="_blank" rel="noopener" class="game-card kss-card sosyal-card sosyal-ig">
-          <div class="default-game-content">
-            <div class="sosyal-ikon"><svg viewBox="0 0 64 64" aria-hidden="true" style="overflow:visible"><defs><linearGradient id="igGradB" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#F58529"/><stop offset=".45" stop-color="#DD2A7B"/><stop offset=".8" stop-color="#8134AF"/><stop offset="1" stop-color="#515BD4"/></linearGradient></defs>
-              <rect x="10" y="12" width="40" height="40" rx="11" fill="none" stroke="url(#igGradB)" stroke-width="3.6"/>
-              <circle cx="41.5" cy="20.5" r="2.6" fill="#DD2A7B"/>
-              <clipPath id="igMercekB"><circle cx="30" cy="32" r="9.4"/></clipPath>
-              <g clip-path="url(#igMercekB)"><g class="kga-akis">
-                <rect x="23.5" y="24" width="13" height="7" rx="2.4" fill="rgba(221,42,123,.85)"/>
-                <rect x="23.5" y="34" width="13" height="7" rx="2.4" fill="rgba(129,52,175,.55)"/>
-                <rect x="23.5" y="44" width="13" height="7" rx="2.4" fill="rgba(221,42,123,.85)"/>
-                <rect x="23.5" y="54" width="13" height="7" rx="2.4" fill="rgba(129,52,175,.55)"/>
-              </g></g>
-              <circle cx="30" cy="32" r="9.4" fill="none" stroke="url(#igGradB)" stroke-width="3.2"/>
-              <path class="kga-kalp" d="M55 34 c-2.4 -2.4 -6.2 -.7 -6.2 2.1 0 2.3 2.7 4 6.2 7 3.5 -3 6.2 -4.7 6.2 -7 0 -2.8 -3.8 -4.5 -6.2 -2.1 Z" fill="#DD2A7B"/>
-              <path class="kga-kalp k2x" d="M58 22 c-1.7 -1.7 -4.4 -.5 -4.4 1.5 0 1.6 1.9 2.8 4.4 5 2.5 -2.2 4.4 -3.4 4.4 -5 0 -2 -2.7 -3.2 -4.4 -1.5 Z" fill="rgba(129,52,175,.75)"/>
-            </svg></div>
-            <h3>Geylani Demirbağ</h3>
-            <span class="sosyal-kullanici">@gylndmrbg</span>
-            <span class="game-card-description">Geliştirici hesabı; yeni içerik haberleri.</span>
-            <span class="status-badge available">📸 Takip Et</span>
-          </div>
-        </a>
       </div>
     </section>
 

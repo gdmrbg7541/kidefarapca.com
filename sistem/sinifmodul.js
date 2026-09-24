@@ -128,8 +128,28 @@
   function yilSerit(mount, n, grid) {
     var v = window.KidefSinifVeri;
     if (!v || !v.yilRozetHtml) return;
+    /* ŞERİT KART KUTUSUNUN DIŞINDA (24.09.2026)
+       Artık "N. Sınıf Etkinlikleri" başlığıyla AYNI SATIRDA, başlık
+       düğmesinin yanında duruyor — kart ızgarasının içinde değil.
+       Sebep: bir belgeye dokununca etkinlik kartları toplanıyor. Şerit
+       kartların içinde kalsaydı onlarla birlikte kaybolurdu; oysa seçilen
+       kitap HEM etkinlikleri HEM belgeleri belirliyor, öğretmenin hangi
+       kitaba baktığını her an görmesi gerekiyor.
+       .ihsec-panel-in'in bulunmadığı sayfalarda eski davranış sürer. */
+    var kap = (mount.closest && mount.closest('.ihsec-item')) || mount;
+    /* Önceki sürümlerden kalan şeritler (kart kutusunda ya da panelin
+       başında) toplanır; şerit artık başlık satırında duruyor. */
+    if (kap !== mount) {
+      var eskiYerler = [mount, mount.parentNode];
+      for (var e = 0; e < eskiYerler.length; e++) {
+        var yer = eskiYerler[e]; if (!yer || !yer.children) continue;
+        var ic = yer.children;
+        for (var j = ic.length - 1; j >= 0; j--)
+          if (ic[j].className === 'sm-yil-serit') yer.removeChild(ic[j]);
+      }
+    }
     /* Doğrudan çocuk olan eski şerit (varsa) — :scope kullanmadan */
-    var eski = null, c = mount.children;
+    var eski = null, c = kap.children;
     for (var i = 0; i < c.length; i++)
       if (c[i].className === 'sm-yil-serit') { eski = c[i]; break; }
     var kod = v.yilRozetHtml(n, { secici: true });
@@ -139,8 +159,15 @@
     var d = document.createElement('div');
     d.className = 'sm-yil-serit';
     d.innerHTML = kod;
+    if (kap !== mount) {
+      /* Başlık düğmesinin HEMEN YANINA; .yil-var ızgarayı açar
+         (index.html'deki .ihsec-item.yil-var kuralları). */
+      var bas = kap.querySelector('.ihsec-head');
+      kap.classList.add('yil-var');
+      kap.insertBefore(d, bas ? bas.nextSibling : kap.firstChild);
+    }
     /* Izgaranın ÜSTÜNE; ızgara yoksa kutunun başına */
-    mount.insertBefore(d, (grid && grid.parentNode === mount) ? grid : mount.firstChild);
+    else mount.insertBefore(d, (grid && grid.parentNode === mount) ? grid : mount.firstChild);
   }
 
   /* ---------------- «Maarif» etiketi ----------------

@@ -1,123 +1,29 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Öğrenme Çıktısına Göre Sınav — Kidef Arapça</title>
-  <meta name="description" content="MEB Arapça öğretim programının öğrenme çıktılarına ve süreç bileşenlerine göre soru seç; çıktı-soru dağılım tablosunu yazdır, soru kâğıdına aktar.">
-  <!-- Google Analytics (GA4) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FV9JD15KLW');
-  </script>
-  <link rel="stylesheet" href="sinifici/ciktisoru.css?v=1">
-  <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
-  <link rel="stylesheet" href="arakom.css?v=2">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Öğrenme Çıktısına Göre Sınav — Sınav Hazırla'ya taşındı</title>
+<!-- 24.09.2026: "Öğrenme Çıktısına Göre Sınav" sayfası "Sınav Hazırla" (sinav.html) içinde birleşti.
+     Bu dosya yalnız eski yer imleri ve bağlantılar bozulmasın diye duruyor;
+     hemen yeni sayfaya gönderir. Eski sürüm:
+     _kaynak/yedekler/eski-sinav-sayfalari/ -->
+<meta http-equiv="refresh" content="0; url=sinav.html?yol=okul">
+<link rel="canonical" href="sinav.html">
+<style>body{font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;
+min-height:100vh;display:grid;place-items:center;background:#f7fafd;color:#0f2a43;padding:24px}
+.k{max-width:460px;text-align:center;background:#fff;border:1.4px solid #e8eef5;
+border-radius:16px;padding:26px 24px;box-shadow:0 10px 30px rgba(15,42,67,.07)}
+a{color:#0E7A68;font-weight:700}
+@media (prefers-color-scheme:dark){body{background:#0E1A24;color:#E2E8F0}
+.k{background:#16222E;border-color:#2B3A48}a{color:#8FEAD5}}</style>
 </head>
-<body data-sekme="cikti">
-
-<header class="ust">
-  <div class="ust-ic">
-    <div class="ust-sol">
-      <h1>Öğrenme Çıktısına Göre Sınav</h1>
-      <p>Çıktıya ya da süreç bileşenine tıkla, uygun soruları gör. Soru seçtiğinde çıktısı kendiliğinden işaretlenir. <span id="havuzBilgi"></span></p>
-    </div>
-    <div class="ust-say"><b class="say-secili">0</b> soru seçili</div>
-  </div>
-</header>
-
-<div class="serit">
-  <label class="alan">Sınıf
-    <select id="sinif"></select>
-  </label>
-  <label class="alan">Ünite
-    <select id="unite"></select>
-  </label>
-  <div class="ara-kutu">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-    <input id="ara" type="search" placeholder="Soruda ara — Türkçe ya da Arapça (harekesiz de olur)" autocomplete="off">
-  </div>
-  <label class="onay"><input type="checkbox" id="tumSinif"> Öteki sınıfların soruları da görünsün</label>
+<body>
+<div class="k">
+  <h1 style="font-size:1.1rem;margin:0 0 8px">Öğrenme Çıktısına Göre Sınav artık <b>Sınav Hazırla</b> içinde</h1>
+  <p style="margin:0 0 14px;color:#64748b">Sayfa birkaç saniye içinde yeni adrese gidecek.</p>
+  <p style="margin:0"><a href="sinav.html?yol=okul">Hemen geç →</a></p>
 </div>
-
-<nav class="sekmeler" aria-label="Bölümler">
-  <button type="button" class="sekme" data-sekme="cikti" aria-selected="true">Çıktılar</button>
-  <button type="button" class="sekme" data-sekme="havuz" aria-selected="false">Soru havuzu (<span id="sayHavuz">0</span>)</button>
-  <button type="button" class="sekme" data-sekme="sinav" aria-selected="false">Sınavım (<span class="say-secili">0</span>)</button>
-</nav>
-
-<div id="yukleniyor"><div class="cark"></div>Soru havuzu ve öğrenme çıktıları yükleniyor…</div>
-
-<main id="uygulama" hidden>
-
-  <!-- ===================== ÇIKTI AĞACI ===================== -->
-  <section class="sutun cikti-sutun kutu" aria-label="Öğrenme çıktıları">
-    <div class="panel-bas">
-      <h2>Öğrenme çıktıları <small id="uniteAd"></small></h2>
-      <button type="button" id="odakTemizle" hidden>✕ Çıktı süzgecini kaldır</button>
-    </div>
-    <p class="not" id="programNot"></p>
-    <div id="agac" aria-live="polite"></div>
-  </section>
-
-  <!-- ===================== SORU HAVUZU ===================== -->
-  <section class="sutun havuz-sutun kutu" aria-label="Soru havuzu">
-    <div class="panel-bas">
-      <h2>Soru havuzu</h2>
-      <b id="bulunan">0 soru</b>
-    </div>
-    <div id="odakBilgi" class="odak" hidden></div>
-    <div class="cipler" id="suz-tip"></div>
-    <div id="liste"></div>
-    <button type="button" id="dahaFazla" hidden></button>
-  </section>
-
-  <!-- ===================== SINAVIM ===================== -->
-  <aside class="sutun sinav-sutun kutu" aria-label="Sınavım">
-    <div class="panel-bas">
-      <h2>Sınavım <span class="say-secili">0</span></h2>
-      <button type="button" id="sinavTemizle">Temizle</button>
-    </div>
-    <p id="sinavBos">Henüz soru yok.<br>Soldaki çıktılardan birine tıkla, havuzdan <b>+ Ekle</b> ile başla.</p>
-    <ol id="sinav"></ol>
-
-    <details class="ayarlar">
-      <summary>Sınav bilgileri (dağılım tablosunun başlığı)</summary>
-      <label class="alan">Sınav başlığı<input type="text" data-ayar="baslik" maxlength="80"></label>
-      <label class="alan">Okul adı<input type="text" data-ayar="okul" maxlength="90" placeholder="(isteğe bağlı)"></label>
-      <div class="iki">
-        <label class="alan">Sınıf / şube<input type="text" data-ayar="sube" maxlength="20" placeholder="ör. 8/A"></label>
-        <label class="alan">Tarih<input type="text" data-ayar="tarih" maxlength="20"></label>
-      </div>
-      <div class="iki">
-        <label class="alan">Toplam puan<input type="number" data-ayar="toplam" min="1" max="1000"></label>
-        <label class="alan">Öğretmen<input type="text" data-ayar="ogretmen" maxlength="60" placeholder="(isteğe bağlı)"></label>
-      </div>
-    </details>
-
-    <div class="eylemler">
-      <button type="button" id="btnTablo" disabled>Dağılım Tablosu</button>
-      <button type="button" id="btnAktar" class="ana" disabled title="Seçilen sorular Soru Kâğıdı Hazırla sayfasına geçer">Soru Kâğıdına Aktar</button>
-    </div>
-    <div id="durum" class="durum" hidden role="status"></div>
-  </aside>
-</main>
-
-<!-- ===================== DAĞILIM TABLOSU ===================== -->
-<div id="tablo" hidden role="dialog" aria-modal="true" aria-labelledby="tabloBaslik">
-  <div class="tb-ust">
-    <h2 id="tabloBaslik">Öğrenme Çıktısı — Soru Dağılım Tablosu</h2>
-    <button type="button" id="tabloYazdir" class="ana">Yazdır</button>
-    <button type="button" id="tabloKapat" aria-label="Kapat">✕</button>
-  </div>
-  <div id="tabloIc"></div>
-</div>
-
-<script src="veri/veri_ciktilar.js?v=1"></script>
-<script src="sinifici/ciktisoru.js?v=1"></script>
-<script src="sistem/geri.js?v=20260915a"></script>
+<script>location.replace('sinav.html?yol=okul');</script>
 </body>
 </html>
