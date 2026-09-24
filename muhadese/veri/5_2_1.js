@@ -1,4 +1,4 @@
-/* 5. sınıf — 5_2_1 (2. Ünite 1. Ders: Sınıf Eşyaları | مُكَوِّناتُ الصَّفّ) */
+/* 5. sınıf — 5_2_1 (2. Ünite 1. Ders: Sınıf Eşyaları | مُكَوِّناتُ الصَّفّ) */
 /* Cümle & diyalog: MEB Arapça 5-8 Öğretim Programı hedef kelime/yapı bloklarına göre hazırlandı. */
 window.data = {
     "sentence": [
@@ -96,7 +96,7 @@ window.data = {
                 {
                     "tr": "bir sandalyedir.",
                     "order": 3,
-                    "ar": "كُرْسِيٌّ."
+                    "ar": "كُرْسِيٌّ."
                 }
             ]
         },
@@ -138,12 +138,12 @@ window.data = {
                 {
                     "tr": "Tahta",
                     "order": 1,
-                    "ar": "اَلسَّبّورَةُ"
+                    "ar": "اَلسَّبّورَةُ"
                 },
                 {
                     "tr": "sınıftadır.",
                     "order": 2,
-                    "ar": "في الصَّفِّ."
+                    "ar": "في الصَّفِّ."
                 }
             ]
         },
@@ -152,7 +152,7 @@ window.data = {
                 {
                     "tr": "Kitap",
                     "order": 1,
-                    "ar": "اَلْكِتابُ"
+                    "ar": "اَلكِتابُ"
                 },
                 {
                     "tr": "çantadadır.",
@@ -166,7 +166,7 @@ window.data = {
                 {
                     "tr": "Defter",
                     "order": 1,
-                    "ar": "اَلدَّفْتَرُ"
+                    "ar": "اَلدَّفْتَرُ"
                 },
                 {
                     "tr": "sıranın üstündedir.",
@@ -185,7 +185,7 @@ window.data = {
                 {
                     "tr": "sınıftayım.",
                     "order": 2,
-                    "ar": "في الصَّفِّ."
+                    "ar": "في الصَّفِّ."
                 }
             ]
         },
@@ -236,7 +236,7 @@ window.data = {
                 {
                     "tr": "Sandalye",
                     "order": 1,
-                    "ar": "اَلْكُرْسِيُّ"
+                    "ar": "اَلكُرْسِيُّ"
                 },
                 {
                     "tr": "masanın yanındadır.",
@@ -250,7 +250,7 @@ window.data = {
                 {
                     "tr": "İlim",
                     "order": 1,
-                    "ar": "اَلْعِلْمُ"
+                    "ar": "اَلعِلْمُ"
                 },
                 {
                     "tr": "faydalıdır.",
@@ -339,7 +339,7 @@ window.data = {
                 {
                     "tr": "Çanta",
                     "order": 2,
-                    "ar": "أَيْنَ"
+                    "ar": "أَيْن"
                 },
                 {
                     "tr": "nerede?",
@@ -351,7 +351,7 @@ window.data = {
                 {
                     "tr": "Çanta",
                     "order": 1,
-                    "ar": "اَلْحَقيبَةُ"
+                    "ar": "اَلحَقيبَةُ"
                 },
                 {
                     "tr": "sıranın üstündedir.",
@@ -370,7 +370,7 @@ window.data = {
                 {
                     "tr": "sınıfta mısın?",
                     "order": 2,
-                    "ar": "في الصَّفِّ؟"
+                    "ar": "في الصَّفِّ؟"
                 }
             ],
             "p2": [
@@ -387,7 +387,7 @@ window.data = {
                 {
                     "tr": "sınıftayım.",
                     "order": 3,
-                    "ar": "في الصَّفِّ."
+                    "ar": "في الصَّفِّ."
                 }
             ]
         }
@@ -459,7 +459,7 @@ window.data = {
         },
         {
             "tr": "öğretmen",
-            "ar": "مُعَلِّم"
+            "ar": "مُعَلِّم"
         },
         {
             "tr": "bu (erkek)",
@@ -499,11 +499,11 @@ window.data = {
         },
         {
             "tr": "nerede",
-            "ar": "أَيْنَ"
+            "ar": "أَيْن"
         },
         {
             "tr": "ilim faydalıdır",
-            "ar": "اَلْعِلْمُ نافِعٌ"
+            "ar": "اَلعِلْمُ نافِعٌ"
         }
     ]
 };

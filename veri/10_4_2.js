@@ -45,7 +45,7 @@ window.data = {
         {
           "tr": "şeker",
           "order": 3,
-          "ar": "سُكَّرٍ."
+          "ar": "سُكَّرٍ."
         },
         {
           "tr": "istiyorum.",
@@ -178,7 +178,7 @@ window.data = {
         {
           "tr": "şapka var mı?",
           "order": 2,
-          "ar": "قُبَّعَةٌ"
+          "ar": "قُبَّعَةٌ"
         }
       ]
     },
@@ -187,7 +187,7 @@ window.data = {
         {
           "tr": "Hangi",
           "order": 1,
-          "ar": "أَيَّ"
+          "ar": "أَيَّ"
         },
         {
           "tr": "rengi",
@@ -216,7 +216,7 @@ window.data = {
         {
           "tr": "tercih edersin?",
           "order": 1,
-          "ar": "أَتُفَضِّلُ"
+          "ar": "أَتُفَضِّلُ"
         }
       ]
     },
@@ -263,7 +263,7 @@ window.data = {
         {
           "tr": "Süpermarkette",
           "order": 3,
-          "ar": "فِي السّوقِ المَرْكَزِيِّ."
+          "ar": "فِي السّوقِ المَرْكَزِيِّ."
         },
         {
           "tr": "indirim",
@@ -282,7 +282,7 @@ window.data = {
         {
           "tr": "Satıcı",
           "order": 1,
-          "ar": "اَلْبائِعُ"
+          "ar": "اَلبائِعُ"
         },
         {
           "tr": "çok",
@@ -301,7 +301,7 @@ window.data = {
         {
           "tr": "Fiyat",
           "order": 1,
-          "ar": "اَلسِّعْرُ"
+          "ar": "اَلسِّعْرُ"
         },
         {
           "tr": "yüksek.",
@@ -348,7 +348,7 @@ window.data = {
         {
           "tr": "Buyurun,",
           "order": 1,
-          "ar": "أَيُّ"
+          "ar": "أَيُّ"
         },
         {
           "tr": "ne arzu edersiniz?",
@@ -362,7 +362,7 @@ window.data = {
         {
           "tr": "Size nasıl",
           "order": 1,
-          "ar": "كَيْفَ"
+          "ar": "كَيْف"
         },
         {
           "tr": "yardımcı olabilirim?",
@@ -409,7 +409,7 @@ window.data = {
         {
           "tr": "Bizi aldatan",
           "order": 1,
-          "ar": "مَنْ غَشَّنا"
+          "ar": "مَنْ غَشَّنا"
         },
         {
           "tr": "bizden değildir.",
@@ -425,7 +425,7 @@ window.data = {
         {
           "tr": "Buyurun,",
           "order": 1,
-          "ar": "أَيُّ"
+          "ar": "أَيُّ"
         },
         {
           "tr": "ne arzu edersiniz?",
@@ -442,7 +442,7 @@ window.data = {
         {
           "tr": "şeker",
           "order": 3,
-          "ar": "سُكَّرٍ."
+          "ar": "سُكَّرٍ."
         },
         {
           "tr": "istiyorum.",
@@ -559,7 +559,7 @@ window.data = {
         {
           "tr": "Hangi",
           "order": 1,
-          "ar": "أَيَّ"
+          "ar": "أَيَّ"
         },
         {
           "tr": "rengi",
@@ -569,7 +569,7 @@ window.data = {
         {
           "tr": "tercih edersin?",
           "order": 3,
-          "ar": "تُفَضِّلُ؟"
+          "ar": "تُفَضِّلُ؟"
         }
       ],
       "p2": [
@@ -581,7 +581,7 @@ window.data = {
         {
           "tr": "tercih ederim.",
           "order": 1,
-          "ar": "أُفَضِّلُ"
+          "ar": "أُفَضِّلُ"
         }
       ]
     },
@@ -638,7 +638,7 @@ window.data = {
         {
           "tr": "hoşça kalın.",
           "order": 2,
-          "ar": "مَعَ السَّلامَةِ."
+          "ar": "مَعَ السَّلامَةِ."
         }
       ]
     }
@@ -646,7 +646,7 @@ window.data = {
   "words": [
     {
       "tr": "Alışveriş yapıyorum",
-      "ar": "أَتَسَوَّقُ"
+      "ar": "أَتَسَوَّقُ"
     },
     {
       "tr": "Satın almak istiyorum",
@@ -662,11 +662,11 @@ window.data = {
     },
     {
       "tr": "Seviyorum",
-      "ar": "أُحِبُّ"
+      "ar": "أُحِبُّ"
     },
     {
       "tr": "Tercih ediyorum",
-      "ar": "أُفَضِّلُ"
+      "ar": "أُفَضِّلُ"
     },
     {
       "tr": "Alıyorum",
@@ -702,7 +702,7 @@ window.data = {
     },
     {
       "tr": "Süpermarket",
-      "ar": "اَلسّوقُ الْمَرْكَزِيّ"
+      "ar": "اَلسّوقُ المَرْكَزِيّ"
     },
     {
       "tr": "Çarşı / pazar",
@@ -734,7 +734,7 @@ window.data = {
     },
     {
       "tr": "Şeker",
-      "ar": "سُكَّر"
+      "ar": "سُكَّر"
     },
     {
       "tr": "Çay",
@@ -750,15 +750,15 @@ window.data = {
     },
     {
       "tr": "Bilgisayar",
-      "ar": "اَلْحاسوب"
+      "ar": "اَلحاسوب"
     },
     {
       "tr": "Cep telefonu",
-      "ar": "اَلْجَوّال"
+      "ar": "اَلجَوّال"
     },
     {
       "tr": "Tablet",
-      "ar": "لَوْحَة ذَكِيَّة"
+      "ar": "لَوْحَة ذَكِيَّة"
     },
     {
       "tr": "Çanta",
@@ -786,7 +786,7 @@ window.data = {
     },
     {
       "tr": "On altı",
-      "ar": "سِتَّةَ عَشَرَ"
+      "ar": "سِتَّةَ عَشَرَ"
     },
     {
       "tr": "On yedi",
@@ -870,7 +870,7 @@ window.data = {
     },
     {
       "tr": "Pembe",
-      "ar": "وَرْدِيّ / وَرْدِيَّة"
+      "ar": "وَرْدِيّ / وَرْدِيَّة"
     },
     {
       "tr": "Daha büyük",
@@ -902,11 +902,11 @@ window.data = {
     },
     {
       "tr": "Ne arzu edersiniz?",
-      "ar": "أَيُّ خِدْمَةٍ؟"
+      "ar": "أَيُّ خِدْمَةٍ؟"
     },
     {
       "tr": "Size nasıl yardımcı olabilirim?",
-      "ar": "كَيْفَ أُساعِدُكَ؟"
+      "ar": "كَيْف أُساعِدُكَ؟"
     },
     {
       "tr": "Başka bir şey ister misiniz?",

@@ -128,7 +128,7 @@ const ORNEK_SOZLUK_TEMATIK_KELIME = {
                 emoji: "🐈",
                 arText: "قِطّ",
                 trText: "Kedi",
-                ornek: { ar: "اَلْقِطُّ نَائِمٌ", tr: "Kedi uyuyor." }
+                ornek: { ar: "اَلقِطُّ نَائِمٌ", tr: "Kedi uyuyor." }
             }
         },
         

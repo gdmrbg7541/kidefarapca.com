@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_2_3 (2. Ünite 3. Ders: El Sanatları | الفُنون اليَدَوِيَّة) */
+/* 8. sınıf — 8_2_3 (2. Ünite 3. Ders: El Sanatları | الفُنون اليَدَوِيَّة) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 2. Ünite, s. 52-59. */
 /* KİTAPTAKİ AD الفُنون اليَدَوِيّة'dir; komisyon dosyasındaki «الأعمال اليدوية» */
 /* yerine kitabın adı esas alındı, muhadese.js başlığı da düzeltildi. */
@@ -125,7 +125,7 @@ window.data = {
             words: [
                 { tr: "Okuldan", order: 3, ar: "مِن المَدْرَسَة" },
                 { tr: "kütüphaneye", order: 4, ar: "إلى المَكْتَبَة؟" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "giderim?", order: 2, ar: "أَذْهَبُ" },
             ]
         },
@@ -227,7 +227,7 @@ window.data = {
         {
             p1: [
                 { tr: "Okuldan kütüphaneye", order: 2, ar: "مِن المَدْرَسَة إلى المَكْتَبَة؟" },
-                { tr: "nasıl giderim?", order: 1, ar: "كَيْفَ أَذْهَبُ" },
+                { tr: "nasıl giderim?", order: 1, ar: "كَيْف أَذْهَبُ" },
             ],
             p2: [
                 { tr: "İleri git,", order: 1, ar: "اِذْهَبْ إلى الأَمام،" },

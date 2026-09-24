@@ -1,5 +1,5 @@
-/* 6. sınıf — 6_2_1 (2. Ünite 1. Ders: Okulun Bölümleri ve Araç Gereçleri | أَقْسامُ الْمَدْرَسَة وَأَدَواتُها) */
-/* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 2. Ünite (هَيّا إلى الْمَدْرَسَة), s. 58-73. */
+/* 6. sınıf — 6_2_1 (2. Ünite 1. Ders: Okulun Bölümleri ve Araç Gereçleri | أَقْسامُ المَدْرَسَة وَأَدَواتُها) */
+/* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 2. Ünite (هَيّا إلى المَدْرَسَة), s. 58-73. */
 /* Kelimeler kitabın kendi kâmûsuyla (s.194-203) karşılaştırılarak yazıldı. */
 /* CÜMLELER HENÜZ GİRİLMEDİ — sentence ve dialog bilerek boştur. */
 window.data = {
@@ -7,11 +7,11 @@ window.data = {
     "dialog": [],
     "words": [
         {
-            "ar": "أَقْسامُ الْمَدْرَسَة",
+            "ar": "أَقْسامُ المَدْرَسَة",
             "tr": "Okulun bölümleri"
         },
         {
-            "ar": "أَدَواتُ الْمَدْرَسَة",
+            "ar": "أَدَواتُ المَدْرَسَة",
             "tr": "Okul araçları"
         },
         {
@@ -35,7 +35,7 @@ window.data = {
             "tr": "Kantin"
         },
         {
-            "ar": "سَبّورَة ذَكِيَّة",
+            "ar": "سَبّورَة ذَكِيَّة",
             "tr": "Akıllı Tahta"
         },
         {
@@ -63,7 +63,7 @@ window.data = {
             "tr": "Sınıf"
         },
         {
-            "ar": "اَلْخامِس",
+            "ar": "اَلخامِس",
             "tr": "Beşinci"
         },
         {
@@ -75,7 +75,7 @@ window.data = {
             "tr": "Kat"
         },
         {
-            "ar": "اَلْأَوَّل",
+            "ar": "اَلأَوَّل",
             "tr": "Birinci"
         },
         {
@@ -95,11 +95,11 @@ window.data = {
             "tr": "Saat"
         },
         {
-            "ar": "غُرْفَةُ الْمُدير",
+            "ar": "غُرْفَةُ المُدير",
             "tr": "Müdür Odası"
         },
         {
-            "ar": "غُرْفَةُ الْمُعَلِّمين",
+            "ar": "غُرْفَةُ المُعَلِّمين",
             "tr": "Öğretmenler Odası"
         },
         {
@@ -135,7 +135,7 @@ window.data = {
             "tr": "Zarf – Zarflar"
         },
         {
-            "ar": "مُعَلِّم / مُعَلِّمَة",
+            "ar": "مُعَلِّم / مُعَلِّمَة",
             "tr": "Öğretmen (erkek / kadın)"
         },
         {
@@ -155,11 +155,11 @@ window.data = {
             "tr": "Merhaba"
         },
         {
-            "ar": "اَلْمَدْرَسَةُ الْمُتَوَسِّطَة",
+            "ar": "اَلمَدْرَسَةُ المُتَوَسِّطَة",
             "tr": "Ortaokul"
         },
         {
-            "ar": "فِناءُ الْمَدْرَسَة",
+            "ar": "فِناءُ المَدْرَسَة",
             "tr": "Okulun bahçesi"
         },
         {
@@ -175,7 +175,7 @@ window.data = {
             "tr": "Sol"
         },
         {
-            "ar": "أُحِبُّ.",
+            "ar": "أُحِبُّ.",
             "tr": "Seviyorum."
         },
         {
@@ -183,7 +183,7 @@ window.data = {
             "tr": "Sekizinci"
         },
         {
-            "ar": "اَلْعاشِر",
+            "ar": "اَلعاشِر",
             "tr": "Onuncu"
         },
         {

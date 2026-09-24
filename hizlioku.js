@@ -35,18 +35,18 @@ const colorPalette = [
                         options: ["النَّاسِ", "النَّاسَ", "النَّاسُ", "النَّاسْ"] 
                     },
                     { text: "في", isTarget: false, refId: "tr-1-cogunlugu", vowelized: "فِي" },
-                    { text: "العالم", isTarget: false, refId: "tr-1-cogunlugu", vowelized: "الْعَالَمِ" },
+                    { text: "العالم", isTarget: false, refId: "tr-1-cogunlugu", vowelized: "العَالَمِ" },
                     { 
                         text: "الإنترنت", isTarget: true, refId: "tr-1-internet", 
-                        correct: "الْإِنْتَرْنِتَ",
-                        options: ["الْإِنْتَرْنِتَ", "الْإِنْتَرْنِتُ", "الْإِنْتَرْنِتِ", "الْأَنْتَرْنِتَ"] 
+                        correct: "الإِنْتَرْنِتَ",
+                        options: ["الإِنْتَرْنِتَ", "الإِنْتَرْنِتُ", "الإِنْتَرْنِتِ", "الأَنْتَرْنِتَ"] 
                     },
                     { text: "ومواقع", isTarget: false, refId: "tr-1-siteler", vowelized: "وَمَوَاقِعَ" },
                     { text: "التواصل", isTarget: false, refId: "tr-1-iletisim", vowelized: "التَّوَاصُلِ" },
                     { 
                         text: "الاجتماعي", isTarget: true, refId: "tr-1-sosyal", 
-                        correct: "الِاجْتِمَاعِيِّ",
-                        options: ["الِاجْتِمَاعِيِّ", "الِاجْتِمَاعِيُّ", "الِاجْتِمَاعِيَّ", "الِاجْتِمَاعِيْ"] 
+                        correct: "الاجْتِمَاعِيِّ",
+                        options: ["الاجْتِمَاعِيِّ", "الاجْتِمَاعِيُّ", "الاجْتِمَاعِيَّ", "الاجْتِمَاعِيْ"] 
                     }
                 ]
             },
@@ -73,8 +73,8 @@ const colorPalette = [
                     { text: "بعد", isTarget: false, refId: "tr-2-sonra", vowelized: "بَعْدَ" },
                     { 
                         text: "الولادة", isTarget: true, refId: "tr-2-dogum", 
-                        correct: "الْوِلَادَةِ",
-                        options: ["الْوِلَادَةِ", "الْوِلَادَةَ", "الْوِلَادَةُ", "الْوَلَّادَةِ"] 
+                        correct: "الوِلَادَةِ",
+                        options: ["الوِلَادَةِ", "الوِلَادَةَ", "الوِلَادَةُ", "الوَلَّادَةِ"] 
                     },
                     { 
                         text: "اللقاحات", isTarget: true, refId: "tr-2-asi", 
@@ -83,12 +83,12 @@ const colorPalette = [
                     },
                     { 
                         text: "المناسبة", isTarget: true, refId: "tr-2-uygun", 
-                        correct: "الْمُنَاسِبَةَ",
-                        options: ["الْمُنَاسِبَةَ", "الْمُنَاسِبَةُ", "الْمُنَاسِبَةِ", "الْمُنَاسَبَةَ"] 
+                        correct: "المُنَاسِبَةَ",
+                        options: ["المُنَاسِبَةَ", "المُنَاسِبَةُ", "المُنَاسِبَةِ", "المُنَاسَبَةَ"] 
                     },
                     { text: "في", isTarget: false, refId: "tr-2-zaman", vowelized: "فِي" },
-                    { text: "المواعيد", isTarget: false, refId: "tr-2-zaman", vowelized: "الْمَوَاعِيدِ" },
-                    { text: "المحددة", isTarget: false, refId: "tr-2-belirli", vowelized: "الْمُحَدَّدَةِ" }
+                    { text: "المواعيد", isTarget: false, refId: "tr-2-zaman", vowelized: "المَوَاعِيدِ" },
+                    { text: "المحددة", isTarget: false, refId: "tr-2-belirli", vowelized: "المُحَدَّدَةِ" }
                 ]
             },
             {
@@ -144,8 +144,8 @@ const colorPalette = [
                     { text: "صار", isTarget: false, refId: "tr-4-oldu", vowelized: "صَارَ" },
                     { 
                         text: "الحاسوب", isTarget: true, refId: "tr-4-pc", 
-                        correct: "الْحَاسُوبُ",
-                        options: ["الْحَاسُوبُ", "الْحَاسُوبَ", "الْحَاسُوبِ", "الْحَاسِبُ"] 
+                        correct: "الحَاسُوبُ",
+                        options: ["الحَاسُوبُ", "الحَاسُوبَ", "الحَاسُوبِ", "الحَاسِبُ"] 
                     },
                     { 
                         text: "ضرورة", isTarget: true, refId: "tr-4-zorunluluk", 
@@ -155,8 +155,8 @@ const colorPalette = [
                     { text: "في", isTarget: false, refId: "tr-4-hayat", vowelized: "فِي" },
                     { 
                         text: "الحياة", isTarget: true, refId: "tr-4-hayat", 
-                        correct: "الْحَيَاةِ",
-                        options: ["الْحَيَاةِ", "الْحَيَاةَ", "الْحَيَاةُ", "الْحَيَاةْ"] 
+                        correct: "الحَيَاةِ",
+                        options: ["الحَيَاةِ", "الحَيَاةَ", "الحَيَاةُ", "الحَيَاةْ"] 
                     },
                     { text: "وأصبح", isTarget: false, refId: "tr-4-hale", vowelized: "وَأَصْبَحَ" },
                     { 
@@ -188,18 +188,18 @@ const colorPalette = [
                     { text: "يعرف", isTarget: false, refId: "tr-5-tanim", vowelized: "يُعَرِّفُ" },
                     { 
                         text: "الاتحاد", isTarget: true, refId: "tr-5-birlik", 
-                        correct: "الِاتِّحَادُ",
-                        options: ["الِاتِّحَادُ", "الِاتِّحَادَ", "الِاتِّحَادِ", "الِاتِّحَادْ"] 
+                        correct: "الاتِّحَادُ",
+                        options: ["الاتِّحَادُ", "الاتِّحَادَ", "الاتِّحَادِ", "الاتِّحَادْ"] 
                     },
                     { 
                         text: "الفلكي", isTarget: true, refId: "tr-5-astro", 
-                        correct: "الْفَلَكِيُّ",
-                        options: ["الْفَلَكِيُّ", "الْفَلَكِيَّ", "الْفَلَكِيِّ", "الْفَلَكِيْ"] 
+                        correct: "الفَلَكِيُّ",
+                        options: ["الفَلَكِيُّ", "الفَلَكِيَّ", "الفَلَكِيِّ", "الفَلَكِيْ"] 
                     },
                     { 
                         text: "العالمي", isTarget: true, refId: "tr-5-ulus", 
-                        correct: "الْعَالَمِيُّ",
-                        options: ["الْعَالَمِيُّ", "الْعَالَمِيَّ", "الْعَالَمِيِّ", "الْعَالَمِيْ"] 
+                        correct: "العَالَمِيُّ",
+                        options: ["العَالَمِيُّ", "العَالَمِيَّ", "العَالَمِيِّ", "العَالَمِيْ"] 
                     },
                     { 
                         text: "النيزك", isTarget: true, refId: "tr-5-meteor", 
@@ -224,8 +224,8 @@ const colorPalette = [
                     },
                     { 
                         text: "الحجم", isTarget: true, refId: "tr-5-hacim", 
-                        correct: "الْحَجْمِ",
-                        options: ["الْحَجْمِ", "الْحَجْمَ", "الْحَجْمُ", "الْحُجْمِ"] 
+                        correct: "الحَجْمِ",
+                        options: ["الحَجْمِ", "الحَجْمَ", "الحَجْمُ", "الحُجْمِ"] 
                     }
                 ]
             }

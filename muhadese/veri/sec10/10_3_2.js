@@ -1,4 +1,4 @@
-/* 10. sınıf SEÇMELİ ARAPÇA — 3. Ünite (الصِّحّة) 2. Ders: المَأْكولات والمَشْروبات
+/* 10. sınıf SEÇMELİ ARAPÇA — 3. Ünite (الصِّحّة) 2. Ders: المَأْكولات والمَشْروبات
    Kaynak: Ortaöğretim Seçmeli Arapça ders kitabı, basılı s.100-111.
    Dersin konusu: kahvaltı, öğle ve akşam yemeği; أَمْ ile seçmeli soru,
    لكِنْ ile olumlu-olumsuz cümle, pazarda alışveriş ve basit bir yemek tarifi. */
@@ -26,7 +26,7 @@ window.data = {
         {
             words: [
                 { tr: "O", order: 1, ar: "هِيَ" },
-                { tr: "domates", order: 3, ar: "الطَّماطِم." },
+                { tr: "domates", order: 3, ar: "الطَّماطِم." },
                 { tr: "yiyor.", order: 2, ar: "تَتَناوَلُ" }
             ]
         },
@@ -53,11 +53,11 @@ window.data = {
         {
             words: [
                 { tr: "O", order: 1, ar: "هُوَ" },
-                { tr: "tavuğu", order: 3, ar: "الدَّجاجَ" },
-                { tr: "tercih ediyor", order: 2, ar: "يُفَضِّلُ" },
+                { tr: "tavuğu", order: 3, ar: "الدَّجاجَ" },
+                { tr: "tercih ediyor", order: 2, ar: "يُفَضِّلُ" },
                 { tr: "ama", order: 4, ar: "لكِنْ" },
                 { tr: "çorbayı", order: 6, ar: "الحَساء." },
-                { tr: "tercih etmiyor.", order: 5, ar: "لا يُفَضِّلُ" }
+                { tr: "tercih etmiyor.", order: 5, ar: "لا يُفَضِّلُ" }
             ]
         },
 
@@ -68,7 +68,7 @@ window.data = {
                 { tr: "bal", order: 3, ar: "العَسَلَ" },
                 { tr: "yiyor", order: 2, ar: "تَتَناوَلُ" },
                 { tr: "ama", order: 4, ar: "لكِنْ" },
-                { tr: "tereyağı", order: 6, ar: "الزُّبْدة." },
+                { tr: "tereyağı", order: 6, ar: "الزُّبْدة." },
                 { tr: "yemiyor.", order: 5, ar: "لا تَتَناوَلُ" }
             ]
         },
@@ -77,10 +77,10 @@ window.data = {
         {
             words: [
                 { tr: "Sen", order: 1, ar: "أَنْتِ" },
-                { tr: "balığı", order: 3, ar: "السَّمَكَ" },
+                { tr: "balığı", order: 3, ar: "السَّمَكَ" },
                 { tr: "seviyorsun", order: 2, ar: "تُحِبّينَ" },
                 { tr: "ama", order: 4, ar: "لكِنْ" },
-                { tr: "eti", order: 6, ar: "اللَّحْم." },
+                { tr: "eti", order: 6, ar: "اللَّحْم." },
                 { tr: "sevmiyorsun.", order: 5, ar: "لا تُحِبّينَ" }
             ]
         },
@@ -98,7 +98,7 @@ window.data = {
         {
             words: [
                 { tr: "Siz ikiniz", order: 1, ar: "أَنْتُما" },
-                { tr: "tavuk", order: 3, ar: "الدَّجاج." },
+                { tr: "tavuk", order: 3, ar: "الدَّجاج." },
                 { tr: "istiyorsunuz.", order: 2, ar: "تُريدانِ" }
             ]
         },
@@ -107,15 +107,15 @@ window.data = {
         {
             words: [
                 { tr: "Akşam yemeğinde", order: 3, ar: "في العَشاء." },
-                { tr: "eti ve pirinci", order: 2, ar: "اللَّحْمَ وَالأُرْزَ" },
-                { tr: "tercih ediyorum.", order: 1, ar: "أُفَضِّلُ" }
+                { tr: "eti ve pirinci", order: 2, ar: "اللَّحْمَ وَالأُرْزَ" },
+                { tr: "tercih ediyorum.", order: 1, ar: "أُفَضِّلُ" }
             ]
         },
 
         /* Yemekten sonra çay ya da kahve içiyorum. (s.105) */
         {
             words: [
-                { tr: "Yemekten sonra", order: 4, ar: "بَعْدَ الطَّعام." },
+                { tr: "Yemekten sonra", order: 4, ar: "بَعْدَ الطَّعام." },
                 { tr: "çay", order: 2, ar: "الشّايَ" },
                 { tr: "ya da kahve", order: 3, ar: "أَوِ القَهْوةَ" },
                 { tr: "içiyorum.", order: 1, ar: "أَشْرَبُ" }
@@ -143,7 +143,7 @@ window.data = {
             ],
             p2: [
                 { tr: "Yumurta,", order: 2, ar: "البَيْضَ" },
-                { tr: "zeytin", order: 3, ar: "وَالزَّيْتونَ" },
+                { tr: "zeytin", order: 3, ar: "وَالزَّيْتونَ" },
                 { tr: "ve peynir", order: 4, ar: "وَالجُبْن." },
                 { tr: "istiyorum.", order: 1, ar: "أُريدُ" }
             ]
@@ -152,11 +152,11 @@ window.data = {
             p1: [
                 { tr: "Balı mı", order: 2, ar: "العَسَلَ" },
                 { tr: "yoksa reçeli mi", order: 3, ar: "أَمِ المُرَبّى؟" },
-                { tr: "tercih edersin?", order: 1, ar: "أَتُفَضِّلُ" }
+                { tr: "tercih edersin?", order: 1, ar: "أَتُفَضِّلُ" }
             ],
             p2: [
                 { tr: "Balı", order: 2, ar: "العَسَل." },
-                { tr: "tercih ederim.", order: 1, ar: "أُفَضِّلُ" }
+                { tr: "tercih ederim.", order: 1, ar: "أُفَضِّلُ" }
             ]
         },
         {
@@ -178,7 +178,7 @@ window.data = {
             ],
             p2: [
                 { tr: "Çorba", order: 2, ar: "الحَساءَ" },
-                { tr: "ve tavuk", order: 3, ar: "وَالدَّجاج." },
+                { tr: "ve tavuk", order: 3, ar: "وَالدَّجاج." },
                 { tr: "istiyorum.", order: 1, ar: "أُريدُ" }
             ]
         },
@@ -186,20 +186,20 @@ window.data = {
             p1: [
                 { tr: "Baklavayı mı", order: 2, ar: "البَقْلاوةَ" },
                 { tr: "yoksa künefeyi mi", order: 3, ar: "أَمِ الكُنافة؟" },
-                { tr: "tercih edersiniz?", order: 1, ar: "أَتُفَضِّلُ" }
+                { tr: "tercih edersiniz?", order: 1, ar: "أَتُفَضِّلُ" }
             ],
             p2: [
                 { tr: "Baklavayı", order: 2, ar: "البَقْلاوة." },
-                { tr: "tercih ederim.", order: 1, ar: "أُفَضِّلُ" }
+                { tr: "tercih ederim.", order: 1, ar: "أُفَضِّلُ" }
             ]
         },
         {
             p1: [
                 { tr: "Hoş geldiniz.", order: 1, ar: "أَهْلًا وَسَهْلًا." },
-                { tr: "Ne arzu edersiniz?", order: 2, ar: "أَيُّ خِدْمة؟" }
+                { tr: "Ne arzu edersiniz?", order: 2, ar: "أَيُّ خِدْمة؟" }
             ],
             p2: [
-                { tr: "Limon", order: 2, ar: "اللَّيْمونَ" },
+                { tr: "Limon", order: 2, ar: "اللَّيْمونَ" },
                 { tr: "istiyorum,", order: 1, ar: "أُريدُ" },
                 { tr: "lütfen.", order: 3, ar: "مِنْ فَضْلِك." }
             ]
@@ -207,7 +207,7 @@ window.data = {
         {
             p1: [
                 { tr: "Hesap", order: 2, ar: "الحِساب؟" },
-                { tr: "ne kadar?", order: 1, ar: "كَمِ" }
+                { tr: "ne kadar?", order: 1, ar: "كَم" }
             ],
             p2: [
                 { tr: "Dokuz", order: 1, ar: "تِسْعُ" },
@@ -221,22 +221,22 @@ window.data = {
 window.data.words = [
     { tr: "Yumurta", ar: "البَيْض" }, { tr: "Peynir", ar: "الجُبْن" },
     { tr: "Bal", ar: "العَسَل" }, { tr: "Reçel", ar: "المُرَبّى" },
-    { tr: "Tereyağı", ar: "الزُّبْدة" }, { tr: "Zeytin", ar: "الزَّيْتون" },
+    { tr: "Tereyağı", ar: "الزُّبْدة" }, { tr: "Zeytin", ar: "الزَّيْتون" },
     { tr: "Ekmek", ar: "الخُبْز" }, { tr: "Salatalık", ar: "الخِيار" },
-    { tr: "Domates", ar: "الطَّماطِم" }, { tr: "Limon", ar: "اللَّيْمون" },
+    { tr: "Domates", ar: "الطَّماطِم" }, { tr: "Limon", ar: "اللَّيْمون" },
     { tr: "Biber", ar: "الفُلْفُل" }, { tr: "Tuz", ar: "المِلْح" },
-    { tr: "Et", ar: "اللَّحْم" }, { tr: "Balık", ar: "السَّمَك" },
-    { tr: "Tavuk", ar: "الدَّجاج" }, { tr: "Pirinç", ar: "الأُرْز" },
+    { tr: "Et", ar: "اللَّحْم" }, { tr: "Balık", ar: "السَّمَك" },
+    { tr: "Tavuk", ar: "الدَّجاج" }, { tr: "Pirinç", ar: "الأُرْز" },
     { tr: "Çorba", ar: "الحَساء" }, { tr: "Baklava", ar: "البَقْلاوة" },
     { tr: "Künefe", ar: "الكُنافة" }, { tr: "Su", ar: "الماء" },
     { tr: "Süt", ar: "الحَليب" }, { tr: "Meyve suyu", ar: "العَصير" },
     { tr: "Çay", ar: "الشّاي" }, { tr: "Kahve", ar: "القَهْوة" },
     { tr: "Kahvaltı", ar: "الفُطور" }, { tr: "Öğle yemeği", ar: "الغَداء" },
     { tr: "Akşam yemeği", ar: "العَشاء" }, { tr: "Tava", ar: "المِقْلاة" },
-    { tr: "Malzemeler", ar: "المُكَوِّنات" }, { tr: "Satıcı", ar: "البائِع" },
+    { tr: "Malzemeler", ar: "المُكَوِّنات" }, { tr: "Satıcı", ar: "البائِع" },
     { tr: "Müşteri", ar: "المُشْتَري" }, { tr: "Pazar, çarşı", ar: "السّوق" },
     { tr: "Kilogram", ar: "كيلوغرام" }, { tr: "Hesap", ar: "الحِساب" },
-    { tr: "Ne arzu edersiniz?", ar: "أَيُّ خِدْمة؟" }, { tr: "Afiyetle", ar: "بِالعافِية" },
+    { tr: "Ne arzu edersiniz?", ar: "أَيُّ خِدْمة؟" }, { tr: "Afiyetle", ar: "بِالعافِية" },
     { tr: "Sıcak", ar: "ساخِن" }, { tr: "Hazır", ar: "جاهِز" },
     { tr: "Yiyor, alıyor", ar: "يَتَناوَلُ" }, { tr: "Ekliyor", ar: "يُضيفُ" },
     { tr: "Kırıyor", ar: "يَكْسِرُ" }, { tr: "Koyuyor", ar: "يَضَعُ" }

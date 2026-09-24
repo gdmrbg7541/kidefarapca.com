@@ -380,9 +380,9 @@ words: `
        
             prepositions: `
 <div class="mp">
-<h2 class="mp-bas">HARFLER VE EKLER <span class="mp-bas-ar" dir="rtl">اَلْحُرُوف</span></h2>
+<h2 class="mp-bas">HARFLER VE EKLER <span class="mp-bas-ar" dir="rtl">اَلحُرُوف</span></h2>
   <section class="mp-blok" style="--mpc:#16A085">
-    <h3 class="mp-alt"><span class="mp-no">1</span> Harf-i Cerler<span class="mp-alt-ar" dir="rtl">حُرُوف الْجَرّ</span></h3>
+    <h3 class="mp-alt"><span class="mp-no">1</span> Harf-i Cerler<span class="mp-alt-ar" dir="rtl">حُرُوف الجَرّ</span></h3>
     <div class="mp-izgara">
       <div class="mp-kart"><div class="mp-ar" dir="rtl">فِي</div><div class="mp-tr">...de / içinde</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">عَلَى</div><div class="mp-tr">üzerinde</div></div>
@@ -410,7 +410,7 @@ words: `
     </div>
   </section>
   <section class="mp-blok" style="--mpc:#EE5253">
-    <h3 class="mp-alt"><span class="mp-no">3</span> Çoğul (Cemi)<span class="mp-alt-ar" dir="rtl">اَلْجَمْع</span></h3>
+    <h3 class="mp-alt"><span class="mp-no">3</span> Çoğul (Cemi)<span class="mp-alt-ar" dir="rtl">اَلجَمْع</span></h3>
     <div class="mp-izgara">
       <div class="mp-kart"><div class="mp-ar" dir="rtl">ـُونَ</div><div class="mp-tr">Erkek (Özne)</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">ـِينَ</div><div class="mp-tr">Erkek (Nesne)</div></div>
@@ -418,7 +418,7 @@ words: `
     </div>
   </section>
   <section class="mp-blok" style="--mpc:#7C3AED">
-    <h3 class="mp-alt"><span class="mp-no">4</span> İkil (Tesniye)<span class="mp-alt-ar" dir="rtl">اَلْمُثَنَّى</span></h3>
+    <h3 class="mp-alt"><span class="mp-no">4</span> İkil (Tesniye)<span class="mp-alt-ar" dir="rtl">اَلمُثَنَّى</span></h3>
     <div class="mp-izgara">
       <div class="mp-kart"><div class="mp-ar" dir="rtl">ـَانِ</div><div class="mp-tr">Özne Hali</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">ـَيْنِ</div><div class="mp-tr">Nesne Hali</div></div>
@@ -427,22 +427,22 @@ words: `
 </div>`,
           soruedatlari: `
 <div class="mp">
-<h2 class="mp-bas">EDATLAR VE ZARFLAR <span class="mp-bas-ar" dir="rtl">اَلظُّرُوف</span></h2>
+<h2 class="mp-bas">EDATLAR VE ZARFLAR <span class="mp-bas-ar" dir="rtl">اَلظُّرُوف</span></h2>
   <section class="mp-blok" style="--mpc:#16A085">
     <h3 class="mp-alt"><span class="mp-no">1</span> Soru Edatları<span class="mp-alt-ar" dir="rtl">أَدَوَات الاِسْتِفْهَام</span></h3>
     <div class="mp-izgara">
       <div class="mp-kart"><div class="mp-ar" dir="rtl">مَا / مَاذَا</div><div class="mp-tr">Ne?</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">مَنْ</div><div class="mp-tr">Kim?</div></div>
-      <div class="mp-kart"><div class="mp-ar" dir="rtl">أَيْنَ</div><div class="mp-tr">Nerede?</div></div>
-      <div class="mp-kart"><div class="mp-ar" dir="rtl">كَيْفَ</div><div class="mp-tr">Nasıl?</div></div>
+      <div class="mp-kart"><div class="mp-ar" dir="rtl">أَيْن</div><div class="mp-tr">Nerede?</div></div>
+      <div class="mp-kart"><div class="mp-ar" dir="rtl">كَيْف</div><div class="mp-tr">Nasıl?</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">مَتَى</div><div class="mp-tr">Ne zaman?</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">لِمَاذَا</div><div class="mp-tr">Niçin?</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">أَيّ / كَمْ</div><div class="mp-tr">Hangi / Kaç?</div></div>
-      <div class="mp-kart"><div class="mp-ar" dir="rtl">مِنْ أَيْنَ</div><div class="mp-tr">Nereden?</div></div>
+      <div class="mp-kart"><div class="mp-ar" dir="rtl">مِنْ أَيْن</div><div class="mp-tr">Nereden?</div></div>
     </div>
   </section>
   <section class="mp-blok" style="--mpc:#F39C12">
-    <h3 class="mp-alt"><span class="mp-no">2</span> Yer Zarfları<span class="mp-alt-ar" dir="rtl">ظُرُوف الْمَكَان</span></h3>
+    <h3 class="mp-alt"><span class="mp-no">2</span> Yer Zarfları<span class="mp-alt-ar" dir="rtl">ظُرُوف المَكَان</span></h3>
     <div class="mp-izgara">
       <div class="mp-kart"><div class="mp-ar" dir="rtl">أَمَامَ</div><div class="mp-tr">Önünde</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">خَلْفَ / وَرَاءَ</div><div class="mp-tr">Arkasında</div></div>
@@ -455,10 +455,10 @@ words: `
     </div>
   </section>
   <section class="mp-blok" style="--mpc:#EE5253">
-    <h3 class="mp-alt"><span class="mp-no">3</span> Zaman Zarfları<span class="mp-alt-ar" dir="rtl">ظُرُوف الزَّمَان</span></h3>
+    <h3 class="mp-alt"><span class="mp-no">3</span> Zaman Zarfları<span class="mp-alt-ar" dir="rtl">ظُرُوف الزَّمَان</span></h3>
     <div class="mp-izgara">
       <div class="mp-kart"><div class="mp-ar" dir="rtl">قَبْلَ / بَعْدَ</div><div class="mp-tr">Önce / Sonra</div></div>
-      <div class="mp-kart"><div class="mp-ar" dir="rtl">اَلْيَوْمَ / غَدًا</div><div class="mp-tr">Bugün / Yarın</div></div>
+      <div class="mp-kart"><div class="mp-ar" dir="rtl">اَليَوْمَ / غَدًا</div><div class="mp-tr">Bugün / Yarın</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">أَمْسِ</div><div class="mp-tr">Dün</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">صَبَاحًا / مَسَاءً</div><div class="mp-tr">Sabah / Akşam</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">حِينَ / أَثْنَاءَ</div><div class="mp-tr">...dığı zaman</div></div>
@@ -467,7 +467,7 @@ words: `
     </div>
   </section>
   <section class="mp-blok" style="--mpc:#7C3AED">
-    <h3 class="mp-alt"><span class="mp-no">4</span> Bağlaçlar / Diğerleri<span class="mp-alt-ar" dir="rtl">حُرُوف الْعَطْف</span></h3>
+    <h3 class="mp-alt"><span class="mp-no">4</span> Bağlaçlar / Diğerleri<span class="mp-alt-ar" dir="rtl">حُرُوف العَطْف</span></h3>
     <div class="mp-izgara">
       <div class="mp-kart"><div class="mp-ar" dir="rtl">أَوْ / أَمْ</div><div class="mp-tr">Veya / Yoksa</div></div>
       <div class="mp-kart"><div class="mp-ar" dir="rtl">لِأَنَّ</div><div class="mp-tr">Çünkü</div></div>
@@ -481,7 +481,7 @@ words: `
 </div>`,
          pronouns: `
 <div class="mp">
-<h2 class="mp-bas">ZAMİRLER <span class="mp-bas-ar" dir="rtl">اَلضَّمَائِر</span></h2>
+<h2 class="mp-bas">ZAMİRLER <span class="mp-bas-ar" dir="rtl">اَلضَّمَائِر</span></h2>
   <section class="mp-blok" style="--mpc:#16A085">
     <h3 class="mp-alt"><span class="mp-no">1</span> Munfasıl (Ayrı)<span class="mp-alt-ar" dir="rtl">ضَمِير مُنْفَصِل</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
@@ -496,7 +496,7 @@ words: `
     </table></div>
   </section>
   <section class="mp-blok" style="--mpc:#F39C12">
-    <h3 class="mp-alt"><span class="mp-no">2</span> Muttasıl (Bitişik)<span class="mp-alt-ar" dir="rtl">ضَمِير مُتَّصِل</span></h3>
+    <h3 class="mp-alt"><span class="mp-no">2</span> Muttasıl (Bitişik)<span class="mp-alt-ar" dir="rtl">ضَمِير مُتَّصِل</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
       <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>
@@ -519,7 +519,7 @@ words: `
     </table></div>
   </section>
   <section class="mp-blok" style="--mpc:#7C3AED">
-    <h3 class="mp-alt"><span class="mp-no">4</span> İsm-i Mevsuller (Ki O)<span class="mp-alt-ar" dir="rtl">اِسْم الْمَوْصُول</span></h3>
+    <h3 class="mp-alt"><span class="mp-no">4</span> İsm-i Mevsuller (Ki O)<span class="mp-alt-ar" dir="rtl">اِسْم المَوْصُول</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
       <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>
@@ -531,9 +531,9 @@ words: `
 </div>`,
         suffix: `
 <div class="mp">
-<h2 class="mp-bas">FİİL KİPLERİ <span class="mp-bas-ar" dir="rtl">تَصْرِيف الْفِعْل</span></h2>
+<h2 class="mp-bas">FİİL KİPLERİ <span class="mp-bas-ar" dir="rtl">تَصْرِيف الفِعْل</span></h2>
   <section class="mp-blok" style="--mpc:#16A085">
-    <h3 class="mp-alt"><span class="mp-no">1</span> Mazi Fiil (-dı)<span class="mp-alt-ar" dir="rtl">اَلْمَاضِي</span></h3>
+    <h3 class="mp-alt"><span class="mp-no">1</span> Mazi Fiil (-dı)<span class="mp-alt-ar" dir="rtl">اَلمَاضِي</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
       <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>
@@ -546,7 +546,7 @@ words: `
     </table></div>
   </section>
   <section class="mp-blok" style="--mpc:#F39C12">
-    <h3 class="mp-alt"><span class="mp-no">2</span> Muzari Fiil (-yor)<span class="mp-alt-ar" dir="rtl">اَلْمُضَارِع</span></h3>
+    <h3 class="mp-alt"><span class="mp-no">2</span> Muzari Fiil (-yor)<span class="mp-alt-ar" dir="rtl">اَلمُضَارِع</span></h3>
     <div class="mp-tablo-kutu"><table class="mp-tablo">
       <thead><tr><th>Çoğul</th><th>İkil</th><th>Tekil</th><th class="mp-kose"></th></tr></thead>
       <tbody>

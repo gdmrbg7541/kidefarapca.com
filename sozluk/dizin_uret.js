@@ -14,10 +14,10 @@
 
    ARANAN BİÇİM KURALI (sözlük simülasyonunun kendi kuralı):
      • Mazi              -> kendisi            (كَتَبَ   → كتب)
-     • Muzari / Emir     -> KENDİ BABININ mazisi (يُفَضِّلُ → فضل,
+     • Muzari / Emir     -> KENDİ BABININ mazisi (يُفَضِّلُ → فضل,
                             أَعْطِني → أعطى)  — kalıp numarasından bulunur
      • Mastar / İsm-i Fâil / İsm-i Mef'ûl / isim kalıpları
-                         -> kendisi            (كِتاب → كتاب, مُعَلِّم → معلم)
+                         -> kendisi            (كِتاب → كتاب, مُعَلِّم → معلم)
      • câmid sözlük kaydı-> hücrenin tekil base'i (çoğul da oraya bakar)
 
    Çıktı (stdout, JSON):

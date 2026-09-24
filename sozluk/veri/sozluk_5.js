@@ -20,7 +20,7 @@ window.SOZLUK_SINIF["5"] = {
   {
     level: 1,
     anahtar: "al",
-    hint: "<h3 dir=\"ltr\">Seviye 1 · <bdi class=\"ip-ar\">ال</bdi> takısı ve yalın isim</h3><p class=\"ip-sinif\" dir=\"ltr\">5. sınıf muhâdese cümlelerinden</p><ul><li>Vurgulanan kelimenin <b>sözlükte aranacak yalın hâlini</b> (harekesiz) yazın.</li><li>İsmin başındaki <b><bdi class=\"ip-ar\">ال</bdi></b> takısı atılır.</li><li>Zamir, işaret ismi ve özel adlar aranmaz: onlar <b>geçilir</b>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">اَلْعِلْمُ</bdi> → <bdi class=\"ip-ar\"><b>علم</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">اَلْعائِلَةُ</bdi> → <bdi class=\"ip-ar\"><b>عائلة</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">اَلْبَيْتُ</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim (ال takılı))</i></li></ul>",
+    hint: "<h3 dir=\"ltr\">Seviye 1 · <bdi class=\"ip-ar\">ال</bdi> takısı ve yalın isim</h3><p class=\"ip-sinif\" dir=\"ltr\">5. sınıf muhâdese cümlelerinden</p><ul><li>Vurgulanan kelimenin <b>sözlükte aranacak yalın hâlini</b> (harekesiz) yazın.</li><li>İsmin başındaki <b><bdi class=\"ip-ar\">ال</bdi></b> takısı atılır.</li><li>Zamir, işaret ismi ve özel adlar aranmaz: onlar <b>geçilir</b>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">اَلعِلْمُ</bdi> → <bdi class=\"ip-ar\"><b>علم</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">اَلعائِلَةُ</bdi> → <bdi class=\"ip-ar\"><b>عائلة</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">اَلبَيْتُ</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim (ال takılı))</i></li></ul>",
     sentences: [
       { /* 5_1_2#16 */
         arabic: [
@@ -35,7 +35,7 @@ window.SOZLUK_SINIF["5"] = {
         arabic: [
           { text: "لا،", root: "لا", category: "nefiy harfi" },
           { text: "أَنا", root: "SKIP", category: "zamir" },
-          { text: "مُعَلِّمٌ.", root: "معلم", category: "isim" }
+          { text: "مُعَلِّمٌ.", root: "معلم", category: "isim" }
         ],
         turkish: ["Hayır,","ben","öğretmenim."],
         turkishFull: "Hayır, ben öğretmenim."
@@ -69,7 +69,7 @@ window.SOZLUK_SINIF["5"] = {
         arabic: [
           { text: "لا،", root: "لا", category: "nefiy harfi" },
           { text: "هَذا", root: "SKIP", category: "işaret/mevsul ismi" },
-          { text: "كُرْسِيٌّ.", root: "كرسي", category: "isim" }
+          { text: "كُرْسِيٌّ.", root: "كرسي", category: "isim" }
         ],
         turkish: ["Hayır,","bu","bir sandalyedir."],
         turkishFull: "Hayır, bu bir sandalyedir."
@@ -85,7 +85,7 @@ window.SOZLUK_SINIF["5"] = {
       },
       { /* 5_2_1#18 */
         arabic: [
-          { text: "اَلْعِلْمُ", root: "علم", category: "isim (ال takılı)" },
+          { text: "اَلعِلْمُ", root: "علم", category: "isim (ال takılı)" },
           { text: "نافِعٌ.", root: "نافع", category: "isim (ism-i fâil)" }
         ],
         turkish: ["İlim","faydalıdır."],
@@ -93,8 +93,8 @@ window.SOZLUK_SINIF["5"] = {
       },
       { /* 5_3_1#17 */
         arabic: [
-          { text: "اَلْعائِلَةُ", root: "عائلة", category: "isim (ال takılı)" },
-          { text: "أَوَّلًا.", root: "أولا", category: "zarf" }
+          { text: "اَلعائِلَةُ", root: "عائلة", category: "isim (ال takılı)" },
+          { text: "أَوَّلًا.", root: "أولا", category: "zarf" }
         ],
         turkish: ["Aile","önce gelir."],
         turkishFull: "Aile önce gelir."
@@ -102,7 +102,7 @@ window.SOZLUK_SINIF["5"] = {
       { /* 5_3_2#2 */
         arabic: [
           { text: "هُوَ", root: "SKIP", category: "zamir" },
-          { text: "مُعَلِّمٌ.", root: "معلم", category: "isim" }
+          { text: "مُعَلِّمٌ.", root: "معلم", category: "isim" }
         ],
         turkish: ["O","öğretmendir."],
         turkishFull: "O öğretmendir."
@@ -110,7 +110,7 @@ window.SOZLUK_SINIF["5"] = {
       { /* 5_3_2#4 */
         arabic: [
           { text: "هِيَ", root: "SKIP", category: "zamir" },
-          { text: "مُعَلِّمَةٌ.", root: "معلمة", category: "isim (meslek · dişil)" }
+          { text: "مُعَلِّمَةٌ.", root: "معلمة", category: "isim (meslek · dişil)" }
         ],
         turkish: ["O","öğretmendir."],
         turkishFull: "O öğretmendir."
@@ -119,14 +119,14 @@ window.SOZLUK_SINIF["5"] = {
         arabic: [
           { text: "لا،", root: "لا", category: "nefiy harfi" },
           { text: "أَنا", root: "SKIP", category: "zamir" },
-          { text: "مُوَظَّفٌ.", root: "موظف", category: "isim" }
+          { text: "مُوَظَّفٌ.", root: "موظف", category: "isim" }
         ],
         turkish: ["Hayır,","ben","memurum."],
         turkishFull: "Hayır, ben memurum."
       },
       { /* 5_3_3#8 */
         arabic: [
-          { text: "اَلْبَيْتُ", root: "بيت", category: "isim (ال takılı)" },
+          { text: "اَلبَيْتُ", root: "بيت", category: "isim (ال takılı)" },
           { text: "كَبيرٌ.", root: "كبير", category: "isim" }
         ],
         turkish: ["Ev","büyüktür."],
@@ -134,7 +134,7 @@ window.SOZLUK_SINIF["5"] = {
       },
       { /* 5_3_3#9 */
         arabic: [
-          { text: "اَلْمَدْرَسَةُ", root: "مدرسة", category: "ال takılı · isim" },
+          { text: "اَلمَدْرَسَةُ", root: "مدرسة", category: "ال takılı · isim" },
           { text: "كَبيرَةٌ.", root: "كبير", category: "isim (sıfat · dişil)" }
         ],
         turkish: ["Okul","büyüktür."],
@@ -142,7 +142,7 @@ window.SOZLUK_SINIF["5"] = {
       },
       { /* 5_3_3#10 */
         arabic: [
-          { text: "اَلْحَقيبَةُ", root: "حقيبة", category: "ال takılı · isim" },
+          { text: "اَلحَقيبَةُ", root: "حقيبة", category: "ال takılı · isim" },
           { text: "صَغيرَةٌ.", root: "صغير", category: "isim (sıfat · dişil)" }
         ],
         turkish: ["Çanta","küçüktür."],
@@ -167,7 +167,7 @@ window.SOZLUK_SINIF["5"] = {
       },
       { /* 5_4_3#1 */
         arabic: [
-          { text: "اَلْأَريكَةُ", root: "أريكة", category: "isim (ال takılı)" },
+          { text: "اَلأَريكَةُ", root: "أريكة", category: "isim (ال takılı)" },
           { text: "جَديدَةٌ.", root: "جديد", category: "isim (sıfat · dişil)" }
         ],
         turkish: ["Koltuk","yenidir."],
@@ -175,7 +175,7 @@ window.SOZLUK_SINIF["5"] = {
       },
       { /* 5_4_3#3 */
         arabic: [
-          { text: "اَلْخِزانَةُ", root: "خزانة", category: "isim (ال takılı)" },
+          { text: "اَلخِزانَةُ", root: "خزانة", category: "isim (ال takılı)" },
           { text: "قَديمَةٌ.", root: "قديم", category: "isim (sıfat · dişil)" }
         ],
         turkish: ["Dolap","eskidir."],
@@ -183,7 +183,7 @@ window.SOZLUK_SINIF["5"] = {
       },
       { /* 5_4_3#5 */
         arabic: [
-          { text: "اَلْبَيْتُ", root: "بيت", category: "isim (ال takılı)" },
+          { text: "اَلبَيْتُ", root: "بيت", category: "isim (ال takılı)" },
           { text: "نَظيفٌ.", root: "نظيف", category: "isim (sıfat)" }
         ],
         turkish: ["Ev","temizdir."],
@@ -191,7 +191,7 @@ window.SOZLUK_SINIF["5"] = {
       },
       { /* 5_4_3#6 */
         arabic: [
-          { text: "اَلْغُرْفَةُ", root: "غرفة", category: "isim (ال takılı)" },
+          { text: "اَلغُرْفَةُ", root: "غرفة", category: "isim (ال takılı)" },
           { text: "نَظيفَةٌ.", root: "نظيف", category: "isim (sıfat · dişil)" }
         ],
         turkish: ["Oda","temizdir."],
@@ -207,7 +207,7 @@ window.SOZLUK_SINIF["5"] = {
       },
       { /* 5_4_3#8 */
         arabic: [
-          { text: "اَلسَّجّادَةُ", root: "سجادة", category: "isim (ال takılı)" },
+          { text: "اَلسَّجّادَةُ", root: "سجادة", category: "isim (ال takılı)" },
           { text: "جَميلَةٌ.", root: "جميل", category: "isim (sıfat · dişil)" }
         ],
         turkish: ["Halı","güzeldir."],
@@ -241,7 +241,7 @@ window.SOZLUK_SINIF["5"] = {
       { /* 5_1_2#12 */
         arabic: [
           { text: "اِسْمي", root: "اسم", category: "isim + bitişik zamir (ben)" },
-          { text: "أَحْمَدُ.", root: "SKIP", category: "isim (özel · kişi)" }
+          { text: "أَحْمَد.", root: "SKIP", category: "isim (özel · kişi)" }
         ],
         turkish: ["Adım","Ahmed'dir."],
         turkishFull: "Adım Ahmed'dir."
@@ -249,7 +249,7 @@ window.SOZLUK_SINIF["5"] = {
       { /* 5_1_2#14 */
         arabic: [
           { text: "اِسْمي", root: "اسم", category: "isim + bitişik zamir (ben)" },
-          { text: "زَيْنَبُ.", root: "SKIP", category: "isim (özel · kişi)" }
+          { text: "زَيْنَب.", root: "SKIP", category: "isim (özel · kişi)" }
         ],
         turkish: ["Adım","Zeynep'tir."],
         turkishFull: "Adım Zeynep'tir."
@@ -280,7 +280,7 @@ window.SOZLUK_SINIF["5"] = {
       },
       { /* 5_2_2#2 */
         arabic: [
-          { text: "الدَّفْتَرَ.", root: "دفتر", category: "isim (ال takılı)" },
+          { text: "الدَّفْتَرَ.", root: "دفتر", category: "isim (ال takılı)" },
           { text: "اِفْتَحي", root: "افتح", category: "isim + bitişik zamir (ben)" }
         ],
         turkish: ["aç (kız).","Defteri"],
@@ -338,7 +338,7 @@ window.SOZLUK_SINIF["5"] = {
       { /* 5_3_1#7 */
         arabic: [
           { text: "اِسْمُهُ", root: "اسم", category: "isim + bitişik zamir (o)" },
-          { text: "أَحْمَدُ.", root: "SKIP", category: "isim (özel · kişi)" }
+          { text: "أَحْمَد.", root: "SKIP", category: "isim (özel · kişi)" }
         ],
         turkish: ["Onun adı","Ahmed'dir."],
         turkishFull: "Onun adı Ahmed'dir."
@@ -346,7 +346,7 @@ window.SOZLUK_SINIF["5"] = {
       { /* 5_3_1#9 */
         arabic: [
           { text: "اِسْمُها", root: "اسم", category: "isim + bitişik zamir (o)" },
-          { text: "مَرْيَمُ.", root: "SKIP", category: "isim (özel · kişi)" }
+          { text: "مَرْيَم.", root: "SKIP", category: "isim (özel · kişi)" }
         ],
         turkish: ["Onun adı","Meryem'dir."],
         turkishFull: "Onun adı Meryem'dir."
@@ -395,7 +395,7 @@ window.SOZLUK_SINIF["5"] = {
       { /* 5_3_2#7 */
         arabic: [
           { text: "أَخي", root: "أخ", category: "isim + bitişik zamir (ben)" },
-          { text: "مُوَظَّفٌ.", root: "موظف", category: "isim" }
+          { text: "مُوَظَّفٌ.", root: "موظف", category: "isim" }
         ],
         turkish: ["Kardeşim","memurdur."],
         turkishFull: "Kardeşim memurdur."
@@ -477,7 +477,7 @@ window.SOZLUK_SINIF["5"] = {
   {
     level: 3,
     anahtar: "illetli",
-    hint: "<h3 dir=\"ltr\">Seviye 3 · İlletli ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">5. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin tümü geçerlidir.</li><li>Fiil, sözlükte <b>mazi</b> (geçmiş zaman) biçimiyle aranır: <bdi class=\"ip-ar\">يَكْتُبُ</bdi> → <bdi class=\"ip-ar\">كتب</bdi>.</li><li><b>Ecvef</b> (ortası illetli): <bdi class=\"ip-ar\">يَنامُ</bdi> → <bdi class=\"ip-ar\">نام</bdi> &nbsp;·&nbsp; <b>Misal</b> (başı illetli): <bdi class=\"ip-ar\">يَقِفُ</bdi> → <bdi class=\"ip-ar\">وقف</bdi></li><li><b>Nâkıs</b> (sonu illetli): <bdi class=\"ip-ar\">يُصَلّي</bdi> → <bdi class=\"ip-ar\">صلى</bdi> &nbsp;·&nbsp; <b>Mehmuz</b>: <bdi class=\"ip-ar\">يَأْكُلُ</bdi> → <bdi class=\"ip-ar\">أكل</bdi></li><li><b>Mudâaf</b> (şeddeli): <bdi class=\"ip-ar\">يُحِبُّ</bdi> → <bdi class=\"ip-ar\">أحب</bdi> &nbsp;·&nbsp; <b>Mezid</b> fiil kendi mazisiyle aranır: <bdi class=\"ip-ar\">يَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\">استيقظ</bdi></li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">القَلَمَ.</bdi> → <bdi class=\"ip-ar\"><b>قلم</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">خُذِ</bdi> → <bdi class=\"ip-ar\"><b>أخذ</b></bdi> <i>(fiil (emir · mehmuz))</i></li><li><bdi class=\"ip-ar\">المِمْحاةَ.</bdi> → <bdi class=\"ip-ar\"><b>ممحاة</b></bdi> <i>(isim (ال takılı))</i></li></ul>",
+    hint: "<h3 dir=\"ltr\">Seviye 3 · İlletli ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">5. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin tümü geçerlidir.</li><li>Fiil, sözlükte <b>mazi</b> (geçmiş zaman) biçimiyle aranır: <bdi class=\"ip-ar\">يَكْتُبُ</bdi> → <bdi class=\"ip-ar\">كتب</bdi>.</li><li><b>Ecvef</b> (ortası illetli): <bdi class=\"ip-ar\">يَنامُ</bdi> → <bdi class=\"ip-ar\">نام</bdi> &nbsp;·&nbsp; <b>Misal</b> (başı illetli): <bdi class=\"ip-ar\">يَقِفُ</bdi> → <bdi class=\"ip-ar\">وقف</bdi></li><li><b>Nâkıs</b> (sonu illetli): <bdi class=\"ip-ar\">يُصَلّي</bdi> → <bdi class=\"ip-ar\">صلى</bdi> &nbsp;·&nbsp; <b>Mehmuz</b>: <bdi class=\"ip-ar\">يَأْكُلُ</bdi> → <bdi class=\"ip-ar\">أكل</bdi></li><li><b>Mudâaf</b> (şeddeli): <bdi class=\"ip-ar\">يُحِبُّ</bdi> → <bdi class=\"ip-ar\">أحب</bdi> &nbsp;·&nbsp; <b>Mezid</b> fiil kendi mazisiyle aranır: <bdi class=\"ip-ar\">يَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\">استيقظ</bdi></li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">القَلَمَ.</bdi> → <bdi class=\"ip-ar\"><b>قلم</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">خُذِ</bdi> → <bdi class=\"ip-ar\"><b>أخذ</b></bdi> <i>(fiil (emir · mehmuz))</i></li><li><bdi class=\"ip-ar\">المِمْحاةَ.</bdi> → <bdi class=\"ip-ar\"><b>ممحاة</b></bdi> <i>(isim (ال takılı))</i></li></ul>",
     sentences: [
       { /* 5_2_2#5 */
         arabic: [
@@ -515,7 +515,7 @@ window.SOZLUK_SINIF["5"] = {
       { /* 5_3_1#15 */
         arabic: [
           { text: "أَنا", root: "SKIP", category: "zamir" },
-          { text: "أُحِبُّ", root: "أحب", category: "fiil (muzari · mudâaf)" },
+          { text: "أُحِبُّ", root: "أحب", category: "fiil (muzari · mudâaf)" },
           { text: "عائِلَتي.", root: "عائلة", category: "isim + bitişik zamir (ben)" }
         ],
         turkish: ["Ben","ailemi","seviyorum."],
@@ -524,7 +524,7 @@ window.SOZLUK_SINIF["5"] = {
       { /* 5_3_2#14 */
         arabic: [
           { text: "أَنا", root: "SKIP", category: "zamir" },
-          { text: "أُحِبُّ", root: "أحب", category: "fiil (muzari · mudâaf)" },
+          { text: "أُحِبُّ", root: "أحب", category: "fiil (muzari · mudâaf)" },
           { text: "مِهْنَتي.", root: "مهنة", category: "isim + bitişik zamir (ben)" }
         ],
         turkish: ["Ben","mesleğimi","seviyorum."],

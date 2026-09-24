@@ -1,5 +1,5 @@
-/* 6. sınıf — 6_4_1 (4. Ünite 1. Ders: Hava Durumu | اَلْأَحْوالُ الْجَوِّيَّة) */
-/* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 4. Ünite (كَيْفَ الْجَوّ هَذا الْأُسْبوع؟), s. 148-159. */
+/* 6. sınıf — 6_4_1 (4. Ünite 1. Ders: Hava Durumu | اَلأَحْوالُ الجَوِّيَّة) */
+/* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 4. Ünite (كَيْف الجَوّ هَذا الأُسْبوع؟), s. 148-159. */
 /* Kelimeler kitabın kendi kâmûsuyla (s.194-203) karşılaştırılarak yazıldı. */
 /* CÜMLELER HENÜZ GİRİLMEDİ — sentence ve dialog bilerek boştur. */
 window.data = {
@@ -23,11 +23,11 @@ window.data = {
             "tr": "Karlı"
         },
         {
-            "ar": "اَلْيَوْم",
+            "ar": "اَليَوْم",
             "tr": "Bugün"
         },
         {
-            "ar": "مِظَلَّة",
+            "ar": "مِظَلَّة",
             "tr": "Şemsiye"
         },
         {
@@ -63,7 +63,7 @@ window.data = {
             "tr": "Giyiyorum."
         },
         {
-            "ar": "أُحِبُّ.",
+            "ar": "أُحِبُّ.",
             "tr": "Seviyorum."
         },
         {
@@ -71,7 +71,7 @@ window.data = {
             "tr": "Mavi"
         },
         {
-            "ar": "اَلْجَوّ",
+            "ar": "اَلجَوّ",
             "tr": "Hava"
         },
         {
@@ -107,7 +107,7 @@ window.data = {
             "tr": "Merhaba"
         },
         {
-            "ar": "قُبَّعَة",
+            "ar": "قُبَّعَة",
             "tr": "Bere, şapka"
         },
         {
@@ -115,7 +115,7 @@ window.data = {
             "tr": "Beyaz"
         },
         {
-            "ar": "بُنِّيّ / بُنِّيَّة",
+            "ar": "بُنِّيّ / بُنِّيَّة",
             "tr": "Kahverengi"
         },
         {
@@ -131,7 +131,7 @@ window.data = {
             "tr": "Gece"
         },
         {
-            "ar": "بُرْتُقالِيّ / بُرْتُقالِيَّة",
+            "ar": "بُرْتُقالِيّ / بُرْتُقالِيَّة",
             "tr": "Turuncu"
         }
     ]

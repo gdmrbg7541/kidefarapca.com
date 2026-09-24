@@ -81,7 +81,7 @@ window.data = {
                 {
                     "tr": "Ahmed'dir.",
                     "order": 2,
-                    "ar": "أَحْمَدُ."
+                    "ar": "أَحْمَد."
                 }
             ]
         },
@@ -104,7 +104,7 @@ window.data = {
                 {
                     "tr": "Meryem'dir.",
                     "order": 2,
-                    "ar": "مَرْيَمُ."
+                    "ar": "مَرْيَم."
                 }
             ]
         },
@@ -160,7 +160,7 @@ window.data = {
                 {
                     "tr": "Çocuk",
                     "order": 1,
-                    "ar": "اَلْوَلَدُ"
+                    "ar": "اَلوَلَدُ"
                 },
                 {
                     "tr": "evdedir.",
@@ -174,7 +174,7 @@ window.data = {
                 {
                     "tr": "Kız",
                     "order": 1,
-                    "ar": "اَلْبِنْتُ"
+                    "ar": "اَلبِنْتُ"
                 },
                 {
                     "tr": "okuldadır.",
@@ -193,7 +193,7 @@ window.data = {
                 {
                     "tr": "ailemi",
                     "order": 2,
-                    "ar": "أُحِبُّ"
+                    "ar": "أُحِبُّ"
                 },
                 {
                     "tr": "seviyorum.",
@@ -212,7 +212,7 @@ window.data = {
                 {
                     "tr": "annemi ve babamı",
                     "order": 2,
-                    "ar": "أُحِبُّ"
+                    "ar": "أُحِبُّ"
                 },
                 {
                     "tr": "seviyorum.",
@@ -226,12 +226,12 @@ window.data = {
                 {
                     "tr": "Aile",
                     "order": 1,
-                    "ar": "اَلْعائِلَةُ"
+                    "ar": "اَلعائِلَةُ"
                 },
                 {
                     "tr": "önce gelir.",
                     "order": 2,
-                    "ar": "أَوَّلًا."
+                    "ar": "أَوَّلًا."
                 }
             ]
         }
@@ -275,7 +275,7 @@ window.data = {
                 {
                     "tr": "Halid'dir.",
                     "order": 2,
-                    "ar": "خالِدٌ."
+                    "ar": "خالِد."
                 }
             ]
         },
@@ -289,7 +289,7 @@ window.data = {
                 {
                     "tr": "senin annen mi?",
                     "order": 2,
-                    "ar": "أُمُّكَ؟"
+                    "ar": "أُمُّكَ؟"
                 }
             ],
             "p2": [
@@ -346,7 +346,7 @@ window.data = {
                 {
                     "tr": "Kız kardeşin",
                     "order": 2,
-                    "ar": "أَيْنَ"
+                    "ar": "أَيْن"
                 },
                 {
                     "tr": "nerede?",
@@ -443,7 +443,7 @@ window.data = {
         },
         {
             "tr": "seviyorum",
-            "ar": "أُحِبُّ"
+            "ar": "أُحِبُّ"
         },
         {
             "tr": "benim var",
@@ -463,7 +463,7 @@ window.data = {
         },
         {
             "tr": "aile önce gelir",
-            "ar": "اَلْعائِلَةُ أَوَّلًا"
+            "ar": "اَلعائِلَةُ أَوَّلًا"
         }
     ]
 };

@@ -1,5 +1,5 @@
 /* 6. sınıf — 6_3_1 (3. Ünite 1. Ders: Vücut Organları | أَعْضاءُ الجِسْم) */
-/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 3. Ünite (الصِّحَّة), s. 70-77. */
+/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 3. Ünite (الصِّحَّة), s. 70-77. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
     "sentence": [
@@ -41,7 +41,7 @@ window.data = {
                 {
                     "tr": "Şapka",
                     "order": 1,
-                    "ar": "القُبَّعَةُ"
+                    "ar": "القُبَّعَةُ"
                 },
                 {
                     "tr": "başımın",
@@ -185,7 +185,7 @@ window.data = {
                 {
                     "tr": "koklar.",
                     "order": 4,
-                    "ar": "يَشُمُّ."
+                    "ar": "يَشُمُّ."
                 }
             ]
         },
@@ -246,7 +246,7 @@ window.data = {
                 {
                     "tr": "bir gençtir.",
                     "order": 2,
-                    "ar": "شابٌّ."
+                    "ar": "شابٌّ."
                 }
             ]
         },
@@ -274,7 +274,7 @@ window.data = {
                 {
                     "tr": "gencin",
                     "order": 3,
-                    "ar": "الشّابِّ."
+                    "ar": "الشّابِّ."
                 },
                 {
                     "tr": "elidir.",
@@ -293,7 +293,7 @@ window.data = {
                 {
                     "tr": "genç bir kızdır.",
                     "order": 2,
-                    "ar": "شابَّةٌ."
+                    "ar": "شابَّةٌ."
                 }
             ]
         },
@@ -321,7 +321,7 @@ window.data = {
                 {
                     "tr": "genç kızın",
                     "order": 3,
-                    "ar": "الشّابَّةِ."
+                    "ar": "الشّابَّةِ."
                 },
                 {
                     "tr": "başıdır.",
@@ -382,7 +382,7 @@ window.data = {
                 {
                     "tr": "Ahmet'in",
                     "order": 2,
-                    "ar": "أَحْمَدَ"
+                    "ar": "أَحْمَد"
                 },
                 {
                     "tr": "Arabası",
@@ -411,7 +411,7 @@ window.data = {
                 {
                     "tr": "",
                     "order": 4,
-                    "ar": "جَيِّدًا."
+                    "ar": "جَيِّدًا."
                 },
                 {
                     "tr": "iyi",
@@ -580,7 +580,7 @@ window.data = {
                 {
                     "tr": "Nereye",
                     "order": 1,
-                    "ar": "إِلى أَيْنَ"
+                    "ar": "إِلى أَيْن"
                 },
                 {
                     "tr": "babasıyla?",
@@ -841,11 +841,11 @@ window.data = {
         },
         {
             "tr": "koklar",
-            "ar": "يَشُمُّ"
+            "ar": "يَشُمُّ"
         },
         {
             "tr": "şapka",
-            "ar": "قُبَّعَة"
+            "ar": "قُبَّعَة"
         },
         {
             "tr": "top",
@@ -881,7 +881,7 @@ window.data = {
         },
         {
             "tr": "genç (kız)",
-            "ar": "شابَّة"
+            "ar": "شابَّة"
         },
         {
             "tr": "üstünde",
@@ -917,7 +917,7 @@ window.data = {
         },
         {
             "tr": "iyi bir şekilde",
-            "ar": "جَيِّدًا"
+            "ar": "جَيِّدًا"
         },
         {
             "tr": "haydi",

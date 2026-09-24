@@ -20,13 +20,13 @@ const TAKIM_RENK = [
   { ad:"الفَريق الأَحْمَر",  tr:"Kırmızı", renk:"#EF5350" },
   { ad:"الفَريق الأَصْفَر",  tr:"Sarı",    renk:"#F39C12" },
   { ad:"الفَريق البَنَفْسَجِيّ", tr:"Mor", renk:"#7E57C2" },
-  { ad:"الفَريق الرَّمادِيّ", tr:"Gri",    renk:"#78909C" },
+  { ad:"الفَريق الرَّمادِيّ", tr:"Gri",    renk:"#78909C" },
   { ad:"الفَريق البُرْتُقالِيّ", tr:"Turuncu", renk:"#FB8C00" },
   { ad:"الفَريق الوَرْدِيّ",   tr:"Pembe",   renk:"#EC407A" },
   { ad:"الفَريق الفَيْروزِيّ", tr:"Turkuaz", renk:"#00ACC1" },
   { ad:"الفَريق الكُحْلِيّ",   tr:"Lacivert",renk:"#3949AB" },
-  { ad:"الفَريق البُنِّيّ",    tr:"Kahve",   renk:"#8D6E63" },
-  { ad:"الفَريق الزَّيْتونِيّ", tr:"Zeytin",  renk:"#7CB342" }
+  { ad:"الفَريق البُنِّيّ",    tr:"Kahve",   renk:"#8D6E63" },
+  { ad:"الفَريق الزَّيْتونِيّ", tr:"Zeytin",  renk:"#7CB342" }
 ];
 
 /* Arapça rakamlar: adlandırılmış renkler bitince takımlar numaralanır. */
@@ -1187,7 +1187,7 @@ const hepsi = [
           </svg>
         </span>
         <span class="biy-menu-ad">Sınıfça Yarış</span>
-        <span class="biy-menu-ar">نِظام الصُّفوف</span>
+        <span class="biy-menu-ar">نِظام الصُّفوف</span>
         <span class="biy-menu-desc">Her sınıfa bir karekod · sınıflar yarışır</span>
         <span class="cdw-menu-tik">✓</span>
       </button>`,

@@ -1,4 +1,4 @@
-/* 5. sınıf — 5_4_3 (4. Ünite 3. Ders: Sıfatlar | اَلصِّفات) */
+/* 5. sınıf — 5_4_3 (4. Ünite 3. Ders: Sıfatlar | اَلصِّفات) */
 /* Cümle & diyalog: MEB Arapça 5-8 Öğretim Programı hedef kelime/yapı bloklarına göre hazırlandı. */
 window.data = {
     "sentence": [
@@ -7,7 +7,7 @@ window.data = {
                 {
                     "tr": "Koltuk",
                     "order": 1,
-                    "ar": "اَلْأَريكَةُ"
+                    "ar": "اَلأَريكَةُ"
                 },
                 {
                     "tr": "yenidir.",
@@ -30,7 +30,7 @@ window.data = {
                 {
                     "tr": "Dolap",
                     "order": 1,
-                    "ar": "اَلْخِزانَةُ"
+                    "ar": "اَلخِزانَةُ"
                 },
                 {
                     "tr": "eskidir.",
@@ -53,7 +53,7 @@ window.data = {
                 {
                     "tr": "Ev",
                     "order": 1,
-                    "ar": "اَلْبَيْتُ"
+                    "ar": "اَلبَيْتُ"
                 },
                 {
                     "tr": "temizdir.",
@@ -67,7 +67,7 @@ window.data = {
                 {
                     "tr": "Oda",
                     "order": 1,
-                    "ar": "اَلْغُرْفَةُ"
+                    "ar": "اَلغُرْفَةُ"
                 },
                 {
                     "tr": "temizdir.",
@@ -95,7 +95,7 @@ window.data = {
                 {
                     "tr": "Halı",
                     "order": 1,
-                    "ar": "اَلسَّجّادَةُ"
+                    "ar": "اَلسَّجّادَةُ"
                 },
                 {
                     "tr": "güzeldir.",
@@ -151,7 +151,7 @@ window.data = {
                 {
                     "tr": "Mutfak",
                     "order": 1,
-                    "ar": "اَلْمَطْبَخُ"
+                    "ar": "اَلمَطْبَخُ"
                 },
                 {
                     "tr": "temiz ve güzeldir.",
@@ -165,7 +165,7 @@ window.data = {
                 {
                     "tr": "Oda",
                     "order": 1,
-                    "ar": "هَلِ الغُرْفَةُ"
+                    "ar": "هَل الغُرْفَةُ"
                 },
                 {
                     "tr": "temiz midir?",
@@ -200,7 +200,7 @@ window.data = {
                 {
                     "tr": "Koltuk",
                     "order": 1,
-                    "ar": "هَلِ الأَريكَةُ"
+                    "ar": "هَل الأَريكَةُ"
                 },
                 {
                     "tr": "yeni midir?",
@@ -231,7 +231,7 @@ window.data = {
                 {
                     "tr": "Dolap",
                     "order": 1,
-                    "ar": "هَلِ الخِزانَةُ"
+                    "ar": "هَل الخِزانَةُ"
                 },
                 {
                     "tr": "yeni midir?",
@@ -293,7 +293,7 @@ window.data = {
                 {
                     "tr": "Ev",
                     "order": 1,
-                    "ar": "كَيْفَ"
+                    "ar": "كَيْف"
                 },
                 {
                     "tr": "nasıl?",
@@ -305,7 +305,7 @@ window.data = {
                 {
                     "tr": "Ev",
                     "order": 1,
-                    "ar": "اَلْبَيْتُ"
+                    "ar": "اَلبَيْتُ"
                 },
                 {
                     "tr": "güzel ve temizdir.",
@@ -358,7 +358,7 @@ window.data = {
         },
         {
             "tr": "nasıl",
-            "ar": "كَيْفَ"
+            "ar": "كَيْف"
         },
         {
             "tr": "koltuk",

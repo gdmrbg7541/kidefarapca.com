@@ -419,12 +419,12 @@ words: `
                 </tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Ne?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مَا / مَاذَا</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Kim?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مَنْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nerede?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَيْنَ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nasıl?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">كَيْفَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nerede?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَيْن</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nasıl?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">كَيْف</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Ne zaman?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مَتَى</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Niçin?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لِمَاذَا</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Hangi / Kaç?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَيّ / كَمْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nereden?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مِنْ أَيْنَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nereden?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مِنْ أَيْن</td></tr>
             </table>
         </div>
 
@@ -457,7 +457,7 @@ words: `
                     <th style="padding: 10px; text-align: center;">Arapça</th>
                 </tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Önce / Sonra</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">قَبْلَ / بَعْدَ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Bugün / Yarın</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">اَلْيَوْمَ / غَدًا</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Bugün / Yarın</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">اَليَوْمَ / غَدًا</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Dün</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَمْسِ</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Sabah / Akşam</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">صَبَاحًا / مَسَاءً</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...dığı zaman</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">حِينَ / أَثْنَاءَ</td></tr>
@@ -1022,7 +1022,7 @@ const data = {
             { tr: "nedir?", order: 1, ar: "ما" }
         ],
         p2: [
-            { tr: "Müslümanlar", order: 1, ar: "الْمُسْلِمُون" },
+            { tr: "Müslümanlar", order: 1, ar: "المُسْلِمُون" },
             { tr: "her zaman", order: 5, ar: "دائِمًا." },
             { tr: "ihtiyaç sahiplerine", order: 3, ar: "المُحْتاجِين" },
             { tr: "ve yaşlılara", order: 4, ar: "وَالمُسِنّين" },
@@ -1041,7 +1041,7 @@ const data = {
             
         ],
         p2: [
-            { tr: "Ve Müslümanın", order: 3, ar: "الْمُسْلِم" },
+            { tr: "Ve Müslümanın", order: 3, ar: "المُسْلِم" },
             { tr: "dürüst", order: 4, ar: "صادِقًا" },
             { tr: "ve sabırlı", order: 5, ar: "وَصَبُورًا." },
             { tr: "olması", order: 2, ar: "يَكونَ" },
@@ -1090,9 +1090,9 @@ const data = {
             { tr: "say (zikret)?", order: 1, ar: "اُذْكُري" }
         ],
         p2: [
-            { tr: "Müslümanlar", order: 1, ar: "الْمُسْلِمُون" },
+            { tr: "Müslümanlar", order: 1, ar: "المُسْلِمُون" },
             { tr: "her zaman", order: 4, ar: "دائِمًا." },
-            { tr: "ihtiyaç sahiplerine", order: 3, ar: "الْمُحْتاجِين" }, // Boşluk Dolduruldu
+            { tr: "ihtiyaç sahiplerine", order: 3, ar: "المُحْتاجِين" }, // Boşluk Dolduruldu
             { tr: "yardım ederler.", order: 2, ar: "يُساعِدُون" }
         ]
     },

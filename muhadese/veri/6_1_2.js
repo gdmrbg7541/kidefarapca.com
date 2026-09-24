@@ -1,5 +1,5 @@
 /* 6. sınıf — 6_1_2 (1. Ünite 2. Ders: Oyunlar | الأَلْعاب) */
-/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 1. Ünite (الحَياة اليَوْمِيَّة), s. 21-29. */
+/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 1. Ünite (الحَياة اليَوْمِيَّة), s. 21-29. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
     "sentence": [
@@ -27,7 +27,7 @@ window.data = {
                 {
                     "tr": "Ahmet'tir.",
                     "order": 2,
-                    "ar": "أَحْمَدُ."
+                    "ar": "أَحْمَد."
                 }
             ]
         },
@@ -55,7 +55,7 @@ window.data = {
                 {
                     "tr": "Ahmet'tir.",
                     "order": 2,
-                    "ar": "أَحْمَدُ."
+                    "ar": "أَحْمَد."
                 }
             ]
         },
@@ -83,7 +83,7 @@ window.data = {
                 {
                     "tr": "Zeynep'tir.",
                     "order": 2,
-                    "ar": "زَيْنَبُ."
+                    "ar": "زَيْنَب."
                 }
             ]
         },
@@ -111,7 +111,7 @@ window.data = {
                 {
                     "tr": "Ali'dir.",
                     "order": 2,
-                    "ar": "عَلِيٌّ."
+                    "ar": "عَلِيّ."
                 }
             ]
         },
@@ -201,7 +201,7 @@ window.data = {
                 {
                     "tr": "Zeynep,",
                     "order": 2,
-                    "ar": "زَيْنَبُ،"
+                    "ar": "زَيْنَب،"
                 },
                 {
                     "tr": "o",
@@ -211,7 +211,7 @@ window.data = {
                 {
                     "tr": "öğretmendir.",
                     "order": 4,
-                    "ar": "مُدَرِّسَةٌ."
+                    "ar": "مُدَرِّسَةٌ."
                 }
             ]
         },
@@ -225,7 +225,7 @@ window.data = {
                 {
                     "tr": "Ali,",
                     "order": 2,
-                    "ar": "عَلِيٌّ،"
+                    "ar": "عَلِيّ،"
                 },
                 {
                     "tr": "o",
@@ -401,7 +401,7 @@ window.data = {
                 {
                     "tr": "evden",
                     "order": 3,
-                    "ar": "مِنَ البَيْتِ."
+                    "ar": "مِن البَيْتِ."
                 },
                 {
                     "tr": "çıktın.",
@@ -420,7 +420,7 @@ window.data = {
                 {
                     "tr": "evden",
                     "order": 3,
-                    "ar": "مِنَ البَيْتِ."
+                    "ar": "مِن البَيْتِ."
                 },
                 {
                     "tr": "çıktı.",
@@ -585,7 +585,7 @@ window.data = {
                 {
                     "tr": "(hazırlık)",
                     "order": 3,
-                    "ar": "تَمْهيدِيَّةً"
+                    "ar": "تَمْهيدِيَّةً"
                 }
             ]
         },
@@ -599,7 +599,7 @@ window.data = {
                 {
                     "tr": "önemli bir maçımız var.",
                     "order": 2,
-                    "ar": "عِنْدَنا مُباراةٌ مُهِمَّةٌ."
+                    "ar": "عِنْدَنا مُباراةٌ مُهِمَّةٌ."
                 }
             ]
         }
@@ -641,7 +641,7 @@ window.data = {
                 {
                     "tr": "Basketbol mu",
                     "order": 1,
-                    "ar": "أَكُرَةَ السَّلَّةِ"
+                    "ar": "أَكُرَةَ السَّلَّةِ"
                 },
                 {
                     "tr": "yoksa hentbol mü?",
@@ -672,7 +672,7 @@ window.data = {
                 {
                     "tr": "başarılar",
                     "order": 3,
-                    "ar": "التَّوْفيقَ."
+                    "ar": "التَّوْفيقَ."
                 },
                 {
                     "tr": "dilerim.",
@@ -978,7 +978,7 @@ window.data = {
                 {
                     "tr": "altı bisiklet var.",
                     "order": 3,
-                    "ar": "سِتُّ دَرّاجاتٍ."
+                    "ar": "سِتُّ دَرّاجاتٍ."
                 }
             ]
         },
@@ -1173,7 +1173,7 @@ window.data = {
                 {
                     "tr": "Selamün",
                     "order": 1,
-                    "ar": "السَّلامُ"
+                    "ar": "السَّلامُ"
                 },
                 {
                     "tr": "aleyküm.",
@@ -1190,7 +1190,7 @@ window.data = {
                 {
                     "tr": "selam.",
                     "order": 2,
-                    "ar": "السَّلامُ."
+                    "ar": "السَّلامُ."
                 }
             ]
         },
@@ -1245,7 +1245,7 @@ window.data = {
                 {
                     "tr": "çünkü ben",
                     "order": 2,
-                    "ar": "لِأَنَّني"
+                    "ar": "لِأَنَّني"
                 },
                 {
                     "tr": "okul takımında",
@@ -1286,7 +1286,7 @@ window.data = {
                 {
                     "tr": "önemli bir maçımız var.",
                     "order": 2,
-                    "ar": "عِنْدَنا مُباراةٌ مُهِمَّةٌ."
+                    "ar": "عِنْدَنا مُباراةٌ مُهِمَّةٌ."
                 }
             ],
             "p2": [
@@ -1334,7 +1334,7 @@ window.data = {
                 {
                     "tr": "yavrum.",
                     "order": 2,
-                    "ar": "يا بُنَيَّ."
+                    "ar": "يا بُنَيَّ."
                 }
             ]
         },
@@ -1379,12 +1379,12 @@ window.data = {
                 {
                     "tr": "yazın",
                     "order": 3,
-                    "ar": "في الصَّيْفِ؟"
+                    "ar": "في الصَّيْفِ؟"
                 },
                 {
                     "tr": "tercih eder misin?",
                     "order": 1,
-                    "ar": "أَتُفَضِّلُ"
+                    "ar": "أَتُفَضِّلُ"
                 }
             ],
             "p2": [
@@ -1401,12 +1401,12 @@ window.data = {
                 {
                     "tr": "yazın",
                     "order": 4,
-                    "ar": "في الصَّيْفِ."
+                    "ar": "في الصَّيْفِ."
                 },
                 {
                     "tr": "tercih ederim.",
                     "order": 2,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 }
             ]
         },
@@ -1420,7 +1420,7 @@ window.data = {
                 {
                     "tr": "nereye",
                     "order": 1,
-                    "ar": "إِلى أَيْنَ"
+                    "ar": "إِلى أَيْن"
                 },
                 {
                     "tr": "gidiyorsun?",
@@ -1446,7 +1446,7 @@ window.data = {
                 {
                     "tr": "Kışın",
                     "order": 3,
-                    "ar": "في الشِّتاءِ؟"
+                    "ar": "في الشِّتاءِ؟"
                 },
                 {
                     "tr": "ne zaman",
@@ -1468,7 +1468,7 @@ window.data = {
                 {
                     "tr": "erken",
                     "order": 3,
-                    "ar": "مُبَكِّرًا."
+                    "ar": "مُبَكِّرًا."
                 },
                 {
                     "tr": "uyanırım.",
@@ -1482,7 +1482,7 @@ window.data = {
                 {
                     "tr": "Bu ay",
                     "order": 3,
-                    "ar": "هَذا الشَّهْرَ؟"
+                    "ar": "هَذا الشَّهْرَ؟"
                 },
                 {
                     "tr": "futbol",
@@ -1533,7 +1533,7 @@ window.data = {
         },
         {
             "tr": "spor salonu",
-            "ar": "صالَةُ الرِّياضَةِ"
+            "ar": "صالَةُ الرِّياضَةِ"
         },
         {
             "tr": "koştu",
@@ -1565,7 +1565,7 @@ window.data = {
         },
         {
             "tr": "basketbol",
-            "ar": "كُرَةُ السَّلَّةِ"
+            "ar": "كُرَةُ السَّلَّةِ"
         },
         {
             "tr": "hentbol",
@@ -1681,7 +1681,7 @@ window.data = {
         },
         {
             "tr": "öğretmen (bayan)",
-            "ar": "مُدَرِّسَة"
+            "ar": "مُدَرِّسَة"
         },
         {
             "tr": "bir",
@@ -1705,7 +1705,7 @@ window.data = {
         },
         {
             "tr": "altı",
-            "ar": "سِتَّة"
+            "ar": "سِتَّة"
         },
         {
             "tr": "yedi",

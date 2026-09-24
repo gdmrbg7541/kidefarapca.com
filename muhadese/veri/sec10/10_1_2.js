@@ -1,4 +1,4 @@
-/* 10. sınıf SEÇMELİ ARAPÇA — 1. Ünite (مِن الحَياة) 2. Ders: الرُّجوع إلى البَيْت
+/* 10. sınıf SEÇMELİ ARAPÇA — 1. Ünite (مِن الحَياة) 2. Ders: الرُّجوع إلى البَيْت
    Kaynak: Ortaöğretim Seçmeli Arapça ders kitabı, basılı s.24-35.
    Dersin konusu: işaret isimleri (هذا/هذِهِ/هذانِ/هاتانِ/ذلِكَ/تِلْكَ), sıfatlar ve
    zıtları, okul sonrası günlük program. Cümleler kitabın kendi metinlerindendir. */
@@ -61,9 +61,9 @@ window.data = {
         /* Yazın hava sıcaktır. (s.28) */
         {
             words: [
-                { tr: "Yazın", order: 3, ar: "في الصَّيْف." },
-                { tr: "hava", order: 1, ar: "الجَوُّ" },
-                { tr: "sıcaktır.", order: 2, ar: "حارٌّ" }
+                { tr: "Yazın", order: 3, ar: "في الصَّيْف." },
+                { tr: "hava", order: 1, ar: "الجَوُّ" },
+                { tr: "sıcaktır.", order: 2, ar: "حارٌّ" }
             ]
         },
 
@@ -89,16 +89,16 @@ window.data = {
         /* Uyumadan önce çantasını hazırlıyor. (s.29) */
         {
             words: [
-                { tr: "Uyumadan önce", order: 3, ar: "قَبْلَ النَّوْم." },
+                { tr: "Uyumadan önce", order: 3, ar: "قَبْلَ النَّوْم." },
                 { tr: "çantasını", order: 2, ar: "حَقيبَتَهُ" },
-                { tr: "hazırlıyor.", order: 1, ar: "يُجَهِّزُ" }
+                { tr: "hazırlıyor.", order: 1, ar: "يُجَهِّزُ" }
             ]
         },
 
         /* Her akşam otobüsle eve dönüyor. (s.30) */
         {
             words: [
-                { tr: "Her akşam", order: 4, ar: "كُلَّ مَساء." },
+                { tr: "Her akşam", order: 4, ar: "كُلَّ مَساء." },
                 { tr: "otobüsle", order: 3, ar: "بِالحافِلةِ" },
                 { tr: "eve", order: 2, ar: "إِلى البَيْتِ" },
                 { tr: "dönüyor.", order: 1, ar: "تَرْجِعُ" }
@@ -108,25 +108,25 @@ window.data = {
         /* Abdest alıyor ve uyumadan önce yatsı namazını kılıyor. (s.30) */
         {
             words: [
-                { tr: "Abdest alıyor", order: 1, ar: "تَتَوَضَّأُ" },
-                { tr: "ve uyumadan önce", order: 4, ar: "قَبْلَ النَّوْم." },
+                { tr: "Abdest alıyor", order: 1, ar: "تَتَوَضَّأُ" },
+                { tr: "ve uyumadan önce", order: 4, ar: "قَبْلَ النَّوْم." },
                 { tr: "yatsı namazını", order: 3, ar: "صَلاةَ العِشاءِ" },
                 { tr: "kılıyor.", order: 2, ar: "وَتُصَلّي" }
             ]
         }
     ],
 
-    /* Kitaptaki diyalog: في الطَّريق — Hâlid ile halası (s.24) */
+    /* Kitaptaki diyalog: في الطَّريق — Hâlid ile halası (s.24) */
     dialog: [
         {
             p1: [
                 { tr: "Merhaba", order: 1, ar: "مَرْحَبًا" },
                 { tr: "Hâlid!", order: 2, ar: "يا خالِد!" },
-                { tr: "Nasılsın?", order: 3, ar: "كَيْفَ حالُكَ؟" }
+                { tr: "Nasılsın?", order: 3, ar: "كَيْف حالُكَ؟" }
             ],
             p2: [
                 { tr: "Merhaba", order: 1, ar: "أَهْلًا" },
-                { tr: "halacığım!", order: 2, ar: "يا عَمَّتي!" },
+                { tr: "halacığım!", order: 2, ar: "يا عَمَّتي!" },
                 { tr: "Ben", order: 3, ar: "أَنا" },
                 { tr: "iyiyim,", order: 4, ar: "بِخَيْر،" },
                 { tr: "teşekkür ederim.", order: 5, ar: "شُكْرًا لَكِ." }
@@ -134,15 +134,15 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Nereden", order: 1, ar: "مِنْ أَيْنَ" },
+                { tr: "Nereden", order: 1, ar: "مِنْ أَيْن" },
                 { tr: "geliyorsun", order: 3, ar: "قادِم،" },
-                { tr: "ve nereye", order: 4, ar: "وَإِلى أَيْنَ" },
+                { tr: "ve nereye", order: 4, ar: "وَإِلى أَيْن" },
                 { tr: "gidiyorsun?", order: 5, ar: "ذاهِب؟" },
                 { tr: "sen", order: 2, ar: "أَنْتَ" }
             ],
             p2: [
                 { tr: "Ben", order: 1, ar: "أَنا" },
-                { tr: "okuldan", order: 3, ar: "مِنَ المَدْرَسة،" },
+                { tr: "okuldan", order: 3, ar: "مِن المَدْرَسة،" },
                 { tr: "geliyorum", order: 2, ar: "قادِم" },
                 { tr: "ve eve", order: 5, ar: "إِلى البَيْت." },
                 { tr: "gidiyorum.", order: 4, ar: "وَذاهِب" }
@@ -176,7 +176,7 @@ window.data.words = [
     { tr: "Ağır", ar: "ثَقيل" }, { tr: "Hafif", ar: "خَفيف" },
     { tr: "Sıcak", ar: "حارّ" }, { tr: "Soğuk", ar: "بارِد" },
     { tr: "Güzel", ar: "جَميل" }, { tr: "Faydalı", ar: "مُفيد" },
-    { tr: "Becerikli", ar: "ماهِر" }, { tr: "Öğretmen", ar: "مُعَلِّم" },
+    { tr: "Becerikli", ar: "ماهِر" }, { tr: "Öğretmen", ar: "مُعَلِّم" },
     { tr: "Mühendis", ar: "مُهَنْدِس" }, { tr: "Öğrenci", ar: "طالِب" },
     { tr: "Ağaç", ar: "شَجَرة" }, { tr: "Çanta", ar: "حَقيبة" },
     { tr: "Banyo", ar: "الحَمّام" }, { tr: "Akşam yemeği", ar: "العَشاء" },
@@ -184,6 +184,6 @@ window.data.words = [
     { tr: "Yüz", ar: "وَجْه" }, { tr: "El", ar: "يَد" },
     { tr: "Yıkıyor", ar: "يَغْسِلُ" }, { tr: "Yiyor, alıyor", ar: "يَتَناوَلُ" },
     { tr: "Ders çalışıyor", ar: "يَدْرُسُ" }, { tr: "Uyuyor", ar: "يَنامُ" },
-    { tr: "İki defa", ar: "مَرَّتَيْنِ" }, { tr: "Nasılsın?", ar: "كَيْفَ حالُكَ؟" },
+    { tr: "İki defa", ar: "مَرَّتَيْنِ" }, { tr: "Nasılsın?", ar: "كَيْف حالُكَ؟" },
     { tr: "İyiyim", ar: "بِخَيْر" }, { tr: "Kim?", ar: "مَنْ" }
 ];

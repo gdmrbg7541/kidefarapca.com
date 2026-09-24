@@ -243,7 +243,7 @@ window.data = {
             { tr: "nedir?", order: 1, ar: "ما" }
         ],
         p2: [
-            { tr: "Müslümanlar", order: 1, ar: "الْمُسْلِمُون" },
+            { tr: "Müslümanlar", order: 1, ar: "المُسْلِمُون" },
             { tr: "her zaman", order: 5, ar: "دائِمًا." },
             { tr: "ihtiyaç sahiplerine", order: 3, ar: "المُحْتاجِين" },
             { tr: "ve yaşlılara", order: 4, ar: "وَالمُسِنّين" },
@@ -262,7 +262,7 @@ window.data = {
             
         ],
         p2: [
-            { tr: "Ve Müslümanın", order: 3, ar: "الْمُسْلِم" },
+            { tr: "Ve Müslümanın", order: 3, ar: "المُسْلِم" },
             { tr: "dürüst", order: 4, ar: "صادِقًا" },
             { tr: "ve sabırlı", order: 5, ar: "وَصَبُورًا." },
             { tr: "olması", order: 2, ar: "يَكونَ" },
@@ -311,9 +311,9 @@ window.data = {
             { tr: "say (zikret)?", order: 1, ar: "اُذْكُري" }
         ],
         p2: [
-            { tr: "Müslümanlar", order: 1, ar: "الْمُسْلِمُون" },
+            { tr: "Müslümanlar", order: 1, ar: "المُسْلِمُون" },
             { tr: "her zaman", order: 4, ar: "دائِمًا." },
-            { tr: "ihtiyaç sahiplerine", order: 3, ar: "الْمُحْتاجِين" }, // Boşluk Dolduruldu
+            { tr: "ihtiyaç sahiplerine", order: 3, ar: "المُحْتاجِين" }, // Boşluk Dolduruldu
             { tr: "yardım ederler.", order: 2, ar: "يُساعِدُون" }
         ]
     },

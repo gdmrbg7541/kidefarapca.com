@@ -1,14 +1,14 @@
 /* ============================================================================
    KIDEF ARAPÇA — KÖKLERİN HAZİNESİ  (hazine.js)
    ----------------------------------------------------------------------------
-   كَنْزُ الْجُذُورِ — Beytü'l-Hikme'den kalma, beş kadranlı kilidi olan sandık.
+   كَنْزُ الجُذُورِ — Beytü'l-Hikme'den kalma, beş kadranlı kilidi olan sandık.
 
    OYUNUN KURALI
    -------------
    Beş kapı vardır. Her kapıda üç bulmaca; üçü de çözülünce kapı bir HARF verir.
    Beş harf yan yana gelince sandık açılır ve içinden şu kelime çıkar:
 
-                            الْعِلْم   (İLİM)
+                            العِلْم   (İLİM)
 
    Bütün cevaplar SAYIDIR — mobilde Arapça klavye gerekmez.
 
@@ -50,13 +50,13 @@ const SIGA_CETVELI = [
 
 /* ===========================================================================
    2) BEŞ KAPI — her biri 3 bulmaca + 1 berat parçası
-      Kapıların baş harfleri sırayla:  ا · ل · ع · ل · م   =>  الْعِلْم
+      Kapıların baş harfleri sırayla:  ا · ل · ع · ل · م   =>  العِلْم
       Bütün cevaplar veri üzerinden doğrulanmıştır.
    =========================================================================== */
 const KAPILAR = [
     {
         harf: 'ا',
-        ar: 'بَابُ الْأَمَانِ',
+        ar: 'بَابُ الأَمَانِ',
         tr: 'Emniyet Kapısı',
         kok: 'أمن',
         kokNo: 70,
@@ -126,7 +126,7 @@ const KAPILAR = [
     },
     {
         harf: 'ع',
-        ar: 'بَابُ الْعِلْمِ',
+        ar: 'بَابُ العِلْمِ',
         tr: 'İlim Kapısı',
         kok: 'علم',
         kokNo: 15,
@@ -236,10 +236,10 @@ const KAPILAR = [
     }
 ];
 
-const SON_KELIME  = 'الْعِلْم';
+const SON_KELIME  = 'العِلْم';
 const SON_ANLAM   = 'İLİM — Hazine buydu.';
 const SON_BERAT   = 'Sandık açıldı. İçinde ne altın vardı ne mücevher; ' +
-                    'yalnızca beş harften kurulmuş bir kelime: الْعِلْم. ' +
+                    'yalnızca beş harften kurulmuş bir kelime: العِلْم. ' +
                     'Onu bulan, sandığı taşımaya gerek duymaz — çünkü hazine artık onunla birlikte yürür.';
 
 /* ===========================================================================
@@ -695,7 +695,7 @@ const KOK_ANLAM = [
     ["خَرَجَ","Çıktı."], ["عَمِلَ","Çalıştı / Yaptı."],
     ["اِسْتَيْقَظَ","Uyandı."], ["دَرَسَ","Ders çalıştı / Okudu."],
     ["حَفِظَ","Korudu / Ezberledi."], ["نَظَرَ","Baktı."],
-    ["مَكُنَ","Güçlü / Sağlam oldu."], ["حَسُنَ","Güzel oldu."],
+    ["مَكُنَ","Güçlü / Sağlam oldu."], ["حَسُن","Güzel oldu."],
     ["سَدَّسَ","Altıladı / Altıya böldü."], ["سَعِدَ","Mutlu oldu."],
     ["جَهِلَ","Bilmedi / Cahil kaldı."], ["سَكَنَ","Sakinleşti / İkamet etti."],
     ["جَهَدَ","Çaba gösterdi."], ["رَجَعَ","Döndü."],
@@ -723,7 +723,7 @@ const KOK_ANLAM = [
     ["قَرَأَ","Okudu."], ["حَرُمَ","Haram oldu / Yasaklandı."],
     ["عَرَضَ","Sunduk / Gösterdi (Arz etti)."], ["قَبِلَ","Kabul etti."],
     ["كَرُمَ","Cömert oldu / Değerli oldu."], ["عَبَرَ","Geçti / Karşıya geçti."],
-    ["عَمَرَ","İmar etti / Şenlendirdi."], ["لَزِمَ","Gerekti / (Bir yerden) Ayrılmadı."],
+    ["عَمَر","İmar etti / Şenlendirdi."], ["لَزِمَ","Gerekti / (Bir yerden) Ayrılmadı."],
     ["لَبِسَ","Giydi."], ["لَفَظَ","Ağzından çıkardı / Söyledi."],
     ["هَدَى","Doğru yolu gösterdi / Kılavuzluk etti."], ["هَجَرَ","Terk etti / Bıraktı."],
     ["هَمَّ","Niyetlendi / Dert edindi."], ["أَيْقَنَ","Kesin olarak inandı."],

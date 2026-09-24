@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_3_2 (3. Ünite 2. Ders: Yardımlaşma | التَّعاوُن) */
+/* 8. sınıf — 8_3_2 (3. Ünite 2. Ders: Yardımlaşma | التَّعاوُن) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 3. Ünite, s. 70-77. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
@@ -62,7 +62,7 @@ window.data = {
             words: [
                 { tr: "Hatice", order: 2, ar: "خَديجَة" },
                 { tr: "sınıf temizliğine", order: 4, ar: "في تَنْظيف الصَّفّ؟" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "katılacak?", order: 3, ar: "سَتُشارِكُ" },
             ]
         },
@@ -198,7 +198,7 @@ window.data = {
         {
             p1: [
                 { tr: "Hatice", order: 2, ar: "خَديجَة" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "katılacak?", order: 3, ar: "سَتُشارِكُ" },
             ],
             p2: [
@@ -231,7 +231,7 @@ window.data = {
         {
             p1: [
                 { tr: "Yarın", order: 3, ar: "غَدًا؟" },
-                { tr: "nereye", order: 1, ar: "إلى أَيْنَ" },
+                { tr: "nereye", order: 1, ar: "إلى أَيْن" },
                 { tr: "gideceksiniz?", order: 2, ar: "سَتَذْهَبونَ" },
             ],
             p2: [

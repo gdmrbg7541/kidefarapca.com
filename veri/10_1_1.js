@@ -76,7 +76,7 @@ window.data = {
             { tr: "Babam", order: 1, ar: "والِدي" },
             { tr: "avukattır", order: 2, ar: "مُحامٍ،" },
             { tr: "ve o", order: 3, ar: "وَهُوَ" },
-            { tr: "adaleti", order: 5, ar: "عَنِ العَدالَة." },
+            { tr: "adaleti", order: 5, ar: "عَن العَدالَة." },
             { tr: "savunur.", order: 4, ar: "يُدافِعُ" },
         ]
     },

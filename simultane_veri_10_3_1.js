@@ -22,7 +22,7 @@ sentence: [
     {
         words: [
             { tr: "Sen", order: 2, ar: "أَنْتِ؟" },
-            { tr: "neredensin?", order: 1, ar: "مِنْ أَيْنَ" }
+            { tr: "neredensin?", order: 1, ar: "مِنْ أَيْن" }
         ]
     },
     // 4. Ben Mısırlıyım.
@@ -36,7 +36,7 @@ sentence: [
     // 5. Nerede yaşıyorsun?
     {
         words: [
-            { tr: "Nerede", order: 1, ar: "أَيْنَ" },
+            { tr: "Nerede", order: 1, ar: "أَيْن" },
             { tr: "yaşıyorsun?", order: 2, ar: "تَعِيشُ؟" }
         ]
     },
@@ -73,7 +73,7 @@ sentence: [
     {
         words: [
             { tr: "Türkiyede", order: 3, ar: "في تُرْكِيا." },
-            { tr: "nerede", order: 1, ar: "أَيْنَ" },
+            { tr: "nerede", order: 1, ar: "أَيْن" },
             { tr: "gezindin?", order: 2, ar: "تَجَوَّلْتِ" }
         ]
     },
@@ -88,7 +88,7 @@ sentence: [
     {
         words: [
             { tr: "Şu an", order: 3, ar: "الآن‫.‬" },
-            { tr: "nereye", order: 1, ar: "إِلَى أَيْنَ" },
+            { tr: "nereye", order: 1, ar: "إِلَى أَيْن" },
             { tr: "gidiyorsun?", order: 2, ar: "تَذْهَبِينَ" }
         ]
     },
@@ -127,8 +127,8 @@ sentence: [
     // 16. Yakutiye medresesi Erzurum'dadır.
     {
         words: [
-            { tr: "Yakutiye", order: 2, ar: "الْيَاكُوتِيَّة" },
-            { tr: "Medresesi", order: 1, ar: "الْمَدْرَسَة" },
+            { tr: "Yakutiye", order: 2, ar: "اليَاكُوتِيَّة" },
+            { tr: "Medresesi", order: 1, ar: "المَدْرَسَة" },
             { tr: "Erzurum'dadır.", order: 3, ar: "فِي أَرْضُرُوم." }
         ]
     },
@@ -136,7 +136,7 @@ sentence: [
     {
         words: [
             { tr: "Urfa'daki", order: 4, ar: "فِي أُورْفَة." }, 
-            { tr: "Balıklı", order: 3, ar: "الْأَسْمَاك" },
+            { tr: "Balıklı", order: 3, ar: "الأَسْمَاك" },
             { tr: "gölde", order: 2, ar: "فِي بُحَيْرَة" }, 
             { tr: "gezindim.", order: 1, ar: "تَجَوَّلْتُ" }
         ]
@@ -145,7 +145,7 @@ sentence: [
     {
         words: [
             { tr: "Mersin", order: 2, ar: "مَرْسِين" },
-            { tr: "kız", order: 4, ar: "الْفَتَاة." },
+            { tr: "kız", order: 4, ar: "الفَتَاة." },
             { tr: "kalesi ile", order: 3, ar: "بِقَلْعَة" },
             { tr: "meşhurdur.", order: 1, ar: "تَشْتَهِرُ" }
         ]
@@ -162,7 +162,7 @@ sentence: [
     {
         words: [
             { tr: "İstanbul'daki", order: 5, ar: "فِي إِسْطَنْبُول." },
-            { tr: "Büyük", order: 4, ar: "الْكَبير" },
+            { tr: "Büyük", order: 4, ar: "الكَبير" },
             { tr: "Ayasofya", order: 3, ar: "آيَاصُوفْيَا" },
             { tr: "camisini", order: 2, ar: "مَسْجِد" },
             { tr: "ziyaret ettim.", order: 1, ar: "زُرْتُ" }
@@ -175,7 +175,7 @@ sentence: [
     {
         words: [
             { tr: "O", order: 1, ar: "هُوَ" },
-            { tr: "deniz", order: 4, ar: "الْبَحْر." },
+            { tr: "deniz", order: 4, ar: "البَحْر." },
             { tr: "kenarına", order: 3, ar: "إِلَى شَاطِئ" },
             { tr: "gitti.", order: 2, ar: "ذَهَبَ" }
         ]
@@ -184,7 +184,7 @@ sentence: [
     {
         words: [
             { tr: "O ikisi", order: 1, ar: "هُمَا" },
-            { tr: "dağa", order: 3, ar: "إِلَى الْجَبَل." },
+            { tr: "dağa", order: 3, ar: "إِلَى الجَبَل." },
             { tr: "gittiler.", order: 2, ar: "ذَهَبَا" }
         ]
     },
@@ -192,7 +192,7 @@ sentence: [
     {
         words: [
             { tr: "Onlar", order: 1, ar: "هُمْ" },
-            { tr: "camiye", order: 3, ar: "إِلَى الْمَسْجِد." },
+            { tr: "camiye", order: 3, ar: "إِلَى المَسْجِد." },
             { tr: "gittiler.", order: 2, ar: "ذَهَبُوا" }
         ]
     },
@@ -200,7 +200,7 @@ sentence: [
     {
         words: [
             { tr: "O", order: 1, ar: "هِيَ" },
-            { tr: "eve", order: 3, ar: "إِلَى الْبَيْت." },
+            { tr: "eve", order: 3, ar: "إِلَى البَيْت." },
             { tr: "gitti.", order: 2, ar: "ذَهَبَتْ" }
         ]
     },
@@ -208,7 +208,7 @@ sentence: [
     {
         words: [
             { tr: "O ikisi", order: 1, ar: "هُمَا" },
-            { tr: "okula", order: 3, ar: "إِلَى الْمَدْرَسَة." },
+            { tr: "okula", order: 3, ar: "إِلَى المَدْرَسَة." },
             { tr: "gittiler.", order: 2, ar: "ذَهَبَتَا" }
         ]
     },
@@ -216,7 +216,7 @@ sentence: [
     {
         words: [
             { tr: "Onlar", order: 1, ar: "هُنَّ" },
-            { tr: "bahçeye", order: 3, ar: "إِلَى الْحَدِيقَة." },
+            { tr: "bahçeye", order: 3, ar: "إِلَى الحَدِيقَة." },
             { tr: "gittiler.", order: 2, ar: "ذَهَبْنَ" }
         ]
     },
@@ -307,7 +307,7 @@ sentence: [
     // Cümle: Büyük Ayasofya camisi ve Topkapı sarayı ve Mevlana müzesi gibi.
     {
         words: [
-            { tr: "Büyük", order: 3, ar: "الْكَبير،" }, // Cümle başı büyük
+            { tr: "Büyük", order: 3, ar: "الكَبير،" }, // Cümle başı büyük
             { tr: "Ayasofya", order: 2, ar: "آياصوفْيا" }, // Özel isim
             { tr: "camisi gibi", order: 1, ar: "كَمَسْجِد" }, // Küçük harf
             { tr: "ve sarayı", order: 4, ar: "وَقَصْر" }, // Küçük harf (ve + saray)
@@ -454,7 +454,7 @@ dialog : [
     {
         p1: [
             { tr: "Sen", order: 2, ar: "أَنْتِ؟" },
-            { tr: "neredensin?", order: 1, ar: "مِنْ أَيْنَ" } // Birleştirildi (Min eyne)
+            { tr: "neredensin?", order: 1, ar: "مِنْ أَيْن" } // Birleştirildi (Min eyne)
         ],
         p2: [
             { tr: "Ben", order: 1, ar: "أَنَا" },
@@ -463,7 +463,7 @@ dialog : [
     },
     {
         p1: [
-            { tr: "Nerede", order: 1, ar: "أَيْنَ" }, // Cümle başı
+            { tr: "Nerede", order: 1, ar: "أَيْن" }, // Cümle başı
             { tr: "yaşıyorsun?", order: 2, ar: "تَعِيشُ؟" } // Küçük harf
         ],
         p2: [
@@ -490,7 +490,7 @@ dialog : [
     {
         p1: [
             { tr: "Türkiye'de", order: 3, ar: "فِي تُرْكِيا" }, // Birleştirildi (Fi Turkiya)
-            { tr: "nerede", order: 1, ar: "أَيْنَ" },
+            { tr: "nerede", order: 1, ar: "أَيْن" },
             { tr: "gezindin?", order: 2, ar: "تَجَوَّلْتِ" }
         ],
         p2: [
@@ -501,7 +501,7 @@ dialog : [
     {
         p1: [
             { tr: "Şu an", order: 3, ar: "الآن." }, // Cümle başı büyük
-            { tr: "nereye", order: 1, ar: "إِلَى أَيْنَ" }, // Küçük harf
+            { tr: "nereye", order: 1, ar: "إِلَى أَيْن" }, // Küçük harf
             { tr: "gidiyorsun?", order: 2, ar: "تَذْهَبِينَ" }
         ],
         p2: [
@@ -513,7 +513,7 @@ dialog : [
     // --- 3. DİYALOG: GEÇMİŞ ZAMAN SORULARI (Seyahat Anıları) ---
     {
         p1: [
-            { tr: "Nereye", order: 1, ar: "إِلَى أَيْنَ" }, // Birleştirildi, Cümle başı büyük
+            { tr: "Nereye", order: 1, ar: "إِلَى أَيْن" }, // Birleştirildi, Cümle başı büyük
             { tr: "seyahat ettiniz?", order: 2, ar: "سَافَرْتُمْ؟" } // Küçük harf
         ],
         p2: [
@@ -524,7 +524,7 @@ dialog : [
     {
         p1: [
             { tr: "Annenle", order: 3, ar: "مَعَ أُمِّكِ؟" }, // Birleştirildi, Cümle başı büyük
-            { tr: "nereye", order: 1, ar: "إِلَى أَيْنَ" }, // Birleştirildi, küçük harf
+            { tr: "nereye", order: 1, ar: "إِلَى أَيْن" }, // Birleştirildi, küçük harf
             { tr: "seyahat ettin?", order: 2, ar: "سَافَرْتِ" }
         ],
         p2: [
@@ -541,7 +541,7 @@ dialog : [
             { tr: "ziyaret ettiniz?", order: 4, ar: "زُرْتُنَّ؟" }
         ],
         p2: [
-            { tr: "Balıklı", order: 3, ar: "الْأَسْمَاكِ." }, // Özel isim (Balıklıgöl)
+            { tr: "Balıklı", order: 3, ar: "الأَسْمَاكِ." }, // Özel isim (Balıklıgöl)
             { tr: "gölü", order: 2, ar: "بُحَيْرَةَ" }, // Küçük harf
             { tr: "ziyaret ettik.", order: 1, ar: "زُرْنَا" }
         ]
@@ -553,7 +553,7 @@ dialog : [
             { tr: "Merhaba,", order: 1, ar: "مَرْحَبًا،" },
             { tr: "ben", order: 2, ar: "أَنَا" },
             { tr: "Türküm,", order: 3, ar: "تُرْكِيٌّ،" },
-            { tr: "nerelisin?", order: 4, ar: "مِنْ أَيْنَ أَنْتَ؟" }
+            { tr: "nerelisin?", order: 4, ar: "مِنْ أَيْن أَنْتَ؟" }
         ],
         p2: [
             { tr: "Hoş geldin,", order: 1, ar: "أَهْلًا،" },
@@ -611,7 +611,7 @@ dialog : [
         p1: [
             { tr: "Selamun aleyküm,", order: 1, ar: "السَّلَامُ عَلَيْكُم،" },
             { tr: "sen", order: 3, ar: "أَنْتَ؟" },
-            { tr: "neredensin?", order: 2, ar: "مِنْ أَيْنَ" } // Birleştirildi
+            { tr: "neredensin?", order: 2, ar: "مِنْ أَيْن" } // Birleştirildi
         ],
         p2: [
             { tr: "Ve aleykum selam,", order: 1, ar: "وَعَلَيْكُم السَّلَام،" },
@@ -622,7 +622,7 @@ dialog : [
     {
         p1: [
             { tr: "Mısır", order: 3, ar: "مِصْر؟" }, // Cümle başı ve Özel isim
-            { tr: "nerede", order: 1, ar: "أَيْنَ" }, // Küçük harf
+            { tr: "nerede", order: 1, ar: "أَيْن" }, // Küçük harf
             { tr: "bulunur?", order: 2, ar: "تَقَعُ" }
         ],
         p2: [
@@ -677,7 +677,7 @@ window.data.words = [
     { tr: "Doğu", ar: "شَرْق" },
     { tr: "Batı", ar: "غَرْب" },
     { tr: "Orta / Merkez", ar: "وَسَط" },
-    { tr: "Nerede?", ar: "أَيْنَ؟" },
+    { tr: "Nerede?", ar: "أَيْن؟" },
 
     // Fiiller (Eylemler)
     { tr: "Yaşıyorum", ar: "أَعِيشُ" },

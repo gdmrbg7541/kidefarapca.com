@@ -1,5 +1,5 @@
 /* 6. sınıf — 6_3_2 (3. Ünite 2. Ders: Hastanede | في المُسْتَشْفى) */
-/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 3. Ünite (الصِّحَّة), s. 78-83. */
+/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 3. Ünite (الصِّحَّة), s. 78-83. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
     "sentence": [
@@ -71,7 +71,7 @@ window.data = {
                 {
                     "tr": "öksürüğü var.",
                     "order": 4,
-                    "ar": "كُحَّةٌ."
+                    "ar": "كُحَّةٌ."
                 }
             ]
         },
@@ -85,7 +85,7 @@ window.data = {
                 {
                     "tr": "Ali'dir,",
                     "order": 2,
-                    "ar": "عَلِيٌّ،"
+                    "ar": "عَلِيّ،"
                 },
                 {
                     "tr": "onun",
@@ -109,12 +109,12 @@ window.data = {
                 {
                     "tr": "eczaneye",
                     "order": 2,
-                    "ar": "إِلى الصَّيْدَلِيَّةِ"
+                    "ar": "إِلى الصَّيْدَلِيَّةِ"
                 },
                 {
                     "tr": "ilaç",
                     "order": 4,
-                    "ar": "الدَّواءِ."
+                    "ar": "الدَّواءِ."
                 },
                 {
                     "tr": "almak için.",
@@ -268,12 +268,12 @@ window.data = {
                 {
                     "tr": "Sigara içmek",
                     "order": 1,
-                    "ar": "التَّدْخينُ"
+                    "ar": "التَّدْخينُ"
                 },
                 {
                     "tr": "zararlıdır.",
                     "order": 2,
-                    "ar": "مُضِرٌّ."
+                    "ar": "مُضِرٌّ."
                 }
             ]
         },
@@ -282,7 +282,7 @@ window.data = {
                 {
                     "tr": "Spor",
                     "order": 2,
-                    "ar": "الرِّياضَةَ."
+                    "ar": "الرِّياضَةَ."
                 },
                 {
                     "tr": "Yaparım.",
@@ -296,7 +296,7 @@ window.data = {
                 {
                     "tr": "",
                     "order": 3,
-                    "ar": "الرِّياضَةَ."
+                    "ar": "الرِّياضَةَ."
                 },
                 {
                     "tr": "Spor",
@@ -315,7 +315,7 @@ window.data = {
                 {
                     "tr": "Spor",
                     "order": 1,
-                    "ar": "الرِّياضَةُ"
+                    "ar": "الرِّياضَةُ"
                 },
                 {
                     "tr": "faydalıdır.",
@@ -357,12 +357,12 @@ window.data = {
                 {
                     "tr": "Doktor",
                     "order": 1,
-                    "ar": "الطَّبيبُ"
+                    "ar": "الطَّبيبُ"
                 },
                 {
                     "tr": "reçeteyi",
                     "order": 3,
-                    "ar": "الوَصْفَةَ الطِّبِّيَّةَ."
+                    "ar": "الوَصْفَةَ الطِّبِّيَّةَ."
                 },
                 {
                     "tr": "yazar.",
@@ -376,7 +376,7 @@ window.data = {
                 {
                     "tr": "Doktor",
                     "order": 2,
-                    "ar": "الطَّبيبُ"
+                    "ar": "الطَّبيبُ"
                 },
                 {
                     "tr": "hastanede",
@@ -395,12 +395,12 @@ window.data = {
                 {
                     "tr": "İlacı",
                     "order": 2,
-                    "ar": "الدَّواءَ"
+                    "ar": "الدَّواءَ"
                 },
                 {
                     "tr": "eczaneden",
                     "order": 3,
-                    "ar": "مِنَ الصَّيْدَلِيَّةِ."
+                    "ar": "مِن الصَّيْدَلِيَّةِ."
                 },
                 {
                     "tr": "Satın alırız.",
@@ -421,12 +421,12 @@ window.data = {
                 {
                     "tr": "doktorun muayenehanesi",
                     "order": 3,
-                    "ar": "عِيادَةُ الطَّبيبِ"
+                    "ar": "عِيادَةُ الطَّبيبِ"
                 },
                 {
                     "tr": "nerede",
                     "order": 2,
-                    "ar": "أَيْنَ"
+                    "ar": "أَيْن"
                 },
                 {
                     "tr": "lütfen?",
@@ -443,7 +443,7 @@ window.data = {
                 {
                     "tr": "acil servisin",
                     "order": 3,
-                    "ar": "قِسْمِ الطَّوارِئِ"
+                    "ar": "قِسْمِ الطَّوارِئِ"
                 },
                 {
                     "tr": "karşısında,",
@@ -453,7 +453,7 @@ window.data = {
                 {
                     "tr": "cildiye polikliniğinin",
                     "order": 5,
-                    "ar": "عِيادَةِ الأَمْراضِ الجِلْدِيَّةِ."
+                    "ar": "عِيادَةِ الأَمْراضِ الجِلْدِيَّةِ."
                 },
                 {
                     "tr": "yanında.",
@@ -515,7 +515,7 @@ window.data = {
                 {
                     "tr": "buyurun",
                     "order": 2,
-                    "ar": "تَفَضَّلْ"
+                    "ar": "تَفَضَّلْ"
                 },
                 {
                     "tr": "lütfen,",
@@ -554,14 +554,14 @@ window.data = {
                 {
                     "tr": "ve öksürük var.",
                     "order": 5,
-                    "ar": "وَكُحَّةٌ."
+                    "ar": "وَكُحَّةٌ."
                 }
             ],
             "p2": [
                 {
                     "tr": "Nerede",
                     "order": 1,
-                    "ar": "أَيْنَ"
+                    "ar": "أَيْن"
                 },
                 {
                     "tr": "ağrı",
@@ -571,7 +571,7 @@ window.data = {
                 {
                     "tr": "tam olarak?",
                     "order": 3,
-                    "ar": "بِالضَّبْطِ؟"
+                    "ar": "بِالضَّبْطِ؟"
                 }
             ]
         },
@@ -626,7 +626,7 @@ window.data = {
                 {
                     "tr": "bir reçete",
                     "order": 5,
-                    "ar": "وَصْفَةً طِبِّيَّةً."
+                    "ar": "وَصْفَةً طِبِّيَّةً."
                 },
                 {
                     "tr": "yazıyorum.",
@@ -638,7 +638,7 @@ window.data = {
                 {
                     "tr": "buraya",
                     "order": 2,
-                    "ar": "الصَّيْدَلِيَّةُ"
+                    "ar": "الصَّيْدَلِيَّةُ"
                 },
                 {
                     "tr": "mı?",
@@ -672,7 +672,7 @@ window.data = {
                 {
                     "tr": "yolun",
                     "order": 4,
-                    "ar": "الطَّريقِ."
+                    "ar": "الطَّريقِ."
                 },
                 {
                     "tr": "karşısında.",
@@ -694,7 +694,7 @@ window.data = {
                 {
                     "tr": "görüşmek üzere.",
                     "order": 3,
-                    "ar": "إِلى اللِّقاءِ."
+                    "ar": "إِلى اللِّقاءِ."
                 }
             ]
         },
@@ -723,7 +723,7 @@ window.data = {
                 {
                     "tr": "mü var?",
                     "order": 5,
-                    "ar": "كُحَّةٌ؟"
+                    "ar": "كُحَّةٌ؟"
                 }
             ],
             "p2": [
@@ -754,24 +754,24 @@ window.data = {
                 {
                     "tr": "önce?",
                     "order": 4,
-                    "ar": "أَوَّلًا؟"
+                    "ar": "أَوَّلًا؟"
                 },
                 {
                     "tr": "konuşuyor",
                     "order": 2,
-                    "ar": "يَتَكَلَّمُ"
+                    "ar": "يَتَكَلَّمُ"
                 }
             ],
             "p2": [
                 {
                     "tr": "Hemşireyle",
                     "order": 2,
-                    "ar": "مَعَ الْمُمَرِّضَةِ."
+                    "ar": "مَعَ المُمَرِّضَةِ."
                 },
                 {
                     "tr": "Konuşuyor.",
                     "order": 1,
-                    "ar": "يَتَكَلَّمُ"
+                    "ar": "يَتَكَلَّمُ"
                 }
             ]
         },
@@ -780,7 +780,7 @@ window.data = {
                 {
                     "tr": "doktor",
                     "order": 3,
-                    "ar": "الطَّبيبُ؟"
+                    "ar": "الطَّبيبُ؟"
                 },
                 {
                     "tr": "Ne",
@@ -797,7 +797,7 @@ window.data = {
                 {
                     "tr": "Bir reçete",
                     "order": 2,
-                    "ar": "وَصْفَةً طِبِّيَّةً."
+                    "ar": "وَصْفَةً طِبِّيَّةً."
                 },
                 {
                     "tr": "Yazıyor.",
@@ -834,11 +834,11 @@ window.data = {
         },
         {
             "tr": "öksürük",
-            "ar": "كُحَّة"
+            "ar": "كُحَّة"
         },
         {
             "tr": "eczane",
-            "ar": "صَيْدَلِيَّة"
+            "ar": "صَيْدَلِيَّة"
         },
         {
             "tr": "muayenehane / poliklinik",
@@ -846,7 +846,7 @@ window.data = {
         },
         {
             "tr": "cildiye polikliniği",
-            "ar": "عِيادَةُ الأَمْراضِ الجِلْدِيَّة"
+            "ar": "عِيادَةُ الأَمْراضِ الجِلْدِيَّة"
         },
         {
             "tr": "kardiyoloji polikliniği",
@@ -854,7 +854,7 @@ window.data = {
         },
         {
             "tr": "acil servis",
-            "ar": "قِسْمُ الطَّوارِئ"
+            "ar": "قِسْمُ الطَّوارِئ"
         },
         {
             "tr": "doktor",
@@ -862,11 +862,11 @@ window.data = {
         },
         {
             "tr": "hemşire",
-            "ar": "مُمَرِّضَة"
+            "ar": "مُمَرِّضَة"
         },
         {
             "tr": "reçete",
-            "ar": "وَصْفَة طِبِّيَّة"
+            "ar": "وَصْفَة طِبِّيَّة"
         },
         {
             "tr": "ağrı",
@@ -894,7 +894,7 @@ window.data = {
         },
         {
             "tr": "konuşur",
-            "ar": "يَتَكَلَّمُ"
+            "ar": "يَتَكَلَّمُ"
         },
         {
             "tr": "hisseder",
@@ -922,7 +922,7 @@ window.data = {
         },
         {
             "tr": "tam olarak",
-            "ar": "بِالضَّبْطِ"
+            "ar": "بِالضَّبْطِ"
         },
         {
             "tr": "bir dakika",
@@ -934,7 +934,7 @@ window.data = {
         },
         {
             "tr": "buyur",
-            "ar": "تَفَضَّلْ"
+            "ar": "تَفَضَّلْ"
         },
         {
             "tr": "rica ederim",
@@ -958,7 +958,7 @@ window.data = {
         },
         {
             "tr": "sigara içmek",
-            "ar": "التَّدْخين"
+            "ar": "التَّدْخين"
         },
         {
             "tr": "zararlı",
@@ -970,7 +970,7 @@ window.data = {
         },
         {
             "tr": "spor",
-            "ar": "الرِّياضَة"
+            "ar": "الرِّياضَة"
         },
         {
             "tr": "yaparım (spor)",
@@ -990,7 +990,7 @@ window.data = {
         },
         {
             "tr": "önce / ilk olarak",
-            "ar": "أَوَّلًا"
+            "ar": "أَوَّلًا"
         },
         {
             "tr": "yol",
@@ -998,11 +998,11 @@ window.data = {
         },
         {
             "tr": "görüşmek üzere",
-            "ar": "إِلى اللِّقاءِ"
+            "ar": "إِلى اللِّقاءِ"
         },
         {
             "tr": "güle güle",
-            "ar": "مَعَ السَّلامَةِ"
+            "ar": "مَعَ السَّلامَةِ"
         }
     ]
 };

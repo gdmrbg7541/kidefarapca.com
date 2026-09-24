@@ -60,7 +60,7 @@ window.data = {
             words: [
                 { tr: "Aile", order: 2, ar: "العائِلَة" },
                 { tr: "bayram namazından sonra", order: 4, ar: "بَعْدَ صَلاة العيد؟" },
-                { tr: "nereye", order: 1, ar: "إلى أَيْنَ" },
+                { tr: "nereye", order: 1, ar: "إلى أَيْن" },
                 { tr: "gidecek?", order: 3, ar: "سَتَذْهَبُ" },
             ]
         },

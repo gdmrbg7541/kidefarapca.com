@@ -1,4 +1,4 @@
-/* 10. sınıf SEÇMELİ ARAPÇA — 2. Ünite (قِيَمي) 3. Ders: أُحِبُّ وَطَني
+/* 10. sınıf SEÇMELİ ARAPÇA — 2. Ünite (قِيَمي) 3. Ders: أُحِبُّ وَطَني
    Kaynak: Ortaöğretim Seçmeli Arapça ders kitabı, basılı s.74-86.
    Dersin konusu: Türkiye'nin coğrafyası ve bölgeleri, yönler (شَمال/جَنوب/شَرْق/غَرْب),
    vatan sevgisi, سـ/سَوْفَ ile gelecek zaman ve seyahat saatleri. */
@@ -33,7 +33,7 @@ window.data = {
         /* Akdeniz Türkiye'nin güneyinde yer alır. (s.75) */
         {
             words: [
-                { tr: "Akdeniz", order: 2, ar: "البَحْرُ الأَبْيَضُ المُتَوَسِّطُ" },
+                { tr: "Akdeniz", order: 2, ar: "البَحْرُ الأَبْيَضُ المُتَوَسِّطُ" },
                 { tr: "Türkiye'nin güneyinde", order: 3, ar: "في جَنوبِ تُرْكِيا." },
                 { tr: "yer alır.", order: 1, ar: "يَقَعُ" }
             ]
@@ -64,7 +64,7 @@ window.data = {
                 { tr: "Vatanımızı", order: 2, ar: "وَطَنَنا" },
                 { tr: "doğusundan", order: 3, ar: "مِنْ شَرْقِهِ" },
                 { tr: "batısına", order: 4, ar: "إِلى غَرْبِهِ." },
-                { tr: "severiz.", order: 1, ar: "نُحِبُّ" }
+                { tr: "severiz.", order: 1, ar: "نُحِبُّ" }
             ]
         },
 
@@ -106,8 +106,8 @@ window.data = {
         /* Vatan sevgisi imandandır. (s.77) */
         {
             words: [
-                { tr: "Vatan sevgisi", order: 1, ar: "حُبُّ الوَطَنِ" },
-                { tr: "imandandır.", order: 2, ar: "مِنَ الإيمان." }
+                { tr: "Vatan sevgisi", order: 1, ar: "حُبُّ الوَطَنِ" },
+                { tr: "imandandır.", order: 2, ar: "مِن الإيمان." }
             ]
         },
 
@@ -139,7 +139,7 @@ window.data = {
             p1: [
                 { tr: "Günaydın", order: 1, ar: "صَباحُ الخَيْر،" },
                 { tr: "Semah,", order: 2, ar: "يا سَماح،" },
-                { tr: "yazın", order: 5, ar: "في الصَّيْف؟" },
+                { tr: "yazın", order: 5, ar: "في الصَّيْف؟" },
                 { tr: "ne", order: 3, ar: "ماذا" },
                 { tr: "yapacaksın?", order: 4, ar: "تَفْعَلينَ" }
             ],
@@ -152,7 +152,7 @@ window.data = {
         {
             p1: [
                 { tr: "Türkiye", order: 3, ar: "تُرْكِيا؟" },
-                { tr: "nerede", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede", order: 1, ar: "أَيْن" },
                 { tr: "yer alır?", order: 2, ar: "تَقَعُ" }
             ],
             p2: [
@@ -188,17 +188,17 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Bu yaz", order: 3, ar: "هذا الصَّيْف؟" },
+                { tr: "Bu yaz", order: 3, ar: "هذا الصَّيْف؟" },
                 { tr: "köyüne", order: 2, ar: "إِلى قَرْيَتِكَ" },
                 { tr: "gidecek misin?", order: 1, ar: "هَلْ سَتَذْهَبُ" }
             ],
             p2: [
                 { tr: "Hayır,", order: 1, ar: "لا،" },
-                { tr: "bu yıl", order: 2, ar: "هذِهِ السَّنة" },
+                { tr: "bu yıl", order: 2, ar: "هذِهِ السَّنة" },
                 { tr: "İzmir'deki dayıma", order: 4, ar: "إِلى خالي في إِزْمير" },
                 { tr: "gideceğim", order: 3, ar: "سَأَذْهَبُ" },
                 { tr: "ama", order: 5, ar: "وَلكِنْ" },
-                { tr: "gelecek yıl", order: 8, ar: "في السَّنةِ القادِمة." },
+                { tr: "gelecek yıl", order: 8, ar: "في السَّنةِ القادِمة." },
                 { tr: "köyümü", order: 7, ar: "قَرْيَتي" },
                 { tr: "ziyaret edeceğim.", order: 6, ar: "سَأَزورُ" }
             ]
@@ -206,7 +206,7 @@ window.data = {
         {
             p1: [
                 { tr: "Köyün", order: 2, ar: "قَرْيَتُكَ؟" },
-                { tr: "nerede?", order: 1, ar: "أَيْنَ" }
+                { tr: "nerede?", order: 1, ar: "أَيْن" }
             ],
             p2: [
                 { tr: "Köyüm", order: 1, ar: "قَرْيَتي" },
@@ -230,11 +230,11 @@ window.data.words = [
     { tr: "Batı", ar: "غَرْب" }, { tr: "Orta", ar: "وَسَط" },
     { tr: "Yer alıyor (eril)", ar: "يَقَعُ" }, { tr: "Yer alıyor (dişil)", ar: "تَقَعُ" },
     { tr: "Koruyoruz", ar: "نُحافِظُ" }, { tr: "Ziyaret edeceğim", ar: "سَأَزورُ" },
-    { tr: "Ziyaret edeceğiz", ar: "سَنَزورُ" }, { tr: "Gelecek yıl", ar: "السَّنة القادِمة" },
+    { tr: "Ziyaret edeceğiz", ar: "سَنَزورُ" }, { tr: "Gelecek yıl", ar: "السَّنة القادِمة" },
     { tr: "Kalkış", ar: "المُغادَرة" }, { tr: "Varış", ar: "الوُصول" },
-    { tr: "Otobüs saatleri", ar: "مَواعِد الحافِلات" }, { tr: "Sefer numarası", ar: "رَقَم السَّفَر" },
+    { tr: "Otobüs saatleri", ar: "مَواعِد الحافِلات" }, { tr: "Sefer numarası", ar: "رَقَم السَّفَر" },
     { tr: "Önemli yerler", ar: "الأَماكِن المُهِمّة" }, { tr: "Turistik", ar: "سِياحِيّة" },
     { tr: "Huzur ve barış", ar: "أَمْن وَسَلام" }, { tr: "Hizmet", ar: "خِدْمة" },
     { tr: "Renk", ar: "لَوْن" }, { tr: "Kırmızı", ar: "الأَحْمَر" },
-    { tr: "Beyaz", ar: "الأَبْيَض" }, { tr: "Yolculuk", ar: "السَّفَر" }
+    { tr: "Beyaz", ar: "الأَبْيَض" }, { tr: "Yolculuk", ar: "السَّفَر" }
 ];

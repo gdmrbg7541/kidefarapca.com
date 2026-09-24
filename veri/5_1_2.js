@@ -1,4 +1,4 @@
-/* 5. sınıf — 5_1_2 (1. Ünite 2. Ders: Kendini Tanıtma | عِباراتُ التَّحِيَّة وَالتَّعارُف وَالوَداع) */
+/* 5. sınıf — 5_1_2 (1. Ünite 2. Ders: Kendini Tanıtma | عِباراتُ التَّحِيَّة وَالتَّعارُف وَالوَداع) */
 /* Cümle & diyalog: MEB Arapça 5-8 Öğretim Programı hedef kelime/yapı bloklarına göre hazırlandı. */
 window.data = {
     "sentence": [
@@ -7,7 +7,7 @@ window.data = {
                 {
                     "tr": "Selamünaleyküm.",
                     "order": 1,
-                    "ar": "اَلسَّلامُ عَلَيْكُمْ."
+                    "ar": "اَلسَّلامُ عَلَيْكُمْ."
                 }
             ]
         },
@@ -16,7 +16,7 @@ window.data = {
                 {
                     "tr": "Aleykümselam.",
                     "order": 1,
-                    "ar": "وَعَلَيْكُمُ السَّلامُ."
+                    "ar": "وَعَلَيْكُمُ السَّلامُ."
                 }
             ]
         },
@@ -84,7 +84,7 @@ window.data = {
                 {
                     "tr": "Nasılsın?",
                     "order": 1,
-                    "ar": "كَيْفَ حالُكَ؟"
+                    "ar": "كَيْف حالُكَ؟"
                 }
             ]
         },
@@ -98,7 +98,7 @@ window.data = {
                 {
                     "tr": "Allah'a hamdolsun.",
                     "order": 2,
-                    "ar": "اَلحَمْدُ لِلَّهِ."
+                    "ar": "اَلحَمْدُ لِلَّهِ."
                 }
             ]
         },
@@ -121,7 +121,7 @@ window.data = {
                 {
                     "tr": "Ahmed'dir.",
                     "order": 2,
-                    "ar": "أَحْمَدُ."
+                    "ar": "أَحْمَد."
                 }
             ]
         },
@@ -144,7 +144,7 @@ window.data = {
                 {
                     "tr": "Zeynep'tir.",
                     "order": 2,
-                    "ar": "زَيْنَبُ."
+                    "ar": "زَيْنَب."
                 }
             ]
         },
@@ -196,7 +196,7 @@ window.data = {
                 {
                     "tr": "öğretmenim.",
                     "order": 3,
-                    "ar": "مُعَلِّمٌ."
+                    "ar": "مُعَلِّمٌ."
                 }
             ]
         },
@@ -233,7 +233,7 @@ window.data = {
                 {
                     "tr": "Tanıştığımıza memnun oldum.",
                     "order": 1,
-                    "ar": "تَشَرَّفْتُ."
+                    "ar": "تَشَرَّفْتُ."
                 }
             ]
         },
@@ -251,7 +251,7 @@ window.data = {
                 {
                     "tr": "Allah'a emanet ol.",
                     "order": 1,
-                    "ar": "في أَمانِ اللَّهِ."
+                    "ar": "في أَمانِ اللَّهِ."
                 }
             ]
         },
@@ -260,7 +260,7 @@ window.data = {
                 {
                     "tr": "Güle güle.",
                     "order": 1,
-                    "ar": "مَعَ السَّلامَةِ."
+                    "ar": "مَعَ السَّلامَةِ."
                 }
             ]
         },
@@ -269,7 +269,7 @@ window.data = {
                 {
                     "tr": "Görüşmek üzere.",
                     "order": 1,
-                    "ar": "إِلى اللِّقاءِ."
+                    "ar": "إِلى اللِّقاءِ."
                 }
             ]
         }
@@ -280,14 +280,14 @@ window.data = {
                 {
                     "tr": "Selamünaleyküm.",
                     "order": 1,
-                    "ar": "اَلسَّلامُ عَلَيْكُمْ."
+                    "ar": "اَلسَّلامُ عَلَيْكُمْ."
                 }
             ],
             "p2": [
                 {
                     "tr": "Aleykümselam.",
                     "order": 1,
-                    "ar": "وَعَلَيْكُمُ السَّلامُ."
+                    "ar": "وَعَلَيْكُمُ السَّلامُ."
                 }
             ]
         },
@@ -313,7 +313,7 @@ window.data = {
                 {
                     "tr": "Halid'dir.",
                     "order": 2,
-                    "ar": "خالِدٌ."
+                    "ar": "خالِد."
                 }
             ]
         },
@@ -322,12 +322,12 @@ window.data = {
                 {
                     "tr": "Nasılsın",
                     "order": 1,
-                    "ar": "كَيْفَ حالُكِ"
+                    "ar": "كَيْف حالُكِ"
                 },
                 {
                     "tr": "ey Meryem?",
                     "order": 2,
-                    "ar": "يا مَرْيَمُ؟"
+                    "ar": "يا مَرْيَم؟"
                 }
             ],
             "p2": [
@@ -339,7 +339,7 @@ window.data = {
                 {
                     "tr": "Allah'a hamdolsun.",
                     "order": 2,
-                    "ar": "اَلحَمْدُ لِلَّهِ."
+                    "ar": "اَلحَمْدُ لِلَّهِ."
                 }
             ]
         },
@@ -384,7 +384,7 @@ window.data = {
                 {
                     "tr": "ey öğretmenim.",
                     "order": 2,
-                    "ar": "يا مُعَلِّمي."
+                    "ar": "يا مُعَلِّمي."
                 }
             ],
             "p2": [
@@ -405,7 +405,7 @@ window.data = {
                 {
                     "tr": "Güle güle",
                     "order": 1,
-                    "ar": "مَعَ السَّلامَةِ"
+                    "ar": "مَعَ السَّلامَةِ"
                 },
                 {
                     "tr": "ey arkadaşım.",
@@ -417,12 +417,12 @@ window.data = {
                 {
                     "tr": "Görüşmek üzere,",
                     "order": 1,
-                    "ar": "إِلى اللِّقاءِ،"
+                    "ar": "إِلى اللِّقاءِ،"
                 },
                 {
                     "tr": "Allah'a emanet ol.",
                     "order": 2,
-                    "ar": "في أَمانِ اللَّهِ."
+                    "ar": "في أَمانِ اللَّهِ."
                 }
             ]
         }
@@ -430,11 +430,11 @@ window.data = {
     "words": [
         {
             "tr": "selam sizin üzerinize olsun",
-            "ar": "اَلسَّلامُ عَلَيْكُمْ"
+            "ar": "اَلسَّلامُ عَلَيْكُمْ"
         },
         {
             "tr": "sizin üzerinize de selam olsun",
-            "ar": "وَعَلَيْكُمُ السَّلام"
+            "ar": "وَعَلَيْكُمُ السَّلام"
         },
         {
             "tr": "merhaba",
@@ -466,11 +466,11 @@ window.data = {
         },
         {
             "tr": "nasılsın?",
-            "ar": "كَيْفَ حالُكَ؟"
+            "ar": "كَيْف حالُكَ؟"
         },
         {
             "tr": "nasılsın? (kız)",
-            "ar": "كَيْفَ حالُكِ؟"
+            "ar": "كَيْف حالُكِ؟"
         },
         {
             "tr": "iyiyim",
@@ -478,23 +478,23 @@ window.data = {
         },
         {
             "tr": "Allah'a hamdolsun",
-            "ar": "اَلحَمْدُ لِلَّه"
+            "ar": "اَلحَمْدُ لِلَّه"
         },
         {
             "tr": "Allah'a emanet ol",
-            "ar": "في أَمانِ اللَّه"
+            "ar": "في أَمانِ اللَّه"
         },
         {
             "tr": "güle güle",
-            "ar": "مَعَ السَّلامَة"
+            "ar": "مَعَ السَّلامَة"
         },
         {
             "tr": "görüşmek üzere",
-            "ar": "إِلى اللِّقاء"
+            "ar": "إِلى اللِّقاء"
         },
         {
             "tr": "tanıştığımıza memnun oldum",
-            "ar": "تَشَرَّفْتُ"
+            "ar": "تَشَرَّفْتُ"
         },
         {
             "tr": "memnun oldum",
@@ -562,7 +562,7 @@ window.data = {
         },
         {
             "tr": "öğretmen",
-            "ar": "مُعَلِّم"
+            "ar": "مُعَلِّم"
         },
         {
             "tr": "arkadaşım",

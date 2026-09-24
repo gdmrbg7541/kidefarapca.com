@@ -3,7 +3,7 @@ const educationData = {
         {
             unitName: "1. Ünite: Merhaba | مَرْحَبًا",
             lessons: [
-                { name: "1. Ders: Arap Harfleri ve Sesler | اَلْحُرُوفُ الْعَرَبِيَّة وَالصَّوَائِت", simultaneUrl: "muhadese.html?ders=5_1_1", aktif: true },
+                { name: "1. Ders: Arap Harfleri ve Sesler | اَلحُرُوفُ العَرَبِيَّة وَالصَّوَائِت", simultaneUrl: "muhadese.html?ders=5_1_1", aktif: true },
                 { name: "2. Ders: Kendini Tanıtma | عِبَارَات التَّحِيَّة وَالتَّعَارُف وَالْوَدَاع", simultaneUrl: "muhadese.html?ders=5_1_2", aktif: true },
             ]
         },
@@ -18,7 +18,7 @@ const educationData = {
             unitName: "3. Ünite: Ailem | عَائِلَتِي",
             lessons: [
                 { name: "1. Ders: Aile Bireyleri | أَفْرَادُ العَائِلَة", simultaneUrl: "muhadese.html?ders=5_3_1", aktif: true },
-                { name: "2. Ders: Meslekler | الْمِهَن", simultaneUrl: "muhadese.html?ders=5_3_2", aktif: true },
+                { name: "2. Ders: Meslekler | المِهَن", simultaneUrl: "muhadese.html?ders=5_3_2", aktif: true },
                 { name: "3. Ders: Sıfatlar | اَلصِّفَات", simultaneUrl: "muhadese.html?ders=5_3_3", aktif: true },
             ]
         },
@@ -28,7 +28,7 @@ const educationData = {
                 { name: "1. Ders: Evin Bölümleri | أَقْسَامُ البَيْت", simultaneUrl: "muhadese.html?ders=5_4_1", aktif: true },
                 { name: "2. Ders: Evin Eşyaları | أَدَوَات البَيْت", simultaneUrl: "muhadese.html?ders=5_4_2", aktif: true },
                 { name: "3. Ders: Sıfatlar | اَلصِّفَات", simultaneUrl: "muhadese.html?ders=5_4_3", aktif: true },
-                { name: "4. Ders: Sayılar | اَلْأَعْدَاد", simultaneUrl: "muhadese.html?ders=5_4_4", aktif: true }
+                { name: "4. Ders: Sayılar | اَلأَعْدَاد", simultaneUrl: "muhadese.html?ders=5_4_4", aktif: true }
             ]
         }
     ],
@@ -38,7 +38,7 @@ const educationData = {
            veri dosyaları muhadese/veri/6_1_1..3.js. Diğer üniteler
            kitap verisi gelene kadar "YAKINDA" olarak kalıyor. */
         {
-            unitName: "1. Ünite: Günlük Hayat | الحَياةُ اليَوْمِيَّة",
+            unitName: "1. Ünite: Günlük Hayat | الحَياةُ اليَوْمِيَّة",
             lessons: [
                 { name: "1. Ders: Okulda | في المَدْرَسَة", simultaneUrl: "muhadese.html?ders=6_1_1", aktif: true },
                 { name: "2. Ders: Oyunlar | الأَلْعاب", simultaneUrl: "muhadese.html?ders=6_1_2", aktif: true },
@@ -56,23 +56,23 @@ const educationData = {
             ]
         },
         /* 3. ve 4. ÜNİTE 2025 ders kitabına göre yazıldı (komisyon verisi):
-           eski başlıklar tahmindi — kitapta ünite adları الصِّحَّة ve المَلابِس,
+           eski başlıklar tahmindi — kitapta ünite adları الصِّحَّة ve المَلابِس,
            her ünitede ÜÇ ders var. Veri dosyaları muhadese/veri/6_3_1..3.js
            ve 6_4_1..3.js. */
         {
-            unitName: "3. Ünite: Sağlık | الصِّحَّة",
+            unitName: "3. Ünite: Sağlık | الصِّحَّة",
             lessons: [
                 { name: "1. Ders: Vücut Organları | أَعْضاءُ الجِسْم", simultaneUrl: "muhadese.html?ders=6_3_1", aktif: true },
                 { name: "2. Ders: Hastanede | في المُسْتَشْفى", simultaneUrl: "muhadese.html?ders=6_3_2", aktif: true },
-                { name: "3. Ders: Temizlik | النَّظافَة", simultaneUrl: "muhadese.html?ders=6_3_3", aktif: true },
+                { name: "3. Ders: Temizlik | النَّظافَة", simultaneUrl: "muhadese.html?ders=6_3_3", aktif: true },
             ]
         },
         {
             unitName: "4. Ünite: Kıyafetler | المَلابِس",
             lessons: [
                 { name: "1. Ders: Mevsimler | الفُصول", simultaneUrl: "muhadese.html?ders=6_4_1", aktif: true },
-                { name: "2. Ders: Kışlık Kıyafetler | المَلابِسُ الشِّتَوِيَّة", simultaneUrl: "muhadese.html?ders=6_4_2", aktif: true },
-                { name: "3. Ders: Yazlık Kıyafetler | المَلابِسُ الصَّيْفِيَّة", simultaneUrl: "muhadese.html?ders=6_4_3", aktif: true },
+                { name: "2. Ders: Kışlık Kıyafetler | المَلابِسُ الشِّتَوِيَّة", simultaneUrl: "muhadese.html?ders=6_4_2", aktif: true },
+                { name: "3. Ders: Yazlık Kıyafetler | المَلابِسُ الصَّيْفِيَّة", simultaneUrl: "muhadese.html?ders=6_4_3", aktif: true },
             ]
         },
         /* 5. ve 6. ÜNİTE 2025 ders kitabına göre güncellendi (komisyon
@@ -80,11 +80,11 @@ const educationData = {
            dosyalar muhadese/veri/6_5_1..3.js ve 6_6_1..3.js. Böylece
            6. sınıfın ALTI ÜNİTESİ de tamamlandı. */
         {
-            unitName: "5. Ünite: Kutsal Mekânlar | الأَماكِنُ المُقَدَّسَة",
+            unitName: "5. Ünite: Kutsal Mekânlar | الأَماكِنُ المُقَدَّسَة",
             lessons: [
-                { name: "1. Ders: Mekke-i Mükerreme'de | في مَكَّةَ المُكَرَّمَة", simultaneUrl: "muhadese.html?ders=6_5_1", aktif: true },
-                { name: "2. Ders: Medine-i Münevvere'de | في المَدينَةِ المُنَوَّرَة", simultaneUrl: "muhadese.html?ders=6_5_2", aktif: true },
-                { name: "3. Ders: Kudüs-i Şerif'te | في القُدْسِ الشَّريف", simultaneUrl: "muhadese.html?ders=6_5_3", aktif: true },
+                { name: "1. Ders: Mekke-i Mükerreme'de | في مَكَّة المُكَرَّمَة", simultaneUrl: "muhadese.html?ders=6_5_1", aktif: true },
+                { name: "2. Ders: Medine-i Münevvere'de | في المَدينَةِ المُنَوَّرَة", simultaneUrl: "muhadese.html?ders=6_5_2", aktif: true },
+                { name: "3. Ders: Kudüs-i Şerif'te | في القُدْس الشَّريف", simultaneUrl: "muhadese.html?ders=6_5_3", aktif: true },
             ]
         },
         {
@@ -100,15 +100,15 @@ const educationData = {
     "7": [
         {
             unitName: "1. Ünite: Bugün Ne Yaptım? | ماذا فَعَلْتُ اليَوْمَ؟",
-            lessons: [{ name: "Günlük Etkinlikler ve Saatler | الأَنْشِطَةُ اليَوْمِيَّة وَالسّاعات", simultaneUrl: "muhadese.html?ders=7_1", aktif: true }]
+            lessons: [{ name: "Günlük Etkinlikler ve Saatler | الأَنْشِطَةُ اليَوْمِيَّة وَالسّاعات", simultaneUrl: "muhadese.html?ders=7_1", aktif: true }]
         },
         {
-            unitName: "2. Ünite: Alışveriş Zamanı | وَقْتُ التَّسَوُّق",
-            lessons: [{ name: "Alışveriş, Miktar ve Sayılar | التَّسَوُّق وَالكَمِّيّات وَالأَعْداد", simultaneUrl: "muhadese.html?ders=7_2", aktif: true }]
+            unitName: "2. Ünite: Alışveriş Zamanı | وَقْتُ التَّسَوُّق",
+            lessons: [{ name: "Alışveriş, Miktar ve Sayılar | التَّسَوُّق وَالكَمِّيّات وَالأَعْداد", simultaneUrl: "muhadese.html?ders=7_2", aktif: true }]
         },
         {
-            unitName: "3. Ünite: Nereye Seyahat Edelim? | إِلى أَيْنَ نُسافِرُ؟",
-            lessons: [ { name: "Ulaşım ve Seyahat | المُواصَلات وَالسَّفَر", simultaneUrl: "muhadese.html?ders=7_3", aktif: true } ]
+            unitName: "3. Ünite: Nereye Seyahat Edelim? | إِلى أَيْن نُسافِرُ؟",
+            lessons: [ { name: "Ulaşım ve Seyahat | المُواصَلات وَالسَّفَر", simultaneUrl: "muhadese.html?ders=7_3", aktif: true } ]
         },
         {
             unitName: "4. Ünite: Şehrim ve Ülkem | مَدينَتي وَبَلَدي",
@@ -125,50 +125,50 @@ const educationData = {
             unitName: "1. Ünite: Etkinlikler | الأَنْشِطَة",
             lessons: [
                 { name: "1. Ders: Kulüpler | الأَنْدِيَة", simultaneUrl: "muhadese.html?ders=8_1_1", aktif: true },
-                { name: "2. Ders: Tiyatro | المَسْرَحِيَّة", simultaneUrl: "muhadese.html?ders=8_1_2", aktif: true },
-                { name: "3. Ders: Gezi | التَّجَوُّل", simultaneUrl: "muhadese.html?ders=8_1_3", aktif: true },
+                { name: "2. Ders: Tiyatro | المَسْرَحِيَّة", simultaneUrl: "muhadese.html?ders=8_1_2", aktif: true },
+                { name: "3. Ders: Gezi | التَّجَوُّل", simultaneUrl: "muhadese.html?ders=8_1_3", aktif: true },
             ]
         },
         {
-            unitName: "2. Ünite: Kültür ve Sanat | الثَّقافَة وَالفَنّ",
+            unitName: "2. Ünite: Kültür ve Sanat | الثَّقافَة وَالفَنّ",
             lessons: [
                 { name: "1. Ders: Edebiyat | الأَدَب", simultaneUrl: "muhadese.html?ders=8_2_1", aktif: true },
                 { name: "2. Ders: Kitap Fuarında | في مَعْرِضِ الكِتاب", simultaneUrl: "muhadese.html?ders=8_2_2", aktif: true },
                 /* Kitaptaki ad الفُنون اليَدَوِيّة (s.52); komisyon dosyasındaki
                    «الأعمال اليدوية» yerine kitabın adı esas alındı. */
-                { name: "3. Ders: El Sanatları | الفُنونُ اليَدَوِيَّة", simultaneUrl: "muhadese.html?ders=8_2_3", aktif: true },
+                { name: "3. Ders: El Sanatları | الفُنونُ اليَدَوِيَّة", simultaneUrl: "muhadese.html?ders=8_2_3", aktif: true },
             ]
         },
         {
             unitName: "3. Ünite: Değerlerim | قِيَمي",
             lessons: [
-                { name: "1. Ders: Arkadaşlık | الصَّداقَة", simultaneUrl: "muhadese.html?ders=8_3_1", aktif: true },
-                { name: "2. Ders: Yardımlaşma | التَّعاوُن", simultaneUrl: "muhadese.html?ders=8_3_2", aktif: true },
+                { name: "1. Ders: Arkadaşlık | الصَّداقَة", simultaneUrl: "muhadese.html?ders=8_3_1", aktif: true },
+                { name: "2. Ders: Yardımlaşma | التَّعاوُن", simultaneUrl: "muhadese.html?ders=8_3_2", aktif: true },
                 { name: "3. Ders: Bayramlar | الأَعْياد", simultaneUrl: "muhadese.html?ders=8_3_3", aktif: true },
             ]
         },
         {
-            unitName: "4. Ünite: Doğa | الطَّبيعَة",
+            unitName: "4. Ünite: Doğa | الطَّبيعَة",
             lessons: [
-                { name: "1. Ders: Çevrenin Önemi | أَهَمِّيَّةُ البِيئَة", simultaneUrl: "muhadese.html?ders=8_4_1", aktif: true },
-                { name: "2. Ders: Hayvan Sevgisi | حُبُّ الحَيَوانات", simultaneUrl: "muhadese.html?ders=8_4_2", aktif: true },
-                { name: "3. Ders: Doğal Afetler | الكَوارِثُ الطَّبيعِيَّة", simultaneUrl: "muhadese.html?ders=8_4_3", aktif: true },
+                { name: "1. Ders: Çevrenin Önemi | أَهَمِّيَّةُ البِيئَة", simultaneUrl: "muhadese.html?ders=8_4_1", aktif: true },
+                { name: "2. Ders: Hayvan Sevgisi | حُبُّ الحَيَوانات", simultaneUrl: "muhadese.html?ders=8_4_2", aktif: true },
+                { name: "3. Ders: Doğal Afetler | الكَوارِثُ الطَّبيعِيَّة", simultaneUrl: "muhadese.html?ders=8_4_3", aktif: true },
             ]
         },
         {
-            unitName: "5. Ünite: Spor | الرِّياضَة",
+            unitName: "5. Ünite: Spor | الرِّياضَة",
             lessons: [
-                { name: "1. Ders: Sporun Tarihi | تاريخُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_1", aktif: true },
-                { name: "2. Ders: Sporun Önemi | أَهَمِّيَّةُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_2", aktif: true },
-                { name: "3. Ders: Spor Türleri | أَنْواعُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_3", aktif: true },
+                { name: "1. Ders: Sporun Tarihi | تاريخُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_1", aktif: true },
+                { name: "2. Ders: Sporun Önemi | أَهَمِّيَّةُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_2", aktif: true },
+                { name: "3. Ders: Spor Türleri | أَنْواعُ الرِّياضَة", simultaneUrl: "muhadese.html?ders=8_5_3", aktif: true },
             ]
         },
         {
             unitName: "6. Ünite: Okula Veda | وَداعُ المَدْرَسَة",
             lessons: [
-                { name: "1. Ders: Mezuniyet | التَّخَرُّج", simultaneUrl: "muhadese.html?ders=8_6_1", aktif: true },
+                { name: "1. Ders: Mezuniyet | التَّخَرُّج", simultaneUrl: "muhadese.html?ders=8_6_1", aktif: true },
                 { name: "2. Ders: Arkadaşlara Veda | وَداعُ الأَصْدِقاء", simultaneUrl: "muhadese.html?ders=8_6_2", aktif: true },
-                { name: "3. Ders: Yaz Tatili | العُطْلَةُ الصَّيْفِيَّة", simultaneUrl: "muhadese.html?ders=8_6_3", aktif: true },
+                { name: "3. Ders: Yaz Tatili | العُطْلَةُ الصَّيْفِيَّة", simultaneUrl: "muhadese.html?ders=8_6_3", aktif: true },
             ]
         }
     ],
@@ -228,7 +228,7 @@ const educationData = {
             unitName: "4. Ünite: Tatile Hazırlanıyorum | أَسْتَعِدُّ لِلْعُطْلَة",
             lessons: [
                 { name: "1. Ders: Mevsimlere Göre Giyinirim | أَلْبَسُ حَسَبَ الفُصول", simultaneUrl: "muhadese.html?ders=10_4_1", aktif: true },
-                { name: "2. Ders: Alışveriş Yapıyorum | أَتَسَوَّقُ", simultaneUrl: "muhadese.html?ders=10_4_2", aktif: true },
+                { name: "2. Ders: Alışveriş Yapıyorum | أَتَسَوَّقُ", simultaneUrl: "muhadese.html?ders=10_4_2", aktif: true },
             ]
         }
     ]
@@ -397,31 +397,31 @@ const educationDataYil = {
                 unitName: "1. Ünite: Hayattan | مِن الحَياة",
                 lessons: [
                     { name: "1. Ders: Okula Hazırlık | الاسْتِعْداد لِلْمَدْرَسة", simultaneUrl: "muhadese.html?ders=10_1_1", aktif: true },
-                    { name: "2. Ders: Eve Dönüş | الرُّجوع إلى البَيْت", simultaneUrl: "muhadese.html?ders=10_1_2", aktif: true },
+                    { name: "2. Ders: Eve Dönüş | الرُّجوع إلى البَيْت", simultaneUrl: "muhadese.html?ders=10_1_2", aktif: true },
                     { name: "3. Ders: Hafta Sonu | نِهاية الأُسْبوع", simultaneUrl: "muhadese.html?ders=10_1_3", aktif: true },
                 ]
             },
             {
                 unitName: "2. Ünite: Değerlerim | قِيَمي",
                 lessons: [
-                    { name: "1. Ders: Dinimi Seviyorum | أُحِبُّ ديني", simultaneUrl: "muhadese.html?ders=10_2_1", aktif: true },
+                    { name: "1. Ders: Dinimi Seviyorum | أُحِبُّ ديني", simultaneUrl: "muhadese.html?ders=10_2_1", aktif: true },
                     { name: "2. Ders: Güzel Ahlak | الأَخْلاق الحَسَنة", simultaneUrl: "muhadese.html?ders=10_2_2", aktif: true },
-                    { name: "3. Ders: Vatanımı Seviyorum | أُحِبُّ وَطَني", simultaneUrl: "muhadese.html?ders=10_2_3", aktif: true },
+                    { name: "3. Ders: Vatanımı Seviyorum | أُحِبُّ وَطَني", simultaneUrl: "muhadese.html?ders=10_2_3", aktif: true },
                 ]
             },
             {
-                unitName: "3. Ünite: Sağlık | الصِّحّة",
+                unitName: "3. Ünite: Sağlık | الصِّحّة",
                 lessons: [
                     { name: "1. Ders: Vücudun Bölümleri | أَجْزاء الجِسْم", simultaneUrl: "muhadese.html?ders=10_3_1", aktif: true },
                     { name: "2. Ders: Yiyecekler ve İçecekler | المَأْكولات والمَشْروبات", simultaneUrl: "muhadese.html?ders=10_3_2", aktif: true },
-                    { name: "3. Ders: Spor | الرِّياضة", simultaneUrl: "muhadese.html?ders=10_3_3", aktif: true },
+                    { name: "3. Ders: Spor | الرِّياضة", simultaneUrl: "muhadese.html?ders=10_3_3", aktif: true },
                 ]
             },
             {
                 unitName: "4. Ünite: Önemli Yerler | الأَماكِن المُهِمّة",
                 lessons: [
-                    { name: "1. Ders: Dünyadaki Türk-İslam Eserleri | الآثار التُّرْكِيّة-الإِسْلامِيّة في العالَم", simultaneUrl: "muhadese.html?ders=10_4_1", aktif: true },
-                    { name: "2. Ders: Mekke, Medine ve Kudüs | مَكّة المُكَرَّمة، المَدينة المُنَوَّرة، القُدْس الشَّريف", simultaneUrl: "muhadese.html?ders=10_4_2", aktif: true },
+                    { name: "1. Ders: Dünyadaki Türk-İslam Eserleri | الآثار التُّرْكِيّة-الإِسْلامِيّة في العالَم", simultaneUrl: "muhadese.html?ders=10_4_1", aktif: true },
+                    { name: "2. Ders: Mekke, Medine ve Kudüs | مَكّة المُكَرَّمة، المَدينة المُنَوَّرة، القُدْس الشَّريف", simultaneUrl: "muhadese.html?ders=10_4_2", aktif: true },
                     { name: "3. Ders: Türkiye’deki Önemli Yerler | الأَماكِن المُهِمّة في تُرْكِيا", simultaneUrl: "muhadese.html?ders=10_4_3", aktif: true },
                 ]
             },
@@ -490,29 +490,29 @@ const educationDataYil = {
             {
                 unitName: "1. Ünite: Akrabalarım | أَقارِبي",
                 lessons: [
-                    { name: "1. Ders: Akrabalar | اَلْأَقارِب", simultaneUrl: "muhadese.html?ders=6_1_1", aktif: true },
-                    { name: "2. Ders: Meslekler | اَلْمِهَن", simultaneUrl: "muhadese.html?ders=6_1_2", aktif: true },
+                    { name: "1. Ders: Akrabalar | اَلأَقارِب", simultaneUrl: "muhadese.html?ders=6_1_1", aktif: true },
+                    { name: "2. Ders: Meslekler | اَلمِهَن", simultaneUrl: "muhadese.html?ders=6_1_2", aktif: true },
                 ]
             },
             {
-                unitName: "2. Ünite: Haydi Okula | هَيّا إلى الْمَدْرَسَة",
+                unitName: "2. Ünite: Haydi Okula | هَيّا إلى المَدْرَسَة",
                 lessons: [
-                    { name: "1. Ders: Okulun Bölümleri ve Araçları | أَقْسامُ الْمَدْرَسَة وَأَدَواتُها", simultaneUrl: "muhadese.html?ders=6_2_1", aktif: true },
-                    { name: "2. Ders: Sıra Sayıları | اَلْأَعْدادُ التَّرْتيبِيَّة", simultaneUrl: "muhadese.html?ders=6_2_2", aktif: true },
+                    { name: "1. Ders: Okulun Bölümleri ve Araçları | أَقْسامُ المَدْرَسَة وَأَدَواتُها", simultaneUrl: "muhadese.html?ders=6_2_1", aktif: true },
+                    { name: "2. Ders: Sıra Sayıları | اَلأَعْدادُ التَّرْتيبِيَّة", simultaneUrl: "muhadese.html?ders=6_2_2", aktif: true },
                 ]
             },
             {
                 unitName: "3. Ünite: Vücudum | جِسْمي",
                 lessons: [
-                    { name: "1. Ders: Organlar | اَلْأَعْضاء", simultaneUrl: "muhadese.html?ders=6_3_1", aktif: true },
-                    { name: "2. Ders: Hisler ve Duygular | اَلْإِحْساس وَالْمَشاعِر", simultaneUrl: "muhadese.html?ders=6_3_2", aktif: true },
+                    { name: "1. Ders: Organlar | اَلأَعْضاء", simultaneUrl: "muhadese.html?ders=6_3_1", aktif: true },
+                    { name: "2. Ders: Hisler ve Duygular | اَلإِحْساس وَالْمَشاعِر", simultaneUrl: "muhadese.html?ders=6_3_2", aktif: true },
                 ]
             },
             {
-                unitName: "4. Ünite: Bu Hafta Hava Nasıl? | كَيْفَ الْجَوّ هَذا الْأُسْبوع؟",
+                unitName: "4. Ünite: Bu Hafta Hava Nasıl? | كَيْف الجَوّ هَذا الأُسْبوع؟",
                 lessons: [
-                    { name: "1. Ders: Hava Durumu | اَلْأَحْوالُ الْجَوِّيَّة", simultaneUrl: "muhadese.html?ders=6_4_1", aktif: true },
-                    { name: "2. Ders: Renkler | اَلْأَلْوان", simultaneUrl: "muhadese.html?ders=6_4_2", aktif: true },
+                    { name: "1. Ders: Hava Durumu | اَلأَحْوالُ الجَوِّيَّة", simultaneUrl: "muhadese.html?ders=6_4_1", aktif: true },
+                    { name: "2. Ders: Renkler | اَلأَلْوان", simultaneUrl: "muhadese.html?ders=6_4_2", aktif: true },
                 ]
             },
         ]

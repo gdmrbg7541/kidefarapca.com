@@ -512,7 +512,7 @@ function kitapcikSayfalari(D){
   const kimlik = `<div class="a4-kimlik">
       <div><b>الاسْم · Ad soyad</b></div>
       <div><b>الفَريق · Grup</b></div>
-      <div><b>الرَّقَم · Sıra no</b></div>
+      <div><b>الرَّقَم · Sıra no</b></div>
     </div>`;
 
   /* Sayfayı ölçerek doldur: taşan soru bir sonraki sayfaya iner. */
@@ -555,7 +555,7 @@ function kartSayfalari(D){
   const alt = uniteAdi() + (konuAdi(D) ? " · " + konuAdi(D) : "");
   const yarisan = D.bicim === "kisi" ? "öğrenci" : (D.bicim === "sinif" ? "sınıf" : "grup");
   const kural = `<div class="a4-kural">
-      <b>Nasıl doldurulur · الطَّريقَة</b>
+      <b>Nasıl doldurulur · الطَّريقَة</b>
       <ol>
         <li>Her soru ekranda gösterilir; ${yarisan} cevabını bu karta yazar.</li>
         <li>Cevap kutusuna yalnızca son karar yazılır, karalama yapılmaz.</li>
@@ -564,10 +564,10 @@ function kartSayfalari(D){
       </ol></div>`;
 
   const kat = (D.katilim && D.katilim.length) ? D.katilim : [{ ad:"", alt:"" }];
-  const birinciEtiket = D.bicim === "kisi" ? "الرَّقَم · Sıra no"
-                      : D.bicim === "sinif" ? "الصَّفّ · Sınıf" : "الفَريق · Grup";
+  const birinciEtiket = D.bicim === "kisi" ? "الرَّقَم · Sıra no"
+                      : D.bicim === "sinif" ? "الصَّفّ · Sınıf" : "الفَريق · Grup";
   const ikinciEtiket  = D.bicim === "kisi" ? "الاسْم · Ad soyad"
-                      : D.bicim === "sinif" ? "المُعَلِّم · Öğretmen" : "الأَعْضاء · Üyeler";
+                      : D.bicim === "sinif" ? "المُعَلِّم · Öğretmen" : "الأَعْضاء · Üyeler";
   const sayfalar = [];
   kat.forEach((k, ki) => {
     /* her gruba kendi kartı: sorular 12'şerli bloklar hâlinde */

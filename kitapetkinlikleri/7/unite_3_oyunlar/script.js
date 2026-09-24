@@ -9,7 +9,7 @@ function buildHTMLSkeleton() {
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
             </a>
-            <h1>لُعْبَة السَّفَر </h1>
+            <h1>لُعْبَة السَّفَر </h1>
             <button onclick="startGame()">اِبْدَأْ</button>
         </div>
 
@@ -37,7 +37,7 @@ function buildHTMLSkeleton() {
             </div>
             <div class="controls">
                 <button id="checkBtn" onclick="checkAnswer()">تَأْكيد</button>
-                <button id="nextBtn" class="hidden" onclick="nextQuestion()">السُّؤال التّالي</button>
+                <button id="nextBtn" class="hidden" onclick="nextQuestion()">السُّؤال التّالي</button>
             </div>
         </div>
 

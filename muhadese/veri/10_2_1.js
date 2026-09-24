@@ -264,7 +264,7 @@ window.data = {
                 { tr: "Sağlıklı", order: 4, ar: "الصِّحِّيّ،" },
                 { tr: "gıda", order: 3, ar: "الغِذاء" },
                 { tr: "almam", order: 2, ar: "أَنْ أَتَناوَلَ" },
-                { tr: "gerekir...", order: 1, ar: "يَجِبُ عَلَيَّ" }
+                { tr: "gerekir...", order: 1, ar: "يَجِبُ عَلَيّ" }
             ]
         },
 

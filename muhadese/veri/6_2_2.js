@@ -60,12 +60,12 @@ window.data = {
                 {
                     "tr": "tavuk",
                     "order": 2,
-                    "ar": "الدَّجاجَ"
+                    "ar": "الدَّجاجَ"
                 },
                 {
                     "tr": "ve pilav",
                     "order": 3,
-                    "ar": "وَالأَرُزَّ"
+                    "ar": "وَالأَرُزَّ"
                 },
                 {
                     "tr": "pişireceğim.",
@@ -79,7 +79,7 @@ window.data = {
                 {
                     "tr": "Yemeğe",
                     "order": 2,
-                    "ar": "الطَّعامَ"
+                    "ar": "الطَّعامَ"
                 },
                 {
                     "tr": "besmeleyle",
@@ -159,12 +159,12 @@ window.data = {
                 {
                     "tr": "Bu yemek",
                     "order": 1,
-                    "ar": "هَذا الطَّعامُ"
+                    "ar": "هَذا الطَّعامُ"
                 },
                 {
                     "tr": "çok",
                     "order": 3,
-                    "ar": "جِدًّا."
+                    "ar": "جِدًّا."
                 },
                 {
                     "tr": "lezzetlidir.",
@@ -197,7 +197,7 @@ window.data = {
                 {
                     "tr": "Yiyeceklerden",
                     "order": 3,
-                    "ar": "مِنَ المَأْكولاتِ؟"
+                    "ar": "مِن المَأْكولاتِ؟"
                 },
                 {
                     "tr": "neyi",
@@ -207,7 +207,7 @@ window.data = {
                 {
                     "tr": "tercih edersin?",
                     "order": 2,
-                    "ar": "تُفَضِّلُ"
+                    "ar": "تُفَضِّلُ"
                 }
             ]
         },
@@ -216,12 +216,12 @@ window.data = {
                 {
                     "tr": "Pilavı",
                     "order": 2,
-                    "ar": "الأَرُزَّ"
+                    "ar": "الأَرُزَّ"
                 },
                 {
                     "tr": "tercih ederim,",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 },
                 {
                     "tr": "lütfen.",
@@ -235,7 +235,7 @@ window.data = {
                 {
                     "tr": "İçeceklerden",
                     "order": 3,
-                    "ar": "مِنَ المَشْروباتِ؟"
+                    "ar": "مِن المَشْروباتِ؟"
                 },
                 {
                     "tr": "neyi",
@@ -245,7 +245,7 @@ window.data = {
                 {
                     "tr": "tercih edersin?",
                     "order": 2,
-                    "ar": "تُفَضِّلُ"
+                    "ar": "تُفَضِّلُ"
                 }
             ]
         },
@@ -259,12 +259,12 @@ window.data = {
                 {
                     "tr": "ızgara tavuğu",
                     "order": 4,
-                    "ar": "الدَّجاجَ المَشْوِيَّ؟"
+                    "ar": "الدَّجاجَ المَشْوِيَّ؟"
                 },
                 {
                     "tr": "tercih eder misin?",
                     "order": 3,
-                    "ar": "تُفَضِّلُ"
+                    "ar": "تُفَضِّلُ"
                 },
                 {
                     "tr": "…mi?",
@@ -283,12 +283,12 @@ window.data = {
                 {
                     "tr": "ızgara tavuğu",
                     "order": 3,
-                    "ar": "الدَّجاجَ المَشْوِيَّ."
+                    "ar": "الدَّجاجَ المَشْوِيَّ."
                 },
                 {
                     "tr": "tercih ederim.",
                     "order": 2,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 }
             ]
         },
@@ -307,12 +307,12 @@ window.data = {
                 {
                     "tr": "pilavı",
                     "order": 4,
-                    "ar": "الأَرُزَّ"
+                    "ar": "الأَرُزَّ"
                 },
                 {
                     "tr": "tercih eder mi?",
                     "order": 3,
-                    "ar": "يُفَضِّلُ"
+                    "ar": "يُفَضِّلُ"
                 },
                 {
                     "tr": "…mi?",
@@ -341,12 +341,12 @@ window.data = {
                 {
                     "tr": "pilavı",
                     "order": 4,
-                    "ar": "الأَرُزَّ"
+                    "ar": "الأَرُزَّ"
                 },
                 {
                     "tr": "tercih etmez.",
                     "order": 3,
-                    "ar": "لا يُفَضِّلُ"
+                    "ar": "لا يُفَضِّلُ"
                 }
             ]
         },
@@ -355,7 +355,7 @@ window.data = {
                 {
                     "tr": "Ayşe",
                     "order": 2,
-                    "ar": "عائِشَةُ"
+                    "ar": "عائِشَة"
                 },
                 {
                     "tr": "kahvaltıda",
@@ -365,12 +365,12 @@ window.data = {
                 {
                     "tr": "sütü",
                     "order": 3,
-                    "ar": "اللَّبَنَ"
+                    "ar": "اللَّبَنَ"
                 },
                 {
                     "tr": "tercih eder mi?",
                     "order": 1,
-                    "ar": "هَلْ تُفَضِّلُ"
+                    "ar": "هَلْ تُفَضِّلُ"
                 }
             ]
         },
@@ -394,7 +394,7 @@ window.data = {
                 {
                     "tr": "tercih eder mi?",
                     "order": 1,
-                    "ar": "هَلْ تُفَضِّلُ"
+                    "ar": "هَلْ تُفَضِّلُ"
                 }
             ]
         },
@@ -413,12 +413,12 @@ window.data = {
                 {
                     "tr": "salatayı",
                     "order": 4,
-                    "ar": "السَّلَطَةَ"
+                    "ar": "السَّلَطَةَ"
                 },
                 {
                     "tr": "tercih eder misin?",
                     "order": 3,
-                    "ar": "تُفَضِّلُ"
+                    "ar": "تُفَضِّلُ"
                 },
                 {
                     "tr": "…mi?",
@@ -600,7 +600,7 @@ window.data = {
                 {
                     "tr": "Yusuf",
                     "order": 2,
-                    "ar": "يوسُفُ"
+                    "ar": "يوسُف"
                 },
                 {
                     "tr": "ödevini",
@@ -619,7 +619,7 @@ window.data = {
                 {
                     "tr": "Yusuf",
                     "order": 2,
-                    "ar": "يوسُفُ"
+                    "ar": "يوسُف"
                 },
                 {
                     "tr": "öğle yemeğini",
@@ -643,7 +643,7 @@ window.data = {
                 {
                     "tr": "Yusuf",
                     "order": 3,
-                    "ar": "يوسُفُ"
+                    "ar": "يوسُف"
                 },
                 {
                     "tr": "öğle yemeğinde",
@@ -667,7 +667,7 @@ window.data = {
                 {
                     "tr": "Yusuf",
                     "order": 2,
-                    "ar": "يوسُفُ"
+                    "ar": "يوسُف"
                 },
                 {
                     "tr": "öğle yemeğinden önce",
@@ -691,7 +691,7 @@ window.data = {
                 {
                     "tr": "Yusuf",
                     "order": 2,
-                    "ar": "يوسُفُ"
+                    "ar": "يوسُف"
                 },
                 {
                     "tr": "öğle yemeğinde",
@@ -706,7 +706,7 @@ window.data = {
                 {
                     "tr": "tercih eder.",
                     "order": 1,
-                    "ar": "يُفَضِّلُ"
+                    "ar": "يُفَضِّلُ"
                 }
             ]
         },
@@ -715,12 +715,12 @@ window.data = {
                 {
                     "tr": "Yusuf",
                     "order": 2,
-                    "ar": "يوسُفُ"
+                    "ar": "يوسُف"
                 },
                 {
                     "tr": "yemekten sonra",
                     "order": 3,
-                    "ar": "بَعْدَ تَناوُلِ الطَّعامِ."
+                    "ar": "بَعْدَ تَناوُلِ الطَّعامِ."
                 },
                 {
                     "tr": "dinlenecek.",
@@ -734,7 +734,7 @@ window.data = {
                 {
                     "tr": "Yusuf",
                     "order": 2,
-                    "ar": "يوسُفُ"
+                    "ar": "يوسُف"
                 },
                 {
                     "tr": "öğle yemeğinde",
@@ -744,12 +744,12 @@ window.data = {
                 {
                     "tr": "salata ile",
                     "order": 5,
-                    "ar": "مَعَ السَّلَطَةِ."
+                    "ar": "مَعَ السَّلَطَةِ."
                 },
                 {
                     "tr": "ızgara tavuk",
                     "order": 4,
-                    "ar": "الدَّجاجَ المَشْوِيَّ"
+                    "ar": "الدَّجاجَ المَشْوِيَّ"
                 },
                 {
                     "tr": "yiyecek.",
@@ -765,12 +765,12 @@ window.data = {
                 {
                     "tr": "Ey Yusuf,",
                     "order": 1,
-                    "ar": "يا يوسُفُ،"
+                    "ar": "يا يوسُف،"
                 },
                 {
                     "tr": "neredesin?",
                     "order": 2,
-                    "ar": "أَيْنَ أَنْتَ؟"
+                    "ar": "أَيْن أَنْتَ؟"
                 },
                 {
                     "tr": "Ödevini bitirdin mi?",
@@ -806,7 +806,7 @@ window.data = {
                 {
                     "tr": "Haydi Yusuf,",
                     "order": 1,
-                    "ar": "هَيّا يا يوسُفُ،"
+                    "ar": "هَيّا يا يوسُف،"
                 },
                 {
                     "tr": "ödevini",
@@ -821,7 +821,7 @@ window.data = {
                 {
                     "tr": "öğle yemeğini 12:30'da yiyeceğiz.",
                     "order": 4,
-                    "ar": "سَنَتَناوَلُ الغَداءَ في الثّانِيَةَ عَشْرَةَ وَالنِّصْفِ."
+                    "ar": "سَنَتَناوَلُ الغَداءَ في الثّانِيَةَ عَشْرَةَ وَالنِّصْفِ."
                 }
             ],
             "p2": [
@@ -852,12 +852,12 @@ window.data = {
                 {
                     "tr": "ızgara tavuk",
                     "order": 3,
-                    "ar": "الدَّجاجَ المَشْوِيَّ"
+                    "ar": "الدَّجاجَ المَشْوِيَّ"
                 },
                 {
                     "tr": "ve salata",
                     "order": 4,
-                    "ar": "وَالسَّلَطَةَ."
+                    "ar": "وَالسَّلَطَةَ."
                 },
                 {
                     "tr": "pişirdim.",
@@ -888,12 +888,12 @@ window.data = {
                 {
                     "tr": "Portakal suyunu mu",
                     "order": 1,
-                    "ar": "أَتُفَضِّلُ عَصيرَ البُرْتُقالِ"
+                    "ar": "أَتُفَضِّلُ عَصيرَ البُرْتُقالِ"
                 },
                 {
                     "tr": "yoksa elma suyunu mu tercih edersin?",
                     "order": 2,
-                    "ar": "أَمْ عَصيرَ التُّفّاحِ؟"
+                    "ar": "أَمْ عَصيرَ التُّفّاحِ؟"
                 }
             ],
             "p2": [
@@ -905,7 +905,7 @@ window.data = {
                 {
                     "tr": "tercih ederim.",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 }
             ]
         },
@@ -914,7 +914,7 @@ window.data = {
                 {
                     "tr": "Yemekten sonra",
                     "order": 2,
-                    "ar": "بَعْدَ تَناوُلِ الطَّعامِ."
+                    "ar": "بَعْدَ تَناوُلِ الطَّعامِ."
                 },
                 {
                     "tr": "dinleneceksin.",
@@ -967,7 +967,7 @@ window.data = {
                 {
                     "tr": "ve zeytin",
                     "order": 4,
-                    "ar": "وَالزَّيْتونَ."
+                    "ar": "وَالزَّيْتونَ."
                 },
                 {
                     "tr": "yerim.",
@@ -998,12 +998,12 @@ window.data = {
                 {
                     "tr": "Tavuk",
                     "order": 2,
-                    "ar": "الدَّجاجَ"
+                    "ar": "الدَّجاجَ"
                 },
                 {
                     "tr": "ve pilav",
                     "order": 3,
-                    "ar": "وَالأَرُزَّ."
+                    "ar": "وَالأَرُزَّ."
                 },
                 {
                     "tr": "yerim.",
@@ -1094,7 +1094,7 @@ window.data = {
                 {
                     "tr": "tercih edersin?",
                     "order": 2,
-                    "ar": "تُفَضِّلُ"
+                    "ar": "تُفَضِّلُ"
                 }
             ],
             "p2": [
@@ -1106,7 +1106,7 @@ window.data = {
                 {
                     "tr": "tercih ederim.",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 }
             ]
         }
@@ -1118,7 +1118,7 @@ window.data = {
         },
         {
             "tr": "tercih eder",
-            "ar": "يُفَضِّلُ"
+            "ar": "يُفَضِّلُ"
         },
         {
             "tr": "çorba",
@@ -1190,7 +1190,7 @@ window.data = {
         },
         {
             "tr": "çok",
-            "ar": "جِدًّا"
+            "ar": "جِدًّا"
         },
         {
             "tr": "ödev",

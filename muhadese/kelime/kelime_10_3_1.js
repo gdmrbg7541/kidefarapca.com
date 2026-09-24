@@ -17,7 +17,7 @@ const allWords = [
     { tr: "Doğu", ar: "شَرْق" },
     { tr: "Batı", ar: "غَرْب" },
     { tr: "Orta / Merkez", ar: "وَسَط" },
-    { tr: "Nerede?", ar: "أَيْنَ؟" },
+    { tr: "Nerede?", ar: "أَيْن؟" },
 
     // Fiiller (Eylemler)
     { tr: "Yaşıyorum", ar: "أَعِيشُ" },

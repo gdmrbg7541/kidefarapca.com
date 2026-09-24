@@ -1,4 +1,4 @@
-/* 6. sınıf — 6_4_3 (4. Ünite 3. Ders: Yazlık Kıyafetler | المَلابِسُ الصَّيْفِيَّة) */
+/* 6. sınıf — 6_4_3 (4. Ünite 3. Ders: Yazlık Kıyafetler | المَلابِسُ الصَّيْفِيَّة) */
 /* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 4. Ünite (المَلابِس), s. 118-126. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
@@ -13,7 +13,7 @@ window.data = {
                 {
                     "tr": "pembedir.",
                     "order": 2,
-                    "ar": "وَرْدِيٌّ."
+                    "ar": "وَرْدِيٌّ."
                 }
             ]
         },
@@ -27,7 +27,7 @@ window.data = {
                 {
                     "tr": "kahverengidir.",
                     "order": 2,
-                    "ar": "بُنِّيٌّ."
+                    "ar": "بُنِّيٌّ."
                 }
             ]
         },
@@ -50,12 +50,12 @@ window.data = {
                 {
                     "tr": "Terlik",
                     "order": 1,
-                    "ar": "الشِّبْشِبُ"
+                    "ar": "الشِّبْشِبُ"
                 },
                 {
                     "tr": "turuncudur.",
                     "order": 2,
-                    "ar": "بُرْتُقالِيٌّ."
+                    "ar": "بُرْتُقالِيٌّ."
                 }
             ]
         },
@@ -83,7 +83,7 @@ window.data = {
                 {
                     "tr": "bir kazaktır.",
                     "order": 3,
-                    "ar": "صوفِيٌّ."
+                    "ar": "صوفِيٌّ."
                 },
                 {
                     "tr": "yünlü",
@@ -102,7 +102,7 @@ window.data = {
                 {
                     "tr": "bir kazaktır.",
                     "order": 3,
-                    "ar": "قُطْنِيٌّ."
+                    "ar": "قُطْنِيٌّ."
                 },
                 {
                     "tr": "pamuklu",
@@ -116,7 +116,7 @@ window.data = {
                 {
                     "tr": "Bu elbise",
                     "order": 1,
-                    "ar": "هَذا الثَّوْبُ"
+                    "ar": "هَذا الثَّوْبُ"
                 },
                 {
                     "tr": "kalındır.",
@@ -130,7 +130,7 @@ window.data = {
                 {
                     "tr": "Bu elbise",
                     "order": 1,
-                    "ar": "هَذا الثَّوْبُ"
+                    "ar": "هَذا الثَّوْبُ"
                 },
                 {
                     "tr": "incedir.",
@@ -261,7 +261,7 @@ window.data = {
                 {
                     "tr": "pembedir.",
                     "order": 2,
-                    "ar": "وَرْدِيَّةٌ."
+                    "ar": "وَرْدِيَّةٌ."
                 }
             ]
         },
@@ -275,7 +275,7 @@ window.data = {
                 {
                     "tr": "kahverengi bir eteklik.",
                     "order": 2,
-                    "ar": "بُنِّيَّةٌ."
+                    "ar": "بُنِّيَّةٌ."
                 }
             ]
         },
@@ -312,7 +312,7 @@ window.data = {
                 {
                     "tr": "Bu terlik",
                     "order": 1,
-                    "ar": "هَذا الشِّبْشِبُ"
+                    "ar": "هَذا الشِّبْشِبُ"
                 },
                 {
                     "tr": "kırmızıdır.",
@@ -389,7 +389,7 @@ window.data = {
                 {
                     "tr": "ne arzu edersiniz?",
                     "order": 2,
-                    "ar": "أَيُّ خِدْمَةٍ؟"
+                    "ar": "أَيُّ خِدْمَةٍ؟"
                 }
             ],
             "p2": [
@@ -415,7 +415,7 @@ window.data = {
                 {
                     "tr": "Hangi rengi",
                     "order": 1,
-                    "ar": "أَيَّ لَوْنٍ"
+                    "ar": "أَيَّ لَوْنٍ"
                 },
                 {
                     "tr": "istersiniz?",
@@ -427,7 +427,7 @@ window.data = {
                 {
                     "tr": "Pembe rengi",
                     "order": 2,
-                    "ar": "اللَّوْنَ الوَرْدِيَّ."
+                    "ar": "اللَّوْنَ الوَرْدِيَّ."
                 },
                 {
                     "tr": "İstiyorum.",
@@ -456,7 +456,7 @@ window.data = {
                 {
                     "tr": "yaz mevsimine",
                     "order": 5,
-                    "ar": "فَصْلَ الصَّيْفِ."
+                    "ar": "فَصْلَ الصَّيْفِ."
                 },
                 {
                     "tr": "yakışan.",
@@ -533,12 +533,12 @@ window.data = {
                 {
                     "tr": "hangi rengi",
                     "order": 3,
-                    "ar": "أَيَّ لَوْنٍ"
+                    "ar": "أَيَّ لَوْنٍ"
                 },
                 {
                     "tr": "tercih edersiniz?",
                     "order": 4,
-                    "ar": "تُفَضِّلينَ؟"
+                    "ar": "تُفَضِّلينَ؟"
                 }
             ],
             "p2": [
@@ -550,7 +550,7 @@ window.data = {
                 {
                     "tr": "Tercih ederim.",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 }
             ]
         },
@@ -559,7 +559,7 @@ window.data = {
                 {
                     "tr": "Buyurun",
                     "order": 1,
-                    "ar": "تَفَضَّلي"
+                    "ar": "تَفَضَّلي"
                 },
                 {
                     "tr": "gömleği",
@@ -569,7 +569,7 @@ window.data = {
                 {
                     "tr": "ve uzun etekliği.",
                     "order": 3,
-                    "ar": "وَالتَّنّورَةَ الطَّويلَةَ."
+                    "ar": "وَالتَّنّورَةَ الطَّويلَةَ."
                 }
             ],
             "p2": [
@@ -581,7 +581,7 @@ window.data = {
                 {
                     "tr": "görüşmek üzere.",
                     "order": 2,
-                    "ar": "إِلى اللِّقاءِ."
+                    "ar": "إِلى اللِّقاءِ."
                 }
             ]
         },
@@ -590,7 +590,7 @@ window.data = {
                 {
                     "tr": "etekliğin",
                     "order": 3,
-                    "ar": "التَّنّورَةِ؟"
+                    "ar": "التَّنّورَةِ؟"
                 },
                 {
                     "tr": "Rengi",
@@ -612,7 +612,7 @@ window.data = {
                 {
                     "tr": "pembedir.",
                     "order": 2,
-                    "ar": "وَرْدِيٌّ."
+                    "ar": "وَرْدِيٌّ."
                 }
             ]
         },
@@ -621,7 +621,7 @@ window.data = {
                 {
                     "tr": "Fatma",
                     "order": 2,
-                    "ar": "فاطِمَةُ"
+                    "ar": "فاطِمَة"
                 },
                 {
                     "tr": "İstiyor mu",
@@ -727,7 +727,7 @@ window.data = {
         },
         {
             "tr": "yazlık kıyafetler",
-            "ar": "مَلابِس صَيْفِيَّة"
+            "ar": "مَلابِس صَيْفِيَّة"
         },
         {
             "tr": "kemerler",
@@ -855,7 +855,7 @@ window.data = {
         },
         {
             "tr": "tercih ederim",
-            "ar": "أُفَضِّلُ"
+            "ar": "أُفَضِّلُ"
         },
         {
             "tr": "-e ihtiyacı var",

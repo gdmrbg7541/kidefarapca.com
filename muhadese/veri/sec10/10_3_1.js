@@ -1,7 +1,7 @@
-/* 10. sınıf SEÇMELİ ARAPÇA — 3. Ünite (الصِّحّة) 1. Ders: أَجْزاء الجِسْم
+/* 10. sınıf SEÇMELİ ARAPÇA — 3. Ünite (الصِّحّة) 1. Ders: أَجْزاء الجِسْم
    Kaynak: Ortaöğretim Seçmeli Arapça ders kitabı, basılı s.88-99.
    Dersin konusu: vücudun bölümleri ve görevleri, hastalık anlatımı,
-   عِنْدَ + zamir, لِأَنَّ / بِسَبَبِ / بِفَضْلِ bağlaçları, doktorda konuşma. */
+   عِنْدَ + zamir, لِأَنَّ / بِسَبَبِ / بِفَضْلِ bağlaçları, doktorda konuşma. */
 window.data = {
     sentence: [
         /* Ben boğazımda ağrı hissediyorum. (s.89) */
@@ -30,7 +30,7 @@ window.data = {
                 { tr: "Sen", order: 1, ar: "أَنْتَ" },
                 { tr: "ayağında", order: 4, ar: "في قَدَمِكَ." },
                 { tr: "ağrı", order: 3, ar: "بِأَلَمٍ" },
-                { tr: "hissediyorsun.", order: 2, ar: "تُحِسُّ" }
+                { tr: "hissediyorsun.", order: 2, ar: "تُحِسُّ" }
             ]
         },
 
@@ -58,7 +58,7 @@ window.data = {
                 { tr: "Onlar", order: 1, ar: "هُمْ" },
                 { tr: "hastaneye", order: 3, ar: "إِلى المُسْتَشْفى،" },
                 { tr: "gidiyorlar,", order: 2, ar: "يَذْهَبونَ" },
-                { tr: "çünkü", order: 4, ar: "لِأَنَّ" },
+                { tr: "çünkü", order: 4, ar: "لِأَنَّ" },
                 { tr: "nezleleri var.", order: 5, ar: "عِنْدَهُمْ نَزْلة." }
             ]
         },
@@ -66,11 +66,11 @@ window.data = {
         /* Onlar (hanımlar) eczaneye gidiyorlar, çünkü reçeteleri var. (s.91) */
         {
             words: [
-                { tr: "Onlar (hanımlar)", order: 1, ar: "هُنَّ" },
-                { tr: "eczaneye", order: 3, ar: "إِلى الصَّيْدَلِيّة،" },
+                { tr: "Onlar (hanımlar)", order: 1, ar: "هُنَّ" },
+                { tr: "eczaneye", order: 3, ar: "إِلى الصَّيْدَلِيّة،" },
                 { tr: "gidiyorlar,", order: 2, ar: "يَذْهَبْنَ" },
-                { tr: "çünkü", order: 4, ar: "لِأَنَّ" },
-                { tr: "reçeteleri var.", order: 5, ar: "عِنْدَهُنَّ وَصْفة طِبِّيّة." }
+                { tr: "çünkü", order: 4, ar: "لِأَنَّ" },
+                { tr: "reçeteleri var.", order: 5, ar: "عِنْدَهُنَّ وَصْفة طِبِّيّة." }
             ]
         },
 
@@ -86,7 +86,7 @@ window.data = {
         /* Doktor ağrı sebebiyle hastayı muayene ediyor. (s.92) */
         {
             words: [
-                { tr: "Doktor", order: 2, ar: "الطَّبيبُ" },
+                { tr: "Doktor", order: 2, ar: "الطَّبيبُ" },
                 { tr: "ağrı sebebiyle", order: 4, ar: "بِسَبَبِ الأَلَم." },
                 { tr: "hastayı", order: 3, ar: "المَريضَ" },
                 { tr: "muayene ediyor.", order: 1, ar: "يَفْحَصُ" }
@@ -96,9 +96,9 @@ window.data = {
         /* Hemşire hastayla ilgileniyor. (s.92) */
         {
             words: [
-                { tr: "Hemşire", order: 2, ar: "المُمَرِّضةُ" },
+                { tr: "Hemşire", order: 2, ar: "المُمَرِّضةُ" },
                 { tr: "hastayla", order: 3, ar: "بِالمَريضة." },
-                { tr: "ilgileniyor.", order: 1, ar: "تَهْتَمُّ" }
+                { tr: "ilgileniyor.", order: 1, ar: "تَهْتَمُّ" }
             ]
         },
 
@@ -114,7 +114,7 @@ window.data = {
         {
             words: [
                 { tr: "Burnumuz sayesinde", order: 2, ar: "بِفَضْلِ أَنْفِنا." },
-                { tr: "koklarız.", order: 1, ar: "نَشُمُّ" }
+                { tr: "koklarız.", order: 1, ar: "نَشُمُّ" }
             ]
         },
 
@@ -145,7 +145,7 @@ window.data = {
                 { tr: "gitmiyorsun?", order: 2, ar: "لا تَذْهَبُ" }
             ],
             p2: [
-                { tr: "Çünkü ben", order: 1, ar: "لِأَنَّني" },
+                { tr: "Çünkü ben", order: 1, ar: "لِأَنَّني" },
                 { tr: "boğazımda", order: 4, ar: "في حَلْقي." },
                 { tr: "ağrı", order: 3, ar: "بِأَلَمٍ" },
                 { tr: "hissediyorum.", order: 2, ar: "أَشْعُرُ" }
@@ -169,7 +169,7 @@ window.data = {
             p2: [
                 { tr: "Boğazımda", order: 3, ar: "في حَلْقي." },
                 { tr: "ağrı", order: 2, ar: "بِأَلَمٍ" },
-                { tr: "hissediyorum.", order: 1, ar: "أُحِسُّ" }
+                { tr: "hissediyorum.", order: 1, ar: "أُحِسُّ" }
             ]
         },
         {
@@ -185,7 +185,7 @@ window.data = {
         {
             p1: [
                 { tr: "Nezle olmuşsun.", order: 1, ar: "عِنْدَكَ نَزْلة." },
-                { tr: "Sağlığını", order: 3, ar: "الحِفاظُ عَلى صِحَّتِك." },
+                { tr: "Sağlığını", order: 3, ar: "الحِفاظُ عَلى صِحَّتِك." },
                 { tr: "korumalısın.", order: 2, ar: "يَجِبُ عَلَيْكَ" }
             ],
             p2: [
@@ -206,7 +206,7 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Hangi organla", order: 1, ar: "بِأَيِّ عُضْوٍ" },
+                { tr: "Hangi organla", order: 1, ar: "بِأَيِّ عُضْوٍ" },
                 { tr: "işitiriz?", order: 2, ar: "نَسْمَعُ؟" }
             ],
             p2: [
@@ -230,16 +230,16 @@ window.data.words = [
     { tr: "Öksürük", ar: "كُحّة" }, { tr: "Nezle", ar: "نَزْلة" },
     { tr: "Karın ağrısı, sancı", ar: "مَغْص" }, { tr: "Yüksek tansiyon", ar: "ضَغْط مُرْتَفِع" },
     { tr: "Hasta", ar: "مَريض" }, { tr: "Hastalık", ar: "مَرَض" },
-    { tr: "Doktor", ar: "الطَّبيب" }, { tr: "Hemşire", ar: "المُمَرِّضة" },
-    { tr: "Hastane", ar: "المُسْتَشْفى" }, { tr: "Eczane", ar: "الصَّيْدَلِيّة" },
+    { tr: "Doktor", ar: "الطَّبيب" }, { tr: "Hemşire", ar: "المُمَرِّضة" },
+    { tr: "Hastane", ar: "المُسْتَشْفى" }, { tr: "Eczane", ar: "الصَّيْدَلِيّة" },
     { tr: "İlaç, deva", ar: "دَواء" }, { tr: "İlaçlar", ar: "أَدْوِية" },
-    { tr: "Tıbbî reçete", ar: "وَصْفة طِبِّيّة" }, { tr: "Sağlık", ar: "صِحّة" },
+    { tr: "Tıbbî reçete", ar: "وَصْفة طِبِّيّة" }, { tr: "Sağlık", ar: "صِحّة" },
     { tr: "-i korumak", ar: "الحِفاظ عَلى" }, { tr: "Hissediyor", ar: "يَشْعُرُ" },
-    { tr: "-i hissediyor", ar: "يُحِسُّ بـ" }, { tr: "Muayene ediyor", ar: "يَفْحَصُ" },
-    { tr: "İlgileniyor", ar: "تَهْتَمُّ" }, { tr: "Görüyoruz", ar: "نَرى" },
-    { tr: "Kokluyoruz", ar: "نَشُمُّ" }, { tr: "Dokunuyoruz", ar: "نَلْمِسُ" },
+    { tr: "-i hissediyor", ar: "يُحِسُّ بـ" }, { tr: "Muayene ediyor", ar: "يَفْحَصُ" },
+    { tr: "İlgileniyor", ar: "تَهْتَمُّ" }, { tr: "Görüyoruz", ar: "نَرى" },
+    { tr: "Kokluyoruz", ar: "نَشُمُّ" }, { tr: "Dokunuyoruz", ar: "نَلْمِسُ" },
     { tr: "Tadına bakıyoruz", ar: "نَذوقُ" }, { tr: "Yürüyoruz", ar: "نَمْشي" },
-    { tr: "… sebebiyle", ar: "بِسَبَبِ" }, { tr: "Çünkü", ar: "لِأَنَّ" },
+    { tr: "… sebebiyle", ar: "بِسَبَبِ" }, { tr: "Çünkü", ar: "لِأَنَّ" },
     { tr: "… sayesinde", ar: "بِفَضْلِ" }, { tr: "Allah (cc) şifa versin.", ar: "شَفاكَ الله." },
     { tr: "İnşallah", ar: "إِنْ شاءَ الله" }
 ];

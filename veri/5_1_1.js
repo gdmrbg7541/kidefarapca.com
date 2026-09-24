@@ -1,4 +1,4 @@
-/* 5. sınıf — 5_1_1 (1. Ünite 1. Ders: Arap Harfleri ve Sesler | اَلْحُروفُ العَرَبِيَّة وَالصَّوائِت) */
+/* 5. sınıf — 5_1_1 (1. Ünite 1. Ders: Arap Harfleri ve Sesler | اَلحُروفُ العَرَبِيَّة وَالصَّوائِت) */
 /* Cümle & diyalog: MEB Arapça 5-8 Öğretim Programı hedef kelime/yapı bloklarına göre hazırlandı. */
 window.data = {
     "sentence": [
@@ -12,7 +12,7 @@ window.data = {
                 {
                     "tr": "ey Ahmed!",
                     "order": 2,
-                    "ar": "يا أَحْمَدُ!"
+                    "ar": "يا أَحْمَد!"
                 }
             ]
         },
@@ -26,7 +26,7 @@ window.data = {
                 {
                     "tr": "ey Halid!",
                     "order": 2,
-                    "ar": "يا خالِدُ!"
+                    "ar": "يا خالِد!"
                 }
             ]
         },
@@ -82,7 +82,7 @@ window.data = {
                 {
                     "tr": "ey öğretmenim.",
                     "order": 2,
-                    "ar": "يا مُعَلِّمي."
+                    "ar": "يا مُعَلِّمي."
                 }
             ]
         },
@@ -105,7 +105,7 @@ window.data = {
                 {
                     "tr": "Selam",
                     "order": 1,
-                    "ar": "اَلسَّلامُ"
+                    "ar": "اَلسَّلامُ"
                 },
                 {
                     "tr": "sözden öncedir.",
@@ -126,7 +126,7 @@ window.data = {
                 {
                     "tr": "ey Halid!",
                     "order": 2,
-                    "ar": "يا خالِدُ!"
+                    "ar": "يا خالِد!"
                 }
             ],
             "p2": [
@@ -138,7 +138,7 @@ window.data = {
                 {
                     "tr": "ey öğretmenim.",
                     "order": 2,
-                    "ar": "يا مُعَلِّمي."
+                    "ar": "يا مُعَلِّمي."
                 }
             ]
         },

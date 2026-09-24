@@ -47,7 +47,7 @@
             baslik: '6. sınıf verisi kitapla karşılaştırıldı',
             metin: '18 dersin tamamı ders kitabıyla satır satır karşılaştırıldı: ' +
                    'kelimelerin %90\'ı kitapta birebir çıktı, eksik kalan رَصيف ' +
-                   '(kaldırım), رِسالَة (mektup) ve مُوَظَّفَة (memur) 6. ünite ' +
+                   '(kaldırım), رِسالَة (mektup) ve مُوَظَّفَة (memur) 6. ünite ' +
                    'derslerine eklendi, bilgi yarışması yenilendi.'
         },
         {

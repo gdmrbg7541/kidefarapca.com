@@ -1,4 +1,4 @@
-/* 6. sınıf — 6_3_1 (3. Ünite 1. Ders: Organlar | اَلْأَعْضاء) */
+/* 6. sınıf — 6_3_1 (3. Ünite 1. Ders: Organlar | اَلأَعْضاء) */
 /* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 3. Ünite (جِسْمي), s. 104-117. */
 /* Kelimeler kitabın kendi kâmûsuyla (s.194-203) karşılaştırılarak yazıldı. */
 /* CÜMLELER HENÜZ GİRİLMEDİ — sentence ve dialog bilerek boştur. */
@@ -59,7 +59,7 @@ window.data = {
             "tr": "Dokunuyorum."
         },
         {
-            "ar": "أَشُمُّ.",
+            "ar": "أَشُمُّ.",
             "tr": "Kokluyorum."
         },
         {
@@ -95,7 +95,7 @@ window.data = {
             "tr": "Sırt"
         },
         {
-            "ar": "مُتَهَيِّج / مُتَهَيِّجَة",
+            "ar": "مُتَهَيِّج / مُتَهَيِّجَة",
             "tr": "Heyecanlı (erkek / kadın)"
         },
         {
@@ -107,11 +107,11 @@ window.data = {
             "tr": "Yorgun (erkek / kadın)"
         },
         {
-            "ar": "اَلْعَقْل",
+            "ar": "اَلعَقْل",
             "tr": "Akıl"
         },
         {
-            "ar": "اَلسَّليم",
+            "ar": "اَلسَّليم",
             "tr": "Sağlıklı"
         }
     ]

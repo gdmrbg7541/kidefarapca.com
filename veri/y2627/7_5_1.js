@@ -103,7 +103,7 @@ window.data = {
         {
             words: [
                 { tr: "Rükû ederim", order: 1, ar: "أَرْكَعُ" },
-                { tr: "ve \"Sübhâne rabbiye'l-azîm\"", order: 3, ar: "«سُبْحَانَ رَبِّيَ الْعَظِيمِ»." },
+                { tr: "ve \"Sübhâne rabbiye'l-azîm\"", order: 3, ar: "«سُبْحَانَ رَبِّيَ العَظِيمِ»." },
                 { tr: "derim.", order: 2, ar: "وأَقول:" },
             ]
         },

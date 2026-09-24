@@ -123,7 +123,7 @@
         { no: 1, ad: 'Bugün Ne Yaptım?', ar: 'ماذا فَعَلْتُ اليَوْم؟', etk: [
           oyunlar('7/unite_1_oyunlar/', [O.yaz, O.kelime, O.ses, O.evet, O.hafiza, O.zamir, O.saat]),
           uniteSonu('7/unitesonudeger_1/') ] },
-        { no: 2, ad: 'Alışveriş Zamanı', ar: 'وَقْت التَّسَوُّق', etk: [
+        { no: 2, ad: 'Alışveriş Zamanı', ar: 'وَقْت التَّسَوُّق', etk: [
           oyunlar('7/unite_2_oyunlar/', [O.yaz, O.kelime, O.evet, O.mukayese, O.pazar, O.hafiza]),
           uniteSonu('7/unitesonudeger_2/') ] },
         { no: 3, ad: 'Nereye Seyahat Ediyoruz?', ar: 'إِلى أَيْن نُسافِرُ؟', etk: [
@@ -184,7 +184,7 @@
           hafiza('10/10.2.1_hafizakarti/', 'Vücut, hastalıklar ve yiyecekler'),
           hafiza('10/10.2.2_hafizakarti/', 'Hobiler ve sporlar'),
           uniteSonu('10/unitesonudeger_2/', null, [D.bosluk, D.sirala, D.hafiza, D.avi, D.surukle, D.test]) ] },
-        { no: 3, ad: 'Seyahat Etmeyi Seviyorum', ar: 'أُحِبّ السِّياحَة', etk: [
+        { no: 3, ad: 'Seyahat Etmeyi Seviyorum', ar: 'أُحِبّ السِّياحَة', etk: [
           hafiza('10/10.3.1_hafizakarti/', 'Türkiye’de gezilecek yerler'),
           hafiza('10/10.3.2_hafizakarti/', 'Ulaşım ve yolculuk'),
           uniteSonu('10/unitesonudeger_3/', null, [D.bosluk, D.sirala, D.hafiza, D.avi, D.surukle, D.test]) ] },

@@ -203,7 +203,7 @@
     /* LEHÇEDE SARF KÖPRÜSÜ KAPALI (Geylani: "lehçede kalıplar tablosu
        bağlantısı ve kelime çeşitlerinin görünmesine gerek yok").
        Sarf motoru fusha kalıpları üzerine kurulu; lehçe biçimleri
-       (إِزَّيَّك, شْلونَك…) o kalıplara girmiyor. Lehçe seçiliyken kelimelere
+       (إِزَّيَّك, شْلونَك…) o kalıplara girmiyor. Lehçe seçiliyken kelimelere
        kök işareti konmuyor ve tür şeridi hiç görünmüyor. */
     function lehcedeMi() {
         return !!(window.KIDEF_LEHCE && !window.KIDEF_LEHCE.fushaMi());

@@ -106,12 +106,12 @@
                 { word: 'بيض', mean: ['Beyazladı', 'Beyazlıyor', 'Beyazla', 'İbyizaz', 'Mubyezz', '-'], derived: ["اِبْيَضَّ", "يَبْيَضُّ", "اِبْيَضِّلْ", "اِبْيِضَاضٌ", "مُبْيَضٌّ", "مُبْيَضٌّ"] }
             ],
             patterns: [
-                r => `<span class="bo-zaid">اِ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">َّ</span>`,
-                r => `<span class="bo-zaid">يَ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">ُّ</span>`,
-                r => `<span class="bo-zaid">اِ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">ِّلْ</span>`,
+                r => `<span class="bo-zaid">اِ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">َّ</span>`,
+                r => `<span class="bo-zaid">يَ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">ُّ</span>`,
+                r => `<span class="bo-zaid">اِ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">ِّلْ</span>`,
                 r => `<span class="bo-zaid">اِ</span>${r[0]}ْ${r[1]}ِ<span class="bo-zaid">ا</span>${r[2]}ٌ`,
-                r => `<span class="bo-zaid">مُ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">ٌّ</span>`,
-                r => `<span class="bo-zaid">مُ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">ٌّ</span>`
+                r => `<span class="bo-zaid">مُ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">ٌّ</span>`,
+                r => `<span class="bo-zaid">مُ</span>${r[0]}ْ${r[1]}َ${r[2]}<span class="bo-zaid">ٌّ</span>`
             ]
         },
         "Tefe'ul": {
@@ -301,9 +301,9 @@
         return sonHarekeTemizle(html);
     }
 
-    // ŞEDDE ÇÖZÜMÜ: yalnız işaretlerden oluşan zâid span'ları (ör. ّ / َّ / ٌّ)
+    // ŞEDDE ÇÖZÜMÜ: yalnız işaretlerden oluşan zâid span'ları (ör. ّ / َّ / ٌّ)
     // bitişmeyi bozmayan .bo-damga span'ına çevrilir (harf ayrılmaz, işaret
-    // damga animasyonuyla gelir). İşaretle BAŞLAYIP harf içerenlerde (ör. ِّلْ / ِي)
+    // damga animasyonuyla gelir). İşaretle BAŞLAYIP harf içerenlerde (ör. ِّلْ / ِي)
     // baştaki işaretler damgaya, kalan harfler normal zâide ayrılır.
     const YALNIZ_ISARET = /^[\u064B-\u0652\u0670]+$/;
     function zaidDamgaIsle(html) {

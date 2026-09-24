@@ -1,4 +1,4 @@
-/* 5. sınıf — 5_3_3 (3. Ünite 3. Ders: Sıfatlar | اَلصِّفات) */
+/* 5. sınıf — 5_3_3 (3. Ünite 3. Ders: Sıfatlar | اَلصِّفات) */
 /* Cümle & diyalog: MEB Arapça 5-8 Öğretim Programı hedef kelime/yapı bloklarına göre hazırlandı. */
 window.data = {
     "sentence": [
@@ -54,7 +54,7 @@ window.data = {
                 {
                     "tr": "benim küçük kardeşimdir.",
                     "order": 2,
-                    "ar": "أَخِي الصَّغيرُ."
+                    "ar": "أَخِي الصَّغيرُ."
                 }
             ]
         },
@@ -68,7 +68,7 @@ window.data = {
                 {
                     "tr": "benim küçük kız kardeşimdir.",
                     "order": 2,
-                    "ar": "أُخْتِي الصَّغيرَةُ."
+                    "ar": "أُخْتِي الصَّغيرَةُ."
                 }
             ]
         },
@@ -105,7 +105,7 @@ window.data = {
                 {
                     "tr": "Ev",
                     "order": 1,
-                    "ar": "اَلْبَيْتُ"
+                    "ar": "اَلبَيْتُ"
                 },
                 {
                     "tr": "büyüktür.",
@@ -119,7 +119,7 @@ window.data = {
                 {
                     "tr": "Okul",
                     "order": 1,
-                    "ar": "اَلْمَدْرَسَةُ"
+                    "ar": "اَلمَدْرَسَةُ"
                 },
                 {
                     "tr": "büyüktür.",
@@ -133,7 +133,7 @@ window.data = {
                 {
                     "tr": "Çanta",
                     "order": 1,
-                    "ar": "اَلْحَقيبَةُ"
+                    "ar": "اَلحَقيبَةُ"
                 },
                 {
                     "tr": "küçüktür.",
@@ -166,7 +166,7 @@ window.data = {
                 {
                     "tr": "ağabeyimi",
                     "order": 2,
-                    "ar": "أُحِبُّ"
+                    "ar": "أُحِبُّ"
                 },
                 {
                     "tr": "seviyorum.",
@@ -362,11 +362,11 @@ window.data = {
         },
         {
             "tr": "küçük kardeşim",
-            "ar": "أَخِي الصَّغير"
+            "ar": "أَخِي الصَّغير"
         },
         {
             "tr": "küçük kız kardeşim",
-            "ar": "أُخْتِي الصَّغيرَة"
+            "ar": "أُخْتِي الصَّغيرَة"
         },
         {
             "tr": "senin ağabeyin",
@@ -386,7 +386,7 @@ window.data = {
         },
         {
             "tr": "seviyorum",
-            "ar": "أُحِبُّ"
+            "ar": "أُحِبُّ"
         },
         {
             "tr": "ev",
@@ -418,7 +418,7 @@ window.data = {
         },
         {
             "tr": "aile önce gelir",
-            "ar": "اَلْعائِلَةُ أَوَّلًا"
+            "ar": "اَلعائِلَةُ أَوَّلًا"
         }
     ]
 };

@@ -114,7 +114,7 @@ window.data = {
                 {
                     "tr": "Süpürge",
                     "order": 1,
-                    "ar": "اَلْمِكْنَسَةُ"
+                    "ar": "اَلمِكْنَسَةُ"
                 },
                 {
                     "tr": "mutfaktadır.",
@@ -128,7 +128,7 @@ window.data = {
                 {
                     "tr": "Koltuk",
                     "order": 1,
-                    "ar": "اَلْأَريكَةُ"
+                    "ar": "اَلأَريكَةُ"
                 },
                 {
                     "tr": "oturma odasındadır.",
@@ -156,7 +156,7 @@ window.data = {
                 {
                     "tr": "Sandalye",
                     "order": 1,
-                    "ar": "اَلْكُرْسِيُّ"
+                    "ar": "اَلكُرْسِيُّ"
                 },
                 {
                     "tr": "masanın yanındadır.",
@@ -170,7 +170,7 @@ window.data = {
                 {
                     "tr": "Televizyon nerede?",
                     "order": 1,
-                    "ar": "أَيْنَ التِّلْفازُ؟"
+                    "ar": "أَيْن التِّلْفازُ؟"
                 }
             ]
         },
@@ -254,12 +254,12 @@ window.data = {
                 {
                     "tr": "Televizyon",
                     "order": 2,
-                    "ar": "أَيْنَ"
+                    "ar": "أَيْن"
                 },
                 {
                     "tr": "nerede?",
                     "order": 1,
-                    "ar": "التِّلْفازُ؟"
+                    "ar": "التِّلْفازُ؟"
                 }
             ],
             "p2": [
@@ -311,7 +311,7 @@ window.data = {
                 {
                     "tr": "Halı",
                     "order": 1,
-                    "ar": "هَلِ السَّجّادَةُ"
+                    "ar": "هَل السَّجّادَةُ"
                 },
                 {
                     "tr": "odada mıdır?",
@@ -393,7 +393,7 @@ window.data = {
         },
         {
             "tr": "nerede",
-            "ar": "أَيْنَ"
+            "ar": "أَيْن"
         },
         {
             "tr": "odada",
@@ -433,7 +433,7 @@ window.data = {
         },
         {
             "tr": "huzur evdedir",
-            "ar": "اَلسَّلامَةُ في المَنْزِلِ"
+            "ar": "اَلسَّلامَةُ في المَنْزِلِ"
         }
     ]
 };

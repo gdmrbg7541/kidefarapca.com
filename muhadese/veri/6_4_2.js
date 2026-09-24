@@ -1,4 +1,4 @@
-/* 6. sınıf — 6_4_2 (4. Ünite 2. Ders: Kışlık Kıyafetler | المَلابِسُ الشِّتَوِيَّة) */
+/* 6. sınıf — 6_4_2 (4. Ünite 2. Ders: Kışlık Kıyafetler | المَلابِسُ الشِّتَوِيَّة) */
 /* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 4. Ünite (المَلابِس), s. 107-116. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
@@ -18,7 +18,7 @@ window.data = {
                 {
                     "tr": "kahverengidir.",
                     "order": 3,
-                    "ar": "بُنِّيَّةٌ."
+                    "ar": "بُنِّيَّةٌ."
                 }
             ]
         },
@@ -27,7 +27,7 @@ window.data = {
                 {
                     "tr": "Ali'nin",
                     "order": 2,
-                    "ar": "عَلِيٍّ"
+                    "ar": "عَلِيّ"
                 },
                 {
                     "tr": "Kemeri",
@@ -65,7 +65,7 @@ window.data = {
                 {
                     "tr": "turuncudur.",
                     "order": 2,
-                    "ar": "بُرْتُقالِيٌّ."
+                    "ar": "بُرْتُقالِيٌّ."
                 }
             ]
         },
@@ -93,7 +93,7 @@ window.data = {
                 {
                     "tr": "kahverengidir.",
                     "order": 2,
-                    "ar": "بُنِّيٌّ."
+                    "ar": "بُنِّيٌّ."
                 }
             ]
         },
@@ -102,7 +102,7 @@ window.data = {
                 {
                     "tr": "Şapka",
                     "order": 1,
-                    "ar": "القُبَّعَةُ"
+                    "ar": "القُبَّعَةُ"
                 },
                 {
                     "tr": "güzeldir.",
@@ -135,7 +135,7 @@ window.data = {
                 {
                     "tr": "mordur.",
                     "order": 2,
-                    "ar": "بَنَفْسَجِيٌّ."
+                    "ar": "بَنَفْسَجِيٌّ."
                 }
             ]
         },
@@ -177,7 +177,7 @@ window.data = {
                 {
                     "tr": "kış mevsiminde",
                     "order": 3,
-                    "ar": "في فَصْلِ الشِّتاءِ."
+                    "ar": "في فَصْلِ الشِّتاءِ."
                 },
                 {
                     "tr": "Giyerim.",
@@ -196,7 +196,7 @@ window.data = {
                 {
                     "tr": "kış mevsiminde",
                     "order": 3,
-                    "ar": "في فَصْلِ الشِّتاءِ."
+                    "ar": "في فَصْلِ الشِّتاءِ."
                 },
                 {
                     "tr": "Giyerim.",
@@ -234,7 +234,7 @@ window.data = {
                 {
                     "tr": "mor",
                     "order": 3,
-                    "ar": "بَنَفْسَجِيٌّ."
+                    "ar": "بَنَفْسَجِيٌّ."
                 },
                 {
                     "tr": "eldiveni var.",
@@ -272,7 +272,7 @@ window.data = {
                 {
                     "tr": "yünlü",
                     "order": 3,
-                    "ar": "صوفِيٌّ."
+                    "ar": "صوفِيٌّ."
                 },
                 {
                     "tr": "kazağım var.",
@@ -315,7 +315,7 @@ window.data = {
                 {
                     "tr": "şapkam var,",
                     "order": 2,
-                    "ar": "قُبَّعَةٌ"
+                    "ar": "قُبَّعَةٌ"
                 },
                 {
                     "tr": "rengi",
@@ -354,7 +354,7 @@ window.data = {
                 {
                     "tr": "turuncudur.",
                     "order": 5,
-                    "ar": "بُرْتُقالِيٌّ."
+                    "ar": "بُرْتُقالِيٌّ."
                 }
             ]
         },
@@ -412,14 +412,14 @@ window.data = {
                 {
                     "tr": "ne arzu edersiniz?",
                     "order": 2,
-                    "ar": "أَيُّ خِدْمَةٍ؟"
+                    "ar": "أَيُّ خِدْمَةٍ؟"
                 }
             ],
             "p2": [
                 {
                     "tr": "Kışlık bir şapka",
                     "order": 2,
-                    "ar": "قُبَّعَةً شِتَوِيَّةً"
+                    "ar": "قُبَّعَةً شِتَوِيَّةً"
                 },
                 {
                     "tr": "lütfen",
@@ -438,7 +438,7 @@ window.data = {
                 {
                     "tr": "Hangi rengi",
                     "order": 1,
-                    "ar": "أَيَّ لَوْنٍ"
+                    "ar": "أَيَّ لَوْنٍ"
                 },
                 {
                     "tr": "istersiniz?",
@@ -450,7 +450,7 @@ window.data = {
                 {
                     "tr": "Kırmızı rengi",
                     "order": 2,
-                    "ar": "اللَّوْنَ الأَحْمَرَ،"
+                    "ar": "اللَّوْنَ الأَحْمَرَ،"
                 },
                 {
                     "tr": "İstiyorum,",
@@ -520,7 +520,7 @@ window.data = {
                 {
                     "tr": "Buyurun,",
                     "order": 1,
-                    "ar": "تَفَضَّلْ،"
+                    "ar": "تَفَضَّلْ،"
                 },
                 {
                     "tr": "bu çizme",
@@ -530,7 +530,7 @@ window.data = {
                 {
                     "tr": "nasıl?",
                     "order": 2,
-                    "ar": "كَيْفَ"
+                    "ar": "كَيْف"
                 }
             ],
             "p2": [
@@ -547,12 +547,12 @@ window.data = {
                 {
                     "tr": "ama",
                     "order": 3,
-                    "ar": "وَلَكِنَّها"
+                    "ar": "وَلَكِنَّها"
                 },
                 {
                     "tr": "çok.",
                     "order": 5,
-                    "ar": "جِدًّا."
+                    "ar": "جِدًّا."
                 },
                 {
                     "tr": "ağır",
@@ -571,7 +571,7 @@ window.data = {
                 {
                     "tr": "buyurun,",
                     "order": 2,
-                    "ar": "تَفَضَّلْ،"
+                    "ar": "تَفَضَّلْ،"
                 },
                 {
                     "tr": "mi?",
@@ -629,7 +629,7 @@ window.data = {
                 {
                     "tr": "Buyurun,",
                     "order": 1,
-                    "ar": "تَفَضَّلْ،"
+                    "ar": "تَفَضَّلْ،"
                 },
                 {
                     "tr": "işte",
@@ -653,7 +653,7 @@ window.data = {
                 {
                     "tr": "satıcıdan",
                     "order": 4,
-                    "ar": "مِنَ البائِعِ؟"
+                    "ar": "مِن البائِعِ؟"
                 },
                 {
                     "tr": "Ne",
@@ -670,7 +670,7 @@ window.data = {
                 {
                     "tr": "Şapka",
                     "order": 2,
-                    "ar": "قُبَّعَةً"
+                    "ar": "قُبَّعَةً"
                 },
                 {
                     "tr": "ve çizme",
@@ -689,7 +689,7 @@ window.data = {
                 {
                     "tr": "Şapkanın",
                     "order": 2,
-                    "ar": "القُبَّعَةِ؟"
+                    "ar": "القُبَّعَةِ؟"
                 },
                 {
                     "tr": "Rengi ne?",
@@ -781,7 +781,7 @@ window.data = {
         },
         {
             "tr": "şapka",
-            "ar": "قُبَّعَة"
+            "ar": "قُبَّعَة"
         },
         {
             "tr": "çanta",
@@ -793,7 +793,7 @@ window.data = {
         },
         {
             "tr": "kışlık kıyafetler",
-            "ar": "مَلابِس شِتَوِيَّة"
+            "ar": "مَلابِس شِتَوِيَّة"
         },
         {
             "tr": "siyah",

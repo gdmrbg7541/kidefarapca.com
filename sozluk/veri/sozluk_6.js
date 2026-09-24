@@ -19,7 +19,7 @@ window.SOZLUK_SINIF["6"] = {
     {
       "level": 1,
       "anahtar": "al",
-      "hint": "<h3 dir=\"ltr\">Seviye 1 · <bdi class=\"ip-ar\">ال</bdi> takısı ve yalın isim</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Vurgulanan kelimenin <b>sözlükte aranacak yalın hâlini</b> (harekesiz) yazın.</li><li>İsmin başındaki <b><bdi class=\"ip-ar\">ال</bdi></b> takısı atılır.</li><li>Zamir, işaret ismi ve özel adlar aranmaz: onlar <b>geçilir</b>.</li><li>Dişil sıfat eril hâliyle aranır: <bdi class=\"ip-ar\">واسِعَةٌ</bdi> → <bdi class=\"ip-ar\">واسع</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المَدْرَسَةِ</bdi> → <bdi class=\"ip-ar\"><b>مدرسة</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الطّالِبِ</bdi> → <bdi class=\"ip-ar\"><b>طالب</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الصَّفِّ</bdi> → <bdi class=\"ip-ar\"><b>صف</b></bdi> <i>(isim (ال takılı))</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المَسْجِدُ</bdi> → <bdi class=\"ip-ar\"><b>مسجد</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الحَرامُ</bdi> → <bdi class=\"ip-ar\"><b>حرام</b></bdi> <i>(isim (sıfat · ال takılı))</i></li><li><bdi class=\"ip-ar\">النّورِ</bdi> → <bdi class=\"ip-ar\"><b>نور</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">المَدينَةِ</bdi> → <bdi class=\"ip-ar\"><b>مدينة</b></bdi> <i>(isim (ال takılı · dişil))</i></li><li><bdi class=\"ip-ar\">البَيْتُ</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">المَدْرَسَةُ</bdi> → <bdi class=\"ip-ar\"><b>مدرسة</b></bdi> <i>(ال takılı · isim)</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 1 · <bdi class=\"ip-ar\">ال</bdi> takısı ve yalın isim</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Vurgulanan kelimenin <b>sözlükte aranacak yalın hâlini</b> (harekesiz) yazın.</li><li>İsmin başındaki <b><bdi class=\"ip-ar\">ال</bdi></b> takısı atılır.</li><li>Zamir, işaret ismi ve özel adlar aranmaz: onlar <b>geçilir</b>.</li><li>Dişil sıfat eril hâliyle aranır: <bdi class=\"ip-ar\">واسِعَةٌ</bdi> → <bdi class=\"ip-ar\">واسع</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المَدْرَسَةِ</bdi> → <bdi class=\"ip-ar\"><b>مدرسة</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الطّالِبِ</bdi> → <bdi class=\"ip-ar\"><b>طالب</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الصَّفِّ</bdi> → <bdi class=\"ip-ar\"><b>صف</b></bdi> <i>(isim (ال takılı))</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المَسْجِدُ</bdi> → <bdi class=\"ip-ar\"><b>مسجد</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الحَرامُ</bdi> → <bdi class=\"ip-ar\"><b>حرام</b></bdi> <i>(isim (sıfat · ال takılı))</i></li><li><bdi class=\"ip-ar\">النّورِ</bdi> → <bdi class=\"ip-ar\"><b>نور</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">المَدينَةِ</bdi> → <bdi class=\"ip-ar\"><b>مدينة</b></bdi> <i>(isim (ال takılı · dişil))</i></li><li><bdi class=\"ip-ar\">البَيْتُ</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">المَدْرَسَةُ</bdi> → <bdi class=\"ip-ar\"><b>مدرسة</b></bdi> <i>(ال takılı · isim)</i></li></ul>",
       "sentences": [
         {
           "arabic": [
@@ -29,7 +29,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "أَحْمَدَ",
+              "text": "أَحْمَد",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             }
@@ -86,7 +86,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "الصَّفِّ",
+              "text": "الصَّفِّ",
               "root": "صف",
               "category": "isim (ال takılı)"
             }
@@ -218,7 +218,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "التَّسَوُّقِ",
+              "text": "التَّسَوُّقِ",
               "root": "تسوق",
               "category": "isim (ال takılı)"
             },
@@ -228,7 +228,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (sıfat)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -275,7 +275,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "الثَّلّاجَةُ",
+              "text": "الثَّلّاجَةُ",
               "root": "ثلاجة",
               "category": "isim (ال takılı)"
             },
@@ -310,7 +310,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "işaret ismi"
             },
             {
-              "text": "مُعَلِّمَةٌ؟",
+              "text": "مُعَلِّمَةٌ؟",
               "root": "معلمة",
               "category": "isim (meslek · dişil)"
             }
@@ -350,12 +350,12 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru ismi"
             },
             {
-              "text": "أَحْمَدُ؟",
+              "text": "أَحْمَد؟",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             }
@@ -369,7 +369,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَحْمَدُ",
+              "text": "أَحْمَد",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
@@ -399,7 +399,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "işaret ismi"
             },
             {
-              "text": "زَيْنَبُ،",
+              "text": "زَيْنَب،",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
@@ -492,7 +492,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "işaret ismi"
             },
             {
-              "text": "عَلِيٌّ،",
+              "text": "عَلِيّ،",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
@@ -561,7 +561,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "الرِّياضَةِ",
+              "text": "الرِّياضَةِ",
               "root": "رياضة",
               "category": "isim (ال takılı)"
             }
@@ -599,7 +599,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "السَّلَّةِ",
+              "text": "السَّلَّةِ",
               "root": "سلة",
               "category": "isim (ال takılı)"
             }
@@ -670,7 +670,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "اللَّحْمُ",
+              "text": "اللَّحْمُ",
               "root": "لحم",
               "category": "isim (ال takılı)"
             },
@@ -680,7 +680,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (sıfat)"
             },
             {
-              "text": "جِدًّا.",
+              "text": "جِدًّا.",
               "root": "جدا",
               "category": "zarf"
             }
@@ -695,7 +695,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "السَّمَكُ",
+              "text": "السَّمَكُ",
               "root": "سمك",
               "category": "isim (ال takılı)"
             },
@@ -705,7 +705,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ism-i fâil)"
             },
             {
-              "text": "لِلصِّحَّةِ.",
+              "text": "لِلصِّحَّةِ.",
               "root": "صحة",
               "category": "harf-i cer + isim (ال takılı)"
             }
@@ -725,7 +725,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -745,7 +745,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "فاتِحٌ",
+              "text": "فاتِح",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
@@ -827,12 +827,12 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "الدَّجاجُ",
+              "text": "الدَّجاجُ",
               "root": "دجاج",
               "category": "isim (ال takılı)"
             },
             {
-              "text": "بِالأَرُزِّ.",
+              "text": "بِالأَرُزِّ.",
               "root": "أرز",
               "category": "harf-i cer + isim (ال takılı)"
             }
@@ -861,7 +861,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "nida harfi"
             },
             {
-              "text": "سَيِّدي.",
+              "text": "سَيِّدي.",
               "root": "سيد",
               "category": "isim + bitişik zamir (ben)"
             }
@@ -877,12 +877,12 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "مَكَّةُ",
+              "text": "مَكَّة",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "المُكَرَّمَةِ",
+              "text": "المُكَرَّمَةِ",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -892,7 +892,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "السُّعودِيَّةِ",
+              "text": "السُّعودِيَّةِ",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -907,7 +907,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (dişil)"
             },
             {
-              "text": "مُقَدَّسَةٌ.",
+              "text": "مُقَدَّسَةٌ.",
               "root": "مقدس",
               "category": "isim (sıfat · dişil)"
             }
@@ -942,12 +942,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "مَكَّةَ",
+              "text": "مَكَّة",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "المُكَرَّمَةِ",
+              "text": "المُكَرَّمَةِ",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -957,7 +957,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "atıf harfi + zamir"
             },
             {
-              "text": "مُقَدَّسٌ",
+              "text": "مُقَدَّسٌ",
               "root": "مقدس",
               "category": "isim (sıfat)"
             },
@@ -998,7 +998,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "مُهِمٌّ",
+              "text": "مُهِمٌّ",
               "root": "مهم",
               "category": "isim (sıfat)"
             },
@@ -1008,12 +1008,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "مَكَّةَ",
+              "text": "مَكَّة",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "المُكَرَّمَةِ.",
+              "text": "المُكَرَّمَةِ.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -1053,7 +1053,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "مُهِمٌّ",
+              "text": "مُهِمٌّ",
               "root": "مهم",
               "category": "isim (sıfat)"
             },
@@ -1063,12 +1063,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "مَكَّةَ",
+              "text": "مَكَّة",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "المُكَرَّمَةِ.",
+              "text": "المُكَرَّمَةِ.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -1109,12 +1109,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "مَكَّةَ",
+              "text": "مَكَّة",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "المُكَرَّمَةِ",
+              "text": "المُكَرَّمَةِ",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -1134,7 +1134,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةِ؟",
+              "text": "المُنَوَّرَةِ؟",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -1162,7 +1162,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةُ",
+              "text": "المُنَوَّرَةُ",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -1177,7 +1177,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (dişil)"
             },
             {
-              "text": "مُقَدَّسَةٌ.",
+              "text": "مُقَدَّسَةٌ.",
               "root": "مقدس",
               "category": "isim (sıfat · dişil)"
             }
@@ -1215,7 +1215,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةِ.",
+              "text": "المُنَوَّرَةِ.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -1233,7 +1233,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru ismi"
             },
@@ -1269,7 +1269,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (sıfat)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -1301,7 +1301,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (sıfat · dişil)"
             },
             {
-              "text": "عَنِ",
+              "text": "عَنْ",
               "root": "عن",
               "category": "harf-i cer"
             },
@@ -1328,7 +1328,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةُ",
+              "text": "المُنَوَّرَةُ",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -1343,7 +1343,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "أَنْقَرَةَ.",
+              "text": "أَنْقَرَة.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -1361,7 +1361,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَنْقَرَةُ",
+              "text": "أَنْقَرَة",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -1427,7 +1427,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (sıfat)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -1474,7 +1474,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةِ؟",
+              "text": "المُنَوَّرَةِ؟",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -1498,7 +1498,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı)"
             },
             {
-              "text": "القُدْسِيُّ",
+              "text": "القُدْسِيُّ",
               "root": "قدسي",
               "category": "isim (sıfat · ال takılı)"
             },
@@ -1508,12 +1508,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "القُدْسِ",
+              "text": "القُدْس",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "الشَّريفِ.",
+              "text": "الشَّريفِ.",
               "root": "شريف",
               "category": "isim (sıfat · ال takılı)"
             }
@@ -1583,7 +1583,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "الرَّجُلُ",
+              "text": "الرَّجُلُ",
               "root": "رجل",
               "category": "isim (ال takılı)"
             },
@@ -1609,7 +1609,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "الشَّجَرَةُ",
+              "text": "الشَّجَرَةُ",
               "root": "شجرة",
               "category": "isim (ال takılı · dişil)"
             },
@@ -1635,7 +1635,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "السَّفينَةُ",
+              "text": "السَّفينَةُ",
               "root": "سفينة",
               "category": "isim (ال takılı · dişil)"
             },
@@ -1693,7 +1693,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "السَّيّارَةُ",
+              "text": "السَّيّارَةُ",
               "root": "سيارة",
               "category": "ال takılı · isim"
             },
@@ -1778,12 +1778,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "işaret/mevsul ismi"
             },
             {
-              "text": "الرَّجُلُ",
+              "text": "الرَّجُلُ",
               "root": "رجل",
               "category": "isim (ال takılı)"
             },
             {
-              "text": "شُرْطِيٌّ.",
+              "text": "شُرْطِيٌّ.",
               "root": "شرطي",
               "category": "isim (meslek)"
             }
@@ -1830,12 +1830,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "السَّفينَةِ",
+              "text": "السَّفينَةِ",
               "root": "سفينة",
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "بُنِّيٌّ.",
+              "text": "بُنِّيٌّ.",
               "root": "بني",
               "category": "isim (sıfat · renk)"
             }
@@ -1897,7 +1897,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الصَّيْفِ.",
+              "text": "الصَّيْفِ.",
               "root": "صيف",
               "category": "isim (ال takılı)"
             }
@@ -1935,7 +1935,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zarf (zaman)"
             },
             {
-              "text": "السَّيْرِ",
+              "text": "السَّيْرِ",
               "root": "سير",
               "category": "isim (ال takılı · mastar)"
             },
@@ -1961,7 +1961,7 @@ window.SOZLUK_SINIF["6"] = {
     {
       "level": 2,
       "anahtar": "zamir",
-      "hint": "<h3 dir=\"ltr\">Seviye 2 · Bitişik zamir, sayı ve çoğul</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyenin kuralları geçerlidir.</li><li>Kelimenin sonundaki <b>bitişik zamir</b> (<bdi class=\"ip-ar\">ـي، ـكَ، ـكِ، ـهُ، ـها، ـنا</bdi>) atılır.</li><li>Harf-i cer bir <b>zamire</b> bitişmişse birlikte aranır: <bdi class=\"ip-ar\">بِكِ</bdi> → <bdi class=\"ip-ar\">بك</bdi>.</li><li><b>İkil ve çoğul</b> tekile döner: <bdi class=\"ip-ar\">أَقْلامٍ</bdi> → <bdi class=\"ip-ar\">قلم</bdi>، <bdi class=\"ip-ar\">كِتابانِ</bdi> → <bdi class=\"ip-ar\">كتاب</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">اسْمُهُ؟</bdi> → <bdi class=\"ip-ar\"><b>اسم</b></bdi> <i>(isim + bitişik zamir (o))</i></li><li><bdi class=\"ip-ar\">كِتابي</bdi> → <bdi class=\"ip-ar\"><b>كتاب</b></bdi> <i>(isim + bitişik zamir (ben))</i></li><li><bdi class=\"ip-ar\">بَيْتُنا</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim + bitişik zamir (biz))</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المُسْلِمينَ</bdi> → <bdi class=\"ip-ar\"><b>مسلم</b></bdi> <i>(isim (düzenli çoğul · ال takılı))</i></li><li><bdi class=\"ip-ar\">جِبالٌ.</bdi> → <bdi class=\"ip-ar\"><b>جبل</b></bdi> <i>(isim (kırık çoğul))</i></li><li><bdi class=\"ip-ar\">مَساجِدُ.</bdi> → <bdi class=\"ip-ar\"><b>مسجد</b></bdi> <i>(isim (kırık çoğul))</i></li><li><bdi class=\"ip-ar\">مُسْلِماتٌ.</bdi> → <bdi class=\"ip-ar\"><b>مسلمة</b></bdi> <i>(isim (dişil çoğul))</i></li><li><bdi class=\"ip-ar\">الأَماكِنُ</bdi> → <bdi class=\"ip-ar\"><b>مكان</b></bdi> <i>(isim (kırık çoğul · ال takılı))</i></li><li><bdi class=\"ip-ar\">التَّذاكِرِ</bdi> → <bdi class=\"ip-ar\"><b>تذكرة</b></bdi> <i>(isim (kırık çoğul · ال takılı))</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 2 · Bitişik zamir, sayı ve çoğul</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyenin kuralları geçerlidir.</li><li>Kelimenin sonundaki <b>bitişik zamir</b> (<bdi class=\"ip-ar\">ـي، ـكَ، ـكِ، ـهُ، ـها، ـنا</bdi>) atılır.</li><li>Harf-i cer bir <b>zamire</b> bitişmişse birlikte aranır: <bdi class=\"ip-ar\">بِكِ</bdi> → <bdi class=\"ip-ar\">بك</bdi>.</li><li><b>İkil ve çoğul</b> tekile döner: <bdi class=\"ip-ar\">أَقْلامٍ</bdi> → <bdi class=\"ip-ar\">قلم</bdi>، <bdi class=\"ip-ar\">كِتابانِ</bdi> → <bdi class=\"ip-ar\">كتاب</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">اسْمُهُ؟</bdi> → <bdi class=\"ip-ar\"><b>اسم</b></bdi> <i>(isim + bitişik zamir (o))</i></li><li><bdi class=\"ip-ar\">كِتابي</bdi> → <bdi class=\"ip-ar\"><b>كتاب</b></bdi> <i>(isim + bitişik zamir (ben))</i></li><li><bdi class=\"ip-ar\">بَيْتُنا</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim + bitişik zamir (biz))</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المُسْلِمينَ</bdi> → <bdi class=\"ip-ar\"><b>مسلم</b></bdi> <i>(isim (düzenli çoğul · ال takılı))</i></li><li><bdi class=\"ip-ar\">جِبالٌ.</bdi> → <bdi class=\"ip-ar\"><b>جبل</b></bdi> <i>(isim (kırık çoğul))</i></li><li><bdi class=\"ip-ar\">مَساجِدُ.</bdi> → <bdi class=\"ip-ar\"><b>مسجد</b></bdi> <i>(isim (kırık çoğul))</i></li><li><bdi class=\"ip-ar\">مُسْلِماتٌ.</bdi> → <bdi class=\"ip-ar\"><b>مسلمة</b></bdi> <i>(isim (dişil çoğul))</i></li><li><bdi class=\"ip-ar\">الأَماكِنُ</bdi> → <bdi class=\"ip-ar\"><b>مكان</b></bdi> <i>(isim (kırık çoğul · ال takılı))</i></li><li><bdi class=\"ip-ar\">التَّذاكِرِ</bdi> → <bdi class=\"ip-ar\"><b>تذكرة</b></bdi> <i>(isim (kırık çoğul · ال takılı))</i></li></ul>",
       "sentences": [
         {
           "arabic": [
@@ -1990,7 +1990,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim + bitişik zamir (o)"
             },
             {
-              "text": "أَحْمَدُ.",
+              "text": "أَحْمَد.",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             }
@@ -2028,7 +2028,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim + bitişik zamir (o · dişil)"
             },
             {
-              "text": "زَيْنَبُ.",
+              "text": "زَيْنَب.",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             }
@@ -2066,7 +2066,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim + bitişik zamir (ben)"
             },
             {
-              "text": "عَلِيٌّ.",
+              "text": "عَلِيّ.",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             }
@@ -2291,7 +2291,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zarf (birliktelik)"
             },
             {
-              "text": "الطَّبيبِ.",
+              "text": "الطَّبيبِ.",
               "root": "طبيب",
               "category": "isim (ال takılı)"
             }
@@ -2312,12 +2312,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zamir"
             },
             {
-              "text": "مُعَلِّمُ",
+              "text": "مُعَلِّمُ",
               "root": "معلم",
               "category": "isim (meslek)"
             },
             {
-              "text": "عائِشَةَ.",
+              "text": "عائِشَة.",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             }
@@ -2332,7 +2332,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "عائِشَةُ",
+              "text": "عائِشَة",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
@@ -2610,7 +2610,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zarf + bitişik zamir (ben)"
             },
             {
-              "text": "سِتُّ",
+              "text": "سِتُّ",
               "root": "ست",
               "category": "isim (sayı · dişil)"
             },
@@ -2748,7 +2748,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zarf + bitişik zamir (ben)"
             },
             {
-              "text": "سِتَّةُ",
+              "text": "سِتَّةُ",
               "root": "ستة",
               "category": "isim (sayı)"
             },
@@ -2823,7 +2823,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "işaret ismi"
             },
             {
-              "text": "الطَّعامُ",
+              "text": "الطَّعامُ",
               "root": "طعام",
               "category": "isim (ال takılı)"
             },
@@ -2833,7 +2833,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (sıfat)"
             },
             {
-              "text": "جِدًّا.",
+              "text": "جِدًّا.",
               "root": "جدا",
               "category": "zarf"
             }
@@ -2849,7 +2849,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "تَفَضَّلْ،",
+              "text": "تَفَضَّلْ،",
               "root": "تفضل",
               "category": "fiil (emir · mezid)"
             },
@@ -2864,7 +2864,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ism-i fâil · dişil)"
             },
             {
-              "text": "الطَّعامِ.",
+              "text": "الطَّعامِ.",
               "root": "طعام",
               "category": "isim (ال takılı)"
             }
@@ -2953,7 +2953,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "الشَّريفَةُ",
+              "text": "الشَّريفَةُ",
               "root": "شريف",
               "category": "isim (sıfat · ال takılı · dişil)"
             },
@@ -3116,7 +3116,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَوَّلُ",
+              "text": "أَوَّلُ",
               "root": "أول",
               "category": "isim (sıra sayı)"
             },
@@ -3171,12 +3171,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةُ",
+              "text": "المُنَوَّرَةُ",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "أَوَّلُ",
+              "text": "أَوَّلُ",
               "root": "أول",
               "category": "isim (sıra sayı)"
             },
@@ -3204,7 +3204,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَوَّلُ",
+              "text": "أَوَّلُ",
               "root": "أول",
               "category": "isim (sıra sayı)"
             },
@@ -3270,7 +3270,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zamir"
             },
             {
-              "text": "أَوَّلُ",
+              "text": "أَوَّلُ",
               "root": "أول",
               "category": "isim (sıra sayı)"
             },
@@ -3320,7 +3320,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (sıfat)"
             },
             {
-              "text": "عَنِ",
+              "text": "عَنْ",
               "root": "عن",
               "category": "harf-i cer"
             },
@@ -3352,7 +3352,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (sıfat · dişil)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -3427,7 +3427,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (kırık çoğul · ال takılı)"
             },
             {
-              "text": "المُقَدَّسَةُ",
+              "text": "المُقَدَّسَةُ",
               "root": "مقدس",
               "category": "isim (sıfat · ال takılı · dişil)"
             },
@@ -3442,7 +3442,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةِ؟",
+              "text": "المُنَوَّرَةِ؟",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -3477,7 +3477,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "القُدْسِ.",
+              "text": "القُدْس.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -3494,7 +3494,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَوَّلُ",
+              "text": "أَوَّلُ",
               "root": "أول",
               "category": "isim (sıra sayı)"
             },
@@ -3559,7 +3559,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı)"
             },
             {
-              "text": "القُدْسِيِّ",
+              "text": "القُدْسِيِّ",
               "root": "قدسي",
               "category": "isim (sıfat · ال takılı)"
             },
@@ -3584,17 +3584,17 @@ window.SOZLUK_SINIF["6"] = {
               "category": "atıf harfi + isim (ال takılı)"
             },
             {
-              "text": "القِبْلِيُّ",
+              "text": "القِبْلِيُّ",
               "root": "قبلي",
               "category": "isim (sıfat · ال takılı)"
             },
             {
-              "text": "وَقُبَّةُ",
+              "text": "وَقُبَّةُ",
               "root": "قبة",
               "category": "atıf harfi + isim (dişil)"
             },
             {
-              "text": "الصَّخْرَةِ",
+              "text": "الصَّخْرَةِ",
               "root": "صخرة",
               "category": "isim (ال takılı · dişil)"
             },
@@ -3604,7 +3604,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "atıf harfi + isim (ال takılı)"
             },
             {
-              "text": "المُعَلَّقُ.",
+              "text": "المُعَلَّقُ.",
               "root": "معلق",
               "category": "isim (ال takılı)"
             }
@@ -3645,12 +3645,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zarf"
             },
             {
-              "text": "قُبَّةِ",
+              "text": "قُبَّةِ",
               "root": "قبة",
               "category": "isim (dişil)"
             },
             {
-              "text": "الصَّخْرَةِ.",
+              "text": "الصَّخْرَةِ.",
               "root": "صخرة",
               "category": "isim (ال takılı · dişil)"
             }
@@ -3668,12 +3668,12 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "قُبَّةُ",
+              "text": "قُبَّةُ",
               "root": "قبة",
               "category": "isim (dişil)"
             },
             {
-              "text": "الصَّخْرَةِ",
+              "text": "الصَّخْرَةِ",
               "root": "صخرة",
               "category": "isim (ال takılı · dişil)"
             },
@@ -3711,7 +3711,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (dişil)"
             },
             {
-              "text": "التَّذاكِرِ",
+              "text": "التَّذاكِرِ",
               "root": "تذكرة",
               "category": "isim (kırık çoğul · ال takılı)"
             },
@@ -3721,7 +3721,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (sıfat · dişil)"
             },
             {
-              "text": "جِدًّا.",
+              "text": "جِدًّا.",
               "root": "جدا",
               "category": "zarf"
             }
@@ -3932,7 +3932,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "السَّيّارَةِ؟",
+              "text": "السَّيّارَةِ؟",
               "root": "سيارة",
               "category": "ال takılı · isim"
             },
@@ -3970,7 +3970,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "الخَطِّ؟",
+              "text": "الخَطِّ؟",
               "root": "خط",
               "category": "isim (ال takılı)"
             },
@@ -4038,7 +4038,7 @@ window.SOZLUK_SINIF["6"] = {
     {
       "level": 3,
       "anahtar": "fiil",
-      "hint": "<h3 dir=\"ltr\">Seviye 3 · Fiiller: muzariden maziye</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin kuralları geçerlidir.</li><li>Fiil, sözlükte <b>mazi</b> (geçmiş zaman) biçimiyle aranır: <bdi class=\"ip-ar\">نَلْعَبُ</bdi> → <bdi class=\"ip-ar\">لعب</bdi>.</li><li>Şahıs ekleri atılır: <bdi class=\"ip-ar\">غَسَلْتُ، غَسَلْتَ، غَسَلَتْ</bdi> → <bdi class=\"ip-ar\">غسل</bdi>.</li><li>Fiile bitişen <b>mef'ûl zamiri</b> (<bdi class=\"ip-ar\">ـهُ، ـها</bdi>) atılır: <bdi class=\"ip-ar\">قَبَّلَتْهُ</bdi> → <bdi class=\"ip-ar\">قبل</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">نَلْعَبُ</bdi> → <bdi class=\"ip-ar\"><b>لعب</b></bdi> <i>(fiil (muzari · mütekellim))</i></li><li><bdi class=\"ip-ar\">تَذْهَبُ</bdi> → <bdi class=\"ip-ar\"><b>ذهب</b></bdi> <i>(fiil (muzari · muhatap))</i></li><li><bdi class=\"ip-ar\">تَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\"><b>استيقظ</b></bdi> <i>(fiil (muzari · mezid · muhatap))</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">سَأَذْهَبُ</bdi> → <bdi class=\"ip-ar\"><b>ذهب</b></bdi> <i>(fiil (muzari · istikbal · mütekellim))</i></li><li><bdi class=\"ip-ar\">سَأَرْجِعُ</bdi> → <bdi class=\"ip-ar\"><b>رجع</b></bdi> <i>(fiil (muzari · istikbal · mütekellim))</i></li><li><bdi class=\"ip-ar\">تَعْرِفُ</bdi> → <bdi class=\"ip-ar\"><b>عرف</b></bdi> <i>(fiil (muzari · muhatap))</i></li><li><bdi class=\"ip-ar\">فَتَحَ</bdi> → <bdi class=\"ip-ar\"><b>فتح</b></bdi> <i>(fiil (mazi))</i></li><li><bdi class=\"ip-ar\">اِرْكَبِ</bdi> → <bdi class=\"ip-ar\"><b>ركب</b></bdi> <i>(fiil (emir))</i></li><li><bdi class=\"ip-ar\">وَانْزِلْ</bdi> → <bdi class=\"ip-ar\"><b>نزل</b></bdi> <i>(atıf harfi + fiil (emir))</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 3 · Fiiller: muzariden maziye</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin kuralları geçerlidir.</li><li>Fiil, sözlükte <b>mazi</b> (geçmiş zaman) biçimiyle aranır: <bdi class=\"ip-ar\">نَلْعَبُ</bdi> → <bdi class=\"ip-ar\">لعب</bdi>.</li><li>Şahıs ekleri atılır: <bdi class=\"ip-ar\">غَسَلْتُ، غَسَلْتَ، غَسَلَتْ</bdi> → <bdi class=\"ip-ar\">غسل</bdi>.</li><li>Fiile bitişen <b>mef'ûl zamiri</b> (<bdi class=\"ip-ar\">ـهُ، ـها</bdi>) atılır: <bdi class=\"ip-ar\">قَبَّلَتْهُ</bdi> → <bdi class=\"ip-ar\">قبل</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">نَلْعَبُ</bdi> → <bdi class=\"ip-ar\"><b>لعب</b></bdi> <i>(fiil (muzari · mütekellim))</i></li><li><bdi class=\"ip-ar\">تَذْهَبُ</bdi> → <bdi class=\"ip-ar\"><b>ذهب</b></bdi> <i>(fiil (muzari · muhatap))</i></li><li><bdi class=\"ip-ar\">تَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\"><b>استيقظ</b></bdi> <i>(fiil (muzari · mezid · muhatap))</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">سَأَذْهَبُ</bdi> → <bdi class=\"ip-ar\"><b>ذهب</b></bdi> <i>(fiil (muzari · istikbal · mütekellim))</i></li><li><bdi class=\"ip-ar\">سَأَرْجِعُ</bdi> → <bdi class=\"ip-ar\"><b>رجع</b></bdi> <i>(fiil (muzari · istikbal · mütekellim))</i></li><li><bdi class=\"ip-ar\">تَعْرِفُ</bdi> → <bdi class=\"ip-ar\"><b>عرف</b></bdi> <i>(fiil (muzari · muhatap))</i></li><li><bdi class=\"ip-ar\">فَتَحَ</bdi> → <bdi class=\"ip-ar\"><b>فتح</b></bdi> <i>(fiil (mazi))</i></li><li><bdi class=\"ip-ar\">اِرْكَبِ</bdi> → <bdi class=\"ip-ar\"><b>ركب</b></bdi> <i>(fiil (emir))</i></li><li><bdi class=\"ip-ar\">وَانْزِلْ</bdi> → <bdi class=\"ip-ar\"><b>نزل</b></bdi> <i>(atıf harfi + fiil (emir))</i></li></ul>",
       "sentences": [
         {
           "arabic": [
@@ -4058,7 +4058,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (özel)"
             },
             {
-              "text": "مُبَكِّرًا.",
+              "text": "مُبَكِّرًا.",
               "root": "مبكرا",
               "category": "zarf"
             }
@@ -4151,7 +4151,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (özel)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -4215,12 +4215,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · mezid · dişil)"
             },
             {
-              "text": "عائِشَةُ",
+              "text": "عائِشَة",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
             {
-              "text": "مُبَكِّرَةً.",
+              "text": "مُبَكِّرَةً.",
               "root": "مبكرة",
               "category": "zarf (dişil)"
             }
@@ -4278,7 +4278,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · dişil)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -4545,7 +4545,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · muhatap)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -4609,12 +4609,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · mezid · dişil)"
             },
             {
-              "text": "الأُمُّ",
+              "text": "الأُمُّ",
               "root": "أم",
               "category": "isim (ال takılı)"
             },
             {
-              "text": "مُبَكِّرَةً.",
+              "text": "مُبَكِّرَةً.",
               "root": "مبكرة",
               "category": "zarf (dişil)"
             }
@@ -4639,7 +4639,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · mezid)"
             },
             {
-              "text": "سُلَيْمانُ؟",
+              "text": "سُلَيْمان؟",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             }
@@ -4659,12 +4659,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · mezid)"
             },
             {
-              "text": "سُلَيْمانُ",
+              "text": "سُلَيْمان",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
             {
-              "text": "مُبَكِّرًا.",
+              "text": "مُبَكِّرًا.",
               "root": "مبكرا",
               "category": "zarf"
             }
@@ -4710,7 +4710,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "قَبَّلَتْهُ",
+              "text": "قَبَّلَتْهُ",
               "root": "قبل",
               "category": "fiil (mazi · mezid · dişil) + mef'ûl zamiri"
             },
@@ -4840,7 +4840,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru ismi"
             },
@@ -4912,7 +4912,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الشِّتاءِ؟",
+              "text": "الشِّتاءِ؟",
               "root": "شتاء",
               "category": "isim (ال takılı)"
             }
@@ -4938,7 +4938,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · mezid · mütekellim)"
             },
             {
-              "text": "مُبَكِّرًا.",
+              "text": "مُبَكِّرًا.",
               "root": "مبكرا",
               "category": "zarf"
             }
@@ -4978,7 +4978,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "işaret ismi"
             },
             {
-              "text": "الشَّهْرَ؟",
+              "text": "الشَّهْرَ؟",
               "root": "شهر",
               "category": "isim (ال takılı)"
             }
@@ -5043,7 +5043,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · mezid · ecvef · muhatap)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -5125,12 +5125,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · mehmuz · mütekellim)"
             },
             {
-              "text": "الدَّجاجَ",
+              "text": "الدَّجاجَ",
               "root": "دجاج",
               "category": "isim (ال takılı)"
             },
             {
-              "text": "وَالأَرُزَّ.",
+              "text": "وَالأَرُزَّ.",
               "root": "أرز",
               "category": "atıf harfi + isim (ال takılı)"
             }
@@ -5292,7 +5292,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi)"
             },
             {
-              "text": "أَحْمَدُ",
+              "text": "أَحْمَد",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
@@ -5329,7 +5329,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi)"
             },
             {
-              "text": "أَحْمَدُ",
+              "text": "أَحْمَد",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
@@ -5361,7 +5361,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · mezid)"
             },
             {
-              "text": "يوسُفُ",
+              "text": "يوسُف",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
@@ -5403,17 +5403,17 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · mütekellim)"
             },
             {
-              "text": "الدَّجاجَ",
+              "text": "الدَّجاجَ",
               "root": "دجاج",
               "category": "isim (ال takılı)"
             },
             {
-              "text": "المَشْوِيَّ",
+              "text": "المَشْوِيَّ",
               "root": "مشوي",
               "category": "isim (sıfat · ال takılı)"
             },
             {
-              "text": "وَالسَّلَطَةَ.",
+              "text": "وَالسَّلَطَةَ.",
               "root": "سلطة",
               "category": "atıf harfi + isim (ال takılı · dişil)"
             }
@@ -5440,7 +5440,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "السُّعودِيَّةِ.",
+              "text": "السُّعودِيَّةِ.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -5461,12 +5461,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · istikbal · mütekellim)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
             {
-              "text": "السُّعودِيَّةِ.",
+              "text": "السُّعودِيَّةِ.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -5492,7 +5492,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · muhatap)"
             },
             {
-              "text": "عَنِ",
+              "text": "عَنْ",
               "root": "عن",
               "category": "harf-i cer"
             },
@@ -5502,7 +5502,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (kırık çoğul · ال takılı)"
             },
             {
-              "text": "المُهِمَّةِ",
+              "text": "المُهِمَّةِ",
               "root": "مهم",
               "category": "isim (sıfat · ال takılı · dişil)"
             },
@@ -5512,12 +5512,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "القُدْسِ",
+              "text": "القُدْس",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "الشَّريفِ؟",
+              "text": "الشَّريفِ؟",
               "root": "شريف",
               "category": "isim (sıfat · ال takılı)"
             }
@@ -5548,12 +5548,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi)"
             },
             {
-              "text": "القُدْسَ",
+              "text": "القُدْس",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "الشَّريفَ؟",
+              "text": "الشَّريفَ؟",
               "root": "شريف",
               "category": "isim (sıfat · ال takılı)"
             }
@@ -5575,7 +5575,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (emir · cemi)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -5654,7 +5654,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "المَحَطَّةِ",
+              "text": "المَحَطَّةِ",
               "root": "محطة",
               "category": "isim (ال takılı · dişil)"
             },
@@ -5683,7 +5683,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (emir)"
             },
             {
-              "text": "الدَّرّاجَةَ",
+              "text": "الدَّرّاجَةَ",
               "root": "دراجة",
               "category": "isim (ال takılı)"
             },
@@ -5741,7 +5741,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "إِسْطَنْبولَ.",
+              "text": "إِسْطَنْبول.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -5808,7 +5808,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı)"
             },
             {
-              "text": "الطَّريقَ.",
+              "text": "الطَّريقَ.",
               "root": "طريق",
               "category": "isim (ال takılı)"
             }
@@ -5839,7 +5839,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الضَّوْءِ",
+              "text": "الضَّوْءِ",
               "root": "ضوء",
               "category": "isim (ال takılı)"
             },
@@ -5904,7 +5904,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı)"
             },
             {
-              "text": "الطَّريقَ.",
+              "text": "الطَّريقَ.",
               "root": "طريق",
               "category": "isim (ال takılı)"
             }
@@ -5988,7 +5988,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الأُرْدُنِّ",
+              "text": "الأُرْدُنِّ",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -6003,7 +6003,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı)"
             },
             {
-              "text": "الصَّيْفِيَّةِ.",
+              "text": "الصَّيْفِيَّةِ.",
               "root": "صيفي",
               "category": "isim (sıfat · ال takılı · dişil)"
             }
@@ -6110,12 +6110,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "مَكَّةَ",
+              "text": "مَكَّة",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "المُكَرَّمَةِ.",
+              "text": "المُكَرَّمَةِ.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -6239,7 +6239,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الشَّهْرِ",
+              "text": "الشَّهْرِ",
               "root": "شهر",
               "category": "isim (ال takılı)"
             },
@@ -6280,12 +6280,12 @@ window.SOZLUK_SINIF["6"] = {
     {
       "level": 4,
       "anahtar": "illetli",
-      "hint": "<h3 dir=\"ltr\">Seviye 4 · İlletli, mehmuz ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin tümü geçerlidir.</li><li><b>Mehmuz</b> (hemzeli): <bdi class=\"ip-ar\">قَرَأَ</bdi> → <bdi class=\"ip-ar\">قرأ</bdi> &nbsp;·&nbsp; <b>Misal</b> (başı illetli): <bdi class=\"ip-ar\">وَجَدْتُ</bdi> → <bdi class=\"ip-ar\">وجد</bdi></li><li><b>Nâkıs</b> (sonu illetli): <bdi class=\"ip-ar\">يَأْتي</bdi> → <bdi class=\"ip-ar\">أتى</bdi> &nbsp;·&nbsp; <b>Mudâaf</b> (şeddeli): <bdi class=\"ip-ar\">سَيَحُلُّ</bdi> → <bdi class=\"ip-ar\">حل</bdi></li><li><b>Mezid</b> fiil kendi mazisiyle aranır: <bdi class=\"ip-ar\">أَتُفَضِّلُ</bdi> → <bdi class=\"ip-ar\">فضل</bdi>، <bdi class=\"ip-ar\">تَوَضَّأَ</bdi> → <bdi class=\"ip-ar\">توضأ</bdi></li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">أَتَمَنّى</bdi> → <bdi class=\"ip-ar\"><b>تمنى</b></bdi> <i>(fiil (muzari · mezid · nakıs · mütekellim))</i></li><li><bdi class=\"ip-ar\">يَأْتي</bdi> → <bdi class=\"ip-ar\"><b>أتى</b></bdi> <i>(fiil (muzari · misal · nakıs))</i></li><li><bdi class=\"ip-ar\">يَشْفيها.</bdi> → <bdi class=\"ip-ar\"><b>شفى</b></bdi> <i>(fiil (muzari · nakıs) + mef'ûl zamiri)</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">تَقَعُ</bdi> → <bdi class=\"ip-ar\"><b>وقع</b></bdi> <i>(fiil (muzari · misal · dişil))</i></li><li><bdi class=\"ip-ar\">يَسْعى</bdi> → <bdi class=\"ip-ar\"><b>سعى</b></bdi> <i>(fiil (muzari · nakıs))</i></li><li><bdi class=\"ip-ar\">يَطوفُ</bdi> → <bdi class=\"ip-ar\"><b>طاف</b></bdi> <i>(fiil (muzari · ecvef))</i></li><li><bdi class=\"ip-ar\">يَقِفُ</bdi> → <bdi class=\"ip-ar\"><b>وقف</b></bdi> <i>(fiil (muzari · misal))</i></li><li><bdi class=\"ip-ar\">يُصَلّي</bdi> → <bdi class=\"ip-ar\"><b>صلى</b></bdi> <i>(fiil (muzari · nakıs))</i></li><li><bdi class=\"ip-ar\">يَقْرَأُ</bdi> → <bdi class=\"ip-ar\"><b>قرأ</b></bdi> <i>(fiil (muzari · mehmuz))</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 4 · İlletli, mehmuz ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">6. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin tümü geçerlidir.</li><li><b>Mehmuz</b> (hemzeli): <bdi class=\"ip-ar\">قَرَأَ</bdi> → <bdi class=\"ip-ar\">قرأ</bdi> &nbsp;·&nbsp; <b>Misal</b> (başı illetli): <bdi class=\"ip-ar\">وَجَدْتُ</bdi> → <bdi class=\"ip-ar\">وجد</bdi></li><li><b>Nâkıs</b> (sonu illetli): <bdi class=\"ip-ar\">يَأْتي</bdi> → <bdi class=\"ip-ar\">أتى</bdi> &nbsp;·&nbsp; <b>Mudâaf</b> (şeddeli): <bdi class=\"ip-ar\">سَيَحُلُّ</bdi> → <bdi class=\"ip-ar\">حل</bdi></li><li><b>Mezid</b> fiil kendi mazisiyle aranır: <bdi class=\"ip-ar\">أَتُفَضِّلُ</bdi> → <bdi class=\"ip-ar\">فضل</bdi>، <bdi class=\"ip-ar\">تَوَضَّأَ</bdi> → <bdi class=\"ip-ar\">توضأ</bdi></li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">أَتَمَنّى</bdi> → <bdi class=\"ip-ar\"><b>تمنى</b></bdi> <i>(fiil (muzari · mezid · nakıs · mütekellim))</i></li><li><bdi class=\"ip-ar\">يَأْتي</bdi> → <bdi class=\"ip-ar\"><b>أتى</b></bdi> <i>(fiil (muzari · misal · nakıs))</i></li><li><bdi class=\"ip-ar\">يَشْفيها.</bdi> → <bdi class=\"ip-ar\"><b>شفى</b></bdi> <i>(fiil (muzari · nakıs) + mef'ûl zamiri)</i></li></ul><p class=\"ip-bas\" dir=\"ltr\">5. ve 6. üniteden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">تَقَعُ</bdi> → <bdi class=\"ip-ar\"><b>وقع</b></bdi> <i>(fiil (muzari · misal · dişil))</i></li><li><bdi class=\"ip-ar\">يَسْعى</bdi> → <bdi class=\"ip-ar\"><b>سعى</b></bdi> <i>(fiil (muzari · nakıs))</i></li><li><bdi class=\"ip-ar\">يَطوفُ</bdi> → <bdi class=\"ip-ar\"><b>طاف</b></bdi> <i>(fiil (muzari · ecvef))</i></li><li><bdi class=\"ip-ar\">يَقِفُ</bdi> → <bdi class=\"ip-ar\"><b>وقف</b></bdi> <i>(fiil (muzari · misal))</i></li><li><bdi class=\"ip-ar\">يُصَلّي</bdi> → <bdi class=\"ip-ar\"><b>صلى</b></bdi> <i>(fiil (muzari · nakıs))</i></li><li><bdi class=\"ip-ar\">يَقْرَأُ</bdi> → <bdi class=\"ip-ar\"><b>قرأ</b></bdi> <i>(fiil (muzari · mehmuz))</i></li></ul>",
       "sentences": [
         {
           "arabic": [
             {
-              "text": "تَوَضَّأَ",
+              "text": "تَوَضَّأَ",
               "root": "توضأ",
               "category": "fiil (mazi · mezid · mehmuz)"
             },
@@ -6300,7 +6300,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (özel)"
             },
             {
-              "text": "لِلصَّلاةِ.",
+              "text": "لِلصَّلاةِ.",
               "root": "صلاة",
               "category": "harf-i cer + isim (ال takılı)"
             }
@@ -6316,12 +6316,12 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "تَوَضَّأَتْ",
+              "text": "تَوَضَّأَتْ",
               "root": "توضأ",
               "category": "fiil (mazi · mezid · mehmuz · dişil)"
             },
             {
-              "text": "لِلصَّلاةِ.",
+              "text": "لِلصَّلاةِ.",
               "root": "صلاة",
               "category": "harf-i cer + isim (ال takılı)"
             }
@@ -6452,7 +6452,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (özel · kişi)"
             },
             {
-              "text": "مُبَكِّرًا",
+              "text": "مُبَكِّرًا",
               "root": "مبكرا",
               "category": "zarf"
             },
@@ -6467,7 +6467,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (tenvinli)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "harf-i cer"
             },
@@ -6506,7 +6506,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "işaret ismi"
             },
             {
-              "text": "الصَّوْتِ",
+              "text": "الصَّوْتِ",
               "root": "صوت",
               "category": "isim (ال takılı)"
             },
@@ -6550,7 +6550,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer + bitişik zamir"
             },
             {
-              "text": "التَّوْفيقَ.",
+              "text": "التَّوْفيقَ.",
               "root": "توفيق",
               "category": "isim (ال takılı)"
             }
@@ -6632,7 +6632,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru ismi"
             },
@@ -6647,7 +6647,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "işaret ismi"
             },
             {
-              "text": "الصَّوْتُ",
+              "text": "الصَّوْتُ",
               "root": "صوت",
               "category": "isim (ال takılı)"
             },
@@ -6686,7 +6686,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "işaret ismi"
             },
             {
-              "text": "الصَّوْتُ",
+              "text": "الصَّوْتُ",
               "root": "صوت",
               "category": "isim (ال takılı)"
             },
@@ -6701,7 +6701,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim"
             },
             {
-              "text": "الثَّلّاجَةِ.",
+              "text": "الثَّلّاجَةِ.",
               "root": "ثلاجة",
               "category": "isim (ال takılı)"
             }
@@ -6739,7 +6739,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zarf (zaman · tenvinli)"
             },
             {
-              "text": "سَيَحُلُّ",
+              "text": "سَيَحُلُّ",
               "root": "حل",
               "category": "fiil (muzari · mudâaf)"
             },
@@ -6768,7 +6768,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَتُفَضِّلُ",
+              "text": "أَتُفَضِّلُ",
               "root": "فضل",
               "category": "soru hemzesi + fiil (muzari · mezid · muhatap)"
             },
@@ -6783,7 +6783,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الصَّيْفِ؟",
+              "text": "الصَّيْفِ؟",
               "root": "صيف",
               "category": "isim (ال takılı)"
             }
@@ -6804,7 +6804,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "cevap harfi"
             },
             {
-              "text": "أُفَضِّلُ",
+              "text": "أُفَضِّلُ",
               "root": "فضل",
               "category": "fiil (muzari · mezid · mütekellim)"
             },
@@ -6819,7 +6819,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الصَّيْفِ.",
+              "text": "الصَّيْفِ.",
               "root": "صيف",
               "category": "isim (ال takılı)"
             }
@@ -6921,7 +6921,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · dişil)"
             },
             {
-              "text": "عائِشَةُ",
+              "text": "عائِشَة",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
@@ -6979,7 +6979,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أُفَضِّلُ",
+              "text": "أُفَضِّلُ",
               "root": "فضل",
               "category": "fiil (muzari · mezid · mütekellim)"
             },
@@ -7008,12 +7008,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "nefiy harfi"
             },
             {
-              "text": "يُفَضِّلُ",
+              "text": "يُفَضِّلُ",
               "root": "فضل",
               "category": "fiil (muzari · mezid)"
             },
             {
-              "text": "الأَرُزَّ",
+              "text": "الأَرُزَّ",
               "root": "أرز",
               "category": "isim (ال takılı)"
             },
@@ -7046,12 +7046,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · istikbal · mütekellim)"
             },
             {
-              "text": "الدَّجاجَ",
+              "text": "الدَّجاجَ",
               "root": "دجاج",
               "category": "isim (ال takılı)"
             },
             {
-              "text": "وَالأَرُزَّ",
+              "text": "وَالأَرُزَّ",
               "root": "أرز",
               "category": "atıf harfi + isim (ال takılı)"
             },
@@ -7077,7 +7077,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (emir · mehmuz)"
             },
             {
-              "text": "الطَّعامَ",
+              "text": "الطَّعامَ",
               "root": "طعام",
               "category": "isim (ال takılı)"
             },
@@ -7153,7 +7153,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (mastar)"
             },
             {
-              "text": "الطَّعامِ.",
+              "text": "الطَّعامِ.",
               "root": "طعام",
               "category": "isim (ال takılı)"
             }
@@ -7225,7 +7225,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · istikbal · mezid · ecvef)"
             },
             {
-              "text": "يوسُفُ",
+              "text": "يوسُف",
               "root": "SKIP",
               "category": "isim (özel · kişi)"
             },
@@ -7240,7 +7240,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (mastar)"
             },
             {
-              "text": "الطَّعامِ.",
+              "text": "الطَّعامِ.",
               "root": "طعام",
               "category": "isim (ال takılı)"
             }
@@ -7291,7 +7291,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zarf (zaman)"
             },
             {
-              "text": "الطَّعامِ.",
+              "text": "الطَّعامِ.",
               "root": "طعام",
               "category": "isim (ال takılı)"
             }
@@ -7332,7 +7332,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zarf (birliktelik)"
             },
             {
-              "text": "السَّلَطَةِ.",
+              "text": "السَّلَطَةِ.",
               "root": "سلطة",
               "category": "isim (ال takılı · dişil)"
             }
@@ -7387,7 +7387,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru ismi"
             },
@@ -7402,7 +7402,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "الشَّريفَةُ؟",
+              "text": "الشَّريفَةُ؟",
               "root": "شريف",
               "category": "isim (sıfat · ال takılı · dişil)"
             }
@@ -7419,7 +7419,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru ismi"
             },
@@ -7429,12 +7429,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · misal · dişil)"
             },
             {
-              "text": "مَكَّةُ",
+              "text": "مَكَّة",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "المُكَرَّمَةِ؟",
+              "text": "المُكَرَّمَةِ؟",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -7471,7 +7471,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zarf (mekân)"
             },
             {
-              "text": "الصَّفا",
+              "text": "الصَّفا",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -7709,7 +7709,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (kırık çoğul · ال takılı)"
             },
             {
-              "text": "المُقَدَّسَةَ.",
+              "text": "المُقَدَّسَةَ.",
               "root": "مقدس",
               "category": "isim (sıfat · ال takılı · dişil)"
             }
@@ -7840,7 +7840,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةِ",
+              "text": "المُنَوَّرَةِ",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -7860,7 +7860,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (sıfat · dişil)"
             },
             {
-              "text": "وَمُهِمَّةٍ",
+              "text": "وَمُهِمَّةٍ",
               "root": "مهم",
               "category": "atıf harfi + isim (sıfat · dişil)"
             },
@@ -7875,7 +7875,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı)"
             },
             {
-              "text": "النَّبَوِيُّ",
+              "text": "النَّبَوِيُّ",
               "root": "نبوي",
               "category": "isim (sıfat · ال takılı)"
             },
@@ -7923,7 +7923,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru ismi"
             },
@@ -7938,7 +7938,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةُ؟",
+              "text": "المُنَوَّرَةُ؟",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -7960,12 +7960,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · ecvef)"
             },
             {
-              "text": "النَّبِيُّ",
+              "text": "النَّبِيُّ",
               "root": "نبي",
               "category": "isim (ال takılı)"
             },
             {
-              "text": "صَلَّى",
+              "text": "صَلَّى",
               "root": "صلى",
               "category": "fiil (mazi · nakıs · mezid)"
             },
@@ -7980,7 +7980,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer + bitişik zamir"
             },
             {
-              "text": "وَسَلَّمَ",
+              "text": "وَسَلَّمَ",
               "root": "SKIP",
               "category": "atıf harfi + fiil (mazi · mezid)"
             },
@@ -8017,7 +8017,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "القُدْسُ",
+              "text": "القُدْس",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -8049,12 +8049,12 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "القُدْسُ",
+              "text": "القُدْس",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
             {
-              "text": "الشَّريفُ",
+              "text": "الشَّريفُ",
               "root": "شريف",
               "category": "isim (sıfat · ال takılı)"
             },
@@ -8137,7 +8137,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru ismi"
             },
@@ -8152,7 +8152,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (dişil)"
             },
             {
-              "text": "القُدْسِ؟",
+              "text": "القُدْس؟",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -8169,7 +8169,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru ismi"
             },
@@ -8179,17 +8179,17 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · misal · dişil)"
             },
             {
-              "text": "قُبَّةُ",
+              "text": "قُبَّةُ",
               "root": "قبة",
               "category": "isim (dişil)"
             },
             {
-              "text": "الصَّخْرَةِ",
+              "text": "الصَّخْرَةِ",
               "root": "صخرة",
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "بِالضَّبْطِ؟",
+              "text": "بِالضَّبْطِ؟",
               "root": "ضبط",
               "category": "harf-i cer + isim (mastar)"
             }
@@ -8207,7 +8207,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "القُدْسُ",
+              "text": "القُدْس",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -8227,7 +8227,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "السُّعودِيَّةِ؛",
+              "text": "السُّعودِيَّةِ؛",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -8263,7 +8263,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَوَّلُ",
+              "text": "أَوَّلُ",
               "root": "أول",
               "category": "isim (sıra sayı)"
             },
@@ -8293,7 +8293,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "الشَّريفَةَ؛",
+              "text": "الشَّريفَةَ؛",
               "root": "شريف",
               "category": "isim (sıfat · ال takılı · dişil)"
             },
@@ -8336,7 +8336,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةُ",
+              "text": "المُنَوَّرَةُ",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             },
@@ -8371,7 +8371,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "السُّعودِيَّةِ.",
+              "text": "السُّعودِيَّةِ.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -8435,7 +8435,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الطَّريقِ",
+              "text": "الطَّريقِ",
               "root": "طريق",
               "category": "isim (ال takılı)"
             },
@@ -8457,7 +8457,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "الرَّجُلُ",
+              "text": "الرَّجُلُ",
               "root": "رجل",
               "category": "isim (ال takılı)"
             },
@@ -8488,12 +8488,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "soru edatı"
             },
             {
-              "text": "تُفَضِّلُ",
+              "text": "تُفَضِّلُ",
               "root": "تفضل",
               "category": "fiil (emir · mezid)"
             },
             {
-              "text": "السَّيّارَةَ",
+              "text": "السَّيّارَةَ",
               "root": "سيارة",
               "category": "ال takılı · isim"
             },
@@ -8521,7 +8521,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أُفَضِّلُ",
+              "text": "أُفَضِّلُ",
               "root": "فضل",
               "category": "fiil (muzari · mezid · mütekellim)"
             },
@@ -8546,7 +8546,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "soru edatı"
             },
             {
-              "text": "تُفَضِّلُ",
+              "text": "تُفَضِّلُ",
               "root": "تفضل",
               "category": "fiil (emir · mezid)"
             },
@@ -8579,7 +8579,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "السَّفينَةُ",
+              "text": "السَّفينَةُ",
               "root": "سفينة",
               "category": "isim (ال takılı · dişil)"
             },
@@ -8626,7 +8626,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "السَّماءِ.",
+              "text": "السَّماءِ.",
               "root": "سماء",
               "category": "isim (ال takılı · dişil)"
             }
@@ -8643,7 +8643,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "السَّيّارَةُ",
+              "text": "السَّيّارَةُ",
               "root": "سيارة",
               "category": "ال takılı · isim"
             },
@@ -8658,7 +8658,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الطَّريقِ.",
+              "text": "الطَّريقِ.",
               "root": "طريق",
               "category": "isim (ال takılı)"
             }
@@ -8675,7 +8675,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru ismi"
             },
@@ -8685,12 +8685,12 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · meçhul · misal · dişil)"
             },
             {
-              "text": "السَّيّارَةُ؟",
+              "text": "السَّيّارَةُ؟",
               "root": "سيارة",
               "category": "ال takılı · isim"
             },
             {
-              "text": "السَّيّارَةُ",
+              "text": "السَّيّارَةُ",
               "root": "سيارة",
               "category": "ال takılı · isim"
             },
@@ -8729,7 +8729,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · ecvef)"
             },
             {
-              "text": "الدَّرّاجَةَ؟",
+              "text": "الدَّرّاجَةَ؟",
               "root": "دراجة",
               "category": "isim (ال takılı)"
             }
@@ -8750,7 +8750,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · misal)"
             },
             {
-              "text": "الرَّجُلُ",
+              "text": "الرَّجُلُ",
               "root": "رجل",
               "category": "isim (ال takılı)"
             },
@@ -8760,7 +8760,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الضَّوْءِ",
+              "text": "الضَّوْءِ",
               "root": "ضوء",
               "category": "isim (ال takılı)"
             },
@@ -8783,7 +8783,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "اِتَّجِهْ",
+              "text": "اِتَّجِهْ",
               "root": "اتجه",
               "category": "fiil (emir · mezid · misal)"
             },
@@ -8827,12 +8827,12 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "يَسْتَعِدُّ",
+              "text": "يَسْتَعِدُّ",
               "root": "استعد",
               "category": "fiil (muzari · mezid · mudâaf)"
             },
             {
-              "text": "الرَّجُلُ",
+              "text": "الرَّجُلُ",
               "root": "رجل",
               "category": "isim (ال takılı)"
             },
@@ -8847,7 +8847,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الضَّوْءِ",
+              "text": "الضَّوْءِ",
               "root": "ضوء",
               "category": "isim (ال takılı)"
             },
@@ -8886,7 +8886,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الضَّوْءِ",
+              "text": "الضَّوْءِ",
               "root": "ضوء",
               "category": "isim (ال takılı)"
             },
@@ -8909,7 +8909,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "يَسْتَعِدُّ",
+              "text": "يَسْتَعِدُّ",
               "root": "استعد",
               "category": "fiil (muzari · mezid · mudâaf)"
             },
@@ -8924,7 +8924,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الضَّوْءِ",
+              "text": "الضَّوْءِ",
               "root": "ضوء",
               "category": "isim (ال takılı)"
             },
@@ -8962,7 +8962,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الضَّوْءِ",
+              "text": "الضَّوْءِ",
               "root": "ضوء",
               "category": "isim (ال takılı)"
             },
@@ -8982,7 +8982,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الضَّوْءِ",
+              "text": "الضَّوْءِ",
               "root": "ضوء",
               "category": "isim (ال takılı)"
             },
@@ -9019,7 +9019,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الضَّوْءِ",
+              "text": "الضَّوْءِ",
               "root": "ضوء",
               "category": "isim (ال takılı)"
             },
@@ -9041,12 +9041,12 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "الرَّجُلُ",
+              "text": "الرَّجُلُ",
               "root": "رجل",
               "category": "isim (ال takılı)"
             },
             {
-              "text": "الشُّجاعُ",
+              "text": "الشُّجاعُ",
               "root": "شجاع",
               "category": "isim (sıfat · ال takılı)"
             },
@@ -9096,7 +9096,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · mezid)"
             },
             {
-              "text": "المُوَظَّفُ",
+              "text": "المُوَظَّفُ",
               "root": "موظف",
               "category": "isim (ال takılı · meslek)"
             },
@@ -9128,7 +9128,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (muzari · misal · dişil)"
             },
             {
-              "text": "السَّيّارَةُ",
+              "text": "السَّيّارَةُ",
               "root": "سيارة",
               "category": "ال takılı · isim"
             },
@@ -9138,7 +9138,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "الضَّوْءِ",
+              "text": "الضَّوْءِ",
               "root": "ضوء",
               "category": "isim (ال takılı)"
             },
@@ -9214,7 +9214,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ال takılı · dişil)"
             },
             {
-              "text": "المُنَوَّرَةِ.",
+              "text": "المُنَوَّرَةِ.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -9241,7 +9241,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (kırık çoğul · ال takılı)"
             },
             {
-              "text": "التّاريخِيَّةَ",
+              "text": "التّاريخِيَّةَ",
               "root": "تاريخي",
               "category": "isim (sıfat · ال takılı · dişil)"
             },
@@ -9251,7 +9251,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "بورصَةَ.",
+              "text": "بورصَة.",
               "root": "SKIP",
               "category": "isim (özel · yer)"
             }
@@ -9279,7 +9279,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "fiil (mazi · mezid · mütekellim)"
             },
             {
-              "text": "التِّلْفازَ.",
+              "text": "التِّلْفازَ.",
               "root": "تلفاز",
               "category": "isim (ال takılı)"
             }
@@ -9300,7 +9300,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "isim (ism-i fâil · ال takılı)"
             },
             {
-              "text": "يَتَجَوَّلُ",
+              "text": "يَتَجَوَّلُ",
               "root": "تجول",
               "category": "fiil (muzari · mezid · ecvef)"
             },
@@ -9327,7 +9327,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "اِهْتَمَّ",
+              "text": "اِهْتَمَّ",
               "root": "اهتم",
               "category": "fiil (emir · mezid · mudâaf)"
             },
@@ -9410,7 +9410,7 @@ window.SOZLUK_SINIF["6"] = {
               "category": "zarf (zaman)"
             },
             {
-              "text": "السَّيْرِ.",
+              "text": "السَّيْرِ.",
               "root": "سير",
               "category": "isim (ال takılı · mastar)"
             }
@@ -9481,7 +9481,7 @@ window.SOZLUK_SINIF["6"] = {
         {
           "arabic": [
             {
-              "text": "تَتَكَلَّمُ",
+              "text": "تَتَكَلَّمُ",
               "root": "تكلم",
               "category": "fiil (muzari · mezid · dişil)"
             },

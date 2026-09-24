@@ -51,7 +51,7 @@ window.data = {
                 {
                     "tr": "salata ile",
                     "order": 4,
-                    "ar": "مَعَ السَّلَطَةِ."
+                    "ar": "مَعَ السَّلَطَةِ."
                 },
                 {
                     "tr": "köfte",
@@ -89,12 +89,12 @@ window.data = {
                 {
                     "tr": "Et",
                     "order": 1,
-                    "ar": "اللَّحْمُ"
+                    "ar": "اللَّحْمُ"
                 },
                 {
                     "tr": "çok",
                     "order": 3,
-                    "ar": "جِدًّا."
+                    "ar": "جِدًّا."
                 },
                 {
                     "tr": "lezzetlidir.",
@@ -108,12 +108,12 @@ window.data = {
                 {
                     "tr": "Balık",
                     "order": 1,
-                    "ar": "السَّمَكُ"
+                    "ar": "السَّمَكُ"
                 },
                 {
                     "tr": "sağlık için",
                     "order": 3,
-                    "ar": "لِلصِّحَّةِ."
+                    "ar": "لِلصِّحَّةِ."
                 },
                 {
                     "tr": "faydalıdır.",
@@ -183,12 +183,12 @@ window.data = {
                 {
                     "tr": "Fatih",
                     "order": 2,
-                    "ar": "فاتِحٌ؟"
+                    "ar": "فاتِح؟"
                 },
                 {
                     "tr": "nerede?",
                     "order": 1,
-                    "ar": "أَيْنَ"
+                    "ar": "أَيْن"
                 }
             ]
         },
@@ -197,7 +197,7 @@ window.data = {
                 {
                     "tr": "Fatih",
                     "order": 1,
-                    "ar": "فاتِحٌ"
+                    "ar": "فاتِح"
                 },
                 {
                     "tr": "lokantadadır.",
@@ -216,7 +216,7 @@ window.data = {
                 {
                     "tr": "yiyeceklerden",
                     "order": 4,
-                    "ar": "مِنَ المَأْكولاتِ؟"
+                    "ar": "مِن المَأْكولاتِ؟"
                 },
                 {
                     "tr": "neyi",
@@ -226,7 +226,7 @@ window.data = {
                 {
                     "tr": "tercih eder?",
                     "order": 2,
-                    "ar": "يُفَضِّلُ"
+                    "ar": "يُفَضِّلُ"
                 }
             ]
         },
@@ -278,7 +278,7 @@ window.data = {
                 {
                     "tr": "Yemekten sonra",
                     "order": 3,
-                    "ar": "بَعْدَ تَناوُلِ الطَّعامِ."
+                    "ar": "بَعْدَ تَناوُلِ الطَّعامِ."
                 },
                 {
                     "tr": "elhamdülillah",
@@ -306,7 +306,7 @@ window.data = {
                 {
                     "tr": "Buyur.",
                     "order": 1,
-                    "ar": "تَفَضَّلْ."
+                    "ar": "تَفَضَّلْ."
                 }
             ]
         },
@@ -315,12 +315,12 @@ window.data = {
                 {
                     "tr": "Pilavlı",
                     "order": 2,
-                    "ar": "بِالأَرُزِّ."
+                    "ar": "بِالأَرُزِّ."
                 },
                 {
                     "tr": "tavuk",
                     "order": 1,
-                    "ar": "الدَّجاجُ"
+                    "ar": "الدَّجاجُ"
                 }
             ]
         },
@@ -329,7 +329,7 @@ window.data = {
                 {
                     "tr": "Balık",
                     "order": 2,
-                    "ar": "السَّمَكَ."
+                    "ar": "السَّمَكَ."
                 },
                 {
                     "tr": "istiyorum.",
@@ -345,7 +345,7 @@ window.data = {
                 {
                     "tr": "Pilavı mı",
                     "order": 1,
-                    "ar": "أَتُفَضِّلُ الأَرُزَّ"
+                    "ar": "أَتُفَضِّلُ الأَرُزَّ"
                 },
                 {
                     "tr": "yoksa makarnayı mı tercih edersin?",
@@ -362,7 +362,7 @@ window.data = {
                 {
                     "tr": "tercih ederim.",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 }
             ]
         },
@@ -371,7 +371,7 @@ window.data = {
                 {
                     "tr": "Çayı mı",
                     "order": 1,
-                    "ar": "أَتُفَضِّلُ الشايَ"
+                    "ar": "أَتُفَضِّلُ الشايَ"
                 },
                 {
                     "tr": "yoksa sütü mü tercih edersin?",
@@ -388,7 +388,7 @@ window.data = {
                 {
                     "tr": "tercih ederim.",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 }
             ]
         },
@@ -397,24 +397,24 @@ window.data = {
                 {
                     "tr": "Ayranı mı",
                     "order": 1,
-                    "ar": "أَتُفَضِّلُ اللَّبَنَ"
+                    "ar": "أَتُفَضِّلُ اللَّبَنَ"
                 },
                 {
                     "tr": "yoksa salatayı mı tercih edersin?",
                     "order": 2,
-                    "ar": "أَمِ السَّلَطَةَ؟"
+                    "ar": "أَمِ السَّلَطَةَ؟"
                 }
             ],
             "p2": [
                 {
                     "tr": "Salatayı",
                     "order": 2,
-                    "ar": "السَّلَطَةَ."
+                    "ar": "السَّلَطَةَ."
                 },
                 {
                     "tr": "tercih ederim.",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 }
             ]
         },
@@ -423,7 +423,7 @@ window.data = {
                 {
                     "tr": "Ekmeği mi",
                     "order": 1,
-                    "ar": "أَتُفَضِّلُ الخُبْزَ"
+                    "ar": "أَتُفَضِّلُ الخُبْزَ"
                 },
                 {
                     "tr": "yoksa keki mi tercih edersin?",
@@ -440,7 +440,7 @@ window.data = {
                 {
                     "tr": "tercih ederim.",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 }
             ]
         },
@@ -449,12 +449,12 @@ window.data = {
                 {
                     "tr": "Çorbayı mı",
                     "order": 1,
-                    "ar": "أَتُفَضِّلُ الحَساءَ"
+                    "ar": "أَتُفَضِّلُ الحَساءَ"
                 },
                 {
                     "tr": "yoksa pilavı mı tercih edersin?",
                     "order": 2,
-                    "ar": "أَمِ الأَرُزَّ؟"
+                    "ar": "أَمِ الأَرُزَّ؟"
                 }
             ],
             "p2": [
@@ -466,7 +466,7 @@ window.data = {
                 {
                     "tr": "tercih ederim.",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 }
             ]
         },
@@ -511,7 +511,7 @@ window.data = {
                 {
                     "tr": "Suyu mu",
                     "order": 1,
-                    "ar": "هَلْ تُفَضِّلُ الماءَ"
+                    "ar": "هَلْ تُفَضِّلُ الماءَ"
                 },
                 {
                     "tr": "yoksa meyve suyunu mu tercih edersin?",
@@ -528,7 +528,7 @@ window.data = {
                 {
                     "tr": "tercih ederim,",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 },
                 {
                     "tr": "lütfen.",
@@ -542,7 +542,7 @@ window.data = {
                 {
                     "tr": "Buyur.",
                     "order": 1,
-                    "ar": "تَفَضَّلْ."
+                    "ar": "تَفَضَّلْ."
                 }
             ],
             "p2": [
@@ -594,24 +594,24 @@ window.data = {
                 {
                     "tr": "Ekmeği mi",
                     "order": 1,
-                    "ar": "هَلْ تُفَضِّلُ الخُبْزَ"
+                    "ar": "هَلْ تُفَضِّلُ الخُبْزَ"
                 },
                 {
                     "tr": "yoksa pilavı mı tercih edersin?",
                     "order": 2,
-                    "ar": "أَمِ الأَرُزَّ؟"
+                    "ar": "أَمِ الأَرُزَّ؟"
                 }
             ],
             "p2": [
                 {
                     "tr": "Pilavı",
                     "order": 2,
-                    "ar": "الأَرُزَّ"
+                    "ar": "الأَرُزَّ"
                 },
                 {
                     "tr": "tercih ederim,",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 },
                 {
                     "tr": "lütfen.",
@@ -630,7 +630,7 @@ window.data = {
                 {
                     "tr": "efendim.",
                     "order": 2,
-                    "ar": "يا سَيِّدي."
+                    "ar": "يا سَيِّدي."
                 }
             ],
             "p2": [
@@ -646,24 +646,24 @@ window.data = {
                 {
                     "tr": "Buyurun,",
                     "order": 1,
-                    "ar": "تَفَضَّلْ،"
+                    "ar": "تَفَضَّلْ،"
                 },
                 {
                     "tr": "bu yemek listesi.",
                     "order": 2,
-                    "ar": "هَذِهِ قائِمَةُ الطَّعامِ."
+                    "ar": "هَذِهِ قائِمَةُ الطَّعامِ."
                 },
                 {
                     "tr": "Yiyeceklerden ne istersiniz?",
                     "order": 3,
-                    "ar": "ماذا تُريدُ مِنَ المَأْكولاتِ؟"
+                    "ar": "ماذا تُريدُ مِن المَأْكولاتِ؟"
                 }
             ],
             "p2": [
                 {
                     "tr": "Önce",
                     "order": 2,
-                    "ar": "أَوَّلًا،"
+                    "ar": "أَوَّلًا،"
                 },
                 {
                     "tr": "mercimek",
@@ -673,7 +673,7 @@ window.data = {
                 {
                     "tr": "sonra sebzeli balık istiyorum,",
                     "order": 3,
-                    "ar": "بَعْدَهُ أُريدُ السَّمَكَ مَعَ الخُضْرَواتِ"
+                    "ar": "بَعْدَهُ أُريدُ السَّمَكَ مَعَ الخُضْرَواتِ"
                 },
                 {
                     "tr": "lütfen.",
@@ -687,17 +687,17 @@ window.data = {
                 {
                     "tr": "Peki efendim,",
                     "order": 1,
-                    "ar": "حاضِرٌ يا سَيِّدي،"
+                    "ar": "حاضِرٌ يا سَيِّدي،"
                 },
                 {
                     "tr": "içeceklerden",
                     "order": 3,
-                    "ar": "مِنَ المَشْروباتِ؟"
+                    "ar": "مِن المَشْروباتِ؟"
                 },
                 {
                     "tr": "neyi tercih edersiniz?",
                     "order": 2,
-                    "ar": "ماذا تُفَضِّلُ"
+                    "ar": "ماذا تُفَضِّلُ"
                 }
             ],
             "p2": [
@@ -745,7 +745,7 @@ window.data = {
                 {
                     "tr": "yemekten sonra",
                     "order": 3,
-                    "ar": "بَعْدَ الطَّعامِ."
+                    "ar": "بَعْدَ الطَّعامِ."
                 },
                 {
                     "tr": "çay içeceğim.",
@@ -759,7 +759,7 @@ window.data = {
                 {
                     "tr": "Peki efendim,",
                     "order": 1,
-                    "ar": "حاضِرٌ يا سَيِّدي،"
+                    "ar": "حاضِرٌ يا سَيِّدي،"
                 },
                 {
                     "tr": "siparişiniz",
@@ -849,11 +849,11 @@ window.data = {
         },
         {
             "tr": "efendim",
-            "ar": "سَيِّدي"
+            "ar": "سَيِّدي"
         },
         {
             "tr": "yemek listesi",
-            "ar": "قائِمَةُ الطَّعامِ"
+            "ar": "قائِمَةُ الطَّعامِ"
         },
         {
             "tr": "sipariş",
@@ -885,7 +885,7 @@ window.data = {
         },
         {
             "tr": "sağlık",
-            "ar": "صِحَّة"
+            "ar": "صِحَّة"
         },
         {
             "tr": "lezzetli",
@@ -949,7 +949,7 @@ window.data = {
         },
         {
             "tr": "yemek yeme",
-            "ar": "تَناوُلُ الطَّعام"
+            "ar": "تَناوُلُ الطَّعام"
         },
         {
             "tr": "eline sağlık",

@@ -3,7 +3,7 @@ const educationData = {
         {
             unitName: "1. Ünite: Merhaba | مَرْحَبًا",
             lessons: [
-                { name: "1. Ders: Arap Harfleri ve Sesler | اَلْحُرُوفُ الْعَرَبِيَّة وَالصَّوَائِت", simultaneUrl: "simultane.html?ders=5_1_1" },
+                { name: "1. Ders: Arap Harfleri ve Sesler | اَلحُرُوفُ العَرَبِيَّة وَالصَّوَائِت", simultaneUrl: "simultane.html?ders=5_1_1" },
                 { name: "2. Ders: Kendini Tanıtma | عِبَارَات التَّحِيَّة وَتَّعَارُف وَالْوَدَاع", simultaneUrl: "simultane.html?ders=5_1_2" },
             ]
         },
@@ -18,7 +18,7 @@ const educationData = {
             unitName: "3. Ünite: Ailem | عَائِلَتِي",
             lessons: [
                 { name: "1. Ders: Aile Bireyleri | أَفْرَادُ العَائِلَة", simultaneUrl: "simultane.html?ders=5_3_1" },
-                { name: "2. Ders: Meslekler | الْمِهَن", simultaneUrl: "simultane.html?ders=5_3_2" },
+                { name: "2. Ders: Meslekler | المِهَن", simultaneUrl: "simultane.html?ders=5_3_2" },
                 { name: "3. Ders: Sıfatlar | اَلصِّفَات", simultaneUrl: "simultane.html?ders=5_3_3" },
             ]
         },
@@ -28,7 +28,7 @@ const educationData = {
                 { name: "1. Ders: Evin Bölümleri | أَقْسَامُ البَيْت", simultaneUrl: "simultane.html?ders=5_4_1" },
                 { name: "2. Ders: Evin Eşyaları | أَدَوَات البَيْت", simultaneUrl: "simultane.html?ders=5_4_2" },
                 { name: "3. Ders: Sıfatlar | اَلصِّفَات", simultaneUrl: "simultane.html?ders=5_4_3" },
-                { name: "4. Ders: Sayılar | اَلْأَعْدَاد", simultaneUrl: "simultane.html?ders=5_4_4" }
+                { name: "4. Ders: Sayılar | اَلأَعْدَاد", simultaneUrl: "simultane.html?ders=5_4_4" }
             ]
         }
     ],
@@ -64,7 +64,7 @@ const educationData = {
     ],
     "7": [
         {
-            unitName: "1. Ünite: Günlük Yaşam | اَلْحَيَاةُ الْيَوْمِيَّةُ",
+            unitName: "1. Ünite: Günlük Yaşam | اَلحَيَاةُ اليَوْمِيَّةُ",
             lessons: [{ name: "", simultaneUrl: "simultane.html?ders=7_1", aktif: true }]
         },
         {

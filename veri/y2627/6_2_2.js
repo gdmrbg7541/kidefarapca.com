@@ -1,5 +1,5 @@
-/* 6. sınıf — 6_2_2 (2. Ünite 2. Ders: Sıra Sayıları | اَلْأَعْدادُ التَّرْتيبِيَّة) */
-/* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 2. Ünite (هَيّا إلى الْمَدْرَسَة), s. 74-89. */
+/* 6. sınıf — 6_2_2 (2. Ünite 2. Ders: Sıra Sayıları | اَلأَعْدادُ التَّرْتيبِيَّة) */
+/* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 2. Ünite (هَيّا إلى المَدْرَسَة), s. 74-89. */
 /* Kelimeler kitabın kendi kâmûsuyla (s.194-203) karşılaştırılarak yazıldı. */
 /* CÜMLELER HENÜZ GİRİLMEDİ — sentence ve dialog bilerek boştur. */
 window.data = {
@@ -7,11 +7,11 @@ window.data = {
     "dialog": [],
     "words": [
         {
-            "ar": "اَلْأَعْدادُ التَّرْتيبِيَّة",
+            "ar": "اَلأَعْدادُ التَّرْتيبِيَّة",
             "tr": "Sıra Sayıları"
         },
         {
-            "ar": "اَلْأَوَّل",
+            "ar": "اَلأَوَّل",
             "tr": "Birinci"
         },
         {
@@ -19,7 +19,7 @@ window.data = {
             "tr": "Dördüncü"
         },
         {
-            "ar": "اَلْخامِس",
+            "ar": "اَلخامِس",
             "tr": "Beşinci"
         },
         {
@@ -31,7 +31,7 @@ window.data = {
             "tr": "Dokuzuncu"
         },
         {
-            "ar": "اَلْعاشِر",
+            "ar": "اَلعاشِر",
             "tr": "Onuncu"
         },
         {
@@ -83,7 +83,7 @@ window.data = {
             "tr": "Beş"
         },
         {
-            "ar": "سِتَّة",
+            "ar": "سِتَّة",
             "tr": "Altı"
         },
         {
@@ -115,15 +115,15 @@ window.data = {
             "tr": "Ne?"
         },
         {
-            "ar": "اَلسَّلامُ عَلَيْكُم",
+            "ar": "اَلسَّلامُ عَلَيْكُم",
             "tr": "Selamünaleyküm (Selam size)"
         },
         {
-            "ar": "وَعَلَيْكُمُ السَّلام",
+            "ar": "وَعَلَيْكُمُ السَّلام",
             "tr": "Aleykümselam (Selam sizin de üzerinize)"
         },
         {
-            "ar": "أَيْنَ؟",
+            "ar": "أَيْن؟",
             "tr": "Nerede?"
         },
         {

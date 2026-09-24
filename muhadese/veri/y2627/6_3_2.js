@@ -1,4 +1,4 @@
-/* 6. sınıf — 6_3_2 (3. Ünite 2. Ders: Hisler ve Duygular | اَلْإِحْساس وَالْمَشاعِر) */
+/* 6. sınıf — 6_3_2 (3. Ünite 2. Ders: Hisler ve Duygular | اَلإِحْساس وَالْمَشاعِر) */
 /* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 3. Ünite (جِسْمي), s. 118-135. */
 /* Kelimeler kitabın kendi kâmûsuyla (s.194-203) karşılaştırılarak yazıldı. */
 /* CÜMLELER HENÜZ GİRİLMEDİ — sentence ve dialog bilerek boştur. */
@@ -31,11 +31,11 @@ window.data = {
             "tr": "Yorgun (erkek / kadın)"
         },
         {
-            "ar": "مُتَهَيِّج / مُتَهَيِّجَة",
+            "ar": "مُتَهَيِّج / مُتَهَيِّجَة",
             "tr": "Heyecanlı (erkek / kadın)"
         },
         {
-            "ar": "مُمَلّ / مُمَلَّة",
+            "ar": "مُمَلّ / مُمَلَّة",
             "tr": "Sıkılmış (erkek / kadın)"
         },
         {
@@ -143,7 +143,7 @@ window.data = {
             "tr": "Duyuyorum."
         },
         {
-            "ar": "أَشُمُّ.",
+            "ar": "أَشُمُّ.",
             "tr": "Kokluyorum."
         },
         {
@@ -155,7 +155,7 @@ window.data = {
             "tr": "Ayak"
         },
         {
-            "ar": "كَيْفَ؟",
+            "ar": "كَيْف؟",
             "tr": "Nasıl?"
         },
         {
@@ -171,7 +171,7 @@ window.data = {
             "tr": "Kız kardeş"
         },
         {
-            "ar": "عَمَّة",
+            "ar": "عَمَّة",
             "tr": "Hala"
         }
     ]

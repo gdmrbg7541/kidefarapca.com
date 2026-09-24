@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_4_2 (4. Ünite 2. Ders: Hayvan Sevgisi | حُبُّ الحَيَوانات) */
+/* 8. sınıf — 8_4_2 (4. Ünite 2. Ders: Hayvan Sevgisi | حُبُّ الحَيَوانات) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 4. Ünite, s. 96-105. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
@@ -31,7 +31,7 @@ window.data = {
         {
             words: [
                 { tr: "Tavşan", order: 2, ar: "الأَرْنَب؟" },
-                { tr: "nerede?", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede?", order: 1, ar: "أَيْن" },
             ]
         },
         {
@@ -212,7 +212,7 @@ window.data = {
         {
             p1: [
                 { tr: "Tavşan", order: 2, ar: "الأَرْنَب؟" },
-                { tr: "nerede?", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede?", order: 1, ar: "أَيْن" },
             ],
             p2: [
                 { tr: "Tavşan", order: 1, ar: "الأَرْنَب" },
@@ -252,7 +252,7 @@ window.data = {
         {
             p1: [
                 { tr: "Balık", order: 3, ar: "السَّمَكَة" },
-                { tr: "nerede", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede", order: 1, ar: "أَيْن" },
                 { tr: "yaşar?", order: 2, ar: "تَعيشُ" },
             ],
             p2: [

@@ -42,7 +42,7 @@ window.data = {
         },
         {
             words: [
-                { tr: "Banyo", order: 1, ar: "الْحَمّام" },
+                { tr: "Banyo", order: 1, ar: "الحَمّام" },
                 { tr: "temiz.", order: 2, ar: "نَظيف." },
             ]
         },
@@ -63,7 +63,7 @@ window.data = {
         {
             words: [
                 { tr: "Babam", order: 1, ar: "أَبِي" },
-                { tr: "oturma odasında", order: 3, ar: "فِي غُرْفَةِ الْجُلُوسِ." },
+                { tr: "oturma odasında", order: 3, ar: "فِي غُرْفَةِ الجُلُوسِ." },
                 { tr: "oturuyor.", order: 2, ar: "يَجْلِسُ" },
             ]
         },
@@ -124,7 +124,7 @@ window.data = {
         },
         {
             words: [
-                { tr: "Ev", order: 1, ar: "الْبَيْت" },
+                { tr: "Ev", order: 1, ar: "البَيْت" },
                 { tr: "temiz", order: 2, ar: "نَظيف" },
                 { tr: "ve güzel.", order: 3, ar: "وَجَميل." },
             ]
@@ -157,7 +157,7 @@ window.data = {
         {
             p1: [
                 { tr: "Annen", order: 2, ar: "أُمُّكَ؟" },
-                { tr: "nerede?", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede?", order: 1, ar: "أَيْن" },
             ],
             p2: [
                 { tr: "Annem", order: 1, ar: "أُمّي" },
@@ -174,18 +174,18 @@ window.data = {
             ],
             p2: [
                 { tr: "Babam", order: 1, ar: "أَبِي" },
-                { tr: "oturma odasında", order: 3, ar: "في غُرْفَةِ الْجُلوس." },
+                { tr: "oturma odasında", order: 3, ar: "في غُرْفَةِ الجُلوس." },
                 { tr: "oturuyor.", order: 2, ar: "يَجْلِسُ" },
             ]
         },
         {
             p1: [
-                { tr: "Ev", order: 1, ar: "هَلِ الْبَيْت" },
+                { tr: "Ev", order: 1, ar: "هَل البَيْت" },
                 { tr: "güzel mi?", order: 2, ar: "جَميل؟" },
             ],
             p2: [
                 { tr: "Evet,", order: 1, ar: "نَعَم،" },
-                { tr: "ev", order: 2, ar: "الْبَيْت" },
+                { tr: "ev", order: 2, ar: "البَيْت" },
                 { tr: "temiz", order: 3, ar: "نَظيف" },
                 { tr: "ve güzel.", order: 4, ar: "وَجَميل." },
             ]
@@ -197,7 +197,7 @@ window.data.words = [
     { tr: "Ev", ar: "بَيْت" },
     { tr: "Oda", ar: "غُرْفَة" },
     { tr: "Yatak odası", ar: "غُرْفَة النَّوْم" },
-    { tr: "Oturma odası", ar: "غُرْفَة الْجُلوس" },
+    { tr: "Oturma odası", ar: "غُرْفَة الجُلوس" },
     { tr: "Mutfak", ar: "مَطْبَخ" },
     { tr: "Banyo", ar: "حَمّام" },
     { tr: "Tuvalet", ar: "مِرْحاض" },

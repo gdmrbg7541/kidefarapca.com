@@ -152,14 +152,14 @@ const VerbGenerator = {
                     }
                     
                     if (babNo === 7) coreWord = r1 + "ْ" + r2 + dynamicAynHareke + r3; 
-                    else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
+                    else if (babNo === 8) coreWord = r1 + "َ" + r2 + "ِّ" + r3;
                     else if (babNo === 9) coreWord = r1 + "َ" + "ا" + r2 + "ِ" + r3;
                     else if (babNo === 10) coreWord = "نْ" + r1 + "َ" + r2 + "ِ" + r3; 
                     else if (babNo === 12) {
                         if (index === 5 || index === 11) coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ِ" + r3; 
                         else coreWord = r1 + "ْ" + r2 + "َ" + r3 + "ّ"; 
                     } 
-                    else if (babNo === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
+                    else if (babNo === 13) coreWord = "تَ" + r1 + "َ" + r2 + "َّ" + r3; 
                     else if (babNo === 14) coreWord = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
                     else if (babNo === 15) coreWord = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
                     
@@ -176,14 +176,14 @@ const VerbGenerator = {
                     if (babNo === 12) {
                         let baseSeddeli = `اِ${r1}ْ${r2}َ${r3}`; 
                         let baseAcik = `اِ${r1}ْ${r2}َ${r3}َ${r3}`; 
-                        let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
+                        let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
                         if (index < 5) cekilmisKelime = baseSeddeli + seddeliEkler[index]; 
                         else cekilmisKelime = baseAcik + siga.ek; 
                     } else if (babNo === 11) {
                         cekilmisKelime = "اِ" + this.getIftialCore(kokArr, "َ") + siga.ek;
                     } else if (isMuzaaf) {
                         if (index < 5) {
-                            let maziEkleri = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
+                            let maziEkleri = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"]; 
                             cekilmisKelime = r1 + "َ" + r2 + maziEkleri[index]; 
                         } else {
                             let aynMazi = "َ"; 
@@ -195,12 +195,12 @@ const VerbGenerator = {
                         // İstif'al babı muzaaf (حقق): idğam (şedde) sakin ekli şahıslarda açılır (fekk-i idğam)
                         let baseSeddeli = `اِسْتَ${r1}َ${r2}`;
                         let baseAcik = `اِسْتَ${r1}ْ${r2}َ${r3}`;
-                        let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"];
+                        let seddeliEkler = ["َّ", "َّا", "ُّوا", "َّتْ", "َّتَا"];
                         if (index < 5) cekilmisKelime = baseSeddeli + seddeliEkler[index];
                         else cekilmisKelime = baseAcik + siga.ek;
                     } else {
                         let tabanKelime = (typeof applyRootToKalip === 'function') ? applyRootToKalip(kok, anaVezin, { skipMisalDrop: (babNo >= 7) }) : "";
-                        let stem = tabanKelime ? tabanKelime.replace(/[َُِّْ]$/, "") : "";
+                        let stem = tabanKelime ? tabanKelime.replace(/[َُِّْ]$/, "") : "";
                         
                         // (OYUN YAMASI: Mezid bablarda lâm-ı و olan nakıslar ي ile çekilir:
                         //  أَعْطَى -> أَعْطَيْتُ. Mücerredde asıl harf korunur: دَعَوْتُ.)
@@ -214,7 +214,7 @@ const VerbGenerator = {
                     if (babNo === 12) {
                         if (index === 5) cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}ِ${r3}ْنَ`; 
                         else {
-                            let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
+                            let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
                             cekilmisKelime = `اِ${r1}ْ${r2}َ${r3}${emirEkleri[index]}`; 
                         }
                     } else if (babNo === 11) {
@@ -225,7 +225,7 @@ const VerbGenerator = {
                             cekilmisKelime = emirPrefix + r1 + "ْ" + r2 + dynamicAynHareke + r3 + "ْنَ";
                         } else {
                             let coreEmir = r1 + dynamicAynHareke + r2; 
-                            let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
+                            let emirEkleri = ["َّ", "َّا", "ُّوا", "ِّي", "َّا"];
                             cekilmisKelime = coreEmir + emirEkleri[index];
                         }
                     } else {
@@ -236,10 +236,10 @@ const VerbGenerator = {
                         else if ([8, 9, 13, 14].includes(babNo)) emirPrefix = ""; 
                         
                         let coreEmir = r1 + "ْ" + r2 + dynamicAynHareke + r3;
-                        if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
+                        if (babNo === 8) coreEmir = r1 + "َ" + r2 + "ِّ" + r3;
                         else if (babNo === 9) coreEmir = r1 + "َ" + "ا" + r2 + "ِ" + r3;
                         else if (babNo === 10) coreEmir = "نْ" + r1 + "َ" + r2 + "ِ" + r3;
-                        else if (babNo === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
+                        else if (babNo === 13) coreEmir = "تَ" + r1 + "َ" + r2 + "َّ" + r3;
                         else if (babNo === 14) coreEmir = "تَ" + r1 + "َ" + "ا" + r2 + "َ" + r3;
                         else if (babNo === 15) coreEmir = "سْتَ" + r1 + "ْ" + r2 + "ِ" + r3;
 
@@ -268,7 +268,7 @@ const VerbGenerator = {
                 }
 
                 // (OYUN YAMASI) Hareke-şedde sırasını normalle (كِّ -> كّ + kasra):
-                // şablonlardaki "ِّ" dizilimi nakıs kurallarının $-desenlerini bozuyordu.
+                // şablonlardaki "ِّ" dizilimi nakıs kurallarının $-desenlerini bozuyordu.
                 cekilmisKelime = cekilmisKelime.replace(/([ً-ِْ])(ّ)/g, "$2$1");
                 if (typeof SarfEngine !== 'undefined') cekilmisKelime = SarfEngine.applyRules(cekilmisKelime, kokArr, callOptions);
                 kelimeListesi.push(cekilmisKelime);
@@ -437,8 +437,8 @@ const SarfEngine = {
             // MAZİ Şeddeli Ekler
             res = res.replace(/([\u0621-\u064A])َا([\u0621-\u064A])ّ/g, `$1${maziHareke}$2ّ`);
             res = res.replace(/([\u0621-\u064A])َوَ([\u0621-\u064A])ّ/g, `$1${maziHareke}$2ّ`);
-            res = res.replace(/([\u0621-\u064A])َيَ([\u0621-\u064A])ّ/g, `$1ِّ`);
-            res = res.replace(/([\u0621-\u064A])َ[وي]ِ([\u0621-\u064A])ّ/g, `$1ِّ`);
+            res = res.replace(/([\u0621-\u064A])َيَ([\u0621-\u064A])ّ/g, `$1ِّ`);
+            res = res.replace(/([\u0621-\u064A])َ[وي]ِ([\u0621-\u064A])ّ/g, `$1ِّ`);
 
             // MAZİ Sükunlar (Kadın Çoğul, Sen, Ben vb. -> عُدْنَ, بِعْنَ, خِفْنَ)
             res = res.replace(/([\u0621-\u064A])َا([\u0621-\u064A])ْ/g, `$1${maziHareke}$2ْ`);
@@ -451,17 +451,17 @@ const SarfEngine = {
             
             // MUZARİ HAREKELİ (MAZİDEN ÖNCE ÇALIŞIR, BÖYLECE YANLIŞLIKLA "يَبَاعُ" OLMAZ!)
             if (!skipIfalEcvef) {
-                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?وُ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2"); // 1. Bab -> يَعُودُ
-                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?يِ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2"); // 2. Bab -> يَبِيعُ
-                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?[وي]َ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // 3/4. Bab -> يَخَافُ
+                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?وُ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2"); // 1. Bab -> يَعُودُ
+                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?يِ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2"); // 2. Bab -> يَبِيعُ
+                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?[وي]َ(?!\u0627)([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // 3/4. Bab -> يَخَافُ
                 
                 // Yanlış Bab eşleşmeleri için tablo görünüm düzeltici
-                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?وِ([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2");
-                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?يُ([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2");
+                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?وِ([\u0621-\u064A])(?![ّْ])/g, "$1ِي$2");
+                res = res.replace(/([يتاأإن][َُِ]?(?!\u0627)[\u0621-\u064A])[َْ]?يُ([\u0621-\u064A])(?![ّْ])/g, "$1ُو$2");
             }
 
             // MAZİ HAREKELİ (Artık Muzari formları güvende olduğu için Mazi kuralları rahatça çalışabilir)
-            res = res.replace(/([\u0621-\u064A])َ[وي][َِ]([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // عَوَدَ -> عَادَ
+            res = res.replace(/([\u0621-\u064A])َ[وي][َِ]([\u0621-\u064A])(?![ّْ])/g, "$1َا$2"); // عَوَدَ -> عَادَ
 
             // ==========================================
             // 3. İSİM TAMLAMALARI VE MEF'ULLER

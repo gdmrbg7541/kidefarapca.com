@@ -1,4 +1,4 @@
-/* 5. sınıf — 5_3_2 (3. Ünite 2. Ders: Meslekler | اَلْمِهَن) */
+/* 5. sınıf — 5_3_2 (3. Ünite 2. Ders: Meslekler | اَلمِهَن) */
 /* Cümle & diyalog: MEB Arapça 5-8 Öğretim Programı hedef kelime/yapı bloklarına göre hazırlandı. */
 window.data = {
     "sentence": [
@@ -21,7 +21,7 @@ window.data = {
                 {
                     "tr": "öğretmendir.",
                     "order": 2,
-                    "ar": "مُعَلِّمٌ."
+                    "ar": "مُعَلِّمٌ."
                 }
             ]
         },
@@ -44,7 +44,7 @@ window.data = {
                 {
                     "tr": "öğretmendir.",
                     "order": 2,
-                    "ar": "مُعَلِّمَةٌ."
+                    "ar": "مُعَلِّمَةٌ."
                 }
             ]
         },
@@ -86,7 +86,7 @@ window.data = {
                 {
                     "tr": "memurdur.",
                     "order": 2,
-                    "ar": "مُوَظَّفٌ."
+                    "ar": "مُوَظَّفٌ."
                 }
             ]
         },
@@ -128,7 +128,7 @@ window.data = {
                 {
                     "tr": "ev hanımıdır.",
                     "order": 2,
-                    "ar": "رَبَّةُ البَيْتِ."
+                    "ar": "رَبَّةُ البَيْتِ."
                 }
             ]
         },
@@ -137,7 +137,7 @@ window.data = {
                 {
                     "tr": "Bu adam",
                     "order": 1,
-                    "ar": "هَذا الرَّجُلُ"
+                    "ar": "هَذا الرَّجُلُ"
                 },
                 {
                     "tr": "tüccardır.",
@@ -151,7 +151,7 @@ window.data = {
                 {
                     "tr": "Doktor",
                     "order": 1,
-                    "ar": "اَلطَّبيبُ"
+                    "ar": "اَلطَّبيبُ"
                 },
                 {
                     "tr": "hastanededir.",
@@ -165,7 +165,7 @@ window.data = {
                 {
                     "tr": "Öğretmen",
                     "order": 1,
-                    "ar": "اَلْمُعَلِّمَةُ"
+                    "ar": "اَلمُعَلِّمَةُ"
                 },
                 {
                     "tr": "okuldadır.",
@@ -184,7 +184,7 @@ window.data = {
                 {
                     "tr": "mesleğimi",
                     "order": 2,
-                    "ar": "أُحِبُّ"
+                    "ar": "أُحِبُّ"
                 },
                 {
                     "tr": "seviyorum.",
@@ -222,7 +222,7 @@ window.data = {
                 {
                     "tr": "memurum.",
                     "order": 3,
-                    "ar": "مُوَظَّفٌ."
+                    "ar": "مُوَظَّفٌ."
                 }
             ]
         }
@@ -264,7 +264,7 @@ window.data = {
                 {
                     "tr": "ne iş yapıyor?",
                     "order": 2,
-                    "ar": "أُمِّكَ؟"
+                    "ar": "أُمِّكَ؟"
                 }
             ],
             "p2": [
@@ -290,7 +290,7 @@ window.data = {
                 {
                     "tr": "öğretmen midir?",
                     "order": 2,
-                    "ar": "مُعَلِّمٌ؟"
+                    "ar": "مُعَلِّمٌ؟"
                 }
             ],
             "p2": [
@@ -307,7 +307,7 @@ window.data = {
                 {
                     "tr": "öğretmendir.",
                     "order": 3,
-                    "ar": "مُعَلِّمٌ."
+                    "ar": "مُعَلِّمٌ."
                 }
             ]
         },
@@ -316,12 +316,12 @@ window.data = {
                 {
                     "tr": "Doktor",
                     "order": 2,
-                    "ar": "أَيْنَ"
+                    "ar": "أَيْن"
                 },
                 {
                     "tr": "nerede?",
                     "order": 1,
-                    "ar": "الطَّبيبُ؟"
+                    "ar": "الطَّبيبُ؟"
                 }
             ],
             "p2": [
@@ -353,11 +353,11 @@ window.data = {
         },
         {
             "tr": "öğretmen (erkek)",
-            "ar": "مُعَلِّم"
+            "ar": "مُعَلِّم"
         },
         {
             "tr": "öğretmen (kadın)",
-            "ar": "مُعَلِّمَة"
+            "ar": "مُعَلِّمَة"
         },
         {
             "tr": "işçi (erkek)",
@@ -377,11 +377,11 @@ window.data = {
         },
         {
             "tr": "memur (erkek)",
-            "ar": "مُوَظَّف"
+            "ar": "مُوَظَّف"
         },
         {
             "tr": "memur (kadın)",
-            "ar": "مُوَظَّفَة"
+            "ar": "مُوَظَّفَة"
         },
         {
             "tr": "doktor (erkek)",
@@ -409,7 +409,7 @@ window.data = {
         },
         {
             "tr": "ev hanımı",
-            "ar": "رَبَّةُ البَيْت"
+            "ar": "رَبَّةُ البَيْت"
         },
         {
             "tr": "hastane",
@@ -429,7 +429,7 @@ window.data = {
         },
         {
             "tr": "seviyorum",
-            "ar": "أُحِبُّ"
+            "ar": "أُحِبُّ"
         },
         {
             "tr": "o (erkek)",

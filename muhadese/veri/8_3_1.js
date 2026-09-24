@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_3_1 (3. Ünite 1. Ders: Arkadaşlık | الصَّداقة) */
+/* 8. sınıf — 8_3_1 (3. Ünite 1. Ders: Arkadaşlık | الصَّداقة) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 3. Ünite, s. 62-69. */
 /* Dil noktası: GELECEK ZAMAN (سَـ) — سَأَزورُ · سَتَشْتَري · سَأَشْتَري. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */

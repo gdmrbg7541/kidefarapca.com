@@ -1,0 +1,27 @@
+
+──────────────────────────────────────────────────────────────
+24.09.2026 · HAREKE DÜZELTMESİ (A sınıfı)
+Ölçüt: Arapca_Hareke_Kuralları.docx
+Kapsam: ders metinleri + belgeler. Âyet/hadis (kısa sûreler) ve i'râbın
+konu olduğu modüller (sarf, dil bilgisi, kalıp tabloları, alfabe) muaf.
+
+Değişen 471 dosya:
+  · 242 js/json  — muhâdese verisi, sözlük/kelime listeleri, oyun verisi
+  · 204 docx     — dosyalar/ altındaki sınav, plan ve çalışma kâğıtları
+  ·  25 html/js  — yalnız ?v= sürüm tazelemesi (tarayıcı önbelleği için)
+
+Yapılan düzeltmeler (37.315):
+  20.644  şedde artık daima harekeden önce saklanıyor (görüntü aynı)
+  13.588  marifelik takısının lamındaki hareke silindi (kural 3a/3b)
+   1.227  özel ve yabancı isimlerde son hareke silindi (kural 8)
+   1.031  soru edatlarında son hareke silindi (kural 10)
+     825  مِنْ / عَنْ geçiş ve sükûn düzeni (kural 6)
+
+Yapılmayan (son hareke / i'râb sınıfı — ayrıca karar verilecek):
+  kural 2 marife isimde son hareke · kural 5 ٌ/ٍ tenvini · kural 9 geçiş
+
+Yedek: _kaynak/yedekler/hareke-oncesi-2026-09-24/ (599 dosya, 26 MB)
+       _kaynak/yedekler/hareke-surum-2026-09-24/ (sürüm öncesi html/js)
+Betikler: _kaynak/yedekler/betikler/hareke/{denetle2,duzelt}.py
+Rapor:    _kaynak/gecici/HAREKE-DENETIM-RAPORU.txt
+──────────────────────────────────────────────────────────────

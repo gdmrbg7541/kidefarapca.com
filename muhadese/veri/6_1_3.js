@@ -1,5 +1,5 @@
 /* 6. sınıf — 6_1_3 (1. Ünite 3. Ders: Evde | في البَيْت) */
-/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 1. Ünite (الحَياة اليَوْمِيَّة), s. 31-36. */
+/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 1. Ünite (الحَياة اليَوْمِيَّة), s. 31-36. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
     "sentence": [
@@ -64,12 +64,12 @@ window.data = {
                 {
                     "tr": "Anne",
                     "order": 2,
-                    "ar": "الأُمُّ"
+                    "ar": "الأُمُّ"
                 },
                 {
                     "tr": "erkenden",
                     "order": 3,
-                    "ar": "مُبَكِّرَةً."
+                    "ar": "مُبَكِّرَةً."
                 },
                 {
                     "tr": "uyandı.",
@@ -83,12 +83,12 @@ window.data = {
                 {
                     "tr": "Alışveriş merkezi",
                     "order": 1,
-                    "ar": "مَرْكَزُ التَّسَوُّقِ"
+                    "ar": "مَرْكَزُ التَّسَوُّقِ"
                 },
                 {
                     "tr": "eve",
                     "order": 3,
-                    "ar": "مِنَ البَيْتِ."
+                    "ar": "مِن البَيْتِ."
                 },
                 {
                     "tr": "yakındır.",
@@ -266,7 +266,7 @@ window.data = {
                 {
                     "tr": "erkenden",
                     "order": 3,
-                    "ar": "مُبَكِّرًا"
+                    "ar": "مُبَكِّرًا"
                 },
                 {
                     "tr": "uyandı",
@@ -286,7 +286,7 @@ window.data = {
                 {
                     "tr": "duydu.",
                     "order": 6,
-                    "ar": "مِنَ الخارِجِ."
+                    "ar": "مِن الخارِجِ."
                 }
             ]
         },
@@ -295,7 +295,7 @@ window.data = {
                 {
                     "tr": "Bu sese",
                     "order": 2,
-                    "ar": "مِنْ هَذا الصَّوْتِ"
+                    "ar": "مِنْ هَذا الصَّوْتِ"
                 },
                 {
                     "tr": "kızdı",
@@ -324,7 +324,7 @@ window.data = {
                 {
                     "tr": "onu öptü",
                     "order": 1,
-                    "ar": "قَبَّلَتْهُ"
+                    "ar": "قَبَّلَتْهُ"
                 },
                 {
                     "tr": "ve ona sordu:",
@@ -371,12 +371,12 @@ window.data = {
                 {
                     "tr": "Bu ses",
                     "order": 3,
-                    "ar": "هَذا الصَّوْتُ"
+                    "ar": "هَذا الصَّوْتُ"
                 },
                 {
                     "tr": "nereden",
                     "order": 1,
-                    "ar": "مِنْ أَيْنَ"
+                    "ar": "مِنْ أَيْن"
                 },
                 {
                     "tr": "geliyor",
@@ -400,12 +400,12 @@ window.data = {
                 {
                     "tr": "bu ses",
                     "order": 3,
-                    "ar": "هَذا الصَّوْتُ"
+                    "ar": "هَذا الصَّوْتُ"
                 },
                 {
                     "tr": "buzdolabının içinden",
                     "order": 4,
-                    "ar": "مِنْ داخِلِ الثَّلّاجَةِ."
+                    "ar": "مِنْ داخِلِ الثَّلّاجَةِ."
                 },
                 {
                     "tr": "geliyor.",
@@ -439,7 +439,7 @@ window.data = {
                 {
                     "tr": "çözecek",
                     "order": 4,
-                    "ar": "سَيَحُلُّ"
+                    "ar": "سَيَحُلُّ"
                 },
                 {
                     "tr": "inşallah.",
@@ -455,19 +455,19 @@ window.data = {
                 {
                     "tr": "Buzdolabı",
                     "order": 2,
-                    "ar": "الثَّلّاجَةُ؟"
+                    "ar": "الثَّلّاجَةُ؟"
                 },
                 {
                     "tr": "nerede?",
                     "order": 1,
-                    "ar": "أَيْنَ"
+                    "ar": "أَيْن"
                 }
             ],
             "p2": [
                 {
                     "tr": "Buzdolabı",
                     "order": 1,
-                    "ar": "الثَّلّاجَةُ"
+                    "ar": "الثَّلّاجَةُ"
                 },
                 {
                     "tr": "mutfaktadır.",
@@ -517,7 +517,7 @@ window.data = {
                 {
                     "tr": "Alışveriş merkezi",
                     "order": 2,
-                    "ar": "مَرْكَزُ التَّسَوُّقِ"
+                    "ar": "مَرْكَزُ التَّسَوُّقِ"
                 },
                 {
                     "tr": "yakın",
@@ -544,7 +544,7 @@ window.data = {
                 {
                     "tr": "eve",
                     "order": 4,
-                    "ar": "مِنَ البَيْتِ."
+                    "ar": "مِن البَيْتِ."
                 },
                 {
                     "tr": "yakındır.",
@@ -585,7 +585,7 @@ window.data = {
                 {
                     "tr": "çok",
                     "order": 4,
-                    "ar": "جِدًّا."
+                    "ar": "جِدًّا."
                 },
                 {
                     "tr": "temizdir.",
@@ -630,12 +630,12 @@ window.data = {
                 {
                     "tr": "Bu ses",
                     "order": 3,
-                    "ar": "هَذا الصَّوْتُ"
+                    "ar": "هَذا الصَّوْتُ"
                 },
                 {
                     "tr": "nereden",
                     "order": 1,
-                    "ar": "مِنْ أَيْنَ"
+                    "ar": "مِنْ أَيْن"
                 },
                 {
                     "tr": "geliyor",
@@ -652,12 +652,12 @@ window.data = {
                 {
                     "tr": "Bu ses",
                     "order": 2,
-                    "ar": "هَذا الصَّوْتُ"
+                    "ar": "هَذا الصَّوْتُ"
                 },
                 {
                     "tr": "buzdolabının içinden",
                     "order": 3,
-                    "ar": "مِنْ داخِلِ الثَّلّاجَةِ."
+                    "ar": "مِنْ داخِلِ الثَّلّاجَةِ."
                 },
                 {
                     "tr": "geliyor.",
@@ -676,7 +676,7 @@ window.data = {
                 {
                     "tr": "yavrum.",
                     "order": 2,
-                    "ar": "يا بُنَيَّ."
+                    "ar": "يا بُنَيَّ."
                 }
             ],
             "p2": [
@@ -717,7 +717,7 @@ window.data = {
                 {
                     "tr": "çözecek.",
                     "order": 4,
-                    "ar": "سَيَحُلُّ"
+                    "ar": "سَيَحُلُّ"
                 }
             ],
             "p2": [
@@ -769,7 +769,7 @@ window.data = {
         },
         {
             "tr": "alışveriş merkezi",
-            "ar": "مَرْكَزُ التَّسَوُّقِ"
+            "ar": "مَرْكَزُ التَّسَوُّقِ"
         },
         {
             "tr": "geniş (dişil)",
@@ -841,7 +841,7 @@ window.data = {
         },
         {
             "tr": "öptü",
-            "ar": "قَبَّلَ"
+            "ar": "قَبَّلَ"
         },
         {
             "tr": "sordu",
@@ -861,7 +861,7 @@ window.data = {
         },
         {
             "tr": "çözecek",
-            "ar": "سَيَحُلُّ"
+            "ar": "سَيَحُلُّ"
         },
         {
             "tr": "...dığı zaman",

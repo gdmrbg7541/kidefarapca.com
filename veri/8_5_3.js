@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_5_3 (5. Ünite 3. Ders: Spor Türleri | أَنْواعُ الرِّياضَة) */
+/* 8. sınıf — 8_5_3 (5. Ünite 3. Ders: Spor Türleri | أَنْواعُ الرِّياضَة) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 5. Ünite, s. 134-141. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
@@ -209,7 +209,7 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Tırmanma zor mu?", order: 1, ar: "هَلِ التَّسَلُّق صَعْب؟" },
+                { tr: "Tırmanma zor mu?", order: 1, ar: "هَل التَّسَلُّق صَعْب؟" },
             ],
             p2: [
                 { tr: "Evet,", order: 1, ar: "نَعَم،" },

@@ -137,8 +137,8 @@ window.SOZLUK_SINIF["10"] = {
       },
       { /* 10_4_1#2 */
         arabic: [
-          { text: "كَيْفَ", root: "كيف", category: "soru ismi" },
-          { text: "الطَّقْسُ", root: "طقس", category: "isim (ال takılı)" },
+          { text: "كَيْف", root: "كيف", category: "soru ismi" },
+          { text: "الطَّقْسُ", root: "طقس", category: "isim (ال takılı)" },
           { text: "اليَوْمَ؟", root: "اليوم", category: "zarf (zaman)" }
         ],
         turkish: ["nasıl?","hava","Bugün"],
@@ -146,7 +146,7 @@ window.SOZLUK_SINIF["10"] = {
       },
       { /* 10_4_1#3 */
         arabic: [
-          { text: "الطَّقْسُ", root: "طقس", category: "isim (ال takılı)" },
+          { text: "الطَّقْسُ", root: "طقس", category: "isim (ال takılı)" },
           { text: "مُشْمِسٌ", root: "مشمس", category: "isim" },
           { text: "اليَوْمَ.", root: "اليوم", category: "zarf (zaman)" }
         ],
@@ -164,7 +164,7 @@ window.SOZLUK_SINIF["10"] = {
       },
       { /* 10_4_2#16 */
         arabic: [
-          { text: "اَلْبائِعُ", root: "بائع", category: "isim (ال takılı)" },
+          { text: "اَلبائِعُ", root: "بائع", category: "isim (ال takılı)" },
           { text: "لَطيفٌ", root: "لطيف", category: "isim (sıfat)" },
           { text: "كَثيرًا.", root: "كثيرا", category: "zarf" }
         ],
@@ -173,7 +173,7 @@ window.SOZLUK_SINIF["10"] = {
       },
       { /* 10_4_2#17 */
         arabic: [
-          { text: "اَلسِّعْرُ", root: "سعر", category: "isim (ال takılı)" },
+          { text: "اَلسِّعْرُ", root: "سعر", category: "isim (ال takılı)" },
           { text: "مُرْتَفِعٌ.", root: "مرتفع", category: "isim" }
         ],
         turkish: ["Fiyat","yüksek."],
@@ -181,7 +181,7 @@ window.SOZLUK_SINIF["10"] = {
       },
       { /* 10_4_2#20 */
         arabic: [
-          { text: "أَيُّ", root: "أي", category: "soru ismi" },
+          { text: "أَيُّ", root: "أي", category: "soru ismi" },
           { text: "خِدْمَةٍ؟", root: "خدمة", category: "isim" }
         ],
         turkish: ["Buyurun,","ne arzu edersiniz?"],
@@ -310,7 +310,7 @@ window.SOZLUK_SINIF["10"] = {
         arabic: [
           { text: "كَمَسْجِد", root: "مسجد", category: "harf-i cer + isim" },
           { text: "آياصوفْيا", root: "SKIP", category: "isim (özel · yer)" },
-          { text: "الْكَبير،", root: "كبير", category: "isim (ال takılı)" },
+          { text: "الكَبير،", root: "كبير", category: "isim (ال takılı)" },
           { text: "وَقَصْر", root: "قصر", category: "atıf harfi + isim" },
           { text: "توبْكابي،", root: "SKIP", category: "isim (özel · yer)" },
           { text: "وَمُتْحَف", root: "متحف", category: "atıf harfi + isim" },
@@ -349,7 +349,7 @@ window.SOZLUK_SINIF["10"] = {
       },
       { /* 10_4_2#21 */
         arabic: [
-          { text: "كَيْفَ", root: "كيف", category: "soru ismi" },
+          { text: "كَيْف", root: "كيف", category: "soru ismi" },
           { text: "أُساعِدُكَ؟", root: "أساعد", category: "isim + bitişik zamir (sen)" }
         ],
         turkish: ["Size nasıl","yardımcı olabilirim?"],
@@ -524,7 +524,7 @@ window.SOZLUK_SINIF["10"] = {
           { text: "تَشْتَهِرُ", root: "اشتهر", category: "fiil (muzari · mezid)" },
           { text: "مَرْسِين", root: "SKIP", category: "isim (özel · yer)" },
           { text: "بِقَلْعَة", root: "قلعة", category: "harf-i cer + isim" },
-          { text: "الْفَتَاة.", root: "فتاة", category: "ال takılı · isim" }
+          { text: "الفَتَاة.", root: "فتاة", category: "ال takılı · isim" }
         ],
         turkish: ["meşhurdur.","Mersin","kalesi ile","kız"],
         turkishFull: "Mersin kız kalesi ile meşhurdur."
@@ -562,8 +562,8 @@ window.SOZLUK_SINIF["10"] = {
       { /* 10_4_1#16 */
         arabic: [
           { text: "أَصْبَحَ", root: "أصبح", category: "fiil (mazi · mezid)" },
-          { text: "الجَوُّ", root: "جو", category: "isim (ال takılı)" },
-          { text: "حارًّا.", root: "حار", category: "isim (tenvinli)" }
+          { text: "الجَوُّ", root: "جو", category: "isim (ال takılı)" },
+          { text: "حارًّا.", root: "حار", category: "isim (tenvinli)" }
         ],
         turkish: ["oldu.","Hava","sıcak"],
         turkishFull: "Hava sıcak oldu."
@@ -571,14 +571,14 @@ window.SOZLUK_SINIF["10"] = {
       { /* 10_4_1#17 */
         arabic: [
           { text: "يَنْزِلُ", root: "نزل", category: "fiil (muzari)" },
-          { text: "الثَّلْجُ", root: "ثلج", category: "isim (ال takılı)" }
+          { text: "الثَّلْجُ", root: "ثلج", category: "isim (ال takılı)" }
         ],
         turkish: ["yağıyor.","Kar"],
         turkishFull: "Kar yağıyor."
       },
       { /* 10_4_1#20 */
         arabic: [
-          { text: "أُنَظِّفُ", root: "نظف", category: "fiil (muzari · mezid)" },
+          { text: "أُنَظِّفُ", root: "نظف", category: "fiil (muzari · mezid)" },
           { text: "غُرْفَتي.", root: "غرفة", category: "isim + bitişik zamir (ben)" }
         ],
         turkish: ["temizlerim.","Odamı"],
@@ -605,7 +605,7 @@ window.SOZLUK_SINIF["10"] = {
   {
     level: 5,
     anahtar: "illetli",
-    hint: "<h3 dir=\"ltr\">Seviye 5 · İlletli ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">10. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin tümü geçerlidir.</li><li><b>Ecvef</b> (ortası illetli): <bdi class=\"ip-ar\">يَنامُ</bdi> → <bdi class=\"ip-ar\">نام</bdi> &nbsp;·&nbsp; <b>Misal</b> (başı illetli): <bdi class=\"ip-ar\">يَقِفُ</bdi> → <bdi class=\"ip-ar\">وقف</bdi></li><li><b>Nâkıs</b> (sonu illetli): <bdi class=\"ip-ar\">يُصَلّي</bdi> → <bdi class=\"ip-ar\">صلى</bdi> &nbsp;·&nbsp; <b>Mehmuz</b>: <bdi class=\"ip-ar\">يَأْكُلُ</bdi> → <bdi class=\"ip-ar\">أكل</bdi></li><li><b>Mudâaf</b> (şeddeli): <bdi class=\"ip-ar\">يُحِبُّ</bdi> → <bdi class=\"ip-ar\">أحب</bdi> &nbsp;·&nbsp; <b>Mezid</b> fiil kendi mazisiyle aranır: <bdi class=\"ip-ar\">يَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\">استيقظ</bdi></li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">والِدَتي</bdi> → <bdi class=\"ip-ar\"><b>والدة</b></bdi> <i>(isim + bitişik zamir (ben))</i></li><li><bdi class=\"ip-ar\">البَيْت،</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">تَهْتَمُّ</bdi> → <bdi class=\"ip-ar\"><b>اهتم</b></bdi> <i>(fiil (muzari · mezid · mudâaf))</i></li></ul>",
+    hint: "<h3 dir=\"ltr\">Seviye 5 · İlletli ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">10. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin tümü geçerlidir.</li><li><b>Ecvef</b> (ortası illetli): <bdi class=\"ip-ar\">يَنامُ</bdi> → <bdi class=\"ip-ar\">نام</bdi> &nbsp;·&nbsp; <b>Misal</b> (başı illetli): <bdi class=\"ip-ar\">يَقِفُ</bdi> → <bdi class=\"ip-ar\">وقف</bdi></li><li><b>Nâkıs</b> (sonu illetli): <bdi class=\"ip-ar\">يُصَلّي</bdi> → <bdi class=\"ip-ar\">صلى</bdi> &nbsp;·&nbsp; <b>Mehmuz</b>: <bdi class=\"ip-ar\">يَأْكُلُ</bdi> → <bdi class=\"ip-ar\">أكل</bdi></li><li><b>Mudâaf</b> (şeddeli): <bdi class=\"ip-ar\">يُحِبُّ</bdi> → <bdi class=\"ip-ar\">أحب</bdi> &nbsp;·&nbsp; <b>Mezid</b> fiil kendi mazisiyle aranır: <bdi class=\"ip-ar\">يَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\">استيقظ</bdi></li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">والِدَتي</bdi> → <bdi class=\"ip-ar\"><b>والدة</b></bdi> <i>(isim + bitişik zamir (ben))</i></li><li><bdi class=\"ip-ar\">البَيْت،</bdi> → <bdi class=\"ip-ar\"><b>بيت</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">تَهْتَمُّ</bdi> → <bdi class=\"ip-ar\"><b>اهتم</b></bdi> <i>(fiil (muzari · mezid · mudâaf))</i></li></ul>",
     sentences: [
       { /* 10_1_1#8 */
         arabic: [
@@ -695,7 +695,7 @@ window.SOZLUK_SINIF["10"] = {
       },
       { /* 10_3_1#5 */
         arabic: [
-          { text: "أَيْنَ", root: "أين", category: "soru ismi" },
+          { text: "أَيْن", root: "أين", category: "soru ismi" },
           { text: "تَعِيشُ؟", root: "عاش", category: "fiil (muzari · ecvef)" }
         ],
         turkish: ["Nerede","yaşıyorsun?"],
@@ -753,7 +753,7 @@ window.SOZLUK_SINIF["10"] = {
       },
       { /* 10_4_1#14 */
         arabic: [
-          { text: "أَيْنَ", root: "أين", category: "soru ismi" },
+          { text: "أَيْن", root: "أين", category: "soru ismi" },
           { text: "سَتَقْضي", root: "قضى", category: "sin harfi + fiil (muzari · nakıs)" },
           { text: "العُطْلَةَ؟", root: "عطلة", category: "isim (ال takılı)" }
         ],
@@ -763,7 +763,7 @@ window.SOZLUK_SINIF["10"] = {
       { /* 10_4_1#15 */
         arabic: [
           { text: "كانَ", root: "كان", category: "fiil (mazi · ecvef)" },
-          { text: "الطَّقْسُ", root: "طقس", category: "isim (ال takılı)" },
+          { text: "الطَّقْسُ", root: "طقس", category: "isim (ال takılı)" },
           { text: "بارِدًا", root: "بارد", category: "isim (tenvinli)" },
           { text: "أَمْسِ.", root: "أمس", category: "zarf (zaman)" }
         ],
@@ -773,7 +773,7 @@ window.SOZLUK_SINIF["10"] = {
       { /* 10_4_1#18 */
         arabic: [
           { text: "أَنا", root: "SKIP", category: "zamir" },
-          { text: "أَهْتَمُّ", root: "اهتم", category: "fiil (muzari · mezid · mudâaf)" },
+          { text: "أَهْتَمُّ", root: "اهتم", category: "fiil (muzari · mezid · mudâaf)" },
           { text: "بِالبيئَةِ.", root: "بيئة", category: "harf-i cer + isim (ال takılı)" }
         ],
         turkish: ["Ben","özen gösteririm.","çevreye"],
@@ -783,7 +783,7 @@ window.SOZLUK_SINIF["10"] = {
         arabic: [
           { text: "أُريدُ", root: "أراد", category: "fiil (muzari · ecvef · mezid)" },
           { text: "كيلو", root: "كيلو", category: "isim" },
-          { text: "سُكَّرٍ.", root: "سكر", category: "isim" }
+          { text: "سُكَّرٍ.", root: "سكر", category: "isim" }
         ],
         turkish: ["istiyorum.","Bir kilo","şeker"],
         turkishFull: "Bir kilo şeker istiyorum."
@@ -808,7 +808,7 @@ window.SOZLUK_SINIF["10"] = {
       },
       { /* 10_4_2#11 */
         arabic: [
-          { text: "أَيَّ", root: "أي", category: "soru ismi" },
+          { text: "أَيَّ", root: "أي", category: "soru ismi" },
           { text: "لَوْنٍ", root: "لون", category: "isim" },
           { text: "تُريدُ؟", root: "أراد", category: "fiil (muzari · ecvef · mezid)" }
         ],

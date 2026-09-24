@@ -19,7 +19,7 @@ const definitions = {
             conjugation: { mazi: "عَبَدَ", muzari: "يَعْبُدُ", emir: "اُعْبُدْ", mastar: "عِبَادَةً" }
         },
         {
-            verse: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+            verse: "اهْدِنَا الصِّرَاطَ المُسْتَقِيمَ",
             target: "اهْدِنَا",
             tr_target: "Bizi ilet",
             translation: "Bizi dosdoğru yola ilet.",
@@ -64,7 +64,7 @@ const definitions = {
 
         // --- KUREYŞ SURESİ ---
         {
-            verse: "فَلْيَعْبُدُوا رَبَّ هَذَا الْبَيْتِ",
+            verse: "فَلْيَعْبُدُوا رَبَّ هَذَا البَيْتِ",
             target: "فَلْيَعْبُدُوا",
             tr_target: "kulluk etsinler",
             translation: "Şu Ev'in (Kabe'nin) Rabbine kulluk etsinler.",
@@ -73,7 +73,7 @@ const definitions = {
         },
         
         {
-            verse: "فَذَلِكَ الَّذِي يَدُعُّ الْيَتِيمَ",
+            verse: "فَذَلِكَ الَّذِي يَدُعُّ اليَتِيمَ",
             target: "يَدُعُّ",
             tr_target: "itip kakan",
             translation: "İşte o, yetimi itip kakan kimsedir.",
@@ -92,7 +92,7 @@ const definitions = {
 
         // --- KAFİRUN SURESİ ---
         {
-            verse: "قُلْ يَا أَيُّهَا الْكَافِرُونَ",
+            verse: "قُلْ يَا أَيُّهَا الكَافِرُونَ",
             target: "قُلْ",
             tr_target: "De ki",
             translation: "De ki: Ey kafirler!",
@@ -154,7 +154,7 @@ const definitions = {
         },
 
         {
-            verse: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ",
+            verse: "قُلْ أَعُوذُ بِرَبِّ الفَلَقِ",
             target: "أَعُوذُ",
             tr_target: "sığınırım",
             translation: "De ki: Sabahın Rabbine sığınırım.",
@@ -213,7 +213,7 @@ const definitions = {
             conjugation: { mazi: "بَسَطَ", muzari: "يَبْسُطُ", emir: "اُبْسُطْ", mastar: "بَسْطًا" }
         },
         {
-            verse: "كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ",
+            verse: "كُلُّ نَفْسٍ ذَائِقَةُ المَوْتِ",
             target: "ذَائِقَةُ", 
             tr_target: "tadacaktır",
             translation: "Her nefis ölümü tadacaktır.",

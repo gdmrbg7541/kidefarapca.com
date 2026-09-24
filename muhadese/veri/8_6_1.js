@@ -1,6 +1,6 @@
-/* 8. sınıf — 8_6_1 (6. Ünite 1. Ders: Mezuniyet | التَّخَرُّج) */
+/* 8. sınıf — 8_6_1 (6. Ünite 1. Ders: Mezuniyet | التَّخَرُّج) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 6. Ünite, s. 144-151. */
-/* Dil noktası: GEÇMİŞ ZAMAN (mazi) — ذَهَبْتُ · تَخَرَّجَتْ · حَصَلْتِ · دَخَلَتْ. */
+/* Dil noktası: GEÇMİŞ ZAMAN (mazi) — ذَهَبْتُ · تَخَرَّجَتْ · حَصَلْتِ · دَخَلَتْ. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
     sentence: [
@@ -132,7 +132,7 @@ window.data = {
         },
         {
             words: [
-                { tr: "Nerede?", order: 1, ar: "أَيْنَ؟" },
+                { tr: "Nerede?", order: 1, ar: "أَيْن؟" },
             ]
         },
     ],
@@ -202,7 +202,7 @@ window.data = {
         {
             p1: [
                 { tr: "Tören", order: 2, ar: "الحَفْلَة؟" },
-                { tr: "nerede?", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede?", order: 1, ar: "أَيْن" },
             ],
             p2: [
                 { tr: "Okul bahçesinde.", order: 1, ar: "في حَديقَة المَدْرَسَة." },

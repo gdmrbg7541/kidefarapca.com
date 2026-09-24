@@ -1,5 +1,5 @@
 /* 6. sınıf — 6_1_1 (1. Ünite 1. Ders: Okulda | في المَدْرَسَة) */
-/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 1. Ünite (الحَياة اليَوْمِيَّة), s. 10-20. */
+/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 1. Ünite (الحَياة اليَوْمِيَّة), s. 10-20. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
     "sentence": [
@@ -102,7 +102,7 @@ window.data = {
                 {
                     "tr": "öğretmen",
                     "order": 3,
-                    "ar": "مُعَلِّمَةٌ؟"
+                    "ar": "مُعَلِّمَةٌ؟"
                 },
                 {
                     "tr": "mi?",
@@ -140,7 +140,7 @@ window.data = {
                 {
                     "tr": "erkenden",
                     "order": 3,
-                    "ar": "مُبَكِّرًا."
+                    "ar": "مُبَكِّرًا."
                 },
                 {
                     "tr": "uyandı.",
@@ -178,12 +178,12 @@ window.data = {
                 {
                     "tr": "namaz için",
                     "order": 3,
-                    "ar": "لِلصَّلاةِ."
+                    "ar": "لِلصَّلاةِ."
                 },
                 {
                     "tr": "abdest aldı.",
                     "order": 1,
-                    "ar": "تَوَضَّأَ"
+                    "ar": "تَوَضَّأَ"
                 }
             ]
         },
@@ -216,7 +216,7 @@ window.data = {
                 {
                     "tr": "evden",
                     "order": 3,
-                    "ar": "مِنَ البَيْتِ."
+                    "ar": "مِن البَيْتِ."
                 },
                 {
                     "tr": "çıktı.",
@@ -249,7 +249,7 @@ window.data = {
                 {
                     "tr": "Ahmet'in",
                     "order": 2,
-                    "ar": "أَحْمَدَ"
+                    "ar": "أَحْمَد"
                 },
                 {
                     "tr": "kitabı",
@@ -291,7 +291,7 @@ window.data = {
                 {
                     "tr": "Sınıfın",
                     "order": 2,
-                    "ar": "الصَّفِّ"
+                    "ar": "الصَّفِّ"
                 },
                 {
                     "tr": "tahtası",
@@ -333,12 +333,12 @@ window.data = {
                 {
                     "tr": "Ayşe",
                     "order": 2,
-                    "ar": "عائِشَةُ"
+                    "ar": "عائِشَة"
                 },
                 {
                     "tr": "erkenden",
                     "order": 3,
-                    "ar": "مُبَكِّرَةً."
+                    "ar": "مُبَكِّرَةً."
                 },
                 {
                     "tr": "uyandı.",
@@ -366,12 +366,12 @@ window.data = {
                 {
                     "tr": "Namaz için",
                     "order": 2,
-                    "ar": "لِلصَّلاةِ."
+                    "ar": "لِلصَّلاةِ."
                 },
                 {
                     "tr": "abdest aldı.",
                     "order": 1,
-                    "ar": "تَوَضَّأَتْ"
+                    "ar": "تَوَضَّأَتْ"
                 }
             ]
         },
@@ -394,7 +394,7 @@ window.data = {
                 {
                     "tr": "Evden",
                     "order": 2,
-                    "ar": "مِنَ البَيْتِ."
+                    "ar": "مِن البَيْتِ."
                 },
                 {
                     "tr": "çıktı.",
@@ -422,12 +422,12 @@ window.data = {
                 {
                     "tr": "Ahmet",
                     "order": 2,
-                    "ar": "أَحْمَدُ؟"
+                    "ar": "أَحْمَد؟"
                 },
                 {
                     "tr": "nerede?",
                     "order": 1,
-                    "ar": "أَيْنَ"
+                    "ar": "أَيْن"
                 }
             ]
         },
@@ -436,7 +436,7 @@ window.data = {
                 {
                     "tr": "Ahmet",
                     "order": 1,
-                    "ar": "أَحْمَدُ"
+                    "ar": "أَحْمَد"
                 },
                 {
                     "tr": "odada.",
@@ -450,12 +450,12 @@ window.data = {
                 {
                     "tr": "Ayşe",
                     "order": 3,
-                    "ar": "عائِشَةُ؟"
+                    "ar": "عائِشَة؟"
                 },
                 {
                     "tr": "nereye",
                     "order": 1,
-                    "ar": "إِلى أَيْنَ"
+                    "ar": "إِلى أَيْن"
                 },
                 {
                     "tr": "gitti?",
@@ -469,7 +469,7 @@ window.data = {
                 {
                     "tr": "Süleyman",
                     "order": 3,
-                    "ar": "سُلَيْمانُ؟"
+                    "ar": "سُلَيْمان؟"
                 },
                 {
                     "tr": "ne zaman",
@@ -488,12 +488,12 @@ window.data = {
                 {
                     "tr": "Süleyman",
                     "order": 2,
-                    "ar": "سُلَيْمانُ"
+                    "ar": "سُلَيْمان"
                 },
                 {
                     "tr": "erkenden",
                     "order": 3,
-                    "ar": "مُبَكِّرًا."
+                    "ar": "مُبَكِّرًا."
                 },
                 {
                     "tr": "uyandı.",
@@ -507,7 +507,7 @@ window.data = {
                 {
                     "tr": "Yusuf",
                     "order": 2,
-                    "ar": "يوسُفُ"
+                    "ar": "يوسُف"
                 },
                 {
                     "tr": "odasında",
@@ -531,7 +531,7 @@ window.data = {
                 {
                     "tr": "Yusuf",
                     "order": 2,
-                    "ar": "يوسُفُ"
+                    "ar": "يوسُف"
                 },
                 {
                     "tr": "odasında.",
@@ -564,7 +564,7 @@ window.data = {
                 {
                     "tr": "Zeynep,",
                     "order": 2,
-                    "ar": "زَيْنَبُ،"
+                    "ar": "زَيْنَب،"
                 },
                 {
                     "tr": "o",
@@ -593,7 +593,7 @@ window.data = {
                 {
                     "tr": "konuşuyor?",
                     "order": 2,
-                    "ar": "يَتَكَلَّمُ"
+                    "ar": "يَتَكَلَّمُ"
                 }
             ]
         },
@@ -602,12 +602,12 @@ window.data = {
                 {
                     "tr": "Öğretmen",
                     "order": 3,
-                    "ar": "المُعَلِّمُ"
+                    "ar": "المُعَلِّمُ"
                 },
                 {
                     "tr": "Ayşe'yi",
                     "order": 4,
-                    "ar": "عَنْ عائِشَةَ؟"
+                    "ar": "عَنْ عائِشَة؟"
                 },
                 {
                     "tr": "soruyor",
@@ -645,7 +645,7 @@ window.data = {
                 {
                     "tr": "Ayşe",
                     "order": 3,
-                    "ar": "عائِشَةُ"
+                    "ar": "عائِشَة"
                 },
                 {
                     "tr": "neden",
@@ -674,7 +674,7 @@ window.data = {
                 {
                     "tr": "doktorla",
                     "order": 3,
-                    "ar": "مَعَ الطَّبيبِ."
+                    "ar": "مَعَ الطَّبيبِ."
                 },
                 {
                     "tr": "randevusu var.",
@@ -690,7 +690,7 @@ window.data = {
                 {
                     "tr": "Selamün",
                     "order": 1,
-                    "ar": "السَّلامُ"
+                    "ar": "السَّلامُ"
                 },
                 {
                     "tr": "aleyküm.",
@@ -707,7 +707,7 @@ window.data = {
                 {
                     "tr": "selam.",
                     "order": 2,
-                    "ar": "السَّلامُ."
+                    "ar": "السَّلامُ."
                 }
             ]
         },
@@ -747,7 +747,7 @@ window.data = {
                 {
                     "tr": "nasıl?",
                     "order": 1,
-                    "ar": "كَيْفَ"
+                    "ar": "كَيْف"
                 }
             ],
             "p2": [
@@ -785,7 +785,7 @@ window.data = {
                 {
                     "tr": "buyurun.",
                     "order": 2,
-                    "ar": "تَفَضَّلْ."
+                    "ar": "تَفَضَّلْ."
                 }
             ]
         },
@@ -799,12 +799,12 @@ window.data = {
                 {
                     "tr": "Ayşe'nin",
                     "order": 3,
-                    "ar": "عائِشَةَ."
+                    "ar": "عائِشَة."
                 },
                 {
                     "tr": "öğretmeniyim.",
                     "order": 2,
-                    "ar": "مُعَلِّمُ"
+                    "ar": "مُعَلِّمُ"
                 }
             ],
             "p2": [
@@ -825,7 +825,7 @@ window.data = {
                 {
                     "tr": "Ayşe",
                     "order": 1,
-                    "ar": "عائِشَةُ"
+                    "ar": "عائِشَة"
                 },
                 {
                     "tr": "bugün",
@@ -943,11 +943,11 @@ window.data = {
         },
         {
             "tr": "öğretmen (bayan)",
-            "ar": "مُعَلِّمَة"
+            "ar": "مُعَلِّمَة"
         },
         {
             "tr": "öğretmen (bay)",
-            "ar": "مُعَلِّم"
+            "ar": "مُعَلِّم"
         },
         {
             "tr": "hasta (bayan)",
@@ -1051,7 +1051,7 @@ window.data = {
         },
         {
             "tr": "abdest aldı",
-            "ar": "تَوَضَّأَ"
+            "ar": "تَوَضَّأَ"
         },
         {
             "tr": "yedi",
@@ -1071,11 +1071,11 @@ window.data = {
         },
         {
             "tr": "konuşuyor",
-            "ar": "يَتَكَلَّمُ"
+            "ar": "يَتَكَلَّمُ"
         },
         {
             "tr": "erkenden",
-            "ar": "مُبَكِّرًا"
+            "ar": "مُبَكِّرًا"
         },
         {
             "tr": "bugün",
@@ -1091,7 +1091,7 @@ window.data = {
         },
         {
             "tr": "buyurun",
-            "ar": "تَفَضَّلْ"
+            "ar": "تَفَضَّلْ"
         },
         {
             "tr": "yok / devamsız",

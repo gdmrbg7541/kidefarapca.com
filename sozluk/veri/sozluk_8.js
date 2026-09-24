@@ -22,7 +22,7 @@ window.SOZLUK_SINIF["8"] = {
     {
       "level": 1,
       "anahtar": "al",
-      "hint": "<h3 dir=\"ltr\">Seviye 1 · <bdi class=\"ip-ar\">ال</bdi> takısı ve yalın isim</h3><p class=\"ip-sinif\" dir=\"ltr\">8. sınıf muhâdese cümlelerinden</p><ul><li>Kelimenin başındaki <bdi class=\"ip-ar\">ال</bdi> takısı atılır: <bdi class=\"ip-ar\">النّادي</bdi> → <bdi class=\"ip-ar\">نادي</bdi>.</li><li>Harekeler ve sondaki tenvin yazılmaz.</li><li>Harf-i cer kelimeye bitişikse o da atılır: <bdi class=\"ip-ar\">بِالرِّياضَة</bdi> → <bdi class=\"ip-ar\">رياضة</bdi>.</li><li>Özel adlar (kişi, şehir) sözlükte aranmaz, atlanır.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المَكْتَبَة!</bdi> → <bdi class=\"ip-ar\"><b>مكتبة</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">المَسْرَحِيَّة.</bdi> → <bdi class=\"ip-ar\"><b>مسرحية</b></bdi> <i>(isim (ال takılı · dişil))</i></li><li><bdi class=\"ip-ar\">بِالمَدْرَسَة.</bdi> → <bdi class=\"ip-ar\"><b>مدرسة</b></bdi> <i>(harf-i cer + isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">السّاعَة</bdi> → <bdi class=\"ip-ar\"><b>ساعة</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الواحِدَة.</bdi> → <bdi class=\"ip-ar\"><b>واحدة</b></bdi> <i>(isim (ال takılı · dişil))</i></li><li><bdi class=\"ip-ar\">والرُّبْع.</bdi> → <bdi class=\"ip-ar\"><b>ربع</b></bdi> <i>(atıf harfi + isim (ال takılı))</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 1 · <bdi class=\"ip-ar\">ال</bdi> takısı ve yalın isim</h3><p class=\"ip-sinif\" dir=\"ltr\">8. sınıf muhâdese cümlelerinden</p><ul><li>Kelimenin başındaki <bdi class=\"ip-ar\">ال</bdi> takısı atılır: <bdi class=\"ip-ar\">النّادي</bdi> → <bdi class=\"ip-ar\">نادي</bdi>.</li><li>Harekeler ve sondaki tenvin yazılmaz.</li><li>Harf-i cer kelimeye bitişikse o da atılır: <bdi class=\"ip-ar\">بِالرِّياضَة</bdi> → <bdi class=\"ip-ar\">رياضة</bdi>.</li><li>Özel adlar (kişi, şehir) sözlükte aranmaz, atlanır.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">المَكْتَبَة!</bdi> → <bdi class=\"ip-ar\"><b>مكتبة</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">المَسْرَحِيَّة.</bdi> → <bdi class=\"ip-ar\"><b>مسرحية</b></bdi> <i>(isim (ال takılı · dişil))</i></li><li><bdi class=\"ip-ar\">بِالمَدْرَسَة.</bdi> → <bdi class=\"ip-ar\"><b>مدرسة</b></bdi> <i>(harf-i cer + isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">السّاعَة</bdi> → <bdi class=\"ip-ar\"><b>ساعة</b></bdi> <i>(isim (ال takılı))</i></li><li><bdi class=\"ip-ar\">الواحِدَة.</bdi> → <bdi class=\"ip-ar\"><b>واحدة</b></bdi> <i>(isim (ال takılı · dişil))</i></li><li><bdi class=\"ip-ar\">والرُّبْع.</bdi> → <bdi class=\"ip-ar\"><b>ربع</b></bdi> <i>(atıf harfi + isim (ال takılı))</i></li></ul>",
       "sentences": [
         {
           "arabic": [
@@ -106,7 +106,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru edatı"
             },
@@ -615,7 +615,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "isim (sıfat · dişil)"
             },
             {
-              "text": "عَنِ",
+              "text": "عَنْ",
               "root": "عن",
               "category": "harf-i cer"
             },
@@ -679,7 +679,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "isim (sıfat · dişil)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "edat"
             },
@@ -1935,7 +1935,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru edatı"
             },
@@ -2601,7 +2601,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ؟",
+              "text": "أَيْن؟",
               "root": "أين",
               "category": "soru edatı"
             }
@@ -2733,7 +2733,7 @@ window.SOZLUK_SINIF["8"] = {
     {
       "level": 2,
       "anahtar": "zamir",
-      "hint": "<h3 dir=\"ltr\">Seviye 2 · Bitişik zamir, sayı ve çoğul</h3><p class=\"ip-sinif\" dir=\"ltr\">8. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyenin kuralları geçerlidir.</li><li>Bitişik zamir atılır: <bdi class=\"ip-ar\">صَديقي</bdi> → <bdi class=\"ip-ar\">صديق</bdi>.</li><li>Çoğul, <b>tekil</b> biçimiyle aranır: <bdi class=\"ip-ar\">الأَنْدِيَة</bdi> → <bdi class=\"ip-ar\">نادي</bdi>.</li><li>Dişil çoğulun tekili de dişildir: <bdi class=\"ip-ar\">الرِّياضات</bdi> → <bdi class=\"ip-ar\">رياضة</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">أَدَوات</bdi> → <bdi class=\"ip-ar\"><b>أداة</b></bdi> <i>(isim (dişil çoğul))</i></li><li><bdi class=\"ip-ar\">الكُتُب؟</bdi> → <bdi class=\"ip-ar\"><b>كتاب</b></bdi> <i>(isim (kırık çoğul · ال takılı))</i></li><li><bdi class=\"ip-ar\">بِكِ،</bdi> → <bdi class=\"ip-ar\"><b>بك</b></bdi> <i>(harf-i cer + bitişik zamir (sen))</i></li><li><bdi class=\"ip-ar\">لَكِ</bdi> → <bdi class=\"ip-ar\"><b>لك</b></bdi> <i>(edat + bitişik zamir (sen))</i></li><li><bdi class=\"ip-ar\">عَمَّتي!</bdi> → <bdi class=\"ip-ar\"><b>عمة</b></bdi> <i>(isim + bitişik zamir (ben))</i></li><li><bdi class=\"ip-ar\">الأماكِن</bdi> → <bdi class=\"ip-ar\"><b>مكان</b></bdi> <i>(isim (kırık çoğul · ال takılı))</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 2 · Bitişik zamir, sayı ve çoğul</h3><p class=\"ip-sinif\" dir=\"ltr\">8. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyenin kuralları geçerlidir.</li><li>Bitişik zamir atılır: <bdi class=\"ip-ar\">صَديقي</bdi> → <bdi class=\"ip-ar\">صديق</bdi>.</li><li>Çoğul, <b>tekil</b> biçimiyle aranır: <bdi class=\"ip-ar\">الأَنْدِيَة</bdi> → <bdi class=\"ip-ar\">نادي</bdi>.</li><li>Dişil çoğulun tekili de dişildir: <bdi class=\"ip-ar\">الرِّياضات</bdi> → <bdi class=\"ip-ar\">رياضة</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">أَدَوات</bdi> → <bdi class=\"ip-ar\"><b>أداة</b></bdi> <i>(isim (dişil çoğul))</i></li><li><bdi class=\"ip-ar\">الكُتُب؟</bdi> → <bdi class=\"ip-ar\"><b>كتاب</b></bdi> <i>(isim (kırık çoğul · ال takılı))</i></li><li><bdi class=\"ip-ar\">بِكِ،</bdi> → <bdi class=\"ip-ar\"><b>بك</b></bdi> <i>(harf-i cer + bitişik zamir (sen))</i></li><li><bdi class=\"ip-ar\">لَكِ</bdi> → <bdi class=\"ip-ar\"><b>لك</b></bdi> <i>(edat + bitişik zamir (sen))</i></li><li><bdi class=\"ip-ar\">عَمَّتي!</bdi> → <bdi class=\"ip-ar\"><b>عمة</b></bdi> <i>(isim + bitişik zamir (ben))</i></li><li><bdi class=\"ip-ar\">الأماكِن</bdi> → <bdi class=\"ip-ar\"><b>مكان</b></bdi> <i>(isim (kırık çoğul · ال takılı))</i></li></ul>",
       "sentences": [
         {
           "arabic": [
@@ -2988,7 +2988,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "isim (ال takılı)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "edat"
             },
@@ -3092,7 +3092,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru edatı"
             },
@@ -4272,7 +4272,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "edat + bitişik zamir (ben)"
             },
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru edatı"
             },
@@ -4481,7 +4481,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "كَيْفَ",
+              "text": "كَيْف",
               "root": "كيف",
               "category": "soru edatı"
             },
@@ -4623,7 +4623,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "كَيْفَ",
+              "text": "كَيْف",
               "root": "كيف",
               "category": "soru edatı"
             },
@@ -4687,7 +4687,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "كَيْفَ",
+              "text": "كَيْف",
               "root": "كيف",
               "category": "soru edatı"
             },
@@ -4697,7 +4697,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "soru edatı + fiil (mazi)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "edat"
             },
@@ -4737,7 +4737,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "كَيْفَ",
+              "text": "كَيْف",
               "root": "كيف",
               "category": "soru edatı"
             },
@@ -4747,7 +4747,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "soru edatı + fiil (mazi)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "edat"
             },
@@ -4781,7 +4781,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "كَيْفَ",
+              "text": "كَيْف",
               "root": "كيف",
               "category": "soru edatı"
             },
@@ -4791,7 +4791,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "soru edatı + fiil (mazi)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "edat"
             },
@@ -5841,7 +5841,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "كَيْفَ",
+              "text": "كَيْف",
               "root": "كيف",
               "category": "soru edatı"
             },
@@ -6518,7 +6518,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru edatı"
             },
@@ -8046,7 +8046,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "harf-i cer"
             },
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru edatı"
             },
@@ -8095,7 +8095,7 @@ window.SOZLUK_SINIF["8"] = {
     {
       "level": 4,
       "anahtar": "illetli",
-      "hint": "<h3 dir=\"ltr\">Seviye 4 · İlletli, mehmuz ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">8. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin kuralları geçerlidir.</li><li><b>Ecvef</b> (ortası illetli) fiilde harf geri gelir: <bdi class=\"ip-ar\">يَقولُ</bdi> → <bdi class=\"ip-ar\">قال</bdi>.</li><li><b>Misâl</b> fiilde düşen <bdi class=\"ip-ar\">و</bdi> geri gelir: <bdi class=\"ip-ar\">تَقَعُ</bdi> → <bdi class=\"ip-ar\">وقع</bdi>.</li><li><b>Mezid</b> fiil, artan harfleriyle birlikte aranır: <bdi class=\"ip-ar\">يُنَظِّفُ</bdi> → <bdi class=\"ip-ar\">نظف</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">سَنَخْتارُ</bdi> → <bdi class=\"ip-ar\"><b>اختار</b></bdi> <i>(fiil (muzari · istikbal · mezid))</i></li><li><bdi class=\"ip-ar\">أُحِبُّ</bdi> → <bdi class=\"ip-ar\"><b>أحب</b></bdi> <i>(fiil (mazi · mezid))</i></li><li><bdi class=\"ip-ar\">بُشْرى</bdi> → <bdi class=\"ip-ar\"><b>شرى</b></bdi> <i>(harf-i cer + fiil (mazi))</i></li><li><bdi class=\"ip-ar\">تُفَضِّلُ</bdi> → <bdi class=\"ip-ar\"><b>تفضل</b></bdi> <i>(fiil (mazi · mezid))</i></li><li><bdi class=\"ip-ar\">أَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\"><b>استيقظ</b></bdi> <i>(fiil (muzari · mezid))</i></li><li><bdi class=\"ip-ar\">أُحافِظُ</bdi> → <bdi class=\"ip-ar\"><b>حافظ</b></bdi> <i>(soru edatı + fiil (mazi · mezid))</i></li></ul>",
+      "hint": "<h3 dir=\"ltr\">Seviye 4 · İlletli, mehmuz ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">8. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin kuralları geçerlidir.</li><li><b>Ecvef</b> (ortası illetli) fiilde harf geri gelir: <bdi class=\"ip-ar\">يَقولُ</bdi> → <bdi class=\"ip-ar\">قال</bdi>.</li><li><b>Misâl</b> fiilde düşen <bdi class=\"ip-ar\">و</bdi> geri gelir: <bdi class=\"ip-ar\">تَقَعُ</bdi> → <bdi class=\"ip-ar\">وقع</bdi>.</li><li><b>Mezid</b> fiil, artan harfleriyle birlikte aranır: <bdi class=\"ip-ar\">يُنَظِّفُ</bdi> → <bdi class=\"ip-ar\">نظف</bdi>.</li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">سَنَخْتارُ</bdi> → <bdi class=\"ip-ar\"><b>اختار</b></bdi> <i>(fiil (muzari · istikbal · mezid))</i></li><li><bdi class=\"ip-ar\">أُحِبُّ</bdi> → <bdi class=\"ip-ar\"><b>أحب</b></bdi> <i>(fiil (mazi · mezid))</i></li><li><bdi class=\"ip-ar\">بُشْرى</bdi> → <bdi class=\"ip-ar\"><b>شرى</b></bdi> <i>(harf-i cer + fiil (mazi))</i></li><li><bdi class=\"ip-ar\">تُفَضِّلُ</bdi> → <bdi class=\"ip-ar\"><b>تفضل</b></bdi> <i>(fiil (mazi · mezid))</i></li><li><bdi class=\"ip-ar\">أَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\"><b>استيقظ</b></bdi> <i>(fiil (muzari · mezid))</i></li><li><bdi class=\"ip-ar\">أُحافِظُ</bdi> → <bdi class=\"ip-ar\"><b>حافظ</b></bdi> <i>(soru edatı + fiil (mazi · mezid))</i></li></ul>",
       "sentences": [
         {
           "arabic": [
@@ -9130,7 +9130,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "isim"
             },
             {
-              "text": "عَنِ",
+              "text": "عَنْ",
               "root": "عن",
               "category": "harf-i cer"
             },
@@ -10484,7 +10484,7 @@ window.SOZLUK_SINIF["8"] = {
               "category": "zarf (yön)"
             },
             {
-              "text": "مِنَ",
+              "text": "مِنْ",
               "root": "من",
               "category": "edat"
             },
@@ -10840,7 +10840,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "أَيْنَ",
+              "text": "أَيْن",
               "root": "أين",
               "category": "soru edatı"
             },
@@ -12694,7 +12694,7 @@ window.SOZLUK_SINIF["8"] = {
         {
           "arabic": [
             {
-              "text": "كَيْفَ",
+              "text": "كَيْف",
               "root": "كيف",
               "category": "soru edatı"
             },

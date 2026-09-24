@@ -233,7 +233,7 @@ window.data = {
                 { tr: "birlikte", order: 4, ar: "مَعًا." },
                 { tr: "tatile", order: 3, ar: "إلى العُطْلة" },
                 { tr: "gideceğiz.", order: 2, ar: "سَنَذْهَب" },
-                { tr: "Nereye", order: 5, ar: "إلى أَيْنَ" },
+                { tr: "Nereye", order: 5, ar: "إلى أَيْن" },
                 { tr: "gideceğiz?", order: 6, ar: "سَنَذْهَب؟" },
             ]
         },
@@ -390,7 +390,7 @@ window.data = {
             words: [
                 { tr: "Göğü", order: 1, ar: "وَالسَّمَاءَ" },
                 { tr: "yükseltti", order: 2, ar: "رَفَعَهَا" },
-                { tr: "ve mizanı koydu.", order: 3, ar: "وَوَضَعَ الْمِيزَانَ." },
+                { tr: "ve mizanı koydu.", order: 3, ar: "وَوَضَعَ المِيزَانَ." },
             ]
         },
     ],
@@ -530,7 +530,7 @@ dialog: [
             { tr: "birlikte", order: 4, ar: "مَعًا." },
             { tr: "tatile", order: 3, ar: "إلى العُطْلة" },
             { tr: "gideceğiz.", order: 2, ar: "سَنَذْهَب" },
-            { tr: "Nereye", order: 5, ar: "إلى أَيْنَ" },
+            { tr: "Nereye", order: 5, ar: "إلى أَيْن" },
             { tr: "gideceğiz?", order: 6, ar: "سَنَذْهَب؟" },
         ],
         p2: [

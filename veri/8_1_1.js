@@ -238,7 +238,7 @@ window.data = {
                 { tr: "ben", order: 4, ar: "وَأَنا" },
                 { tr: "spor", order: 7, ar: "الرِّياضِيَّة." },
                 { tr: "aletlerinden", order: 6, ar: "الأَدَوات" },
-                { tr: "sorumluyum.", order: 5, ar: "مَسْؤول عَنِ" },
+                { tr: "sorumluyum.", order: 5, ar: "مَسْؤول عَنْ" },
             ]
         },
         {
@@ -462,7 +462,7 @@ window.data = {
                 { tr: "ben", order: 4, ar: "وَأَنا" },
                 { tr: "spor", order: 7, ar: "الرِّياضِيَّة." },
                 { tr: "aletlerinden", order: 6, ar: "الأَدَوات" },
-                { tr: "sorumluyum.", order: 5, ar: "مَسْؤول عَنِ" },
+                { tr: "sorumluyum.", order: 5, ar: "مَسْؤول عَنْ" },
             ]
         },
         {

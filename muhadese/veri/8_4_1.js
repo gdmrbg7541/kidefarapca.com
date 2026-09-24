@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_4_1 (4. Ünite 1. Ders: Çevrenin Önemi | أَهَمِّيَّةُ البِيئَة) */
+/* 8. sınıf — 8_4_1 (4. Ünite 1. Ders: Çevrenin Önemi | أَهَمِّيَّةُ البِيئَة) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 4. Ünite, s. 88-95. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
@@ -211,7 +211,7 @@ window.data = {
         {
             p1: [
                 { tr: "Çöpleri", order: 3, ar: "النُّفايات؟" },
-                { tr: "nereye", order: 1, ar: "أَيْنَ" },
+                { tr: "nereye", order: 1, ar: "أَيْن" },
                 { tr: "atarsın?", order: 2, ar: "تَرْمي" },
             ],
             p2: [

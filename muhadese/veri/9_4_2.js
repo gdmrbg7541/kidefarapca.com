@@ -12,20 +12,20 @@ window.data = {
         {
             words: [
                 { tr: "Babamla", order: 3, ar: "مَعَ أَبِي." },
-                { tr: "sabah namazını", order: 2, ar: "صَلَاةَ الْفَجْرِ" },
+                { tr: "sabah namazını", order: 2, ar: "صَلَاةَ الفَجْرِ" },
                 { tr: "kılarım.", order: 1, ar: "أُصَلِّي" },
             ]
         },
         {
             words: [
                 { tr: "Saat yedide", order: 3, ar: "فِي السَّاعَةِ السَّابِعَةِ." },
-                { tr: "okula", order: 2, ar: "إِلَى الْمَدْرَسَةِ" },
+                { tr: "okula", order: 2, ar: "إِلَى المَدْرَسَةِ" },
                 { tr: "giderim.", order: 1, ar: "أَذْهَبُ" },
             ]
         },
         {
             words: [
-                { tr: "Sınıfta", order: 2, ar: "فِي الْفَصْلِ" },
+                { tr: "Sınıfta", order: 2, ar: "فِي الفَصْلِ" },
                 { tr: "arkadaşlarımla", order: 3, ar: "مَعَ أَصْدِقَائِي." },
                 { tr: "ders çalışırım.", order: 1, ar: "أَدْرُسُ" },
             ]
@@ -33,27 +33,27 @@ window.data = {
         {
             words: [
                 { tr: "Öğlen", order: 3, ar: "فِي الظُّهْرِ." },
-                { tr: "ailemle", order: 2, ar: "مَعَ الْأُسْرَةِ" },
+                { tr: "ailemle", order: 2, ar: "مَعَ الأُسْرَةِ" },
                 { tr: "öğle yemeği yerim.", order: 1, ar: "أَتَغَدَّى" },
             ]
         },
         {
             words: [
                 { tr: "Derslerimi", order: 2, ar: "دُرُوسِي" },
-                { tr: "akşamdan sonra", order: 3, ar: "بَعْدَ الْمَسَاءِ." },
+                { tr: "akşamdan sonra", order: 3, ar: "بَعْدَ المَسَاءِ." },
                 { tr: "okurum.", order: 1, ar: "أَقْرَأُ" },
             ]
         },
         {
             words: [
-                { tr: "Akşam", order: 3, ar: "فِي الْمَسَاءِ." },
-                { tr: "futbol", order: 2, ar: "كُرَةَ الْقَدَمِ" },
+                { tr: "Akşam", order: 3, ar: "فِي المَسَاءِ." },
+                { tr: "futbol", order: 2, ar: "كُرَةَ القَدَمِ" },
                 { tr: "oynarım.", order: 1, ar: "أَلْعَبُ" },
             ]
         },
         {
             words: [
-                { tr: "Mutfakta", order: 3, ar: "فِي الْمَطْبَخِ." },
+                { tr: "Mutfakta", order: 3, ar: "فِي المَطْبَخِ." },
                 { tr: "anneme", order: 2, ar: "أُمِّي" },
                 { tr: "yardım ederim.", order: 1, ar: "أُسَاعِدُ" },
             ]
@@ -81,7 +81,7 @@ window.data = {
         },
         {
             words: [
-                { tr: "Akşam", order: 3, ar: "فِي الْمَسَاءِ." },
+                { tr: "Akşam", order: 3, ar: "فِي المَسَاءِ." },
                 { tr: "dedemi", order: 2, ar: "جَدِّي" },
                 { tr: "ziyaret ederim.", order: 1, ar: "أَزُورُ" },
             ]
@@ -89,7 +89,7 @@ window.data = {
         {
             words: [
                 { tr: "Namaz için", order: 3, ar: "لِلصَّلَاةِ." },
-                { tr: "camiye", order: 2, ar: "إِلَى الْمَسْجِدِ" },
+                { tr: "camiye", order: 2, ar: "إِلَى المَسْجِدِ" },
                 { tr: "giderim.", order: 1, ar: "أَذْهَبُ" },
             ]
         },
@@ -124,25 +124,25 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Sabah namazını", order: 3, ar: "صَلَاةَ الْفَجْرِ؟" },
+                { tr: "Sabah namazını", order: 3, ar: "صَلَاةَ الفَجْرِ؟" },
                 { tr: "kiminle", order: 1, ar: "مَعَ مَنْ" },
                 { tr: "kılarsın?", order: 2, ar: "تُصَلِّي" },
             ],
             p2: [
-                { tr: "Sabah namazını", order: 2, ar: "صَلَاةَ الْفَجْرِ" },
+                { tr: "Sabah namazını", order: 2, ar: "صَلَاةَ الفَجْرِ" },
                 { tr: "babamla", order: 3, ar: "مَعَ أَبِي." },
                 { tr: "kılarım.", order: 1, ar: "أُصَلِّي" },
             ]
         },
         {
             p1: [
-                { tr: "Akşam", order: 3, ar: "فِي الْمَسَاءِ؟" },
+                { tr: "Akşam", order: 3, ar: "فِي المَسَاءِ؟" },
                 { tr: "ne", order: 1, ar: "مَاذَا" },
                 { tr: "yaparsın?", order: 2, ar: "تَفْعَلُ" },
             ],
             p2: [
-                { tr: "Akşam", order: 3, ar: "فِي الْمَسَاءِ." },
-                { tr: "futbol", order: 2, ar: "كُرَةَ الْقَدَمِ" },
+                { tr: "Akşam", order: 3, ar: "فِي المَسَاءِ." },
+                { tr: "futbol", order: 2, ar: "كُرَةَ القَدَمِ" },
                 { tr: "oynarım.", order: 1, ar: "أَلْعَبُ" },
             ]
         },
@@ -188,5 +188,5 @@ window.data.words = [
     { tr: "Geç yatıyorum", ar: "أَنامُ مُتَأَخِّرًا" },
     { tr: "Ne?", ar: "ماذا؟" },
     { tr: "Akşam", ar: "المَساء" },
-    { tr: "Nasıl?", ar: "كَيْفَ" },
+    { tr: "Nasıl?", ar: "كَيْف" },
 ];

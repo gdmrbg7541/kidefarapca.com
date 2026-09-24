@@ -21,7 +21,7 @@ window.data = {
         {
             words: [
                 { tr: "Bu kitaplar", order: 2, ar: "هذه الكُتُب؟" },
-                { tr: "nerede?", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede?", order: 1, ar: "أَيْن" },
             ]
         },
         {
@@ -289,7 +289,7 @@ window.data = {
         {
             p1: [
                 { tr: "Bu kitaplar", order: 2, ar: "هذه الكُتُب؟" },
-                { tr: "nerede?", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede?", order: 1, ar: "أَيْن" },
             ],
             p2: [
                 { tr: "Buyurun,", order: 1, ar: "تَفَضَّلْ،" },
@@ -332,7 +332,7 @@ window.data = {
         {
             p1: [
                 { tr: "Leylâ", order: 2, ar: "لَيْلى" },
-                { tr: "nereye", order: 3, ar: "إلى أَيْنَ" },
+                { tr: "nereye", order: 3, ar: "إلى أَيْن" },
                 { tr: "gitti?", order: 1, ar: "ذَهَبَتْ" },
             ],
             p2: [

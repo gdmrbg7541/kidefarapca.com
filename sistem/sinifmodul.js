@@ -445,8 +445,8 @@
 
   /* ---- MESLEKLER ----
      Sınıfta tahtaya yansıtılan dört oyun (ة ikizleri · مَنْ أَنا؟ ·
-     cümle treni · meslek çarkı). Kelime havuzu 5. sınıfın «الْمِهَن»
-     dersiyle yeni 6. sınıf kitabının «اَلْمِهَن» dersinin birleşimi:
+     cümle treni · meslek çarkı). Kelime havuzu 5. sınıfın «المِهَن»
+     dersiyle yeni 6. sınıf kitabının «اَلمِهَن» dersinin birleşimi:
      16 meslek, hepsinin erkek/kadın çifti var.
 
      YALNIZ 7. SINIFTA çıkıyor. Sebebi pedagojik: oyun 5 ve 6'nın

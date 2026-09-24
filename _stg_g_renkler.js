@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 { id: 2, arabic: 'أَزْرَق', turkish: 'Mavi', cssColor: '#3498DB' },
                                 { id: 3, arabic: 'أَصْفَر', turkish: 'Sarı', cssColor: '#F1C40F' },
                                 { id: 4, arabic: 'أَخْضَر', turkish: 'Yeşil', cssColor: '#2ECC71' },
-                                { id: 5, arabic: 'بُنِّيّ', turkish: 'Kahverengi', cssColor: '#A0522D' },
+                                { id: 5, arabic: 'بُنِّيّ', turkish: 'Kahverengi', cssColor: '#A0522D' },
                                 { id: 6, arabic: 'وَرْدِيّ', turkish: 'Pembe', cssColor: '#FFC0CB' },
                                 { id: 7, arabic: 'بُرتُقَالِيّ', turkish: 'Turuncu', cssColor: '#E67E22' },
                                 { id: 8, arabic: 'بَنَفْسَجِيّ', turkish: 'Mor', cssColor: '#8E44AD' }, // Yazım düzeltildi

@@ -8,7 +8,7 @@ window.data = {
                 {
                     "tr": "Yiyeceklerden",
                     "order": 3,
-                    "ar": "مِنَ المَأْكولاتِ؟"
+                    "ar": "مِن المَأْكولاتِ؟"
                 },
                 {
                     "tr": "ne",
@@ -56,7 +56,7 @@ window.data = {
                 {
                     "tr": "tereyağı",
                     "order": 3,
-                    "ar": "الزُّبْدَةَ"
+                    "ar": "الزُّبْدَةَ"
                 },
                 {
                     "tr": "bal ile",
@@ -75,7 +75,7 @@ window.data = {
                 {
                     "tr": "İçeceklerden",
                     "order": 3,
-                    "ar": "مِنَ المَشْروباتِ؟"
+                    "ar": "مِن المَشْروباتِ؟"
                 },
                 {
                     "tr": "ne",
@@ -123,12 +123,12 @@ window.data = {
                 {
                     "tr": "yiyeceklerden mi",
                     "order": 2,
-                    "ar": "مِنَ المَأْكولاتِ"
+                    "ar": "مِن المَأْكولاتِ"
                 },
                 {
                     "tr": "yoksa içeceklerden mi?",
                     "order": 3,
-                    "ar": "أَمْ مِنَ المَشْروباتِ؟"
+                    "ar": "أَمْ مِن المَشْروباتِ؟"
                 }
             ]
         },
@@ -137,7 +137,7 @@ window.data = {
                 {
                     "tr": "Yiyeceklerden",
                     "order": 3,
-                    "ar": "مِنَ المَأْكولاتِ؟"
+                    "ar": "مِن المَأْكولاتِ؟"
                 },
                 {
                     "tr": "neyi",
@@ -147,7 +147,7 @@ window.data = {
                 {
                     "tr": "tercih edersin?",
                     "order": 2,
-                    "ar": "تُفَضِّلُ"
+                    "ar": "تُفَضِّلُ"
                 }
             ]
         },
@@ -161,7 +161,7 @@ window.data = {
                 {
                     "tr": "tercih ederim,",
                     "order": 1,
-                    "ar": "أُفَضِّلُ"
+                    "ar": "أُفَضِّلُ"
                 },
                 {
                     "tr": "lütfen.",
@@ -199,7 +199,7 @@ window.data = {
                 {
                     "tr": "yavrum.",
                     "order": 3,
-                    "ar": "يا بُنَيَّ."
+                    "ar": "يا بُنَيَّ."
                 }
             ]
         },
@@ -294,7 +294,7 @@ window.data = {
                 {
                     "tr": "tereyağı istiyorum.",
                     "order": 2,
-                    "ar": "أُريدُ الزُّبْدَةَ"
+                    "ar": "أُريدُ الزُّبْدَةَ"
                 }
             ]
         },
@@ -303,12 +303,12 @@ window.data = {
                 {
                     "tr": "Buyur",
                     "order": 1,
-                    "ar": "تَفَضَّلْ"
+                    "ar": "تَفَضَّلْ"
                 },
                 {
                     "tr": "yavrum.",
                     "order": 2,
-                    "ar": "يا بُنَيَّ."
+                    "ar": "يا بُنَيَّ."
                 }
             ]
         },
@@ -331,7 +331,7 @@ window.data = {
                 {
                     "tr": "Ahmet",
                     "order": 2,
-                    "ar": "أَحْمَدُ"
+                    "ar": "أَحْمَد"
                 },
                 {
                     "tr": "aç mı",
@@ -355,7 +355,7 @@ window.data = {
                 {
                     "tr": "Ahmet",
                     "order": 3,
-                    "ar": "أَحْمَدُ"
+                    "ar": "أَحْمَد"
                 },
                 {
                     "tr": "kahvaltıdan önce",
@@ -379,7 +379,7 @@ window.data = {
                 {
                     "tr": "Ahmet",
                     "order": 3,
-                    "ar": "أَحْمَدُ"
+                    "ar": "أَحْمَد"
                 },
                 {
                     "tr": "annesinden",
@@ -403,7 +403,7 @@ window.data = {
                 {
                     "tr": "Ahmet",
                     "order": 3,
-                    "ar": "أَحْمَدُ"
+                    "ar": "أَحْمَد"
                 },
                 {
                     "tr": "ekmeğin üzerine",
@@ -413,7 +413,7 @@ window.data = {
                 {
                     "tr": "tereyağı",
                     "order": 4,
-                    "ar": "الزُّبْدَةَ"
+                    "ar": "الزُّبْدَةَ"
                 },
                 {
                     "tr": "yedi",
@@ -465,7 +465,7 @@ window.data = {
                 {
                     "tr": "altı tabak var.",
                     "order": 2,
-                    "ar": "سِتَّةُ أَطْباقٍ."
+                    "ar": "سِتَّةُ أَطْباقٍ."
                 }
             ]
         },
@@ -490,7 +490,7 @@ window.data = {
                 {
                     "tr": "Yiyeceklerden",
                     "order": 3,
-                    "ar": "مِنَ المَأْكولاتِ؟"
+                    "ar": "مِن المَأْكولاتِ؟"
                 },
                 {
                     "tr": "ne",
@@ -531,7 +531,7 @@ window.data = {
                 {
                     "tr": "İçeceklerden",
                     "order": 3,
-                    "ar": "مِنَ المَشْروباتِ؟"
+                    "ar": "مِن المَشْروباتِ؟"
                 },
                 {
                     "tr": "ne",
@@ -603,7 +603,7 @@ window.data = {
                 {
                     "tr": "Tereyağı",
                     "order": 2,
-                    "ar": "الزُّبْدَةَ؟"
+                    "ar": "الزُّبْدَةَ؟"
                 },
                 {
                     "tr": "ister misin?",
@@ -620,7 +620,7 @@ window.data = {
                 {
                     "tr": "tereyağı",
                     "order": 3,
-                    "ar": "الزُّبْدَةَ."
+                    "ar": "الزُّبْدَةَ."
                 },
                 {
                     "tr": "istemiyorum.",
@@ -727,7 +727,7 @@ window.data = {
                 {
                     "tr": "Süt",
                     "order": 2,
-                    "ar": "اللَّبَنَ؟"
+                    "ar": "اللَّبَنَ؟"
                 },
                 {
                     "tr": "ister misin?",
@@ -744,7 +744,7 @@ window.data = {
                 {
                     "tr": "süt",
                     "order": 3,
-                    "ar": "اللَّبَنَ."
+                    "ar": "اللَّبَنَ."
                 },
                 {
                     "tr": "istemiyorum.",
@@ -927,7 +927,7 @@ window.data = {
                 {
                     "tr": "tereyağı",
                     "order": 4,
-                    "ar": "الزُّبْدَةَ؟"
+                    "ar": "الزُّبْدَةَ؟"
                 },
                 {
                     "tr": "istiyor mu?",
@@ -954,7 +954,7 @@ window.data = {
                 {
                     "tr": "tereyağı",
                     "order": 4,
-                    "ar": "الزُّبْدَةَ."
+                    "ar": "الزُّبْدَةَ."
                 },
                 {
                     "tr": "istemiyor.",
@@ -978,7 +978,7 @@ window.data = {
                 {
                     "tr": "ey Ahmet.",
                     "order": 3,
-                    "ar": "يا أَحْمَدُ."
+                    "ar": "يا أَحْمَد."
                 }
             ],
             "p2": [
@@ -1014,7 +1014,7 @@ window.data = {
                 {
                     "tr": "yavrum,",
                     "order": 2,
-                    "ar": "يا بُنَيَّ،"
+                    "ar": "يا بُنَيَّ،"
                 },
                 {
                     "tr": "ellerini ve yüzünü",
@@ -1132,19 +1132,19 @@ window.data = {
                 {
                     "tr": "tereyağı istiyorum.",
                     "order": 2,
-                    "ar": "أُريدُ الزُّبْدَةَ"
+                    "ar": "أُريدُ الزُّبْدَةَ"
                 }
             ],
             "p2": [
                 {
                     "tr": "Buyur",
                     "order": 1,
-                    "ar": "تَفَضَّلْ"
+                    "ar": "تَفَضَّلْ"
                 },
                 {
                     "tr": "yavrum.",
                     "order": 2,
-                    "ar": "يا بُنَيَّ."
+                    "ar": "يا بُنَيَّ."
                 }
             ]
         },
@@ -1170,7 +1170,7 @@ window.data = {
                 {
                     "tr": "yavrum.",
                     "order": 2,
-                    "ar": "يا بُنَيَّ."
+                    "ar": "يا بُنَيَّ."
                 }
             ]
         }
@@ -1294,7 +1294,7 @@ window.data = {
         },
         {
             "tr": "tercih ederim",
-            "ar": "أُفَضِّلُ"
+            "ar": "أُفَضِّلُ"
         },
         {
             "tr": "yıka",
@@ -1302,7 +1302,7 @@ window.data = {
         },
         {
             "tr": "buyur",
-            "ar": "تَفَضَّلْ"
+            "ar": "تَفَضَّلْ"
         },
         {
             "tr": "hazır",

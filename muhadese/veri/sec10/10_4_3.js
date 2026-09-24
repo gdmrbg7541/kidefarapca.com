@@ -2,7 +2,7 @@
    الأَماكِن المُهِمّة في تُرْكِيا
    Kaynak: Ortaöğretim Seçmeli Arapça ders kitabı, basılı s.156-169.
    Dersin konusu: Türkiye'deki önemli mekânlar, çoğul fiil çekimi
-   (يَعْبُرونَ / يَعْبُرْنَ), saatin kesirleri (وَالنِّصْف، وَالرُّبْع، إِلّا رُبْعًا) ve günlük plan.
+   (يَعْبُرونَ / يَعْبُرْنَ), saatin kesirleri (وَالنِّصْف، وَالرُّبْع، إِلّا رُبْعًا) ve günlük plan.
    Diyaloğun son iki sorusu, kitabın s.162'deki metin sorularından
    ikinci şahsa çevrilerek düzenlenmiştir. */
 window.data = {
@@ -21,7 +21,7 @@ window.data = {
         /* Gelecek ay İstanbul'daki Ayasofya Camii'ni ziyaret edeceğim. (s.158) */
         {
             words: [
-                { tr: "Gelecek ay", order: 1, ar: "في الشَّهْرِ القادِمِ" },
+                { tr: "Gelecek ay", order: 1, ar: "في الشَّهْرِ القادِمِ" },
                 { tr: "İstanbul'daki", order: 4, ar: "في إِسْطَنْبول." },
                 { tr: "Ayasofya Camii'ni", order: 3, ar: "مَسْجِدَ آيا صوفيا" },
                 { tr: "ziyaret edeceğim.", order: 2, ar: "سَأَزورُ" }
@@ -54,7 +54,7 @@ window.data = {
         {
             words: [
                 { tr: "Bugün", order: 1, ar: "اليَوْمَ" },
-                { tr: "Antalya'ya gitmek için", order: 4, ar: "لِلذَّهابِ إِلى أَنْطاليا" },
+                { tr: "Antalya'ya gitmek için", order: 4, ar: "لِلذَّهابِ إِلى أَنْطاليا" },
                 { tr: "uçağa", order: 3, ar: "الطّائِرةَ" },
                 { tr: "bineceğiz.", order: 2, ar: "سَنَرْكَبُ" }
             ]
@@ -63,7 +63,7 @@ window.data = {
         /* Erkekler vatanları için çalışıyorlar. (s.159) */
         {
             words: [
-                { tr: "Erkekler", order: 1, ar: "الرِّجالُ" },
+                { tr: "Erkekler", order: 1, ar: "الرِّجالُ" },
                 { tr: "vatanları için", order: 3, ar: "مِنْ أَجْلِ وَطَنِهِم." },
                 { tr: "çalışıyorlar.", order: 2, ar: "يَعْمَلونَ" }
             ]
@@ -72,7 +72,7 @@ window.data = {
         /* Kadınlar vatanları için çalışıyorlar. (s.159) */
         {
             words: [
-                { tr: "Kadınlar", order: 1, ar: "النِّساءُ" },
+                { tr: "Kadınlar", order: 1, ar: "النِّساءُ" },
                 { tr: "vatanları için", order: 3, ar: "مِنْ أَجْلِ وَطَنِهِنّ." },
                 { tr: "çalışıyorlar.", order: 2, ar: "يَعْمَلْنَ" }
             ]
@@ -82,7 +82,7 @@ window.data = {
         {
             words: [
                 { tr: "Ziyaretçiler", order: 1, ar: "الزّائِرونَ" },
-                { tr: "yolu", order: 3, ar: "الطَّريقَ،" },
+                { tr: "yolu", order: 3, ar: "الطَّريقَ،" },
                 { tr: "geçiyorlar", order: 2, ar: "يَعْبُرونَ" },
                 { tr: "ama", order: 4, ar: "وَلكِنْ" },
                 { tr: "köprüyü", order: 6, ar: "الجِسْر." },
@@ -93,11 +93,11 @@ window.data = {
         /* Onlar (hanımlar) otobüse biniyorlar ama arabaya binmiyorlar. (s.163) */
         {
             words: [
-                { tr: "Onlar (hanımlar)", order: 1, ar: "هُنَّ" },
+                { tr: "Onlar (hanımlar)", order: 1, ar: "هُنَّ" },
                 { tr: "otobüse", order: 3, ar: "الحافِلةَ" },
                 { tr: "biniyorlar", order: 2, ar: "يَرْكَبْنَ" },
                 { tr: "ama", order: 4, ar: "وَلكِنْ" },
-                { tr: "arabaya", order: 6, ar: "السَّيّارة." },
+                { tr: "arabaya", order: 6, ar: "السَّيّارة." },
                 { tr: "binmiyorlar.", order: 5, ar: "لا يَرْكَبْنَ" }
             ]
         },
@@ -105,8 +105,8 @@ window.data = {
         /* Saat beş buçukta abdest alıyorum. (s.165) */
         {
             words: [
-                { tr: "Saat beş buçukta", order: 2, ar: "في السّاعةِ الخامِسةِ وَالنِّصْف." },
-                { tr: "abdest alıyorum.", order: 1, ar: "أَتَوَضَّأُ" }
+                { tr: "Saat beş buçukta", order: 2, ar: "في السّاعةِ الخامِسةِ وَالنِّصْف." },
+                { tr: "abdest alıyorum.", order: 1, ar: "أَتَوَضَّأُ" }
             ]
         },
 
@@ -114,7 +114,7 @@ window.data = {
         {
             words: [
                 { tr: "Park", order: 1, ar: "الحَديقةُ" },
-                { tr: "kütüphaneye", order: 3, ar: "مِنَ المَكْتَبة." },
+                { tr: "kütüphaneye", order: 3, ar: "مِن المَكْتَبة." },
                 { tr: "yakındır.", order: 2, ar: "قَريبةٌ" }
             ]
         },
@@ -146,7 +146,7 @@ window.data = {
                 { tr: "Ben", order: 1, ar: "أَنا" },
                 { tr: "Topkapı Sarayı'nı", order: 3, ar: "زِيارةَ قَصْرِ طوب قابي،" },
                 { tr: "ziyaret etmek istiyorum,", order: 2, ar: "أُريدُ" },
-                { tr: "saray nerede", order: 4, ar: "أَيْنَ القَصْرُ" },
+                { tr: "saray nerede", order: 4, ar: "أَيْن القَصْرُ" },
                 { tr: "arkadaşım?", order: 5, ar: "يا صَديقَتي؟" }
             ],
             p2: [
@@ -163,7 +163,7 @@ window.data = {
             ],
             p2: [
                 { tr: "Saray", order: 1, ar: "القَصْرُ" },
-                { tr: "sabah saat dokuzdan", order: 3, ar: "مِنَ السّاعةِ التّاسِعةِ صَباحًا" },
+                { tr: "sabah saat dokuzdan", order: 3, ar: "مِن السّاعةِ التّاسِعةِ صَباحًا" },
                 { tr: "akşam saat altıya kadar", order: 4, ar: "إِلى السّاعةِ السّادِسةِ مَساءً." },
                 { tr: "açıktır.", order: 2, ar: "مَفْتوحٌ" }
             ]
@@ -188,7 +188,7 @@ window.data = {
             ],
             p2: [
                 { tr: "Akşam saat altıda", order: 3, ar: "في السّاعةِ السّادِسةِ مَساءً." },
-                { tr: "basketbol", order: 2, ar: "كُرةَ السَّلّة" },
+                { tr: "basketbol", order: 2, ar: "كُرةَ السَّلّة" },
                 { tr: "oynayacağım.", order: 1, ar: "سَأَلْعَبُ" }
             ]
         },
@@ -208,21 +208,21 @@ window.data = {
 /* Dersin kelimeleri (Kelime Listeleri bölümü bu diziyi okur) */
 window.data.words = [
     { tr: "Topkapı Sarayı", ar: "قَصْر طوب قابي" }, { tr: "Ayasofya Camii", ar: "مَسْجِد آيا صوفيا" },
-    { tr: "Sultan Ahmet Camii", ar: "مَسْجِد السُّلْطان أَحْمَد" }, { tr: "Ulu Cami", ar: "مَسْجِد أولو" },
+    { tr: "Sultan Ahmet Camii", ar: "مَسْجِد السُّلْطان أَحْمَد" }, { tr: "Ulu Cami", ar: "مَسْجِد أولو" },
     { tr: "Hasankeyf", ar: "حِصْن كيفى" }, { tr: "Diyarbakır surları", ar: "أَسْوار دِيار بَكْر" },
     { tr: "Aspendos Tiyatrosu", ar: "مَسْرَح أَسْبَنْدوس" }, { tr: "Balıklı Göl", ar: "بُحَيرة الأَسْماك" },
     { tr: "Göreme Açık Hava Müzesi", ar: "مُتْحَف غوريم المَفْتوح" },
-    { tr: "Türkiye Büyük Millet Meclisi", ar: "المَجْلِس الوَطَنِيّ التُّرْكِيّ الكَبير" },
+    { tr: "Türkiye Büyük Millet Meclisi", ar: "المَجْلِس الوَطَنِيّ التُّرْكِيّ الكَبير" },
     { tr: "Saray", ar: "القَصْر" }, { tr: "Tiyatro", ar: "مَسْرَح" },
     { tr: "Duvar, sur", ar: "الأَسْوار" }, { tr: "Köprü", ar: "الجِسْر" },
     { tr: "Açık", ar: "مَفْتوح" }, { tr: "Vakit, zaman", ar: "وَقْت" },
-    { tr: "Erkekler", ar: "الرِّجال" }, { tr: "Kadınlar", ar: "النِّساء" },
+    { tr: "Erkekler", ar: "الرِّجال" }, { tr: "Kadınlar", ar: "النِّساء" },
     { tr: "Yarın", ar: "غَدًا" }, { tr: "Bugün", ar: "اليَوْم" },
-    { tr: "Gelecek ay", ar: "الشَّهْر القادِم" }, { tr: "Gece", ar: "لَيْلًا" },
+    { tr: "Gelecek ay", ar: "الشَّهْر القادِم" }, { tr: "Gece", ar: "لَيْلًا" },
     { tr: "Geçiyor", ar: "يَعْبُرُ" }, { tr: "Giriyor", ar: "يَدْخُلُ" },
     { tr: "Vakit geçiriyor", ar: "يَقْضي" }, { tr: "Biniyor", ar: "يَرْكَبُ" },
-    { tr: "Saat bir", ar: "السّاعة الواحِدة" }, { tr: "Buçuk", ar: "وَالنِّصْف" },
-    { tr: "Çeyrek geçe", ar: "وَالرُّبُع" }, { tr: "Yirmi geçe", ar: "وَالثُّلُث" },
+    { tr: "Saat bir", ar: "السّاعة الواحِدة" }, { tr: "Buçuk", ar: "وَالنِّصْف" },
+    { tr: "Çeyrek geçe", ar: "وَالرُّبُع" }, { tr: "Yirmi geçe", ar: "وَالثُّلُث" },
     { tr: "Çeyrek kala", ar: "إِلّا رُبْعًا" }, { tr: "Yirmi kala", ar: "إِلّا ثُلْثًا" },
     { tr: "On birinci (saat on bir)", ar: "الحادِية عَشْرة" }, { tr: "On ikinci (saat on iki)", ar: "الثّانِية عَشْرة" }
 ];

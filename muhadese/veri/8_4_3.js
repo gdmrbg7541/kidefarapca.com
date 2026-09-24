@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_4_3 (4. Ünite 3. Ders: Doğal Afetler | الكَوارِثُ الطَّبيعِيَّة) */
+/* 8. sınıf — 8_4_3 (4. Ünite 3. Ders: Doğal Afetler | الكَوارِثُ الطَّبيعِيَّة) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 4. Ünite, s. 106-113. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
@@ -204,7 +204,7 @@ window.data = {
         {
             p1: [
                 { tr: "Türkiye'de deprem hattı", order: 3, ar: "خَطّ الزِّلْزال في تُرْكِيا؟" },
-                { tr: "nerede", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede", order: 1, ar: "أَيْن" },
                 { tr: "bulunur?", order: 2, ar: "يوجَدُ" },
             ],
             p2: [

@@ -1,5 +1,5 @@
 /* 10. sınıf SEÇMELİ ARAPÇA — 4. Ünite (الأَماكِن المُهِمّة) 1. Ders:
-   الآثار التُّرْكِيّة-الإِسْلامِيّة في العالَم
+   الآثار التُّرْكِيّة-الإِسْلامِيّة في العالَم
    Kaynak: Ortaöğretim Seçmeli Arapça ders kitabı, basılı s.126-139.
    Dersin konusu: tatil ve seyahat planı, سـ ile gelecek ve لَنْ ile olumsuz
    gelecek, yer belirten edatlar (أَمامَ/خَلْفَ/فَوْقَ/تَحْتَ/قَريب مِنْ/بَعيد عَنْ),
@@ -61,7 +61,7 @@ window.data = {
         /* Eczane evin altındadır. (s.129) */
         {
             words: [
-                { tr: "Eczane", order: 1, ar: "الصَّيْدَلِيّةُ" },
+                { tr: "Eczane", order: 1, ar: "الصَّيْدَلِيّةُ" },
                 { tr: "evin altındadır.", order: 2, ar: "تَحْتَ البَيْت." }
             ]
         },
@@ -70,7 +70,7 @@ window.data = {
         {
             words: [
                 { tr: "Lokanta", order: 1, ar: "المَطْعَمُ" },
-                { tr: "camiden", order: 3, ar: "عَنِ الجامِع." },
+                { tr: "camiden", order: 3, ar: "عَن الجامِع." },
                 { tr: "uzaktır.", order: 2, ar: "بَعيدٌ" }
             ]
         },
@@ -79,7 +79,7 @@ window.data = {
         {
             words: [
                 { tr: "Ev", order: 1, ar: "البَيْتُ" },
-                { tr: "parka", order: 3, ar: "مِنَ الحَديقة." },
+                { tr: "parka", order: 3, ar: "مِن الحَديقة." },
                 { tr: "yakındır.", order: 2, ar: "قَريبٌ" }
             ]
         },
@@ -107,7 +107,7 @@ window.data = {
             words: [
                 { tr: "Şam'da", order: 4, ar: "في دِمَشْق." },
                 { tr: "birçok", order: 2, ar: "الكَثيرُ" },
-                { tr: "Osmanlı eseri", order: 3, ar: "مِنَ الآثارِ العُثْمانِيّةِ" },
+                { tr: "Osmanlı eseri", order: 3, ar: "مِن الآثارِ العُثْمانِيّةِ" },
                 { tr: "vardır.", order: 1, ar: "هُناكَ" }
             ]
         },
@@ -117,7 +117,7 @@ window.data = {
             words: [
                 { tr: "Saray", order: 2, ar: "بِناءُ القَصْرِ" },
                 { tr: "on sekizinci yüzyılda", order: 3, ar: "في القَرْنِ الثّامِنَ عَشَر." },
-                { tr: "inşa edildi.", order: 1, ar: "تَمَّ" }
+                { tr: "inşa edildi.", order: 1, ar: "تَمَّ" }
             ]
         },
 
@@ -131,12 +131,12 @@ window.data = {
         }
     ],
 
-    /* Diyalog: العُطْلة ve إِلى المَطار (s.126), في الشَّرِكة السِّياحِيّة (s.131) */
+    /* Diyalog: العُطْلة ve إِلى المَطار (s.126), في الشَّرِكة السِّياحِيّة (s.131) */
     dialog: [
         {
             p1: [
                 { tr: "Gelecek tatilde", order: 3, ar: "في العُطْلةِ القادِمةِ" },
-                { tr: "nereye", order: 1, ar: "إِلى أَيْنَ" },
+                { tr: "nereye", order: 1, ar: "إِلى أَيْن" },
                 { tr: "yolculuk edeceksin", order: 2, ar: "سَتُسافِرُ" },
                 { tr: "Ahmed?", order: 4, ar: "يا أَحْمَد؟" }
             ],
@@ -149,7 +149,7 @@ window.data = {
             p1: [
                 { tr: "Peki sen", order: 1, ar: "وَأَنْتَ" },
                 { tr: "arkadaşım,", order: 2, ar: "يا صَديقي،" },
-                { tr: "gelecek yaz", order: 5, ar: "في الصَّيْفِ القادِم؟" },
+                { tr: "gelecek yaz", order: 5, ar: "في الصَّيْفِ القادِم؟" },
                 { tr: "Urfa'ya", order: 4, ar: "إِلى أورفا" },
                 { tr: "gidecek misin?", order: 3, ar: "هَلْ سَتَذْهَبُ" }
             ],
@@ -165,12 +165,12 @@ window.data = {
         {
             p1: [
                 { tr: "Havaalanına", order: 3, ar: "إِلى المَطارِ" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "gideceğiz", order: 2, ar: "سَنَذْهَبُ" },
                 { tr: "anneciğim?", order: 4, ar: "يا أُمّي؟" }
             ],
             p2: [
-                { tr: "Oraya gitmek için", order: 3, ar: "لِلذَّهابِ إِلَيْه." },
+                { tr: "Oraya gitmek için", order: 3, ar: "لِلذَّهابِ إِلَيْه." },
                 { tr: "bir taksi", order: 2, ar: "سَيّارةَ أُجْرةٍ" },
                 { tr: "tutacağız.", order: 1, ar: "سَنَأْخُذُ" }
             ]
@@ -178,7 +178,7 @@ window.data = {
         {
             p1: [
                 { tr: "Taksi", order: 2, ar: "سَيّارةُ الأُجْرة؟" },
-                { tr: "nerede?", order: 1, ar: "أَيْنَ" }
+                { tr: "nerede?", order: 1, ar: "أَيْن" }
             ],
             p2: [
                 { tr: "Şurada,", order: 1, ar: "هُناكَ،" },
@@ -189,13 +189,13 @@ window.data = {
             p1: [
                 { tr: "Konya şehrine", order: 2, ar: "إِلى مَدينةِ قونيا،" },
                 { tr: "yolculuk edeceğim,", order: 1, ar: "سَأُسافِرُ" },
-                { tr: "orada hangi tarihî eser", order: 4, ar: "أَيُّ أَثَرٍ تاريخِيٍّ" },
+                { tr: "orada hangi tarihî eser", order: 4, ar: "أَيُّ أَثَرٍ تاريخِيٍّ" },
                 { tr: "bulunduğunu", order: 5, ar: "يوجَدُ فيها؟" },
                 { tr: "bana söyler misiniz?", order: 3, ar: "هَلْ تَقولُ لي" }
             ],
             p2: [
-                { tr: "Tabii ki", order: 1, ar: "بِالطَّبْعِ" },
-                { tr: "efendim!", order: 2, ar: "يا سَيِّدَتي!" },
+                { tr: "Tabii ki", order: 1, ar: "بِالطَّبْعِ" },
+                { tr: "efendim!", order: 2, ar: "يا سَيِّدَتي!" },
                 { tr: "Konya şehrinin", order: 3, ar: "لِمَدينةِ قونيا" },
                 { tr: "tarihimizde", order: 5, ar: "في تاريخِنا." },
                 { tr: "önemli bir yeri vardır.", order: 4, ar: "مَكانةٌ مُهِمّةٌ" }
@@ -209,7 +209,7 @@ window.data = {
             ],
             p2: [
                 { tr: "Evet,", order: 1, ar: "نَعَمْ،" },
-                { tr: "Selimiye Camii,", order: 3, ar: "مَسْجِدُ السُّلَيْمِيّة،" },
+                { tr: "Selimiye Camii,", order: 3, ar: "مَسْجِدُ السُّلَيْمِيّة،" },
                 { tr: "Kapı Camii", order: 4, ar: "وَمَسْجِدُ قابي،" },
                 { tr: "ve Aziziye Camii", order: 5, ar: "وَمَسْجِدُ العَزيزِيّة." },
                 { tr: "vardır.", order: 2, ar: "هُناكَ" }
@@ -222,7 +222,7 @@ window.data = {
 window.data.words = [
     { tr: "Eserler", ar: "الآثار" }, { tr: "Tarihî eser", ar: "أَثَر تاريخِيّ" },
     { tr: "Medeniyet, uygarlık", ar: "الحَضارة" }, { tr: "Osmanlı", ar: "العُثْمانِيّة" },
-    { tr: "Selçuklu", ar: "السَّلْجوقِيّة" }, { tr: "Müze", ar: "المَتْحَف" },
+    { tr: "Selçuklu", ar: "السَّلْجوقِيّة" }, { tr: "Müze", ar: "المَتْحَف" },
     { tr: "Mescit", ar: "المَسْجِد" }, { tr: "Cami", ar: "الجامِع" },
     { tr: "Minare", ar: "مِئْذَنة" }, { tr: "Kale", ar: "قَلْعة" },
     { tr: "Saray", ar: "القَصْر" }, { tr: "Köprü", ar: "جِسْر" },

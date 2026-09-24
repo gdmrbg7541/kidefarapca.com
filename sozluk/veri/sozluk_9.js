@@ -130,7 +130,7 @@ window.SOZLUK_SINIF["9"] = {
       { /* 9_2_1#1 */
         arabic: [
           { text: "أَيْن", root: "أين", category: "soru ismi" },
-          { text: "الْمُدَرِّس؟", root: "مدرس", category: "isim (ال takılı)" }
+          { text: "المُدَرِّس؟", root: "مدرس", category: "isim (ال takılı)" }
         ],
         turkish: ["nerede?","Öğretmen"],
         turkishFull: "Öğretmen nerede?"
@@ -177,7 +177,7 @@ window.SOZLUK_SINIF["9"] = {
       },
       { /* 9_3_1#7 */
         arabic: [
-          { text: "الْحَمّام", root: "حمام", category: "isim (ال takılı)" },
+          { text: "الحَمّام", root: "حمام", category: "isim (ال takılı)" },
           { text: "نَظيف.", root: "نظيف", category: "isim (sıfat)" }
         ],
         turkish: ["Banyo","temiz."],
@@ -185,7 +185,7 @@ window.SOZLUK_SINIF["9"] = {
       },
       { /* 9_3_1#19 */
         arabic: [
-          { text: "الْبَيْت", root: "بيت", category: "isim (ال takılı)" },
+          { text: "البَيْت", root: "بيت", category: "isim (ال takılı)" },
           { text: "نَظيف", root: "نظيف", category: "isim (sıfat)" },
           { text: "وَجَميل.", root: "جميل", category: "atıf harfi + isim" }
         ],
@@ -225,7 +225,7 @@ window.SOZLUK_SINIF["9"] = {
       },
       { /* 9_1_1#9 */
         arabic: [
-          { text: "كَيْفَ", root: "كيف", category: "soru ismi" },
+          { text: "كَيْف", root: "كيف", category: "soru ismi" },
           { text: "حالُكَ؟", root: "حال", category: "isim + bitişik zamir (sen)" }
         ],
         turkish: ["nasıl?","Halin"],
@@ -488,7 +488,7 @@ window.SOZLUK_SINIF["9"] = {
   {
     level: 4,
     anahtar: "illetli",
-    hint: "<h3 dir=\"ltr\">Seviye 4 · İlletli ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">9. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin tümü geçerlidir.</li><li><b>Ecvef</b> (ortası illetli): <bdi class=\"ip-ar\">يَنامُ</bdi> → <bdi class=\"ip-ar\">نام</bdi> &nbsp;·&nbsp; <b>Misal</b> (başı illetli): <bdi class=\"ip-ar\">يَقِفُ</bdi> → <bdi class=\"ip-ar\">وقف</bdi></li><li><b>Nâkıs</b> (sonu illetli): <bdi class=\"ip-ar\">يُصَلّي</bdi> → <bdi class=\"ip-ar\">صلى</bdi> &nbsp;·&nbsp; <b>Mehmuz</b>: <bdi class=\"ip-ar\">يَأْكُلُ</bdi> → <bdi class=\"ip-ar\">أكل</bdi></li><li><b>Mudâaf</b> (şeddeli): <bdi class=\"ip-ar\">يُحِبُّ</bdi> → <bdi class=\"ip-ar\">أحب</bdi> &nbsp;·&nbsp; <b>Mezid</b> fiil kendi mazisiyle aranır: <bdi class=\"ip-ar\">يَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\">استيقظ</bdi></li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">أَعِدْ</bdi> → <bdi class=\"ip-ar\"><b>أعاد</b></bdi> <i>(fiil (emir · mezid · ecvef))</i></li><li><bdi class=\"ip-ar\">بَعْدي</bdi> → <bdi class=\"ip-ar\"><b>بعد</b></bdi> <i>(isim + bitişik zamir (ben))</i></li><li><bdi class=\"ip-ar\">عائِلَتي</bdi> → <bdi class=\"ip-ar\"><b>عائلة</b></bdi> <i>(isim + bitişik zamir (ben))</i></li></ul>",
+    hint: "<h3 dir=\"ltr\">Seviye 4 · İlletli ve mezid fiiller</h3><p class=\"ip-sinif\" dir=\"ltr\">9. sınıf muhâdese cümlelerinden</p><ul><li>Önceki seviyelerin tümü geçerlidir.</li><li><b>Ecvef</b> (ortası illetli): <bdi class=\"ip-ar\">يَنامُ</bdi> → <bdi class=\"ip-ar\">نام</bdi> &nbsp;·&nbsp; <b>Misal</b> (başı illetli): <bdi class=\"ip-ar\">يَقِفُ</bdi> → <bdi class=\"ip-ar\">وقف</bdi></li><li><b>Nâkıs</b> (sonu illetli): <bdi class=\"ip-ar\">يُصَلّي</bdi> → <bdi class=\"ip-ar\">صلى</bdi> &nbsp;·&nbsp; <b>Mehmuz</b>: <bdi class=\"ip-ar\">يَأْكُلُ</bdi> → <bdi class=\"ip-ar\">أكل</bdi></li><li><b>Mudâaf</b> (şeddeli): <bdi class=\"ip-ar\">يُحِبُّ</bdi> → <bdi class=\"ip-ar\">أحب</bdi> &nbsp;·&nbsp; <b>Mezid</b> fiil kendi mazisiyle aranır: <bdi class=\"ip-ar\">يَسْتَيْقِظُ</bdi> → <bdi class=\"ip-ar\">استيقظ</bdi></li></ul><p class=\"ip-bas\" dir=\"ltr\">Bu seviyeden örnekler:</p><ul class=\"ip-ornek\"><li><bdi class=\"ip-ar\">أَعِدْ</bdi> → <bdi class=\"ip-ar\"><b>أعاد</b></bdi> <i>(fiil (emir · mezid · ecvef))</i></li><li><bdi class=\"ip-ar\">بَعْدي</bdi> → <bdi class=\"ip-ar\"><b>بعد</b></bdi> <i>(isim + bitişik zamir (ben))</i></li><li><bdi class=\"ip-ar\">عائِلَتي</bdi> → <bdi class=\"ip-ar\"><b>عائلة</b></bdi> <i>(isim + bitişik zamir (ben))</i></li></ul>",
     sentences: [
       { /* 9_1_1#16 */
         arabic: [

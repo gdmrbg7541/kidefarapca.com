@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_5_2 (5. Ünite 2. Ders: Sporun Önemi | أَهَمِّيَّةُ الرِّياضَة) */
+/* 8. sınıf — 8_5_2 (5. Ünite 2. Ders: Sporun Önemi | أَهَمِّيَّةُ الرِّياضَة) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 5. Ünite, s. 126-133. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {

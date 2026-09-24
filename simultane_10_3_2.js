@@ -419,12 +419,12 @@ words: `
                 </tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Ne?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مَا / مَاذَا</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Kim?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مَنْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nerede?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَيْنَ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nasıl?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">كَيْفَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nerede?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَيْن</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nasıl?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">كَيْف</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Ne zaman?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مَتَى</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Niçin?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">لِمَاذَا</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Hangi / Kaç?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَيّ / كَمْ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nereden?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مِنْ أَيْنَ</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Nereden?</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">مِنْ أَيْن</td></tr>
             </table>
         </div>
 
@@ -457,7 +457,7 @@ words: `
                     <th style="padding: 10px; text-align: center;">Arapça</th>
                 </tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Önce / Sonra</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">قَبْلَ / بَعْدَ</td></tr>
-                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Bugün / Yarın</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">اَلْيَوْمَ / غَدًا</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Bugün / Yarın</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">اَليَوْمَ / غَدًا</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Dün</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">أَمْسِ</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Sabah / Akşam</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">صَبَاحًا / مَسَاءً</td></tr>
                 <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">...dığı zaman</td><td class="ar-txt" dir="rtl" style="font-size: 1.8rem; text-align: center;">حِينَ / أَثْنَاءَ</td></tr>
@@ -1185,7 +1185,7 @@ dialog :[
     },
     {
         p1: [
-            { tr: "Nereye", order: 1, ar: "إِلَى أَيْنَ" },
+            { tr: "Nereye", order: 1, ar: "إِلَى أَيْن" },
             { tr: "gitmek", order: 3, ar: "الذَّهَاب؟" },
             { tr: "istiyorsun?", order: 2, ar: "تُرِيدُ" }
         ],
@@ -1240,7 +1240,7 @@ dialog :[
         ],
         p2: [
             { tr: "Ve aleyküm selam.", order: 1, ar: "وَعَلَيْكُمُ السَّلَام." },
-            { tr: "Otel", order: 5, ar: "الْفُنْدُق؟" },
+            { tr: "Otel", order: 5, ar: "الفُنْدُق؟" },
             { tr: "adresi", order: 4, ar: "عُنْوَانُ" },
             { tr: "sende var", order: 3, ar: " عِنْدَكَ" },
             { tr: "mı?", order: 2, ar: "هَلْ" } // Arapçada 'hel indeke' soru yapısını karşılıyor
@@ -1250,30 +1250,30 @@ dialog :[
         p1: [
             { tr: "Evet,", order: 1, ar: "نَعَمْ،" },
             { tr: "buyur.", order: 2, ar: "تَفَضَّلْ." },
-            { tr: "Otel", order: 4, ar: "الْفُنْدُقُ" },
+            { tr: "Otel", order: 4, ar: "الفُنْدُقُ" },
             { tr: "yakın", order: 5, ar: "قَرِيبٌ" },
             { tr: "mı", order: 3, ar: "هَل" },
             { tr: "yoksa", order: 6, ar: "أَمْ" },
             { tr: "uzak mı?", order: 7, ar: "بَعِيد؟" }
         ],
         p2: [
-            { tr: "Otel", order: 1, ar: "اَلْفُنْدُقُ" },
+            { tr: "Otel", order: 1, ar: "اَلفُنْدُقُ" },
             { tr: "yakındır.", order: 2, ar: "قَرِيب." }
         ]
     },
     {
         p1: [
-            { tr: "Otele", order: 3, ar: "إِلَى الْفُنْدُق؟" },
-            { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+            { tr: "Otele", order: 3, ar: "إِلَى الفُنْدُق؟" },
+            { tr: "nasıl", order: 1, ar: "كَيْف" },
             { tr: "giderim?", order: 2, ar: "أَذْهَبُ" }
         ],
         p2: [
             { tr: "Biraz", order: 2, ar: "قَلِيلًا،" },
             { tr: "yürü,", order: 1, ar: "اِمْشِ" },
-            { tr: "sağa", order: 4, ar: "إِلَى الْيَمِين." },
+            { tr: "sağa", order: 4, ar: "إِلَى اليَمِين." },
             { tr: "yönel.", order: 3, ar: "وَاتَّجِهْ" },
-            { tr: "Oteli", order: 6, ar: "الْفُنْدُقَ" },
-            { tr: "solda", order: 7, ar: "عَلَى الْيَسَار." },
+            { tr: "Oteli", order: 6, ar: "الفُنْدُقَ" },
+            { tr: "solda", order: 7, ar: "عَلَى اليَسَار." },
             { tr: "göreceksin.", order: 5, ar: "سَتَرَى" }
         ]
     },
@@ -1292,7 +1292,7 @@ dialog :[
             { tr: "Hoş geldiniz,", order: 1, ar: "أَهْلًا وَسَهْلًا،" },
             { tr: "buyurun,", order: 2, ar: "تَفَضَّلْ،" },
             { tr: "sana", order: 4, ar: "أُسَاعِدُك؟" },
-            { tr: "nasıl", order: 3, ar: "كَيْفَ" },
+            { tr: "nasıl", order: 3, ar: "كَيْف" },
             { tr: "yardımcı olabilirim?", order: 4, ar: "أُسَاعِدُك؟" }
         ],
         p2: [
@@ -1331,13 +1331,13 @@ dialog :[
             { tr: "Merhaba", order: 1, ar: "مَرْحَبًا" },
             { tr: "Feride,", order: 2, ar: "فَرِيدَة،" },
             { tr: "yarın", order: 5, ar: "غَدًا." },
-            { tr: "umreye", order: 4, ar: "إِلَى الْعُمْرَةِ" },
+            { tr: "umreye", order: 4, ar: "إِلَى العُمْرَةِ" },
             { tr: "gideceğim.", order: 3, ar: "سَأَذْهَبُ" }
         ],
         p2: [
             { tr: "Merhaba", order: 1, ar: "أَهْلًا" },
             { tr: "Zeynep,", order: 2, ar: "زَيْنَب،" },
-            { tr: "nasıl", order: 3, ar: "كَيْفَ" },
+            { tr: "nasıl", order: 3, ar: "كَيْف" },
             { tr: "yolculuk yapacaksın?", order: 4, ar: "سَتُسَافِرِين؟" }
         ]
     },
@@ -1355,7 +1355,7 @@ dialog :[
             { tr: "Taif", order: 1, ar: "اَلطَّائِفُ" },
             { tr: "Mekke'ye", order: 3, ar: "مِنْ مَكَّة." },
             { tr: "yakındır.", order: 2, ar: "قَرِيبَةٌ" },
-            { tr: "Otobüse", order: 5, ar: "الْحَافِلَةَ،" },
+            { tr: "Otobüse", order: 5, ar: "الحَافِلَةَ،" },
             { tr: "bin,", order: 4, ar: "اِرْكَبِي" },
             { tr: "yolculuk", order: 7, ar: "الرِّحْلَةُ" },
             { tr: "yaklaşık", order: 9, ar: "تَقْرِيبًا." },
@@ -1369,21 +1369,21 @@ dialog :[
             { tr: "Mekke'yi", order: 3, ar: "مَكَّة." },
             { tr: "biliyorsun.", order: 2, ar: "تَعْرِفِينَ" },
             { tr: "Oradaki", order: 7, ar: "فِيهَا؟" },
-            { tr: "otobüs", order: 5, ar: "الْحَافِلَاتِ" },
+            { tr: "otobüs", order: 5, ar: "الحَافِلَاتِ" },
             { tr: "durağı", order: 6, ar: "مَحَطَّةُ" },
-            { tr: "nerede?", order: 4, ar: "أَيْنَ" }
+            { tr: "nerede?", order: 4, ar: "أَيْن" }
         ],
         p2: [
-            { tr: "Mescidi Haram'ın", order: 2, ar: "مِنَ الْمَسْجِدِ الْحَرَامِ" },
+            { tr: "Mescidi Haram'ın", order: 2, ar: "مِن المَسْجِدِ الحَرَامِ" },
             { tr: "Ecyâd", order: 4, ar: "أَجْيَاد،" },
             { tr: "kapısından", order: 3, ar: "مِنْ بَابِ" },
             { tr: "çık,", order: 1, ar: "اُخْرُجِي" },
-            { tr: "geniş", order: 7, ar: "الْوَاسِعِ" },
+            { tr: "geniş", order: 7, ar: "الوَاسِعِ" },
             { tr: "caddede", order: 6, ar: "فِي الشَّارِعِ" },
             { tr: "biraz", order: 8, ar: "قَلِيلًا،" },
             { tr: "yürü,", order: 5, ar: "وَامْشِي" },
             { tr: "sonra", order: 9, ar: "ثُمَّ" },
-            { tr: "sola", order: 11, ar: "إِلَى الْيَسَار." },
+            { tr: "sola", order: 11, ar: "إِلَى اليَسَار." },
             { tr: "yönel.", order: 10, ar: "اتَّجِهِي" }
         ]
     },
@@ -1391,7 +1391,7 @@ dialog :[
         p1: [
             { tr: "Çok", order: 2, ar: "جَزِيلًا" },
             { tr: "teşekkürler", order: 1, ar: "شُكْرًا" },
-            { tr: "değerli", order: 4, ar: "الْعَزِيزَة." },
+            { tr: "değerli", order: 4, ar: "العَزِيزَة." },
             { tr: "arkadaşım.", order: 3, ar: "صَدِيقَتِي" }
         ],
         p2: [{ tr: "Rica ederim.", order: 1, ar: "عَفْوًا." }]
@@ -1401,16 +1401,16 @@ dialog :[
     {
         p1: [
             { tr: "Selamun aleyküm,", order: 1, ar: "السَّلَامُ عَلَيْكُمْ،" },
-            { tr: "büyük", order: 5, ar: "الْكَبِير؟" },
-            { tr: "camiye", order: 4, ar: "إِلَى الْمَسْجِدِ" },
-            { tr: "nasıl", order: 2, ar: "كَيْفَ" },
+            { tr: "büyük", order: 5, ar: "الكَبِير؟" },
+            { tr: "camiye", order: 4, ar: "إِلَى المَسْجِدِ" },
+            { tr: "nasıl", order: 2, ar: "كَيْف" },
             { tr: "giderim?", order: 3, ar: "أَذْهَبُ" }
         ],
         p2: [
             { tr: "Ve aleykum selam,", order: 1, ar: "وَعَلَيْكُمُ السَّلَام،" },
-            { tr: "otobüse", order: 3, ar: "الْحَافِلَةَ" },
+            { tr: "otobüse", order: 3, ar: "الحَافِلَةَ" },
             { tr: "bin", order: 2, ar: "اِرْكَبِ" },
-            { tr: "merkez", order: 6, ar: "السُّوقِ الْمَرْكَزِيّ." },
+            { tr: "merkez", order: 6, ar: "السُّوقِ المَرْكَزِيّ." },
             { tr: "çarşının", order: 6, ar: "" },
             { tr: "önünde", order: 5, ar: "أَمَامَ" },
             { tr: "in.", order: 4, ar: "وَانْزِلْ" }
@@ -1419,7 +1419,7 @@ dialog :[
     {
         p1: [
             { tr: "Sonra", order: 1, ar: "ثُمَّ" },
-            { tr: "sola", order: 3, ar: "إِلَى الْيَسَار،" },
+            { tr: "sola", order: 3, ar: "إِلَى اليَسَار،" },
             { tr: "yönel,", order: 2, ar: "اتَّجِهْ" },
             { tr: "biraz", order: 5, ar: "قَلِيلًا،" },
             { tr: "yürü,", order: 4, ar: "وَامْشِ" },
@@ -1431,8 +1431,8 @@ dialog :[
             { tr: "Oraya", order: 4, ar: "إِلَيْهِ" },
             { tr: "yürüyerek", order: 5, ar: "مَشْيًا؟" },
             { tr: "gitmem", order: 3, ar: "أَنْ أَذْهَبَ" },
-            { tr: "mümkün", order: 2, ar: "الْمُمْكِنِ" },
-            { tr: "mü?", order: 1, ar: "هَلْ مِنَ" }
+            { tr: "mümkün", order: 2, ar: "المُمْكِنِ" },
+            { tr: "mü?", order: 1, ar: "هَلْ مِنْ" }
         ]
     },
     {
@@ -1448,9 +1448,9 @@ dialog :[
     {
         p1: [
             { tr: "Selamun aleyküm,", order: 1, ar: "السَّلَامُ عَلَيْكُمْ،" },
-            { tr: "otobüs", order: 5, ar: "الْحَافِلَات؟" },
+            { tr: "otobüs", order: 5, ar: "الحَافِلَات؟" },
             { tr: "durağına", order: 4, ar: "إِلَى مَوْقِفِ" },
-            { tr: "nasıl", order: 2, ar: "كَيْفَ" },
+            { tr: "nasıl", order: 2, ar: "كَيْف" },
             { tr: "giderim?", order: 3, ar: "أَذْهَبُ" }
         ],
         p2: [
@@ -1458,18 +1458,18 @@ dialog :[
             { tr: "biraz", order: 3, ar: "قَلِيلًا،" },
             { tr: "yürü,", order: 1, ar: "اِمْشِ" },
             { tr: "sonra", order: 4, ar: "ثُمَّ" },
-            { tr: "sola", order: 6, ar: "إِلَى الْيَسَار." },
+            { tr: "sola", order: 6, ar: "إِلَى اليَسَار." },
             { tr: "yönel.", order: 5, ar: "اتَّجِهْ" },
-            { tr: "Otobüs", order: 9, ar: "الْحَافِلَاتِ" },
+            { tr: "Otobüs", order: 9, ar: "الحَافِلَاتِ" },
             { tr: "durağını", order: 8, ar: "مَوْقِفَ" },
-            { tr: "hastanenin", order: 11, ar: "الْمُسْتَشْفَى." },
+            { tr: "hastanenin", order: 11, ar: "المُسْتَشْفَى." },
             { tr: "önünde", order: 10, ar: "أَمَامَ" },
             { tr: "bulacaksın.", order: 7, ar: "سَتَجِدُ" }
         ]
     },
     {
         p1: [
-            { tr: "Otobüs", order: 3, ar: "الْحَافِلَاتِ" },
+            { tr: "Otobüs", order: 3, ar: "الحَافِلَاتِ" },
             { tr: "durağı", order: 2, ar: "مَوْقِفُ" },
             { tr: "buraya", order: 5, ar: "مِنْ هُنَا؟" },
             { tr: "yakın", order: 4, ar: "قَرِيبٌ" },

@@ -19,7 +19,7 @@ window.data = {
             words: [
                 { tr: "Dinimiz", order: 2, ar: "ديننا" },
                 { tr: "hayvanlara", order: 4, ar: "لِلْحَيَوانات." },
-                { tr: "merhameti", order: 3, ar: "بِالرَّحْمةِ" },
+                { tr: "merhameti", order: 3, ar: "بِالرَّحْمةِ" },
                 { tr: "emreder.", order: 1, ar: "يَأْمُرُ" }
             ]
         },
@@ -27,8 +27,8 @@ window.data = {
         /* Sabrın meyvesi başarıdır. (s.63) */
         {
             words: [
-                { tr: "Sabrın meyvesi", order: 1, ar: "ثَمَرةُ الصَّبْرِ" },
-                { tr: "başarıdır.", order: 2, ar: "النَّجاح." }
+                { tr: "Sabrın meyvesi", order: 1, ar: "ثَمَرةُ الصَّبْرِ" },
+                { tr: "başarıdır.", order: 2, ar: "النَّجاح." }
             ]
         },
 
@@ -45,7 +45,7 @@ window.data = {
             words: [
                 { tr: "İslam", order: 2, ar: "الإِسْلامُ" },
                 { tr: "insanlar arasında", order: 4, ar: "بَيْنَ النّاس." },
-                { tr: "yardımlaşmayı", order: 3, ar: "بِالتَّعاوُنِ" },
+                { tr: "yardımlaşmayı", order: 3, ar: "بِالتَّعاوُنِ" },
                 { tr: "emreder.", order: 1, ar: "يَأْمُرُ" }
             ]
         },
@@ -62,9 +62,9 @@ window.data = {
         /* Dürüstlük ilişkilerde önemlidir. (s.63) */
         {
             words: [
-                { tr: "Dürüstlük", order: 1, ar: "الصِّدْقُ" },
+                { tr: "Dürüstlük", order: 1, ar: "الصِّدْقُ" },
                 { tr: "ilişkilerde", order: 3, ar: "في العَلاقات." },
-                { tr: "önemlidir.", order: 2, ar: "مُهِمٌّ" }
+                { tr: "önemlidir.", order: 2, ar: "مُهِمٌّ" }
             ]
         },
 
@@ -107,7 +107,7 @@ window.data = {
         {
             words: [
                 { tr: "Saat yedide", order: 3, ar: "في السّاعةِ السّابِعة." },
-                { tr: "spor", order: 2, ar: "الرِّياضةَ" },
+                { tr: "spor", order: 2, ar: "الرِّياضةَ" },
                 { tr: "yapıyorum.", order: 1, ar: "أُمارِسُ" }
             ]
         },
@@ -125,7 +125,7 @@ window.data = {
     dialog: [
         {
             p1: [
-                { tr: "Peygamberimizin ﷺ ahlakı hakkında", order: 2, ar: "عَنْ أَخْلاقِ الرَّسولِ ﷺ." },
+                { tr: "Peygamberimizin ﷺ ahlakı hakkında", order: 2, ar: "عَنْ أَخْلاقِ الرَّسولِ ﷺ." },
                 { tr: "bir ödevim var.", order: 1, ar: "عِنْدي واجِبٌ" },
                 { tr: "Bana yardım eder misin", order: 3, ar: "هَلْ تُساعِدُني" },
                 { tr: "babacığım?", order: 4, ar: "يا أَبي؟" }
@@ -138,10 +138,10 @@ window.data = {
         {
             p1: [
                 { tr: "Onun ahlakı", order: 2, ar: "أَخْلاقُهُ؟" },
-                { tr: "nasıldı?", order: 1, ar: "كَيْفَ كانَتْ" }
+                { tr: "nasıldı?", order: 1, ar: "كَيْف كانَتْ" }
             ],
             p2: [
-                { tr: "Peygamber ﷺ", order: 2, ar: "الرَّسولُ ﷺ" },
+                { tr: "Peygamber ﷺ", order: 2, ar: "الرَّسولُ ﷺ" },
                 { tr: "insanların ahlakça", order: 3, ar: "أَحْسَنَ النّاسِ أَخْلاقًا،" },
                 { tr: "en güzeliydi,", order: 1, ar: "كانَ" },
                 { tr: "o bizim için", order: 4, ar: "وَهُوَ" },
@@ -151,11 +151,11 @@ window.data = {
         {
             p1: [
                 { tr: "Çocukları", order: 2, ar: "الأَطْفال؟" },
-                { tr: "sever miydi?", order: 1, ar: "هَلْ كانَ يُحِبُّ" }
+                { tr: "sever miydi?", order: 1, ar: "هَلْ كانَ يُحِبُّ" }
             ],
             p2: [
                 { tr: "Evet,", order: 1, ar: "نَعَمْ،" },
-                { tr: "aynen öyle.", order: 2, ar: "بِالضَّبْط." }
+                { tr: "aynen öyle.", order: 2, ar: "بِالضَّبْط." }
             ]
         },
         {
@@ -171,7 +171,7 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Amcan", order: 2, ar: "عَمٌّ" },
+                { tr: "Amcan", order: 2, ar: "عَمٌّ" },
                 { tr: "ya da halan", order: 3, ar: "أَوْ عَمّة؟" },
                 { tr: "var mı?", order: 1, ar: "هَلْ لَكِ" }
             ],
@@ -185,7 +185,7 @@ window.data = {
         {
             p1: [
                 { tr: "Okula", order: 2, ar: "سَتَذْهَبُ إِلى المَدْرَسة؟" },
-                { tr: "saat kaçta gideceksin?", order: 1, ar: "في أَيِّ ساعةٍ" }
+                { tr: "saat kaçta gideceksin?", order: 1, ar: "في أَيِّ ساعةٍ" }
             ],
             p2: [
                 { tr: "Yaklaşık", order: 3, ar: "تَقْريبًا." },
@@ -199,10 +199,10 @@ window.data = {
 /* Dersin kelimeleri (Kelime Listeleri bölümü bu diziyi okur) */
 window.data.words = [
     { tr: "Güzel ahlak", ar: "الأَخْلاق الحَسَنة" }, { tr: "Önder, örnek", ar: "الأُسْوة الحَسَنة" },
-    { tr: "Elçi, Peygamber", ar: "الرَّسول" }, { tr: "Kardeşlik", ar: "الأُخُوّة" },
-    { tr: "Merhamet", ar: "الرَّحْمة" }, { tr: "Sabır", ar: "الصَّبْر" },
-    { tr: "Başarı", ar: "النَّجاح" }, { tr: "Yardımlaşma", ar: "التَّعاوُن" },
-    { tr: "Saygı", ar: "اِحْتِرام" }, { tr: "Dürüstlük", ar: "الصِّدْق" },
+    { tr: "Elçi, Peygamber", ar: "الرَّسول" }, { tr: "Kardeşlik", ar: "الأُخُوّة" },
+    { tr: "Merhamet", ar: "الرَّحْمة" }, { tr: "Sabır", ar: "الصَّبْر" },
+    { tr: "Başarı", ar: "النَّجاح" }, { tr: "Yardımlaşma", ar: "التَّعاوُن" },
+    { tr: "Saygı", ar: "اِحْتِرام" }, { tr: "Dürüstlük", ar: "الصِّدْق" },
     { tr: "Doğru sözlü", ar: "صادِق" }, { tr: "Adalet", ar: "العَدالة" },
     { tr: "İlişkiler", ar: "العَلاقات" }, { tr: "Sevgi", ar: "المَحَبّة" },
     { tr: "Dostluk", ar: "صَداقة" }, { tr: "Mütevazı", ar: "مُتَواضِع" },
@@ -214,7 +214,7 @@ window.data.words = [
     { tr: "Hala", ar: "عَمّة" }, { tr: "Çocuklar, oğullar", ar: "أَوْلاد" },
     { tr: "Kız, kız evlat", ar: "بِنْت" }, { tr: "Saat", ar: "السّاعة" },
     { tr: "Yaklaşık olarak", ar: "تَقْريبًا" }, { tr: "Tam olarak", ar: "تَمامًا" },
-    { tr: "Aynen", ar: "بِالضَّبْط" }, { tr: "Tabii ki", ar: "طَبْعًا" },
+    { tr: "Aynen", ar: "بِالضَّبْط" }, { tr: "Tabii ki", ar: "طَبْعًا" },
     { tr: "Tren", ar: "القِطار" }, { tr: "Gideceğim", ar: "سَأَذْهَبُ" },
     { tr: "Döneceğim", ar: "سَأَعودُ" }, { tr: "Başlayacak", ar: "سَيَبْدَأُ" }, { tr: "Gelecek", ar: "سَيَأْتي" }
 ];

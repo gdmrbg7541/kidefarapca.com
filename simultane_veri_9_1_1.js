@@ -53,7 +53,7 @@ window.data = {
         {
             words: [
                 { tr: "Halin", order: 2, ar: "حالُكَ؟" },
-                { tr: "nasıl?", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl?", order: 1, ar: "كَيْف" },
             ]
         },
         {
@@ -129,7 +129,7 @@ window.data = {
         {
             p1: [
                 { tr: "Halin", order: 2, ar: "حالُكَ؟" },
-                { tr: "nasıl?", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl?", order: 1, ar: "كَيْف" },
             ],
             p2: [
                 { tr: "Ben", order: 1, ar: "أَنا" },
@@ -163,14 +163,14 @@ window.data.words = [
     { tr: "Selam, sizin de üzerinize olsun", ar: "وَعَلَيْكُم السَّلام" },
     { tr: "Hayırlı Sabahlar", ar: "صَباح الخَيْر" },
     { tr: "Günaydın", ar: "صَباح النّور" },
-    { tr: "İyi akşamlar", ar: "مَساء الْخَيْر" },
+    { tr: "İyi akşamlar", ar: "مَساء الخَيْر" },
     { tr: "İyi akşamlar (cevap olarak)", ar: "مَساء النّور" },
     { tr: "Merhaba!", ar: "مَرْحَبًا" },
     { tr: "Hoş geldiniz!", ar: "أَهْلًا وَسَهْلًا" },
     { tr: "Hoş Bulduk!", ar: "أَهْلًا بِك" },
-    { tr: "Nasılsın?", ar: "كَيْفَ حالُك؟" },
+    { tr: "Nasılsın?", ar: "كَيْف حالُك؟" },
     { tr: "İyiyim!", ar: "أَنا بِخَيْر!" },
-    { tr: "Allah’a hamdolsun!", ar: "الْـحَمْد لِلّٰه" },
+    { tr: "Allah’a hamdolsun!", ar: "الـحَمْد لِلّٰه" },
     { tr: "Görüşmek üzere", ar: "إِلى اللِّقاء" },
     { tr: "Hoşça kal", ar: "مَع السَّلامَة" },
     { tr: "Allah’a emanet ol", ar: "في أَمان اللهِ" },

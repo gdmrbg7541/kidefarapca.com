@@ -1,4 +1,4 @@
-/* 5. sınıf — 5_4_4 (4. Ünite 4. Ders: Sayılar | اَلْأَعْداد) */
+/* 5. sınıf — 5_4_4 (4. Ünite 4. Ders: Sayılar | اَلأَعْداد) */
 /* Cümle & diyalog: MEB Arapça 5-8 Öğretim Programı hedef kelime/yapı bloklarına göre hazırlandı. */
 window.data = {
     "sentence": [
@@ -77,12 +77,12 @@ window.data = {
                 {
                     "tr": "Sınıfta",
                     "order": 1,
-                    "ar": "في الصَّفِّ"
+                    "ar": "في الصَّفِّ"
                 },
                 {
                     "tr": "altı sıra var.",
                     "order": 2,
-                    "ar": "سِتَّةُ مَقاعِدَ."
+                    "ar": "سِتَّةُ مَقاعِدَ."
                 }
             ]
         },
@@ -337,7 +337,7 @@ window.data = {
         },
         {
             "tr": "altı",
-            "ar": "سِتَّة"
+            "ar": "سِتَّة"
         },
         {
             "tr": "yedi",

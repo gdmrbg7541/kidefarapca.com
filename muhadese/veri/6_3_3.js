@@ -1,5 +1,5 @@
-/* 6. sınıf — 6_3_3 (3. Ünite 3. Ders: Temizlik | النَّظافَة) */
-/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 3. Ünite (الصِّحَّة), s. 87-92. */
+/* 6. sınıf — 6_3_3 (3. Ünite 3. Ders: Temizlik | النَّظافَة) */
+/* Kaynak: 6. Sınıf Arapça ders kitabı 2025, 3. Ünite (الصِّحَّة), s. 87-92. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
     "sentence": [
@@ -37,7 +37,7 @@ window.data = {
                 {
                     "tr": "Abdest alır.",
                     "order": 1,
-                    "ar": "يَتَوَضَّأُ"
+                    "ar": "يَتَوَضَّأُ"
                 }
             ]
         },
@@ -61,7 +61,7 @@ window.data = {
                 {
                     "tr": "Temizler.",
                     "order": 1,
-                    "ar": "تُنَظِّفُ"
+                    "ar": "تُنَظِّفُ"
                 }
             ]
         },
@@ -80,7 +80,7 @@ window.data = {
                 {
                     "tr": "Temizlerim.",
                     "order": 1,
-                    "ar": "أُنَظِّفُ"
+                    "ar": "أُنَظِّفُ"
                 }
             ]
         },
@@ -99,7 +99,7 @@ window.data = {
                 {
                     "tr": "çöp kutusuna",
                     "order": 4,
-                    "ar": "في سَلَّةِ القُمامَةِ."
+                    "ar": "في سَلَّةِ القُمامَةِ."
                 },
                 {
                     "tr": "Atar.",
@@ -161,12 +161,12 @@ window.data = {
                 {
                     "tr": "Temizlik",
                     "order": 1,
-                    "ar": "النَّظافَةُ"
+                    "ar": "النَّظافَةُ"
                 },
                 {
                     "tr": "imandandır.",
                     "order": 2,
-                    "ar": "مِنَ الإيمانِ."
+                    "ar": "مِن الإيمانِ."
                 }
             ]
         },
@@ -194,17 +194,17 @@ window.data = {
                 {
                     "tr": "Temizlik",
                     "order": 1,
-                    "ar": "النَّظافَةُ"
+                    "ar": "النَّظافَةُ"
                 },
                 {
                     "tr": "sağlık için",
                     "order": 3,
-                    "ar": "لِلصِّحَّةِ."
+                    "ar": "لِلصِّحَّةِ."
                 },
                 {
                     "tr": "önemlidir.",
                     "order": 2,
-                    "ar": "مُهِمَّةٌ"
+                    "ar": "مُهِمَّةٌ"
                 }
             ]
         },
@@ -223,12 +223,12 @@ window.data = {
                 {
                     "tr": "sağlık için",
                     "order": 4,
-                    "ar": "لِلصِّحَّةِ."
+                    "ar": "لِلصِّحَّةِ."
                 },
                 {
                     "tr": "önemlidir.",
                     "order": 3,
-                    "ar": "مُهِمٌّ"
+                    "ar": "مُهِمٌّ"
                 }
             ]
         },
@@ -247,7 +247,7 @@ window.data = {
                 {
                     "tr": "temizliyor.",
                     "order": 2,
-                    "ar": "تُنَظِّفُ"
+                    "ar": "تُنَظِّفُ"
                 }
             ]
         },
@@ -261,7 +261,7 @@ window.data = {
                 {
                     "tr": "çöp kutusuna",
                     "order": 3,
-                    "ar": "في سَلَّةِ القُمامَةِ."
+                    "ar": "في سَلَّةِ القُمامَةِ."
                 },
                 {
                     "tr": "At.",
@@ -275,7 +275,7 @@ window.data = {
                 {
                     "tr": "Ellerimi",
                     "order": 2,
-                    "ar": "يَدَيَّ"
+                    "ar": "يَدَيَّ"
                 },
                 {
                     "tr": "sabunla",
@@ -309,12 +309,12 @@ window.data = {
                 {
                     "tr": "uyumadan önce",
                     "order": 4,
-                    "ar": "قَبْلَ النَّوْمِ."
+                    "ar": "قَبْلَ النَّوْمِ."
                 },
                 {
                     "tr": "Temizlerim.",
                     "order": 1,
-                    "ar": "أُنَظِّفُ"
+                    "ar": "أُنَظِّفُ"
                 }
             ]
         },
@@ -383,7 +383,7 @@ window.data = {
                 {
                     "tr": "acıktım,",
                     "order": 4,
-                    "ar": "جِدًّا،"
+                    "ar": "جِدًّا،"
                 },
                 {
                     "tr": "çok",
@@ -454,7 +454,7 @@ window.data = {
                 {
                     "tr": "ellerimi",
                     "order": 5,
-                    "ar": "يَدَيَّ"
+                    "ar": "يَدَيَّ"
                 },
                 {
                     "tr": "sabunla",
@@ -515,12 +515,12 @@ window.data = {
                 {
                     "tr": "sağlık için",
                     "order": 4,
-                    "ar": "لِلصِّحَّةِ."
+                    "ar": "لِلصِّحَّةِ."
                 },
                 {
                     "tr": "önemlidir.",
                     "order": 3,
-                    "ar": "مُهِمٌّ"
+                    "ar": "مُهِمٌّ"
                 }
             ],
             "p2": [
@@ -532,7 +532,7 @@ window.data = {
                 {
                     "tr": "yavrum.",
                     "order": 2,
-                    "ar": "يا بُنَيَّ."
+                    "ar": "يا بُنَيَّ."
                 }
             ]
         },
@@ -546,7 +546,7 @@ window.data = {
                 {
                     "tr": "ellerimi",
                     "order": 2,
-                    "ar": "يَدَيَّ"
+                    "ar": "يَدَيَّ"
                 },
                 {
                     "tr": "yemekten sonra",
@@ -577,7 +577,7 @@ window.data = {
                 {
                     "tr": "Ve uyumadan önce",
                     "order": 1,
-                    "ar": "وَقَبْلَ النَّوْمِ"
+                    "ar": "وَقَبْلَ النَّوْمِ"
                 },
                 {
                     "tr": "dişlerimi",
@@ -592,7 +592,7 @@ window.data = {
                 {
                     "tr": "temizlerim.",
                     "order": 2,
-                    "ar": "أُنَظِّفُ"
+                    "ar": "أُنَظِّفُ"
                 }
             ],
             "p2": [
@@ -623,7 +623,7 @@ window.data = {
                 {
                     "tr": "Hasan",
                     "order": 3,
-                    "ar": "حَسَنٌ"
+                    "ar": "حَسَن"
                 },
                 {
                     "tr": "akşam yemeğini?",
@@ -669,7 +669,7 @@ window.data = {
                 {
                     "tr": "Hasan",
                     "order": 3,
-                    "ar": "حَسَنٌ"
+                    "ar": "حَسَن"
                 },
                 {
                     "tr": "dişlerini?",
@@ -679,7 +679,7 @@ window.data = {
                 {
                     "tr": "temizler",
                     "order": 2,
-                    "ar": "يُنَظِّفُ"
+                    "ar": "يُنَظِّفُ"
                 }
             ],
             "p2": [
@@ -730,15 +730,15 @@ window.data = {
     "words": [
         {
             "tr": "temizler",
-            "ar": "يُنَظِّفُ"
+            "ar": "يُنَظِّفُ"
         },
         {
             "tr": "temizler (dişil)",
-            "ar": "تُنَظِّفُ"
+            "ar": "تُنَظِّفُ"
         },
         {
             "tr": "temizlerim",
-            "ar": "أُنَظِّفُ"
+            "ar": "أُنَظِّفُ"
         },
         {
             "tr": "temiz",
@@ -770,11 +770,11 @@ window.data = {
         },
         {
             "tr": "abdest alır",
-            "ar": "يَتَوَضَّأُ"
+            "ar": "يَتَوَضَّأُ"
         },
         {
             "tr": "abdest alır (dişil)",
-            "ar": "تَتَوَضَّأُ"
+            "ar": "تَتَوَضَّأُ"
         },
         {
             "tr": "çamaşır makinesi",
@@ -798,7 +798,7 @@ window.data = {
         },
         {
             "tr": "çöp kutusu",
-            "ar": "سَلَّةُ القُمامَة"
+            "ar": "سَلَّةُ القُمامَة"
         },
         {
             "tr": "çöp",
@@ -854,7 +854,7 @@ window.data = {
         },
         {
             "tr": "sağlık",
-            "ar": "صِحَّة"
+            "ar": "صِحَّة"
         },
         {
             "tr": "sebep",
@@ -890,7 +890,7 @@ window.data = {
         },
         {
             "tr": "uyku",
-            "ar": "النَّوْم"
+            "ar": "النَّوْم"
         },
         {
             "tr": "yemek yeme",
@@ -926,7 +926,7 @@ window.data = {
         },
         {
             "tr": "çok",
-            "ar": "جِدًّا"
+            "ar": "جِدًّا"
         }
     ]
 };

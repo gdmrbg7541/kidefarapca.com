@@ -1,4 +1,4 @@
-/* 5. sınıf — 5_2_2 (2. Ünite 2. Ders: Kırtasiye Malzemeleri | أَدَواتُ الدِّراسَة) */
+/* 5. sınıf — 5_2_2 (2. Ünite 2. Ders: Kırtasiye Malzemeleri | أَدَواتُ الدِّراسَة) */
 /* Cümle & diyalog: MEB Arapça 5-8 Öğretim Programı hedef kelime/yapı bloklarına göre hazırlandı. */
 window.data = {
     "sentence": [
@@ -26,7 +26,7 @@ window.data = {
                 {
                     "tr": "aç (kız).",
                     "order": 1,
-                    "ar": "الدَّفْتَرَ."
+                    "ar": "الدَّفْتَرَ."
                 }
             ]
         },
@@ -110,7 +110,7 @@ window.data = {
                 {
                     "tr": "bana ver,",
                     "order": 1,
-                    "ar": "الدَّفْتَرَ،"
+                    "ar": "الدَّفْتَرَ،"
                 },
                 {
                     "tr": "lütfen.",
@@ -161,7 +161,7 @@ window.data = {
                 {
                     "tr": "Kalem",
                     "order": 1,
-                    "ar": "اَلْقَلَمُ"
+                    "ar": "اَلقَلَمُ"
                 },
                 {
                     "tr": "çantadadır.",
@@ -222,7 +222,7 @@ window.data = {
                 {
                     "tr": "Ders araçları",
                     "order": 1,
-                    "ar": "أَدَواتُ الدِّراسَةِ"
+                    "ar": "أَدَواتُ الدِّراسَةِ"
                 },
                 {
                     "tr": "çantadadır.",
@@ -255,7 +255,7 @@ window.data = {
                 {
                     "tr": "Buyur,",
                     "order": 1,
-                    "ar": "تَفَضَّلْ،"
+                    "ar": "تَفَضَّلْ،"
                 },
                 {
                     "tr": "işte kalem.",
@@ -300,7 +300,7 @@ window.data = {
                 {
                     "tr": "ey Ahmed.",
                     "order": 3,
-                    "ar": "يا أَحْمَدُ."
+                    "ar": "يا أَحْمَد."
                 }
             ],
             "p2": [
@@ -312,7 +312,7 @@ window.data = {
                 {
                     "tr": "ey öğretmenim.",
                     "order": 2,
-                    "ar": "يا مُعَلِّمي."
+                    "ar": "يا مُعَلِّمي."
                 }
             ]
         },
@@ -383,11 +383,11 @@ window.data = {
         },
         {
             "tr": "buyur",
-            "ar": "تَفَضَّلْ"
+            "ar": "تَفَضَّلْ"
         },
         {
             "tr": "ders araçları",
-            "ar": "أَدَواتُ الدِّراسَة"
+            "ar": "أَدَواتُ الدِّراسَة"
         },
         {
             "tr": "kitap",
@@ -459,7 +459,7 @@ window.data = {
         },
         {
             "tr": "ilim faydalıdır",
-            "ar": "اَلْعِلْمُ نافِعٌ"
+            "ar": "اَلعِلْمُ نافِعٌ"
         }
     ]
 };

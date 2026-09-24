@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_6_3 (6. Ünite 3. Ders: Yaz Tatili | العُطْلَةُ الصَّيْفِيَّة) */
+/* 8. sınıf — 8_6_3 (6. Ünite 3. Ders: Yaz Tatili | العُطْلَةُ الصَّيْفِيَّة) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 6. Ünite, s. 160-168. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
@@ -137,7 +137,7 @@ window.data = {
         },
         {
             words: [
-                { tr: "Nereye", order: 1, ar: "إلى أَيْنَ" },
+                { tr: "Nereye", order: 1, ar: "إلى أَيْن" },
                 { tr: "gideceksin?", order: 2, ar: "سَتَذْهَبُ؟" },
             ]
         },
@@ -162,7 +162,7 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Nereye", order: 1, ar: "إلى أَيْنَ" },
+                { tr: "Nereye", order: 1, ar: "إلى أَيْن" },
                 { tr: "gideceksin?", order: 2, ar: "سَتَذْهَبُ؟" },
             ],
             p2: [
@@ -206,7 +206,7 @@ window.data = {
         {
             p1: [
                 { tr: "Geçen tatilde", order: 3, ar: "في العُطْلَة الماضِيَة؟" },
-                { tr: "nereye", order: 1, ar: "إلى أَيْنَ" },
+                { tr: "nereye", order: 1, ar: "إلى أَيْن" },
                 { tr: "gittin?", order: 2, ar: "ذَهَبْتَ" },
             ],
             p2: [

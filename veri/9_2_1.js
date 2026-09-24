@@ -4,7 +4,7 @@ window.data = {
     sentence: [
         {
             words: [
-                { tr: "Öğretmen", order: 2, ar: "الْمُدَرِّس؟" },
+                { tr: "Öğretmen", order: 2, ar: "المُدَرِّس؟" },
                 { tr: "nerede?", order: 1, ar: "أَيْن" },
             ]
         },
@@ -47,7 +47,7 @@ window.data = {
         {
             words: [
                 { tr: "Kalem", order: 1, ar: "القَلَم" },
-                { tr: "kitabın altında.", order: 2, ar: "تَحْت الْكِتاب." },
+                { tr: "kitabın altında.", order: 2, ar: "تَحْت الكِتاب." },
             ]
         },
         {
@@ -116,7 +116,7 @@ window.data = {
     dialog: [
         {
             p1: [
-                { tr: "Öğretmen", order: 2, ar: "الْمُدَرِّس؟" },
+                { tr: "Öğretmen", order: 2, ar: "المُدَرِّس؟" },
                 { tr: "nerede?", order: 1, ar: "أَيْن" },
             ],
             p2: [
@@ -151,7 +151,7 @@ window.data = {
             ],
             p2: [
                 { tr: "Kalem", order: 1, ar: "القَلَم" },
-                { tr: "kitabın altında.", order: 2, ar: "تَحْت الْكِتاب." },
+                { tr: "kitabın altında.", order: 2, ar: "تَحْت الكِتاب." },
             ]
         }
     ]

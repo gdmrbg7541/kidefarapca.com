@@ -1,5 +1,5 @@
-/* 6. sınıf — 6_4_2 (4. Ünite 2. Ders: Renkler | اَلْأَلْوان) */
-/* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 4. Ünite (كَيْفَ الْجَوّ هَذا الْأُسْبوع؟), s. 160-177. */
+/* 6. sınıf — 6_4_2 (4. Ünite 2. Ders: Renkler | اَلأَلْوان) */
+/* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 4. Ünite (كَيْف الجَوّ هَذا الأُسْبوع؟), s. 160-177. */
 /* Kelimeler kitabın kendi kâmûsuyla (s.194-203) karşılaştırılarak yazıldı. */
 /* CÜMLELER HENÜZ GİRİLMEDİ — sentence ve dialog bilerek boştur. */
 window.data = {
@@ -11,11 +11,11 @@ window.data = {
             "tr": "Renk – Renkler"
         },
         {
-            "ar": "وَرْدِيّ / وَرْدِيَّة",
+            "ar": "وَرْدِيّ / وَرْدِيَّة",
             "tr": "Pembe"
         },
         {
-            "ar": "بَنَفْسَجِيّ / بَنَفْسَجِيَّة",
+            "ar": "بَنَفْسَجِيّ / بَنَفْسَجِيَّة",
             "tr": "Mor"
         },
         {
@@ -39,11 +39,11 @@ window.data = {
             "tr": "Siyah"
         },
         {
-            "ar": "بُرْتُقالِيّ / بُرْتُقالِيَّة",
+            "ar": "بُرْتُقالِيّ / بُرْتُقالِيَّة",
             "tr": "Turuncu"
         },
         {
-            "ar": "بُنِّيّ / بُنِّيَّة",
+            "ar": "بُنِّيّ / بُنِّيَّة",
             "tr": "Kahverengi"
         },
         {
@@ -79,7 +79,7 @@ window.data = {
             "tr": "Karlı"
         },
         {
-            "ar": "كَيْفَ؟",
+            "ar": "كَيْف؟",
             "tr": "Nasıl?"
         },
         {
@@ -91,7 +91,7 @@ window.data = {
             "tr": "Pantolon"
         },
         {
-            "ar": "قُبَّعَة",
+            "ar": "قُبَّعَة",
             "tr": "Bere, şapka"
         },
         {
@@ -111,7 +111,7 @@ window.data = {
             "tr": "Etek"
         },
         {
-            "ar": "مِظَلَّة",
+            "ar": "مِظَلَّة",
             "tr": "Şemsiye"
         },
         {
@@ -119,11 +119,11 @@ window.data = {
             "tr": "Hangi?"
         },
         {
-            "ar": "اَلْأُسْبوع",
+            "ar": "اَلأُسْبوع",
             "tr": "Hafta"
         },
         {
-            "ar": "اَلْيَوْم",
+            "ar": "اَليَوْم",
             "tr": "Bugün"
         },
         {
@@ -139,7 +139,7 @@ window.data = {
             "tr": "Alıyorum."
         },
         {
-            "ar": "أُحِبُّ.",
+            "ar": "أُحِبُّ.",
             "tr": "Seviyorum."
         },
         {
@@ -147,7 +147,7 @@ window.data = {
             "tr": "Gündüz"
         },
         {
-            "ar": "تُحِبُّ. / تُحِبّينَ.",
+            "ar": "تُحِبُّ. / تُحِبّينَ.",
             "tr": "Seviyorsun. (erkek / kadın)"
         },
         {

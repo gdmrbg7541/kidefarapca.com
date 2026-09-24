@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_1_2 (1. Ünite 2. Ders: Tiyatro | المَسْرَحِيَّة) */
+/* 8. sınıf — 8_1_2 (1. Ünite 2. Ders: Tiyatro | المَسْرَحِيَّة) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 1. Ünite, s. 18-25. */
 /* SAAT KONUSU BU DERSTEDİR: kitapta s.23 المَسْرَحِيّة başlığı altında geçiyor */
 /* (diyalogdaki «سَتَبْدَأُ في السّاعة الخامِسة مَساءً» cümlesinin devamı). */
@@ -9,7 +9,7 @@ window.data = {
             words: [
                 { tr: "Merhaba", order: 1, ar: "مَرْحَبًا" },
                 { tr: "Sümeyye,", order: 2, ar: "سُمَيَّة،" },
-                { tr: "nereye", order: 3, ar: "إلى أَيْنَ" },
+                { tr: "nereye", order: 3, ar: "إلى أَيْن" },
                 { tr: "gidiyorsun?", order: 4, ar: "أنتِ ذاهِبَة؟" },
             ]
         },
@@ -270,7 +270,7 @@ window.data = {
                 { tr: "bana", order: 3, ar: "لي" },
                 { tr: "söyle:", order: 2, ar: "قُلْ" },
                 { tr: "dünyanın merkezi", order: 5, ar: "مَرْكَزُ الأَرْضِ؟" },
-                { tr: "nerede?", order: 4, ar: "أَيْنَ" },
+                { tr: "nerede?", order: 4, ar: "أَيْن" },
             ]
         },
         {
@@ -390,7 +390,7 @@ window.data = {
             p1: [
                 { tr: "Merhaba", order: 1, ar: "مَرْحَبًا" },
                 { tr: "Sümeyye,", order: 2, ar: "سُمَيَّة،" },
-                { tr: "nereye", order: 3, ar: "إلى أَيْنَ" },
+                { tr: "nereye", order: 3, ar: "إلى أَيْن" },
                 { tr: "gidiyorsun?", order: 4, ar: "أنتِ ذاهِبَة؟" },
             ],
             p2: [
@@ -458,7 +458,7 @@ window.data = {
                 { tr: "bana", order: 3, ar: "لي" },
                 { tr: "söyle:", order: 2, ar: "قُلْ" },
                 { tr: "dünyanın merkezi", order: 5, ar: "مَرْكَزُ الأَرْضِ؟" },
-                { tr: "nerede?", order: 4, ar: "أَيْنَ" },
+                { tr: "nerede?", order: 4, ar: "أَيْن" },
             ],
             p2: [
                 { tr: "Dünyanın merkezi", order: 1, ar: "مَرْكَزُ الأَرْضِ" },

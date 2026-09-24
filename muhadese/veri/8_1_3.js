@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_1_3 (1. Ünite 3. Ders: Gezi | التَّجَوُّل) */
+/* 8. sınıf — 8_1_3 (1. Ünite 3. Ders: Gezi | التَّجَوُّل) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 1. Ünite, s. 26-33. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
@@ -33,7 +33,7 @@ window.data = {
         {
             words: [
                 { tr: "Gülhane Parkı'na", order: 3, ar: "إلى حَديقَة كُلْخانَة؟" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "giderim?", order: 2, ar: "أَذْهَبُ" },
             ]
         },
@@ -89,7 +89,7 @@ window.data = {
         {
             words: [
                 { tr: "Kütüphane", order: 1, ar: "المَكْتَبَة" },
-                { tr: "evden", order: 3, ar: "عَنِ البَيْت." },
+                { tr: "evden", order: 3, ar: "عَن البَيْت." },
                 { tr: "uzak.", order: 2, ar: "بَعيدَة" },
             ]
         },
@@ -120,7 +120,7 @@ window.data = {
         {
             words: [
                 { tr: "Okula", order: 3, ar: "إلى المَدْرَسَة؟" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "giderim?", order: 2, ar: "أَذْهَبُ" },
             ]
         },
@@ -141,7 +141,7 @@ window.data = {
         {
             words: [
                 { tr: "Sonra", order: 1, ar: "ثُمَّ" },
-                { tr: "birinci yoldan", order: 4, ar: "مِنَ الطَّريق الأَوَّل." },
+                { tr: "birinci yoldan", order: 4, ar: "مِن الطَّريق الأَوَّل." },
                 { tr: "sağa", order: 3, ar: "نَحْوَ اليَمين" },
                 { tr: "dön.", order: 2, ar: "اِتَّجِهْ" },
             ]
@@ -155,17 +155,17 @@ window.data = {
         },
         {
             words: [
-                { tr: "Spor salonundan", order: 3, ar: "مِنَ الصّالَة الرِّياضِيَّة" },
+                { tr: "Spor salonundan", order: 3, ar: "مِن الصّالَة الرِّياضِيَّة" },
                 { tr: "okula", order: 4, ar: "إلى المَدْرَسَة؟" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "giderim?", order: 2, ar: "أَذْهَبُ" },
             ]
         },
         {
             words: [
-                { tr: "Kütüphaneden", order: 3, ar: "مِنَ المَكْتَبَة" },
+                { tr: "Kütüphaneden", order: 3, ar: "مِن المَكْتَبَة" },
                 { tr: "müzeye", order: 4, ar: "إلى المُتْحَف؟" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "giderim?", order: 2, ar: "أَذْهَبُ" },
             ]
         },
@@ -180,16 +180,16 @@ window.data = {
         },
         {
             words: [
-                { tr: "Müzeden", order: 3, ar: "مِنَ المُتْحَف" },
+                { tr: "Müzeden", order: 3, ar: "مِن المُتْحَف" },
                 { tr: "hastaneye", order: 4, ar: "إلى المُسْتَشْفى؟" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "giderim?", order: 2, ar: "أَذْهَبُ" },
             ]
         },
         {
             words: [
                 { tr: "Okul", order: 1, ar: "المَدْرَسَة" },
-                { tr: "hastaneye", order: 3, ar: "مِنَ المُسْتَشْفى." },
+                { tr: "hastaneye", order: 3, ar: "مِن المُسْتَشْفى." },
                 { tr: "yakın.", order: 2, ar: "قَريبَة" },
             ]
         },
@@ -232,7 +232,7 @@ window.data = {
             words: [
                 { tr: "Bu şehir", order: 3, ar: "هذه المَدينَة" },
                 { tr: "Türkiye'de", order: 4, ar: "في تُرْكِيا؟" },
-                { tr: "nerede", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede", order: 1, ar: "أَيْن" },
                 { tr: "yer alır?", order: 2, ar: "تَقَعُ" },
             ]
         },
@@ -386,7 +386,7 @@ window.data = {
             words: [
                 { tr: "Orada", order: 1, ar: "هُناك" },
                 { tr: "ziyaret edilecek", order: 3, ar: "لِلزِّيارَة." },
-                { tr: "birçok yer vardır.", order: 2, ar: "العَديد مِنَ الأماكِن" },
+                { tr: "birçok yer vardır.", order: 2, ar: "العَديد مِن الأماكِن" },
             ]
         },
         {
@@ -419,7 +419,7 @@ window.data = {
         {
             p1: [
                 { tr: "Gülhane Parkı'na", order: 3, ar: "إلى حَديقَة كُلْخانَة؟" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "giderim?", order: 2, ar: "أَذْهَبُ" },
             ],
             p2: [
@@ -443,7 +443,7 @@ window.data = {
         {
             p1: [
                 { tr: "Okula", order: 3, ar: "إلى المَدْرَسَة؟" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "giderim?", order: 2, ar: "أَذْهَبُ" },
             ],
             p2: [
@@ -460,16 +460,16 @@ window.data = {
             ],
             p2: [
                 { tr: "Sonra", order: 1, ar: "ثُمَّ" },
-                { tr: "birinci yoldan", order: 4, ar: "مِنَ الطَّريق الأَوَّل." },
+                { tr: "birinci yoldan", order: 4, ar: "مِن الطَّريق الأَوَّل." },
                 { tr: "sağa", order: 3, ar: "نَحْوَ اليَمين" },
                 { tr: "dön.", order: 2, ar: "اِتَّجِهْ" },
             ]
         },
         {
             p1: [
-                { tr: "Spor salonundan", order: 3, ar: "مِنَ الصّالَة الرِّياضِيَّة" },
+                { tr: "Spor salonundan", order: 3, ar: "مِن الصّالَة الرِّياضِيَّة" },
                 { tr: "okula", order: 4, ar: "إلى المَدْرَسَة؟" },
-                { tr: "nasıl", order: 1, ar: "كَيْفَ" },
+                { tr: "nasıl", order: 1, ar: "كَيْف" },
                 { tr: "giderim?", order: 2, ar: "أَذْهَبُ" },
             ],
             p2: [

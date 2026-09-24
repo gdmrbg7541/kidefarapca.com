@@ -1,4 +1,4 @@
-/* 8. sınıf — 8_5_1 (5. Ünite 1. Ders: Sporun Tarihi | تاريخُ الرِّياضَة) */
+/* 8. sınıf — 8_5_1 (5. Ünite 1. Ders: Sporun Tarihi | تاريخُ الرِّياضَة) */
 /* Kaynak: 8. Sınıf Arapça ders kitabı, 5. Ünite, s. 116-125. */
 /* Dizi sırası TÜRKÇE okuma sırasıdır; 'order' alanı ARAPÇA okuma sırasını verir. */
 window.data = {
@@ -200,7 +200,7 @@ window.data = {
         {
             p1: [
                 { tr: "Satranç", order: 2, ar: "الشَّطْرَنْج" },
-                { tr: "nerede", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede", order: 1, ar: "أَيْن" },
                 { tr: "ortaya çıkmıştır?", order: 3, ar: "ظَهَرَ؟" },
             ],
             p2: [
@@ -211,7 +211,7 @@ window.data = {
         {
             p1: [
                 { tr: "Futbol", order: 2, ar: "كُرَة القَدَم" },
-                { tr: "nerede", order: 1, ar: "أَيْنَ" },
+                { tr: "nerede", order: 1, ar: "أَيْن" },
                 { tr: "ortaya çıkmıştır?", order: 3, ar: "ظَهَرَتْ؟" },
             ],
             p2: [

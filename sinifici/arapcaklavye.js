@@ -120,16 +120,16 @@
         ['\uFDFA', 'sav · sallallâhu aleyhi ve sellem', 'muhur', 'muhur'], ['\uFDFD', 'Besmele', 'muhur', 'muhur'],
         ['\uFDF4', 'Muhammed', 'muhur', 'muhur']] },
       { baslik: 'Açık yazılışlar', bilgi: 'muhur', tus: [
-        ['اللّٰهُ', 'Allah', null, 'ifade'], ['جَلَّ جَلَالُهُ', 'cc · celle celâlühû', null, 'ifade'],
-        ['صَلَّى اللّٰهُ عَلَيْهِ وَسَلَّمَ', 'sav', null, 'ifade'], ['بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيمِ', 'Besmele', null, 'ifade'],
-        ['عَلَيْهِ السَّلَامُ', 'as · aleyhisselâm', null, 'ifade'], ['رَضِيَ اللّٰهُ عَنْهُ', 'ra · radıyallâhu anh', null, 'ifade'],
+        ['اللّٰهُ', 'Allah', null, 'ifade'], ['جَلَّ جَلَالُهُ', 'cc · celle celâlühû', null, 'ifade'],
+        ['صَلَّى اللّٰهُ عَلَيْهِ وَسَلَّمَ', 'sav', null, 'ifade'], ['بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيمِ', 'Besmele', null, 'ifade'],
+        ['عَلَيْهِ السَّلَامُ', 'as · aleyhisselâm', null, 'ifade'], ['رَضِيَ اللّٰهُ عَنْهُ', 'ra · radıyallâhu anh', null, 'ifade'],
         ['رَضِيَ اللّٰهُ عَنْهَا', 'radıyallâhu anhâ', null, 'ifade'], ['رَضِيَ اللّٰهُ عَنْهُمْ', 'radıyallâhu anhüm', null, 'ifade'],
         ['رَحِمَهُ اللّٰهُ', 'rh · rahimehullâh', null, 'ifade'], ['سُبْحَانَهُ وَتَعَالَى', 'st · sübhânehû ve teâlâ', null, 'ifade'],
-        ['عَزَّ وَجَلَّ', 'azze ve celle', null, 'ifade'], ['تَبَارَكَ وَتَعَالَى', 'tebâreke ve teâlâ', null, 'ifade']] },
+        ['عَزَّ وَجَلَّ', 'azze ve celle', null, 'ifade'], ['تَبَارَكَ وَتَعَالَى', 'tebâreke ve teâlâ', null, 'ifade']] },
       { baslik: 'Günlük dinî ifadeler', tus: [
-        ['السَّلَامُ عَلَيْكُمْ', 'selâmün aleyküm', null, 'ifade'], ['وَعَلَيْكُمُ السَّلَامُ', 've aleykümüsselâm', null, 'ifade'],
+        ['السَّلَامُ عَلَيْكُمْ', 'selâmün aleyküm', null, 'ifade'], ['وَعَلَيْكُمُ السَّلَامُ', 've aleykümüsselâm', null, 'ifade'],
         ['إِنْ شَاءَ اللّٰهُ', 'inşâallah', null, 'ifade'], ['مَا شَاءَ اللّٰهُ', 'mâşâallah', null, 'ifade'],
-        ['الْحَمْدُ لِلّٰهِ', 'elhamdülillâh', null, 'ifade'], ['سُبْحَانَ اللّٰهِ', 'sübhânallah', null, 'ifade'],
+        ['الحَمْدُ لِلّٰهِ', 'elhamdülillâh', null, 'ifade'], ['سُبْحَانَ اللّٰهِ', 'sübhânallah', null, 'ifade'],
         ['اللّٰهُ أَكْبَرُ', 'Allâhu ekber', null, 'ifade'], ['جَزَاكَ اللّٰهُ خَيْرًا', 'cezâkallâhu hayran', null, 'ifade']] }] },
     { id: 'kuran', ad: 'Kur\u2019an', bolum: [
       { baslik: 'Âyet', bilgi: 'ayet', tus: [
@@ -678,11 +678,11 @@
       baslik: 'Şedde — harfi iki kez okut',
       svg: function () {
         return svg('<g class="sd0">' + T(220, 110, 76, 'مَدْدَ', ' fill="#16324F"') + T(220, 160, 20, 'aynı harf iki kez: د + د', ' fill="#16A085"') + '</g>' +
-          '<g class="sd1">' + T(220, 110, 76, 'مَدَّ', ' fill="#F39C12"') + T(220, 110, 76, 'مد', ' fill="#16324F"') +
+          '<g class="sd1">' + T(220, 110, 76, 'مَدَّ', ' fill="#F39C12"') + T(220, 110, 76, 'مد', ' fill="#16324F"') +
           T(220, 160, 20, 'tek harf + şedde → “medde”', ' fill="#E67E22"') + '</g>' +
           T(220, 192, 15, 'şeddeli harf önce sessiz, sonra harekeli okunur', ' class="lbl"'), sira('sd', 2, 5));
       },
-      metin: '<p><b>Şedde</b> bir harfin <b>iki kez</b> okunduğunu gösterir: ilki cezimli, ikincisi harekeli. <span class="ar">مَدْدَ</span> yerine <span class="ar">مَدَّ</span> yazılır.</p>' +
+      metin: '<p><b>Şedde</b> bir harfin <b>iki kez</b> okunduğunu gösterir: ilki cezimli, ikincisi harekeli. <span class="ar">مَدْدَ</span> yerine <span class="ar">مَدَّ</span> yazılır.</p>' +
         '<p>Şedde her zaman bir harekeyle birlikte kullanılır: önce harfe, sonra <b>şedde</b>ye, sonra harekeye bas (sıra fark etmez). ' +
         'İkisi birlikte durur; yeni bir harekeye basarsan yalnız hareke değişir, şedde kalır.</p>',
       ekle: [['\u0651', 'şedde']], hareke: true, kod: 'U+0651 ARABIC SHADDA'
@@ -715,7 +715,7 @@
           sira('ck', 3, 7.5) + '.ck-u{transform-box:fill-box;transform-origin:left;animation:ckU 2.5s ease-out infinite}@keyframes ckU{0%,10%{transform:scaleX(.1)}70%,100%{transform:scaleX(1)}}');
       },
       metin: '<p><b>Çekerler</b> harfin uzatılarak okunacağını gösteren küçük işaretlerdir (Kur’an ve dinî metinlerde sık geçer).</p>' +
-        '<ul><li><b>Dik üstün</b> (hançerî elif) <span class="ar">هٰذَا</span> — “â” diye uzatılır. <span class="ar">اللّٰهُ ، الرَّحْمٰنُ</span></li>' +
+        '<ul><li><b>Dik üstün</b> (hançerî elif) <span class="ar">هٰذَا</span> — “â” diye uzatılır. <span class="ar">اللّٰهُ ، الرَّحْمٰنُ</span></li>' +
         '<li><b>Dik esre</b> <span class="ar">بِهٖ</span> — “î”, <b>ters ötre</b> <span class="ar">لَهٗ</span> — “û”.</li>' +
         '<li><b>Med</b> (<span class="ar">ٓ</span>) daha uzun çekişi gösterir. <span class="bilgi-bag" role="button" tabindex="0" data-bilgi="med">Med nasıl okunur? ›</span></li></ul>',
       ekle: [['\u0670', 'dik üstün'], ['\u0656', 'dik esre'], ['\u0657', 'ters ötre'], ['\u0653', 'med']], hareke: true, kod: 'U+0670 · U+0656 · U+0657'
@@ -783,13 +783,13 @@
       metin: '<p>Bu işaretler <b>tek bir karakter</b> olarak yazılan hazır bağlamalardır (Unicode “ligature”):</p>' +
         '<ul><li><span class="ar">ﷲ</span> <b>Allah</b> lafzı</li><li><span class="ar">ﷻ</span> <b>celle celâlühû</b> (cc) — Allah’ın adından sonra</li>' +
         '<li><span class="ar">ﷺ</span> <b>sallallâhu aleyhi ve sellem</b> (sav) — Peygamberimizin adından sonra</li><li><span class="ar">﷽</span> <b>Besmele</b></li></ul>' +
-        '<p><b>Dikkat:</b> Her yazı tipinde bulunmazlar; bulunmayanda kutucuk (□) görünür. Word’de Sakkal Majalla, Dokümanlar’da Amiri bunları gösterir. Emin değilsen <b>Mühür · İfade</b> sekmesindeki <b>açık yazılışları</b> kullan: <span class="ar">صَلَّى اللّٰهُ عَلَيْهِ وَسَلَّمَ</span>.</p>',
+        '<p><b>Dikkat:</b> Her yazı tipinde bulunmazlar; bulunmayanda kutucuk (□) görünür. Word’de Sakkal Majalla, Dokümanlar’da Amiri bunları gösterir. Emin değilsen <b>Mühür · İfade</b> sekmesindeki <b>açık yazılışları</b> kullan: <span class="ar">صَلَّى اللّٰهُ عَلَيْهِ وَسَلَّمَ</span>.</p>',
       ekle: [['\uFDFA', 'sav'], ['\uFDFB', 'cc'], ['\uFDF2', 'Allah']], kod: 'U+FDFA · U+FDFB · U+FDF2 · U+FDFD'
     },
     ayet: {
       baslik: 'Âyet ayracı ve âyet sonu',
       svg: function () {
-        return svg(T(220, 110, 44, 'إِنَّ مَعَ الْعُسْرِ يُسْرًا', ' fill="#16324F"') +
+        return svg(T(220, 110, 44, 'إِنَّ مَعَ العُسْرِ يُسْرًا', ' fill="#16324F"') +
           '<g class="ay-s">' + T(392, 114, 58, '\uFD3F', ' fill="#16A085"') + '</g>' +
           '<g class="ay-l">' + T(48, 114, 58, '\uFD3E', ' fill="#16A085"') + '</g>' +
           '<g class="ay-n"><circle cx="220" cy="160" r="19" fill="#FFF8E6" stroke="#E9C46A" stroke-width="3"/>' + T(220, 168, 22, '٦', ' fill="#7A4A00"') + '</g>' +

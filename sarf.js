@@ -796,7 +796,7 @@ const App = {
 const BACK_SVG = '<svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>';
 
 /* =========================================================
-   OYUN 1 — مِنَ الجَذْرِ إِلى الصّورَة (kökten kalıba/emojiye)
+   OYUN 1 — مِن الجَذْرِ إِلى الصّورَة (kökten kalıba/emojiye)
 ========================================================= */
 const Game1 = {
     /* selected: seçili kökün ROOTS_GAME1 içindeki sırası (-1 = hiçbiri).
@@ -918,7 +918,7 @@ const Game1 = {
             <div class="back-btn" id="g1-back">${BACK_SVG}</div>
             <div class="progress-pill" id="g1-pill">0 / ${ROOTS_GAME1.length}</div>
             <div class="g1-wrap">
-                <div class="g1-title" dir="rtl">اُسْحَبِ الْجَذْرَ إِلَى الصُّورَةِ الْمُنَاسِبَةِ.</div>
+                <div class="g1-title" dir="rtl">اُسْحَبِ الجَذْرَ إِلَى الصُّورَةِ المُنَاسِبَةِ.</div>
                 <div class="g1-root-bar" id="g1-root-bar" dir="rtl">
                     <div class="g1-conj-host" id="g1-conj-host"></div>
                 </div>
@@ -966,7 +966,7 @@ const Game1 = {
        Sürüklenecek kök çipi de olmadığı için sürükle-bırak kapalıdır. */
     showPickHint() {
         const grid = document.getElementById('g1-circle');
-        grid.innerHTML = '<div class="g1-pick-hint" dir="rtl">اِخْتَرْ جَذْرًا مِنَ الأَعْلى</div>';
+        grid.innerHTML = '<div class="g1-pick-hint" dir="rtl">اِخْتَرْ جَذْرًا مِن الأَعْلى</div>';
     },
 
     selectRoot(i) {
@@ -1057,7 +1057,7 @@ const Game1 = {
         this.updatePill();
 
         if (this.state.done.length >= ROOTS_GAME1.length) {
-            App.showDone('🎉', 'أَحْسَنْتَ! لَقَدْ أَتْمَمْتَ كُلَّ الْجُذُورِ.');
+            App.showDone('🎉', 'أَحْسَنْتَ! لَقَدْ أَتْمَمْتَ كُلَّ الجُذُورِ.');
             document.getElementById('done-replay').onclick = () => {
                 App.hideDone();
                 this.start();
@@ -1463,7 +1463,7 @@ const Game2 = {
         if (this.ilkYonerge) {
             this.ilkYonerge = false;
             this.yonergeGoster(
-                'اِضْغَطْ عَلَى الْكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَهَا.' +
+                'اِضْغَطْ عَلَى الكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَهَا.' +
                 '<br>' +
                 'اِخْتَرْ جَذْرًا ثُمَّ وَزْنًا لِتَصْنَعَ كَلِمَةً جَدِيدَةً.',
                 true, 5200);
@@ -2116,7 +2116,7 @@ const Game2 = {
         if (this.state.roundIdx >= GAME2_ROUNDS.length) {
             /* NOT: Kelime Fabrikasi PUAN URETMEZ (yanlis yolu yok) — sure
                takibi gorevkopru'nun sureTakibiBaslat() kanaliyla yapilir. */
-            App.showDone('🏭', 'أَحْسَنْتَ! مِنَ الْكَلِمَةِ إِلَى الْجَذْرِ وَمِنَ الْجَذْرِ إِلَى الْكَلِمَةِ.');
+            App.showDone('🏭', 'أَحْسَنْتَ! مِن الكَلِمَةِ إِلَى الجَذْرِ وَمِنَ الجَذْرِ إِلَى الكَلِمَةِ.');
             document.getElementById('done-replay').onclick = () => {
                 App.hideDone();
                 this.start();
@@ -2151,7 +2151,7 @@ const Game3 = {
             <div class="back-btn" id="g3-back">${BACK_SVG}</div>
             <div class="progress-pill" id="g3-progress">${this.state.doneSet.size} / ${this.totalValid()}</div>
             <div class="g3-wrap">
-                <div class="g1-title" dir="rtl">اُسْحَبِ الْجَذْرَ إِلَى الْوَزْنِ لِتَصْنَعَ كَلِمَةً جَدِيدَةً.</div>
+                <div class="g1-title" dir="rtl">اُسْحَبِ الجَذْرَ إِلَى الوَزْنِ لِتَصْنَعَ كَلِمَةً جَدِيدَةً.</div>
                 <div class="g3-stage">
                     <!-- VİTRİN: türeyen kelime, tenteli bir dükkân vitrininde sergilenir -->
                     <div class="g3-vitrin">
@@ -2261,7 +2261,7 @@ const Game3 = {
                 document.getElementById('g3-progress').textContent = `${this.state.doneSet.size} / ${this.totalValid()}`;
                 if (this.state.doneSet.size === this.totalValid()) {
                     setTimeout(() => {
-                        App.showDone('🏆', 'أَحْسَنْتَ! لَقَدِ اكْتَشَفْتَ كُلَّ الِاشْتِقَاقَاتِ.');
+                        App.showDone('🏆', 'أَحْسَنْتَ! لَقَدِ اكْتَشَفْتَ كُلَّ الاشْتِقَاقَاتِ.');
                         document.getElementById('done-replay').onclick = () => {
                             App.hideDone();
                             this.start();

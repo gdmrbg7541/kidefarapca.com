@@ -12,8 +12,8 @@
 
    VERİ BİÇİMİ
      Kelime kartlarına isteğe bağlı bir `lh` alanı eklenir:
-       { tr:'Nasılsın?', ar:'كَيْفَ حالُكَ؟',
-         lh:{ mis:'إِزَّيَّك؟', sam:'كِيفَك؟', hic:'كَيْف حالَك؟' } }
+       { tr:'Nasılsın?', ar:'كَيْف حالُكَ؟',
+         lh:{ mis:'إِزَّيَّك؟', sam:'كِيفَك؟', hic:'كَيْف حالَك؟' } }
      Yazılmayan lehçe FUSHAYA DÜŞER ve arayüzde "fusha ile aynı"
      diye işaretlenir — uydurma bir karşılık gösterilmez.
 
@@ -99,8 +99,8 @@
          1) parçanın kendi `lh` alanı (elle yazılmışsa en doğrusu),
          2) DERSİN KELİME LİSTESİ — words[] içinde aynı ifade varsa
             onun lehçe karşılığı cümleye/diyaloga da uygulanıyor.
-       Eşleme harekesiz ve noktalamasız yapılıyor: "كَيْفَ حالُكَ؟" ile
-       "كَيْفَ حالُكَ" aynı sayılıyor, sondaki soru işareti korunuyor.
+       Eşleme harekesiz ve noktalamasız yapılıyor: "كَيْف حالُكَ؟" ile
+       "كَيْف حالُكَ" aynı sayılıyor, sondaki soru işareti korunuyor.
 
        Parçalar YERİNDE değiştiriliyor (yeni nesne üretilmiyor):
        simultane.js `data` değişkenini bir kez okuyup tutuyor, referans
@@ -128,7 +128,7 @@
 
     /* Bir cümle/diyalog parçasının seçili lehçedeki hâli.
        NOKTALAMA PARÇANIN KENDİSİNDEN gelir: kelime listesindeki karşılık
-       "إِزَّيَّك؟" gibi soru işaretiyle yazılmış olabilir; parçada da ؟
+       "إِزَّيَّك؟" gibi soru işaretiyle yazılmış olabilir; parçada da ؟
        varsa iki soru işareti çıkıyordu. İki tarafın da gövdesi ayrılıp
        yalnız PARÇANIN noktalaması geri ekleniyor. */
     function parca(arFusha, lh) {

@@ -13,7 +13,7 @@ function shuffleQuestions(array) {
             { ar: "انتهى", tr: "Bitti", hk: "اِنْتَهَى" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "اللغة", tr: "Dili", hk: "اَللُّغَةِ" },
-            { ar: "العربية", tr: "Arap", hk: "اَلْعَرَبِيَّةِ" },
+            { ar: "العربية", tr: "Arap", hk: "اَلعَرَبِيَّةِ" },
             { ar: "قبل", tr: "Önce", hk: "قَبْلَ" },
             { ar: "قليل", tr: "Az", hk: "قَلِيلٍ" }
         ],
@@ -29,9 +29,9 @@ function shuffleQuestions(array) {
             { ar: "انتشرت", tr: "Yaygınlaştı", hk: "اِنْتَشَرَتْ" },
             { ar: "مواقع", tr: "Siteleri", hk: "مَوَاقِعُ" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "الاجتماعي", tr: "Sosyal", hk: "اَلِاجْتِمَاعِيِّ" },
+            { ar: "الاجتماعي", tr: "Sosyal", hk: "اَلاجْتِمَاعِيِّ" },
             { ar: "في", tr: "-da", hk: "فِي" },
-            { ar: "العالم", tr: "Dünya", hk: "اَلْعَالَمِ" }
+            { ar: "العالم", tr: "Dünya", hk: "اَلعَالَمِ" }
         ],
         targetIndex: 2,
         options: [
@@ -89,9 +89,9 @@ function shuffleQuestions(array) {
         words: [
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "الطالب", tr: "Öğrenci", hk: "اَلطَّالِبُ" },
-            { ar: "الواجب", tr: "Ödevi", hk: "اَلْوَاجِبَ" },
+            { ar: "الواجب", tr: "Ödevi", hk: "اَلوَاجِبَ" },
             { ar: "في", tr: "-", hk: "فِي" },
-            { ar: "البيت", tr: "Evde", hk: "اَلْبَيْتِ" }
+            { ar: "البيت", tr: "Evde", hk: "اَلبَيْتِ" }
         ],
         targetIndex: 0,
         options: [
@@ -103,7 +103,7 @@ function shuffleQuestions(array) {
         fullTr: "Okulun kapısı açıldı.",
         words: [
             { ar: "باب", tr: "Kapısı", hk: "بَابُ" },
-            { ar: "المدرسة", tr: "Okulun", hk: "اَلْمَدْرَسَةِ" },
+            { ar: "المدرسة", tr: "Okulun", hk: "اَلمَدْرَسَةِ" },
             { ar: "_______", tr: "???", hk: "_______" }
         ],
         targetIndex: 2,
@@ -142,7 +142,7 @@ function shuffleQuestions(array) {
         fullTr: "Bilim ve teknoloji insana büyük bir yardım sundu.",
         words: [
             { ar: "إن", tr: "Şüphesiz", hk: "إِنَّ" },
-            { ar: "العلم", tr: "Bilim", hk: "الْعِلْمَ" },
+            { ar: "العلم", tr: "Bilim", hk: "العِلْمَ" },
             { ar: "والتكنولوجيا", tr: "Teknoloji", hk: "وَالتِّكْنُولُوجِيَا" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "للإنسان", tr: "İnsana", hk: "لِلْإِنْسَانِ" },
@@ -221,7 +221,7 @@ function shuffleQuestions(array) {
         fullTr: "Modern çağda akıllı telefonlar çok gelişti.",
         words: [
             { ar: "تطورت", tr: "Gelişti", hk: "تَطَوَّرَتِ" },
-            { ar: "الهواتف", tr: "Telefonlar", hk: "الْهَوَاتِفُ" },
+            { ar: "الهواتف", tr: "Telefonlar", hk: "الهَوَاتِفُ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "بشكل", tr: "Şekilde", hk: "بِشَكْلٍ" },
             { ar: "كبير", tr: "Büyük", hk: "كَبِيرٍ" }
@@ -247,7 +247,7 @@ function shuffleQuestions(array) {
         words: [
             { ar: "يسبب", tr: "Neden olur", hk: "يُسَبِّبُ" },
             { ar: "تلوث", tr: "Kirliliği", hk: "تَلَوُّثُ" },
-            { ar: "الهواء", tr: "Hava", hk: "الْهَوَاءِ" },
+            { ar: "الهواء", tr: "Hava", hk: "الهَوَاءِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "خطيرة", tr: "Tehlikeli", hk: "خَطِيرَةً" },
             { ar: "للصحة", tr: "Sağlık için", hk: "لِلصِّحَّةِ" }
@@ -271,9 +271,9 @@ function shuffleQuestions(array) {
     {
         fullTr: "Vatan, insanların ait olduğu en kutsal mekandır.",
         words: [
-            { ar: "الوطن", tr: "Vatan", hk: "الْوَطَنُ" },
+            { ar: "الوطن", tr: "Vatan", hk: "الوَطَنُ" },
             { ar: "هو", tr: "-", hk: "هُوَ" },
-            { ar: "المكان", tr: "Mekandır", hk: "الْمَكَانُ" },
+            { ar: "المكان", tr: "Mekandır", hk: "المَكَانُ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "ينتمي", tr: "Ait olduğu", hk: "يَنْتَمِي" },
             { ar: "إليه", tr: "Ona", hk: "إِلَيْهِ" }
@@ -298,10 +298,10 @@ function shuffleQuestions(array) {
         fullTr: "Uzmanlar vücudu dinlendirmenin iyileşmeye büyük katkı sağladığını düşünüyor.",
         words: [
             { ar: "يعتقد", tr: "İnanıyor/Düşünüyor", hk: "يَعْتَقِدُ" },
-            { ar: "الخبراء", tr: "Uzmanlar", hk: "الْخُبَرَاءُ" },
+            { ar: "الخبراء", tr: "Uzmanlar", hk: "الخُبَرَاءُ" },
             { ar: "أن", tr: "-diğini", hk: "أَنَّ" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "الجسد", tr: "Vücudu", hk: "الْجَسَدِ" },
+            { ar: "الجسد", tr: "Vücudu", hk: "الجَسَدِ" },
             { ar: "تساهم", tr: "Katkı sağlar", hk: "تُسَاهِمُ" },
             { ar: "في", tr: "-de", hk: "فِي" },
             { ar: "الشفاء", tr: "İyileşme", hk: "الشِّفَاءِ" }
@@ -328,7 +328,7 @@ function shuffleQuestions(array) {
             { ar: "يعد", tr: "Sayılır/Kabul edilir", hk: "يُعَدُّ" },
             { ar: "تدوين", tr: "Yazıya dökmek", hk: "تَدْوِينُ" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "العربية", tr: "Arap", hk: "الْعَرَبِيَّةِ" },
+            { ar: "العربية", tr: "Arap", hk: "العَرَبِيَّةِ" },
             { ar: "أمرا", tr: "Bir iş", hk: "أَمْرًا" },
             { ar: "معقدا", tr: "Karmaşık", hk: "مُعَقَّدًا" }
         ],
@@ -353,7 +353,7 @@ function shuffleQuestions(array) {
         words: [
             { ar: "يستخدم", tr: "Kullanır", hk: "يَسْتَخْدِمُ" },
             { ar: "الطب", tr: "Tıp", hk: "الطِّبُّ" },
-            { ar: "الحديث", tr: "Modern", hk: "الْحَدِيثُ" },
+            { ar: "الحديث", tr: "Modern", hk: "الحَدِيثُ" },
             { ar: "تقنيات", tr: "Teknolojiler", hk: "تِقْنِيَّاتٍ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "في", tr: "-de", hk: "فِي" },
@@ -383,7 +383,7 @@ function shuffleQuestions(array) {
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "من", tr: "-den", hk: "مِنْ" },
             { ar: "أهم", tr: "En önemli", hk: "أَهَمِّ" },
-            { ar: "الأولويات", tr: "Öncelikler", hk: "الْأَوْلَوِيَّاتِ" }
+            { ar: "الأولويات", tr: "Öncelikler", hk: "الأَوْلَوِيَّاتِ" }
         ],
         targetIndex: 2,
         options: [
@@ -405,8 +405,8 @@ function shuffleQuestions(array) {
         fullTr: "Düzenli yürüyüş yapmak kalp hastalıkları riskini azaltır.",
         words: [
             { ar: "يقلل", tr: "Azaltır", hk: "يُقَلِّلُ" },
-            { ar: "المشي", tr: "Yürüyüş", hk: "الْمَشْيُ" },
-            { ar: "المنتظم", tr: "Düzenli", hk: "الْمُنْتَظَمُ" },
+            { ar: "المشي", tr: "Yürüyüş", hk: "المَشْيُ" },
+            { ar: "المنتظم", tr: "Düzenli", hk: "المُنْتَظَمُ" },
             { ar: "من", tr: "...", hk: "مِنْ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "أصابة", tr: "Yakalanma", hk: "إِصَابَةِ" },
@@ -462,7 +462,7 @@ function shuffleQuestions(array) {
             { ar: "على", tr: "...", hk: "عَلَى" },
             { ar: "نسبة", tr: "Oran", hk: "نِسْبَةٍ" },
             { ar: "عالية", tr: "Yüksek", hk: "عَالِيَةٍ" },
-            { ar: "من", tr: "-den", hk: "مِنَ" },
+            { ar: "من", tr: "-den", hk: "مِن" },
             { ar: "_______", tr: "???", hk: "_______" }
         ],
         targetIndex: 6,
@@ -485,11 +485,11 @@ function shuffleQuestions(array) {
         fullTr: "İşlenmiş gıdalar çocukların sağlığını olumsuz etkiler.",
         words: [
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "الأغذية", tr: "Gıdalar", hk: "الْأَغْذِيَةُ" },
-            { ar: "المصنعة", tr: "İşlenmiş", hk: "الْمُصَنَّعَةُ" },
+            { ar: "الأغذية", tr: "Gıdalar", hk: "الأَغْذِيَةُ" },
+            { ar: "المصنعة", tr: "İşlenmiş", hk: "المُصَنَّعَةُ" },
             { ar: "على", tr: "üzerinde", hk: "عَلَى" },
             { ar: "صحة", tr: "Sağlık", hk: "صِحَّةِ" },
-            { ar: "الأطفال", tr: "Çocuklar", hk: "الْأَطْفَالِ" }
+            { ar: "الأطفال", tr: "Çocuklar", hk: "الأَطْفَالِ" }
         ],
         targetIndex: 0,
         options: [
@@ -511,12 +511,12 @@ function shuffleQuestions(array) {
         fullTr: "Vücut için gerekli enerjiyi sağlamak amacıyla kahvaltı öğününe önem verilmelidir.",
         words: [
             { ar: "يجب", tr: "Gereklidir", hk: "يَجِبُ" },
-            { ar: "الاهتمام", tr: "Önem vermek", hk: "الِاهْتِمَامُ" },
+            { ar: "الاهتمام", tr: "Önem vermek", hk: "الاهْتِمَامُ" },
             { ar: "بوجبة", tr: "Öğününe", hk: "بِوَجْبَةِ" },
-            { ar: "الإفطار", tr: "Kahvaltı", hk: "الْإِفْطَارِ" },
+            { ar: "الإفطار", tr: "Kahvaltı", hk: "الإِفْطَارِ" },
             { ar: "لأنها", tr: "Çünkü o", hk: "لِأَنَّهَا" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "الجسم", tr: "Vücudu", hk: "الْجَسَدَ" },
+            { ar: "الجسم", tr: "Vücudu", hk: "الجَسَدَ" },
             { ar: "بالطاقة", tr: "Enerji ile", hk: "بِالطَّاقَةِ" }
         ],
         targetIndex: 5,
@@ -538,14 +538,14 @@ function shuffleQuestions(array) {
     {
         fullTr: "Küresel ısınma buzulların erimesine yol açan ciddi bir sorundur.",
         words: [
-            { ar: "الاحتباس", tr: "Isınma", hk: "الِاحْتِبَاسُ" },
-            { ar: "الحراري", tr: "Küresel/Isıl", hk: "الْحَرَارِيُّ" },
+            { ar: "الاحتباس", tr: "Isınma", hk: "الاحْتِبَاسُ" },
+            { ar: "الحراري", tr: "Küresel/Isıl", hk: "الحَرَارِيُّ" },
             { ar: "مشكلة", tr: "Sorundur", hk: "مُشْكِلَةٌ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "تؤدي", tr: "Yol açan", hk: "تُؤَدِّي" },
             { ar: "إلى", tr: "-e", hk: "إِلَى" },
             { ar: "ذوبان", tr: "Erimesine", hk: "ذَوَبَانِ" },
-            { ar: "الجليد", tr: "Buzulların", hk: "الْجَلِيدِ" }
+            { ar: "الجليد", tr: "Buzulların", hk: "الجَلِيدِ" }
         ],
         targetIndex: 3,
         options: [
@@ -567,13 +567,13 @@ function shuffleQuestions(array) {
         fullTr: "Eğitimciler çocukların becerilerini geliştirmek için yeni yöntemler arıyorlar.",
         words: [
             { ar: "يبحث", tr: "Arıyor", hk: "يَبْحَثُ" },
-            { ar: "المربون", tr: "Eğitimciler", hk: "الْمُرَبُّونَ" },
+            { ar: "المربون", tr: "Eğitimciler", hk: "المُرَبُّونَ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "وسائل", tr: "Yöntemler/Yollar", hk: "وَسَائِلَ" },
             { ar: "جديدة", tr: "Yeni", hk: "جَدِيدَةٍ" },
             { ar: "لتطوير", tr: "Geliştirmek için", hk: "لِتَطْوِيرِ" },
             { ar: "مهارات", tr: "Becerilerini", hk: "مَهَارَاتِ" },
-            { ar: "الأطفال", tr: "Çocukların", hk: "الْأَطْفَالِ" }
+            { ar: "الأطفال", tr: "Çocukların", hk: "الأَطْفَالِ" }
         ],
         targetIndex: 2,
         options: [
@@ -595,13 +595,13 @@ function shuffleQuestions(array) {
         fullTr: "Laboratuvar testleri hastalığın teşhis edilmesinde temel bir rol oynar.",
         words: [
             { ar: "تلعب", tr: "Oynar", hk: "تَلْعَبُ" },
-            { ar: "الفحوصات", tr: "Testler", hk: "الْفُحُوصَاتُ" },
-            { ar: "المخبرية", tr: "Laboratuvar", hk: "الْمِخْبَرِيَّةُ" },
+            { ar: "الفحوصات", tr: "Testler", hk: "الفُحُوصَاتُ" },
+            { ar: "المخبرية", tr: "Laboratuvar", hk: "المِخْبَرِيَّةُ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "أساسيا", tr: "Temel", hk: "أَسَاسِيًّا" },
             { ar: "في", tr: "-de", hk: "فِي" },
             { ar: "تحديد", tr: "Belirlenmesinde", hk: "تَحْدِيدِ" },
-            { ar: "المرض", tr: "Hastalığın", hk: "الْمَرَضِ" }
+            { ar: "المرض", tr: "Hastalığın", hk: "المَرَضِ" }
         ],
         targetIndex: 3,
         options: [
@@ -626,11 +626,11 @@ function shuffleQuestions(array) {
             { ar: "كثيرون", tr: "Birçokları", hk: "كَثِيرُونَ" },
             { ar: "أن", tr: "-diğine", hk: "أَنَّ" },
             { ar: "الذكاء", tr: "Zeka", hk: "الذَّكَاءَ" },
-            { ar: "الاصطناعي", tr: "Yapay", hk: "الِاصْطِنَاعِيَّ" },
+            { ar: "الاصطناعي", tr: "Yapay", hk: "الاصْطِنَاعِيَّ" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "العالم", tr: "Dünyayı", hk: "الْعَالَمَ" },
+            { ar: "العالم", tr: "Dünyayı", hk: "العَالَمَ" },
             { ar: "في", tr: "-de", hk: "فِي" },
-            { ar: "المستقبل", tr: "Gelecek", hk: "الْمُسْتَقْبَلِ" }
+            { ar: "المستقبل", tr: "Gelecek", hk: "المُسْتَقْبَلِ" }
         ],
         targetIndex: 5,
         options: [
@@ -683,10 +683,10 @@ function shuffleQuestions(array) {
             { ar: "الناس", tr: "İnsanlar", hk: "النَّاسُ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "إلى", tr: "-e", hk: "إِلَى" },
-            { ar: "المكتبات", tr: "Kütüphaneler", hk: "الْمَكْتَبَاتِ" },
+            { ar: "المكتبات", tr: "Kütüphaneler", hk: "المَكْتَبَاتِ" },
             { ar: "للحصول", tr: "Ulaşmak için", hk: "لِلْحُصُولِ" },
             { ar: "على", tr: "...", hk: "عَلَى" },
-            { ar: "المعلومات", tr: "Bilgi", hk: "الْمَعْلُومَاتِ" }
+            { ar: "المعلومات", tr: "Bilgi", hk: "المَعْلُومَاتِ" }
         ],
         targetIndex: 2,
         options: [
@@ -710,7 +710,7 @@ function shuffleQuestions(array) {
             { ar: "يجب", tr: "Gerekir", hk: "يَجِبُ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "يقضي", tr: "Geçirmesi", hk: "يَقْضِيَ" },
-            { ar: "الأطفال", tr: "Çocuklar", hk: "الْأَطْفَالُ" },
+            { ar: "الأطفال", tr: "Çocuklar", hk: "الأَطْفَالُ" },
             { ar: "وقتاً", tr: "Vakit", hk: "وَقْتاً" },
             { ar: "طويلاً", tr: "Uzun", hk: "طَوِيلاً" },
             { ar: "أمام", tr: "Karşısında", hk: "أَمَامَ" },
@@ -740,9 +740,9 @@ function shuffleQuestions(array) {
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "أن", tr: "-diğini", hk: "أَنَّ" },
             { ar: "تناول", tr: "Yemek/Tüketmek", hk: "تَنَاوُلَ" },
-            { ar: "الفواكه", tr: "Meyveler", hk: "الْفَوَاكِه" },
+            { ar: "الفواكه", tr: "Meyveler", hk: "الفَوَاكِه" },
             { ar: "يقوي", tr: "Güçlendirir", hk: "يُقَوِّي" },
-            { ar: "المناعة", tr: "Bağışıklık", hk: "الْمَنَاعَةَ" }
+            { ar: "المناعة", tr: "Bağışıklık", hk: "المَنَاعَةَ" }
         ],
         targetIndex: 2,
         options: [
@@ -764,12 +764,12 @@ function shuffleQuestions(array) {
         fullTr: "Yeni teknolojik cihazlar insanların günlük hayatını kolaylaştırdı.",
         words: [
             { ar: "سهلت", tr: "Kolaylaştırdı", hk: "سَهَّلَتِ" },
-            { ar: "الأجهزة", tr: "Cihazlar", hk: "الْأَجْهِزَةُ" },
+            { ar: "الأجهزة", tr: "Cihazlar", hk: "الأَجْهِزَةُ" },
             { ar: "التكنولوجية", tr: "Teknolojik", hk: "التِّكْنُولُوجِيَّةُ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "حياة", tr: "Hayatını", hk: "حَيَاةَ" },
             { ar: "الناس", tr: "İnsanların", hk: "النَّاسِ" },
-            { ar: "اليومية", tr: "Günlük", hk: "الْيَوْمِيَّةَ" }
+            { ar: "اليومية", tr: "Günlük", hk: "اليَوْمِيَّةَ" }
         ],
         targetIndex: 3,
         options: [
@@ -792,7 +792,7 @@ function shuffleQuestions(array) {
         words: [
             { ar: "تأثرت", tr: "Etkilenmiştir", hk: "تَأَثَّرَتِ" },
             { ar: "اللغة", tr: "Dili", hk: "اللُّغَةُ" },
-            { ar: "العربية", tr: "Arap", hk: "الْعَرَبِيَّةُ" },
+            { ar: "العربية", tr: "Arap", hk: "العَرَبِيَّةُ" },
             { ar: "بـ", tr: "ile/dan", hk: "بِـ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "مختلفة", tr: "Farklı", hk: "مُخْتَلِفَةٍ" },
@@ -820,13 +820,13 @@ function shuffleQuestions(array) {
         words: [
             { ar: "يُعتبر", tr: "Kabul edilir", hk: "يُعْتَبَرُ" },
             { ar: "تلوث", tr: "Kirliliği", hk: "تَلَوُّثُ" },
-            { ar: "الهواء", tr: "Hava", hk: "الْهَوَاءِ" },
+            { ar: "الهواء", tr: "Hava", hk: "الهَوَاءِ" },
             { ar: "عاملاً", tr: "Faktör", hk: "عَامِلاً" },
             { ar: "أساسياً", tr: "Temel", hk: "أَسَاسِيّاً" },
             { ar: "في", tr: "-de", hk: "فِي" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "أمراض", tr: "Hastalıklarının", hk: "أَمْرَاضِ" },
-            { ar: "الجهاز", tr: "Yolu/Sistemi", hk: "الْجِهَازِ" },
+            { ar: "الجهاز", tr: "Yolu/Sistemi", hk: "الجِهَازِ" },
             { ar: "التنفسي", tr: "Solunum", hk: "التَّنَفُّسِيِّ" }
         ],
         targetIndex: 6,
@@ -850,8 +850,8 @@ function shuffleQuestions(array) {
         words: [
             { ar: "لم", tr: "Değildir", hk: "لَمْ" },
             { ar: "تعد", tr: "Artık ... değil", hk: "تَعُدِ" },
-            { ar: "المكتبات", tr: "Kütüphaneler", hk: "الْمَكْتَبَاتُ" },
-            { ar: "الحديثة", tr: "Modern", hk: "الْحَدِيثَةُ" },
+            { ar: "المكتبات", tr: "Kütüphaneler", hk: "المَكْتَبَاتُ" },
+            { ar: "الحديثة", tr: "Modern", hk: "الحَدِيثَةُ" },
             { ar: "مجرد", tr: "Sadece", hk: "مُجَرَّدَ" },
             { ar: "مخازن", tr: "Depoları", hk: "مَخَازِنَ" },
             { ar: "للكتب", tr: "Kitaplar için", hk: "لِلْكُتُبِ" },
@@ -884,7 +884,7 @@ function shuffleQuestions(array) {
             { ar: "مكانة", tr: "Bir konum", hk: "مَكَانَةً" },
             { ar: "رائدة", tr: "Öncü", hk: "رَائِدَةً" },
             { ar: "في", tr: "-da", hk: "فِي" },
-            { ar: "العالم", tr: "Dünya", hk: "الْعَالَمِ" },
+            { ar: "العالم", tr: "Dünya", hk: "العَالَمِ" },
             { ar: "من", tr: "-dan", hk: "مِنْ" },
             { ar: "حيث", tr: "Açısından", hk: "حَيْثُ" },
             { ar: "_______", tr: "???", hk: "_______" },
@@ -910,12 +910,12 @@ function shuffleQuestions(array) {
         fullTr: "Doktorlar, hastaların durumunu yakından takip etmek için yeni cihazlar kullanıyor.",
         words: [
             { ar: "يستخدم", tr: "Kullanıyor", hk: "يَسْتَخْدِمُ" },
-            { ar: "الأطباء", tr: "Doktorlar", hk: "الْأَطِبَّاءُ" },
+            { ar: "الأطباء", tr: "Doktorlar", hk: "الأَطِبَّاءُ" },
             { ar: "أجهزة", tr: "Cihazlar", hk: "أَجْهِزَةً" },
             { ar: "حديثة", tr: "Yeni/Modern", hk: "حَدِيثَةً" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "حالة", tr: "Durumunu", hk: "حَالَةِ" },
-            { ar: "المرضى", tr: "Hastaların", hk: "الْمَرْضَى" },
+            { ar: "المرضى", tr: "Hastaların", hk: "المَرْضَى" },
             { ar: "عن", tr: "...", hk: "عَنْ" },
             { ar: "كثب", tr: "Yakından", hk: "كَثَبٍ" }
         ],
@@ -940,18 +940,18 @@ function shuffleQuestions(array) {
         words: [
             { ar: "ساهم", tr: "Katkıda bulundu", hk: "سَاهَمَ" },
             { ar: "الطب", tr: "Tıp", hk: "الطِّبُّ" },
-            { ar: "الحديث", tr: "Modern", hk: "الْحَدِيثُ" },
+            { ar: "الحديث", tr: "Modern", hk: "الحَدِيثُ" },
             { ar: "في", tr: "-e", hk: "فِي" },
             { ar: "علاج", tr: "Tedavisi", hk: "عِلَاجِ" },
-            { ar: "الأمراض", tr: "Hastalıkların", hk: "الْأَمْرَاضِ" },
-            { ar: "المزمنة", tr: "Kronik", hk: "الْمُزْمِنَةِ" },
+            { ar: "الأمراض", tr: "Hastalıkların", hk: "الأَمْرَاضِ" },
+            { ar: "المزمنة", tr: "Kronik", hk: "المُزْمِنَةِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "نمط", tr: "Tarzı", hk: "نَمَطَ" },
-            { ar: "الحياة", tr: "Yaşam", hk: "الْحَيَاةِ" },
+            { ar: "الحياة", tr: "Yaşam", hk: "الحَيَاةِ" },
             { ar: "الصحي", tr: "Sağlıklı", hk: "الصِّحِّيَّ" },
             { ar: "لا", tr: "Hala", hk: "لَا" },
             { ar: "يزال", tr: "Devam ediyor", hk: "يَزَالُ" },
-            { ar: "الأهم", tr: "En önemli", hk: "الْأَهَمَّ" }
+            { ar: "الأهم", tr: "En önemli", hk: "الأَهَمَّ" }
         ],
         targetIndex: 7,
         options: [
@@ -974,13 +974,13 @@ function shuffleQuestions(array) {
         words: [
             { ar: "تعد", tr: "Kabul edilir", hk: "تُعَدُّ" },
             { ar: "حماية", tr: "Korunması", hk: "حِمَايَةُ" },
-            { ar: "الموارد", tr: "Kaynakların", hk: "الْمَوَاردِ" },
+            { ar: "الموارد", tr: "Kaynakların", hk: "المَوَاردِ" },
             { ar: "الطبيعية", tr: "Doğal", hk: "الطَّبيعيةِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "حيوية", tr: "Hayati", hk: "حَيَوِيَّةً" },
             { ar: "لرفاهية", tr: "Refahı için", hk: "لِرَفَاهِيَةِ" },
-            { ar: "الأجيال", tr: "Nesillerin", hk: "الْأَجْيَالِ" },
-            { ar: "القادمة", tr: "Gelecek", hk: "الْقَادِمَةِ" }
+            { ar: "الأجيال", tr: "Nesillerin", hk: "الأَجْيَالِ" },
+            { ar: "القادمة", tr: "Gelecek", hk: "القَادِمَةِ" }
         ],
         targetIndex: 4,
         options: [
@@ -1008,9 +1008,9 @@ function shuffleQuestions(array) {
             { ar: "التواصل", tr: "Sosyal", hk: "التَّوَاصُلِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "شعور", tr: "Hissi", hk: "شُعُورُ" },
-            { ar: "الوحدة", tr: "Yalnızlık", hk: "الْوَحْدَةِ" },
+            { ar: "الوحدة", tr: "Yalnızlık", hk: "الوَحْدَةِ" },
             { ar: "بين", tr: "Arasında", hk: "بَيْنَ" },
-            { ar: "الأفراد", tr: "Bireyler", hk: "الْأَفْرَادِ" }
+            { ar: "الأفراد", tr: "Bireyler", hk: "الأَفْرَادِ" }
         ],
         targetIndex: 5,
         options: [
@@ -1038,7 +1038,7 @@ function shuffleQuestions(array) {
             { ar: "وصول", tr: "Erişimini", hk: "وُصُولَ" },
             { ar: "الطلاب", tr: "Öğrencilerin", hk: "الطلابِ" },
             { ar: "إلى", tr: "-e", hk: "إِلَى" },
-            { ar: "المعلومات", tr: "Bilgi", hk: "الْمَعْلُومَاتِ" },
+            { ar: "المعلومات", tr: "Bilgi", hk: "المَعْلُومَاتِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "تسرعه", tr: "Hızlandırıyor", hk: "تُسَرِّعُهُ" }
         ],
@@ -1062,10 +1062,10 @@ function shuffleQuestions(array) {
         fullTr: "Hükümetler, yenilenebilir enerji projelerini destekleyerek çevreyi korumayı amaçlıyor.",
         words: [
             { ar: "تهدف", tr: "Amaçlıyor", hk: "تَهْدِفُ" },
-            { ar: "الحكومات", tr: "Hükümetler", hk: "الْحُكُومَاتُ" },
+            { ar: "الحكومات", tr: "Hükümetler", hk: "الحُكُومَاتُ" },
             { ar: "إلى", tr: "...", hk: "إِلَى" },
             { ar: "حماية", tr: "Korumayı", hk: "حِمَايَةِ" },
-            { ar: "البيئة", tr: "Çevreyi", hk: "الْبِيئَةِ" },
+            { ar: "البيئة", tr: "Çevreyi", hk: "البِيئَةِ" },
             { ar: "عن", tr: "...", hk: "عَنْ" },
             { ar: "طريق", tr: "Yoluyla", hk: "طَرِيقِ" },
             { ar: "_______", tr: "???", hk: "_______" },
@@ -1094,11 +1094,11 @@ function shuffleQuestions(array) {
             { ar: "إن", tr: "Eğer", hk: "إِنْ" },
             { ar: "لم", tr: "olmazsa", hk: "لَمْ" },
             { ar: "تتخذ", tr: "almazsa", hk: "تَتَّخِذِ" },
-            { ar: "الحكومات", tr: "Hükümetler", hk: "الْحُكُومَاتُ" },
+            { ar: "الحكومات", tr: "Hükümetler", hk: "الحُكُومَاتُ" },
             { ar: "إجراءات", tr: "Önlemler", hk: "إِجْرَاءَاتٍ" },
             { ar: "صارمة", tr: "Sert", hk: "صَارِمَةً" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "العالم", tr: "Dünya", hk: "الْعَالَمُ" },
+            { ar: "العالم", tr: "Dünya", hk: "العَالَمُ" },
             { ar: "أزمة", tr: "Bir kriz", hk: "أَزْمَةً" },
             { ar: "مناخية", tr: "İklimsel", hk: "مُنَاخِيَّةً" }
         ],
@@ -1123,7 +1123,7 @@ function shuffleQuestions(array) {
         words: [
             { ar: "تعد", tr: "Sayılır", hk: "تُعَدُّ" },
             { ar: "التكنولوجيا", tr: "Teknoloji", hk: "التِّكْنُولُوجِيَا" },
-            { ar: "الحيوية", tr: "Biyo/Hayati", hk: "الْحَيَوِيَّةُ" },
+            { ar: "الحيوية", tr: "Biyo/Hayati", hk: "الحَيَوِيَّةُ" },
             { ar: "علماً", tr: "Bir bilim", hk: "عِلْماً" },
             { ar: "حديثاً", tr: "Modern", hk: "حَدِيثاً" },
             { ar: "_______", tr: "???", hk: "_______" },
@@ -1152,14 +1152,14 @@ function shuffleQuestions(array) {
         fullTr: "Eski şehirler, o dönemin mimari zevkini yansıtan dar sokaklarla karakterize edilir.",
         words: [
             { ar: "تتميز", tr: "Karakterize edilir", hk: "تَتَمَيَّزُ" },
-            { ar: "المدن", tr: "Şehirler", hk: "الْمُدُنُ" },
-            { ar: "القديمة", tr: "Eski", hk: "الْقَدِيمَةُ" },
+            { ar: "المدن", tr: "Şehirler", hk: "المُدُنُ" },
+            { ar: "القديمة", tr: "Eski", hk: "القَدِيمَةُ" },
             { ar: "بـ", tr: "ile", hk: "بِـ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "ضيقة", tr: "Dar", hk: "ضَيِّقَةٍ" },
             { ar: "تعكس", tr: "Yansıtan", hk: "تَعْكِسُ" },
-            { ar: "الفن", tr: "Sanatı", hk: "الْفَنَّ" },
-            { ar: "المعماري", tr: "Mimari", hk: "الْمِعْمَارِيَّ" }
+            { ar: "الفن", tr: "Sanatı", hk: "الفَنَّ" },
+            { ar: "المعماري", tr: "Mimari", hk: "المِعْمَارِيَّ" }
         ],
         targetIndex: 4,
         options: [
@@ -1182,13 +1182,13 @@ function shuffleQuestions(array) {
         words: [
             { ar: "يولي", tr: "Önem veriyor", hk: "يُولِي" },
             { ar: "كثير", tr: "Birçok", hk: "كَثِيرٌ" },
-            { ar: "من", tr: "...", hk: "مِنَ" },
+            { ar: "من", tr: "...", hk: "مِن" },
             { ar: "الشباب", tr: "Genç", hk: "الشَّبَابِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "بالغاً", tr: "Büyük", hk: "بَالِغاً" },
             { ar: "بتعلم", tr: "Öğrenmeye", hk: "بِتَعَلُّمِ" },
             { ar: "اللغات", tr: "Dilleri", hk: "اللُّغَاتِ" },
-            { ar: "الأجنبية", tr: "Yabancı", hk: "الْأَجْنَبِيَّةِ" }
+            { ar: "الأجنبية", tr: "Yabancı", hk: "الأَجْنَبِيَّةِ" }
         ],
         targetIndex: 4,
         options: [
@@ -1210,15 +1210,15 @@ function shuffleQuestions(array) {
         fullTr: "Yeterli uyku uyumak, zihinsel odaklanmayı artırır ve gün boyu verimliliği yükseltir.",
         words: [
             { ar: "النوم", tr: "Uyumak", hk: "النَّوْمُ" },
-            { ar: "الكافي", tr: "Yeterli", hk: "الْكَافِي" },
+            { ar: "الكافي", tr: "Yeterli", hk: "الكَافِي" },
             { ar: "يعزز", tr: "Artırır/Güçlendirir", hk: "يُعَزِّزُ" },
             { ar: "التركيز", tr: "Odaklanmayı", hk: "التَّرْكِيزَ" },
             { ar: "الذهني", tr: "Zihinsel", hk: "الذِّهْنِيَّ" },
             { ar: "و", tr: "ve", hk: "وَ" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "الإنتاجية", tr: "Verimliliği", hk: "الْإِنْتَاجِيَّةَ" },
+            { ar: "الإنتاجية", tr: "Verimliliği", hk: "الإِنْتَاجِيَّةَ" },
             { ar: "طوال", tr: "Boyu", hk: "طَوَالَ" },
-            { ar: "اليوم", tr: "Gün", hk: "الْيَوْمِ" }
+            { ar: "اليوم", tr: "Gün", hk: "اليَوْمِ" }
         ],
         targetIndex: 6,
         options: [
@@ -1241,13 +1241,13 @@ function shuffleQuestions(array) {
         words: [
             { ar: "تعد", tr: "Sayılır", hk: "تُعَدُّ" },
             { ar: "التجارة", tr: "Ticaret", hk: "التِّجَارَةُ" },
-            { ar: "العالمية", tr: "Küresel", hk: "الْعَالَمِيَّةُ" },
-            { ar: "من", tr: "-den", hk: "مِنْ" },
+            { ar: "العالمية", tr: "Küresel", hk: "العَالَمِيَّةُ" },
+            { ar: "من", tr: "-den", hk: "مِن" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "الوسائل", tr: "Araçların", hk: "الْوَسَائِلِ" },
+            { ar: "الوسائل", tr: "Araçların", hk: "الوَسَائِلِ" },
             { ar: "التي", tr: "ki o", hk: "الَّتِي" },
             { ar: "تقوي", tr: "Güçlendirir", hk: "تُقَوِّي" },
-            { ar: "العلاقات", tr: "İlişkileri", hk: "الْعَلَاقَاتِ" }
+            { ar: "العلاقات", tr: "İlişkileri", hk: "العَلَاقَاتِ" }
         ],
         targetIndex: 4,
         options: [
@@ -1271,10 +1271,10 @@ function shuffleQuestions(array) {
             { ar: "إن", tr: "Şüphesiz", hk: "إِنَّ" },
             { ar: "الصبر", tr: "Sabır/Sabırlı olmak", hk: "الصَّبْرَ" },
             { ar: "عند", tr: "anında/karşısında", hk: "عِنْدَ" },
-            { ar: "المواجهة", tr: "Karşılaşma", hk: "الْمُوَاجَهَةِ" },
+            { ar: "المواجهة", tr: "Karşılaşma", hk: "المُوَاجَهَةِ" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "من", tr: "...", hk: "مِنَ" },
-            { ar: "المرونة", tr: "Dayanıklılığı", hk: "الْمُرُونَةِ" },
+            { ar: "من", tr: "...", hk: "مِن" },
+            { ar: "المرونة", tr: "Dayanıklılığı", hk: "المُرُونَةِ" },
             { ar: "النفسية", tr: "Psikolojik", hk: "النَّفْسِيَّةِ" }
         ],
         targetIndex: 4,
@@ -1300,10 +1300,10 @@ function shuffleQuestions(array) {
             { ar: "تطور", tr: "Gelişmesi", hk: "تَطَوُّرِ" },
             { ar: "تكنولوجيا", tr: "Teknolojisi", hk: "تِكْنُولُوجِيَا" },
             { ar: "الذكاء", tr: "Zeka", hk: "الذِّكَّاءِ" },
-            { ar: "الاصطناعي", tr: "Yapay", hk: "الِاصْطِنَاعِيِّ" },
+            { ar: "الاصطناعي", tr: "Yapay", hk: "الاصْطِنَاعِيِّ" },
             { ar: "ازدادت", tr: "Arttı", hk: "ازْدَادَتْ" },
             { ar: "أهمية", tr: "Önemi", hk: "أَهَمِّيَّةُ" },
-            { ar: "القواعد", tr: "Kuralların", hk: "الْقَوَاعِدِ" },
+            { ar: "القواعد", tr: "Kuralların", hk: "القَوَاعِدِ" },
             { ar: "_______", tr: "???", hk: "_______" }
         ],
         targetIndex: 8,
@@ -1326,14 +1326,14 @@ function shuffleQuestions(array) {
         fullTr: "Bilim adamları, evrenin sırlarını keşfetmek için uzaya yeni uydular gönderiyor.",
         words: [
             { ar: "يرسل", tr: "Gönderiyor", hk: "يُرْسِلُ" },
-            { ar: "العلماء", tr: "Bilim adamları", hk: "الْعُلَمَاءُ" },
+            { ar: "العلماء", tr: "Bilim adamları", hk: "العُلَمَاءُ" },
             { ar: "أقماراً", tr: "Uydular", hk: "أَقْمَاراً" },
             { ar: "اصطناعية", tr: "Yapay", hk: "اصْطِنَاعِيَّةً" },
             { ar: "إلى", tr: "-e", hk: "إِلَى" },
-            { ar: "الفضاء", tr: "Uzay", hk: "الْفَضَاءِ" },
+            { ar: "الفضاء", tr: "Uzay", hk: "الفَضَاءِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "أسرار", tr: "Sırlarını", hk: "أَسْرَارِ" },
-            { ar: "الكون", tr: "Evrenin", hk: "الْكَوْنِ" }
+            { ar: "الكون", tr: "Evrenin", hk: "الكَوْنِ" }
         ],
         targetIndex: 6,
         options: [
@@ -1359,12 +1359,12 @@ function shuffleQuestions(array) {
             { ar: "السمعي", tr: "Gürültü (İşitsel)", hk: "السَّمْعِيُّ" },
             { ar: "في", tr: "-deki", hk: "فِي" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "الكبرى", tr: "Büyük", hk: "الْكُبْرَى" },
+            { ar: "الكبرى", tr: "Büyük", hk: "الكُبْرَى" },
             { ar: "مشكلة", tr: "Bir sorundur", hk: "مُشْكِلَةً" },
             { ar: "تؤثر", tr: "Etkileyen", hk: "تُؤَثِّرُ" },
             { ar: "على", tr: "...", hk: "عَلَى" },
             { ar: "جودة", tr: "Kalitesini", hk: "جَوْدَةِ" },
-            { ar: "الحياة", tr: "Yaşam", hk: "الْحَيَاةِ" }
+            { ar: "الحياة", tr: "Yaşam", hk: "الحَيَاةِ" }
         ],
         targetIndex: 4,
         options: [
@@ -1392,7 +1392,7 @@ function shuffleQuestions(array) {
             { ar: "وهم", tr: "iken", hk: "وَهُمْ" },
             { ar: "ينتظرون", tr: "Bekliyorlar", hk: "يَنْتَظِرُونَ" },
             { ar: "نتائج", tr: "Sonuçlarını", hk: "نَتَائِجَ" },
-            { ar: "الامتحان", tr: "Sınav", hk: "الِامْتِحَانِ" }
+            { ar: "الامتحان", tr: "Sınav", hk: "الامْتِحَانِ" }
         ],
         targetIndex: 3,
         options: [
@@ -1414,15 +1414,15 @@ function shuffleQuestions(array) {
         fullTr: "Şehir hayatının gürültüsünden kaçmak isteyenler için parklar en iyi sığınaktır.",
         words: [
             { ar: "تعد", tr: "Sayılır", hk: "تُعَدُّ" },
-            { ar: "الحدائق", tr: "Parklar", hk: "الْحَدَائِقُ" },
+            { ar: "الحدائق", tr: "Parklar", hk: "الحَدَائِقُ" },
             { ar: "أفضل", tr: "En iyi", hk: "أَفْضَلَ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "للراغبين", tr: "İsteyenler için", hk: "لِلرَّاغِبِينَ" },
             { ar: "في", tr: "-de", hk: "فِي" },
-            { ar: "الهروب", tr: "Kaçmak", hk: "الْهُرُوبِ" },
+            { ar: "الهروب", tr: "Kaçmak", hk: "الهُرُوبِ" },
             { ar: "من", tr: "-den", hk: "مِنْ" },
             { ar: "ضجيج", tr: "Gürültü", hk: "ضَجِيجِ" },
-            { ar: "المدينة", tr: "Şehir", hk: "الْمَدِينَةِ" }
+            { ar: "المدينة", tr: "Şehir", hk: "المَدِينَةِ" }
         ],
         targetIndex: 3,
         options: [
@@ -1444,8 +1444,8 @@ function shuffleQuestions(array) {
         fullTr: "Bilimsel veriler olmasaydı, tıp bu kadar hızlı ilerleyemezdi.",
         words: [
             { ar: "لولا", tr: "Olmasaydı", hk: "لَوْلَا" },
-            { ar: "البيانات", tr: "Veriler", hk: "الْبَيَانَاتُ" },
-            { ar: "العلمية", tr: "Bilimsel", hk: "الْعِلْمِيَّةُ" },
+            { ar: "البيانات", tr: "Veriler", hk: "البَيَانَاتُ" },
+            { ar: "العلمية", tr: "Bilimsel", hk: "العِلْمِيَّةُ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "تقدم", tr: "İlerledi", hk: "تَقَدَّمَ" },
             { ar: "الطب", tr: "Tıp", hk: "الطِّبُّ" },
@@ -1475,7 +1475,7 @@ function shuffleQuestions(array) {
             { ar: "معظم", tr: "Çoğu", hk: "مُعْظَمُ" },
             { ar: "الطلاب", tr: "Öğrencilerin", hk: "الطُّلَّابِ" },
             { ar: "إلى", tr: "-e", hk: "إِلَى" },
-            { ar: "المكتبة", tr: "Kütüphane", hk: "الْمَكْتَبَةِ" },
+            { ar: "المكتبة", tr: "Kütüphane", hk: "المَكْتَبَةِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "واحداً", tr: "Biri", hk: "وَاحِداً" }
         ],
@@ -1507,7 +1507,7 @@ function shuffleQuestions(array) {
             { ar: "من", tr: "...", hk: "مِنْ" },
             { ar: "أجل", tr: "için", hk: "أَجْلِ" },
             { ar: "زيادة", tr: "Artırmak", hk: "زِيَادَةِ" },
-            { ar: "الإنتاجية", tr: "Verimliliği", hk: "الْإِنْتَاجِيَّةِ" }
+            { ar: "الإنتاجية", tr: "Verimliliği", hk: "الإِنْتَاجِيَّةِ" }
         ],
         targetIndex: 4,
         options: [
@@ -1531,8 +1531,8 @@ function shuffleQuestions(array) {
             { ar: "لا", tr: "Yoktur", hk: "لَا" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "أهم", tr: "Daha önemli", hk: "أَهَمَّ" },
-            { ar: "من", tr: "-den", hk: "مِنْ" },
-            { ar: "البيئة", tr: "Çevre", hk: "الْبِيئَةِ" },
+            { ar: "من", tr: "-den", hk: "مِن" },
+            { ar: "البيئة", tr: "Çevre", hk: "البِيئَةِ" },
             { ar: "النظيفة", tr: "Temiz", hk: "النَّظِيفَةِ" },
             { ar: "لبناء", tr: "İnşa etmek için", hk: "لِبِنَاءِ" },
             { ar: "مجتمع", tr: "Toplum", hk: "مُجْتَمَعٍ" },
@@ -1558,13 +1558,13 @@ function shuffleQuestions(array) {
         fullTr: "Öğretmen, konuyu tüm öğrencilerin anlayabileceği bir şekilde ayrıntılı olarak açıkladı.",
         words: [
             { ar: "شرح", tr: "Açıkladı", hk: "شَرَحَ" },
-            { ar: "المعلم", tr: "Öğretmen", hk: "الْمُعَلِّمُ" },
-            { ar: "الموضوع", tr: "Konuyu", hk: "الْمَوْضُوعَ" },
+            { ar: "المعلم", tr: "Öğretmen", hk: "المُعَلِّمُ" },
+            { ar: "الموضوع", tr: "Konuyu", hk: "المَوْضُوعَ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "مفصلاً", hk: "مُفَصَّلاً", tr: "Ayrıntılı" },
             { ar: "لكي", tr: "için", hk: "لِكَيْ" },
             { ar: "يفهمه", tr: "Anlaması", hk: "يَفْهَمَهُ" },
-            { ar: "الجميع", tr: "Herkes", hk: "الْجَمِيعُ" }
+            { ar: "الجميع", tr: "Herkes", hk: "الجَمِيعُ" }
         ],
         targetIndex: 3,
         options: [
@@ -1585,7 +1585,7 @@ function shuffleQuestions(array) {
     {
         fullTr: "Dün okuduğum makaleler, modern teknolojinin riskleri hakkında önemli bilgiler içeriyordu.",
         words: [
-            { ar: "المقالات", tr: "Makaleler", hk: "الْمَقَالَاتُ" },
+            { ar: "المقالات", tr: "Makaleler", hk: "المَقَالَاتُ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "قرأتها", tr: "Okuduğum", hk: "قَرَأْتُهَا" },
             { ar: "أمس", tr: "Dün", hk: "أَمْسِ" },
@@ -1613,13 +1613,13 @@ function shuffleQuestions(array) {
         fullTr: "Yolcuların hepsi tren istasyonuna zamanında ulaştı.",
         words: [
             { ar: "وصل", tr: "Ulaştı", hk: "وَصَلَ" },
-            { ar: "المسافرون", tr: "Yolcular", hk: "الْمُسَافِرُونَ" },
+            { ar: "المسافرون", tr: "Yolcular", hk: "المُسَافِرُونَ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "إلى", tr: "-e", hk: "إِلَى" },
             { ar: "محطة", tr: "İstasyonuna", hk: "مَحَطَّةِ" },
-            { ar: "القطار", tr: "Tren", hk: "الْقِطَارِ" },
+            { ar: "القطار", tr: "Tren", hk: "القِطَارِ" },
             { ar: "في", tr: "...", hk: "فِي" },
-            { ar: "الموعد", tr: "Zamanında", hk: "الْمَوْعِدِ" }
+            { ar: "الموعد", tr: "Zamanında", hk: "المَوْعِدِ" }
         ],
         targetIndex: 2,
         options: [
@@ -1641,14 +1641,14 @@ function shuffleQuestions(array) {
         fullTr: "Kitap okumak, insanın ufkunu genişleten ve düşüncesini geliştiren en iyi alışkanlıktır.",
         words: [
             { ar: "قراءة", tr: "Okumak", hk: "قِرَاءَةُ" },
-            { ar: "الكتب", tr: "Kitap", hk: "الْكُتُبِ" },
+            { ar: "الكتب", tr: "Kitap", hk: "الكُتُبِ" },
             { ar: "هي", tr: "...", hk: "هِيَ" },
-            { ar: "العادة", tr: "Alışkanlıktır", hk: "الْعَادَةُ" },
-            { ar: "المثلى", tr: "En iyi", hk: "الْمُثْلَى" },
+            { ar: "العادة", tr: "Alışkanlıktır", hk: "العَادَةُ" },
+            { ar: "المثلى", tr: "En iyi", hk: "المُثْلَى" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "توسع", tr: "Genişleten", hk: "تُوَسِّعُ" },
             { ar: "مدارك", tr: "Ufkunu", hk: "مَدَارِكَ" },
-            { ar: "الإنسان", tr: "İnsanın", hk: "الْإِنْسَانِ" }
+            { ar: "الإنسان", tr: "İnsanın", hk: "الإِنْسَانِ" }
         ],
         targetIndex: 5,
         options: [
@@ -1671,12 +1671,12 @@ function shuffleQuestions(array) {
         words: [
             { ar: "أصبح", tr: "Haline geldi", hk: "أَصْبَحَ" },
             { ar: "نقص", tr: "Azalması", hk: "نَقْصُ" },
-            { ar: "المساحات", tr: "Alanların", hk: "الْمَسَاحَاتِ" },
-            { ar: "الخضراء", tr: "Yeşil", hk: "الْخَضْرَاءِ" },
+            { ar: "المساحات", tr: "Alanların", hk: "المَسَاحَاتِ" },
+            { ar: "الخضراء", tr: "Yeşil", hk: "الخَضْرَاءِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "على", tr: "üzerinde", hk: "عَلَى" },
             { ar: "صحة", tr: "Sağlığı", hk: "صِحَّةِ" },
-            { ar: "الإنسان", tr: "İnsanın", hk: "الْإِنْسَانِ" }
+            { ar: "الإنسان", tr: "İnsanın", hk: "الإِنْسَانِ" }
         ],
         targetIndex: 4,
         options: [
@@ -1699,9 +1699,9 @@ function shuffleQuestions(array) {
         words: [
             { ar: "إنما", tr: "Ancak/Sadece", hk: "إِنَّمَا" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "العلم", tr: "Bilim", hk: "الْعِلْمُ" },
+            { ar: "العلم", tr: "Bilim", hk: "العِلْمُ" },
             { ar: "بالبحث", tr: "Araştırma ile", hk: "بِالْبَحْثِ" },
-            { ar: "المستمر", tr: "Sürekli", hk: "الْمُسْتَمِرِّ" },
+            { ar: "المستمر", tr: "Sürekli", hk: "المُسْتَمِرِّ" },
             { ar: "والصبر", tr: "ve sabırla", hk: "وَالصَّبْرِ" }
         ],
         targetIndex: 1,
@@ -1751,13 +1751,13 @@ function shuffleQuestions(array) {
         fullTr: "Hükümet, bu yıl içerisinde üç yeni hastane inşa etti.",
         words: [
             { ar: "بنت", tr: "İnşa etti", hk: "بَنَتِ" },
-            { ar: "الحكومة", tr: "Hükümet", hk: "الْحُكُومَةُ" },
+            { ar: "الحكومة", tr: "Hükümet", hk: "الحُكُومَةُ" },
             { ar: "ثلاثة", tr: "Üç", hk: "ثَلَاثَةَ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "جديدة", tr: "Yeni", hk: "جَدِيدَةٍ" },
             { ar: "خلال", tr: "Boyunca/İçerisinde", hk: "خِلَالَ" },
             { ar: "هذا", tr: "bu", hk: "هَذَا" },
-            { ar: "العام", tr: "yıl", hk: "الْعَامِ" }
+            { ar: "العام", tr: "yıl", hk: "العَامِ" }
         ],
         targetIndex: 3,
         options: [
@@ -1779,18 +1779,18 @@ function shuffleQuestions(array) {
         fullTr: "Öğretmen öğrencilerine, kütüphanede sessiz olmalarını tavsiye etti.",
         words: [
             { ar: "نصح", tr: "Tavsiye etti", hk: "نَصَحَ" },
-            { ar: "المعلم", tr: "Öğretmen", hk: "الْمُعَلِّمُ" },
+            { ar: "المعلم", tr: "Öğretmen", hk: "المُعَلِّمُ" },
             { ar: "طالبه", tr: "Öğrencisine", hk: "طُلَّابَهُ" },
             { ar: "بـ", tr: "...", hk: "بِـ" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "الهدوء", tr: "Sessizliği", hk: "الْهُدُوءِ" },
+            { ar: "الهدوء", tr: "Sessizliği", hk: "الهُدُوءِ" },
             { ar: "داخل", tr: "İçinde", hk: "دَاخِلَ" },
-            { ar: "المكتبة", tr: "Kütüphane", hk: "الْمَكْتَبَةِ" }
+            { ar: "المكتبة", tr: "Kütüphane", hk: "المَكْتَبَةِ" }
         ],
         targetIndex: 4,
         options: [
             { 
-                ar: "الِالْتِزامِ", 
+                ar: "الالْتِزامِ", 
                 correct: true, 
                 features: ["Uymak/Bağlı kalmak demektir", "Harf-i cerden dolayı mecrurdur", "Mastar formundadır"], 
                 type: "İsim (Mastar)" 
@@ -1807,14 +1807,14 @@ function shuffleQuestions(array) {
         fullTr: "Araştırmacılar, küresel sıcaklık artışının deniz seviyelerini hızla yükselttiğini doğruluyor.",
         words: [
             { ar: "يؤكد", tr: "Doğruluyor", hk: "يُؤَكِّدُ" },
-            { ar: "الباحثون", tr: "Araştırmacılar", hk: "الْبَاحِثُونَ" },
+            { ar: "الباحثون", tr: "Araştırmacılar", hk: "البَاحِثُونَ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "ارتفاع", tr: "Artışının", hk: "ارْتِفَاعَ" },
-            { ar: "الحرارة", tr: "Sıcaklık", hk: "الْحَرَارَةِ" },
+            { ar: "الحرارة", tr: "Sıcaklık", hk: "الحَرَارَةِ" },
             { ar: "يؤدي", tr: "Yol açıyor", hk: "يُؤَدِّي" },
             { ar: "إلى", tr: "-e", hk: "إِلَى" },
             { ar: "فيضان", tr: "Yükselmesine", hk: "فَيَضَانِ" },
-            { ar: "البحار", tr: "Denizlerin", hk: "الْبِحَارِ" }
+            { ar: "البحار", tr: "Denizlerin", hk: "البِحَارِ" }
         ],
         targetIndex: 2,
         options: [
@@ -1842,12 +1842,12 @@ function shuffleQuestions(array) {
             { ar: "الشرق", tr: "Doğu", hk: "الشَّرْقِ" },
             { ar: "والغرب", tr: "ve Batı", hk: "وَالْغَرْبِ" },
             { ar: "عبر", tr: "Boyunca", hk: "عَبْرَ" },
-            { ar: "العصور", tr: "Çağlar/Tarih", hk: "الْعُصُورِ" }
+            { ar: "العصور", tr: "Çağlar/Tarih", hk: "العُصُورِ" }
         ],
         targetIndex: 1,
         options: [
             { 
-                ar: "إِسْطَنْبولُ", 
+                ar: "إِسْطَنْبول", 
                 correct: true, 
                 features: ["Gayri munsarıf bir özel isimdir", "Kâne'nin ismidir", "Tenvin almaz"], 
                 type: "Özel İsim" 
@@ -1864,13 +1864,13 @@ function shuffleQuestions(array) {
         fullTr: "Yolcular, uçağın kalkış saatini beklerken salonda sessizce oturdular.",
         words: [
             { ar: "جلس", tr: "Oturdular", hk: "جَلَسَ" },
-            { ar: "المسافرون", tr: "Yolcular", hk: "الْمُسَافِرُونَ" },
+            { ar: "المسافرون", tr: "Yolcular", hk: "المُسَافِرُونَ" },
             { ar: "في", tr: "-da", hk: "فِي" },
-            { ar: "القاعة", tr: "Salonda", hk: "الْقَاعَةِ" },
+            { ar: "القاعة", tr: "Salonda", hk: "القَاعَةِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "انتظار", tr: "Beklerken/Bekleyerek", hk: "انْتِظَارَ" },
             { ar: "لموعد", tr: "Saatini", hk: "لِمَوْعِدِ" },
-            { ar: "الإقلاع", tr: "Kalkış", hk: "الْإِقْلَاعِ" }
+            { ar: "الإقلاع", tr: "Kalkış", hk: "الإِقْلَاعِ" }
         ],
         targetIndex: 4,
         options: [
@@ -1892,14 +1892,14 @@ function shuffleQuestions(array) {
         fullTr: "Yeni kanunlar, çalışanların haklarını korumak amacıyla yürürlüğe girdi.",
         words: [
             { ar: "دخلت", tr: "Girdi", hk: "دَخَلَتِ" },
-            { ar: "القوانين", tr: "Kanunlar", hk: "الْقَوَانِينُ" },
-            { ar: "الجديدة", tr: "Yeni", hk: "الْجَدِيدَةُ" },
+            { ar: "القوانين", tr: "Kanunlar", hk: "القَوَانِينُ" },
+            { ar: "الجديدة", tr: "Yeni", hk: "الجَدِيدَةُ" },
             { ar: "حيز", tr: "...", hk: "حَيِّزَ" },
             { ar: "التنفيذ", tr: "Uygulama/Yürürlük", hk: "التَّنْفِيذِ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "عن", tr: "...", hk: "عَنْ" },
             { ar: "حقوق", tr: "Haklarını", hk: "حُقُوقِ" },
-            { ar: "العمال", tr: "Çalışanların", hk: "الْعُمَّالِ" }
+            { ar: "العمال", tr: "Çalışanların", hk: "العُمَّالِ" }
         ],
         targetIndex: 5,
         options: [
@@ -1921,11 +1921,11 @@ function shuffleQuestions(array) {
         fullTr: "Sanatçı, konserin sonunda seyircileri büyük bir nezaketle selamladı.",
         words: [
             { ar: "حيى", tr: "Selamladı", hk: "حَيَّى" },
-            { ar: "الفنان", tr: "Sanatçı", hk: "الْفَنَّانُ" },
-            { ar: "الجمهور", tr: "Seyircileri", hk: "الْجُمْهُورَ" },
+            { ar: "الفنان", tr: "Sanatçı", hk: "الفَنَّانُ" },
+            { ar: "الجمهور", tr: "Seyircileri", hk: "الجُمْهُورَ" },
             { ar: "في", tr: "-da", hk: "فِي" },
             { ar: "نهاية", tr: "Sonunda", hk: "نِهَايَةِ" },
-            { ar: "الحفل", tr: "Konser", hk: "الْحَفْلِ" },
+            { ar: "الحفل", tr: "Konser", hk: "الحَفْلِ" },
             { ar: "_______", tr: "???", hk: "_______" }
         ],
         targetIndex: 6,
@@ -1949,13 +1949,13 @@ function shuffleQuestions(array) {
         words: [
             { ar: "عندما", tr: "-dığında", hk: "عِنْدَمَا" },
             { ar: "دخل", tr: "Girdi", hk: "دَخَلَ" },
-            { ar: "المعلم", tr: "Öğretmen", hk: "الْمُعَلِّمُ" },
-            { ar: "الفصل", tr: "Sınıfa", hk: "الْفَصْلَ" },
+            { ar: "المعلم", tr: "Öğretmen", hk: "المُعَلِّمُ" },
+            { ar: "الفصل", tr: "Sınıfa", hk: "الفَصْلَ" },
             { ar: "وجد", tr: "Gördü/Buldu", hk: "وَجَدَ" },
             { ar: "الطلاب", tr: "Öğrencileri", hk: "الطُّلَّابَ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "لكتبهم", tr: "Kitaplarını", hk: "لِكُتُبِهِمُ" },
-            { ar: "المدرسية", tr: "Ders", hk: "الْمَدْرَسِيَّةِ" }
+            { ar: "المدرسية", tr: "Ders", hk: "المَدْرَسِيَّةِ" }
         ],
         targetIndex: 6,
         options: [
@@ -1978,10 +1978,10 @@ function shuffleQuestions(array) {
         words: [
             { ar: "يوجد", tr: "Bulunmaktadır", hk: "يُوجَدُ" },
             { ar: "في", tr: "-da", hk: "فِي" },
-            { ar: "المكتبة", tr: "Kütüphane", hk: "الْمَكْتَبَةِ" },
+            { ar: "المكتبة", tr: "Kütüphane", hk: "المَكْتَبَةِ" },
             { ar: "آلاف", tr: "Binlerce", hk: "آلَافُ" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "المكتوبة", tr: "Yazılmış", hk: "الْمَكْتُوبَةِ" },
+            { ar: "المكتوبة", tr: "Yazılmış", hk: "المَكْتُوبَةِ" },
             { ar: "في", tr: "-da", hk: "فِي" },
             { ar: "مجالات", tr: "Alanlarında", hk: "مَجَالَاتِ" },
             { ar: "مختلفة", tr: "Çeşitli", hk: "مُخْتَلِفَةٍ" }
@@ -2008,9 +2008,9 @@ function shuffleQuestions(array) {
             { ar: "ممارسة", tr: "Yapmak", hk: "مُمَارَسَةُ" },
             { ar: "الرياضة", tr: "Spor", hk: "الرِّيَاضَةِ" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "الجسم", tr: "İnsanı/Vücudu", hk: "الْجِسْمَ" },
-            { ar: "من", tr: "-den", hk: "مِنَ" },
-            { ar: "الأمراض", tr: "Hastalıklardan", hk: "الْأَمْرَاضِ" }
+            { ar: "الجسم", tr: "İnsanı/Vücudu", hk: "الجِسْمَ" },
+            { ar: "من", tr: "-den", hk: "مِن" },
+            { ar: "الأمراض", tr: "Hastalıklardan", hk: "الأَمْرَاضِ" }
         ],
         targetIndex: 2,
         options: [
@@ -2032,9 +2032,9 @@ function shuffleQuestions(array) {
         fullTr: "Bu şehir, tarihi eserleri bakımından ülkenin en zengin şehirlerinden biridir.",
         words: [
             { ar: "هذه", tr: "Bu", hk: "هَذِهِ" },
-            { ar: "المدينة", tr: "Şehir", hk: "الْمَدِينَةُ" },
+            { ar: "المدينة", tr: "Şehir", hk: "المَدِينَةُ" },
             { ar: "هي", tr: "...", hk: "هِيَ" },
-            { ar: "الأكثر", tr: "En çok/En fazla", hk: "الْأَكْثَرُ" },
+            { ar: "الأكثر", tr: "En çok/En fazla", hk: "الأَكْثَرُ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "بالمعالم", tr: "Eserler bakımından", hk: "بِالْمَعَالِمِ" },
             { ar: "التاريخية", tr: "Tarihi", hk: "التَّارِيخِيَّةِ" }
@@ -2064,7 +2064,7 @@ function shuffleQuestions(array) {
             { ar: "بألوان", tr: "Renklerle", hk: "بِأَلْوَانٍ" },
             { ar: "رائعة", tr: "Muhteşem", hk: "رَائِعَةٍ" },
             { ar: "عند", tr: "-da/de", hk: "عِنْدَ" },
-            { ar: "الغروب", tr: "Gün batımı", hk: "الْغُرُوبِ" }
+            { ar: "الغروب", tr: "Gün batımı", hk: "الغُرُوبِ" }
         ],
         targetIndex: 2,
         options: [
@@ -2088,11 +2088,11 @@ function shuffleQuestions(array) {
             { ar: "لو", tr: "Eğer ... olsaydı", hk: "لَوْ" },
             { ar: "لم", tr: "...meselerdi", hk: "لَمْ" },
             { ar: "يهتم", tr: "Özen göstermek", hk: "يَهْتَمَّ" },
-            { ar: "البشر", tr: "İnsanlar", hk: "الْبَشَرُ" },
+            { ar: "البشر", tr: "İnsanlar", hk: "البَشَرُ" },
             { ar: "بحماية", tr: "Korumaya", hk: "بِحِمَايَةِ" },
             { ar: "الطبيعة", tr: "Doğayı", hk: "الطَّبِيعَةِ" },
             { ar: "_______", tr: "???", hk: "_______" },
-            { ar: "الحياة", tr: "Hayat", hk: "الْحَيَاةُ" },
+            { ar: "الحياة", tr: "Hayat", hk: "الحَيَاةُ" },
             { ar: "مستحيلة", tr: "İmkansız", hk: "مُسْتَحِيلَةً" }
         ],
         targetIndex: 6,
@@ -2115,9 +2115,9 @@ function shuffleQuestions(array) {
         fullTr: "Bilimsel ilerleme, toplumların refah düzeyini yükselten temel itici güçtür.",
         words: [
             { ar: "التقدم", tr: "İlerleme", hk: "التَّقَدُّمُ" },
-            { ar: "العلمي", tr: "Bilimsel", hk: "الْعِلْمِيُّ" },
+            { ar: "العلمي", tr: "Bilimsel", hk: "العِلْمِيُّ" },
             { ar: "هو", tr: "o", hk: "هُوَ" },
-            { ar: "القوة", tr: "Güçtür", hk: "الْقُوَّةُ" },
+            { ar: "القوة", tr: "Güçtür", hk: "القُوَّةُ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "التي", tr: "ki o", hk: "الَّتِي" },
             { ar: "ترفع", tr: "Yükselten", hk: "تَرْفَعُ" },
@@ -2146,11 +2146,11 @@ function shuffleQuestions(array) {
             { ar: "بئس", tr: "Ne kötü!", hk: "بِئْسَ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "تلوث", tr: "Kirlilik", hk: "تَلَوُّثُ" },
-            { ar: "الهواء", tr: "Hava", hk: "الْهَوَاءِ" },
+            { ar: "الهواء", tr: "Hava", hk: "الهَوَاءِ" },
             { ar: "لأنه", tr: "Çünkü o", hk: "لِأَنَّهُ" },
             { ar: "يهدد", tr: "Tehdit ediyor", hk: "يُهَدِّدُ" },
             { ar: "صحة", tr: "Sağlığını", hk: "صِحَّةِ" },
-            { ar: "الكائنات", tr: "Canlıların", hk: "الْكَائِنَاتِ" }
+            { ar: "الكائنات", tr: "Canlıların", hk: "الكَائِنَاتِ" }
         ],
         targetIndex: 1,
         options: [
@@ -2200,13 +2200,13 @@ function shuffleQuestions(array) {
         words: [
             { ar: "تعلم", tr: "Öğrenmek", hk: "تَعَلُّمُ" },
             { ar: "اللغة", tr: "Dilini", hk: "اللُّغَةِ" },
-            { ar: "العربية", tr: "Arapça", hk: "الْعَرَبِيَّةِ" },
+            { ar: "العربية", tr: "Arapça", hk: "العَرَبِيَّةِ" },
             { ar: "هو", tr: "o", hk: "هُوَ" },
             { ar: "_______", tr: "???", hk: "_______" },
             { ar: "لفهم", tr: "Anlamanın", hk: "لِفَهْمِ" },
             { ar: "تاريخ", tr: "Tarihini", hk: "تَارِيخِ" },
-            { ar: "الحضارة", tr: "Medeniyetinin", hk: "الْحَضَارَةِ" },
-            { ar: "الإسلامية", tr: "İslam", hk: "الْإِسْلَامِيَّةِ" }
+            { ar: "الحضارة", tr: "Medeniyetinin", hk: "الحَضَارَةِ" },
+            { ar: "الإسلامية", tr: "İslam", hk: "الإِسْلَامِيَّةِ" }
         ],
         targetIndex: 4,
         options: [

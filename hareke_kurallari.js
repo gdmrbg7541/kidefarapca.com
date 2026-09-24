@@ -9,16 +9,16 @@
  * 
  * 1. FİİLLER:
  *    - Tam harekelidir (Zamir eki alsa bile son harf dahil harekelenir). 
- *    - Örn: سافَرْتَ، سَخَّرَ
+ *    - Örn: سافَرْتَ، سَخَّرَ
  *    - İstisna: Emir fiillerde geçiş durumunda son harekeler verilmez.
  * 
  * 2. İSİM VE DİĞER KELİMELER:
  *    - Son harf daima HAREKESİZ bırakılır.
- *    - Örn: الصَّباح، البَيْت، مَدينَة
+ *    - Örn: الصَّباح، البَيْت، مَدينَة
  * 
  * 3. MARİFELİK TAKISI (ال):
  *    - Kamerî harflerde "lâm" (ل) HAREKESİZ yazılır (Örn: البَيْت).
- *    - Şemsî harflerde lâm'dan sonraki harfin şeddesi korunur (Örn: الصُّوَر).
+ *    - Şemsî harflerde lâm'dan sonraki harfin şeddesi korunur (Örn: الصُّوَر).
  * 
  * 4. MED (UZATMA) HARFLERİ:
  *    - Med harfinden (ا, و, ي) hemen önceki harf HAREKESİZ yazılır.
@@ -26,7 +26,7 @@
  * 
  * 5. FETHA TENVİNLERİ:
  *    - Belirsiz nasb/hâl/zarf tenvinleri mutlaka yazılır.
- *    - Örn: مَشْيًا، صَباحًا، مَساءً، جِدًّا
+ *    - Örn: مَشْيًا، صَباحًا، مَساءً، جِدًّا
  * 
  * 6. HARF-İ CER VE EDATLAR:
  *    - بِـ، لِـ، كَـ kendi harekesini taşır.
@@ -34,7 +34,7 @@
  *    - Med harfi ile bitenlerin son harfi harekelenmez (Örn: في، إلى).
  * 
  * 7. BİTİŞİK (MUTTASIL) ZAMİRLER:
- *    - Genel kurala (son harf harekesiz) uyarlar (Örn: أُمَّه).
+ *    - Genel kurala (son harf harekesiz) uyarlar (Örn: أُمَّه).
  *    - Sadece muhatab/muhataba ayrımı için özel harekelendirilebilir.
  * 
  * 8. ÖZEL VE YABANCI İSİMLER:

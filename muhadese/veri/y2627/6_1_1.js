@@ -1,4 +1,4 @@
-/* 6. sınıf — 6_1_1 (1. Ünite 1. Ders: Akrabalar | اَلْأَقارِب) */
+/* 6. sınıf — 6_1_1 (1. Ünite 1. Ders: Akrabalar | اَلأَقارِب) */
 /* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 1. Ünite (أَقارِبي), s. 12-30. */
 /* Kelimeler kitabın kendi kâmûsuyla (s.194-203) karşılaştırılarak yazıldı. */
 /* CÜMLELER HENÜZ GİRİLMEDİ — sentence ve dialog bilerek boştur. */
@@ -23,7 +23,7 @@ window.data = {
             "tr": "Dede"
         },
         {
-            "ar": "جَدَّة",
+            "ar": "جَدَّة",
             "tr": "Nine"
         },
         {
@@ -31,11 +31,11 @@ window.data = {
             "tr": "Aile"
         },
         {
-            "ar": "مُمَرِّض / مُمَرِّضَة",
+            "ar": "مُمَرِّض / مُمَرِّضَة",
             "tr": "Hemşire (erkek / kadın)"
         },
         {
-            "ar": "مُعَلِّم / مُعَلِّمَة",
+            "ar": "مُعَلِّم / مُعَلِّمَة",
             "tr": "Öğretmen (erkek / kadın)"
         },
         {
@@ -55,7 +55,7 @@ window.data = {
             "tr": "Meslek – Meslekler"
         },
         {
-            "ar": "اَلْأَقارِب",
+            "ar": "اَلأَقارِب",
             "tr": "Akrabalar"
         },
         {
@@ -91,7 +91,7 @@ window.data = {
             "tr": "Çiftçi (erkek / kadın)"
         },
         {
-            "ar": "تَلَفُّظ",
+            "ar": "تَلَفُّظ",
             "tr": "Telaffuz, seslendirme"
         },
         {
@@ -143,7 +143,7 @@ window.data = {
             "tr": "Fırça"
         },
         {
-            "ar": "قِطَّة",
+            "ar": "قِطَّة",
             "tr": "Kedi"
         },
         {
@@ -247,11 +247,11 @@ window.data = {
             "tr": "Yatak"
         },
         {
-            "ar": "اَلْحُروفُ الْقَمَرِيَّة",
+            "ar": "اَلحُروفُ القَمَرِيَّة",
             "tr": "Kamerî Harfler"
         },
         {
-            "ar": "اَلْحُروفُ الشَّمْسِيَّة",
+            "ar": "اَلحُروفُ الشَّمْسِيَّة",
             "tr": "Şemsî Harfler"
         },
         {
@@ -347,7 +347,7 @@ window.data = {
             "tr": "Gömlek"
         },
         {
-            "ar": "مِظَلَّة",
+            "ar": "مِظَلَّة",
             "tr": "Şemsiye"
         },
         {
@@ -399,7 +399,7 @@ window.data = {
             "tr": "Amca"
         },
         {
-            "ar": "عَمَّة",
+            "ar": "عَمَّة",
             "tr": "Hala"
         },
         {
@@ -411,7 +411,7 @@ window.data = {
             "tr": "Torun (erkek / kadın)"
         },
         {
-            "ar": "بَيْطَرِيّ / بَيْطَرِيَّة",
+            "ar": "بَيْطَرِيّ / بَيْطَرِيَّة",
             "tr": "Veteriner (erkek / kadın)"
         },
         {
@@ -439,7 +439,7 @@ window.data = {
             "tr": "Resim – Resimler"
         },
         {
-            "ar": "أَيْنَ؟",
+            "ar": "أَيْن؟",
             "tr": "Nerede?"
         },
         {
@@ -471,11 +471,11 @@ window.data = {
             "tr": "Okul"
         },
         {
-            "ar": "غُرْفَةُ الْجُلوس",
+            "ar": "غُرْفَةُ الجُلوس",
             "tr": "Oturma Odası"
         },
         {
-            "ar": "شُرْطِيّ / شُرْطِيَّة",
+            "ar": "شُرْطِيّ / شُرْطِيَّة",
             "tr": "Polis (erkek / kadın)"
         },
         {
@@ -495,7 +495,7 @@ window.data = {
             "tr": "Hayır"
         },
         {
-            "ar": "غُرْفَةُ النَّوْم",
+            "ar": "غُرْفَةُ النَّوْم",
             "tr": "Yatak odası"
         },
         {
@@ -511,7 +511,7 @@ window.data = {
             "tr": "İyilik, güzel davranış"
         },
         {
-            "ar": "اَلْأَقْرَبونَ أَوْلَى بِالْمَعْروف.",
+            "ar": "اَلأَقْرَبونَ أَوْلَى بِالْمَعْروف.",
             "tr": "Akrabalar iyiliğe daha layıktır."
         }
     ]

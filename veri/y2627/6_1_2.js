@@ -1,4 +1,4 @@
-/* 6. sınıf — 6_1_2 (1. Ünite 2. Ders: Meslekler | اَلْمِهَن) */
+/* 6. sınıf — 6_1_2 (1. Ünite 2. Ders: Meslekler | اَلمِهَن) */
 /* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 1. Ünite (أَقارِبي), s. 31-49. */
 /* Kelimeler kitabın kendi kâmûsuyla (s.194-203) karşılaştırılarak yazıldı. */
 /* CÜMLELER HENÜZ GİRİLMEDİ — sentence ve dialog bilerek boştur. */
@@ -19,7 +19,7 @@ window.data = {
             "tr": "Şoför (erkek / kadın)"
         },
         {
-            "ar": "شُرْطِيّ / شُرْطِيَّة",
+            "ar": "شُرْطِيّ / شُرْطِيَّة",
             "tr": "Polis (erkek / kadın)"
         },
         {
@@ -27,7 +27,7 @@ window.data = {
             "tr": "Aşçı (erkek / kadın)"
         },
         {
-            "ar": "بَيْطَرِيّ / بَيْطَرِيَّة",
+            "ar": "بَيْطَرِيّ / بَيْطَرِيَّة",
             "tr": "Veteriner (erkek / kadın)"
         },
         {
@@ -35,11 +35,11 @@ window.data = {
             "tr": "Çiftçi (erkek / kadın)"
         },
         {
-            "ar": "مُمَرِّض / مُمَرِّضَة",
+            "ar": "مُمَرِّض / مُمَرِّضَة",
             "tr": "Hemşire (erkek / kadın)"
         },
         {
-            "ar": "مُعَلِّم / مُعَلِّمَة",
+            "ar": "مُعَلِّم / مُعَلِّمَة",
             "tr": "Öğretmen (erkek / kadın)"
         },
         {
@@ -63,7 +63,7 @@ window.data = {
             "tr": "Amca"
         },
         {
-            "ar": "عَمَّة",
+            "ar": "عَمَّة",
             "tr": "Hala"
         },
         {
@@ -71,7 +71,7 @@ window.data = {
             "tr": "Dede"
         },
         {
-            "ar": "جَدَّة",
+            "ar": "جَدَّة",
             "tr": "Nine"
         },
         {
@@ -131,7 +131,7 @@ window.data = {
             "tr": "Emekli (erkek / kadın)"
         },
         {
-            "ar": "أُحِبُّ.",
+            "ar": "أُحِبُّ.",
             "tr": "Seviyorum."
         },
         {
@@ -143,7 +143,7 @@ window.data = {
             "tr": "Bu (kadın)"
         },
         {
-            "ar": "رَبَّةُ الْبَيْت",
+            "ar": "رَبَّةُ البَيْت",
             "tr": "Ev hanımı"
         },
         {
@@ -155,7 +155,7 @@ window.data = {
             "tr": "Kim?"
         },
         {
-            "ar": "أَيْنَ؟",
+            "ar": "أَيْن؟",
             "tr": "Nerede?"
         },
         {

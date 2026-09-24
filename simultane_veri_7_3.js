@@ -337,7 +337,7 @@ dialog: [
 
 // 5. Sonra duraktan otobüse bin
 { tr: "sonra", order: 11, ar: "ثُمَّ" },
-{ tr: "duraktan", order: 14, ar: "مِنَ المَوْقِفِ‫.‬" },
+{ tr: "duraktan", order: 14, ar: "مِن المَوْقِفِ‫.‬" },
 { tr: "otobüse", order: 13, ar: "الحَافِلَةَ" },
 { tr: "bin.", order: 12, ar: "ارْكَبْ" }
         ]
