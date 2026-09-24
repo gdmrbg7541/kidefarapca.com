@@ -159,6 +159,12 @@
     },
     10: {
       kitap: 'İHL Arapça 10',
+      /* Bu etkinlikler 10. sınıfın ZORUNLU (Maarif) Arapça kitabına girmiştir.
+         10. sınıfın iki kitabı var (bkz. sistem/sinifveri.js → VERI_YILI);
+         «Seçmeli Arapça» seçiliyken bu bölüm gizlenir, çünkü o kitabın
+         üniteleri başkadır. 24.09.2026'da eklendi: önceden yıl süzgeci yoktu,
+         seçmeli kitaptayken Maarif kitabının etkinlikleri görünüyordu. */
+      yil: '2026-2027',
       uniteler: [
         { no: 1, ad: 'Değerlerim', ar: 'قِيَمي', etk: [
           { tur: 'sayfa', ad: 'Boşluk Doldurma', alt: 'Etkinlik 3 · işaret zamirleri', sayfa: 16, url: '10/arp1001_s16_e3_boslukdoldurma_isaretzamirleri/' },

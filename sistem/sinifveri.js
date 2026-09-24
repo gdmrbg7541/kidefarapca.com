@@ -174,10 +174,10 @@
      kitap Maarif'e ait — öğretmen eski yıla geçince etiket kendiliğinden
      kalkar, yoksa etiket yalan söylerdi. */
   var VERI_YILI = {
-    5:  [{ yil: '2025-2026', program: '2025 TYMM Arapça Programı (5-8. sınıflar)', onek: '', maarif: true }],
+    5:  [{ yil: '2025-2026', program: '2025 TYMM Maarif Arapça Programı (5-8. sınıflar)', onek: '', maarif: true }],
     /* 6. sınıfın YENİ kitabı 4 ünite × 2 ders; ders verisi y2627/ altında.
        Önceki kitap (6 ünite × 3 ders) yerinde duruyor, öneki boş. */
-    6:  [{ yil: '2026-2027', program: '2025 TYMM Arapça Programı · yeni kitap (4 ünite)', onek: 'y2627/', maarif: true },
+    6:  [{ yil: '2026-2027', program: '2025 TYMM Maarif Arapça Programı · yeni kitap (4 ünite)', onek: 'y2627/', maarif: true },
          { yil: '2025-2026', program: 'Önceki program · 2025 ders kitabı (6 ünite)', onek: '', maarif: false }],
     /* 7. sınıfın İKİ KİTABI var (22.09.2026, Geylani): 2026-2027'de okutulan Mektep
        Yayınları kitabı (6 ünite × 3 ders, ders verisi y2627/7_1_1 … 7_6_3) ve
@@ -188,20 +188,20 @@
        klasöre gider. Mektep kitabı önceki programa göre yazıldığı için Maarif
        etiketi yalnız 2027-2028 seçiliyken görünür. */
     7:  [{ yil: '2026-2027', ad: 'Mektep Yayınları 2026-2027', program: 'Mektep Yayınları ders kitabı (6 ünite) · 2026-2027 öğretim yılı', onek: 'y2627/', maarif: false, desen: /^7_\d+_\d+$/ },
-         { yil: '2027-2028', ad: '2027-2028', program: '2025 TYMM Arapça Programı · MEB ders kitabı (4 ünite) · 2027-2028 öğretim yılı', onek: '', maarif: true, desen: /^7_\d+$/ }],
+         { yil: '2027-2028', ad: '2027-2028', program: '2025 TYMM Maarif Arapça Programı · MEB ders kitabı (4 ünite) · 2027-2028 öğretim yılı', onek: '', maarif: true, desen: /^7_\d+$/ }],
     /* 8. sınıfın ders verisi 6 ünite × 3 ders (8_1_1 … 8_6_3) olarak
        yeni kitaptan çıkarıldı. MAARİF DEĞİL: 2026-2027'de Türkiye Yüzyılı
        Maarif Modeli ortaokulda 5, 6 ve 7. sınıflarda uygulanıyor; 8. sınıf
        önceki öğretim programıyla devam ediyor (21.09.2026, Geylani). */
     8:  [{ yil: '2026-2027', program: 'Önceki öğretim programı (Maarif Modeli 8. sınıfta henüz uygulanmıyor)', onek: '', maarif: false }],
-    9:  [{ yil: '2026-2027', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '', maarif: true }],
+    9:  [{ yil: '2026-2027', program: '2025 TYMM Maarif Arapça Programı (9-10. sınıflar) · 2026-2027 ders kitabı', onek: '', maarif: true }],
     /* 10. sınıfın İKİ KİTABI var (23.09.2026, Geylani): MEB Maarif kitabı
        (4 tema × 2 ders, ders verisi kökte 10_1_1 … 10_4_2) ve Ortaöğretim
        SEÇMELİ ARAPÇA kitabı (4 ünite × 3 ders, ders verisi sec10/ altında).
        Ders kimlikleri aynı biçimde (10_ü_d); hangi kitabın okunacağını `onek`
        belirler — 6. sınıftaki düzenin aynısı. Seçmeli kitap 2017 programına
        göre yazıldığı için Maarif etiketi yalnız Maarif kitabında görünür. */
-    10: [{ yil: '2026-2027', ad: '2026-2027 (Maarif)', program: '2026 Arapça Programı (9-10. sınıflar)', onek: '', maarif: true },
+    10: [{ yil: '2026-2027', program: '2025 TYMM Maarif Arapça Programı (9-10. sınıflar) · 2026-2027 ders kitabı', onek: '', maarif: true },
          { yil: 'secmeli', ad: 'Seçmeli Arapça', program: 'Ortaöğretim Seçmeli Arapça ders kitabı (4 ünite × 3 ders)', onek: 'sec10/', maarif: false }]
   };
 
@@ -300,9 +300,14 @@
     if (!d.length) return '';
     ayar = ayar || {};
     var s = seciliVeriYili(n), sinif_ = ayar.sinif || '';
+    /* Seçili kitap Maarif Modeli'ne aitse yılın yanına «Maarif» rozeti eklenir;
+       şerit yalnız yılı değil hangi programa ait olduğunu da söyler. Kitap
+       değişince şerit yeniden basıldığı için rozet kendiliğinden gelir/kalkar. */
+    var mrf = s.maarif ? '<span class="kd-yil-maarif">Maarif</span>' : '';
     if (d.length < 2 || ayar.secici === false) {
       return '<span class="kd-yil ' + kacis(sinif_) + '" title="' + kacis(s.program) + '">' +
-             '<span class="kd-yil-nokta" aria-hidden="true"></span>' + kacis(s.ad || s.yil) + '</span>';
+             '<span class="kd-yil-nokta" aria-hidden="true"></span>' + kacis(s.ad || s.yil) +
+             mrf + '</span>';
     }
     var o = d.map(function (x) {
       return '<option value="' + kacis(x.yil) + '"' + (x.yil === s.yil ? ' selected' : '') +
@@ -312,7 +317,7 @@
            '<span class="kd-yil-nokta" aria-hidden="true"></span>' +
            '<span class="kd-yil-etiket">Öğretim yılı</span>' +
            '<select data-kd-yil-sinif="' + n + '" aria-label="' + n + '. sınıf öğretim yılı">' +
-           o + '</select></label>';
+           o + '</select>' + mrf + '</label>';
   }
 
   /* Seçicinin ortak davranışı: sayfa başına BİR kez bağlanır, sonradan
@@ -360,6 +365,8 @@
       'white-space:nowrap;vertical-align:middle;text-shadow:none;}' +
       '.kd-yil-nokta{width:7px;height:7px;border-radius:50%;background:#0E9E86;flex:none;}' +
       '.kd-yil-etiket{color:#3F6F65;font-weight:600;}' +
+      '.kd-yil-maarif{margin-left:2px;padding:2px 7px;border-radius:999px;font-size:10.5px;' +
+      'font-weight:800;letter-spacing:.04em;background:#0E9E86;color:#fff;flex:none;}' +
       '.kd-yil-sec{cursor:pointer;padding-right:7px;}' +
       '.kd-yil-sec select{font:inherit;font-weight:700;color:#0B5F51;background:transparent;' +
       'border:0;padding:0 2px;cursor:pointer;outline:none;}' +
@@ -369,7 +376,8 @@
       '.kd-yil{background:#0C3F36;color:#8FEAD5;border-color:#1E7A67;}' +
       '.kd-yil-etiket{color:#67C7B2;}' +
       '.kd-yil-sec select{color:#8FEAD5;}' +
-      '.kd-yil-sec select option{color:#0B5F51;background:#fff;}}';
+      '.kd-yil-sec select option{color:#0B5F51;background:#fff;}' +
+      '.kd-yil-maarif{background:#8FEAD5;color:#06302A;}}';
     (document.head || document.documentElement).appendChild(st);
   }
 
