@@ -507,6 +507,37 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     @media (prefers-color-scheme: dark){
       #imam-hatip .ihsec-ayirac{ background:linear-gradient(90deg, transparent, #2B3A48 12%, #2B3A48 88%, transparent); }
     }
+    /* ETKİNLİK KARTLARI ŞERİDİ (24.09.2026)
+       Bir sınıf belgesi açılınca üstteki etkinlik kartları toplanıyor; böylece
+       belgeler sınıfın adının hemen altına geliyor. Şerit hem "burada kartlar
+       var" der hem de okuyla kartları geri açar. Kartların kendisi silinmiyor,
+       yalnız yüksekliği sıfıra iniyor. */
+    #imam-hatip .ihkart-bar{
+      display:flex; align-items:center; gap:8px; width:100%;
+      padding:7px 11px; margin:0 0 10px;
+      border:1.3px solid #e8eef5; border-radius:10px; background:#f7fafd;
+      font-family:inherit; font-size:.74rem; font-weight:800; letter-spacing:.7px;
+      text-transform:uppercase; color:#7c8b99; text-align:left; cursor:pointer;
+      -webkit-appearance:none; appearance:none;
+    }
+    #imam-hatip .ihkart-bar:hover{ filter:brightness(.98); }
+    #imam-hatip .ihkart-bar:focus-visible{ outline:3px solid #2563EB; outline-offset:-3px; }
+    #imam-hatip .ihkart-say{ font-weight:700; letter-spacing:0; text-transform:none; color:#a3b1bf; }
+    #imam-hatip .ihkart-ok{ margin-left:auto; font-size:.95rem; color:#94a3b8; transition:transform .3s ease; }
+    #imam-hatip .ihkart-bar.kapali .ihkart-ok{ transform:rotate(-90deg); }
+    #imam-hatip .ih-kartlar{
+      transition:max-height .34s cubic-bezier(.4,0,.2,1), margin .34s ease, opacity .22s ease;
+    }
+    #imam-hatip .ih-kartlar.kapali{ max-height:0; margin:0; opacity:0; overflow:hidden; }
+    #imam-hatip .ihsec-ayirac.gizli{ display:none; }
+    @media (prefers-color-scheme: dark){
+      #imam-hatip .ihkart-bar{ background:#16222E; border-color:#2B3A48; color:#8FA3B5; }
+      #imam-hatip .ihkart-say{ color:#6F8399; }
+      #imam-hatip .ihkart-ok{ color:#8FA3B5; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      #imam-hatip .ih-kartlar, #imam-hatip .ihkart-ok{ transition:none; }
+    }
     #imam-hatip .ih-kartlar .game-card .default-game-content {
         flex: 1 1 auto; display: flex; flex-direction: column; align-items: center;
     }
@@ -3161,6 +3192,30 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           void p.offsetHeight;
           p.style.transition = g;
         });
+        /* Belge kartı panelleri de kapansın. (Belgeler artık .ihdoc-item
+           akordiyonu değil .a4-kart ızgarası; yukarıdaki liste onları
+           görmüyordu, sınıf yeniden açılınca açık kalıyorlardı.) */
+        [].forEach.call(kok.querySelectorAll('.a4-kart.acik'), function (b) {
+          b.classList.remove('acik'); b.setAttribute('aria-expanded', 'false');
+        });
+        [].forEach.call(kok.querySelectorAll('.a4-panel'), function (q) {
+          acilisDinleyiciSil(q);
+          var g = q.style.transition; q.style.transition = 'none';
+          q.style.maxHeight = '0px'; void q.offsetHeight; q.style.transition = g;
+        });
+        /* Kendiliğinden toplanmış etkinlik kartları da geri açılsın:
+           sınıf bir dahaki açılışında kartlar yine görünür gelsin. */
+        [].forEach.call(kok.querySelectorAll('.ih-kartlar.kapali'), function (m) {
+          if (m.getAttribute('data-oto') !== '1') return;
+          var g = m.style.transition; m.style.transition = 'none';
+          m.classList.remove('kapali'); m.style.maxHeight = 'none';
+          m.removeAttribute('data-oto');
+          var b = m.previousElementSibling;
+          if (b && b.classList.contains('ihkart-bar')) b.classList.remove('kapali');
+          var a = m.nextElementSibling;
+          if (a && a.classList.contains('ihsec-ayirac')) a.classList.remove('gizli');
+          void m.offsetHeight; m.style.transition = g;
+        });
       }
       /* TEK BOLUM KURALI: "Sinif Etkinlikleri", "Sinif Dokumanlari" ve
          "Ogretmen Dokumanlari" bolumlerinden ayni anda yalnizca BIRI acik
@@ -3270,6 +3325,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         var panel = item.querySelector('.ihdoc-panel');
         if (item.classList.contains('acik')) { item.classList.remove('acik'); panelKapat(panel); }
         else { item.classList.add('acik'); ustPanelSerbest(item); panelAc(panel); }
+        /* Belge açıldıysa üstteki etkinlik kartları toplansın (aşağıda kurulur). */
+        if (window.ihKartOto) window.ihKartOto(item);
       };
 
       /* ==========================================================
@@ -4220,8 +4277,16 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         [].forEach.call(wrap.querySelectorAll('.a4-kart.acik'), function (b) {
           b.classList.remove('acik'); b.setAttribute('aria-expanded', 'false');
         });
-        if (zatenAcik) { panelKapat(panel); kartKapaninca(btn); return; }
+        if (zatenAcik) {
+          panelKapat(panel); kartKapaninca(btn);
+          if (window.ihKartOto) window.ihKartOto(btn);   /* son belge kapandı → kartlar geri */
+          return;
+        }
         btn.classList.add('acik'); btn.setAttribute('aria-expanded', 'true');
+        /* Belge açıldı: üstteki etkinlik kartları toplansın ki belge sınıfın
+           adının hemen altına gelsin. Aşağıdaki kaydırma bu yeni yüksekliğe
+           göre hesaplansın diye kartlar ÖNCE toplanıyor. */
+        if (window.ihKartOto) window.ihKartOto(btn);
         var d = btn._a4 || {};
         wrap.style.setProperty('--a4c', d.renk || '#dbe3ec');
         ic.innerHTML = '<div class="a4-panel-bas">' + a4Ikon(d.set || 'sinif', d.i || 0, 'a4-panel-ikon') +
@@ -4511,6 +4576,99 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         modulKartlari(mount, sinif);
       }
       [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar'), mhKur);
+
+      /* ==========================================================
+         ETKİNLİK KARTLARI ŞERİDİ
+         Amaç: bir sınıf belgesi açılınca üstteki etkinlik kartları
+         toplansın, belgeler sınıfın adının hemen altına gelsin.
+         Kartlar silinmiyor; şeritteki oktan geri açılıyor.
+
+         data-oto="1"  → kartları BİZ topladık, son belge kapanınca
+                         kendiliğinden geri açılabilir.
+         Kullanıcı şeride kendi eliyle dokunduysa bu işaret silinir;
+         bir daha onun yerine karar vermeyiz.
+         ========================================================== */
+      function kartSayGuncelle(kartlar) {
+        var bar = kartlar.previousElementSibling;
+        if (!bar || !bar.classList.contains('ihkart-bar')) return;
+        var n = kartlar.querySelectorAll('.game-card').length;
+        var s = bar.querySelector('.ihkart-say');
+        if (s) s.textContent = n ? '(' + n + ')' : '';
+      }
+      function kartAyirac(kartlar) {
+        var a = kartlar.nextElementSibling;
+        return (a && a.classList.contains('ihsec-ayirac')) ? a : null;
+      }
+      /* ac: true → aç, false → topla · oto: kararı biz mi verdik
+         Kararı biz verdiysek animasyon YOK: kullanıcı belgeye tıklamışken
+         kartların ağır ağır kapanması tıkladığı kartı altından kaydırıyor.
+         Şeride kendi eliyle bastıysa animasyon var. */
+      function kartlariAyarla(kartlar, ac, oto) {
+        var bar = kartlar.previousElementSibling;
+        var ayr = kartAyirac(kartlar);
+        var eskiGecis = kartlar.style.transition;
+        if (oto) kartlar.style.transition = 'none';
+        if (ac) {
+          /* önce 0'a sabitle, sonra hedefe: aksi hâlde "none"dan geçiş
+             animasyonu çalışmaz, kartlar birden zıplar */
+          kartlar.style.maxHeight = '0px';
+          kartlar.classList.remove('kapali');
+          void kartlar.offsetHeight;
+          kartlar.style.maxHeight = kartlar.scrollHeight + 'px';
+          /* animasyon bitince sınır kalksın, yoksa içerik büyüyünce kırpılır */
+          setTimeout(function () {
+            if (!kartlar.classList.contains('kapali')) kartlar.style.maxHeight = 'none';
+          }, 380);
+          if (ayr) ayr.classList.remove('gizli');
+        } else {
+          kartlar.style.maxHeight = kartlar.scrollHeight + 'px';
+          void kartlar.offsetHeight;                 /* ölçü yazılsın, sonra kapansın */
+          kartlar.classList.add('kapali');
+          kartlar.style.maxHeight = '';
+          if (ayr) ayr.classList.add('gizli');
+        }
+        if (oto) { void kartlar.offsetHeight; kartlar.style.transition = eskiGecis; }
+        if (oto && !ac) kartlar.setAttribute('data-oto', '1');
+        else kartlar.removeAttribute('data-oto');
+        if (bar && bar.classList.contains('ihkart-bar')) {
+          bar.classList.toggle('kapali', !ac);
+          bar.setAttribute('aria-expanded', ac ? 'true' : 'false');
+        }
+        if (kartlar.closest) {
+          var ic = kartlar.closest('.ihsec-panel');
+          if (ic && ic.style.maxHeight && ic.style.maxHeight !== 'none') ic.style.maxHeight = 'none';
+        }
+      }
+      function kartBariKur(kartlar) {
+        var v = kartlar.previousElementSibling;
+        if (v && v.classList.contains('ihkart-bar')) { kartSayGuncelle(kartlar); return; }
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'ihkart-bar';
+        b.setAttribute('aria-expanded', 'true');
+        b.innerHTML = '<span>Etkinlik kartları</span>' +
+                      '<span class="ihkart-say"></span>' +
+                      '<span class="ihkart-ok" aria-hidden="true">\u25BE</span>';
+        b.addEventListener('click', function () {
+          kartlariAyarla(kartlar, kartlar.classList.contains('kapali'), false);
+        });
+        kartlar.parentNode.insertBefore(b, kartlar);
+        kartSayGuncelle(kartlar);
+      }
+      [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar'), kartBariKur);
+      /* Kitap değişince kartlar yeniden kuruluyor; sayıyı tazele. */
+      document.addEventListener('kidef:veriyili', function () {
+        [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar'), kartSayGuncelle);
+      });
+      /* ihdocToggle buradan çağırıyor. */
+      window.ihKartOto = function (belge) {
+        var kap = belge.closest('.ihsec-panel-in'); if (!kap) return;
+        var kartlar = kap.querySelector('.ih-kartlar'); if (!kartlar) return;
+        if (kap.querySelector('.ihdoc-acc .a4-kart.acik, .ihdoc-item.acik')) {
+          if (!kartlar.classList.contains('kapali')) kartlariAyarla(kartlar, false, true);
+        } else if (kartlar.getAttribute('data-oto') === '1') {
+          kartlariAyarla(kartlar, true, true);
+        }
+      };
       /* Öğretim yılı / kitap değişince (6 ve 7. sınıf) o sınıfın Muhâdese listesi
          seçilen kitabın derslerine döner; açık olan panel açık kalır. */
       document.addEventListener('kidef:veriyili', function (e) {

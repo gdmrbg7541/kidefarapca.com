@@ -25,3 +25,23 @@ Yedek: _kaynak/yedekler/hareke-oncesi-2026-09-24/ (599 dosya, 26 MB)
 Betikler: _kaynak/yedekler/betikler/hareke/{denetle2,duzelt}.py
 Rapor:    _kaynak/gecici/HAREKE-DENETIM-RAPORU.txt
 ──────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────
+24.09.2026 · ETKİNLİK KARTLARI ŞERİDİ (index.html)
+Sınıf panelinde bir belgeye tıklanınca üstteki etkinlik kartları toplanıyor,
+böylece belge sınıfın adının hemen altına geliyor. Kartlar silinmiyor:
+üstlerine gelen "ETKİNLİK KARTLARI (n) ▾" şeridinden geri açılıyor.
+
+  · şerit    → .ihkart-bar (JS ile her .ih-kartlar'ın üstüne ekleniyor)
+  · kanca    → a4Toggle içinden window.ihKartOto(btn)
+  · işaret   → .ih-kartlar[data-oto="1"] yalnız BİZİM topladığımızı söyler;
+               son belge kapanınca kartlar kendiliğinden geri gelir.
+               Kullanıcı şeride kendi eliyle basarsa işaret silinir,
+               bir daha onun yerine karar verilmez.
+  · sıfırlama→ icleriKapat() artık .a4-kart panellerini de kapatıyor
+               (belgeler .ihdoc-item akordiyonundan .a4-kart ızgarasına
+                geçince bu gözden kaçmıştı; sınıf yeniden açılınca belge
+                açık kalıyordu).
+
+Yedek: _kaynak/yedekler/index_2026-09-24_kart-serit-oncesi.html
+──────────────────────────────────────────────────────────────
