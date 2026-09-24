@@ -217,3 +217,54 @@ Yedek: _kaynak/yedekler/sinav_2026-09-24_klasik-oncesi.js
   Yedekler: _kaynak/yedekler/sinav_2026-09-24_sekme-oncesi.js
             _kaynak/yedekler/klasik_2026-09-24_ders-oncesi.js
 ──────────────────────────────────────────────────────────────
+
+24.09.2026 · DİKEY YAN ŞERİTLER (index.html)
+Yatay "ETKİNLİK KARTLARI" şeridi kalktı; yerine her iki bölümün de SOL
+KENARINDA dikey şerit geldi. Yazı aşağıdan yukarıya okunuyor
+(writing-mode: vertical-rl + transform: rotate(180deg)).
+
+  · Bölümler: .ih-kartlar (Etkinlik kartları) ve .ihdoc-acc (Sınıf belgeleri).
+    İkisi de JS ile .ihblok ızgarasına alınıyor: sol sütun şerit (38px),
+    sağ sütun içerik. Satır yüksekliği ikisinden büyüğü alır, bu yüzden
+    içerik sıfırlanınca satır şerit kadar kalır — ok yerinde durur.
+  · KAPANINCA ŞERİT YATAYA DÖNER ve bu geçiş ANİMASYONLU (0,55 sn elle,
+    0,7 sn kendiliğinden): şeridin genişliği/yüksekliği ve etiketin açısı
+    birlikte yumuşar. writing-mode animasyona girmediği için yazı hep
+    yatay tutuluyor; etiket+ok öbeği -90°'den 0°'ye DÖNDÜRÜLÜYOR. Öbek
+    mutlak konumlu ve ortalı, dönerken kaymıyor. Izgara iki durumda da
+    İKİ SÜTUN (38px→100% ve 1fr→0fr), yoksa tarayıcı ara değer üretemiyor.
+  · TEK ŞERİT KURALI (24.09.2026): belgelerden birine dokununca etkinlik
+    kartları toplanıyordu; şimdi tersi de var — KAPALI etkinlik şeridi
+    elle açılınca o sınıfın BELGE şeridi kendiliğinden toplanıyor.
+    Etkinlik şeridi yeniden kapatılınca, kapatan biz isek (data-oto="1")
+    belgeler geri açılıyor. Sınıf ilk açıldığında ikisi de açık.
+  · Parantezli kart sayısı kaldırıldı: sayı zaten kartların üstünde
+    yazıyor, şeritte tekrar etmesi kalabalık yapıyordu.
+  · Belgeye basılınca etkinlik kartları yavaşça toplanıyor (eskisi gibi).
+  · SINIF AÇILINCA İKİSİ DE AÇIK geliyor: icleriKapat artık .ihblok-ic.kapali
+    olan her bölümü açıyor (yalnız data-oto olanları değil).
+  · Sıra değişmedi: üstte etkinlik kartları, altında sınıf belgeleri.
+
+Yedek: _kaynak/yedekler/index_2026-09-24_yan-serit-oncesi.html
+──────────────────────────────────────────────────────────────
+
+8. SINIF — TEMEL DÜZEY ÖRNEK SINAV ve ÇALIŞMA KÂĞIDI (24.09.2026)
+  Yeni 8 dosya: dosyalar/sinavlar/8-sinif/2026-2027-1d1y/temel-duzey/
+    arapca-8-1d1y-temel-ornek-sinav.docx / .pdf                 (2 sayfa)
+    arapca-8-1d1y-temel-ornek-sinav-cevap-anahtari.docx / .pdf  (1 sayfa)
+    arapca-8-1-unite-calisma-kagidi-temel.docx / .pdf           (2 sayfa)
+    arapca-8-1-unite-calisma-kagidi-temel-cevaplar.docx / .pdf  (1 sayfa)
+  · ÖRNEK SINAV: uygulanacak A-D temel düzey kâğıtlarıyla AYNI sekiz soru ve
+    aynı puanlar (20-16-12-12-12-12-8-8), FARKLI içerik. Betik, A-D'den madde
+    kopyalanmadığını denetliyor (ek_denetim.py, 0 hata).
+  · ÇALIŞMA KÂĞIDI: sınavın sekiz soru tipini aynı sırayla tekrar ettirir
+    (okuma · sözcük eşleştirme · bağlaç · saat · soru sözcüğü · yön · çeviri ·
+    yazma) + üç maddelik öz değerlendirme.
+  · Belgelerde OKUL ADI ve ÖĞRETMEN ADI YOK: okul satırı noktalı bırakıldı,
+    imzada yalnız "بالتوفيق" ve "معلّم اللغة العربية" var.
+  · Arapça tamamen "8. Sınıf Kitap Verileri (18 Ders).tsv"den; 323 sözcüğün
+    hepsi veride (dogrula.py). Yazı tipleri: Arakom + Carlito.
+  · index.html: 8. sınıf Sınavlar ve Çalışma Kâğıtları listelerinin sonuna
+    eklendi (aynı işaretli blok içinde), 8. sınıf sınav notu güncellendi.
+  · Betikler: _kaynak/yedekler/betikler/sinav8/ (ek.py, ornek.js,
+    calisma_temel.js, ek_denetim.py, spec_ek.json, OKU-ek.txt) — git'e gitmez.

@@ -507,52 +507,79 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     @media (prefers-color-scheme: dark){
       #imam-hatip .ihsec-ayirac{ background:linear-gradient(90deg, transparent, #2B3A48 12%, #2B3A48 88%, transparent); }
     }
-    /* ETKİNLİK KARTLARI ŞERİDİ (24.09.2026)
-       Bir sınıf belgesi açılınca üstteki etkinlik kartları toplanıyor; böylece
-       belgeler sınıfın adının hemen altına geliyor. Şerit hem "burada kartlar
-       var" der hem de okuyla kartları geri açar. Kartların kendisi silinmiyor,
-       yalnız yüksekliği sıfıra iniyor. */
-    /* Şerit sitenin kendi yeşiliyle (#16A085 — İmam Hatip başlığının ve 5.
-       sınıfın rengi). Kapalıyken dolgun yeşil: "burada kartlar var, aç" der;
-       açıkken daha hafif durur, kartların önüne geçmez. */
-    #imam-hatip .ihkart-bar{
-      display:flex; align-items:center; gap:8px; width:100%;
-      padding:7px 11px; margin:0 0 10px;
-      border:1.5px solid rgba(22,160,133,.38); border-radius:10px;
-      background:#EAF7F3;
-      font-family:inherit; font-size:.74rem; font-weight:800; letter-spacing:.7px;
-      /* Yazı siyah: açık yeşil zeminde yeşil yazı sönük duruyordu. Sayı ve
-         ok yeşil kaldı, şerit yine yeşil ailesinden okunuyor. */
-      text-transform:uppercase; color:#111827; text-align:left; cursor:pointer;
-      transition:background .25s ease, border-color .25s ease;
+    /* YAN ŞERİTLER (24.09.2026) — ETKİNLİK KARTLARI ve SINIF BELGELERİ
+       Her iki bölüm de kendi SOL KENARINDAKİ DİKEY şeritten açılıp kapanır.
+       Yazı aşağıdan yukarıya okunur (writing-mode: vertical-rl + 180°).
+       Bölüm kapandığında şerit yerinde kalır, oku da öyle: öğretmen neyin
+       gizlendiğini görür ve aynı yerden geri açar.
+       Izgara sayesinde satır yüksekliği şeritle içerik arasında büyüğü
+       alır; içerik sıfırlanınca satır şerit kadar kalır. */
+    #imam-hatip .ihblok {
+      display:grid; grid-template-columns:38px minmax(0,1fr); gap:11px;
+      align-items:stretch; margin:0 0 14px;
+      transition:grid-template-columns .55s cubic-bezier(.4,0,.2,1), gap .55s ease;
+    }
+    /* KAPALI: sütun şeride bırakılır, içerik sütunu sıfıra iner. İki durumda
+       da İKİ SÜTUN var — tarayıcı ancak o zaman ızgarayı yumuşak geçirebiliyor. */
+    #imam-hatip .ihblok.kapali { grid-template-columns:100% minmax(0,0fr); gap:0; }
+    #imam-hatip .ihyan {
+      position:relative; overflow:hidden;
+      min-height:128px; border:1.5px solid rgba(22,160,133,.38); border-radius:11px;
+      background:#EAF7F3; padding:0; cursor:pointer;
+      font-family:inherit; font-size:.72rem; font-weight:800; letter-spacing:.9px;
+      text-transform:uppercase; color:#111827;
+      transition:background .3s ease, border-color .3s ease, min-height .55s cubic-bezier(.4,0,.2,1);
       -webkit-appearance:none; appearance:none;
     }
-    #imam-hatip .ihkart-bar.kapali,
-    #imam-hatip .ihkart-bar:hover{ background:#CFEEE4; border-color:rgba(22,160,133,.62); }
-    #imam-hatip .ihkart-bar:focus-visible{ outline:3px solid #16A085; outline-offset:-3px; }
-    #imam-hatip .ihkart-say{ font-weight:700; letter-spacing:0; text-transform:none; color:#0B6353; }
-    #imam-hatip .ihkart-ok{ margin-left:auto; font-size:1.05rem; color:#0E8C75; transition:transform .3s ease; }
-    #imam-hatip .ihkart-bar.kapali .ihkart-ok{ transform:rotate(-90deg); }
-    #imam-hatip .ih-kartlar{
-      transition:max-height .34s cubic-bezier(.4,0,.2,1), margin .34s ease, opacity .22s ease;
+    #imam-hatip .ihblok.kapali > .ihyan { min-height:38px; }
+    #imam-hatip .ihyan.kapali,
+    #imam-hatip .ihyan:hover { background:#CFEEE4; border-color:rgba(22,160,133,.62); }
+    #imam-hatip .ihyan:focus-visible { outline:3px solid #16A085; outline-offset:-3px; }
+    /* DİKEYDEN YATAYA GEÇİŞ TEK BİR DÖNÜŞLE OLUYOR.
+       writing-mode animasyona girmiyor; bu yüzden yazı hep yatay duruyor,
+       etiket+ok öbeği -90°'den 0°'ye DÖNDÜRÜLÜYOR. Öbek mutlak konumlu ve
+       ortalı olduğu için dönerken yer değiştirmiyor, kayma olmuyor. */
+    #imam-hatip .ihyan-ic {
+      position:absolute; left:50%; top:50%;
+      display:flex; align-items:center; gap:9px; white-space:nowrap;
+      transform:translate(-50%,-50%) rotate(-90deg);
+      transition:transform .55s cubic-bezier(.4,0,.2,1);
     }
-    #imam-hatip .ih-kartlar.kapali{ max-height:0; margin:0; opacity:0; overflow:hidden; }
-    /* Belgeye dokununca kartlar AĞIR AĞIR toplansın: kullanıcı neyin
-       kapandığını görsün, belge sessizce yerine geçmesin. Şeritten elle
-       açıp kapatmak daha çevik (yukarıdaki .34s). */
-    #imam-hatip .ih-kartlar.yavas{
-      transition:max-height .62s cubic-bezier(.33,0,.2,1),
-                 margin .62s cubic-bezier(.33,0,.2,1),
-                 opacity .5s ease;
+    #imam-hatip .ihblok.kapali .ihyan-ic { transform:translate(-50%,-50%) rotate(0deg); }
+    /* Ok öbekle birlikte dönmesin diye ters yönde döndürülüyor: açıkken
+       aşağıyı (açık), kapalıyken sağı (aç) gösterir. */
+    #imam-hatip .ihyan-ok {
+      font-size:1.05rem; line-height:1; color:#0E8C75;
+      transform:rotate(90deg);
+      transition:transform .55s cubic-bezier(.4,0,.2,1);
     }
-    #imam-hatip .ihkart-bar.yavas .ihkart-ok{ transition:transform .62s cubic-bezier(.33,0,.2,1); }
+    #imam-hatip .ihblok.kapali .ihyan-ok { transform:rotate(-90deg); }
+    #imam-hatip .ihblok-ic { min-width:0; }
+    #imam-hatip .ihblok-ic.kapali { max-height:0; opacity:0; overflow:hidden; margin:0; }
+    #imam-hatip .ihblok-ic {
+      transition:max-height .55s cubic-bezier(.4,0,.2,1), opacity .4s ease;
+    }
+    #imam-hatip .ihblok-ic.yavas {
+      transition:max-height .7s cubic-bezier(.33,0,.2,1), opacity .55s ease;
+    }
+    #imam-hatip .ihblok.yavas,
+    #imam-hatip .ihblok.yavas .ihyan-ic,
+    #imam-hatip .ihblok.yavas .ihyan-ok,
+    #imam-hatip .ihblok.yavas > .ihyan {
+      transition-duration:.7s;
+    }
+    @media (max-width:560px){
+      #imam-hatip .ihblok { grid-template-columns:32px minmax(0,1fr); gap:8px; }
+      #imam-hatip .ihyan { min-height:110px; font-size:.66rem; }
+    }
     #imam-hatip .ihsec-ayirac.gizli{ display:none; }
-    /* KARANLIK KİP KURALI YOK — bilerek. İmam Hatip paneli karanlık kipte
-       de beyaz zeminde duruyor (.ih-panel .ihsec-head gradyanı #fff'e gidiyor);
-       şeride karanlık kip verilince beyaz yazı beyaz zemine düşüyordu. */
+    @media (max-width:560px){
+      #imam-hatip .ihblok { grid-template-columns:32px 1fr; gap:8px; }
+      #imam-hatip .ihyan { min-height:110px; font-size:.66rem; padding:10px 5px; }
+    }
     @media (prefers-reduced-motion: reduce){
-      #imam-hatip .ih-kartlar, #imam-hatip .ih-kartlar.yavas,
-      #imam-hatip .ihkart-ok, #imam-hatip .ihkart-bar{ transition:none; }
+      #imam-hatip .ihblok-ic, #imam-hatip .ihblok-ic.yavas,
+      #imam-hatip .ihyan-ok, #imam-hatip .ihyan{ transition:none; }
     }
     #imam-hatip .ih-kartlar .game-card .default-game-content {
         flex: 1 1 auto; display: flex; flex-direction: column; align-items: center;
@@ -3261,16 +3288,19 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           var g = q.style.transition; q.style.transition = 'none';
           q.style.maxHeight = '0px'; void q.offsetHeight; q.style.transition = g;
         });
-        /* Kendiliğinden toplanmış etkinlik kartları da geri açılsın:
-           sınıf bir dahaki açılışında kartlar yine görünür gelsin. */
-        [].forEach.call(kok.querySelectorAll('.ih-kartlar.kapali'), function (m) {
-          if (m.getAttribute('data-oto') !== '1') return;
+        /* SINIF AÇILINCA İKİSİ DE AÇIK GELSİN (24.09.2026, öğretmen isteği):
+           hem etkinlik kartları hem sınıf belgeleri. Öğretmen elleriyle
+           kapatmış olsa bile sınıfa yeniden girince derli toplu, açık bir
+           ekran görür. Animasyonsuz: bu sıfırlama ekran dışında oluyor. */
+        [].forEach.call(kok.querySelectorAll('.ihblok-ic.kapali'), function (m) {
           var g = m.style.transition; m.style.transition = 'none';
           m.classList.remove('kapali', 'yavas'); m.style.maxHeight = 'none';
           m.removeAttribute('data-oto');
-          var b = m.previousElementSibling;
-          if (b && b.classList.contains('ihkart-bar')) b.classList.remove('kapali', 'yavas');
-          var a = m.nextElementSibling;
+          var blok = m.closest('.ihblok');
+          if (blok) blok.classList.remove('kapali', 'yavas');
+          var s = blok && blok.querySelector('.ihyan');
+          if (s) { s.classList.remove('kapali', 'yavas'); s.setAttribute('aria-expanded', 'true'); }
+          var a = blok && blok.nextElementSibling;
           if (a && a.classList.contains('ihsec-ayirac')) a.classList.remove('gizli');
           void m.offsetHeight; m.style.transition = g;
         });
@@ -4153,6 +4183,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           'Uyarlanmış sürümün anahtarı').forEach(function (x) { d.push(x); });
         ikili(ETI + 'TEMEL DÜZEY · Konu-Soru Dağılım Tablosu', T + 'arapca-8-1d1y-temel-konu-soru-dagilim',
           'Uyarlanmış sürümün soru analizi').forEach(function (x) { d.push(x); });
+        /* TEMEL DÜZEY ÖRNEK SINAV (24.09.2026): öğrenci yazılıdan önce biçimi
+           görsün diye hazırlandı; soru tipleri ve puanlar uygulanacak kâğıtla
+           aynı, sorular farklıdır (A-D'den madde kopyalanmadığı denetlendi). */
+        ikili(ETI + 'TEMEL DÜZEY · Örnek Sınav (alıştırma)', T + 'arapca-8-1d1y-temel-ornek-sinav',
+          'Aynı soru tipleri ve puanlar, farklı sorular · öğrencinin çalışması için').forEach(function (x) { d.push(x); });
+        ikili(ETI + 'TEMEL DÜZEY · Örnek Sınav Cevap Anahtarı', T + 'arapca-8-1d1y-temel-ornek-sinav-cevap-anahtari',
+          'Örnek sınavın anahtarı ve puanlama notları').forEach(function (x) { d.push(x); });
         ek('Sınavlar', d);
         SINIF_GIRIS[8]['Sınavlar'] = (SINIF_GIRIS[8]['Sınavlar'] || '') +
           '<div class="dok-not"><b>2026-2027 1. dönem 1. yazılı.</b> Listenin sonundaki belgeler ' +
@@ -4160,7 +4197,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           'hazırlanmıştır; sorular aynı konuları ölçer, yalnız sıraları ve seçenekleri değişir. ' +
           'Ayrıca kaynaştırma/bütünleştirme öğrencisi için <b>Temel Düzey</b> dört grup vardır. ' +
           'Her setin <b>cevap anahtarı</b> ve <b>konu-soru dağılım tablosu</b> (hangi soru hangi ' +
-          'konuyu ve beceriyi ölçüyor) ayrı dosyadadır. Kapsam: <b>1. Ünite — Kulüpler, Tiyatro, Gezi</b> ' +
+          'konuyu ve beceriyi ölçüyor) ayrı dosyadadır. Temel düzey için ayrıca bir <b>örnek sınav</b> ' +
+          '(alıştırma; aynı soru tipleri, farklı sorular) ve ona uygun bir <b>çalışma kâğıdı</b> vardır. ' +
+          'Kapsam: <b>1. Ünite — Kulüpler, Tiyatro, Gezi</b> ' +
           '(kitap s. 10-34). Sorular <b>yalnız açık uçlu ve kısa cevaplıdır</b> (Yazılı ve Uygulamalı Sınavlar ' +
           'Yönergesi m.5/1-e); her sorunun yanında beceri etiketi vardır.</div>';
 
@@ -4168,7 +4207,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           ikili('1. Ünite Çalışma Kâğıdı (2026-2027)', Y + 'arapca-8-1-unite-calisma-kagidi',
             '1. Ünite — Kulüpler, Tiyatro, Gezi · yazılı öncesi tekrar kâğıdı')
           .concat(ikili('1. Ünite Çalışma Kâğıdı — Cevaplar', Y + 'arapca-8-1-unite-calisma-kagidi-cevaplar',
-            'Öğretmen için cevaplı sürüm')));
+            'Öğretmen için cevaplı sürüm'))
+          .concat(ikili('1. Ünite Çalışma Kâğıdı — TEMEL DÜZEY', T + 'arapca-8-1-unite-calisma-kagidi-temel',
+            'Sınavın sekiz soru tipi, daha kolay ve bol tekrarlı · örnek sınavdan önce'))
+          .concat(ikili('1. Ünite Çalışma Kâğıdı — TEMEL DÜZEY Cevaplar', T + 'arapca-8-1-unite-calisma-kagidi-temel-cevaplar',
+            'Uyarlanmış çalışma kâğıdının cevapları')));
       })();
       /* <<< 8. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ */
       /* === A4 "RESMİ EVRAK" KARTLARI ===================================
@@ -4670,87 +4713,98 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          Kullanıcı şeride kendi eliyle dokunduysa bu işaret silinir;
          bir daha onun yerine karar vermeyiz.
          ========================================================== */
-      function kartSayGuncelle(kartlar) {
-        var bar = kartlar.previousElementSibling;
-        if (!bar || !bar.classList.contains('ihkart-bar')) return;
-        var n = kartlar.querySelectorAll('.game-card').length;
-        var s = bar.querySelector('.ihkart-say');
-        if (s) s.textContent = n ? '(' + n + ')' : '';
-      }
-      function kartAyirac(kartlar) {
-        var a = kartlar.nextElementSibling;
+      /* ---- YAN ŞERİTLER: her bölümün solunda dikey aç/kapa şeridi ----
+         Bölümler: .ih-kartlar (etkinlik kartları) ve .ihdoc-acc (sınıf
+         belgeleri). İkisi de .ihblok içine alınır; şerit gridin sol
+         sütununda durur, içerik sağda. Kapanınca satır şerit kadar kalır,
+         ok da orada. */
+      /* Şeritte yalnız AD ve OK var. Parantezli sayı bilerek kaldırıldı
+         (24.09.2026): kart sayısı zaten kartların kendisinde görünüyor,
+         şeritte tekrar etmesi gereksiz kalabalık yapıyordu. */
+      var SERIT_ADI = { 'ih-kartlar': 'Etkinlik kartları', 'ihdoc-acc': 'Sınıf belgeleri' };
+      function seritAyirac(blok) {
+        var a = blok.nextElementSibling;
         return (a && a.classList.contains('ihsec-ayirac')) ? a : null;
       }
-      /* ac: true → aç, false → topla · oto: kararı biz mi verdik
-         Kararı biz verdiysek geçiş YAVAŞ (.yavas sınıfı): öğretmen belgeye
-         dokunduğunda kartların ağır ağır toplandığını görsün. Şeride kendi
-         eliyle bastıysa normal hız. Sayfa kaydırması bundan etkilenmiyor:
-         kartBolumunuYukariKaydir sınıf BAŞLIĞINI hedefliyor, başlık da
-         kartların üstünde, yüksekliği değişmiyor. */
-      function kartlariAyarla(kartlar, ac, oto) {
-        var bar = kartlar.previousElementSibling;
-        var ayr = kartAyirac(kartlar);
+      /* ac: aç/kapa · oto: kararı biz mi verdik (yavaş geçiş + geri açma işareti) */
+      function blokAyarla(ic, ac, oto) {
+        var blok = ic.closest && ic.closest('.ihblok'); if (!blok) return;
+        var serit = blok.querySelector('.ihyan');
+        var ayr = seritAyirac(blok);
         var sure = oto ? 700 : 380;
-        kartlar.classList.toggle('yavas', !!oto);
-        if (bar && bar.classList.contains('ihkart-bar')) bar.classList.toggle('yavas', !!oto);
+        ic.classList.toggle('yavas', !!oto);
+        blok.classList.toggle('yavas', !!oto);
+        if (serit) serit.classList.toggle('yavas', !!oto);
         if (ac) {
-          /* önce 0'a sabitle, sonra hedefe: aksi hâlde "none"dan geçiş
-             animasyonu çalışmaz, kartlar birden zıplar */
-          kartlar.style.maxHeight = '0px';
-          kartlar.classList.remove('kapali');
-          void kartlar.offsetHeight;
-          kartlar.style.maxHeight = kartlar.scrollHeight + 'px';
-          /* animasyon bitince sınır kalksın, yoksa içerik büyüyünce kırpılır */
+          ic.style.maxHeight = '0px';
+          ic.classList.remove('kapali');
+          void ic.offsetHeight;
+          ic.style.maxHeight = ic.scrollHeight + 'px';
           setTimeout(function () {
-            if (!kartlar.classList.contains('kapali')) kartlar.style.maxHeight = 'none';
+            if (!ic.classList.contains('kapali')) ic.style.maxHeight = 'none';
           }, sure);
           if (ayr) ayr.classList.remove('gizli');
         } else {
-          kartlar.style.maxHeight = kartlar.scrollHeight + 'px';
-          void kartlar.offsetHeight;                 /* ölçü yazılsın, sonra kapansın */
-          kartlar.classList.add('kapali');
-          kartlar.style.maxHeight = '';
+          ic.style.maxHeight = ic.scrollHeight + 'px';
+          void ic.offsetHeight;
+          ic.classList.add('kapali');
+          ic.style.maxHeight = '';
           if (ayr) ayr.classList.add('gizli');
         }
-        if (oto && !ac) kartlar.setAttribute('data-oto', '1');
-        else kartlar.removeAttribute('data-oto');
-        if (bar && bar.classList.contains('ihkart-bar')) {
-          bar.classList.toggle('kapali', !ac);
-          bar.setAttribute('aria-expanded', ac ? 'true' : 'false');
+        if (oto && !ac) ic.setAttribute('data-oto', '1');
+        else ic.removeAttribute('data-oto');
+        blok.classList.toggle('kapali', !ac);      /* ızgara yatay/dikey */
+        if (serit) {
+          serit.classList.toggle('kapali', !ac);
+          serit.setAttribute('aria-expanded', ac ? 'true' : 'false');
         }
-        if (kartlar.closest) {
-          var ic = kartlar.closest('.ihsec-panel');
-          if (ic && ic.style.maxHeight && ic.style.maxHeight !== 'none') ic.style.maxHeight = 'none';
+        var p = ic.closest('.ihsec-panel');
+        if (p && p.style.maxHeight && p.style.maxHeight !== 'none') p.style.maxHeight = 'none';
+      }
+      /* İki şerit bir arada ekranı doldurmasın: etkinlik kartları ELLE
+         açılınca aynı sınıfın belgeleri kendiliğinden toplanır, kartlar
+         yine kapanınca belgeler — kapatan biz isek — geri açılır.
+         Ters yön (belgeye dokununca kartların toplanması) ihKartOto'da. */
+      function esleniginiTopla(kartlar, acildi) {
+        var kap = kartlar.closest('.ihsec-panel-in'); if (!kap) return;
+        var belge = kap.querySelector('.ihdoc-acc'); if (!belge) return;
+        if (acildi) {
+          if (!belge.classList.contains('kapali')) blokAyarla(belge, false, true);
+        } else if (belge.getAttribute('data-oto') === '1') {
+          blokAyarla(belge, true, true);
         }
       }
-      function kartBariKur(kartlar) {
-        var v = kartlar.previousElementSibling;
-        if (v && v.classList.contains('ihkart-bar')) { kartSayGuncelle(kartlar); return; }
+      function yanSeritKur(ic) {
+        if (ic.closest('.ihblok')) return;
+        var ad = SERIT_ADI[ic.classList.contains('ih-kartlar') ? 'ih-kartlar' : 'ihdoc-acc'];
+        var blok = document.createElement('div');
+        blok.className = 'ihblok';
+        ic.parentNode.insertBefore(blok, ic);
         var b = document.createElement('button');
-        b.type = 'button'; b.className = 'ihkart-bar';
+        b.type = 'button'; b.className = 'ihyan';
         b.setAttribute('aria-expanded', 'true');
-        b.innerHTML = '<span>Etkinlik kartları</span>' +
-                      '<span class="ihkart-say"></span>' +
-                      '<span class="ihkart-ok" aria-hidden="true">\u25BE</span>';
+        b.title = ad;
+        b.innerHTML = '<span class="ihyan-ic">' +
+                      '<span class="ihyan-ok" aria-hidden="true">\u25BE</span>' +
+                      '<span class="ihyan-etiket">' + ad + '</span></span>';
         b.addEventListener('click', function () {
-          kartlariAyarla(kartlar, kartlar.classList.contains('kapali'), false);
+          var ac = ic.classList.contains('kapali');
+          blokAyarla(ic, ac, false);
+          if (ic.classList.contains('ih-kartlar')) esleniginiTopla(ic, ac);
         });
-        kartlar.parentNode.insertBefore(b, kartlar);
-        kartSayGuncelle(kartlar);
+        blok.appendChild(b);
+        ic.classList.add('ihblok-ic');
+        blok.appendChild(ic);
       }
-      [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar'), kartBariKur);
-      /* Kitap değişince kartlar yeniden kuruluyor; sayıyı tazele. */
-      document.addEventListener('kidef:veriyili', function () {
-        [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar'), kartSayGuncelle);
-      });
-      /* ihdocToggle buradan çağırıyor. */
+      [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar, #imam-hatip .ihdoc-acc'), yanSeritKur);
+      /* a4Toggle buradan çağırıyor: belge açılınca etkinlik kartları toplansın. */
       window.ihKartOto = function (belge) {
         var kap = belge.closest('.ihsec-panel-in'); if (!kap) return;
         var kartlar = kap.querySelector('.ih-kartlar'); if (!kartlar) return;
         if (kap.querySelector('.ihdoc-acc .a4-kart.acik, .ihdoc-item.acik')) {
-          if (!kartlar.classList.contains('kapali')) kartlariAyarla(kartlar, false, true);
+          if (!kartlar.classList.contains('kapali')) blokAyarla(kartlar, false, true);
         } else if (kartlar.getAttribute('data-oto') === '1') {
-          kartlariAyarla(kartlar, true, true);
+          blokAyarla(kartlar, true, true);
         }
       };
       /* Öğretim yılı / kitap değişince (6 ve 7. sınıf) o sınıfın Muhâdese listesi
