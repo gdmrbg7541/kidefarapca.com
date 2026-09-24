@@ -367,3 +367,22 @@ ANA SAYFA — KATALOG ŞERİDİ BAŞLIĞA YAKLAŞTI (24.09.2026)
     ona dokunulmadı, sayfanın geri kalanı aynı.
   · Katalog sayfasındaki (katalog/index.html) üst boşluk ayrı olarak
     kısaltılmıştı; ikisi karıştırılmasın.
+
+SEKMEDEN SEVİYE AYARINA KISA YOL (24.09.2026)
+  Dosyalar: index.html · hesap/listelerim.js · hesap/listelerim.css
+  · Öğretmen panelinde sınıf açıkken üç sekmenin sağ üstüne dişli düğmesi kondu:
+      Kurayla Seç  → "Kura başlıkları"
+      Performans   → "Ödev başlıkları" ve "Davranış puanı"
+      Sınavlar     → "Sınav başlıkları"
+  · Düğme llAyarAc('kura'|'hw'|'beh'|'ex') çağırır: Seviye Ayarları penceresi
+    açılır, ilgili kart yeşil halkayla vurgulanır ve ilk kutuya imleç düşer.
+    openLvlConfig(lId, odak) ikinci parametre aldı; kartlara kimlik verildi
+    (lvlKartHw / lvlKartEx / lvlKartKura / lvlKartBeh).
+  · Kaydedince ayar zaten SEVİYEYE yazılıyor: seviyedeki bütün sınıflarda aynı
+    başlıklar geçerli olur. saveLvlConfig ayrıca havuz durumu tablosunu da
+    yeniliyor (renderActivityStatus) — eskiden kura adları değişince o sütun
+    eski adlarda kalıyordu; artık "Havuz Durumu" da seviye kurasından besleniyor
+    (llKuraListesi).
+  · Sınıf seçili değilken düğme uyarı kutusu gösterir, hata vermez.
+  · Denetim: dört düğme de doğru panelde, fonksiyonlar global, dört odak
+    denemesi de hatasız; vurgu ve yeşil halka çalışıyor; 16 satır içi betik temiz.

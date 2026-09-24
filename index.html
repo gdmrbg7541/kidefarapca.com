@@ -5753,6 +5753,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
              bir mod. Öğretmen listeyle kura arasında sekme değiştirmeden
              geçebilsin diye buraya taşındı (llNotModSec -> "kura"). -->
         <div id="llAracKura" style="display:none;">
+        <!-- Sekmeden seviye ayarına kısa yol (24.09.2026): başlıkları burada
+             değiştirip anında uygulayabilmek için. Kaydedilen ayar seviyeye
+             yazılır, seviyedeki tüm sınıflarda aynı anda geçerli olur. -->
+        <div class="ll-ayar-serit">
+          <button type="button" class="ll-ayar-tus" onclick="llAyarAc('kura')" title="Kura başlıklarını düzenle — değişiklik seviyedeki tüm sınıflara işler"><svg viewBox="0 0 24 24" aria-hidden="true"><g class="li-disli"><path d="M12 8.4A3.6 3.6 0 1 0 12 15.6 3.6 3.6 0 0 0 12 8.4m0 2.1a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3" fill="#8A5A34"/><path d="M12 1.9l1.5 2.3 2.7-.6.5 2.7 2.6 1-1.2 2.5 1.8 2.1-2.2 1.7.5 2.7-2.8.2-1.1 2.5-2.3-1.5-2.3 1.5-1.1-2.5-2.8-.2.5-2.7L3.6 12l1.8-2.1-1.2-2.5 2.6-1 .5-2.7 2.7.6z" fill="#C9884A"/></g></svg><span>Kura başlıkları</span></button>
+        </div>
         <div id="luckyBox" style="text-align:center; padding:30px; background:#fff; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px;">
             <div id="luckyStudent" style="font-size:2.5em; font-weight:bold; color:var(--primary); min-height:1.5em;">Öğrenci Seçin</div>
             <div id="activityType" style="font-size:1.2em; color:var(--accent); margin-top:10px; font-weight:bold;"></div>
@@ -5768,8 +5774,17 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         <div style="margin-top:30px;"><table id="activityStatusTable"></table></div>
         <button onclick="resetPools()" style="margin-top:20px; padding:10px; cursor:pointer;">Havuzları Sıfırla</button>
         </div>
-        <div id="llModPerf" style="display:none;"><div id="behBilgi"></div><table id="hwTable"></table></div>
-        <div id="llModSinav" style="display:none;"><table id="exTable"></table></div>
+        <div id="llModPerf" style="display:none;">
+        <div class="ll-ayar-serit">
+          <button type="button" class="ll-ayar-tus" onclick="llAyarAc('hw')" title="Ödev adlarını ve ağırlıklarını düzenle — seviyedeki tüm sınıflara işler"><svg viewBox="0 0 24 24" aria-hidden="true"><g class="li-disli"><path d="M12 8.4A3.6 3.6 0 1 0 12 15.6 3.6 3.6 0 0 0 12 8.4m0 2.1a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3" fill="#8A5A34"/><path d="M12 1.9l1.5 2.3 2.7-.6.5 2.7 2.6 1-1.2 2.5 1.8 2.1-2.2 1.7.5 2.7-2.8.2-1.1 2.5-2.3-1.5-2.3 1.5-1.1-2.5-2.8-.2.5-2.7L3.6 12l1.8-2.1-1.2-2.5 2.6-1 .5-2.7 2.7.6z" fill="#C9884A"/></g></svg><span>Ödev başlıkları</span></button>
+          <button type="button" class="ll-ayar-tus" onclick="llAyarAc('beh')" title="Artı/eksi puanı aç-kapat, sebep başlıklarını düzenle"><svg viewBox="0 0 24 24" aria-hidden="true"><g class="li-disli"><path d="M12 8.4A3.6 3.6 0 1 0 12 15.6 3.6 3.6 0 0 0 12 8.4m0 2.1a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3" fill="#8A5A34"/><path d="M12 1.9l1.5 2.3 2.7-.6.5 2.7 2.6 1-1.2 2.5 1.8 2.1-2.2 1.7.5 2.7-2.8.2-1.1 2.5-2.3-1.5-2.3 1.5-1.1-2.5-2.8-.2.5-2.7L3.6 12l1.8-2.1-1.2-2.5 2.6-1 .5-2.7 2.7.6z" fill="#C9884A"/></g></svg><span>Davranış puanı</span></button>
+        </div>
+        <div id="behBilgi"></div><table id="hwTable"></table></div>
+        <div id="llModSinav" style="display:none;">
+        <div class="ll-ayar-serit">
+          <button type="button" class="ll-ayar-tus" onclick="llAyarAc('ex')" title="Sınav adlarını ve ağırlıklarını düzenle — seviyedeki tüm sınıflara işler"><svg viewBox="0 0 24 24" aria-hidden="true"><g class="li-disli"><path d="M12 8.4A3.6 3.6 0 1 0 12 15.6 3.6 3.6 0 0 0 12 8.4m0 2.1a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3" fill="#8A5A34"/><path d="M12 1.9l1.5 2.3 2.7-.6.5 2.7 2.6 1-1.2 2.5 1.8 2.1-2.2 1.7.5 2.7-2.8.2-1.1 2.5-2.3-1.5-2.3 1.5-1.1-2.5-2.8-.2.5-2.7L3.6 12l1.8-2.1-1.2-2.5 2.6-1 .5-2.7 2.7.6z" fill="#C9884A"/></g></svg><span>Sınav başlıkları</span></button>
+        </div>
+        <table id="exTable"></table></div>
         <div id="llModSonuc" style="display:none;"><table id="resTable"></table></div>
         <!-- GÖREV GÖNDER gövdesi: içeriği tamamen sistem/gorev.js yazar
              (GV.sekmeGorevCiz). Eski elle yazılmış görev paneli kaldırıldı;

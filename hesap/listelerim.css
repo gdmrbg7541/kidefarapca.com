@@ -3238,3 +3238,35 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
     #ll-root .ll-mod-hap{ gap: 6px; }
     #ll-root .ll-mod-hap .hap-ikon{ width: 20px; height: 20px; }
 }
+
+
+/* ==========================================================================
+   SEKME İÇİ AYAR DÜĞMESİ (24.09.2026)
+   Kura / Performans / Sınavlar sekmelerinin sağ üstünde durur; seviye ayarları
+   penceresini o sekmenin kartına odaklanmış olarak açar (llAyarAc).
+   ========================================================================== */
+#ll-root .ll-ayar-serit{ display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; margin:0 0 12px; }
+#ll-root .ll-ayar-tus{
+    display:inline-flex; align-items:center; gap:7px; padding:7px 14px; border-radius:999px;
+    border:1.5px solid #F0DACA; background:#FFF7F0; color:#8A5A34;
+    font:inherit; font-size:.85rem; font-weight:700; cursor:pointer;
+    transition:background .16s, border-color .16s, transform .16s, box-shadow .16s;
+}
+#ll-root .ll-ayar-tus:hover{ background:#FDEBDD; border-color:#E2B894; transform:translateY(-1px);
+    box-shadow:0 4px 12px rgba(201,136,74,.18); }
+#ll-root .ll-ayar-tus:focus-visible{ outline:3px solid #E2B894; outline-offset:2px; }
+#ll-root .ll-ayar-tus svg{ width:17px; height:17px; flex:0 0 auto; }
+#ll-root .ll-ayar-tus .li-disli{ transform-origin:12px 12px; }
+#ll-root .ll-ayar-tus:hover .li-disli{ animation:llAyarDon 1.6s linear infinite; }
+@keyframes llAyarDon{ to{ transform:rotate(360deg); } }
+@media (max-width:560px){
+    #ll-root .ll-ayar-tus{ padding:6px 11px; font-size:.8rem; }
+    #ll-root .ll-ayar-tus span{ display:inline; }
+}
+
+/* Sekmeden gelince ilgili kart iki saniye vurgulanır */
+#lvlModal .lvl-kart.vurgu{
+    box-shadow:0 0 0 3px #2ECC71, 0 12px 30px rgba(46,204,113,.22);
+    animation:llKartVurgu 1.1s ease-in-out 2;
+}
+@keyframes llKartVurgu{ 50%{ box-shadow:0 0 0 6px rgba(46,204,113,.35), 0 12px 30px rgba(46,204,113,.22); } }

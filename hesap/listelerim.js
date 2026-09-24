@@ -3198,13 +3198,24 @@ function addKuraRow(name = "") {
     container.appendChild(div);
 }
 
+    /* Havuz durumu sütunu, kura düğmeleriyle aynı listeden beslenir; başlık
+       değişince "Havuz Durumu" da yeni adları gösterir (eski sabit liste
+       yeniden adlandırmalarda geride kalıyordu). */
+    function llKuraListesi() {
+        const lvl = curLId && data.levels ? data.levels[curLId] : null;
+        const kura = lvl && lvl.config && lvl.config.kura;
+        if (!kura || !kura.length) return skillTypes;
+        const renk = ['#3498db', '#e74c3c', '#2ecc71', '#f1c40f', '#9b59b6', '#e67e22'];
+        return kura.map((k, i) => ({ n: k.n, c: renk[i % renk.length] }));
+    }
+
     function renderActivityStatus() {
         if(!curCId) return;
         let table = document.getElementById('activityStatusTable');
         table.innerHTML = `<tr><th>Öğrenci</th><th>Geçmiş (Silmek için tıkla)</th><th>Havuz Durumu</th></tr>`;
         data.levels[curLId].classes[curCId].students.forEach((s, idx) => {
             let hist = (s.history||[]).map((c, hi) => `<span class="marker" style="background:${c}; cursor:pointer;" onclick="delHist(${idx},${hi})"></span>`).join('');
-            let poolSt = skillTypes.map(st => {
+            let poolSt = llKuraListesi().map(st => {
                 let exist = !pools[st.n] || pools[st.n].includes(idx);
                 return `<span style="font-size:0.8em; color:${exist?'#2ecc71':'#e74c3c'}; ${!exist?'text-decoration:line-through':''}">${llIcon('nokta')} ${st.n}</span>`;
             }).join(' ');
@@ -3311,7 +3322,9 @@ function behKacis(s) {
 }
 
 // 1. Ayar Penceresini Açan Ana Fonksiyon
-function openLvlConfig(lId) {
+/* odak: 'hw' | 'ex' | 'kura' | 'beh' — sekmedeki ayar düğmesinden gelince
+   ilgili kart öne çıkar (bk. llAyarAc). Boş bırakılırsa pencere normal açılır. */
+function openLvlConfig(lId, odak) {
     curLId = lId;
     const lvl = data.levels[lId];
     if (!lvl) return;
@@ -3347,24 +3360,24 @@ function openLvlConfig(lId) {
             </div>
 
             <div class="lvl-izgara">
-                <div class="lvl-kart">
+                <div class="lvl-kart" id="lvlKartHw">
                     <h4>${llIcon('kitap')} Ödevler (Ağırlık %)</h4>
                     <div id="lvlHwList"></div>
                     <button class="btn-add" onclick="llOdevOneriAc()" style="width:100%; margin-top:10px;">+ Ödev Ekle</button>
                     <div id="lvlHwToplam" style="margin-top:10px; padding:8px 12px; border-radius:9px; border:1px solid #A7E8CF; background:#EAFBF4; color:#0E7C66; font-weight:700; font-size:.84rem; text-align:center; line-height:1.35;"></div>
                 </div>
-                <div class="lvl-kart">
+                <div class="lvl-kart" id="lvlKartEx">
                     <h4 style="border-bottom-color: var(--danger);">${llIcon('not')} Sınavlar (Ağırlık %)</h4>
                     <div id="lvlExList"></div>
                     <button class="btn-add" onclick="addConfigRow('ex')" style="width:100%; margin-top:10px; background:var(--secondary);">+ Sınav Ekle</button>
                 </div>
-                <div class="lvl-kart">
+                <div class="lvl-kart" id="lvlKartKura">
                     <h4 style="border-bottom-color: #2ecc71;">${llIcon('hedef')} Kura Kategorileri</h4>
                     <div id="lvlKuraList"></div>
                     <button class="btn-add" onclick="addKuraRow()" style="width:100%; margin-top:10px; background:#2ecc71;">+ Yeni Kura Kutusu Ekle</button>
                 </div>
 
-                <div class="lvl-kart lvl-genis">
+                <div class="lvl-kart lvl-genis" id="lvlKartBeh">
                     <h4 style="border-bottom-color:#27ae60;">${llIcon('terazi')} Davranış Puanı (Artı / Eksi)</h4>
                     <div class="beh-ust">
                         <div class="beh-tanim">
@@ -3441,6 +3454,37 @@ function openLvlConfig(lId) {
     // 5. Davranış sebep başlıklarını yükle
     beh.arti.forEach(t => behSebepSatiri('arti', t));
     beh.eksi.forEach(t => behSebepSatiri('eksi', t));
+
+    // 6. Sekmeden gelindiyse ilgili kartı öne çıkar
+    if (odak) llAyarOdak(odak);
+}
+
+/* ---------------------------------------------------------------------------
+   SEKMEDEN SEVİYE AYARINA KISA YOL (24.09.2026)
+   Kura / Performans / Sınavlar sekmelerindeki dişli düğmesi buraya gelir:
+   pencere açılır, o sekmenin kartı vurgulanır ve ilk kutuya imleç düşer.
+   Ayar seviyeye yazıldığı için kaydedince seviyedeki BÜTÜN sınıflar eşitlenir
+   (saveLvlConfig zaten renderActivityButtons + renderGrades çağırıyor).
+--------------------------------------------------------------------------- */
+function llAyarAc(odak) {
+    if (!curLId || !data.levels || !data.levels[curLId]) {
+        llBilgi('Ayarları açmak için önce bir sınıf seçin.', 'Seviye ayarları');
+        return;
+    }
+    openLvlConfig(curLId, odak || 'hw');
+}
+
+function llAyarOdak(odak) {
+    const kimlik = { hw: 'lvlKartHw', ex: 'lvlKartEx', kura: 'lvlKartKura', beh: 'lvlKartBeh' };
+    const kart = document.getElementById(kimlik[odak] || '');
+    if (!kart) return;
+    setTimeout(function () {
+        kart.classList.add('vurgu');
+        try { kart.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { kart.scrollIntoView(); }
+        const ilk = kart.querySelector('input[type="text"], input:not([type="checkbox"]):not([type="number"])');
+        if (ilk) { try { ilk.focus({ preventScroll: true }); ilk.select(); } catch (e) {} }
+        setTimeout(function () { kart.classList.remove('vurgu'); }, 2600);
+    }, 70);
 }
 
 /* Seviye ayarları penceresini kapatır. */
@@ -3681,6 +3725,8 @@ function saveLvlConfig() {
         renderGrades('hw');
         renderGrades('ex');
         renderResults();
+        /* Havuz durumu sütunu da yeni kura adlarını göstersin (24.09.2026) */
+        if (typeof renderActivityStatus === 'function') renderActivityStatus();
     }
     
     alert("Tüm ayarlar (Ödev, Sınav, Kura ve Davranış Puanı) kaydedildi!");
