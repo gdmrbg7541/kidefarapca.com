@@ -392,3 +392,27 @@ SEKMEDEN SEVİYE AYARINA KISA YOL (24.09.2026)
     ?v=20260924a — tarayıcı eski kopyayı göstermesin.
   · Denetim: dört düğme de doğru panelde, fonksiyonlar global, dört odak
     denemesi de hatasız; vurgu ve yeşil halka çalışıyor; 16 satır içi betik temiz.
+
+─────────────────────────────────────────────────────────────────────────────
+KURUM BÖLÜMÜNDEKİ AYAR DÜĞMELERİ  (24.09.2026 gece)  —  index.html,
+hesap/listelerim.js, hesap/listelerim.css
+  · Sekmelerdeki ayar hapının aynısı artık KURUM tarafında da var. Üç yerde:
+      1) Perde (Kurumlar & Sınıflar ağacı) → seviye satırındaki dişli
+      2) "Kurumlar & Sınıflar" penceresi (başlıktaki okul tuşu / sınıf rozeti)
+         → her seviyenin yanında "⚙ Ayarlar" hapı
+      3) Profildeki okul haritası, düzenleme modu → aynı hap (eski ⚙️ emojisi
+         kalktı)
+  · Yeni ikon: llIcon('disli') — sekme haplarındaki turuncu dişlinin aynısı
+    (path'i index.html'deki dört kopyayla birebir aynı). Eski llIcon('ayar')
+    olduğu gibi duruyor, başka yerlerde kullanılmaya devam ediyor.
+  · Ölçüler: pencerede hap 99x35 px / dişli 23 px, okul haritasında 90x31 /
+    21 px (satırda dört tuş var, biraz dar), perdede dişli 22 px (satırın
+    1.3em kuralı aşıldı). Dar ekranda (≤560 px, harita için ≤820 px) yazı
+    gizlenir, dişli tek başına kalır — satır taşmaz.
+  · llOkulSeviyeAyar(lId, odak) ikinci parametre aldı; pencereden de doğrudan
+    bir ayar kartına odaklanılabilir (şimdilik odaksız çağrılıyor).
+  · Sürüm etiketleri ?v=20260924b oldu (css + js) — tarayıcı eskisini
+    göstermesin.
+  · Denetim: listelerim.js node --check temiz, index.html'deki 16 satır içi
+    betik temiz, üç yüzeyde de hap/dişli doğru boyutta çizildi, pencere
+    içeriğinde yatay taşma yok, hapa tıklayınca Seviye Ayarları açılıyor.

@@ -19,6 +19,8 @@ const LL_IKONLAR = {
 klasor: '<path d="M2.5 6.2a1.7 1.7 0 0 1 1.7-1.7h4.3l1.8 2.1h9.3a1.7 1.7 0 0 1 1.7 1.7v10.1a1.7 1.7 0 0 1-1.7 1.7H4.2a1.7 1.7 0 0 1-1.7-1.7z" fill="#f6b93b"/><path class="li-kapak" d="M2.5 9.1h19v9.3a1.7 1.7 0 0 1-1.7 1.7H4.2a1.7 1.7 0 0 1-1.7-1.7z" fill="#fad390"/>',
 klasorAcik: '<path d="M2.5 6.2a1.7 1.7 0 0 1 1.7-1.7h4.3l1.8 2.1h9.3a1.7 1.7 0 0 1 1.7 1.7v3H2.5z" fill="#e58e26"/><path class="li-kapakac" d="M3.6 10.4h18.9l-2.3 8.2a1.8 1.8 0 0 1-1.7 1.3H4.3a1.8 1.8 0 0 1-1.7-2.2z" fill="#fad390"/>',
 ayar: '<g class="li-disli"><path d="M12 8.4A3.6 3.6 0 1 0 12 15.6 3.6 3.6 0 0 0 12 8.4m0 2.1a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3" fill="#5f6f81"/><path d="M12 1.9l1.5 2.3 2.7-.6.5 2.7 2.6 1-1.2 2.5 1.8 2.1-2.2 1.7.5 2.7-2.8.2-1.1 2.5-2.3-1.5-2.3 1.5-1.1-2.5-2.8-.2.5-2.7L3.6 12l1.8-2.1-1.2-2.5 2.6-1 .5-2.7 2.7.6z" fill="#78909c"/></g>',
+/* buyuk/gorunur dişli: kurum bolumu ve sekme kisayollarinda kullanilir */
+disli: '<g class="li-disli"><path fill="#C9721E" stroke="#8A4B12" stroke-width=".7" stroke-linejoin="round" d="M19.6 13.6a7.8 7.8 0 0 0 0-3.2l2.1-1.6-1.9-3.4-2.5 1a7.8 7.8 0 0 0-2.7-1.6L14.2 2h-4.4l-.4 2.8a7.8 7.8 0 0 0-2.7 1.6l-2.5-1L2.3 8.8l2.1 1.6a7.8 7.8 0 0 0 0 3.2l-2.1 1.6 1.9 3.4 2.5-1a7.8 7.8 0 0 0 2.7 1.6l.4 2.8h4.4l.4-2.8a7.8 7.8 0 0 0 2.7-1.6l2.5 1 1.9-3.4z"/><circle cx="12" cy="12" r="3.4" fill="#FFF7F0" stroke="#8A4B12" stroke-width=".9"/></g>',
 kalem: '<g class="li-kalem"><path d="M3.4 17.1l9.9-9.9 3.6 3.6-9.9 9.9-4.4.8z" fill="#f1c40f"/><path d="M3.4 17.1l-.8 4.4 4.4-.8z" fill="#fff3cd"/><path d="M2.6 21.5l1.6-.3-1.3-1.3z" fill="#4a4a4a"/><path d="M14.6 5.9l3.6 3.6 2-2a1.6 1.6 0 0 0 0-2.3l-1.3-1.3a1.6 1.6 0 0 0-2.3 0z" fill="#e67e22"/></g>',
 cop: '<g class="li-kapakc"><path d="M4 6.1h16v2.1H4z" fill="#c0392b"/><path d="M9.4 3.4h5.2a1 1 0 0 1 1 1v1.5H8.4V4.4a1 1 0 0 1 1-1" fill="#c0392b"/></g><path d="M5.8 8.9h12.4l-1 11.2a1.7 1.7 0 0 1-1.7 1.5H8.5a1.7 1.7 0 0 1-1.7-1.5z" fill="#e74c3c"/><g stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".85"><line class="li-cub1" x1="9.6" y1="11.6" x2="9.9" y2="18.6"/><line class="li-cub2" x1="12" y1="11.6" x2="12" y2="18.6"/><line class="li-cub3" x1="14.4" y1="11.6" x2="14.1" y2="18.6"/></g>',
 not: '<path d="M4.3 3.2h11.2l4.2 4.2v13.4a1.2 1.2 0 0 1-1.2 1.2H4.3a1.2 1.2 0 0 1-1.2-1.2V4.4a1.2 1.2 0 0 1 1.2-1.2" fill="#ecf0f1"/><path d="M15.5 3.2l4.2 4.2h-4.2z" fill="#bdc3c7"/><g stroke="#95a5a6" stroke-width="1.35" stroke-linecap="round"><line class="li-satir1" x1="6.2" y1="10.4" x2="16.4" y2="10.4"/><line class="li-satir2" x1="6.2" y1="13.6" x2="16.4" y2="13.6"/><line class="li-satir3" x1="6.2" y1="16.8" x2="12.6" y2="16.8"/></g>',
@@ -2064,7 +2066,7 @@ function renderSidebar() {
             <div class="level-head">
                 <span onclick="handleLevelNameClick('${lId}', this)" title="Tek tik: ac/kapa · Cift tik: ismi degistir" style="cursor:pointer; flex:1; font-weight:bold;">${llIcon('sinif')} ${lvl.name}</span>
                 <div class="level-actions">
-                    <button onclick="openLvlConfig('${lId}')" title="Seviye Ayarları">${llIcon('ayar')}</button>
+                    <button class="ll-seviye-ayar" onclick="openLvlConfig('${lId}')" title="Seviye ayarları — ders, ağırlık, kura ve davranış başlıkları">${llIcon('disli')}</button>
                     <button onclick="editLevelName('${lId}')" title="İsmi Değiştir">${llIcon('kalem')}</button>
                     <button onclick="seviyeArsivle('${lId}')" title="Seviyeyi arşivle (tüm sınıflarıyla sakla)">🗄</button>
                     <button onclick="deleteLevel('${lId}')" title="Seviyeyi Sil">${llIcon('cop')}</button>
@@ -4504,8 +4506,10 @@ function llOkulPopupAc() {
            rozetinden hem sekme cubugundaki OKUL tusundan ayni yere ulasilir.
            Pencere once kapanir ki ayar penceresi ustte kalsin. */
         var ayarTus = '<span class="okul-kat-tus">' +
-            '<button type="button" class="okul-mtus" title="Seviye ayarları (dersler, ağırlıklar, dönemler)"' +
-            ' onclick="llOkulSeviyeAyar(\'' + lId + '\')">' + llIcon('ayar') + '</button></span>';
+            '<button type="button" class="okul-mtus okul-ayar-tus"' +
+            ' title="Seviye ayarları — ders, ağırlık, kura ve davranış başlıkları (seviyedeki tüm sınıflara işler)"' +
+            ' onclick="llOkulSeviyeAyar(\'' + lId + '\')">' + llIcon('disli') +
+            '<span>Ayarlar</span></button></span>';
         /* animasyonlu SINIF ikonu SADECE kat (seviye) basliginda; kapilarda ikon yok */
         return '<div class="okul-kat"><span class="okul-kat-ad" title="' + behKacis(lvl.name) + '">' +
             llIcon('sinif') + '<span class="okul-kat-yazi">' + behKacis(lvl.name) + '</span></span>' +
@@ -4604,7 +4608,7 @@ function llOkulKurumEkle() {
 
 /* Okul penceresinden seviye ayarlarini ac: once pencere kapanir, sonra
    ayar penceresi acilir (ikisi ust uste binmesin). */
-function llOkulSeviyeAyar(lId) {
+function llOkulSeviyeAyar(lId, odak) {
     llOkulPopupKapat();
     /* Ayar penceresi Listelerim bolumunun icinde yasiyor; baska bir
        gorunumdeyken acilirsa gorunmez kalir. Once oraya gecilir. */
@@ -4616,7 +4620,7 @@ function llOkulSeviyeAyar(lId) {
         }
     } catch (e) { }
     setTimeout(function () {
-        try { openLvlConfig(lId); }
+        try { openLvlConfig(lId, odak); }
         catch (e) { console.warn('seviye ayarları açılamadı:', e && e.message); }
     }, 0);
 }
@@ -4868,7 +4872,9 @@ function renderTeacherProfile(deneme) {
             ' onclick="addClass(\'' + lId + '\'); tpTazele();">+</button>';
         var tuslar = duzen
             ? '<span class="okul-kat-tus">' +
-              mTus('⚙️', 'Seviye ayarları (dersler, ağırlıklar, dönemler)', 'openLvlConfig(\'' + lId + '\')') +
+              '<button type="button" class="okul-mtus okul-ayar-tus"' +
+              ' title="Seviye ayarları — ders, ağırlık, kura ve davranış başlıkları (seviyedeki tüm sınıflara işler)"' +
+              ' onclick="openLvlConfig(\'' + lId + '\')">' + llIcon('disli') + '<span>Ayarlar</span></button>' +
               mTus('✏️', 'Seviye ismini değiştir', 'editLevelName(\'' + lId + '\'); tpTazele();') +
               mTus('🗄', 'Seviyeyi arşivle', 'seviyeArsivle(\'' + lId + '\'); tpTazele();') +
               mTus('🗑', 'Seviyeyi sil', 'deleteLevel(\'' + lId + '\'); tpTazele();') + '</span>'
