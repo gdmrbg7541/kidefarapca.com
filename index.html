@@ -3613,19 +3613,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               url: k + '.pdf' }
           ];
           SINIF_GIRIS[s]['Planlar'] =
-            '<div class="dok-not">Bu kartta <b>ünitelendirilmiş yıllık plan</b> ve <b>günlük ders ' +
-            'planı</b> birlikte bulunur. Yıllık plan <b>2026-2027</b> öğretim yılı içindir: MEB 2026/68 sayılı ' +
-            'Genelge’ye göre <b>37 ders haftası</b> (1. dönem 18, 2. dönem 19 hafta) üzerinden hazırlanmıştır. ' +
-            'Uygulanan program: <b>' + y.prg + '</b> · ' + y.st + ' · ' + y.ek + '.</div>' +
-            '<div class="dok-not">Sayfa düzeni <b>A4 yatay, 10 sütunludur</b>: ay, hafta, saat, tema/ünite, ' +
-            'öğrenme çıktıları, içerik (konu · sözcük · dil bilgisi), yöntem ve teknikler, araç-gereç, ölçme ve ' +
-            'değerlendirme, belirli gün ve haftalar. Ara tatiller, resmî tatile denk gelen kayıp günler ve ' +
-            'yazılı sınav haftaları tabloda ayrıca işaretlidir. Belgenin sonundaki <b>Açıklamalar</b> bölümü, ' +
-            'planın hangi kaynaklara dayandığını ve öğretmenin nereleri güncellemesi gerektiğini madde madde yazar.</div>' +
-            '<div class="dok-not">Hedef sözcükler belgede <b>Türkçe okunuşlarıyla</b> verilmiştir; kendi ' +
-            'dosyanda Arapça yazıya çevirebilirsin. Word dosyası düzenlenebilir, PDF yazdırmaya hazırdır. ' +
-            'Plan bir <b>örnektir</b>; zümre kararlarına, ders kitabına ve okulunun takvimine göre uyarlanmalıdır. ' +
-            'Yönerge gereği yıllık planın <b>ders yılının ilk 15 günü içinde okul müdürüne onaylatılması</b> gerekir.</div>';
+            /* 24.09.2026: uzun anlatım yerine kısa özet ifadeler */
+            '<div class="dok-not"><b>Planlar:</b> yıllık plan + günlük ders planı · 2026-2027 · '
+            + '37 hafta (18 + 19) · ' + y.prg + ' · ' + y.st + '.</div>' +
+            '<div class="dok-not">A4 yatay, 10 sütun · ara tatiller ve yazılı haftaları işaretli · sonda açıklamalar.</div>' +
+            '<div class="dok-not">Sözcükler Türkçe okunuşlu · Word düzenlenebilir · plan örnektir · ilk 15 günde müdüre onaylat.</div>';
         });
       })();
       /* --- SINAVLAR · GÜNLÜK PLAN · ÇALIŞMA KÂĞITLARI · SINIF DOSYASI ·
@@ -3785,7 +3777,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           var d = [];
           d.push(
             { ad: s + '. Sınıf Çalışma Kâğıtları — iki kâğıt tek dosyada (Word)', tur: 'doc',
-              kaynak: 'Cevap anahtarı ve öğretmen notu her kâğıdın sonundadır',
+              kaynak: 'Cevap anahtarı sonda',
               url: 'dosyalar/calisma-kagitlari/' + s + '-sinif/arapca-' + s + '-sinif-calisma-kagitlari.docx' },
             { ad: s + '. Sınıf Çalışma Kâğıtları — iki kâğıt tek dosyada (PDF)',
               url: 'dosyalar/calisma-kagitlari/' + s + '-sinif/arapca-' + s + '-sinif-calisma-kagitlari.pdf' }
@@ -3803,35 +3795,35 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         /* 3a — Sınıf içi etkinlikler: her sınıfta iki etkinlik + toplu dosya */
         var ETKINLIK = {
           5: [
-            ['5-1', 'Selam Topu ve İsim Zinciri', 'Konuşma ve etkileşim oyunu  ·  Tüm sınıf  ·  30-35 dk  ·  1. Ünite — MERHABA!'],
-            ['5-2', 'Aile Ağacım Posteri', 'Üretim ve sunum etkinliği  ·  4 kişilik gruplar  ·  35-40 dk  ·  3. Ünite — AİLEM']
+            ['5-1', 'Selam Topu ve İsim Zinciri', 'Konuşma oyunu · 30-35 dk'],
+            ['5-2', 'Aile Ağacım Posteri', 'Poster ve sunum · 35-40 dk']
           ],
           6: [
-            ['6-1', 'Okulda Kelime Avı', 'Arama ve etiketleme oyunu  ·  4 kişilik gruplar  ·  35-40 dk  ·  2. Ünite — HAYDİ OKULA!'],
-            ['6-2', 'Öğretmen Diyor ki', 'Hareketli dinleme ve drama etkinliği  ·  Tüm sınıf  ·  25-30 dk  ·  3. Ünite — VÜCUDUM']
+            ['6-1', 'Okulda Kelime Avı', 'Kelime avı · 35-40 dk'],
+            ['6-2', 'Öğretmen Diyor ki', 'Dinleme ve drama · 25-30 dk']
           ],
           7: [
-            ['7-1', 'Sınıf Muhabirleri: Meslek Anketi', 'Mini röportaj ve veri toplama etkinliği  ·  İkili çalışma  ·  30-35 dk  ·  1. Tema — MESLEKLER'],
-            ['7-2', 'Canlı Yayındayız: Hava Durumu Bülteni', 'Canlandırma ve sunum etkinliği  ·  4 kişilik gruplar  ·  35-40 dk  ·  3. Tema — HAVA DURUMU']
+            ['7-1', 'Sınıf Muhabirleri: Meslek Anketi', 'Mini röportaj · 30-35 dk'],
+            ['7-2', 'Canlı Yayındayız: Hava Durumu Bülteni', 'Canlandırma · 35-40 dk']
           ],
           8: [
-            ['8-1', 'Değer Kartları: Sen Ne Yapardın?', 'Vaka çözümleme ve tartışma etkinliği  ·  4 kişilik gruplar  ·  35-40 dk  ·  3. Tema — DEĞERLERİM'],
-            ['8-2', 'Yeşil Duvar Afiş Atölyesi', 'Yazma ve ürün oluşturma etkinliği  ·  4 kişilik gruplar  ·  40-45 dk  ·  4. Tema — DOĞA']
+            ['8-1', 'Değer Kartları: Sen Ne Yapardın?', 'Vaka tartışması · 35-40 dk'],
+            ['8-2', 'Yeşil Duvar Afiş Atölyesi', 'Afiş atölyesi · 40-45 dk']
           ],
           9: [
-            ['9-1', 'Eksik Ders Programı', 'Konuşma ve etkileşim etkinliği  ·  İkili çalışma  ·  35-40 dk  ·  2. Tema — OKULDAYIM'],
-            ['9-2', 'Evimin Krokisi', 'Üretim ve sunum etkinliği  ·  Bireysel çalışma ve 4 kişilik grup sunumu  ·  40-45 dk  ·  3. Tema — EVDEYİM']
+            ['9-1', 'Eksik Ders Programı', 'Konuşma etkinliği · 35-40 dk'],
+            ['9-2', 'Evimin Krokisi', 'Kroki ve sunum · 40-45 dk']
           ],
           10: [
-            ['10-1', 'Yolculuk Planı ve Havalimanı Sahnesi', 'Planlama ve rol yapma etkinliği  ·  4 kişilik gruplar  ·  35-40 dk  ·  3. Tema — SEYAHAT ETMEYİ SEVİYORUM'],
-            ['10-2', 'Kapıyı Çaldık: Akraba Ziyareti Sahnesi', 'Yazma ve canlandırma etkinliği  ·  İkili çalışma  ·  30-35 dk  ·  1. Tema — DEĞERLERİM']
+            ['10-1', 'Yolculuk Planı ve Havalimanı Sahnesi', 'Rol yapma · 35-40 dk'],
+            ['10-2', 'Kapıyı Çaldık: Akraba Ziyareti Sahnesi', 'Yazma ve canlandırma · 30-35 dk']
           ]
         };
         Object.keys(ETKINLIK).forEach(function (s) {
           var d = SINIF_PDF[s]['Çalışma Kâğıtları & Etkinlikler'];
           d.push(
             { ad: s + '. Sınıf Etkinlikleri — iki etkinlik tek dosyada (Word)', tur: 'doc',
-              kaynak: 'Öğretmen uygulama planı + öğrenci çalışma materyali',
+              kaynak: 'Plan + materyal',
               url: 'dosyalar/etkinlikler/' + s + '-sinif/arapca-' + s + '-sinif-etkinlikler.docx' },
             { ad: s + '. Sınıf Etkinlikleri — iki etkinlik tek dosyada (PDF)',
               url: 'dosyalar/etkinlikler/' + s + '-sinif/arapca-' + s + '-sinif-etkinlikler.pdf' }
@@ -3917,105 +3909,39 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         var SINIFLAR_ = [5, 6, 7, 8, 9, 10];
         SINIFLAR_.forEach(function (s) {
           SINIF_GIRIS[s]['Sınavlar'] =
-            '<div class="dok-not">Her sınıf için <b>sekiz yazılı sınav</b> hazırlanmıştır: iki dönem × ' +
-            'iki yazılı, her yazılı <b>iki ayrı yöntemle</b>. <b>Klasik</b> sınav kelime, çeviri, eşleştirme, ' +
-            'boşluk doldurma, çoktan seçmeli ve yazma görevlerinden oluşur. <b>Beceri temelli</b> sınav ise ' +
-            'okuma-anlama metni, dinleme görevi, sıralama ve üretim görevleriyle kurgulanmıştır. ' +
-            'İkisi de <b>100 puan</b> üzerindendir.</div>' +
-            '<div class="dok-not">Her sınavın sonunda <b>cevap anahtarı</b>, yazma görevi için <b>dereceli ' +
-            'puanlama anahtarı</b> ve soruların hangi öğrenme çıktısını ölçtüğünü gösteren <b>soru — çıktı ' +
-            'tablosu</b> vardır. Bu tablo, öğretmen dosyasındaki soru analiz formunu doldururken doğrudan ' +
-            'kullanılabilir. Cevap anahtarı sayfası öğrenciye verilmez.</div>' +
-            '<div class="tut-ipucu"><b>Sınavı uygularken</b><ul>' +
-            '<li>Beceri temelli sınavdaki <b>dinleme metni</b> öğretmen tarafından iki kez okunur; metin cevap ' +
-            'anahtarı sayfasındadır.</li>' +
-            '<li>Ortak sınav yapılacaksa zümrede <b>hangi yöntemin</b> uygulanacağına önceden karar verin.</li>' +
-            '<li>Word dosyası düzenlenebilir: soru sayısını, puanı ve kelimeleri kendi işlediğin konuya göre ' +
-            'değiştirebilirsin.</li>' +
-            '</ul></div>' +
-            '<div class="dok-not">Sınavlar <b>örnektir</b>; okulunun ders kitabına, işlenen konulara ve zümre ' +
-            'kararlarına göre uyarlanmalıdır. Son kontrol: Ağustos 2026.</div>' +
-            /* 7. sınıfta belgeler ile ders verisi FARKLI programın konu
-               adlarını kullanıyor; öğretmen indirmeden ÖNCE bilsin. */
+            /* 24.09.2026: uzun anlatım kaldırıldı, yerine kısa özet ifadeler kondu */
+            '<div class="dok-not"><b>Sekiz sınav:</b> iki dönem × iki yazılı · klasik ve beceri temelli · '
+            + '100 puan · cevap anahtarı, puanlama ölçeği ve soru-çıktı tablosu sonda · anahtar sayfası öğrenciye verilmez.</div>' +
+            '<div class="dok-not">Dinleme metni iki kez okunur · ortak sınavda yöntemi zümre seçer · '
+            + 'Word düzenlenebilir · sınavlar örnektir, kendi konuna uyarla.</div>' +
+            /* 7. sınıfta belgeler ile ders verisi FARKLI programın konu adlarını kullanıyor */
             (String(s) === '7'
-              ? '<div class="dok-not"><b>Not:</b> Bu sınavların tema adları <b>önceki programın altı ' +
-                'teması</b>na göredir (Meslekler · Alışveriş · Hava Durumu · Vatanım · İbadetler · İletişim). ' +
-                'Sitedeki 7. sınıf <b>ders verisi</b> ise yeni kitabın <b>dört ünitesini</b> izler ' +
-                '(Bugün Ne Yaptım? · Alışveriş Zamanı · Nereye Seyahat Edelim? · Şehrim ve Ülkem). ' +
-                'Sınavları kullanmadan önce konu adlarını kendi işlediğin üniteye göre uyarla.</div>'
+              ? '<div class="dok-not"><b>7. sınıf notu:</b> tema adları eski programa göre · ders verisi yeni kitaba göre · kullanmadan önce uyarla.</div>'
               : '');
         });
         SINIFLAR_.forEach(function (s) {
           SINIF_GIRIS[s]['Çalışma Kâğıtları & Etkinlikler'] =
-            '<div class="dok-not">Her sınıf için <b>iki çalışma kâğıdı</b> hazırlanmıştır. Her kâğıt <b>altı ' +
-            'görevden</b> oluşur ve yaklaşık <b>bir ders saatinde</b> uygulanacak biçimde tasarlanmıştır. ' +
-            'Görevler bilerek farklı türlerdedir: eşleştirme, boşluk doldurma, kelime havuzu, doğru-yanlış, ' +
-            'kısa okuma ve serbest yazma.</div>' +
-            '<div class="dok-not">Kâğıdın son sayfasında <b>cevap anahtarı ve öğretmen notu</b> bulunur: ' +
-            'beklenen cevaplar, açık uçlu görev için <b>dereceli puanlama anahtarı</b>, görevlerin hangi ' +
-            '<b>öğrenme çıktısını</b> ve hangi <b>beceri alanını</b> ölçtüğünü gösteren tablo ve uygulama ' +
-            'önerileri. Bu sayfa öğrenciye verilmez — çoğaltırken son sayfayı ayırman yeterlidir.</div>' +
-            '<div class="dok-not">Kâğıtlar hem <b>tek tek</b> hem de sınıfın <b>iki kâğıdı tek dosyada</b> ' +
-            'olacak biçimde verilmiştir. Word hâli düzenlenebilir, PDF hâli doğrudan çoğaltılır.</div>' +
-            '<div class="dok-not">Aynı kartın altında her sınıf için <b>iki sınıf içi etkinlik</b> vardır. ' +
-            'Etkinlik çalışma kâğıdından farklıdır: öğrenciye soru çözdürmez, <b>sınıfta yapılan bir ' +
-            'uygulamayı</b> anlatır — oyun, istasyon, drama, mini röportaj, poster atölyesi gibi. Her sınıfın ' +
-            'iki etkinliği <b>bilerek farklı türdedir</b>: biri konuşma ve etkileşim ağırlıklı, diğeri yazma ' +
-            've ürün ağırlıklıdır.</div>' +
-            '<div class="dok-not">Her etkinlik belgesinin ilk sayfaları <b>öğretmenindir</b>: etkinlik künyesi ' +
-            '(süre, çalışma biçimi, sınıf düzeni, beceri alanı), amaç, ön hazırlık, <b>süreleriyle birlikte ' +
-            'uygulama basamakları</b>, destekleyici ve zenginleştirici <b>farklılaştırma</b>, dereceli ' +
-            '<b>değerlendirme ölçütleri</b>, sekiz satırlık <b>gözlem çizelgesi</b>, sınıf yönetimi notları ve ' +
-            'kesilip kullanılabilen <b>temel sözcük kartları</b>. Son sayfa <b>öğrencinindir</b>: yönerge ve ' +
-            'etkinlik sırasında doldurulacak çalışma materyali. Çoğaltırken yalnız son sayfayı vermen yeterlidir.</div>' +
-            '<div class="tut-ipucu"><b>Uygularken</b><ul>' +
-            '<li>Ön hazırlık maddelerini <b>bir gün önceden</b> tamamla; kartların kesilmesi en çok vakit alan iştir.</li>' +
-            '<li>Basamak süreleri toplamı ders saatine göre ayarlanmıştır; <b>sürede kalmak</b> için kronometre kullan.</li>' +
-            '<li>Gözlem çizelgesini etkinlik <b>sırasında</b> doldur; sonradan hatırlamaya çalışma.</li>' +
-            '<li>Bütün Arapça içerik <b>harekelidir</b> ve sınıf düzeyine göre seçilmiştir.</li>' +
-            '</ul></div>';
+            /* 24.09.2026: uzun anlatım kaldırıldı, yerine kısa özet ifadeler kondu */
+            '<div class="dok-not"><b>Çalışma kâğıdı:</b> iki kâğıt · altı görev · bir ders saati · '
+            + 'cevap anahtarı sonda · son sayfa öğretmene.</div>' +
+            '<div class="dok-not"><b>Etkinlik:</b> sınıfta uygulama · biri konuşma, biri yazma · '
+            + 'künye ve basamaklar · gözlem çizelgesi · son sayfa öğrenciye.</div>' +
+            '<div class="dok-not">Word düzenlenebilir · PDF çoğaltılır · Arapça harekeli · ön hazırlığı bir gün önce yap.</div>';
         });
         SINIFLAR_.forEach(function (s) {
           SINIF_GIRIS[s]['Sınıf Dosyası'] =
-            '<div class="dok-not">Sınıf dosyası, <b>okuttuğun her şubeye ait</b> bir dosyadır: sınıfın künyesi, ' +
-            'öğrenci listesi, oturma planı ve o şubeye ait bütün takip çizelgeleri burada toplanır. ' +
-            'Öğretmen dosyasından ayrıdır — orada <b>senin</b> mesleki belgelerin, burada <b>sınıfın</b> ' +
-            'belgeleri bulunur; iki dosya birbirini tekrar etmez.</div>' +
-            '<div class="dok-not">Dosyada <b>on üç form</b> vardır: kapak, içindekiler, sınıf künyesi, öğrenci ' +
-            'listesi, oturma planı, sınıf içi Arapça ifadeler ve kurallar, ünite takip çizelgesi, kelime hazinesi ' +
-            'takibi, beceri gözlem çizelgesi, sınav ve puan takibi, ödev takibi, veli görüşmeleri ve dönem ' +
-            'değerlendirmesi. Formlar o sınıfın <b>kendi ünitelerine ve haftalık ders saatine</b> göre ' +
-            'doldurulmuş olarak gelir; kelime takip çizelgesindeki sözcükler de sınıfın ünitelerinden seçilmiştir.</div>' +
-            '<div class="tut-ipucu"><b>Nasıl kullanılır?</b><ul>' +
-            '<li>Her şube için <b>ayrı bir çıktı</b> al; kapağa şube adını yaz.</li>' +
-            '<li>Öğrenci listesini eylül ayında bir kez doldur, yıl boyunca aynı sayfayı kullan.</li>' +
-            '<li>Kelime hazinesi ve beceri gözlem çizelgelerini <b>ünite sonlarında</b> işaretle.</li>' +
-            '<li>Word dosyası düzenlenebilir: satır sayısını mevcuduna göre artırıp azaltabilirsin.</li>' +
-            '</ul></div>' +
-            '<div class="dok-not">Arapça ifadeler formundaki cümleler <b>harekelidir</b> ve sınıf düzeyine göre ' +
-            'değişir. Dosya bir <b>örnektir</b>; okulunun istediği ek formlar varsa Word hâline ekleyebilirsin.</div>';
+            /* 24.09.2026: kısa özet */
+            '<div class="dok-not"><b>Sınıf dosyası:</b> her şubeye ayrı · on üç form · künye, öğrenci listesi, '
+            + 'oturma planı, takip çizelgeleri.</div>' +
+            '<div class="dok-not">Öğretmen dosyasından ayrıdır · formlar sınıfın kendi ünitelerine göre · '
+            + 'Arapça ifadeler harekeli · her şube için ayrı çıktı al.</div>';
         });
         SINIFLAR_.forEach(function (s) {
           SINIF_GIRIS[s]['Proje & Performans Görevleri'] =
-            '<div class="dok-not">Her sınıf için <b>1. dönem bir performans görevi</b>, <b>2. dönem bir proje ' +
-            'ödevi</b> hazırlanmıştır — toplam on iki görev. Görevler o sınıfın <b>işlenen ünitesine</b> ve ' +
-            'öğrenme çıktılarına bağlanmıştır; 7 ve 8. sınıflarda 2016 programının kazanımları esas alınmıştır.</div>' +
-            '<div class="dok-not">Her belge <b>beş sayfadır</b>. Birinci sayfada görev künyesi, amaç, ölçülen ' +
-            'öğrenme çıktıları, görev basamakları ve kaynaklar; ikinci sayfada <b>harekeli Arapça örnek metin</b>, ' +
-            'sözcük desteği, teslim ölçütleri ve öğrencinin dolduracağı çalışma takvimi; üçüncü sayfada ' +
-            '<b>öğrenci çalışma alanı</b> bulunur. Son iki sayfa <b>öğretmene aittir</b>: 100 puan üzerinden ' +
-            '<b>dereceli puanlama anahtarı</b> ve bütün sınıfın tek sayfada izlendiği <b>değerlendirme ' +
-            'çizelgesi</b>. Bu sayfalar öğrenciye verilmez — çoğaltırken son iki sayfayı ayırman yeterlidir.</div>' +
-            '<div class="tut-ipucu"><b>Uygularken</b><ul>' +
-            '<li>Görevi <b>dönemin başında</b> ver; teslim tarihini birinci sayfadaki künyeye yaz.</li>' +
-            '<li>Puanlama ölçütlerini görevi verirken öğrenciyle birlikte oku; ölçütleri bilmek çalışmayı ' +
-            'doğrudan iyileştirir.</li>' +
-            '<li>Değerlendirme çizelgesindeki <b>Ö1-Ö7</b> sütunları puanlama anahtarındaki ölçütlerin sırasıdır.</li>' +
-            '<li>Word dosyası düzenlenebilir: görev basamaklarını ve ölçütleri kendi işlediğin konuya göre ' +
-            'değiştirebilirsin.</li>' +
-            '</ul></div>' +
-            '<div class="dok-not">Görevler <b>örnektir</b>; ders kitabına, zümre kararlarına ve sınıfının ' +
-            'düzeyine göre uyarlanmalıdır. Son kontrol: Ağustos 2026.</div>';
+            /* 24.09.2026: kısa özet */
+            '<div class="dok-not"><b>Görevler:</b> 1. dönem performans, 2. dönem proje · beş sayfa · '
+            + 'künye, amaç, ölçütler, öğrenci sayfası.</div>' +
+            '<div class="dok-not">Görevi dönem başında ver · ölçütleri öğrenciyle oku · görevler örnektir, kendi konuna uyarla.</div>';
         });
       })();
       /* --- BEP & DESTEK EĞİTİM (2026-2027) -------------------------------
@@ -4042,38 +3968,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             );
           });
           SINIF_GIRIS[s]['BEP & Destek Eğitim'] =
-            '<div class="dok-not"><b>Bireyselleştirilmiş Eğitim Programı (BEP)</b>, özel eğitim ihtiyacı olan ' +
-            'öğrenci için takip ettiği programa göre hazırlanan; yıllık ve kısa dönemli amaçları, destek eğitim ' +
-            'hizmetini, öğretim yöntem ve materyallerini, ortam düzenlemelerini içeren programdır ' +
-            '(Özel Eğitim Hizmetleri Yönetmeliği m.20). Kaynaştırma/bütünleştirme yapılan okullarda ' +
-            '<b>BEP geliştirme birimi</b> kurulması zorunludur (m.22/4); öğrencinin başarısı sınıf ölçütlerine ' +
-            'göre değil <b>kendi BEP’ine göre</b> değerlendirilir (m.24/1-a).</div>' +
-            '<div class="dok-not">Bu karttaki beş belge ' + s + '. sınıfın <b>kendi ünitelerine</b> ve sitedeki ' +
-            '<b>ders verisine</b> göre hazırlanmıştır: amaçlardaki ve alıştırmalardaki Arapça sözcükler o sınıfın ' +
-            'derslerinden alınmıştır. Amaçlar <b>iki düzeyde</b> yazılmıştır — <b>Düzey 1</b>: sınıf kazanımının ' +
-            'sadeleştirilmişi (kelime-cümle ağırlıklı), <b>Düzey 2</b>: harf, sözcük ve kalıp temelli en temel ' +
-            'beceriler. Öğretmen öğrencinin performansına göre düzeyi seçer; beceri alanlarında farklı düzeyler ' +
-            'de seçilebilir.</div>' +
-            '<div class="tut-bas"><i></i>Nasıl kullanılır? — beş adım</div>' +
-            '<ol class="tut-liste">' +
-            '<li><b>Eğitsel performansı al:</b> «Kaba Değerlendirme Formu»nu birebir, 15-20 dakikalık oturumda doldur ' +
-            '(kodlama B / S / M / Y). Formun sonundaki sözcük kartlarını kesip kullanabilirsin.</li>' +
-            '<li><b>BEP planını yaz:</b> performans özetini ve seçtiğin düzeyi plana işle; ünite ünite kısa dönemli ' +
-            'amaçlar zaten hazırdır, öğrenciye göre kısalt ya da genişlet.</li>' +
-            '<li><b>Uyarlamaları işaretle:</b> ders içi ve sınav tedbirleri listesinden uygulayacaklarını seç; ' +
-            'BEP geliştirme birimi toplantısında karara bağla (tutanak formu sette).</li>' +
-            '<li><b>İzle:</b> izleme çizelgesine her ay kod yaz; ölçüt karşılandığında amacı «gerçekleşti» olarak işaretle.</li>' +
-            '<li><b>Sınavda uyarlanmış kâğıdı kullan:</b> aynı dönemin konularından, iki düzeyde hazır yazılı ve ' +
-            'cevap anahtarı sette bulunur.</li>' +
-            '</ol>' +
-            '<div class="dok-not"><b>Destek eğitim odası</b> paketi, tam zamanlı kaynaştırma öğrencisi için açılan ' +
-            'odada kullanılacak haftalık çizelgeyi, ünitelere göre 8 haftalık çalışma programını ve uyarlanmış ' +
-            'çalışma kâğıtlarını içerir. Öğrencinin destek eğitim odasındaki ders saati, <b>haftalık toplam ders ' +
-            'saatinin %40’ını aşamaz</b>; eğitim bire bir yapılır, en çok üç öğrenciyle grup eğitimi de yapılabilir ' +
-            '(m.25).</div>' +
-            '<div class="dok-not">Belgeler <b>örnektir</b>: öğrencinin RAM raporuna, performansına ve BEP geliştirme ' +
-            'birimi kararlarına göre uyarlanmalıdır. Word dosyaları düzenlenebilir, PDF’ler yazdırmaya hazırdır. ' +
-            'Son kontrol: Eylül 2026.</div>';
+            /* 24.09.2026: kısa özet */
+            '<div class="dok-not"><b>BEP:</b> özel eğitim ihtiyacı olan öğrenci için · yıllık ve kısa dönemli amaçlar · '
+            + 'başarı kendi BEP’ine göre ölçülür.</div>' +
+            '<div class="dok-not">Beş belge · ' + s + '. sınıfın kendi ünitelerine göre · amaçlar iki düzeyde '
+            + '(Düzey 1 sadeleştirilmiş, Düzey 2 en temel).</div>' +
+            '<div class="dok-not"><b>Sıra:</b> kaba değerlendirme → BEP planı → uyarlamalar (birim kararı) → '
+            + 'aylık izleme → uyarlanmış yazılı.</div>' +
+            '<div class="dok-not"><b>Destek eğitim odası:</b> haftalık çizelge · 8 haftalık program · '
+            + 'uyarlanmış kâğıtlar · haftalık ders saatinin %40’ını aşamaz.</div>';
         });
       })();
       /* >>> 10. SINIF SEÇMELİ ARAPÇA BELGELERİ (23.09.2026) */
@@ -4097,11 +4000,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         function giris(tur, html) {
           SEC10_GIRIS[tur] = (SEC10_GIRIS[tur] || '') + html;
         }
-        var KITAP = '<div class="dok-not"><b>Seçmeli Arapça belgeleri.</b> Bu karttaki belgeler ' +
-          '10. sınıfın <b>zorunlu</b> Arapça kitabına değil, <b>Mektep Yayınları “Ortaöğretim Seçmeli ' +
-          'Arapça”</b> kitabına göredir (2017 Ortaöğretim İkinci Yabancı Dil Arapça 9-12 programı, ' +
-          '<b>2 saat/hafta · 74 saat</b>). Bu kitap sitede <b>10. sınıf → kitap seçimi → Seçmeli Arapça</b> ' +
-          'bölümünde işlenir. Ders <b>4 saat</b> seçildiyse her ünitenin saati ikiye katlanır.</div>';
+        var KITAP = '<div class="dok-not"><b>Seçmeli Arapça:</b> Mektep Yayınları kitabına göre · '
+          + '2 saat/hafta (74 saat) · 4 saat seçildiyse üniteler ikiye katlanır.</div>';
 
         ek('Planlar', ikili('Ünitelendirilmiş Yıllık Plan (2026-2027)',
               D + 'yillik-plan/arapca-10-sinif-secmeli-yillik-plan',
@@ -4119,15 +4019,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           ek('Sınavlar', ikili(v[1], D + 'sinavlar/10-sinif-secmeli/arapca-10-secmeli-' + v[0],
             v[2] + ' · klasik + beceri temelli bölüm · cevap anahtarı ve puanlama dosyanın içinde'));
         });
-        giris('Sınavlar', KITAP + '<div class="dok-not">Dört yazılının her biri <b>tek dosyadır</b>: ' +
-          'A sözcük eşleştirme, B boşluk doldurma, C çeviri, D Arapça cevap yazma, E <b>beceri temelli</b> ' +
-          'okuma bölümü; son sayfada <b>cevap anahtarı ve puanlama tablosu</b> vardır. Sınav haftaları ' +
-          'yıllık plandaki <b>8.</b> ve <b>17.</b> haftalardır.</div>');
+        giris('Sınavlar', KITAP + '<div class="dok-not">Dört yazılı · beş bölüm (A-E) · '
+          + 'cevap anahtarı sonda · 8. ve 17. haftalar.</div>');
 
         ek('Çalışma Kâğıtları & Etkinlikler',
            ikili('Çalışma Kâğıtları (4 ünite)',
              D + 'calisma-kagitlari/10-sinif-secmeli/arapca-10-sinif-secmeli-calisma-kagitlari',
-             'Her ünite için bir kâğıt: eşleştirme, boşluk doldurma, çeviri, cümle yazma · cevap anahtarı sonda'));
+             'Dört ünite · cevap anahtarlı'));
         giris('Çalışma Kâğıtları & Etkinlikler', KITAP);
 
         ek('Proje & Performans Görevleri',
@@ -4192,26 +4090,17 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           'Örnek sınavın anahtarı ve puanlama notları').forEach(function (x) { d.push(x); });
         ek('Sınavlar', d);
         SINIF_GIRIS[8]['Sınavlar'] = (SINIF_GIRIS[8]['Sınavlar'] || '') +
-          '<div class="dok-not"><b>2026-2027 1. dönem 1. yazılı.</b> Listenin sonundaki belgeler ' +
-          'sınıfta <b>uygulanmış</b> sınavdır: kopya önlemek için <b>dört eşdeğer grup</b> (A-D) ' +
-          'hazırlanmıştır; sorular aynı konuları ölçer, yalnız sıraları ve seçenekleri değişir. ' +
-          'Ayrıca kaynaştırma/bütünleştirme öğrencisi için <b>Temel Düzey</b> dört grup vardır. ' +
-          'Her setin <b>cevap anahtarı</b> ve <b>konu-soru dağılım tablosu</b> (hangi soru hangi ' +
-          'konuyu ve beceriyi ölçüyor) ayrı dosyadadır. Temel düzey için ayrıca bir <b>örnek sınav</b> ' +
-          '(alıştırma; aynı soru tipleri, farklı sorular) ve ona uygun bir <b>çalışma kâğıdı</b> vardır. ' +
-          'Kapsam: <b>1. Ünite — Kulüpler, Tiyatro, Gezi</b> ' +
-          '(kitap s. 10-34). Sorular <b>yalnız açık uçlu ve kısa cevaplıdır</b> (Yazılı ve Uygulamalı Sınavlar ' +
-          'Yönergesi m.5/1-e); her sorunun yanında beceri etiketi vardır.</div>';
+          '<div class="dok-not"><b>2026-2027 1. yazılı:</b> dört eşdeğer grup (A-D) · temel düzey dört grup · örnek sınav · her setin anahtarı ve dağılım tablosu ayrı · 1. Ünite (s. 10-34) · yalnız açık uçlu ve kısa cevaplı.</div>';
 
         ek('Çalışma Kâğıtları & Etkinlikler',
           ikili('1. Ünite Çalışma Kâğıdı (2026-2027)', Y + 'arapca-8-1-unite-calisma-kagidi',
-            '1. Ünite — Kulüpler, Tiyatro, Gezi · yazılı öncesi tekrar kâğıdı')
+            '1. Ünite · yazılı öncesi')
           .concat(ikili('1. Ünite Çalışma Kâğıdı — Cevaplar', Y + 'arapca-8-1-unite-calisma-kagidi-cevaplar',
-            'Öğretmen için cevaplı sürüm'))
+            'Cevaplı sürüm'))
           .concat(ikili('1. Ünite Çalışma Kâğıdı — TEMEL DÜZEY', T + 'arapca-8-1-unite-calisma-kagidi-temel',
-            'Sınavın sekiz soru tipi, daha kolay ve bol tekrarlı · örnek sınavdan önce'))
+            'Temel düzey · bol tekrar'))
           .concat(ikili('1. Ünite Çalışma Kâğıdı — TEMEL DÜZEY Cevaplar', T + 'arapca-8-1-unite-calisma-kagidi-temel-cevaplar',
-            'Uyarlanmış çalışma kâğıdının cevapları')));
+            'Cevaplı sürüm')));
       })();
       /* <<< 8. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ */
       /* >>> 8. SINIF DİLBİLGİSİ ÖZETİ (24.09.2026) */
@@ -4223,7 +4112,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       (function () {
         var G = 'dosyalar/calisma-kagitlari/8-sinif/arapca-8-dilbilgisi-ozeti';
         var ad = 'Dilbilgisi Özeti (2 sayfa)';
-        var kaynak = 'Zamirler · mâzi-muzâri çekimi (tekil ve "biz") · soru edatları · alıştırma ve cevaplar';
+        var kaynak = 'Zamirler · fiil çekimi · soru edatları';
         var liste = SINIF_PDF[8]['Çalışma Kâğıtları & Etkinlikler'] ||
                     (SINIF_PDF[8]['Çalışma Kâğıtları & Etkinlikler'] = []);
         liste.push({ ad: ad + ' — düzenlenebilir (Word)', tur: 'doc', kaynak: kaynak, url: G + '.docx' });
@@ -4842,12 +4731,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           /* 19 doldurulabilir form. Tam set tek dosyada; ayrıca yıl içinde çoğaltılan
              formlar dört küçük pakete ayrıldı. Formlar Arapça dersine özel yazıldı. */
           giris:
-            '<div class="dok-not"><b>Öğretmen dosyası</b>, bir öğretmenin yıl boyunca ürettiği ve ' +
-            'kendisinden istenebilecek belgeleri tek yerde toplayan klasördür. Mevzuatta <b>tek tip bir ' +
-            'form seti yoktur</b>; aşağıdaki 19 form, Ortaöğretim Kurumları Yönetmeliği ile Okul Öncesi ' +
-            'Eğitim ve İlköğretim Kurumları Yönetmeliği’nde öğretmene verilen görevler esas alınarak ' +
-            've <b>Arapça dersine göre</b> hazırlanmıştır. Hepsi boştur; indir, kendi okuluna göre ' +
-            'düzenle. Son kontrol: Ağustos 2026.</div>' +
+            '<div class="dok-not"><b>Öğretmen dosyası:</b> 19 form · mevzuattaki öğretmen görevlerine göre · '
+            + 'Arapça dersine uyarlı · hepsi boş, indir ve düzenle.</div>' +
 
             '<div class="tut-bas"><i></i>Dosyada ne var? — 19 form</div>' +
             '<ol class="tut-liste">' +
@@ -4873,23 +4758,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             '</ol>' +
 
             '<div class="tut-bas"><i></i>Tam set mi, küçük paket mi?</div>' +
-            '<div class="dok-not"><b>Tam set</b> 19 sayfadır; yıl başında bir kez yazdırıp klasöre koyman içindir. ' +
-            'Yıl içinde tekrar tekrar çoğaltacağın formlar ayrıca <b>dört küçük pakete</b> ayrıldı: sınıf ve ' +
-            'nöbet çizelgeleri (her şube için bir tane), sınav analiz formları (her yazılı için bir tane), ' +
-            'Arapça değerlendirme ölçekleri (muhâdese, okuma, kelime, portfolyo) ve veli görüşme formları. ' +
-            'Word hâli düzenlenebilir, PDF hâli doğrudan yazdırılır.</div>' +
+            '<div class="dok-not"><b>Tam set:</b> 19 sayfa, yıl başında bir kez · <b>dört küçük paket:</b> '
+            + 'sınıf ve nöbet çizelgeleri · sınav analizi · değerlendirme ölçekleri · veli görüşme formları.</div>' +
 
-            '<div class="tut-ipucu"><b>Dosyayı kurarken</b>' +
-            '<ul>' +
-            '<li>Kapağı ve içindekiler listesini en öne koy; denetimde ilk bakılan yer burasıdır.</li>' +
-            '<li>Yıllık planların <b>onay tarihini</b> “Okutulan sınıflar” çizelgesine yaz; plan dosyada olsa bile onaysızsa eksik sayılır.</li>' +
-            '<li>Soru analiz formunu sınavdan <b>önce</b> doldur. Sonradan doldurulan analiz, soruların çıktı dağılımını düzeltmeye yaramaz.</li>' +
-            '<li>Öğrenci ve veli telefonlarını taşıdığı için dosyayı açıkta bırakma; formlarda kişisel veri koruma yükümlülüğün sürer.</li>' +
-            '<li>Muhâdese ve okuma ölçeklerini öğrenciye <b>önceden</b> göster; neye göre puanlandığını bilen öğrenci daha iyi hazırlanır.</li>' +
-            '</ul></div>' +
-
-            '<div class="dok-not">Bu formlar <b>genel bir örnektir</b>; okulunun kendi antedi, sıralaması ya da ' +
-            'ilave formu varsa Word hâli üzerinde değiştir. Zorunlu bir biçim değildir.</div>',
+            '<div class="tut-ipucu"><b>Dosyayı kurarken</b> kapak ve içindekiler önde · plan onay tarihini yaz · '
+            + 'sınav analizini sınavdan önce doldur · kişisel veri taşır, açıkta bırakma.</div>' +
+            '<div class="dok-not">Formlar örnektir; Word’de kendi okuluna göre değiştir.</div>',
           dosyalar: [
             { ad: 'Öğretmen Dosyası Tam Set (19 form) — düzenlenebilir (Word)', tur: 'doc',
               kaynak: 'İndir, okul adını ve formları kendine göre düzenle',
@@ -4924,12 +4798,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
              Gündem maddeleri yönergenin 12, 14 ve 15’inci maddelerinden birebir alınmıştır;
              kararlar Arapça dersine özel yazılmış örneklerdir. */
           giris:
-            '<div class="dok-not">Zümre toplantıları ve tutanakları <b>MEB Eğitim Kurulları ve Zümreleri ' +
-            'Yönergesi</b>’ne (21.01.2025) göre yürütülür. Yönergede tutanak için <b>resmî bir form yoktur</b>; ' +
-            'aşağıdaki dokuz şablon, yönergedeki gündem maddeleri esas alınarak hazırlanmıştır. Gündem maddeleri ' +
-            'yönergeden birebir alınmış, <b>kararlar ise Arapça dersine özel</b> yazılmıştır (harf ve hareke öğretimi, ' +
-            'kelime hazinesi, harekeli metin okuma, ortak sınav, muhâdese vb.). Şablonu indir, ' +
-            'kendi zümrenin durumuna göre değiştir. Son kontrol: Ağustos 2026.</div>' +
+            '<div class="dok-not"><b>Zümre tutanakları:</b> dokuz şablon · yönergedeki (21.01.2025) gündem maddelerine göre · '
+            + 'kararlar Arapça dersine özel · indir, kendi zümrene göre değiştir.</div>' +
 
             '<div class="zum-ust"><a href="https://www.meb.gov.tr/meb_iys_dosyalar/2025_01/22103224_egitim_kurullari_ve_zumreleri_yonergesi.pdf" ' +
             'target="_blank" rel="noopener">' + disSvg() + 'Yönergenin MEB’deki resmî metni (PDF)</a></div>' +
@@ -4973,21 +4843,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             'belirtilen zaman dilimi içinde kalmak şartıyla planlanır. Toplantı tarihini kendi kurumunun/ilinin ' +
             'takvimine göre yazmalısın.</div>' +
 
-            '<div class="zum-uyari"><b>Şablonu doldururken</b>' +
-            '<ul>' +
-            '<li>Noktalı yerler (………) doldurulacak alanlardır: kurum adı, tarih, sayı, isim ve oran.</li>' +
-            '<li>Gündem maddelerini <b>silmeden</b> kullan; zümrenle ilgisi olmayan maddeye “bu yıl için gündeme ' +
-            'alınmamıştır” yazmak, maddeyi atmaktan daha güvenlidir.</li>' +
-            '<li>Kararlar “ne yapılacak, kim yapacak, ne zaman” belli olacak biçimde kurulmalıdır; ' +
-            '“dikkat edilecektir” gibi havada kalan cümleler denetimde dayanak olmaz.</li>' +
-            '<li>Tutanağı <b>toplantıya katılmayanlar da imzalar</b>. İmza tablosundaki fazla satırları sil.</li>' +
-            '<li>Kararlar oy çokluğuyla alınır; eşitlik hâlinde zümre başkanının katıldığı görüş kabul edilir.</li>' +
-            '<li>Alınan kararlar <b>onaydan sonra</b> uygulamaya konur; onay bölümünü boş bırakma.</li>' +
-            '</ul></div>' +
-
-            '<div class="dok-not">Şablonlar yönergedeki gündem maddeleri esas alınarak kidefarapca.com için ' +
-            'hazırlanmış <b>örneklerdir</b>; resmî bir form değildir. Kurumunun kendi antedi ve uygulaması varsa ' +
-            'onu esas al. Word dosyaları düzenlenebilir, PDF’ler yazdırmaya hazırdır.</div>',
+            '<div class="zum-uyari"><b>Şablonu doldururken</b> noktalı yerleri doldur · gündem maddesini silme · '
+            + 'kararda kim, ne, ne zaman belli olsun · katılmayanlar da imzalar · onaydan sonra uygula.</div>' +
+            '<div class="dok-not">Şablonlar örnektir, resmî form değildir; kurumunun antedi varsa onu esas al.</div>',
           dosyalar: [
             { ad: 'Okul Zümresi — 1. Toplantı (Sene Başı) — düzenlenebilir (Word)', tur: 'doc',
               kaynak: 'Yönerge md. 12 — 21 gündem maddesi, Arapça dersine özel kararlar',
@@ -5039,11 +4897,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           /* Bu kart MEB’in resmî çizelgesini ay ay taşır; işaretli günler için
              Arapça dersine uyarlanmış pano metni, kelime ve etkinlik önerisi vardır. */
           giris:
-            '<div class="dok-not">Aşağıdaki çizelge <b>MEB’in resmî Belirli Gün ve Haftalar Çizelgesi</b>’dir ' +
-            '(meb.gov.tr’de yayımlanan, 18.01.2023 tarihli düzenlemeye dayanan liste — <b>70 madde</b>). ' +
-            'Haftaya bağlı olanların tarihi her yıl kayar; <b>bağlayıcı olan, okulunuzun kendi ' +
-            'görev dağılım çizelgesidir</b>. Yeşil etiketli satırlarda, o gün için Arapça dersine ' +
-            'uyarlanmış pano metni ve etkinlik önerisi bulacaksınız. Son kontrol: Ağustos 2026.</div>' +
+            '<div class="dok-not"><b>MEB resmî çizelgesi</b> (70 madde) · haftaya bağlı tarihler her yıl kayar · '
+            + 'bağlayıcı olan okulunun görev dağılımı · yeşil satırlarda Arapça pano metni ve etkinlik.</div>' +
             '<div class="bgh-ust"><a href="https://www.meb.gov.tr/belirli-gun-ve-haftalar-cizelgesi/duyuru/11814" ' +
             'target="_blank" rel="noopener">' + disSvg() + 'Çizelgenin MEB’deki resmî sayfası</a></div>' +
             '<div class="tut-bas"><i></i>Resmî çizelge — ay ay</div>' +
@@ -5333,20 +5188,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               '</div>' +
               '<div class="bgh-etk"><b>Etkinlik:</b> Okul bahçesindeki ağaçlara Arapça ad etiketleri asın; <span class="bgh-ar" style="display:inline;font-size:1.05rem">أَنَا أَحْمِي بِيئَتِي</span> (çevremi korurum) sloganıyla afiş çalışması yaptırın. Yıl sonuna denk geldiği için öğrendikleri fiilleri tekrar etmek için iyi bir fırsattır.</div>' +
             '</div>' +
-            '<div class="tut-ipucu"><b>Uygulamada dikkat edilecekler</b><ul>' +
-              '<li>Haftaya bağlı günlerin tarihi her yıl değişir; eylül ayında okulun kendi çizelgesi yayımlanınca ' +
-              'yıllık planınızdaki tarihleri ona göre güncelleyin.</li>' +
-              '<li>Mevlid-i Nebî Haftası’nın tarihini Diyanet İşleri Başkanlığı belirler; hicrî takvime bağlı olduğu ' +
-              'için her yıl yaklaşık 11 gün öne kayar.</li>' +
-              '<li>Bir gün/hafta için görev size verildiyse etkinlik sonrası <b>rapor/tutanak</b> tutmayı unutmayın; ' +
-              'denetimde istenen budur. Aşağıdaki şablonu indirip kullanabilirsiniz.</li>' +
-              '<li>Panoyu yalnız Arapça bırakmayın: her cümlenin altına Türkçe anlamını da yazın; ' +
-              'okulda Arapça bilmeyen öğrenci ve veliler de okuyabilsin.</li>' +
-              '<li>Harekeleri silmeyin. Öğrenci harekesiz metni doğru okuyamaz, panodan yanlış öğrenir.</li>' +
-            '</ul></div>' +
-            '<div class="dok-not">Çizelge MEB’in resmî sayfasından alınmıştır; Arapça köşesindeki pano metinleri, ' +
-            'kelimeler ve etkinlik önerileri kidefarapca.com için hazırlanmış <b>öneri</b> niteliğindedir, ' +
-            'resmî bir zorunluluk değildir.</div>',
+            '<div class="tut-ipucu"><b>Dikkat</b> haftaya bağlı tarihler her yıl değişir · Mevlid-i Nebî hicrî takvime göre kayar · '
+            + 'görev verildiyse rapor tut · panoda Türkçesini de yaz · harekeleri silme.</div>' +
+            '<div class="dok-not">Çizelge MEB’in resmî sayfasından; pano metinleri ve etkinlikler öneridir.</div>',
           dosyalar: [
             { ad: 'Belirli Gün ve Haftalar Görev Dağılım Çizelgesi — düzenlenebilir (Word)', tur: 'doc',
               kaynak: 'İndir, okulunun gün/hafta dağılımına göre doldur',
@@ -5363,11 +5207,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           /* Bu kart bir "nasıl yazılır" rehberi + doldurulmuş örnek taşır;
              altındaki iki satır aynı metnin Word ve PDF hâlidir. */
           giris:
-            '<div class="dok-not">Veli toplantısı tutanağı, toplantının <b>yapıldığını ve nelerin ' +
-            'konuşulduğunu</b> belgeleyen resmî bir kayıttır; okul/sınıf dosyasında saklanır ve ' +
-            'denetimde, veli görüşmelerinde, öğrenci hakkında karar alınırken dayanak olur. ' +
-            'Aşağıda önce <b>tutanakta bulunması gerekenler</b>, sonra <b>doldurulmuş bir örnek</b> var. ' +
-            'Aynı metnin düzenlenebilir Word ve yazdırmaya hazır PDF hâlini en alttan indirebilirsin.</div>' +
+            '<div class="dok-not"><b>Veli toplantısı tutanağı:</b> resmî kayıt · sınıf dosyasında saklanır · '
+            + 'aşağıda önce gerekenler, sonra doldurulmuş örnek.</div>' +
 
             '<div class="tut-bas"><i></i>Tutanakta mutlaka bulunması gerekenler</div>' +
             '<ol class="tut-liste">' +
@@ -5430,18 +5271,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             '<span>Uygundur<br>[Ad Soyad] — Okul Müdürü</span></div>' +
             '</div>' +
 
-            '<div class="tut-ipucu"><b>Sık yapılan hatalar</b>' +
-            '<ul>' +
-            '<li>Tutanak toplantıdan günler sonra hatırlayarak değil, <b>toplantı sırasında</b> tutulur; kararlar kapanıştan önce katılanlara okunur.</li>' +
-            '<li>Öğrenci adı verilerek olumsuz değerlendirme <b>yazılmaz</b>; bireysel konular veliyle ayrı görüşülür. Tutanak birden çok kişinin okuyacağı bir belgedir.</li>' +
-            '<li>“Ödevlere dikkat edilecek” gibi havada kalan kararlar yerine kim, neyi, ne zaman yapacak belli olacak şekilde yazılır.</li>' +
-            '<li>İmza sirküsü boş bırakılmaz; katılmayan velinin karşısına “katılmadı” yazılır.</li>' +
-            '<li>Tutanak ıslak imzalı olarak öğretim yılı boyunca sınıf/okul dosyasında saklanır.</li>' +
-            '</ul></div>' +
-
-            '<div class="dok-not">Şablon; MEB Okul Öncesi Eğitim ve İlköğretim Kurumları Yönetmeliği ile ' +
-            'Ortaöğretim Kurumları Yönetmeliğinin veli toplantısı ve rehberlik hükümleri esas alınarak ' +
-            'hazırlanmış <b>genel bir örnektir</b>; okulunun kendi antedi ve uygulaması varsa onu esas al.</div>',
+            '<div class="tut-ipucu"><b>Sık yapılan hatalar</b> tutanağı sonradan yazmak · öğrenci adıyla '
+            + 'olumsuz not düşmek · havada kalan karar · boş imza sirküsü.</div>' +
+            '<div class="dok-not">Şablon genel bir örnektir; okulunun antedi ve uygulaması varsa onu esas al.</div>',
           dosyalar: [
             { ad: 'Veli Toplantısı Tutanağı — düzenlenebilir şablon (Word)', tur: 'doc',
               kaynak: 'İndir, okul adını ve gündemi kendine göre düzenle',

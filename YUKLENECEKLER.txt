@@ -284,3 +284,60 @@ Yedek: _kaynak/yedekler/index_2026-09-24_yan-serit-oncesi.html
   · index.html: 8. sınıf Çalışma Kâğıtları listesine ayrı işaretli blokla eklendi
     (>>> 8. SINIF DİLBİLGİSİ ÖZETİ).
   · Betikler: _kaynak/yedekler/betikler/gramer8/ — git'e gitmez.
+  · 24.09.2026 akşam düzeltmesi: tablolar ARAPÇA GİBİ SAĞDAN SOLA dizildi —
+    zamir/ek/soru edatı sütunu artık en sağda, çekimler onun solunda.
+    Ayrıca vurgu eklendi: mâzi ekleri ve muzâri önekleri, bitişik zamir ekleri,
+    cümlelerdeki zamir ve soru edatları lacivert + kalın. Alıştırmalardaki
+    sözcüklerde vurgu YOK (cevabı ele vermesin).
+
+ÇALIŞMA KÂĞITLARI & ETKİNLİKLER KARTI — AÇIKLAMALAR KISALDI (24.09.2026)
+  · Kartın girişindeki BEŞ uzun paragraf + "Uygularken" ipucu kutusu kaldırıldı;
+    yerine üç kısa satır kondu (her ifade 2-3 kelime):
+      Çalışma kâğıdı: iki kâğıt · altı görev · bir ders saati · cevap anahtarı
+        sonda · son sayfa öğretmene
+      Etkinlik: sınıfta uygulama · biri konuşma, biri yazma · künye ve
+        basamaklar · gözlem çizelgesi · son sayfa öğrenciye
+      Word düzenlenebilir · PDF çoğaltılır · Arapça harekeli · ön hazırlığı bir
+        gün önce yap
+    Bu giriş 5-10 arası BÜTÜN sınıflarda ortak (SINIF_GIRIS döngüsü).
+  · Dosya satırlarının üzerine gelince çıkan ipuçları da kısaldı:
+    "Konuşma ve etkileşim oyunu · Tüm sınıf · 30-35 dk · 1. Ünite — MERHABA!"
+    → "Konuşma oyunu · 30-35 dk" (on iki etkinliğin hepsi), "Cevap anahtarı
+    sonda", "Plan + materyal", "1. Ünite · yazılı öncesi", "Cevaplı sürüm",
+    "Temel düzey · bol tekrar", "Zamirler · fiil çekimi · soru edatları",
+    "Dört ünite · cevap anahtarlı".
+  · Dosya adları ve bağlantılar değişmedi; yalnız açıklama metinleri kısaldı.
+  · Eski uzun metinler yedekte: _kaynak/yedekler/index-*-kisa-aciklama.html
+
+SINAVLAR KARTI — AÇIKLAMALAR KISALDI (24.09.2026)
+  · 5-10 arası bütün sınıflarda ortak giriş: iki uzun paragraf + "Sınavı
+    uygularken" ipucu kutusu + "örnektir" paragrafı kaldırıldı; yerine iki kısa
+    satır kondu:
+      Sekiz sınav: iki dönem × iki yazılı · klasik ve beceri temelli · 100 puan ·
+        cevap anahtarı, puanlama ölçeği ve soru-çıktı tablosu sonda · anahtar
+        sayfası öğrenciye verilmez
+      Dinleme metni iki kez okunur · ortak sınavda yöntemi zümre seçer · Word
+        düzenlenebilir · sınavlar örnektir, kendi konuna uyarla
+  · 7. sınıfın tema uyarısı tek satıra indi: "tema adları eski programa göre ·
+    ders verisi yeni kitaba göre · kullanmadan önce uyarla".
+  · 8. sınıfın 2026-2027 1. yazılı notu tek satıra indi (dört grup · temel düzey ·
+    örnek sınav · anahtar ve dağılım ayrı · 1. Ünite · açık uçlu).
+  · 10. sınıf seçmeli sınav notu: "Dört yazılı · beş bölüm (A-E) · cevap anahtarı
+    sonda · 8. ve 17. haftalar".
+  · Dosya adları ve bağlantılar değişmedi.
+  · Eski metinler yedekte: _kaynak/yedekler/index-*-sinav-aciklama.html
+
+BÜTÜN BELGE KARTLARINDA AÇIKLAMALAR KISALTILDI (24.09.2026)
+  Sınıf kartları (5-10 ortak): Planlar · Sınıf Dosyası · Sınavlar · Çalışma
+  Kâğıtları & Etkinlikler · Proje & Performans · BEP & Destek Eğitim.
+  Okul geneli kartlar: Öğretmen Dosyası · Zümre Tutanakları · Belirli Gün ve
+  Haftalar · Veli Toplantısı Tutanakları · 10. sınıf seçmeli kitap notu.
+  · Uzun paragraflar ve ipucu listeleri "·" ile ayrılmış 2-3 kelimelik
+    ifadelere indirildi; her kartta 2-4 kısa satır kaldı (83-209 karakter).
+  · İÇERİK KORUNDU: Öğretmen dosyasındaki 19 formluk liste, zümrenin üç seviye
+    ve üç toplantı kutuları, Belirli Gün ve Haftalar'ın 70 maddelik resmî
+    çizelgesi, veli toplantısının "gerekenler" listesi ve doldurulmuş örnek
+    tutanak olduğu gibi duruyor. Yalnız açıklama metinleri kısaldı.
+  · Dosya adları, bağlantılar ve kart sayıları değişmedi.
+  · index.html 590 KB → 572 KB (yaklaşık 12.000 karakter açıklama metni).
+  · Eski metinler yedekte: _kaynak/yedekler/index-*-tum-aciklamalar.html
