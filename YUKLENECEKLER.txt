@@ -510,3 +510,32 @@ SINIF BAŞLIĞI KALDIRILDI: 8'E BASINCA BELGELER + ETKİNLİKLER DOĞRUDAN AÇIL
     hâlâ açılıp kapanıyor; 390 px'te şerit tam genişlik (310/312), kartlar iki
     sütun; 16 satır içi betik temiz; JS hatası yok.
   · Yedek: _kaynak/yedekler/index_2026-09-25_baslik-oncesi.html
+
+─────────────────────────────────────────────────────────────────────────────
+KİTAP ETKİNLİKLERİ: HER DOSYA MÜSTAKİL SEKMEDE  (25.09.2026)
+  · sistem/kitapetkinlik.js — etkinlik ve parça bağlantıları artık
+    target="_blank" rel="opener": her etkinlik kendi sekmesinde açılıyor.
+  · YENİ: sistem/etkinlik-kapat.js — 92 etkinlik dosyasının sonuna tek satır
+    <script> olarak eklendi (paketlerin kendi kodu DEĞİŞMEDİ, 📖Komisyon
+    asılları da öyle). Sekmenin ilk sayfasındaysak (history.length 1) geri
+    tuşu sekmeyi KAPATIYOR:
+      – history.back() / history.go(-1) yaması,
+      – .back-btn / .back-button / .back-icon-btn / .nav-back-btn /
+        .back-home düğmelerine tıklama (yakalama evresinde).
+    Oyun içi düğmeler elenir: .back-menu sınıfı ve onclick'inde showScreen,
+    goBackToStart, reload, restart geçenler. Paketin kendi derinliği varsa
+    (history.state.depth > 0 — hafızakartı paketleri) karışılmaz; geri
+    tuşu kendi ekranına döner. Menüden etkinliğe geçilmişse (aynı sekmede
+    ikinci sayfa) geri normal çalışır.
+  · Denetim: 9 boşluk doldurma (<a href=index.html>), 7 boşluk doldurma
+    (exitToHome), 7 kelime (.back-icon-btn) → üçünde de sekme kapandı.
+    Hafızakartı paketlerinde kök ekranda geri düğmesi zaten görünmüyor
+    (paketin kendi App.fallbackToParent'ı tanımsız — eski bir eksik).
+  · 10. SINIF İPTAL: KITAP[10]'a kapali:true kondu, gorunurMu() onu
+    gizliyor. Sebep: kitapetkinlikleri/10/ boştu, karttaki bağlantıların
+    hepsi 404 veriyordu. Dosyalar MEB klasöründe duruyor; kopyalanıp
+    kapali:true silinince kart geri gelir.
+  · Kısa süre için siteye kopyalanan 10. sınıf paketleri geri alındı:
+    _to_delete/kitapetkinlikleri-10-2026-09-25/ (git'e girmez, Finder'dan
+    silinebilir; asılları MEB klasöründe duruyor).
+  · Yedek: _kaynak/yedekler/kitapetkinlik-2026-09-25/

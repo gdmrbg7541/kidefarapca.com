@@ -23,7 +23,11 @@
    kart yalnız KITAP[7].yil ile seçili yıl aynıyken basılır; kitap
    seçilince kart belirme animasyonuyla girer (gorunurMu → belir).
 
-   Etkinlik bağlantıları AYNI SEKMEDE açılır (Geylani).
+   Etkinlik bağlantıları YENİ SEKMEDE açılır (25.09.2026, Geylani:
+   "her dosya müstakil olacak"). Paketlerin kendi geri tuşu o sekmede
+   siteye dönemiyordu; sekmenin ilk sayfasındayken geri tuşu artık
+   SEKMEYİ KAPATIYOR — bunu sistem/etkinlik-kapat.js yapıyor, her etkinlik
+   dosyasının sonuna eklendi (paketlerin kendi kodu değişmedi).
 
    ⚠️ YENİ ETKİNLİK EKLEMEK — tek satır:
       KITAP[sınıf].uniteler[i].etk dizisine
@@ -159,6 +163,11 @@
     },
     10: {
       kitap: 'İHL Arapça 10',
+      /* KAPALI (25.09.2026, Geylani: "10. sınıf kitap etkinliklerini iptal et").
+         Paketler siteye hiç kopyalanmamıştı: kitapetkinlikleri/10/ boştu,
+         karttaki bağlantıların tamamı 404 veriyordu. Dosyalar MEB klasöründe
+         duruyor; kopyalanınca bu satırı silmek kartı geri getirir. */
+      kapali: true,
       /* Bu etkinlikler 10. sınıfın ZORUNLU (Maarif) Arapça kitabına girmiştir.
          10. sınıfın iki kitabı var (bkz. sistem/sinifveri.js → VERI_YILI);
          «Seçmeli Arapça» seçiliyken bu bölüm gizlenir, çünkü o kitabın
@@ -213,9 +222,9 @@
 
   function etkHtml(e) {
     var t = TUR[e.tur] || TUR.sayfa, renk = t.renk, ic = (SIMGE[e.tur] || SIMGE.sayfa)(renk);
-    /* AYNI SEKMEDE AÇILIR (Geylani: "yeni sekme olmasın"). Etkinlikler
-       sitenin kendi sayfaları; geri tuşu listeye döndürür. */
-    var h = '<a class="ke-etk" href="' + esc(adres(e.url)) + '" style="--ket:' + renk + '">' +
+    /* YENİ SEKMEDE AÇILIR (25.09.2026): her etkinlik müstakil bir sekme.
+       rel="opener" bilerek: etkinlik sayfası açan sekmeye erişebilsin. */
+    var h = '<a class="ke-etk" target="_blank" rel="opener" href="' + esc(adres(e.url)) + '" style="--ket:' + renk + '">' +
       '<span class="ke-ic">' + ic + '</span>' +
       '<span class="ke-metin"><b>' + esc(e.ad) + '</b>' + (e.alt ? '<small>' + esc(e.alt) + '</small>' : '') + '</span>' +
       (e.sayfa ? '<span class="ke-sayfa" title="Kitaptaki sayfası">s. ' + esc(e.sayfa) + '</span>' : '') +
@@ -223,7 +232,7 @@
     if (e.parca && e.parca.length) {
       h += '<div class="ke-parcalar" style="--ket:' + renk + '">' + e.parca.map(function (p) {
         var pdf = /\.pdf$/i.test(p[0]);
-        return '<a href="' + esc(klasor(e.url) + p[0]) + '"' +
+        return '<a target="_blank" rel="opener" href="' + esc(klasor(e.url) + p[0]) + '"' +
           (pdf ? ' class="ke-pdf"' : '') + '>' + esc(p[1]) + '</a>';
       }).join('') + '</div>';
     }
@@ -340,6 +349,7 @@
   function gorunurMu(sinif) {
     var k = KITAP[String(sinif)];
     if (!k) return false;
+    if (k.kapali) return false;          /* dosyaları sitede olmayan sınıf */
     if (!k.yil) return true;
     var v = window.KidefSinifVeri;
     if (!v || !v.seciliVeriYili) return true;
