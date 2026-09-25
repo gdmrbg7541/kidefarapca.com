@@ -452,3 +452,61 @@ DERS KİTABI KARTI  (25.09.2026)  —  index.html
     açık olan kart açık kalıyor; 390/600/1280 px'te etiket kağıttan taşmıyor;
     16 satır içi betik temiz.
   · Yedek: _kaynak/yedekler/index_2026-09-25_kitapkarti-oncesi.html
+
+─────────────────────────────────────────────────────────────────────────────
+SINIF PANELİ: AÇILIŞTA SADECE KİTAP SEÇİCİ + BELGELER ÜSTTE  (25.09.2026)
+index.html
+  · Sınıfa (ör. 8) tıklayınca "N. Sınıf Etkinlikleri" ARTIK KENDİLİĞİNDEN
+    AÇILMIYOR. Panelde yalnız o başlık ve yanındaki KİTAP SEÇİCİ görünür;
+    içeriği öğretmen başlığa basınca açar. (ihToggle'daki otomatik açılış
+    bloğu kaldırıldı — transitionend + 620 ms yedek dahil.)
+  · Panelin içinde sıra DEĞİŞTİ: önce SINIF BELGELERİ, ayraç, sonra ETKİNLİK
+    KARTLARI. Altı sınıfta da .ihdoc-acc artık .ih-kartlar'dan önce.
+    Alt başlık yazısı da "Sınıf belgeleri ve etkinlik kartları" oldu.
+  · İKİ BÖLÜM ARASINDAKİ OTOMATİK EŞLEŞME KALDIRILDI:
+      – belge açılınca etkinlik kartlarının toplanması (ihKartOto),
+      – etkinlik kartları elle açılınca belgelerin kapanması ve kartlar
+        kapanınca belgelerin geri açılması (esleniginiTopla).
+    Belgeler zaten en üstte olduğu için ikisinin de faydası kalmamıştı;
+    üstelik geri açılma "istemediğim şey kendiliğinden açılıyor" hissini
+    veriyordu. data-oto işareti artık hiç konmuyor (blokAyarla'daki
+    mekanizma duruyor, çağıran yok).
+  · Sınıf kapanıp yeniden açılınca içerisi sıfırlanıyor: alt bölüm kapalı,
+    iki blok açık durumda bekliyor (icleriKapat).
+  · Denetim (yerel kopya, headless Chromium): 8'e basınca panel 113 px —
+    yalnız başlık satırı + "● 2026-2027" seçici; alt başlığa basınca panel
+    1271 px ve belgeler (y=260) etkinliklerin (y=738) ÜSTÜNDE; belge kartı
+    açmak etkinlikleri toplamıyor; iki şerit de elle açılıp kapanıyor;
+    sınıf kapat-aç sonrası alt bölüm yine kapalı; 9'a basınca 8 kapanıyor;
+    16 satır içi betik temiz.
+  · Eski davranışı isteyen olursa yedek:
+    _kaynak/yedekler/index_2026-09-25_sira-oncesi.html
+
+─────────────────────────────────────────────────────────────────────────────
+SINIF BAŞLIĞI KALDIRILDI: 8'E BASINCA BELGELER + ETKİNLİKLER DOĞRUDAN AÇILIYOR
+(25.09.2026, aynı günün ikinci düzeltmesi) — index.html
+  · "N. Sınıf Etkinlikleri" başlığı (.ihsec-head düğmesi) altı sınıftan da
+    kaldırıldı. Artık sınıf rakamına basınca panelde doğrudan şunlar var:
+        [kitap seçici şeridi]
+        SINIF BELGELERİ  (a4 kart ızgarası, ilk kart Ders Kitabı)
+        ─ ayraç ─
+        ETKİNLİK KARTLARI
+    Yani bir tık eksildi; açılıp kapanan tek şey sınıfın kendisi.
+  · Kabuk (.ihsec-item) duruyor, yeni sınıfı: .ihsec-bassiz. Sebep: kitap
+    seçicisini sistem/sinifmodul.js → yilSerit() bu kabuğa koyuyor
+    (mount.closest('.ihsec-item')); kabuk gitse seçici blokların içine düşerdi.
+    Paneli CSS ile hep açık: .ihsec-item.ihsec-bassiz > .ihsec-panel{max-height:none}
+  · Kitap seçici artık başlık satırının sağında değil, panelin üstünde TAM
+    GENİŞLİKTE ince bir şerit (sınıfın rengini alıyor).
+    TUZAK: eski kuraldan gelen justify-self:end, Chrome'da blok düzeninde de
+    uygulanıyor ve şerit içeriği kadar daralıp sağa kaçıyordu; kurala
+    justify-self:stretch + width:auto eklendi.
+  · "Öğretmen Dökümanları" bölümü başlığıyla birlikte DURUYOR (tek kalan
+    .ihsec-head); ihsecToggle yalnız onu açıp kapatıyor.
+  · Denetim: 8'e basınca başlık yok, seçici en üstte (y=181), belgeler y=239,
+    etkinlikler y=718 → sıra doğru; 10. sınıfta seçici <select> tam genişlikte
+    ("Öğretim yılı · 2026-2027 · Maarif"), Seçmeli'ye geçince belge seti
+    değişiyor ve Ders Kitabı kartı gizleniyor; Öğretmen Dökümanları akordiyonu
+    hâlâ açılıp kapanıyor; 390 px'te şerit tam genişlik (310/312), kartlar iki
+    sütun; 16 satır içi betik temiz; JS hatası yok.
+  · Yedek: _kaynak/yedekler/index_2026-09-25_baslik-oncesi.html
