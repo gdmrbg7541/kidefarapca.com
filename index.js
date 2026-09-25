@@ -189,8 +189,12 @@ document.addEventListener("DOMContentLoaded", () => {
     for (const card of grid.children) {
         if (!card.classList.contains('game-card')) continue; 
         
+        /* ÖLÇÜ DÖNGÜ İÇİNDE YENİDEN OKUNMUYOR (25.09.2026): scrollLeft ve
+           clientWidth her kart için yeniden okunuyordu; tarayıcı her okumada
+           yerleşimi yeniden hesaplıyor (forced reflow). Merkez yukarıda bir
+           kez hesaplandı, döngü onu kullanıyor. */
         const cardCenter = card.offsetLeft + card.clientWidth / 2;
-        const distance = Math.abs(cardCenter - (grid.scrollLeft + grid.clientWidth / 2));
+        const distance = Math.abs(cardCenter - gridCenter);
         
         if (distance < minDistance) {
             minDistance = distance;

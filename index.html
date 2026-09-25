@@ -147,6 +147,13 @@
       if (baglanti && baglanti.saveData === true) puan += 1;
       if (baglanti && /^(slow-2g|2g|3g)$/.test(baglanti.effectiveType || '')) puan += 1;
 
+      /* ZAYIF GÖRÜNEN CİHAZDA HEMEN KAPAT (25.09.2026): eskiden ölçüm
+         bitene kadar (≈4 sn) 366 SVG animasyonu dönüyordu; açılışın en
+         yoğun anında kasmanın bir sebebi buydu. Karar KAYDEDİLMEZ; ölçüm
+         "güçlü" derse animasyonlar geri gelir. */
+      var gecici = false;
+      if (puan >= 3) { gecici = true; kapat('donanim-gecici', false); }
+
       var IYI    = puan >= 3 ? 50 : 45;   /* bu fps'i bir kez gören pencere → güçlü */
       var KOTU   = puan >= 3 ? 38 : 32;   /* bu fps'in altı → kötü pencere        */
       var GEREK  = puan >= 3 ? 2 : 3;     /* kaç kötü pencere "zayıf" demek için  */
@@ -181,7 +188,8 @@
           if (document.hidden) return;
           olc(function(zayif){
             if (zayif === null) return;                /* karar yok, kayıt yok */
-            if (zayif) kapat('olcum', true); else yaz('guclu', 'olcum');
+            if (zayif) kapat('olcum', true);
+            else { if (gecici) ac(false, 'olcum'); yaz('guclu', 'olcum'); }
           });
         }, 3500);
       }
@@ -189,6 +197,26 @@
       else window.addEventListener('load', basla, {once:true});
     })();
     </script>
+    <style id="ekran-disi-stil">
+    /* =============== EKRAN DIŞINI ÇİZME (25.09.2026) ===============
+       Anasayfa tek uzun sayfa: yedi bölüm, ~5400 düğüm, 366 SVG. Zayıf
+       cihazda tarayıcının stil/yerleşim/boyama işi (ölçüldü: CPU x6'da
+       ~8,8 sn) kasmanın asıl sebebiydi.
+       content-visibility:auto → bölüm ekran dışındayken tarayıcı onu
+       YERLEŞTİRMİYOR ve BOYAMIYOR; yaklaştıkça çiziliyor. contain-intrinsic-size
+       "auto" ile bir kez ölçülen gerçek yükseklik hatırlanıyor, kaydırma
+       çubuğu zıplamıyor. Desteklemeyen tarayıcı (eski Safari) eskisi gibi
+       çalışır — @supports ile korumalı. */
+    @supports (content-visibility: auto) {
+      #home-hub-section .content-section {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 720px;
+      }
+      /* Yapışkan başlığı olan ve akordiyonla boyu değişen bölüm: açıkken
+         (odak kipinde) çizim atlanmasın. */
+      #imam-hatip.ih-odak { content-visibility: visible; }
+    }
+    </style>
     <style id="dusuk-guc-stil">
     /* ================= DÜŞÜK GÜÇ MODU =================
        html.dusuk-guc → süsleme animasyonları durur; şekiller bozulmadan,
@@ -3382,7 +3410,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
       window.ihToggle = function (btn) {
         var hedefItem = btn.closest('.ih-item');
-        if (hedefItem && !hedefItem.classList.contains('acik')) icleriKapat(hedefItem);
+        /* içerik ilk açılışta kurulur (tembel kurulum) — panel ölçülmeden önce */
+        if (hedefItem && !hedefItem.classList.contains('acik')) {
+          try { ihIcKur(hedefItem); } catch (e) { }
+          icleriKapat(hedefItem);
+        }
         bolumleriKapat(hedefItem);            /* Ogretmen Dokumanlari da kapanir */
         tekAcilir(btn, 'ih-item', 'ih-panel', 'ih-acc');
         /* kapanan (veya kapali kalan) tum siniflarin ici sifirlansin */
@@ -4452,7 +4484,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           for (i = 0; i < y.length; i++) if ((y[i]._a4 || {}).ad === ad) { window.a4Toggle(y[i]); break; }
         }
       }
-      [].forEach.call(document.querySelectorAll('#imam-hatip .ihdoc-acc'), ihdocKur);
+      /* Açılışta KURULMUYOR — bkz. ihIcKur (tembel kurulum). */
       document.addEventListener('kidef:veriyili', function (e) {
         var n = e && e.detail ? String(e.detail.sinif) : '';
         if (!n) return;
@@ -4675,7 +4707,36 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             liste.html + '</div></div>';
         modulKartlari(mount, sinif);
       }
-      [].forEach.call(document.querySelectorAll('#imam-hatip .ih-kartlar'), mhKur);
+      /* ================= TEMBEL KURULUM (25.09.2026) =================
+         Açılışta ALTI sınıfın da etkinlik kartları ve belge ızgaraları
+         çiziliyordu: sayfadaki 5418 düğümün ~2350'si, 366 SVG'nin ~194'ü
+         buradan geliyordu. Zayıf cihazda (CPU x6 kısıtlı ölçüm) yükleme
+         4,35 sn · bloklama 3,9 sn · kaydırma 21 fps idi; sınıf ilk
+         açıldığında kurulunca 2,8 sn · 1,2 sn · 41 fps oldu.
+         Kurulum ihToggle'ın başında, panel açılmadan ÖNCE yapılır ki
+         yükseklik doğru ölçülsün. */
+      function ihIcKur(item) {
+        if (!item || item.__ihKuruldu) return;
+        item.__ihKuruldu = 1;
+        try { [].forEach.call(item.querySelectorAll('.ih-kartlar'), mhKur); } catch (e) { }
+        try { [].forEach.call(item.querySelectorAll('.ihdoc-acc'), ihdocKur); } catch (e) { }
+      }
+      window.ihIcKur = ihIcKur;
+      /* «Maarif» etiketi kapalı sınıfta da doğru görünsün: kart kurulumunu
+         beklemeden yalnız etiket tazelenir (altı çağrı, DOM kurmaz).
+         Normalde bunu sinifmodul.js kart yerleştirirken yapıyordu. */
+      function ihMaarifEtiket() {
+        var v = window.KidefSinifVeri; if (!v || !v.maarifMi) return;
+        [].forEach.call(document.querySelectorAll('#imam-hatip .ih-item'), function (it) {
+          var m = it.querySelector('.ih-kartlar'); if (!m) return;
+          var d = v.maarifMi(m.getAttribute('data-sinif'));
+          var et = it.querySelector('.ih-maarif'); if (!et || d === null) return;
+          et.style.display = d ? '' : 'none';
+          et.setAttribute('aria-hidden', d ? 'false' : 'true');
+        });
+      }
+      try { ihMaarifEtiket(); } catch (e) { }
+      document.addEventListener('kidef:veriyili', function () { try { ihMaarifEtiket(); } catch (e) { } });
 
       /* ==========================================================
          BÖLÜM ŞERİTLERİ

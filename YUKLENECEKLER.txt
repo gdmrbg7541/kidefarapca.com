@@ -563,3 +563,39 @@ ROL KARTLARI + ÇİZİMLİ PANEL TANITIMI  (25.09.2026)
     (index 17, indeks 5) temiz, JS hatası yok.
   · Yedekler: _kaynak/yedekler/index_2026-09-25_tanitim-oncesi.html ve
     indeks_2026-09-25_tanitim-oncesi.html
+
+─────────────────────────────────────────────────────────────────────────────
+ZAYIF CİHAZLARDA KASMA — ANASAYFA HAFİFLETİLDİ  (25.09.2026)
+index.html · index.js
+  ÖLÇÜM (CPU 6× kısıtlı, dış kaynaklar kapalı, 3 turun ortalaması):
+                        ÖNCE      SONRA
+    yükleme            4310 ms   2709 ms   (−%37)
+    bloklama (TBT)     4254 ms   1229 ms   (−%71)
+    uzun görev sayısı     77        36
+    DOM düğümü          5418      3067     (−%43)
+    kaydırma            20-25 fps   42 fps  (≈2 kat)
+
+  1) TEMBEL KURULUM (asıl kazanç). Açılışta altı sınıfın DA etkinlik
+     kartları (mhKur) ve belge ızgaraları (ihdocKur) çiziliyordu; sayfadaki
+     düğümlerin yarısı, SVG'lerin yarısı buradan geliyordu. Artık sınıf ilk
+     açıldığında kuruluyor: ihIcKur(item), ihToggle'ın başında, panel
+     ölçülmeden önce. İkinci açılışta yeniden kurmaz (item.__ihKuruldu).
+     · «Maarif» etiketi kapalı sınıfta da doğru kalsın diye ayrı, ucuz bir
+       tazeleyici eklendi (ihMaarifEtiket) — eskiden kart kurulumu yapıyordu.
+     · Kitap seçici, Muhâdese kartı, belge kartları, 10. sınıf kitap
+       değişimi denendi: hepsi sınıf açılınca yerinde.
+  2) EKRAN DIŞINI ÇİZME: #home-hub-section .content-section →
+     content-visibility:auto + contain-intrinsic-size:auto 720px.
+     Tek başına ölçülebilir fayda vermiyordu; tembel kurulumla birlikte
+     yükleme %12, bloklama %11 daha düştü. @supports ile korumalı.
+  3) ZAYIF DONANIMDA ANINDA DÜŞÜK GÜÇ: eskiden karar 3,5 sn'lik fps
+     ölçümünden sonra veriliyordu, o zamana kadar 366 SVG animasyonu
+     dönüyordu. Artık donanım puanı ≥3 ise animasyonlar HEMEN kapanıyor
+     (kayıt edilmeden); ölçüm "güçlü" derse geri açılıyor.
+  4) KAYDIRMADA ZORLA YERLEŞİM: index.js → findClosestCardToCenter
+     döngünün İÇİNDE scrollLeft/clientWidth okuyordu (her kart için bir
+     reflow). Merkez bir kez hesaplanıp kullanılıyor.
+  Yedekler: _kaynak/yedekler/index_2026-09-25_hafiflik-oncesi.html ve
+            index.js_2026-09-25_hafiflik-oncesi
+  SONRAKİ ADAYLAR: kelimeler.html (veri_kokler.js 1,76 MB — ilk liste
+  açılınca yüklenebilir), diğer ağır sayfalarda aynı tembel kurulum.
