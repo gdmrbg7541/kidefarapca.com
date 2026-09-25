@@ -596,6 +596,12 @@
     font-size:.86rem; color:#6B4A38; line-height:1.45; }
   #kitlePerde .krk-liste svg{ width:30px; height:30px; flex:0 0 30px; margin:0; display:block; overflow:visible; }
   #kitlePerde .krk-liste b{ color:#9C3B0C; }
+  #kitlePerde .krk-bak{ display:flex; align-items:center; justify-content:center; gap:7px; width:100%;
+    margin:12px 0 0; padding:10px 12px; border-radius:11px; cursor:pointer; font-family:inherit;
+    font-size:.86rem; font-weight:800; color:#9C3B0C; background:#FFF0E2; border:1.5px solid #F0D3BB;
+    transition:background .16s, border-color .16s, transform .16s; }
+  #kitlePerde .krk-bak:hover{ background:#FFE3CC; border-color:#E2B894; transform:translateY(-2px); }
+  #kitlePerde .krk-bak span{ font-weight:600; color:#8B6A57; font-size:.8rem; }
   #kitlePerde .krk-cta{ display:inline-block; padding:14px 42px; border-radius:12px; text-decoration:none;
     font-weight:800; font-size:1.05rem; color:#fff; background:linear-gradient(135deg,#F39C12,#D84315);
     box-shadow:0 6px 18px rgba(216,67,21,.35); }
@@ -675,6 +681,7 @@
               <ellipse class="ki-iz" cx="16" cy="25" rx="9.5" ry="3.6" fill="#D84315"/></svg>
             <span><b>Kalıcı</b> — görev ve tekrarla öğrenilen unutulmaz</span></li>
         </ul>
+        <button type="button" class="krk-bak" onclick="KidefTanitim.ac('ogrenci')">Panelde ne var? <span>Görsellerle bak</span></button>
       </div>
       <div class="krk-kart">
         <svg viewBox="0 0 64 64" aria-hidden="true">
@@ -723,6 +730,7 @@
               <circle class="ki-nokta n3" cx="21.5" cy="12.5" r="2" fill="#fff"/></svg>
             <span><b>Veli iletişimi</b> — gelişim raporları elinin altında</span></li>
         </ul>
+        <button type="button" class="krk-bak" onclick="KidefTanitim.ac('ogretmen')">Panelde ne var? <span>Görsellerle bak</span></button>
       </div>
     </div>
     <a class="krk-cta" id="krkCta" href="index.html">Siteye Gir</a>
@@ -734,6 +742,7 @@
 
 <script>window.SITE_KILIT_GOZLE = true;</script>
 <script src="sistem/kilit.js?v=12"></script>
+<script src="sistem/panel-tanitim.js?v=20260925a"></script>
 <script src="indeks.js?v=8"></script>
 <script>
 /* SITE KILIDI ILE UYUM: tanitim sayfasi HER kademede acik kalir (gozlem kipi).

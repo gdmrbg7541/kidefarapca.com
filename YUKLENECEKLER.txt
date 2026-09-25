@@ -539,3 +539,27 @@ KİTAP ETKİNLİKLERİ: HER DOSYA MÜSTAKİL SEKMEDE  (25.09.2026)
     _to_delete/kitapetkinlikleri-10-2026-09-25/ (git'e girmez, Finder'dan
     silinebilir; asılları MEB klasöründe duruyor).
   · Yedek: _kaynak/yedekler/kitapetkinlik-2026-09-25/
+
+─────────────────────────────────────────────────────────────────────────────
+ROL KARTLARI + ÇİZİMLİ PANEL TANITIMI  (25.09.2026)
+  · YENİ: sistem/panel-tanitim.js — "Öğrenci misin? / Öğretmen misin?"
+    kartları ve karta basınca açılan çizimli tanıtım penceresi.
+      Öğretmen (6 maket): Kurumlarım & Sınıflarım · Sınıf listesi ·
+        Kurayla seç · Etkinlikler & oyunlar · Görev gönder · Sonuçlar & karne
+      Öğrenci (4 maket): Görevlerim · Puanlarım & rozetlerim ·
+        Oyunlar & sözlük · Karnem
+    Maketler ekran görüntüsü değil, elle yazılmış SVG'dir (320×200 pencere
+    çerçevesi); büyütünce bozulmaz, site değişince kırılmaz. Bir makete
+    tıklayınca büyür (lightbox), Esc kapatır.
+  · index.html — giriş/kayıt penceresinde başlığın hemen altına iki kart
+    (#kdtGirisKartlar; içeriği betik dolduruyor).
+  · indeks.html — alttaki "Kime Ne Katar?" bölümünde iki kartın içine
+    "Panelde ne var? · Görsellerle bak" düğmesi (.krk-bak) + aynı betik.
+  · TUZAK: giriş penceresi (#login-modal) z-index 100000001 kullanıyor;
+    tanıtım penceresi onun altında kalıyordu, z-index 2147483000 yapıldı.
+  · Denetim: giriş penceresinde iki kart çiziliyor, öğretmen penceresinde
+    6 / öğrenci penceresinde 4 maket, yatay taşma yok, büyütme ve Esc
+    çalışıyor, indeks.html'de iki düğme de yerinde; satır içi betikler
+    (index 17, indeks 5) temiz, JS hatası yok.
+  · Yedekler: _kaynak/yedekler/index_2026-09-25_tanitim-oncesi.html ve
+    indeks_2026-09-25_tanitim-oncesi.html

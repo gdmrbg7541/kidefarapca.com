@@ -881,6 +881,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             <div class="modal-close" onclick="closeLoginModal()">✖</div>
             <h2 id="auth-title" style="color:#16A085; margin-top:0;">Sisteme Giriş Yap</h2>
 
+            <!-- ROL KARTLARI (25.09.2026): "öğrenciysen / öğretmensen panelde ne
+                 var?" — karta basınca çizimli tanıtım penceresi açılır.
+                 İçeriği sistem/panel-tanitim.js doldurur. -->
+            <div id="kdtGirisKartlar"></div>
+
             <!-- KAREKOD ALANI — giriş penceresi ilk açıldığında BURASI görünür;
                  e-posta/şifre formu gizlidir. İçeriği hesap/qrgiris.js doldurur.
                  "E-posta ve şifreyle gir" tuşu ikisi arasında geçiş yaptırır. -->
@@ -6404,6 +6409,18 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sarf/sozlukpop.js?v=2"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
     <script src="hesap/qrgiris.js?v=20260815a"></script>
+    <!-- Rol tanıtımı: giriş penceresindeki öğrenci/öğretmen kartları ve
+         çizimli panel tanıtımı (indeks.html de aynı dosyayı kullanır). -->
+    <script src="sistem/panel-tanitim.js?v=20260925a"></script>
+    <script>
+      (function () {
+        function kur() {
+          try { if (window.KidefTanitim) KidefTanitim.kartlar('kdtGirisKartlar'); } catch (e) { }
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
+        else kur();
+      })();
+    </script>
     <script>
     /* Emniyet: hesap/qrgiris.js yüklenmediyse (dosya siteye konmamışsa)
        tuşa basınca hiçbir şey olmuyordu. Artık nedenini söyler. */
