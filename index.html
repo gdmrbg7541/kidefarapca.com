@@ -211,6 +211,7 @@
     html.dusuk-guc .a4-grid.acildi .a4-kart,
     html.dusuk-guc .ik-sayfa,  html.dusuk-guc .ik-halka, html.dusuk-guc .ik-tik,
     html.dusuk-guc .ik-damga,  html.dusuk-guc .ik-kalem, html.dusuk-guc .ik-yazi3,
+    html.dusuk-guc .ik-kapak,
     html.dusuk-guc .kaliplar-tablosu-btn,
     html.dusuk-guc .kaliplar-tablosu-btn::before,
     html.dusuk-guc .kb-og-kirici,
@@ -2974,6 +2975,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
       .a4-kart { -webkit-appearance:none; appearance:none; border:0; background:transparent; padding:0 7px 7px 0; margin:0;
                  cursor:pointer; font-family:inherit; display:block; width:100%; text-align:center; color:inherit; }
+      /* Ders Kitabı kartı buton değil <a>: panel açmaz, çevrim içi kitabı yeni
+         sekmede açar. Kağıdı hafif krem tonda ki belge kartlarından ayrılsın. */
+      a.a4-kart { text-decoration:none; }
+      a.a4-kart .a4-sheet { background:linear-gradient(180deg,#FFFBF3 0%,#fff 58%); }
+      a.a4-kart:hover .a4-sheet, a.a4-kart:focus-visible .a4-sheet { border-color:var(--a4c); }
 
       /* --- kağıdın kendisi: arkasında iki yaprak daha varmış gibi katmanlı gölge --- */
       .a4-sheet { position:relative; display:flex; flex-direction:column; align-items:center; width:100%;
@@ -3044,6 +3050,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         font-size:.66rem; font-weight:800; letter-spacing:.4px; color:var(--a4c);
         background:#f5f8fc; border:1px solid #e6edf5; border-radius:999px; padding:2.5px 10px; white-space:nowrap; }
       .a4-sayac.bos { color:#8296aa; }
+      /* uzun etiket kağıttan taşmasın (dar ekranda kart ~150px kalıyor) */
+      .a4-sayac { max-width:100%; overflow:hidden; text-overflow:ellipsis; }
+      /* dış bağlantı oku sayacın içinde, yazıyla aynı renkte */
+      .a4-sayac .a4-disok { width:.82em; height:.82em; margin-left:4px; vertical-align:-.11em; }
 
       /* ============ ANİMASYONLAR ============ */
       /* mühür basma: yukarıdan iner, hafifçe sekip solar */
@@ -3084,6 +3094,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       .ik-kalem { transform-box:fill-box; transform-origin:center; animation:a4Kalem 4.4s ease-in-out infinite; }
       .ik-yazi3 { stroke-dasharray:26; animation:a4Ciz 4.4s ease-in-out infinite; }
       .ik-rozet { transform-box:fill-box; transform-origin:50% 18%; animation:a4Salla 3.2s ease-in-out infinite; }
+      /* ders kitabı ikonunda sağ sayfa çevrilir (sırt ekseninde döner) */
+      @keyframes a4Sayfa { 0%,18%{ transform:rotateY(0deg); opacity:1 } 48%{ transform:rotateY(-96deg); opacity:.9 }
+                           72%,100%{ transform:rotateY(-176deg); opacity:0 } }
+      .ik-kapak { transform-box:fill-box; transform-origin:0% 50%; animation:a4Sayfa 5.2s ease-in-out infinite; }
 
       /* --- kartın altında açılan PDF paneli (dosya çekmecesi) --- */
       .a4-panel { max-height:0; overflow:hidden; transition:max-height .36s cubic-bezier(.4,0,.2,1); }
@@ -3117,7 +3131,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       }
       @media (prefers-reduced-motion: reduce){
         .a4-muhur-g, .a4-imza-yol, .a4-satirlar b::after, .a4-grid.acildi .a4-kart,
-        .ik-sayfa, .ik-halka, .ik-tik, .ik-damga, .ik-kalem, .ik-yazi3, .ik-rozet { animation:none !important }
+        .ik-sayfa, .ik-halka, .ik-tik, .ik-damga, .ik-kalem, .ik-yazi3, .ik-rozet, .ik-kapak { animation:none !important }
         .a4-imza-yol { stroke-dashoffset:0 } .ik-tik, .ik-yazi3 { stroke-dashoffset:0 }
         .a4-muhur-g, .ik-damga { opacity:.95 }
       }
@@ -4225,6 +4239,35 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         }
       }
       function a4Ikon(set, i, cls) { return '<svg class="' + cls + '" viewBox="0 0 48 48" aria-hidden="true">' + a4IkonIc(set, i) + '</svg>'; }
+      /* --- SIRA NUMARASINA BAĞLI OLMAYAN İKONLAR ---------------------
+         Ders Kitabı kartı ızgaranın başına giriyor; ikonu sırayla değil
+         adıyla seçilir ki SINIF_TURLERI'nin ikon sırası kaymasın. */
+      function a4IkonKitap() {
+        return '<path d="M4 8 h12 a8 8 0 0 1 8 8 v25 a6 6 0 0 0 -6 -5 H4 Z" fill="#FEF3E2" stroke="#D97706" stroke-width="2.2" stroke-linejoin="round"/>' +
+          '<path d="M44 8 h-12 a8 8 0 0 0 -8 8 v25 a6 6 0 0 1 6 -5 h14 Z" fill="#FEF3E2" stroke="#D97706" stroke-width="2.2" stroke-linejoin="round"/>' +
+          '<g class="ik-sayfa" fill="#D97706">' +
+            '<rect x="8.5" y="15" width="11" height="2.6" rx="1.3" opacity=".5"/>' +
+            '<rect x="8.5" y="21" width="8" height="2.6" rx="1.3" opacity=".34"/>' +
+            '<rect x="28.5" y="15" width="11" height="2.6" rx="1.3" opacity=".5"/>' +
+            '<rect x="28.5" y="21" width="8.5" height="2.6" rx="1.3" opacity=".34"/></g>' +
+          '<path class="ik-kapak" d="M24 16 a8 8 0 0 1 8 -8 h8 v25 h-8 a7 7 0 0 0 -8 5 Z" fill="#FDE6C4" stroke="#D97706" stroke-width="1.8" stroke-linejoin="round"/>';
+      }
+      /* dış bağlantı oku — "↗" karakteri bazı tarayıcılarda emoji olarak
+         çiziliyordu, onun yerine çizgi ok */
+      function a4DisOkSvg() {
+        return '<svg class="a4-disok" viewBox="0 0 12 12" aria-hidden="true">' +
+          '<path d="M3.4 8.6 L8.6 3.4 M4.6 3.4 h4 v4" fill="none" stroke="currentColor" ' +
+          'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      }
+      function a4IkonOzel(ad, cls) {
+        return '<svg class="' + cls + '" viewBox="0 0 48 48" aria-hidden="true">' +
+          (ad === 'kitap' ? a4IkonKitap() : '') + '</svg>';
+      }
+      /* ik = {ozel:'kitap'} ya da {i:sıra} */
+      function a4IkonAl(set, ik, cls) {
+        if (ik && ik.ozel) return a4IkonOzel(ik.ozel, cls);
+        return a4Ikon(set, (ik && ik.i) || 0, cls);
+      }
       /* sayaç: yayında olan PDF varsa sayısı, yoksa başlık sayısı, o da yoksa "yakında" */
       function a4Sayac(ds) {
         var hazir = 0, dis = 0, doc = 0, k;
@@ -4252,28 +4295,40 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           'fill="none" stroke="#94a3b8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>' +
           '<path d="M3 21.4 h54" stroke="#e3eaf2" stroke-width="1.4" stroke-linecap="round"/></svg>';
       }
-      function a4KartHtml(antet, t, set, i, ds) {
-        var sy = a4Sayac(ds);
-        return '<button type="button" class="a4-kart" style="--a4c:' + t.renk + '" onclick="a4Toggle(this)" aria-expanded="false">' +
+      function a4KartHtml(antet, t, set, ik, ds) {
+        /* t.etiket → sayaç yerine sabit yazı · t.bag → panel değil dış bağlantı
+           · t.antet → o karta özel antet yazısı */
+        var sy = t.etiket ? { yazi: t.etiket, bos: false } : a4Sayac(ds);
+        var bas = t.bag
+          ? '<a class="a4-kart a4-bag" style="--a4c:' + t.renk + '" href="' + t.bag + '"' +
+            ' target="_blank" rel="noopener"' + (t.ipucu ? ' title="' + t.ipucu + '"' : '') + '>'
+          : '<button type="button" class="a4-kart" style="--a4c:' + t.renk + '" onclick="a4Toggle(this)" aria-expanded="false">';
+        return bas +
           '<span class="a4-sheet">' +
             '<span class="a4-serit"></span><span class="a4-kivrim"></span>' +
-            '<span class="a4-antet"><i class="uzun"></i>' + antet + '<i class="kisa"></i></span>' +
-            a4Ikon(set, i, 'a4-ikon') +
+            '<span class="a4-antet"><i class="uzun"></i>' + (t.antet || antet) + '<i class="kisa"></i></span>' +
+            a4IkonAl(set, ik, 'a4-ikon') +
             '<span class="a4-ad">' + t.ad + '</span>' +
             '<span class="a4-satirlar"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span>' +
-            '<span class="a4-sayac' + (sy.bos ? ' bos' : '') + '">' + sy.yazi + '</span>' +
+            '<span class="a4-sayac' + (sy.bos ? ' bos' : '') + '">' + sy.yazi + (t.bag ? a4DisOkSvg() : '') + '</span>' +
             '<span class="a4-alt">' + a4MuhurSvg() + a4ImzaSvg() + '</span>' +
-          '</span></button>';
+          '</span>' + (t.bag ? '</a>' : '</button>');
       }
       /* bir kart ızgarası + altında tek panel üretir (hem sınıf içi hem okul geneli) */
       function a4IzgaraKur(mount, antet, set, liste, dosyaOf, girisOf) {
+        /* İkon numarası kartın sırasından değil TÜR sırasından gelir: araya
+           özel ikonlu kart (Ders Kitabı) girince ötekilerin ikonu kaymaz. */
+        var ikonlar = [], ix = -1;
+        liste.forEach(function (t) {
+          if (t.ikon) ikonlar.push({ ozel: t.ikon }); else { ix++; ikonlar.push({ i: ix }); }
+        });
         mount.innerHTML = '<div class="a4-wrap"><div class="a4-grid">' +
-          liste.map(function (t, i) { return a4KartHtml(antet, t, set, i, dosyaOf(t)); }).join('') +
+          liste.map(function (t, i) { return a4KartHtml(antet, t, set, ikonlar[i], dosyaOf(t)); }).join('') +
           '</div><div class="a4-panel"><div class="a4-panel-in"></div></div></div>';
         [].forEach.call(mount.querySelectorAll('.a4-kart'), function (btn, i) {
           var t = liste[i], ds = dosyaOf(t);
           var gr = girisOf ? (girisOf(t) || '') : (t.giris || '');
-          btn._a4 = { set: set, i: i, ad: t.ad, renk: t.renk, sayac: a4Sayac(ds), html: gr + pdfListe(ds) };
+          btn._a4 = { set: set, ik: ikonlar[i], ad: t.ad, renk: t.renk, sayac: a4Sayac(ds), html: gr + pdfListe(ds) };
         });
       }
       /* karta tıklayınca: ızgaranın ALTINDAKİ tek panel o kategoriyle dolar */
@@ -4296,7 +4351,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         if (window.ihKartOto) window.ihKartOto(btn);
         var d = btn._a4 || {};
         wrap.style.setProperty('--a4c', d.renk || '#dbe3ec');
-        ic.innerHTML = '<div class="a4-panel-bas">' + a4Ikon(d.set || 'sinif', d.i || 0, 'a4-panel-ikon') +
+        ic.innerHTML = '<div class="a4-panel-bas">' + a4IkonAl(d.set || 'sinif', d.ik, 'a4-panel-ikon') +
           '<b>' + (d.ad || '') + '</b>' +
           '<span class="a4-panel-chip">' + ((d.sayac && d.sayac.yazi) || 'YAKINDA') + '</span></div>' + (d.html || '');
         /* panel zaten açıksa yükseklik serbest kalsın (içerik değişti), değilse animasyonla aç */
@@ -4359,10 +4414,44 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           '<small>Aşağıdaki listede — indir, Word\'de düzenle, yazdır</small></div>' +
           '</div>';
       }
+      /* === DERS KİTABI KARTI (25.09.2026) ==============================
+         Belge ızgarasının İLK kartı (Sınıf Dosyası'nın solunda) o sınıfın
+         ÇEVRİM İÇİ ders kitabına gider. Dosya bizde durmuyor: kart panel
+         açmaz, kitabı yeni sekmede açar.
+           · 8, 9, 10 → doğrudan o sınıfın sayfa çevirmeli kitabı
+           · 5, 6, 7  → 2026-2027 Arapça Ders Kitapları Portalı (bu üç sınıfın
+             ayrı adresi yok; portalda bütün sınıflar bir arada)
+           · 10. sınıfta "Seçmeli Arapça" kitabı seçiliyken kart GİZLENİR;
+             bağlantı İHL zorunlu Arapça kitabına gidiyor, yanıltmasın.
+         Adres değişirse yalnız bu tablo güncellenir. */
+      var KITAP_PORTAL = 'https://arapca.muallimun.net/2026_2027_arabicbooks/';
+      function portalKitap(sinif) {
+        return { url: KITAP_PORTAL, etiket: 'ÇEVRİM İÇİ',
+          ipucu: sinif + '. sınıf Arapça ders kitabı — 2026-2027 Arapça Ders Kitapları Portalı ' +
+                 '(muallimun.net); yeni sekmede açılır' };
+      }
+      function flipKitap(sinif, adres) {
+        return { url: adres, etiket: 'ÇEVRİM İÇİ',
+          ipucu: sinif + '. sınıf Arapça ders kitabı — sayfa çevirmeli çevrim içi kitap ' +
+                 '(muallimun.net); yeni sekmede açılır' };
+      }
+      var DERS_KITABI = {
+        '5': portalKitap('5'), '6': portalKitap('6'), '7': portalKitap('7'),
+        '8': flipKitap('8', 'https://arapca.muallimun.net/flipbook/iho08_2026/'),
+        '9': flipKitap('9', 'https://arapca.muallimun.net/flipbook/ihlar092026/'),
+        '10': flipKitap('10', 'https://arapca.muallimun.net/flipbook/ihlar102026/')
+      };
+      function kitapKarti(sinif) {
+        var k = DERS_KITABI[sinif]; if (!k) return null;
+        return { ad: 'Ders Kitabı', renk: '#D97706', ikon: 'kitap', bag: k.url,
+                 etiket: k.etiket, ipucu: k.ipucu, antet: sinif + '. SINIF · KİTAP' };
+      }
       function ihdocKur(mount) {
         var sinif = mount.getAttribute('data-sinif');
         var sec = (sinif === '10' && seciliKitap('10') === 'secmeli');
-        a4IzgaraKur(mount, sinif + '. SINIF · BELGE', 'sinif', SINIF_TURLERI, function (t) {
+        var kk = sec ? null : kitapKarti(sinif);
+        var liste = kk ? [kk].concat(SINIF_TURLERI) : SINIF_TURLERI;
+        a4IzgaraKur(mount, sinif + '. SINIF · BELGE', 'sinif', liste, function (t) {
           if (sec && SEC10_PDF[t.ad]) return SEC10_PDF[t.ad];
           return (SINIF_PDF[sinif] && SINIF_PDF[sinif][t.ad]) || [];
         }, function (t) {
@@ -4376,12 +4465,14 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       }
       /* Kitap değişince açık olan kategori açık kalsın. */
       function ihdocTazele(mount) {
-        var k = mount.querySelectorAll('.a4-kart'), acik = -1, i;
-        for (i = 0; i < k.length; i++) if (k[i].classList.contains('acik')) { acik = i; break; }
+        /* Açık kart SIRA numarasıyla değil ADIYLA geri açılır: kitap kartı
+           gelip gidince (10. sınıf) sıra bir kayıyordu, başka kart açılıyordu. */
+        var k = mount.querySelectorAll('.a4-kart'), ad = '', i;
+        for (i = 0; i < k.length; i++) if (k[i].classList.contains('acik')) { ad = (k[i]._a4 || {}).ad || ''; break; }
         ihdocKur(mount);
-        if (acik >= 0 && window.a4Toggle) {
-          var y = mount.querySelectorAll('.a4-kart')[acik];
-          if (y) window.a4Toggle(y);
+        if (ad && window.a4Toggle) {
+          var y = mount.querySelectorAll('.a4-kart');
+          for (i = 0; i < y.length; i++) if ((y[i]._a4 || {}).ad === ad) { window.a4Toggle(y[i]); break; }
         }
       }
       [].forEach.call(document.querySelectorAll('#imam-hatip .ihdoc-acc'), ihdocKur);

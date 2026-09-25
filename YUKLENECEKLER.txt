@@ -416,3 +416,39 @@ hesap/listelerim.js, hesap/listelerim.css
   · Denetim: listelerim.js node --check temiz, index.html'deki 16 satır içi
     betik temiz, üç yüzeyde de hap/dişli doğru boyutta çizildi, pencere
     içeriğinde yatay taşma yok, hapa tıklayınca Seviye Ayarları açılıyor.
+
+─────────────────────────────────────────────────────────────────────────────
+DERS KİTABI KARTI  (25.09.2026)  —  index.html
+  · İmam Hatip bölümünde her sınıfın belge ızgarasının BAŞINA (Sınıf
+    Dosyası'nın soluna) "Ders Kitabı" kartı kondu. Kart panel açmaz; sınıfın
+    çevrim içi ders kitabını YENİ SEKMEDE açar (<a target="_blank" rel="noopener">).
+  · Bağlantılar (DERS_KITABI tablosu, tek yerde):
+      5 · 6 · 7 → https://arapca.muallimun.net/2026_2027_arabicbooks/
+                  (2026-2027 Arapça Ders Kitapları Portalı — bu üç sınıfın ayrı
+                   flipbook adresi yok, portalda hepsi bir arada)
+      8        → https://arapca.muallimun.net/flipbook/iho08_2026/
+      9        → https://arapca.muallimun.net/flipbook/ihlar092026/
+      10       → https://arapca.muallimun.net/flipbook/ihlar102026/
+    Dördü de açılıyor (25.09.2026'da denendi): "İHO 8 Arapça Ders Kitabı",
+    "AİHL 9. Sınıf Arapça Ders Kitabı", "İHL 10. Sınıf Arapça Ders Kitabı".
+  · 10. sınıfta "Seçmeli Arapça" kitabı seçiliyken kart GİZLENİR — bağlantı İHL
+    zorunlu Arapça kitabına gidiyor, öğretmeni yanıltmasın. Maarif'e dönünce
+    kart geri gelir.
+  · Kartın görünüşü: krem kağıt, turuncu (#D97706) şerit, açık kitap ikonu
+    (sağ sayfa çevrilir — .ik-kapak), antet "8. SINIF · KİTAP", etiket
+    "ÇEVRİM İÇİ" + küçük dış bağlantı oku. Ok önce "↗" karakteriydi, tarayıcı
+    onu EMOJİ olarak çiziyordu; yerine çizgi SVG kondu (a4DisOkSvg).
+  · Altyapı: a4KartHtml artık t.bag (dış bağlantı), t.ikon (sıraya bağlı olmayan
+    ikon), t.etiket (sayaç yerine yazı), t.antet destekliyor. İkon numarası
+    kartın sırasından değil TÜR sırasından geliyor (a4IkonAl + ikonlar dizisi);
+    böylece araya kart girince Sınıf Dosyası/Planlar/... ikonları kaymadı.
+  · Yan fayda: ihdocTazele açık kartı artık SIRA yerine ADIYLA geri açıyor
+    (kitap kartı gelip gidince sıra kayıp başka kart açılıyordu).
+  · Denetim (yerel kopya, headless Chromium): altı sınıfta da kart ilk sırada,
+    adresler doğru, ikinci kartın ikonu hâlâ mavi klasör, son kart hâlâ BEP;
+    karta tıklayınca panel açılmıyor ve etkinlik kartları toplanmıyor; belge
+    kartı açılınca kartlar yine toplanıyor (618→0, data-oto=1), kapanınca geri
+    geliyor; 10. sınıf Seçmeli'ye geçince kart kalkıyor, dönünce geliyor ve
+    açık olan kart açık kalıyor; 390/600/1280 px'te etiket kağıttan taşmıyor;
+    16 satır içi betik temiz.
+  · Yedek: _kaynak/yedekler/index_2026-09-25_kitapkarti-oncesi.html
