@@ -12,7 +12,7 @@
       gtag('js', new Date());
       gtag('config', 'G-FV9JD15KLW');
     </script>
-    <link rel="stylesheet" href="okumayazma/alfabe.css?v=76">
+    <link rel="stylesheet" href="okumayazma/alfabe.css?v=77">
     <link rel="stylesheet" href="arakom.css?v=2">
 </head>
 <body>
@@ -78,6 +78,7 @@
                 <div class="tab-grup-sira">
                     <button class="tab-trigger active" onclick="ui.tab(event, 'p1')" title="Harf Tanıtımı" aria-label="Harf Tanıtımı"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.4" y="3.6" width="19.2" height="16.8" rx="2.6" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><rect x="4.4" y="5.6" width="4.6" height="4.2" rx="1" fill="#2ecc71"/><rect x="9.7" y="5.6" width="4.6" height="4.2" rx="1" fill="#3498db"/><rect x="15" y="5.6" width="4.6" height="4.2" rx="1" fill="#9b59b6"/><rect x="4.4" y="10.5" width="4.6" height="4.2" rx="1" fill="#F1C40F"/><rect x="9.7" y="10.5" width="4.6" height="4.2" rx="1" fill="#e74c3c"/><rect x="15" y="10.5" width="4.6" height="4.2" rx="1" fill="#1ABC9C"/><rect x="4.4" y="15.4" width="15.2" height="3.1" rx="1" fill="#D6E4EC"/></svg><span class="tab-ad">Harf Tanıtımı</span></button>
                     <button class="tab-trigger" onclick="ui.tab(event, 'p5')" title="Harf Birleştirme" aria-label="Harf Birleştirme"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 15.5h18" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/><path d="M4.6 15.2V9.6a2.4 2.4 0 0 1 4.8 0v5.6" fill="none" stroke="#2ecc71" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.4 15.2v-2.6a2.3 2.3 0 0 1 4.6 0v2.6" fill="none" stroke="#3498db" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 15.2V7.4" fill="none" stroke="#9b59b6" stroke-width="2.3" stroke-linecap="round"/><path d="M17.2 15.2c1.9 0 2.9-1.2 2.9-2.8" fill="none" stroke="#e74c3c" stroke-width="2.3" stroke-linecap="round"/><circle cx="20.1" cy="10.9" r="1.15" fill="#e74c3c"/></svg><span class="tab-ad">Harf Birleştirme</span></button>
+                    <button class="tab-trigger" onclick="ui.tab(event, 'p8'); if (window.ocAc) ocAc()" title="Okuma" aria-label="Okuma"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.4" y="3.8" width="19.2" height="16.4" rx="2.6" fill="#F7FAFC" stroke="#0E6655" stroke-width="1.3"/><path d="M17.8 7.6H8.2" fill="none" stroke="#9b59b6" stroke-width="1.8" stroke-linecap="round"/><path d="M10 5.8L8.2 7.6 10 9.4" fill="none" stroke="#9b59b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="12.6" r="1.15" fill="#F1C40F"/><circle cx="12" cy="12.6" r="1.15" fill="#3498db"/><circle cx="17" cy="12.6" r="1.15" fill="#e74c3c"/><path d="M6.2 16.6h9.6" fill="none" stroke="#2ecc71" stroke-width="1.8" stroke-linecap="round"/><path d="M14 14.8l1.8 1.8-1.8 1.8" fill="none" stroke="#2ecc71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tab-ad">Okuma</span></button>
                     <button class="tab-trigger" onclick="ui.tab(event, 'p7'); dvyAc()" title="Dinle ve Yaz" aria-label="Dinle ve Yaz"><svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.4h3.1L11 6.1v11.8L7.1 14.6H4z" fill="#3498db"/><path class="li-alev" d="M13.4 9.1a4.2 4.2 0 0 1 0 5.8" fill="none" stroke="#F1C40F" stroke-width="1.7" stroke-linecap="round"/><path class="li-alev" d="M15.8 7a7.4 7.4 0 0 1 0 10" fill="none" stroke="#F1C40F" stroke-width="1.7" stroke-linecap="round"/><path d="M17.4 19.9l-2.6.7.7-2.6 4.6-4.6 1.9 1.9z" fill="#e74c3c"/><path d="M20.1 13.4l1.9 1.9" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/></svg><span class="tab-ad">Dinle ve Yaz</span></button>
                 </div>
             </div>
@@ -392,6 +393,17 @@
              İçeriği okumayazma/alfabe_birlestir.js kurar. -->
         <section id="p5" class="panel"><div class="ab-sar" id="abSar"></div></section>
 
+        <!-- OKUMA: "İleri" ile adım adım ilerleyen gösteri. 1) Latin harfler
+             Arapça mantıkta hazır bekler: sessizler ÇİZGİNİN üstünde sağdan
+             sola, sesliler çizginin altında-üstünde. 2) Her basışta BİR Arapça
+             harf harekesiyle kendi Latin harfinin altına gelir — hece hece
+             ilerlenir, o hecenin sütunu renklenir. 3) Harfler birleşir, bitişik
+             Arapça kelime oluşur. 4) Latin harflerin klonu kelimenin altına
+             TEK TEK inip Türkçe yazılış gibi dizilir (soldan sağa).
+             İçeriğini okumayazma/okuma-cevir.js kurar; kelimeler ve Latin
+             karşılıklar okumayazma/okuma.js ile aynıdır. -->
+        <section id="p8" class="panel"><div id="ocSar"></div></section>
+
         <!-- SINAV: 9 ayrı soru tipi. İçeriği okumayazma/alfabe_sinav.js kurar. -->
         <section id="p6" class="panel"><div class="as-sar" id="asSar"></div></section>
 
@@ -617,12 +629,13 @@ function dvyAc() {
 <script src="okumayazma/alfabe_harf_detay.js?v=31"></script>
 <script src="sistem/gorevkopru.js?v=8"></script>
 <script src="okumayazma/alfabe.js?v=34"></script>
-<script src="okumayazma/alfabe_birlestir.js?v=22"></script>
+<script src="okumayazma/alfabe_birlestir.js?v=24"></script>
 <script src="okumayazma/alfabe_sinav.js?v=9"></script>
+<script src="okumayazma/okuma-cevir.js?v=18"></script>
 <!-- KISMİ ÖLÇME: Harf Tanıtımı ve Harf Birleştirme sekmelerinin altına
      katlanır mini testler ekler. Soruları alfabe_sinav.js üretir, bu
      yüzden ONDAN SONRA yüklenir. -->
-<script src="okumayazma/alfabe_akordiyon.js?v=7"></script>
+<script src="okumayazma/alfabe_akordiyon.js?v=10"></script>
     <script src="sistem/geri.js?v=20260915a"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.

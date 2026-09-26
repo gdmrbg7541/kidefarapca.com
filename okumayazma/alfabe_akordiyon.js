@@ -14,6 +14,9 @@
      Harf Birleştirme
      └ Kendini Dene   → çizgideki yazılışlar (tip 5-6) ve
                         kelimedeki boşluğa gelen biçim (tip 9)
+     Okuma
+     └ Kendini Dene   → hece/kelime okunuşu, işaretin ne yaptığı ve
+                        okunuştan kelimeyi bulma (okuma-cevir.js üretir)
      Dinle ve Yaz
 
    Ayrı bir başlık açılmadı: bunlar alfabenin kendi etkinlikleri, konuyu
@@ -23,10 +26,16 @@
    sıkıştırılmadı; ekranı baştan başa kaplayan bir katman açılıyor ve
    her şey (soru, şıklar, harfler) tahtanın arkasından okunacak puntoda.
 
-   Sorular UYDURULMAZ: hepsi alfabe_sinav.js'in kendi üreteçlerinden
-   (AlfabeSinav.uret) gelir ve yine onun denetle()'sinden geçer. Böylece
-   «Kendini Dene» ile Sınav sekmesi aynı soruları, aynı kurallarla sorar;
-   ikisi ayrışamaz.
+   Sorular UYDURULMAZ: harf konularının soruları alfabe_sinav.js'in kendi
+   üreteçlerinden (AlfabeSinav.uret) gelir ve yine onun denetle()'sinden
+   geçer. Böylece «Kendini Dene» ile Sınav sekmesi aynı soruları, aynı
+   kurallarla sorar; ikisi ayrışamaz.
+
+   OKUMA'nın soruları ise okuma-cevir.js'ten gelir (KidefOkumaCevir.
+   sinavHavuzu): o sekmenin kendi kelimeleri ve kendi okunuş kuralları.
+   Bir bölüm kendi üreticisini getiriyorsa (uretici alanı) havuz ondan
+   kurulur; getirmiyorsa tiplerden. Katman ikisini de aynı biçimde çizer:
+     { tip, bicim:'test', metin, ustlik, siklar:[{html,dogru}] }
    ===================================================================== */
 (function () {
     'use strict';
@@ -89,6 +98,19 @@
                   '<path d="M9.4 15.3v-2.5a2.2 2.2 0 0 1 4.4 0v2.5" fill="none" stroke="#3498db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>' +
                   '<circle cx="18.2" cy="16.6" r="3.9" fill="#2ecc71"/>' +
                   '<path d="M16.4 16.7l1.3 1.3 2.4-2.6" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        },
+        {
+            /* OKUMA — soruları alfabe_sinav.js'ten DEĞİL, okuma-cevir.js'ten
+               gelir: o sekmenin kendi kelimeleri, kendi okunuşları. Bu yüzden
+               tip listesi boş, yerine bir üretici veriliyor. */
+            anahtar: 'p8',
+            baslik: 'Okuma',
+            not: function () { return soruSayisi + ' soru · hece, uzatma, cezim ve şedde okunuşları'; },
+            tipler: [],
+            uretici: function (adet) {
+                var O = window.KidefOkumaCevir;
+                return (O && O.sinavHavuzu) ? O.sinavHavuzu(adet) : [];
+            }
         }
     ];
 
@@ -323,6 +345,7 @@
                ' puan, önce bilene ' + HIZ_PUAN + ' puan hız</div>' +
                '  <div class="ak-alt">' +
                '    <button type="button" class="ak-t" data-rol="yeniden">Yeniden dene</button>' +
+               '    <button type="button" class="ak-t ak-ikincil" data-rol="kisi">Kişi sayısı</button>' +
                '    <button type="button" class="ak-t ak-ikincil" data-rol="kapat">Kapat</button>' +
                '  </div></div>';
     }
@@ -338,6 +361,7 @@
                '  <div class="ak-sonsoz">' + soz + '</div>' +
                '  <div class="ak-alt">' +
                '    <button type="button" class="ak-t" data-rol="yeniden">Yeniden dene</button>' +
+               '    <button type="button" class="ak-t ak-ikincil" data-rol="kisi">Kişi sayısı</button>' +
                '    <button type="button" class="ak-t ak-ikincil" data-rol="kapat">Kapat</button>' +
                '  </div></div>';
     }
@@ -348,6 +372,129 @@
         var bas = hal === 'iyi' ? '✔ Doğru.' : (hal === 'orta' ? '◐ Tamamlandı.' : '✘ Yanlış.');
         b.className = 'as-geri-bildirim ak-bildirim as-' + hal;
         b.innerHTML = yazi ? (bas + ' ' + yazi) : bas;
+    }
+
+    /* ---------------- GİRİŞ EKRANI ----------------------------------
+       «Dene»ye basınca sorular hemen gelmiyor: önce KAÇ KİŞİ oynayacağı
+       soruluyor ve iki kişiliğin kuralları yazıyor. Sınıfta tahtaya iki
+       öğrenci kalkacaksa neye göre yarışacaklarını baştan bilmeliler.
+
+       Görseller CANLI: tek kişilikte öğrenci defterine tik atar, iki
+       kişilikte iki öğrenci sırayla öne çıkar ve aralarında şimşek çakar.
+       SVG'ler burada duruyor, kıpırtıları bicemKur()'daki @keyframes'te. */
+
+    var SVG_TEK =
+        '<svg class="ak-svg" viewBox="0 0 132 88" aria-hidden="true" focusable="false">' +
+        '<rect x="14" y="66" width="104" height="6" rx="3" fill="#D7E3EF"/>' +
+        '<g class="ak-og ak-og1">' +
+        '  <circle cx="48" cy="26" r="13" fill="#3498db"/>' +
+        '  <path d="M26 66c0-13 10-22 22-22s22 9 22 22z" fill="#2E86C1"/></g>' +
+        '<rect x="76" y="44" width="38" height="24" rx="4" fill="#fff" stroke="#0E6655" stroke-width="2"/>' +
+        '<path class="ak-tik" d="M83 57l6 6 13-15" fill="none" stroke="#2ecc71" stroke-width="4.2" ' +
+        '  stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    var SVG_IKI =
+        '<svg class="ak-svg" viewBox="0 0 132 88" aria-hidden="true" focusable="false">' +
+        '<rect x="8" y="66" width="116" height="6" rx="3" fill="#D7E3EF"/>' +
+        '<g class="ak-og ak-og1">' +
+        '  <circle cx="30" cy="30" r="12" fill="#3498db"/>' +
+        '  <path d="M10 66c0-12 9-20 20-20s20 8 20 20z" fill="#2E86C1"/></g>' +
+        '<g class="ak-og ak-og2">' +
+        '  <circle cx="102" cy="30" r="12" fill="#9b59b6"/>' +
+        '  <path d="M82 66c0-12 9-20 20-20s20 8 20 20z" fill="#8E44AD"/></g>' +
+        '<path class="ak-simsek" d="M70 12L54 40h10l-6 22 20-28H68z" fill="#F1C40F" ' +
+        '  stroke="#E67E22" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+
+    var SVG_SIMSEK =
+        '<svg class="ak-mini ak-simsek" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path d="M13.6 2L5.4 14h5.2L9.2 22l8.6-12.4h-5.4z" fill="#F1C40F" stroke="#E67E22" ' +
+        '  stroke-width="1.3" stroke-linejoin="round"/></svg>';
+
+    var SVG_KUPA =
+        '<svg class="ak-mini ak-kupa" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path d="M7 3.6h10v5.2a5 5 0 0 1-10 0z" fill="#F1C40F" stroke="#D4A017" stroke-width="1.2"/>' +
+        '<path d="M7 5H4.4a3.6 3.6 0 0 0 3.6 3.6M17 5h2.6A3.6 3.6 0 0 1 16 8.6" fill="none" ' +
+        '  stroke="#D4A017" stroke-width="1.4"/>' +
+        '<path d="M10.6 13.8h2.8v3.2h-2.8z" fill="#D4A017"/>' +
+        '<rect x="7.8" y="17" width="8.4" height="2.8" rx="1.4" fill="#B8860B"/></svg>';
+
+    var SVG_GOZ =
+        '<svg class="ak-mini" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path d="M2.6 12S6.4 5.6 12 5.6 21.4 12 21.4 12 17.6 18.4 12 18.4 2.6 12 2.6 12z" ' +
+        '  fill="#fff" stroke="#0E6655" stroke-width="1.5"/>' +
+        '<circle cx="12" cy="12" r="3.1" fill="#0E6655"/>' +
+        '<path class="ak-cizik" d="M4 20L20 4" stroke="#e74c3c" stroke-width="2.2" stroke-linecap="round"/></svg>';
+
+    var SVG_SAYIM =
+        '<svg class="ak-mini" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<circle cx="12" cy="13" r="8.4" fill="#fff" stroke="#0E6655" stroke-width="1.6"/>' +
+        '<path d="M9.4 2.6h5.2" stroke="#0E6655" stroke-width="1.8" stroke-linecap="round"/>' +
+        '<path class="ak-akrep" d="M12 13V8.2" stroke="#e74c3c" stroke-width="1.9" stroke-linecap="round"/></svg>';
+
+    /* İki kişiliğin kuralları — kodda gerçekten böyle işliyor (bkz.
+       ikiliHtml, ikiliCevap, ikiliCoz, otomatikGec). */
+    function kurallar(n) {
+        if (n === 2) {
+            return [
+                [SVG_GOZ,    'Soru <b>ortak</b>, şıklar iki ekranda <b>ayrı</b> dizilir — yandakine bakıp kopya çekilemez.'],
+                [SVG_SAYIM,  'Cevabını veren bekler; ikisi de cevaplayınca renkler <b>birlikte</b> açılır. Biri cevaplamazsa «Cevapları aç».'],
+                [SVG_SIMSEK, 'Her doğru <b>+' + DOGRU_PUAN + '</b> puan; doğru bilenlerden <b>önce</b> basana <b>+' + HIZ_PUAN + '</b> hız puanı.'],
+                [SVG_KUPA,   '<b>3 · 2 · 1</b> sayımıyla başlar, sorular kendiliğinden ilerler. Sonunda puanı yüksek olan kazanır.']
+            ];
+        }
+        return [
+            [SVG_SAYIM, 'Her soruda bir şık seç; doğru mu yanlış mı <b>hemen</b> görünür.'],
+            [SVG_KUPA,  'Sonunda <b>kaç doğru</b> yaptığın yazar; «Yeniden dene» ile yeni sorular gelir.']
+        ];
+    }
+
+    function girisHtml(b) {
+        var kart = function (n, svg, ad, alt) {
+            return '<button type="button" class="ak-kart' + (mod === n ? ' secili' : '') +
+                   '" data-secmod="' + n + '" aria-pressed="' + (mod === n) + '">' +
+                   '<span class="ak-kart-gorsel">' + svg + '</span>' +
+                   '<span class="ak-kart-ad">' + ad + '</span>' +
+                   '<span class="ak-kart-not">' + alt + '</span></button>';
+        };
+        return '<div class="ak-giris">' +
+               '  <div class="ak-giris-bas">Kaç kişi oynayacak?</div>' +
+               '  <div class="ak-kartlar">' +
+               kart(1, SVG_TEK, 'Tek kişilik', 'Kendi başına çöz') +
+               kart(2, SVG_IKI, 'İki kişilik', 'İki öğrenci tahtada yarışır') +
+               '  </div>' +
+               '  <ul class="ak-kural" data-rol="kural">' + kuralHtml(mod) + '</ul>' +
+               '  <div class="ak-giris-alt">' +
+               '    <span class="ak-giris-not">' + soruSayisi + ' soru &middot; sayıyı yukarıdan değiştirebilirsin</span>' +
+               '    <button type="button" class="ak-t" data-rol="akbasla">Başla ▸</button>' +
+               '  </div></div>';
+    }
+    function kuralHtml(n) {
+        return kurallar(n).map(function (k) {
+            return '<li>' + k[0] + '<span>' + k[1] + '</span></li>';
+        }).join('');
+    }
+    function girisGoster() {
+        zamanTemizle(); perdeKapat();
+        if (aktif) aktif.giris = true;
+        var b = bolumBul(aktif && aktif.anahtar);
+        if (!b) return;
+        sahne.innerHTML = girisHtml(b);
+    }
+    /* Kart değişince yalnız kurallar ve işaretler tazelenir — ekran zıplamasın. */
+    function girisTazele() {
+        var u = sahne.querySelector('[data-rol="kural"]');
+        if (u) u.innerHTML = kuralHtml(mod);
+        [].forEach.call(sahne.querySelectorAll('.ak-kart'), function (k) {
+            var se = +k.dataset.secmod === mod;
+            k.classList.toggle('secili', se);
+            k.setAttribute('aria-pressed', se ? 'true' : 'false');
+        });
+        var n = sahne.querySelector('.ak-giris-not');
+        if (n) n.innerHTML = soruSayisi + ' soru &middot; sayıyı yukarıdan değiştirebilirsin';
+    }
+    function bolumBul(anahtar) {
+        for (var i = 0; i < BOLUMLER.length; i++) if (BOLUMLER[i].anahtar === anahtar) return BOLUMLER[i];
+        return null;
     }
 
     /* ---------------- tam ekran katman ---------------- */
@@ -394,18 +541,27 @@
             if (rol === 'kapat')   { tik(); kapat(); return; }
             if (rol === 'sonraki') { tik(); aktif.i++; soruGoster(); return; }
             if (rol === 'yeniden') { tik(); turBaslat(); return; }
+            if (rol === 'kisi')    { tik(); girisGoster(); return; }
+            /* Rol adı bilerek 'akbasla': Sınav sekmesinde de data-rol="basla"
+               taşıyan bir düğme var, belge genelinde karışmasın. */
+            if (rol === 'akbasla')   { tik(); turBaslat(); return; }
+            /* Giriş ekranındaki kişi sayısı kartları */
+            var kk = t.closest('.ak-kart');
+            if (kk) { tik(); modYaz(+kk.dataset.secmod); modIsaretle(); girisTazele(); return; }
+            var giriste = !!(aktif && aktif.giris);
             var mb = t.closest('.ak-modb');
-            if (mb) { tik(); modYaz(+mb.dataset.mod); modIsaretle(); turBaslat(); return; }
+            if (mb) {
+                tik(); modYaz(+mb.dataset.mod); modIsaretle();
+                if (giriste) girisTazele(); else turBaslat();
+                return;
+            }
             var ab = t.closest('.ak-adetb');
             if (ab) {
                 tik(); soruSayisiYaz(+ab.dataset.adet); modIsaretle();
-                if (notEl && aktif) {
-                    var bb = null, q;
-                    for (q = 0; q < BOLUMLER.length; q++)
-                        if (BOLUMLER[q].anahtar === aktif.anahtar) bb = BOLUMLER[q];
-                    if (bb) notEl.textContent = bb.not();
-                }
-                turBaslat(); return;
+                var bb = bolumBul(aktif && aktif.anahtar);
+                if (notEl && bb) notEl.textContent = bb.not();
+                if (giriste) girisTazele(); else turBaslat();
+                return;
             }
             var s = aktif && aktif.havuz[aktif.i];
             if (!s) return;
@@ -517,7 +673,9 @@
             ? aktif.tipler.filter(function (t) { return t !== 7 && t !== 8; })
             : aktif.tipler;
         zamanTemizle(); perdeKapat();
-        aktif.havuz = havuz(tipler, soruSayisi);
+        aktif.giris = false;
+        /* Kendi üreticisi olan bölüm (Okuma) havuzunu kendi kurar. */
+        aktif.havuz = aktif.uretici ? aktif.uretici(soruSayisi) : havuz(tipler, soruSayisi);
         aktif.i = 0; aktif.dogru = 0;
         aktif.puan = { 1: { dogru: 0, hiz: 0 }, 2: { dogru: 0, hiz: 0 } };
         if (!aktif.havuz.length) {
@@ -662,14 +820,14 @@
 
     function ac(anahtar) {
         katmanKur(); bicemKur();
-        var b = null, i;
-        for (i = 0; i < BOLUMLER.length; i++) if (BOLUMLER[i].anahtar === anahtar) b = BOLUMLER[i];
+        var b = bolumBul(anahtar);
         if (!b) return false;
         if (!durumlar[anahtar]) {
             durumlar[anahtar] = { anahtar: anahtar, tipler: b.tipler, havuz: [], i: 0,
                                   dogru: 0, cevapli: false, esSol: null, esDogru: 0, esHata: 0 };
         }
         aktif = durumlar[anahtar];
+        aktif.uretici = b.uretici || null;
         basEl.textContent = 'Kendini Dene — ' + b.baslik;
         notEl.textContent = b.not();
         /* KUMANDA ŞERİDİ: alfabe.html'de sayfanın herhangi bir yerine
@@ -682,7 +840,7 @@
         katman.hidden = false;
         document.body.classList.add('ak-acik');
         modIsaretle();
-        turBaslat();
+        girisGoster();          /* önce «kaç kişi oynayacak?» ekranı */
         return true;
     }
     function seridiGeriAc() {
@@ -902,10 +1060,60 @@
             '.nav-tabs .ak-defter .tab-ikon{flex:none}',
             '.nav-tabs .ak-defternot{margin-left:auto;font-size:.74rem;line-height:1.1;',
             '  white-space:nowrap;opacity:.8}',
+            /* ---- GİRİŞ EKRANI: kaç kişi oynayacak + kurallar ---- */
+            '#ak-tam .ak-giris{display:flex;flex-direction:column;align-items:center;',
+            '  gap:2.2vh;width:100%;max-width:1100px;margin:0 auto;text-align:center}',
+            '#ak-tam .ak-giris-bas{font-size:clamp(20px,4.2vh,44px);color:#0E6655;font-weight:400}',
+            '#ak-tam .ak-kartlar{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,2vw,26px);',
+            '  width:100%}',
+            '#ak-tam .ak-kart{display:flex;flex-direction:column;align-items:center;gap:.6vh;',
+            '  padding:2vh 1.6vw;border:2px solid #DCE6EE;border-radius:20px;background:#fff;',
+            '  cursor:pointer;font-family:inherit;color:#1f2937;',
+            '  transition:border-color .18s,box-shadow .18s,background .18s,transform .18s}',
+            '#ak-tam .ak-kart:hover{border-color:#9FD5C8;transform:translateY(-2px)}',
+            '#ak-tam .ak-kart.secili{border-color:#16A085;background:#F3FBF8;',
+            '  box-shadow:0 0 0 4px rgba(22,160,133,.16)}',
+            '#ak-tam .ak-kart-gorsel{display:block;width:100%}',
+            '#ak-tam .ak-svg{width:clamp(132px,19vh,260px);height:auto;display:block;margin:0 auto}',
+            '#ak-tam .ak-kart-ad{font-size:clamp(17px,3vh,32px);font-weight:400}',
+            '#ak-tam .ak-kart-not{font-size:clamp(12px,1.7vh,18px);color:#64748b}',
+            /* kurallar: her satırın başında küçük bir işaret */
+            '#ak-tam .ak-kural{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;',
+            '  gap:1.1vh;width:100%;max-width:820px;text-align:start}',
+            '#ak-tam .ak-kural li{display:flex;align-items:flex-start;gap:10px;',
+            '  font-size:clamp(13px,1.95vh,21px);color:#334155;line-height:1.45}',
+            '#ak-tam .ak-kural b{color:#0E6655;font-weight:400}',
+            '#ak-tam .ak-mini{width:clamp(20px,2.7vh,30px);height:clamp(20px,2.7vh,30px);flex:none;',
+            '  margin-top:.1em}',
+            '#ak-tam .ak-giris-alt{display:flex;align-items:center;justify-content:center;',
+            '  gap:clamp(10px,2vw,24px);flex-wrap:wrap;margin-top:.6vh}',
+            '#ak-tam .ak-giris-not{font-size:clamp(12px,1.7vh,18px);color:#94a3b8}',
+            /* ---- kıpırtılar ---- */
+            '@keyframes akBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}',
+            '@keyframes akCiz{0%,15%{stroke-dashoffset:40}52%,86%{stroke-dashoffset:0}100%{stroke-dashoffset:40}}',
+            '@keyframes akCak{0%,100%{transform:scale(.8);opacity:.35}42%{transform:scale(1.14);opacity:1}',
+            '  64%{transform:scale(.96);opacity:.9}}',
+            '@keyframes akDon{0%,100%{transform:rotate(0)}50%{transform:rotate(360deg)}}',
+            '#ak-tam .ak-og{transform-box:fill-box;transform-origin:50% 100%;',
+            '  animation:akBob 1.9s ease-in-out infinite}',
+            '#ak-tam .ak-og2{animation-delay:.95s}',
+            '#ak-tam .ak-tik{stroke-dasharray:40;stroke-dashoffset:40;',
+            '  animation:akCiz 2.6s ease-in-out infinite}',
+            '#ak-tam .ak-simsek{transform-box:fill-box;transform-origin:50% 50%;',
+            '  animation:akCak 1.9s ease-in-out infinite}',
+            '#ak-tam .ak-kupa{transform-box:fill-box;transform-origin:50% 100%;',
+            '  animation:akBob 2.4s ease-in-out infinite}',
+            '#ak-tam .ak-akrep{transform-box:fill-box;transform-origin:50% 100%;',
+            '  animation:akDon 3.2s linear infinite}',
+            '@media (prefers-reduced-motion:reduce){',
+            '  #ak-tam .ak-og,#ak-tam .ak-tik,#ak-tam .ak-simsek,#ak-tam .ak-kupa,#ak-tam .ak-akrep',
+            '  {animation:none}}',
             /* Dar ekranda tek sütun: iki büyük şık yan yana sığmıyor. */
             '@media (max-width:820px){',
             '  #ak-tam .as-siklar{grid-template-columns:1fr}',
             '  #ak-tam .as-h,#ak-tam .as-uclu,#ak-tam .as-bic{font-size:clamp(28px,6vh,60px)}',
+            '  #ak-tam .ak-kartlar{gap:10px}',
+            '  #ak-tam .ak-svg{width:clamp(80px,11vh,130px)}',
             '}'
         ].join('\n');
         document.head.appendChild(st);
@@ -917,6 +1125,7 @@
 
          [ Harf Tanıtımı              ][ Dene ]
          [ Harf Birleştirme           ][ Dene ]
+         [ Okuma                      ][ Dene ]
          [ Dinle ve Yaz               ][ PDF  ]
          [ Hat Atölyesi · Öğrenci Defteri      ]   ← indirme satırı
 
@@ -1006,6 +1215,12 @@
         a.setAttribute('aria-label', a.title);
         a.innerHTML = PDF_IKON + '<span class="ak-yanad">PDF</span>';
         sar(konuBul('p7'), a);
+
+        /* NOT: Okuma'nın yanında PDF tuşu YOK — orada «Dene» var (yukarıdaki
+           BOLUMLER döngüsü koyuyor). Çalışma kâğıtları dosyası siteden
+           çıkarıldı, _kaynak/okuma-calisma-kagitlari.pdf altında duruyor
+           (site dışı, git'e gitmiyor). Geri istenirse dosya okumayazma/
+           içine alınıp buraya Dinle ve Yaz'ınki gibi bir bağlantı konur. */
 
         /* HAT ATÖLYESİ ÖĞRENCİ DEFTERİ — sekme değil, indirme satırı.
            Alfabe bölümünün sonuna, tam genişlikte. Dosya öğretmenin kendi

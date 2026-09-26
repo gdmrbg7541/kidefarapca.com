@@ -30,15 +30,18 @@
      KIRMIZI → kendinden SONRAKİ harfe BAĞLANMAZ    (ر و د ...)
      SİYAH   → iki yandan da bağlanmaz, YALNIZ yazılır (ج)
 
-   ADIM DÜZENİ (öğretmenin ل ح ق örneği birebir uygulanır)
-     0) boş        1) ل        2) لـ        3) لـ ح
-     4) لـ ـحـ     5) لـ ـحـ ق  6) لـ ـحـ ـق  7) لحق
-   Yani her harf için İKİ adım vardır: önce harf yalın gelir,
-   sonra bulunduğu yere göre biçimini alır. En sonda hepsi
-   birleşip gerçek kelime çıkar.
-   İSTİSNA: harf bulunduğu yerde ZATEN yalın yazılıyorsa (kaşide
-   almıyorsa) ikinci adım aynı şeyi tekrar edeceği için atlanır —
-   bir kez belirmesi yeter.
+   ADIM DÜZENİ (26.09.2026 — öğretmenin ك ت ب örneği birebir)
+     boş → ك → كـ → ت → ـت → ـتـ → ب → ـب → كتب
+   Yani SIRASI GELEN harf önce yalın gelir, sonra biçim biçim
+   değişir; daha önce gelenler son biçimleriyle yerinde durur.
+   Bir harfin geçeceği biçimler:
+     1) yalın                 ت
+     2) öncekinden bağlı      ـت    (kendinden önceki harf bağlanıyorsa)
+     3) bulunduğu yerin tam biçimi  ـتـ  (bir öncekinden farklıysa)
+   BÜTÜN harflerin birleşmesi EN SON adımdır; o adımda parçalar tek
+   kutuya girer, tarayıcı gerçek kelime gibi bağlar ve harfler
+   birbirine doğru kayarak yaklaşır (FLIP).
+   Kendi yerinde zaten yalın yazılan harf (و د ر …) tek adımda gelir.
 
    KUMANDA: tek bir "İleri" her şeyi sürer. Etkin örneğin adımları
    biter bitmez bir sonraki örneğe geçilir. Klavyede → / boşluk
@@ -123,23 +126,30 @@
        "değişiyormuş" gibi yeniden beliriyordu. Böyle harflerde TEK adım
        yeter — çizgili bir hâle dönüşmüyorlar.
        Örnek: و ح ش → و zaten yalın yazılır, tek adımda gelir. */
-    function adimlar(coz) {
-        var n = coz.length, liste = [[]], i, j, a, b;
+    function adimlar(c) {
+        var n = c.length, liste = [[]], i, j, f, a, formlar;
         for (i = 0; i < n; i++) {
-            a = [];
-            for (j = 0; j < i; j++) a.push({ t: coz[j].bicim, r: coz[j].renk });
-            a.push({ t: coz[i].harf, r: coz[i].renk, yeni: true });
-            liste.push(a);
-            if (coz[i].bicim === coz[i].harf) continue;   /* yalın kalıyor → 2. adım gereksiz */
-            b = [];
-            /* DİKKAT: burada "yeni" değil "donusum" işaretlenir. Harf zaten
-               ekranda; yalnız biçim değiştiriyor (س → سـ). "yeni" olsaydı
-               belirme animasyonu tekrar oynar, harf kaybolup yeniden
-               görünürdü — süreklilik bozuluyordu. */
-            for (j = 0; j <= i; j++) b.push({ t: coz[j].bicim, r: coz[j].renk, donusum: j === i });
-            liste.push(b);
+            /* Bir harfin GEÇECEĞİ biçimler, sırayla:
+                 1) yalın hâli                       ت
+                 2) yalnız ÖNCEKİNDEN bağlı hâli     ـت   (öncekine bağlanıyorsa)
+                 3) bulunduğu yerdeki tam biçimi     ـتـ  (bir öncekinden farklıysa)
+               Örnek ك ت ب →  ك · كـ · ت · ـت · ـتـ · ب · ـب  (sonra kelime). */
+            formlar = [c[i].harf];
+            if (c[i].geriBag) formlar.push(TATVIL + c[i].harf);
+            if (c[i].bicim !== formlar[formlar.length - 1]) formlar.push(c[i].bicim);
+
+            for (f = 0; f < formlar.length; f++) {
+                a = [];
+                /* önceki harfler artık SON biçimleriyle durur */
+                for (j = 0; j < i; j++) a.push({ t: c[j].bicim, r: c[j].renk, i: j });
+                /* sırası gelen harf: ilk gelişinde belirir, sonra biçim değiştirir */
+                a.push({ t: formlar[f], r: c[i].renk, i: i,
+                         yeni: f === 0, donusum: f > 0 });
+                liste.push(a);
+            }
         }
-        liste.push(coz.map(function (c) { return { t: c.harf, r: c.renk, bitisik: true }; }));
+        /* EN SON: bütün harfler birleşir, gerçek kelime çıkar */
+        liste.push(c.map(function (x, k) { return { t: x.harf, r: x.renk, i: k, g: 1 }; }));
         return liste;
     }
 
@@ -150,19 +160,20 @@
 
     function adimHtml(parcalar) {
         if (!parcalar.length) return '<span class="ab-dizi ab-bos-dizi"></span>';
-        var bitisik = parcalar[0].bitisik, i, cik = [];
+        var grup = [], ayrik = [], i, p, sp;
         for (i = 0; i < parcalar.length; i++) {
-            cik.push('<span class="ab-p ab-c-' + parcalar[i].r +
-                     (parcalar[i].yeni ? ' ab-yeni' : '') +
-                     (parcalar[i].donusum ? ' ab-donusum' : '') + '">' +
-                     kacis(parcalar[i].t) + '</span>');
+            p = parcalar[i];
+            sp = '<span class="ab-p ab-c-' + p.r +
+                 (p.yeni ? ' ab-yeni' : (p.donusum ? ' ab-donusum' : '')) +
+                 '" data-i="' + p.i + '">' + kacis(p.t) + '</span>';
+            if (p.g) grup.push(sp); else ayrik.push(sp);
         }
-        /* BİTİŞİK adımda parçalar arasında BOŞLUK YOK: tarayıcı
-           harfleri gerçek kelime gibi birbirine bağlar. Ayrı
-           adımlarda ise her parça inline-block olduğu için
-           yan yana durur ama BİRLEŞMEZ (istediğimiz de bu). */
-        return '<span class="ab-dizi' + (bitisik ? ' ab-bitisik' : '') + '">' +
-               cik.join('') + '</span>';
+        /* Son adımda parçaların hepsi TEK kutuya girer: içleri inline
+           olduğu için tarayıcı onları gerçek kelime gibi bağlar. Diğer
+           adımlarda her parça ayrı durur, aralarında boşluk kalır. */
+        return '<span class="ab-dizi">' +
+               (grup.length ? '<span class="ab-grup">' + grup.join('') + '</span>' : '') +
+               ayrik.join('') + '</span>';
     }
 
     /* Bir örnek satırı.
@@ -400,23 +411,35 @@
 
         var kutu = satir.querySelector('[data-rol="adim"]');
         var parca = liste[adim];
-        var dizi  = kutu.querySelector('.ab-dizi');
-        var eski  = dizi ? dizi.querySelectorAll('.ab-p') : [];
-        var bitisik = !!(parca.length && parca[0].bitisik);
-        var yerinde = dizi && parca.length && eski.length === parca.length &&
-                      dizi.classList.contains('ab-bitisik') === bitisik;
 
-        if (yerinde) {
-            for (var i = 0; i < parca.length; i++) {
-                var el = eski[i], p = parca[i];
-                var taban = 'ab-p ab-c-' + p.r;
-                var ek = p.yeni ? ' ab-yeni' : (p.donusum ? ' ab-donusum' : '');
-                el.className = taban;                       /* eski animasyonu sil */
-                if (el.textContent !== p.t) el.textContent = p.t;
-                if (ek) { void el.offsetWidth; el.className = taban + ek; }  /* yeniden tetikle */
-            }
-        } else {
-            kutu.innerHTML = adimHtml(parca);
+        /* YAKLAŞMA (FLIP): harfler yeniden çizilmeden önce yerleri ölçülür,
+           çizildikten sonra eski yerlerinden yenisine kaydırılır. Böylece
+           her adımda birleşen harf, komşusuna doğru gerçekten "yaklaşır". */
+        var once = {};
+        [].forEach.call(kutu.querySelectorAll('.ab-p[data-i]'), function (el) {
+            once[el.getAttribute('data-i')] = el.getBoundingClientRect();
+        });
+
+        kutu.innerHTML = adimHtml(parca);
+
+        var yeniler = kutu.querySelectorAll('.ab-p[data-i]');
+        var oynayan = [];
+        [].forEach.call(yeniler, function (el) {
+            var o = once[el.getAttribute('data-i')];
+            if (!o) return;
+            var y = el.getBoundingClientRect();
+            var dx = o.left - y.left;
+            if (Math.abs(dx) < 0.5) return;
+            el.style.transition = 'none';
+            el.style.transform = 'translateX(' + dx.toFixed(1) + 'px)';
+            oynayan.push(el);
+        });
+        if (oynayan.length) {
+            void kutu.offsetWidth;
+            oynayan.forEach(function (el) {
+                el.style.transition = 'transform .38s cubic-bezier(.34,1.18,.5,1)';
+                el.style.transform = '';
+            });
         }
         satir.classList.toggle('ab-bitti', adim === top);
     }

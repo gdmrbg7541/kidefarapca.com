@@ -1682,6 +1682,12 @@
         /* Birleşik adımda parçalar SATIR İÇİ kalır ki tarayıcı harfleri
            gerçek kelime gibi birbirine bağlasın. */
         .ab-bitisik .ab-p { display: inline; }
+        /* BİRLEŞMİŞ KÜME (26.09.2026): tek kutu, içindeki harfler inline —
+           tarayıcı onları gerçek kelime gibi bağlar. Kümenin solundaki
+           ayrık harflerle arasında .ab-dizi'nin boşluğu kalır; harf kümeye
+           katıldıkça o boşluk kapanır, harfler birbirine yaklaşır. */
+        .ab-grup { display: inline-block; white-space: nowrap; line-height: 1; }
+        .ab-grup .ab-p { display: inline; }
         /* İLK BELİRME: harf ekrana yeni geliyor → yumuşakça belirir. */
         .ab-yeni { animation: abGel .34s ease-out both; }
         @keyframes abGel {

@@ -599,3 +599,260 @@ index.html · index.js
             index.js_2026-09-25_hafiflik-oncesi
   SONRAKİ ADAYLAR: kelimeler.html (veri_kokler.js 1,76 MB — ilk liste
   açılınca yüklenebilir), diğer ağır sayfalarda aynı tembel kurulum.
+
+--- 2026-09-25 · alfabe.html "Okuma" sekmesi -------------------------
+YENI : okumayazma/okuma-cevir.js
+DEGISEN : alfabe.html  (Alfabe grubuna "Okuma" sekmesi + p8 paneli + script satiri)
+Ne yapar: Sagda harekeli Arapca kelime, solda ayni kelimenin Latin hali
+ARAPCA dizilimde (sagdan sola, sesliler alt-ustte). "Ileri" deyince
+parcalar yerinden oynayip TURKCE dizime geciyor (soldan saga, sesli
+harf sessizin yaninda). Konular: hece / uzatma / cezim / sedde.
+Harf karsiliklari ve 26 kelime okumayazma/okuma.js (OK_HARFLER,
+OK_KELIMELER) ile birebir ayni - iki sayfa ayni okunusu gosteriyor.
+Yedek: _kaynak/yedekler/alfabe_2026-09-25_okuma-oncesi.html
+  + Masaustunde yazilar cok daha buyuk; telefonda ayni kaliyor.
+  + Elif/hemze: أَب'in "e"si YUKARIDA duruyor - o bir hareke, harf degil.
+  + YENI DUZEN (hepsi alt alta, "Ileri" ile adim adim):
+      1) Latin harfler hazir bekler, Arapca mantikta: sessizler CIZGININ
+         ustunde sagdan sola (cizgideki harfler once okunur), sesliler
+         cizginin altinda-ustunde.
+      2) Her Ileri basisinda BIR Arapca harf harekesiyle birlikte kendi
+         Latin harfinin altina gelir - yani HECE HECE ilerlenir. Acilan
+         hecenin Latin sutunu ve altindaki cizgi renklenir, altta o
+         hecenin okunusu yazar (mesela "hece 2/4  Ayn+ustun = 'a").
+      3) Butun harfler cikinca bir basis daha: harfler ortada birlesir,
+         bitisik Arapca kelime olusur.
+      4) Son basis: Latin harflerin KLONU Arapca kelimenin altina TEK TEK
+         (aralarinda ~0,22 sn gecikmeyle) suzulur ve Turkce yazilis gibi
+         dizilir: soldan saga, sesli sessizin yaninda.
+    Ust satir ile Arapca satir tek CSS izgarasinda; sutunlar birebir hizali
+    (seddeli harfin Arapcasi iki sutunu birden kapliyor).
+  + Harfler masaustunde 7rem'e kadar buyuyor; alcak ekranlarda (min(vw,vh))
+    kendiliginden kuculuyor, kart 1366x768'de de sigiyor.
+
+--- 2026-09-26 · Okuma sekmesi ikinci tur ---------------------------
+YENI : okumayazma/okuma-calisma-kagitlari.pdf  (ogretmenin 4 A4 sayfasi:
+       hece + uzatma + cezim + sedde, tek dosyada, yer imleriyle)
+DEGISEN : okumayazma/alfabe_akordiyon.js (v=8) - Okuma'nin yanina PDF tusu,
+          Dinle ve Yaz'daki gibi. Yedek: _kaynak/yedekler/alfabe_akordiyon_2026-09-26_okuma-pdf-oncesi.js
+DEGISEN : alfabe.html - akordiyon surumu v=7 -> v=8
+DEGISEN : okumayazma/okuma-cevir.js
+  + "أَب" ornegi kaldirildi (hemze basta, sesli okunan tek harf).
+  + Birlesme animasyonunda harfler artik yatayda KAYMIYOR (soldaki harf
+    saga geciyormus gibi duruyordu); durduklari yerde sonuyorlar.
+  + Butun kelimeler TENVINLE bitiyor, uc tenvin de ornekte var:
+    ً an/en · ٌ un · ٍ in/in. Kart ustunde kucuk bir bilgi satiri var.
+    Harekeli ة artik "t" okunuyor (مَدْرَسَةً = medreseten), fethali
+    tenvinden sonraki elif okunmuyor (وَلَدًا = veleden).
+  + Uzatma harfi onceki harfe YAPISMIYOR: kendi sutununda, kendi adiminda
+    geliyor; Latin karsiligi yok, cizgisi kesik, altta "uzatma harfi -
+    kendi sesi yok, onceki sesi uzatir (â)" yaziyor.
+  + Latin tarafta CEZIM ISARETI yok: hareke almayan harfin ustu bos kalir.
+  + Sedde: once cezimli + harekeli iki harf ayri ayri gelir (بْ + بٌ),
+    sonra bir adimda seddeli tek harfe doner (بٌّ), sonra kelime butunlesir.
+
+--- 2026-09-26 · uc duzeltme -----------------------------------------
+1) HARF BIRLESTIRME (okumayazma/alfabe_birlestir.js v=24, alfabe.css v=77)
+   Adim duzeni ogretmenin ك ت ب ornegi birebir olacak sekilde kuruldu:
+     bos -> ك -> كـ -> ت -> ـت -> ـتـ -> ب -> ـب -> كتب
+   Yani SIRASI GELEN harf once yalin gelir, sonra bicim bicim degisir;
+   daha once gelenler son bicimleriyle yerinde durur. Bir harfin
+   gecebilecegi bicimler:
+     1) yalin                        ت
+     2) yalniz oncekinden bagli      ـت    (onceki harf baglaniyorsa)
+     3) bulundugu yerin tam bicimi   ـتـ   (bir oncekinden farkliysa)
+   BUTUN harflerin birlesmesi EN SON adimdir; o adimda parcalar tek
+   kutuya (.ab-grup) girer, tarayici gercek kelime gibi baglar ve
+   harfler birbirine dogru kayarak yaklasir (FLIP).
+   Kendi yerinde zaten yalin yazilan harf (و د ر …) tek adimda gelir.
+   Renk anahtari aynen korundu.
+   Yedekler: _kaynak/yedekler/alfabe_birlestir_2026-09-26_oncesi.js
+             _kaynak/yedekler/alfabe_css_2026-09-26_oncesi.css
+
+2) OKUMA sekmesinde Ileri/Geri calismiyordu -> script surumu
+   okuma-cevir.js?v=1 iken dosya cok degismisti, tarayici ESKI
+   kopyayi onbellekten veriyordu. Surum v=3 yapildi. (Kodda hata
+   yoktu; ileri/geri tarayicida tek tek dogrulandi.)
+
+3) INDEX'te SOSYAL popup acilmiyordu. Sebep: 25.09'da eklenen
+   "#home-hub-section .content-section { content-visibility:auto }"
+   kurali #youtube-kanallari bolumunu de kapsiyordu. O bolum
+   masaustunde sol kenara yapisan bir acilir pencere ve ok sekmesi
+   (.sosyal-ok) kutunun DISINA tasiyor; content-visibility'nin
+   getirdigi "contain: paint" onu kirpiyor, tiklanamaz hale
+   getiriyordu. Bolum kuraldan haric tutuldu (daha ozgul seci + 
+   !important). Yedek: _kaynak/yedekler/index_2026-09-26_sosyal-oncesi.html
+
+--- 2026-09-26 · Okuma sekmesi KUTUSUZ kagit duzeni (v=5) ------------
+Cevaplar artik calisma kagidinin (PDF'in) USTUNE yaziliyormus gibi
+gorunuyor - Dinle ve Yaz'daki defter mantiginin aynisi:
+  · Kart bir SAYFA oldu: sicak beyaz zemin, ince cerceve, sayfa golgesi.
+  · Tepede konu bandi (renkli serit, ortada konu adi beyaz yaziyla) -
+    PDF'teki kirmizi baslik bandinin karsiligi.
+  · Bandin altinda ogretmenin "Yardim tablosu!"nun aynisi:
+    ـُ u,o · ـِ i,ı · ـَ e,a · ـٌ un,on · ـٍ in,ın · ـً en,an
+  · Solda defter payi: kirmizi kenar cizgisi.
+  · KALEM RENKLERI kagittaki gibi: sessiz harfler MAVI (#1B4EA8),
+    harekeler KIRMIZI (#CF3A2E). Okunan hece grubun rengine doner.
+  · Alt ayrac kesik cizgi, sayfa numarasi kagit tonunda.
+
+  GUNCELLEME (v=5) - "mumkun oldugunca konteynirsiz":
+  Kutu/cerceve/golge kaldirildi, her sey sayfanin kendi boslugunda akiyor.
+    · Kart artik gorunmuyor (zemin, kenarlik, golge, kose yuvarlagi yok).
+    · Konu secimi kutucuk degil: alti cizilen sade yazilar.
+    · Yardim tablosu cerceveli kutu degil, sade bir satir.
+    · Konu adi bandi kaldirildi (zaten ustteki sekmede yaziyor); emoji
+      kelimenin anlaminin yanina tasindi - boylece cevabi onceden ele
+      vermiyor, yalniz son adimda goruluyor.
+    · Geriye yalniz iki kumanda tusu ve altlarindaki sac cizgisi kaldi.
+  Kagit hissini tek basina YAZI CIZGISI ve kalem renkleri veriyor:
+  sessiz harf MAVI, hareke KIRMIZI.
+
+--- 2026-09-26 · Okuma: BAGLANMA adimi (v=6) -------------------------
+Harfler birlesmeden once, Harf Birlestirme sekmesindeki gibi
+BAGLANMA BICIMLERINI aliyor. Ornek كِتَابٌ:
+  كِ  →  كِ تَ  →  كِ تَ ا  →  كِ تَ ا بٌ        (harfler tek tek gelir)
+  →  كِـ  ـتَـ  ـا  بٌ                          (YENI: baglanma bicimleri)
+  →  كِتَابٌ                                     (kelime birlesir)
+Kasideler her harfin kelime icindeki gercek yerine gore hesaplaniyor;
+baglanmayan harften (ا د ذ ر ز و ة ء) sonraki harf kaside almiyor.
+Seddeli harf bu asamaya TEK harf olarak giriyor (once sedde adimi olur):
+  مُعَلِّمٌ → مُـ ـعَـ ـلِّـ ـمٌ → مُعَلِّمٌ
+Hicbir harf bicim degistirmiyorsa (orn. رَبٌّ, أُمٌّ) bu adim atlanir.
+
+--- 2026-09-26 · Okuma: cizgi + yardim tablosu (v=7) -----------------
+· YAZI CIZGISI artik harflerin TABANINDA: satir kutusu kisaltildi
+  (line-height .74), harf kutudan tasiyor; harf ile cizgi arasindaki
+  bosluk kalkti.
+· Alta yazilan sesliler (esre) CIZGININ ALTINDA duruyor; birimin alt
+  payi buna gore artirildi.
+· YARDIM TABLOSU konuya gore degisiyor:
+    hece   : ـَ e,a · ـِ i,ı · ـُ u,o
+    uzatma : ـَا â · ـُو û · ـِي î
+    cezim  : ـْ ses yok
+    sedde  : ـّ harf iki kez
+  Hepsinin altinda ortak TENVIN bloku: ـً en,an · ـٌ un,on · ـٍ in,ın
+· Tablo DIKEY ve SAGDA: govde iki sutunlu izgara (icerik | tablo).
+  860px alti ekranlarda tablo icerigin altina inip yatay sariyor.
+  + (v=8) Harf ile ustune/altina yazilan hareke arasina nefes payi
+    eklendi; isaretler birimin en ucuna oturuyor, sikisiklik kalkti.
+    Kart 1440x1000'de 674px, 1366x768'de 586px - ikisinde de sigiyor.
+  + (v=9) KLAVYE / SUNUM KUMANDASI eklendi. Okuma sekmesinde:
+      ileri : sag ok · bosluk · Enter · PageDown
+      geri  : sol ok · Backspace · PageUp
+    Harf Birlestirme sekmesindeki ile ayni tuslar; uzaktan kumandali
+    sunum tiklayicilari da bu tuslari gonderiyor. Yalniz p8 acikken ve
+    bir yazi alanina yazilmiyorken calisir; baska sekme acikken Okuma
+    ilerlemiyor (denendi). Sayac satirinda "→ ileri · ← geri" ipucu var
+    (dokunmatik cihazlarda gizli).
+  + (v=10) Yardim tablosunda isaretler COK daha buyuk (4,6rem'e kadar) ve
+    satirin SAGINDA; Latin karsilik solda kaliyor - calisma kagidindaki
+    "u, o – ـُ" dizilisinin aynisi. Arapca glif kendi kutusunun disina
+    tasabildigi icin satira sag pay birakildi.
+  + (v=11) Ileri/Geri tuslari SAG ALT KOSEDE: akistan cikip bolumun
+    kosesine yaslandi (position:absolute), tahtada hep ayni yerde duruyor.
+    Okunus/anlam ve sayac satiri sol altta kaliyor, tuslarin altina
+    girmesin diye saga pay birakildi. 860px altinda tuslar eski akisina
+    donuyor (telefonda tam genislik).
+  + (v=12) Yardim tablosundaki isaretler GERCEKTEN buyudu: 84px'e
+    (7rem'e kadar) cikti. Onemli not: tek basina bir harekenin MUREKKEBI
+    cok az oldugu icin punto buyutmek yetmiyordu; isaretler artik CIFT
+    KASIDE (ـــَ) uzerinde duruyor, taban cizgisi genisleyince okunur
+    oluyor. Tablo uzadigi icin govdeye alt serit ayrildi; yardim tablosu
+    artik sag alt kosedeki tuslarin ustune binmiyor.
+  + (v=13) Latin harf karsiliklari CALISMA KAGIDINDAKI (PDF) tabloya
+    cekildi:
+        ث : s̱  ->  ṯ   (t, alti cizgili)
+        ذ : ẕ  ->  ḏ   (d, alti cizgili)
+        ق : ḳ  ->  q
+        ص : ṣ  (ayni)      ظ : ẓ  (ayni)
+    Ayrica قَلَم ve قَمَر kelimelerinde ق'i duz "k" yapan ozel duzeltme
+    kaldirildi; artik kagittaki gibi "qalemin" / "qamerun" okunuyor.
+    DIKKAT: okuma.html (okumayazma/okuma.js) hala eski yazimi kullaniyor
+    (s̱ / ẕ / ḳ). Iki sayfanin ayni olmasi isteniyorsa oradaki OK_HARFLER
+    ve OK_KELIMELER'in tr alanlari da bu tabloya cekilmeli.
+  + (v=14) Yardim tablosunda tasma duzeltildi (ozellikle Hece sekmesi):
+      - Satirlara dikey nefes payi verildi (9px) ve satir kirpiliyor;
+        isaretin murekkebi komsu satira sarkmiyor.
+      - ESRE ve ESRE-TENVINI kasidenin ALTINA ciziliyordu, satirin dibine
+        kaciyordu; o iki isaret .yk sinifiyla biraz yukari alindi.
+      - "TENVIN" basligina ust-alt pay verildi, ustteki satira yapismiyor.
+      - Punto 84px'ten 66px'e cekildi (1366x768'de 51px) — cift kaside
+        tabani sayesinde hala buyuk ve okunur, ama 7 satirlik Hece tablosu
+        artik sag alt kosedeki tuslara degmiyor. Uc ekran boyunda olculdu:
+        1366x768 / 1600x900 / 1440x1000 -> cakisma yok.
+  + (v=15) HARF BOYUTU ARTIK UYARLANIYOR, tavan 14rem (224px).
+    Butun puntolar tek bir degiskenden (--ocharf) tureme:
+      hareke = %50 · Arapca satir = %80 · bitisik kelime = %88 ·
+      Latin klonu = %72 · bosluklar = %54/%56
+    Deger her kelimede yeniden hesaplaniyor:
+      yatay sinir = calisma alani genisligi / (sutun sayisi x 1,22)
+      dikey sinir = (pencere yuksekligi - 470) / 4,05
+      tavan = 14rem
+    Boylece kisa kelime buyuk, uzun kelime satira sigacak kadar buyuk.
+    Pencere boyutu degisince yeniden olculuyor.
+    Genis ekranda calisma alani da genisliyor: max-width 1240px yerine
+    min(1700px, 96vw).
+    Olculen sonuclar (6 sutunlu en uzun kelime / kisa kelime):
+      1366x768  ->  74px            1440x1000 -> 131px
+      1920x1080 -> 151px            2560x1440 -> 184px (kisa kelime 224px)
+      390x844   ->  46px
+    Hicbirinde yatay tasma ya da dikey kaydirma yok.
+
+[2026-09-26] Okuma sekmesi (alfabe.html · p8) — sadeleştirme + şedde iki adım
+  okumayazma/okuma-cevir.js   -> v16 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v15.js)
+  alfabe.html                 -> okuma-cevir.js?v=16
+  1) Latin harflerin altındaki yazı çizgisi soluklaştı (2.5-6px #C9CFD8 -> 1.5-3px #DEE4EB).
+  2) Bağlı biçimlerde kaşidenin yanına ZWJ eklendi: şeddeli harf (ن+ّ+َ) her yazı
+     tipinde orta biçimini alsın, ـنَّـ tam ـنـ gibi bitişsin.
+  3) Adım açıklamaları, yön uyarısı, kelime/adım sayacı ve klavye ipucu kaldırıldı.
+     Boşalan dikey pay harfe verildi (boyutla: yh-470 -> yh-380) — harfler büyüdü.
+  4) Tenvin satırları yardım tablosunda YALNIZ Hece konusunda duruyor.
+  5) Şedde artık İKİ adım: önce cezimli harf yalnız şedde işaretine dönüşüyor
+     (kırmızı, havada, öbür harfe eklenmemiş), bir basış daha: şedde ikinci
+     harfin üstüne oturuyor.
+
+[2026-09-26] Okuma'nın yanındaki PDF kalktı, yerine «Dene» geldi
+  okumayazma/okuma-cevir.js      -> v17 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v16.js)
+  okumayazma/alfabe_akordiyon.js -> v9  (yedek: _kaynak/yedekler/alfabe_akordiyon_2026-09-26_okuma-dene-oncesi.js)
+  alfabe.html                    -> okuma-cevir.js?v=17 · alfabe_akordiyon.js?v=9
+  · Şeritte artık: Harf Tanıtımı[Dene] · Harf Birleştirme[Dene] · Okuma[Dene] · Dinle ve Yaz[PDF]
+  · Okuma'nın soruları okuma-cevir.js'ten geliyor (KidefOkumaCevir.sinavHavuzu):
+      1) Arapça hece -> okunuşu     2) Arapça kelime -> okunuşu
+      3) işaret (hareke/tenvin/cezim/şedde) -> ne yaptığı
+      4) okunuş verilir -> kelime seçilir
+    Çeldiriciler konunun kendi hatasından türüyor: uzatmayı yutma (kitâbun/kitabun),
+    şeddeyi tekleme (rabbun/rabun), tenvin karıştırma (-un/-in), hareke şaşırma.
+  · Katman (alfabe_akordiyon.js) artık iki kaynaktan soru alabiliyor: bölümün
+    kendi «uretici» alanı varsa havuzu o kurar, yoksa eskisi gibi AlfabeSinav.
+  · okuma-calisma-kagitlari.pdf siteden çıkarıldı, _kaynak/ altına alındı —
+    hiçbir yere bağlı değildi, git'e gitmesin diye.
+
+[2026-09-26] Okuma'da konu şeridi + bütün «Dene»lere giriş ekranı
+  okumayazma/okuma-cevir.js      -> v18 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v17.js)
+  okumayazma/alfabe_akordiyon.js -> v10 (yedek: _kaynak/yedekler/alfabe_akordiyon_2026-09-26_v9.js)
+  alfabe.html                    -> okuma-cevir.js?v=18 · alfabe_akordiyon.js?v=10
+  1) OKUMA'DAKİ KONU ŞERİDİ (Hece · Uzatma · Cezim · Şedde)
+     · Yazılar İKİ KAT büyüdü: clamp(.92rem,1.35vw,1.2rem) -> clamp(1.1rem,2.7vw,2.4rem)
+       (1440'ta 19 -> 38 px; 390'da 18 px, taşmıyor)
+     · Görünüm sarf/kaliplartablosu.css'teki mücerred/mezid anahtarının aynısı:
+       gri yuva + KIRMIZI (#FF3B30) kaydırak, seçilen konuya KAYARAK gider
+       (transform .32s cubic-bezier(.25,1,.5,1)), seçili yazı beyaza döner.
+     · Kaydırağın yeri/eni JS'te seçili düğmeden ölçülüyor (kaydiragiOynat):
+       konu adları farklı uzunlukta, yüzde tutmuyor. Yazı tipi yüklenince
+       ve pencere boyu değişince yeniden ölçülüyor.
+     · Şerit büyüdüğü için dikey pay: boyutla() yh-380 -> yh-412.
+  2) «DENE» GİRİŞ EKRANI — üç bölümde de (Harf Tanıtımı · Harf Birleştirme · Okuma)
+     · Sorular hemen gelmiyor: önce "Kaç kişi oynayacak?" ekranı.
+     · İki büyük kart, ANİMASYONLU SVG'lerle:
+         Tek kişilik  → öğrenci sallanır, defterine yeşil tik ÇİZİLİR
+         İki kişilik  → iki öğrenci sırayla öne çıkar, aralarında şimşek çakar
+     · Kart seçilince kurallar değişir. İki kişilikte yazanlar (kodda da böyle):
+         soru ortak / şıklar iki ekranda ayrı dizilir (kopya yok)
+         cevaplayan bekler, ikisi de cevaplayınca renkler birlikte açılır
+         her doğru +10, doğru bilenlerden önce basana +5 hız
+         3-2-1 sayımıyla başlar, sorular kendiliğinden ilerler
+       Satır başlarındaki küçük simgeler de kıpırdıyor (şimşek, kupa, saat).
+     · Sonuç ekranına «Kişi sayısı» düğmesi eklendi: giriş ekranına döner.
+     · Katmandaki rol adı 'akbasla' — Sınav sekmesinde data-rol="basla" taşıyan
+       başka bir düğme var, belge genelinde karışmasın.

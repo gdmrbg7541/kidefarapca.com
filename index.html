@@ -215,6 +215,18 @@
       /* Yapışkan başlığı olan ve akordiyonla boyu değişen bölüm: açıkken
          (odak kipinde) çizim atlanmasın. */
       #imam-hatip.ih-odak { content-visibility: visible; }
+      /* SOSYAL HESAPLAR bölümü hariç: masaüstünde akıştan çıkıp sol kenara
+         yapışan bir açılır pencere oluyor ve ok sekmesi (.sosyal-ok) kutunun
+         DIŞINA taşıyor. content-visibility:auto "contain: paint" getirdiği
+         için o sekme kırpılıyor, görünmez oluyordu — pencere hiç açılamıyordu.
+         Zaten sayfa akışında yer kaplamadığı için buradan bir kazanç da yok. */
+      /* Seçici, yukarıdaki '#home-hub-section .content-section' kuralından
+         DAHA ÖZGÜL olmalı; yoksa content-visibility:auto geçerli kalıyor. */
+      #home-hub-section #youtube-kanallari.content-section {
+        content-visibility: visible !important;
+        contain-intrinsic-size: none !important;
+        contain: none !important;
+      }
     }
     </style>
     <style id="dusuk-guc-stil">
