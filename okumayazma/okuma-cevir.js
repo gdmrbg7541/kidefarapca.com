@@ -122,6 +122,57 @@
      yardım tablosunun altında hep durur. */
   var TENVIN = [['\u064B', 'en, an'], ['\u064C', 'un, on'], ['\u064D', 'in, ın']];
 
+  /* ================================================================
+     ÖRNEK TABLOSU — okuma.html'den taşındı
+     ----------------------------------------------------------------
+     Eski okuma.html'de her konu, YİRMİ SEKİZ HARFİN üç hareke ile
+     okunuşunu tek tek gösteren bir tablo çıkarıyordu (بَ بِ بُ …).
+     Ana sayfadaki "Okuma" kartı kaldırılıp okuma-yazmaya ait her şey
+     alfabe.html'e toplanınca o tablo da buraya alındı: Okuma sekmesinde
+     «Örnekler» düğmesi aynı listeyi konuya göre üretir.
+
+     Latin karşılıkları bu dosyanın kendi tablosundan (öğretmenin çalışma
+     kâğıdı) gelir: okuma.js'teki s̱ / ẕ / ḳ yerine ṯ / ḏ / q.
+     ================================================================ */
+  var OKHARF = [
+    { h: 'ا', ad: 'Elif', lat: '',  hemze: true },
+    { h: 'ب', ad: 'Be',   lat: 'b' },
+    { h: 'ت', ad: 'Te',   lat: 't' },
+    { h: 'ث', ad: 'Ṯe',   lat: 'ṯ' },
+    { h: 'ج', ad: 'Cim',  lat: 'c' },
+    { h: 'ح', ad: 'Ḥa',   lat: 'ḥ' },
+    { h: 'خ', ad: 'Ḫa',   lat: 'ḫ' },
+    { h: 'د', ad: 'Dal',  lat: 'd' },
+    { h: 'ذ', ad: 'Ḏel',  lat: 'ḏ' },
+    { h: 'ر', ad: 'Ra',   lat: 'r' },
+    { h: 'ز', ad: 'Ze',   lat: 'z' },
+    { h: 'س', ad: 'Sin',  lat: 's' },
+    { h: 'ش', ad: 'Şın',  lat: 'ş' },
+    { h: 'ص', ad: 'Ṣad',  lat: 'ṣ' },
+    { h: 'ض', ad: 'Ḍad',  lat: 'ḍ' },
+    { h: 'ط', ad: 'Ṭa',   lat: 'ṭ' },
+    { h: 'ظ', ad: 'Ẓa',   lat: 'ẓ' },
+    { h: 'ع', ad: 'Ayn',  lat: 'ʿ' },
+    { h: 'غ', ad: 'Ğayn', lat: 'ğ' },
+    { h: 'ف', ad: 'Fe',   lat: 'f' },
+    { h: 'ق', ad: 'Qaf',  lat: 'q' },
+    { h: 'ك', ad: 'Kef',  lat: 'k' },
+    { h: 'ل', ad: 'Lam',  lat: 'l' },
+    { h: 'م', ad: 'Mim',  lat: 'm' },
+    { h: 'ن', ad: 'Nun',  lat: 'n' },
+    { h: 'و', ad: 'Vav',  lat: 'v' },
+    { h: 'ه', ad: 'He',   lat: 'h' },
+    { h: 'ي', ad: 'Ye',   lat: 'y' }
+  ];
+  var TURAD = { ustun: 'Üstün', esre: 'Esre', otre: 'Ötre' };
+  /* Konuya göre altta duran hatırlatma (okuma.html'deki "not" alanı). */
+  var ORNEKNOT = {
+    hece:   'Harf + hareke: harfi üstün, esre ve ötre ile tek tek oku. Elif harekeyi hemze ile taşır: أَ إِ أُ',
+    uzatma: 'Üstün + elif, esre + ye, ötre + vav: ses bir elif miktarı uzar. Med harfleri: ا و ي',
+    cezim:  'Cezimli harf harekesizdir, kendinden önceki harfe yaslanır. Elif cezim almaz.',
+    sedde:  'Şeddeli harf iki kere okunur: biri cezimli, biri harekeli. Elif şedde almaz.'
+  };
+
   /* ------------------------------------------------------- harf/hareke */
   var FTH = 'َ', DMM = 'ُ', KSR = 'ِ', SKN = 'ْ', SDD = 'ّ';
   var TNF = 'ً', TND = 'ٌ', TNK = 'ٍ';
@@ -206,7 +257,11 @@
         b.push({ harf: lat, arTam: h + msz, sesli: v.s, yer: v.yer, sukun: !!v.sukun,
                  sedde: true });
       } else {
-        b.push({ harf: lat, arTam: h + m, sesli: v.s, yer: v.yer, sukun: !!v.sukun });
+        /* YUVARLAK TE (ة): kelimenin sonunda durur, harekeliyse "t" okunur.
+           Ayrı bir renkle (pembe) gösteriliyor — öğrenci bunun sıradan bir
+           te olmadığını, kelimenin dişil kapanışı olduğunu görsün. */
+        b.push({ harf: lat, arTam: h + m, sesli: v.s, yer: v.yer, sukun: !!v.sukun,
+                 yuvarlak: (h === 'ة') });
       }
     }
     return b;
@@ -238,6 +293,50 @@
     return b.map(function (x) { return x.harf + (x.sesli || ''); }).join('');
   }
 
+  /* Örnek tablosunun okuyuş üreteçleri — okuma.js'teki URETEC'in aynısı.
+     Her biri {ar, tr} döndürür. */
+  var ISARETI = { ustun: FTH, esre: KSR, otre: DMM };
+  function okSesli(h, tur, uzun) {
+    var k = KALIN.indexOf(h.h) >= 0;
+    if (tur === 'ustun') return uzun ? 'â' : (k ? 'a' : 'e');
+    if (tur === 'esre')  return uzun ? 'î' : (k ? 'ı' : 'i');
+    return uzun ? 'û' : 'u';
+  }
+  var URET = {
+    /* Harf + hareke:  بَ / بِ / بُ */
+    hece: function (h, tur) {
+      var iz = ISARETI[tur];
+      if (h.hemze) return { ar: (tur === 'esre' ? 'إ' : 'أ') + iz, tr: okSesli(h, tur, false) };
+      return { ar: h.h + iz, tr: h.lat + okSesli(h, tur, false) };
+    },
+    /* Harf + hareke + med harfi:  بَا / بِي / بُو */
+    uzatma: function (h, tur) {
+      var iz = ISARETI[tur], med = { ustun: 'ا', esre: 'ي', otre: 'و' }[tur];
+      if (h.hemze) {
+        var ar = (tur === 'ustun') ? 'آ' : (tur === 'esre' ? 'إ' + KSR + 'ي' : 'أ' + DMM + 'و');
+        return { ar: ar, tr: okSesli(h, tur, true) };
+      }
+      return { ar: h.h + iz + med, tr: h.lat + okSesli(h, tur, true) };
+    },
+    /* Hemze + hareke, sonra sâkin harf:  أَبْ / إِبْ / أُبْ */
+    cezim: function (h, tur) {
+      var bas = (tur === 'esre' ? 'إ' : 'أ') + ISARETI[tur];
+      return { ar: bas + h.h + SKN, tr: okSesli(h, tur, false) + h.lat };
+    },
+    /* Şeddeli harf iki kez okunur:  أَبَّ / إِبِّ / أُبُّ */
+    sedde: function (h, tur) {
+      var iz = ISARETI[tur], bas = (tur === 'esre' ? 'إ' : 'أ') + iz;
+      var v = okSesli(h, tur, false);
+      return { ar: bas + h.h + SDD + iz, tr: v + h.lat + h.lat + v };
+    }
+  };
+  /* Elif cezim ve şedde almaz (okuma.html'deki elifVar kuralı). */
+  function ornekHarfleri(grup) {
+    return OKHARF.filter(function (h) {
+      return (grup === 'hece' || grup === 'uzatma') || !h.hemze;
+    });
+  }
+
   /* ------------------------------------------------------------- stil */
   function stil() {
     if (document.getElementById('ocStil')) return;
@@ -248,7 +347,7 @@
       /* Genis ekranda (tahta/projeksiyon) harfler daha da buyusun diye
          calisma alani genisliyor. */
       '.oc-sar{position:relative;max-width:min(1700px,96vw);margin:0 auto;' +
-        'padding:6px 10px 26px;font-family:inherit}' +
+        'padding:6px 10px 10px;font-family:inherit}' +
       /* KONU SEÇİMİ — sarf/kaliplartablosu.css'teki mücerred/mezid anahtarının
          aynısı: gri bir yuvanın içinde KIRMIZI bir kaydırak, seçilen konunun
          altına KAYARAK gider; yazı o an beyaza döner. Kaydırağın yeri ve eni
@@ -263,44 +362,130 @@
         'transition:transform .32s cubic-bezier(.25,1,.5,1),width .32s cubic-bezier(.25,1,.5,1)}' +
       '.oc-hap{position:relative;z-index:2;flex:1 1 auto;border:0;background:none;' +
         'color:#0F2A43;border-radius:10px;white-space:nowrap;' +
-        'padding:clamp(6px,.9vw,14px) clamp(12px,1.9vw,30px);' +
+        'padding:clamp(5px,.75vw,11px) clamp(10px,1.6vw,24px);' +
         'font:inherit;font-weight:800;cursor:pointer;letter-spacing:.3px;' +
-        'font-size:clamp(1.1rem,2.7vw,2.4rem);transition:color .22s ease}' +
+        'font-size:clamp(1rem,2.15vw,1.9rem);transition:color .22s ease}' +
       '.oc-hap:hover{color:#FF3B30}' +
       '.oc-hap.aktif,.oc-hap.aktif:hover{color:#fff}' +
       '@media (prefers-reduced-motion:reduce){.oc-kaydirak{transition:none}}' +
       '.oc-not{text-align:center;color:#64748B;font-size:clamp(.88rem,1.35vw,1.15rem);margin:0 0 14px;line-height:1.5}' +
-      /* GÖVDE: solda çalışma alanı, SAĞDA dikey yardım tablosu */
-      /* Alt sag kosedeki kumanda tuslari icin serit ayrilir: yardim tablosu
-         uzun oldugunda tuslarin ustune binmesin. */
-      '.oc-govde{display:grid;grid-template-columns:minmax(0,1fr) auto;' +
-        'gap:clamp(12px,2vw,30px);align-items:start;padding-bottom:clamp(58px,6vw,78px)}' +
-      /* Yardım tablosu — dikey, konuya göre değişir. Kutu değil: ince
-         satır çizgileri ve kırmızı bir başlık. */
-      '.oc-yardim{display:flex;flex-direction:column;align-self:start;' +
-        'min-width:clamp(140px,15vw,250px);color:#8A7A5E;' +
-        'font-size:clamp(.78rem,1.1vw,1.02rem);font-weight:700}' +
-      '.oc-yardim-bas{color:#C0392B;font-weight:800;font-size:1.05em;text-align:right;' +
-        'padding:0 12px 6px 0;border-bottom:2px solid rgba(192,57,43,.45);white-space:nowrap}' +
-      '.oc-yy{display:flex;align-items:center;justify-content:space-between;gap:12px;' +
-        'padding:9px 14px 9px 2px;border-bottom:1px solid rgba(140,120,80,.22);white-space:nowrap;' +
-        'overflow:hidden}' +
-      '.oc-yy i{font-style:normal}' +
-      '.oc-yy-ara{justify-content:flex-end;color:#B9A98A;font-size:.85em;font-weight:800;' +
-        'letter-spacing:1px;text-transform:uppercase;border-bottom:0;padding:14px 14px 4px 2px}' +
-      /* İşaretler SAĞDA ve BÜYÜK: uzaktan da okunsun diye */
+      /* GÖVDE: yardım tablosu artık yanda değil, AÇILIR PENCEREDE — bütün
+         genişlik çalışma alanına kaldı, harfler o kadar büyüyebiliyor. */
+      '.oc-govde{display:block;padding-bottom:clamp(58px,6vw,78px)}' +
+      /* Pencereleri açan düğmeler: sağ ÜST köşede, akıştan çıkmış. */
+      '.oc-tuslar-ust{position:absolute;right:10px;top:6px;z-index:3;display:flex;gap:8px;' +
+        'flex-wrap:wrap;justify-content:flex-end}' +
+      '.oc-yac{display:inline-flex;' +
+        'align-items:center;gap:8px;border:1px solid rgba(140,120,80,.28);' +
+        'background:linear-gradient(180deg,#FFFDFA,#FBF7F1);' +
+        'color:#B03A2E;border-radius:999px;cursor:pointer;font:inherit;font-weight:800;' +
+        'font-size:clamp(.8rem,1.15vw,1.02rem);padding:clamp(6px,.7vw,10px) clamp(12px,1.3vw,18px);' +
+        'box-shadow:0 8px 18px -16px rgba(80,60,20,.9);' +
+        'transition:background .16s,border-color .16s,transform .16s,box-shadow .16s}' +
+      '.oc-yac:hover{background:#fff;border-color:rgba(176,58,46,.5);transform:translateY(-1px);' +
+        'box-shadow:0 12px 22px -16px rgba(80,60,20,.95)}' +
+      '.oc-yac b{font-family:"arakom","Noto Naskh Arabic","Amiri",serif;font-weight:400;' +
+        'font-size:1.5em;line-height:1;direction:rtl}' +
+      /* AÇILIR PENCERE */
+      '.oc-yperde{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;' +
+        'justify-content:center;padding:2vh 2vw;background:rgba(15,23,42,.46);' +
+        '-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}' +
+      '.oc-yperde[hidden]{display:none}' +
+      '@keyframes ocYAc{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}' +
+      '.oc-ykutu{background:#fff;border-radius:22px;box-shadow:0 30px 80px rgba(15,23,42,.35);' +
+        'padding:clamp(14px,2vh,26px) clamp(16px,2.2vw,34px) clamp(16px,2.4vh,30px);' +
+        'width:min(var(--ocw,1100px),94vw);max-height:94vh;overflow:auto;' +
+        'animation:ocYAc .22s cubic-bezier(.22,1,.36,1)}' +
+      '.oc-ybas{display:flex;align-items:center;justify-content:space-between;gap:20px;' +
+        'color:#B03A2E;font-weight:800;font-size:clamp(1.05rem,2.2vh,1.6rem);letter-spacing:.2px;' +
+        'padding:0 0 clamp(8px,1.3vh,14px);margin:0 0 clamp(10px,1.8vh,20px);' +
+        'border-bottom:1px solid rgba(140,120,80,.22);position:relative}' +
+      /* Başlığın altında ince kırmızı bir vurgu — kâğıttaki kırmızı kalem. */
+      '.oc-ybas::after{content:"";position:absolute;left:0;bottom:-1px;width:clamp(48px,7vw,96px);' +
+        'height:3px;border-radius:3px;background:#B03A2E}' +
+      '.oc-ykonu{display:inline-block;vertical-align:.08em;margin-inline-start:.55em;' +
+        'background:#FBEDEA;color:#B03A2E;border:1px solid rgba(176,58,46,.22);border-radius:999px;' +
+        'padding:.12em .75em;font-weight:800;font-size:.66em;letter-spacing:.6px}' +
+      '.oc-ykapa{border:1px solid rgba(140,120,80,.22);background:#FFFDF9;color:#6B5B43;' +
+        'border-radius:50%;width:2.1em;height:2.1em;' +
+        'font:inherit;font-size:1em;line-height:1;cursor:pointer;flex:none;' +
+        'transition:background .16s,color .16s,border-color .16s}' +
+      '.oc-ykapa:hover{background:#B03A2E;color:#fff;border-color:#B03A2E}' +
+      '.oc-yliste{display:grid;grid-template-columns:repeat(var(--ocsut,1),minmax(0,1fr));' +
+        'gap:clamp(8px,1.3vh,16px) clamp(12px,2vw,26px);align-content:start}' +
+      /* ---- ÖRNEK TABLOSU (28 harf × 3 hareke) ----
+         Gerçek bir tablo gibi: çerçeveli kutu, yapışkan başlık, zebra
+         satırlar, sütun ayraçları ve üstünde gezinince aydınlanan satır. */
+      '.oc-ornek .oc-yliste{display:block}' +
+      '.oc-onot{color:#6B5B43;font-weight:700;font-size:clamp(.82rem,1.7vh,1.05rem);' +
+        'line-height:1.55;margin:0 0 clamp(10px,1.6vh,18px);' +
+        'background:#FBF7F1;border:1px solid rgba(140,120,80,.2);' +
+        'border-inline-start:4px solid rgba(176,58,46,.45);border-radius:12px;' +
+        'padding:clamp(8px,1.2vh,14px) clamp(12px,1.4vw,18px)}' +
+      '.oc-otablo{border:1px solid rgba(140,120,80,.22);border-radius:16px;background:#fff;' +
+        'box-shadow:0 14px 30px -26px rgba(80,60,20,.9)}' +
+      '.oc-osat{display:grid;grid-template-columns:7.5em repeat(3,minmax(0,1fr));' +
+        'align-items:stretch;transition:background .14s}' +
+      '.oc-osat + .oc-osat{border-top:1px solid rgba(140,120,80,.14)}' +
+      '.oc-osat:nth-child(even){background:#FDFBF7}' +
+      '.oc-osat:not(.oc-obas):hover{background:#FFF6E9}' +
+      '.oc-osat:last-child{border-radius:0 0 15px 15px}' +
+      '.oc-osat.oc-obas{position:sticky;top:0;z-index:2;border-radius:15px 15px 0 0;' +
+        'background:linear-gradient(180deg,#FCF2EF 0%,#F8EAE6 100%);' +
+        'border-bottom:1px solid rgba(176,58,46,.28);color:#B03A2E;font-weight:800;' +
+        'letter-spacing:1.4px;text-transform:uppercase;' +
+        'font-size:clamp(.82rem,1.75vh,1.18rem)}' +
+      '.oc-obas span,.oc-obas .oc-oad{display:flex;align-items:center;justify-content:center;' +
+        'padding:clamp(7px,1.2vh,12px) 4px;color:inherit;font-size:inherit;letter-spacing:inherit}' +
+      '.oc-obas .oc-oad{justify-content:flex-start}' +
+      '.oc-oad{display:flex;align-items:center;color:#6B5B43;font-weight:800;' +
+        'font-size:clamp(.95rem,2.1vh,1.5rem);font-style:normal;white-space:nowrap;' +
+        'padding-inline-start:clamp(12px,1.3vw,20px)}' +
+      '.oc-ohucre{display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+        'gap:1px;min-width:0;padding:clamp(3px,.7vh,9px) 4px;' +
+        'border-inline-start:1px solid rgba(140,120,80,.12)}' +
+      /* ÖRNEKLER DEVASA: tahtadan okunacak. Satır yüksekliği büyüdüğü için
+         tablo daha çok kayar, sorun değil — harf harf çalışılan bir liste. */
+      '.oc-oar{font-family:"arakom","Noto Naskh Arabic","Amiri",serif;direction:rtl;' +
+        'font-weight:400;color:#0F2A43;line-height:1.2;' +
+        'font-size:clamp(3rem,min(9vw,13vh),9rem)}' +
+      '.oc-olat{color:#B03A2E;font-weight:800;letter-spacing:.4px;' +
+        'background:#FBEDEA;border-radius:999px;padding:.06em .62em;' +
+        'font-size:clamp(1.15rem,3.2vh,2.3rem)}' +
+      /* HER SATIR BİR KART: solda okunuş, ince kesik çizgiden sonra sağda
+         İŞARET. Kâğıt tonunda zemin, saç teli kenarlık, yumuşak gölge —
+         liste değil, düzenlenmiş bir tablo gibi dursun. */
+      '.oc-yy{display:grid;grid-template-columns:1fr auto;align-items:center;' +
+        'gap:clamp(10px,1.6vw,22px);white-space:nowrap;' +
+        'background:linear-gradient(180deg,#FFFDFA 0%,#FBF7F1 100%);' +
+        'border:1px solid rgba(140,120,80,.22);border-radius:16px;' +
+        'padding:clamp(6px,1vh,14px) clamp(14px,1.7vw,24px);' +
+        'box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 10px 22px -20px rgba(80,60,20,.85)}' +
+      /* Okunuş, İŞARETLE BİRLİKTE büyür: punto işaretin ~0,26'sı. Sabit bir
+         clamp'te kalınca 166 px'lik harekenin yanında minicik duruyordu. */
+      '.oc-yy i{font-style:normal;color:#6B5B43;font-weight:800;letter-spacing:.4px;' +
+        'line-height:1.15;white-space:normal;' +
+        'font-size:max(1.1rem,calc(var(--ocyy,5rem) * .30))}' +
+      /* Ara başlık (TENVİN): kart değil, iki yana uzanan ince çizgili ayraç. */
+      '.oc-yy-ara{grid-column:1/-1;display:flex;align-items:center;gap:14px;' +
+        'background:none;border:0;box-shadow:none;border-radius:0;' +
+        'color:#B9A98A;font-size:clamp(.8rem,1.7vh,1.15rem);font-weight:800;' +
+        'letter-spacing:2.5px;text-transform:uppercase;' +
+        'padding:clamp(6px,1.2vh,16px) 2px clamp(2px,.4vh,6px)}' +
+      '.oc-yy-ara::before,.oc-yy-ara::after{content:"";flex:1;height:1px;' +
+        'background:linear-gradient(90deg,transparent,rgba(140,120,80,.35),transparent)}' +
       '.oc-yy b{font-family:"arakom","Noto Naskh Arabic","Amiri",serif;' +
-        'font-size:clamp(2.8rem,min(5.2vw,6.6vh),5.4rem);' +
-        'font-weight:400;color:#B03A2E;direction:rtl;display:inline-block;line-height:1.2;' +
-        'min-width:1.7em;text-align:center}' +
-      '.oc-yy b.yk{transform:translateY(-.2em)}' +
+        'font-size:var(--ocyy,clamp(3rem,min(7vw,11vh),8rem));' +
+        'font-weight:400;color:#B03A2E;direction:rtl;display:inline-block;line-height:1.15;' +
+        'min-width:1.8em;text-align:center;' +
+        'border-inline-start:1px dashed rgba(140,120,80,.3);' +
+        'padding-inline-start:clamp(10px,1.5vw,22px)}' +
+      '.oc-yy b.yk{transform:translateY(-.18em)}' +
       /* KUTUSUZ DÜZEN: çerçeve, zemin, gölge yok — her şey sayfanın kendi
          boşluğunda akar. Kâğıt hissini tek başına YAZI ÇİZGİSİ ve kalem
          renkleri (mavi harf, kırmızı hareke) veriyor. */
       /* position:static — kumanda tuslari .oc-sar'in kosesine yaslansin */
       '.oc-kart{position:static;background:none;border:0;border-radius:0;box-shadow:none;padding:0}' +
-      '.oc-emoji{font-size:clamp(1.3rem,2.1vw,1.9rem);line-height:1;margin-inline-end:8px;' +
-        'vertical-align:-.12em}' +
       '.oc-sayfa{position:relative;padding:0}' +
 
       /* ---- sahne: üstte Latin, ortada Arapça, altta Latin klonu ---- */
@@ -312,8 +497,14 @@
       '.oc-cizelge{display:grid;grid-auto-columns:max-content;justify-content:center;' +
         'direction:rtl;position:relative;row-gap:clamp(6px,1vw,14px)}' +
 
+      /* Alt-üst boşluk = seslinin kutu yüksekliği (.68 punto × 1.08 satır).
+         AMA yalnız GEREKTİĞİ KADAR: kelimede üstte sesli yoksa üst boşluk,
+         altta (esre) yoksa alt boşluk neredeyse sıfırlanır (boyutla()
+         --ocust / --ocalt'ı kelimeye göre yazar). Kazanılan yer harfe
+         gidiyor — esresiz kelimelerde punto ~%20 büyüyor. */
       '.oc-birim{grid-row:1;position:relative;display:block;text-align:center;' +
-        'padding:calc(var(--ocharf,7rem) * .54) 0 calc(var(--ocharf,7rem) * .56)}' +
+        'padding:calc(var(--ocharf,7rem) * var(--ocust,.74)) 0 ' +
+        'calc(var(--ocharf,7rem) * var(--ocalt,.76))}' +
       /* ÇİZGİ: sessiz harfler bu çizginin üstünde durur — önce onlar okunur. */
       /* Yazı çizgisi harflerin TABANINDA: satır kutusu kısaltıldı, harf
          kutudan taşar; böylece çizgi ile harf arasında boşluk kalmaz. */
@@ -329,61 +520,78 @@
       '.oc-ses{display:inline-block;font-weight:700;color:#CF3A2E;line-height:1.08;' +
         'font-size:var(--ocharf,7rem);' +
         'transition:transform .55s cubic-bezier(.4,0,.2,1),opacity .3s ease}' +
-      /* üst satırda hareke, harften küçük durur */
-      '.oc-cizelge .oc-ses{font-size:calc(var(--ocharf,7rem) * .5)}' +
+      /* Üst satırdaki sesli (hareke karşılığı) harften küçük durur ama
+         tahtadan okunacak kadar büyük: harfin ~0,68'i. Birim kutusunun
+         alt-üst boşluğu da bununla birlikte büyür (bkz. .oc-birim),
+         yoksa sesli harfin üstüne biner. */
+      '.oc-cizelge .oc-ses{font-size:calc(var(--ocharf,7rem) * .68)}' +
       /* okunan hece: altındaki çizgi ve harf renklenir */
       '.oc-birim.vurgu .oc-ray{border-bottom-color:var(--ocr,#2563EB)}' +
       '.oc-birim.vurgu .oc-harf{color:var(--ocr,#2563EB)}' +
       '.oc-birim.vurgu .oc-ses{color:var(--ocr,#2563EB)}' +
-      /* uzatma harfinin sütunu: Latin karşılığı yok, çizgi kesik */
-      '.oc-birim.uzt .oc-ray{border-bottom-style:dashed}' +
+      /* YUVARLAK TE — pembe. Vurgu renginden SONRA yazılıyor ki hece
+         okunurken bile pembe kalsın. */
+      '.oc-birim.yt .oc-harf,.oc-birim.vurgu.yt .oc-harf{color:#DB2777}' +
+      '.oc-ar.yt{color:#DB2777}' +
+      '.oc-tam .yt{color:#DB2777;font-style:normal}' +
+      /* Uzatma sütunu: Latin karşılığı yok. Yazı çizgisi kesintisiz devam
+         etsin ve sütun harf genişliği kadar açılmasın diye yan boşluk sıfır. */
+      '.oc-birim.uzt .oc-ray{padding:0}' +
+      /* Eni sıfır ama SATIR YÜKSEKLİĞİ duruyor: içi boş bırakılırsa kutu
+         çöküyor ve yazı çizgisi o sütunda yukarı kayıyordu. */
+      '.oc-harf.oc-yok{width:0;padding:0;margin:0;overflow:hidden}' +
       /* şeddeli ikili tek harften geldiği için ortak zemin */
       '.oc-birim.sd1 .oc-ray,.oc-birim.sd2 .oc-ray{background:rgba(15,42,67,.055)}' +
       '.oc-birim.sd1 .oc-ray{border-radius:0 10px 0 0}' +
       '.oc-birim.sd2 .oc-ray{border-radius:10px 0 0 0}' +
 
+      /* Arapça harfler LATİNLE AYNI PUNTODA (naskh gövdesi zaten em'in
+         içinde daha küçük durur, bu yüzden 1.0 ile denk görünüyor). */
       '.oc-ar{grid-row:2;font-family:"arakom","Noto Naskh Arabic","Amiri",serif;direction:rtl;' +
-        'font-size:calc(var(--ocharf,7rem) * .8);color:#0F2A43;line-height:1.35;text-align:center;' +
+        'font-size:var(--ocharf,7rem);color:#0F2A43;line-height:1.12;text-align:center;' +
         'opacity:0;transform:translateY(16px);' +
         'transition:opacity .42s ease,transform .42s cubic-bezier(.34,1.3,.5,1)}' +
       '.oc-sed{grid-row:2;font-family:"arakom","Noto Naskh Arabic","Amiri",serif;direction:rtl;' +
-        'font-size:calc(var(--ocharf,7rem) * .8);color:#0F2A43;line-height:1.35;text-align:center;' +
+        'font-size:var(--ocharf,7rem);color:#0F2A43;line-height:1.12;text-align:center;' +
         'opacity:0;transform:scale(.9);' +
         'transition:opacity .4s ease,transform .4s cubic-bezier(.34,1.3,.5,1)}' +
       /* Şeddenin BİRİNCİ adımı: cezimli harf yerini yalnız şedde işaretine
          bırakır — henüz öbür harfe eklenmemiştir, havada durur. Sayfanın
          hareke rengini (kırmızı) alır: bu artık harf değil, işarettir.
          Punto DEĞİŞMEZ; ikinci adımda harfin üstüne aynı boyda oturacak. */
-      '.oc-ar.oc-sdd{color:#B03A2E}' +
+      /* Tek başına duran şedde, altında harf olmadığı için kendi satır
+         kutusunun TEPESİNE çiziliyor ve yazı çizgisine yapışıyordu.
+         Arapça satırın içine, harflerin hareke yüksekliğine indiriliyor.
+         (transform kullanılamaz: adımlar .oc-ar'ın transform'unu yazıyor.) */
+      '.oc-ar.oc-sdd{color:#B03A2E;position:relative;top:.30em}' +
       '@keyframes ocDon{0%{transform:scale(.88)}60%{transform:scale(1.06)}100%{transform:none}}' +
       '.oc-don{animation:ocDon .34s cubic-bezier(.34,1.42,.5,1)}' +
       '.oc-tam{grid-row:2;align-self:center;justify-self:center;pointer-events:none;' +
         'font-family:"arakom","Noto Naskh Arabic","Amiri",serif;direction:rtl;' +
-        'font-size:calc(var(--ocharf,7rem) * .88);color:#0F2A43;line-height:1.35;white-space:nowrap;' +
+        'font-size:var(--ocharf,7rem);color:#0F2A43;line-height:1.12;white-space:nowrap;' +
         'opacity:0;transform:scale(.92);transition:opacity .45s ease .12s,transform .45s cubic-bezier(.34,1.3,.5,1) .12s}' +
       '.s2 .oc-tam,.s3 .oc-tam{opacity:1;transform:none}' +
 
       /* Latin klonu: Arapça kelimenin altında, Türkçe yazılış gibi */
-      '.oc-klon{opacity:0;transition:opacity .3s;margin-top:clamp(0px,.4vw,6px);line-height:1.15}' +
+      /* Türkçe yazılış (klon) da Latin/Arapça ile aynı boyda. */
+      '.oc-klon{opacity:0;transition:opacity .3s;margin-top:clamp(0px,.4vw,6px);line-height:1}' +
       '.oc-klon .oc-satir{display:flex;align-items:baseline;justify-content:center;direction:ltr}' +
       '.oc-klon .oc-birim{grid-row:auto;display:inline-flex;align-items:baseline;padding:0}' +
       '.oc-klon .oc-ray{display:inline;padding:0;border:0}' +
       '.oc-klon .oc-yuva{position:static;display:inline}' +
       '.oc-klon .oc-bos{display:none}' +
-      '.oc-klon .oc-ses,.oc-klon .oc-harf{font-size:calc(var(--ocharf,7rem) * .72)}' +
+      '.oc-klon .oc-ses,.oc-klon .oc-harf{font-size:var(--ocharf,7rem)}' +
       /* klonda zemin yerine ince alt çizgi: iki harfin tek Arapça harften
          geldiği belli olsun ama satır arasına kutu girmesin */
       '.oc-klon .oc-birim.sd1 .oc-ray,.oc-klon .oc-birim.sd2 .oc-ray{background:none;' +
         'box-shadow:inset 0 -.07em 0 rgba(15,42,67,.28)}' +
 
 
-      '.oc-alt{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;' +
-        'border-top:1px solid rgba(120,100,60,.14);margin:clamp(6px,1vw,14px) 0 0;padding-top:12px;' +
-        'min-height:clamp(52px,5vw,64px);padding-right:clamp(240px,26vw,340px)}' +
-      '.oc-anlam{display:inline-flex;align-items:center;font-size:clamp(1.02rem,1.7vw,1.5rem);' +
-        'color:#334155;font-weight:800;opacity:0;transition:opacity .4s}' +
-      '.oc-anlam.gorun{opacity:1}' +
-      '.oc-anlam i{font-style:normal;color:var(--ocr,#2563EB)}' +
+      /* Altta yazı YOK: okunuş, anlam ve emoji kaldırıldı — kelimenin
+         Türkçe yazılışı zaten klon satırında duruyor. Bu satır artık
+         yalnız kumanda tuşlarının (dar ekranda akışa giren) kabı. */
+      '.oc-alt{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;' +
+        'border:0;margin:0;padding:0;min-height:0}' +
       /* Kumanda tuşları sağ ALT KÖŞEDE: akıştan çıkar, sayfanın köşesine
          oturur; tahtada hep aynı yerde durduğu için el aramaz. */
       '.oc-tuslar{display:flex;gap:8px;position:absolute;right:10px;bottom:10px;z-index:3}' +
@@ -393,14 +601,14 @@
       '.oc-tus:hover{filter:brightness(1.07);transform:translateY(-1px)}' +
       '.oc-tus.ikincil{background:#EEF2F7;color:#334155}' +
 
-      '@media (max-width:860px){.oc-govde{grid-template-columns:1fr}' +
-        '.oc-yardim{flex-direction:row;flex-wrap:wrap;justify-content:center;' +
-          'align-items:center;gap:0 clamp(8px,2vw,18px);min-width:0;margin-top:6px}' +
-        '.oc-yardim-bas{border-bottom:0;padding:0}' +
-        '.oc-yy{border-bottom:0;padding:4px 2px}.oc-yy-ara{display:none}}' +
+      '@media (max-width:860px){.oc-ykutu{border-radius:16px;padding:12px 14px 16px}' +
+        '.oc-yliste{grid-template-columns:minmax(0,1fr)}' +
+        '.oc-osat{grid-template-columns:4.2em repeat(3,minmax(0,1fr))}' +
+        '.oc-oad{padding-inline-start:8px}' +
+        '.oc-tuslar-ust{position:static;justify-content:center;margin:0 0 10px}}' +
       '@media (max-width:860px){.oc-tuslar{position:static;margin-left:auto}' +
         '.oc-govde{padding-bottom:0}' +
-        '.oc-alt{padding-right:0;min-height:0}}' +
+        '.oc-alt{min-height:0}}' +
       '@media (max-width:640px){.oc-tuslar{width:100%;margin-left:0}.oc-tus{flex:1}' +
         '.oc-birim{padding:34px 0 34px}}' +
       '@media (prefers-reduced-motion:reduce){.oc-harf,.oc-ses,.oc-ar,.oc-tam,.oc-klon{transition:none}}' +
@@ -450,31 +658,44 @@
             '</div>' +
           '</div>' +
           '<div class="oc-alt">' +
-            '<span class="oc-anlam"><span class="oc-emoji"></span>' +
-              '<span class="oc-anlam-yazi"></span></span>' +
             '<span class="oc-tuslar">' +
               '<button type="button" class="oc-tus ikincil oc-geri">◂ Geri</button>' +
               '<button type="button" class="oc-tus oc-ileri">İleri ▸</button>' +
             '</span>' +
           '</div>' +
         '</div>' +
-        /* Yardım tablosu: sağda, DİKEY, konuya göre değişir */
-        '<aside class="oc-yardim"></aside>' +
+        '</div>' +
+        /* Yardım tablosu AÇILIR PENCEREDE: işaretler tahtadan okunacak
+           kadar büyük olabilsin, çalışma alanı da daralmasın. */
+        '<span class="oc-tuslar-ust">' +
+          '<button type="button" class="oc-yac" data-kip="ornek">' +
+            '<b dir="rtl">\u0628\u064E</b> Örnekler</button>' +
+          '<button type="button" class="oc-yac" data-kip="yardim">' +
+            '<b dir="rtl">\u0640\u064E</b> Yardım tablosu</button>' +
+        '</span>' +
+        '<div class="oc-yperde" hidden>' +
+          '<div class="oc-ykutu" role="dialog" aria-modal="true" aria-label="Yardım tablosu">' +
+            '<div class="oc-ybas"><span><span class="oc-ybaslik">Yardım tablosu!</span> ' +
+              '<span class="oc-ykonu"></span></span>' +
+              '<button type="button" class="oc-ykapa" aria-label="Kapat">✕</button></div>' +
+            '<div class="oc-yliste"></div>' +
+          '</div>' +
         '</div>' +
       '</div>';
 
     var sar = mount.querySelector('.oc-sar'),
         serit = mount.querySelector('.oc-serit'),
         not = mount.querySelector('.oc-not'),
-        yardim = mount.querySelector('.oc-yardim'),
+        yardim = mount.querySelector('.oc-yliste'),
+        yperde = mount.querySelector('.oc-yperde'),
+        ykutu = mount.querySelector('.oc-ykutu'),
+        ybaslik = mount.querySelector('.oc-ybaslik'),
+        ykonu = mount.querySelector('.oc-ykonu'),
         kart = mount.querySelector('.oc-kart'),
-        emoji = mount.querySelector('.oc-emoji'),
-        anlamYazi = mount.querySelector('.oc-anlam-yazi'),
         sahne = mount.querySelector('.oc-sahne'),
         cizelge = mount.querySelector('.oc-cizelge'),
         klon = mount.querySelector('.oc-klon'),
         klonSatir = klon.querySelector('.oc-satir'),
-        anlam = mount.querySelector('.oc-anlam'),
         ileri = mount.querySelector('.oc-ileri'),
         geri = mount.querySelector('.oc-geri');
 
@@ -498,6 +719,98 @@
       document.fonts.ready.then(kaydiragiOynat);
     }
 
+    /* --------------------------------------------- yardım penceresi
+       Dışarı dokununca, ✕ ile ya da Esc ile kapanır. Açıkken ok tuşları
+       kelimeyi ilerletmez (aşağıdaki klavye kancasına bakınız). */
+    /* Pencere SATIR SAYISINA GÖRE boyutlanır: az satır varsa (Şedde'de bir
+       tane) işaret devasa olur, Hece'de yedi satır iki sütuna dizilir ve
+       ekrana sığacak en büyük puntoyu alır. */
+    function yardimBoyutla() {
+      if (!yperde || !yardim) return;
+      var satir = yardim.querySelectorAll('.oc-yy:not(.oc-yy-ara)').length;
+      var ara = yardim.querySelectorAll('.oc-yy-ara').length;
+      var sut = (satir > 3) ? 2 : 1;                     /* yalnız Hece iki sütun */
+      var dizi = Math.ceil(satir / sut) + ara;
+      /* Kullanılabilir yükseklik: pencere payı eksi başlık ve iç boşluk.
+         Bir satır = işaret puntosu × 1,18 + 26 px dolgu. */
+      var yer = (window.innerHeight || 800) * 0.94 - 130;
+      var px = Math.min(16 * 16, Math.max(2.2 * 16,
+               (yer / Math.max(1, dizi) - 26) / 1.18));
+      yperde.style.setProperty('--ocyy', px.toFixed(0) + 'px');
+      yperde.style.setProperty('--ocsut', sut);
+      yperde.style.setProperty('--ocw', (sut === 2 ? 1180 : 760) + 'px');
+    }
+    /* Yardım tablosu satırları — konuya göre, tenvinler yalnız Hece'de. */
+    function yardimIc(g) {
+      return (g.yardim || []).map(function (y) { return yySatir(y); }).join('') +
+        (grup === 'hece'
+          ? '<span class="oc-yy oc-yy-ara">tenvin</span>' + TENVIN.map(yySatir).join('')
+          : '');
+    }
+    /* Örnek tablosu: 28 harfin (cezim/şeddede elifsiz) üç hareke ile
+       okunuşu — eski okuma.html'in yaptığı işin aynısı. */
+    function ornekIc() {
+      var tur = ['ustun', 'esre', 'otre'], uret = URET[grup];
+      if (!uret) return '';
+      var bas = '<div class="oc-osat oc-obas"><i class="oc-oad">Harf</i>' +
+                tur.map(function (t) { return '<span>' + TURAD[t] + '</span>'; }).join('') + '</div>';
+      return '<p class="oc-onot">' + (ORNEKNOT[grup] || '') + '</p>' +
+        '<div class="oc-otablo">' + bas +
+        ornekHarfleri(grup).map(function (h) {
+          return '<div class="oc-osat"><i class="oc-oad">' + h.ad + '</i>' +
+            tur.map(function (t) {
+              var o = uret(h, t);
+              return '<span class="oc-ohucre"><span class="oc-oar" dir="rtl">' + o.ar + '</span>' +
+                     '<span class="oc-olat">' + o.tr + '</span></span>';
+            }).join('') + '</div>';
+        }).join('') + '</div>';
+    }
+    function pencereAc(kip) {
+      if (!yperde) return;
+      var g = KELIME[grup];
+      ykonu.textContent = g.ad;
+      if (kip === 'ornek') {
+        ybaslik.textContent = 'Örnekler —';
+        ykutu.classList.add('oc-ornek');
+        yardim.innerHTML = ornekIc();
+        yperde.style.setProperty('--ocsut', 1);
+        yperde.style.setProperty('--ocw', '1460px');
+      } else {
+        ybaslik.textContent = 'Yardım tablosu!';
+        ykutu.classList.remove('oc-ornek');
+        yardim.innerHTML = yardimIc(g);
+        yardimBoyutla();
+      }
+      yperde.hidden = false;
+      ykutu.scrollTop = 0;
+      /* Yardım tablosu KAYDIRILMADAN sığsın: hesap birkaç piksel şaşarsa
+         işaret puntosu ölçülerek küçültülür. (Örnek tablosu 28 satır, o
+         zaten kaydırmalı.) */
+      /* Dar ekranda küçültme yok: telefonda kaydırmak, yedi işareti birden
+         küçültmekten iyi. */
+      if (kip !== 'ornek' && (window.innerWidth || 1000) > 860) {
+        var yy = parseFloat(yperde.style.getPropertyValue('--ocyy')) || 0;
+        for (var i = 0; i < 12 && yy > 40 && ykutu.scrollHeight > ykutu.clientHeight + 2; i++) {
+          yy *= 0.94;
+          yperde.style.setProperty('--ocyy', yy.toFixed(0) + 'px');
+        }
+      }
+    }
+    function yardimAc(evet, kip) {
+      if (!yperde) return;
+      if (evet) pencereAc(kip || 'yardim'); else yperde.hidden = true;
+    }
+    mount.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;
+      var d = t.closest('.oc-yac');
+      if (d) { yardimAc(true, d.getAttribute('data-kip')); return; }
+      if (t.closest('.oc-ykapa')) { yardimAc(false); return; }
+      if (yperde && !yperde.hidden && t.closest('.oc-yperde') && !t.closest('.oc-ykutu')) {
+        yardimAc(false);
+      }
+    });
+
     serit.addEventListener('click', function (e) {
       var t = e.target.closest ? e.target.closest('.oc-hap') : null;
       if (!t) return;
@@ -517,28 +830,91 @@
        ekrana sığacak kadar: genişlik SÜTUN SAYISINA, yükseklik pencere
        boyuna göre sınırlanır. Bütün puntolar (hareke, Arapça satır,
        klon, boşluklar) bu tek değerden türer: --ocharf. */
-    var ENBUYUK = 14 * 16;                       /* 14rem tavan */
+    var ENBUYUK = 18 * 16;                       /* 18rem tavan */
+    /* Sahnenin yüksekliği punto ile ORANTILI: aşağıdaki katsayılar ölçülen
+       satır yükseklikleridir (punto = 1 birim).
+         üst sesli boşluğu   --ocust   (.74 varsa, yoksa yok sayılır)
+         alt  sesli boşluğu  --ocalt   (.76)
+         Latin harf satırı   .74       (line-height)
+         Arapça satır        1.12
+         Türkçe klon satırı  1.00
+         satır araları/pay   .30                                        */
+    var BOS = 0.06;                              /* sesli yoksa kalan nefes */
+    /* Üstteki sabit pay (konu şeridi + konu notu) SABİT DEĞİL: şeridin
+       puntosu vw'ye bağlı, ekran genişledikçe şerit de büyüyor. Bu yüzden
+       tahmin edilmiyor, SAHNENİN TEPESİ ÖLÇÜLÜYOR. Alt pay ise kumanda
+       tuşlarının köşedeki yeri. */
+    var ALTPAY = 96;
+    var yatayEnb = ENBUYUK;                      /* boyutla() her turda yazar */
     function boyutla() {
       var n = Math.max(1, b.length);
       var kap = (kart && kart.clientWidth) || mount.clientWidth || 700;
       var yh = window.innerHeight || 800;
+      /* Bu kelimede üstte / altta sesli var mı? Yoksa o boşluk harfe gider. */
+      var ustVar = false, altVar = false, i;
+      for (i = 0; i < b.length; i++) {
+        if (b[i].sukun || !b[i].sesli) continue;
+        if (b[i].yer === 'alt') altVar = true; else ustVar = true;
+      }
+      var pu = ustVar ? 0.74 : BOS, pa = altVar ? 0.76 : BOS;
+      sar.style.setProperty('--ocust', pu);
+      sar.style.setProperty('--ocalt', pa);
+      var kat = pu + pa + 0.74 + 1.12 + 1.00 + 0.30;
+      var ust = 200;                             /* daha yerleşmediyse makul pay */
+      if (sahne && sahne.getBoundingClientRect) {
+        var r = sahne.getBoundingClientRect();
+        if (r.top > 60 && r.top < yh * 0.6) ust = r.top;
+      }
       var yatay = (kap * 0.96) / (n * 1.22);     /* n sütun yan yana sığsın */
-      var dikey = (yh - 412) / 4.05;             /* üç satır + kumanda sığsın.
-                                                    Adım açıklaması ve sayaç
-                                                    kaldırıldı, konu şeridi ise
-                                                    iki katına çıktı */
-      var px = Math.min(ENBUYUK, yatay, dikey);
+      var dikey = (yh - ust - ALTPAY) / kat;
+      yatayEnb = Math.min(ENBUYUK, yatay);       /* büyütme turunun tavanı */
+      var px = Math.min(yatayEnb, dikey);
       if (!(px > 24)) px = 24;
       sar.style.setProperty('--ocharf', px.toFixed(1) + 'px');
+    }
+
+    /* SON RÖTUŞ — hesapla, ÖLÇ, düzelt.
+       Yukarıdaki katsayılar iyi bir başlangıç veriyor ama yazı tipi,
+       satır yuvarlamaları ve konu şeridinin gerçek yüksekliği birkaç
+       piksel şaşırtabiliyor. Burada sahnenin GERÇEK alt kenarı ölçülüp
+       punto ekrana tam oturana kadar küçültülüyor; yer kaldıysa da
+       tavana kadar büyütülüyor. Böylece harfler her ekranda sığabilecek
+       EN BÜYÜK boyu alıyor, elle katsayı ayarlamaya gerek kalmıyor. */
+    function sigdir() {
+      if (!sar.offsetHeight) return;             /* sekme kapalıysa ölçme */
+      var yh = window.innerHeight || 800;
+      var hedef = yh - 12;
+      var i;
+      var px = parseFloat(sar.style.getPropertyValue('--ocharf')) || 100;
+      for (i = 0; i < 20 && px > 24 && sar.getBoundingClientRect().bottom > hedef; i++) {
+        px *= 0.95;
+        sar.style.setProperty('--ocharf', px.toFixed(1) + 'px');
+      }
+      for (i = 0; i < 14 && px < yatayEnb - 0.5; i++) {
+        var deneme = Math.min(yatayEnb, px * 1.04);
+        sar.style.setProperty('--ocharf', deneme.toFixed(1) + 'px');
+        if (sar.getBoundingClientRect().bottom > hedef) {
+          sar.style.setProperty('--ocharf', px.toFixed(1) + 'px');
+          return;
+        }
+        px = deneme;
+      }
     }
     var olcZaman = 0;
     window.addEventListener('resize', function () {
       clearTimeout(olcZaman);
-      olcZaman = setTimeout(function () { boyutla(); kaydiragiOynat(); }, 150);
+      olcZaman = setTimeout(function () { boyutla(); sigdir(); kaydiragiOynat(); }, 150);
     });
 
     /* ---------------------------------------------- kelimeyi kur */
     function kelimeCiz() {
+      /* ÖNCE LATİN KLONUNU KAPAT. Önceki kelimenin son adımında klon açık
+         kalıyor; yeni kelimenin satırı yazılınca okunuşu bir an görünüp
+         sönüyordu — çocuğa cevabı önden gösteren bir kopya gibi. Geçiş de
+         kapatılıyor ki sönme bile oynamasın; klonUcur() geri açıyor. */
+      klon.style.transition = 'none';
+      klon.style.opacity = '0';
+      sahne.className = 'oc-sahne s0';
       var g = KELIME[grup], k = g.liste[sira];
       b = birimler(k);
       sar.style.setProperty('--ocr', g.renk);
@@ -548,19 +924,10 @@
       });
       kaydiragiOynat();
       not.textContent = g.not;
-      emoji.textContent = k.e || '';
       /* Yardım tablosu konuya göre: önce konunun kendi işaretleri, altında
          her kelimede geçen tenvin satırları. İşaretler tek başına görünmez,
          çalışma kâğıdındaki gibi bir kaşide üstünde gösterilir (ـَ ـُ …). */
-      /* Tenvin satırları YALNIZ Hece konusunda durur: tenvin orada
-         öğretiliyor, öbür konularda tablo sade kalsın. */
-      yardim.innerHTML = '<span class="oc-yardim-bas">Yardım tablosu!</span>' +
-        (g.yardim || []).map(function (y) {
-          return yySatir(y);
-        }).join('') +
-        (grup === 'hece'
-          ? '<span class="oc-yy oc-yy-ara">tenvin</span>' + TENVIN.map(yySatir).join('')
-          : '');
+      /* Pencereler açılırken doldurulur (aşağıda pencereAc). */
 
       /* 1. satır: Latin birimleri (sessizler çizginin üstünde) */
       var latin = b.map(function (x, i) {
@@ -582,7 +949,8 @@
         heceler.push({ ar: b[i].arTam, lat: lat, ilk: i, sp: sp,
                        uzatma: !!b[i].uzatma, uzunSes: b[i].uzunSes || '' });
         hucreler.push({ sut: i + 1, sp: sp, ar: b[i].arTam, sd: !!(b[i].seddeIlk || b[i].sedde),
-                        sedIlk: !!b[i].seddeIlk, arSedde: b[i].arSedde || '' });
+                        sedIlk: !!b[i].seddeIlk, arSedde: b[i].arSedde || '',
+                        yt: !!b[i].yuvarlak });
       }
 
       /* KELİMEDEKİ GERÇEK HARF SIRASI — şeddeli ikili burada TEK harftir.
@@ -610,7 +978,7 @@
         u = hucreler[i];
         hd = '';
         for (j = 0; j < gercek.length; j++) if (gercek[j].hucre === i && !u.sedIlk) hd = gercek[j].bag;
-        ar += '<span class="oc-ar"' + (u.sd ? ' data-sd="1"' : '') +
+        ar += '<span class="oc-ar' + (u.yt ? ' yt' : '') + '"' + (u.sd ? ' data-sd="1"' : '') +
               (u.sedIlk ? ' data-sdd="' + SDD + '"' : '') +
               ' data-yalin="' + u.ar + '" data-bag="' + (hd || u.ar) + '"' +
               ' style="grid-column:' + u.sut + ' / span ' + u.sp + '">' + u.ar + '</span>';
@@ -625,13 +993,19 @@
          bağlanma adımı gereksizdir — atlanır. */
       bagAdimi = gercek.some(function (x) { return x.bag !== x.ar; }) ? 1 : 0;
 
+      /* Birleşik kelimede de yuvarlak te pembe kalsın: son ة'den itibaren
+         (harekesiyle birlikte) ayrı bir kutuya alınıyor. Tarayıcı Arapça'yı
+         kutu sınırları boyunca yine bitiştiriyor, kelime kopmuyor. */
+      var tamIc = k.ar, ti = k.ar.lastIndexOf('\u0629');
+      if (ti >= 0) tamIc = k.ar.slice(0, ti) + '<i class="yt">' + k.ar.slice(ti) + '</i>';
       cizelge.innerHTML = latin + ar + sed +
-        '<span class="oc-tam" style="grid-column:1 / span ' + b.length + '">' + k.ar + '</span>';
+        '<span class="oc-tam" style="grid-column:1 / span ' + b.length + '">' + tamIc + '</span>';
 
       /* alt satır: aynı harflerin klonu, Türkçe dizilim */
       klonSatir.innerHTML = b.map(function (x) { return birimHtml(x, ''); }).join('');
 
       adimaGec(0);
+      sigdir();                                  /* ölçüp puntoyu oturt */
     }
 
     /* Yardım tablosunun bir satırı: solda Latin karşılık, sağda işaret.
@@ -648,10 +1022,18 @@
 
     function birimHtml(x, stil2) {
       var sn = 'oc-birim' + (x.seddeIlk ? ' sd1' : '') + (x.sedde ? ' sd2' : '') +
-               (x.uzatma ? ' uzt' : '');
-      var harf = (x.tasiyici || x.uzatma)
-        ? '<span class="oc-harf oc-bos" aria-hidden="true">' + (x.sesli || x.uzunSes || 'a') + '</span>'
-        : '<span class="oc-harf">' + (x.harf || '') + '</span>';
+               (x.uzatma ? ' uzt' : '') + (x.yuvarlak ? ' yt' : '');
+      /* UZATMA sütununda Latin tarafta hiçbir şey YOK ve yer de tutmuyor:
+         eskiden görünmez bir 'â' yer tutuyordu ve iki Latin harfin arası
+         kocaman açılıyordu. Artık sütunun eni yalnız altındaki Arapça
+         uzatma harfi (ا و ي) kadar. Taşıyıcı elif/hemzede ise yer tutan
+         harf KALIYOR: onun sesi çizginin üstünde duruyor, sütun daralırsa
+         hareke sığmaz. */
+      var harf = x.uzatma
+        ? '<span class="oc-harf oc-bos oc-yok" aria-hidden="true">' + (x.uzunSes || 'a') + '</span>'
+        : (x.tasiyici
+            ? '<span class="oc-harf oc-bos" aria-hidden="true">' + (x.sesli || 'a') + '</span>'
+            : '<span class="oc-harf">' + (x.harf || '') + '</span>');
       /* Cezimli harfin Latin tarafında işaret YOKTUR: hareke almadığı
          için üstü boş kalır — cezmin anlamı da budur. Arapça satırdaki
          harfte ْ işareti zaten görünüyor. */
@@ -732,13 +1114,10 @@
 
       if (n === son && H) klonUcur(); else klonuGizle();
 
-      /* Ekranda yalnız kelimenin kendisi durur: adım açıklaması, yön uyarısı
-         ve sayaç yok — tahtada sade görünsün diye. Altta yalnız kelime
-         tamamlanınca okunuşu ve anlamı çıkar. */
-      var k = KELIME[grup].liste[sira];
-      var bitti = n > H + SD + BG;
-      anlamYazi.innerHTML = bitti ? ('<i>' + okunus(b) + '</i> &nbsp;&middot;&nbsp; ' + k.tr) : '';
-      anlam.classList.toggle('gorun', bitti);
+      /* Ekranda YALNIZ kelimenin kendisi durur: adım açıklaması, yön
+         uyarısı, sayaç, okunuş/anlam ve emoji yok — tahtada sade görünsün
+         diye. Kelimenin Türkçe okunuşu zaten en son adımda klon satırında
+         çıkıyor. */
       ileri.textContent = n >= son ? 'Sonraki kelime ▸' : 'İleri ▸';
     }
 
@@ -770,6 +1149,8 @@
     function klonUcur() {
       var ustP = [].slice.call(cizelge.querySelectorAll('.oc-harf, .oc-ses'));
       var altP = [].slice.call(klonSatir.querySelectorAll('.oc-harf, .oc-ses'));
+      klon.style.transition = '';                /* kelimeCiz kapatmıştı */
+      void klon.offsetWidth;
       klon.style.opacity = '1';
       if (ustP.length !== altP.length) return;
       var u = ustP.map(function (p) { return p.getBoundingClientRect(); });
@@ -804,6 +1185,11 @@
       if (!mount.offsetParent && mount.offsetHeight === 0) return;
       var ov = document.getElementById('hd-overlay');
       if (ov && ov.style.display === 'flex') return;
+      /* Yardım penceresi açıkken ok tuşu kelimeyi ilerletmesin; Esc kapatsın. */
+      if (yperde && !yperde.hidden) {
+        if (e.key === 'Escape') { yardimAc(false); e.preventDefault(); }
+        return;
+      }
       var h = e.target;
       if (h && /^(INPUT|TEXTAREA|SELECT)$/.test(h.tagName || '')) return;
       if (h && h.isContentEditable) return;

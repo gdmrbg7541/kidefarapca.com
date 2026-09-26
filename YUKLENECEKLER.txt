@@ -856,3 +856,163 @@ Hicbir harf bicim degistirmiyorsa (orn. رَبٌّ, أُمٌّ) bu adim atlanir.
      · Sonuç ekranına «Kişi sayısı» düğmesi eklendi: giriş ekranına döner.
      · Katmandaki rol adı 'akbasla' — Sınav sekmesinde data-rol="basla" taşıyan
        başka bir düğme var, belge genelinde karışmasın.
+
+[2026-09-26] Okuma: sesliler büyüdü, alttaki okunuş/anlam satırı kalktı
+  okumayazma/okuma-cevir.js -> v19 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v18.js)
+  alfabe.html               -> okuma-cevir.js?v=19
+  · Üst satırdaki sesliler (hareke karşılıkları) harfin 0,50'sinden 0,68'ine çıktı
+    — 1440'ta 63 -> 86 px. Birim kutusunun alt-üst boşluğu da .54/.56'dan
+    .74/.76'ya çekildi (boşluk = seslinin kutu yüksekliği), sesli harfe binmiyor.
+  · Alttaki "✋ yedun · el" satırı (okunuş + anlam + emoji) tamamen kaldırıldı;
+    .oc-alt artık yalnız kumanda tuşlarının kabı, ayraç çizgisi de yok.
+    Kelimenin Türkçe okunuşu zaten son adımda klon satırında çıkıyor.
+  · Dikey pay yeniden ölçüldü: sahne yüksekliği punto ile 4,30 kat artıyor;
+    boyutla() (yh-412)/4.05 -> (yh-357)/4.30. 1366'da 88 -> 96 px,
+    1920'de 165 -> 168 px; her boyda ~45 px pay kalıyor, taşma yok.
+
+[2026-09-26] Okuma: Arapça ve Türkçe 18 rem'e çıktı, punto artık ÖLÇÜLEREK oturuyor
+  okumayazma/okuma-cevir.js -> v20 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v19.js)
+  alfabe.html               -> okuma-cevir.js?v=20
+  · Tavan 14 rem -> 18 rem (288 px). Arapça satır .80 -> 1.00, tam kelime .88 -> 1.00,
+    Türkçe klon satırı .72 -> 1.00: üçü de Latin harflerle AYNI puntoda.
+    Satır yükseklikleri sıkıldı (Arapça 1.35 -> 1.12, klon 1.15 -> 1.00).
+  · Birim kutusunun alt-üst boşluğu artık KELİMEYE GÖRE: üstte sesli yoksa üst,
+    altta esre yoksa alt boşluk neredeyse sıfır (--ocust / --ocalt). Esresiz
+    kelimelerde punto ~%20 büyüyor.
+  · Üstteki sabit pay tahmin edilmiyor, SAHNENİN TEPESİ ölçülüyor (konu şeridi
+    vw'ye bağlı olduğu için sabit değildi).
+  · YENİ: sigdir() — hesapla, ÖLÇ, düzelt. İki sütun var (solda harfler, sağda
+    yardım tablosu); hangisi uzunsa her turda o küçültülüyor, sonra yer kaldıysa
+    harfler tavana kadar büyütülüyor. Elle katsayı ayarına gerek kalmadı.
+    Yardım tablosu puntosu da değişkene bağlandı (--ocyy).
+  · .oc-sar alt payı 26 -> 10 px (kumanda tuşları için .oc-govde zaten pay bırakıyor).
+  · Ölçülen puntolar (kısa kelime / uzun kelime):
+      2560x1440 -> 288 / 184 px      1920x1080 -> 196 / 167 px
+      1440x900  -> 153 / 130 px      1366x768  -> 116 /  99 px
+      1280x720  -> 107 px            390x844   -> 139 /  46 px
+    8 ekran boyu x 4 konu x 25 kelime x bütün adımlar: taşma yok, çakışma yok.
+
+[2026-09-26] Okuma: sekmeler küçüldü, tek şedde aşağı indi, yuvarlak te pembe
+  okumayazma/okuma-cevir.js -> v21 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v20.js)
+  alfabe.html               -> okuma-cevir.js?v=21
+  1) Konu sekmeleri biraz küçüldü: clamp(1.1rem,2.7vw,2.4rem) -> clamp(1rem,2.15vw,1.9rem),
+     iç boşluk da daraldı. 1440'ta 38 -> 30 px. Boşalan dikey pay harfe geçti:
+     1366'da 116 -> 125 px, 1920'de 196 -> 200 px.
+  2) Şeddenin birinci adımında tek başına duran şedde işareti, altında harf
+     olmadığı için kendi satır kutusunun tepesine çiziliyor ve yazı çizgisine
+     yapışıyordu. .oc-ar.oc-sdd{position:relative;top:.30em} ile Arapça satırın
+     içine, komşu harflerin hareke yüksekliğine indirildi. (transform kullanılamaz:
+     adım makinesi .oc-ar'ın inline transform'unu yazıyor.)
+  3) YUVARLAK TE (ة) artık PEMBE (#DB2777): hem Latin "t"si (üst satır ve klon),
+     hem Arapça hücresi, hem de birleşik kelimenin içinde. Birleşik kelimede son
+     ة'den itibaren <i class="yt"> ile sarılıyor; tarayıcı kutu sınırı boyunca
+     yine bitiştirdiği için kelime kopmuyor. Vurgu renginden sonra tanımlandı,
+     hece okunurken de pembe kalıyor.
+     Etkilenen kelimeler: مَدْرَسَةً · جَنَّةً · سَيَّارَةٍ (veri taramasıyla doğrulandı).
+
+[2026-09-26] Okuma: yardım tablosu AÇILIR PENCEREYE taşındı
+  okumayazma/okuma-cevir.js -> v22 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v21.js)
+  alfabe.html               -> okuma-cevir.js?v=22
+  · Sağdaki dikey tablo kalktı; yerine sağ ÜST köşede «Yardım tablosu» düğmesi.
+    Basınca tam ekran perde + ortada beyaz pencere açılıyor. ✕, Esc ya da
+    dışarı dokunuş kapatıyor. Pencere açıkken ok tuşları kelimeyi ilerletmiyor.
+  · İşaretler ÇOK daha büyük: 1080'de 71 px -> 166 px (Hece), uzatma/cezim/şedde
+    gibi az satırlı konularda 256 px'e kadar (tavan 16 rem).
+    Pencere satır sayısına göre kendini boyutluyor (yardimBoyutla): Hece yedi
+    satır -> iki sütun, öbürleri tek sütun; punto boş yükseklikten hesaplanıyor.
+  · Yan sütun kalkınca çalışma alanı bütün genişliği aldı: 2560x1440'ta uzun
+    kelimeler de büyüdü (medreseten 220 -> 264 px, seyyaretin 184 -> 220 px).
+  · sigdir() sadeleşti: artık tek sütun var, yalnız harfler ölçülüp oturtuluyor.
+  · Dar ekranda (<=860px) düğme akışa giriyor, pencere tek sütun ve kaydırmalı.
+
+[2026-09-26] Okuma-yazma tek yerde: index'teki Okuma kartı kalktı, içeriği alfabe.html'e taşındı
+  okumayazma/okuma-cevir.js -> v23 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v22.js)
+  index.html                -> Okuma kartı silindi, Alfabe kartı güncellendi
+                               (yedek: _kaynak/yedekler/index_2026-09-26_okuma-karti-oncesi.html)
+  alfabe.html               -> okuma-cevir.js?v=23
+  · Okuma sekmesine «Örnekler» penceresi eklendi: eski okuma.html'in yaptığı işin
+    aynısı — 28 harfin ÜÇ HAREKE ile okunuşu, konuya göre üretiliyor.
+      hece    بَ be · بِ bi · بُ bu            (28 harf × 3 = 84 okuyuş)
+      uzatma  بَا bâ · بِي bî · بُو bû          (elif: آ · إِي · أُو)
+      cezim   أَبْ eb · إِبْ ib · أُبْ ub        (27 harf, elif yok)
+      şedde   أَبَّ ebbe · إِبِّ ibbi · أُبُّ ubbu (27 harf, elif yok)
+    Üstte konunun hatırlatması, tabloda yapışkan başlık satırı (Harf/Üstün/Esre/Ötre).
+    Üreteçler okuma.js'teki URETEC'in birebir karşılığı; Latin yazım bu dosyanın
+    kendi tablosundan (ṯ · ḏ · q).
+  · Sağ üstte artık iki düğme var: «Örnekler» ve «Yardım tablosu». İkisi de aynı
+    pencereyi kullanıyor, içerik ve boyut kipe göre değişiyor.
+  · index.html: "Okuma" kartı kaldırıldı (yerine açıklama notu kondu), Alfabe
+    kartının açıklaması "Harfleri Pekiştir." -> "Harfleri tanı, birleştir, oku ve yaz."
+  · okuma.html DOSYASI SİLİNMEDİ, yalnız ana sayfadan bağlanmıyor. Hâlâ bağlantı
+    veren iki yer var: katalog/index.html ve sistem/gorev.js — istenirse onlar da
+    alfabe.html'e çevrilebilir.
+
+[2026-09-26] Okuma: yardım ve örnek tablolarının tasarımı yenilendi
+  okumayazma/okuma-cevir.js -> v24 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v23.js)
+  alfabe.html               -> okuma-cevir.js?v=24
+  · Pencere başlığı: altında kısa kırmızı vurgu çizgisi, konu adı artık yuvarlak
+    bir rozet (chip). Kapatma düğmesi saç teli kenarlıklı, üstüne gelince kırmızıya dönüyor.
+  · YARDIM TABLOSU artık satır listesi değil, KART DİZİSİ: kâğıt tonunda gradyan
+    zemin, ince kenarlık, yumuşak gölge; solda okunuş, ince kesik çizgi, sağda işaret.
+    «TENVİN» ayracı iki yana uzanan çizgili başlık oldu.
+  · ÖRNEK TABLOSU gerçek bir tablo gibi: çerçeveli kutu + yuvarlatılmış köşeler,
+    yapışkan ve tonlu başlık satırı (HARF · ÜSTÜN · ESRE · ÖTRE, büyük harf,
+    harf aralıklı), ZEBRA satırlar, sütun ayraçları, üstüne gelince aydınlanan satır.
+    Latin okunuşlar hap (pill) içinde. Konu notu, solunda kırmızı şeridi olan
+    bilgi kutusuna alındı.
+  · Örnek satırları .oc-otablo kutusuna sarıldı (zebra ve köşe yuvarlatma için).
+  · 1600x900 ve 390x844'te bakıldı; yatay taşma yok, başlık kaydırırken yapışıyor,
+    8 ekran boyu x 4 konu x 25 kelime taraması temiz.
+
+[2026-09-26] Okuma: yeni kelimede Latin okunuşu bir an görünme hatası düzeldi
+  okumayazma/okuma-cevir.js -> v25 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v24.js)
+  alfabe.html               -> okuma-cevir.js?v=25
+  SORUN: Bir kelime bitince Latin klonu (Türkçe yazılış) açık kalıyordu. «Sonraki
+  kelime»ye basılınca klon satırı yeni kelimeyle yeniden yazılıyor ama klon kabı
+  hâlâ opaklık 1'de olduğu için yeni kelimenin OKUNUŞU iki kare görünüp .3 sn'de
+  sönüyordu — çocuğa cevabı önden gösteren bir kopya gibi. (Ölçüldü: 0-1. karede
+  opaklık 1.00, 6. karede 0.00.)
+  ÇÖZÜM: kelimeCiz() en başta klonu ANINDA kapatıyor (transition:none + opacity:0)
+  ve sahneyi s0'a alıyor; klonUcur() açarken geçişi geri veriyor. Artık yeni
+  kelimede, konu değişiminde ve geri/ileri gezinmede klonun opaklığı hiç 0'ın
+  üstüne çıkmıyor; son adımda eskisi gibi tek tek süzülerek açılıyor.
+
+[2026-09-26] Okuma: Latin tarafta uzatma harfinin boşluğu kapandı
+  okumayazma/okuma-cevir.js -> v26 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v25.js)
+  alfabe.html               -> okuma-cevir.js?v=26
+  · Uzatma harfinin (ا و ي) Latin karşılığı yok ama sütununda görünmez bir "â"
+    yer tutuyordu; iki Latin harfin arası koca bir boşluk oluyordu.
+    Artık yer tutmuyor: sütunun eni yalnız altındaki Arapça uzatma harfi kadar.
+    Ölçüldü (1600x900): bâbun'da uzatma sütunu 124 -> 30 px, kitâbun'da 104 -> 25 px.
+  · Yer tutan harf SİLİNMEDİ, eni sıfırlandı (width:0;overflow:hidden): içi boş
+    bırakılınca satır kutusu çöküyor, yazı çizgisi o sütunda yukarı kayıyordu.
+  · Çizgi artık kesik değil, düz ve kesintisiz devam ediyor (uzatma sütununun
+    yan boşluğu da sıfırlandı).
+  · Taşıyıcı elif/hemze sütununda yer tutan harf KALDI: onun sesi çizginin
+    üstünde duruyor, sütun daralırsa hareke sığmıyor.
+
+[2026-09-26] Okuma: tablolardaki Latin yazılar büyütüldü
+  okumayazma/okuma-cevir.js -> v27 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v26.js)
+  alfabe.html               -> okuma-cevir.js?v=27
+  · Yardım tablosunda okunuş artık İŞARETLE BİRLİKTE büyüyor: punto işaretin
+    %30'u (sabit clamp'te kalınca 166 px'lik harekenin yanında minicik duruyordu).
+    1920x1080'de 22 -> 44 px.
+  · Örnek tablosunda Latin okunuş hapları 16 -> 29 px, harf adları 13 -> 17 px,
+    başlık satırı da büyüdü; ilk sütun 6em -> 7em.
+  · «TENVİN» ayracı da büyütüldü.
+  · YENİ: yardım penceresi açılırken ÖLÇÜLÜYOR — kaydırma gerekiyorsa işaret
+    puntosu sığana kadar küçültülüyor (1920'de 166 -> 147 px). Dar ekranda
+    (<=860px) küçültme yok: telefonda kaydırmak yedi işareti birden küçültmekten
+    iyi. Örnek tablosu 28 satır olduğu için zaten kaydırmalı, ona dokunulmuyor.
+
+[2026-09-26] Okuma: «Örnekler» penceresindeki okuyuşlar devasa
+  okumayazma/okuma-cevir.js -> v28 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v27.js)
+  alfabe.html               -> okuma-cevir.js?v=28
+  · Arapça okuyuşlar clamp(1.7rem,5vh,3.6rem) -> clamp(3rem,min(9vw,13vh),9rem):
+      1920x1080 -> 54 -> 140 px     1600x900 -> 45 -> 117 px
+      1366x768  -> 38 -> 100 px     390x844  -> 28 ->  48 px
+  · Latin okunuş hapları 29 -> 35 px, harf adları ve başlık satırı da büyüdü;
+    ilk sütun 7 -> 7,5em, pencere 1220 -> 1460 px genişledi.
+  · Ölçüldü: en geniş okuyuş (uzatma, بُو) 183 px, hücre 423 px — hiçbir hücrede
+    taşma yok. Satır yüksekliği 1920'de 241 px, ekranda üç satır görünüyor;
+    tablo zaten kaydırmalı, harf harf çalışılan bir liste.
