@@ -1016,3 +1016,93 @@ Hicbir harf bicim degistirmiyorsa (orn. رَبٌّ, أُمٌّ) bu adim atlanir.
   · Ölçüldü: en geniş okuyuş (uzatma, بُو) 183 px, hücre 423 px — hiçbir hücrede
     taşma yok. Satır yüksekliği 1920'de 241 px, ekranda üç satır görünüyor;
     tablo zaten kaydırmalı, harf harf çalışılan bir liste.
+
+[2026-09-26] Okuma: örnek hücrelerinde boşluk, kapatma çarpısı kırmızı ve sabit
+  okumayazma/okuma-cevir.js -> v29 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v28.js)
+  alfabe.html               -> okuma-cevir.js?v=29
+  · Örnek hücrelerinde Arapça okuyuş ile Türkçe okunuşu arasındaki boşluk
+    1 px -> clamp(8px,1.8vh,26px) (1920'de 19 px); hücre dolgusu da arttı.
+  · Pencere artık iki katlı: BAŞLIK SABİT, yalnız liste kayıyor
+    (.oc-ykutu flex sütun + overflow:hidden, .oc-yliste overflow:auto).
+    Böylece «Örnekler»de 1200 px kaydırınca bile başlık, konu rozeti, tablo
+    başlığı (HARF/ÜSTÜN/ESRE/ÖTRE) ve çarpı yerinde duruyor — ölçüldü.
+  · Kapatma düğmesi KIRMIZI DOLGU (#B03A2E), beyaz çarpı, hafif gölge; üstüne
+    gelince koyulaşıp büyüyor.
+  · Yardım penceresinin sığdırma ölçümü kutu yerine listeye bakıyor artık.
+
+[2026-09-26] Okuma/şedde: sönen hücrede cezimli harfin geri gelmesi düzeldi
+  okumayazma/okuma-cevir.js -> v30 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v29.js)
+  alfabe.html               -> okuma-cevir.js?v=30
+  SORUN: Şeddenin ikinci adımında (işaret ikinci harfe oturunca) cezimli hücre
+  SÖNERKEN yazısı şedde işaretinden eski harfine (نْ) geri dönüyordu. Ölçüldü:
+  geçişin ortasında hücre 0.53 opaklıkta ve içinde "نْ" var; üstelik .oc-sdd
+  sınıfı da kalktığı için kırmızıdan koyuya dönüp yukarı zıplıyordu.
+  ÇÖZÜM: metinAyarla() artık iki ayrı şey alıyor — biçim kipi ('yalin'/'bag')
+  ve "şedde metni kalsın" bayrağı. Cezimli hücre bir kez şeddeye döndükten
+  sonra (n >= H+1) şedde olarak kalıyor; yalnız GERİ tuşuyla o adımın öncesine
+  dönülünce harfine kavuşuyor.
+  DOĞRULANDI: altı şedde kelimesinin hepsinde ileri ve geri adımlar tek tek
+  okundu — رَبٌّ · أُمٌّ · حَقٌّ · جَنَّةً · مُعَلِّمٌ · سَيَّارَةٍ; geri gidişte
+  cezimli harf doğru geri geliyor, konsolda hata yok.
+
+[2026-09-26] Okuma/şedde: harf şeddeye dönüşünce şedde artık büyük ve yerinde
+  okumayazma/okuma-cevir.js -> v31 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v30.js)
+  alfabe.html               -> okuma-cevir.js?v=31
+  SORUN: Cezimli harf şeddeye dönüşünce kalan tek işaret, yanındaki 120 px'lik
+  harflerin yanında 55 px'lik bir leke gibi kalıyordu; üstelik kendi satır
+  kutusunun tepesine çizildiği için harflerin çok üstünde duruyordu.
+  ÇÖZÜM: İşaret artık kendi iç kutusuna (<i class="oc-sddic">) alınıp orada
+  2,2 kat büyütülüyor. Hücrenin puntosu değişmiyor — büyütülse sütun genişler,
+  birleşme animasyonu kayardı. line-height:0 olduğu için satır yüksekliği de
+  değişmiyor; konum transform ile veriliyor.
+  YER ÖLÇÜLEREK bulundu (1600x900, رَبٌّ): işaretin mürekkebi hücrenin tam
+  ortasında (817 px) ve komşu harekelerle aynı hizada (y 468 · بٌ tenvini 457,
+  رَ fethası 465). Komşu harflerle çakışma yok.
+  Altı şedde kelimesinin hepsinde, 1600x900 / 1366x768 / 390x844'te doğrulandı.
+
+[2026-09-26] Okuma/şedde: tek kalan şedde bir kat daha büyütüldü
+  okumayazma/okuma-cevir.js -> v32 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v31.js)
+  alfabe.html               -> okuma-cevir.js?v=32
+  · İç kutu 2,2em -> 3,1em; konum yeniden ölçülerek verildi
+    (transform: translate(-.086em,.80em)).
+  · Ölçüm (1600x900, رَبٌّ): işaretin mürekkebi 83 x 78 px — komşu ب harfinin
+    gövdesi 110 x 120 px. Ortası hücrenin tam ortasında (817 px), dikeyde
+    harflerin bandında (470-547; ب 457-577). Sağ ve sol komşuyla çakışma yok.
+  · 1920x1080 / 1600x900 / 1366x768 / 390x844'te altı şedde kelimesinde de
+    bakıldı; dar hücreli مُعَلِّمٌ ve سَيَّارَةٍ dâhil taşma yok.
+  NOT: Öğretmenin gönderdiği ekran görüntüsünde işaret yazı çizgisinin hemen
+  altında ve minik duruyordu — bu v30 ve öncesinin konumu. Yeni sürümü görmek
+  için hizli-gonder sonrası sayfanın sert yenilenmesi (Cmd+Shift+R) gerekiyor.
+  EK (aynı v32): şeddeli hücreye z-index:2 verildi. Aynı ızgara gözünü paylaşan
+  .oc-sed (birleşmiş şeddeli harf) DOM'da sonra geldiği için üstteydi; o adımda
+  saydam olduğundan görüntüyü kapatmıyordu ama işaret artık kesin olarak üstte.
+  DURUM: Yayındaki (son commit) sürüm hâlâ v28 — şeddenin küçük ve yukarıda
+  durduğu sürüm. v29-v32 düzeltmeleri diskte, gönderilmedi. hizli-gonder sonrası
+  sayfa ?v=32 istemeli.
+
+[2026-09-26] Okuma/şedde: tek kalan şedde artık METİN DEĞİL, ÇİZİM
+  okumayazma/okuma-cevir.js -> v33 (yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v32.js)
+  alfabe.html               -> okuma-cevir.js?v=33
+  SORUN: Tek başına duran bir hareke (ّ) yazı tipine ve tarayıcının şekillendirme
+  motoruna kalıyor. Chromium'da düzgün çiziliyor; öğretmenin makinesinde (macOS)
+  hiç görünmüyordu — siteye gönderildikten ve dosya doğrudan açıldıktan sonra da.
+  Punto/konum/katman denemeleri bu yüzden işe yaramadı: sorun boyut değil, işaretin
+  hiç çizilmemesiydi.
+  ÇÖZÜM: İşaret arakom.ttf'ten çıkarılıp VEKTÖR olarak basılıyor.
+    glif uni0651 · birim/em 2048 · sınırlar x 0-354, y 1634-1964
+    <svg viewBox="0 0 354 330"><path transform="translate(0,1964) scale(1,-1)" …>
+  Yazı tipi yüklensin yüklenmesin, hangi tarayıcı olursa olsun aynı çiziliyor.
+  · Hücrede mutlak konumlu duruyor (.oc-sddic), satır yüksekliğini değiştirmiyor;
+    hücrede görünmez bir sıfır-genişlik boşluk (U+200B) satır kutusunu tutuyor.
+  · Ölçü em cinsinden: genişlik .54em, üstten .31em — eski metin hâliyle birebir
+    aynı yerde ve boyda (ölçüldü: 84 x 78 px, orta 817 px, y 469.5-547.5).
+  · Hücre kutusu değişmedi (116 x 176 px), ızgara kaymıyor.
+  · Altı şedde kelimesinde ileri/geri adımlar ve dört ekran boyu doğrulandı.
+
+--- 26.09.2026 · Okuma sekmesi: şedde işareti biraz küçültüldü (v34)
+okumayazma/okuma-cevir.js   -> şedde SVG'si .54em -> .44em genişlik, üst konum .31em -> .355em
+                               (harf kaybolup şeddeye dönüşünce çıkan işaret; artık komşu
+                                harflerle aynı ölçekte, hücre ortasında)
+alfabe.html                 -> okuma-cevir.js?v=33 -> ?v=34
+Yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v33.js
+Test: 8 ekran boyutu x 4 konu x tüm kelimeler -> taşma/çakışma yok.

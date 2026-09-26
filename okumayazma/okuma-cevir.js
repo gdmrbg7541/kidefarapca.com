@@ -165,6 +165,19 @@
     { h: 'ي', ad: 'Ye',   lat: 'y' }
   ];
   var TURAD = { ustun: 'Üstün', esre: 'Esre', otre: 'Ötre' };
+
+  /* ŞEDDE İŞARETİ — ÇİZİM OLARAK.
+     Tek başına duran bir hareke (ّ) yazı tipine ve tarayıcının şekillendirme
+     motoruna kalıyor: Chromium'da düzgün çiziliyor, macOS'ta (CoreText)
+     çizilmiyor ya da bambaşka yere düşüyor — öğretmenin ekranında işaret hiç
+     görünmedi. Bu yüzden işaret METİN OLARAK DEĞİL, arakom.ttf'ten çıkarılmış
+     VEKTÖR olarak basılıyor: yazı tipi yüklensin yüklenmesin, hangi tarayıcı
+     olursa olsun aynı çiziliyor.
+       glif  uni0651 · birim/em 2048 · sınırlar x 0-354, y 1634-1964
+       viewBox 0 0 354 330 (font y yukarı arttığı için ters çevriliyor) */
+  var SDD_SVG =
+    '<svg viewBox="0 0 354 330" aria-hidden="true" focusable="false">' +
+    '<path transform="translate(0,1964) scale(1,-1)" d="' + 'M354 1868Q354 1700 250 1700Q213 1700 186 1720Q182 1704 172.0 1688.5Q162 1673 148.0 1661.0Q134 1649 117.0 1641.5Q100 1634 82 1634Q0 1634 0 1743Q0 1765 23 1843L45 1847Q45 1737 84 1737Q147 1737 174 1898L193 1905Q214 1806 250 1806Q308 1806 317 1954L340 1964Q348 1936 351.0 1912.0Q354 1888 354 1868Z' + '"/></svg>';
   /* Konuya göre altta duran hatırlatma (okuma.html'deki "not" alanı). */
   var ORNEKNOT = {
     hece:   'Harf + hareke: harfi üstün, esre ve ötre ile tek tek oku. Elif harekeyi hemze ile taşır: أَ إِ أُ',
@@ -392,27 +405,34 @@
         '-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}' +
       '.oc-yperde[hidden]{display:none}' +
       '@keyframes ocYAc{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}' +
+      /* Kutu bir sütun: BAŞLIK SABİT durur (kapatma çarpısı hep göz önünde),
+         yalnız liste kayar. */
       '.oc-ykutu{background:#fff;border-radius:22px;box-shadow:0 30px 80px rgba(15,23,42,.35);' +
         'padding:clamp(14px,2vh,26px) clamp(16px,2.2vw,34px) clamp(16px,2.4vh,30px);' +
-        'width:min(var(--ocw,1100px),94vw);max-height:94vh;overflow:auto;' +
+        'width:min(var(--ocw,1100px),94vw);max-height:94vh;overflow:hidden;' +
+        'display:flex;flex-direction:column;' +
         'animation:ocYAc .22s cubic-bezier(.22,1,.36,1)}' +
       '.oc-ybas{display:flex;align-items:center;justify-content:space-between;gap:20px;' +
         'color:#B03A2E;font-weight:800;font-size:clamp(1.05rem,2.2vh,1.6rem);letter-spacing:.2px;' +
         'padding:0 0 clamp(8px,1.3vh,14px);margin:0 0 clamp(10px,1.8vh,20px);' +
-        'border-bottom:1px solid rgba(140,120,80,.22);position:relative}' +
+        'border-bottom:1px solid rgba(140,120,80,.22);position:relative;flex:none}' +
       /* Başlığın altında ince kırmızı bir vurgu — kâğıttaki kırmızı kalem. */
       '.oc-ybas::after{content:"";position:absolute;left:0;bottom:-1px;width:clamp(48px,7vw,96px);' +
         'height:3px;border-radius:3px;background:#B03A2E}' +
       '.oc-ykonu{display:inline-block;vertical-align:.08em;margin-inline-start:.55em;' +
         'background:#FBEDEA;color:#B03A2E;border:1px solid rgba(176,58,46,.22);border-radius:999px;' +
         'padding:.12em .75em;font-weight:800;font-size:.66em;letter-spacing:.6px}' +
-      '.oc-ykapa{border:1px solid rgba(140,120,80,.22);background:#FFFDF9;color:#6B5B43;' +
-        'border-radius:50%;width:2.1em;height:2.1em;' +
-        'font:inherit;font-size:1em;line-height:1;cursor:pointer;flex:none;' +
-        'transition:background .16s,color .16s,border-color .16s}' +
-      '.oc-ykapa:hover{background:#B03A2E;color:#fff;border-color:#B03A2E}' +
+      /* Kapatma: KIRMIZI DOLGU, başlıkla birlikte hep göz önünde. */
+      '.oc-ykapa{border:0;background:#B03A2E;color:#fff;' +
+        'border-radius:50%;width:2.2em;height:2.2em;' +
+        'font:inherit;font-size:1.05em;font-weight:800;line-height:1;cursor:pointer;flex:none;' +
+        'box-shadow:0 8px 18px -10px rgba(176,58,46,.9);' +
+        'transition:background .16s,transform .16s,box-shadow .16s}' +
+      '.oc-ykapa:hover{background:#8E2F25;transform:scale(1.06);' +
+        'box-shadow:0 10px 22px -10px rgba(176,58,46,1)}' +
       '.oc-yliste{display:grid;grid-template-columns:repeat(var(--ocsut,1),minmax(0,1fr));' +
-        'gap:clamp(8px,1.3vh,16px) clamp(12px,2vw,26px);align-content:start}' +
+        'gap:clamp(8px,1.3vh,16px) clamp(12px,2vw,26px);align-content:start;' +
+        'overflow:auto;min-height:0;flex:1 1 auto;padding:2px}' +
       /* ---- ÖRNEK TABLOSU (28 harf × 3 hareke) ----
          Gerçek bir tablo gibi: çerçeveli kutu, yapışkan başlık, zebra
          satırlar, sütun ayraçları ve üstünde gezinince aydınlanan satır. */
@@ -441,8 +461,9 @@
       '.oc-oad{display:flex;align-items:center;color:#6B5B43;font-weight:800;' +
         'font-size:clamp(.95rem,2.1vh,1.5rem);font-style:normal;white-space:nowrap;' +
         'padding-inline-start:clamp(12px,1.3vw,20px)}' +
+      /* Arapça okuyuş ile Türkçe okunuşu arasında belirgin boşluk. */
       '.oc-ohucre{display:flex;flex-direction:column;align-items:center;justify-content:center;' +
-        'gap:1px;min-width:0;padding:clamp(3px,.7vh,9px) 4px;' +
+        'gap:clamp(8px,1.8vh,26px);min-width:0;padding:clamp(6px,1.1vh,16px) 4px;' +
         'border-inline-start:1px solid rgba(140,120,80,.12)}' +
       /* ÖRNEKLER DEVASA: tahtadan okunacak. Satır yüksekliği büyüdüğü için
          tablo daha çok kayar, sorun değil — harf harf çalışılan bir liste. */
@@ -563,7 +584,22 @@
          kutusunun TEPESİNE çiziliyor ve yazı çizgisine yapışıyordu.
          Arapça satırın içine, harflerin hareke yüksekliğine indiriliyor.
          (transform kullanılamaz: adımlar .oc-ar'ın transform'unu yazıyor.) */
-      '.oc-ar.oc-sdd{color:#B03A2E;position:relative;top:.30em}' +
+      /* Tek başına duran şedde: harflerin yanında kaybolmasın diye KENDİ
+         kutusunda büyütülüyor. Hücrenin puntosunu büyütmek sütunu da
+         genişletirdi; bu yüzden işaret iç bir kutuya alınıp orada
+         büyütülüyor (birleşen harfin sütunu yerinde kalıyor).
+         Kendi satır kutusunun tepesine çizildiği için de aşağı indiriliyor. */
+      /* z-index: şeddeli hücrenin üstünde, aynı ızgara gözünü paylaşan
+         .oc-sed duruyor (o adımda saydam ama DOM'da sonra geliyor). İşaret
+         hiçbir koşulda altta kalmasın diye kendi katmanına alınıyor. */
+      '.oc-ar.oc-sdd{position:relative;z-index:2}' +
+      /* İşaret hücrenin İÇİNDE, mutlak konumlu: satır yüksekliğini
+         değiştirmiyor (hücrede görünmez bir sıfır-genişlik boşluk duruyor),
+         ölçüsü ve yeri em cinsinden — punto ne olursa olsun aynı oranda.
+         .54em genişlik = eski 3,1em'lik metin işaretinin mürekkep genişliği. */
+      '.oc-sddic{position:absolute;left:50%;top:.355em;width:.44em;' +
+        'transform:translateX(-50%);line-height:0;pointer-events:none}' +
+      '.oc-sddic svg{display:block;width:100%;height:auto;fill:#B03A2E}' +
       '@keyframes ocDon{0%{transform:scale(.88)}60%{transform:scale(1.06)}100%{transform:none}}' +
       '.oc-don{animation:ocDon .34s cubic-bezier(.34,1.42,.5,1)}' +
       '.oc-tam{grid-row:2;align-self:center;justify-self:center;pointer-events:none;' +
@@ -782,7 +818,7 @@
         yardimBoyutla();
       }
       yperde.hidden = false;
-      ykutu.scrollTop = 0;
+      yardim.scrollTop = 0;
       /* Yardım tablosu KAYDIRILMADAN sığsın: hesap birkaç piksel şaşarsa
          işaret puntosu ölçülerek küçültülür. (Örnek tablosu 28 satır, o
          zaten kaydırmalı.) */
@@ -790,7 +826,7 @@
          küçültmekten iyi. */
       if (kip !== 'ornek' && (window.innerWidth || 1000) > 860) {
         var yy = parseFloat(yperde.style.getPropertyValue('--ocyy')) || 0;
-        for (var i = 0; i < 12 && yy > 40 && ykutu.scrollHeight > ykutu.clientHeight + 2; i++) {
+        for (var i = 0; i < 12 && yy > 40 && yardim.scrollHeight > yardim.clientHeight + 2; i++) {
           yy *= 0.94;
           yperde.style.setProperty('--ocyy', yy.toFixed(0) + 'px');
         }
@@ -1066,12 +1102,15 @@
       if (n < 0) n = 0; if (n > son) n = son;
       asama = n;
       var sddAdim = (SD === 2 && n === H + 1);   /* şeddenin birinci adımı */
+      /* Cezimli hücre bir kez şeddeye döndükten SONRA hep şedde kalır —
+         sönerken harfine geri dönüp göze çarpmasın. */
+      var sddMetin = (SD === 2 && n >= H + 1);
       var evre = n === 0 ? 's0' : n <= H ? 's1' : n <= H + SD ? 'ss'
                : n <= H + SD + BG ? 'sb' : n === H + SD + BG + 1 ? 's2' : 's3';
       sahne.className = 'oc-sahne ' + evre;
       /* Harfler birleşmeden ÖNCE bağlanma biçimlerini alır (Harf Birleştirme
          sekmesindeki gibi): كِ تَ ا بٌ  →  كِـ ـتَـ ـا ـبٌ  →  كِتَابٌ */
-      metinAyarla(sddAdim ? 'sdd' : ((n >= H + SD + BG && BG === 1) ? 'bag' : 'yalin'));
+      metinAyarla((n >= H + SD + BG && BG === 1) ? 'bag' : 'yalin', sddMetin);
 
       birimEl.forEach(function (el) { el.classList.remove('vurgu'); });
 
@@ -1121,18 +1160,36 @@
       ileri.textContent = n >= son ? 'Sonraki kelime ▸' : 'İleri ▸';
     }
 
-    /* Hücrelerin yazısını üç biçim arasında değiştirir:
-         'yalin'  harf tek başına        (نْ)
-         'sdd'    şeddeye dönüşmüş hâli  ( ّ )  — yalnız cezimli hücrede
-         'bag'    kelime içindeki bağlı biçim (ـنَّـ) */
-    function metinAyarla(kip) {
+    /* Hücrelerin yazısını biçimler arasında değiştirir:
+         kip 'yalin'  harf tek başına              (نْ)
+         kip 'bag'    kelime içindeki bağlı biçim  (ـنَّـ)
+         sddKalsin    cezimli hücre ŞEDDE İŞARETİNİ gösterir ( ّ )
+
+       sddKalsin AYRI bir bayrak, çünkü şedde ikinci harfe oturduktan sonra
+       cezimli hücre SÖNERKEN eski harfine (نْ) geri dönüyordu: yarı saydam
+       hâlde harf bir an yeniden beliriyor, üstelik kırmızı/aşağı kaymış
+       konumundan da zıplıyordu. Artık bir kez şeddeye döndü mü, geri
+       tuşuyla o adımın öncesine dönülmedikçe şedde olarak kalıyor. */
+    function metinAyarla(kip, sddKalsin) {
       [].forEach.call(cizelge.querySelectorAll('.oc-ar, .oc-sed'), function (c) {
-        var t = (kip === 'sdd') ? c.getAttribute('data-sdd') : null;
+        var t = sddKalsin ? c.getAttribute('data-sdd') : null;
         var sdd = t != null;
         if (t == null) t = (kip === 'bag') ? c.getAttribute('data-bag') : c.getAttribute('data-yalin');
         c.classList.toggle('oc-sdd', sdd);
-        if (t == null || c.textContent === t) return;
-        c.textContent = t;
+        if (t == null) return;
+        /* Şedde hücresi çizim basıyor; ötekiler düz metin. Hücrede ne
+           olduğunu data-kip söylüyor (metin karşılaştırması yetmez:
+           çizimli hâlde hücrenin metni sıfır-genişlik boşluktur). */
+        var suan = c.getAttribute('data-kip') || '';
+        if (sdd) {
+          if (suan === 'sdd') return;
+          c.innerHTML = '\u200B<i class="oc-sddic">' + SDD_SVG + '</i>';
+          c.setAttribute('data-kip', 'sdd');
+        } else {
+          if (suan !== 'sdd' && c.textContent === t) return;
+          c.textContent = t;
+          c.setAttribute('data-kip', 'metin');
+        }
         c.classList.remove('oc-don'); void c.offsetWidth; c.classList.add('oc-don');
       });
     }
