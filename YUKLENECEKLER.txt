@@ -1183,3 +1183,13 @@ Test: 390 ve 360 px'te sesli/sessiz kutuları artık değmiyor; 8 ekran boyu x 4
     sonra perde kalkıyor — "Karekodla Giriş" tuşu normal çalışmaya devam ediyor.
     Ölçüm: açılışta 16 kare boyunca e-posta alanı görünür, karekod ekranı hiç
     görünmüyor (1440 ve 390 px).
+  · v=8: TAM SAYFA. Giriş penceresi artık ortada bir kutu değil, sayfanın
+    tamamı (beyaz zemin, çerçeve/gölge yok). Yazılar clamp ile ekrana göre
+    büyüyor: başlık 1,7–2,9rem, soru 1,35–2,3rem, şıklar 1,12–1,6rem, form
+    alanları 1,05–1,3rem — akıllı tahtada iri, telefonda okunur.
+    Sağ üstteki tuş: ilk ekranda ve kayıt formunda ✖ (kapatır), rol ve soru
+    ekranlarında ‹ geri. İçerideki "‹ Geri" bağlantıları kaldırıldı.
+    "Karekodla Giriş" artık seçim ekranı göstermiyor, karekodu DOĞRUDAN
+    üretiyor (qrGirisAc); o ekranda sağ üst tuş forma dönüş sağlıyor.
+    Ayrıca: "tahta" simgesi ayaklı yazı tahtası olarak yeniden çizildi (büyük
+    boyda okunmuyordu), dar ekranda rol kartları alt alta diziliyor.

@@ -35,9 +35,9 @@
         anahtar: '<circle cx="8.4" cy="9.6" r="3.9"/><path d="M11.2 12.4 20 21.2M17.2 18.4l2-2M14.6 15.8l1.6-1.6"/>',
         kivilcim: '<path d="M12 3.2 13.7 9 19.5 10.7 13.7 12.4 12 18.2 10.3 12.4 4.5 10.7 10.3 9Z"/>' +
                   '<path d="M18.4 16.2l.6 2 2 .6-2 .6-.6 2-.6-2-2-.6 2-.6Z"/>',
-        tahta: '<rect x="2.6" y="3.4" width="13.4" height="10" rx="1.6"/>' +
-               '<path d="M5.4 6.8h7.6M5.4 9.6h4.6"/><circle cx="18.6" cy="12.6" r="2.1"/>' +
-               '<path d="M14.9 20.6a3.9 3.9 0 0 1 7.4 0"/>',
+        tahta: '<rect x="2.8" y="3.2" width="18.4" height="12.4" rx="2"/>' +
+               '<path d="M6.6 7.2h8M6.6 10.6h5.4"/>' +
+               '<path d="M12 15.6v2.8M8 21.4 12 18.4l4 3"/>',
         kep: '<path d="M12 4.2 22 8.6l-10 4.4L2 8.6Z"/>' +
              '<path d="M6.4 10.8v4.4c0 1.8 2.6 3.2 5.6 3.2s5.6-1.4 5.6-3.2v-4.4"/>',
         cami: '<path d="M4.6 20.6V12c0-2.6 3.3-4.6 7.4-4.6S19.4 9.4 19.4 12v8.6"/>' +
@@ -75,7 +75,8 @@
                '<path d="M12 15.2C9.6 15.2 7.6 13.2 7.6 10.8c2.4 0 4.4 2 4.4 4.4Z"/>',
         madalya: '<circle cx="12" cy="15" r="5.2"/><path d="m8.6 10.2-2.8-6M15.4 10.2l2.8-6"/>' +
                  '<path d="m12 12.6.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3Z"/>',
-        ampul: '<path d="M9.4 17.4a6 6 0 1 1 5.2 0"/><path d="M9.6 17.4h4.8M10.4 20.4h3.2"/>'
+        ampul: '<path d="M9.4 17.4a6 6 0 1 1 5.2 0"/><path d="M9.6 17.4h4.8M10.4 20.4h3.2"/>',
+        geri: '<path d="M14.8 5.2 8 12l6.8 6.8"/>'
     };
     function ikon(ad, sinif) {
         var g = IK[ad] || IK.yildiz;
@@ -257,8 +258,59 @@
             '.ka-rol .ka-ik{width:46px;height:46px;color:#16A085;stroke-width:1.5}',
             '.ka-rol button.ikinci .ka-ik{color:#E08A00}',
             '.ka-rol button.ikinci:hover{background:#FEF7EC;color:#A85F00}',
-            '@media(max-width:540px){.ka-rol button + button{border-inline-start:0;',
-            'border-top:1px solid #EEF2F7}}',
+            '@media(max-width:540px){.ka-rol{flex-direction:column}',
+            '.ka-rol button + button{border-inline-start:0;border-top:1px solid #EEF2F7}}',
+            /* ------------------------------------------------------------
+               TAM SAYFA: giriş penceresi artık ortada küçük bir kutu değil,
+               sayfanın tamamı. Yazılar da ona göre büyüdü (clamp ile ekrana
+               göre ölçekleniyor — akıllı tahtada iri, telefonda okunur).
+               ------------------------------------------------------------ */
+            '#login-modal.ka-tam{padding:0 !important;align-items:stretch !important;',
+            'justify-content:stretch !important;background:#fff !important}',
+            '#login-modal.ka-tam .modal-content{width:100% !important;max-width:none !important;',
+            'height:100% !important;max-height:none !important;border-radius:0 !important;',
+            'box-shadow:none !important;margin:0 !important;background:#fff !important;',
+            'overflow:auto !important;display:block !important;',
+            'padding:clamp(20px,3.4vw,46px) clamp(16px,4vw,48px) clamp(28px,4vw,56px) !important}',
+            /* içerik ortada, okunur genişlikte; sağ kenarda tanıtım rafına yer */
+            '#login-modal.ka-tam .modal-content > *:not(.modal-close){max-width:760px;margin-inline:auto}',
+            /* ✖ / geri: sayfanın kendi sağ üst köşesinde sabit dursun */
+            '#login-modal.ka-tam .modal-close{position:fixed !important;',
+            'top:clamp(12px,2vw,26px) !important;inset-inline-end:clamp(12px,2vw,26px) !important;',
+            'inset-inline-start:auto !important;z-index:3}',
+            '@media(min-width:1100px){#login-modal.ka-tam .modal-content{padding-inline-end:340px !important}}',
+            '#login-modal.ka-tam #auth-title{font-size:clamp(1.7rem,3.4vw,2.9rem) !important;',
+            'margin:0 auto clamp(14px,2vw,26px) !important}',
+            '#login-modal.ka-tam .ka-ust{font-size:clamp(1.35rem,2.9vw,2.3rem)}',
+            '#login-modal.ka-tam .ka-alt{font-size:clamp(.98rem,1.5vw,1.25rem);',
+            'margin-bottom:clamp(18px,2.4vw,30px)}',
+            '#login-modal.ka-tam .ka-sec button{font-size:clamp(1.12rem,2vw,1.6rem);',
+            'padding:clamp(14px,1.8vw,22px) 12px;gap:18px}',
+            '#login-modal.ka-tam .ka-sec .ka-ik{width:clamp(30px,3vw,44px);height:clamp(30px,3vw,44px)}',
+            '#login-modal.ka-tam .ka-rol button{font-size:clamp(1.3rem,2.6vw,2rem);',
+            'padding:clamp(24px,3vw,44px) 16px;gap:16px}',
+            '#login-modal.ka-tam .ka-rol .ka-ik{width:clamp(58px,6vw,96px);height:clamp(58px,6vw,96px)}',
+            '#login-modal.ka-tam .ka-rol button small{font-size:clamp(.92rem,1.3vw,1.1rem)}',
+            '#login-modal.ka-tam .ka-nokta{height:7px}',
+            '#login-modal.ka-tam .ka-say{font-size:clamp(.95rem,1.3vw,1.15rem)}',
+            '#login-modal.ka-tam .form-group label{font-size:clamp(.98rem,1.4vw,1.2rem) !important}',
+            '#login-modal.ka-tam input,#login-modal.ka-tam select,#login-modal.ka-tam textarea',
+            '{font-size:clamp(1.05rem,1.5vw,1.3rem) !important;padding:clamp(13px,1.5vw,18px) !important}',
+            '#login-modal.ka-tam #auth-action-btn{font-size:clamp(1.1rem,1.8vw,1.45rem) !important;',
+            'padding:clamp(14px,1.8vw,20px) !important}',
+            '#login-modal.ka-tam #ka-kayit-kart b{font-size:clamp(1.15rem,2vw,1.6rem)}',
+            '#login-modal.ka-tam #ka-kayit-kart small{font-size:clamp(.92rem,1.3vw,1.1rem)}',
+            '#login-modal.ka-tam #ka-kayit-kart .ka-ik{width:clamp(38px,3.4vw,52px);',
+            'height:clamp(38px,3.4vw,52px)}',
+            '#login-modal.ka-tam #ka-serit{font-size:clamp(1rem,1.5vw,1.2rem);padding:14px 18px}',
+            '#login-modal.ka-tam .qr-giris-tus{font-size:clamp(1rem,1.5vw,1.25rem)}',
+            /* beyaz zeminde tanıtım rafının başlığı koyu olsun */
+            '#login-modal.ka-tam #ka-yan > p{color:#8A94A3;text-shadow:none}',
+            /* ✖ / ‹ geri tuşu */
+            '#login-modal.ka-tam .modal-close{width:clamp(44px,4vw,58px) !important;',
+            'height:clamp(44px,4vw,58px) !important;font-size:clamp(1.4rem,2.4vw,2rem) !important}',
+            '.modal-close.ka-geri-tus{display:flex !important;align-items:center;justify-content:center}',
+            '.modal-close.ka-geri-tus .ka-ik{width:62%;height:62%;stroke-width:2.2}',
             /* ortak simge biçimi — emoji yok, hepsi kontur çizim */
             '.ka-ik{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;',
             'stroke-linejoin:round;display:block}',
@@ -311,6 +363,7 @@
         var m = document.getElementById('login-modal');
         if (!m) return;
         stilKur();
+        m.classList.add('ka-tam');
         m.classList.add('ka-kapali');
         m.classList.remove('ka-form');
         clearTimeout(perdeZaman);
@@ -352,7 +405,27 @@
         }
         if (a.baslik) a.baslik.innerText = kayitKipi() ? 'Sisteme Kayıt Ol' : 'Sisteme Giriş Yap';
         asama = kayitKipi() ? 'soru' : 'giris';
+        kapatTusu(null);
         formEkrani();
+    }
+
+    /* SAĞ ÜSTTEKİ TUŞ: ilk ekranda ✖ (pencereyi kapatır), ara ekranlarda
+       ‹ geri. Aynı düğme; yazısı ve işi değişiyor. */
+    function kapatTusu(geri) {
+        var x = document.querySelector('#login-modal .modal-close');
+        if (!x) return;
+        if (x.__kaEski == null) x.__kaEski = x.innerHTML;
+        if (geri) {
+            x.innerHTML = ikon('geri');
+            x.classList.add('ka-geri-tus');
+            x.setAttribute('title', 'Geri');
+            x.onclick = geri;
+        } else {
+            x.innerHTML = x.__kaEski;
+            x.classList.remove('ka-geri-tus');
+            x.setAttribute('title', 'Kapat');
+            x.onclick = function () { if (typeof window.closeLoginModal === 'function') window.closeLoginModal(); };
+        }
     }
 
     /* GİRİŞ EKRANI — pencerenin ilk görünümü.
@@ -363,7 +436,7 @@
     var perdeZaman = 0;
     function girisEkrani() {
         var m = document.getElementById('login-modal');
-        if (m) { m.classList.add('ka-kapali'); m.classList.add('ka-form'); }
+        if (m) { m.classList.add('ka-tam'); m.classList.add('ka-kapali'); m.classList.add('ka-form'); }
         clearTimeout(perdeZaman);
         perdeZaman = setTimeout(function () {
             var m2 = document.getElementById('login-modal');
@@ -376,6 +449,7 @@
             try { window.qrElleGirisAc(); } catch (e) { if (a.form) a.form.style.display = ''; }
         } else if (a.form) { a.form.style.display = ''; }
         if (a.baslik) a.baslik.innerText = kayitKipi() ? 'Sisteme Kayıt Ol' : 'Sisteme Giriş Yap';
+        kapatTusu(null);                       /* ilk ekran: ✖ */
         formEkrani();
     }
 
@@ -529,15 +603,14 @@
                 '<button type="button" data-r="student" class="ikinci">' + ikon('kep') + 'Öğrenciyim' +
                 '<small>Arapça öğreniyorum;<br>ders ve alıştırma yaparım</small></button>' +
                 '</div>' +
-                '<div class="ka-tus"><button type="button" class="ka-geri">‹ Geri</button></div>' +
                 '<div class="ka-tanit"><p>Emin değil misin? Girince neler yapabileceğine bak:</p></div>';
             [].forEach.call(kapi.querySelectorAll('.ka-rol button'), function (b) {
                 b.onclick = function () { rolSec(b.getAttribute('data-r')); };
             });
-            kapi.querySelector('.ka-geri').onclick = function () {
+            kapatTusu(function () {
                 if (kayitKipi()) modDegis();          /* giriş kipine dön */
                 asama = 'giris'; girisEkrani();
-            };
+            });
             kartlariGetir();
             return;
         }
@@ -558,7 +631,7 @@
         });
         h += '</div><div class="ka-ilerle">';
         for (var i = 1; i <= L.length; i++) h += '<span class="ka-nokta' + (i <= adim ? ' dolu' : '') + '"></span>';
-        h += '</div><div class="ka-tus"><button type="button" class="ka-geri">‹ Geri</button>' +
+        h += '</div><div class="ka-tus">' +
             '<span class="ka-say">' + adim + ' / ' + L.length + '</span></div>';
         kapi.innerHTML = h;
 
@@ -569,9 +642,9 @@
                 if (adim >= L.length) kapiKapat(); else { adim++; ciz(); }
             };
         });
-        kapi.querySelector('.ka-geri').onclick = function () {
+        kapatTusu(function () {
             if (adim > 1) { adim--; ciz(); } else { asama = 'rol'; ciz(); }
-        };
+        });
     }
 
     /* auth.js'in giriş/kayıt kipini çevirir; kendi sarmalayıcımız bu
@@ -750,7 +823,7 @@
                     stilKur();
                     secimKilit = true;               /* karekod seçim ekranı atlanır */
                     var m0 = document.getElementById('login-modal');
-                    if (m0) m0.classList.add('ka-kapali');
+                    if (m0) { m0.classList.add('ka-tam'); m0.classList.add('ka-kapali'); }
                 } catch (e) { }
                 var r = eskiAc.apply(this, arguments);
                 try { kapiAc('giris'); } catch (e) { }
@@ -793,13 +866,38 @@
             yeniIs.__ka = 1;
             window.authIslemi = yeniIs;
         }
+        /* "Karekodla Giriş" tuşu: seçim ekranı yerine karekodu DOĞRUDAN
+           üretsin. Perde kalkar, sağ üstteki tuş da forma dönüş için geri
+           işaretine döner. */
+        if (typeof window.qrGirisTusu === 'function' && !window.qrGirisTusu.__ka) {
+            var eskiQr = window.qrGirisTusu;
+            var yeniQr = function () {
+                try {
+                    var m = document.getElementById('login-modal');
+                    if (m) { m.classList.remove('ka-kapali'); m.classList.remove('ka-form'); }
+                    clearTimeout(perdeZaman);
+                } catch (e) { }
+                if (typeof window.qrGirisAc === 'function') {
+                    try {
+                        window.qrGirisAc();
+                        kapatTusu(function () { asama = 'giris'; girisEkrani(); });
+                        return;
+                    } catch (e) { }
+                }
+                return eskiQr.apply(this, arguments);
+            };
+            yeniQr.__ka = 1;
+            window.qrGirisTusu = yeniQr;
+        }
         if (typeof window.closeLoginModal === 'function' && !window.closeLoginModal.__ka) {
             var eskiKap = window.closeLoginModal;
             var yeniKap = function () {
                 try {
                     var m = document.getElementById('login-modal');
-                    if (m) { m.classList.remove('ka-kapali'); m.classList.remove('ka-form'); }
+                    if (m) { m.classList.remove('ka-kapali'); m.classList.remove('ka-form');
+                             m.classList.remove('ka-tam'); }
                     clearTimeout(perdeZaman);
+                    kapatTusu(null);
                     kartlariBirak();
                     if (kapi) { kapi.style.display = 'none'; kapi.innerHTML = ''; }
                 } catch (e) { }
