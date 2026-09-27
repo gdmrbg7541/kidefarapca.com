@@ -26,6 +26,9 @@
          { tamam:false, hata:'…' }           — ilk hatalı alanın mesajı
        Mesajlar index'teki metinlerle birebir aynı; öğretmen iki ekranda
        farklı uyarı görmesin. */
+    /* KAYIT ANKETI: rol + 4 kisa soru (hesap/kayitanketi.js). Cevaplar
+       zorunlu; kapi gecilmeden e-posta alanlari gorunmuyor, bu yuzden
+       burada ayrica dogrulanmiyor - yalniz belgeye ekleniyor. */
     K.dogrula = function (a) {
         a = a || {};
         var email = String(a.email || '').trim();
@@ -65,6 +68,15 @@
         try {
             d.createdAt = firebase.firestore.FieldValue.serverTimestamp();
         } catch (e) { /* firebase yoksa alan yazılmaz */ }
+        /* KAYIT ANKETI (27.09.2026): rol sorusu + 4 kisa soru. Cevaplari
+           hesap/kayitanketi.js tutar; burada yalniz belgeye ekleniyor ki
+           iki kayit ekrani da ayni alani yazsin. Dosya yuklenmemisse alan
+           hic yazilmaz - eski kayitlar gibi. */
+        try {
+            var _ank = (window.KidefAnket && window.KidefAnket.belgeAlani)
+                ? window.KidefAnket.belgeAlani(rol) : null;
+            if (_ank) d.anket = _ank;
+        } catch (e) { }
         /* ÖĞRETMEN ONAY KAPISI: öğretmen kaydı doğrudan açılmaz, yönetici
            onayına düşer (sistem/erisim.js perdesi ve yönetici paneli). */
         if (rol === 'teacher') {

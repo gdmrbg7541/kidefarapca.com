@@ -1106,3 +1106,30 @@ okumayazma/okuma-cevir.js   -> şedde SVG'si .54em -> .44em genişlik, üst konu
 alfabe.html                 -> okuma-cevir.js?v=33 -> ?v=34
 Yedek: _kaynak/yedekler/okuma-cevir_2026-09-26_v33.js
 Test: 8 ekran boyutu x 4 konu x tüm kelimeler -> taşma/çakışma yok.
+
+--- 27.09.2026 · Oturum güvenliği: index'teki sürüm etiketi tazelendi
+index.html -> hesap/oturumguvenlik.js?v=20260815a -> ?v=20260912a
+  (dosya 12 Eylül'de değişti — "anonim misafir atılmasın" eklendi — ama index
+   hâlâ eski etiketi istiyordu; tarayıcı önbelleği eski dosyayı veriyordu.
+   Diğer sayfalar zaten 20260911a ile tazelenmişti.)
+Kontrol: 40 dk boşta kalma denetimi tarayıcıda baştan sona sınandı — uyarı,
+  "Devam et", süre dolunca çıkış, anonim misafirin atılmaması, sekmeler arası
+  ortak sayaç: hepsi çalışıyor.
+
+--- 27.09.2026 · Kayıt anketi / rol kapısı (öğretmenler yanlışlıkla öğrenci kaydoluyordu)
+YENİ  hesap/kayitanketi.js        -> giriş penceresi açılınca ÖNCE "öğretmen misin,
+                                     öğrenci misin" sorulur; kayıt kipinde 4 kısa soru
+                                     daha (hazır cevaplı, zorunlu). Kapı geçilmeden
+                                     e-posta/şifre alanları görünmez. Rol sekmesi
+                                     formdan kaldırıldı; yerine "Değiştir" tuşlu şerit.
+                                     Yönetici panelinde "📋 Kayıt Anketi" bölümü:
+                                     öğretmen/öğrenci süzgeci + en çok verilen cevaplar.
+      hesap/kayitalani.js         -> kullanicilar/{uid} belgesine `anket` alanı
+      hesap/auth.js               -> yedek belge biçimine de `anket`
+      index.html                  -> betik satırı (hesap/kayitanketi.js?v=1)
+Sorular — öğretmen: görev yeri · hangi sınıflar · siteyi ne için · nereden duydun
+Sorular — öğrenci : sınıf düzeyi · Arapça seviyesi · amaç · nereden duydun
+Yedekler: _kaynak/yedekler/kayitalani_2026-09-27_anket-oncesi.js,
+          auth_2026-09-27_anket-oncesi.js, index_2026-09-27_anket-oncesi.html
+Test: 1440x900 ve 390x844 — rol kapısı, 4 soru, geri tuşu, cevapsız kayıt engeli,
+      karekod seçim ekranına dönüş, Firestore belgesi, yönetici listesi. JS hatası yok.

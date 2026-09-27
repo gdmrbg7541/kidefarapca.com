@@ -400,6 +400,12 @@ function authIslemi() {
                     _kayit.ogretmenOnay = 'bekliyor';
                     _kayit.onayIstekTarihi = firebase.firestore.FieldValue.serverTimestamp();
                 }
+                /* Kayit anketi (27.09.2026) - kayitalani.js yuklenmediyse burada. */
+                try {
+                    var _ank2 = (window.KidefAnket && window.KidefAnket.belgeAlani)
+                        ? window.KidefAnket.belgeAlani(regRole) : null;
+                    if (_ank2) _kayit.anket = _ank2;
+                } catch (e) { }
             }
             return db.collection('kullanicilar').doc(userCredential.user.uid).set(_kayit).then(() => {
                 // Yaris onleme: dokuman yazildiktan sonra dogru rolle girisi tamamla

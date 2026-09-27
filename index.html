@@ -6469,6 +6469,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sarf/sozlukpop.js?v=2"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
     <script src="hesap/qrgiris.js?v=20260815a"></script>
+    <!-- KAYIT ANKETI / ROL KAPISI: giris penceresi acilinca once
+         "ogretmen misin, ogrenci misin" sorulur; kayitta 4 kisa soru daha.
+         Cevaplar kullanicilar/{uid}.anket alaninda, yonetici panelinde gorunur. -->
+    <script src="hesap/kayitanketi.js?v=1"></script>
     <!-- Rol tanıtımı: giriş penceresindeki öğrenci/öğretmen kartları ve
          çizimli panel tanıtımı (indeks.html de aynı dosyayı kullanır). -->
     <script src="sistem/panel-tanitim.js?v=20260925a"></script>
@@ -6507,7 +6511,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/listelerim.js?v=20260924b"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
-    <script src="hesap/oturumguvenlik.js?v=20260815a"></script>
+    <script src="hesap/oturumguvenlik.js?v=20260912a"></script>
     <script src="hesap/ogrencihesap.js?v=20260919e"></script>
     <script src="sistem/ihoneri.js?v=20260805a"></script>
     <script src="sistem/gorev.js?v=35"></script>
