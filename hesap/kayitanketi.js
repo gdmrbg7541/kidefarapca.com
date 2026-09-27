@@ -148,7 +148,8 @@
     /* ---------------- durum ---------------- */
     var rol = '';           /* 'teacher' | 'student' — YALNIZ kayıtta sorulur */
     var cevap = {};         /* {kurum:'iho', ...} */
-    var asama = 'kip';      /* 'kip' = giriş mi kayıt mı · 'rol' · 'soru' */
+    var asama = 'giris';    /* 'giris' = e-posta formu + "Kayıt ol" kartı · 'rol' · 'soru' */
+    var secimKilit = false; /* pencere açılırken karekod seçim ekranı devreye girmesin */
     var adim = 1;           /* 'soru' aşamasında kaçıncı soru (1..4) */
     var kapi = null;
     var icGecis = false;    /* moduDegistir'i biz çağırdıysak sarmalayıcı karışmasın */
@@ -191,6 +192,12 @@
                !important onun üstünde kalır. */
             '#login-modal.ka-kapali #qr-modal-alan,',
             '#login-modal.ka-kapali #giris-form-alani{display:none !important}',
+            /* Giriş ekranında perde YALNIZ karekod alanını kapatır; form açık
+               kalır. Perde ilk ~0,2 sn duruyor: hesap/qrgiris.js pencere
+               açılınca 30 ms sonra kendi karekod seçim ekranını gösteriyor
+               (modül içi çağrı, dışarıdan sarmalanamıyor) — perde onu yutuyor,
+               sonra kalkıyor ki "Karekodla Giriş" tuşu normal çalışsın. */
+            '#login-modal.ka-kapali.ka-form #giris-form-alani{display:block !important}',
             /* Tanıtım kartları (KidefTanitim) rol adımında kapının İÇİNE
                taşınıyor; orada görünür kalsın diye kural yalnız pencerenin
                doğrudan çocuğunu gizliyor. */
@@ -209,6 +216,16 @@
             '#ka-yan > p{margin:0;font-size:.79rem;font-weight:800;color:#fff;opacity:.92;',
             'letter-spacing:.2px;text-shadow:0 1px 4px rgba(0,0,0,.45)}',
             '#ka-yan .kdt-kartlar{grid-template-columns:1fr !important;margin:0 !important}',
+            /* Giriş formunun altındaki "Kayıt ol" kartı */
+            '#ka-kayit-kart{margin-top:6px;padding-top:14px;border-top:1px solid #EEF2F7}',
+            '#ka-kayit-kart > button{display:flex;align-items:center;gap:13px;width:100%;',
+            'box-sizing:border-box;text-align:start;background:none;border:0;border-radius:12px;',
+            'padding:12px 12px;cursor:pointer;font:inherit;color:#1F2430;transition:background .15s}',
+            '#ka-kayit-kart > button:hover{background:#FEF7EC}',
+            '#ka-kayit-kart .ka-ik{width:34px;height:34px;flex:0 0 auto;color:#E08A00;stroke-width:1.6}',
+            '#ka-kayit-kart b{display:block;font-size:1rem;font-weight:800}',
+            '#ka-kayit-kart small{display:block;font-size:.82rem;color:#8A94A3;line-height:1.45;margin-top:1px}',
+            '#ka-kayit-kart .ka-ok{margin-inline-start:auto;font-size:1.3rem;color:#E08A00;line-height:1}',
             '.ka-tanit{margin-top:20px;padding-top:16px;border-top:1px solid #EEF2F7}',
             '.ka-tanit > p{font-size:.82rem;font-weight:700;color:#8A94A3;margin:0 0 10px}',
             '.ka-tanit .kdt-kartlar{margin-bottom:0}',
@@ -295,6 +312,8 @@
         if (!m) return;
         stilKur();
         m.classList.add('ka-kapali');
+        m.classList.remove('ka-form');
+        clearTimeout(perdeZaman);
         var a = alanlar();
 
         if (!kapi) {
@@ -304,15 +323,17 @@
             if (!kutu) return;
             kutu.insertBefore(kapi, a.form || null);
         }
-        kapi.style.display = 'block';
         if (baslangic) asama = baslangic;
         if (asama === 'soru' && !rol) asama = 'rol';
+        if (asama === 'giris') { girisEkrani(); return; }
+        kapi.style.display = 'block';
         ciz();
     }
 
     function kapiKapat() {
         var m = document.getElementById('login-modal');
-        if (m) m.classList.remove('ka-kapali');
+        if (m) { m.classList.remove('ka-kapali'); m.classList.remove('ka-form'); }
+        clearTimeout(perdeZaman);
         var a = alanlar();
         kartlariBirak();
         /* İçerik de boşaltılıyor: gizli kalan eski şık düğmeleri DOM'da
@@ -330,6 +351,82 @@
             a.form.style.display = '';
         }
         if (a.baslik) a.baslik.innerText = kayitKipi() ? 'Sisteme Kayıt Ol' : 'Sisteme Giriş Yap';
+        asama = kayitKipi() ? 'soru' : 'giris';
+        formEkrani();
+    }
+
+    /* GİRİŞ EKRANI — pencerenin ilk görünümü.
+       Başlıktaki giriş okuna basan kişi doğrudan e-posta + şifre alanlarını
+       ve altındaki "Karekodla Giriş" satırını görüyor; hemen altında da
+       ayrı bir "Kayıt ol" kartı duruyor. Kayıt yolu (rol sorusu + 4 soru)
+       yalnız o karta basılınca açılıyor. */
+    var perdeZaman = 0;
+    function girisEkrani() {
+        var m = document.getElementById('login-modal');
+        if (m) { m.classList.add('ka-kapali'); m.classList.add('ka-form'); }
+        clearTimeout(perdeZaman);
+        perdeZaman = setTimeout(function () {
+            var m2 = document.getElementById('login-modal');
+            if (m2 && asama === 'giris') { m2.classList.remove('ka-kapali'); m2.classList.remove('ka-form'); }
+        }, 220);
+        kartlariBirak();
+        if (kapi) { kapi.style.display = 'none'; kapi.innerHTML = ''; }
+        var a = alanlar();
+        if (typeof window.qrElleGirisAc === 'function') {
+            try { window.qrElleGirisAc(); } catch (e) { if (a.form) a.form.style.display = ''; }
+        } else if (a.form) { a.form.style.display = ''; }
+        if (a.baslik) a.baslik.innerText = kayitKipi() ? 'Sisteme Kayıt Ol' : 'Sisteme Giriş Yap';
+        formEkrani();
+    }
+
+    /* Formun altındaki "Kayıt ol" kartını kurar / gizler ve tanıtım
+       kartlarını yerleştirir. Kayıt kipinde kart gizlenir; oradaki
+       "Zaten hesabınız var mı? Giriş Yap" bağlantısı geri döner. */
+    function formEkrani() {
+        var a = alanlar();
+        if (!a.form) return;
+        var kayitta = kayitKipi();
+        var kart = document.getElementById('ka-kayit-kart');
+        if (!kart) {
+            kart = document.createElement('div');
+            kart.id = 'ka-kayit-kart';
+            kart.innerHTML = '<button type="button">' + ikon('kivilcim') +
+                '<span><b>Kayıt ol</b><small>İlk kez geliyorum; yeni hesap açayım</small></span>' +
+                '<span class="ka-ok" aria-hidden="true">\u203A</span></button>';
+            a.form.appendChild(kart);
+            kart.querySelector('button').onclick = function () { kayitYolu(); };
+        } else if (kart.parentNode !== a.form) {
+            a.form.appendChild(kart);
+        }
+        kart.style.display = kayitta ? 'none' : '';
+
+        /* Kendi kartımız varken pencerenin kendi "Kayıt Ol" bağlantısı
+           ikinci kez durmasın. */
+        var dg = document.getElementById('auth-switch-container');
+        if (dg) dg.style.display = kayitta ? '' : 'none';
+
+        /* Tanıtım kartlarının dar ekrandaki yeri: kayıt kartının ALTINDA
+           ayrı bir kutu. (Kayıt kartının kendisini hedef verirsek geniş
+           ekranda o da gizleniyordu.) */
+        var tk = document.getElementById('ka-tanit-form');
+        if (!tk) {
+            tk = document.createElement('div');
+            tk.id = 'ka-tanit-form';
+            tk.className = 'ka-tanit';
+            tk.innerHTML = '<p>Girince neler yapabileceğine bak:</p>';
+            a.form.appendChild(tk);
+        } else if (tk.parentNode !== a.form) { a.form.appendChild(tk); }
+
+        seritKur();
+        if (kayitta) { tk.style.display = 'none'; kartlariBirak(); }
+        else kartlariGetir(tk);
+    }
+
+    /* "Kayıt ol" kartı: kayıt kipine geç ve rol sorusunu aç. */
+    function kayitYolu() {
+        if (!kayitKipi()) modDegis();
+        if (tamam()) { kapiKapat(); return; }
+        asama = 'rol'; adim = 1; kapiAc('rol');
     }
 
     /* Rol sekmesi artık formda durmuyor; yerine "değiştir" tuşlu şerit. */
@@ -375,11 +472,11 @@
         }
         return y;
     }
-    function kartlariGetir() {
+    function kartlariGetir(darHedef) {
         var k = document.getElementById('kdtGirisKartlar');
-        if (!k || !kapi) return;
+        if (!k) return;
         if (!kartYuva) kartYuva = { eb: k.parentNode, ka: k.nextSibling };
-        var kutu = kapi.querySelector('.ka-tanit');
+        var kutu = darHedef || (kapi ? kapi.querySelector('.ka-tanit') : null);
         var genis = (window.innerWidth || 1200) >= YAN_ESIK;
         k.style.display = '';
         if (genis) {
@@ -409,7 +506,8 @@
     window.addEventListener('resize', function () {
         clearTimeout(yanZaman);
         yanZaman = setTimeout(function () {
-            if (kapi && kapi.style.display !== 'none' && (asama === 'kip' || asama === 'rol')) ciz();
+            if (asama === 'giris') { if (!kayitKipi()) formEkrani(); return; }
+            if (kapi && kapi.style.display !== 'none' && asama === 'rol') ciz();
         }, 160);
     });
 
@@ -418,30 +516,7 @@
         kartlariBirak();
         var a = alanlar();
 
-        /* ---- 1. ekran: GİRİŞ Mİ, KAYIT MI? ------------------------------
-           Girişte öğretmen/öğrenci sorusu YOK — rol zaten hesapta yazılı.
-           Rol sorusu yalnız yeni kayıtta anlamlı; asıl dert de buydu. */
-        if (asama === 'kip') {
-            if (a.baslik) a.baslik.innerText = 'Hoş geldin';
-            kapi.innerHTML =
-                '<p class="ka-ust">Hesabın var mı?</p>' +
-                '<p class="ka-alt">Girişte öğretmen/öğrenci seçmene gerek yok; ' +
-                'hesabın hangisiyse onunla açılır.</p>' +
-                '<div class="ka-rol">' +
-                '<button type="button" data-k="giris">' + ikon('anahtar') + 'Giriş yap' +
-                '<small>Hesabım var;<br>e-posta ya da karekodla gireyim</small></button>' +
-                '<button type="button" data-k="kayit" class="ikinci">' + ikon('kivilcim') + 'Kayıt ol' +
-                '<small>İlk kez geliyorum;<br>yeni hesap açayım</small></button>' +
-                '</div>' +
-                '<div class="ka-tanit"><p>Girince neler yapabileceğine bak:</p></div>';
-            [].forEach.call(kapi.querySelectorAll('.ka-rol button'), function (b) {
-                b.onclick = function () { kipSec(b.getAttribute('data-k')); };
-            });
-            kartlariGetir();
-            return;
-        }
-
-        /* ---- 2. ekran: ROL (yalnız kayıt) ------------------------------ */
+        /* ---- ROL EKRANI (yalnız kayıt yolunda) ------------------------- */
         if (asama === 'rol') {
             if (a.baslik) a.baslik.innerText = 'Kayıt — önce seni tanıyalım';
             kapi.innerHTML =
@@ -459,7 +534,10 @@
             [].forEach.call(kapi.querySelectorAll('.ka-rol button'), function (b) {
                 b.onclick = function () { rolSec(b.getAttribute('data-r')); };
             });
-            kapi.querySelector('.ka-geri').onclick = function () { asama = 'kip'; ciz(); };
+            kapi.querySelector('.ka-geri').onclick = function () {
+                if (kayitKipi()) modDegis();          /* giriş kipine dön */
+                asama = 'giris'; girisEkrani();
+            };
             kartlariGetir();
             return;
         }
@@ -494,20 +572,6 @@
         kapi.querySelector('.ka-geri').onclick = function () {
             if (adim > 1) { adim--; ciz(); } else { asama = 'rol'; ciz(); }
         };
-    }
-
-    /* 1. ekranın seçimi. Giriş: kapı kapanır, pencerenin kendi giriş
-       görünümü (karekod seçim ekranı) gelir. Kayıt: kayıt kipine geçilir
-       ve rol sorulur. */
-    function kipSec(k) {
-        if (k === 'giris') {
-            if (kayitKipi()) modDegis();
-            kapiKapat();
-            return;
-        }
-        if (!kayitKipi()) modDegis();
-        if (tamam()) { kapiKapat(); return; }   /* cevaplar zaten tam */
-        asama = 'rol'; adim = 1; ciz();
     }
 
     /* auth.js'in giriş/kayıt kipini çevirir; kendi sarmalayıcımız bu
@@ -676,9 +740,31 @@
         if (typeof window.showLoginModal === 'function' && !window.showLoginModal.__ka) {
             var eskiAc = window.showLoginModal;
             var yeniAc = function () {
+                /* ÖNCE PERDE, SONRA PENCERE. Kapıyı zamanlayıcıya bırakırsak
+                   arada pencerenin eski görünümü (e-posta formu ya da karekod
+                   seçim ekranı) bir an görünüyor; sayfa meşgulse bu "an" bir
+                   saniyeyi buluyor ve iki ekran üst üste açılmış gibi oluyor.
+                   Sınıf ve kapı artık SENKRON kuruluyor: hiçbir kare boyunca
+                   başka bir şey görünmüyor. */
+                try {
+                    stilKur();
+                    secimKilit = true;               /* karekod seçim ekranı atlanır */
+                    var m0 = document.getElementById('login-modal');
+                    if (m0) m0.classList.add('ka-kapali');
+                } catch (e) { }
                 var r = eskiAc.apply(this, arguments);
-                /* Pencere her açıldığında ilk ekran: giriş mi, kayıt mı? */
-                try { setTimeout(function () { kapiAc('kip'); }, 60); } catch (e) { }
+                try { kapiAc('giris'); } catch (e) { }
+                /* Emniyet: hesap/qrgiris.js pencere açılınca 30 ms sonra kendi
+                   seçim ekranını gösteriyor; sınıf o sırada duruyor mu, bak. */
+                try {
+                    setTimeout(function () {
+                        if (asama === 'giris') { girisEkrani(); return; }
+                        if (!kapi || kapi.style.display === 'none') return;
+                        var m1 = document.getElementById('login-modal');
+                        if (m1) m1.classList.add('ka-kapali');
+                    }, 80);
+                    setTimeout(function () { secimKilit = false; }, 1200);
+                } catch (e) { }
                 return r;
             };
             yeniAc.__ka = 1;
@@ -690,8 +776,8 @@
                 var r = eskiMod.apply(this, arguments);
                 if (icGecis) return r;          /* çeviren biziz, kapıyı bozma */
                 try {
-                    if (kayitKipi()) { if (!tamam()) kapiAc('rol'); }
-                    else kapiKapat();
+                    if (kayitKipi()) { if (!tamam()) kapiAc('rol'); else formEkrani(); }
+                    else { asama = 'giris'; girisEkrani(); }
                 } catch (e) { }
                 return r;
             };
@@ -712,7 +798,8 @@
             var yeniKap = function () {
                 try {
                     var m = document.getElementById('login-modal');
-                    if (m) m.classList.remove('ka-kapali');
+                    if (m) { m.classList.remove('ka-kapali'); m.classList.remove('ka-form'); }
+                    clearTimeout(perdeZaman);
                     kartlariBirak();
                     if (kapi) { kapi.style.display = 'none'; kapi.innerHTML = ''; }
                 } catch (e) { }

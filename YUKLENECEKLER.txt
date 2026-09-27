@@ -1165,3 +1165,21 @@ Test: 390 ve 360 px'te sesli/sessiz kutuları artık değmiyor; 8 ekran boyu x 4
     eskisi gibi kapının altında. "Giriş yap"a basınca doğrudan e-posta + şifre
     formu ve altındaki "Karekodla Giriş" satırı birlikte açılıyor (önce karekod
     seçim ekranı gelmiyor). Kayıt tarafı aynı.
+  · v=6: "iki şey açılıyor" düzeltildi. Kapı zamanlayıcıyla (60 ms) açılıyordu;
+    sayfa açılış anında meşgul olduğu için bu gecikme canlı sitede ~1 sn'ye
+    çıkıyor, arada pencerenin eski görünümü (e-posta formu / karekod seçim
+    ekranı) görünüp sonra "Hoş geldin" üstüne biniyordu. Artık perde sınıfı ve
+    kapı SENKRON kuruluyor — showLoginModal daha kendi işini yapmadan. 14 kare
+    boyunca ölçüldü: açılış boyunca başka hiçbir ekran görünmüyor.
+  · v=7: "Hoş geldin" ara ekranı KALDIRILDI. Başlıktaki giriş okuna basınca
+    doğrudan e-posta + şifre + "Karekodla Giriş" açılıyor; hemen altında ayrı
+    bir "Kayıt ol" kartı duruyor. Kayıt yolu (rol sorusu + 4 soru) yalnız o
+    karta basılınca başlıyor; "‹ Geri" giriş ekranına döndürüyor.
+    Pencerenin kendi "Hesabınız yok mu? Kayıt Ol" bağlantısı giriş ekranında
+    gizleniyor (aynı şey iki kez durmasın), kayıt formunda geri geliyor.
+    NOT: hesap/qrgiris.js pencere açılınca 30 ms sonra kendi karekod seçim
+    ekranını gösteriyor ve bu çağrı modül içinden yapıldığı için dışarıdan
+    sarmalanamıyor; ilk ~0,2 sn perde sınıfı (.ka-form) o ekranı yutuyor,
+    sonra perde kalkıyor — "Karekodla Giriş" tuşu normal çalışmaya devam ediyor.
+    Ölçüm: açılışta 16 kare boyunca e-posta alanı görünür, karekod ekranı hiç
+    görünmüyor (1440 ve 390 px).
