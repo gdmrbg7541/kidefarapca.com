@@ -27,64 +27,120 @@
 
     var TASLAK = 'ka_taslak';          /* yarım kalan cevaplar */
 
+    /* ---------------- çizgi simgeler (emoji yerine) ----------------
+       Hepsi 24x24, yalnız kontur; rengi bulunduğu yerden alır. Emoji
+       kullanmıyoruz: yazı tipine göre boyu ve biçimi değişiyordu,
+       tahtada da bazıları renkli blok gibi duruyordu. */
+    var IK = {
+        anahtar: '<circle cx="8.4" cy="9.6" r="3.9"/><path d="M11.2 12.4 20 21.2M17.2 18.4l2-2M14.6 15.8l1.6-1.6"/>',
+        kivilcim: '<path d="M12 3.2 13.7 9 19.5 10.7 13.7 12.4 12 18.2 10.3 12.4 4.5 10.7 10.3 9Z"/>' +
+                  '<path d="M18.4 16.2l.6 2 2 .6-2 .6-.6 2-.6-2-2-.6 2-.6Z"/>',
+        tahta: '<rect x="2.6" y="3.4" width="13.4" height="10" rx="1.6"/>' +
+               '<path d="M5.4 6.8h7.6M5.4 9.6h4.6"/><circle cx="18.6" cy="12.6" r="2.1"/>' +
+               '<path d="M14.9 20.6a3.9 3.9 0 0 1 7.4 0"/>',
+        kep: '<path d="M12 4.2 22 8.6l-10 4.4L2 8.6Z"/>' +
+             '<path d="M6.4 10.8v4.4c0 1.8 2.6 3.2 5.6 3.2s5.6-1.4 5.6-3.2v-4.4"/>',
+        cami: '<path d="M4.6 20.6V12c0-2.6 3.3-4.6 7.4-4.6S19.4 9.4 19.4 12v8.6"/>' +
+              '<path d="M12 7.4V4.2M2.4 20.6h19.2"/>' +
+              '<path d="M9.6 20.6v-3.4a2.4 2.4 0 0 1 4.8 0v3.4"/>',
+        okul: '<path d="M3.4 20.6V10l8.6-5 8.6 5v10.6M2 20.6h20"/>' +
+              '<path d="M9.4 20.6v-5.2h5.2v5.2"/><path d="M12 5V2.6l3.4 1L12 4.8"/>',
+        bina: '<rect x="4.4" y="3.6" width="15.2" height="17" rx="1.6"/>' +
+              '<path d="M8.2 7.6h2.2M13.6 7.6h2.2M8.2 11.4h2.2M13.6 11.4h2.2"/>' +
+              '<path d="M10.2 20.6v-4.2h3.6v4.2"/>',
+        kitap: '<path d="M4 4.6h5.6A2.4 2.4 0 0 1 12 7v12a2 2 0 0 0-2-2H4Z"/>' +
+               '<path d="M20 4.6h-5.6A2.4 2.4 0 0 0 12 7v12a2 2 0 0 1 2-2h6Z"/>',
+        yildiz: '<path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.8l5.9-.8Z"/>',
+        kisi: '<circle cx="12" cy="8" r="3.6"/><path d="M5 20.4a7 7 0 0 1 14 0"/>',
+        ikikisi: '<circle cx="9" cy="8.2" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/>' +
+                 '<path d="M16.2 5.4a3.2 3.2 0 0 1 0 6.2M17.4 14.6A5.6 5.6 0 0 1 21 20"/>',
+        sayi: '<path d="M4 9h16M4 15h16M9.5 4v16M14.5 4v16"/>',
+        merdiven: '<path d="M3 20.6h5.2v-4.2h5.2v-4.2h5.2V8h2.4"/>',
+        karisik: '<path d="M3.4 6.6h3.2c3.6 0 3.6 10.8 7.2 10.8h3.4"/>' +
+                 '<path d="M3.4 17.4h3.2c1.5 0 2.4-1.9 3.2-4M14.4 12.6c.8-2.2 1.7-4.2 3.2-4.2h3.4"/>' +
+                 '<path d="m18.6 5.6 2.6 2.8-2.6 2.8M18.6 14.6l2.6 2.8-2.6 2.8"/>',
+        kagit: '<path d="M13.6 3.6H6.4A1.8 1.8 0 0 0 4.6 5.4v13.2a1.8 1.8 0 0 0 1.8 1.8h6"/>' +
+               '<path d="M8 8h6M8 11.6h6M8 15.2h3"/><path d="m17.6 13.6 2.8 2.8-4 4h-2.8v-2.8Z"/>',
+        liste: '<path d="M9 6.4h11M9 12h11M9 17.6h11"/>' +
+               '<path d="m3.4 6.2 1.3 1.3 2.1-2.4M3.4 11.8l1.3 1.3 2.1-2.4M3.4 17.4l1.3 1.3 2.1-2.4"/>',
+        harfler: '<path d="M3.4 18 7.8 6.4 12.2 18M4.9 14.4h5.8"/>' +
+                 '<circle cx="17.6" cy="14.6" r="3.3"/><path d="M20.9 11.3v6.7"/>',
+        telefon: '<rect x="7" y="2.6" width="10" height="18.8" rx="2.4"/>' +
+                 '<path d="M10.6 5.6h2.8"/><circle cx="12" cy="18" r="1.1"/>',
+        arama: '<circle cx="10.8" cy="10.8" r="6.2"/><path d="m15.4 15.4 4.6 4.6"/>',
+        mikrofon: '<rect x="9.4" y="2.8" width="5.2" height="10.4" rx="2.6"/>' +
+                  '<path d="M6 11.4v1.4a6 6 0 0 0 12 0v-1.4M12 18.8v2.6M9 21.4h6"/>',
+        sohbet: '<path d="M20.4 12.8a7.6 7.6 0 0 1-8.2 7.6L5 21.8l1.5-4.6A7.6 7.6 0 1 1 20.4 12.8Z"/>',
+        filiz: '<path d="M12 20.6v-7"/><path d="M12 13.6c0-3 2.4-5.4 5.4-5.4 0 3-2.4 5.4-5.4 5.4Z"/>' +
+               '<path d="M12 15.2C9.6 15.2 7.6 13.2 7.6 10.8c2.4 0 4.4 2 4.4 4.4Z"/>',
+        madalya: '<circle cx="12" cy="15" r="5.2"/><path d="m8.6 10.2-2.8-6M15.4 10.2l2.8-6"/>' +
+                 '<path d="m12 12.6.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3Z"/>',
+        ampul: '<path d="M9.4 17.4a6 6 0 1 1 5.2 0"/><path d="M9.6 17.4h4.8M10.4 20.4h3.2"/>'
+    };
+    function ikon(ad, sinif) {
+        var g = IK[ad] || IK.yildiz;
+        return '<svg class="' + (sinif || 'ka-ik') + '" viewBox="0 0 24 24" aria-hidden="true" ' +
+               'focusable="false">' + g + '</svg>';
+    }
+
     /* ---------------- sorular ---------------- */
     var SORULAR = {
         teacher: [
             { id: 'kurum', s: 'Nerede görev yapıyorsun?', c: [
-                ['iho', 'İmam Hatip Ortaokulu', '🕌'],
-                ['aihl', 'Anadolu İmam Hatip Lisesi', '🏫'],
-                ['diger-okul', 'Diğer ortaokul / lise', '🏛️'],
-                ['kurankursu', 'Kur\'an Kursu', '📖'],
-                ['ozel', 'Özel okul / kurs', '⭐'],
-                ['universite', 'Üniversite', '🎓'],
-                ['serbest', 'Serbest / özel ders', '🧑‍🏫']
+                ['iho', 'İmam Hatip Ortaokulu', 'cami'],
+                ['aihl', 'Anadolu İmam Hatip Lisesi', 'okul'],
+                ['diger-okul', 'Diğer ortaokul / lise', 'bina'],
+                ['kurankursu', 'Kur\'an Kursu', 'kitap'],
+                ['ozel', 'Özel okul / kurs', 'yildiz'],
+                ['universite', 'Üniversite', 'kep'],
+                ['serbest', 'Serbest / özel ders', 'kisi']
             ] },
             { id: 'sinif', s: 'Hangi sınıflara giriyorsun?', c: [
-                ['5-8', '5 – 8. sınıf (ortaokul)', '🔢'],
-                ['9-12', '9 – 12. sınıf (lise)', '🔟'],
-                ['yetiskin', 'Yetişkin', '🧑'],
-                ['karma', 'Karma / hepsi', '🔀']
+                ['5-8', '5 – 8. sınıf (ortaokul)', 'sayi'],
+                ['9-12', '9 – 12. sınıf (lise)', 'merdiven'],
+                ['yetiskin', 'Yetişkin', 'kisi'],
+                ['karma', 'Karma / hepsi', 'karisik']
             ] },
             { id: 'amac', s: 'Siteyi en çok ne için kullanacaksın?', c: [
-                ['sinav', 'Sınav ve soru hazırlama', '📝'],
-                ['tahta', 'Tahtada ders materyali', '📽️'],
-                ['takip', 'Öğrenci takibi / sınıf listeleri', '📋'],
-                ['kelime', 'Kelime ve sözlük çalışması', '🔤'],
-                ['hepsi', 'Hepsi', '✨']
+                ['sinav', 'Sınav ve soru hazırlama', 'kagit'],
+                ['tahta', 'Tahtada ders materyali', 'tahta'],
+                ['takip', 'Öğrenci takibi / sınıf listeleri', 'liste'],
+                ['kelime', 'Kelime ve sözlük çalışması', 'harfler'],
+                ['hepsi', 'Hepsi', 'kivilcim']
             ] },
             { id: 'kaynak', s: 'Bizi nereden duydun?', c: [
-                ['meslektas', 'Meslektaşım söyledi', '🤝'],
-                ['sosyal', 'Sosyal medya', '📱'],
-                ['arama', 'Arama motoru', '🔍'],
-                ['seminer', 'Seminer / kurs', '🎤'],
-                ['diger', 'Diğer', '💬']
+                ['meslektas', 'Meslektaşım söyledi', 'ikikisi'],
+                ['sosyal', 'Sosyal medya', 'telefon'],
+                ['arama', 'Arama motoru', 'arama'],
+                ['seminer', 'Seminer / kurs', 'mikrofon'],
+                ['diger', 'Diğer', 'sohbet']
             ] }
         ],
         student: [
             { id: 'sinif', s: 'Kaçıncı sınıftasın?', c: [
-                ['5-8', '5 – 8. sınıf', '🔢'],
-                ['9-12', '9 – 12. sınıf', '🔟'],
-                ['universite', 'Üniversite', '🎓'],
-                ['yetiskin', 'Yetişkin / kendi kendime', '🧑']
+                ['5-8', '5 – 8. sınıf', 'sayi'],
+                ['9-12', '9 – 12. sınıf', 'merdiven'],
+                ['universite', 'Üniversite', 'kep'],
+                ['yetiskin', 'Yetişkin / kendi kendime', 'kisi']
             ] },
             { id: 'seviye', s: 'Arapça seviyen ne durumda?', c: [
-                ['yeni', 'Yeni başladım', '🌱'],
-                ['harf', 'Harfleri okuyorum', '🔤'],
-                ['orta', 'Orta', '📗'],
-                ['iyi', 'İyi', '🏅']
+                ['yeni', 'Yeni başladım', 'filiz'],
+                ['harf', 'Harfleri okuyorum', 'harfler'],
+                ['orta', 'Orta', 'kitap'],
+                ['iyi', 'İyi', 'madalya']
             ] },
             { id: 'amac', s: 'Ne için kullanacaksın?', c: [
-                ['okul', 'Okul dersi', '🏫'],
-                ['sinav', 'Sınava hazırlık', '📝'],
-                ['kuran', 'Kur\'an okuma', '📖'],
-                ['merak', 'Kendi merakım', '💡']
+                ['okul', 'Okul dersi', 'okul'],
+                ['sinav', 'Sınava hazırlık', 'kagit'],
+                ['kuran', 'Kur\'an okuma', 'kitap'],
+                ['merak', 'Kendi merakım', 'ampul']
             ] },
             { id: 'kaynak', s: 'Bizi nereden duydun?', c: [
-                ['ogretmen', 'Öğretmenim söyledi', '🧑‍🏫'],
-                ['arkadas', 'Arkadaşım', '🤝'],
-                ['sosyal', 'Sosyal medya', '📱'],
-                ['arama', 'Arama motoru', '🔍'],
-                ['diger', 'Diğer', '💬']
+                ['ogretmen', 'Öğretmenim söyledi', 'tahta'],
+                ['arkadas', 'Arkadaşım', 'ikikisi'],
+                ['sosyal', 'Sosyal medya', 'telefon'],
+                ['arama', 'Arama motoru', 'arama'],
+                ['diger', 'Diğer', 'sohbet']
             ] }
         ]
     };
@@ -139,29 +195,56 @@
                taşınıyor; orada görünür kalsın diye kural yalnız pencerenin
                doğrudan çocuğunu gizliyor. */
             '#login-modal.ka-kapali > .modal-content > #kdtGirisKartlar{display:none !important}',
+            /* Kapı açıkken pencere de sadeleşiyor: ağır gölge yerine yumuşak. */
+            '#login-modal.ka-kapali .modal-content{box-shadow:0 22px 60px rgba(16,22,30,.18) !important;',
+            'border-radius:22px}',
+            /* TANITIM KARTLARI geniş ekranda pencerenin DIŞINDA, sağ kenarda
+               durur; dar ekranda kapının altına iner (.ka-tanit). */
+            '#ka-yan{position:fixed;top:50%;inset-inline-end:26px;transform:translateY(-50%);',
+            'width:298px;display:flex;flex-direction:column;gap:10px;z-index:1}',
+            /* Dar sütunda kart üç parçaya bölünmesin: "İçeriye bak" rozeti
+               alt satıra, tam genişliğe insin. */
+            '#ka-yan .kdt-kart{flex-wrap:wrap;row-gap:9px;align-items:flex-start}',
+            '#ka-yan .kdt-kart-ok{flex:1 1 100%;text-align:center;padding-block:7px}',
+            '#ka-yan > p{margin:0;font-size:.79rem;font-weight:800;color:#fff;opacity:.92;',
+            'letter-spacing:.2px;text-shadow:0 1px 4px rgba(0,0,0,.45)}',
+            '#ka-yan .kdt-kartlar{grid-template-columns:1fr !important;margin:0 !important}',
             '.ka-tanit{margin-top:20px;padding-top:16px;border-top:1px solid #EEF2F7}',
             '.ka-tanit > p{font-size:.82rem;font-weight:700;color:#8A94A3;margin:0 0 10px}',
             '.ka-tanit .kdt-kartlar{margin-bottom:0}',
             '#ka-kapi{animation:kaGel .2s ease both}',
             '@keyframes kaGel{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}',
-            '.ka-ust{font-size:1.05rem;font-weight:800;color:#1F2430;margin:0 0 4px;line-height:1.35}',
-            '.ka-alt{font-size:.86rem;color:#7A8698;margin:0 0 16px;line-height:1.5}',
-            '.ka-sec{display:flex;flex-direction:column;gap:9px}',
-            '.ka-sec button{display:flex;align-items:center;gap:11px;width:100%;box-sizing:border-box;',
-            'text-align:start;background:#fff;border:2px solid #E9EEF5;border-radius:13px;padding:13px 15px;',
-            'cursor:pointer;font:inherit;font-size:.97rem;font-weight:600;color:#2C3E50;transition:.15s}',
-            '.ka-sec button:hover{border-color:#16A085;background:#F4FBF9;transform:translateY(-1px)}',
-            '.ka-sec button.sec{border-color:#16A085;background:#E8F6F3}',
-            '.ka-sec button .ka-em{font-size:1.25rem;line-height:1;flex-shrink:0}',
-            /* rol kartları — iri, karıştırılamaz */
-            '.ka-rol{display:flex;gap:12px;flex-wrap:wrap}',
-            '.ka-rol button{flex:1 1 150px;display:flex;flex-direction:column;align-items:center;gap:8px;',
-            'background:#fff;border:2px solid #E9EEF5;border-radius:18px;padding:22px 14px;cursor:pointer;',
-            'font:inherit;font-weight:800;font-size:1.05rem;color:#2C3E50;transition:.18s}',
-            '.ka-rol button:hover{border-color:#16A085;background:#F4FBF9;transform:translateY(-2px);',
-            'box-shadow:0 8px 20px rgba(22,160,133,.16)}',
-            '.ka-rol button small{display:block;font-weight:500;font-size:.8rem;color:#7A8698;line-height:1.45}',
-            '.ka-rol .ka-ikon{font-size:2.5rem;line-height:1}',
+            '.ka-ust{font-size:1.12rem;font-weight:800;color:#1F2430;margin:0 0 5px;line-height:1.35}',
+            '.ka-alt{font-size:.86rem;color:#7A8698;margin:0 0 18px;line-height:1.5}',
+            /* KUTUSUZ TASARIM: şıklar çerçeveli kart değil, ince bir ayraç
+               çizgisiyle ayrılan satırlar. Pencerenin içinde ikinci bir
+               kutu görüntüsü kalmıyor. */
+            '.ka-sec{display:flex;flex-direction:column;gap:0}',
+            '.ka-sec button{display:flex;align-items:center;gap:13px;width:100%;box-sizing:border-box;',
+            'text-align:start;background:none;border:0;border-bottom:1px solid #EEF2F7;border-radius:10px;',
+            'padding:13px 10px;cursor:pointer;font:inherit;font-size:.97rem;font-weight:600;color:#2C3E50;',
+            'transition:background .15s,color .15s}',
+            '.ka-sec button:last-child{border-bottom:0}',
+            '.ka-sec button:hover{background:#F2FAF8;color:#0E7A68}',
+            '.ka-sec button.sec{background:#E8F6F3;color:#0E7A68}',
+            '.ka-sec .ka-ik{width:25px;height:25px;flex:0 0 auto;color:#16A085}',
+            /* kip / rol seçimi — iri, çerçevesiz, arada ince ayraç */
+            '.ka-rol{display:flex;gap:0;flex-wrap:wrap}',
+            '.ka-rol button{flex:1 1 150px;display:flex;flex-direction:column;align-items:center;gap:10px;',
+            'background:none;border:0;border-radius:14px;padding:20px 12px;cursor:pointer;',
+            'font:inherit;font-weight:800;font-size:1.06rem;color:#1F2430;',
+            'transition:background .16s,color .16s}',
+            '.ka-rol button + button{border-inline-start:1px solid #EEF2F7}',
+            '.ka-rol button:hover{background:#F2FAF8;color:#0E7A68}',
+            '.ka-rol button small{display:block;font-weight:500;font-size:.8rem;color:#8A94A3;line-height:1.5}',
+            '.ka-rol .ka-ik{width:46px;height:46px;color:#16A085;stroke-width:1.5}',
+            '.ka-rol button.ikinci .ka-ik{color:#E08A00}',
+            '.ka-rol button.ikinci:hover{background:#FEF7EC;color:#A85F00}',
+            '@media(max-width:540px){.ka-rol button + button{border-inline-start:0;',
+            'border-top:1px solid #EEF2F7}}',
+            /* ortak simge biçimi — emoji yok, hepsi kontur çizim */
+            '.ka-ik{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;',
+            'stroke-linejoin:round;display:block}',
             /* ilerleme */
             '.ka-ilerle{display:flex;align-items:center;gap:6px;margin:16px 0 0}',
             '.ka-nokta{flex:1;height:5px;border-radius:99px;background:#E9EEF5;transition:.25s}',
@@ -174,7 +257,7 @@
             /* form üstündeki rol şeridi */
             '#ka-serit{display:flex;align-items:center;gap:10px;background:#E8F6F3;border:1px solid #BFE7DE;',
             'border-radius:13px;padding:11px 14px;margin-bottom:16px;font-size:.92rem;color:#14705F;font-weight:700}',
-            '#ka-serit .ka-em{font-size:1.3rem;line-height:1}',
+            '#ka-serit .ka-ik{width:24px;height:24px;flex:0 0 auto}',
             '#ka-serit button{margin-inline-start:auto;background:#fff;border:1px solid #BFE7DE;border-radius:9px;',
             'color:#16A085;font:inherit;font-size:.82rem;font-weight:700;padding:6px 11px;cursor:pointer}',
             '#ka-serit button:hover{background:#16A085;color:#fff}',
@@ -237,14 +320,12 @@
         if (kapi) { kapi.style.display = 'none'; kapi.innerHTML = ''; }
         seritKur();
 
-        /* Kayıtta doğrudan e-posta formu; girişte pencerenin kendi ilk
-           görünümü (karekod seçim ekranı) geri gelsin — karekodla giriş
-           yolunu kapatmıyoruz. */
-        if (kayitKipi()) {
-            if (typeof window.qrElleGirisAc === 'function') { try { window.qrElleGirisAc(); } catch (e) { } }
-            else if (a.form) a.form.style.display = '';
-        } else if (typeof window.qrSecimEkrani === 'function') {
-            try { window.qrSecimEkrani(); } catch (e) { if (a.form) a.form.style.display = ''; }
+        /* Hem girişte hem kayıtta DOĞRUDAN form açılıyor: e-posta + şifre
+           alanları ve altındaki "Karekodla Giriş" satırı bir arada görünsün.
+           Eskiden girişte önce karekod seçim ekranı geliyordu, e-postayla
+           girecek kişi bir tuş daha basıyordu. */
+        if (typeof window.qrElleGirisAc === 'function') {
+            try { window.qrElleGirisAc(); } catch (e) { if (a.form) a.form.style.display = ''; }
         } else if (a.form) {
             a.form.style.display = '';
         }
@@ -266,7 +347,7 @@
             a.form.insertBefore(s, a.form.firstChild);
         }
         var ogretmen = (rol === 'teacher');
-        s.innerHTML = '<span class="ka-em">' + (ogretmen ? '🧑‍🏫' : '🎓') + '</span>' +
+        s.innerHTML = ikon(ogretmen ? 'tahta' : 'kep') +
             '<span>' + (ogretmen ? 'Öğretmen' : 'Öğrenci') + ' olarak kayıt oluyorsun</span>' +
             '<button type="button">Değiştir</button>';
         s.querySelector('button').onclick = function () { kapiAc('rol'); };
@@ -281,25 +362,56 @@
        yapabileceğini görsün. Adım değişince ya da kapı kapanınca yerine
        geri konuyor — yoksa kapi.innerHTML onları silerdi. */
     var kartYuva = null;
+    var YAN_ESIK = 1100;                 /* bu genişlikten itibaren yan sütun */
+    function yanSutun() {
+        var m = document.getElementById('login-modal');
+        if (!m) return null;
+        var y = document.getElementById('ka-yan');
+        if (!y) {
+            y = document.createElement('div');
+            y.id = 'ka-yan';
+            y.innerHTML = '<p>Girince neler yapabileceğine bak:</p>';
+            m.appendChild(y);
+        }
+        return y;
+    }
     function kartlariGetir() {
         var k = document.getElementById('kdtGirisKartlar');
         if (!k || !kapi) return;
         if (!kartYuva) kartYuva = { eb: k.parentNode, ka: k.nextSibling };
         var kutu = kapi.querySelector('.ka-tanit');
-        if (!kutu) return;
+        var genis = (window.innerWidth || 1200) >= YAN_ESIK;
         k.style.display = '';
-        kutu.appendChild(k);
+        if (genis) {
+            /* Pencerenin DIŞINDA, sağ kenarda dursun. */
+            var y = yanSutun();
+            if (y) { y.style.display = 'flex'; y.appendChild(k); if (kutu) kutu.style.display = 'none'; return; }
+        }
+        var y2 = document.getElementById('ka-yan');
+        if (y2) y2.style.display = 'none';
+        if (kutu) { kutu.style.display = ''; kutu.appendChild(k); }
     }
     function kartlariBirak() {
+        var y = document.getElementById('ka-yan');
+        if (y) y.style.display = 'none';
         var k = document.getElementById('kdtGirisKartlar');
         if (!k) return;
-        /* Kartlar YALNIZ rol ekranında görünür. Giriş/kayıt formunun
-           üstünde ikinci kez çıkmasınlar — aynı iki kart iki yerde
-           duruyordu. */
+        /* Kartlar YALNIZ ilk iki ekranda görünür; giriş/kayıt formunun
+           üstünde ikinci kez çıkmasınlar. */
         k.style.display = 'none';
-        if (!kartYuva || !kapi || !kapi.contains(k)) return;
+        if (!kartYuva) return;
+        var disarda = (kapi && kapi.contains(k)) || (y && y.contains(k));
+        if (!disarda) return;
         try { kartYuva.eb.insertBefore(k, kartYuva.ka); } catch (e) { kartYuva.eb.appendChild(k); }
     }
+    /* Pencere boyu değişince yan sütun ↔ alt blok geçişi yenilensin. */
+    var yanZaman = 0;
+    window.addEventListener('resize', function () {
+        clearTimeout(yanZaman);
+        yanZaman = setTimeout(function () {
+            if (kapi && kapi.style.display !== 'none' && (asama === 'kip' || asama === 'rol')) ciz();
+        }, 160);
+    });
 
     function ciz() {
         if (!kapi) return;
@@ -316,9 +428,9 @@
                 '<p class="ka-alt">Girişte öğretmen/öğrenci seçmene gerek yok; ' +
                 'hesabın hangisiyse onunla açılır.</p>' +
                 '<div class="ka-rol">' +
-                '<button type="button" data-k="giris"><span class="ka-ikon">🔑</span>Giriş yap' +
+                '<button type="button" data-k="giris">' + ikon('anahtar') + 'Giriş yap' +
                 '<small>Hesabım var;<br>e-posta ya da karekodla gireyim</small></button>' +
-                '<button type="button" data-k="kayit"><span class="ka-ikon">✨</span>Kayıt ol' +
+                '<button type="button" data-k="kayit" class="ikinci">' + ikon('kivilcim') + 'Kayıt ol' +
                 '<small>İlk kez geliyorum;<br>yeni hesap açayım</small></button>' +
                 '</div>' +
                 '<div class="ka-tanit"><p>Girince neler yapabileceğine bak:</p></div>';
@@ -337,9 +449,9 @@
                 '<p class="ka-alt">Hesabın buna göre açılıyor; sonradan değiştirmek için ' +
                 'yöneticiye yazman gerekir. Lütfen doğru olanı seç.</p>' +
                 '<div class="ka-rol">' +
-                '<button type="button" data-r="teacher"><span class="ka-ikon">🧑‍🏫</span>Öğretmenim' +
+                '<button type="button" data-r="teacher">' + ikon('tahta') + 'Öğretmenim' +
                 '<small>Sınıfım var; sınav hazırlarım,<br>öğrenci takibi yaparım</small></button>' +
-                '<button type="button" data-r="student"><span class="ka-ikon">🎓</span>Öğrenciyim' +
+                '<button type="button" data-r="student" class="ikinci">' + ikon('kep') + 'Öğrenciyim' +
                 '<small>Arapça öğreniyorum;<br>ders ve alıştırma yaparım</small></button>' +
                 '</div>' +
                 '<div class="ka-tus"><button type="button" class="ka-geri">‹ Geri</button></div>' +
@@ -364,7 +476,7 @@
         q.c.forEach(function (o) {
             h += '<button type="button" data-k="' + esc(o[0]) + '"' +
                 (cevap[q.id] === o[0] ? ' class="sec"' : '') + '>' +
-                '<span class="ka-em">' + o[2] + '</span><span>' + esc(o[1]) + '</span></button>';
+                ikon(o[2]) + '<span>' + esc(o[1]) + '</span></button>';
         });
         h += '</div><div class="ka-ilerle">';
         for (var i = 1; i <= L.length; i++) h += '<span class="ka-nokta' + (i <= adim ? ' dolu' : '') + '"></span>';

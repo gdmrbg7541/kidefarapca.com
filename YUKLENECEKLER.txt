@@ -1158,3 +1158,10 @@ Test: 390 ve 360 px'te sesli/sessiz kutuları artık değmiyor; 8 ekran boyu x 4
     giriş seçilince doğrudan pencerenin kendi giriş görünümü (karekod seçim ekranı) gelir.
     Rol şeridi ("... olarak kayıt oluyorsun · Değiştir") yalnız kayıt formunda görünür.
     Her ekranda "‹ Geri" var: sorulardan role, rolden ilk ekrana döner.
+  · v=5: tasarım sadeleşti. EMOJİ YOK — 24 çizgi simge (SVG) koda gömülü; yazı
+    tipine göre boyu/biçimi değişmiyor. Şıklar ve kip/rol seçimleri çerçevesiz:
+    kutu içinde kutu yerine ince ayraç çizgileri. Tanıtım kartları geniş ekranda
+    (>=1100 px) pencerenin DIŞINDA, sağ kenarda sabit bir sütunda; dar ekranda
+    eskisi gibi kapının altında. "Giriş yap"a basınca doğrudan e-posta + şifre
+    formu ve altındaki "Karekodla Giriş" satırı birlikte açılıyor (önce karekod
+    seçim ekranı gelmiyor). Kayıt tarafı aynı.
