@@ -1193,3 +1193,95 @@ Test: 390 ve 360 px'te sesli/sessiz kutuları artık değmiyor; 8 ekran boyu x 4
     üretiyor (qrGirisAc); o ekranda sağ üst tuş forma dönüş sağlıyor.
     Ayrıca: "tahta" simgesi ayaklı yazı tahtası olarak yeniden çizildi (büyük
     boyda okunmuyordu), dar ekranda rol kartları alt alta diziliyor.
+  · v=9: ✖ / ‹ tuşu SOL ÜST köşeye alındı ve kırmızı dolgulu daire oldu
+    (#E03B2F, beyaz simge, gölgeli). Sitenin kendi "✖" karakteri emoji olarak
+    çizildiği için rengi CSS'ten değişmiyordu — kırmızı dairenin içinde gri
+    duruyordu; hem çarpı hem geri oku artık kontur SVG. İçerik üst boşluğu
+    tuşun altına inecek şekilde açıldı.
+
+--- 27.09.2026 · Öğretmen Özel: üç sözlük kartı tek karta indirildi
+YENİ  sozluk/sozluksekme.js       -> sozluk.html'e "Sözlük | Simülasyon | Dedektif"
+                                     sekme şeridi (kalıplar tablosundaki kırmızı
+                                     kaydırak biçimi). Oyunlar kendi sayfalarında
+                                     kalıyor, burada iframe ile açılıyor: kod/veri
+                                     kopyalanmıyor, tek doğruluk kaynağı yine kendi
+                                     dosyaları. Sekme ilk tıklandığında yükleniyor,
+                                     sonra bellekte kalıyor (oyun baştan başlamıyor).
+                                     Oyun sayfasının kendi "geri" tuşu çerçeve içinde
+                                     gizleniyor. Doğrudan bağlantı: sozluk.html#simulasyon
+                                     ve sozluk.html#dedektif.
+      sozluk.html                 -> betik satırı (sozluk/sozluksekme.js?v=1)
+      index.html                  -> "Öğretmen Özel"den Sözlük Simülasyonu ve Sözlük
+                                     Dedektifi kartları KALDIRILDI; Sözlük kartının
+                                     açıklaması güncellendi, bağlantı ?v=4 oldu.
+İMAM HATİP'E DOKUNULMADI: oradaki Sözlük Simülasyonu kartı sistem/sinifmodul.js'ten
+geliyor ve görev olarak veriliyor; yerinde duruyor.
+Yedekler: _kaynak/yedekler/sozluk_2026-09-27_sekme-oncesi.html,
+          index_2026-09-27_sozlukkart-oncesi.html
+Test: 1440 ve 390 px — üç sekme, sözlük araması, iki oyunun yüklenmesi, sekmeler arası
+      geçiş, sözlüğe dönüş, #dedektif bağlantısı. JS hatası yok.
+      Öğretmen Özel'de 11 kart -> 9 kart; tek "Sözlük" kartı kaldı.
+NOT: katalog/index.html (basılı katalog) ikisini ayrı satır olarak listelemeye devam
+     ediyor — istenirse orası da birleştirilir.
+  · v=2: şerit üst şeridin İÇİNE, en sağa alındı (yukarıda zaten yer vardı).
+    "Sözlük" sekmesi kaldırıldı — sayfanın kendisi zaten sözlük; geri dönmek
+    için soldaki "Sözlük" yazısı/simgesi tıklanıyor (klavyeyle de: Enter/boşluk),
+    ya da seçili sekmeye bir daha basılıyor. Yeşil zeminde beyaz kaydırak,
+    seçili sekmenin yazısı yeşil. Dar ekranda (<=560px) sonuç sayacı gizlenip
+    sekmelere yer açılıyor.
+  · v=3: sözlük açıkken soldaki "Sözlük" başlığı da seçili sekme gibi görünüyor —
+    beyaz hap, yeşil yazı, yeşile dönen kitap simgesi (aria-current="page").
+    Oyun sekmesine geçilince hap kalkıyor, başlık yine düz beyaz yazı oluyor.
+  · v=4: iki oyunun kendi "ana sayfaya dön" tuşu sekmenin içinde tamamen
+    gizlendi (üstte zaten geri ve Sözlük var). Tek tek gizlemek yetmiyordu:
+    sozluksimulasyonu.js back-btn'i "her durumda görünür" diye oyun başlayınca
+    yeniden açıyor; artık çerçeveye STİL KURALI yazılıyor, yeniden çizimden
+    sonra da geçerli. Dedektif'teki kimliksiz ev simgesi de aynı kuralla
+    (a[href="index.html"][title*="Ana"]) kapanıyor.
+    Ölçüm: iki oyunda da hem açılışta hem "Başla"dan sonra görünen geri tuşu yok.
+  · Sözlük kartının açıklaması düzeltildi: .game-card-description bir ESNEK (flex)
+    kutu, içine konan <b> öğeleri ayrı satıra düşüyor ve yazı bölünüyordu
+    ("İçinde / Simülasyon / ve / Dedektif / sekmeleri de var." diye beş parça).
+    Açıklama düz metne çevrildi: "Kelime ara, yıldızla, favorilerinden çalış.
+    Simülasyon ve Dedektif de içinde."
+  · v=5: DİKEY YERDEN TASARRUF. Simülasyonun kendi başlık satırı (başlık +
+    geri + Joker + İpuçları) sekmede tamamen gizlendi; Joker ve İpuçları
+    üst şeride, sekmelerin soluna alındı. Taşımak yerine VEKİL tuş konuyor:
+    aslı çerçevede gizli duruyor, vekile basınca o tıklanıyor — oyunun kendi
+    mantığı (getElementById ile bulup "Joker (2)" diye güncellemesi) bozulmuyor;
+    vekilin yazısı ve etkin/pasif durumu MutationObserver ile aslından kopyalanıyor.
+    Dedektif'in ayrı başlık satırı yok; iki "ana sayfa" simgesi (.mobile-home-btn
+    dâhil) gizlendi.
+    Dar ekran: başlığın yazısı gizlenip yalnız simge kalıyor, "💡 İpuçları"
+    "💡"ye kısalıyor, şerit boşlukları daralıyor — 390 px'te tam sığıyor,
+    sayfa yatay kaymıyor.
+  · v=6 + YENİ sozluk/gomulu.js — "olmamış" denen durumun sebebi bulundu:
+    sayfa "file://" ile (dosyaya çift tıklayarak) açılınca tarayıcı ÇERÇEVENİN
+    İÇİNE ERİŞİME İZİN VERMİYOR (contentDocument null). Dışarıdan yapılan her
+    şey — geri tuşunu gizleme, başlık satırını kaldırma, Joker/İpuçları
+    vekilleri — sessizce boşa gidiyordu. Sunucudan (https) açılınca çalışıyor,
+    yerelde çalışmıyordu.
+    ÇÖZÜM: iş, oyun sayfasının KENDİSİNE verildi.
+      YENİ sozluk/gomulu.js  -> sozluksimulasyonu.html ve yenisozlukdedektifi.html'e
+                                eklendi. Yalnız adreste ?gomulu=1 varsa çalışır:
+                                kendi geri/ana sayfa tuşlarını ve başlık satırını
+                                gizler, üst şeride taşınacak tuşları postMessage
+                                ile bildirir, üstten gelen "tıkla" isteğini uygular.
+                                Tek başına açılınca hiçbir şey yapmaz — İmam Hatip
+                                görevi, katalog ve doğrudan bağlantılar etkilenmez.
+      sozluk/sozluksekme.js  -> çerçeveyi ?gomulu=1 ile açıyor; vekil tuşları artık
+                                postMessage'la geleni çiziyor ve tıklamayı geri
+                                gönderiyor. Aynı köken şartı kalmadı.
+    Ölçüm: hem file:// hem http ile — geri/ana sayfa tuşu görünmüyor, başlık
+    satırı kalkıyor, Joker vekili çalışıyor (3 -> 2), dedektifte tuş yok.
+    Yedekler: _kaynak/yedekler/sozluksimulasyonu_2026-09-27_gomulu-oncesi.html,
+              yenisozlukdedektifi_2026-09-27_gomulu-oncesi.html
+  · v=7 / gomulu v=2: Joker ve İpuçları vekilleri artık oyunun kendi durumunu
+    izliyor. Simülasyon giriş ekranında (ipuçları + "Başla") bu iki tuşu kendisi
+    gizliyor (sozluksimulasyonu.js → state 'start': display:none), oyun başlayınca
+    gösteriyor. Üst şeritteki vekiller de aynı anda çıkıp kayboluyor:
+    ipuçları kapanıp oyun başlayana kadar şeritte görünmüyorlar.
+    (Tuşun ve .header-buttons kabının kendi display değerine bakılıyor; .header'ı
+     biz gizlediğimiz için offsetParent'a bakmak yanıltıcı olurdu.)
+    Ölçüm: file:// ve http — giriş ekranında şerit boş, "Başla"dan sonra iki tuş,
+    Joker'e basınca 3 -> 2.

@@ -1641,22 +1641,6 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           </div>
         </a>
 
-        <a href="sozluksimulasyonu.html" target="_blank" rel="opener" class="game-card kss-card">
-          <div class="default-game-content">
-            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
-              <rect x="10" y="8" width="44" height="48" rx="6" fill="#fff" stroke="#b9c3d4" stroke-width="2.4"/>
-              <line x1="17" y1="20" x2="47" y2="20" stroke="#d6dde8" stroke-width="3.4" stroke-linecap="round"/>
-              <line x1="17" y1="30" x2="47" y2="30" stroke="#d6dde8" stroke-width="3.4" stroke-linecap="round"/>
-              <line x1="17" y1="40" x2="47" y2="40" stroke="#d6dde8" stroke-width="3.4" stroke-linecap="round"/>
-              <line x1="17" y1="48" x2="37" y2="48" stroke="#d6dde8" stroke-width="3.4" stroke-linecap="round"/>
-              <g class="kga-buyutec"><circle cx="32" cy="30" r="9.5" fill="rgba(90,180,255,.22)" stroke="#2563EB" stroke-width="3.4"/><line x1="39" y1="37" x2="46" y2="44" stroke="#2563EB" stroke-width="4.4" stroke-linecap="round"/></g>
-            </svg></div>
-            <h3>Sözlük Simülasyonu</h3>
-            <span class="game-card-description">Kelimenin yalın halini bul!</span>
-            <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
-            <span class="status-badge available">Hemen Başla</span>
-          </div>
-        </a>
         <a href="fiiller.html" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
             <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
@@ -1696,8 +1680,14 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
         <!-- SÖZLÜK — vezinler tablosundaki sözlüğün tek başına hâli:
              kök yok, vezin yok, yalnız kelime araması. Masaüstünde
-             başlıktaki simgeden açılır pencerede de açılıyor. -->
-        <a href="sozluk.html?v=3" target="_blank" rel="opener" class="game-card kss-card">
+             başlıktaki simgeden açılır pencerede de açılıyor.
+             27.09.2026: Sözlük Simülasyonu ve Sözlük Dedektifi kartları
+             BURAYA KATILDI — üç kart yerine tek kart. İkisi de sözlük
+             sayfasının içinde sekme olarak açılıyor (sozluk/sozluksekme.js);
+             doğrudan gitmek için sozluk.html#simulasyon / #dedektif.
+             İMAM HATİP kartlarındaki Sözlük Simülasyonu yerinde duruyor
+             (sistem/sinifmodul.js) — oraya dokunulmadı. -->
+        <a href="sozluk.html?v=4" target="_blank" rel="opener" class="game-card kss-card">
           <div class="default-game-content">
             <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
               <path class="kga-szkapak" d="M10 12 a4 4 0 0 1 4 -4 h14 a6 6 0 0 1 6 6 v38 a5 5 0 0 0 -5 -5 H14 a4 4 0 0 1 -4 -4 Z" fill="#eafaf3" stroke="#16A085" stroke-width="2.6"/>
@@ -1708,25 +1698,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               <g class="kga-szmercek"><circle cx="41" cy="41" r="10" fill="rgba(243,156,18,.16)" stroke="#F39C12" stroke-width="3.4"/><line x1="48" y1="48" x2="56" y2="56" stroke="#F39C12" stroke-width="4.4" stroke-linecap="round"/></g>
             </svg></div>
             <h3>Sözlük</h3>
-            <span class="game-card-description">Arapça ya da Türkçe yaz, kelimeyi bul. Beğendiğini yıldızla, sonra favorilerinden çalış.</span>
+            <span class="game-card-description">Kelime ara, yıldızla, favorilerinden çalış. Simülasyon ve Dedektif de içinde.</span>
             <span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>
-            <span class="status-badge available">Hemen Başla</span>
-          </div>
-        </a>
-        <a href="yenisozlukdedektifi.html" target="_blank" rel="opener" class="game-card kss-card">
-          <div class="default-game-content">
-            <div class="default-game-emoji"><svg viewBox="0 0 64 64" class="kg" aria-hidden="true">
-              <path d="M6 52 V24 q13 -6 26 0 q13 -6 26 0 v28 q-13 -5 -26 0 q-13 -5 -26 0 Z" fill="#fff" stroke="#16A085" stroke-width="2.8"/>
-              <line x1="32" y1="23" x2="32" y2="52" stroke="#16A085" stroke-width="2.2"/>
-              <line x1="12" y1="31" x2="26" y2="29" stroke="#d6dde8" stroke-width="2.6" stroke-linecap="round"/>
-              <line x1="12" y1="38" x2="26" y2="36" stroke="#d6dde8" stroke-width="2.6" stroke-linecap="round"/>
-              <line x1="12" y1="45" x2="26" y2="43" stroke="#d6dde8" stroke-width="2.6" stroke-linecap="round"/>
-              <text x="45" y="42" font-size="13" fill="#EE5253" text-anchor="middle" font-weight="bold">؟</text>
-              <g class="kga-buyutec"><circle cx="44" cy="20" r="9" fill="rgba(124,58,237,.15)" stroke="#7C3AED" stroke-width="3.2"/><line x1="50.5" y1="26.5" x2="57" y2="33" stroke="#7C3AED" stroke-width="4.2" stroke-linecap="round"/></g>
-            </svg></div>
-            <h3>Sözlük Dedektifi</h3>
-            <span class="game-card-description">Çekimli fiilin sözlük hâlini bul!</span>
-            <span class="mrf mrf-zen"><i>Maarif</i>Zenginleştirme</span>
             <span class="status-badge available">Hemen Başla</span>
           </div>
         </a>
@@ -6472,7 +6445,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- KAYIT ANKETI / ROL KAPISI: giris penceresi acilinca once
          "ogretmen misin, ogrenci misin" sorulur; kayitta 4 kisa soru daha.
          Cevaplar kullanicilar/{uid}.anket alaninda, yonetici panelinde gorunur. -->
-    <script src="hesap/kayitanketi.js?v=8"></script>
+    <script src="hesap/kayitanketi.js?v=9"></script>
     <!-- Rol tanıtımı: giriş penceresindeki öğrenci/öğretmen kartları ve
          çizimli panel tanıtımı (indeks.html de aynı dosyayı kullanır). -->
     <script src="sistem/panel-tanitim.js?v=20260925a"></script>
@@ -6865,7 +6838,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 <!-- KAMUS (sözlük): yüzen düğme yığınında Sarf Motoru ile İletişim
      arasında. Konumu positionFeedbackFab() hesaplıyor; biçimi
      sarf/sozlukpop.js içindeki stilde. -->
-<a href="sozluk.html?v=3" id="kamusFab" class="floating-tool-button kamus-btn"
+<a href="sozluk.html?v=4" id="kamusFab" class="floating-tool-button kamus-btn"
    title="Kamus — Arapça/Türkçe sözlük" aria-label="Kamus"
    onclick="if(window.SozlukPop){SozlukPop.ac();event.preventDefault();}"><span class="kb-govde"><svg class="szp-ik" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path class="szp-sayfa" d="M8 10a4 4 0 0 1 4-4h10a5 5 0 0 1 5 5v29a4 4 0 0 0-4-4H12a4 4 0 0 1-4-4z" fill="currentColor" opacity=".95"/><path d="M40 10a4 4 0 0 0-4-4H26a5 5 0 0 0-5 5v29a4 4 0 0 1 4-4h11a4 4 0 0 0 4-4z" fill="currentColor" opacity=".62"/><g class="szp-mercek"><circle cx="33" cy="30" r="8" fill="none" stroke="#F7C948" stroke-width="3.2"/><line x1="39" y1="36" x2="45" y2="42" stroke="#F7C948" stroke-width="3.6" stroke-linecap="round"/></g><g class="szp-parilti" fill="#ffe082"><circle cx="15" cy="14" r="1.7"/><circle cx="19" cy="20" r="1.2"/></g></svg><span class="kb-oluk" aria-hidden="true"></span><span class="szp-ad" aria-hidden="true"><i>K</i><i>a</i><i>m</i><i>u</i><i>s</i></span><span class="kb-arayan" aria-hidden="true"></span></span></a>
 

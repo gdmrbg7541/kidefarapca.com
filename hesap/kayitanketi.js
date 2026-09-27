@@ -76,7 +76,8 @@
         madalya: '<circle cx="12" cy="15" r="5.2"/><path d="m8.6 10.2-2.8-6M15.4 10.2l2.8-6"/>' +
                  '<path d="m12 12.6.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3Z"/>',
         ampul: '<path d="M9.4 17.4a6 6 0 1 1 5.2 0"/><path d="M9.6 17.4h4.8M10.4 20.4h3.2"/>',
-        geri: '<path d="M14.8 5.2 8 12l6.8 6.8"/>'
+        geri: '<path d="M14.8 5.2 8 12l6.8 6.8"/>',
+        kapat: '<path d="M6.2 6.2 17.8 17.8M17.8 6.2 6.2 17.8"/>'
     };
     function ikon(ad, sinif) {
         var g = IK[ad] || IK.yildiz;
@@ -271,13 +272,20 @@
             'height:100% !important;max-height:none !important;border-radius:0 !important;',
             'box-shadow:none !important;margin:0 !important;background:#fff !important;',
             'overflow:auto !important;display:block !important;',
-            'padding:clamp(20px,3.4vw,46px) clamp(16px,4vw,48px) clamp(28px,4vw,56px) !important}',
+            'padding:clamp(74px,8vw,104px) clamp(16px,4vw,48px) clamp(28px,4vw,56px) !important}',
             /* içerik ortada, okunur genişlikte; sağ kenarda tanıtım rafına yer */
             '#login-modal.ka-tam .modal-content > *:not(.modal-close){max-width:760px;margin-inline:auto}',
-            /* ✖ / geri: sayfanın kendi sağ üst köşesinde sabit dursun */
+            /* ✖ / geri: sayfanın SOL üst köşesinde, kırmızı dolgulu */
             '#login-modal.ka-tam .modal-close{position:fixed !important;',
-            'top:clamp(12px,2vw,26px) !important;inset-inline-end:clamp(12px,2vw,26px) !important;',
-            'inset-inline-start:auto !important;z-index:3}',
+            'top:clamp(12px,2vw,26px) !important;',
+            'left:clamp(12px,2vw,26px) !important;right:auto !important;',
+            'inset-inline-start:clamp(12px,2vw,26px) !important;inset-inline-end:auto !important;',
+            'z-index:3;background:#E03B2F !important;color:#fff !important;border:0 !important;',
+            'border-radius:50% !important;box-shadow:0 6px 18px rgba(224,59,47,.34) !important;',
+            'display:flex !important;align-items:center;justify-content:center;',
+            'line-height:1 !important;opacity:1 !important;transition:background .16s,transform .16s}',
+            '#login-modal.ka-tam .modal-close:hover{background:#C22C21 !important;transform:scale(1.06)}',
+            '#login-modal.ka-tam .modal-close .ka-ik{stroke:#fff}',
             '@media(min-width:1100px){#login-modal.ka-tam .modal-content{padding-inline-end:340px !important}}',
             '#login-modal.ka-tam #auth-title{font-size:clamp(1.7rem,3.4vw,2.9rem) !important;',
             'margin:0 auto clamp(14px,2vw,26px) !important}',
@@ -309,8 +317,10 @@
             /* ✖ / ‹ geri tuşu */
             '#login-modal.ka-tam .modal-close{width:clamp(44px,4vw,58px) !important;',
             'height:clamp(44px,4vw,58px) !important;font-size:clamp(1.4rem,2.4vw,2rem) !important}',
-            '.modal-close.ka-geri-tus{display:flex !important;align-items:center;justify-content:center}',
+            '.modal-close.ka-geri-tus,.modal-close.ka-x-tus{display:flex !important;',
+            'align-items:center;justify-content:center}',
             '.modal-close.ka-geri-tus .ka-ik{width:62%;height:62%;stroke-width:2.2}',
+            '.modal-close.ka-x-tus .ka-ik{width:54%;height:54%;stroke-width:2.6}',
             /* ortak simge biçimi — emoji yok, hepsi kontur çizim */
             '.ka-ik{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;',
             'stroke-linejoin:round;display:block}',
@@ -418,11 +428,16 @@
         if (geri) {
             x.innerHTML = ikon('geri');
             x.classList.add('ka-geri-tus');
+            x.classList.remove('ka-x-tus');
             x.setAttribute('title', 'Geri');
             x.onclick = geri;
         } else {
-            x.innerHTML = x.__kaEski;
+            /* Sitenin kendi "✖" karakteri emoji olarak çiziliyor ve rengi
+               CSS'ten değişmiyordu (kırmızı dairenin içinde gri duruyordu);
+               onun yerine kontur çizim kullanıyoruz. */
+            x.innerHTML = ikon('kapat');
             x.classList.remove('ka-geri-tus');
+            x.classList.add('ka-x-tus');
             x.setAttribute('title', 'Kapat');
             x.onclick = function () { if (typeof window.closeLoginModal === 'function') window.closeLoginModal(); };
         }
