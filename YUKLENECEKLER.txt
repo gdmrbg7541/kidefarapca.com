@@ -1137,3 +1137,6 @@ Test: 1440x900 ve 390x844 — rol kapısı, 4 soru, geri tuşu, cevapsız kayıt
     "Öğrenci misin? / Öğretmen misin? — İçeriye bak" (sistem/panel-tanitim.js).
     Kartlar rol adımında kapının içine taşınıyor, sorulara geçince yerine dönüyor.
     Küçük ekranda pencere kaydırılabiliyor, alttaki kart erişilebilir (390 ve 360 px denendi).
+  · v=3: tanıtım kartları ARTIK YALNIZ rol ekranında. Önce hem "Önce seni tanıyalım"
+    ekranında hem de "Sisteme Giriş Yap / Kayıt Ol" formunun üstünde çıkıyordu;
+    kapı kapanınca kartlar gizleniyor, "Değiştir" ile geri dönünce yine görünüyor.

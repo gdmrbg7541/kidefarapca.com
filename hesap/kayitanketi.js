@@ -233,7 +233,6 @@
         /* İçerik de boşaltılıyor: gizli kalan eski şık düğmeleri DOM'da
            durursa sonraki adımda yanlışlıkla tıklanabiliyor. */
         if (kapi) { kapi.style.display = 'none'; kapi.innerHTML = ''; }
-        if (a.kart) a.kart.style.display = '';
         seritKur();
 
         /* Kayıtta doğrudan e-posta formu; girişte pencerenin kendi ilk
@@ -289,7 +288,12 @@
     }
     function kartlariBirak() {
         var k = document.getElementById('kdtGirisKartlar');
-        if (!k || !kartYuva || !kapi || !kapi.contains(k)) return;
+        if (!k) return;
+        /* Kartlar YALNIZ rol ekranında görünür. Giriş/kayıt formunun
+           üstünde ikinci kez çıkmasınlar — aynı iki kart iki yerde
+           duruyordu. */
+        k.style.display = 'none';
+        if (!kartYuva || !kapi || !kapi.contains(k)) return;
         try { kartYuva.eb.insertBefore(k, kartYuva.ka); } catch (e) { kartYuva.eb.appendChild(k); }
     }
 
