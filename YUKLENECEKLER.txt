@@ -1133,3 +1133,7 @@ Yedekler: _kaynak/yedekler/kayitalani_2026-09-27_anket-oncesi.js,
           auth_2026-09-27_anket-oncesi.js, index_2026-09-27_anket-oncesi.html
 Test: 1440x900 ve 390x844 — rol kapısı, 4 soru, geri tuşu, cevapsız kayıt engeli,
       karekod seçim ekranına dönüş, Firestore belgesi, yönetici listesi. JS hatası yok.
+  · v=2: rol ekranına ("Önce seni tanıyalım") çizimli tanıtım kartları da alındı —
+    "Öğrenci misin? / Öğretmen misin? — İçeriye bak" (sistem/panel-tanitim.js).
+    Kartlar rol adımında kapının içine taşınıyor, sorulara geçince yerine dönüyor.
+    Küçük ekranda pencere kaydırılabiliyor, alttaki kart erişilebilir (390 ve 360 px denendi).

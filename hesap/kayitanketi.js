@@ -132,8 +132,14 @@
                sonra karekod seçim ekranını kendi gösteriyor. Sınıf +
                !important onun üstünde kalır. */
             '#login-modal.ka-kapali #qr-modal-alan,',
-            '#login-modal.ka-kapali #giris-form-alani,',
-            '#login-modal.ka-kapali #kdtGirisKartlar{display:none !important}',
+            '#login-modal.ka-kapali #giris-form-alani{display:none !important}',
+            /* Tanıtım kartları (KidefTanitim) rol adımında kapının İÇİNE
+               taşınıyor; orada görünür kalsın diye kural yalnız pencerenin
+               doğrudan çocuğunu gizliyor. */
+            '#login-modal.ka-kapali > .modal-content > #kdtGirisKartlar{display:none !important}',
+            '.ka-tanit{margin-top:20px;padding-top:16px;border-top:1px solid #EEF2F7}',
+            '.ka-tanit > p{font-size:.82rem;font-weight:700;color:#8A94A3;margin:0 0 10px}',
+            '.ka-tanit .kdt-kartlar{margin-bottom:0}',
             '#ka-kapi{animation:kaGel .2s ease both}',
             '@keyframes kaGel{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}',
             '.ka-ust{font-size:1.05rem;font-weight:800;color:#1F2430;margin:0 0 4px;line-height:1.35}',
@@ -223,6 +229,7 @@
         var m = document.getElementById('login-modal');
         if (m) m.classList.remove('ka-kapali');
         var a = alanlar();
+        kartlariBirak();
         /* İçerik de boşaltılıyor: gizli kalan eski şık düğmeleri DOM'da
            durursa sonraki adımda yanlışlıkla tıklanabiliyor. */
         if (kapi) { kapi.style.display = 'none'; kapi.innerHTML = ''; }
@@ -265,8 +272,30 @@
         s.style.display = rol ? 'flex' : 'none';
     }
 
+    /* Tanıtım kartları ("Öğrenci misin? / Öğretmen misin? — İçeriye bak")
+       normalde pencerenin en üstünde duruyor. Rol adımında onları kapının
+       içine, soruların altına alıyoruz: öğretmen seçmeden önce girince ne
+       yapabileceğini görsün. Adım değişince ya da kapı kapanınca yerine
+       geri konuyor — yoksa kapi.innerHTML onları silerdi. */
+    var kartYuva = null;
+    function kartlariGetir() {
+        var k = document.getElementById('kdtGirisKartlar');
+        if (!k || !kapi) return;
+        if (!kartYuva) kartYuva = { eb: k.parentNode, ka: k.nextSibling };
+        var kutu = kapi.querySelector('.ka-tanit');
+        if (!kutu) return;
+        k.style.display = '';
+        kutu.appendChild(k);
+    }
+    function kartlariBirak() {
+        var k = document.getElementById('kdtGirisKartlar');
+        if (!k || !kartYuva || !kapi || !kapi.contains(k)) return;
+        try { kartYuva.eb.insertBefore(k, kartYuva.ka); } catch (e) { kartYuva.eb.appendChild(k); }
+    }
+
     function ciz() {
         if (!kapi) return;
+        kartlariBirak();
         var a = alanlar();
         if (adim === 0) {
             if (a.baslik) a.baslik.innerText = 'Önce seni tanıyalım';
@@ -279,10 +308,12 @@
                 '<small>Sınıfım var; sınav hazırlarım,<br>öğrenci takibi yaparım</small></button>' +
                 '<button type="button" data-r="student"><span class="ka-ikon">🎓</span>Öğrenciyim' +
                 '<small>Arapça öğreniyorum;<br>ders ve alıştırma yaparım</small></button>' +
-                '</div>';
+                '</div>' +
+                '<div class="ka-tanit"><p>Emin değil misin? Girince neler yapabileceğine bak:</p></div>';
             [].forEach.call(kapi.querySelectorAll('.ka-rol button'), function (b) {
                 b.onclick = function () { rolSec(b.getAttribute('data-r')); };
             });
+            kartlariGetir();
             return;
         }
 
@@ -509,7 +540,8 @@
                 try {
                     var m = document.getElementById('login-modal');
                     if (m) m.classList.remove('ka-kapali');
-                    if (kapi) kapi.style.display = 'none';
+                    kartlariBirak();
+                    if (kapi) { kapi.style.display = 'none'; kapi.innerHTML = ''; }
                 } catch (e) { }
                 return eskiKap.apply(this, arguments);
             };
