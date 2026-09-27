@@ -404,14 +404,18 @@ body.pn-gercek .pn-afis { box-shadow: 0 8px 26px rgba(0, 0, 0, .2); }
    ================================================================== */
 .pn-hatic { align-items: center; text-align: center; }
 .pn-hatic .pn-uste { align-self: stretch; }
-/* Kelime kutusu artan yeri yutuyor: sayfanın boşluğu yazıyı değil
-   BOYANACAK KELİMEYİ büyütsün. */
+/* KARE olmalı: tezhip çizimi 1000x1000 kare düzlemde. Dikdörtgen
+   kutuya esnetilince daireler yumurtaya dönüyor, süsler birbirine
+   giriyordu. Kutu kare olunca çizim birebir oturuyor; sayfanın artan
+   boşluğunu da ölçek (--sk) yutuyor, yani kelime yine büyüyor. */
 .pn-hatkutu {
-  position: relative; width: 100%; flex: 1 1 auto;
-  min-height: calc(var(--m) * .5); margin-top: calc(var(--m) * .02);
+  position: relative; flex: 0 0 auto;
+  width: calc(var(--m) * .82); height: calc(var(--m) * .82);
+  margin: calc(var(--m) * .022) auto 0;
 }
 .pn-tezhip { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
-.pn-hatyol { position: absolute; left: 10%; top: 13%; width: 80%; height: 74%; }
+/* iç çerçeve 96..904 arası; kelime onun içinde kalsın */
+.pn-hatyol { position: absolute; left: 11%; top: 11.5%; width: 78%; height: 77%; }
 .pn-hattr { margin-top: calc(var(--m) * .026); }
 .pn-hattr b { display: block; font-size: calc(var(--m) * .06); color: var(--mur); }
 .pn-hattr i {
@@ -448,8 +452,8 @@ body.pn-gercek .pn-afis { box-shadow: 0 8px 26px rgba(0, 0, 0, .2); }
   width: 100%; margin-top: calc(var(--m) * .03); display: flex;
   align-items: center; justify-content: center; gap: calc(var(--m) * .03);
 }
-.pn-ornekkelime .pn-yol { flex: 0 1 62%; height: calc(var(--m) * .17); }
-.pn-ornekkelime span { font-size: calc(var(--m) * .034); font-weight: 800; color: var(--mur); }
+.pn-ornekkelime .pn-yol { flex: 0 1 68%; height: calc(var(--m) * .22); }
+.pn-ornekkelime span { font-size: calc(var(--m) * .036); font-weight: 800; color: var(--mur); }
 
 /* ==================================================================
    YAZMA ŞERİDİ — kesik çizgi, üzerinden geçilecek

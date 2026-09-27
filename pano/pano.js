@@ -39,7 +39,7 @@
        irileştirebiliyor. Boyama sayfalarında asıl büyüyecek şey kelime,
        yazı değil — o yüzden kelime kutusu boşluğu yutuyor (CSS'te
        flex), yazının tavanı da burada tutuluyor. */
-    var TAVAN = { afis: 1.9, agac: 1.5, ifade: 1.5, hat: 1.08, harf: 1.25, yazma: 1.25, tablo: 1.3 };
+    var TAVAN = { afis: 1.9, agac: 1.5, ifade: 1.5, hat: 1.35, harf: 1.25, yazma: 1.25, tablo: 1.3 };
     var tavan = 1.9;
 
     function esc(t) {

@@ -41,33 +41,74 @@ window.PanoCiz = (function () {
             'stroke-linejoin="round" stroke-linecap="round"/></svg>';
     }
 
+    /* ---------- çizgi kalınlığını eşitle ----------
+       Çizgi kalınlığı viewBox biriminde; kutusu geniş olan bir kelime
+       sayfaya sığmak için küçültülünce çizgisi de inceliyor ve
+       "السلام عليكم" gibi uzun ibareler kıl gibi çıkıyordu. Kalınlığı
+       kelimenin kutusuyla orantılı verince sayfadaki kalınlık hep aynı
+       kalıyor — boyanacak alan her kelimede aynı genişlikte. */
+    function esitKalinlik(y, istenen, temel) {
+        if (!y || !y.kutu) return istenen;
+        var buyuk = Math.max(y.kutu[2], y.kutu[3]);
+        return Math.round(istenen * buyuk / (temel || 1100) * 10) / 10;
+    }
+
     /* ---------- tezhip çerçevesi ----------
-       Klasik kenar süsü: çift çerçeve, köşe gülleri ve kenarlarda
-       tekrar eden küçük baklava dilimleri. Hepsi kontur — öğrenci
-       çerçeveyi de boyayabiliyor. */
+       Klasik kenar süsü: çift çerçeve, köşe gülleri, kenarlarda
+       baklava dilimleri ve aralarında küçük noktalar. Hepsi kontur —
+       öğrenci çerçeveyi de boyayabiliyor.
+
+       DİKKAT — iki tuzağa dikkat edilerek çizildi:
+       1) Çizim 1000x1000 KARE bir düzlemde. Kutu da kare (bkz.
+          pano.css → .pn-hatkutu). Eskiden kutu dikdörtgendi ve çizim
+          "preserveAspectRatio: none" ile esnetiliyordu; daireler
+          yumurtaya dönüyor, süsler birbirine giriyordu.
+       2) Kenar süsleri köşe güllerinin ÜSTÜNDEN başlamıyor: köşeden
+          KOSE_PAY kadar içeride başlayıp bitiyor. Eskiden ilk süs tam
+          köşe gülünün üzerine denk geliyor, üst üste biniyordu. */
     function tezhip(renk) {
-        var g = '', i, n = 9, en = 1000, boy = 1000, ic = 78, d = 46;
-        for (i = 0; i <= n; i++) {
-            var t = ic + (en - 2 * ic) * (i / n);
-            g += '<path d="M' + t + ' ' + (ic - 17) + ' l' + d / 2 + ' ' + d / 2 +
-                 ' l-' + d / 2 + ' ' + d / 2 + ' l-' + d / 2 + ' -' + d / 2 + ' Z"/>';
-            g += '<path d="M' + t + ' ' + (boy - ic + 17) + ' l' + d / 2 + ' ' + d / 2 +
-                 ' l-' + d / 2 + ' ' + d / 2 + ' l-' + d / 2 + ' -' + d / 2 + ' Z"/>';
+        var DIS = 26, IC = 96, ORTA = (DIS + IC) / 2;   /* çerçeveler ve süs şeridi */
+        var SON = 1000 - IC, KOSE_PAY = 78;             /* köşeden bırakılan boşluk */
+        var ELMAS = 19, NOKTA = 5.5;
+        var g = '';
+
+        /* bir kenar boyunca süsleri dağıt: baklava · nokta · baklava … */
+        function serit(bas, bit, yatayMi, kayit) {
+            var uzunluk = bit - bas;
+            var adet = Math.max(3, Math.round(uzunluk / 92));   /* aralık ~92 birim */
+            for (var i = 0; i <= adet; i++) {
+                var t = bas + uzunluk * (i / adet);
+                var x = yatayMi ? t : kayit, y = yatayMi ? kayit : t;
+                g += '<path d="M' + x + ' ' + (y - ELMAS) + ' L' + (x + ELMAS) + ' ' + y +
+                     ' L' + x + ' ' + (y + ELMAS) + ' L' + (x - ELMAS) + ' ' + y + ' Z"/>';
+                if (i < adet) {
+                    var o = bas + uzunluk * ((i + 0.5) / adet);
+                    var ox = yatayMi ? o : kayit, oy = yatayMi ? kayit : o;
+                    g += '<circle cx="' + ox + '" cy="' + oy + '" r="' + NOKTA + '"/>';
+                }
+            }
         }
-        for (i = 1; i < n; i++) {
-            var u = ic + (boy - 2 * ic) * (i / n);
-            g += '<circle cx="' + (ic - 17) + '" cy="' + u + '" r="' + d / 2.6 + '"/>';
-            g += '<circle cx="' + (en - ic + 17) + '" cy="' + u + '" r="' + d / 2.6 + '"/>';
-        }
-        /* köşe gülleri */
-        [[ic, ic], [en - ic, ic], [ic, boy - ic], [en - ic, boy - ic]].forEach(function (c) {
-            g += '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="34"/>';
-            g += '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="17"/>';
+        serit(IC + KOSE_PAY, SON - KOSE_PAY, true, ORTA);            /* üst */
+        serit(IC + KOSE_PAY, SON - KOSE_PAY, true, 1000 - ORTA);     /* alt */
+        serit(IC + KOSE_PAY, SON - KOSE_PAY, false, ORTA);           /* sol */
+        serit(IC + KOSE_PAY, SON - KOSE_PAY, false, 1000 - ORTA);    /* sağ */
+
+        /* köşe gülleri — iç çerçevenin köşelerinde */
+        [[IC, IC], [SON, IC], [IC, SON], [SON, SON]].forEach(function (c) {
+            g += '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="30"/>';
+            g += '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="15"/>';
+            g += '<path d="M' + c[0] + ' ' + (c[1] - 30) + ' L' + (c[0] + 30) + ' ' + c[1] +
+                 ' L' + c[0] + ' ' + (c[1] + 30) + ' L' + (c[0] - 30) + ' ' + c[1] + ' Z"/>';
         });
-        return '<svg class="pn-tezhip" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">' +
-            '<g fill="none" stroke="' + renk + '" stroke-width="7">' +
-            '<rect x="30" y="30" width="940" height="940" rx="26"/>' +
-            '<rect x="' + ic + '" y="' + ic + '" width="' + (en - 2 * ic) + '" height="' + (boy - 2 * ic) + '" rx="14"/>' +
+
+        return '<svg class="pn-tezhip" viewBox="0 0 1000 1000" ' +
+            'preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+            '<g fill="none" stroke="' + renk + '" stroke-width="7" ' +
+            'stroke-linejoin="round" stroke-linecap="round">' +
+            '<rect x="' + DIS + '" y="' + DIS + '" width="' + (1000 - 2 * DIS) +
+            '" height="' + (1000 - 2 * DIS) + '" rx="24"/>' +
+            '<rect x="' + IC + '" y="' + IC + '" width="' + (SON - IC) +
+            '" height="' + (SON - IC) + '" rx="12"/>' +
             g + '</g></svg>';
     }
 
@@ -199,7 +240,7 @@ window.PanoCiz = (function () {
             '<div class="pn-ic pn-hatic">' +
                 '<p class="pn-uste">Harflerin içini boya</p>' +
                 '<div class="pn-hatkutu">' + tezhip(s.renk || '#B7791F') +
-                    yolSvg(k, { sinif: 'pn-hatyol', kalinlik: 9 }) +
+                    yolSvg(k, { sinif: 'pn-hatyol', kalinlik: esitKalinlik(k, 10, 1200) }) +
                 '</div>' +
                 '<div class="pn-hattr"><b>' + esc(k.tr) + '</b>' +
                     (k.alt ? '<i>' + esc(k.alt) + '</i>' : '') + '</div>' +
@@ -215,7 +256,8 @@ window.PanoCiz = (function () {
         var hucre = [];
         function ek(y, ad) {
             if (!y) return;
-            hucre.push('<div class="pn-hal">' + yolSvg(y, { kalinlik: 11, sinif: 'pn-halyol' }) +
+            hucre.push('<div class="pn-hal">' +
+                yolSvg(y, { kalinlik: esitKalinlik(y, 9, 900), sinif: 'pn-halyol' }) +
                 '<span>' + ad + '</span></div>');
         }
         ek(h.yalin, 'yalın');
@@ -227,13 +269,13 @@ window.PanoCiz = (function () {
                 '<p class="pn-uste">Boya, sonra ' +
                     (h.baglanir ? 'dört' : 'iki') + ' hâline bak</p>' +
                 '<div class="pn-buyukharf">' +
-                    yolSvg(h.yalin, { kalinlik: 8, sinif: 'pn-buyukyol' }) +
+                    yolSvg(h.yalin, { kalinlik: esitKalinlik(h.yalin, 9, 900), sinif: 'pn-buyukyol' }) +
                 '</div>' +
                 '<div class="pn-haller">' + hucre.join('') + '</div>' +
                 (h.baglanir ? '' :
                     '<p class="pn-uyari">Bu harf kendinden sonraki harfe bağlanmaz.</p>') +
                 (h.ornek ? '<div class="pn-ornekkelime">' +
-                    yolSvg(h.ornek, { kalinlik: 10, sinif: 'pn-ornekyol' }) +
+                    yolSvg(h.ornek, { kalinlik: esitKalinlik(h.ornek, 9, 1100), sinif: 'pn-ornekyol' }) +
                     '<span>' + esc(h.ornek.tr) + '</span></div>' : '') +
             '</div>' +
             altBant(s, '');
@@ -247,9 +289,13 @@ window.PanoCiz = (function () {
         for (i = 0; i < 3; i++) {
             var hucre = '';
             for (j = 0; j < 6; j++) {
+                /* kesik çizginin boyu da kelimeyle birlikte ölçeklenmeli,
+                   yoksa geniş harflerde nokta nokta görünüyor */
+                var o = esitKalinlik(h.yalin, 1, 900);
                 hucre += '<span class="pn-yz">' +
                     yolSvg(h.yalin, {
-                        kalinlik: 7, kesik: '26 20',
+                        kalinlik: esitKalinlik(h.yalin, 6, 900),
+                        kesik: (26 * o).toFixed(0) + ' ' + (20 * o).toFixed(0),
                         cizgi: (i === 0 && j === 0) ? '#2A3242' : '#9AA6B6',
                         sinif: 'pn-yzyol'
                     }) + '</span>';
@@ -263,7 +309,11 @@ window.PanoCiz = (function () {
                 '<p class="pn-uste">Kesik çizgilerin üzerinden geç, sonra boş satırları sen doldur</p>' +
                 '<div class="pn-yzalan">' + sr + '</div>' +
                 (h.ornek ? '<div class="pn-ornekkelime">' +
-                    yolSvg(h.ornek, { kalinlik: 9, kesik: '26 20', cizgi: '#9AA6B6', sinif: 'pn-ornekyol' }) +
+                    yolSvg(h.ornek, {
+                        kalinlik: esitKalinlik(h.ornek, 8, 1100),
+                        kesik: (26 * esitKalinlik(h.ornek, 1, 1100)).toFixed(0) + ' ' +
+                               (20 * esitKalinlik(h.ornek, 1, 1100)).toFixed(0),
+                        cizgi: '#9AA6B6', sinif: 'pn-ornekyol' }) +
                     '<span>' + esc(h.ornek.tr) + '</span></div>' : '') +
             '</div>' +
             altBant(s, '');

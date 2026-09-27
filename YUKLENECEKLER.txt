@@ -1489,3 +1489,18 @@ NOT: katalog/index.html (basılı katalog) ikisini ayrı satır olarak listeleme
   Ölçüldü: yedi bölümün hepsi taşmasız; yedi ayrı sayfadan PDF indirildi,
   sayfa ölçüleri ve çözünürlükleri doğrulandı; bağlanmayan harflerde
   (ا د ذ ر ز و) yalnız iki hâl ve uyarı satırı çıkıyor.
+
+  TEZHİP ÇERÇEVESİ DÜZELTİLDİ (hat boyama). İki ayrı hata vardı:
+    1) Çizim 1000x1000 kare düzlemdeydi ama kutu dikdörtgendi ve
+       "preserveAspectRatio: none" ile esnetiliyordu — daireler
+       yumurtaya dönüyor, kenar süsleri birbirine giriyordu. Kutu
+       artık KARE (pano.css → .pn-hatkutu) ve çizim birebir oturuyor.
+    2) Kenar süsleri tam köşe güllerinin üzerinden başlıyordu. Artık
+       köşeden pay bırakıp başlıyor (pano-ciz.js → tezhip → KOSE_PAY),
+       aralara da küçük noktalar kondu.
+  ÇİZGİ KALINLIĞI EŞİTLENDİ: kalınlık viewBox biriminde olduğu için
+  kutusu geniş bir ibare ("السلام عليكم") sayfaya sığmak üzere
+  küçülünce çizgisi de kıl gibi inceliyordu. Kalınlık artık kelimenin
+  kutusuyla orantılı (pano-ciz.js → esitKalinlik); sayfadaki kalınlık
+  her kelimede aynı, yani boyanacak alan da aynı. Kesik çizgili yazma
+  sayfasında çizgi boyu da aynı orana bağlandı.
