@@ -1,0 +1,297 @@
+/* ==================================================================
+   PANO — sınıf panosu malzemeleri (pano.html)
+   ------------------------------------------------------------------
+   İki katman var:
+     1) SEÇİCİ + PANO ÖNİZLEME — ekranda; afişin mantar panoda nasıl
+        duracağı görünüyor.
+     2) AFİŞ — A3 dikey oranında (297×420 mm). Bütün ölçüler tek bir
+        değişkenden (--ae = afiş eni) türüyor; önizlemede küçük,
+        yazdırırken tam boy çıkıyor. Yeniden ölçeklemek için başka
+        hiçbir sayıya dokunmak gerekmiyor.
+   ================================================================== */
+
+:root {
+  --yesil: #16A085;
+  --yesilK: #0E7C66;
+  --mur: #1F2430;
+  --gri: #5B6471;
+  --soluk: #8A93A0;
+  --cizgi: #E3E8EF;
+  --zemin: #EEF1F5;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  background: var(--zemin); color: var(--mur);
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+
+/* ---------------- üst şerit ---------------- */
+.pn-ust {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 12px;
+  padding: clamp(8px, .6vw, 12px) clamp(14px, 1.5vw, 28px);
+  background: linear-gradient(120deg, #16A085, #0E7C66);
+  color: #fff; box-shadow: 0 2px 12px rgba(14, 124, 102, .28); z-index: 5;
+}
+.pn-ust h1 {
+  margin: 0; font-family: 'Marhey', sans-serif;
+  font-size: clamp(1.2rem, 1.5vw, 2rem); font-weight: 700;
+  display: flex; align-items: center; gap: 9px;
+}
+.pn-ust h1 svg { width: 1.15em; height: 1.15em; display: block; }
+.pn-geri {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 2.2em; height: 2.2em; border: 0; border-radius: 12px;
+  background: rgba(255, 255, 255, .18); color: #fff; cursor: pointer;
+  font-size: 1rem; transition: background .16s;
+}
+.pn-geri:hover { background: rgba(255, 255, 255, .3); }
+.pn-arac { margin-inline-start: auto; display: inline-flex; gap: 8px; align-items: center; }
+.pn-tus {
+  border: 1.6px solid rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .12);
+  color: #fff; font: inherit; font-weight: 800; border-radius: 999px; cursor: pointer;
+  font-size: clamp(.8rem, .95vw, 1.1rem); padding: clamp(5px, .5vw, 10px) clamp(12px, 1.2vw, 22px);
+  white-space: nowrap; transition: background .18s;
+}
+.pn-tus:hover { background: rgba(255, 255, 255, .28); }
+.pn-tus[disabled] { opacity: .65; cursor: progress; }
+/* ikonlu tuş (İndir) */
+.pn-basli { display: inline-flex; align-items: center; gap: .45em; }
+.pn-basli svg { width: 1.15em; height: 1.15em; display: block; }
+.pn-tus.etkin { background: #fff; color: var(--yesilK); border-color: #fff; }
+
+/* ---------------- gövde: liste + pano ---------------- */
+.pn-govde { flex: 1 1 auto; min-height: 0; display: flex; }
+
+.pn-liste {
+  flex: 0 0 clamp(240px, 22vw, 340px); overflow: auto;
+  background: #fff; border-inline-end: 1px solid var(--cizgi);
+  padding: 14px 12px 28px;
+}
+.pn-liste h2 {
+  margin: 6px 6px 10px; font-size: .78rem; font-weight: 800; letter-spacing: .4px;
+  text-transform: uppercase; color: var(--soluk);
+}
+.pn-liste button {
+  display: flex; align-items: center; gap: 11px; width: 100%; box-sizing: border-box;
+  text-align: start; background: none; border: 0; border-radius: 12px;
+  padding: 10px 11px; cursor: pointer; font: inherit; color: var(--mur);
+  transition: background .15s;
+}
+.pn-liste button:hover { background: #F2FAF8; }
+.pn-liste button[aria-current="true"] { background: #E8F6F3; }
+.pn-liste .pn-nokta { width: 12px; height: 12px; border-radius: 50%; flex: 0 0 auto; }
+.pn-liste .pn-ad { flex: 1; min-width: 0; font-weight: 700; font-size: .95rem; line-height: 1.3; }
+.pn-liste .pn-tar { display: block; font-weight: 500; font-size: .8rem; color: var(--soluk); margin-top: 1px; }
+.pn-liste .pn-kok { font-size: 1.35rem; color: var(--gri); flex: 0 0 auto; }
+
+/* ---------------- pano (mantar zemin) ---------------- */
+.pn-pano {
+  flex: 1 1 auto; min-width: 0; overflow: auto; display: grid; place-items: center;
+  padding: clamp(18px, 3vw, 54px);
+  background-color: #C79A5B;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, .16) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, rgba(0, 0, 0, .10) 0 2px, transparent 3px),
+    radial-gradient(circle at 45% 80%, rgba(0, 0, 0, .07) 0 3px, transparent 4px),
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, .12) 0 2px, transparent 3px),
+    linear-gradient(160deg, #CFA469, #B9894A);
+  background-size: 34px 34px, 46px 46px, 58px 58px, 40px 40px, 100% 100%;
+  box-shadow: inset 0 0 0 10px #8C6239, inset 0 0 26px rgba(0, 0, 0, .28);
+}
+/* "gerçek boyut" kipinde pano zemini kalkar, afiş 1:1 görünür */
+body.pn-gercek .pn-pano { background: #9AA3AF; box-shadow: none; align-items: start; }
+
+.pn-asili { position: relative; transform: rotate(-.7deg); }
+.pn-asili::before,
+.pn-asili::after {
+  content: ''; position: absolute; top: -9px; width: 20px; height: 20px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff8a80, #c0392b 70%);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, .35); z-index: 2;
+}
+.pn-asili::before { left: 8%; }
+.pn-asili::after { right: 8%; background: radial-gradient(circle at 35% 30%, #a5d6f7, #1f6feb 70%); }
+body.pn-gercek .pn-asili { transform: none; }
+body.pn-gercek .pn-asili::before,
+body.pn-gercek .pn-asili::after { display: none; }
+
+/* ==================================================================
+   AFİŞ — A3 dikey.  --ae : afiş eni (px). Her ölçü bunun oranı.
+   ================================================================== */
+.pn-afis {
+  --ae: 720px;
+  /* --sk: içerik ölçeği. Afişin çerçevesi A3'te sabit; uzun el yazısı
+     not ya da altı türevli kök taşırınca JS bunu 1'in altına çekiyor
+     (bkz. pano.js → sigdir). Bütün iç ölçüler --m üzerinden yazıldığı
+     için tek sayı değişince metnin tamamı birlikte küçülüyor; oranlar
+     bozulmuyor ve baskıda da aynı görünüyor. */
+  --sk: 1;
+  --m: calc(var(--ae) * var(--sk));
+  /* Açık tonlar CSS'in color-mix()'i ile değil, pano.js'te hesaplanıp
+     satır içi yazılıyor (bkz. tint). SEBEP: afişi PNG olarak indiren
+     html2canvas color-mix / color() gibi yeni renk yazımlarını
+     okuyamıyor, indirme o yüzden hata veriyordu. Düz hex her yerde
+     çalışıyor — eski tarayıcılarda da. */
+  --acik12: #F2FBF9;
+  --acik8: #F6FCFB;
+  --ar: #1F2430;              /* koyu metin */
+  --renk: #16A085;            /* günün rengi (JS yazar) */
+  width: var(--ae);
+  height: calc(var(--ae) * 1.41421);   /* A3: 297 × 420 */
+  background: #fff;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .35);
+  display: flex; flex-direction: column;
+  overflow: hidden; position: relative;
+}
+body.pn-gercek .pn-afis { box-shadow: 0 8px 26px rgba(0, 0, 0, .2); }
+
+/* üst bant */
+.pn-bant {
+  flex: 0 0 auto; background: var(--renk); color: #fff;
+  padding: calc(var(--ae) * .03) calc(var(--ae) * .05) calc(var(--ae) * .024);
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
+}
+.pn-bant .pn-gun {
+  font-family: 'Marhey', sans-serif; font-weight: 700; line-height: 1.12;
+  font-size: calc(var(--ae) * .046);
+}
+.pn-bant .pn-tarih {
+  flex: 0 0 auto; font-weight: 800; letter-spacing: .5px;
+  font-size: calc(var(--ae) * .026); opacity: .95;
+  border: 2px solid rgba(255, 255, 255, .6); border-radius: 999px;
+  padding: calc(var(--ae) * .008) calc(var(--ae) * .022);
+  white-space: nowrap;
+}
+
+/* içerik */
+.pn-ic {
+  flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;
+  /* Yatay dolgu --ae ile: kenar payı üst/alt bantla hizalı kalsın.
+     Dikey dolgu --m ile: içerik küçülünce boşluk da küçülsün. */
+  overflow: hidden;
+  padding: calc(var(--m) * .03) calc(var(--ae) * .05) calc(var(--m) * .024);
+}
+.pn-uste {
+  font-family: 'Caveat', 'Marhey', cursive; color: var(--renk);
+  font-size: calc(var(--m) * .05); line-height: 1; margin: 0 0 calc(var(--m) * .012);
+}
+
+/* kök harfleri */
+.pn-kokkutu { display: flex; justify-content: center; gap: calc(var(--m) * .022); direction: rtl; }
+/* DİKKAT — harf kutusu neden böyle kuruldu:
+   Eskiden "display:grid; place-items:center; line-height:1" vardı.
+   Ekranda düzgün duruyordu ama PDF'e alırken (html2canvas) harfler
+   kutudan taşıyordu: ع, ج, م gibi harflerin kuyruğu satır kutusunun
+   dışına çıkıyor, kütüphane de yazıyı tarayıcıdan biraz farklı
+   yerleştiriyor. Çözüm: ızgara ortalaması yerine normal bir satır
+   kutusu — line-height kutu boyuna eşit — ve harfe bol pay. Böylece
+   kuyruklar kutunun içinde kalıyor. */
+.pn-harf {
+  width: calc(var(--m) * .165); height: calc(var(--m) * .2);
+  display: block; text-align: center;
+  line-height: calc(var(--m) * .2);
+  border-radius: calc(var(--m) * .028);
+  background: var(--acik12);   /* bkz. pano.js → tint() */
+  border: calc(var(--m) * .006) solid var(--renk);
+  color: var(--renk); font-size: calc(var(--m) * .1);
+  overflow: hidden;
+}
+.pn-kokalt {
+  text-align: center; color: var(--soluk); font-weight: 700;
+  font-size: calc(var(--m) * .026); margin-top: calc(var(--m) * .01);
+  letter-spacing: .6px; text-transform: uppercase;
+}
+
+/* türeyen kelimeler */
+.pn-turev {
+  margin-top: calc(var(--m) * .02); display: flex; flex-direction: column;
+  gap: calc(var(--m) * .004);
+}
+.pn-sat {
+  display: flex; align-items: baseline; gap: calc(var(--m) * .02);
+  padding: calc(var(--m) * .009) calc(var(--m) * .012);
+  border-bottom: 1px dashed #DDE3EC;
+}
+.pn-sat:last-child { border-bottom: 0; }
+.pn-sat .pn-ar {
+  flex: 0 0 auto; min-width: calc(var(--m) * .3); text-align: right; direction: rtl;
+  font-size: calc(var(--m) * .062); line-height: 1.25; color: var(--ar);
+}
+.pn-sat .pn-tr {
+  flex: 1 1 auto; font-weight: 800; font-size: calc(var(--m) * .032); color: var(--mur);
+}
+.pn-sat .pn-uzun {
+  display: block; font-weight: 500; font-size: calc(var(--m) * .026); color: var(--soluk);
+  line-height: 1.35; margin-top: calc(var(--m) * .002);
+}
+
+/* örnek cümleler (en çok üç; kaçının yazılacağına pano.js karar verir) */
+.pn-ornek {
+  margin-top: auto; display: flex; flex-direction: column;
+  gap: calc(var(--m) * .011);
+}
+.pn-cumle {
+  background: var(--acik8);
+  border-inline-start: calc(var(--m) * .009) solid var(--renk);
+  border-radius: calc(var(--m) * .016);
+  padding: calc(var(--m) * .016) calc(var(--m) * .024);
+}
+.pn-cumle .pn-car {
+  direction: rtl; text-align: right; font-size: calc(var(--m) * .054);
+  line-height: 1.55; color: var(--ar);
+}
+.pn-cumle .pn-ctr {
+  font-size: calc(var(--m) * .03); color: var(--gri); margin-top: calc(var(--m) * .005);
+  line-height: 1.35;
+}
+.pn-cumle .pn-kaynak {
+  display: block; font-size: calc(var(--m) * .024); color: var(--soluk);
+  margin-top: calc(var(--m) * .003);
+}
+
+/* el yazısı not */
+.pn-not {
+  font-family: 'Caveat', 'Marhey', cursive;
+  font-size: calc(var(--m) * .044); line-height: 1.22; color: #45505F;
+  margin-top: calc(var(--m) * .016);
+}
+
+/* alt bant */
+.pn-alt {
+  flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding: calc(var(--ae) * .014) calc(var(--ae) * .05) calc(var(--ae) * .02);
+  color: var(--soluk); font-size: calc(var(--ae) * .026); font-weight: 700;
+}
+.pn-alt .pn-cizgi { flex: 1 1 auto; height: 2px; background: #E7ECF3; border-radius: 2px; }
+
+/* ---------------- dar ekran ---------------- */
+@media (max-width: 860px) {
+  .pn-govde { flex-direction: column; }
+  .pn-liste { flex: 0 0 auto; max-height: 38vh; border-inline-end: 0; border-bottom: 1px solid var(--cizgi); }
+}
+
+/* ==================================================================
+   YAZDIRMA — yalnız afiş, A3 dikey, kenar boşluksuz
+   ================================================================== */
+@media print {
+  @page { size: A3 portrait; margin: 0; }
+  html, body { height: auto; overflow: visible; background: #fff; }
+  .pn-ust, .pn-liste { display: none !important; }
+  .pn-govde { display: block; }
+  .pn-pano {
+    display: block; padding: 0; background: #fff !important; box-shadow: none !important;
+  }
+  .pn-asili { transform: none; }
+  .pn-asili::before, .pn-asili::after { display: none; }
+  .pn-afis {
+    /* !important ŞART: pano.js önizleme için --ae'yi satır içi stille
+       (ör. 555px) yazıyor ve satır içi stil normalde bu kuralı ezer.
+       Ezerse çerçeve A3'e büyür ama yazılar önizleme boyunda kalır;
+       çıktıda afişin ortası kocaman boş görünür. */
+    --ae: 297mm !important;
+    width: 297mm; height: 420mm; box-shadow: none;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+}

@@ -1285,3 +1285,138 @@ NOT: katalog/index.html (basılı katalog) ikisini ayrı satır olarak listeleme
      biz gizlediğimiz için offsetParent'a bakmak yanıltıcı olurdu.)
     Ölçüm: file:// ve http — giriş ekranında şerit boş, "Başla"dan sonra iki tuş,
     Joker'e basınca 3 -> 2.
+  · Kart sırası: Sözlük kartı Kelime Dağarcığı'ndan hemen SONRAYA alındı.
+    Öğretmen Özel sırası artık: Alfabe · Kelime Çarkı · Kelime Dağarcığı ·
+    Sözlük · Fiil Çekim Atlası · Kelime Fabrikası · Muhadese · Vezinler
+    Tablosu · Tamlama ve Cümleler.
+    Yedek: _kaynak/yedekler/index_2026-09-27_kartsira-oncesi.html
+
+────────────────────────────────────────────────────────────────────
+27.09.2026 · PANO — sınıf panosu afişleri (YENİ bölüm)
+────────────────────────────────────────────────────────────────────
+  YENİ pano.html          -> Sınıfiçi Materyaller'den açılıyor. Solda 16
+                             günün listesi, sağda mantar pano; seçilen afiş
+                             raptiyeli olarak panoda görünüyor.
+                             "Gerçek boyut" tuşu afişi 1:1 (A3) gösterir,
+                             "Yazdır · A3" kenar boşluksuz A3 dikey çıktı
+                             verir (yalnız afiş basılır, liste ve şerit değil).
+                             Klavyede yukarı/aşağı okla afişler gezilir;
+                             adres çubuğundaki #camiler gibi bağlantılar
+                             doğrudan o afişi açar.
+  YENİ pano/panoveri.js   -> 16 afişin verisi. ÜRETİLMİŞ DOSYA, elle
+                             düzenlenmez. Arapça kelimelerin tek harfi bile
+                             yazılmadı; hepsi sitenin kendi kök verisinden
+                             (veri/veri_kokler.js → wordEasterEggs) alındı,
+                             kökler bile Türkçe anlamlarıyla arandı. Yani
+                             afişteki hareke ve yazım sözlükle birebir aynı.
+                             Yenilemek/yeni gün eklemek için:
+                                 cd _kaynak/uretici && node panoUret.js
+                             (_kaynak git'e gitmiyor, yalnız sende duruyor.)
+  YENİ pano/pano.css      -> Afiş A3 dikey oranında (297×420). Bütün ölçüler
+                             tek değişkenden (--ae = afiş eni) türüyor;
+                             ekranda küçük, baskıda tam boy — başka hiçbir
+                             sayıya dokunmak gerekmiyor.
+  YENİ pano/pano.js       -> Liste, afiş çizimi, ölçekleme ve baskı.
+  index.html              -> Sınıfiçi Materyaller'e "Pano" kartı eklendi
+                             (Arapça Klavye'den sonra). Var olan kartlara
+                             dokunulmadı.
+                             Yedek: _kaynak/yedekler/index_2026-09-27_pano-oncesi.html
+
+  AFİŞLERDE NE VAR: günün adı ve tarihi, o güne bağlanan kök (üç harf ayrı
+  kutularda), kökten türeyen 3-6 kelime (Arapça + Türkçe), verideki örnek
+  cümle/hadis ve el yazısı bir not. 16 gün:
+    Camiler ve Din Görevlileri Haftası (جمع) · Cumhuriyet Bayramı (حرر) ·
+    10 Kasım (ذكر) · Öğretmenler Günü (علم) · Dünya Arapça Günü (كلم) ·
+    Üç Aylar/Regaib (دعو) · Miraç (صلي) · Berat (عفو) · Ramazan (صوم) ·
+    Kadir Gecesi (قدر) · Ramazan Bayramı (فطر) · Yeşilay Haftası (صحح) ·
+    Kütüphane Haftası (كتب) · Çanakkale (شهد) · 23 Nisan (طفل) ·
+    Kurban Bayramı (ضحي)
+
+  TAŞMA SORUNU VE ÇÖZÜMÜ (not düşülüyor, bir daha uğraşılmasın):
+    Afiş çerçevesi A3 oranında sabit; uzun el yazısı notu ya da altı türevli
+    bir kök içeriği alttan taşırıyordu. Artık iç ölçüler --m = --ae * --sk
+    üzerinden yazılıyor ve pano.js → sigdir() sığana kadar --sk'yı
+    küçültüyor. Oran her yerde aynı çalıştığı için ekranda sığan baskıda da
+    sığıyor. 16 afişin ölçümü: ölçek 0,78 – 1,00 arası; taşma 0.
+    DİKKAT: ölçüm yaparken '.pn-cumle{margin-top:auto}' yüzünden içerik kısa
+    kalınca scrollHeight her zaman clientHeight'a EŞİT çıkıyor; "yüzde şu
+    kadar payla sığıyor mu" diye bakan bir karşılaştırma bütün afişleri en
+    küçük ölçeğe indirir. Eşitlik = sığıyor, büyük = taşıyor.
+
+  YAZI TİPİ: el yazısı hissi verilen iki yer (üstteki "Bu günün kökü" ve
+  alttaki not) Caveat ile yazılıyor. Site geneli arakom.css her şeyi kendi
+  yazı tipine çevirdiği için pano.html'de kimlikli seçiciyle (#pnSahne ...)
+  geçiliyor — arakom.css'e dokunulmadı.
+
+  BASKI DÜZELTMESİ: pano.js önizleme için afiş enini (--ae) satır içi
+  stille yazıyor; satır içi stil normalde @media print kuralını ezdiği
+  için çıktıda çerçeve A3'e büyüyor ama yazılar önizleme boyunda kalıyor
+  ve afişin ortası kocaman boş çıkıyordu. pano.css'te baskı kuralı
+  "--ae: 297mm !important" yapıldı. Ölçüldü: A3 dikey, tek sayfa,
+  842×1191 punto, afiş sayfayı tam dolduruyor.
+
+ "YAZDIR" YERİNE "İNDİR": şeritteki tuş afişi A3 dikey, tek sayfalık
+  PDF olarak indiriyor. Sayfa tam 297x420 mm (841,89 x 1190,55 punto),
+  içindeki görüntü 2480 x 3508 px, yani ≈212 dpi; dosya ~0,4-0,5 MB.
+  Yazıcıya "A3, ölçekleme yok" denince kenar boşluksuz tam boy çıkıyor.
+  Dosya adı günün adından üretiliyor, Türkçe harfler sadeleştiriliyor:
+  "Ogretmenler Gunu - Bu Gunun Koku (A3).pdf".
+      PDF hazır kütüphaneyle değil, elle kuruluyor (pano.js -> pdfKur).
+      jsPDF tek başına ~350 KB daha yük demekti ve yaptığı iş tam olarak
+      bu: tek sayfa, içine bir JPEG. PDF'in JPEG'i olduğu gibi kabul eden
+      bir yolu var (/DCTDecode), o yüzden dosya bayt bayt kuruluyor —
+      nesnelerin dosya içindeki konumu xref tablosuna yazıldığı için
+      parçalar metin olarak değil, bayt dizisi olarak birleştiriliyor.
+      Denendi: qpdf --check temiz, poppler ve pypdf açıyor, 4 ayrı afişte
+      sayfa ölçüsü A3 çıktı.
+      YENİ pano/html2canvas.min.js (1.4.1, MIT) — afişi sayfanın KENDİ
+      yazı tipleriyle çizdiği için çıktı ekranda görünenin aynısı oluyor.
+      Sayfa açılırken değil, tuşa basılınca yükleniyor; gelmezse
+      (internet yoksa) eskisi gibi yazdırma penceresi açılıyor.
+      Klonda afiş eni 1240 px'e sabitleniyor; bütün iç ölçüler
+      --m = --ae * --sk üzerinden yazıldığı için ekranda ne kadar küçük
+      görünürse görünsün tam boyda çiziliyor.
+  BUNU BİLMEK GEREKİR: pano.css'te color-mix() KULLANILMIYOR. Açık
+  tonlar (harf kutuları, cümle kutusu) pano.js → tint() ile hesaplanıp
+  --acik12 / --acik8 olarak satır içi yazılıyor. Sebep: html2canvas
+  color-mix / color() gibi yeni renk yazımlarını okuyamıyor, indirme
+  "unsupported color function" hatası veriyordu. Afişe yeni bir renk
+  eklerken düz hex kullan.
+  Yazdırma yolu duruyor: Ctrl+P hâlâ tek sayfa, kenar boşluksuz A3 veriyor.
+  Ölçüldü: indirme (16 afişin ikisiyle), kütüphane engellenince yazdırmaya
+  düşüş, tuşun ikonu ve "Hazırlanıyor…" yazısı.
+
+────────────────────────────────────────────────────────────────────
+27.09.2026 · PANO — üç düzeltme (harf kutuları, örnekler, yazı boyu)
+────────────────────────────────────────────────────────────────────
+  1) KÖK HARFLERİ KUTUDAN TAŞIYORDU (yalnız PDF'te). Ekranda düzgün
+     duruyordu; PDF'i çizen html2canvas yazıyı tarayıcıdan biraz farklı
+     yerleştirdiği için ع, ج, ق gibi kuyruklu harfler kutunun altından
+     çıkıyordu. Kutu artık ızgara ortalamasıyla değil, normal bir satır
+     kutusuyla kuruluyor: line-height kutu boyuna eşit, harfe bol pay
+     (kutu .165 x .2, harf .1). Bir daha taşmaz.
+
+  2) DAHA ÇOK ÖRNEK CÜMLE. Afişte tek örnek vardı; artık en çok üç
+     örnek var. Cümlelerin tamamı yine sitenin kendi verisinden —
+     kalıplar tablosunun okuduğu veri/veri_kokler.js'ten — çekiliyor,
+     elle yazılmıyor. Önce afişte yazan türevlerin örnekleri, sonra
+     kökün geri kalan türevlerinden gelenler alınıyor; kısa cümleler
+     öne konuyor (kısa cümle daha iri yazılabiliyor). Türkçe karşılığın
+     sonundaki kaynak parantezi (sure, hadis, atasözü) ayrıştırılıp
+     cümlenin altına küçük punto ile yazılıyor.
+     DİKKAT: veride "ornek" kimi kayıtta tek nesne, kimi kayıtta dizi.
+     İkisi de okunuyor (bkz. _kaynak/uretici/panoUret.js → orneklerinHepsi).
+     Eski "cumle" alanı kalktı, yerine "cumleler" dizisi geldi.
+
+  3) YAZILAR OLABİLDİĞİNCE İRİ. Sığdırma artık tek yönlü değil: ölçek
+     yalnız küçülmüyor, sığdığı yere kadar BÜYÜYOR da (ikili arama,
+     0,55 - 1,9 arası, 12 adım). Ayrıca bütün boşluklar sıkılaştırıldı
+     ve küçük yazılar (kelimenin ikinci anlamı, cümlenin Türkçesi, alt
+     bant) bir tık büyütüldü.
+     Örnek sayısına afiş karar veriyor: üçle başlanıyor, yazı boyu
+     0,72'nin altına düşerse bir örnek eksiltiliyor. Sonuç: 11 afişte
+     üç örnek, 5 afişte iki örnek; ölçek 0,73 - 0,94.
+     A3'te bu, kök türevleri ~13 mm, örnek cümleler ~12 mm demek.
+
+  Ölçüldü: 16 afişin hepsinde taşma yok; iki ayrı afişin PDF'i 212 dpi
+  açılıp harf kutuları tek tek bakıldı.

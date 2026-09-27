@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pano · Sınıf Panosu Malzemeleri</title>
+<meta name="description" content="Arapça sınıf panosu için baskıya hazır A3 afişler: özel günleri bir Arapça köke bağlayan 'Bu Günün Kökü' serisi.">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pano/pano.css?v=1">
+<!-- Arakom EN SON: site geneli yazı tipi. El yazısı notlar pano.css'te
+     kimlikli seçiciyle Caveat'a bırakılıyor. -->
+<link rel="stylesheet" href="arakom.css?v=2">
+<style>
+  /* Arakom her şeyi kendine çeviriyor; el yazısı hissi verilen iki yer
+     onun üstünde kalsın diye kimlikli seçici (öncelik) kullanılıyor. */
+  #pnSahne .pn-uste:not(#yok1),
+  #pnSahne .pn-not:not(#yok1) { font-family: 'Caveat', 'Marhey', cursive; }
+</style>
+</head>
+<body>
+
+<header class="pn-ust">
+  <button type="button" class="pn-geri" onclick="return kidefGeri(event)" title="Geri" aria-label="Geri">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" stroke-linejoin="round" style="width:1.15em;height:1.15em" aria-hidden="true">
+      <path d="M20 12H5.4"></path><path d="M11.8 5.6 5 12l6.8 6.4"></path>
+    </svg>
+  </button>
+  <h1>
+    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <rect x="5" y="7" width="38" height="28" rx="3" fill="#fff" opacity=".92"/>
+      <rect x="9" y="11" width="30" height="20" rx="2" fill="none" stroke="#0E7C66" stroke-width="2"/>
+      <circle cx="16" cy="9" r="2.6" fill="#F39C12"/>
+      <circle cx="32" cy="9" r="2.6" fill="#EE5253"/>
+      <path d="M14 40h20" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    Pano
+  </h1>
+  <div class="pn-arac">
+    <button type="button" class="pn-tus" id="pnGercek">Gerçek boyut</button>
+    <button type="button" class="pn-tus pn-basli" id="pnIndir">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3.5v11"></path><path d="M7.4 10.2 12 14.8l4.6-4.6"></path>
+        <path d="M4.5 19.5h15"></path>
+      </svg>
+      <span id="pnIndirYazi">İndir · A3</span>
+    </button>
+  </div>
+</header>
+
+<div class="pn-govde">
+  <nav class="pn-liste" id="pnListe" aria-label="Pano malzemeleri"></nav>
+  <main class="pn-pano" id="pnSahne" aria-live="polite"></main>
+</div>
+
+<!-- html2canvas: afişi PNG olarak indirmek için. Kütüphane sayfa
+     açılırken DEĞİL, "İndir" tuşuna basılınca yükleniyor (bkz. pano.js
+     → kutuphane); sayfa hızlı açılsın diye. -->
+<script src="pano/panoveri.js?v=1"></script>
+<script src="pano/pano.js?v=1"></script>
+<script src="sistem/geri.js?v=20260915a"></script>
+</body>
+</html>
