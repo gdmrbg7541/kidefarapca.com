@@ -1140,3 +1140,21 @@ Test: 1440x900 ve 390x844 — rol kapısı, 4 soru, geri tuşu, cevapsız kayıt
   · v=3: tanıtım kartları ARTIK YALNIZ rol ekranında. Önce hem "Önce seni tanıyalım"
     ekranında hem de "Sisteme Giriş Yap / Kayıt Ol" formunun üstünde çıkıyordu;
     kapı kapanınca kartlar gizleniyor, "Değiştir" ile geri dönünce yine görünüyor.
+
+--- 27.09.2026 · Okuma sekmesi: telefonda harfler küçüldü, sesli/sessiz binmesi bitti (v35)
+okumayazma/okuma-cevir.js
+  · KALDIRILDI: @media(max-width:640px){.oc-birim{padding:34px 0 34px}} — sabit 34 px,
+    puntoyla büyüyen orantılı boşluğu (--ocust/--ocalt) eziyordu; harf 100 px'i geçince
+    üstteki sesli harf sessizin üstüne biniyordu. Boşluk artık her ekranda puntoyla ölçülüyor.
+  · EKLENDİ: telefon punto tavanı — dar ekranda punto, ekran genişliğinin %25'ini geçmiyor.
+    (390 px'te يَدٌ için 139,3 px -> 88,5 px; 360 px'te 109,1 -> 81,0)
+alfabe.html -> okuma-cevir.js?v=34 -> ?v=35
+Yedek: _kaynak/yedekler/okuma-cevir_2026-09-27_v34.js
+Test: 390 ve 360 px'te sesli/sessiz kutuları artık değmiyor; 8 ekran boyu x 4 konu x
+      25 kelime x bütün adımlar taraması temiz.
+  · v=4: pencere artık ÜÇ adım. 1) "Hoş geldin — hesabın var mı?": Giriş yap / Kayıt ol
+    (+ altında çizimli tanıtım kartları). 2) Kayıt seçilirse rol sorusu (öğretmen/öğrenci).
+    3) 4 kısa soru. GİRİŞTE ÖĞRETMEN/ÖĞRENCİ SORUSU YOK — rol zaten hesapta yazılı;
+    giriş seçilince doğrudan pencerenin kendi giriş görünümü (karekod seçim ekranı) gelir.
+    Rol şeridi ("... olarak kayıt oluyorsun · Değiştir") yalnız kayıt formunda görünür.
+    Her ekranda "‹ Geri" var: sorulardan role, rolden ilk ekrana döner.

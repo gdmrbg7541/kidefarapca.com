@@ -90,10 +90,12 @@
     };
 
     /* ---------------- durum ---------------- */
-    var rol = '';           /* 'teacher' | 'student' */
+    var rol = '';           /* 'teacher' | 'student' — YALNIZ kayıtta sorulur */
     var cevap = {};         /* {kurum:'iho', ...} */
-    var adim = 0;           /* 0 = rol sorusu, 1..4 = anket */
+    var asama = 'kip';      /* 'kip' = giriş mi kayıt mı · 'rol' · 'soru' */
+    var adim = 1;           /* 'soru' aşamasında kaçıncı soru (1..4) */
     var kapi = null;
+    var icGecis = false;    /* moduDegistir'i biz çağırdıysak sarmalayıcı karışmasın */
 
     try {
         var t = JSON.parse(localStorage.getItem(TASLAK) || '{}');
@@ -220,8 +222,8 @@
             kutu.insertBefore(kapi, a.form || null);
         }
         kapi.style.display = 'block';
-        adim = (typeof baslangic === 'number') ? baslangic : (rol ? 1 : 0);
-        if (adim > 0 && !kayitKipi()) adim = 0;
+        if (baslangic) asama = baslangic;
+        if (asama === 'soru' && !rol) asama = 'rol';
         ciz();
     }
 
@@ -265,10 +267,12 @@
         }
         var ogretmen = (rol === 'teacher');
         s.innerHTML = '<span class="ka-em">' + (ogretmen ? '🧑‍🏫' : '🎓') + '</span>' +
-            '<span>' + (ogretmen ? 'Öğretmen' : 'Öğrenci') + ' olarak devam ediyorsun</span>' +
+            '<span>' + (ogretmen ? 'Öğretmen' : 'Öğrenci') + ' olarak kayıt oluyorsun</span>' +
             '<button type="button">Değiştir</button>';
-        s.querySelector('button').onclick = function () { kapiAc(0); };
-        s.style.display = rol ? 'flex' : 'none';
+        s.querySelector('button').onclick = function () { kapiAc('rol'); };
+        /* Şerit YALNIZ kayıt formunda. Girişte öğretmen/öğrenci ayrımı yok:
+           hangi rolde olduğun zaten hesabından biliniyor. */
+        s.style.display = (rol && kayitKipi()) ? 'flex' : 'none';
     }
 
     /* Tanıtım kartları ("Öğrenci misin? / Öğretmen misin? — İçeriye bak")
@@ -301,10 +305,35 @@
         if (!kapi) return;
         kartlariBirak();
         var a = alanlar();
-        if (adim === 0) {
-            if (a.baslik) a.baslik.innerText = 'Önce seni tanıyalım';
+
+        /* ---- 1. ekran: GİRİŞ Mİ, KAYIT MI? ------------------------------
+           Girişte öğretmen/öğrenci sorusu YOK — rol zaten hesapta yazılı.
+           Rol sorusu yalnız yeni kayıtta anlamlı; asıl dert de buydu. */
+        if (asama === 'kip') {
+            if (a.baslik) a.baslik.innerText = 'Hoş geldin';
             kapi.innerHTML =
-                '<p class="ka-ust">Sisteme öğretmen olarak mı, öğrenci olarak mı giriyorsun?</p>' +
+                '<p class="ka-ust">Hesabın var mı?</p>' +
+                '<p class="ka-alt">Girişte öğretmen/öğrenci seçmene gerek yok; ' +
+                'hesabın hangisiyse onunla açılır.</p>' +
+                '<div class="ka-rol">' +
+                '<button type="button" data-k="giris"><span class="ka-ikon">🔑</span>Giriş yap' +
+                '<small>Hesabım var;<br>e-posta ya da karekodla gireyim</small></button>' +
+                '<button type="button" data-k="kayit"><span class="ka-ikon">✨</span>Kayıt ol' +
+                '<small>İlk kez geliyorum;<br>yeni hesap açayım</small></button>' +
+                '</div>' +
+                '<div class="ka-tanit"><p>Girince neler yapabileceğine bak:</p></div>';
+            [].forEach.call(kapi.querySelectorAll('.ka-rol button'), function (b) {
+                b.onclick = function () { kipSec(b.getAttribute('data-k')); };
+            });
+            kartlariGetir();
+            return;
+        }
+
+        /* ---- 2. ekran: ROL (yalnız kayıt) ------------------------------ */
+        if (asama === 'rol') {
+            if (a.baslik) a.baslik.innerText = 'Kayıt — önce seni tanıyalım';
+            kapi.innerHTML =
+                '<p class="ka-ust">Öğretmen olarak mı, öğrenci olarak mı kayıt oluyorsun?</p>' +
                 '<p class="ka-alt">Hesabın buna göre açılıyor; sonradan değiştirmek için ' +
                 'yöneticiye yazman gerekir. Lütfen doğru olanı seç.</p>' +
                 '<div class="ka-rol">' +
@@ -313,14 +342,17 @@
                 '<button type="button" data-r="student"><span class="ka-ikon">🎓</span>Öğrenciyim' +
                 '<small>Arapça öğreniyorum;<br>ders ve alıştırma yaparım</small></button>' +
                 '</div>' +
+                '<div class="ka-tus"><button type="button" class="ka-geri">‹ Geri</button></div>' +
                 '<div class="ka-tanit"><p>Emin değil misin? Girince neler yapabileceğine bak:</p></div>';
             [].forEach.call(kapi.querySelectorAll('.ka-rol button'), function (b) {
                 b.onclick = function () { rolSec(b.getAttribute('data-r')); };
             });
+            kapi.querySelector('.ka-geri').onclick = function () { asama = 'kip'; ciz(); };
             kartlariGetir();
             return;
         }
 
+        /* ---- 3. ekran: ANKET SORULARI ---------------------------------- */
         var L = SORULAR[rol] || [];
         var q = L[adim - 1];
         if (!q) { kapiKapat(); return; }
@@ -347,7 +379,32 @@
                 if (adim >= L.length) kapiKapat(); else { adim++; ciz(); }
             };
         });
-        kapi.querySelector('.ka-geri').onclick = function () { adim--; ciz(); };
+        kapi.querySelector('.ka-geri').onclick = function () {
+            if (adim > 1) { adim--; ciz(); } else { asama = 'rol'; ciz(); }
+        };
+    }
+
+    /* 1. ekranın seçimi. Giriş: kapı kapanır, pencerenin kendi giriş
+       görünümü (karekod seçim ekranı) gelir. Kayıt: kayıt kipine geçilir
+       ve rol sorulur. */
+    function kipSec(k) {
+        if (k === 'giris') {
+            if (kayitKipi()) modDegis();
+            kapiKapat();
+            return;
+        }
+        if (!kayitKipi()) modDegis();
+        if (tamam()) { kapiKapat(); return; }   /* cevaplar zaten tam */
+        asama = 'rol'; adim = 1; ciz();
+    }
+
+    /* auth.js'in giriş/kayıt kipini çevirir; kendi sarmalayıcımız bu
+       çağrıda devreye girmesin diye bayrak kalkıyor. */
+    function modDegis() {
+        if (typeof window.moduDegistir !== 'function') return;
+        icGecis = true;
+        try { window.moduDegistir(); } catch (e) { }
+        icGecis = false;
     }
 
     function rolSec(r) {
@@ -355,7 +412,7 @@
         rol = r;
         taslakYaz();
         try { if (typeof window.setRole === 'function') window.setRole(r); } catch (e) { }
-        if (kayitKipi()) { adim = 1; ciz(); } else kapiKapat();
+        asama = 'soru'; adim = 1; ciz();
     }
 
     /* ---------------- belge alanı (kayitalani.js buradan okur) -------- */
@@ -508,9 +565,8 @@
             var eskiAc = window.showLoginModal;
             var yeniAc = function () {
                 var r = eskiAc.apply(this, arguments);
-                /* Pencere her açıldığında rol sorusu çıkar — istenen buydu:
-                   "giriş ve kayıt ol'a basınca öğretmen misin öğrenci misin". */
-                try { setTimeout(function () { kapiAc(0); }, 60); } catch (e) { }
+                /* Pencere her açıldığında ilk ekran: giriş mi, kayıt mı? */
+                try { setTimeout(function () { kapiAc('kip'); }, 60); } catch (e) { }
                 return r;
             };
             yeniAc.__ka = 1;
@@ -520,9 +576,10 @@
             var eskiMod = window.moduDegistir;
             var yeniMod = function () {
                 var r = eskiMod.apply(this, arguments);
+                if (icGecis) return r;          /* çeviren biziz, kapıyı bozma */
                 try {
-                    if (kayitKipi() && !tamam()) kapiAc(rol ? 1 : 0);
-                    else { kapiKapat(); }
+                    if (kayitKipi()) { if (!tamam()) kapiAc('rol'); }
+                    else kapiKapat();
                 } catch (e) { }
                 return r;
             };
@@ -532,7 +589,7 @@
         if (typeof window.authIslemi === 'function' && !window.authIslemi.__ka) {
             var eskiIs = window.authIslemi;
             var yeniIs = function () {
-                if (kayitKipi() && !tamam()) { kapiAc(rol ? 1 : 0); return; }
+                if (kayitKipi() && !tamam()) { kapiAc(rol ? 'soru' : 'rol'); return; }
                 return eskiIs.apply(this, arguments);
             };
             yeniIs.__ka = 1;

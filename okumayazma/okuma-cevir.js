@@ -645,8 +645,11 @@
       '@media (max-width:860px){.oc-tuslar{position:static;margin-left:auto}' +
         '.oc-govde{padding-bottom:0}' +
         '.oc-alt{min-height:0}}' +
-      '@media (max-width:640px){.oc-tuslar{width:100%;margin-left:0}.oc-tus{flex:1}' +
-        '.oc-birim{padding:34px 0 34px}}' +
+      /* DİKKAT: burada bir zamanlar '.oc-birim{padding:34px 0 34px}' vardı.
+         Sabit 34 px, puntoyla büyüyen orantılı boşluğu (--ocust/--ocalt)
+         eziyordu; harf 100 px'i geçince üstteki sesli harf sessizin üstüne
+         biniyordu. Boşluk her ekranda puntoyla ölçülmeli. */
+      '@media (max-width:640px){.oc-tuslar{width:100%;margin-left:0}.oc-tus{flex:1}}' +
       '@media (prefers-reduced-motion:reduce){.oc-harf,.oc-ses,.oc-ar,.oc-tam,.oc-klon{transition:none}}' +
 
       /* ---- Kendini Dene katmanı (#ak-tam) için ----
@@ -903,7 +906,13 @@
       }
       var yatay = (kap * 0.96) / (n * 1.22);     /* n sütun yan yana sığsın */
       var dikey = (yh - ust - ALTPAY) / kat;
-      yatayEnb = Math.min(ENBUYUK, yatay);       /* büyütme turunun tavanı */
+      /* TELEFON TAVANI: dar ekranda az harfli kelimede sütun genişliği
+         (dolayısıyla punto) ekranın yarısına çıkabiliyordu — يَدٌ gibi iki
+         harfli bir kelimede harf 139 px oluyordu. Telefonda punto ekran
+         genişliğinin ~%25'ini geçmesin; uzun kelimelerde zaten yatay hesap
+         daha küçük çıkıyor, bu tavan yalnız kısa kelimeleri dizginliyor. */
+      var telTavan = (kap < 700) ? kap * 0.25 : Infinity;
+      yatayEnb = Math.min(ENBUYUK, yatay, telTavan);   /* büyütme turunun tavanı */
       var px = Math.min(yatayEnb, dikey);
       if (!(px > 24)) px = 24;
       sar.style.setProperty('--ocharf', px.toFixed(1) + 'px');
