@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="pano/pano.css?v=1">
+<link rel="stylesheet" href="pano/pano.css?v=2">
 <!-- Arakom EN SON: site geneli yazı tipi. El yazısı notlar pano.css'te
      kimlikli seçiciyle Caveat'a bırakılıyor. -->
 <link rel="stylesheet" href="arakom.css?v=2">
@@ -62,15 +62,22 @@
 </header>
 
 <div class="pn-govde">
-  <nav class="pn-liste" id="pnListe" aria-label="Pano malzemeleri"></nav>
+  <nav class="pn-liste" aria-label="Pano malzemeleri">
+    <!-- Bölüm sekmeleri: afiş / ağaç / ifade / hat / harf / yazma / tablo -->
+    <div class="pn-gruplar" id="pnGruplar"></div>
+    <div id="pnListe"></div>
+  </nav>
   <main class="pn-pano" id="pnSahne" aria-live="polite"></main>
 </div>
 
-<!-- html2canvas: afişi PNG olarak indirmek için. Kütüphane sayfa
-     açılırken DEĞİL, "İndir" tuşuna basılınca yükleniyor (bkz. pano.js
-     → kutuphane); sayfa hızlı açılsın diye. -->
-<script src="pano/panoveri.js?v=1"></script>
-<script src="pano/pano.js?v=1"></script>
+<!-- Veri: kök afişleri ve kalıp ifadeler. Hat konturları (panohat.js,
+     ~400 KB) burada DEĞİL — boyama/yazma bölümüne girilince yükleniyor
+     (bkz. pano.js → hatYukle). html2canvas da "İndir"e basılınca gelir. -->
+<script src="pano/panoveri.js?v=2"></script>
+<script src="pano/panoifade.js?v=1"></script>
+<script src="pano/qrcode.min.js?v=1" defer></script>
+<script src="pano/pano-ciz.js?v=1"></script>
+<script src="pano/pano.js?v=2" defer></script>
 <script src="sistem/geri.js?v=20260915a"></script>
 </body>
 </html>

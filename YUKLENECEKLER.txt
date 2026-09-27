@@ -1420,3 +1420,72 @@ NOT: katalog/index.html (basılı katalog) ikisini ayrı satır olarak listeleme
 
   Ölçüldü: 16 afişin hepsinde taşma yok; iki ayrı afişin PDF'i 212 dpi
   açılıp harf kutuları tek tek bakıldı.
+
+────────────────────────────────────────────────────────────────────
+27.09.2026 · PANO — yedi bölüm (boyama, yazma, tablo, ağaç, ifadeler)
+────────────────────────────────────────────────────────────────────
+  Pano artık tek tür afiş değil. Solda bölüm sekmeleri var:
+
+    Bu Günün Kökü    16 sayfa  A3   özel günler (eskisi)
+    Kelime Ailesi    16 sayfa  A3   kök ortada, türevler dallarda
+    Günlük İfadeler   8 sayfa  A3   kalıp ifadeler, karekodlu
+    Hat Boyama       28 sayfa  A4   tezhip çerçeveli içi boş kelime
+    Harf Boyama      28 sayfa  A4   dev harf + dört hâli + örnek kelime
+    Yazma Şeridi     28 sayfa  A4   kesik çizgili harf, üzerinden geçilir
+    Bağlantı Tablosu  2 sayfa  A3   28 harfin dört hâli
+
+  A3 olanlar panoya, A4 olanlar öğrenciye. İndirme tuşu hangisi
+  seçiliyse onun ölçüsünde PDF veriyor (A3 841x1191 punto, A4 595x842).
+
+  KONTURLAR NEREDEN GELİYOR (işin can alıcı yeri):
+    Boyama ve yazma sayfalarındaki içi boş harfler yazı DEĞİL, vektör
+    şekil. Sitenin kendi yazı tipinden (arakom.ttf) çıkarıldılar:
+    harfbuzz harfleri doğru bağlayıp harekeleri yerine koyuyor,
+    fontTools da her glifin yolunu veriyor.
+    NİYE BÖYLE: (1) içi boş harf yapmanın tarayıcıdan tarayıcıya değişen
+    yolları var, (2) PDF'i çizen html2canvas yazıyı yazı tipiyle çiziyor,
+    oysa kontur düpedüz bir şekil — her yerde aynı, kenarları keskin.
+      YENİ pano/panohat.js (400 KB) — üretilmiş veri. Sayfa açılırken
+      DEĞİL, boyama/yazma/tablo bölümüne girilince yükleniyor.
+
+  YENİ DOSYALAR
+    pano/pano-ciz.js     yedi sayfa türünün çizimi (pano.js yalnız
+                         liste, ölçekleme ve PDF ile ilgileniyor)
+    pano/panohat.js      harf ve kelime konturları  (üretilmiş)
+    pano/panoifade.js    kalıp ifade afişleri       (üretilmiş)
+    pano/qrcode.min.js   karekod çizici (qrcode-generator 2.0.4, MIT)
+    _kaynak/uretici/hatSecim.js   kontur çizilecek kelimeleri seçer
+    _kaynak/uretici/hatUret.py    konturları yazı tipinden çıkarır
+    _kaynak/uretici/ifadeUret.js  kalıp ifadeleri afişe çevirir
+
+  ÜRETİCİLERİ YENİDEN ÇALIŞTIRMA (_kaynak/uretici içinden)
+    node panoUret.js          -> pano/panoveri.js
+    node ifadeUret.js         -> pano/panoifade.js
+    node hatSecim.js          -> hat-kelimeler.json
+    python3 hatUret.py        -> pano/panohat.js
+    Son ikisi SIRAYLA çalışır. hatUret.py iki paket ister:
+        pip install fonttools uharfbuzz
+    (Bu makinede kurulu değil; kurmadan çalıştırma, panohat.js zaten
+     hazır ve git'te.)
+
+  PDF ARTIK KAYIPSIZ: görüntü JPEG değil, Flate ile (PNG'deki "Up"
+  öngörücüsüyle) gömülüyor. Boyama sayfalarındaki ince konturlar
+  JPEG'te tırtıklanıyordu; şimdi kenarlar temiz — üstelik dosya da
+  küçüldü (A4 boyama ~220 KB, A3 afiş ~350-400 KB). Sıkıştırmayı
+  tarayıcının kendi CompressionStream'i yapıyor, ek kütüphane yok;
+  desteklemeyen tarayıcıda JPEG'e düşülüyor.
+  A4 sayfalar 300 dpi, A3 afişler 212 dpi çıkıyor.
+
+  ÖLÇEK TAVANI: sığdırma "sığdığı kadar büyüt" diye çalıştığı için
+  içeriği az olan sayfalarda başlık yazısı gülünç irileşiyordu. Artık
+  tür başına tavan var (pano.js → TAVAN) ve boyama sayfasında artan
+  yeri YAZI değil, boyanacak kelime yutuyor (CSS'te flex).
+
+  DOSYA ADI: "·" işareti bazı tarayıcılarda dosya adını tümden
+  geçersiz kılıyordu (inen dosya "download" oluyordu); tireye çevriliyor.
+
+  index.html — Pano kartının açıklaması yenilendi (A3 afiş + A4 boyama).
+
+  Ölçüldü: yedi bölümün hepsi taşmasız; yedi ayrı sayfadan PDF indirildi,
+  sayfa ölçüleri ve çözünürlükleri doğrulandı; bağlanmayan harflerde
+  (ا د ذ ر ز و) yalnız iki hâl ve uyarı satırı çıkıyor.
