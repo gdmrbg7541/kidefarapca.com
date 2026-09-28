@@ -1504,3 +1504,65 @@ NOT: katalog/index.html (basılı katalog) ikisini ayrı satır olarak listeleme
   kutusuyla orantılı (pano-ciz.js → esitKalinlik); sayfadaki kalınlık
   her kelimede aynı, yani boyanacak alan da aynı. Kesik çizgili yazma
   sayfasında çizgi boyu da aynı orana bağlandı.
+
+────────────────────────────────────────────────────────────────────
+28.09.2026 · DEĞERLENDİRME ÖLÇEĞİ — puanla, evrak olarak indir (YENİ)
+────────────────────────────────────────────────────────────────────
+  Kitap karekodundan inen dereceli puanlama ölçekleri artık ekranda
+  işaretleniyor; toplam ve yüzlük karşılık kendiliğinden hesaplanıyor,
+  sayfa evrak düzeninde A4 PDF olarak iniyor.
+
+  YENİ olcek.html          -> Sol panelde sınıf, tür, ölçek, künye ve
+                              sınıf listesi; sağda A4 kâğıt. Kâğıttaki
+                              tabloda bir dereceye tıklayınca o hücre
+                              işaretleniyor ve puan güncelleniyor.
+                              "PDF indir" tek öğrenciyi, "Sınıfı indir"
+                              her öğrenciye bir sayfa + sonda sınıf
+                              çizelgesi veriyor.
+                              Girilenler tarayıcıda saklanıyor; sayfayı
+                              kapatıp açınca kaldığın yerden devam.
+  YENİ olcek/olcekveri.js  -> ÜRETİLMİŞ. Kitap ölçeklerinin ölçüt ve
+                              derece açıklamaları. Arapçanın tek harfi
+                              yazılmadı; MEB'in ölçek dosyalarından
+                              okundu. Şu an 9. sınıf 1. ünitenin iki
+                              ölçeği var (s.31 ve s.67).
+  YENİ olcek/olcekgenel.js -> ELLE yazılmış Türkçe genel ölçekler
+                              (proje ve performans). Kitap ölçeği
+                              girilmemiş sınıflarda bunlar kullanılıyor.
+  YENİ olcek/olcek.js/.css -> Sayfanın kendisi.
+  YENİ sistem/kagitpdf.js  -> Kâğıdı PDF'e çeviren ortak parça. Pano da
+                              aynı yöntemi kullanıyor (kayıpsız Flate,
+                              elde kurulan PDF, ek kütüphane yok).
+                              Çok sayfalı çıktıda çözünürlük 200 dpi'ye
+                              iniyor: otuz kişilik sınıf 25 MB yerine
+                              ~12 MB oluyor.
+  YENİ _kaynak/uretici/olcekUret.py -> MEB ölçek dosyalarını okuyup
+                              olcekveri.js'i yazar (.xlsx ve .docx).
+
+  ADLANDIRMA (mevzuat): Okul Öncesi ve İlköğretim Kurumları
+  Yönetmeliği md. 20/4'e göre ortaokul ve imam-hatip ortaokulunda
+  başarı "sınavlar, DERS ETKİNLİKLERİNE KATILIM ve varsa PROJE" ile
+  değerlendirilir; Ortaöğretim Kurumları Yönetmeliği'nde ölçme araçları
+  "yazılı ve uygulamalı sınavlar, PERFORMANS ÇALIŞMASI ve PROJE"dir.
+  Sayfa 5-8. sınıfta "Ders Etkinliklerine Katılım", 9-12'de "Performans
+  Çalışması" adını kullanıyor; proje ikisinde de ayrı bir evrak.
+
+  index.html — İmam Hatip > her sınıf > "Proje & Performans Görevleri"
+  kartının içine iki tuş kondu: "Proje Ölçeği" ve (sınıfa göre) "Ders
+  Etkinliklerine Katılım Ölçeği" / "Performans Çalışması Ölçeği".
+  Var olan dosya listesine dokunulmadı.
+  Yedek: _kaynak/yedekler/index_2026-09-28_olcek-oncesi.html
+
+  YENİ ÖLÇEK EKLEMEK (kitap karekodundaki ölçekler):
+    1. Ölçek dosyalarını (.xlsx ya da .docx) _kaynak/olcekler/ içine koy.
+       Dosya adındaki iho07 / ARP9 / U1 / Syf45 gibi parçalardan sınıf,
+       ünite ve sayfa kendiliğinden okunuyor.
+    2. cd _kaynak/uretici && python3 olcekUret.py
+    olcek/olcekveri.js yenilenir. Bu dosya ELLE DÜZENLENMEZ.
+    Ölçüt adlarının Türkçesi üreticideki TR sözlüğünden gelir; yeni
+    ölçütün Türkçesini oraya eklemek yeter (Arapçası dosyadan okunur).
+
+  Ölçüldü: 9. sınıf kitap ölçeğiyle ve genel ölçekle puanlama; tek
+  öğrenci PDF'i (A4, 1 sayfa) ve dokuz kişilik sınıf PDF'i (10 sayfa,
+  200 dpi, 4,2 MB); 7. sınıfta adlandırmanın "ders etkinliklerine
+  katılım"a dönmesi.

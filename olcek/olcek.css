@@ -1,0 +1,284 @@
+/* ==================================================================
+   DEĞERLENDİRME ÖLÇEĞİ — ekran ve evrak (olcek.html)
+   ------------------------------------------------------------------
+   Kâğıt A4 dikey oranında (210x297). Bütün iç ölçüler tek bir
+   değişkenden (--ae = kâğıt eni) türüyor: ekranda küçük görünürken
+   PDF'e tam boyda çiziliyor, başka hiçbir sayıya dokunmak gerekmiyor.
+   (Aynı yöntem pano.css'te de var.)
+   ================================================================== */
+
+:root {
+  --yesil: #16A085;
+  --yesilK: #0E7C66;
+  --mur: #1F2430;
+  --gri: #5B6471;
+  --soluk: #8A93A0;
+  --cizgi: #E3E8EF;
+  --zemin: #EEF1F5;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  background: var(--zemin); color: var(--mur);
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+
+/* ---------------- üst şerit ---------------- */
+.olc-ust {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 12px;
+  padding: clamp(8px, .6vw, 12px) clamp(14px, 1.5vw, 28px);
+  background: linear-gradient(120deg, #16A085, #0E7C66);
+  color: #fff; box-shadow: 0 2px 12px rgba(14, 124, 102, .28); z-index: 5;
+}
+.olc-ust h1 {
+  margin: 0; font-family: 'Marhey', sans-serif;
+  font-size: clamp(1.05rem, 1.4vw, 1.7rem); font-weight: 700;
+  display: flex; align-items: center; gap: 9px;
+}
+.olc-ust h1 svg { width: 1.15em; height: 1.15em; display: block; }
+.olc-geri {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 2.2em; height: 2.2em; border: 0; border-radius: 12px;
+  background: rgba(255, 255, 255, .18); color: #fff; cursor: pointer; font-size: 1rem;
+}
+.olc-geri:hover { background: rgba(255, 255, 255, .3); }
+.olc-arac { margin-inline-start: auto; display: inline-flex; gap: 8px; align-items: center; }
+.olc-durum { font-size: .85rem; font-weight: 700; opacity: .9; }
+.olc-tus {
+  border: 1.6px solid rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .12);
+  color: #fff; font: inherit; font-weight: 800; border-radius: 999px; cursor: pointer;
+  font-size: clamp(.78rem, .9vw, 1rem); padding: clamp(5px, .5vw, 9px) clamp(11px, 1.1vw, 20px);
+  white-space: nowrap;
+}
+.olc-tus:hover { background: rgba(255, 255, 255, .28); }
+.olc-tus[disabled] { opacity: .6; cursor: progress; }
+.olc-basli { display: inline-flex; align-items: center; gap: .45em; }
+.olc-basli svg { width: 1.1em; height: 1.1em; display: block; }
+
+/* ---------------- gövde ---------------- */
+.olc-govde { flex: 1 1 auto; min-height: 0; display: flex; }
+
+.olc-panel {
+  flex: 0 0 clamp(270px, 25vw, 380px); overflow: auto;
+  background: #fff; border-inline-end: 1px solid var(--cizgi);
+  padding: 14px 14px 30px;
+}
+.olc-blok { margin-bottom: 18px; }
+.olc-blok h2 {
+  margin: 0 0 9px; font-size: .74rem; font-weight: 800; letter-spacing: .5px;
+  text-transform: uppercase; color: var(--soluk);
+}
+.olc-sat { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.olc-sat > span { flex: 0 0 92px; font-size: .84rem; font-weight: 700; color: var(--gri); }
+.olc-sat input, .olc-sat select {
+  flex: 1 1 auto; min-width: 0; font: inherit; font-size: .88rem;
+  border: 1.5px solid var(--cizgi); border-radius: 9px; padding: 6px 9px; background: #fff;
+}
+.olc-sat input:focus, .olc-sat select:focus { outline: 2px solid var(--yesil); outline-offset: 1px; }
+.olc-panel textarea {
+  width: 100%; font: inherit; font-size: .88rem; line-height: 1.45;
+  border: 1.5px solid var(--cizgi); border-radius: 9px; padding: 8px 10px; resize: vertical;
+}
+.olc-not { margin: 6px 0 0; font-size: .78rem; line-height: 1.45; color: var(--soluk); }
+.olc-not.tamam { color: var(--yesilK); font-weight: 700; }
+.olc-kucuk {
+  margin-top: 9px; font: inherit; font-size: .8rem; font-weight: 700; cursor: pointer;
+  border: 1.5px solid var(--cizgi); background: #fff; color: var(--gri);
+  border-radius: 999px; padding: 5px 12px;
+}
+.olc-kucuk:hover { background: #FDF1F0; border-color: #F3C9C4; color: #B03A2E; }
+
+.olc-ogrenciler { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.olc-ogrenciler button {
+  display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: .8rem;
+  font-weight: 700; cursor: pointer; border: 1.5px solid var(--cizgi); background: #fff;
+  color: var(--mur); border-radius: 999px; padding: 4px 11px;
+}
+.olc-ogrenciler button i {
+  font-style: normal; font-size: .7rem; background: var(--yesil); color: #fff;
+  border-radius: 999px; padding: 0 6px;
+}
+.olc-ogrenciler button[aria-current="true"] {
+  background: var(--yesilK); border-color: var(--yesilK); color: #fff;
+}
+.olc-ogrenciler button[aria-current="true"] i { background: #fff; color: var(--yesilK); }
+
+.olc-ozet { display: flex; gap: 8px; }
+.olc-ozk {
+  flex: 1 1 0; background: #F4F7FA; border-radius: 11px; padding: 8px 10px;
+}
+.olc-ozk span { display: block; font-size: .72rem; font-weight: 700; color: var(--soluk); }
+.olc-ozk b { font-size: 1.15rem; }
+.olc-ozk.vurgu { background: #E8F6F3; color: var(--yesilK); }
+
+/* ---------------- sahne ---------------- */
+.olc-sahne {
+  flex: 1 1 auto; min-width: 0; overflow: auto; display: grid; place-items: center;
+  padding: clamp(14px, 2vw, 34px); background: #9AA3AF;
+}
+.olc-bos { color: #fff; font-weight: 700; }
+
+/* ==================================================================
+   KÂĞIT — A4 dikey.  --ae : kâğıt eni (px). Her ölçü bunun oranı.
+   ================================================================== */
+.olc-kagit {
+  --ae: 720px;
+  width: var(--ae); height: calc(var(--ae) * 1.41421);
+  background: #fff; color: #1F2430;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .32);
+  overflow: hidden; position: relative;
+}
+.olc-ic {
+  height: 100%; display: flex; flex-direction: column;
+  padding: calc(var(--ae) * .05) calc(var(--ae) * .055) calc(var(--ae) * .04);
+}
+
+/* başlık */
+.olc-bas { text-align: center; flex: 0 0 auto; }
+.olc-okul {
+  font-size: calc(var(--ae) * .026); font-weight: 800; letter-spacing: .4px;
+  text-transform: uppercase; color: var(--gri);
+}
+.olc-yil { font-size: calc(var(--ae) * .022); color: var(--soluk); margin-top: calc(var(--ae) * .004); }
+.olc-bas h2 {
+  margin: calc(var(--ae) * .014) 0 0; font-size: calc(var(--ae) * .034);
+  line-height: 1.25; font-weight: 800; color: var(--yesilK);
+}
+.olc-basar {
+  margin: calc(var(--ae) * .012) 0 0; text-align: center; direction: rtl;
+  font-size: calc(var(--ae) * .03); line-height: 1.6; color: #2A3242;
+}
+.olc-bastr {
+  margin: calc(var(--ae) * .01) 0 0; text-align: center;
+  font-size: calc(var(--ae) * .024); color: var(--gri);
+}
+
+/* künye */
+.olc-kunye {
+  flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: calc(var(--ae) * .012);
+  margin-top: calc(var(--ae) * .022); padding: calc(var(--ae) * .014) 0;
+  border-top: 1.5px solid var(--cizgi); border-bottom: 1.5px solid var(--cizgi);
+}
+.olc-alan { flex: 1 1 28%; min-width: 0; }
+.olc-alan span {
+  display: block; font-size: calc(var(--ae) * .019); font-weight: 800;
+  letter-spacing: .3px; text-transform: uppercase; color: var(--soluk);
+}
+.olc-alan b {
+  display: block; font-size: calc(var(--ae) * .026); font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* tablo */
+.olc-tablo {
+  flex: 1 1 auto; width: 100%; border-collapse: collapse;
+  margin-top: calc(var(--ae) * .02); table-layout: fixed;
+}
+.olc-tablo th, .olc-tablo td {
+  border: 1px solid #D8E0EA; vertical-align: top;
+  padding: calc(var(--ae) * .008) calc(var(--ae) * .008);
+}
+.olc-tablo thead th {
+  background: #F1F6FA; text-align: center; font-size: calc(var(--ae) * .019);
+  font-weight: 800; color: var(--gri); line-height: 1.2;
+}
+.olc-tablo thead th span {
+  display: block; font-weight: 600; font-size: calc(var(--ae) * .016); color: var(--soluk);
+}
+.olc-tablo .olc-olcut { width: 21%; text-align: start; background: #FAFCFE; }
+.olc-tablo .olc-puan { width: 8%; text-align: center; }
+.olc-olcut .olc-ar {
+  display: block; direction: rtl; font-size: calc(var(--ae) * .026); line-height: 1.5;
+}
+.olc-olcut .olc-tr {
+  display: block; font-size: calc(var(--ae) * .018); font-weight: 700;
+  color: var(--gri); line-height: 1.25; margin-top: calc(var(--ae) * .003);
+}
+/* derece hücreleri — tıklanınca seçilir */
+.olc-d { cursor: pointer; position: relative; transition: background .12s; }
+.olc-d:hover { background: #F2FAF8; }
+.olc-dpuan {
+  display: none;               /* ekranda sütun başlığı zaten puanı yazıyor */
+}
+.olc-dmetin {
+  display: block; font-size: calc(var(--ae) * .0165); line-height: 1.45; color: #3C4655;
+}
+.olc-d[dir="rtl"] .olc-dmetin { font-size: calc(var(--ae) * .019); line-height: 1.7; }
+.olc-d.secili { background: #E8F6F3; box-shadow: inset 0 0 0 2px var(--yesil); }
+.olc-d.secili .olc-dmetin { color: #10322B; font-weight: 700; }
+.olc-tablo td.olc-puan {
+  font-size: calc(var(--ae) * .03); font-weight: 800; color: var(--yesilK);
+  text-align: center; vertical-align: middle;
+}
+
+/* sonuç şeridi */
+.olc-sonuc {
+  flex: 0 0 auto; display: flex; align-items: stretch; gap: calc(var(--ae) * .016);
+  margin-top: calc(var(--ae) * .02);
+}
+.olc-kutu {
+  flex: 0 0 auto; min-width: calc(var(--ae) * .17);
+  border: 1.5px solid var(--cizgi); border-radius: calc(var(--ae) * .014);
+  padding: calc(var(--ae) * .01) calc(var(--ae) * .016);
+}
+.olc-kutu span {
+  display: block; font-size: calc(var(--ae) * .018); font-weight: 800;
+  text-transform: uppercase; letter-spacing: .3px; color: var(--soluk);
+}
+.olc-kutu b { font-size: calc(var(--ae) * .034); }
+.olc-kutu.vurgu { background: #E8F6F3; border-color: #BDE3DA; color: var(--yesilK); }
+.olc-imza {
+  flex: 1 1 auto; text-align: end; display: flex; flex-direction: column;
+  justify-content: flex-end;
+}
+.olc-imza span {
+  font-size: calc(var(--ae) * .018); font-weight: 800; text-transform: uppercase;
+  letter-spacing: .3px; color: var(--soluk);
+}
+.olc-imza b { font-size: calc(var(--ae) * .024); }
+.olc-imza i {
+  font-style: normal; font-size: calc(var(--ae) * .018); color: var(--soluk);
+  border-top: 1.5px solid var(--cizgi); margin-top: calc(var(--ae) * .018);
+  padding-top: calc(var(--ae) * .004);
+}
+.olc-dip {
+  flex: 0 0 auto; margin: calc(var(--ae) * .014) 0 0;
+  font-size: calc(var(--ae) * .016); color: var(--soluk); line-height: 1.4;
+}
+
+/* özet çizelgesi */
+.olc-ozettablo { table-layout: auto; }
+.olc-ozettablo th, .olc-ozettablo td {
+  text-align: center; font-size: calc(var(--ae) * .022); padding: calc(var(--ae) * .009);
+  vertical-align: middle;
+}
+.olc-ozettablo .sol { text-align: start; }
+.olc-ozettablo .kalin { font-weight: 800; color: var(--yesilK); }
+.olc-ozetsayfa .olc-tablo { flex: 0 0 auto; }
+
+/* toplu indirmede kullanılan, ekranda görünmeyen kâğıtlar */
+.olc-gizli {
+  position: fixed; left: -20000px; top: 0; width: 1px; height: 1px; overflow: hidden;
+}
+
+/* ---------------- dar ekran ---------------- */
+@media (max-width: 900px) {
+  .olc-govde { flex-direction: column; }
+  .olc-panel { flex: 0 0 auto; max-height: 45vh; border-inline-end: 0; border-bottom: 1px solid var(--cizgi); }
+}
+
+/* ---------------- yazdırma (Ctrl+P) ---------------- */
+@media print {
+  @page { size: A4 portrait; margin: 0; }
+  html, body { height: auto; overflow: visible; background: #fff; }
+  .olc-ust, .olc-panel { display: none !important; }
+  .olc-govde { display: block; }
+  .olc-sahne { display: block; padding: 0; background: #fff; }
+  .olc-kagit {
+    --ae: 210mm !important;
+    width: 210mm; height: 297mm; box-shadow: none;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+}

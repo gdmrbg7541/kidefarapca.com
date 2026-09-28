@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Değerlendirme Ölçeği · Proje ve Performans</title>
+<meta name="description" content="Arapça dersi proje ve performans/ders etkinlikleri değerlendirme ölçeklerini puanlayıp evrak düzeninde PDF olarak indirin.">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="olcek/olcek.css?v=1">
+<!-- Arakom EN SON: site geneli yazı tipi (Arapça metinler onunla çizilir). -->
+<link rel="stylesheet" href="arakom.css?v=2">
+<style>
+  /* Form alanları ve Latin başlıklar Arakom'a düşmesin diye kimlikli
+     seçiciyle (öncelik) Nunito'da tutuluyor; arakom.css'e dokunulmadı. */
+  #olcAlan .olc-lat:not(#yok1),
+  #olcAlan input:not(#yok1),
+  #olcAlan select:not(#yok1),
+  #olcAlan textarea:not(#yok1) { font-family: 'Nunito', system-ui, sans-serif; }
+</style>
+</head>
+<body>
+
+<header class="olc-ust">
+  <button type="button" class="olc-geri" onclick="return kidefGeri(event)" title="Geri" aria-label="Geri">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" stroke-linejoin="round" style="width:1.15em;height:1.15em" aria-hidden="true">
+      <path d="M20 12H5.4"></path><path d="M11.8 5.6 5 12l6.8 6.4"></path>
+    </svg>
+  </button>
+  <h1>
+    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <rect x="9" y="5" width="30" height="38" rx="3" fill="#fff" opacity=".94"/>
+      <rect x="9" y="5" width="30" height="38" rx="3" fill="none" stroke="#0E7C66" stroke-width="2"/>
+      <path d="M14 15h20M14 22h20M14 29h13" stroke="#9FD5C9" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M24 33.5l3.6 3.8 8-9" stroke="#F39C12" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Değerlendirme Ölçeği
+  </h1>
+  <div class="olc-arac">
+    <span class="olc-durum" id="olcDurum"></span>
+    <button type="button" class="olc-tus" id="olcTopluTus" title="Sınıftaki her öğrenci için bir sayfa">
+      Sınıfı indir
+    </button>
+    <button type="button" class="olc-tus olc-basli" id="olcIndir">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3.5v11"></path><path d="M7.4 10.2 12 14.8l4.6-4.6"></path>
+        <path d="M4.5 19.5h15"></path>
+      </svg>
+      <span id="olcIndirYazi">PDF indir</span>
+    </button>
+  </div>
+</header>
+
+<div class="olc-govde" id="olcAlan">
+
+  <!-- ================= SOL: AYARLAR ================= -->
+  <aside class="olc-panel" aria-label="Ölçek ayarları">
+
+    <section class="olc-blok">
+      <h2 class="olc-lat">Belge</h2>
+      <label class="olc-sat"><span>Sınıf</span>
+        <select id="olcSinif"></select></label>
+      <label class="olc-sat"><span>Tür</span>
+        <select id="olcTur"></select></label>
+      <label class="olc-sat"><span>Ölçek</span>
+        <select id="olcOlcek"></select></label>
+      <p class="olc-not" id="olcTurNot"></p>
+    </section>
+
+    <section class="olc-blok">
+      <h2 class="olc-lat">Künye</h2>
+      <label class="olc-sat"><span>Okul</span><input id="olcOkul" placeholder="Okulun adı"></label>
+      <label class="olc-sat"><span>Ders</span><input id="olcDers" value="Arapça"></label>
+      <label class="olc-sat"><span>Eğitim yılı</span><input id="olcYil"></label>
+      <label class="olc-sat"><span>Dönem</span>
+        <select id="olcDonem"><option>1. Dönem</option><option>2. Dönem</option></select></label>
+      <label class="olc-sat"><span>Görev</span><input id="olcGorev" placeholder="Görevin adı (boş bırakılabilir)"></label>
+      <label class="olc-sat"><span>Tarih</span><input id="olcTarih" type="date"></label>
+      <label class="olc-sat"><span>Öğretmen</span><input id="olcOgretmen" placeholder="Ad Soyad"></label>
+    </section>
+
+    <section class="olc-blok">
+      <h2 class="olc-lat">Öğrenciler</h2>
+      <p class="olc-not">Her satıra bir öğrenci: <b>no ad soyad</b>. Sınıf listesini
+        buraya yapıştırman yeterli.</p>
+      <textarea id="olcListe" rows="5" placeholder="12 Ayşe Yılmaz&#10;14 Mehmet Demir"></textarea>
+      <div class="olc-ogrenciler" id="olcOgrenciler"></div>
+    </section>
+
+    <section class="olc-blok">
+      <h2 class="olc-lat">Puanlama</h2>
+      <p class="olc-not">Kâğıttaki tabloda her ölçüt için bir dereceye tıkla;
+        toplam ve 100'lük karşılık kendiliğinden hesaplanır.</p>
+      <div class="olc-ozet" id="olcOzet"></div>
+      <button type="button" class="olc-kucuk" id="olcTemizle">Bu öğrencinin puanlarını sil</button>
+    </section>
+  </aside>
+
+  <!-- ================= SAĞ: KÂĞIT ================= -->
+  <main class="olc-sahne" id="olcSahne" aria-live="polite">
+    <div class="olc-kagit" id="olcKagit"></div>
+  </main>
+</div>
+
+<!-- Veri: MEB ölçekleri (üretilmiş) + genel ölçekler (elle yazılmış) -->
+<script src="olcek/olcekveri.js?v=1"></script>
+<script src="olcek/olcekgenel.js?v=1"></script>
+<!-- PDF: html2canvas tuşa basılınca yüklenir (bkz. sistem/kagitpdf.js) -->
+<script src="sistem/kagitpdf.js?v=1"></script>
+<script src="olcek/olcek.js?v=1"></script>
+<script src="sistem/geri.js?v=20260915a"></script>
+</body>
+</html>

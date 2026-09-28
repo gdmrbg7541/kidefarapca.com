@@ -1269,6 +1269,17 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
   }
 </style>
 
+    <style>
+      /* Belge kartlarının içindeki eylem tuşları (ör. ölçek hesaplayıcı) */
+      .dok-tuslar { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+      .dok-tus {
+        display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+        font-weight: 800; font-size: .86rem; line-height: 1.1;
+        color: #0E7C66; background: #E8F6F3; border: 1.6px solid #BDE3DA;
+        border-radius: 999px; padding: 7px 14px; transition: background .15s, color .15s;
+      }
+      .dok-tus:hover { background: #0E7C66; border-color: #0E7C66; color: #fff; }
+    </style>
     <section id="imam-hatip" class="content-section">
       <h2>
         <svg class="kbas" viewBox="0 0 64 64" aria-hidden="true">
@@ -3925,6 +3936,28 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             url: 'dosyalar/performans-proje/arapca-performans-proje-5-10.pdf' }
         );
         
+        /* 3d — Değerlendirme ölçeği hesaplayıcısı.
+           Kitap karekodundan inen dereceli puanlama ölçeklerini ekranda
+           puanlayıp evrak düzeninde PDF veren sayfa: olcek.html
+           ADLANDIRMA: ortaokulda (5-8) puan "ders etkinliklerine katılım",
+           ortaöğretimde (9-10) "performans çalışması" adıyla verilir —
+           bağlantı adları da buna göre değişiyor. Proje her ikisinde de
+           ayrı bir evrak. */
+        [5, 6, 7, 8, 9, 10].forEach(function (s) {
+          var perfAd = (s <= 8) ? 'Ders Etkinliklerine Katılım' : 'Performans Çalışması';
+          SINIF_GIRIS[s]['Proje & Performans Görevleri'] =
+            '<div class="dok-not"><b>Ölçekle puanla:</b> kitabın karekodundaki dereceli '
+            + 'puanlama ölçeğini ekranda işaretle; toplam ve yüzlük karşılık kendiliğinden '
+            + 'hesaplansın, evrak düzeninde A4 PDF olarak insin. Sınıf listesini yapıştırıp '
+            + 'her öğrenciye bir sayfa da alabilirsin.</div>'
+            + '<div class="dok-tuslar">'
+            + '<a class="dok-tus" href="olcek.html?sinif=' + s + '&tur=proje" '
+            + 'target="_blank" rel="opener">Proje Ölçeği</a>'
+            + '<a class="dok-tus" href="olcek.html?sinif=' + s + '&tur=performans" '
+            + 'target="_blank" rel="opener">' + perfAd + ' Ölçeği</a>'
+            + '</div>';
+        });
+
         /* 4 — kart açıklamaları */
         var SINIFLAR_ = [5, 6, 7, 8, 9, 10];
         SINIFLAR_.forEach(function (s) {
