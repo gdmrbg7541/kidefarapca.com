@@ -2809,13 +2809,14 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       .ihsv-ok { margin-left:auto; font-size:1.1rem; color:#16A085; }
       .ihsv-hazir { flex-direction:column; align-items:flex-start; gap:2px;
                     background:#fff; border-style:dashed; }
-      @media (prefers-color-scheme: dark){
-        .ihsv-dug { background:rgba(22,160,133,.12); border-color:rgba(22,160,133,.32); }
-        .ihsv-hazir { background:#16222E; border-color:#2B3A48; }
-        .ihsv-sec b { color:#8FEAD5; }
-        .ihsv-sec small { color:#67C7B2; }
-        .ihsv-ok { color:#8FEAD5; }
-      }
+      /* KARANLIK KİP KURALLARI KALDIRILDI (28.09.2026) — sitenin bütününde
+         karanlık tema YOK; sayfa her zaman açık zeminde açılıyor. Buradaki
+         @media (prefers-color-scheme: dark) bloğu ise işletim sistemi
+         karanlık kipteyse devreye giriyor ve yazıları açık yeşile
+         (#8FEAD5 / #67C7B2) çeviriyordu: beyaz zeminde okunmuyordu.
+         Öğretmenin "açık renk, iyi görünmüyor" dediği buydu; yazı rengini
+         açık kipte siyah yapmak yetmiyordu çünkü bu blok onu eziyordu.
+         Siteye gerçek bir karanlık tema gelirse burası yeniden yazılabilir. */
       /* --- sınıf içi döküman akordiyonu (iç içe) --- */
       .ihdoc-acc { display:flex; flex-direction:column; gap:9px; }
       .ihdoc-item { background:#f8fafc; border:1.3px solid #eef2f6; border-radius:12px; overflow:hidden; transition:border-color .2s, background .2s; }

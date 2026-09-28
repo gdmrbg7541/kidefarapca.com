@@ -1761,3 +1761,12 @@ YEDEKLER
     önce başlıkları görüyor, aradığına tıklayınca açılıyor.
   · «Sınav Oluştur» / «Hazır sınavlar» başlıkları koyu yeşilden siyaha alındı.
   · «Klasik sorular · öğrenme çıktılarına göre · antet hazır» alt açıklaması da siyah.
+  · ASIL SEBEP: index.html'de yalnız «Sınav Oluştur» kutusu için yazılmış bir
+    @media (prefers-color-scheme: dark) bloğu vardı. Sitenin bütününde
+    karanlık tema yok; işletim sistemi karanlık kipteyse bu blok devreye
+    girip yazıları açık yeşile (#8FEAD5 / #67C7B2) çeviriyor, beyaz zeminde
+    okunmuyordu. Blok kaldırıldı — yazı her kipte siyah.
+    (Aynı biçimde tek başına kalmış iki karanlık kip bloğu daha var:
+     #imam-hatip .ihsec-ayirac ve .sosyal-* — sorun çıkarırlarsa onlar da
+     kaldırılabilir.)
+    Yedek: _kaynak/yedekler/index_2026-09-28_ihsv-koyu-oncesi.html
