@@ -1870,3 +1870,105 @@ DENETİM
   · «Dosyayı kurarken» ipucu ve «Formlar örnektir» notu da kaldırıldı.
     Öğretmen Dosyası kartında artık: kısa not + «Dosyada ne var? — 19 form»
     açıklaması + Tam Set / Küçük Paketler belge grupları.
+
+───────────────────────────────────────────────────────────────────
+28.09.2026 (6) — SÖZLÜK · SİMÜLASYON SEVİYELERİ ÜST ŞERİTTE
+───────────────────────────────────────────────────────────────────
+DEĞİŞEN
+  sozluk/gomulu.js        (v2 → v3)
+    · Oyunun .level-selector satırı ve altındaki ayıraç (content-wrapper > hr)
+      gizlendi — aşağıda iki satırlık yer açıldı.
+    · Seviye düğmeleri üst sayfaya bildiriliyor:
+      { kidef:'gomulu', tuslar:[…], seviyeler:[{n,yazi,etkin,pasif,gizli}] }
+    · { kidef:'gomulu-seviye', n } gelince o seviyeye basıyor.
+    · .level-selector izleniyor; oyun seviyeyi kendi değiştirince
+      (bir seviye bitince) üstteki işaret de kayıyor.
+  sozluk/sozluksekme.js   (v7 → v8)
+    · Yeşil şeritte "SEVİYE 1 2 3 4 5" kaydırağı (.szs-sev). Etkin seviye
+      dolu beyaz + yeşil yazı; sekme kaydırağıyla aynı dil.
+    · 700 pikselin altında "SEVİYE" etiketi gizleniyor, yalnız rakamlar kalıyor.
+  sozluksimulasyonu.html · yenisozlukdedektifi.html · sozluk.html
+    · sürüm numaraları artırıldı (önbellek)
+
+NEDEN POSTMESSAGE: oyun sekme içinde <iframe> ile açılıyor; "file://" ile
+açıldığında üst sayfa çerçevenin içine dokunamıyor. Joker/İpuçları'nda
+kurulu olan köprü kullanıldı.
+
+DENETİM (koşum, gerçek oyunla)
+  · Şeritte 5 düğme çıkıyor, etkin seviye doğru işaretleniyor
+  · Şeritten 3'e basınca oyun 3. seviyeye geçiyor (iframe .active=2),
+    5'e basınca 5. seviyeye (active=4)
+  · Oyun içindeki seviye satırı display:none
+  · Joker vekili bozulmadı
+  · Yedek: _kaynak/yedekler/gomulu_2026-09-28_seviye-oncesi.js
+           _kaynak/yedekler/sozluksekme_2026-09-28_seviye-oncesi.js
+  · Betik: _kaynak/uretici/seviyeSerit.py
+
+───────────────────────────────────────────────────────────────────
+28.09.2026 (7) — SİMÜLASYONDA SÖZLÜK KLAVYESİ
+───────────────────────────────────────────────────────────────────
+YENİ
+  sozluk/klavye.css      ortak klavye görünümü (.szk-klavye)
+
+DEĞİŞEN
+  sozluk/sozluksimulasyonu.js  (v20260924h → v20260929a)
+    · createKeyboard() artık oyunun kendi renkli klavyesini değil,
+      SÖZLÜKTEKİ klavyeyi çiziyor: KidefSozluk.klavyeCiz (sarf/sozlukmotor.js).
+      Tuşa basınca yine handleKeyboardInput çağrılıyor — oyun mantığı aynı.
+    · Harf satırları .letter-row sınıfını alıyor, boşluk+"Dar" satırı da
+      oyunun "özel satırı" oluyor; setKeyboardState olduğu gibi çalışıyor.
+    · Motor yüklenmemişse eski renkli klavye yedek olarak çiziliyor.
+  sozluksimulasyonu.html
+    · sarf/sozlukmotor.js ve sozluk/klavye.css bağlandı
+
+NOT
+  · Boşluk tuşu oyunda gizli (cevap tek kelime); 1024 pikselin altında
+    "Dar" düğmesi de gizlendiği için o satırın tamamı kalkıyor —
+    bir satır daha yer kazanılıyor.
+  · sozluk.html klavye stilini kendi <style> bloğunda taşımaya devam
+    ediyor; klavye.css oradan kopyalandı. Ölçü değiştirirsen ikisine de bak.
+
+DENETİM (koşum, gerçek oyunla)
+  · Klavye çiziliyor (35 tuş), eski renkli tuşlardan hiç kalmadı
+  · Harfe basınca girdiye yazıyor (ك + ت = كت), sil tuşu siliyor
+  · 1180 px: üç harf satırı + Dar düğmesi · 900 px: özel satır gizli
+  · Yedek: _kaynak/yedekler/sozluksimulasyonu_2026-09-28_klavye-oncesi.js
+           _kaynak/yedekler/sozluksimulasyonu_2026-09-28_klavye-oncesi.html
+  · Betik: _kaynak/uretici/oyunKlavye.py
+  · (düzeltme) Klavye SÖZLÜKTEKİYLE TIPATIP AYNI oldu:
+      - dizilim ters dönüyordu → .szk-klavye'ye direction:ltr
+        (oyun kabı .game-container rtl; satırları çeviriyordu)
+      - ölçüler sözlükteki :root değerlerine döndürüldü
+      - boşluk tuşu geri geldi (sözlükte var)
+    Klavye artık oyun alanının EN ALTINDA: .szk-klavye'ye margin-top:auto,
+    kabına .szk-klavye-kap (flex:1 1 auto) — altında boşluk kalmıyor (0 px).
+    Sürümler: klavye.css?v=3 · sozluksimulasyonu.js?v=20260929b
+    Denetim: sözlük ve oyun ilk satırı birebir aynı (ذضصثقفغعهـخحجد),
+    1180 ve 900 pikselde alt boşluk 0 px.
+  · (düzeltme 2) Klavye YATAYDA da sözlüktekiyle birebir aynı oldu.
+    Sorun kaplardı: .aspect-ratio-wrapper 98vw (iki yanda 12 px) ve
+    .content-wrapper %95 — klavye hem 67 px dar kalıyor hem sağa kayıyordu.
+      - klavye pencereye SABİTLENDİ (position:fixed; left/right/bottom:0);
+        artık hiçbir kap onu kısıtlamıyor
+      - oyun alanı klavyenin üstünde bitiyor:
+        .game-container.szk-klavyeli { bottom:var(--szk-klv-y); height:auto }
+        (height:auto şart — top+height+bottom birlikteyken bottom yok sayılır)
+        Yüksekliği JS ölçüyor (ResizeObserver); klavye gizliyken 0, oyun
+        bütün alanı kullanıyor.
+      - box-sizing:border-box eklendi (oyun sayfasında genel kural yok,
+        iç boşluk genişliğe ekleniyordu)
+    Sürümler: klavye.css?v=8 · sozluksimulasyonu.js?v=20260929d
+    ÖLÇÜM (1180 px): sözlük ve oyun — kap eni 1180, sol 0, sağ 0,
+    satır eni 1165, tuş eni 78, ilk üç tuşun konumu 40/125/210, alt 0 px.
+  · (düzeltme 3) Üç pürüz giderildi (klavye.css?v=10):
+      - HARFLER KALINDI: oyunun .keyboard button kuralı font-weight:bold
+        veriyordu; klavyeye font-weight:400 kondu (sözlükteki gibi).
+      - "DAR" KİPİ BOZULUYORDU: oyun klavyeye satır içi display:flex
+        yazıyor (setKeyboardState), satırlar esnek öge olunca içerikleri
+        kadar daralıyor, tuşlar 18 piksele inip harfler taşıyordu.
+        .szk-satir'a width:100% eklendi → dar kipte tuş 46 px, sözlükle aynı.
+      - TUŞ 5 PİKSEL ALÇAKTI: çerçeve, üstteki yeşil şerit kadar kısa
+        olduğu için 8vh küçük geliyordu; --tus-y 8.6vh yapıldı.
+    ÖLÇÜM (1180×800): sözlük ve oyun dört değerde de aynı —
+      tam kip  tuş 78x64, harf 14x60, punto 40.12, kalınlık 400
+      dar kip  tuş 46x64, harf 10x43, punto 28.91, kalınlık 400

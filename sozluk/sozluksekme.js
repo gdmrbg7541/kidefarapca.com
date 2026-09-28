@@ -80,6 +80,25 @@
             'white-space:nowrap;transition:background .18s}',
             '.szs-vekil:hover{background:rgba(255,255,255,.26)}',
             '.szs-vekil:disabled{opacity:.45;cursor:default}',
+            /* SEVİYE ŞERİDİ — oyunun kendi seviye satırı yukarı, yeşil
+               şeridin içine alındı; aşağıda bir satır boşa gitmiyor.
+               Görünüşü sekme kaydırağının küçüğü: beyaz saydam hap,
+               etkin seviye dolu beyaz + yeşil yazı. */
+            '.szs-sev{display:inline-flex;align-items:center;gap:7px}',
+            '.szs-sev-et{font-weight:800;font-size:.76rem;letter-spacing:.3px;',
+            'color:rgba(255,255,255,.85);text-transform:uppercase}',
+            '.szs-sev-yuva{display:inline-flex;gap:2px;background:rgba(255,255,255,.18);',
+            'border-radius:999px;padding:3px}',
+            '.szs-sev-yuva button{border:0;background:none;cursor:pointer;font:inherit;',
+            'font-weight:800;color:rgba(255,255,255,.92);border-radius:999px;',
+            'font-size:clamp(.76rem,.9vw,1.05rem);padding:3px clamp(9px,.9vw,14px);',
+            'min-width:26px;transition:background .18s,color .18s}',
+            '.szs-sev-yuva button:hover{color:#fff;background:rgba(255,255,255,.22)}',
+            '.szs-sev-yuva button[aria-pressed="true"]{background:#fff;color:#0E7C66;',
+            'box-shadow:0 2px 7px rgba(0,0,0,.18)}',
+            '.szs-sev-yuva button:disabled{opacity:.4;cursor:default}',
+            '@media(max-width:700px){.szs-sev-et{display:none}',
+            '.szs-sev-yuva button{font-size:.74rem;padding:3px 8px;min-width:22px}}',
             /* Dar ekranda üst şerit: başlığın yazısı gizlenir (simge kalır),
                etiketler küçülür, taşarsa şerit kendi içinde kayar — sayfa
                yatay kaymaz. */
@@ -255,6 +274,7 @@
     /* Oyun sayfasından gelen tuş listesi (postMessage). Aynı köken
        şartı yok: "file://" ile açıldığında da çalışıyor. */
     var sonTuslar = {};                 /* sekme id -> [{id,yazi,pasif}] */
+    var sonSeviye = {};                 /* sekme id -> [{n,yazi,etkin,gizli}] */
 
     function kisaAd(id, yazi) {
         var dar = (window.innerWidth || 1200) <= 700;
@@ -268,9 +288,35 @@
         for (i = 0; i < SEKME.length; i++) if (SEKME[i].id === secili) s = SEKME[i];
         if (!s || !s.url) return;                 /* sözlükteyken vekil yok */
         var liste = sonTuslar[secili] || [];
-        if (!liste.length) return;
+        var sev = (sonSeviye[secili] || []).filter(function (v) { return !v.gizli; });
+        if (!liste.length && !sev.length) return;
         var kutu = aracKutu();
         if (!kutu) return;
+        /* seviye şeridi, oyun tuşlarının SOLUNDA */
+        if (sev.length > 1) {
+            var sv = document.createElement('div');
+            sv.className = 'szs-sev';
+            sv.innerHTML = '<span class="szs-sev-et">Seviye</span>';
+            var yuva = document.createElement('div');
+            yuva.className = 'szs-sev-yuva';
+            sev.forEach(function (v, i) {
+                var b = document.createElement('button');
+                b.type = 'button';
+                b.textContent = String(i + 1);
+                b.title = v.yazi || ('Seviye ' + (i + 1));
+                b.setAttribute('aria-label', b.title);
+                b.setAttribute('aria-pressed', v.etkin ? 'true' : 'false');
+                b.disabled = !!v.pasif;
+                b.onclick = function () {
+                    var f = cerceve[secili];
+                    if (!f || !f.contentWindow) return;
+                    try { f.contentWindow.postMessage({ kidef: 'gomulu-seviye', n: v.n }, '*'); } catch (e) { }
+                };
+                yuva.appendChild(b);
+            });
+            sv.appendChild(yuva);
+            kutu.appendChild(sv);
+        }
         liste.forEach(function (v) {
             /* Oyun o anda kendi tuşunu gizliyorsa (giriş/ipuçları ekranı)
                vekili de çıkmasın; "Başla"dan sonra ikisi birden gelir. */
@@ -297,6 +343,7 @@
         for (k in cerceve) {
             if (cerceve[k].contentWindow === ev.source) {
                 sonTuslar[k] = d.tuslar || [];
+                sonSeviye[k] = d.seviyeler || [];
                 if (k === secili) vekilCiz();
                 return;
             }

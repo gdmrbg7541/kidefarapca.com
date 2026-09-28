@@ -43,7 +43,11 @@
             '.mobile-home-btn,' +
             /* simülasyonun başlık satırı: başlık + geri + Joker + İpuçları.
                Tuşlar yukarı taşındığı için satırın tamamı kalkıyor. */
-            '.header' +
+            '.header,' +
+            /* seviye şeridi de yukarı taşındı; altındaki ayıraç da
+               boşuna bir satır yiyordu (28.09.2026). */
+            '.level-selector,' +
+            '.content-wrapper > hr' +
             '{display:none !important}';
         (document.head || document.documentElement).appendChild(st);
     }
@@ -70,6 +74,24 @@
         return false;
     }
 
+    /* Seviye düğmeleri: id'leri yok, data-level ile duruyorlar. Etkin
+       olanı oyun .active sınıfıyla işaretliyor; bitmiş seviyeleri de
+       hidden yapabiliyor — ikisi de üste bildiriliyor. */
+    function seviyeler() {
+        var l = [];
+        [].forEach.call(document.querySelectorAll('.level-btn'), function (e, i) {
+            var n = e.getAttribute('data-level');
+            l.push({
+                n: (n == null ? String(i) : n),
+                yazi: (e.textContent || '').trim(),
+                etkin: e.classList.contains('active'),
+                pasif: !!e.disabled,
+                gizli: e.hasAttribute('hidden')
+            });
+        });
+        return l;
+    }
+
     function bildir() {
         var l = [];
         TASINAN.forEach(function (id) {
@@ -80,11 +102,24 @@
                 pasif: !!e.disabled, gizli: gizliMi(e)
             });
         });
-        try { parent.postMessage({ kidef: 'gomulu', tuslar: l }, '*'); } catch (e) { }
+        try {
+            parent.postMessage({ kidef: 'gomulu', tuslar: l, seviyeler: seviyeler() }, '*');
+        } catch (e) { }
     }
     function gecikmeliBildir() { clearTimeout(zaman); zaman = setTimeout(bildir, 60); }
 
     function izle() {
+        /* Seviye şeridi: etkin seviye değişince (oyun .active'i taşıyor)
+           üstteki kaydırak da kaysın. */
+        var sv = document.querySelector('.level-selector');
+        if (sv && !sv.__kdIzli) {
+            sv.__kdIzli = 1;
+            try {
+                new MutationObserver(gecikmeliBildir).observe(sv, {
+                    childList: true, subtree: true, attributes: true
+                });
+            } catch (x) { }
+        }
         TASINAN.forEach(function (id) {
             var e = document.getElementById(id);
             if (!e || e.__kdIzli) return;
@@ -108,7 +143,14 @@
     /* ---------------- üstten gelen tıklama ---------------- */
     window.addEventListener('message', function (ev) {
         var d = ev && ev.data;
-        if (!d || d.kidef !== 'gomulu-tik' || !d.id) return;
+        if (!d) return;
+        if (d.kidef === 'gomulu-seviye' && d.n != null) {
+            var s = document.querySelector('.level-btn[data-level="' + d.n + '"]');
+            if (s) { try { s.click(); } catch (x) { } }
+            gecikmeliBildir();
+            return;
+        }
+        if (d.kidef !== 'gomulu-tik' || !d.id) return;
         var e = document.getElementById(d.id);
         if (e) { try { e.click(); } catch (x) { } }
     });

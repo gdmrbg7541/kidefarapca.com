@@ -131,12 +131,16 @@
       } catch (e) {}
     })();
     </script>
-    <script src="sozluk/sozluksimulasyonu.js?v=20260924h"></script>
+    <!-- Klavye sözlükten geliyor: çizen işlev sozlukmotor.js'te
+         (KidefSozluk.klavyeCiz), görünümü sozluk/klavye.css'te. -->
+    <link rel="stylesheet" href="sozluk/klavye.css?v=10">
+    <script src="sarf/sozlukmotor.js?v=3"></script>
+    <script src="sozluk/sozluksimulasyonu.js?v=20260929d"></script>
 <!-- GOMULU KIP: sozluk.html icinde sekme olarak acildiginda (?gomulu=1)
      kendi geri/ana sayfa tuslarini ve baslik satirini gizler, ust seride
      tasinacak tuslari (Joker, Ipuclari) bildirir. Tek basina acilinca
      hicbir sey yapmaz - Imam Hatip gorevi ve katalog etkilenmez. -->
-<script src="sozluk/gomulu.js?v=2"></script>
+<script src="sozluk/gomulu.js?v=3"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */

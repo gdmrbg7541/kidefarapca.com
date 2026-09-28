@@ -724,12 +724,60 @@ olduğu gibi yazılır.</li>
             return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`; 
         }
 
-        // --- GÜNCELLENDİ: KLAVYE OLUŞTURMA ---
+        // --- KLAVYE OLUŞTURMA ---
+        /* 28.09.2026 (öğretmen isteği): oyunun kendi renkli klavyesi
+           kaldırıldı, SÖZLÜKTEKİ klavye çiziliyor. Çizen işlev ortak:
+           KidefSozluk.klavyeCiz (sarf/sozlukmotor.js), görünüm
+           sozluk/klavye.css. Tuşa basınca yine handleKeyboardInput
+           çağrılıyor, yani oyunun mantığı hiç değişmedi.
+           Motor yoksa (sayfa betiksiz açılırsa) aşağıdaki eski renkli
+           klavye yedek olarak çiziliyor. */
         function createKeyboard() {
-            // GÜNCELLENDİ: Hatalı prepend mantığı kaldırıldı
-            
-            // Klavye tuşları zaten varsa oluşturmayı atla
-            if(letterRows.length > 0) return;
+            if (letterRows.length > 0) return;
+
+            var motor = window.KidefSozluk;
+            if (motor && motor.klavyeCiz) {
+                keyboardEl.classList.add('szk-klavye');
+                motor.klavyeCiz(keyboardEl,
+                    function (h) { handleKeyboardInput(h); },
+                    function () { handleKeyboardInput('Backspace'); });
+                /* setKeyboardState satırları .letter-row ile gizleyip
+                   gösteriyor; çizilen satırlara o sınıfı ekliyoruz. */
+                /* Klavye, oyun kabının DOĞRUDAN çocuğu yapılıyor. Neden:
+                   sözlükte klavye sayfanın iki kenarına dayanıyor; oyunda
+                   ise .content-wrapper %95 genişlikte ve ortalanmış değil,
+                   klavye 12 piksel sağa kaçıyordu. Kabın çocuğu olunca
+                   tam genişlik hesabı (bkz. klavye.css) şaşmıyor.
+                   setKeyboardState yalnız keyboardEl / letterRows /
+                   specialKeysRow değişkenlerine bakıyor, taşımadan
+                   etkilenmiyor. */
+                var oyunKabi = keyboardEl.closest ? keyboardEl.closest('.game-container') : null;
+                if (oyunKabi) {
+                    oyunKabi.appendChild(keyboardEl);
+                    oyunKabi.classList.add('szk-klavyeli');
+                    /* Klavye pencereye sabit; oyun alanı onun üstünde bitsin
+                       diye yüksekliği ölçülüp değişkene yazılıyor. Klavye
+                       gizlenince (giriş ekranı) ölçü 0 olur ve oyun bütün
+                       alanı kullanır. */
+                    var olc = function () {
+                        oyunKabi.style.setProperty('--szk-klv-y', keyboardEl.offsetHeight + 'px');
+                    };
+                    try { new ResizeObserver(olc).observe(keyboardEl); } catch (x) { }
+                    window.addEventListener('resize', olc);
+                    olc(); setTimeout(olc, 120); setTimeout(olc, 600);
+                }
+                var satirlar = [].slice.call(keyboardEl.querySelectorAll('.szk-satir'));
+                /* SON satır boşluk + "Dar" düğmesi: harf satırı değil, oyunun
+                   "özel satır"ı olarak alınıyor. Böylece cevap gösterilirken
+                   (reviewing) harfler gizlenip o satır yerinde kalıyor ve
+                   setKeyboardState'in satır mantığı olduğu gibi işliyor. */
+                specialKeysRow = satirlar.pop();
+                if (specialKeysRow) specialKeysRow.classList.add('special-keys-row');
+                letterRows = satirlar;
+                letterRows.forEach(function (r) { r.classList.add('letter-row'); });
+                return;
+            }
+            /* ---- yedek: eski renkli klavye ---- */
 
             const colorMap={'ب':'#a0c4ff','ت':'#a0c4ff','ث':'#a0c4ff','ن':'#a0c4ff','ي':'#a0c4ff','ج':'#caffbf','ح':'#caffbf','خ':'#caffbf','د':'#fdffb6','ذ':'#fdffb6','ر':'#ffd6a5','ز':'#ffd6a5','s':'#ffadad','ش':'#ffadad','ص':'#bdb2ff','ض':'#bdb2ff','ط':'#9bf6ff','ظ':'#9bf6ff','ع':'#ffc6ff','غ':'#ffc6ff','ف':'#b9f6ca','ق':'#b9f6ca','ه':'#b3e5fc','ة':'#b3e5fc','ء':'#ffccbc','ؤ':'#ffccbc','ئ':'#ffccbc','ا':'#e0e0e0','ل':'#e0e0e0','ك':'#d1c4e9','م':'#f8bbd0','و':'#c5cae9'};
             const defaultColor='#FFFFFF';

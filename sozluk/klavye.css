@@ -1,0 +1,133 @@
+/* ==================================================================
+   ORTAK ARAPÇA KLAVYE — sözlükteki klavyenin oyunlarda kullanılan hâli
+   ------------------------------------------------------------------
+   NİYE VAR: Simülasyon'un kendi renkli klavyesi kaldırıldı; artık
+   sözlükteki klavye çiziliyor (28.09.2026, öğretmen isteği:
+   "simülasyondaki klavyeyi silelim, sözlüktekini orada da kullanalım…
+   tıpatıp aynı olsun"). Tuşları çizen işlev ortak:
+   sarf/sozlukmotor.js → KidefSozluk.klavyeCiz.
+
+   ÖLÇÜLER SÖZLÜKTEKİNİN AYNISI — sozluk.html'deki <style> bloğundan
+   ("---------- klavye ----------") birebir kopyalandı. Orada bir ölçü
+   değişirse burada da değiştir.
+
+   İKİ FARK, ikisi de oyunun kendi düzeninden geliyor:
+     · direction:ltr — oyun kabı (.game-container) rtl; klavye satırları
+       da ters dönüyordu. Sözlükteki sırayı korumak için ltr'ye alındı.
+     · margin-top:auto — klavye oyun alanının EN ALTINA yaslanıyor.
+
+   KULLANIMI: sayfaya bu dosyayı bağla, klavye kabına szk-klavye
+   sınıfını ver, KidefSozluk.klavyeCiz(kap, yaz, sil) çağır.
+   ================================================================== */
+
+/* Oyun sayfasında genel bir box-sizing kuralı yok; sözlükte var.
+   Olmadan width:100vw'ye iç boşluk EKLENİYOR ve klavye 15 piksel
+   taşıyordu. */
+.szk-klavye, .szk-klavye * { box-sizing: border-box; }
+
+.szk-klavye {
+    /* sözlükteki :root değerlerinin aynısı */
+    /* Sözlükte 8vh; oyun çerçeve içinde açıldığı için pencere üstteki
+       yeşil şerit kadar (~57 px) kısa ve 8vh tuşu 5 piksel alçaltıyordu —
+       harf tuşa sığmıyordu. 8.6vh ile tuş sözlüktekiyle aynı yükseklikte. */
+    --tus-y: clamp(44px, 8.6vh, 98px);          /* tuş yüksekliği */
+    --tus-en: clamp(62px, 6.6vw, 138px);        /* tuş eni (üst sınır) */
+    --tus-yz: clamp(1.4rem, 3.4vw, 4.2rem);     /* tuş harfi */
+    --tus-oran: .69;                            /* harf / tuş yüksekliği */
+    --tus-ara: clamp(5px, .62vw, 12px);
+    --klv-dar: clamp(680px, 56vw, 1040px);
+
+    /* Oyun kabı rtl; klavye sözlükteki sırayla dizilsin diye ltr. */
+    direction: ltr;
+    /* Oyun alanının en altına yaslan. */
+    margin-top: auto;
+    flex: 0 0 auto;
+    display: block;
+    /* KAP KISITLAMASI YOK: sözlükte klavye sayfanın iki kenarına
+       dayanıyor. Oyunda ise .aspect-ratio-wrapper 98vw/98dvh ve
+       .content-wrapper %95 — klavye hem dar kalıyor hem 12 piksel sağa
+       kayıyordu. Klavye pencereye SABİTLENDİ: kapların hiçbiri onu
+       kısıtlamıyor, sözlükteki yerin aynısına oturuyor.
+       Üstteki oyun alanı da klavye kadar yukarıdan bitiyor
+       (.game-container.szk-klavyeli → bottom:var(--szk-klv-y)). */
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    width: auto;
+    margin: 0;
+    z-index: 5;
+    background: #DFE6EE;
+    border-top: 1px solid #CBD5E0;
+    border-radius: 0;
+    padding: var(--tus-ara) var(--tus-ara) calc(var(--tus-ara) + 2px);
+    user-select: none;
+}
+/* Klavye oyun kabının son çocuğu; üstündeki gövde kalan yüksekliği
+   doldurur, klavye de dibe yaslanır. Kabın alt iç boşluğu (1.5vmin)
+   negatif kenarla siliniyor ki klavye tam kenara otursun. */
+.game-container.szk-klavyeli > .content-wrapper { height: 100%; }
+/* Oyun alanı klavyenin üstünde biter; yüksekliği JS ölçüp yazıyor
+   (klavye gizliyken 0 olur, oyun bütün alanı kullanır). */
+/* height:auto şart: kapta top+height+bottom birlikte tanımlıysa tarayıcı
+   bottom'ı yok sayıyor ve oyun alanı klavyenin altına uzuyordu. */
+.game-container.szk-klavyeli { bottom: var(--szk-klv-y, 0px); height: auto; }
+
+.szk-klavye .szk-satir {
+    display: flex; justify-content: center;
+    gap: var(--tus-ara); margin-bottom: var(--tus-ara);
+    /* width:100% ŞART: oyun klavyeyi display:flex yapıyor (setKeyboardState
+       satır içi stil yazıyor), satırlar da esnek öge olunca içeriği kadar
+       daralıyordu — "Dar" kipinde tuşlar 18 piksele inip harfler taşıyordu.
+       Sözlükte kap block, satırlar zaten tam genişlik. */
+    width: 100%;
+}
+.szk-klavye .szk-satir:last-child { margin-bottom: 0; }
+.szk-klavye .szk-tus {
+    flex: 1 1 0; min-width: 0; max-width: var(--tus-en); height: var(--tus-y);
+    font-family: 'Arakom', serif; line-height: 1;
+    /* Oyunun .keyboard button kuralı harfleri kalın yapıyordu; sözlükte
+       tuşlar normal kalınlıkta. */
+    font-weight: 400;
+    /* Harf hiçbir ekran oranında tuştan taşmasın: tuş alçalınca harf de alçalır. */
+    font-size: min(var(--tus-yz), calc(var(--tus-y) * var(--tus-oran)));
+    background: var(--szk-bg, #fff); color: #111; cursor: pointer;
+    border: 0; border-radius: clamp(9px, .7vw, 16px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .28);
+    transition: transform .08s ease, filter .12s ease;
+    padding: 0; width: auto;              /* oyunun 8.5vmin daire kuralını ez */
+}
+.szk-klavye .szk-tus:active { transform: translateY(1px); filter: brightness(.94); }
+.szk-klavye .szk-sil {
+    background: #B0BEC5; max-width: clamp(88px, 8.2vw, 180px);
+    font-size: min(calc(var(--tus-yz) * .82), calc(var(--tus-y) * .62));
+}
+.szk-klavye .szk-bosluk {
+    flex: 0 0 46%; max-width: clamp(320px, 34vw, 660px);
+    height: calc(var(--tus-y) * .88); background: #fff;
+}
+/* Dar/Tam düğmesi yalnız geniş ekranda — sözlükteki kuralın aynısı. */
+.szk-klavye .szk-boyut { display: none; }
+@media (min-width: 1024px) {
+    .szk-klavye .szk-boyut {
+        flex: 0 0 auto; display: inline-flex; align-items: center; gap: .45em;
+        height: calc(var(--tus-y) * .88); padding: 0 clamp(12px, .85vw, 20px);
+        border: 0; border-radius: clamp(9px, .7vw, 16px); cursor: pointer;
+        background: #C6D0DC; color: #2D3948; font-family: inherit; font-weight: 800;
+        font-size: min(calc(var(--tus-yz) * .5), calc(var(--tus-y) * .3));
+        box-shadow: 0 1px 2px rgba(0, 0, 0, .28);
+        transition: transform .08s ease, background .12s ease;
+        width: auto;
+    }
+    .szk-klavye .szk-boyut:hover { background: #B7C3D2; }
+    .szk-klavye .szk-boyut:active { transform: translateY(1px); }
+    .szk-klavye .szk-bik { width: 1.55em; height: 1.55em; display: block; flex: 0 0 auto; }
+    .szk-klavye .szk-boyut .bi-dis { display: none; }
+    .szk-klavye.dar .szk-boyut .bi-ic { display: none; }
+    .szk-klavye.dar .szk-boyut .bi-dis { display: block; }
+
+    /* Satır enini kıs; tuşlar flex:1 1 0 olduğu için kendiliğinden daralır. */
+    .szk-klavye.dar { --tus-yz: clamp(1.05rem, 2.45vw, 3.1rem); }
+    .szk-klavye.dar .szk-satir { max-width: var(--klv-dar); margin-inline: auto; }
+    .szk-klavye.dar .szk-tus { max-width: calc((var(--klv-dar) - 12 * var(--tus-ara)) / 13); }
+    .szk-klavye.dar .szk-sil { max-width: calc((var(--klv-dar) - 12 * var(--tus-ara)) / 9); }
+    .szk-klavye.dar .szk-bosluk { max-width: calc(var(--klv-dar) * .42); }
+}
