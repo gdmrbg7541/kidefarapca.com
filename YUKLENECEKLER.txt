@@ -1566,3 +1566,61 @@ NOT: katalog/index.html (basılı katalog) ikisini ayrı satır olarak listeleme
   öğrenci PDF'i (A4, 1 sayfa) ve dokuz kişilik sınıf PDF'i (10 sayfa,
   200 dpi, 4,2 MB); 7. sınıfta adlandırmanın "ders etkinliklerine
   katılım"a dönmesi.
+
+  ÖĞRETMEN DÖKÜMANLARI AÇILINCA SINIF KAPANIYOR (28.09.2026). Sınıf
+  panelindeki "Sınıf Belgeleri" ve "Etkinlik Kartları" BAŞLIKSIZ bir
+  bölümün (.ihsec-item.ihsec-bassiz) içinde duruyor ve o bölümün paneli
+  CSS ile hep açık; bu yüzden bolumleriKapat() onları kapatamıyordu,
+  Öğretmen Dökümanları'na basınca altta öylece duruyorlardı. Artık
+  ihsecToggle, sınıfın DIŞINDAKİ bir bölüm açılırken açık sınıfı
+  kapatıyor (yeni siniflariKapat). Tersi zaten vardı: sınıfa basınca
+  Öğretmen Dökümanları kapanıyordu.
+  Ölçüldü: 7. sınıf aç -> Öğretmen Dökümanları'na bas -> sınıf kapandı,
+  bölüm açıldı; sonra 6. sınıfa bas -> bölüm kapandı, sınıf açıldı.
+  Yedek: _kaynak/yedekler/index_2026-09-28_ihsec-oncesi.html
+
+  DÜZELTME — ölçek tuşları görünmüyordu. Tuşlar ayrı bir blokta
+  SINIF_GIRIS[s]['Proje & Performans Görevleri'] alanına yazılıyordu,
+  ama aşağıdaki "4 — kart açıklamaları" bölümü aynı alanı '=' ile
+  yeniden yazıp siliyordu. Artık tuşlar o atamanın ARDINDAN ve '+=' ile
+  ekleniyor; açıklama da duruyor. (Bu alana yeni bir şey eklerken sırayı
+  ve '+=' kullanımını kontrol et.)
+
+  ÖLÇEK ÜRETİCİSİ İYİLEŞTİ (28.09.2026)
+    · Dosyalar artık ADINA göre değil İÇERİĞİNE göre bulunuyor: içinde
+      "مقياس ... التقييم" geçen her .docx/.xlsx taranıyor. Ölçek dosyasını
+      📚 Arapça altında herhangi bir yere koymak yetiyor, adını
+      değiştirmeye gerek yok.
+    · docx okuma hatası düzeldi: '<w:t[^>]*>' yazımı <w:tcW .../> gibi
+      etiketleri de yakalıyor, hücrelere ham XML sızıyordu.
+    · Yanlış eşleşme elemesi: bir ünite dosyası yalnız "öğretmen karekodu
+      okutarak ölçeğe ulaşır" diyordu; içindeki kelime tablosu ölçek
+      sanılıp saçma veri üretmişti. Artık belgede "مقياس" ile BAŞLAYAN bir
+      başlık aranıyor ve derece açıklamalarının ortalama uzunluğu 18
+      harfin altındaysa tablo ölçek sayılmıyor.
+    Tarama sonucu: 📚 Arapça altındaki 1336 ofis dosyasından ölçek içeren
+    yalnız 2025_IHL_ARP9_UNITE1_OLCEKLER_HHK.xlsx (9. sınıf, iki ölçek).
+    Diğer sınıfların ölçekleri henüz bilgisayarda yok; kitap karekodundaki
+    klasörlerden (ör. 08_Odev_Olcekleri) indirilip 📚 Arapça altına
+    konunca üretici hepsini kendiliğinden alır.
+
+  9. SINIFIN SEKİZ ÖLÇEĞİ GİRDİ (28.09.2026). Kaynak: Meb/5-10/9/
+  2026-2027/24_Odev_Olcekleri + (kitap karekodundan inen dosyalar).
+  Ünite 1: s.31, s.67 · Ünite 2: s.91, s.111 · Ünite 3: s.139, s.158 ·
+  Ünite 4: s.181, s.197. Her biri beş ölçüt, dört derece.
+  Üreticide üç düzeltme gerekti:
+    · PUAN SIRASI DOSYADAN OKUNUYOR. xlsx çizelgesinde sıra soldan sağa
+      1-2-3-4 iken docx ölçeklerinde TERS (ممتاز=4 solda). Sıra
+      varsayılsaydı bütün puanlar ters çıkardı; artık başlık satırındaki
+      "٤ نِقاط / ١ نُقْطَة" ibarelerinden okunuyor (bkz. puanSirasi).
+    · Başlık satırı ("المعايير | ممتاز | …") ölçüt sanılıyordu, elendi.
+    · Başlık metni PARAGRAF paragraf toplanıyor: Word bir cümleyi çok
+      sayıda <w:t> parçasına böldüğü için başlık "مقياس" tek kelimesine
+      iniyordu.
+    · Aynı ölçeğin iki sürümü varsa (2025 xlsx ile 2026-2027 docx)
+      yenisi alınıyor.
+  Ölçüt adlarının Türkçesi için TR sözlüğüne yedi karşılık eklendi;
+  şu an Türkçesiz ölçüt yok.
+  NOT: aynı klasörde 22_Kontrol_Listeleri de var (sekiz kontrol listesi).
+  Onlar farklı bir araç (evet/hayır ölçütleri); istenirse ikinci bir
+  belge türü olarak eklenebilir.

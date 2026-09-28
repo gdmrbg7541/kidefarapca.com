@@ -3379,11 +3379,31 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         var acik = kok.querySelector('.ih-item.acik, .ihsec-item.acik');
         if (acik) kok.classList.add('ih-odak'); else kok.classList.remove('ih-odak');
       }
+      /* Acik sinifi (ve icindeki her seyi) kapatir.
+         NIYE GEREKLI: bir sinif panelinde "Sinif Belgeleri" ile "Etkinlik
+         Kartlari" BASLIKSIZ bir bolumun (.ihsec-item.ihsec-bassiz) icinde
+         duruyor; o bolumun paneli CSS ile hep acik oldugu icin
+         bolumleriKapat() onu kapatamiyordu. Sinifin kendisi kapatilinca
+         ikisi birden toplaniyor. */
+      function siniflariKapat() {
+        var kok = document.getElementById('imam-hatip'); if (!kok) return;
+        [].forEach.call(kok.querySelectorAll('.ih-item.acik'), function (d) {
+          d.classList.remove('acik');
+          panelKapat(d.querySelector('.ih-panel'));
+          icleriKapat(d);                 /* ic akordiyonlar sifirlansin */
+        });
+      }
       window.ihsecToggle = function (btn) {
         var item = btn.closest('.ihsec-item'); if (!item) return;
         var panel = item.querySelector('.ihsec-panel');
         var aciliyor = !item.classList.contains('acik');
         bolumleriKapat(item);
+        /* OGRETMEN DOKUMANLARI ACILINCA SINIF KAPANIR (28.09.2026,
+           ogretmen istegi). Bu bolum bir sinifin ICINDE degil; acilinca
+           altta duran sinif belgeleri ve etkinlik kartlari ekrani
+           doldurmasin. Tersi zaten vardi: sinifa basinca Ogretmen
+           Dokumanlari kapaniyordu (bkz. ihToggle -> bolumleriKapat). */
+        if (aciliyor && !item.closest('.ih-item')) siniflariKapat();
         if (aciliyor) { item.classList.add('acik'); ustPanelSerbest(item); panelAc(panel); }
         else { item.classList.remove('acik'); panelKapat(panel); }
         odakGuncelle();
@@ -3936,28 +3956,6 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             url: 'dosyalar/performans-proje/arapca-performans-proje-5-10.pdf' }
         );
         
-        /* 3d — Değerlendirme ölçeği hesaplayıcısı.
-           Kitap karekodundan inen dereceli puanlama ölçeklerini ekranda
-           puanlayıp evrak düzeninde PDF veren sayfa: olcek.html
-           ADLANDIRMA: ortaokulda (5-8) puan "ders etkinliklerine katılım",
-           ortaöğretimde (9-10) "performans çalışması" adıyla verilir —
-           bağlantı adları da buna göre değişiyor. Proje her ikisinde de
-           ayrı bir evrak. */
-        [5, 6, 7, 8, 9, 10].forEach(function (s) {
-          var perfAd = (s <= 8) ? 'Ders Etkinliklerine Katılım' : 'Performans Çalışması';
-          SINIF_GIRIS[s]['Proje & Performans Görevleri'] =
-            '<div class="dok-not"><b>Ölçekle puanla:</b> kitabın karekodundaki dereceli '
-            + 'puanlama ölçeğini ekranda işaretle; toplam ve yüzlük karşılık kendiliğinden '
-            + 'hesaplansın, evrak düzeninde A4 PDF olarak insin. Sınıf listesini yapıştırıp '
-            + 'her öğrenciye bir sayfa da alabilirsin.</div>'
-            + '<div class="dok-tuslar">'
-            + '<a class="dok-tus" href="olcek.html?sinif=' + s + '&tur=proje" '
-            + 'target="_blank" rel="opener">Proje Ölçeği</a>'
-            + '<a class="dok-tus" href="olcek.html?sinif=' + s + '&tur=performans" '
-            + 'target="_blank" rel="opener">' + perfAd + ' Ölçeği</a>'
-            + '</div>';
-        });
-
         /* 4 — kart açıklamaları */
         var SINIFLAR_ = [5, 6, 7, 8, 9, 10];
         SINIFLAR_.forEach(function (s) {
@@ -3995,6 +3993,25 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             '<div class="dok-not"><b>Görevler:</b> 1. dönem performans, 2. dönem proje · beş sayfa · '
             + 'künye, amaç, ölçütler, öğrenci sayfası.</div>' +
             '<div class="dok-not">Görevi dönem başında ver · ölçütleri öğrenciyle oku · görevler örnektir, kendi konuna uyarla.</div>';
+
+          /* DEĞERLENDİRME ÖLÇEĞİ TUŞLARI (28.09.2026)
+             DİKKAT: bu satırlar '+=' ile ve bu atamanın ARDINDAN gelmeli.
+             Önce yukarıda ayrı bir blokta yazılmışlardı; buradaki '='
+             onları eziyor ve tuşlar hiç görünmüyordu.
+             ADLANDIRMA: ortaokulda (5-8) puan "ders etkinliklerine
+             katılım", ortaöğretimde "performans çalışması" adıyla verilir. */
+          var perfAd = (s <= 8) ? 'Ders Etkinliklerine Katılım' : 'Performans Çalışması';
+          SINIF_GIRIS[s]['Proje & Performans Görevleri'] +=
+            '<div class="dok-not"><b>Ölçekle puanla:</b> kitabın karekodundaki dereceli '
+            + 'puanlama ölçeğini ekranda işaretle; toplam ve yüzlük karşılık kendiliğinden '
+            + 'hesaplansın, evrak düzeninde A4 PDF olarak insin. Sınıf listesini yapıştırıp '
+            + 'her öğrenciye bir sayfa da alabilirsin.</div>'
+            + '<div class="dok-tuslar">'
+            + '<a class="dok-tus" href="olcek.html?sinif=' + s + '&tur=proje" '
+            + 'target="_blank" rel="opener">Proje Ölçeği</a>'
+            + '<a class="dok-tus" href="olcek.html?sinif=' + s + '&tur=performans" '
+            + 'target="_blank" rel="opener">' + perfAd + ' Ölçeği</a>'
+            + '</div>';
         });
       })();
       /* --- BEP & DESTEK EĞİTİM (2026-2027) -------------------------------
