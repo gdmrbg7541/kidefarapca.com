@@ -258,7 +258,9 @@
     html.dusuk-guc .kb-og-duman,
     html.dusuk-guc .kb-og-harf,
     html.dusuk-guc .kb-og-kok,
-    html.dusuk-guc .ik-rozet { animation: none !important; }
+    html.dusuk-guc .ik-rozet,
+    html.dusuk-guc .ik-grafik, html.dusuk-guc .ik-yildiz,
+    html.dusuk-guc .ik-mercek { animation: none !important; }
     html.dusuk-guc .kb-og-kok { opacity: 1; transform: none; }
     /* Sözlük kartı: mercek kelimenin üstünde gezinir, kapak hafif aralanır */
     .kga-szmercek { transform-box: fill-box; transform-origin: 50% 50%; animation: kgaSzMercek 4.6s ease-in-out infinite; }
@@ -2952,6 +2954,70 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       #imam-hatip .ih-genel-dok .a4-grid {
         grid-template-columns:repeat(auto-fit,minmax(0,152px));
         justify-content:center; gap:14px 12px; }
+      /* ===== a4-grid: TEK SATIR + YATAY KAYDIRMA (masaüstü) =====
+         28.09.2026: proje ile performans ayrı kart olunca belgeler iki
+         satıra taşıyordu. Masaüstünde kartlar artık tek sırada duruyor,
+         sığmayanlar yatay kaydırmayla geliyor.
+         · grid-auto-flow:column + grid-auto-columns: kartlar satır
+           atlamaz, yan yana dizilir.
+         · justify-content: safe center — az kart varsa ortalanır, çok
+           kart varsa SOLDAN başlar (düz 'center' kaydırmada ilk kartı
+           erişilemez hâle getirir, 'safe' onu önler).
+         · overflow-x açılınca dikey taşma da kırpılır; kartın havalanma
+           (hover) ve kıvrım büyüme payı için üstte/altta dolgu bırakıldı.
+         Telefonda (<=601px) eski düzen sürüyor: satıra üç kâğıt. */
+      @media (min-width:601px){
+        #imam-hatip .a4-grid,
+        #imam-hatip .ih-genel-dok .a4-grid {
+          grid-template-columns:none;
+          grid-auto-flow:column;
+          grid-auto-columns:152px;
+          justify-content:safe center;
+          overflow-x:auto; overflow-y:hidden;
+          padding:8px 4px 12px;
+          scroll-snap-type:x proximity;
+          scrollbar-width:thin; scrollbar-color:#C6D2E0 transparent;
+          overscroll-behavior-x:contain;
+        }
+        #imam-hatip .a4-kart { scroll-snap-align:center; }
+        #imam-hatip .a4-grid::-webkit-scrollbar,
+        #imam-hatip .ih-genel-dok .a4-grid::-webkit-scrollbar { height:9px; }
+        #imam-hatip .a4-grid::-webkit-scrollbar-thumb,
+        #imam-hatip .ih-genel-dok .a4-grid::-webkit-scrollbar-thumb {
+          background:#C6D2E0; border-radius:999px; }
+        #imam-hatip .a4-grid::-webkit-scrollbar-thumb:hover,
+        #imam-hatip .ih-genel-dok .a4-grid::-webkit-scrollbar-thumb:hover {
+          background:#9FB2C7; }
+        #imam-hatip .a4-grid::-webkit-scrollbar-track,
+        #imam-hatip .ih-genel-dok .a4-grid::-webkit-scrollbar-track {
+          background:transparent; }
+      }
+      /* ===== REYONUN İKİ UCUNDAKİ KAYDIRMA OKLARI =====
+         Kartlar tek sırada durunca fareyle kaydırmak zor; iki uca birer
+         ok kondu. Oklar ızgaranın DIŞINDA (.a4-kaydir içinde) duruyor ki
+         kaydırmayla birlikte kaymasınlar ve .a4-grid'in nth-child
+         animasyon sırasını bozmasınlar.
+         Ok yalnız kaydırılacak yer varsa görünür (.a4-kayar sınıfını JS
+         koyar); yönünde gidilecek yer kalmayınca o ok sönükleşir. */
+      .a4-kaydir { position:relative; }
+      .a4-ok { display:none; }
+      @media (min-width:601px){
+        #imam-hatip .a4-kaydir.a4-kayar .a4-ok { display:inline-flex; }
+        #imam-hatip .a4-ok {
+          position:absolute; top:50%; transform:translateY(-50%);
+          width:40px; height:40px; align-items:center; justify-content:center;
+          padding:0; border:1.6px solid #dbe3ec; border-radius:50%;
+          background:#fff; color:#12304c; cursor:pointer; z-index:3;
+          box-shadow:0 5px 16px rgba(16,42,67,.20);
+          transition:opacity .16s ease, background .16s ease, border-color .16s ease;
+        }
+        #imam-hatip .a4-ok svg { width:21px; height:21px; display:block; }
+        #imam-hatip .a4-ok.sol { left:0; }
+        #imam-hatip .a4-ok.sag { right:0; }
+        #imam-hatip .a4-ok:hover { background:#F2FAF8; border-color:#9FD5C9; }
+        #imam-hatip .a4-ok:focus-visible { outline:3px solid #16A085; outline-offset:2px; }
+        #imam-hatip .a4-ok[disabled] { opacity:0; pointer-events:none; }
+      }
       #imam-hatip .a4-kart { padding:0 5px 5px 0; }
       #imam-hatip .a4-sheet { padding:6px 7px 5px; }
       #imam-hatip .a4-antet { margin-top:3px; font-size:.52rem; letter-spacing:.6px; gap:2px; }
@@ -3139,6 +3205,21 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       @keyframes a4Sayfa { 0%,18%{ transform:rotateY(0deg); opacity:1 } 48%{ transform:rotateY(-96deg); opacity:.9 }
                            72%,100%{ transform:rotateY(-176deg); opacity:0 } }
       .ik-kapak { transform-box:fill-box; transform-origin:0% 50%; animation:a4Sayfa 5.2s ease-in-out infinite; }
+      /* --- yeni iki evrak kartının hareketleri (28.09.2026) ---
+         a4CizUzun: a4Ciz'in uzun yol için olanı (dashoffset 34 değil 46);
+                    grafik çizgisi kendi kendine çizilir.
+         a4Parla  : yıldız çizim bitince sıçrayarak belirir.
+         a4Ara    : mercek pano üzerinde gezinir. */
+      @keyframes a4CizUzun { 0%,8%{ stroke-dashoffset:46 } 40%,86%{ stroke-dashoffset:0 } 100%{ stroke-dashoffset:46 } }
+      @keyframes a4Parla   { 0%,34%{ opacity:0; transform:scale(.3) rotate(-25deg) }
+                             48%{ opacity:1; transform:scale(1.22) rotate(4deg) }
+                             58%,86%{ opacity:1; transform:scale(1) rotate(0deg) }
+                             100%{ opacity:0; transform:scale(.3) rotate(-25deg) } }
+      @keyframes a4Ara     { 0%,8%{ transform:translate(-7px,4px) } 40%{ transform:translate(6px,-4px) }
+                             68%{ transform:translate(-1px,2px) } 100%{ transform:translate(-7px,4px) } }
+      .ik-grafik { stroke-dasharray:46; animation:a4CizUzun 4.8s ease-in-out infinite; }
+      .ik-yildiz { transform-box:fill-box; transform-origin:center; animation:a4Parla 4.8s ease-in-out infinite; }
+      .ik-mercek { transform-box:fill-box; transform-origin:center; animation:a4Ara 5.2s ease-in-out infinite; }
 
       /* --- kartın altında açılan PDF paneli (dosya çekmecesi) --- */
       .a4-panel { max-height:0; overflow:hidden; transition:max-height .36s cubic-bezier(.4,0,.2,1); }
@@ -3172,8 +3253,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       }
       @media (prefers-reduced-motion: reduce){
         .a4-muhur-g, .a4-imza-yol, .a4-satirlar b::after, .a4-grid.acildi .a4-kart,
-        .ik-sayfa, .ik-halka, .ik-tik, .ik-damga, .ik-kalem, .ik-yazi3, .ik-rozet, .ik-kapak { animation:none !important }
-        .a4-imza-yol { stroke-dashoffset:0 } .ik-tik, .ik-yazi3 { stroke-dashoffset:0 }
+        .ik-sayfa, .ik-halka, .ik-tik, .ik-damga, .ik-kalem, .ik-yazi3, .ik-rozet, .ik-kapak,
+        .ik-grafik, .ik-yildiz, .ik-mercek { animation:none !important }
+        .a4-imza-yol { stroke-dashoffset:0 } .ik-tik, .ik-yazi3, .ik-grafik { stroke-dashoffset:0 }
+        .ik-yildiz { opacity:1 }
         .a4-muhur-g, .ik-damga { opacity:.95 }
       }
     </style>
@@ -3619,11 +3702,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
            SINIF_PDF ve SINIF_GIRIS anahtarları da o adla kurulur.
            İkonu 'ikon' alanıyla verilmiştir: ikon numarası tür SIRASINDAN
            geldiği için araya sırasız bir kart girerse ötekiler kaymasın. */
-        { perf: true, ad: 'Performans Çalışması', renk: '#0891B2', ikon:
-          '<rect x="7" y="8" width="34" height="23" rx="3" fill="#E4F6FA" stroke="#0891B2" stroke-width="2.4"/>' +
-          '<path d="M13 25 l7 -7 l5 4 l9 -10" fill="none" stroke="#0891B2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
-          '<circle cx="34" cy="12" r="2.8" fill="#F39C12"/>' +
-          '<path d="M24 31 v6 M24 37 l-6 6 M24 37 l6 6" stroke="#0891B2" stroke-width="2.6" stroke-linecap="round"/>' },
+        /* İkisinin de ikonu SIRAYA bağlı (4 performans, 5 proje); BEP
+           son sırada kalıp kendi ikonunu (default) koruyor. */
+        { perf: true, ad: 'Performans Çalışması', renk: '#0891B2' },
         { ad: 'Proje Ödevi',                     renk: '#059669' },
         /* Kaynaştırma/bütünleştirme öğrencisi için: BEP planı, eğitsel performans
            formu, uyarlanmış yazılılar, izleme formları, destek eğitim odası paketi.
@@ -3641,7 +3722,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       function sinifTurleri(sinif) {
         return SINIF_TURLERI.map(function (t) {
           if (!t.perf) return t;
-          return { ad: perfAdi(sinif), renk: t.renk, ikon: t.ikon, perf: true };
+          return { ad: perfAdi(sinif), renk: t.renk, perf: true };
         });
       }
       var SINIF_PDF = { 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {} };
@@ -4274,14 +4355,25 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             '<g class="ik-kalem">' +
             '<path d="M38.6 11.4 l4.2 4.2 l-16.2 16.2 l-5.9 1.7 l1.7 -5.9 Z" fill="#FDD9A0" stroke="#E08E1C" stroke-width="2" stroke-linejoin="round"/>' +
             '<path d="M35.2 14.8 l4.2 4.2" stroke="#E08E1C" stroke-width="1.8" stroke-linecap="round"/></g>';
-          /* 4 — Proje Ödevi: sallanan kurdeleli rozet.
-             (Performans kartı ayrıldı ve kendi ikonunu SINIF_TURLERI'nde
-              'ikon' alanıyla taşıyor; bu yüzden sıra kaymadı.) */
-          case 4: return '<g class="ik-rozet">' +
-            '<path d="M17.4 26 L11.5 44 l8.2 -3.6 L24 47 Z" fill="#059669" opacity=".5"/>' +
-            '<path d="M30.6 26 L36.5 44 l-8.2 -3.6 L24 47 Z" fill="#059669" opacity=".78"/>' +
-            '<circle cx="24" cy="18" r="13" fill="#E6F7F0" stroke="#059669" stroke-width="2.4"/>' +
-            '<path d="M24 9.8 l2.7 5.5 l6 .9 l-4.35 4.25 l1.03 6 l-5.38 -2.83 l-5.38 2.83 l1.03 -6 L15.3 16.2 l6 -.9 Z" fill="#059669"/></g>';
+          /* 4 — Performans Çalışması / Ders Etkinliklerine Katılım:
+                 sunum sehpası; yükseliş çizgisi kendini çizer, yıldız parlar */
+          case 4: return '<rect x="6" y="6.5" width="36" height="25" rx="3.4" fill="#E4F6FA" stroke="#0891B2" stroke-width="2.4"/>' +
+            '<path class="ik-grafik" d="M11.5 26 l7 -6.5 l5 3.5 l8 -8" fill="none" stroke="#0891B2" ' +
+            'stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '<g transform="translate(36.4 12.6) scale(.5) translate(-24 -17)">' +
+            '<g class="ik-yildiz">' +
+            '<path d="M24 9.8 l2.7 5.5 l6 .9 l-4.35 4.25 l1.03 6 l-5.38 -2.83 l-5.38 2.83 l1.03 -6 L15.3 16.2 l6 -.9 Z" fill="#F39C12"/>' +
+            '</g></g>' +
+            '<path d="M24 31.5 v4.4 M24 35.9 l-7 7 M24 35.9 l7 7" fill="none" stroke="#0891B2" ' +
+            'stroke-width="2.8" stroke-linecap="round"/>';
+          /* 5 — Proje Ödevi: pano üzerinde gezinen mercek (inceleme, araştırma) */
+          case 5: return '<rect x="8" y="8" width="26" height="33" rx="3.4" fill="#E6F7F0" stroke="#059669" stroke-width="2.4"/>' +
+            '<rect x="15" y="4.2" width="12" height="7.2" rx="2.4" fill="#fff" stroke="#059669" stroke-width="2"/>' +
+            '<path d="M13.5 19 h15 M13.5 25 h11 M13.5 31 h7" stroke="#8FD3BD" stroke-width="2.6" stroke-linecap="round"/>' +
+            '<g class="ik-mercek">' +
+            '<circle cx="30.5" cy="29" r="7.6" fill="#FFFFFF" fill-opacity=".9" stroke="#059669" stroke-width="2.6"/>' +
+            '<path d="M35.9 34.4 l5.6 5.6" stroke="#059669" stroke-width="3.2" stroke-linecap="round"/>' +
+            '</g>';
           /* 5 — BEP & Destek Eğitim: bireysel plan panosu, öğrenci ve kendini çizen onay */
           default: return '<rect x="8" y="7.5" width="32" height="35" rx="4" fill="#EEF0FF" stroke="#4F46E5" stroke-width="2.2"/>' +
             '<rect x="17" y="3.6" width="14" height="7.4" rx="2.6" fill="#fff" stroke="#4F46E5" stroke-width="2"/>' +
@@ -4414,14 +4506,59 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         liste.forEach(function (t) {
           if (t.ikon) ikonlar.push({ ozel: t.ikon }); else { ix++; ikonlar.push({ i: ix }); }
         });
-        mount.innerHTML = '<div class="a4-wrap"><div class="a4-grid">' +
+        /* .a4-kaydir: ızgarayı saran kap — kaydırma okları buraya konuyor
+           (bkz. a4OkKur). Kartlar yine .a4-grid'in doğrudan çocuğu, o
+           yüzden nth-child'a bağlı giriş animasyonu bozulmuyor. */
+        mount.innerHTML = '<div class="a4-wrap"><div class="a4-kaydir"><div class="a4-grid">' +
           liste.map(function (t, i) { return a4KartHtml(antet, t, set, ikonlar[i], dosyaOf(t)); }).join('') +
-          '</div><div class="a4-panel"><div class="a4-panel-in"></div></div></div>';
+          '</div></div><div class="a4-panel"><div class="a4-panel-in"></div></div></div>';
         [].forEach.call(mount.querySelectorAll('.a4-kart'), function (btn, i) {
           var t = liste[i], ds = dosyaOf(t);
           var gr = girisOf ? (girisOf(t) || '') : (t.giris || '');
           btn._a4 = { set: set, ik: ikonlar[i], ad: t.ad, renk: t.renk, sayac: a4Sayac(ds), html: gr + pdfListe(ds) };
         });
+        a4OkKur(mount.querySelector('.a4-kaydir'));
+      }
+      /* Reyonun iki ucundaki kaydırma okları. Bir tıklama ızgaranın
+         görünen genişliğinin %80'i kadar kaydırıyor; böylece son görünen
+         kart yeni ekranda da kalıyor, kullanıcı yerini kaybetmiyor. */
+      function a4OkKur(kaydir) {
+        if (!kaydir) return;
+        var grid = kaydir.querySelector('.a4-grid');
+        if (!grid) return;
+
+        function okYap(yon, sinif, etiket) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'a4-ok ' + sinif;
+          b.setAttribute('aria-label', etiket);
+          b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' +
+            (yon < 0 ? 'M15 4.5 L8 12 l7 7.5' : 'M9 4.5 L16 12 l-7 7.5') +
+            '" fill="none" stroke="currentColor" stroke-width="2.6" ' +
+            'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          b.onclick = function (e) {
+            e.preventDefault(); e.stopPropagation();
+            var adim = Math.max(170, Math.round(grid.clientWidth * 0.8));
+            try { grid.scrollBy({ left: yon * adim, behavior: 'smooth' }); }
+            catch (x) { grid.scrollLeft += yon * adim; }
+          };
+          kaydir.appendChild(b);
+          return b;
+        }
+        var sol = okYap(-1, 'sol', 'Belgeleri geri kaydır');
+        var sag = okYap(1, 'sag', 'Belgeleri ileri kaydır');
+
+        function guncelle() {
+          var kayar = grid.scrollWidth > grid.clientWidth + 2;
+          kaydir.classList.toggle('a4-kayar', kayar);
+          sol.disabled = !kayar || grid.scrollLeft <= 2;
+          sag.disabled = !kayar || grid.scrollLeft >= grid.scrollWidth - grid.clientWidth - 2;
+        }
+        grid.addEventListener('scroll', guncelle, { passive: true });
+        window.addEventListener('resize', guncelle);
+        guncelle();
+        /* yazı tipi ve ikonlar gelince ölçü değişebiliyor */
+        setTimeout(guncelle, 80); setTimeout(guncelle, 400);
       }
       /* karta tıklayınca: ızgaranın ALTINDAKİ tek panel o kategoriyle dolar */
       window.a4Toggle = function (btn) {

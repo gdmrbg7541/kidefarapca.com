@@ -1644,3 +1644,45 @@ NOT: katalog/index.html (basılı katalog) ikisini ayrı satır olarak listeleme
   Katılım" 6 dosya + kendi ölçek tuşu, "Proje Ödevi" 6 dosya + kendi
   tuşu; 9. sınıfta 4'er dosya; eski anahtar hiçbir yerde kalmadı.
   Yedek: _kaynak/yedekler/index_2026-09-28_kartayirma-oncesi.html
+
+  BELGE KARTLARI MASAÜSTÜNDE TEK SATIR (28.09.2026). Proje ile
+  performans ayrılınca kartlar iki satıra taşıyordu. Artık ≥601px'te
+  ızgara tek sıra: grid-auto-flow:column + grid-auto-columns:152px,
+  sığmayanlar yatay kaydırmayla geliyor.
+    · justify-content: safe center — az kart varsa ortalanır, çok kart
+      varsa soldan başlar. Düz "center" kaydırmada ilk kartı erişilemez
+      hâle getiriyor, "safe" bunu önlüyor.
+    · overflow-x açılınca dikey taşma kırpılır; kartın havalanma ve
+      kıvrım büyüme payı için üstte/altta dolgu bırakıldı.
+    · Kaydırma çubuğu inceltilip renklendirildi (webkit + firefox).
+    Telefonda (≤600px) eski düzen sürüyor: satıra üç kâğıt.
+    Ölçüldü: 1180px'te 8 kart tek satır, scrollWidth 1315 > 980 (kayıyor);
+    390px'te 3 satır, kaydırma yok.
+
+  YENİ İKİ KARTA KENDİ ANİMASYONLU İKONU (28.09.2026)
+    · Performans / Ders Etkinliklerine Katılım: sunum sehpası; yükseliş
+      çizgisi kendi kendine çizilir (ik-grafik), ardından yıldız
+      sıçrayarak belirir (ik-yildiz).
+    · Proje Ödevi: pano ve üzerinde gezinen mercek (ik-mercek) —
+      "inceleme, araştırma".
+    Yeni keyframe'ler: a4CizUzun, a4Parla, a4Ara. Üçü de düşük güç kipi
+    ve "hareketi azalt" listelerine eklendi.
+    DİKKAT: ikon numarası tür SIRASINDAN geliyor. Bu yüzden ikisi de
+    'ikon' alanıyla değil sıraya bağlandı (4 performans, 5 proje) ve BEP
+    son sırada kalıp kendi ikonunu (default) korudu. Eski rozet ikonu
+    artık kullanılmıyor.
+  Yedek: _kaynak/yedekler/index_2026-09-28_kaydirma-ikon-oncesi.html
+
+  REYONUN İKİ UCUNA KAYDIRMA OKU (28.09.2026). Kartlar tek sırada
+  durunca fareyle kaydırmak zordu; sola ve sağa birer yuvarlak ok kondu.
+  Bir tıklama ızgaranın görünen genişliğinin %80'i kadar kaydırıyor —
+  son görünen kart yeni ekranda da kalıyor, öğretmen yerini kaybetmiyor.
+    · Oklar ızgaranın DIŞINDA, yeni .a4-kaydir kabının içinde. İçinde
+      olsalardı kaydırmayla birlikte kayar, üstelik .a4-grid'in
+      nth-child'a bağlı kart giriş animasyonunu da bozarlardı.
+    · Ok yalnız kaydırılacak yer varsa görünüyor (.a4-kayar sınıfını JS
+      koyar); o yönde gidilecek yer kalmayınca sönüyor.
+    · Telefonda oklar yok (kartlar zaten satır satır diziliyor).
+    Ölçüldü: başta sol ok kapalı/sağ açık; sağa basınca 336 px kayıp sağ
+    ok kapanıyor, sola basınca başa dönüyor; 390 px'te iki ok da yok.
+  Yedek: _kaynak/yedekler/index_2026-09-28_ok-oncesi.html
