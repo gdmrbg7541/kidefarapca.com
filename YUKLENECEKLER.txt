@@ -1835,3 +1835,38 @@ DENETİM
     öteki gruplar kapanır (svGrupToggle → svGrupKapat). Kap olarak panelin
     gövdesi (.a4-panel-in) alınıyor, başka kartın grupları etkilenmiyor.
     Açık gruba tekrar basmak onu kapatır.
+
+───────────────────────────────────────────────────────────────────
+28.09.2026 (5) — ÖĞRETMEN DÖKÜMANLARI TOPARLANDI
+───────────────────────────────────────────────────────────────────
+index.html
+  · Kart açıklamalarındaki uzun bölümler artık KAPALI açıklama grupları
+    (svGirisAyir): «tut-bas» başlıklı her bölüm bir gruba dönüşüyor,
+    panelde yalnız baştaki kısa not açıkta kalıyor.
+    Kart metinlerine dokunulmadı — ayırma çizim anında yapılıyor, yani
+    sonradan yazılan açıklamalar da kendiliğinden katlanıyor.
+      Öğretmen Dosyası            3.159 → 154 karakter açıkta
+      Zümre Tutanakları           3.126 → 395
+      Belirli Gün ve Haftalar    24.064 → 369
+      Veli Toplantısı Tutanakları 4.691 → 151
+      Mevzuat & Yönetmelikler       221 → 221 (zaten kısaydı)
+  · Öğretmen Dökümanları kartlarına da belge grupları:
+      Öğretmen Dosyası → Tam Set (19 form) · Küçük Paketler
+      Zümre Tutanakları → Okul Zümresi · İlçe Zümresi · İl Zümresi
+      Mevzuat & Yönetmelikler → Kanunlar · Yönetmelikler · Yönerge ve Kararlar
+      Belirli Gün ve Haftalar, Veli Toplantısı → belgeleri az, düz liste
+  · Alt başlık kuralı sıkılaştı: ancak grupta birden çok alt varsa VE en az
+    biri birden çok belge tutuyorsa (Word–PDF çifti) yazılıyor. Tek belgelik
+    alt başlık satırın tekrarıydı, kalktı (örn. Mevzuat bağlantıları).
+
+DENETİM
+  · 5 öğretmen dökümanı kartı + 37 sınıf kartı: belge kaybı yok
+  · 17 gömülü betik node --check'ten geçti
+  · Betik: _kaynak/uretici/dokAkordiyon.py
+  · Yedek: _kaynak/yedekler/index_2026-09-28_dok-akordiyon-oncesi.html
+  · Öğretmen Dosyası kartından «Tam set mi, küçük paket mi?» bölümü kaldırıldı;
+    ayrım zaten belge gruplarının adında duruyor (Tam Set (19 form) /
+    Küçük Paketler). Kalan ipucu «Dosyayı kurarken» başlığını aldı.
+  · «Dosyayı kurarken» ipucu ve «Formlar örnektir» notu da kaldırıldı.
+    Öğretmen Dosyası kartında artık: kısa not + «Dosyada ne var? — 19 form»
+    açıklaması + Tam Set / Küçük Paketler belge grupları.

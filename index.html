@@ -3755,25 +3755,51 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       function svCiz(gruplar) {
         var cikti = '';
         gruplar.forEach(function (G) {
-          var say = 0, ic = '';
-          G.alt.forEach(function (a) { say += a.ogeler.length; });
-          /* Alt başlık tek taneyse grup adının tekrarı olur, yazılmaz. */
-          var basliklariYaz = G.alt.length > 1;
-          G.alt.forEach(function (a) {
-            if (basliklariYaz && a.baslik) ic += '<div class="sv-alt">' + a.baslik + '</div>';
-            ic += pdfListe(a.ogeler);
-          });
+          var say = 0, ic = '', etiket;
+          if (G.ham != null) {                       /* açıklama grubu */
+            ic = G.ham; etiket = 'açıklama';
+          } else {
+            G.alt.forEach(function (a) { say += a.ogeler.length; });
+            etiket = say + ' belge';
+            /* Alt başlık ancak İŞE YARIYORSA yazılır: grupta birden çok alt
+               olacak ve en az biri birden çok belge tutacak (Word–PDF çifti).
+               Yoksa başlık, altındaki tek satırın tekrarı olur. */
+            var cokluVar = G.alt.some(function (a) { return a.ogeler.length > 1; });
+            var basliklariYaz = G.alt.length > 1 && cokluVar;
+            G.alt.forEach(function (a) {
+              if (basliklariYaz && a.baslik) ic += '<div class="sv-alt">' + a.baslik + '</div>';
+              ic += pdfListe(a.ogeler);
+            });
+          }
           cikti += '<div class="sv-grup">' +
             '<button type="button" class="sv-bas" aria-expanded="false" onclick="svGrupToggle(this)">' +
               '<span class="sv-nokta" aria-hidden="true"></span>' +
               '<span class="sv-ad">' + G.ad + '</span>' +
-              '<span class="sv-say">' + say + ' belge</span>' +
+              '<span class="sv-say">' + etiket + '</span>' +
               '<span class="sv-ok" aria-hidden="true">▾</span>' +
             '</button>' +
             '<div class="sv-panel"><div class="sv-panel-in">' + ic + '</div></div>' +
             '</div>';
         });
         return cikti;
+      }
+      /* === UZUN AÇIKLAMALARI KATLA ====================================
+         Kart açıklaması «tut-bas» başlıklarıyla bölümlere ayrılmış. İlk
+         başlıktan öncesi (kısa not) panelde açıkta kalır; her bölüm kapalı
+         bir açıklama grubu olur. Kart metinlerine dokunulmuyor: ayırma
+         çizim anında yapıldığı için sonradan yazılan açıklamalar da
+         kendiliğinden katlanır. */
+      function svGirisAyir(giris) {
+        /* Başlık divinde ek sınıf olabiliyor (örn. "tut-bas zum-bas"). */
+        var m = String(giris || ''), yer = [], re = /<div class="tut-bas[^"]*">(?:<i><\/i>)?([\s\S]*?)<\/div>/g, x;
+        while ((x = re.exec(m))) yer.push({ bas: x.index, son: re.lastIndex, ad: x[1] });
+        if (!yer.length) return { bas: m, gruplar: [] };
+        var gruplar = yer.map(function (y, i) {
+          var bitis = (i + 1 < yer.length) ? yer[i + 1].bas : m.length;
+          return { ad: String(y.ad).replace(/<[^>]+>/g, '').trim() || 'Açıklama',
+                   ham: m.slice(y.son, bitis), alt: [] };
+        });
+        return { bas: m.slice(0, yer[0].bas), gruplar: gruplar };
       }
       /* kova: kod → alt başlık → belgeler (giriş sırası korunur) */
       function svKova() {
@@ -3855,7 +3881,22 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         ],
         'Ders Etkinliklerine Katılım': GOREV_GRUP,
         'Performans Çalışması': GOREV_GRUP,
-        'Proje Ödevi': GOREV_GRUP
+        'Proje Ödevi': GOREV_GRUP,
+        /* --- okul geneli "Öğretmen Dökümanları" kartları --- */
+        'Öğretmen Dosyası': [
+          { ad: 'Tam Set (19 form)', ne: function (d) { return svYol(d, 'ogretmen-dosyasi-form-seti'); } },
+          { ad: 'Küçük Paketler', ne: function () { return true; } }
+        ],
+        'Zümre Tutanakları': [
+          { ad: 'Okul Zümresi', ne: function (d) { return svYol(d, '/okul-zumre'); } },
+          { ad: 'İlçe Zümresi', ne: function (d) { return svYol(d, '/ilce-zumre'); } },
+          { ad: 'İl Zümresi', ne: function (d) { return svYol(d, '/il-zumre'); } }
+        ],
+        'Mevzuat & Yönetmelikler': [
+          { ad: 'Kanunlar', ne: function (d) { return /kanunu\s*$/i.test(d.ad || ''); } },
+          { ad: 'Yönetmelikler', ne: function (d) { return /yönetmeliği\s*$/i.test(d.ad || ''); } },
+          { ad: 'Yönerge ve Kararlar', ne: function () { return true; } }
+        ]
       };
       /* Bir kartın panel gövdesi: uygun grup tablosu varsa akordiyon, yoksa
          düz liste. Tek grup çıkarsa da düz liste — boşuna tıklatmayalım. */
@@ -4816,11 +4857,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           '</div></div><div class="a4-panel"><div class="a4-panel-in"></div></div></div>';
         [].forEach.call(mount.querySelectorAll('.a4-kart'), function (btn, i) {
           var t = liste[i], ds = dosyaOf(t);
-          var gr = girisOf ? (girisOf(t) || '') : (t.giris || '');
+          var gr = svGirisAyir(girisOf ? (girisOf(t) || '') : (t.giris || ''));
           /* Her kart gruplu akordiyondan geçer; grup tablosu olmayan ya da
-             tek grup çıkan kart düz liste olarak döner (bkz. belgeAkordiyon) */
-          var govde = belgeAkordiyon(t.ad, ds);
-          btn._a4 = { set: set, ik: ikonlar[i], ad: t.ad, renk: t.renk, sayac: a4Sayac(ds), html: gr + govde };
+             tek grup çıkan kart düz liste olarak döner (bkz. belgeAkordiyon).
+             Uzun açıklamalar belgelerin ÜSTÜNDE, kapalı gruplar olarak durur. */
+          var govde = (gr.gruplar.length ? svCiz(gr.gruplar) : '') + belgeAkordiyon(t.ad, ds);
+          btn._a4 = { set: set, ik: ikonlar[i], ad: t.ad, renk: t.renk, sayac: a4Sayac(ds), html: gr.bas + govde };
         });
         a4OkKur(mount.querySelector('.a4-kaydir'));
       }
@@ -5385,15 +5427,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             '<li><b>Ödev / performans – proje görevi takip çizelgesi:</b> konu, veriliş-teslim tarihi, puan, açıklama.</li>' +
             '<li><b>Mesleki çalışma ve hizmet içi eğitim kayıt formu:</b> faaliyet, süre, belge no ve <b>derse yansıması</b>.</li>' +
             '<li><b>Zümre ve kurul toplantıları takip çizelgesi:</b> sana düşen kararın ne olduğu ve ne yaptığın.</li>' +
-            '</ol>' +
-
-            '<div class="tut-bas"><i></i>Tam set mi, küçük paket mi?</div>' +
-            '<div class="dok-not"><b>Tam set:</b> 19 sayfa, yıl başında bir kez · <b>dört küçük paket:</b> '
-            + 'sınıf ve nöbet çizelgeleri · sınav analizi · değerlendirme ölçekleri · veli görüşme formları.</div>' +
-
-            '<div class="tut-ipucu"><b>Dosyayı kurarken</b> kapak ve içindekiler önde · plan onay tarihini yaz · '
-            + 'sınav analizini sınavdan önce doldur · kişisel veri taşır, açıkta bırakma.</div>' +
-            '<div class="dok-not">Formlar örnektir; Word’de kendi okuluna göre değiştir.</div>',
+            '</ol>',
+            /* 28.09.2026, öğretmen isteği: iki açıklama bölümü kaldırıldı.
+               · "Tam set mi, küçük paket mi?" — ayrım zaten belge
+                 gruplarının adında duruyor (Tam Set (19 form) / Küçük Paketler)
+               · "Dosyayı kurarken" ipucu ve "Formlar örnektir" notu
+               Kartta yalnız baştaki kısa not ile "Dosyada ne var?" listesi kaldı. */
           dosyalar: [
             { ad: 'Öğretmen Dosyası Tam Set (19 form) — düzenlenebilir (Word)', tur: 'doc',
               kaynak: 'İndir, okul adını ve formları kendine göre düzenle',
