@@ -1831,3 +1831,7 @@ DENETİM
   · index.html'in 17 gömülü betiği node --check'ten geçti
   · Betik: _kaynak/uretici/belgeAkordiyon.py
   · Yedek: _kaynak/yedekler/index_2026-09-28_tumkart-akordiyon-oncesi.html
+  · (28.09.2026) Panelde AYNI ANDA TEK GRUP açık kalır: bir başlığa basınca
+    öteki gruplar kapanır (svGrupToggle → svGrupKapat). Kap olarak panelin
+    gövdesi (.a4-panel-in) alınıyor, başka kartın grupları etkilenmiyor.
+    Açık gruba tekrar basmak onu kapatır.

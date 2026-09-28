@@ -3883,15 +3883,32 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       }
       /* Grup açılıp kapanınca ÜSTTEKİ a4 panelinin yüksekliği de serbest
          bırakılıyor; yoksa açılan grup panelin dışında kalıp kırpılıyor. */
+      /* Bir grup kapanırken: açık yüksekliğe sabitle, bir kare bekle, sıfırla
+         (maxHeight 'none' iken doğrudan 0 vermek geçişi atlatıyor). */
+      function svGrupKapat(grup) {
+        var p = grup.querySelector('.sv-panel');
+        if (p) {
+          p.style.maxHeight = p.scrollHeight + 'px';
+          void p.offsetHeight;
+          p.style.maxHeight = '0px';
+        }
+        grup.classList.remove('acik');
+        var b = grup.querySelector('.sv-bas');
+        if (b) b.setAttribute('aria-expanded', 'false');
+      }
       window.svGrupToggle = function (btn) {
         var grup = btn.parentNode, panel = grup.querySelector('.sv-panel');
         var acik = grup.classList.contains('acik');
         if (acik) {
-          panel.style.maxHeight = panel.scrollHeight + 'px';
-          void panel.offsetHeight;
-          panel.style.maxHeight = '0px';
-          grup.classList.remove('acik'); btn.setAttribute('aria-expanded', 'false');
+          svGrupKapat(grup);
         } else {
+          /* TEK GRUP AÇIK KALIR (28.09.2026, öğretmen isteği): aynı paneldeki
+             öbür gruplar kapanır, panel uzayıp gitmez. Kap olarak panelin
+             gövdesi alınıyor ki başka kartın grupları etkilenmesin. */
+          var kap = btn.closest('.a4-panel-in') || btn.closest('.dok-panel-in') || document;
+          [].forEach.call(kap.querySelectorAll('.sv-grup.acik'), function (g) {
+            if (g !== grup) svGrupKapat(g);
+          });
           grup.classList.add('acik'); btn.setAttribute('aria-expanded', 'true');
           panel.style.maxHeight = panel.scrollHeight + 'px';
           setTimeout(function () { if (grup.classList.contains('acik')) panel.style.maxHeight = 'none'; }, 320);
