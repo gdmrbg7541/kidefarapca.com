@@ -1624,3 +1624,23 @@ NOT: katalog/index.html (basılı katalog) ikisini ayrı satır olarak listeleme
   NOT: aynı klasörde 22_Kontrol_Listeleri de var (sekiz kontrol listesi).
   Onlar farklı bir araç (evet/hayır ölçütleri); istenirse ikinci bir
   belge türü olarak eklenebilir.
+
+  SINIF BELGELERİNDE PROJE İLE PERFORMANS AYRILDI (28.09.2026).
+  Tek "Proje & Performans Görevleri" kartı ikiye bölündü:
+      · 5-8. sınıf: "Ders Etkinliklerine Katılım"  +  "Proje Ödevi"
+      · 9-10. sınıf: "Performans Çalışması"        +  "Proje Ödevi"
+  Performans kartının ADI SINIFA GÖRE değişiyor; kart listesi artık
+  sinifTurleri(sinif) ile o sınıfa göre adlandırılıyor ve SINIF_PDF /
+  SINIF_GIRIS anahtarları da aynı yardımcıdan (perfAdi) üretiliyor.
+  Her kartta yalnız kendi ölçek tuşu var.
+  "İkisi tek dosyada" olan sürümler (sınıf dosyası ve 5-10 toplu dosya)
+  iki kartta da duruyor: dosya gerçekten ikisini de içeriyor.
+  DİKKAT — İKON: kart ikonu tür SIRASINDAN geliyor. Yeni performans
+  kartına 'ikon' alanıyla kendi çizimi verildi ki sıralı ikonlar kaymasın;
+  Proje kartı eski rozet ikonunu (sıra 4), BEP kendi ikonunu koruyor.
+  10. sınıf Seçmeli Arapça'da da iki karta bölündü (dosya ikisini
+  içerdiği için her ikisinde de listeleniyor).
+  Ölçüldü (node ile betik çalıştırılarak): 5. sınıfta "Ders Etkinliklerine
+  Katılım" 6 dosya + kendi ölçek tuşu, "Proje Ödevi" 6 dosya + kendi
+  tuşu; 9. sınıfta 4'er dosya; eski anahtar hiçbir yerde kalmadı.
+  Yedek: _kaynak/yedekler/index_2026-09-28_kartayirma-oncesi.html

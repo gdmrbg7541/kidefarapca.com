@@ -3614,12 +3614,36 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         { ad: 'Planlar',                         renk: '#EE5253' },
         { ad: 'Sınavlar',                        renk: '#0E9E86' },
         { ad: 'Çalışma Kâğıtları & Etkinlikler', renk: '#0EA5E9' },
-        { ad: 'Proje & Performans Görevleri',    renk: '#059669' },
+        /* PROJE ile PERFORMANS AYRI KARTTIR (28.09.2026, öğretmen isteği).
+           Performans kartının ADI SINIFA GÖRE değişir (bkz. perfAdi);
+           SINIF_PDF ve SINIF_GIRIS anahtarları da o adla kurulur.
+           İkonu 'ikon' alanıyla verilmiştir: ikon numarası tür SIRASINDAN
+           geldiği için araya sırasız bir kart girerse ötekiler kaymasın. */
+        { perf: true, ad: 'Performans Çalışması', renk: '#0891B2', ikon:
+          '<rect x="7" y="8" width="34" height="23" rx="3" fill="#E4F6FA" stroke="#0891B2" stroke-width="2.4"/>' +
+          '<path d="M13 25 l7 -7 l5 4 l9 -10" fill="none" stroke="#0891B2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+          '<circle cx="34" cy="12" r="2.8" fill="#F39C12"/>' +
+          '<path d="M24 31 v6 M24 37 l-6 6 M24 37 l6 6" stroke="#0891B2" stroke-width="2.6" stroke-linecap="round"/>' },
+        { ad: 'Proje Ödevi',                     renk: '#059669' },
         /* Kaynaştırma/bütünleştirme öğrencisi için: BEP planı, eğitsel performans
            formu, uyarlanmış yazılılar, izleme formları, destek eğitim odası paketi.
            Belgeler dosyalar/bep/ altındadır. */
         { ad: 'BEP & Destek Eğitim',              renk: '#4F46E5' }
       ];
+      /* ADLANDIRMA (mevzuat): ortaokul ve imam-hatip ortaokulunda başarı
+         "sınavlar, DERS ETKİNLİKLERİNE KATILIM ve varsa proje" ile
+         değerlendirilir; ortaöğretimde ölçme araçları "yazılı ve uygulamalı
+         sınavlar, PERFORMANS ÇALIŞMASI ve proje"dir. */
+      function perfAdi(s) {
+        return (+s <= 8) ? 'Ders Etkinliklerine Katılım' : 'Performans Çalışması';
+      }
+      /* Tür listesinin o sınıfa göre adlandırılmış kopyası. */
+      function sinifTurleri(sinif) {
+        return SINIF_TURLERI.map(function (t) {
+          if (!t.perf) return t;
+          return { ad: perfAdi(sinif), renk: t.renk, ikon: t.ikon, perf: true };
+        });
+      }
       var SINIF_PDF = { 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {} };
       /* Sınıf kartlarına, dosya listesinin ÜSTÜNDE görünecek açıklama metni.
          SINIF_GIRIS[sınıf][tür adı] = HTML. Boş bırakılırsa hiçbir şey yazılmaz. */
@@ -3932,29 +3956,38 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         };
         Object.keys(GOREV).forEach(function (s) {
           var g = GOREV[s], k = 'dosyalar/performans-proje/' + s + '-sinif/arapca-' + s;
-          SINIF_PDF[s]['Proje & Performans Görevleri'] = [
+          /* İKİSİ TEK DOSYADA olan sürüm iki kartta da duruyor: dosya
+             gerçekten ikisini de içeriyor, öğretmen hangi karttan
+             bakarsa baksın bulsun. */
+          var ikisi = [
             { ad: s + '. Sınıf Performans Görevi ve Proje Ödevi — ikisi tek dosyada (Word)',
               tur: 'doc', kaynak: 'Öğrenci yönergesi, örnek metin, çalışma alanı ve öğretmen sayfası',
               url: k + '-sinif-performans-proje.docx' },
             { ad: s + '. Sınıf Performans Görevi ve Proje Ödevi — ikisi tek dosyada (PDF)',
-              url: k + '-sinif-performans-proje.pdf' },
-            { ad: '1. Dönem Performans Görevi — ' + g[0] + ' (Word)', tur: 'doc',
+              url: k + '-sinif-performans-proje.pdf' }
+          ];
+          SINIF_PDF[s][perfAdi(s)] = [
+            { ad: '1. Dönem ' + perfAdi(s) + ' — ' + g[0] + ' (Word)', tur: 'doc',
               kaynak: g[1], url: k + '-performans-gorevi.docx' },
-            { ad: '1. Dönem Performans Görevi — ' + g[0] + ' (PDF)',
-              url: k + '-performans-gorevi.pdf' },
+            { ad: '1. Dönem ' + perfAdi(s) + ' — ' + g[0] + ' (PDF)',
+              url: k + '-performans-gorevi.pdf' }
+          ].concat(ikisi);
+          SINIF_PDF[s]['Proje Ödevi'] = [
             { ad: '2. Dönem Proje Ödevi — ' + g[2] + ' (Word)', tur: 'doc',
               kaynak: g[3], url: k + '-proje-odevi.docx' },
             { ad: '2. Dönem Proje Ödevi — ' + g[2] + ' (PDF)',
               url: k + '-proje-odevi.pdf' }
-          ];
+          ].concat(ikisi);
         });
-        SINIF_PDF[5]['Proje & Performans Görevleri'].push(
-          { ad: '5-10. Sınıf Performans Görevleri ve Proje Ödevleri (on iki görev tek dosyada) — Word',
-            tur: 'doc', kaynak: 'Altı sınıfın performans görevi ve proje ödevi art arda',
-            url: 'dosyalar/performans-proje/arapca-performans-proje-5-10.docx' },
-          { ad: '5-10. Sınıf Performans Görevleri ve Proje Ödevleri (on iki görev tek dosyada) — PDF',
-            url: 'dosyalar/performans-proje/arapca-performans-proje-5-10.pdf' }
-        );
+        [perfAdi(5), 'Proje Ödevi'].forEach(function (anahtar) {
+          SINIF_PDF[5][anahtar].push(
+            { ad: '5-10. Sınıf Performans Görevleri ve Proje Ödevleri (on iki görev tek dosyada) — Word',
+              tur: 'doc', kaynak: 'Altı sınıfın performans görevi ve proje ödevi art arda',
+              url: 'dosyalar/performans-proje/arapca-performans-proje-5-10.docx' },
+            { ad: '5-10. Sınıf Performans Görevleri ve Proje Ödevleri (on iki görev tek dosyada) — PDF',
+              url: 'dosyalar/performans-proje/arapca-performans-proje-5-10.pdf' }
+          );
+        });
         
         /* 4 — kart açıklamaları */
         var SINIFLAR_ = [5, 6, 7, 8, 9, 10];
@@ -3988,30 +4021,30 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             + 'Arapça ifadeler harekeli · her şube için ayrı çıktı al.</div>';
         });
         SINIFLAR_.forEach(function (s) {
-          SINIF_GIRIS[s]['Proje & Performans Görevleri'] =
-            /* 24.09.2026: kısa özet */
-            '<div class="dok-not"><b>Görevler:</b> 1. dönem performans, 2. dönem proje · beş sayfa · '
+          /* DİKKAT: bu atamalar '=' ile; ölçek tuşları AŞAĞIDA '+=' ile
+             ekleniyor. Tersi yapılırsa tuşlar eziliyor (28.09.2026 hatası). */
+          SINIF_GIRIS[s][perfAdi(s)] =
+            '<div class="dok-not"><b>1. dönem ' + perfAdi(s).toLocaleLowerCase('tr') + ':</b> beş sayfa · '
             + 'künye, amaç, ölçütler, öğrenci sayfası.</div>' +
-            '<div class="dok-not">Görevi dönem başında ver · ölçütleri öğrenciyle oku · görevler örnektir, kendi konuna uyarla.</div>';
+            '<div class="dok-not">Görevi dönem başında ver · ölçütleri öğrenciyle oku · '
+            + 'görev örnektir, kendi konuna uyarla.</div>';
+          SINIF_GIRIS[s]['Proje Ödevi'] =
+            '<div class="dok-not"><b>2. dönem proje:</b> beş sayfa · '
+            + 'künye, amaç, ölçütler, öğrenci sayfası.</div>' +
+            '<div class="dok-not">Proje konusunu dönem başında ver · teslim tarihini yaz · '
+            + 'görev örnektir, kendi konuna uyarla.</div>';
 
-          /* DEĞERLENDİRME ÖLÇEĞİ TUŞLARI (28.09.2026)
-             DİKKAT: bu satırlar '+=' ile ve bu atamanın ARDINDAN gelmeli.
-             Önce yukarıda ayrı bir blokta yazılmışlardı; buradaki '='
-             onları eziyor ve tuşlar hiç görünmüyordu.
-             ADLANDIRMA: ortaokulda (5-8) puan "ders etkinliklerine
-             katılım", ortaöğretimde "performans çalışması" adıyla verilir. */
-          var perfAd = (s <= 8) ? 'Ders Etkinliklerine Katılım' : 'Performans Çalışması';
-          SINIF_GIRIS[s]['Proje & Performans Görevleri'] +=
-            '<div class="dok-not"><b>Ölçekle puanla:</b> kitabın karekodundaki dereceli '
-            + 'puanlama ölçeğini ekranda işaretle; toplam ve yüzlük karşılık kendiliğinden '
-            + 'hesaplansın, evrak düzeninde A4 PDF olarak insin. Sınıf listesini yapıştırıp '
-            + 'her öğrenciye bir sayfa da alabilirsin.</div>'
-            + '<div class="dok-tuslar">'
-            + '<a class="dok-tus" href="olcek.html?sinif=' + s + '&tur=proje" '
-            + 'target="_blank" rel="opener">Proje Ölçeği</a>'
-            + '<a class="dok-tus" href="olcek.html?sinif=' + s + '&tur=performans" '
-            + 'target="_blank" rel="opener">' + perfAd + ' Ölçeği</a>'
-            + '</div>';
+          /* DEĞERLENDİRME ÖLÇEĞİ TUŞU — her kart kendi ölçeğini açar. */
+          function olcekTusu(tur, yazi) {
+            return '<div class="dok-not"><b>Ölçekle puanla:</b> kitabın karekodundaki dereceli '
+              + 'puanlama ölçeğini ekranda işaretle; toplam ve yüzlük karşılık kendiliğinden '
+              + 'hesaplansın, evrak düzeninde A4 PDF olarak insin. Sınıf listesini yapıştırıp '
+              + 'her öğrenciye bir sayfa da alabilirsin.</div>'
+              + '<div class="dok-tuslar"><a class="dok-tus" href="olcek.html?sinif=' + s
+              + '&tur=' + tur + '" target="_blank" rel="opener">' + yazi + '</a></div>';
+          }
+          SINIF_GIRIS[s][perfAdi(s)] += olcekTusu('performans', perfAdi(s) + ' Ölçeği');
+          SINIF_GIRIS[s]['Proje Ödevi'] += olcekTusu('proje', 'Proje Ölçeği');
         });
       })();
       /* --- BEP & DESTEK EĞİTİM (2026-2027) -------------------------------
@@ -4098,11 +4131,14 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
              'Dört ünite · cevap anahtarlı'));
         giris('Çalışma Kâğıtları & Etkinlikler', KITAP);
 
-        ek('Proje & Performans Görevleri',
-           ikili('Performans Çalışmaları ve Proje Görevi',
-             D + 'performans-proje/10-sinif-secmeli/arapca-10-sinif-secmeli-performans-proje',
-             'İki dönem performans çalışması + proje görevi · dereceli puanlama anahtarları'));
-        giris('Proje & Performans Görevleri', KITAP);
+        /* Seçmeli kitapta ikisi tek dosyada; iki kartta da gösteriliyor. */
+        ['Performans Çalışması', 'Proje Ödevi'].forEach(function (anahtar) {
+          ek(anahtar,
+             ikili('Performans Çalışmaları ve Proje Görevi',
+               D + 'performans-proje/10-sinif-secmeli/arapca-10-sinif-secmeli-performans-proje',
+               'İki dönem performans çalışması + proje görevi · dereceli puanlama anahtarları'));
+          giris(anahtar, KITAP);
+        });
       })();
       /* <<< 10. SINIF SEÇMELİ ARAPÇA BELGELERİ */
       /* >>> 8. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ (23.09.2026) */
@@ -4238,7 +4274,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             '<g class="ik-kalem">' +
             '<path d="M38.6 11.4 l4.2 4.2 l-16.2 16.2 l-5.9 1.7 l1.7 -5.9 Z" fill="#FDD9A0" stroke="#E08E1C" stroke-width="2" stroke-linejoin="round"/>' +
             '<path d="M35.2 14.8 l4.2 4.2" stroke="#E08E1C" stroke-width="1.8" stroke-linecap="round"/></g>';
-          /* 4 — Proje & Performans Görevleri: sallanan kurdeleli rozet */
+          /* 4 — Proje Ödevi: sallanan kurdeleli rozet.
+             (Performans kartı ayrıldı ve kendi ikonunu SINIF_TURLERI'nde
+              'ikon' alanıyla taşıyor; bu yüzden sıra kaymadı.) */
           case 4: return '<g class="ik-rozet">' +
             '<path d="M17.4 26 L11.5 44 l8.2 -3.6 L24 47 Z" fill="#059669" opacity=".5"/>' +
             '<path d="M30.6 26 L36.5 44 l-8.2 -3.6 L24 47 Z" fill="#059669" opacity=".78"/>' +
@@ -4500,7 +4538,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         var sinif = mount.getAttribute('data-sinif');
         var sec = (sinif === '10' && seciliKitap('10') === 'secmeli');
         var kk = sec ? null : kitapKarti(sinif);
-        var liste = kk ? [kk].concat(SINIF_TURLERI) : SINIF_TURLERI;
+        var turler = sinifTurleri(sinif);
+        var liste = kk ? [kk].concat(turler) : turler;
         a4IzgaraKur(mount, sinif + '. SINIF · BELGE', 'sinif', liste, function (t) {
           if (sec && SEC10_PDF[t.ad]) return SEC10_PDF[t.ad];
           return (SINIF_PDF[sinif] && SINIF_PDF[sinif][t.ad]) || [];
