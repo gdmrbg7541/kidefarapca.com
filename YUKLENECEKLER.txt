@@ -1686,3 +1686,78 @@ NOT: katalog/index.html (basılı katalog) ikisini ayrı satır olarak listeleme
     Ölçüldü: başta sol ok kapalı/sağ açık; sağa basınca 336 px kayıp sağ
     ok kapanıyor, sola basınca başa dönüyor; 390 px'te iki ok da yok.
   Yedek: _kaynak/yedekler/index_2026-09-28_ok-oncesi.html
+
+═══════════════════════════════════════════════════════════════════
+28.09.2026 — SORUMLULUK SINAVLARI + BELGE KARTI SIRASI
+═══════════════════════════════════════════════════════════════════
+YENİ DOSYALAR (yüklenecek)
+  dosyalar/sinavlar/<5..10>-sinif/sorumluluk/    · her sınıfta 10 dosya
+      arapca-<s>-sorumluluk-yil.docx/.pdf          tüm yıl
+      arapca-<s>-sorumluluk-1donem.docx/.pdf       1. dönem üniteleri
+      arapca-<s>-sorumluluk-2donem.docx/.pdf       2. dönem üniteleri
+      arapca-<s>-sorumluluk-calisma.docx/.pdf      hazırlık çalışma kâğıdı
+      arapca-<s>-sorumluluk-calisma-cevap.docx/.pdf  cevaplı sürüm
+  (toplam 60 dosya · 6,8 MB)
+
+DEĞİŞEN
+  index.html
+    · «Sınavlar» kartına sorumluluk belgeleri eklendi (listenin SONUNA,
+      var olan sınavların sırası bozulmadı) + kart açıklamasına bir satır
+    · SINIF_TURLERI sırası öğretim akışına göre dizildi:
+        Ders Kitabı → Çalışma Kâğıtları → Ders Etkinliklerine Katılım/
+        Performans → Proje Ödevi → Sınavlar → Sınıf Dosyası → Planlar → BEP
+    · ikon kayması olmasın diye her türe ikonNo eklendi; a4IzgaraKur önce
+      ona bakıyor (okul geneli "dok" takımı eskisi gibi sırayla sayıyor)
+
+NOTLAR
+  · Sınav kâğıdı 2 sayfa, 100 puan, cevap anahtarı AYNI dosyanın sonunda.
+  · Sorular elle yazılmadı: veri/<sınıf>_<ünite>*.js ders verisinden
+    üretildi. Hangi kitap okutuluyorsa onun verisi alınıyor
+    (sistem/sinifveri.js → VERI_YILI ilk kaydının öneki; 6 ve 7 → y2627/).
+  · 6. sınıfın 2026-2027 kitabında cümle/diyalog verisi henüz yok; o yüzden
+    6. sınıf sınavı kelime ağırlıklı (çoktan seçmeli + kelime havuzu).
+    Cümle verisi girilince betik kendiliğinden tam düzene geçer.
+  · Üretici betikler: _kaynak/uretici/sorumlulukVeri.js (veriyi toplar),
+    sorumlulukUret.js (belgeleri kurar), sorumlulukKart.py + kartSirasi.py
+    (index.html yamaları). _kaynak git'e gitmiyor.
+  · Yedek: _kaynak/yedekler/index_2026-09-28_sorumluluk-sira-oncesi.html
+
+───────────────────────────────────────────────────────────────────
+28.09.2026 (2) — SINAV PANELİ AKORDİYONU + ARAPÇA YAZI TİPİ
+───────────────────────────────────────────────────────────────────
+DEĞİŞEN
+  index.html
+    · «Sınavlar» kartının paneli artık gruplu akordiyon:
+        Sınav Oluştur (üstte, tuş) → Tüm Sınavlar Tek Dosyada →
+        1. Dönem Yazılıları → 2. Dönem Yazılıları → Sorumluluk Sınavları
+        → Sınava Hazırlık Çalışma Kâğıtları → Diğer Belgeler
+      Grup içinde belgeler alt başlıklara ayrılıyor (1. Yazılı, 2. Yazılı,
+      tüm yıl kapsamı…). Açılışta 1. Dönem grubu açık gelir.
+      Belgeler ADINDAN ve YOLUNDAN tanınıyor (…-1d1y-…, …/sorumluluk/…),
+      yeni sınav eklerken kod değiştirmeye gerek yok; tanınmayan belge
+      "Diğer Belgeler" grubuna düşer, kaybolmaz.  → svSinifla / SV_GRUP
+    · Yalnız Sınavlar kartı akordiyon; öteki kartlar düz listede kaldı.
+
+  dosyalar/ altındaki 150 Word belgesi + 150 PDF
+    · Arapça yazı tipi «Markazi Text» → «Arakom» (sitenin kendi fontu).
+      Markazi Text öğretmenin Mac'inde kurulu değil; hem Word hem de
+      PDF'ler onun yerine düz bir sans fontu (DejaVu Sans) gösteriyordu,
+      harekeler bozuk çıkıyordu. PDF'ler Arakom gömülü olarak yeniden
+      üretildi.
+    · Yedek: _kaynak/yedekler/font-2026-09-28/  (özgün klasör yapısıyla)
+    · Betik: _kaynak/uretici/fontDegistir.py
+             (python3 _kaynak/uretici/fontDegistir.py dosyalar)
+
+  dosyalar/sinavlar/<5..10>-sinif/sorumluluk/ — 60 dosya yenilendi
+    · Arakom'a geçildi; Arakom'un satır yüksekliği geniş olduğu için
+      Arapça satırlarda satır aralığı sabitlendi (exact 400 twip) ve
+      tablo iç boşlukları daraltıldı. Öğrenci kâğıdı yine İKİ SAYFA,
+      cevap anahtarı üçüncü sayfada.
+
+YEDEKLER
+  _kaynak/yedekler/index_2026-09-28_sinav-akordiyon-oncesi.html
+  _kaynak/yedekler/font-2026-09-28/   (150 docx + 150 pdf)
+  · (düzeltme) Sınav panelinde artık HİÇBİR grup açık gelmiyor; öğretmen
+    önce başlıkları görüyor, aradığına tıklayınca açılıyor.
+  · «Sınav Oluştur» / «Hazır sınavlar» başlıkları koyu yeşilden siyaha alındı.
+  · «Klasik sorular · öğrenme çıktılarına göre · antet hazır» alt açıklaması da siyah.

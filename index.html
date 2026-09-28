@@ -2507,6 +2507,32 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       .dok-pdf svg { flex:none; width:26px; height:26px; }
       .dok-pdf span.uz { margin-left:auto; font-size:.66rem; font-weight:800; color:#C0392B; background:#FDECEA; border-radius:6px; padding:2px 7px; }
       /* dosyası henüz yüklenmemiş belge: tıklanmayan "yakında" satırı */
+      /* ===== SINAV PANELİ — GRUPLU AKORDİYON (28.09.2026) =============
+         Sınav belgeleri çoğaldı (sekiz yazılı + sorumluluk + hazırlık
+         kâğıtları + 8. sınıfın dört eşdeğer grubu). Düz liste okunmuyordu;
+         panel içinde ikinci bir akordiyon katmanı açıldı. Yalnız Sınavlar
+         kartı bunu kullanıyor (bkz. sinavAkordiyon). */
+      .sv-grup { border:1.4px solid #e6ecf3; border-radius:12px; margin-top:10px; background:#fff; overflow:hidden; }
+      .sv-grup.acik { border-color:var(--a4c,#0E9E86); }
+      .sv-bas { display:flex; align-items:center; gap:10px; width:100%; padding:11px 13px;
+                border:0; background:#F7FAFC; cursor:pointer; text-align:left; font:inherit;
+                color:#0f2a43; font-weight:800; transition:background .16s ease; }
+      .sv-bas:hover { background:#EEF6F3; }
+      .sv-bas:focus-visible { outline:3px solid var(--a4c,#16A085); outline-offset:-3px; }
+      .sv-bas .sv-nokta { width:9px; height:9px; border-radius:50%; flex:none; background:var(--a4c,#0E9E86); }
+      .sv-bas .sv-ad { flex:1 1 auto; font-size:.95rem; }
+      .sv-bas .sv-say { font-size:.66rem; font-weight:800; letter-spacing:.4px; color:#0b6b59;
+                        background:#E6F7F2; border-radius:6px; padding:2px 8px; }
+      .sv-bas .sv-ok { flex:none; color:#6b7f95; transition:transform .22s ease; }
+      .sv-grup.acik .sv-bas .sv-ok { transform:rotate(180deg); }
+      .sv-panel { max-height:0; overflow:hidden; transition:max-height .3s cubic-bezier(.4,0,.2,1); }
+      .sv-panel-in { padding:4px 12px 12px; }
+      .sv-alt { margin:12px 0 0; font-size:.74rem; font-weight:800; letter-spacing:.5px;
+                text-transform:uppercase; color:#6b7f95; }
+      .sv-panel-in .dok-pdf { margin-top:7px; }
+      @media (max-width:600px){ .sv-bas { padding:10px 11px; } .sv-bas .sv-ad { font-size:.88rem; } }
+      html.dusuk-guc .sv-panel, html.dusuk-guc .sv-bas .sv-ok { transition:none; }
+      @media (prefers-reduced-motion: reduce){ .sv-panel, .sv-bas .sv-ok { transition:none; } }
       .dok-pdf.dok-bekliyor { cursor:default; opacity:.9; }
       .dok-pdf.dok-bekliyor:hover { border-color:#eef2f6; box-shadow:none; transform:none; }
       .dok-pdf .uz.bekliyor { color:#64748b; background:#eef2f6; }
@@ -2773,8 +2799,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       .ihsv-ik { flex:none; width:38px; height:38px; }
       .ihsv-ik svg { width:100%; height:100%; display:block; }
       .ihsv-yazi { display:flex; flex-direction:column; gap:2px; min-width:0; }
-      .ihsv-sec b { font-size:.95rem; font-weight:800; color:#0B5F51; }
-      .ihsv-sec small { font-size:.76rem; color:#5C7D76; line-height:1.4; }
+      /* Başlık koyu yeşildi, panelin açık zemininde soluk duruyordu;
+         siyaha alındı (28.09.2026, öğretmen isteği). Karanlık kipteki
+         rengi aşağıda ayrıca tanımlı, ona dokunulmadı. */
+      .ihsv-sec b { font-size:.95rem; font-weight:800; color:#111111; }
+      /* Alt açıklama da soluk yeşildi (öğretmen: "iyi görünmüyor"),
+         siyaha alındı; sıralama artık punto ve kalınlıkla veriliyor. */
+      .ihsv-sec small { font-size:.76rem; color:#111111; line-height:1.4; }
       .ihsv-ok { margin-left:auto; font-size:1.1rem; color:#16A085; }
       .ihsv-hazir { flex-direction:column; align-items:flex-start; gap:2px;
                     background:#fff; border-style:dashed; }
@@ -3677,6 +3708,100 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             '<span>' + d.ad + '</span><span class="uz bekliyor">yakında</span></div>';
         }).join('');
       }
+      /* === SINAV PANELİ: BELGELERİ GRUPLA ==============================
+         Belgeler ADINDAN ve YOLUNDAN tanınıyor; listeye yeni sınav eklemek
+         için burada bir şey yapmaya gerek yok, adlandırma kuralına uyması
+         yeterli:
+           …-1d1y-…  1. dönem 1. yazılı      …/sorumluluk/…-yil       tüm yıl
+           …-1d2y-…  1. dönem 2. yazılı      …/sorumluluk/…-1donem    1. dönem
+           …-2d1y-…  2. dönem 1. yazılı      …/sorumluluk/…-calisma   hazırlık
+           …-2d2y-…  2. dönem 2. yazılı
+         Tanınmayan belge "Diğer Belgeler" grubuna düşer — kaybolmaz. */
+      var SV_GRUP = [
+        { kod: 'toplu',  ad: 'Tüm Sınavlar Tek Dosyada' },
+        { kod: 'd1',     ad: '1. Dönem Yazılıları' },
+        { kod: 'd2',     ad: '2. Dönem Yazılıları' },
+        { kod: 'sorumlu', ad: 'Sorumluluk Sınavları' },
+        { kod: 'hazirlik', ad: 'Sınava Hazırlık Çalışma Kâğıtları' },
+        { kod: 'diger',  ad: 'Diğer Belgeler' }
+      ];
+      function svSinifla(d) {
+        var u = (d.url || '').toLowerCase(), a = (d.ad || '').toLocaleLowerCase('tr');
+        if (u.indexOf('/sorumluluk/') > -1 || a.indexOf('sorumluluk') > -1) {
+          if (u.indexOf('calisma') > -1 || a.indexOf('çalışma kâğıdı') > -1)
+            return { kod: 'hazirlik', alt: 'Sorumluluk sınavına hazırlık' };
+          if (u.indexOf('-1donem') > -1) return { kod: 'sorumlu', alt: '1. dönem kapsamı' };
+          if (u.indexOf('-2donem') > -1) return { kod: 'sorumlu', alt: '2. dönem kapsamı' };
+          return { kod: 'sorumlu', alt: 'Tüm yıl kapsamı' };
+        }
+        if (u.indexOf('yazili-sinavlar') > -1 || u.indexOf('tum-gruplar') > -1)
+          return { kod: 'toplu', alt: 'Bütün yazılılar art arda' };
+        var m = u.match(/([12])d([12])y/);
+        if (!m) { m = a.match(/([12])\.\s*dönem\s*([12])\.\s*yazılı/); }
+        if (m) return { kod: 'd' + m[1], alt: m[2] + '. Yazılı' };
+        if (a.indexOf('çalışma kâğıdı') > -1 || u.indexOf('calisma-kagidi') > -1)
+          return { kod: 'hazirlik', alt: 'Yazılı öncesi' };
+        if (a.indexOf('örnek sınav') > -1) return { kod: 'hazirlik', alt: 'Örnek sınav' };
+        return { kod: 'diger', alt: '' };
+      }
+      /* Sınavlar kartının panel içeriği: gruplu akordiyon.
+         Grup içinde belgeler ALT BAŞLIKLARA ayrılıyor; alt başlıkların sırası
+         belgelerin listeye giriş sırasıyla aynı (böylece Word-PDF çiftleri
+         yan yana kalıyor). */
+      function sinavAkordiyon(dosyalar) {
+        if (!dosyalar || !dosyalar.length) return pdfListe(dosyalar);
+        var kova = {};
+        dosyalar.forEach(function (d) {
+          var g = svSinifla(d);
+          var k = kova[g.kod] || (kova[g.kod] = { sira: [], alt: {} });
+          if (!kova[g.kod].alt[g.alt]) { kova[g.kod].alt[g.alt] = []; kova[g.kod].sira.push(g.alt); }
+          kova[g.kod].alt[g.alt].push(d);
+        });
+        /* Panel açıldığında BÜTÜN gruplar KAPALI gelir (28.09.2026, öğretmen
+           isteği): öğretmen önce başlıkları görüp aradığına tıklıyor. */
+        var cikti = '';
+        SV_GRUP.forEach(function (G) {
+          var k = kova[G.kod]; if (!k) return;
+          var say = 0;
+          k.sira.forEach(function (a) { say += k.alt[a].length; });
+          var acik = false;
+          var ic = '';
+          k.sira.forEach(function (a) {
+            if (a) ic += '<div class="sv-alt">' + a + '</div>';
+            ic += pdfListe(k.alt[a]);
+          });
+          cikti += '<div class="sv-grup' + (acik ? ' acik' : '') + '">' +
+            '<button type="button" class="sv-bas" aria-expanded="' + (acik ? 'true' : 'false') +
+              '" onclick="svGrupToggle(this)">' +
+              '<span class="sv-nokta" aria-hidden="true"></span>' +
+              '<span class="sv-ad">' + G.ad + '</span>' +
+              '<span class="sv-say">' + say + ' belge</span>' +
+              '<span class="sv-ok" aria-hidden="true">▾</span>' +
+            '</button>' +
+            '<div class="sv-panel"' + (acik ? ' style="max-height:none"' : '') + '>' +
+              '<div class="sv-panel-in">' + ic + '</div></div>' +
+            '</div>';
+        });
+        return cikti;
+      }
+      /* Grup açılıp kapanınca ÜSTTEKİ a4 panelinin yüksekliği de serbest
+         bırakılıyor; yoksa açılan grup panelin dışında kalıp kırpılıyor. */
+      window.svGrupToggle = function (btn) {
+        var grup = btn.parentNode, panel = grup.querySelector('.sv-panel');
+        var acik = grup.classList.contains('acik');
+        if (acik) {
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+          void panel.offsetHeight;
+          panel.style.maxHeight = '0px';
+          grup.classList.remove('acik'); btn.setAttribute('aria-expanded', 'false');
+        } else {
+          grup.classList.add('acik'); btn.setAttribute('aria-expanded', 'true');
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+          setTimeout(function () { if (grup.classList.contains('acik')) panel.style.maxHeight = 'none'; }, 320);
+        }
+        var ust = btn.closest('.a4-panel');
+        if (ust) ust.style.maxHeight = 'none';
+      };
       /* ortak başlık kartı üretici (hem Dökümanlar hem sınıf içi kullanır) */
       function docKart(b, toggleFn, itemCls, headCls, panelCls) {
         return '<div class="' + itemCls + '">' +
@@ -3692,24 +3817,32 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       /* === SINIFA ÖZEL DÖKÜMANLAR (her sınıfın 5-10 altına) — "Ders içerikli olanlar" ===
          Bir sınıfa PDF eklemek: SINIF_PDF[sınıf][tür adı] dizisine ekle. Örn:
          SINIF_PDF[5]['Sınavlar'] = [ { ad:'1. Yazılı', url:'dosyalar/5-sinav1.pdf' } ]; */
+      /* SIRA ÖĞRETİM AKIŞINA GÖRE (28.09.2026, öğretmen isteği):
+         ders kitabı → çalışma kâğıdı → ders etkinliklerine katılım/performans
+         → proje → sınavlar; öğretmenin kendi evrakı (sınıf dosyası, planlar,
+         BEP) sona alındı. Ders Kitabı kartı bu dizide değil, ızgaranın
+         başına ayrıca ekleniyor (bkz. kitapKarti).
+
+         ikonNo: ikonun TÜRE sabitlenmiş numarası (a4IkonIc içindeki case).
+         Sırayı bir daha değiştirirsen ikonNo'lara dokunma — ikonlar öyle
+         yerinde kalıyor. Yeni kart eklerken a4IkonIc'e yeni bir case yaz ve
+         numarasını buraya ikonNo olarak koy. */
       var SINIF_TURLERI = [
-        { ad: 'Sınıf Dosyası',                   renk: '#2563EB' },
-        { ad: 'Planlar',                         renk: '#EE5253' },
-        { ad: 'Sınavlar',                        renk: '#0E9E86' },
-        { ad: 'Çalışma Kâğıtları & Etkinlikler', renk: '#0EA5E9' },
+        { ikonNo: 3, ad: 'Çalışma Kâğıtları & Etkinlikler', renk: '#0EA5E9' },
         /* PROJE ile PERFORMANS AYRI KARTTIR (28.09.2026, öğretmen isteği).
-           Performans kartının ADI SINIFA GÖRE değişir (bkz. perfAdi);
-           SINIF_PDF ve SINIF_GIRIS anahtarları da o adla kurulur.
-           İkonu 'ikon' alanıyla verilmiştir: ikon numarası tür SIRASINDAN
-           geldiği için araya sırasız bir kart girerse ötekiler kaymasın. */
-        /* İkisinin de ikonu SIRAYA bağlı (4 performans, 5 proje); BEP
-           son sırada kalıp kendi ikonunu (default) koruyor. */
-        { perf: true, ad: 'Performans Çalışması', renk: '#0891B2' },
-        { ad: 'Proje Ödevi',                     renk: '#059669' },
+           Performans kartının ADI SINIFA GÖRE değişir (bkz. perfAdi):
+           ortaokulda "Ders Etkinliklerine Katılım", lisede "Performans
+           Çalışması"; SINIF_PDF ve SINIF_GIRIS anahtarları da o adla kurulur.
+           İkisi yan yana duruyor: ikisi de sınav dışı puanlar. */
+        { ikonNo: 4, perf: true, ad: 'Performans Çalışması', renk: '#0891B2' },
+        { ikonNo: 5, ad: 'Proje Ödevi',                     renk: '#059669' },
+        { ikonNo: 2, ad: 'Sınavlar',                        renk: '#0E9E86' },
+        { ikonNo: 0, ad: 'Sınıf Dosyası',                   renk: '#2563EB' },
+        { ikonNo: 1, ad: 'Planlar',                         renk: '#EE5253' },
         /* Kaynaştırma/bütünleştirme öğrencisi için: BEP planı, eğitsel performans
            formu, uyarlanmış yazılılar, izleme formları, destek eğitim odası paketi.
            Belgeler dosyalar/bep/ altındadır. */
-        { ad: 'BEP & Destek Eğitim',              renk: '#4F46E5' }
+        { ikonNo: 6, ad: 'BEP & Destek Eğitim',              renk: '#4F46E5' }
       ];
       /* ADLANDIRMA (mevzuat): ortaokul ve imam-hatip ortaokulunda başarı
          "sınavlar, DERS ETKİNLİKLERİNE KATILIM ve varsa proje" ile
@@ -3722,7 +3855,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       function sinifTurleri(sinif) {
         return SINIF_TURLERI.map(function (t) {
           if (!t.perf) return t;
-          return { ad: perfAdi(sinif), renk: t.renk, perf: true };
+          /* ikonNo da taşınmalı, yoksa performans kartı ikonunu kaybeder */
+          return { ikonNo: t.ikonNo, ad: perfAdi(sinif), renk: t.renk, perf: true };
         });
       }
       var SINIF_PDF = { 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {} };
@@ -4306,6 +4440,55 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         liste.push({ ad: ad + ' — yazdırmaya hazır (PDF)', url: G + '.pdf' });
       })();
       /* <<< 8. SINIF DİLBİLGİSİ ÖZETİ */
+      /* >>> SORUMLULUK SINAVLARI (28.09.2026) ==========================
+         Sınıfta kalıp sorumluluk sınavına giren öğrenciler için her sınıfta
+         ÜÇ sınav (tüm yıl / 1. dönem / 2. dönem) ve bunlara çalışmak için
+         bir ÇALIŞMA KÂĞIDI (ünite ünite kelime özeti + örnek cümleler +
+         alıştırmalar) ile onun cevaplı sürümü.
+
+         Sorular elle yazılmadı: sitenin kendi ders verisinden
+         (veri/<sınıf>_<ünite>*.js — o sınıfta BU YIL okutulan kitap)
+         üretildi. Üretici: _kaynak/uretici/sorumlulukVeri.js (veriyi
+         toplar) + _kaynak/uretici/sorumlulukUret.js (belgeleri kurar).
+         Cevap anahtarı sınav dosyasının SON sayfasındadır; öğrenci kâğıdı
+         iki sayfadır.
+
+         6. sınıfın 2026-2027 kitabında henüz cümle/diyalog verisi yok, o
+         yüzden 6. sınıf sınavı kelime ağırlıklı (çoktan seçmeli ve kelime
+         havuzu soruları var); diğer sınıflarda boşluk doldurma, cümle
+         kurma, diyalog tamamlama ve çeviri soruları da bulunuyor.
+
+         Listenin SONUNA ekleniyor ki var olan sınav belgelerinin sırası
+         bozulmasın. ============================================= */
+      (function () {
+        [5, 6, 7, 8, 9, 10].forEach(function (s) {
+          var K = 'dosyalar/sinavlar/' + s + '-sinif/sorumluluk/arapca-' + s + '-sorumluluk-';
+          function ikili(ad, kod, kaynak) {
+            return [
+              { ad: ad + ' (Word)', tur: 'doc', kaynak: kaynak, url: K + kod + '.docx' },
+              { ad: ad + ' (PDF)', url: K + kod + '.pdf' }
+            ];
+          }
+          var liste = SINIF_PDF[s]['Sınavlar'] || (SINIF_PDF[s]['Sınavlar'] = []);
+          ikili('Sorumluluk Sınavı — Tüm Yıl', 'yil',
+                'Yılın bütün üniteleri · 100 puan · cevap anahtarı sonda')
+            .concat(ikili('Sorumluluk Sınavı — 1. Dönem', '1donem',
+                '1. dönem üniteleri · 100 puan · cevap anahtarı sonda'))
+            .concat(ikili('Sorumluluk Sınavı — 2. Dönem', '2donem',
+                '2. dönem üniteleri · 100 puan · cevap anahtarı sonda'))
+            .concat(ikili('Sorumluluk Sınavı Çalışma Kâğıdı', 'calisma',
+                'Ünite ünite kelime özeti, örnek cümleler ve alıştırmalar'))
+            .concat(ikili('Sorumluluk Sınavı Çalışma Kâğıdı — Cevaplar', 'calisma-cevap',
+                'Alıştırmaların cevaplı sürümü · öğrenci kendi kontrol eder'))
+            .forEach(function (x) { liste.push(x); });
+
+          SINIF_GIRIS[s]['Sınavlar'] = (SINIF_GIRIS[s]['Sınavlar'] || '') +
+            '<div class="dok-not"><b>Sorumluluk sınavı:</b> üç kapsam (tüm yıl · 1. dönem · 2. dönem) · ' +
+            'iki sayfa · 100 puan · cevap anahtarı aynı dosyanın sonunda · ' +
+            'hazırlık için çalışma kâğıdı ve cevapları ayrı.</div>';
+        });
+      })();
+      /* <<< SORUMLULUK SINAVLARI */
       /* === A4 "RESMİ EVRAK" KARTLARI ===================================
          Sınıf akordiyonlarındaki "Dökümanlar" bölümü artık akordiyon değil,
          A4 sayfa oranında kartlardan oluşan bir ızgara. Bir karta tıklanınca
@@ -4500,11 +4683,16 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       }
       /* bir kart ızgarası + altında tek panel üretir (hem sınıf içi hem okul geneli) */
       function a4IzgaraKur(mount, antet, set, liste, dosyaOf, girisOf) {
-        /* İkon numarası kartın sırasından değil TÜR sırasından gelir: araya
-           özel ikonlu kart (Ders Kitabı) girince ötekilerin ikonu kaymaz. */
+        /* İkON SEÇİMİ — üç yol:
+             t.ikon    → özel ikon adı (Ders Kitabı gibi sırasız kartlar)
+             t.ikonNo  → ikon numarası TÜRE SABİTLENMİŞ (sınıf kartları);
+                         kartların sırası değişince ikonlar kaymasın diye
+             (yoksa)   → sırayla sayılır (okul geneli "dok" takımı böyle) */
         var ikonlar = [], ix = -1;
         liste.forEach(function (t) {
-          if (t.ikon) ikonlar.push({ ozel: t.ikon }); else { ix++; ikonlar.push({ i: ix }); }
+          if (t.ikon) ikonlar.push({ ozel: t.ikon });
+          else if (t.ikonNo != null) ikonlar.push({ i: t.ikonNo });
+          else { ix++; ikonlar.push({ i: ix }); }
         });
         /* .a4-kaydir: ızgarayı saran kap — kaydırma okları buraya konuyor
            (bkz. a4OkKur). Kartlar yine .a4-grid'in doğrudan çocuğu, o
@@ -4515,7 +4703,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         [].forEach.call(mount.querySelectorAll('.a4-kart'), function (btn, i) {
           var t = liste[i], ds = dosyaOf(t);
           var gr = girisOf ? (girisOf(t) || '') : (t.giris || '');
-          btn._a4 = { set: set, ik: ikonlar[i], ad: t.ad, renk: t.renk, sayac: a4Sayac(ds), html: gr + pdfListe(ds) };
+          /* Sınavlar kartı gruplu akordiyon, ötekiler düz liste */
+          var govde = (t.ad === 'Sınavlar') ? sinavAkordiyon(ds) : pdfListe(ds);
+          btn._a4 = { set: set, ik: ikonlar[i], ad: t.ad, renk: t.renk, sayac: a4Sayac(ds), html: gr + govde };
         });
         a4OkKur(mount.querySelector('.a4-kaydir'));
       }
