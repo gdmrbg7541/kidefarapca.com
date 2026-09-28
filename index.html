@@ -3749,41 +3749,137 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          Grup içinde belgeler ALT BAŞLIKLARA ayrılıyor; alt başlıkların sırası
          belgelerin listeye giriş sırasıyla aynı (böylece Word-PDF çiftleri
          yan yana kalıyor). */
-      function sinavAkordiyon(dosyalar) {
-        if (!dosyalar || !dosyalar.length) return pdfListe(dosyalar);
-        var kova = {};
-        dosyalar.forEach(function (d) {
-          var g = svSinifla(d);
-          var k = kova[g.kod] || (kova[g.kod] = { sira: [], alt: {} });
-          if (!kova[g.kod].alt[g.alt]) { kova[g.kod].alt[g.alt] = []; kova[g.kod].sira.push(g.alt); }
-          kova[g.kod].alt[g.alt].push(d);
-        });
-        /* Panel açıldığında BÜTÜN gruplar KAPALI gelir (28.09.2026, öğretmen
-           isteği): öğretmen önce başlıkları görüp aradığına tıklıyor. */
+      /* ORTAK ÇİZİM — gruplar: [{ ad, alt: [{ baslik, ogeler }] }]
+         Bütün gruplar KAPALI açılır (28.09.2026, öğretmen isteği): öğretmen
+         önce başlıkları görüp aradığına tıklıyor. */
+      function svCiz(gruplar) {
         var cikti = '';
-        SV_GRUP.forEach(function (G) {
-          var k = kova[G.kod]; if (!k) return;
-          var say = 0;
-          k.sira.forEach(function (a) { say += k.alt[a].length; });
-          var acik = false;
-          var ic = '';
-          k.sira.forEach(function (a) {
-            if (a) ic += '<div class="sv-alt">' + a + '</div>';
-            ic += pdfListe(k.alt[a]);
+        gruplar.forEach(function (G) {
+          var say = 0, ic = '';
+          G.alt.forEach(function (a) { say += a.ogeler.length; });
+          /* Alt başlık tek taneyse grup adının tekrarı olur, yazılmaz. */
+          var basliklariYaz = G.alt.length > 1;
+          G.alt.forEach(function (a) {
+            if (basliklariYaz && a.baslik) ic += '<div class="sv-alt">' + a.baslik + '</div>';
+            ic += pdfListe(a.ogeler);
           });
-          cikti += '<div class="sv-grup' + (acik ? ' acik' : '') + '">' +
-            '<button type="button" class="sv-bas" aria-expanded="' + (acik ? 'true' : 'false') +
-              '" onclick="svGrupToggle(this)">' +
+          cikti += '<div class="sv-grup">' +
+            '<button type="button" class="sv-bas" aria-expanded="false" onclick="svGrupToggle(this)">' +
               '<span class="sv-nokta" aria-hidden="true"></span>' +
               '<span class="sv-ad">' + G.ad + '</span>' +
               '<span class="sv-say">' + say + ' belge</span>' +
               '<span class="sv-ok" aria-hidden="true">▾</span>' +
             '</button>' +
-            '<div class="sv-panel"' + (acik ? ' style="max-height:none"' : '') + '>' +
-              '<div class="sv-panel-in">' + ic + '</div></div>' +
+            '<div class="sv-panel"><div class="sv-panel-in">' + ic + '</div></div>' +
             '</div>';
         });
         return cikti;
+      }
+      /* kova: kod → alt başlık → belgeler (giriş sırası korunur) */
+      function svKova() {
+        var kova = {}, sira = [];
+        return {
+          koy: function (kod, baslik, oge) {
+            var k = kova[kod];
+            if (!k) { k = kova[kod] = { sira: [], alt: {} }; sira.push(kod); }
+            if (!k.alt[baslik]) { k.alt[baslik] = []; k.sira.push(baslik); }
+            k.alt[baslik].push(oge);
+          },
+          al: function (kod) {
+            var k = kova[kod]; if (!k) return null;
+            return k.sira.map(function (b) { return { baslik: b, ogeler: k.alt[b] }; });
+          },
+          kodlar: function () { return sira.slice(); }
+        };
+      }
+      function sinavAkordiyon(dosyalar) {
+        if (!dosyalar || !dosyalar.length) return pdfListe(dosyalar);
+        var kova = svKova();
+        dosyalar.forEach(function (d) { var g = svSinifla(d); kova.koy(g.kod, g.alt, d); });
+        var gruplar = [];
+        SV_GRUP.forEach(function (G) {
+          var alt = kova.al(G.kod); if (alt) gruplar.push({ ad: G.ad, alt: alt });
+        });
+        return svCiz(gruplar);
+      }
+
+      /* === ÖTEKİ KARTLARIN GRUPLARI ==================================
+         Sınavlar dışındaki kartlar da aynı akordiyona girer. Grup, belgenin
+         YOLUNDAN tanınır (ad değişse de bozulmaz); tanınmayan belge "Diğer
+         Belgeler"e düşer, kaybolmaz.
+         Grup içinde Word–PDF çifti, belge adıyla tek alt başlıkta toplanır.
+         Yeni kart eklerken buraya bir satır yaz; yazmazsan o kart eskisi
+         gibi düz liste olarak görünür (bir şey bozulmaz). */
+      function svYol(d, parca) { return (d.url || '').toLowerCase().indexOf(parca) > -1; }
+      /* "… tek dosyada", "5-10. Sınıf …" gibi toplu belgeler */
+      function svToplu(d) {
+        var a = (d.ad || '').toLocaleLowerCase('tr');
+        return a.indexOf('tek dosyada') > -1 || a.indexOf('5-10. sınıf') > -1 ||
+               svYol(d, '-5-10') || svYol(d, 'tum-gruplar');
+      }
+      /* Belgenin kendi adı: "… — düzenlenebilir (Word)" gibi biçim ekleri atılır */
+      function svBelgeAdi(d) {
+        return String(d.ad || '')
+          .replace(/\s*[—-]\s*(düzenlenebilir|yazdırmaya hazır)\s*\((Word|PDF)\)\s*$/i, '')
+          .replace(/\s*[—-]\s*(Word|PDF)\s*$/i, '')
+          .replace(/\s*\((Word|PDF)\)\s*$/i, '')
+          .trim();
+      }
+      var GOREV_GRUP = [
+        { ad: 'Görev Belgesi', ne: function (d) { return !svToplu(d); } },
+        { ad: 'Toplu Dosyalar', ne: svToplu }
+      ];
+      var BELGE_GRUPLARI = {
+        'Çalışma Kâğıtları & Etkinlikler': [
+          { ad: 'Çalışma Kâğıtları', ne: function (d) { return svYol(d, '/calisma-kagitlari/') && !svYol(d, 'dilbilgisi-ozeti') && !svToplu(d); } },
+          { ad: 'Etkinlikler', ne: function (d) { return svYol(d, '/etkinlikler/') && !svToplu(d); } },
+          { ad: 'Yazılıya Hazırlık', ne: function (d) { return svYol(d, '/sinavlar/'); } },
+          { ad: 'Dilbilgisi Özeti', ne: function (d) { return svYol(d, 'dilbilgisi-ozeti'); } },
+          { ad: 'Toplu Dosyalar', ne: svToplu }
+        ],
+        'Planlar': [
+          { ad: 'Ünitelendirilmiş Yıllık Plan', ne: function (d) { return svYol(d, '/yillik-plan/') && !svToplu(d); } },
+          { ad: 'Günlük Ders Planı', ne: function (d) { return svYol(d, '/gunluk-plan/') && !svToplu(d); } },
+          { ad: 'Toplu Dosyalar', ne: svToplu }
+        ],
+        'Sınıf Dosyası': [
+          { ad: 'Form Seti', ne: function (d) { return !svToplu(d); } },
+          { ad: 'Toplu Dosyalar', ne: svToplu }
+        ],
+        'BEP & Destek Eğitim': [
+          { ad: 'BEP Planı', ne: function (d) { return svYol(d, 'bep-plani'); } },
+          { ad: 'Eğitsel Performans Formu', ne: function (d) { return svYol(d, 'bep-performans'); } },
+          { ad: 'Uyarlanmış Yazılı Sınav', ne: function (d) { return svYol(d, 'bep-yazili'); } },
+          { ad: 'İzleme ve BEP Birimi Formları', ne: function (d) { return svYol(d, 'bep-izleme'); } },
+          { ad: 'Destek Eğitim Odası', ne: function (d) { return svYol(d, 'bep-destek'); } }
+        ],
+        'Ders Etkinliklerine Katılım': GOREV_GRUP,
+        'Performans Çalışması': GOREV_GRUP,
+        'Proje Ödevi': GOREV_GRUP
+      };
+      /* Bir kartın panel gövdesi: uygun grup tablosu varsa akordiyon, yoksa
+         düz liste. Tek grup çıkarsa da düz liste — boşuna tıklatmayalım. */
+      function belgeAkordiyon(tur, dosyalar) {
+        if (!dosyalar || !dosyalar.length) return pdfListe(dosyalar);
+        if (tur === 'Sınavlar') return sinavAkordiyon(dosyalar);
+        var tablo = BELGE_GRUPLARI[tur];
+        if (!tablo) return pdfListe(dosyalar);
+        var kova = svKova();
+        dosyalar.forEach(function (d) {
+          var kod = 'diger';
+          for (var i = 0; i < tablo.length; i++) {
+            if (tablo[i].ne(d)) { kod = tablo[i].ad; break; }
+          }
+          kova.koy(kod, svBelgeAdi(d), d);
+        });
+        var gruplar = [];
+        tablo.forEach(function (G) {
+          var alt = kova.al(G.ad); if (alt) gruplar.push({ ad: G.ad, alt: alt });
+        });
+        var kalan = kova.al('diger');
+        if (kalan) gruplar.push({ ad: 'Diğer Belgeler', alt: kalan });
+        if (gruplar.length < 2) return pdfListe(dosyalar);
+        return svCiz(gruplar);
       }
       /* Grup açılıp kapanınca ÜSTTEKİ a4 panelinin yüksekliği de serbest
          bırakılıyor; yoksa açılan grup panelin dışında kalıp kırpılıyor. */
@@ -4704,8 +4800,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         [].forEach.call(mount.querySelectorAll('.a4-kart'), function (btn, i) {
           var t = liste[i], ds = dosyaOf(t);
           var gr = girisOf ? (girisOf(t) || '') : (t.giris || '');
-          /* Sınavlar kartı gruplu akordiyon, ötekiler düz liste */
-          var govde = (t.ad === 'Sınavlar') ? sinavAkordiyon(ds) : pdfListe(ds);
+          /* Her kart gruplu akordiyondan geçer; grup tablosu olmayan ya da
+             tek grup çıkan kart düz liste olarak döner (bkz. belgeAkordiyon) */
+          var govde = belgeAkordiyon(t.ad, ds);
           btn._a4 = { set: set, ik: ikonlar[i], ad: t.ad, renk: t.renk, sayac: a4Sayac(ds), html: gr + govde };
         });
         a4OkKur(mount.querySelector('.a4-kaydir'));

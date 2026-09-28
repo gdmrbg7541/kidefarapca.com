@@ -1770,3 +1770,64 @@ YEDEKLER
      #imam-hatip .ihsec-ayirac ve .sosyal-* — sorun çıkarırlarsa onlar da
      kaldırılabilir.)
     Yedek: _kaynak/yedekler/index_2026-09-28_ihsv-koyu-oncesi.html
+
+───────────────────────────────────────────────────────────────────
+28.09.2026 (3) — AKSÂM-I SEB'A KONUSU KALDIRILDI
+───────────────────────────────────────────────────────────────────
+SİLİNEN (16 dosya) — konu müfredatta yok
+  aksamiseba.html · aksamiseba.js
+  telaffuzaksamiseba.html/.js/.css · sarf/mucerred/telaffuzaksamiseba.js/.css
+  konuanlatimi.html · sarf/mucerred/konuanlatimi.js/.css
+  kavramtesti.html · oyunlar/kavramtesti.js/.css
+  kurandanornekler.html · sarf/mucerred/kurandanornekler.js/.css
+  Yedek: _kaynak/yedekler/aksamiseba-2026-09-28/  (git'e gitmez)
+
+KALAN ve DÜZELTİLEN
+  sozlukdedektifi.html — Aksâm-ı Seb'a değil, sözlük oyunu; katalogdan ve
+  görev sisteminden bağlı, duruyor. İçindeki iki "Ana Sayfaya Dön"
+  düğmesi aksamiseba.html'e gidiyordu, index.html'e çevrildi.
+  Yedek: _kaynak/yedekler/sozlukdedektifi_2026-09-28_aksamiseba-oncesi.html
+
+NOT
+  · Bu küme index.html'e ve katalog/index.html'e zaten bağlı değildi.
+  · sarf/mucerred/ klasöründe artık yalnız sozlukdedektifi.css/.js var.
+  · Silme işlemi 8429495 numaralı kayıtla GitHub'a gitti; geriye yalnız
+    sozlukdedektifi.html'in bağlantı düzeltmesi gönderilecek.
+  · Kök klasörde ~90 adet .fuse_hidden* artık dosyası duruyor (bağlantı
+    kopmalarından kalma, birkaç MB). İstenirse temizlenebilir.
+  · Takipsiz duran iki öğe var: "Gizem Sandığı/" ve
+    "Vezinler Bilgi Yarışması.pdf" — hizli-gonder 'git add -A' yaptığı
+    için bir sonraki gönderimde siteye çıkarlar; kalsın mı?
+
+───────────────────────────────────────────────────────────────────
+28.09.2026 (4) — AKORDİYON BÜTÜN BELGE KARTLARINDA
+───────────────────────────────────────────────────────────────────
+index.html
+  · Gruplu akordiyon artık yalnız Sınavlar'da değil, bütün kartlarda.
+    Çizim ortak işleve alındı (svCiz); sinavAkordiyon da onu kullanıyor.
+  · Kart türüne göre grup tabloları: BELGE_GRUPLARI
+      Çalışma Kâğıtları & Etkinlikler →
+          Çalışma Kâğıtları · Etkinlikler · Yazılıya Hazırlık ·
+          Dilbilgisi Özeti · Toplu Dosyalar
+      Planlar → Ünitelendirilmiş Yıllık Plan · Günlük Ders Planı ·
+                Toplu Dosyalar
+      Sınıf Dosyası → Form Seti · Toplu Dosyalar
+      Ders Etkinliklerine Katılım / Performans Çalışması / Proje Ödevi →
+          Görev Belgesi · Toplu Dosyalar
+      BEP & Destek Eğitim → BEP Planı · Eğitsel Performans Formu ·
+          Uyarlanmış Yazılı Sınav · İzleme ve BEP Birimi Formları ·
+          Destek Eğitim Odası
+      Sınavlar → eskisi gibi (SV_GRUP)
+  · Grup içinde Word–PDF çifti BELGE ADIYLA tek alt başlıkta toplanıyor
+    (svBelgeAdi biçim eklerini atar). Grupta tek belge varsa alt başlık
+    yazılmaz — grup adının tekrarı olurdu.
+  · Gruplar YOLDAN tanınır, addan değil; tanınmayan belge "Diğer Belgeler"e
+    düşer, kaybolmaz. Tablosu olmayan ya da tek grup çıkan kart düz liste
+    olarak kalır (örn. 6-10. sınıf Sınıf Dosyası: 2 belge).
+  · Bütün gruplar KAPALI açılır.
+
+DENETİM
+  · 6 sınıf × 7 kart koşumla denendi: hiçbir kartta belge kaybı yok
+  · index.html'in 17 gömülü betiği node --check'ten geçti
+  · Betik: _kaynak/uretici/belgeAkordiyon.py
+  · Yedek: _kaynak/yedekler/index_2026-09-28_tumkart-akordiyon-oncesi.html
