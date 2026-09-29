@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-FV9JD15KLW');
   </script>
-  <link rel="stylesheet" href="sinifici/sinav.css?v=5">
+  <link rel="stylesheet" href="sinifici/sinav.css?v=6">
   <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
   <link rel="stylesheet" href="arakom.css?v=2">
 </head>
@@ -53,16 +53,33 @@
   </button>
 </nav>
 
-<nav class="sekmeler" aria-label="Bölümler">
-  <button type="button" class="sekme" data-sekme="havuz" aria-selected="true">Soru havuzu</button>
-  <button type="button" class="sekme" data-sekme="kagit" aria-selected="false">Kâğıdım (<span class="say-secili">0</span>)</button>
-</nav>
+<!-- 29.09.2026: "Soru havuzu / Kâğıdım" sekmeleri kaldırıldı. Kâğıdım
+     artık her ekran boyunda sayfanın altındaki sabit sepet çubuğu, yani
+     havuzla arasında gidip gelmeye gerek yok. -->
 
 <div id="yukleniyor"><div class="cark"></div>Soru havuzu yükleniyor…</div>
 
 <main id="uygulama" hidden>
   <!-- ===================== SORU HAVUZU ===================== -->
   <section class="havuz" aria-label="Soru havuzu">
+
+    <!-- SEÇİM SIRASI: önce sınıf+kitap, sonra ünite ve (varsa) ders,
+         en sonda o ünitenin öğrenme çıktıları. Öğretmen böyle çalışıyor. -->
+    <details id="klasikPaneli" class="kutu klasik-panel sv-ak" hidden aria-label="Klasik soru türleri">
+      <summary><b>Sınıf, ünite ve soru türleri</b> <span id="klasikOzet"></span></summary>
+      <div class="agac-ust">
+        <select id="sinifSec" aria-label="Sınıf"></select>
+        <select id="uniteSec" aria-label="Ünite" disabled></select>
+      </div>
+      <p id="klasikDurum" class="klasik-durum"></p>
+      <div id="dersSatir" class="ders-satir" hidden>
+        <h4>Ders</h4>
+        <div id="suz-ders" class="cipler"></div>
+      </div>
+      <div id="suz-klasik" class="cipler"></div>
+      <p class="klasik-not">Sorular seçili <b>sınıf ve ünitenin kendi ders cümlelerinden</b> üretilir
+        (<code>muhadese/veri/</code>); Arapça elle yazılmaz. Kapalı türleri açmak için üstlerine bas.</p>
+    </details>
 
     <!-- SINAV YOLU: hazırlama yöntemi (29.09.2026, öğretmen isteği).
          Bilerek akordiyon yapılmadı: hangi yöntemle çalışıldığı hep
@@ -103,24 +120,6 @@
       </div>
     </details>
 
-    <!-- SEÇİM SIRASI: önce sınıf+kitap, sonra ünite ve (varsa) ders,
-         en sonda o ünitenin öğrenme çıktıları. Öğretmen böyle çalışıyor. -->
-    <details id="klasikPaneli" class="kutu klasik-panel sv-ak" hidden aria-label="Klasik soru türleri">
-      <summary><b>Sınıf, ünite ve soru türleri</b> <span id="klasikOzet"></span></summary>
-      <div class="agac-ust">
-        <select id="sinifSec" aria-label="Sınıf"></select>
-        <select id="uniteSec" aria-label="Ünite" disabled></select>
-      </div>
-      <p id="klasikDurum" class="klasik-durum"></p>
-      <div id="dersSatir" class="ders-satir" hidden>
-        <h4>Ders</h4>
-        <div id="suz-ders" class="cipler"></div>
-      </div>
-      <div id="suz-klasik" class="cipler"></div>
-      <p class="klasik-not">Sorular seçili <b>sınıf ve ünitenin kendi ders cümlelerinden</b> üretilir
-        (<code>muhadese/veri/</code>); Arapça elle yazılmaz. Kapalı türleri açmak için üstlerine bas.</p>
-    </details>
-
     <!-- OKUL SINAVI: çıktı ağacı -->
     <details id="agacPaneli" class="kutu agac-panel sv-ak" hidden aria-label="Öğrenme çıktıları">
       <summary><b>Öğrenme çıktıları</b> <small>bileşen ve kazanımlar</small></summary>
@@ -157,20 +156,33 @@
   </section>
 
   <!-- ===================== KÂĞIDIM ===================== -->
+  <!-- KÂĞIDIM — sayfanın ALTINDA sabit sepet çubuğu (29.09.2026,
+       öğretmen isteği: "kağıdım konteynırı aşağıda alışveriş sepeti gibi
+       sabit olsun"). Kapalıyken sayaç, özet, (varsa) çıktı uyarısı ve
+       düğmeler görünür; başlığa basınca yukarı doğru açılır. Soru
+       listesi ve kâğıt ayarları açık gövdede. -->
   <aside class="kagit-panel kutu" aria-label="Kâğıdım">
-    <div class="panel-bas">
-      <h2>Kâğıdım <span class="say-secili">0</span></h2>
+    <div class="panel-bas sepet-bas">
+      <button type="button" class="sepet-tog" id="sepetTog" aria-expanded="false" aria-controls="sepetGovde">
+        <span class="sepet-ik" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8.5 6.5V5A2.4 2.4 0 0 1 10.9 2.6h2.2A2.4 2.4 0 0 1 15.5 5v1.5"/><rect x="4" y="6.5" width="16" height="14.9" rx="2.4"/><path d="M8.4 12h7.2M8.4 16.3h4.6"/></svg></span>
+        <b>Kâğıdım</b><span class="say-secili">0</span>
+        <small id="sepetOzet">Havuzdan <b>+ Kâğıda ekle</b> ile başla</small>
+        <span class="sepet-ok" aria-hidden="true">▴</span>
+      </button>
       <button type="button" id="kagitTemizle">Temizle</button>
     </div>
-    <p id="kagitBos">Henüz soru yok.<br>Havuzdan <b>+ Kâğıda ekle</b> ile başla.</p>
-    <ol id="kagit"></ol>
-    <div id="kagitAraclar"><span id="puanOzet"></span></div>
 
-    <!-- Sınav yolunda çıktısı bağlanmamış soru varsa kâğıt çıkmaz. -->
+    <!-- Sınav yolunda çıktısı bağlanmamış soru varsa kâğıt çıkmaz.
+         Sepet KAPALIYKEN de görünsün diye gövdenin dışında duruyor. -->
     <div id="ciktiUyari" class="cikti-uyari" hidden>
       <span id="ciktiUyariYazi"></span>
       <button type="button" id="ciktiDoldur">Önerilenleri ata</button>
     </div>
+
+    <div class="sepet-govde" id="sepetGovde">
+    <p id="kagitBos">Henüz soru yok.<br>Havuzdan <b>+ Kâğıda ekle</b> ile başla.</p>
+    <ol id="kagit"></ol>
+    <div id="kagitAraclar"><span id="puanOzet"></span></div>
 
     <details class="ayarlar sv-ak">
       <summary><b>Kâğıt ayarları</b></summary>
@@ -219,6 +231,7 @@
         </div>
       </div>
     </details>
+    </div><!-- /sepet-govde -->
 
     <div class="eylemler">
       <button type="button" id="btnDagilim" hidden title="Konu ve kazanım dağılım tablosu — yazılı dosyasına konur">Dağılım tablosu</button>
@@ -252,7 +265,7 @@
      bakarak doğru üniteyi okur. -->
 <script src="sistem/sinifveri.js?v=20260924j"></script>
 <script src="sinifici/klasik.js?v=3"></script>
-<script src="sinifici/sinav.js?v=4"></script>
+<script src="sinifici/sinav.js?v=5"></script>
 <script src="sistem/geri.js?v=20260915a"></script>
 <script>
 /* ==================================================================

@@ -598,6 +598,34 @@ const MZ_OK_CIKIS = '<svg class="mz-ok mz-ok-cikis" viewBox="0 0 34 34" aria-hid
     + '<path class="mz-govde" d="M14 17H30"></path>'
     + '<path class="mz-uc" d="M25 11.5L30.5 17L25 22.5"></path></svg>';
 
+/* =====================================================================
+   GOOGLE ANALYTICS — SEKME ZİYARETİ  (29.09.2026, öğretmen isteği)
+   "Harf Tanıtımı, Harf Birleştirme, Okuma ve Dinle-Yaz'a kaç kişi
+    girmiş görmek istiyorum."
+   Her sekmenin AYRI BİR ETKİNLİK ADI var; GA4 → Etkinlikler raporunda
+   kendiliğinden satır oluyorlar, özel boyut tanımlamak gerekmiyor.
+   Sayfa görüntüleme sayısına dokunulmuyor (page_view gönderilmiyor),
+   yani alfabe.html'in kendi sayımı şişmiyor.
+   gtag yoksa (yerelde, çevrimdışı, reklam engelleyicide) sessizce geçer.
+   ===================================================================== */
+const GA_SEKME = {
+    p1: { ad: 'alfabe_harf_tanitimi',    yazi: 'Harf Tanıtımı' },
+    p5: { ad: 'alfabe_harf_birlestirme', yazi: 'Harf Birleştirme' },
+    p8: { ad: 'alfabe_okuma',            yazi: 'Okuma' },
+    p7: { ad: 'alfabe_dinle_yaz',        yazi: 'Dinle ve Yaz' }
+};
+let gaSonSekme = '';
+function gaSekme(id) {
+    const s = GA_SEKME[id];
+    if (!s || gaSonSekme === id) return;   /* aynı sekmeye tekrar basmak sayılmaz */
+    gaSonSekme = id;
+    try {
+        if (typeof gtag === 'function') {
+            gtag('event', s.ad, { sekme: s.yazi, sayfa: 'alfabe' });
+        }
+    } catch (e) { }
+}
+
 const ui = {
     tab: (e, id) => {
         if (e) e.preventDefault(); 
@@ -635,6 +663,7 @@ const ui = {
            tekrar basıldıysa şerit katlanır. */
         if (ayniSekme && typeof navKapat === 'function') { try { navKapat(); } catch (h) { } }
         else if (typeof navAdYaz === 'function') { try { navAdYaz(); } catch (h) { } }
+        gaSekme(id);                       /* ziyaret GA4'e bildirilsin */
     },
     init: () => {
         const g1 = document.getElementById('g1');
@@ -1284,3 +1313,5 @@ const game = {
 };
 
 ui.init();
+/* Açılışta etkin sekme Harf Tanıtımı: onun ziyareti de sayılsın. */
+gaSekme('p1');

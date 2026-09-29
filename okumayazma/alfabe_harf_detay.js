@@ -577,11 +577,13 @@ const harfGrid = {
     calis: false,
     t0: null,         // animasyon açıldığı andaki saat (hepsi baştan başlasın)
     oturanSay: -1,    // kapalıyken tam hâline oturtulan darbe sayısı
-    /* EKRANDA HER AN TEK KART YAZILIR (Geylani: "aynı anda birden fazla
-       noktada birden fazla doğrultuda yazı yazılmamalı" — bütün ekran
-       için). Yazan kartın dışındakiler BOŞ değil, TAMAMLANMIŞ durur;
-       sayfa yarım görünmesin. Sıra kartlar arasında dolaşır, fareyle
-       bir kartın üstüne gelince sıra hemen ona geçer. */
+    /* HEPSİ BİRDEN YAZILIR (29.09.2026, öğretmen isteği: "dat harfine
+       basınca tüm harflerin yazılış animasyonu başlasın"). Arada bir
+       dönem sıra tek kartta dolaşıyordu; düğmeye basınca ekranda yalnız
+       bir küçük kart yazdığı için "çalışmıyor" gibi görünüyordu.
+       Aşağıdaki kartlar/aktifKart alanları o düzenden kaldı: kartlar
+       hâlâ dolduruluyor (ileride yine gerekirse dursun), ama tick()
+       artık hepsini birden sürüyor. */
     kartlar: [],      // kart no → o kartın darbeleri
     aktifKart: 0,
     kartT0: null,
@@ -695,13 +697,9 @@ const harfGrid = {
             const kartNo = harfGrid.kartlar.length;
             harfGrid.kartlar.push([]);
             card.__hgKart = kartNo;
-            /* Fareyle bir kartın üstüne gelince sıra hemen ona geçer:
-               öğretmen istediği harfi beklemeden gösterebilsin. */
-            card.addEventListener('mouseenter', function () {
-                if (!harfGrid.calis) return;
-                if (harfGrid.aktifKart === kartNo) return;
-                harfGrid.aktifKart = kartNo; harfGrid.kartT0 = null; harfGrid.tazele = true;
-            });
+            /* 29.09.2026: "fareyle gelince sıra bu karta geçsin" kalktı —
+               artık bütün kartlar birlikte yazıyor, sırasını bekleyen
+               kart yok. */
             requestAnimationFrame(() => {
                 const group = [];
                 let enGec = 300;
@@ -803,34 +801,18 @@ const harfGrid = {
         const p1 = document.getElementById('p1');
         if (document.visibilityState === 'visible' && p1 && p1.classList.contains('active')) {
             if (this.calis) {
-                /* SIRA TEK KARTTA. Eskiden bütün kartlar ortak saatten
-                   `zaman % cycle` ile besleniyordu: 28 kart aynı anda
-                   yazıyordu. Şimdi yalnız aktif kart ilerler; ötekiler
-                   tamamlanmış hâlde durur. */
-                const kartSay = this.kartlar.length;
-                if (!kartSay) { requestAnimationFrame(this.tick); return; }
-                if (this.aktifKart >= kartSay) this.aktifKart = 0;
-                if (this.kartT0 == null) { this.kartT0 = now; this.tazele = true; }
-                let grup = this.kartlar[this.aktifKart] || [];
-                const cycle = grup.length ? grup[0].cycle : 1200;
-                if (now - this.kartT0 > cycle) {
-                    grup.forEach(it => { it.el.style.strokeDashoffset = 0; });
-                    this.aktifKart = (this.aktifKart + 1) % kartSay;
-                    this.kartT0 = now; this.tazele = true;
-                    grup = this.kartlar[this.aktifKart] || [];
-                }
-                if (this.tazele) {
-                    /* ötekiler TAM, aktif kart BOŞ (baştan yazılacak) */
-                    for (const it of this.items) {
-                        if (it.kart !== this.aktifKart) it.el.style.strokeDashoffset = 0;
-                    }
-                    grup.forEach(it => { it.el.style.strokeDashoffset = it.len; });
-                    this.tazele = false;
-                }
-                const zaman = now - this.kartT0;
+                /* HEPSİ BİRDEN (29.09.2026, öğretmen isteği). Her kartın
+                   kendi turu var (cycle: o kartın dört biçiminin en geç
+                   biteni + 1400 ms bekleme); hepsi ortak saatten
+                   `zaman % cycle` ile besleniyor. Turlar eşit olmadığı
+                   için kartlar birbirine göre kayıyor: ekran tek ağızdan
+                   değil, doğal görünüyor. Tur bitince harf tamamlanmış
+                   durur, bekleme sonunda silinip baştan yazılır. */
+                if (this.t0 == null) this.t0 = now;
+                const zaman = now - this.t0;
                 let butce = 3;      /* kare başına en çok 3 profil hesabı */
-                for (const it of grup) {
-                    const t = zaman;
+                for (const it of this.items) {
+                    const t = it.cycle ? (zaman % it.cycle) : zaman;
                     let f;
                     if (t < it.t0) f = 0;
                     else if (t >= it.t0 + it.dur) f = 1;
@@ -839,9 +821,16 @@ const harfGrid = {
                         it.pr = it.w ? harfDetay.agirlikProfili(it) : null;
                         butce--;
                     }
-                    it.el.style.strokeDashoffset = it.pr
+                    /* Değişmeyen darbeye dokunma: 203 darbenin çoğu her
+                       karede aynı yerde duruyor (tur sonu beklemesi,
+                       sırası gelmemiş darbeler). Yazmayınca tarayıcı
+                       boşuna stil hesabı yapmıyor. */
+                    const v = it.pr
                         ? it.len - harfDetay.profilUzunluk(it.pr, f)
                         : it.len * (1 - f);
+                    if (it.son === undefined || Math.abs(it.son - v) > 0.25) {
+                        it.el.style.strokeDashoffset = v; it.son = v;
+                    }
                 }
                 this.oturanSay = -1;
             } else if (this.oturanSay !== this.items.length) {
@@ -849,7 +838,7 @@ const harfGrid = {
                    kart normal (statik) harf gibi görünür. Darbeler init()
                    sırasında parça parça eklendiği için sayı değişince
                    yeniden oturtulur. */
-                for (const it of this.items) it.el.style.strokeDashoffset = 0;
+                for (const it of this.items) { it.el.style.strokeDashoffset = 0; it.son = 0; }
                 this.oturanSay = this.items.length;
             }
         }

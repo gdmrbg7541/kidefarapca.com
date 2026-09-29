@@ -489,6 +489,7 @@
   }
 
   function liste() {
+    klasikOzetYaz();                     /* üstteki sabit şerit tazelensin */
     var l = suzulmus(), kutu = $('#liste');
     $('#bulunan').textContent = l.length + ' soru';
     if (!l.length) {
@@ -549,6 +550,14 @@
     $('#puanOzet').textContent = ayar.puan && secili.length
       ? 'Her soru ' + (puanlar[0] === puanlar[puanlar.length - 1] ? puanlar[0] : puanlar[puanlar.length - 1] + '–' + puanlar[0]) + ' puan · toplam ' + ayar.toplam
       : '';
+    /* Sepet kapalıyken de ne olduğu görünsün. */
+    var so = $('#sepetOzet');
+    if (so) {
+      so.innerHTML = secili.length
+        ? secili.length + ' soru' + (ayar.puan ? ' · toplam ' + kac(ayar.toplam) + ' puan' : '')
+        : 'Havuzdan <b>+ Kâğıda ekle</b> ile başla';
+    }
+    sepetOlc();
     kaydet();
   }
 
@@ -1084,6 +1093,42 @@
     kaydet();
   }
 
+  /* --- ÜSTTE SABİT SINIF ŞERİDİ / ALTTA SEPET (29.09.2026) ------------
+     Üstteki başlık şeridiyle alttaki sepetin yüksekliği yazı boyuna ve
+     ekran enine göre değişiyor; ikisi de JS'le ölçülüp CSS değişkenine
+     yazılıyor: --ust-y (sınıf paneli oraya yapışıyor) ve --sepet-y
+     (sayfanın alt boşluğu, içerik sepetin altında kalmasın). */
+  function sepetOlc() {
+    var u = document.querySelector('.ust');
+    if (u) document.documentElement.style.setProperty('--ust-y', u.offsetHeight + 'px');
+    /* Sepet AÇIKKEN ölçme: o an yüksekliği ekranın yarısı, sayfanın alt
+       boşluğu boşuna o kadar büyümesin. */
+    if (document.body.classList.contains('sepet-acik')) return;
+    var p = document.querySelector('.kagit-panel');
+    if (p && !p.hidden) document.documentElement.style.setProperty('--sepet-y', p.offsetHeight + 'px');
+  }
+  function sepetAc(ac) {
+    document.body.classList.toggle('sepet-acik', !!ac);
+    var t = $('#sepetTog');
+    if (t) t.setAttribute('aria-expanded', ac ? 'true' : 'false');
+    sepetOlc();
+  }
+
+  /* Sınıf panelinin başlığı: seçili SINIF, KİTAP ve ÜNİTE hep görünsün
+     (öğretmen isteği: "her zaman yukarda hangi sınıf ve kitabı olduğu
+     açık olsun"). Metin seçicilerin kendi yazısından geliyor, yani kitap
+     adı listede nasıl yazıyorsa şeritte de öyle. */
+  function klasikOzetYaz() {
+    var e = $('#klasikOzet'); if (!e) return;
+    var s = $('#sinifSec');
+    var sad = (s && s.value && s.selectedIndex >= 0) ? (s.options[s.selectedIndex].textContent || '').trim() : '';
+    if (!sad) { e.textContent = 'önce sınıf ve kitap seç'; e.className = 'sv-ozet bos'; return; }
+    var u = $('#uniteSec');
+    var uad = (u && !u.disabled && u.selectedIndex >= 0) ? (u.options[u.selectedIndex].textContent || '').trim() : '';
+    e.textContent = uad ? sad + '  ·  ' + uad : sad;
+    e.className = 'sv-ozet';
+  }
+
   /* --- sınav hazırlama yöntemi (29.09.2026) ---------------------------
      İki yöntem aynı kâğıdı üretir, FARK HAVUZUN NASIL DARALDIĞINDA:
        'cikti' → çıktı ağacı açık; seçilen çıktının alan becerisi havuzu
@@ -1402,6 +1447,11 @@
       gosterilen = LISTE_ADIM; cizAgac(); cipler(); liste(); kagidim();
       klasikYukle().then(function () { cipler(); liste(); cizAgac(); });
     });
+    var st = $('#sepetTog');
+    if (st) st.addEventListener('click', function () {
+      sepetAc(!document.body.classList.contains('sepet-acik'));
+    });
+    window.addEventListener('resize', sepetOlc);
     var cd = $('#ciktiDoldur');
     if (cd) cd.addEventListener('click', function () {
       var n = 0;
@@ -1491,6 +1541,9 @@
       hazirla(r[0]);
       $('#yukleniyor').hidden = true;
       yolKur(ayar.yol || 'sinav');            /* sekmeli: açılışta Sınav Hazırla */
+      /* Sepet ve başlık şeridi yerleşsin (yazı tipi geç gelirse diye
+         birkaç kez ölçülüyor). */
+      sepetOlc(); [120, 500, 1400].forEach(function (ms) { setTimeout(sepetOlc, ms); });
       cipler(); liste(); kagidim();
     }).catch(function (e) {
       console.error('[sorukagidi]', e);

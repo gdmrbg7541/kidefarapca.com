@@ -163,17 +163,14 @@ button.ana:hover:not(:disabled) { background: var(--yesil-k); border-color: var(
 .durum.hata { background: #FDECEA; color: var(--kirmizi); }
 
 /* ---------- mobil sekmeleri ---------- */
-.sekmeler { display: none; }
+.sekmeler { display: none !important; }
+/* 29.09.2026: mobil "Soru havuzu / Kâğıdım" sekmeleri kalktı; Kâğıdım
+   artık her ekranda alttaki sabit sepet. Eski kurallar (sekmeye göre
+   panel gizleme, .kagit-panel'i static yapma) sepeti bozduğu için
+   silindi. */
 @media (max-width: 920px) {
   .ust-ic { padding-left: 64px; }
   #uygulama { grid-template-columns: 1fr; padding-top: 12px; }
-  .sekmeler { display: flex; position: sticky; top: 62px; z-index: 25; background: var(--zemin); padding: 8px 16px 6px; gap: 6px; }
-  .sekme { flex: 1; padding: 9px; border-radius: 11px; border: 1.5px solid var(--cizgi); background: #fff; font-weight: 800; color: var(--gri); }
-  .sekme[aria-selected="true"] { border-color: var(--yesil); color: var(--yesil-k); background: var(--yesil-a); }
-  body[data-sekme="havuz"] .kagit-panel { display: none; }
-  body[data-sekme="kagit"] .havuz { display: none; }
-  .kagit-panel { position: static; max-height: none; }
-  #kagit { max-height: none; }
   .soru-ust { padding-right: 0; }
   .ekle { position: static; margin-top: 8px; width: 100%; }
 }
@@ -552,3 +549,112 @@ details.sv-ak.ayarlar { border-top: 0; padding-top: 0; }
   border: .3mm solid #BFE6DC; border-radius: 1.2mm; padding: .3mm 1.4mm;
   white-space: nowrap;
 }
+
+
+/* ===================================================================
+   DÜZEN — SINIF ÜSTTE SABİT · KÂĞIDIM ALTTA SEPET · BÜYÜK YAZI
+   (29.09.2026, öğretmen isteği)
+   =================================================================== */
+
+/* --- 1) yazılar büyüdü ---------------------------------------------
+   Arayüzdeki ölçüler rem ile yazıldığı için kök boyu değişince hepsi
+   birlikte büyüyor. A4 KÂĞIT ETKİLENMİYOR: .sk-sayfa ve içindekiler
+   px/pt/mm ile ölçülü, sınav çıktısı birebir aynı kalıyor. */
+html { font-size: 19px; }
+body { font-size: 1rem; }
+
+/* --- 2) tek sütun: sağdaki Kâğıdım sütunu kalktı ------------------- */
+#uygulama {
+  grid-template-columns: minmax(0, 1fr);
+  padding-bottom: calc(var(--sepet-y, 96px) + 24px);
+}
+
+/* --- 3) üstte sabit sınıf şeridi ------------------------------------
+   --ust-y'yi JS ölçüyor (sinav.js → sepetOlc): başlık şeridinin boyu
+   yazı boyuna ve ekran enine göre değişiyor. */
+#klasikPaneli {
+  position: sticky; top: var(--ust-y, 66px); z-index: 24;
+  margin-bottom: 14px; box-shadow: 0 5px 16px rgba(22, 50, 79, .08);
+}
+#klasikPaneli > summary { background: var(--yesil-a); padding: 13px 16px; }
+#klasikPaneli > summary:hover { background: #DBEFE9; }
+#klasikPaneli > summary::before { background: var(--yesil); }
+/* Açıkken kendi içinde kayar; açık panel bütün listeyi örtmesin. */
+#klasikPaneli[open] {
+  overflow-y: auto;
+  max-height: calc(100vh - var(--ust-y, 66px) - 140px);
+}
+#klasikOzet.sv-ozet {
+  font-weight: 800; color: var(--yesil-k); font-size: .88rem;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+#klasikOzet.sv-ozet.bos { font-weight: 700; color: var(--turuncu); }
+
+/* --- 4) altta sabit Kâğıdım sepeti ---------------------------------
+   Yan boşluk max() ile veriliyor: geniş ekranda içerik 1320 pikselle
+   ortalanıp sayfanın geri kalanıyla hizalanıyor, dar ekranda 16px. */
+.kagit-panel {
+  position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 40;
+  max-width: none; max-height: 86vh; margin: 0;
+  border: 0; border-top: 1.5px solid var(--cizgi); border-radius: 18px 18px 0 0;
+  box-shadow: 0 -8px 30px rgba(22, 50, 79, .17);
+  padding: 9px max(16px, calc((100vw - 1320px) / 2)) 12px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.sepet-bas { margin: 0; gap: 8px; }
+.sepet-tog {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px;
+  border: 0; background: none; padding: 3px 2px; text-align: left; color: inherit;
+}
+.sepet-tog:focus-visible { outline: 3px solid var(--yesil); outline-offset: 2px; border-radius: 10px; }
+.sepet-ik {
+  flex: none; width: 32px; height: 32px; display: grid; place-items: center;
+  border-radius: 10px; background: var(--yesil-a); color: var(--yesil-k);
+}
+.sepet-ik svg { width: 19px; height: 19px; fill: none; stroke: currentColor;
+                stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.sepet-tog > b { flex: none; font-size: 1.04rem; }
+.sepet-tog .say-secili {
+  flex: none; min-width: 28px; text-align: center; background: var(--yesil); color: #fff;
+  border-radius: 99px; padding: 2px 9px; font-size: .8rem; font-weight: 800;
+}
+.sepet-tog small {
+  flex: 1; min-width: 0; color: var(--gri); font-size: .85rem;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sepet-tog .sepet-ok { flex: none; color: var(--gri); font-size: 1.1rem; transition: transform .2s ease; }
+body.sepet-acik .sepet-tog .sepet-ok { transform: rotate(180deg); }
+
+/* gövde: kapalıyken yok, açıkken tek kaydırıcı */
+.sepet-govde { display: none; }
+body.sepet-acik .sepet-govde {
+  display: block; overflow-y: auto;
+  max-height: calc(86vh - 150px); padding-right: 2px;
+}
+.kagit-panel #kagit { max-height: none; overflow: visible; border-top: 1px solid var(--cizgi); }
+.kagit-panel .ayarlar { max-height: none; overflow: visible; }
+
+/* düğmeler tek sırada, sağa dayalı */
+.kagit-panel .eylemler {
+  display: flex; flex-wrap: wrap; gap: 9px; justify-content: flex-end; margin-top: 0;
+}
+.kagit-panel .eylemler button { flex: 0 1 auto; padding: 11px 18px; }
+.kagit-panel .durum { margin-top: 0; }
+@media (max-width: 700px) {
+  .sepet-tog small { display: none; }          /* dar ekranda sayaç yeter */
+  .kagit-panel .eylemler button { flex: 1 1 42%; }
+}
+
+/* KAPALIYKEN TEK SIRA (geniş ekran): başlık, özet ve düğmeler yan yana;
+   çubuk 118 piksel yerine ~64 piksel yer kaplıyor. Açılınca alt alta
+   dönüyor, çünkü araya soru listesi ve ayarlar giriyor. */
+@media (min-width: 900px) {
+  body:not(.sepet-acik) .kagit-panel { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  body:not(.sepet-acik) .kagit-panel .sepet-bas { flex: 1 1 320px; min-width: 0; }
+  body:not(.sepet-acik) .kagit-panel .eylemler { flex: 0 0 auto; }
+  body:not(.sepet-acik) .kagit-panel #ciktiUyari { order: -1; flex: 1 1 100%; }
+  body:not(.sepet-acik) .kagit-panel .durum { flex: 1 1 100%; }
+}
+
+/* Önizleme açıkken sepet perdeye karışmasın. */
+body.onizleme-acik .kagit-panel { display: none; }

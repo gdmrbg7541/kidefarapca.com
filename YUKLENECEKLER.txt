@@ -2037,3 +2037,141 @@ B) SINAV HAZIRLAMA İKİ YÖNTEM — "eğer sınav hazırlanıyorsa iki seçenek
        Önizle/Yazdır/PDF üçü de kapanıyor
      · "Önerilenleri ata" → doluyor, düğmeler açılıyor
      · önizlemede: soru başlığında kod YOK, sorunun son ögesi .k-ck-son
+
+────────────────────────────────────────────────────────────────────────
+ALFABE — YAZILIŞ ANİMASYONU + GOOGLE ANALYTICS  (29.09.2026)
+Dosyalar: alfabe.html · okumayazma/alfabe.js?v=35
+          okumayazma/alfabe_harf_detay.js?v=32
+Yedek:   _kaynak/yedekler/alfabe.html_2026-09-29_yazim-ga-oncesi
+         _kaynak/yedekler/alfabe.js_2026-09-29_yazim-ga-oncesi
+         _kaynak/yedekler/alfabe_harf_detay.js_2026-09-29_yazim-ga-oncesi
+Betik:   _kaynak/uretici/alfabeYazimGa.py
+────────────────────────────────────────────────────────────────────────
+
+A) YAZILIŞ ANİMASYONU (ض düğmesi) YİNE HEPSİ BİRDEN
+   Şikâyet: "dat harfine basınca normalde tüm harflerin yazılış
+   animasyonu başlardı, şu an çalışmıyor."
+
+   TEŞHİS: bozuk değildi. Arada sıra TEK KARTA indirilmişti (harfGrid.tick
+   yalnız aktifKart'ı sürüyordu): sıra elif'ten başlayıp kart kart
+   dolaşıyor, bir kart ~4 sn, 28 kartın turu ~2 dakika sürüyordu. Düğmeye
+   basınca ekranda yalnız bir küçük kart yazdığı için hiçbir şey olmamış
+   gibi görünüyordu. Ölçüldü: düğme çalışıyor, calis=true oluyor, dashoffset
+   ilerliyor — ama tek kartta.
+
+   YAPILAN: tick() artık bütün darbeleri (203 darbe / 28 kart / 112 biçim)
+   birlikte sürüyor. Her kartın kendi turu var (cycle = o kartın dört
+   biçiminin en geç biteni + 1400 ms bekleme); hepsi ortak saatten
+   `zaman % cycle` ile besleniyor. Turlar eşit olmadığı için kartlar
+   birbirine göre kayıyor, ekran tek ağızdan değil doğal görünüyor.
+     · "fareyle gelince sıra bu karta geçsin" davranışı kalktı (anlamsız).
+     · aktifKart / kartT0 / tazele alanları duruyor ama artık okunmuyor.
+     · Değişmeyen darbeye stil yazılmıyor (Math.abs(it.son - v) > 0.25):
+       tur sonu beklemesinde ve sırası gelmemiş darbelerde tarayıcı boşuna
+       stil hesabı yapmıyor.
+     · Düğme KAPALIYKEN eskisi gibi: bütün harfler tamamlanmış duruyor.
+
+   DENETİM (Playwright): düğmeye basıldıktan sonra aynı anda yazan kart
+   sayısı 28 → 23 → 16 → 4 → 10 (turlar kaydığı için değişiyor). Kapatınca
+   yarım kalan darbe 0. Kare hızında ölçülebilir kayıp yok (kapalı 21 fps,
+   açık 22 fps — kaptaki tavan zaten 22).
+
+B) GOOGLE ANALYTICS — SEKME ZİYARETİ
+   İstek: "harf tanıtımı, harf birleştirme, okuma ve dinle yaz kısmının
+   sitede ziyaret edildiğini GA'dan takip etmek istiyorum."
+
+   ui.tab() tek geçit olduğu için sayaç oraya kondu (alfabe.js → gaSekme).
+   Her sekmenin AYRI ETKİNLİK ADI var:
+       alfabe_harf_tanitimi      → Harf Tanıtımı
+       alfabe_harf_birlestirme   → Harf Birleştirme
+       alfabe_okuma              → Okuma
+       alfabe_dinle_yaz          → Dinle ve Yaz
+   Parametreler: { sekme: '<ad>', sayfa: 'alfabe' }
+
+   NEREDE GÖRÜNÜR: GA4 → Raporlar → Etkileşim → Etkinlikler. Adlar ayrı
+   olduğu için satırlar kendiliğinden oluşur; özel boyut tanımlamak
+   GEREKMEZ. İlk kayıtların rapora düşmesi birkaç saat alır; anında görmek
+   için GA4 → Yönetici → DebugView ya da Gerçek Zamanlı.
+
+   NİYE page_view DEĞİL: page_view gönderilseydi alfabe.html'in sayfa
+   görüntüleme sayısı iki katına çıkardı. Bu yol sayfa sayımına dokunmuyor.
+
+   AYRINTILAR:
+     · Açılışta etkin sekme Harf Tanıtımı olduğu için ui.init()'ten sonra
+       bir kez gaSekme('p1') çağrılıyor; yoksa en çok kullanılan sekme hiç
+       sayılmazdı.
+     · Aynı sekmeye üst üste basmak sayılmıyor (gaSonSekme).
+     · gtag yoksa (yerelde, çevrimdışı, reklam engelleyicide) sessizce
+       geçiyor; sayfa çalışmaya devam ediyor.
+     · Dinle ve Yaz bir <iframe> (dinleveyaz.html) ve onun kendi GA
+       etiketi zaten var; yani o sekme hem etkinlik hem de kendi sayfa
+       görüntülemesi olarak görünür.
+
+   DENETİM (Playwright, dataLayer dinlenerek): açılışta
+   alfabe_harf_tanitimi; p5 → p8 → p7 → p1 gezintisinde dördü de sırayla;
+   p1'e ikinci kez basınca tekrar sayılmadı.
+
+────────────────────────────────────────────────────────────────────────
+SINAV HAZIRLA — DÜZEN: SINIF ÜSTTE, KÂĞIDIM ALTTA SEPET  (29.09.2026)
+Dosyalar: sinav.html · sinifici/sinav.js?v=5 · sinifici/sinav.css?v=6
+Yedek:   _kaynak/yedekler/sinav.{html,js,css}_2026-09-29_duzen-oncesi
+Betik:   _kaynak/uretici/sinavDuzen.py
+────────────────────────────────────────────────────────────────────────
+
+İstek: "headerin altında önce Sınıf, ünite ve soru türleri olsun ve kağıdım
+konteynırı aşağıda alışveriş sepeti gibi sabit olsun, her zaman yukarda açık
+olarak hangi sınıf ve kitabı olduğu açık olsun, aşağı scroll yapıldıkça da
+sabit kalsın, hem kağıdım hem sınıf kısmı sabit olacak, ayrıca yazılar çok
+daha büyük olsun"
+
+1) SIRA DEĞİŞTİ
+   Header'ın hemen altında artık "Sınıf, ünite ve soru türleri" var. Sonra
+   sırayla: Sınav nasıl hazırlansın · Okul bilgileri · Öğrenme çıktıları ·
+   Süzgeçler · soru listesi.
+
+2) ÜSTTE SABİT SINIF ŞERİDİ
+   O panel position:sticky; başlığında SEÇİLİ SINIF, KİTAP ve ÜNİTE yazıyor:
+     "6. sınıf — 2026-2027 (Maarif)  ·  1. ünite — AKRABALARIM"
+   Metin seçicilerin kendi yazısından geliyor (klasikOzetYaz), yani kitap adı
+   listede nasıl yazıyorsa şeritte de öyle; hiçbir ad elle yazılmıyor. Sınıf
+   seçilmemişse turuncu "önce sınıf ve kitap seç" yazıyor.
+   Panel AÇILIRSA kendi içinde kayıyor (max-height), listeyi boğmuyor.
+   Yapıştığı yer --ust-y: başlık şeridinin boyu yazı boyuna ve ekran enine
+   göre değiştiği için JS ölçüyor (sepetOlc).
+
+3) ALTTA SABİT KÂĞIDIM SEPETİ
+   Sağdaki 390 piksellik sütun kalktı; sayfa tek sütun. Kâğıdım sayfanın
+   altında sabit (position:fixed) bir çubuk:
+     · KAPALI (varsayılan): ikon · "Kâğıdım" · sayaç · "3 soru · toplam 100
+       puan" · (varsa) çıktı uyarısı · Temizle · Dağılım tablosu · Önizle ·
+       Yazdır · PDF İndir. Geniş ekranda hepsi TEK SIRA, 72 piksel.
+     · AÇIK (başlığa basınca): yukarı doğru açılıyor; soru listesi, puan
+       özeti ve Kâğıt ayarları geliyor, en çok ekranın %86'sı, içinde kayıyor.
+   Sayfanın alt boşluğu --sepet-y ile çubuğun boyuna göre ayarlanıyor,
+   içerik çubuğun altında kalmıyor. Çıktı uyarısı bilerek gövdenin DIŞINDA:
+   sepet kapalıyken de "n sorunun öğrenme çıktısı boş" ve "Önerilenleri ata"
+   görünüyor.
+   Mobildeki "Soru havuzu / Kâğıdım" sekmeleri gereksiz kaldığı için kalktı
+   (Kâğıdım artık her ekranda altta); onları koruyan eski CSS kuralları
+   (body[data-sekme=…] ile panel gizleme, .kagit-panel'i static yapma)
+   sepeti bozduğu için silindi.
+
+4) YAZILAR BÜYÜDÜ
+   Kök yazı boyu 16px → 19px (+%19). Arayüzdeki bütün ölçüler rem ile
+   yazıldığı için hepsi birlikte büyüdü: sayfa başlığı 21.6 → 25.7 px.
+   A4 KÂĞIT DEĞİŞMEDİ: .sk-sayfa ve içindekiler px/pt/mm ile ölçülü, sınav
+   çıktısı birebir aynı. (Kâğıdın yazı boyu yine "Kâğıt ayarları → Yazı
+   boyu" düğmesinden.)
+
+DENETİM (Playwright):
+  · panel sırası: klasikPaneli → yontemPaneli → okulPaneli → agacPaneli →
+    suzgec → liste
+  · şerit: "6. sınıf — 2026-2027 (Maarif) · 1. ünite — AKRABALARIM",
+    position sticky, top 82px = başlık şeridinin tam altı
+  · 1400 piksel aşağı kaydırıldı: başlık altı 82, sınıf şeridi üstü 82
+    (yapışık), sepetin altı 860 = pencerenin dibi — ikisi de yerinde
+  · sepet kapalı 72px, sayfa alt boşluğu 96px; açılınca 291px, gövde
+    görünür, Kâğıt ayarları içinde
+  · kök 19px, gövde 19px, h1 25.65px
+  · 760 piksel dar ekran: sepet yine sabit, yatay taşma yok
+  · konsolda hata yok
