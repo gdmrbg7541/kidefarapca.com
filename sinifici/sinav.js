@@ -378,7 +378,7 @@
   /* Bir soruya atanabilecek en makul çıktı: ağaçta seçili olan → soru
      türünün alan becerisindeki ilk çıktı → ünitenin ilk çıktısı. */
   function ciktiOner(a) {
-    var o = odakCikti() || onerilenCikti(V.harita[a]);
+    var o = odakCikti(V.harita[a]) || onerilenCikti(V.harita[a]);
     if (o) return o;
     var al = uniteAlanlari(ayar.sinifNo, ayar.unite);
     var c = al.length ? alanCiktilari(al[0]) : [];
@@ -430,7 +430,7 @@
     var a = normalle(suz.ara);
     /* Okul sınavı yolunda ağaçtan bir çıktı seçiliyse havuz o çıktının
        ALAN BECERİSİNE süzülür (soru tipinden alan becerisi kesin çıkar). */
-    var odakAlan = ayar.yol === 'sinav' ? odakSuzgeci() : '';
+    var odakAlan = ayar.yol === 'sinav' ? odakSuzgeci() : [];
     var acikTurler = klasikAcikTurler();
     return V.sorular.filter(function (o) {
       /* SINAV yolunda yalnız klasik (açık uçlu) sorular görünür:
@@ -439,7 +439,7 @@
       /* Hiç tür seçilmediyse süzme yok: hepsi görünür (29.09.2026). */
       if (o.klasik && acikTurler.length && acikTurler.indexOf(o.q.tip) < 0) return false;
       if (o.klasik && ayar.dersSuz && o.q.ders !== ayar.dersSuz) return false;
-      if (odakAlan && soruAlanAnahtari(o) !== odakAlan) return false;
+      if (odakAlan.length && odakAlan.indexOf(soruAlanAnahtari(o)) < 0) return false;
       if (haric !== 'konu' && suz.konu.size && !suz.konu.has(o.konu)) return false;
       if (haric !== 'tip' && suz.tip.size && !suz.tip.has(o.q.tip)) return false;
       if (haric !== 'bicim' && suz.bicim.size && !suz.bicim.has(bicimi(o.q))) return false;
@@ -499,16 +499,19 @@
     }
     kutu.innerHTML = l.slice(0, gosterilen).map(function (o) {
       var q = o.q, var_ = secili.indexOf(o.anahtar) >= 0, t = V.tip[q.tip] || {}, bi = V.bicim[bicimi(q)] || {};
+      /* 29.09.2026 (öğretmen isteği): önce SORU, sonra ŞIKLAR VE CEVAP
+         (artık katlanmıyor, hep açık), en altta ETİKETLER. */
+      var ozet = soruOzeti(o);
       return '<article class="soru' + (var_ ? ' secili' : '') + '" data-a="' + kac(o.anahtar) + '">' +
-        '<div class="soru-ust"><span class="rozet">' + kac(o.konuAd) + '</span>' +
+        '<p class="soru-kok">' + karisik(q.soru) + '</p>' +
+        (ozet ? '<div class="soru-cevap">' + ozet + '</div>' : '') +
+        '<div class="soru-etiket"><span class="rozet">' + kac(o.konuAd) + '</span>' +
         '<span class="rozet r-tip">' + kac((t.emoji || '') + ' ' + (t.ad || q.tip || '')) + '</span>' +
         '<span class="rozet r-bic">' + kac((bi.emoji || '') + ' ' + (bi.ad || '')) + '</span>' +
         '<span class="rozet r-z' + q.zorluk + '">' + ['', 'Kolay', 'Orta', 'Zor'][q.zorluk || 0] + '</span>' +
         (ayar.yol === 'sinav' && soruAlanAnahtari(o)
           ? '<span class="rozet r-alan">' + kac(ALAN_KISA[soruAlanAnahtari(o)] || soruAlanAnahtari(o)) + '</span>' : '') +
         '</div>' +
-        '<p class="soru-kok">' + karisik(q.soru) + '</p>' +
-        '<details><summary>Şıklar ve cevap</summary>' + soruOzeti(o) + '</details>' +
         '<button type="button" class="ekle" data-a="' + kac(o.anahtar) + '" aria-pressed="' + var_ + '">' +
         (var_ ? '✓ Kâğıtta' : '+ Kâğıda ekle') + '</button></article>';
     }).join('');
@@ -576,7 +579,7 @@
       /* Soru eklenince çıktısı KENDİLİĞİNDEN atanır (öneri); öğretmen
          Kâğıdım listesindeki seçiciden değiştirebilir. */
       if (ayar.yol === 'sinav' && !ciktiAtama[a]) {
-        var oner = odakCikti() || onerilenCikti(V.harita[a]);
+        var oner = odakCikti(V.harita[a]) || onerilenCikti(V.harita[a]);
         if (oner) ciktiAtama[a] = oner;
       }
     }
@@ -1031,25 +1034,54 @@
   /* =====================================================================
      9b) İKİ YOL · ÇIKTI AĞACI · OKUL BİLGİSİ · DAĞILIM TABLOSU
      ===================================================================== */
-  var odak = '';                                  // ağaçta seçili çıktı kodu
+  /* ÇOKLU SEÇİM (29.09.2026, öğretmen isteği: "birden fazla bileşen &
+     kazanım seçebilmem lazım, zaten sınav senaryolarında birden fazla
+     seçilmeli"). Doğru: bir yazılı tek kazanımı değil, ünitenin birkaç
+     kazanımını ölçer. Eskiden tek 'odak' vardı, ikinciye basınca birinci
+     düşüyordu. */
+  var odaklar = [];                               // ağaçta seçili çıktı kodları
   var son_dersler = null;                         // son yüklenen ünitenin dersleri
 
-  function odakCikti() { return odak; }
-  function odakAlanKodu() { return odak ? odak.split('.').slice(0, 3).join('.') : ''; }
-  function odakAlanAdi() {
-    var ak = odakAlanKodu(); if (!ak) return '';
-    var ad = alanAdi(ak);
-    var bulunan = '';
+  function odakSecili(ck) { return odaklar.indexOf(ck) >= 0; }
+  /* Çıktı kodu → alan becerisi anahtarı (ALAN_KISA'daki ad). */
+  function ciktiAlanAdi(ck) {
+    var ak = ck ? ck.split('.').slice(0, 3).join('.') : '';
+    if (!ak) return '';
+    var ad = alanAdi(ak), bulunan = '';
     Object.keys(ALAN_KISA).forEach(function (k) { if (!bulunan && ad.indexOf(k) === 0) bulunan = k; });
     return bulunan;
   }
-  /* Havuzda o alan becerisinden hiç soru yoksa SÜZME: dinleme, konuşma ve
-     yazma becerilerinin yazılı soru havuzunda karşılığı yok; süzsek liste
+  /* Süzgeç = seçili çıktıların alan becerilerinin BİRLEŞİMİ. Havuzda hiç
+     sorusu olmayan beceri süzgece KATILMAZ: dinleme, konuşma ve yazma
+     becerilerinin yazılı soru havuzunda karşılığı yok; katsak liste
      bomboş kalır, öğretmen soruyu bulamaz. Durum satırı bunu söyler. */
   function odakSuzgeci() {
-    var an = odakAlanAdi(); if (!an) return '';
-    var v = V.sorular.some(function (o) { return soruAlanAnahtari(o) === an; });
-    return v ? an : '';
+    var s = [];
+    odaklar.forEach(function (ck) {
+      var an = ciktiAlanAdi(ck);
+      if (an && s.indexOf(an) < 0 &&
+          V.sorular.some(function (o) { return soruAlanAnahtari(o) === an; })) s.push(an);
+    });
+    return s;
+  }
+  /* Seçili çıktılardan SORUYA UYANI: önce sorunun alan becerisiyle
+     eşleşen; eşleşen yoksa ve tek çıktı seçiliyse o. Birkaç çıktı seçili
+     ve hiçbiri sorunun becerisine uymuyorsa boş döner — o zaman tür
+     tabanlı öneri (onerilenCikti) devreye girer. */
+  function odakCikti(o) {
+    if (!odaklar.length) return '';
+    if (o) {
+      var an = soruAlanAnahtari(o);
+      for (var i = 0; i < odaklar.length; i++) if (ciktiAlanAdi(odaklar[i]) === an) return odaklar[i];
+    }
+    return odaklar.length === 1 ? odaklar[0] : '';
+  }
+  /* Süzgeçte kullanılmayan (havuzda sorusu olmayan) seçili çıktılar. */
+  function odakBossuzgec() {
+    return odaklar.filter(function (ck) {
+      var an = ciktiAlanAdi(ck);
+      return !an || !V.sorular.some(function (o) { return soruAlanAnahtari(o) === an; });
+    });
   }
 
   /* --- yol seçimi --- */
@@ -1178,7 +1210,7 @@
   }
   function yontemKur(y) {
     ayar.yontem = (y === 'havuz') ? 'havuz' : 'cikti';
-    if (ayar.yontem === 'havuz') odak = '';   /* havuz yönteminde süzme yok */
+    if (ayar.yontem === 'havuz') odaklar = [];   /* havuz yönteminde süzme yok */
     yontemGoster();
     gosterilen = LISTE_ADIM; cizAgac(); cipler(); liste(); kagidim(); kaydet();
   }
@@ -1306,20 +1338,31 @@
         '<small>' + (sy ? sy + ' soru' : 'havuzda soru yok') + '</small></h4>' +
         alanCiktilari(ak).map(function (ck) {
           var c = C.cikti[ck], se = ciktiSecimSayisi(ck);
-          return '<button type="button" class="ag-cikti' + (odak === ck ? ' acik' : '') + '" data-cikti="' + ck + '">' +
+          return '<button type="button" class="ag-cikti' + (odakSecili(ck) ? ' acik' : '') +
+            '" aria-pressed="' + odakSecili(ck) + '" data-cikti="' + ck + '">' +
             '<b>' + ck + '</b><span>' + kac(c.m || '') + '</span>' +
             (se ? '<i class="ag-say">' + se + ' soru seçili</i>' : '') + '</button>';
         }).join('') + '</section>';
     }).join('');
     var d = $('#agacDurum');
     if (!d) return;
-    if (!odak) { d.textContent = 'Bir çıktı seç: havuz o alan becerisine süzülür.'; d.className = 'agac-durum'; return; }
-    var an = odakAlanAdi(), suzuldu = !!odakSuzgeci();
-    d.className = 'agac-durum' + (suzuldu ? '' : ' uyari');
-    d.textContent = suzuldu
-      ? odak + ' seçili — havuz “' + (ALAN_KISA[an] || an) + '” sorularına süzüldü'
-      : odak + ' seçili — “' + (ALAN_KISA[an] || an) + '” becerisinin havuzda hazır sorusu yok, ' +
-        'liste süzülmedi. Uygun bir soru seçip çıktısını elle bu çıktıya bağlayabilirsin.';
+    if (!odaklar.length) {
+      d.innerHTML = '<b>Birden çok çıktı seçebilirsin</b> — bir yazılıda genelde ünitenin ' +
+        'birkaç kazanımı ölçülür. Seçtiklerinin alan becerileri havuzu süzer.';
+      d.className = 'agac-durum'; return;
+    }
+    var alanlar = odakSuzgeci(), bos = odakBossuzgec();
+    d.className = 'agac-durum' + (alanlar.length ? '' : ' uyari');
+    var y = '<b>' + odaklar.length + ' çıktı seçili</b>';
+    y += alanlar.length
+      ? ' — havuz “' + alanlar.map(function (a) { return kac(ALAN_KISA[a] || a); }).join('”, “') + '” sorularına süzüldü'
+      : ' — seçtiğin becerilerin havuzda hazır sorusu yok, liste süzülmedi';
+    if (alanlar.length && bos.length) {
+      y += '. <i>' + bos.join(', ') + '</i> için havuzda soru yok; o çıktıya uygun bir soru seçip ' +
+           'Kâğıdım listesinden elle bağlayabilirsin';
+    }
+    y += ' · <button type="button" id="odakTemizle">seçimi kaldır</button>';
+    d.innerHTML = y;
   }
 
   /* --- dağılım tablosu --- */
@@ -1404,7 +1447,12 @@
       var ag = e.target.closest('.ag-cikti');
       if (ag) {
         var ck = ag.getAttribute('data-cikti');
-        odak = (odak === ck) ? '' : ck;
+        var oi = odaklar.indexOf(ck);
+        if (oi >= 0) odaklar.splice(oi, 1); else odaklar.push(ck);   /* ÇOKLU */
+        gosterilen = LISTE_ADIM; cizAgac(); cipler(); liste(); return;
+      }
+      if (e.target.closest('#odakTemizle')) {
+        odaklar = [];
         gosterilen = LISTE_ADIM; cizAgac(); cipler(); liste(); return;
       }
       var ek = e.target.closest('.ekle');
@@ -1460,7 +1508,7 @@
     if (ss) ss.addEventListener('change', function () {
       var p2 = String(this.value).split('|');
       ayar.sinifNo = p2[0] || ''; ayar.kitapYil = p2[1] || '';
-      ayar.dersSuz = ''; odak = '';
+      ayar.dersSuz = ''; odaklar = [];
       kitabiUygula();                       /* dersYolu doğru klasöre baksın */
       anteteAktar(); formDoldur();
       Promise.resolve(uniteSecKur()).then(function () {
@@ -1470,7 +1518,7 @@
     });
     var us = $('#uniteSec');
     if (us) us.addEventListener('change', function () {
-      ayar.unite = this.value; ayar.dersSuz = ''; odak = '';
+      ayar.unite = this.value; ayar.dersSuz = ''; odaklar = [];
       gosterilen = LISTE_ADIM; cizAgac(); cipler(); liste(); kagidim();
       klasikYukle().then(function () { cipler(); liste(); cizAgac(); });
     });

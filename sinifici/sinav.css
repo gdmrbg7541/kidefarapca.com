@@ -171,7 +171,7 @@ button.ana:hover:not(:disabled) { background: var(--yesil-k); border-color: var(
 @media (max-width: 920px) {
   .ust-ic { padding-left: 64px; }
   #uygulama { grid-template-columns: 1fr; padding-top: 12px; }
-  .soru-ust { padding-right: 0; }
+  .soru-etiket { padding-right: 0; }
   .ekle { position: static; margin-top: 8px; width: 100%; }
 }
 @media (max-width: 520px) { .ust p { display: none; } .eylemler { grid-template-columns: 1fr 1fr; } .eylemler .ana { grid-column: 1 / -1; } }
@@ -670,3 +670,41 @@ body.sepet-acik .sepet-govde {
 
 /* Önizleme açıkken sepet perdeye karışmasın. */
 body.onizleme-acik .kagit-panel { display: none; }
+
+
+/* ===================================================================
+   SORU KARTI VE ÇOKLU ÇIKTI (29.09.2026, öğretmen isteği)
+     · soru ve şıklar HER ZAMAN açık (katlanan details kalktı)
+     · etiketler soru ile cevapların ALTINDA
+     · yazılar bir kademe daha büyük
+   =================================================================== */
+html { font-size: 20px; }
+
+/* --- soru kartı: soru → cevap → etiket --- */
+.soru { padding: 13px 15px 12px; }
+.soru-kok { font-size: 1.04rem; line-height: 1.55; padding-right: 130px; }
+.soru-cevap { margin-top: 7px; font-size: .96rem; line-height: 1.55; }
+.soru-cevap .oz-sik { gap: 3px; }
+.soru-cevap .oz-ar .ar { font-size: 1.3em; }
+/* Etiketler artık en altta: üstteki ayırıcı çizgi onları sorudan ayırıyor. */
+.soru-etiket {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  margin: 10px 0 0; padding-top: 9px; border-top: 1px dashed var(--cizgi);
+}
+.rozet { font-size: .74rem; }
+/* Dar ekranda «+ Kâğıda ekle» soru metninin altına iniyor (bkz. 920px
+   kuralı); o zaman sağdaki boşluğa gerek yok. */
+@media (max-width: 920px) { .soru-kok { padding-right: 0; } }
+
+/* --- çoklu çıktı seçimi --- */
+.ag-cikti.acik::after {
+  content: '✓'; position: absolute; top: 8px; inset-inline-end: 10px;
+  color: var(--yesil); font-weight: 900; font-size: .95rem;
+}
+.ag-cikti { position: relative; padding-inline-end: 30px; }
+.agac-durum b { color: var(--murekkep); }
+.agac-durum i { font-style: normal; font-weight: 700; color: var(--turuncu); }
+#odakTemizle {
+  border: 0; background: none; padding: 0; font: inherit; font-weight: 800;
+  color: var(--kirmizi); text-decoration: underline; cursor: pointer;
+}

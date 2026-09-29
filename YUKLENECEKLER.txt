@@ -2213,3 +2213,79 @@ DENETİM (Playwright, 6. sınıf 1. ünite):
   · renkler ölçüldü: yeşil rgb(14,124,102) · mavi rgb(37,99,235) ·
     turuncu rgb(180,97,26)
   · konsolda hata yok
+
+────────────────────────────────────────────────────────────────────────
+KATALOG GÜNCELLEMESİ  (29.09.2026)  ·  katalog/index.html
+Yedek: _kaynak/yedekler/katalog-index_2026-09-29_guncelleme-oncesi.html
+Betik: _kaynak/uretici/katalogGuncel.py
+────────────────────────────────────────────────────────────────────────
+TARAMA: kataloğun 110 adresi diskle karşılaştırıldı (ölü bağ yok) ve
+index.html'in bağladığı bütün sayfalar katalogla karşılaştırıldı.
+
+ÇIKANLAR
+  · Renkler (renkler.html) — öğretmen isteği. Kart index.html'den zaten
+    27.09'da kaldırılmıştı; artık katalogda da yok. SAYFA SİLİNMEDİ.
+  · Okuma (okuma.html) — yerini alfabe.html'in OKUMA sekmesi aldı,
+    index.html ona bağ vermiyor. Alfabe kartının açıklamasına dört sekme
+    (tanıma · birleştirme · okuma · dinle-yaz) yazıldı.
+
+TAŞINANLAR (kart duruyor, adres düzeldi)
+  · Sözlük Simülasyonu → sozluk.html#simulasyon
+  · Sözlük Dedektifi   → sozluk.html#dedektif
+
+EKLENENLER
+  · Sözlük               sozluk.html        → Kelime ve sözlük
+  · Arapça Klavye        arapcaklavye.html  → Harf, okuma ve yazı
+  · Tecvid               tecvid.html        → Konuşma, dinleme ve ezber
+  · Değerlendirme Ölçeği olcek.html         → Ölçme, sınav ve kitap
+  · Pano                 pano.html          → Öğretmen dokümanları
+
+KATALOGA ALINMAYANLAR
+  · indeks.html               sitenin vitrini, araç değil
+  · kaliplartablosumobil.html Vezinler Tablosu'nun dar ekran sürümü
+  · dinleveyaz.html           alfabe.html'in DİNLE VE YAZ sekmesi
+
+BÖLÜM SAYILARI: Konuşma 3→4 araç, Ölçme 5→6 araç (ötekiler değişmedi).
+DENETİM: her bölümde bsay = gerçek kart sayısı; ölü bağ yok; div dengesi
+201/201; "renkler" ve "okuma.html" katalogda hiç geçmiyor.
+NOT: renkler.html ve okuma.html diskte duruyor; sistem/gorev.js hâlâ
+ikisine de görev hedefi olarak bağ veriyor (istenirse ayrıca ele alınır).
+
+────────────────────────────────────────────────────────────────────────
+SINAV HAZIRLA — ÇOKLU ÇIKTI SEÇİMİ + SORU KARTI DÜZENİ  (29.09.2026)
+Dosyalar: sinav.html · sinifici/sinav.js?v=7 · sinifici/sinav.css?v=8
+Yedek: _kaynak/yedekler/sinav.{html,js,css}_2026-09-29_coklu-oncesi
+Betik: _kaynak/uretici/sinavCoklu.py
+────────────────────────────────────────────────────────────────────────
+
+1) BİRDEN ÇOK BİLEŞEN / KAZANIM SEÇİLEBİLİYOR
+   Öğretmen haklıydı: bir yazılı tek kazanımı değil, ünitenin birkaç
+   kazanımını ölçer. Eskiden tek 'odak' vardı, ikinciye basınca birinci
+   düşüyordu. Artık 'odaklar' dizisi:
+     · ağaçta istediğin kadar çıktı seçilir, seçili olana ✓ konur
+     · havuz SEÇİLENLERİN alan becerilerinin BİRLEŞİMİNE süzülür
+     · soru eklenince ona, kendi alan becerisiyle EŞLEŞEN seçili çıktı
+       atanır; eşleşen yoksa ve tek çıktı seçiliyse o; hiçbiri uymuyorsa
+       tür tabanlı öneri (onerilenCikti) devreye girer
+     · havuzda hiç sorusu olmayan beceriler (dinleme, konuşma, yazma)
+       süzgece KATILMAZ — katsak liste bomboş kalırdı; durum satırı
+       hangilerinin boş olduğunu turuncuyla söyler
+     · durum satırında "seçimi kaldır" ile hepsi birden bırakılır
+
+2) SORU KARTI: SORU → CEVAP → ETİKET
+   "Şıklar ve cevap" katlanan details KALKTI, şıklar ve cevap her zaman
+   açık. Etiket rozetleri (konu · içerik · biçim · zorluk · alan) soru ve
+   cevapların ALTINA indi, aralarında kesik çizgi ayırıcı var.
+
+3) YAZILAR BİR KADEME DAHA BÜYÜK
+   Kök 19px → 20px; soru metni 1.04rem (20.8px), şıklar ve cevap .96rem.
+   A4 kâğıt yine etkilenmedi (px/pt ölçülü).
+
+DENETİM (Playwright, 6. sınıf 1. ünite):
+  · kart sırası soru-kok → soru-cevap → soru-etiket; details yok;
+    cevap görünür; etiket sorunun altında; soru puntosu 20.8px
+  · üç çıktıya basıldı → üçü de seçili kaldı; ikincisine tekrar basıldı →
+    yalnız o düştü; "seçimi kaldır" → hepsi kalktı
+  · 6.1.7.3 seçilince: "havuz “Yazma” sorularına süzüldü", 3 soru → 2
+  · sorusu olmayan çıktılar seçilince liste süzülmedi, uyarı çıktı
+  · konsolda hata yok
