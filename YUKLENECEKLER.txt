@@ -2344,3 +2344,32 @@ DENETİM (jsdom + sahte Firestore, iki dosya da gerçek hâliyle koşuldu):
     "Genel Sonuçlarım" var; sorgu "ogrenciIlerleme ogrenciUid == OGR1";
     tabloda "Hangi Harf? %72 · 5 oyun" ve "Sarf: Kelime Fabrikası
     15 dk 30 sn · 3 oturum" satırları çizildi
+
+────────────────────────────────────────────────────────────────────────
+7. SINIF DERS KİTABI BAĞI — MEKTEP YAYINLARI  (29.09.2026)
+Dosya: index.html   ·   Yedek: _kaynak/yedekler/index_2026-09-29_kitap7-oncesi.html
+Betik: _kaynak/uretici/kitap7Mektep.py
+────────────────────────────────────────────────────────────────────────
+7. sınıfın İKİ kitabı var (sistem/sinifveri.js → VERI_YILI[7]) ama Ders
+Kitabı kartı ikisini de aynı yere, genel portala götürüyordu. DERS_KITABI
+tablosu artık SINIFA DEĞİL, SEÇİLİ KİTABA göre adres verebiliyor:
+
+  Mektep Yayınları 2026-2027 (varsayılan)
+      https://arapca.muallimun.net/flipbook/iho07_mektep/
+      "İHO 7. Sınıf Arapça Etkileşimli Ders Kitabı (MEKTEP) 2026",
+      sayfa çevirmeli — adres denendi, açılıyor.
+  MEB kitabı 2027-2028
+      https://arapca.muallimun.net/2026_2027_arabicbooks/  (portal;
+      o kitabın ayrı adresi henüz yok)
+
+Kart, kitap seçici değişince zaten yeniden çiziliyor (ihdocTazele), yani
+öğretmen kitabı değiştirince bağlantı da kendiliğinden değişiyor.
+flipKitap() üçüncü bir "ad" parametresi aldı: ipucunda hangi kitap olduğu
+yazıyor ("… — Mektep Yayınları — sayfa çevirmeli çevrim içi kitap").
+Başka sınıfın birden çok kitabı olursa aynı biçimde tabloya yazılır.
+
+DENETİM (index.html'den kesilen dilim node'da koşuldu):
+  7 · seçili 2026-2027 → .../flipbook/iho07_mektep/   (Mektep ipucusu)
+  7 · seçili 2027-2028 → .../2026_2027_arabicbooks/   (portal ipucusu)
+  7 · seçim yok        → .../flipbook/iho07_mektep/   (ilk kitap varsayılan)
+  5 ve 8 → eskisi gibi (portal / iho08_2026)

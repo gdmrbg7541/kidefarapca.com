@@ -5002,19 +5002,35 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           ipucu: sinif + '. sınıf Arapça ders kitabı — 2026-2027 Arapça Ders Kitapları Portalı ' +
                  '(muallimun.net); yeni sekmede açılır' };
       }
-      function flipKitap(sinif, adres) {
+      function flipKitap(sinif, adres, ad) {
         return { url: adres, etiket: 'ÇEVRİM İÇİ',
-          ipucu: sinif + '. sınıf Arapça ders kitabı — sayfa çevirmeli çevrim içi kitap ' +
-                 '(muallimun.net); yeni sekmede açılır' };
+          ipucu: sinif + '. sınıf Arapça ders kitabı' + (ad ? ' — ' + ad : '') +
+                 ' — sayfa çevirmeli çevrim içi kitap (muallimun.net); yeni sekmede açılır' };
       }
+      /* Bir sınıfın BİRDEN ÇOK KİTABI varsa değer düz kayıt değil, kitap
+         yılına göre tablo olur (29.09.2026): kart hangi kitap seçiliyse
+         onun adresine gider. Kitap seçici değişince ızgara zaten yeniden
+         çiziliyor (ihdocTazele), bağlantı da kendiliğinden değişiyor. */
       var DERS_KITABI = {
-        '5': portalKitap('5'), '6': portalKitap('6'), '7': portalKitap('7'),
+        '5': portalKitap('5'), '6': portalKitap('6'),
+        /* 7. sınıfın iki kitabı var (bkz. sistem/sinifveri.js → VERI_YILI[7]).
+           Mektep Yayınları'nın kendi sayfa çevirmeli kitabı yayında; MEB
+           kitabının ayrı adresi henüz yok, portala gidiyor. */
+        '7': {
+          '2026-2027': flipKitap('7', 'https://arapca.muallimun.net/flipbook/iho07_mektep/',
+                                 'Mektep Yayınları'),
+          '2027-2028': portalKitap('7')
+        },
         '8': flipKitap('8', 'https://arapca.muallimun.net/flipbook/iho08_2026/'),
         '9': flipKitap('9', 'https://arapca.muallimun.net/flipbook/ihlar092026/'),
         '10': flipKitap('10', 'https://arapca.muallimun.net/flipbook/ihlar102026/')
       };
       function kitapKarti(sinif) {
         var k = DERS_KITABI[sinif]; if (!k) return null;
+        /* Kitap tablosuysa (url alanı yok) seçili kitabın kaydını al;
+           seçim okunamazsa tablodaki ilk kitap varsayılandır. */
+        if (!k.url) k = k[seciliKitap(sinif)] || k[Object.keys(k)[0]];
+        if (!k) return null;
         return { ad: 'Ders Kitabı', renk: '#D97706', ikon: 'kitap', bag: k.url,
                  etiket: k.etiket, ipucu: k.ipucu, antet: sinif + '. SINIF · KİTAP' };
       }
