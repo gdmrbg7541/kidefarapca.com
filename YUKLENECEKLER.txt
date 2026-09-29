@@ -2373,3 +2373,70 @@ DENETİM (index.html'den kesilen dilim node'da koşuldu):
   7 · seçili 2027-2028 → .../2026_2027_arabicbooks/   (portal ipucusu)
   7 · seçim yok        → .../flipbook/iho07_mektep/   (ilk kitap varsayılan)
   5 ve 8 → eskisi gibi (portal / iho08_2026)
+
+────────────────────────────────────────────────────────────────────────
+NAMAZ — KONTEYNIRSIZ DÜZEN  (29.09.2026)
+Dosyalar: namaz.html · degerler/namaz.css?v=2
+Yedek: _kaynak/yedekler/namaz.css_2026-09-29_konteynirsiz-oncesi
+       _kaynak/yedekler/namaz.html_2026-09-29_konteynirsiz-oncesi
+────────────────────────────────────────────────────────────────────────
+Eskiden sayfa, gri zeminde yüzen bir KART'tı: .container max-width 1200px,
+height 90vh, border-radius 30px, gölge; body'de 20px dolgu. 1440 piksellik
+tahtada iki yanda 120'şer piksel boş şerit kalıyordu. Artık ekranın
+tamamı:
+
+  · dış kart yok — gölge, yuvarlak köşe, gri zemin ve dolgu kalktı;
+    .container width %100 / height 100dvh (sınıf adı korundu, html ve js
+    ona bakıyor)
+  · sekme şeridi en üstte, alt bilgi en altta, ikisi de kenardan kenara
+    ve sabit; yalnız aradaki .content kayıyor
+  · bütün ölçüler clamp() ile ekran enine bağlandı: hikâye yazısı
+    2.8rem sabit yerine clamp(1.5rem, 3.3vw, 4.2rem), dolgular, jeton
+    kutuları, kart yazıları hepsi büyüyüp küçülüyor
+  · hikâyedeki 1000 piksellik iç sınır (.slide-text-wrapper max-width)
+    kalktı — cümle ekranın tamamını kullanıyor
+  · listeler sabit iki sütun değil: repeat(auto-fit, minmax(...)) —
+    1440'ta üç sütun, dar ekranda tek
+  · planlayıcı sol sütunu clamp(280px, 26vw, 430px)
+  · geri tuşu şeridin içine ortalandı (top 16→10, left 16→13) ve
+    .nav-header'a 70px sol dolgu verildi; tuş sekmelerin üstüne binmiyor
+  · DAR EKRAN (≤860px): sekmeler iki satır (nowrap kalktı, kelime sarıyor),
+    planlayıcı tek sütun, jeton ızgarası 4'lü, yükseklik içeriğe bırakıldı
+
+DENETİM (Playwright, 1440×900 · 820×1100 · 390×780):
+  · üç ende de kap eni = pencere eni, sol 0, border-radius 0px,
+    box-shadow none, şeridin sol ve sağ boşluğu 0
+  · geri tuşu şeridin içinde ve ilk sekmenin solunda (1440'ta sekme 70px,
+    dar ekranda 62px'ten başlıyor)
+  · yatay taşma yok
+  · Değerlendirme listesi 1440'ta üç sütun; telefonda sekmeler iki satır,
+    planlayıcı tek sütun
+
+── (aynı gün, ikinci istek) NAMAZ · TEK SÜTUN + DEVASA YAZI ────────────
+"değerlendirme kısmını tek sütun yap aşağı scroll yapılabilsin, yazılar
+ devasa olsun, hikmet kısmı da, genel olarak yazıları büyüt"
+Dosyalar: namaz.html · degerler/namaz.css?v=3 · degerler/namaz.js?v=2
+Yedek: _kaynak/yedekler/namaz.js_2026-09-29_devasa-oncesi
+       (css ve html yedeği bir önceki maddede)
+
+  · DEĞERLENDİRME ve HİKMET tek sütun (.list-container 1fr). İkisi aynı
+    sınıfı kullanıyor, tek değişiklik ikisini de kapsıyor. Kaydırma
+    .content'te, şerit ve alt bilgi sabit kalıyor.
+  · Soru / kaynak satırı clamp(1.35rem, 2.6vw, 3.2rem) — 1440'ta 37 px
+    (eskiden ~19 px). Cevap/meal clamp(1.15rem, 2.1vw, 2.6rem) — 30 px.
+    Kart dolgusu da büyüdü, kartlar nefes alıyor.
+  · CEVAP KUTUSU ARTIK KESİLMİYOR: namaz.js'teki toggleInfo sabit 100px
+    yazıyordu, büyük yazıda cevabın altı kırpılıyordu. Artık içeriğin
+    kendi yüksekliği (scrollHeight) kadar açılıyor ve durum .acik
+    sınıfında tutuluyor (eskiden maxHeight metnine bakılıyordu).
+  · GENEL BÜYÜTME: sekme yazıları 1.15→1.45rem üst sınır, hikâye
+    4.2→5rem, etkinlik kartları 1.2→1.55rem, jeton rakamı 1.9→2.5rem,
+    alt bilgi ve düğmeler de bir kademe büyüdü.
+  · Dar ekran: listeler yine tek sütun, yazı ekran enine göre
+    (soru 5.4vw, cevap 4.6vw).
+
+DENETİM (Playwright):
+  1440×900 · Değerlendirme: 1 sütun, 10 kart, kart eni 1348 px, soru
+    37.44 px, bölüm kayabiliyor (1519 > 754); cevap açıldı, kesilme yok
+  390×780 · 1 sütun, soru 21 px, cevap 17.9 px, kesilme yok
+  Hikmet sekmesi de tek sütun ve aynı boyda

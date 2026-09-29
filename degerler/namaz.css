@@ -1,218 +1,299 @@
+/* =====================================================================
+   NAMAZ — 24 ALTIN  ·  degerler/namaz.css
+   ---------------------------------------------------------------------
+   KONTEYNIRSIZ DÜZEN (29.09.2026, öğretmen isteği: "konteynırsız bi
+   tasarım kullanalım"). Eskiden sayfa, gri zeminde yüzen 1200 piksellik
+   yuvarlak köşeli beyaz bir KART'tı (.container: max-width 1200px,
+   height 90vh, border-radius 30px, gölge) — tahtada iki yanda geniş boş
+   şerit kalıyordu. Artık sayfa ekranın tamamı:
+
+     · dış kart yok — kenarlık, gölge, yuvarlak köşe ve gri zemin kalktı
+     · sekme şeridi en üstte, alt bilgi en altta, ikisi de kenardan kenara
+     · ARADAKİ İÇERİK kayıyor (.content), şerit ve alt bilgi sabit duruyor
+     · bütün ölçüler clamp() ile ekran enine bağlı: yazı, boşluk ve
+       jetonlar büyük ekranda büyür, dar ekranda küçülür
+     · listeler TEK SÜTUN (29.09.2026 ikinci istek): Değerlendirme ve
+       Hikmet kartları tahtada arka sıradan okunacak kadar büyük yazıyla
+       alt alta diziliyor, bölüm aşağı kayıyor
+
+   Sol üstteki geri tuşu şeridin ÜSTÜNDE duruyor; .nav-header'ın sol
+   dolgusu (70px) onun için ayrıldı.
+   ===================================================================== */
 :root {
-            --bg: #f8faff;
-            --card-bg: #ffffff;
-            --primary: #2d3436;
-            --accent: #0984e3;
-            --success: #00b894;
-            --danger: #d63031;
-            --gold: #fdcb6e;
-        }
+    --bg: #f8faff;
+    --card-bg: #ffffff;
+    --primary: #2d3436;
+    --accent: #0984e3;
+    --success: #00b894;
+    --danger: #d63031;
+    --gold: #fdcb6e;
+    --serit: #f1f2f6;
+    --cizgi: #e8ebf0;
+}
 
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
-            background: var(--bg);
-            margin: 0;
-            padding: 20px;
-            color: var(--primary);
-            overflow: hidden;
-        }
+* { box-sizing: border-box; }
 
-        .container {
-            max-width: 1200px;
-            height: 90vh;
-            margin: auto;
-            background: var(--card-bg);
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-        }
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+    background: var(--card-bg);
+    margin: 0;
+    padding: 0;
+    color: var(--primary);
+    overflow: hidden;              /* yalnız .content kayar */
+}
 
-        .nav-header {
-            display: flex;
-            background: #f1f2f6;
-            padding: 10px;
-            border-radius: 30px 30px 0 0;
-            gap: 10px;
-        }
+/* Adı "container" ama artık kutu değil: sayfanın kendisi.
+   Sınıf adı korundu — namaz.html ve namaz.js ona bakıyor. */
+.container {
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    margin: 0;
+    background: var(--card-bg);
+    border-radius: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+}
 
-        .nav-btn {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            border-radius: 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            background: none;
-            color: #636e72;
-        }
+/* ---------- üstteki sekme şeridi (kenardan kenara) ---------- */
+.nav-header {
+    display: flex;
+    flex-wrap: wrap;
+    background: var(--serit);
+    border-bottom: 1px solid var(--cizgi);
+    border-radius: 0;
+    /* sol dolgu: sabit geri tuşu oraya oturuyor */
+    padding: 10px clamp(14px, 2vw, 28px) 10px 70px;
+    gap: clamp(6px, 1vw, 14px);
+    flex: none;
+}
 
-        .nav-btn.active {
-            color: var(--accent);
-            background: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+.nav-btn {
+    flex: 1;
+    padding: 13px clamp(8px, 1.3vw, 20px);
+    border: none;
+    border-radius: 14px;
+    font-size: clamp(.95rem, 1.25vw, 1.45rem);
+    font-weight: bold;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: 0.3s;
+    background: none;
+    color: #636e72;
+}
 
-        .content {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            display: none;
-        }
+.nav-btn.active {
+    color: var(--accent);
+    background: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
 
-        .content.active {
-            display: flex;
-            flex-direction: column;
-        }
+/* ---------- kayan içerik ---------- */
+.content {
+    flex: 1;
+    min-height: 0;
+    padding: clamp(18px, 3vw, 54px) clamp(16px, 3.2vw, 64px);
+    overflow-y: auto;
+    display: none;
+}
 
-        /* --- HİKAYE BÖLÜMÜ (SÜTUNSUZ TAM ORTALI) --- */
-        #story {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            height: 100%;
-        }
+.content.active {
+    display: flex;
+    flex-direction: column;
+}
 
-        #story.active {
-            display: flex !important;
-        }
+/* --- HİKAYE BÖLÜMÜ (SÜTUNSUZ TAM ORTALI) --- */
+#story {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+}
 
-        .slide-text-wrapper {
-            width: 100%;
-            max-width: 1000px;
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+#story.active {
+    display: flex !important;
+}
 
-        #slide-box {
-            font-size: 2.8rem;
-            line-height: 1.5;
-            color: #2d3436;
-            width: 100%;
-            display: block; /* Sütunlaşmayı engellemek için block yapıldı */
-        }
+/* Genişlik SINIRI KALKTI: cümle ekranın tamamını kullanıyor, yazı boyu
+   da ekran enine bağlı — tahtada arka sıradan okunsun. */
+.slide-text-wrapper {
+    width: 100%;
+    max-width: none;
+    min-height: 32vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .fade-in {
-            animation: fadeInSlide 0.5s ease-in-out;
-        }
+#slide-box {
+    font-size: clamp(1.7rem, 3.9vw, 5rem);
+    line-height: 1.4;
+    color: #2d3436;
+    width: 100%;
+    display: block;            /* Sütunlaşmayı engellemek için block */
+}
 
-        @keyframes fadeInSlide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.fade-in { animation: fadeInSlide 0.5s ease-in-out; }
 
-        .highlight { color: var(--accent); font-weight: 800; display: inline; }
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-        /* --- ZAMAN PLANLAYICI --- */
-        .planner-container {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 40px;
-            height: 100%;
-        }
+.highlight { color: var(--accent); font-weight: 800; display: inline; }
 
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+/* --- ZAMAN PLANLAYICI --- */
+.planner-container {
+    display: grid;
+    grid-template-columns: clamp(280px, 26vw, 430px) 1fr;
+    gap: clamp(20px, 3vw, 56px);
+    height: 100%;
+}
 
-        .act-card {
-            padding: 15px;
-            border: 2px solid #f1f2f6;
-            border-radius: 15px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1vh, 14px);
+}
 
-        .act-card.disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            background: #eee !important;
-            pointer-events: none;
-        }
+.act-card {
+    padding: clamp(11px, 1.4vh, 17px) clamp(12px, 1.2vw, 20px);
+    border: 2px solid var(--serit);
+    border-radius: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(1.02rem, 1.3vw, 1.55rem);
+    font-weight: 600;
+}
 
-        .grid-24 {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 12px;
-        }
+.act-card.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #eee !important;
+    pointer-events: none;
+}
 
-        .hour-jeton {
-            background: #f1f2f6;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #b2bec3;
-        }
+.grid-24 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: clamp(8px, 1vw, 18px);
+}
 
-        .hour-jeton.filled { color: white; transform: scale(1.02); }
+.hour-jeton {
+    background: var(--serit);
+    border-radius: clamp(10px, 1vw, 20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.15rem, 1.9vw, 2.5rem);
+    font-weight: bold;
+    color: #b2bec3;
+}
 
-        /* --- LİSTELER --- */
-        .list-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
+.hour-jeton.filled { color: white; transform: scale(1.02); }
 
-        .info-card {
-            background: #f8faff;
-            padding: 20px;
-            border-radius: 15px;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
+/* --- LİSTELER: TEK SÜTUN, DEVASA YAZI (29.09.2026, öğretmen isteği:
+   "değerlendirme kısmını tek sütun yap aşağı scroll yapılabilsin, yazılar
+   devasa olsun, hikmet kısmı da"). Değerlendirme ve Hikmet aynı sınıfı
+   kullanıyor, ikisi de bu düzene giriyor. Kaydırma .content'te. --- */
+.list-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(14px, 1.6vw, 26px);
+    align-content: start;
+}
 
-        .info-card:hover { border-color: var(--accent); }
+.info-card {
+    background: var(--bg);
+    padding: clamp(20px, 2.4vw, 44px) clamp(20px, 2.6vw, 52px);
+    border-radius: 20px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color .2s, background .2s;
+}
 
-        .answer, .meal {
-            max-height: 0;
-            overflow: hidden;
-            transition: 0.3s;
-            color: var(--success);
-            font-size: 1.1rem;
-            margin-top: 10px;
-            font-weight: bold;
-        }
+.info-card:hover { border-color: var(--accent); background: #fff; }
 
-        .footer-controls {
-            padding: 15px 40px;
-            background: #fff;
-            border-top: 2px solid #f1f2f6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 0 0 30px 30px;
-        }
+/* Soru / kaynak satırı — tahtada arka sıradan okunacak boy. */
+.info-card > b {
+    display: block;
+    font-size: clamp(1.35rem, 2.6vw, 3.2rem);
+    line-height: 1.32;
+    font-weight: 800;
+}
 
-        .stats-badge {
-            padding: 8px 20px;
-            background: #e17055;
-            color: white;
-            border-radius: 50px;
-            font-weight: bold;
-        }
+.answer, .meal {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease;
+    color: var(--success);
+    font-size: clamp(1.15rem, 2.1vw, 2.6rem);
+    line-height: 1.4;
+    margin-top: 0;
+    font-weight: bold;
+}
+/* Açılınca üstteki soruyla arasına boşluk girsin (kapalıyken 0 kalsın). */
+.info-card.acik .answer, .info-card.acik .meal { margin-top: clamp(10px, 1.2vw, 22px); }
 
-        .btn-main {
-            padding: 12px 30px;
-            border-radius: 12px;
-            border: none;
-            background: var(--primary);
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
+/* ---------- alt bilgi (kenardan kenara) ---------- */
+.footer-controls {
+    padding: 14px clamp(16px, 3.2vw, 64px);
+    background: #fff;
+    border-top: 2px solid var(--serit);
+    border-radius: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex: none;
+}
+
+#footer-status { font-size: clamp(1rem, 1.25vw, 1.5rem) !important; }
+
+.stats-badge {
+    font-size: clamp(.95rem, 1.2vw, 1.4rem);
+    padding: clamp(8px, .9vh, 13px) clamp(18px, 1.8vw, 30px);
+    background: #e17055;
+    color: white;
+    border-radius: 50px;
+    font-weight: bold;
+}
+
+.btn-main {
+    padding: clamp(10px, 1.2vh, 15px) clamp(20px, 2.2vw, 38px);
+    border-radius: 12px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: clamp(1rem, 1.2vw, 1.45rem);
+}
+
+/* ---------- DAR EKRAN ----------
+   Konteynır kalktığı için dar ekranda da kenardan kenara; planlayıcı tek
+   sütuna iner, jeton ızgarası 4'lü olur ve yüksekliği içeriğe bırakılır. */
+@media (max-width: 860px) {
+    .nav-header { padding-left: 62px; }
+    /* Etiketler uzun; nowrap kalsa her biri tek satır kaplıyordu.
+       Dar ekranda kelime sarmasına izin: dört sekme iki satıra sığıyor. */
+    .nav-btn { flex: 1 1 calc(50% - 12px); min-width: 0; white-space: normal;
+               font-size: .82rem; line-height: 1.25; padding: 10px 6px; }
+    .planner-container { grid-template-columns: 1fr; gap: 18px; height: auto; }
+    .grid-24 { grid-template-columns: repeat(4, 1fr); grid-template-rows: none;
+               grid-auto-rows: minmax(52px, auto); }
+    #slide-box { font-size: clamp(1.4rem, 5.6vw, 2.6rem); }
+    .slide-text-wrapper { min-height: 26vh; }
+    /* Listeler dar ekranda da tek sütun; yazı ekranın enine göre. */
+    .info-card { padding: 18px 20px; }
+    .info-card > b { font-size: clamp(1.15rem, 5.4vw, 1.9rem); }
+    .answer, .meal { font-size: clamp(1.02rem, 4.6vw, 1.6rem); }
+}

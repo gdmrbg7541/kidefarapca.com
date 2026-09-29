@@ -11,13 +11,15 @@
 
   gtag('config', 'G-FV9JD15KLW');
 </script>
-    <link rel="stylesheet" href="degerler/namaz.css">
+    <link rel="stylesheet" href="degerler/namaz.css?v=3">
     <style>
       /* Geri (index'e donus) tusu: sitedeki diger sayfalarla ayni desen.
          data-kidef-done="1" sayesinde geri.js buraya ayrica ev (Anasayfa)
          tusu EKLEMEZ; tek geri tusu yeterli. */
       a.back-btn.kidef-siteye{
-        position:fixed; top:16px; left:16px; z-index:1000;
+        /* 29.09.2026: sayfa konteynırsız oldu, şerit en üstte —
+           tuş şeridin içine ortalandı. */
+        position:fixed; top:10px; left:13px; z-index:1000;
         width:44px; height:44px; border-radius:50%;
         display:flex; align-items:center; justify-content:center;
         background:#fff; color:var(--accent); text-decoration:none;
@@ -92,7 +94,7 @@
     </div>
 </div>
 
-<script src="degerler/namaz.js"></script>
+<script src="degerler/namaz.js?v=2"></script>
 <script src="sistem/geri.js?v=20260915a"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.

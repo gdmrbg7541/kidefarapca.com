@@ -131,7 +131,12 @@ const questions = [
 
     function toggleInfo(el) {
         const content = el.querySelector('.answer') || el.querySelector('.meal');
-        content.style.maxHeight = content.style.maxHeight === '100px' ? '0' : '100px';
+        /* 29.09.2026: sabit 100px kalkti. Yazilar devasa oldugu icin cevap
+           100 piksele sigmiyor, alt satirlari kesiliyordu; artik icerigin
+           KENDI yuksekligi kadar aciliyor. Durum .acik sinifinda tutuluyor
+           (eskiden maxHeight metnine bakiliyordu, kirilgandi). */
+        const acik = el.classList.toggle('acik');
+        content.style.maxHeight = acik ? (content.scrollHeight + 8) + 'px' : '0';
     }
 
     loadData();
