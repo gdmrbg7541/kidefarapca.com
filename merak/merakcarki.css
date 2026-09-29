@@ -1,0 +1,362 @@
+/* ==========================================================================
+   MERAK ÇARKI — ders başı ısınma          merak/merakcarki.css
+   --------------------------------------------------------------------------
+   TEMA: SİTENİN KENDİ RENKLERİ, AÇIK ZEMİN (29.09.2026, öğretmen isteği:
+   "tema renkleri site renkleri olsun, açık renkler olsun"). İlk sürüm koyu
+   lacivert bir zemindeydi; artık sinifici/sinav.css ve katalogla aynı
+   palet kullanılıyor:
+       yeşil  #16A085 / #0E7C66 / #E8F6F2   (ana renk, düğmeler)
+       mürekkep #16324F · gri #6B7A8C · çizgi #E3E9F0 · zemin #F4F7FA
+       turuncu #E67E22 · mavi #2E86DE · mor #8E44AD   (tür renkleri)
+   Dört tür rengi de sitenin başka yerlerinde geçen renkler; yeni palet yok.
+
+   Düzen konteynırsız: sayfa ekranın tamamı, üstte şerit, ortada çark,
+   altında kart. Ölçüler clamp() ile ekran enine bağlı — tahtada büyük,
+   telefonda sığar.
+   ========================================================================== */
+:root {
+    --mc-zemin: #F4F7FA;
+    --mc-kart: #FFFFFF;
+    --mc-murekkep: #16324F;
+    --mc-gri: #6B7A8C;
+    --mc-cizgi: #E3E9F0;
+    --mc-yesil: #16A085;
+    --mc-yesil-k: #0E7C66;
+    --mc-yesil-a: #E8F6F2;
+    --mc-turuncu: #E67E22;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+    min-height: 100dvh;
+    font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+    color: var(--mc-murekkep);
+    background: var(--mc-zemin);
+    display: flex; flex-direction: column;
+}
+/* 29.09.2026 (öğretmen isteği: "scroll olsun sayfa"): kaydırma artık
+   SAYFANIN KENDİSİNDE. Önce orta alan (.mc-sahne) kendi içinde kayıyordu;
+   kart yazıları büyüyünce o dar pencerede okumak zorlaştı. Üst şerit
+   yapışık kalıyor ki hangi sınıfta olduğun hep görünsün. */
+.mc-ust { position: sticky; top: 0; z-index: 30; }
+.ar { font-family: 'Arakom', serif; }
+
+/* ---------- üst şerit ---------- */
+.mc-ust {
+    flex: none; display: flex; align-items: center; gap: 14px;
+    padding: clamp(13px, 1.5vw, 20px) clamp(14px, 2.4vw, 32px) clamp(13px, 1.5vw, 20px) clamp(74px, 6vw, 92px);
+    background: #fff;
+    border-bottom: 1px solid var(--mc-cizgi);
+}
+.mc-ust h1 {
+    margin: 0; font-size: clamp(1.6rem, 3vw, 3.1rem); font-weight: 800;
+    letter-spacing: .3px; color: var(--mc-yesil-k);
+}
+.mc-ust p { margin: 3px 0 0; font-size: clamp(1.02rem, 1.55vw, 1.5rem); color: var(--mc-gri); }
+.mc-ust-sol { flex: 1; min-width: 0; }
+.mc-ust-ikon { flex: none; display: block; width: clamp(38px, 3.4vw, 62px); }
+.mc-ust-ikon svg { width: 100%; height: auto; display: block; }
+
+/* geri tuşu — sitedeki öteki sayfalarla aynı desen */
+a.mc-geri {
+    position: fixed; top: 10px; left: 14px; z-index: 40;
+    width: clamp(46px, 3.6vw, 58px); height: clamp(46px, 3.6vw, 58px); border-radius: 15px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--mc-yesil-a); color: var(--mc-yesil-k); text-decoration: none;
+    border: 1.5px solid var(--mc-yesil);
+    transition: background .18s, color .18s, transform .18s;
+}
+a.mc-geri:hover { background: var(--mc-yesil); color: #fff; transform: translateX(-2px); }
+a.mc-geri:focus-visible { outline: 3px solid var(--mc-yesil); outline-offset: 2px; }
+a.mc-geri svg { width: clamp(24px, 1.9vw, 30px); height: clamp(24px, 1.9vw, 30px); fill: currentColor; }
+
+/* ---------- ayar şeridi ---------- */
+.mc-ayar {
+    flex: none; display: flex; flex-wrap: wrap; align-items: center;
+    gap: clamp(8px, 1.2vw, 18px);
+    padding: clamp(10px, 1.4vw, 16px) clamp(14px, 2.4vw, 32px);
+    background: #fff;
+    border-bottom: 1px solid var(--mc-cizgi);
+}
+.mc-alan { display: flex; align-items: center; gap: clamp(9px, 1vw, 14px); }
+/* display:flex, [hidden]'ın display:none'unu eziyordu: girişsiz kullanıcıya
+   boş bir SINIF seçici görünüyordu. */
+.mc-alan[hidden] { display: none; }
+.mc-alan > span {
+    font-size: clamp(1rem, 1.35vw, 1.3rem); font-weight: 800; color: var(--mc-gri);
+    text-transform: uppercase; letter-spacing: .6px;
+}
+#mcSinif {
+    font: inherit; font-size: clamp(1.15rem, 1.7vw, 1.65rem); font-weight: 700;
+    padding: clamp(11px, 1.1vw, 16px) clamp(16px, 1.6vw, 24px); border-radius: 13px;
+    border: 1.5px solid var(--mc-cizgi); background: #fbfcfd;
+    color: var(--mc-murekkep); max-width: 60vw; outline: none;
+}
+#mcSinif:focus { border-color: var(--mc-yesil); background: #fff; }
+
+.mc-tur-tuslar { display: flex; flex-wrap: wrap; gap: clamp(8px, .9vw, 13px); }
+.mc-tur-tus {
+    display: inline-flex; align-items: center; gap: .5em;
+    font: inherit; font-size: clamp(1.1rem, 1.6vw, 1.55rem); font-weight: 800; cursor: pointer;
+    padding: clamp(10px, 1vw, 15px) clamp(18px, 1.9vw, 30px); border-radius: 999px; color: var(--mc-murekkep);
+    background: #fff; border: 1.5px solid var(--mc-cizgi);
+    transition: border-color .16s, background .16s, transform .16s, color .16s;
+}
+.mc-tur-tus:hover { transform: translateY(-1px); }
+/* Seçili sekme artık hep yeşil değil, O TÜRÜN rengine boyanıyor:
+   çarktaki dilimle aynı renk, hangi türde olduğun bir bakışta belli. */
+.mc-tur-tus.acik { background: var(--r, var(--mc-yesil)); border-color: var(--r, var(--mc-yesil)); color: #fff; }
+/* Simge, yazıdan bağımsız olarak TÜRÜN renginde; seçiliyken beyaz. */
+.mc-tur-tus .mcs { color: var(--r, var(--mc-yesil)); }
+.mc-tur-tus.acik .mcs { color: #fff; }
+.mc-tur-tus:hover { border-color: var(--r, var(--mc-yesil)); }
+.mc-tur-tus:focus-visible { outline: 3px solid var(--mc-yesil); outline-offset: 2px; }
+#mcTurNot { flex: 1 1 100%; margin: 0; font-size: clamp(1rem, 1.35vw, 1.3rem); color: var(--mc-gri); }
+
+/* ---------- durum ---------- */
+#mcDurum {
+    flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 9px 16px;
+    padding: clamp(11px, 1.2vw, 17px) clamp(14px, 2.4vw, 32px);
+    font-size: clamp(1.05rem, 1.45vw, 1.4rem); color: var(--mc-gri);
+    background: var(--mc-yesil-a);
+    border-bottom: 1px solid #D4EBE4;
+}
+.mc-durum-ad { font-weight: 800; color: var(--mc-yesil-k); }
+.mc-kalanlar { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.mc-kalan {
+    display: inline-flex; align-items: center; gap: .4em;
+    padding: clamp(5px, .5vw, 8px) clamp(13px, 1.3vw, 18px); border-radius: 999px;
+    font-size: clamp(.98rem, 1.3vw, 1.25rem); font-weight: 700;
+    background: #fff; border: 1.3px solid var(--r); color: var(--r);
+}
+.mc-kalan b { font-weight: 900; }
+
+/* ---------- sahne: çark + kart ---------- */
+.mc-sahne {
+    flex: 1 0 auto; overflow: visible;
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(14px, 2vw, 26px);
+    padding: clamp(16px, 2.4vw, 34px) clamp(14px, 3vw, 44px) clamp(28px, 4vw, 56px);
+}
+
+.mc-cark-kutu { position: relative; width: clamp(240px, 40vh, 480px); flex: none; }
+.mc-cark-kutu svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
+/* Gölge SVG'ye filtre olarak değil, altına YUVARLAK bir katman olarak
+   veriliyor: filtre kutusu açık zeminde soluk bir kare bırakıyordu. */
+.mc-cark-kutu::before {
+    content: ''; position: absolute; inset: 1%; border-radius: 50%;
+    background: #fff; box-shadow: 0 12px 30px rgba(22, 50, 79, .15);
+}
+#mcCark { transform-origin: 50% 50%; }
+.mc-cark-golge { fill: #fff; }
+.mc-dilim-ad {
+    font-size: 15.5px; font-weight: 800; fill: #fff; letter-spacing: .4px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+/* ibre — çarkın tepesinde, aşağı bakan üçgen */
+.mc-ibre {
+    position: absolute; top: -8px; left: 50%; transform: translateX(-50%); z-index: 2;
+    filter: drop-shadow(0 3px 5px rgba(22, 50, 79, .3));
+}
+.mc-ibre svg { width: 34px; }
+
+#mcCevir {
+    display: inline-flex; align-items: center; gap: .55em;
+    font: inherit; font-size: clamp(1.3rem, 2vw, 2rem); font-weight: 900; cursor: pointer;
+    padding: clamp(15px, 1.8vh, 22px) clamp(36px, 4vw, 66px);
+    border: 0; border-radius: 999px; color: #fff;
+    background: linear-gradient(135deg, #1ABC9C, var(--mc-yesil) 55%, var(--mc-yesil-k));
+    box-shadow: 0 8px 20px rgba(22, 160, 133, .34);
+    transition: transform .16s ease, box-shadow .16s ease, filter .16s;
+    letter-spacing: .4px;
+}
+#mcCevir:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(22, 160, 133, .42); }
+#mcCevir:focus-visible { outline: 3px solid var(--mc-yesil-k); outline-offset: 3px; }
+#mcCevir:disabled { filter: grayscale(.45); opacity: .65; cursor: default; }
+.mc-ipucu { margin: 0; font-size: clamp(1rem, 1.3vw, 1.25rem); color: var(--mc-gri); }
+
+/* ---------- kart ---------- */
+.mc-kart {
+    width: 100%; max-width: 960px;
+    background: var(--mc-kart); color: var(--mc-murekkep);
+    border: 1px solid var(--mc-cizgi);
+    border-top: 7px solid var(--r, var(--mc-yesil));
+    border-radius: 24px; padding: clamp(24px, 3.2vw, 54px) clamp(24px, 3.4vw, 62px);
+    box-shadow: 0 12px 34px rgba(22, 50, 79, .1);
+    animation: mcGel .45s cubic-bezier(.2, .9, .3, 1) both;
+    /* Çark dönünce kart ekranın tepesine kaydırılıyor; yapışık üst şerit
+       kartın başlığını örtmesin diye pay bırakıldı. Pay SABİT DEĞİL: şerit
+       yazı boyuna ve giriş notunun olup olmamasına göre değişiyor, o yüzden
+       merakcarki.js ölçüp --mc-ust-y'ye yazıyor (bkz. ustOlc). */
+    scroll-margin-top: calc(var(--mc-ust-y, 120px) + 14px);
+}
+@keyframes mcGel { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: none; } }
+.mc-kart-ust { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.mc-rozet {
+    display: inline-flex; align-items: center; gap: .45em;
+    font-size: clamp(1.1rem, 1.5vw, 1.55rem); font-weight: 800;
+    padding: clamp(8px, .8vw, 12px) clamp(20px, 2vw, 28px); border-radius: 999px;
+    background: color-mix(in srgb, var(--r) 12%, #fff); color: var(--r);
+    border: 1.3px solid color-mix(in srgb, var(--r) 40%, #fff);
+}
+.mc-kart .mc-ar { font-size: clamp(1.6rem, 2.4vw, 2.8rem); color: var(--r); margin-left: auto; }
+.mc-kart h2 {
+    margin: 0 0 16px; font-size: clamp(1.9rem, 4vw, 4.2rem); line-height: 1.2;
+    color: var(--r, var(--mc-murekkep));
+}
+.mc-govde { margin: 0; font-size: clamp(1.35rem, 2.7vw, 3rem); line-height: 1.5; }
+.mc-cevap {
+    margin-top: clamp(14px, 1.8vw, 26px); padding: clamp(14px, 1.8vw, 24px);
+    background: var(--mc-yesil-a); border: 1.5px dashed #A7D9CB; border-radius: 14px;
+    animation: mcGel .35s ease both;
+}
+.mc-cevap b {
+    display: block; font-size: clamp(1.05rem, 1.35vw, 1.4rem); letter-spacing: .9px;
+    text-transform: uppercase; color: var(--mc-yesil-k); margin-bottom: 8px;
+}
+.mc-cevap p {
+    margin: 0; font-size: clamp(1.25rem, 2.4vw, 2.7rem); line-height: 1.45;
+    color: #14453A; font-weight: 600;
+}
+
+.mc-kart-tuslar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: clamp(14px, 1.8vw, 24px); }
+.mc-t-ana, .mc-t-yan {
+    font: inherit; font-weight: 800; cursor: pointer; border-radius: 12px;
+    padding: clamp(15px, 1.7vw, 22px) clamp(30px, 2.8vw, 48px);
+    font-size: clamp(1.2rem, 1.7vw, 1.7rem);
+    transition: transform .16s, background .16s, border-color .16s, color .16s;
+}
+.mc-t-ana { border: 0; background: var(--mc-yesil); color: #fff; }
+.mc-t-ana:hover { background: var(--mc-yesil-k); transform: translateY(-2px); }
+.mc-t-yan { border: 1.5px solid var(--mc-cizgi); background: #fff; color: var(--mc-gri); }
+.mc-t-yan:hover { border-color: #C0392B; color: #C0392B; }
+.mc-t-ana:focus-visible, .mc-t-yan:focus-visible { outline: 3px solid var(--mc-yesil); outline-offset: 2px; }
+.mc-bitti { border-top-color: #C0392B; }
+.mc-bitti h2 { color: #C0392B; }
+.mc-bitti p { font-size: clamp(1.35rem, 2.1vw, 2.1rem); line-height: 1.55; color: var(--mc-murekkep); }
+
+/* ---------- giriş notu ---------- */
+#mcGiris {
+    flex: none; margin: 0; padding: clamp(12px, 1.2vw, 18px) clamp(14px, 2.4vw, 32px);
+    font-size: clamp(1rem, 1.35vw, 1.3rem); line-height: 1.55; color: #8A5A00;
+    background: #FFF6E5; border-bottom: 1px solid #F3DCB2;
+}
+#mcGiris b { color: #6B4400; }
+
+@media (max-width: 720px) {
+    .mc-ust { padding-left: 68px; }
+    .mc-kalanlar { margin-left: 0; }
+    #mcSinif { max-width: 100%; }
+}
+
+
+/* ==========================================================================
+   ANİMASYONLU SİMGELER (29.09.2026, öğretmen isteği: "tümü için svler yap,
+   animasyonlu olsun ... iyice dikkat çekici olsun")
+   --------------------------------------------------------------------------
+   Emojiler kaldırıldı: cihazdan cihaza değişiyor, tahtada soluk kalıyor ve
+   kıpırdamıyorlardı. Yerlerine merakcarki.js içindeki MC_SIMGE'den gelen
+   elle çizilmiş SVG'ler geçti — AYRI DOSYA YOK, hepsi kodun içinde.
+
+   Simge nereye konursa oranın rengini alır (currentColor). Aynı simge
+   sayfada defalarca geçtiği için içlerinde id ya da gradient yok.
+   Hareketler kısa ve döngüsel; azaltılmış hareket ayarında hepsi durur.
+   ========================================================================== */
+.mcs {
+    width: 1.15em; height: 1.15em; flex: none;
+    display: inline-block; vertical-align: -.2em;
+    overflow: visible;
+}
+/* Çark dilimlerinde simge ölçeklenmiş bir <g> içinde duruyor (iç içe <svg>
+   değil). Orada view-box dış çarkın 200x200 kutusunu gösterirdi, merkezler
+   kayardı — o yüzden her parça KENDİ kutusunu esas alıyor. */
+.mcs-yuz, .mcs-goz, .mcs-dil, .mcs-yaprak, .mcs-tohum, .mcs-boylam,
+.mcs-buyutec, .mcs-soru, .mcs-parilti, .mcs-mini-don, .mcs-ok-don {
+    transform-box: fill-box;
+}
+/* Çark içindeki simge: dilim zemini renkli olduğu için çizimin gövdesi
+   beyaz (currentColor), çizimde beyaz olan AYRINTILAR ise dilimin rengine
+   (--d) dönüyor. Aksi hâlde beyaz beyaza biniyor, simge leke gibi duruyor:
+   gülen yüzün gözü ağzı, kürenin meridyenleri, büyütecin camı böyle. */
+.mcs-ic { color: #fff; }
+.mcs-ic [fill="#fff"]   { fill: var(--d); }
+.mcs-ic [stroke="#fff"] { stroke: var(--d); }
+
+/* Kart rozetindeki simge biraz daha iri: kartın kimliği o. */
+.mc-rozet .mcs { width: 1.5em; height: 1.5em; vertical-align: -.32em; }
+
+/* ---------- Fıkra: gülen yüz ---------- */
+.mcs-yuz { transform-origin: 50% 54%; animation: mcsGul 3.4s ease-in-out infinite; }
+@keyframes mcsGul {
+    0%, 55%, 100% { transform: rotate(0) translateY(0); }
+    63% { transform: rotate(-8deg) translateY(-.6px); }
+    72% { transform: rotate(7deg) translateY(-1.1px); }
+    81% { transform: rotate(-5deg) translateY(-.4px); }
+    90% { transform: rotate(3deg); }
+}
+.mcs-goz { transform-origin: 50% 50%; animation: mcsGoz 3.4s ease-in-out infinite; }
+
+@keyframes mcsGoz { 0%, 44%, 52%, 100% { transform: scaleY(1); } 48% { transform: scaleY(.15); } }
+.mcs-dil { transform-origin: 50% 0; animation: mcsDil 3.4s ease-in-out infinite; }
+@keyframes mcsDil { 0%, 58%, 100% { transform: scaleY(.55); } 70%, 80% { transform: scaleY(1); } }
+
+/* ---------- Köken: filiz ---------- */
+.mcs-yaprak { transform-origin: 100% 100%; animation: mcsSalin 2.9s ease-in-out infinite; }
+.mcs-yaprak-b { transform-origin: 0 100%; animation-delay: -1.45s; }
+@keyframes mcsSalin { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(7deg); } }
+.mcs-tohum { animation: mcsTohum 2.9s ease-in-out infinite; }
+@keyframes mcsTohum { 0%, 100% { opacity: .25; } 50% { opacity: .6; } }
+
+/* ---------- Kültür: küre ---------- */
+/* Boylam yatayda daralıp genişliyor: küre dönüyormuş gibi. rx yerine
+   scaleX kullanıldı — geometri özelliklerini CSS'ten canlandırmak eski
+   tarayıcılarda tutmuyor, transform her yerde çalışıyor. */
+.mcs-boylam { transform-origin: 50% 50%; animation: mcsDunya 4.2s ease-in-out infinite; }
+@keyframes mcsDunya {
+    0%, 100% { transform: scaleX(1); }
+    50% { transform: scaleX(.08); }
+}
+
+/* ---------- Bulmaca: büyüteç ---------- */
+.mcs-buyutec { transform-origin: 50% 50%; animation: mcsAra 4s ease-in-out infinite; }
+@keyframes mcsAra {
+    0%, 100% { transform: translate(0, 0) rotate(0); }
+    25% { transform: translate(1.3px, -1px) rotate(-7deg); }
+    55% { transform: translate(-1.4px, .7px) rotate(6deg); }
+    80% { transform: translate(.7px, 1px) rotate(-3deg); }
+}
+.mcs-soru {
+    font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+    font-size: 9.5px; font-weight: 900;
+    transform-origin: 50% 50%; animation: mcsSoru 2s ease-in-out infinite;
+}
+@keyframes mcsSoru { 0%, 100% { opacity: .85; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.1); } }
+.mcs-parilti { animation: mcsParilti 4s ease-in-out infinite; }
+@keyframes mcsParilti { 0%, 60%, 100% { opacity: .25; } 72% { opacity: .95; } }
+
+/* ---------- başlıktaki mini çark ---------- */
+.mcs-mini { display: block; width: 100%; height: auto; overflow: visible; }
+.mcs-mini-don {
+    transform-origin: 50% 50%;
+    animation: mcsMiniDon 7s cubic-bezier(.34, .05, .28, 1) infinite;
+}
+@keyframes mcsMiniDon { 0%, 16% { transform: rotate(0); } 58%, 100% { transform: rotate(340deg); } }
+
+/* ---------- ÇARKI ÇEVİR düğmesindeki ok ---------- */
+.mcs-ok { width: 1.05em; height: 1.05em; }
+.mcs-ok-don {
+    transform-origin: 50% 50%;
+    animation: mcsOk 2.6s cubic-bezier(.4, 0, .25, 1) infinite;
+}
+@keyframes mcsOk { 0%, 30% { transform: rotate(0); } 70%, 100% { transform: rotate(360deg); } }
+#mcCevir:disabled .mcs-ok-don { animation-duration: .8s; animation-timing-function: linear; }
+
+@media (prefers-reduced-motion: reduce) {
+    #mcCark { transition: none !important; }
+    .mc-kart, .mc-cevap { animation: none !important; }
+    /* Simgeler kıpırdamasın; çizim olarak yerinde kalsınlar. */
+    .mcs *, .mcs-ic *, .mcs-mini *, .mcs-ok * { animation: none !important; }
+}
+html.dusuk-guc .mcs *, html.dusuk-guc .mcs-ic *,
+html.dusuk-guc .mcs-mini * { animation: none !important; }

@@ -2440,3 +2440,225 @@ DENETİM (Playwright):
     37.44 px, bölüm kayabiliyor (1519 > 754); cevap açıldı, kesilme yok
   390×780 · 1 sütun, soru 21 px, cevap 17.9 px, kesilme yok
   Hikmet sekmesi de tek sütun ve aynı boyda
+
+────────────────────────────────────────────────────────────────────────
+MERAK ÇARKI — DERS BAŞI ISINMA  (29.09.2026, öğretmen isteği)
+Yeni dosyalar: merakcarki.html · merak/merakcarki.css · merak/merakcarki.js
+               merak/merakveri.js  (144 kart)
+Değişen:       index.html (Oyunlar kartı + ikon animasyonu) · katalog/index.html
+Yedek: _kaynak/yedekler/index_2026-09-29_merakcarki-oncesi.html
+       _kaynak/yedekler/katalog-index_2026-09-29_merakcarki-oncesi.html
+Betik: _kaynak/uretici/merakKart.py
+────────────────────────────────────────────────────────────────────────
+
+İstek: "ders başında öğrencilerin dikkatini çekmek ve derse hazır
+başlamaları için bi kura ve çark… fıkralar, kısa hikâyeler, gizemli
+bulmacalar, kültürel bilgiler… 36 hafta… öğretmen girişi varsa hangi
+sınıfa hangi kart çıkmışsa sonraki haftalarda tekrar çıkmasın… bunu bir
+kart olarak oyunlar kategorisine ekle"
+
+İÇERİK — 4 tür × 36 kart = 144
+  😄 Fıkra          Nasreddin Hoca ve Arap dünyasındaki karşılığı Cuhâ
+                    etrafındaki halk fıkraları; sonu gizli, sınıf tahmin
+                    eder, sonra açılır
+  🌿 Kelime Kökeni  Türkçedeki Arapça kelimelerin kök hikâyesi
+                    (mektep-kitap-kâtip, minare-nur, kalp-kalıp…) —
+                    doğrudan Arapça dersinin içine düşüyor
+  🌍 Kültür & Bilim Sıfırın kökeni, el-Karaviyyîn, Hârizmî ve algoritma,
+                    balın bozulmaması, devenin hörgücü…
+  🔍 Bulmaca        Mantık bulmacaları; cevap gizli
+Her kartın id'si sabit (f01, k01, g01, b01…). TEKRAR KAYDI BU ID'YE GÖRE
+tutulur — mevcut bir kartın id'sini DEĞİŞTİRME, yoksa o kart bütün
+sınıflarda "hiç çıkmamış" sayılır. Yeni kart ilgili dizinin sonuna.
+
+ÇARK — iki kip (öğretmen ikisini de istedi)
+  · Varsayılan: çark dört dilimli, rastgele bir türde durur
+  · "Tür" düğmelerinden birine basılırsa çark hep o dilimde durur
+  Boşluk tuşu da çeviriyor (öğretmen tahtadayken fareye uzanmasın).
+
+TEKRAR ETMEME
+  · Çıkan kartın id'si o SINIFIN listesine yazılır; bir daha çıkmaz
+  · Sınıf seçici öğretmenin kendi verisinden geliyor
+    (localStorage 'schoolData' → data.levels[lId].classes[cId]);
+    giriş yoksa tek bir "genel" kova kullanılıyor
+  · Kayıt yeri: kullanicilar/{uid} belgesinde "merakCarki" alanı (JSON).
+    BU KOLEKSİYON ZATEN İZİNLİ ("kendi belgesini güncelleyebilir"),
+    yeni Firestore kuralı yayınlamak GEREKMEDİ. Ayrıca localStorage'a da
+    yazılıyor: çevrimdışı ve girişsiz de çalışıyor.
+  · İki bilgisayarda çalışılmışsa bulut ile yerel BİRLEŞTİRİLİYOR
+    (kesişim değil birleşim) — kayıt kaybolmuyor
+  · "Bunu sayma" düğmesi: yanlışlıkla çevrildiyse kartı geri koyar
+  · Bir türün 36'sı da bitince uyarı çıkıyor ve o türün geçmişini
+    sıfırlama düğmesi geliyor (yeni öğretim yılı için)
+
+KARTLAR
+  · index.html → Oyunlar kategorisinin BAŞINDA (zilden sonra ilk açılacak
+    şey). İkon sayfaya özel: dört dilimli çark ağır ağır dönüyor, ibre
+    sabit; html.dusuk-guc'te duruyor.
+  · katalog → "Harf, okuma ve yazı" bölümüne, data-isinma="1" ile
+    (Isınma oyunları süzgecine giriyor). Bölüm sayısı 5 → 6 araç.
+
+DENETİM (Playwright)
+  · açılış: 4 dilim, sınıf seçicide öğretmenin üç sınıfı, 0/144
+  · 5 çevirme → 5 FARKLI kart, cevapların hepsi gizli; "Cevabı Aç"
+    çalışıyor ve düğme kayboluyor
+  · kayıt localStorage'da sınıf anahtarıyla (L1/C1) tutuluyor
+  · sınıf değiştirince sayaç sıfırdan başlıyor (sınıf başına ayrı kayıt)
+  · tür seçilince üç çevirmede de aynı tür çıktı
+  · "Bunu sayma": 3 → 4 → 3
+  · 36 HAFTA SINAMASI: aynı sınıf aynı türden 36 kez çekti — 36 kartın
+    hepsi farklı, 37. denemede "bitti" uyarısı
+  · telefonda (390 px) yatay taşma yok; konsolda hata yok
+
+── (aynı gün) MERAK ÇARKI · SİTE RENKLERİ, AÇIK TEMA ───────────────────
+"tema renkleri site renkleri olsun, açık renkler olsun"
+İlk sürüm koyu lacivert zemindeydi. Artık sinifici/sinav.css ve katalogla
+aynı palet, açık zemin:
+    zemin #F4F7FA · kart #fff · mürekkep #16324F · gri #6B7A8C
+    çizgi #E3E9F0 · yeşil #16A085 / #0E7C66 / #E8F6F2
+Tür renkleri de sitenin kendi renkleri (yeni palet eklenmedi):
+    Fıkra #E67E22 (sinav.css --turuncu) · Köken #16A085 (ana yeşil)
+    Kültür #2E86DE · Bulmaca #8E44AD (katalog bölüm renkleri)
+Değişenler: başlık ve durum şeridi yeşil, "ÇARKI ÇEVİR" sarı yerine yeşil
+gradyan, geri tuşu sitenin yeşil kare deseni, çark dilimleri arasına beyaz
+ayraç, göbek yeşil, giriş notu açık sarı uyarı şeridi.
+Çarkın gölgesi SVG filtresi yerine altına yuvarlak bir katman olarak
+verildi: açık zeminde filtre kutusu soluk bir KARE bırakıyordu.
+DENETİM: gövde zemini rgb(244,247,250), başlık rgb(14,124,102), düğme
+yeşil gradyan, durum şeridi rgb(232,246,242); konsolda hata yok, telefonda
+yatay taşma yok.
+
+── (aynı gün) MERAK ÇARKI · BÜYÜK KART + SAYFA KAYDIRMASI ──────────────
+"çarkı çevirdikten sonra bilgilerin boyutu çok büyük olsun, scroll olsun sayfa"
+  · Kaydırma artık SAYFANIN KENDİSİNDE. Önce orta alan (.mc-sahne) kendi
+    içinde kayıyordu; yazılar büyüyünce o dar pencerede okumak zorlaştı.
+    Üst şerit position:sticky ile yapışık kalıyor, hangi sınıfta olduğun
+    hep görünüyor.
+  · Kart yazıları çok büyüdü (1280 px ekranda ölçüldü):
+        başlık 2.6rem → clamp(1.9rem, 4vw, 4.2rem)   = 51 px
+        gövde  1.75rem → clamp(1.35rem, 2.7vw, 3rem) = 35 px
+        cevap  1.55rem → clamp(1.25rem, 2.4vw, 2.7rem) = 31 px
+    Rozet, Arapça kök yazısı, düğmeler ve kart dolgusu da büyüdü.
+    Telefonda (390 px) başlık 30 px, gövde 22 px — taşma yok.
+  · Çark dönünce kart ekranın TEPESİNE kaydırılıyor (block:'start');
+    yapışık şerit başlığı örtmesin diye scroll-margin-top:84px.
+Sürümler: merakcarki.css?v=2 · merakcarki.js?v=2
+
+────────────────────────────────────────────────────────────────────────
+OYUNLAR BÖLÜMÜ BEŞ ŞERİDE AYRILDI  (29.09.2026)
+Dosya: index.html  ·  Yedek: _kaynak/yedekler/index_2026-09-29_oyungrup-oncesi.html
+Betik: _kaynak/uretici/oyunGrup.py
+────────────────────────────────────────────────────────────────────────
+İstek: "oyunlar kategorisini güncelleyelim, kendi içinde bilgi yarışması
+bi kategoride, fıkralar bi kategoride olacak şekilde o konteynırı bölelim"
+
+SEÇİLEN YOL: tek bölüm, içi ALT BAŞLIKLI ŞERİTLER (akordiyon ya da süzgeç
+çipi değil). Gerekçe: ana sayfada oyun ararken hepsi göz önünde kalsın,
+tıklama arkasına saklanmasın.
+
+  ● Ders Başı        mor    #8E44AD  Merak Çarkı                        (1)
+  ● Sınıfça Yarışma  yeşil  #16A085  Bilgi Yarışması · Test Kapışması ·
+                                     İkiki                              (3)
+  ● Harf ve Klavye   mavi   #2E86DE  Hangi Harf · Hareke Avcısı ·
+                                     Klavye Oyunu                       (3)
+  ● Kök ve Kalıp     turuncu #E67E22 Kökü Tanı · Kökten Gövdeye ·
+                                     Zamanla Yarış                      (3)
+  ● Kelime           kırmızı #C0392B Hafıza Kartları · İsim x 4         (2)
+
+Renkler sitenin kendi paleti. Şerit başlığı: renkli kare + büyük harf ad +
+gri açıklama + sağda "n oyun". 600 pikselin altında açıklama alt satıra
+iniyor, sayı gizleniyor; kartlar şerit şerit yatay kayıyor
+(mobile-scroll-grid-single her şeritte ayrı).
+
+KARTLARA DOKUNULMADI: her kart bloğu önündeki açıklama yorumuyla birlikte
+taşındı. Yalnız kapsamı değişen iki yorum yeniden yazıldı —
+"MERAK ÇARKI … kategorinin başında" ve "Sarf Motoru oyunları" notu
+(ikincisi Hareke Avcısı ile Kök-Kalıp şeridine bölündüğü için).
+
+YENİ OYUN EKLERKEN: ilgili şeridin .game-grid'ine koy, şerit başlığındaki
+"n oyun" sayısını güncelle.
+
+DENETİM: 5 şerit, 5 ızgara, 12 kart; bölüm içi div dengesi 35/35 (sayfadaki
++1 fark yamadan önce de vardı: 685/684 → 694/693, yani 9 açılış 9 kapanış
+eklendi). 1280 ve 420 pikselde çizim doğru, renkler ölçüldü.
+
+── (aynı gün, değiştirildi) OYUNLAR: TEK IZGARA + DERS AKIŞI ETİKETİ ───
+Şeritli düzen bir tur denendi, sonra öğretmenin seçimiyle DEĞİŞTİRİLDİ:
+gruplama "dersin akışına göre", görünüş "tek ızgara + renkli etiket".
+Betik: _kaynak/uretici/oyunEvre.py  (şerit öncesi yedekten çalışıyor;
+       _kaynak/uretici/oyunGrup.py artık KULLANILMIYOR, arşiv)
+Yedek: _kaynak/yedekler/index_2026-09-29_oyungrup-oncesi.html
+
+  On iki kart yine TEK ızgarada — alt başlık, akordiyon ya da çip yok.
+  Kartlar ders saatinin akışına göre dizildi ve her kartın tepesine,
+  oyunun EN ÇOK İŞE YARADIĞI ANI söyleyen renkli bir etiket kondu:
+
+    ● Ders Başı   #8E44AD  Merak Çarkı · Hangi Harf · Hareke Avcısı
+    ● Ders Sırası #2E86DE  Kökü Tanı · Kökten Gövdeye · İsim x 4 ·
+                           Klavye Oyunu
+    ● Pekiştirme  #16A085  Hafıza Kartları · Zamanla Yarış
+    ● Kapanış     #E67E22  Bilgi Yarışması · Test Kapışması · İkiki
+
+  Etiket görünümü .mrf çipiyle aynı dilde: kart zemini canlı gradyan
+  olduğu için KOYU CAM (rgba(28,33,44,.55)) + beyaz yazı, solda evrenin
+  renginde bir nokta. Açık renk o zeminde kayboluyordu (aynı gerekçe
+  .mrf kuralının başındaki notta da yazılı).
+  Başlığın altında tek satırlık anahtar: dört rengin ne demek olduğu.
+  Dar ekranda etiket küçülüyor, nokta gölgesi kalkıyor.
+
+  YENİ OYUN EKLERKEN: karta .oyun-evre etiketini de ver ve kartı kendi
+  evresinin yanına koy (sıra, ders akışı sırasıdır).
+
+DENETİM: 1 ızgara, 12 kart, 12 etiket; sıra ve renkler doğru; etiket
+puntosu 10.56 px (.mrf ile aynı ölçek); bölüm div dengesi 26/26, sayfa
+685/684 (yamadan önceki değerin aynısı). 1280 ve 420 pikselde çizim
+doğru; telefonda kartlar yatay kayıyor, etiket okunuyor.
+
+[29.09.2026] index.html — Oyunlar: ders akışı etiketleri kaldırıldı
+  · Kartların tepesindeki renkli "Ders Başı / Ders Sırası / Pekiştirme /
+    Kapanış" çipleri (12 adet) ve başlık altındaki açıklama satırı silindi.
+  · İlgili CSS (.oyun-evre, .oyun-anahtar ve mobil kuralları) da çıkarıldı.
+  · KART SIRASI DURUYOR: kartlar hâlâ dersin akışına göre dizili, sadece
+    bunu söyleyen yazı yok. Sıra, bölümün başındaki yorumda yazılı.
+  · Betik: _kaynak/uretici/oyunEvreKaldir.py
+  · Yedek: _kaynak/yedekler/index_2026-09-29_evreetiket-oncesi.html
+  · Denendi: 12 kart, 0 etiket, 0 anahtar; 1280 ve 420 px'de taşma yok.
+
+[29.09.2026] Merak Çarkı — sayfa çevresindeki yazılar da büyütüldü
+  · Bir önceki adımda yalnız kart içi büyümüştü; üst şerit, SINIF seçici,
+    TÜR sekmeleri, tür notu, durum satırı, kalan çipleri, çark dilim
+    yazıları, ÇARKI ÇEVİR, ipucu, rozet, kart düğmeleri ve giriş notu
+    hepsi clamp() ile ekran enine bağlandı (tahtada büyük, telefonda sığar).
+  · Punto ile birlikte iç boşluklar da büyütüldü; çark 400 → 480 px oldu.
+  · Yapışık üst şerit yükseldiği için sabit scroll payı tutmuyordu: şerit
+    artık ÖLÇÜLÜP --mc-ust-y'ye yazılıyor (açılışta, yeniden boyutlamada,
+    yazı tipleri yüklenince, giriş notu kalkınca ve kart kaydırılmadan önce).
+  · Betikler: _kaynak/uretici/merakBuyut.py, merakUstOlc.py
+  · Yedekler: _kaynak/yedekler/merakcarki_2026-09-29_buyutme-oncesi.css
+              _kaynak/yedekler/merakcarki_2026-09-29_ustolc-oncesi.js
+  · Sürüm: merakcarki.css?v=3, merakcarki.js?v=3
+  · Denendi 1600/1280/420 px: konsol hatasız, taşma yok, şerit kartı örtmüyor.
+
+[29.09.2026] Merak Çarkı — emojiler yerine ANİMASYONLU SVG simgeler
+  · Fıkra: gülen yüz (kahkahayla sallanır, göz kırpar, dil oynar)
+    Köken: filiz (yapraklar rüzgârda salınır)
+    Kültür: küre (boylam daralıp genişler, dönüyormuş gibi)
+    Bulmaca: büyüteç (arar gibi gezinir, soru işareti nefes alır)
+  · AYRI DOSYA YOK: çizimler merakcarki.js içindeki MC_SIMGE'de, biçimleri
+    merakcarki.css'te. Aynı simge hem HTML'e hem çarkın SVG'sine giriyor.
+  · Konuldukları yerler: çark dilimleri, tür sekmeleri, kart rozeti, durum
+    satırındaki kalan sayaçları, sayfa başlığı (dönen mini çark) ve
+    ÇARKI ÇEVİR düğmesi (dönen ok).
+  · Tür sekmesi seçilince artık yeşile değil O TÜRÜN rengine boyanıyor.
+  · Çark içinde iç içe <svg> KULLANILMIYOR (CSS width/height sunum
+    özniteliğini eziyor, simge devasa çıkıyordu): ölçekli <g> kullanıldı.
+    Dönüş merkezleri transform-box:fill-box + yüzde.
+  · Çizimin gövdesi beyaz, beyaz ayrıntılar dilimin rengine (--d) dönüyor;
+    yoksa renkli dilim üstünde beyaz beyaza biniyordu.
+  · YAN DÜZELTME (eski hata): .mc-alan'daki display:flex, [hidden]'ı
+    eziyordu; girişsiz kullanıcıya boş bir SINIF seçici görünüyordu.
+  · Betikler: _kaynak/uretici/merakSimge.py, merakSimgeDuzelt.py, merakSimgeCark.py
+  · Yedekler: _kaynak/yedekler/merakcarki_2026-09-29_simge-oncesi.{js,css,html}
+  · Sürüm: merakcarki.css?v=4, merakcarki.js?v=4
+  · Denendi 1600/1280/420 px: konsol hatasız, taşma yok, emoji kalmadı,
+    altı yerde de simgeler var, şerit kartı örtmüyor.

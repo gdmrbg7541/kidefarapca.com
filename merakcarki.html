@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merak Çarkı — Kidef Arapça</title>
+<meta name="description" content="Ders başında sınıfın dikkatini toplamak için çark: fıkra, kelime kökeni, kültür-bilim ve gizemli bulmaca kartları. Aynı kart aynı sınıfa iki kez çıkmaz.">
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+<link rel="stylesheet" href="merak/merakcarki.css?v=4">
+<!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
+<link rel="stylesheet" href="arakom.css?v=2">
+</head>
+<body>
+
+<!-- Geri tuşu DOĞRUDAN index.html'e gider; data-kidef-done sayesinde
+     geri.js ikinci bir "ev" tuşu eklemez. -->
+<a href="index.html" class="mc-geri" data-kidef-done="1" onclick="return kidefAnasayfa(event)"
+   title="Siteye dön" aria-label="Siteye dön">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+</a>
+
+<header class="mc-ust">
+  <!-- Başlıktaki mini çark: merakcarki.js dolduruyor (MC_SIMGE yanındaki
+       simgeCark). Ayrı dosya yok, hepsi kodun içinde. -->
+  <span class="mc-ust-ikon" aria-hidden="true"></span>
+  <div class="mc-ust-sol">
+    <h1>Merak Çarkı</h1>
+    <p>Ders başı ısınma · fıkra, kelime kökeni, kültür ve bulmaca — aynı kart aynı sınıfa iki kez çıkmaz</p>
+  </div>
+</header>
+
+<!-- Giriş yapılmamışsa: kayıt yalnız bu tarayıcıda tutulur -->
+<p id="mcGiris">Öğretmen hesabınla giriş yaparsan çıkan kartlar <b>sınıf sınıf</b> kaydedilir ve
+  bütün cihazlarında aynı kalır. Girişsiz kullanımda kayıt yalnız bu tarayıcıda tutulur.</p>
+
+<div class="mc-ayar">
+  <div class="mc-alan" id="mcSinifKutu" hidden>
+    <span>Sınıf</span>
+    <select id="mcSinif" aria-label="Sınıf seç"></select>
+  </div>
+  <div class="mc-alan">
+    <span>Tür</span>
+    <div class="mc-tur-tuslar" role="group" aria-label="Tür seç">
+      <!-- Emoji yerine animasyonlu SVG: boş span'ları merakcarki.js dolduruyor. -->
+      <button type="button" class="mc-tur-tus" data-mc-tur="fikra"   aria-pressed="false"><span class="mc-tur-ikon"></span>Fıkra</button>
+      <button type="button" class="mc-tur-tus" data-mc-tur="koken"   aria-pressed="false"><span class="mc-tur-ikon"></span>Köken</button>
+      <button type="button" class="mc-tur-tus" data-mc-tur="kultur"  aria-pressed="false"><span class="mc-tur-ikon"></span>Kültür</button>
+      <button type="button" class="mc-tur-tus" data-mc-tur="bulmaca" aria-pressed="false"><span class="mc-tur-ikon"></span>Bulmaca</button>
+    </div>
+  </div>
+  <p id="mcTurNot"></p>
+</div>
+
+<div id="mcDurum"></div>
+
+<main class="mc-sahne">
+  <div class="mc-cark-kutu">
+    <div class="mc-ibre" aria-hidden="true">
+      <svg viewBox="0 0 34 30"><path d="M17 30 L2 2 A30 30 0 0 1 32 2 Z" fill="#FFC107" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>
+    </div>
+    <svg viewBox="0 0 200 200" role="img" aria-label="Merak çarkı">
+      <circle class="mc-cark-golge" cx="100" cy="100" r="99"/>
+      <g id="mcCark"><g id="mcDilimler"></g></g>
+      <circle cx="100" cy="100" r="96" fill="none" stroke="#fff" stroke-width="3"/>
+      <circle cx="100" cy="100" r="20" fill="#fff"/>
+      <circle cx="100" cy="100" r="13" fill="#16A085"/>
+    </svg>
+  </div>
+
+  <button type="button" id="mcCevir">ÇARKI ÇEVİR</button>
+  <p class="mc-ipucu">Boşluk tuşu da çarkı çevirir.</p>
+
+  <section class="mc-kart" id="mcKart" hidden aria-live="polite"></section>
+</main>
+
+<script src="merak/merakveri.js?v=1"></script>
+<script src="merak/merakcarki.js?v=4"></script>
+<script src="sistem/geri.js?v=20260915a"></script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+</body>
+</html>
