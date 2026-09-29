@@ -1972,3 +1972,68 @@ DENETİM (koşum, gerçek oyunla)
     ÖLÇÜM (1180×800): sözlük ve oyun dört değerde de aynı —
       tam kip  tuş 78x64, harf 14x60, punto 40.12, kalınlık 400
       dar kip  tuş 46x64, harf 10x43, punto 28.91, kalınlık 400
+
+────────────────────────────────────────────────────────────────────────
+SINAV HAZIRLA SAYFASI — AKORDİYON + İKİ YÖNTEM  (29.09.2026)
+Dosyalar: sinav.html · sinifici/sinav.js?v=4 · sinifici/sinav.css?v=5
+Yedek:   _kaynak/yedekler/sinav.{html,js,css}_2026-09-29_akordiyon-oncesi
+         _kaynak/yedekler/sinav.{html,js,css}_2026-09-29_yontem-oncesi
+Betik:   _kaynak/uretici/sinavSayfaAkordiyon.py · sinavYontem.py
+────────────────────────────────────────────────────────────────────────
+
+A) BÖLÜM AKORDİYONU — "sınav.html kısmında akordiyon sistemi yapalım …
+   akordiyonlar hep kapalı olarak açılsın, başka bi sekme açıldığında
+   diğerleri kapansın"
+
+   Beş bölüm de artık <details class="sv-ak">, belge kartlarındaki
+   akordiyonla aynı görünüm:
+     Okul bilgileri · Sınıf, ünite ve soru türleri · Öğrenme çıktıları ·
+     Süzgeçler · Kâğıt ayarları
+   Açma-kapama tarayıcının kendi işi; sinav.html'in sonundaki kısa betik
+   yalnız "biri açılınca ötekiler kapansın" kuralını kuruyor. Paneller yol
+   seçilince görünür olduğu için MutationObserver yenileri de kuruyor.
+   sinav.js'teki "okul adı boşsa panel açık gelsin" satırı kaldırıldı.
+   DENETİM (Playwright): açılışta 5 bölümün 5'i kapalı; 1. açıldı → 1 açık,
+   3. açıldı → yine 1 açık.
+
+B) SINAV HAZIRLAMA İKİ YÖNTEM — "eğer sınav hazırlanıyorsa iki seçenek
+   olsun … ama her soruya en az bi kazanım eşleştirilsin. sınav kağıdında
+   her zaman soruların sonunda kazanım numaraları olsun"
+
+   1) YÖNTEM SEÇİCİ  (#yontemPaneli — bilerek akordiyon DEĞİL, seçim hep
+      göz önünde dursun diye; yalnız Sınav yolunda görünür)
+        · "Öğrenme çıktısına göre" (varsayılan)
+            Çıktı ağacı açık. Bir çıktı seçilince havuz o alan becerisine
+            süzülür, eklenen soru o çıktıyı kendiliğinden alır.
+        · "Soru havuzundan seç"
+            Ağaç kapanır, süzme yok. Soru doğrudan seçilir; çıktısı
+            Kâğıdım'daki seçiciden bağlanır (önerisi hazır gelir).
+      Seçim ayar.yontem'de saklanıyor, sayfa kapanınca kaybolmuyor.
+
+   2) ÇIKTISI OLMAYAN SORUYLA KÂĞIT ÇIKMAZ
+        Çıktısı boş soru varsa Önizle / Yazdır / PDF kapanıyor, satır
+        kırmızıya dönüyor, Kâğıdım'ın altında uyarı çıkıyor:
+          "n sorunun öğrenme çıktısı boş. Sınav kâğıdı, her soru bir
+           kazanıma bağlanmadan çıkmaz."
+        Yanındaki "Önerilenleri ata" düğmesi hepsini tek tıkla dolduruyor
+        (ağaçta seçili çıktı → soru türünün alan becerisindeki ilk çıktı →
+        ünitenin ilk çıktısı). Öneri, Kâğıdım'daki seçiciden değişiyor.
+        Kural yalnız çıktı verisi VARSA işliyor: veri yüklenmediyse ya da o
+        ünitenin çıktısı yoksa kâğıt kilitlenmiyor.
+
+   3) NUMARA SORUNUN SONUNDA
+        Çıktı kodu (8.2.1 a gibi) artık soru başlığının sağ üstünde değil,
+        sorunun EN SONUNDA, sağa dayalı (.k-ck-son). Sınavda HER ZAMAN
+        yazılıyor — ayara bakmıyor; bu yüzden "Soru sonunda öğrenme çıktısı
+        numarası" onay kutusu sınav yolunda gizleniyor, temrinde duruyor.
+        Cevap anahtarındaki numaralar da aynı kurala bağlandı.
+
+   DENETİM (Playwright, 5. sınıf 1. ünite):
+     · açılış: yöntem paneli görünür, "çıktıya göre" seçili, ağaç açık,
+       5 akordiyonun 5'i kapalı, onay kutusu gizli
+     · "Soru havuzundan seç" → ağaç gizleniyor
+     · soru eklenince çıktı kendiliğinden atanıyor (5.1.6.1), uyarı yok
+     · seçici elle boşaltılınca → uyarı çıkıyor, satır kırmızı,
+       Önizle/Yazdır/PDF üçü de kapanıyor
+     · "Önerilenleri ata" → doluyor, düğmeler açılıyor
+     · önizlemede: soru başlığında kod YOK, sorunun son ögesi .k-ck-son

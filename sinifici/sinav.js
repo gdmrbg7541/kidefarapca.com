@@ -141,6 +141,7 @@
     puan: true, toplam: 100, boyut: 'normal', kalite: 'keskin',
     /* --- iki yol --- */
     yol: '',              // '' açılış · 'sinav' · 'temrin'
+    yontem: 'cikti',      // sınav yolu: 'cikti' (çıktıdan) · 'havuz' (havuzdan)
     klasikTur: null,      // açık klasik soru türleri (null = varsayılan küme)
     kitapYil: '',         // birden çok kitabı olan sınıflarda seçili kitap
     dersSuz: '',          // ders süzgeci: '' = ünitenin tamamı · '8_2_1' tek ders
@@ -363,6 +364,26 @@
     return b[0] + (b[1] ? ' ' + b[1] + ')' : '');
   }
   function ciktiMetni(kod) { return (C && C.cikti[kod] && C.cikti[kod].m) || ''; }
+  /* HER SORUYA BİR ÇIKTI (29.09.2026, öğretmen isteği). Kural yalnız sınav
+     yolunda ve ATANACAK ÇIKTI VARSA işler: çıktı verisi yüklenmediyse ya da
+     o ünitenin çıktısı yoksa kâğıdı kilitlemenin anlamı yok. */
+  function ciktiZorunlu() {
+    return ayar.yol === 'sinav' && ciktiVarMi() &&
+           uniteAlanlari(ayar.sinifNo, ayar.unite).length > 0;
+  }
+  function eksikCiktilar() {
+    if (!ciktiZorunlu()) return [];
+    return secili.filter(function (a) { return !ciktiAtama[a]; });
+  }
+  /* Bir soruya atanabilecek en makul çıktı: ağaçta seçili olan → soru
+     türünün alan becerisindeki ilk çıktı → ünitenin ilk çıktısı. */
+  function ciktiOner(a) {
+    var o = odakCikti() || onerilenCikti(V.harita[a]);
+    if (o) return o;
+    var al = uniteAlanlari(ayar.sinifNo, ayar.unite);
+    var c = al.length ? alanCiktilari(al[0]) : [];
+    return c[0] || '';
+  }
 
   /* =====================================================================
      3c) OKUL SINAVI ANTETİ
@@ -502,11 +523,23 @@
     $$('.say-secili').forEach(function (e) { e.textContent = secili.length; });
     $('#kagitBos').hidden = !!secili.length;
     $('#kagitAraclar').hidden = !secili.length;
-    ['#btnOnizle', '#btnPdf', '#btnYazdir'].forEach(function (s) { $(s).disabled = !secili.length; });
+    /* Çıktısı bağlanmamış soru varsa kâğıt çıkmaz (29.09.2026). */
+    var eksik = eksikCiktilar();
+    ['#btnOnizle', '#btnPdf', '#btnYazdir'].forEach(function (s) {
+      $(s).disabled = !secili.length || eksik.length > 0;
+    });
+    var uy = $('#ciktiUyari');
+    if (uy) {
+      uy.hidden = !eksik.length;
+      var uyz = $('#ciktiUyariYazi');
+      if (uyz) uyz.textContent = eksik.length + ' sorunun öğrenme çıktısı boş. ' +
+        'Sınav kâğıdı, her soru bir kazanıma bağlanmadan çıkmaz.';
+    }
     var puanlar = puanDagit(secili.length);
     kutu.innerHTML = secili.map(function (a, i) {
       var o = V.harita[a];
-      return '<li data-a="' + kac(a) + '"><span class="no">' + (i + 1) + '</span>' +
+      return '<li data-a="' + kac(a) + '"' + (eksik.indexOf(a) >= 0 ? ' class="eksik"' : '') +
+        '><span class="no">' + (i + 1) + '</span>' +
         '<span class="k-metin">' + karisik(o.q.soru) + ciktiSecici(a) + '</span>' +
         (ayar.puan ? '<span class="k-puan">' + puanlar[i] + ' p</span>' : '') +
         '<span class="k-dug"><button type="button" data-is="yukari" aria-label="Yukarı taşı"' + (i ? '' : ' disabled') + '>↑</button>' +
@@ -565,6 +598,10 @@
   /* =====================================================================
      6) SORUNUN KÂĞITTAKİ HÂLİ
      ===================================================================== */
+  /* Sınavda çıktı numarası HER ZAMAN yazılır (yönergeye göre soru hangi
+     kazanımı ölçüyor belli olsun); temrinde ayardan açılıp kapanır. */
+  function ciktiKoduYazilsin() { return ayar.yol === 'sinav' || !!ayar.ciktiKodu; }
+
   /* Bir sorunun kâğıt HTML'i + cevap anahtarındaki karşılığı */
   function kagitSorusu(o, no, puan, kitap, yer) {
     var q = o.q, b = bicimi(q), anahtarTohum = ayar.tohum + '|' + kitap + '|' + o.anahtar;
@@ -621,13 +658,15 @@
     } else {
       govde = arKutusu + '<div class="k-cizgi"></div>';
     }
-    /* Öğrenme çıktısı numarası (8.2.1 gibi) sorunun sağ üstünde; puanın
-       solunda durur ki yazdırırken ikisi çakışmasın. */
-    var kod = ayar.ciktiKodu ? ciktiEtiketi(o.anahtar) : '';
+    /* Öğrenme çıktısı numarası (8.2.1 a gibi) SORUNUN SONUNDA (29.09.2026,
+       öğretmen isteği). Sınavda her zaman yazılır — ayara bakmaz; temrinde
+       isteğe bağlı. Eskiden soru başlığının sağ üstündeydi. */
+    var kod = ciktiKoduYazilsin() ? ciktiEtiketi(o.anahtar) : '';
     var html = '<section class="k-soru" data-no="' + no + '" data-a="' + kac(o.anahtar) + '">' +
       '<div class="k-bas"><b class="k-no">' + no + '.</b><p>' + karisik(q.soru) + '</p>' +
-      (kod ? '<span class="k-ck" title="Öğrenme çıktısı">' + kac(kod) + '</span>' : '') +
-      (ayar.puan ? '<span class="k-p">' + puan + ' p</span>' : '') + '</div>' + govde + '</section>';
+      (ayar.puan ? '<span class="k-p">' + puan + ' p</span>' : '') + '</div>' + govde +
+      (kod ? '<div class="k-ck-son"><span title="Öğrenme çıktısı">' + kac(kod) + '</span></div>' : '') +
+      '</section>';
     return { html: html, cevap: cevap };
   }
 
@@ -711,7 +750,7 @@
       }
       var ol = ic.lastElementChild;
       k.cevaplar.forEach(function (c, i) {
-        var ck = ayar.ciktiKodu ? ciktiEtiketi(k.sira[i]) : '';
+        var ck = ciktiKoduYazilsin() ? ciktiEtiketi(k.sira[i]) : '';
         ol.insertAdjacentHTML('beforeend', '<li><b>' + (i + 1) + '</b><span>' + metin(c || '—') + '</span>' +
           (ck ? '<i class="ca-ck">' + kac(ck) + '</i>' : '') + '</li>');
         if (tasti(ic) && ol.children.length > 1) {
@@ -1011,21 +1050,25 @@
     });
     $('#uygulama').hidden = !y;
     $('#okulPaneli').hidden = y !== 'sinav';
-    $('#agacPaneli').hidden = y !== 'sinav';
+    var yp = $('#yontemPaneli'); if (yp) yp.hidden = y !== 'sinav';
+    yontemGoster();                       /* ağaç paneli yönteme göre açılır */
     var kp = $('#klasikPaneli'); if (kp) kp.hidden = !y;
     $('#ciktiAyar').hidden = !y;
     var aa = $('#aciklamaAyar'); if (aa) aa.hidden = y !== 'sinav';
     $('#btnDagilim').hidden = y !== 'sinav';
     if (y === 'sinav') {
       ayar.ciktiKodu = true; anteteAktar();
-      /* Okul adı henüz yoksa panel açık gelsin: öğretmen ilk iş onu yazsın. */
-      var op = $('#okulPaneli'); if (op) op.open = !okul.ad;
+      /* Sınavda numara zorunlu; onay kutusu anlamsız kaldığı için gizlenir. */
+      var cka = $('#ciktiKoduAyar'); if (cka) cka.hidden = true;
+      /* 29.09.2026: bölümler artık HEP KAPALI açılıyor (öğretmen isteği),
+         okul adı boş olsa da panel kendiliğinden açılmıyor. */
     } else if (y === 'temrin') {
       /* Okul sınavından gelindiyse antet ve çıktı numarası orada kalsın:
          alıştırma kâğıdında okul adı ve yazılı başlığı işi yok. */
       if (ayar.baslik === otoBaslik()) ayar.baslik = ayar.baslikSerbest || 'Arapça Temrin Kâğıdı';
       ayar.okul = '';
       ayar.ciktiKodu = false;
+      var ck2 = $('#ciktiKoduAyar'); if (ck2) ck2.hidden = false;
     }
     var ya = $('#yolAdi');
     if (ya) ya.textContent = y === 'sinav' ? 'Sınav — öğrenme çıktılarına göre, yalnız klasik sorular'
@@ -1039,6 +1082,33 @@
       }).then(function () { cipler(); liste(); if (y === 'sinav') cizAgac(); });
     }
     kaydet();
+  }
+
+  /* --- sınav hazırlama yöntemi (29.09.2026) ---------------------------
+     İki yöntem aynı kâğıdı üretir, FARK HAVUZUN NASIL DARALDIĞINDA:
+       'cikti' → çıktı ağacı açık; seçilen çıktının alan becerisi havuzu
+                 süzer, eklenen soru o çıktıyı kendiliğinden alır.
+       'havuz' → ağaç kapalı, süzme yok; soru doğrudan seçilir, çıktısı
+                 Kâğıdım'daki seçiciden bağlanır (önerisi hazır gelir).
+     Her iki yöntemde de çıktısız soruyla kâğıt çıkmaz. */
+  function yontemGoster() {
+    if (ayar.yontem !== 'havuz') ayar.yontem = 'cikti';
+    /* Gövdedeki imi 'data-sinav-yontem': gövde de [data-yontem] ile
+       eşleşip düğme sanılmasın (yoksa her tık yöntemi değiştirirdi). */
+    document.body.setAttribute('data-sinav-yontem', ayar.yontem);
+    $$('button[data-yontem]').forEach(function (b) {
+      var s = b.getAttribute('data-yontem') === ayar.yontem;
+      b.setAttribute('aria-pressed', s ? 'true' : 'false');
+      b.classList.toggle('acik', s);
+    });
+    var ap = $('#agacPaneli');
+    if (ap) ap.hidden = !(ayar.yol === 'sinav' && ayar.yontem === 'cikti');
+  }
+  function yontemKur(y) {
+    ayar.yontem = (y === 'havuz') ? 'havuz' : 'cikti';
+    if (ayar.yontem === 'havuz') odak = '';   /* havuz yönteminde süzme yok */
+    yontemGoster();
+    gosterilen = LISTE_ADIM; cizAgac(); cipler(); liste(); kagidim(); kaydet();
   }
 
   /* --- okul bilgisi formu --- */
@@ -1257,6 +1327,8 @@
         ayar.klasikTur = acik;
         gosterilen = LISTE_ADIM; klasikCipleri(); cipler(); liste(); kaydet(); return;
       }
+      var yn = e.target.closest('button[data-yontem]');
+      if (yn) { yontemKur(yn.getAttribute('data-yontem')); return; }
       var ag = e.target.closest('.ag-cikti');
       if (ag) {
         var ck = ag.getAttribute('data-cikti');
@@ -1309,7 +1381,7 @@
       if (cs) {
         var a = cs.getAttribute('data-a');
         if (cs.value) ciktiAtama[a] = cs.value; else delete ciktiAtama[a];
-        kaydet(); cizAgac(); return;
+        kaydet(); cizAgac(); kagidim(); return;
       }
     });
     var ss = $('#sinifSec');
@@ -1329,6 +1401,17 @@
       ayar.unite = this.value; ayar.dersSuz = ''; odak = '';
       gosterilen = LISTE_ADIM; cizAgac(); cipler(); liste(); kagidim();
       klasikYukle().then(function () { cipler(); liste(); cizAgac(); });
+    });
+    var cd = $('#ciktiDoldur');
+    if (cd) cd.addEventListener('click', function () {
+      var n = 0;
+      eksikCiktilar().forEach(function (a) {
+        var o = ciktiOner(a);
+        if (o) { ciktiAtama[a] = o; n++; }
+      });
+      kagidim(); cizAgac();
+      durum(n ? n + ' soruya önerilen çıktı atandı; Kâğıdım listesinden değiştirebilirsin.'
+              : 'Atanacak çıktı bulunamadı: önce sınıf ve üniteyi seç.', n ? 'ok' : 'hata');
     });
     var bd = $('#btnDagilim'); if (bd) bd.addEventListener('click', dagilimAc);
     $('#btnOnizle').addEventListener('click', onizle);

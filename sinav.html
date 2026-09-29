@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-FV9JD15KLW');
   </script>
-  <link rel="stylesheet" href="sinifici/sinav.css?v=4">
+  <link rel="stylesheet" href="sinifici/sinav.css?v=5">
   <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
   <link rel="stylesheet" href="arakom.css?v=2">
 </head>
@@ -64,8 +64,27 @@
   <!-- ===================== SORU HAVUZU ===================== -->
   <section class="havuz" aria-label="Soru havuzu">
 
+    <!-- SINAV YOLU: hazırlama yöntemi (29.09.2026, öğretmen isteği).
+         Bilerek akordiyon yapılmadı: hangi yöntemle çalışıldığı hep
+         göz önünde dursun diye. -->
+    <div id="yontemPaneli" class="kutu yontem-panel" hidden>
+      <h3>Sınav nasıl hazırlansın?</h3>
+      <div class="yontem-sec" role="group" aria-label="Sınav hazırlama yöntemi">
+        <button type="button" class="yontem" data-yontem="cikti" aria-pressed="true">
+          <b>Öğrenme çıktısına göre</b>
+          <small>Bileşen–kazanım seç; havuz o çıktının sorularına süzülsün</small>
+        </button>
+        <button type="button" class="yontem" data-yontem="havuz" aria-pressed="false">
+          <b>Soru havuzundan seç</b>
+          <small>Soruyu doğrudan seç; çıktısını Kâğıdım'dan sen bağla</small>
+        </button>
+      </div>
+      <p class="yontem-not">Hangi yolu seçersen seç <b>her sorunun bir öğrenme çıktısı olmalı</b>;
+        numara sınav kâğıdında sorunun sonunda yazar.</p>
+    </div>
+
     <!-- OKUL SINAVI: okul bilgileri -->
-    <details id="okulPaneli" class="kutu okul-panel" hidden>
+    <details id="okulPaneli" class="kutu okul-panel sv-ak" hidden>
       <summary><b>Okul bilgileri</b> <span id="okulOzet"></span></summary>
       <p class="okul-not">Bu bilgiler <b>yalnız bu tarayıcıda</b> saklanır; siteye ya da başka bir yere gönderilmez. Bir kez yaz, sonraki sınavlarda kendiliğinden dolar.</p>
       <label class="alan">Okul adı<input type="text" data-okul="ad" maxlength="90" placeholder="ör. … Anadolu İmam Hatip Lisesi"></label>
@@ -86,8 +105,8 @@
 
     <!-- SEÇİM SIRASI: önce sınıf+kitap, sonra ünite ve (varsa) ders,
          en sonda o ünitenin öğrenme çıktıları. Öğretmen böyle çalışıyor. -->
-    <section id="klasikPaneli" class="kutu klasik-panel" hidden aria-label="Klasik soru türleri">
-      <h3>Sınıf, ünite ve soru türleri</h3>
+    <details id="klasikPaneli" class="kutu klasik-panel sv-ak" hidden aria-label="Klasik soru türleri">
+      <summary><b>Sınıf, ünite ve soru türleri</b> <span id="klasikOzet"></span></summary>
       <div class="agac-ust">
         <select id="sinifSec" aria-label="Sınıf"></select>
         <select id="uniteSec" aria-label="Ünite" disabled></select>
@@ -100,17 +119,19 @@
       <div id="suz-klasik" class="cipler"></div>
       <p class="klasik-not">Sorular seçili <b>sınıf ve ünitenin kendi ders cümlelerinden</b> üretilir
         (<code>muhadese/veri/</code>); Arapça elle yazılmaz. Kapalı türleri açmak için üstlerine bas.</p>
-    </section>
+    </details>
 
     <!-- OKUL SINAVI: çıktı ağacı -->
-    <section id="agacPaneli" class="kutu agac-panel" hidden aria-label="Öğrenme çıktıları">
+    <details id="agacPaneli" class="kutu agac-panel sv-ak" hidden aria-label="Öğrenme çıktıları">
+      <summary><b>Öğrenme çıktıları</b> <small>bileşen ve kazanımlar</small></summary>
       <p id="agacDurum" class="agac-durum"></p>
       <div id="agac"></div>
       <p class="agac-not">Çıktı numarası bir <b>öneridir</b>: havuzda sorunun ünitesi yazmaz, ünite senin üstten seçtiğindir. Kâğıdım listesinden her soru için değiştirebilirsin.</p>
-    </section>
+    </details>
 
 
-    <div class="suzgec kutu">
+    <details class="suzgec kutu sv-ak">
+      <summary><b>Süzgeçler</b> <small>ara · konu · içerik · biçim · zorluk</small></summary>
       <div class="ara-kutu">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
         <input id="ara" type="search" placeholder="Soruda ara — Türkçe ya da Arapça (harekesiz de olur)" autocomplete="off">
@@ -120,7 +141,7 @@
       <div class="suz-grup"><h3>Soru biçimi</h3><div id="suz-bicim" class="cipler"></div></div>
       <div class="suz-grup"><h3>Zorluk</h3><div id="suz-zorluk" class="cipler"></div></div>
       <button type="button" id="suzTemizle" hidden>✕ Süzgeçleri temizle</button>
-    </div>
+    </details>
 
     <div class="liste-ust">
       <b id="bulunan">0 soru</b>
@@ -145,8 +166,14 @@
     <ol id="kagit"></ol>
     <div id="kagitAraclar"><span id="puanOzet"></span></div>
 
-    <details class="ayarlar">
-      <summary>Kâğıt ayarları</summary>
+    <!-- Sınav yolunda çıktısı bağlanmamış soru varsa kâğıt çıkmaz. -->
+    <div id="ciktiUyari" class="cikti-uyari" hidden>
+      <span id="ciktiUyariYazi"></span>
+      <button type="button" id="ciktiDoldur">Önerilenleri ata</button>
+    </div>
+
+    <details class="ayarlar sv-ak">
+      <summary><b>Kâğıt ayarları</b></summary>
       <label class="alan">Sınav / etkinlik başlığı<input type="text" data-ayar="baslik" maxlength="80"></label>
       <label class="alan">Okul adı<input type="text" data-ayar="okul" maxlength="90" placeholder="(isteğe bağlı)"></label>
       <div class="iki">
@@ -161,7 +188,8 @@
       <label class="onay"><input type="checkbox" data-ayar="puan"> Soru puanlarını göster</label>
       <label class="onay"><input type="checkbox" data-ayar="anahtar"> Cevap anahtarı ekle <small>(son sayfa)</small></label>
       <div id="ciktiAyar" hidden>
-        <label class="onay"><input type="checkbox" data-ayar="ciktiKodu"> Soruların yanında öğrenme çıktısı numarası</label>
+        <!-- Sınav yolunda gizlenir: orada numara ZORUNLU (yolKur). -->
+        <label class="onay" id="ciktiKoduAyar"><input type="checkbox" data-ayar="ciktiKodu"> Soru sonunda öğrenme çıktısı numarası</label>
         <label class="onay" id="aciklamaAyar"><input type="checkbox" data-ayar="aciklama"> Kâğıdın başına açıklamalar <small>(süre, puan, okunaklı yazma)</small></label>
       </div>
 
@@ -224,7 +252,33 @@
      bakarak doğru üniteyi okur. -->
 <script src="sistem/sinifveri.js?v=20260924j"></script>
 <script src="sinifici/klasik.js?v=3"></script>
-<script src="sinifici/sinav.js?v=3"></script>
+<script src="sinifici/sinav.js?v=4"></script>
 <script src="sistem/geri.js?v=20260915a"></script>
+<script>
+/* ==================================================================
+   BÖLÜM AKORDİYONU (29.09.2026, öğretmen isteği)
+   Bütün bölümler KAPALI açılır; biri açılınca ötekiler kapanır.
+   Paneller details ögesi olduğu için açma-kapama tarayıcının işi; burada
+   yalnız "tek bölüm açık" kuralı var.
+   ================================================================== */
+(function () {
+  function hepsi() { return [].slice.call(document.querySelectorAll('details.sv-ak')); }
+  function kur() {
+    hepsi().forEach(function (d) {
+      if (d.__svKurulu) return;
+      d.__svKurulu = 1;
+      d.open = false;                       /* kapalı başla */
+      d.addEventListener('toggle', function () {
+        if (!d.open) return;
+        hepsi().forEach(function (o) { if (o !== d) o.open = false; });
+      });
+    });
+  }
+  kur();
+  /* Paneller sonradan görünür oluyor (yol seçilince); yenileri de kurulsun. */
+  try { new MutationObserver(kur).observe(document.body, { childList: true, subtree: true }); }
+  catch (e) { [400, 1200, 2500].forEach(function (ms) { setTimeout(kur, ms); }); }
+})();
+</script>
 </body>
 </html>
