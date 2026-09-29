@@ -585,10 +585,22 @@ body { font-size: 1rem; }
   max-height: calc(100vh - var(--ust-y, 66px) - 140px);
 }
 #klasikOzet.sv-ozet {
-  font-weight: 800; color: var(--yesil-k); font-size: .88rem;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 7px; min-width: 0;
+  font-weight: 800; font-size: .84rem; white-space: nowrap;
 }
-#klasikOzet.sv-ozet.bos { font-weight: 700; color: var(--turuncu); }
+/* ÜÇ BİLGİ, ÜÇ RENK (öğretmen isteği): sınıf+kitap YEŞİL (sayfanın ana
+   rengi), ünite MAVİ (sayfanın ikinci rengi — Temrin yolu da mavi),
+   soru türü süzgeci TURUNCU. Rozetler daralınca üç nokta ile kısalıyor. */
+#klasikOzet .ko-sinif, #klasikOzet .ko-unite, #klasikOzet .ko-tur {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis;
+  border-radius: 99px; padding: 2px 11px; border: 1.3px solid;
+}
+#klasikOzet .ko-sinif { background: #fff;          color: var(--yesil-k); border-color: #BCE3D8; }
+#klasikOzet .ko-unite { background: var(--mavi-a); color: var(--mavi);    border-color: #C6D8FB; }
+#klasikOzet .ko-tur   { background: #FDF2E4;       color: #B4611A;        border-color: #F2D6B2; }
+/* Dar ekranda sınıf ve ünite öncelikli; tür rozeti çekiliyor. */
+@media (max-width: 900px) { #klasikOzet .ko-tur { display: none; } }
+#klasikOzet.sv-ozet.bos { display: inline; font-weight: 700; color: var(--turuncu); }
 
 /* --- 4) altta sabit Kâğıdım sepeti ---------------------------------
    Yan boşluk max() ile veriliyor: geniş ekranda içerik 1320 pikselle

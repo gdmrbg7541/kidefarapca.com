@@ -436,7 +436,8 @@
       /* SINAV yolunda yalnız klasik (açık uçlu) sorular görünür:
          Yazılı ve Uygulamalı Sınavlar Yönergesi m.5/1-e. Temrinde ikisi de. */
       if (ayar.yol === 'sinav' && !o.klasik) return false;
-      if (o.klasik && acikTurler.indexOf(o.q.tip) < 0) return false;
+      /* Hiç tür seçilmediyse süzme yok: hepsi görünür (29.09.2026). */
+      if (o.klasik && acikTurler.length && acikTurler.indexOf(o.q.tip) < 0) return false;
       if (o.klasik && ayar.dersSuz && o.q.ders !== ayar.dersSuz) return false;
       if (odakAlan && soruAlanAnahtari(o) !== odakAlan) return false;
       if (haric !== 'konu' && suz.konu.size && !suz.konu.has(o.konu)) return false;
@@ -935,9 +936,14 @@
      her öğrenme çıktısının karşılığında soru bulunur; çoktan seçmeli
      havuzda yalnız SÖZCÜK, OKUMA, DİL BİLGİSİ ve SESLETİM vardı.
      ===================================================================== */
+  /* 29.09.2026 (öğretmen isteği: "seçili soru tipi olmasın, filtreyi
+     öğretmen kendisi seçebilsin"): AÇILIŞTA HİÇBİR TÜR SEÇİLİ DEĞİL.
+     BOŞ LİSTE = SÜZGEÇ YOK; bütün klasik türler görünür, öğretmen bir
+     türe basınca liste ona daralır (bkz. suzulmus). Eskiden
+     KidefKlasik.VARSAYILAN kümesi kendiliğinden seçili geliyor, öteki
+     türler havuzda olduğu hâlde listeye düşmüyordu. */
   function klasikAcikTurler() {
-    if (ayar.klasikTur && ayar.klasikTur.length) return ayar.klasikTur;
-    return (window.KidefKlasik && window.KidefKlasik.VARSAYILAN) || [];
+    return (ayar.klasikTur && ayar.klasikTur.length) ? ayar.klasikTur : [];
   }
   function klasikTurAdi(tip) {
     return (window.KidefKlasik && window.KidefKlasik.TUR_ADI[tip]) || tip;
@@ -1114,6 +1120,21 @@
     sepetOlc();
   }
 
+  /* Şeritteki soru türü rozeti. Sayım ÇİPLERDEN okunuyor: havuzda hiç
+     sorusu olmayan tür çipte görünmüyor, şeritte de görünmesin — yazan
+     hep listeyi gerçekten süzen türler olsun. Hiçbiri seçili değilse
+     süzgeç yoktur, yani hepsi listelenir. */
+  function klasikTurOzeti() {
+    var kutu = $('#suz-klasik'); if (!kutu) return '';
+    var cip = [].slice.call(kutu.querySelectorAll('[data-klasik]'));
+    if (!cip.length) return '';
+    var acik = cip.filter(function (b) { return b.classList.contains('acik'); });
+    if (!acik.length || acik.length === cip.length) return 'tüm soru türleri (' + cip.length + ')';
+    return acik.map(function (b) {
+      return ((b.firstChild && b.firstChild.nodeValue) || b.textContent || '').trim();
+    }).join(' · ');
+  }
+
   /* Sınıf panelinin başlığı: seçili SINIF, KİTAP ve ÜNİTE hep görünsün
      (öğretmen isteği: "her zaman yukarda hangi sınıf ve kitabı olduğu
      açık olsun"). Metin seçicilerin kendi yazısından geliyor, yani kitap
@@ -1125,7 +1146,13 @@
     if (!sad) { e.textContent = 'önce sınıf ve kitap seç'; e.className = 'sv-ozet bos'; return; }
     var u = $('#uniteSec');
     var uad = (u && !u.disabled && u.selectedIndex >= 0) ? (u.options[u.selectedIndex].textContent || '').trim() : '';
-    e.textContent = uad ? sad + '  ·  ' + uad : sad;
+    /* ÜÇ AYRI RENK (29.09.2026, öğretmen isteği): sınıf+kitap yeşil,
+       ünite mavi, soru türü süzgeci turuncu. Hangi bilginin ne olduğu
+       bir bakışta ayrılsın. */
+    var tad = klasikTurOzeti();
+    e.innerHTML = '<span class="ko-sinif">' + kac(sad) + '</span>' +
+                  (uad ? '<span class="ko-unite">' + kac(uad) + '</span>' : '') +
+                  (tad ? '<span class="ko-tur">' + kac(tad) + '</span>' : '');
     e.className = 'sv-ozet';
   }
 

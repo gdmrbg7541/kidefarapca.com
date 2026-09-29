@@ -2175,3 +2175,41 @@ DENETİM (Playwright):
   · kök 19px, gövde 19px, h1 25.65px
   · 760 piksel dar ekran: sepet yine sabit, yatay taşma yok
   · konsolda hata yok
+
+────────────────────────────────────────────────────────────────────────
+SINAV HAZIRLA — ŞERİTTE ÜÇ RENK + SORU TÜRÜ SÜZGECİ BOŞ BAŞLIYOR
+(29.09.2026)  ·  sinav.html · sinifici/sinav.js?v=6 · sinav.css?v=7
+Yedek: _kaynak/yedekler/sinav.{html,js,css}_2026-09-29_renk-oncesi
+Betik: _kaynak/uretici/sinavUniteRenk.py
+────────────────────────────────────────────────────────────────────────
+
+1) ÜSTTEKİ SABİT ŞERİTTE ÜÇ AYRI RENKTE ROZET
+   ("ünite bilgileri için farklı renk" + "soru türleri için ayrı renk")
+     [ 6. sınıf — 2026-2027 (Maarif) ]  YEŞİL   sınıf + kitap
+     [ 1. ünite — AKRABALARIM ]         MAVİ    ünite
+     [ tüm soru türleri (2) ]           TURUNCU soru türü süzgeci
+   Renkler sayfanın kendi değişkenlerinden (yeşil ana renk, mavi Temrin
+   yolunun rengi); yeni palet eklenmedi. Rozetler daralınca üç noktayla
+   kısalıyor, 900 pikselin altında tür rozeti çekiliyor (sınıf ve ünite
+   öncelikli). Tür rozetinin metni ÇİPLERDEN okunuyor: havuzda sorusu
+   olmayan tür çipte görünmüyorsa şeritte de görünmüyor.
+
+2) AÇILIŞTA HİÇBİR SORU TÜRÜ SEÇİLİ DEĞİL
+   ("seçili soru tipi olmasın, filtreyi öğretmen kendisi seçebilsin")
+   Eskiden KidefKlasik.VARSAYILAN kümesi kendiliğinden seçili geliyor,
+   öteki türler havuzda olduğu hâlde listeye düşmüyordu. Artık:
+     BOŞ LİSTE = SÜZGEÇ YOK → bütün klasik türler görünür
+     bir türe basınca liste ona daralır
+     aynı türe tekrar basınca süzgeç kalkar
+   Sayfadaki öteki çip süzgeçleriyle (konu, içerik, biçim, zorluk) aynı
+   mantık. Panelin altındaki not da buna göre yazıldı.
+
+DENETİM (Playwright, 6. sınıf 1. ünite):
+  · açılış: hiçbir çip açık değil, rozet "tüm soru türleri (2)",
+    havuz 3 soru (hepsi)
+  · "Yazma"ya basıldı: çip açık, rozet "Yazma", havuz 2 soru
+  · aynı çipe tekrar basıldı: süzgeç kalktı, rozet "tüm soru türleri (2)",
+    havuz yine 3 soru
+  · renkler ölçüldü: yeşil rgb(14,124,102) · mavi rgb(37,99,235) ·
+    turuncu rgb(180,97,26)
+  · konsolda hata yok
