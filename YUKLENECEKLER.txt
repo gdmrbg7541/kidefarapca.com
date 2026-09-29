@@ -2289,3 +2289,58 @@ DENETİM (Playwright, 6. sınıf 1. ünite):
   · 6.1.7.3 seçilince: "havuz “Yazma” sorularına süzüldü", 3 soru → 2
   · sorusu olmayan çıktılar seçilince liste süzülmedi, uyarı çıktı
   · konsolda hata yok
+
+────────────────────────────────────────────────────────────────────────
+ÖĞRENCİ KENDİ KARNESİNİ ÖĞRETMENSİZ DE GÖRÜYOR  (29.09.2026)
+Dosyalar: sistem/gorevkopru.js · sistem/gorev.js  (+ 21 sayfada sürüm damgası)
+Yedek: _kaynak/yedekler/gorev.js_2026-09-29_ogrenci-karne-oncesi
+       _kaynak/yedekler/gorevkopru.js_2026-09-29_ogrenci-karne-oncesi
+       _kaynak/yedekler/index_2026-09-29_ogrenci-karne-oncesi.html
+Betik: _kaynak/uretici/ogrenciKarne.py
+────────────────────────────────────────────────────────────────────────
+
+İstek: "öğrenci giriş yapınca puanlı veya süresi hesaplanan rapor kısmını
+kendisi de görebilmeli … bir öğretmene bağlı olmasa da."
+
+TEŞHİS — iki ayrı engel, ikisi de koddaydı (kural değil):
+  1) VERİ HİÇ YAZILMIYORDU. gorevkopru.js → ilerlemeYaz() ilk satırda
+     "if (!KG.bag) return" diyordu; KG.bag = ONAYLI öğretmen bağı. Yani
+     bağsız öğrenci oynadıkça ogrenciIlerleme'ye hiçbir şey düşmüyordu.
+     Süre kaydı da aynıydı ("if (KG.bag)"), üstelik KG.aktif = (görev ||
+     bağ) olduğu için süre sayacı hiç kurulmuyordu.
+  2) EKRAN HİÇ ÇİZİLMİYORDU. gorev.js → profilKartiGuncelle(), öğrenci
+     bağlı değilse yalnız "Öğretmene Bağlan" kartını basıp return
+     ediyordu; "Genel Sonuçlarım" yalnız bağlı öğrencide çiziliyordu.
+     Çizen işlev (GV.sonuclariDoldur) zaten vardı ve zaten öğrencinin
+     KENDİ uid'siyle sorguluyordu — yalnız çağrılmıyordu.
+
+FIRESTORE KURALINA DOKUNULMADI. ogrenciIlerleme kuralı zaten
+  get/list  : resource.data.ogrenciUid == request.auth.uid
+  create/upd: request.resource.data.ogrenciUid == request.auth.uid
+diyor; ogretmenUid'in dolu olması şart değil. (Yayında olan kuralın bu
+blok içerdiğini doğrula: repoda birkaç kopya var, en dolusu
+firestore.rules19 Eylül.txt.)
+
+YAPILAN
+  · KG.aktif artık e-posta hesabıyla giren HERKESTE açık (anonim/e-postasız
+    kontrolü zaten üstte). Kayıt kanalı bağdan bağımsız.
+  · ilerlemeYaz / sureIlerlemeYaz: "bağ yoksa yazma" kapısı kalktı;
+    ogretmenUid = (KG.bag && KG.bag.ogretmenUid) || '', ad = bağdaki ad ya
+    da hesabın adı. Öğrenci sonradan bağlanınca bir sonraki oynayışta
+    merge ile ogretmenUid doluyor, öğretmen de görmeye başlıyor.
+  · Bağsız öğrencinin profilinde "🏆 Genel Sonuçlarım" akordiyonu
+    çiziliyor: puanlı oyunlarda rekor + oynama sayısı, süre takipli
+    sayfalarda toplam süre + oturum sayısı. Sınav/performans not özeti
+    BURADA YOK — o notları öğretmen giriyor, bağsız öğrencide karşılığı
+    yok.
+
+DENETİM (jsdom + sahte Firestore, iki dosya da gerçek hâliyle koşuldu):
+  · gorevkopru, bağ YOK: KG.aktif true, bildir() true, ogrenciIlerleme'ye
+    1 yazım — {ogrenciUid:OGR1, ogretmenUid:"", ad:"Test Öğrenci",
+    oyun:hangiharf.html, rekor:90, oynama:1}
+  · gorevkopru, bağ VAR: aynı akış, ogretmenUid:"OGT9", ad:"Ali Veli"
+    (yani öğretmenin gördüğü kayıt bozulmadı)
+  · gorev.js, bağsız öğrenci: kart çizildi, hem "Öğretmene Bağlan" hem
+    "Genel Sonuçlarım" var; sorgu "ogrenciIlerleme ogrenciUid == OGR1";
+    tabloda "Hangi Harf? %72 · 5 oyun" ve "Sarf: Kelime Fabrikası
+    15 dk 30 sn · 3 oturum" satırları çizildi

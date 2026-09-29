@@ -1470,7 +1470,21 @@
                 '<p style="margin:0 0 14px; font-size:.9rem; color:#6B4A38; line-height:1.6;">' + metin + '</p>' +
                 '<button type="button" onclick="if(window.OH&&OH.kodModalAc)OH.kodModalAc()" style="width:100%; padding:13px;' +
                 'border:none; border-radius:12px; cursor:pointer; font-family:inherit; font-weight:700; font-size:1rem;' +
-                'color:#fff; background:linear-gradient(135deg,#F39C12,#D84315);">' + tus + '</button>', true);
+                'color:#fff; background:linear-gradient(135deg,#F39C12,#D84315);">' + tus + '</button>', true) +
+                /* 29.09.2026 (öğretmen isteği): ÖĞRETMENE BAĞLI OLMAYAN öğrenci
+                   de kendi karnesini görsün. Kayıtlar zaten öğrencinin kendi
+                   uid'siyle tutuluyor (ogrenciIlerleme) ve Firestore kuralı
+                   öğrencinin kendi kaydını okumasına izin veriyor; eksik olan
+                   yalnız bu ekrandı. Not özeti (sınav/performans) BURADA YOK:
+                   o notları öğretmen giriyor, bağsız öğrencide karşılığı yok. */
+                akordiyon('prfSonuclar', '#7B1FA2', '<span>🏆 Genel Sonuçlarım</span>',
+                    '<p style="margin:0 0 12px; font-size:.84rem; color:#8B6A57; line-height:1.6;">' +
+                    'Bu tablo öğretmenden bağımsızdır: ölçülebilir oyunlarda aldığın <b>rekorlar</b> ve ' +
+                    'süre takipli sayfalarda geçirdiğin <b>zaman</b>, bir öğretmene bağlı olmasan da ' +
+                    'burada birikir. Bir öğretmene bağlandığında aynı kayıtlar ona da görünür.</p>' +
+                    '<div id="gvPrfProfilSonuc"><p style="margin:0; font-size:.85rem; color:#A6836E;">Yükleniyor…</p></div>',
+                    false);
+            GV.sonuclariDoldur('gvPrfProfilSonuc');
             GV.noktaGuncelle(false);
             return;
         }

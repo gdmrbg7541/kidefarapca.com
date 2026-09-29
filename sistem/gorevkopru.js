@@ -172,7 +172,13 @@
             }
             return Promise.all(isler).then(function () {
                 if (gorevId && !KG.gorev) { rozet('Görev bulunamadı', 'hata'); rozetGizle(6000); }
-                KG.aktif = !!(KG.gorev || KG.bag);
+                /* 29.09.2026 (öğretmen isteği): KAYIT ARTIK ÖĞRETMEN BAĞINA
+                   BAĞLI DEĞİL. Buraya gelindiğinde kullanıcı zaten e-posta
+                   hesabıyla girmiş demektir (yukarıdaki anonim/e-postasız
+                   kontrolü geçti); kendi ilerleme kaydını tutabilsin diye
+                   kanal her hâlükârda açık. Öğretmen bağı varsa kayda
+                   ogretmenUid de yazılır, yoksa boş kalır. */
+                KG.aktif = true;
                 if (KG.aktif) KG.bildir = gonder;
                 if (KG.gorev) rozet('📋 GÖREV: ' + (KG.gorev.baslik || KG.gorev.oyun || ''));
                 sureKur();   /* sayfa sure takibi istediyse simdi kurulur */
@@ -207,7 +213,11 @@
 
     /* ------------------------------------------------ SUREC: ogrenciIlerleme */
     function ilerlemeYaz(yuzde, simdi, ek) {
-        if (!KG.bag || !db || !user) return Promise.resolve({ rekor: yuzde, kirildi: false, yok: true });
+        /* Öğretmen bağı ŞART DEĞİL (29.09.2026): öğrenci kendi karnesini
+           bağsız da biriktirir. Bağ varsa ogretmenUid yazılır ve öğretmen
+           de görür; sonradan bağlanınca bir sonraki oynayışta merge ile
+           kendiliğinden dolar. */
+        if (!db || !user) return Promise.resolve({ rekor: yuzde, kirildi: false, yok: true });
         var ref = db.collection('ogrenciIlerleme').doc(user.uid + '_' + oyunDosya.replace(/[^a-z0-9]/g, ''));
         return ref.get().then(function (doc) {
             var eski = (doc.exists && doc.data()) || {};
@@ -223,9 +233,9 @@
             }
             return ref.set({
                 ogrenciUid: user.uid,
-                ogretmenUid: KG.bag.ogretmenUid,
+                ogretmenUid: (KG.bag && KG.bag.ogretmenUid) || '',
                 email: user.email || '',
-                ad: KG.bag.ad || '',
+                ad: (KG.bag && KG.bag.ad) || user.displayName || '',
                 oyun: oyunDosya,
                 rekor: Math.max(eskiRekor, yuzde, 0),
                 sonYuzde: yuzde,
@@ -328,7 +338,8 @@
         var fark = sn - sure.dokumaYazilan;
         if (!sure.acik || !db || !user || fark <= 0) return Promise.resolve(false);
         var simdi = Date.now(), isler = [];
-        if (KG.bag) isler.push(sureIlerlemeYaz(fark, sn, simdi).catch(function (e) {
+        /* Süre kaydı da bağdan bağımsız (29.09.2026). */
+        isler.push(sureIlerlemeYaz(fark, sn, simdi).catch(function (e) {
             console.warn('sure ilerleme yazilamadi:', e && (e.code || e.message)); return null;
         }));
         if (KG.gorev) isler.push(sureGorevYaz(fark, sn, simdi).catch(function (e) {
@@ -346,9 +357,9 @@
             var eski = (doc.exists && doc.data()) || {};
             return ref.set({
                 ogrenciUid: user.uid,
-                ogretmenUid: KG.bag.ogretmenUid,
+                ogretmenUid: (KG.bag && KG.bag.ogretmenUid) || '',
                 email: user.email || '',
-                ad: KG.bag.ad || '',
+                ad: (KG.bag && KG.bag.ad) || user.displayName || '',
                 oyun: oyunDosya,
                 tur: 'sure',
                 toplamSureSn: (parseInt(eski.toplamSureSn) || 0) + fark,
