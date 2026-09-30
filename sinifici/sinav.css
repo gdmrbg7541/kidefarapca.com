@@ -116,7 +116,13 @@ button:disabled { cursor: not-allowed; opacity: .45; }
 #kagit li { display: flex; align-items: center; gap: 8px; padding: 7px 2px; border-bottom: 1px solid var(--cizgi); font-size: .86rem; }
 #kagit .no { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--yesil-a); color: var(--yesil-k);
              font-weight: 800; font-size: .76rem; display: grid; place-items: center; }
-#kagit .k-metin { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#kagit .k-metin { flex: 1; min-width: 0; }
+/* Soru metni iki satıra kadar (30.09.2026): tek satıra kırpılınca Arapça
+   görünmüyor, on soru aynı Türkçe yönergeyle sıralanıyordu. */
+#kagit .k-soru {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden; line-height: 1.5;
+}
 #kagit .k-puan { flex: none; font-size: .74rem; color: var(--gri); }
 #kagit .k-dug { flex: none; display: flex; gap: 2px; }
 #kagit .k-dug button { width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--cizgi); background: #fff;
@@ -579,10 +585,17 @@ body { font-size: 1rem; }
 #klasikPaneli > summary { background: var(--yesil-a); padding: 13px 16px; }
 #klasikPaneli > summary:hover { background: #DBEFE9; }
 #klasikPaneli > summary::before { background: var(--yesil); }
-/* Açıkken kendi içinde kayar; açık panel bütün listeyi örtmesin. */
+/* AÇIKKEN YAPIŞIK DEĞİL (30.09.2026). Önce açık panel de yapışıktı ve
+   kendi içinde kayıyordu; max-height hesabı yol sekmelerini ve alttaki
+   sabit sepeti saymadığı için telefonda (390x780) yapışık blok ekrandan
+   200 px taşıyor, altındaki "Görünenleri ekle / soru ekle" tuşlarına
+   hiçbir kaydırma konumunda basılamıyordu. Yukarıda kalması gereken,
+   KAPALI hâlindeki özet şeridi (sınıf-ünite-tür rozetleri); panel açıkken
+   zaten onu düzenliyorsun, akışta durması yeter. */
 #klasikPaneli[open] {
-  overflow-y: auto;
-  max-height: calc(100vh - var(--ust-y, 66px) - 140px);
+  position: static;
+  max-height: none;
+  overflow: visible;
 }
 #klasikOzet.sv-ozet {
   display: inline-flex; align-items: center; gap: 7px; min-width: 0;
@@ -708,3 +721,71 @@ html { font-size: 20px; }
   border: 0; background: none; padding: 0; font: inherit; font-weight: 800;
   color: var(--kirmizi); text-decoration: underline; cursor: pointer;
 }
+
+
+/* ==========================================================================
+   ÇIKTI AĞACINDA ÜNİTE BAŞLIĞI            (30.09.2026)
+   Program üniteleri kitabın üniteleriyle tutmadığı için ağaçta sınıfın
+   bütün üniteleri listeleniyor; hangi program ünitesine baktığın belli
+   olsun diye başlık kondu. İlkinin (kitapta seçtiğin numaraya denk gelen)
+   rengi ana renk, ötekiler soluk.
+   ========================================================================== */
+.ag-unite {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  margin: 22px 0 10px; padding-bottom: 7px;
+  border-bottom: 2px solid var(--cizgi);
+  font-size: .95rem; font-weight: 800; letter-spacing: .3px;
+  color: var(--gri);
+}
+.ag-unite:first-child { margin-top: 2px; }
+.ag-unite small {
+  font-size: .78rem; font-weight: 700; letter-spacing: 0;
+  color: var(--yesil-k); background: var(--yesil-a);
+  border-radius: 999px; padding: 2px 10px;
+}
+.ag-unite-esas { color: var(--murekkep); border-bottom-color: var(--yesil); }
+
+/* Öteki program üniteleri katlı durur; içinden çıktı seçilmişse açık
+   açılır ve kaç tane seçildiği başlıkta yazar. */
+.ag-unite-kat { margin-top: 18px; border-top: 1px solid var(--cizgi); }
+.ag-unite-kat > summary {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 11px 2px; list-style: none;
+  font-size: .95rem; font-weight: 800; color: var(--gri);
+}
+.ag-unite-kat > summary::-webkit-details-marker { display: none; }
+.ag-unite-kat > summary::before {
+  content: '▸'; font-size: .9em; color: var(--yesil); transition: transform .18s;
+}
+.ag-unite-kat[open] > summary::before { transform: rotate(90deg); }
+.ag-unite-kat[open] > summary { color: var(--murekkep); }
+.ag-unite-kat > summary:hover { color: var(--yesil-k); }
+.ag-unite-kat > summary i {
+  margin-left: auto; font-style: normal; font-size: .8rem; font-weight: 700;
+  color: var(--yesil-k); background: var(--yesil-a);
+  border-radius: 999px; padding: 2px 10px;
+}
+
+
+/* Kâğıdın antedinde ders öğretmeni (30.09.2026) — Okul bilgileri'nde
+   toplanıyordu ama hiçbir çıktıda görünmüyordu. */
+.s-ogretmen { margin-top: 2px; font-size: .84em; color: #44506080; }
+
+
+/* Kâğıt satırında ELLE PUAN kutusu (30.09.2026). Elle yazılan puan sabit
+   kalır, kalan puan öteki sorulara dağıtılır; kutuyu boşaltmak o soruyu
+   otomatiğe döndürür. Elle verilmiş olan kutu renkli çerçeveyle belli. */
+#kagit .k-puan { display: inline-flex; align-items: center; gap: 3px; }
+#kagit .k-puan-gir {
+  width: 3.4em; font: inherit; font-size: .8rem; font-weight: 700; text-align: center;
+  color: var(--murekkep); background: #fff;
+  border: 1px solid var(--cizgi); border-radius: 7px; padding: 3px 2px;
+}
+#kagit .k-puan-gir:focus { border-color: var(--yesil); outline: 2px solid var(--yesil-a); }
+#kagit .k-puan-gir[data-el="1"] { border-color: var(--yesil); color: var(--yesil-k); background: var(--yesil-a); }
+#kagit .k-puan b { font-weight: 600; font-size: .72rem; color: var(--gri); }
+
+/* Kâğıt satırındaki Arapça parça — soruyu tanımaya yarar (30.09.2026). */
+/* .k-ar DEĞİL: o ad sınav kâğıdındaki yeşil çerçeveli Arapça kutusunun
+   (satır 233) — kâğıt satırında o çerçeve görünüyordu. */
+#kagit .k-sor-ar { font-size: 1.05em; color: var(--yesil-k); opacity: .9; }

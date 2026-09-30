@@ -138,7 +138,11 @@
   var ayar = {
     baslik: 'Arapça Değerlendirme', okul: '', ders: 'Arapça', sinif: '',
     tarih: bugun(), ogrenci: true, anahtar: true, kitapcik: 'tek', tohum: 1,
+    /* anteteAktar'ın en son kendi yazdığı değerler: öğretmenin elle
+       değiştirdiği alanı ezmemek için karşılaştırma ölçütü. */
+    sonOtoBaslik: '', sonOtoOkul: '', sonOtoSinif: '',
     puan: true, toplam: 100, boyut: 'normal', kalite: 'keskin',
+    elPuanlar: {},                 /* anahtar → elle yazılan puan (30.09.2026) */
     /* --- iki yol --- */
     yol: '',              // '' açılış · 'sinav' · 'temrin'
     yontem: 'cikti',      // sınav yolu: 'cikti' (çıktıdan) · 'havuz' (havuzdan)
@@ -155,7 +159,7 @@
   /* soru anahtarı → öğrenme çıktısı kodu ("8.2.1" ya da "8.2.1#b") */
   var ciktiAtama = {};
   /* okul bilgileri — ayrı depoda; sınav temizlense de kalır */
-  var okul = { ad: '', ogretmen: '', yil: '', donem: '1', yazili: '1', sube: '' };
+  var okul = { ad: '', ogretmen: '', yil: '', donem: '1', yazili: '1', sube: '', sure: '' };
 
   function bugun() {
     var d = new Date();
@@ -316,12 +320,20 @@
      numarası yapışmış ("OKUMA-ANLAMLANDIRMA295"); ekranda gösterilmez.
      Veri dosyasına dokunulmuyor, yalnız gösterim temizleniyor. */
   function alanAdi(kod) { return String((C && C.alan[kod]) || '').replace(/\d{2,}$/, '').trim(); }
+  /* Ünite verilmezse sınıfın bütün üniteleri taranır — seçili üniteye
+     denk gelen program ünitesi başta (bkz. ciktiUniteSirasi). Eskiden
+     yalnız o ünite taranıyordu; kitapta program karşılığı olmayan bir
+     ünite (8/5 Spor gibi) seçiliyse hiçbir beceri bulunamıyordu. */
   function alanBul(anahtar, sinif, unite) {
     if (!ciktiVarMi()) return '';
-    var on = (sinif || ayar.sinifNo) + '.' + (unite || ayar.unite) + '.';
-    for (var i = 1; i <= 9; i++) {
-      var k = on + i;
-      if (C.alan[k] && C.alan[k].indexOf(anahtar) === 0) return k;
+    var s = sinif || ayar.sinifNo;
+    var liste = unite ? [unite] : ciktiUniteSirasi(s);
+    for (var j = 0; j < liste.length; j++) {
+      var on = s + '.' + liste[j] + '.';
+      for (var i = 1; i <= 9; i++) {
+        var k = on + i;
+        if (C.alan[k] && C.alan[k].indexOf(anahtar) === 0) return k;
+      }
     }
     return '';
   }
@@ -346,6 +358,33 @@
     var u = C && C.unite && C.unite[String(sinif)];
     return (u && u[String(unite)]) || '';
   }
+  /* ---------------------------------------------------------------------
+     PROGRAM ÜNİTESİ ≠ KİTAP ÜNİTESİ  (30.09.2026)
+     veri_ciktilar.js MEB PROGRAMINI anlatıyor: her sınıfta dört ünite var
+     ve ünite adları kitabınkilerle tutmuyor. Kitaplarda altı ünite
+     olabiliyor (8. sınıf, 7. Mektep, eski 6. sınıf). Bu yüzden çıktılar
+     "kitabın ünite numarasına eşit program ünitesine" KİLİTLENMİYOR:
+     sınıfın bütün üniteleri sunuluyor, aynı numaralı olan başa alınıyor.
+     Öğretmen doğru kazanımı kendi seçer; kural hiçbir ünitede kapanmaz.
+     --------------------------------------------------------------------- */
+  function sinifUniteleri(sinif) {
+    var r = [];
+    if (!ciktiVarMi()) return r;
+    for (var u = 1; u <= 12; u++) if (uniteAlanlari(sinif, u).length) r.push(u);
+    return r;
+  }
+  function ciktiUniteSirasi(sinif) {
+    var s = sinif || ayar.sinifNo, h = sinifUniteleri(s), i = h.indexOf(+ayar.unite);
+    if (i > 0) { h.splice(i, 1); h.unshift(+ayar.unite); }
+    return h;
+  }
+  /* "Program" ön eki bilerek: üstteki seçicide kitabın ünitesi yazıyor
+     (8/2 "Kültür ve Sanat"), burada programınki (8/2 "SAĞLIKLI HAYATIM").
+     İkisinin ayrı numaralandırma olduğu görünsün. */
+  function ciktiUniteEtiketi(sinif, u) {
+    var ad = uniteAdi(sinif, u);
+    return 'Program ' + u + '. ünite' + (ad ? ' — ' + ad : '');
+  }
   function soruAlanAnahtari(o) { return TIP_ALAN[o.q.tip] || ''; }
   /* Soruya önerilen çıktı: türünden alan becerisi çıkar, o becerinin
      seçili ünitedeki ilk çıktısı önerilir. ÜNİTE TAHMİN EDİLMEZ — ünite
@@ -365,22 +404,32 @@
   }
   function ciktiMetni(kod) { return (C && C.cikti[kod] && C.cikti[kod].m) || ''; }
   /* HER SORUYA BİR ÇIKTI (29.09.2026, öğretmen isteği). Kural yalnız sınav
-     yolunda ve ATANACAK ÇIKTI VARSA işler: çıktı verisi yüklenmediyse ya da
-     o ünitenin çıktısı yoksa kâğıdı kilitlemenin anlamı yok. */
+     yolunda ve ATANACAK ÇIKTI VARSA işler: çıktı verisi yüklenmediyse
+     kâğıdı kilitlemenin anlamı yok.
+     30.09.2026: ölçüt ÜNİTE değil SINIF. Eskiden "bu ünitenin çıktısı yok"
+     sayıldığı için 8/5, 8/6 gibi ünitelerde kural kendiliğinden kapanıyor
+     ve kâğıt numarasız basılıyordu — oysa sınıfın çıktıları duruyor. */
   function ciktiZorunlu() {
     return ayar.yol === 'sinav' && ciktiVarMi() &&
-           uniteAlanlari(ayar.sinifNo, ayar.unite).length > 0;
+           sinifUniteleri(ayar.sinifNo).length > 0;
   }
+  /* Boş olan da, ARTIK VAR OLMAYAN bir koda bağlı olan da eksik sayılır:
+     ünite ya da kitap değişince listede bulunamayan bir kod sessizce
+     düşüyordu, uyarı çıkmadan kazanımsız kâğıt basılabiliyordu. */
   function eksikCiktilar() {
     if (!ciktiZorunlu()) return [];
-    return secili.filter(function (a) { return !ciktiAtama[a]; });
+    return secili.filter(function (a) {
+      var k = ciktiKodu(a);
+      return !k || !(C.cikti && C.cikti[k]);
+    });
   }
   /* Bir soruya atanabilecek en makul çıktı: ağaçta seçili olan → soru
      türünün alan becerisindeki ilk çıktı → ünitenin ilk çıktısı. */
   function ciktiOner(a) {
     var o = odakCikti(V.harita[a]) || onerilenCikti(V.harita[a]);
     if (o) return o;
-    var al = uniteAlanlari(ayar.sinifNo, ayar.unite);
+    var sira = ciktiUniteSirasi();
+    var al = sira.length ? uniteAlanlari(ayar.sinifNo, sira[0]) : [];
     var c = al.length ? alanCiktilari(al[0]) : [];
     return c[0] || '';
   }
@@ -395,19 +444,55 @@
     var s = ayar.sinifNo ? ayar.sinifNo + '. SINIF ' : '';
     return s + 'ARAPÇA DERSİ ' + okul.donem + '. DÖNEM ' + okul.yazili + '. YAZILI SINAVI';
   }
+  /* 30.09.2026: ELLE YAZILANI EZMİYOR. Eskiden dört alan da her çağrıda
+     yeniden yazılıyordu; anteteAktar her okul bilgisi tuşuna basışta da
+     çağrıldığı için öğretmen başlığı değiştirip Okul bilgileri'ne bir
+     harf yazınca başlık geri dönüyordu. Ölçüt şu: alan boşsa ya da hâlâ
+     BİZİM en son yazdığımız değerde duruyorsa güncelle; öğretmen
+     değiştirmişse dokunma. sonOto* alanları bunun için tutuluyor. */
   function anteteAktar() {
     if (ayar.yol !== 'sinav') return;
-    ayar.okul = okul.ad;
-    ayar.baslik = otoBaslik();
-    ayar.ders = 'Arapça';
-    ayar.sinif = okul.sube || (ayar.sinifNo ? ayar.sinifNo + '. sınıf' : '');
+    var oB = otoBaslik();
+    if (!ayar.baslik || ayar.baslik === ayar.sonOtoBaslik) ayar.baslik = oB;
+    ayar.sonOtoBaslik = oB;
+
+    if (!ayar.okul || ayar.okul === ayar.sonOtoOkul) ayar.okul = okul.ad;
+    ayar.sonOtoOkul = okul.ad;
+
+    var oS = okul.sube || (ayar.sinifNo ? ayar.sinifNo + '. sınıf' : '');
+    if (!ayar.sinif || ayar.sinif === ayar.sonOtoSinif) ayar.sinif = oS;
+    ayar.sonOtoSinif = oS;
+
+    if (!ayar.ders) ayar.ders = 'Arapça';
   }
+  /* "-dir" eki, öğretmenin yazdığı süreye göre ünlü ve ünsüz uyumuyla
+     çekilir: "40 dakikadır", "bir ders saatidir", "iki ders saatidir",
+     "45 dk.dır". Süre alanı serbest metin olduğu için gerekli. */
+  function ekDir(son) {
+    if (/saat$/.test(son)) return 'tir';            /* ince ünlülü istisna */
+    var unlu = '', i;
+    for (i = son.length - 1; i >= 0; i--) if ('aeıioöuü'.indexOf(son[i]) >= 0) { unlu = son[i]; break; }
+    var d = 'pçtkfhsş'.indexOf(son.slice(-1)) >= 0 ? 't' : 'd';
+    var u = (unlu === 'a' || unlu === 'ı') ? 'ı'
+          : (unlu === 'o' || unlu === 'u') ? 'u'
+          : (unlu === 'ö' || unlu === 'ü') ? 'ü' : 'i';
+    return d + u + 'r';
+  }
+  /* Süre alanı serbest metin. Çekilebiliyorsa "… 40 dakikadır", kısaltma
+     ya da sayıyla bitiyorsa ("45 dk.", "2x40") iki nokta ile yazılır. */
+  function sureCumlesi() {
+    var t = (okul.sure || '').trim() || 'bir ders saati';
+    var son = t.toLowerCase().replace(/[^a-zçğıöşü]+$/, '');
+    if (son.length < 3 || !/[aeıioöuü]/.test(son)) return 'Sınav süresi: ' + t.replace(/\.+$/, '') + '.';
+    return 'Sınav süresi ' + t + ekDir(son) + '.';
+  }
+
   /* Yazılı ve Uygulamalı Sınavlar Yönergesi'ne göre kâğıdın başındaki
      açıklama satırları. Öğretmen isterse kapatır. */
   function aciklamaSatirlari() {
     var n = secili.length;
     return [
-      'Sınav süresi bir ders saatidir.',
+      sureCumlesi(),
       'Her sorunun puanı soru sonunda belirtilmiştir.' ,
       'Arapça yazarken harekeleri de yazmayı unutmayınız.',
       'Cevaplarınızı okunaklı yazınız; okunmayan cevaplar değerlendirmeye alınmaz.'
@@ -466,6 +551,12 @@
           '" data-deger="' + kac(x[0]) + '" aria-pressed="' + acik + '">' + kac(x[1]) +
           '<small>' + (say[x[0]] || 0) + '</small></button>';
       }).join('');
+      /* Çipi olmayan grup gizlenir (30.09.2026): sınav yolunda "Konu /
+         sınıf" ve "Soru içeriği" hep boş kalıyor (klasik soruların konusu
+         'klasik', tipi 'kl-*'; ikisi de havuzun listelerinde yok) ama
+         başlıkları yer kaplıyordu. */
+      var grup = kutu.parentNode;
+      if (grup && grup.className === 'suz-grup') grup.hidden = !kutu.children.length;
     });
     var sayac = suz.konu.size + suz.tip.size + suz.bicim.size + suz.zorluk.size + (suz.ara ? 1 : 0);
     $('#suzTemizle').hidden = !sayac;
@@ -522,6 +613,13 @@
   /* =====================================================================
      5) KÂĞIDIM (seçili sorular)
      ===================================================================== */
+  /* Kâğıt satırında soruyu tanımaya yarayan Arapça parça. soruOzeti()
+     HTML döndürüyor; etiketler atılıp ilk Arapça öbek alınıyor. */
+  function kagitArapca(o) {
+    var d = String(soruOzeti(o) || '').replace(/<[^>]*>/g, ' ');
+    var m = d.match(/[\u0600-\u06FF][\u0600-\u06FF\u064B-\u0652\u0640\s]{3,}/);
+    return m ? m[0].replace(/\s+/g, ' ').trim().slice(0, 64) : '';
+  }
   function kagidim() {
     secili = secili.filter(function (a) { return V.harita[a]; });
     var kutu = $('#kagit');
@@ -545,54 +643,107 @@
       var o = V.harita[a];
       return '<li data-a="' + kac(a) + '"' + (eksik.indexOf(a) >= 0 ? ' class="eksik"' : '') +
         '><span class="no">' + (i + 1) + '</span>' +
-        '<span class="k-metin">' + karisik(o.q.soru) + ciktiSecici(a) + '</span>' +
-        (ayar.puan ? '<span class="k-puan">' + puanlar[i] + ' p</span>' : '') +
+        /* Soru metni kendi kutusunda, iki satıra kadar; yanında ARAPÇA
+           parça (30.09.2026). Çeviri sorularında yönerge cümlesi hepsinde
+           aynı ("Aşağıdaki cümleyi Türkçeye çeviriniz."), ayırt eden şey
+           Arapça metin — o da soru kökünde değil özetinde duruyor.
+           Tek satıra kırpılıyken on soru aynı görünüyordu. */
+        '<span class="k-metin"><span class="k-soru">' + karisik(o.q.soru) +
+        (function (ar) { return ar ? ' <bdi class="ar k-sor-ar">' + kac(ar) + '</bdi>' : ''; })(kagitArapca(o)) +
+        '</span>' + ciktiSecici(a) + '</span>' +
+        /* Puan artık yazılabilir: boş bırakılırsa otomatik dağıtılır. */
+        (ayar.puan ? '<span class="k-puan"><input type="number" min="1" max="100" ' +
+          'class="k-puan-gir" data-a="' + kac(a) + '" value="' + puanlar[i] + '"' +
+          (elPuan(a) ? ' data-el="1"' : '') +
+          ' aria-label="Bu sorunun puanı" title="Puanı elle yaz; boşaltırsan otomatik dağıtılır">' +
+          '<b>p</b></span>' : '') +
         '<span class="k-dug"><button type="button" data-is="yukari" aria-label="Yukarı taşı"' + (i ? '' : ' disabled') + '>↑</button>' +
         '<button type="button" data-is="asagi" aria-label="Aşağı taşı"' + (i < secili.length - 1 ? '' : ' disabled') + '>↓</button>' +
         '<button type="button" data-is="sil" aria-label="Kâğıttan çıkar">✕</button></span></li>';
     }).join('');
+    /* Gerçek toplam yazılıyor: soru sayısı toplam puandan çoksa her soru
+       1 puan alıyor ve toplam ayar.toplam'ı aşıyor (bkz. puanDagit). */
+    var puanToplam = puanlar.reduce(function (a, b) { return a + b; }, 0);
     $('#puanOzet').textContent = ayar.puan && secili.length
-      ? 'Her soru ' + (puanlar[0] === puanlar[puanlar.length - 1] ? puanlar[0] : puanlar[puanlar.length - 1] + '–' + puanlar[0]) + ' puan · toplam ' + ayar.toplam
+      ? 'Her soru ' + (puanlar[0] === puanlar[puanlar.length - 1] ? puanlar[0] : puanlar[puanlar.length - 1] + '–' + puanlar[0]) +
+        ' puan · toplam ' + puanToplam +
+        (puanToplam !== (parseInt(ayar.toplam, 10) || 100)
+          ? ' — soru sayısı toplam puandan çok, her soru en az 1 puan aldı' : '')
       : '';
     /* Sepet kapalıyken de ne olduğu görünsün. */
     var so = $('#sepetOzet');
     if (so) {
       so.innerHTML = secili.length
-        ? secili.length + ' soru' + (ayar.puan ? ' · toplam ' + kac(ayar.toplam) + ' puan' : '')
+        ? secili.length + ' soru' + (ayar.puan ? ' · toplam ' + puanToplam + ' puan' : '')
         : 'Havuzdan <b>+ Kâğıda ekle</b> ile başla';
     }
     sepetOlc();
     kaydet();
   }
 
+  /* Puanlar toplam puana tam bölünür; artan ilk sorulara birer birer
+     dağıtılır. 30.09.2026: soru sayısı toplam puandan ÇOKSA taban 0
+     çıkıyor ve sondaki sorular kâğıda "0 p" basılıyordu — o durumda
+     herkese 1 puan veriliyor (toplam, soru sayısına çıkar; puan özeti
+     bunu söyler). */
+  /* Öğretmenin elle yazdığı puanlar (anahtar → puan). Kutuyu boşaltmak
+     o soruyu otomatik dağıtıma geri döndürür. */
+  function elPuan(a) {
+    var v = parseInt(ayar.elPuanlar && ayar.elPuanlar[a], 10);
+    return v > 0 ? v : 0;
+  }
   function puanDagit(n) {
     if (!n) return [];
-    var t = Math.max(1, parseInt(ayar.toplam, 10) || 100), taban = Math.floor(t / n), art = t - taban * n;
-    return Array.from({ length: n }, function (_, i) { return taban + (i < art ? 1 : 0); });
+    var t = Math.max(1, parseInt(ayar.toplam, 10) || 100);
+    /* Elle verilen puanlar sabit; kalan, puanı verilmemiş sorulara
+       otomatik dağıtılır (30.09.2026). */
+    var el = secili.slice(0, n).map(elPuan);
+    var elTop = el.reduce(function (x, y) { return x + y; }, 0);
+    var kalanN = el.filter(function (p) { return !p; }).length;
+    if (!kalanN) return el;
+    var kalanT = Math.max(kalanN, t - elTop);          /* her birine en az 1 */
+    var taban = Math.floor(kalanT / kalanN), art = kalanT - taban * kalanN, k = 0;
+    return el.map(function (p) {
+      if (p) return p;
+      var v = taban + (k < art ? 1 : 0); k++; return v;
+    });
   }
 
+  /* Bir sorunun çıktısını, boşsa, öneriyle doldurur. Tek tek eklemede de
+     toplu eklemede de aynı kural işlesin diye ayrı işlev (30.09.2026):
+     eskiden yalnız ekleCikar atıyordu, "Görünenleri ekle" ve "Rastgele
+     soru ekle" atamıyordu ve kâğıt hep kilitli duruma düşüyordu. */
+  function ciktiyiDoldur(a) {
+    if (ayar.yol !== 'sinav' || ciktiAtama[a]) return;
+    var oner = odakCikti(V.harita[a]) || onerilenCikti(V.harita[a]);
+    if (oner) ciktiAtama[a] = oner;
+  }
   function ekleCikar(a) {
     var i = secili.indexOf(a);
-    if (i >= 0) { secili.splice(i, 1); delete ciktiAtama[a]; }
-    else {
+    if (i >= 0) {
+      secili.splice(i, 1);
+      delete ciktiAtama[a];
+      if (ayar.elPuanlar) delete ayar.elPuanlar[a];
+    } else {
       secili.push(a);
-      /* Soru eklenince çıktısı KENDİLİĞİNDEN atanır (öneri); öğretmen
-         Kâğıdım listesindeki seçiciden değiştirebilir. */
-      if (ayar.yol === 'sinav' && !ciktiAtama[a]) {
-        var oner = odakCikti(V.harita[a]) || onerilenCikti(V.harita[a]);
-        if (oner) ciktiAtama[a] = oner;
-      }
+      ciktiyiDoldur(a);
     }
     liste(); kagidim(); if (ayar.yol === 'sinav') cizAgac();
   }
 
-  /* Kâğıdım satırındaki çıktı seçici: o ünitenin bütün çıktıları + bileşenleri */
+  /* Kâğıdım satırındaki çıktı seçici: SINIFIN bütün çıktıları + bileşenleri.
+     Seçili üniteye denk gelen program ünitesi başta. Tek üniteye
+     kilitliyken atanmış bir kod ünite değişince listeden düşüyordu. */
   function ciktiSecici(a) {
     if (ayar.yol !== 'sinav' || !ciktiVarMi()) return '';
     var simdi = ciktiAtama[a] || '';
     var sec = ['<option value="">— çıktı seç —</option>'];
-    uniteAlanlari(ayar.sinifNo, ayar.unite).forEach(function (ak) {
-      sec.push('<optgroup label="' + kac(alanAdi(ak)) + '">');
+    var uSira = ciktiUniteSirasi(), cokUnite = uSira.length > 1;
+    uSira.forEach(function (u) {
+    uniteAlanlari(ayar.sinifNo, u).forEach(function (ak) {
+      sec.push('<optgroup label="' +
+        (cokUnite ? kac(ciktiUniteEtiketi(ayar.sinifNo, u)) + ' · ' : '') +
+        kac(alanAdi(ak)) + '">');
       alanCiktilari(ak).forEach(function (ck) {
         var c = C.cikti[ck];
         sec.push('<option value="' + ck + '"' + (simdi === ck ? ' selected' : '') + '>' +
@@ -604,6 +755,7 @@
         });
       });
       sec.push('</optgroup>');
+    });
     });
     return '<select class="k-cikti" data-a="' + kac(a) + '" aria-label="Öğrenme çıktısı">' + sec.join('') + '</select>';
   }
@@ -695,7 +847,12 @@
       (ayar.yol === 'sinav' && okul.yil ? '<div class="s-yil">' + kac(okul.yil) + ' EĞİTİM ÖĞRETİM YILI</div>' : '') +
       (ayar.okul ? '<div class="s-okul">' + kac(ayar.okul) + '</div>' : '') +
       '<h1>' + kac(ayar.baslik) + '</h1>' +
-      '<div class="s-alt">' + [ayar.ders, ayar.sinif, ayar.tarih].filter(Boolean).map(kac).join(' · ') + '</div></div>' + sag +
+      '<div class="s-alt">' + [ayar.ders, ayar.sinif, ayar.tarih].filter(Boolean).map(kac).join(' · ') + '</div>' +
+      /* Öğretmen adı Okul bilgileri'nde toplanıyordu ama hiçbir çıktıda
+         görünmüyordu (30.09.2026). Yalnız sınav kâğıdında yazılır. */
+      (ayar.yol === 'sinav' && okul.ogretmen
+        ? '<div class="s-ogretmen">Ders Öğretmeni: ' + kac(okul.ogretmen) + '</div>' : '') +
+      '</div>' + sag +
       '</header>' +
       (ayar.ogrenci ? '<div class="s-kimlik">' +
         '<div class="gen"><b>Adı Soyadı <bdi dir="rtl" class="ar">الاسم</bdi></b></div>' +
@@ -1055,12 +1212,20 @@
      sorusu olmayan beceri süzgece KATILMAZ: dinleme, konuşma ve yazma
      becerilerinin yazılı soru havuzunda karşılığı yok; katsak liste
      bomboş kalır, öğretmen soruyu bulamaz. Durum satırı bunu söyler. */
+  /* Ölçüt YOLUN havuzu: sınavda yalnız klasik sorular görünüyor, oysa
+     eskiden bütün havuza bakılıyordu. Yalnız çoktan seçmelide karşılığı
+     olan bir beceri (Sesletim) "süzüldü" sanılıp liste bomboş kalıyordu. */
+  function yolHavuzu() {
+    return ayar.yol === 'sinav'
+      ? V.sorular.filter(function (o) { return o.klasik; })
+      : V.sorular;
+  }
   function odakSuzgeci() {
-    var s = [];
+    var s = [], h = yolHavuzu();
     odaklar.forEach(function (ck) {
       var an = ciktiAlanAdi(ck);
       if (an && s.indexOf(an) < 0 &&
-          V.sorular.some(function (o) { return soruAlanAnahtari(o) === an; })) s.push(an);
+          h.some(function (o) { return soruAlanAnahtari(o) === an; })) s.push(an);
     });
     return s;
   }
@@ -1078,9 +1243,10 @@
   }
   /* Süzgeçte kullanılmayan (havuzda sorusu olmayan) seçili çıktılar. */
   function odakBossuzgec() {
+    var h = yolHavuzu();
     return odaklar.filter(function (ck) {
       var an = ciktiAlanAdi(ck);
-      return !an || !V.sorular.some(function (o) { return soruAlanAnahtari(o) === an; });
+      return !an || !h.some(function (o) { return soruAlanAnahtari(o) === an; });
     });
   }
 
@@ -1104,6 +1270,22 @@
     var aa = $('#aciklamaAyar'); if (aa) aa.hidden = y !== 'sinav';
     $('#btnDagilim').hidden = y !== 'sinav';
     if (y === 'sinav') {
+      /* SINAVDA YALNIZ AÇIK UÇLU SORU OLUR (Yazılı ve Uygulamalı Sınavlar
+         Yönergesi m.5/1-e). suzulmus() çoktan seçmelileri LİSTEDEN
+         gizliyor ama kâğıt secili'den kuruluyordu: temrinde seçilmiş test
+         soruları sekme değişince kâğıtta kalıyor ve resmî yazılıya şıklı
+         sorular basılıyordu. Burada çıkarılıyorlar. V.harita boşken
+         (ilk açılış, havuz daha yüklenmedi) dokunulmuyor. */
+      if (V.harita && secili.length) {
+        var atilan = 0;
+        secili = secili.filter(function (a) {
+          var o = V.harita[a];
+          if (o && !o.klasik) { delete ciktiAtama[a]; atilan++; return false; }
+          return true;
+        });
+        if (atilan) durum(atilan + ' çoktan seçmeli soru kâğıttan çıkarıldı — ' +
+          'sınav kâğıdında yalnız açık uçlu sorular olur.', 'uyari');
+      }
       ayar.ciktiKodu = true; anteteAktar();
       /* Sınavda numara zorunlu; onay kutusu anlamsız kaldığı için gizlenir. */
       var cka = $('#ciktiKoduAyar'); if (cka) cka.hidden = true;
@@ -1313,11 +1495,21 @@
   }
 
   /* --- çıktı ağacı --- */
+  /* Çıktı süzgeci UYGULANMADAN, o anki sınıf/ünite/tür/arama süzgeçleriyle
+     kalan havuz. Ağaçtaki sayılar bunun üstünden hesaplanıyor; eskiden
+     bütün havuz sayılıyordu ve ünitede 107 soru varken başlıkta
+     "727 soru" yazıyordu. Odak dışarıda bırakılıyor, yoksa bir çıktı
+     seçtiğin an öteki becerilerin sayısı sıfıra düşerdi. */
+  function odaksizHavuz() {
+    var eski = odaklar;
+    odaklar = [];
+    try { return suzulmus(); } finally { odaklar = eski; }
+  }
   function ciktiSoruSayisi(alanKod) {
     var ad = alanAdi(alanKod), an = '';
     Object.keys(ALAN_KISA).forEach(function (k) { if (!an && ad.indexOf(k) === 0) an = k; });
     if (!an) return 0;
-    return V.sorular.filter(function (o) { return soruAlanAnahtari(o) === an; }).length;
+    return odaksizHavuz().filter(function (o) { return soruAlanAnahtari(o) === an; }).length;
   }
   function ciktiSecimSayisi(kod) {
     var n = 0;
@@ -1330,9 +1522,18 @@
     var kutu = $('#agac'); if (!kutu) return;
     if (!ciktiVarMi()) { kutu.innerHTML = '<div class="bos">Öğrenme çıktısı verisi yüklenemedi.</div>'; return; }
     if (!ayar.sinifNo) { kutu.innerHTML = '<div class="bos">Önce sınıf seç.</div>'; return; }
-    var alanlar = uniteAlanlari(ayar.sinifNo, ayar.unite);
-    if (!alanlar.length) { kutu.innerHTML = '<div class="bos">Bu ünitede çıktı bulunamadı.</div>'; return; }
-    kutu.innerHTML = alanlar.map(function (ak) {
+    /* SINIFIN bütün program üniteleri; seçili üniteye denk geleni başta.
+       Kitabın ünite adı programınkiyle tutmadığı için (8/2 "Kültür ve
+       Sanat" ↔ program 2 "Sağlıklı Hayatım") ünite başlığı yazılıyor. */
+    var uSira = ciktiUniteSirasi();
+    if (!uSira.length) { kutu.innerHTML = '<div class="bos">Bu sınıfın program çıktıları bulunamadı.</div>'; return; }
+    var cokUnite = uSira.length > 1;
+    kutu.innerHTML = uSira.map(function (u, ui) {
+      var alanlar = uniteAlanlari(ayar.sinifNo, u);
+      /* Kitapta seçtiğin numaraya denk gelen ünite AÇIK; ötekiler katlı.
+         Hepsi listelenmese kitabın 5-6. ünitesinde hiç kazanım çıkmıyor,
+         listelense de dört ünite alt alta çok uzuyordu. */
+      var ic = alanlar.map(function (ak) {
       var sy = ciktiSoruSayisi(ak);
       return '<section class="ag-alan"><h4>' + kac(alanAdi(ak)) +
         '<small>' + (sy ? sy + ' soru' : 'havuzda soru yok') + '</small></h4>' +
@@ -1343,6 +1544,15 @@
             '<b>' + ck + '</b><span>' + kac(c.m || '') + '</span>' +
             (se ? '<i class="ag-say">' + se + ' soru seçili</i>' : '') + '</button>';
         }).join('') + '</section>';
+      }).join('');
+      if (!cokUnite) return ic;
+      var basAd = kac(ciktiUniteEtiketi(ayar.sinifNo, u));
+      var secSay = odaklar.filter(function (ck) { return ck.indexOf(ayar.sinifNo + '.' + u + '.') === 0; }).length;
+      return ui
+        ? '<details class="ag-unite-kat"' + (secSay ? ' open' : '') + '><summary>' + basAd +
+          (secSay ? '<i>' + secSay + ' seçili</i>' : '') + '</summary>' + ic + '</details>'
+        : '<h3 class="ag-unite ag-unite-esas">' + basAd +
+          '<small>kitapta seçtiğin ünite numarasıyla aynı</small></h3>' + ic;
     }).join('');
     var d = $('#agacDurum');
     if (!d) return;
@@ -1397,7 +1607,8 @@
       'th{background:#eef2f6;text-align:left}td:first-child,td:last-child{text-align:center;white-space:nowrap}' +
       '.ar{font-family:Arakom,serif}@media print{body{margin:12mm}}</style></head><body>' +
       '<h1>KONU VE KAZANIM DAĞILIM TABLOSU</h1><div class="ust">' +
-      [kac(okul.ad), kac(okul.yil), kac(ayar.baslik), kac(ayar.sinif)].filter(Boolean).join(' · ') +
+      [kac(okul.ad), kac(okul.yil), kac(ayar.baslik), kac(ayar.sinif),
+       okul.ogretmen ? 'Ders Öğretmeni: ' + kac(okul.ogretmen) : ''].filter(Boolean).join(' · ') +
       '</div><h2>Soru dağılımı</h2><table><thead><tr><th>No</th><th>Soru</th><th>Havuz konusu</th>' +
       '<th>Alan becerisi</th><th>Öğrenme çıktısı</th><th>Çıktı metni</th><th>Puan</th></tr></thead><tbody>' +
       satir + '</tbody></table><h2>Çıktıya göre özet</h2><table><thead><tr><th>Çıktı</th><th>Metin</th>' +
@@ -1460,10 +1671,16 @@
       var dug = e.target.closest('#kagit button[data-is]');
       if (dug) {
         var a = dug.closest('li').getAttribute('data-a'), i = secili.indexOf(a), is = dug.getAttribute('data-is');
-        if (is === 'sil') secili.splice(i, 1);
+        /* Silinen sorunun çıktı ataması ve elle puanı da gitsin: eskiden
+           kalıyor, soru yeniden eklenince eski koduyla geri geliyordu. */
+        if (is === 'sil' && i >= 0) {
+          secili.splice(i, 1);
+          delete ciktiAtama[a];
+          if (ayar.elPuanlar) delete ayar.elPuanlar[a];
+        }
         if (is === 'yukari' && i > 0) { secili.splice(i, 1); secili.splice(i - 1, 0, a); }
         if (is === 'asagi' && i < secili.length - 1) { secili.splice(i, 1); secili.splice(i + 1, 0, a); }
-        kagidim(); liste(); return;
+        kagidim(); liste(); if (ayar.yol === 'sinav') cizAgac(); return;
       }
     });
     $('#ara').addEventListener('input', function () { suz.ara = this.value; gosterilen = LISTE_ADIM; cipler(); liste(); });
@@ -1477,18 +1694,24 @@
       var aday = suzulmus().filter(function (o) { return secili.indexOf(o.anahtar) < 0; });
       var sec = karistir(aday.map(function (o) { return o.anahtar; }), String(Date.now())).slice(0, n);
       secili = secili.concat(sec);
-      liste(); kagidim();
+      sec.forEach(ciktiyiDoldur);
+      liste(); kagidim(); if (ayar.yol === 'sinav') cizAgac();
       durum(sec.length ? sec.length + ' soru rastgele eklendi.' : 'Eklenecek yeni soru kalmadı.', sec.length ? 'ok' : '');
     });
     $('#hepsiniEkle').addEventListener('click', function () {
       var aday = suzulmus().slice(0, gosterilen).filter(function (o) { return secili.indexOf(o.anahtar) < 0; });
-      secili = secili.concat(aday.map(function (o) { return o.anahtar; }));
-      liste(); kagidim();
+      var yeni = aday.map(function (o) { return o.anahtar; });
+      secili = secili.concat(yeni);
+      yeni.forEach(ciktiyiDoldur);
+      liste(); kagidim(); if (ayar.yol === 'sinav') cizAgac();
     });
     $('#kagitTemizle').addEventListener('click', function () {
       if (!secili.length) return;
       if (!window.confirm(secili.length + ' soru kâğıttan çıkarılsın mı?')) return;
-      secili = []; liste(); kagidim();
+      /* Çıktı atamaları ve elle puanlar da gitsin: eskiden ciktiAtama'da
+         kalıyor, soru yeniden eklenince eski koduyla geri geliyordu. */
+      secili.forEach(function (a) { delete ciktiAtama[a]; if (ayar.elPuanlar) delete ayar.elPuanlar[a]; });
+      secili = []; liste(); kagidim(); if (ayar.yol === 'sinav') cizAgac();
     });
     $('#yenidenKaristir').addEventListener('click', function () {
       ayar.tohum = ayar.tohum % 9999 + 1;
@@ -1497,6 +1720,13 @@
         '. Cevap anahtarı yeni sıraya göre çıkar.', 'ok');
     });
     document.addEventListener('change', function (e) {
+      var pg = e.target.closest('.k-puan-gir');
+      if (pg) {
+        var pa = pg.getAttribute('data-a'), pv = parseInt(pg.value, 10);
+        ayar.elPuanlar = ayar.elPuanlar || {};
+        if (pv > 0) ayar.elPuanlar[pa] = pv; else delete ayar.elPuanlar[pa];
+        kaydet(); kagidim(); return;
+      }
       var cs = e.target.closest('.k-cikti');
       if (cs) {
         var a = cs.getAttribute('data-a');
@@ -1616,6 +1846,10 @@
       hazirla(r[0]);
       $('#yukleniyor').hidden = true;
       yolKur(ayar.yol || 'sinav');            /* sekmeli: açılışta Sınav Hazırla */
+      /* İlk iş sınıf seçmek; henüz seçilmemişse o panel AÇIK gelsin
+         (30.09.2026). Eskiden bütün bölümler kapalı açılıyordu ve sayfa
+         "0 soru" yazan, ne yapılacağı belli olmayan bir ekrandı. */
+      if (!ayar.sinifNo) { var kp0 = $('#klasikPaneli'); if (kp0) kp0.open = true; }
       /* Sepet ve başlık şeridi yerleşsin (yazı tipi geç gelirse diye
          birkaç kez ölçülüyor). */
       sepetOlc(); [120, 500, 1400].forEach(function (ms) { setTimeout(sepetOlc, ms); });

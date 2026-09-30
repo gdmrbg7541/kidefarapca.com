@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-FV9JD15KLW');
   </script>
-  <link rel="stylesheet" href="sinifici/sinav.css?v=8">
+  <link rel="stylesheet" href="sinifici/sinav.css?v=9">
   <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
   <link rel="stylesheet" href="arakom.css?v=2">
 </head>
@@ -119,6 +119,9 @@
         </label>
         <label class="alan">Şube<input type="text" data-okul="sube" maxlength="20" placeholder="ör. 8/A"></label>
       </div>
+      <!-- Süre, kâğıdın başındaki açıklamalarda yazar (30.09.2026). Boş
+           bırakılırsa "bir ders saati" yazılır. -->
+      <label class="alan">Sınav süresi<input type="text" data-okul="sure" maxlength="30" placeholder="bir ders saati"></label>
     </details>
 
     <!-- OKUL SINAVI: çıktı ağacı -->
@@ -126,7 +129,10 @@
       <summary><b>Öğrenme çıktıları</b> <small>bileşen ve kazanımlar</small></summary>
       <p id="agacDurum" class="agac-durum"></p>
       <div id="agac"></div>
-      <p class="agac-not">Çıktı numarası bir <b>öneridir</b>: havuzda sorunun ünitesi yazmaz, ünite senin üstten seçtiğindir. Kâğıdım listesinden her soru için değiştirebilirsin.</p>
+      <p class="agac-not"><b>Kitabın ünitesi ile programın ünitesi aynı değil.</b> MEB programında her sınıfta
+        dört ünite var ve adları kitaptakilerle tutmuyor; bu yüzden burada <b>sınıfın bütün üniteleri</b>
+        listelenir, kitapta seçtiğin numaraya denk gelen ünite en üstte durur. Doğru kazanımı sen seçersin;
+        Kâğıdım listesinden her soru için ayrıca değiştirebilirsin.</p>
     </details>
 
 
@@ -266,7 +272,7 @@
      bakarak doğru üniteyi okur. -->
 <script src="sistem/sinifveri.js?v=20260924j"></script>
 <script src="sinifici/klasik.js?v=3"></script>
-<script src="sinifici/sinav.js?v=7"></script>
+<script src="sinifici/sinav.js?v=8"></script>
 <script src="sistem/geri.js?v=20260915a"></script>
 <script>
 /* ==================================================================

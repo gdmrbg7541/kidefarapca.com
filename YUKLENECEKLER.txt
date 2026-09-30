@@ -2662,3 +2662,53 @@ doğru; telefonda kartlar yatay kayıyor, etiket okunuyor.
   · Sürüm: merakcarki.css?v=4, merakcarki.js?v=4
   · Denendi 1600/1280/420 px: konsol hatasız, taşma yok, emoji kalmadı,
     altı yerde de simgeler var, şerit kartı örtmüyor.
+
+[30.09.2026] sinav.html denetimi — 12 hata/eksik düzeltildi
+  KAZANIM HATALARI (kâğıdı yanlış çıkarıyordu)
+  1-3 · Kök sebep: çıktılar "kitabın ünite numarasına EŞİT numaralı
+        program ünitesinden" sunuluyordu. Program (veri_ciktilar.js) her
+        sınıfta DÖRT ünite; kitaplarda altı olabiliyor ve adlar tutmuyor
+        (8. sınıf kitap: Etkinlikler/Kültür ve Sanat/Değerlerim/Doğa/
+        Spor/Okula Veda ↔ program: Dün Ne Yaptım?/Sağlıklı Hayatım/
+        İletişim/Mezun Oluyorum). 7-Mektep ve 10-seçmeli de böyle.
+        Sonuçları: 5-6. ünitede kural kendiliğinden kapanıp kâğıt
+        numarasız basılıyordu; yanlış ünitenin kazanımı öneriliyordu;
+        ünite değişince atanan kod sessizce düşüyordu.
+        Çözüm: ağaç ve seçici artık SINIFIN BÜTÜN ünitelerini sunuyor,
+        seçili numaraya denk gelen başta ve açık, ötekiler katlı.
+        ciktiZorunlu ölçütü ünite değil sınıf; eksikCiktilar artık var
+        olmayan kodu da eksik sayıyor.
+  KISA HATALAR
+  4 · Temrinde seçilen çoktan seçmeliler Sınav sekmesine geçince
+      kâğıtta kalıp resmî yazılıya basılıyordu — artık çıkarılıyor.
+  5 · anteteAktar Başlık/Okul/Ders/Sınıf'ı her çağrıda eziyordu; artık
+      yalnız boş olanı ya da kendi yazdığını günceller (sonOto*).
+  6 · Soru sayısı toplam puandan çoksa 0 puanlı soru çıkıyordu; en az
+      1 puan veriliyor, puan özeti gerçek toplamı yazıyor.
+  7 · Ağaçtaki alan sayıları bütün havuzu sayıyordu (107 soruluk
+      ünitede "727 soru"); artık görünen liste sayılıyor (odaksizHavuz).
+      odakSuzgeci/odakBossuzgec de yolun havuzuna bakıyor.
+  8 · Öğretmen adı hiçbir çıktıda yoktu; kâğıdın antedine ve dağılım
+      tablosuna kondu.
+  TASARIM
+  9 · Telefonda (390x780) yapışık blok ekrandan 200 px taşıyor, liste
+      tuşlarına basılamıyordu: #klasikPaneli AÇIKKEN artık yapışık değil.
+  10 · İlk açılışta sınıf seçilmemişse o panel açık geliyor.
+  11 · Kâğıdım satırları tek satıra kırpılıyordu; iki satıra çıktı ve
+       soruyu tanıtan Arapça parça eklendi (kagitArapca).
+  12 · Sınav yolunda hep boş kalan "Konu / sınıf" ve "Soru içeriği"
+       süzgeç grupları gizleniyor.
+  YENİ ÖZELLİKLER
+  · Sınav süresi alanı (Okul bilgileri). Kâğıtta "Sınav süresi 40
+    dakikadır." — ek Türkçe uyumla çekiliyor (ekDir/sureCumlesi).
+  · Soru puanı elle yazılabiliyor; elle verilenler sabit, kalan puan
+    ötekilere dağıtılır, kutuyu boşaltmak otomatiğe döndürür.
+  · "Görünenleri ekle" ve "Rastgele soru ekle" artık kazanım atıyor
+    (ciktiyiDoldur) ve ağacı tazeliyor.
+  · Soru silince / kâğıdı temizleyince çıktı ataması ve elle puan da
+    siliniyor (eskiden kalıyor, soru yeniden eklenince geri geliyordu).
+  Betikler: _kaynak/uretici/sinavCikti.py, sinavAgacKat.py,
+            sinavKisaHatalar.py, sinavDuzenDuzelt.py, sinavOzellik.py
+  Yedekler: _kaynak/yedekler/sinav_2026-09-30_cikti-oncesi.{js,css,html}
+  Sürüm: sinav.js?v=8, sinav.css?v=9
+  Denendi: 5 sınıf/ünite bileşimi, 390/768/1440 px, konsol hatasız.
