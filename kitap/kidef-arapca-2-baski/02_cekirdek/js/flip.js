@@ -85,6 +85,19 @@
     if (!img) return;
     yuz.dataset.yuklu = '1';
     var self = this;
+    /* HTML SAYFA (01.10.2026): 03_veri/html_sayfalar.js'te karşılığı olan sayfa resim
+       değil, yazı olarak çizilir (s.1–7). Ölçek --hs ile (uygulama.js yazar). */
+    var hs = window.HTML_SAYFALAR && window.HTML_SAYFALAR[no];
+    if (hs) {
+      var d = document.createElement('div');
+      d.className = 'html-sayfa';
+      d.innerHTML = hs;
+      yuz.insertBefore(d, yuz.querySelector('.katman'));
+      yuz.classList.add('html-yuz');
+      yuz.dataset.tamGeldi = '1';
+      if (this.katmanKur) this.katmanKur(no, yuz.querySelector('.katman'));
+      return;
+    }
     if (this.kucukYolu) {
       var kck = new Image();
       kck.onload = function () { if (!yuz.dataset.tamGeldi) img.src = kck.src; };
@@ -308,7 +321,7 @@
 
     this.kitap.addEventListener('pointerdown', function (e) {
       if (self.animasyonda || self.kilitli) return;
-      if (e.target.closest('.nokta')) return;      // hotspot'a dokunma
+      if (e.target.closest('.nokta, [data-git], .html-sayfa a')) return;      // hotspot / HTML sayfadaki bağlantı
       if (self.tekli) {
         // TEK SAYFA: yaprak parmakla sürüklenmez, sayfa kaydırılır (kararı birak verir).
         // Başka bir parmak da inerse bu kıstırmadır (yakınlaştırma): kaydırma iptal.

@@ -1,0 +1,140 @@
+/* ============================================================
+   Kidef Arapça — HTML SAYFALAR (s.1–7, 01.10.2026)
+   Sayfa 595×842 birimlik A4 tuvalde tasarlanır; --hs (= sayfa genişliği / 595)
+   ile ölçeklenir. Yazı tipleri yerelde yoksa benzerine düşer, internet gerekmez.
+   ============================================================ */
+.html-sayfa{position:absolute;left:0;top:0;width:595px;height:842px;transform:scale(var(--hs,1));
+  transform-origin:0 0;background:#fff;color:#1d1d1f;overflow:hidden;
+  font-family:'Biome','Bahnschrift','Segoe UI Variable Display','Avenir Next','Segoe UI',system-ui,sans-serif;
+  font-size:12.6px;line-height:1.5;-webkit-font-smoothing:antialiased;text-align:left}
+.html-sayfa *{box-sizing:border-box}
+/* flipbook.css'teki .yuz img{width:100%;height:100%} kuralı sayfa içi resimlere uygulanmasın */
+.html-sayfa img{width:auto;height:auto;object-fit:fill;background:none;display:block;pointer-events:auto}
+.html-sayfa a{color:inherit;text-decoration:none}
+.yuz.html-yuz > img{display:none}
+/* katman sayfanın tamamını örter: HTML sayfada tıklamalar alttaki bağlantılara geçsin */
+.yuz.html-yuz .katman{pointer-events:none}
+.yuz.html-yuz .katman .nokta{pointer-events:auto}
+.hs{position:absolute;inset:0;padding:42px 44px}
+.hs .ortala{text-align:center}
+.hs h2{font-size:15px;font-weight:400;margin:0 0 6px}
+.hs h3{font-size:14px;font-weight:600;color:#C00000;margin:0 0 6px}
+.hs ul{margin:4px 0 10px;padding-left:40px}
+.hs li{margin:0 0 2px}
+.kirmizi{color:#E01010}.yesil{color:#14A84B}.mavi{color:#1E73D8}.mor{color:#7B3FB3}.pembe{color:#E011D0}
+.html-sayfa .ar{font-family:'Arakom','Traditional Arabic','Geeza Pro','Arial',serif;font-size:1.35em;unicode-bidi:isolate}
+.html-sayfa .ar.buyuk{font-size:1.9em;line-height:.8}
+
+/* 1 — kapak */
+.hs-kapak{padding:0}
+.k-ikon{position:absolute;line-height:1;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif}
+.html-sayfa img.k-sema{position:absolute;left:132px;top:210px;width:332px;border-radius:2px}
+.k-baslik{position:absolute;right:38px;top:522px;margin:0;font-size:47px;font-weight:300;letter-spacing:.5px}
+.k-baski{position:absolute;right:40px;top:592px;font-size:16px;color:#555}
+.k-pdf{position:absolute;left:40px;top:662px;display:flex;align-items:center;gap:26px;font-size:15px;
+  font-family:Calibri,Carlito,'Segoe UI',system-ui,sans-serif;cursor:pointer}
+.html-sayfa .k-pdf img{width:72px;height:72px;image-rendering:pixelated}
+.k-pdf span{padding:6px 10px;border-radius:8px;transition:background .15s}
+.k-pdf:hover span,.k-pdf:active span{background:#FBEFD6}
+
+/* 2 — mukaddime */
+.hs-yazi{padding-top:84px;font-size:13.4px}
+.html-sayfa img.euzu{display:block;margin:0 auto 34px;width:345px}
+.hs-yazi .girinti{text-indent:8px;margin:0 0 30px;text-align:left}
+.hs-yazi .ara{margin:10px 0 2px}
+
+/* 3 — simgeler */
+.hs-simge{padding-top:86px}
+.simgeler{margin:0 auto;border-collapse:collapse;font-size:12.4px;min-width:162px}
+.simgeler caption{border:1px solid #222;border-bottom:0;color:#E01010;font-size:15px;padding:1px 0}
+.simgeler td{border:1px solid #222;padding:0 8px;text-align:center;height:18px}
+.simgeler .s-sim{font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;font-size:11px;
+  white-space:nowrap;padding:0 5px}
+.hs-simge .not{text-align:center;color:#8a8a8a;font-size:10.5px;margin-top:16px}
+
+/* 4 — içindekiler */
+.hs-icindekiler{padding:44px 30px 30px 44px;font-size:9.2px;line-height:1.25}
+.hs-icindekiler h2{font-size:11px;margin-bottom:12px;letter-spacing:.5px}
+.i-sutunlar{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.i-sutun:first-child{border-right:1px solid #222;padding-right:14px}
+.i-unite{color:#E01010;margin:9px 0 2px;padding-left:44px}
+.i-unite:first-child{margin-top:0}
+.i-satir{display:flex;align-items:baseline;gap:4px;padding:1.3px 4px;border-bottom:.6px solid #c9c9c9;
+  border-radius:2px;cursor:pointer;transition:background .12s}
+.i-satir:hover,.i-satir:active{background:#FBEFD6}
+.i-no{width:36px;flex-shrink:0;text-align:right;padding-right:8px;font-variant-numeric:tabular-nums}
+.i-sim{font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;font-size:7.5px;min-width:10px;white-space:nowrap}
+.i-ad{flex:1}
+.i-ipucu{position:absolute;left:0;right:0;bottom:24px;text-align:center;color:#9a9a9a;font-size:9px;margin:0}
+
+/* 5 — dil öğrenmek */
+.hs-dil{padding-top:56px;font-family:Calibri,Carlito,'Segoe UI',system-ui,sans-serif;font-size:13px}
+.baslik-kirmizi{color:#C00000;font-size:19px !important;font-family:'Biome','Bahnschrift','Segoe UI',system-ui,sans-serif;margin-bottom:16px !important}
+.hs-dil h3{font-size:14px}
+.hs .dolu{list-style:disc}
+.agac{margin:36px 0 0;color:#C00000;font-family:'Biome','Bahnschrift','Segoe UI',system-ui,sans-serif}
+.agac-kok{text-align:center;font-size:15px}
+.agac-cizgi{margin:2px 80px 0 98px;height:12px;border:1px solid #C00000;border-bottom:0;position:relative}
+.agac-dallar{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:-2px}
+.agac-dallar div{display:flex;flex-direction:column;align-items:center}
+.agac-dallar b{font-weight:400;font-size:13.5px;margin-bottom:2px}
+.agac-dallar span{font-size:13px;align-self:center;min-width:120px}
+.agac-dallar span::before{content:'⅄ ';font-size:9px}
+.agac-dallar div:first-child span{min-width:70px;align-self:flex-start;margin-left:2px}
+.yh{position:relative;margin-top:84px;padding-left:128px}
+.yh-ikon{position:absolute;left:20px;top:84px;font-size:58px;line-height:1;filter:grayscale(1) sepia(1) hue-rotate(225deg) saturate(2.6) brightness(.62)}
+.yh-tablo{border-collapse:collapse;width:100%;font-family:'Biome','Bahnschrift','Segoe UI',system-ui,sans-serif}
+.yh-bas{font-size:22px;color:#C00000;font-weight:400;text-align:center;padding-bottom:6px}
+.yh-tablo .d{width:36px;height:56px;vertical-align:bottom;font-weight:400;font-size:10px;padding:0}
+.yh-tablo .d{writing-mode:vertical-rl;transform:rotate(180deg);text-align:left;border-bottom:0}
+.yh-tablo .k{color:#C00000;border-right:5px solid #C00000}.yh-tablo .m{color:#1E73D8;border-right:5px solid #1E73D8}
+.yh-tablo .y{color:#14A84B;border-right:5px solid #14A84B}
+.yh-tablo td{border:1px solid #bdbdbd;height:33px}
+.yh-tablo .yh-ad{border-left:0;padding:2px 4px}
+.yh-ad b{display:block;color:#C00000;font-weight:400;font-size:14.5px;line-height:1.1}
+.yh-ad small{color:#C00000;font-size:6.6px}
+
+/* 6 — ünite kapağı */
+.hs-unite{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'Courier New',Courier,monospace;color:#111;padding-bottom:90px}
+.u-no{font-size:84px;line-height:1;position:relative}
+.u-no i{position:absolute;left:-40px;top:-6px;width:8px;height:112px;background:#F11;border-radius:3px}
+.u-ad{font-size:56px;line-height:1.35;text-align:center;margin-top:24px}
+
+/* 7 — genel bilgiler */
+.hs-genel{padding:56px 40px 30px 44px;font-family:Calibri,Carlito,'Segoe UI',system-ui,sans-serif;font-size:12.5px;line-height:1.38}
+.hs-genel h3{color:#E01010;font-weight:400;margin-bottom:12px}
+.hs-genel ul{padding-left:22px}
+.hs-genel li{margin-bottom:4px}
+.ornek{display:flex;justify-content:center;align-items:center;gap:14px;margin:2px 0;font-size:12px}
+.ornek .ok-yazi{font-family:'Segoe Script','Brush Script MT',cursive;font-size:11px}
+.ornek.dort{justify-content:space-around;padding:0 20px}
+.ornek.dort .ar{font-size:1.5em}
+.ornek.dort b{font-weight:400}
+.ornek.yon{gap:60px}
+.ornek.yon div{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;column-gap:16px;align-items:center;justify-items:center}
+.ornek.yon small{grid-column:1/3;font-size:12px}
+.ornek.yon i{font-style:normal;font-size:7px;letter-spacing:-1px;color:#E01010}
+.ornek.yon .sola,.ornek.yon .saga{grid-row:2}
+.ornek.yon .ar,.ornek.yon span{grid-row:3}
+.ornek.hareke{gap:16px}
+.ornek.hareke i{font-style:normal}
+.ornek.hareke .sessiz{font-style:italic;letter-spacing:6px}
+.ornek.hareke sub,.ornek.hareke sup{font-style:normal;font-size:10px}
+.harekeler{display:grid;grid-template-columns:1fr 1fr 1fr;margin:4px -10px 0 -22px;text-align:center;font-size:12.4px}
+.harekeler div{padding:0 4px}
+.harekeler div + div{border-left:1px dashed #9a9a9a}
+.sahislar{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding:0 4px}
+.sahislar::before{content:'';order:1;align-self:stretch;border-left:1px solid #555}
+.sahis{border-collapse:collapse;font-size:8.6px;text-align:center}
+.sahis.tr{order:0}.sahis.ar-t{order:2}
+.sahis th,.sahis td{border:1px solid #9a9a9a;padding:.5px 6px;font-weight:400}
+.sahis th:first-child{border:0;font-weight:600}
+.sahis.ar-t th:last-child{border:0;font-weight:600}
+.sahis.ar-t th:first-child{border:1px solid #9a9a9a;font-weight:400}
+.sahis .tk{background:#F7C7C7}.sahis .cg{background:#F7C7C7}.sahis .ik{background:#F7C7C7}
+.sahis.tr td:first-child{background:#D9D9D9}
+.sahis.tr td:nth-child(2),.sahis.ar-t td:nth-child(3){color:#E01010}
+.sahis.ar-t td:nth-child(1),.sahis.ar-t td:nth-child(2){color:#1E73D8}
+.sahis .er,.sahis .di,.sahis .or{background:#D9D9D9}
+.sahis .er{color:#1E73D8}.sahis .di{color:#E011D0}.sahis .or{color:#7B3FB3}

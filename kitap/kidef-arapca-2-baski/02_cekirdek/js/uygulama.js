@@ -488,6 +488,20 @@
   });
   window.flip = flip;
 
+  /* HTML sayfalar (s.1–7): 595 birimlik tuval sayfa genişliğine ölçeklenir;
+     İçindekiler'deki satırlar (data-git) o sayfaya götürür. */
+  function htmlOlcek() {
+    var en = flip.sayfaEn || (flip.kitap && flip.kitap.clientWidth / 2) || 595;
+    document.documentElement.style.setProperty('--hs', en / 595);
+  }
+  htmlOlcek();
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.html-sayfa [data-git]');
+    if (!a) return;
+    e.preventDefault(); e.stopPropagation();
+    flip.git(+a.dataset.git);
+  });
+
   function durumGuncelle(d) {
     var no = d.aktif;
     // tek sayfa modunda (telefon) yalnız görünen sayfa yazılır: "26 / 231"
@@ -758,7 +772,7 @@
   var rz;
   window.addEventListener('resize', function () {
     clearTimeout(rz);
-    rz = setTimeout(function () { flip.olcekle(); sinirla(); zUygula(true); }, 120);
+    rz = setTimeout(function () { flip.olcekle(); htmlOlcek(); sinirla(); zUygula(true); }, 120);
   });
 
   /* ---------- açılış ---------- */
