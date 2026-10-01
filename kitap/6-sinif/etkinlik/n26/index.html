@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تصنيف الأعضاء والإحساس والمشاعر</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      font-family: "Arial", sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, #fed7e2 0, transparent 40%),
+        radial-gradient(circle at bottom right, #bfdbfe 0, transparent 45%),
+        linear-gradient(135deg, #22c1c3 0%, #fdbb2d 50%, #f472b6 100%);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .game-container {
+      width: min(1180px, 100vw);
+      margin: 20px;
+      padding: 24px 24px 30px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(239,246,255,0.98));
+      border-radius: 32px;
+      border: 3px solid rgba(255,255,255,0.95);
+      box-shadow: 0 16px 32px rgba(15,23,42,0.35);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 40px);
+    }
+
+    .title-bar {
+      padding: 14px 22px;
+      border-radius: 40px;
+      background: #ffffff;
+      border: 4px solid #0ea5e9;
+      box-shadow: 0 4px 14px rgba(15,23,42,0.25);
+      font-size: 30px;
+      text-align: center;
+      color: #0f172a;
+      margin-bottom: 22px;
+    }
+
+    /* ORTADA: Şekiller YAN YANA */
+    .shapes-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      flex: 1;
+      margin-bottom: 18px;
+    }
+
+    .shape-wrapper {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pentagon,
+    .circle-shape,
+    .square-shape {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 18px 16px;
+      box-shadow: 0 10px 22px rgba(15,23,42,0.35);
+      transition: transform 0.18s ease-out;
+    }
+
+    /* DAHA BÜYÜK ŞEKİLLER */
+    .pentagon {
+      width: 320px;
+      height: 260px;
+      background: linear-gradient(135deg,#f97316,#ec4899);
+      clip-path: polygon(50% 0%, 100% 40%, 82% 100%, 18% 100%, 0% 40%);
+      border: 4px solid #fb923c;
+    }
+
+    .circle-shape {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 20% 0,#4ade80,#22c55e);
+      border: 4px solid #16a34a;
+    }
+
+    /* kare şekil (duyular) */
+    .square-shape {
+      width: 320px;
+      height: 260px;
+      background: linear-gradient(135deg,#38bdf8,#6366f1);
+      border-radius: 24px;
+      border: 4px solid #38bdf8;
+    }
+
+    .shape-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #fefce8;
+      text-shadow: 0 2px 4px rgba(15,23,42,0.6);
+      margin-bottom: 10px;
+    }
+
+    .shape-drop {
+      width: 90%;
+      flex: 1;
+      border-radius: 26px;
+      border: 3px dashed rgba(248,250,252,0.9);
+      background: rgba(255,255,255,0.3);
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 8px;
+      overflow-y: auto;
+      transition: transform 0.15s ease-out, background 0.15s ease-out, border-color 0.15s ease-out;
+    }
+
+    .shape-drop.over {
+      background: rgba(255,255,255,0.9);
+      border-color: #22c55e;
+      transform: scale(1.03);
+    }
+
+    /* ✅ Senin istediğin tam ayarlar */
+    .pentagon .shape-drop {
+      height: 78%;
+      margin-top: 6px;
+      overflow: hidden;      /* beşgenin dışına taşmasın */
+    }
+
+    .circle-shape .shape-drop {
+      height: 62%;
+      width: 72%;
+      margin-top: 12px;
+      overflow: hidden;      /* dairenin dışına taşmasın */
+    }
+
+    /* Bunlar JS tarafından son kontrolde kullanılabiliyor */
+    .shape-drop.correct {
+      background: rgba(187,247,208,0.95);
+      border-color: #22c55e;
+    }
+
+    .shape-drop.incorrect {
+      background: rgba(254,226,226,0.95);
+      border-color: #ef4444;
+    }
+
+    /* Animasyonlar */
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+      100% { transform: translateX(0); }
+    }
+
+    .pop { animation: pop 0.25s ease-out; }
+    .shake { animation: shake 0.25s ease-out; }
+
+    /* KELİME BANKASI EN ALTTA (satır şeklinde) */
+    .bank-card {
+      background: radial-gradient(circle at bottom,#dbeafe,#fee2e2);
+      border-radius: 24px;
+      padding: 14px 16px 18px;
+      box-shadow: 0 4px 12px rgba(15,23,42,0.2);
+      margin-top: auto;
+    }
+
+    .bank-title {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 10px;
+      color: #1f2937;
+    }
+
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .word {
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 20% 0,#fee2e2,#fb7185);
+      border: 2px solid #b91c1c;
+      text-align: center;
+      font-size: 24px;
+      cursor: grab;
+      user-select: none;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(15,23,42,0.4);
+      box-shadow: 0 3px 8px rgba(15,23,42,0.25);
+      transition: transform 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+
+    .word:active {
+      cursor: grabbing;
+      transform: scale(1.08);
+      box-shadow: 0 4px 10px rgba(15,23,42,0.3);
+    }
+
+    .word.placed {
+      background: radial-gradient(circle at 20% 0,#bbf7d0,#22c55e);
+      border-color: #15803d;
+    }
+
+    /* 🔴 SADECE YANLIŞ KELİME KIRMIZI */
+    .word.wrong-word {
+      background: radial-gradient(circle at 20% 0,#fecaca,#f87171) !important;
+      border-color: #b91c1c !important;
+    }
+
+    .controls {
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .controls button {
+      padding: 10px 22px;
+      border-radius: 24px;
+      border: none;
+      background: linear-gradient(135deg,#6366f1,#8b5cf6);
+      color: #ffffff;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(15,23,42,0.25);
+      margin: 0 6px;
+    }
+
+    #message {
+      margin-top: 10px;
+      font-size: 22px;
+      min-height: 26px;
+    }
+
+    #message.success { color:#16a34a; font-weight:bold; }
+    #message.error { color:#dc2626; font-weight:bold; }
+  </style>
+</head>
+<body>
+
+<div class="game-container">
+  <div class="title-bar">
+    ضَع الْكَلِمات في الشَّكْل الْمُناسِب
+  </div>
+
+  <!-- BÜYÜK ŞEKİLLER YAN YANA -->
+  <div class="shapes-area">
+    <!-- Organlar: beşgen -->
+    <div class="shape-wrapper">
+      <div class="pentagon">
+        <div class="shape-title">أَعْضاء</div>
+        <div class="shape-drop" data-category="organ"></div>
+      </div>
+    </div>
+
+    <!-- Hisler/duygular: daire -->
+    <div class="shape-wrapper">
+      <div class="circle-shape">
+        <div class="shape-title">مَشاعِر</div>
+        <div class="shape-drop" data-category="feeling"></div>
+      </div>
+    </div>
+
+    <!-- Duyular: kare -->
+    <div class="shape-wrapper">
+      <div class="square-shape">
+        <div class="shape-title">أَحْساس</div>
+        <div class="shape-drop" data-category="sense"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KELİME BANKASI (ALTTA) -->
+  <div class="bank-card">
+    <div class="bank-title">قائِمَة الْكَلِمات:</div>
+    <div id="wordBank" class="word-bank"></div>
+  </div>
+
+  <div class="controls">
+    <button id="checkBtn">✅ تَحَقَّقْ مِنَ الْإِجابات</button>
+    <button id="resetBtn">🔄 حاوِلْ مَرَّةً اُخْرى</button>
+    <div id="message"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const wordBank = document.getElementById("wordBank");
+  const drops = Array.from(document.querySelectorAll(".shape-drop"));
+  const resetBtn = document.getElementById("resetBtn");
+  const checkBtn = document.getElementById("checkBtn");
+  const message = document.getElementById("message");
+  let audioCtx = null;
+
+  const wordsData = [
+    {text:"أَرى",     category:"sense"},
+    {text:"أَلْمِسُ", category:"sense"},
+    {text:"أَسْمَعُ", category:"sense"},
+    {text:"أَشُمُّ",  category:"sense"},
+    {text:"عَيْني",   category:"organ"},
+    {text:"يَدي",     category:"organ"},
+    {text:"أُذُني",   category:"organ"},
+    {text:"قَدَمي",   category:"organ"},
+    {text:"أَنْفي",   category:"organ"},
+    {text:"سَعيدة",  category:"feeling"}
+  ];
+
+  function getAudioCtx() {
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) audioCtx = new AC();
+    }
+    return audioCtx;
+  }
+
+  function playTone(freq, duration, type="sine", volume=0.25) {
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  }
+
+  function playCorrectSound() {
+    playTone(880, 0.15, "triangle");
+    setTimeout(() => playTone(1175, 0.18, "triangle"), 150);
+  }
+
+  function playWrongSound() {
+    playTone(220, 0.15, "square");
+    setTimeout(() => playTone(180, 0.18, "square"), 150);
+  }
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function shuffledNoRuns(data) {
+    let tries = 0;
+    while (tries < 1000) {
+      const arr = shuffle([...data]);
+      let ok = true;
+      for (let i = 1; i < arr.length; i++) {
+        if (arr[i].category === arr[i-1].category) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok) return arr;
+      tries++;
+    }
+    return shuffle([...data]);
+  }
+
+  function createWordElements() {
+    wordBank.innerHTML = "";
+    const shuffled = shuffledNoRuns(wordsData);
+
+    shuffled.forEach((item, index) => {
+      const w = document.createElement("div");
+      w.className = "word";
+      w.draggable = true;
+      w.dataset.category = item.category;
+      w.id = "w-" + (index + 1);
+      w.textContent = item.text;
+      wordBank.appendChild(w);
+    });
+  }
+
+  function clearMessage() {
+    message.textContent = "";
+    message.className = "";
+  }
+
+  function setMessage(text, type) {
+    message.textContent = text;
+    message.className = type || "";
+  }
+
+  // OYNARKEN: sadece kelimeyi kutuya koy, doğru-yanlış GÖSTERME.
+  function handleDrop(wordEl, dropEl) {
+    if (!wordEl || !dropEl) return;
+    clearMessage();
+
+    dropEl.classList.remove("over","pop","shake");
+
+    wordEl.classList.add("placed");
+    wordEl.classList.remove("wrong-word");
+    dropEl.appendChild(wordEl);
+  }
+
+  // ✅ EN SON: sadece yanlış kelimeler kırmızı olsun
+  function checkAnswers() {
+    clearMessage();
+
+    const allWords = Array.from(document.querySelectorAll(".word"));
+    const allPlaced = allWords.every(w =>
+      w.parentElement.classList.contains("shape-drop")
+    );
+
+    if (!allPlaced) {
+      setMessage("أَكْمِلْ جَميع الْكَلِمات ثُمَّ اِضْغَطْ زِرَّ التَّحَقُّق.", "error");
+      playWrongSound();
+      return;
+    }
+
+    let allCorrect = true;
+
+    drops.forEach(dropEl => {
+      dropEl.classList.remove("correct","incorrect","pop","shake");
+
+      const children = Array.from(dropEl.children)
+        .filter(el => el.classList.contains("word"));
+
+      children.forEach(w => w.classList.remove("wrong-word"));
+
+      const dropCategory = dropEl.dataset.category;
+
+      children.forEach(w => {
+        if (w.dataset.category !== dropCategory) {
+          w.classList.add("wrong-word");
+          allCorrect = false;
+        }
+      });
+    });
+
+    if (allCorrect) {
+      setMessage("🎉 أَحْسَنْت! كُلّ الْإِجابات صَحيحَة!", "success");
+      playCorrectSound();
+      setTimeout(playCorrectSound, 250);
+    } else {
+      setMessage("بَعْضُ الْكَلِمات في غَيْر مَكانِها. الكَلِمات الحَمراء خاطِئَة.", "error");
+      playWrongSound();
+    }
+  }
+
+  document.addEventListener("dragstart", (e) => {
+    if (e.target.classList.contains("word")) {
+      e.dataTransfer.setData("text/plain", e.target.id);
+      clearMessage();
+    }
+  });
+
+  drops.forEach(drop => {
+    drop.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      drop.classList.add("over");
+    });
+
+    drop.addEventListener("dragleave", () => {
+      drop.classList.remove("over");
+    });
+
+    drop.addEventListener("drop", (e) => {
+      e.preventDefault();
+      drop.classList.remove("over");
+      const id = e.dataTransfer.getData("text/plain");
+      handleDrop(document.getElementById(id), drop);
+    });
+  });
+
+  resetBtn.addEventListener("click", () => {
+    createWordElements();
+    drops.forEach(d => {
+      d.classList.remove("correct","incorrect","over","pop","shake");
+    });
+    clearMessage();
+  });
+
+  checkBtn.addEventListener("click", checkAnswers);
+
+  createWordElements();
+})();
+</script>
+
+</body>
+</html>

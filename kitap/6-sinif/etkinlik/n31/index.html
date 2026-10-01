@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>هذه عائلتي – مطابقة الأرقام بالصور</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Arial",sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#e0f2fe,#ffe4e6);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px;
+}
+
+/* ANA ALAN */
+.container{
+  width:100%;
+  max-width:1200px;
+  display:grid;
+  grid-template-columns:2fr 1fr;  /* SOLDa cümleler, SAĞda görseller */
+  gap:18px;
+}
+
+/* SOL: CÜMLELER + YÖNERGE */
+.sentences{
+  background:#ffffff;
+  padding:16px 18px;
+  border-radius:18px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.18);
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* Yönerge kutusu (cümlelerin üstünde) */
+.inst-box{
+  background:#ffffff;
+  padding:10px 18px;
+  border-radius:16px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.12);
+  font-size:26px;
+  font-weight:bold;
+  color:#0f172a;
+  text-align:center;
+}
+
+/* Cümle listesi */
+.sentences-list{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.sentence-card{
+  background:#f8fafc;
+  border-radius:14px;
+  padding:14px 16px;
+  border:2px solid transparent;
+  transition:0.2s;
+}
+
+.sentence-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+/* Cümle yazısı – BÜYÜTÜLDÜ */
+.sentence-text{
+  font-size:34px;
+  text-align:right;
+  flex:1;
+}
+
+/* Cümle yanındaki drop alanı */
+.answer-slot{
+  min-width:60px;
+  min-height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+}
+
+.small-number{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:24px;
+  color:#111827;
+  cursor:grab;
+  flex-shrink:0;
+}
+
+.sentence-card.correct{
+  border-color:#16a34a;
+  background:#dcfce7;
+}
+.sentence-card.incorrect{
+  border-color:#dc2626;
+  background:#fee2e2;
+}
+.small-number.wrong{
+  outline:3px solid #dc2626;
+}
+
+/* SAĞ: GÖRSELLER 2×3 */
+.characters{
+  background:#ffffff;
+  padding:16px;
+  border-radius:18px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.18);
+  display:flex;
+}
+
+.characters-grid{
+  flex:1;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  align-content:flex-start; /* yukarı toplansın */
+}
+
+.character-card{
+  background:#f9fafb;
+  border-radius:14px;
+  padding:10px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.18);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+}
+
+.character-card img{
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  border-radius:10px;
+}
+
+/* Altındaki renkli rakamlar */
+.number-label{
+  width:48px;
+  height:48px;
+  color:#111827;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:24px;
+  cursor:grab;
+  box-shadow:0 3px 10px rgba(0,0,0,0.25);
+}
+
+/* BUTONLAR */
+.btns{
+  margin-top:20px;
+  display:flex;
+  justify-content:center;
+  gap:12px;
+}
+
+button{
+  border:none;
+  padding:10px 22px;
+  border-radius:999px;
+  color:white;
+  font-size:20px;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.check{background:#16a34a;}
+.reset{background:#dc2626;}
+
+#msg{
+  text-align:center;
+  font-size:22px;
+  margin-top:10px;
+  min-height:30px;  /* yazı gelse de gelmese de yükseklik sabit, sayfa kaymaz */
+}
+#msg.success{color:#15803d;font-weight:bold;}
+#msg.error{color:#b91c1c;font-weight:bold;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- SOL: CÜMLELER -->
+  <div class="sentences">
+    <!-- YÖNERGE -->
+    <div class="inst-box">
+      اُنْظُرْ إلى الصُّوَر وَاسْحَب الْأَرْقامَ الْمُناسِبَة الْجُمَل .
+    </div>
+
+    <!-- Cümleler -->
+    <div class="sentences-list" id="sentencesList"></div>
+  </div>
+
+  <!-- SAĞ: GÖRSELLER -->
+  <div class="characters">
+    <div class="characters-grid" id="charactersList"></div>
+  </div>
+
+</div>
+
+<!-- BUTONLAR EN AŞAĞIDA -->
+<div class="btns">
+  <button class="check" id="checkBtn">تَحَقَّقْ مِنَ الْإِجابات</button>
+  <button class="reset" id="resetBtn">حاوِلْ مَرَّة أُخْرى</button>
+</div>
+
+<div id="msg"></div>
+
+<script>
+// Arapça rakamlar
+const arabicNums = ["١","٢","٣","٤","٥","٦"];
+
+// Renk paleti
+const numColors = ["#fde68a","#bbf7d0","#bfdbfe","#e9d5ff","#fecaca","#fed7aa"];
+
+// Görseller
+const characters = [
+  { id:1, img:"v/03.png" },
+  { id:2, img:"v/01.png" },
+  { id:3, img:"v/06.png" },
+  { id:4, img:"v/04.png" },
+  { id:5, img:"v/05.png" },
+  { id:6, img:"v/02.png" }
+];
+
+// Cümlelerin doğru eşleştirmesi: 1-3-2-4-5-6
+const sentences = [
+  { target:1, text:"أَنا عائِشَة، أَنا سَعيدَة." },
+  { target:3, text:"هَذا أَخي حَسَن، هُو حَزين." },
+  { target:2, text:"هَذِهِ أُمّي آمِنَة، هِي مُتْعَبَة." },
+  { target:4, text:"هَذا أَبي أَحْمَد، هُو مُتَهَيِّج." },
+  { target:5, text:"هَذا عَمّي عُمَر، هُو مُمِلّ." },
+  { target:6, text:"هَذِهِ خالَتي شَيْدا، هِي قَلِقَة." }
+];
+
+// Sürüklenen numaranın id'si
+let draggedId = null;
+
+/* SAĞ GÖRSELLERİ YÜKLE */
+const charactersList = document.getElementById("charactersList");
+
+characters.forEach((ch,i)=>{
+  const card = document.createElement("div");
+  card.className = "character-card";
+
+  const img = document.createElement("img");
+  img.src = ch.img;
+
+  const label = document.createElement("div");
+  label.className = "number-label";
+  label.textContent = arabicNums[i];
+  label.style.backgroundColor = numColors[i];
+  label.dataset.id = ch.id;
+  label.draggable = true;
+
+  // Sağdaki rakamdan sürükleme
+  label.addEventListener("dragstart", ()=>{
+    draggedId = ch.id;
+  });
+
+  card.appendChild(img);
+  card.appendChild(label);
+  charactersList.appendChild(card);
+});
+
+/* SOL CÜMLELERİ YÜKLE */
+const sentencesList = document.getElementById("sentencesList");
+
+sentences.forEach(s=>{
+  const card = document.createElement("div");
+  card.className = "sentence-card";
+  card.dataset.target = s.target;
+
+  const row = document.createElement("div");
+  row.className = "sentence-row";
+
+  const text = document.createElement("div");
+  text.className = "sentence-text";
+  text.textContent = s.text;
+
+  const slot = document.createElement("div");
+  slot.className = "answer-slot";
+
+  row.appendChild(text);
+  row.appendChild(slot);
+  card.appendChild(row);
+  sentencesList.appendChild(card);
+
+  // Kart üzerine bırakma izni
+  card.addEventListener("dragover", e=>e.preventDefault());
+
+  // DROP OLAYI – her numara sadece bir şıkka gidecek,
+  // cümledeki numara da tekrar sürüklenip başka yere taşınabilecek
+  card.addEventListener("drop", ()=> {
+    if (!draggedId) return;
+
+    // 1) Aynı numara başka cümlede varsa önce oradan sil
+    document.querySelectorAll(".answer-slot .small-number").forEach(n=>{
+      if (parseInt(n.dataset.id) === draggedId) {
+        n.parentElement.innerHTML = "";
+      }
+    });
+
+    // 2) Bu cümlenin slotunu temizle
+    const slot = card.querySelector(".answer-slot");
+    slot.innerHTML = "";
+
+    // 3) Yeni numarayı oluşturup ekle
+    const index = draggedId - 1;
+    const small = document.createElement("div");
+    small.className = "small-number";
+    small.dataset.id = draggedId;
+    small.textContent = arabicNums[index];
+    small.style.backgroundColor = numColors[index];
+    small.draggable = true;
+
+    // Cümledeki numaradan tekrar sürükleme (geri çekebilme)
+    small.addEventListener("dragstart", ()=>{
+      draggedId = parseInt(small.dataset.id);
+    });
+
+    slot.appendChild(small);
+
+    // 4) Eski hataları temizle
+    card.classList.remove("correct","incorrect");
+    small.classList.remove("wrong");
+    const msg = document.getElementById("msg");
+    msg.textContent = "";
+    msg.className = "";
+
+    // Bıraktıktan sonra da değiştirilebilir kalsın diye draggedId'yi sıfırlamıyoruz
+  });
+});
+
+/* KONTROL BUTONU */
+const checkBtn = document.getElementById("checkBtn");
+const msg = document.getElementById("msg");
+
+checkBtn.onclick = ()=>{
+  let filled = true;
+  let correct = true;
+
+  document.querySelectorAll(".sentence-card").forEach(card=>{
+    const slot = card.querySelector(".answer-slot");
+    const num = slot.querySelector(".small-number");
+
+    if(!num){
+      filled = false;
+      correct = false;
+      card.classList.add("incorrect");
+      return;
+    }
+
+    const chosen = parseInt(num.dataset.id);
+    const target = parseInt(card.dataset.target);
+
+    if(chosen === target){
+      card.classList.add("correct");
+    }else{
+      card.classList.add("incorrect");
+      num.classList.add("wrong");
+      correct = false;
+    }
+  });
+
+  if(!filled){
+    msg.textContent = "أَكْمِلِ الفَراغات أَوَّلًا.";
+    msg.className = "error";
+  }else if(correct){
+    msg.textContent = "🎉 أَحْسَنْتِ! كُلُّ الإِجابات صَحِيحَة.";
+    msg.className = "success";
+  }else{
+    msg.textContent = "بَعْضُ الأَرْقام لَيْسَتْ صَحيحَة.";
+    msg.className = "error";
+  }
+};
+
+/* TEKRAR BUTONU */
+document.getElementById("resetBtn").onclick = ()=>{
+  location.reload();
+};
+</script>
+
+</body>
+</html>

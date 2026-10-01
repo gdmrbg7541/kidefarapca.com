@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>اِسْحَب الْعُضْوَ الْمُناسِب في الْفَراغات.</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Arial", sans-serif;
+      direction: rtl;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, #fef3c7 0, transparent 40%),
+        radial-gradient(circle at bottom right, #bfdbfe 0, transparent 45%),
+        linear-gradient(135deg, #a5f3fc 0%, #93c5fd 40%, #f9a8d4 80%);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .game-container {
+      width: min(1100px, 100vw);
+      margin: 14px;
+      padding: 26px 22px 34px;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.98),
+        rgba(239, 246, 255, 0.98)
+      );
+      border-radius: 30px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.25);
+      border: 3px solid rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(6px);
+    }
+
+    .instruction-banner {
+      padding: 14px 20px;
+      border-radius: 40px;
+      background: #ffffff;
+      border: 4px solid #6366f1;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+      font-size: 36px;
+      text-align: center;
+      color: #4338ca;
+      margin-bottom: 22px;
+      font-family: Arial;
+    }
+
+    .sections-wrapper {
+      display: grid;
+      grid-template-rows: auto auto auto;
+      row-gap: 22px;
+    }
+
+    .card {
+      border-radius: 26px;
+      padding: 20px 20px 24px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-body {
+      background: radial-gradient(circle at top left,#fed7aa,#fecaca);
+    }
+
+    .card-head {
+      background: radial-gradient(circle at top right,#bfdbfe,#a7f3d0);
+    }
+
+    .card-words {
+      background: radial-gradient(circle at center,#fef9c3,#e0f2fe);
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-title {
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 14px;
+      color: #0f766e;
+      font-family: Arial;
+    }
+
+    .slots-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    .slot {
+      min-width: 170px;
+      min-height: 60px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 3px dashed #38bdf8;
+      background: linear-gradient(135deg,#e0f2fe,#fefce8);
+      box-shadow: 0 3px 8px rgba(15,23,42,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-size: 26px;
+      font-family: Arial;
+    }
+
+    .slot::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(129, 230, 217, 0.7);
+      bottom: -6px;
+      left: 20%;
+      box-shadow: 0 2px 5px rgba(15,23,42,0.3);
+    }
+
+    .words-title {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 12px;
+      color: #1f2937;
+      font-family: Arial;
+    }
+
+    .word-bank {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 14px;
+      padding: 6px 6px 10px;
+      overflow-x: auto;
+    }
+
+    .word {
+      padding: 12px 26px;
+      min-width: 90px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 20% 0,#fee2e2,#fb7185);
+      border: 2px solid #b91c1c;
+      text-align: center;
+      font-size: 30px;
+      cursor: grab;
+      user-select: none;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(15,23,42,0.4);
+      transition: transform 0.12s, box-shadow 0.12s, outline 0.12s;
+      white-space: nowrap;
+      font-family: Arial;
+    }
+
+    .word:active {
+      cursor: grabbing;
+      transform: scale(1.12);
+      box-shadow: 0 4px 12px rgba(15,23,42,0.3);
+    }
+
+    .word.placed {
+      background: radial-gradient(circle at 20% 0,#bbf7d0,#22c55e);
+      border-color: #15803d;
+      cursor: grab;
+    }
+
+    .word.selected {
+      outline: 3px solid #fbbf24;
+      box-shadow: 0 0 0 4px rgba(251,191,36,0.7);
+      transform: scale(1.08);
+    }
+
+    .dropzone.over {
+      background: rgba(255,255,255,0.9);
+      border-color: #22c55e !important;
+      transform: scale(1.05);
+    }
+
+    .dropzone.correct {
+      background: rgba(187,247,208,0.96);
+      border-color: #22c55e !important;
+    }
+
+    .dropzone.incorrect {
+      background: rgba(254,226,226,0.96);
+      border-color: #ef4444 !important;
+    }
+
+    .controls {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .controls button {
+      padding: 12px 26px;
+      border-radius: 28px;
+      border: none;
+      background: linear-gradient(135deg,#f97316,#ec4899);
+      color: #ffffff;
+      font-size: 26px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(15,23,42,0.25);
+      font-family: Arial;
+      margin: 0 8px;
+    }
+
+    #message {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 26px;
+      min-height: 28px;
+      font-family: Arial;
+    }
+
+    #message.success {
+      color: #16a34a;
+      font-weight: bold;
+    }
+
+    #message.error {
+      color: #dc2626;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-container">
+
+    <div class="instruction-banner">
+      اِسْحَب الْعُضْوَ الْمُناسِب في الْفَراغات.
+    </div>
+
+    <div class="sections-wrapper">
+      <!-- في الْجِسْم -->
+      <div class="card card-body">
+        <div class="card-inner">
+          <div class="card-title">في الْجِسْم</div>
+          <div class="slots-row">
+            <!-- 3 slot: 3 body kelimesi -->
+            <div class="slot dropzone" data-category="body"></div>
+            <div class="slot dropzone" data-category="body"></div>
+            <div class="slot dropzone" data-category="body"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kelime havuzu -->
+      <div class="card card-words">
+        <div class="card-inner">
+          <div class="words-title">اَلْكَلِمات:</div>
+          <div id="wordBank" class="word-bank">
+            <!-- BODY (3 kelime) -->
+            <div class="word" draggable="true" data-category="body">يَد</div>
+            <div class="word" draggable="true" data-category="body">بَطْن</div>
+            <div class="word" draggable="true" data-category="body">ظَهْر</div>
+
+            <!-- HEAD (5 kelime: 4 eski + وَجْه) -->
+            <div class="word" draggable="true" data-category="head">فَم</div>
+            <div class="word" draggable="true" data-category="head">أَنْف</div>
+            <div class="word" draggable="true" data-category="head">أُذُن</div>
+            <div class="word" draggable="true" data-category="head">شَعْر</div>
+            <!-- YÜZ: tek ve sadece baş grubu için -->
+            <div class="word" draggable="true" data-category="head">وَجْه</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- في الرَّأْس -->
+      <div class="card card-head">
+        <div class="card-inner">
+          <div class="card-title">في الرَّأْس</div>
+          <div class="slots-row">
+            <!-- 5 slot: 5 head kelimesi -->
+            <div class="slot dropzone" data-category="head"></div>
+            <div class="slot dropzone" data-category="head"></div>
+            <div class="slot dropzone" data-category="head"></div>
+            <div class="slot dropzone" data-category="head"></div>
+            <div class="slot dropzone" data-category="head"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="checkBtn">✅ تَحَقَّقْ مِنَ الْإِجابات</button>
+      <button id="resetBtn">🔄 حاوِلْ مَرَّةً أُخْرى</button>
+      <div id="message"></div>
+    </div>
+
+  </div>
+
+<script>
+(function () {
+  const words = Array.from(document.querySelectorAll(".word"));
+  const dropzones = Array.from(document.querySelectorAll(".dropzone"));
+  const wordBank = document.getElementById("wordBank");
+  const resetBtn = document.getElementById("resetBtn");
+  const checkBtn = document.getElementById("checkBtn");
+  const message = document.getElementById("message");
+
+  let selectedWord = null;
+  let draggedWord = null;
+
+  // Her kelimeye benzersiz id ver (drag&drop için)
+  words.forEach((w, i) => {
+    if (!w.id) {
+      w.id = "word-" + (i + 1);
+    }
+  });
+
+  function clearMessage() {
+    message.textContent = "";
+    message.className = "";
+  }
+
+  function setMessage(text, type) {
+    message.textContent = text;
+    message.className = type || "";
+  }
+
+  function clearSelection() {
+    words.forEach(w => w.classList.remove("selected"));
+    selectedWord = null;
+  }
+
+  // Kelimeyi herhangi bir dropzone'a yerleştir / taşımak
+  function handleDrop(wordElement, zone) {
+    if (!wordElement || !zone) return;
+
+    clearMessage();
+    zone.classList.remove("incorrect", "correct", "over");
+
+    // Eğer bu alanda daha önce bir kelime varsa → onu tekrar bank'a gönder
+    if (zone.firstElementChild) {
+      const oldWord = zone.firstElementChild;
+      oldWord.classList.remove("placed");
+      oldWord.setAttribute("draggable", "true");
+      wordBank.appendChild(oldWord);
+    }
+
+    // Kelime başka bir slotta duruyorsa → oradan çıkar
+    if (wordElement.parentElement && wordElement.parentElement.classList.contains("dropzone")) {
+      wordElement.parentElement.classList.remove("correct", "incorrect");
+    }
+
+    // Seçilen kelimeyi bu slota taşı
+    zone.appendChild(wordElement);
+    wordElement.classList.add("placed");
+    wordElement.setAttribute("draggable", "true"); // slotta da sürüklenebilir
+    wordElement.classList.remove("selected");
+
+    // Tüm alanlar dolu mu diye küçük bilgilendirme
+    const allFilled = dropzones.every(z => z.firstElementChild);
+    if (allFilled) {
+      setMessage("أَكْمَلْت جَميعَ الْأَسْاِلَة بِشَكْل صَحيح.");
+    }
+  }
+
+  // En sonda doğru-yanlışı göster
+  function checkAnswers() {
+    clearMessage();
+
+    let allFilled = true;
+    let allCorrect = true;
+
+    dropzones.forEach(zone => {
+      zone.classList.remove("correct", "incorrect");
+
+      const wordElement = zone.firstElementChild;
+      if (!wordElement) {
+        allFilled = false;
+        allCorrect = false;
+        return;
+      }
+
+      if (wordElement.dataset.category === zone.dataset.category) {
+        zone.classList.add("correct");
+      } else {
+        zone.classList.add("incorrect");
+        allCorrect = false;
+      }
+    });
+
+    if (!allFilled) {
+      setMessage("أَكْمِلْ جَميع الْفَراغات ثُمَّ اِضْغَطْ زِرَّ التَّحَقُّق.", "error");
+      return;
+    }
+
+    if (allCorrect) {
+      setMessage("أَحْسَنْت! رَتَّبْت الْأَعْضاء في أَماكِنَها الصَّحيحَة 🌟", "success");
+    } else {
+      setMessage("بَعْضُ الْإِجابات غَيْرُ صَحِيحَة. اُنْظُرْ إِلى الأَلْوان ثُمَّ حاوِلْ مَرَّة أُخْرى.", "error");
+    }
+  }
+
+  /* --- KELİMELER: tıklama + drag --- */
+  words.forEach(word => {
+    // TIKLAMA (seç ve sonra boşluğa tıkla)
+    word.addEventListener("click", () => {
+      if (selectedWord === word) {
+        clearSelection();
+      } else {
+        clearSelection();
+        selectedWord = word;
+        word.classList.add("selected");
+      }
+      clearMessage();
+    });
+
+    // DRAG BAŞLAT (artık placed olsa da sürüklenebilir)
+    word.addEventListener("dragstart", (e) => {
+      draggedWord = word;
+      e.dataTransfer.setData("text/plain", word.id);
+      e.dataTransfer.effectAllowed = "move";
+      clearMessage();
+    });
+
+    word.addEventListener("dragend", () => {
+      draggedWord = null;
+    });
+  });
+
+  /* --- DROPZONES: tıklama + sürükle-bırak --- */
+  dropzones.forEach(zone => {
+    // Sürükleme üstünde
+    zone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      zone.classList.add("over");
+    });
+
+    zone.addEventListener("dragleave", () => {
+      zone.classList.remove("over");
+    });
+
+    zone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      zone.classList.remove("over");
+      const id = e.dataTransfer.getData("text/plain");
+      const wordElement = document.getElementById(id);
+      handleDrop(wordElement, zone);
+    });
+
+    // TIKLAYARAK BIRAK
+    zone.addEventListener("click", () => {
+      if (!selectedWord) return;
+      handleDrop(selectedWord, zone);
+    });
+  });
+
+  /* RESET */
+  resetBtn.addEventListener("click", () => {
+    words.forEach(w => {
+      w.classList.remove("placed", "selected");
+      w.setAttribute("draggable", "true");
+      wordBank.appendChild(w);
+    });
+
+    dropzones.forEach(z => {
+      z.classList.remove("correct", "incorrect", "over");
+      while (z.firstChild) z.removeChild(z.firstChild);
+    });
+
+    clearSelection();
+    clearMessage();
+  });
+
+  /* CHECK BUTTON */
+  checkBtn.addEventListener("click", () => {
+    checkAnswers();
+  });
+
+})();
+</script>
+
+</body>
+</html>

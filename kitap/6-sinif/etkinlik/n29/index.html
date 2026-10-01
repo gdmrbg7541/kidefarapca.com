@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arabic Learning Activity</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap');
+
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 5px;
+      font-family: 'Scheherazade New', serif;
+      background: linear-gradient(135deg,#667eea,#764ba2,#f093fb,#f5576c,#4facfe);
+      min-height: 100%;
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    .page-container{
+      width:100%;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      background:rgba(255,255,255,0.92);
+      border-radius:15px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.15);
+      padding:15px;
+    }
+
+    .title{
+      text-align:center;
+      font-size:26px;
+      font-weight:bold;
+      color:white;
+      padding:18px;
+      background:linear-gradient(45deg,#667eea,#764ba2,#f093fb,#f5576c,#4facfe);
+      border-radius:18px;
+      margin-bottom:20px;
+    }
+
+    .main-content{
+      display:flex;
+      gap:20px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+
+    .houses-section{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:15px;
+      flex:1;
+    }
+
+    .house{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      background:white;
+      border-radius:18px;
+      padding:15px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    /* ⭐ POSTA KUTUSU GÖRSELİ */
+    .house-shape{
+      width:90px;
+      height:110px;
+      position:relative;
+      margin-bottom:10px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+    }
+    .house-base{
+      width:54px;
+      height:78px;
+      background:#ff6b6b;
+      border-radius:26px;
+      border:2px solid #b91c1c;
+      position:relative;
+    }
+    .house-base::before{
+      content:'';
+      position:absolute;
+      top:24px;
+      left:10px;
+      right:10px;
+      height:7px;
+      border-radius:999px;
+      background:#111;
+    }
+    .house-roof{
+      width:54px;
+      height:28px;
+      background:#fb7185;
+      border-radius:26px;
+      border:2px solid #b91c1c;
+      position:absolute;
+      top:-4px;
+    }
+
+    /* ⭐ UPDATED DROP-ZONE — ENİ BÜYÜTÜLDÜ 200px */
+    .drop-zone{
+      width:200px;          /* ←←← sadece EN büyütüldü */
+      height:50px;          /* aynı kaldı */
+      padding:6px 10px;
+      border:3px dashed #45b7d1;
+      border-radius:20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      font-weight:bold;
+      color:#45b7d1;
+      background:rgba(69,183,209,0.15);
+      white-space:nowrap;   /* kelime alt satıra kaymasın */
+      transition:0.3s;
+    }
+
+    .drop-zone.drag-over{
+      background:rgba(69,183,209,0.3);
+      border-color:#4ecdc4;
+      transform:scale(1.05);
+    }
+
+    .sentence-row{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+    }
+
+    .sentence{
+      font-size:30px;
+      font-weight:bold;
+    }
+
+    .envelopes-section{
+      flex:1;
+    }
+
+    .envelopes-container{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:15px;
+      padding:15px;
+    }
+
+    .envelope{
+      width:120px;
+      height:80px;
+      cursor:grab;
+      position:relative;
+    }
+
+    .envelope-body{
+      width:100%;
+      height:55px;
+      background:#feca57;
+      border-radius:12px;
+      position:absolute;
+      bottom:0;
+    }
+
+    .envelope-flap{
+      border-left:60px solid transparent;
+      border-right:60px solid transparent;
+      border-bottom:35px solid #ff6b6b;
+      position:absolute;
+      top:0;
+    }
+
+    .envelope-text{
+      position:absolute;
+      bottom:15px;
+      left:50%;
+      transform:translateX(-50%);
+      font-size:24px;
+      font-weight:bold;
+      white-space:nowrap;
+    }
+
+    .replay-button{
+      margin-top:20px;
+      padding:10px 25px;
+      font-size:18px;
+      border:none;
+      border-radius:999px;
+      background:#4facfe;
+      color:white;
+      cursor:pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page-container">
+
+  <div class="title">أَكْمِل الْفَراغات بِالْكَلِمَةِ الْمُناسِبَة</div>
+
+  <div class="main-content">
+
+    <div class="houses-section">
+
+      <!-- 1 -->
+      <div class="house">
+        <div class="house-shape">
+          <div class="house-base"></div>
+          <div class="house-roof"></div>
+        </div>
+        <div class="sentence-row">
+          <div class="sentence">أَسْمَعُ بِـ</div>
+          <div class="drop-zone" data-answer="٣" data-text="الْأُذُن">...</div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="house">
+        <div class="house-shape">
+          <div class="house-base"></div>
+          <div class="house-roof"></div>
+        </div>
+        <div class="sentence-row">
+          <div class="sentence">أَشُمُّ بِـ</div>
+          <div class="drop-zone" data-answer="٤" data-text="الْأَنْف">...</div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="house">
+        <div class="house-shape">
+          <div class="house-base"></div>
+          <div class="house-roof"></div>
+        </div>
+        <div class="sentence-row">
+          <div class="sentence">أَرى بِـ</div>
+          <div class="drop-zone" data-answer="٢" data-text="الْعَيْن">...</div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="house">
+        <div class="house-shape">
+          <div class="house-base"></div>
+          <div class="house-roof"></div>
+        </div>
+        <div class="sentence-row">
+          <div class="sentence">أَلْمِسُ بِـ</div>
+          <div class="drop-zone" data-answer="٦" data-text="الْيَد">...</div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="house">
+        <div class="house-shape">
+          <div class="house-base"></div>
+          <div class="house-roof"></div>
+        </div>
+        <div class="sentence-row">
+          <div class="sentence">في الرَّأْس</div>
+          <div class="drop-zone" data-answer="٥" data-text="شَعْر">...</div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="house">
+        <div class="house-shape">
+          <div class="house-base"></div>
+          <div class="house-roof"></div>
+        </div>
+        <div class="sentence-row">
+          <div class="sentence">في الْوَجْه</div>
+          <div class="drop-zone" data-answer="١" data-text="فَم">...</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="envelopes-section">
+      <div class="envelopes-container">
+
+        <div class="envelope" draggable="true" data-number="١" data-text="فَم">
+          <div class="envelope-body"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-text">فَم</div>
+        </div>
+
+        <div class="envelope" draggable="true" data-number="٢" data-text="الْعَيْن">
+          <div class="envelope-body"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-text">الْعَيْن</div>
+        </div>
+
+        <div class="envelope" draggable="true" data-number="٣" data-text="الْأُذُن">
+          <div class="envelope-body"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-text">الْأُذُن</div>
+        </div>
+
+        <div class="envelope" draggable="true" data-number="٤" data-text="الْأَنْف">
+          <div class="envelope-body"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-text">الْأَنْف</div>
+        </div>
+
+        <div class="envelope" draggable="true" data-number="٥" data-text="شَعْر">
+          <div class="envelope-body"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-text">شَعْر</div>
+        </div>
+
+        <div class="envelope" draggable="true" data-number="٦" data-text="الْيَد">
+          <div class="envelope-body"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-text">الْيَد</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div style="text-align:center;">
+    <button class="replay-button" onclick="resetGame()">🔁 حاوِلْ مَرَّة أُخْرى</button>
+  </div>
+
+</div>
+
+<script>
+let draggedElement=null;
+
+document.querySelectorAll('.envelope').forEach(env=>{
+  env.addEventListener('dragstart',e=>{
+    draggedElement=env;
+    e.dataTransfer.setData('text/plain',env.dataset.number);
+  });
+  env.addEventListener('click',()=>{
+    document.querySelectorAll('.envelope').forEach(x=>x.classList.remove('selected'));
+    env.classList.add('selected');
+    draggedElement=env;
+  });
+});
+
+document.querySelectorAll('.drop-zone').forEach(zone=>{
+  zone.addEventListener('dragover',e=>{
+    e.preventDefault();
+    zone.classList.add('drag-over');
+  });
+  zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over'));
+  zone.addEventListener('drop',()=>{
+    zone.classList.remove('drag-over');
+    handleDrop(zone);
+  });
+  zone.addEventListener('click',()=>handleDrop(zone));
+});
+
+function handleDrop(zone){
+  if(!draggedElement) return;
+
+  let text=draggedElement.dataset.text;
+  let num=draggedElement.dataset.number;
+
+  zone.textContent=text;
+  zone.dataset.current=num;
+  zone.classList.remove('correct-result','wrong-result');
+
+  document.querySelectorAll('.envelope').forEach(e=>e.classList.remove('selected'));
+  draggedElement=null;
+
+  const allFilled=[...document.querySelectorAll('.drop-zone')].every(z=>z.dataset.current);
+  if(allFilled) evaluateAnswers();
+}
+
+function evaluateAnswers(){
+  let allCorrect=true;
+  document.querySelectorAll('.drop-zone').forEach(zone=>{
+    if(zone.dataset.current===zone.dataset.answer){
+      zone.style.background='#2ecc71';
+      zone.style.color='white';
+    }else{
+      zone.style.background='#e74c3c';
+      zone.style.color='white';
+      allCorrect=false;
+    }
+  });
+}
+
+function resetGame(){
+  document.querySelectorAll('.drop-zone').forEach(z=>{
+    z.textContent='...';
+    z.dataset.current='';
+    z.style='';
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="tr" style="height: 100%;">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arapça Kelime Sınıflandırma</title>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100%;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .instruction {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .category {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 200px;
+            border: 3px dashed rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .category.drag-over {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.02);
+        }
+
+        .category-title {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .words-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .word-item {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 20px 28px;
+            border-radius: 15px;
+            font-size: 1.9rem;
+            font-weight: bold;
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .word-item:nth-child(2n) {
+            background: linear-gradient(45deg, #48cae4, #023e8a);
+        }
+
+        .word-item:nth-child(3n) {
+            background: linear-gradient(45deg, #ff9ec7, #ff6bb3);
+        }
+
+        .word-item:nth-child(4n) {
+            background: linear-gradient(45deg, #06ffa5, #0077b6);
+        }
+
+        .word-item:nth-child(5n) {
+            background: linear-gradient(45deg, #ffbe0b, #fb8500);
+        }
+
+        .word-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .word-item:active {
+            cursor: grabbing;
+            transform: rotate(5deg) scale(0.95);
+        }
+
+        .word-item.dragging {
+            opacity: 0.7;
+            transform: rotate(10deg) scale(1.1);
+            z-index: 1000;
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 36px;
+            border-radius: 25px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .success-message {
+            background: linear-gradient(45deg, #06ffa5, #0077b6);
+            color: white;
+            padding: 24px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .category-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 100px;
+        }
+
+        .category .word-item {
+            font-size: 1.7rem;
+            padding: 16px 22px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                font-size: 16px;
+            }
+            
+            .container {
+                padding: 15px;
+                border-radius: 15px;
+            }
+            
+            .instruction {
+                font-size: 1.4rem;
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .game-title {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+            
+            .categories {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+            
+            .category {
+                padding: 15px;
+                min-height: 150px;
+            }
+            
+            .category-title {
+                font-size: 1.6rem;
+                padding: 8px;
+                margin-bottom: 10px;
+            }
+            
+            .words-container {
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            
+            .word-item {
+                font-size: 1.5rem;
+                padding: 15px 20px;
+                min-height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                line-height: 1.2;
+            }
+            
+            .category .word-item {
+                font-size: 1.3rem;
+                padding: 12px 16px;
+                min-height: 45px;
+            }
+            
+            .btn {
+                font-size: 1.2rem;
+                padding: 15px 25px;
+                margin: 5px;
+                display: inline-block;
+                width: auto;
+                min-width: 120px;
+            }
+            
+            .success-message {
+                font-size: 1.4rem;
+                padding: 15px;
+                margin-top: 15px;
+            }
+            
+            .controls {
+                margin-top: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .instruction {
+                font-size: 1.2rem;
+                padding: 8px;
+            }
+            
+            .game-title {
+                font-size: 1.8rem;
+            }
+            
+            .category-title {
+                font-size: 1.4rem;
+            }
+            
+            .word-item {
+                font-size: 1.3rem;
+                padding: 12px 16px;
+            }
+            
+            .category .word-item {
+                font-size: 1.1rem;
+                padding: 10px 14px;
+            }
+            
+            .btn {
+                font-size: 1.1rem;
+                padding: 12px 20px;
+                width: 90%;
+                max-width: 250px;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.fixed{position:fixed}.block{display:block}.inline{display:inline}.flex{display:flex}.grid{display:grid}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.flex-wrap{flex-wrap:wrap}.border{border-width:1px}.blur{--tw-blur:blur(8px)}.blur,.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-filter{-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}</style>
+ </head>
+ <body>
+  <div class="container">
+   <div class="instruction" id="instruction">
+    اِسْحَبْ إِلى الْكَلِماتِ الصَّحيحَة
+   </div>
+   <h1 class="game-title" id="gameTitle">لُعْبَةُ تَصْنيفِ الْكَلِماتِ الْعَرَبِيَّة</h1>
+   <div class="categories">
+    <div class="category" data-category="school-parts">
+     <div class="category-title">
+      أَقْسامُ الْمَدْرَسَة
+     </div>
+     <div class="category-items"></div>
+    </div>
+    <div class="category" data-category="school-tools">
+     <div class="category-title">
+      أَدَواتُ الْمَدْرَسَة
+     </div>
+     <div class="category-items"></div>
+    </div>
+    <div class="category" data-category="ordinal-numbers">
+     <div class="category-title">
+      اَلْأَعَدادُ التَّرْتيبِيَّة
+     </div>
+     <div class="category-items"></div>
+    </div>
+   </div>
+   <div class="words-container" id="wordsContainer">
+    <div class="word-item" draggable="true" data-word="غُرْفَةُ الْمُدير" data-category="school-parts">
+     غُرْفَةُ الْمُدير
+    </div>
+    <div class="word-item" draggable="true" data-word="مُخْتَبَر" data-category="school-parts">
+     مُخْتَبَر
+    </div>
+    <div class="word-item" draggable="true" data-word="فِناءُ الْمَدْرَسَة" data-category="school-parts">
+     فِناءُ الْمَدْرَسَة
+    </div>
+    <div class="word-item" draggable="true" data-word="خَريطَة" data-category="school-tools">
+     خَريطَة
+    </div>
+    <div class="word-item" draggable="true" data-word="تَحْتَ" data-category="school-tools">
+     تَحْتَ
+    </div>
+    <div class="word-item" draggable="true" data-word="مَقْعَد" data-category="school-tools">
+     مَقْعَد
+    </div>
+    <div class="word-item" draggable="true" data-word="اَلثّامِن" data-category="ordinal-numbers">
+     اَلثّامِن
+    </div>
+    <div class="word-item" draggable="true" data-word="اَلْعاشِر" data-category="ordinal-numbers">
+     اَلْعاشِر
+    </div>
+    <div class="word-item" draggable="true" data-word="يَسارَ" data-category="school-tools">
+     يَسارَ
+    </div>
+   </div>
+   <div class="controls"><button class="btn" onclick="checkAnswers()">تَحَقَّقْ مِنَ الْإِجابات</button> <button class="btn" onclick="resetGame()">اَعِدْ تَشْغيلِ اللُّعْبَة</button>
+   </div>
+   <div class="success-message" id="successMessage">
+    مُبارَك! لَقَد وَضَعْتَ جَميع الْكَلِمات في الْفِئات الصَّحيحَة! 🎉
+   </div>
+  </div>
+  <script>
+        const defaultConfig = {
+            game_title: "لُعْبَةُ تَصْنيفِ الْكَلِماتِ الْعَرَبِيَّة",
+            success_message: "مُبارَك! لَقَد وَضَعْتَ جَميع الْكَلِمات في الْفِئات الصَّحيحَة! 🎉"
+        };
+
+        let draggedElement = null;
+
+        // Element SDK initialization
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                render: async (config) => {
+                    const gameTitle = document.getElementById('gameTitle');
+                    const successMessage = document.getElementById('successMessage');
+                    
+                    if (gameTitle) {
+                        gameTitle.textContent = config.game_title || defaultConfig.game_title;
+                    }
+                    
+                    if (successMessage) {
+                        successMessage.textContent = config.success_message || defaultConfig.success_message;
+                    }
+                },
+                mapToCapabilities: (config) => ({
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["game_title", config.game_title || defaultConfig.game_title],
+                    ["success_message", config.success_message || defaultConfig.success_message]
+                ])
+            });
+        }
+
+        // Drag and drop functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDragAndDrop();
+        });
+
+        function initializeDragAndDrop() {
+            const wordItems = document.querySelectorAll('.word-item');
+            const categories = document.querySelectorAll('.category');
+            const wordsContainer = document.getElementById('wordsContainer');
+
+            // Add drag events to word items
+            wordItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+                
+                // Touch events for mobile
+                item.addEventListener('touchstart', handleTouchStart, { passive: false });
+                item.addEventListener('touchmove', handleTouchMove, { passive: false });
+                item.addEventListener('touchend', handleTouchEnd, { passive: false });
+            });
+
+            // Add drop events to categories
+            categories.forEach(category => {
+                category.addEventListener('dragover', handleDragOver);
+                category.addEventListener('drop', handleDrop);
+                category.addEventListener('dragenter', handleDragEnter);
+                category.addEventListener('dragleave', handleDragLeave);
+            });
+
+            // Add drop events to words container
+            wordsContainer.addEventListener('dragover', handleDragOver);
+            wordsContainer.addEventListener('drop', handleDropToContainer);
+        }
+
+        let touchItem = null;
+        let touchOffset = { x: 0, y: 0 };
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.outerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            // Clean up any drag-over states
+            document.querySelectorAll('.category').forEach(cat => {
+                cat.classList.remove('drag-over');
+            });
+            draggedElement = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            const category = e.target.closest('.category');
+            if (category) {
+                category.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            const category = e.target.closest('.category');
+            if (category && !category.contains(e.relatedTarget)) {
+                category.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const category = e.target.closest('.category');
+            
+            if (category && draggedElement) {
+                const categoryItems = category.querySelector('.category-items');
+                if (categoryItems) {
+                    categoryItems.appendChild(draggedElement);
+                    playDropSound();
+                }
+                category.classList.remove('drag-over');
+            }
+        }
+
+        function handleDropToContainer(e) {
+            e.preventDefault();
+            const wordsContainer = document.getElementById('wordsContainer');
+            
+            if (draggedElement && (e.target === wordsContainer || wordsContainer.contains(e.target))) {
+                wordsContainer.appendChild(draggedElement);
+            }
+        }
+
+        // Touch events for mobile devices
+        function handleTouchStart(e) {
+            touchItem = this;
+            const touch = e.touches[0];
+            const rect = this.getBoundingClientRect();
+            touchOffset.x = touch.clientX - rect.left;
+            touchOffset.y = touch.clientY - rect.top;
+            
+            this.classList.add('dragging');
+            e.preventDefault();
+        }
+
+        function handleTouchMove(e) {
+            if (!touchItem) return;
+            
+            const touch = e.touches[0];
+            touchItem.style.position = 'fixed';
+            touchItem.style.left = (touch.clientX - touchOffset.x) + 'px';
+            touchItem.style.top = (touch.clientY - touchOffset.y) + 'px';
+            touchItem.style.zIndex = '1000';
+            touchItem.style.pointerEvents = 'none';
+            
+            // Find element under touch
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const category = elementBelow ? elementBelow.closest('.category') : null;
+            
+            // Remove previous drag-over states
+            document.querySelectorAll('.category').forEach(cat => {
+                cat.classList.remove('drag-over');
+            });
+            
+            // Add drag-over to current category
+            if (category) {
+                category.classList.add('drag-over');
+            }
+            
+            e.preventDefault();
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchItem) return;
+            
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const category = elementBelow ? elementBelow.closest('.category') : null;
+            const wordsContainer = document.getElementById('wordsContainer');
+            
+            // Reset styles
+            touchItem.style.position = '';
+            touchItem.style.left = '';
+            touchItem.style.top = '';
+            touchItem.style.zIndex = '';
+            touchItem.style.pointerEvents = '';
+            touchItem.classList.remove('dragging');
+            
+            // Remove drag-over states
+            document.querySelectorAll('.category').forEach(cat => {
+                cat.classList.remove('drag-over');
+            });
+            
+            // Move to category or back to container
+            if (category) {
+                const categoryItems = category.querySelector('.category-items');
+                if (categoryItems) {
+                    categoryItems.appendChild(touchItem);
+                    playDropSound();
+                }
+            } else if (elementBelow && (elementBelow === wordsContainer || wordsContainer.contains(elementBelow))) {
+                wordsContainer.appendChild(touchItem);
+            }
+            
+            touchItem = null;
+            e.preventDefault();
+        }
+
+        // Audio feedback functions
+        function playSuccessSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Beautiful success melody with harmonics
+                const melody = [
+                    { freq: 523.25, time: 0 },     // C5
+                    { freq: 659.25, time: 0.15 },  // E5
+                    { freq: 783.99, time: 0.3 },   // G5
+                    { freq: 1046.50, time: 0.45 }  // C6
+                ];
+                
+                // Add harmonics for richer sound
+                melody.forEach((note, index) => {
+                    // Main note
+                    createTone(audioContext, note.freq, note.time, 0.6, 'sine');
+                    // Harmonic (octave)
+                    createTone(audioContext, note.freq * 2, note.time, 0.2, 'sine');
+                    // Fifth harmonic
+                    createTone(audioContext, note.freq * 1.5, note.time, 0.15, 'triangle');
+                });
+                
+                // Add a gentle reverb effect with delay
+                setTimeout(() => {
+                    melody.forEach((note, index) => {
+                        createTone(audioContext, note.freq, note.time + 0.1, 0.2, 'sine');
+                    });
+                }, 100);
+                
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function playErrorSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Gentle error sound - not harsh
+                const errorNotes = [
+                    { freq: 440, time: 0 },      // A4
+                    { freq: 415.30, time: 0.2 }, // G#4
+                    { freq: 392, time: 0.4 },    // G4
+                ];
+                
+                errorNotes.forEach((note, index) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    const filter = audioContext.createBiquadFilter();
+                    
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(audioContext.destination);
+                    
+                    osc.frequency.setValueAtTime(note.freq, audioContext.currentTime + note.time);
+                    osc.type = 'triangle';
+                    
+                    // Low-pass filter for softer sound
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(800, audioContext.currentTime + note.time);
+                    
+                    gain.gain.setValueAtTime(0, audioContext.currentTime + note.time);
+                    gain.gain.linearRampToValueAtTime(0.25, audioContext.currentTime + note.time + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + note.time + 0.4);
+                    
+                    osc.start(audioContext.currentTime + note.time);
+                    osc.stop(audioContext.currentTime + note.time + 0.4);
+                });
+                
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function playDropSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Pleasant drop sound with multiple layers
+                const dropFreqs = [600, 800, 1000];
+                
+                dropFreqs.forEach((freq, index) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    const filter = audioContext.createBiquadFilter();
+                    
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(audioContext.destination);
+                    
+                    osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(freq * 0.5, audioContext.currentTime + 0.15);
+                    osc.type = index === 0 ? 'sine' : 'triangle';
+                    
+                    // Band-pass filter for bell-like sound
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(freq, audioContext.currentTime);
+                    filter.Q.setValueAtTime(10, audioContext.currentTime);
+                    
+                    const volume = index === 0 ? 0.3 : 0.15;
+                    gain.gain.setValueAtTime(0, audioContext.currentTime);
+                    gain.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                    
+                    osc.start(audioContext.currentTime);
+                    osc.stop(audioContext.currentTime + 0.15);
+                });
+                
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function createTone(audioContext, frequency, startTime, volume, waveType) {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.frequency.setValueAtTime(frequency, audioContext.currentTime + startTime);
+            osc.type = waveType;
+            
+            // Add subtle filter for warmth
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(frequency * 4, audioContext.currentTime + startTime);
+            
+            gain.gain.setValueAtTime(0, audioContext.currentTime + startTime);
+            gain.gain.linearRampToValueAtTime(volume, audioContext.currentTime + startTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + startTime + 0.5);
+            
+            osc.start(audioContext.currentTime + startTime);
+            osc.stop(audioContext.currentTime + startTime + 0.5);
+        }
+
+        function checkAnswers() {
+            const categories = document.querySelectorAll('.category');
+            let correctCount = 0;
+            let totalWords = 0;
+
+            categories.forEach(category => {
+                const categoryType = category.dataset.category;
+                const wordsInCategory = category.querySelectorAll('.word-item');
+                
+                wordsInCategory.forEach(word => {
+                    totalWords++;
+                    if (word.dataset.category === categoryType) {
+                        correctCount++;
+                        word.style.border = '3px solid #06ffa5';
+                    } else {
+                        word.style.border = '3px solid #ff6b6b';
+                    }
+                });
+            });
+
+            // Reset border colors after 2 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.word-item').forEach(word => {
+                    word.style.border = '3px solid rgba(255, 255, 255, 0.3)';
+                });
+            }, 2000);
+
+            if (correctCount === totalWords && totalWords > 0) {
+                playSuccessSound();
+                document.getElementById('successMessage').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'none';
+                }, 4000);
+            } else {
+                playErrorSound();
+                // Show inline feedback instead of alert
+                const feedback = document.createElement('div');
+                feedback.style.cssText = `
+                    background: linear-gradient(45deg, #ff6b6b, #feca57);
+                    color: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    text-align: center;
+                    font-weight: bold;
+                    margin-top: 20px;
+                    animation: slideIn 0.5s ease;
+                `;
+                feedback.textContent = `${correctCount}/${totalWords} صَحيح! حاوِل مَرَّة أُخْرى.`;
+                
+                const existingFeedback = document.querySelector('.feedback-message');
+                if (existingFeedback) {
+                    existingFeedback.remove();
+                }
+                
+                feedback.classList.add('feedback-message');
+                document.querySelector('.controls').appendChild(feedback);
+                
+                setTimeout(() => {
+                    feedback.remove();
+                }, 3000);
+            }
+        }
+
+        function resetGame() {
+            const wordsContainer = document.getElementById('wordsContainer');
+            const allWords = document.querySelectorAll('.word-item');
+            
+            allWords.forEach(word => {
+                wordsContainer.appendChild(word);
+                word.style.border = '3px solid rgba(255, 255, 255, 0.3)';
+            });
+
+            document.getElementById('successMessage').style.display = 'none';
+            
+            const existingFeedback = document.querySelector('.feedback-message');
+            if (existingFeedback) {
+                existingFeedback.remove();
+            }
+        }
+    </script>
+ </body>
+</html>

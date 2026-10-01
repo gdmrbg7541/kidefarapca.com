@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="tr" style="height: 100%;">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arapça Sayılar Sınıflandırma</title>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100%;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 4.5rem;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .instruction {
+            font-size: 4.5rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .numbers-pool {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 10px;
+            min-height: 400px;
+            border: 3px dashed #cbd5e0;
+        }
+
+        .pool-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
+        /* Desktop specific - 2 columns for better readability */
+        @media (min-width: 1025px) {
+            .numbers-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 6px;
+            }
+        }
+
+        .category {
+            background: #edf2f7;
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 400px;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .category.drag-over {
+            border-color: #48bb78;
+            background: #f0fff4;
+            transform: scale(1.02);
+        }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .category-prefix {
+            font-size: 5.5rem;
+            font-weight: bold;
+            color: #2b6cb0;
+            margin-bottom: 10px;
+        }
+
+        .category-title {
+            font-size: 2.9rem;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .number-card {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            padding: 16px 8px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: grab;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            user-select: none;
+            touch-action: none;
+        }
+
+        .number-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .number-card:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .number-card.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .category .number-card {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            margin-bottom: 0;
+        }
+
+        .category-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .score-board {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .score {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 18px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 2.2rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.4s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+        }
+
+        .feedback.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+            color: #22543d;
+            border-color: #48bb78;
+            animation: correctPulse 0.6s ease-in-out;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
+            color: #742a2a;
+            border-color: #f56565;
+            animation: incorrectShake 0.6s ease-in-out;
+        }
+
+        .feedback.complete {
+            background: linear-gradient(135deg, #ffd89b, #19547b);
+            color: white;
+            border-color: #f6ad55;
+            animation: completeCelebration 1s ease-in-out;
+            font-size: 2.5rem;
+            padding: 24px;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes completeCelebration {
+            0% { transform: scale(0.8) rotate(-5deg); }
+            50% { transform: scale(1.1) rotate(2deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .feedback-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            display: inline-block;
+            animation: iconBounce 0.5s ease-in-out;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+            color: white;
+            border: none;
+            padding: 20px 45px;
+            border-radius: 25px;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            touch-action: manipulation;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Tablet responsive */
+        @media (max-width: 1024px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 20px;
+                margin: 0;
+                border-radius: 15px;
+            }
+            
+            .title {
+                font-size: 2.8rem;
+            }
+            
+            .instruction {
+                font-size: 1.4rem;
+            }
+            
+            .game-area {
+                grid-template-columns: 1fr 220px 1fr;
+                gap: 20px;
+            }
+            
+            .category-prefix {
+                font-size: 3.5rem;
+            }
+            
+            .category-title {
+                font-size: 1.6rem;
+            }
+            
+            .numbers-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .number-card {
+                padding: 18px 12px;
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+            
+            .container {
+                padding: 12px;
+                margin: 0;
+                border-radius: 8px;
+            }
+            
+            .title {
+                font-size: 2.4rem;
+                margin-bottom: 12px;
+            }
+            
+            .instruction {
+                font-size: 1.3rem;
+                margin-bottom: 18px;
+                line-height: 1.5;
+            }
+            
+            .game-area {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 18px;
+            }
+            
+            .numbers-pool {
+                padding: 12px;
+                min-height: 280px;
+                order: 1;
+            }
+            
+            .pool-title {
+                font-size: 1.6rem;
+                margin-bottom: 12px;
+            }
+            
+            .numbers-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .category {
+                padding: 12px;
+                min-height: 160px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .category-content {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                flex: 1;
+            }
+            
+            .category:first-child {
+                order: 2;
+            }
+            
+            .category:last-child {
+                order: 3;
+            }
+            
+            .category-prefix {
+                font-size: 2.8rem;
+                margin-bottom: 6px;
+            }
+            
+            .category-title {
+                font-size: 1.4rem;
+                margin-bottom: 8px;
+            }
+            
+            .category-header {
+                margin-bottom: 12px;
+                flex-shrink: 0;
+            }
+            
+            .number-card {
+                padding: 16px 10px;
+                font-size: 1.6rem;
+                min-height: 55px;
+                min-width: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex: 0 0 auto;
+                margin-bottom: 8px;
+            }
+            
+            .score-board {
+                padding: 12px;
+                margin-top: 12px;
+            }
+            
+            .score {
+                font-size: 1.6rem;
+            }
+            
+            .feedback {
+                margin-top: 8px;
+                padding: 12px;
+                font-size: 1.2rem;
+            }
+            
+            .reset-btn {
+                padding: 14px 24px;
+                font-size: 1.2rem;
+                margin-top: 8px;
+                min-height: 50px;
+            }
+        }
+
+        /* Small mobile responsive */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .title {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+            
+            .instruction {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+            }
+            
+            .numbers-pool {
+                padding: 10px;
+                min-height: 250px;
+            }
+            
+            .pool-title {
+                font-size: 1.4rem;
+                margin-bottom: 10px;
+            }
+            
+            .numbers-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+            
+            .number-card {
+                padding: 14px 8px;
+                font-size: 1.4rem;
+                min-height: 50px;
+                min-width: 90px;
+            }
+            
+            .category {
+                padding: 10px;
+                min-height: 140px;
+            }
+            
+            .category-prefix {
+                font-size: 2.4rem;
+            }
+            
+            .category-title {
+                font-size: 1.2rem;
+            }
+            
+            .score-board {
+                padding: 10px;
+            }
+            
+            .score {
+                font-size: 1.4rem;
+            }
+            
+            .reset-btn {
+                padding: 12px 20px;
+                font-size: 1.1rem;
+                min-height: 46px;
+            }
+        }
+
+        /* Extra small mobile */
+        @media (max-width: 360px) {
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .instruction {
+                font-size: 1rem;
+            }
+            
+            .number-card {
+                font-size: 1.3rem;
+                min-width: 85px;
+                min-height: 48px;
+            }
+            
+            .category-prefix {
+                font-size: 2.2rem;
+            }
+            
+            .category-title {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.flex{display:flex}.grid{display:grid}.flex-shrink{flex-shrink:1}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.border{border-width:1px}.ordinal{--tw-ordinal:ordinal;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}</style>
+ </head>
+ <body>
+  <div class="container">
+   <header class="header">
+    <h1 class="title" id="main-title">تَصْنيفُ الْأَعْداد</h1>
+    <p class="instruction" id="instruction-text">اِسْحَب الْأَعْداد إِلى الْمَجْموعَةِ الصَّحيحَة</p>
+   </header>
+   <div class="game-area">
+    <div class="category" id="counting-category" data-type="counting">
+     <div class="category-header">
+      <div class="category-prefix">
+       أ
+      </div>
+      <div class="category-title" id="counting-label">
+       اَلْأَعْدادُ الطَّبيعِيَّة
+      </div>
+     </div>
+     <div class="category-content"></div>
+    </div>
+    <div class="numbers-pool">
+     <div class="pool-title">
+      اَلْأَعْداد
+     </div>
+     <div class="numbers-grid" id="numbers-pool"><!-- Numbers will be generated here -->
+     </div>
+    </div>
+    <div class="category" id="ordinal-category" data-type="ordinal">
+     <div class="category-header">
+      <div class="category-prefix">
+       ب
+      </div>
+      <div class="category-title" id="ordinal-label">
+       اَلْأَعْدادُ التَّرْتيبِيَّة
+      </div>
+     </div>
+     <div class="category-content"></div>
+    </div>
+   </div>
+   <div class="score-board">
+    <div class="score">
+     اَلنَّتيجَة: <span id="score">0</span> / 20
+    </div>
+    <div class="feedback" id="feedback"></div><button class="reset-btn" onclick="resetGame()">أَعِد اللُّعْبَة</button>
+   </div>
+  </div>
+  <script>
+        // Default configuration
+        const defaultConfig = {
+            main_title: "تَصْنيفُ الْأَعْداد",
+            instruction_text: "اِسْحَب الْأَعْداد إِلى الْمَجْموعَةِ الصَّحيحَة",
+            counting_label: "اَلْأَعْدادُ الطَّبيعِيَّة",
+            ordinal_label: "اَلْأَعْدادُ التَّرْتيبِيَّة"
+        };
+
+        // Arabic numbers data with pronunciation
+        const arabicNumbers = {
+            counting: [
+                { text: 'واحِد', pronunciation: 'واحد' },
+                { text: 'اِثْنان', pronunciation: 'اثنان' },
+                { text: 'ثَلاثَة', pronunciation: 'ثلاثة' },
+                { text: 'أَرْبَعَة', pronunciation: 'أربعة' },
+                { text: 'خَمْسَة', pronunciation: 'خمسة' },
+                { text: 'سِتَّة', pronunciation: 'ستة' },
+                { text: 'سَبْعَة', pronunciation: 'سبعة' },
+                { text: 'ثَمانِيَة', pronunciation: 'ثمانية' },
+                { text: 'تِسْعَة', pronunciation: 'تسعة' },
+                { text: 'عَشْرَة', pronunciation: 'عشرة' }
+            ],
+            ordinal: [
+                { text: 'اَلْأَوَّل', pronunciation: 'الأول' },
+                { text: 'اَلثّاني', pronunciation: 'الثاني' },
+                { text: 'اَلثّالِث', pronunciation: 'الثالث' },
+                { text: 'اَلرّابِع', pronunciation: 'الرابع' },
+                { text: 'اَلْخامِس', pronunciation: 'الخامس' },
+                { text: 'اَلسّادِس', pronunciation: 'السادس' },
+                { text: 'اَلسّابِع', pronunciation: 'السابع' },
+                { text: 'اَلثّامِن', pronunciation: 'الثامن' },
+                { text: 'اَلتّاسِع', pronunciation: 'التاسع' },
+                { text: 'اَلْعاشِر', pronunciation: 'العاشر' }
+            ]
+        };
+
+        let gameNumbers = [];
+        let score = 0;
+        let draggedElement = null;
+
+        // Audio context for pronunciation and feedback
+        let audioContext = null;
+
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            return audioContext;
+        }
+
+        // Only feedback sounds remain - no pronunciation or touch sounds
+
+        function playSuccessSound() {
+            try {
+                const ctx = initAudioContext();
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                
+                // Success melody
+                oscillator.frequency.setValueAtTime(523, ctx.currentTime); // C5
+                oscillator.frequency.setValueAtTime(659, ctx.currentTime + 0.1); // E5
+                oscillator.frequency.setValueAtTime(784, ctx.currentTime + 0.2); // G5
+                gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                
+                oscillator.start(ctx.currentTime);
+                oscillator.stop(ctx.currentTime + 0.4);
+            } catch (e) {
+                console.log('Audio not available');
+            }
+        }
+
+        function playErrorSound() {
+            try {
+                const ctx = initAudioContext();
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                
+                // Error sound
+                oscillator.frequency.setValueAtTime(300, ctx.currentTime);
+                oscillator.frequency.setValueAtTime(250, ctx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                
+                oscillator.start(ctx.currentTime);
+                oscillator.stop(ctx.currentTime + 0.3);
+            } catch (e) {
+                console.log('Audio not available');
+            }
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function createNumberCard(numberObj, type) {
+            const card = document.createElement('div');
+            card.className = 'number-card';
+            card.draggable = true;
+            card.textContent = numberObj.text;
+            card.dataset.type = type;
+            card.dataset.number = numberObj.text;
+            card.dataset.pronunciation = numberObj.pronunciation;
+
+            // Add drag events only (no pronunciation sounds)
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+
+            return card;
+        }
+
+        function initializeGame() {
+            const pool = document.getElementById('numbers-pool');
+            pool.innerHTML = '';
+            
+            // Combine all numbers and shuffle
+            gameNumbers = [
+                ...arabicNumbers.counting.map(num => ({ numberObj: num, type: 'counting' })),
+                ...arabicNumbers.ordinal.map(num => ({ numberObj: num, type: 'ordinal' }))
+            ];
+            
+            gameNumbers = shuffleArray(gameNumbers);
+            
+            // Create cards
+            gameNumbers.forEach(item => {
+                const card = createNumberCard(item.numberObj, item.type);
+                pool.appendChild(card);
+            });
+
+            // Reset score
+            score = 0;
+            updateScore();
+            
+            // Clear categories
+            document.getElementById('counting-category').querySelectorAll('.number-card').forEach(card => card.remove());
+            document.getElementById('ordinal-category').querySelectorAll('.number-card').forEach(card => card.remove());
+        }
+
+        function handleDragStart(e) {
+            e.stopPropagation();
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', '');
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedElement = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            const category = e.target.closest('.category');
+            if (category) {
+                category.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            const category = e.target.closest('.category');
+            if (category && !category.contains(e.relatedTarget)) {
+                category.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const category = e.target.closest('.category');
+            if (!category || !draggedElement) return;
+
+            category.classList.remove('drag-over');
+            
+            const categoryType = category.dataset.type;
+            const numberType = draggedElement.dataset.type;
+            
+            // Move the card to the category content area
+            const categoryContent = category.querySelector('.category-content');
+            if (categoryContent) {
+                categoryContent.appendChild(draggedElement);
+            } else {
+                category.appendChild(draggedElement);
+            }
+            
+            // Check if correct
+            const isCorrect = categoryType === numberType;
+            
+            if (isCorrect) {
+                score++;
+                // Random positive feedback messages
+                const correctMessages = [
+                    'صَحيح! أَحْسَنْت',
+                    'مُمْتاز! إِجابَة صَحيحَة',
+                    'رائِع! واصِل هَكَذا',
+                    'بَرافو! عَمَل جَيِّد',
+                    'أَحْسَنْت صُنْعاً!'
+                ];
+                const randomMessage = correctMessages[Math.floor(Math.random() * correctMessages.length)];
+                showFeedback(randomMessage, 'correct');
+                playSuccessSound();
+            } else {
+                // Random encouraging feedback messages
+                const incorrectMessages = [
+                    'خَطَأ! حاوِلْ مَرَّةً أُخْرى',
+                    'لَيْسَ صَحيحاً، فَكِّر مَرَّةً أُخْرى',
+                    'خَطَأ! لا تَسْتَسْلِم',
+                    'غَيْر صَحيح، حاوِل مَرَّةً أُخْرى',
+                    'خَطَأ! سَتَنْجَح في المَرَّة القادِمَة'
+                ];
+                const randomMessage = incorrectMessages[Math.floor(Math.random() * incorrectMessages.length)];
+                showFeedback(randomMessage, 'incorrect');
+                playErrorSound();
+            }
+            
+            updateScore();
+            
+            // Check if game is complete
+            if (document.getElementById('numbers-pool').children.length === 0) {
+                setTimeout(() => {
+                    const percentage = Math.round((score / 20) * 100);
+                    let completionMessage = '';
+                    
+                    if (percentage === 100) {
+                        completionMessage = `🎉 تَهانينا! لَقَدْ أَنْهَيْتَ اللُّعْبَة بِنَجاح! 🎉<br>نَتِيجَة كَامِلَة: ${score}/20 - أَنْتَ بَطَل حَقيقي! 🏆`;
+                    } else if (percentage >= 80) {
+                        completionMessage = `🌟 أَحْسَنْتَ! لَقَدْ أَنْهَيْتَ اللُّعْبَة! 🌟<br>نَتِيجَة رَائِعَة: ${score}/20 (${percentage}%) - عَمَل مُمْتاز! ⭐`;
+                    } else if (percentage >= 60) {
+                        completionMessage = `👍 مُبارَك! لَقَدْ أَكْمَلْتَ اللُّعْبَة! 👍<br>نَتِيجَة جَيِّدَة: ${score}/20 (${percentage}%) - يُمْكِنُكَ تَحْسينُها! 📈`;
+                    } else {
+                        completionMessage = `💪 اِنْتَهَيْتَ مِنَ اللُّعْبَة! 💪<br>اَلنَّتيجَة: ${score}/20 (${percentage}%) - حاوِلْ مَرَّةً أُخْرى لِتَحْسين النَّتيجَة! 🔄`;
+                    }
+                    
+                    showFeedback(completionMessage, 'complete', true);
+                }, 500);
+            }
+        }
+
+        function showFeedback(message, type, isComplete = false) {
+            const feedback = document.getElementById('feedback');
+            
+            // Clear any existing timeout
+            if (feedback.hideTimeout) {
+                clearTimeout(feedback.hideTimeout);
+            }
+            
+            // Remove existing classes first
+            feedback.className = 'feedback';
+            
+            // Add appropriate icon based on type (but not for complete messages as they already have emojis)
+            let displayMessage = message;
+            if (!isComplete) {
+                let icon = '';
+                if (type === 'correct') {
+                    icon = '✅';
+                } else if (type === 'incorrect') {
+                    icon = '❌';
+                }
+                displayMessage = `<span class="feedback-icon">${icon}</span>${message}`;
+            }
+            
+            feedback.innerHTML = displayMessage;
+            
+            // Force reflow to ensure class removal takes effect
+            feedback.offsetHeight;
+            
+            // Set appropriate class
+            if (isComplete || type === 'complete') {
+                feedback.className = 'feedback complete show';
+            } else {
+                feedback.className = `feedback ${type} show`;
+            }
+            
+            // Auto-hide after delay (longer for completion message)
+            const delay = (isComplete || type === 'complete') ? 6000 : 2500;
+            feedback.hideTimeout = setTimeout(() => {
+                feedback.classList.remove('show');
+            }, delay);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+
+        function resetGame() {
+            initializeGame();
+            showFeedback('🔄 تَمَّ إِعادَة تَشْغيلِ اللُّعْبَة - حَظّا سَعيدًا!', 'correct');
+        }
+
+        // Touch support for mobile devices
+        let touchStartPos = null;
+        let touchElement = null;
+
+        function handleTouchStart(e) {
+            if (e.target.classList.contains('number-card')) {
+                touchElement = e.target;
+                const touch = e.touches[0];
+                touchStartPos = { x: touch.clientX, y: touch.clientY };
+                e.target.style.transform = 'scale(1.1)';
+                // Don't play sound here, wait for touchend to determine if it's a tap or drag
+            }
+        }
+
+        function handleTouchMove(e) {
+            if (!touchElement || !touchStartPos) return;
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - touchStartPos.x;
+            const deltaY = touch.clientY - touchStartPos.y;
+            
+            touchElement.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.1)`;
+            
+            // Highlight drop zones
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const category = elementBelow?.closest('.category');
+            
+            document.querySelectorAll('.category').forEach(cat => cat.classList.remove('drag-over'));
+            if (category) {
+                category.classList.add('drag-over');
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchElement) return;
+            
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const category = elementBelow?.closest('.category');
+            
+            // Reset transform
+            touchElement.style.transform = '';
+            
+            if (category) {
+                const categoryType = category.dataset.type;
+                const numberType = touchElement.dataset.type;
+                
+                // Move the card to the category content area
+                const categoryContent = category.querySelector('.category-content');
+                if (categoryContent) {
+                    categoryContent.appendChild(touchElement);
+                } else {
+                    category.appendChild(touchElement);
+                }
+                
+                // Check if correct
+                const isCorrect = categoryType === numberType;
+                
+                if (isCorrect) {
+                    score++;
+                    // Random positive feedback messages
+                    const correctMessages = [
+                        'صَحيح! أَحْسَنْت',
+                        'مُمْتاز! إِجابَة صَحيحَة',
+                        'رائِع! واصِل هَكَذا',
+                        'بَرافو! عَمَل جَيِّد',
+                        'أَحْسَنْت صُنْعاً!'
+                    ];
+                    const randomMessage = correctMessages[Math.floor(Math.random() * correctMessages.length)];
+                    showFeedback(randomMessage, 'correct');
+                    playSuccessSound();
+                } else {
+                    // Random encouraging feedback messages
+                    const incorrectMessages = [
+                        'خَطَأ! حاوِلْ مَرَّةً أُخْرى',
+                        'لَيْسَ صَحيحاً، فَكِّر مَرَّةً أُخْرى',
+                        'خَطَأ! لا تَسْتَسْلِم',
+                        'غَيْر صَحيح، حاوِل مَرَّةً أُخْرى',
+                        'خَطَأ! سَتَنْجَح في المَرَّة القادِمَة'
+                    ];
+                    const randomMessage = incorrectMessages[Math.floor(Math.random() * incorrectMessages.length)];
+                    showFeedback(randomMessage, 'incorrect');
+                    playErrorSound();
+                }
+                
+                updateScore();
+                
+                // Check if game is complete
+                if (document.getElementById('numbers-pool').children.length === 0) {
+                    setTimeout(() => {
+                        const percentage = Math.round((score / 20) * 100);
+                        let completionMessage = '';
+                        
+                        if (percentage === 100) {
+                            completionMessage = `🎉 تَهانينا! لَقَدْ أَنْهَيْتَ اللُّعْبَة بِنَجاح! 🎉<br>نَتِيجَة كَامِلَة: ${score}/20 - أَنْتَ بَطَل حَقيقي! 🏆`;
+                        } else if (percentage >= 80) {
+                            completionMessage = `🌟 أَحْسَنْتَ! لَقَدْ أَنْهَيْتَ اللُّعْبَة! 🌟<br>نَتيجَة رائِعَة: ${score}/20 (${percentage}%) - عَمَل مُمْتاز! ⭐`;
+                        } else if (percentage >= 60) {
+                            completionMessage = `👍 مُبارَك! لَقَدْ أَكْمَلْتَ اللُّعْبَة! 👍<br>نَتيجَة جَيِّدَة: ${score}/20 (${percentage}%) - يُمْكِنُكَ تَحْسينُها! 📈`;
+                        } else {
+                            completionMessage = `💪 اِنْتَهَيْتَ مِنَ اللُّعْبَة! 💪<br>النَّتيجَة: ${score}/20 (${percentage}%) - حاوِلْ مَرَّةً أُخْرى لِتَحْسين النَّتيجَة! 🔄`;
+                        }
+                        
+                        showFeedback(completionMessage, 'complete', true);
+                    }, 500);
+                }
+            }
+            
+            // Clean up
+            document.querySelectorAll('.category').forEach(cat => cat.classList.remove('drag-over'));
+            touchElement = null;
+            touchStartPos = null;
+        }
+
+        // Set up drag and drop event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const categories = document.querySelectorAll('.category');
+            categories.forEach(category => {
+                category.addEventListener('dragover', handleDragOver);
+                category.addEventListener('dragenter', handleDragEnter);
+                category.addEventListener('dragleave', handleDragLeave);
+                category.addEventListener('drop', handleDrop);
+            });
+
+            // Add touch support
+            document.addEventListener('touchstart', handleTouchStart, { passive: false });
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+            // Initialize audio context on first user interaction
+            document.addEventListener('click', () => {
+                initAudioContext();
+            }, { once: true });
+            
+            document.addEventListener('touchstart', () => {
+                initAudioContext();
+            }, { once: true });
+
+            initializeGame();
+        });
+
+        // Element SDK implementation
+        async function onConfigChange(config) {
+            document.getElementById('main-title').textContent = config.main_title || defaultConfig.main_title;
+            document.getElementById('instruction-text').textContent = config.instruction_text || defaultConfig.instruction_text;
+            document.getElementById('counting-label').textContent = config.counting_label || defaultConfig.counting_label;
+            document.getElementById('ordinal-label').textContent = config.ordinal_label || defaultConfig.ordinal_label;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_title", config.main_title || defaultConfig.main_title],
+                ["instruction_text", config.instruction_text || defaultConfig.instruction_text],
+                ["counting_label", config.counting_label || defaultConfig.counting_label],
+                ["ordinal_label", config.ordinal_label || defaultConfig.ordinal_label]
+            ]);
+        }
+
+        // Initialize Element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+ </body>
+</html>

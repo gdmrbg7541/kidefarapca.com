@@ -1,0 +1,1104 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boşluk Doldurma – Arapça</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&amp;family=Amiri:wght@400;700&amp;display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Amiri', serif;
+      background: linear-gradient(135deg, #FFF2F4 0%, #EAF7FF 100%);
+      min-height: 100%;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    .floating-decorations {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      font-size: 32px;
+      animation: float 4s ease-in-out infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-25px) rotate(180deg); }
+    }
+
+    .star:nth-child(1) { top: 8%; left: 8%; animation-delay: 0s; }
+    .star:nth-child(2) { top: 15%; left: 88%; animation-delay: 0.7s; }
+    .star:nth-child(3) { top: 55%; left: 3%; animation-delay: 1.4s; }
+    .star:nth-child(4) { top: 75%; left: 92%; animation-delay: 2.1s; }
+    .star:nth-child(5) { top: 35%; left: 50%; animation-delay: 2.8s; }
+    .star:nth-child(6) { top: 85%; left: 15%; animation-delay: 1s; }
+
+    .container {
+      max-width: 100%;
+      margin: 0;
+      padding: 12px 32px 12px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 0px;
+      animation: slideDown 0.6s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, #FFDCE3 0%, #FFB3C1 100%);
+      color: #3B3B3B;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-family: 'Noto Naskh Arabic', serif;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 3px 12px rgba(255, 122, 144, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-badge::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0%   { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .header-badge:hover {
+      transform: scale(1.05) rotate(-2deg);
+      box-shadow: 0 8px 28px rgba(255, 122, 144, 0.4);
+    }
+
+    .pencil-icon {
+      width: 14px;
+      height: 14px;
+      animation: wiggle 2s ease-in-out infinite;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25%      { transform: rotate(-10deg); }
+      75%      { transform: rotate(10deg); }
+    }
+
+    .word-bank {
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF9FB 100%);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2px;
+      border: 2px solid rgba(255, 122, 144, 0.2);
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .word-bank-items {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .word-chip {
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F7 100%);
+      border: 2px solid #FF7A90;
+      border-radius: 12px;
+      padding: 8px 20px;
+      font-family: 'Amiri', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #3B3B3B;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 4px 12px rgba(255, 122, 144, 0.25);
+      transition: all 0.3s ease;
+      position: relative;
+      animation: popIn 0.5s ease-out backwards;
+    }
+
+    @keyframes popIn {
+      0%   { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+      70%  { transform: scale(1.1) rotate(5deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    .word-chip:nth-child(1) { animation-delay: 0.1s; }
+    .word-chip:nth-child(2) { animation-delay: 0.2s; }
+    .word-chip:nth-child(3) { animation-delay: 0.3s; }
+
+    .word-chip:hover {
+      transform: translateY(-6px) rotate(-3deg);
+      box-shadow: 0 10px 25px rgba(255, 122, 144, 0.35);
+      border-color: #FF5A75;
+    }
+
+    .word-chip.dragging {
+      opacity: 0.6;
+      cursor: grabbing;
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .word-chip.placed {
+      opacity: 0.3;
+      pointer-events: none;
+      filter: grayscale(0.5);
+    }
+
+    .exercise-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 0.6s ease-out backwards;
+      /* flex: 1;  KALDIRILDI – satırlar artık içeriğe göre yükseklik alıyor */
+    }
+
+    .exercise-row:nth-child(3) { animation-delay: 0.2s; }
+    .exercise-row:nth-child(4) { animation-delay: 0.4s; }
+    .exercise-row:nth-child(5) { animation-delay: 0.6s; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(50px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .exercise-row::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .exercise-row:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    .image-placeholder {
+      flex-shrink: 0;
+      width: 120px;
+      height: 120px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #F8F8F8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      border: 3px solid rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+    }
+
+    .image-placeholder:hover {
+      transform: scale(1.05) rotate(-2deg);
+    }
+
+    .image-placeholder svg {
+      width: 75px;
+      height: 75px;
+      opacity: 0.4;
+      transition: all 0.3s ease;
+    }
+
+    .image-placeholder:hover svg {
+      transform: scale(1.1);
+      opacity: 0.6;
+    }
+
+    /* GÖRSELLER HER ZAMAN TAM OTURSUN */
+    .image-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .sentence-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sentence {
+      font-family: 'Amiri', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #2B2B2B;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+      text-align: right;
+    }
+
+    .dropzone {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 160px;
+      height: 44px;
+      border: 3px dashed #FF7A90;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF9FB 100%);
+      font-family: 'Amiri', serif;
+      font-size: 18px;
+      color: #BBB;
+      transition: all 0.3s ease;
+      position: relative;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .dropzone::before {
+      content: '👆';
+      position: absolute;
+      top: -40px;
+      right: 50%;
+      transform: translateX(50%);
+      font-size: 28px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      animation: bounce 1s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(50%) translateY(0); }
+      50%      { transform: translateX(50%) translateY(-8px); }
+    }
+
+    .dropzone:hover::before {
+      opacity: 0.7;
+    }
+
+    .dropzone.drag-over {
+      background: linear-gradient(135deg, #FFF2F4 0%, #FFE5E9 100%);
+      border-color: #FF5A75;
+      border-style: solid;
+      transform: scale(1.08);
+      box-shadow: 0 0 20px rgba(255, 122, 144, 0.4), inset 0 2px 8px rgba(255, 122, 144, 0.1);
+    }
+
+    .dropzone.filled {
+      border-style: solid;
+      border-color: #A6E3A1;
+      background: linear-gradient(135deg, #F0FFF0 0%, #E8F5E9 100%);
+      animation: success-pulse 0.6s ease;
+    }
+
+    @keyframes success-pulse {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.1); box-shadow: 0 0 30px rgba(166, 227, 161, 0.6); }
+      100% { transform: scale(1); }
+    }
+
+    .dropzone.error {
+      border-color: #FF7A90;
+      background: linear-gradient(135deg, #FFF2F4 0%, #FFE0E6 100%);
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25%      { transform: translateX(-10px) rotate(-2deg); }
+      75%      { transform: translateX(10px) rotate(2deg); }
+    }
+
+    .dropzone-word {
+      font-family: 'Amiri', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #2B2B2B;
+      animation: wordAppear 0.4s ease;
+    }
+
+    @keyframes wordAppear {
+      0%   { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    .feedback-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF9FB 100%);
+      padding: 24px 36px;
+      border-radius: 24px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+      font-family: 'Noto Naskh Arabic', serif;
+      font-size: 24px;
+      font-weight: 700;
+      z-index: 1000;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      pointer-events: none;
+    }
+
+    .feedback-message::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border-radius: 36px;
+      z-index: -1;
+      animation: glow 1s ease-in-out infinite;
+    }
+
+    .feedback-message.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .feedback-message.success {
+      color: #4CAF50;
+      border: 5px solid #A6E3A1;
+    }
+
+    .feedback-message.success::before {
+      background: linear-gradient(135deg, #A6E3A1, #81C784);
+      opacity: 0.3;
+    }
+
+    .feedback-message.success::after {
+      content: '🎉';
+      position: absolute;
+      top: -50px;
+      right: 50%;
+      transform: translateX(50%);
+      font-size: 48px;
+      animation: celebrate 0.6s ease;
+    }
+
+    @keyframes celebrate {
+      0%   { transform: translateX(50%) scale(0) rotate(0deg); }
+      50%  { transform: translateX(50%) scale(1.3) rotate(180deg); }
+      100% { transform: translateX(50%) scale(1) rotate(360deg); }
+    }
+
+    .feedback-message.error {
+      color: #FF7A90;
+      border: 5px solid #FF7A90;
+    }
+
+    .feedback-message.error::before {
+      background: linear-gradient(135deg, #FF7A90, #FF5A75);
+      opacity: 0.2;
+    }
+
+    @keyframes glow {
+      0%, 100% { opacity: 0.5; }
+      50%      { opacity: 0.8; }
+    }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: #FF7A90;
+      position: absolute;
+      animation: confetti-fall 3s linear forwards;
+      z-index: 999;
+    }
+
+    @keyframes confetti-fall {
+      to {
+        transform: translateY(100%) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .reset-button {
+      background: linear-gradient(135deg, #FF7A90 0%, #FF5A75 100%);
+      color: white;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 50px;
+      font-family: 'Noto Naskh Arabic', serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(255, 122, 144, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px auto 0;
+      width: fit-content;
+    }
+
+    .reset-button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(255, 122, 144, 0.5);
+      background: linear-gradient(135deg, #FF5A75 0%, #FF3A5A 100%);
+    }
+
+    .reset-button:active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 122, 144, 0.4);
+    }
+
+    .reset-icon {
+      font-size: 18px;
+      animation: rotate-icon 2s ease-in-out infinite;
+    }
+
+    @keyframes rotate-icon {
+      0%, 100% { transform: rotate(0deg); }
+      50%      { transform: rotate(180deg); }
+    }
+
+    @media (max-width: 1200px) {
+      .container {
+        padding: 20px 24px 24px 24px;
+      }
+
+      .exercise-row {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .image-placeholder {
+        width: 200px;
+        height: 200px;
+      }
+
+      .sentence {
+        font-size: 26px;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .dropzone {
+        min-width: 220px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 16px;
+        gap: 16px;
+      }
+
+      .header-badge {
+        font-size: 16px;
+        padding: 10px 20px;
+        gap: 6px;
+      }
+
+      .pencil-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      .word-bank {
+        padding: 16px 20px;
+      }
+
+      .word-bank-items {
+        gap: 12px;
+      }
+
+      .word-chip {
+        font-size: 20px;
+        padding: 10px 20px;
+      }
+
+      .exercise-row {
+        padding: 16px;
+        gap: 12px;
+      }
+
+      .image-placeholder {
+        width: 140px;
+        height: 140px;
+      }
+
+      .sentence {
+        font-size: 22px;
+        gap: 8px;
+      }
+
+      .dropzone {
+        min-width: 180px;
+        height: 44px;
+        font-size: 18px;
+      }
+
+      .dropzone-word {
+        font-size: 20px;
+      }
+
+      .feedback-message {
+        font-size: 20px;
+        padding: 20px 32px;
+      }
+
+      .star {
+        font-size: 20px;
+      }
+
+      .reset-button {
+        padding: 14px 32px;
+        font-size: 18px;
+        margin: 20px auto 0;
+      }
+
+      .reset-icon {
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .header-badge {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+
+      .word-bank {
+        padding: 12px 16px;
+      }
+
+      .word-chip {
+        font-size: 18px;
+        padding: 8px 16px;
+      }
+
+      .exercise-row {
+        padding: 12px;
+      }
+
+      .image-placeholder {
+        width: 120px;
+        height: 120px;
+      }
+
+      .sentence {
+        font-size: 18px;
+      }
+
+      .dropzone {
+        min-width: 150px;
+        height: 40px;
+        font-size: 16px;
+      }
+
+      .dropzone-word {
+        font-size: 18px;
+      }
+
+      .reset-button {
+        padding: 12px 28px;
+        font-size: 16px;
+        margin: 16px auto 0;
+      }
+    }
+  </style>
+
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.block{display:block}.flex{display:flex}.hidden{display:none}.flex-shrink{flex-shrink:1}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.flex-wrap{flex-wrap:wrap}.border{border-width:1px}.grayscale{--tw-grayscale:grayscale(100%)}.filter,.grayscale{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.ease-in-out{transition-timing-function:cubic-bezier(.4,0,.2,1)}.ease-out{transition-timing-function:cubic-bezier(0,0,.2,1)}</style>
+ </head>
+
+ <body>
+  <div class="floating-decorations">
+   <div class="star">⭐</div>
+   <div class="star">🌟</div>
+   <div class="star">✨</div>
+   <div class="star">💫</div>
+   <div class="star">⭐</div>
+   <div class="star">🌟</div>
+  </div>
+
+  <div class="container">
+   <div class="header">
+    <div class="header-badge">
+     <svg class="pencil-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#3B3B3B" />
+     </svg>
+     <span id="header-title">١١ – اِمْلَأ الْفَراغات مُسْتَعينًا بِالصُّوَر.</span>
+    </div>
+   </div>
+
+   <div class="word-bank">
+    <div class="word-bank-items" id="word-bank-items">
+     <div class="word-chip" draggable="true" data-word-id="w1" id="word-1">الْمَسْجِد</div>
+     <div class="word-chip" draggable="true" data-word-id="w2" id="word-2">خَريطَة</div>
+     <div class="word-chip" draggable="true" data-word-id="w3" id="word-3">اَلصَّفّ</div>
+    </div>
+   </div>
+
+   <!-- SATIR 1 -->
+   <div class="exercise-row" style="background: linear-gradient(135deg, #E7F8E8 0%, #D4F1D4 100%);">
+    <div class="sentence-container">
+     <div class="sentence">
+      <span>اَلسَّجّادَة في</span>
+      <div class="dropzone" data-dropzone-id="d1" data-accepts="w1">
+       <span class="dropzone-placeholder">………</span>
+      </div>
+      <span>.</span>
+     </div>
+    </div>
+    <div class="image-placeholder" id="img1">
+     <img src="v/02.jpg" alt="الْمَسْجِد">
+    </div>
+   </div>
+
+   <!-- SATIR 2 -->
+   <div class="exercise-row" style="background: linear-gradient(135deg, #F8EFD9 0%, #F5E6C3 100%);">
+    <div class="sentence-container">
+     <div class="sentence">
+      <span>في الْمَكْتَبَة</span>
+      <div class="dropzone" data-dropzone-id="d2" data-accepts="w2">
+       <span class="dropzone-placeholder">………</span>
+      </div>
+      <span>كَبيرَة.</span>
+     </div>
+    </div>
+    <div class="image-placeholder" id="img2">
+     <img src="v/03.jpg" alt="الْمَكْتَبَة">
+    </div>
+   </div>
+
+   <!-- SATIR 3 -->
+   <div class="exercise-row" style="background: linear-gradient(135deg, #E6F7FA 0%, #CCE7F0 100%);">
+    <div class="sentence-container">
+     <div class="sentence">
+      <span>السَّبّورَةُ الذَّكِيَّة أَمامَ</span>
+      <div class="dropzone" data-dropzone-id="d3" data-accepts="w3">
+       <span class="dropzone-placeholder">………</span>
+      </div>
+      <span>.</span>
+     </div>
+    </div>
+    <div class="image-placeholder" id="img3">
+     <img src="v/01.jpg" alt="الصَّفّ">
+    </div>
+   </div>
+  </div> <!-- /container -->
+
+  <div class="feedback-message" id="feedback-message"></div>
+
+  <button class="reset-button" id="reset-button">
+   <span class="reset-icon">🔄</span>
+   <span id="reset-button-text">تَكْرار اللُّعْبَة</span>
+  </button>
+
+  <script>
+    const defaultConfig = {
+      background_color: "#FFF2F4",
+      surface_color: "#FFFFFF",
+      text_color: "#2B2B2B",
+      primary_action_color: "#FF7A90",
+      secondary_action_color: "#A6E3A1",
+      font_family: "Noto Naskh Arabic",
+      font_size: 32,
+      header_title: "اِمْلَأ الْفَراغات مُسْتَعينًا بِالصُّوَر.",
+      word_1: "الْمَسْجِد",
+      word_2: "خَريطَة",
+      word_3: "اَلصَّفّ",
+      sentence_1: "اَلسَّجّادَة في {d1}.",
+      sentence_2: "في الْمَكْتَبَة {d2} كَبِيرَة.",
+      sentence_3: "اَلسَّبّورَةُ الذَّكِيَّة أَمامَ {d3}.",
+      success_message: "صَحيح! أَحْسَنْتَ/أَحْسَنْتِ.",
+      error_message: "جَرِّبْ مُجَدَّدًا.",
+      reset_button_text: "تَكْرار اللُّعْبَة"
+    };
+
+    let draggedElement = null;
+    let draggedWordId = null;
+
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSuccessSound() {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
+      oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2);
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.4);
+    }
+
+    function playErrorSound() {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1);
+      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.2);
+    }
+
+    function createConfetti() {
+      const colors = ['#FF7A90', '#7AC4FF', '#A6E3A1', '#F9D976', '#FFB3C1'];
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.top = '-10px';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 3000);
+        }, i * 50);
+      }
+    }
+
+    function initializeDragAndDrop() {
+      const wordChips = document.querySelectorAll('.word-chip');
+      const dropzones = document.querySelectorAll('.dropzone');
+
+      wordChips.forEach(chip => {
+        chip.addEventListener('dragstart', handleDragStart);
+        chip.addEventListener('dragend', handleDragEnd);
+      });
+
+      dropzones.forEach(zone => {
+        zone.addEventListener('dragover', handleDragOver);
+        zone.addEventListener('dragleave', handleDragLeave);
+        zone.addEventListener('drop', handleDrop);
+      });
+    }
+
+    function handleDragStart(e) {
+      draggedElement = e.target;
+      draggedWordId = e.target.dataset.wordId;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const dropzone = e.currentTarget;
+      dropzone.classList.remove('drag-over');
+
+      const acceptedWords = dropzone.dataset.accepts.split(',');
+      const isCorrect = acceptedWords.includes(draggedWordId);
+
+      if (isCorrect) {
+        const placeholder = dropzone.querySelector('.dropzone-placeholder');
+        if (placeholder) placeholder.remove();
+
+        const existingWord = dropzone.querySelector('.dropzone-word');
+        if (existingWord) {
+          const oldWordId = existingWord.dataset.wordId;
+          const oldChip = document.querySelector(`[data-word-id="${oldWordId}"]`);
+          if (oldChip) oldChip.classList.remove('placed');
+          existingWord.remove();
+        }
+
+        const wordSpan = document.createElement('span');
+        wordSpan.className = 'dropzone-word';
+        wordSpan.textContent = draggedElement.textContent;
+        wordSpan.dataset.wordId = draggedWordId;
+        dropzone.appendChild(wordSpan);
+
+        draggedElement.classList.add('placed');
+        dropzone.classList.add('filled');
+        dropzone.classList.remove('error');
+
+        createConfetti();
+        playSuccessSound();
+        showFeedback(true);
+      } else {
+        dropzone.classList.add('error');
+        setTimeout(() => dropzone.classList.remove('error'), 500);
+        playErrorSound();
+        showFeedback(false);
+      }
+
+      draggedElement = null;
+      draggedWordId = null;
+    }
+
+    function showFeedback(isSuccess) {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const feedbackEl = document.getElementById('feedback-message');
+      feedbackEl.textContent = isSuccess
+        ? (config.success_message || defaultConfig.success_message)
+        : (config.error_message || defaultConfig.error_message);
+      feedbackEl.className = `feedback-message ${isSuccess ? 'success' : 'error'} show`;
+      setTimeout(() => feedbackEl.classList.remove('show'), 2500);
+    }
+
+    function resetGame() {
+      const wordChips = document.querySelectorAll('.word-chip');
+      wordChips.forEach(chip => chip.classList.remove('placed'));
+
+      const dropzones = document.querySelectorAll('.dropzone');
+      dropzones.forEach(zone => {
+        zone.classList.remove('filled', 'error');
+        const existingWord = zone.querySelector('.dropzone-word');
+        if (existingWord) existingWord.remove();
+        if (!zone.querySelector('.dropzone-placeholder')) {
+          const placeholder = document.createElement('span');
+          placeholder.className = 'dropzone-placeholder';
+          placeholder.textContent = '………';
+          zone.appendChild(placeholder);
+        }
+      });
+
+      document.getElementById('feedback-message').classList.remove('show');
+    }
+
+    async function onConfigChange(config) {
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseFontStack = 'Arial, sans-serif';
+      const baseSize = config.font_size || defaultConfig.font_size;
+
+      document.body.style.background =
+        `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, #EAF7FF 100%)`;
+
+      document.getElementById('header-title').textContent =
+        config.header_title || defaultConfig.header_title;
+      document.getElementById('header-title').style.fontFamily =
+        `'Noto Naskh Arabic', ${customFont}, ${baseFontStack}`;
+      document.getElementById('header-title').style.fontSize = `${baseSize * 0.74}px`;
+
+      document.getElementById('word-1').textContent = config.word_1 || defaultConfig.word_1;
+      document.getElementById('word-2').textContent = config.word_2 || defaultConfig.word_2;
+      document.getElementById('word-3').textContent = config.word_3 || defaultConfig.word_3;
+
+      const wordChips = document.querySelectorAll('.word-chip');
+      wordChips.forEach(chip => {
+        chip.style.fontFamily = `${customFont}, ${baseFontStack}`;
+        chip.style.fontSize = `${baseSize * 0.89}px`;
+        chip.style.color = config.text_color || defaultConfig.text_color;
+        chip.style.borderColor = config.primary_action_color || defaultConfig.primary_action_color;
+      });
+
+      const sentences = document.querySelectorAll('.sentence');
+      sentences.forEach((sentence, index) => {
+        const configKey = `sentence_${index + 1}`;
+        const sentenceText = config[configKey] || defaultConfig[configKey];
+        const parts = sentenceText.split(/(\{d\d+\})/);
+        const textSpans = sentence.querySelectorAll('span:not(.dropzone-placeholder):not(.dropzone-word)');
+        let spanIndex = 0;
+        parts.forEach(part => {
+          if (!part.match(/\{d\d+\}/)) {
+            if (textSpans[spanIndex]) {
+              textSpans[spanIndex].textContent = part;
+              textSpans[spanIndex].style.fontFamily = `${customFont}, ${baseFontStack}`;
+              textSpans[spanIndex].style.fontSize = `${baseSize}px`;
+              textSpans[spanIndex].style.color = config.text_color || defaultConfig.text_color;
+              spanIndex++;
+            }
+          }
+        });
+      });
+
+      const dropzones = document.querySelectorAll('.dropzone');
+      dropzones.forEach(zone => {
+        zone.style.borderColor = config.primary_action_color || defaultConfig.primary_action_color;
+        const placeholder = zone.querySelector('.dropzone-placeholder');
+        if (placeholder) {
+          placeholder.style.fontFamily = `${customFont}, ${baseFontStack}`;
+          placeholder.style.fontSize = `${baseSize * 0.84}px`;
+        }
+        const word = zone.querySelector('.dropzone-word');
+        if (word) {
+          word.style.fontFamily = `${customFont}, ${baseFontStack}`;
+          word.style.fontSize = `${baseSize * 0.89}px`;
+          word.style.color = config.text_color || defaultConfig.text_color;
+        }
+        if (zone.classList.contains('filled')) {
+          zone.style.borderColor =
+            config.secondary_action_color || defaultConfig.secondary_action_color;
+        }
+      });
+
+      const feedbackMessage = document.getElementById('feedback-message');
+      feedbackMessage.style.fontFamily = `'Noto Naskh Arabic', ${customFont}, ${baseFontStack}`;
+      feedbackMessage.style.fontSize = `${baseSize * 0.95}px`;
+
+      const resetButtonText = document.getElementById('reset-button-text');
+      resetButtonText.textContent =
+        config.reset_button_text || defaultConfig.reset_button_text;
+      resetButtonText.style.fontFamily =
+        `'Noto Naskh Arabic', ${customFont}, ${baseFontStack}`;
+      resetButtonText.style.fontSize = `${baseSize * 0.8}px`;
+
+      const resetButton = document.getElementById('reset-button');
+      resetButton.style.background =
+        `linear-gradient(135deg, ${config.primary_action_color || defaultConfig.primary_action_color} 0%, #FF5A75 100%)`;
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.surface_color || defaultConfig.surface_color,
+              set: (value) => {
+              config.surface_color = value;
+              window.elementSdk.setConfig({ surface_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.primary_action_color || defaultConfig.primary_action_color,
+              set: (value) => {
+                config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+              set: (value) => {
+                config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => {
+              config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => {
+              config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["header_title", config.header_title || defaultConfig.header_title],
+          ["word_1",       config.word_1       || defaultConfig.word_1],
+          ["word_2",       config.word_2       || defaultConfig.word_2],
+          ["word_3",       config.word_3       || defaultConfig.word_3],
+          ["sentence_1",   config.sentence_1   || defaultConfig.sentence_1],
+          ["sentence_2",   config.sentence_2   || defaultConfig.sentence_2],
+          ["sentence_3",   config.sentence_3   || defaultConfig.sentence_3],
+          ["success_message", config.success_message || defaultConfig.success_message],
+          ["error_message",   config.error_message   || defaultConfig.error_message],
+          ["reset_button_text", config.reset_button_text || defaultConfig.reset_button_text]
+        ])
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeDragAndDrop();
+      onConfigChange(defaultConfig);
+      document.getElementById('reset-button').addEventListener('click', resetGame);
+    });
+  </script>
+
+  
+
+ </body>
+</html>

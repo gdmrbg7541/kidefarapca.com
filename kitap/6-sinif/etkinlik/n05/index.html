@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="tr">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arapça Harf Treni</title>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 10px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        .game-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #2C3E50;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .instruction {
+            text-align: center;
+            font-size: 1rem;
+            color: #34495E;
+            margin-bottom: 15px;
+        }
+
+        .alphabet-container {
+            background: #F8F9FA;
+            border: 2px dashed #3498DB;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .alphabet-title {
+            font-size: 1.1rem;
+            color: #2C3E50;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(14, 1fr);
+            gap: 5px;
+            justify-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .letter {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+            border: 2px solid #E74C3C;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+            cursor: grab;
+            transition: all 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            user-select: none;
+        }
+
+        .letter:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .letter:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .letter.dragging {
+            opacity: 0.7;
+            transform: rotate(5deg);
+        }
+
+        .trains-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .train {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .locomotive {
+            width: 160px;
+            height: 80px;
+            border-radius: 15px 15px 8px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .locomotive::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 15px;
+            background: #2C3E50;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .locomotive::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 15px;
+            width: 20px;
+            height: 20px;
+            background: #34495E;
+            border-radius: 50%;
+            box-shadow: 110px 0 0 #34495E;
+        }
+
+        .shamsi-locomotive {
+            background: linear-gradient(135deg, #2980B9, #3498DB, #5DADE2);
+            border: 5px solid #1F618D;
+        }
+
+        .qamari-locomotive {
+            background: linear-gradient(135deg, #C0392B, #E74C3C, #F1948A);
+            border: 5px solid #A93226;
+        }
+
+        .wagons-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            max-width: 600px;
+        }
+
+        .wagon {
+            width: 70px;
+            height: 50px;
+            border-radius: 10px;
+            border: 3px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .wagon::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 10px;
+            width: 15px;
+            height: 15px;
+            background: #2C3E50;
+            border-radius: 50%;
+            box-shadow: 30px 0 0 #2C3E50;
+        }
+
+        .shamsi-wagon {
+            background: linear-gradient(135deg, #5DADE2, #85C1E9, #AED6F1);
+            border-color: #2980B9;
+        }
+
+        .qamari-wagon {
+            background: linear-gradient(135deg, #F1948A, #F5B7B1, #FADBD8);
+            border-color: #C0392B;
+        }
+
+        .wagon.drag-over {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.6);
+        }
+
+        .wagon.correct {
+            animation: celebrate 0.6s ease;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #27AE60, #58D68D);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .success-message.show {
+            opacity: 1;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, -50%) translateY(0); }
+            40% { transform: translate(-50%, -50%) translateY(-10px); }
+            60% { transform: translate(-50%, -50%) translateY(-5px); }
+        }
+
+        .reset-button {
+            display: block;
+            margin: 15px auto 0;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #9B59B6, #BB8FCE);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .locomotive {
+                width: 140px;
+                height: 70px;
+                font-size: 0.9rem;
+            }
+            
+            .wagons-container {
+                grid-template-columns: repeat(7, 1fr);
+                max-width: 450px;
+            }
+            
+            .wagon {
+                width: 55px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .alphabet-grid {
+                grid-template-columns: repeat(14, 1fr);
+                gap: 3px;
+            }
+            
+            .letter {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+            
+            .game-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.block{display:block}.flex{display:flex}.grid{display:grid}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.border{border-width:1px}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}</style>
+ </head>
+ <body>
+  <div class="game-container">
+   <h1 class="game-title" id="gameTitle">قِطَار الحُروف العَرَبِيَّة</h1>
+   <p class="instruction" id="instructionText">اِسْحَب الحُروف إِلَى القِطارات الصَّحيحَة</p>
+   <div class="alphabet-container">
+    <h2 class="alphabet-title">الأَبْجَدِيَّة العَرَبِيَّة</h2>
+    <div class="alphabet-grid" id="alphabetGrid"><!-- Harfler buraya eklenecek -->
+    </div>
+   </div>
+   <div class="trains-container">
+    <div class="train">
+     <div class="locomotive shamsi-locomotive">
+      الحُروف الشَّمْسِيَّة
+     </div>
+     <div class="wagons-container">
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+      <div class="wagon shamsi-wagon" data-type="shamsi"></div>
+     </div>
+    </div>
+    <div class="train">
+     <div class="locomotive qamari-locomotive">
+      الحُروف القَمَرِيَّة
+     </div>
+     <div class="wagons-container">
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+      <div class="wagon qamari-wagon" data-type="qamari"></div>
+     </div>
+    </div>
+   </div><button class="reset-button" onclick="resetGame()">🔄 إِعادَة تَشْغيل اللُّعْبَة</button>
+  </div>
+  <div class="success-message" id="successMessage">
+   أَحْسَنْتَ! وَضَعْتَ الحَرْف فِي المَكَانِ الصَّحيحِ!
+  </div>
+  <script>
+        // Arap alfabesi harfleri ve türleri
+        const arabicLetters = {
+            // Şemsi harfler (14 tane)
+            shamsi: ['ت', 'ث', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ل', 'ن'],
+            // Kameri harfler (14 tane)
+            qamari: ['ا', 'ب', 'ج', 'ح', 'خ', 'ع', 'غ', 'ف', 'ق', 'ك', 'م', 'ه', 'و', 'ي']
+        };
+
+        let draggedElement = null;
+        let correctPlacements = 0;
+        let totalLetters = 28;
+
+        // Varsayılan konfigürasyon
+        const defaultConfig = {
+            game_title: "قِطار الحُروف العَرَبِيَّة",
+            instruction_text: "اِسْحَب الحُروف إِلَى القِطارات الصَّحيحَة",
+            success_message: "أَحْسَنْتَ! وَضَعْتَ الحَرْف فِي المَكَانِ الصَّحيحِ!"
+        };
+
+        // Element SDK render fonksiyonu
+        async function render(config) {
+            document.getElementById('gameTitle').textContent = config.game_title || defaultConfig.game_title;
+            document.getElementById('instructionText').textContent = config.instruction_text || defaultConfig.instruction_text;
+            document.getElementById('successMessage').textContent = config.success_message || defaultConfig.success_message;
+        }
+
+        // Element SDK capabilities
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        // Element SDK edit panel values
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["game_title", config.game_title || defaultConfig.game_title],
+                ["instruction_text", config.instruction_text || defaultConfig.instruction_text],
+                ["success_message", config.success_message || defaultConfig.success_message]
+            ]);
+        }
+
+        // Element SDK'yı başlat
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                render,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+
+        function createLetters() {
+            const alphabetGrid = document.getElementById('alphabetGrid');
+            alphabetGrid.innerHTML = '';
+
+            // Tüm harfleri karıştır
+            const allLetters = [...arabicLetters.shamsi, ...arabicLetters.qamari];
+            const shuffledLetters = allLetters.sort(() => Math.random() - 0.5);
+
+            shuffledLetters.forEach(letter => {
+                const letterElement = document.createElement('div');
+                letterElement.className = 'letter';
+                letterElement.textContent = letter;
+                letterElement.draggable = true;
+                
+                // Harfin türünü belirle
+                const letterType = arabicLetters.shamsi.includes(letter) ? 'shamsi' : 'qamari';
+                letterElement.dataset.type = letterType;
+                letterElement.dataset.letter = letter;
+
+                // Drag event listeners
+                letterElement.addEventListener('dragstart', handleDragStart);
+                letterElement.addEventListener('dragend', handleDragEnd);
+
+                alphabetGrid.appendChild(letterElement);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedElement = null;
+        }
+
+        function setupWagons() {
+            const wagons = document.querySelectorAll('.wagon');
+            
+            wagons.forEach(wagon => {
+                wagon.addEventListener('dragover', handleDragOver);
+                wagon.addEventListener('drop', handleDrop);
+                wagon.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            const wagon = e.target.closest('.wagon');
+            if (wagon) {
+                wagon.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            const wagon = e.target.closest('.wagon');
+            if (wagon) {
+                wagon.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+
+            const wagon = e.target.closest('.wagon');
+            if (!wagon) return;
+
+            wagon.classList.remove('drag-over');
+
+            if (!draggedElement) return;
+
+            const wagonType = wagon.dataset.type;
+            const letterType = draggedElement.dataset.type;
+
+            // Vagon zaten dolu mu kontrol et
+            if (wagon.textContent.trim() !== '') {
+                return;
+            }
+
+            // Doğru tür mü kontrol et
+            if (wagonType === letterType) {
+                // Doğru yerleştirme
+                wagon.textContent = draggedElement.textContent;
+                wagon.classList.add('correct');
+                draggedElement.remove();
+                correctPlacements++;
+
+                // Başarı mesajını göster
+                showSuccessMessage();
+
+                // Oyun tamamlandı mı kontrol et
+                if (correctPlacements === totalLetters) {
+                    setTimeout(() => {
+                        showGameComplete();
+                    }, 1000);
+                }
+            } else {
+                // Yanlış yerleştirme - harf geri döner
+                draggedElement.style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    if (draggedElement) {
+                        draggedElement.style.animation = '';
+                    }
+                }, 500);
+            }
+        }
+
+        function showSuccessMessage() {
+            const message = document.getElementById('successMessage');
+            message.classList.add('show');
+            setTimeout(() => {
+                message.classList.remove('show');
+            }, 2000);
+        }
+
+        function showGameComplete() {
+            const message = document.getElementById('successMessage');
+            const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+            message.textContent = '🎉 مَبْروك! وَضَعْتَ جَميع الحُروف فِي الأَماكِنِ الصَّحيحَة! 🎉';
+            message.classList.add('show');
+            setTimeout(() => {
+                message.classList.remove('show');
+                message.textContent = config.success_message || defaultConfig.success_message;
+            }, 4000);
+        }
+
+        function resetGame() {
+            // Vagonları temizle
+            const wagons = document.querySelectorAll('.wagon');
+            wagons.forEach(wagon => {
+                wagon.textContent = '';
+                wagon.classList.remove('correct');
+            });
+
+            // Harfleri yeniden oluştur
+            createLetters();
+            correctPlacements = 0;
+        }
+
+        // CSS animasyonu ekle
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Oyunu başlat
+        document.addEventListener('DOMContentLoaded', () => {
+            createLetters();
+            setupWagons();
+        });
+    </script>
+ </body>
+</html>

@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arabic Drag Drop Game</title>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+            min-height: 100%;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        /* Background decorations */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.3) 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, rgba(173, 216, 230, 0.3) 3px, transparent 3px),
+                radial-gradient(circle at 60% 80%, rgba(144, 238, 144, 0.3) 2px, transparent 2px),
+                radial-gradient(circle at 30% 70%, rgba(255, 218, 185, 0.3) 2px, transparent 2px);
+            background-size: 100px 100px, 150px 150px, 120px 120px, 80px 80px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Instruction box */
+        .instruction-box {
+            background: white;
+            border: 3px solid #e74c3c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .instruction-text {
+            font-size: 38px;
+            font-weight: bold;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        /* Draggable words container */
+        .words-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .draggable-word {
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 34px;
+            font-weight: bold;
+            color: white;
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .draggable-word:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .draggable-word:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .draggable-word.dragging {
+            opacity: 0.8;
+            transform: rotate(5deg);
+            z-index: 1000;
+        }
+
+        .word-1 { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+        .word-2 { background: linear-gradient(135deg, #e91e63, #f06292); }
+        .word-3 { background: linear-gradient(135deg, #66bb6a, #81c784); }
+        .word-4 { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+        .word-5 { background: linear-gradient(135deg, #42a5f5, #64b5f6); }
+
+        .draggable-word.selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            border: 3px solid #ffd700;
+        }
+
+        /* Sentences container */
+        .sentences-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sentence-row {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            font-size: 34px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .sentence-1 { background: linear-gradient(135deg, #d4f4dd, #c8f7c5); }
+        .sentence-2 { background: linear-gradient(135deg, #ffe0b3, #ffd699); }
+        .sentence-3 { background: linear-gradient(135deg, #cce7ff, #b3d9ff); }
+        .sentence-4 { background: linear-gradient(135deg, #e6e6e6, #d9d9d9); }
+
+        .sentence-number {
+            font-size: 24px;
+            margin-left: 15px;
+            min-width: 30px;
+        }
+
+        .sentence-text {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .drop-zone {
+            min-width: 150px;
+            min-height: 50px;
+            border: 3px dashed #bdc3c7;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.7);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .drop-zone.highlight {
+            border-color: #3498db;
+            background: rgba(52, 152, 219, 0.1);
+            transform: scale(1.05);
+        }
+
+        .drop-zone.filled {
+            border: 3px solid #27ae60;
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .drop-zone.animate-dots {
+            animation: shimmer 2s infinite;
+        }
+
+        .drop-zone.waiting {
+            border-color: #f39c12;
+            background: rgba(243, 156, 18, 0.2);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                border-color: #f39c12;
+                background: rgba(243, 156, 18, 0.2);
+            }
+            50% { 
+                border-color: #e67e22;
+                background: rgba(230, 126, 34, 0.3);
+            }
+        }
+
+        @keyframes shimmer {
+            0%, 100% { border-color: #bdc3c7; }
+            50% { border-color: #3498db; }
+        }
+
+        .dropped-word {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Success animations */
+        @keyframes sparkle {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        .sparkle {
+            animation: sparkle 0.6s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 60%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            80% { transform: translateY(-5px); }
+        }
+
+        .bounce {
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        /* Feedback messages */
+        .feedback-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1500;
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .feedback-message.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .feedback-message.success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .feedback-message.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        /* Completion message */
+        .completion-message {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 20px;
+            font-size: 34px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 90%;
+            margin: 40px auto;
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.5s ease;
+            display: block;
+        }
+
+        .completion-message.show {
+            opacity: 1;
+            transform: scale(1);
+            display: block;
+        }
+
+        /* Retry button */
+        .retry-button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .retry-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #2980b9, #21618c);
+        }
+
+        .retry-button:active {
+            transform: translateY(0);
+        }
+
+        /* Touch support for mobile */
+        .draggable-word {
+            touch-action: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .instruction-box {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .instruction-text {
+                font-size: 18px;
+                line-height: 1.5;
+            }
+            
+            .words-container {
+                gap: 8px;
+                margin-bottom: 25px;
+            }
+            
+            .draggable-word {
+                padding: 12px 18px;
+                font-size: 16px;
+                min-width: 80px;
+                text-align: center;
+            }
+            
+            .sentences-container {
+                gap: 15px;
+            }
+            
+            .sentence-row {
+                padding: 15px;
+                font-size: 16px;
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            
+            .sentence-text {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+            
+            .drop-zone {
+                min-width: 120px;
+                min-height: 45px;
+                font-size: 16px;
+            }
+            
+            .dropped-word {
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+            
+            .completion-message {
+                padding: 20px 30px;
+                font-size: 22px;
+                margin: 0 10px;
+                max-width: 90%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            
+            .instruction-text {
+                font-size: 16px;
+            }
+            
+            .draggable-word {
+                padding: 10px 15px;
+                font-size: 14px;
+                min-width: 70px;
+            }
+            
+            .sentence-row {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .drop-zone {
+                min-width: 100px;
+                min-height: 40px;
+                font-size: 14px;
+            }
+            
+            .dropped-word {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+            
+            .completion-message {
+                padding: 15px 20px;
+                font-size: 18px;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.block{display:block}.flex{display:flex}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.flex-wrap{flex-wrap:wrap}.border{border-width:1px}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}</style>
+ </head>
+ <body>
+  <div class="game-container"><!-- Instruction Box -->
+   <div class="instruction-box">
+    <div class="instruction-text" id="instruction-text">
+     اِقْرَأِ الْجُمَل وَصَحِّح الْأَخْطاءَ الَّتي في الْكَلِماتِ الْمُلَوَّنَة مُسْتَعينًا بِالْقائِمَة.
+    </div>
+   </div><!-- Draggable Words -->
+   <div class="words-container">
+    <div class="draggable-word word-1" draggable="true" data-word="اَلْمَسْجِد">
+     اَلْمَسْجِد
+    </div>
+    <div class="draggable-word word-2" draggable="true" data-word="اَلصَّفّ">
+     اَلصَّفّ
+    </div>
+    <div class="draggable-word word-3" draggable="true" data-word="اَلْمَدْرَسَة">
+     اَلْمَدْرَسَة
+    </div>
+    <div class="draggable-word word-4" draggable="true" data-word="اَلْمَقْصِف">
+     اَلْمَقْصِف
+    </div>
+    <div class="draggable-word word-5" draggable="true" data-word="أَمَامَ">
+     أَمَامَ
+    </div>
+   </div><!-- Sentences with Drop Zones -->
+   <div class="sentences-container">
+    <div class="sentence-row sentence-1">
+     <div class="sentence-text"><span>يوجَدُ الْمُخْتَبَر فِي <span style="color: #e74c3c; font-weight: bold;">الْبَيْتِ</span>.</span> <span>/</span>
+      <div class="drop-zone animate-dots" data-correct="اَلْمَدْرَسَة" data-sentence="1"></div>
+     </div>
+    </div>
+    <div class="sentence-row sentence-2">
+     <div class="sentence-text"><span>توجَدُ السَّجَّادَةُ فِي <span style="color: #e74c3c; font-weight: bold;">الصَّفِّ</span>.</span> <span>/</span>
+      <div class="drop-zone animate-dots" data-correct="اَلْمَسْجِد" data-sentence="2"></div>
+     </div>
+    </div>
+    <div class="sentence-row sentence-3">
+     <div class="sentence-text"><span>تُوجَدُ الخَريطَةُ فِي <span style="color: #e74c3c; font-weight: bold;">المَسْجِدِ</span>.</span> <span>/</span>
+      <div class="drop-zone animate-dots" data-correct="اَلصَّفّ" data-sentence="3"></div>
+     </div>
+    </div>
+    <div class="sentence-row sentence-4">
+     <div class="sentence-text"><span>السَّبُّورَةُ الذَّكِيَّةُ <span style="color: #e74c3c; font-weight: bold;">خَلْفَ</span> الصَّفِّ.</span> <span>/</span>
+      <div class="drop-zone animate-dots" data-correct="أَمَامَ" data-sentence="4"></div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Completion Message -->
+  <div class="completion-message" id="completion-message">
+   <div>
+    🎉 أَحْسَنْت! لَقَدْ أَكْمَلْتَ اللُّعْبَةَ بِنَجَاح! 🎉
+   </div><button class="retry-button" onclick="resetGame()">اِلْعَبْ مَرَّة أُخْرى</button>
+  </div>
+  <div class="feedback-message" id="feedback-message"></div>
+  <script>
+        // Configuration object
+        const defaultConfig = {
+            instruction_text: "اِقْرَأِ الْجُمَل وَصَحِّح الْأَخْطاءَ الَّتي في الْكَلِماتِ الْمُلَوَّنَة مُسْتَعينًا بِالْقائِمَة.",
+            success_message: "أَحْسَنْت!",
+            retry_message: "حاوِلْ مَرَّةً أُخْرى",
+            primary_color: "#e74c3c",
+            background_color: "#f8f9ff"
+        };
+
+        let config = { ...defaultConfig };
+        let completedSentences = 0;
+        let usedWords = new Set();
+
+        // Audio feedback with simple beep sounds
+        function playFeedbackSound(isSuccess = false) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (isSuccess) {
+                // Success sound: higher pitch, pleasant tone
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
+            } else {
+                // Error sound: lower pitch, brief tone
+                oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(250, audioContext.currentTime + 0.1);
+            }
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+
+        // Show feedback message
+        function showFeedback(message, isSuccess = true) {
+            const feedbackElement = document.getElementById('feedback-message');
+            feedbackElement.textContent = message;
+            feedbackElement.className = `feedback-message ${isSuccess ? 'success' : 'error'}`;
+            feedbackElement.classList.add('show');
+            
+            setTimeout(() => {
+                feedbackElement.classList.remove('show');
+            }, 2000);
+        }
+
+        // Reset game function
+        function resetGame() {
+            // Hide completion message
+            document.getElementById('completion-message').classList.remove('show');
+            
+            // Reset game state
+            completedSentences = 0;
+            usedWords.clear();
+            selectedWord = null;
+            
+            // Reset all draggable words
+            document.querySelectorAll('.draggable-word').forEach(word => {
+                word.style.opacity = '1';
+                word.style.pointerEvents = 'auto';
+                word.classList.remove('selected');
+            });
+            
+            // Reset all drop zones
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.classList.remove('filled', 'highlight', 'waiting', 'sparkle', 'bounce');
+                zone.classList.add('animate-dots');
+                zone.innerHTML = '';
+            });
+            
+            // Show success feedback
+            showFeedback(config.success_message || defaultConfig.success_message, true);
+        }
+
+        // Drag and drop functionality with touch support
+        let draggedElement = null;
+        let selectedWord = null;
+        let isTouchDevice = 'ontouchstart' in window;
+
+        document.querySelectorAll('.draggable-word').forEach(word => {
+            // Desktop drag and drop
+            word.addEventListener('dragstart', handleDragStart);
+            word.addEventListener('dragend', handleDragEnd);
+            
+            // Touch and click support
+            word.addEventListener('click', handleWordClick);
+            
+            // Touch events for mobile
+            if (isTouchDevice) {
+                word.addEventListener('touchstart', handleTouchStart, { passive: false });
+                word.addEventListener('touchmove', handleTouchMove, { passive: false });
+                word.addEventListener('touchend', handleTouchEnd, { passive: false });
+            }
+        });
+
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            // Desktop drag and drop
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('dragenter', handleDragEnter);
+            zone.addEventListener('dragleave', handleDragLeave);
+            zone.addEventListener('drop', handleDrop);
+            
+            // Mobile touch support
+            zone.addEventListener('click', handleZoneClick);
+        });
+
+        // Mobile touch handlers
+        function handleWordClick(e) {
+            if (usedWords.has(this.dataset.word)) return;
+            
+            // Clear previous selection
+            document.querySelectorAll('.draggable-word').forEach(w => w.classList.remove('selected'));
+            document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('waiting'));
+            
+            // Select this word
+            selectedWord = this;
+            this.classList.add('selected');
+            
+            // Highlight available drop zones
+            document.querySelectorAll('.drop-zone:not(.filled)').forEach(zone => {
+                zone.classList.add('waiting');
+            });
+            
+            this.classList.add('bounce');
+            setTimeout(() => this.classList.remove('bounce'), 600);
+        }
+
+        function handleZoneClick(e) {
+            if (!selectedWord || this.classList.contains('filled')) return;
+            
+            const droppedWord = selectedWord.dataset.word;
+            const correctWord = this.dataset.correct;
+            
+            console.log('Dropped word:', droppedWord);
+            console.log('Correct word:', correctWord);
+            console.log('Match:', droppedWord === correctWord);
+            
+            if (droppedWord === correctWord) {
+                // Correct answer
+                this.classList.remove('animate-dots', 'waiting');
+                this.classList.add('filled', 'sparkle');
+                
+                const wordClass = selectedWord.className.match(/word-\d+/)[0];
+                this.innerHTML = `<div class="dropped-word ${wordClass}">${droppedWord}</div>`;
+                
+                selectedWord.style.opacity = '0.3';
+                selectedWord.style.pointerEvents = 'none';
+                selectedWord.classList.remove('selected');
+                usedWords.add(droppedWord);
+                
+                playFeedbackSound(true);
+                showFeedback(config.success_message || defaultConfig.success_message, true);
+                
+                setTimeout(() => this.classList.remove('sparkle'), 600);
+                
+                completedSentences++;
+                if (completedSentences === 4) {
+                    setTimeout(showCompletionMessage, 1000);
+                }
+            } else {
+                // Incorrect answer
+                this.classList.add('bounce');
+                playFeedbackSound(false);
+                showFeedback(config.retry_message || defaultConfig.retry_message, false);
+                setTimeout(() => this.classList.remove('bounce'), 600);
+            }
+            
+            // Clear selection
+            selectedWord = null;
+            document.querySelectorAll('.draggable-word').forEach(w => w.classList.remove('selected'));
+            document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('waiting'));
+        }
+
+        function handleTouchStart(e) {
+            if (usedWords.has(this.dataset.word)) {
+                e.preventDefault();
+                return;
+            }
+            e.preventDefault();
+            handleWordClick.call(this, e);
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+        }
+
+        function handleTouchEnd(e) {
+            e.preventDefault();
+        }
+
+        function handleDragStart(e) {
+            if (usedWords.has(this.dataset.word)) {
+                e.preventDefault();
+                return;
+            }
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.outerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            draggedElement = null;
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            if (!this.classList.contains('filled')) {
+                this.classList.add('highlight');
+            }
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('highlight');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            this.classList.remove('highlight');
+
+            if (this.classList.contains('filled') || !draggedElement) {
+                return false;
+            }
+
+            const droppedWord = draggedElement.dataset.word;
+            const correctWord = this.dataset.correct;
+
+            console.log('Drag - Dropped word:', droppedWord);
+            console.log('Drag - Correct word:', correctWord);
+            console.log('Drag - Match:', droppedWord === correctWord);
+
+            if (droppedWord === correctWord) {
+                // Correct answer
+                this.classList.remove('animate-dots');
+                this.classList.add('filled', 'sparkle');
+                
+                const wordClass = draggedElement.className.match(/word-\d+/)[0];
+                this.innerHTML = `<div class="dropped-word ${wordClass}">${droppedWord}</div>`;
+                
+                draggedElement.style.opacity = '0.3';
+                draggedElement.style.pointerEvents = 'none';
+                usedWords.add(droppedWord);
+                
+                playFeedbackSound(true);
+                showFeedback(config.success_message || defaultConfig.success_message, true);
+                
+                setTimeout(() => this.classList.remove('sparkle'), 600);
+                
+                completedSentences++;
+                if (completedSentences === 4) {
+                    setTimeout(showCompletionMessage, 1000);
+                }
+            } else {
+                // Incorrect answer
+                this.classList.add('bounce');
+                playFeedbackSound(false);
+                showFeedback(config.retry_message || defaultConfig.retry_message, false);
+                setTimeout(() => this.classList.remove('bounce'), 600);
+            }
+
+            return false;
+        }
+
+        function showCompletionMessage() {
+            const message = document.getElementById('completion-message');
+            message.classList.add('show');
+            
+            setTimeout(() => {
+                message.classList.remove('show');
+            }, 4000);
+        }
+
+        // Element SDK integration
+        async function onConfigChange(newConfig) {
+            config = { ...config, ...newConfig };
+            
+            // Update instruction text
+            const instructionElement = document.getElementById('instruction-text');
+            if (instructionElement) {
+                instructionElement.textContent = config.instruction_text || defaultConfig.instruction_text;
+            }
+            
+            // Update colors if needed
+            if (config.primary_color) {
+                document.querySelector('.instruction-box').style.borderColor = config.primary_color;
+            }
+            
+            if (config.background_color) {
+                document.body.style.background = `linear-gradient(135deg, ${config.background_color} 0%, #e8f4fd 100%)`;
+            }
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.primary_color || defaultConfig.primary_color,
+                        set: (value) => {
+                            config.primary_color = value;
+                            window.elementSdk?.setConfig({ primary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk?.setConfig({ background_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["instruction_text", config.instruction_text || defaultConfig.instruction_text],
+                ["success_message", config.success_message || defaultConfig.success_message],
+                ["retry_message", config.retry_message || defaultConfig.retry_message]
+            ]);
+        }
+
+        // Initialize Element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+ </body>
+</html>

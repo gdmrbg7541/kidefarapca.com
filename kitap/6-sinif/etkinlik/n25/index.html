@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arabic Body Parts Matching Worksheet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&amp;family=Amiri:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Noto Naskh Arabic', 'Amiri', serif;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 50%, #f0f8ff 100%);
+            min-height: 100%;
+            direction: rtl;
+        }
+
+        .worksheet-container {
+            max-width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #fef7cd 100%);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            padding: 30px;
+            position: relative;
+            border: 3px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .worksheet-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3);
+            border-radius: 20px;
+            z-index: -1;
+            animation: rainbow-border 3s linear infinite;
+        }
+
+        @keyframes rainbow-border {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .header-box {
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 30%, #45b7d1 60%, #96ceb4 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+            position: relative;
+            overflow: hidden;
+            animation: pulse-glow 2s ease-in-out infinite alternate;
+        }
+
+        .header-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4); }
+            100% { box-shadow: 0 12px 35px rgba(255, 107, 107, 0.6); }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .main-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .instruction-text {
+            font-size: 20px;
+            margin: 10px 0 0 0;
+            opacity: 0.95;
+        }
+
+        .matching-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: 4px solid transparent;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            background: linear-gradient(white, white) padding-box, 
+                       linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4) border-box;
+        }
+
+        .matching-table th,
+        .matching-table td {
+            border: 2px solid rgba(255,255,255,0.3);
+            text-align: center;
+            vertical-align: middle;
+            height: 70px;
+            position: relative;
+        }
+
+        .matching-table th {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            font-weight: 700;
+            font-size: 36px;
+            padding: 15px 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: emoji-bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes emoji-bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .word-column {
+            width: 35%;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            text-align: right;
+            padding-right: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .emoji-column {
+            width: 11%;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            font-size: 32px;
+        }
+
+        .word-cell {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #2d3748;
+            font-size: 26px;
+            font-weight: 700;
+            text-align: right;
+            padding-right: 20px;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+            transition: all 0.3s ease;
+        }
+
+        .word-cell:hover {
+            transform: scale(1.02);
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .answer-cell {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .answer-cell:hover {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f3e8ff 100%);
+            transform: scale(1.02);
+        }
+
+        .checkmark-input {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #ff6b6b;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #fef7cd 100%);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #10b981;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
+        }
+
+        .checkmark-input:hover {
+            border-color: #4ecdc4;
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+        }
+
+        .checkmark-input.correct {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            border-color: #059669;
+            color: white;
+            animation: correct-pulse 0.6s ease-out;
+        }
+
+        .checkmark-input.incorrect {
+            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            border-color: #dc2626;
+            color: white;
+            animation: incorrect-shake 0.6s ease-out;
+        }
+
+        @keyframes correct-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrect-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .decorative-border {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px dashed #c7d2fe;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .game-controls {
+            text-align: center;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .game-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .reset-button {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+            min-width: 200px;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: celebration-bounce 0.6s ease-out;
+            display: none;
+        }
+
+        @keyframes celebration-bounce {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .worksheet-container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .main-title {
+                font-size: 24px;
+            }
+            
+            .instruction-text {
+                font-size: 18px;
+            }
+            
+            .matching-table th,
+            .word-cell {
+                font-size: 20px;
+            }
+            
+            .matching-table th {
+                font-size: 26px;
+            }
+
+            .game-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .game-button, .score-display {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.collapse{visibility:collapse}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.block{display:block}.flex{display:flex}.table{display:table}.hidden{display:none}.border-collapse{border-collapse:collapse}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.flex-wrap{flex-wrap:wrap}.border{border-width:1px}.uppercase{text-transform:uppercase}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.ease-in-out{transition-timing-function:cubic-bezier(.4,0,.2,1)}</style>
+ </head>
+ <body>
+  <div class="decorative-border"></div>
+  <div class="worksheet-container">
+   <div class="header-box">
+    <h1 class="main-title" id="main-title">🎮 لُعْبَة مُطابَقَةِ أَعْضاءِ الْجِسْم 🎮</h1>
+    <p class="instruction-text" id="instruction-text">ضَعْ عَلامَةَ (✅) في الْمَكانِ الْمُناسِب.</p>
+   </div>
+   <div class="game-controls">
+    <div class="score-display" id="score-display">
+     اَلنُّقاط: 0 | اَلْأَخْطاء: 0
+    </div>
+    <button class="game-button reset-button" onclick="resetGame(); playClickSound();">
+      🔄 اِلْعَبْ مَرَّةً أُخْرى
+    </button>
+   </div>
+   <div class="celebration" id="celebration">
+    🎉 أَحْسَنْت! لَقَدْ أَكْمَلْت اللُّعْبَة! 🎉
+   </div>
+   <table class="matching-table">
+    <thead>
+     <tr>
+      <th class="word-column">اَلْكَلِمات</th>
+      <th class="emoji-column">👂</th>
+      <th class="emoji-column">🦶</th>
+      <th class="emoji-column">😀</th>
+      <th class="emoji-column">👃</th>
+      <th class="emoji-column">👀</th>
+      <th class="emoji-column">✋</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <td class="word-cell" id="word-eye">عَيْن</td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+     </tr>
+     <tr>
+      <td class="word-cell" id="word-hand">يَد</td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+     </tr>
+     <tr>
+      <td class="word-cell" id="word-nose">أَنْف</td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+     </tr>
+     <tr>
+      <td class="word-cell" id="word-foot">قَدَم</td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+     </tr>
+     <tr>
+      <td class="word-cell" id="word-ear">أُذُن</td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+      <td class="answer-cell"><div class="checkmark-input" onclick="toggleCheck(this)"></div></td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+  <script>
+        const defaultConfig = {
+            main_title: "🎮 لُعْبَة مُطابَقَة أَعْضاء الْجِسْم 🎮",
+            instruction_text: "ضَعْ عَلامَةَ (✅) في الْمَكانِ الْمُناسِب.",
+            word_eye: "عَيْن",
+            word_hand: "يَد", 
+            word_nose: "أَنْف",
+            word_foot: "قَدَم",
+            word_ear: "أُذُن",
+            primary_color: "#ff6b6b",
+            secondary_color: "#4ecdc4",
+            background_color: "#f8f9ff",
+            text_color: "#2d3748",
+            accent_color: "#10b981"
+        };
+
+        // Game state
+        let gameState = {
+            score: 0,
+            errors: 0,
+            correctAnswers: {
+                0: 4, // عَيْن (eye) -> 👀 (column 4)
+                1: 5, // يَد (hand) -> ✋ (column 5)
+                2: 3, // أَنْف (nose) -> 👃 (column 3)
+                3: 1, // قَدَم (foot) -> 🦶 (column 1)
+                4: 0  // أُذُن (ear) -> 👂 (column 0)
+            },
+            selectedAnswers: {}
+        };
+
+        // Simple and reliable sound system
+        let audioContext = null;
+        let audioEnabled = false;
+
+        function initAudio() {
+            if (!audioEnabled) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    audioEnabled = true;
+                } catch (e) {
+                    console.log('Audio not supported');
+                }
+            }
+        }
+
+        function playSound(frequency, duration, volume = 0.3) {
+            if (!audioEnabled || !audioContext) return;
+            
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                console.log('Sound play failed');
+            }
+        }
+
+        function playCorrectSound() {
+            playSound(800, 0.3, 0.4); // Happy high beep
+        }
+
+        function playIncorrectSound() {
+            playSound(300, 0.4, 0.3); // Low error beep
+        }
+
+        function playVictorySound() {
+            playSound(600, 0.2, 0.3);
+            setTimeout(() => playSound(800, 0.2, 0.3), 150);
+            setTimeout(() => playSound(1000, 0.3, 0.4), 300);
+        }
+
+        function playClickSound() {
+            playSound(600, 0.1, 0.2);
+        }
+
+        // Enable audio on first user interaction
+        document.addEventListener('click', initAudio, { once: true });
+        document.addEventListener('touchstart', initAudio, { once: true });
+
+        // ✔ Satırda sadece bir kutu + doğru/yanlış en sonda
+        function toggleCheck(element) {
+            playClickSound();
+
+            const cell = element.parentElement;
+            const row = cell.parentElement;
+            const tbody = row.parentElement;
+
+            const allRows = Array.from(tbody.children);
+            const rowIndex = allRows.indexOf(row);
+
+            const allCells = Array.from(row.children);
+            const colIndex = allCells.indexOf(cell) - 1; // kelime sütununu çıkar
+
+            if (rowIndex < 0 || colIndex < 0) return;
+
+            // Aynı satırdaki tüm işaretleri temizle
+            const rowCells = row.querySelectorAll('.checkmark-input');
+            rowCells.forEach(input => {
+                input.textContent = '';
+                input.classList.remove('correct', 'incorrect');
+                input.style.background = '';
+                input.style.borderColor = '';
+            });
+
+            // Yeni işareti koy
+            element.textContent = '✓';
+            gameState.selectedAnswers[rowIndex] = colIndex;
+
+            // Sadece seçim, henüz doğru/yanlış rengi yok.
+            // Tüm satırlar doldurulduysa en son doğrula.
+            const totalRows = Object.keys(gameState.correctAnswers).length;
+            if (Object.keys(gameState.selectedAnswers).length === totalRows) {
+                evaluateGame();
+            }
+        }
+
+        function evaluateGame() {
+            gameState.score = 0;
+            gameState.errors = 0;
+
+            const tbody = document.querySelector('.matching-table tbody');
+            const rows = Array.from(tbody.children);
+
+            rows.forEach((row, rowIndex) => {
+                const selectedCol = gameState.selectedAnswers[rowIndex];
+                const correctCol = gameState.correctAnswers[rowIndex];
+
+                const cells = row.querySelectorAll('.checkmark-input');
+                cells.forEach(c => c.classList.remove('correct', 'incorrect'));
+
+                if (selectedCol === undefined) return;
+
+                if (selectedCol === correctCol) {
+                    cells[selectedCol].classList.add('correct');
+                    gameState.score++;
+                } else {
+                    cells[selectedCol].classList.add('incorrect');
+                    gameState.errors++;
+                }
+            });
+
+            updateScore();
+
+            // Genel ses: hepsi doğruysa mutlu ses, değilse hata sesi
+            if (gameState.errors === 0) {
+                playCorrectSound();
+            } else {
+                playIncorrectSound();
+            }
+
+            checkGameComplete();
+        }
+
+        function updateScore() {
+            document.getElementById('score-display').textContent = 
+                `النقاط: ${gameState.score} | الأخطاء: ${gameState.errors}`;
+        }
+
+        function checkGameComplete() {
+            if (gameState.score === 5) {
+                setTimeout(() => {
+                    document.getElementById('celebration').style.display = 'block';
+                    playVictorySound();
+                    setTimeout(() => {
+                        document.getElementById('celebration').style.display = 'none';
+                    }, 3000);
+                }, 500);
+            }
+        }
+
+        function resetGame() {
+            gameState.score = 0;
+            gameState.errors = 0;
+            gameState.selectedAnswers = {};
+            
+            // Clear all selections
+            document.querySelectorAll('.checkmark-input').forEach(input => {
+                input.textContent = '';
+                input.classList.remove('correct', 'incorrect');
+                input.style.background = '';
+                input.style.borderColor = '';
+            });
+            
+            updateScore();
+            document.getElementById('celebration').style.display = 'none';
+        }
+
+        async function onConfigChange(config) {
+            const mainTitle = config.main_title || defaultConfig.main_title;
+            const instructionText = config.instruction_text || defaultConfig.instruction_text;
+            const wordEye = config.word_eye || defaultConfig.word_eye;
+            const wordHand = config.word_hand || defaultConfig.word_hand;
+            const wordNose = config.word_nose || defaultConfig.word_nose;
+            const wordFoot = config.word_foot || defaultConfig.word_foot;
+            const wordEar = config.word_ear || defaultConfig.word_ear;
+            const primaryColor = config.primary_color || defaultConfig.primary_color;
+            const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+            const backgroundColor = config.background_color || defaultConfig.background_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const accentColor = config.accent_color || defaultConfig.accent_color;
+
+            document.getElementById('main-title').textContent = mainTitle;
+            document.getElementById('instruction-text').textContent = instructionText;
+            document.getElementById('word-eye').textContent = wordEye;
+            document.getElementById('word-hand').textContent = wordHand;
+            document.getElementById('word-nose').textContent = wordNose;
+            document.getElementById('word-foot').textContent = wordFoot;
+            document.getElementById('word-ear').textContent = wordEar;
+
+            document.body.style.background = `linear-gradient(135deg, ${backgroundColor} 0%, #e8f0ff 50%, #f0f8ff 100%)`;
+            
+            const headerBox = document.querySelector('.header-box');
+            headerBox.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 60%, #96ceb4 100%)`;
+            
+            const wordCells = document.querySelectorAll('.word-cell');
+            wordCells.forEach(cell => {
+                cell.style.color = textColor;
+            });
+            
+            const checkInputs = document.querySelectorAll('.checkmark-input');
+            checkInputs.forEach(input => {
+                input.style.borderColor = primaryColor;
+                input.style.color = accentColor;
+            });
+
+            const resetButton = document.querySelector('.reset-button');
+            if (resetButton) {
+                resetButton.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+            }
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.primary_color || defaultConfig.primary_color,
+                        set: (value) => {
+                            config.primary_color = value;
+                            window.elementSdk.setConfig({ primary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.secondary_color || defaultConfig.secondary_color,
+                        set: (value) => {
+                            config.secondary_color = value;
+                            window.elementSdk.setConfig({ secondary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.accent_color || defaultConfig.accent_color,
+                        set: (value) => {
+                            config.accent_color = value;
+                            window.elementSdk.setConfig({ accent_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_title", config.main_title || defaultConfig.main_title],
+                ["instruction_text", config.instruction_text || defaultConfig.instruction_text],
+                ["word_eye", config.word_eye || defaultConfig.word_eye],
+                ["word_hand", config.word_hand || defaultConfig.word_hand],
+                ["word_nose", config.word_nose || defaultConfig.word_nose],
+                ["word_foot", config.word_foot || defaultConfig.word_foot],
+                ["word_ear", config.word_ear || defaultConfig.word_ear]
+            ]);
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+ </body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Renkler Oyunu</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Arakom", "Amiri", "Scheherazade New", serif;
+      background: radial-gradient(circle at top, #ffeef8, #f7fbff, #fffbe9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      direction: rtl;
+    }
+
+    .page-frame {
+      width: 100%;
+      max-width: 1200px;
+      margin: 12px;
+      padding: 20px;
+      border-radius: 24px;
+      background: #ffffffee;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      border: 3px solid #ffd2e6;
+      position: relative;
+      display: none;
+    }
+
+    .page-frame.active {
+      display: block;
+    }
+
+    .instruction-box {
+      display: inline-flex;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: #fffaf3;
+      border: 2px dashed #ffc857;
+      font-size: 30px;
+      font-weight: 800;
+      gap: 10px;
+      margin-bottom: 18px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .instruction-icon {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #ffc857;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 26px;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .game-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 600px) {
+      .game-grid { grid-template-columns: 1fr; }
+    }
+
+    .item-card {
+      background: #fff;
+      border-radius: 22px;
+      padding: 18px;
+      border: 2px solid #ffd9f0;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    }
+
+    .image-frame {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg,#ffe5f5,#ffeede,#e6f6ff);
+      border-radius: 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .image-frame img {
+      max-width: 85%;
+      max-height: 85%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .options-box {
+      border: 2px solid #ffd2e6;
+      border-radius: 20px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .option-row:hover { background: #fff7fe; }
+
+    .option-text {
+      font-size: 28px;
+      font-weight: 800;
+      flex: 1;
+      text-align: center;
+    }
+
+    .bubble {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      border: 3px solid #ff9ab5;
+      background: #fff;
+      box-shadow: 0 0 0 2px #ffe0f0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bubble::after {
+      content:"";
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: #ff9ab5;
+      transition: 0.18s;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
+
+    .bubble::before {
+      content: "✓";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-55%);
+      font-size: 22px;
+      color: #ff9ab5;
+      opacity: 0;
+      transition: 0.18s;
+    }
+
+    .selected .bubble::after {
+      width: 18px;
+      height: 18px;
+    }
+
+    .selected .bubble::before {
+      opacity: 1;
+    }
+
+    .correct.selected {
+      background:#e6ffec !important;
+    }
+    .correct.selected .bubble::after {
+      background:#37a866 !important;
+    }
+    .correct.selected .bubble::before {
+      color:#37a866 !important;
+    }
+
+    .wrong.selected {
+      background:#ffe8ea !important;
+    }
+    .wrong.selected .bubble::after {
+      background:#ff4b6e !important;
+    }
+    .wrong.selected .bubble::before {
+      color:#ff4b6e !important;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      font-size: 26px;
+      font-weight: 800;
+      text-align: center;
+      min-height: 24px;
+    }
+
+    .feedback.correct { color: #2f8f5b; }
+    .feedback.wrong { color: #d23b4a; }
+
+    .page-feedback {
+      margin-top: 14px;
+      font-size: 28px;
+      font-weight: 800;
+      text-align: center;
+      min-height: 30px;
+    }
+    .page-feedback.success { color: #2f8f5b; }
+    .page-feedback.warning { color: #c05621; }
+    .page-feedback.info { color: #2c5282; }
+
+    .nav-bar {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .nav-button {
+      border: none;
+      padding: 12px 26px;
+      border-radius: 999px;
+      font-size: 28px;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg,#ffb4d4,#ffa75a);
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    }
+
+    .nav-button:hover:not([disabled]) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+    }
+
+    .nav-button[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ============ SAYFA 1 ============ -->
+<div class="page-frame active" data-page="0">
+  <div class="instruction-box">
+    <span class="instruction-icon">✏️</span>
+    <span>اِخْتَر اللَّوْن الْمُناسِب لِلصّورَة.</span>
+  </div>
+
+  <section class="game-grid">
+
+    <!-- 1 — Mor Palto -->
+    <div class="item-card">
+      <div class="image-frame">
+        <img src="v/02.png" alt="مِعْطَف بَنَفْسَجِيّ">
+      </div>
+      <div class="options-box">
+        <div class="option-row" data-correct="false">
+          <span class="option-text">وَرْدِيّ</span><span class="bubble"></span>
+        </div>
+        <div class="option-row" data-correct="true">
+          <span class="option-text">بَنَفْسَجِيّ</span><span class="bubble"></span>
+        </div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <!-- 2 — Siyah Pantolon -->
+    <div class="item-card">
+      <div class="image-frame">
+        <img src="v/07.png" alt="بَنْطَلون أَسْوَد">
+      </div>
+      <div class="options-box">
+        <div class="option-row" data-correct="true">
+          <span class="option-text">أَسْوَد</span><span class="bubble"></span>
+        </div>
+        <div class="option-row" data-correct="false">
+          <span class="option-text">أَبْيَض</span><span class="bubble"></span>
+        </div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <!-- 3 — Mavi Gömlek -->
+    <div class="item-card">
+      <div class="image-frame">
+        <img src="v/08.png" alt="قَمِيص أَزْرَق">
+      </div>
+      <div class="options-box">
+        <div class="option-row" data-correct="true">
+          <span class="option-text">أَزْرَق</span><span class="bubble"></span>
+        </div>
+        <div class="option-row" data-correct="false">
+          <span class="option-text">أَصْفَر</span><span class="bubble"></span>
+        </div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+  </section>
+
+  <div class="nav-bar">
+    <button class="nav-button check-button">تَحَقَّقْ</button>
+    <!-- SONRAKİ: OK SOLA DOĞRU -->
+    <button class="nav-button next-button" data-goto="1" disabled>اَلتّالي ◀</button>
+  </div>
+  <div class="page-feedback"></div>
+</div>
+
+
+<!-- ============ SAYFA 2 ============ -->
+<div class="page-frame" data-page="1">
+  <div class="instruction-box">
+    <span class="instruction-icon">✏️</span>
+    <span>اِخْتَر اللَّوْن الْمُناسِب لِلصّورَة.</span>
+  </div>
+
+  <section class="game-grid">
+
+    <!-- 4 — Siyah Ayakkabı -->
+    <div class="item-card">
+      <div class="image-frame">
+        <img src="v/03.png" alt="حِذاء أَسْوَد">
+      </div>
+      <div class="options-box">
+        <div class="option-row" data-correct="false">
+          <span class="option-text">وَرْدِيّ</span><span class="bubble"></span>
+        </div>
+        <div class="option-row" data-correct="true">
+          <span class="option-text">أَسْوَد</span><span class="bubble"></span>
+        </div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <!-- 5 — Turuncu Atkı -->
+    <div class="item-card">
+      <div class="image-frame">
+        <img src="v/06.png" alt="وِشَاح بُرْتُقالِيّ">
+      </div>
+      <div class="options-box">
+        <div class="option-row" data-correct="true">
+          <span class="option-text">بُرْتُقالِيّ</span><span class="bubble"></span>
+        </div>
+        <div class="option-row" data-correct="false">
+          <span class="option-text">بَنَفْسَجِيّ</span><span class="bubble"></span>
+        </div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <!-- 6 — Kahverengi Terlik -->
+    <div class="item-card">
+      <div class="image-frame">
+        <img src="v/01.png" alt="حِذاء بُنِّيّ">
+      </div>
+      <div class="options-box">
+        <div class="option-row" data-correct="true">
+          <span class="option-text">بُنِّيّ</span><span class="bubble"></span>
+        </div>
+        <div class="option-row" data-correct="false">
+          <span class="option-text">أَزْرَق</span><span class="bubble"></span>
+        </div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+  </section>
+
+  <div class="nav-bar">
+    <!-- ÖNCEKİ: OK SAĞA DOĞRU -->
+    <button class="nav-button" data-goto="0">▶ رُجُوع</button>
+    <button class="nav-button check-button">تَحَقَّقْ</button>
+    <!-- SONRAKİ: OK SOLA DOĞRU -->
+    <button class="nav-button next-button" data-goto="2" disabled>اَلتّالي ◀</button>
+  </div>
+  <div class="page-feedback"></div>
+</div>
+
+
+<!-- ============ SAYFA 3 ============ -->
+<div class="page-frame" data-page="2">
+  <div class="instruction-box">
+    <span class="instruction-icon">✏️</span>
+    <span>اِخْتَر اللَّوْن الْمُناسِب لِلصّورَة.</span>
+  </div>
+
+  <section class="game-grid">
+
+    <!-- 7 — Mor Çorap (pembe-corap görseli) -->
+    <div class="item-card">
+      <div class="image-frame">
+        <img src="v/05.png" alt="جَوْرَب بَنَفْسَجِيّ">
+      </div>
+      <div class="options-box">
+        <div class="option-row" data-correct="true">
+          <span class="option-text">بَنَفْسَجِيّ</span><span class="bubble"></span>
+        </div>
+        <div class="option-row" data-correct="false">
+          <span class="option-text">أَحْمَر</span><span class="bubble"></span>
+        </div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <!-- 8 — Sarı Etek -->
+    <div class="item-card">
+      <div class="image-frame">
+        <img src="v/09.png" alt="تَنّورة صَفْراء">
+      </div>
+      <div class="options-box">
+        <div class="option-row" data-correct="true">
+          <span class="option-text">صَفْراء</span><span class="bubble"></span>
+        </div>
+        <div class="option-row" data-correct="false">
+          <span class="option-text">بَنَفْسَجِيَّة</span><span class="bubble"></span>
+        </div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <!-- 9 — Beyaz Bere -->
+    <div class="item-card">
+      <div class="image-frame">
+        <img src="v/04.png" alt="قُبَّعَة أَبْيَض">
+      </div>
+      <div class="options-box">
+        <div class="option-row" data-correct="false">
+          <span class="option-text">أَزْرَق</span><span class="bubble"></span>
+        </div>
+        <div class="option-row" data-correct="true">
+          <span class="option-text">أَبْيَض</span><span class="bubble"></span>
+        </div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+  </section>
+
+  <div class="nav-bar">
+    <!-- ÖNCEKİ: OK SAĞA DOĞRU -->
+    <button class="nav-button" data-goto="1">▶ رُجُوع</button>
+    <button class="nav-button check-button">تَحَقَّقْ</button>
+  </div>
+  <div class="page-feedback"></div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const pages = Array.from(document.querySelectorAll(".page-frame"));
+
+  function showPage(index) {
+    pages.forEach((p, i) => {
+      p.classList.toggle("active", i === index);
+    });
+  }
+
+  // Başlangıçta ilk sayfa
+  showPage(0);
+
+  pages.forEach((page) => {
+    const itemCards    = Array.from(page.querySelectorAll(".item-card"));
+    const checkBtn     = page.querySelector(".check-button");
+    const pageFeedback = page.querySelector(".page-feedback");
+
+    // Seçeneklere tıklama
+    itemCards.forEach((card) => {
+      const optionRows = Array.from(card.querySelectorAll(".option-row"));
+      const feedback   = card.querySelector(".feedback");
+
+      optionRows.forEach((row) => {
+        row.addEventListener("click", () => {
+          // Aynı kart içindeki tüm seçeneklerden seçimi kaldır
+          optionRows.forEach((r) => {
+            r.classList.remove("selected", "correct", "wrong");
+          });
+
+          // Tıklananı seç
+          row.classList.add("selected");
+
+          // Kart geri bildirimi sıfırla
+          if (feedback) {
+            feedback.textContent = "";
+            feedback.className = "feedback";
+          }
+
+          // Sayfa geri bildirimini sıfırla
+          if (pageFeedback) {
+            pageFeedback.textContent = "";
+            pageFeedback.className = "page-feedback";
+          }
+        });
+      });
+    });
+
+    // Kontrol butonu
+    if (checkBtn) {
+      checkBtn.addEventListener("click", () => {
+        if (pageFeedback) {
+          pageFeedback.textContent = "";
+          pageFeedback.className = "page-feedback";
+        }
+
+        let allAnswered = true;
+        let allCorrect  = true;
+
+        itemCards.forEach((card) => {
+          const optionRows = Array.from(card.querySelectorAll(".option-row"));
+          const feedback   = card.querySelector(".feedback");
+
+          optionRows.forEach((r) => {
+            r.classList.remove("correct", "wrong");
+          });
+
+          const selected = optionRows.find((r) =>
+            r.classList.contains("selected")
+          );
+
+          if (!selected) {
+            allAnswered = false;
+            allCorrect  = false;
+            if (feedback) {
+              feedback.textContent = "اِخْتَرْ إِجابَة أَوَّلًا.";
+              feedback.className = "feedback wrong";
+            }
+            return;
+          }
+
+          const isCorrect = selected.getAttribute("data-correct") === "true";
+
+          if (isCorrect) {
+            selected.classList.add("correct");
+            if (feedback) {
+              feedback.textContent = "إِجابَة صَحيحَة ✔️";
+              feedback.className = "feedback correct";
+            }
+          } else {
+            selected.classList.add("wrong");
+            if (feedback) {
+              feedback.textContent = "إِجابَة خاطِئَة ✖️";
+              feedback.className = "feedback wrong";
+            }
+            allCorrect = false;
+          }
+        });
+
+        if (pageFeedback) {
+          if (!allAnswered) {
+            pageFeedback.textContent = "أَكْمِلْ جَمِيعَ الاِخْتِيارات أَوَّلًا.";
+            pageFeedback.className = "page-feedback info";
+          } else if (allCorrect) {
+            pageFeedback.textContent = "أَحْسَنْت! كُلُّ الْإِجاباتِ صَحيحَة.";
+            pageFeedback.className = "page-feedback success";
+          } else {
+            pageFeedback.textContent = "بَعْضُ الْإِجاباتِ خاطِئَة، حاوِلْ مَرَّةً أُخْرى.";
+            pageFeedback.className = "page-feedback warning";
+          }
+        }
+
+        // Bu sayfadaki her şey doğru ise "اَلتّالي" butonunu aç
+        const nextBtn = page.querySelector(".next-button");
+        if (nextBtn) {
+          if (allAnswered && allCorrect) {
+            nextBtn.disabled = false;
+          } else {
+            nextBtn.disabled = true;
+          }
+        }
+      });
+    }
+
+    // Sayfa geçiş butonları (data-goto)
+    const gotoButtons = Array.from(page.querySelectorAll(".nav-button[data-goto]"));
+    gotoButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = parseInt(btn.getAttribute("data-goto"), 10);
+        if (!isNaN(target) && target >= 0 && target < pages.length) {
+          showPage(target);
+        }
+      });
+    });
+  });
+});
+</script>
+
+</body>
+</html>

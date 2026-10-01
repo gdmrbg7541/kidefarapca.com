@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لعبة الألوان – فقاعات ملوّنة</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Amiri', serif;
+      background: radial-gradient(circle at top, #ffecc7 0%, #ffdff1 35%, #d7f0ff 75%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .wrapper {
+      width: min(1180px, 100%);
+      padding: 26px;
+    }
+
+    /* BAŞLIK */
+    .title {
+      background: linear-gradient(135deg, #fffaf3, #fff0ff);
+      border-radius: 26px;
+      padding: 20px 26px;
+      font-size: 2.3rem;
+      text-align: center;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.16);
+      border: 2px solid #ffc86f;
+      color: #432e23;
+    }
+
+    .game {
+      display: flex;
+      gap: 24px;
+    }
+
+    /* SOL – KELİME LİSTESİ */
+    .word-box {
+      width: 30%;
+      background: #ffffffee;
+      border-radius: 24px;
+      padding: 18px 16px;
+      border: 2px solid #ff9ccc;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .word-box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 10px;
+      right: 10px;
+      height: 8px;
+      border-radius: 0 0 999px 999px;
+      background: linear-gradient(90deg,#ff9ccc,#ffd36f,#88d4ff);
+      opacity: 0.9;
+    }
+
+    .word-box-title {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 14px;
+      color: #4a3540;
+    }
+
+    .word {
+      padding: 10px 18px;
+      margin: 8px 0;
+      border-radius: 999px;
+      font-size: 2rem;
+      text-align: center;
+      cursor: grab;
+      user-select: none;
+      border: 2px solid #ff9ccc;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+      background: linear-gradient(90deg,#ff9ccc,#ffd36f,#88d4ff);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    }
+
+    .word.dragging {
+      opacity: 0.7;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    }
+
+    .word:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+
+    /* SAĞ – RENK DAİRELERİ */
+    .board {
+      width: 70%;
+      background: #ffffffdd;
+      border-radius: 26px;
+      padding: 22px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      border: 2px solid #e0d6ff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 26px 20px;
+    }
+
+    .bubble-card {
+      text-align: center;
+      padding: 12px 6px 14px;
+      border-radius: 22px;
+      background: #ffffffd9;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .ball {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 0 auto;
+      position: relative;
+      border: 3px solid #ffffff;
+    }
+
+    .black  { background: #1b1b1b; }
+    .orange { background: #ff9b29; }
+    .green  { background: #28c86f; }
+
+    /* ✔ MOR RENK GERÇEK MOR YAPILDI */
+    .purple { background: #A020F0; }
+
+    .blue   { background: #3aaaff; }
+    .pink   { background: #ff74c9; }
+    .red    { background: #ff3d4f; }
+    .yellow { background: #f0c41a; }
+
+    .drop-zone {
+      width: 100%;
+      min-height: 46px;
+      margin-top: 12px;
+      border-radius: 999px;
+      border: 2px dashed #b3b3b3;
+      background: #ffffff;
+      font-size: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: 0.18s;
+    }
+
+    .drop-zone.correct {
+      background:#e0ffe8;
+      border-color:#32be66;
+    }
+    .drop-zone.wrong {
+      background:#ffe1e7;
+      border-color:#ff4d6d;
+    }
+
+    .buttons {
+      text-align: center;
+      margin-top: 18px;
+    }
+
+    button {
+      font-family: 'Amiri', serif;
+      font-size: 1.9rem;
+      padding: 9px 34px;
+      border-radius: 999px;
+      border: none;
+      margin: 0 10px;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 5px 14px rgba(0,0,0,0.25);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    }
+
+    #checkBtn { background: linear-gradient(135deg,#40d49b,#23a86f); }
+    #resetBtn { background: linear-gradient(135deg,#ff9e66,#ff6153); }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 18px rgba(0,0,0,0.3);
+      filter: brightness(1.05);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      filter: brightness(0.97);
+    }
+
+    .result {
+      font-size: 1.4rem;
+      text-align: center;
+      min-height: 1.4em;
+      margin-top: 6px;
+      color:#4b2f2f;
+    }
+
+    @media (max-width: 900px) {
+      .game { flex-direction: column; }
+      .word-box, .board { width: 100%; }
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .ball { width: 130px; height: 130px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="title">اِسْحَب اسْمَ اللَّوْن إِلى الْمَكانِ المُناسِبَة 🎨</div>
+
+  <div class="game">
+
+    <div class="word-box" id="wordList">
+      <div class="word-box-title">قائِمَةُ الْأَلْوان</div>
+
+      <div class="word" draggable="true" id="black"  data-color="black">أَسْوَد</div>
+      <div class="word" draggable="true" id="orange" data-color="orange">بُرْتُقالِيّ</div>
+      <div class="word" draggable="true" id="green"  data-color="green">أَخْضَر</div>
+      <div class="word" draggable="true" id="purple" data-color="purple">بَنَفْسَجِيّ</div>
+      <div class="word" draggable="true" id="blue"   data-color="blue">أَزْرَق</div>
+      <div class="word" draggable="true" id="pink"   data-color="pink">وَرْدِيّ</div>
+      <div class="word" draggable="true" id="red"    data-color="red">أَحْمَر</div>
+      <div class="word" draggable="true" id="yellow" data-color="yellow">أَصْفَر</div>
+    </div>
+
+    <div class="board">
+      <div class="grid">
+
+        <div class="bubble-card">
+          <div class="ball black"></div>
+          <div class="drop-zone" data-color="black"></div>
+        </div>
+
+        <div class="bubble-card">
+          <div class="ball orange"></div>
+          <div class="drop-zone" data-color="orange"></div>
+        </div>
+
+        <div class="bubble-card">
+          <div class="ball green"></div>
+          <div class="drop-zone" data-color="green"></div>
+        </div>
+
+        <div class="bubble-card">
+          <div class="ball purple"></div>
+          <div class="drop-zone" data-color="purple"></div>
+        </div>
+
+        <div class="bubble-card">
+          <div class="ball blue"></div>
+          <div class="drop-zone" data-color="blue"></div>
+        </div>
+
+        <div class="bubble-card">
+          <div class="ball pink"></div>
+          <div class="drop-zone" data-color="pink"></div>
+        </div>
+
+        <div class="bubble-card">
+          <div class="ball red"></div>
+          <div class="drop-zone" data-color="red"></div>
+        </div>
+
+        <div class="bubble-card">
+          <div class="ball yellow"></div>
+          <div class="drop-zone" data-color="yellow"></div>
+        </div>
+
+      </div>
+
+      <div class="buttons">
+        <button id="checkBtn">تَحَقَّقْ</button>
+        <button id="resetBtn">حاوِلْ مَرَّةً أُخْرى</button>
+      </div>
+
+      <div class="result" id="resultText"></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const words = document.querySelectorAll('.word');
+  const zones = document.querySelectorAll('.drop-zone');
+  const list = document.getElementById('wordList');
+  const resultText = document.getElementById('resultText');
+
+  words.forEach(w => {
+    w.addEventListener('dragstart', e => {
+      e.dataTransfer.setData("text/plain", e.target.id);
+      w.classList.add("dragging");
+      resultText.textContent = "";
+    });
+    w.addEventListener('dragend', () => w.classList.remove("dragging"));
+  });
+
+  zones.forEach(z => {
+    z.addEventListener('dragover', e => {
+      e.preventDefault();
+    });
+
+    z.addEventListener('drop', e => {
+      e.preventDefault();
+      const id = e.dataTransfer.getData("text/plain");
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      const exists = z.querySelector('.word');
+      if (exists) list.appendChild(exists);
+
+      z.appendChild(el);
+      z.classList.remove("correct","wrong");
+    });
+  });
+
+  list.addEventListener('dragover', e => {
+    e.preventDefault();
+  });
+  list.addEventListener('drop', e => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("text/plain");
+    const el = document.getElementById(id);
+    if (!el) return;
+    list.appendChild(el);
+    zones.forEach(z => z.classList.remove("correct","wrong"));
+    resultText.textContent = "";
+  });
+
+  document.getElementById("checkBtn").onclick = () => {
+    let correct = 0;
+    let filled = 0;
+
+    zones.forEach(z => {
+      const w = z.querySelector(".word");
+      z.classList.remove("correct","wrong");
+
+      if (w) {
+        filled++;
+        if (w.dataset.color === z.dataset.color) {
+          z.classList.add("correct");
+          correct++;
+        } else {
+          z.classList.add("wrong");
+        }
+      }
+    });
+
+    if (filled === 0) {
+      resultText.textContent = "اِسْحَبْ أَسْماء الْألْوانِ إِلى الدَّوائِرِ أَوَّلًا.";
+    } else if (correct === zones.length) {
+      resultText.textContent = "أَحْسَنْت! جَميعُها صَحيح 🎉";
+    } else {
+      resultText.textContent = "حاوِلْ مَرَّةً أُخْرى ";
+    }
+  };
+
+  document.getElementById("resetBtn").onclick = () => {
+    zones.forEach(z => {
+      const w = z.querySelector(".word");
+      if (w) list.appendChild(w);
+      z.classList.remove("correct","wrong");
+    });
+    resultText.textContent = "";
+  };
+
+  function shuffleWords() {
+    const wordsArr = Array.from(words);
+    const shuffled = wordsArr.sort(() => Math.random() - 0.5);
+    shuffled.forEach(w => list.appendChild(w));
+  }
+  shuffleWords();
+
+</script>
+
+</body>
+</html>

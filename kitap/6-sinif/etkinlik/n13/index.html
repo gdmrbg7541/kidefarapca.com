@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lumi Video Etkinlik</title>
+
+<style>
+html,body{
+  margin:0;
+  height:100%;
+  overflow:hidden;
+  font-family:"Scheherazade New","Amiri","Noto Naskh Arabic",sans-serif;
+}
+
+/* ===== SAYFA ARKA PLAN GRADYAN ===== */
+body{
+  background: linear-gradient(135deg,#c7eaff,#fce1f1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ===== ANA KAPSAYICI ===== */
+.app{
+  width:100%;
+  max-width:960px;
+  height:100%;
+  padding:14px;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* ===== VIDEO ===== */
+.videoWrap{
+  background:#000;
+  border-radius:18px;
+  overflow:hidden;
+  height:40vh;
+}
+video{
+  width:100%;
+  height:100%;
+  object-fit:contain; /* TAM GÖRÜNSÜN */
+  background:#000;
+}
+
+/* ===== SORU ===== */
+.question{
+  background:linear-gradient(135deg,#ffe29f,#ffa99f);
+  border-radius:16px;
+  padding:14px;
+  text-align:center;
+  font-size:30px;
+  font-weight:700;
+  direction:rtl;
+}
+
+/* ===== ŞIKLAR ===== */
+.choices{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.choice{
+  background:linear-gradient(135deg,#e0f7fa,#e1bee7);
+  border-radius:16px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.choiceText{
+  flex:1;
+  font-size:26px;
+  direction:rtl;
+  text-align:right;
+}
+
+.choice input{
+  width:26px;
+  height:26px;
+}
+
+/* ===== ALT KONTROL ===== */
+.footer{
+  margin-top:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.controlBtn{
+  background:linear-gradient(135deg,#81c784,#4caf50);
+  color:#000;
+  border:none;
+  padding:12px 18px;
+  font-size:22px;
+  border-radius:14px;
+  font-weight:800;
+}
+
+.navBtn{
+  background:linear-gradient(135deg,#ffd54f,#ffb300);
+  border:none;
+  padding:12px 18px;
+  font-size:20px;
+  border-radius:14px;
+  font-weight:800;
+}
+
+/* ✅/❌ yazısı büyütüldü */
+.feedback{
+  font-size:22px;
+  font-weight:800;
+}
+
+.choice.good{outline:3px solid #2e7d32;}
+.choice.bad{outline:3px solid #c62828;}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="videoWrap">
+    <video id="video" controls playsinline>
+      <source id="videoSrc" src="1.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="question">
+    اِخْتَر الْعِبارَةَ الصَّحيحَة حَسَبَ الْفيدْيو.
+  </div>
+
+  <div class="choices" id="choices"></div>
+
+  <div class="footer">
+    <button class="controlBtn" id="checkBtn">ْتَأَكَّد</button>
+    <div class="feedback" id="feedback"></div>
+    <div>
+      <button class="navBtn" id="prev">اَلسّابِق</button>
+      <button class="navBtn" id="next">اَلتّالي</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var pages=[
+  {
+    video:"1.mp4",
+    choices:[
+      {text:"أَنا طالِبَة في الصَّفِّ الْخامِس.",correct:false},
+      {text:"أَنا طالِبَة في الصَّفِّ السّادِس.",correct:true}
+    ]
+  },
+  {
+    video:"2.mp4",
+    choices:[
+      {text:"اَلسَّبّورَةُ الذَّكِيَّة أَمامَ الصَّفّ.",correct:true},
+      {text:"اَلسَّبّورَةُ الذَّكِيَّة خَلْفَ الصَّفّ.",correct:false}
+    ]
+  },
+  {
+    video:"3.mp4",
+    choices:[
+      {text:"اَلْمَسْجِد في الطّابِقِ الثّاني.",correct:false},
+      {text:"اَلْمَسْجِد في الطّابِقِ الْأَوَّل.",correct:true}
+    ]
+  },
+  {
+    video:"4.mp4",
+    choices:[
+      {text:"صَفّي في الطّابِقِ الثّاني.",correct:true},
+      {text:"صَفّي في الطّابِقِ الثّالِث.",correct:false}
+    ]
+  }
+];
+
+var i=0;
+var v=document.getElementById("video");
+var src=document.getElementById("videoSrc");
+var box=document.getElementById("choices");
+var fb=document.getElementById("feedback");
+
+function clearUI(){
+  fb.textContent=""; /* sayfa değişince ✅/❌ temizlensin */
+  var items = box.querySelectorAll(".choice");
+  var k;
+  for(k=0;k<items.length;k++){
+    items[k].className="choice";
+  }
+}
+
+function load(){
+  /* sayfa yüklenirken önceki sayfanın sonucu kalmasın */
+  box.innerHTML="";
+  clearUI();
+
+  src.src=pages[i].video;
+  v.load();
+
+  pages[i].choices.forEach(function(c){
+    var d=document.createElement("div");
+    d.className="choice";
+    d.innerHTML = '<div class="choiceText">'+c.text+'</div><input type="checkbox">';
+    box.appendChild(d);
+  });
+}
+
+function setSingleChoice(checkedBox){
+  var all = box.querySelectorAll('input[type="checkbox"]');
+  var j;
+  for(j=0;j<all.length;j++){
+    if(all[j] !== checkedBox){
+      all[j].checked = false;
+    }
+  }
+}
+
+/* Tek seçim: biri seçilince diğeri kapanır + yeniden seçime izin */
+function bindChoiceEvents(){
+  /* event delegation */
+  box.addEventListener("change", function(e){
+    if(e && e.target && e.target.type === "checkbox"){
+      setSingleChoice(e.target);
+      /* kullanıcı yeni seçim yapınca önceki doğru/yanlış çerçevelerini sıfırlayalım */
+      clearUI();
+    }
+  }, false);
+
+  /* iOS bazı durumlarda change gecikebilir; click/touchstart da destek */
+  box.addEventListener("click", function(e){
+    if(e && e.target && e.target.type === "checkbox"){
+      setSingleChoice(e.target);
+      clearUI();
+    }
+  }, false);
+
+  box.addEventListener("touchstart", function(e){
+    if(e && e.target && e.target.type === "checkbox"){
+      setSingleChoice(e.target);
+      clearUI();
+    }
+  }, {passive:true});
+}
+
+function checkAnswers(){
+  var ok=true;
+  var rows = box.querySelectorAll(".choice");
+  var idx;
+  for(idx=0; idx<rows.length; idx++){
+    var el = rows[idx];
+    var ch = el.querySelector("input").checked;
+    var correct = pages[i].choices[idx].correct;
+
+    if(correct !== ch){ ok=false; }
+
+    el.className = "choice " + (ch && correct ? "good" : (ch && !correct ? "bad" : ""));
+  }
+  fb.textContent = ok ? "✅ صَحيح" : "❌ خَطَأ";
+}
+
+function goNext(){
+  if(i < pages.length-1){
+    i++;
+    load();
+  }
+}
+
+function goPrev(){
+  if(i > 0){
+    i--;
+    load();
+  }
+}
+
+/* Butonları mobil için click + touchstart */
+function bindButton(btn, handler){
+  btn.addEventListener("click", function(e){
+    e.preventDefault();
+    handler();
+  }, false);
+
+  btn.addEventListener("touchstart", function(e){
+    /* çift tetiklemeyi azaltmak için preventDefault */
+    e.preventDefault();
+    handler();
+  }, false);
+}
+
+load();
+bindChoiceEvents();
+
+bindButton(document.getElementById("checkBtn"), checkAnswers);
+bindButton(document.getElementById("next"), goNext);
+bindButton(document.getElementById("prev"), goPrev);
+</script>
+
+</body>
+</html>

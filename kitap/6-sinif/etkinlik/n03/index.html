@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lumi Video Etkinlik</title>
+
+<style>
+html,body{
+  margin:0;
+  height:100%;
+  overflow:hidden;
+  font-family:"Scheherazade New","Amiri","Noto Naskh Arabic",sans-serif;
+}
+
+/* ===== SAYFA ARKA PLAN GRADYAN ===== */
+body{
+  background: linear-gradient(135deg,#c7eaff,#fce1f1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ===== ANA KAPSAYICI ===== */
+.app{
+  width:100%;
+  max-width:960px;
+  height:100%;
+  padding:14px;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* ===== VIDEO ===== */
+.videoWrap{
+  background:#000;
+  border-radius:18px;
+  overflow:hidden;
+  height:40vh;
+}
+video{
+  width:100%;
+  height:100%;
+  object-fit:contain; /* TAM GÖRÜNSÜN */
+  background:#000;
+}
+
+/* ===== SORU ===== */
+.question{
+  background:linear-gradient(135deg,#ffe29f,#ffa99f);
+  border-radius:16px;
+  padding:14px;
+  text-align:center;
+  font-size:30px;
+  font-weight:700;
+  direction:rtl;
+}
+
+/* ===== ŞIKLAR ===== */
+.choices{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.choice{
+  background:linear-gradient(135deg,#e0f7fa,#e1bee7);
+  border-radius:16px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.choiceText{
+  flex:1;
+  font-size:26px;
+  direction:rtl;
+  text-align:right;
+}
+
+.choice input{
+  width:26px;
+  height:26px;
+}
+
+/* ===== ALT KONTROL ===== */
+.footer{
+  margin-top:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.controlBtn{
+  background:linear-gradient(135deg,#81c784,#4caf50);
+  color:#000;
+  border:none;
+  padding:12px 18px;
+  font-size:22px;
+  border-radius:14px;
+  font-weight:800;
+}
+
+.navBtn{
+  background:linear-gradient(135deg,#ffd54f,#ffb300);
+  border:none;
+  padding:12px 18px;
+  font-size:20px;
+  border-radius:14px;
+  font-weight:800;
+}
+
+/* ✅/❌ yazısı büyütüldü */
+.feedback{
+  font-size:22px;
+  font-weight:800;
+}
+
+.choice.good{outline:3px solid #2e7d32;}
+.choice.bad{outline:3px solid #c62828;}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="videoWrap">
+    <video id="video" controls playsinline>
+      <source id="videoSrc" src="1.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="question" id="questionBox"></div>
+
+  <div class="choices" id="choices"></div>
+
+  <div class="footer">
+    <button class="controlBtn" id="checkBtn">ْتَأَكَّد</button>
+    <div class="feedback" id="feedback"></div>
+    <div>
+      <button class="navBtn" id="prev">اَلسّابِق</button>
+      <button class="navBtn" id="next">اَلتّالي</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ===== 4 SAYFA, VIDEO 1-2-3-4 ===== */
+var pages=[
+  {
+    video:"1.mp4",
+    choices:[
+      {text:"والِدي مُحامٍ", correct:true},
+      {text:"والِدي طَبّاخ", correct:false}
+    ]
+  },
+  {
+    video:"2.mp4",
+    choices:[
+      {text:"والِدَتي مُهَنْدِسَة", correct:false},
+      {text:"والِدَتي مُعَلِّمَة", correct:true}
+    ]
+  },
+  {
+    video:"3.mp4",
+    choices:[
+      {text:"جَدّي مُعَلِّم", correct:false},
+      {text:"جَدّي فَلّاح", correct:true}  /* ✅ ÇİFTÇİ DOĞRU */
+    ]
+  },
+  {
+    video:"4.mp4",
+    choices:[
+      {text:"جَدَّتي مُحامِيَة", correct:false},
+      {text:"جَدَّتي مُتَقاعِدَة", correct:true}
+    ]
+  }
+];
+
+var questions=[
+  "اِخْتَر الْعِبارَةَ الصَّحيحَة حَسَبَ الصّورَة",
+  "اِخْتَر الْعِبارَةَ الصَّحيحَة حَسَبَ الصّورَة",
+  "اِخْتَر الْعِبارَةَ الصَّحيحَة حَسَبَ الصّورَة",
+  "اِخْتَر الْعِبارَةَ الصَّحيحَة حَسَبَ الصّورَة"
+];
+
+var i=0;
+var v=document.getElementById("video");
+var src=document.getElementById("videoSrc");
+var box=document.getElementById("choices");
+var fb=document.getElementById("feedback");
+var qBox=document.getElementById("questionBox");
+
+/* Nokta EKLE: cümlenin sonunda nokta yoksa "." ekler */
+function withDot(t){
+  if(!t) return ".";
+  t = String(t).replace(/\s+$/,'');            // sondaki boşlukları sil
+  if(t.length===0) return ".";
+  var last = t.charAt(t.length-1);
+  // Zaten noktalama varsa bir daha ekleme
+  if(last==="." || last==="؟" || last==="!" || last==="…" || last==="،" || last==="؛") return t;
+  return t + ".";
+}
+
+function clearUI(){
+  fb.textContent="";
+  var items = box.querySelectorAll(".choice");
+  for(var k=0;k<items.length;k++){
+    items[k].className="choice";
+  }
+}
+
+function load(){
+  box.innerHTML="";
+  clearUI();
+
+  // ✅ YÖNERGEYE NOKTA
+  qBox.textContent = withDot(questions[i] || "");
+
+  src.src = pages[i].video;
+  v.load();
+
+  // ✅ ŞIKLARA NOKTA
+  pages[i].choices.forEach(function(c){
+    var d=document.createElement("div");
+    d.className="choice";
+    d.innerHTML = '<div class="choiceText">'+ withDot(c.text) +'</div><input type="checkbox">';
+    box.appendChild(d);
+  });
+}
+
+function setSingleChoice(checkedBox){
+  var all = box.querySelectorAll('input[type="checkbox"]');
+  for(var j=0;j<all.length;j++){
+    if(all[j] !== checkedBox) all[j].checked = false;
+  }
+}
+
+/* Tek seçim: biri seçilince diğeri kapanır + yeniden seçime izin */
+function bindChoiceEvents(){
+  box.addEventListener("change", function(e){
+    if(e && e.target && e.target.type === "checkbox"){
+      setSingleChoice(e.target);
+      clearUI();
+    }
+  }, false);
+
+  box.addEventListener("click", function(e){
+    if(e && e.target && e.target.type === "checkbox"){
+      setSingleChoice(e.target);
+      clearUI();
+    }
+  }, false);
+
+  box.addEventListener("touchstart", function(e){
+    if(e && e.target && e.target.type === "checkbox"){
+      setSingleChoice(e.target);
+      clearUI();
+    }
+  }, {passive:true});
+}
+
+function checkAnswers(){
+  var ok=true;
+  var rows = box.querySelectorAll(".choice");
+  for(var idx=0; idx<rows.length; idx++){
+    var el = rows[idx];
+    var ch = el.querySelector("input").checked;
+    var correct = !!pages[i].choices[idx].correct;
+
+    if(correct !== ch){ ok=false; }
+
+    el.className = "choice " + (ch && correct ? "good" : (ch && !correct ? "bad" : ""));
+  }
+  fb.textContent = ok ? "✅ صَحيح" : "❌ خَطَأ";
+}
+
+function goNext(){
+  if(i < pages.length-1){
+    i++;
+    load();
+  }
+}
+
+function goPrev(){
+  if(i > 0){
+    i--;
+    load();
+  }
+}
+
+/* Butonları mobil için click + touchstart */
+function bindButton(btn, handler){
+  btn.addEventListener("click", function(e){
+    e.preventDefault();
+    handler();
+  }, false);
+
+  btn.addEventListener("touchstart", function(e){
+    e.preventDefault();
+    handler();
+  }, false);
+}
+
+load();
+bindChoiceEvents();
+
+bindButton(document.getElementById("checkBtn"), checkAnswers);
+bindButton(document.getElementById("next"), goNext);
+bindButton(document.getElementById("prev"), goPrev);
+</script>
+
+</body>
+</html>

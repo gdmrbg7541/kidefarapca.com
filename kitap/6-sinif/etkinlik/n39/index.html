@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>سحب وإفلات – الطقس والملابس</title>
+
+<style>
+  *{ box-sizing:border-box; }
+
+  body{
+    font-family:"Amiri", serif;
+    background:linear-gradient(135deg,#fff9f0,#f6fff7);
+    padding:24px;
+    text-align:center;
+    direction:rtl;
+    color:#3b3a3a;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* === DAĞINIK DOODLE ÇİZİMLERİ (HER ÇİZİMDEN 3 TANE) === */
+  .doodle{
+    position:fixed;
+    font-size:2.8rem;
+    opacity:0.45;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* SAĞ TARAF */
+  .d1{ right:25px; top:110px; transform:rotate(10deg); }
+  .d2{ right:40px; top:240px; transform:rotate(-12deg); }
+  .d3{ right:15px; top:380px; transform:rotate(6deg); }
+
+  .d7{ right:28px; top:500px; transform:rotate(-8deg); }
+  .d8{ right:52px; top:620px; transform:rotate(14deg); }
+  .d9{ right:8px;  top:740px; transform:rotate(3deg); }
+
+  /* SOL TARAF */
+  .d4{ left:25px; top:130px; transform:rotate(-8deg); }
+  .d5{ left:40px; top:260px; transform:rotate(12deg); }
+  .d6{ left:15px; top:400px; transform:rotate(-5deg); }
+
+  .d10{ left:32px; top:520px; transform:rotate(9deg); }
+  .d11{ left:48px; top:650px; transform:rotate(-11deg); }
+  .d12{ left:10px; top:770px; transform:rotate(5deg); }
+
+  @media (max-width:1000px){
+    .doodle{ display:none; }
+  }
+
+  /* === OYUN TASARIMI === */
+
+  .title-frame{
+    display:inline-block;
+    padding:10px 30px;
+    border-radius:30px;
+    border:3px solid #f0c36a;
+    background:linear-gradient(90deg,#ffe9b3,#fff7d6);
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    margin-bottom:18px;
+  }
+
+  h2{
+    font-size:26px;
+    margin:0;
+  }
+
+  .word-line{
+    margin-top:18px;
+  }
+
+  .word-box{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:10px 16px;
+    margin:7px;
+    border-radius:16px;
+    background:linear-gradient(135deg,#ffffff,#eef2ff);
+    border:2px solid #e0e4f2;
+    font-size:30px;
+    cursor:grab;
+    color:#333;
+    font-weight:bold;
+    box-shadow:0 3px 7px rgba(0,0,0,0.12);
+  }
+
+  .num-circle{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    border:2px solid #f0b34b;
+    background:#fffdf6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    color:#c27a1e;
+  }
+
+  .row{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:20px;
+    gap:16px;
+  }
+
+  .drop-box{
+    width:150px;
+    height:150px;
+    border-radius:26px;
+    background:#ffffff;
+    border:3px solid #cfe9d8;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 6px 12px rgba(0,0,0,0.08);
+    transition:0.2s;
+    overflow:hidden;
+  }
+
+  .drop-box:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 16px rgba(0,0,0,0.12);
+  }
+
+  .drop-box.correct{
+    border-color:#27ae60 !important;
+    background:linear-gradient(145deg,#f4fff7,#ffffff);
+  }
+
+  .drop-box.wrong{
+    border-color:#e74c3c !important;
+    background:linear-gradient(145deg,#fff4f4,#ffffff);
+  }
+
+  .drop-img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+  }
+
+  .badge{
+    position:absolute;
+    top:8px;
+    right:10px;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    border:2px solid #f0b34b;
+    background:#fffdf6;
+    color:#c27a1e;
+    font-size:17px;
+    font-weight:bold;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .buttons{
+    margin-top:24px;
+    display:flex;
+    justify-content:center;
+    gap:16px;
+  }
+
+  button{
+    font-family:"Amiri", serif;
+    font-size:18px;
+    padding:10px 25px;
+    border-radius:22px;
+    border:none;
+    cursor:pointer;
+    box-shadow:0 3px 8px rgba(0,0,0,0.15);
+  }
+
+  #checkBtn{
+    background:linear-gradient(135deg,#27ae60,#2ecc71);
+    color:#fff;
+  }
+
+  #resetBtn{
+    background:linear-gradient(135deg,#95a5a6,#bdc3c7);
+    color:#fff;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- === TÜM DAĞINIK ÇOCUK KARALAMALARI === -->
+<div class="doodle d1">🦋</div>
+<div class="doodle d2">🌻</div>
+<div class="doodle d3">☁️</div>
+
+<div class="doodle d7">🦋</div>
+<div class="doodle d8">🌼</div>
+<div class="doodle d9">🍃</div>
+
+<div class="doodle d4">🦋</div>
+<div class="doodle d5">🌼</div>
+<div class="doodle d6">🍃</div>
+
+<div class="doodle d10">☁️</div>
+<div class="doodle d11">🦋</div>
+<div class="doodle d12">🌻</div>
+
+
+<!-- === BAŞLIK === -->
+<div class="title-frame">
+<h2>ضَع الرَّقْمَ الصَّحِيح فَوْقَ الصّورَةِ الصَّحيحَة.</h2>
+</div>
+
+<!-- === KELİME LİSTESİ === -->
+<div class="word-line">
+  <div class="word-box" data-value="1" draggable="true"><span class="num-circle">١</span> حارّ</div>
+  <div class="word-box" data-value="2" draggable="true"><span class="num-circle">٢</span> بَنْطَلون</div>
+  <div class="word-box" data-value="3" draggable="true"><span class="num-circle">٣</span> مِظَلَّة</div>
+  <div class="word-box" data-value="4" draggable="true"><span class="num-circle">٤</span> مُثْلِج</div>
+  <div class="word-box" data-value="5" draggable="true"><span class="num-circle">٥</span> أَسْوَد</div>
+</div>
+
+<div class="word-line">
+  <div class="word-box" data-value="6" draggable="true"><span class="num-circle">٦</span> لَيْل</div>
+  <div class="word-box" data-value="7" draggable="true"><span class="num-circle">٧</span> بَارِد</div>
+  <div class="word-box" data-value="8" draggable="true"><span class="num-circle">٨</span> حِذاء</div>
+  <div class="word-box" data-value="9" draggable="true"><span class="num-circle">٩</span> مُشْمِس</div>
+  <div class="word-box" data-value="10" draggable="true"><span class="num-circle">١٠</span> حَمْراء</div>
+</div>
+
+<!-- === GÖRSELLER === -->
+<div class="row">
+  <div class="drop-box" data-answer="7"><div class="badge"></div><img class="drop-img" src="v/05.png"/></div>
+  <div class="drop-box" data-answer="9"><div class="badge"></div><img class="drop-img" src="v/10.png"/></div>
+  <div class="drop-box" data-answer="5"><div class="badge"></div><img class="drop-img" src="v/06.png"/></div>
+  <div class="drop-box" data-answer="2"><div class="badge"></div><img class="drop-img" src="v/04.png"/></div>
+  <div class="drop-box" data-answer="4"><div class="badge"></div><img class="drop-img" src="v/08.png"/></div>
+</div>
+
+<div class="row">
+  <div class="drop-box" data-answer="8"><div class="badge"></div><img class="drop-img" src="v/03.png"/></div>
+  <div class="drop-box" data-answer="10"><div class="badge"></div><img class="drop-img" src="v/02.png"/></div>
+  <div class="drop-box" data-answer="6"><div class="badge"></div><img class="drop-img" src="v/09.png"/></div>
+  <div class="drop-box" data-answer="3"><div class="badge"></div><img class="drop-img" src="v/01.png"/></div>
+  <div class="drop-box" data-answer="1"><div class="badge"></div><img class="drop-img" src="v/07.png"/></div>
+</div>
+
+<!-- === BUTONLAR === -->
+<div class="buttons">
+  <button id="checkBtn">تَحَقَّقْ</button>
+  <button id="resetBtn">حاوِلْ مَرَّةً أُخْرى</button>
+</div>
+
+<script>
+const arabicDigits = {
+  "1":"١","2":"٢","3":"٣","4":"٤","5":"٥",
+  "6":"٦","7":"٧","8":"٨","9":"٩","10":"١٠"
+};
+
+const words = document.querySelectorAll(".word-box");
+const drops = document.querySelectorAll(".drop-box");
+const checkBtn = document.getElementById("checkBtn");
+const resetBtn = document.getElementById("resetBtn");
+
+words.forEach(word=>{
+  word.addEventListener("dragstart", e=>{
+    e.dataTransfer.setData("text/value", word.dataset.value);
+  });
+});
+
+drops.forEach(box=>{
+  box.addEventListener("dragover", e=>e.preventDefault());
+  box.addEventListener("drop", e=>{
+    e.preventDefault();
+    const value = e.dataTransfer.getData("text/value");
+
+    drops.forEach(other=>{
+      if(other !== box && other.dataset.chosen === value){
+        other.dataset.chosen = "";
+        other.querySelector(".badge").textContent = "";
+        other.classList.remove("correct","wrong");
+      }
+    });
+
+    box.dataset.chosen = value;
+    box.querySelector(".badge").textContent = arabicDigits[value];
+    box.classList.remove("correct","wrong");
+  });
+});
+
+checkBtn.addEventListener("click", ()=>{
+  drops.forEach(box=>{
+    const chosen = box.dataset.chosen;
+    const answer = box.dataset.answer;
+
+    if(!chosen) return;
+    if(chosen === answer){
+      box.classList.add("correct");
+    } else {
+      box.classList.add("wrong");
+    }
+  });
+});
+
+resetBtn.addEventListener("click", ()=>{
+  drops.forEach(box=>{
+    box.classList.remove("correct","wrong");
+    box.dataset.chosen = "";
+    box.querySelector(".badge").textContent = "";
+  });
+});
+</script>
+
+</body>
+</html>

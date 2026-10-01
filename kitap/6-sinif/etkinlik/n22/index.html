@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لُعْبَةُ تَفْجِيرِ الْبَالُونَاتِ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 600px;
+      overflow: hidden;
+      font-family: 'Amiri', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
+    }
+
+    html {
+      width: 100%;
+      height: 600px;
+    }
+
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 600px;
+      background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%);
+      overflow: hidden;
+    }
+
+    #title {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2.2em;
+      font-weight: 900;
+      color: #FF1493;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+      z-index: 100;
+    }
+
+    #instruction-panel {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 30px 50px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      z-index: 200;
+    }
+
+    #question-counter {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 2em;
+      font-weight: bold;
+      color: #333;
+      background: rgba(255,255,255,0.9);
+      padding: 15px 25px;
+      border-radius: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+
+    #instruction-text {
+      font-size: 1.8em;
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: 900;
+    }
+
+    #target-number {
+      font-size: 7em;
+      color: #FF6347;
+      font-weight: 900;
+      margin: 15px 0;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+    }
+
+    .balloon {
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.1s;
+      animation: sideFloat 4s ease-in-out infinite;
+      z-index: 150;
+      pointer-events: auto;
+    }
+
+    .balloon:hover {
+      transform: scale(1.1) !important;
+    }
+
+    .balloon-body {
+      width: 140px;
+      height: 160px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), transparent);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .balloon-string {
+      position: absolute;
+      bottom: -50px;
+      left: 50%;
+      width: 2px;
+      height: 50px;
+      background: #666;
+      transform-origin: top;
+      animation: swing 2s ease-in-out infinite;
+    }
+
+    .balloon-number {
+      font-size: 1.8em;
+      font-weight: 900;
+      color: white;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+      text-align: center;
+      line-height: 1.2;
+      padding: 8px;
+    }
+
+    @keyframes sideFloat {
+      0% {
+        transform: translateX(0) translateY(0) scale(1);
+      }
+      25% {
+        transform: translateX(10px) translateY(-5px) scale(1.02);
+      }
+      50% {
+        transform: translateX(0) translateY(-10px) scale(1);
+      }
+      75% {
+        transform: translateX(-10px) translateY(-5px) scale(1.02);
+      }
+      100% {
+        transform: translateX(0) translateY(0) scale(1);
+      }
+    }
+
+    @keyframes swing {
+      0%, 100% {
+        transform: rotate(-3deg);
+      }
+      50% {
+        transform: rotate(3deg);
+      }
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      25% {
+        transform: scale(1.5) rotate(90deg);
+        opacity: 0.8;
+      }
+      50% {
+        transform: scale(2) rotate(180deg);
+        opacity: 0.5;
+      }
+      75% {
+        transform: scale(1.8) rotate(270deg);
+        opacity: 0.2;
+      }
+      100% {
+        transform: scale(0) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    #success-message, #wrong-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 4.5em;
+      font-weight: 900;
+      text-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+      z-index: 300;
+      animation: celebrate 0.5s ease-out forwards;
+    }
+
+    #success-message {
+      color: #32CD32;
+    }
+
+    #wrong-message {
+      color: #FF4444;
+    }
+
+    @keyframes celebrate {
+      0% {
+        transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .wrong-balloon {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    #final-results {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 40px 60px;
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      text-align: center;
+      z-index: 300;
+    }
+
+    #final-score {
+      font-size: 4em;
+      font-weight: 900;
+      margin: 20px 0;
+    }
+
+    #final-message {
+      font-size: 2.8em;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    #restart-button {
+      background: #32CD32;
+      color: white;
+      border: none;
+      padding: 20px 40px;
+      font-size: 2em;
+      font-weight: bold;
+      border-radius: 15px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-family: inherit;
+      transition: background 0.3s;
+    }
+
+    #restart-button:hover {
+      background: #228B22;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.flex{display:flex}.hidden{display:none}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.border{border-width:1px}.ordinal{--tw-ordinal:ordinal;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.ease-in-out{transition-timing-function:cubic-bezier(.4,0,.2,1)}.ease-out{transition-timing-function:cubic-bezier(0,0,.2,1)}</style>
+ </head>
+ <body>
+  <div id="game-container">
+   <div id="title">
+    لُعْبَة تَفْجيرِ الْبالونات
+   </div>
+   <div id="question-counter">
+    اَلسُّؤال ١ مِنْ ١٠
+   </div>
+   <div id="instruction-panel">
+    <div id="instruction-text">
+     أَيُّ رَقَمٍ؟
+    </div>
+    <div id="target-number">
+     ٥
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      game_title: "لُعْبَة تَفْجيرِ الْبالونات",
+      instruction_text: "أَيُّ رَقَمٍ؟",
+      success_message: "صَحيحٌ! 🎉",
+      wrong_message: "خَطَأ! حاوِلْ مَرَّةً أُخْرى",
+      final_excellent: "مُمْتازٌ! 🌟",
+      final_good: "جَيِّد جِدًّا! 👏",
+      final_okay: "جَيِّد! 👍",
+      final_try_again: "حاوِلْ مَرَّةً أُخْرى! 💪",
+      restart_text: "اِبْدَأْ مِنْ جَديد",
+      background_color: "#87CEEB",
+      text_color: "#FF1493",
+      instruction_bg: "#FFFFFF",
+      number_color: "#FF6347",
+      font_family: "Amiri",
+      font_size: 20
+    };
+
+    const balloonColors = ['#FF69B4', '#32CD32', '#FFD700', '#1E90FF'];
+    const arabicNumbers = ['١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩', '١٠'];
+    const arabicOrdinals = ['اَلْأَوَّل', 'اَلثّاني', 'اَلثّالِث', 'اَلرّابِع', 'اَلْخامِس', 'اَلسّادِس', 'اَلسّابِع', 'اَلثّامِن', 'اَلتّاسِع', 'اَلْعاشِر'];
+    
+    let targetNumber = 0;
+    let balloons = [];
+    let gameActive = false;
+    let currentQuestion = 0;
+    let correctAnswers = 0;
+    let totalQuestions = 10;
+    let usedNumbers = [];
+
+    // Create audio context for sound effects
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(frequency, duration, type = 'sine') {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = type;
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + duration);
+    }
+
+    function playSuccessSound() {
+      // Happy success sound
+      playSound(523, 0.2); // C5
+      setTimeout(() => playSound(659, 0.2), 100); // E5
+      setTimeout(() => playSound(784, 0.3), 200); // G5
+    }
+
+    function playWrongSound() {
+      // Wrong answer sound
+      playSound(200, 0.3, 'sawtooth');
+    }
+
+    function playPopSound() {
+      // Balloon pop sound
+      playSound(150, 0.1, 'square');
+    }
+
+    async function onConfigChange(config) {
+      const baseFont = config.font_family || defaultConfig.font_family;
+      const baseFontStack = 'Noto Sans Arabic, Arial Unicode MS, sans-serif';
+      const baseSize = config.font_size || defaultConfig.font_size;
+
+      document.body.style.fontFamily = `${baseFont}, ${baseFontStack}`;
+      
+      const gameContainer = document.getElementById('game-container');
+      gameContainer.style.background = `linear-gradient(to bottom, ${config.background_color || defaultConfig.background_color} 0%, #E0F6FF 100%)`;
+
+      const title = document.getElementById('title');
+      title.textContent = config.game_title || defaultConfig.game_title;
+      title.style.color = config.text_color || defaultConfig.text_color;
+      title.style.fontSize = `${baseSize * 2.2}px`;
+
+      const instructionText = document.getElementById('instruction-text');
+      instructionText.textContent = config.instruction_text || defaultConfig.instruction_text;
+      instructionText.style.fontSize = `${baseSize * 1.8}px`;
+
+      const instructionPanel = document.getElementById('instruction-panel');
+      instructionPanel.style.background = config.instruction_bg || defaultConfig.instruction_bg;
+
+      const targetNumberEl = document.getElementById('target-number');
+      targetNumberEl.style.color = config.number_color || defaultConfig.number_color;
+      targetNumberEl.style.fontSize = `${baseSize * 7}px`;
+    }
+
+    function createBalloon(ordinalText, correctAnswer, index) {
+      const balloon = document.createElement('div');
+      balloon.className = 'balloon';
+      
+      // Position balloons in middle row horizontally
+      const positions = [
+        {x: 15, y: 50}, // middle-left
+        {x: 35, y: 50}, // middle-center-left
+        {x: 55, y: 50}, // middle-center-right
+        {x: 75, y: 50}  // middle-right
+      ];
+      
+      const pos = positions[index];
+      const animationDelay = index * 0.3; // Stagger the balloon animations
+      
+      balloon.style.left = `${pos.x}%`;
+      balloon.style.top = `${pos.y}%`;
+      balloon.style.animationDelay = `${animationDelay}s`;
+      balloon.style.transform = 'translate(-50%, -50%)';
+      
+      const color = balloonColors[index];
+      
+      balloon.innerHTML = `
+        <div class="balloon-body" style="background-color: ${color}; background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), transparent);">
+          <div class="balloon-number">${ordinalText}</div>
+        </div>
+        <div class="balloon-string"></div>
+      `;
+      
+      balloon.addEventListener('click', () => handleBalloonClick(ordinalText === arabicOrdinals[correctAnswer - 1], balloon));
+      
+      return balloon;
+    }
+
+    function handleBalloonClick(isCorrect, balloonElement) {
+      if (!gameActive) return;
+      
+      gameActive = false;
+      
+      if (isCorrect) {
+        correctAnswers++;
+        playPopSound();
+        setTimeout(playSuccessSound, 100);
+        balloonElement.style.animation = 'pop 0.4s ease-out forwards';
+        
+        setTimeout(() => {
+          balloonElement.remove();
+          showMessage('success');
+        }, 400);
+      } else {
+        playWrongSound();
+        balloonElement.classList.add('wrong-balloon');
+        showMessage('wrong');
+        
+        setTimeout(() => {
+          balloonElement.classList.remove('wrong-balloon');
+          gameActive = true;
+        }, 1500);
+      }
+    }
+
+    function showMessage(type) {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const message = document.createElement('div');
+      
+      if (type === 'success') {
+        message.id = 'success-message';
+        message.textContent = config.success_message || defaultConfig.success_message;
+        
+        setTimeout(() => {
+          message.remove();
+          currentQuestion++;
+          if (currentQuestion >= totalQuestions) {
+            showFinalResults();
+          } else {
+            startNewRound();
+          }
+        }, 2500);
+      } else {
+        message.id = 'wrong-message';
+        message.textContent = config.wrong_message || defaultConfig.wrong_message;
+        
+        setTimeout(() => {
+          message.remove();
+        }, 1500);
+      }
+      
+      document.getElementById('game-container').appendChild(message);
+    }
+
+    function showFinalResults() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+      
+      let finalMessage = '';
+      let scoreColor = '';
+      
+      if (percentage >= 90) {
+        finalMessage = config.final_excellent || defaultConfig.final_excellent;
+        scoreColor = '#32CD32';
+      } else if (percentage >= 70) {
+        finalMessage = config.final_good || defaultConfig.final_good;
+        scoreColor = '#FFD700';
+      } else if (percentage >= 50) {
+        finalMessage = config.final_okay || defaultConfig.final_okay;
+        scoreColor = '#FF8C00';
+      } else {
+        finalMessage = config.final_try_again || defaultConfig.final_try_again;
+        scoreColor = '#FF6347';
+      }
+      
+      const resultsPanel = document.createElement('div');
+      resultsPanel.id = 'final-results';
+      resultsPanel.innerHTML = `
+        <div id="final-message">${finalMessage}</div>
+        <div id="final-score" style="color: ${scoreColor};">${correctAnswers}/${totalQuestions}</div>
+        <div style="font-size: 1.5em; color: #666;">النِّسْبَةُ: ${percentage}%</div>
+        <button id="restart-button">${config.restart_text || defaultConfig.restart_text}</button>
+      `;
+      
+      document.getElementById('game-container').appendChild(resultsPanel);
+      
+      document.getElementById('restart-button').addEventListener('click', restartGame);
+    }
+
+    function restartGame() {
+      const resultsPanel = document.getElementById('final-results');
+      if (resultsPanel) resultsPanel.remove();
+      
+      currentQuestion = 0;
+      correctAnswers = 0;
+      usedNumbers = [];
+      
+      startNewRound();
+    }
+
+    function startNewRound() {
+      balloons.forEach(b => b.remove());
+      balloons = [];
+      gameActive = false;
+      
+      // Update question counter
+      document.getElementById('question-counter').textContent = `اَلسُّؤال ${arabicNumbers[currentQuestion]} مِنْ ١٠`;
+      
+      // Pick a random target number that hasn't been used yet
+      let availableNumbers = [];
+      for (let i = 1; i <= 10; i++) {
+        if (!usedNumbers.includes(i)) {
+          availableNumbers.push(i);
+        }
+      }
+      
+      // If all numbers used, reset (shouldn't happen with 10 questions)
+      if (availableNumbers.length === 0) {
+        availableNumbers = Array.from({length: 10}, (_, i) => i + 1);
+        usedNumbers = [];
+      }
+      
+      targetNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+      usedNumbers.push(targetNumber);
+      
+      // Show the Arabic numeral in the instruction panel
+      document.getElementById('target-number').textContent = arabicNumbers[targetNumber - 1];
+      document.getElementById('instruction-panel').classList.remove('hidden');
+      
+      setTimeout(() => {
+        document.getElementById('instruction-panel').classList.add('hidden');
+        
+        // Create 4 balloons with ordinal numbers
+        const correctOrdinal = arabicOrdinals[targetNumber - 1];
+        const allOrdinals = [...arabicOrdinals];
+        
+        // Remove the correct answer from the pool
+        allOrdinals.splice(targetNumber - 1, 1);
+        
+        // Pick 3 random wrong answers
+        const wrongAnswers = [];
+        for (let i = 0; i < 3; i++) {
+          const randomIndex = Math.floor(Math.random() * allOrdinals.length);
+          wrongAnswers.push(allOrdinals.splice(randomIndex, 1)[0]);
+        }
+        
+        // Create array of 4 options (1 correct + 3 wrong)
+        const options = [correctOrdinal, ...wrongAnswers];
+        
+        // Shuffle the options
+        for (let i = options.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [options[i], options[j]] = [options[j], options[i]];
+        }
+        
+        // Create balloons
+        options.forEach((ordinal, index) => {
+          const balloon = createBalloon(ordinal, targetNumber, index);
+          document.getElementById('game-container').appendChild(balloon);
+          balloons.push(balloon);
+        });
+        
+        // Activate game immediately when balloons start floating
+        gameActive = true;
+      }, 5000);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.instruction_bg || defaultConfig.instruction_bg,
+              set: (value) => {
+                config.instruction_bg = value;
+                window.elementSdk.setConfig({ instruction_bg: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.number_color || defaultConfig.number_color,
+              set: (value) => {
+                config.number_color = value;
+                window.elementSdk.setConfig({ number_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => {
+              config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => {
+              config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["game_title", config.game_title || defaultConfig.game_title],
+          ["instruction_text", config.instruction_text || defaultConfig.instruction_text],
+          ["success_message", config.success_message || defaultConfig.success_message],
+          ["wrong_message", config.wrong_message || defaultConfig.wrong_message]
+        ])
+      });
+    }
+
+    // Initialize audio context on first user interaction
+    document.addEventListener('click', () => {
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }, { once: true });
+
+    startNewRound();
+  </script>
+ </body>
+</html>

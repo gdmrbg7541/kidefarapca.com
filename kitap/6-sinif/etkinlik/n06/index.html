@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arapça Hareke Oyunu</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #fecfef 50%, #a8edea 75%, #fed6e3 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .score {
+            font-size: 1.2rem;
+            color: #718096;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            transition: width 0.3s ease;
+        }
+
+        .question-area {
+            margin-bottom: 40px;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .option {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 50%, #f8b500 100%);
+            color: white;
+            border: 4px solid #fff;
+            padding: 20px 30px;
+            font-size: 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Arial Unicode MS', sans-serif;
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option.flower-frame::before {
+            content: '🌸🌼🌸🌼🌸🌼🌸🌼🌸🌼🌸🌼🌸';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            font-size: 0.9rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .option.flower-frame::after {
+            content: '🌼🌸🌼🌸🌼🌸🌼🌸🌼🌸🌼🌸🌼';
+            position: absolute;
+            bottom: -8px;
+            left: -8px;
+            right: -8px;
+            font-size: 0.9rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .option.pencil-frame::before {
+            content: '✏️📝✏️📝✏️📝✏️📝✏️📝✏️📝✏️';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            font-size: 0.9rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .option.pencil-frame::after {
+            content: '📝✏️📝✏️📝✏️📝✏️📝✏️📝✏️📝';
+            position: absolute;
+            bottom: -8px;
+            left: -8px;
+            right: -8px;
+            font-size: 0.9rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .option.pencil-frame {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 50%, #2b77cb 100%);
+            box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
+        }
+
+        .option {
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+        }
+
+        .option {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 50%, #f8b500 100%);
+            color: white;
+            border: 4px solid #fff;
+            padding: 20px 30px;
+            font-size: 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Arial Unicode MS', sans-serif;
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+            position: relative;
+            overflow: visible;
+            border-image: linear-gradient(90deg, 
+                transparent 0%, 
+                transparent 10%,
+                #ff6b9d 10%,
+                #ff6b9d 90%,
+                transparent 90%,
+                transparent 100%) 1;
+        }
+
+        .option {
+            box-shadow: 
+                inset 0 0 0 2px #fff,
+                0 0 0 1px #ff6b9d,
+                0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .option.correct {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            animation: correctPulse 0.6s ease;
+        }
+
+        .option.incorrect {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        .feedback.correct {
+            color: #38a169;
+        }
+
+        .feedback.incorrect {
+            color: #e53e3e;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .final-screen {
+            display: none;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            color: #48bb78;
+            margin: 20px 0;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .option {
+                min-width: 150px;
+                font-size: 1.5rem;
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="game-container">
+        <header class="header">
+            <h1 class="title">🎯 لُعْبَةُ الْحَرَكاتِ الْعَرَبِيَّة</h1>
+            <div class="score">النَّتيجَة: <span id="score">0</span> / <span id="total">6</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+        </header>
+
+        <section class="game-area" id="gameArea">
+            <div class="question-area">
+                <p class="question-text" id="questionText">اِخْتَر الْكَلِمَةَ الصَّحيحَة حَسَبَ الْحَرَكات</p>
+                <div class="options" id="options">
+                    <!-- Options will be inserted here -->
+                </div>
+            </div>
+            <div class="feedback" id="feedback"></div>
+            <button class="next-btn" id="nextBtn">السُّؤالُ التّالي ➡️</button>
+        </section>
+
+        <section class="final-screen" id="finalScreen">
+            <h2>🎉 انْتَهَتِ اللُّعْبَة!</h2>
+            <div class="final-score" id="finalScore">6/6</div>
+            <p id="finalMessage">مُمْتاز! أَجَبْتَ عَلى جَميعِ الأَسْئِلَةِ بِشَكْلٍ صَحيح!</p>
+            <button class="restart-btn" id="restartBtn">🔄 اِلْعَبْ مَرَّةً أُخْرى</button>
+        </section>
+    </main>
+
+    <script>
+        const questions = [
+            {
+                correct: "اَلْحَياة",
+                incorrect: "اَلحَّياة",
+                meaning: "hayat"
+            },
+            {
+                correct: "اَلْمَطْبَخ",
+                incorrect: "اَلمَّطْبَخ",
+                meaning: "mutfak"
+            },
+            {
+                correct: "اَلدَّرْس",
+                incorrect: "اَلْدَرْس",
+                meaning: "ders"
+            },
+            {
+                correct: "اَلنّافِذَة",
+                incorrect: "اَلْنافِذَة",
+                meaning: "pencere"
+            },
+            {
+                correct: "اَلْخَريطَة",
+                incorrect: "الخَّريطَة",
+                meaning: "harita"
+            },
+            {
+                correct: "اَلرِّزْق",
+                incorrect: "اَلْرِزْق",
+                meaning: "rızık"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        const scoreElement = document.getElementById('score');
+        const totalElement = document.getElementById('total');
+        const progressElement = document.getElementById('progress');
+        const questionTextElement = document.getElementById('questionText');
+        const optionsElement = document.getElementById('options');
+        const feedbackElement = document.getElementById('feedback');
+        const nextBtnElement = document.getElementById('nextBtn');
+        const gameAreaElement = document.getElementById('gameArea');
+        const finalScreenElement = document.getElementById('finalScreen');
+        const finalScoreElement = document.getElementById('finalScore');
+        const finalMessageElement = document.getElementById('finalMessage');
+        const restartBtnElement = document.getElementById('restartBtn');
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function displayQuestion() {
+            if (currentQuestion >= questions.length) {
+                showFinalScreen();
+                return;
+            }
+
+            const question = questions[currentQuestion];
+            answered = false;
+            
+            questionTextElement.textContent = `اِخْتَر الْكَلِمَةَ الصَّحيحَة حَسَبَ الْحَرَكات`;
+            
+            const options = shuffleArray([
+                { text: question.correct, isCorrect: true },
+                { text: question.incorrect, isCorrect: false }
+            ]);
+
+            optionsElement.innerHTML = '';
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                
+                // Çerçeve tipini belirle (çift sayılar kalem, tek sayılar papatya)
+                if (currentQuestion % 2 === 1) {
+                    button.classList.add('pencil-frame');
+                } else {
+                    button.classList.add('flower-frame');
+                }
+                
+                button.textContent = option.text;
+                button.addEventListener('click', () => selectOption(button, option.isCorrect));
+                optionsElement.appendChild(button);
+            });
+
+            feedbackElement.textContent = '';
+            feedbackElement.className = 'feedback';
+            nextBtnElement.style.display = 'none';
+            
+            updateProgress();
+        }
+
+        function selectOption(button, isCorrect) {
+            if (answered) return;
+            
+            answered = true;
+            const allOptions = document.querySelectorAll('.option');
+            
+            allOptions.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.textContent === questions[currentQuestion].correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (isCorrect) {
+                score++;
+                feedbackElement.textContent = '🎉 صَحيح! أَحْسَنْت!';
+                feedbackElement.className = 'feedback correct';
+                scoreElement.textContent = score;
+            } else {
+                button.classList.add('incorrect');
+                feedbackElement.textContent = '❌ خَطَأ. الإِجابَةُ الصَّحيحَةُ مُحَدَّدَة.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+
+            nextBtnElement.style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            displayQuestion();
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / questions.length) * 100;
+            progressElement.style.width = progress + '%';
+        }
+
+        function showFinalScreen() {
+            gameAreaElement.style.display = 'none';
+            finalScreenElement.style.display = 'block';
+            
+            finalScoreElement.textContent = `${score}/${questions.length}`;
+            
+            let message = '';
+            if (score === questions.length) {
+                message = '🌟 مُمْتاز! أَجَبْتَ عَلى جَميعِ الأَسْئِلَةِ بِشَكْلٍ صَحيح!';
+            } else if (score >= questions.length * 0.8) {
+                message = '👏 رائِع! أَنْتَ مُتَفَوِّق جِدّاً!';
+            } else if (score >= questions.length * 0.6) {
+                message = '👍 جَيِّد! يُمْكِنُكَ التَّدَرُّبُ أَكْثَر قَليلاً.';
+            } else {
+                message = '💪 حاوِلْ مَرَّةً أُخْرى، يُمْكِنُكَ النَّجاح!';
+            }
+            
+            finalMessageElement.textContent = message;
+            
+            // Restart butonu görünür yap
+            restartBtnElement.style.display = 'inline-block';
+        }
+
+        function restartGame() {
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+            
+            scoreElement.textContent = '0';
+            gameAreaElement.style.display = 'block';
+            finalScreenElement.style.display = 'none';
+            
+            displayQuestion();
+        }
+
+        // Event listeners
+        nextBtnElement.addEventListener('click', nextQuestion);
+        restartBtnElement.addEventListener('click', restartGame);
+
+        // Initialize game
+        totalElement.textContent = questions.length;
+        displayQuestion();
+    </script>
+</body>
+</html>

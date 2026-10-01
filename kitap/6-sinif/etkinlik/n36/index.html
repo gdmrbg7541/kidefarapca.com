@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>أملأ الفراغات بالكلمة المناسبة</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Arakom", "Amiri", "Scheherazade", serif;
+      background: linear-gradient(135deg, #fef3ff, #e0f7ff, #fff7e0);
+      display: flex;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 900px;
+      margin: 16px;
+      padding: 20px 24px;
+      background: #ffffff;
+      border-radius: 26px;
+      border: 3px solid #f6c879;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+      position: relative;
+      box-sizing: border-box;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .page::before,
+    .page::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 6px;
+      z-index: 0;
+    }
+
+    .page::before {
+      top: 0;
+      background: linear-gradient(90deg, #ffb6c1, #d989ff, #7fd8be, #ffd66b);
+    }
+
+    .page::after {
+      bottom: 0;
+      background: linear-gradient(90deg, #ffd66b, #7fd8be, #d989ff, #ffb6c1);
+    }
+
+    /* doodle'lar */
+    .doodle {
+      position: fixed;
+      font-size: 2.6rem;
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .d1 { right: 20px; top: 120px; transform: rotate(10deg); }
+    .d2 { right: 40px; top: 280px; transform: rotate(-12deg); }
+    .d3 { right: 15px; top: 430px; transform: rotate(6deg); }
+
+    .d4 { left: 20px; top: 160px; transform: rotate(-8deg); }
+    .d5 { left: 35px; top: 320px; transform: rotate(14deg); }
+    .d6 { left: 10px; top: 470px; transform: rotate(-5deg); }
+
+    @media (max-width: 1000px) {
+      .doodle { display: none; }
+    }
+
+    .instruction-box {
+      background: #fff8e8;
+      border: 3px solid #f6c879;
+      padding: 14px;
+      border-radius: 20px;
+      font-size: 1.9rem;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 18px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .questions {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .question-row {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .options-box {
+      background: #f5d6ff;
+      border-radius: 20px;
+      border: 2px solid #d989ff;
+      padding: 8px 10px;
+      min-width: 220px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    .options-inner {
+      background: #ffffff;
+      padding: 5px 10px;
+      border-radius: 14px;
+      font-size: 1.7rem;
+      color: #4a2766;
+      white-space: nowrap;
+    }
+
+    .choice-btn {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 1.7rem;
+      padding: 0 4px;
+      border-radius: 8px;
+      transition: 0.15s;
+    }
+
+    .choice-btn:hover { background: #ffe7ff; }
+
+    .choice-btn.selected {
+      background: #ffd6ff;
+      box-shadow: 0 0 0 2px #d989ff;
+    }
+
+    .sentence-box {
+      flex: 1;
+      background: #e1f6ee;
+      border: 2px solid #7fd8be;
+      border-radius: 20px;
+      padding: 10px 18px;
+      font-size: 2rem;
+      color: #20443a;
+      line-height: 1.8;
+      box-sizing: border-box;
+    }
+
+    /* 🔹 Cevap boşluğu – sadece uzun çizgi kaldırıldı, “……” yazısı kalacak */
+    .blank {
+      display: inline-block;
+      min-width: 140px;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #333;
+      padding-bottom: 3px;
+      border: none; /* uzun noktalama çizgisi tamamen kaldırıldı */
+    }
+
+    .blank.correct {
+      color: #0a7b3b;
+      background: #eaffea;
+    }
+
+    .blank.incorrect {
+      color: #b00020;
+      background: #ffe8ea;
+    }
+
+    .check-area {
+      text-align: center;
+      margin-top: 18px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .check-btn {
+      background: linear-gradient(90deg, #ffd66b, #ffb6c1);
+      border: none;
+      padding: 10px 28px;
+      border-radius: 25px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+    }
+
+    .message {
+      font-size: 1.4rem;
+      margin-top: 8px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- DAĞINIK ÇOCUK KARALAMASI (kelebek ağırlıklı) -->
+  <div class="doodle d1">🦋</div>
+  <div class="doodle d2">🌻</div>
+  <div class="doodle d3">☁️</div>
+  <div class="doodle d4">🦋</div>
+  <div class="doodle d5">🌼</div>
+  <div class="doodle d6">🍃</div>
+
+  <div class="page">
+
+    <div class="instruction-box">
+      ٦- اِمْلَأ الْفَراغات بِالْكَلِمَةِ الْمُناسِبَة مِمّا بَيْنَ الْقَوْسَيْن.
+    </div>
+
+    <div class="questions">
+
+      <div class="question-row">
+        <div class="options-box">
+          <div class="options-inner">
+            (
+            <button class="choice-btn" data-question="q1" data-value="الصَّفّ">الصَّفّ</button>
+            /
+            <button class="choice-btn" data-question="q1" data-value="الْيَوْم">الْيَوْم</button>
+            )
+          </div>
+        </div>
+        <div class="sentence-box">
+          أَنا طالِبَة في
+          <span class="blank" data-question="q1" data-answer="الصَّفّ">......</span>
+          السّادِس.
+        </div>
+      </div>
+
+      <div class="question-row">
+        <div class="options-box">
+          <div class="options-inner">
+            (
+            <button class="choice-btn" data-question="q2" data-value="الْمِظَلَّة">الْمِظَلَّة</button>
+            /
+            <button class="choice-btn" data-question="q2" data-value="الْقَميص">الْقَميص</button>
+            )
+          </div>
+        </div>
+        <div class="sentence-box">
+          آخُذُ
+          <span class="blank" data-question="q2" data-answer="الْمِظَلَّة">......</span>
+          في الْجَوّ الْمُمْطِر.
+        </div>
+      </div>
+
+      <div class="question-row">
+        <div class="options-box">
+          <div class="options-inner">
+            (
+            <button class="choice-btn" data-question="q3" data-value="قَميصًا">قَميصًا</button>
+            /
+            <button class="choice-btn" data-question="q3" data-value="وِشاحًا">وِشاحًا</button>
+            )
+          </div>
+        </div>
+        <div class="sentence-box">
+          أَلبَسُ
+          <span class="blank" data-question="q3" data-answer="قَميصًا">......</span>
+          وَشِبْشِبًا.
+        </div>
+      </div>
+
+      <div class="question-row">
+        <div class="options-box">
+          <div class="options-inner">
+            (
+            <button class="choice-btn" data-question="q4" data-value="الْمُشْمِس">الْمُشْمِس</button>
+            /
+            <button class="choice-btn" data-question="q4" data-value="الْمُثْلِج">الْمُثْلِج</button>
+            )
+          </div>
+        </div>
+        <div class="sentence-box">
+          أَلبَسُ مِعْطَفًا وَوِشاحًا في الْجَوّ
+          <span class="blank" data-question="q4" data-answer="الْمُثْلِج">......</span>.
+        </div>
+      </div>
+
+      <div class="question-row">
+        <div class="options-box">
+          <div class="options-inner">
+            (
+            <button class="choice-btn" data-question="q5" data-value="الْمُشْمِس">الْمُشْمِس</button>
+            /
+            <button class="choice-btn" data-question="q5" data-value="الْمِظَلَّة">الْمِظَلَّة</button>
+            )
+          </div>
+        </div>
+        <div class="sentence-box">
+          أُحِبُّ الْجَوّ
+          <span class="blank" data-question="q5" data-answer="الْمُشْمِس">......</span>.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="check-area">
+      <button class="check-btn" id="checkBtn">تَحَقَّقْ مِنَ الْإِجابات</button>
+      <div class="message" id="message"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const choiceBtns = document.querySelectorAll(".choice-btn");
+    const blanks = document.querySelectorAll(".blank");
+    const message = document.getElementById("message");
+
+    choiceBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const q = btn.dataset.question;
+
+        // Aynı sorudaki eski seçimi kaldır
+        document
+          .querySelectorAll(`.choice-btn[data-question="${q}"]`)
+          .forEach(b => b.classList.remove("selected"));
+
+        // Yeni seçimi işaretle
+        btn.classList.add("selected");
+
+        // İlgili boşluğa kelimeyi yaz
+        const blank = document.querySelector(`.blank[data-question="${q}"]`);
+        blank.textContent = btn.dataset.value;
+        blank.dataset.chosen = btn.dataset.value;
+        blank.classList.remove("correct", "incorrect");
+
+        // Mesajı temizle
+        message.textContent = "";
+      });
+    });
+
+    document.getElementById("checkBtn").addEventListener("click", () => {
+      let correct = 0;
+
+      blanks.forEach(blank => {
+        const answer = blank.dataset.answer;
+        const chosen = blank.dataset.chosen;
+
+        if (chosen === answer) {
+          blank.classList.add("correct");
+          blank.classList.remove("incorrect");
+          correct++;
+        } else {
+          blank.classList.add("incorrect");
+          blank.classList.remove("correct");
+        }
+      });
+
+      message.textContent =
+        "عَدَدُ الْإِجابات الصَّحيحَة: " + correct + " مِنْ " + blanks.length + ".";
+    });
+  </script>
+
+</body>
+</html>

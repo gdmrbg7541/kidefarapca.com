@@ -1,0 +1,1023 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لُعْبَة الْأَشْكالِ الْعَرَبِيَّة</title>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Arakom', 'Amiri', 'Noto Sans Arabic', Arial, sans-serif;
+            background: linear-gradient(45deg, #ff6b6b 0%, #4ecdc4 25%, #45b7d1 50%, #96ceb4 75%, #ffeaa7 100%);
+            background-size: 600% 600%;
+            animation: gradientShift 10s ease infinite;
+            min-height: 100%;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 107, 107, 0.2) 0%, transparent 60%),
+                radial-gradient(circle at 90% 80%, rgba(78, 205, 196, 0.2) 0%, transparent 60%),
+                radial-gradient(circle at 50% 50%, rgba(69, 183, 209, 0.1) 0%, transparent 70%),
+                radial-gradient(circle at 30% 70%, rgba(150, 206, 180, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(255, 234, 167, 0.2) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: -10;
+            animation: floatingBubbles 15s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes floatingBubbles {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: transparent;
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .instruction-box {
+            background: linear-gradient(45deg, #4fc3f7, #29b6f6);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(79, 195, 247, 0.3);
+            border: 3px solid #01579b;
+            z-index: 10;
+            position: relative;
+        }
+
+        .game-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .word-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 200px;
+        }
+
+        .word-item {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 42px;
+            font-weight: bold;
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 2px solid #d32f2f;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .word-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        .word-item:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-5px) scale(1.05); }
+            50% { transform: translateY(-8px) scale(1.08); }
+        }
+
+        .shapes-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex: 1;
+            align-items: center;
+        }
+
+        .shape {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            border: 4px dashed #666;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .shape.drag-over {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.1);
+            transform: scale(1.05);
+        }
+
+        .square {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(45deg, #e8f5e8, #c8e6c9);
+            border-color: #4caf50;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 260px solid #ffecb3;
+            border-radius: 0;
+            background: none;
+            position: relative;
+            min-height: 260px;
+            border-top: none;
+            border-style: solid;
+            border-width: 0 150px 260px 150px;
+            border-color: transparent transparent #ffc107 transparent;
+        }
+
+        .triangle::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: -140px;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-bottom: 240px solid #fff8e1;
+        }
+
+        .circle {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f3e5f5, #e1bee7);
+            border-color: #9c27b0;
+        }
+
+        .shape-label {
+            display: none;
+        }
+
+        .dropped-words {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .triangle .dropped-words {
+            position: absolute;
+            top: 30px;
+            left: -150px;
+            right: -150px;
+            width: 300px;
+            margin: 0 auto;
+            z-index: 200;
+            background: transparent;
+            border-radius: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            max-height: 220px;
+            overflow: visible;
+            border: none;
+            box-shadow: none;
+        }
+
+        .dropped-word {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 24px;
+            border-radius: 8px;
+            font-size: 38px;
+            text-align: center;
+            border: 1px solid #ccc;
+            animation: dropIn 0.5s ease-out;
+            margin-bottom: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+        }
+
+        .triangle .dropped-word {
+            font-size: 38px;
+            padding: 20px 24px;
+            margin: 0;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #ff9800;
+            color: #333;
+            font-weight: bold;
+            white-space: nowrap;
+            flex-shrink: 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes dropIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            color: white;
+            padding: 40px 80px;
+            border-radius: 15px;
+            font-size: 52px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .feedback.error {
+            background: linear-gradient(45deg, #f44336, #ef5350);
+        }
+
+        .feedback.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .reset-button {
+            background: linear-gradient(45deg, #2196f3, #42a5f5);
+            color: white;
+            border: none;
+            padding: 30px 60px;
+            border-radius: 10px;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+
+        .orientation-message {
+            display: none !important;
+        }
+
+        .word-item.selected {
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .word-item.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .shape.selectable {
+            border-color: #2196f3;
+            background: rgba(33, 150, 243, 0.1);
+            cursor: pointer;
+        }
+
+        .shape.selectable:hover {
+            border-color: #1976d2;
+            background: rgba(33, 150, 243, 0.2);
+            transform: scale(1.05);
+        }
+
+        .shape {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Mobile responsive design */
+        @media (max-width: 768px) {
+            
+            body {
+                padding: 5px;
+                height: 100vh;
+                overflow: hidden;
+            }
+            
+            .game-container {
+                display: flex !important;
+                flex-direction: column;
+                padding: 5px;
+                height: 100vh;
+                overflow: hidden;
+                max-width: 100%;
+            }
+            
+            .instruction-box {
+                font-size: 18px;
+                padding: 12px;
+                margin-bottom: 10px;
+                line-height: 1.2;
+                flex-shrink: 0;
+            }
+            
+            .progress-bar {
+                margin: 5px 0;
+                height: 6px;
+                flex-shrink: 0;
+            }
+            
+            .game-area {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+                flex: 1;
+                margin: 10px 0;
+                overflow-y: auto;
+            }
+            
+            .word-column {
+                width: 100%;
+                flex-direction: row;
+                gap: 8px;
+                overflow-x: auto;
+                max-height: none;
+                justify-content: center;
+                flex-wrap: wrap;
+                padding: 10px 0;
+            }
+            
+            #leftWords, #rightWords {
+                order: 1;
+            }
+            
+            .word-item {
+                font-size: 20px;
+                padding: 14px 18px;
+                min-width: auto;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                line-height: 1.2;
+                white-space: nowrap;
+                flex-shrink: 0;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+                user-select: none;
+                -webkit-user-select: none;
+            }
+            
+            .shapes-container {
+                flex-direction: row;
+                gap: 20px;
+                flex: none;
+                align-items: center;
+                justify-content: center;
+                order: 2;
+                margin-top: 20px;
+            }
+            
+            .square, .circle {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .triangle {
+                border-left-width: 50px;
+                border-right-width: 50px;
+                border-bottom-width: 90px;
+                min-height: 90px;
+            }
+            
+            .triangle::before {
+                left: -45px;
+                border-left-width: 45px;
+                border-right-width: 45px;
+                border-bottom-width: 80px;
+                top: 10px;
+            }
+            
+            .triangle .dropped-words {
+                left: -50px;
+                right: -50px;
+                width: 100px;
+                max-height: 70px;
+                top: 15px;
+            }
+            
+            .dropped-word {
+                font-size: 16px;
+                padding: 6px 8px;
+                margin-bottom: 2px;
+                line-height: 1.1;
+            }
+            
+            .triangle .dropped-word {
+                font-size: 16px;
+                padding: 6px 8px;
+                line-height: 1.1;
+            }
+            
+            .feedback {
+                font-size: 24px;
+                padding: 20px 30px;
+                max-width: 80%;
+                text-align: center;
+            }
+            
+            .reset-button {
+                font-size: 20px;
+                padding: 15px 25px;
+                width: 100%;
+                max-width: 200px;
+                margin-top: 10px;
+                flex-shrink: 0;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.visible{visibility:visible}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.flex{display:flex}.hidden{display:none}.flex-shrink{flex-shrink:1}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.resize{resize:both}.flex-wrap{flex-wrap:wrap}.border{border-width:1px}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.ease-in-out{transition-timing-function:cubic-bezier(.4,0,.2,1)}</style>
+ </head>
+ <body>
+  <div class="game-container">
+   <div class="instruction-box" id="instruction">
+    اِخْتَرْ أَرْقامَ أَقْسامِ الْمَدْرَسَة في الْمُرَبَّع، وَأَدَواتِ الْمَدْرَسَة في الْمُثَلَّث، وَالظَّرْف في الدّائِرَة.
+   </div>
+   <div class="progress-bar">
+    <div class="progress-fill" id="progress"></div>
+   </div>
+   <div class="game-area">
+    <div class="word-column" id="leftWords">
+     <div class="word-item" data-category="school-tools">
+      ٥ سَبّورَة ذَكِيَّة
+     </div>
+     <div class="word-item" data-category="prepositions">
+      ٦ خَلْفَ
+     </div>
+     <div class="word-item" data-category="school-places">
+      ٧ مَسْجِد
+     </div>
+     <div class="word-item" data-category="school-places">
+      ٨ مُخْتَبَر
+     </div>
+    </div>
+    <div class="shapes-container">
+     <div class="shape square" data-target="school-places">
+      <div class="dropped-words"></div>
+      <div class="shape-label">
+       مُرَبَّع
+      </div>
+     </div>
+     <div class="shape triangle" data-target="school-tools">
+      <div class="dropped-words"></div>
+      <div class="shape-label">
+       مُثَلَّث
+      </div>
+     </div>
+     <div class="shape circle" data-target="prepositions">
+      <div class="dropped-words"></div>
+      <div class="shape-label">
+       دائِرَة
+      </div>
+     </div>
+    </div>
+    <div class="word-column" id="rightWords">
+     <div class="word-item" data-category="school-places">
+      ١ مَكْتَبَة
+     </div>
+     <div class="word-item" data-category="school-tools">
+      ٢ خَرِيطَة
+     </div>
+     <div class="word-item" data-category="school-places">
+      ٣ مَقْصِف
+     </div>
+     <div class="word-item" data-category="school-tools">
+      ٤ طاوِلَة
+     </div>
+    </div>
+   </div><button class="reset-button" onclick="resetGame()">أَعِدْ تَشْغِيل اللُّعْبَة</button>
+  </div>
+  <div class="feedback" id="feedback"></div>
+  <script>
+        const defaultConfig = {
+            instruction_text: "اِخْتَرْ أَرْقامَ أَقْسامِ الْمَدْرَسَة في الْمُرَبَّع، وَأَدَوات الْمَدْرَسَة في الْمُثَلَّث، وَالظَّرْف في الدّائِرَة.",
+            success_message: "أَحْسَنْت!",
+            retry_message: "جَرِّبْ مَرَّة أُخْرَى!",
+            primary_color: "#4fc3f7",
+            secondary_color: "#ff6b6b",
+            background_color: "#e3f2fd",
+            text_color: "#333333",
+            accent_color: "#4caf50"
+        };
+
+        let draggedElement = null;
+        let selectedWord = null;
+        let correctPlacements = 0;
+        const totalWords = 8;
+        let isMobile = false;
+
+        // Check if device is mobile
+        function checkMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        // Initialize drag and drop functionality
+        function initializeDragAndDrop() {
+            isMobile = checkMobile();
+            const wordItems = document.querySelectorAll('.word-item');
+            const shapes = document.querySelectorAll('.shape');
+
+            wordItems.forEach(item => {
+                if (isMobile) {
+                    // Mobile touch controls
+                    item.addEventListener('click', handleWordClick);
+                    item.addEventListener('touchstart', handleWordClick);
+                    item.addEventListener('touchend', (e) => e.preventDefault());
+                } else {
+                    // Desktop drag and drop
+                    item.addEventListener('dragstart', handleDragStart);
+                    item.addEventListener('dragend', handleDragEnd);
+                }
+            });
+
+            shapes.forEach(shape => {
+                if (isMobile) {
+                    // Mobile touch controls
+                    shape.addEventListener('click', handleShapeClick);
+                    shape.addEventListener('touchstart', handleShapeClick);
+                    shape.addEventListener('touchend', (e) => e.preventDefault());
+                } else {
+                    // Desktop drag and drop
+                    shape.addEventListener('dragover', handleDragOver);
+                    shape.addEventListener('drop', handleDrop);
+                    shape.addEventListener('dragenter', handleDragEnter);
+                    shape.addEventListener('dragleave', handleDragLeave);
+                }
+            });
+        }
+
+        // Mobile word selection
+        function handleWordClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (selectedWord) {
+                selectedWord.classList.remove('selected');
+                document.querySelectorAll('.shape').forEach(s => s.classList.remove('selectable'));
+            }
+            
+            selectedWord = e.target;
+            selectedWord.classList.add('selected');
+            
+            // Make shapes selectable
+            document.querySelectorAll('.shape').forEach(shape => {
+                shape.classList.add('selectable');
+            });
+            
+            // Disable other words
+            document.querySelectorAll('.word-item').forEach(item => {
+                if (item !== selectedWord) {
+                    item.classList.add('disabled');
+                }
+            });
+        }
+
+        // Mobile shape selection
+        function handleShapeClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (!selectedWord) return;
+            
+            const shape = e.target.closest('.shape');
+            if (!shape) return;
+            
+            const wordCategory = selectedWord.dataset.category;
+            const targetCategory = shape.dataset.target;
+
+            if (wordCategory === targetCategory) {
+                // Correct placement
+                const droppedWordsContainer = shape.querySelector('.dropped-words');
+                const droppedWord = document.createElement('div');
+                droppedWord.className = 'dropped-word';
+                droppedWord.textContent = selectedWord.textContent;
+                droppedWordsContainer.appendChild(droppedWord);
+
+                selectedWord.remove();
+                correctPlacements++;
+                updateProgress();
+                showFeedback(true);
+
+                if (correctPlacements === totalWords) {
+                    setTimeout(() => {
+                        showFeedback(true, "مَبْرُوك! لَقَدْ أَكْمَلْت اللُّعْبَة بِنَجَاح!");
+                    }, 1000);
+                }
+            } else {
+                // Incorrect placement
+                showFeedback(false);
+                selectedWord.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => {
+                    if (selectedWord) {
+                        selectedWord.style.animation = '';
+                    }
+                }, 500);
+            }
+
+            // Reset selection
+            selectedWord = null;
+            document.querySelectorAll('.word-item').forEach(item => {
+                item.classList.remove('selected', 'disabled');
+            });
+            document.querySelectorAll('.shape').forEach(shape => {
+                shape.classList.remove('selectable');
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.style.opacity = '0.5';
+        }
+
+        function handleDragEnd(e) {
+            e.target.style.opacity = '1';
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            e.target.closest('.shape').classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            if (!e.target.closest('.shape').contains(e.relatedTarget)) {
+                e.target.closest('.shape').classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const shape = e.target.closest('.shape');
+            shape.classList.remove('drag-over');
+
+            if (!draggedElement) return;
+
+            const wordCategory = draggedElement.dataset.category;
+            const targetCategory = shape.dataset.target;
+
+            if (wordCategory === targetCategory) {
+                // Correct placement
+                const droppedWordsContainer = shape.querySelector('.dropped-words');
+                const droppedWord = document.createElement('div');
+                droppedWord.className = 'dropped-word';
+                droppedWord.textContent = draggedElement.textContent;
+                droppedWordsContainer.appendChild(droppedWord);
+
+                draggedElement.remove();
+                correctPlacements++;
+                updateProgress();
+                showFeedback(true);
+
+                if (correctPlacements === totalWords) {
+                    setTimeout(() => {
+                        showFeedback(true, "مَبْرُوك! لَقَدْ أَكْمَلْت اللُّعْبَة بِنَجَاح!");
+                    }, 1000);
+                }
+            } else {
+                // Incorrect placement
+                showFeedback(false);
+                // Add shake animation to the dragged element
+                draggedElement.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => {
+                    if (draggedElement) {
+                        draggedElement.style.animation = '';
+                    }
+                }, 500);
+            }
+
+            draggedElement = null;
+        }
+
+        function playSound(type) {
+            // Create audio context for sound feedback
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            if (type === 'success') {
+                // Success sound - ascending notes
+                const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
+                frequencies.forEach((freq, index) => {
+                    setTimeout(() => {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                        oscillator.type = 'sine';
+                        
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.3);
+                    }, index * 100);
+                });
+            } else if (type === 'error') {
+                // Error sound - descending buzz
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
+                oscillator.type = 'sawtooth';
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } else if (type === 'complete') {
+                // Game complete sound - celebration melody
+                const melody = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                melody.forEach((freq, index) => {
+                    setTimeout(() => {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                        oscillator.type = 'triangle';
+                        
+                        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                        
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.4);
+                    }, index * 150);
+                });
+            }
+        }
+
+        function showFeedback(isCorrect, customMessage = null) {
+            const feedback = document.getElementById('feedback');
+            const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+            
+            if (isCorrect) {
+                feedback.textContent = customMessage || config.success_message || defaultConfig.success_message;
+                feedback.className = 'feedback show';
+                
+                // Play appropriate sound
+                if (customMessage) {
+                    playSound('complete'); // Game completion sound
+                } else {
+                    playSound('success'); // Regular success sound
+                }
+            } else {
+                feedback.textContent = config.retry_message || defaultConfig.retry_message;
+                feedback.className = 'feedback error show';
+                playSound('error'); // Error sound
+            }
+
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progress');
+            const percentage = (correctPlacements / totalWords) * 100;
+            progressFill.style.width = percentage + '%';
+        }
+
+        function resetGame() {
+            // Reset all dropped words
+            document.querySelectorAll('.dropped-words').forEach(container => {
+                container.innerHTML = '';
+            });
+
+            // Reset word items
+            const leftColumn = document.getElementById('leftWords');
+            const rightColumn = document.getElementById('rightWords');
+            
+            const draggableAttr = isMobile ? '' : 'draggable="true"';
+            
+            leftColumn.innerHTML = `
+                <div class="word-item" ${draggableAttr} data-category="school-tools">٥ سَبّورَة ذَكِيَّة</div>
+                <div class="word-item" ${draggableAttr} data-category="prepositions">٦ خَلْفَ</div>
+                <div class="word-item" ${draggableAttr} data-category="school-places">٧ مَسْجِد</div>
+                <div class="word-item" ${draggableAttr} data-category="school-places">٨ مُخْتَبَر</div>
+            `;
+            
+            rightColumn.innerHTML = `
+                <div class="word-item" ${draggableAttr} data-category="school-places">١ مَكْتَبَة</div>
+                <div class="word-item" ${draggableAttr} data-category="school-tools">٢ خَرِيطَة</div>
+                <div class="word-item" ${draggableAttr} data-category="school-places">٣ مَقْصِف</div>
+                <div class="word-item" ${draggableAttr} data-category="school-tools">٤ طاوِلَة</div>
+            `;
+
+            // Reset selections
+            selectedWord = null;
+            document.querySelectorAll('.word-item').forEach(item => {
+                item.classList.remove('selected', 'disabled');
+            });
+            document.querySelectorAll('.shape').forEach(shape => {
+                shape.classList.remove('selectable');
+            });
+
+            correctPlacements = 0;
+            updateProgress();
+            initializeDragAndDrop();
+        }
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Element SDK integration
+        async function onConfigChange(config) {
+            const instruction = document.getElementById('instruction');
+            instruction.textContent = config.instruction_text || defaultConfig.instruction_text;
+            
+            // Update colors
+            document.documentElement.style.setProperty('--primary-color', config.primary_color || defaultConfig.primary_color);
+            document.documentElement.style.setProperty('--secondary-color', config.secondary_color || defaultConfig.secondary_color);
+            document.documentElement.style.setProperty('--background-color', config.background_color || defaultConfig.background_color);
+            document.documentElement.style.setProperty('--text-color', config.text_color || defaultConfig.text_color);
+            document.documentElement.style.setProperty('--accent-color', config.accent_color || defaultConfig.accent_color);
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.primary_color || defaultConfig.primary_color,
+                        set: (value) => {
+                            config.primary_color = value;
+                            window.elementSdk.setConfig({ primary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.secondary_color || defaultConfig.secondary_color,
+                        set: (value) => {
+                            config.secondary_color = value;
+                            window.elementSdk.setConfig({ secondary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.accent_color || defaultConfig.accent_color,
+                        set: (value) => {
+                            config.accent_color = value;
+                            window.elementSdk.setConfig({ accent_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["instruction_text", config.instruction_text || defaultConfig.instruction_text],
+                ["success_message", config.success_message || defaultConfig.success_message],
+                ["retry_message", config.retry_message || defaultConfig.retry_message]
+            ]);
+        }
+
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set draggable attribute based on device type
+            isMobile = checkMobile();
+            const wordItems = document.querySelectorAll('.word-item');
+            wordItems.forEach(item => {
+                if (!isMobile) {
+                    item.setAttribute('draggable', 'true');
+                }
+            });
+            
+            initializeDragAndDrop();
+            
+            // Handle orientation change
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    location.reload();
+                }, 100);
+            });
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                const wasMobile = isMobile;
+                isMobile = checkMobile();
+                if (wasMobile !== isMobile) {
+                    location.reload();
+                }
+            });
+            
+            if (window.elementSdk) {
+                window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange,
+                    mapToCapabilities,
+                    mapToEditPanelValues
+                });
+            }
+        });
+    </script>
+ </body>
+</html>

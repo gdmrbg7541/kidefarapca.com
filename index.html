@@ -5096,7 +5096,17 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          onun adresine gider. Kitap seçici değişince ızgara zaten yeniden
          çiziliyor (ihdocTazele), bağlantı da kendiliğinden değişiyor. */
       var DERS_KITABI = {
-        '5': portalKitap('5'), '6': portalKitap('6'),
+        '5': portalKitap('5'),
+        /* 6. sınıf 2026-2027 kitabı sitede (01.10.2026): kitap/6-sinif/ —
+           sayfa çevirmeli kitap + 42 ses, 44 etkinlik, video ve şarkılar;
+           internetsiz çalışır, flaş için ZIP indirilebilir.
+           2025-2026 kitabı portala gitmeye devam eder. */
+        '6': {
+          '2026-2027': { url: 'kitap/6-sinif/index.html', etiket: 'DİJİTAL KİTAP',
+            ipucu: '6. sınıf Arapça ders kitabı (2026-2027) — sayfa çevirmeli kitap; sesler, ' +
+                   'etkinlikler, videolar ve şarkılar içinde; flaşa indirilebilir; yeni sekmede açılır' },
+          '2025-2026': portalKitap('6')
+        },
         /* 7. sınıfın iki kitabı var (bkz. sistem/sinifveri.js → VERI_YILI[7]).
            Mektep Yayınları'nın kendi sayfa çevirmeli kitabı yayında; MEB
            kitabının ayrı adresi henüz yok, portala gidiyor. */

@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>سحب وإفلات – الملابس والأحوال الجوية</title>
+
+<style>
+  *{
+    box-sizing:border-box;
+  }
+
+  body{
+    margin:0;
+    padding:8px;
+    font-family:'Amiri', serif;
+    direction:rtl;
+    text-align:center;
+    background:radial-gradient(circle at 0% 0%, #f5f5fb 0, #e5ecff 45%, #f6f7fb 100%);
+    position:relative;
+    overflow-x:hidden;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
+  .doodle{
+    position:fixed;
+    font-size:2.4rem;
+    opacity:0.55;
+    pointer-events:none;
+    z-index:0;
+  }
+  .d1{ right:3%;  top:80px;  transform:rotate(10deg); }
+  .d2{ right:6%;  top:210px; transform:rotate(-15deg); }
+  .d3{ right:2%;  top:360px; transform:rotate(5deg); }
+  .d4{ right:7%;  top:520px; transform:rotate(-8deg); }
+
+  .d5{ left:3%;  top:120px; transform:rotate(-10deg); }
+  .d6{ left:7%;  top:260px; transform:rotate(12deg); }
+  .d7{ left:2%;  top:420px; transform:rotate(-6deg); }
+  .d8{ left:6%;  top:580px; transform:rotate(8deg); }
+
+  @media (max-width:1000px){
+    .doodle{ display:none; }
+  }
+
+  .game-wrapper{
+    width:100%;
+    max-width:1200px;
+    margin:0 auto;
+    background:#ffffff;
+    border-radius:26px;
+    padding:18px 20px 22px;
+    position:relative;
+    z-index:1;
+    box-shadow:0 10px 28px rgba(15,23,42,0.25);
+    border:3px solid transparent;
+    background-image:
+      linear-gradient(#ffffff,#ffffff),
+      linear-gradient(135deg,#f97373,#fbbf24,#34d399,#60a5fa,#a855f7);
+    background-origin:border-box;
+    background-clip:padding-box, border-box;
+  }
+
+  .game-wrapper::before{
+    content:"";
+    position:absolute;
+    left:14px;
+    right:14px;
+    top:10px;
+    height:4px;
+    border-radius:999px;
+    background:linear-gradient(90deg,#f97373,#fb923c,#22c55e,#38bdf8,#a855f7);
+    opacity:0.8;
+  }
+
+  h1{
+    font-size:28px;
+    margin:16px 0 18px 0;
+    padding:10px 22px;
+    display:inline-block;
+    border-radius:999px;
+    border:3px solid transparent;
+    background-image:
+      linear-gradient(#ffffff,#ffffff),
+      linear-gradient(135deg,#fda4af,#facc15,#6ee7b7);
+    background-origin:border-box;
+    background-clip:padding-box, border-box;
+    box-shadow:0 4px 12px rgba(0,0,0,0.18);
+  }
+
+  /* KELİME DİKDÖRTGENLERİ */
+  .words{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:18px;
+    margin-top:4px;
+  }
+
+  .word{
+    width:230px;
+    height:72px;
+    color:#fff;
+    font-weight:bold;
+    font-size:20px;
+    box-shadow:0 4px 8px rgba(0,0,0,0.22);
+    border-radius:16px;
+    position:relative;
+    cursor:pointer;
+    user-select:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding-top:2px;
+    transition:0.18s;
+    touch-action:none; /* telefonda kaydırırken sayfa kaymasın */
+  }
+
+  .word-text{
+    position:relative;
+    z-index:1;
+    font-size:28px;
+  }
+
+  /* Arapça rakamlar gizli */
+  .word-number{
+    display:none;
+  }
+
+  /* KONTROL SONRASI RENKLER */
+  .word.wrong{
+    box-shadow:0 0 0 3px #ef4444, 0 4px 10px rgba(0,0,0,0.3);
+  }
+
+  .word.correct{
+    box-shadow:0 0 0 3px #22c55e, 0 4px 10px rgba(0,0,0,0.3);
+  }
+
+  /* Sürüklenirken hafif vurgulu görünüm (orijinal kart) */
+  .word.drag-origin{
+    opacity:0.6;
+    transform:scale(0.97);
+  }
+
+  /* Ekranda parmağın altında gezen hayalet kutu */
+  .drag-ghost{
+    position:fixed;
+    z-index:9999;
+    pointer-events:none;
+    opacity:0.9;
+    transform:translate(-50%, -50%);
+  }
+
+  /* HER KELİME İÇİN FARKLI RENK ÇERÇEVELERİ */
+  .c1 {background:linear-gradient(135deg,#60a5fa,#2563eb);}
+  .c2 {background:linear-gradient(135deg,#4ade80,#16a34a);}
+  .c3 {background:linear-gradient(135deg,#a855f7,#7c3aed);}
+  .c4 {background:linear-gradient(135deg,#fb923c,#ea580c);}
+  .c5 {background:linear-gradient(135deg,#f97373,#b91c1c);}
+  .c6 {background:linear-gradient(135deg,#22c55e,#0f766e);}
+  .c7 {background:linear-gradient(135deg,#fbbf24,#eab308);}
+  .c8 {background:linear-gradient(135deg,#38bdf8,#0ea5e9);}
+  .c9 {background:linear-gradient(135deg,#f472b6,#db2777);}
+  .c10{background:linear-gradient(135deg,#facc15,#f97316);}
+  .c11{background:linear-gradient(135deg,#2dd4bf,#0f766e);}
+  .c12{background:linear-gradient(135deg,#818cf8,#4f46e5);}
+  .c13{background:linear-gradient(135deg,#f9a8d4,#ec4899);}
+  .c14{background:linear-gradient(135deg,#34d399,#15803d);}
+  .c15{background:linear-gradient(135deg,#fcd34d,#f97316);}
+
+  /* BIRAKMA ALANLARI BLOĞU */
+  .drop-section{
+    display:flex;
+    justify-content:center;
+    gap:24px;
+    flex-wrap:wrap;
+    margin-top:12px;
+  }
+
+  .drop-wrapper{
+    text-align:center;
+    position:relative;
+  }
+
+  .drop-title{
+    display:inline-block;
+    padding:6px 22px;
+    margin-bottom:8px;
+    font-size:24px;
+    font-weight:bold;
+    border-radius:999px;
+    border:3px solid transparent;
+    background-image:
+      linear-gradient(#ffffff,#ffffff),
+      linear-gradient(135deg,#f97373,#facc15);
+    background-origin:border-box;
+    background-clip:padding-box, border-box;
+    box-shadow:0 3px 8px rgba(0,0,0,0.18);
+  }
+
+  .drop-area{
+    width:320px;
+    height:180px;
+    margin:0 auto;
+    background:radial-gradient(circle at 20% 0%, #ffffff 0, #dbeafe 40%, #bfdbfe 75%);
+    box-shadow:0 6px 14px rgba(15,23,42,0.3);
+    border-radius:24px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-start;
+    align-content:flex-start;
+    padding:8px 8px 6px 8px;
+    overflow:auto;
+    border:3px solid #93c5fd;
+  }
+
+  .drop-area[data-type="clothes"]{
+    background:radial-gradient(circle at 20% 0%, #ffffff 0, #bbf7d0 40%, #86efac 75%);
+    border-color:#6ee7b7;
+  }
+
+  .placed-word{
+    font-size:24px;
+    margin:3px 8px;
+    color:#06243b;
+    font-weight:bold;
+    background:transparent;
+    border:none;
+    white-space:nowrap;
+    transition:0.18s;
+  }
+
+  .placed-word.wrong-placed{
+    color:#b00020;
+    text-decoration:underline wavy #b00020;
+  }
+
+  .placed-word.correct-placed{
+    color:#15803d;
+  }
+
+  .check-btn{
+    margin-top:18px;
+    padding:9px 26px;
+    font-size:20px;
+    font-weight:bold;
+    border-radius:999px;
+    border:none;
+    background:linear-gradient(135deg,#f97373,#fb923c);
+    color:#ffffff;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,0.25);
+  }
+
+  .check-btn:hover{
+    opacity:0.95;
+    transform:translateY(-1px);
+  }
+
+  @media (max-width:900px){
+    .drop-area{
+      width:90vw;
+      max-width:360px;
+    }
+    .game-wrapper{
+      padding-inline:12px;
+    }
+  }
+</style>
+
+<script>
+/* ---- Ortak yerleştirme fonksiyonu ---- */
+function placeWordById(id, target){
+  const source = document.getElementById(id);
+  if(!source) return;
+
+  const textEl = source.querySelector('.word-text');
+  if(!textEl) return;
+
+  const wordText = textEl.textContent.trim();
+
+  // Aynı kelime daha önce bırakılmışsa onu sil (bir kelime bir kez)
+  document.querySelectorAll('.placed-word').forEach(function(p){
+    if(p.dataset.from === id){
+      p.remove();
+    }
+  });
+
+  const w = document.createElement('div');
+  w.className = 'placed-word';
+  w.textContent = wordText;
+  w.dataset.from = id;
+
+  target.appendChild(w);
+}
+
+/* ---- Kontrol fonksiyonu (eski mantık aynen) ---- */
+function checkAnswers(){
+  document.querySelectorAll('.word').forEach(function(w){
+    w.classList.remove('wrong','correct');
+  });
+  document.querySelectorAll('.placed-word').forEach(function(p){
+    p.classList.remove('wrong-placed','correct-placed');
+  });
+
+  const correctCategory = {
+    // اَلْمَلابِس
+    w1: "clothes",
+    w3: "clothes",
+    w4: "clothes",
+    w6: "clothes",
+    w7: "clothes",
+    w8: "clothes",
+    w11:"clothes",
+    w13:"clothes",
+    w15:"clothes",
+    // اَلْأَحْوال الْجَوِّيَّة
+    w2: "weather",
+    w5: "weather",
+    w9: "weather",
+    w10:"weather",
+    w12:"weather",
+    w14:"weather"
+  };
+
+  Object.keys(correctCategory).forEach(function(id){
+    const expected = correctCategory[id];
+    const sourceWord = document.getElementById(id);
+    if(!sourceWord) return;
+
+    const placed = document.querySelector('.placed-word[data-from="'+id+'"]');
+
+    if(!placed){
+      sourceWord.classList.add('wrong');
+      return;
+    }
+
+    const parentDrop = placed.closest('.drop-area');
+    if(!parentDrop){
+      sourceWord.classList.add('wrong');
+      placed.classList.add('wrong-placed');
+      return;
+    }
+
+    const type = parentDrop.dataset.type;
+
+    if(type !== expected){
+      sourceWord.classList.add('wrong');
+      placed.classList.add('wrong-placed');
+    } else {
+      sourceWord.classList.add('correct');
+      placed.classList.add('correct-placed');
+    }
+  });
+}
+
+/* ---- Pointer tabanlı (mouse + telefon) sürükle-bırak ---- */
+let activeWordId = null;
+let dragGhost = null;
+let dragOriginEl = null;
+
+function startDrag(wordEl, clientX, clientY){
+  activeWordId = wordEl.id;
+  dragOriginEl = wordEl;
+  wordEl.classList.add('drag-origin');
+
+  dragGhost = wordEl.cloneNode(true);
+  dragGhost.classList.add('drag-ghost');
+  dragGhost.id = ''; // aynı id olmasın
+
+  const rect = wordEl.getBoundingClientRect();
+  dragGhost.style.width = rect.width + 'px';
+  dragGhost.style.height = rect.height + 'px';
+
+  document.body.appendChild(dragGhost);
+  moveGhost(clientX, clientY);
+
+  window.addEventListener('pointermove', onPointerMove, {passive:false});
+  window.addEventListener('pointerup', onPointerUp, {passive:false});
+}
+
+function moveGhost(clientX, clientY){
+  if(!dragGhost) return;
+  dragGhost.style.left = clientX + 'px';
+  dragGhost.style.top  = clientY + 'px';
+}
+
+function endDrag(clientX, clientY){
+  if(!activeWordId) return;
+
+  const el = document.elementFromPoint(clientX, clientY);
+  let target = el;
+  while(target && !target.classList.contains('drop-area')){
+    target = target.parentElement;
+  }
+  if(target){
+    placeWordById(activeWordId, target);
+  }
+
+  if(dragGhost){
+    dragGhost.remove();
+    dragGhost = null;
+  }
+  if(dragOriginEl){
+    dragOriginEl.classList.remove('drag-origin');
+    dragOriginEl = null;
+  }
+
+  activeWordId = null;
+  window.removeEventListener('pointermove', onPointerMove);
+  window.removeEventListener('pointerup', onPointerUp);
+}
+
+function onPointerMove(ev){
+  if(!dragGhost) return;
+  ev.preventDefault();
+  moveGhost(ev.clientX, ev.clientY);
+}
+
+function onPointerUp(ev){
+  ev.preventDefault();
+  endDrag(ev.clientX, ev.clientY);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  // Kelimelere pointerdown ekle
+  document.querySelectorAll('.word').forEach(function(word){
+    word.removeAttribute('draggable'); // eski HTML drag kaldır
+
+    word.addEventListener('pointerdown', function(ev){
+      ev.preventDefault();
+      startDrag(word, ev.clientX, ev.clientY);
+    });
+  });
+});
+</script>
+
+</head>
+
+<body>
+
+<!-- Kırtasiye doodle'lar -->
+<div class="doodle d1">✏️</div>
+<div class="doodle d2">📏</div>
+<div class="doodle d3">📐</div>
+<div class="doodle d4">✂️</div>
+
+<div class="doodle d5">📎</div>
+<div class="doodle d6">🖍️</div>
+<div class="doodle d7">📚</div>
+<div class="doodle d8">🧷</div>
+
+<div class="game-wrapper">
+
+  <h1>اِسْحَب الْكَلِمات إِلى الْقِسْمِ الْمُناسِب</h1>
+
+  <!-- KELİME DİKDÖRTGENLERİ -->
+  <div class="words">
+
+    <div id="w1" class="word c1">
+      <span class="word-text">وِشاح</span>
+      <div class="word-number">١</div>
+    </div>
+
+    <div id="w2" class="word c2">
+      <span class="word-text">بارِد</span>
+      <div class="word-number">٢</div>
+    </div>
+
+    <div id="w3" class="word c3">
+      <span class="word-text">جَوْرَب</span>
+      <div class="word-number">٣</div>
+    </div>
+
+    <div id="w4" class="word c4">
+      <span class="word-text">حِذاء</span>
+      <div class="word-number">٤</div>
+    </div>
+
+    <div id="w5" class="word c5">
+      <span class="word-text">حارّ</span>
+      <div class="word-number">٥</div>
+    </div>
+
+    <div id="w6" class="word c6">
+      <span class="word-text">تَنّورَة</span>
+      <div class="word-number">٦</div>
+    </div>
+
+    <div id="w7" class="word c7">
+      <span class="word-text">بَنْطَلون</span>
+      <div class="word-number">٧</div>
+    </div>
+
+    <div id="w8" class="word c8">
+      <span class="word-text">شَبْشِب</span>
+      <div class="word-number">٨</div>
+    </div>
+
+    <div id="w9" class="word c9">
+      <span class="word-text">مُعْتَدِل</span>
+      <div class="word-number">٩</div>
+    </div>
+
+    <div id="w10" class="word c10">
+      <span class="word-text">مُمْطِر</span>
+      <div class="word-number">١٠</div>
+    </div>
+
+    <div id="w11" class="word c11">
+      <span class="word-text">مِعْطَف</span>
+      <div class="word-number">١١</div>
+    </div>
+
+    <div id="w12" class="word c12">
+      <span class="word-text">مُثْلِج</span>
+      <div class="word-number">١٢</div>
+    </div>
+
+    <div id="w13" class="word c13">
+      <span class="word-text">قُبَّعَة</span>
+      <div class="word-number">١٣</div>
+    </div>
+
+    <div id="w14" class="word c14">
+      <span class="word-text">مُشمِس</span>
+      <div class="word-number">١٤</div>
+    </div>
+
+    <div id="w15" class="word c15">
+      <span class="word-text">قَميص</span>
+      <div class="word-number">١٥</div>
+    </div>
+
+  </div>
+
+  <!-- BIRAKMA ALANLARI -->
+  <div class="drop-section">
+
+    <div class="drop-wrapper">
+      <div class="drop-title">اَلْأَحْوالُ الْجَوِّيَّةُ</div>
+      <div id="drop-weather" class="drop-area" data-type="weather"></div>
+    </div>
+
+    <div class="drop-wrapper">
+      <div class="drop-title">اَلْمَلابِس</div>
+      <div id="drop-clothes" class="drop-area" data-type="clothes"></div>
+    </div>
+
+  </div>
+
+  <button class="check-btn" onclick="checkAnswers()">
+    تَحَقَّقْ مِنَ الْإِجابات
+  </button>
+
+</div>
+</body>
+</html>

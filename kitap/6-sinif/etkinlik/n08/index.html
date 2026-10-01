@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arabic Matching Game</title>
+  <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Amiri', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(45deg, #ffd89b 0%, #19547b 100%);
+            border-radius: 15px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .pen-icon {
+            width: 40px;
+            height: 40px;
+            fill: white;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .game-area {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .questions-column, .answers-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .question-item, .answer-item {
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .question-item {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 100%);
+            color: #2d3748;
+        }
+
+        .answer-item {
+            background: linear-gradient(45deg, #a8edea 0%, #fed6e3 100%);
+            color: #2d3748;
+        }
+
+        .question-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            border-color: #e53e3e;
+        }
+
+        .answer-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            border-color: #38a169;
+        }
+
+        .question-item.selected {
+            border-color: #e53e3e;
+            background: linear-gradient(45deg, #fc8181 0%, #f093fb 100%);
+            transform: scale(1.05);
+        }
+
+        .answer-item.matched {
+            border-color: #38a169;
+            background: linear-gradient(45deg, #68d391 0%, #4fd1c7 100%);
+            transform: scale(1.05);
+        }
+
+        .answer-item.correct {
+            border-color: #38a169;
+            background: linear-gradient(45deg, #68d391 0%, #4fd1c7 100%);
+            transform: scale(1.05);
+        }
+
+        .answer-item.incorrect {
+            border-color: #e53e3e;
+            background: linear-gradient(45deg, #fc8181 0%, #feb2b2 100%);
+            transform: scale(1.05);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(45deg, #68d391 0%, #4fd1c7 100%);
+            color: white;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(45deg, #fc8181 0%, #feb2b2 100%);
+            color: white;
+        }
+
+        .arrow-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .arrow {
+            position: absolute;
+            stroke-width: 2;
+            fill: none;
+            opacity: 0.9;
+        }
+
+        .drawing-path {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .question-item.selected {
+            border-color: #e53e3e;
+            background: linear-gradient(45deg, #fc8181 0%, #f093fb 100%);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(229, 62, 62, 0.5);
+        }
+
+        .reset-button {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .title {
+                font-size: 22px;
+                padding: 15px;
+            }
+            
+            .question-item, .answer-item {
+                font-size: 16px;
+                padding: 15px;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.absolute{position:absolute}.relative{position:relative}.block{display:block}.flex{display:flex}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.resize{resize:both}.border{border-width:1px}.drop-shadow{--tw-drop-shadow:drop-shadow(0 1px 2px rgba(0,0,0,.1)) drop-shadow(0 1px 1px rgba(0,0,0,.06))}.drop-shadow,.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}</style>
+ </head>
+ <body>
+  <div class="container">
+   <div class="title">
+    <svg class="pen-icon" viewbox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+    </svg> صِلْ بَيْنَ الْأَسْئِلَة وَالْأَجْوِبَة كَمَا فِي الْمِثَال.
+   </div>
+   <div class="game-area">
+    <div class="questions-column">
+     <div class="question-item" data-question="0">
+      مَا مِهْنَتُكَ؟
+     </div>
+     <div class="question-item" data-question="1">
+      أَيْنَ يَعْمَل الضَّابِط؟
+     </div>
+     <div class="question-item" data-question="2">
+      مَا مِهْنَةُ الْحَفِيد؟
+     </div>
+     <div class="question-item" data-question="3">
+      كَمْ عَمًّا لَكَ؟
+     </div>
+     <div class="question-item" data-question="4">
+      هَل الْحَفيدَة طَبّاخَة؟
+     </div>
+    </div>
+    <div class="answers-column">
+     <div class="answer-item" data-answer="2">
+      هُوَ بَيْطَرِيٌّ.
+     </div>
+     <div class="answer-item" data-answer="4">
+      لَا، الْحَفيدَة مُحَامِيَةٌ.
+     </div>
+     <div class="answer-item" data-answer="0">
+      أَنَا شُرْطِيٌّ.
+     </div>
+     <div class="answer-item" data-answer="3">
+      ثَلَاثَةٌ.
+     </div>
+     <div class="answer-item" data-answer="1">
+      يَعْمَل الضَّابِط فِي الْعَمَل.
+     </div>
+    </div>
+    <svg class="arrow-container"><defs>
+      <marker id="arrowhead0" markerwidth="8" markerheight="6" refx="7" refy="3" orient="auto">
+       <polygon points="0 0, 8 3, 0 6" fill="#e53e3e" />
+      </marker>
+      <marker id="arrowhead1" markerwidth="8" markerheight="6" refx="7" refy="3" orient="auto">
+       <polygon points="0 0, 8 3, 0 6" fill="#38a169" />
+      </marker>
+      <marker id="arrowhead2" markerwidth="8" markerheight="6" refx="7" refy="3" orient="auto">
+       <polygon points="0 0, 8 3, 0 6" fill="#3182ce" />
+      </marker>
+      <marker id="arrowhead3" markerwidth="8" markerheight="6" refx="7" refy="3" orient="auto">
+       <polygon points="0 0, 8 3, 0 6" fill="#d69e2e" />
+      </marker>
+      <marker id="arrowhead4" markerwidth="8" markerheight="6" refx="7" refy="3" orient="auto">
+       <polygon points="0 0, 8 3, 0 6" fill="#9f7aea" />
+      </marker>
+     </defs>
+    </svg>
+   </div>
+   <div class="feedback" id="feedback"></div>
+   <div class="reset-button"><button class="reset-btn" onclick="resetGame()">إِعادَة تَعْيين</button>
+   </div>
+  </div>
+  <script>
+        let selectedQuestion = null;
+        let connections = new Map();
+        
+        // Correct answers mapping
+        const correctAnswers = {
+            0: 0, // ما مِهْنَتُكَ؟ -> أَنا شُرْطِيّ
+            1: 1, // أَيْنَ يَعْمَلُ الضَّابِط؟ -> يَعْمَلُ الضَّابِط في الْعَمَل
+            2: 2, // ما مِهْنَةُ الْحَفيد؟ -> هُوَ بَيْطَرِيّ
+            3: 3, // كَمْ عَمَّا لَك؟ -> ثَلاَثَة
+            4: 4  // هَل الْحَفِيدَة طَبّاخَة؟ -> لا، الْحَفيدَة مُحامِيَة
+        };
+        
+        let isDrawing = false;
+        let currentPath = null;
+        let startElement = null;
+        
+        // Add mouse/touch listeners for drawing
+        document.addEventListener('mousedown', startDrawing);
+        document.addEventListener('mousemove', draw);
+        document.addEventListener('mouseup', endDrawing);
+        document.addEventListener('touchstart', startDrawing);
+        document.addEventListener('touchmove', draw);
+        document.addEventListener('touchend', endDrawing);
+        
+        function startDrawing(e) {
+            e.preventDefault();
+            const target = e.target.closest('.question-item, .answer-item');
+            if (!target) return;
+            
+            isDrawing = true;
+            startElement = target;
+            
+            // Highlight start element
+            target.classList.add('selected');
+            
+            // Create new path for drawing
+            const svg = document.querySelector('.arrow-container');
+            currentPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            currentPath.setAttribute('class', 'drawing-path');
+            currentPath.setAttribute('stroke', '#e53e3e');
+            currentPath.setAttribute('stroke-width', '3');
+            currentPath.setAttribute('fill', 'none');
+            currentPath.setAttribute('stroke-dasharray', '5,5');
+            
+            const svgRect = svg.getBoundingClientRect();
+            const targetRect = target.getBoundingClientRect();
+            
+            const startX = targetRect.right - svgRect.left;
+            const startY = targetRect.top + targetRect.height / 2 - svgRect.top;
+            
+            currentPath.setAttribute('d', `M ${startX} ${startY}`);
+            svg.appendChild(currentPath);
+        }
+        
+        function draw(e) {
+            if (!isDrawing || !currentPath) return;
+            e.preventDefault();
+            
+            const svg = document.querySelector('.arrow-container');
+            const svgRect = svg.getBoundingClientRect();
+            
+            let clientX, clientY;
+            if (e.type.includes('touch')) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            const currentX = clientX - svgRect.left;
+            const currentY = clientY - svgRect.top;
+            
+            const currentD = currentPath.getAttribute('d');
+            currentPath.setAttribute('d', currentD + ` L ${currentX} ${currentY}`);
+        }
+        
+        function endDrawing(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            
+            const target = e.target.closest('.question-item, .answer-item');
+            
+            // Remove drawing path
+            if (currentPath) {
+                currentPath.remove();
+                currentPath = null;
+            }
+            
+            // Check if we ended on a valid target
+            if (target && target !== startElement) {
+                handleConnection(startElement, target);
+            }
+            
+            // Clean up
+            document.querySelectorAll('.question-item, .answer-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            isDrawing = false;
+            startElement = null;
+        }
+        
+        function handleConnection(start, end) {
+            const isStartQuestion = start.classList.contains('question-item');
+            const isEndAnswer = end.classList.contains('answer-item');
+            
+            // Only allow question to answer connections
+            if (!isStartQuestion || !isEndAnswer) return;
+            
+            const questionIndex = parseInt(start.dataset.question);
+            const answerIndex = parseInt(end.dataset.answer);
+            
+            // Remove any existing connection from this question
+            removeConnectionFromQuestion(questionIndex);
+            
+            // Create new connection
+            connections.set(questionIndex, answerIndex);
+            
+            // Check if answer is correct
+            const isCorrect = correctAnswers[questionIndex] === answerIndex;
+            
+            // Mark answer with appropriate class
+            end.classList.add('matched');
+            if (isCorrect) {
+                end.classList.add('correct');
+                showFeedback(true);
+            } else {
+                end.classList.add('incorrect');
+                showFeedback(false);
+            }
+            
+            // Draw permanent arrow
+            drawArrow(questionIndex, answerIndex);
+        }
+        
+        function removeConnectionFromQuestion(questionIndex) {
+            if (connections.has(questionIndex)) {
+                const oldAnswerIndex = connections.get(questionIndex);
+                const oldAnswer = document.querySelector(`[data-answer="${oldAnswerIndex}"]`);
+                if (oldAnswer) {
+                    oldAnswer.classList.remove('matched', 'correct', 'incorrect');
+                }
+                
+                // Remove old arrow
+                const oldArrow = document.querySelector(`[data-connection="${questionIndex}-${oldAnswerIndex}"]`);
+                if (oldArrow) {
+                    oldArrow.remove();
+                }
+            }
+        }
+        
+        function showFeedback(isCorrect) {
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            
+            if (isCorrect) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = '✓ صَحيح! إِجابَة مُمْتازَة';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = '✗ خَطَأْ! حاوِل مَرَّةً أُخْرى';
+            }
+            
+            // Hide feedback after 3 seconds
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 3000);
+        }
+        
+        function drawArrow(questionIndex, answerIndex) {
+            const question = document.querySelector(`[data-question="${questionIndex}"]`);
+            const answer = document.querySelector(`[data-answer="${answerIndex}"]`);
+            const svg = document.querySelector('.arrow-container');
+            
+            const questionRect = question.getBoundingClientRect();
+            const answerRect = answer.getBoundingClientRect();
+            const svgRect = svg.getBoundingClientRect();
+            
+            // Calculate positions relative to SVG
+            const startX = questionRect.left - svgRect.left;
+            const startY = questionRect.top + questionRect.height / 2 - svgRect.top;
+            const endX = answerRect.right - svgRect.left;
+            const endY = answerRect.top + answerRect.height / 2 - svgRect.top;
+            
+            // Define colors for each question
+            const colors = ['#e53e3e', '#38a169', '#3182ce', '#d69e2e', '#9f7aea'];
+            
+            // Create arrow line
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', startX);
+            line.setAttribute('y1', startY);
+            line.setAttribute('x2', endX);
+            line.setAttribute('y2', endY);
+            line.setAttribute('class', 'arrow');
+            line.setAttribute('stroke', colors[questionIndex]);
+            line.setAttribute('marker-end', `url(#arrowhead${questionIndex})`);
+            line.setAttribute('data-connection', `${questionIndex}-${answerIndex}`);
+            
+            svg.appendChild(line);
+        }
+        
+        function resetGame() {
+            // Clear all connections
+            connections.clear();
+            
+            // Remove all visual indicators
+            document.querySelectorAll('.question-item').forEach(q => q.classList.remove('selected'));
+            document.querySelectorAll('.answer-item').forEach(a => a.classList.remove('matched', 'correct', 'incorrect'));
+            
+            // Remove all arrows
+            document.querySelectorAll('.arrow').forEach(arrow => arrow.remove());
+            
+            // Hide feedback
+            document.getElementById('feedback').style.display = 'none';
+            
+            selectedQuestion = null;
+        }
+        
+        // Redraw arrows on window resize
+        window.addEventListener('resize', function() {
+            const arrows = document.querySelectorAll('.arrow');
+            arrows.forEach(arrow => {
+                const connection = arrow.getAttribute('data-connection').split('-');
+                const questionIndex = parseInt(connection[0]);
+                const answerIndex = parseInt(connection[1]);
+                
+                arrow.remove();
+                drawArrow(questionIndex, answerIndex);
+            });
+        });
+    </script>
+ </body>
+</html>

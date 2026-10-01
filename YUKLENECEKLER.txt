@@ -2712,3 +2712,8 @@ doğru; telefonda kartlar yatay kayıyor, etiket okunuyor.
   Yedekler: _kaynak/yedekler/sinav_2026-09-30_cikti-oncesi.{js,css,html}
   Sürüm: sinav.js?v=8, sinav.css?v=9
   Denendi: 5 sınıf/ünite bileşimi, 390/768/1440 px, konsol hatasız.
+
+== 01.10.2026 — 6. sınıf Arapça (2026-2027) dijital kitap ==
+- kitap/6-sinif/ (yeni klasör, ~200 MB, en büyük dosya 28 MB): sayfa çevirmeli kitap (sağdan sola),
+  42 ses, 44 etkinlik, 4 video + 4 şarkı; QR'ların yerine SVG düğmeler; internetsiz çalışır; "İndir" ile flaş ZIP'i.
+- index.html: DERS_KITABI['6'] → 2026-2027 = kitap/6-sinif/index.html, 2025-2026 = portal (yedek: _kaynak/yedek/index-kitap6-oncesi-2026-10-01.html)

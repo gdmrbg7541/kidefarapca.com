@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ثلاثة اختيارات</title>
+
+<style>
+body{
+  margin:0;
+  font-family:"Scheherazade New","Amiri",serif;
+  background: linear-gradient(135deg,#fbc2eb,#a6c1ee);
+}
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:18px;
+}
+.instruction{
+  background:#ffffff;
+  border-radius:20px;
+  padding:16px;
+  font-size:28px;
+  text-align:center;
+  box-shadow:0 6px 15px rgba(0,0,0,0.15);
+  margin-bottom:18px;
+}
+.topbar{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+.btn{
+  font-family:"Scheherazade New","Amiri",serif;
+  font-size:22px;
+  padding:10px 20px;
+  border:none;
+  border-radius:14px;
+  background:#ffffff;
+  cursor:pointer;
+  box-shadow:0 6px 14px rgba(0,0,0,0.15);
+}
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
+}
+.card{
+  background:linear-gradient(180deg,#ffffff,#f1f5ff);
+  border-radius:22px;
+  padding:14px;
+  text-align:center;
+  box-shadow:0 8px 18px rgba(0,0,0,0.15);
+}
+.image-box img{
+  width:180px;
+  height:180px;
+  object-fit:contain;
+}
+.options{
+  text-align:right;
+  margin-top:10px;
+}
+.option{
+  background:#eef2ff;
+  border-radius:12px;
+  padding:10px 14px;
+  margin-bottom:10px;
+  font-size:24px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border:2px solid transparent;
+}
+.option input{
+  width:22px;
+  height:22px;
+  accent-color:#673ab7;
+}
+.is-correct{
+  background:#eaffea !important;
+  border-color:#2e7d32 !important;
+}
+.is-wrong{
+  background:#ffecec !important;
+  border-color:#c62828 !important;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="instruction">
+    ضَعْ عَلامَةَ ✔️ أَمامَ الْكَلِمَةِ الصَّحِيحَة حَسَبَ الصُّوَر.
+  </div>
+
+  <div class="topbar">
+    <button class="btn" id="checkBtn">تَحَقَّقْ</button>
+    <button class="btn" id="resetBtn">إِعادَة</button>
+  </div>
+
+  <div class="cards">
+
+    <!-- 1 -->
+    <div class="card">
+      <div class="image-box">
+        <img src="1.jpeg">
+      </div>
+      <div class="options">
+        <label class="option"><input type="checkbox" data-correct="true"> مِظَلَّة</label>
+        <label class="option"><input type="checkbox" data-correct="false"> قُبَّعَة</label>
+        <label class="option"><input type="checkbox" data-correct="false"> مُثْلِج</label>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="card">
+      <div class="image-box">
+        <img src="2.jpeg">
+      </div>
+      <div class="options">
+        <label class="option"><input type="checkbox" data-correct="false"> مُمْطِر</label>
+        <label class="option"><input type="checkbox" data-correct="false"> بُرْتُقالِيّ</label>
+        <label class="option"><input type="checkbox" data-correct="true"> قَميص</label>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="card">
+      <div class="image-box">
+        <img src="3.jpeg">
+      </div>
+      <div class="options">
+        <label class="option"><input type="checkbox" data-correct="false"> تَنّورَة</label>
+        <label class="option"><input type="checkbox" data-correct="true"> مُمْطِر</label>
+        <label class="option"><input type="checkbox" data-correct="false"> حِذاء</label>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="card">
+      <div class="image-box">
+        <img src="4.jpeg">
+      </div>
+      <div class="options">
+        <label class="option"><input type="checkbox" data-correct="false"> مَشْمِس</label>
+        <label class="option"><input type="checkbox" data-correct="false"> مِغْطَف</label>
+        <label class="option"><input type="checkbox" data-correct="true"> أَسْوَد</label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function clearColors(){
+  document.querySelectorAll(".option").forEach(o=>{
+    o.classList.remove("is-correct","is-wrong");
+  });
+}
+document.getElementById("checkBtn").onclick=function(){
+  clearColors();
+  document.querySelectorAll(".option").forEach(o=>{
+    var inp=o.querySelector("input");
+    if(inp.checked){
+      o.classList.add(inp.dataset.correct==="true"?"is-correct":"is-wrong");
+    }
+  });
+};
+document.getElementById("resetBtn").onclick=function(){
+  document.querySelectorAll("input").forEach(i=>i.checked=false);
+  clearColors();
+};
+</script>
+
+</body>
+</html>

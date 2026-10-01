@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="tr">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Arapça Kelime Sınıflandırma Oyunu</title>
+  <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 10px;
+            min-height: 100dvh;
+            direction: rtl;
+        
+            overflow: hidden;
+}
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100dvh - 20px);
+
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .title {
+            text-align: center;
+            color: #4a5568;
+            font-size: 2.1rem;
+            margin-bottom: 18px;
+            font-weight: bold;
+        }
+
+        .game-area {
+            display: flex;
+            justify-content: space-between;
+            gap: 28px;
+            margin-bottom: 18px;
+            align-items: flex-start;
+        }
+
+        .category {
+            flex: 1;
+            text-align: center;
+        }
+
+        .category-title {
+            font-size: 1.65rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 15px;
+            color: white;
+        }
+
+        .family-title {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        }
+
+        .profession-title {
+            background: linear-gradient(45deg, #4834d4, #686de0);
+        }
+
+        .tree-container {
+            position: relative;
+            margin: 12px auto;
+            width: 340px;
+            height: 360px;
+        }
+
+        .tree {
+            width: 100%;
+            height: 100%;
+        }
+
+        .family-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        
+        .family-cards{
+            position:absolute;
+            top:0; left:0;
+            width:100%; height:100%;
+            z-index:2;
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 10px;
+        }
+        .family-card{
+            background: rgba(255,255,255,0.18);
+            border: 2px solid rgba(255,255,255,0.25);
+            border-radius: 16px;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:flex-start;
+            padding: 7px 7px 9px;
+            backdrop-filter: blur(6px);
+        }
+        .family-photo{
+            width: 104px;
+            height: 104px;
+            border-radius: 16px;
+            object-fit: cover;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+            border: 2px solid rgba(255,255,255,0.55);
+        }
+        .family-card .drop-zone{
+            position: static;
+            width: 104px;
+            height: 34px;
+            margin-top: 7px;
+            font-size: 12px;
+        }
+
+        /* Tree zones become normal flow under photos */
+        .tree-zone-1, .tree-zone-2, .tree-zone-3, .tree-zone-4{ z-index:10; }
+
+        .drop-zone {
+            position: absolute;
+            width: 80px;
+            height: 40px;
+            border: 3px dashed #ff6b6b;
+            border-radius: 10px;
+            background: rgba(255, 107, 107, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.dragover {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: #e55039;
+            transform: scale(1.05);
+        }
+
+        .tree-zone-1{ z-index:10; }
+        .tree-zone-2{ z-index:10; }
+        .tree-zone-3{ z-index:10; }
+        .tree-zone-4{ z-index:10; }
+
+        .table-container {
+            height: 360px;
+
+            background: linear-gradient(45deg, #4834d4, #686de0);
+            border-radius: 15px;
+            padding: 16px;
+            margin: 12px auto;
+            width: 340px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profession-icons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .table-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .table-grid-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .table-zone {
+            width: 120px;
+            height: 50px;
+            border: 3px dashed #ffffff;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .table-zone.dragover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .words-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 14px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .word {
+            background: linear-gradient(45deg, #feca57, #ff9ff3);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 25px;
+            cursor: grab;
+            font-weight: bold;
+            font-size: 1.05rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .word:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .word.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .word.placed {
+            background: linear-gradient(45deg, #2ed573, #1e90ff);
+            cursor: default;
+        }
+
+        .success-message {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #2ed573;
+            font-weight: bold;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .success-message.show {
+            opacity: 1;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.static{position:static}.absolute{position:absolute}.relative{position:relative}.flex{display:flex}.grid{display:grid}.hidden{display:none}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.flex-wrap{flex-wrap:wrap}.border{border-width:1px}.blur{--tw-blur:blur(8px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-filter{-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.ease-in-out{transition-timing-function:cubic-bezier(.4,0,.2,1)}</style>
+ </head>
+ <body>
+  <div class="container">
+   <h1 class="title">🎯 لُعْبَة تَصْنيف الْكَلِمات الْعَرَبِيَّة</h1>
+   <div class="game-area"><!-- Aile Fertleri (Sağ taraf) -->
+    <div class="category">
+     <div class="category-title family-title">
+      اَلْأَقارِب
+     </div>
+     <div class="tree-container"><!-- Aile soy ağacı arka plan -->
+      <div class="family-cards" aria-label="Family cards">
+  <div class="family-card">
+    <img class="family-photo" src="v/03.png" alt="Dede" loading="lazy" />
+    <div class="drop-zone tree-zone-1" data-zone="1" data-category="family" data-accept="جَدّ">اِسْحَبْ هُنَا</div>
+  </div>
+
+  <div class="family-card">
+    <img class="family-photo" src="v/02.png" alt="Nine" loading="lazy" />
+    <div class="drop-zone tree-zone-2" data-zone="2" data-category="family" data-accept="جَدَّة">اِسْحَبْ هُنَا</div>
+  </div>
+
+  <div class="family-card">
+    <img class="family-photo" src="v/04.png" alt="Baba" loading="lazy" />
+    <div class="drop-zone tree-zone-3" data-zone="3" data-category="family" data-accept="والِد">اِسْحَبْ هُنَا</div>
+  </div>
+
+  <div class="family-card">
+    <img class="family-photo" src="v/01.jpg" alt="Anne" loading="lazy" />
+    <div class="drop-zone tree-zone-4" data-zone="4" data-category="family" data-accept="والِدَة">اِسْحَبْ هُنَا</div>
+  </div>
+</div>
+
+
+
+</div>
+    </div><!-- Meslekler (Sol taraf) -->
+    <div class="category">
+     <div class="category-title profession-title">
+      اَلْمِهَن
+     </div>
+     <div class="table-container"><!-- Meslek simgeleri arka plan -->
+      <svg class="profession-icons" viewbox="0 0 300 150"><!-- Büyük arka plan dairesi --> <circle cx="150" cy="75" r="70" fill="#4834d4" opacity="0.3" /> <circle cx="150" cy="75" r="50" fill="#686de0" opacity="0.4" /> <!-- Avukat - Terazi (sol üst) --> <g transform="translate(30, 15)">
+        <circle cx="25" cy="25" r="25" fill="#FFD700" stroke="#B8860B" stroke-width="4" opacity="0.9" />
+        <text x="25" y="33" text-anchor="middle" font-size="28" fill="white">
+         ⚖️
+        </text>
+       </g> <!-- Aşçı - Şef şapkası (sağ üst) --> <g transform="translate(215, 15)">
+        <circle cx="25" cy="25" r="25" fill="#FF6B6B" stroke="#E55039" stroke-width="4" opacity="0.9" />
+        <text x="25" y="33" text-anchor="middle" font-size="28" fill="white">
+         👨‍🍳
+        </text>
+       </g> <!-- Öğretmen - Kitap (sol alt) --> <g transform="translate(30, 100)">
+        <circle cx="25" cy="25" r="25" fill="#4ECDC4" stroke="#26D0CE" stroke-width="4" opacity="0.9" />
+        <text x="25" y="33" text-anchor="middle" font-size="28" fill="white">
+         👨‍🏫
+        </text>
+       </g> <!-- Emekli - Koltuk (sağ alt) --> <g transform="translate(215, 100)">
+        <circle cx="25" cy="25" r="25" fill="#95E1D3" stroke="#6C5CE7" stroke-width="4" opacity="0.9" />
+        <text x="25" y="33" text-anchor="middle" font-size="28" fill="white">
+         🪑
+        </text>
+       </g> <!-- Orta dekoratif simgeler --> <g transform="translate(130, 25)">
+        <circle cx="20" cy="20" r="18" fill="#FFA726" opacity="0.7" />
+        <text x="20" y="27" text-anchor="middle" font-size="20" fill="white">
+         📝
+        </text>
+       </g> <g transform="translate(130, 105)">
+        <circle cx="20" cy="20" r="18" fill="#E1BEE7" opacity="0.7" />
+        <text x="20" y="27" text-anchor="middle" font-size="20" fill="white">
+         💼
+        </text>
+       </g> <g transform="translate(80, 65)">
+        <circle cx="15" cy="15" r="15" fill="#FFCDD2" opacity="0.7" />
+        <text x="15" y="21" text-anchor="middle" font-size="18" fill="white">
+         📚
+        </text>
+       </g> <g transform="translate(190, 65)">
+        <circle cx="15" cy="15" r="15" fill="#C8E6C9" opacity="0.7" />
+        <text x="15" y="21" text-anchor="middle" font-size="18" fill="white">
+         🏢
+        </text>
+       </g>
+      </svg>
+      <div class="table-grid-vertical">
+       <div class="table-zone" data-category="profession">
+        اِسْحَبْ هُنَا
+       </div>
+       <div class="table-zone" data-category="profession">
+        اِسْحَبْ هُنَا
+       </div>
+       <div class="table-zone" data-category="profession">
+        اِسْحَبْ هُنَا
+       </div>
+       <div class="table-zone" data-category="profession">
+        اِسْحَبْ هُنَا
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Kelimeler -->
+   <div class="words-container">
+    <div class="word" draggable="true" data-category="family" data-word="والِد">
+     والِد
+    </div>
+    <div class="word" draggable="true" data-category="profession" data-word="مُحامِيَة">
+     مُحامِيَة
+    </div>
+    <div class="word" draggable="true" data-category="family" data-word="جَدَّة">
+     جَدَّة
+    </div>
+    <div class="word" draggable="true" data-category="profession" data-word="طَبّاخ">
+     طَبّاخ
+    </div>
+    <div class="word" draggable="true" data-category="family" data-word="جَدّ">
+     جَدّ
+    </div>
+    <div class="word" draggable="true" data-category="profession" data-word="مُعَلِّم">
+     مُعَلِّم
+    </div>
+    <div class="word" draggable="true" data-category="family" data-word="والِدَة">
+     والِدَة
+    </div>
+    <div class="word" draggable="true" data-category="profession" data-word="مُتَقاعِدَة">
+     مُتَقاعِدَة
+    </div>
+   </div>
+   <div class="success-message" id="successMessage">
+    🎉 أَحْسَنْت! لَقَدْ صَنَّفْت جَميع الْكَلِمات بِشَكْلٍ صَحيحٍ! 🎉
+   </div>
+  </div>
+  <script>
+        let draggedElement = null;
+        let correctPlacements = 0;
+        const totalWords = 8;
+
+        // Drag başlangıcı
+        document.querySelectorAll('.word').forEach(word => {
+            word.addEventListener('dragstart', (e) => {
+                draggedElement = e.target;
+                e.target.classList.add('dragging');
+            });
+
+            word.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+            });
+        });
+
+        // Drop zone olayları
+        document.querySelectorAll('.drop-zone, .table-zone').forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('dragover');
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('dragover');
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+
+                if (draggedElement && zone.children.length === 0) {
+                    const wordCategory = draggedElement.dataset.category;
+                    const zoneCategory = zone.dataset.category;
+                    const wordValue = (draggedElement.dataset.word || draggedElement.textContent).trim();
+                    const zoneAccept = (zone.dataset.accept || '').trim();
+                    const isCorrectMatch = zoneAccept ? (wordValue === zoneAccept) : (wordCategory === zoneCategory);
+
+                    if (isCorrectMatch) {
+                        // Doğru yerleştirme
+                        const wordText = draggedElement.textContent;
+                        zone.textContent = wordText;
+                        zone.style.background = 'linear-gradient(45deg, #2ed573, #1e90ff)';
+                        zone.style.color = 'white';
+                        zone.style.border = '3px solid #2ed573';
+                        
+                        draggedElement.classList.add('placed');
+                        draggedElement.style.display = 'none';
+                        
+                        correctPlacements++;
+                        
+                        // Tüm kelimeler doğru yerleştirildi mi?
+                        if (correctPlacements === totalWords) {
+                            setTimeout(() => {
+                                document.getElementById('successMessage').classList.add('show');
+                            }, 500);
+                        }
+                    } else {
+                        // Yanlış yerleştirme - animasyon
+                        draggedElement.style.animation = 'shake 0.5s ease-in-out';
+                        setTimeout(() => {
+                            draggedElement.style.animation = '';
+                        }, 500);
+                    }
+                }
+                draggedElement = null;
+            });
+        });
+
+        // Shake animasyonu için CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+ </body>
+</html>

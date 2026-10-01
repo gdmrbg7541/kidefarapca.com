@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>الألوان – لعبة اختيار</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;           /* Yükseklik: minimum 1 ekran */
+      width: 100vw;
+      overflow-x: hidden;          /* Yatay taşma yok */
+      overflow-y: auto;            /* Dikey kaydırma serbest */
+      display: flex;
+      align-items: flex-start;     /* Sayfa yukarıdan başlasın */
+      justify-content: center;
+      font-family: "Arakom", "Amiri", "Scheherazade New", serif;
+
+      background:
+        radial-gradient(circle at 0% 0%, #ffe4e6 0, transparent 55%),
+        radial-gradient(circle at 100% 0%, #e0f2fe 0, transparent 55%),
+        radial-gradient(circle at 0% 100%, #dcfce7 0, transparent 55%),
+        radial-gradient(circle at 100% 100%, #fef9c3 0, transparent 55%),
+        linear-gradient(135deg, #fecaca, #fed7aa, #bbf7d0, #bfdbfe, #e9d5ff);
+      background-size: 220% 220%;
+      animation: bgMove 14s ease-in-out infinite;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .page {
+      width: 95vw;
+      max-width: 950px;
+      min-height: 90vh;            /* Artık sabit değil, esnek */
+      padding: 20px 32px;
+      margin: 16px auto;
+      border-radius: 28px;
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(15,23,42,0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+      overflow: visible;           /* İçerik kesilmesin */
+    }
+
+    .page::before,
+    .page::after {
+      content: "";
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      height: 4px;
+      border-radius: 999px;
+    }
+
+    .page::before {
+      top: 10px;
+      background: linear-gradient(90deg,#f97373,#fb923c,#facc15,#22c55e,#38bdf8,#a855f7);
+    }
+
+    .page::after {
+      bottom: 10px;
+      background: linear-gradient(90deg,#a855f7,#38bdf8,#22c55e,#facc15,#fb923c,#f97373);
+    }
+
+    .instruction-box {
+      border: 3px solid #facc15;
+      border-radius: 24px;
+      padding: 12px 24px;
+      font-size: 2.1rem;
+      text-align: center;
+      color: #7c2d12;
+      background: linear-gradient(135deg,#fff7ed,#fef9c3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      position: relative;
+      z-index: 1;
+    }
+
+    .words-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px 24px;
+      align-items: center;
+      justify-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .word-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .word-card {
+      position: relative;
+      min-width: 140px;
+      padding: 10px 24px 12px;
+      border-radius: 24px;
+      text-align: center;
+      font-size: 2rem;
+      color: #0f172a;
+      font-weight: 700;
+      box-shadow: 0 6px 14px rgba(15,23,42,0.18);
+      transition: transform 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .word-item:hover .word-card {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 10px 24px rgba(15,23,42,0.22);
+    }
+
+    .word-item:nth-child(1)  .word-card { background: linear-gradient(135deg,#fee2e2,#fecaca); }
+    .word-item:nth-child(2)  .word-card { background: linear-gradient(135deg,#fecaca,#fed7aa); }
+    .word-item:nth-child(3)  .word-card { background: linear-gradient(135deg,#bfdbfe,#e0f2fe); }
+    .word-item:nth-child(4)  .word-card { background: linear-gradient(135deg,#e9d5ff,#fbcfe8); }
+
+    .word-item:nth-child(5)  .word-card { background: linear-gradient(135deg,#dcfce7,#bbf7d0); }
+    .word-item:nth-child(6)  .word-card { background: linear-gradient(135deg,#fee2e2,#fef3c7); }
+    .word-item:nth-child(7)  .word-card { background: linear-gradient(135deg,#e0f2fe,#ddd6fe); }
+    .word-item:nth-child(8)  .word-card { background: linear-gradient(135deg,#ffedd5,#fbcfe8); }
+
+    .word-item:nth-child(9)  .word-card { background: linear-gradient(135deg,#ddd6fe,#bfdbfe); }
+    .word-item:nth-child(10) .word-card { background: linear-gradient(135deg,#fef3c7,#bbf7d0); }
+    .word-item:nth-child(11) .word-card { background: linear-gradient(135deg,#fee2e2,#fbcfe8); }
+    .word-item:nth-child(12) .word-card { background: linear-gradient(135deg,#e0f2fe,#fef9c3); }
+
+    .word-item:nth-child(13) .word-card { background: linear-gradient(135deg,#bbf7d0,#fef3c7); }
+    .word-item:nth-child(14) .word-card { background: linear-gradient(135deg,#fbcfe8,#fecaca); }
+    .word-item:nth-child(15) .word-card { background: linear-gradient(135deg,#e0f2fe,#cffafe); }
+    .word-item:nth-child(16) .word-card { background: linear-gradient(135deg,#fef3c7,#fed7aa); }
+
+    /* değerlendirme renkleri */
+    .correct { box-shadow: 0 0 0 4px #22c55e inset !important; }
+    .wrong { box-shadow: 0 0 0 4px #ef4444 inset !important; }
+
+    /* Buton alanı */
+    .buttons-box {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 16px;
+      margin-top: 8px;
+    }
+
+    .game-btn {
+      padding: 10px 32px;
+      font-size: 1.6rem;
+      font-weight: 700;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+      touch-action: manipulation;
+    }
+
+    .check-btn { background: linear-gradient(135deg,#4ade80,#22c55e); }
+    .retry-btn { background: linear-gradient(135deg,#fb7185,#f43f5e); }
+
+    /* checkbox tasarımı */
+    .choice {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 3px solid #94a3b8;
+      background: #f8fafc;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+      position: relative;
+      box-shadow: 0 2px 4px rgba(15,23,42,0.15);
+      transition: 0.15s ease;
+      touch-action: manipulation;
+    }
+
+    .choice::before {
+      content: "✔";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #ffffff;
+      transform: scale(0);
+      transition: transform 0.12s ease-out;
+    }
+
+    .choice:checked {
+      background: linear-gradient(135deg,#38bdf8,#6366f1);
+      border-color: #4f46e5;
+      box-shadow: 0 3px 8px rgba(37,99,235,0.4);
+    }
+
+    .choice:checked::before {
+      transform: scale(1);
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        padding: 16px 14px;
+        gap: 16px;
+      }
+
+      .instruction-box {
+        font-size: 1.6rem;
+        padding: 10px 16px;
+      }
+
+      .words-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px 16px;
+      }
+
+      .word-card {
+        min-width: 120px;
+        font-size: 1.7rem;
+        padding: 8px 16px 10px;
+      }
+
+      .game-btn {
+        font-size: 1.4rem;
+        padding: 8px 20px;
+      }
+
+      .choice {
+        width: 26px;
+        height: 26px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <div class="instruction-box">
+      <span class="number">٤-</span>
+      اِقْرَأ الْكَلِمات وَضَعْ ✔ تَحْتَ الْأَلْوان.
+    </div>
+
+    <div class="words-grid">
+
+      <!-- Renkli kelimeler: class="color" -->
+      <div class="word-item"><div class="word-card">حارّ</div><input type="checkbox" class="choice"></div>
+      <div class="word-item"><div class="word-card">حَمْراء</div><input type="checkbox" class="choice color"></div>
+      <div class="word-item"><div class="word-card">مُشْمِس</div><input type="checkbox" class="choice"></div>
+      <div class="word-item"><div class="word-card">بَنَفْسَجِيّ</div><input type="checkbox" class="choice color"></div>
+
+      <div class="word-item"><div class="word-card">أَخْضَر</div><input type="checkbox" class="choice color"></div>
+      <div class="word-item"><div class="word-card">كَيْف</div><input type="checkbox" class="choice"></div>
+      <div class="word-item"><div class="word-card">جَوّ</div><input type="checkbox" class="choice"></div>
+      <div class="word-item"><div class="word-card">بُرْتُقالِيّ</div><input type="checkbox" class="choice color"></div>
+
+      <div class="word-item"><div class="word-card">لَيْل</div><input type="checkbox" class="choice"></div>
+      <div class="word-item"><div class="word-card">مُعْتَدِل</div><input type="checkbox" class="choice"></div>
+      <div class="word-item"><div class="word-card">أَبْيَض</div><input type="checkbox" class="choice color"></div>
+      <div class="word-item"><div class="word-card">شِبْشِب</div><input type="checkbox" class="choice"></div>
+
+      <div class="word-item"><div class="word-card">مُشْمِس</div><input type="checkbox" class="choice"></div>
+      <div class="word-item"><div class="word-card">بَيْضاء</div><input type="checkbox" class="choice color"></div>
+      <div class="word-item"><div class="word-card">مُثْلِج</div><input type="checkbox" class="choice"></div>
+      <div class="word-item"><div class="word-card">بُنِّيّ</div><input type="checkbox" class="choice color"></div>
+
+    </div>
+
+    <div class="buttons-box">
+      <button type="button" class="game-btn check-btn" onclick="checkAnswers()">تَحَقَّقْ</button>
+      <button type="button" class="game-btn retry-btn" onclick="retry()">حاوِلْ مَرَّةً أُخْرى</button>
+    </div>
+
+  </div>
+
+  <script>
+    function checkAnswers() {
+      document.querySelectorAll(".word-item").forEach(item => {
+        const card = item.querySelector(".word-card");
+        const check = item.querySelector("input.choice");
+
+        card.classList.remove("correct","wrong");
+
+        const isColor = check.classList.contains("color");
+
+        if (check.checked && isColor) {
+          card.classList.add("correct");
+        } else if (check.checked && !isColor) {
+          card.classList.add("wrong");
+        }
+      });
+    }
+
+    function retry() {
+      document.querySelectorAll(".choice").forEach(c => c.checked = false);
+      document.querySelectorAll(".word-card").forEach(c => c.classList.remove("correct","wrong"));
+    }
+
+    // Mobilde tıklama kaçmasın diye ekstra
+    document.addEventListener("DOMContentLoaded", () => {
+      const checkBtn = document.querySelector(".check-btn");
+      const retryBtn = document.querySelector(".retry-btn");
+
+      if (checkBtn) {
+        checkBtn.addEventListener("click", () => { checkAnswers(); });
+        checkBtn.addEventListener("touchend", (e) => { e.preventDefault(); checkAnswers(); });
+      }
+
+      if (retryBtn) {
+        retryBtn.addEventListener("click", () => { retry(); });
+        retryBtn.addEventListener("touchend", (e) => { e.preventDefault(); retry(); });
+      }
+    });
+  </script>
+
+</body>
+</html>

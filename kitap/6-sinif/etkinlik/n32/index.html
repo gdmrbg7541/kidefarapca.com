@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arabic Word Selection Game</title>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Arakom', 'Amiri', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 100%);
+            min-height: 100%;
+            direction: rtl;
+        }
+
+        .worksheet-container {
+            max-width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #ec4899;
+        }
+
+        .main-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #be185d;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(190, 24, 93, 0.1);
+        }
+
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .game-instructions {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .question-item {
+            background: linear-gradient(135deg, #fce7f3 0%, #f3e8ff 100%);
+            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 20px;
+            border: 3px solid #ec4899;
+            box-shadow: 0 8px 25px rgba(236, 72, 153, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .question-item.completed {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border-color: #10b981;
+            transform: scale(1.02);
+        }
+
+        .question-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sentence-part {
+            font-size: 36px;
+            font-weight: bold;
+            color: #be185d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        /* 🔹 BIRAKMA ÇERÇEVESİ GENİŞLETİLMİŞ HALİ */
+        .answer-slot {
+            display: inline-block;
+            min-width: 200px;     /* EN BÜYÜTÜLDÜ */
+            height: 50px;         /* BOY BİRAZ RAHAT */
+            background: white;
+            border: 3px dashed #ec4899;
+            border-radius: 15px;
+            text-align: center;
+            line-height: 46px;    /* Yazı tam ortalansın */
+            font-weight: bold;
+            font-size: 30px;
+            color: #be185d;
+            transition: all 0.3s ease;
+            padding: 0 10px;
+            white-space: nowrap;  /* Kelime alt satıra inmesin */
+            overflow: hidden;     /* Taşma olmasın */
+            animation: bounce 1s infinite;
+        }
+
+        .answer-slot.filled {
+            background: linear-gradient(135deg, #ffe4f3 0%, #fdf2f8 100%);
+            color: #be185d;
+            border-color: #ec4899;
+            animation: none;
+            transform: scale(1.02);
+        }
+
+        /* Son kontrol sonrası doğru/yanlış rengi */
+        .answer-slot.correct-final {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .answer-slot.incorrect-final {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .options-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .option-button {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+            transform: translateY(0);
+        }
+
+        .option-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+            background: linear-gradient(135deg, #9333ea 0%, #6b21a8 100%);
+        }
+
+        .option-button:active {
+            transform: translateY(0);
+        }
+
+        /* Öğrencinin seçtiği ama henüz kontrol edilmemiş cevap */
+        .option-button.selected-option {
+            outline: 3px solid #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.4);
+        }
+
+        /* Kontrol SONRASI doğru/yanlış */
+        .option-button.correct {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            animation: correctAnswer 0.6s ease;
+        }
+
+        .option-button.incorrect {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            animation: incorrectAnswer 0.6s ease;
+        }
+
+        .option-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @keyframes correctAnswer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectAnswer {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .feedback-message {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-message.show {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .feedback-message.correct {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            color: #059669;
+            border: 2px solid #10b981;
+        }
+
+        .feedback-message.incorrect {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #dc2626;
+            border: 2px solid #ef4444;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 25px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+            transition: all 0.5s ease;
+        }
+
+        .celebration.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .reset-button {
+            margin-left: 20px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+
+        .check-button {
+            margin-left: 20px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .check-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .worksheet-container {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: none;
+                min-height: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .question-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .sentence-part {
+                min-width: auto;
+                justify-content: center;
+            }
+            
+            .worksheet-container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .main-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.flex{display:flex}.hidden{display:none}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.flex-wrap{flex-wrap:wrap}.border{border-width:1px}.outline{outline-style:solid}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}</style>
+ </head>
+ <body>
+  <div class="worksheet-container">
+   <header class="header">
+    <h1 class="main-title" id="mainTitle">أَكْمِل الْجُمَل بِالْكَلِمَةِ الْمُناسِبَة.</h1>
+   </header>
+   <div class="content-area">
+    <div class="score-display">
+      <span>اَلنَّتيجَة: </span>
+      <span id="score">0</span>
+      <span> / 6</span>
+      <span style="margin-left: 20px;">⭐</span>
+      <button class="check-button" onclick="checkAllAnswers()">✅ تَحَقَّقْ مِنَ الْإِجابات</button>
+      <button class="reset-button" onclick="resetGame()">🔄 اِلْعَبْ مَرَّةً أُخْرى</button>
+    </div>
+
+    <div class="question-item" data-question="0">
+     <div class="question-content">
+      <div class="sentence-part">
+       ١. هَذِهِ أُخْتي وَهِيَ <span class="answer-slot" id="answer-0"></span>
+      </div>
+      <div class="options-container">
+        <button class="option-button" onclick="selectAnswer(0, 'سَعيدَة', true)">سَعيدَة</button>
+        <button class="option-button" onclick="selectAnswer(0, 'سَعيد', false)">سَعيد</button>
+      </div>
+     </div>
+     <div class="feedback-message" id="feedback-0"></div>
+    </div>
+
+    <div class="question-item" data-question="1">
+     <div class="question-content">
+      <div class="sentence-part">
+       ٢. هَذا أَبي وَهُوَ <span class="answer-slot" id="answer-1"></span>
+      </div>
+      <div class="options-container">
+        <button class="option-button" onclick="selectAnswer(1, 'حَزين', true)">حَزين</button>
+        <button class="option-button" onclick="selectAnswer(1, 'حَزينَة', false)">حَزينَة</button>
+      </div>
+     </div>
+     <div class="feedback-message" id="feedback-1"></div>
+    </div>
+
+    <div class="question-item" data-question="2">
+     <div class="question-content">
+      <div class="sentence-part">
+       ٣. هَذِهِ مُعَلِّمَتي وَهِيَ <span class="answer-slot" id="answer-2"></span>
+      </div>
+      <div class="options-container">
+        <button class="option-button" onclick="selectAnswer(2, 'مُمِلّ', false)">مُمِلّ</button>
+        <button class="option-button" onclick="selectAnswer(2, 'مُمِلَّة', true)">مُمِلَّة</button>
+      </div>
+     </div>
+     <div class="feedback-message" id="feedback-2"></div>
+    </div>
+
+    <div class="question-item" data-question="3">
+     <div class="question-content">
+      <div class="sentence-part">
+       ٤. هَذا صَديقي وَهُوَ <span class="answer-slot" id="answer-3"></span>
+      </div>
+      <div class="options-container">
+        <button class="option-button" onclick="selectAnswer(3, 'مُتْعَبَة', false)">مُتْعَبَة</button>
+        <button class="option-button" onclick="selectAnswer(3, 'مُتْعَب', true)">مُتْعَب</button>
+      </div>
+     </div>
+     <div class="feedback-message" id="feedback-3"></div>
+    </div>
+
+    <div class="question-item" data-question="4">
+     <div class="question-content">
+      <div class="sentence-part">
+       ٥. هَذِهِ جَدَّتي وَهِيَ <span class="answer-slot" id="answer-4"></span>
+      </div>
+      <div class="options-container">
+        <button class="option-button" onclick="selectAnswer(4, 'قَلِقَة', true)">قَلِقَة</button>
+        <button class="option-button" onclick="selectAnswer(4, 'قَلِق', false)">قَلِق</button>
+      </div>
+     </div>
+     <div class="feedback-message" id="feedback-4"></div>
+    </div>
+
+    <div class="question-item" data-question="5">
+     <div class="question-content">
+      <div class="sentence-part">
+       ٦. هَذا جَدّي وَهُوَ <span class="answer-slot" id="answer-5"></span>
+      </div>
+      <div class="options-container">
+        <button class="option-button" onclick="selectAnswer(5, 'مُتَهَيِّج', true)">مُتَهَيِّج</button>
+        <button class="option-button" onclick="selectAnswer(5, 'مُتَهَيِّجَة', false)">مُتَهَيِّجَة</button>
+      </div>
+     </div>
+     <div class="feedback-message" id="feedback-5"></div>
+    </div>
+   </div>
+
+   <div class="celebration" id="celebration">
+    🎉 مَبْروك! لَقَدْ أَكْمَلْت جَميع الْأَسْئِلَة بِشَكْلٍ صَحيح! 🎉
+   </div>
+  </div>
+
+  <script>
+        const defaultConfig = {
+            main_title: "أَكْمِل الْجُمَل بِالْكَلِمَةِ الْمُناسِبَة.",
+            game_instruction: "🎯 اقرأ الجملة ثم اختر الكلمة الصحيحة",
+            primary_color: "#ec4899",
+            secondary_color: "#a855f7",
+            background_color: "#fdf2f8",
+            text_color: "#be185d",
+            accent_color: "#7c3aed"
+        };
+
+        let score = 0;
+        // Öğrencinin seçtiği cevaplar (sadece hafızada tutulacak)
+        const selections = {};
+        const correctAnswersMap = {
+            0: 'سَعيدَة',
+            1: 'حَزين',
+            2: 'مُمِلَّة',
+            3: 'مُتْعَب',
+            4: 'قَلِقَة',
+            5: 'مُتَهَيِّج'
+        };
+
+        function selectAnswer(questionIndex, selectedWord, isCorrect) {
+            const answerSlot = document.getElementById(`answer-${questionIndex}`);
+            const questionItem = document.querySelector(`[data-question="${questionIndex}"]`);
+            const buttons = questionItem.querySelectorAll('.option-button');
+
+            // Boşluğa kelimeyi yaz
+            answerSlot.textContent = selectedWord;
+            answerSlot.classList.add('filled');
+            answerSlot.classList.remove('correct-final', 'incorrect-final');
+
+            // Önceki buton vurgularını temizle
+            buttons.forEach(btn => {
+                btn.classList.remove('selected-option', 'correct', 'incorrect');
+            });
+
+            // Seçilen butonu hafifçe vurgula
+            buttons.forEach(btn => {
+                if (btn.textContent === selectedWord) {
+                    btn.classList.add('selected-option');
+                }
+            });
+
+            // Öğrencinin seçimini kaydet
+            selections[questionIndex] = selectedWord;
+        }
+
+        function checkAllAnswers() {
+            score = 0;
+
+            for (let i = 0; i < 6; i++) {
+                const answerSlot = document.getElementById(`answer-${i}`);
+                const questionItem = document.querySelector(`[data-question="${i}"]`);
+                const buttons = questionItem.querySelectorAll('.option-button');
+                const selected = selections[i];
+
+                // Eski durumları temizle
+                buttons.forEach(btn => {
+                    btn.classList.remove('correct', 'incorrect');
+                });
+                questionItem.classList.remove('completed');
+                answerSlot.classList.remove('correct-final', 'incorrect-final');
+
+                if (selected) {
+                    if (selected === correctAnswersMap[i]) {
+                        score++;
+                        questionItem.classList.add('completed');
+                        answerSlot.classList.add('correct-final');
+
+                        buttons.forEach(btn => {
+                            if (btn.textContent === selected) {
+                                btn.classList.add('correct');
+                            }
+                        });
+                    } else {
+                        answerSlot.classList.add('incorrect-final');
+                        buttons.forEach(btn => {
+                            if (btn.textContent === selected) {
+                                btn.classList.add('incorrect');
+                            }
+                        });
+                    }
+                }
+            }
+
+            document.getElementById('score').textContent = score;
+
+            if (score === 6) {
+                showCelebration();
+            }
+        }
+
+        function showCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.classList.add('show');
+            createConfetti();
+            setTimeout(() => {
+                celebration.classList.remove('show');
+            }, 4000);
+        }
+
+        function createConfetti() {
+            const colors = ['#ec4899', '#a855f7', '#fbbf24', '#10b981', '#3b82f6'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.zIndex = '9999';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.animation = 'fall 3s linear forwards';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 100);
+            }
+        }
+
+        function resetGame() {
+            score = 0;
+            document.getElementById('score').textContent = '0';
+
+            for (let i = 0; i < 6; i++) {
+                const answerSlot = document.getElementById(`answer-${i}`);
+                const feedbackElement = document.getElementById(`feedback-${i}`);
+                const questionItem = document.querySelector(`[data-question="${i}"]`);
+                const buttons = questionItem.querySelectorAll('.option-button');
+
+                answerSlot.textContent = '';
+                answerSlot.classList.remove('filled', 'correct-final', 'incorrect-final');
+
+                if (feedbackElement) {
+                    feedbackElement.classList.remove('show', 'correct', 'incorrect');
+                    feedbackElement.textContent = '';
+                }
+
+                questionItem.classList.remove('completed');
+
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('correct', 'incorrect', 'selected-option');
+                });
+
+                selections[i] = undefined;
+            }
+
+            const celebration = document.getElementById('celebration');
+            celebration.classList.remove('show');
+        }
+
+        async function onConfigChange(config) {
+            const mainTitle = document.getElementById('mainTitle');
+            const gameInstructions = document.getElementById('gameInstructions');
+            
+            if (mainTitle) {
+                mainTitle.textContent = config.main_title || defaultConfig.main_title;
+                mainTitle.style.color = config.text_color || defaultConfig.text_color;
+            }
+            
+            if (gameInstructions) {
+                gameInstructions.textContent = config.game_instruction || defaultConfig.game_instruction;
+            }
+
+            const primaryColor = config.primary_color || defaultConfig.primary_color;
+            const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const accentColor = config.accent_color || defaultConfig.accent_color;
+
+            document.documentElement.style.setProperty('--primary-color', primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+            document.documentElement.style.setProperty('--text-color', textColor);
+            document.documentElement.style.setProperty('--accent-color', accentColor);
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.primary_color || defaultConfig.primary_color,
+                        set: (value) => {
+                            config.primary_color = value;
+                            window.elementSdk.setConfig({ primary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.secondary_color || defaultConfig.secondary_color,
+                        set: (value) => {
+                            config.secondary_color = value;
+                            window.elementSdk.setConfig({ secondary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.accent_color || defaultConfig.accent_color,
+                        set: (value) => {
+                            config.accent_color = value;
+                            window.elementSdk.setConfig({ accent_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_title", config.main_title || defaultConfig.main_title],
+                ["game_instruction", config.game_instruction || defaultConfig.game_instruction]
+            ]);
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+ </body>
+</html>

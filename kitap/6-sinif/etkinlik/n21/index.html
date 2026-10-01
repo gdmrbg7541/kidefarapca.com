@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حوار — سحب وإفلات</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #f0f8ff 50%, #fff8f0 100%);
+            height: 100%;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px 8px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        .instruction {
+            font-size: 2.5rem;
+            color: #4a5568;
+            margin: 0;
+            opacity: 0.9;
+            line-height: 1.4;
+            font-weight: 600;
+        }
+
+        .feedback-area {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .feedback-message {
+            background: linear-gradient(135deg, #68d391 0%, #38b2ac 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 2.2s forwards;
+            margin-bottom: 10px;
+        }
+
+        .feedback-message.wrong {
+            background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .chips-area {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+
+        .chip {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #2d3748;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            cursor: grab;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 2px solid rgba(255,255,255,0.4);
+            white-space: nowrap;
+            touch-action: none;
+        }
+
+        .chip:nth-child(1) { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        .chip:nth-child(2) { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .chip:nth-child(3) { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+        .chip:nth-child(4) { background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); }
+        .chip:nth-child(5) { background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); }
+        .chip:nth-child(6) { background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%); }
+        .chip:nth-child(7) { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+
+        .chip:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+        }
+
+        .chip:active {
+            cursor: grabbing;
+        }
+
+        .chip.dragging {
+            opacity: 0.8;
+            transform: rotate(3deg) scale(1.05);
+            z-index: 1000;
+        }
+
+        .dialogue-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 0 8px;
+            overflow-y: auto;
+            min-height: 0;
+        }
+
+        .dialogue-line {
+            display: flex;
+            margin-bottom: 6px;
+            width: 100%;
+        }
+
+        .dialogue-line.saleh {
+            justify-content: center;
+        }
+
+        .dialogue-line.ali {
+            justify-content: center;
+        }
+
+        .dialogue-bubble {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            font-size: 1.9rem;
+            color: #2d3748;
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .dialogue-line.saleh .dialogue-bubble {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        }
+
+        .dialogue-line.ali .dialogue-bubble {
+            background: linear-gradient(135deg, #f1f8e9 0%, #fff3e0 100%);
+        }
+
+        .speaker-name {
+            font-weight: 600;
+            color: #4a5568;
+            margin-left: 8px;
+        }
+
+        .drop-zone {
+            display: inline-block;
+            min-width: 120px;
+            height: 50px;
+            border: 3px dashed #cbd5e0;
+            border-radius: 15px;
+            margin: 0 6px;
+            vertical-align: middle;
+            position: relative;
+            transition: all 0.3s ease;
+            text-align: center;
+            line-height: 44px;
+            font-size: 1.8rem;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #4299e1;
+            background-color: rgba(66, 153, 225, 0.1);
+            transform: scale(1.05);
+        }
+
+        .drop-zone.filled {
+            border: 2px solid transparent;
+            background: linear-gradient(135deg, #68d391 0%, #38b2ac 100%);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 0 20px rgba(104, 211, 145, 0.4);
+            animation: glowOnce 0.6s ease-out;
+        }
+
+        @keyframes glowOnce {
+            0% { box-shadow: 0 0 5px rgba(104, 211, 145, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(104, 211, 145, 0.6); }
+            100% { box-shadow: 0 0 20px rgba(104, 211, 145, 0.4); }
+        }
+
+        .restart-btn {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            transition: transform 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.fixed{position:fixed}.relative{position:relative}.flex{display:flex}.hidden{display:none}.flex-shrink{flex-shrink:1}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.flex-wrap{flex-wrap:wrap}.border{border-width:1px}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.ease-in{transition-timing-function:cubic-bezier(.4,0,1,1)}</style>
+ </head>
+ <body>
+  <div class="container">
+   <div class="title-section">
+    <p class="instruction">اَكْمِل الْحِوار مُسْتَعينًا بِالْكَلِماتِ الْآتِيَة</p>
+   </div>
+   <div class="chips-area" id="chips-area">
+    <div class="chip" draggable="true" data-word="قَلَم">
+     قَلَم
+    </div>
+    <div class="chip" draggable="true" data-word="طالِب">
+     طالِب
+    </div>
+    <div class="chip" draggable="true" data-word="السّادِس">
+     السّادِس
+    </div>
+    <div class="chip" draggable="true" data-word="فَوْقَ">
+     فَوْقَ
+    </div>
+    <div class="chip" draggable="true" data-word="الْمَقْصِف">
+     الْمَقْصِف
+    </div>
+    <div class="chip" draggable="true" data-word="عَفْوًا">
+     عَفْوًا
+    </div>
+    <div class="chip" draggable="true" data-word="طَبْعًا">
+     طَبْعًا
+    </div>
+   </div>
+   <div class="feedback-area" id="feedback-area"></div>
+   <div class="dialogue-area">
+    <div class="dialogue-line saleh">
+     <div class="dialogue-bubble"><span class="speaker-name">صالِح:</span> اَلسَّلام عَلَيْكُمْ. أَنا صالِح وَأَنا طالِب في الصَّفّ <span class="drop-zone" data-answer="السّادِس"></span>
+     </div>
+    </div>
+    <div class="dialogue-line ali">
+     <div class="dialogue-bubble"><span class="speaker-name">عَلِيّ:</span> وَعَلَيْكُم السَّلام. أَنا عَلِيّ وَأَنا <span class="drop-zone" data-answer="طالِب"></span> في الصَّفِّ الْخامِس. أَيْنَ <span class="drop-zone" data-answer="الْمَقْصِف"></span> يا صالِح؟
+     </div>
+    </div>
+    <div class="dialogue-line saleh">
+     <div class="dialogue-bubble"><span class="speaker-name">صالِح:</span> في فِناءِ الْمَدْرَسَة.
+     </div>
+    </div>
+    <div class="dialogue-line ali">
+     <div class="dialogue-bubble"><span class="speaker-name">عَلِيّ:</span> هَلْ في الْمَقْصِف <span class="drop-zone" data-answer="قَلَم"></span> ؟
+     </div>
+    </div>
+    <div class="dialogue-line saleh">
+     <div class="dialogue-bubble"><span class="speaker-name">صالِح:</span> <span class="drop-zone" data-answer="طَبْعًا"></span>
+     </div>
+    </div>
+    <div class="dialogue-line ali">
+     <div class="dialogue-bubble"><span class="speaker-name">عَلِىّ:</span> مُمْتاز، شُكْرًا.
+     </div>
+    </div>
+    <div class="dialogue-line saleh">
+     <div class="dialogue-bubble"><span class="speaker-name">صالِح:</span> <span class="drop-zone" data-answer="عَفْوًا"></span>
+     </div>
+    </div>
+   </div>
+  </div><button class="restart-btn" id="restart-btn" onclick="location.reload()">أَعِدْ</button>
+  <script>
+        const defaultConfig = {
+            restart_button_text: "أَعِدْ"
+        };
+
+        let draggedElement = null;
+
+        // Sound effects
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            if (type === 'pickup') {
+                // Pickup sound - short beep
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } else if (type === 'success') {
+                // Success sound - pleasant chime
+                const oscillator1 = audioContext.createOscillator();
+                const oscillator2 = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator1.connect(gainNode);
+                oscillator2.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator1.frequency.setValueAtTime(523, audioContext.currentTime); // C5
+                oscillator2.frequency.setValueAtTime(659, audioContext.currentTime); // E5
+                
+                gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator1.start(audioContext.currentTime);
+                oscillator2.start(audioContext.currentTime);
+                oscillator1.stop(audioContext.currentTime + 0.3);
+                oscillator2.stop(audioContext.currentTime + 0.3);
+            } else if (type === 'drop') {
+                // Drop sound - soft thud
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.15);
+            }
+        }
+
+        // Touch and drag functionality for mobile
+        let touchStartX, touchStartY, isDragging = false;
+
+        document.querySelectorAll('.chip').forEach(chip => {
+            // Desktop drag events
+            chip.addEventListener('dragstart', (e) => {
+                draggedElement = e.target;
+                e.target.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                playSound('pickup');
+            });
+
+            chip.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+                draggedElement = null;
+            });
+
+            // Mobile touch events
+            chip.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+                draggedElement = e.target;
+                e.target.classList.add('dragging');
+                isDragging = true;
+                playSound('pickup');
+            });
+
+            chip.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                
+                // Remove drag-over from all zones
+                document.querySelectorAll('.drop-zone').forEach(zone => {
+                    zone.classList.remove('drag-over');
+                });
+                
+                // Add drag-over to current zone
+                if (element && element.classList.contains('drop-zone') && !element.classList.contains('filled')) {
+                    element.classList.add('drag-over');
+                }
+            });
+
+            chip.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const touch = e.changedTouches[0];
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                
+                if (element && element.classList.contains('drop-zone') && !element.classList.contains('filled')) {
+                    const draggedWord = draggedElement.dataset.word;
+                    const expectedAnswer = element.dataset.answer;
+                    
+                    if (draggedWord === expectedAnswer) {
+                        element.textContent = draggedWord;
+                        element.classList.add('filled');
+                        draggedElement.classList.add('hidden');
+                        playSound('success');
+                        showFeedback('مُمْتاز! إِجابَة صَحيحَة', 'correct');
+                        checkCompletion();
+                    } else {
+                        playSound('drop');
+                        showFeedback('حاوِلْ مَرَّة أُخْرى', 'wrong');
+                    }
+                }
+                
+                // Clean up
+                document.querySelectorAll('.drop-zone').forEach(zone => {
+                    zone.classList.remove('drag-over');
+                });
+                draggedElement.classList.remove('dragging');
+                draggedElement = null;
+                isDragging = false;
+            });
+        });
+
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                if (!zone.classList.contains('filled')) {
+                    zone.classList.add('drag-over');
+                }
+            });
+
+            zone.addEventListener('dragleave', (e) => {
+                zone.classList.remove('drag-over');
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                
+                if (draggedElement && !zone.classList.contains('filled')) {
+                    const draggedWord = draggedElement.dataset.word;
+                    const expectedAnswer = zone.dataset.answer;
+                    
+                    if (draggedWord === expectedAnswer) {
+                        // Correct answer - snap and glow
+                        zone.textContent = draggedWord;
+                        zone.classList.add('filled');
+                        draggedElement.classList.add('hidden');
+                        playSound('success');
+                        showFeedback('مُمْتاز! إِجابَة صَحيحَة', 'correct');
+                        
+                        // Check if all zones are filled
+                        checkCompletion();
+                    } else {
+                        // Incorrect answer - play drop sound
+                        playSound('drop');
+                        showFeedback('حاوِلْ مَرَّة أُخْرى', 'wrong');
+                    }
+                }
+            });
+        });
+
+        // Feedback system
+        function showFeedback(message, type) {
+            const feedbackArea = document.getElementById('feedback-area');
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = `feedback-message ${type === 'wrong' ? 'wrong' : ''}`;
+            feedbackDiv.textContent = message;
+            
+            feedbackArea.appendChild(feedbackDiv);
+            
+            // Remove message after animation
+            setTimeout(() => {
+                if (feedbackDiv.parentNode) {
+                    feedbackDiv.parentNode.removeChild(feedbackDiv);
+                }
+            }, 2500);
+        }
+
+        // Check if all zones are completed
+        function checkCompletion() {
+            const allZones = document.querySelectorAll('.drop-zone');
+            const filledZones = document.querySelectorAll('.drop-zone.filled');
+            
+            if (allZones.length === filledZones.length) {
+                setTimeout(() => {
+                    showFeedback('🎉 أحْسَنْت! أَكْمَلْت الْحِوار بِنَجاح', 'correct');
+                    playCompletionSound();
+                }, 500);
+            }
+        }
+
+        // Completion celebration sound
+        function playCompletionSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Play a celebratory melody
+            const notes = [523, 659, 784, 1047]; // C5, E5, G5, C6
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                }, index * 150);
+            });
+        }
+
+        // Element SDK implementation
+        async function onConfigChange(config) {
+            const restartBtn = document.getElementById('restart-btn');
+            
+            if (restartBtn) {
+                restartBtn.textContent = config.restart_button_text || defaultConfig.restart_button_text;
+            }
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["restart_button_text", config.restart_button_text || defaultConfig.restart_button_text]
+            ]);
+        }
+
+        // Initialize Element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+ </body>
+</html>

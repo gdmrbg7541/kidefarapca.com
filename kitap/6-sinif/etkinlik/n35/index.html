@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>لعبة اختيار الملابس</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Arapça fontlar -->
+<link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  padding:0;
+  font-family:'Amiri',serif;
+  background:#f5f5f5;
+  direction:rtl;
+}
+
+.page{
+  width:100%;
+  max-width:900px;
+  margin:20px auto;
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.15);
+}
+
+.header-box{
+  padding:16px 20px;
+  border-radius:20px;
+  background:#ffe9c0;
+  border:3px solid #f59e0b;
+  margin-bottom:20px;
+  font-size:1.7rem;
+  font-weight:700;
+  text-align:center;
+  font-family:'Scheherazade New','Amiri',serif;
+}
+
+/* SES BUTONU */
+.sound-btn {
+  background: #ffe1ac;
+  border: 3px solid #f59e0b;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: .2s;
+  text-align:center;
+}
+.sound-btn:hover {
+  background: #ffcf7a;
+  transform: scale(1.05);
+}
+
+.question{
+  border-radius:20px;
+  border:3px solid #fb923c;
+  padding:20px;
+  background:white;
+  margin-bottom:20px;
+  display:none;
+}
+.question.active{display:block;}
+
+.options-row{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.option{
+  width:180px;
+  cursor:pointer;
+  transition:.2s;
+}
+.option:hover{transform:scale(1.05);}
+
+.option-frame{
+  border-radius:15px;
+  border:3px solid #22a2c8;
+  padding:10px;
+  background:white;
+  box-shadow:0 6px 15px rgba(0,0,0,0.12);
+}
+
+.option img{
+  width:100%;
+  height:130px;
+  object-fit:contain;
+}
+
+.circle{
+  margin-top:10px;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  border:3px solid #22a2c8;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:white;
+  font-size:1.9rem;
+  font-weight:700;
+  color:transparent;
+  transition:.2s;
+}
+
+.option.selected .circle{
+  background:#c5ecff;
+  border-color:#0ea5e9;
+  color:#0ea5e9;
+}
+
+.option.correct .circle{
+  background:#bbf7d0;
+  border-color:#16a34a;
+  color:#16a34a;
+}
+
+.option.wrong .circle{
+  background:#ffd5d5;
+  border-color:#dc2626;
+  color:#dc2626;
+}
+
+/* BUTON OK SİMGELERİ */
+.nav-buttons button span.icon {
+  font-size:1.6rem;
+  margin:0 6px;
+}
+
+#resetBtn .icon {
+  font-size:1.6rem;
+  margin-left:6px;
+}
+
+/* ALT BUTONLAR */
+.nav-buttons{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:25px;
+}
+.nav-buttons button{
+  flex:1;
+  padding:12px;
+  border-radius:30px;
+  font-size:1.4rem;
+  background:#0ea5e9;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+.nav-buttons button:disabled{
+  opacity:.4;
+  cursor:default;
+}
+
+#checkBtn{
+  margin-top:12px;
+  width:100%;
+  padding:14px;
+  font-size:1.5rem;
+  background:#22c55e;
+  color:white;
+  border:none;
+  border-radius:30px;
+  cursor:pointer;
+}
+
+/* TEKRAR BUTONU ORTADA */
+#resetBtn{
+  margin-top:15px;
+  width:60%;
+  padding:12px;
+  font-size:1.4rem;
+  background:#6366f1;
+  color:white;
+  border:none;
+  border-radius:30px;
+  cursor:pointer;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+}
+
+.feedback{
+  margin-top:12px;
+  text-align:center;
+  font-size:1.8rem;
+  font-weight:700;
+}
+.good{color:#16a34a;}
+.bad{color:#dc2626;}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <div class="header-box">
+    اِسْتَمِعْ إِلى الْجُمَل ثُمَّ اخْتَر الصّورَةَ الْمُناسِبَة لَها.
+  </div>
+
+  <!-- SORU 1 -->
+  <div class="question active" data-question="1">
+
+    <button class="sound-btn" onclick="playSound('s1')">🔉 اِضغَط الْاِسْتِماعِ الجُمْلَة</button>
+    <audio id="s1" src="ses1.mp3"></audio>
+
+    <div class="options-row">
+      <div class="option" data-question="1" data-correct="true">
+        <div class="option-frame">
+          <img src="v/01.png">
+        </div>
+        <div class="circle">✓</div>
+      </div>
+
+      <div class="option" data-question="1" data-correct="false">
+        <div class="option-frame">
+          <img src="v/08.png">
+        </div>
+        <div class="circle">✓</div>
+      </div>
+
+      <div class="option" data-question="1" data-correct="true">
+        <div class="option-frame">
+          <img src="v/06.png">
+        </div>
+        <div class="circle">✓</div>
+      </div>
+
+      <div class="option" data-question="1" data-correct="true">
+        <div class="option-frame">
+          <img src="v/07.png">
+        </div>
+        <div class="circle">✓</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SORU 2 -->
+  <div class="question" data-question="2">
+
+    <button class="sound-btn" onclick="playSound('s2')">🔉 اِضغَط لِسَماعِ الجُملة</button>
+    <audio id="s2" src="ses2.mp3"></audio>
+
+    <div class="options-row">
+      <div class="option" data-question="2" data-correct="true">
+        <div class="option-frame">
+          <img src="v/02.png">
+        </div>
+        <div class="circle">✓</div>
+      </div>
+
+      <div class="option" data-question="2" data-correct="false">
+        <div class="option-frame">
+          <img src="v/04.png">
+        </div>
+        <div class="circle">✓</div>
+      </div>
+
+      <div class="option" data-question="2" data-correct="true">
+        <div class="option-frame">
+          <img src="v/05.png">
+        </div>
+        <div class="circle">✓</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SORU 3 -->
+  <div class="question" data-question="3">
+
+    <button class="sound-btn" onclick="playSound('s3')">🔉 اِضغَط لِسَماعِ الجُملة</button>
+    <audio id="s3" src="ses3.mp3"></audio>
+
+    <div class="options-row">
+      <div class="option" data-question="3" data-correct="false">
+        <div class="option-frame">
+          <img src="v/09.png">
+        </div>
+        <div class="circle">✓</div>
+      </div>
+
+      <div class="option" data-question="3" data-correct="true">
+        <div class="option-frame">
+          <img src="v/03.png">
+        </div>
+        <div class="circle">✓</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- KONTROL BUTONU -->
+  <button id="checkBtn">تَحَقَّقْ مِنَ الْإِجابَة</button>
+
+  <!-- TEKRAR BUTONU ORTADA -->
+  <button id="resetBtn">
+    <span class="icon">↻</span> حاوِلْ مَرَّةً أُخْرى
+  </button>
+
+  <!-- GERİ BİLDİRİM -->
+  <div id="feedback" class="feedback"></div>
+
+  <!-- EN ALTA ÖNCEKİ / SONRAKİ BUTONLARI -->
+  <div class="nav-buttons">
+    <!-- ÖNCEKİ: sağda ➤ -->
+    <button id="prevBtn">
+      اَلسّابِق <span class="icon">➤</span>
+    </button>
+
+    <!-- SONRAKİ: solda ◄ -->
+    <button id="nextBtn">
+      <span class="icon">◄</span> اَلتّالي
+    </button>
+  </div>
+
+</div>
+
+
+<script>
+function playSound(id){
+  const audio = document.getElementById(id);
+  audio.currentTime = 0;
+  audio.play();
+}
+
+const options   = Array.from(document.querySelectorAll(".option"));
+const questions = Array.from(document.querySelectorAll(".question"));
+const prevBtn   = document.getElementById("prevBtn");
+const nextBtn   = document.getElementById("nextBtn");
+const checkBtn  = document.getElementById("checkBtn");
+const resetBtn  = document.getElementById("resetBtn");
+const feedback  = document.getElementById("feedback");
+
+let current = 0;
+
+function showQ(i){
+  questions.forEach((q,idx)=>q.classList.toggle("active",idx===i));
+  prevBtn.disabled = (i===0);
+  nextBtn.disabled = (i===questions.length-1);
+}
+showQ(0);
+
+prevBtn.onclick = () => {
+  if(current>0){ 
+    current--; 
+    showQ(current); 
+    feedback.textContent="";
+    feedback.className="feedback";
+  }
+};
+
+nextBtn.onclick = () => {
+  if(current<questions.length-1){ 
+    current++; 
+    showQ(current); 
+    feedback.textContent="";
+    feedback.className="feedback";
+  }
+};
+
+options.forEach(opt=>{
+  opt.addEventListener("click", ()=>{
+
+    const qId   = opt.dataset.question;
+    const group = options.filter(o=>o.dataset.question===qId);
+
+    if(qId==="3"){
+      group.forEach(o=>o.classList.remove("selected"));
+      opt.classList.add("selected");
+    }else{
+      opt.classList.toggle("selected");
+    }
+
+    group.forEach(o=>o.classList.remove("correct","wrong"));
+    feedback.textContent=""; 
+    feedback.className="feedback";
+  });
+});
+
+resetBtn.onclick = ()=>{
+  options.forEach(o=>o.classList.remove("selected","correct","wrong"));
+  feedback.textContent=""; 
+  feedback.className="feedback";
+  current=0; 
+  showQ(current);
+};
+
+checkBtn.onclick = ()=>{
+
+  const activeQ   = questions[current];
+  const qId       = activeQ.dataset.question;
+  const group     = options.filter(o=>o.dataset.question===qId);
+  const correct   = group.filter(o=>o.dataset.correct==="true");
+  const selected  = group.filter(o=>o.classList.contains("selected"));
+
+  group.forEach(o=>o.classList.remove("correct","wrong"));
+
+  selected.forEach(s=>{
+    if(s.dataset.correct==="true") s.classList.add("correct");
+    else s.classList.add("wrong");
+  });
+
+  if(
+    selected.length===correct.length &&
+    selected.length>0 &&
+    selected.every(s=>s.dataset.correct==="true")
+  ){
+    feedback.textContent="إِجابَة صَحيحَة 👏";
+    feedback.className="feedback good";
+  }else{
+    feedback.textContent="إِجابَة خاطِئَة، حاوِل مَرَّةً أُخْرى.";
+    feedback.className="feedback bad";
+  }
+};
+</script>
+
+</body>
+</html>

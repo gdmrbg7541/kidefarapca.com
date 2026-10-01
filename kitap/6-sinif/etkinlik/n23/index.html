@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مميز الأشياء في المدرسة</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      height: calc(100% - 40px);
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 2.4rem;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 16px;
+      color: #2d3748;
+    }
+
+    .score-board {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .score-item {
+      background: #74b9ff;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .score-value {
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .item-card {
+      background: #ff9a9e;
+      border: 3px solid #fd79a8;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      min-height: 75px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .item-card:nth-child(4n+1) { background:#a8edea; border-color:#00cec9; }
+    .item-card:nth-child(4n+2) { background:#ffeaa7; border-color:#fdcb6e; }
+    .item-card:nth-child(4n+3) { background:#fd79a8; border-color:#e84393; }
+    .item-card:nth-child(4n+4) { background:#a29bfe; border-color:#6c5ce7; }
+
+    .item-card.correct {
+      background:#00b894 !important;
+      color:white;
+      border-color:#00a085;
+    }
+
+    .item-card.wrong {
+      background:#e17055 !important;
+      color:white;
+      border-color:#d63031;
+    }
+
+    .item-card.disabled {
+      pointer-events:none;
+      opacity:0.6;
+    }
+
+    .feedback {
+      text-align:center;
+      font-size:1.5rem;
+      font-weight:bold;
+      margin: 12px 0;
+      min-height: 32px;
+    }
+
+    .feedback.correct { color:#00b894; }
+    .feedback.wrong { color:#e17055; }
+
+    .reset-btn {
+      display:block;
+      margin: 16px auto 0;
+      background:#6c5ce7;
+      color:white;
+      border:none;
+      padding:12px 26px;
+      border-radius:10px;
+      font-size:1.4rem;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    @media (max-width: 520px) {
+      .items-grid { grid-template-columns: repeat(3,1fr); }
+    }
+    @media (max-width: 380px) {
+      .items-grid { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <h1 class="title">اِخْتَر الْأَشْياءَ الَّتي لا توجَدُ في الْمَدْرَسَة.</h1>
+
+  <div class="score-board">
+    <div class="score-item">
+      <div>اَلصَّحيحَة</div>
+      <div class="score-value" id="correctCount">0</div>
+    </div>
+    <div class="score-item">
+      <div>اَلْخاطِئَة</div>
+      <div class="score-value" id="wrongCount">0</div>
+    </div>
+    <div class="score-item">
+      <div>اَلْمُتَبَقّي</div>
+      <div class="score-value" id="remainingCount">4</div>
+    </div>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+
+  <div class="items-grid" id="itemsGrid"></div>
+
+  <button class="reset-btn" onclick="resetGame()">أَعِدْ اَللُّعْبَة</button>
+
+</div>
+
+<script>
+  /*
+    ✅ SADECE SIRALAMA DÜZELTİLDİ:
+    Doğru kartlar (notInSchool:true) artık aynı sütunda alt alta gelmiyor.
+    4 sütuna dağıtıldı.
+  */
+  var items = [
+    /* Row 1 */
+    {name:"غَسّالَة", notInSchool:true},          // ✅ doğru (col 1)
+    {name:"مَكْتَبَة", notInSchool:false},
+    {name:"حاسوب", notInSchool:false},
+    {name:"غُرْفَةُ الْمُدير", notInSchool:false},
+
+    /* Row 2 */
+    {name:"مُخْتَبَر", notInSchool:false},
+    {name:"غُرْفَةُ الْجُلوس", notInSchool:true}, // ✅ doğru (col 2)
+    {name:"ساعَة", notInSchool:false},
+    {name:"ثَلّاجَة", notInSchool:true},          // ✅ doğru (col 4)
+
+    /* Row 3 */
+    {name:"فِناءُ الْمَدْرَسَة", notInSchool:false},
+    {name:"غُرْفَةُ الْمُعَلِّمين", notInSchool:false},
+    {name:"حَمّام", notInSchool:true},            // ✅ doğru (col 3)
+    {name:"خَريطَة", notInSchool:false}
+  ];
+
+  var state = {
+    correct:0,
+    wrong:0,
+    answered:{},
+    target:4
+  };
+
+  function init(){
+    var grid=document.getElementById("itemsGrid");
+    grid.innerHTML="";
+    for(var i=0;i<items.length;i++){
+      var card=document.createElement("div");
+      card.className="item-card";
+      card.textContent=items[i].name;
+      (function(c,item,idx){
+        c.onclick=function(){handle(c,item,idx);};
+      })(card,items[i],i);
+      grid.appendChild(card);
+    }
+    update();
+  }
+
+  function handle(card,item,idx){
+    if(state.answered[idx]) return;
+    state.answered[idx]=true;
+    card.classList.add("disabled");
+
+    var fb=document.getElementById("feedback");
+
+    if(item.notInSchool){
+      card.classList.add("correct");
+      state.correct++;
+      fb.textContent="✅ إِجابَة صَحيحَة";
+      fb.className="feedback correct";
+    }else{
+      card.classList.add("wrong");
+      state.wrong++;
+      fb.textContent="❌ إِجابَة خاطِئَة";
+      fb.className="feedback wrong";
+    }
+
+    update();
+
+    setTimeout(function(){
+      fb.textContent="";
+      fb.className="feedback";
+    },2500);
+  }
+
+  function update(){
+    document.getElementById("correctCount").textContent=state.correct;
+    document.getElementById("wrongCount").textContent=state.wrong;
+    document.getElementById("remainingCount").textContent=state.target-state.correct;
+  }
+
+  function resetGame(){
+    state={correct:0,wrong:0,answered:{},target:4};
+    document.getElementById("feedback").textContent="";
+    init();
+  }
+
+  init();
+</script>
+</body>
+</html>
