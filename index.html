@@ -3890,6 +3890,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         'Planlar': [
           { ad: 'Ünitelendirilmiş Yıllık Plan', ne: function (d) { return svYol(d, '/yillik-plan/') && !svToplu(d); } },
           { ad: 'Günlük Ders Planı', ne: function (d) { return svYol(d, '/gunluk-plan/') && !svToplu(d); } },
+          { ad: 'Okul Temelli Planlama', ne: function (d) { return svYol(d, '/okul-temelli/'); } },
           { ad: 'Toplu Dosyalar', ne: svToplu }
         ],
         'Sınıf Dosyası': [
@@ -4955,6 +4956,59 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         ustPanelSerbest(btn);
         kartBolumunuYukariKaydir(btn);
       };
+      /* >>> OKUL TEMELLİ PLANLAMA (01.10.2026) ----------------------------
+         Her sınıfın "Planlar" kartına, yıllık planın altına eklenir
+         (dosyalar/okul-temelli/). KİTABA GÖRE DEĞİŞİR: belge ünitelere bağlı.
+           · 6 ve 7. sınıfta iki kitap var → satırlar "kitap" alanı taşır;
+             ihdocKur yalnız seçili kitabın satırını gösterir (kitabaUygun).
+             Seçim okunamazsa "varsayilan: true" olan satır görünür.
+           · 10. sınıf Seçmeli Arapça → SEC10_PDF['Planlar'] (kendi deposu).
+         2016/2017 programlı kitaplarda resmî OTP süresi yok; belge bunu yazar
+         ve etkinlikleri "zümre kararıyla" tekrar haftalarına koyar.
+         Yeni kitap gelirse OTP dizisine bir satır eklemek yeterlidir. */
+      (function () {
+        var D = 'dosyalar/okul-temelli/arapca-';
+        var OTP = [
+          /* [sınıf, dosya eki, kitap yılı, varsayılan mı, ad eki, açıklama] */
+          ['5', '', '', true, '', '2025 programı · 4 saat (18-22 Ocak + 14-18 Haziran) · etiket-harf sergisi · aile ağacı / ev planı'],
+          ['6', '', '2026-2027', true, '', 'Yeni kitap (4 ünite) · 4 saat · okul yön levhaları · hava durumu bülteni'],
+          ['6', '2025-2026-', '2025-2026', false, ' — 2025-2026 kitabı', 'Eski kitap (6 tema, 2016 programı) · zümre kararıyla 2+2 saat · sağlıklı kantin · kutsal yolculuk planı'],
+          ['7', '', '2026-2027', true, ' — Mektep Yayınları', '2016 programı (resmî OTP yok) · zümre kararıyla 2+2 saat · sınıf pazarı · tebrik kartı ve mektup'],
+          ['7', '2027-2028-', '2027-2028', false, ' — 2027-2028 kitabı', 'MEB kitabı (4 ünite, Maarif) · 4 saat · sınıf çarşısı · şehir rehberi · haftalar tarihsiz'],
+          ['8', '', '', true, '', '2016 programı (resmî OTP yok) · zümre kararıyla 2+2 saat · kültür-sanat fuarı · hatıra defteri'],
+          ['9', '', '', true, '', '2025 programı · 8 saat (4+4) · okul tanıtım broşürü · okuma saati ve fotoğraf günlüğü'],
+          ['10', '', '', true, '', 'Maarif kitabı · 6 saat (3+3) · değerler panosu · gezi rehberi']
+        ];
+        OTP.forEach(function (o) {
+          var k = D + o[0] + '-sinif-' + o[1] + 'okul-temelli-planlama';
+          var liste = SINIF_PDF[o[0]]['Planlar'] || (SINIF_PDF[o[0]]['Planlar'] = []);
+          var ad = o[0] + '. Sınıf Okul Temelli Planlama' + o[4];
+          liste.push(
+            { ad: ad + ' — düzenlenebilir (Word)', tur: 'doc', kaynak: o[5], url: k + '.docx',
+              kitap: o[2] || undefined, varsayilan: o[3] },
+            { ad: ad + ' — yazdırmaya hazır (PDF)', url: k + '.pdf',
+              kitap: o[2] || undefined, varsayilan: o[3] }
+          );
+        });
+        ['5', '6', '7', '8', '9', '10'].forEach(function (s) {
+          SINIF_GIRIS[s]['Planlar'] = (SINIF_GIRIS[s]['Planlar'] || '') +
+            '<div class="dok-not"><b>Okul temelli planlama:</b> iki oturum · ihtiyaç belirleme · etkinlik akışı · '
+            + 'dereceli puanlama · etki raporu' + ((s === '6' || s === '7') ? ' · <b>seçili kitaba göre değişir</b>' : '') + '.</div>';
+        });
+        /* 10. sınıf Seçmeli Arapça */
+        var ks = D + '10-sinif-secmeli-okul-temelli-planlama';
+        var ls = SEC10_PDF['Planlar'] || (SEC10_PDF['Planlar'] = []);
+        ls.push(
+          { ad: 'SEÇMELİ ARAPÇA · Okul Temelli Planlama — düzenlenebilir (Word)', tur: 'doc',
+            kaynak: '2017 programı (resmî OTP yok) · zümre kararıyla 2+2 saat · hayatım ve değerlerim panosu · önemli yerler sanal müzesi',
+            url: ks + '.docx' },
+          { ad: 'SEÇMELİ ARAPÇA · Okul Temelli Planlama — yazdırmaya hazır (PDF)', url: ks + '.pdf' }
+        );
+        SEC10_GIRIS['Planlar'] = (SEC10_GIRIS['Planlar'] || '') +
+          '<div class="dok-not"><b>Okul temelli planlama:</b> Seçmeli Arapça kitabının ünitelerine göre · '
+          + '2017 programında resmî süre yok, zümre kararıyla uygulanır.</div>';
+      })();
+      /* <<< OKUL TEMELLİ PLANLAMA */
       /* === BELGELER ↔ KİTAP SEÇİMİ (24.09.2026) =========================
          Sınıf panelindeki kitap/yıl seçicisi (sistem/sinifveri.js) değişince
          belge kartları da yenilenir. Önceden yenilenmiyordu: seçici yalnız
@@ -4980,6 +5034,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           for (var i = 0; i < l.length; i++) if (l[i].yil === yil) return l[i].ad || l[i].yil;
         } catch (e) {}
         return yil;
+      }
+      /* Satır belirli bir kitaba aitse yalnız o kitap seçiliyken gösterilir. */
+      function kitabaUygun(sinif, d) {
+        if (!d || !d.kitap) return true;
+        var s = seciliKitap(sinif);
+        return s ? d.kitap === s : !!d.varsayilan;
       }
       function kitapUyarisi(sinif) {
         var beklenen = BELGE_KITABI[sinif]; if (!beklenen) return '';
@@ -5066,7 +5126,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         var liste = kk ? [kk].concat(turler) : turler;
         a4IzgaraKur(mount, sinif + '. SINIF · BELGE', 'sinif', liste, function (t) {
           if (sec && SEC10_PDF[t.ad]) return SEC10_PDF[t.ad];
-          return (SINIF_PDF[sinif] && SINIF_PDF[sinif][t.ad]) || [];
+          /* "kitap" alanı taşıyan satır yalnız o kitap seçiliyken görünür
+             (01.10.2026 — okul temelli planlama). */
+          return ((SINIF_PDF[sinif] && SINIF_PDF[sinif][t.ad]) || []).filter(function (d) {
+            return kitabaUygun(sinif, d);
+          });
         }, function (t) {
           /* Sınavlar kartı iki şey sunar: HAZIR sınav dosyaları (hemen altta
              listelenir) ve SINAV OLUŞTUR (sinav.html — öğrenme çıktılarına
