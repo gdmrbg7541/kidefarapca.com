@@ -2714,6 +2714,21 @@ doğru; telefonda kartlar yatay kayıyor, etiket okunuyor.
   Denendi: 5 sınıf/ünite bileşimi, 390/768/1440 px, konsol hatasız.
 
 == 01.10.2026 — 6. sınıf Arapça (2026-2027) dijital kitap ==
-- kitap/6-sinif/ (yeni klasör, ~200 MB, en büyük dosya 28 MB): sayfa çevirmeli kitap (sağdan sola),
+- kitap/6-sinif-2026-2027/ (yeni klasör, ~200 MB, en büyük dosya 28 MB): sayfa çevirmeli kitap (sağdan sola),
   42 ses, 44 etkinlik, 4 video + 4 şarkı; QR'ların yerine SVG düğmeler; internetsiz çalışır; "İndir" ile flaş ZIP'i.
-- index.html: DERS_KITABI['6'] → 2026-2027 = kitap/6-sinif/index.html, 2025-2026 = portal (yedek: _kaynak/yedek/index-kitap6-oncesi-2026-10-01.html)
+- index.html: DERS_KITABI['6'] → 2026-2027 = kitap/6-sinif-2026-2027/index.html, 2025-2026 = portal (yedek: _kaynak/yedek/index-kitap6-oncesi-2026-10-01.html)
+== 01.10.2026 — 5. sınıf Arapça dijital kitap ==
+- kitap/5-sinif-2026-2027/ (yeni, 46 MB): 328 sayfalık sayfa çevirmeli kitap (sağdan sola), internetsiz çalışır, İndir ile ZIP.
+- kitap/6-sinif-2026-2027/uygulama.js + veri.js: iki kitap ortak koda geçti (kitaba özgü ayarlar veri.js'te).
+- index.html: DERS_KITABI['5'] → kitap/5-sinif-2026-2027/index.html (yedek: _kaynak/yedek/index-kitap5-oncesi-2026-10-01.html)
+== 01.10.2026 — Kelime Dağarcığı: liste indirme ==
+- sarf/kelimeindir.js (yeni): açılan her listede "İndir" → Word (.doc) / Excel (.xlsx) / Yazdır-PDF
+- kelimeler.html, kaliplartablosu.html: betik eklendi (yedek: _kaynak/yedek/kelime-indir-oncesi/)
+== 01.10.2026 — Kidef Arapça: eski FlipHTML5 kitabı kaldırıldı, yeni flipbook siteye ==
+- kitap/kidef-arapca-2-baski/ (yeni, 317 MB; en büyük dosya 38 MB mazi videosu): sıfırdan yapılan flipbook
+  (1. KA/FLIPBOOK kopyası). Sunular yeni sekmede sunum.html ile açılır (sitede PDF yok).
+- index.html: "Kidef Arapça 📒 2. Baskı" kartı → kitap/kidef-arapca-2-baski/index.html
+- flipbookkidef.html: artık yönlendirme sayfası (eski bağlantılar/karekodlar çalışsın)
+- KALDIRILDI (→ _kaynak/eski-flipbook-html5-2026-10-01/): eski flipbookkidef.html/.css/.js,
+  kitap/flipbookkidef.*, files/ (53 MB), javascript/ (5 MB) — yalnız eski kitap kullanıyordu
+- katalog/index.html bağlantısı, _yolkontrol.html listesi, ga_ekle.py atlama listesi güncellendi

@@ -1,0 +1,594 @@
+:root {
+            --bg-color: #2c3e50;
+            --card-bg: #ffffff;
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --info-bg: #34495e; 
+            --info-strip-bg: #ecf0f1; /* İpucu şeridi rengi */
+            --text-gray: #7f8c8d;
+        }
+
+@keyframes sequence-glow {
+    0% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.1); filter: brightness(1.4); color: var(--accent); }
+    100% { transform: scale(1); filter: brightness(1); }
+}
+
+.reveal-pulse {
+    animation: sequence-glow 0.6s ease-out;
+}
+
+        /* 1. ANA YAPI */
+        * { box-sizing: border-box; }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            background-color: var(--bg-color);<div id="orientation-overlay">
+    <div class="phone-icon"></div>
+    <p style="font-family: 'Nunito', sans-serif; font-weight: 700;">Lütfen Cihazı Yatay Çevirin</p>
+</div>
+
+<div id="start-overlay">
+    <button class="next-btn" onclick="startActivity()">Etkileşime Başla</button>
+</div>
+            overflow: hidden;
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 2. OYUN KUTUSU */
+        .container {
+            width: 95vw;
+            max-width: 1920px;
+            aspect-ratio: 16 / 9;
+            background: var(--card-bg);
+            border-radius: 2vh;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+padding-bottom: env(safe-area-inset-bottom, 20px);
+justify-content: flex-start;
+        }
+
+        @media (orientation: landscape) {
+            .container {
+                width: min(100vw, 177.78vh);
+                height: min(100vh, 56.25vw);
+                aspect-ratio: 16 / 9;
+            }
+        }
+
+        @media (orientation: portrait) {
+            .container {
+                width: min(100vw, 56.25vh);
+                height: min(100vh, 177.78vw);
+                aspect-ratio: 9 / 16;
+            }
+        }
+
+        /* --- BÖLÜMLER --- */
+        
+        .header {
+    background-color: var(--primary);
+    color: white;
+    text-align: center;
+    font-size: 3vh;
+    font-weight: 800;
+    flex: 0 0 8%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* Geri tuşu buna göre hizalanacak */
+    padding: 0 1vh;
+}
+
+        .sentence-area {
+    flex: 3.0; 
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 1vh 2vh;
+    flex-wrap: nowrap; /* Yeni: Kelimelerin alt satıra geçmesini engeller */
+    overflow-x: auto;  /* Yeni: Eğer sığmazsa yatayda kaydırılabilir yapar */
+    direction: rtl;
+    width: 100%;
+}
+#pdf-iframe {
+    width: 100%;
+    flex: 1; 100%;
+    border: none;
+}
+
+/* Eğer PDF bir modal içindeyse modalı da genişletin */
+.modal-content {
+    width: 95vw; /* Kenarlarda çok az boşluk bırakır */
+    height: 90vh;
+    max-width: none;
+}
+
+        /* Mevcut kodda satır ~103 civarı */
+.word-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 0.8vh; /* Boşluğu biraz azalttık */
+    flex-shrink: 0;  /* Yeni: Kelimelerin sıkışıp bozulmasını engeller */
+}
+
+        .arabic-word {
+    font-family: 'Scheherazade New', serif;
+    font-size: 6.5vh; /* Boyutu 8vh'den 6.5vh'ye çektik (Daha iyi sığması için) */
+    color: var(--primary);
+    font-weight: 700;
+    line-height: 1.2;
+    z-index: 2; 
+    white-space: nowrap; /* Kelimenin kendi içinde bölünmesini engeller */
+}
+       .tr-meaning {
+    position: absolute;
+    left: 50%;
+    top: -5vh;
+    transform: translate(-50%, -50%); /* Döndürmeyi (rotate) kaldırdık, daha okunaklı olması için */
+    white-space: nowrap;
+    text-align: center; /* Merkeze hizala */
+    font-size: 2.2vh; 
+    color: #7f8c8d;
+    font-weight: 700;
+    pointer-events: none; 
+    z-index: 1;
+    opacity: 0; 
+    transition: all 0.3s ease;
+}
+/* Hareke için ek stil */
+.hk-info {
+    display: block;
+    font-size: 1.8vh;
+    color: var(--accent); /* Hareke bilgisini farklı renk yapalım */
+    font-style: italic;
+}
+
+/* Dokunulduğunda/Tıklandığında görünür yapacak sınıf */
+.word-group.show-tr .tr-meaning {
+    opacity: 1;
+    top: -7vh; /* Hafif yukarı zıplama efekti */
+}
+
+/* Arapça kelimenin üzerine gelindiğinde imleci değiştir */
+.word-group {
+    cursor: pointer;
+}
+
+        .target-group .arabic-word {
+            color: var(--accent);
+            cursor: pointer;
+        }
+        .target-group .tr-meaning {
+            color: var(--accent);
+            font-size: 3.2vh; 
+            font-weight: 900;
+        }
+
+        .full-sentence-box {
+            flex: 0 0 auto;
+            min-height: 15%; 
+            width: 100%;
+            background-color: #f1f2f6;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 4.2vh; 
+            font-weight: 800;
+            padding: 2vh;
+            border-top: 2px solid #e0e0e0;
+            border-bottom: 2px solid #e0e0e0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            z-index: 5;
+        }
+        
+        .highlight {
+            color: var(--accent);
+            text-decoration: none; 
+            font-weight: 900;
+        }
+
+        /* Seçenekler Alanı */
+        .options-area {
+    flex: 3;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5vh;
+    padding: 1vh 2vh 15vh 2vh; /* Alt boşluğu 15vh yaparak butona yer açtık */
+    width: 100%;
+    overflow-y: auto; /* Şıklar sığmazsa kendi içinde kaydırılabilir */
+}
+
+        /* --- ŞIK KARTI (Dış Çerçeve) --- */
+        .option-card {
+            background: #f8f9fa;
+            border: 0.4vh solid #e0e0e0;
+            border-radius: 1.5vh;
+            display: flex; /* Flex yapısı ile yatay bölme */
+            flex-direction: row; 
+            height: 20vh; 
+            position: relative; 
+            overflow: hidden; 
+            transition: transform 0.1s;
+            min-height: 120px;
+        }
+
+        /* --- SOL TARAF: CEVAP ALANI (%80) --- */
+        .answer-zone {
+            flex: 4; /* Geniş alan */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: transparent;
+        }
+
+        .answer-zone:active {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        /* --- SAĞ TARAF: İPUCU ŞERİDİ (%20) --- */
+        .info-zone {
+            flex: 1.2; /* Dar alan */
+            background-color: var(--info-strip-bg);
+            border-left: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .info-zone:active {
+            background-color: #d5dbdb;
+        }
+
+        .opt-arabic {
+            font-family: 'Scheherazade New', serif;
+            font-size: 8vh; 
+            min-size: 40px;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        /* --- DEVASA AMPUL --- */
+        .info-icon {
+            font-size: 5vh; /* Ampul büyüdü */
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+            transition: transform 0.2s;
+        }
+        
+        .info-zone:active .info-icon {
+            transform: scale(0.85);
+        }
+
+        /* --- BİLGİ KUTUSU (OVERLAY) --- */
+        .info-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--info-bg);
+            color: white;
+            padding: 2vh;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start; 
+            text-align: left;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 50; /* Yazıların üstüne çıksın */
+        }
+
+        .show-info {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .info-overlay ul {
+            margin: 0;
+            padding-left: 3vh;
+            list-style-type: disc;
+        }
+
+        .info-overlay li {
+            font-size: 2vh;
+            margin-bottom: 1vh;
+            line-height: 1.4;
+        }
+
+        .info-title {
+            align-self: center;
+            font-weight: 800;
+            color: #f1c40f;
+            margin-bottom: 1.5vh;
+            font-size: 2.2vh;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            width: 100%;
+            text-align: center;
+            padding-bottom: 0.5vh;
+        }
+
+        .close-info {
+            position: absolute;
+            top: 1vh;
+            right: 1.5vh;
+            font-size: 3.5vh;
+            color: #e74c3c;
+            cursor: pointer;
+        }
+
+        /* Geri Bildirim Butonu */
+         .feedback-box {
+    position: absolute; 
+    bottom: 2vh; /* Ekranın en altından 2 birim yukarda */
+    left: 0;
+    width: 100%; 
+    text-align: center; 
+    display: none;
+    z-index: 999;
+    padding-bottom: env(safe-area-inset-bottom); /* Modern telefonlardaki çentik payı */
+}
+/* PDF açıldığında butonu gizlemek için yeni kural */
+body.pdf-open .feedback-box {
+    display: none !important;
+}
+/* PDF kapsayıcısının butonun üstüne çıkması için */
+#pdf-viewer-container {
+    z-index: 200; /* Butondan (150) daha yüksek olmalı */
+}
+
+
+        .next-btn {
+    background-color: #27ae60; /* Yeşil renk daha dikkat çekici */
+    color: white;
+    border: none;
+    padding: 2vh 10vh; 
+    border-radius: 5vh;
+    font-size: 3.5vh;
+    cursor: pointer;
+    font-weight: 800;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Butonun öne çıkması için gölge */
+}
+
+        .correct { background-color: #d4efdf !important; border-color: var(--success) !important; }
+        .wrong { background-color: #fadbd8 !important; border-color: #c0392b !important; }
+        
+        /* Cevap verildikten sonra cevap alanını pasif yap ama ipucu kalsın */
+        .disabled-answer {
+            pointer-events: none;
+        }
+
+/* --- Geri Tuşu (Header ile Uyumlu Tasarım) --- */
+.back-button-container {
+    position: absolute;
+    left: 1.5vh; 
+    top: 50%;
+    transform: translateY(-50%); /* Dikeyde tam ortala */
+    display: flex;
+    align-items: center;
+    z-index: 101;
+}
+
+.back-button {
+    width: 5vh; /* vh birimi ekran yüksekliğine göre ölçeklenir */
+    height: 5vh;
+    min-width: 35px; /* Çok küçük ekranlarda kaybolmaması için */
+    min-height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff; /* Linkin genel rengini beyaz yapar */
+    text-decoration: none;
+
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    transform: translateX(-2px); /* Hafif sola kayma efekti */
+}
+
+.back-button svg {
+    width: 3.5vh;
+    height: 3.5vh;
+    fill: currentColor; /* Yazı rengiyle (beyaz) aynı yapar */
+}
+
+/* PDF Simgeleri Konteynırı */
+.pdf-tools {
+    position: absolute;
+    top: 1.5vh;
+    right: 1.5vh;
+    display: flex;
+    gap: 1.5vh;
+    z-index: 100;
+}
+
+.pdf-btn {
+    background: #e74c3c;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.2vh;
+    width: 18vh; /* Butonu yatay olarak uzattık */
+    height: 6vh; /* Yüksekliği biraz artırdık */
+    display: flex;
+    flex-direction: row; /* İkon ve metni yan yana getirdik */
+    align-items: center;
+    justify-content: flex-start; /* İçerikleri soldan başlattık */
+    padding: 0 1.5vh; /* Kenarlardan boşluk verdik */
+    gap: 1.2vh; /* İkon ve yazı arasına boşluk ekledik */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: white;
+}
+
+.pdf-btn:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+}
+
+.pdf-btn svg {
+    width: 3vh;
+    height: 3vh;
+    flex-shrink: 0; /* İkonun sıkışmasını engeller */
+}
+
+.pdf-label {
+    font-size: 1.8vh; /* Yazıyı daha okunabilir yaptık */
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0; /* Üst boşluğu sıfırladık */
+    white-space: nowrap;
+}
+
+#pdf-viewer-container {
+    display: none; 
+    position: absolute; 
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border-top: 5px solid var(--primary);
+    z-index: 10000; 
+    box-shadow: 0 -10px 20px rgba(0,0,0,0.4);
+    /* Yükseklik ve Top değerlerini JS atayacak */
+}
+
+/* Kapatma Butonu */
+.close-pdf {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 160;
+    font-weight: bold;
+}
+
+/* PDF iframe ayarları */
+#pdf-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* PDF açıkken ana konteynerın taşmasını engelle */
+body.pdf-open .container {
+    overflow: hidden;
+}
+/* PDF Butonlarını güncelleme (JavaScript ile çalışması için a yerine div) */
+.pdf-btn {
+    cursor: pointer;
+}
+
+/* --- Dikey Mod Uyarı Ekranı --- */
+#rotate-device-overlay {
+    display: none; /* Varsayılan kapalı */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #2c3e50;
+    color: white;
+    z-index: 99999;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.rotate-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: rotate-anim 2s infinite ease-in-out;
+}
+
+@keyframes rotate-anim {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Sadece telefonlarda (max-width: 1024px) ve dikey modda çalışır */
+@media screen and (max-width: 1024px) and (orientation: portrait) {
+    #rotate-device-overlay {
+        display: flex;
+    }
+    .container {
+        display: none !important;
+    }
+}
+
+/* Mobilde PDF Butonlarını Gizle */
+@media screen and (max-width: 1024px) {
+    .pdf-tools {
+        display: none !important;
+    }
+}
+
+/* --- Başlangıç Ekranı --- */
+#start-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+}
+
+/* --- Tam Ekran Düğmesi Tasarımı --- */
+#fullscreen-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.2vh;
+    cursor: pointer;
+    width: 5vh;
+    height: 5vh;
+    min-width: 35px;
+    min-height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1vh;
+    transition: all 0.2s;
+}
+
+#fullscreen-btn:hover { background: rgba(255, 255, 255, 0.3); }
+#fullscreen-btn svg { width: 3.5vh; height: 3.5vh; fill: currentColor; }
+
+/* Simge Değişimi */
+#fullscreen-btn .icon-close { display: none; }
+body.fullscreen-mode #fullscreen-btn .icon-open { display: none; }
+body.fullscreen-mode #fullscreen-btn .icon-close { display: block; }
+
+/* Konteynırın tam ekranda köşelerini düzeltme */
+body.fullscreen-mode .container { border-radius: 0; }

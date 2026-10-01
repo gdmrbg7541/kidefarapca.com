@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mezîd Fiil Atölyesi | Çoklu Ekran Destekli</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Work+Sans:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="sarf/mezid/testmezid.css">
+    <link rel="stylesheet" href="arakom.css?v=2">
+</head>
+<body>
+
+<a href="kaliplartablosu.html" class="fixed-back-nav">←</a>
+
+<div id="quiz-container">
+    <div class="status-bar" id="counter">Soru: 1 / 30</div>
+    <div id="question" class="question-text"></div>
+    <div id="options" class="options-grid"></div>
+    <div class="bottom-nav">
+        <button id="prev-btn" class="nav-btn">GERİ</button>
+        <button id="next-btn" class="nav-btn" disabled>İLERİ</button>
+    </div>
+</div>
+
+<script src="sarf/mezid/testmezid.js"></script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+<script src="_flipbook_kopru.js"></script>
+</body>
+</html>

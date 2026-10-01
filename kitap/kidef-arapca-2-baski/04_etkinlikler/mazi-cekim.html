@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mazi Fiil Çekimi — Alıştırma</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Arakom';src:url('../02_cekirdek/fonts/Arakom-Regular.ttf') format('truetype');
+  font-weight:400 700;font-display:swap}
+@font-face{font-family:'Markazi';src:url('../02_cekirdek/fonts/Markazi.ttf') format('truetype');
+  font-weight:400 700;font-display:swap}
+:root{
+  /* Arapça yığını: önce web (Amiri), sonra offline'da çalışan yerel dosyalar */
+  --ar:'Amiri','Markazi','Arakom','Geeza Pro','Segoe UI',serif;
+  --ink:#122040; --ink2:#2A3C63; --muted:#6C7794; --line:#E2E7F0; --paper:#FFFDF8;
+  --gold:#E3A02A; --teal:#17817E; --violet:#6B4BB4; --coral:#E0533B;
+  --dogru:#0E7C66; --dogruZ:#E1F4EE; --yanlis:#C23B22; --yanlisZ:#FBE6E1;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',-apple-system,system-ui,sans-serif;background:var(--paper);
+  color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;padding:22px 20px 40px}
+.sar{max-width:1060px;margin:0 auto}
+
+/* başlık */
+header{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.kick{font-size:10.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+h1{font-size:clamp(21px,3vw,27px);font-weight:800;letter-spacing:-.02em}
+header p{color:var(--ink2);font-size:13.5px;max-width:58ch;margin-top:5px}
+.puan{margin-left:auto;display:flex;align-items:center;gap:10px}
+.halka{position:relative;width:62px;height:62px;flex-shrink:0}
+.halka svg{transform:rotate(-90deg)}
+.halka b{position:absolute;inset:0;display:grid;place-items:center;font-size:14px;font-weight:800;
+  font-variant-numeric:tabular-nums}
+.puan small{font-size:11.5px;color:var(--muted);font-weight:600;line-height:1.35;display:block}
+
+/* ek havuzu */
+.havuz{margin:20px 0 6px;padding:15px 16px;border:1.5px dashed var(--line);border-radius:14px;
+  background:#fff;position:sticky;top:0;z-index:20;box-shadow:0 4px 18px rgba(18,32,64,.04)}
+.havuz h2{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:11px}
+.ekler{display:flex;flex-wrap:wrap;gap:8px}
+.ek{font-family:var(--ar);font-size:25px;font-weight:700;
+  direction:rtl;min-width:62px;padding:7px 15px;border-radius:11px;border:2px solid var(--line);
+  background:#fff;color:var(--ink);cursor:pointer;transition:.15s;line-height:1.35}
+.ek:hover{border-color:var(--gold);background:#FFFCF5;transform:translateY(-2px)}
+.ek.secili{border-color:var(--gold);background:var(--gold);color:#221503;
+  box-shadow:0 0 0 4px rgba(227,160,42,.2)}
+.ek.bitti{opacity:.28;pointer-events:none;text-decoration:line-through}
+
+/* tablo */
+.tablo{margin-top:20px;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;
+  background:#fff}
+.satir{display:grid;grid-template-columns:132px repeat(3,1fr);border-bottom:1.5px solid var(--line)}
+.satir:last-child{border-bottom:none}
+.satir.bas{background:#F7F9FC}
+.huc{padding:11px 12px;border-left:1.5px solid var(--line);min-height:96px;
+  display:flex;flex-direction:column;justify-content:center;gap:5px}
+.satir.bas .huc{min-height:0;padding:10px 12px}
+.huc:first-child{border-left:none;background:#F7F9FC;align-items:flex-start;justify-content:center}
+.bl{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.sahis{font-family:var(--ar);font-size:21px;font-weight:700;direction:rtl;
+  color:var(--ink)}
+.sahis small{display:block;font-family:'Poppins',sans-serif;font-size:10.5px;font-weight:700;
+  letter-spacing:.04em;color:var(--muted);direction:ltr;margin-top:2px}
+
+/* kutucuk */
+.kutu{width:100%;border:2px dashed #CFD8E6;border-radius:11px;background:#FCFDFE;
+  padding:9px 8px;cursor:pointer;transition:.16s;text-align:center}
+.kutu:hover{border-color:var(--gold);background:#FFFCF5}
+.kutu.hedef{border-color:var(--gold);border-style:solid;background:#FFF8EA;
+  box-shadow:0 0 0 4px rgba(227,160,42,.16)}
+.kutu .yazi{font-family:var(--ar);font-size:28px;font-weight:700;
+  direction:rtl;unicode-bidi:isolate;color:var(--ink);
+  line-height:1.55;min-height:44px;display:flex;align-items:center;justify-content:center}
+.kutu .yazi .kok{color:var(--ink)}
+.kutu .yazi .bosluk{display:inline-block;min-width:34px;border-bottom:2.5px solid #C3CEDE;
+  height:26px;margin-left:3px}
+/* ek çipi — tam kelimenin altında, hangi ekin konduğunu gösterir */
+.kutu .cip{display:none;font-family:var(--ar);font-size:17px;font-weight:700;
+  direction:rtl;unicode-bidi:isolate;color:var(--coral);background:#FFF3F0;
+  border-radius:7px;padding:1px 9px;align-self:center;line-height:1.5}
+.kutu .cip.var{display:inline-block}
+.kutu .tr{font-size:11px;font-weight:600;color:var(--muted);margin-top:2px}
+.kutu.dogru{border-style:solid;border-color:var(--dogru);background:var(--dogruZ)}
+.kutu.dogru .cip{color:var(--dogru);background:#D2EDE4}
+.kutu.yanlis{border-style:solid;border-color:var(--yanlis);background:var(--yanlisZ);
+  animation:silk .32s}
+.kutu.yanlis .cip{color:var(--yanlis);background:#F7D9D2}
+@keyframes silk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.kutu .im{font-size:12px;font-weight:800;margin-top:1px}
+.kutu.dogru .im{color:var(--dogru)}
+.kutu.yanlis .im{color:var(--yanlis)}
+
+/* alt düğmeler */
+.dugmeler{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;align-items:center}
+.dg{padding:10px 19px;border-radius:99px;font:inherit;font-size:13.5px;font-weight:700;
+  border:1.5px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;transition:.15s}
+.dg:hover{border-color:var(--gold);color:var(--ink)}
+.dg.ana{background:var(--ink);border-color:var(--ink);color:#fff}
+.dg.ana:hover{background:var(--ink2);border-color:var(--ink2)}
+.dg.altin{background:var(--gold);border-color:var(--gold);color:#221503}
+.ipucu-yazi{font-size:12.5px;color:var(--muted);margin-left:auto}
+
+/* bitirme rozeti */
+.bitti-kutu{margin-top:18px;padding:16px 18px;border-radius:14px;background:var(--dogruZ);
+  border:1.5px solid #B6E0D3;display:none;gap:13px;align-items:center}
+.bitti-kutu.gor{display:flex}
+.bitti-kutu .ik{font-size:26px}
+.bitti-kutu b{font-size:14.5px;display:block}
+.bitti-kutu small{font-size:12.5px;color:var(--ink2)}
+
+@media (max-width:760px){
+  .satir{grid-template-columns:96px repeat(3,1fr)}
+  .huc{padding:8px 7px;min-height:88px}
+  .kutu .yazi{font-size:22px}
+  .ek{font-size:21px;min-width:54px;padding:6px 12px}
+  .havuz{position:static}
+}
+</style>
+</head>
+<body>
+<div class="sar">
+
+<header>
+  <div>
+    <div class="kick">🧐 Dilbilgisi · Ünite 3 · Sayfa 78</div>
+    <h1>Mazi Fiil Çekimi — <span style="font-family:var(--ar);direction:rtl">كَتَبَ</span></h1>
+    <p>Her kutuya doğru <b>eki</b> yerleştir. Önce yukarıdan bir ek seç, sonra kutuya dokun.
+       Ekler Arapçanın kalıp mantığını kurar: kök sabit kalır, ek şahsı taşır.</p>
+  </div>
+  <div class="puan">
+    <div class="halka">
+      <svg width="62" height="62" viewBox="0 0 62 62">
+        <circle cx="31" cy="31" r="26" fill="none" stroke="#E2E7F0" stroke-width="6"/>
+        <circle id="halkaCizgi" cx="31" cy="31" r="26" fill="none" stroke="#E3A02A" stroke-width="6"
+                stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4"
+                style="transition:stroke-dashoffset .45s"/>
+      </svg>
+      <b id="puanYazi">0</b>
+    </div>
+    <small id="puanAlt">14 kutudan<br>0 doğru</small>
+  </div>
+</header>
+
+<div class="havuz">
+  <h2>Ekler — birini seç, sonra kutuya dokun</h2>
+  <div class="ekler" id="ekler"></div>
+</div>
+
+<div class="tablo" id="tablo"></div>
+
+<div class="dugmeler">
+  <button class="dg ana" id="bKontrol">Kontrol et</button>
+  <button class="dg" id="bTemizle">Temizle</button>
+  <button class="dg altin" id="bCevap">Cevapları göster</button>
+  <span class="ipucu-yazi">Yanlış kutuya dokunarak eki geri alabilirsin</span>
+</div>
+
+<div class="bitti-kutu" id="bittiKutu">
+  <span class="ik">🦾</span>
+  <div><b>Tebrikler, çekim tamam!</b>
+  <small id="bittiAlt">14 / 14 doğru. Şimdi 79. sayfadaki “Ezberleyelim” bölümüne geçebilirsin.</small></div>
+</div>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var KOK = 'كَتَب';
+
+/* ÖNEMLİ — Arapça harf birleşmesi:
+   Kök ile eki iki ayrı <span> içine koyarsak tarayıcının shaping motoru
+   bunları ayrı metin akışı sayar ve harfler BİRLEŞMEZ ("كَتَب" + "ُوا" yan yana
+   durur, "كَتَبُوا" olmaz). Bu yüzden her hücrede kelimenin TAM hâli (`tam`)
+   tek metin düğümü olarak yazılır; ek ayrıca küçük bir çipte gösterilir.
+   `ekG` = ekin çipte görünen hâli (başında tatvîl "ـ" ile bitişik biçim). */
+var SATIRLAR = [
+ {ar:'غَائِب',    tr:'Gâib — O (eril)',      h:[
+   {ek:'ُوا',   ekG:'ـُوا',   tam:'كَتَبُوا',   tr:'(Onlar) yazdılar'},
+   {ek:'َا',    ekG:'ـَا',    tam:'كَتَبَا',    tr:'(O ikisi) yazdı'},
+   {ek:'َ',     ekG:'ـَ',     tam:'كَتَبَ',     tr:'(O) yazdı'}]},
+ {ar:'غَائِبَة',  tr:'Gâibe — O (dişil)',    h:[
+   {ek:'ْنَ',   ekG:'ـْنَ',   tam:'كَتَبْنَ',   tr:'(Onlar) yazdılar'},
+   {ek:'َتَا',  ekG:'ـَتَا',  tam:'كَتَبَتَا',  tr:'(O ikisi) yazdı'},
+   {ek:'َتْ',   ekG:'ـَتْ',   tam:'كَتَبَتْ',   tr:'(O) yazdı'}]},
+ {ar:'مُخَاطَب',  tr:'Muhâtab — Sen (eril)', h:[
+   {ek:'ْتُمْ',  ekG:'ـْتُمْ',  tam:'كَتَبْتُمْ',  tr:'(Siz) yazdınız'},
+   {ek:'ْتُمَا', ekG:'ـْتُمَا', tam:'كَتَبْتُمَا', tr:'(Siz ikiniz) yazdınız'},
+   {ek:'ْتَ',   ekG:'ـْتَ',   tam:'كَتَبْتَ',   tr:'(Sen) yazdın'}]},
+ {ar:'مُخَاطَبَة',tr:'Muhâtaba — Sen (dişil)',h:[
+   {ek:'ْتُنَّ', ekG:'ـْتُنَّ', tam:'كَتَبْتُنَّ', tr:'(Siz) yazdınız'},
+   {ek:'ْتُمَا', ekG:'ـْتُمَا', tam:'كَتَبْتُمَا', tr:'(Siz ikiniz) yazdınız'},
+   {ek:'ْتِ',   ekG:'ـْتِ',   tam:'كَتَبْتِ',   tr:'(Sen) yazdın'}]},
+ {ar:'مُتَكَلِّم', tr:'Mütekellim — Ben / Biz',h:[
+   {ek:'ْنَا',  ekG:'ـْنَا',  tam:'كَتَبْنَا',  tr:'(Biz) yazdık'},
+   null,
+   {ek:'ْتُ',   ekG:'ـْتُ',   tam:'كَتَبْتُ',   tr:'(Ben) yazdım'}]},
+];
+
+var BASLIK = ["Cem' — Çoğul","Müsennâ — İkil","Müfred — Tekil"];
+
+/* Hücreyi çizer.
+   ek yoksa  -> kök + boşluk çizgisi
+   ek varsa  -> kelimenin TAM hâli tek metin düğümü (harfler birleşsin) + ek çipi */
+function kutuCiz(b, ek){
+  var y = b.querySelector('.yazi'), c = b.querySelector('.cip');
+  if (!ek){
+    y.textContent = '';
+    y.innerHTML = '<span class="kok">'+KOK+'</span><span class="bosluk"></span>';
+    c.textContent = '';
+    c.classList.remove('var');
+    return;
+  }
+  // doğru ek ise kelimenin tam hâli; yanlış ek ise kök+ek (bilerek "yanlış" görünür)
+  y.textContent = (ek === b.dataset.dogru) ? b.dataset.tam : (KOK + ek);
+  c.textContent = ek === b.dataset.dogru ? b.dataset.ekg : 'ـ' + ek;
+  c.classList.add('var');
+}
+
+/* ---------- tablo kur ---------- */
+var tablo = document.getElementById('tablo');
+var bas = document.createElement('div');
+bas.className = 'satir bas';
+bas.innerHTML = '<div class="huc"><span class="bl">Şahıs</span></div>' +
+  BASLIK.map(function(b){return '<div class="huc"><span class="bl">'+b+'</span></div>';}).join('');
+tablo.appendChild(bas);
+
+var kutular = [];
+SATIRLAR.forEach(function(s, si){
+  var r = document.createElement('div');
+  r.className = 'satir';
+  var h = '<div class="huc"><span class="sahis">'+s.ar+'<small>'+s.tr+'</small></span></div>';
+  r.innerHTML = h;
+  s.h.forEach(function(c, ci){
+    var d = document.createElement('div');
+    d.className = 'huc';
+    if (!c){ d.innerHTML = '<span class="bl" style="text-align:center;width:100%;opacity:.5">—</span>'; }
+    else {
+      var b = document.createElement('button');
+      b.className = 'kutu';
+      b.innerHTML = '<span class="yazi"></span><span class="cip"></span>' +
+                    '<span class="tr">'+c.tr+'</span><span class="im"></span>';
+      b.dataset.dogru = c.ek;
+      b.dataset.tam = c.tam;
+      b.dataset.ekg = c.ekG;
+      kutuCiz(b, null);
+      b.addEventListener('click', function(){ kutuTik(b); });
+      d.appendChild(b);
+      kutular.push(b);
+    }
+    r.appendChild(d);
+  });
+  tablo.appendChild(r);
+});
+
+/* ---------- ek havuzu (karışık, tekrarlar ayrı) ---------- */
+var havuzEkler = [];
+kutular.forEach(function(b){ havuzEkler.push(b.dataset.dogru); });
+havuzEkler.sort(function(){ return Math.random()-0.5; });
+
+var eklerEl = document.getElementById('ekler');
+var ekTuslari = [];
+var ekGorunum = {};
+SATIRLAR.forEach(function(s){ s.h.forEach(function(c){ if(c) ekGorunum[c.ek] = c.ekG; }); });
+havuzEkler.forEach(function(e){
+  var b = document.createElement('button');
+  b.className = 'ek';
+  b.textContent = ekGorunum[e] || e;
+  b.dataset.ek = e;
+  b.addEventListener('click', function(){ ekTik(b); });
+  eklerEl.appendChild(b);
+  ekTuslari.push(b);
+});
+
+/* ---------- etkileşim ---------- */
+var secili = null;
+
+function ekTik(b){
+  if (secili === b){ b.classList.remove('secili'); secili = null; return; }
+  ekTuslari.forEach(function(x){ x.classList.remove('secili'); });
+  b.classList.add('secili');
+  secili = b;
+  // seçili ek varsa boş ilk kutuyu vurgula
+  kutular.forEach(function(k){ k.classList.toggle('hedef', !k.dataset.dolu); });
+}
+
+function kutuTik(k){
+  // dolu kutuya dokunma -> eki geri al
+  if (k.dataset.dolu){
+    var geri = k.dataset.dolu;
+    k.removeAttribute('data-dolu');
+    kutuCiz(k, null);
+    k.querySelector('.im').textContent = '';
+    k.classList.remove('dogru','yanlis');
+    var bos = ekTuslari.filter(function(x){ return x.classList.contains('bitti') && x.dataset.ek === geri; })[0];
+    if (bos) bos.classList.remove('bitti');
+    puanla();
+    return;
+  }
+  if (!secili){ titret(k); return; }
+  k.dataset.dolu = secili.dataset.ek;
+  kutuCiz(k, secili.dataset.ek);
+  secili.classList.add('bitti');
+  secili.classList.remove('secili');
+  secili = null;
+  kutular.forEach(function(x){ x.classList.remove('hedef'); });
+  puanla();
+}
+
+function titret(k){
+  k.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},
+             {transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:240});
+  havuzVurgu();
+}
+function havuzVurgu(){
+  var h = document.querySelector('.havuz');
+  h.animate([{boxShadow:'0 0 0 0 rgba(227,160,42,0)'},
+             {boxShadow:'0 0 0 6px rgba(227,160,42,.28)'},
+             {boxShadow:'0 0 0 0 rgba(227,160,42,0)'}],{duration:800});
+}
+
+/* ---------- puan ---------- */
+function puanla(){
+  var dolu = kutular.filter(function(k){ return k.dataset.dolu; }).length;
+  var d = kutular.filter(function(k){ return k.dataset.dolu === k.dataset.dogru; }).length;
+  document.getElementById('puanYazi').textContent = d;
+  document.getElementById('puanAlt').innerHTML = kutular.length + ' kutudan<br>' + d + ' doğru';
+  var c = 163.4 * (1 - d / kutular.length);
+  document.getElementById('halkaCizgi').style.strokeDashoffset = c;
+  document.getElementById('halkaCizgi').setAttribute('stroke', d === kutular.length ? '#0E7C66' : '#E3A02A');
+  var bk = document.getElementById('bittiKutu');
+  bk.classList.toggle('gor', d === kutular.length);
+  return {dolu:dolu, dogru:d};
+}
+
+/* ---------- düğmeler ---------- */
+document.getElementById('bKontrol').addEventListener('click', function(){
+  var bos = 0;
+  kutular.forEach(function(k){
+    k.classList.remove('dogru','yanlis');
+    if (!k.dataset.dolu){ bos++; return; }
+    var ok = k.dataset.dolu === k.dataset.dogru;
+    k.classList.add(ok ? 'dogru' : 'yanlis');
+    k.querySelector('.im').textContent = ok ? '✓ doğru' : '✕ tekrar dene';
+  });
+  var p = puanla();
+  if (bos) havuzVurgu();
+});
+
+document.getElementById('bTemizle').addEventListener('click', function(){
+  kutular.forEach(function(k){
+    k.removeAttribute('data-dolu');
+    kutuCiz(k, null);
+    k.querySelector('.im').textContent = '';
+    k.classList.remove('dogru','yanlis','hedef');
+  });
+  ekTuslari.forEach(function(x){ x.classList.remove('bitti','secili'); });
+  secili = null;
+  puanla();
+});
+
+document.getElementById('bCevap').addEventListener('click', function(){
+  kutular.forEach(function(k){
+    k.dataset.dolu = k.dataset.dogru;
+    kutuCiz(k, k.dataset.dogru);
+    k.classList.remove('yanlis','hedef');
+    k.classList.add('dogru');
+    k.querySelector('.im').textContent = '✓';
+  });
+  ekTuslari.forEach(function(x){ x.classList.add('bitti'); x.classList.remove('secili'); });
+  secili = null;
+  puanla();
+  document.getElementById('bittiAlt').textContent =
+    'Cevaplar gösterildi. Şimdi “Temizle”ye basıp kendi başına dene.';
+});
+
+/* flipbook içine gömülüyken Escape ile paneli kapat */
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Escape') return;
+  if (window.parent !== window){
+    e.preventDefault();
+    window.parent.postMessage({kidef:'kapat'}, '*');
+  }
+});
+
+puanla();
+})();
+</script>
+</body>
+</html>

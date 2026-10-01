@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YDT Analiz: Bağlam Dedektifi</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="ydt/baglamdedektifi.css">
+    <link rel="stylesheet" href="arakom.css?v=2">
+</head>
+<body>
+    <div class="container">
+        <div class="header" style="display: flex; justify-content: space-between; align-items: center; padding: 0 2vh; height: 8vh; background-color: var(--primary); color: white; position: relative;">
+            
+            <div class="header-left" style="display: flex; align-items: center; z-index: 10;">
+                <a href="ydtarapca.html" class="back-button" style="display: flex; align-items: center; text-decoration: none; color: white;">
+                    <svg viewBox="0 0 24 24" style="width: 3.5vh; height: 3.5vh; fill: currentColor;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                </a>
+            </div>
+
+            <div class="header-center" style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 4.5vh; font-weight: 800; white-space: nowrap; z-index: 5;">
+                Bağlam Dedektifi 🕵️‍♂️
+            </div>
+
+            <div class="header-right" style="display: flex; align-items: center; gap: 1.5vh; z-index: 10;">
+                <div onclick="openPdf('tablo1.pdf')" class="pdf-btn" style="cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; width: 18vh; height: 6vh; padding: 0 1.2vh; gap: 1vh; background: #e74c3c; border-radius: 1vh; border: 1px solid rgba(255,255,255,0.2);">
+    <svg viewBox="0 0 24 24" style="width: 3vh; height: 3vh; fill: currentColor; flex-shrink: 0;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+    <span style="font-size: 2.2vh; font-weight: 900; text-transform: uppercase; white-space: nowrap; letter-spacing: 0.1vh;">SÜLASİ</span>
+</div>
+
+<div onclick="openPdf('tablo2.pdf')" class="pdf-btn" style="cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; width: 18vh; height: 6vh; padding: 0 1.2vh; gap: 1vh; background: #e74c3c; border-radius: 1vh; border: 1px solid rgba(255,255,255,0.2);">
+    <svg viewBox="0 0 24 24" style="width: 3vh; height: 3vh; fill: currentColor; flex-shrink: 0;"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+    <span style="font-size: 2.2vh; font-weight: 900; text-transform: uppercase; white-space: nowrap; letter-spacing: 0.1vh;">MEZİD</span>
+</div>
+            </div>
+        </div>
+        
+        <div id="pdf-viewer-container" style="display: none; position: absolute; z-index: 1000; width: 100%; height: 92vh; background: white;">
+            <button class="close-pdf" onclick="closePdf()" style="position: absolute; right: 10px; top: 10px; z-index: 1001; padding: 10px; background: red; color: white; border: none; border-radius: 5px; cursor: pointer;">X</button>
+            <iframe id="pdf-frame" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+
+        <div id="sentence-container" class="sentence-area" style="padding-bottom: 50px;"></div>
+        <div id="full-sentence-display" class="full-sentence-box"></div>
+        <div id="options-container" class="options-area"></div>
+
+        <div id="feedback-overlay" class="feedback-box">
+            <button id="next-btn" class="next-btn" onclick="nextQuestion()">Sıradaki </button>
+        </div>
+    </div>
+    <script src="ydt/baglamdedektifi.js"></script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+<script src="_flipbook_kopru.js"></script>
+</body>
+</html>

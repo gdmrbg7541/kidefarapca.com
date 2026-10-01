@@ -1,0 +1,4545 @@
+{
+ "ad": "Kidef Arapça",
+ "baski": "2. Baskı",
+ "toplamSayfa": 231,
+ "en": 1654,
+ "boy": 2339,
+ "oran": 1.4141,
+ "simgeler": [
+  {
+   "kod": "oyun-takim",
+   "simge": "🎯✊",
+   "ad": "Takım Oyunu",
+   "renk": "#E0533B"
+  },
+  {
+   "kod": "oyun-ikili",
+   "simge": "🎯⚔",
+   "ad": "İkişerli Oyun",
+   "renk": "#E0533B"
+  },
+  {
+   "kod": "dilbilgisi",
+   "simge": "🧐",
+   "ad": "Dilbilgisi",
+   "renk": "#17817E"
+  },
+  {
+   "kod": "kalip",
+   "simge": "🛠",
+   "ad": "Kalıp-Vezin",
+   "renk": "#6B4BB4"
+  },
+  {
+   "kod": "yazma",
+   "simge": "✏",
+   "ad": "Yazma",
+   "renk": "#E3A02A"
+  },
+  {
+   "kod": "sozluk",
+   "simge": "📚",
+   "ad": "Sözlük Çalışması",
+   "renk": "#6B4BB4"
+  },
+  {
+   "kod": "tercume",
+   "simge": "🙇",
+   "ad": "Metin Tercüme",
+   "renk": "#17817E"
+  },
+  {
+   "kod": "zaman",
+   "simge": "⏱",
+   "ad": "Zamanla Yarış!",
+   "renk": "#E0533B"
+  },
+  {
+   "kod": "konusma",
+   "simge": "🗣",
+   "ad": "Konuşma",
+   "renk": "#E3A02A"
+  },
+  {
+   "kod": "dene",
+   "simge": "⚖",
+   "ad": "Kendini Dene!",
+   "renk": "#122040"
+  },
+  {
+   "kod": "pekistir",
+   "simge": "🦾",
+   "ad": "Pekiştirelim!",
+   "renk": "#17817E"
+  },
+  {
+   "kod": "kelime",
+   "simge": "🏝",
+   "ad": "Kelime Cenneti",
+   "renk": "#6B4BB4"
+  },
+  {
+   "kod": "irab",
+   "simge": "🔬",
+   "ad": "Kelime İrabı",
+   "renk": "#122040"
+  }
+ ],
+ "uniteler": [
+  {
+   "no": 0,
+   "ad": "Giriş"
+  },
+  {
+   "no": 1,
+   "ad": "Ünite 1: Arapçaya Giriş"
+  },
+  {
+   "no": 2,
+   "ad": "Ünite 2: İsim"
+  },
+  {
+   "no": 3,
+   "ad": "Ünite 3: Fiil"
+  },
+  {
+   "no": 4,
+   "ad": "Ünite 4: Harf"
+  },
+  {
+   "no": 5,
+   "ad": "Ünite 5: Tamlama ve Cümleler"
+  },
+  {
+   "no": 6,
+   "ad": "Ünite 6: Metin Çalışmaları"
+  },
+  {
+   "no": 7,
+   "ad": "Ünite 7: İstimâ’ (Dinleme)"
+  },
+  {
+   "no": 9,
+   "ad": "Ünite 9: Kendini Değerlendir (Kitap Sonu)"
+  }
+ ],
+ "dersler": [
+  {
+   "unite": 0,
+   "uniteAd": "Giriş",
+   "sayfa": 1,
+   "bitis": 1,
+   "simge": null,
+   "ad": "Kapak"
+  },
+  {
+   "unite": 0,
+   "uniteAd": "Giriş",
+   "sayfa": 2,
+   "bitis": 2,
+   "simge": null,
+   "ad": "Mukaddime"
+  },
+  {
+   "unite": 0,
+   "uniteAd": "Giriş",
+   "sayfa": 3,
+   "bitis": 3,
+   "simge": null,
+   "ad": "Simgeler"
+  },
+  {
+   "unite": 0,
+   "uniteAd": "Giriş",
+   "sayfa": 4,
+   "bitis": 4,
+   "simge": null,
+   "ad": "İçindekiler"
+  },
+  {
+   "unite": 0,
+   "uniteAd": "Giriş",
+   "sayfa": 5,
+   "bitis": 5,
+   "simge": null,
+   "ad": "Dil Öğrenmek"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 6,
+   "bitis": 14,
+   "simge": "yazma",
+   "ad": "Genel Bilgiler ve Harfler"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 15,
+   "bitis": 15,
+   "simge": "yazma",
+   "ad": "Harfleri Ayırt Edelim",
+   "kaynak": "ders-15"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 16,
+   "bitis": 16,
+   "simge": "yazma",
+   "ad": "Kelimeyi Tamamla",
+   "kaynak": "ders-16"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 17,
+   "bitis": 17,
+   "simge": "yazma",
+   "ad": "İstenen Harfi Yazabilir misin?",
+   "kaynak": "ders-17"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 18,
+   "bitis": 18,
+   "simge": "yazma",
+   "ad": "Harfleri Birleştirelim"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 19,
+   "bitis": 22,
+   "simge": "yazma",
+   "ad": "Dinle ve Yaz (4 Seviye)"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 23,
+   "bitis": 23,
+   "simge": "yazma",
+   "ad": "İstenen Harfi Yazabilir misin? 2. Alıştırma",
+   "kaynak": "ders-23"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 24,
+   "bitis": 24,
+   "simge": "yazma",
+   "ad": "Okuyalım"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 25,
+   "bitis": 25,
+   "simge": "yazma",
+   "ad": "Harekeleyelim"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 26,
+   "bitis": 26,
+   "simge": "sozluk",
+   "ad": "Dijital Sözlük Kullanıyorum",
+   "kaynak": "dijital-sozluk"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 27,
+   "bitis": 28,
+   "simge": "oyun-takim",
+   "ad": "En Çok Kelime Bulan Kazanır",
+   "kaynak": "ders-27"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 29,
+   "bitis": 33,
+   "simge": "kalip",
+   "ad": "Arapça Kalıplar Dilidir",
+   "kaynak": "ders-29"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 34,
+   "bitis": 37,
+   "simge": "oyun-ikili",
+   "ad": "Kalıplar Tablosu",
+   "kaynak": "ders-34"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 38,
+   "bitis": 39,
+   "simge": "oyun-takim",
+   "ad": "Bul Kalıbı Al Puanı",
+   "kaynak": "ders-38"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 40,
+   "bitis": 41,
+   "simge": "sozluk",
+   "ad": "Arapçada Kelime",
+   "kaynak": "ders-40"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 42,
+   "bitis": 42,
+   "simge": "oyun-ikili",
+   "ad": "İkiki",
+   "kaynak": "ders-42"
+  },
+  {
+   "unite": 1,
+   "uniteAd": "Ünite 1: Arapçaya Giriş",
+   "sayfa": 43,
+   "bitis": 49,
+   "simge": "dene",
+   "ad": "Kendini Dene!"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 50,
+   "bitis": 51,
+   "simge": "dilbilgisi",
+   "ad": "İsim ve Dört Özelliği"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 52,
+   "bitis": 53,
+   "simge": "oyun-ikili",
+   "ad": "Kim Daha Hızlı?",
+   "kaynak": "ders-52"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 54,
+   "bitis": 54,
+   "simge": "dilbilgisi",
+   "ad": "Munfasıl Zamirler"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 55,
+   "bitis": 58,
+   "simge": "dilbilgisi",
+   "ad": "Muttasıl Zamirler"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 59,
+   "bitis": 60,
+   "simge": "dilbilgisi",
+   "ad": "Harfi Tarif",
+   "kaynak": "ders-59"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 61,
+   "bitis": 62,
+   "simge": "oyun-takim",
+   "ad": "İsim x 4 Survivor"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 63,
+   "bitis": 64,
+   "simge": "dilbilgisi",
+   "ad": "Müfred, Tesniye ve Cem' İsimler",
+   "kaynak": "ders-63"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 65,
+   "bitis": 65,
+   "simge": "dilbilgisi",
+   "ad": "Cem'i Teksir Vezinleri"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 66,
+   "bitis": 66,
+   "simge": "dilbilgisi",
+   "ad": "Müennes-Müzekker İsimler",
+   "kaynak": "ders-66"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 67,
+   "bitis": 69,
+   "simge": "irab",
+   "ad": "İsimlerin Kelime İrabı"
+  },
+  {
+   "unite": 2,
+   "uniteAd": "Ünite 2: İsim",
+   "sayfa": 70,
+   "bitis": 74,
+   "simge": "dene",
+   "ad": "Kendini Dene!",
+   "kaynak": "ders-70"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 75,
+   "bitis": 76,
+   "simge": "dilbilgisi",
+   "ad": "Arapçada Fiiller"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 77,
+   "bitis": 81,
+   "simge": "dilbilgisi",
+   "ad": "Mazi",
+   "kaynak": "mazi"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 82,
+   "bitis": 88,
+   "simge": "dilbilgisi",
+   "ad": "Muzari",
+   "kaynak": "ders-82"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 89,
+   "bitis": 93,
+   "simge": "dilbilgisi",
+   "ad": "Emir",
+   "kaynak": "ders-89"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 94,
+   "bitis": 103,
+   "simge": "dilbilgisi",
+   "ad": "Basit Fiiller (Aksam-ı Seba)",
+   "kaynak": "aksam-i-seba"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 104,
+   "bitis": 120,
+   "simge": "oyun-takim",
+   "ad": "Kökten Gövdeye",
+   "kaynak": "ders-104"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 121,
+   "bitis": 123,
+   "simge": "dilbilgisi",
+   "ad": "Fiillerin Olumsuzu ve İrabı",
+   "kaynak": "ders-121"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 124,
+   "bitis": 135,
+   "simge": "kalip",
+   "ad": "Türemiş Fiiller (Sülasi Mezid)",
+   "kaynak": "mezid"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 136,
+   "bitis": 166,
+   "simge": "oyun-takim",
+   "ad": "Kök-Kelime-Cümle",
+   "kaynak": "ders-136"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 167,
+   "bitis": 168,
+   "simge": "irab",
+   "ad": "Fiilin Kelime İrabı"
+  },
+  {
+   "unite": 3,
+   "uniteAd": "Ünite 3: Fiil",
+   "sayfa": 169,
+   "bitis": 177,
+   "simge": "dene",
+   "ad": "Kendini Dene!"
+  },
+  {
+   "unite": 4,
+   "uniteAd": "Ünite 4: Harf",
+   "sayfa": 178,
+   "bitis": 179,
+   "simge": "dilbilgisi",
+   "ad": "Harfler",
+   "kaynak": "harfler"
+  },
+  {
+   "unite": 5,
+   "uniteAd": "Ünite 5: Tamlama ve Cümleler",
+   "sayfa": 180,
+   "bitis": 182,
+   "simge": "dilbilgisi",
+   "ad": "İzafet (İsim Tamlaması)"
+  },
+  {
+   "unite": 5,
+   "uniteAd": "Ünite 5: Tamlama ve Cümleler",
+   "sayfa": 183,
+   "bitis": 184,
+   "simge": "dilbilgisi",
+   "ad": "Mevsuf ve Sıfat"
+  },
+  {
+   "unite": 5,
+   "uniteAd": "Ünite 5: Tamlama ve Cümleler",
+   "sayfa": 185,
+   "bitis": 186,
+   "simge": "dilbilgisi",
+   "ad": "İsim Cümlesi"
+  },
+  {
+   "unite": 5,
+   "uniteAd": "Ünite 5: Tamlama ve Cümleler",
+   "sayfa": 187,
+   "bitis": 188,
+   "simge": "dilbilgisi",
+   "ad": "Fiil Cümlesi"
+  },
+  {
+   "unite": 5,
+   "uniteAd": "Ünite 5: Tamlama ve Cümleler",
+   "sayfa": 189,
+   "bitis": 191,
+   "simge": "pekistir",
+   "ad": "Tamlama ve Cümleler"
+  },
+  {
+   "unite": 5,
+   "uniteAd": "Ünite 5: Tamlama ve Cümleler",
+   "sayfa": 192,
+   "bitis": 195,
+   "simge": "dilbilgisi",
+   "ad": "Kane ve Kardeşleri"
+  },
+  {
+   "unite": 5,
+   "uniteAd": "Ünite 5: Tamlama ve Cümleler",
+   "sayfa": 196,
+   "bitis": 200,
+   "simge": "dene",
+   "ad": "Kendini Dene!"
+  },
+  {
+   "unite": 6,
+   "uniteAd": "Ünite 6: Metin Çalışmaları",
+   "sayfa": 201,
+   "bitis": 203,
+   "simge": "konusma",
+   "ad": "Kendimizce Sohbet Oluşturalım"
+  },
+  {
+   "unite": 6,
+   "uniteAd": "Ünite 6: Metin Çalışmaları",
+   "sayfa": 204,
+   "bitis": 204,
+   "simge": "pekistir",
+   "ad": "Pekiştirelim"
+  },
+  {
+   "unite": 6,
+   "uniteAd": "Ünite 6: Metin Çalışmaları",
+   "sayfa": 205,
+   "bitis": 205,
+   "simge": "tercume",
+   "ad": "Üridu En (…mek istiyorum)"
+  },
+  {
+   "unite": 6,
+   "uniteAd": "Ünite 6: Metin Çalışmaları",
+   "sayfa": 206,
+   "bitis": 206,
+   "simge": "tercume",
+   "ad": "Yecibu Ale (…meli, …malı)"
+  },
+  {
+   "unite": 6,
+   "uniteAd": "Ünite 6: Metin Çalışmaları",
+   "sayfa": 207,
+   "bitis": 207,
+   "simge": "tercume",
+   "ad": "İstitae – Yestetiu (…ebilmek)"
+  },
+  {
+   "unite": 6,
+   "uniteAd": "Ünite 6: Metin Çalışmaları",
+   "sayfa": 208,
+   "bitis": 209,
+   "simge": "sozluk",
+   "ad": "Harekeleme Çalışması"
+  },
+  {
+   "unite": 7,
+   "uniteAd": "Ünite 7: İstimâ’ (Dinleme)",
+   "sayfa": 210,
+   "bitis": 211,
+   "simge": "kelime",
+   "ad": "Kelime Cenneti: Temel Kavramlar"
+  },
+  {
+   "unite": 7,
+   "uniteAd": "Ünite 7: İstimâ’ (Dinleme)",
+   "sayfa": 212,
+   "bitis": 212,
+   "simge": "kelime",
+   "ad": "Sayılar"
+  },
+  {
+   "unite": 7,
+   "uniteAd": "Ünite 7: İstimâ’ (Dinleme)",
+   "sayfa": 213,
+   "bitis": 218,
+   "simge": "kelime",
+   "ad": "En Çok Kullanılan Fiiller"
+  },
+  {
+   "unite": 9,
+   "uniteAd": "Ünite 9: Kendini Değerlendir (Kitap Sonu)",
+   "sayfa": 219,
+   "bitis": 220,
+   "simge": "dene",
+   "ad": "Kendini Değerlendir"
+  },
+  {
+   "unite": 9,
+   "uniteAd": "Ünite 9: Kendini Değerlendir (Kitap Sonu)",
+   "sayfa": 221,
+   "bitis": 230,
+   "simge": null,
+   "ad": "Notlarım"
+  },
+  {
+   "unite": 9,
+   "uniteAd": "Ünite 9: Kendini Değerlendir (Kitap Sonu)",
+   "sayfa": 231,
+   "bitis": 231,
+   "simge": null,
+   "ad": "Kaynaklar"
+  }
+ ],
+ "kaynaklar": {
+  "mazi": {
+   "sayfalar": [
+    77,
+    78,
+    79,
+    80,
+    81
+   ],
+   "ad": "Mazi Fiil",
+   "sunum": {
+    "klasor": "05_sunumlar/mazi",
+    "adet": 223,
+    "ad": "Mazi Fiil Ders Sunusu",
+    "pdf": "../1. Knlr/3. Ünite - Fiiller/11. Ders - 🧐 Mazi Fiil/Sunu 🧐 Mazi Fiil.pdf"
+   },
+   "video": [
+    {
+     "dosya": "05_sunumlar/mazi_ders_videosu.mp4",
+     "ad": "Mazi Fiil Ders Videosu"
+    },
+    {
+     "dosya": "05_sunumlar/mazi_animasyon.mp4",
+     "ad": "Animasyonlu Mazi Fiil Çekimi"
+    }
+   ],
+   "cevap": {
+    "klasor": "06_cevaplar/mazi",
+    "adet": 5,
+    "ad": "Mazi Fiil Cevap Anahtarı"
+   },
+   "etkinlik": [
+    {
+     "dosya": "04_etkinlikler/mazi-cekim.html",
+     "ad": "Mazi Fiil Çekimi — Ekleri Yerleştir"
+    }
+   ]
+  },
+  "dijital-sozluk": {
+   "sayfalar": [
+    26
+   ],
+   "ad": "Dijital Sözlük Kullanıyorum",
+   "etkinlik": [
+    {
+     "dosya": "07_araclar/sozluk.html",
+     "ad": "Sözlük",
+     "aciklama": "Arapça ya da Türkçe yaz; kökü ve türevleriyle bul",
+     "kategori": "sozluk"
+    },
+    {
+     "dosya": "07_araclar/sozlukdedektifi.html",
+     "ad": "Sözlük Dedektifi",
+     "aciklama": "Kelimenin kökünü bulma çalışması",
+     "kategori": "sozluk"
+    }
+   ],
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/dijital-sozluk",
+     "adet": 345,
+     "ad": "Dijital Sözlük Kullanıyorum — Ders Sunusu",
+     "sayfa": 26,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/1.2. Ders- Dijital Sözlük Kullanıyorum/Dijital Sözlük Kullanıyorum.pdf"
+    }
+   ]
+  },
+  "aksam-i-seba": {
+   "sayfalar": [
+    94
+   ],
+   "ad": "Basit Fiiller (Aksam-ı Seba)",
+   "etkinlik": [
+    {
+     "dosya": "07_araclar/kurandanornekler.html",
+     "ad": "Aksam-ı Seba — Kur'an'dan Örnekler",
+     "aciklama": "Basit fiil yapıları, âyetlerden örneklerle",
+     "kategori": "fiil"
+    }
+   ],
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/basit-fiiller",
+     "adet": 253,
+     "ad": "Basit Fiiller (Aksam-ı Seba) Ders Sunusu",
+     "sayfa": 95,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/33. Ders - 76 🧐 Basit Fiiller/Slayt Pdf/Sayfa 76 🧐 Basit Fiiller.pdf"
+    }
+   ]
+  },
+  "mezid": {
+   "sayfalar": [
+    124
+   ],
+   "ad": "Türemiş Fiiller (Sülasi Mezid)",
+   "etkinlik": [
+    {
+     "dosya": "07_araclar/kurandanorneklermezid.html",
+     "ad": "Mezid Fiiller — Kur'an'dan Örnekler",
+     "aciklama": "Türemiş fiil babları, âyetlerden örneklerle",
+     "kategori": "fiil"
+    },
+    {
+     "dosya": "07_araclar/testmezid.html",
+     "ad": "Mezid Fiil Atölyesi",
+     "aciklama": "Türemiş fiil alıştırmaları",
+     "kategori": "fiil"
+    }
+   ],
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/turemis-1",
+     "adet": 47,
+     "ad": "Türemiş Fiiller 1 — Giriş ve İf’âl",
+     "sayfa": 125,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/56. Ders - 134 🧐 🛠 ⏱️Türemiş Fiiller/Slayt Pdf/Sunu 1 🧐 🛠 ⏱️Türemiş Fiiller 1. Giriş ve Tefil.pdf"
+    },
+    {
+     "klasor": "05_sunumlar/turemis-2",
+     "adet": 60,
+     "ad": "Türemiş Fiiller 2 — Tef’îl ve Müfâ’ale",
+     "sayfa": 125,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/56. Ders - 134 🧐 🛠 ⏱️Türemiş Fiiller/Slayt Pdf/Sunu 2 🧐 🛠 ⏱️Türemiş Fiiller 2. Tefil ve Müfaale.pdf"
+    },
+    {
+     "klasor": "05_sunumlar/turemis-3",
+     "adet": 83,
+     "ad": "Türemiş Fiiller 3 — İnfiâl, İftiâl, İf’ilâl",
+     "sayfa": 125,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/56. Ders - 134 🧐 🛠 ⏱️Türemiş Fiiller/Slayt Pdf/Sunu 3 🧐 🛠 ⏱️Türemiş Fiiller 3. İnfial, İftial, İfilal.pdf"
+    },
+    {
+     "klasor": "05_sunumlar/turemis-4",
+     "adet": 182,
+     "ad": "Türemiş Fiiller 4 — Tefe’ul, Tefâ’ul, İstif’âl, Alıştırmalar",
+     "sayfa": 125,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/56. Ders - 134 🧐 🛠 ⏱️Türemiş Fiiller/Slayt Pdf/Sunu 4 🧐 🛠 ⏱️Türemiş Fiiller 4. Tefe'ul, Tefaaul, İstif'al, Alıştırmalar.pdf"
+    }
+   ]
+  },
+  "harfler": {
+   "sayfalar": [
+    178
+   ],
+   "ad": "Harfler",
+   "etkinlik": [
+    {
+     "dosya": "07_araclar/Harfi cer.html",
+     "ad": "Harf-i Cer",
+     "aciklama": "Harf-i cerler ve anlamları",
+     "kategori": "dilbilgisi"
+    },
+    {
+     "dosya": "07_araclar/harficerler.html",
+     "ad": "Harf-i Cer Çalışması",
+     "aciklama": "Harf-i cer alıştırması",
+     "kategori": "dilbilgisi"
+    }
+   ]
+  },
+  "ders-15": {
+   "sayfalar": [
+    15
+   ],
+   "ad": "Harfleri Ayırt Edelim",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/harf-ayirt",
+     "adet": 95,
+     "ad": "Harfleri Ayırt Edelim — Ders Sunusu",
+     "sayfa": 15,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/1. Ders 2-19 Okuma-Dinleme-Yazma/Sayfa 11 ✍️ Harf Birleştirme ve Ayırd Etme/2. Harf Ayırtetme/Slayt - Harf Ayırtetme.pdf"
+    }
+   ]
+  },
+  "ders-16": {
+   "sayfalar": [
+    16
+   ],
+   "ad": "Kelimeyi Tamamla",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/kelimeyi-tamamla",
+     "adet": 242,
+     "ad": "Kelimeyi Tamamla — Ders Sunusu",
+     "sayfa": 16,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/1. Ders 2-19 Okuma-Dinleme-Yazma/Sayfa 11 ✍️ Harf Birleştirme ve Ayırd Etme/2. Harf Ayırtetme/Slayt - Kelimeyi Tamamla.pdf"
+    }
+   ]
+  },
+  "ders-17": {
+   "sayfalar": [
+    17
+   ],
+   "ad": "İstenen Harfi Yazabilir misin?",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/istenen-harf-1",
+     "adet": 43,
+     "ad": "İstenen Harfi Yazabilir misin? — Ders Sunusu",
+     "sayfa": 17,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/1. Ders 2-19 Okuma-Dinleme-Yazma/Sayfa 11 ✍️ Harf Birleştirme ve Ayırd Etme/4. İstenen Harfi Yazabilir Misin/Slayt - 4. İstenen Harfi Yazabilir Misin 1. Alıştırma.pdf"
+    }
+   ]
+  },
+  "ders-23": {
+   "sayfalar": [
+    23
+   ],
+   "ad": "İstenen Harfi Yazabilir misin? 2. Alıştırma",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/istenen-harf-2",
+     "adet": 41,
+     "ad": "İstenen Harfi Yazabilir misin? 2. Alıştırma — Ders Sunusu",
+     "sayfa": 23,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/1. Ders 2-19 Okuma-Dinleme-Yazma/Sayfa 11 ✍️ Harf Birleştirme ve Ayırd Etme/4. İstenen Harfi Yazabilir Misin/Slayt - 4. İstenen Harfi Yazabilir Misin 2. Alıştırma.pdf"
+    }
+   ]
+  },
+  "ders-27": {
+   "sayfalar": [
+    27
+   ],
+   "ad": "En Çok Kelime Bulan Kazanır",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/eckbk-oyun1",
+     "adet": 118,
+     "ad": "En Çok Kelime Bulan Kazanır — 1. Oyun",
+     "sayfa": 27,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/2. Ders - 🎯✊ En Çok Kelime Bulan Kazanır/Oyun 1/Slayt - En Çok Kelime Bulan Kazanır, Oyun 1.pdf"
+    },
+    {
+     "klasor": "05_sunumlar/eckbk-oyun2",
+     "adet": 102,
+     "ad": "En Çok Kelime Bulan Kazanır — 2. Oyun",
+     "sayfa": 28,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/2. Ders - 🎯✊ En Çok Kelime Bulan Kazanır/Oyun 2/Slayt - En Çok Kelime Bulan Kazanır, Oyun 2.pdf"
+    }
+   ]
+  },
+  "ders-29": {
+   "sayfalar": [
+    29
+   ],
+   "ad": "Arapça Kalıplar Dilidir",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/kaliplar-dilidir",
+     "adet": 154,
+     "ad": "Arapça Kalıplar Dilidir — Ders Sunusu",
+     "sayfa": 29,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/2.1 Ders -  37 🛠 Arapça Kalıplar Dilidir/Sunu 🛠 Arapça Kalıplar Dilidir.pdf"
+    }
+   ]
+  },
+  "ders-34": {
+   "sayfalar": [
+    34
+   ],
+   "ad": "Kalıplar Tablosu",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/kaliplar-tablosu",
+     "adet": 971,
+     "ad": "Kalıplar Tablosu — Dijital Oyun",
+     "sayfa": 34,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/3. Ders - 🎯⚔️ Kalıplar Tablosu/Dijital Oyun 1/Slayt-Kalıplar Tablosu.pdf"
+    }
+   ],
+   "cevap": {
+    "klasor": "06_cevaplar/kaliplar-tablosu",
+    "adet": 4,
+    "ad": "Kalıplar Tablosu Cevap Anahtarı"
+   }
+  },
+  "ders-38": {
+   "sayfalar": [
+    38
+   ],
+   "ad": "Bul Kalıbı Al Puanı",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/bul-kalibi-oyun1",
+     "adet": 66,
+     "ad": "Bul Kalıbı Al Puanı — 1. Oyun",
+     "sayfa": 38,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/4. Ders - 🎯✊ Bul Kalıbı Al Puanı/Oyun 1/Slayt - Bul Kalıbı Al Puanı, Oyun 1.pdf"
+    },
+    {
+     "klasor": "05_sunumlar/bul-kalibi-oyun2",
+     "adet": 57,
+     "ad": "Bul Kalıbı Al Puanı — 2. Oyun",
+     "sayfa": 39,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/4. Ders - 🎯✊ Bul Kalıbı Al Puanı/Oyun 2/Slayt - Bul Kalıbı Al Puanı, Oyun 2.pdf"
+    }
+   ]
+  },
+  "ders-40": {
+   "sayfalar": [
+    40
+   ],
+   "ad": "Arapçada Kelime",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/arapcada-kelime",
+     "adet": 28,
+     "ad": "Arapçada Kelime — Ders Sunusu",
+     "sayfa": 40,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/4.2. Ders - Arapçada Kelime/Sunu - Arapçada Kelime .pdf"
+    }
+   ]
+  },
+  "ders-42": {
+   "sayfalar": [
+    42
+   ],
+   "ad": "İkiki",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/ikiki-kirmizi",
+     "adet": 229,
+     "ad": "İkiki — Kırmızı Kartlar",
+     "sayfa": 42,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/5.4. Ders - 🎯⚔️ İkiki/Slaytlar/1. Kırmızı Kartlar Slaytı.pdf"
+    },
+    {
+     "klasor": "05_sunumlar/ikiki-mavi",
+     "adet": 227,
+     "ad": "İkiki — Mavi Kartlar",
+     "sayfa": 42,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/5.4. Ders - 🎯⚔️ İkiki/Slaytlar/2. Mavi Kartlar Slaytı.pdf"
+    },
+    {
+     "klasor": "05_sunumlar/ikiki-mor",
+     "adet": 219,
+     "ad": "İkiki — Mor Kartlar",
+     "sayfa": 42,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/5.4. Ders - 🎯⚔️ İkiki/Slaytlar/3. Mor Kartlar Slaytı.pdf"
+    },
+    {
+     "klasor": "05_sunumlar/ikiki-yesil",
+     "adet": 207,
+     "ad": "İkiki — Yeşil Kartlar",
+     "sayfa": 42,
+     "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/5.4. Ders - 🎯⚔️ İkiki/Slaytlar/4. Yeşil Kartlar Slaytı.pdf"
+    }
+   ]
+  },
+  "ders-52": {
+   "sayfalar": [
+    52
+   ],
+   "ad": "Kim Daha Hızlı?",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/kim-daha-hizli",
+     "adet": 407,
+     "ad": "Kim Daha Hızlı? — Etkinlik Sunusu",
+     "sayfa": 52,
+     "pdf": "../1. Knlr/2. Ünite - İsimler/5.1. Ders - 🎯⚔️ Kim Daha Hızlı?/Sunu - Kim Daha Hızlı?.pdf"
+    }
+   ]
+  },
+  "ders-59": {
+   "sayfalar": [
+    59
+   ],
+   "ad": "Harfi Tarif",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/harfi-tarif",
+     "adet": 81,
+     "ad": "Harf-i Ta’rîf — Ders Sunusu",
+     "sayfa": 59,
+     "pdf": "../1. Knlr/2. Ünite - İsimler/9. Ders - 🧐 Harf-i Ta’rîf “ال  ” (Elif-Lam Takısı)/Sunu 🧐 Harf-i Tarîf.pdf"
+    }
+   ]
+  },
+  "ders-63": {
+   "sayfalar": [
+    63
+   ],
+   "ad": "Müfred, Tesniye ve Cem' İsimler",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/mufred-tesniye-cem",
+     "adet": 219,
+     "ad": "Müfred, Tesniye ve Cem’ İsimler — Ders Sunusu",
+     "sayfa": 63,
+     "pdf": "../1. Knlr/2. Ünite - İsimler/10. Ders - 52 🧐 Müfred, Tesniye, Cem İsimler/Sunu  🧐 Müfred, Tesniye, Cem İsimler.pdf"
+    }
+   ]
+  },
+  "ders-66": {
+   "sayfalar": [
+    66
+   ],
+   "ad": "Müennes-Müzekker İsimler",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/muennes-muzekker",
+     "adet": 30,
+     "ad": "Müennes-Müzekker İsimler — Ders Sunusu",
+     "sayfa": 66,
+     "pdf": "../1. Knlr/2. Ünite - İsimler/16. Ders - 38 🧐 Müennes Müzekker (Eril-Dişil)/Sunu 🧐 Müennes Müzekker (Eril-Dişil).pdf"
+    }
+   ]
+  },
+  "ders-70": {
+   "sayfalar": [
+    70
+   ],
+   "ad": "Kendini Dene!",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/marife-nekra",
+     "adet": 87,
+     "ad": "Marife-Nekra, Dişil-Eril, Merfu-Mansub-Mecrur — Sunu",
+     "sayfa": 70,
+     "pdf": "../1. Knlr/2. Ünite - İsimler/41. Ders - 🦾 Marife-Nekra, Dişil-Eril, Merfu-Mansub-Mecrur/Sunu 🦾 Marife-Nekra, Dişil-Eril, Merfu-Mansub-Mecrur.pdf"
+    }
+   ]
+  },
+  "ders-82": {
+   "sayfalar": [
+    82
+   ],
+   "ad": "Muzari",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/muzari",
+     "adet": 282,
+     "ad": "Muzari Fiil Ders Sunusu",
+     "sayfa": 82,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/18. Ders - 🧐 Muzari Fiil/Sunu 🧐 Muzari Fiil.pdf"
+    }
+   ],
+   "cevap": {
+    "klasor": "06_cevaplar/muzari",
+    "adet": 7,
+    "ad": "Muzari Fiil Cevap Anahtarı"
+   }
+  },
+  "ders-89": {
+   "sayfalar": [
+    89
+   ],
+   "ad": "Emir",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/emir",
+     "adet": 155,
+     "ad": "Emir Fiil Ders Sunusu",
+     "sayfa": 89,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/24. Ders - 🧐 Emir Fiil/Slayt Pdf/Sayfa 57 🧐 Emir Fiil.pdf"
+    }
+   ],
+   "cevap": {
+    "klasor": "06_cevaplar/emir",
+    "adet": 4,
+    "ad": "Emir Fiil Cevap Anahtarı (Konuşma Çalışması)"
+   }
+  },
+  "ders-104": {
+   "sayfalar": [
+    104
+   ],
+   "ad": "Kökten Gövdeye",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/kokten-govdeye",
+     "adet": 518,
+     "ad": "Kökten Gövdeye — Etkinlik Sunusu",
+     "sayfa": 104,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/34. Ders - 🎯✊ Kökten Gövdeye/Dijital Akış ve Oyun /Slayt - Kökten Gövdeye.pdf"
+    }
+   ]
+  },
+  "ders-121": {
+   "sayfalar": [
+    121
+   ],
+   "ad": "Fiillerin Olumsuzu ve İrabı",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/fiil-olumsuz",
+     "adet": 73,
+     "ad": "Fiillerin Olumsuzu ve İrabı — Ders Sunusu",
+     "sayfa": 121,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/29. Ders - 🔬 Fiillerin Olumsuzu ve Merfu, Mansub, Meczum Halleri/Sayfa 68 🔬 Fiillerin Olumsuzu ve Merfu, Mansub, Meczum Halleri.pdf"
+    }
+   ]
+  },
+  "ders-136": {
+   "sayfalar": [
+    136
+   ],
+   "ad": "Kök-Kelime-Cümle",
+   "sunum": [
+    {
+     "klasor": "05_sunumlar/kok-kelime-cumle-1",
+     "adet": 187,
+     "ad": "Kök-Kelime-Cümle — 1. Oyun",
+     "sayfa": 136,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/57. Ders - 🎯✊ Kök, Kelime ve Cümle/Oyun 1/Sunu 1 - Kök-Kelime-Cümle Slayt 1. Oyun.pdf"
+    },
+    {
+     "klasor": "05_sunumlar/kok-kelime-cumle-2",
+     "adet": 127,
+     "ad": "Kök-Kelime-Cümle — 2. Oyun",
+     "sayfa": 136,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/57. Ders - 🎯✊ Kök, Kelime ve Cümle/Oyun 2/Sunu 2 - Kök-Kelime-Cümle Slayt 2. Oyun.pdf"
+    },
+    {
+     "klasor": "05_sunumlar/kok-kelime-cumle-3",
+     "adet": 132,
+     "ad": "Kök-Kelime-Cümle — 3. Oyun",
+     "sayfa": 136,
+     "pdf": "../1. Knlr/3. Ünite - Fiiller/57. Ders - 🎯✊ Kök, Kelime ve Cümle/Oyun 3/Sunu 3 - Kök-Kelime-Cümle Slayt 3. Oyun.pdf"
+    }
+   ]
+  }
+ },
+ "aracKategorileri": [
+  {
+   "kod": "sozluk",
+   "simge": "📚",
+   "ad": "Sözlük ve Kök",
+   "renk": "#6B4BB4"
+  },
+  {
+   "kod": "dilbilgisi",
+   "simge": "🧐",
+   "ad": "Dilbilgisi",
+   "renk": "#17817E"
+  },
+  {
+   "kod": "fiil",
+   "simge": "🛠",
+   "ad": "Fiil Atölyeleri",
+   "renk": "#6B4BB4"
+  },
+  {
+   "kod": "oyun",
+   "simge": "🎯",
+   "ad": "Oyun ve Test",
+   "renk": "#E0533B"
+  },
+  {
+   "kod": "ydt",
+   "simge": "⚖",
+   "ad": "YDT Hazırlık",
+   "renk": "#122040"
+  }
+ ],
+ "araclar": [
+  {
+   "kategori": "sozluk",
+   "dosya": "07_araclar/sozluk.html",
+   "ad": "Sözlük",
+   "aciklama": "Arapça ya da Türkçe yaz; kökü ve türevleriyle bul"
+  },
+  {
+   "kategori": "sozluk",
+   "dosya": "07_araclar/sozlukdedektifi.html",
+   "ad": "Sözlük Dedektifi",
+   "aciklama": "Kelimenin kökünü bulma çalışması"
+  },
+  {
+   "kategori": "sozluk",
+   "dosya": "07_araclar/kokenkardesligi.html",
+   "ad": "Türkçe Köken Kardeşliği",
+   "aciklama": "Türkçeye geçmiş Arapça kelimeler"
+  },
+  {
+   "kategori": "sozluk",
+   "dosya": "07_araclar/yeni kelimeler.html",
+   "ad": "Kelimeler",
+   "aciklama": "Konulara göre kelime dizilimi"
+  },
+  {
+   "kategori": "sozluk",
+   "dosya": "07_araclar/meslekler.html",
+   "ad": "Meslekler · اَلْمِهَن",
+   "aciklama": "Sahneli ve sesli meslek kelimeleri"
+  },
+  {
+   "kategori": "dilbilgisi",
+   "dosya": "07_araclar/Dilbilgisi Konuları.html",
+   "ad": "20 Konuda Gramer",
+   "aciklama": "Konu konu tam gramer rehberi"
+  },
+  {
+   "kategori": "dilbilgisi",
+   "dosya": "07_araclar/dilbilgisikonuanlatimi.html",
+   "ad": "İnteraktif Konu Anlatımı",
+   "aciklama": "Adım adım dilbilgisi paneli"
+  },
+  {
+   "kategori": "dilbilgisi",
+   "dosya": "07_araclar/Harfi cer.html",
+   "ad": "Harf-i Cer",
+   "aciklama": "Harf-i cerler ve anlamları"
+  },
+  {
+   "kategori": "dilbilgisi",
+   "dosya": "07_araclar/harficerler.html",
+   "ad": "Harf-i Cer Çalışması",
+   "aciklama": "Harf-i cer alıştırması"
+  },
+  {
+   "kategori": "fiil",
+   "dosya": "07_araclar/kurandanornekler.html",
+   "ad": "Aksam-ı Seba — Kur'an'dan Örnekler",
+   "aciklama": "Basit fiil yapıları, âyetlerden örneklerle"
+  },
+  {
+   "kategori": "fiil",
+   "dosya": "07_araclar/kurandanorneklermezid.html",
+   "ad": "Mezid Fiiller — Kur'an'dan Örnekler",
+   "aciklama": "Türemiş fiil babları, âyetlerden örneklerle"
+  },
+  {
+   "kategori": "fiil",
+   "dosya": "07_araclar/testmezid.html",
+   "ad": "Mezid Fiil Atölyesi",
+   "aciklama": "Türemiş fiil alıştırmaları"
+  },
+  {
+   "kategori": "oyun",
+   "dosya": "07_araclar/kavramtesti.html",
+   "ad": "Kavram Testi",
+   "aciklama": "Arapça atölyesi — kavram oyunu"
+  },
+  {
+   "kategori": "oyun",
+   "dosya": "07_araclar/kelimeavi.html",
+   "ad": "Kelime Avı",
+   "aciklama": "Süreli kelime oyunu"
+  },
+  {
+   "kategori": "oyun",
+   "dosya": "07_araclar/hizlioku.html",
+   "ad": "Hareke Avcısı",
+   "aciklama": "Harekeli hızlı okuma"
+  },
+  {
+   "kategori": "oyun",
+   "dosya": "07_araclar/baglamdedektifi.html",
+   "ad": "Bağlam Dedektifi",
+   "aciklama": "Kelimeyi bağlamından çıkar"
+  },
+  {
+   "kategori": "ydt",
+   "dosya": "07_araclar/ydtarapca.html",
+   "ad": "YDT Arapça Platformu",
+   "aciklama": "YDT çalışmalarının giriş sayfası"
+  },
+  {
+   "kategori": "ydt",
+   "dosya": "07_araclar/cikmissorular.html",
+   "ad": "YDT Çıkmış Sorular 2020–2025",
+   "aciklama": "Yıllara göre soru bankası"
+  }
+ ],
+ "sozluk": {
+  "dosya": "07_araclar/sozluk.html",
+  "ad": "Sözlük"
+ },
+ "uretilmisSayfalar": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39,
+  40,
+  41,
+  42,
+  43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49,
+  50,
+  51,
+  52,
+  53,
+  54,
+  55,
+  56,
+  57,
+  58,
+  59,
+  60,
+  61,
+  62,
+  63,
+  64,
+  65,
+  66,
+  67,
+  68,
+  69,
+  70,
+  71,
+  72,
+  73,
+  74,
+  75,
+  76,
+  77,
+  78,
+  79,
+  80,
+  81,
+  82,
+  83,
+  84,
+  85,
+  86,
+  87,
+  88,
+  89,
+  90,
+  91,
+  92,
+  93,
+  94,
+  95,
+  96,
+  97,
+  98,
+  99,
+  100,
+  101,
+  102,
+  103,
+  104,
+  105,
+  106,
+  107,
+  108,
+  109,
+  110,
+  111,
+  112,
+  113,
+  114,
+  115,
+  116,
+  117,
+  118,
+  119,
+  120,
+  121,
+  122,
+  123,
+  124,
+  125,
+  126,
+  127,
+  128,
+  129,
+  130,
+  131,
+  132,
+  133,
+  134,
+  135,
+  136,
+  137,
+  138,
+  139,
+  140,
+  141,
+  142,
+  143,
+  144,
+  145,
+  146,
+  147,
+  148,
+  149,
+  150,
+  151,
+  152,
+  153,
+  154,
+  155,
+  156,
+  157,
+  158,
+  159,
+  160,
+  161,
+  162,
+  163,
+  164,
+  165,
+  166,
+  167,
+  168,
+  169,
+  170,
+  171,
+  172,
+  173,
+  174,
+  175,
+  176,
+  177,
+  178,
+  179,
+  180,
+  181,
+  182,
+  183,
+  184,
+  185,
+  186,
+  187,
+  188,
+  189,
+  190,
+  191,
+  192,
+  193,
+  194,
+  195,
+  196,
+  197,
+  198,
+  199,
+  200,
+  201,
+  202,
+  203,
+  204,
+  205,
+  206,
+  207,
+  208,
+  209,
+  210,
+  211,
+  212,
+  213,
+  214,
+  215,
+  216,
+  217,
+  218,
+  219,
+  220,
+  221,
+  222,
+  223,
+  224,
+  225,
+  226,
+  227,
+  228,
+  229,
+  230,
+  231
+ ],
+ "sayfa": {
+  "13": {
+   "baslik": "Qâf harfinin boğazdan çıkan kalın bir",
+   "hotspot": []
+  },
+  "14": {
+   "baslik": "Nûn Türkçedeki “N” harfi gibidir.",
+   "hotspot": []
+  },
+  "15": {
+   "baslik": "Harfleri Ayırt Edelim! açısından gruplandırınız. Aşağıda",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 65.45,
+     "y": 6.22,
+     "w": 14.45,
+     "h": 6.29
+    }
+   ]
+  },
+  "16": {
+   "baslik": "Aşağıda boş bırakılan yerleri verilen harflere",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 7.88,
+     "y": 6.14,
+     "w": 15.24,
+     "h": 6.29
+    }
+   ]
+  },
+  "17": {
+   "baslik": "İstenen Harfi Yazabilir misin? Alıştırma Ders",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 68.06,
+     "y": 5.99,
+     "w": 17.64,
+     "h": 4.64
+    }
+   ]
+  },
+  "18": {
+   "baslik": "Alfabe Ḫ-ḫ birleşmeyen Kendinden sonrakiyle harfler",
+   "hotspot": []
+  },
+  "19": {
+   "baslik": "Alfabe Ḫ-ḫ birleşmeyen Kendinden sonrakiyle harfler",
+   "hotspot": []
+  },
+  "20": {
+   "baslik": "Alfabe Ḫ-ḫ birleşmeyen Kendinden sonrakiyle harfler",
+   "hotspot": []
+  },
+  "21": {
+   "baslik": "Alfabe Ḫ-ḫ birleşmeyen Kendinden sonrakiyle harfler",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 5.85,
+     "y": 46.2,
+     "w": 3.94,
+     "h": 3.69
+    }
+   ]
+  },
+  "22": {
+   "baslik": "Dinle ve Yaz Seviye dinleyerek yazmaya",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 31.05,
+     "y": 5.38,
+     "w": 3.94,
+     "h": 3.69
+    }
+   ]
+  },
+  "23": {
+   "baslik": "İstenen Harfi Yazabilir misin? Alıştırma Ders",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 67.9,
+     "y": 5.99,
+     "w": 17.64,
+     "h": 4.64
+    }
+   ]
+  },
+  "24": {
+   "baslik": "~َ ﺼْ ﺟَ ﻣَ ﻣُ ﻌَ",
+   "hotspot": []
+  },
+  "25": {
+   "baslik": "۳٧ ۱٩ Öğretmeni Dinleyerek Harekeleyelim! Patates",
+   "hotspot": []
+  },
+  "26": {
+   "baslik": "Dijital Sözlük Kullanıyorum “Tevakku” sözlük uygulamasını",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 80.96,
+     "y": 4.63,
+     "w": 11.24,
+     "h": 6.26
+    },
+    {
+     "tur": "simge",
+     "alt": "sozluk",
+     "etiket": "Sözlük Çalışması",
+     "simge": "📚",
+     "x": 23.25,
+     "y": 5.35,
+     "w": 3.94,
+     "h": 3.69
+    }
+   ]
+  },
+  "27": {
+   "baslik": "Kurallar (Seviye 1) Kelimenin Serüveni En",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 68.58,
+     "y": 5.77,
+     "w": 17.64,
+     "h": 4.64
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 6.35,
+     "y": 5.33,
+     "w": 3.94,
+     "h": 3.77
+    }
+   ]
+  },
+  "28": {
+   "baslik": "Kurallar 2. Oyun 1. Harflerin yeri",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 67.45,
+     "y": 6.17,
+     "w": 17.64,
+     "h": 4.64
+    }
+   ]
+  },
+  "29": {
+   "baslik": "Arapça Kalıplar Dilidir yerleştirilerek asıl anlamından",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 64.47,
+     "y": 6.05,
+     "w": 17.64,
+     "h": 4.64
+    }
+   ]
+  },
+  "30": {
+   "baslik": "Dördüncü Düzensiz Kalıpları Üçüncü Beşinci Altıncı",
+   "hotspot": []
+  },
+  "31": {
+   "baslik": "Dördüncü Düzensiz Kalıpları Üçüncü Beşinci Altıncı",
+   "hotspot": []
+  },
+  "32": {
+   "baslik": "4-5-6 Müfâ’ale Tefâ’ul Tefe’ul İstif’al İnfi’al",
+   "hotspot": []
+  },
+  "33": {
+   "baslik": "4-5-6 Müfâ’ale Tefâ’ul Tefe’ul İstif’al İnfi’al",
+   "hotspot": []
+  },
+  "34": {
+   "baslik": "Kelimenin Serüveni Kalıplar Tablosu (Seviye 2)",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 13.3,
+     "y": 6.08,
+     "w": 17.96,
+     "h": 4.64
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 32.35,
+     "y": 6.44,
+     "w": 3.94,
+     "h": 3.77
+    }
+   ]
+  },
+  "35": {
+   "baslik": "2. Gücü elinde barındırmak, muhalefetin zıttı.",
+   "hotspot": []
+  },
+  "36": {
+   "baslik": "1. Bir erkek ismi. Tanım Cevap",
+   "hotspot": []
+  },
+  "37": {
+   "baslik": "1. Beden. Tanım Cevap Kalıp Numarası",
+   "hotspot": []
+  },
+  "38": {
+   "baslik": "(3. Seviye) Kelimenin Serüveni Bul Kalıbı",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 14.55,
+     "y": 6.08,
+     "w": 18.0,
+     "h": 4.64
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 39.48,
+     "y": 5.41,
+     "w": 3.94,
+     "h": 3.77
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 45.53,
+     "y": 88.84,
+     "w": 4.27,
+     "h": 4.08
+    }
+   ]
+  },
+  "39": {
+   "baslik": "Oyun Kalıplar Tablosundan numaralı kalıbı bul",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 13.9,
+     "y": 6.08,
+     "w": 17.96,
+     "h": 4.64
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 45.53,
+     "y": 87.82,
+     "w": 4.27,
+     "h": 4.08
+    }
+   ]
+  },
+  "40": {
+   "baslik": "Arapçada Kelime Arapça bir metinde geçen",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 15.19,
+     "y": 6.85,
+     "w": 14.23,
+     "h": 6.26
+    }
+   ]
+  },
+  "41": {
+   "baslik": "🧑🧑🧒🧒 İsimlerin Özellikleri Fiillerin Özellikleri Harflerin",
+   "hotspot": []
+  },
+  "42": {
+   "baslik": "Kelimenin Serüveni İkiki (4. Seviye) Etkinlik",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Etkinlik Sunusu",
+     "x": 67.38,
+     "y": 10.84,
+     "w": 22.81,
+     "h": 4.64
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 5.25,
+     "y": 5.36,
+     "w": 3.94,
+     "h": 3.77
+    }
+   ]
+  },
+  "43": {
+   "baslik": "Kendini Dene (Arapçaya Giriş) 1. Aşağıda",
+   "hotspot": []
+  },
+  "44": {
+   "baslik": "3. Aşağıda verilen harflerden uzatma harflerini",
+   "hotspot": []
+  },
+  "45": {
+   "baslik": "أ$ ﻛC ﻟv ﺨَ حُ مَ",
+   "hotspot": []
+  },
+  "46": {
+   "baslik": "harften oluşur? b) d) 21. Genellikle",
+   "hotspot": []
+  },
+  "47": {
+   "baslik": "Kendini Dene (Kökü Üç Harften Oluşan",
+   "hotspot": []
+  },
+  "48": {
+   "baslik": "oluşmuştur? oluşmuştur? 11. Yukarıdaki kelime aşağıdaki",
+   "hotspot": []
+  },
+  "49": {
+   "baslik": "oluşmuştur? oluşmuştur? a) c) 23. Yukarıdaki",
+   "hotspot": []
+  },
+  "50": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "51": {
+   "baslik": "İsmin Özelliği olabilir, bu özellik sadece",
+   "hotspot": []
+  },
+  "52": {
+   "baslik": "İkişerli Etkinlik Kim Daha Hızlı? Kelimeler",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 71.22,
+     "y": 4.0,
+     "w": 14.27,
+     "h": 6.29
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 17.49,
+     "y": 5.19,
+     "w": 3.94,
+     "h": 3.77
+    }
+   ]
+  },
+  "53": {
+   "baslik": "ﻋَ ﺰَ ﻤُ 7ْ ﻦ\\ ر\\",
+   "hotspot": []
+  },
+  "54": {
+   "baslik": "67 (َ +ِ Munfasıl Zamirler",
+   "hotspot": []
+  },
+  "55": {
+   "baslik": "63 (َ !َ $+ِ Muttasıl Zamirler",
+   "hotspot": []
+  },
+  "56": {
+   "baslik": "Not 2: Bu bitişik zamirler bütün",
+   "hotspot": []
+  },
+  "57": {
+   "baslik": "Şahıs Onlar ikisi 3.",
+   "hotspot": []
+  },
+  "58": {
+   "baslik": "Siz-ler Şahıs Şahıs ikiniz Ben •Siz",
+   "hotspot": []
+  },
+  "59": {
+   "baslik": "Harf-i Ta’rîf (Elif-Lam Takısı) Bir ismi",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 71.97,
+     "y": 5.99,
+     "w": 13.81,
+     "h": 6.26
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 6.14,
+     "y": 3.89,
+     "w": 5.75,
+     "h": 4.39
+    }
+   ]
+  },
+  "60": {
+   "baslik": "ا¨ Şemsi Harfler; Kameri harfler;",
+   "hotspot": []
+  },
+  "61": {
+   "baslik": "ﺟَ ﺼُ ﺠْ ﻣَ ﻣُ ﻣُ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 6.14,
+     "y": 4.18,
+     "w": 3.94,
+     "h": 3.69
+    }
+   ]
+  },
+  "62": {
+   "baslik": "ﺟَ ﺼُ ﺠْ ﻣُ ﻣَ ﻣُ",
+   "hotspot": []
+  },
+  "63": {
+   "baslik": "ﻦَ ﻦ¥ £َ £ُ نِ Arapçada",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 70.36,
+     "y": 4.26,
+     "w": 14.57,
+     "h": 6.26
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 19.25,
+     "y": 3.93,
+     "w": 4.81,
+     "h": 3.76
+    }
+   ]
+  },
+  "64": {
+   "baslik": "ﻣُ ﻣُ Cem’ (Çoğul) İsimler Düzenli",
+   "hotspot": []
+  },
+  "65": {
+   "baslik": "Cemi Teksir Vezinleri Kelimedeki harekeleri, uzatma",
+   "hotspot": []
+  },
+  "66": {
+   "baslik": "Müennes Müzekker (Dişil Eril) Genellikle kelime",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 69.01,
+     "y": 4.28,
+     "w": 15.67,
+     "h": 6.29
+    }
+   ]
+  },
+  "67": {
+   "baslik": "İsimlerin Kelime İ’rabı Arapçada isimlerin cümledeki",
+   "hotspot": []
+  },
+  "68": {
+   "baslik": "ﻌُ ﻣُ ﻣُ ﻌَ ﻌَ ﻢٌ",
+   "hotspot": []
+  },
+  "69": {
+   "baslik": "ﺪﱠ ﺘَ ﻋَ رَ رْ ﺐَ",
+   "hotspot": []
+  },
+  "70": {
+   "baslik": "Müzekker Müennes Kelime sonu Nekra Marife",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 17.47,
+     "y": 4.14,
+     "w": 14.94,
+     "h": 6.26
+    }
+   ]
+  },
+  "71": {
+   "baslik": "Kelime Kelime Sonu Œْ Œْ Œْ",
+   "hotspot": []
+  },
+  "72": {
+   "baslik": "ﻦَ uٌ uُ uَ uَ uُ",
+   "hotspot": []
+  },
+  "73": {
+   "baslik": "Test İsimler ﺳَ ﻣُ بُ ﺳَ",
+   "hotspot": []
+  },
+  "161": {
+   "baslik": "YARIŞMA KARTI 43 Grup İsmi:",
+   "hotspot": []
+  },
+  "162": {
+   "baslik": "YARIŞMA KARTI 45 Grup İsmi:",
+   "hotspot": []
+  },
+  "163": {
+   "baslik": "YARIŞMA KARTI 47 Grup İsmi:",
+   "hotspot": []
+  },
+  "164": {
+   "baslik": "YARIŞMA KARTI 49 Grup İsmi:",
+   "hotspot": []
+  },
+  "165": {
+   "baslik": "YARIŞMA KARTI 51 Grup İsmi:",
+   "hotspot": []
+  },
+  "166": {
+   "baslik": "YARIŞMA KARTI 53 Grup İsmi:",
+   "hotspot": []
+  },
+  "167": {
+   "baslik": "Qَ Qُ ﻢْ ﺮ\\ Fiillerin sonundaki",
+   "hotspot": []
+  },
+  "168": {
+   "baslik": "ﺪﱠ ﺘَ ﻋَ رَ رْ ﺐَ",
+   "hotspot": []
+  },
+  "169": {
+   "baslik": "1. Bir ismi belirli yapmak için",
+   "hotspot": []
+  },
+  "170": {
+   "baslik": "ﺖْ Kendini Dene! ﺤَ 1. Kök",
+   "hotspot": []
+  },
+  "171": {
+   "baslik": "Kendini Dene! 1. Aşağıda verilen kelimelerden",
+   "hotspot": []
+  },
+  "172": {
+   "baslik": "[َ ﺼْ ﺤَ ﺣَ ﻣُ ﺮَ",
+   "hotspot": []
+  },
+  "173": {
+   "baslik": "×َ ﻞُ ﻞُ ﻞُ ﺳْ ﺳْ",
+   "hotspot": []
+  },
+  "174": {
+   "baslik": "لٍ ﻋِ ﻟِ Basit Fiillerin Özne",
+   "hotspot": []
+  },
+  "175": {
+   "baslik": "ﻣَ ﻣَ ﻌُ Basit Fiillerin Nesne",
+   "hotspot": []
+  },
+  "176": {
+   "baslik": "ﻣَ ﻣَ ﻌَ ﻌِ Basit Fiillerin",
+   "hotspot": []
+  },
+  "177": {
+   "baslik": "ﺴَ ﺮَ اِ Aşağıda verilen fiilleri",
+   "hotspot": []
+  },
+  "178": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "179": {
+   "baslik": "وَ Qَ ﻦَ رَ ﺳَ ﺐَ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 6.1,
+     "y": 3.89,
+     "w": 5.75,
+     "h": 4.39
+    }
+   ]
+  },
+  "180": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "181": {
+   "baslik": "ﻌَ ﻢُ ﻤُ ﻢِ ◌ٍ İzafet",
+   "hotspot": []
+  },
+  "182": {
+   "baslik": "ﻟ9 ﻠ\" ا\" ﻘَ ﻄﱠ ﻬْ",
+   "hotspot": []
+  },
+  "183": {
+   "baslik": "ﻟ8 ﻟ8 ﻠ) ا) ﻘَ ﺠَ",
+   "hotspot": []
+  },
+  "184": {
+   "baslik": "ﻠ\" ﻗَ ا\" ﻃَ ﻄﱠ ﻋَ",
+   "hotspot": []
+  },
+  "185": {
+   "baslik": "بُ ﻣُ ﻔِ 8ِ İsim Cümlesi;",
+   "hotspot": []
+  },
+  "186": {
+   "baslik": "1. Güneş, sıcaktır. 2. Sigara, zararlıdır.",
+   "hotspot": []
+  },
+  "187": {
+   "baslik": "ﻛ$ ﻟl ﻠ¨ ﺪﱠ ﺘَ رْ",
+   "hotspot": []
+  },
+  "188": {
+   "baslik": "ﻟ- ﻧَ ﻈ~ ﺪْ ﺧَ مُ",
+   "hotspot": []
+  },
+  "189": {
+   "baslik": "Öğretmenin faydalıdır. Öğretmen, Mübteda kalemi konuyu",
+   "hotspot": []
+  },
+  "190": {
+   "baslik": "ﻌَ ﻢُ ﻤُ Pekiştirelim Tamlama ve",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "pekistir",
+     "etiket": "Pekiştirelim",
+     "simge": "🦾",
+     "x": 6.14,
+     "y": 3.93,
+     "w": 4.81,
+     "h": 3.76
+    }
+   ]
+  },
+  "191": {
+   "baslik": "ﺠَ ﻌَ ﻢُ ﻤُ ﻤِ Peki",
+   "hotspot": []
+  },
+  "192": {
+   "baslik": "Fiil (Eylem-Yüklem) Kâne ve Kardeşleri Özne",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 6.14,
+     "y": 5.07,
+     "w": 4.81,
+     "h": 3.76
+    }
+   ]
+  },
+  "193": {
+   "baslik": "qَ ﻦْ idi, oldu",
+   "hotspot": []
+  },
+  "194": {
+   "baslik": "ﻛw نَ ﻛÍ ¤Í نُ ﺖْ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 71.69,
+     "y": 30.31,
+     "w": 4.37,
+     "h": 3.46
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 72.09,
+     "y": 74.67,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "195": {
+   "baslik": "ﺖْ ²ُ ²ُ ²ُ ²ُ ﻦَ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 70.57,
+     "y": 32.14,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "196": {
+   "baslik": "اq ﺪﱠ Test Tamlama ve Cümleler",
+   "hotspot": []
+  },
+  "197": {
+   "baslik": "Kendini Dene (Tamlama ve Cümleler)",
+   "hotspot": []
+  },
+  "198": {
+   "baslik": "Sıfat Tamlaması ◌ࣩ ◌ࣦ ◌ࣩ ◌ࣦ",
+   "hotspot": []
+  },
+  "199": {
+   "baslik": "ﺖْ Fiil Cümlesi ﺐَ °َ ◌ࣩ",
+   "hotspot": []
+  },
+  "200": {
+   "baslik": "Aşağıda verilen kavramları, ilgili tanımların başına",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "dene",
+     "etiket": "Kendini Dene",
+     "simge": "⚖",
+     "x": 22.56,
+     "y": 4.15,
+     "w": 3.62,
+     "h": 3.4
+    },
+    {
+     "tur": "simge",
+     "alt": "dene",
+     "etiket": "Kendini Dene",
+     "simge": "⚖",
+     "x": 73.76,
+     "y": 4.15,
+     "w": 3.62,
+     "h": 3.4
+    }
+   ]
+  },
+  "201": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "202": {
+   "baslik": "ﻋَ ﻋَ وَ مُ مُ ﺣَ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 6.14,
+     "y": 3.89,
+     "w": 5.75,
+     "h": 4.39
+    }
+   ]
+  },
+  "203": {
+   "baslik": "uygulayalım. Yukarıdaki ifadelerden kendimizce sohbet oluşturalım.",
+   "hotspot": []
+  },
+  "204": {
+   "baslik": "ﻬُ Şahıs ‹َ ‹َ ﻮَ ﺐَ",
+   "hotspot": []
+  },
+  "205": {
+   "baslik": "ﺪُ نْ ﺘُ وَ ﺐَ }َ",
+   "hotspot": []
+  },
+  "206": {
+   "baslik": "ﻋَ ²َ ﺐُ „ْ ﺠِ ﻜ—",
+   "hotspot": []
+  },
+  "207": {
+   "baslik": "ﺼْ ﺳْ ﻣَ ﻢٌ ﻄَ ﻊُ",
+   "hotspot": []
+  },
+  "208": {
+   "baslik": "Èَ ﻳَ ±َ ﺳْ ﻣُ ﻣُ",
+   "hotspot": []
+  },
+  "209": {
+   "baslik": "ﻢْ ١٣ ١٤ ١٥",
+   "hotspot": []
+  },
+  "210": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "211": {
+   "baslik": "ﻃَ ﻣُ ﺐٌ ﻣُ ﺐٌ °َ",
+   "hotspot": []
+  },
+  "212": {
+   "baslik": "ﺪَ ﻋَ وَ وَ ﺣَ إِ",
+   "hotspot": []
+  },
+  "213": {
+   "baslik": "ءَ ﺮَ ﺮَ ﻗِ اِ En",
+   "hotspot": []
+  },
+  "214": {
+   "baslik": "²َ ﻣَ ﻣَ ﻤْ 0* اِ",
+   "hotspot": []
+  },
+  "215": {
+   "baslik": "ﻋَ ²َ اِ ۳۱ En Çok",
+   "hotspot": []
+  },
+  "216": {
+   "baslik": "ﻖْ êَ ﺳَ ﺳَ ﺳُ ﻮْ",
+   "hotspot": []
+  },
+  "217": {
+   "baslik": "جَ جْ جُ ²َ ﻣَ ﺮُ",
+   "hotspot": []
+  },
+  "218": {
+   "baslik": "²َ ﺟَ ﻣَ ءَ ءُ ﺠِ",
+   "hotspot": []
+  },
+  "219": {
+   "baslik": "Kendini",
+   "hotspot": []
+  },
+  "220": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "221": {
+   "baslik": "Notlarım",
+   "hotspot": []
+  },
+  "222": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "223": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "224": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "225": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "226": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "227": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "228": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "229": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "230": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "231": {
+   "baslik": "Kaynaklar Arapça Dilbilgisi, Mahmut Kafes 2012",
+   "hotspot": []
+  },
+  "1": {
+   "baslik": "",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 67.03,
+     "y": 10.68,
+     "w": 5.28,
+     "h": 5.02
+    }
+   ]
+  },
+  "2": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "3": {
+   "baslik": "Simgeler 🎯⚔ 🎯✊ Takım Oyunu İkişerli",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 37.95,
+     "y": 10.75,
+     "w": 5.63,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 37.95,
+     "y": 12.68,
+     "w": 5.63,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 38.96,
+     "y": 14.59,
+     "w": 3.62,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "kalip",
+     "etiket": "Kalıp-Vezin",
+     "simge": "🛠",
+     "x": 39.29,
+     "y": 16.85,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "yazma",
+     "etiket": "Yazma",
+     "simge": "✏",
+     "x": 38.96,
+     "y": 18.41,
+     "w": 3.62,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "sozluk",
+     "etiket": "Sözlük Çalışması",
+     "simge": "📚",
+     "x": 38.96,
+     "y": 20.32,
+     "w": 3.62,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "tercume",
+     "etiket": "Metin Tercüme",
+     "simge": "🙇",
+     "x": 38.96,
+     "y": 22.26,
+     "w": 3.62,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 38.96,
+     "y": 24.2,
+     "w": 3.62,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 38.96,
+     "y": 26.11,
+     "w": 3.62,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "dene",
+     "etiket": "Kendini Dene",
+     "simge": "⚖",
+     "x": 38.96,
+     "y": 28.05,
+     "w": 3.62,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "pekistir",
+     "etiket": "Pekiştirelim",
+     "simge": "🦾",
+     "x": 38.96,
+     "y": 29.99,
+     "w": 3.62,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "kelime",
+     "etiket": "Kelime Cenneti",
+     "simge": "🏝",
+     "x": 38.96,
+     "y": 31.93,
+     "w": 3.62,
+     "h": 3.47
+    },
+    {
+     "tur": "simge",
+     "alt": "irab",
+     "etiket": "Kelime İrabı",
+     "simge": "🔬",
+     "x": 38.96,
+     "y": 33.84,
+     "w": 3.62,
+     "h": 3.47
+    }
+   ]
+  },
+  "4": {
+   "baslik": "İÇİNDEKİLER Ünite 1: Arapçaya Giriş İzafet",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "yazma",
+     "etiket": "Yazma",
+     "simge": "✏",
+     "x": 13.84,
+     "y": 10.4,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "yazma",
+     "etiket": "Yazma",
+     "simge": "✏",
+     "x": 13.84,
+     "y": 12.0,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "yazma",
+     "etiket": "Yazma",
+     "simge": "✏",
+     "x": 13.84,
+     "y": 13.6,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "yazma",
+     "etiket": "Yazma",
+     "simge": "✏",
+     "x": 13.84,
+     "y": 15.16,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "yazma",
+     "etiket": "Yazma",
+     "simge": "✏",
+     "x": 13.84,
+     "y": 16.76,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "yazma",
+     "etiket": "Yazma",
+     "simge": "✏",
+     "x": 13.84,
+     "y": 18.36,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "yazma",
+     "etiket": "Yazma",
+     "simge": "✏",
+     "x": 13.84,
+     "y": 19.95,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "yazma",
+     "etiket": "Yazma",
+     "simge": "✏",
+     "x": 13.84,
+     "y": 21.55,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "yazma",
+     "etiket": "Yazma",
+     "simge": "✏",
+     "x": 13.84,
+     "y": 23.15,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "sozluk",
+     "etiket": "Sözlük Çalışması",
+     "simge": "📚",
+     "x": 13.84,
+     "y": 24.74,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 13.84,
+     "y": 26.34,
+     "w": 4.27,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "kalip",
+     "etiket": "Kalıp-Vezin",
+     "simge": "🛠",
+     "x": 13.84,
+     "y": 27.93,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 13.84,
+     "y": 29.53,
+     "w": 4.27,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 13.84,
+     "y": 31.13,
+     "w": 4.27,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "sozluk",
+     "etiket": "Sözlük Çalışması",
+     "simge": "📚",
+     "x": 13.84,
+     "y": 32.72,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dene",
+     "etiket": "Kendini Dene",
+     "simge": "⚖",
+     "x": 13.84,
+     "y": 34.29,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 13.84,
+     "y": 35.89,
+     "w": 4.27,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 40.56,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 13.84,
+     "y": 42.16,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 46.95,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 13.84,
+     "y": 48.54,
+     "w": 4.27,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 50.11,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 51.71,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 53.3,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "irab",
+     "etiket": "Kelime İrabı",
+     "simge": "🔬",
+     "x": 13.84,
+     "y": 54.9,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dene",
+     "etiket": "Kendini Dene",
+     "simge": "⚖",
+     "x": 13.84,
+     "y": 56.5,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 61.17,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 62.77,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 64.37,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 65.93,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 67.53,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 13.84,
+     "y": 69.13,
+     "w": 4.27,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 13.84,
+     "y": 70.72,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "kalip",
+     "etiket": "Kalıp-Vezin",
+     "simge": "🛠",
+     "x": 13.84,
+     "y": 72.32,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 13.84,
+     "y": 73.91,
+     "w": 4.27,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "irab",
+     "etiket": "Kelime İrabı",
+     "simge": "🔬",
+     "x": 13.84,
+     "y": 75.51,
+     "w": 5.16,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dene",
+     "etiket": "Kendini Dene",
+     "simge": "⚖",
+     "x": 13.84,
+     "y": 77.11,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 55.65,
+     "y": 11.8,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 55.65,
+     "y": 13.4,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 55.65,
+     "y": 14.99,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 55.65,
+     "y": 16.59,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "pekistir",
+     "etiket": "Pekiştirelim",
+     "simge": "💪",
+     "x": 55.65,
+     "y": 18.19,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 55.65,
+     "y": 19.75,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dene",
+     "etiket": "Kendini Dene",
+     "simge": "⚖",
+     "x": 55.65,
+     "y": 21.35,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 55.65,
+     "y": 7.12,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 55.65,
+     "y": 59.92,
+     "w": 2.93,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 55.65,
+     "y": 61.43,
+     "w": 5.35,
+     "h": 2.84
+    },
+    {
+     "tur": "simge",
+     "alt": "kelime",
+     "etiket": "Kelime Cenneti",
+     "simge": "🏝",
+     "x": 55.65,
+     "y": 62.97,
+     "w": 2.93,
+     "h": 2.84
+    }
+   ]
+  },
+  "5": {
+   "baslik": "Dil Öğrenmek Arapça, İslam Dininin temel",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 6.14,
+     "y": 62.66,
+     "w": 17.75,
+     "h": 12.66
+    }
+   ]
+  },
+  "6": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "7": {
+   "baslik": "Arapçada harfler bitişik yazılır ve ayrık",
+   "hotspot": []
+  },
+  "8": {
+   "baslik": "Elif, Hemze değişir. Boğazın sonunda göğse",
+   "hotspot": []
+  },
+  "9": {
+   "baslik": "Cîm Türkçedeki “C” harfi gibidir.",
+   "hotspot": []
+  },
+  "10": {
+   "baslik": "Ḏêl Peltek ve ince “Z” harfidir.",
+   "hotspot": []
+  },
+  "11": {
+   "baslik": "Şîn Türkçedeki “Ş” harfi gibidir.",
+   "hotspot": []
+  },
+  "12": {
+   "baslik": "Ẓâ’ Peltek ve kalın “Z” harfidir.",
+   "hotspot": []
+  },
+  "74": {
+   "baslik": "ﺑَ ﺑَ ﺑَ ﺑَ ﻦَ ﻦَ",
+   "hotspot": []
+  },
+  "75": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "76": {
+   "baslik": "Fiildeki formu; kelime Siz-ler Şahıs Şahıs",
+   "hotspot": []
+  },
+  "77": {
+   "baslik": "Mazi Fiil Emir’dir. Mazi Muzari 1.",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 74.55,
+     "y": 4.11,
+     "w": 14.07,
+     "h": 6.26
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 24.97,
+     "y": 4.89,
+     "w": 5.75,
+     "h": 4.39
+    }
+   ]
+  },
+  "78": {
+   "baslik": "ﺐَ }َ ﺟَ ﻣُ ﻤْ 7َ",
+   "hotspot": []
+  },
+  "79": {
+   "baslik": "ﻛ› ﻛ› دَ ﺘَ ﺘَ ﺟَ",
+   "hotspot": []
+  },
+  "80": {
+   "baslik": "ﺖْ ﻦَ uُ uَ uْ ﺟَ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 6.14,
+     "y": 3.96,
+     "w": 4.81,
+     "h": 3.76
+    }
+   ]
+  },
+  "81": {
+   "baslik": "ﺖْ ﻦَ uْ uُ uَ ﺟَ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 5.25,
+     "y": 3.96,
+     "w": 4.81,
+     "h": 3.76
+    }
+   ]
+  },
+  "82": {
+   "baslik": "Muzari Fiil Mazi Muzari Emir 1.",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 74.99,
+     "y": 4.43,
+     "w": 14.03,
+     "h": 6.26
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 23.6,
+     "y": 5.21,
+     "w": 5.75,
+     "h": 4.39
+    }
+   ]
+  },
+  "83": {
+   "baslik": "Qَ ﻞُ ﻞَ ﻌُ ﻌَ Muzari",
+   "hotspot": []
+  },
+  "84": {
+   "baslik": "ﻛ$ ﻠ$ ¤l ﺘُ ﺘَ ²َ",
+   "hotspot": []
+  },
+  "85": {
+   "baslik": "ﻛ$ ﻠ$ ¤l ﺘُ ﺘَ ²َ",
+   "hotspot": []
+  },
+  "86": {
+   "baslik": "ﺗَ ﺪْ ﺪْ ²َ ²َ ²َ",
+   "hotspot": []
+  },
+  "87": {
+   "baslik": "ﻦَ uَ uْ uَ …ُ نِ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 6.14,
+     "y": 3.93,
+     "w": 4.81,
+     "h": 3.76
+    }
+   ]
+  },
+  "88": {
+   "baslik": "ﻦَ uَ uْ uَ …ُ نِ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 5.25,
+     "y": 3.96,
+     "w": 4.81,
+     "h": 3.76
+    }
+   ]
+  },
+  "89": {
+   "baslik": "Emir Fiil Mazi Muzari Emir 1.",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 74.31,
+     "y": 4.08,
+     "w": 14.03,
+     "h": 6.26
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 25.1,
+     "y": 4.86,
+     "w": 5.75,
+     "h": 4.39
+    }
+   ]
+  },
+  "90": {
+   "baslik": "ﺟَ ﺟَ ﻣُ ﻣُ ﻤْ ﻤْ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 62.87,
+     "y": 4.86,
+     "w": 4.27,
+     "h": 4.08
+    }
+   ]
+  },
+  "91": {
+   "baslik": "ﻦَ ﺟَ ﻤْ 7َ %َ 7َ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 6.14,
+     "y": 3.93,
+     "w": 4.81,
+     "h": 3.76
+    }
+   ]
+  },
+  "92": {
+   "baslik": "ﻦَ ﺟَ ﻤْ 7َ 7َ 7َ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "konusma",
+     "etiket": "Konuşma",
+     "simge": "🗣",
+     "x": 5.25,
+     "y": 3.96,
+     "w": 4.81,
+     "h": 3.76
+    }
+   ]
+  },
+  "93": {
+   "baslik": "Basit Fiillerde (üç harfli fiil) oluşturulurken;",
+   "hotspot": []
+  },
+  "94": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "95": {
+   "baslik": "Basit Fiiller Fiil kökündeki bazı hareke",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 13.7,
+     "y": 79.83,
+     "w": 14.07,
+     "h": 6.26
+    },
+    {
+     "tur": "simge",
+     "alt": "dilbilgisi",
+     "etiket": "Dilbilgisi",
+     "simge": "🧐",
+     "x": 6.14,
+     "y": 3.89,
+     "w": 5.75,
+     "h": 4.39
+    }
+   ]
+  },
+  "96": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "97": {
+   "baslik": "Salim Fiil Kök harfinde Hemze veya",
+   "hotspot": []
+  },
+  "98": {
+   "baslik": "أ, b, Mehmuz Fiil Kök harfinde",
+   "hotspot": []
+  },
+  "99": {
+   "baslik": "Muda’af Fiil Fiil kökünde harf barındıran",
+   "hotspot": []
+  },
+  "100": {
+   "baslik": "وَ ﻳَ ﺟَ ﻢَ Misâl Fiil",
+   "hotspot": []
+  },
+  "101": {
+   "baslik": "لَ لَ ﻣَ Ecvef Fiil Kök",
+   "hotspot": []
+  },
+  "102": {
+   "baslik": "ﻋَ رَ رَ ﻣَ ﻲَ ﺿِ",
+   "hotspot": []
+  },
+  "103": {
+   "baslik": "وَ ﻮَ Lefîf Fiil Kök harflerinden",
+   "hotspot": []
+  },
+  "104": {
+   "baslik": "Kelimenin Serüveni Kökten Gövdeye (5. Seviye)",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Etkinlik Sunusu",
+     "x": 69.31,
+     "y": 6.88,
+     "w": 22.46,
+     "h": 4.64
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 5.25,
+     "y": 4.16,
+     "w": 3.94,
+     "h": 3.77
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 32.12,
+     "y": 18.87,
+     "w": 1.7,
+     "h": 1.69
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 19.34,
+     "y": 47.54,
+     "w": 1.99,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 23.63,
+     "y": 47.54,
+     "w": 1.99,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 19.34,
+     "y": 49.98,
+     "w": 1.99,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 27.91,
+     "y": 49.98,
+     "w": 1.99,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 38.74,
+     "y": 45.44,
+     "w": 1.92,
+     "h": 1.9
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 32.19,
+     "y": 47.54,
+     "w": 1.99,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 23.63,
+     "y": 49.98,
+     "w": 1.99,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 27.91,
+     "y": 47.54,
+     "w": 1.99,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 42.76,
+     "y": 42.7,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 43.43,
+     "y": 43.17,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 44.09,
+     "y": 43.63,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 44.75,
+     "y": 44.1,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 45.41,
+     "y": 44.57,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 46.08,
+     "y": 45.04,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 46.74,
+     "y": 45.5,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 47.4,
+     "y": 45.97,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 48.06,
+     "y": 46.44,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 48.72,
+     "y": 46.91,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 49.38,
+     "y": 47.37,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 50.04,
+     "y": 47.84,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 50.71,
+     "y": 48.31,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 32.19,
+     "y": 49.98,
+     "w": 1.99,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 51.37,
+     "y": 48.78,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 52.03,
+     "y": 49.25,
+     "w": 1.94,
+     "h": 1.95
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 27.83,
+     "y": 73.58,
+     "w": 1.94,
+     "h": 1.96
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 34.22,
+     "y": 65.79,
+     "w": 2.29,
+     "h": 2.21
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 41.79,
+     "y": 65.79,
+     "w": 2.29,
+     "h": 2.21
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 49.36,
+     "y": 65.79,
+     "w": 2.29,
+     "h": 2.21
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 56.93,
+     "y": 65.79,
+     "w": 2.29,
+     "h": 2.21
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 34.22,
+     "y": 70.09,
+     "w": 2.29,
+     "h": 2.21
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 41.79,
+     "y": 70.09,
+     "w": 2.29,
+     "h": 2.21
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 49.36,
+     "y": 70.09,
+     "w": 2.29,
+     "h": 2.21
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 56.93,
+     "y": 70.09,
+     "w": 2.29,
+     "h": 2.21
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 48.35,
+     "y": 76.5,
+     "w": 1.94,
+     "h": 1.96
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 67.21,
+     "y": 74.33,
+     "w": 1.94,
+     "h": 1.96
+    }
+   ]
+  },
+  "105": {
+   "baslik": "Kök harfleri Kalıba yerleştir Yeni kelimeyi",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 44.35,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 90.85,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "106": {
+   "baslik": "Kök harfleri Kalıba yerleştir Yeni kelimeyi",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 44.24,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 89.68,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "107": {
+   "baslik": "Kök harfleri Kalıba yerleştir Yeni kelimeyi",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 43.95,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 90.05,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "108": {
+   "baslik": "Kök harfleri Kalıba yerleştir Yeni kelimeyi",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.74,
+     "y": 44.13,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.74,
+     "y": 89.14,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "109": {
+   "baslik": "Kök harfleri Kalıba yerleştir Yeni kelimeyi",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 44.24,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 32.83,
+     "y": 88.77,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "110": {
+   "baslik": "11 Kök harfleri Kalıba yerleştir Yeni",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 44.13,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 88.97,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "111": {
+   "baslik": "13 Kök harfleri Kalıba yerleştir Yeni",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 43.67,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.75,
+     "y": 89.51,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "112": {
+   "baslik": "15 34 Kök harfleri Kalıba yerleştir",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 41.99,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 87.03,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "113": {
+   "baslik": "17 Kök Kök harfleri Kalıba yerleştir",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 43.27,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 88.34,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "114": {
+   "baslik": "19 Kök Kök harfleri Kalıba yerleştir",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 43.27,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 89.05,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "115": {
+   "baslik": "21 55 Kök harfleri Kalıba yerleştir",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 41.96,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 87.8,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "116": {
+   "baslik": "23 Kök Kök harfleri Kalıba yerleştir",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 42.67,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 87.71,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "117": {
+   "baslik": "25 Kök Kök harfleri Kalıba yerleştir",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.19,
+     "y": 44.24,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 89.05,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "118": {
+   "baslik": "27 Kök Kök harfleri Kalıba yerleştir",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 41.39,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 85.32,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "119": {
+   "baslik": "29 Kök Kök harfleri Kalıba yerleştir",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 44.24,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 89.42,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "120": {
+   "baslik": "31 Kök harfleri Kalıba yerleştir Yeni",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.8,
+     "y": 44.78,
+     "w": 4.62,
+     "h": 4.41
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 33.73,
+     "y": 90.51,
+     "w": 4.62,
+     "h": 4.41
+    }
+   ]
+  },
+  "121": {
+   "baslik": "Fiillerin Olumsuzu ve Merfu, Mansub, Meczum",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 70.5,
+     "y": 6.39,
+     "w": 15.67,
+     "h": 6.26
+    }
+   ]
+  },
+  "122": {
+   "baslik": "ﺟَ ﻣُ ﻣَ ﻤْ ﺮَ Aşağıdaki",
+   "hotspot": []
+  },
+  "123": {
+   "baslik": "ﺟَ ﻣُ ﻣَ ﻤْ ﺮَ Ref’-Merfû’:",
+   "hotspot": []
+  },
+  "124": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "125": {
+   "baslik": "²ُ ﻞْ ﻞَ ﻞُ ﻌَ ﻌَ",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Ders Sunusu",
+     "x": 7.4,
+     "y": 84.96,
+     "w": 15.67,
+     "h": 6.26
+    },
+    {
+     "tur": "simge",
+     "alt": "kalip",
+     "etiket": "Kalıp-Vezin",
+     "simge": "🛠",
+     "x": 18.73,
+     "y": 6.23,
+     "w": 6.2,
+     "h": 4.75
+    }
+   ]
+  },
+  "126": {
+   "baslik": "",
+   "hotspot": []
+  },
+  "127": {
+   "baslik": "أ\" أ\" ﻓْ ﻓْ 7ُ ﻞُ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 69.29,
+     "y": 70.16,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "128": {
+   "baslik": "7ُ ﻞْ ﻞَ ﻞُ ﻌﱢ ﻌﱠ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 69.65,
+     "y": 68.37,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "129": {
+   "baslik": "ﻋَ ﻋَ 7ُ ﻞَ ﻞْ ﻞُ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 67.28,
+     "y": 70.96,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "130": {
+   "baslik": "ﻳَ ﻞَ ﻞْ ﻞُ ﻌَ ﻌَ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 69.31,
+     "y": 73.27,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "131": {
+   "baslik": "7َ ﻞَ ﻞْ ﻞُ ﻌَ ﻌَ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 69.46,
+     "y": 70.62,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "132": {
+   "baslik": "7َ ﻞﱠ ﻞﱡ ﻞﱠ ﻌَ ﻌَ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 68.4,
+     "y": 73.18,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "133": {
+   "baslik": "ﻳَ ﻞَ ﻞْ ﻞُ ﻌﱠ ﻌﱠ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 56.82,
+     "y": 70.9,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "134": {
+   "baslik": "ﻋَ ﻋَ ﻋَ ﻋُ ﻳَ ﻞَ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 68.86,
+     "y": 70.93,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "135": {
+   "baslik": "rَ ﻞَ ﻞْ ﻞُ ﺳْ ﺳْ",
+   "hotspot": [
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 68.7,
+     "y": 70.36,
+     "w": 4.37,
+     "h": 3.46
+    }
+   ]
+  },
+  "136": {
+   "baslik": "Kelimenin Serüveni Kök-Kelime-Cümle (6. Seviye) Etkinlik",
+   "hotspot": [
+    {
+     "tur": "sunum",
+     "etiket": "Etkinlik Sunusu",
+     "x": 67.35,
+     "y": 8.3,
+     "w": 22.92,
+     "h": 4.64
+    },
+    {
+     "tur": "simge",
+     "alt": "oyun",
+     "etiket": "Takım / İkişerli Oyun",
+     "simge": "🎯",
+     "x": 6.14,
+     "y": 4.16,
+     "w": 3.94,
+     "h": 3.77
+    },
+    {
+     "tur": "simge",
+     "alt": "zaman",
+     "etiket": "Zamanla Yarış",
+     "simge": "⏱",
+     "x": 31.88,
+     "y": 20.48,
+     "w": 1.7,
+     "h": 1.69
+    }
+   ]
+  },
+  "137": {
+   "baslik": "ﻠِ ﻟْ Kök-Gövde-Cümle Kelimenin Serüveni:",
+   "hotspot": []
+  },
+  "138": {
+   "baslik": "YARIŞMA KARTI Grup İsmi:",
+   "hotspot": []
+  },
+  "139": {
+   "baslik": "YARIŞMA KARTI Grup İsmi:",
+   "hotspot": []
+  },
+  "140": {
+   "baslik": "YARIŞMA KARTI Grup İsmi:",
+   "hotspot": []
+  },
+  "141": {
+   "baslik": "YARIŞMA KARTI Grup İsmi:",
+   "hotspot": []
+  },
+  "142": {
+   "baslik": "YARIŞMA KARTI Grup İsmi:",
+   "hotspot": []
+  },
+  "143": {
+   "baslik": "YARIŞMA KARTI 11 Grup İsmi:",
+   "hotspot": []
+  },
+  "144": {
+   "baslik": "YARIŞMA KARTI 13 Grup İsmi:",
+   "hotspot": []
+  },
+  "145": {
+   "baslik": "YARIŞMA KARTI 15 Grup İsmi:",
+   "hotspot": []
+  },
+  "146": {
+   "baslik": "YARIŞMA KARTI 17 Grup İsmi:",
+   "hotspot": []
+  },
+  "147": {
+   "baslik": "ﻠِ ﻟْ Kök-Gövde-Cümle Kelimenin Serüveni:",
+   "hotspot": []
+  },
+  "148": {
+   "baslik": "YARIŞMA KARTI 19 Grup İsmi:",
+   "hotspot": []
+  },
+  "149": {
+   "baslik": "YARIŞMA KARTI 21 Grup İsmi:",
+   "hotspot": []
+  },
+  "150": {
+   "baslik": "YARIŞMA KARTI 23 Grup İsmi:",
+   "hotspot": []
+  },
+  "151": {
+   "baslik": "YARIŞMA KARTI 25 Grup İsmi:",
+   "hotspot": []
+  },
+  "152": {
+   "baslik": "YARIŞMA KARTI 27 Grup İsmi:",
+   "hotspot": []
+  },
+  "153": {
+   "baslik": "YARIŞMA KARTI 29 Grup İsmi:",
+   "hotspot": []
+  },
+  "154": {
+   "baslik": "YARIŞMA KARTI 31 Grup İsmi:",
+   "hotspot": []
+  },
+  "155": {
+   "baslik": "YARIŞMA KARTI 33 Grup İsmi:",
+   "hotspot": []
+  },
+  "156": {
+   "baslik": "YARIŞMA KARTI 35 Grup İsmi:",
+   "hotspot": []
+  },
+  "157": {
+   "baslik": "ﻠِ ﻟْ Kök-Gövde-Cümle Kelimenin Serüveni:",
+   "hotspot": []
+  },
+  "158": {
+   "baslik": "YARIŞMA KARTI 37 Grup İsmi:",
+   "hotspot": []
+  },
+  "159": {
+   "baslik": "YARIŞMA KARTI 39 Grup İsmi:",
+   "hotspot": []
+  },
+  "160": {
+   "baslik": "YARIŞMA KARTI 41 Grup İsmi:",
+   "hotspot": []
+  }
+ }
+}

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YDT Arapça Soru Bankası (2020-2025)</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Rubik:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="ydt/cikmissorular.css">
+    <link rel="stylesheet" href="arakom.css?v=2">
+</head>
+<body>
+
+<header style="display: flex; align-items: center; justify-content: space-between;">
+    <a href="ydtarapca.html" class="back-button" title="Ana Sayfaya Dön">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+    </a>
+
+    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; flex-grow: 1;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="font-size: 2.2rem;">🎓</span>
+            <div>
+                <h1 style="margin: 0;">YDT Arapça Atölyesi</h1>
+                <small style="opacity: 0.85; font-weight: 400;">2020 - 2025 Soru Bankası</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="year-selector">
+        <select id="yearSelect" onchange="loadQuestions()">
+            <option value="2025" selected>2025 YDT</option>
+            <option value="2024">2024 YDT (Yakında)</option>
+        </select>
+    </div>
+</header>
+
+<div class="app-container">
+    <nav class="horizontal-tabs-nav">
+    <div class="tabs-scroll-container" id="categoryTabs">
+        <button class="tab-btn active" onclick="filterCategory('all')">Tümü</button>
+        <button class="tab-btn" onclick="filterCategory('kelime')">Kelime</button>
+        <button class="tab-btn" onclick="filterCategory('dilbilgisi')">Dilbilgisi</button>
+        <button class="tab-btn" onclick="filterCategory('harficer')">Harfi Cer</button>
+        <button class="tab-btn" onclick="filterCategory('tamamlama')">Tamamlama</button>
+        <button class="tab-btn" onclick="filterCategory('ceviri')">Çeviri</button>
+        <button class="tab-btn" onclick="filterCategory('paragraf')">Paragraf</button>
+        <button class="tab-btn" onclick="filterCategory('diyalog')">Diyalog</button>
+        <button class="tab-btn" onclick="filterCategory('yakin')">Yakın Anlam</button>
+        <button class="tab-btn" onclick="filterCategory('alakasiz')">Akışı Bozan</button>
+    </div>
+</nav>
+
+
+
+ <main class="content-area" style="display: block; position: relative;">
+    
+    <div id="sticky-instruction" style="
+        display: none; 
+        position: sticky; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        z-index: 1000; 
+        background: #ffffff; 
+        border-bottom: 3px solid var(--accent); 
+        padding: 15px 25px; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        box-sizing: border-box; 
+        margin-bottom: 20px;
+        clear: both;
+    ">
+        <div style="max-width: 1000px; margin: 0 auto; display: flex; align-items: center; gap: 15px;">
+            <i class="fas fa-info-circle" style="color: var(--accent); font-size: 1.2rem;"></i>
+            <span id="sticky-instruction-text" style="font-weight: 600; color: var(--primary); line-height: 1.5; font-size: 1.05rem;"></span>
+        </div>
+    </div>
+
+    <div style="padding: 0 20px;">
+        <div id="progress-wrapper" style="display: none;"> ... </div>
+        <div id="result-screen"> ... </div>
+        <div id="question-container"></div>
+    </div>
+</main>
+</div>
+
+<div id="explanationModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 style="margin:0; font-size:1.2rem;">Cevap Detayı</h3>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p id="modalAnswer" style="font-weight:700; font-size:1.3rem; color:var(--success); margin-top:0; border-bottom:1px solid #eee; padding-bottom:15px; margin-bottom:20px;"></p>
+            <div style="background:#f8fafc; padding:20px; border-radius:12px; border-left:4px solid var(--accent);">
+                <strong style="display:block; margin-bottom:10px; color:#475569; text-transform:uppercase; font-size:0.85rem; letter-spacing:1px;">Açıklama</strong>
+                <span id="modalText" style="font-family: var(--font-ui); line-height: 1.6;"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="ydt/cikmissorular.js"></script>
+
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+<script src="_flipbook_kopru.js"></script>
+</body>
+</html>

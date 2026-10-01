@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+
+    :root {
+        --primary: #2c3e50;
+        --secondary: #2980b9;
+        --bg-body: #2d3436;
+        --bg-panel: #fdfdfd;
+    }
+
+    body {
+        font-family: 'Rubik', sans-serif;
+        background-color: var(--bg-body);
+        margin: 0;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    /* --- MASAÜSTÜ VARSAYILAN --- */
+    #game-stage {
+        background-color: var(--bg-panel);
+        width: 95vw;
+        aspect-ratio: 16/9;
+        max-height: 95vh;
+        border-radius: 20px;
+        box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        display: grid;
+        grid-template-columns: 6fr 4fr;
+        overflow: hidden;
+        padding: 20px;
+        gap: 20px;
+        box-sizing: border-box;
+    }
+
+    #left-panel {
+        background: #f1f2f6;
+        border-radius: 15px;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow-y: auto;
+        border: 2px solid #dfe6e9;
+    }
+
+    .accordion-btn {
+        background: var(--primary);
+        color: white;
+        padding: 4px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        text-align: center;
+        font-size: 1.6rem;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .accordion-content {
+        background: white; border-radius: 0 0 8px 8px; overflow: hidden;
+        max-height: 0; transition: max-height 0.4s ease-out; margin-bottom: 5px; border: 1px solid #dfe6e9;
+    }
+    .accordion-content.open { max-height: 800px; }
+
+    .verb-table { width: 100%; border-collapse: separate; border-spacing: 4px; direction: rtl; }
+    .verb-table td {
+        background: white; border: 1px solid #b2bec3;
+        font-family: 'Noto Naskh Arabic', serif; font-size: 2.8rem; 
+        color: var(--primary); text-align: center; border-radius: 4px;
+        height: 45px; vertical-align: middle; position: relative;
+    }
+    .highlight-cell {
+        background-color: #ffeaa7 !important; border: 3px solid #fdcb6e !important;
+        color: #d35400 !important; transform: scale(1.05); z-index: 5;
+    }
+    .frozen-cell::after {
+        content: '?'; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(135deg, #81ecec, #74b9ff); display: flex;
+        align-items: center; justify-content: center; color: rgba(255,255,255,0.8);
+        font-size: 2rem; border-radius: 4px; z-index: 10;
+    }
+    .frozen-cell.crack-1::after { background: repeating-linear-gradient(45deg, #81ecec, #81ecec 10px, #74b9ff 10px, #74b9ff 20px); opacity: 0.8; }
+    .frozen-cell.crack-2::after { opacity: 0; pointer-events: none; }
+
+    #right-panel { display: flex; flex-direction: column; justify-content: space-between; padding: 10px; }
+    
+    #section-question {
+        flex: 0.4; display: flex; flex-direction: column; align-items: center;
+        justify-content: center; text-align: center; background: #ecf0f1;
+        border-radius: 15px; margin-bottom: 20px; padding: 15px; border: 2px dashed #bdc3c7;
+    }
+
+    .question-highlight {
+        font-family: 'Noto Naskh Arabic', serif; font-weight: 700; 
+        font-size: 3.5rem; /* Masaüstü Font */
+        color: var(--primary); margin: 5px 0; background: white; padding: 5px 80px;
+        border-radius: 10px; box-shadow: 0 4px 0 #dfe6e9;
+    }
+
+    .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; flex: 1; }
+
+    .det-opt-btn {
+        font-family: 'Noto Naskh Arabic', serif; font-size: 3rem; background: white;
+        border: 3px solid #e0e6ed; border-radius: 15px; cursor: pointer; color: var(--primary);
+        height: 100%; box-shadow: 0 5px 0 #b2bec3;
+    }
+    .det-opt-btn:last-child { grid-column: 1 / -1; width: 60%; justify-self: center; }
+
+    /* İpucu ve İkon Varsayılanları */
+    .mobile-hint { display: block; }
+    .mobile-home-btn { display: none; position: absolute; left: 10px; top: 10px; color: #b2bec3; }
+
+    /* ========================================= */
+    /* MOBİL DİKEY (PORTRAIT) */
+    /* ========================================= */
+    @media screen and (max-width: 900px) {
+        #game-stage {
+            grid-template-columns: 1fr; grid-template-rows: 1fr;
+            aspect-ratio: auto; height: 85dvh; width: 95vw; padding: 10px;
+        }
+
+        #left-panel, .mobile-hint { display: none !important; }
+        .mobile-home-btn { display: block; }
+
+        #right-panel { justify-content: flex-start; gap: 5px; }
+        #section-question { flex: 0 0 auto; margin-bottom: 5px; padding: 10px; }
+        
+        .question-highlight { 
+            font-size: 2rem !important; 
+            padding: 5px 20px; 
+            width: auto;
+        }
+
+        #section-question > div:nth-child(2),
+        #section-question > div:nth-child(4) { font-size: 1rem !important; margin-top: 5px !important; }
+
+        .options-container { flex: 1; gap: 8px; padding-bottom: 10px; }
+        .det-opt-btn { font-size: 1.8rem; border-width: 2px; }
+    }
+
+    /* ========================================= */
+    /* MOBİL YATAY (LANDSCAPE) - FİNAL DÜZELTME */
+    /* ========================================= */
+    @media screen and (max-height: 500px) and (orientation: landscape) {
+        #game-stage {
+            height: 100dvh; /* Ekranı tam kapla */
+            padding: 5px;
+            grid-template-columns: 1fr; 
+        }
+
+        #left-panel, .mobile-hint { display: none !important; }
+        .mobile-home-btn { display: block; top: 5px; left: 5px; } /* İkonu biraz köşeye çek */
+
+        #right-panel {
+            flex-direction: column;
+            justify-content: center; /* Ortala */
+            gap: 5px;
+            height: 100%;
+            padding: 0 5px; /* Yanlardan biraz boşluk */
+        }
+
+        /* --- Üst Kısım: Soru Kutusu --- */
+        #section-question {
+            flex: 0 0 auto; /* İçerik kadar yer kapla, esneme */
+            width: 100%;
+            margin: 0; 
+            padding: 5px; /* İç boşluğu azalttık */
+            min-height: auto;
+            background: #ecf0f1; /* Arkaplan rengi */
+        }
+
+        /* Soru Kelimesi (Kutuya Sığdırma Ayarları) */
+        .question-highlight { 
+            font-size: 2.5rem !important; /* İstenen Boyut */
+            line-height: 1.1; /* Satır aralığını sıkılaştır */
+            margin: 2px 0 !important; 
+            padding: 0 15px !important;
+            box-shadow: none; /* Gölge yer kaplamasın */
+            border: 1px solid #dfe6e9; /* Hafif sınır */
+        }
+        
+        /* Diğer küçük yazılar */
+        #section-question > div:nth-child(2) { display: none; } /* "Aranan Kelime" yazısını kaldır (yer açmak için) */
+        
+        #section-question > div:nth-child(4) { 
+            font-size: 0.8rem !important; 
+            margin-top: 2px !important;
+            line-height: 1;
+        }
+
+        /* --- Alt Kısım: Şıklar (1 Satır 5 Sütun) --- */
+        .options-container {
+            flex: 0 0 auto; /* Esnemesin, buton boyu kadar olsun */
+            display: grid;
+            grid-template-columns: repeat(5, 1fr) !important;
+            gap: 5px;
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        .det-opt-btn:last-child { grid-column: auto; width: 100%; }
+        
+        /* Buton Stili */
+        .det-opt-btn { 
+            font-size: 2rem; 
+            height: 60px; /* SABİT YÜKSEKLİK - Artık uzamayacak */
+            border-radius: 8px; 
+            padding: 0;
+            line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+        }
+    }

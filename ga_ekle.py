@@ -33,6 +33,7 @@ ATLA_SAYFA = {
     '_yolkontrol.html',                    # yol/yönlendirme kontrol aracı
     'surekontrol.html',                    # süre kontrol aracı
     'sozluk_veri_giris.html',              # yönetici veri giriş ekranı
+    'flipbookkidef.html',                  # eski adres: yeni flipbook'a yönlendirme sayfası
 }
 
 def _nrm(y):
@@ -42,6 +43,16 @@ def _nrm(y):
     return unicodedata.normalize('NFC', y)
 
 ATLA_SAYFA = {_nrm(x) for x in ATLA_SAYFA}
+
+# Bu yollarla BAŞLAYAN sayfalar da atlanır. Dijital kitapların etkinlikleri
+# kitabın içinde (iframe) açılır; kitap sayfası zaten ölçülüyor ve hangi
+# etkinliğin açıldığını olay olarak gönderiyor — ayrıca ölçülürse çift sayılır.
+ATLA_ONEK = tuple(_nrm(x) for x in (
+    'kitap/6-sinif-2026-2027/etkinlik/',
+    # Kidef Arapça flipbook: araç ve alıştırma kopyaları kitabın içinde (iframe) açılır
+    'kitap/kidef-arapca-2-baski/07_araclar/',
+    'kitap/kidef-arapca-2-baski/04_etkinlikler/',
+))
 
 BLOK = (
     '    <!-- Google Analytics (GA4) -->\n'
@@ -112,7 +123,7 @@ def main():
                 bozuk.append((bagil, 'betik=%d konfig=%d' % (nb, nk)))
             continue
 
-        if _nrm(bagil) in ATLA_SAYFA:
+        if _nrm(bagil) in ATLA_SAYFA or _nrm(bagil).startswith(ATLA_ONEK):
             atlanan.append(bagil)
             continue
 

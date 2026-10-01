@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hareke Avcısı: Tam Etkileşim</title>
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="ydt/hizlioku.css">
+    <link rel="stylesheet" href="arakom.css?v=2">
+</head>
+<body>
+
+    <div class="arabic-area" id="arabic-container"></div>
+<div class="back-button-container">
+        <a href="ydtarapca.html" class="back-button" title="Geri Dön">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+        </a>
+    </div>
+    <div class="turkish-area" id="turkish-container"></div>
+
+   <div class="options-area">
+        <div class="timer-container" id="timer-box">
+            <div class="timer-bar" id="question-timer-bar"></div>
+        </div>
+
+        <div class="options-grid" id="options-grid">
+            <div class="option-btn"></div>
+            <div class="option-btn"></div>
+            <div class="option-btn"></div>
+            <div class="option-btn"></div>
+        </div>
+
+        <div id="success-panel" style="display:none; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center;">
+            <div style="font-size: 3vh; color: #27ae60; margin-bottom: 2vh; font-weight: bold;">Tebrikler, Cümle Tamamlandı!</div>
+            <div onclick="nextSentence()" style="background:#2c3e50; color:#fff; padding:1.5vh 4vh; border-radius:30px; cursor:pointer; font-size:3vh;">
+                Sıradaki Cümle ➔
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div id="next-btn" class="next-sentence-btn" onclick="nextSentence()">Sıradaki Cümle ➔</div>
+
+    <script src="ydt/hizlioku.js"></script>
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+<script src="_flipbook_kopru.js"></script>
+</body>
+</html>

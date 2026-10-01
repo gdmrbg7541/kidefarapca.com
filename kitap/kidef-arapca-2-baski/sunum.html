@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ders Sunusu — Kidef Arapça</title>
+<!--
+  KİDEF ARAPÇA — SUNU GÖSTERİCİ (01.10.2026)
+  Flipbook'taki bir ders sunusunu YENİ SEKMEDE tam ekran gösterir.
+  Bilgisayarda da sitede de sunular bununla açılır (01.10.2026): slayt ekranın tamamını
+  kaplar, düğmeler üstünde durur ve 3 sn dokunulmazsa kaybolur (PDF tam ekran gibi).
+  Slaytlar flipbook'un 05_sunumlar/<deste>/NNN.webp görselleri; asıl PDF (yalnız bilgisayarda) &p= ile. Adres:
+     sunum.html?d=05_sunumlar/mazi&n=223&a=Mazi%20Fiil%20Ders%20Sunusu&s=1
+  Akıllı tahta için: büyük oklar, parmakla kaydırma, ekranın sağına/soluna
+  dokunma, klavye (← → Boşluk Home End F).
+-->
+<style>
+  :root{--gold:#E3A02A;--ink:#122040;--zemin:#0C1220}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--zemin);color:#fff;overflow:hidden;
+    font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    -webkit-tap-highlight-color:transparent}
+  button,input{font:inherit;color:inherit;touch-action:manipulation}
+  button{background:none;border:0;cursor:pointer}
+  .ust{position:fixed;top:0;left:0;right:0;height:64px;display:flex;align-items:center;gap:12px;
+    padding:0 14px;background:linear-gradient(rgba(8,12,22,.82),rgba(8,12,22,0));z-index:5;
+    transition:opacity .35s}
+  .ust h1{flex:1;min-width:0;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ust .rozet{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;
+    border-radius:99px;background:var(--gold);color:#221503;white-space:nowrap}
+  .tus{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#D6DEEC}
+  .tus:active{transform:scale(.92);background:rgba(255,255,255,.15)}
+  .tus svg,.ok svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .sahne{position:fixed;inset:0;display:grid;place-items:center;touch-action:pan-y;background:#000}
+  /* slayt yatayda ekranın iki kenarına kadar uzar; üstte/altta siyah boşluk kalabilir */
+  .sahne img{width:100vw;height:auto;display:block;user-select:none;-webkit-user-drag:none;
+    transition:opacity .12s}
+  .sahne img.yukleniyor{opacity:.35}
+  /* ileri/geri tuşları slaydın ÜSTÜNDE, her zaman görünür (yarı saydam) */
+  /* ileri/geri: geniş, açık renkli, slaydın üstünde. Görünen düğme 88×180, basılabilen alan
+     ekran kenarından ortaya doğru 140 px ve ekran yüksekliğinin %70'i (akıllı tahtada rahat) */
+  .ok{position:fixed;top:50%;transform:translateY(-50%);width:88px;height:180px;border-radius:22px;display:grid;
+    place-items:center;background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.45);z-index:6;color:#fff;
+    box-shadow:0 4px 18px rgba(0,0,0,.18);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  .ok::before{content:'';position:absolute;top:calc(50% - 35vh);height:70vh;width:140px}
+  .ok.sol::before{left:-10px}.ok.sag::before{right:-10px}
+  .ok svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
+  .ok:active{background:var(--gold);border-color:var(--gold);color:#221503;transform:translateY(-50%) scale(.93)}
+  .ok:disabled{opacity:.15;pointer-events:none}
+  .ok.sol{left:10px}.ok.sag{right:10px}
+  .ok svg{width:38px;height:38px;stroke-width:2.6}
+  .alt{position:fixed;left:0;right:0;bottom:0;height:68px;display:flex;align-items:center;gap:14px;padding:0 18px;
+    background:linear-gradient(rgba(8,12,22,0),rgba(8,12,22,.82));z-index:5;transition:opacity .35s}
+  .ok{transition:opacity .35s,background .15s}
+  .pdf{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:12px;color:#fff;
+    text-decoration:none;font-size:13px;font-weight:700;background:rgba(255,255,255,.12)}
+  .pdf[hidden]{display:none}
+  .pdf:active{transform:scale(.94)}
+  .pdf svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .sayac{font-size:13px;font-weight:700;color:#9FB0CC;white-space:nowrap;font-variant-numeric:tabular-nums}
+  input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:99px;outline:none;
+    background:linear-gradient(90deg,var(--gold) var(--dolu,0%),rgba(255,255,255,.16) var(--dolu,0%))}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:4px solid var(--gold)}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid var(--gold)}
+  /* bir süre dokunulmazsa düğmeler kaybolur, slayt tek başına kalır (PDF tam ekran gibi) */
+  body.sakin .ust,body.sakin .alt{opacity:0;pointer-events:none}
+  body.sakin .ok{opacity:.45}   /* dokunmadan bekleyince oklar yalnız soluklaşır */
+  /* klavye / sunum kumandası ile ilerlenirken oklar TAMAMEN kaybolur; ekrana dokununca geri gelir */
+  body.tusla .ok{opacity:0;pointer-events:none}
+  body.sakin{cursor:none}
+  /* tam ekranda başlık ("DERS SUNUSU" + sunu adı) görünmez; yalnız düğmeler kalır */
+  body.tamekran .ust .rozet,body.tamekran .ust h1{visibility:hidden}
+  .hata{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding:30px;color:#C9D3E6;font-size:15px;line-height:1.6}
+  @media (max-width:700px){.ok{width:52px;height:110px}.ok svg{width:26px;height:26px}.ok::before{width:80px}}
+</style>
+</head>
+<body>
+<header class="ust">
+  <span class="rozet">Ders Sunusu</span>
+  <h1 id="baslik">—</h1>
+  <a class="pdf" id="pdfAc" target="_blank" rel="noopener" hidden title="Asıl PDF dosyasını aç">
+    <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>PDF</a>
+  <button class="tus" id="tSakin" title="Çubukları gizle (H)" aria-label="Çubukları gizle">
+    <svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+  <button class="tus" id="tTam" title="Tam ekran (F)" aria-label="Tam ekran">
+    <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <button class="tus" id="tKapat" title="Sekmeyi kapat" aria-label="Kapat">
+    <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+</header>
+
+<main class="sahne" id="sahne"><img id="slayt" alt="Sunu slaydı"></main>
+
+<button class="ok sol" id="geri" aria-label="Önceki slayt"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
+<button class="ok sag" id="ileri" aria-label="Sonraki slayt"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
+
+<footer class="alt">
+  <span class="sayac" id="sayac">1 / 1</span>
+  <input type="range" id="kaydirac" min="1" max="1" value="1" aria-label="Slayt seç">
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var q = new URLSearchParams(location.search);
+  var klasor = (q.get('d') || '').replace(/[^a-z0-9_\-\/]/gi, '');      // yalnız kendi klasörlerimiz
+  var adet = parseInt(q.get('n'), 10) || 0;
+  var ad = q.get('a') || 'Ders Sunusu';
+  var $ = function (s) { return document.querySelector(s); };
+  document.title = ad + ' — Kidef Arapça';
+  $('#baslik').textContent = ad;
+  if (!/^05_sunumlar\//.test(klasor) || adet < 1) {
+    document.body.innerHTML = '<div class="hata">Sunu bulunamadı.<br>Flipbook\'tan bir sunu damgasına dokunarak açın.</div>';
+    return;
+  }
+  var i = Math.min(adet, Math.max(1, parseInt(q.get('s'), 10) || 1));
+  var img = $('#slayt'), kay = $('#kaydirac');
+  kay.max = adet;
+  function yol(n) { return klasor + '/' + ('00' + n).slice(-3) + '.webp'; }
+  function goster(n) {
+    i = Math.max(1, Math.min(adet, n));
+    img.classList.add('yukleniyor');
+    img.onload = function () { img.classList.remove('yukleniyor'); };
+    img.src = yol(i);
+    $('#sayac').textContent = i + ' / ' + adet;
+    kay.value = i; kay.style.setProperty('--dolu', ((i - 1) / Math.max(1, adet - 1) * 100) + '%');
+    $('#geri').disabled = i <= 1; $('#ileri').disabled = i >= adet;
+    for (var j = i + 1; j <= i + 3 && j <= adet; j++) { var o = new Image(); o.src = yol(j); }
+    try { var u = { d: klasor, n: adet, a: ad, s: i }; if (q.get('p')) u.p = q.get('p'); history.replaceState(null, '', '?' + new URLSearchParams(u)); } catch (e) {}
+  }
+  $('#geri').onclick = function () { goster(i - 1); };
+  $('#ileri').onclick = function () { goster(i + 1); };
+  kay.oninput = function () { goster(+kay.value); };
+  function tam() {
+    var d = document;
+    if (d.fullscreenElement || d.webkitFullscreenElement) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+    else { var e = d.documentElement; (e.requestFullscreen || e.webkitRequestFullscreen || function () {}).call(e); }
+  }
+  $('#tTam').onclick = tam;
+  $('#tSakin').onclick = function () { document.body.classList.toggle('sakin'); };
+  $('#tKapat').onclick = function () { window.close(); setTimeout(function () { history.back(); }, 150); };
+
+  // dokunma: kaydırma ya da ekranın sağ/sol üçte birine dokunma
+  var s = null;
+  $('#sahne').addEventListener('pointerdown', function (e) { s = { x: e.clientX, y: e.clientY }; });
+  $('#sahne').addEventListener('pointerup', function (e) {
+    if (!s) return;
+    var dx = e.clientX - s.x, dy = e.clientY - s.y; s = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) { goster(dx < 0 ? i + 1 : i - 1); return; }
+    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+      var W = window.innerWidth;
+      if (e.clientX > W * 0.66) goster(i + 1);
+      else if (e.clientX < W * 0.34) goster(i - 1);
+      else if (!sakinIdi) { clearTimeout(gizZ); document.body.classList.add('sakin'); }   // ortaya dokunmak gizler/gösterir
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === ' ' || k === 'PageDown') { e.preventDefault(); goster(i + 1); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); goster(i - 1); }
+    else if (k === 'Home') goster(1);
+    else if (k === 'End') goster(adet);
+    else if (k === 'f' || k === 'F') tam();
+    else if (k === 'h' || k === 'H') document.body.classList.toggle('sakin');
+  });
+  // tam ekran mı? (düğmeyle/F ile açılan tam ekran ya da tarayıcının kendi tam ekranı — F11)
+  function tamMi() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement) ||
+      (window.innerHeight >= screen.height - 2 && window.innerWidth >= screen.width - 2);
+  }
+  function tamYaz() { document.body.classList.toggle('tamekran', tamMi()); }
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (ev) { document.addEventListener(ev, tamYaz); });
+  window.addEventListener('resize', tamYaz);
+  tamYaz();
+  // asıl PDF (yalnız bilgisayardaki kopyada; sitede yok)
+  var pdf = q.get('p');
+  if (pdf && location.protocol === 'file:' && /^\.\.\//.test(pdf)) {
+    var pa = $('#pdfAc'); pa.hidden = false; pa.href = pdf.split('/').map(encodeURIComponent).join('/');
+  }
+  // düğmeler 3 sn hareketsizlikte kaybolur; dokununca/fare oynayınca geri gelir
+  var gizZ, sakinIdi = false;
+  // dokunma anında düğmeler gizli miydi? (uyan() onları hemen gösterdiği için önce kaydedilir)
+  document.addEventListener('pointerdown', function () { sakinIdi = document.body.classList.contains('sakin'); }, true);
+  function uyan() {
+    document.body.classList.remove('sakin');
+    clearTimeout(gizZ); gizZ = setTimeout(function () { document.body.classList.add('sakin'); }, 3000);
+  }
+  ['pointermove', 'pointerdown'].forEach(function (ev) { document.addEventListener(ev, uyan, true); });
+  // Tuşla (klavye oku, Boşluk, PageUp/Down — sunum kumandaları da bunları gönderir) ilerlenince
+  // ekrandaki her şey, oklar dahil, kaybolur. Dokunma ya da fare hareketi geri getirir.
+  var GEZ = { ArrowRight: 1, ArrowLeft: 1, ' ': 1, PageDown: 1, PageUp: 1, Home: 1, End: 1, ArrowUp: 1, ArrowDown: 1 };
+  document.addEventListener('keydown', function (e) {
+    if (GEZ[e.key]) { clearTimeout(gizZ); document.body.classList.add('sakin', 'tusla'); }
+    else uyan();
+  }, true);
+  var sonFare = null;
+  document.addEventListener('pointermove', function (e) {
+    // fare yerinde dururken bazı tarayıcılar pointermove gönderir; gerçekten oynadıysa göster
+    if (sonFare && Math.abs(e.clientX - sonFare[0]) + Math.abs(e.clientY - sonFare[1]) < 4) return;
+    sonFare = [e.clientX, e.clientY]; document.body.classList.remove('tusla');
+  }, true);
+  document.addEventListener('pointerdown', function () { document.body.classList.remove('tusla'); }, true);
+  uyan();
+  goster(i);
+})();
+</script>
+</body>
+</html>

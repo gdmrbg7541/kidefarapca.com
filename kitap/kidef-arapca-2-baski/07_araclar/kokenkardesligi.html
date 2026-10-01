@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YDT Arapça - Türkçe Köken Kardeşliği Sözlüğü</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <link rel="stylesheet" href="ydt/kokenkardesligi.css">
+    <link rel="stylesheet" href="arakom.css?v=2">
+</head>
+<body>
+
+<div class="container">
+    <header>
+    <div class="header-container">
+        <a href="ydtarapca.html" class="back-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            
+        </a>
+        <h1>Köken Kardeşliği Sözlüğü</h1>
+        <div style="width: 100px;"></div> </div>
+</header>
+
+    <div class="filter-section">
+        <label for="yearSelect">Sınav Yılını Seçin: </label>
+        <select id="yearSelect" onchange="filterWords()">
+            <option value="2025">2025 YKS-YDT</option>
+            <option value="2024">2024 YKS-YDT (Örnek)</option>
+            <option value="2023">2023 YKS-YDT (Örnek)</option>
+            <option value="2022">2022 YKS-YDT (Örnek)</option>
+            <option value="2021">2021 YKS-YDT (Örnek)</option>
+            <option value="2020">2020 YKS-YDT (Örnek)</option>
+        </select>
+    </div>
+
+    <table id="wordTable">
+        <thead>
+            <tr>
+                <th width="30%">Arapça (Metindeki)</th>
+                <th width="30%">Türkçe Karşılık / Köken</th>
+                <th width="40%">Anlam/Kullanım</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+    <div id="emptyMsg" class="empty-msg">Seçilen yıl için henüz veri girişi yapılmadı.</div>
+</div>
+
+<script src="ydt/kokenkardesligi.js"></script>
+
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+<script src="_flipbook_kopru.js"></script>
+</body>
+</html>

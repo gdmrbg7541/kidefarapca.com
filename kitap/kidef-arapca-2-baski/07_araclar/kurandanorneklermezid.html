@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kur'an-ı Kerim Mezid Fiil Atölyesi</title>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="sarf/mezid/kurandanorneklermezid.css">
+    <link rel="stylesheet" href="arakom.css?v=2">
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <div class="header-bar">
+        <a href="kaliplartablosu.html" class="icon-btn" title="Ana Sayfa">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+                <path d="M3.4 10.5 12 3.5l8.6 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.4 9.4V19a1.5 1.5 0 0 0 1.5 1.5h10.2a1.5 1.5 0 0 0 1.5-1.5V9.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.6 20.5v-5a1.3 1.3 0 0 1 1.3-1.3h2.2a1.3 1.3 0 0 1 1.3 1.3v5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+        
+        <div class="header-title">Kelime Tahlili</div>
+
+        <button class="icon-btn" onclick="toggleFullScreen()" title="Tam Ekran">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div class="progress-wrapper">
+        <div class="progress-fill" id="progress-bar"></div>
+    </div>
+
+    <div class="content-scroll-area">
+        <div class="question-area">
+            <div id="feedback-left" class="feedback-icon icon-left"></div>
+            
+            <div class="quran-text" id="verse-text">...</div>
+            <div class="translation" id="verse-translation">...</div>
+            
+            <div id="feedback-right" class="feedback-icon icon-right"></div>
+        </div>
+
+        <div class="interaction-stage">
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="result-view" id="result-container">
+                <div class="answer-row">
+                    <div id="correct-answer-title" class="answer-title"></div>
+                    <div style="font-size: 1.5rem; color: var(--primary);">:</div> 
+                    <div id="correct-answer-desc" class="answer-desc"></div>
+                </div>
+                
+                <table class="sarf-table">
+                    <thead>
+                        <tr>
+                            <th>Mazi</th>
+                            <th>Muzari</th>
+                            <th>Emir</th>
+                            <th>Mastar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="res-mazi"></td>
+                            <td id="res-muzari"></td>
+                            <td id="res-emir"></td>
+                            <td id="res-mastar"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-bar">
+        <button class="nav-btn" onclick="prevQuestion()">
+            <span>&#8592;</span> Geri
+        </button>
+        
+        <button class="nav-btn" id="next-btn" onclick="nextQuestion()" disabled>
+            İleri <span>&#8594;</span>
+        </button>
+    </div>
+</div>
+
+<script src="sarf/mezid/kurandanorneklermezid.js"></script>
+
+<script id="kidef-koruma">
+/* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
+   Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();},false);
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(), m=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||(m&&e.shiftKey&&(k==='i'||k==='j'||k==='c'))||(m&&k==='u')){e.preventDefault();return false;}
+  },false);
+})();
+</script>
+<script src="_flipbook_kopru.js"></script>
+</body>
+</html>
