@@ -44,7 +44,10 @@
     clearTimeout(tostZ); tostZ = setTimeout(function () { t.classList.remove('gor'); }, sure || 2600);
   }
   var YEREL = location.protocol === 'file:';
-  var ACILIS = new URLSearchParams(location.search).get('s');   // flip kurulmadan oku (degisti adresi yeniler)
+  var ACILIS = new URLSearchParams(location.search).get('s');
+  /* En son kalınan sayfa bu tarayıcıda saklanır; adreste ?s= yoksa oradan açılır */
+  var SON_ANAHTAR = 'arapca6_2026_sonSayfa', SON = null;
+  try { SON = parseInt(localStorage.getItem(SON_ANAHTAR), 10); } catch (e) {}   // flip kurulmadan oku (degisti adresi yeniler)
 
   /* ---------- hotspot katmanı ---------- */
   function katmanKur(f, katman) {
@@ -92,6 +95,7 @@
     if (!u && d.sol) u = uniteBul(basili(d.sol));
     $('#uniteEt').textContent = u ? (u.no ? u.no + '. Ünite' : u.ad) : (d.aktif <= 2 ? 'Kapak' : (d.aktif >= TOPLAM - 1 ? 'Arka kapak' : 'Giriş'));
     $('#dersEt').textContent = u && u.no ? u.ad : '';
+    try { localStorage.setItem(SON_ANAHTAR, String(d.aktif)); } catch (e) {}   // en son kalınan sayfa
     try { history.replaceState(null, '', '?s=' + (d.aktif > 2 && d.aktif < TOPLAM - 1 ? pr : (d.aktif <= 2 ? 'kapak' : 'son'))); } catch (e) {}
     calanIsaretle();
   }
@@ -402,5 +406,9 @@
   var s = ACILIS;
   if (s && /^\d+$/.test(s)) flip.git(+s + FARK, true);
   else if (s === 'son') flip.git(TOPLAM, true);
-  if (!s) setTimeout(function () { tost('Sayfayı çevirmek için ok tuşları, kaydırma ya da sayfanın kenarını sürükleyin', 3800); }, 700);
+  else if (!s && SON > 1 && SON <= TOPLAM) {
+    flip.git(SON, true);
+    setTimeout(function () { tost('Kaldığınız sayfadan açıldı: ' + (etiket(SON) || SON) + ' — kapağa dönmek için Home tuşu', 3800); }, 600);
+  }
+  if (!s && !(SON > 1)) setTimeout(function () { tost('Sayfayı çevirmek için ok tuşları, kaydırma ya da sayfanın kenarını sürükleyin', 3800); }, 700);
 })();
