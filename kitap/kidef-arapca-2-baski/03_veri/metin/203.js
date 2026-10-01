@@ -1,0 +1,1 @@
+(window.SAYFA_METIN=window.SAYFA_METIN||{})[203]={"W":595.2,"H":841.92,"t":[["cl",15.92,0,41.04,56.42,458.6,"Yukarıdaki ifadelerden kendimizce sohbet oluşturalım. Arkadaşımızla"],["cl",15.92,0,41.04,76.1,84.02,"uygulayalım."],["cl",15.92,0,267.94,417.14,59.1,"Sohbet 2"]]};

@@ -1,0 +1,1 @@
+(window.SAYFA_METIN=window.SAYFA_METIN||{})[65]={"W":595.2,"H":841.92,"t":[["cl",18.0,12582912,70.32,58.56,156.4,"Cemi Teksir Vezinleri"],["cl",13.92,0,162.72,132.48,285.44,"Kırmızı renkteki harf ve harekeleri kelimeye ekle!"],["cl",11.04,0,52.08,230.64,20.33,"Ülke"],["cl",11.04,15597568,72.72,230.64,12.21,"ler"]]};

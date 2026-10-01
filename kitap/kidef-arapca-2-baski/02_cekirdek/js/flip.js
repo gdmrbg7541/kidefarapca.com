@@ -111,6 +111,7 @@
     };
     tam.onerror = function () { yuz.classList.add('uretilmedi'); };
     tam.src = this.gorselYolu(no);
+    if (window.metinKatmani) window.metinKatmani(no, yuz);     // HTML metin katmanı (metin.js)
     if (this.katmanKur) this.katmanKur(no, yuz.querySelector('.katman'));
   };
 
@@ -293,9 +294,10 @@
     if (hedef === this.c && !sessiz) { this._bildir(); return; }
     this.c = hedef;
     this.kitap.style.transition = 'none';   // atlarken kitap kaymasın, yerine otursun
+    this.kitap.classList.add('atla');        // yazı katmanları da beklemeden yerine geçsin
     for (var i = 0; i < this.yaprakSayisi; i++) {
       var y = this.yapraklar[i];
-      y.classList.remove('suruklenen');
+      y.classList.remove('suruklenen', 'yari');
       y.style.transform = '';
       y.style.transition = 'none';
       y.classList.toggle('cevrildi', i < this.c);
@@ -308,6 +310,7 @@
     this._bildir();
     void this.kitap.offsetWidth;
     this.kitap.style.transition = '';
+    this.kitap.classList.remove('atla');
   };
 
   /* ---------- sürükleyerek çevirme ---------- */
@@ -348,6 +351,7 @@
       else oran = Math.min(1, Math.max(0, dx / s.w));
       var aci = s.ileri ? -180 * oran : -180 * (1 - oran);
       s.y.style.transform = 'rotateY(' + aci + 'deg)';
+      s.y.classList.toggle('yari', aci < -90);   // hangi yüzün yazısı görünsün (sayfa-html.css)
       s.oran = oran;
     });
 
@@ -364,7 +368,7 @@
       }
       var t = s;
       s = null;
-      t.y.classList.remove('suruklenen');
+      t.y.classList.remove('suruklenen', 'yari');
       if (!t.tasi) { t.y.style.transform = ''; self._zSirala(-1); return; }
       if ((t.oran || 0) > 0.32) {
         if (t.ileri) { self.c = t.i + 1; self._animasyon(t.y, true); }

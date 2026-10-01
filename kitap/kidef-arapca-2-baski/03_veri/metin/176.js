@@ -1,0 +1,1 @@
+(window.SAYFA_METIN=window.SAYFA_METIN||{})[176]={"W":595.2,"H":841.92,"t":[["cl",17.82,0,70.42,58.56,292.98,"Basit Fiillerin Zaman ve Mekan Kalıpları"],["cl",16.08,0,41.28,720.0,315.18,"dişilik alameti yerine ‘çokluk’ anlamını ifade eder."]]};

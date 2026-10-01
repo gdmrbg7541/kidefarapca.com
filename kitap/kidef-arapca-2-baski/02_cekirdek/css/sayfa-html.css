@@ -138,3 +138,23 @@
 .sahis.ar-t td:nth-child(1),.sahis.ar-t td:nth-child(2){color:#1E73D8}
 .sahis .er,.sahis .di,.sahis .or{background:#D9D9D9}
 .sahis .er{color:#1E73D8}.sahis .di{color:#E011D0}.sahis .or{color:#7B3FB3}
+
+/* HTML metin katmanı (s.8–231): SVG yazı, arka plan görselinin tam üstünde */
+.metin-katman{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;
+  white-space:pre;text-rendering:geometricPrecision}
+
+/* GÖRÜNMEYEN YÜZÜN YAZISI ÖNE SIZMASIN (02.10.2026)
+   backface-visibility:hidden yalnız .yuz'un kendi boyamasını gizler; içindeki SVG/HTML yazı
+   bazı tarayıcılarda (Safari, akıllı tahta tarayıcıları, bazen Chrome) ayrı katman olarak
+   çizilir ve sayfanın arkasındaki yazı öndeki sayfanın üstünde görünür. Bu yüzden görünmeyen
+   yüzün yazısı açıkça gizlenir. Yaprak dönerken yüzler yaprak 90°'ye geldiğinde (geçiş eğrisinde ~0,24 sn) yer değiştirir. */
+.yaprak .metin-katman,.yaprak .html-sayfa{transition:visibility 0s linear .24s}
+.yaprak.cevrildi > .yuz.on .metin-katman,.yaprak.cevrildi > .yuz.on .html-sayfa,
+.yaprak:not(.cevrildi) > .yuz.arka .metin-katman,.yaprak:not(.cevrildi) > .yuz.arka .html-sayfa{visibility:hidden}
+/* parmakla sürüklerken: flip.js yaprak 90°'yi geçince .yari ekler */
+.yaprak.suruklenen .metin-katman,.yaprak.suruklenen .html-sayfa{transition:none}
+.yaprak.suruklenen:not(.yari) > .yuz.on .metin-katman,.yaprak.suruklenen:not(.yari) > .yuz.on .html-sayfa,
+.yaprak.suruklenen.yari > .yuz.arka .metin-katman,.yaprak.suruklenen.yari > .yuz.arka .html-sayfa{visibility:visible}
+.yaprak.suruklenen.yari > .yuz.on .metin-katman,.yaprak.suruklenen.yari > .yuz.on .html-sayfa,
+.yaprak.suruklenen:not(.yari) > .yuz.arka .metin-katman,.yaprak.suruklenen:not(.yari) > .yuz.arka .html-sayfa{visibility:hidden}
+.atla .metin-katman,.atla .html-sayfa{transition:none !important}
