@@ -285,14 +285,23 @@ const topics = {
 };
 
 // --- DEĞİŞKENLER VE AYARLAR ---
-const cardColors = ["#364fc7", "#63e6be", "#ff922b", "#f06595", "#845ef7", "#51cf66", "#fcc419", "#339af0"];
+/* Çalışma kartlarının rengi: sert çivit/turuncu yerine yumuşak
+   pastel sekizli (gül, lila, nane, kum, gök, pudra, sis, bej).
+   Yazı rengi de beyazdan mürekkebe çekildi (CSS). */
+const cardColors = ["#F6DCE4", "#E7DCF4", "#DCEFE4", "#F7E7D4",
+                    "#DCE8F5", "#F3E0DA", "#E8EAF2", "#EFE6D8"];
 let mode = 'study', isAr = true, scores = [0, 0], currentPlayer = 1, activeFlipped = [];
 let currentWords = []; // Seçilen konunun kelimeleri
 
 // --- SİSTEM BAŞLATICI ---
-window.onload = () => {
-    renderMenu(); 
-};
+/* window.onload BUTUN kaynaklar (uzak ses dosyalari, Analytics) inince
+   calisiyordu; konu listesi bu yuzden gec geliyordu. HTML okunur okunmaz
+   ciziliyor artik (02.10.2026). */
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderMenu);
+} else {
+    renderMenu();
+}
 
 // --- MENÜ YÖNETİMİ ---
 function renderMenu() {
@@ -303,8 +312,12 @@ function renderMenu() {
     Object.keys(topics).forEach(key => {
         const topic = topics[key];
         const card = document.createElement('div');
-        card.style = "background:white; padding:25px; border-radius:20px; box-shadow:0 12px 25px rgba(0,0,0,0.1); cursor:pointer; border:3px solid transparent; transition:0.3s;";
-        card.innerHTML = `<div style="font-size:3rem;">${topic.icon}</div><h3>${topic.title}</h3><span>${topic.words.length} Kelime</span>`;
+        /* Stil CSS'e taşındı (02.10.2026): satır içi yazılınca tasarım
+           dosyadan değiştirilemiyordu. */
+        card.className = 'konu-kart';
+        card.innerHTML = `<div class="konu-ikon">${topic.icon}</div>` +
+                         `<h3>${topic.title}</h3>` +
+                         `<span class="konu-adet">${topic.words.length} kelime</span>`;
         
         card.onclick = () => {
             currentWords = [...topic.words]; // Referans hatasını önlemek için kopya al
@@ -410,11 +423,13 @@ function init() {
         card.dataset.id = isStudy ? item.ar : item.pairId;
         
         const isBackAr = isStudy ? !isAr : (item.lang === 'ar');
-        const color = isStudy ? cardColors[index % cardColors.length] : "#5c7cfa";
+        /* Hafıza kipinde kapalı yüze renk VERİLMİYOR: krem kâğıt + altın
+           kafes desenini CSS çiziyor (.card-front.kapali). */
+        const color = isStudy ? cardColors[index % cardColors.length] : null;
 
         card.innerHTML = `
             <div class="card-inner">
-                <div class="card-face card-front" style="background-color: ${color}">
+                <div class="card-face card-front${color ? '' : ' kapali'}"${color ? ` style="background-color: ${color}"` : ''}>
                     <span class="${isStudy && isAr ? 'lang-ar' : 'lang-tr'}">
                         ${isStudy ? (isAr ? item.ar : item.tr) : ""}
                     </span>

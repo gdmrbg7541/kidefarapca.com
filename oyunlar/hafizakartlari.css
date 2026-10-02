@@ -327,3 +327,112 @@
         font-size: 2rem;
     }
 }
+
+/* ============================================================
+   ZARİF YENİLEME (02.10.2026)
+   Öğretmen: "yeniden tasarla; 7. sınıf ünite oyunlarındaki hafıza
+   kartları tasarımı güzeldi, oraya bakabilirsin."
+   Aynı dil: krem kâğıt · gül kurusu / lila pastel · antika altın.
+   Eski kurallar yerinde; bu blok üstlerine yazıyor, geri almak için
+   bu bloğu silmek yeter.
+   ============================================================ */
+:root {
+  --zarif-kagit: #FBF7F4; --zarif-kagit2: #F3EBE6;
+  --zarif-mur: #43303A;   --zarif-mur2: #6B5560;
+  --zarif-gul: #D98CA0;   --zarif-gul-ac: #F3DCE2;
+  --zarif-lila: #B9A7D8;  --zarif-lila-ac: #EDE6F6;
+  --zarif-altin: #BF9B4E; --zarif-altin-ac: #E3C87E;
+  --zarif-cizgi: rgba(191, 155, 78, .30);
+
+  --bg-gradient:
+    radial-gradient(60% 45% at 18% 8%, rgba(217, 140, 160, .13), transparent 70%),
+    radial-gradient(55% 45% at 86% 92%, rgba(185, 167, 216, .14), transparent 70%),
+    linear-gradient(180deg, #FDFAF8, #F1E7E2);
+  --primary: #B07E8E;
+  --accent: var(--zarif-altin);
+  --p1: #D98CA0;
+  --p2: #B9A7D8;
+  --shadow: 0 10px 26px rgba(67, 48, 58, .09);
+}
+body { color: var(--zarif-mur) }
+
+/* ---------- üst şerit, başlık, düğmeler ---------- */
+.header { background: rgba(255, 253, 251, .92); box-shadow: 0 1px 0 var(--zarif-cizgi) }
+h1, .menu-title { color: var(--zarif-mur); letter-spacing: .3px }
+.menu-title::after {
+  content: ''; display: block; width: min(220px, 44vw); height: 1px; margin: 12px auto 0;
+  background: linear-gradient(90deg, transparent, var(--zarif-altin-ac) 18%,
+    var(--zarif-altin) 50%, var(--zarif-altin-ac) 82%, transparent);
+}
+.btn {
+  background: #fff; color: var(--zarif-mur);
+  border: 1px solid var(--zarif-cizgi); border-radius: 13px;
+  box-shadow: 0 1px 2px rgba(67, 48, 58, .05), 0 6px 16px rgba(67, 48, 58, .05);
+}
+.btn:hover { border-color: var(--zarif-altin-ac); background: #FFFBF8 }
+.btn.active { background: linear-gradient(180deg, #CBA86A, #B08A42); color: #fff; border-color: #A8812F }
+#lang-btn-main { background: linear-gradient(180deg, #CBA86A, #B08A42) !important; color: #fff !important }
+.home-btn { background: #fff !important; color: var(--zarif-mur) !important; border: 1px solid var(--zarif-cizgi) }
+.home-btn:hover { background: #FFF8F2 !important; box-shadow: 0 6px 16px rgba(191, 155, 78, .18) }
+.home-btn svg { fill: none; stroke: var(--zarif-mur2) }
+
+/* ---------- konu kartları ---------- */
+.konu-kart {
+  background: linear-gradient(180deg, #FFFFFF, #FFFBF8);
+  border: 1px solid var(--zarif-cizgi); border-radius: 20px;
+  padding: 24px 20px; cursor: pointer;
+  box-shadow: 0 1px 2px rgba(67, 48, 58, .05), 0 12px 26px rgba(67, 48, 58, .06);
+  transition: transform .18s, border-color .18s, box-shadow .18s;
+}
+.konu-kart:hover {
+  transform: translateY(-4px); border-color: var(--zarif-altin-ac);
+  box-shadow: 0 18px 34px rgba(191, 155, 78, .18);
+}
+.konu-ikon { font-size: 2.7rem; line-height: 1.1 }
+.konu-kart h3 { margin: 10px 0 4px; color: var(--zarif-mur); font-size: 1.15rem }
+.konu-adet {
+  display: inline-block; padding: 3px 12px; border-radius: 99px;
+  background: rgba(191, 155, 78, .12); color: #8A6B2E; font-size: .82rem;
+}
+
+/* ---------- kartlar ---------- */
+.card-face {
+  border: 1px solid var(--zarif-cizgi) !important;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(67, 48, 58, .05), 0 8px 20px rgba(67, 48, 58, .07);
+}
+/* çalışma kartlarında yazı beyaz değil mürekkep (pastel zemin) */
+.grid:not(.memory-mode) .card-front span { color: var(--zarif-mur) !important }
+.grid:not(.memory-mode) .card-back  span { color: var(--zarif-mur) !important }
+.card-front { color: var(--zarif-mur) }
+.card-back  { background: linear-gradient(180deg, #FFFFFF, #FDF8F5); color: var(--zarif-mur) }
+.grid.memory-mode .card-back { color: var(--zarif-mur) !important }
+
+/* hafıza kipinde kapalı yüz: krem kâğıt, ince altın kafes, altın elmas */
+.card-front.kapali {
+  background:
+    repeating-linear-gradient(45deg, rgba(191, 155, 78, .10) 0 1px, transparent 1px 13px),
+    repeating-linear-gradient(-45deg, rgba(191, 155, 78, .10) 0 1px, transparent 1px 13px),
+    linear-gradient(160deg, #FFFDFB, var(--zarif-kagit2));
+  overflow: hidden;
+}
+.card-front.kapali::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 26%; aspect-ratio: 1; transform: translate(-50%, -50%) rotate(45deg);
+  border: 1px solid var(--zarif-altin); border-radius: 3px; opacity: .5;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .7),
+              inset 0 0 0 4px rgba(191, 155, 78, .28);
+}
+.card:hover .card-face { border-color: var(--zarif-altin-ac) !important }
+.card.matched .card-face {
+  background: linear-gradient(180deg, #FFFCF4, #FBF1DC) !important;
+  border-color: var(--zarif-altin) !important; color: #5B4420 !important;
+  box-shadow: 0 0 0 2px rgba(191, 155, 78, .25), 0 10px 26px rgba(191, 155, 78, .20);
+}
+
+/* ---------- oyuncu kutuları ---------- */
+.player-box {
+  background: #fff !important; border: 1px solid var(--zarif-cizgi);
+  border-radius: 18px; box-shadow: 0 8px 22px rgba(67, 48, 58, .07);
+}
+.p-label { opacity: .75 }

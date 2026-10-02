@@ -3772,3 +3772,229 @@ SIRADA (öğretmen onayına göre)
   Hareke Avcısı, Bağlam Dedektifi) ve 7. sınıf ünite oyunlarına da
   uygulanabilir.
 
+────────────────────────────────────────────────────────────
+02.10.2026 — İndir yalnız Liste Modu + Hafıza Kartları yenilendi
+────────────────────────────────────────────────────────────
+
+1) KELİME DAĞARCIĞI: İNDİR YALNIZ LİSTE MODU'NDA
+   Öğretmen: "listeyi indirme özelliği hafıza kartı, test ve çalışma
+   kartları kısmında olmasın; sadece liste modundayken indirilebilsin."
+   İnen şey bir LİSTE (Word/Excel/PDF tablosu); öteki kiplerde ekranda
+   liste yokken düğme kafa karıştırıyordu. Artık sütun seçicinin zaten
+   yaptığı gibi yalnız Liste Modu'nda görünüyor.
+
+   Yol boyunca aynı kusurun SÜTUN SEÇİCİ'de de olduğu görüldü: "Hafıza
+   Oyunu" düğmesi setMemoryMode'u değil openMemorySetup'ı çağırdığı için
+   gizleme satırına hiç uğramıyordu; test kipinde de açık kalıyordu.
+   İkisi de düzeltildi.
+
+   Denendi (kelimeler.html, "renk" listesi):
+     liste açıldı      → indir var, sütun var
+     çalışma kartları  → ikisi de yok
+     hafıza oyunu      → ikisi de yok
+     test modu         → ikisi de yok
+     listeye dönüş     → ikisi de geri geldi
+   Konsol temiz.
+
+   DEĞİŞEN  sarf/kelimeindir.js · sarf/kelimeler.js
+   ÜRETİCİ  _kaynak/uretici/indirYalnizListe.py · indirYalnizListe2.py
+   YEDEK    _kaynak/yedekler/20261002-indir-yalniz-liste/
+
+2) ANA SAYFADAKİ HAFIZA KARTLARI (hafizakartlari.html)
+   Öğretmen: "veri geç geliyor, kart tasarımını güncelleyelim; 7. sınıf
+   ünite oyunlarındaki tasarım güzeldi."
+
+   VERİ NEDEN GEÇ GELİYORDU — bulundu: konu listesi window.onload içinde
+   çiziliyordu. window.onload BÜTÜN kaynaklar inince çalışır; sayfada
+   cdn.pixabay.com'dan üç ses dosyası var. Yani liste, pixabay'den üç mp3
+   inene kadar bekliyordu.
+     · liste artık DOMContentLoaded'da çiziliyor
+     · <audio> etiketlerine preload="none" — sesler ilk çalınışta iniyor
+   Ölçüldü: konu listesi 130 ms'de geliyor. Sesler aynı, yalnız ne zaman
+   indikleri değişti.
+
+   TASARIM — 7. sınıftaki zarif dil buraya da taşındı
+     · kapalı kartlar: krem kâğıt, ince altın kafes, ortada altın elmas
+     · çalışma kartları: sert çivit/turuncu/pembe yerine yumuşak pastel
+       sekizli; yazı beyaz yerine mürekkep (okunurluk arttı)
+     · konu kartları: beyaz kâğıt, ince altın çerçeve, altın kelime sayısı
+       rozeti — stil JS'in içinde satır içindeydi, CSS'e taşındı
+     · başlık, anasayfa düğmesi, oyuncu kutuları aynı palete çekildi
+
+   DEĞİŞEN  hafizakartlari.html · oyunlar/hafizakartlari.js · .css
+   ÜRETİCİ  _kaynak/uretici/hkYenile2.py
+   YEDEK    _kaynak/yedekler/20261002-hafizakartlari/
+
+AÇIK SORU
+  Kitap etkinliklerindeki 10 hafıza kartı oyununa da aynı tema uygulanmıştı
+  (öğretmen "kastettiğim o değildi" dedi). Kalsın mı, geri alınsın mı?
+  Geri almak: python3 _kaynak/uretici/oyunZarifKur.py <kök> --geri
+
+────────────────────────────────────────────────────────────
+02.10.2026 — 5 ve 6. sınıf planları kitabın sayfalarına bağlandı
+────────────────────────────────────────────────────────────
+Öğretmen: "6 ve 5. sınıf kitaplarına göre günlük ve yıllık planları
+güncelleyelim, diğer evrakları da tarayalım eksikleri tamamlayalım."
+
+TARAMA — beklenenden iyi çıktı
+  Planların, çalışma kâğıtlarının ve etkinliklerin ünite adları yeni
+  kitaplarla zaten birebir aynı:
+    5: Merhaba · Sınıfım · Ailem · Güzel Evim
+    6: Akrabalarım · Haydi Okula · Vücudum · Bu Hafta Hava Nasıl?
+  Eksik olan tek şey, haftaların kitabın SAYFALARINA bağlı olmamasıydı.
+
+YAPILAN
+  · Yıllık planın 34 hafta satırına (ikisinde de) İÇERİK sütununun sonuna
+    "• Ders kitabı: s. X-Y" satırı eklendi. Sayfalar tahmin değil:
+    her ünitenin aralığı kitabın kendi veri.js'inden okunup o ünitenin
+    hafta sayısına eşit bölündü, artan ilk haftalara dağıtıldı.
+      5: 10-73 / 74-139 / 140-177 / 178-223   (9+8+9+8 hafta)
+      6: 10-55 / 56-101 / 102-145 / 146-193   (9+8+9+8 hafta)
+    Son hafta tam ünitenin son sayfasında bitiyor (5 → 223, 6 → 193).
+  · Günlük plan örneklerinin künyesine "Ders kitabı" satırı eklendi:
+      5 → Arapça 5 · MEB 2026-2027 · 3. Ünite s. 140-177
+      6 → Arapça 6 · MEB 2026-2027 · 2. Ünite s. 56-101
+  · Dört belgenin PDF'i yeniden üretildi (soffice).
+
+DENETİM
+  Sayfa sayısı değişmedi (7+7), yalnız eklenen satırlar kadar metin arttı
+  (+1024 / +850 karakter). Dört belgenin de word/document.xml'i lxml ile
+  doğrulandı.
+
+  NOT — ilk denemede günlük planlar düzenli ifadeyle düzenlenmişti ve
+  bozuldu (iç içe tablolar yüzünden "<w:tc>.*?</w:tc>" yanlış yerde
+  kapanıyor; LibreOffice "source file could not be loaded" dedi).
+  Yedekten geri alındı, lxml ile yeniden yapıldı. Yıllık planlar
+  etkilenmedi (XML'leri geçerli, PDF'leri sorunsuz).
+
+DEĞİŞEN
+  dosyalar/yillik-plan/arapca-{5,6}-sinif-yillik-plan.{docx,pdf}
+  dosyalar/gunluk-plan/arapca-{5,6}-sinif-gunluk-plan.{docx,pdf}
+
+ÜRETİCİ
+  _kaynak/uretici/planSayfa.py          (yıllık · --kuru ile denemelik)
+  _kaynak/uretici/gunlukPlanKitap2.py   (günlük · lxml)
+
+YEDEK
+  _kaynak/yedekler/20261002-plan-sayfa/ (dört belgenin özgün hâli)
+
+SIRADA — 10. sınıf Seçmeli eksikleri (öğretmen "hepsi" dedi)
+  bep/            5 belge yok (öteki altı sınıfta beşerli set var)
+  etkinlikler/    klasör yok (3 belge)
+  calisma-kagitlari/ 1 var, 3 olmalı
+  sinavlar/       4 var, ötekilerde 9 (beceri/klasik ayrımı + toplu belge)
+  sinif-dosyasi/  yok
+  Üretici betikler duruyor: _kaynak/yedekler/betikler/{bep,sec10dok}/
+
+────────────────────────────────────────────────────────────
+02.10.2026 — Günlük planlar tüm eğitim öğretim yılını kapsıyor
+────────────────────────────────────────────────────────────
+Öğretmen: "günlük planlar sadece bir gün için mi hazırlanmış, tüm eğitim
+öğretim yılı için yapmak gerekmez mi?" — Haklıydı: 5-10'da günlük plan tek
+bir örnek dersti (4 sayfa). 10. sınıf Seçmeli'de ise kitabın her dersi için
+birer sayfa vardı. Aynı düzen altı sınıfa da getirildi.
+
+ÜRETİLEN
+  dosyalar/gunluk-plan/arapca-{5,6,7,8,9,10}-sinif-gunluk-plan.{docx,pdf}
+  Her biri 38 sayfa: 1 kapak + 37 ders haftası, sayfa başına bir hafta.
+
+BİR SAYFADA NE VAR
+  hafta ve tarih · ünite · ders kitabı sayfası · süre · tarih alanı ·
+  belirli gün ve haftalar · öğrenme çıktıları · içerik (konu/sözcük/dil
+  bilgisi) · ders akışı (hazırlık-sunum-uygulama-değerlendirme) ·
+  araç-gereç · ölçme ve değerlendirme
+
+KAYNAK — UYDURMA YOK
+  Her sayfanın içeriği o sınıfın KENDİ ünitelendirilmiş yıllık planındaki
+  o haftanın satırından okunuyor. Ders kitabı sayfaları da yıllık plana
+  bugün yazılan aralıklar (5 ve 6'da 34 haftada dolu, kalan 3 haftada ve
+  7-10'da "s. ……" diye boş — o kitapların sayfa verisi sitede yok,
+  öğretmen elle yazar). Tek düzenleme, yöntem ve ölçme sütunlarının dört
+  adımlı bir ders akışına yerleştirilmesi; metin yıllık planın kendi metni.
+
+BİÇİM
+  Örnek günlük plan belgesi şablon olarak açılıp gövdesi yeniden yazıldı,
+  böylece yazı tipi, stiller, altbilgi ve sayfa düzeni birebir aynı kaldı.
+  Arapça parçalar ayrı çalıştırılıp Arakom + RTL ile yazılıyor.
+
+DENETİM
+  Altı belgede de 37 plan; boş kalan ders akışı adımı yok; altı dosyanın
+  word/document.xml'i lxml ile doğrulandı; PDF'ler 38 sayfa.
+
+ÜRETİCİ
+  _kaynak/uretici/gunlukYilUret.py   (python3 gunlukYilUret.py <kök> [sınıf...])
+
+YEDEK
+  _kaynak/yedekler/20261002-gunluk-yil/  (altı sınıfın tek örnekli eski hâli)
+  Not: dosyalar/gunluk-plan/arapca-gunluk-ders-planlari-5-10.{docx,pdf}
+  dokunulmadı — altı sınıfın örnek dersleri orada duruyor.
+
+HÂLÂ AÇIK
+  10. sınıf Seçmeli eksikleri (BEP 5, etkinlik 3, çalışma kâğıdı 2,
+  sınav 5, sınıf dosyası) — öğretmen "hepsi" dedi, henüz yapılmadı.
+
+────────────────────────────────────────────────────────────
+02.10.2026 — Günlük planlar tamamlandı (10. Seçmeli de eklendi)
+────────────────────────────────────────────────────────────
+Öğretmen: "günlük planları bitirelim, sadece güncel kitaplar için yapalım,
+tüm haftalar için devam edelim."
+
+10. sınıf Seçmeli hâlâ eski düzendeydi (kitabın 12 dersi için birer sayfa).
+O da yıllık planından üretildi: 37 haftalık plan, sayfa başına bir hafta.
+Artık yedi belgenin hepsi aynı düzende:
+
+  5 · 6 · 7 · 8 · 9 · 10 · 10 Seçmeli → her biri 38 sayfa
+  (1 kapak + 37 ders haftası)
+
+GÜNCEL KİTAP KURALI
+  Her sınıfın günlük planı, o sınıfın dosyalar/yillik-plan/ içindeki TEK
+  yıllık planından üretiliyor; o plan da güncel kitabın planı. İki kitaplı
+  sınıflarda (6 · 7 · 10) ikinci kitap için ayrı yıllık plan yok, dolayısıyla
+  ayrı günlük plan da üretilmedi — istenen de buydu.
+
+DERS KİTABI SAYFASI
+  5 ve 6'da dolu (34 haftada; kalan 3 hafta ünite dışı).
+  7 · 8 · 9 · 10 · 10 Seçmeli'de "s. ……" — o kitapların sayfa verisi sitede
+  yok (flipbook'u olan tek kitaplar 5 ve 6). Öğretmen elle yazar.
+
+ÜRETİCİ
+  _kaynak/uretici/gunlukYilUret.py
+  python3 gunlukYilUret.py <kök> 5 6 7 8 9 10 10sec
+
+YEDEK
+  _kaynak/yedekler/20261002-gunluk-yil/  (yedi belgenin eski hâli)
+  arapca-gunluk-ders-planlari-5-10 dosyasına dokunulmadı.
+
+────────────────────────────────────────────────────────────
+02.10.2026 — Günlük planlar gerçekten GÜNLÜK (ders gününe bölündü)
+────────────────────────────────────────────────────────────
+Öğretmen: "ama günlük planlar sadece bir günlük olmamalı."
+
+Haklıydı. Haftalık sayfa 2 saatlik sınıflarda zaten bir ders günü, ama
+9. sınıfta haftada 4, 10. sınıfta 3 ders saati var — o ikisinde bir sayfa
+iki ders gününü tek plana sıkıştırıyordu.
+
+YAPILAN
+  Üreticiye GUNLER tablosu eklendi:  9 → 2+2  ·  10 → 2+1
+  Bu iki sınıfta her ders günü için ayrı sayfa çıkıyor. Haftanın öğrenme
+  çıktıları, içeriği ve kitap sayfaları günlere SIRAYLA bölünüyor; ders
+  akışı da güne göre yazılıyor:
+    1. ders günü → Hazırlık · Sunum · Uygulama · Değerlendirme
+    2. ders günü → Hatırlatma · Uygulama · Üretim · Değerlendirme
+  Dakikalar ders süresine tam toplanıyor (2 saat → 5+36+29+10 = 80,
+  1 saat → 5+15+10+10 = 40). 74 sayfanın hepsinde tutuyor, denetlendi.
+
+SON DURUM
+  5 · 6 · 7 · 8 · 10 Seçmeli   38 sayfa ·  37 ders günü (hafta = 2 saat, tek blok)
+  9                            75 sayfa ·  74 ders günü (37 hafta × 2)
+  10                           75 sayfa ·  74 ders günü (37 hafta × 2)
+
+  Kapakta, okulun çizelgesi farklıysa (ör. 9'da 2+1+1) sayfaların
+  birleştirilip ayrılabileceği yazıyor.
+
+ÜRETİCİ
+  _kaynak/uretici/gunlukYilUret.py   (GUNLER tablosu içinde)
+  _kaynak/uretici/gunlukGunBol.py    (yamayı yapan betik)
+YEDEK
+  _kaynak/yedekler/20261002-gunluk-yil/gunlukYilUret-haftalik.py (haftalık sürüm)
+
