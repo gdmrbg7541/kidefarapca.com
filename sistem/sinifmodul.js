@@ -438,7 +438,10 @@
      kart YALNIZ Arapçaya alfabeden başlanan sınıflarda çıksın diye
      aşağıdaki listeyle sınırlandı. Başka bir sınıfta da istenirse
      ALFABE_SINIF'a o sınıf eklenir, başka hiçbir yere dokunulmaz. */
-  var ALFABE_SINIF = { '5': 1, '9': 1 };
+  /* 6. SINIF (02.10.2026, öğretmen isteği): "olur da 5. sınıfta okuma ve
+     yazma ile ilgili iyi öğrenememiş öğrenciler varsa diye". Kart 6'da
+     yeni konu değil, DESTEK olarak duruyor; alt yazısı bunu söylüyor. */
+  var ALFABE_SINIF = { '5': 1, '6': 1, '9': 1 };
 
   function alfSvg() {
     /* index.html'deki Alfabe kartının ikonuyla AYNI: öğrenci iki yerde
@@ -463,9 +466,16 @@
     sira: 10,                      /* harf: yılın ilk konusu, en kolayı */
     renk: '#E67E22',
     svg: alfSvg,
-    aciklama: 'Harf tanıtımı, birleştirme, oyun ve sınav',
+    aciklama: function (s) {
+      /* 6. sınıfta kart tekrar/destek amaçlı: öğrenci de öğretmen de
+         bunun yeni konu olmadığını alt yazıdan görsün. */
+      return String(s) === '6'
+        ? 'Okuma-yazma desteği — harf, birleştirme, oyun ve sınav'
+        : 'Harf tanıtımı, birleştirme, oyun ve sınav';
+    },
     veriVar: function (s) {
-      return ALFABE_SINIF[String(s)] ? { rozet: '7 Etkinlik' } : null;
+      if (!ALFABE_SINIF[String(s)]) return null;
+      return { rozet: String(s) === '6' ? 'Destek · 7 Etkinlik' : '7 Etkinlik' };
     },
     url: function () { return 'alfabe.html'; }
   });

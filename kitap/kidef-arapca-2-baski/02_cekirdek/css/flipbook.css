@@ -359,3 +359,170 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
 .kaynak-pdf:hover{background:#CBE8E6}
 .kaynak-pdf:active,.pdf-ac:active{transform:scale(.95)}
 @media (pointer:coarse){ .dg.kucuk{padding:10px 16px;font-size:14px} .kaynak-pdf{padding:12px 16px;font-size:14px} }
+
+
+/* ============================================================
+   ÇIKTI ALINABİLİR BELGELER                      (02.10.2026)
+   Kaynak panelinde sunu/cevap kartlarının altında, dersin A4
+   çıktılıkları. Kart değil SATIR: bir derste 10 belge olabiliyor,
+   kart olsalar panel uzardı. Soldaki geniş alan açar (yeni sekmede
+   PDF görüntüleyici → yazdır), sağdaki ok doğrudan indirir.
+   ============================================================ */
+.belge-bas {
+  margin: 18px 0 8px; padding: 0 2px 7px;
+  border-bottom: 2px solid rgba(22, 50, 79, .08);
+}
+.belge-bas b { display: block; font-size: .95rem; font-weight: 800; color: var(--murekkep, #16324F); }
+.belge-bas small { display: block; margin-top: 2px; font-size: .78rem; color: #8A97A8; }
+
+.belge { display: flex; gap: 7px; margin-bottom: 7px; }
+.belge-ac {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 11px;
+  padding: 10px 13px; border-radius: 12px; cursor: pointer; text-align: left;
+  background: #fff; border: 1px solid #E3E9F0; font: inherit;
+  transition: border-color .16s, background .16s, transform .16s;
+}
+.belge-ac:hover { border-color: #16A085; background: #F6FBFA; transform: translateY(-1px); }
+.belge-ac svg {
+  flex: none; width: 24px; height: 24px; color: #C0392B;
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.belge-ac .mt { min-width: 0; }
+.belge-ac b {
+  display: block; font-size: .95rem; font-weight: 700; color: #16324F;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.belge-ac small { display: block; font-size: .76rem; color: #8A97A8; margin-top: 1px; }
+.belge-indir {
+  flex: none; width: 44px; display: grid; place-items: center;
+  border-radius: 12px; background: #F1F5F9; border: 1px solid #E3E9F0;
+  color: #6B7A8C; text-decoration: none;
+  transition: background .16s, color .16s, border-color .16s;
+}
+.belge-indir:hover { background: #16A085; border-color: #16A085; color: #fff; }
+.belge-indir svg {
+  width: 20px; height: 20px; fill: none; stroke: currentColor;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+@media (max-width: 560px) {
+  .belge-ac { padding: 9px 11px; gap: 9px; }
+  .belge-indir { width: 40px; }
+}
+
+
+/* ============================================================
+   KÜTÜPHANE — ÇUBUK DÜĞMELERİ + PANEL             (02.10.2026)
+   Öğretmen: "araç çubuklarında pdf'ler için kırmızı renklerde bi
+   svg yapalım, sunumlar için de, yani öğretmen isterse kitaptan
+   bağımsız şekilde kütüphane gibi dolaşabilmeli."
+   KIRMIZI = çıktılık belgeler, TEAL = sunu desteleri. Aynı simgeler
+   çubukta (19px) ve panelin sekmelerinde (24px) kullanılıyor.
+   ============================================================ */
+.ktp-ik{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+/* dolu vurgular: PDF bandı/köşe kıvrımı ve oynat üçgeni */
+.ktp-ik .ik-kivrim,.ktp-ik .ik-bant,.ktp-ik .ik-oyna{fill:currentColor;stroke:none}
+.ik-pdf{color:#F2584A}      /* koyu çubukta okunan kırmızı */
+.ik-sunu{color:#2FC2B4}
+.pgovde .ik-pdf{color:#C0392B}   /* beyaz panelde koyu kırmızı */
+.pgovde .ik-sunu{color:#17817E}
+.ik-pdf .ik-bant{animation:ktpBant 2.6s ease-in-out infinite}
+.ik-sunu .ik-oyna{animation:ktpOyna 2.6s ease-in-out infinite}
+@keyframes ktpBant{0%,100%{opacity:.42}50%{opacity:1}}
+@keyframes ktpOyna{0%,100%{opacity:.5;transform:translateX(-.45px)}
+  50%{opacity:1;transform:translateX(.45px)}}
+
+/* --- üst çubuktaki iki düğme: kendi renkleri, çubuğun yazısı --- */
+.ktp-tus.sunu{background:rgba(47,194,180,.15)}
+.ktp-tus.sunu:hover{background:rgba(47,194,180,.28)}
+.ktp-tus.pdf{background:rgba(242,88,70,.16)}
+.ktp-tus.pdf:hover{background:rgba(242,88,70,.29)}
+/* altın "aktif" zemininde açık renk okunmaz */
+.ktp-tus.aktif .ik-pdf{color:#8C2A17}
+.ktp-tus.aktif .ik-sunu{color:#0C5554}
+
+/* --- panel: iki sekme --- */
+.ktp-sekmeler{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.ktp-sekme{display:flex;flex-direction:column;align-items:flex-start;gap:1px;
+  padding:11px 13px;border-radius:13px;border:1.5px solid var(--line);background:#fff;
+  text-align:left;transition:border-color .16s,background .16s,transform .16s}
+.ktp-sekme .ktp-ik{width:24px;height:24px;margin-bottom:4px}
+.ktp-sekme b{font-size:13.5px;font-weight:800;color:var(--ink)}
+.ktp-sekme small{font-size:11px;font-weight:600;color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.ktp-sekme:hover{transform:translateY(-1px)}
+.ktp-sekme.sunu.acik{border-color:#17817E;background:#E8F6F4}
+.ktp-sekme.pdf.acik{border-color:#C0392B;background:#FDECEA}
+.ktp-ozet{margin:0 2px 12px;font-size:12px;line-height:1.55;color:var(--muted)}
+
+/* --- liste: ders başlığı + öğe satırları --- */
+.ktp-ders{margin-bottom:10px}
+.ktp-ders-bas{display:flex;align-items:center;gap:8px;width:100%;padding:5px 7px;
+  border-radius:8px;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.ktp-ders-bas:hover{background:#F4F7FB;color:var(--ink)}
+.ktp-ders-bas .ad{flex:1;min-width:0;text-align:left;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+/* sayfa no rozeti: başlığın tıklanabilir olduğunu belli eder */
+.ktp-ders-bas .sy{font-size:11px;font-weight:700;color:var(--muted);
+  font-variant-numeric:tabular-nums;background:#F1F5F9;border:1px solid var(--line);
+  border-radius:99px;padding:2px 9px;transition:background .16s,color .16s,border-color .16s}
+.ktp-ders-bas:hover .sy{background:var(--ink2);border-color:var(--ink2);color:#fff}
+.ktp-sat{display:flex;gap:7px;margin:0 0 6px 7px}
+.ktp-ac{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-radius:11px;background:#fff;border:1px solid var(--line);text-align:left;
+  transition:border-color .16s,background .16s,transform .16s}
+.ktp-ac:hover{transform:translateY(-1px)}
+.ktp-sat.sunu .ktp-ac:hover{border-color:#17817E;background:#F3FAF9}
+.ktp-sat.belge .ktp-ac:hover{border-color:#C0392B;background:#FDF6F5}
+.ktp-ac .mt{min-width:0}
+.ktp-ac b{display:block;font-size:13px;font-weight:700;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ktp-ac small{display:block;margin-top:1px;font-size:11px;color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ktp-ek{flex:none;width:42px;display:grid;place-items:center;border-radius:11px;
+  background:#F1F5F9;border:1px solid var(--line);color:var(--muted);text-decoration:none;
+  transition:background .16s,color .16s,border-color .16s}
+.ktp-ek svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.ktp-sat.sunu .ktp-ek:hover{background:#17817E;border-color:#17817E;color:#fff}
+.ktp-sat.belge .ktp-ek:hover{background:#C0392B;border-color:#C0392B;color:#fff}
+@media (pointer:coarse){ .ktp-ac{padding:11px 13px} .ktp-ek{width:46px} }
+/* ÇUBUK TAŞMASI — ölçülerek ayarlandı (02.10.2026).
+   Dört etiketli düğmeyle çubuk 560–760px arasında taşıyordu; eski 520px
+   eşiği yetmiyor (560px'te zaten taşıyormuş). Aşamalı daraltma:
+     ≤900px  yakınlaştırma takımı gizlenir (dokunma/çift dokunma/klavye
+             ve 6 bölge büyütme zaten var)
+     ≤730px  yeni iki düğme yazısız kalır, simgeleri durur
+     ≤480px  sunu düğmesi gizlenir — panelin sekmesinden ulaşılıyor,
+             çıktı düğmesi yerinde kalır */
+@media (max-width:900px){ .araclar .gizle-kucuk{display:none} }
+/* "ÜNİTE 3" rozeti kısalamadığı için düğmelerin altına giriyordu (bu da
+   eskiden beri vardı, 540–720px arası). Yer dar olduğunda rozet kalkar,
+   ders adı kalır — o zaten üç nokta ile kısalıyor. */
+.konum{overflow:hidden}
+@media (max-width:1020px){ .konum .u{display:none} }
+@media (max-width:730px){
+  .ktp-tus span{display:none}
+  .ktp-tus{width:38px;padding:0;justify-content:center}
+}
+/* Sözlük/Araçlar yazıları eskiden 520px'te gizleniyordu; 521–620 arasında
+   marka ile düğmeler üst üste biniyordu (bu da eskiden beri vardı). */
+@media (max-width:620px){
+  .tus.etiketli span{display:none}
+  .tus.etiketli{width:38px;padding:0;justify-content:center}
+}
+@media (max-width:480px){
+  #tSunular{display:none}
+  /* Dar telefonda marka yazısı düğmelerin altına giriyordu (eskiden de
+     sınırdaydı): çubuk sıkışır, marka taşarsa kırpılır — üst üste binmez. */
+  .ust{gap:6px;padding:0 8px}
+  .araclar{gap:3px}
+  .tus{width:36px}
+  .marka{overflow:hidden}
+  .marka b{font-size:14px;overflow:hidden;text-overflow:ellipsis}
+}
+@media (prefers-reduced-motion:reduce){
+  .ik-pdf .ik-bant,.ik-sunu .ik-oyna{animation:none}
+  .ktp-sekme:hover,.ktp-ac:hover{transform:none}
+}

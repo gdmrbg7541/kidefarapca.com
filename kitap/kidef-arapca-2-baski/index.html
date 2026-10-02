@@ -20,9 +20,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="02_cekirdek/css/flipbook.css">
+<link rel="stylesheet" href="02_cekirdek/css/flipbook.css?v=20261002d">
 <!-- ORTAK: bütün flipbooklarda aynı (kaynak: sitede _kaynak/ortak-kitap/) -->
-<link rel="stylesheet" href="02_cekirdek/css/kitapzoom.css?v=20261002">
+<link rel="stylesheet" href="02_cekirdek/css/kitapzoom.css?v=20261002d">
 <link rel="stylesheet" href="02_cekirdek/css/sayfa-html.css">
 <link rel="stylesheet" href="02_cekirdek/css/yazi.css">
 </head>
@@ -47,6 +47,18 @@
     <button class="tus etiketli" id="tAraclar" title="Araçlar ve oyunlar (A)" aria-label="Araçlar">
       <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg>
       <span>Araçlar</span>
+    </button>
+    <!-- KÜTÜPHANE (02.10.2026): kitaptan bağımsız dolaşma. Kırmızı = çıktılık
+         PDF'ler, teal = sunu desteleri; ikisi de #pKutuphane'yi açar. -->
+    <button class="tus etiketli ktp-tus sunu" id="tSunular"
+            title="Sunu kütüphanesi — bütün sunular (U)" aria-label="Sunu kütüphanesi">
+      <svg class="ktp-ik ik-sunu" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="4" width="17.6" height="11.6" rx="2"/><path d="M12 15.6v2.7M8.5 20.8 12 18.3l3.5 2.5"/><path class="ik-oyna" d="M10.5 7.4 15 9.8l-4.5 2.4Z"/></svg>
+      <span>Sunular</span>
+    </button>
+    <button class="tus etiketli ktp-tus pdf" id="tBelgeler"
+            title="Çıktı kütüphanesi — yazdırılacak belgeler (B)" aria-label="Çıktı kütüphanesi">
+      <svg class="ktp-ik ik-pdf" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.2 2.8H7.4A2.1 2.1 0 0 0 5.3 4.9v14.2a2.1 2.1 0 0 0 2.1 2.1h9.2a2.1 2.1 0 0 0 2.1-2.1V7.4Z"/><path class="ik-kivrim" d="M14.2 2.8v4.6h4.5Z"/><path d="M8.2 10.5h5.4"/><rect class="ik-bant" x="8" y="13.4" width="8" height="4.6" rx="1.2"/></svg>
+      <span>Çıktılar</span>
     </button>
     <span class="ayrac gizle-kucuk"></span>
     <button class="tus" id="tIcindekiler" title="İçindekiler (I)" aria-label="İçindekiler">
@@ -117,6 +129,31 @@
     <button class="kapat" data-kapat aria-label="Kapat">&times;</button>
   </div>
   <div class="pgovde"><div class="kaynaklar" id="kaynakListe"></div></div>
+</aside>
+
+<!-- ======================= KÜTÜPHANE ======================= -->
+<!-- Kitaptan bağımsız: bütün sunular ve bütün çıktılıklar tek yerde (02.10.2026) -->
+<aside class="panel yan genis" id="pKutuphane" aria-hidden="true">
+  <div class="pbas">
+    <h2 id="ktpBaslik">Kütüphane</h2>
+    <button class="kapat" data-kapat aria-label="Kapat">&times;</button>
+  </div>
+  <div class="pgovde">
+    <div class="ktp-sekmeler" role="tablist">
+      <button class="ktp-sekme sunu" id="ktpSekmeSunu" role="tab" aria-selected="true">
+        <svg class="ktp-ik ik-sunu" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="4" width="17.6" height="11.6" rx="2"/><path d="M12 15.6v2.7M8.5 20.8 12 18.3l3.5 2.5"/><path class="ik-oyna" d="M10.5 7.4 15 9.8l-4.5 2.4Z"/></svg>
+        <b>Sunular</b><small id="ktpSayiSunu">—</small>
+      </button>
+      <button class="ktp-sekme pdf" id="ktpSekmePdf" role="tab" aria-selected="false">
+        <svg class="ktp-ik ik-pdf" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.2 2.8H7.4A2.1 2.1 0 0 0 5.3 4.9v14.2a2.1 2.1 0 0 0 2.1 2.1h9.2a2.1 2.1 0 0 0 2.1-2.1V7.4Z"/><path class="ik-kivrim" d="M14.2 2.8v4.6h4.5Z"/><path d="M8.2 10.5h5.4"/><rect class="ik-bant" x="8" y="13.4" width="8" height="4.6" rx="1.2"/></svg>
+        <b>Çıktılar</b><small id="ktpSayiPdf">—</small>
+      </button>
+    </div>
+    <p class="ktp-ozet" id="ktpOzet">—</p>
+    <input class="arama" id="ktpAra" type="search" autocomplete="off"
+           placeholder="Ara… (ör. mazi, harf, zamir ya da sayfa no)">
+    <div id="ktpListe"></div>
+  </div>
 </aside>
 
 <!-- ======================= SUNUM ======================= -->
@@ -209,11 +246,13 @@
 
 <!-- veri: file:// altında fetch CORS'a takıldığı için script olarak yüklenir -->
 <script src="03_veri/kitap.js"></script>
+<!-- Derslerin A4 çıktılıkları — _araclar/11_belgeler.py üretir -->
+<script src="03_veri/belgeler.js?v=20261002e"></script>
 <script src="03_veri/html_sayfalar.js"></script>
 <script src="03_veri/metin/liste.js"></script>
 <script src="02_cekirdek/js/metin.js"></script>
-<script src="02_cekirdek/js/flip.js"></script>
-<script src="02_cekirdek/js/kitapzoom.js?v=20261002"></script>
-<script src="02_cekirdek/js/uygulama.js"></script>
+<script src="02_cekirdek/js/flip.js?v=20261002b"></script>
+<script src="02_cekirdek/js/kitapzoom.js?v=20261002d"></script>
+<script src="02_cekirdek/js/uygulama.js?v=20261002e"></script>
 </body>
 </html>

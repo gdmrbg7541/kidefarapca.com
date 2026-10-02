@@ -2814,3 +2814,249 @@ doğru; telefonda kartlar yatay kayıyor, etiket okunuyor.
     Konsol hatasız. Dosya dört yerde de bayt bayt aynı.
   · Değiştirmek için: _kaynak/ortak-kitap/kitapzoom.{js,css} → sonra
     python3 _kaynak/uretici/kitapOrtakla.py "$K"
+
+[02.10.2026] FLIPBOOK — sayfa çevirme yalnız yatay kaydırma ve oklarla
+  Öğretmen: "sol ortaya basınca hem sayfa çevriliyor hem büyüyor" /
+  "parmağını yatay olarak kaydırınca veya oklara basınca olsun, çünkü hem
+   büyütme hem sayfa çevirme aynı anda çakışmasın."
+  · SEBEP: 5 ve 6. sınıf flip.js'inde "sayfanın dış kenarına (dokunKenar
+    %20'nin yarısı) dokununca çevir" vardı. 6 bölge dokun-büyüt gelince
+    kenardaki bölgelere (1, 3, 4, 6) dokunmak İKİ işi birden yapıyordu.
+    Kidef'in flip.js'inde bu hiç yoktu.
+  · ARTIK: dokunma yalnız bölgeyi büyütür/küçültür · sayfayı yatay
+    kaydırma çevirir (yatay hareket dikeyden 1,2 kat büyük olmalı; dikey
+    ya da eğik hareket yaprağı hiç kıpırdatmaz) · oklar ve klavye her
+    zaman çalışır.
+  · Kaldırıldı: çift sayfada ve tek sayfada "kenara dokununca çevir".
+    Eklendi: sürükleme başlangıcına y0 + yatay baskınlık ölçütü.
+    dokunKenar ayarı artık kullanılmıyor (notu kodda).
+  · Tanıtım penceresindeki "Sayfa çevir" yazısı da güncellendi.
+  · Betik: _kaynak/uretici/kitapYatayCevir.py (üç kitap + Kidef ASIL)
+  · Yedek: _kaynak/yedekler/flip-yatay-2026-10-02/
+  · Sürüm: flip.js ve kitapzoom.js → ?v=20261002b (Kidef'in flip.js'ine
+    damga YOKTU, eklendi — yoksa tarayıcı eski dosyayı önbellekten verirdi)
+  · Denendi (6. sınıf): dış kenara dokununca sayfa DURDU ve %261'e büyüdü ·
+    dikey sürükleme hiçbir şey yapmadı · yatay sürükleme 14-15 → 16-17 ·
+    ok düğmesi çalıştı. Konsol hatasız, dört flip.js de sözdizimi temiz.
+
+[02.10.2026] Kidef flipbook — ÇIKTI ALINABİLİR BELGELER (PDF)
+  Öğretmen: "bazı konuların sunum olan yere yakın o konunun pdf'sini de
+  çıktı alabilmeleri lazım ... hızlıca indirip çıktı alacak şekilde."
+  Seçim: KARMA — tablolar sonra HTML olacak, geri kalanlar PDF.
+  · 08_belgeler/ — 52 A4 çıktılık PDF, 54 MB (yayın 866 → ~920 MB,
+    GitHub Pages sınırı 1024 MB; pay ~104 MB kaldı).
+    `1. Knlr`deki 346 PDF'in 2 GB'ı var; slayt/sunu dökümleri (992 MB),
+    "Sınav" adlılar, ESKİ sürümler ve 8 MB üstü dosyalar ALINMADI.
+  · 03_veri/belgeler.js — window.KITAP_BELGE {kaynak:{slug:[…]}, sayfa:{…}}.
+    AYRI DOSYA, çünkü kitap.js'i 02_kitap_json.py yeniden üretiyor; oraya
+    yazsak silinirdi. Kaynağı tanımlı olmayan dersler (ör. Genel Bilgiler
+    ve Harfler s.6-14) dersin İLK sayfa numarasıyla bağlandı.
+  · Kaynak panelinde sunu/cevap/video kartlarının altında "Çıktı alınabilir
+    belgeler" başlığı; her belge bir satır: ad, sayfa sayısı, boyut; sola
+    basınca yeni sekmede açılır (tarayıcı PDF görüntüleyicisi hem yazdırır
+    hem indirir), sağdaki ok doğrudan indirir.
+  · Kaynağı olmayan ama belgesi olan derslerde de panel açılıyor artık
+    (K tuşu ve hotspot çerçevesi ölçütü güncellendi).
+  · Betikler: FLIPBOOK/_araclar/11_belgeler.py (seçki + kopyalama + veri),
+    _kaynak/uretici/belgePanel.py (panel + CSS + HTML, bir kerelik)
+  · Yedek: _kaynak/yedekler/belge-paneli-2026-10-02/
+  · Hem Mac'teki ASIL FLIPBOOK'a hem siteye yazıldı.
+  · Denendi: s.10 (kaynaksız ders) 10 belge, s.77 Mazi 3 belge; adlar,
+    sayfa sayıları, boyutlar doğru; PDF'ler 200 application/pdf dönüyor;
+    konsol hatasız.
+  SIRADAKİ: alfabe, harflerin başta-ortada-sonda, harf birleştirme, yazma
+  çizgileri ve kalıplar tablosu HTML çıktı sayfası olacak (birkaç KB,
+  "Yazdır" ile PDF). Aynı belge listesine girecekler.
+
+=============================================================
+02.10.2026 — KÜTÜPHANE: kitaptan bağımsız sunu/çıktı dolaşma
+=============================================================
+İstek: "araç çubuklarında pdf'ler için kırmızı renklerde bi svg yapalım,
+sunumlar için de, yani öğretmen isterse kitaptan bağımsız şekilde
+kütüphane gibi dolaşabilmeli."
+
+NE YAPILDI
+  · Üst çubuğa iki düğme: "Sunular" (teal ekran + oynat üçgeni) ve
+    "Çıktılar" (kırmızı PDF yaprağı + bant). İkisinde de nabız gibi atan
+    küçük bir vurgu var; ikisi de aynı iki sekmeli paneli açıyor.
+  · Yeni panel #pKutuphane: bütün sunular (34 deste · 6.290 slayt) ve
+    bütün çıktılıklar (52 belge · 1.119 sayfa) ünite -> ders sırasıyla.
+    Ders başlığına basmak kitabı o sayfaya götürür; satıra basmak
+    sunuyu/PDF'i yeni sekmede açar; sağdaki düğme belgeyi indirir ya da
+    slaytları kitabın içinde gösterir. Arama: belge/sunu adı, ders adı,
+    ünite adı ya da sayfa numarası.
+  · Klavye: U = sunu kütüphanesi, B = çıktı kütüphanesi.
+  · .html çıktı sayfaları aynı listeye hazır ("Yazdırılabilir sayfa"
+    diye görünür) — tablolar HTML'e geçince ek iş gerekmeyecek.
+
+YAN ONARIM (eskiden beri vardı, ölçerek bulundu)
+  Üst çubuk 540-720 px arasında taşıyor, marka yazısı ve "ÜNİTE" rozeti
+  düğmelerin altına giriyordu. Eşikler yeniden kuruldu:
+    <=1020px ünite rozeti kalkar (ders adı kalır, üç noktayla kısalır)
+    <=900px  yakınlaştırma takımı kalkar (dokunma/klavye zaten var)
+    <=730px  yeni iki düğme yazısız, simgeleriyle kalır
+    <=620px  Sözlük/Araçlar yazıları kalkar (eskiden 520px'ti)
+    <=480px  sunu düğmesi gizlenir (panelin sekmesinden ulaşılır)
+  320-1500 px arası 10'ar px'le tarandı: taşma ve bindirme yok.
+
+DENENDİ (Playwright, yerel sunucu)
+  52 belge / 34 sunu doğru sayıldı; "mazi" araması 1, "125" araması 4
+  sonuç; boş sonuç uyarısı çalışıyor; PDF satırı yeni sekmede açıldı
+  (200 application/pdf), indirme bağlantısında download özniteliği var;
+  sunu satırı sunum.html'i açtı, yan düğme slaytları içeride gösterdi;
+  ders başlığı kitabı s.77'ye götürüp paneli kapattı; telefonda (390px)
+  taşma yok. Konsolda JS hatası yok.
+
+DEĞİŞEN DOSYALAR (hem site kopyası hem Mac'teki asıl FLIPBOOK)
+  kitap/kidef-arapca-2-baski/02_cekirdek/js/uygulama.js
+  kitap/kidef-arapca-2-baski/02_cekirdek/css/flipbook.css
+  kitap/kidef-arapca-2-baski/index.html   (sürüm damgası v=20261002d)
+  Üretici: _kaynak/uretici/kutuphane.py
+  Yedek:   _kaynak/yedekler/20261002-kutuphane/
+
+NOT: yeni dosya üretilmedi, site boyutu değişmedi (920 MB).
+
+=============================================================
+02.10.2026 — KELİME DAĞARCIĞI: DOĞRUDAN PDF İNDİRME
+=============================================================
+İstek: "kelime dağarcığı kısmında pdf indir kısmında pdf'yi seçince
+yazdırma seçeneği olmadan da pdf şeklinde indirsin, hem yazdır hem indir
+seçeneği olsun."
+
+NE DEĞİŞTİ (sarf/kelimeindir.js)
+  Menüde tek "Yazdır / PDF" satırı vardı, yazdırma penceresini açıyordu.
+  Artık iki ayrı satır:
+    · PDF indir — dosya doğrudan iner, hiçbir pencere açılmaz
+    · Yazdır    — eskisi gibi yazıcıya gönderir
+  Word ve Excel satırları aynı kaldı.
+
+PDF NASIL ÜRETİLİYOR
+  Sitenin kendi üreticisiyle: sistem/kagitpdf.js (KidefKagit) — pano
+  afişleri ve ölçekler de bunu kullanıyor. Dışarıdan jsPDF vb. kütüphane
+  YOK. Sayfalar ekranda görünmeyen A4 kutuları olarak kurulup
+  html2canvas ile çiziliyor; Arapça'yı tarayıcı dizdiği için harekeler ve
+  harf birleşmeleri birebir doğru çıkıyor.
+  Satırlar ÖLÇÜLEREK sayfalara bölünüyor: hiçbir kelime ikiye bölünmüyor,
+  tablo başlığı her sayfada yineleniyor, altta "kidefarapca.com" ve
+  "sayfa n / N" var. Sonraki sayfaların başında "<liste adı> — devamı".
+
+ÇÖZÜLEN SORUN
+  İlk denemede PDF bozuk çıktı: sütunlar 762/110/110 px, zemin gri,
+  numaralar kırmızı. Sebebi sarf/kaliplartablosu.css'teki SAYFA GENELİ
+  kurallar (th:nth-child(2){width:11%}, td{background:#e5e5ea;
+  border:4px solid #fff !important}, td:first-child{color:#FF3B30
+  !important}) kâğıda da uyguluyordu. Kâğıdın içi artık kendi
+  sıfırlaması + .kl-kagit ile kapsanmış kurallarla çiziliyor; sütun
+  genişlikleri hem <colgroup> hem th sınıflarıyla veriliyor.
+
+NOT: Latin yazılar da Arakom ile çıkıyor — arakom.css bütün siteye
+  "body *" ile ve !important ile Arakom'u dayatıyor. Bu yüzden parantez
+  gibi işaretler Arakom'un kendi biçiminde görünüyor (sitede de öyle).
+  İstenirse yalnız çıktıda Türkçe sütunu Latin bir yazı tipine alınabilir.
+
+DENENDİ (Playwright, yerel sunucu)
+  Soru Edatları 21 kelime -> 2 sayfa (12 + 9), Ev Eşyaları 43 kelime ->
+  3 sayfa (15'er), Olumsuzluk 7 kelime -> 1 sayfa. Dosyalar 210 KB -
+  718 KB, üretim 2-8 sn. Menüde dört satır (Word/Excel/PDF indir/Yazdır),
+  konsolda JS hatası yok. Sayfa ölçüsü 595x842 pt (A4).
+
+DEĞİŞEN DOSYALAR
+  sarf/kelimeindir.js
+  kelimeler.html, kaliplartablosu.html  (sürüm damgası ?v=2)
+  Üretici: _kaynak/uretici/kelimePdf.py + kelimePdfDuzelt.py
+  Yedek:   _kaynak/yedekler/20261002-kelimepdf/
+
+=============================================================
+02.10.2026 — ÇIKTILIKLARDAN SUNU DÖKÜMLERİNİN AYIKLANMASI
+=============================================================
+İstek: "çıktı kısmında yatay olan bazı pdf sunumlar var, mesela
+08_belgeler/ders-63/tekil-ikil-cogul-isimler.pdf gibi"
+
+ÖLÇÜM: 52 belgenin 19'u yataymış. İkiye ayrıldı:
+  · 11'i 16:9 (960x540) SUNU dökümü — 53-211 sayfa, toplam 30,6 MB.
+    İlk sayfaları slayt kapağı. Bunlar çıktılık değil; zaten Sunu
+    kütüphanesinde duruyorlar. ÇIKARILDI.
+  · 8'i gerçek yatay A4/A3 tablo (oran 1,41): Alfabe A4, Harf
+    Birleştirme A3, Kalıplar Tablosu Alıştırması (2 parça), İsim x4
+    Kartlar, Merfu-Mansub-Mecrur, Tüm Mazi/Muzari Fiiller. KALDI,
+    satırlarında artık "yatay" yazıyor (yazıcı ona göre kurulsun).
+
+ÇIKARILANLAR
+  Arapça Kalıplar Dilidir · Kalıplar — Pratik · Şeffaf Kartlar ·
+  Harf-i Tarif — Pratik · Tekil, İkil, Çoğul İsimler · Emir Fiil —
+  Çalışma Kâğıdı · Fiillerin Olumsuzu ve İrabı · Tablolar ·
+  Rakamlarla Harf Birleştirme 1-2 · Okunuşu Benzer Harfler
+  Dosyalar SİLİNMEDİ, site dışına alındı (asılları "1. Knlr"de duruyor):
+    site  → _kaynak/site-disi/eski-belgeler-16x9/
+    asıl  → FLIPBOOK/_araclar/eski-belgeler-16x9/
+
+BİR DAHA OLMASIN DİYE
+  _araclar/11_belgeler.py'ye ÖLÇÜ DENETİMİ eklendi: ilk sayfası
+  1,5'ten geniş olan PDF listeye hiç girmiyor (kopyalanmıyor bile) ve
+  çalıştırma sonunda "SUNU OLDUĞU İÇİN ALINMADI" diye raporlanıyor.
+  Dikeyden geniş ama A4/A3 olanlara 'y':1 işareti konuyor.
+
+SONUÇ
+  41 belge · 218 sayfa · 27 MB (önce 52 belge · 1.119 sayfa · 59 MB)
+  Yayınlanacak toplam: 857 MB (git'in saydığı dosyalar) — sınır 1024 MB.
+
+=============================================================
+02.10.2026 — İMAM HATİP 6. SINIFA ALFABE KARTI
+=============================================================
+İstek: "imam hatip 6. sınıf kategorisinde, olur da 5. sınıfta okuma ve
+yazma ile ilgili iyi öğrenememiş öğrenciler varsa diye alfabe.html kartı
+ekleyelim."
+
+Kart zaten kayıtlıydı (sistem/sinifmodul.js, id:'alfabe'); hangi sınıfta
+görüneceğini ALFABE_SINIF belirliyordu (5 ve 9). Oraya 6 eklendi —
+dosyanın kendi notunun söylediği yol. 6. sınıfta kart DESTEK olarak
+duruyor:
+  rozet    : "Destek · 7 Etkinlik"   (5 ve 9'da "7 Etkinlik")
+  alt yazı : "Okuma-yazma desteği — harf, birleştirme, oyun ve sınav"
+5, 7, 9, 10'da hiçbir şey değişmedi. index.html'de sinifmodul.js'in
+sürüm damgası ?v=20261002a oldu.
+
+DEĞİŞEN DOSYALAR
+  kitap/kidef-arapca-2-baski/{03_veri/belgeler.js, 08_belgeler/,
+    02_cekirdek/js/uygulama.js, index.html (?v=20261002e)}
+  (aynıları Mac'teki asıl FLIPBOOK'ta da)
+  FLIPBOOK/_araclar/11_belgeler.py
+  sistem/sinifmodul.js, index.html
+  Üretici: _kaynak/uretici/belgeYatay.py, _kaynak/uretici/alfabe6.py
+  Yedek:   _kaynak/yedekler/20261002-belge-yatay/, 20261002-alfabe6/
+
+=============================================================
+02.10.2026 — KELİME LİSTESİ İNDİRMEDE "KAÇ SÜTUN?"
+=============================================================
+İstek: "listeyi indirmek istediğimizde soru sorulsun kaç sütun olarak
+indirilmesi gerektiği şeklinde, çünkü A4'ün yarısı boş kalıyor, hatta
+zaten orada sütunlardan biri seçilmişse o çıkartılabilsin varsayılan
+olarak, mesela 3 sütunda kelimeler listeleniyorsa indirilmek istendiğinde
+eğer hiç ayar yapılmazsa 3 sütun olarak indirilsin."
+
+NE DEĞİŞTİ (sarf/kelimeindir.js)
+  · İndir menüsünün başına "Kaç sütun? / A4 boş kalmasın" satırı ve
+    1 / 2 / 3 düğmeleri geldi (sayfadaki sütun seçicinin simgeleriyle).
+  · VARSAYILAN, listenin EKRANDAKİ sütun sayısı: kelimeler.js'teki
+    klSutun(key) okunuyor; o yoksa .kdf-defter'in sutun-N sınıfı; o da
+    yoksa 1. Yani 3 sütunda bakılıyorsa, hiç ayar yapmadan 3 sütun iner.
+  · Seçim PDF'e, Yazdır'a ve Word'e uygulanıyor. Excel tek tablo kalıyor
+    (orada sütun başka şey ifade eder).
+  · Sütun düğmesine basmak menüyü KAPATMIYOR, yalnız seçimi değiştiriyor.
+  · Sütun arttıkça punto ve iç boşluk küçülüyor (Arapça 20/15,5/12,5 pt),
+    gruplar arasında ince boşluk var, tablo başlığı her grupta yineleniyor.
+  · Kelimeler satır satır diziliyor (1-2-3 üstte, 4-5-6 altta);
+    numaralar sırayı belli ediyor.
+
+DENENDİ (Playwright, 21 kelimelik "Soru Edatları")
+  Sayfada 3 sütun seçiliyken menü 3'ü işaretli açtı.
+  1 sütun → 2 sayfa / 421 KB · 2 sütun → 1 sayfa / 305 KB ·
+  3 sütun → 1 sayfa / 276 KB.
+  Word 2 sütunda satır başına 7 hücre, yazdırma çerçevesi 3 sütunda 11
+  hücre ve üç kez yinelenen başlık üretti. Konsolda JS hatası yok.
+
+DEĞİŞEN DOSYALAR
+  sarf/kelimeindir.js
+  kelimeler.html, kaliplartablosu.html  (sürüm damgası ?v=3)
+  Üretici: _kaynak/uretici/kelimeSutun.py
+  Yedek:   _kaynak/yedekler/20261002-kelime-sutun/

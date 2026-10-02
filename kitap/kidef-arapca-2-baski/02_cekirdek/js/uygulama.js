@@ -383,6 +383,31 @@
     return l.length === 1 ? l[0] : null;
   }
 
+  /* Kütüphane simgeleri — çubuktakilerin aynısı (02.10.2026) */
+  var KTP_IK = {
+    sunu: '<svg class="ktp-ik ik-sunu" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="4" width="17.6" height="11.6" rx="2"/><path d="M12 15.6v2.7M8.5 20.8 12 18.3l3.5 2.5"/><path class="ik-oyna" d="M10.5 7.4 15 9.8l-4.5 2.4Z"/></svg>',
+    belge: '<svg class="ktp-ik ik-pdf" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.2 2.8H7.4A2.1 2.1 0 0 0 5.3 4.9v14.2a2.1 2.1 0 0 0 2.1 2.1h9.2a2.1 2.1 0 0 0 2.1-2.1V7.4Z"/><path class="ik-kivrim" d="M14.2 2.8v4.6h4.5Z"/><path d="M8.2 10.5h5.4"/><rect class="ik-bant" x="8" y="13.4" width="8" height="4.6" rx="1.2"/></svg>'
+  };
+
+  /* ---------- çıktı alınabilir belgeler (02.10.2026) ----------
+     Dersin A4 çıktılıkları: 03_veri/belgeler.js → window.KITAP_BELGE.
+     Kaynak slug'ıyla ya da (kaynağı olmayan dersler için) dersin İLK
+     sayfasıyla eşleşir. Tıklayınca yeni sekmede açılır; tarayıcının PDF
+     görüntüleyicisi hem yazdırır hem indirir. Sağdaki ok doğrudan indirir. */
+  function belgeler(no) {
+    var B = window.KITAP_BELGE;
+    if (!B) return [];
+    var d = dersBul(no), r = [];
+    if (d && d.kaynak && B.kaynak && B.kaynak[d.kaynak]) r = r.concat(B.kaynak[d.kaynak]);
+    if (d && B.sayfa && B.sayfa[String(d.sayfa)]) r = r.concat(B.sayfa[String(d.sayfa)]);
+    return r;
+  }
+  function belgeBoyu(b) {
+    if (!b) return '';
+    return b >= 1048576 ? (b / 1048576).toFixed(1).replace('.', ',') + ' MB'
+                        : Math.round(b / 1024) + ' KB';
+  }
+
   function kaynakPaneliAc(no) {
     var k = sayfaKaynaklari(no);
     var liste = $('#kaynakListe');
@@ -390,7 +415,9 @@
     var d = dersBul(no);
     $('#kaynakBaslik').textContent = d ? d.ad : no + '. sayfa';
 
-    if (!k) {
+    /* Kaynağı tanımlı olmasa da çıktılık belgesi olabilir (02.10.2026):
+       ör. "Genel Bilgiler ve Harfler" s.6-14. O zaman panel boş sayılmaz. */
+    if (!k && !belgeler(no).length) {
       liste.innerHTML = '<div class="bos-sonuc">Bu ders için dijital kaynak henüz eklenmedi.<br>' +
         '<small>Kaynaklar 03_veri/kitap.js içindeki <code>KAYNAKLAR</code> bölümünden tanımlanır.</small></div>';
       panelAc('#pKaynak');
@@ -404,6 +431,7 @@
       b.addEventListener('click', tik);
       liste.appendChild(b);
     }
+    k = k || {};
     sunumlar(k).forEach(function (s) {
       var oyun = /Oyun|Kartlar|Etkinlik/.test(s.ad);
       kart(oyun ? '🎯' : '🧐', 'i-teal', s.ad, s.adet + ' slayt · yeni sekmede tam ekran', function () { sunumAc(s); });
@@ -421,6 +449,41 @@
     (k.video || []).forEach(function (v) {
       kart('📺', 'i-coral', v.ad, 'Video', function () { videoAc(v); });
     });
+    /* Dersin çıktılıkları — sunu/cevap kartlarının yanında (02.10.2026) */
+    var bl = belgeler(no);
+    if (bl.length) {
+      var bas = document.createElement('div');
+      bas.className = 'belge-bas';
+      bas.innerHTML = '<b>Çıktı alınabilir belgeler</b><small>' + bl.length +
+        ' belge · yazdırmak için aç, indirmek için oka bas</small>';
+      liste.appendChild(bas);
+      bl.forEach(function (x) {
+        var sat = document.createElement('div');
+        sat.className = 'belge';
+        /* 'yatay' = A4/A3 yatay tablo; yazıcıyı ona göre kurmak gerekiyor */
+        var alt = [x.n ? x.n + ' sayfa' : '', x.y ? 'yatay' : '', belgeBoyu(x.b), 'PDF']
+          .filter(Boolean).join(' · ');
+        sat.innerHTML =
+          '<button type="button" class="belge-ac">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2.5H7A2 2 0 0 0 5 4.5v15a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7.5Z"/>' +
+          '<path d="M14 2.5v5h5"/><path d="M8.5 13h7M8.5 16.5h4.5"/></svg>' +
+          '<span class="mt"><b></b><small></small></span></button>' +
+          '<a class="belge-indir" download title="İndir" aria-label="İndir">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11"/>' +
+          '<polyline points="7.5 10 12 14.5 16.5 10"/><path d="M4.5 17v2.5h15V17"/></svg></a>';
+        sat.querySelector('.belge-ac b').textContent = x.a;
+        sat.querySelector('.belge-ac small').textContent = alt;
+        var a = sat.querySelector('.belge-indir');
+        a.setAttribute('href', x.d);
+        sat.querySelector('.belge-ac').addEventListener('click', function () {
+          var w = window.open(x.d, '_blank');
+          if (w) { try { w.opener = null; } catch (e) {} }
+          else tost('Tarayıcı yeni sekmeyi engelledi — indirme okunu kullanabilirsin');
+        });
+        liste.appendChild(sat);
+      });
+    }
+
     (k.etkinlik || []).forEach(function (e) {
       // sitedeki araçlar açıklama ve kategori taşır; flipbook alıştırmaları taşımaz
       var kat = e.kategori && katHar[e.kategori];
@@ -432,6 +495,192 @@
     });
     panelAc('#pKaynak');
   }
+
+  /* ============================================================
+     KÜTÜPHANE — KİTAPTAN BAĞIMSIZ DOLAŞMA           (02.10.2026)
+     Öğretmen isteği: "öğretmen isterse kitaptan bağımsız şekilde
+     kütüphane gibi dolaşabilmeli." Üst çubuktaki iki düğme (Sunular
+     / Çıktılar) aynı iki sekmeli paneli açar. Liste ünite → ders
+     sırasında; veri yeni değil: K.kaynaklar[...].sunum ve
+     window.KITAP_BELGE okunur.
+     ============================================================ */
+  var ktpTur = 'sunu';
+
+  function ktpKucuk(t) { return String(t).toLocaleLowerCase('tr'); }
+
+  function dersSunulari(d) {
+    return sunumlar(d && d.kaynak ? K.kaynaklar[d.kaynak] : null);
+  }
+
+  /* [{unite, dersler:[{ders, oge:[...]}]}] — aynı öğe iki derse düşerse
+     yalnız ilkinde görünür (liste tekrarlı olmasın). */
+  function ktpVeri(tur) {
+    var gor = {}, g = [];
+    K.uniteler.forEach(function (u) {
+      var dl = [];
+      K.dersler.forEach(function (d) {
+        if (d.unite !== u.no) return;
+        var oge = (tur === 'sunu' ? dersSunulari(d) : belgeler(d.sayfa))
+          .filter(function (x) {
+            var a = tur === 'sunu' ? x.klasor : x.d;
+            if (gor[a]) return false;
+            gor[a] = 1; return true;
+          });
+        if (oge.length) dl.push({ ders: d, oge: oge });
+      });
+      if (dl.length) g.push({ unite: u, dersler: dl });
+    });
+    return g;
+  }
+
+  function ktpSayilar() {
+    var s = { sunu: 0, slayt: 0, belge: 0, sayfa: 0, boyut: 0 };
+    ktpVeri('sunu').forEach(function (u) {
+      u.dersler.forEach(function (d) {
+        d.oge.forEach(function (x) { s.sunu++; s.slayt += x.adet || 0; });
+      });
+    });
+    ktpVeri('belge').forEach(function (u) {
+      u.dersler.forEach(function (d) {
+        d.oge.forEach(function (x) { s.belge++; s.sayfa += x.n || 0; s.boyut += x.b || 0; });
+      });
+    });
+    return s;
+  }
+
+  function ktpSayi(n) { return n.toLocaleString ? n.toLocaleString('tr') : String(n); }
+
+  function ktpSatir(x, ders) {
+    var sat = document.createElement('div');
+    if (ktpTur === 'sunu') {
+      sat.className = 'ktp-sat sunu';
+      sat.innerHTML =
+        '<button type="button" class="ktp-ac">' + KTP_IK.sunu +
+        '<span class="mt"><b></b><small></small></span></button>' +
+        '<button type="button" class="ktp-ek" title="Slaytları burada göster" ' +
+        'aria-label="Slaytları burada göster">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"/>' +
+        '<path d="M8 21h8M12 17v4"/></svg></button>';
+      sat.querySelector('.ktp-ac b').textContent = x.ad;
+      sat.querySelector('.ktp-ac small').textContent = x.adet + ' slayt · ' +
+        (x.sayfa && x.sayfa !== ders.sayfa ? 's. ' + x.sayfa + ' · ' : '') +
+        'yeni sekmede tam ekran';
+      sat.querySelector('.ktp-ac').addEventListener('click', function () { sunumAc(x); });
+      sat.querySelector('.ktp-ek').addEventListener('click', function () { sunumAc(x, true); });
+    } else {
+      /* .html çıktı sayfaları da aynı listeye girecek (tablolar HTML'e geçiyor) */
+      var htm = /\.html?$/i.test(x.d);
+      sat.className = 'ktp-sat belge';
+      sat.innerHTML =
+        '<button type="button" class="ktp-ac">' + KTP_IK.belge +
+        '<span class="mt"><b></b><small></small></span></button>' +
+        '<a class="ktp-ek" download title="İndir" aria-label="İndir">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11"/>' +
+        '<polyline points="7.5 10 12 14.5 16.5 10"/><path d="M4.5 17v2.5h15V17"/></svg></a>';
+      sat.querySelector('.ktp-ac b').textContent = x.a;
+      sat.querySelector('.ktp-ac small').textContent =
+        [x.n ? x.n + ' sayfa' : '', x.y ? 'yatay' : '', belgeBoyu(x.b),
+         htm ? 'Yazdırılabilir sayfa' : 'PDF'].filter(Boolean).join(' · ');
+      sat.querySelector('.ktp-ek').setAttribute('href', x.d);
+      sat.querySelector('.ktp-ac').addEventListener('click', function () {
+        var w = window.open(x.d, '_blank');
+        if (w) { try { w.opener = null; } catch (e) {} }
+        else tost('Tarayıcı yeni sekmeyi engelledi — indirme okunu kullanabilirsin');
+      });
+    }
+    return sat;
+  }
+
+  function ktpKur(filtre) {
+    var l = $('#ktpListe');
+    var f = ktpKucuk((filtre || '').trim());
+    var fno = /^\d+$/.test(f) ? +f : 0;
+    l.innerHTML = '';
+    var say = 0;
+
+    ktpVeri(ktpTur).forEach(function (grup) {
+      var dl = [];
+      grup.dersler.forEach(function (d) {
+        var oge = d.oge.filter(function (x) {
+          if (!f) return true;
+          var ad = ktpKucuk(ktpTur === 'sunu' ? x.ad : x.a);
+          return ad.indexOf(f) >= 0 ||
+                 ktpKucuk(d.ders.ad).indexOf(f) >= 0 ||
+                 ktpKucuk(grup.unite.ad).indexOf(f) >= 0 ||
+                 (fno && fno >= d.ders.sayfa && fno <= d.ders.bitis);
+        });
+        if (oge.length) dl.push({ ders: d.ders, oge: oge });
+      });
+      if (!dl.length) return;
+
+      var g = document.createElement('div');
+      g.className = 'unite';
+      g.innerHTML = '<h3></h3>';
+      g.querySelector('h3').textContent = grup.unite.ad;
+      dl.forEach(function (d) {
+        var kutu = document.createElement('div');
+        kutu.className = 'ktp-ders';
+        kutu.innerHTML = '<button type="button" class="ktp-ders-bas" ' +
+          'title="Kitabı bu derse götür"><span class="ad"></span>' +
+          '<span class="sy">s. ' + d.ders.sayfa + '</span></button>';
+        kutu.querySelector('.ad').textContent = d.ders.ad;
+        kutu.querySelector('.ktp-ders-bas').addEventListener('click', function () {
+          flip.git(d.ders.sayfa);
+          panelKapat();
+          if (!uretilmis(d.ders.sayfa)) tost(d.ders.ad + ' — bu sayfa henüz üretilmedi');
+        });
+        d.oge.forEach(function (x) { kutu.appendChild(ktpSatir(x, d.ders)); say++; });
+        g.appendChild(kutu);
+      });
+      l.appendChild(g);
+    });
+
+    if (!say) {
+      if (ktpTur === 'belge' && !window.KITAP_BELGE) {
+        l.innerHTML = '<div class="bos-sonuc">Çıktılık belge listesi yüklenmedi.<br>' +
+          '<small>03_veri/belgeler.js — <code>_araclar/11_belgeler.py</code> üretir.</small></div>';
+      } else {
+        l.innerHTML = '<div class="bos-sonuc">Sonuç bulunamadı.</div>';
+      }
+    }
+  }
+
+  function ktpSekmeGuncelle() {
+    var s = ktpSayilar(), sn = ktpTur === 'sunu';
+    $('#ktpSekmeSunu').classList.toggle('acik', sn);
+    $('#ktpSekmePdf').classList.toggle('acik', !sn);
+    $('#ktpSekmeSunu').setAttribute('aria-selected', sn ? 'true' : 'false');
+    $('#ktpSekmePdf').setAttribute('aria-selected', sn ? 'false' : 'true');
+    $('#ktpSayiSunu').textContent = s.sunu + ' deste · ' + ktpSayi(s.slayt) + ' slayt';
+    $('#ktpSayiPdf').textContent = s.belge + ' belge · ' + ktpSayi(s.sayfa) + ' sayfa';
+    $('#ktpBaslik').textContent = sn ? 'Sunu kütüphanesi' : 'Çıktı kütüphanesi';
+    $('#ktpOzet').textContent = sn
+      ? 'Bütün ders ve etkinlik sunuları — kitabın sayfasını açmaya gerek yok. Satıra bas, sunu yeni sekmede tam ekran açılır.'
+      : 'Yazdırmaya hazır belgeler. Satıra bas, yeni sekmede açılır (oradan çıktı al); okla doğrudan indir.';
+  }
+
+  function ktpAc(tur) {
+    if (acikPanel === $('#pKutuphane') && ktpTur === tur) { panelKapat(); return; }
+    ktpTur = tur;
+    ktpSekmeGuncelle();
+    ktpKur($('#ktpAra').value);
+    if (acikPanel !== $('#pKutuphane')) panelAc('#pKutuphane');
+    setTimeout(function () { $('#ktpAra').focus(); }, 260);
+  }
+
+  function ktpSekme(tur) {
+    ktpTur = tur;
+    ktpSekmeGuncelle();
+    ktpKur($('#ktpAra').value);
+    $('#ktpListe').scrollTop = 0;
+  }
+
+  $('#tSunular').addEventListener('click', function () { ktpAc('sunu'); });
+  $('#tBelgeler').addEventListener('click', function () { ktpAc('belge'); });
+  $('#ktpSekmeSunu').addEventListener('click', function () { ktpSekme('sunu'); });
+  $('#ktpSekmePdf').addEventListener('click', function () { ktpSekme('belge'); });
+  $('#ktpAra').addEventListener('input', function () { ktpKur(this.value); });
+  ktpSekmeGuncelle();
 
   /* ============================================================
      HOTSPOT KATMANI
@@ -463,7 +712,7 @@
       } else if (h.alt === 'sozluk') {                     /* 📚 Sözlük Çalışması: sözlük her zaman hazır */
         etiket = h.simge + '  ' + h.etiket; is = function () { sozlukAc(); };
       } else {
-        if (!k) return;                                    /* bu derste dijital kaynak yok */
+        if (!k && !belgeler(no).length) return;            /* ne kaynak ne belge var */
         etiket = h.simge + '  ' + h.etiket;
         is = function () { kaynakPaneliAc(no); };
       }
@@ -683,11 +932,15 @@
       case 'i': case 'I': case 'ı': $('#tIcindekiler').click(); break;
       case 's': case 'S': e.preventDefault(); sozlukAc(); break;
       case 'a': case 'A': e.preventDefault(); $('#tAraclar').click(); break;
+      case 'u': case 'U': e.preventDefault(); ktpAc('sunu'); break;
+      case 'b': case 'B': e.preventDefault(); ktpAc('belge'); break;
       case 'h': case 'H': $('#tIpucu').click(); break;
       case 'f': case 'F': $('#tTamEkran').click(); break;
       case 'k': case 'K': {
+        /* Kaynağı olmasa da çıktılık belgesi varsa panel açılır (02.10.2026) */
         var kk = sayfaKaynaklari(flip.aktif);
-        if (kk) kaynakPaneliAc(flip.aktif); else tost('Bu sayfada dijital kaynak yok');
+        if (kk || belgeler(flip.aktif).length) kaynakPaneliAc(flip.aktif);
+        else tost('Bu sayfada dijital kaynak yok');
         break;
       }
     }
