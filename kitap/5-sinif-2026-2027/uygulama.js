@@ -91,7 +91,7 @@
   });
   function olcuYaz() { document.documentElement.style.setProperty('--sayfaEn', (flip.sayfaEn || 500) + 'px'); }
   olcuYaz();
-  window.addEventListener('resize', function () { flip.olcekle(); olcuYaz(); zoomUygula(); });
+  window.addEventListener('resize', function () { flip.olcekle(); olcuYaz(); if (Z) Z.olcekle(); });
 
   var sonDurum = null;
   function degisti(d) {
@@ -389,50 +389,41 @@
   }
   $('#tTamEkran').addEventListener('click', tamEkran);
 
-  /* ---------- yakınlaştırma ---------- */
-  var zoom = 1, px = 0, py = 0, kaydir = $('#kaydir'), sahne = $('#sahne');
-  var zbZ;
-  function zoomUygula() {
-    if (zoom <= 1) { zoom = 1; px = py = 0; }
-    var W = sahne.clientWidth, H = sahne.clientHeight;
-    var mx = W * (zoom - 1) / 2, my = H * (zoom - 1) / 2;
-    px = Math.max(-mx, Math.min(mx, px)); py = Math.max(-my, Math.min(my, py));
-    kaydir.style.transform = zoom === 1 ? '' : 'translate(' + px + 'px,' + py + 'px) scale(' + zoom + ')';
-    flip.kilitli = zoom > 1;
-    sahne.classList.toggle('yakin', zoom > 1);
-    var y = '%' + Math.round(zoom * 100);
-    $('#zoomEt').textContent = y;
-    var zb = $('#zoomBilgi'); zb.textContent = y + (zoom > 1 ? ' — sürükleyerek gezin' : '');
-    zb.classList.add('gor'); clearTimeout(zbZ); zbZ = setTimeout(function () { zb.classList.remove('gor'); }, 1400);
-  }
-  function zoomDegis(d) { zoom = Math.max(1, Math.min(3, Math.round((zoom + d) * 4) / 4)); zoomUygula(); }
-  $('#tYaklas').addEventListener('click', function () { zoomDegis(0.25); });
-  $('#tUzaklas').addEventListener('click', function () { zoomDegis(-0.25); });
-  sahne.addEventListener('wheel', function (e) {
-    if (!e.ctrlKey) return; e.preventDefault(); zoomDegis(e.deltaY < 0 ? 0.25 : -0.25);
-  }, { passive: false });
-  var surukle = null;
-  sahne.addEventListener('pointerdown', function (e) {
-    if (zoom <= 1 || e.target.closest('.nokta')) return;
-    kaydir.classList.add('serbest');
-    surukle = { x: e.clientX, y: e.clientY, px: px, py: py };
-  });
-  window.addEventListener('pointermove', function (e) {
-    if (!surukle) return;
-    px = surukle.px + e.clientX - surukle.x; py = surukle.py + e.clientY - surukle.y; zoomUygula();
-  });
-  window.addEventListener('pointerup', function () { if (surukle) { surukle = null; kaydir.classList.remove('serbest'); } });
-  sahne.addEventListener('dblclick', function (e) {
-    if (e.target.closest('.nokta')) return;
-    zoom = zoom > 1 ? 1 : 2; px = py = 0; zoomUygula();
+  /* ---------- yakınlaştırma: ORTAK MODÜL (kitapzoom.js) ----------
+     02.10.2026, öğretmen isteği: "tasarımsal şeyler tüm flipbooklarda ortak
+     olmalı". Burada önce basit bir yakınlaştırma vardı (yalnız fareyle çift
+     tıklama + sürükleme, en çok %300). Kidef Arapça flipbook'undaki motor
+     ortak dosyaya çıkarıldı; artık üç kitapta da aynısı çalışıyor:
+       · çift sayfada 6 bölge — bir bölgeye dokunuş onu ekranı dolduracak
+         kadar büyütür, tekrar dokunuş küçültür (akıllı tahta)
+       · büyükken yön tuşları: ↑↓ sayfa boyunun 1/9'u kadar yumuşak kayar,
+         uçta öbür sayfaya/yayılıma geçer; ←→ okuma sırasına göre sayfa
+       · iki parmak pinch, telefonda çift dokunma, imlece göre yakınlaştırma
+       · %500'e kadar
+     KODU BURADA DEĞİŞTİRME — ortak kaynak: _kaynak/ortak-kitap/kitapzoom.js
+     (değişiklikten sonra _kaynak/uretici/kitapOrtakla.py çalıştırılır).
+     rtl ayarı Flip örneğinden okunur. */
+  var sahne = $('#sahne');
+  var Z = window.KitapZoom({
+    sahne: sahne,
+    kaydir: $('#kaydir'),
+    flip: flip,
+    panelAcik: function () { return !!$('.panel.acik'); },
+    etiket: $('#zoomEt'),
+    bilgi: $('#zoomBilgi'),
+    yaklas: $('#tYaklas'),
+    uzaklas: $('#tUzaklas'),
+    yoksay: '.nokta'
   });
 
   /* ---------- klavye ---------- */
   document.addEventListener('keydown', function (e) {
     if (/INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || '')) return;
     var acik = !!$('.panel.acik');
-    if (e.key === 'Escape') { if (acik) kapatHepsi(); else if (zoom > 1) { zoom = 1; zoomUygula(); } return; }
+    if (e.key === 'Escape') { if (acik) kapatHepsi(); else Z.sifirla(); return; }
     if (acik) return;
+    /* Büyükken yön tuşları sayfa çevirmez, sayfanın içinde gezdirir. */
+    if (Z.tus(e.key)) { e.preventDefault(); return; }
     switch (e.key) {
       case 'ArrowLeft': case 'PageDown': case ' ': e.preventDefault(); flip.ileri(); break;   // sağdan sola: sol = ileri
       case 'ArrowRight': case 'PageUp': e.preventDefault(); flip.geri(); break;
@@ -442,8 +433,9 @@
       case 'i': case 'I': $('#tIcindekiler').click(); break;
       case 'k': case 'K': $('#tKaynak').click(); break;
       case 'h': case 'H': $('#tIpucu').click(); break;
-      case '+': case '=': zoomDegis(0.25); break;
-      case '-': zoomDegis(-0.25); break;
+      case '+': case '=': Z.ayarla(Z.oran() * 1.5); break;
+      case '-': case '_': Z.ayarla(Z.oran() / 1.5); break;
+      case '0': Z.sifirla(); break;
     }
   });
 

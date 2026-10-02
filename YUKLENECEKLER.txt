@@ -2757,3 +2757,30 @@ doğru; telefonda kartlar yatay kayıyor, etiket okunuyor.
   · Denendi: dururken 12 katmanlı yüzün hepsi doğru; çevirince, parmakla
     sürüklerken (30°/83°/144°/180°) ve sayfaya atlarken doğru; .yari
     kalıntısı yok, konsol hatasız.
+
+[02.10.2026] FLIPBOOK'LARDA ORTAK YAKINLAŞTIRMA/GEZİNME (öğretmen isteği)
+  "Kidef Arapça 2. Baskı flipbook için yaptığımız tıklayınca zoom özellikleri
+   gibi tasarımsal şeyler tüm yaptığımız flipbooklar için ortak olmalı."
+  · YENİ TEK KAYNAK: _kaynak/ortak-kitap/kitapzoom.js + kitapzoom.css
+    Kidef'in uygulama.js'indeki satır içi ZOOM & PAN bloğu buraya çıkarıldı;
+    5. ve 6. sınıf kitaplarındaki basit yakınlaştırma (yalnız çift tıklama +
+    sürükleme, en çok %300) kaldırılıp aynı modüle bağlandı.
+  · ÜÇ KİTAPTA DA artık şunlar var: çift sayfada 6 bölge dokun-büyüt,
+    büyükken yön tuşlarıyla gezinme (↑↓ sayfa boyunun 1/9'u, uçta öbür
+    sayfaya/yayılıma; ←→ okuma sırasına göre sayfa), iki parmak pinch,
+    telefonda çift dokunma, imlece göre yakınlaştırma, %500'e kadar.
+  · SAĞDAN SOLA kitaplar: ekrandaki yarı ile sayfa numarası eşlemesi ve
+    okuma sırası rtl'ye göre çevriliyor (6. sınıfta ← ileri, → geri).
+    rtl ayarı Flip örneğinden okunuyor, kitabın ayarına gerek yok.
+  · KOPYALAMA: python3 _kaynak/uretici/kitapOrtakla.py "$K"
+    → 5. sınıf, 6. sınıf, Kidef (site kopyası) VE Kidef'in Mac'teki ASIL
+      klasörü (1. KA/FLIPBOOK). Kitap klasöründeki kopyayı elle değiştirme.
+    Yeni kitap eklenince betikteki KITAPLAR listesine bir satır eklenir.
+  · Bir kerelik bağlama betiği: _kaynak/uretici/kitapZoomBagla.py
+  · Yedek: _kaynak/yedekler/kitap-ortakzoom-2026-10-02/
+  · Denendi (Playwright): 6. sınıf — bölgeye dokununca %261, 4×↓ ile sayfa
+    kaydı ve 14-15 → 16-17 yayılımına geçti, ← ileri / → geri doğru çalıştı,
+    tekrar dokununca %100, +/-/0 çalıştı. Kidef — aynı davranış, metin
+    katmanı keskin. Konsol hatasız. 5. sınıf dosyaları 6 ile bayt bayt aynı.
+  · NOT: Kidef'in ASIL klasörü de değişti; asıldan siteye yeniden kopyalama
+    yapılırsa dosyalar zaten yerinde olur.

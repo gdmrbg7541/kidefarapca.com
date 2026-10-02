@@ -1,0 +1,26 @@
+/* ============================================================================
+   ORTAK YAKINLAŞTIRMA BİÇİMLERİ                    kitapzoom.css  (02.10.2026)
+   ----------------------------------------------------------------------------
+   BÜTÜN FLIPBOOK'LARDA AYNI DOSYA. Tek kaynağı:
+       _kaynak/ortak-kitap/kitapzoom.css
+   Kitap klasöründeki kopyayı elle değiştirme — kopyalamada üstüne yazılır.
+   kitapzoom.js'in ihtiyaç duyduğu sınıflar burada; kitabın kendi CSS'inde
+   aynı sınıf varsa bu dosya SONRA yüklendiği için burası geçerli olur.
+   ========================================================================== */
+
+/* Kaydırma kabı. .serbest = anlık (parmakla sürüklerken), .yumusak = yön
+   tuşlarıyla ince kaydırma (yarım saniyelik yumuşak geçiş). */
+.kaydir { transition: transform .28s cubic-bezier(.2, .7, .3, 1); }
+.kaydir.serbest { transition: none; }
+.kaydir.yumusak { transition: transform .5s cubic-bezier(.25, .8, .35, 1); }
+
+/* Büyükken imleç: sürüklenebilir olduğu belli olsun. */
+.sahne.yakin { cursor: grab; }
+.sahne.yakin:active { cursor: grabbing; }
+
+/* Alttaki küçük bilgi şeridi — yalnız büyükken görünür. */
+.zoom-bilgi { opacity: 0; transition: opacity .2s; pointer-events: none; }
+.zoom-bilgi.gor { opacity: 1; }
+
+/* Büyütülmüş sayfada yazı keskin kalsın (bazı tarayıcılar bulanıklaştırıyor). */
+.kaydir .yuz img { image-rendering: auto; }
