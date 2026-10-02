@@ -3714,3 +3714,61 @@ DEĞİŞEN
 YEDEK
   _kaynak/yedekler/20261002-panel-kaydirma2/{kitapyan.js, kitapyan.css}
 
+────────────────────────────────────────────────────────────
+02.10.2026 — Eşlenmiş oklar + hafıza kartlarında zarif tema
+────────────────────────────────────────────────────────────
+
+1) OKLAR BİRLİKTE VURGULANIYOR
+   Öğretmen: "bi ileri tuşuna basınca diğerine de basmış gibi vurgu olsun."
+   Aynı işi yapan oklar (ileri ↔ ileri, geri ↔ geri) birbirinin üzerine
+   gelme/basılma durumunu paylaşıyor; biri parlarken öbürü sönük kalmıyor.
+   kitapyan.js'te okEslestir, kitapyan.css + kitaptema.css'te .es-vurgu.
+   Denendi: sağdaki ileriye değince soldaki de vurgulanıyor, basılınca
+   ikisi de basılı görünüyor, bırakınca ikisi de sönüyor; geri çifti
+   etkilenmiyor.
+
+2) HAFIZA KARTLARINDA ZARİF TEMA
+   Öğretmen: "oyun kategorisinde, kart oyunlarında mümkün olduğunca
+   zarif, kızların dikkatini çekecek bir tasarım kullanalım."
+   Seçilen yön: krem kâğıt + gül kurusu/lila pastel + antika altın.
+
+   · zemin krem kâğıt, köşelerde çok hafif gül ve lila ışık
+   · başlığın altında ince altın çizgi ve küçük bir elmas
+   · kapalı kartlar: krem kâğıt, ince altın kafes deseni, ortada altın
+     elmas — eski düz mavi/gri yerine
+   · açık kartlar: beyaz kâğıt, ince altın kenar, mürekkep yazı;
+     1. oyuncunun kartı gül, 2. oyuncununki lila
+   · eşleşen çift yumuşak altın parıltı alıyor
+   · emoji simgeler (📖 👤 👥) yerine ince çizgili gül/lila/altın simgeler
+   · sırası olmayan oyuncu tamamen griye dönmüyor, rengi muhafaza ediyor
+
+   ÖNEMLİ: oyun dosyalarının İÇİNE dokunulmadı. sistem/oyun-zarif.css
+   her oyunun kendi stilinden sonra yükleniyor; dosyalara yalnız tek bir
+   <link> satırı girdi. Oyun mantığı, sınıf adları, ders verileri aynı.
+   Geri almak: python3 _kaynak/uretici/oyunZarifKur.py <kök> --geri
+
+   UYGULANAN 10 OYUN
+     7. sınıf: unite_1/2/3_oyunlar/hafizakarti.html
+     9. sınıf: arp09.01.1 · 02.1 · 02.2 · 03.1 · 03.2 · 04.1 · 04.2
+   Denendi: 7. sınıf oyununda giriş, tahta, kart çevirme, iki oyunculu
+   mod; 9. sınıf oyununda giriş. Konsol temiz, oyun akışı bozulmadı.
+
+DEĞİŞEN
+  sistem/oyun-zarif.css                        (yeni)
+  kitapetkinlikleri/**/hafizakart*             (yalnız bir <link> satırı)
+  _kaynak/ortak-kitap/kitapyan.js · kitapyan.css · kitaptema.css
+  7 index.html: kitapyan.css ...g · kitapyan.js ...f · kitaptema.css ...h
+
+ÜRETİCİ
+  _kaynak/uretici/okEs.py
+  _kaynak/uretici/oyunZarifKur.py   (--geri ile geri alınır)
+
+YEDEK
+  _kaynak/yedekler/20261002-ok-es/
+  _kaynak/yedekler/20261002-oyun-zarif/   (10 oyunun özgün hâli)
+
+SIRADA (öğretmen onayına göre)
+  Aynı tema oyun kategorisindeki diğer araçlara (Kavram Testi, Kelime Avı,
+  Hareke Avcısı, Bağlam Dedektifi) ve 7. sınıf ünite oyunlarına da
+  uygulanabilir.
+

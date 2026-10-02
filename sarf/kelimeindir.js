@@ -483,9 +483,58 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && acikMenu) { e.stopPropagation(); menuKapat(); } }, true);
   window.addEventListener('resize', menuKapat);
 
+  /* ---------- düğme yalnız Liste Modu'nda ----------
+     İnen şey bir LİSTE; çalışma kartları, hafıza oyunu ve test kipinde
+     ekranda liste olmadığı için düğme de görünmüyor. Kip bilgisi mod
+     satırındaki düğmeden okunuyor: Liste Modu seçiliyken btn-list-<key>
+     'active' sınıfını taşıyor (bkz. kelimeler.js setMemoryMode). */
+  function listeKipiMi(key) {
+    var l = document.getElementById('btn-list-' + key);
+    if (!l) return true;                       /* mod satırı yoksa sade liste */
+    if (window.KidefKelimeTest && KidefKelimeTest.acikMi && KidefKelimeTest.acikMi(key)) return false;
+    return l.classList.contains('active');
+  }
+
+  function gorunur(key, goster) {
+    var b = document.getElementById('btn-indir-' + key);
+    if (!b) return;
+    b.style.display = goster ? 'inline-flex' : 'none';
+    if (!goster && acikMenu) menuKapat();       /* açık menü varsa kapansın */
+  }
+
+  /* Test kipi mod satırını yerinde bırakıp üstüne kendi katmanını açıyor.
+     kelimetest.js'e dokunmadan ac/kapat sarmalanıyor. */
+  function testiSar() {
+    var T = window.KidefKelimeTest;
+    if (!T || T.__klIndirSarili) return;
+    T.__klIndirSarili = true;
+    var ac = T.ac, kapat = T.kapat;
+    if (typeof ac === 'function') {
+      T.ac = function (key) {
+        var r = ac.apply(this, arguments);
+        /* Sütun seçici de testte anlamsız; sarmalayıcı burada olduğu için
+           onu da buradan ayarlıyoruz (kelimetest.js'e dokunulmuyor). */
+        try { gorunur(key, false); if (window.klSutunGoster) klSutunGoster(key, false); } catch (e) {}
+        return r;
+      };
+    }
+    if (typeof kapat === 'function') {
+      T.kapat = function (key) {
+        var r = kapat.apply(this, arguments);
+        try {
+          var l = listeKipiMi(key);
+          gorunur(key, l);
+          if (window.klSutunGoster) klSutunGoster(key, l);
+        } catch (e) {}
+        return r;
+      };
+    }
+  }
+
   /* ---------- düğmeleri ekle ---------- */
   function dugmeleriEkle() {
     stilKur();
+    testiSar();
     var kapatlar = document.querySelectorAll('[id^="btn-fs-"]');
     [].forEach.call(kapatlar, function (k) {
       var key = k.id.slice(7);
@@ -503,6 +552,7 @@
         menuAc(key, b);
       });
       k.parentNode.insertBefore(b, k);
+      gorunur(key, listeKipiMi(key));          /* ilk hâli de kipe uysun */
     });
   }
 
@@ -517,5 +567,5 @@
   /* sayfa zaten çizildiyse */
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', dugmeleriEkle);
   else dugmeleriEkle();
-  window.KidefKelimeIndir = { ekle: dugmeleriEkle };
+  window.KidefKelimeIndir = { ekle: dugmeleriEkle, goster: gorunur, listeKipiMi: listeKipiMi };
 })();

@@ -1045,6 +1045,13 @@ function openMemorySetup(key) {
     if (pairCount) pairCount.disabled = false;
 
     seritAc(key, 'mem');
+
+    /* Hafıza oyunu düğmesi setMemoryMode'u değil bu işlevi çağırıyor, bu
+       yüzden initMemoryGrid'deki gizleme satırına uğramıyordu: hafıza oyunu
+       ayarlarında ekranda liste yokken sütun seçici ve İndir düğmesi
+       duruyordu (02.10.2026). */
+    klSutunGoster(key, false);
+    if (window.KidefKelimeIndir && KidefKelimeIndir.goster) KidefKelimeIndir.goster(key, false);
 }
 
 /* ÇIKIŞ HER KİPTE AYNI: şerit kapanır, LİSTE geri gelir (başlık
@@ -1197,6 +1204,9 @@ function initMemoryGrid(key, forceShuffle = false) {
     const isList = state.mode === 'list';
     
     klSutunGoster(key, isList);
+    /* İndir düğmesi de yalnız Liste Modu'nda: inen şey bir liste
+       (02.10.2026, öğretmen isteği). */
+    if (window.KidefKelimeIndir && KidefKelimeIndir.goster) KidefKelimeIndir.goster(key, isList);
 
     const lbas = document.getElementById(`lbaslik-${key}`);
     if (lbas) lbas.innerHTML = `${cat.icon || ''} ${cat.title || ''}`;

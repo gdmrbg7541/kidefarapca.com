@@ -1,0 +1,312 @@
+/* ============================================================
+   ZARİF OYUN TEMASI — hafıza kartları ve kart oyunları   02.10.2026
+   Öğretmen: "oyun kategorisinde, kart oyunlarında mümkün olduğunca
+   zarif, kızların dikkatini çekecek bir tasarım kullanalım."
+
+   Oyunun KENDİ dosyasına dokunulmuyor: bu dosya kendi stilinden SONRA
+   yükleniyor ve yalnız görünümü değiştiriyor. Oyun mantığı, sınıf
+   adları, düğme davranışları aynı. Geri almak için index/oyun
+   dosyasındaki <link> satırını çıkarmak yeter.
+
+   Palet — krem kâğıt üzerine gül kurusu, lila ve antika altın:
+     kâğıt   #FBF7F4 · #F3EBE6      zemin, kart yüzü
+     mürekkep#43303A · #6B5560      yazı
+     gül     #D98CA0 · #F3DCE2      1. oyuncu, vurgular
+     lila    #B9A7D8 · #EDE6F6      2. oyuncu
+     nane    #9CCFB8                doğru eşleşme
+     altın   #BF9B4E · #E3C87E      ince çizgiler, süsleme
+   ============================================================ */
+
+:root {
+  --zarif-kagit: #FBF7F4;
+  --zarif-kagit2: #F3EBE6;
+  --zarif-mur: #43303A;
+  --zarif-mur2: #6B5560;
+  --zarif-gul: #D98CA0;
+  --zarif-gul-ac: #F3DCE2;
+  --zarif-lila: #B9A7D8;
+  --zarif-lila-ac: #EDE6F6;
+  --zarif-nane: #9CCFB8;
+  --zarif-altin: #BF9B4E;
+  --zarif-altin-ac: #E3C87E;
+  --zarif-cizgi: rgba(191, 155, 78, .30);
+
+  /* oyunun kendi değişkenleri yeni palete çekiliyor */
+  --bg-start: #FDFAF8;
+  --bg-end: #F1E7E2;
+  --primary-color: #B07E8E;
+  --accent-color: var(--zarif-altin);
+  --surface-color: #FFFFFF;
+  --text-color: var(--zarif-mur);
+  --player1-color: var(--zarif-gul);
+  --player2-color: var(--zarif-lila);
+  --correct-color: var(--zarif-nane);
+  --incorrect-color: #E6A2A2;
+  --shadow-light: rgba(67, 48, 58, .07);
+  --shadow-medium: rgba(67, 48, 58, .13);
+  --border-radius-sm: 11px;
+  --border-radius-md: 16px;
+  --border-radius-lg: 22px;
+  --button-shadow: 0 2px 0 rgba(191, 155, 78, .22);
+  --button-hover-bg: #FDF6F1;
+}
+
+/* ---------- zemin: krem kâğıt + çok hafif pembe/lila ışık ---------- */
+body {
+  background:
+    radial-gradient(60% 45% at 18% 8%, rgba(217, 140, 160, .13), transparent 70%),
+    radial-gradient(55% 45% at 86% 92%, rgba(185, 167, 216, .14), transparent 70%),
+    linear-gradient(180deg, #FDFAF8, #F1E7E2);
+  color: var(--zarif-mur);
+}
+
+/* ---------- başlık ve açıklama ---------- */
+.start-title {
+  color: var(--zarif-mur);
+  letter-spacing: .4px;
+  text-shadow: 0 1px 0 #fff;
+}
+/* başlığın altına ince altın bir çizgi ve ortasında küçük bir elmas */
+.start-title::after {
+  content: '';
+  display: block;
+  width: min(230px, 46vw);
+  height: 11px;
+  margin: 10px auto 2px;
+  background:
+    linear-gradient(90deg, transparent, var(--zarif-altin-ac) 18%,
+      var(--zarif-altin) 50%, var(--zarif-altin-ac) 82%, transparent) center 5px / 100% 1px no-repeat,
+    conic-gradient(from 45deg, var(--zarif-altin) 0 25%, transparent 0 100%) center / 7px 7px no-repeat;
+  opacity: .85;
+}
+.game-instruction-title { color: var(--zarif-mur2) }
+.option-group label,
+.mode-label { color: #A8788A; letter-spacing: .3px }
+
+/* ---------- seçim düğmeleri: ince altın çerçeveli kâğıt ---------- */
+.player-button,
+#lesson-select,
+#start-game-btn {
+  background: #fff;
+  border: 1px solid var(--zarif-cizgi);
+  color: var(--zarif-mur);
+  box-shadow: 0 1px 2px var(--shadow-light), 0 6px 18px rgba(67, 48, 58, .05);
+  transition: background .18s, border-color .18s, box-shadow .18s, transform .14s;
+}
+.player-button:hover,
+#lesson-select:hover {
+  background: #FFFBF8;
+  border-color: var(--zarif-altin-ac);
+  box-shadow: 0 2px 4px var(--shadow-light), 0 10px 24px rgba(191, 155, 78, .14);
+  transform: translateY(-1px);
+}
+.player-button.selected,
+.player-button[data-players="1"].selected,
+.player-button[data-players="2"].selected,
+.player-button[data-players="3"].selected {
+  background: linear-gradient(180deg, #FFF6F8, var(--zarif-gul-ac));
+  color: var(--zarif-mur);
+  border-color: var(--zarif-gul);
+  box-shadow: 0 0 0 3px rgba(217, 140, 160, .22),
+              0 8px 20px rgba(217, 140, 160, .18);
+}
+#start-game-btn:not(:disabled) {
+  background: linear-gradient(180deg, #CBA86A, #B08A42);
+  color: #fff;
+  border-color: #A8812F;
+  letter-spacing: .6px;
+  box-shadow: 0 2px 0 #9B762A, 0 10px 24px rgba(176, 138, 66, .28);
+}
+#start-game-btn:not(:disabled):hover {
+  background: linear-gradient(180deg, #D4B377, #B9934A);
+  color: #fff;
+  transform: translateY(-1px);
+}
+#start-game-btn:not(:disabled):active { transform: translateY(1px); box-shadow: 0 1px 0 #9B762A }
+#start-game-btn:disabled {
+  background: #EFE6E0; color: #B6A6A0; border-color: transparent; box-shadow: none;
+}
+#lesson-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B07E8E'%3E%3Cpath d='M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z'/%3E%3C/svg%3E");
+}
+
+/* ---------- kartlar ---------- */
+/* kapalı yüz: krem kâğıt, ince altın kafes deseni, ortada altın elmas */
+.card-front {
+  background:
+    repeating-linear-gradient(45deg, rgba(191, 155, 78, .10) 0 1px, transparent 1px 13px),
+    repeating-linear-gradient(-45deg, rgba(191, 155, 78, .10) 0 1px, transparent 1px 13px),
+    linear-gradient(160deg, #FFFDFB, var(--zarif-kagit2));
+  border: 1px solid var(--zarif-cizgi);
+  box-shadow: 0 1px 2px var(--shadow-light), 0 8px 20px rgba(67, 48, 58, .07);
+  /* DİKKAT: position'a dokunma — .card-face zaten absolute/inset:0 ile
+     kartın boyunu alıyor; relative yapılırsa kart ince bir şeride iner. */
+  overflow: hidden;
+}
+.card-front::after {
+  content: '';
+  position: absolute; left: 50%; top: 50%;
+  width: 26%; aspect-ratio: 1; transform: translate(-50%, -50%) rotate(45deg);
+  border: 1px solid var(--zarif-altin);
+  border-radius: 3px;
+  opacity: .5;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .7),
+              inset 0 0 0 4px rgba(191, 155, 78, .28);
+}
+.card:hover .card-front {
+  border-color: var(--zarif-altin-ac);
+  box-shadow: 0 2px 4px var(--shadow-light), 0 12px 26px rgba(191, 155, 78, .16);
+}
+
+/* açık yüz: beyaz kâğıt, ince altın kenar, mürekkep yazı */
+.card-back {
+  background: linear-gradient(180deg, #FFFFFF, #FDF8F5);
+  color: var(--zarif-mur);
+  border: 1px solid var(--zarif-cizgi);
+  box-shadow: 0 2px 4px var(--shadow-light), 0 10px 26px rgba(67, 48, 58, .09);
+}
+.card.p1-turn .card-back {
+  background: linear-gradient(180deg, #FFF8FA, var(--zarif-gul-ac));
+  border-color: rgba(217, 140, 160, .55);
+  color: #6D3B49;
+}
+.card.p2-turn .card-back {
+  background: linear-gradient(180deg, #FAF7FD, var(--zarif-lila-ac));
+  border-color: rgba(185, 167, 216, .55);
+  color: #473A63;
+}
+/* eşleşen kartlar: yumuşak altın parıltı */
+.card.p1-match .card-face.card-back,
+.card.p2-match .card-face.card-back {
+  background: linear-gradient(180deg, #FFFCF4, #FBF1DC);
+  border-color: var(--zarif-altin);
+  color: #5B4420;
+  box-shadow: 0 0 0 2px rgba(191, 155, 78, .25), 0 10px 26px rgba(191, 155, 78, .22);
+}
+.card-back img { border-radius: 10px }
+
+/* ---------- oyuncu sayaçları ---------- */
+.score-display {
+  border: 1px solid var(--zarif-cizgi);
+  box-shadow: 0 8px 22px rgba(67, 48, 58, .08);
+  transition: transform .22s, box-shadow .22s;
+}
+#player1-display {
+  background: linear-gradient(180deg, #F6D3DD, #E39BAE);
+  color: #5E2F3D;
+}
+#player2-display {
+  background: linear-gradient(180deg, #E2D7F2, #B4A0D6);
+  color: #3E3159;
+}
+.score-display svg { fill: rgba(255, 255, 255, .92); filter: drop-shadow(0 1px 2px rgba(67,48,58,.18)) }
+#player1-display svg { fill: #fff }
+#player2-display svg { fill: #fff }
+.score-display.active {
+  box-shadow: 0 0 0 3px var(--zarif-altin-ac), 0 14px 30px rgba(191, 155, 78, .25);
+}
+
+/* ---------- bitiş penceresi ---------- */
+.game-over-overlay {
+  background: linear-gradient(180deg, #FFFFFF, #FDF7F3);
+  border: 1px solid var(--zarif-cizgi);
+  box-shadow: 0 24px 60px rgba(67, 48, 58, .22);
+}
+.game-over-overlay h2 { color: var(--zarif-mur); letter-spacing: .3px }
+.win-buttons .icon-btn {
+  border: 1px solid var(--zarif-cizgi);
+  border-radius: 14px;
+  background: #fff;
+  transition: background .18s, border-color .18s, transform .14s;
+}
+.win-buttons .icon-btn:hover {
+  background: #FFF8F2; border-color: var(--zarif-altin-ac); transform: translateY(-1px);
+}
+.win-buttons .icon-btn svg { fill: #B07E8E }
+.win-buttons .icon-btn:hover svg { fill: var(--zarif-altin) }
+
+/* ---------- geri düğmesi, çevirme uyarısı ---------- */
+.back-btn svg, .nav-back-btn svg { fill: var(--zarif-mur2) }
+.back-btn:hover svg, .nav-back-btn:hover svg { fill: var(--zarif-altin) }
+#rotate-message { background: linear-gradient(180deg, #FDFAF8, #F1E7E2); color: var(--zarif-mur) }
+.rotate-text { color: var(--zarif-mur2) }
+
+
+/* ---------- oyun dosyasının kendi !important'ları ile çakışanlar ----------
+   Oyun dosyasının alt kısmında .player-button için
+   "border: 4px solid #e2e8f0 !important" gibi kurallar var; aynı güçle
+   yazmak gerekiyor. Dosyaya dokunmamak için burada. */
+.player-button {
+  border: 1.5px solid var(--zarif-cizgi) !important;
+  background: linear-gradient(180deg, #FFFFFF, #FFFBF8) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 1px 2px var(--shadow-light), 0 10px 24px rgba(67, 48, 58, .06) !important;
+}
+.player-button:hover {
+  border-color: var(--zarif-altin-ac) !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 16px 30px rgba(191, 155, 78, .18) !important;
+}
+.player-button.selected,
+.player-button[data-players="1"].selected,
+.player-button[data-players="2"].selected,
+.player-button[data-players="3"].selected {
+  background: linear-gradient(180deg, #FFF8FA, var(--zarif-gul-ac)) !important;
+  border-color: var(--zarif-gul) !important;
+  color: var(--zarif-mur) !important;
+  box-shadow: 0 0 0 3px rgba(217, 140, 160, .22),
+              0 14px 28px rgba(217, 140, 160, .20) !important;
+  transform: translateY(-5px) !important;
+}
+.player-button[data-players="2"].selected {
+  background: linear-gradient(180deg, #FAF7FD, var(--zarif-lila-ac)) !important;
+  border-color: var(--zarif-lila) !important;
+  box-shadow: 0 0 0 3px rgba(185, 167, 216, .25),
+              0 14px 28px rgba(185, 167, 216, .22) !important;
+}
+.player-button[data-players="3"].selected {
+  background: linear-gradient(180deg, #FFFCF4, #F7EBD3) !important;
+  border-color: var(--zarif-altin) !important;
+  box-shadow: 0 0 0 3px rgba(191, 155, 78, .25),
+              0 14px 28px rgba(191, 155, 78, .22) !important;
+}
+
+/* ---------- emoji yerine ince çizgili simgeler ----------
+   Düğmelerin içindeki 📖 👤 👥 emojileri sistem emojisi olduğu için
+   mavi duruyor ve paletle uyuşmuyordu. Oyun dosyasına dokunmadan
+   yazı gizlenip yerine çizgi simge konuyor. */
+.player-button { font-size: 0 !important; line-height: 0 !important }
+.player-button::before {
+  content: '';
+  display: block;
+  width: min(74px, 46%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  transition: filter .18s, transform .18s;
+}
+.player-button:hover::before { transform: scale(1.05) }
+
+/* açık kitap (bıtâkât / kartlar) */
+.player-button[data-players="3"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none' stroke='%23B07E8E' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M24 13.5C20.5 10.6 16.4 9.4 10.5 9.4v24.9c5.9 0 10 1.2 13.5 4.1 3.5-2.9 7.6-4.1 13.5-4.1V9.4c-5.9 0-10 1.2-13.5 4.1Z'/%3E%3Cpath d='M24 13.5v25.1' stroke='%23BF9B4E'/%3E%3Cpath d='M15.4 17.6h4.6M15.4 22.4h4.6M28 17.6h4.6M28 22.4h4.6' stroke='%23D8B6C2'/%3E%3C/svg%3E");
+}
+/* tek kişi */
+.player-button[data-players="1"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none' stroke='%23B07E8E' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='24' cy='18' r='6.8'/%3E%3Cpath d='M11.5 38.6c0-6.1 5.6-9.9 12.5-9.9s12.5 3.8 12.5 9.9'/%3E%3Cpath d='M24 11.2v-2.6' stroke='%23BF9B4E'/%3E%3C/svg%3E");
+}
+/* iki kişi */
+.player-button[data-players="2"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none' stroke='%23B07E8E' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='18.5' r='5.8'/%3E%3Cpath d='M7 37.8c0-5.5 4.9-8.9 11-8.9s11 3.4 11 8.9'/%3E%3Ccircle cx='33' cy='19.5' r='4.8' stroke='%23B9A7D8'/%3E%3Cpath d='M27.5 29.8c1.7-.6 3.6-.9 5.5-.9 5.2 0 9 2.9 9 7.6' stroke='%23B9A7D8'/%3E%3C/svg%3E");
+}
+.player-button.selected::before { filter: saturate(1.15) }
+
+
+/* ---------- sırası olmayan oyuncu ----------
+   Oyun, sırası olmayan oyuncuyu grayscale ile tamamen griye çeviriyordu;
+   pastel renkte bu "bozuk" duruyor. Rengin bir kısmı kalsın, sıra yine
+   belli olsun. */
+.score-display { filter: grayscale(.45); opacity: .72; transition: filter .25s, opacity .25s }
+.score-display.active { filter: none; opacity: 1 }
