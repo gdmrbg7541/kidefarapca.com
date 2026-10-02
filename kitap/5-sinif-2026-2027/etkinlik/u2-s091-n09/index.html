@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ARP5-Ü2-S91-N12</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:'Scheherazade New',serif;background:linear-gradient(135deg,#dbeafe,#ede9fe,#fef3c7);overflow-x:hidden}
+.wrap{min-height:100svh;min-height:100dvh;padding:16px;display:flex;align-items:center;justify-content:center}
+.panel{width:min(1100px,100%);background:#fff;border-radius:28px;box-shadow:0 18px 50px rgba(0,0,0,.16);padding:18px}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.title{font-size:clamp(24px,3vw,34px);margin:0;color:#0f172a}
+.stage{display:none}.stage.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.unit{background:#f8fafc;border:4px solid #e2e8f0;border-radius:22px;padding:10px;min-width:0}
+.unit.correct{border-color:#16a34a;background:#dcfce7}
+.unit.wrong{border-color:#dc2626;background:#fee2e2}
+.imgbox{height:170px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:18px;overflow:hidden;margin-bottom:10px}
+.imgbox img{max-width:100%;max-height:100%;object-fit:contain}
+.drop{min-height:64px;border:3px dashed #94a3b8;border-radius:16px;padding:10px;display:flex;align-items:center;justify-content:center;background:#fff;text-align:center;font-size:30px;cursor:pointer}
+.bank{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.card{background:#0ea5e9;color:#fff;border-radius:18px;padding:10px 14px;font-size:28px;cursor:pointer;user-select:none}
+.card.sel{outline:4px solid #f59e0b}
+.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.btn{border:none;border-radius:16px;padding:12px 20px;font-size:26px;cursor:pointer}
+.check{background:#86efac;color:#14532d}.show{background:#fde68a;color:#78350f}.reset{background:#fca5a5;color:#7f1d1d}.nav{background:#bfdbfe;color:#1e3a8a}#prevBtn{background:#e9d5ff;color:#6b21a8}
+.feedback{min-height:40px;text-align:center;font-size:28px;font-weight:700;margin-top:10px}
+.start{position:fixed;inset:0;background:linear-gradient(135deg,#dbeafe,#ede9fe,#fef3c7);display:flex;align-items:center;justify-content:center;z-index:99;padding:16px}
+.startCard{background:#fff;border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.18);padding:24px;max-width:720px;width:100%;text-align:center}
+.startText{font-size:36px;line-height:1.8;margin-bottom:18px}.startBtn{border:none;border-radius:18px;padding:14px 28px;background:#f9a8d4;color:#831843;font-size:30px;cursor:pointer}
+@media (max-width:360px){.grid{grid-template-columns:1fr}.imgbox{height:130px}.drop,.card,.btn,.feedback{font-size:22px}}
+</style>
+</head>
+<body>
+<div id="startScreen" class="start">
+  <div class="startCard">
+    <div class="startText">اِسْحَب الْجُمَل إِلى الصُّوَرِ الصَّحيحَة.</div>
+    <button id="startBtn" class="startBtn">اِبْدَأْ</button>
+  </div>
+</div>
+<div class="wrap">
+  <div class="panel">
+    <div class="header">
+      <h1 class="title" id="instruction">اِسْحَب الْجُمَل إِلى الصُّوَرِ الصَّحيحَة.</h1>
+      <div id="pageIndicator" class="title" style="font-size:24px">١ / ٢</div>
+    </div>
+    <div id="stage1" class="stage active"></div>
+    <div id="stage2" class="stage"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="controls">
+      <button class="btn check" id="checkBtn">تَحَقَّقْ</button>
+      <button class="btn show" id="showBtn" disabled>أَظْهِرِ الْحَلّ</button>
+      <button class="btn reset" id="resetBtn">حاوِلْ مَرَّةً أُخْرى</button>
+      <button class="btn nav" id="prevBtn">اَلسّابِق</button>
+      <button class="btn nav" id="nextBtn">اَلتّالي</button>
+    </div>
+  </div>
+</div>
+<audio id="audio1" preload="auto" src="audio/1.mp3"></audio>
+<audio id="audio2" preload="auto" src="page13/audio/1.mp3"></audio>
+<script>
+const pages=[
+ {audio:'audio1', base:'', items:[
+  {img:'images/1.png', ans:'خُذي الْمِمْحاة.'},
+  {img:'images/2.png', ans:'أَعْط الْكِتاب.'},
+  {img:'images/3.png', ans:'خُذ الْمِمْحاة.'},
+  {img:'images/4.png', ans:'أَعْطيني الْقَلَم.'}
+ ], options:['خُذي الْمِمْحاة.','أَعْط الْكِتاب.','خُذ الْمِمْحاة.','أَعْطيني الْقَلَم.','اُكْتُبْ مِنْ فَضْلِك.']},
+ {audio:null, base:'page13/', items:[
+  {img:'images/1.png', ans:'أَغْلِقي الْكِتاب'},
+  {img:'images/2.png', ans:'اِفْتَح الْكِتاب'},
+  {img:'images/3.png', ans:'أَغلِق الْحَقيبَة'},
+  {img:'images/4.png', ans:'اِفْتَحي الْحَقيبَة'}
+ ], options:['أَغْلِقي الْكِتاب','اِفْتَح الْكِتاب','أَغلِق الْحَقيبَة','اِفْتَحي الْحَقيبَة','اُكْتُب مِنْ فَضْلِكَ']}
+];
+let current=0, activeCard=null, checked=false;
+function numAr(n){return String(n).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
+function renderPage(){
+  checked=false;
+  document.getElementById('showBtn').disabled=true;
+  const feedback=document.getElementById('feedback');
+  feedback.textContent='';
+  feedback.style.color='';
+  document.getElementById('pageIndicator').textContent=numAr(current+1)+' / '+numAr(pages.length);
+  document.getElementById('prevBtn').disabled=current===0;
+  document.getElementById('nextBtn').disabled=current===pages.length-1;
+  pages.forEach((p,idx)=>{
+    const st=document.getElementById('stage'+(idx+1));
+    st.classList.toggle('active', idx===current);
+    if(idx!==current) return;
+    st.innerHTML='';
+    const grid=document.createElement('div'); grid.className='grid';
+    p.items.forEach((it,i)=>{
+      const unit=document.createElement('div'); unit.className='unit';
+      unit.innerHTML='<div class="imgbox"><img src="'+p.base+it.img+'" alt=""></div><div class="drop" data-answer="'+it.ans.replace(/"/g,'&quot;')+'"></div>';
+      grid.appendChild(unit);
+    });
+    const bank=document.createElement('div'); bank.className='bank'; bank.id='bank'+idx;
+    [...p.options].sort(()=>Math.random()-0.5).forEach(t=>{
+      const c=document.createElement('div'); c.className='card'; c.textContent=t;
+      c.onclick=()=>{document.querySelectorAll('.card.sel').forEach(x=>x.classList.remove('sel')); activeCard=c; c.classList.add('sel');};
+      bank.appendChild(c);
+    });
+    st.appendChild(grid); st.appendChild(bank);
+    st.querySelectorAll('.drop').forEach(drop=>{
+      drop.onclick=()=>{
+        if(activeCard){
+          if(drop.dataset.value){
+            restoreCard(drop.dataset.value);
+          }
+          drop.textContent=activeCard.textContent;
+          drop.dataset.value=activeCard.textContent;
+          activeCard.remove();
+          activeCard=null;
+          updateCheck();
+        }else if(drop.dataset.value && !checked){
+          restoreCard(drop.dataset.value);
+          drop.textContent='';
+          delete drop.dataset.value;
+          updateCheck();
+        }
+      };
+    });
+  });
+}
+function restoreCard(text){
+  const bank=document.getElementById('bank'+current);
+  const c=document.createElement('div'); c.className='card'; c.textContent=text;
+  c.onclick=()=>{document.querySelectorAll('.card.sel').forEach(x=>x.classList.remove('sel')); activeCard=c; c.classList.add('sel');};
+  bank.appendChild(c);
+}
+function updateCheck(){
+  const stage=document.getElementById('stage'+(current+1));
+  const fills=Array.from(stage.querySelectorAll('.drop')).filter(d=>d.dataset.value).length;
+  document.getElementById('checkBtn').disabled=fills!==4;
+  document.getElementById('showBtn').disabled=true;
+}
+function checkAnswers(){
+  const stage=document.getElementById('stage'+(current+1));
+  let ok=true;
+  stage.querySelectorAll('.unit').forEach(u=>{
+    const d=u.querySelector('.drop');
+    u.classList.remove('correct','wrong');
+    if((d.dataset.value||'').trim()===(d.dataset.answer||'').trim()) u.classList.add('correct');
+    else {u.classList.add('wrong'); ok=false;}
+  });
+  checked=true;
+  document.getElementById('showBtn').disabled=false;
+  const feedback=document.getElementById('feedback');
+  feedback.textContent=ok?'أَحْسَنْت.':'خَطَأ.';
+  feedback.style.color=ok?'#16a34a':'#dc2626';
+}
+function showSolution(){
+  if(!checked){
+    const feedback=document.getElementById('feedback');
+    feedback.textContent='أَجِبْ عَنِ السُّؤال أَوَّلًا.';
+    feedback.style.color='';
+    return;
+  }
+  const stage=document.getElementById('stage'+(current+1));
+  stage.querySelectorAll('.drop').forEach(d=>{ d.textContent=d.dataset.answer; d.dataset.value=d.dataset.answer; });
+  stage.querySelectorAll('.unit').forEach(u=>{u.classList.remove('wrong');u.classList.add('correct');});
+}
+function resetPage(){ activeCard=null; renderPage(); }
+function playCurrent(){ if(!pages[current].audio) return; const a=document.getElementById(pages[current].audio); a.currentTime=0; a.play().catch(()=>{}); }
+document.getElementById('checkBtn').onclick=checkAnswers;
+document.getElementById('showBtn').onclick=showSolution;
+document.getElementById('resetBtn').onclick=resetPage;
+document.getElementById('prevBtn').onclick=()=>{ if(current>0){ current--; renderPage(); playCurrent(); }};
+document.getElementById('nextBtn').onclick=()=>{ if(current<pages.length-1){ current++; renderPage(); playCurrent(); }};
+document.getElementById('startBtn').onclick=()=>{ document.getElementById('startScreen').style.display='none'; renderPage(); playCurrent(); };
+renderPage();
+</script>
+
+<script id="final-sequence-fix">
+(function(){
+  try {
+    const pickBySelector = (sel) => sel ? document.querySelector(sel) : null;
+    const pickByText = (rxSrc) => {
+      if(!rxSrc) return null;
+      const rx = new RegExp(rxSrc);
+      return Array.from(document.querySelectorAll('button,.btn')).find(b => rx.test((b.textContent||'').replace(/\s+/g,' ').trim()));
+    };
+    const checkBtn = pickBySelector("#checkBtn") || pickByText(null);
+    const showBtn  = pickBySelector("#showBtn")  || pickByText(null);
+    const resetBtn = pickBySelector("#resetBtn") || pickByText(null);
+    if(!checkBtn || !showBtn || !resetBtn) return;
+
+    const navBtns = ["#prevBtn", "#nextBtn", "#startBtn"].map(sel => document.querySelector(sel)).filter(Boolean);
+    let phase = 'fill';
+
+    function setActive(btn, enabled){
+      if(!btn) return;
+      btn.hidden = false;
+      btn.style.display = '';
+      btn.disabled = !enabled;
+      btn.style.opacity = enabled ? '1' : '0.55';
+      btn.style.pointerEvents = enabled ? 'auto' : 'none';
+    }
+
+    function isComplete(){
+      try { return !!(Array.from(document.querySelectorAll('#stage'+(current+1)+' .drop')).length>0 && Array.from(document.querySelectorAll('#stage'+(current+1)+' .drop')).every(d => ((d.dataset.value||'').trim()!==''))); } catch(e) { return false; }
+    }
+
+    function isWrong(){
+      try { return !!(Array.from(document.querySelectorAll('#stage'+(current+1)+' .unit')).some(u => u.classList.contains('wrong'))); } catch(e) { return false; }
+    }
+
+    function syncFill(){
+      if(phase !== 'fill') return;
+      setActive(checkBtn, isComplete());
+      setActive(showBtn, false);
+      setActive(resetBtn, false);
+    }
+
+    function syncAfterCheck(){
+      const wrong = isWrong();
+      phase = wrong ? 'checkedWrong' : 'checkedCorrect';
+      setActive(checkBtn, false);
+      setActive(showBtn, wrong);
+      setActive(resetBtn, !wrong);
+    }
+
+    function syncAfterShow(){
+      phase = 'solved';
+      setActive(checkBtn, false);
+      setActive(showBtn, false);
+      setActive(resetBtn, true);
+    }
+
+    function syncAfterReset(){
+      phase = 'fill';
+      setTimeout(syncFill, 0);
+    }
+
+    function runCheck(){
+      if(checkBtn.disabled) return;
+      
+      if(typeof window["checkAnswers"] === 'function') window["checkAnswers"]();
+      setTimeout(syncAfterCheck, 0);
+    }
+
+    function runShow(){
+      if(showBtn.disabled) return;
+      
+      if(typeof window["showSolution"] === 'function') window["showSolution"]();
+      setTimeout(syncAfterShow, 0);
+    }
+
+    function runReset(){
+      if(resetBtn.disabled) return;
+      
+      if(typeof window["resetPage"] === 'function') window["resetPage"]();
+      syncAfterReset();
+    }
+
+    function hardBind(btn, fn){
+      ['click','touchend'].forEach(evt => {
+        btn.addEventListener(evt, function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          fn();
+          return false;
+        }, true);
+      });
+      btn.onclick = null;
+    }
+
+    hardBind(checkBtn, runCheck);
+    hardBind(showBtn, runShow);
+    hardBind(resetBtn, runReset);
+
+    navBtns.forEach(btn => {
+      ['click','touchend'].forEach(evt => btn.addEventListener(evt, () => {
+        phase = 'fill';
+        setTimeout(syncFill, 50);
+      }, true));
+    });
+
+    ['click','touchend','drop'].forEach(evt => document.addEventListener(evt, () => {
+      if(phase === 'fill') setTimeout(syncFill, 0);
+    }, true));
+
+    window.addEventListener('load', () => setTimeout(syncFill, 0));
+    setTimeout(syncFill, 0);
+  } catch(e) {
+    console.warn('final-sequence-fix error', e);
+  }
+})();
+</script>
+
+</body>
+</html>

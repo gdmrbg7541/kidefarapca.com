@@ -1,0 +1,226 @@
+/* ============================================================
+   FLIPBOOK AÇIK TEMA — sitenin renkleri                02.10.2026
+   Öğretmen: "arayüz site renkleri olsun, açık tema olsun."
+
+   Kitabın arayüzü koyu lacivertti (--zemin #101A2E, altın vurgu).
+   Burası onu sitenin paletine çekiyor: açık zemin, mürekkep yazı,
+   yeşil vurgu. Sayfaların kendisine DOKUNULMUYOR — yalnız çerçeve
+   (yan çubuk, oklar, kaydıraç, paneller, baloncuklar).
+
+   Sitenin paleti (olcek.css'ten):
+     yeşil #16A085 · koyu yeşil #0E7C66 · mürekkep #1F2430
+     gri #5B6471 · soluk #8A93A0 · çizgi #E3E8EF · zemin #EEF1F5
+
+   Geri almak için: index.html'den bu dosyanın <link> satırını çıkar.
+   ============================================================ */
+
+:root {
+  --yesil: #16A085; --yesilK: #0E7C66; --mur: #1F2430;
+  --gri: #5B6471; --soluk: #8A93A0; --cizgi: #E3E8EF;
+
+  /* kitabın kendi değişkenleri siteye çekiliyor */
+  --zemin: #EEF1F5;
+  --zemin2: #E4E9F0;
+  --ink: #1F2430;
+  --ink2: #2A3C63;
+  --muted: #5B6471;
+  --line: #E3E8EF;
+  --gold: #16A085;            /* vurgu artık sitenin yeşili */
+}
+
+body { background: var(--zemin); color: var(--mur) }
+
+/* ---------- üst / yan çubuk ---------- */
+.ust {
+  background: rgba(255, 255, 255, .94);
+  border-bottom-color: var(--cizgi);
+  border-right-color: var(--cizgi);
+}
+.marka b { color: var(--mur) }
+.marka span { color: var(--yesilK) }
+.konum { color: var(--gri) }
+.konum .u { background: rgba(22, 160, 133, .12); color: var(--yesilK) }
+
+.tus { color: var(--gri) }
+.tus:hover { background: rgba(22, 160, 133, .10); color: var(--yesilK) }
+.tus.etiketli { background: rgba(31, 36, 48, .045) }
+.tus.etiketli:hover { background: rgba(22, 160, 133, .12); color: var(--yesilK) }
+.tus.aktif,
+.tus.etiketli.aktif { background: var(--yesil); color: #fff }
+.ayrac { background: var(--cizgi) }
+.sayac { color: var(--gri) }
+.yan-zoom { background: rgba(31, 36, 48, .045) }
+.yan-kapat { color: var(--soluk) }
+.yan-kapat:hover { background: rgba(22, 160, 133, .10); color: var(--yesilK) }
+.yan-ilerleme { border-top-color: var(--cizgi) }
+
+/* ---------- oklar ---------- */
+.ok {
+  background: rgba(255, 255, 255, .92);
+  color: var(--mur);
+  border-color: var(--cizgi);
+  box-shadow: 0 2px 12px rgba(31, 36, 48, .10);
+}
+.ok:hover,
+.slayt-ok:hover { background: var(--yesil); color: #fff; border-color: var(--yesil) }
+
+/* ---------- alt şerit, kaydıraç ---------- */
+.alt { background: rgba(255, 255, 255, .94); border-top-color: var(--cizgi) }
+input[type=range] {
+  background: linear-gradient(90deg, var(--yesil) var(--dolu, 0%),
+              rgba(31, 36, 48, .14) var(--dolu, 0%));
+}
+input[type=range]::-webkit-slider-thumb { border-color: var(--yesil) }
+input[type=range]::-moz-range-thumb { border-color: var(--yesil) }
+.git { color: var(--gri) }
+.git input { background: #fff; border-color: var(--cizgi); color: var(--mur) }
+.git input:focus { border-color: var(--yesil) }
+
+/* ---------- perde, baloncuk, göstergeler ---------- */
+.perde { background: rgba(31, 36, 48, .42) }
+.zoom-bilgi {
+  background: rgba(255, 255, 255, .94); color: var(--gri);
+  border: 1px solid var(--cizgi);
+}
+.tost { background: var(--mur); color: #fff }
+
+/* altın zeminle gelen koyu kahve yazı, yeşil zeminde okunmuyordu */
+.dg.altin { background: var(--yesil); border-color: var(--yesil); color: #fff }
+
+/* ---------- renkli şerit ---------- */
+.serit {
+  background: linear-gradient(90deg, var(--yesil) 0 22%, #17817E 22% 42%,
+    #2E86DE 42% 62%, #E67E22 62% 80%, #6B4BB4 80% 100%);
+}
+@media (min-width: 760px) {
+  html.yanli .serit {
+    background: linear-gradient(180deg, var(--yesil) 0 22%, #17817E 22% 42%,
+      #2E86DE 42% 62%, #E67E22 62% 80%, #6B4BB4 80% 100%);
+  }
+}
+
+/* ---------- sayfa üstündeki düğmeler ---------- */
+.nokta { box-shadow: 0 0 0 2px rgba(255, 255, 255, .55) }
+
+/* ---------- Kidef kütüphane düğmeleri ---------- */
+.ktp-tus.sunu .ik-sunu { color: #17817E }
+.ktp-tus.pdf .ik-pdf { color: #C0392B }
+
+/* ============================================================
+   KİTAP BELİRGİNLİĞİ (02.10.2026)
+   Öğretmen: "kitap kısmı belirgin olsun, açık temada belirgin olmadı."
+   Açık zeminde beyaz sayfa kayboluyordu; zemin derinleşti, sayfa
+   gölge ve ince kenar kazandı.
+   ============================================================ */
+
+/* 1 — sahne bir masa yüzeyi gibi: ortası açık, kenarları koyu */
+body { background: #E6EBF2 }
+.sahne {
+  background:
+    radial-gradient(130% 100% at 50% 42%,
+      #F3F6FA 0%, #E9EEF4 45%, #DCE3EC 100%);
+}
+
+/* 2 — gölge açık kitabın TAMAMININ altında (ortadaki bant sorunu)
+   Gölge tek tek sayfa yüzlerine verilince iki iç kenar birbirine gölge
+   düşürüyor ve kitabın ortasında geniş gri bir bant oluşuyordu. Gölge
+   kitaba taşındı; yüzlerde yalnız ince kenar çizgisi kaldı. */
+.yuz {
+  box-shadow: none;
+  outline: 1px solid rgba(31, 36, 48, .10);
+  outline-offset: -1px;
+}
+.kitap:not(.tekli) {
+  box-shadow: 0 14px 38px rgba(31, 36, 48, .20),
+              0 3px 10px rgba(31, 36, 48, .12);
+}
+.kitap.tekli .yaprak {
+  box-shadow: 0 14px 38px rgba(31, 36, 48, .22),
+              0 3px 10px rgba(31, 36, 48, .12);
+}
+
+/* 3 — cilt izi: kat yeri belli olsun ama leke gibi durmasın */
+.kitap::after {
+  background: linear-gradient(90deg, transparent,
+    rgba(31, 36, 48, .07) 44%, rgba(31, 36, 48, .13) 50%,
+    rgba(31, 36, 48, .07) 56%, transparent);
+  opacity: .8;
+}
+
+/* ============================================================
+   KİTAP İSMİ KUTUSU (02.10.2026)
+   Öğretmen: "kitap ismi şık bi kutu içinde olsun."
+   kitapsecici.js markayı çalışma anında saydam bir düğmeye çeviriyor
+   (koyu tema için). Burada açık temaya göre gerçek bir kart oluyor.
+   Seçiciler bilerek bir basamak belirgin: o stil belgede daha sonra.
+   ============================================================ */
+
+html .ust .marka.ks-marka {
+  background: #fff;
+  border: 1px solid var(--cizgi);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(31, 36, 48, .05),
+              0 5px 16px rgba(31, 36, 48, .06);
+  transition: border-color .16s, box-shadow .16s, transform .12s;
+}
+html .ust .marka.ks-marka:hover {
+  border-color: rgba(22, 160, 133, .45);
+  box-shadow: 0 2px 4px rgba(31, 36, 48, .06),
+              0 8px 22px rgba(22, 160, 133, .15);
+}
+html .ust .marka.ks-marka:active { transform: translateY(1px) scale(.995) }
+html .ust .marka.ks-marka:focus-visible {
+  outline: 2px solid var(--yesil); outline-offset: 2px;
+}
+
+/* kitap simgesi kendi yeşil karesinde */
+html .ust .marka .ks-kik {
+  width: 27px; height: 27px; display: grid; place-items: center;
+  border-radius: 9px; background: rgba(22, 160, 133, .11);
+  color: var(--yesilK);
+  transition: background .16s;
+}
+html .ust .marka .ks-kik svg { width: 17px; height: 17px }
+html .ust .marka.ks-marka:hover .ks-kik { background: rgba(22, 160, 133, .18) }
+
+/* ▾ oku: sessiz bir yuvarlak, üstüne gelince yeşil */
+html .ust .marka .ks-sag {
+  background: rgba(31, 36, 48, .05); color: var(--gri);
+  transition: background .16s, color .16s;
+}
+html .ust .marka.ks-marka:hover .ks-sag {
+  background: rgba(22, 160, 133, .13); color: var(--yesilK);
+}
+
+/* ---------- yan çubuk: iki satırlı kart ---------- */
+@media (min-width: 760px) {
+  html.yanli .ust .marka.ks-marka {
+    padding: 8px 9px 9px; column-gap: 6px;
+  }
+  /* flex-basis 0: ad "ne kalırsa" der; taşma yerine üç nokta.
+     En uzun ad "Kidef Arapça" 96 px, kalan yer 100 px — kısalmıyor. */
+  html.yanli .ust .marka b {
+    font-size: 14.5px; letter-spacing: -.1px;
+    flex: 1 1 0; min-width: 0;
+  }
+  /* yıl satırı simgenin değil, adın altına hizalı (25 + 6 boşluk) */
+  html.yanli .ust .marka > span:not(.ks-kik):not(.ks-sag) {
+    padding-left: 31px; margin-top: 1px; font-weight: 700;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  /* simge biraz küçülüyor, ada yer açılıyor */
+  html.yanli .ust .marka .ks-kik { width: 25px; height: 25px; border-radius: 8px }
+  html.yanli .ust .marka .ks-kik svg { width: 16px; height: 16px }
+  /* ▾: yuvarlak yerine sade ok — hem yer açıyor hem daha sakin duruyor */
+  html.yanli .ust .marka .ks-sag {
+    background: none; padding: 0; margin-left: 5px;
+    font-size: 11px; color: var(--soluk);
+  }
+  html.yanli .ust .marka.ks-marka:hover .ks-sag { background: none; color: var(--yesilK) }
+  /* daraltılmış çubuk: kare simge düğmesi */
+  html.yanli.dar .ust .marka.ks-marka {
+    border-radius: 11px; place-items: center;
+  }
+  html.yanli.dar .ust .marka .ks-kik { background: none; width: 27px; height: 27px }
+  html.yanli.dar .ust .marka .ks-kik svg { width: 17px; height: 17px }
+}

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="com.example.scorm"
+    version="1.0"
+    xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+    xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2
+    ims_xml.xsd
+    http://www.adlnet.org/xsd/adlcp_rootv1p2
+    adlcp_rootv1p2.xsd">
+  <organizations default="ORG1">
+    <organization identifier="ORG1">
+      <item identifier="ITEM1" identifierref="RES1">
+        <title>SCORM İçeriği</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="RES1" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="adlcp_rootv1p2.xsd"/>
+      <file href="analytics-frame.html"/>
+      <file href="imscp_rootv1p1p2.xsd"/>
+      <file href="imsmd_rootv1p2p1.xsd"/>
+      <file href="ims_xml.xsd"/>
+      <file href="index.html"/>
+      <file href="index_lms.html"/>
+      <file href="meta.xml"/>
+      <file href="story.html"/>
+      <file href="custom_sfx/basari.mp3"/>
+      <file href="custom_sfx/butonsesi.mp3"/>
+      <file href="custom_sfx/dogru.mp3"/>
+      <file href="custom_sfx/sonraki.mp3"/>
+      <file href="custom_sfx/tebrikler.mp3"/>
+      <file href="custom_sfx/yanliscevap.mp3"/>
+      <file href="html5/data/css/output.min.css"/>
+      <file href="html5/data/js/5VZyi53eZwH.js"/>
+      <file href="html5/data/js/5xmbOa3X1hw.js"/>
+      <file href="html5/data/js/5Y88pEkfgtM.js"/>
+      <file href="html5/data/js/6ffk1BMP0fX.js"/>
+      <file href="html5/data/js/6GVz22OMv8i.js"/>
+      <file href="html5/data/js/6qISCcYRr4L.js"/>
+      <file href="html5/data/js/6rejvMN1CDV.js"/>
+      <file href="html5/data/js/6SUM9O0dCgr.js"/>
+      <file href="html5/data/js/data.js"/>
+      <file href="html5/data/js/frame.js"/>
+      <file href="html5/data/js/paths.js"/>
+      <file href="html5/lib/scripts/bootstrapper.min.js"/>
+      <file href="html5/lib/scripts/frame.desktop.min.js"/>
+      <file href="html5/lib/scripts/frame.mobile.min.js"/>
+      <file href="html5/lib/scripts/slides.min.js"/>
+      <file href="html5/lib/stylesheets/desktop.min.css"/>
+      <file href="html5/lib/stylesheets/mobile.min.css"/>
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-bold.woff"/>
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-light.woff"/>
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-regular.woff"/>
+      <file href="lms/AICCComm.html"/>
+      <file href="lms/blank.html"/>
+      <file href="lms/browsersniff.js"/>
+      <file href="lms/goodbye.html"/>
+      <file href="lms/scormdriver.js"/>
+      <file href="mobile/1.png"/>
+      <file href="mobile/2.png"/>
+      <file href="mobile/3.png"/>
+      <file href="mobile/4.png"/>
+      <file href="mobile/5.png"/>
+      <file href="mobile/5b190eeh1ss.jpg"/>
+      <file href="mobile/5pG0ce0pwKi.png"/>
+      <file href="mobile/6.png"/>
+      <file href="mobile/68Xuw9K4F3X.png"/>
+      <file href="mobile/6BOCTouRljJ.png"/>
+      <file href="mobile/6PrHcp9mXRw.png"/>
+      <file href="mobile/6Ykrxeou6AB.png"/>
+      <file href="mobile/7.png"/>
+      <file href="mobile/poster_5attG0tsdnw_video_6Gj7XOD070L_9_160_1004x898.jpg"/>
+      <file href="mobile/poster_5bsc0TKkbe0_video_6QHqpbeUwFx_9_160_1004x898.jpg"/>
+      <file href="mobile/poster_5bzREGUUt8g_video_6IsGaTMktE6_9_160_1004x898.jpg"/>
+      <file href="mobile/poster_5X34yjBxnK6_video_6qSJ1lhRnQp_9_160_1004x898.jpg"/>
+      <file href="mobile/poster_6JbwJXuot5p_video_5VGerOxAEr3_9_160_1004x898.jpg"/>
+      <file href="mobile/poster_6lZUqkBKoKP_video_5jpIjQ4QKzT_9_160_1004x898.jpg"/>
+      <file href="mobile/poster_6njmbMfJS2A_video_6eiWvAdH2If_9_160_1004x898.jpg"/>
+      <file href="sesler/basari.mp3"/>
+      <file href="sesler/butonsesi.mp3"/>
+      <file href="sesler/dogru.mp3"/>
+      <file href="sesler/sonraki.mp3"/>
+      <file href="sesler/tebrikler.mp3"/>
+      <file href="sesler/yanliscevap.mp3"/>
+      <file href="story_content/1.mp3"/>
+      <file href="story_content/1.mp4"/>
+      <file href="story_content/1.png"/>
+      <file href="story_content/10.mp3"/>
+      <file href="story_content/2.mp3"/>
+      <file href="story_content/2.mp4"/>
+      <file href="story_content/2.png"/>
+      <file href="story_content/3.mp3"/>
+      <file href="story_content/3.mp4"/>
+      <file href="story_content/3.png"/>
+      <file href="story_content/4.mp3"/>
+      <file href="story_content/4.mp4"/>
+      <file href="story_content/4.png"/>
+      <file href="story_content/5.mp3"/>
+      <file href="story_content/5.mp4"/>
+      <file href="story_content/5.png"/>
+      <file href="story_content/5b190eeh1ss.jpg"/>
+      <file href="story_content/5jjfGA9NOst_44100_160_0.mp3"/>
+      <file href="story_content/5mN4IbWzWpn_44100_160_0.mp3"/>
+      <file href="story_content/5pG0ce0pwKi.png"/>
+      <file href="story_content/5qK6ewgR6qn_44100_160_0.mp3"/>
+      <file href="story_content/5zjppCLzcH9_44100_160_0.mp3"/>
+      <file href="story_content/5ZShSomodQW_44100_160_0.mp3"/>
+      <file href="story_content/6.mp3"/>
+      <file href="story_content/6.mp4"/>
+      <file href="story_content/6.png"/>
+      <file href="story_content/64lnliXwve2_44100_160_0.mp3"/>
+      <file href="story_content/68Xuw9K4F3X.png"/>
+      <file href="story_content/6BOCTouRljJ.png"/>
+      <file href="story_content/6G3B8jGykKZ_44100_160_0.mp3"/>
+      <file href="story_content/6jb5dmYlGY2_44100_160_0.mp3"/>
+      <file href="story_content/6MhTzuiH8gf_44100_160_0.mp3"/>
+      <file href="story_content/6PrHcp9mXRw.png"/>
+      <file href="story_content/6Q3FO3bZWCx_44100_160_0.mp3"/>
+      <file href="story_content/6Ykrxeou6AB.png"/>
+      <file href="story_content/7.mp3"/>
+      <file href="story_content/7.mp4"/>
+      <file href="story_content/7.png"/>
+      <file href="story_content/8.mp3"/>
+      <file href="story_content/9.mp3"/>
+      <file href="story_content/poster_5attG0tsdnw_video_6Gj7XOD070L_9_160_1004x898.jpg"/>
+      <file href="story_content/poster_5bsc0TKkbe0_video_6QHqpbeUwFx_9_160_1004x898.jpg"/>
+      <file href="story_content/poster_5bzREGUUt8g_video_6IsGaTMktE6_9_160_1004x898.jpg"/>
+      <file href="story_content/poster_5X34yjBxnK6_video_6qSJ1lhRnQp_9_160_1004x898.jpg"/>
+      <file href="story_content/poster_6JbwJXuot5p_video_5VGerOxAEr3_9_160_1004x898.jpg"/>
+      <file href="story_content/poster_6lZUqkBKoKP_video_5jpIjQ4QKzT_9_160_1004x898.jpg"/>
+      <file href="story_content/poster_6njmbMfJS2A_video_6eiWvAdH2If_9_160_1004x898.jpg"/>
+      <file href="story_content/thumbnail.jpg"/>
+      <file href="story_content/triggers.js"/>
+      <file href="story_content/user.js"/>
+      <file href="story_content/video_5jpIjQ4QKzT_9_160_1004x898.mp4"/>
+      <file href="story_content/video_5VGerOxAEr3_9_160_1004x898.mp4"/>
+      <file href="story_content/video_6eiWvAdH2If_9_160_1004x898.mp4"/>
+      <file href="story_content/video_6Gj7XOD070L_9_160_1004x898.mp4"/>
+      <file href="story_content/video_6IsGaTMktE6_9_160_1004x898.mp4"/>
+      <file href="story_content/video_6QHqpbeUwFx_9_160_1004x898.mp4"/>
+      <file href="story_content/video_6qSJ1lhRnQp_9_160_1004x898.mp4"/>
+      <file href="story_content/yonerge1.mp3"/>
+      <file href="story_content/yonerge2.mp3"/>
+      <file href="story_content/yonerge3.mp3"/>
+    </resource>
+  </resources>
+</manifest>

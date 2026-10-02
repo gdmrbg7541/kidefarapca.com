@@ -16,15 +16,17 @@
     gtag('config', 'G-FV9JD15KLW');
   }
 </script>
-<meta name="description" content="5. sınıf Arapça ders ve öğrenci çalışma kitabı (2026-2027): sayfa çevirmeli kitap. İnternetsiz de çalışır.">
+<meta name="description" content="5. sınıf Arapça ders kitabı (2026-2027, Maarif): sayfa çevirmeli kitap, sesler, etkinlikler, videolar ve şarkılar. İnternetsiz de çalışır.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='3' width='20' height='18' rx='3' fill='%23E3A02A'/%3E%3Cpath d='M12 6v12M5 7h5M5 11h5M14 7h5M14 11h5' stroke='%23122040' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="kitap.css?v=20261002">
-<link rel="stylesheet" href="ek.css?v=20261002">
+<link rel="stylesheet" href="kitap.css?v=20261002b">
+<link rel="stylesheet" href="ek.css?v=20261002b">
 <!-- ORTAK: bütün flipbooklarda aynı (kaynak _kaynak/ortak-kitap/) -->
 <link rel="stylesheet" href="kitapzoom.css?v=20261002g">
+<link rel="stylesheet" href="kitapyan.css?v=20261002f">
+<link rel="stylesheet" href="kitaptema.css?v=20261002g">
 </head>
 <body>
 
@@ -40,7 +42,7 @@
   </div>
 
   <div class="araclar">
-    <button class="tus etiketli" id="tKaynak" hidden title="Sesler, etkinlikler, videolar (K)" aria-label="Kaynaklar">
+    <button class="tus etiketli" id="tKaynak" title="Sesler, etkinlikler, videolar (K)" aria-label="Kaynaklar">
       <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg>
       <span>Kaynaklar</span>
     </button>
@@ -97,7 +99,7 @@
 <footer class="alt">
   <div class="kaydirac">
     <span class="sayac" id="sayfaEt">Kapak</span>
-    <input type="range" id="kaydiracInput" min="1" max="210" value="1" dir="rtl" aria-label="Sayfa seç">
+    <input type="range" id="kaydiracInput" min="1" max="236" value="1" dir="rtl" aria-label="Sayfa seç">
   </div>
   <div class="git">
     <label for="gitInput">Sayfaya git</label>
@@ -168,18 +170,19 @@
   </div>
   <div class="pgovde">
     <p class="aciklama">Paketi indirip ZIP dosyasını bir klasöre (ya da flaş belleğe) çıkarın. Akıllı tahtada
-      <b>index.html</b> dosyasını çift tıklayın: kitap <b>internet olmadan</b> açılır.
+      <b>index.html</b> dosyasını çift tıklayın: kitap, sesler, etkinlikler ve videolar <b>internet olmadan</b> açılır.
       (EBA bağlantıları için internet gerekir.)</p>
     <div class="indir-liste" id="indirListe"></div>
     <div class="ilerleme" id="indirIlerleme" hidden><div><span id="indirCubuk"></span></div><small id="indirYazi"></small></div>
   </div>
 </section>
 
-<script src="veri.js?v=20261002"></script>
-<script src="dosyalar.js?v=20261002"></script>
+<script src="veri.js?v=20261002f"></script>
+<script src="dosyalar.js?v=20261002b"></script>
 <script src="flip.js?v=20261002b"></script>
 <script src="kitapzoom.js?v=20261002g"></script>
 <script src="kitapsecici.js?v=20261002c"></script>
-<script src="uygulama.js?v=20261002"></script>
+<script src="kitapyan.js?v=20261002e"></script>
+<script src="uygulama.js?v=20261002b"></script>
 </body>
 </html>

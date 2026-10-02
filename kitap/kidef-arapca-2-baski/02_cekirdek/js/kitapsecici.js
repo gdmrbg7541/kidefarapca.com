@@ -33,10 +33,22 @@
 
   /* Yeni kitap eklenince buraya bir satır yazmak yeter. */
   var KITAPLAR = [
-    { id: '5-sinif-2026-2027',    ad: 'Arapça 5',     alt: 'Dijital ders kitabı · 2026-2027',
-      renk: '#16A085', im: '5' },
+    /* 5. sınıfın üç kitabı (02.10.2026): yeni Maarif kitabı asıl,
+       2025-2026 baskısı ve 2024-2025 kitabı seçenek olarak duruyor. */
+    /* guncel: bu öğretim yılında okutulan kitap — yılı renkli yazılır */
+    { id: '5-sinif-2026-2027',    ad: 'Arapça 5',     alt: 'Maarif kitabı · 2026-2027',
+      renk: '#16A085', im: '5', guncel: true },
+    { id: '5-sinif-2025-2026',    ad: 'Arapça 5',     alt: 'Maarif kitabı · 2025-2026 baskısı',
+      renk: '#13907A', im: '5' },
+    { id: '5-sinif-2024-2025',    ad: 'Arapça 5',     alt: 'Önceki kitap · 2024-2025',
+      renk: '#0E7C66', im: '5' },
     { id: '6-sinif-2026-2027',    ad: 'Arapça 6',     alt: 'Dijital ders kitabı · 2026-2027',
-      renk: '#F39C12', im: '6' },
+      renk: '#F39C12', im: '6', guncel: true },
+    /* GİZLİ (02.10.2026): 7. sınıf Maarif kitabı resmî olarak yayınlanamıyor.
+       Listede yalnız o kitabın içindeyken görünür; başka kitaptan bağlantı
+       verilmez, site kartı da portala gider. */
+    { id: '7-sinif-2027-2028',    ad: 'Arapça 7',     alt: 'Dijital ders kitabı · 2027-2028',
+      renk: '#2563EB', im: '7', gizli: true },
     { id: 'kidef-arapca-2-baski', ad: 'Kidef Arapça', alt: '2. Baskı · flipbook',
       renk: '#E3A02A', im: 'K', asil: 'FLIPBOOK' }
   ];
@@ -133,6 +145,11 @@
       '.ks-mt{min-width:0;flex:1;}' +
       '.ks-mt b{display:block;font-size:1rem;font-weight:800;}' +
       '.ks-mt small{display:block;margin-top:2px;font-size:.82rem;color:#6B7A8C;line-height:1.4;}' +
+      /* güncel kitabın yılı kitabın kendi renginde, hafif zeminli */
+      '.ks-yil.simdi{color:var(--ksr);font-weight:800;background:color-mix(in srgb,var(--ksr) 13%,transparent);' +
+      'padding:1px 7px;border-radius:99px;white-space:nowrap;}' +
+      '@supports not (background:color-mix(in srgb,red 10%,transparent)){' +
+      '.ks-yil.simdi{background:rgba(0,0,0,.055);}}' +
       '.ks-rozet{display:inline-block;margin-top:6px;font-size:.68rem;font-weight:800;' +
         'letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:99px;' +
         'background:var(--ksr);color:#fff;}' +
@@ -160,6 +177,10 @@
     if (panel) { kapat(); return; }
     stilKur();
     var simdi = simdiki(), yerel = !!kokDizin();
+    /* gizli kitap yalnız içindeyken listelenir */
+    var liste = KITAPLAR.filter(function (k) {
+      return !k.gizli || (simdi && k.id === simdi.id);
+    });
 
     perde = document.createElement('div');
     perde.className = 'ks-perde';
@@ -173,9 +194,10 @@
       '<h2>Kitaplar</h2>' +
       '<button class="ks-kapat" type="button" aria-label="Kapat">&times;</button></div>' +
       '<div class="ks-govde">' +
-      '<p class="ks-ust">Hangi kitabı açalım? Üçü de aynı motorla çalışıyor: ' +
-      'dokununca büyütme, içindekiler, kaynaklar.</p><div class="ks-liste">';
-    KITAPLAR.forEach(function (k) {
+      '<p class="ks-ust">Hangi kitabı açalım? ' + liste.length +
+      ' kitap da aynı motorla çalışıyor: dokununca büyütme, içindekiler, ' +
+      'kaynaklar.</p><div class="ks-liste">';
+    liste.forEach(function (k) {
       var bu = simdi && k.id === simdi.id;
       var ic = '<span class="ks-kapak"><span class="ks-harf">' + k.im + '</span>' +
         '<img alt="" loading="lazy" src="' + kapak(k) + '"></span>' +
@@ -196,9 +218,20 @@
 
     /* adlar metin olarak yazılıyor; kapak gelince beliriyor */
     var kutular = panel.querySelectorAll('.ks-kitap');
-    KITAPLAR.forEach(function (k, i) {
+    liste.forEach(function (k, i) {
       kutular[i].querySelector('b').textContent = k.ad;
-      kutular[i].querySelector('small').textContent = k.alt;
+      /* alt yazının son parçası yıl: güncel kitapta renkli rozet olur */
+      var kucuk = kutular[i].querySelector('small');
+      var p = k.alt.split(' · ');
+      if (p.length > 1) {
+        kucuk.textContent = p.slice(0, -1).join(' · ') + ' · ';
+        var yil = document.createElement('span');
+        yil.className = 'ks-yil' + (k.guncel ? ' simdi' : '');
+        yil.textContent = p[p.length - 1];
+        kucuk.appendChild(yil);
+      } else {
+        kucuk.textContent = k.alt;
+      }
       var im = kutular[i].querySelector('img');
       im.addEventListener('load', function () { im.classList.add('geldi'); });
       im.addEventListener('error', function () { im.remove(); });   /* harf karesi kalsın */

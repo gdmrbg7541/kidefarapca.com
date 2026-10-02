@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>لُعْبَةُ التَّطابُق</title>
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Scheherazade+New', serif;
+            background: linear-gradient(to bottom, #e0f2fe, #f0f9ff);
+            margin: 0;
+            padding: 0;
+            height: 100svh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        .instruction {
+            font-size: clamp(20px, 4vw, 32px);
+            font-weight: bold;
+            color: #0369a1;
+            margin: 0;
+        }
+
+        .audio-btn {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+            transition: all 0.2s;
+        }
+
+        .audio-btn:active { transform: scale(0.9); }
+        .audio-btn svg { width: 22px; height: 22px; fill: currentColor; }
+
+        .drop-area {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .drop-area { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .matching-unit {
+            background: white;
+            border-radius: 15px;
+            padding: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border: 4px solid #f1f5f9;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .feedback-icon {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 20px;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .feedback-correct { background: #10b981; }
+        .feedback-wrong { background: #f43f5e; }
+
+        .img-container {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #f8fafc;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .drop-zone {
+            height: 55px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+
+        .word-bank {
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.03);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .word-card {
+            background: #0ea5e9;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 12px;
+            font-size: clamp(18px, 3vw, 24px);
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 3px 5px rgba(14, 165, 233, 0.2);
+            touch-action: none;
+        }
+
+        .placed-word {
+            width: 100%;
+            height: 100%;
+            background: #0284c7;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(16px, 2.5vw, 20px);
+            text-align: center;
+            padding: 4px;
+            animation: pop 0.3s ease;
+        }
+
+        @keyframes pop { 0% { transform: scale(0.8); } 100% { transform: scale(1); } }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 15px;
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: bold;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:active { opacity: 0.8; }
+        .btn-check { background: #10b981; }
+        .btn-reset { background: #f43f5e; }
+        .btn-show { background: #8b5cf6; }
+    </style>
+
+<style id="oai-hide-audio-and-start-css">
+.audio-btn,.speaker,.sound-btn,.listen-btn,.play-btn,[class*="audio-btn"],button[title*="Dinle"],button[title*="Listen"],button[aria-label*="audio"]{display:none!important}
+#oaiStartScreen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#dbeafe,#ede9fe,#fef3c7);z-index:99999;padding:16px}
+#oaiStartCard{max-width:760px;width:min(100%,760px);background:#fff;border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.18);padding:24px;text-align:center}
+#oaiStartText{font-size:clamp(24px,4vw,38px);line-height:1.7;color:#0f172a;margin:0 0 18px}
+#oaiStartBtn{border:none;border-radius:18px;padding:14px 28px;font-size:clamp(22px,3vw,30px);background:#0ea5e9;color:#fff;cursor:pointer;min-width:160px}
+#oaiStartBtn:active{transform:scale(.98)}
+</style>
+
+</head>
+<body>
+
+<audio id="audio">
+    <source src="audio/1.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+    <div class="header">
+        <button class="audio-btn" onclick="document.getElementById('audio').currentTime=0;document.getElementById('audio').play()">
+            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <h1 class="instruction">اِسْحَب الْجُمَل إِلى الصُّوَرِ الصَّحيحَة.</h1>
+    </div>
+
+    <div class="drop-area">
+        <div class="matching-unit" id="unit-1">
+            <div class="feedback-icon feedback-correct">✓</div>
+            <div class="feedback-icon feedback-wrong">✕</div>
+            <div class="img-container">
+                <!-- JPG -> PNG -->
+                <img src="images/1.png" alt="أَغْلِقي الْكِتاب" onerror="this.style.display='none'">
+            </div>
+            <div class="drop-zone" data-answer="أَغْلِقي الْكِتاب"></div>
+        </div>
+
+        <div class="matching-unit" id="unit-2">
+            <div class="feedback-icon feedback-correct">✓</div>
+            <div class="feedback-icon feedback-wrong">✕</div>
+            <div class="img-container">
+                <!-- JPG -> PNG -->
+                <img src="images/2.png" alt="اِفْتَح الْكِتاب" onerror="this.style.display='none'">
+            </div>
+            <div class="drop-zone" data-answer="اِفْتَح الْكِتاب"></div>
+        </div>
+
+        <div class="matching-unit" id="unit-3">
+            <div class="feedback-icon feedback-correct">✓</div>
+            <div class="feedback-icon feedback-wrong">✕</div>
+            <div class="img-container">
+                <!-- JPG -> PNG -->
+                <img src="images/3.png" alt="أَغلِق الْحَقيبَة" onerror="this.style.display='none'">
+            </div>
+            <div class="drop-zone" data-answer="أَغلِق الْحَقيبَة"></div>
+        </div>
+
+        <div class="matching-unit" id="unit-4">
+            <div class="feedback-icon feedback-correct">✓</div>
+            <div class="feedback-icon feedback-wrong">✕</div>
+            <div class="img-container">
+                <!-- JPG -> PNG -->
+                <img src="images/4.png" alt="اِفْتَحي الْحَقيبَة" onerror="this.style.display='none'">
+            </div>
+            <div class="drop-zone" data-answer="اِفْتَحي الْحَقيبَة"></div>
+        </div>
+    </div>
+
+    <div class="word-bank" id="bank">
+        <div class="word-card" draggable="true">أَغْلِقي الْكِتاب</div>
+        <div class="word-card" draggable="true">اِفْتَح الْكِتاب</div>
+        <div class="word-card" draggable="true">أَغلِق الْحَقيبَة</div>
+        <div class="word-card" draggable="true">اِفْتَحي الْحَقيبَة</div>
+        <div class="word-card" draggable="true">اُكْتُب مِنْ فَضْلِكَ</div>
+    </div>
+</div>
+
+<div class="controls">
+    <button class="btn btn-reset" onclick="reset()">حاوِلْ مَرَّةً أُخْرى</button>
+    <button class="btn btn-show" onclick="showSolution()">أَظْهِر الحَلّ</button>
+    <button class="btn btn-check" onclick="check()">تَحَقَّق</button>
+</div>
+
+<script>
+    let dragged = null;
+    const cards = document.querySelectorAll('.word-card');
+    const zones = document.querySelectorAll('.drop-zone');
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', () => { dragged = card; card.style.opacity = '0.4'; });
+        card.addEventListener('dragend', () => { dragged = null; card.style.opacity = '1'; });
+
+        card.addEventListener('touchstart', () => {
+            cards.forEach(c => c.style.background = '#0ea5e9');
+            dragged = card;
+            card.style.background = '#f59e0b';
+        }, {passive:true});
+    });
+
+    zones.forEach(zone => {
+        zone.addEventListener('dragover', (e) => e.preventDefault());
+        zone.addEventListener('drop', () => handlePlacement(zone));
+        zone.addEventListener('click', () => { if(dragged) handlePlacement(zone); });
+    });
+
+    function handlePlacement(zone) {
+        if(!dragged) return;
+
+        const existing = zone.querySelector('.placed-word');
+        if(existing) {
+            const originalCard = Array.from(cards).find(c => c.innerText.trim() === existing.innerText.trim());
+            if(originalCard) originalCard.style.display = 'block';
+        }
+
+        zone.innerHTML = `<div class="placed-word">${dragged.innerText}</div>`;
+        dragged.style.display = 'none';
+        dragged = null;
+        cards.forEach(c => c.style.background = '#0ea5e9');
+    }
+
+    function check() {
+        zones.forEach(zone => {
+            const placed = zone.querySelector('.placed-word');
+            const unit = zone.closest('.matching-unit');
+            const correctIcon = unit.querySelector('.feedback-correct');
+            const wrongIcon = unit.querySelector('.feedback-wrong');
+
+            correctIcon.style.display = 'none';
+            wrongIcon.style.display = 'none';
+            unit.style.borderColor = '#f1f5f9';
+
+            if(placed) {
+                if(placed.innerText.trim() === zone.dataset.answer.trim()) {
+                    unit.style.borderColor = '#10b981';
+                    correctIcon.style.display = 'flex';
+                } else {
+                    unit.style.borderColor = '#f43f5e';
+                    wrongIcon.style.display = 'flex';
+                }
+            }
+        });
+    }
+
+    function reset() {
+        zones.forEach(zone => {
+            zone.innerHTML = '';
+            const unit = zone.closest('.matching-unit');
+            unit.style.borderColor = '#f1f5f9';
+            unit.querySelectorAll('.feedback-icon').forEach(i => i.style.display = 'none');
+        });
+        cards.forEach(card => card.style.display = 'block');
+        cards.forEach(c => c.style.background = '#0ea5e9');
+        dragged = null;
+    }
+
+    function showSolution() {
+        // Önce temizle (bozmadan)
+        reset();
+
+        zones.forEach(zone => {
+            const ans = zone.dataset.answer.trim();
+            const card = Array.from(cards).find(c => c.innerText.trim() === ans && c.style.display !== 'none');
+            if(card) {
+                dragged = card;
+                handlePlacement(zone);
+            }
+        });
+
+        // Çözümü gösterdikten sonra doğru/yanlış işaretlerini de göstermek istersen:
+        check();
+    }
+</script>
+
+
+<script id="oai-logic-patch">
+(function(){
+  if(window.__oaiPatched) return; window.__oaiPatched=true;
+  const state={checked:false,answered:false,listened:false};
+  const unitNo=2;
+  const isListenSelect=false;
+  function norm(s){return (s||'').replace(/\s+/g,' ').trim();}
+  function showFeedback(msg){
+    let el=document.getElementById('feedback')||document.querySelector('.feedback')||document.querySelector('[id*="feedback"]')||document.querySelector('.result')||document.querySelector('#resultBox p')||document.querySelector('#scoreBox');
+    if(el){
+      el.textContent=msg;
+      el.style.display='block';
+      el.style.visibility='visible';
+      return;
+    }
+    try{ alert(msg); }catch(e){}
+  }
+  function getButtonsByText(rx){
+    return Array.from(document.querySelectorAll('button,.btn')).filter(b=>rx.test(norm(b.textContent)));
+  }
+  const showBtns=getButtonsByText(/أَظْهِر|اظهر/);
+  const checkBtns=getButtonsByText(/تَحَق|تحق/);
+  const navBtns=getButtonsByText(/اَلسّابِق|السابق|اَلتّالي|التالي/);
+  const resetBtns=getButtonsByText(/إِعاد|اعاد|حاوِل|حاول/);
+  function syncShowDisabled(){
+    showBtns.forEach(btn=>{
+      if(checkBtns.length){
+        btn.disabled=!state.checked;
+      }else if(isListenSelect){
+        btn.disabled=!(state.listened&&state.answered);
+      }
+    });
+  }
+  function resetLocks(){
+    state.checked=false;
+    if(isListenSelect){ state.listened=false; state.answered=false; }
+    syncShowDisabled();
+  }
+  function markAnswered(){ state.answered=true; syncShowDisabled(); }
+  function markListened(){ state.listened=true; syncShowDisabled(); }
+  function markChecked(){ state.checked=true; syncShowDisabled(); }
+  document.querySelectorAll('audio').forEach(a=>{
+    a.addEventListener('play',markListened,true);
+    a.addEventListener('ended',markListened,true);
+  });
+  document.addEventListener('click', function(e){
+    const t=e.target.closest('.option,.choice,.word-card,.word-item,.drop-zone,.card,.answer,[data-answer],label,button');
+    if(!t) return;
+    if(showBtns.includes(t) || checkBtns.includes(t) || navBtns.includes(t) || resetBtns.includes(t)) return;
+    markAnswered();
+  }, true);
+  showBtns.forEach(btn=>{
+    const originalOnclick=btn.onclick;
+    btn.onclick=function(ev){
+      if(checkBtns.length && !state.checked){
+        if(ev){ev.preventDefault();ev.stopPropagation();}
+        showFeedback('أَجِبْ عَنِ السُّؤال أَوَّلًا.');
+        return false;
+      }
+      if(isListenSelect && !(state.listened && state.answered)){
+        if(ev){ev.preventDefault();ev.stopPropagation();}
+        showFeedback('أَجِبْ عَنِ السُّؤال أَوَّلًا.');
+        return false;
+      }
+      return originalOnclick ? originalOnclick.call(this,ev) : true;
+    };
+    btn.addEventListener('click', function(ev){
+      if((checkBtns.length && !state.checked) || (isListenSelect && !(state.listened&&state.answered))){
+        ev.preventDefault(); ev.stopImmediatePropagation(); ev.stopPropagation();
+      }
+    }, true);
+  });
+  checkBtns.forEach(btn=>{
+    btn.addEventListener('click', function(){ setTimeout(markChecked,0); }, true);
+  });
+  navBtns.forEach(btn=>btn.addEventListener('click', ()=>setTimeout(resetLocks,0), true));
+  resetBtns.forEach(btn=>btn.addEventListener('click', ()=>setTimeout(resetLocks,0), true));
+  syncShowDisabled();
+
+  // generic undo for drag-drop before check
+  document.addEventListener('click', function(e){
+    const placed=e.target.closest('.placed-word');
+    if(!placed || state.checked) return;
+    const txt=norm(placed.textContent);
+    const zone=placed.closest('.drop-zone');
+    if(zone){
+      zone.innerHTML='';
+      zone.classList.remove('filled');
+      zone.style.borderColor='';
+      zone.style.backgroundColor='';
+      zone.style.color='';
+    }
+    const bank=document.getElementById('bank') || document.getElementById('pool') || document.querySelector('.word-bank') || document.querySelector('.word-pool');
+    if(bank && txt){
+      let existing=Array.from(bank.querySelectorAll('.word-card,.word-item')).find(el=>norm(el.textContent)===txt && getComputedStyle(el).display==='none');
+      if(existing){ existing.style.display=''; existing.classList.remove('selected'); }
+      else{
+        const div=document.createElement('div');
+        div.className=(bank.className.includes('pool')?'word-item':'word-card');
+        div.textContent=txt;
+        if(div.className==='word-item'){
+          div.onclick=function(){
+            document.querySelectorAll('.word-item.selected').forEach(x=>x.classList.remove('selected'));
+            div.classList.add('selected');
+            window.selectedWord=div;
+          };
+        }else{
+          div.draggable=true;
+          div.addEventListener('dragstart',()=>{window.activeCard=div; div.style.opacity='0.4';});
+          div.addEventListener('dragend',()=>{window.activeCard=null; div.style.opacity='1';});
+          div.addEventListener('click',()=>{window.activeCard=div;});
+        }
+        bank.appendChild(div);
+      }
+    }
+  }, true);
+
+  // hide standalone speaker buttons using emoji/text
+  Array.from(document.querySelectorAll('button,.btn')).forEach(b=>{
+    const t=norm(b.textContent);
+    if(t==='🔊' || t==='🔈' || t==='🔉' || t==='🔁 صوت' || /استمع/.test(t)) b.style.display='none';
+  });
+
+  // start screen injection when absent
+  if(!document.getElementById('startScreen') && !document.getElementById('oaiStartScreen') && !document.querySelector('.start-screen') && !document.body.dataset.noStartPatch){
+    const instructionEl=document.querySelector('.instruction,#instruction,h1,h2,.title');
+    const start=document.createElement('div');
+    start.id='oaiStartScreen';
+    start.innerHTML='<div id="oaiStartCard"><div id="oaiStartText"></div><button id="oaiStartBtn">اِبْدَأْ</button></div>';
+    start.querySelector('#oaiStartText').textContent=instructionEl ? norm(instructionEl.textContent) : 'اِسْتَمِعْ ثُمَّ أَجِبْ.';
+    document.body.appendChild(start);
+    document.getElementById('oaiStartBtn').addEventListener('click', function(){
+      start.remove();
+      const audio=document.querySelector('audio');
+      if(audio){ try{audio.currentTime=0;}catch(e){} audio.play().catch(()=>{}); }
+      if(typeof playInstruction==='function'){ try{ playInstruction(); }catch(e){} }
+      if(typeof playInstrAudio==='function'){ try{ playInstrAudio(); }catch(e){} }
+      if(typeof playAudio==='function'){ try{ playAudio(); }catch(e){} }
+    });
+  }
+})();
+</script>
+
+
+<script id="final-sequence-fix">
+(function(){
+  try {
+    const pickBySelector = (sel) => sel ? document.querySelector(sel) : null;
+    const pickByText = (rxSrc) => {
+      if(!rxSrc) return null;
+      const rx = new RegExp(rxSrc);
+      return Array.from(document.querySelectorAll('button,.btn')).find(b => rx.test((b.textContent||'').replace(/\s+/g,' ').trim()));
+    };
+    const checkBtn = pickBySelector(".btn-check") || pickByText(null);
+    const showBtn  = pickBySelector(".btn-show")  || pickByText(null);
+    const resetBtn = pickBySelector(".btn-reset") || pickByText(null);
+    if(!checkBtn || !showBtn || !resetBtn) return;
+
+    const navBtns = [].map(sel => document.querySelector(sel)).filter(Boolean);
+    let phase = 'fill';
+
+    function setActive(btn, enabled){
+      if(!btn) return;
+      btn.hidden = false;
+      btn.style.display = '';
+      btn.disabled = !enabled;
+      btn.style.opacity = enabled ? '1' : '0.55';
+      btn.style.pointerEvents = enabled ? 'auto' : 'none';
+    }
+
+    function isComplete(){
+      try { return !!(Array.from(document.querySelectorAll('.drop-zone')).length>0 && Array.from(document.querySelectorAll('.drop-zone')).every(z => !!z.querySelector('.placed-word'))); } catch(e) { return false; }
+    }
+
+    function isWrong(){
+      try { return !!(Array.from(document.querySelectorAll('.drop-zone')).some(z => { const p=z.querySelector('.placed-word'); return !p || (p.textContent||'').trim() !== (z.dataset.answer||'').trim(); })); } catch(e) { return false; }
+    }
+
+    function syncFill(){
+      if(phase !== 'fill') return;
+      setActive(checkBtn, isComplete());
+      setActive(showBtn, false);
+      setActive(resetBtn, false);
+    }
+
+    function syncAfterCheck(){
+      const wrong = isWrong();
+      phase = wrong ? 'checkedWrong' : 'checkedCorrect';
+      setActive(checkBtn, false);
+      setActive(showBtn, wrong);
+      setActive(resetBtn, !wrong);
+    }
+
+    function syncAfterShow(){
+      phase = 'solved';
+      setActive(checkBtn, false);
+      setActive(showBtn, false);
+      setActive(resetBtn, true);
+    }
+
+    function syncAfterReset(){
+      phase = 'fill';
+      setTimeout(syncFill, 0);
+    }
+
+    function runCheck(){
+      if(checkBtn.disabled) return;
+      
+      if(typeof window["check"] === 'function') window["check"]();
+      setTimeout(syncAfterCheck, 0);
+    }
+
+    function runShow(){
+      if(showBtn.disabled) return;
+      
+      if(typeof window["showSolution"] === 'function') window["showSolution"]();
+      setTimeout(syncAfterShow, 0);
+    }
+
+    function runReset(){
+      if(resetBtn.disabled) return;
+      
+      if(typeof window["reset"] === 'function') window["reset"]();
+      syncAfterReset();
+    }
+
+    function hardBind(btn, fn){
+      ['click','touchend'].forEach(evt => {
+        btn.addEventListener(evt, function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          fn();
+          return false;
+        }, true);
+      });
+      btn.onclick = null;
+    }
+
+    hardBind(checkBtn, runCheck);
+    hardBind(showBtn, runShow);
+    hardBind(resetBtn, runReset);
+
+    navBtns.forEach(btn => {
+      ['click','touchend'].forEach(evt => btn.addEventListener(evt, () => {
+        phase = 'fill';
+        setTimeout(syncFill, 50);
+      }, true));
+    });
+
+    ['click','touchend','drop'].forEach(evt => document.addEventListener(evt, () => {
+      if(phase === 'fill') setTimeout(syncFill, 0);
+    }, true));
+
+    window.addEventListener('load', () => setTimeout(syncFill, 0));
+    setTimeout(syncFill, 0);
+  } catch(e) {
+    console.warn('final-sequence-fix error', e);
+  }
+})();
+</script>
+
+</body>
+</html>

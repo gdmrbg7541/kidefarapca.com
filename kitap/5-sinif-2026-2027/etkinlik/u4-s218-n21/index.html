@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة الجمع والطرح المصورة</title>
+<link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-color: #f8fafc;
+    --primary-color: #2563eb;
+    --accent-color: #e11d48;
+    --font-main: 'Scheherazade New', serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-main);
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.header {
+    background: white;
+    width: 100%;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+}
+
+.instruction-box {
+    background: #dbeafe;
+    border-right: 5px solid var(--primary-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    width: 85%;
+    max-width: 800px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.instruction-box p {
+    margin: 0;
+    font-size: 22px;
+    color: #1e40af;
+    font-weight: bold;
+}
+
+h1 { margin: 0; color: var(--primary-color); font-size: 32px; }
+h2 { margin: 15px 0 5px; color: #475569; font-size: 24px; text-decoration: underline; }
+
+.word-pool {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    padding: 15px;
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 800px;
+    min-height: 120px;
+    border: 3px dashed #cbd5e1;
+    margin-bottom: 15px;
+}
+
+.draggable-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+    background: #fff;
+    object-fit: cover;
+    border: 3px solid transparent;
+}
+
+.draggable-img.selected {
+    border-color: var(--accent-color);
+    transform: scale(1.05);
+}
+
+.equations-container {
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.equation-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: white;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.static-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+}
+
+.operator {
+    font-size: 36px;
+    font-weight: bold;
+    color: #64748b;
+}
+
+.drop-zone {
+    width: 80px;
+    height: 80px;
+    border: 3px dashed #94a3b8;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f1f5f9;
+    transition: all 0.3s;
+    cursor: pointer;
+    font-size: 32px;
+    color: #94a3b8;
+    position: relative;
+}
+
+.drop-zone.filled {
+    border-style: solid;
+    border-color: var(--primary-color);
+    background: white;
+}
+
+.drop-zone img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.feedback-mark {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 28px;
+    z-index: 10;
+    background: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    pointer-events: none;
+}
+
+.controls {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.btn {
+    padding: 8px 35px;
+    border: none;
+    border-radius: 12px;
+    font-family: var(--font-main);
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-check { background: #16a34a; color: white; }
+.btn-reset { background: #dc2626; color: white; }
+.btn-solution { background: #2563eb; color: white; }
+
+
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn{display:none !important;}
+#globalStartOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#fff7ed,#dbeafe);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px}
+#globalStartOverlay .startCard{width:min(900px,100%);background:white;border-radius:28px;padding:28px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+#globalStartOverlay .startInstruction{font-size:clamp(28px,4.5vw,40px);color:#0f4c81;font-weight:700;line-height:1.5;margin-bottom:18px}
+#globalStartOverlay .startBtn{background:#22c55e;color:white;border:none;border-radius:18px;padding:12px 28px;font-size:28px;font-family:inherit;font-weight:700;cursor:pointer}
+
+</style>
+
+<style id="final-fix-audio-memory">
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn,.speaker-icon,.sound-icon{display:none !important;visibility:hidden !important}
+#feedbackBox,#memoryFeedback,.feedbackBox,.feedback{min-height:42px}
+#feedbackBox.error,#memoryFeedback.error,.feedbackBox.error,.feedback.error{color:#dc2626 !important}
+.card.wrong,.memory-card.wrong,.memory-item.wrong,.tile.wrong,.flip-card.wrong{border:4px solid #dc2626 !important}
+.card.matched,.memory-card.matched,.memory-item.matched,.tile.matched,.flip-card.matched{border:4px solid #16a34a !important}
+</style>
+
+</head>
+<body>
+
+<div id="globalStartOverlay">
+  <div class="startCard">
+    <div id="globalStartInstruction" class="startInstruction"></div>
+    <button id="globalStartBtn" class="startBtn">اِبْدَأْ</button>
+  </div>
+</div>
+
+
+<div class="header">
+    <h1>هَيّا نَحْسِبْ!</h1>
+</div>
+
+<div class="instruction-box">
+    <p>اِخْتَر الرَّقْم وَأَكْمِل الْعَمَلِيَّةَ الْحِسابِيَّة.</p>
+</div>
+
+<!-- YÖNERGE SESİ GERİ GETİRİLDİ -->
+<audio id="instructionAudio" src="1.mp3"></audio>
+
+<div class="word-pool" id="wordPool"></div>
+
+<div class="equations-container">
+    <h2 style="text-decoration: none;">اَلْجَمْع (+)</h2>
+    <div class="equation-row">
+        <img src="images/7.jpg" class="static-img" title="2">
+        <span class="operator">+</span>
+        <img src="images/8.jpg" class="static-img" title="3">
+        <span class="operator">=</span>
+        <div class="drop-zone" data-correct-value="5">؟</div>
+    </div>
+
+    <div class="equation-row">
+        <img src="images/1.jpg" class="static-img" title="2">
+        <span class="operator">+</span>
+        <img src="images/10.jpg" class="static-img" title="2">
+        <span class="operator">=</span>
+        <div class="drop-zone" data-correct-value="4">؟</div>
+    </div>
+
+    <h2 style="text-decoration: none;">اَلطَّرْح (-)</h2>
+    <div class="equation-row">
+        <img src="images/11.jpg" class="static-img" title="4">
+        <span class="operator">-</span>
+        <img src="images/10.jpg" class="static-img" title="2">
+        <span class="operator">=</span>
+        <div class="drop-zone" data-correct-value="2">؟</div>
+    </div>
+
+    <div class="equation-row">
+        <img src="images/9.jpg" class="static-img" title="7">
+        <span class="operator">-</span>
+        <img src="images/12.jpg" class="static-img" title="4">
+        <span class="operator">=</span>
+        <div class="drop-zone" data-correct-value="3">؟</div>
+    </div>
+</div>
+
+<div id="feedbackText" style="min-height:36px;text-align:center;font-size:28px;font-weight:700;color:#dc2626;margin:8px 0;"></div>
+<div class="controls">
+    <button class="btn btn-reset" onclick="resetGame()">حاوِلْ مَرَّةً أُخْرى</button>
+    <button class="btn btn-check" onclick="checkAnswers()">تَحَقَّقْ</button>
+    <button class="btn btn-solution" onclick="showSolution()">أَظْهِر الْحَلّ</button>
+</div>
+
+<script>
+/* BURADAN SONRASI ORİJİNAL JS + SADECE showSolution EKLENDİ */
+
+let selectedImg = null;
+let hasChecked = false;
+
+const imageValues = {
+    1: 2, 2: 8, 3: 9, 4: 3, 5: 6, 6: 5, 
+    7: 2, 8: 3, 9: 7, 10: 2, 11: 4, 12: 4
+};
+
+const poolIds = [6, 12, 7, 4, 2, 3, 5, 9];
+
+function init() {
+    const pool = document.getElementById('wordPool');
+    pool.innerHTML = '';
+    selectedImg = null;
+
+    const currentPool = [...poolIds].sort(() => Math.random() - 0.5);
+
+    currentPool.forEach(id => {
+        const img = document.createElement('img');
+        img.src = `images/${id}.jpg`;
+        img.className = 'draggable-img';
+        img.dataset.id = id;
+        img.dataset.val = imageValues[id];
+        img.onclick = () => selectImg(img);
+        pool.appendChild(img);
+    });
+
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.innerHTML = '؟';
+        zone.classList.remove('filled');
+        zone.removeAttribute('data-current-val');
+        zone.removeAttribute('data-current-id');
+        zone.style.borderColor = "#94a3b8";
+        zone.onclick = () => dropImg(zone);
+        const oldMark = zone.querySelector('.feedback-mark');
+        if (oldMark) oldMark.remove();
+    });
+}
+
+function selectImg(el) {
+    document.querySelectorAll('.draggable-img').forEach(img => img.classList.remove('selected'));
+    if (selectedImg === el) selectedImg = null;
+    else {
+        selectedImg = el;
+        el.classList.add('selected');
+    }
+}
+
+function dropImg(zone) {
+    const pool = document.getElementById('wordPool');
+    if (!selectedImg) {
+        if(zone.dataset.currentId){
+            const img = document.createElement('img');
+            img.src = zone.querySelector('img').src;
+            img.className = 'draggable-img';
+            img.dataset.id = zone.dataset.currentId;
+            img.dataset.val = zone.dataset.currentVal;
+            img.onclick = () => selectImg(img);
+            pool.appendChild(img);
+            zone.innerHTML = '؟';
+            zone.classList.remove('filled');
+            zone.removeAttribute('data-current-val');
+            zone.removeAttribute('data-current-id');
+            zone.style.borderColor = "#94a3b8";
+            const oldMark = zone.querySelector('.feedback-mark');
+            if (oldMark) oldMark.remove();
+            hasChecked = false;
+            document.getElementById('feedbackText').textContent = '';
+        }
+        return;
+    }
+
+    if(zone.dataset.currentId){
+        const img = document.createElement('img');
+        img.src = zone.querySelector('img').src;
+        img.className = 'draggable-img';
+        img.dataset.id = zone.dataset.currentId;
+        img.dataset.val = zone.dataset.currentVal;
+        img.onclick = () => selectImg(img);
+        pool.appendChild(img);
+    }
+
+    const newImg = document.createElement('img');
+    newImg.src = selectedImg.src;
+    zone.innerHTML = '';
+    zone.appendChild(newImg);
+    zone.dataset.currentVal = selectedImg.dataset.val;
+    zone.dataset.currentId = selectedImg.dataset.id;
+    zone.classList.add('filled');
+    zone.style.borderColor = "#94a3b8";
+
+    selectedImg.remove();
+    selectedImg = null;
+    hasChecked = false;
+    document.getElementById('feedbackText').textContent = '';
+}
+
+function checkAnswers() {
+    hasChecked = true;
+    document.getElementById("feedbackText").textContent = "";
+
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        const oldMark = zone.querySelector('.feedback-mark');
+        if (oldMark) oldMark.remove();
+
+        if (zone.dataset.currentVal) {
+            const mark = document.createElement('span');
+            mark.className = 'feedback-mark';
+
+            if (parseInt(zone.dataset.currentVal) === parseInt(zone.dataset.correctValue)) {
+                zone.style.borderColor = "#16a34a";
+                mark.innerText = "✅";
+            } else {
+                zone.style.borderColor = "#dc2626";
+                mark.innerText = "❌";
+            }
+            zone.appendChild(mark);
+        }
+    });
+}
+
+/* SADECE EKLENEN FONKSİYON */
+function showSolution(){
+    if(!hasChecked){
+        document.getElementById('feedbackText').textContent = 'أَجِبْ عَنِ السُّؤال أَوَّلًا.';
+        return;
+    }
+    document.querySelectorAll('.drop-zone').forEach(zone=>{
+        const correctVal = parseInt(zone.dataset.correctValue);
+        for(let id in imageValues){
+            if(imageValues[id] === correctVal){
+                const img = document.createElement('img');
+                img.src = `images/${id}.jpg`;
+                zone.innerHTML='';
+                zone.appendChild(img);
+                zone.style.borderColor="#16a34a";
+                zone.dataset.currentVal = String(correctVal);
+                zone.dataset.currentId = String(id);
+                break;
+            }
+        }
+    });
+}
+
+function resetGame(){ hasChecked = false; document.getElementById("feedbackText").textContent=""; init(); }
+
+window.onload = init;
+
+/* ORİJİNAL SES SİSTEMİ GERİ EKLENDİ */
+window.addEventListener("load", function () {
+    const audio = document.getElementById("instructionAudio");
+
+    function playAudioOnce() {
+        audio.play().catch(()=>{});
+        document.removeEventListener("click", playAudioOnce);
+        document.removeEventListener("touchstart", playAudioOnce);
+    }
+
+    document.addEventListener("click", playAudioOnce);
+    document.addEventListener("touchstart", playAudioOnce);
+});
+</script>
+
+
+<script>
+(function(){
+  const overlay = document.getElementById('globalStartOverlay');
+  const startBtn = document.getElementById('globalStartBtn');
+  const target = document.querySelector('.instruction') || document.querySelector('.instruction-box p') || document.querySelector('h1');
+  const text = target ? (target.textContent || target.innerText || '').trim() : '';
+  document.getElementById('globalStartInstruction').textContent = text;
+  function playInstructionFromStart(){
+    try {
+      if (typeof playInstruction === 'function') { playInstruction(); return; }
+      if (typeof playInstrAudio === 'function') { playInstrAudio(); return; }
+      const a = document.getElementById('instructionAudio') || document.getElementById('instrAudio') || document.getElementById('mainAudio');
+      if (a) { a.currentTime = 0; a.play().catch(()=>{}); return; }
+    } catch(e){}
+  }
+  startBtn.addEventListener('click', function(){
+    overlay.style.display='none';
+    playInstructionFromStart();
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function q(sel){ return document.querySelector(sel); }
+  function qa(sel){ return Array.from(document.querySelectorAll(sel)); }
+  function getInstructionAudio(){
+    return q('#audio-inst') || q('#instructionAudio') || q('#introAudio') || q('audio[data-role="instruction"]') || qa('audio').find(a => (a.id||'').toLowerCase().includes('inst')) || qa('audio')[0] || null;
+  }
+  function hideAudioIcons(){
+    qa('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon,.speaker-icon,.sound-icon').forEach(el=>{
+      el.style.display='none';
+      el.style.visibility='hidden';
+      el.setAttribute('aria-hidden','true');
+    });
+  }
+  function playInstructionAudio(){
+    hideAudioIcons();
+    var a = getInstructionAudio();
+    if(a){
+      try{ a.currentTime = 0; }catch(e){}
+      try{ var p = a.play(); if(p && p.catch){ p.catch(function(){}); } }catch(e){}
+      return true;
+    }
+    var btn = q('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon');
+    if(btn){ try{ btn.click(); }catch(e){} return true; }
+    return false;
+  }
+  function initStartOverlay(){
+    var overlay = q('#globalStartOverlay');
+    var startBtn = q('#globalStartBtn');
+    var startInstr = q('#globalStartInstruction');
+    if(startInstr && !startInstr.textContent.trim()){
+      var src = q('.instruction, .instructions, h1, .question-text, .title');
+      if(src) startInstr.textContent = src.textContent.trim();
+    }
+    if(startBtn){
+      startBtn.addEventListener('click', function(){
+        setTimeout(playInstructionAudio, 50);
+        setTimeout(hideAudioIcons, 100);
+      }, true);
+    }
+    if(!overlay){
+      setTimeout(hideAudioIcons, 100);
+    }
+  }
+  function initMemoryFeedback(){
+    var fb = q('#feedbackBox') || q('#memoryFeedback') || q('.feedbackBox') || q('.feedback');
+    if(fb){
+      var apply = function(){
+        var t = (fb.textContent || '').trim();
+        fb.style.color = t.indexOf('خَطَأ') !== -1 ? '#dc2626' : '';
+      };
+      try{
+        new MutationObserver(apply).observe(fb,{childList:true,subtree:true,characterData:true});
+      }catch(e){}
+      apply();
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    hideAudioIcons();
+    initStartOverlay();
+    initMemoryFeedback();
+  });
+})();
+</script>
+
+
+<script id="final-sequence-fix">
+(function(){
+  try {
+    const pickBySelector = (sel) => sel ? document.querySelector(sel) : null;
+    const pickByText = (rxSrc) => {
+      if(!rxSrc) return null;
+      const rx = new RegExp(rxSrc);
+      return Array.from(document.querySelectorAll('button,.btn')).find(b => rx.test((b.textContent||'').replace(/\s+/g,' ').trim()));
+    };
+    const checkBtn = pickBySelector(null) || pickByText("تَحَق|تحق");
+    const showBtn  = pickBySelector(null)  || pickByText("أَظْهِر|اظهر");
+    const resetBtn = pickBySelector(null) || pickByText("حاوِل|حاول|إِعاد|اعاد");
+    if(!checkBtn || !showBtn || !resetBtn) return;
+
+    const navBtns = [].map(sel => document.querySelector(sel)).filter(Boolean);
+    let phase = 'fill';
+
+    function setActive(btn, enabled){
+      if(!btn) return;
+      btn.hidden = false;
+      btn.style.display = '';
+      btn.disabled = !enabled;
+      btn.style.opacity = enabled ? '1' : '0.55';
+      btn.style.pointerEvents = enabled ? 'auto' : 'none';
+    }
+
+    function isComplete(){
+      try { return !!(Array.from(document.querySelectorAll('.drop-zone')).length>0 && Array.from(document.querySelectorAll('.drop-zone')).every(z => !!z.dataset.currentVal)); } catch(e) { return false; }
+    }
+
+    function isWrong(){
+      try { return !!(Array.from(document.querySelectorAll('.drop-zone')).some(z => String(z.dataset.currentVal||'') !== String(z.dataset.correctValue||''))); } catch(e) { return false; }
+    }
+
+    function syncFill(){
+      if(phase !== 'fill') return;
+      setActive(checkBtn, isComplete());
+      setActive(showBtn, false);
+      setActive(resetBtn, false);
+    }
+
+    function syncAfterCheck(){
+      const wrong = isWrong();
+      phase = wrong ? 'checkedWrong' : 'checkedCorrect';
+      setActive(checkBtn, false);
+      setActive(showBtn, wrong);
+      setActive(resetBtn, !wrong);
+    }
+
+    function syncAfterShow(){
+      phase = 'solved';
+      setActive(checkBtn, false);
+      setActive(showBtn, false);
+      setActive(resetBtn, true);
+    }
+
+    function syncAfterReset(){
+      phase = 'fill';
+      setTimeout(syncFill, 0);
+    }
+
+    function runCheck(){
+      if(checkBtn.disabled) return;
+      
+      if(typeof window["checkAnswers"] === 'function') window["checkAnswers"]();
+      setTimeout(syncAfterCheck, 0);
+    }
+
+    function runShow(){
+      if(showBtn.disabled) return;
+      
+      if(typeof window["showSolution"] === 'function') window["showSolution"]();
+      setTimeout(syncAfterShow, 0);
+    }
+
+    function runReset(){
+      if(resetBtn.disabled) return;
+      
+      if(typeof window["resetGame"] === 'function') window["resetGame"]();
+      syncAfterReset();
+    }
+
+    function hardBind(btn, fn){
+      ['click','touchend'].forEach(evt => {
+        btn.addEventListener(evt, function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          fn();
+          return false;
+        }, true);
+      });
+      btn.onclick = null;
+    }
+
+    hardBind(checkBtn, runCheck);
+    hardBind(showBtn, runShow);
+    hardBind(resetBtn, runReset);
+
+    navBtns.forEach(btn => {
+      ['click','touchend'].forEach(evt => btn.addEventListener(evt, () => {
+        phase = 'fill';
+        setTimeout(syncFill, 50);
+      }, true));
+    });
+
+    ['click','touchend','drop'].forEach(evt => document.addEventListener(evt, () => {
+      if(phase === 'fill') setTimeout(syncFill, 0);
+    }, true));
+
+    window.addEventListener('load', () => setTimeout(syncFill, 0));
+    setTimeout(syncFill, 0);
+  } catch(e) {
+    console.warn('final-sequence-fix error', e);
+  }
+})();
+</script>
+
+</body>
+</html>

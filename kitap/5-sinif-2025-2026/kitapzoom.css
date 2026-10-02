@@ -1,0 +1,203 @@
+/* ============================================================================
+   ORTAK YAKINLAŞTIRMA BİÇİMLERİ                    kitapzoom.css  (02.10.2026)
+   ----------------------------------------------------------------------------
+   BÜTÜN FLIPBOOK'LARDA AYNI DOSYA. Tek kaynağı:
+       _kaynak/ortak-kitap/kitapzoom.css
+   Kitap klasöründeki kopyayı elle değiştirme — kopyalamada üstüne yazılır.
+   kitapzoom.js'in ihtiyaç duyduğu sınıflar burada; kitabın kendi CSS'inde
+   aynı sınıf varsa bu dosya SONRA yüklendiği için burası geçerli olur.
+   ========================================================================== */
+
+/* Kaydırma kabı. .serbest = anlık (parmakla sürüklerken), .yumusak = yön
+   tuşlarıyla ince kaydırma (yarım saniyelik yumuşak geçiş). */
+.kaydir { transition: transform .28s cubic-bezier(.2, .7, .3, 1); }
+.kaydir.serbest { transition: none; }
+.kaydir.yumusak { transition: transform .5s cubic-bezier(.25, .8, .35, 1); }
+
+/* Büyükken imleç: sürüklenebilir olduğu belli olsun. */
+.sahne.yakin { cursor: grab; }
+.sahne.yakin:active { cursor: grabbing; }
+
+/* Alttaki küçük bilgi şeridi — yalnız büyükken görünür. */
+.zoom-bilgi { opacity: 0; transition: opacity .2s; pointer-events: none; }
+.zoom-bilgi.gor { opacity: 1; }
+
+/* Büyütülmüş sayfada yazı keskin kalsın (bazı tarayıcılar bulanıklaştırıyor). */
+.kaydir .yuz img { image-rendering: auto; }
+
+/* ============================================================================
+   "NASIL KULLANILIR?" TANITIMI                                   (02.10.2026)
+   Pencereyi de üst çubuktaki "?" düğmesini de kitapzoom.js kuruyor; kitabın
+   HTML'ine hiçbir şey eklenmiyor. İlk açılışta bir kez kendiliğinden çıkar.
+   ========================================================================== */
+.kz-tanitim {
+  position: fixed; inset: 0; z-index: 9000;
+  display: grid; place-items: center; padding: 18px;
+  background: rgba(12, 18, 30, .62); backdrop-filter: blur(3px);
+  animation: kzGel .18s ease both;
+}
+.kz-tanitim[hidden] { display: none; }
+@keyframes kzGel { from { opacity: 0 } to { opacity: 1 } }
+
+.kz-tanitim-ic {
+  position: relative; width: min(880px, 100%); max-height: calc(100dvh - 36px);
+  overflow: auto; -webkit-overflow-scrolling: touch;
+  background: #fff; color: #16324F; border-radius: 20px;
+  padding: clamp(18px, 2.4vw, 28px) clamp(18px, 2.6vw, 32px) 0;
+  box-shadow: 0 24px 70px rgba(8, 16, 32, .45);
+  font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+  animation: kzCik .22s cubic-bezier(.2, .9, .3, 1) both;
+}
+@keyframes kzCik { from { opacity: 0; transform: translateY(14px) scale(.98) } to { opacity: 1; transform: none } }
+.kz-tanitim-ic h2 {
+  margin: 0 0 clamp(14px, 1.8vw, 20px); font-size: clamp(1.3rem, 2.2vw, 1.85rem);
+  font-weight: 800; color: #0E7C66; letter-spacing: .2px;
+}
+.kz-kapat {
+  position: absolute; top: 12px; right: 12px; width: 36px; height: 36px;
+  border: 0; border-radius: 11px; background: #F1F5F9; color: #6B7A8C;
+  font-size: 1rem; line-height: 1; cursor: pointer;
+}
+.kz-kapat:hover { background: #E2E8F0; color: #16324F; }
+
+/* --- altı bölge şeması --- */
+.kz-sema { margin: 0 0 clamp(14px, 1.7vw, 20px); }
+.kz-kitap {
+  position: relative; display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6px; width: min(400px, 100%); margin: 0 auto;
+  aspect-ratio: 1.62 / 1;
+  padding: 7px; border-radius: 12px;
+  background: #EEF3F8; border: 1.5px solid #D7E1EC;
+}
+.kz-sayfa {
+  display: grid; grid-template-rows: repeat(3, 1fr); gap: 5px;
+  background: #fff; border-radius: 8px; padding: 5px;
+  box-shadow: 0 1px 4px rgba(22, 50, 79, .12);
+}
+.kz-bolge {
+  display: grid; place-items: center; border-radius: 6px;
+  font-size: clamp(.95rem, 1.6vw, 1.25rem); font-weight: 800; color: #0E7C66;
+  background: #E8F6F2; border: 1.4px dashed #9FD4C6;
+}
+.kz-bolge-ilk {
+  position: relative; background: #16A085; border-style: solid;
+  border-color: #0E7C66; color: #fff;
+  /* numara dokunuş işaretinin altında kalmasın: sol üst köşeye çekilir */
+  display: block; padding: 5px 8px; font-size: .9rem; line-height: 1;
+  text-align: left;
+}
+/* dokunuş işareti 1 numaralı bölgenin içinde durur, nabız gibi atar */
+.kz-dokunus {
+  position: absolute; left: 50%; top: 50%; width: clamp(30px, 4.4vw, 42px);
+  transform: translate(-50%, -50%); color: #fff; pointer-events: none;
+  animation: kzNabiz 2.1s ease-in-out infinite;
+}
+.kz-dokunus svg { width: 100%; height: auto; display: block; }
+@keyframes kzNabiz {
+  0%, 100% { transform: translate(-50%, -50%) scale(.86); opacity: .75 }
+  50% { transform: translate(-50%, -50%) scale(1.08); opacity: 1 }
+}
+.kz-sema-not {
+  margin: 10px 0 0; text-align: center; line-height: 1.55;
+  font-size: clamp(.95rem, 1.35vw, 1.1rem); color: #44536A;
+}
+.kz-sema-not b { color: #0E7C66; }
+
+/* --- özellik listesi --- */
+.kz-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.kz-liste li {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 9px 12px; border-radius: 12px; background: #F7FAFC;
+  border: 1px solid #E3E9F0;
+}
+.kz-liste .kz-ik { flex: none; width: 26px; height: 26px; color: #16A085; margin-top: 2px; }
+.kz-liste b { display: block; font-size: clamp(.98rem, 1.35vw, 1.12rem); margin-bottom: 2px; }
+.kz-liste span { display: block; font-size: clamp(.88rem, 1.2vw, 1rem); line-height: 1.55; color: #5A6B80; }
+.kz-liste span b { display: inline; margin: 0; color: #16324F; font-weight: 800; }
+
+/* --- alt --- */
+/* Alt çubuk kartın dibine yapışık: içerik uzun olsa da "Anladım" hep
+   görünür kalır (küçük ekranlarda kart kayıyor). */
+.kz-alt {
+  position: sticky; bottom: 0; z-index: 2;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-top: clamp(14px, 1.8vw, 20px);
+  padding: 13px 0 clamp(14px, 2vw, 20px);
+  background: linear-gradient(180deg, rgba(255,255,255,.72), #fff 32%);
+}
+.kz-tamam {
+  font: inherit; font-size: clamp(1rem, 1.4vw, 1.15rem); font-weight: 800; cursor: pointer;
+  padding: 12px 30px; border: 0; border-radius: 12px; color: #fff;
+  background: linear-gradient(135deg, #1ABC9C, #16A085 55%, #0E7C66);
+  box-shadow: 0 7px 18px rgba(22, 160, 133, .32);
+}
+.kz-tamam:hover { transform: translateY(-1px); }
+.kz-alt small { font-size: .86rem; color: #7A8798; }
+.kz-alt small b { color: #0E7C66; }
+
+/* --- üst çubuktaki "?" düğmesi --- */
+/* .tus biçimini kitaptan alır; yalnız serbest duran hâli burada tanımlı. */
+.kz-yardim svg { width: 22px; height: 22px; }
+.kz-yardim-serbest {
+  position: fixed; right: 14px; bottom: 76px; z-index: 60;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: #fff; color: #0E7C66; border: 1.6px solid #16A085;
+  display: grid; place-items: center; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(18, 32, 64, .2);
+}
+
+@media (max-width: 560px) {
+  .kz-tanitim { padding: 10px; }
+  .kz-tanitim-ic { border-radius: 16px; }
+  .kz-liste li { padding: 10px; gap: 10px; }
+  .kz-alt { flex-direction: column; align-items: stretch; }
+  .kz-tamam { width: 100%; }
+  .kz-alt small { text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kz-tanitim, .kz-tanitim-ic, .kz-dokunus { animation: none !important; }
+}
+
+/* 1 numaralı bölgedeki örnek yazı — şema tek başına da anlaşılsın */
+.kz-ornek {
+  position: absolute; left: 0; right: 0; bottom: 7px;
+  font-style: normal; font-size: .72rem; font-weight: 700;
+  letter-spacing: .2px; text-align: center; color: rgba(255, 255, 255, .92);
+}
+@media (max-width: 420px) { .kz-ornek { display: none; } }
+
+/* Tek sayfa (telefon/dikey) uyarısı — şemanın altında */
+.kz-tekli-not {
+  margin-top: 8px; padding: 9px 12px; border-radius: 10px;
+  background: #FFF6E5; border: 1px solid #F3DCB2; color: #8A5A00;
+  font-size: clamp(.86rem, 1.2vw, .98rem);
+}
+.kz-tekli-not b { color: #6B4400; }
+.kz-tekli-not[hidden] { display: none; }
+
+/* ============================================================================
+   ÜST ÇUBUK TAŞMASI — BÜTÜN KİTAPLARDA ORTAK              (02.10.2026)
+   Marka yazısı ve "ÜNİTE" rozeti kısalamadığı için yer daralınca düğmelerin
+   ALTINA giriyordu. Ölçüldü (320–1500 px, 20'şer): 5. sınıfta 540–580,
+   6. sınıfta 320–700 px arası biniyordu; kitapsecici.js markaya ▾ ekleyince
+   biraz daha büyüdü. Yer daraldıkça sırayla kalkıyor:
+     ≤1020px  ünite rozeti (ders adı kalır, üç noktayla kısalır)
+     ≤960px   yakınlaştırma takımı (dokunma, çift dokunma ve klavye duruyor)
+     ≤760px   etiketli düğmelerin yazısı (simgeleri kalır)
+     ≤480px   çubuk sıkışır, marka taşarsa kırpılır
+   Kitabın kendi kuralları varsa bu dosya SONRA yüklendiği için burası geçerli.
+   ========================================================================== */
+.ust .konum { overflow: hidden; }
+@media (max-width: 1020px) { .ust .konum .u { display: none; } }
+@media (max-width: 960px)  { .ust .araclar .gizle-kucuk { display: none; } }
+@media (max-width: 760px) {
+  .ust .tus.etiketli span { display: none; }
+  .ust .tus.etiketli { width: 38px; padding: 0; justify-content: center; }
+}
+@media (max-width: 480px) {
+  .ust { gap: 6px; padding: 0 8px; }
+  .ust .araclar { gap: 3px; }
+  .ust .tus { width: 36px; }
+  .ust .marka { overflow: hidden; }
+  .ust .marka b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; }
+}

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>لعبة البطاقات</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;}
+body{
+margin:0;
+font-family:'Scheherazade New', serif;
+background:linear-gradient(135deg,#4e73df,#1cc88a);
+display:flex;
+flex-direction:column;
+align-items:center;
+min-height:100svh;
+min-height:100dvh;
+overflow-x:hidden;
+}
+
+#game-container{
+width:100%;
+max-width:900px;
+padding:15px;
+text-align:center;
+}
+
+.header-row{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:15px;
+margin-bottom:10px;
+}
+
+h1{
+font-size:30px;
+color:white;
+margin:0;
+}
+
+.instrAudioBtn{
+background:white;
+border:none;
+border-radius:50%;
+width:45px;
+height:45px;
+font-size:22px;
+cursor:pointer;
+}
+
+#timerBox{
+font-size:28px;
+color:white;
+background:rgba(0,0,0,0.35);
+padding:10px 25px;
+border-radius:18px;
+display:inline-block;
+margin-bottom:10px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:10px;
+}
+
+.card{
+background:white;
+border-radius:15px;
+height:100px;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,0.25);
+overflow:hidden;
+}
+
+.card img{
+max-width:100%;
+max-height:100%;
+object-fit:contain;
+display:none;
+}
+
+.card.flipped img{display:block;}
+#feedbackBox{margin-top:10px;font-size:28px;font-weight:700;min-height:42px;}
+.card.matched{border:4px solid #16a34a;}
+.card.wrong{border:4px solid #dc2626;}
+.card.matched img,.card.flipped img{display:block;}
+
+.reset-btn{
+padding:12px 35px;
+font-size:26px;
+border:none;
+border-radius:14px;
+cursor:pointer;
+background:#f6c23e;
+margin-top:20px;
+font-weight:bold;
+}
+
+.reset-btn:disabled{
+opacity:0.5;
+cursor:not-allowed;
+}
+
+#resultOverlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+visibility:hidden;
+}
+
+#resultBox{
+background:white;
+padding:40px;
+border-radius:25px;
+text-align:center;
+animation:pop .4s ease;
+}
+
+#resultBox h2{
+font-size:48px;
+color:#1cc88a;
+margin-bottom:15px;
+}
+
+#resultBox p{
+font-size:36px;
+}
+
+@keyframes pop{
+0%{transform:scale(.5);opacity:0;}
+100%{transform:scale(1);opacity:1;}
+}
+
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn{display:none !important;}
+#globalStartOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#fff7ed,#dbeafe);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px}
+#globalStartOverlay .startCard{width:min(900px,100%);background:white;border-radius:28px;padding:28px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+#globalStartOverlay .startInstruction{font-size:clamp(28px,4.5vw,40px);color:#0f4c81;font-weight:700;line-height:1.5;margin-bottom:18px}
+#globalStartOverlay .startBtn{background:#22c55e;color:white;border:none;border-radius:18px;padding:12px 28px;font-size:28px;font-family:inherit;font-weight:700;cursor:pointer}
+
+</style>
+
+<style id="final-fix-audio-memory">
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn,.speaker-icon,.sound-icon{display:none !important;visibility:hidden !important}
+#feedbackBox,#memoryFeedback,.feedbackBox,.feedback{min-height:42px}
+#feedbackBox.error,#memoryFeedback.error,.feedbackBox.error,.feedback.error{color:#dc2626 !important}
+.card.wrong,.memory-card.wrong,.memory-item.wrong,.tile.wrong,.flip-card.wrong{border:4px solid #dc2626 !important}
+.card.matched,.memory-card.matched,.memory-item.matched,.tile.matched,.flip-card.matched{border:4px solid #16a34a !important}
+</style>
+
+
+<style id="final-memory-feedback-hide">
+#feedbackBox,#memoryFeedback,#oai-bottom-feedback,#feedback,.feedback,.feedbackBox,.feedback-message,.feedback-box,.message-box,.result-message{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  min-height:0 !important;
+  height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:none !important;
+}
+</style>
+<script id="final-memory-feedback-hide-script">
+(function(){
+  function clearMemFeedback(){
+    ['feedbackBox','memoryFeedback','oai-bottom-feedback','feedback'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){ el.textContent=''; el.style.display='none'; }
+    });
+    document.querySelectorAll('.feedback,.feedbackBox,.feedback-message,.feedback-box,.message-box,.result-message').forEach(el=>{
+      el.textContent=''; el.style.display='none';
+    });
+  }
+  document.addEventListener('click', ()=>setTimeout(clearMemFeedback,0), true);
+  document.addEventListener('touchend', ()=>setTimeout(clearMemFeedback,0), true);
+  window.addEventListener('load', clearMemFeedback);
+  setTimeout(clearMemFeedback,0);
+})();
+</script>
+
+</head>
+
+<body>
+
+<div id="globalStartOverlay">
+  <div class="startCard">
+    <div id="globalStartInstruction" class="startInstruction"></div>
+    <button id="globalStartBtn" class="startBtn">اِبْدَأْ</button>
+  </div>
+</div>
+
+
+<div id="game-container">
+
+<div class="header-row">
+<h1>اِقْلِبْ وَطَابِق الْبِطاقاتِ الْمُتَماثِلَة صَوْتًا وَصُورَةً.</h1>
+</div>
+
+<audio id="instrAudio" src="audio1.mp3"></audio>
+
+<div id="timerBox">
+اَلْوَقْت: <span id="timer">٠٠:٠٠</span>
+</div>
+
+<div class="grid" id="grid"></div>
+<div id="feedbackBox"></div>
+
+</div>
+
+<div id="resultOverlay">
+<div id="resultBox">
+<h2>أَحْسَنْت🎉</h2>
+<p id="finalTime"></p>
+<button id="resetBtn"
+class="reset-btn"
+onclick="resetGame()"
+disabled>
+حاوِلْ مَرَّةً أُخْرى
+</button>
+</div>
+</div>
+
+<script>
+const instrAudio=document.getElementById("instrAudio");
+function playInstrAudio(){
+instrAudio.currentTime=0;
+instrAudio.play().catch(()=>{});
+}
+
+const numbers=[1,2,3,4,5,6];
+let cardsArray=[...numbers,...numbers];
+cardsArray.sort(()=>0.5-Math.random());
+
+const grid=document.getElementById("grid");
+
+let firstCard=null;
+let secondCard=null;
+let lockBoard=false;
+let matches=0;
+let seconds=0;
+let timerInterval=null;
+let gameStarted=false;
+
+function toArabicNumbers(num){
+return num.toString().replace(/[0-9]/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+}
+
+function startTimer(){
+if(timerInterval) return;
+timerInterval=setInterval(()=>{
+seconds++;
+let mins=Math.floor(seconds/60);
+let secs=seconds%60;
+let formatted=(mins<10?"0":"")+mins+":"+(secs<10?"0":"")+secs;
+document.getElementById("timer").textContent=
+toArabicNumbers(formatted);
+},1000);
+}
+
+function stopTimer(){
+clearInterval(timerInterval);
+}
+
+cardsArray.forEach(num=>{
+const card=document.createElement("div");
+card.classList.add("card");
+card.dataset.id=num;
+
+const img=document.createElement("img");
+img.src="images/"+num+".jpg";
+card.appendChild(img);
+
+const audio=new Audio("audios/"+num+".m4a");
+
+card.addEventListener("click",()=>{
+if(lockBoard) return;
+if(card===firstCard) return;
+if(card.classList.contains("flipped") || card.classList.contains("matched")) return;
+
+if(!gameStarted){
+startTimer();
+gameStarted=true;
+}
+
+card.classList.add("flipped");
+audio.currentTime=0;
+audio.play().catch(()=>{});
+
+if(!firstCard){
+firstCard=card;
+return;
+}
+
+secondCard=card;
+lockBoard=true;
+
+if(firstCard.dataset.id===secondCard.dataset.id){
+matches++;
+firstCard.classList.add("matched");
+secondCard.classList.add("matched");
+document.getElementById("feedbackBox").textContent = "";
+resetTurn();
+
+if(matches===6){
+stopTimer();
+setTimeout(()=>{
+document.getElementById("finalTime").textContent=
+"اَلْوَقْت: "+
+document.getElementById("timer").textContent;
+document.getElementById("resultOverlay").style.visibility="visible";
+setTimeout(()=>{
+document.getElementById("resetBtn").disabled=false;
+},600);
+},400);
+}
+}else{
+firstCard.classList.add("wrong");
+secondCard.classList.add("wrong");
+document.getElementById("feedbackBox").textContent = "خَطَأ.";
+setTimeout(()=>{
+firstCard.classList.remove("flipped","wrong");
+secondCard.classList.remove("flipped","wrong");
+document.getElementById("feedbackBox").textContent = "";
+resetTurn();
+},800);
+}
+});
+
+grid.appendChild(card);
+});
+
+function resetTurn(){
+firstCard=null;
+secondCard=null;
+lockBoard=false;
+}
+
+function resetGame(){
+location.reload();
+}
+</script>
+
+
+<script>
+(function(){
+  const overlay = document.getElementById('globalStartOverlay');
+  const startBtn = document.getElementById('globalStartBtn');
+  const target = document.querySelector('.instruction') || document.querySelector('.instruction-box p') || document.querySelector('h1');
+  const text = target ? (target.textContent || target.innerText || '').trim() : '';
+  document.getElementById('globalStartInstruction').textContent = text;
+  function playInstructionFromStart(){
+    try {
+      if (typeof playInstruction === 'function') { playInstruction(); return; }
+      if (typeof playInstrAudio === 'function') { playInstrAudio(); return; }
+      const a = document.getElementById('instructionAudio') || document.getElementById('instrAudio') || document.getElementById('mainAudio');
+      if (a) { a.currentTime = 0; a.play().catch(()=>{}); return; }
+    } catch(e){}
+  }
+  startBtn.addEventListener('click', function(){
+    overlay.style.display='none';
+    playInstructionFromStart();
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function q(sel){ return document.querySelector(sel); }
+  function qa(sel){ return Array.from(document.querySelectorAll(sel)); }
+  function getInstructionAudio(){
+    return q('#audio-inst') || q('#instructionAudio') || q('#introAudio') || q('audio[data-role="instruction"]') || qa('audio').find(a => (a.id||'').toLowerCase().includes('inst')) || qa('audio')[0] || null;
+  }
+  function hideAudioIcons(){
+    qa('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon,.speaker-icon,.sound-icon').forEach(el=>{
+      el.style.display='none';
+      el.style.visibility='hidden';
+      el.setAttribute('aria-hidden','true');
+    });
+  }
+  function playInstructionAudio(){
+    hideAudioIcons();
+    var a = getInstructionAudio();
+    if(a){
+      try{ a.currentTime = 0; }catch(e){}
+      try{ var p = a.play(); if(p && p.catch){ p.catch(function(){}); } }catch(e){}
+      return true;
+    }
+    var btn = q('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon');
+    if(btn){ try{ btn.click(); }catch(e){} return true; }
+    return false;
+  }
+  function initStartOverlay(){
+    var overlay = q('#globalStartOverlay');
+    var startBtn = q('#globalStartBtn');
+    var startInstr = q('#globalStartInstruction');
+    if(startInstr && !startInstr.textContent.trim()){
+      var src = q('.instruction, .instructions, h1, .question-text, .title');
+      if(src) startInstr.textContent = src.textContent.trim();
+    }
+    if(startBtn){
+      startBtn.addEventListener('click', function(){
+        setTimeout(playInstructionAudio, 50);
+        setTimeout(hideAudioIcons, 100);
+      }, true);
+    }
+    if(!overlay){
+      setTimeout(hideAudioIcons, 100);
+    }
+  }
+  function initMemoryFeedback(){
+    var fb = q('#feedbackBox') || q('#memoryFeedback') || q('.feedbackBox') || q('.feedback');
+    if(fb){
+      var apply = function(){
+        var t = (fb.textContent || '').trim();
+        fb.style.color = t.indexOf('خَطَأ') !== -1 ? '#dc2626' : '';
+      };
+      try{
+        new MutationObserver(apply).observe(fb,{childList:true,subtree:true,characterData:true});
+      }catch(e){}
+      apply();
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    hideAudioIcons();
+    initStartOverlay();
+    initMemoryFeedback();
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>لُعْبَةُ الصَّحيحِ وَالْخَطأ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            --primary-color: #0369a1;
+            --accent-color: #0ea5e9;
+            --font-main: 'Scheherazade New', serif;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-main);
+            background: var(--bg-gradient);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100svh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            width: 100%;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .instruction {
+            font-size: clamp(24px, 5vw, 34px);
+            color: var(--primary-color);
+            margin: 0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .audio-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(3, 105, 161, 0.3);
+        }
+
+        .game-container {
+            width: 95%;
+            max-width: 500px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .match-card {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 3px solid #bae6fd;
+            position: relative;
+        }
+
+        .progress-bar {
+            font-size: 22px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .image-box {
+            width: 100%;
+            height: 220px;
+            background: #f8fafc;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .error-msg {
+            color: #dc2626;
+            font-size: 20px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 34px;
+            color: #0c4a6e;
+            font-weight: bold;
+            margin: 5px 0;
+            min-height: 50px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .game-btn {
+            font-family: var(--font-main);
+            flex: 1;
+            padding: 12px;
+            font-size: 26px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+
+        .btn-true { background-color: #059669; }
+        .btn-false { background-color: #dc2626; }
+        .game-btn:active { transform: scale(0.95); }
+
+        .feedback-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 120px;
+            z-index: 100;
+            display: none;
+            pointer-events: none;
+            text-shadow: 0 0 20px rgba(255,255,255,0.8);
+        }
+
+        .end-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .retry-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 30px;
+            border-radius: 10px;
+            font-size: 24px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+        }
+    
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn{display:none !important;}
+#globalStartOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#fff7ed,#dbeafe);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px}
+#globalStartOverlay .startCard{width:min(900px,100%);background:white;border-radius:28px;padding:28px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+#globalStartOverlay .startInstruction{font-size:clamp(28px,4.5vw,40px);color:#0f4c81;font-weight:700;line-height:1.5;margin-bottom:18px}
+#globalStartOverlay .startBtn{background:#22c55e;color:white;border:none;border-radius:18px;padding:12px 28px;font-size:28px;font-family:inherit;font-weight:700;cursor:pointer}
+
+</style>
+
+<style id="final-fix-audio-memory">
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn,.speaker-icon,.sound-icon{display:none !important;visibility:hidden !important}
+#feedbackBox,#memoryFeedback,.feedbackBox,.feedback{min-height:42px}
+#feedbackBox.error,#memoryFeedback.error,.feedbackBox.error,.feedback.error{color:#dc2626 !important}
+.card.wrong,.memory-card.wrong,.memory-item.wrong,.tile.wrong,.flip-card.wrong{border:4px solid #dc2626 !important}
+.card.matched,.memory-card.matched,.memory-item.matched,.tile.matched,.flip-card.matched{border:4px solid #16a34a !important}
+</style>
+
+</head>
+<body>
+
+<div id="globalStartOverlay">
+  <div class="startCard">
+    <div id="globalStartInstruction" class="startInstruction"></div>
+    <button id="globalStartBtn" class="startBtn">اِبْدَأْ</button>
+  </div>
+</div>
+
+
+    <div class="header">
+        <div class="instruction"> اُنْظُرْ إِلى الصّورَة ثُمَّ أَجِبْ بِـ (صَحيح) أَوْ (خَطَأ).</div>
+        <button class="audio-btn" onclick="playInstruction()">🔊</button>
+
+        <!-- SADECE BURASI DEĞİŞTİ -->
+        <audio id="instructionAudio" src="1.mp3"></audio>
+    </div>
+
+    <div class="game-container">
+        <div id="game-card" class="match-card">
+            <div class="progress-bar" id="progress"></div>
+            <div class="image-box">
+                <img id="q-img" src="" alt="Resim" onerror="handleImageError(this)">
+            </div>
+            <div class="question-text" id="q-text"></div>
+            <div class="btn-group">
+                <button class="game-btn btn-true" onclick="handleAnswer(true)">صَحيح</button>
+                <button class="game-btn btn-false" onclick="handleAnswer(false)">خَطأ</button>
+            </div>
+        </div>
+
+        <div id="end-screen" class="match-card end-screen">
+            <div class="question-text">أَحْسَنْت! اِنْتَهى الْاِخْتِبار.</div>
+            <div id="score-text" style="font-size: 24px; color: var(--primary-color);"></div>
+            <button class="retry-btn" onclick="resetGame()">حاوِلْ مَرَّةً أُخْرى</button>
+        </div>
+    </div>
+
+    <div id="feedback" class="feedback-overlay"></div>
+
+    <script>
+        const dataset = [
+            { text: "اَلْأَريكَة وَسِخَة.", img: "1.jpeg", correct: true },
+            { text: "اَلْبَيْت جَميل.", img: "2.jpeg", correct: true },
+            { text: "اَلثَّلّاجَة وَسِخَة.", img: "6.jpg", correct: false },
+            { text: "اَلسَّجّادَة قَديمَة.", img: "4.png", correct: true },
+            { text: "اَلْبَيْت وَسِخ.", img: "2.jpeg", correct: false },
+            { text: "اَلْأَريكَة نَظيفَة.", img: "1.jpeg", correct: false }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+
+        function handleImageError(img) {
+            const parent = img.parentElement;
+            parent.innerHTML = `<div class="error-msg">⚠️ لَمْ يَتِمَّ الْعُثورُ عَلى الصّورَةِ<br><small>(${img.getAttribute('src')})</small></div>`;
+        }
+
+        function playInstruction() {
+            const audio = document.getElementById('instructionAudio');
+            audio.play().catch(() => console.log("Ses dosyası henüz hazır değil."));
+        }
+
+        function loadQuestion() {
+            if (currentIndex >= dataset.length) {
+                showEndScreen();
+                return;
+            }
+
+            const item = dataset[currentIndex];
+            const imgEl = document.getElementById('q-img');
+
+            if (!imgEl) {
+                document.querySelector('.image-box').innerHTML = `<img id="q-img" src="" alt="Resim" onerror="handleImageError(this)">`;
+            }
+
+            document.getElementById('q-img').src = item.img;
+            document.getElementById('q-text').innerText = item.text;
+            document.getElementById('progress').innerText =
+                `${convertToArabic(currentIndex + 1)} / ${convertToArabic(dataset.length)}`;
+        }
+
+        function convertToArabic(n) {
+            return String(n).replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+        }
+
+        function handleAnswer(userChoice) {
+            const isCorrect = userChoice === dataset[currentIndex].correct;
+            if (isCorrect) score++;
+
+            showFeedback(isCorrect);
+
+            setTimeout(() => {
+                currentIndex++;
+                loadQuestion();
+            }, 800);
+        }
+
+        function showFeedback(isCorrect) {
+            const fb = document.getElementById('feedback');
+            fb.innerText = isCorrect ? "✅" : "❌";
+            fb.style.display = 'block';
+            setTimeout(() => {
+                fb.style.display = 'none';
+            }, 700);
+        }
+
+        function showEndScreen() {
+            document.getElementById('game-card').style.display = 'none';
+            document.getElementById('end-screen').style.display = 'block';
+            document.getElementById('score-text').innerText =
+                `اَلنَّتيجَة: ${convertToArabic(score)} / ${convertToArabic(dataset.length)}`;
+        }
+
+        function resetGame() {
+            currentIndex = 0;
+            score = 0;
+            document.getElementById('game-card').style.display = 'flex';
+            document.getElementById('end-screen').style.display = 'none';
+            loadQuestion();
+        }
+
+        window.onload = loadQuestion;
+    </script>
+
+<script>
+(function(){
+  const overlay = document.getElementById('globalStartOverlay');
+  const startBtn = document.getElementById('globalStartBtn');
+  const target = document.querySelector('.instruction') || document.querySelector('.instruction-box p') || document.querySelector('h1');
+  const text = target ? (target.textContent || target.innerText || '').trim() : '';
+  document.getElementById('globalStartInstruction').textContent = text;
+  function playInstructionFromStart(){
+    try {
+      if (typeof playInstruction === 'function') { playInstruction(); return; }
+      if (typeof playInstrAudio === 'function') { playInstrAudio(); return; }
+      const a = document.getElementById('instructionAudio') || document.getElementById('instrAudio') || document.getElementById('mainAudio');
+      if (a) { a.currentTime = 0; a.play().catch(()=>{}); return; }
+    } catch(e){}
+  }
+  startBtn.addEventListener('click', function(){
+    overlay.style.display='none';
+    playInstructionFromStart();
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function q(sel){ return document.querySelector(sel); }
+  function qa(sel){ return Array.from(document.querySelectorAll(sel)); }
+  function getInstructionAudio(){
+    return q('#audio-inst') || q('#instructionAudio') || q('#introAudio') || q('audio[data-role="instruction"]') || qa('audio').find(a => (a.id||'').toLowerCase().includes('inst')) || qa('audio')[0] || null;
+  }
+  function hideAudioIcons(){
+    qa('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon,.speaker-icon,.sound-icon').forEach(el=>{
+      el.style.display='none';
+      el.style.visibility='hidden';
+      el.setAttribute('aria-hidden','true');
+    });
+  }
+  function playInstructionAudio(){
+    hideAudioIcons();
+    var a = getInstructionAudio();
+    if(a){
+      try{ a.currentTime = 0; }catch(e){}
+      try{ var p = a.play(); if(p && p.catch){ p.catch(function(){}); } }catch(e){}
+      return true;
+    }
+    var btn = q('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon');
+    if(btn){ try{ btn.click(); }catch(e){} return true; }
+    return false;
+  }
+  function initStartOverlay(){
+    var overlay = q('#globalStartOverlay');
+    var startBtn = q('#globalStartBtn');
+    var startInstr = q('#globalStartInstruction');
+    if(startInstr && !startInstr.textContent.trim()){
+      var src = q('.instruction, .instructions, h1, .question-text, .title');
+      if(src) startInstr.textContent = src.textContent.trim();
+    }
+    if(startBtn){
+      startBtn.addEventListener('click', function(){
+        setTimeout(playInstructionAudio, 50);
+        setTimeout(hideAudioIcons, 100);
+      }, true);
+    }
+    if(!overlay){
+      setTimeout(hideAudioIcons, 100);
+    }
+  }
+  function initMemoryFeedback(){
+    var fb = q('#feedbackBox') || q('#memoryFeedback') || q('.feedbackBox') || q('.feedback');
+    if(fb){
+      var apply = function(){
+        var t = (fb.textContent || '').trim();
+        fb.style.color = t.indexOf('خَطَأ') !== -1 ? '#dc2626' : '';
+      };
+      try{
+        new MutationObserver(apply).observe(fb,{childList:true,subtree:true,characterData:true});
+      }catch(e){}
+      apply();
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    hideAudioIcons();
+    initStartOverlay();
+    initMemoryFeedback();
+  });
+})();
+</script>
+
+</body>
+</html>

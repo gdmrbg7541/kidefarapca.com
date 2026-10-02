@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>سحب وإفلات (13 صفحة)</title>
+  <style>
+    *{box-sizing:border-box;}
+    body{
+      margin:0; font-family:"Scheherazade New","Amiri","Arial",sans-serif;
+      overflow-x:hidden; overflow-y:hidden;
+      background: linear-gradient(135deg, #d7f0ff 0%, #a9ddff 40%, #e6f7ff 100%);
+      min-height:100svh; min-height:100dvh;
+      display:flex; align-items:center; justify-content:center;
+      padding:12px;
+    }
+    #app{width:100%; max-width:980px;}
+    .card{
+      width:100%;
+      border-radius:22px;
+      background: rgba(255,255,255,.88);
+      box-shadow: 0 10px 30px rgba(0,0,0,.12);
+      overflow-x:hidden; overflow-y:hidden;
+    }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:8px 10px;
+      gap:10px;
+      background: rgba(255,255,255,.55);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(0,0,0,.06);
+    }
+    .title{
+      font-size:18px; font-weight:700;
+      color:#0b2a3a;
+      white-space:nowrap;
+    }
+    .inst{font-weight:500; font-size:clamp(22px, 2.8vw, 30px); line-height:1.16; text-align:center; width:100%;}
+    \.stageWrap{
+      padding:6px;
+    }
+    /* responsive stage without 100vh */
+    .stage{
+      position:relative;
+      width:100%;
+      aspect-ratio: 16 / 9;
+      border-radius:18px;
+      background: rgba(255,255,255,.6);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+      overflow-x:hidden; overflow-y:hidden;
+      touch-action: none;
+    }
+    .staticImg, .dragImg{
+      position:absolute;
+      user-select:none;
+      -webkit-user-drag:none;
+      max-width:none;
+      object-fit:contain;
+      display:block;
+      transform: scale(0.80);
+      transform-origin: top left;
+    }
+    .dragImg.placed{
+      transform:none;
+    }
+
+    .dragImg.ans-correct{
+      outline: 4px solid rgba(40,167,69,.9);
+      border-radius: 18px;
+    }
+    .dragImg.ans-wrong{
+      outline: 4px solid rgba(220,53,69,.9);
+      border-radius: 18px;
+    }
+
+    .dropZone{
+      position:absolute;
+      border-radius:16px;
+      border:3px dashed rgba(11,42,58,.35);
+      background: #ffffff;
+      overflow-x:hidden; overflow-y:hidden;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+      outline: 14px solid #ffffff; /* يغطي رموز + في الخلفية */
+      outline-offset: 0px;
+    }
+    .dropZone.correct{
+      border-style:solid;
+      border-color: rgba(40,167,69,.55);
+      background: rgba(40,167,69,.14);
+    }
+    .dropZone.wrong{
+      border-style:solid;
+      border-color: rgba(220,53,69,.55);
+      background: rgba(220,53,69,.14);
+    }
+
+    .dropZone::before{
+      content:"";
+      display:none;
+    }
+    .dropZone.occupied::before{ display:none; }
+    .controls{
+      display:flex; flex-wrap:wrap;
+      gap:10px;
+      padding:12px 12px calc(12px + env(safe-area-inset-bottom));
+      justify-content:space-between;
+      border-top: 1px solid rgba(0,0,0,.06);
+      background: rgba(255,255,255,.55);
+      backdrop-filter: blur(6px);
+    }
+    .btn{
+      border:0;
+      border-radius:16px;
+      padding:12px 16px;
+      font-size:18px;
+      font-weight:700;
+      color:#0b2a3a;
+      cursor:pointer;
+      min-height:44px;
+      flex:1;
+      white-space:nowrap;
+    }
+    .btnRow{display:flex; gap:10px; flex: 2;}
+    .navRow{display:flex; gap:10px; flex: 1; justify-content:flex-end;}
+    .btn.small{flex:0; min-width:120px;}
+    .badge{
+      padding:6px 10px; border-radius:999px;
+      background: rgba(11,42,58,.08);
+      font-weight:800; font-size:14px;
+      align-self:center;
+      white-space:nowrap;
+    }
+    /* small screens: allow vertical scroll on app only */
+    @media (max-width:360px){
+      body{align-items:flex-start;}
+
+    /* ---- PATCH: mobile scroll support (single scroller) ---- */
+    @media (max-width:480px), (max-height:620px), (orientation:landscape) and (max-height:500px){
+      body{overflow-y:auto; -webkit-overflow-scrolling:touch;}
+      #app{padding-bottom: calc(88px + env(safe-area-inset-bottom));}
+    }
+      #app{max-width:100%;}
+      .stageWrap{padding:10px;}
+    }
+  
+    /* ---- PATCH: hide progress/title/audio icon, lighten text, better fit ---- */
+    .title{display:none !important;}
+    .badge{display:none !important;}
+    .iconbtn{display:none !important;}
+    .inst{font-weight:500; font-size:clamp(22px, 2.8vw, 30px); line-height:1.16; text-align:center; width:100%;}
+    .stage{aspect-ratio: unset !important; width:100%;}
+    .feedback{margin:0 12px 12px; text-align:center; font-size: clamp(22px, 2.8vw, 30px); font-weight:600; min-height: 56px;}
+    .feedback.ok{color:#128a3a;}
+    .feedback.no{color:#c21f2d;}
+    
+  
+/* Start overlay (blur background) */
+.startOverlay{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  padding:18px;
+  background: rgba(207,233,255,.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index:9999;
+}
+.startCard{
+  width:min(980px,100%);
+  background: rgba(255,255,255,.86);
+  border:1px solid rgba(0,0,0,.08);
+  border-radius:22px;
+  box-shadow:0 12px 30px rgba(0,0,0,.14);
+  padding:18px;
+  text-align:center;
+}
+.startInstr{
+  font-size:clamp(30px, 4vw, 44px);
+  font-weight:700;
+  line-height:1.35;
+  padding:14px 12px;
+  border-radius:18px;
+  background: rgba(207,233,255,.55);
+  border:1px solid rgba(0,0,0,.06);
+}
+.startBtn{
+  margin-top:14px;
+  border:none;
+  border-radius:18px;
+  padding:16px 22px;
+  font-size:clamp(28px, 4vw, 40px);
+  font-weight:900;
+  min-height:56px;
+  cursor:pointer;
+  background:#63a8ff;
+  color:#fff;
+  box-shadow:0 10px 22px rgba(0,0,0,.16);
+}
+
+
+    /* Koyu artıları kaldır */
+    .dropZone::before{display:none !important;}
+
+    .endScreen{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      background: rgba(0,0,0,.45);
+      z-index: 9999;
+    }
+    .endCard{
+      width:min(560px, 92vw);
+      background: rgba(255,255,255,.95);
+      border-radius: 22px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.25);
+      padding: 22px 18px 18px;
+      text-align:center;
+    }
+    .endTitle{
+      font-size: clamp(28px, 4.2vw, 40px);
+      font-weight: 700;
+      margin: 6px 0 14px;
+    }
+    .endBtn{
+      margin-top: 10px;
+      padding: 14px 18px;
+      font-size: clamp(20px, 2.8vw, 28px);
+      border:0;
+      border-radius: 16px;
+      cursor:pointer;
+      min-height: 48px;
+    }
+    .hidden{display:none !important;}
+
+
+    .endStats{
+      width:min(520px, 100%);
+      margin: 18px auto 8px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.75);
+      border: 2px solid rgba(0,0,0,.08);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      font-size: 30px;
+      line-height:1.35;
+    }
+    .statRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .statLabel{ opacity:.9; }
+    .statValue{
+      font-weight: 800;
+      min-width: 72px;
+      text-align:center;
+      padding: 6px 10px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.06);
+    }
+
+
+/* ===== PATCH_SCROLL_LANDSCAPE_V1 =====
+   Landscape + küçük ekranlarda tek scroller (#game-container) kullanır.
+   Not: Bu blok, mevcut stilleri bozmayacak şekilde en sona eklenir.
+*/
+*{ box-sizing: border-box; }
+html, body{ margin:0; padding:0; }
+body{ overflow-x:hidden; }
+
+/* 100vh kullanmadan (güvenli override) */
+#game-container{
+  width: 100%;
+  min-height: 100svh;
+  min-height: 100dvh;
+  height: auto !important;
+}
+
+/* Yatay + kısa yükseklik */
+@media (orientation: landscape) and (max-height: 500px) {
+  body{ overflow: hidden; } /* çift scroll olmasın */
+
+  #game-container{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+
+    max-height: 100svh;
+    max-height: 100dvh;
+    max-height: calc(var(--vh, 1vh) * 100);
+
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .instruction{ margin-bottom: 10px; padding: 5px; }
+  #words-area{ margin-bottom: 15px; padding: 8px; }
+  #drop-zones{ grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .drop-box{ min-height: 80px; padding: 5px; }
+  .target-label{ margin-bottom: 2px; }
+}
+
+/* Çok küçük ekran */
+@media (max-width: 360px) {
+  body{ overflow: hidden; }
+
+  #game-container{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+
+    max-height: 100svh;
+    max-height: 100dvh;
+    max-height: calc(var(--vh, 1vh) * 100);
+
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  #drop-zones{ grid-template-columns: 1fr; }
+}
+
+/* Ek: küçük yükseklik */
+@media (max-height: 620px) {
+  body{ overflow: hidden; }
+
+  #game-container{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+
+    max-height: 100svh;
+    max-height: 100dvh;
+    max-height: calc(var(--vh, 1vh) * 100);
+
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
+
+</style>
+
+<style id="final-fix-audio-memory">
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn,.speaker-icon,.sound-icon{display:none !important;visibility:hidden !important}
+#feedbackBox,#memoryFeedback,.feedbackBox,.feedback{min-height:42px}
+#feedbackBox.error,#memoryFeedback.error,.feedbackBox.error,.feedback.error{color:#dc2626 !important}
+.card.wrong,.memory-card.wrong,.memory-item.wrong,.tile.wrong,.flip-card.wrong{border:4px solid #dc2626 !important}
+.card.matched,.memory-card.matched,.memory-item.matched,.tile.matched,.flip-card.matched{border:4px solid #16a34a !important}
+</style>
+
+</head>
+<body>
+
+<div class="startOverlay" id="startOverlay">
+  <div class="startCard">
+    <div class="startInstr" id="startInstr"></div>
+    <button class="startBtn" id="startBtn">اِبْدَأْ</button>
+  </div>
+</div>
+  <div id="app">
+    <div class="card">
+      <div class="topbar">
+        <div class="inst" id="instruction">ضَع الْحَرْفَ الْمناسِب في الْمَكانِ الصَّحيح.</div>
+        </div>
+
+      <div class="stageWrap">
+        <div class="stage" id="stage"></div>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="controls">
+        <div class="btnRow">
+          <button class="btn" id="checkBtn">تَحَقَّقْ</button>
+          <button class="btn" id="showBtn">أَظْهِر الْحَلّ</button>
+          <button class="btn" id="resetBtn">إِعادَةُ الْبَدْء</button>
+        </div>
+        <div class="navRow">
+          <button class="btn small" id="prevBtn">اَلسّابِق</button>
+          <button class="btn small" id="nextBtn">اَلتّالي</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <div id="endScreen" class="endScreen hidden" aria-hidden="true">
+    <div class="endCard">
+      <div class="endTitle">اَلنَّتيجَة</div>
+      <div class="endStats" role="status" aria-live="polite">
+        <div class="statRow">
+          <span class="statLabel">اَلصَّحيح</span>
+          <span class="statValue" id="correctCount">0</span>
+        </div>
+        <div class="statRow">
+          <span class="statLabel">اَلْخَطَأ</span>
+          <span class="statValue" id="wrongCount">0</span>
+        </div>
+      </div>
+      <button id="restartAllBtn" class="endBtn btn">إِعادَةُ الْبَدْء</button>
+    </div>
+  </div>
+
+<script>
+const SLIDES = [{"num": 1, "title": "اَلنَّشاط ١", "width": 1920, "height": 1080, "drags": [{"id": "5ihJJEkHmi9", "x": 425, "y": 182, "w": 290, "h": 337, "img": "6dpQetD8A7b.png", "dragdropids": ["_drop_6RjodIxLIhE"]}, {"id": "6WaZtXltJ9D", "x": 815, "y": 182, "w": 290, "h": 337, "img": "6Vb4iKFcSO1.png", "dragdropids": ["_drop_6RjodIxLIhE"]}, {"id": "67W99yNY9s1", "x": 1205, "y": 182, "w": 290, "h": 337, "img": "60iF6Cfgq8C.png", "dragdropids": ["_drop_6RjodIxLIhE"]}, {"id": "6aZxBa6BkZz", "x": 1595, "y": 182, "w": 290, "h": 337, "img": "6Fgx7XTnRMu.png", "dragdropids": ["_drop_6RjodIxLIhE"]}, {"id": "5YEDT8WFprB", "x": 35, "y": 182, "w": 290, "h": 337, "img": "6R5eGWs3EYM.png", "dragdropids": ["_drop_6RjodIxLIhE"]}], "drops": [{"id": "67rEOXgqStb", "x": 614, "y": 558, "w": 290, "h": 337, "dropgroup": ["_drop_6RjodIxLIhE"]}, {"id": "6cxn3t6fdqt", "x": 1037, "y": 558, "w": 290, "h": 337, "dropgroup": ["_drop_6RjodIxLIhE"]}, {"id": "5w6N046KAwQ", "x": 1460, "y": 558, "w": 290, "h": 337, "dropgroup": ["_drop_6RjodIxLIhE"]}], "statics": [{"id": "6XYD5APwraZ", "x": 0, "y": 600, "w": 1920, "h": 252, "img": "5hu3OS5Lquy.png"}], "correctMap": {"5w6N046KAwQ": "5ihJJEkHmi9", "67rEOXgqStb": "6WaZtXltJ9D", "6cxn3t6fdqt": "6aZxBa6BkZz"}}, {"num": 2, "title": "اَلنَّشاط ٢", "width": 1920, "height": 1080, "drags": [{"id": "6eI451QLazz", "x": 35, "y": 172, "w": 290, "h": 337, "img": "5h75Iwtkb3c.png", "dragdropids": ["_drop_60rC8qJvRR4"]}, {"id": "5bRyPQkFoPL", "x": 347, "y": 172, "w": 290, "h": 337, "img": "6kv3dckJZ52.png", "dragdropids": ["_drop_60rC8qJvRR4"]}, {"id": "5fMhy8rHvtq", "x": 659, "y": 172, "w": 290, "h": 337, "img": "60iF6Cfgq8C.png", "dragdropids": ["_drop_60rC8qJvRR4"]}, {"id": "6ASs6KAXjJy", "x": 971, "y": 172, "w": 290, "h": 337, "img": "5dUEgNZ9iHU.png", "dragdropids": ["_drop_60rC8qJvRR4"]}, {"id": "5mTA4sfXmPH", "x": 1283, "y": 172, "w": 290, "h": 337, "img": "6R5eGWs3EYM.png", "dragdropids": ["_drop_60rC8qJvRR4"]}, {"id": "5kIlxXuTIit", "x": 1595, "y": 172, "w": 290, "h": 337, "img": "6bg6NKUZcoW.png", "dragdropids": ["_drop_60rC8qJvRR4"]}], "drops": [{"id": "6bXQQo0sTwC", "x": 705, "y": 558, "w": 290, "h": 337, "dropgroup": ["_drop_60rC8qJvRR4"]}, {"id": "5gVLXcgetCa", "x": 1128, "y": 558, "w": 290, "h": 337, "dropgroup": ["_drop_60rC8qJvRR4"]}, {"id": "5XEpN3zhcbu", "x": 1551, "y": 558, "w": 290, "h": 337, "dropgroup": ["_drop_60rC8qJvRR4"]}], "statics": [{"id": "5XQzpo1hXBD", "x": 0, "y": 600, "w": 1920, "h": 258, "img": "5ZlgiQdWBfK.png"}], "correctMap": {"5XEpN3zhcbu": "6eI451QLazz", "6bXQQo0sTwC": "5bRyPQkFoPL", "5gVLXcgetCa": "5fMhy8rHvtq"}}, {"num": 3, "title": "اَلنَّشاط ٣", "width": 1920, "height": 1080, "drags": [{"id": "6K98pglvGOr", "x": 40, "y": 179, "w": 290, "h": 337, "img": "6UaD5UYaOWE.png", "dragdropids": ["_drop_5VZltvHLNbd"]}, {"id": "5iOdkBW6GYs", "x": 352, "y": 179, "w": 290, "h": 337, "img": "5wkreV7a7OD.png", "dragdropids": ["_drop_5VZltvHLNbd"]}, {"id": "6p9zwpzOjuB", "x": 664, "y": 179, "w": 290, "h": 337, "img": "66q9U9CKlwG.png", "dragdropids": ["_drop_5VZltvHLNbd"]}, {"id": "6FIpxhaswwo", "x": 976, "y": 179, "w": 290, "h": 337, "img": "5seByvfpWjK.png", "dragdropids": ["_drop_5VZltvHLNbd"]}, {"id": "5vTqHiEBPPB", "x": 1288, "y": 179, "w": 290, "h": 337, "img": "63ZYaIiL6rv.png", "dragdropids": ["_drop_5VZltvHLNbd"]}, {"id": "6Knzfg8RDLi", "x": 1600, "y": 179, "w": 290, "h": 337, "img": "6XkVtE26G5U.png", "dragdropids": ["_drop_5VZltvHLNbd"]}], "drops": [{"id": "5ydjRdIWMSu", "x": 663, "y": 558, "w": 290, "h": 337, "dropgroup": ["_drop_5VZltvHLNbd"]}, {"id": "5VlOQJICcS7", "x": 1086, "y": 558, "w": 290, "h": 337, "dropgroup": ["_drop_5VZltvHLNbd"]}, {"id": "5wThY7ubnRx", "x": 1509, "y": 558, "w": 290, "h": 337, "dropgroup": ["_drop_5VZltvHLNbd"]}], "statics": [{"id": "69cv3TTxxIW", "x": 0, "y": 600, "w": 1920, "h": 276, "img": "6EJ7fNXyKUW.png"}], "correctMap": {"5ydjRdIWMSu": "6K98pglvGOr", "5wThY7ubnRx": "6p9zwpzOjuB", "5VlOQJICcS7": "5vTqHiEBPPB"}}, {"num": 4, "title": "اَلنَّشاط ٤", "width": 1920, "height": 1080, "drags": [{"id": "6aZ5UWdgmwQ", "x": 28, "y": 188, "w": 290, "h": 337, "img": "6ixqOwqBZC8.png", "dragdropids": ["_drop_5lK0eURS2kv"]}, {"id": "5kXR2fI44Sl", "x": 418, "y": 188, "w": 290, "h": 337, "img": "6dpQetD8A7b.png", "dragdropids": ["_drop_5lK0eURS2kv"]}, {"id": "5VJ2DaYhpWh", "x": 808, "y": 188, "w": 290, "h": 337, "img": "6Vb4iKFcSO1.png", "dragdropids": ["_drop_5lK0eURS2kv"]}, {"id": "5vencOjTqUF", "x": 1198, "y": 188, "w": 290, "h": 337, "img": "60iF6Cfgq8C.png", "dragdropids": ["_drop_5lK0eURS2kv"]}, {"id": "6U2yNujZjvE", "x": 1588, "y": 188, "w": 290, "h": 337, "img": "6Fgx7XTnRMu.png", "dragdropids": ["_drop_5lK0eURS2kv"]}], "drops": [{"id": "66vrdW8Hoyl", "x": 672, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_5lK0eURS2kv"]}, {"id": "6Ay6stGR0mR", "x": 1095, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_5lK0eURS2kv"]}, {"id": "63uxlC6uAD9", "x": 1518, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_5lK0eURS2kv"]}], "statics": [{"id": "5XNgZ0oPikh", "x": 0, "y": 600, "w": 1920, "h": 307, "img": "6gQlEr0rAyb.png"}], "correctMap": {"63uxlC6uAD9": "6aZ5UWdgmwQ", "6Ay6stGR0mR": "5kXR2fI44Sl", "66vrdW8Hoyl": "6U2yNujZjvE"}}, {"num": 5, "title": "َلنَّشاط ٥", "width": 1920, "height": 1080, "drags": [{"id": "5ZEywWSFWf1", "x": 40, "y": 203, "w": 290, "h": 337, "img": "6Vb4iKFcSO1.png", "dragdropids": ["_drop_5hrXYcLlMzQ"]}, {"id": "5z3ShPNLHs6", "x": 352, "y": 203, "w": 290, "h": 337, "img": "5mHIGkBTlxT.png", "dragdropids": ["_drop_5hrXYcLlMzQ"]}, {"id": "6449m82qkpV", "x": 664, "y": 203, "w": 290, "h": 337, "img": "6aNFYBI8DEH.png", "dragdropids": ["_drop_5hrXYcLlMzQ"]}, {"id": "69dTPijUMkL", "x": 976, "y": 203, "w": 290, "h": 337, "img": "6Fgx7XTnRMu.png", "dragdropids": ["_drop_5hrXYcLlMzQ"]}, {"id": "6LpdocIhQFS", "x": 1288, "y": 203, "w": 290, "h": 337, "img": "5ogHVB2nJbj.png", "dragdropids": ["_drop_5hrXYcLlMzQ"]}, {"id": "6ZIoOQ3F6gM", "x": 1600, "y": 203, "w": 290, "h": 337, "img": "6pnONOUzU5n.png", "dragdropids": ["_drop_5hrXYcLlMzQ"]}], "drops": [{"id": "5r96JgTa7mU", "x": 645, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_5hrXYcLlMzQ"]}, {"id": "6NMI1SqF94w", "x": 1068, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_5hrXYcLlMzQ"]}, {"id": "6NnF6iXNAW2", "x": 1491, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_5hrXYcLlMzQ"]}], "statics": [{"id": "6DASKycohQb", "x": 0, "y": 600, "w": 1920, "h": 273, "img": "6EZWY4Ry9Mj.png"}], "correctMap": {"5r96JgTa7mU": "5z3ShPNLHs6", "6NnF6iXNAW2": "6449m82qkpV", "6NMI1SqF94w": "69dTPijUMkL"}}, {"num": 6, "title": "اَلنَّشاط ٦", "width": 1920, "height": 1080, "drags": [{"id": "6CEYjamwjs2", "x": 40, "y": 210, "w": 290, "h": 337, "img": "6dpQetD8A7b.png", "dragdropids": ["_drop_5gZLIb5cZVF"]}, {"id": "63lGUJdvcnR", "x": 352, "y": 210, "w": 290, "h": 337, "img": "6mHkcyJrbYI.png", "dragdropids": ["_drop_5gZLIb5cZVF"]}, {"id": "6AzXo8F4a6i", "x": 664, "y": 210, "w": 290, "h": 337, "img": "5mHIGkBTlxT.png", "dragdropids": ["_drop_5gZLIb5cZVF"]}, {"id": "6YHF4uWQyCL", "x": 976, "y": 210, "w": 290, "h": 337, "img": "5ogHVB2nJbj.png", "dragdropids": ["_drop_5gZLIb5cZVF"]}, {"id": "5uag7lECpNC", "x": 1288, "y": 210, "w": 290, "h": 337, "img": "6R5eGWs3EYM.png", "dragdropids": ["_drop_5gZLIb5cZVF"]}, {"id": "5oe6w2ZGpz0", "x": 1600, "y": 210, "w": 290, "h": 337, "img": "5xRzPhRRaFn.png", "dragdropids": ["_drop_5gZLIb5cZVF"]}], "drops": [{"id": "6JQOHDfuOKe", "x": 645, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_5gZLIb5cZVF"]}, {"id": "5wYgZAg7cX4", "x": 1068, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_5gZLIb5cZVF"]}, {"id": "6YhfnDQIGOO", "x": 1491, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_5gZLIb5cZVF"]}], "statics": [{"id": "62Qmsu8Toj6", "x": 0, "y": 600, "w": 1920, "h": 253, "img": "6QSwqqZeCQm.png"}], "correctMap": {"5wYgZAg7cX4": "6CEYjamwjs2", "6YhfnDQIGOO": "6AzXo8F4a6i", "6JQOHDfuOKe": "5oe6w2ZGpz0"}}, {"num": 7, "title": "اَلنَّشاط ٧", "width": 1920, "height": 1080, "drags": [{"id": "5tqufzjTSjE", "x": 40, "y": 203, "w": 290, "h": 337, "img": "6mHkcyJrbYI.png", "dragdropids": ["_drop_6TdWYpI2EnN"]}, {"id": "6Js0373XNjJ", "x": 352, "y": 203, "w": 290, "h": 337, "img": "6Vp7cGm17c5.png", "dragdropids": ["_drop_6TdWYpI2EnN"]}, {"id": "6DTivqwlhue", "x": 664, "y": 203, "w": 290, "h": 337, "img": "60iF6Cfgq8C.png", "dragdropids": ["_drop_6TdWYpI2EnN"]}, {"id": "5nkCLnfuvtB", "x": 976, "y": 203, "w": 290, "h": 337, "img": "6R5eGWs3EYM.png", "dragdropids": ["_drop_6TdWYpI2EnN"]}, {"id": "6pONhccMXif", "x": 1288, "y": 203, "w": 290, "h": 337, "img": "5xRzPhRRaFn.png", "dragdropids": ["_drop_6TdWYpI2EnN"]}, {"id": "6LI4753nPaz", "x": 1600, "y": 203, "w": 290, "h": 337, "img": "68MGK2d8Nco.png", "dragdropids": ["_drop_6TdWYpI2EnN"]}], "drops": [{"id": "5foaGQIJEn1", "x": 747, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_6TdWYpI2EnN"]}, {"id": "5m9nfudSfg5", "x": 1170, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_6TdWYpI2EnN"]}, {"id": "5aWWzpvnoyH", "x": 1593, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_6TdWYpI2EnN"]}], "statics": [{"id": "6DJCDZi4EPw", "x": 0, "y": 600, "w": 1920, "h": 274, "img": "5m9EtwI1evM.png"}], "correctMap": {"5aWWzpvnoyH": "6Js0373XNjJ", "5m9nfudSfg5": "6DTivqwlhue", "5foaGQIJEn1": "6pONhccMXif"}}, {"num": 8, "title": "اَلنَّشاط ٨", "width": 1920, "height": 1080, "drags": [{"id": "6LtFKaDKBr1", "x": 26, "y": 188, "w": 290, "h": 337, "img": "5iLBz3Fl3IA.png", "dragdropids": ["_drop_67Y8RKk2nZV"]}, {"id": "5Yf0Ec3qHHO", "x": 338, "y": 188, "w": 290, "h": 337, "img": "60iF6Cfgq8C.png", "dragdropids": ["_drop_67Y8RKk2nZV"]}, {"id": "5ufwtWvoeAp", "x": 650, "y": 188, "w": 290, "h": 337, "img": "66BZ51qU4BS.png", "dragdropids": ["_drop_67Y8RKk2nZV"]}, {"id": "5oj8Fp9HXFG", "x": 962, "y": 188, "w": 290, "h": 337, "img": "6Qr6X5QiPfH.png", "dragdropids": ["_drop_67Y8RKk2nZV"]}, {"id": "6SbB3dUKySF", "x": 1274, "y": 188, "w": 290, "h": 337, "img": "6R5eGWs3EYM.png", "dragdropids": ["_drop_67Y8RKk2nZV"]}, {"id": "6SVm1Q7KufJ", "x": 1586, "y": 188, "w": 290, "h": 337, "img": "5sDi5lCoGFg.png", "dragdropids": ["_drop_67Y8RKk2nZV"]}], "drops": [{"id": "5leyszDhbUZ", "x": 698, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_67Y8RKk2nZV"]}, {"id": "6D29cHQmOwy", "x": 1121, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_67Y8RKk2nZV"]}, {"id": "5ZPRQ4UyE24", "x": 1544, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_67Y8RKk2nZV"]}], "statics": [{"id": "6q3ExgaqdYc", "x": 0, "y": 600, "w": 1920, "h": 262, "img": "6rQ101gpwhF.png"}], "correctMap": {"5ZPRQ4UyE24": "6LtFKaDKBr1", "6D29cHQmOwy": "5Yf0Ec3qHHO", "5leyszDhbUZ": "6SVm1Q7KufJ"}}, {"num": 9, "title": "اَلنَّشاط ٩", "width": 1920, "height": 1080, "drags": [{"id": "67jklSZvntv", "x": 40, "y": 222, "w": 290, "h": 337, "img": "6dpQetD8A7b.png", "dragdropids": ["_drop_6BE8pP7lFsy"]}, {"id": "6pfBZB4SRhe", "x": 352, "y": 222, "w": 290, "h": 337, "img": "5ahNL2PUMYa.png", "dragdropids": ["_drop_6BE8pP7lFsy"]}, {"id": "6mYuerJXoqn", "x": 664, "y": 222, "w": 290, "h": 337, "img": "5toTIT9bXmP.png", "dragdropids": ["_drop_6BE8pP7lFsy"]}, {"id": "5hFBSkmjVWA", "x": 976, "y": 222, "w": 290, "h": 337, "img": "60iF6Cfgq8C.png", "dragdropids": ["_drop_6BE8pP7lFsy"]}, {"id": "5Zz0YYqXHLG", "x": 1288, "y": 222, "w": 290, "h": 337, "img": "5eEkJosKpd6.png", "dragdropids": ["_drop_6BE8pP7lFsy"]}, {"id": "6RlOGpwOwNW", "x": 1600, "y": 222, "w": 290, "h": 337, "img": "6OyXBjYToB4.png", "dragdropids": ["_drop_6BE8pP7lFsy"]}], "drops": [{"id": "6OZmuD4aYLx", "x": 737, "y": 634, "w": 290, "h": 337, "dropgroup": ["_drop_6BE8pP7lFsy"]}, {"id": "5kwLkrwkHJu", "x": 1160, "y": 634, "w": 290, "h": 337, "dropgroup": ["_drop_6BE8pP7lFsy"]}, {"id": "6jZjdpNoLQo", "x": 1583, "y": 634, "w": 290, "h": 337, "dropgroup": ["_drop_6BE8pP7lFsy"]}], "statics": [{"id": "5xw4BqHeU7E", "x": 0, "y": 600, "w": 1920, "h": 307, "img": "5b43Ch4Swno.png"}], "correctMap": {"6jZjdpNoLQo": "6mYuerJXoqn", "5kwLkrwkHJu": "5hFBSkmjVWA", "6OZmuD4aYLx": "5Zz0YYqXHLG"}}, {"num": 10, "title": "اَلنَّشاط ١٠", "width": 1920, "height": 1080, "drags": [{"id": "5jK48ltaxTv", "x": 24, "y": 203, "w": 290, "h": 337, "img": "5h75Iwtkb3c.png", "dragdropids": ["_drop_5XaKcHVQqF9"]}, {"id": "5mIlGKAi4n6", "x": 336, "y": 203, "w": 290, "h": 337, "img": "60iF6Cfgq8C.png", "dragdropids": ["_drop_5XaKcHVQqF9"]}, {"id": "6DLYOGUCj3Q", "x": 648, "y": 203, "w": 290, "h": 337, "img": "5dUEgNZ9iHU.png", "dragdropids": ["_drop_5XaKcHVQqF9"]}, {"id": "5fH5fb8y58i", "x": 960, "y": 203, "w": 290, "h": 337, "img": "6R5eGWs3EYM.png", "dragdropids": ["_drop_5XaKcHVQqF9"]}, {"id": "6T0SvBI9qOA", "x": 1272, "y": 203, "w": 290, "h": 337, "img": "6bg6NKUZcoW.png", "dragdropids": ["_drop_5XaKcHVQqF9"]}, {"id": "6IW7nomi6zJ", "x": 1584, "y": 203, "w": 290, "h": 337, "img": "6bf5wOmdGCv.png", "dragdropids": ["_drop_5XaKcHVQqF9"]}], "drops": [{"id": "5xsAwOqHJ9a", "x": 586, "y": 634, "w": 290, "h": 337, "dropgroup": ["_drop_5XaKcHVQqF9"]}, {"id": "6SSjQT5yMWL", "x": 1009, "y": 634, "w": 290, "h": 337, "dropgroup": ["_drop_5XaKcHVQqF9"]}, {"id": "5gqt3xhvdcP", "x": 1432, "y": 634, "w": 290, "h": 337, "dropgroup": ["_drop_5XaKcHVQqF9"]}], "statics": [{"id": "6hfZekudOIY", "x": 0, "y": 600, "w": 1920, "h": 267, "img": "5eYN0Ll07sZ.png"}], "correctMap": {"6SSjQT5yMWL": "5jK48ltaxTv", "5xsAwOqHJ9a": "5fH5fb8y58i", "5gqt3xhvdcP": "6IW7nomi6zJ"}}, {"num": 11, "title": "اَلنَّشاط ١١", "width": 1920, "height": 1080, "drags": [{"id": "6fVXqfieGMf", "x": 1224, "y": 197, "w": 290, "h": 337, "img": "6mHkcyJrbYI.png", "dragdropids": ["_drop_66JVWfLagER"]}, {"id": "6N0PGUkSA1c", "x": 394, "y": 197, "w": 290, "h": 337, "img": "5hFbl32U0Ui.png", "dragdropids": ["_drop_66JVWfLagER"]}, {"id": "6RAd3Jx59Y8", "x": 809, "y": 197, "w": 290, "h": 337, "img": "5xRzPhRRaFn.png", "dragdropids": ["_drop_66JVWfLagER"]}], "drops": [{"id": "6MPEH2vX8m1", "x": 933, "y": 533, "w": 290, "h": 337, "dropgroup": ["_drop_66JVWfLagER"]}], "statics": [{"id": "6PdOKUlyjyw", "x": 154, "y": 494, "w": 1021, "h": 309, "img": "69dPNDwmJaT_P_0_0_1049_318.png"}], "correctMap": {"6MPEH2vX8m1": "6fVXqfieGMf"}}, {"num": 12, "title": "اَلنَّشاط ١٢", "width": 1920, "height": 1080, "drags": [{"id": "6AzbBJMQWGM", "x": 1223, "y": 194, "w": 290, "h": 337, "img": "6CyrLIic0i4.png", "dragdropids": ["_drop_5mvejp5df4q"]}, {"id": "5oTgLFOAWHm", "x": 393, "y": 194, "w": 290, "h": 337, "img": "5eEkJosKpd6.png", "dragdropids": ["_drop_5mvejp5df4q"]}, {"id": "5odWWA8TJj3", "x": 808, "y": 194, "w": 290, "h": 337, "img": "5ahNL2PUMYa.png", "dragdropids": ["_drop_5mvejp5df4q"]}], "drops": [{"id": "5seednkvRTX", "x": 957, "y": 596, "w": 290, "h": 337, "dropgroup": ["_drop_5mvejp5df4q"]}], "statics": [{"id": "5eIIQElMtwH", "x": 407, "y": 600, "w": 897, "h": 328, "img": "6Km7F0RNltm_P_0_0_897_328.png"}], "correctMap": {"5seednkvRTX": "5odWWA8TJj3"}}, {"num": 13, "title": "اَلنَّشاط ١٣", "width": 1920, "height": 1080, "drags": [{"id": "5Z5mv1k4TMH", "x": 1044, "y": 192, "w": 290, "h": 337, "img": "6ixqOwqBZC8.png", "dragdropids": ["_drop_6atWcrmYE8w"]}, {"id": "6j0cUw3idY0", "x": 570, "y": 192, "w": 290, "h": 337, "img": "62ppheoelQ7.png", "dragdropids": ["_drop_6atWcrmYE8w"]}], "drops": [{"id": "5ujRP3qSbPT", "x": 805, "y": 600, "w": 290, "h": 337, "dropgroup": ["_drop_6atWcrmYE8w"]}], "statics": [{"id": "639k9UmwjyX", "x": 1134, "y": 626, "w": 299, "h": 284, "img": "6iqZ1Cc30Nq_P_365_0_299_284.png"}, {"id": "6HFNmfoU0lq", "x": 322, "y": 626, "w": 443, "h": 284, "img": "6iqZ1Cc30Nq_P_0_0_443_284.png"}], "correctMap": {"5ujRP3qSbPT": "6j0cUw3idY0"}}];
+
+// ---- PATCH: result (netice) tracking ----
+const FIRST_RESULT = Array(SLIDES.length).fill(null); // true/false per activity (first check only)
+
+function computeResults(){
+  let correct = 0;
+  for(const r of FIRST_RESULT){
+    if(r === true) correct++;
+  }
+  const total = SLIDES.length;
+  const wrong = total - correct;
+  return {correct, wrong, total};
+}
+function toArabicIndicDigits(value){
+  const map = {'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩'};
+  return String(value).replace(/[0-9]/g, d => map[d] || d);
+}
+function updateResultsUI(){
+  const {correct, wrong} = computeResults();
+  const cEl = document.getElementById('correctCount');
+  const wEl = document.getElementById('wrongCount');
+  if(cEl) cEl.textContent = toArabicIndicDigits(correct);
+  if(wEl) wEl.textContent = toArabicIndicDigits(wrong);
+}
+
+const ASSET = (name) => "assets/" + name;
+
+const stage = document.getElementById('stage');
+const checkBtn = document.getElementById('checkBtn');
+const showBtn  = document.getElementById('showBtn');
+const resetBtn = document.getElementById('resetBtn');
+const prevBtn  = document.getElementById('prevBtn');
+const nextBtn  = document.getElementById('nextBtn');
+
+const restartAllBtn = document.getElementById('restartAllBtn');
+
+
+// ---- PATCH: feedback sounds ----
+const DRAG_SCALE = 0.85;
+const SFX = {
+  click: new Audio("butonsesi.mp3"),
+  nav: new Audio("sonraki.mp3"),
+  correct: new Audio("dogru.mp3"),
+  wrong: new Audio("yanliscevap.mp3"),
+};
+// Instruction audio (single instance to avoid echo)
+const instructionAudio = new Audio(ASSET("6NsXvbdOBfr_44100_160_0.mp3"));
+instructionAudio.preload = "auto";
+
+function playInstruction(){
+  try{
+    instructionAudio.pause();
+    instructionAudio.currentTime = 0;
+    instructionAudio.play();
+  }catch(e){}
+}
+
+function playSfx(a){
+  try{ a.currentTime = 0; a.play(); }catch(e){}
+}
+
+let current = 0;
+let placements = new Map(); // dropId -> dragId
+let dragHome = new Map();   // dragId -> {x,y}
+let dragEls = new Map();
+let dropEls = new Map();
+let selectedDragId = null;
+let hasCheckedCurrent = false;
+
+function setBtnColors() {
+  // fixed colors across all pages
+  checkBtn.style.background = "#c9f2d3";  // تَحَقَّقْ (green)
+  checkBtn.style.color = "#0b2a3a";
+  showBtn.style.background  = "#ffb3a3";  // أَظْهِر الْحَلَّ (orange)
+  showBtn.style.color = "#0b2a3a";
+  resetBtn.style.background = "#ffd0d6";  // إِعادَةُ الْبَدْء (red)
+  resetBtn.style.color = "#0b2a3a";
+
+  if (restartAllBtn){
+    restartAllBtn.style.background = resetBtn.style.background; // same as إِعادَةُ الْبَدْء
+    restartAllBtn.style.color = resetBtn.style.color;
+  }
+  nextBtn.style.background  = "#cfe5ff";  // اَلتّالي (blue)
+  nextBtn.style.color = "#0b2a3a";
+  prevBtn.style.background  = "#fff2b8";  // اَلسّابِق (yellow)
+  prevBtn.style.color = "#0b2a3a";
+}
+
+
+function clearStage() {
+  stage.innerHTML = '';
+  placements.clear();
+  dragHome.clear();
+  dragEls.clear();
+  dropEls.clear();
+  selectedDragId = null;
+}
+
+function toPct(x, base) {
+  return (x / base) * 100;
+}
+
+function shuffleInPlace(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function shuffledDrags(drags){
+  const ds = (drags||[]).map(d=>({...d}));
+  const pos = ds.map(d=>({x:d.x, y:d.y}));
+  shuffleInPlace(pos);
+  ds.forEach((d,i)=>{ d.x = pos[i].x; d.y = pos[i].y; });
+  shuffleInPlace(ds); // shuffle DOM order too
+  return ds;
+}
+
+let endTimer = null;
+let endCanceled = false;
+
+function hideEndScreen(){
+  const es = document.getElementById('endScreen');
+  if(es){
+    es.classList.add('hidden');
+    es.setAttribute('aria-hidden','true');
+  }
+}
+function showEndScreen(){
+  updateResultsUI();
+  const es = document.getElementById('endScreen');
+  if(es){
+    es.classList.remove('hidden');
+    es.setAttribute('aria-hidden','false');
+  }
+}
+function cancelEndCountdown(){
+  endCanceled = true;
+  if(endTimer){ clearTimeout(endTimer); endTimer = null; }
+  hideEndScreen();
+}
+function startEndCountdown(){
+  cancelEndCountdown();
+  endCanceled = false;
+  endTimer = setTimeout(()=>{
+    endTimer = null;
+    if(!endCanceled) showEndScreen();
+  }, 4500);
+}
+
+
+
+
+function renderSlide() {
+  cancelEndCountdown();
+  clearStage();
+  setBtnColors();
+
+  const fb = document.getElementById('feedback');
+  hasCheckedCurrent = false;
+  if (fb){ fb.textContent=''; fb.classList.remove('ok','no'); }
+
+  const s = SLIDES[current];
+  const dragsShuffled = shuffledDrags(s.drags || []);
+  
+  // static images
+  (s.statics || []).forEach(img => {
+    const el = document.createElement('img');
+    el.className = 'staticImg';
+    el.src = ASSET(img.img);
+    el.alt = '';
+    el.style.left = toPct(img.x, s.width) + '%';
+    el.style.top  = toPct(img.y, s.height) + '%';
+    el.style.width  = toPct(img.w, s.width) + '%';
+    el.style.height = toPct(img.h, s.height) + '%';
+    stage.appendChild(el);
+  });
+
+  // drop zones
+  (s.drops || []).forEach(z => {
+    const dz = document.createElement('div');
+    dz.className = 'dropZone';
+    const dropId = String(z.id);
+    dz.dataset.dropId = dropId;
+    dz.style.left = toPct(z.x, s.width) + '%';
+    dz.style.top  = toPct(z.y, s.height) + '%';
+    dz.style.width  = toPct(z.w, s.width) + '%';
+    dz.style.height = toPct(z.h, s.height) + '%';
+    dz.addEventListener('click', ()=> {
+      if (!selectedDragId) return;
+      placeDragOnDrop(selectedDragId, dropId);
+      selectedDragId = null;
+    });
+    stage.appendChild(dz);
+    dropEls.set(dropId, dz);
+  });
+
+  // draggables (shuffled each load)
+  (dragsShuffled || []).forEach(d => {
+    const el = document.createElement('img');
+    el.className = 'dragImg';
+    el.src = ASSET(d.img);
+    el.alt = '';
+    const dragId = String(d.id);
+    el.dataset.dragId = dragId;
+    el.style.left = toPct(d.x, s.width) + '%';
+    el.style.top  = toPct(d.y, s.height) + '%';
+    el.style.width  = toPct(d.w, s.width) + '%';
+    el.style.height = toPct(d.h, s.height) + '%';
+    el.dataset.homeW = el.style.width;
+    el.dataset.homeH = el.style.height;
+
+    el.style.touchAction = 'none';
+
+    // home
+    dragHome.set(d.id, {x:d.x, y:d.y});
+
+    // tap-to-select alternative
+    el.addEventListener('click', (e)=> {
+      e.stopPropagation();
+      selectedDragId = d.id;
+      // tiny visual cue
+      el.style.filter = "drop-shadow(0 8px 14px rgba(0,0,0,.25))";
+      setTimeout(()=> el.style.filter = "", 220);
+    });
+
+    enableDrag(el, s);
+    stage.appendChild(el);
+    dragEls.set(dragId, el);
+  });
+
+  prevBtn.disabled = (current===0);
+  nextBtn.disabled = (current===SLIDES.length-1);
+}
+
+function enableDrag(el, s) {
+  let startX=0, startY=0, origLeft=0, origTop=0, dragging=false;
+
+  el.addEventListener('pointerdown', (e)=> {
+    dragging=true;
+    el.setPointerCapture(e.pointerId);
+    const rect = stage.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    startX = e.clientX;
+    startY = e.clientY;
+    origLeft = elRect.left - rect.left;
+    origTop  = elRect.top  - rect.top;
+    el.style.zIndex = 50;
+  });
+
+  el.addEventListener('pointermove', (e)=> {
+    if (!dragging) return;
+    const rect = stage.getBoundingClientRect();
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    const leftPx = origLeft + dx;
+    const topPx  = origTop + dy;
+    // convert to %
+    el.style.left = (leftPx / rect.width) * 100 + '%';
+    el.style.top  = (topPx  / rect.height) * 100 + '%';
+  });
+
+  el.addEventListener('pointerup', (e)=> {
+    if (!dragging) return;
+    dragging=false;
+    el.releasePointerCapture(e.pointerId);
+    el.style.zIndex = 10;
+
+    const dropId = hitTestDrop(el);
+    if (dropId) {
+      placeDragOnDrop(el.dataset.dragId, dropId);
+    }
+  });
+
+  el.addEventListener('pointercancel', ()=> { dragging=false; });
+}
+
+function hitTestDrop(dragEl) {
+  const dragRect = dragEl.getBoundingClientRect();
+  for (const [dropId, dz] of dropEls.entries()) {
+    const r = dz.getBoundingClientRect();
+    const cx = dragRect.left + dragRect.width/2;
+    const cy = dragRect.top  + dragRect.height/2;
+    if (cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom) {
+      return dropId;
+    }
+  }
+  return null;
+}
+
+
+function updateDropOccupancy(){
+  for (const [id, el] of dropEls.entries()){
+    if (placements.has(id)) el.classList.add('occupied');
+    else el.classList.remove('occupied');
+  }
+}
+
+function placeDragOnDrop(dragId, dropId) {
+  // if drop already has something, send it home
+  for (const [dId, drId] of placements.entries()) {
+    if (dId === dropId) {
+      sendHome(drId);
+      placements.delete(dId);
+    }
+  }
+  // if this drag is already placed elsewhere, clear it
+  for (const [dId, drId] of placements.entries()) {
+    if (drId === String(dragId)) {
+      placements.delete(dId);
+    }
+  }
+
+  const dz = dropEls.get(String(dropId));
+  const de = dragEls.get(String(dragId));
+  if (!dz || !de) return;
+
+  // fit exactly into drop
+  de.classList.add('placed');
+  de.style.left = dz.style.left;
+  de.style.top  = dz.style.top;
+  de.style.width  = dz.style.width;
+  de.style.height = dz.style.height;
+
+  placements.set(String(dropId), String(dragId));
+  updateDropOccupancy();
+}
+
+function sendHome(dragId) {
+  const s = SLIDES[current];
+  const home = dragHome.get(String(dragId)) || dragHome.get(dragId);
+  const el = dragEls.get(String(dragId));
+  if (!home || !el) return;
+
+  el.classList.remove('placed','ans-correct','ans-wrong');
+  if (el.dataset.homeW) el.style.width = el.dataset.homeW;
+  if (el.dataset.homeH) el.style.height = el.dataset.homeH;
+
+  el.style.left = toPct(home.x, s.width) + '%';
+  el.style.top  = toPct(home.y, s.height) + '%';
+}
+
+function resetSlide() {
+  cancelEndCountdown();
+  // clear feedback
+  const fb = document.getElementById('feedback');
+  hasCheckedCurrent = false;
+  if (fb){ fb.textContent=''; fb.classList.remove('ok','no'); }
+
+  // clear drop styles
+  for (const dz of dropEls.values()) {
+    dz.classList.remove('correct','wrong');
+  }
+
+  for (const de of dragEls.values()) {
+    de.classList.remove('ans-correct','ans-wrong');
+  }
+  // send all drags home
+  for (const drId of dragEls.keys()){
+    sendHome(drId);
+  }
+  placements.clear();
+  updateDropOccupancy();
+}
+
+
+function checkAnswers() {
+  hasCheckedCurrent = true;
+  const s = SLIDES[current];
+  const fb = document.getElementById('feedback');
+
+  for (const dz of dropEls.values()) {
+    dz.classList.remove('correct','wrong');
+  }
+
+  for (const de of dragEls.values()) {
+    de.classList.remove('ans-correct','ans-wrong');
+  }
+
+  let allOk = true;
+  (s.drops||[]).forEach(z => {
+    const dropId = String(z.id);
+    const placed = placements.get(dropId) ? String(placements.get(dropId)) : null;
+    const correct = (s.correctMap && s.correctMap[dropId] != null) ? String(s.correctMap[dropId]) : null;
+    const dz = dropEls.get(dropId);
+    if (!dz) return;
+
+    if (!placed || !correct) {
+      allOk = false;
+      dz.classList.add('wrong');
+      if (placed){
+        const de = dragEls.get(String(placed));
+        if (de) de.classList.add('ans-wrong');
+      }
+      return;
+    }
+    if (placed === correct) {
+      dz.classList.add('correct');
+      const de = dragEls.get(String(placed));
+      if (de) de.classList.add('ans-correct');
+    } else {
+      dz.classList.add('wrong');
+      const de = dragEls.get(String(placed));
+      if (de) de.classList.add('ans-wrong');
+      allOk = false;
+    }
+  });
+
+  if (fb){
+    fb.classList.remove('ok','no');
+    if(allOk){
+      fb.textContent = 'أَحْسَنْت.';
+      fb.classList.add('ok');
+      playSfx(SFX.correct);
+    }else{
+      fb.textContent = 'حاوِلْ مَرَّةً أُخْرى.';
+      fb.classList.add('no');
+      playSfx(SFX.wrong);
+    }
+  }
+  if (FIRST_RESULT[current] === null) FIRST_RESULT[current] = allOk;
+  if(current===SLIDES.length-1){
+    startEndCountdown();
+  }else{
+    cancelEndCountdown();
+  }
+  if (navigator.vibrate) navigator.vibrate(allOk ? [80] : [40,40,40]);
+}
+
+
+function showSolution() {
+  const fb = document.getElementById('feedback');
+  if (!hasCheckedCurrent){
+    if (fb){
+      fb.textContent = 'أَجِبْ عَنِ السُّؤال أَوَّلًا.';
+      fb.classList.remove('ok');
+      fb.classList.add('no');
+    }
+    try{ playSfx(SFX.wrong); }catch(e){}
+    return;
+  }
+  const s = SLIDES[current];
+  if (!s.correctMap) return;
+  Object.keys(s.correctMap).forEach(dropId => {
+    const dragId = s.correctMap[dropId];
+    placeDragOnDrop(dragId, dropId);
+  });
+  checkAnswers();
+}
+
+checkBtn.addEventListener('click', ()=>{ playSfx(SFX.click); checkAnswers(); });
+showBtn.addEventListener('click', ()=>{ playSfx(SFX.click); showSolution(); });
+resetBtn.addEventListener('click', ()=>{ playSfx(SFX.click); cancelEndCountdown(); renderSlide(); updateDropOccupancy(); fitStage(); });
+if (restartAllBtn){
+  restartAllBtn.addEventListener('click', ()=>{
+    playSfx(SFX.click);
+    cancelEndCountdown();
+    FIRST_RESULT.fill(null);
+    current = 0;
+    renderSlide();
+    updateDropOccupancy();
+    fitStage();
+  });
+  restartAllBtn.onclick = ()=>{
+    playSfx(SFX.click);
+    cancelEndCountdown();
+    FIRST_RESULT.fill(null);
+    current = 0;
+    renderSlide();
+    updateDropOccupancy();
+    fitStage();
+  };
+}
+
+
+
+prevBtn.addEventListener('click', ()=> {
+  if (current<=0) return;
+  current--;
+  playSfx(SFX.nav);
+  renderSlide();
+  updateDropOccupancy();
+  fitStage();
+});
+nextBtn.addEventListener('click', ()=> {
+  if (current>=SLIDES.length-1) return;
+  current++;
+  playSfx(SFX.nav);
+  renderSlide();
+  updateDropOccupancy();
+  fitStage();
+});
+
+
+// ---- PATCH: fit stage to screen (reduce scroll) ----
+function fitStage(){
+  const s = SLIDES[current];
+  if(!s) return;
+  const wrap = document.querySelector('.stageWrap');
+  const stageEl = document.getElementById('stage');
+  const topbar = document.querySelector('.topbar');
+  const controls = document.querySelector('.controls');
+  const fb = document.getElementById('feedback');
+
+  const vh = (window.visualViewport && window.visualViewport.height) ? window.visualViewport.height : window.innerHeight;
+  const wrapW = Math.max(260, (document.getElementById('app').clientWidth || 980) - 24);
+
+  const topH = topbar ? topbar.offsetHeight : 0;
+  const ctrlH = controls ? controls.offsetHeight : 0;
+  const fbH = fb ? fb.offsetHeight : 0;
+
+  const extra = 18; // paddings
+  const availH = Math.max(240, vh - topH - ctrlH - fbH - extra);
+
+  const aspect = s.width / s.height;
+  let w = Math.min(wrapW, availH * aspect);
+  let h = w / aspect;
+
+  stageEl.style.width = w + 'px';
+  stageEl.style.height = h + 'px';
+  if(wrap){
+    wrap.style.display='flex';
+    wrap.style.justifyContent='center';
+    wrap.style.alignItems='center';
+  }
+}
+
+window.addEventListener('resize', ()=>{ try{fitStage();}catch(e){} });
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', ()=>{ try{fitStage();}catch(e){} });
+
+// Start screen
+function showStart(){
+  const ov = document.getElementById('startOverlay');
+  const si = document.getElementById('startInstr');
+  const instEl = document.getElementById('instruction');
+  if(si) si.textContent = instEl ? instEl.textContent.trim() : '';
+  if(ov) ov.style.display='flex';
+}
+function hideStart(){
+  const ov = document.getElementById('startOverlay');
+  if(ov) ov.style.display='none';
+}
+}
+
+showStart();
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  try{ Object.values(SFX).forEach(a=>a.load()); }catch(e){}
+  playSfx(SFX.click);
+  hideStart();
+  renderSlide();
+  updateDropOccupancy();
+  fitStage();
+  // first slide instruction auto
+  playInstruction();
+});
+
+</script>
+<script>
+/* PATCH_VH_FIX_V1: iPhone/Safari viewport yüksekliği düzeltmesi */
+(function () {
+  function setVH() {
+    document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+  }
+  window.addEventListener('resize', setVH);
+  window.addEventListener('orientationchange', setVH);
+  setVH();
+})();
+</script>
+
+
+<script>
+(function(){
+  function q(sel){ return document.querySelector(sel); }
+  function qa(sel){ return Array.from(document.querySelectorAll(sel)); }
+  function getInstructionAudio(){
+    return q('#audio-inst') || q('#instructionAudio') || q('#introAudio') || q('audio[data-role="instruction"]') || qa('audio').find(a => (a.id||'').toLowerCase().includes('inst')) || qa('audio')[0] || null;
+  }
+  function hideAudioIcons(){
+    qa('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon,.speaker-icon,.sound-icon').forEach(el=>{
+      el.style.display='none';
+      el.style.visibility='hidden';
+      el.setAttribute('aria-hidden','true');
+    });
+  }
+  function playInstructionAudio(){
+    hideAudioIcons();
+    var a = getInstructionAudio();
+    if(a){
+      try{ a.currentTime = 0; }catch(e){}
+      try{ var p = a.play(); if(p && p.catch){ p.catch(function(){}); } }catch(e){}
+      return true;
+    }
+    var btn = q('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon');
+    if(btn){ try{ btn.click(); }catch(e){} return true; }
+    return false;
+  }
+  function initStartOverlay(){
+    var overlay = q('#globalStartOverlay');
+    var startBtn = q('#globalStartBtn');
+    var startInstr = q('#globalStartInstruction');
+    if(startInstr && !startInstr.textContent.trim()){
+      var src = q('.instruction, .instructions, h1, .question-text, .title');
+      if(src) startInstr.textContent = src.textContent.trim();
+    }
+    if(startBtn){
+      startBtn.addEventListener('click', function(){
+        setTimeout(playInstructionAudio, 50);
+        setTimeout(hideAudioIcons, 100);
+      }, true);
+    }
+    if(!overlay){
+      setTimeout(hideAudioIcons, 100);
+    }
+  }
+  function initMemoryFeedback(){
+    var fb = q('#feedbackBox') || q('#memoryFeedback') || q('.feedbackBox') || q('.feedback');
+    if(fb){
+      var apply = function(){
+        var t = (fb.textContent || '').trim();
+        fb.style.color = t.indexOf('خَطَأ') !== -1 ? '#dc2626' : '';
+      };
+      try{
+        new MutationObserver(apply).observe(fb,{childList:true,subtree:true,characterData:true});
+      }catch(e){}
+      apply();
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    hideAudioIcons();
+    initStartOverlay();
+    initMemoryFeedback();
+  });
+})();
+</script>
+
+
+<script id="final-sequence-fix">
+(function(){
+  try {
+    const pickBySelector = (sel) => sel ? document.querySelector(sel) : null;
+    const pickByText = (rxSrc) => {
+      if(!rxSrc) return null;
+      const rx = new RegExp(rxSrc);
+      return Array.from(document.querySelectorAll('button,.btn')).find(b => rx.test((b.textContent||'').replace(/\s+/g,' ').trim()));
+    };
+    const checkBtn = pickBySelector("#checkBtn") || pickByText(null);
+    const showBtn  = pickBySelector("#showBtn")  || pickByText(null);
+    const resetBtn = pickBySelector("#resetBtn") || pickByText(null);
+    if(!checkBtn || !showBtn || !resetBtn) return;
+
+    const navBtns = ["#prevBtn", "#nextBtn", "#restartAllBtn"].map(sel => document.querySelector(sel)).filter(Boolean);
+    let phase = 'fill';
+
+    function setActive(btn, enabled){
+      if(!btn) return;
+      btn.hidden = false;
+      btn.style.display = '';
+      btn.disabled = !enabled;
+      btn.style.opacity = enabled ? '1' : '0.55';
+      btn.style.pointerEvents = enabled ? 'auto' : 'none';
+    }
+
+    function isComplete(){
+      try { return !!(typeof SLIDES!=='undefined' && SLIDES[current] && (SLIDES[current].drops||[]).length>0 && (SLIDES[current].drops||[]).every(z => placements.get(String(z.id)))); } catch(e) { return false; }
+    }
+
+    function isWrong(){
+      try { return !!(document.querySelectorAll('.dropZone.wrong').length>0); } catch(e) { return false; }
+    }
+
+    function syncFill(){
+      if(phase !== 'fill') return;
+      setActive(checkBtn, isComplete());
+      setActive(showBtn, false);
+      setActive(resetBtn, false);
+    }
+
+    function syncAfterCheck(){
+      const wrong = isWrong();
+      phase = wrong ? 'checkedWrong' : 'checkedCorrect';
+      setActive(checkBtn, false);
+      setActive(showBtn, wrong);
+      setActive(resetBtn, !wrong);
+    }
+
+    function syncAfterShow(){
+      phase = 'solved';
+      setActive(checkBtn, false);
+      setActive(showBtn, false);
+      setActive(resetBtn, true);
+    }
+
+    function syncAfterReset(){
+      phase = 'fill';
+      setTimeout(syncFill, 0);
+    }
+
+    function runCheck(){
+      if(checkBtn.disabled) return;
+      if(typeof playSfx==='function' && typeof SFX!=='undefined' && SFX.click){{try{{playSfx(SFX.click);}}catch(e){{}}}}
+      if(typeof window["checkAnswers"] === 'function') window["checkAnswers"]();
+      setTimeout(syncAfterCheck, 0);
+    }
+
+    function runShow(){
+      if(showBtn.disabled) return;
+      if(typeof playSfx==='function' && typeof SFX!=='undefined' && SFX.click){{try{{playSfx(SFX.click);}}catch(e){{}}}}
+      if(typeof window["showSolution"] === 'function') window["showSolution"]();
+      setTimeout(syncAfterShow, 0);
+    }
+
+    function runReset(){
+      if(resetBtn.disabled) return;
+      if(typeof playSfx==='function' && typeof SFX!=='undefined' && SFX.click){{try{{playSfx(SFX.click);}}catch(e){{}}}}
+      if(typeof cancelEndCountdown==='function') cancelEndCountdown(); if(typeof renderSlide==='function') renderSlide(); if(typeof updateDropOccupancy==='function') updateDropOccupancy(); if(typeof fitStage==='function') fitStage();
+      syncAfterReset();
+    }
+
+    function hardBind(btn, fn){
+      ['click','touchend'].forEach(evt => {
+        btn.addEventListener(evt, function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          fn();
+          return false;
+        }, true);
+      });
+      btn.onclick = null;
+    }
+
+    hardBind(checkBtn, runCheck);
+    hardBind(showBtn, runShow);
+    hardBind(resetBtn, runReset);
+
+    navBtns.forEach(btn => {
+      ['click','touchend'].forEach(evt => btn.addEventListener(evt, () => {
+        phase = 'fill';
+        setTimeout(syncFill, 50);
+      }, true));
+    });
+
+    ['click','touchend','drop'].forEach(evt => document.addEventListener(evt, () => {
+      if(phase === 'fill') setTimeout(syncFill, 0);
+    }, true));
+
+    window.addEventListener('load', () => setTimeout(syncFill, 0));
+    setTimeout(syncFill, 0);
+  } catch(e) {
+    console.warn('final-sequence-fix error', e);
+  }
+})();
+</script>
+
+</body>
+</html>

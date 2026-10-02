@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="com.example.scorm"
+    version="1.0"
+    xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+    xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2
+    ims_xml.xsd
+    http://www.adlnet.org/xsd/adlcp_rootv1p2
+    adlcp_rootv1p2.xsd">
+  <organizations default="ORG1">
+    <organization identifier="ORG1">
+      <item identifier="ITEM1" identifierref="RES1">
+        <title>SCORM İçeriği</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="RES1" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="1.jpeg"/>
+      <file href="1.mp3"/>
+      <file href="2.jpeg"/>
+      <file href="2.mp3"/>
+      <file href="3.jpeg"/>
+      <file href="3.mp3"/>
+      <file href="4.mp3"/>
+      <file href="4.png"/>
+      <file href="5.jpeg"/>
+      <file href="5.mp3"/>
+      <file href="6.jpeg"/>
+      <file href="6.mp3"/>
+      <file href="audio1.mp3"/>
+      <file href="index.html"/>
+      <file href="sesler/basari.mp3"/>
+      <file href="sesler/butonsesi.mp3"/>
+      <file href="sesler/dogru.mp3"/>
+      <file href="sesler/sonraki.mp3"/>
+      <file href="sesler/tebrikler.mp3"/>
+      <file href="sesler/yanliscevap.mp3"/>
+    </resource>
+  </resources>
+</manifest>

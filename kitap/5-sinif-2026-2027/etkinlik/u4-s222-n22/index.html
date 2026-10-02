@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>لعبة الأثاث المنزلي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: linear-gradient(135deg, #e0f7fa 0%, #ffecb3 100%);
+            --primary: #3f51b5;
+            --font-main: 'Scheherazade New', serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-main);
+            background: var(--bg);
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        .header {
+            width: 100%;
+            padding: 15px 0;
+            background: rgba(255,255,255,0.4);
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .instruction {
+            font-size: clamp(20px, 4vw, 28px);
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .audio-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .audio-btn:active { transform: scale(0.9); }
+
+        .audio-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .game-container {
+            width: 98%;
+            max-width: 1000px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex-grow: 1;
+        }
+
+        .words-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 20px;
+            min-height: 60px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .word-item {
+            background: #fff;
+            padding: 5px 15px;
+            border-radius: 12px;
+            font-size: clamp(22px, 5vw, 32px);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 2px solid var(--primary);
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .word-item.selected {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .grid-area {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            width: 100%;
+        }
+
+        .item-card {
+            background: white;
+            padding: 5px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .img-box {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #fdfdfd;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .img-box img {
+            width: 95%;
+            height: 95%;
+            object-fit: contain;
+        }
+
+        .drop-area {
+            width: 95%;
+            height: 40px;
+            background: #f5f5f5;
+            border: 1.5px dashed #bbb;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(16px, 3vw, 22px);
+            color: #aaa;
+            transition: all 0.3s;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .drop-area.filled {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            color: #1b5e20;
+            font-size: clamp(20px, 4vw, 26px);
+        }
+
+        .controls {
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: auto;
+            background: white;
+            border-top: 1px solid #ddd;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 50px;
+            font-family: var(--font-main);
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-check { background: #4caf50; color: white; }
+        .btn-reset { background: #f44336; color: white; }
+
+        #modalOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        .modal h2 { font-size: 36px; margin: 0 0 15px 0; }
+
+        @media (max-width: 800px) {
+            .grid-area { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 500px) {
+            .grid-area { grid-template-columns: repeat(2, 1fr); }
+        }
+    
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn{display:none !important;}
+#globalStartOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#fff7ed,#dbeafe);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px}
+#globalStartOverlay .startCard{width:min(900px,100%);background:white;border-radius:28px;padding:28px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+#globalStartOverlay .startInstruction{font-size:clamp(28px,4.5vw,40px);color:#0f4c81;font-weight:700;line-height:1.5;margin-bottom:18px}
+#globalStartOverlay .startBtn{background:#22c55e;color:white;border:none;border-radius:18px;padding:12px 28px;font-size:28px;font-family:inherit;font-weight:700;cursor:pointer}
+
+</style>
+
+<style id="final-fix-audio-memory">
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn,.speaker-icon,.sound-icon{display:none !important;visibility:hidden !important}
+#feedbackBox,#memoryFeedback,.feedbackBox,.feedback{min-height:42px}
+#feedbackBox.error,#memoryFeedback.error,.feedbackBox.error,.feedback.error{color:#dc2626 !important}
+.card.wrong,.memory-card.wrong,.memory-item.wrong,.tile.wrong,.flip-card.wrong{border:4px solid #dc2626 !important}
+.card.matched,.memory-card.matched,.memory-item.matched,.tile.matched,.flip-card.matched{border:4px solid #16a34a !important}
+</style>
+
+</head>
+<body>
+
+<div id="globalStartOverlay">
+  <div class="startCard">
+    <div id="globalStartInstruction" class="startInstruction"></div>
+    <button id="globalStartBtn" class="startBtn">اِبْدَأْ</button>
+  </div>
+</div>
+
+
+    <div class="header">
+        <button class="audio-btn" onclick="playInstruction()" aria-label="Play Instruction">
+            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        </button>
+        <div class="instruction">اِضْغَطْ وَطَابِق الْكَلِمَات مَعَ الصُّوَرِ الْمُنَاسِبَةِ.</div>
+        <audio id="audioInstruction" src="audio1.mp3"></audio>
+    </div>
+
+    <div class="game-container">
+        <div class="words-container" id="wordPool"></div>
+        <div class="grid-area" id="gridArea"></div>
+
+        <div id="feedbackText" style="min-height:36px;text-align:center;font-size:28px;font-weight:700;color:#f44336;margin:8px 0;"></div>
+        <div class="controls">
+            <button class="btn btn-reset" onclick="resetGame()">حاوِلْ مَرَّة أُخْرى</button>
+            <button class="btn btn-check" onclick="checkAnswers()">تَحَقَّقْ</button>
+            <button class="btn btn-check" onclick="showSolution()"> أَظْهِر الْحَلّ</button>
+        </div>
+    </div>
+
+    <div id="modalOverlay">
+        <div class="modal">
+            <h2 id="modalText"></h2>
+            <button class="btn btn-check" onclick="closeModal()">حَسَنًا</button>
+        </div>
+    </div>
+
+    <script>
+        const items = [
+            { id: 1, word: "سَرير", img: "1.png", isDistractor: false },
+            { id: 2, word: "سَجّادة", img: "2.png", isDistractor: false },
+            { id: 3, word: "ثَلّاجة", img: "3.png", isDistractor: false },
+            { id: 4, word: "كُرْسِيّ", img: "4.png", isDistractor: false },
+            { id: 5, word: "مِكْنَسة", img: "5.png", isDistractor: false },
+            { id: 99, word: "غَسّالة", img: null, isDistractor: true }
+        ];
+
+        let selectedElement = null;
+        let hasChecked = false;
+
+        function playInstruction() {
+            const audio = document.getElementById('audioInstruction');
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Ses oynatılamadı."));
+        }
+
+        function init() {
+            const pool = document.getElementById('wordPool');
+            const grid = document.getElementById('gridArea');
+            pool.innerHTML = '';
+            grid.innerHTML = '';
+
+            const wordList = [...items].sort(() => Math.random() - 0.5);
+            wordList.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'word-item';
+                div.innerText = item.word;
+                div.dataset.id = item.id;
+                div.onclick = () => selectWord(div);
+                pool.appendChild(div);
+            });
+
+            const visualItems = items.filter(i => !i.isDistractor);
+            visualItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.innerHTML = `
+                    <div class="img-box">
+                        <img src="${item.img}" alt="${item.word}">
+                    </div>
+                    <div class="drop-area" data-target-id="${item.id}" onclick="dropWord(this)">ضَعْ هُنا</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectWord(el) {
+            document.querySelectorAll('.word-item').forEach(w => w.classList.remove('selected'));
+            if (selectedElement === el) selectedElement = null;
+            else {
+                selectedElement = el;
+                el.classList.add('selected');
+            }
+        }
+
+        function dropWord(area) {
+            const pool = document.getElementById('wordPool');
+            if (!selectedElement) {
+                if (area.dataset.currentId) {
+                    const div = document.createElement('div');
+                    div.className = 'word-item';
+                    div.innerText = area.innerText;
+                    div.dataset.id = area.dataset.currentId;
+                    div.onclick = () => selectWord(div);
+                    pool.appendChild(div);
+                    area.innerText = '';
+                    area.dataset.currentId = '';
+                    area.classList.remove('filled');
+                    area.style.borderColor = '#ddd';
+                    hasChecked = false;
+                    document.getElementById('feedbackText').textContent = '';
+                }
+                return;
+            }
+
+            if (area.dataset.currentId) {
+                const div = document.createElement('div');
+                div.className = 'word-item';
+                div.innerText = area.innerText;
+                div.dataset.id = area.dataset.currentId;
+                div.onclick = () => selectWord(div);
+                pool.appendChild(div);
+            }
+
+            area.innerText = selectedElement.innerText;
+            area.dataset.currentId = selectedElement.dataset.id;
+            area.classList.add('filled');
+
+            selectedElement.remove();
+            selectedElement = null;
+            hasChecked = false;
+            document.getElementById('feedbackText').textContent = '';
+        }
+
+        function checkAnswers() {
+            hasChecked = true;
+            document.getElementById("feedbackText").textContent = "";
+            const areas = document.querySelectorAll('.drop-area');
+            const realItemsCount = items.filter(i => !i.isDistractor).length;
+            let correct = 0;
+
+            areas.forEach(area => {
+                if (area.dataset.currentId && area.dataset.currentId === area.dataset.targetId) {
+                    area.style.borderColor = "#4caf50";
+                    correct++;
+                } else if (area.dataset.currentId) {
+                    area.style.borderColor = "#f44336";
+                }
+            });
+
+            const modal = document.getElementById('modalOverlay');
+            const text = document.getElementById('modalText');
+
+            if (correct === realItemsCount) {
+                text.innerText = "أَحْسَنْت!";
+                text.style.color = "#4caf50";
+            } else {
+                text.innerText = "حاوِلْ مَرَّة أُخْرى";
+                text.style.color = "#f44336";
+            }
+            modal.style.display = 'flex';
+        }
+
+        function showSolution() {
+            if (!hasChecked) {
+                document.getElementById('feedbackText').textContent = 'أَجِبْ عَنِ السُّؤال أَوَّلًا.';
+                return;
+            }
+            const areas = document.querySelectorAll('.drop-area');
+            areas.forEach(area => {
+                const correctItem = items.find(i => i.id == area.dataset.targetId);
+                if (correctItem) {
+                    area.innerText = correctItem.word;
+                    area.dataset.currentId = correctItem.id;
+                    area.classList.add('filled');
+                    area.style.borderColor = "#4caf50";
+                }
+            });
+
+            document.querySelectorAll('.word-item').forEach(w => w.remove());
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+
+        function resetGame() {
+            hasChecked = false;
+            document.getElementById('feedbackText').textContent = '';
+            init();
+            closeModal();
+        }
+
+        window.onload = init;
+    </script>
+
+<script>
+(function(){
+  const overlay = document.getElementById('globalStartOverlay');
+  const startBtn = document.getElementById('globalStartBtn');
+  const target = document.querySelector('.instruction') || document.querySelector('.instruction-box p') || document.querySelector('h1');
+  const text = target ? (target.textContent || target.innerText || '').trim() : '';
+  document.getElementById('globalStartInstruction').textContent = text;
+  function playInstructionFromStart(){
+    try {
+      if (typeof playInstruction === 'function') { playInstruction(); return; }
+      if (typeof playInstrAudio === 'function') { playInstrAudio(); return; }
+      const a = document.getElementById('instructionAudio') || document.getElementById('instrAudio') || document.getElementById('mainAudio');
+      if (a) { a.currentTime = 0; a.play().catch(()=>{}); return; }
+    } catch(e){}
+  }
+  startBtn.addEventListener('click', function(){
+    overlay.style.display='none';
+    playInstructionFromStart();
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function q(sel){ return document.querySelector(sel); }
+  function qa(sel){ return Array.from(document.querySelectorAll(sel)); }
+  function getInstructionAudio(){
+    return q('#audio-inst') || q('#instructionAudio') || q('#introAudio') || q('audio[data-role="instruction"]') || qa('audio').find(a => (a.id||'').toLowerCase().includes('inst')) || qa('audio')[0] || null;
+  }
+  function hideAudioIcons(){
+    qa('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon,.speaker-icon,.sound-icon').forEach(el=>{
+      el.style.display='none';
+      el.style.visibility='hidden';
+      el.setAttribute('aria-hidden','true');
+    });
+  }
+  function playInstructionAudio(){
+    hideAudioIcons();
+    var a = getInstructionAudio();
+    if(a){
+      try{ a.currentTime = 0; }catch(e){}
+      try{ var p = a.play(); if(p && p.catch){ p.catch(function(){}); } }catch(e){}
+      return true;
+    }
+    var btn = q('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon');
+    if(btn){ try{ btn.click(); }catch(e){} return true; }
+    return false;
+  }
+  function initStartOverlay(){
+    var overlay = q('#globalStartOverlay');
+    var startBtn = q('#globalStartBtn');
+    var startInstr = q('#globalStartInstruction');
+    if(startInstr && !startInstr.textContent.trim()){
+      var src = q('.instruction, .instructions, h1, .question-text, .title');
+      if(src) startInstr.textContent = src.textContent.trim();
+    }
+    if(startBtn){
+      startBtn.addEventListener('click', function(){
+        setTimeout(playInstructionAudio, 50);
+        setTimeout(hideAudioIcons, 100);
+      }, true);
+    }
+    if(!overlay){
+      setTimeout(hideAudioIcons, 100);
+    }
+  }
+  function initMemoryFeedback(){
+    var fb = q('#feedbackBox') || q('#memoryFeedback') || q('.feedbackBox') || q('.feedback');
+    if(fb){
+      var apply = function(){
+        var t = (fb.textContent || '').trim();
+        fb.style.color = t.indexOf('خَطَأ') !== -1 ? '#dc2626' : '';
+      };
+      try{
+        new MutationObserver(apply).observe(fb,{childList:true,subtree:true,characterData:true});
+      }catch(e){}
+      apply();
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    hideAudioIcons();
+    initStartOverlay();
+    initMemoryFeedback();
+  });
+})();
+</script>
+
+
+<script id="final-sequence-fix">
+(function(){
+  try {
+    const pickBySelector = (sel) => sel ? document.querySelector(sel) : null;
+    const pickByText = (rxSrc) => {
+      if(!rxSrc) return null;
+      const rx = new RegExp(rxSrc);
+      return Array.from(document.querySelectorAll('button,.btn')).find(b => rx.test((b.textContent||'').replace(/\s+/g,' ').trim()));
+    };
+    const checkBtn = pickBySelector(null) || pickByText("تَحَق|تحق");
+    const showBtn  = pickBySelector(null)  || pickByText("أَظْهِر|اظهر");
+    const resetBtn = pickBySelector(null) || pickByText("حاوِل|حاول|إِعاد|اعاد");
+    if(!checkBtn || !showBtn || !resetBtn) return;
+
+    const navBtns = [].map(sel => document.querySelector(sel)).filter(Boolean);
+    let phase = 'fill';
+
+    function setActive(btn, enabled){
+      if(!btn) return;
+      btn.hidden = false;
+      btn.style.display = '';
+      btn.disabled = !enabled;
+      btn.style.opacity = enabled ? '1' : '0.55';
+      btn.style.pointerEvents = enabled ? 'auto' : 'none';
+    }
+
+    function isComplete(){
+      try { return !!(Array.from(document.querySelectorAll('.drop-area')).filter(a => a.dataset.targetId).length>0 && Array.from(document.querySelectorAll('.drop-area')).filter(a => a.dataset.targetId).every(a => !!a.dataset.currentId)); } catch(e) { return false; }
+    }
+
+    function isWrong(){
+      try { return !!(Array.from(document.querySelectorAll('.drop-area')).filter(a => a.dataset.targetId).some(a => String(a.dataset.currentId||'') !== String(a.dataset.targetId||''))); } catch(e) { return false; }
+    }
+
+    function syncFill(){
+      if(phase !== 'fill') return;
+      setActive(checkBtn, isComplete());
+      setActive(showBtn, false);
+      setActive(resetBtn, false);
+    }
+
+    function syncAfterCheck(){
+      const wrong = isWrong();
+      phase = wrong ? 'checkedWrong' : 'checkedCorrect';
+      setActive(checkBtn, false);
+      setActive(showBtn, wrong);
+      setActive(resetBtn, !wrong);
+    }
+
+    function syncAfterShow(){
+      phase = 'solved';
+      setActive(checkBtn, false);
+      setActive(showBtn, false);
+      setActive(resetBtn, true);
+    }
+
+    function syncAfterReset(){
+      phase = 'fill';
+      setTimeout(syncFill, 0);
+    }
+
+    function runCheck(){
+      if(checkBtn.disabled) return;
+      
+      if(typeof window["checkAnswers"] === 'function') window["checkAnswers"]();
+      setTimeout(syncAfterCheck, 0);
+    }
+
+    function runShow(){
+      if(showBtn.disabled) return;
+      
+      if(typeof window["showSolution"] === 'function') window["showSolution"]();
+      setTimeout(syncAfterShow, 0);
+    }
+
+    function runReset(){
+      if(resetBtn.disabled) return;
+      
+      if(typeof window["resetGame"] === 'function') window["resetGame"]();
+      syncAfterReset();
+    }
+
+    function hardBind(btn, fn){
+      ['click','touchend'].forEach(evt => {
+        btn.addEventListener(evt, function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          fn();
+          return false;
+        }, true);
+      });
+      btn.onclick = null;
+    }
+
+    hardBind(checkBtn, runCheck);
+    hardBind(showBtn, runShow);
+    hardBind(resetBtn, runReset);
+
+    navBtns.forEach(btn => {
+      ['click','touchend'].forEach(evt => btn.addEventListener(evt, () => {
+        phase = 'fill';
+        setTimeout(syncFill, 50);
+      }, true));
+    });
+
+    ['click','touchend','drop'].forEach(evt => document.addEventListener(evt, () => {
+      if(phase === 'fill') setTimeout(syncFill, 0);
+    }, true));
+
+    window.addEventListener('load', () => setTimeout(syncFill, 0));
+    setTimeout(syncFill, 0);
+  } catch(e) {
+    console.warn('final-sequence-fix error', e);
+  }
+})();
+</script>
+
+</body>
+</html>

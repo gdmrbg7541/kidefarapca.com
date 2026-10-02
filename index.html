@@ -5100,9 +5100,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       var DERS_KITABI = {
         /* 5. sınıf kitabı sitede (01.10.2026): kitap/5-sinif-2026-2027/ —
            sayfa çevirmeli kitap; internetsiz çalışır, flaş için ZIP indirilebilir. */
+        /* 5. sınıfın ÜÇ kitabı var (02.10.2026): kart yeni Maarif kitabına gider,
+           2025-2026 baskısı ve 2024-2025 kitabı kitabın içindeki seçiciden
+           açılır (kitap/5-sinif-2025-2026/, kitap/5-sinif-2024-2025/). */
         '5': { url: 'kitap/5-sinif-2026-2027/index.html', etiket: 'DİJİTAL KİTAP',
-               ipucu: '5. sınıf Arapça ders ve öğrenci çalışma kitabı (2026-2027) — sayfa çevirmeli kitap; ' +
-                      'flaşa indirilebilir; yeni sekmede açılır' },
+               ipucu: '5. sınıf Arapça ders kitabı (2026-2027, Maarif) — sayfa çevirmeli kitap; ' +
+                      '103 ses, 9 video, 4 şarkı ve 22 etkinlik içinde; eski baskılar da ' +
+                      'kitabın içinden açılır; yeni sekmede açılır' },
         /* 6. sınıf 2026-2027 kitabı sitede (01.10.2026): kitap/6-sinif-2026-2027/ —
            sayfa çevirmeli kitap + 42 ses, 44 etkinlik, video ve şarkılar;
            internetsiz çalışır, flaş için ZIP indirilebilir.
@@ -5114,8 +5118,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           '2025-2026': portalKitap('6')
         },
         /* 7. sınıfın iki kitabı var (bkz. sistem/sinifveri.js → VERI_YILI[7]).
-           Mektep Yayınları'nın kendi sayfa çevirmeli kitabı yayında; MEB
-           kitabının ayrı adresi henüz yok, portala gidiyor. */
+           Mektep Yayınları'nın kendi sayfa çevirmeli kitabı yayında;
+           2027-2028 MEB kitabının sayfa çevirmeli kopyası kitap/
+           7-sinif-2027-2028/ altında DURUYOR ama GİZLİ (02.10.2026):
+           resmî olarak yayınlanamadığı için karttan bağlantı verilmez,
+           kitap seçicide görünmez ve indirilemez; kart portala gider. */
         '7': {
           '2026-2027': flipKitap('7', 'https://arapca.muallimun.net/flipbook/iho07_mektep/',
                                  'Mektep Yayınları'),

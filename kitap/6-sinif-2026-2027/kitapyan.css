@@ -1,0 +1,225 @@
+/* ============================================================
+   YAN ARAÇ ÇUBUĞU — üstteki şerit sola alınır            02.10.2026
+   Öğretmen: "kitap iki sayfa açıkken çok küçük duruyor, yukardaki
+   tüm araç çubukları sola alalım kitap seçme kısmının altına,
+   açılıp kapanabilir olsun."
+
+   İki sayfalık yayılım yatay ekranda BOYA sığıyor, ene değil: üstteki
+   60 px'lik şerit ve alttaki 64 px'lik şerit kalkınca kitap ~%18 büyüyor.
+   Soldan giden 188 px (daraltınca 56 px) boşta duran enden karşılanıyor.
+   02.10.2026 ikinci adım — öğretmen: "aşağıdaki ilerleme çizgisini de sola
+   alalım daha kısa olsun": alt şeridin içi (ünite/ders, kaydıraç, sayaç,
+   sayfaya git) yan çubuğun altına indi, alt şerit tamamen kalktı.
+
+   Yalnız 760 px'ten geniş ekranlarda; telefonda eski üst şerit düzeni
+   olduğu gibi kalır (dar ekranda yan çubuk eni yiyor).
+   kitapyan.js html'e "yanli" sınıfını koyar, daraltınca "dar" ekler.
+   ============================================================ */
+
+@media (min-width: 760px) {
+
+  html.yanli {
+    --yan: 188px;          /* açık en */
+    --yan-dar: 56px;       /* daraltılmış en */
+  }
+  html.yanli.dar { --yan: var(--yan-dar); }
+
+  /* renkli şerit: üstten sola, dikey */
+  html.yanli .serit {
+    top: 0; bottom: 0; left: 0; right: auto; width: 5px; height: auto;
+    background: linear-gradient(180deg, var(--ink) 0 22%, var(--teal) 22% 42%,
+      var(--gold) 42% 62%, var(--coral) 62% 80%, var(--violet) 80% 100%);
+  }
+
+  /* ---------- çubuğun kendisi ---------- */
+  html.yanli .ust {
+    top: 0; bottom: 0; left: 5px; right: auto;
+    width: var(--yan); height: auto;
+    flex-direction: column; align-items: stretch; justify-content: flex-start;
+    gap: 8px; padding: 12px 9px 10px;
+    border-bottom: 0; border-right: 1px solid rgba(255, 255, 255, .08);
+    overflow-x: hidden; overflow-y: auto; scrollbar-width: thin;
+    transition: width .2s cubic-bezier(.2, .7, .3, 1);
+  }
+  html.yanli .ust::-webkit-scrollbar { width: 6px }
+  html.yanli .ust::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 99px }
+
+  /* ---------- kitap seçme (marka) en üstte ---------- */
+  /* iki satır: 1) kitap simgesi + ad + ▾   2) altında yıl */
+  html.yanli .marka {
+    width: 100%; flex: 0 0 auto; align-items: center; flex-wrap: wrap;
+    justify-content: flex-start; overflow: hidden; column-gap: 7px; row-gap: 0;
+  }
+  html.yanli .marka .ks-kik { order: 0 }
+  html.yanli .marka b {
+    order: 1; font-size: 15px; flex: 1 1 auto; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  /* "DEĞİŞTİR" yazısı yan çubuğa sığmıyor: yalnız ▾ oku kalır */
+  html.yanli .marka .ks-sag { order: 2; margin-left: auto; flex: 0 0 auto }
+  html.yanli .marka .ks-sag .ks-yazi { display: none }
+  html.yanli .marka > span:not(.ks-kik):not(.ks-sag) {
+    order: 3; flex: 0 0 100%; padding-left: 27px; font-size: 9.5px; line-height: 1.3;
+  }
+  html.yanli.dar .marka {
+    width: 38px; height: 38px; align-self: center; justify-content: center;
+    padding: 0; flex-wrap: nowrap;
+  }
+  html.yanli.dar .marka b,
+  html.yanli.dar .marka > span:not(.ks-kik) { display: none }
+
+  /* ---------- düğmeler alt alta ---------- */
+  html.yanli .araclar {
+    flex-direction: column; align-items: stretch; gap: 4px; width: 100%;
+  }
+  html.yanli .tus {
+    width: 100%; height: 38px; justify-content: flex-start;
+    display: flex; align-items: center; gap: 10px; padding: 0 10px;
+    text-align: start;
+  }
+  html.yanli .tus svg { flex: 0 0 auto }
+  html.yanli .tus.etiketli { width: 100%; padding: 0 10px }
+  html.yanli .tus > span {
+    font-size: 12.5px; font-weight: 700; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  /* etiketi olmayan düğmelere kitapyan.js yazı ekliyor */
+  html.yanli .tus > span.yan-et { display: inline }
+
+  html.yanli.dar .tus { width: 38px; padding: 0; justify-content: center; align-self: center }
+  html.yanli.dar .tus > span { display: none }
+
+  /* ayraç: dikey çizgiden yatay çizgiye */
+  html.yanli .ayrac {
+    width: 100%; height: 1px; margin: 5px 0; background: rgba(255, 255, 255, .1);
+  }
+  html.yanli.dar .ayrac { width: 28px; align-self: center }
+
+  /* yakınlaştırma üçlüsü yan yana kalsın */
+  html.yanli .yan-zoom {
+    display: flex; align-items: center; gap: 2px; width: 100%;
+    background: rgba(255, 255, 255, .05); border-radius: 10px; padding: 2px;
+  }
+  html.yanli .yan-zoom .tus { width: 34px; height: 32px; padding: 0; justify-content: center }
+  html.yanli .yan-zoom .tus > span { display: none }   /* kutuda yalnız simge */
+  html.yanli .yan-zoom .sayac { flex: 1; text-align: center; padding: 0; font-size: 12px }
+  html.yanli.dar .yan-zoom { flex-direction: column; width: 38px; align-self: center; background: none; padding: 0 }
+  html.yanli.dar .yan-zoom .sayac { display: none }
+
+  /* ---------- aç / kapat ---------- */
+  html.yanli .yan-kapat {
+    margin-top: 4px; width: 100%; height: 34px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: flex-start; gap: 10px;
+    padding: 0 10px; border-radius: 10px; color: #8E9DB8;
+    font-size: 11.5px; font-weight: 700; letter-spacing: .02em;
+    background: none; border: 0; cursor: pointer; font-family: inherit;
+    transition: background .15s, color .15s;
+  }
+  html.yanli .yan-kapat:hover { background: rgba(255, 255, 255, .1); color: #fff }
+  html.yanli .yan-kapat svg {
+    width: 17px; height: 17px; flex: 0 0 auto; fill: none; stroke: currentColor;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform .2s;
+  }
+  html.yanli.dar .yan-kapat { width: 38px; padding: 0; justify-content: center; align-self: center }
+  html.yanli.dar .yan-kapat span { display: none }
+  html.yanli.dar .yan-kapat svg { transform: rotate(180deg) }
+
+  /* ---------- ilerleme: yan çubuğun altında ---------- */
+  html.yanli .yan-ilerleme {
+    margin-top: auto; width: 100%; flex: 0 0 auto;
+    display: flex; flex-direction: column; gap: 7px;
+    padding: 9px 0 3px; border-top: 1px solid rgba(255, 255, 255, .1);
+  }
+  html.yanli .yan-ilerleme .konum {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 7px;
+    font-size: 11.5px; min-width: 0;
+  }
+  html.yanli .yan-ilerleme .konum .u { font-size: 9px; padding: 2px 7px }
+  html.yanli .yan-ilerleme .konum .d {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  html.yanli .yan-ilerleme .kaydirac {
+    flex: 0 0 auto; display: flex; flex-direction: column;
+    align-items: stretch; gap: 5px;
+  }
+  html.yanli .yan-ilerleme .kaydirac .sayac {
+    padding: 0; font-size: 12px; text-align: center;
+  }
+  html.yanli .yan-ilerleme input[type=range] { width: 100%; flex: 0 0 auto }
+  html.yanli .yan-ilerleme .git {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 6px; font-size: 11px;
+  }
+  html.yanli .yan-ilerleme .git input { width: 48px; padding: 4px 6px; font-size: 11.5px }
+
+  /* daraltınca yalnız sayfa numarası kalır */
+  html.yanli.dar .yan-ilerleme { padding: 8px 0 2px }
+  html.yanli.dar .yan-ilerleme .konum,
+  html.yanli.dar .yan-ilerleme .git,
+  html.yanli.dar .yan-ilerleme input[type=range] { display: none }
+  html.yanli.dar .yan-ilerleme .sayac { font-size: 10.5px }
+
+  /* ---------- kazanılan yer: alt şerit tamamen kalkıyor ---------- */
+  html.yanli .alt.yan-bos { display: none }
+  html.yanli .sahne {
+    top: 0; bottom: 0; left: calc(var(--yan) + 5px); right: 0;
+  }
+  /* ---------- oklar sağ kenarda alt alta ----------
+     Öğretmen: "sol ok sağ okun altına alalım, sağ tarafa alalım."
+     İleri üstte, geri altında; kitabın sol yanı boşalıyor. */
+  html.yanli .ok {
+    left: auto; right: 14px;
+    transition: background .16s, opacity .16s, transform .16s;
+  }
+  html.yanli .ok.sag { transform: translateY(-50%) translateY(-45px) }
+  html.yanli .ok.sol { transform: translateY(-50%) translateY(45px) }
+  html.yanli .ok:hover { transform: translateY(-50%) translateY(-45px) scale(1.04) }
+  html.yanli .ok.sol:hover { transform: translateY(-50%) translateY(45px) scale(1.04) }
+
+  /* ikiz oklar sol kenarda — sıra aynı, böylece hangi tarafa uzanırsan
+     uzan üstteki hep geri, alttaki hep ileri. Yan çubuk daralınca
+     (--yan değişir) kendiliğinden kayarlar. */
+  html.yanli .ok.ikiz { left: calc(var(--yan) + 14px); right: auto }
+  html.yanli .zoom-bilgi { left: calc(var(--yan) + 19px); bottom: 16px }
+  html.yanli .tost { bottom: 20px }
+
+  /* çubuk kitabın üstüne binen panellerin altında kalsın */
+  html.yanli .ust { z-index: 50 }
+}
+
+/* dar ekranda yan çubuk yok: yazılar ve aç/kapat düğmesi görünmesin
+   (yan çubuk kuralları yalnız ≥760 px'te; düğme üst şeride sığmıyor) */
+.tus > span.yan-et { display: none }
+.yan-kapat { display: none }
+.yan-ilerleme:empty { display: none }
+/* yan çubuk kapalıyken (telefon) .konum alt şeride indiği için üstte
+   düğmeler sağa yaslanır, kitap adı taşmasın diye kısalır */
+@media (max-width: 759px) {
+  .ust .araclar { margin-left: auto }
+  .ust .marka { min-width: 0; overflow: hidden }
+  .ust .marka b { overflow: hidden; text-overflow: ellipsis }
+}
+
+/* ============================================================
+   PANEL GÖVDESİ KAYDIRMA (02.10.2026)
+   Öğretmen: "kaynaklarda scroll çalışmıyor iki parmakla."
+   Sütun esnek kutuda çocuğun min-height:auto'su kısalmayı engelleyip
+   overflow:auto'yu etkisiz bırakabiliyor (Safari'de belirgin).
+   ============================================================ */
+.panel .pgovde,
+.panel .cevap-alan,
+.ks-panel .ks-govde {
+  min-height: 0;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  /* Kullanımdan kalkmış bu özellik Safari'de kaydırmayı ayrı bir katmana
+     taşıyıp iki parmak olaylarını yutabiliyor (02.10.2026). */
+  -webkit-overflow-scrolling: auto;
+}
+.panel { min-height: 0 }
+
+/* ikiz oklar yalnız yan çubuklu geniş ekranda; dar ekranda oklar zaten
+   iki yanda duruyor, kopya üst üste binerdi. */
+.ok.ikiz { display: none }
+@media (min-width: 760px) { html.yanli .ok.ikiz { display: grid } }

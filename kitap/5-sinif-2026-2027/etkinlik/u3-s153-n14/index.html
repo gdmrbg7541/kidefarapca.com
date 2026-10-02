@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>لُعْبَةُ الذّاكِرَة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: #ffffff;
+            --accent-color: #ffce00;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Scheherazade New', serif;
+            background: var(--primary-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100svh;
+            overflow: hidden;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 900px;
+            height: 100svh;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: clamp(24px, 4vw, 32px);
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin: 5px auto;
+            gap: 10px;
+        }
+
+        .stat-box {
+            font-size: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+            border: 2px solid white;
+            color: white;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .audio-btn {
+            background: white;
+            color: #764ba2;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 6px;
+            width: 100%;
+            height: 70vh;
+            perspective: 1000px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card.matched{visibility:visible !important; opacity:1 !important; border:4px solid #16a34a !important; box-shadow:0 0 0 3px rgba(22,163,74,.18) !important;}
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 2px solid white;
+        }
+
+        .card-back {
+            background: var(--accent-color);
+            font-size: clamp(20px, 5vw, 32px);
+            color: #764ba2;
+        }
+
+        .card-front {
+            background: white;
+            transform: rotateY(180deg);
+        }
+
+        .card-front img {
+            width: 95%;
+            height: 95%;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+
+        .controls {
+            margin-top: 5px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-main {
+            background: #ff4b2b;
+            color: white;
+            border: none;
+            padding: 8px 25px;
+            border-radius: 50px;
+            font-family: 'Scheherazade New', serif;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .btn-main:active {
+            transform: scale(0.95);
+        }
+
+        #success-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            .grid { gap: 4px; }
+            .stat-box { font-size: 16px; padding: 5px 10px; }
+            .instr-text { line-height: 1.1; }
+        }
+    
+#oai-bottom-feedback, .feedback, .feedback-message, .feedback-box, .message-box, .result-message{
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+#oai-bottom-feedback{color:#dc2626 !important; bottom:120px !important;}
+
+</style>
+
+<style id="oai-fix-style">
+.audio-btn,.audio-icon,.speaker-icon,.sound-icon,.play-audio,.audio-trigger,#playAudioBtn,[title*="استمع"],[aria-label*="استمع"]{display:none !important;visibility:hidden !important;opacity:0 !important;pointer-events:none !important}
+#oai-start-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(79,70,229,.97),rgba(16,185,129,.95));z-index:999999}
+#oai-start-card{width:min(92vw,760px);background:#fff;border-radius:28px;padding:28px 22px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+#oai-start-text{font-family:'Scheherazade New',serif;font-size:clamp(28px,4vw,40px);line-height:1.8;color:#1f2937;margin-bottom:18px}
+#oai-start-btn{font-family:'Scheherazade New',serif;font-size:clamp(26px,3vw,34px);padding:12px 36px;border:none;border-radius:18px;background:#16a34a;color:#fff;cursor:pointer}
+#oai-bottom-feedback{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);display:none;z-index:999998;padding:0;background:transparent !important;color:#dc2626 !important;font-family:'Scheherazade New',serif;font-size:clamp(22px,2.8vw,28px);font-weight:400;box-shadow:none !important;border:none !important;border-radius:0 !important;pointer-events:none;text-align:center;min-width:auto;max-width:88vw}
+#oai-bottom-feedback.show{display:block}
+}
+.card.oai-wrong,.memory-card.oai-wrong,.tile.oai-wrong{border:4px solid #dc2626 !important;box-shadow:0 0 0 3px rgba(220,38,38,.18) !important}
+.card.matched,.memory-card.matched,.tile.matched,.card.oai-matched,.memory-card.oai-matched,.tile.oai-matched{visibility:visible !important;opacity:1 !important;border:4px solid #16a34a !important;box-shadow:0 0 0 3px rgba(22,163,74,.18) !important}
+.drop-box .dropped-content,.drop-zone.filled,.drop-area.filled{cursor:pointer}
+</style>
+
+
+<style id="final-memory-feedback-hide">
+#feedbackBox,#memoryFeedback,#oai-bottom-feedback,#feedback,.feedback,.feedbackBox,.feedback-message,.feedback-box,.message-box,.result-message{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  min-height:0 !important;
+  height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:none !important;
+}
+</style>
+<script id="final-memory-feedback-hide-script">
+(function(){
+  function clearMemFeedback(){
+    ['feedbackBox','memoryFeedback','oai-bottom-feedback','feedback'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){ el.textContent=''; el.style.display='none'; }
+    });
+    document.querySelectorAll('.feedback,.feedbackBox,.feedback-message,.feedback-box,.message-box,.result-message').forEach(el=>{
+      el.textContent=''; el.style.display='none';
+    });
+  }
+  document.addEventListener('click', ()=>setTimeout(clearMemFeedback,0), true);
+  document.addEventListener('touchend', ()=>setTimeout(clearMemFeedback,0), true);
+  window.addEventListener('load', clearMemFeedback);
+  setTimeout(clearMemFeedback,0);
+})();
+</script>
+
+</head>
+<body>
+
+<div id="game-container">
+    <div class="header">
+        <h1>طابِق الصُّوَرَ الْمُتَشابِهَة.</h1>
+        <div class="stats-row">
+            <div class="stat-box" id="timer-display" style="max-width: 120px;">اَلْوَقْت: ٠٠:٠٠</div>
+            <div class="stat-box">
+                <span class="instr-text">طابِق الصُّوَرَ الْمُتَشابِهَة.</span>
+                <div class="audio-btn" onclick="playInstructionSound()" title="استمع">🔊</div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="instrAudio" src="audio1.mp3"></audio>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="controls">
+        <button class="btn-main" onclick="resetGame()">حاوِلْ مَرَّةً أُخْرى</button>
+    </div>
+</div>
+
+<div id="success-modal">
+    <div class="modal-content">
+        <p id="final-time" style="font-size: 28px; margin-bottom: 20px; font-weight: bold;"></p>
+        <button class="btn-main" onclick="closeModalAndReset()">حاوِلْ مَرَّةً أُخْرى</button>
+    </div>
+</div>
+
+<script>
+    const soundMap = {
+        1: "dabib.mp3",
+        2: "amile.mp3",
+        3: "muhendise.mp3",
+        4: "muvazzafe.mp3",
+        5: "muallım.mp3",
+        6: "mutegaide.mp3",
+        7: "muvazzaf.mp3",
+        8: "mutegaid.mp3",
+        9: "rabbetul beyt.mp3",
+        10: "muallime.mp3",
+        11: "tacir.mp3",
+        12: "amil.mp3",
+        13: "dabibe.mp3",
+        14: "tacira.mp3",
+        15: "muhendis.mp3"
+    };
+
+    let flippedCards = [];
+    let matchedCount = 0;
+    let lockBoard = false;
+    let currentAudio = null;
+    
+    let seconds = 0;
+    let timerInterval = null;
+    let gameStarted = false;
+
+    function toArabicNumerals(str) {
+        const arabicNums = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+        return str.replace(/[0-9]/g, w => arabicNums[+w]);
+    }
+
+    function formatTime(s) {
+        const mins = Math.floor(s / 60).toString().padStart(2, '0');
+        const secs = (s % 60).toString().padStart(2, '0');
+        /* ✅ DÜZENLEME: Dakika solda, Saniye sağda (MM:SS) */
+        return toArabicNumerals(`${mins}:${secs}`);
+    }
+
+    function playInstructionSound() {
+        const audio = document.getElementById('instrAudio');
+        audio.currentTime = 0;
+        audio.play();
+    }
+
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        seconds = 0;
+        timerInterval = setInterval(() => {
+            seconds++;
+            document.getElementById('timer-display').innerText = `اَلْوَقْت: ${formatTime(seconds)}`;
+        }, 1000);
+    }
+
+    function stopTimer() {
+        clearInterval(timerInterval);
+    }
+
+    function playSound(id) {
+        const soundFile = soundMap[id];
+        if (!soundFile) return;
+
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        }
+
+        currentAudio = new Audio(soundFile);
+        currentAudio.play().catch(e => {
+            console.warn(`Ses çalınamadı (${soundFile}): `, e);
+        });
+    }
+
+    function createBoard() {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+        
+        const cardValues = [];
+        for (let i = 1; i <= 15; i++) {
+            cardValues.push(i, i);
+        }
+
+        cardValues.sort(() => Math.random() - 0.5);
+
+        cardValues.forEach((val) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.dataset.id = val;
+            
+            card.innerHTML = `
+                <div class="card-back">؟</div>
+                <div class="card-front">
+                    <img src="${val}.jpeg" alt="görsel" onerror="this.src='https://via.placeholder.com/150?text=Resim+Yok'">
+                </div>
+            `;
+            
+            card.addEventListener('click', flipCard);
+            grid.appendChild(card);
+        });
+        
+        gameStarted = false;
+        document.getElementById('timer-display').innerText = `اَلْوَقْت: ${toArabicNumerals("00:00")}`;
+    }
+
+    function flipCard() {
+        if (lockBoard) return;
+        if (this === flippedCards[0]) return;
+        
+        if (!gameStarted) {
+            gameStarted = true;
+            startTimer();
+        }
+
+        this.classList.add('flipped');
+        flippedCards.push(this);
+
+        playSound(this.dataset.id);
+
+        if (flippedCards.length === 2) {
+            checkMatch();
+        }
+    }
+
+    function checkMatch() {
+        lockBoard = true;
+        let isMatch = flippedCards[0].dataset.id === flippedCards[1].dataset.id;
+
+        if (isMatch) {
+            disableCards();
+        } else {
+            unflipCards();
+        }
+    }
+
+    function disableCards() {
+        setTimeout(() => {
+            flippedCards[0].classList.add('matched');
+            flippedCards[1].classList.add('matched');
+            resetBoard();
+            matchedCount += 2;
+            if (matchedCount === 30) {
+                stopTimer();
+                showSuccess();
+            }
+        }, 600);
+    }
+
+    function unflipCards() {
+        setTimeout(() => {
+            flippedCards[0].classList.remove('flipped');
+            flippedCards[1].classList.remove('flipped');
+            resetBoard();
+        }, 1000);
+    }
+
+    function resetBoard() {
+        [flippedCards, lockBoard] = [[], false];
+    }
+
+    function resetGame() {
+        stopTimer();
+        matchedCount = 0;
+        createBoard();
+    }
+
+    function showSuccess() {
+        const modal = document.getElementById('success-modal');
+        const timeP = document.getElementById('final-time');
+        timeP.innerText = `اَلْوَقْتُ النِّهائِيّ: ${formatTime(seconds)}`;
+        modal.style.display = 'flex';
+    }
+
+    function closeModalAndReset() {
+        document.getElementById('success-modal').style.display = 'none';
+        resetGame();
+    }
+
+    window.onload = createBoard;
+</script>
+
+
+<script id="oai-fix-script">
+(function(){
+  function showBottomFeedback(msg, color){
+    let box=document.getElementById('oai-bottom-feedback');
+    if(!box){
+      box=document.createElement('div');
+      box.id='oai-bottom-feedback';
+      document.body.appendChild(box);
+    }
+    box.textContent=msg;
+    if(color) box.style.background=color;
+    box.classList.remove('show');
+    void box.offsetWidth;
+    box.classList.add('show');
+    clearTimeout(box._t);
+    box._t=setTimeout(()=>{ box.classList.remove('show'); box.style.display='none'; }, 1700);
+    box.style.display='block';
+  }
+  window.__oaiShowBottomFeedback=showBottomFeedback;
+
+  function hideAudioIcons(){
+    const selectors=['.audio-btn','.audio-icon','.speaker-icon','.sound-icon','.play-audio','.audio-trigger','#playAudioBtn','[title*="استمع"]','[aria-label*="استمع"]'];
+    selectors.forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.style.display='none'));
+    document.querySelectorAll('div,button,span,a').forEach(el=>{
+      const t=(el.textContent||'').trim();
+      if(t==='🔊' || t==='🎧') el.style.display='none';
+    });
+  }
+
+  function playInstruction(){
+    const fns=['playInstruction','playAudio','playAudioOnce','firstTouch'];
+    for(const fn of fns){
+      if(typeof window[fn]==='function'){ try{ window[fn](); return; }catch(e){} }
+    }
+    const audios=[...document.querySelectorAll('audio')];
+    const audio=audios.find(a=>a.id&&/instruction|audio1|audio-inst|audioElement/i.test(a.id)) || audios[0];
+    if(audio){
+      try{ audio.currentTime=0; const p=audio.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){}
+    }
+  }
+
+  function addStartOverlay(){
+    if(document.getElementById('oai-start-overlay')) return;
+    const overlay=document.createElement('div');
+    overlay.id='oai-start-overlay';
+    overlay.innerHTML='<div id="oai-start-card"><div id="oai-start-text"></div><button id="oai-start-btn" type="button">اِبْدَأْ</button></div>';
+    overlay.querySelector('#oai-start-text').textContent=(function(){
+  const sels=['.instruction','.instr','#instruction','.header .instruction','.header .instr','h1 span','h1','.title','.game-title'];
+  for(const s of sels){
+    const el=document.querySelector(s);
+    if(el && el.textContent.trim()) return el.textContent.trim();
+  }
+  return document.title || 'اِبْدَأْ';
+})();
+    document.body.appendChild(overlay);
+    overlay.querySelector('#oai-start-btn').addEventListener('click',()=>{
+      overlay.remove();
+      hideAudioIcons();
+      setTimeout(playInstruction,120);
+    },{once:true});
+  }
+
+  function installSolutionLock(){
+    window.__oaiChecked=false;
+    const checkNames=['checkAnswers','checkAnswer','validateAnswers'];
+    checkNames.forEach(name=>{
+      if(typeof window[name]==='function' && !window[name].__oaiWrapped){
+        const old=window[name];
+        const wrap=function(){ window.__oaiChecked=true; return old.apply(this,arguments); };
+        wrap.__oaiWrapped=true;
+        window[name]=wrap;
+      }
+    });
+    const solNames=['showSolution','showCorrectAnswers'];
+    solNames.forEach(name=>{
+      if(typeof window[name]==='function' && !window[name].__oaiWrapped){
+        const old=window[name];
+        const wrap=function(){
+          if(!window.__oaiChecked){
+            showBottomFeedback('أَجِبْ عَنِ السُّؤال أَوَّلًا.','#dc2626');
+            return;
+          }
+          return old.apply(this,arguments);
+        };
+        wrap.__oaiWrapped=true;
+        window[name]=wrap;
+      }
+    });
+    ['resetGame','init','loadQuestion','renderQuestion','nextQuestion','showQuestion'].forEach(name=>{
+      if(typeof window[name]==='function' && !window[name].__oaiResetWrapped){
+        const old=window[name];
+        const wrap=function(){ window.__oaiChecked=false; return old.apply(this,arguments); };
+        wrap.__oaiResetWrapped=true;
+        window[name]=wrap;
+      }
+    });
+  }
+
+  function installDropRevert(){
+    document.addEventListener('click',function(e){
+      const target=e.target.closest('.dropped-content,.drop-zone.filled,.drop-area.filled');
+      if(!target || window.__oaiChecked) return;
+
+      let zone=null, valueText='', currentId='', currentVal='';
+      if(target.classList.contains('dropped-content')){
+        zone=target.parentElement;
+        valueText=(target.textContent||'').trim();
+        target.remove();
+      } else {
+        zone=target;
+        valueText=(zone.innerText||'').trim();
+        currentId=zone.dataset.currentId||'';
+        currentVal=zone.dataset.currentVal||'';
+        zone.innerHTML='؟';
+      }
+      if(!zone) return;
+
+      const candidates=[...document.querySelectorAll('.word-item,.word,.word-card,.draggable-img,img.draggable-img,.option,.choice,.choice-item')];
+      let restored=false;
+      candidates.forEach(el=>{
+        const t=(el.textContent||'').trim();
+        const id=el.dataset.id||'';
+        const val=el.dataset.val||'';
+        if(!restored && ((valueText && t===valueText) || (currentId && id===currentId) || (currentVal && val===currentVal))){
+          el.style.visibility='visible';
+          el.style.display='';
+          if(el.parentElement==null){
+            const pool=document.getElementById('pool')||document.getElementById('wordPool')||document.querySelector('.word-row')||document.querySelector('.word-bank');
+            if(pool) pool.appendChild(el);
+          }
+          restored=true;
+        }
+      });
+
+      // image pool recreation if removed
+      if(!restored && currentId && typeof window.imageValues==='object'){
+        const pool=document.getElementById('wordPool')||document.getElementById('pool');
+        if(pool){
+          const img=document.createElement('img');
+          img.src=`images/${currentId}.jpg`;
+          img.className='draggable-img';
+          img.dataset.id=currentId;
+          img.dataset.val=window.imageValues[currentId];
+          img.onclick=()=>{ if(typeof selectImg==='function') selectImg(img); };
+          pool.appendChild(img);
+        }
+      }
+
+      zone.classList.remove('filled','correct','wrong');
+      zone.style.borderColor='';
+      zone.style.backgroundColor='';
+      zone.style.color='';
+      zone.dataset.currentVal='';
+      zone.dataset.currentId='';
+      if(zone.querySelector('.feedback-mark')) zone.querySelector('.feedback-mark').remove();
+      if(typeof window.updateButtonState==='function'){ try{ window.updateButtonState(); }catch(e){} }
+    });
+  }
+
+  function installMemoryFeedback(){
+    document.addEventListener('click',function(){
+      setTimeout(()=>{
+        const flipped=[...document.querySelectorAll('.card.flipped:not(.matched), .memory-card.flipped:not(.matched), .tile.flipped:not(.matched)')];
+        if(flipped.length===2){
+          const id1=flipped[0].dataset.id, id2=flipped[1].dataset.id;
+          if(id1 && id2 && id1!==id2){
+            flipped.forEach(c=>c.classList.add('oai-wrong'));
+            
+            setTimeout(()=>flipped.forEach(c=>c.classList.remove('oai-wrong')),700);
+          } else if(id1 && id1===id2){
+            flipped.forEach(c=>c.classList.add('oai-matched'));
+          }
+        }
+      },30);
+    },true);
+  }
+
+  function initAll(){
+    hideAudioIcons();
+    addStartOverlay();
+    installSolutionLock();
+    installDropRevert();
+    installMemoryFeedback();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', initAll);
+  else initAll();
+})();
+</script>
+
+</body>
+</html>

@@ -3202,3 +3202,515 @@ DEĞİŞEN DOSYALAR
   (aynıları Mac'teki asıl FLIPBOOK'ta da; kapak.webp oraya da kondu)
   Damga: kitapsecici.js ?v=20261002c
   Üretici: _kaynak/uretici/icindekilerEtiket.py
+
+=============================================================
+02.10.2026 — 7. SINIF (MAARİF 2027-2028) FLIPBOOK'U
+=============================================================
+İstek: "7. sınıf 2027-2028 kitabı hazır, onu da flipbook olarak ekleyelim."
+Karar (soruldu): kapsam = HEPSİ (kitap + ünite oyunları + ünite sonu
+değerlendirmeleri + scorm etkinlikleri), görünürlük = herkese açık.
+
+KAYNAK
+  Meb/5️⃣-🔟/7️⃣/Maarif 2027-2028/Arapça Kitabı 2027 Maarif.pdf
+  194 sayfa · 185 MB · 1. sayfa kapak yayılımı (1140x780), ötekiler
+  553x780 (oran 0,709 — 6. sınıfla birebir aynı).
+  (Google Drive bağlantısı açılamadı — Drive bağlayıcısı yok; kitap
+  zaten bilgisayarda bulundu.)
+
+ÜRETİLEN: kitap/7-sinif-2027-2028/  ·  22,3 MB
+  sayfa/001..195.webp (1152x1625) + sayfa/k/ küçükleri (240 px)
+    001 = ön kapak, 195 = arka kapak (yayılım ikiye ayrıldı, sırt payı
+    kırpıldı), 002-194 = PDF'in 2-194. sayfaları
+  veri.js · index.html · kapak.webp · dosyalar.js
+  motor dosyaları 6. sınıftan kopyalandı (kitaba özgü hiçbir şey
+  içlerinde yok, hepsi veri.js'ten okunuyor)
+
+SAYFA NUMARASI EŞLEMESİ (ölçüldü)
+  basılı = PDF - 1 (PDF 9 → basılı 8, PDF 178 → basılı 177)
+  flipbook'ta kapak başa eklendi → basılı = yaprak - 1, veri.js fark: 1
+  son basılı sayfa 193, toplam yaprak 195
+
+ÜNİTELER (kitabın içindekiler sayfasından, s.8)
+  1. Bugün Ne Yaptım?        10-51
+  2. Alışveriş Zamanı        52-93
+  3. Nereye Seyahat Edelim?  94-135
+  4. Şehrim ve Ülkem         136-177
+  Sözlük 178-190 · Kaynakça ve haritalar 191-193
+  ARAPÇA ADLAR ELLE YAZILMADI: sarf/ihkelime.js'teki doğrulanmış
+  Maarif-7 listesinden, "Sözlük (القاموس)" 6. sınıfın veri.js'inden
+  olduğu gibi alındı.
+
+KAYNAKLAR (30 tane, ünitelere göre gruplu)
+  · 4 ünite oyun paketi + 4 ünite sonu değerlendirmesi — sitede zaten
+    duruyordu (kitapetkinlikleri/7/), KOPYALANMADI, "../../" ile açılıyor
+  · 22 scorm etkinliği — Meb klasöründen kitapetkinlikleri/7/scorm/
+    altına Türkçe adlarla kopyalandı (14,4 MB; kopya dosya alınmadı):
+    Diyalog Kur · Kelimeler · Sırala · Soru Edatları · Farklı Olanı Bul ·
+    Klavye ile Yaz · Evet / Hayır · Harita
+
+BAĞLANTILAR
+  · Kitap seçici (kitapsecici.js): dört kitap oldu, kapağıyla listeleniyor
+  · index.html → DERS_KITABI['7']['2027-2028'] artık portala değil
+    sitedeki flipbook'a gidiyor
+  · kitapOrtakla.py'nin KITAPLAR listesine 7. sınıf eklendi
+
+DENENDİ (Playwright)
+  Başlık/marka doğru · içindekiler 4 ünite + sözlük + kaynakça, Arapça
+  adlar yerinde · "52" yazınca 2. Ünite / 51-52 · kaynak paneli 30
+  kaynağı 4 ünite başlığı altında listeledi · kitap seçici dört kitabı
+  gösterdi, açık olan işaretli · konsol hatasız.
+
+BOYUT: yayınlanacak toplam 893,9 MB (sınır 1024) — 130 MB pay kaldı.
+
+YAPILMADI (sonraya)
+  · Sayfa üstündeki altın çerçeveler (hotspot) yok: veri.js'teki "sayfa"
+    boş. Kaynaklar panelden açılıyor. İstenirse ünite açılış sayfalarına
+    birkaç çerçeve konabilir.
+  · "İndir" (flaşa) paketine etkinlikler girmiyor; etkinlikler kitap
+    klasörünün dışında.
+
+ÜRETİCİLER
+  _kaynak/uretici/kitap7Sayfa.py   (sayfaları çizer, parça parça)
+  _kaynak/uretici/kitap7Kur.py     (kabuk, veri.js, index.html, kapak)
+  _kaynak/uretici/kitap7Scorm.py   (scorm etkinliklerini alır ve bağlar)
+
+── 02.10.2026 · 7. SINIF MAARİF KİTABI GİZLİ VE İNDİRİLEMEZ ──────────────
+Öğretmen: "7. sınıf indirilemesin, çünkü resmî olarak yayınlanamaz,
+7. sınıf Maarif kitabı gizli olsun."
+
+Yapılanlar (_kaynak/uretici/kitap7Gizle.py):
+  · kitap/7-sinif-2027-2028/index.html — "İndir" düğmesi ve indirme
+    paneli kaldırıldı, dosyalar.js betiği çıkarıldı, <meta robots
+    noindex,nofollow> eklendi. dosyalar.js'in içi boşaltıldı.
+  · kitap/{5,6,7}/uygulama.js — #tIndir'e dinleyici bağlanırken null
+    denetimi (düğmesi olmayan kitap hata vermesin). 5 ve 6 eskisi gibi
+    indiriliyor; Kidef'te zaten indirme yok.
+  · _kaynak/ortak-kitap/kitapsecici.js — 7. sınıf kaydına gizli:true;
+    gizli kitap yalnız O KİTABIN İÇİNDEYKEN listede görünür. 5, 6 ve
+    Kidef'ten bakınca listede 3 kitap var. kitapOrtakla.py ile dağıtıldı,
+    damga kitapsecici.js?v=20261002f (ASIL flipbook dâhil).
+  · index.html — DERS_KITABI['7']['2027-2028'] yine portalKitap('7');
+    siteden kitaba bağlantı verilmiyor.
+Kitap klasörü yerinde (22,3 MB); adresini bilen açar. 22 scorm etkinliği
+sitede hiçbir listede değil, yalnız kitabın içinden açılıyor.
+Deneme: 5/6/7 açıldı, konsol hatası yok; 7'de İndir düğmesi yok, 5 ve 6'nın
+indirme paneli paketleri listeliyor.
+Yedek: _kaynak/yedekler/20261002-kitap7-gizle/
+
+── 02.10.2026 · ARAÇ ÇUBUĞU SOLA ALINDI (yan çubuk) ──────────────────────
+Öğretmen: "kitap iki sayfa açıkken çok küçük duruyor, yukardaki tüm araç
+çubukları sola alalım kitap seçme kısmının altına, açılıp kapanabilir olsun."
+
+Yeni ortak dosyalar: _kaynak/ortak-kitap/kitapyan.css + kitapyan.js
+(kitapOrtakla.py dağıtıyor, damga ?v=20261002a). HTML'de başka değişiklik yok.
+  · Üst şerit tamamen kalktı; her şey solda: en üstte kitap seçme (marka),
+    altında araç düğmeleri alt alta, en altta "Daralt".
+  · Daralt/genişlet: düğme ya da Y tuşu. Seçim hatırlanıyor (localStorage).
+    Daraltınca çubuk 188 → 56 px, yalnız simgeler kalıyor.
+  · Ünite/ders bilgisi alt şeride indi; alt şerit 64 → 44 px inceldi.
+  · Renkli şerit üstten sola alındı (dikey).
+  · 760 px'ten dar ekranda (telefon) ESKİ ÜST ŞERİT düzeni aynen kalıyor.
+İKİNCİ ADIM (aynı gün) — "aşağıdaki ilerleme çizgisini de sola alalım daha
+kısa olsun": alt şeridin içi de yan çubuğun altına indi (ünite rozeti, sayfa
+sayacı, kaydıraç, "Sayfaya git"), ALT ŞERİT TAMAMEN KALKTI. Kaydıraç 1200 px
+yerine 169 px. Daraltınca yalnız sayfa numarası kalıyor.
+Telefonda (<760 px) parçalar eski yerine dönüyor — kaydıraç yine altta.
+Kazanç: kitap %16 büyüdü (1440x900'de 1053x743 → 1219x860).
+Deneme: dört kitap da 320-1920 px arasında taşmasız, kaydıraç her genişlikte
+görünür, <760'ta alt şerit yerinde, >=800'de kalkmış; konsol hatası yok;
+kitap seçici, içindekiler paneli ve daraltma çalışıyor. Damga ?v=20261002b.
+Yedek: _kaynak/yedekler/20261002-yan-cubuk/
+
+── 02.10.2026 · KİDEF SUNULARI PDF RESİMDEN HTML'E ───────────────────────
+Öğretmen: "kidef kitabının sunumlarını pdf den html ye çevirelim parça parça."
+
+34 destenin 32'si çevrildi: 5 617 slayt, hepsi gerçek metin (Arapça dâhil),
+adım adım açılıyor. 05_sunumlar/<kod>/html/ (sunu.js + m/*.webp).
+Resim slaytları yerinde duruyor — html/sunu.js açılmazsa gösterici onlara düşüyor.
+  · Hangi deste hangi pptx: sunumlar.json'daki kaynak PDF ile aynı gövdeli
+    pptx; "atla" sayısı pptx'in görünür slayt sayısı eksi beklenen adet
+    (ölçüldü, uydurulmadı).
+  · EMF sorunu: Word'den yapıştırılmış görseller EMF olduğu için Pillow
+    açamıyordu, 207 slayt bomboş çıkmıştı. LibreOffice ile EMF → PDF, oradan
+    gömülü resim olduğu gibi çıkarılıyor. 709 resim önbelleğe alındı.
+    ŞU AN BOŞ SLAYT YOK (5 617'de 0).
+  · Kalıplar Tablosu (971 slayt) 180 sn sınırı yüzünden parça parça çevrildi.
+  · Eksik iki madde imi resim slaytlara bakılarak eklendi:
+    Wingdings "t" → ⬥ , Wingdings 2 "å" → ⌃
+Sitedeki boyut: resim 201,7 MB + html 41,7 MB. Resimler kaldırılırsa 160 MB
+kazanç olur ama geri dönüşü zor — ÖĞRETMENE SORULACAK.
+AÇIKTA: kokten-govdeye (pptx 440 MB, içinde 212 MB video — python-pptx
+bilgisayarda açamıyor) ve emir (pptx 142 görünür slayt, beklenen 155).
+Üreticiler: _kaynak/uretici/sunuPptxEsle.py, sunuHtmlListe.py, sunuEmf.py,
+sunuBuyukDeste.py, sunuHtmlSiteye.py
+
+Yayınlanacak toplam: 926,9 MB (sınır 1024) — 97 MB pay kaldı.
+
+── 02.10.2026 · 5. SINIF: ÜÇ KİTAP + MAARİF MATERYALLERİ ─────────────────
+Öğretmen: "5. sınıf 2026-2027 kitabı ve 2025-2026 kitaplarını klasörde
+güncelledim, şu anki 5. sınıf eski kitap, seçenek olarak kalsın o 2024-2025
+kitabı. 5. sınıf Maarif kitabının ses, video ve diğer materyalleri de var,
+onları da ekle." Kararlar: hepsi gelsin (videolar sıkıştırılsın) · Kidef sunu
+resimleri kaldırılsın · üçü de flipbook olsun.
+
+1) YER AÇILDI — Kidef'in HTML'i olan 32 destesinin resim slaytları siteden
+   _kaynak/site-disi/sunu-resimleri/ altına TAŞINDI: 5 617 dosya, 176,4 MB.
+   HTML'i olmayan iki deste (kokten-govdeye, emir) resimleriyle kaldı.
+   Geri almak: python3 _kaynak/uretici/sunuResimAyir.py <kök> --geri
+
+2) ESKİ KİTAP AYRILDI — kitap/5-sinif-2026-2027 → kitap/5-sinif-2024-2025.
+   veri.js'te ad/anahtar/zipKlasor 2024-2025'e çevrildi (kayıtlı sayfa
+   anahtarı arapca5_2425_sonSayfa), marka ve başlık güncellendi.
+
+3) YENİ MAARİF KİTABI — kitap/5-sinif-2026-2027/ · 174,9 MB
+   236 yaprak (001 ön kapak, 236 arka kapak), basılı = yaprak - 1,
+   son basılı 234. Üniteler (içindekiler sayfasından): Merhaba 10 ·
+   Sınıfım 74 · Ailem 140 · Güzel Evim 178 · Sözlük 224 · ekler 232.
+   Ünite adları sarf/ihkelime.js'teki doğrulanmış Maarif-5 listesinden.
+   138 kaynak: 103 ses · 4 şarkı · 9 video · 22 etkinlik.
+     · sesler: 52 MB → 29 MB (konuşma, 64 kbps mono). 52'sinde MEB'in dosya
+       adında sayfa var; 1. ve 3. ünitenin sesleri sayfasız, ünite altında
+       listeleniyor.
+     · videolar: 237 MB → 24 MB. İkisi HEVC'ti (tarayıcıda hiç açılmıyordu),
+       hepsi H.264 720p oldu; kare karşılaştırıldı, kayıp görünmüyor.
+       Video 1-5'in sayfaları kitabın metin katmanındaki "فيديو N"
+       işaretlerinden okundu (11, 18, 32, 48, 61 — hepsi 1. ünite).
+     · e-içerikler: 22 SCORM etkinliği, 140 MB → 100 MB (3000 px'lik
+       fotoğraflar 1600 px'e indirildi). Ünite ve sayfa klasör adından.
+
+4) 2025-2026 BASKISI — kitap/5-sinif-2025-2026/ · 16,6 MB
+   Aynı Maarif kitabının önceki baskısı (237 yaprak, son basılı 235);
+   ünite başlangıçları birebir aynı (ölçüldü). Materyaller 2026-2027
+   klasöründen paylaşılıyor (160 MB ikinci kez kopyalanmadı) — bu yüzden
+   bu baskıda İndir düğmesi yok.
+
+5) BAĞLANTILAR — index.html'deki 5. sınıf kartı yeni kitaba gidiyor; üç
+   kitap arasında geçiş KİTAP SEÇİCİden (kitapsecici.js ?v=20261002g).
+   kitapOrtakla.py iki yeni klasörü de besliyor.
+
+6) KAYNAK PANELİNDE İKİ HATA DÜZELTİLDİ (beş kitapta birden):
+   · Sayfası olmayan kaynakta "Kitap sayfası undefined" yazıyor ve işlemeyen
+     bir "Sayfaya git" düğmesi çıkıyordu — artık hiç basılmıyor.
+   · Gruplama yalnız sayfa aralığına bakıyordu; sayfasız kaynak HER ünitede
+     tekrar ediyordu (138 kaynak 413 satır oluyordu). Artık ünitesi olan
+     kaynak ünitesinde, olmayan "Diğer kaynaklar" başlığında bir kez.
+   Deneme: beş kitapta kaynak sayısı = satır sayısı, konsol hatası yok.
+
+Yayınlanacak toplam: 941,9 MB (sınır 1024) — 82 MB pay.
+Yedek: _kaynak/yedekler/20261002-5sinif-kitaplar/
+
+── 02.10.2026 · 5. SINIFTA SAYFA ÜSTÜ DÜĞMELER + ÖNBELLEK DAMGASI ────────
+Öğretmen: "5. sınıf 2026-2027 kitabında yok sesler ve etkinlikler."
+Dosyalar yerindeydi (103 ses, 9 video, 4 şarkı, 22 etkinlik; veri.js'te 138
+kaynak) ama iki şey eksikti:
+
+1) SAYFA ÜSTÜNDE DÜĞME YOKTU. 6. sınıfta sayfaların üstünde altın çerçeveli
+   ses/etkinlik düğmeleri var; 5. sınıfta veri.js'teki "sayfa" boştu, kaynaklara
+   yalnız soldaki Kaynaklar panelinden ulaşılıyordu — kitabı çevirirken hiçbir
+   şey görünmüyordu.
+   _kaynak/uretici/kitap5Nokta.py ile kondu. İLK DENEME YANLIŞTI (öğretmen
+   fark etti: "ses 1 iki yerde kullanılmış"): işaretin yanındaki ilk sayı
+   numara sanılmıştı, oysa çoğu sayfada orada ALIŞTIRMA numarası duruyor —
+   "Ses 1" on bir ayrı sayfaya konmuştu. Kural değiştirildi, iki bağımsız
+   kaynak üst üste düşmeden düğme konmuyor:
+     1. kaynağın sayfası MEB'in dosya/klasör adından bilinecek
+        ("ARP 5 Ü4 SES 100 SAYFA 193" → 193; "ARP5_Ü1_S13_N1" → 13)
+     2. kitabın o sayfasında aynı türden bir صوت/فيديو/نشاط işareti olacak
+   İşaretin yanındaki numara da tutuyorsa eşleşme kesin.
+   SONUÇ: 63 sayfaya 71 düğme (45 ses · 4 video · 22 etkinlik).
+   Güven: 46 sağlam (numara da tuttu) · 19 sayfada tek · 6 okuma sırası.
+   Sayfası hiç bilinmeyen 55 kaynağa (1. ve 3. ünite sesleri, video 6-9)
+   DÜĞME KONMADI — o sayfalarda kitaptaki numara alıştırma numarasıyla
+   karışıyor; onlar yalnız Kaynaklar panelinde. Sayfası bilinip o sayfada
+   işaret bulunamayan 8 kaynak da düğmesiz.
+   Denetim: hiçbir kaynak iki yerde değil, düğmenin yaprağı kaynağın
+   sayfasıyla birebir (0 uyuşmazlık). Düğmeler kitabın basılı QR
+   karelerinin üstüne oturuyor.
+
+2) TARAYICI ESKİ veri.js'İ TUTUYORDU. Klasör adı aynı kaldığı için
+   kitap/5-sinif-2026-2027/veri.js?v=20261002 adresi eskiden 2024-2025
+   kitabının verisiydi (tek EBA kaynağı). Beş kitabın veri.js, uygulama.js,
+   dosyalar.js, kitap.css, ek.css ve flip.js damgası ?v=20261002b yapıldı.
+
+Deneme: 14. yaprakta 11 düğme göründü (Ses 1, Ses 2, Ses 4, Etkinlik 1,
+Video 1 …), konsol hatası yok.
+
+── 02.10.2026 · GÜNCEL YIL RENKLİ + PANELLERDE İKİ PARMAKLA KAYDIRMA ─────
+Öğretmen: "kitaplarda güncel olanların yıl bilgisi renkli olsun, ayrıca
+kaynaklarda scroll çalışmıyor iki parmakla bilgisayardan touch pad kısmında."
+
+1) GÜNCEL KİTABIN YILI RENKLİ (_kaynak/uretici/kitapGuncelYil.py)
+   Kitap seçicide alt yazının son parçası (yıl) ayrı bir span'e alındı.
+   KITAPLAR kaydına "guncel: true" konan kitaplarda — bu öğretim yılının
+   kitapları, 5. ve 6. sınıfın 2026-2027'si — yıl kitabın kendi renginde,
+   kalın ve hafif renkli zeminli bir rozet gibi görünüyor. Eski baskılar ve
+   2027-2028 eskisi gibi gri. Yeni yıl gelince guncel bayrağı taşınacak.
+
+2) PANELLERDE KAYDIRMA (_kaynak/uretici/panelKaydirma.py)
+   Sebep: .panel sütun yönünde esnek kutu, gövdesi .pgovde{flex:1;
+   overflow:auto}. Esnek kutu çocuğunun öntanımlı min-height:auto değeri
+   çocuğun içeriğinden kısalmasını engelleyebiliyor; o zaman kutu hiç
+   kaydırılabilir olmuyor ve panel overflow:hidden ile kırpıyor. Chrome'da
+   çoğu zaman çalışıyor, Safari'de çalışmıyor.
+   İki katmanlı çözüm, ortak dosyalarda (altı kitapta birden):
+     · kitapyan.css — .pgovde / .cevap-alan / .ks-govde için min-height:0,
+       overscroll-behavior:contain, touch-action:pan-y.
+     · kitapyan.js — uyarlanabilir yedek: tekerlek olayından bir kare sonra
+       kutu gerçekten kaymadıysa o kutu bundan sonra elle kaydırılıyor.
+       Çalışan tarayıcıda hiçbir şey değişmiyor, momentum bozulmuyor.
+       Sonradan açılan paneller için MutationObserver.
+   Deneme: kaynak panelinde tekerlek 1200 px kaydırdı, 6 kutuya yedek
+   kuruldu, konsol hatası yok.
+
+Damga: kitapsecici.js / kitapyan.js / kitapyan.css ?v=20261002c
+
+── 02.10.2026 · OKLAR SAĞA ALT ALTA + AÇIK TEMA (SİTE RENKLERİ) ──────────
+Öğretmen: "sayfalar arasında gezinmeye yarayan sol ok sağ okun altına
+alalım sağ tarafa alalım" · "ayrıca arayüz site renkleri olsun açık tema
+olsun."
+
+1) OKLAR (_kaynak/uretici/okSagaAl.py → kitapyan.css)
+   İki ok da sağ kenarda, alt alta: üstte ileri, altında geri. Kitabın
+   sol yanı tamamen boşaldı, iki ok tek elin menzilinde (akıllı tahtada
+   öğretmen tek yerden çeviriyor). Yalnız yan çubuğun açık olduğu
+   ekranlarda (≥760 px); telefonda oklar eskisi gibi iki yanda.
+
+2) AÇIK TEMA (_kaynak/ortak-kitap/kitaptema.css — YENİ ortak dosya,
+   kitapTemaBagla.py altı kitaba + ASIL flipbook'a bağladı)
+   Kitabın arayüzü koyu laciverttı (--zemin #101A2E, altın vurgu). Artık
+   sitenin paleti: zemin #EEF1F5, mürekkep #1F2430, gri #5B6471,
+   çizgi #E3E8EF, vurgu yeşil #16A085 (altın yerine). Kapsam: yan çubuk,
+   düğmeler, oklar, kaydıraç ve sayaç, perde, baloncuk, zoom göstergesi,
+   renkli şerit, sayfa üstü düğmeler. SAYFALARIN KENDİSİNE DOKUNULMADI.
+   Altın zeminle gelen koyu kahve yazılar (.dg.altin, .ok:hover,
+   .slayt-ok:hover, aktif düğme) yeşil zeminde okunmadığı için beyaza
+   çevrildi.
+   Geri almak: index.html'den kitaptema.css satırını çıkarmak yeter.
+
+Deneme: 5, 6 ve Kidef açık temada; gövde #EEF1F5, çubuk beyaz, vurgu
+yeşil; kaynak panelinde düşük kontrastlı yazı 0; oklar sağ kenarda
+(1380,364) ve (1380,454); konsol hatası yok.
+Damga: kitapyan.css / kitaptema.css ?v=20261002d
+
+── 02.10.2026 · AÇIK TEMADA KİTAP BELİRGİNLEŞTİ ──────────────────────────
+Öğretmen: "kitap kısmı belirgin olsun, açık tema kullanınca çok belirgin
+olmadı orası."
+Koyu temada beyaz sayfa lacivert zeminden kendiliğinden ayrılıyordu; açık
+temada zemin (#EEF1F5) ile sayfa birbirine çok yakın kalmıştı.
+kitaptema.css'e üç dokunuş (_kaynak/uretici/kitapBelirgin.py):
+  · sahne masa yüzeyi gibi: ortası açık, kenarları koyu bir geçiş
+    (#F3F6FA → #DCE3EC), gövde #E6EBF2
+  · sayfa yüzleri gerçek gölge bırakıyor (0 14px 38px) ve kâğıdın
+    kenarında saç teli kalınlığında bir çizgi var
+  · cilt (sırt) gölgesi siyah yerine mürekkep tonunda, biraz daha ince
+Damga: kitaptema.css ?v=20261002e
+
+────────────────────────────────────────────────────────────
+02.10.2026 — Kitap ismi şık bir kutuda (6 kitap + flipbooklar)
+────────────────────────────────────────────────────────────
+Öğretmen: "kitap ismi şık bi kutu içinde olsun."
+
+Yan çubuğun tepesindeki kitap adı koyu tema için yapılmış saydam bir
+düğmeydi (beyaz üstüne %10 beyaz) — açık temada neredeyse görünmüyordu.
+Artık gerçek bir kart:
+  · beyaz zemin, 1 px çizgi, 14 px yuvarlak köşe, yumuşak gölge
+  · kitap simgesi yeşil tonlu kendi karesinde
+  · yıl, adın altına hizalı yeşil satırda
+  · sağda sade bir ▾; üstüne gelince kart, simge ve ok yeşile dönüyor
+  · daraltılmış çubukta (Y) 38 px'lik kare simge düğmesi
+
+Ölçüyle kuruldu: kartın içi 149 px, en uzun ad "Kidef Arapça" 96 px.
+Simge 25 px'e indi, ▾ yuvarlağı kalktı — ada 100 px kaldı, hiçbir
+kitapta ad kısalmıyor. Altı kitabın altısında da denendi.
+
+DEĞİŞEN
+  _kaynak/ortak-kitap/kitaptema.css        (yeni blok: KİTAP İSMİ KUTUSU)
+  → kitapOrtakla.py ile 7 kitaba dağıtıldı
+  7 index.html: kitaptema.css?v=20261002e → 20261002f
+
+ÜRETİCİ
+  _kaynak/uretici/kitapAdiKutu.py          kart + simge karesi + ▾
+  _kaynak/uretici/kitapAdiKutu2.py         uzun ad alt satıra düşmesin
+  _kaynak/uretici/kitapAdiKutu3.py         (denendi, 5 ile geri alındı)
+  _kaynak/uretici/kitapAdiKutu4.py         (denendi, 5 ile geri alındı)
+  _kaynak/uretici/kitapAdiKutu5.py         son hâli: tek satır, sade ▾
+
+YEDEK
+  _kaynak/yedekler/20261002-kitap-adi-kutu/kitaptema.css
+
+────────────────────────────────────────────────────────────
+02.10.2026 — 5. sınıf (2026-2027): düğmeler karekodların üstünde
+────────────────────────────────────────────────────────────
+Öğretmen: "güncel 5. sınıf kitabının ses karekodları için ses dosya
+kısayolları eklenmemiş görünüyor, kontrol et." — Doğruydu: 138 kaynağın
+yalnız 71'inde sayfa düğmesi vardı. Eski yöntem dosya adındaki sayfaya
+bakıyordu, 55 dosyanın adında sayfa yok (Arp5_u3_savt85 gibi).
+
+YENİ YÖNTEM — kitabın kendi karekodları
+  1. PDF'te her karekodun üzerinde bağlantı var: tam dikdörtgeni biliniyor.
+  2. Karekodun yanında türü (صوت/فيديو/نشاط/أغنية) ve numarası yazıyor.
+  3. MEB'in dosya adındaki numara (ARP5_Ü1_SES2 → 2) kitaptaki numaranın
+     ta kendisi — eşleşme tahmin değil, iki bağımsız kaynağın mutabakatı.
+  4. Rakamlar PDF'ten karışık çıkabildiği için (١٠٦ → ٠١٦) bütün okunuşlar
+     aday sayılıp kitapta ARTAN giden tek dizi seçildi. Çıkan diziler
+     boşluksuz: ses 1…106, video 1…9, etkinlik 1…22. Zincir kendini
+     doğruluyor.
+  5. Düğme karekodun tam üstüne kondu: karekodu okutur gibi dokunuluyor.
+
+SONUÇ
+  · sayfa düğmesi    71 → 137 (138 kaynağın 137'si)
+  · kaynak sayfası   83 → 138 (hepsi; "Sayfaya git" artık her satırda)
+  · yanlış sayfa     12 düzeltildi (MEB'in dosya adı bir eksik yazmış)
+  · ses numaraları kitapla aynı yapıldı: kitapta "صوت ٦٢" yazan karekodun
+    üstündeki düğme artık "Ses 62" diyor (önce "Ses 60" diyordu, çünkü
+    flipbook 1'den yeniden saymıştı; kitap ünite şarkısını da sayıyor).
+
+DENETİM
+  · adında sayfa yazan 51 dosyanın 40'ı birebir aynı sayfada çıktı;
+    sapan 11'inde MEB'in adı yanlış (5'inde o sayfada hiç ses karekodu yok).
+  · sayfa 105 ve 106 gözle denetlendi: kitapta "صوت ٦٠" ve "صوت ٦٢",
+    eşleşme aynısını söylüyor.
+  · tarayıcıda denendi: 14/106/181. yapraklarda düğmeler karekodların
+    üstünde, "Ses 2 … Ses 99" adları kitapla aynı, ilk düğme ses001.mp3'ü
+    çaldı, konsol temiz.
+
+DEĞİŞEN
+  kitap/5-sinif-2026-2027/veri.js       (sayfa düğmeleri + kaynak sayfaları
+                                         + ses numaraları)
+  kitap/5-sinif-2026-2027/index.html    veri.js?v=20261002b → 20261002f
+
+ÜRETİCİ (hepsi _kaynak/uretici/)
+  karekodBak.py       PDF'teki karekod bağlantılarını döker
+  karekodMetin.py     her karekodun yanındaki yazıyı toplar
+  karekodSinifla.py   türlere ayırır (صوت/فيديو/نشاط/أغنية)
+  karekodNumara.py    numara/şarkı düzeltmeleri
+  karekodSayi2.py     numaraları artan diziye göre çözer
+  karekodDenetim.py   sapan çıpaları denetler
+  karekodKirp.py      gözle denetim için karekod çevresini kırpar
+  kitap5Karekod.py    düğmeleri karekodların üstüne koyar
+  kitap5Karekod2.py   kaynakların sayfa bilgisini düzeltir
+  kitap5SesNumara.py  ses numaralarını kitaptakiyle aynı yapar
+
+YEDEK
+  _kaynak/yedekler/20261002-karekod-dugmeleri/veri.js
+  _kaynak/gecici/5-sayfa-eski.json      (eski sayfa/ünite bilgisi)
+
+AÇIK
+  · "Video 9 sesi" (ARP 5 Ü4 VİDEO SAYFA 180) kitapta numarasız; sayfa
+    180'deki videonun ses kuşağı, düğmesi yok (video düğmesi orada zaten).
+  · 5. sınıf 2025-2026 kitabının PDF'inde de 176 karekod bağlantısı var;
+    istenirse aynı yöntem oraya ve 6. sınıfa da uygulanabilir.
+
+────────────────────────────────────────────────────────────
+02.10.2026 — Kitabın ortasındaki fazladan gölge kalktı
+────────────────────────────────────────────────────────────
+Öğretmen: "bi sayfa çevrildikten sonra kitap ortasında extra bi gölge gibi
+bi şey oluyor, ona gerek yok."
+
+Sebebi bulundu: kitabı belirginleştirirken (aynı gün, bir önceki iş)
+gölgeyi SAYFA YÜZÜNE (.yuz) vermiştim. Kapakta tek yüz olduğu için
+görünmüyordu; iki sayfa açılınca iki iç kenar birbirine gölge düşürüyor ve
+ortada geniş gri bir bant oluşuyordu. Tarayıcıda katman katman kapatarak
+doğrulandı: gölgeyi kapatınca bant kayboluyor.
+
+Doğrusu: gölge tek tek sayfaların değil, açık kitabın TAMAMININ altında.
+  · .yuz          box-shadow kalktı (ince kenar çizgisi kalıyor)
+  · .kitap:not(.tekli)  gölge buraya taşındı
+  · .kitap::after (cilt izi) inceltildi: .30/.42 → .07/.13
+Tek sayfa görünümünde (telefon, kapak) gölge zaten yaprağın kendisinde,
+dokunulmadı.
+
+DEĞİŞEN
+  _kaynak/ortak-kitap/kitaptema.css  → kitapOrtakla.py ile 7 kitaba
+  7 index.html: kitaptema.css?v=20261002f → 20261002g
+
+ÜRETİCİ
+  _kaynak/uretici/kitapOrtaGolge.py
+
+YEDEK
+  _kaynak/yedekler/20261002-orta-golge/kitaptema.css
+
+DENENDİ
+  13-14 ve 11-12. sayfalar (çevirdikten sonra da), kapak, telefon (390 px).
+  Orta bant yok, kitap hâlâ zeminden ayrılıyor, konsol temiz.
+
+────────────────────────────────────────────────────────────
+02.10.2026 — İleri/geri okları sol kenarda da (dört düğme)
+────────────────────────────────────────────────────────────
+Öğretmen: "ileri geri tuşu sol tarafta da olsun, yani iki tane ileri iki
+tane geri tuşu olmuş olacak."
+
+Sağ kenardaki ikilinin birer kopyası sol kenara kondu: akıllı tahtada
+öğretmen hangi taraftaysa oradan çeviriyor. Sıra iki tarafta da aynı —
+üstteki geri, alttaki ileri.
+
+Nasıl: düğmeler çoğaltılmadı, KOPYALANDI. Kopyanın tıklaması aslına
+iletiliyor, pasif/aktif durumu da aslını izliyor (MutationObserver).
+Böylece sayfa çevirme mantığına hiç dokunulmadı; düğmeye ileride bir şey
+eklenirse kopya da kendiliğinden alır.
+
+Yan çubuk daralınca (Y) kopyalar da kayıyor (--yan değişkenine bağlı).
+Telefonda gizli: orada oklar zaten iki yanda, kopya üst üste binerdi.
+
+DEĞİŞEN
+  _kaynak/ortak-kitap/kitapyan.js   (okIkizle)
+  _kaynak/ortak-kitap/kitapyan.css  (.ok.ikiz yeri + görünürlük)
+  → kitapOrtakla.py ile 7 kitaba dağıtıldı
+  7 index.html: kitapyan.css?v=…d → …e · kitapyan.js?v=…c → …d
+
+ÜRETİCİ
+  _kaynak/uretici/okIkiz.py
+
+YEDEK
+  _kaynak/yedekler/20261002-ok-ikiz/{kitapyan.js, kitapyan.css}
+
+DENENDİ
+  Sol kopyalarla ileri/geri çevirme (yaprak 15 → 17 → 19 → 17 → 15),
+  kapakta geri düğmesinin pasifliği kopyaya da geçiyor, çubuk daralınca
+  kopyalar 202 px → 70 px'e kayıyor, telefonda gizli, taşma yok,
+  konsol temiz.
+
+────────────────────────────────────────────────────────────
+02.10.2026 — Toplu silme onayı + panel kaydırma (Safari)
+────────────────────────────────────────────────────────────
+
+1) HIZLI GÖNDER DURDU: "5801 dosya silinmiş görünüyor"
+   Denetledim, ikisi de bilerek yapılmış:
+     5617  kitap/kidef-arapca-2-baski/05_sunumlar/*/NNN.webp
+           32 sunum PowerPoint'ten HTML'e çevrildi (2 Ekim); sunum.html
+           destede html/sunu.js varsa slaytları HTML olarak çiziyor, slayt
+           resimleri gerekmiyor. Tarayıcıda denendi: "mazi" sunusu 104
+           slayt, hiç 404 yok, konsol temiz. Çevrilemeyen iki destenin
+           (emir, kokten-govdeye) resimleri DURUYOR.
+      184  kitap/5-sinif-2026-2027/sayfa/{,k/}237…328.webp
+           Klasörde önce 328 yapraklık eski kitap vardı; yeni Maarif kitabı
+           236 yaprak. 1…236'nın hepsi (büyük + küçük) yerinde, eksik yok.
+   _kaynak/gecici/silme-onayi.txt yazıldı (5801 + gerekçe). hizli-gonder
+   bu dosyayı kayıttan sonra kendisi siliyor, yani onay tek seferlik.
+
+2) ÇIKTI KÜTÜPHANESİNDE İKİ PARMAKLA KAYDIRMA
+   Öğretmen: "çıktı kütüphanesi kısmında iki parmakla scroll yapamıyorum."
+   Chromium'da çalışıyor (scrollTop 0 → 800), demek ki Safari'ye özgü.
+   İlk yamadaki (panelKaydirma.py) iki katman bu panelde yetmemiş:
+     · CSS'te -webkit-overflow-scrolling:touch duruyordu — kullanımdan
+       kalkmış bu özellik Safari'de kaydırmayı ayrı bir katmana taşıyıp
+       tekerlek olaylarını yutabiliyor. Panel gövdelerinde auto'ya çekildi.
+     · JS yedeği tekerlekten BİR kare sonra bakıyordu; Safari kendi
+       katmanında kaydırdığı için bir kare yetmeyebiliyor, yedek "tarayıcı
+       kaydırdı" sanıyordu. Artık İKİ kare bekliyor.
+     · Panelin kendisi de dinleniyor: parmak başlıkta ya da kenar
+       boşluğunda olsa bile gövde kayıyor.
+   Çalışan tarayıcıda hiçbir şey değişmiyor (denendi: kaynak paneli
+   0 → 500, başlıkta tekerlek 500 → 800, ikiz oklar hâlâ çeviriyor).
+
+DEĞİŞEN
+  _kaynak/ortak-kitap/kitapyan.css · kitapyan.js → 7 kitaba dağıtıldı
+  7 index.html: kitapyan.css?v=…e → …f · kitapyan.js?v=…d → …e
+  _kaynak/gecici/silme-onayi.txt (git'e gitmez)
+
+ÜRETİCİ
+  _kaynak/uretici/panelKaydirma2.py
+
+YEDEK
+  _kaynak/yedekler/20261002-panel-kaydirma2/{kitapyan.js, kitapyan.css}
+

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لعبة البطاقات</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+margin:0;
+font-family:'Scheherazade New', serif;
+background:linear-gradient(135deg,#4e73df,#1cc88a);
+display:flex;
+flex-direction:column;
+align-items:center;
+min-height:100vh;
+}
+
+#game-container{
+width:100%;
+max-width:900px;
+padding:15px;
+text-align:center;
+position: relative;
+}
+
+h1{
+font-size:34px;
+color:white;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 15px;
+margin-bottom: 20px;
+}
+
+.audio-icon {
+background: white;
+color: #4e73df;
+width: 45px;
+height: 45px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+font-size: 24px;
+box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+transition: transform 0.2s;
+}
+
+.audio-icon:hover {
+transform: scale(1.1);
+}
+
+#timerBox{
+font-size:28px;
+color:white;
+background:rgba(0,0,0,0.35);
+padding:10px 25px;
+border-radius:18px;
+display:inline-block;
+margin-bottom:10px;
+}
+
+/* ✅ Vakit soldan sağa ve standart formatta (Dakika:Saniye) */
+#timer{
+direction:ltr;
+unicode-bidi:isolate;
+display:inline-block;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:10px;
+}
+
+.card{
+background:white;
+border-radius:15px;
+height:100px;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,0.25);
+overflow:hidden;
+position: relative;
+}
+
+.card::before {
+content: "?";
+font-size: 40px;
+color: #ccc;
+display: block;
+}
+
+.card.flipped::before {
+display: none;
+}
+
+.card img{
+max-width:100%;
+max-height:100%;
+object-fit:contain;
+display:none;
+}
+
+.card.flipped img{
+display:block;
+}
+
+button{
+padding:10px 20px;
+font-size:20px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+background:#f6c23e;
+margin-top:15px;
+font-family: inherit;
+font-weight: bold;
+}
+
+#resultMessage {
+    display: none;
+    font-size: 60px;
+    color: #f6c23e;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    margin-top: 20px;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+#oai-bottom-feedback, .feedback, .feedback-message, .feedback-box, .message-box, .result-message{
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+#oai-bottom-feedback{color:#dc2626 !important; bottom:120px !important;}
+
+</style>
+
+<style id="oai-fix-style">
+.audio-btn,.audio-icon,.speaker-icon,.sound-icon,.play-audio,.audio-trigger,#playAudioBtn,[title*="استمع"],[aria-label*="استمع"]{display:none !important;visibility:hidden !important;opacity:0 !important;pointer-events:none !important}
+#oai-start-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(79,70,229,.97),rgba(16,185,129,.95));z-index:999999}
+#oai-start-card{width:min(92vw,760px);background:#fff;border-radius:28px;padding:28px 22px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+#oai-start-text{font-family:'Scheherazade New',serif;font-size:clamp(28px,4vw,40px);line-height:1.8;color:#1f2937;margin-bottom:18px}
+#oai-start-btn{font-family:'Scheherazade New',serif;font-size:clamp(26px,3vw,34px);padding:12px 36px;border:none;border-radius:18px;background:#16a34a;color:#fff;cursor:pointer}
+#oai-bottom-feedback{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);display:none;z-index:999998;padding:0;background:transparent !important;color:#dc2626 !important;font-family:'Scheherazade New',serif;font-size:clamp(22px,2.8vw,28px);font-weight:400;box-shadow:none !important;border:none !important;border-radius:0 !important;pointer-events:none;text-align:center;min-width:auto;max-width:88vw}
+#oai-bottom-feedback.show{display:block}
+}
+.card.oai-wrong,.memory-card.oai-wrong,.tile.oai-wrong{border:4px solid #dc2626 !important;box-shadow:0 0 0 3px rgba(220,38,38,.18) !important}
+.card.matched,.memory-card.matched,.tile.matched,.card.oai-matched,.memory-card.oai-matched,.tile.oai-matched{visibility:visible !important;opacity:1 !important;border:4px solid #16a34a !important;box-shadow:0 0 0 3px rgba(22,163,74,.18) !important}
+.drop-box .dropped-content,.drop-zone.filled,.drop-area.filled{cursor:pointer}
+</style>
+
+
+<style id="final-memory-feedback-hide">
+#feedbackBox,#memoryFeedback,#oai-bottom-feedback,#feedback,.feedback,.feedbackBox,.feedback-message,.feedback-box,.message-box,.result-message{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  min-height:0 !important;
+  height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:none !important;
+}
+</style>
+<script id="final-memory-feedback-hide-script">
+(function(){
+  function clearMemFeedback(){
+    ['feedbackBox','memoryFeedback','oai-bottom-feedback','feedback'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){ el.textContent=''; el.style.display='none'; }
+    });
+    document.querySelectorAll('.feedback,.feedbackBox,.feedback-message,.feedback-box,.message-box,.result-message').forEach(el=>{
+      el.textContent=''; el.style.display='none';
+    });
+  }
+  document.addEventListener('click', ()=>setTimeout(clearMemFeedback,0), true);
+  document.addEventListener('touchend', ()=>setTimeout(clearMemFeedback,0), true);
+  window.addEventListener('load', clearMemFeedback);
+  setTimeout(clearMemFeedback,0);
+})();
+</script>
+
+</head>
+
+<body>
+
+<div id="game-container">
+
+<h1>
+  <span>طابِق الصُّوَرَ الْمُتَشابِهَة.</span>
+  <div class="audio-icon" onclick="playInstruction()" title="استمع">🔊</div>
+</h1>
+
+<audio id="instructionAudio" src="audio1.mp3"></audio>
+
+<div id="timerBox">
+اَلْوَقْت: <span id="timer" dir="ltr">٠٠:٠٠</span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div id="resultMessage">أَحْسَنْت</div>
+
+<button onclick="resetGame()">حاوِلْ مَرَّةً أُخْرى</button>
+
+</div>
+
+<script>
+
+const numbers=[1,2,3,4,5,6];
+
+const soundMap={
+1:1,
+2:4,
+3:6,
+4:5,
+5:2,
+6:3
+};
+
+let cardsArray=[...numbers,...numbers];
+cardsArray.sort(()=>0.5-Math.random());
+
+const grid=document.getElementById("grid");
+
+let firstCard=null;
+let secondCard=null;
+let lockBoard=false;
+let matches=0;
+
+let seconds=0;
+let timerInterval=null;
+let gameStarted=false;
+
+function toArabicNumbers(num){
+return num.toString().replace(/[0-9]/g,
+d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+}
+
+function playInstruction() {
+  const audio = document.getElementById("instructionAudio");
+  audio.currentTime = 0;
+  audio.play();
+}
+
+function startTimer(){
+timerInterval=setInterval(()=>{
+
+seconds++;
+
+let mins=Math.floor(seconds/60);
+let secs=seconds%60;
+
+/* ✅ Standart format: Dakika solda, Saniye sağda (MM:SS) */
+let formatted=
+(mins<10?"0":"")+mins+":"+
+(secs<10?"0":"")+secs;
+
+document.getElementById("timer")
+.textContent=toArabicNumbers(formatted);
+
+},1000);
+}
+
+function stopTimer(){
+clearInterval(timerInterval);
+}
+
+cardsArray.forEach(num=>{
+
+const card=document.createElement("div");
+card.classList.add("card");
+card.dataset.id=num;
+
+const img=document.createElement("img");
+if(num==4){
+img.src="4.png";
+}else{
+img.src=num+".jpeg";
+}
+card.appendChild(img);
+
+const cardAudio=new Audio(soundMap[num]+".mp3");
+
+card.addEventListener("click",()=>{
+
+if(lockBoard) return;
+if(card===firstCard) return;
+
+if(!gameStarted){
+startTimer();
+gameStarted=true;
+}
+
+card.classList.add("flipped");
+
+cardAudio.currentTime=0;
+cardAudio.play();
+
+if(!firstCard){
+firstCard=card;
+return;
+}
+
+secondCard=card;
+lockBoard=true;
+
+if(firstCard.dataset.id===secondCard.dataset.id){
+
+matches++;
+
+setTimeout(()=>{
+firstCard.classList.add("oai-matched"); firstCard.style.visibility = "visible";
+secondCard.classList.add("oai-matched"); secondCard.style.visibility = "visible";
+},300);
+
+firstCard=null;
+secondCard=null;
+lockBoard=false;
+
+if(matches===6){
+stopTimer();
+setTimeout(()=>{
+document.getElementById("resultMessage").style.display = "block";
+},400);
+}
+
+}else{
+
+setTimeout(()=>{
+firstCard.classList.remove("flipped");
+secondCard.classList.remove("flipped");
+firstCard=null;
+secondCard=null;
+lockBoard=false;
+},800);
+
+}
+
+});
+
+grid.appendChild(card);
+
+});
+
+function resetGame(){
+location.reload();
+}
+
+</script>
+
+
+<script id="oai-fix-script">
+(function(){
+  function showBottomFeedback(msg, color){
+    let box=document.getElementById('oai-bottom-feedback');
+    if(!box){
+      box=document.createElement('div');
+      box.id='oai-bottom-feedback';
+      document.body.appendChild(box);
+    }
+    box.textContent=msg;
+    if(color) box.style.background=color;
+    box.classList.remove('show');
+    void box.offsetWidth;
+    box.classList.add('show');
+    clearTimeout(box._t);
+    box._t=setTimeout(()=>{ box.classList.remove('show'); box.style.display='none'; }, 1700);
+    box.style.display='block';
+  }
+  window.__oaiShowBottomFeedback=showBottomFeedback;
+
+  function hideAudioIcons(){
+    const selectors=['.audio-btn','.audio-icon','.speaker-icon','.sound-icon','.play-audio','.audio-trigger','#playAudioBtn','[title*="استمع"]','[aria-label*="استمع"]'];
+    selectors.forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.style.display='none'));
+    document.querySelectorAll('div,button,span,a').forEach(el=>{
+      const t=(el.textContent||'').trim();
+      if(t==='🔊' || t==='🎧') el.style.display='none';
+    });
+  }
+
+  function playInstruction(){
+    const fns=['playInstruction','playAudio','playAudioOnce','firstTouch'];
+    for(const fn of fns){
+      if(typeof window[fn]==='function'){ try{ window[fn](); return; }catch(e){} }
+    }
+    const audios=[...document.querySelectorAll('audio')];
+    const audio=audios.find(a=>a.id&&/instruction|audio1|audio-inst|audioElement/i.test(a.id)) || audios[0];
+    if(audio){
+      try{ audio.currentTime=0; const p=audio.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){}
+    }
+  }
+
+  function addStartOverlay(){
+    if(document.getElementById('oai-start-overlay')) return;
+    const overlay=document.createElement('div');
+    overlay.id='oai-start-overlay';
+    overlay.innerHTML='<div id="oai-start-card"><div id="oai-start-text"></div><button id="oai-start-btn" type="button">اِبْدَأْ</button></div>';
+    overlay.querySelector('#oai-start-text').textContent=(function(){
+  const sels=['.instruction','.instr','#instruction','.header .instruction','.header .instr','h1 span','h1','.title','.game-title'];
+  for(const s of sels){
+    const el=document.querySelector(s);
+    if(el && el.textContent.trim()) return el.textContent.trim();
+  }
+  return document.title || 'اِبْدَأْ';
+})();
+    document.body.appendChild(overlay);
+    overlay.querySelector('#oai-start-btn').addEventListener('click',()=>{
+      overlay.remove();
+      hideAudioIcons();
+      setTimeout(playInstruction,120);
+    },{once:true});
+  }
+
+  function installSolutionLock(){
+    window.__oaiChecked=false;
+    const checkNames=['checkAnswers','checkAnswer','validateAnswers'];
+    checkNames.forEach(name=>{
+      if(typeof window[name]==='function' && !window[name].__oaiWrapped){
+        const old=window[name];
+        const wrap=function(){ window.__oaiChecked=true; return old.apply(this,arguments); };
+        wrap.__oaiWrapped=true;
+        window[name]=wrap;
+      }
+    });
+    const solNames=['showSolution','showCorrectAnswers'];
+    solNames.forEach(name=>{
+      if(typeof window[name]==='function' && !window[name].__oaiWrapped){
+        const old=window[name];
+        const wrap=function(){
+          if(!window.__oaiChecked){
+            showBottomFeedback('أَجِبْ عَنِ السُّؤال أَوَّلًا.','#dc2626');
+            return;
+          }
+          return old.apply(this,arguments);
+        };
+        wrap.__oaiWrapped=true;
+        window[name]=wrap;
+      }
+    });
+    ['resetGame','init','loadQuestion','renderQuestion','nextQuestion','showQuestion'].forEach(name=>{
+      if(typeof window[name]==='function' && !window[name].__oaiResetWrapped){
+        const old=window[name];
+        const wrap=function(){ window.__oaiChecked=false; return old.apply(this,arguments); };
+        wrap.__oaiResetWrapped=true;
+        window[name]=wrap;
+      }
+    });
+  }
+
+  function installDropRevert(){
+    document.addEventListener('click',function(e){
+      const target=e.target.closest('.dropped-content,.drop-zone.filled,.drop-area.filled');
+      if(!target || window.__oaiChecked) return;
+
+      let zone=null, valueText='', currentId='', currentVal='';
+      if(target.classList.contains('dropped-content')){
+        zone=target.parentElement;
+        valueText=(target.textContent||'').trim();
+        target.remove();
+      } else {
+        zone=target;
+        valueText=(zone.innerText||'').trim();
+        currentId=zone.dataset.currentId||'';
+        currentVal=zone.dataset.currentVal||'';
+        zone.innerHTML='؟';
+      }
+      if(!zone) return;
+
+      const candidates=[...document.querySelectorAll('.word-item,.word,.word-card,.draggable-img,img.draggable-img,.option,.choice,.choice-item')];
+      let restored=false;
+      candidates.forEach(el=>{
+        const t=(el.textContent||'').trim();
+        const id=el.dataset.id||'';
+        const val=el.dataset.val||'';
+        if(!restored && ((valueText && t===valueText) || (currentId && id===currentId) || (currentVal && val===currentVal))){
+          el.style.visibility='visible';
+          el.style.display='';
+          if(el.parentElement==null){
+            const pool=document.getElementById('pool')||document.getElementById('wordPool')||document.querySelector('.word-row')||document.querySelector('.word-bank');
+            if(pool) pool.appendChild(el);
+          }
+          restored=true;
+        }
+      });
+
+      // image pool recreation if removed
+      if(!restored && currentId && typeof window.imageValues==='object'){
+        const pool=document.getElementById('wordPool')||document.getElementById('pool');
+        if(pool){
+          const img=document.createElement('img');
+          img.src=`images/${currentId}.jpg`;
+          img.className='draggable-img';
+          img.dataset.id=currentId;
+          img.dataset.val=window.imageValues[currentId];
+          img.onclick=()=>{ if(typeof selectImg==='function') selectImg(img); };
+          pool.appendChild(img);
+        }
+      }
+
+      zone.classList.remove('filled','correct','wrong');
+      zone.style.borderColor='';
+      zone.style.backgroundColor='';
+      zone.style.color='';
+      zone.dataset.currentVal='';
+      zone.dataset.currentId='';
+      if(zone.querySelector('.feedback-mark')) zone.querySelector('.feedback-mark').remove();
+      if(typeof window.updateButtonState==='function'){ try{ window.updateButtonState(); }catch(e){} }
+    });
+  }
+
+  function installMemoryFeedback(){
+    document.addEventListener('click',function(){
+      setTimeout(()=>{
+        const flipped=[...document.querySelectorAll('.card.flipped:not(.matched), .memory-card.flipped:not(.matched), .tile.flipped:not(.matched)')];
+        if(flipped.length===2){
+          const id1=flipped[0].dataset.id, id2=flipped[1].dataset.id;
+          if(id1 && id2 && id1!==id2){
+            flipped.forEach(c=>c.classList.add('oai-wrong'));
+            
+            setTimeout(()=>flipped.forEach(c=>c.classList.remove('oai-wrong')),700);
+          } else if(id1 && id1===id2){
+            flipped.forEach(c=>c.classList.add('oai-matched'));
+          }
+        }
+      },30);
+    },true);
+  }
+
+  function initAll(){
+    hideAudioIcons();
+    addStartOverlay();
+    installSolutionLock();
+    installDropRevert();
+    installMemoryFeedback();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', initAll);
+  else initAll();
+})();
+</script>
+
+</body>
+</html>

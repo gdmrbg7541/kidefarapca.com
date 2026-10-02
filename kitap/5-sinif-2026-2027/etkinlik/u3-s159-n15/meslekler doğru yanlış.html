@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>لعبة المهن</title>
+  <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Scheherazade New", serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color:#111;
+      overflow-x:hidden;
+      min-height: 100vh;
+    }
+    .wrap{
+      width:100%;
+      max-width:720px;
+      margin:0 auto;
+      padding:14px 14px calc(14px + env(safe-area-inset-bottom));
+      min-height:100svh;
+      min-height:100dvh;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .top{
+      background:#fff;
+      border:2px solid #e5e7eb;
+      border-radius:18px;
+      padding:12px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .instr-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .instr{
+      font-size:34px;
+      font-weight:700;
+      line-height:1.2;
+      margin:0;
+    }
+    .audio-trigger {display:none !important;
+      background: #f3f4f6;
+      border: 2px solid #e5e7eb;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 24px;
+      transition: transform 0.2s;
+    }
+    .audio-trigger:hover {
+      transform: scale(1.1);
+      background: #e5e7eb;
+    }
+
+    .card{
+      flex:1;
+      background:#fff;
+      border:2px solid #e5e7eb;
+      border-radius:22px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      justify-content:center;
+      align-items:stretch;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .imgBox{
+      width:100%;
+      border:2px solid #f3f4f6;
+      border-radius:18px;
+      overflow:hidden;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:min(52vh, 360px);
+    }
+    .imgBox img{
+      max-width:100%;
+      max-height:100%;
+      width:auto;
+      height:auto;
+      object-fit:contain;
+      display:block;
+    }
+    .label{
+      font-size:46px;
+      font-weight:700;
+      text-align:center;
+      border:2px solid #e5e7eb;
+      border-radius:18px;
+      padding:6px 14px;
+      background: #f9fafb;
+    }
+    .btnRow{
+      display:flex;
+      gap:12px;
+      width:100%;
+    }
+    button{
+      flex:1;
+      border:none;
+      border-radius:18px;
+      padding:14px 12px;
+      font-size:34px;
+      font-family:inherit;
+      font-weight:700;
+      cursor:pointer;
+      min-height:62px;
+      transition: opacity 0.2s;
+    }
+    button:active { opacity: 0.7; }
+    .ok{background:#16a34a;color:#fff;}
+    .bad{background:#dc2626;color:#fff;}
+
+    .nav{
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      border:2px solid #e5e7eb;
+      border-radius:18px;
+      padding:10px 12px;
+      background:#fff;
+    }
+    .progress{
+      font-size:24px;
+      font-weight:700;
+    }
+    .smallBtn{
+      flex:0 0 auto;
+      font-size:22px;
+      padding:10px 14px;
+      min-height:44px;
+      border-radius:14px;
+      background:#111827;
+      color:#fff;
+    }
+
+    .toast{
+      position:fixed;
+      inset:auto 50% 22px auto;
+      transform:translateX(50%);
+      color:#fff;
+      border-radius:18px;
+      display:none;
+      z-index:999;
+      max-width:92vw;
+      text-align:center;
+      font-weight:900;
+      font-size:64px;
+      padding:18px 24px;
+      line-height:1;
+      box-shadow:0 18px 45px rgba(0,0,0,.22);
+    }
+    .toast.good{background:#16a34a;}
+    .toast.bad{background:#dc2626;}
+
+    /* Çözüm Ekranı Stilleri */
+    .end-screen {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px 0;
+    }
+    .result-icon {
+      font-size: 80px;
+      color: #16a34a;
+    }
+    .solution-btn {
+      background: #4f46e5;
+      color: white;
+      font-size: 28px;
+      padding: 15px;
+      border-radius: 15px;
+      width: 100%;
+    }
+    .solution-panel {
+      display: none;
+      text-align: right;
+      background: #fff;
+      border-radius: 18px;
+      padding: 15px;
+      border: 2px solid #e5e7eb;
+      margin-top: 10px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .wrong-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .wrong-item:last-child { border-bottom: none; }
+    .mini-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #f3f4f6;
+      border: 1px solid #eee;
+      display:block;
+    }
+    .wrong-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .wrong-text { font-size: 26px; font-weight: 700; }
+    .correct-ans { color: #16a34a; font-size: 20px; font-weight: bold; }
+
+    @media (max-width:420px){
+      .instr{font-size:30px}
+      .label{font-size:42px}
+      button{font-size:32px}
+    }
+  </style>
+<style id="startOverlayPatch">
+    .audioBtn,.audio-trigger,.audio-btn,#playAudioBtn{display:none !important;}
+    #startOverlay{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg,#dbeafe 0%, #fef3c7 50%, #dcfce7 100%);
+      padding:12px;
+    }
+    #startCard{
+      width:min(98vw,1180px);
+      background:#ffffff;
+      border:3px solid #e5e7eb;
+      border-radius:28px;
+      padding:16px 10px;
+      box-shadow:0 14px 40px rgba(0,0,0,.16);
+      text-align:center;
+      direction:rtl;
+      overflow:visible;
+    }
+    #startInstruction{
+      font-family:"Scheherazade New", serif;
+      font-size:clamp(12px,2.8vw,30px);
+      font-weight:700;
+      line-height:1.15;
+      color:#0f172a;
+      margin:0 0 16px;
+      white-space:nowrap;
+      display:block;
+      width:100%;
+      max-width:none;
+      overflow:visible;
+      text-align:center;
+      letter-spacing:0;
+      transform-origin:center center;
+    }
+    #startBtn{
+      font-family:"Scheherazade New", serif;
+      font-size:clamp(28px,4vw,36px);
+      font-weight:700;
+      border:none;
+      border-radius:20px;
+      padding:14px 32px;
+      background:#2563eb;
+      color:#fff;
+      cursor:pointer;
+      min-height:56px;
+      min-width:160px;
+      box-shadow:0 8px 20px rgba(37,99,235,.28);
+    }
+    #startBtn:active{transform:scale(.98);}
+  </style>
+
+</head>
+
+<body>
+
+  <div id="startOverlay" aria-label="start screen">
+    <div id="startCard">
+      <p id="startInstruction">اُنْظُرْ إِلى الصّورَة ثُمَّ أَجِبْ بِـ (صَحيح) أَوْ (خَطَأ).</p>
+      <button id="startBtn" type="button">اِبْدَأْ</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div id="topArea" class="top">
+      <div class="instr-container">
+        <p class="instr">اُنْظُرْ إِلى الصّورَة ثُمَّ أَجِبْ بِـ (صَحيح) أَوْ (خَطَأ).</p>
+        <div class="audio-trigger" onclick="playMainAudio()" title="استمع">🔊</div>
+      </div>
+      <audio id="audio1" preload="metadata" src="audio1.mp3"></audio>
+    </div>
+
+    <div id="gameCard" class="card">
+      <!-- Dinamik İçerik -->
+    </div>
+
+    <div id="navArea" class="nav">
+      <div id="progress" class="progress">١ / ١٧</div>
+      <button id="retryBtn" class="smallBtn" type="button">حاوِلْ مَرَّةً أُخْرى</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const IMG_EXTS = ["jpg","jpeg","png","webp"];
+
+    // ✅ NOT: Çözüm görselleri "solImgBase" yerine "imgBase" sırasıyla kullanılacak
+    const items = [
+      { id: 1,  imgBase: "images/1",  text: "طَبِيبَة",        correct: true  },
+      { id: 2,  imgBase: "images/2",  text: "مُهَنْدِسَة",     correct: false },
+      { id: 3,  imgBase: "images/3",  text: "عامِل",           correct: false },
+      { id: 4,  imgBase: "images/4",  text: "مُهَنْدِسَة",     correct: true  },
+      { id: 5,  imgBase: "images/5",  text: "طَبيب",           correct: true  },
+      { id: 6,  imgBase: "images/6",  text: "عامِل",           correct: true  },
+      { id: 7,  imgBase: "images/7",  text: "مُتَقاعِدَة",     correct: true  },
+      { id: 8,  imgBase: "images/8",  text: "مُتَقاعِد",       correct: true  },
+      { id: 9,  imgBase: "images/9",  text: "عامِلَة",         correct: true  },
+      { id: 10, imgBase: "images/10", text: "مُوَظَّف",        correct: false },
+      { id: 11, imgBase: "images/11", text: "مُوَظَّف",        correct: true  },
+      { id: 12, imgBase: "images/12", text: "مُعَلِّم",        correct: false },
+      { id: 13, imgBase: "images/13", text: "تاجِر",           correct: false },
+      { id: 14, imgBase: "images/14", text: "مُعَلِّم",        correct: true  },
+      { id: 15, imgBase: "images/15", text: "تاجِر",           correct: true  },
+      { id: 16, imgBase: "images/16", text: "مُعَلِّمَة",      correct: true  },
+      { id: 17, imgBase: "images/17", text: "رَبَّةُ الْبَيْت", correct: true }
+    ];
+
+    let index = 0;
+    let mistakes = []; // {id,imgBase,text,correct,choiceTrue}
+
+    const gameCard = document.getElementById("gameCard");
+    const progressEl = document.getElementById("progress");
+    const retryBtn = document.getElementById("retryBtn");
+    const toast = document.getElementById("toast");
+
+    const toArabicDigits = (str) => String(str).replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+
+    function playMainAudio() {
+      const a = document.getElementById("audio1");
+      a.currentTime = 0;
+      a.play();
+    }
+
+    /* ✅ NEW: Doğru/yanlış sesleri (dosyasız, WebAudio) */
+    let _audioCtx = null;
+    function getAudioCtx(){
+      if(!_audioCtx){
+        _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if(_audioCtx.state === "suspended"){
+        _audioCtx.resume().catch(()=>{});
+      }
+      return _audioCtx;
+    }
+
+    // "dırırtı" hissi: kısa yükselen chirp + hafif titreme
+    function playCorrectSound(){
+      try{
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(980, now + 0.14);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+        // tremolo / titreme
+        const lfo = ctx.createOscillator();
+        const lfoGain = ctx.createGain();
+        lfo.type = "square";
+        lfo.frequency.setValueAtTime(28, now);
+        lfoGain.gain.setValueAtTime(18, now);
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc.frequency);
+
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(now);  osc.stop(now + 0.20);
+        lfo.start(now);  lfo.stop(now + 0.20);
+      }catch(e){}
+    }
+
+    // "dınk": kısa bell sesi
+    function playWrongSound(){
+      try{
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(740, now);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.45, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.30);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(1480, now);
+        gain2.gain.setValueAtTime(0.0001, now);
+        gain2.gain.exponentialRampToValueAtTime(0.18, now + 0.01);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+        osc.connect(gain).connect(ctx.destination);
+        osc2.connect(gain2).connect(ctx.destination);
+
+        osc.start(now);  osc.stop(now + 0.32);
+        osc2.start(now); osc2.stop(now + 0.24);
+      }catch(e){}
+    }
+
+    function showMark(ok){
+      toast.textContent = ok ? "✓" : "✗";
+      toast.className = "toast " + (ok ? "good" : "bad");
+      toast.style.display = "block";
+      setTimeout(()=> toast.style.display="none", 650);
+    }
+
+    function setProgress(){
+      progressEl.textContent = `${toArabicDigits(index+1)} / ${toArabicDigits(items.length)}`;
+    }
+
+    function loadWithFallback(el, base, exts, finalFail){
+      let i = 0;
+      const tryNext = () => {
+        if(i >= exts.length){ if(finalFail) finalFail(); return; }
+        el.src = `${base}.${exts[i++]}`;
+      };
+      el.onerror = tryNext;
+      tryNext();
+    }
+
+    function goNext(){
+      if(index < items.length-1){
+        index++;
+        render();
+      }else{
+        showEnd();
+      }
+    }
+
+    function render(){
+      const it = items[index];
+      gameCard.innerHTML = `
+        <div class="imgBox">
+          <img id="qImg" alt="صورة ${toArabicDigits(it.id)}">
+        </div>
+        <div class="label">${it.text}</div>
+        <div class="btnRow">
+          <button class="ok" id="trueBtn" type="button">صَحيح</button>
+          <button class="bad" id="falseBtn" type="button">خَطَأ</button>
+        </div>
+      `;
+
+      const imgEl = document.getElementById("qImg");
+      loadWithFallback(imgEl, it.imgBase, IMG_EXTS, () => {
+          imgEl.style.display = "none";
+          const fallback = Object.assign(document.createElement("div"), {
+            style: "font-size:22px;font-weight:700;color:#dc2626;text-align:center;padding:10px;",
+            innerHTML: `لَمْ تُوجَد الصّورَةُ`
+          });
+          imgEl.parentNode.appendChild(fallback);
+      });
+
+      const answer = (choiceTrue)=>{
+        const isCorrect = (choiceTrue === it.correct);
+
+        // ✅ NEW: doğru/yanlış sesini çal (ek)
+        if(isCorrect) playCorrectSound();
+        else playWrongSound();
+
+        if(!isCorrect){
+          // store mistake
+          mistakes.push({ id: it.id, imgBase: it.imgBase, text: it.text, correct: it.correct, choiceTrue });
+        }
+        showMark(isCorrect);
+        setTimeout(()=> goNext(), 500);
+      };
+
+      document.getElementById("trueBtn").onclick = () => answer(true);
+      document.getElementById("falseBtn").onclick = () => answer(false);
+      setProgress();
+    }
+
+    function showEnd(){
+      document.getElementById("topArea").style.display = "none";
+      document.getElementById("navArea").style.display = "none";
+
+      let mistakeHtml = mistakes.length > 0 ?
+        mistakes.map(m => `
+          <div class="wrong-item">
+            <img class="mini-img" data-base="${m.imgBase}" alt="صورة ${toArabicDigits(m.id)}">
+            <div class="wrong-info">
+              <span class="wrong-text">${m.text}</span>
+              <span class="correct-ans">الْجَواب الصَّحيح: ${m.correct ? 'صَحيح' : 'خَطَأ'}</span>
+            </div>
+          </div>
+        `).join('') : '<p style="text-align:center;font-size:24px;padding:20px;">أَحْسَنْت! لَمْ تُخْطِئْ.</p>';
+
+      gameCard.innerHTML = `
+        <div class="end-screen">
+          <div class="result-icon">🎉</div>
+          <div style="font-size:40px; font-weight:bold;">اِنْتَهَت اللُّعْبَة</div>
+
+          <button class="solution-btn" onclick="toggleSolutions()">أَظْهِر الْحَلّ</button>
+
+          <div id="solutionPanel" class="solution-panel">
+            <h3 style="margin-top:0; border-bottom:2px solid #f3f4f6; padding-bottom:10px;">تَصْحيح الأَخْطاء</h3>
+            ${mistakeHtml}
+          </div>
+
+          <button class="smallBtn" style="margin-top:20px; width:100%; font-size:28px; padding:15px;" onclick="resetGame()">حاوِلْ مَرَّةً أُخْرى</button>
+        </div>
+      `;
+
+      const thumbs = gameCard.querySelectorAll(".mini-img[data-base]");
+      thumbs.forEach(img => {
+        const base = img.getAttribute("data-base");
+        loadWithFallback(img, base, IMG_EXTS, () => {
+          img.src = "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23eee%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2214%22>🖼️</text></svg>";
+        });
+      });
+    }
+
+    window.toggleSolutions = function() {
+      const panel = document.getElementById("solutionPanel");
+      panel.style.display = (panel.style.display === "block") ? "none" : "block";
+    };
+
+    window.resetGame = function() {
+      index = 0;
+      mistakes = [];
+      document.getElementById("topArea").style.display = "flex";
+      document.getElementById("navArea").style.display = "flex";
+      render();
+    };
+
+    retryBtn.addEventListener("click", resetGame);
+    render();
+  </script>
+
+
+
+
+
+<script id="startOverlayScript">
+(function(){
+  const overlay = document.getElementById('startOverlay');
+  const startBtn = document.getElementById('startBtn');
+  const instructionAudio = document.getElementById('audio1') || document.getElementById('audioElement');
+  let started = false;
+
+  function fitStartInstruction(){
+    const el = document.getElementById('startInstruction');
+    const card = document.getElementById('startCard');
+    if(!el || !card) return;
+
+    el.style.whiteSpace = 'nowrap';
+    el.style.transform = '';
+    el.style.width = '100%';
+    el.style.display = 'block';
+
+    const available = Math.max(160, card.clientWidth - 20);
+    let size = 30;
+    const min = 10;
+
+    while(size >= min){
+      el.style.fontSize = size + 'px';
+      if(el.scrollWidth <= available) break;
+      size -= 0.5;
+    }
+
+    if(el.scrollWidth > available){
+      const rawWidth = el.scrollWidth || 1;
+      const scale = Math.max(0.72, available / rawWidth);
+      el.style.display = 'inline-block';
+      el.style.width = rawWidth + 'px';
+      el.style.transform = 'scale(' + scale + ')';
+    }
+  }
+
+  async function playInstruction(){
+    if(!instructionAudio) return;
+    try{
+      instructionAudio.pause();
+      instructionAudio.currentTime = 0;
+      await instructionAudio.play();
+    }catch(e){
+      console.warn('Instruction audio could not play.', e);
+    }
+  }
+
+  async function hideOverlayAndPlay(ev){
+    if(ev){ ev.preventDefault(); }
+    if(started) return;
+    started = true;
+    if(overlay){ overlay.style.display = 'none'; }
+    await playInstruction();
+  }
+
+  fitStartInstruction();
+  window.addEventListener('resize', fitStartInstruction);
+  window.addEventListener('load', fitStartInstruction);
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(fitStartInstruction).catch(function(){});
+  }
+  setTimeout(fitStartInstruction, 150);
+  setTimeout(fitStartInstruction, 600);
+
+  if(startBtn){
+    startBtn.addEventListener('click', hideOverlayAndPlay);
+    startBtn.addEventListener('touchstart', hideOverlayAndPlay, {passive:false});
+  }
+})();
+</script>
+
+</body>
+</html>

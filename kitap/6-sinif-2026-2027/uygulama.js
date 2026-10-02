@@ -200,7 +200,7 @@
     if (calanK === i && !a.paused) { a.pause(); return; }
     if (calanK !== i) { a.src = k.yol; calanK = i; }
     $('#calarAd').textContent = k.ad;
-    $('#calarSayfa').textContent = 'Kitap sayfası ' + k.s;
+    $('#calarSayfa').textContent = k.s ? 'Kitap sayfası ' + k.s : '';
     $('#calar').hidden = false;
     var p = a.play(); if (p && p.catch) p.catch(function () { tost('Ses dosyası açılamadı'); });
     calanIsaretle();
@@ -255,29 +255,52 @@
 
   /* ---------- kaynaklar ---------- */
   var filtre = 'hepsi';
+  /* bir kaynak satırı — ünite grubunda da "Diğer kaynaklar"da da aynı */
+  function satir(i) {
+    var k = K.kaynak[i];
+    var indir = (k.tur === 'ses' || k.tur === 'video' || k.tur === 'sarki')
+      ? '<a class="gizle-kucuk" href="' + k.yol + '" download title="Bilgisayara indir">İndir</a>' : '';
+    return '<div class="ksatir"><span class="ik i-' + k.tur + '">' + SVG[k.tur] + '</span>' +
+      '<span class="ad">' + k.ad + (k.s ? '<small>Kitap sayfası ' + k.s + '</small>' : '') + '</span>' +
+      '<span class="dgm"><button data-ac="' + i + '">' + (k.tur === 'ses' ? 'Dinle' : (k.tur === 'eba' ? 'EBA’da aç' : 'Aç')) + '</button>' +
+      (k.s ? '<button data-sayfa="' + k.s + '" class="gizle-kucuk">Sayfaya git</button>' : '') + indir + '</span></div>';
+  }
   function kaynakKur() {
     var gruplar = K.uniteler;
     var h = '';
+    /* 02.10.2026: ünitesi belli olan kaynak o ünitenin altında listelenir;
+       yalnız sayfaya bakmak, sayfası olmayan kaynağı her ünitede tekrar
+       ediyordu. Ne ünitesi ne sayfası olan kaynak en sonda toplanır. */
+    function uygun(k, u) {
+      /* no:0 olan bölümler (sözlük, kaynakça) gerçek ünite değil: onlara
+         yalnız sayfa aralığıyla girilir, yoksa ünitesiz kaynak ikisinde de
+         görünüyordu. */
+      if (u.no && k.u != null) return k.u === u.no;
+      if (k.s != null) return k.s >= u.bas && k.s <= u.son;
+      return false;
+    }
+    function suzgec(k) {
+      return filtre === 'hepsi' || filtre === k.tur || (filtre === 'video' && k.tur === 'sarki');
+    }
+    var yerlesen = {};
     gruplar.forEach(function (u) {
       var L = [];
       K.kaynak.forEach(function (k, i) {
-        if (k.s < u.bas || k.s > u.son) return;
-        if (filtre !== 'hepsi' && !(filtre === k.tur || (filtre === 'video' && k.tur === 'sarki'))) return;
+        if (!uygun(k, u)) return;
+        yerlesen[i] = 1;
+        if (!suzgec(k)) return;
         L.push(i);
       });
       if (!L.length) return;
       h += '<div class="kgrup"><h3>' + (u.no ? u.no + '. Ünite · ' : '') + u.ad + (u.ar ? ' <span dir="rtl">' + u.ar + '</span>' : '') + '</h3>';
-      L.forEach(function (i) {
-        var k = K.kaynak[i];
-        var indir = (k.tur === 'ses' || k.tur === 'video' || k.tur === 'sarki')
-          ? '<a class="gizle-kucuk" href="' + k.yol + '" download title="Bilgisayara indir">İndir</a>' : '';
-        h += '<div class="ksatir"><span class="ik i-' + k.tur + '">' + SVG[k.tur] + '</span>' +
-          '<span class="ad">' + k.ad + '<small>Kitap sayfası ' + k.s + '</small></span>' +
-          '<span class="dgm"><button data-ac="' + i + '">' + (k.tur === 'ses' ? 'Dinle' : (k.tur === 'eba' ? 'EBA’da aç' : 'Aç')) + '</button>' +
-          '<button data-sayfa="' + k.s + '" class="gizle-kucuk">Sayfaya git</button>' + indir + '</span></div>';
-      });
+      h += L.map(satir).join('');
       h += '</div>';
     });
+    var arta = [];
+    K.kaynak.forEach(function (k, i) { if (!yerlesen[i] && suzgec(k)) arta.push(i); });
+    if (arta.length) {
+      h += '<div class="kgrup"><h3>Diğer kaynaklar</h3>' + arta.map(satir).join('') + '</div>';
+    }
     $('#kaynakListe').innerHTML = h || '<div class="bos-sonuc">Kaynak yok</div>';
     $$('#kaynakListe [data-ac]').forEach(function (b) {
       b.addEventListener('click', function () {
@@ -372,7 +395,12 @@
       .catch(function (e) { yaz(0, 'İndirme yarıda kaldı (' + (e && e.message || 'bağlantı') + '). Tekrar deneyin.'); })
       .then(function () { zipCalisiyor = false; $$('#indirListe button').forEach(function (b) { b.disabled = false; }); });
   }
-  $('#tIndir').addEventListener('click', function () { indirKur(); panelAc('#pIndir'); this.classList.add('aktif'); });
+  /* İndir düğmesi olmayan kitap olabilir (02.10.2026: 7. sınıf Maarif
+     kitabı resmî olarak yayınlanamadığı için indirilemiyor). */
+  var bIndir = $('#tIndir');
+  if (bIndir) bIndir.addEventListener('click', function () {
+    indirKur(); panelAc('#pIndir'); this.classList.add('aktif');
+  });
 
   /* ---------- düğmeleri göster/gizle ---------- */
   $('#tIpucu').addEventListener('click', function () {

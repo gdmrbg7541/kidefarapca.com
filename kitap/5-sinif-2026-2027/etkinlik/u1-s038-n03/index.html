@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>لعبة الحروف</title>
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{overflow:hidden;font-family:"Scheherazade New","Amiri",serif;background:#bfe7ff;color:#123;}
+#app{width:100%;min-height:100svh;min-height:100dvh;display:flex;flex-direction:column;gap:10px;padding:10px;}
+.card{background:rgba(255,255,255,.86);border:1px solid rgba(0,0,0,.08);box-shadow:0 10px 22px rgba(0,0,0,.10);border-radius:22px;overflow:hidden;}
+#topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;}
+#instrText{flex:1;text-align:center;font-size:clamp(24px,3.8vw,34px);line-height:1.1;padding:0 6px;}
+.tbBtn{border:none;border-radius:16px;padding:10px 12px;font-size:20px;cursor:pointer;min-height:44px;background:rgba(255,255,255,.92);box-shadow:0 8px 14px rgba(0,0,0,.10);}
+.tbBtn:active{transform:scale(.98);}
+.screen{display:none;} .screen.active{display:block;}
+#unlockOverlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);padding:16px;z-index:50;}
+#unlockBox{width:min(520px,100%);text-align:center;padding:16px;}
+#unlockBox h2{margin:0 0 8px;font-size:30px;}
+#unlockBox p{margin:0 0 12px;font-size:22px;opacity:.9;}
+#unlockBtn{width:100%;border:none;border-radius:18px;padding:14px 16px;font-size:26px;cursor:pointer;min-height:54px;box-shadow:0 10px 18px rgba(0,0,0,.14);}
+#introCard{padding:10px;}
+#balloonWrap{background-image:url("mobile/5pG0ce0pwKi.png");background-size:cover;background-position:center;border-radius:18px;padding:10px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;place-items:center;}
+.balloonBtn{border:none;background:transparent;padding:0;cursor:pointer;width:100%;max-width:120px;aspect-ratio:1/1.92;filter:drop-shadow(0 10px 14px rgba(0,0,0,.16));touch-action:manipulation;}
+.balloonBtn img{width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;}
+#mainCard{padding:10px;}
+#mainGrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.55fr);gap:10px;align-items:stretch;}
+#videoBox{border-radius:18px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:#fff;display:flex;flex-direction:column;}
+#video{width:100%;height:auto;max-height:42svh;background:#000;}
+#vControls{display:flex;gap:8px;padding:8px;align-items:center;}
+.vBtn{border:none;border-radius:14px;padding:10px 12px;font-size:18px;cursor:pointer;min-height:44px;background:rgba(245,248,255,.95);box-shadow:0 8px 14px rgba(0,0,0,.08);}
+#seek{flex:1;height:36px;}
+#lettersBox{border-radius:18px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.92);padding:8px;display:flex;flex-direction:column;gap:8px;justify-content:space-between;}
+#letterBtns{display:flex;flex-direction:column;gap:8px;}
+.letterBtn{border:none;border-radius:18px;padding:10px 8px;font-size:clamp(34px,5.8vw,48px);cursor:pointer;min-height:54px;background:linear-gradient(180deg,#fff,#f1f6ff);box-shadow:0 10px 16px rgba(0,0,0,.10);touch-action:manipulation;}
+.letterBtn.active{outline:3px solid rgba(0,120,255,.30);}
+#toWriteBtn{border:none;border-radius:18px;padding:12px 10px;font-size:22px;cursor:pointer;min-height:44px;background:rgba(255,255,255,.95);box-shadow:0 10px 16px rgba(0,0,0,.10);}
+#writeCard{padding:10px;}
+#writeWrap{border-radius:18px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background-image:none;background-size:cover;background-position:center;padding:10px;display:flex;flex-direction:column;gap:8px;;padding-bottom:14px;}
+#canvasBox{position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(0,0,0,.10);background:rgba(255,255,255,.85);background-image:url("mobile/68Xuw9K4F3X.png");background-size:cover;background-position:center;height:min(40svh,340px);}
+#guideImg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:1;filter:contrast(1.35) saturate(1.6);pointer-events:none;z-index:1;}
+#canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;z-index:3;}
+#actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.actionBtn{border:none;border-radius:18px;padding:12px 10px;font-size:20px;cursor:pointer;min-height:44px;box-shadow:0 10px 16px rgba(0,0,0,.10);}
+.btnCheck{background:#e9f7ff;} .btnShow{background:#fff3d6;} .btnReset{background:#ffe2e2;}
+#writeNav{display:flex;gap:8px;}
+.navBtn{border:none;border-radius:18px;padding:12px 10px;font-size:22px;cursor:pointer;min-height:44px;background:rgba(255,255,255,.95);box-shadow:0 10px 16px rgba(0,0,0,.10);flex:1;}
+.nextRed{color:#c40000;font-weight:700;}
+#feedback{text-align:center;font-size:clamp(26px,4.5vw,36px);min-height:44px;font-weight:700;}
+@media (max-width:360px),(max-height:620px){#app{padding:8px;gap:8px;}#video{max-height:38svh;}#canvasBox{height:min(38svh,280px);}}
+
+/* --- FIX: header + start/intro instr layout --- */
+#topbar{position:relative; padding-top:34px;}
+#cornerTitle{
+  position:absolute;
+  top:10px;
+  right:12px;
+  font-size:18px;
+  font-weight:900;
+  white-space:nowrap;
+}
+#instrText{width:100%; text-align:center; font-size:28px; font-weight:800; line-height:1.3;}
+.centerStack{display:grid; gap:14px; place-items:center; text-align:center; padding:10px;}
+.bigInstr{font-size:32px; font-weight:900; line-height:1.35;}
+/* guide image in writing box */
+#guideImg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+  user-select:none;
+}
+#canvasBox{position:relative;}
+/* make ÜKTÜB blue */
+#toWriteBtn{background:#1e66ff; color:#fff;}
+/* remove special next color */
+.nextRed{background:inherit; color:inherit;}
+
+/* PATCH_BALLOON_BG */
+#balloonWrap{background-image:none !important;background:rgba(255,255,255,.20) !important;}
+
+
+/* ===== PATCH_SCROLL_LANDSCAPE_V1 =====
+   Landscape + küçük ekranlarda tek scroller (#game-container) kullanır.
+   Not: Bu blok, mevcut stilleri bozmayacak şekilde en sona eklenir.
+*/
+*{ box-sizing: border-box; }
+html, body{ margin:0; padding:0; }
+body{ overflow-x:hidden; }
+
+/* 100vh kullanmadan (güvenli override) */
+#game-container{
+  width: 100%;
+  min-height: 100svh;
+  min-height: 100dvh;
+  height: auto !important;
+}
+
+/* Yatay + kısa yükseklik */
+@media (orientation: landscape) and (max-height: 500px) {
+  body{ overflow: hidden; } /* çift scroll olmasın */
+
+  #game-container{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+
+    max-height: 100svh;
+    max-height: 100dvh;
+    max-height: calc(var(--vh, 1vh) * 100);
+
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .instruction{ margin-bottom: 10px; padding: 5px; }
+  #words-area{ margin-bottom: 15px; padding: 8px; }
+  #drop-zones{ grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .drop-box{ min-height: 80px; padding: 5px; }
+  .target-label{ margin-bottom: 2px; }
+}
+
+/* Çok küçük ekran */
+@media (max-width: 360px) {
+  body{ overflow: hidden; }
+
+  #game-container{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+
+    max-height: 100svh;
+    max-height: 100dvh;
+    max-height: calc(var(--vh, 1vh) * 100);
+
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  #drop-zones{ grid-template-columns: 1fr; }
+}
+
+/* Ek: küçük yükseklik */
+@media (max-height: 620px) {
+  body{ overflow: hidden; }
+
+  #game-container{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+
+    max-height: 100svh;
+    max-height: 100dvh;
+    max-height: calc(var(--vh, 1vh) * 100);
+
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
+
+</style>
+</head>
+<body>
+<main id="app">
+  <header class="card" id="topbar">
+    <div id="cornerTitle">اَلْحُروفُ الْعَرَبِيَّة مِنْ د إِلى ز.</div>
+    <div id="instrText"></div>
+  </header>
+
+  
+  <section class="card screen active" id="startCard">
+    <div class="centerStack">
+      <button id="startBtn" class="navBtn" type="button">اِبْدَأْ</button>
+    </div>
+  </section>
+<section class="card screen" id="introCard">
+    <div id="balloonWrap">
+      <button class="balloonBtn" data-letter="د" type="button"><img alt="د" src="mobile/1.png"></button>
+      <button class="balloonBtn" data-letter="ذ" type="button"><img alt="ذ" src="mobile/2.png"></button>
+      <button class="balloonBtn" data-letter="ر" type="button"><img alt="ر" src="mobile/3.png"></button>
+      <button class="balloonBtn" data-letter="ز" type="button"><img alt="ز" src="mobile/4.png"></button>
+    </div>
+  </section>
+
+  <section class="card screen" id="mainCard">
+    <div id="mainGrid">
+      <div id="videoBox">
+        <video id="video" playsinline controls preload="metadata"></video>
+        <div id="vControls">
+          <button class="vBtn" id="playPauseBtn" type="button">⏯</button>
+          <button class="vBtn" id="stopBtn" type="button">⏹</button>
+          <input id="seek" type="range" min="0" max="100" value="0" step="1" aria-label="seek"/>
+          <button class="vBtn" id="fsBtn" type="button">⛶</button>
+        </div>
+      </div>
+      <div id="lettersBox">
+        <div id="letterBtns"></div>
+</div>
+    </div>
+  </section>
+
+  <section class="card screen" id="writeCard">
+    <div id="writeWrap">
+      <div id="canvasBox">
+        <img id="guideImg" alt=""/>
+<canvas id="canvas"></canvas>
+      </div>
+
+      <div id="actions">
+        <button id="showBtn" class="actionBtn btnShow" type="button">أَظْهِر الْحَلّ</button>
+        <button id="resetBtn" class="actionBtn btnReset" type="button">إِعادَةُ الْبَدْء</button>
+      </div>
+
+      <div id="writeNav">
+        <button id="prevBtn" class="navBtn" type="button">اَلسّابِق</button>
+        <button id="nextBtn" class="navBtn" type="button">اَلتّالي</button>
+      </div>
+
+      <div id="feedback"></div>
+    </div>
+</section>
+<section class="card screen" id="doneCard">
+  <div style="text-align:center;display:grid;gap:16px;padding:8px 4px;">
+    <div style="font-size:34px;font-weight:900;line-height:1.35;">أَكْمَلَتْ اَللُّعْبَة</div>
+    <button id="restartAllBtn" class="actionBtn btnReset" type="button" style="font-size:26px;">إِعادَةُ الْبَدْء</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+let __introDone=false;
+const LETTERS = ["د", "ذ", "ر", "ز"];
+
+/* FIX-NAV: منع تخطّي الحروف بسبب اللمس المزدوج/ghost click */
+let __navLock = false;
+let __navLockUntil = 0;
+function navGate(){
+  const now = Date.now();
+  if(__navLock && now < __navLockUntil) return false;
+  __navLock = true;
+  __navLockUntil = now + 650; // نافذة منع التكرار
+  return true;
+}
+function navRelease(delay=0){
+  const now = Date.now();
+  __navLockUntil = Math.max(__navLockUntil, now + delay);
+  setTimeout(()=>{ __navLock = false; }, delay);
+}
+
+const AUDIO = {"introInstr": "story_content/yonerge1.mp3", "letterInstr": "story_content/yonerge2.mp3", "writeInstr": "story_content/yonerge3.mp3", "letters": {"د": "story_content/1.mp3", "ذ": "story_content/2.mp3", "ر": "story_content/3.mp3", "ز": "story_content/4.mp3"}};
+const VIDEOS = {"د": "story_content/1.mp4", "ذ": "story_content/2.mp4", "ر": "story_content/3.mp4", "ز": "story_content/4.mp4"};
+
+const SFX = {
+  click: "custom_sfx/butonsesi.mp3",
+  next:  "custom_sfx/sonraki.mp3",
+  correct1: "custom_sfx/dogru.mp3",
+  correct2: "custom_sfx/basari.mp3",
+  correct3: "custom_sfx/tebrikler.mp3",
+  wrong: "custom_sfx/yanliscevap.mp3"
+};
+
+const INSTR_TEXT = {
+  start: "اِسْتَمِعْ إِلى الْحُروف وَلاحِظْ كِتابَتَها.",
+  intro: "اِسْتَمِعْ إِلى الْحُروف وَلاحِظْ كِتابَتَها.",
+  main:  "اِسْتَمِعْ إِلى الْحَرْف وَلاحِظْ كِتابَتَهُ.",
+  write: "اُكْتُب الْحَرْف بِشَكْل صَحيح."
+  ,done:""
+};
+
+const instrText = document.getElementById("instrText");
+
+const startCard = document.getElementById("startCard");
+const startBtn  = document.getElementById("startBtn");
+
+const introCard = document.getElementById("introCard");
+const mainCard  = document.getElementById("mainCard");
+const writeCard = document.getElementById("writeCard");
+
+const doneCard = document.getElementById("doneCard");
+const restartAllBtn = document.getElementById("restartAllBtn");
+const video = document.getElementById("video");
+video.addEventListener("click", ()=>{ unlockMedia(); playAndWait(audMainInstr).then((ok)=>{ if(!ok) return; video.currentTime=0; video.play().catch(()=>{}); safePlay(audLetters[currentLetter]).catch?.(()=>{}); }).catch(()=>{}); });
+
+const playPauseBtn = document.getElementById("playPauseBtn");
+const stopBtn = document.getElementById("stopBtn");
+const fsBtn = document.getElementById("fsBtn");
+const seek = document.getElementById("seek");
+
+const letterBtns = document.getElementById("letterBtns");
+
+const guideImg = document.getElementById("guideImg");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const showBtn  = document.getElementById("showBtn");
+const resetBtn = document.getElementById("resetBtn");
+const prevBtn  = document.getElementById("prevBtn");
+const nextBtn  = document.getElementById("nextBtn");
+const feedback = document.getElementById("feedback");
+
+function mkAudio(src){ const a=new Audio(src); a.preload="auto"; a.playsInline=true; return a; }
+const audIntroInstr = mkAudio(AUDIO.introInstr);
+const audMainInstr  = mkAudio(AUDIO.letterInstr);
+const audWriteInstr = mkAudio(AUDIO.writeInstr);
+const audLetters = {};
+for (const k of Object.keys(AUDIO.letters)) audLetters[k]=mkAudio(AUDIO.letters[k]);
+
+const sfxClick = mkAudio(SFX.click);
+const sfxNext  = mkAudio(SFX.next);
+const sfxWrong = mkAudio(SFX.wrong);
+const sfxCorrect=[mkAudio(SFX.correct1),mkAudio(SFX.correct2),mkAudio(SFX.correct3)];
+
+function playIntroInstrNow(){
+  // must be called within a user gesture
+
+  // Play intro instruction immediately within the user gesture chain
+  safePlay(audIntroInstr);
+}
+
+// one-time media unlock on first user interaction
+window.addEventListener("pointerdown",(ev)=>{ if(finishTimer && (Date.now()-finishArmedAt)>150){ cancelFinishTimer(); } }, true);
+
+window.addEventListener("pointerdown", ()=>{ try{ unlockMedia(); }catch(e){} }, {once:true, passive:true});
+window.addEventListener("touchstart", ()=>{ try{ unlockMedia(); }catch(e){} }, {once:true, passive:true});
+
+function safePlay(a){ if(!a) return Promise.resolve(); try{a.pause(); if(a.readyState>0) a.currentTime=0;}catch(e){} const p=a.play(); return (p&&p.catch)?p.catch(()=>{}):Promise.resolve(); }
+
+function stopAllAudio(){
+  try{ audIntroInstr.pause(); audIntroInstr.currentTime=0; }catch(e){}
+  try{ audMainInstr.pause(); audMainInstr.currentTime=0; }catch(e){}
+  try{ audWriteInstr.pause(); audWriteInstr.currentTime=0; }catch(e){}
+  try{ Object.values(audLetters).forEach(x=>{ try{x.pause(); x.currentTime=0;}catch(e){}; }); }catch(e){}
+  try{ sfxClick.pause(); sfxClick.currentTime=0; }catch(e){}
+  try{ sfxNext.pause(); sfxNext.currentTime=0; }catch(e){}
+  try{ sfxWrong.pause(); sfxWrong.currentTime=0; }catch(e){}
+  try{ sfxCorrect.forEach(x=>{ try{x.pause(); x.currentTime=0;}catch(e){}; }); }catch(e){}
+}
+
+function playAndWait(a){
+  return new Promise((resolve)=>{
+    if(!a){ resolve(true); return; }
+    let finished=false;
+    const finish=(ok)=>{ if(finished) return; finished=true; try{a.removeEventListener("ended", onEnd);}catch(e){} resolve(ok); };
+    const onEnd=()=>finish(true);
+    try{ a.pause(); if(a.readyState>0) a.currentTime=0; }catch(e){}
+    try{ a.addEventListener("ended", onEnd); }catch(e){}
+    const p=a.play();
+    if(p && p.catch){ p.catch(()=>{ finish(false); }); }
+  });
+}
+function playClick(){ return safePlay(sfxClick); }
+function playNext(){ return safePlay(sfxNext); }
+function playCorrect(){ return safePlay(sfxCorrect[Math.floor(Math.random()*sfxCorrect.length)]); }
+
+async function unlockAudio(){ const t=mkAudio(SFX.click); try{await t.play(); t.pause();}catch(e){} unlockOverlay.style.display="none"; await safePlay(sfxClick); setInstr("intro"); await safePlay(audIntroInstr); }
+function showScreen(name){
+  startCard.classList.toggle("active", name==="start");
+  introCard.classList.toggle("active", name==="intro");
+  mainCard.classList.toggle("active", name==="main");
+  writeCard.classList.toggle("active", name==="write");
+  doneCard.classList.toggle("active", name==="done");
+}
+function setInstr(where){ instrText.textContent = INSTR_TEXT[where] || ""; instrText.dataset.where = where; }
+
+/* state */
+let currentIdx=0;
+let currentLetter=LETTERS[currentIdx];
+let inkCount=0;
+let strokes=[];
+let finishTimer=null;
+let finishArmedAt=0;
+let evalTimer=null;
+function cancelFinishTimer(){
+  if(finishTimer){ try{clearTimeout(finishTimer);}catch(e){} finishTimer=null; }
+}
+
+function setActiveLetter(letter){
+  currentLetter = letter;
+  
+  try{ video.onloadeddata = ()=>{ navRelease(0); }; }catch(e){}currentIdx = LETTERS.indexOf(letter);
+  [...letterBtns.querySelectorAll(".letterBtn")].forEach(b=>b.classList.toggle("active", b.dataset.letter===letter));
+  // بعد آخر سؤال: عطّل زرّ (التّالِي)
+  const isLast = (currentIdx === LETTERS.length - 1);
+  nextBtn.disabled = isLast;
+  nextBtn.style.opacity = isLast ? "0.55" : "1";
+  nextBtn.style.pointerEvents = isLast ? "none" : "auto";
+}
+function loadVideo(letter){ video.src = VIDEOS[letter]; video.load(); }
+
+function startLetterFlow(letter){
+  if(!__introDone){ return; }
+unlockMedia();
+  stopAllAudio();
+  setActiveLetter(letter);
+  setInstr("main");
+  showScreen("main");
+  // 1) Instruction MUST finish, 2) then start video, 3) play letter sound with the video
+  playAndWait(audMainInstr).then((ok)=>{ if(!ok) return;
+    loadVideo(letter);
+    video.currentTime = 0;
+    video.play().catch(()=>{});
+    // play letter sound together with video start
+    safePlay(audLetters[letter]).catch(()=>{});
+  }).catch(()=>{
+    // If instruction audio is blocked, do not auto-start video.
+  });
+}
+function gotoWrite(){ showScreen("write"); setInstr("write"); feedback.textContent=""; feedback.style.color=""; setupCanvas(); renderGuide(); safePlay(audWriteInstr); }
+
+video.addEventListener("ended", ()=>{ gotoWrite(); });
+
+/* build letters */
+(function build(){ letterBtns.innerHTML=""; for(const l of LETTERS){ const b=document.createElement("button"); b.type="button"; b.className="letterBtn"; b.textContent=l; b.dataset.letter=l; b.addEventListener("pointerup", ()=>startLetterFlow(l)); b.addEventListener("click", ()=>startLetterFlow(l)); letterBtns.appendChild(b); } })();
+setActiveLetter(currentLetter);
+
+/* start */
+function unlockMedia(except){
+  except = except || [];
+
+  // iOS/Safari: unlock audio/video with a user gesture (one-time)
+  if(window.__mediaUnlocked) return;
+  window.__mediaUnlocked = true;
+
+  // Resume AudioContext if present
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(AC){
+      if(!window.__ac){ window.__ac = new AC(); }
+      if(window.__ac.state === "suspended") window.__ac.resume();
+    }
+  }catch(e){}
+
+  // Prime HTMLAudio elements (muted play/pause) so later plays won't be blocked
+  let list = [audIntroInstr, audMainInstr, audWriteInstr, sfxClick, sfxNext, sfxWrong, ...sfxCorrect, ...Object.values(audLetters)];
+  if(except && except.length){ list = list.filter(a=> !except.includes(a)); }
+  list.forEach(a=>{
+    try{
+      if(!a) return;
+      a.muted = true;
+      const p = a.play();
+      if(p && p.then){
+        p.then(()=>{ try{ a.pause(); a.currentTime=0; a.muted=false; }catch(e){}; })
+         .catch(()=>{ try{ a.muted=false; }catch(e){}; });
+      }else{
+        a.pause(); a.currentTime=0; a.muted=false;
+      }
+    }catch(e){}
+  });
+
+  // Prime video
+  try{
+    video.muted = true;
+    const pv = video.play();
+    if(pv && pv.then){
+      pv.then(()=>{ try{ video.pause(); video.currentTime=0; video.muted=false; }catch(e){}; })
+        .catch(()=>{ try{ video.muted=false; }catch(e){}; });
+    }else{
+      video.pause(); video.currentTime=0; video.muted=false;
+    }
+  }catch(e){}
+}
+let __startHandled = false;
+function __goIntroFromStart(){
+  if(__startHandled) return;
+  __startHandled = true;
+  __introDone = false;
+  if(!AUDIO.introInstr) __introDone = true;
+  try{ unlockMedia([audIntroInstr]); }catch(e){}
+  stopAllAudio();
+  showScreen("intro");
+  setInstr("intro");
+  // Play within user gesture
+  /* PATCH_INTRO_DONE */
+  playAndWait(audIntroInstr).then(()=>{ __introDone = true; }).catch(()=>{ __introDone = true; });
+}
+startBtn.addEventListener("pointerup", __goIntroFromStart);
+startBtn.addEventListener("touchend", __goIntroFromStart);
+startBtn.addEventListener("click", (e)=>{ __goIntroFromStart(); });
+
+/* results */
+let score = {correct:0, wrong:0};
+let perLetter = {};
+function resetAll(){
+  score = {correct:0, wrong:0};
+  __startHandled = false;
+  perLetter = {};
+  strokes=[]; inkCount=0;
+  currentLetter = LETTERS[0];
+  currentIdx = 0;
+  setActiveLetter(currentLetter);
+  feedback.textContent="";
+  showScreen("start");
+  
+/* FIX33: ضمان عمل زرّ "التّالِي" على جميع الأجهزة */
+nextBtn.onclick = ()=>{ gotoNextLetter(); };
+prevBtn.onclick = ()=>{ playClick(); gotoPrevLetter(); };
+
+setInstr("start");
+}
+
+restartAllBtn.addEventListener('click', ()=>{ playClick(); resetAll(); });
+restartAllBtn.addEventListener('pointerup', ()=>{ playClick(); resetAll(); });
+
+
+/* balloons */
+document.querySelectorAll(".balloonBtn").forEach(btn=>{ btn.addEventListener("pointerup", ()=>startLetterFlow(btn.dataset.letter)); btn.addEventListener("click", ()=>startLetterFlow(btn.dataset.letter)); });
+
+/* video controls */
+function updateSeek(){ if(!isFinite(video.duration)||video.duration<=0) return; seek.value=String(Math.round((video.currentTime/video.duration)*100)); }
+video.addEventListener("timeupdate", updateSeek);
+seek.addEventListener("input", ()=>{ if(!isFinite(video.duration)||video.duration<=0) return; video.currentTime=(Number(seek.value)/100)*video.duration; });
+playPauseBtn.addEventListener("pointerup", ()=>{ playClick(); if(video.paused) video.play().catch(()=>{}); else video.pause(); });
+playPauseBtn.addEventListener("click", ()=>{ if(video.paused) video.play().catch(()=>{}); else video.pause(); });
+stopBtn.addEventListener("pointerup", ()=>{ playClick(); video.pause(); });
+stopBtn.addEventListener("click", ()=>{ video.pause(); });
+fsBtn.addEventListener("pointerup", ()=>{ playClick(); const el=video; if(el.requestFullscreen) el.requestFullscreen().catch(()=>{}); else if(el.webkitEnterFullscreen) el.webkitEnterFullscreen(); });
+fsBtn.addEventListener("click", ()=>{ const el=video; if(el.requestFullscreen) el.requestFullscreen().catch(()=>{}); else if(el.webkitEnterFullscreen) el.webkitEnterFullscreen(); });
+
+/* canvas */
+function resizeCanvasToCSS(){ const r=canvas.getBoundingClientRect(); const dpr=Math.max(1, window.devicePixelRatio||1); const w=Math.floor(r.width*dpr); const h=Math.floor(r.height*dpr); if(canvas.width!==w||canvas.height!==h){ canvas.width=w; canvas.height=h; } ctx.setTransform(dpr,0,0,dpr,0,0); }
+function clearCanvas(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
+function renderGuide(){ guideImg.src="write_bg.png"; guideImg.style.display="block"; }
+function redrawStrokes(color){ clearCanvas(); ctx.lineCap="round"; ctx.lineJoin="round"; ctx.lineWidth=8; ctx.strokeStyle=color; for(const s of strokes){ const pts=s.points; if(!pts||pts.length<2) continue; ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y); ctx.stroke(); } }
+function setupCanvas(){ strokes=[]; inkCount=0; feedback.textContent=""; feedback.style.color=""; resizeCanvasToCSS(); clearCanvas(); }
+
+let drawing=false; let currentStroke=null;
+function getPos(evt){ const r=canvas.getBoundingClientRect(); return {x:(evt.clientX-r.left), y:(evt.clientY-r.top)}; }
+function startDraw(e){ drawing=true; currentStroke={points:[]}; strokes.push(currentStroke); currentStroke.points.push(getPos(e)); }
+function moveDraw(e){ if(!drawing) return; const p=getPos(e); const pts=currentStroke.points; pts.push(p); inkCount++; ctx.lineCap="round"; ctx.lineJoin="round"; ctx.lineWidth=8; ctx.strokeStyle="#c40000"; const n=pts.length; if(n>=2){ ctx.beginPath(); ctx.moveTo(pts[n-2].x, pts[n-2].y); ctx.lineTo(pts[n-1].x, pts[n-1].y); ctx.stroke(); } }
+function endDraw(){
+  if(!drawing) return;
+  drawing=false;
+  currentStroke=null;
+  // Debounced evaluate: wait for user to finish multi-stroke letters (dots / pen lift)
+  if(evalTimer) try{ clearTimeout(evalTimer); }catch(e){}
+  evalTimer = setTimeout(()=>{
+    if(writeCard.classList.contains("active")){
+      checkDrawing();
+    }
+  }, 800);
+}
+canvas.addEventListener("pointerdown",(e)=>{ e.preventDefault(); canvas.setPointerCapture?.(e.pointerId); startDraw(e); });
+canvas.addEventListener("pointermove",(e)=>{ e.preventDefault(); moveDraw(e); });
+canvas.addEventListener("pointerup",(e)=>{ e.preventDefault(); endDraw(); });
+canvas.addEventListener("pointercancel",(e)=>{ e.preventDefault(); endDraw(); });
+canvas.addEventListener("pointerleave",(e)=>{ e.preventDefault(); endDraw(); });
+
+window.addEventListener("pointerup", endDraw);
+
+/* actions */
+function pointInZone(p,w,h){
+  // Blue line removed: allow drawing anywhere
+  return true;
+}
+
+function strokeBounds(st){
+  let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+  for(const p of st.points){
+    if(p.x<minX) minX=p.x;
+    if(p.y<minY) minY=p.y;
+    if(p.x>maxX) maxX=p.x;
+    if(p.y>maxY) maxY=p.y;
+  }
+  return {minX,minY,maxX,maxY,w:(maxX-minX),h:(maxY-minY)};
+}
+
+function hasRequiredDots(letter,w,h){
+  const DOTS = {
+    "ب":{n:1,pos:"below"},
+    "ت":{n:2,pos:"above"},
+    "ث":{n:3,pos:"above"},
+    "ج":{n:1,pos:"below"},
+    "خ":{n:1,pos:"above"},
+    "ذ":{n:1,pos:"above"},
+    "ز":{n:1,pos:"above"},
+    "ش":{n:3,pos:"above"},
+    "ض":{n:1,pos:"above"},
+    "ظ":{n:1,pos:"above"},
+    "غ":{n:1,pos:"above"},
+    "ف":{n:1,pos:"above"},
+    "ق":{n:2,pos:"above"},
+    "ن":{n:1,pos:"above"},
+    "ي":{n:2,pos:"below"}
+  };
+  const rule = DOTS[letter];
+  if(!rule) return true;
+
+  const topZone = {x1:0.18*w, x2:0.82*w, y1:0.04*h, y2:0.38*h};
+  const bottomZone = {x1:0.18*w, x2:0.82*w, y1:0.55*h, y2:0.96*h};
+  const zone = (rule.pos==="below") ? bottomZone : topZone;
+
+  let dots=0;
+  for(const st of strokes){
+    if(!st.points || st.points.length<3) continue;
+    const b=strokeBounds(st);
+    const cx=(b.minX+b.maxX)/2, cy=(b.minY+b.maxY)/2;
+    const small = (b.w <= 0.22*w) && (b.h <= 0.22*h);
+    const inZone = (cx>=zone.x1 && cx<=zone.x2 && cy>=zone.y1 && cy<=zone.y2);
+    if(small && inZone){
+      dots++;
+    }
+  }
+  return dots>=rule.n;
+}
+
+function hasTailPart(letter,w,h){
+  const TAIL = new Set(["ع","غ","ق","ف","ص","ض","ي","ن","م"]);
+  if(!TAIL.has(letter)) return true;
+
+  // Tail heuristic: at least one non-dot stroke must reach the lower area of the canvas.
+  const yNeed = 0.78*h;
+  for(const st of strokes){
+    if(!st.points || st.points.length<6) continue;
+    const b=strokeBounds(st);
+    const tall = (b.h >= 0.26*h) || (b.w >= 0.35*w);
+    const reaches = b.maxY >= yNeed;
+    const tooSmall = (b.w <= 0.22*w) && (b.h <= 0.22*h); // ignore dot strokes
+    if(!tooSmall && tall && reaches) return true;
+  }
+  return false;
+}
+
+
+
+function __baselineY(){
+  return canvas.height * 0.545; // ratio measured from guide image
+}
+function __baselineTol(){
+  return Math.max(10, canvas.height * 0.02);
+}
+const __TAIL_BELOW = new Set(["ج", "ح", "خ", "ر", "ز", "س", "ش", "ص", "ض", "ع", "غ", "ق", "ل", "م", "ن", "و", "ي"]);
+function __goesBelowBaseline(){
+  const by = __baselineY();
+  const tol = __baselineTol();
+  for(const s of strokes){
+    for(const p of s.points){
+      if(p.y > by + tol) return true;
+    }
+  }
+  return false;
+}
+
+
+function checkDrawing(){
+  const enough = inkCount>40;
+
+  // Noktalı harflerde nokta yoksa DÖNÜT VERME (erken doğru/yanlış yok)
+  if(enough){
+    const r=canvas.getBoundingClientRect();
+    if(!hasRequiredDots(currentLetter, r.width, r.height)){
+      return;
+    }
+  }
+
+  // Kuyruklu harflerde kuyruk yarım kalırsa yanlış kabul et
+  let ok = !!enough;
+  if(ok){
+    const r=canvas.getBoundingClientRect();
+    if(!hasTailPart(currentLetter, r.width, r.height)){
+      ok = false;
+    }
+  }
+
+  
+  // Baseline rule:
+  // - For listed tail letters: must go BELOW the blue line (tail under baseline)
+  // - For all other letters: must NOT go below the blue line (if it goes under, it's wrong)
+  if(ok){
+    const below = __goesBelowBaseline();
+    if(__TAIL_BELOW.has(currentLetter)){
+      if(!below) ok = false;
+    }else{
+      if(below) ok = false;
+    }
+  }
+const color = ok ? "#0a7a2a" : "#c40000";
+  redrawStrokes(color);
+  feedback.textContent = ok ? "أَحْسَنْت." : "حاوِلْ مَرَّةً أُخْرى.";
+  feedback.style.color = color;
+
+  const firstTime = !(currentLetter in perLetter);
+  if(firstTime){
+    perLetter[currentLetter] = ok ? "correct" : "wrong";
+    if(ok) score.correct += 1; else score.wrong += 1;
+  }
+
+  if(ok) playCorrect(); else safePlay(sfxWrong);
+
+  // After last letter (ز) is attempted, show completion page automatically
+  if(firstTime && currentIdx===LETTERS.length-1){
+    stopAllAudio();
+    try{ video.pause(); }catch(e){}
+    // show completion page 5 seconds later (cancelable)
+    if(finishTimer) try{ clearTimeout(finishTimer); }catch(e){}
+    finishArmedAt=Date.now();
+    finishTimer = setTimeout(()=>{
+      showScreen("done");
+      setInstr("done");
+      renderProgress();
+    }, 5000);
+  }
+}
+
+
+function drawSolution(){ strokes=[]; inkCount=999; resizeCanvasToCSS(); clearCanvas(); guideImg.style.display="none"; const r=canvas.getBoundingClientRect(); ctx.save(); ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillStyle="rgba(0,0,0,.55)"; const size=Math.floor(Math.min(r.width,r.height)*0.72); ctx.font = String(size) + 'px "Scheherazade New","Amiri",serif'; ctx.fillText(currentLetter, r.width/2, r.height/2); ctx.restore(); }
+showBtn.addEventListener("pointerup", ()=>{ playClick(); drawSolution(); });
+showBtn.addEventListener("click", ()=>{ drawSolution(); });
+
+function backToVideo(){
+  showScreen("main");
+  setInstr("main");
+  playAndWait(audMainInstr).then((ok)=>{ if(!ok) return;
+    loadVideo(currentLetter);
+    video.currentTime = 0;
+    video.play().catch(()=>{});
+    safePlay(audLetters[currentLetter]).catch?.(()=>{});
+  }).catch(()=>{});
+}
+// reset current write attempt (redo the same letter)
+function resetWriteAttempt(){
+  // cancel any pending completion transition
+  if(finishTimer){ try{ clearTimeout(finishTimer); }catch(e){} finishTimer = null; }
+
+  strokes=[]; inkCount=0;
+  resizeCanvasToCSS();
+  clearCanvas();
+  renderGuide();
+  feedback.textContent="";
+  feedback.style.color="";
+  // clear per-letter answer so it can be re-evaluated
+  delete perLetter[currentLetter];
+
+  // Return to the video page to rewatch before drawing again
+  stopAllAudio();
+  showScreen("main");
+  setInstr("main");
+  try{ video.currentTime = 0; }catch(e){}
+  // do not auto-play video here; user can tap the letter/video to replay
+}
+resetBtn.addEventListener("pointerup", ()=>{ playClick(); cancelFinishTimer(); resetWriteAttempt(); startLetterFlow(currentLetter); });
+resetBtn.addEventListener("click", ()=>{ cancelFinishTimer(); resetWriteAttempt(); startLetterFlow(currentLetter); });
+function gotoLetterByIdx(i){ const idx=(i+LETTERS.length)%LETTERS.length; currentIdx=idx; const l=LETTERS[currentIdx]; setActiveLetter(l); setupCanvas(); renderGuide(); }
+
+function gotoNextLetter(){
+  if(!navGate()) return;
+  const idx = LETTERS.indexOf(currentLetter);
+  if(idx === -1) return;
+  // بعد آخر حرف: لا تعمل (التّالِي)
+  if(idx >= LETTERS.length - 1){
+    // تأكيد التعطيل (في حال تغيّر DOM)
+    nextBtn.disabled = true;
+    nextBtn.style.opacity = "0.55";
+    nextBtn.style.pointerEvents = "none";
+    return;
+  }
+  startLetterFlow(LETTERS[idx+1]);
+}
+function gotoPrevLetter(){
+  if(!navGate()) return;
+  const idx = LETTERS.indexOf(currentLetter);
+  if(idx <= 0){
+    startLetterFlow(LETTERS[0]);
+    return;
+  }
+  startLetterFlow(LETTERS[idx-1]);
+}
+
+prevBtn.addEventListener("pointerup", ()=>{ playClick(); gotoPrevLetter(); });
+prevBtn.addEventListener("click", ()=>{ gotoPrevLetter(); });
+nextBtn.addEventListener("pointerup", ()=>{ gotoNextLetter(); });
+nextBtn.addEventListener("click", ()=>{ gotoNextLetter(); });
+
+/* FIX33: ضمان عمل زرّ "التّالِي" على جميع الأجهزة */
+nextBtn.onclick = ()=>{ gotoNextLetter(); };
+prevBtn.onclick = ()=>{ playClick(); gotoPrevLetter(); };
+
+setInstr("start");
+showScreen("start");
+
+window.addEventListener("resize", ()=>{ if(writeCard.classList.contains("active")){ resizeCanvasToCSS(); redrawStrokes("#c40000"); } });
+</script>
+
+<script>
+/*VIDEO_TAP_TOGGLE*/
+(function(){
+  function closestVideo(el){
+    while(el && el !== document){
+      if(el.tagName && el.tagName.toLowerCase()==='video') return el;
+      el = el.parentNode;
+    }
+    return null;
+  }
+  function toggleVideo(v){
+    try{
+      if(v.paused){ v.play(); } else { v.pause(); }
+    }catch(e){}
+  }
+  // Tap/click on video pauses/plays (keeps currentTime).
+  document.addEventListener('click', function(e){
+    var v = closestVideo(e.target);
+    if(v){ e.preventDefault(); e.stopPropagation(); toggleVideo(v); }
+  }, true);
+  document.addEventListener('touchend', function(e){
+    var t = (e.changedTouches && e.changedTouches[0]) ? document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY) : e.target;
+    var v = closestVideo(t);
+    if(v){ e.preventDefault(); e.stopPropagation(); toggleVideo(v); }
+  }, {capture:true, passive:false});
+
+  // Writing canvas: ensure touch/pointer end triggers same logic as mouseup.
+  function dispatchMouseUp(target){
+    try{
+      var ev = new MouseEvent('mouseup', {bubbles:true, cancelable:true, view:window});
+      target.dispatchEvent(ev);
+    }catch(e){}
+  }
+  document.addEventListener('pointerup', function(e){
+    if(e.target && e.target.tagName && e.target.tagName.toLowerCase()==='canvas'){ dispatchMouseUp(e.target); }
+  }, true);
+  document.addEventListener('touchend', function(e){
+    var t = e.target;
+    if(t && t.tagName && t.tagName.toLowerCase()==='canvas'){ dispatchMouseUp(t); }
+  }, true);
+})();
+</script>
+
+
+<script>
+/* PATCH_VH_FIX_V1: iPhone/Safari viewport yüksekliği düzeltmesi */
+(function () {
+  function setVH() {
+    document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+  }
+  window.addEventListener('resize', setVH);
+  window.addEventListener('orientationchange', setVH);
+  setVH();
+})();
+</script>
+
+</body>
+</html>

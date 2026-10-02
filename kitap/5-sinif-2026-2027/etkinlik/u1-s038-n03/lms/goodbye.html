@@ -1,0 +1,25 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!doctype html>
+<html>
+<body style="background-color: #ffffff;">
+
+<p role="alert" style="color: #333333;font-family: TemelYazi, articulate, tahoma, arial;font-size: medium;text-align: center;">
+<br><br><br><br>
+انتهى المحتوى. يمكنك إغلاق هذه النافذة.
+</p>
+
+
+<script>
+/* PATCH_VH_FIX_V1: iPhone/Safari viewport yüksekliği düzeltmesi */
+(function () {
+  function setVH() {
+    document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+  }
+  window.addEventListener('resize', setVH);
+  window.addEventListener('orientationchange', setVH);
+  setVH();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,551 @@
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لُعْبَةُ الْأَرْقامِ الْعَرَبِيَّة (١-١٠)</title>
+<link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--primary:#0369a1;
+--accent:#0ea5e9;
+--bg:#f0f9ff;
+--font-main:'Scheherazade New',serif;
+}
+
+body{
+margin:0;
+padding:0;
+font-family:var(--font-main);
+background-color:var(--bg);
+display:flex;
+flex-direction:column;
+align-items:center;
+min-height:100vh;
+}
+
+.header{
+background:white;
+width:100%;
+padding:15px;
+text-align:center;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+margin-bottom:10px;
+}
+
+.instruction{
+font-size:28px;
+color:var(--primary);
+font-weight:bold;
+margin:0;
+}
+
+.game-area{
+position:relative;
+width:95%;
+max-width:600px;
+margin:10px auto;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+background:white;
+user-select:none;
+}
+
+.main-image{
+display:block;
+width:100%;
+height:auto;
+pointer-events:none;
+}
+
+.drop-zone{
+position:absolute;
+width:100px;
+height:40px;
+background:rgba(255,255,255,0.8);
+border:2px dashed var(--primary);
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+font-weight:bold;
+color:var(--primary);
+cursor:pointer;
+transform:translateY(-50%);
+}
+
+.drop-zone.filled{
+border-style:solid;
+background:white;
+}
+
+.word-pool{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:10px;
+padding:15px;
+background:white;
+width:100%;
+margin-top:auto;
+border-radius:25px 25px 0 0;
+}
+
+.word-item{
+padding:8px 18px;
+background:white;
+border:2px solid var(--primary);
+border-radius:15px;
+font-size:24px;
+cursor:pointer;
+color:var(--primary);
+}
+
+.word-item.selected{
+background:var(--primary);
+color:white;
+}
+
+.controls{
+padding:15px;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+background:white;
+width:100%;
+justify-content:center;
+}
+
+.btn{
+font-family:var(--font-main);
+padding:8px 20px;
+font-size:18px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+color:white;
+font-weight:bold;
+}
+
+.btn:disabled{
+background:#cbd5e1 !important;
+cursor:not-allowed;
+opacity:0.6;
+}
+
+.check-btn{background:#059669;}
+.show-correct-btn{background:#7c3aed;}
+.reset-btn{background:#64748b;}
+
+#zone-1{top:66%;left:63%;}
+#zone-2{top:50%;left:80%;}
+#zone-3{top:35%;left:66%;}
+#zone-4{top:23%;left:81%;}
+#zone-5{top:10%;left:66%;}
+#zone-6{top:65%;left:17%;}
+#zone-7{top:48%;left:6%;}
+#zone-8{top:34%;left:21%;}
+#zone-9{top:24%;left:2%;}
+#zone-10{top:8%;left:17%;}
+
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn{display:none !important;}
+#globalStartOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#fff7ed,#dbeafe);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px}
+#globalStartOverlay .startCard{width:min(900px,100%);background:white;border-radius:28px;padding:28px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+#globalStartOverlay .startInstruction{font-size:clamp(28px,4.5vw,40px);color:#0f4c81;font-weight:700;line-height:1.5;margin-bottom:18px}
+#globalStartOverlay .startBtn{background:#22c55e;color:white;border:none;border-radius:18px;padding:12px 28px;font-size:28px;font-family:inherit;font-weight:700;cursor:pointer}
+
+</style>
+
+<style id="final-fix-audio-memory">
+#audioIcon,.audio-icon,.audio-btn,.instrAudioBtn,#playAudioBtn,.speaker-icon,.sound-icon{display:none !important;visibility:hidden !important}
+#feedbackBox,#memoryFeedback,.feedbackBox,.feedback{min-height:42px}
+#feedbackBox.error,#memoryFeedback.error,.feedbackBox.error,.feedback.error{color:#dc2626 !important}
+.card.wrong,.memory-card.wrong,.memory-item.wrong,.tile.wrong,.flip-card.wrong{border:4px solid #dc2626 !important}
+.card.matched,.memory-card.matched,.memory-item.matched,.tile.matched,.flip-card.matched{border:4px solid #16a34a !important}
+</style>
+
+</head>
+
+<body>
+
+<div id="globalStartOverlay">
+  <div class="startCard">
+    <div id="globalStartInstruction" class="startInstruction"></div>
+    <button id="globalStartBtn" class="startBtn">اِبْدَأْ</button>
+  </div>
+</div>
+
+
+<div class="header">
+<p class="instruction">اِضْغَطْ وَطَابِق الْعَدَد مَعَ الرَّقْمِ الصَّحيح.</p>
+</div>
+
+<audio id="instructionAudio" src="1.mp3" preload="auto"></audio>
+
+<div id="gameContainer" class="game-area">
+<img src="1.jpg" class="main-image">
+
+<div id="zone-1" class="drop-zone" data-correct="واحِد">؟</div>
+<div id="zone-2" class="drop-zone" data-correct="اِثْنان">؟</div>
+<div id="zone-3" class="drop-zone" data-correct="ثَلاثَة">؟</div>
+<div id="zone-4" class="drop-zone" data-correct="أَرْبَعَة">؟</div>
+<div id="zone-5" class="drop-zone" data-correct="خَمْسَة">؟</div>
+<div id="zone-6" class="drop-zone" data-correct="سِتَّة">؟</div>
+<div id="zone-7" class="drop-zone" data-correct="سَبْعَة">؟</div>
+<div id="zone-8" class="drop-zone" data-correct="ثَمانِيَة">؟</div>
+<div id="zone-9" class="drop-zone" data-correct="تِسْعَة">؟</div>
+<div id="zone-10" class="drop-zone" data-correct="عَشَرَة">؟</div>
+</div>
+
+<div class="word-pool" id="pool"></div>
+
+<div id="feedbackText" style="min-height:36px;text-align:center;font-size:28px;font-weight:700;color:#dc2626;margin:10px auto;"></div>
+<div class="controls">
+<button id="checkBtn" class="btn check-btn" onclick="checkAnswers()" disabled>تَحَقَّقْ</button>
+<button id="showCorrectBtn" class="btn show-correct-btn" onclick="showCorrectAnswers()" disabled>أَظْهِر الْأَجْوِبَة</button>
+<button class="btn reset-btn" onclick="resetGame()">حاوِلْ مَرَّةً أُخْرى</button>
+</div>
+
+<script>
+const words=["واحِد","اِثْنان","ثَلاثَة","أَرْبَعَة","خَمْسَة","سِتَّة","سَبْعَة","ثَمانِيَة","تِسْعَة","عَشَرَة"];
+let selectedWord=null;
+let hasChecked=false;
+
+function init(){
+const pool=document.getElementById('pool');
+pool.innerHTML='';
+const shuffled=[...words].sort(()=>Math.random()-0.5);
+
+shuffled.forEach(w=>{
+const div=document.createElement('div');
+div.className='word-item';
+div.innerText=w;
+div.onclick=()=>{
+if(selectedWord)selectedWord.classList.remove('selected');
+selectedWord=div;
+div.classList.add('selected');
+};
+pool.appendChild(div);
+});
+
+document.querySelectorAll('.drop-zone').forEach(zone=>{
+zone.innerText='؟';
+zone.classList.remove('filled');
+zone.onclick=()=>{
+if(selectedWord){
+const oldVal = zone.classList.contains('filled') ? zone.innerText.trim() : null;
+if(oldVal){
+const returned=document.createElement('div');
+returned.className='word-item';
+returned.innerText=oldVal;
+returned.onclick=()=>{
+if(selectedWord)selectedWord.classList.remove('selected');
+selectedWord=returned;
+returned.classList.add('selected');
+};
+pool.appendChild(returned);
+}
+zone.innerText=selectedWord.innerText;
+zone.classList.add('filled');
+selectedWord.remove();
+selectedWord=null;
+hasChecked=false;
+document.getElementById('feedbackText').textContent='';
+updateButtonState();
+}else if(zone.classList.contains('filled')){
+const returned=document.createElement('div');
+returned.className='word-item';
+returned.innerText=zone.innerText.trim();
+returned.onclick=()=>{
+if(selectedWord)selectedWord.classList.remove('selected');
+selectedWord=returned;
+returned.classList.add('selected');
+};
+pool.appendChild(returned);
+zone.innerText='؟';
+zone.classList.remove('filled');
+zone.style.borderColor='';
+zone.style.backgroundColor='';
+zone.style.color='';
+hasChecked=false;
+document.getElementById('feedbackText').textContent='';
+updateButtonState();
+}
+};
+});
+
+document.getElementById('checkBtn').disabled=true;
+document.getElementById('showCorrectBtn').disabled=true;
+
+document.addEventListener("click",firstTouch);
+}
+
+function firstTouch(){
+const audio=document.getElementById("instructionAudio");
+audio.play().catch(()=>{});
+document.removeEventListener("click",firstTouch);
+}
+
+function updateButtonState(){
+const total=document.querySelectorAll('.drop-zone').length;
+const filled=document.querySelectorAll('.drop-zone.filled').length;
+const checkBtn=document.getElementById('checkBtn');
+const showBtn=document.getElementById('showCorrectBtn');
+
+if(filled===total){
+checkBtn.disabled=false;
+showBtn.disabled=!hasChecked;
+}else{
+checkBtn.disabled=true;
+showBtn.disabled=true;
+}
+}
+
+function checkAnswers(){
+hasChecked=true;
+document.getElementById("feedbackText").textContent="";
+updateButtonState();
+    document.querySelectorAll('.drop-zone').forEach(zone=>{
+        const val = zone.innerText.trim();
+        const correct = zone.dataset.correct;
+
+        if(val === correct){
+            zone.style.borderColor = "#16a34a";
+            zone.style.backgroundColor = "#dcfce7";
+            zone.style.color = "#166534";
+        } else {
+            zone.style.borderColor = "#dc2626";
+            zone.style.backgroundColor = "#fee2e2";
+            zone.style.color = "#7f1d1d";
+        }
+    });
+}
+
+function showCorrectAnswers(){
+if(!hasChecked){
+document.getElementById('feedbackText').textContent='أَجِبْ عَنِ السُّؤال أَوَّلًا.';
+return;
+}
+document.querySelectorAll('.drop-zone').forEach(zone=>{
+zone.innerText=zone.dataset.correct;
+zone.style.borderColor="#059669";
+zone.style.backgroundColor="#dcfce7";
+zone.style.color="#166534";
+});
+}
+
+function resetGame(){hasChecked=false; document.getElementById("feedbackText").textContent=""; init();}
+window.onload=init;
+</script>
+
+
+<script>
+(function(){
+  const overlay = document.getElementById('globalStartOverlay');
+  const startBtn = document.getElementById('globalStartBtn');
+  const target = document.querySelector('.instruction') || document.querySelector('.instruction-box p') || document.querySelector('h1');
+  const text = target ? (target.textContent || target.innerText || '').trim() : '';
+  document.getElementById('globalStartInstruction').textContent = text;
+  function playInstructionFromStart(){
+    try {
+      if (typeof playInstruction === 'function') { playInstruction(); return; }
+      if (typeof playInstrAudio === 'function') { playInstrAudio(); return; }
+      const a = document.getElementById('instructionAudio') || document.getElementById('instrAudio') || document.getElementById('mainAudio');
+      if (a) { a.currentTime = 0; a.play().catch(()=>{}); return; }
+    } catch(e){}
+  }
+  startBtn.addEventListener('click', function(){
+    overlay.style.display='none';
+    playInstructionFromStart();
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function q(sel){ return document.querySelector(sel); }
+  function qa(sel){ return Array.from(document.querySelectorAll(sel)); }
+  function getInstructionAudio(){
+    return q('#audio-inst') || q('#instructionAudio') || q('#introAudio') || q('audio[data-role="instruction"]') || qa('audio').find(a => (a.id||'').toLowerCase().includes('inst')) || qa('audio')[0] || null;
+  }
+  function hideAudioIcons(){
+    qa('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon,.speaker-icon,.sound-icon').forEach(el=>{
+      el.style.display='none';
+      el.style.visibility='hidden';
+      el.setAttribute('aria-hidden','true');
+    });
+  }
+  function playInstructionAudio(){
+    hideAudioIcons();
+    var a = getInstructionAudio();
+    if(a){
+      try{ a.currentTime = 0; }catch(e){}
+      try{ var p = a.play(); if(p && p.catch){ p.catch(function(){}); } }catch(e){}
+      return true;
+    }
+    var btn = q('#playAudioBtn,.audio-btn,.instrAudioBtn,.audio-icon,#audioIcon');
+    if(btn){ try{ btn.click(); }catch(e){} return true; }
+    return false;
+  }
+  function initStartOverlay(){
+    var overlay = q('#globalStartOverlay');
+    var startBtn = q('#globalStartBtn');
+    var startInstr = q('#globalStartInstruction');
+    if(startInstr && !startInstr.textContent.trim()){
+      var src = q('.instruction, .instructions, h1, .question-text, .title');
+      if(src) startInstr.textContent = src.textContent.trim();
+    }
+    if(startBtn){
+      startBtn.addEventListener('click', function(){
+        setTimeout(playInstructionAudio, 50);
+        setTimeout(hideAudioIcons, 100);
+      }, true);
+    }
+    if(!overlay){
+      setTimeout(hideAudioIcons, 100);
+    }
+  }
+  function initMemoryFeedback(){
+    var fb = q('#feedbackBox') || q('#memoryFeedback') || q('.feedbackBox') || q('.feedback');
+    if(fb){
+      var apply = function(){
+        var t = (fb.textContent || '').trim();
+        fb.style.color = t.indexOf('خَطَأ') !== -1 ? '#dc2626' : '';
+      };
+      try{
+        new MutationObserver(apply).observe(fb,{childList:true,subtree:true,characterData:true});
+      }catch(e){}
+      apply();
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    hideAudioIcons();
+    initStartOverlay();
+    initMemoryFeedback();
+  });
+})();
+</script>
+
+
+<script id="final-sequence-fix">
+(function(){
+  try {
+    const pickBySelector = (sel) => sel ? document.querySelector(sel) : null;
+    const pickByText = (rxSrc) => {
+      if(!rxSrc) return null;
+      const rx = new RegExp(rxSrc);
+      return Array.from(document.querySelectorAll('button,.btn')).find(b => rx.test((b.textContent||'').replace(/\s+/g,' ').trim()));
+    };
+    const checkBtn = pickBySelector("#checkBtn") || pickByText(null);
+    const showBtn  = pickBySelector("#showCorrectBtn")  || pickByText(null);
+    const resetBtn = pickBySelector(".reset-btn") || pickByText(null);
+    if(!checkBtn || !showBtn || !resetBtn) return;
+
+    const navBtns = [].map(sel => document.querySelector(sel)).filter(Boolean);
+    let phase = 'fill';
+
+    function setActive(btn, enabled){
+      if(!btn) return;
+      btn.hidden = false;
+      btn.style.display = '';
+      btn.disabled = !enabled;
+      btn.style.opacity = enabled ? '1' : '0.55';
+      btn.style.pointerEvents = enabled ? 'auto' : 'none';
+    }
+
+    function isComplete(){
+      try { return !!(Array.from(document.querySelectorAll('.drop-zone')).length>0 && Array.from(document.querySelectorAll('.drop-zone')).every(z => z.classList.contains('filled'))); } catch(e) { return false; }
+    }
+
+    function isWrong(){
+      try { return !!(Array.from(document.querySelectorAll('.drop-zone')).some(z => ((z.innerText||'').trim()) !== String(z.dataset.correct||'').trim())); } catch(e) { return false; }
+    }
+
+    function syncFill(){
+      if(phase !== 'fill') return;
+      setActive(checkBtn, isComplete());
+      setActive(showBtn, false);
+      setActive(resetBtn, false);
+    }
+
+    function syncAfterCheck(){
+      const wrong = isWrong();
+      phase = wrong ? 'checkedWrong' : 'checkedCorrect';
+      setActive(checkBtn, false);
+      setActive(showBtn, wrong);
+      setActive(resetBtn, !wrong);
+    }
+
+    function syncAfterShow(){
+      phase = 'solved';
+      setActive(checkBtn, false);
+      setActive(showBtn, false);
+      setActive(resetBtn, true);
+    }
+
+    function syncAfterReset(){
+      phase = 'fill';
+      setTimeout(syncFill, 0);
+    }
+
+    function runCheck(){
+      if(checkBtn.disabled) return;
+      
+      if(typeof window["checkAnswers"] === 'function') window["checkAnswers"]();
+      setTimeout(syncAfterCheck, 0);
+    }
+
+    function runShow(){
+      if(showBtn.disabled) return;
+      
+      if(typeof window["showCorrectAnswers"] === 'function') window["showCorrectAnswers"]();
+      setTimeout(syncAfterShow, 0);
+    }
+
+    function runReset(){
+      if(resetBtn.disabled) return;
+      
+      if(typeof window["resetGame"] === 'function') window["resetGame"]();
+      syncAfterReset();
+    }
+
+    function hardBind(btn, fn){
+      ['click','touchend'].forEach(evt => {
+        btn.addEventListener(evt, function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          fn();
+          return false;
+        }, true);
+      });
+      btn.onclick = null;
+    }
+
+    hardBind(checkBtn, runCheck);
+    hardBind(showBtn, runShow);
+    hardBind(resetBtn, runReset);
+
+    navBtns.forEach(btn => {
+      ['click','touchend'].forEach(evt => btn.addEventListener(evt, () => {
+        phase = 'fill';
+        setTimeout(syncFill, 50);
+      }, true));
+    });
+
+    ['click','touchend','drop'].forEach(evt => document.addEventListener(evt, () => {
+      if(phase === 'fill') setTimeout(syncFill, 0);
+    }, true));
+
+    window.addEventListener('load', () => setTimeout(syncFill, 0));
+    setTimeout(syncFill, 0);
+  } catch(e) {
+    console.warn('final-sequence-fix error', e);
+  }
+})();
+</script>
+
+</body>
+</html>

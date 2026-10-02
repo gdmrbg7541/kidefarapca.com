@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>استمع واختر الصورة</title>
+  <style>
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    body{overflow-x:hidden;font-family:"Scheherazade New","Amiri",serif;}
+    :root{
+      --bg1:#ffd6c9; --bg2:#ffe8e1;
+      --card: rgba(255,255,255,.62);
+      --stroke: rgba(255,255,255,.60);
+      --shadow: 0 18px 45px rgba(0,0,0,.15);
+      --text:#2b1b17;
+      --good: rgb(22,163,74);
+      --bad: rgb(244,63,94);
+    }
+    body{
+      background: radial-gradient(900px 650px at 15% 15%, #fff6f3, transparent 60%),
+                  radial-gradient(900px 650px at 85% 25%, #fff, transparent 60%),
+                  linear-gradient(180deg, var(--bg2), var(--bg1));
+      min-height:100svh; min-height:100dvh;
+      color:var(--text);
+    }
+    .vhfix{min-height:calc(var(--vh, 1vh) * 100);}
+    #game-container{width:100%;max-width:100%;display:flex;justify-content:center;padding:16px 12px;}
+    .wrap{width:min(980px,100%);display:grid;gap:12px;}
+    .card{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .header{padding:16px 16px 10px;text-align:center;}
+    .title{margin:0;font-size: clamp(22px, 3.2vw, 36px);line-height:1.25;font-weight: 900;}
+
+    /* زر الاستماع: أيقونة فقط، كبيرة وخضراء */
+    .listenWrap{display:flex;justify-content:center;padding:12px 16px 6px;}
+    .listenBtn{
+      display:inline-flex;align-items:center;justify-content:center;
+      border: 2px solid rgba(34,197,94,.60);
+      background: rgba(34,197,94,.16);
+      color: var(--good);
+      border-radius: 999px;
+      width: 72px;height: 72px;
+      cursor:pointer;
+      box-shadow: 0 12px 22px rgba(0,0,0,.10);
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s ease, opacity .12s ease;
+    }
+    .listenBtn:active{transform:scale(.99);}
+    .listenBtn.disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+    .iconSvg{width:40px;height:40px;display:block;}
+
+    .stage{padding:14px;display:grid;gap:10px;}
+    .audioBox{display:none;}
+
+    .grid{display:grid;gap:12px;grid-template-columns: repeat(2, minmax(0,1fr));}
+    .option{
+      border-radius:20px;
+      border:2px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.72);
+      overflow:hidden;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      min-height: 180px;
+      display:grid;place-items:center;
+      position:relative;
+    }
+    .option:active{transform:scale(.99);}
+    .option img{width:100%;height:auto;max-width:100%;max-height:200px;display:block;object-fit:contain;padding:4px;}
+    .option.disabled{cursor:not-allowed;opacity:1;}
+    .option.selected{border-color: rgba(0,0,0,.55); border-width: 4px; box-shadow: 0 18px 34px rgba(0,0,0,.18); transform: translateY(-2px) scale(1.02);}
+
+    .feedback{
+      margin:0;text-align:center;
+      font-size: clamp(18px, 2.2vw, 26px);
+      font-weight: 1000;
+      min-height: 34px;
+      white-space: pre-line;
+      padding-top: 4px;
+    }
+    .feedback.good{color: var(--good);}
+    .feedback.bad{color: var(--bad);}
+
+    .footer{
+      display:block;
+      padding:14px;
+      border-top: 1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.35);
+    }
+    
+    .topBtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .navRow{display:flex;justify-content:center;gap:12px;margin-top:12px;}
+    .navRow .btn{width:min(220px, 100%);}
+.btn{
+      width:100%;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:16px;
+      padding:12px 12px;
+      font-size:18px;
+      font-weight:1000;
+      cursor:pointer;
+      min-height:44px;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s ease, opacity .12s ease;
+      color:#1f140f;
+      background: rgba(255,255,255,.60);
+    }
+    .btn:active{transform:scale(.99);}
+    .btn.disabled{opacity:.55;cursor:not-allowed;}
+
+    #prevBtn{background: rgba(245,158,11,.28);}
+    #nextBtn{background: rgba(59,130,246,.22);}
+#showBtn{background: rgba(249,115,22,.28);}   /* أصفر */
+    #restartBtn{background: rgba(244,63,94,.30);}     #restartAll{background: rgba(244,63,94,.30);}
+/* أحمر */
+
+    .resultCard{padding:28px;text-align:center;background: rgba(255,255,255,.88);border-radius:22px;border:2px solid rgba(0,0,0,.08);box-shadow: 0 22px 55px rgba(0,0,0,.18);}
+    .big{margin:8px 0 12px;font-size:clamp(36px,4.2vw,58px);font-weight:1200;}
+    .sub{margin:0 0 18px;font-size:clamp(24px,2.8vw,34px);font-weight:1000;line-height:1.9;white-space: pre-line;}
+
+    /* شاشة بدء (تظهر فقط إذا المتصفح منع التشغيل التلقائي) */
+    .startOverlay{
+      position: fixed; inset: 0;
+      display:none;
+      align-items:center; justify-content:center;
+      padding: 18px;
+      background: rgba(0,0,0,.30);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 99;
+    }
+    .startCard{
+      width: min(420px, 100%);
+      background: rgba(255,255,255,.85);
+      border: 1px solid rgba(0,0,0,.10);
+      border-radius: 22px;
+      box-shadow: 0 18px 45px rgba(0,0,0,.20);
+      padding: 18px;
+      text-align:center;
+    }
+    .startTitle{font-size: 26px; font-weight: 1100; margin: 0 0 10px;}
+    .startBtn{
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid rgba(0,0,0,.10);
+      background: rgba(34,197,94,.22);
+      padding: 18px 14px;
+      font-size: 24px;
+      font-weight: 1100;
+      cursor:pointer;
+      min-height: 56px;
+    }
+
+    @media (max-width:360px), (max-height:620px), (orientation: landscape) and (max-height:500px){
+      #game-container{padding:10px;}
+      .grid{grid-template-columns:1fr;}
+      .footer{grid-template-columns:1fr;}
+      .topBtns{grid-template-columns:1fr;}
+      .navRow{flex-direction:column;}
+      .navRow .btn{width:100%;}
+      .vhfix{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+    }
+  
+    /* تأثيرات: لمعان + اهتزاز */
+    @keyframes glowPulse{
+      0%{ box-shadow: 0 0 0 rgba(34,197,94,0); transform: translateY(-1px) scale(1); }
+      40%{ box-shadow: 0 0 28px rgba(34,197,94,.45); transform: translateY(-1px) scale(1.02); }
+      100%{ box-shadow: 0 0 0 rgba(34,197,94,0); transform: translateY(-1px) scale(1); }
+    }
+    @keyframes shakeX{
+      0%,100%{ transform: translateX(0); }
+      15%{ transform: translateX(-8px); }
+      30%{ transform: translateX(7px); }
+      45%{ transform: translateX(-6px); }
+      60%{ transform: translateX(5px); }
+      75%{ transform: translateX(-3px); }
+    }
+    .option.glow{ animation: glowPulse .55s ease-out; }
+    .option.shake{ animation: shakeX .42s ease-in-out; }
+
+    /* كونفيتي */
+    #confetti{
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 120;
+      display: none;
+    }
+
+  
+    
+
+/* ===== PATCH_SCROLL_LANDSCAPE_V1 =====
+   Landscape + küçük ekranlarda tek scroller (#game-container) kullanır.
+   Not: Bu blok, mevcut stilleri bozmayacak şekilde en sona eklenir.
+*/
+*{ box-sizing: border-box; }
+html, body{ margin:0; padding:0; }
+body{ overflow-x:hidden; }
+
+/* 100vh kullanmadan (güvenli override) */
+#game-container{
+  width: 100%;
+  min-height: 100svh;
+  min-height: 100dvh;
+  height: auto !important;
+}
+
+/* Yatay + kısa yükseklik */
+@media (orientation: landscape) and (max-height: 500px) {
+  body{ overflow: hidden; } /* çift scroll olmasın */
+
+  #game-container{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+
+    max-height: 100svh;
+    max-height: 100dvh;
+    max-height: calc(var(--vh, 1vh) * 100);
+
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .instruction{ margin-bottom: 10px; padding: 5px; }
+  #words-area{ margin-bottom: 15px; padding: 8px; }
+  #drop-zones{ grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .drop-box{ min-height: 80px; padding: 5px; }
+  .target-label{ margin-bottom: 2px; }
+}
+
+/* Çok küçük ekran */
+@media (max-width: 360px) {
+  body{ overflow: hidden; }
+
+  #game-container{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+
+    max-height: 100svh;
+    max-height: 100dvh;
+    max-height: calc(var(--vh, 1vh) * 100);
+
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  #drop-zones{ grid-template-columns: 1fr; }
+}
+
+/* Ek: küçük yükseklik */
+@media (max-height: 620px) {
+  body{ overflow: hidden; }
+
+  #game-container{
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+
+    max-height: 100svh;
+    max-height: 100dvh;
+    max-height: calc(var(--vh, 1vh) * 100);
+
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
+
+</style>
+
+<!-- OAI_PATCH_STYLE -->
+<style id="oai-patch-style">
+.oai-start-overlay{
+position:fixed; inset:0; background:rgba(0,0,0,.55); display:flex; align-items:center; justify-content:center;
+z-index:999999; padding:20px;
+}
+.oai-start-card{
+background:#fff; border-radius:24px; padding:24px 20px; width:min(92vw,520px); text-align:center;
+box-shadow:0 20px 50px rgba(0,0,0,.25);
+font-family:"Scheherazade New","Amiri",serif;
+}
+.oai-start-title{font-size:clamp(28px,5vw,38px); margin:0 0 14px 0; color:#0b2a3a; font-weight:700;}
+.oai-start-btn{
+border:none; border-radius:16px; padding:14px 28px; font-size:clamp(24px,4vw,32px);
+font-family:"Scheherazade New","Amiri",serif; font-weight:700; cursor:pointer; background:#22c55e; color:#fff;
+}
+.audio-btn,.instrAudioBtn,.audio-icon,[title="استمع"],#playAudioBtn{display:none !important;}
+#oai-memory-feedback{min-height:32px;font-size:clamp(22px,3vw,30px);font-weight:700;text-align:center;margin:10px 0;color:#fff;}
+#oai-memory-feedback.good{color:#22c55e;}
+#oai-memory-feedback.bad{color:#ef4444;}
+.card.matched,.matched{
+outline:4px solid rgba(34,197,94,.95) !important;
+outline-offset:-4px;
+visibility:visible !important;
+opacity:1 !important;
+}
+.card.wrong-temp,.wrong-temp{
+outline:4px solid rgba(239,68,68,.95) !important;
+outline-offset:-4px;
+}
+</style>
+
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="startOverlay" id="startOverlay">
+  <div class="startCard">
+    <p class="startTitle">اِسْتَمِعْ إِلى الْعِبارات وَاخْتَر الصّورَةَ الْمُناسِبَة.</p>
+    <button class="startBtn" id="startBtn">اِبْدَأْ</button>
+  </div>
+</div>
+
+<main id="game-container" class="vhfix">
+  <div class="wrap">
+    <section class="card" id="gameCard">
+      <div class="header">
+        <h1 class="title">اِسْتَمِعْ إِلى الْعِبارات وَاخْتَر الصّورَةَ الْمُناسِبَة.</h1>
+        <div class="listenWrap">
+          <button class="listenBtn" id="listenBtn" aria-label="سماع">
+            <svg class="iconSvg" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M3 10v4h4l5 4V6L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 7.97v2.2a2.5 2.5 0 0 1 0 3.66v2.2A4.5 4.5 0 0 0 16.5 12zm0-9.5v2.1A9 9 0 0 1 20 12a9 9 0 0 1-3.5 7.4v2.1A11 11 0 0 0 22 12 11 11 0 0 0 16.5 2.5z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="audioBox">
+          <audio id="questionAudio" preload="auto" playsinline></audio>
+          <audio id="instrAudio" preload="auto" playsinline></audio>
+          <audio id="okAudio" preload="auto" playsinline></audio>
+          <audio id="badAudio" preload="auto" playsinline></audio>
+          <audio id="btnAudio" preload="auto" playsinline></audio>
+          <audio id="nextAudio" preload="auto" playsinline></audio>
+        </div>
+
+        <div class="grid" id="options"></div>
+        <p class="feedback" id="feedback"></p>
+      </div>
+
+      <div class="footer">
+        <div class="topBtns">
+          <button class="btn" id="showBtn">أَظْهِر الْحَلّ</button>
+          <button class="btn" id="restartBtn">حاوِلْ مَرَّةً أُخْرى</button>
+        </div>
+
+        <div class="navRow">
+          <button class="btn" id="prevBtn">اَلسّابِق</button>
+          <button class="btn" id="nextBtn">اَلتّالي</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="resultCard" style="display:none;">
+      <div class="resultCard">
+        <div class="big">اَلنَّتيجَة</div>
+        <p class="sub" id="finalText"></p>
+        <button class="btn" id="restartAll">حاوِلْ مَرَّةً أُخْرى</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+  (function setVH(){
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  })();
+  window.addEventListener('resize', () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  });
+
+  const $ = (id)=>document.getElementById(id);
+
+  const startOverlay = $('startOverlay');
+  const startBtn = $('startBtn');
+
+  const listenBtn = $('listenBtn');
+  const optionsEl = $('options');
+  const feedbackEl = $('feedback');
+
+  const prevBtn = $('prevBtn');
+  const nextBtn = $('nextBtn');
+  const showBtn = $('showBtn');
+  const restartBtn = $('restartBtn');
+
+  const gameCard = $('gameCard');
+  const resultCard = $('resultCard');
+  const finalText = $('finalText');
+  const restartAll = $('restartAll');
+  const resultCardEl = $('resultCard');
+
+  const questionAudio = $('questionAudio');
+  const instrAudio = $('instrAudio');
+  const okAudio = $('okAudio');
+  const badAudio = $('badAudio');
+  const btnAudio = $('btnAudio');
+  const nextAudio = $('nextAudio');
+
+  function toArabicDigits(s){
+    const map = {'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩'};
+    return String(s).split('').map(ch => map[ch] ?? ch).join('');
+  }
+
+  // ملفاتك المرفوعة + بدائل المسار (نفس المجلد أو audios/ images/)
+  const ASSETS = {
+    instr: ['yonerge1.mp3','audios/yonerge1.mp3'],
+    ok: ['tebrikler.mp3','basari.mp3','dogru.mp3','audios/tebrikler.mp3','audios/basari.mp3','audios/dogru.mp3'],
+    bad: ['yanliscevap.mp3','yanlis.mp3','audios/yanliscevap.mp3','audios/yanlis.mp3'],
+    btn: ['butonsesi.mp3','audios/butonsesi.mp3'],
+    next: ['sonraki.mp3','audios/sonraki.mp3'],
+    q1: ['1.mp3','audios/1.mp3'],
+    q2: ['2.mp3','audios/2.mp3'],
+    img: (n)=>[`${n}.png`,`images/${n}.png`,`${n}.PNG`,`images/${n}.PNG`]
+  };
+
+  function setSrcWithFallback(el, candidates){
+    return new Promise((resolve)=>{
+      let i = 0;
+      const tryNext = ()=>{
+        if(i >= candidates.length){ resolve(false); return; }
+        const src = candidates[i++];
+        el.src = encodeURI(src);
+
+        if(el.tagName === 'AUDIO'){
+          const ok = ()=>{ cleanup(); resolve(true); };
+          const err = ()=>{ cleanup(); tryNext(); };
+          const cleanup = ()=>{
+            el.removeEventListener('canplay', ok);
+            el.removeEventListener('error', err);
+          };
+          el.addEventListener('canplay', ok, {once:true});
+          el.addEventListener('error', err, {once:true});
+          el.load();
+        } else {
+          const ok = ()=>{ cleanup(); resolve(true); };
+          const err = ()=>{ cleanup(); tryNext(); };
+          const cleanup = ()=>{
+            el.removeEventListener('load', ok);
+            el.removeEventListener('error', err);
+          };
+          el.addEventListener('load', ok, {once:true});
+          el.addEventListener('error', err, {once:true});
+        }
+      };
+      tryNext();
+    });
+  }
+
+  let audioUnlocked = false;
+  async function unlockAudioOnce(){
+    if(audioUnlocked) return true;
+    audioUnlocked = true;
+    try{
+      instrAudio.muted = true;
+      await instrAudio.play();
+      instrAudio.pause();
+      instrAudio.currentTime = 0;
+      instrAudio.muted = false;
+      return true;
+    }catch(e){
+      instrAudio.muted = false;
+      return false;
+    }
+  }
+
+  async function safePlay(aud){
+    await unlockAudioOnce();
+    try{
+      aud.currentTime = 0;
+      const p = aud.play();
+      if(p && typeof p.catch === 'function') p.catch(()=>{});
+    }catch(e){}
+  }
+
+  function clearFeedback(){
+    feedbackEl.textContent = '';
+    feedbackEl.classList.remove('good','bad');
+  }
+
+
+  // كونفيتي بسيط (بدون مكتبات)
+  const confettiCanvas = $('confetti');
+  const cctx = confettiCanvas.getContext('2d');
+
+  function resizeConfetti(){
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    confettiCanvas.width = Math.floor(window.innerWidth * dpr);
+    confettiCanvas.height = Math.floor(window.innerHeight * dpr);
+    confettiCanvas.style.width = window.innerWidth + 'px';
+    confettiCanvas.style.height = window.innerHeight + 'px';
+    cctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener('resize', resizeConfetti);
+  resizeConfetti();
+
+  let confettiAnim = null;
+  function burstConfetti(){
+    const W = window.innerWidth, H = window.innerHeight;
+    confettiCanvas.style.display = 'block';
+    const pieces = [];
+    const count = 120;
+    const colors = ['#22c55e','#3b82f6','#f59e0b','#a855f7','#ef4444','#10b981','#0ea5e9'];
+    for(let i=0;i<count;i++){
+      pieces.push({
+        x: W*0.5 + (Math.random()-0.5)*120,
+        y: H*0.25 + (Math.random()-0.5)*40,
+        vx: (Math.random()-0.5)*8,
+        vy: Math.random()*-6 - 3,
+        g: 0.18 + Math.random()*0.10,
+        s: 6 + Math.random()*6,
+        r: Math.random()*Math.PI,
+        vr: (Math.random()-0.5)*0.25,
+        c: colors[(Math.random()*colors.length)|0],
+        life: 90 + (Math.random()*40)|0
+      });
+    }
+    let frame = 0;
+    if(confettiAnim) cancelAnimationFrame(confettiAnim);
+
+    function step(){
+      frame++;
+      cctx.clearRect(0,0,W,H);
+      for(const p of pieces){
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.r += p.vr;
+        p.life--;
+        cctx.save();
+        cctx.translate(p.x, p.y);
+        cctx.rotate(p.r);
+        cctx.fillStyle = p.c;
+        cctx.fillRect(-p.s/2, -p.s/2, p.s, p.s*0.65);
+        cctx.restore();
+      }
+      // remove dead
+      for(let i=pieces.length-1;i>=0;i--){
+        if(pieces[i].life<=0 || pieces[i].y>H+40) pieces.splice(i,1);
+      }
+      if(pieces.length && frame < 220){
+        confettiAnim = requestAnimationFrame(step);
+      }else{
+        cctx.clearRect(0,0,W,H);
+        confettiCanvas.style.display = 'none';
+      }
+    }
+    confettiAnim = requestAnimationFrame(step);
+  }
+
+  function pulseGlow(node){
+    if(!node) return;
+    node.classList.remove('glow');
+    // force reflow
+    void node.offsetWidth;
+    node.classList.add('glow');
+  }
+  function shakeNode(node){
+    if(!node) return;
+    node.classList.remove('shake');
+    void node.offsetWidth;
+    node.classList.add('shake');
+  }
+
+  // 2 سؤال
+  const QUESTIONS = [
+    { correctImg: 2, wrongImg: 1, soundCandidates: ASSETS.q1 },
+    { correctImg: 4, wrongImg: 3, soundCandidates: ASSETS.q2 },
+  ];
+
+  let idx = 0;
+  let order = [];
+  let selected = null;
+  let listened = false;
+  let answering = false;
+  
+  let wrongLocked = false;
+  function setWrongLock(flag){
+    wrongLocked = !!flag;
+    [...optionsEl.children].forEach(btn=>{
+      btn.classList.toggle('locked', wrongLocked);
+      btn.style.pointerEvents = wrongLocked ? 'none' : '';
+    });
+  }
+let autoResultTimer = null;
+  let solved = [false,false];
+  let correctCount = 0;
+  let restartBusy = false;
+
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]] = [arr[j],arr[i]];
+    }
+    return arr;
+  }
+
+  function setState(){
+
+    [...optionsEl.children].forEach(btn=>{
+      btn.classList.toggle('disabled', !listened);
+    });
+
+    prevBtn.classList.toggle('disabled', idx===0);
+    prevBtn.disabled = idx===0;// تغيير نص زرّ الانتقال في السؤال الأخير
+    if(idx === QUESTIONS.length - 1){
+      nextBtn.textContent = 'اَلنَّتيجَة';
+    }else{
+      nextBtn.textContent = 'اَلتّالي';
+    }
+  }
+
+  async function primeAudios(){
+    await setSrcWithFallback(instrAudio, ASSETS.instr);
+    await setSrcWithFallback(okAudio, ASSETS.ok);
+    await setSrcWithFallback(badAudio, ASSETS.bad);
+    await setSrcWithFallback(btnAudio, ASSETS.btn);
+    await setSrcWithFallback(nextAudio, ASSETS.next);
+  }
+
+  async function playInstructionNow(){
+    if(idx !== 0) return;
+    const ok = await unlockAudioOnce();
+    if(!ok){
+      // يحتاج تفاعل: أظهر شاشة البدء
+      startOverlay.style.display = 'flex';
+      return;
+    }
+    try{
+      instrAudio.currentTime = 0;
+      await instrAudio.play();
+    }catch(e){
+      startOverlay.style.display = 'flex';
+    }
+  }
+
+  async function renderQuestion(keepListen=false){
+    selected = null;
+    if(!keepListen) listened = false;
+    clearFeedback();
+    optionsEl.innerHTML = '';
+
+    const q = QUESTIONS[idx];
+    order = shuffle([q.correctImg, q.wrongImg]);
+
+    await setSrcWithFallback(questionAudio, q.soundCandidates);
+
+    for(const n of order){
+      const btn = document.createElement('div');
+      btn.className = 'option disabled';
+      btn.setAttribute('role','button');
+      btn.setAttribute('tabindex','0');
+
+      const img = document.createElement('img');
+      img.alt = 'اَلصّورَة';
+      btn.appendChild(img);
+      await setSrcWithFallback(img, ASSETS.img(n));
+
+      const pick = async ()=>{
+        if(wrongLocked) return;
+        if(!listened){
+          feedbackEl.classList.remove('good');
+          feedbackEl.classList.add('bad');
+          feedbackEl.textContent = 'اِسْتَمِعْ أَوَّلًا ثُمَّ حاوِلْ مَرَّةً أُخْرى.';
+          await safePlay(badAudio);
+      setWrongLock(true);
+return;
+        }
+        selected = n;
+        [...optionsEl.children].forEach(x=>x.classList.remove('selected'));
+        btn.classList.add('selected');
+        if(answering) return;
+        answering = true;
+        await checkAnswer();
+        setWrongLock(true);
+        answering = false;
+      };
+
+      btn.addEventListener('click', pick, {passive:true});
+      btn.addEventListener('touchstart', pick, {passive:true});
+      btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') pick(); });
+
+      optionsEl.appendChild(btn);
+    }
+
+    setState();
+  }
+
+  function colorSelected(correct){
+    [...optionsEl.children].forEach((node, i)=>{
+      const imgN = order[i];
+      if(selected === imgN){
+        node.style.borderColor = correct ? 'rgba(34,197,94,.75)' : 'rgba(244,63,94,.75)';
+        node.style.boxShadow = correct ? '0 14px 26px rgba(34,197,94,.18)' : '0 14px 26px rgba(244,63,94,.16)';
+      } else {
+        node.style.borderColor = 'rgba(0,0,0,.10)';
+        node.style.boxShadow = 'none';
+      }
+    });
+  }
+
+  async function checkAnswer(){
+    setWrongLock(false);
+    const q = QUESTIONS[idx];
+    if(!listened) return;
+    if(selected === null) return;
+
+    const correct = (selected === q.correctImg);
+    if(correct){
+      feedbackEl.textContent = 'أَحْسَنْت.';
+      feedbackEl.classList.remove('bad');
+      feedbackEl.classList.add('good');
+      await safePlay(okAudio);
+      if(!solved[idx]){ solved[idx] = true; correctCount += 1; }
+    }else{
+      feedbackEl.textContent = 'خَطَأ.';
+      feedbackEl.classList.remove('good');
+      feedbackEl.classList.add('bad');
+      await safePlay(badAudio);
+    }
+    colorSelected(correct);
+
+    // تأثيرات على الصورة المختارة
+    const selIndex = order.indexOf(selected);
+    const selNode = (selIndex >= 0) ? optionsEl.children[selIndex] : null;
+    if(correct){
+      burstConfetti();
+      pulseGlow(selNode);
+    }else{
+      shakeNode(selNode);
+    }
+
+    setState();
+
+    if(idx === QUESTIONS.length - 1){
+      if(autoResultTimer) clearTimeout(autoResultTimer);
+      autoResultTimer = setTimeout(()=>{
+        showResults();
+      }, 5000);
+    }
+  }
+
+  function showSolution(){
+    const q = QUESTIONS[idx];
+    [...optionsEl.children].forEach((node, i)=>{
+      const imgN = order[i];
+      if (imgN === q.correctImg){
+        node.style.borderColor = 'rgba(34,197,94,.75)';
+        node.style.boxShadow = '0 14px 26px rgba(34,197,94,.18)';
+      } else {
+        node.style.borderColor = 'rgba(0,0,0,.10)';
+        node.style.boxShadow = 'none';
+      }
+    });
+  }
+
+
+  async function guardedShowSolution(){
+    if(!listened || selected === null){
+      feedbackEl.textContent = 'أَجِبْ عَنِ السُّؤال أَوَّلًا.';
+      feedbackEl.classList.remove('good');
+      feedbackEl.classList.add('bad');
+      await safePlay(badAudio);
+      return;
+    }
+    showSolution();
+  }
+
+  async function spell(){
+    await safePlay(btnAudio);
+    await safePlay(questionAudio);
+  }
+
+  function showResults(){
+    const total = QUESTIONS.length;
+    const wrong = total - correctCount;
+    gameCard.style.display = 'none';
+    resultCard.style.display = 'block';
+    finalText.textContent =
+      'اَلصَّحيح: ' + toArabicDigits(correctCount) + '\n' +
+      'اَلْخَطَأ: ' + toArabicDigits(wrong);
+  }
+
+  async function goNext(){
+    await safePlay(nextAudio);
+    if(!solved[idx]) return;
+if(idx < QUESTIONS.length - 1){
+      idx += 1;
+      await renderQuestion();
+      await playInstructionNow(); // ادخل السؤال -> اقرأ اليوْنَرْجَة
+    }else{
+      return;
+    }
+  }
+
+  async function goPrev(){
+    await safePlay(btnAudio);
+    if(idx === 0) return;
+    idx -= 1;
+    await renderQuestion();
+    if(!skipInstruction && startOverlay.style.display === "none") await playInstructionNow();
+    restartBusy = false;
+  }
+
+  async function restartAllGame(skipInstruction=false){
+  if(restartBusy) return;
+    restartBusy = true;
+    try{
+idx = 0;
+    correctCount = 0;
+    solved = [false,false];
+    gameCard.style.display = 'block';
+    resultCard.style.display = 'none';
+    await renderQuestion();
+    if(!skipInstruction && startOverlay.style.display === "none") await playInstructionNow();
+    }finally{
+      restartBusy = false;
+    }
+  }
+
+  async function restart(){
+    // إعادة تشغيل السؤال الحالي فقط
+    if(autoResultTimer){ clearTimeout(autoResultTimer); autoResultTimer = null; }
+    setWrongLock(false);
+    selected = null;
+    answering = false;
+    clearFeedback();
+    // نُعيد نفس السؤال مع الحفاظ على حالة الاستماع (بدون تشغيل صوت الإرشاد تلقائيًا)
+    await renderQuestion(true);
+  }
+
+  listenBtn.addEventListener('click', async ()=>{
+    await safePlay(btnAudio);
+    await safePlay(questionAudio);
+    if(!listened){
+      listened = true;
+      setWrongLock(false);
+      clearFeedback();
+      setState();
+    }
+  });
+
+listenBtn.addEventListener('touchstart', async ()=>{
+    await safePlay(btnAudio);
+    await safePlay(questionAudio);
+    if(!listened){
+      listened = true;
+      setWrongLock(false);
+      clearFeedback();
+      setState();
+    }
+  }, {passive:true});
+
+showBtn.addEventListener('click', async ()=>{ await safePlay(btnAudio); await guardedShowSolution(); });
+  showBtn.addEventListener('touchstart', async ()=>{ await safePlay(btnAudio); await guardedShowSolution(); }, {passive:true});
+
+  nextBtn.addEventListener('click', goNext);
+  nextBtn.addEventListener('touchstart', goNext, {passive:true});
+
+  prevBtn.addEventListener('click', goPrev);
+  prevBtn.addEventListener('touchstart', goPrev, {passive:true});
+
+  restartBtn.addEventListener('click', restart);
+  restartBtn.addEventListener('touchstart', restart, {passive:true});
+  restartAll.addEventListener('click', (e)=>{ e.stopPropagation(); restartAllGame(true); });
+restartAll.addEventListener('touchstart', (e)=>{ try{e.stopPropagation();}catch(_){} restartAllGame(); }, {passive:true});
+// في صفحة النتيجة: أيّ نقرة تُعيد النشاط من البداية
+  resultCardEl.addEventListener('click', (e)=>{ if(e.target && e.target.id==='restartAll') return; restartAllGame(); });
+resultCardEl.addEventListener('touchstart', (e)=>{ if(e.target && e.target.id==='restartAll') return; restartAllGame(); }, {passive:true});
+startBtn.addEventListener('click', async ()=>{
+    startOverlay.style.display = 'none';
+    await unlockAudioOnce();
+    await playInstructionNow();
+  });
+
+  // Start
+  (async ()=>{
+    await primeAudios();
+    await renderQuestion();
+    await playInstructionNow(); // oyuna girildiği gibi yönerge okunur (engellenirse "ابدأ" çıkar)
+  })();
+</script>
+
+<script>
+/* PATCH_VH_FIX_V1: iPhone/Safari viewport yüksekliği düzeltmesi */
+(function () {
+  function setVH() {
+    document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+  }
+  window.addEventListener('resize', setVH);
+  window.addEventListener('orientationchange', setVH);
+  setVH();
+})();
+</script>
+</body>
+</html>
