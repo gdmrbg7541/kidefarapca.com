@@ -26,7 +26,10 @@
        Safari'de (ve çevirme sırasında Chromium'da) dönüşümlü alt katmanlar
        backface-visibility'ye uymuyor: düğmeler arkadan TERS görünüyordu.
        Şimdi yön doğrudan CSS'te (.kitap.rtl), içerikte hiçbir dönüşüm yok. */
-    this.dokunKenar = ayar.dokunKenar == null ? 0.2 : ayar.dokunKenar; // dış kenara dokununca çevir (oran)
+    this.dokunKenar = ayar.dokunKenar == null ? 0.2 : ayar.dokunKenar;
+    /* ARTIK KULLANILMIYOR (02.10.2026): kenara dokununca sayfa çevirme
+       kaldırıldı, dokunma yalnız bölgeyi büyütüyor. Ayar, dışarıdan
+       verilmeye devam edebilsin diye duruyor. */
 
     this.yaprakSayisi = Math.ceil(this.toplam / 2);
     this.c = 0;                                   // çevrilmiş yaprak sayısı
@@ -330,14 +333,24 @@
       var i = ileri ? self.c : self.c - 1;
       if (i < 0 || i >= self.yaprakSayisi) return;
       if (ileri && !self._ilerisiVar()) return;    // tek sayılı kitapta son yaprağın arkası boş
-      s = { i: i, ileri: ileri, x0: e.clientX, y: self.yapraklar[i], w: p.r.width / 2, tasi: false, px: p.x, gen: p.r.width };
+      s = { i: i, ileri: ileri, x0: e.clientX, y0: e.clientY, y: self.yapraklar[i], w: p.r.width / 2, tasi: false, px: p.x, gen: p.r.width };
       self._zSirala(i);
     });
 
     window.addEventListener('pointermove', function (e) {
       if (!s || s.kaydirma) return;
       var dx = (e.clientX - s.x0) * (self.rtl ? -1 : 1);
-      if (!s.tasi && Math.abs(dx) < 6) return;
+      var dy = e.clientY - s.y0;
+      /* YALNIZ YATAY KAYDIRMA SAYFA ÇEVİRİR (02.10.2026, öğretmen isteği:
+         "parmağını yatay olarak kaydırınca veya oklara basınca olsun,
+         çünkü hem büyütme hem sayfa çevirme aynı anda çakışmasın").
+         Dikey ya da eğik hareket yaprağı hiç kıpırdatmaz; dokunma da
+         çevirmez, yalnız dokunulan bölgeyi büyütür (kitapzoom.js).
+         Oklar ve klavye her zaman çalışır. */
+      if (!s.tasi) {
+        if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;           /* karar verilmedi */
+        if (Math.abs(dx) < Math.abs(dy) * 1.2) { s = null; return; }  /* dikey: yaprağı bırak */
+      }
       if (!s.tasi) { s.tasi = true; s.y.classList.add('suruklenen'); }
       var oran;
       if (s.ileri) oran = Math.min(1, Math.max(0, -dx / s.w));
@@ -358,14 +371,10 @@
         var k = s; s = null;
         if (e.type !== 'pointerup' || self.kilitli) return;
         var dx = (e.clientX - k.x0) * (self.rtl ? -1 : 1), dy = e.clientY - k.y0;
+        /* Sayfayı YALNIZ yatay kaydırma çevirir; dokunma çevirmez
+           (02.10.2026) — oklar ve klavye her zaman çalışır. */
         // yatay ve yeterince uzun kaydırma: sola = ileri, sağa = geri (rtl'de tersi)
         if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy) * 1.3) { if (dx < 0) self.ileri(); else self.geri(); return; }
-        // kaydırmadan dokunma: ekranın dış kenarına dokunmak çevirir
-        if (Math.abs(dx) < 12 && Math.abs(dy) < 12 && !(e.target.closest && e.target.closest('.nokta'))) {
-          var W = window.innerWidth, x = e.clientX, kenar = W * self.dokunKenar;
-          var solda = x < kenar, sagda = x > W - kenar;
-          if (solda || sagda) { if (solda === self.rtl) self.ileri(); else self.geri(); }
-        }
         return;
       }
       var t = s;
@@ -373,11 +382,6 @@
       t.y.classList.remove('suruklenen', 'yari');
       if (!t.tasi) {
         t.y.style.transform = ''; self._zSirala(-1);
-        // sürüklemeden DOKUNMA: sayfanın dış kenarına dokunmak çevirir (akıllı tahta)
-        if (e.type === 'pointerup' && !self.kilitli) {
-          if (t.px > t.gen * (1 - self.dokunKenar / 2)) self.ileri();
-          else if (t.px < t.gen * self.dokunKenar / 2) self.geri();
-        }
         return;
       }
       if ((t.oran || 0) > 0.32) {

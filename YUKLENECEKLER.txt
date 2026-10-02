@@ -2784,3 +2784,33 @@ doğru; telefonda kartlar yatay kayıyor, etiket okunuyor.
     katmanı keskin. Konsol hatasız. 5. sınıf dosyaları 6 ile bayt bayt aynı.
   · NOT: Kidef'in ASIL klasörü de değişti; asıldan siteye yeniden kopyalama
     yapılırsa dosyalar zaten yerinde olur.
+
+[02.10.2026] FLIPBOOK — "Nasıl kullanılır?" tanıtımı (ortak modüle eklendi)
+  Öğretmen: "tüm flipbooklara 6 dokunma zoom yeri ve diğer motor
+  özelliklerini anlatan görsel veya uygulama akışı ekleyelim."
+  · NEDEN SAYFA DEĞİL: 5. sınıfta boş sayfa yok (1 kapak, 2 künye,
+    3 İstiklal Marşı, 4 Gençliğe Hitabe) ve sayfa eklemek 328 sayfanın
+    numarasını, 85 düğme eşlemesini ve eski ?s= bağlantılarını kaydırırdı.
+    Kidef'te sayfa 2 Mukaddime. Öğretmen ortak katmanı seçti.
+  · NE EKLENDİ (kitapzoom.js + kitapzoom.css içinde, üç kitapta da):
+    - Altı bölge şeması: açık iki sayfanın küçük çizimi, bölgeler 1-6
+      numaralı; 1 numaranın içinde nabız gibi atan dokunuş işareti ve
+      "buraya dokun" yazısı. Numaralar OKUMA SIRASINA göre — sağdan sola
+      kitapta 1-2-3 sağ sayfada başlıyor, soldan sağda sol sayfada.
+    - Beş satırlık özet: bölgeyi büyüt · büyükken gezin (yön yazısı rtl'ye
+      göre değişiyor) · sayfa çevir · dokunmatik · tuşlar.
+    - Tek sayfa modundaysa (telefon/dikey) ayrıca sarı not: orada bölge
+      yerine çift dokunma geçerli.
+  · İlk açılışta bir kez kendiliğinden çıkar, kapatılınca bir daha çıkmaz
+    (localStorage: kitapTanitim_<yol>). Sonra üst çubuğa EKLENEN "?"
+    düğmesinden ya da "?" tuşundan açılır; Esc kapatır.
+  · Kitapların HTML'ine HİÇBİR ŞEY eklenmedi — pencereyi de "?" düğmesini
+    de modül kuruyor (tTamEkran'ın soluna, aynı .tus biçimiyle). Sonraki
+    kitaplar da modülü bağlayınca bedava alıyor.
+  · Alt çubuk yapışık: "Anladım" küçük ekranda da hep görünür.
+  · Denendi: 6. sınıf (rtl) 1400/1280/390 px — şema 4-5-6 solda, 1-2-3
+    sağda; Kidef (ltr) 1-2-3 solda; telefonda tek sayfa notu çıkıyor;
+    kapat → localStorage → yenileyince çıkmıyor; ? ve Esc çalışıyor.
+    Konsol hatasız. Dosya dört yerde de bayt bayt aynı.
+  · Değiştirmek için: _kaynak/ortak-kitap/kitapzoom.{js,css} → sonra
+    python3 _kaynak/uretici/kitapOrtakla.py "$K"

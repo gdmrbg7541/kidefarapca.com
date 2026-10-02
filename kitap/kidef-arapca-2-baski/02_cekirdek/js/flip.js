@@ -337,14 +337,24 @@
       var i = ileri ? self.c : self.c - 1;
       if (i < 0 || i >= self.yaprakSayisi) return;
       if (ileri && !self._ilerisiVar()) return;    // tek sayılı kitapta son yaprağın arkası boş
-      s = { i: i, ileri: ileri, x0: e.clientX, y: self.yapraklar[i], w: p.r.width / 2, tasi: false };
+      s = { i: i, ileri: ileri, x0: e.clientX, y0: e.clientY, y: self.yapraklar[i], w: p.r.width / 2, tasi: false };
       self._zSirala(i);
     });
 
     window.addEventListener('pointermove', function (e) {
       if (!s || s.kaydirma) return;
       var dx = e.clientX - s.x0;
-      if (!s.tasi && Math.abs(dx) < 6) return;
+      var dy = e.clientY - s.y0;
+      /* YALNIZ YATAY KAYDIRMA SAYFA ÇEVİRİR (02.10.2026, öğretmen isteği:
+         "parmağını yatay olarak kaydırınca veya oklara basınca olsun,
+         çünkü hem büyütme hem sayfa çevirme aynı anda çakışmasın").
+         Dikey ya da eğik hareket yaprağı hiç kıpırdatmaz; dokunma da
+         çevirmez, yalnız dokunulan bölgeyi büyütür (kitapzoom.js).
+         Oklar ve klavye her zaman çalışır. */
+      if (!s.tasi) {
+        if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;           /* karar verilmedi */
+        if (Math.abs(dx) < Math.abs(dy) * 1.2) { s = null; return; }  /* dikey: yaprağı bırak */
+      }
       if (!s.tasi) { s.tasi = true; s.y.classList.add('suruklenen'); }
       var oran;
       if (s.ileri) oran = Math.min(1, Math.max(0, -dx / s.w));
@@ -362,6 +372,8 @@
         var k = s; s = null;
         if (e.type !== 'pointerup' || self.kilitli) return;
         var dx = e.clientX - k.x0, dy = e.clientY - k.y0;
+        /* Sayfayı YALNIZ yatay kaydırma çevirir; dokunma çevirmez
+           (02.10.2026) — oklar ve klavye her zaman çalışır. */
         // yatay ve yeterince uzun kaydırma: sola = ileri, sağa = geri
         if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy) * 1.3) { if (dx < 0) self.ileri(); else self.geri(); }
         return;
