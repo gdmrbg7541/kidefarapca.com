@@ -3099,3 +3099,106 @@ DEĞİŞEN DOSYALAR
   (asıl FLIPBOOK'un html'i de)
   Üretici: _kaynak/uretici/zoomKaydir.py
   Yedek:   _kaynak/yedekler/20261002-zoom-kaydir/
+
+=============================================================
+02.10.2026 — KİTAPTAN KİTABA GEÇİŞ
+=============================================================
+İstek: "bir flipbooktan diğer flipbooklara geçiş yapılabilmeli, şu an
+3 tane flipbook'umuz var."
+
+NASIL GÖRÜNÜYOR
+  Üst çubuğun solundaki MARKA (kitabın adı) düğmeye dönüştü: yanında
+  küçük bir ▾ var, üstüne gelince zemin aydınlanıyor. Basınca "Hangi
+  kitabı açalım?" penceresi çıkıyor; üç kitap da renkli kitap sırtı
+  simgesiyle listeleniyor, açık olan "ŞU AN AÇIK" rozetiyle işaretli ve
+  tıklanmıyor. Esc, × ve perdeye tıklama kapatıyor.
+  Marka bulunamayan bir kitapta modül kendi düğmesini üst çubuğa koyar.
+
+ADRESLER
+  Bulunulan adreste "/kitap/" geçiyorsa bağlantılar oradan kuruluyor
+  (hem siteden hem file:// ile açılınca çalışır). Geçmiyorsa — Mac'teki
+  ASIL klasör ya da flaşa indirilmiş tek kitap — bağlantılar
+  kidefarapca.com'a gider ve pencerede "Bu kopya çevrimdışı" notu çıkar.
+
+YENİ DOSYA (ortak, tek kaynak)
+  _kaynak/ortak-kitap/kitapsecici.js   ← kitap listesi, pencere, biçimler
+  kitapOrtakla.py'nin DOSYALAR listesine eklendi; dört kopyaya dağıtılıyor.
+  Yeni kitap eklenince dosyanın başındaki KITAPLAR listesine bir satır
+  yazmak yetiyor.
+
+YAN ONARIM — ÜST ÇUBUK TAŞMASI (eskiden beri vardı)
+  Marka ve "ÜNİTE" rozeti kısalamadığı için yer daralınca düğmelerin
+  altına giriyordu: ölçüldü, 5. sınıfta 540-580, 6. sınıfta 320-700 px.
+  (Kidef'te geçen hafta düzeltilmişti.) Kurallar artık ORTAK dosyada —
+  _kaynak/ortak-kitap/kitapzoom.css — yani üç kitapta da aynı:
+    <=1020px ünite rozeti kalkar (ders adı kalır, üç noktayla kısalır)
+    <=960px  yakınlaştırma takımı kalkar
+    <=760px  etiketli düğmelerin yazısı kalkar, simgeler kalır
+    <=480px  çubuk sıkışır, marka taşarsa kırpılır
+  320-1500 px arası 20'şer px taranarak doğrulandı: ÜÇ KİTAPTA DA temiz.
+
+DENENDİ (Playwright, üç kitap yan yana sunulup)
+  Her kitapta marka düğmeye dönüştü ve ▾ geldi · pencere üç kitabı
+  listeledi, açık olan işaretli · bağlantılar doğru göreli yollar ·
+  5. sınıftan Kidef'e tıklayınca gerçekten geçti (başlık "Kidef Arapça
+  2. Baskı — Flipbook") · "/kitap/" içermeyen yolda bağlantılar siteye
+  döndü ve çevrimdışı notu çıktı · Esc kapattı · konsol hatasız.
+
+DEĞİŞEN DOSYALAR
+  _kaynak/ortak-kitap/kitapsecici.js   (YENİ)
+  _kaynak/ortak-kitap/kitapzoom.css    (ortak çubuk kuralları)
+  _kaynak/uretici/kitapOrtakla.py      (DOSYALAR listesi)
+  kitap/5-sinif-2026-2027/{index.html, kitapsecici.js, kitapzoom.css}
+  kitap/6-sinif-2026-2027/{index.html, kitapsecici.js, kitapzoom.css}
+  kitap/kidef-arapca-2-baski/{index.html, 02_cekirdek/js/kitapsecici.js,
+    02_cekirdek/css/kitapzoom.css, 02_cekirdek/css/flipbook.css}
+  (aynıları Mac'teki asıl FLIPBOOK'ta da)
+  Damgalar: kitapzoom ?v=20261002g · flipbook.css ?v=20261002g
+            kitapsecici.js ?v=20261002
+  Üretici: _kaynak/uretici/kitapSeciciBagla.py (bir kerelik bağlama)
+  Yedek:   _kaynak/yedekler/20261002-kitap-secici/
+
+=============================================================
+02.10.2026 — KİTAP SEÇİCİ: BELİRGİN DÜĞME, KAPAKLAR, SOL PANEL
+=============================================================
+İstek: "soldaki kısım çok belirgin olmuyor, ayrıca kitapların kapağı da
+görünsün ve soldan açılsın panel." + "yukarda içindekiler başlığı da
+olsun, sadece svg değil."
+
+NE DEĞİŞTİ
+  · MARKA artık çerçeveli bir düğme: solunda kitap yığını simgesi (altın),
+    sağında yuvarlak rozette "DEĞİŞTİR ▾". Üstüne gelince aydınlanıyor.
+  · Panel ORTADAN değil SOLDAN kayarak açılıyor (380 px, telefonda %90).
+  · Her kitap KAPAĞIYLA listeleniyor. Kapak yüklenemezse (çevrimdışı
+    kopya) yerine kitabın renginde harf/rakam karesi kalıyor.
+  · Üst çubuktaki İçindekiler düğmesi artık "etiketli": simgenin yanında
+    yazısı da var (dar ekranda ortak kuralla gizlenip simge kalıyor).
+
+KAPAKLAR (yeni dosya, her kitap klasöründe)
+  kitap/<kitap>/kapak.webp — 300 px genişlik
+    5. sınıf  8 KB · 6. sınıf 14 KB · Kidef 8 KB   (toplam 30 KB)
+  5 ve 6'nınki sayfa/001.webp'ten küçültüldü; Kidef'in ilk sayfası resim
+  değil HTML olduğu için tarayıcıda çizilip alındı.
+  Üretici: _kaynak/uretici/kapakUret.py yerine bu kez tek seferlik
+  kapsayıcıda üretildi; yeni kitap eklenirse aynı ölçüde bir kapak.webp
+  koymak yeterli (yoksa harf karesi çıkar, bozulma olmaz).
+
+ÇUBUK EŞİKLERİ (ölçülerek ayarlandı)
+  Beş etiketli düğme + marka düğmesi 1040-1200 px arasında biniyordu:
+    · Kidef'e özel: Sunular/Çıktılar yazıları ≤1240 px'te kalkar
+    · Ortak: "DEĞİŞTİR" yazısı ≤1200 px'te kalkar (simge ve ▾ kalır)
+  320-1600 px arası 20'şer px tarandı: ÜÇ KİTAPTA DA taşma/bindirme yok.
+
+DENENDİ (Playwright)
+  Panel soldan açıldı (sol kenar 0) · üç kapak da yüklendi
+  (300x414, 300x423, 300x424) · adlar ve "ŞU AN AÇIK" rozeti doğru ·
+  İçindekiler yazısı görünüyor · konsol hatasız.
+
+DEĞİŞEN DOSYALAR
+  _kaynak/ortak-kitap/kitapsecici.js
+  kitap/{5-sinif-2026-2027,6-sinif-2026-2027,kidef-arapca-2-baski}/kapak.webp (YENİ)
+  üç kitabın index.html'i (İçindekiler etiketi + damgalar)
+  kitap/kidef-arapca-2-baski/02_cekirdek/css/flipbook.css (?v=20261002h)
+  (aynıları Mac'teki asıl FLIPBOOK'ta da; kapak.webp oraya da kondu)
+  Damga: kitapsecici.js ?v=20261002c
+  Üretici: _kaynak/uretici/icindekilerEtiket.py

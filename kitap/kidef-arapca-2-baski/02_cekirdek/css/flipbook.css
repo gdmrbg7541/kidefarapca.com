@@ -503,7 +503,10 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
    ders adı kalır — o zaten üç nokta ile kısalıyor. */
 .konum{overflow:hidden}
 @media (max-width:1020px){ .konum .u{display:none} }
-@media (max-width:730px){
+/* 1240px (02.10.2026): İçindekiler de etiketlendi ve marka düğmeye dönüştü;
+   beş etiketli düğme 1040-1200 px arasında markanın üstüne biniyordu. Kütüphane
+   düğmeleri (Sunular/Çıktılar) yazılarını önce bırakır, simgeleri kalır. */
+@media (max-width:1240px){
   .ktp-tus span{display:none}
   .ktp-tus{width:38px;padding:0;justify-content:center}
 }

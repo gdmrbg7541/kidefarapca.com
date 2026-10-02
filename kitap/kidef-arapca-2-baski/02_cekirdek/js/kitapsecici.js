@@ -2,7 +2,8 @@
    KİTAPTAN KİTABA GEÇİŞ                        kitapsecici.js   (02.10.2026)
    ----------------------------------------------------------------------------
    Öğretmen: "bir flipbooktan diğer flipbooklara geçiş yapılabilmeli, şu an
-   3 tane flipbook'umuz var."
+   3 tane flipbook'umuz var."  → "soldaki kısım çok belirgin olmuyor, ayrıca
+   kitapların kapağı da görünsün ve soldan açılsın panel."
 
    BÜTÜN FLIPBOOK'LARDA AYNI DOSYA. Tek kaynağı:
        _kaynak/ortak-kitap/kitapsecici.js
@@ -10,18 +11,21 @@
    (_kaynak/uretici/kitapOrtakla.py).
 
    NASIL GÖRÜNÜYOR
-   Üst çubuğun solundaki MARKA (kitabın adı) düğmeye dönüşüyor: yanında küçük
-   bir ▾ beliriyor, basınca "Hangi kitabı açalım?" penceresi çıkıyor. Üç kitap
-   da listelenir; açık olan işaretli ve tıklanmaz. Marka bulunamazsa üst
-   çubuğa kendi düğmesini koyar (#tTamEkran'ın soluna).
+   Üst çubuğun solundaki MARKA çerçeveli bir düğmeye dönüşüyor: solunda kitap
+   yığını simgesi, sağında "değiştir ▾". Basınca panel SOLDAN kayarak açılıyor;
+   her kitap KAPAĞIYLA listeleniyor, açık olan işaretli. Esc, ×, perde kapatır.
+   Marka bulunamazsa modül üst çubuğa kendi düğmesini koyar.
+
+   KAPAKLAR
+   Her kitap klasöründe 300 px genişliğinde "kapak.webp" duruyor
+   (_kaynak/uretici/kapakUret.py üretti). Yüklenemezse yerine kitabın
+   renginde harf/rakam karesi çıkıyor — çevrimdışı kopyada da boş kalmaz.
 
    ADRESLER
-   Üç kitap da sitede "kitap/<klasör>/index.html" altında. Bulunduğumuz
-   adreste "/kitap/" geçiyorsa bağlantılar ona göre kuruluyor (hem http hem
-   file:// çalışır). Geçmiyorsa — Mac'teki ASIL klasör ya da flaşa indirilmiş
-   tek kitap — bağlantılar siteye gider ve "internet gerekir" notu çıkar.
-
-   Kitabın HTML'ine yalnız <script> satırı eklenir; biçimler burada.
+   Bulunulan adreste "/kitap/" geçiyorsa bağlantılar ve kapaklar oradan
+   kuruluyor (hem http hem file:// çalışır). Geçmiyorsa — Mac'teki ASIL
+   klasör ya da flaşa indirilmiş tek kitap — siteye gider, panelde
+   "çevrimdışı" notu çıkar.
    ========================================================================== */
 (function () {
   'use strict';
@@ -43,10 +47,9 @@
     var y = yol(), i = y.lastIndexOf('/kitap/');
     return i >= 0 ? y.slice(0, i + 7) : null;
   }
-  function adres(k) {
-    var kd = kokDizin();
-    return kd ? kd + k.id + '/index.html' : SITE + k.id + '/index.html';
-  }
+  function kitapKok() { return kokDizin() || SITE; }
+  function adres(k) { return kitapKok() + k.id + '/index.html'; }
+  function kapak(k) { return kitapKok() + k.id + '/kapak.webp'; }
   function simdiki() {
     var y = yol();
     for (var i = 0; i < KITAPLAR.length; i++) {
@@ -57,109 +60,167 @@
     return null;
   }
 
+  var IK_KITAPLAR =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M4 4.6h4a2 2 0 0 1 2 2v12.8a1.6 1.6 0 0 0-1.6-1.6H4Z"/>' +
+    '<path d="M20 4.6h-4a2 2 0 0 0-2 2v12.8a1.6 1.6 0 0 1 1.6-1.6H20Z"/></svg>';
+
   /* ---------- biçimler (kitabın CSS'ine dokunulmuyor) ---------- */
   function stilKur() {
     if (document.getElementById('ksStil')) return;
     var s = document.createElement('style');
     s.id = 'ksStil';
     s.textContent =
-      /* marka artık düğme: imleç ve küçük ok */
-      '.ust .marka.ks-marka{cursor:pointer;border-radius:10px;padding:3px 8px;margin-left:-8px;' +
-        'transition:background .15s;}' +
-      '.ust .marka.ks-marka:hover,.ust .marka.ks-marka:focus-visible{background:rgba(255,255,255,.12);}' +
-      '.ust .marka.ks-marka:focus-visible{outline:2px solid rgba(255,255,255,.5);outline-offset:1px;}' +
-      '.ks-ok{font-size:11px;opacity:.75;margin-left:2px;flex:none;}' +
+      /* --- marka artık belirgin bir düğme --- */
+      '.ust .marka.ks-marka{cursor:pointer;display:flex;align-items:center;gap:9px;' +
+        'padding:5px 10px 5px 9px;border-radius:12px;' +
+        'background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);' +
+        'transition:background .15s,border-color .15s;}' +
+      '.ust .marka.ks-marka:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.45);}' +
+      '.ust .marka.ks-marka:focus-visible{outline:2px solid rgba(255,255,255,.65);outline-offset:2px;}' +
+      '.ust .marka.ks-marka:active{transform:scale(.98);}' +
+      '.ks-kik{width:19px;height:19px;flex:none;color:var(--gold,#E3A02A);align-self:center;}' +
+      '.ks-sag{display:inline-flex;align-items:center;gap:4px;flex:none;align-self:center;' +
+        'padding:3px 8px;border-radius:99px;background:rgba(255,255,255,.14);' +
+        'font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;' +
+        'color:rgba(255,255,255,.88);white-space:nowrap;}' +
+      '.ks-ok{font-size:9px;line-height:1;}' +
+      /* 1200px: beş etiketli düğmeli kitapta (Kidef) "değiştir" yazısı
+         markayı büyütüp düğmelerin altına sokuyordu; simge ve ▾ kalıyor. */
+      '@media (max-width:1200px){.ks-sag .ks-yazi{display:none;}' +
+        '.ks-sag{padding:3px 6px;}}' +
+      '@media (max-width:480px){.ust .marka.ks-marka{gap:6px;padding:4px 6px;}.ks-kik{display:none;}}' +
       '.ks-tus svg{width:20px;height:20px;}' +
-      /* pencere */
-      '.ks-perde{position:fixed;inset:0;z-index:9100;display:grid;place-items:center;padding:18px;' +
-        'background:rgba(12,18,30,.62);backdrop-filter:blur(3px);animation:ksGel .18s ease both;}' +
-      '.ks-perde[hidden]{display:none;}' +
-      '@keyframes ksGel{from{opacity:0}to{opacity:1}}' +
-      '.ks-kutu{position:relative;width:min(540px,100%);max-height:calc(100dvh - 36px);overflow:auto;' +
-        '-webkit-overflow-scrolling:touch;background:#fff;color:#16324F;border-radius:20px;' +
-        'padding:clamp(18px,2.4vw,26px);box-shadow:0 24px 70px rgba(8,16,32,.45);' +
+
+      /* --- perde + SOLDAN açılan panel --- */
+      '.ks-perde{position:fixed;inset:0;z-index:9100;background:rgba(12,18,30,.55);' +
+        'backdrop-filter:blur(2px);opacity:0;transition:opacity .22s;}' +
+      '.ks-perde.gor{opacity:1;}' +
+      '.ks-panel{position:fixed;top:0;bottom:0;left:0;z-index:9101;width:min(380px,90vw);' +
+        'display:flex;flex-direction:column;background:#fff;color:#16324F;' +
         "font-family:'Segoe UI',Roboto,Helvetica,sans-serif;" +
-        'animation:ksCik .22s cubic-bezier(.2,.9,.3,1) both;}' +
-      '@keyframes ksCik{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}' +
-      '.ks-kutu h2{margin:0 0 4px;font-size:clamp(1.15rem,2vw,1.5rem);font-weight:800;color:#0E7C66;}' +
-      '.ks-kutu .ks-ust{margin:0 0 16px;font-size:.9rem;color:#6B7A8C;line-height:1.5;}' +
-      '.ks-kapat{position:absolute;top:12px;right:12px;width:34px;height:34px;border:0;border-radius:10px;' +
-        'background:#F1F5F9;color:#6B7A8C;font-size:1rem;line-height:1;cursor:pointer;}' +
+        'box-shadow:18px 0 56px rgba(8,16,32,.38);' +
+        'transform:translateX(-101%);transition:transform .3s cubic-bezier(.2,.8,.3,1);}' +
+      '.ks-panel.gor{transform:none;}' +
+      '.ks-bas{display:flex;align-items:center;gap:10px;padding:16px 16px 13px;' +
+        'border-bottom:1px solid #E3E9F0;}' +
+      '.ks-bas .ks-kik{width:22px;height:22px;color:#0E7C66;}' +
+      '.ks-bas h2{flex:1;min-width:0;margin:0;font-size:1.05rem;font-weight:800;color:#0E7C66;}' +
+      '.ks-kapat{flex:none;width:34px;height:34px;border:0;border-radius:10px;cursor:pointer;' +
+        'background:#F1F5F9;color:#6B7A8C;font-size:1rem;line-height:1;}' +
       '.ks-kapat:hover{background:#E2E8F0;color:#16324F;}' +
-      /* kitap satırları */
+      '.ks-govde{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:14px;}' +
+      '.ks-ust{margin:0 2px 12px;font-size:.84rem;line-height:1.5;color:#6B7A8C;}' +
+
+      /* --- kitap kartları --- */
       '.ks-liste{display:grid;gap:10px;}' +
-      '.ks-kitap{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;' +
+      '.ks-kitap{display:flex;align-items:center;gap:12px;padding:10px;border-radius:14px;' +
         'border:1.5px solid #E3E9F0;background:#fff;text-decoration:none;color:inherit;' +
         'transition:border-color .16s,background .16s,transform .16s;}' +
       '.ks-kitap:hover{transform:translateY(-1px);border-color:var(--ksr);background:#F8FAFC;}' +
       '.ks-kitap.acik{border-color:var(--ksr);background:#F6FAFF;' +
-        'background:color-mix(in srgb,var(--ksr) 10%,#fff);' +
-        'cursor:default;transform:none;}' +
-      '.ks-sim{flex:none;width:44px;height:56px;border-radius:5px 9px 9px 5px;display:grid;' +
-        'place-items:center;background:var(--ksr);color:#fff;font-weight:800;font-size:1.3rem;' +
-        'box-shadow:inset 4px 0 0 rgba(0,0,0,.18),0 3px 8px rgba(16,26,46,.18);}' +
+        'background:color-mix(in srgb,var(--ksr) 10%,#fff);cursor:default;transform:none;}' +
+      /* kapak: gerçek resim; yüklenemezse altındaki harf karesi kalır */
+      '.ks-kapak{position:relative;flex:none;width:58px;height:78px;border-radius:4px 8px 8px 4px;' +
+        'overflow:hidden;background:var(--ksr);' +
+        'box-shadow:inset 5px 0 0 rgba(0,0,0,.2),0 3px 10px rgba(16,26,46,.22);}' +
+      '.ks-kapak img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' +
+        'display:block;opacity:0;transition:opacity .2s;}' +
+      '.ks-kapak img.geldi{opacity:1;}' +
+      '.ks-harf{position:absolute;inset:0;display:grid;place-items:center;color:#fff;' +
+        'font-weight:800;font-size:1.5rem;}' +
       '.ks-mt{min-width:0;flex:1;}' +
-      '.ks-mt b{display:block;font-size:1.02rem;font-weight:800;}' +
-      '.ks-mt small{display:block;margin-top:2px;font-size:.84rem;color:#6B7A8C;}' +
-      '.ks-rozet{flex:none;font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;' +
-        'padding:5px 10px;border-radius:99px;background:var(--ksr);color:#fff;}' +
-      '.ks-git{flex:none;color:var(--ksr);font-size:1.2rem;font-weight:800;}' +
-      '.ks-not{margin:14px 2px 0;font-size:.82rem;line-height:1.5;color:#8A5A00;background:#FFF6E5;' +
-        'border:1px solid #F3DCB2;border-radius:10px;padding:9px 12px;}' +
-      '@media (max-width:520px){.ks-kutu{border-radius:16px;}.ks-sim{width:38px;height:48px;font-size:1.1rem;}' +
-        '.ks-rozet{display:none;}}' +
-      '@media (prefers-reduced-motion:reduce){.ks-perde,.ks-kutu{animation:none;}' +
-        '.ks-kitap:hover{transform:none;}}';
+      '.ks-mt b{display:block;font-size:1rem;font-weight:800;}' +
+      '.ks-mt small{display:block;margin-top:2px;font-size:.82rem;color:#6B7A8C;line-height:1.4;}' +
+      '.ks-rozet{display:inline-block;margin-top:6px;font-size:.68rem;font-weight:800;' +
+        'letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:99px;' +
+        'background:var(--ksr);color:#fff;}' +
+      '.ks-git{flex:none;color:var(--ksr);font-size:1.25rem;font-weight:800;padding-right:4px;}' +
+      '.ks-not{margin:14px 2px 0;font-size:.8rem;line-height:1.5;color:#8A5A00;background:#FFF6E5;' +
+        'border:1px solid #F3DCB2;border-radius:10px;padding:9px 11px;}' +
+      '@media (prefers-reduced-motion:reduce){' +
+        '.ks-panel,.ks-perde{transition:none;}.ks-kitap:hover{transform:none;}}';
     (document.head || document.documentElement).appendChild(s);
   }
 
-  /* ---------- pencere ---------- */
-  var perde = null;
-  function kapat() { if (perde) { perde.remove(); perde = null; } }
+  /* ---------- panel ---------- */
+  var perde = null, panel = null;
+
+  function kapat() {
+    if (!panel) return;
+    var pn = panel, pr = perde;
+    panel = perde = null;
+    pn.classList.remove('gor');
+    if (pr) pr.classList.remove('gor');
+    setTimeout(function () { pn.remove(); if (pr) pr.remove(); }, 320);
+  }
+
   function ac() {
-    if (perde) { kapat(); return; }
+    if (panel) { kapat(); return; }
     stilKur();
     var simdi = simdiki(), yerel = !!kokDizin();
-    var h = '<div class="ks-kutu" role="dialog" aria-modal="true" aria-label="Kitap seç">' +
-      '<button class="ks-kapat" type="button" aria-label="Kapat">&times;</button>' +
-      '<h2>Hangi kitabı açalım?</h2>' +
-      '<p class="ks-ust">Üç dijital kitap da aynı motorla çalışıyor: dokununca büyütme, ' +
-      'içindekiler, kaynaklar.</p><div class="ks-liste">';
+
+    perde = document.createElement('div');
+    perde.className = 'ks-perde';
+    perde.addEventListener('click', kapat);
+
+    panel = document.createElement('aside');
+    panel.className = 'ks-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', 'Kitaplar');
+    var h = '<div class="ks-bas"><span class="ks-kik">' + IK_KITAPLAR + '</span>' +
+      '<h2>Kitaplar</h2>' +
+      '<button class="ks-kapat" type="button" aria-label="Kapat">&times;</button></div>' +
+      '<div class="ks-govde">' +
+      '<p class="ks-ust">Hangi kitabı açalım? Üçü de aynı motorla çalışıyor: ' +
+      'dokununca büyütme, içindekiler, kaynaklar.</p><div class="ks-liste">';
     KITAPLAR.forEach(function (k) {
       var bu = simdi && k.id === simdi.id;
-      var ic = '<span class="ks-sim">' + k.im + '</span>' +
-        '<span class="ks-mt"><b></b><small></small></span>' +
-        (bu ? '<span class="ks-rozet">şu an açık</span>' : '<span class="ks-git">→</span>');
+      var ic = '<span class="ks-kapak"><span class="ks-harf">' + k.im + '</span>' +
+        '<img alt="" loading="lazy" src="' + kapak(k) + '"></span>' +
+        '<span class="ks-mt"><b></b><small></small>' +
+        (bu ? '<span class="ks-rozet">şu an açık</span>' : '') + '</span>' +
+        (bu ? '' : '<span class="ks-git">→</span>');
       h += bu
         ? '<div class="ks-kitap acik" style="--ksr:' + k.renk + '">' + ic + '</div>'
         : '<a class="ks-kitap" style="--ksr:' + k.renk + '" href="' + adres(k) + '">' + ic + '</a>';
     });
     h += '</div>';
     if (!yerel) {
-      h += '<p class="ks-not"><b>Bu kopya çevrimdışı.</b> Öteki kitaplar ' +
-        'kidefarapca.com üzerinden açılır; internet gerekir.</p>';
+      h += '<p class="ks-not"><b>Bu kopya çevrimdışı.</b> Öteki kitaplar ve kapak ' +
+        'resimleri kidefarapca.com üzerinden gelir; internet gerekir.</p>';
     }
     h += '</div>';
+    panel.innerHTML = h;
 
-    perde = document.createElement('div');
-    perde.className = 'ks-perde';
-    perde.innerHTML = h;
-    /* adlar metin olarak yazılıyor (HTML'e gömülmüyor) */
-    var kutular = perde.querySelectorAll('.ks-kitap');
+    /* adlar metin olarak yazılıyor; kapak gelince beliriyor */
+    var kutular = panel.querySelectorAll('.ks-kitap');
     KITAPLAR.forEach(function (k, i) {
       kutular[i].querySelector('b').textContent = k.ad;
       kutular[i].querySelector('small').textContent = k.alt;
+      var im = kutular[i].querySelector('img');
+      im.addEventListener('load', function () { im.classList.add('geldi'); });
+      im.addEventListener('error', function () { im.remove(); });   /* harf karesi kalsın */
+      if (im.complete && im.naturalWidth) im.classList.add('geldi');
     });
-    perde.addEventListener('click', function (e) {
-      if (e.target === perde || e.target.closest('.ks-kapat')) { e.preventDefault(); kapat(); }
-    });
+    panel.querySelector('.ks-kapat').addEventListener('click', kapat);
+
     document.body.appendChild(perde);
-    var kp = perde.querySelector('.ks-kapat');
-    if (kp) setTimeout(function () { kp.focus({ preventScroll: true }); }, 60);
+    document.body.appendChild(panel);
+    /* bir kare sonra sınıf: geçiş çalışsın */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        if (perde) perde.classList.add('gor');
+        if (panel) panel.classList.add('gor');
+      });
+    });
+    var kp = panel.querySelector('.ks-kapat');
+    if (kp) setTimeout(function () { kp.focus({ preventScroll: true }); }, 120);
   }
 
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && perde) { e.stopPropagation(); kapat(); }
+    if (e.key === 'Escape' && panel) { e.stopPropagation(); kapat(); }
   }, true);
 
   /* ---------- markayı düğmeye çevir ---------- */
@@ -172,14 +233,16 @@
       m.setAttribute('role', 'button');
       m.setAttribute('tabindex', '0');
       m.title = 'Başka bir kitaba geç';
-      m.insertAdjacentHTML('beforeend', '<span class="ks-ok" aria-hidden="true">▾</span>');
+      m.insertAdjacentHTML('afterbegin', '<span class="ks-kik">' + IK_KITAPLAR + '</span>');
+      m.insertAdjacentHTML('beforeend',
+        '<span class="ks-sag"><span class="ks-yazi">değiştir</span>' +
+        '<span class="ks-ok" aria-hidden="true">▾</span></span>');
       m.addEventListener('click', ac);
       m.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ac(); }
       });
       return;
     }
-    /* marka yoksa: üst çubuğa kendi düğmesi */
     if (document.getElementById('tKitaplar')) return;
     var cubuk = document.querySelector('.ust .araclar');
     if (!cubuk) return;
@@ -189,13 +252,9 @@
     b.className = 'tus ks-tus';
     b.title = 'Başka bir kitaba geç';
     b.setAttribute('aria-label', 'Kitaplar');
-    b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
-      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      '<path d="M4 4.5h4.2a2 2 0 0 1 2 2V19a1.6 1.6 0 0 0-1.6-1.6H4Z"/>' +
-      '<path d="M20 4.5h-4.2a2 2 0 0 0-2 2V19a1.6 1.6 0 0 1 1.6-1.6H20Z"/></svg>';
+    b.innerHTML = IK_KITAPLAR;
     b.addEventListener('click', ac);
-    var once = document.getElementById('tTamEkran') || cubuk.lastChild;
-    cubuk.insertBefore(b, once);
+    cubuk.insertBefore(b, document.getElementById('tTamEkran') || cubuk.lastChild);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);

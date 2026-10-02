@@ -174,3 +174,30 @@
 }
 .kz-tekli-not b { color: #6B4400; }
 .kz-tekli-not[hidden] { display: none; }
+
+/* ============================================================================
+   ÜST ÇUBUK TAŞMASI — BÜTÜN KİTAPLARDA ORTAK              (02.10.2026)
+   Marka yazısı ve "ÜNİTE" rozeti kısalamadığı için yer daralınca düğmelerin
+   ALTINA giriyordu. Ölçüldü (320–1500 px, 20'şer): 5. sınıfta 540–580,
+   6. sınıfta 320–700 px arası biniyordu; kitapsecici.js markaya ▾ ekleyince
+   biraz daha büyüdü. Yer daraldıkça sırayla kalkıyor:
+     ≤1020px  ünite rozeti (ders adı kalır, üç noktayla kısalır)
+     ≤960px   yakınlaştırma takımı (dokunma, çift dokunma ve klavye duruyor)
+     ≤760px   etiketli düğmelerin yazısı (simgeleri kalır)
+     ≤480px   çubuk sıkışır, marka taşarsa kırpılır
+   Kitabın kendi kuralları varsa bu dosya SONRA yüklendiği için burası geçerli.
+   ========================================================================== */
+.ust .konum { overflow: hidden; }
+@media (max-width: 1020px) { .ust .konum .u { display: none; } }
+@media (max-width: 960px)  { .ust .araclar .gizle-kucuk { display: none; } }
+@media (max-width: 760px) {
+  .ust .tus.etiketli span { display: none; }
+  .ust .tus.etiketli { width: 38px; padding: 0; justify-content: center; }
+}
+@media (max-width: 480px) {
+  .ust { gap: 6px; padding: 0 8px; }
+  .ust .araclar { gap: 3px; }
+  .ust .tus { width: 36px; }
+  .ust .marka { overflow: hidden; }
+  .ust .marka b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; }
+}
