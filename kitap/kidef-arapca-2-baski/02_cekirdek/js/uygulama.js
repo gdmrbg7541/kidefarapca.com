@@ -125,6 +125,14 @@
       else sunumAc(k, true);   // açılır pencere engellendiyse içeride göster
       return;
     }
+    // 02.10.2026: içeride de aynı gösterici (sunum.html) çerçevede açılır — HTML sunu varsa
+    // onu (adımlı), yoksa resimleri gösterir. Eski resim oynatıcısı (#pSunum) yalnız yedek.
+    if (k.klasor && /^05_sunumlar\//.test(k.klasor)) {
+      $('#etkinlikBaslik').textContent = k.ad;
+      panelAc('#pEtkinlik');
+      $('#etkinlikCerceve').setAttribute('src', sunumAdres(k));
+      return;
+    }
     sunum.klasor = k.klasor; sunum.adet = k.adet; sunum.i = 1;
     $('#sunumBaslik').textContent = k.ad;
     var pa = $('#sunumPdf');

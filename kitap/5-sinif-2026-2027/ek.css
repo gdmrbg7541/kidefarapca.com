@@ -190,3 +190,34 @@ input[type=range][dir=rtl]{background:linear-gradient(270deg,var(--gold) var(--d
   .ok{width:64px;height:120px;border-radius:18px}
   .ok svg{width:30px;height:30px}
 }
+
+
+/* ============================================================
+   GÖRÜNMEYEN YÜZÜN DÜĞMELERİ ÖNE SIZMASIN   (02.10.2026, Safari)
+   ------------------------------------------------------------
+   .yuz'daki backface-visibility:hidden yalnız yüzün KENDİ boyamasını
+   durduruyor. İçindeki .katman (SVG düğmeler) WebKit'te ayrı bir
+   kompozisyon katmanı olarak çizildiği için o kurala uymuyor: çevrilmiş
+   yaprağın arkasında kalan düğmeler, öndeki sayfanın üstünde ve
+   AYNALANMIŞ olarak görünüyor. Tıklanmıyorlar (hit-test zaten
+   pointer-events ile kapalı), yalnız görüntü sızıyor.
+   Çare: görünmeyen yüzün katmanını açıkça gizle.
+   Yüzler yaprak 90°'ye geldiğinde el değiştirsin diye visibility
+   geçişi yarı süre gecikmeli (--gecis .78s → .36s).
+   Aynı hata ve aynı çözüm: Kidef flipbook sayfa-html.css "SIZMASIN".
+   ============================================================ */
+.yaprak .katman{transition:visibility 0s linear .36s}
+.yaprak.cevrildi > .yuz.on .katman,
+.yaprak:not(.cevrildi) > .yuz.arka .katman{visibility:hidden}
+
+/* Parmakla sürüklerken gecikme işe yaramaz: yaprağın 90°'yi ne zaman
+   geçeceği belli değil. flip.js o anda yaprağa .yari ekliyor. */
+.yaprak.suruklenen .katman{transition:none}
+.yaprak.suruklenen:not(.yari) > .yuz.on .katman,
+.yaprak.suruklenen.yari   > .yuz.arka .katman{visibility:visible}
+.yaprak.suruklenen.yari   > .yuz.on .katman,
+.yaprak.suruklenen:not(.yari) > .yuz.arka .katman{visibility:hidden}
+
+/* Sayfaya atlarken (git) yapraklar anında yerine oturuyor; katmanlar
+   yarım saniye beklemesin. */
+.kitap.atla .katman{transition:none !important}

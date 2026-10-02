@@ -9,11 +9,15 @@
   Flipbook'taki bir ders sunusunu YENİ SEKMEDE tam ekran gösterir.
   Bilgisayarda da sitede de sunular bununla açılır (01.10.2026): slayt ekranın tamamını
   kaplar, düğmeler üstünde durur ve 3 sn dokunulmazsa kaybolur (PDF tam ekran gibi).
-  Slaytlar flipbook'un 05_sunumlar/<deste>/NNN.webp görselleri; asıl PDF (yalnız bilgisayarda) &p= ile. Adres:
+  Slaytlar flipbook'un 05_sunumlar/<deste>/NNN.webp görselleri; asıl PDF (yalnız bilgisayarda) &p= ile.
+  02.10.2026: destenin html/sunu.js'i varsa (PowerPoint'ten çevrilmiş HTML sunu) slaytlar
+  resim değil HTML olarak çizilir (yazılar gerçek metin, deste birkaç yüz KB). Adres:
      sunum.html?d=05_sunumlar/mazi&n=223&a=Mazi%20Fiil%20Ders%20Sunusu&s=1
   Akıllı tahta için: büyük oklar, parmakla kaydırma, ekranın sağına/soluna
   dokunma, klavye (← → Boşluk Home End F).
 -->
+<link rel="stylesheet" href="02_cekirdek/css/sunu-html.css">
+<script src="02_cekirdek/js/sunu-html.js"></script>
 <style>
   :root{--gold:#E3A02A;--ink:#122040;--zemin:#0C1220}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -33,15 +37,19 @@
   .tus svg,.ok svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .sahne{position:fixed;inset:0;display:grid;place-items:center;touch-action:pan-y;background:#000}
   /* slayt yatayda ekranın iki kenarına kadar uzar; üstte/altta siyah boşluk kalabilir */
-  .sahne img{width:100vw;height:auto;display:block;user-select:none;-webkit-user-drag:none;
+  .sahne > #slayt{width:100vw;height:auto;display:block;user-select:none;-webkit-user-drag:none;
     transition:opacity .12s}
-  .sahne img.yukleniyor{opacity:.35}
+  .sahne > #slayt.yukleniyor{opacity:.35}
+  /* HTML sunu: 960×540 tuval ekran genişliğine ölçeklenir (resimdeki gibi kenardan kenara) */
+  .sahne .sl{position:absolute;left:0;top:50%;transform-origin:0 0;user-select:none;-webkit-user-select:none}
+  .sahne.html > #slayt{display:none}  /* yalnız resim slayt; HTML slayttaki resimler değil */
   /* ileri/geri tuşları slaydın ÜSTÜNDE, her zaman görünür (yarı saydam) */
   /* ileri/geri: geniş, açık renkli, slaydın üstünde. Görünen düğme 88×180, basılabilen alan
      ekran kenarından ortaya doğru 140 px ve ekran yüksekliğinin %70'i (akıllı tahtada rahat) */
   .ok{position:fixed;top:50%;transform:translateY(-50%);width:88px;height:180px;border-radius:22px;display:grid;
-    place-items:center;background:rgba(255,255,255,.72);border:2px solid rgba(18,32,64,.28);z-index:6;color:var(--ink);
-    box-shadow:0 4px 18px rgba(0,0,0,.18);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+    place-items:center;background:rgba(255,255,255,.30);border:2px solid rgba(18,32,64,.16);z-index:6;color:var(--ink);
+    box-shadow:0 2px 10px rgba(0,0,0,.08)}
+  /* 02.10.2026: oklar daha saydam — arkalarındaki slayt görünsün (bulanıklaştırma da kaldırıldı) */
   /* İKİ OK DA SAĞDA, ALT ALTA (koca tahtada öğretmen bir sağa bir sola yürümesin):
      üstte İLERİ, altta GERİ. Basılabilen alan düğmeden geniş: kenardan 150 px içeri,
      iki düğme arasındaki boşluğu da paylaşırlar. */
@@ -62,6 +70,7 @@
   .pdf[hidden]{display:none}
   .pdf:active{transform:scale(.94)}
   .pdf svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .sayac .adim{margin-left:8px;padding:2px 8px;border-radius:99px;background:rgba(227,160,42,.22);color:#F3C672}
   .sayac{font-size:13px;font-weight:700;color:#9FB0CC;white-space:nowrap;font-variant-numeric:tabular-nums}
   input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:99px;outline:none;
     background:linear-gradient(90deg,var(--gold) var(--dolu,0%),rgba(255,255,255,.16) var(--dolu,0%))}
@@ -69,7 +78,7 @@
   input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid var(--gold)}
   /* bir süre dokunulmazsa düğmeler kaybolur, slayt tek başına kalır (PDF tam ekran gibi) */
   body.sakin .ust,body.sakin .alt{opacity:0;pointer-events:none}
-  body.sakin .ok{opacity:.45}   /* dokunmadan bekleyince oklar yalnız soluklaşır */
+  body.sakin .ok{opacity:.35}   /* dokunmadan bekleyince oklar yalnız soluklaşır */
   /* klavye / sunum kumandası ile ilerlenirken oklar TAMAMEN kaybolur; ekrana dokununca geri gelir */
   body.tusla .ok{opacity:0;pointer-events:none}
   body.sakin{cursor:none}
@@ -94,7 +103,7 @@
     <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
 </header>
 
-<main class="sahne" id="sahne"><img id="slayt" alt="Sunu slaydı"></main>
+<main class="sahne" id="sahne"><img id="slayt" alt="Sunu slaydı"><div class="sl" id="slHtml" hidden></div></main>
 
 <button class="ok sol" id="geri" aria-label="Önceki slayt"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
 <button class="ok sag" id="ileri" aria-label="Sonraki slayt"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
@@ -122,19 +131,50 @@
   var img = $('#slayt'), kay = $('#kaydirac');
   kay.max = adet;
   function yol(n) { return klasor + '/' + ('00' + n).slice(-3) + '.webp'; }
-  function goster(n) {
+  // HTML sunu (varsa): <deste>/html/sunu.js → window.SUNU_HTML
+  var V = null, sl = $('#slHtml');
+  function olcekle() {
+    if (!V) return;
+    var k = window.innerWidth / V.w;
+    sl.style.width = V.w + 'px'; sl.style.height = V.h + 'px';
+    sl.style.transform = 'translateY(' + (-V.h * k / 2) + 'px) scale(' + k + ')';
+  }
+  window.addEventListener('resize', olcekle);
+  // HTML sunuda bir slayt birkaç ADIMdan oluşabilir (eski sunularda animasyon yerine slayt
+  // çoğaltılmıştı; 10_sunum_html.py bunları tek slayt + adımlar yaptı). ileri/geri önce adımları gezer.
+  var adim = 0;
+  function adimSayisi() { return V && V.g ? V.g[i - 1].length : 1; }
+  function ileri() { if (adim < adimSayisi() - 1) adimGoster(adim + 1); else if (i < adet) goster(i + 1); }
+  function geri() { if (adim > 0) adimGoster(adim - 1); else if (i > 1) goster(i - 1, true); }
+  function adimGoster(a) {
+    adim = a; SunuHTML.adim(sl, V, i - 1, a);
+    sayacYaz();
+    $('#geri').disabled = i <= 1 && adim === 0; $('#ileri').disabled = i >= adet && adim >= adimSayisi() - 1;
+  }
+  function sayacYaz() {
+    var k = adimSayisi();
+    $('#sayac').innerHTML = i + ' / ' + adet + (k > 1 ? ' <span class="adim">' + (adim + 1) + '/' + k + '</span>' : '');
+  }
+  function goster(n, sonAdim) {
     i = Math.max(1, Math.min(adet, n));
+    if (V) {
+      SunuHTML.ciz(sl, V, i, klasor + '/html');
+      adim = sonAdim ? adimSayisi() - 1 : 0;
+      if (V.g) SunuHTML.adim(sl, V, i - 1, adim, true);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { SunuHTML.sigdir(sl); });
+    } else {
     img.classList.add('yukleniyor');
     img.onload = function () { img.classList.remove('yukleniyor'); };
     img.src = yol(i);
-    $('#sayac').textContent = i + ' / ' + adet;
+    }
+    sayacYaz();
     kay.value = i; kay.style.setProperty('--dolu', ((i - 1) / Math.max(1, adet - 1) * 100) + '%');
-    $('#geri').disabled = i <= 1; $('#ileri').disabled = i >= adet;
-    for (var j = i + 1; j <= i + 3 && j <= adet; j++) { var o = new Image(); o.src = yol(j); }
+    $('#geri').disabled = i <= 1 && adim === 0; $('#ileri').disabled = i >= adet && adim >= adimSayisi() - 1;
+    if (!V) for (var j = i + 1; j <= i + 3 && j <= adet; j++) { var o = new Image(); o.src = yol(j); }
     try { var u = { d: klasor, n: adet, a: ad, s: i }; if (q.get('p')) u.p = q.get('p'); history.replaceState(null, '', '?' + new URLSearchParams(u)); } catch (e) {}
   }
-  $('#geri').onclick = function () { goster(i - 1); };
-  $('#ileri').onclick = function () { goster(i + 1); };
+  $('#geri').onclick = geri;
+  $('#ileri').onclick = ileri;
   kay.oninput = function () { goster(+kay.value); };
   function tam() {
     var d = document;
@@ -150,20 +190,31 @@
   $('#sahne').addEventListener('pointerdown', function (e) { s = { x: e.clientX, y: e.clientY }; });
   $('#sahne').addEventListener('pointerup', function (e) {
     if (!s) return;
+    // HTML sunuda slayt içi bağlantı ("sonraki slayt", "3. slayta git" düğmeleri)
+    var bag = e.target.closest && e.target.closest('[data-slayt]');
+    if (bag && Math.abs(e.clientX - s.x) < 10 && Math.abs(e.clientY - s.y) < 10) {
+      s = null; var h = +bag.getAttribute('data-slayt');
+      if (h === -1) ileri(); else if (h === -2) geri(); else if (V && V.g) {
+        // bağlantı asıl slayt sırasını verir → o slaytın grubuna ve adımına git
+        for (var gi = 0; gi < V.g.length; gi++) { var ai = V.g[gi].indexOf(h - 1); if (ai >= 0) { goster(gi + 1); adimGoster(ai); break; } }
+      } else goster(h);
+      return;
+    }
+    if (e.target.closest && e.target.closest('.sl a')) { s = null; return; }
     var dx = e.clientX - s.x, dy = e.clientY - s.y; s = null;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) { goster(dx < 0 ? i + 1 : i - 1); return; }
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) { if (dx < 0) ileri(); else geri(); return; }
     if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
       var W = window.innerWidth;
       // sağ kenar şeridi oklarla aynı düzende: üst yarı ileri, alt yarı geri
-      if (e.clientX > W * 0.66) goster(e.clientY > window.innerHeight / 2 + 16 && e.clientX > W * 0.85 ? i - 1 : i + 1);
-      else if (e.clientX < W * 0.34) goster(i - 1);
+      if (e.clientX > W * 0.66) { if (e.clientY > window.innerHeight / 2 + 16 && e.clientX > W * 0.85) geri(); else ileri(); }
+      else if (e.clientX < W * 0.34) geri();
       else if (!sakinIdi) { clearTimeout(gizZ); document.body.classList.add('sakin'); }   // ortaya dokunmak gizler/gösterir
     }
   });
   document.addEventListener('keydown', function (e) {
     var k = e.key;
-    if (k === 'ArrowRight' || k === 'ArrowDown' || k === ' ' || k === 'PageDown') { e.preventDefault(); goster(i + 1); }
-    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); goster(i - 1); }
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === ' ' || k === 'PageDown') { e.preventDefault(); ileri(); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); geri(); }
     else if (k === 'Home') goster(1);
     else if (k === 'End') goster(adet);
     else if (k === 'f' || k === 'F') tam();
@@ -207,7 +258,20 @@
   }, true);
   document.addEventListener('pointerdown', function () { document.body.classList.remove('tusla'); }, true);
   uyan();
-  goster(i);
+  // HTML sunu var mı? Yüklenemezse (yoksa) eskisi gibi resimler gösterilir.
+  var js = document.createElement('script');
+  // ?v=: deste yeniden üretilince tarayıcı eski kopyayı göstermesin (üretimde güncellenir)
+  js.src = klasor + '/html/sunu.js?v=20261002d';
+  js.onload = function () {
+    if (window.SUNU_HTML && window.SUNU_HTML.s && window.SUNU_HTML.s.length) {
+      V = window.SUNU_HTML; adet = V.g ? V.g.length : V.s.length; kay.max = adet;
+      if (i > adet) i = 1;
+      $('#sahne').classList.add('html'); sl.hidden = false; olcekle();
+    }
+    goster(i);
+  };
+  js.onerror = function () { goster(i); };
+  document.head.appendChild(js);
 })();
 </script>
 </body>

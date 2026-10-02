@@ -2732,3 +2732,28 @@ doğru; telefonda kartlar yatay kayıyor, etiket okunuyor.
 - KALDIRILDI (→ _kaynak/eski-flipbook-html5-2026-10-01/): eski flipbookkidef.html/.css/.js,
   kitap/flipbookkidef.*, files/ (53 MB), javascript/ (5 MB) — yalnız eski kitap kullanıyordu
 - katalog/index.html bağlantısı, _yolkontrol.html listesi, ga_ekle.py atlama listesi güncellendi
+
+[02.10.2026] 5. ve 6. sınıf dijital kitap — Safari'de arka yüzün düğmeleri
+             öne sızıyordu (düzeltildi)
+  · Belirti (Mac Safari): sayfa dururken bile arkadaki sayfanın ses /
+    etkinlik / video SVG düğmeleri öndeki sayfanın üstünde ve AYNALANMIŞ
+    görünüyor, tıklanmıyordu.
+  · Sebep: .yuz'daki backface-visibility:hidden yalnız yüzün KENDİ
+    boyamasını durduruyor; içindeki .katman (düğme katmanı) WebKit'te
+    ayrı kompozisyon katmanı olduğu için o kurala uymuyor. Tıklanmaması
+    hit-test'in zaten pointer-events ile kapalı olmasından — yalnız
+    GÖRÜNTÜ sızıyordu.
+  · Çözüm: Kidef flipbook'ta aynı hata için yazılan "SIZMASIN" kurallarının
+    aynısı — görünmeyen yüzün katmanı visibility:hidden ile açıkça
+    gizleniyor, yaprak 90°'yi geçince el değiştirsin diye geçiş .36 sn
+    gecikmeli (--gecis .78s'in yarısı). Sürüklerken gecikme işe yaramadığı
+    için flip.js yaprağa .yari, sayfaya atlarken kitaba .atla koyuyor.
+  · 5. ve 6. sınıf dosyaları aynı; ikisine de uygulandı.
+  · index.html'de kitap.css/ek.css/flip.js/uygulama.js/veri.js/dosyalar.js
+    artık ?v=20261002 ile yükleniyor — damga yoktu, Safari eski dosyayı
+    önbellekten servis edip düzeltmeyi hiç göstermeyebilirdi.
+  · Betik: _kaynak/uretici/kitapSafariSizma.py
+  · Yedek: _kaynak/yedekler/kitap56-2026-10-02/
+  · Denendi: dururken 12 katmanlı yüzün hepsi doğru; çevirince, parmakla
+    sürüklerken (30°/83°/144°/180°) ve sayfaya atlarken doğru; .yari
+    kalıntısı yok, konsol hatasız.

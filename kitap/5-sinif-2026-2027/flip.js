@@ -259,7 +259,7 @@
   Flip.prototype._animasyon = function (y, ileri) {
     var self = this;
     this.animasyonda = true;
-    y.classList.remove('suruklenen');
+    y.classList.remove('suruklenen', 'yari');
     y.style.transform = '';
     // reflow -> geçişin tetiklenmesi
     void y.offsetWidth;
@@ -287,9 +287,10 @@
     if (hedef === this.c && !sessiz) { this._bildir(); return; }
     this.c = hedef;
     this.kitap.style.transition = 'none';   // atlarken kitap kaymasın, yerine otursun
+    this.kitap.classList.add('atla');       // düğme katmanları da beklemeden yerine geçsin
     for (var i = 0; i < this.yaprakSayisi; i++) {
       var y = this.yapraklar[i];
-      y.classList.remove('suruklenen');
+      y.classList.remove('suruklenen', 'yari');
       y.style.transform = '';
       y.style.transition = 'none';
       y.classList.toggle('cevrildi', i < this.c);
@@ -301,6 +302,7 @@
     this._komsulariYukle();
     this._bildir();
     void this.kitap.offsetWidth;
+    this.kitap.classList.remove('atla');
     this.kitap.style.transition = '';
   };
 
@@ -343,6 +345,9 @@
       var aci = s.ileri ? -180 * oran : -180 * (1 - oran);
       if (self.rtl) aci = -aci;
       s.y.style.transform = 'rotateY(' + aci + 'deg)';
+      /* 90°'yi geçince hangi yüzün düğmeleri görünsün — ek.css "SIZMASIN".
+         aci ltr'de negatif, rtl'de pozitif; mutlak değere bakılıyor. */
+      s.y.classList.toggle('yari', Math.abs(aci) > 90);
       s.oran = oran;
     });
 
@@ -365,7 +370,7 @@
       }
       var t = s;
       s = null;
-      t.y.classList.remove('suruklenen');
+      t.y.classList.remove('suruklenen', 'yari');
       if (!t.tasi) {
         t.y.style.transform = ''; self._zSirala(-1);
         // sürüklemeden DOKUNMA: sayfanın dış kenarına dokunmak çevirir (akıllı tahta)
