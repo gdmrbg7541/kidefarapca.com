@@ -3060,3 +3060,42 @@ DEĞİŞEN DOSYALAR
   kelimeler.html, kaliplartablosu.html  (sürüm damgası ?v=3)
   Üretici: _kaynak/uretici/kelimeSutun.py
   Yedek:   _kaynak/yedekler/20261002-kelime-sutun/
+
+=============================================================
+02.10.2026 — TRACKPAD'DE AŞAĞI YUKARI GİDEMEME
+=============================================================
+İstek: "flipbooklarda touch pad kısmıyla bazı scrollarda aşağı yukarı
+gidemiyorum."
+
+SORUN (ölçüldü): sayfa büyütülmüşken (%225) trackpad'de iki parmakla
+yukarı/aşağı kaydırınca sayfa gezinmiyor, UZAKLAŞIYORDU (%225 → %123).
+kitapzoom.js'teki tekerlek dinleyicisi ctrl/cmd basılı olmasa bile her
+tekerlek olayını yakınlaştırmaya çeviriyordu. Panellerin (İçindekiler,
+Kütüphane, Araçlar, Kaynak, "Nasıl kullanılır?") kaydırması zaten
+çalışıyordu — tek tek ölçüldü, hepsi sağlam.
+
+ÇÖZÜM — ikisi ayrıldı:
+  · ctrl/cmd + tekerlek (trackpad'de iki parmakla sıkıştırma) → YAKINLAŞTIRIR
+  · düz kaydırma, sayfa büyükken  → sayfayı GEZDİRİR (yukarı-aşağı, sağa-sola,
+    piksel piksel, anlık)
+  · düz kaydırma, normal boyda    → hiçbir şey (eskisi gibi)
+Yakınlaştırmanın öteki yolları duruyor: +/- düğmeleri, klavye +/-, çift
+dokunma, sıkıştırma, 6 bölgeye dokunma.
+
+DENENDİ (Playwright)
+  normal boyda tekerlek → %100 sabit, kıpırdamadı
+  büyütülmüş (%225): aşağı → y 0 → -300, oran %225 sabit
+                     yukarı → y -300 → -100
+                     yana   → x 0 → -250
+  ctrl+tekerlek → %225 → %445 (yakınlaştırdı)
+  Paneller: İçindekiler, Kütüphane, Araçlar, Kaynak, tanıtım penceresi —
+  hepsi tekerlekle kayıyor.
+
+DEĞİŞEN DOSYALAR
+  _kaynak/ortak-kitap/kitapzoom.js   (TEK KAYNAK)
+  → kitapOrtakla.py ile dağıtıldı: 5. sınıf, 6. sınıf, Kidef (site),
+    Kidef (Mac'teki asıl)
+  Üç kitabın index.html'inde kitapzoom damgası ?v=20261002f
+  (asıl FLIPBOOK'un html'i de)
+  Üretici: _kaynak/uretici/zoomKaydir.py
+  Yedek:   _kaynak/yedekler/20261002-zoom-kaydir/

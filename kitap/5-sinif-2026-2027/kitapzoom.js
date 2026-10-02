@@ -119,13 +119,35 @@
     if (ayar.yaklas) ayar.yaklas.addEventListener('click', function () { zAyarla(z.o * 1.5); });
     if (ayar.uzaklas) ayar.uzaklas.addEventListener('click', function () { zAyarla(z.o / 1.5); });
 
-    /* tekerlek / trackpad pinch */
+    /* Piksel piksel gezinme — tekerlek/iki parmak için. zKaydir() oransal
+       çalışıyor (yön tuşları için); burada hareketin kendi uzunluğu gerekli. */
+    function zKaydirPx(dx, dy) {
+      if (!dx && !dy) return;
+      z.x -= dx; z.y -= dy;
+      sinirla();
+      zUygula(false);              /* anlık: parmakla birlikte kaysın */
+    }
+
+    /* TEKERLEK / TRACKPAD
+       02.10.2026 — öğretmen: "touch pad kısmıyla bazı scrollarda aşağı
+       yukarı gidemiyorum". Eskiden düz tekerlek de yakınlaştırıyordu, bu
+       yüzden büyütülmüş sayfada iki parmakla yukarı-aşağı gidilemiyordu
+       (sayfa gezinmek yerine uzaklaşıyordu). Artık:
+         · ctrl/cmd + tekerlek (trackpad'de iki parmakla sıkıştırma) → yakınlaştırır
+         · düz kaydırma, sayfa büyükken                              → GEZİNİR
+         · düz kaydırma, normal boyda                                → hiçbir şey */
     sahne.addEventListener('wheel', function (e) {
-      if (!(e.ctrlKey || e.metaKey) && z.o <= 1.001) return;
+      var sikistir = e.ctrlKey || e.metaKey;
+      if (!sikistir && z.o <= 1.001) return;
       e.preventDefault();
-      var r = sahne.getBoundingClientRect();
-      var k = (e.ctrlKey || e.metaKey) ? Math.exp(-e.deltaY / 220) : Math.exp(-e.deltaY / 500);
-      zAyarla(z.o * k, e.clientX - r.left, e.clientY - r.top);
+      if (sikistir) {
+        var r = sahne.getBoundingClientRect();
+        zAyarla(z.o * Math.exp(-e.deltaY / 220), e.clientX - r.left, e.clientY - r.top);
+        return;
+      }
+      /* deltaMode: 0 piksel, 1 satır, 2 sayfa */
+      var kat = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? sahne.clientHeight : 1);
+      zKaydirPx(e.deltaX * kat, e.deltaY * kat);
     }, { passive: false });
 
     /* --------------------------------------------------------------

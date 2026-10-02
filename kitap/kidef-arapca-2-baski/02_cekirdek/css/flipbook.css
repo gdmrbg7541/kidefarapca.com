@@ -496,7 +496,8 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
      ≤730px  yeni iki düğme yazısız kalır, simgeleri durur
      ≤480px  sunu düğmesi gizlenir — panelin sekmesinden ulaşılıyor,
              çıktı düğmesi yerinde kalır */
-@media (max-width:900px){ .araclar .gizle-kucuk{display:none} }
+/* 960px: marka düğmeye dönünce (kitapsecici.js ▾) 920px'te binmeye başladı */
+@media (max-width:960px){ .araclar .gizle-kucuk{display:none} }
 /* "ÜNİTE 3" rozeti kısalamadığı için düğmelerin altına giriyordu (bu da
    eskiden beri vardı, 540–720px arası). Yer dar olduğunda rozet kalkar,
    ders adı kalır — o zaten üç nokta ile kısalıyor. */
