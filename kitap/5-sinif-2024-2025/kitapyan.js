@@ -235,7 +235,44 @@
     }
   }
 
-  function basla() { kur(); gozle(); okIkizle(); }
+  /* ---------- eşler birlikte vurgulansın ----------
+     Öğretmen: "bi ileri tuşuna basınca diğerine de basmış gibi vurgu olsun."
+     Aynı işi yapan oklar (ileri ↔ ileri, geri ↔ geri) birbirinin
+     üzerine gelme/basılma durumunu paylaşıyor. */
+  function okEslestir() {
+    var hepsi = document.querySelectorAll('.ok.sol, .ok.sag');
+    function esleri(o) {
+      var tur = o.classList.contains('sag') ? 'sag' : 'sol';
+      var d = [];
+      for (var i = 0; i < hepsi.length; i++) {
+        if (hepsi[i] !== o && hepsi[i].classList.contains(tur)) d.push(hepsi[i]);
+      }
+      return d;
+    }
+    function isaret(o, sinif, var_) {
+      var d = esleri(o);
+      for (var i = 0; i < d.length; i++) d[i].classList[var_ ? 'add' : 'remove'](sinif);
+    }
+    for (var n = 0; n < hepsi.length; n++) {
+      (function (o) {
+        if (o.dataset.esli) return;
+        o.dataset.esli = '1';
+        o.addEventListener('pointerenter', function () { isaret(o, 'es-vurgu', 1); });
+        o.addEventListener('focus', function () { isaret(o, 'es-vurgu', 1); });
+        ['pointerleave', 'pointercancel', 'blur'].forEach(function (e) {
+          o.addEventListener(e, function () { isaret(o, 'es-vurgu', 0); isaret(o, 'es-basili', 0); });
+        });
+        o.addEventListener('pointerdown', function () { isaret(o, 'es-basili', 1); });
+        ['pointerup', 'pointercancel'].forEach(function (e) {
+          o.addEventListener(e, function () {
+            setTimeout(function () { isaret(o, 'es-basili', 0); }, 130);
+          });
+        });
+      })(hepsi[n]);
+    }
+  }
+
+  function basla() { kur(); gozle(); okIkizle(); okEslestir(); }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', basla);

@@ -176,6 +176,8 @@
   html.yanli .ok.sol { transform: translateY(-50%) translateY(45px) }
   html.yanli .ok:hover { transform: translateY(-50%) translateY(-45px) scale(1.04) }
   html.yanli .ok.sol:hover { transform: translateY(-50%) translateY(45px) scale(1.04) }
+  html.yanli .ok.sag.es-vurgu { transform: translateY(-50%) translateY(-45px) scale(1.04) }
+  html.yanli .ok.sol.es-vurgu { transform: translateY(-50%) translateY(45px) scale(1.04) }
 
   /* ikiz oklar sol kenarda — sıra aynı, böylece hangi tarafa uzanırsan
      uzan üstteki hep geri, alttaki hep ileri. Yan çubuk daralınca
@@ -223,3 +225,8 @@
    iki yanda duruyor, kopya üst üste binerdi. */
 .ok.ikiz { display: none }
 @media (min-width: 760px) { html.yanli .ok.ikiz { display: grid } }
+
+/* Eşlenmiş oklar: birine değince/basınca öbürü de aynı görünümü alır
+   (02.10.2026). Renk :hover ile aynı; açık temada kitaptema.css eziyor. */
+.ok.es-vurgu { background: var(--gold); color: #221503 }
+.ok.es-basili { filter: brightness(.93) }

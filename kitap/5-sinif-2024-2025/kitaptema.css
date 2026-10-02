@@ -62,6 +62,7 @@ body { background: var(--zemin); color: var(--mur) }
   box-shadow: 0 2px 12px rgba(31, 36, 48, .10);
 }
 .ok:hover,
+.ok.es-vurgu,
 .slayt-ok:hover { background: var(--yesil); color: #fff; border-color: var(--yesil) }
 
 /* ---------- alt şerit, kaydıraç ---------- */
