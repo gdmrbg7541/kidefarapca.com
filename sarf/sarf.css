@@ -783,13 +783,19 @@ body {
 .g2-yonerge {
     position: fixed; left: 50%; top: 42%;
     transform: translate(-50%, -50%) scale(.82);
-    direction: rtl; text-align: center; z-index: 40; pointer-events: none;
+    direction: ltr; text-align: center; z-index: 40; pointer-events: none;
     background: rgba(255,255,255,.93);
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     padding: clamp(16px, 3vh, 30px) clamp(28px, 5vw, 60px) clamp(20px, 3.6vh, 36px);
     border-radius: 26px; border: 1px solid rgba(255,255,255,.9);
     box-shadow: 0 18px 50px rgba(44,62,80,.22);
-    color: var(--primary); font-size: clamp(1.5rem, 4.4vw, 2.8rem); line-height: 1.5;
+    color: var(--primary); line-height: 1.45;
+    /* 03.10.2026: yönerge Türkçeleşti. Arapça kısa olduğu için punto
+       2,8rem'e kadar büyüyordu; iki satırlık Türkçe metin taşıyordu. */
+    /* Yazı tipi arakom.css'ten gelir (site geneli, !important) —
+       burada ayrıca yazmaya gerek yok, Türkçe harfler doğru çıkıyor. */
+    font-weight: 600; letter-spacing: -.01em;
+    font-size: clamp(1.05rem, 2.5vw, 1.7rem);
     opacity: 0; max-width: 88vw;
     transition: opacity .55s ease, transform .55s cubic-bezier(.3,1.25,.5,1);
 }
@@ -1945,4 +1951,47 @@ a.back-btn.kidef-siteye:hover { color: #fff; }
     .g1-conj-row { flex-wrap: wrap; row-gap: 4px; }
     .g1-conj-row .cekim-no { font-size: .3em; padding: .34em .5em; }
     .g1-kok-kunye { gap: 10px; padding: 7px 10px; }
+}
+
+
+/* (Yönerge satır vurgusu kaldırıldı: sesli anlatım silindiği için
+   eşlenecek bir şey kalmadı — 03.10.2026.) */
+
+
+/* ── RAFTAKİ KÖK BASILMAYI BEKLİYOR (03.10.2026) ──────────────────────
+   Öğretmen: "bi kök usta bölümüne taşınınca ve basılması gerektiğinde
+   vurgulansın ki köke basılsın ve vezinler çıksın."
+   Nabız gibi atan turuncu parıltı + hafif zıplama. Dövülmüş külçenin
+   SABİT yeşil parıltısı (.islendi) ve seçili külçenin DURAN turuncu
+   parıltısı (.secili) karışmasın diye ikisi ayrı tutuldu; üstüne gelince
+   nabız durur ki imleç tepkisi hissedilsin. */
+.g2-kok-kulce.bas-bana { animation: g2BasBana 1.25s ease-in-out infinite; }
+@keyframes g2BasBana {
+    0%, 100% { transform: translateY(0) scale(1) rotate(0deg);
+               filter: drop-shadow(0 2px 3px rgba(18,32,64,.26)); }
+    45%      { transform: translateY(-11px) scale(1.10) rotate(-1.6deg);
+               filter: drop-shadow(0 11px 14px rgba(18,32,64,.46)) brightness(1.14) saturate(1.18); }
+    70%      { transform: translateY(-4px) scale(1.04) rotate(.9deg);
+               filter: drop-shadow(0 6px 10px rgba(18,32,64,.38)) brightness(1.06); }
+}
+.g2-kok-kulce.bas-bana.islendi { animation-name: g2BasBanaIslendi; }
+@keyframes g2BasBanaIslendi {
+    0%, 100% { transform: translateY(0) scale(1) rotate(0deg);
+               filter: drop-shadow(0 2px 3px rgba(18,32,64,.26))
+                       drop-shadow(0 0 6px rgba(39,174,96,.65)); }
+    45%      { transform: translateY(-11px) scale(1.10) rotate(-1.6deg);
+               filter: drop-shadow(0 11px 14px rgba(18,32,64,.46))
+                       drop-shadow(0 0 14px rgba(39,174,96,.9)) brightness(1.1); }
+    70%      { transform: translateY(-4px) scale(1.04) rotate(.9deg);
+               filter: drop-shadow(0 6px 10px rgba(18,32,64,.38))
+                       drop-shadow(0 0 10px rgba(39,174,96,.8)); }
+}
+.g2-kok-kulce.bas-bana:hover { animation: none; }
+.g2-kok-kulce.bas-bana.secili { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+    .g2-kok-kulce.bas-bana,
+    .g2-kok-kulce.bas-bana.islendi {
+        animation: none; transform: translateY(-6px) scale(1.06);
+        filter: drop-shadow(0 8px 12px rgba(18,32,64,.45)) brightness(1.1);
+    }
 }

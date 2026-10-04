@@ -225,3 +225,89 @@ html .ust .marka.ks-marka:hover .ks-sag {
   html.yanli.dar .ust .marka .ks-kik { background: none; width: 27px; height: 27px }
   html.yanli.dar .ust .marka .ks-kik svg { width: 17px; height: 17px }
 }
+
+
+/* ============================================================
+   YAN ÇUBUK — site renkleri + içindekiler yukarı       03.10.2026
+   Öğretmen: "kitap seçme kısmının altına içindekiler olsun, yani
+   yukarı taşı içindekiler tuşunu, tam ekran svg sini kırmızı yap,
+   kenardaki yazılar site renklerinden olsun, turuncu site
+   mavilerinden yeşillerinden vs"
+
+   Renkler sitenin belge kartlarından (index.html → "renk:"):
+     turuncu #D97706 · açık mavi #0EA5E9 · yeşil #059669 · mavi #2563EB
+     mor #7C3AED · kırmızı #EE5253 · camgöbeği #0891B2
+   Her düğme rengini --tr (dolu) ve --trz (soluk zemin) ile taşır;
+   hover ve etkin durum aynı renkten türer. Simgeler currentColor
+   kullandığı için yazıyla birlikte boyanır.
+   ============================================================ */
+
+/* içindekiler, kitap seçicinin hemen altına (yalnız yan çubukta) */
+@media (min-width: 760px) {
+  html.yanli .ust .araclar > #tIcindekiler { order: -2 }
+  html.yanli .ust .araclar > .ayrac        { order: -1 }
+}
+
+/* düğme renkleri */
+.ust .araclar .tus { --tr: var(--gri);  --trz: rgba(91, 100, 113, .10) }
+.ust .araclar #tIcindekiler { --tr: #D97706; --trz: rgba(217, 119, 6, .12) }
+.ust .araclar #tKaynak      { --tr: #0EA5E9; --trz: rgba(14, 165, 233, .12) }
+.ust .araclar #tIndir       { --tr: #059669; --trz: rgba(5, 150, 105, .12) }
+.ust .araclar #tUzaklas,
+.ust .araclar #tYaklas      { --tr: #2563EB; --trz: rgba(37, 99, 235, .12) }
+.ust .araclar #tIpucu       { --tr: #7C3AED; --trz: rgba(124, 58, 237, .12) }
+.ust .araclar #tTamEkran    { --tr: #EE5253; --trz: rgba(238, 82, 83, .12) }
+.ust .araclar #tYardim,
+.ust .araclar #tNasil,
+.ust .araclar .kz-yardim    { --tr: #0891B2; --trz: rgba(8, 145, 178, .12) }
+
+html.yanli .ust .araclar .tus                 { color: var(--tr) }
+html.yanli .ust .araclar .tus:hover           { background: var(--trz); color: var(--tr) }
+html.yanli .ust .araclar .tus.etiketli        { background: var(--trz) }
+html.yanli .ust .araclar .tus.etiketli:hover  { background: var(--trz); color: var(--tr) }
+html.yanli .ust .araclar .tus.aktif,
+html.yanli .ust .araclar .tus.etiketli.aktif  { background: var(--tr); color: #fff }
+
+/* tam ekran simgesi her düzende kırmızı (dar ekranda da) */
+.ust .araclar #tTamEkran            { color: #EE5253 }
+.ust .araclar #tTamEkran:hover      { background: rgba(238, 82, 83, .12); color: #EE5253 }
+.ust .araclar #tTamEkran.aktif      { background: #EE5253; color: #fff }
+
+/* yakınlaştırma kutusu da mavi ailesinden */
+html.yanli .yan-zoom        { background: rgba(37, 99, 235, .07) }
+html.yanli .yan-zoom .sayac { color: #2563EB }
+
+
+/* ============================================================
+   PANELLER SOLDAN AÇILIR                               03.10.2026
+   Öğretmen: "içindekiler kaynaklar her şey ekranın solundan açılsın."
+
+   .panel.yan sağ kenara yapışıktı (right:0 · translateX(102%)).
+   Artık sol kenardan kayıyor. Yan araç çubuğu açıkken panel çubuğun
+   YANINDAN başlar, çubuğu örtmez: içindekilerden kaynaklara geçmek
+   için paneli kapatmak gerekmiyor. Çubuk daralınca (--yan 188 → 56)
+   panel de kendiliğinden kayar.
+
+   .ks-panel (kitap seçici) zaten soldaydı. .panel.orta (etkinlik,
+   slayt, cevaplar) ortada kalır — onlar kenar paneli değil.
+   ============================================================ */
+
+.panel.yan {
+  right: auto; left: 0;
+  transform: translateX(-102%);
+  box-shadow: 26px 0 80px rgba(31, 36, 48, .26);
+}
+.panel.yan.acik { transform: none }
+
+/* 03.10.2026 — öğretmen: "sola dayalı olsun, biraz merkeze yakın çıkıyor."
+   Önce panel yan çubuğun YANINDAN başlıyordu (sol = 188 + 5 = 193 px);
+   o kadar içeriden açılınca ortaya yakın duruyordu. Artık ekranın sol
+   kenarına dayalı (sol = 0) ve çubuğun üstüne biniyor; panel kapanınca
+   çubuk geri görünür. Yani üstteki .panel.yan kuralı her ende geçerli,
+   yan çubuğa göre ayrı bir kural yok. */
+@media (min-width: 760px) {
+  html.yanli .panel.yan { left: 0 }
+  html.yanli .panel.yan:not(.acik) { transform: translateX(-102%) }
+  /* panel çubuğun üstünde kalsın (çubuk z-index: 50) */
+  html.yanli .panel.yan { z-index: 90 }
+}

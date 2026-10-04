@@ -1214,6 +1214,315 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════════════════════════════════════
+         GÜNCELLEMELER VE GALERİ   (03.10.2026)
+         Öğretmen: "katalogtan sonra imam hatip kategorisinden önce
+         profesyonel bi site güncellemelerinin duyurularının olduğu ve
+         galeri olan kategori gibi bi şey ekleyelim."
+
+         İÇERİK KODDA DEĞİL, VERİDE:
+           · Duyurular → sistem/yenilikler.js · KidefYenilikler.hepsi()
+             (öğretmen profilindeki yenilik şeridiyle AYNI liste; yeni
+             duyuru eklemek için o dosyanın başına bir kayıt yazmak yeter)
+           · Galeri    → sistem/galeriveri.js · _kaynak/uretici/galeriYenile.py
+             üretir, hızlı gönder her gönderimde çalıştırır. Fotoğrafı
+             Galeri/ klasörüne atmak yeterli; küçük önizleme ve web kopyası
+             kendiliğinden üretilir.
+
+         Bölümü doldurmayı sistem/galeri.js yapar; liste boşsa bölüm kendini
+         gizler. ══════════════════════════════════════════════════════════ -->
+    <style id="gdCss">
+      /* ── İKİ EŞİT YARIM, TEK TEK OKLARLA (03.10.2026) ───────────────
+         Öğretmen: "site güncellemeleri yatay olarak ekranın yarısını
+         kaplasın, her bi güncelleme oklarla açılsın tüm güncellemeler
+         dikey scrollarla görülmesin, galeri de görseller tek tek sağ sol
+         oklarla gezilsin."
+         Dikey kaydırma yok; iki yarım da sabit yükseklikte, geçişte
+         sayfa zıplamıyor. Gezinmeyi sistem/galeri.js kurar. */
+      #guncellemeler{ margin:0 0 10px; }
+      #guncellemeler .gd-kutu{
+        display:grid; grid-template-columns:1fr 1fr; gap:20px;
+        background:linear-gradient(140deg,#FBFDFC,#FFFFFF 58%);
+        border:2px solid #E3E8EF; border-radius:20px;
+        padding:16px 18px 14px; box-shadow:0 8px 24px rgba(31,36,48,.07);
+      }
+      #guncellemeler.gd-tek .gd-kutu{ grid-template-columns:minmax(0,1fr); }
+      #guncellemeler .gd-sol,
+      #guncellemeler .gd-sag{ display:flex; flex-direction:column; min-width:0; }
+      /* Galeri çevresindeki süsler, içeriğin ALTINDA duran ayrı bir
+         katmanda (04.10.2026, öğretmen isteği). pointer-events:none —
+         fotoğrafa basmayı ve okları engellemiyor. */
+      #guncellemeler .gd-sag{ position:relative; }
+      #guncellemeler .gd-susler{
+        position:absolute; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+      }
+      #guncellemeler .gd-susler svg{ position:absolute; fill:none; stroke:currentColor;
+        stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+      #guncellemeler .gd-susler .s1{ top:44px;  left:2px;   width:46px; height:46px;
+        color:#0E9E86; opacity:.17; transform:rotate(-9deg); }
+      #guncellemeler .gd-susler .s2{ top:16px;  right:6px;  width:40px; height:40px;
+        color:#E3A02A; opacity:.20; transform:rotate(8deg); }
+      #guncellemeler .gd-susler .s3{ bottom:92px; left:10px; width:38px; height:38px;
+        color:#2563EB; opacity:.15; transform:rotate(6deg); }
+      #guncellemeler .gd-susler .s4{ bottom:76px; right:4px; width:44px; height:44px;
+        color:#7C3AED; opacity:.15; transform:rotate(-7deg); }
+      #guncellemeler .gd-susler .s5{ top:112px; right:16px; width:22px; height:22px;
+        color:#E3A02A; opacity:.28; }
+      #guncellemeler .gd-susler .s6{ bottom:150px; left:26px; width:18px; height:18px;
+        color:#0E9E86; opacity:.26; }
+      #guncellemeler .gd-sag > *:not(.gd-susler){ position:relative; z-index:1; }
+      @media (max-width:860px){ #guncellemeler .gd-susler{ display:none; } }
+      #guncellemeler .gd-sol:focus-visible,
+      #guncellemeler .gd-sag:focus-visible{ outline:3px solid #16A085; outline-offset:6px; border-radius:14px; }
+
+      /* ---- başlık + okların olduğu kumanda ---- */
+      /* Başlık kutuyu dolduracak kadar büyük (03.10.2026, öğretmen isteği) */
+      #guncellemeler .gd-bas{
+        display:flex; align-items:center; gap:11px; margin:0 0 10px;
+        font-size:clamp(1.35rem, 2.9vw, 2.2rem); font-weight:800;
+        color:#0B6F5E; letter-spacing:-.02em; line-height:1.15;
+      }
+      #guncellemeler .gd-bas svg{ width:1.05em; height:1.05em; flex:0 0 auto; stroke-width:2.1; }
+
+      /* Oklar başlıktan alındı: içeriğin iki yanında, DİKEYDE ORTALI ve
+         büyük — akıllı tahtada parmakla da rahat basılsın. */
+      #guncellemeler .gd-govde{
+        flex:1 1 auto; display:grid; grid-template-columns:auto minmax(0,1fr) auto;
+        align-items:center; gap:10px;
+      }
+      /* Duyuru tarafında oklar ÜSTTE ve ALTTA (03.10.2026, öğretmen isteği):
+         metin alt alta okunur, yan boşluk da yazıya kalır. */
+      #guncellemeler .gd-govde.gd-govde-d{
+        grid-template-columns:minmax(0,1fr);
+        grid-template-rows:auto minmax(0,1fr) auto;
+        justify-items:center; gap:7px;
+      }
+      #guncellemeler .gd-govde.gd-govde-d > .gd-duyuru{ width:100%; }
+      /* Oklar renkli (03.10.2026, öğretmen isteği): duyuru tarafı sitenin
+         yeşili, galeri tarafı amberi — dolu zemin, beyaz simge. */
+      #guncellemeler .gd-ok{   /* gd-ok-yesil */
+        width:46px; height:46px; display:grid; place-items:center; flex:0 0 auto;
+        border:0; border-radius:50%; color:#fff; cursor:pointer; padding:0;
+        background:linear-gradient(140deg,#1ABC9C,#0E9E86 62%);
+        box-shadow:0 4px 12px rgba(14,158,134,.34);
+        transition:filter .15s, transform .15s, box-shadow .15s;
+      }
+      #guncellemeler .gd-sag .gd-ok{
+        background:linear-gradient(140deg,#F5B041,#E3A02A 62%);
+        box-shadow:0 4px 12px rgba(227,160,42,.34);
+      }
+      #guncellemeler .gd-ok svg{ width:26px; height:26px; fill:none;
+        stroke:currentColor; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+      #guncellemeler .gd-ok:hover{ filter:brightness(1.08); transform:scale(1.09);
+        box-shadow:0 6px 16px rgba(14,158,134,.42); }
+      #guncellemeler .gd-sag .gd-ok:hover{ box-shadow:0 6px 16px rgba(227,160,42,.42); }
+      #guncellemeler .gd-ok:disabled{ opacity:.35; cursor:default; }
+      #guncellemeler .gd-ok:disabled:hover{ filter:none; transform:none; }
+
+      /* sayaç aşağı indi, noktalarla aynı satırda */
+      #guncellemeler .gd-alt{
+        display:flex; align-items:center; justify-content:center; gap:13px;
+        padding:11px 0 2px;
+      }
+      #guncellemeler .gd-say{
+        font-size:.8rem; font-weight:800; color:#5B6471;
+        letter-spacing:.03em; font-variant-numeric:tabular-nums;
+      }
+
+      /* ---- sol: tek duyuru ---- */
+      #guncellemeler .gd-duyuru{ flex:1 1 auto; min-height:188px; }
+      /* KÂĞIT GÖRÜNÜMÜ (04.10.2026, öğretmen isteği): duyuru bir sayfanın
+         üstünde duruyor — ince kenarlık, iki katmanlı gölge, solda kenar
+         boşluğu çizgisi, metnin arkasında defter çizgileri. Çizgiler satır
+         yüksekliğiyle birebir hizalı (metin 28 px · satır 40 px · çizgi
+         her 40 px'te), bu yüzden p'nin line-height'ı px olarak sabit. */
+      #guncellemeler .gd-kayit{
+        position:relative; background:#fff;
+        border:1px solid #E6E9EE; border-radius:5px;
+        padding:22px 26px 26px 60px;
+        box-shadow:0 1px 2px rgba(31,36,48,.06), 0 14px 30px rgba(31,36,48,.11);
+        background-image:linear-gradient(90deg,
+          transparent 0 46px, rgba(224,83,59,.30) 46px 47.5px, transparent 47.5px);
+      }
+      /* üst kenarda hafif eğik yapıştırıcı bandı */
+      #guncellemeler .gd-kayit::before{
+        content:''; position:absolute; top:-9px; left:34px;
+        width:104px; height:20px; transform:rotate(-3.2deg);
+        background:linear-gradient(180deg, rgba(243,201,106,.55), rgba(236,186,80,.42));
+        border-inline-start:1px solid rgba(255,255,255,.55);
+        border-inline-end:1px solid rgba(255,255,255,.55);
+        box-shadow:0 1px 3px rgba(31,36,48,.12);
+      }
+      #guncellemeler .gd-gir{ animation:gdGir .28s cubic-bezier(.2,.8,.3,1); }
+      @keyframes gdGir{ from{ opacity:0; transform:translateX(10px); } to{ opacity:1; transform:none; } }
+      @media (prefers-reduced-motion:reduce){ #guncellemeler .gd-gir{ animation:none; } }
+      #guncellemeler .gd-ust{ display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+      #guncellemeler .gd-tarih{ font-size:1rem; font-weight:700; color:#8A93A0; }
+      #guncellemeler .gd-rozet{
+        font-size:.66rem; font-weight:800; letter-spacing:.09em; color:#0E7C66;
+        background:#E3F5F0; border:1px solid #BFE6DE; border-radius:999px; padding:2px 7px;
+      }
+      #guncellemeler .gd-rozet[hidden]{ display:none; }
+      /* Okları kenardan alınca genişleyen yer yazıya verildi (03.10.2026) */
+      /* 04.10.2026 — öğretmen: "başlık 30 px metin 28 px olsun".
+         rem değil px: verilen ölçü birebir uygulansın. */
+      #guncellemeler .gd-kayit h4{ margin:0 0 10px; font-size:30px; font-weight:800;
+        color:#1F2430; line-height:1.25; }
+      #guncellemeler .gd-kayit p{
+        margin:0; font-size:28px; color:#4A535F; line-height:40px;
+        background:repeating-linear-gradient(180deg,
+          transparent 0 38.5px, #E7EDF4 38.5px 40px);
+      }
+
+      /* ---- sağ: tek fotoğraf ---- */
+      #guncellemeler .gd-foto{ flex:1 1 auto; display:grid; place-items:center; min-height:188px; }
+      /* Sabit yükseklik + 16:10: fotoğrafın boyu bölümü uzatmasın,
+         duyuru tarafı boş kalmasın (03.10.2026). */
+      #guncellemeler .gd-kare{
+        padding:0; border:1px solid #E3E8EF; border-radius:14px; overflow:hidden;
+        background:#F4F7FA; cursor:zoom-in;
+        height:min(248px, 42vh); aspect-ratio:16 / 10; width:auto; max-width:100%;
+        display:block; transition:box-shadow .16s, border-color .16s;
+      }
+      #guncellemeler .gd-kare img{ width:100%; height:100%; object-fit:cover; display:block; }
+      #guncellemeler .gd-kare:hover{ border-color:#BFE6DE; box-shadow:0 8px 20px rgba(22,160,133,.18); }
+      #guncellemeler .gd-kare:focus-visible{ outline:3px solid #16A085; outline-offset:2px; }
+
+      /* ---- nokta göstergesi ---- */
+      #guncellemeler .gd-nokta{ display:flex; justify-content:center; gap:6px; }
+      #guncellemeler .gd-n{
+        width:7px; height:7px; border-radius:50%; padding:0; cursor:pointer;
+        border:0; background:#D4DCE6; transition:background .15s, transform .15s;
+      }
+      #guncellemeler .gd-n:hover{ background:#9FB2C4; }
+      #guncellemeler .gd-n.acik{ background:#16A085; transform:scale(1.35); }
+
+      /* galeri altındaki not */
+      #guncellemeler .gd-not{
+        display:flex; align-items:flex-start; gap:8px; margin:10px 0 0;
+        font-size:.8rem; line-height:1.5; color:#5B6471;
+        background:#F4F8FB; border:1px solid #E3E8EF; border-radius:11px;
+        padding:9px 12px;
+      }
+      #guncellemeler .gd-not svg{ width:16px; height:16px; flex:0 0 auto; margin-top:2px; color:#0E9E86; }
+      #guncellemeler .gd-not a{ color:#0E7C66; font-weight:700; }
+      #guncellemeler .gd-not b{ color:#1F2430; font-weight:800; }
+
+      @media (max-width:860px){
+        #guncellemeler .gd-kutu{ grid-template-columns:minmax(0,1fr); gap:16px; padding:14px 14px 12px; }
+        #guncellemeler .gd-duyuru{ min-height:210px; }
+        #guncellemeler .gd-ok{ width:40px; height:40px; }
+        #guncellemeler .gd-ok svg{ width:22px; height:22px; }
+        /* telefonda 30/28 px taşıyor: okunur ama sığan ölçüye iniyor.
+           Defter çizgisi de satır yüksekliğiyle birlikte 30 px'e iner. */
+        #guncellemeler .gd-kayit{ padding:18px 16px 20px 42px;
+          background-image:linear-gradient(90deg,
+            transparent 0 30px, rgba(224,83,59,.28) 30px 31.5px, transparent 31.5px); }
+        #guncellemeler .gd-kayit::before{ left:22px; width:78px; height:16px; top:-7px; }
+        #guncellemeler .gd-kayit h4{ font-size:22px; }
+        #guncellemeler .gd-kayit p{ font-size:20px; line-height:30px;
+          background:repeating-linear-gradient(180deg,
+            transparent 0 28.5px, #E7EDF4 28.5px 30px); }
+        #guncellemeler .gd-govde{ gap:6px; }
+        #guncellemeler .gd-foto{ min-height:0; }
+        #guncellemeler .gd-kare{ aspect-ratio:4 / 3; height:auto; width:100%; }
+      }
+
+      /* ---- büyüteç (lightbox) ---- */
+      .gd-buyut{
+        position:fixed; inset:0; z-index:12000; display:grid;
+        grid-template-columns:auto 1fr auto; align-items:center;
+        background:rgba(14,18,26,.93); opacity:0; transition:opacity .22s ease;
+        -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+      }
+      .gd-buyut.gor{ opacity:1; }
+      .gd-buyut[hidden]{ display:none; }
+      .gd-b-sahne{ display:grid; place-items:center; width:100%; height:100%; padding:18px; }
+      .gd-b-resim{
+        max-width:100%; max-height:calc(100vh - 110px); width:auto; height:auto;
+        border-radius:12px; box-shadow:0 24px 70px rgba(0,0,0,.55); background:#20262F;
+      }
+      .gd-buyut button{
+        background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22);
+        color:#fff; border-radius:50%; cursor:pointer; display:grid; place-items:center;
+        transition:background .15s, transform .15s;
+      }
+      .gd-buyut button:hover{ background:rgba(255,255,255,.26); transform:scale(1.05); }
+      .gd-buyut button svg{ width:24px; height:24px; fill:none; stroke:currentColor;
+        stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+      .gd-b-ok{ width:50px; height:50px; margin:0 14px; }
+      .gd-b-kapat{ position:absolute; top:16px; inset-inline-end:16px; width:42px; height:42px; z-index:2; }
+      .gd-b-sayac{
+        position:absolute; bottom:18px; left:50%; transform:translateX(-50%);
+        color:#E6EBF2; font-size:.84rem; font-weight:700; letter-spacing:.06em;
+        background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.18);
+        border-radius:999px; padding:5px 14px;
+      }
+      @media (max-width:640px){
+        .gd-b-ok{ width:42px; height:42px; margin:0 6px; }
+        .gd-b-resim{ max-height:calc(100vh - 140px); }
+      }
+    </style>
+
+    <section id="guncellemeler" class="content-section">
+      <div class="gd-kutu">
+        <!-- tabindex: kutu odaktayken ← → tuşlarıyla da gezilebilsin -->
+        <div class="gd-sol" tabindex="0" aria-label="Site güncellemeleri">
+          <h3 class="gd-bas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0E9E86" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 5.5h11a2 2 0 0 1 2 2v9.5a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2z"/>
+              <path d="M17 9h1.6a1.4 1.4 0 0 1 1.4 1.4V17"/>
+              <path d="M7 9h5M7 12.2h5M7 15.4h3"/>
+            </svg>
+            Site güncellemeleri
+          </h3>
+          <!-- oklar .gd-govde'nin iki yanına, dikeyde ortalı olarak
+               sistem/galeri.js tarafından konur -->
+          <div class="gd-govde"><div class="gd-duyuru"></div></div>
+          <div class="gd-sol-alt gd-alt"></div>
+        </div>
+        <div class="gd-sag" tabindex="0" aria-label="Galeri">
+          <!-- Galeri çevresi süsleri: fotoğraf makinesi, polaroid, film şeridi,
+               manzara karesi ve iki parıltı. Yalnız süs; aria-hidden ve
+               pointer-events:none (biçim #gdCss içinde). -->
+          <span class="gd-susler" aria-hidden="true">
+            <svg class="s1" viewBox="0 0 24 24"><path d="M3.4 8.6h3.1l1.5-2.4h8l1.5 2.4h3.1v10.2H3.4z"/><circle cx="12" cy="13.3" r="3.6"/></svg>
+            <svg class="s2" viewBox="0 0 24 24"><rect x="4" y="3.6" width="16" height="16.8" rx="1.6"/><rect x="6.6" y="6.2" width="10.8" height="8.6" rx="1"/><path d="M7.4 17.8h5.2"/></svg>
+            <svg class="s3" viewBox="0 0 24 24"><rect x="2.8" y="5.4" width="18.4" height="13.2" rx="1.6"/><path d="M2.8 9h18.4M2.8 15h18.4M7 5.4v13.2M17 5.4v13.2"/></svg>
+            <svg class="s4" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2.2"/><circle cx="8.6" cy="9.6" r="1.7"/><path d="M3.6 16.6l4.6-4.1a1.8 1.8 0 0 1 2.4 0l3 2.7"/><path d="M14 14.6l1.8-1.6a1.8 1.8 0 0 1 2.4 0l2.2 2"/></svg>
+            <svg class="s5" viewBox="0 0 24 24"><path d="M12 3.4l1.9 4.9 4.9 1.9-4.9 1.9L12 17l-1.9-4.9L5.2 10.2l4.9-1.9z"/></svg>
+            <svg class="s6" viewBox="0 0 24 24"><path d="M12 4.6v5M12 14.4v5M4.6 12h5M14.4 12h5"/></svg>
+          </span>
+          <h3 class="gd-bas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0E9E86" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3.2" y="5" width="17.6" height="14" rx="2.4"/>
+              <circle cx="8.6" cy="10" r="1.7"/>
+              <path d="M3.6 16.4l4.6-4.1a1.8 1.8 0 0 1 2.4 0l3 2.7"/>
+              <path d="M14 14.6l1.8-1.6a1.8 1.8 0 0 1 2.4 0l2.2 2"/>
+            </svg>
+            Galeri
+          </h3>
+          <div class="gd-govde"><div class="gd-foto"></div></div>
+          <div class="gd-sag-alt gd-alt"></div>
+          <!-- 03.10.2026, öğretmen isteği: sınıfından fotoğraf göndermek
+               isteyene çağrı; öğrencilerin yüzü kapalı olmak şartıyla. -->
+          <p class="gd-not">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 11.5a8.5 8.5 0 1 1 3.3 6.7L3 19.5l1.1-3.1A8.4 8.4 0 0 1 3 11.5z"/>
+              <path d="M9 10.8h6M9 13.8h4"/>
+            </svg>
+            <span>Sınıfınızdan fotoğraf paylaşmak isterseniz
+              <a href="mailto:kidefarapca@gmail.com?subject=Galeri%20i%C3%A7in%20foto%C4%9Fraf">kidefarapca@gmail.com</a>
+              adresine gönderebilirsiniz. <b>Öğrencilerin yüzleri kapalı olmalı</b>
+              (bulanıklaştırılmış ya da arkadan çekilmiş).</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- SIRA: İmam Hatip en üstte; sayfayı açan öğretmenin
          ilk gördüğü kategori bu olsun diye buraya alındı. -->
 <style id="mrfEtiketCss">
@@ -1871,8 +2180,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           transition:transform .18s, box-shadow .18s, border-color .18s; }
         #sunumSatir .sk-kart:hover{ transform:translateY(-5px);
           box-shadow:0 16px 34px rgba(224,138,0,.18); border-color:#F6DFB4; }
+        /* 03.10.2026: rozetlerdeki emoji (🗺️ 🎬) SVG ile değiştirildi —
+           emoji her sistemde başka türlü çiziliyor ve yazıyla hizalanmıyordu.
+           SVG currentColor kullanır, rozetin rengini alır. */
         #sunumSatir .sk-rozet{ align-self:flex-start; font-size:.72em; font-weight:800; color:#8A6412;
-          background:#FDF1D9; border-radius:999px; padding:5px 10px; }
+          background:#FDF1D9; border-radius:999px; padding:5px 10px;
+          display:inline-flex; align-items:center; gap:6px; }
+        #sunumSatir .sk-roz-ik{ width:1.2em; height:1.2em; flex:0 0 auto; display:block;
+          fill:none; stroke:currentColor; stroke-width:1.9;
+          stroke-linecap:round; stroke-linejoin:round; }
         #sunumSatir .sk-kart h4{ font-family:'Marhey',sans-serif; margin:0; font-size:1em; color:#27AE60;
           line-height:1.3; }
         #sunumSatir .sk-kart p{ margin:0; font-size:.8em; color:#7C8794; line-height:1.45; }
@@ -1986,7 +2302,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           <a class="sk-harita" href="sunum html/sunumlar.html?gorunum=harita&amp;don=liste" target="_blank" rel="opener"
              onclick="window.open(this.href, '_blank'); return false;">
             <div class="skh-yazi">
-              <span class="sk-rozet">🗺️ Konu Haritası</span>
+              <span class="sk-rozet"><svg class="sk-roz-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.2 3.6 6.4v13.4L9 17.6l6 2.2 5.4-2.2V4.2L15 6.4 9 4.2z"/><path d="M9 4.2v13.4M15 6.4v13.4"/></svg>Konu Haritası</span>
               <h4>Arapçanın haritasında gez, sunuma oradan gir</h4>
               <p>Kelime · İsim · Fiil · Harf, tamlama ve cümle — bütün başlıklar tek şemada.
                  Bir dala yaklaş, sunumu olan başlıkta yeşil tuşla derse gir.</p>
@@ -2038,7 +2354,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
                açılan sekmeyi tarayıcı kapattırmıyor. -->
           <a class="sk-kart" href="sunum html/sunumlar.html?don=liste" target="_blank" rel="opener"
              onclick="window.open(this.href, '_blank'); return false;">
-            <span class="sk-rozet">🎬 Sunum serisi</span>
+            <span class="sk-rozet"><svg class="sk-roz-ik" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.6" width="18" height="14.8" rx="2.2"/><path d="M3 9.4h18"/><path d="M7.6 4.7 5.8 9.4M12.2 4.7 10.4 9.4M16.8 4.7 15 9.4"/><path d="M10.6 12.6v4.2l3.9-2.1z"/></svg>Sunum serisi</span>
             <span class="sk-on" aria-hidden="true"><svg viewBox="0 0 200 120">
               <rect class="skp-golge" x="18" y="10" width="164" height="86" rx="8"/>
               <rect class="skp-ekran" x="18" y="10" width="164" height="86" rx="8"/>
@@ -4090,6 +4406,39 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             + '37 hafta (18 + 19) · ' + y.prg + ' · ' + y.st + '.</div>' +
             '<div class="dok-not">A4 yatay, 10 sütun · ara tatiller ve yazılı haftaları işaretli · sonda açıklamalar.</div>' +
             '<div class="dok-not">Sözcükler Türkçe okunuşlu · Word düzenlenebilir · plan örnektir · ilk 15 günde müdüre onaylat.</div>';
+        });
+      })();
+      /* --- AÇIK ÖĞRETİM İHL · yüz yüze Arapça kur planları (02.10.2026) ----
+         AÖİHL'de Arapça yüz yüze okutulan derslerden: Arapça-1 ve Arapça-2
+         haftada 4, Arapça-3 ve Arapça-4 haftada 3 saat; normal düzende bir
+         yüz yüze eğitim dönemi 18 hafta (yoğunlaştırılmışta 9 hafta, saat iki
+         katı). İçerik örgün 9 ve 10. sınıf yıllık planlarının dönemleriyle
+         aynı olduğu için belgeler o planlardan üretildi
+         (_kaynak/uretici/aoihlPlan2.py). Ayrı bir kart açılmadı: Arapça-1/2
+         9. sınıf, Arapça-3/4 10. sınıf belge kartının Planlar bölümünde. */
+      (function () {
+        var AO = {
+          9:  [['1', 'I. dönem · 1-2. tema'], ['2', 'II. dönem · 3-4. tema']],
+          10: [['3', 'I. dönem · 1-2. tema'], ['4', 'II. dönem · 3-4. tema']]
+        };
+        var SAAT = { 9: '4 saat/hafta · dönem toplamı 72 saat',
+                     10: '3 saat/hafta · dönem toplamı 54 saat' };
+        Object.keys(AO).forEach(function (s) {
+          var liste = SINIF_PDF[s]['Planlar'];
+          AO[s].forEach(function (v) {
+            var k = 'dosyalar/yillik-plan/arapca-aoihl-arapca-' + v[0] + '-donem-plani';
+            liste.push({ ad: 'AÖİHL Arapça-' + v[0] + ' Dönem Planı (2026-2027) — düzenlenebilir (Word)',
+                         tur: 'doc',
+                         kaynak: 'Açık öğretim İHL yüz yüze eğitim · 18 hafta · ' + SAAT[s]
+                                 + ' · ' + v[1],
+                         url: k + '.docx' });
+            liste.push({ ad: 'AÖİHL Arapça-' + v[0] + ' Dönem Planı (2026-2027) — yazdırmaya hazır (PDF)',
+                         url: k + '.pdf' });
+          });
+          SINIF_GIRIS[s]['Planlar'] += '<div class="dok-not"><b>Açık öğretim İHL:</b> Arapça-'
+            + AO[s][0][0] + ' ve Arapça-' + AO[s][1][0] + ' kurları için dönem planı · 18 hafta '
+            + '(normal düzen) · ' + SAAT[s] + ' · yoğunlaştırılmış düzende 9 haftada, haftalık '
+            + 'ders saati iki katına çıkarılarak uygulanır.</div>';
         });
       })();
       /* --- SINAVLAR · GÜNLÜK PLAN · ÇALIŞMA KÂĞITLARI · SINIF DOSYASI ·
@@ -7197,6 +7546,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/kazanimoneri.js?v=20260924h"></script>
     <!-- Öğretmen profilindeki "sitede yenilikler" şeridi -->
     <script src="sistem/yenilikler.js?v=20260924h"></script>
+    <!-- Güncellemeler ve Galeri bölümü: liste galeriYenile.py'den,
+         duyurular yukarıdaki yenilikler.js'ten gelir. -->
+    <script src="sistem/galeriveri.js?v=20261003a"></script>
+    <script src="sistem/galeri.js?v=20261003d"></script>
     <script src="hesap/listelerim.js?v=20260924b"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->

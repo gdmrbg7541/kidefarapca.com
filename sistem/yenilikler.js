@@ -24,6 +24,52 @@
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
         {
+            id: 16,
+            tarih: '2026-10-03',
+            baslik: 'Ana sayfaya güncellemeler ve galeri bölümü',
+            metin: 'Katalog şeridinin hemen altında yeni bir bölüm var: solda ' +
+                   'sitede neyin yenilendiği, sağda fotoğraf galerisi. Bir ' +
+                   'fotoğrafa basınca tam ekran açılır, oklarla gezilir.'
+        },
+        {
+            id: 15,
+            tarih: '2026-10-03',
+            baslik: 'Günlük planlar bir sayfada iki ders günü',
+            metin: '5-10. sınıf ve 10. sınıf Seçmeli için bütün yılın günlük ' +
+                   'planları yeniden düzenlendi: her sayfada iki ders günü var, ' +
+                   'sayfa sayısı neredeyse yarıya indi.'
+        },
+        {
+            id: 14,
+            tarih: '2026-10-03',
+            baslik: 'Dijital kitapların araç çubuğu yenilendi',
+            metin: 'İçindekiler kitap seçicinin hemen altına alındı, düğmeler ' +
+                   'sitenin renklerini aldı; içindekiler ve kaynaklar panelleri ' +
+                   'artık ekranın solundan açılıyor.'
+        },
+        {
+            id: 13,
+            tarih: '2026-10-02',
+            baslik: 'Açık öğretim İHL için dönem planları',
+            metin: 'Arapça-1, Arapça-2, Arapça-3 ve Arapça-4 kurlarının her biri ' +
+                   'için 18 haftalık yüz yüze eğitim dönem planı eklendi; Word ve ' +
+                   'PDF olarak 9 ve 10. sınıf belgelerinin içinde.'
+        },
+        {
+            id: 12,
+            tarih: '2026-10-02',
+            baslik: 'Planlarda hangi hafta hangi kitap sayfası belli',
+            metin: '5 ve 6. sınıfın yıllık ve günlük planlarında her haftanın ' +
+                   'karşısında o hafta işlenecek ders kitabı sayfaları yazıyor.'
+        },
+        {
+            id: 11,
+            tarih: '2026-10-02',
+            baslik: 'Hafıza kartları yeniden tasarlandı',
+            metin: 'Kart oyunu hem çok daha hızlı açılıyor hem de yeni, zarif bir ' +
+                   'görünüme kavuştu.'
+        },
+        {
             id: 10,
             tarih: '2026-08-24',
             baslik: 'Ders verisinin hangi öğretim yılına ait olduğu görünüyor',

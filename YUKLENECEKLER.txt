@@ -3998,3 +3998,454 @@ SON DURUM
 YEDEK
   _kaynak/yedekler/20261002-gunluk-yil/gunlukYilUret-haftalik.py (haftalık sürüm)
 
+──────────────────────────────────────────────────────────────────────
+02.10.2026 · AÇIK ÖĞRETİM İHL — yüz yüze Arapça kur planları (YENİ)
+──────────────────────────────────────────────────────────────────────
+Öğretmen isteği: "ihl açık öğretim için yıllık plan ekleyelim 9-10."
+Kararlar: normal düzen (18 hafta) · içerik mevcut 9 ve 10. sınıf yıllık
+planlarından.
+
+MEB AÖİHL yüz yüze eğitim uygulaması: Arapça yüz yüze okutulur;
+Arapça-1/2 → 4 saat/hafta, Arapça-3/4 → 3 saat/hafta; normal düzende
+bir dönem 18 hafta, yoğunlaştırılmışta 9 hafta (saat iki katı).
+Bu saatler sitedeki 9 (4 saat) ve 10 (3 saat) planlarıyla birebir aynı
+olduğu için içerik yeniden yazılmadı, o planlardan üretildi.
+
+YENİ BELGELER — dosyalar/yillik-plan/ (docx + pdf, 4 sayfa A4 yatay)
+  arapca-aoihl-arapca-1-donem-plani   ←  9. sınıf  I. dönem · 18 hafta · 4 saat · 72 saat
+  arapca-aoihl-arapca-2-donem-plani   ←  9. sınıf II. dönem · 18 hafta · 4 saat · 72 saat
+  arapca-aoihl-arapca-3-donem-plani   ← 10. sınıf  I. dönem · 18 hafta · 3 saat · 54 saat
+  arapca-aoihl-arapca-4-donem-plani   ← 10. sınıf II. dönem · 18 hafta · 3 saat · 54 saat
+Mevcut 9/10 yıllık planlarına DOKUNULMADI; dosyalar yeni adla yazıldı.
+
+II. dönem takvimde 19 hafta, kılavuzdaki dönem 18 hafta. İçerik atılmadı:
+son iki satır (OKUL TEMELLİ PLANLAMA + YIL SONU DEĞERLENDİRME) tek
+haftada birleştirildi → her kur tam 18 hafta.
+
+Değişenler: başlık (AÇIK ÖĞRETİM İMAM HATİP LİSESİ · ... DÖNEM PLANI),
+künye (ders adı, sınıf düzeyi, dönem toplamı, 18 hafta), dönem bandı,
+alt bilgi, açıklamalar (AÖİHL düzeni + yoğunlaştırılmış düzen + kitap).
+
+SİTEYE BAĞLANDI
+  index.html        → 9. sınıf belge kartı "Planlar" içine Arapça-1/2,
+                      10. sınıf belge kartına Arapça-3/4 (SINIF_PDF).
+                      Ayrı kart/UI açılmadı, düzen değişmedi.
+  katalog/index.html→ Yıllık Plan kartına ikinci çip satırı
+                      ("Açık öğretim İHL: Arapça-1 … Arapça-4").
+
+Üreticiler: _kaynak/uretici/aoihlPlan2.py (belgeler, lxml) ·
+            aoihlAltbilgi2.py (alt bilgi) · aoihlSite.py (site bağları)
+Yedek: _kaynak/yedekler/20261002-aoihl-plan/ (index.html, katalog)
+Denetim: 4 belgenin XML'i geçerli · PDF'ler yeniden üretildi ·
+         index.html'in 17 satır içi script bloğu `node --check` ile sınandı.
+
+──────────────────────────────────────────────────────────────────────
+03.10.2026 · GÜNLÜK PLANLAR — bir sayfaya İKİ ders günü
+──────────────────────────────────────────────────────────────────────
+Öğretmen: "günlük planları bi sayfaya iki gün sığdıracak şekilde yapalım."
+
+Sayfa sonu artık yalnız ÇİFT sıradaki günden önce atılıyor; tek sıradaki
+gün aynı sayfada kesik çizgiyle devam ediyor. 9 ve 10. sınıfta haftanın
+iki ders günü doğal olarak aynı sayfaya düşüyor.
+
+Sığması için (içerikten hiçbir şey atılmadı, yalnız yerleşim):
+  · başlık iki satırdan tek satıra
+  · künye 5 satırdan 3 satıra (Ders kitabı+Süre, Tarih+Belirli gün)
+  · bölüm araları tam satırlık boşluk yerine ince boşluk
+  · kenar boşlukları 51 → 36 punto (alt/üst), 51 → 40 (yan)
+  · UYARLANIR PUNTO: her ders günü için, o günün tahmini yüksekliği
+    sayfanın yarısını (332 punto) aşmayacak en büyük punto seçiliyor
+    (9 → 8,5 → 8 → 7,5 → 7). Kısa günler 9 puntoda kalıyor.
+
+SAYFA SAYILARI (önce → sonra)
+  5 / 6 / 7 / 8. sınıf      38 → 20 sayfa   (37 ders günü)
+  9. sınıf                  75 → 38 sayfa   (74 ders günü)
+  10. sınıf                 75 → 38 sayfa   (74 ders günü)
+  10. sınıf Seçmeli         38 → 20 sayfa   (37 ders günü)
+
+DENETİM: yedi belgenin PDF'i pdftotext ile taranarak her sayfadaki
+"GÜNLÜK DERS PLANI" başlığı sayıldı — taşma YOK; her sayfada tam iki gün
+(son sayfalarda tek gün kalıyor, tek sayıda gün olduğu için).
+Seçilen puntolar: 5 → 36×9 + 1×8,5 · 6 → 32×9 + 4×8,5 + 1×8 ·
+7, 8, 9, 10 → tamamı 9 · 10sec → 1×9 + 14×8 + 20×7,5 + 2×7.
+
+Betikler: _kaynak/uretici/gunlukIkiGun.py (sayfa eşleme) ·
+          gunlukSikilastir.py (başlık/künye/punto) ·
+          gunlukSigdir.py (uyarlanır punto + kenar boşluğu)
+Yedek:    _kaynak/yedekler/20261003-gunluk-iki-gun/
+
+NOT: dosyalar/gunluk-plan/arapca-gunluk-ders-planlari-5-10.docx/pdf
+("hepsi bir arada", 24 sayfa) ESKİ sürümdür; tüm yılın planları gelince
+güncellenmedi. İstenirse yeniden üretilebilir.
+
+──────────────────────────────────────────────────────────────────────
+03.10.2026 · FLIPBOOK YAN ÇUBUĞU — içindekiler yukarı, site renkleri
+──────────────────────────────────────────────────────────────────────
+Öğretmen: "flipbooklarda kitap seçme kısmının altına içindekiler olsun,
+yani yukarı taşı içindekiler tuşunu, tam ekran svg sini kırmızı yap,
+kenardaki yazılar site renklerinden olsun, turuncu site mavilerinden
+yeşillerinden vs"
+
+· İÇİNDEKİLER artık kitap seçicinin hemen altında (yan çubukta, CSS
+  order ile; HTML sırası değişmedi, telefon düzeni aynı kaldı).
+  Hemen altına ayraç çizgisi düştü, ötekiler onun altında.
+· Her düğme sitenin kendi belge kartı rengini aldı (index.html "renk:"):
+    İçindekiler  turuncu  #D97706
+    Kaynaklar    açık mavi #0EA5E9
+    İndir        yeşil    #059669
+    Yakınlaştırma mavi    #2563EB
+    Düğmeler     mor      #7C3AED
+    Nasıl kullanılır camgöbeği #0891B2
+    Tam ekran    KIRMIZI  #EE5253   ← simge dahil, dar ekranda da
+  Renk --tr (dolu) ve --trz (soluk zemin) değişkenleriyle taşınıyor;
+  hover ve etkin durum aynı renkten türüyor. Simgeler currentColor
+  kullandığı için yazıyla birlikte boyanıyor.
+
+Dosya: _kaynak/ortak-kitap/kitaptema.css (ortak) → kitapOrtakla.py ile
+altı flipbooka + Mac'teki asıl Kidef klasörüne dağıtıldı.
+Flipbook html'lerinde ortak css/js sürümü ?v=20261003a oldu.
+Yedek: _kaynak/yedekler/20261003-yan-renk/
+Betik: _kaynak/uretici/yanRenk.py
+
+DENETİM: 5. sınıf flipbook'u yerel sunucuda açılıp hesaplanmış stiller
+okundu — sıra (İçindekiler en üstte, kitap seçicinin 8 px altında) ve
+yedi düğmenin rengi tek tek doğrulandı; sayfa hatası yok.
+
+──────────────────────────────────────────────────────────────────────
+03.10.2026 · FLIPBOOK PANELLERİ SOLDAN AÇILIYOR
+──────────────────────────────────────────────────────────────────────
+Öğretmen: "içindekiler kaynaklar her şey ekranın solundan açılsın."
+
+.panel.yan sağ kenara yapışıktı (right:0 · translateX(102%) ile sağdan
+kayıyordu). Artık sol kenardan kayıyor:
+  · yan araç çubuğu açıkken panel çubuğun YANINDAN başlar (sol = --yan + 5),
+    çubuğu örtmez — içindekilerden kaynaklara geçmek için paneli
+    kapatmaya gerek yok.
+  · çubuk daralınca (--yan 188 → 56) panel de kendiliğinden kayar.
+  · dar ekranda (telefon, yan çubuk yok) panel sol kenardan, sol = 0.
+  · gölge de yön değiştirdi (26px 0 ... sağa doğru).
+
+Dokunulmayanlar: .ks-panel (kitap seçici) zaten soldaydı;
+.panel.orta (etkinlik, slayt, cevaplar) ortada kalmaya devam ediyor —
+onlar kenar paneli değil, tam ekran içerik penceresi.
+
+Dosya: _kaynak/ortak-kitap/kitaptema.css → kitapOrtakla.py ile altı
+flipbooka + Mac'teki asıl Kidef klasörüne dağıtıldı.
+Flipbook html'lerinde ortak css/js sürümü ?v=20261003b oldu.
+Betik: _kaynak/uretici/panelSol.py · Yedek: _kaynak/yedekler/20261003-panel-sol/
+
+DENETİM: 5. sınıf flipbook'u yerel sunucuda açıldı, ölçüldü —
+  kapalı:      sol -445 / sağ -5   (ekran dışında, solda)
+  İçindekiler: sol 193 (çubuğun sağ kenarı tam 193)
+  Kaynaklar:   sol 193, en 500 (geniş panel)
+  dar çubuk:   sol 61 (56 + 5)
+Sayfa hatası yok.
+
+03.10.2026 (düzeltme) · Paneller SOL KENARA DAYANDI
+  Öğretmen: "sola dayalı olsun biraz merkeze yakın çıkıyor."
+  Panel yan çubuğun yanından başlıyordu (sol = 188 + 5 = 193 px); o kadar
+  içeriden açılınca ortaya yakın duruyordu. Artık sol = 0, panel çubuğun
+  üstüne biniyor (z-index 90 > çubuğun 50'si); kapanınca çubuk geri
+  görünüyor. Ölçüldü: İçindekiler sol 0 / sağ 440, Kaynaklar sol 0 / sağ 500.
+  Sürüm ?v=20261003c · yedek _kaynak/yedekler/20261003-panel-sol/kitaptema-yanindan.css
+
+──────────────────────────────────────────────────────────────────────
+03.10.2026 · sarf.html — YÖNERGE SESİ İLE YAZININ SENKRONU
+──────────────────────────────────────────────────────────────────────
+Öğretmen: "sarf.html de ses senkron problemi var sanırım." — Haklı.
+
+ÖLÇÜLEN DURUM (ffmpeg silencedetect)
+  sarf/ses/yonergesarf.mp3 = 8,86 sn · iki cümle:
+     1. cümle 0,00 – 3,50 sn
+     sessizlik  3,50 – 4,57 sn
+     2. cümle 4,57 – 8,86 sn
+  Yönerge kartı ise SABİT 5200 ms sonra kapanıyordu: ikinci cümle daha
+  0,6. saniyesindeyken yazı ekrandan kalkıyor, ses 3,6 saniye daha boş
+  ekrana konuşuyordu.
+
+  İkinci sorun: sarf.html tek oyun kipinde (data-tek-oyun="game2")
+  sayfa açılır açılmaz fabrikayı kuruyor; yönerge sesi KULLANICI JESTİ
+  OLMADAN başlatılıyordu. Tarayıcı otomatik oynatmayı engelleyince
+  .catch(() => {}) hatayı yutuyor, ses hiç çalmıyordu.
+
+YAPILAN (sarf/sarf.js + sarf/sarf.css)
+  · Kart artık sesin BİTİŞİNDE kapanıyor; sabit süre yalnızca ses
+    çalmazsa geçerli yedek.
+  · Okunan satır vurgulanıyor, öteki soluyor (.g2-yon-satir / .simdi).
+    Satırlar metindeki <br> ile çalışma anında bölünüyor — Arapça metne
+    DOKUNULMADI.
+  · Otomatik oynatma engellenirse kart kendi süresinde sessizce duruyor
+    (yanıp sönme yok), anlatım ilk dokunuşta yazısıyla birlikte baştan
+    başlıyor (bir kez).
+
+DENETİM (yerel sunucu + Playwright, iki tarayıcı kuralıyla)
+  otomatik oynatma AÇIK : kart 0 → 9,04 sn açık · 1. satır 0–4,4 sn ·
+                          2. satır 4,4 sn → son · ses bitince kapandı
+  otomatik oynatma KAPALI: açılışta kart sessiz 5,2 sn · ilk tıkta kart
+                          + ses birlikte · 1. satır → 2. satır → kapandı
+  Sayfa hatası yok · node --check temiz.
+
+Sürüm: sarf.html içinde sarf.js?v=127 · sarf.css?v=123
+Betik: _kaynak/uretici/sarfSesSenkron.py
+Yedek: _kaynak/yedekler/20261003-sarf-ses/ (sarf.js, sarf.css, sarf.html)
+
+03.10.2026 (devam) · sarf.html — YÖNERGE TÜRKÇE, SES SİLİNDİ
+  Öğretmen: "yönerge türkçe olsun, sesi sil."
+  · Yönerge metni Türkçe:
+      "Kelimeye bas, kökünü çıkar."
+      "Bir kök, sonra bir vezin seç; yeni bir kelime üret."
+    (Arapça aslının karşılığı; kart 6 sn görünüyor.)
+  · Kart soldan sağa (dir="ltr" lang="tr"), punto Türkçe metne göre
+    küçüldü: clamp(1,5–2,8rem) → clamp(1,05–1,7rem). Yazı tipi site
+    geneliyle aynı (arakom.css); Türkçe harfler doğru çıkıyor.
+  · SES TAMAMEN KALKTI: App.yonergeSes / yonergeSesCal /
+    yonergeSesNesnesi / yonergeJestBekle ve yonergeGoster içindeki ses
+    dinleyicileri silindi; menü kartındaki çağrı da kalktı.
+    yonergeGoster imzası artık (metin, sure) — sesliMi yok.
+  · sarf/ses/yonergesarf.mp3 siteden ÇIKARILDI →
+    _kaynak/yedekler/20261003-sarf-ses/yonergesarf.mp3 (silinmedi, taşındı).
+    sarf/ses/ klasörü boş kaldı; git boş klasör izlemediği için sorun yok.
+  DENETİM: yerel sunucuda açıldı — metin Türkçe, yön ltr, punto 27,2 px,
+    kart 6,3 sn sonra kapandı, HİÇ mp3 isteği yok, sayfa hatası yok.
+  Sürüm: sarf.js?v=128 · sarf.css?v=124
+  Betik: _kaynak/uretici/sarfYonergeTurkce.py
+
+──────────────────────────────────────────────────────────────────────
+03.10.2026 · ANA SAYFA — "GÜNCELLEMELER VE GALERİ" BÖLÜMÜ (YENİ)
+──────────────────────────────────────────────────────────────────────
+Öğretmen: "Galeri diye bi klasöre bi foto ekledim, index te katalogtan
+sonra imam hatip kategorisinden önce profesyonel bi site güncellemelerinin
+duyurularının olduğu ve galeri olan kategori gibi bi şey ekleyelim,
+galeriye görsel ekleyince içinde gezilebilsin."
+
+YERİ: katalog şeridinin hemen altı, #imam-hatip'ten önce → #guncellemeler
+
+SOL SÜTUN — SİTE GÜNCELLEMELERİ
+  Kaynak: sistem/yenilikler.js (KidefYenilikler.hepsi()). AYRI bir duyuru
+  dosyası AÇILMADI — öğretmen profilindeki yenilik şeridiyle aynı liste
+  kullanılıyor, böylece duyuru tek yerde yazılıyor. En yeni 6 kayıt,
+  zaman çizgisi biçiminde; en üstteki "YENİ" rozetli.
+  Son haftaların işleri duyuru olarak eklendi (id 11-16); listedeki en
+  yeni kayıt 24.08.2026'da kalmıştı.
+  YENİ DUYURU EKLEMEK: sistem/yenilikler.js'in BAŞINA bir kayıt
+  (id artan ve benzersiz, tarih YYYY-AA-GG, tek cümle metin).
+
+SAĞ SÜTUN — GALERİ
+  Kaynak: sistem/galeriveri.js → _kaynak/uretici/galeriYenile.py üretir.
+  Fotoğrafa basınca tam ekran büyüteç: oklar, klavye (← → Esc), parmakla
+  kaydırma, sayaç; komşu fotoğraf önceden indirilir.
+  Üç ve daha az fotoğrafta kareler büyür ve ortalanır (gd-az).
+
+GALERİYE FOTOĞRAF EKLEMEK
+  Fotoğrafı Galeri/ klasörüne at, hızlı gönder'e bas. Gerisi kendiliğinden:
+    · galeriYenile.py Galeri/web/g-<özet>.jpg  (en çok 1600 px, kalite 82)
+      ve Galeri/kucuk/g-<özet>.jpg (en çok 560 px) üretir
+    · sistem/galeriveri.js yeniden yazılır (en yeni fotoğraf en üstte)
+  Ad dosyanın sha1 özetinden: aynı fotoğraf hep aynı adı alır, boşuna
+  yeniden üretilmez; Türkçe harf/boşluk/NFD sorunu URL'e bulaşmaz.
+  Örnek: 1,14 MB'lık WhatsApp fotoğrafı → 209 KB web + 35 KB önizleme.
+
+  .gitignore: Galeri/* yayına GİTMEZ, yalnız Galeri/web ve Galeri/kucuk
+  gider. Asıllar klasörde durur. (Öğretmenin kuralı: siteye yalnız gereken
+  dosyalar.) Doğrulandı: git yalnız iki küçültülmüş kopyayı ekliyor.
+
+  hizli-gonder.command'a "▸ Galeri taranıyor…" adımı eklendi; Pillow ya da
+  Galeri/ yoksa sessizce atlar, gönderimi durdurmaz.
+
+DOSYALAR
+  yeni: sistem/galeri.js · sistem/galeriveri.js (üretilen) ·
+        Galeri/web/ · Galeri/kucuk/
+  değişen: index.html (#gdCss + #guncellemeler bölümü + iki betik) ·
+           sistem/yenilikler.js · .gitignore · ../hizli-gonder.command
+  betikler: _kaynak/uretici/galeriYenile.py · galeriBolum.py ·
+            galeriBaglan.py · yenilikEkle.py
+  yedek: _kaynak/yedekler/20261003-galeri/
+
+DENETİM (yerel sunucu + Playwright)
+  · bölüm katalogtan SONRA, imam hatipten ÖNCE (DOM sırası doğrulandı)
+  · 6 duyuru + 1 fotoğraf göründü, sayfa hatası yok
+  · büyüteç açıldı (Galeri/web/... yüklendi, 1600 px), sayaç "1 / 1",
+    Esc ile kapandı
+  · 1400 px ve 430 px genişlikte ekran görüntüsü alındı, ikisi de düzgün
+
+NOT: galerideki fotoğrafta öğrenciler görünüyor. Site herkese açık;
+öğrenci fotoğrafı yayımlamadan önce veli izni gerekir (bir yüz zaten
+bulanıklaştırılmış). Karar öğretmenin.
+
+──────────────────────────────────────────────────────────────────────
+03.10.2026 (devam) · TEK TEK GEZİNME + SARF'TA KÖK VURGUSU
+──────────────────────────────────────────────────────────────────────
+Öğretmen: "site güncellemeleri yatay olarak ekranın yarısını kaplasın,
+her bi güncelleme oklarla açılsın tüm güncellemeler dikey scrollarla
+görülmesin, galeri de görseller tek tek sağ sol oklarla gezilsin,
+büyütülse de, sarf html de bi kök usta bölümüne taşınınca ve basılması
+gerektiğinde vurgulansın ki köke basılsın ve vezinler çıksın."
+
+1) GÜNCELLEMELER VE GALERİ — iki eşit yarım, tek tek
+   · Izgara 38/62'den 50/50'ye: iki yarım da 595 px (1400 px ekranda).
+   · Dikey kaydırma KALKTI. Solda tek duyuru, sağda tek fotoğraf;
+     başlıktaki ‹ › okları, altındaki noktalar, parmakla kaydırma ve
+     kutu odaktayken ← → tuşlarıyla gezilir. Sona gelince başa sarar.
+   · Büyüteçte de sağ/sol oklar; büyütecte gezilince küçük görünüm de
+     aynı fotoğrafa gelir (geri bildirim bağlandı).
+   · Fotoğraf karesi sabit: 16:10, en çok 248 px — fotoğrafın boyu
+     bölümü uzatmasın, duyuru tarafı boş kalmasın. Bölüm 322 px.
+   · DÜZELTME: gezgin ilk çizimi atlıyordu (git(0,true) erken dönüyordu);
+     açılışta duyuru ve fotoğraf boş geliyordu. ilkCizim bayrağı eklendi.
+   Betik: _kaynak/uretici/galeriTek.py · sistem/galeri.js yeniden yazıldı
+   Sürüm: sistem/galeri.js?v=20261003b
+   Yedek: _kaynak/yedekler/20261003-galeri/index-izgara.html
+
+2) SARF — rafa inen kök basılmayı beklerken vurgulanıyor
+   Kök usta rafına (g2-kokraf) iniyor ama vezin levhalarının gelmesi için
+   önce köke BASILMASI gerekiyor; külçeler durgun durduğundan bu adım
+   gözden kaçıyordu.
+   · Yeni kokVurgula(): faz 'forge' ise ve seçili kök yoksa (ya da
+     seçilinin bütün vezinleri dövülmüşse), hâlâ dövülebilecek vezni olan
+     külçelere .bas-bana sınıfı verilir. Basılınca vurgu kalkar; o kök
+     bitince kalanlar yeniden vurgulanır.
+   · Çağrı: vezinleriGuncelle()'nin başı + forklift boşaltmayı bitirip
+     faz 'forge' olduğu an.
+   · Biçim: külçe zıplar, hafif yalpalar, bir tık parlar ve altındaki
+     gölge derinleşir (1,25 sn nabız). ÖNCE sıcak renkli parıltı
+     denendi — külçe sarı, sahne açık lavanta olduğu için ekranda
+     görünmüyordu (ölçüldü); hareket + gölge her zeminde görünür.
+     prefers-reduced-motion'da nabız durur, külçe yükseltilmiş kalır.
+   Betik: _kaynak/uretici/sarfKokVurgu.py
+   Sürüm: sarf.js?v=129 · sarf.css?v=125
+   Yedek: _kaynak/yedekler/20261003-kok-vurgu/
+
+DENETİM (yerel sunucu + Playwright)
+  · iki yarım 595/595, dikey kaydırma yok (overflow visible), 12 duyuru
+    1/12'den başlıyor, ileri 2/12, iki geri 12/12 (başa sardı)
+  · büyüteç açıldı, sayaç doğru, Esc kapattı
+  · sarf: kelime öğütüldü → forklift → kök rafa indi → vurgulu külçe 1,
+    vezin 0; köke basıldı → vurgu 0, vezin 9. Sayfa hatası yok.
+  · 1400 px ve 430 px ekran görüntüleri alındı
+
+03.10.2026 (rötuş) · Güncellemeler ve Galeri — büyük oklar, büyük başlık, not
+  Öğretmen: "oklar daha büyük ve dikey olarak ortalı olsun, site
+  güncellemeleri yazısı sol kutuyu dolduracak kadar büyük olsun, galeri
+  kısmında bi not olsun, öğrencilerin yüzü kapalı şekilde foto
+  gönderilebileceği notu olsun."
+  · Oklar başlıktan alınıp içeriğin iki yanına kondu: 44 px yuvarlak,
+    DİKEYDE TAM ORTALI (ölçüldü: sapma 0 px), dar ekranda 38 px.
+    Akıllı tahtada parmakla da rahat basılıyor.
+  · Sayaç aşağı indi, nokta göstergesiyle aynı satırda.
+  · Başlık 1,02rem'den clamp(1,35–2,2rem)'e çıktı: 1400 px ekranda
+    35,2 px ve kutunun tamamını (595 px) kaplıyor.
+  · Galeri altına not kutusu: "Sınıfınızdan fotoğraf paylaşmak isterseniz
+    kidefarapca@gmail.com adresine gönderebilirsiniz. Öğrencilerin
+    yüzleri kapalı olmalı (bulanıklaştırılmış ya da arkadan çekilmiş)."
+    E-posta mailto bağlantısı, konu satırı hazır.
+  Betik: _kaynak/uretici/galeriOk.py · sürüm sistem/galeri.js?v=20261003c
+  Yedek: _kaynak/yedekler/20261003-galeri/index-kucuk-ok.html, galeri-kucuk-ok.js
+  Denetim: 1400 px ve 430 px ekran görüntüsü alındı, sayfa hatası yok.
+
+03.10.2026 (rötuş 2) · Duyuruda dikey oklar · sunum rozetlerine SVG
+  Öğretmen: "site güncellemeleri kısmında oklar aşağıda ve yukarda olsun
+  ve güncelleme içeriği daha büyük yazı olsun, index te ders sunumları
+  kısmında konu haritası ve sunum serisi başlıklarında emojiler var
+  onları svg lerle değiştir."
+
+  · Duyuru tarafında oklar iki yandan alınıp İÇERİĞİN ÜSTÜNE ve ALTINA
+    kondu (yukarı/aşağı simgeleriyle, yatayda ortalı — ölçüldü).
+    Galeri tarafı sağ/sol kalıyor: fotoğraf yan yana, metin alt alta.
+    Klavyede dikey kutuda ↑ ↓ de çalışıyor (← → duruyor).
+  · İçerik puntosu büyüdü: başlık 1,02 → 1,22rem (19,5 px),
+    metin 0,88 → 1,02rem (16,3 px), tarih 0,78 → 0,86rem,
+    rozet 0,60 → 0,66rem. Oklar kenardan kalkınca kayıt kutunun
+    tamamını (595 px) kaplıyor.
+  · Ders Sunumları rozetlerindeki emojiler SVG oldu:
+      🗺️ Konu Haritası → katlanmış harita çizimi
+      🎬 Sunum serisi  → klaket + oynat üçgeni
+    SVG currentColor kullanıyor, rozetin kendi rengini alıyor; emoji
+    her işletim sisteminde başka türlü çiziliyordu ve yazıyla
+    hizalanmıyordu. Rozet inline-flex oldu, simge 1,2em.
+
+  Betik: _kaynak/uretici/okDikeyEmoji.py · sürüm sistem/galeri.js?v=20261003d
+  Yedek: _kaynak/yedekler/20261003-ok-dikey/
+  Denetim: üst ok içeriğin üstünde, alt ok altında, yatayda ortalı;
+  alt oka basınca 2/12'ye geçti; iki rozette de emoji yok, birer SVG var;
+  sayfa hatası yok.
+
+──────────────────────────────────────────────────────────────────────
+03.10.2026 · BÜYÜK YAZI + RENKLİ OKLAR · KATALOG · GÜNÜN SÖZÜ
+──────────────────────────────────────────────────────────────────────
+Öğretmen: "site güncellemeleri kısmında yazılar daha büyük olsun, oklar
+renkli olsun, kataloğu da güncelleyelim, flipbooklar, merak çarkı vs her
+şeyi karşılaştır yoksa ekle, ayrıca merak çarkı içine ayrıca günün sözü
+ekleyelim bu çark dışında yukarda bi popup şeklinde görülsün."
+
+1) GÜNCELLEMELER — yazı ve oklar
+   · Duyuru başlığı 1,22 → 1,40rem (22,4 px), metin 1,02 → 1,12rem
+     (17,9 px), tarih 0,86 → 0,9rem.
+   · Oklar artık RENKLİ ve dolu: duyuru tarafı sitenin yeşili
+     (#1ABC9C→#0E9E86), galeri tarafı amberi (#F5B041→#E3A02A); beyaz
+     simge, renkli gölge, 46 px (dar ekranda 40 px).
+   Betik: _kaynak/uretici/katalogGuncelle.py
+
+2) KATALOG — siteyle karşılaştırıldı
+   Betikle tarandı: index.html'den bağlı BÜTÜN kök sayfalar katalogda
+   zaten vardı (merak çarkı, hafıza kartları, hangi harf, hareke avcısı,
+   klavye oyunu, test kapışması, zamana yarış, kök utanı, kökten
+   gövdeye, ikiki dijital dahil — bunlar kart olarak duruyor).
+   EKSİK OLANLAR eklendi (4 yeni kart, 56 → 60 kart):
+     · MEB Ders Kitapları — 5, 6, 7. sınıf flipbookları. Katalogda
+       yalnız Kidef 2. Baskı vardı; MEB kitapları hiç yoktu.
+     · Kitap Etkinlikleri — 22 paket (7. sınıf 9, 9. sınıf 13)
+     · Okul Temelli Planlama — 5-10. sınıf çipleriyle
+     · 10. Sınıf Seçmeli Arapça — yıllık/günlük plan, 4 yazılı, çalışma
+       kâğıdı, proje-performans, okul temelli (9 çip)
+   Bölüm sayaçları: "Ölçme, sınav ve kitap" 6 → 8 araç;
+   "Öğretmen dokümanları" PDF · 5-10. sınıf · seçmeli.
+   Yedek: _kaynak/yedekler/20261003-katalog/
+
+3) MERAK ÇARKI — GÜNÜN SÖZÜ pop-up'ı (YENİ)
+   Çarkın DIŞINDA, sayfa açılınca üstte beliren ayrı kart. Çarkın kart
+   havuzuna (merak/merakveri.js) dokunulmadı.
+   · İçerik: 36 Türk atasözü + her birinin altında sınıfa bağlayan tek
+     cümle. (Arapça söz kullanılmadı: öğretmene soruldu, "Türkçe sözler
+     olsun" dedi — Arapça metni elle yazmama kuralı da böylece korundu.)
+   · Söz TAKVİM GÜNÜNDEN seçilir: aynı gün her cihazda aynı söz, ertesi
+     gün kendiliğinden değişir. Rastgele değil.
+   · Günde bir kez kendiliğinden açılır
+     (localStorage['kidef_gunsozu'] = YYYY-AA-GG); kapatınca o gün bir
+     daha gelmez. Üst çubuktaki «Günün sözü» düğmesiyle her an açılır.
+     Esc, çarpı, "Anladım" ve boşluğa basmak kapatır.
+   Yeni dosya: merak/gunsozu.js · biçim merak/merakcarki.css (?v=5)
+   Betik: _kaynak/uretici/gunsozuKur.py
+   Yedek: _kaynak/yedekler/20261003-gunun-sozu/
+
+DENETİM (yerel sunucu + Playwright)
+  · index: başlık 22,4 px, metin 17,9 px; sol oklar yeşil, sağ oklar
+    amber gradyan, simge beyaz
+  · katalog: 60 kart, dört yeni başlık da yerinde, sayaçlar doğru
+  · merak çarkı: pop-up açıldı (üstte, çarkın üzerinde değil ÜSTÜNDE),
+    söz + not göründü, "Anladım" kapattı, düğme yeniden açtı,
+    sayfa yenilenince kendiliğinden AÇILMADI (günde bir kez kuralı)
+  · üç sayfada da sayfa hatası yok
+
+04.10.2026 · Duyuru yazısı 30/28 px · kâğıt görünümü · galeri süsleri
+  Öğretmen: "başlık 30 px metin 28 px olsun" + "site güncellemeleri
+  kısmında açıklama bi kağıt içindeymiş gibi bi tasarım olsun, galeri
+  kısmında etrafta galeri ile ilgili svg ler olsun."
+
+  · Punto rem değil PX yazıldı (verilen ölçü birebir uygulansın):
+    başlık 30 px, metin 28 px, tarih 1rem. Dar ekranda (≤860 px)
+    22/20 px'e iniyor, yoksa telefonda iki kelime bir satıra sığıyor.
+  · DUYURU ARTIK KÂĞIT: beyaz sayfa, ince kenarlık, iki katmanlı gölge,
+    solda kırmızı kenar boşluğu çizgisi, metnin arkasında defter
+    çizgileri ve üst kenarda hafif eğik yapıştırıcı bandı.
+    Çizgiler satır yüksekliğiyle BİREBİR hizalı: metin 28 px ·
+    satır 40 px · çizgi her 40 px'te (telefonda 20/30 px).
+  · GALERİ ÇEVRESİNDE SÜS: fotoğraf makinesi, polaroid, film şeridi,
+    manzara karesi ve iki parıltı — içeriğin ALTINDA ayrı katmanda,
+    düşük saydamlıkta, pointer-events:none ve aria-hidden. Fotoğrafa
+    basmayı ve okları engellemiyor (ölçüldü: karenin ortasındaki
+    elementFromPoint hâlâ .gd-kare). Telefonda süsler gizli.
+
+  Betik: _kaynak/uretici/kagitSus.py
+  Yedek: _kaynak/yedekler/20261004-kagit-sus/
+  Denetim: 1400 px ve 430 px'te ekran görüntüsü; bölüm 549 px,
+  taşma yok, sayfa hatası yok.

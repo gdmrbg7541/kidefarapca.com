@@ -496,7 +496,7 @@ const App = {
                 this.playSound('click');
                 const target = card.dataset.goto;
                 if (target === 'game1-screen') Game1.start();
-                else if (target === 'game2-screen') { this.yonergeSesCal(); Game2.start(); }
+                else if (target === 'game2-screen') { Game2.start(); }
                 else if (target === 'game3-screen') Game3.start();
                 else if (target === 'quiz-screen') { Quiz.start(); }
                 this.showScreen(target);
@@ -570,14 +570,11 @@ const App = {
     /* Yönerge sesi: tıklama jestinin İÇİNDE başlatılır ki tarayıcının
        otomatik oynatma engeline takılmasın. Tek Audio nesnesi paylaşılır;
        yonergeGoster çift çalmayı önlemek için bunu kontrol eder. */
-    yonergeSes: null,
-    yonergeSesCal() {
-        try {
-            if (!this.yonergeSes) this.yonergeSes = new Audio('sarf/ses/yonergesarf.mp3');
-            this.yonergeSes.currentTime = 0;
-            this.yonergeSes.play().catch(() => {});
-        } catch (e) {}
-    },
+    /* YÖNERGE SESİ KALDIRILDI (03.10.2026 — öğretmen: "yönerge türkçe
+       olsun, sesi sil"). Eskiden burada yonergeSes / yonergeSesCal /
+       yonergeSesNesnesi / yonergeJestBekle vardı ve sayfa açılırken
+       sarf/ses/yonergesarf.mp3 çalınırdı. Ses dosyası siteden çıkarıldı
+       (_kaynak/yedekler/20261003-sarf-ses/). Yönerge artık yalnız yazı. */
 
     playSound(key) {
         /* Bağlam henüz kurulmadıysa (örn. sayfadaki İLK tıklama) burada kur:
@@ -1258,33 +1255,26 @@ const Game2 = {
         this.rondKur(false);
     },
 
-    /* Yönergeyi ekranın ortasında gösterir, 3 sn sonra kaybolur.
-       sesliMi=true ise sarf/ses/yonergesarf.mp3 de çalınır (dosya yoksa
-       sessiz geçer). */
     yonergeZaman: null,
-    yonergeGoster(metin, sesliMi, sure) {
+    /* Yönergeyi ekranın ortasında gösterir, süre dolunca kaybolur.
+       03.10.2026: metin Türkçeleşti ve ses kalktı; satır vurgusu /
+       ses dinleyicileri gereksiz kaldığı için kaldırıldı. */
+    yonergeGoster(metin, sure) {
         const y = document.getElementById('g2-yonerge');
         if (!y) return;
         y.innerHTML = metin;
         y.classList.add('goster');
         clearTimeout(this.yonergeZaman);
         this.yonergeZaman = setTimeout(() => y.classList.remove('goster'), sure || 3000);
-        if (sesliMi) {
-            /* Menü kartına tıklanırken ses çoktan başladıysa dokunma;
-               başka bir yoldan gelindiyse (örn. مِنْ جَدِيدٍ) burada başlat. */
-            const ses = App.yonergeSes;
-            if (!(ses && !ses.paused && !ses.ended)) App.yonergeSesCal();
-        }
     },
-
     render() {
         const screen = document.getElementById('game2-screen');
         screen.innerHTML = `
             <div class="back-btn" id="g2-back">${BACK_SVG}</div>
             <!-- Yönerge artık üstte sabit durmaz: faz başında ekranın
-                 ortasında belirir, (ilk sefer sarf/ses/yonergesarf.mp3 ile) okunur
-                 ve kendiliğinden kaybolur -->
-            <div class="g2-yonerge" id="g2-yonerge" dir="rtl"></div>
+                 ortasında Türkçe olarak belirir ve kendiliğinden kaybolur
+                 (03.10.2026: sesli anlatım kaldırıldı) -->
+            <div class="g2-yonerge" id="g2-yonerge" dir="ltr" lang="tr"></div>
             <div class="g2-dunya" id="g2-dunya">
                 <!-- SOL SAHNE: USTA ATÖLYESİ -->
                 <section class="g2-sahne">
@@ -1482,10 +1472,10 @@ const Game2 = {
         if (this.ilkYonerge) {
             this.ilkYonerge = false;
             this.yonergeGoster(
-                'اِضْغَطْ عَلَى الْكَلِمَةِ لِتَسْتَخْرِجَ جَذْرَهَا.' +
-                '<br>' +
-                'اِخْتَرْ جَذْرًا ثُمَّ وَزْنًا لِتَصْنَعَ كَلِمَةً جَدِيدَةً.',
-                true, 5200);
+                'Kelimeye bas, kökünü çıkar.'
+                + '<br>' +
+                'Bir kök, sonra bir vezin seç; yeni bir kelime üret.',
+                6000);
         }
         document.getElementById('g2-kapIc').innerHTML = '';
         document.getElementById('g2-kokraf').innerHTML = '';
@@ -1821,6 +1811,7 @@ const Game2 = {
             });
             setTimeout(() => {
                 this.state.phase = 'forge';
+                this.kokVurgula();   // kökler indi: hangisine basılacağı belli olsun
                 // Boşaltma bitti: konteynırın altındaki yerine döner
                 fl.style.left = this.parkYeri + '%';
                 App.playSound('forklift');
@@ -1938,11 +1929,38 @@ const Game2 = {
     /* Vezin levhaları: kök seçili değilken panel boştur; kök seçilince
        YALNIZ o köke veri_kokler.js'te tanımlı İSİM vezinleri belirir.
        Vezin adındaki zaid harfler ف ع ل köküne göre kırmızı boyanır. */
+    /* RAFTAKİ KÖKÜ VURGULA (03.10.2026 — öğretmen: "bi kök usta bölümüne
+       taşınınca ve basılması gerektiğinde vurgulansın ki köke basılsın ve
+       vezinler çıksın").
+       Kök rafa indikten sonra vezin levhalarının gelmesi için önce köke
+       BASILMASI gerekiyor; külçeler durgun durduğu için bu adım gözden
+       kaçıyordu. Burada "şimdi basılmalı mı" sorusu sorulup .bas-bana
+       sınıfı açılıp kapatılıyor:
+         · faz 'forge' (kökler rafa indi) ve
+         · seçili kök yok ya da seçilinin bütün vezinleri dövüldü ve
+         · o kökün hâlâ dövülebilecek vezini var.
+       Bir köke basılınca vurgu kalkar; o kök bitince kalanlar yeniden
+       vurgulanır. Biçim sarf.css'te (.g2-kok-kulce.bas-bana). */
+    kokVurgula() {
+        const raf = document.getElementById('g2-kokraf');
+        if (!raf) return;
+        const sec = this.state.selRoot;
+        const bekliyor = this.state.phase === 'forge'
+            && (!sec || this.kalanVezin(sec) === 0);
+        raf.querySelectorAll('.g2-kok-kulce').forEach(k => {
+            const uygun = bekliyor && this.kalanVezin(k.dataset.kok) > 0;
+            k.classList.toggle('bas-bana', uygun);
+            if (uygun) k.setAttribute('title', 'Bu köke bas, vezinleri gelsin');
+            else k.removeAttribute('title');
+        });
+    },
+
     vezinleriGuncelle() {
         const panel = document.getElementById('g2-vezinler');
         panel.innerHTML = '';
         const root = this.state.selRoot;
         panel.style.removeProperty('--vf');
+        this.kokVurgula();
         if (!root) return;
         const liste = this.kokVezinleri(root);
         /* Çok vezinli köklerde panel 3 satıra çıkar. Akış SATIR SATIR:

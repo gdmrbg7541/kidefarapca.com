@@ -44,3 +44,12 @@ desktop.ini
 
 # --- kullanıcının silmek üzere kenara aldığı dosyalar ---
 _SILINECEK/
+
+# --- galeri asılları: siteye yalnız küçültülmüş kopyalar gider ---
+#  Galeri/ içine atılan fotoğraf 1-5 MB olabiliyor. _kaynak/uretici/
+#  galeriYenile.py bunlardan Galeri/web (en çok 1600 px) ve Galeri/kucuk
+#  (en çok 560 px) kopyalarını üretir; site yalnız onları kullanır.
+#  Asıllar klasörde durmaya devam eder, sadece GitHub'a gitmez.
+Galeri/*
+!Galeri/web/
+!Galeri/kucuk/
