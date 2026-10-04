@@ -33,15 +33,6 @@
 (function () {
   'use strict';
 
-  var AY = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-            'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
-
-  function tarihYaz(s) {
-    var p = String(s || '').split('-');
-    if (p.length !== 3) return s || '';
-    return parseInt(p[2], 10) + ' ' + (AY[parseInt(p[1], 10) - 1] || '') + ' ' + p[0];
-  }
-
   function el(etiket, sinif, yazi) {
     var e = document.createElement(etiket);
     if (sinif) e.className = sinif;
@@ -139,17 +130,29 @@
       if (Math.abs(dx) > 45) git(dx < 0 ? 1 : -1);
     }, { passive: true });
 
-    git(0, true);
+    git(ayar.basla || 0, true);
     return { git: git, sira: function () { return i; } };
   }
 
-  /* ---------------------------------------------------------------- duyurular */
+  /* -------------------------------------------------------------- sınıfta yeni */
+  /* 04.10.2026 — öğretmen: "amacımız yaptığımız yeni güncellemeleri bildirmek
+     ama çok fazla teknik bi dille değil, öğretim yöntem ve teknikleri ve
+     öğretmenin kolaylıkla uygulaması vs yönünden."
+     Kaynak: sistem/siniftayeni.js — her kayıt yeniliğin SINIFTA ne işe
+     yaradığını anlatır. Site içi teknik şerit ayrı: sistem/yenilikler.js.
+     En yeni kayıtla açılır, oklarla geriye doğru gezilir. */
+  var AY = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+            'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+
+  function tarihYaz(s) {
+    var p = String(s || '').split('-');
+    if (p.length !== 3) return s || '';
+    return parseInt(p[2], 10) + ' ' + (AY[parseInt(p[1], 10) - 1] || '') + ' ' + p[0];
+  }
+
   function duyurulariKur(bolum) {
     var liste = [];
-    try {
-      if (window.KidefYenilikler && KidefYenilikler.hepsi) liste = KidefYenilikler.hepsi();
-    } catch (e) { liste = []; }
-    liste = liste.slice(0, 12);
+    try { liste = (window.KIDEF_SINIFTA_YENI || []).slice(); } catch (e) { liste = []; }
     if (!liste.length) return 0;
 
     var sol = bolum.querySelector('.gd-sol');
@@ -158,9 +161,10 @@
 
     var kart = el('article', 'gd-kayit');
     var ust = el('div', 'gd-ust');
+    var etiket = el('span', 'gd-etiket');
     var tarih = el('time', 'gd-tarih');
     var rozet = el('span', 'gd-rozet', 'YENİ');
-    ust.appendChild(tarih); ust.appendChild(rozet);
+    ust.appendChild(etiket); ust.appendChild(tarih); ust.appendChild(rozet);
     var h4 = el('h4');
     var p = el('p');
     kart.appendChild(ust); kart.appendChild(h4); kart.appendChild(p);
@@ -170,13 +174,15 @@
     gezgin({
       adet: liste.length, kap: sol, okKap: sol.querySelector('.gd-govde'), alt: alt,
       dikey: true,
-      geriEtiket: 'Önceki güncelleme', ileriEtiket: 'Sonraki güncelleme',
+      geriEtiket: 'Önceki yenilik', ileriEtiket: 'Sonraki yenilik',
       ciz: function (i) {
-        var y = liste[i] || {};
-        tarih.textContent = tarihYaz(y.tarih);
+        var f = liste[i] || {};
+        etiket.textContent = f.e || '';
+        tarih.textContent = tarihYaz(f.t);
         rozet.hidden = i !== 0;
-        h4.textContent = y.baslik || '';
-        p.textContent = y.metin || '';
+        h4.textContent = f.b || '';
+        p.textContent = f.m || '';
+        kart.scrollTop = 0;               /* sabit boy kâğıt: yeni kayıt baştan */
         kart.classList.remove('gd-gir');
         void kart.offsetWidth;            /* animasyonu yeniden başlat */
         kart.classList.add('gd-gir');

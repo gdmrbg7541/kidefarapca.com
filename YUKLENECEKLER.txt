@@ -4449,3 +4449,102 @@ DENETİM (yerel sunucu + Playwright)
   Yedek: _kaynak/yedekler/20261004-kagit-sus/
   Denetim: 1400 px ve 430 px'te ekran görüntüsü; bölüm 549 px,
   taşma yok, sayfa hatası yok.
+
+04.10.2026 · Kâğıt sabit boyda, içi kaydırmalı · fotoğraf alanı sabit
+  Öğretmen: "site güncellemelerin bilgi kağıdı dikey olarak sabit boyutta
+  olsun, scrolla aşağı kaydırılsın" + "boyut küçük foto gibi olsun, foto
+  alanı da sabit olacak görseller dikey olarak yüksekse dahi o alanı
+  büyütmeyecek o alana göre küçülecek."
+
+  · TEK ÖLÇÜ: #guncellemeler --gd-boy (geniş 280 px, dar 240 px).
+    Hem kâğıt hem fotoğraf çerçevesi bu boyda — "küçük foto" boyutu.
+  · KÂĞIT SABİT, İÇİ KAYIYOR: kâğıdın kendisi artık dış çerçeve
+    (.gd-duyuru): kenarlık, gölge, yapıştırıcı bandı ve altta solma.
+    Yazı içeride (.gd-kayit) kayıyor; bant ve solma kaydırma kutusunun
+    DIŞINDA kaldığı için kırpılmıyor. Kenar boşluğu çizgisi metinle
+    birlikte kayıyor (background-attachment:local). İnce, yumuşak
+    kaydırma çubuğu. Duyuru değişince kâğıt başa sarıyor (galeri.js).
+  · FOTOĞRAF ALANI SABİT: oran kuralı (16:10) kaldırıldı, boy --gd-boy'a
+    sabitlendi, en çok 440 px. object-fit cover → CONTAIN: dikey/yüksek
+    fotoğraf kırpılmadan alana göre küçülür, alanı büyütemez.
+
+  DENETİM: 700×1200'lük dikey deneme fotoğrafı üretildi ve denendi —
+  kare 440×280 kaldı (yatay fotoğrafta da aynı), fotoğraf içeri sığdı.
+  Uzun duyuruda kâğıt 595×280 kaldı, içerik 411 px olup kaydı; bölüm
+  her durumda 504 px. Deneme fotoğrafı ve kopyaları siteden çıkarıldı
+  (_kaynak/yedekler/20261004-esit-kutu/deneme-foto/).
+
+  Betikler: _kaynak/uretici/kagitSabit.py · esitKutu.py
+  Yedek: _kaynak/yedekler/20261004-kagit-sabit/ · 20261004-esit-kutu/
+
+──────────────────────────────────────────────────────────────────────
+04.10.2026 · "SİTE GÜNCELLEMELERİ" → "FİKİR DEFTERİ"
+──────────────────────────────────────────────────────────────────────
+Öğretmen: "site güncellemelerinde teknik ve site ile ilgili değil de
+genellikle öğretimle ilgili bilgiler olsun, amacımız site bilgilerini
+paylaşmak değil öğretmenlerin özgün yöntemleri keşfetmelerini sağlamak,
+öğretmenlikteki enerjilerini yüksek tutmak, hatta başlığı site
+güncellemeleri yerine başka bi şey olarak belirle."
+Ek: "ileriki bilgileri de bu bağlamda ekleyelim, çok fazla teknik
+bilgiler olmasın."
+
+  · Başlık: "Site güncellemeleri" → FİKİR DEFTERİ. Simge ampul+defter.
+  · Kaynak: sistem/yenilikler.js yerine YENİ sistem/fikirdefteri.js.
+    28 öğretim fikri: etiket (Ders başı, Ölçme, Farklılaştırma, Hafıza,
+    Akran öğretimi, Öz bakım, Keşif…) + başlık + 2-3 cümlelik somut
+    uygulama. Hepsi sınıfta AYNI GÜN denenebilecek şeyler.
+  · Tarih ve "YENİ" rozeti kalktı; yerine etiket çipi geldi.
+  · Açılışta HAFTANIN fikri gelir (yılın kaçıncı haftasıysa o sıradaki)
+    ve yanında "BU HAFTA" rozeti durur; oklarla 28 fikrin hepsi gezilir.
+    Her hafta kendiliğinden başka bir fikirle açılır.
+
+  SİTE DUYURULARI KALKMADI: sistem/yenilikler.js duruyor ve öğretmen
+  profilindeki yenilik şeridini beslemeye devam ediyor. Teknik duyuru
+  oraya yazılacak.
+
+  KURAL (ileride eklenecekler için): Fikir Defteri'ne teknik/site
+  duyurusu YAZILMAZ. Her kayıt öğretmenin sınıfta aynı gün
+  deneyebileceği somut bir fikir olmalı. Bu kural dosyanın başında da
+  yazılı.
+
+  Yeni fikir eklemek: sistem/fikirdefteri.js dizisinin sonuna
+  { e:'etiket', b:'başlık', m:'metin' }. Sıra önemli değil.
+
+  Betik: _kaynak/uretici/fikirKur.py
+  Yedek: _kaynak/yedekler/20261004-fikir-defteri/
+  Sürüm: sistem/galeri.js?v=20261004a · fikirdefteri.js?v=20261004a
+  Denetim: açılışta 12/28 "Hata · Hatayı tahtaya al" + BU HAFTA rozeti;
+  ileri okta 13/28'e geçti ve rozet kalktı; bölüm 504 px, hata yok.
+
+04.10.2026 (düzeltme) · "Fikir Defteri" → "SINIFTA YENİ"
+  Öğretmen: "hayır fikir defteri olmaz, amacımız yaptığımız yeni
+  güncellemeleri bildirmek ama çok fazla teknik bi dille değil, öğretim
+  yöntem ve teknikleri ve öğretmenin kolaylıkla uygulaması vs yönünden."
+
+  Bir önceki adımda bölüm tamamen öğretim fikirlerine çevrilmişti — fazla
+  ileri gitmiş. Bölüm yine DUYURU bölümü; değişen DİL:
+    · Başlık yeniliğin adını değil öğretmene söylediğini anlatıyor
+      ("Flipbook yan çubuğu yenilendi" değil, "İçindekiler artık elinin
+      altında").
+    · Metin, sınıfta ne işe yaradığını ve nasıl uygulandığını söylüyor;
+      dosya adı, sürüm, klasör, kod adı geçmiyor.
+  · Başlık: Fikir Defteri → SINIFTA YENİ
+  · Kaynak: sistem/siniftayeni.js — 18 kayıt. Sitedeki bütün yenilikler
+    (yenilikler.js'teki 16 kayıt + bu haftanın işleri) öğretmen diliyle
+    yeniden yazıldı.
+  · Tarih geri geldi, en yenide "YENİ" rozeti, yanında alan etiketi
+    (Planlar, Dijital kitap, Oyun, Bilgi yarışması, Ders başı…).
+    Açılış en yeni kayıtta; hafta döndürmesi kalktı.
+  · sistem/fikirdefteri.js SİLİNMEDİ, yedeğe alındı — içindeki 28 öğretim
+    fikri ileride ayrı bir bölümde ya da duyuru metinlerinde kullanılabilir
+    (_kaynak/yedekler/20261004-siniftayeni/fikirdefteri.js).
+
+  YAZIM KURALI dosyanın başında: yeni kayıt eklerken teknik dil yok,
+  2-3 cümlede "sınıfta ne işine yarar, nasıl uygularsın".
+
+  Betik: _kaynak/uretici/siniftaYeniKur.py
+  Yedek: _kaynak/yedekler/20261004-siniftayeni/
+  Sürüm: sistem/galeri.js?v=20261004b · siniftayeni.js?v=20261004a
+  Denetim: açılışta 1/18 "Ders başı · 4 Ekim 2026 · Merak Çarkı günün
+  sözüyle açılıyor" + YENİ rozeti; ileri okta 2/18'e geçti, rozet kalktı.
+  Sayfa hatası yok.
