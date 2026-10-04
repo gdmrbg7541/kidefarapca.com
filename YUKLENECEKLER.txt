@@ -4941,3 +4941,26 @@ bilgiler olmasın."
    döndü. switchTab(9) tab12'yi açtı. Plan/işlendi/kaldığımız yer eski
    alanlara yazıldı; şube değişince plan ortak kaldı, defter ve işlendi
    şubeye özel kaldı. Sayfa hatası yok.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — YILLIK ÇIKTILAR AYRI SEKMEDE AÇILMIYOR
+────────────────────────────────────────────────────────────────────────
+  İstek: "ayrı bi sekme olarak açılmasın."
+
+  · Öğretmen panelinin sekme çubuğundaki «Yıllık Çıktılar» düğmesi
+    TAMAMEN kaldırıldı. Panelde ayrı sekmeye gerek yok: her haftanın
+    çıktısı zaten Sınıf Defteri kartının içinde yazıyor, defterin
+    başlığında da bağlantı var.
+  · Defter başlığındaki «Yıllık çıktılar» bağlantısı artık AYNI
+    sekmede açılıyor (target=_blank kalktı).
+  · Sınıf kartlarındaki «Yıllık Çıktılar» kartı da aynı sekmede
+    açılıyor (sinifmodul'de yeniSekme:false).
+  · cikti.html'in sol üstündeki geri tuşu, site içinden gelindiyse bir
+    adım GERİ gidiyor — paneldeki yerini kaybetmiyorsun. Doğrudan
+    girilmişse ana sayfaya götürüyor.
+
+  Betik: _kaynak/uretici/ciktiAyniSekme.py
+  Yedek: _kaynak/yedekler/20261004-ayni-sekme/
+  Sürüm: hesap/sinifdefteri.js?v=4 · sistem/ciktikart.js?v=2
+  Denetim: defterdeki bağlantıda target yok; tıklayınca açılan pencere
+  sayısı 0, aynı sekme cikti.html?sinif=9'a geçti. Sayfa hatası yok.

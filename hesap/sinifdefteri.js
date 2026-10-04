@@ -408,8 +408,10 @@
     h +=   '<span class="sd-sayac">' + dolu + ' / ' + HAFTA_SAYISI + ' hafta yazılı</span>';
     var ka = kitapAnahtar();
     if (ka) {
+      /* ayrı sekmede AÇILMAZ (öğretmen isteği): aynı sekmede gider,
+         cikti.html'in sol üstündeki tuş siteye geri getirir */
       h += '<a class="sd-tus sd-ikincil" href="cikti.html?sinif=' + sinifNo() +
-           '" target="_blank" rel="noopener" title="' +
+           '" title="' +
            esc(window.KIDEF_CIKTI[ka].ad) + ' — 36 haftanın tamamı">Yıllık çıktılar</a>';
     }
     h +=   '<button type="button" class="sd-tus sd-ikincil" id="sdYaz">Yazdır</button>';

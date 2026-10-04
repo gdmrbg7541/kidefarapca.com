@@ -114,6 +114,9 @@
         if (!a || !D[a]) return null;            /* bu kitabın planı yok */
         return { rozet: D[a].hafta + ' hafta' };
       },
+      /* yeniSekme:false → kart ayrı sekme açmaz, aynı sekmede gider
+         (04.10.2026, öğretmen: "ayrı bi sekme olarak açılmasın") */
+      yeniSekme: false,
       url: function (s) { return 'cikti.html?sinif=' + s; }
     });
     return true;

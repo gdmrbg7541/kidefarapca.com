@@ -3690,7 +3690,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          ve sınıf kartlarına «Yıllık Çıktılar» kartı. Asıl veri 157 KB olan
          sistem/ciktiveri.js; o buraya YÜKLENMEZ, cikti.html yükler. -->
     <script src="sistem/ciktivar.js?v=1"></script>
-    <script src="sistem/ciktikart.js?v=1"></script>
+    <script src="sistem/ciktikart.js?v=2"></script>
     <!-- İmam Hatip 7/9/10 «Kitap Etkinlikleri» kartı: sınıfın kart
          ızgarasına girer, ünite listesi kartın altında açılır. 7. sınıfta
          yalnız MEB 2027-2028 kitabı seçiliyken görünür. -->
@@ -6912,11 +6912,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          Panelin tamamı hesap/sinifdefteri.js içinde çizilir; buraya
          yalnız düğme ile boş #tab12 kutusu kondu. -->
     <button class="tab" title="Sınıf Defteri" aria-label="Sınıf Defteri" onclick="switchTab(12)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.2 3.6h13.2a2.2 2.2 0 0 1 2.2 2.2v14.6H6.4a2.2 2.2 0 0 1-2.2-2.2z" fill="#fdfefe" stroke="#90A4AE" stroke-width=".9"/><path d="M4.2 3.6h3.2v16.8H6.4a2.2 2.2 0 0 1-2.2-2.2z" fill="#16A085"/><g stroke="#BDC9D3" stroke-width="1.1" stroke-linecap="round"><path d="M9.6 7.8h7.4M9.6 11h7.4M9.6 14.2h5.2"/></g><path class="li-gun" d="M15.8 3.6h2.8v6l-1.4-1.3-1.4 1.3z" fill="#E67E22"/></svg><span>Sınıf Defteri</span></button>
-    <!-- YILLIK ÇIKTILAR kısayolu (04.10.2026): sekme değil, cikti.html'i
-         açar. Seçili kitabın 36 haftalık öğrenme çıktıları orada. -->
-    <button class="tab" type="button" title="Yıllık Öğrenme Çıktıları"
-            aria-label="Yıllık Öğrenme Çıktıları"
-            onclick="window.open('cikti.html','_blank','noopener')"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.4" y="4.6" width="17.2" height="16" rx="2.2" fill="#fff" stroke="#0E7C66" stroke-width="1.4"/><path d="M3.4 9.2h17.2" stroke="#0E7C66" stroke-width="1.4"/><path d="M3.4 6.8a2.2 2.2 0 0 1 2.2-2.2h12.8a2.2 2.2 0 0 1 2.2 2.2v2.4H3.4z" fill="#16A085"/><g fill="#C9DED8"><rect x="6.2" y="11.6" width="3.2" height="2.4" rx=".7"/><rect x="10.4" y="11.6" width="3.2" height="2.4" rx=".7"/><rect x="14.6" y="11.6" width="3.2" height="2.4" rx=".7"/><rect x="6.2" y="15.6" width="3.2" height="2.4" rx=".7"/></g><rect class="li-gun" x="10.4" y="15.6" width="3.2" height="2.4" rx=".7" fill="#E67E22"/></svg><span>Yıllık Çıktılar</span></button>
+    <!-- YILLIK ÇIKTILAR: panelde AYRI SEKME YOK (04.10.2026, öğretmen:
+         "ayrı bi sekme olarak açılmasın"). Çıktılara iki yerden
+         ulaşılıyor: Sınıf Defteri'nin başlığındaki bağlantı ve sınıf
+         kartlarındaki «Yıllık Çıktılar» kartı — ikisi de aynı sekmede
+         açılır. Zaten her haftanın çıktısı defter kartının içinde. -->
     <!-- "Veli & Durum" sekmesi buradan KALDIRILDI: artik ogretmen profilinde,
          "Kisisel Bilgilerim"in hemen altindaki akordiyonda yasiyor. -->
     <button class="tab" title="Sınıf Araçları" aria-label="Sınıf Araçları" onclick="switchTab(4)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.2V5a2.1 2.1 0 0 1 2.1-2.1h1.8A2.1 2.1 0 0 1 15 5v1.2" fill="none" stroke="#8d6e63" stroke-width="1.9" stroke-linecap="round"/><rect x="2.6" y="6.2" width="18.8" height="13.8" rx="2.4" fill="#e67e22"/><path d="M2.6 12.2h7.6v1.5a1.1 1.1 0 0 0 1.1 1.1h1.4a1.1 1.1 0 0 0 1.1-1.1v-1.5h7.6" fill="none" stroke="#b3541e" stroke-width="1.6"/><rect x="10.6" y="11.1" width="2.8" height="3.3" rx=".8" fill="#f6ddc5" stroke="#b3541e" stroke-width="1.1"/><path d="M5.4 9.2h3M15.6 9.2h3" stroke="#f6ddc5" stroke-width="1.5" stroke-linecap="round"/></svg><span>Sınıf Araçları</span></button>
@@ -7619,7 +7619,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/oturumguvenlik.js?v=20260912a"></script>
     <!-- Sınıf Defteri: şubenin 36 haftalık ders defteri.
          listelerim.js ve oturumguvenlik.js'ten SONRA: switchTab'ı sarıyor. -->
-    <script src="hesap/sinifdefteri.js?v=3"></script>
+    <script src="hesap/sinifdefteri.js?v=4"></script>
     <script src="hesap/ogrencihesap.js?v=20260919e"></script>
     <script src="sistem/ihoneri.js?v=20260805a"></script>
     <script src="sistem/gorev.js?v=36"></script>
