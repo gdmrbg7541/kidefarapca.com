@@ -26,6 +26,19 @@
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
 
+  { t: '2026-10-04', e: 'Sınıf defteri', b: 'Her haftanın öğrenme çıktısı kitabına göre hazır',
+    m: 'Şubenin defterini açtığında o haftanın ünitesi ve öğrenme çıktıları kazanım '
+     + 'kodlarıyla karşında duruyor; hangi kitabı kullanıyorsan ona ait olanlar '
+     + 'geliyor, kitabı değiştirince çıktılar da değişiyor. Tek dokunuşla deftere '
+     + 'düşürüyorsun, dersin günü kendiliğinden yazılıyor. Zümre ya da denetim '
+     + 'istediğinde dolu haftaları imza satırıyla birlikte yazdırabilirsin.' },
+
+  { t: '2026-10-04', e: 'Sınıf defteri', b: 'Plan ve defter artık tek yerde',
+    m: 'Haftalık plan ile defter ayrı ayrı doldurulmuyor: aynı hafta kartında '
+     + 'üstte kitaptan gelen çıktı, ortada senin planın, altta sınıfta gerçekten '
+     + 'işlenen yazıyor. "İşlendi" kutusu ve kaldığın yer de orada. Plan '
+     + 'şubelerin ortak kalıyor, defter her şubenin kendine özel.' },
+
   { t: '2026-10-04', e: 'Ders başı', b: 'Günün sözünü kendi dersine göre seçiyorsun',
     m: 'Merak Çarkı açılınca gelen söz artık tek çeşit değil: âyet, hadis, yalnız '
      + 'dinî sözler, atasözü ya da deyim — hangisini seçersen o tür geliyor ve '

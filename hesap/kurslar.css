@@ -155,11 +155,23 @@ header svg { stroke: white; }
     border-radius: 12px; 
     box-sizing: border-box;
     background: #fff;
-    color: #333;
+    /* 04.10.2026 — öğretmen: "şifre girerken gri olan noktalar siyaha yakın
+       olsun". Şifre alanında tarayıcının çizdiği noktalar da bu renkten
+       geliyor; #333 açık kalıyordu. */
+    color: #161A22;
     font-family: 'Marhey', sans-serif;
     font-size: 15px;
     transition: all 0.3s;
 }
+
+/* "…boşları çok açık gri olsun" — şifre alanındaki placeholder noktaları
+   (••••••••) yalnızca süs; sönük dursunlar ki yazılanla karışmasınlar.
+   Bilgi veren placeholder'lara (ornek@mail.com, 5XX XXX XX XX) dokunulmadı,
+   onlar okunur kalmalı.
+   opacity:1 şart: Firefox placeholder'a kendiliğinden saydamlık veriyor. */
+.form-group input[type="password"]::placeholder { color: #DEE4EB; opacity: 1; }
+.form-group input[type="password"]::-webkit-input-placeholder { color: #DEE4EB; }
+.form-group input[type="password"]::-moz-placeholder { color: #DEE4EB; opacity: 1; }
 .form-group input:focus, .form-group select:focus {
     outline: none;
     border-color: var(--primary-color);

@@ -4964,3 +4964,55 @@ bilgiler olmasın."
   Sürüm: hesap/sinifdefteri.js?v=4 · sistem/ciktikart.js?v=2
   Denetim: defterdeki bağlantıda target yok; tıklayınca açılan pencere
   sayısı 0, aynı sekme cikti.html?sinif=9'a geçti. Sayfa hatası yok.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — SINIFTA YENİ: sınıf defteri duyuruları
+────────────────────────────────────────────────────────────────────────
+  İstek: "bu özelliği duyurulara ekle."
+
+  Dizinin başına iki kayıt kondu (etiket: Sınıf defteri):
+   · "Her haftanın öğrenme çıktısı kitabına göre hazır" — ünite ve
+     kazanım kodları defterde hazır geliyor, kitap değişince çıktılar da
+     değişiyor, tek dokunuşla deftere düşüyor, dolu haftalar imza
+     satırıyla yazdırılabiliyor.
+   · "Plan ve defter artık tek yerde" — aynı hafta kartında kitaptan
+     gelen çıktı, kendi planın ve sınıfta işlenen; işlendi kutusu ve
+     kaldığın yer de orada; plan şubelerde ortak, defter şubeye özel.
+
+  Dosyanın yazım kuralına uyuldu: başlıklar yeniliğin adını değil
+  öğretmene söylediğini anlatıyor, metinlerde dosya adı/sürüm/klasör yok.
+  Toplam kayıt 18 → 20.
+
+  Betik: _kaynak/uretici/siniftaYeniDefter.py
+  Yedek: _kaynak/yedekler/20261004-duyuru-defter/
+  Sürüm: sistem/siniftayeni.js?v=20261004d
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — GİRİŞ EKRANI: ŞİFRE NOKTALARININ RENGİ
+────────────────────────────────────────────────────────────────────────
+  İstek: "index giriş ekranında şifre girerken gri olan noktalar siyaha
+  yakın olsun, boşları çok açık gri olsun."
+
+  İki ayrı şeydi:
+   · YAZILAN noktalar — tarayıcı bunları alanın color'uyla çiziyor.
+     kurslar.css'te .form-group input { color:#333 } yazıyordu, açık
+     kalıyordu → #161A22 (siyaha yakın).
+   · BOŞ noktalar — placeholder="••••••••". Placeholder için hiçbir
+     kural yoktu, tarayıcının orta grisi çıkıyordu → yalnız şifre
+     alanlarında #DEE4EB (çok açık gri). opacity:1 eklendi, yoksa
+     Firefox üstüne bir de saydamlık veriyor.
+
+  Bilgi veren placeholder'lara DOKUNULMADI (ornek@mail.com,
+  5XX XXX XX XX) — onların okunur kalması gerekiyor.
+
+  index.html bu css'i SÜRÜMSÜZ yüklüyordu; ?v=20261004a eklendi, yoksa
+  tarayıcı eski dosyayı gösterirdi.
+
+  Depo kökünde kurslar.css'in birebir kopyası var; ikisi ayrışmasın diye
+  ikisine de yazıldı (index.html hesap/ altındakini yüklüyor).
+
+  Betik: _kaynak/uretici/sifreNoktalari2.py
+  Yedek: _kaynak/yedekler/20261004-sifre-noktalari/
+  Denetim: eski/yeni yan yana ölçüldü — yazı rgb(51,51,51) → rgb(22,26,34);
+  placeholder "kural yok" → rgb(222,228,235). E-posta placeholder'ı aynı
+  kaldı ve okunur.
