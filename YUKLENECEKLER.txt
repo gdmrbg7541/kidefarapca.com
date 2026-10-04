@@ -4548,3 +4548,304 @@ bilgiler olmasın."
   Denetim: açılışta 1/18 "Ders başı · 4 Ekim 2026 · Merak Çarkı günün
   sözüyle açılıyor" + YENİ rozeti; ileri okta 2/18'e geçti, rozet kalktı.
   Sayfa hatası yok.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — GÜNÜN SÖZÜ: TÜR SEÇİMİ (âyet / atasözü / deyim)
+────────────────────────────────────────────────────────────────────────
+  İstek: "günün sözünü öğretmen isterse sadece dinî konular, örneğin
+  sadece âyetlerden, sadece hadislerden, sadece atasözlerinden, sadece
+  deyimlerden gibi bir çok seçenek ekleyelim."
+
+  Sözler artık türlerine göre ayrı havuzlarda:
+    merak/gunsozu-veri.js   atasözü 36 · deyim 26 · hadis 0 (BOŞ)
+    merak/gunsozu-ayet.js   âyet 16 — ÜRETİLEN DOSYA, elle değiştirme
+    merak/gunsozu.js        motor: havuzlar, tür şeridi, güne göre seçim
+
+  · Pop-up'ın altında şerit: Hepsi · Âyet · Atasözü · Deyim.
+    Seçim localStorage['kidef_gunsozu_tur'] ile hatırlanıyor.
+  · BOŞ HAVUZ ŞERİTTE GÖRÜNMEZ. Hadis metni olmadığı için «Hadis»
+    düğmesi yok; "Dinî" (âyet+hadis) seçeneği de en az iki bileşeni
+    dolu olmadığı için gizli. Hadis eklenince ikisi de kendiliğinden
+    çıkar — kod değişikliği gerekmiyor.
+  · Âyet seçiliyse sözün üstünde Arapçası (yeşil, sağdan sola), altında
+    meali, en altta kaynağı (sure adı + âyet no) yazıyor.
+  · Güne göre seçim her havuzda ayrı: aynı gün, aynı türde, bütün
+    cihazlarda aynı söz.
+
+  ÂYETLERİN ARAPÇASI ELLE YAZILMADI. _kaynak/uretici/ayetSecki.py
+  degerler/kisasureler.js dosyasındaki doğrulanmış metni konumsal olarak
+  kopyalıyor. Seçkiyi değiştirmek için betikteki SECKI listesini düzenle
+  (sure adı + âyet no + simge + not) ve betiği yeniden çalıştır:
+      python3 _kaynak/uretici/ayetSecki.py "$K"
+
+  HADİS EKLEMEK İSTERSEN: merak/gunsozu-veri.js dosyasının sonundaki
+  KIDEF_SOZ_HADIS dizisine kayıt ekle. Her kayıtta k alanına kaynağı yaz
+  (ör. 'Buhârî, İlim, 10'); Arapçası varsa ar alanına kopyala. Dosyanın
+  başında örnek biçim duruyor.
+
+  SINIFTA YENİ: 04.10 tarihli kayıt güncellendi — "Günün sözünü kendi
+  dersine göre seçiyorsun".
+
+  Betikler: _kaynak/uretici/ayetSecki.py · gunsozuTur.py ·
+            siniftaYeniGunsozu.py
+  Yedek:    _kaynak/yedekler/20261004-gunsozu-tur/ ·
+            _kaynak/yedekler/20261004-siniftayeni-gunsozu/
+  Sürüm:    merakcarki.css?v=7 · gunsozu.js?v=3 · gunsozu-veri.js?v=1 ·
+            gunsozu-ayet.js?v=1 · siniftayeni.js?v=20261004b
+  Denetim:  masaüstü 1280 ve telefon 390 px'te dört tür tek tek açıldı;
+            âyette Arapça + meal + "İnşirah Suresi, 5. ayet" çıktı,
+            deyimde anlam satırı, atasözünde "Türk atasözü". Sayfa
+            yenilendiğinde seçim korundu. Taşma ve sayfa hatası yok.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — KAREKODLA GİRİŞ: SENDE KALAN İŞ (Firebase Blaze)
+────────────────────────────────────────────────────────────────────────
+  Karekodla giriş kodu sitede ve functions/ içinde EKSİKSİZ duruyor:
+    functions/index.js  → qrOturumBaslat · qrOturumBilgi ·
+                          qrOturumOnayla · qrOturumSor
+    bölge europe-west1 (hesap/qrgiris.js içindeki QR_BOLGE ile aynı)
+    çalışma ortamı nodejs22 — bu bilgisayardaki node da v22
+  Eksik olan tek şey: işlevlerin yayında olması. Cloud Functions
+  yalnız Blaze planında çalışır; plan normale dönünce işlevler durur.
+
+  SIRAYLA (ödeme adımı bende yapılamıyor, kendin yapacaksın):
+   1. console.firebase.google.com → kidefarapca-98f9c → sol altta
+      plan satırı → Upgrade → Blaze.
+   2. Aynı yerde "Budgets & alerts" → aylık eşik koy (ör. 5 USD).
+      Bu kullanımda karekod girişi ücretsiz katmanın içinde kalır.
+   3. Terminalde, bir kez:
+         npm install -g firebase-tools
+         firebase login
+   4. Site klasöründe:
+         cd "$K/functions" && npm install
+         cd "$K" && firebase deploy --only functions
+   5. Konsolda Functions sekmesinde dört işlev de europe-west1
+      bölgesinde "Çalışıyor" görünmeli. Sonra indexte karekodu dene.
+
+  Ayrıntılı anlatım: functions/KAREKOD-KURULUM.md
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — GÜNÜN SÖZÜ: HADİS HAVUZU (12 hadis) + «Dinî» seçeneği
+────────────────────────────────────────────────────────────────────────
+  İstek: "hadisler için internetten tara."
+
+  KAYNAK: sunnah.com. Arapça metinler sayfada basıldığı gibi,
+  harekeleriyle birlikte AYNEN kopyalandı — hiçbiri elle yazılmadı.
+    · Sahîh-i Buhârî, Kitâbü'l-İlm   sunnah.com/bukhari/3
+    · Sahîh-i Buhârî 5027            sunnah.com arama sonucu
+    · Sahîh-i Müslim 2699a           sunnah.com/muslim:2699a
+    · Nevevî, Kırk Hadis             sunnah.com/nawawi40
+
+  DOĞRULAMA: on iki metin, kaynak sayfaya karşı tek tek sınandı.
+  Buhârî 71 ile Müslim 2699a ayrıca KOD NOKTASI KOD NOKTASI
+  karşılaştırıldı — birebir aynı çıktı. Sınama sırasında Buhârî 71'in
+  tamamının daha uzun olduğu görüldü; bizdeki metin hadisin baş kısmı
+  ve künyede bu açıkça yazıyor.
+
+  SEÇİM ÖLÇÜSÜ: hepsi sahih/hasen. Zayıf (daîf) rivayetler — "ilim
+  talebi her Müslümana farzdır" gibi çok bilinen ama senedi zayıf
+  olanlar dâhil — alınmadı. Birkaç uzun hadisin yalnız baş kısmı
+  kullanıldı; künyede "hadisin baş kısmı / ilk cümlesi / bir bölümü"
+  diye yazıyor.
+
+  HADİSLER
+    Buhârî 69       Kolaylaştırın, zorlaştırmayın…
+    Buhârî 71       Allah kimin hakkında hayır dilerse…
+    Buhârî 5027     Sizin en hayırlınız, Kur'an'ı öğrenen ve öğreten
+    Müslim 2699a    Kim ilim için bir yola girerse…
+    Buhârî+Müslim   Ameller niyetlere göredir
+    Tirmizî 2318    Kendini ilgilendirmeyeni terk etmek
+    Buhârî 13 /
+      Müslim 45     Kendisi için istediğini kardeşi için de istemedikçe
+    Buhârî+Müslim   Ya hayır söylesin ya sussun
+    Buhârî          Öfkelenme
+    Tirmizî 1987    Nerede olursan ol…
+    Tirmizî 2516    Allah'ın hakkını gözet…
+    Müslim          İyilik güzel ahlaktır
+
+  TÜRKÇESİ: çeviriler Arapça metne dayanılarak yazıldı. Kendi
+  kullandığın meâl varsa merak/gunsozu-veri.js içinde s alanını
+  değiştirebilirsin — Arapçaya dokunma.
+
+  KÜNYE BİÇİMİ: kaynağın verdiği hadis numaraları kullanıldı. Türkçe
+  usuldeki bâb künyesi (ör. "Buhârî, İlim, 11") UYDURULMADI; o biçimi
+  istiyorsan k alanlarını kendin yazarsın.
+
+  ŞERİT: havuz dolunca «Hadis» ve «Dinî» (âyet+hadis) seçenekleri
+  kendiliğinden göründü — kodda değişiklik gerekmedi. Şerit artık altı
+  düğme: Hepsi · Âyet · Hadis · Dinî · Atasözü · Deyim.
+
+  Betikler: _kaynak/uretici/hadisHavuzu.py · hadisKunyeDuzelt.py ·
+            siniftaYeniHadis.py
+  Yedek:    _kaynak/yedekler/20261004-hadis-havuzu/
+  Sürüm:    gunsozu-veri.js?v=2 · siniftayeni.js?v=20261004c
+  Denetim:  1280 ve 390 px'te altı türün hepsi tek tek açıldı. Hadiste
+            Arapça + Türkçe + künye çıktı, "Dinî"de âyet ve hadis aynı
+            havuzda döndü. Telefonda şerit iki satıra iniyor, taşma ve
+            sayfa hatası yok.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — SINIF DEFTERİ (öğretmen paneline yeni sekme)
+────────────────────────────────────────────────────────────────────────
+  İstek: "kartların içine sınıf defterleri için bi kart yapalım, buradan
+  öğretmen sınıflarına göre güncel ve herhangi bi tarihin öğrenme
+  çıktılarını deftere yazabileceği bi sistem yapalım, her hafta için
+  olsun."
+  Kararlar: kendi şubelerim · öğretmen panelinde sekme · çıktılar hem
+  kazanım önerisinden hem kendi haftalık planımdan hem serbest.
+
+  NEREDE: öğretmen panelinde «Sınıf Defteri» sekmesi (Haftalık Plan'ın
+  yanında). Seçili ŞUBENİN 36 haftalık defteri çizilir; şube seçili
+  değilse kendi uyarısını basar.
+
+  NE YAPIYOR
+   · Üstte bugünün tarihi ve kaçıncı hafta olduğu; «Bugünün haftasına
+     git» düğmesi o karta kaydırıp yazı alanına odaklanıyor.
+   · «Tarihe git» kutusuna herhangi bir gün yazılınca o günün haftasına
+     atlıyor ve ders günü boşsa o günü kendiliğinden yazıyor. Tatile
+     denk gelen gün uyarı veriyor.
+   · Her haftada: ders günü + öğrenme çıktıları + iki kısayol —
+       «Öneri» → sitedeki 36 haftalık kazanım önerisi (seviyenin sınıf
+                 numarasına göre)
+       «Plan»  → Haftalık Plan'da o seviyeye yazdığın metin
+     Dolu satırın üstüne yazmadan önce soruyor.
+   · Üstte "n / 36 hafta yazılı" sayacı; yazılı haftalar yeşil zeminli.
+   · «Yazdır» → yalnız dolu haftaların tablosu, şube adı, tarih ve imza
+     satırı. Okul adı ya da öğretmen adı YAZILMIYOR (boş bırakıldı).
+   · Ara tatiller (1. ara tatil, sömestr, 2. ara tatil) ayrı şerit
+     olarak görünüyor — Haftalık Plan'daki gibi.
+
+  VERİ: şubenin kendi kaydında —
+     data.levels[lId].classes[cId].defter = { "<hafta>": {t,c,g} }
+  Kaydetme listelerim.js'teki save() ile; hesapla birlikte buluta
+  gidiyor, ayrı depo yok. Şube değişince defter de değişiyor.
+
+  TAKVİM: Haftalık Plan ile BİREBİR aynı hesap — 14.09.2026 başlangıç,
+  36 hafta, 9. haftadan sonra 1 hafta, 18'den sonra 2 hafta, 22'den
+  sonra 1 hafta tatil. İki ekranın tarihleri kaymaz.
+
+  DOKUNULMAYANLAR: listelerim.js'in içine girilmedi. switchTab,
+  oturumguvenlik.js'in yaptığı gibi SARILDI (sekme no 12).
+  index.html'e yalnız üç şey eklendi: sekme düğmesi, boş #tab12
+  kutusu, betik etiketi.
+
+  Dosya:   hesap/sinifdefteri.js  (yeni)
+  Betik:   _kaynak/uretici/sinifDefteriKur.py · defterTarihDuzelt.py
+  Yedek:   _kaynak/yedekler/20261004-sinif-defteri/
+  Sürüm:   hesap/sinifdefteri.js?v=1
+
+  DENETİM (ayrı koşumda, bugün 7 Ekim'e sabitlenerek)
+   · takvim 36 hafta, üç tatil kayması Haftalık Plan ile birebir aynı
+   · 4. hafta "BU HAFTA" diye vurgulandı, açılışta oraya kaydırdı
+   · «Öneri» kazanımı düşürdü, tarih kendiliğinden doldu, sayaç arttı
+   · dolu satıra «Plan» basınca üstüne yazma onayı istedi
+   · elle yazılan metin ve tarih şubenin kaydına yazıldı
+   · 18 Kasım (ara tatil) uyarı verdi; 17 Mart 23. haftaya atladı
+   · 9-B şubesine geçince defter boş geldi (şubeler karışmıyor)
+   · şube seçili değilken uyarı çıktı
+   · yazdırmada 2 dolu hafta + imza satırı
+   · 420 px'te tek sütuna indi, yatay kayma yok, sayfa hatası yok
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — DERS SUNUMU PDF'LERİ: DURUM VE KARAR GEREKİYOR
+────────────────────────────────────────────────────────────────────────
+  İstek: "kidef arapçada ders sunumlarında pdf leri kullanalım, html ye
+  çevrilen sunumlar düzgün olmamış."
+
+  Kaynak: 1. KA / 2. Prtk / Geylani Hoca — 30 PDF, 1,1 GB, 5571 sayfa.
+  Büyük olmalarının sebebi fotoğraf değil: animasyon adımları ayrı
+  sayfa olarak dışa aktarılmış (bir deste 407, biri 927 sayfa).
+
+  SIKIŞTIRMA ÇALIŞIYOR ve kalite tam. Ghostscript /ebook metni METİN
+  olarak bırakıyor — Arapça harfler ve harekeler keskin kalıyor,
+  yalnız gömülü görseller 150 dpi'ya iniyor. 3 sunum hazır:
+     01 Genel Bilgiler ve Harfler   5,1 MB → 3,1 MB  (239 sayfa)
+     02 Renklere Göre Harf Birl.    2,3 MB → 0,7 MB  ( 91 sayfa)
+     03 Harf Ayırtetme              6,0 MB → 3,1 MB  (103 sayfa)
+  Hazır olanlar: _kaynak/gecici/sunum-hazir/ (depoya sızmasın diye
+  orada duruyor). Örnek sayfa karşılaştırması: _kaynak/gecici/
+  kalite-ham.png ve kalite-gs.png — gözle fark yok.
+
+  SORUN DEPO BOYUTU
+     izlenen dosyalar : 272 MB
+     .git geçmişi     : 1,38 GB   ← GitHub'ın önerdiği sınır 1 GB
+  30 sunumun tamamı sıkıştırılınca ~150 MB daha ekleyecek. Depo zaten
+  sınırın üstünde; hepsini koymak işleri yavaşlatır ve GitHub'dan uyarı
+  gelebilir. Bu yüzden DURDURDUM, karar sende:
+
+   A) Seçme sunumlar siteye (önerdiğim) — kavram anlatan 10-12 tanesi:
+      14 Arapça Kalıplar Dilidir · 15 Kalıplar Tablosu · 18 Arapçada
+      Kelime · 19 İsmin 4 Özelliği · 25 Harf-i Tarîf · 26 Müfred,
+      Tesniye, Cem · 27 Mazi Fiil · 28 Arapçada Ekler · 29 Müennes
+      Müzekker · 30 Muzari Fiil. Oyun/alıştırma desteleri (İkiki
+      kartları, Kim Daha Hızlı, Dinle ve Yaz) dışarıda kalır.
+      Tahmini ek: 25-40 MB.
+   B) Hepsi siteye — ~150 MB ek, depo ~430 MB izlenen dosya.
+   C) Sunumlar başka yerde (Drive vb.) dursun, siteden bağlantı
+      verelim — depo hiç büyümez.
+
+  SIKIŞTIRMAYI SEN DE ÇALIŞTIRABİLİRSİN (kaldığı yerden sürer):
+      cd "$K" && python3 _kaynak/uretici/sunumHazirla3.py "$K" --sure 1800
+      python3 _kaynak/uretici/sunumHazirla3.py "$K" --durum
+  Çıktı _kaynak/gecici/sunum-hazir yerine sunum/ klasörüne gider;
+  hangi dosyaların işleneceğine karar verilince betikteki listeyi
+  daraltırım.
+
+  NOT: .git/objects içinde 326 tane tmp_obj_* artığı var (yarıda kalmış
+  git işlemlerinden). Zarar vermiyor ama depoyu şişiriyor; istersen
+  temizleyecek komutu veririm.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — GİT TEMİZLİĞİ: ÖLÇÜM VE YENİ KOMUT
+────────────────────────────────────────────────────────────────────────
+  İstek: "giti temizleyecek bi command yap, çünkü çok fazla yol
+  değiştirdik, bu istediğim mantıklı mı"
+
+  ÖLÇÜM (bugün)
+    .git paketi            1,38 GB
+    izlenen dosyalar         272 MB
+    commit sayısı          1 610
+    yarıda kalmış artık      327 dosya ama yalnız  2,4 MB
+    boşta duran nesne        157 dosya ama yalnız  5,3 MB
+
+  Yani sıradan bakım (gc / prune) en fazla ~8 MB kazandırır. Geri
+  kalan 1,38 GB geçmişin KENDİSİ: bir kez commit'lenmiş, sonra silinmiş
+  ya da taşınmış dosyalar. git bunları unutmaz.
+
+  GEÇMİŞ NEYLE DOLU
+    kitap/                   680 MB   (kitaplar + mp4 ders videoları)
+    kök dosyaları            609 MB   ← eski sunum PDF'leri
+    dosyalar/                 63 MB
+    files/                    41 MB
+  En büyük altı sürüm:
+      98,5 MB  ⚔️ Kim Daha Hızlı?.pdf        } hepsi KÖKTE duruyordu,
+      83,5 MB  İkiki Kırmızı Kartlar.pdf     } sonra silindi —
+      77,5 MB  İkiki Mor Kartlar.pdf         } HEAD'de artık yoklar
+      72,7 MB  İkiki Yeşil Kartlar.pdf       } ama geçmişte duruyorlar
+      69,5 MB  İkiki Mavi Kartlar.pdf        }
+      38,0 MB  kitap/kidef-arapca-2-baski/05_sunumlar/mazi_animasyon.mp4
+
+  Not: bu PDF'ler, şu an sıkıştırıp siteye koymayı konuştuğumuz
+  sunumların ta kendisi. Bir kez tam boyutlarıyla depoya girmişler;
+  silinmeleri depoyu küçültmemiş.
+
+  YENİ KOMUT: GitHub/git-temizle.command  (çift tıkla çalışır)
+    1. takılı kilitleri kaldırır
+    2. tmp_obj_* artıklarını siler
+    3. depoyu yeniden paketler (git repack, bellek sınırı 256 MB) ve
+       çöp toplar
+    4. öncesini/sonrasını ve geçmişin ağırlığını raporlar
+    Çalışma klasörüne DOKUNMAZ; commit/push/dal silme YOK; geçmişi
+    YENİDEN YAZMAZ. Her şey yerel.
+    Beklenen kazanç: ~8 MB + yeniden paketlemenin bulacağı kadar.
+
+  ASIL KÜÇÜLTME AYRI BİR İŞ
+  609 MB'lık ölü yükü atmak için geçmişi yeniden yazmak gerekir
+  (git filter-repo). Sonuçları:
+    · bütün commit numaraları değişir
+    · GitHub'a zorla gönderim (force push) yapılır
+    · github-yedek-20260924-0245 ve yerel-gecmis-20260924-0323 dalları
+      da elden geçmeli (biri origin'de de duruyor)
+    · önce klasörün tam kopyası alınır
+  Yapılırsa 1,38 GB → yaklaşık 600-700 MB bekliyorum. Karar verilirse
+  ayrı bir komut olarak, tek başına, yedekle birlikte hazırlanacak.

@@ -380,33 +380,90 @@ html.dusuk-guc .mcs-mini * { animation: none !important; }
 .gs-katman[hidden]{ display:none; }
 
 .gs-kart{
-  position:relative; width:min(560px, 100%);
-  margin-top:clamp(10px, 6vh, 64px);
+  position:relative; width:min(680px, 100%);
+  margin-top:clamp(8px, 5vh, 52px);
   background:linear-gradient(150deg,#FFFDF6,#FFFFFF 58%);
-  border:1px solid #F0E2C0; border-radius:20px;
+  border:1px solid #F0E2C0; border-radius:24px;
   box-shadow:0 22px 60px rgba(16,26,46,.28);
-  padding:22px 24px 18px;
+  padding:26px 32px 22px;
+  text-align:center;
   transform:translateY(-16px) scale(.97);
   transition:transform .3s cubic-bezier(.2,.9,.3,1);
+}
+
+/* Her söze kendi simgesi (04.10.2026, öğretmen isteği). Çizim
+   merak/gunsozu.js'teki SIMGE havuzundan, kayıttaki s2 alanına göre. */
+.gs-simge{
+  width:92px; height:92px; margin:18px auto 4px;
+  display:grid; place-items:center; border-radius:50%;
+  background:radial-gradient(circle at 34% 28%, #FFF6E0, #FBE9C4 70%);
+  border:1px solid #F0DFB4;
+  box-shadow:inset 0 2px 6px rgba(255,255,255,.9), 0 6px 18px rgba(201,160,74,.22);
+}
+.gs-simge svg{
+  width:50px; height:50px; fill:none; stroke:#B07D18; stroke-width:1.6;
+  stroke-linecap:round; stroke-linejoin:round; display:block;
+}
+@media (max-width:640px){
+  .gs-simge{ width:72px; height:72px; margin:12px auto 2px; }
+  .gs-simge svg{ width:40px; height:40px; }
 }
 .gs-katman.gor .gs-kart{ transform:none; }
 
 .gs-etiket{
-  display:inline-flex; align-items:center; gap:7px;
-  font-size:.74rem; font-weight:800; letter-spacing:.11em; text-transform:uppercase;
-  color:#8A6412; background:#FDF1D9; border-radius:999px; padding:6px 13px;
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:.8rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  color:#8A6412; background:#FDF1D9; border-radius:999px; padding:7px 15px;
 }
-.gs-etiket svg{ width:16px; height:16px; fill:currentColor; }
+.gs-etiket svg{ width:18px; height:18px; fill:currentColor; stroke:none; }
 
+/* 04.10.2026 — öğretmen: "günün sözü çok daha büyük olsun" */
 .gs-soz{
-  margin:14px 0 8px; font-size:clamp(1.2rem, 3.1vw, 1.62rem); font-weight:800;
-  line-height:1.4; color:#15283F; letter-spacing:-.01em;
+  margin:14px 0 10px; font-size:clamp(1.9rem, 5.2vw, 3rem); font-weight:800;
+  line-height:1.26; color:#15283F; letter-spacing:-.02em; text-wrap:balance;
 }
-.gs-not{ margin:0; font-size:.97rem; line-height:1.55; color:#5B6471; }
+.gs-not{ margin:0 auto; max-width:46ch; font-size:clamp(1rem, 2.3vw, 1.22rem);
+  line-height:1.5; color:#5B6471; }
 
 .gs-alt{
   display:flex; align-items:center; justify-content:space-between; gap:12px;
-  margin-top:16px; padding-top:13px; border-top:1px dashed #EADFC6;
+  margin-top:20px; padding-top:15px; border-top:1px dashed #EADFC6;
+}
+
+/* 04.10.2026 — öğretmen: "sadece âyetlerden, sadece hadislerden, sadece
+   atasözlerinden, sadece deyimlerden gibi bir çok seçenek ekleyelim."
+   Âyet/hadis seçiliyse sözün üstünde Arapça metin; altta tür şeridi. */
+.gs-arapca{
+  margin:12px 0 2px; direction:rtl; unicode-bidi:isolate; text-align:center;
+  font-size:clamp(1.65rem, 4.6vw, 2.5rem); line-height:1.95;
+  font-weight:600; color:#0E7C66;
+}
+.gs-turler{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:center;
+  gap:7px; margin-top:20px; padding-top:15px; border-top:1px dashed #EADFC6;
+}
+.gs-turler-bas{
+  width:100%; margin-bottom:3px; font-size:.72rem; font-weight:800;
+  letter-spacing:.1em; text-transform:uppercase; color:#A9906A;
+}
+.gs-tur-t{
+  appearance:none; -webkit-appearance:none; cursor:pointer;
+  font:inherit; font-size:.86rem; font-weight:700; line-height:1;
+  padding:8px 15px; border-radius:999px;
+  border:1px solid #EADFC6; background:#FFFBF1; color:#8A6412;
+  transition:background .16s, color .16s, border-color .16s, transform .12s;
+}
+.gs-tur-t:hover{ background:#FDF1D9; }
+.gs-tur-t:active{ transform:translateY(1px); }
+.gs-tur-t[aria-pressed="true"]{
+  background:linear-gradient(140deg,#B07D18,#8A6412 72%);
+  border-color:#8A6412; color:#fff;
+}
+.gs-turler + .gs-alt{ margin-top:14px; padding-top:0; border-top:0; }
+@media (max-width:640px){
+  .gs-arapca{ font-size:clamp(1.35rem, 6.4vw, 1.9rem); line-height:1.85; }
+  .gs-tur-t{ font-size:.8rem; padding:7px 12px; }
+  .gs-turler{ gap:6px; margin-top:16px; padding-top:12px; }
 }
 .gs-kaynak{ font-size:.8rem; font-weight:700; color:#A08A5A; }
 .gs-tamam{
@@ -440,7 +497,7 @@ html.dusuk-guc .mcs-mini * { animation: none !important; }
 @media (max-width:640px){
   .gs-tus span{ display:none; }
   .gs-tus{ padding:8px 11px; }
-  .gs-kart{ padding:19px 18px 15px; }
+    .gs-kart{ padding:20px 16px 16px; }
 }
 @media (prefers-reduced-motion:reduce){
   .gs-katman, .gs-kart{ transition:none; }

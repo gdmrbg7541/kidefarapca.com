@@ -26,10 +26,12 @@
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
 
-  { t: '2026-10-04', e: 'Ders başı', b: 'Merak Çarkı günün sözüyle açılıyor',
-    m: 'Çarkı açar açmaz bir atasözü ve onu derse bağlayan tek cümle geliyor. '
-     + 'Zilden sonra sınıfa okuyup bir dakikada ısınma yaparsın. Söz her gün '
-     + 'değişiyor ve aynı gün bütün sınıflarda aynı; "bugünün sözü" diyebilirsin.' },
+  { t: '2026-10-04', e: 'Ders başı', b: 'Günün sözünü kendi dersine göre seçiyorsun',
+    m: 'Merak Çarkı açılınca gelen söz artık tek çeşit değil: âyet, hadis, yalnız '
+     + 'dinî sözler, atasözü ya da deyim — hangisini seçersen o tür geliyor ve '
+     + 'seçimin hatırlanıyor. Âyet ve hadiste Arapçası, Türkçesi ve kaynağı bir '
+     + 'arada çıkıyor; Arapça metni tahtaya yansıtıp okutabilirsin. Söz her gün '
+     + 'değişir ve aynı gün bütün sınıflarda aynıdır, "bugünün sözü" diyebilirsin.' },
 
   { t: '2026-10-03', e: 'Sarf', b: 'Kelime Fabrikası sıradaki adımı kendi gösteriyor',
     m: 'Kök, ustanın rafına inince yanıp sönüyor. Öğrenci nereye basacağını sormadan '
