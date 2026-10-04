@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yıllık Öğrenme Çıktıları — Kidef Arapça</title>
+<meta name="description" content="Seçilen ders kitabına göre 36 haftanın öğrenme çıktıları: ünite, kazanım kodları, içerik ve ölçme. Yıllık plan belgelerinden hazırlanmıştır.">
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+<style>
+  :root{
+    --yesil:#16A085; --koyu:#0E7C66; --murekkep:#1F2430; --gri:#5B6471;
+    --soluk:#8A93A0; --cizgi:#E3E8EF; --zemin:#EEF1F5;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--zemin); color:var(--murekkep);
+       font-family:system-ui,-apple-system,"Segoe UI",sans-serif; line-height:1.55;}
+
+  .yc-geri{position:fixed; top:14px; left:14px; z-index:50; width:44px; height:44px;
+    display:grid; place-items:center; background:#fff; border:1px solid var(--cizgi);
+    border-radius:13px; box-shadow:0 4px 14px rgba(31,36,48,.12);}
+  .yc-geri svg{width:22px; height:22px; fill:var(--koyu)}
+
+  header.yc-ust{background:linear-gradient(135deg,#0E7C66,#16A085 70%); color:#fff;
+    padding:26px 20px 24px; text-align:center;}
+  header.yc-ust h1{margin:0 0 6px; font-size:clamp(1.4rem,3.6vw,2rem); letter-spacing:-.01em;}
+  header.yc-ust p{margin:0; opacity:.92; font-size:.95rem;}
+
+  .yc-kap{max-width:1040px; margin:0 auto; padding:18px 16px 60px;}
+
+  .yc-arac{display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    background:#fff; border:1px solid var(--cizgi); border-radius:14px;
+    padding:13px 15px; margin:-30px 0 18px; position:relative;
+    box-shadow:0 8px 26px rgba(31,36,48,.10);}
+  .yc-arac label{font-size:.86rem; font-weight:700; color:var(--gri);}
+  .yc-arac select,.yc-arac input[type=search]{font:inherit; font-size:.92rem;
+    padding:8px 11px; border:1px solid #CBD5E1; border-radius:9px; color:var(--murekkep);
+    background:#fff; max-width:100%;}
+  .yc-arac input[type=search]{flex:1 1 180px; min-width:150px;}
+  .yc-tus{border:none; border-radius:10px; padding:9px 15px; cursor:pointer;
+    font:inherit; font-weight:700; font-size:.88rem; color:#fff; background:var(--yesil);}
+  .yc-tus:hover{background:var(--koyu)}
+  .yc-tus.ikincil{background:#fff; color:var(--koyu); border:1px solid #BCDAD2;}
+  .yc-tus.ikincil:hover{background:#E8F4F1}
+  .yc-ara{flex:1 1 auto}
+
+  .yc-kunye{background:#fff; border:1px solid var(--cizgi); border-radius:14px;
+    padding:14px 17px; margin-bottom:16px; font-size:.9rem; color:var(--gri);}
+  .yc-kunye b{color:var(--murekkep)}
+  .yc-kunye .yc-sat{display:flex; flex-wrap:wrap; gap:6px 20px;}
+
+  .yc-uyari{background:#FFF8E6; border:1px solid #F0DFB4; border-radius:14px;
+    padding:22px 20px; color:#7A6230; line-height:1.65;}
+  .yc-uyari b{color:#8A6412}
+
+  .yc-hafta{background:#fff; border:1px solid var(--cizgi); border-radius:13px;
+    padding:13px 16px; margin-bottom:11px; display:grid;
+    grid-template-columns:62px minmax(0,1fr); gap:14px; scroll-margin-top:16px;}
+  .yc-hafta.simdi{border-color:var(--yesil); box-shadow:0 0 0 2px rgba(22,160,133,.18)}
+  .yc-hafta.gizli{display:none}
+  .yc-no{text-align:center}
+  .yc-no b{display:block; font-size:1.5rem; line-height:1.1; color:var(--koyu)}
+  .yc-no span{display:block; font-size:.72rem; color:var(--soluk); line-height:1.5}
+  .yc-govde{min-width:0}
+  .yc-unite{font-weight:800; color:var(--yesil); font-size:.92rem; margin-bottom:6px;}
+  .yc-rozet{float:right; font-size:.72rem; font-weight:800; color:var(--yesil)}
+  .yc-liste{margin:0 0 8px; padding-left:19px}
+  .yc-liste li{margin:3px 0; font-size:.93rem}
+  .yc-kod{font-weight:700; color:var(--koyu)}
+  .yc-ek{font-size:.86rem; color:var(--gri); border-top:1px dashed var(--cizgi);
+    padding-top:7px; margin-top:7px;}
+  .yc-ek b{color:#44515F}
+  .yc-tatil{display:flex; align-items:center; justify-content:center; gap:9px;
+    background:#FDF3E3; border:1px dashed #E8C98E; border-radius:11px;
+    padding:9px 14px; color:#8A6412; font-weight:700; font-size:.88rem; margin-bottom:11px;}
+  mark{background:#FFF2A8; color:inherit; border-radius:3px; padding:0 2px}
+
+  @media (max-width:640px){
+    .yc-hafta{grid-template-columns:48px minmax(0,1fr); gap:10px; padding:11px 13px}
+    .yc-no b{font-size:1.2rem}
+    .yc-arac{margin-top:-22px}
+  }
+  @media print{
+    .yc-geri,.yc-arac,header.yc-ust p{display:none !important}
+    body{background:#fff}
+    .yc-hafta{break-inside:avoid; box-shadow:none; border-color:#999}
+    header.yc-ust{background:none; color:#000; padding:0 0 10px; text-align:left}
+  }
+</style>
+<!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
+<link rel="stylesheet" href="arakom.css?v=2">
+</head>
+<body>
+
+<a href="index.html" class="yc-geri" data-kidef-done="1" title="Siteye dön" aria-label="Siteye dön">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+</a>
+
+<header class="yc-ust">
+  <h1>Yıllık Öğrenme Çıktıları</h1>
+  <p>Seçtiğin ders kitabına göre 36 haftanın çıktıları — yıllık plan belgelerinden hazırlandı</p>
+</header>
+
+<div class="yc-kap">
+  <div class="yc-arac" id="ycArac"></div>
+  <div id="ycKunye"></div>
+  <div id="ycListe"></div>
+</div>
+
+<script src="sistem/sinifveri.js?v=20260924a"></script>
+<script src="sistem/ciktiveri.js?v=1"></script>
+<script src="sistem/geri.js?v=20260915a"></script>
+<script>
+/* ===========================================================================
+   YILLIK ÖĞRENME ÇIKTILARI — tek sayfa
+   ---------------------------------------------------------------------------
+   Öğretmen: "her kitap için bi yıllık her hafta için öğrenim çıktısı
+   otomatik olarak seçilen kitaplara göre hazır olsun, fakat öğretmenin
+   pratik bi şekilde ulaşabilmesi lazım."
+
+   Veri sistem/ciktiveri.js'ten (yıllık plan belgelerinden üretilir).
+   Kitap seçimi sistem/sinifveri.js'teki seçimle AYNI yerden okunur, burada
+   değiştirilince site genelinde de değişir — sınıf kartları, belgeler ve
+   ders verisi de o kitaba döner.
+
+   Takvim listelerim.js'teki renderPlan ile birebir: 14.09.2026, 36 hafta,
+   9/18/22. haftalardan sonra 1/2/1 hafta tatil.
+   =========================================================================== */
+(function () {
+  'use strict';
+
+  var BASLANGIC = [2026, 9, 14];
+  var TATIL = { 9: { ad: '1. Ara Tatil', h: 1 }, 18: { ad: 'Sömestr Tatili', h: 2 },
+                22: { ad: '2. Ara Tatil', h: 1 } };
+  var SINIFLAR = [5, 6, 7, 8, 9, 10];
+  var AY = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran',
+            'Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function el(id) { return document.getElementById(id); }
+  function ks(d) { return ('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2); }
+
+  var _tak = null;
+  function takvim() {
+    if (_tak) return _tak;
+    var bas = new Date(BASLANGIC[0], BASLANGIC[1]-1, BASLANGIC[2]), kayma = 0, c = [];
+    for (var i = 1; i <= 36; i++) {
+      var b = new Date(bas); b.setDate(bas.getDate() + (i-1)*7 + kayma);
+      var s = new Date(b); s.setDate(b.getDate()+6);
+      c.push({ no:i, bas:b, bit:s, tatil:TATIL[i]||null });
+      if (TATIL[i]) kayma += TATIL[i].h*7;
+    }
+    _tak = c; return c;
+  }
+  function buHafta() {
+    var d = new Date(), g = new Date(d.getFullYear(), d.getMonth(), d.getDate()), c = takvim();
+    for (var i=0;i<c.length;i++) if (g>=c[i].bas && g<=c[i].bit) return c[i].no;
+    return null;
+  }
+
+  /* --- sınıf ve kitap --- */
+  function sinifOku() {
+    var n = parseInt((location.search.match(/[?&]sinif=(\d+)/)||[])[1], 10);
+    if (SINIFLAR.indexOf(n) >= 0) return n;
+    try { var k = parseInt(localStorage.getItem('kidef_cikti_sinif'), 10);
+          if (SINIFLAR.indexOf(k) >= 0) return k; } catch (e) {}
+    return 9;
+  }
+  function sinifYaz(n) { try { localStorage.setItem('kidef_cikti_sinif', String(n)); } catch(e){} }
+
+  function kitaplar(n) {
+    var V = window.KidefSinifVeri;
+    return (V && V.veriYillari) ? V.veriYillari(n) : [];
+  }
+  function seciliKitap(n) {
+    var V = window.KidefSinifVeri;
+    var s = (V && V.seciliVeriYili) ? V.seciliVeriYili(n) : null;
+    return s || (kitaplar(n)[0] || null);
+  }
+  /* ciktiveri.js anahtarı: tek kitaplı sınıfta "9", çok kitaplıda "6@2026-2027" */
+  function anahtar(n, kitap) {
+    var C = window.KIDEF_CIKTI || {};
+    if (kitap && C[n + '@' + kitap.yil]) return n + '@' + kitap.yil;
+    if (C[String(n)]) return String(n);
+    return null;
+  }
+
+  var sinif = sinifOku(), suzgec = '';
+
+  /* --- araç çubuğu --- */
+  function aracCiz() {
+    var kt = kitaplar(sinif), sk = seciliKitap(sinif);
+    var h = '<label for="ycSinif">Sınıf</label><select id="ycSinif">';
+    SINIFLAR.forEach(function (n) {
+      h += '<option value="'+n+'"'+(n===sinif?' selected':'')+'>'+n+'. sınıf</option>';
+    });
+    h += '</select>';
+    if (kt.length > 1) {
+      h += '<label for="ycKitap">Kitap</label><select id="ycKitap" title="Site genelindeki kitap seçimiyle aynı">';
+      kt.forEach(function (k) {
+        h += '<option value="'+esc(k.yil)+'"'+(sk&&k.yil===sk.yil?' selected':'')+' title="'+esc(k.program||'')+'">'
+           + esc(k.ad || k.yil) + '</option>';
+      });
+      h += '</select>';
+    }
+    h += '<input type="search" id="ycAra" placeholder="Çıktı, konu ya da kod ara…" value="'+esc(suzgec)+'">';
+    h += '<button type="button" class="yc-tus" id="ycBugun">Bu haftaya git</button>';
+    h += '<button type="button" class="yc-tus ikincil" id="ycYaz">Yazdır</button>';
+    el('ycArac').innerHTML = h;
+
+    el('ycSinif').onchange = function () { sinif = parseInt(this.value,10); sinifYaz(sinif); ciz(); };
+    var kk = el('ycKitap');
+    if (kk) kk.onchange = function () {
+      var V = window.KidefSinifVeri;
+      if (V && V.veriYiliSec) V.veriYiliSec(sinif, this.value);
+      ciz();
+    };
+    el('ycAra').oninput = function () { suzgec = this.value.trim(); suz(); };
+    el('ycBugun').onclick = function () {
+      var b = buHafta(), k = b && el('ych'+b);
+      if (!k) { alert('Bugün ders haftasına denk gelmiyor (tatil ya da öğretim yılı dışı).'); return; }
+      k.scrollIntoView({ block:'center', behavior:'smooth' });
+    };
+    el('ycYaz').onclick = function () { window.print(); };
+  }
+
+  /* --- arama süzgeci --- */
+  function suz() {
+    var a = suzgec.toLocaleLowerCase('tr');
+    var kart = document.querySelectorAll('.yc-hafta');
+    for (var i=0;i<kart.length;i++) {
+      var t = (kart[i].dataset.ara || '');
+      kart[i].classList.toggle('gizli', !!a && t.indexOf(a) < 0);
+    }
+  }
+
+  /* --- çizim --- */
+  function ciz() {
+    aracCiz();
+    var kitap = seciliKitap(sinif);
+    var ak = anahtar(sinif, kitap);
+    var v = ak ? (window.KIDEF_CIKTI || {})[ak] : null;
+    var kunye = el('ycKunye'), liste = el('ycListe');
+
+    if (!v) {
+      kunye.innerHTML = '';
+      liste.innerHTML = '<div class="yc-uyari"><b>Bu kitap için hazır çıktı yok.</b><br>' +
+        esc(sinif + '. sınıf' + (kitap ? ' · ' + (kitap.ad || kitap.yil) : '')) +
+        ' için depoda yıllık plan belgesi bulunmadığından haftalık çıktı listesi ' +
+        'hazırlanmadı. Yanlış kitabın çıktısını göstermektense boş bırakmayı tercih ettim. ' +
+        'Yukarıdan başka bir kitap ya da sınıf seçebilirsin.</div>';
+      return;
+    }
+
+    kunye.innerHTML = '<div class="yc-kunye"><div class="yc-sat">' +
+      '<span><b>' + esc(v.ad) + '</b></span>' +
+      (v.program ? '<span>Program: ' + esc(v.program) + '</span>' : '') +
+      (v.saat ? '<span>Ders saati: ' + esc(v.saat) + '</span>' : '') +
+      (v.yil ? '<span>Ders yılı: ' + esc(v.yil) + '</span>' : '') +
+      '</div></div>';
+
+    var simdi = buHafta(), c = takvim(), h = '';
+    for (var i=0;i<c.length;i++) {
+      var w = c[i], k = v.haftalar[String(w.no)];
+      var ara = (w.no + ' ' + (k ? (k.u + ' ' + k.c.join(' ') + ' ' + (k.i||'') + ' ' + (k.o||'')) : ''))
+                .toLocaleLowerCase('tr');
+      h += '<div class="yc-hafta' + (w.no===simdi?' simdi':'') + '" id="ych'+w.no+'" data-ara="'+esc(ara)+'">';
+      h +=   '<div class="yc-no"><b>'+w.no+'</b><span>'+ks(w.bas)+'<br>'+ks(w.bit)+'</span></div>';
+      h +=   '<div class="yc-govde">';
+      if (w.no === simdi) h += '<span class="yc-rozet">BU HAFTA</span>';
+      if (k) {
+        h += '<div class="yc-unite">' + esc(k.u) + '</div>';
+        if (k.c && k.c.length) {
+          h += '<ul class="yc-liste">';
+          for (var j=0;j<k.c.length;j++) {
+            var m = k.c[j].match(/^((?:ARP|AÖ)[.\d]*\d)\s*[—–-]\s*([\s\S]*)$/);
+            h += '<li>' + (m ? '<span class="yc-kod">'+esc(m[1])+'</span> — '+esc(m[2])
+                             : esc(k.c[j])) + '</li>';
+          }
+          h += '</ul>';
+        }
+        if (k.i) h += '<div class="yc-ek"><b>İçerik:</b> ' + esc(k.i) + '</div>';
+        if (k.o) h += '<div class="yc-ek"><b>Ölçme:</b> ' + esc(k.o) + '</div>';
+      } else {
+        h += '<div class="yc-ek" style="border:0;margin:0;padding:0">Bu hafta için planda kayıt yok.</div>';
+      }
+      h +=   '</div>';
+      h += '</div>';
+      if (w.tatil) {
+        h += '<div class="yc-tatil"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" ' +
+             'stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ' +
+             'aria-hidden="true"><path d="M5 21V3"/><path d="M5 4h12l-2.4 3.4L17 11H5z"/></svg>' +
+             esc(w.tatil.ad) + ' — ' + w.tatil.h + ' hafta</div>';
+      }
+    }
+    liste.innerHTML = h;
+    if (suzgec) suz();
+    if (simdi) {
+      var hed = el('ych'+simdi);
+      if (hed) try { hed.scrollIntoView({ block:'center' }); } catch (e) {}
+    }
+  }
+
+  document.addEventListener('kidef:veriyili', function () { ciz(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ciz);
+  else ciz();
+})();
+</script>
+</body>
+</html>

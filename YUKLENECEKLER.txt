@@ -4849,3 +4849,95 @@ bilgiler olmasın."
     · önce klasörün tam kopyası alınır
   Yapılırsa 1,38 GB → yaklaşık 600-700 MB bekliyorum. Karar verilirse
   ayrı bir komut olarak, tek başına, yedekle birlikte hazırlanacak.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — KİTABA GÖRE YILLIK ÖĞRENME ÇIKTILARI
+            + Haftalık Plan ile Sınıf Defteri birleşti
+────────────────────────────────────────────────────────────────────────
+  İstek: "listeler kısmında haftalık kazanım takibi ile defter doldurmak
+  için yaptığımız şey aynı amaca hizmet ediyor, her kitap için bi yıllık
+  her hafta için öğrenim çıktısı otomatik olarak seçilen kitaplara göre
+  hazır olsun, fakat öğretmenin pratik bi şekilde ulaşabilmesi lazım."
+  Kararlar: tek sekmede birleşsin · kart + kısayol + defterin içi.
+
+  1) VERİ — UYDURULMADI, PLANLARDAN OKUNDU
+  _kaynak/uretici/ciktiHavuzu.py, dosyalar/yillik-plan/*.docx içindeki
+  yıllık planların ana tablosundan konumsal olarak okuyor:
+  ünite (3. sütun) · ÖĞRENME ÇIKTILARI (4.) · içerik (5.) · ölçme (8.).
+  Hafta eşlemesi plandaki TARİHLERDEN yapılıyor, sitenin takvimine göre —
+  plandaki dönem içi numaralar (1..19 + 1..18) karışmıyor.
+
+    anahtar          kitap                         hafta  çıktı
+    5                5. Sınıf                      36/36    70
+    6@2026-2027      6. Sınıf · yeni MEB kitabı    36/36    81
+    7@2026-2027      7. Sınıf · Mektep Yayınları   36/36    58
+    8                8. Sınıf                      36/36    47
+    9                9. Sınıf                      36/36    78
+    10@2026-2027     10. Sınıf · Maarif            36/36    76
+    10@secmeli       10. Sınıf · Seçmeli Arapça    36/36   108
+
+  Anahtarlar sistem/sinifveri.js'teki VERI_YILI ile aynı; kitap değişince
+  çıktılar da değişiyor. PLANI OLMAYAN İKİ KİTAP HAVUZDA YOK —
+  6. sınıf eski kitap ve 7. sınıf 2027-2028. Yanlış kitabın çıktısını
+  göstermektense "bu kitap için hazır çıktı yok" demeyi seçtim.
+
+  Üretilen:
+    sistem/ciktiveri.js   157 KB — asıl veri. ANA SAYFAYA YÜKLENMEZ.
+    sistem/ciktivar.js    0,6 KB — dizin: hangi kitapta çıktı var.
+  Plan belgeleri değişince: python3 _kaynak/uretici/ciktiHavuzu.py "$K"
+
+  2) ÜÇ KAPI
+   a. Sınıf kartları arasında «Yıllık Çıktılar» kartı (sistem/ciktikart.js)
+      — yalnız öğretmen girişinde, yalnız seçili kitabın planı varsa.
+      Rol geç çözülürse kart o anda beliriyor.
+   b. Öğretmen panelinin sekme çubuğunda «Yıllık Çıktılar» kısayolu —
+      cikti.html'i açar.
+   c. Sınıf Defteri'nin içinde: her haftanın üstünde o haftanın ünitesi
+      ve çıktıları; başlıkta «Yıllık çıktılar» bağlantısı.
+
+  3) YENİ SAYFA: cikti.html
+   Seçili kitabın 36 haftası: ünite, kazanım kodları (ARP.9.1.5.1 gibi
+   vurgulu), içerik, ölçme. Sınıf ve kitap seçici (kitap seçimi site
+   geneliyle AYNI yerden okunur ve oraya yazılır), arama kutusu,
+   «Bu haftaya git», yazdırma düzeni, ara tatil şeritleri.
+
+  4) İKİ EKRAN BİRLEŞTİ
+   Artık her hafta kartında üçü bir arada:
+     KİTAPTAN GELEN  ünite + öğrenme çıktıları (okunur, yeşil kutu)
+     PLAN            seviyeye ortak plan — eskiden Haftalık Plan
+                     sekmesindeydi, AYNI veri (level.planText)
+     DEFTER          o şubede gerçekte işlenen (class.defter)
+   Ayrıca «işlendi» kutusu (class.planStatus) ve üstte «Kaldığımız yer»
+   (class.stayedPoint) deftere taşındı. VERİ KOPYALANMADI, PAYLAŞILDI:
+   eski alanların aynısına yazılıyor.
+
+   «Çıktıyı al» kitabın çıktılarını deftere düşürüyor (tarih de kendiliğinden
+   doluyor). Kitabın planı yoksa düğme «Öneri»ye dönüp eski haftalık
+   kazanım önerisini kullanıyor.
+
+   Haftalık Plan sekmesinin DÜĞMESİ kaldırıldı; paneli (#tab8), renderPlan
+   ve «Yöneticinin tavsiyesi» penceresi YERİNDE DURUYOR. switchTab(9)
+   deftere yönleniyor. Geri istenirse index.html'deki yorumda duran düğmeyi
+   geri koymak yeterli — veri ortak olduğu için hiçbir şey kaybolmaz.
+
+  Yeni dosyalar: cikti.html · sistem/ciktiveri.js · sistem/ciktivar.js ·
+                 sistem/ciktikart.js
+  Betikler: _kaynak/uretici/ciktiHavuzu.py · ciktiKur.py ·
+            defterKitapCikti.py · defterBirlestir.py
+  Yedek:    _kaynak/yedekler/20261004-yillik-cikti/ ·
+            .../20261004-defter-birlesme/
+  Sürüm:    hesap/sinifdefteri.js?v=3 · ciktivar.js?v=1 · ciktikart.js?v=1
+
+  DENETİM
+   cikti.html: 9. sınıf 36 hafta · 3 ara tatil · bu hafta vurgulu · kazanım
+   kodları ayrı renkte · 10. sınıfta kitap seçici iki seçenekle çıktı,
+   Maarif→"1. TEMA DEĞERLERİM", Seçmeli→"1. ÜNİTE HAYATTAN" · 7. sınıf
+   2027-2028 seçilince "hazır çıktı yok" uyarısı ve hiç hafta kartı yok ·
+   arama Türkçe büyük-küçük harf farkını yutuyor (mâzî/MÂZÎ 2 sonuç,
+   ARP.9.4 → 8 hafta) · 390 px'te yatay kayma yok.
+   Defter: 36 kitap kutusu, «Çıktıyı al» iki satır çıktıyı ve tarihi yazdı,
+   seviye 10'a çevrilince ünite Maarif'e, kitap Seçmeli'ye çevrilince
+   Seçmeli'ye döndü, plansız kitapta kutular kayboldu ve düğme «Öneri»ye
+   döndü. switchTab(9) tab12'yi açtı. Plan/işlendi/kaldığımız yer eski
+   alanlara yazıldı; şube değişince plan ortak kaldı, defter ve işlendi
+   şubeye özel kaldı. Sayfa hatası yok.
