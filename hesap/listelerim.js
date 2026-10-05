@@ -1006,17 +1006,30 @@ function selectClass(lId, cId, element) {
             _toplamSinif += Object.keys((data.levels[l] && data.levels[l].classes) || {}).length;
         });
     } catch (e) { }
-    var _ipucu = (_toplamSinif > 1)
-        ? 'Sınıf değiştir — ' + _toplamSinif + ' sınıf'
-        : 'Öğrenciler — ' + className;
+    /* AD ve OK AYRI HEDEF (05.10.2026 — öğretmen: "sınıf ismine basınca
+       ilgili liste açılsın, diğer sınıflara geçmek için sınıf isimlerinin
+       yanında bi ok olsun oradan değişilsin"):
+           ad   → yalnız o sınıfın öğrenci listesi (switchTab 0)
+           ok   → sınıf seçici (llSinifListesiAc)
+       Eskiden rozete basınca ikisi birden oluyordu; listeye bakmak isteyen
+       her seferinde karşısında menü buluyordu.
+       Tek sınıfı olan öğretmende ok çıkmaz — gidecek başka sınıf yok. */
     viewTitle.innerHTML = `<span id="active-class-title" class="ll-sinif-rozet"` +
-        ` onclick="switchTab(0); llSinifListesiAc();"` +
-        ` title="${behKacis(_ipucu)}" role="button" tabindex="0">` +
+        ` onclick="switchTab(0)"` +
+        ` title="Öğrenciler — ${behKacis(className)} sınıf listesi"` +
+        ` role="button" tabindex="0">` +
         `<span class="rz-ad">${behKacis(className)}</span>` +
         (_toplamSinif > 1 ? `<span class="rz-say">${_toplamSinif}</span>` : '') +
-        `<svg class="rz-ok" viewBox="0 0 24 24" aria-hidden="true" focusable="false">` +
-        `<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4"` +
-        ` stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+        (_toplamSinif > 1
+            ? `<button type="button" class="rz-ok" tabindex="0"` +
+              ` title="Başka sınıfa geç — ${_toplamSinif} sınıf"` +
+              ` aria-label="Başka sınıfa geç"` +
+              ` onclick="event.stopPropagation(); llSinifListesiAc();">` +
+              `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">` +
+              `<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4"` +
+              ` stroke-linecap="round" stroke-linejoin="round"/></svg></button>`
+            : '') +
+        `</span>`;
     /* Emniyet: kap hangi kurala takilirsa takilsin gorunur kalsin. */
     viewTitle.style.setProperty('display', 'flex', 'important');
     viewTitle.style.alignItems = 'center';
@@ -4453,13 +4466,41 @@ window.llRozetPerdeAc = llRozetPerdeAc;
    kurum adi, her seviye bir KAT, siniflar katin KAPILARI. Cok seviyesi/
    sinifi olan kurumun binasi BUYUR. "Genel" seviyeler gri binada.
    ====================================================================== */
-/* Başlıktaki okul tuşunun altındaki beyaz vurgu çizgisi: pencere
-   açıkken yanar, kapanınca söner (öğretmen, 05.10.2026). */
-function okulTusDurum(acik) {
+/* ======================================================================
+   OKUL SİMGESİNİN BEYAZ VURGU ÇİZGİSİ  (05.10.2026)
+   Öğretmen: "kurum ve sınıflarla ilgili her şey okul svg vurgulanacak."
+   Vurgu TEK YERDEN hesaplanır; şu üç durumdan biri varsa yanar:
+       · okul penceresi açık          (#llOkulPopup)
+       · sınıf seçici liste açık      (#llSinifSec)
+       · ekran sınıf listeleri        (appState.currentView)
+   Böylece öğretmen sınıflarında gezerken de vurgu okulda kalır —
+   eskiden o ekranda çizgi PROFİLİN altında yanıyordu (router.js,
+   'profile-open'); orası artık yalnız profil ve öğretmen paneli.
+   ====================================================================== */
+function okulVurguVar() {
+    try {
+        if (document.getElementById('llOkulPopup')) return true;
+        if (document.getElementById('llSinifSec')) return true;
+        if (typeof appState !== 'undefined' && appState.currentView === 'listelerim-section') return true;
+    } catch (e) { }
+    return false;
+}
+function okulVurguTazele() {
     try {
         var b = document.getElementById('header-okul-btn');
-        if (b) b.classList.toggle('acik', !!acik);
+        if (b) b.classList.toggle('acik', okulVurguVar());
     } catch (e) { }
+}
+window.okulVurguVar = okulVurguVar;
+window.okulVurguTazele = okulVurguTazele;
+
+/* Eski çağrı noktaları için: artık doğrudan sınıf koymaz, tazeler.
+   Kapatma işlevleri önce tuşu güncelleyip SONRA pencereyi kaldırdığı
+   için aynı tıkta bakmak "hâlâ açık" derdi; bir sonraki tıkta da
+   tazeliyoruz. */
+function okulTusDurum(acik) {
+    okulVurguTazele();
+    setTimeout(okulVurguTazele, 0);
 }
 
 function llOkulPopupAc() {
@@ -4693,8 +4734,8 @@ function llSinifListesiKapat() {
         if (e) e.remove();
         var r = document.getElementById('active-class-title');
         if (r) r.classList.remove('acik');
-        /* Okul penceresi de açık değilse beyaz çizgi sönsün. */
-        if (!document.getElementById('llOkulPopup') && typeof okulTusDurum === 'function') okulTusDurum(false);
+        /* Vurgu tek yerden hesaplanıyor: pencere, liste ve ekran. */
+        okulTusDurum(false);
         document.removeEventListener('keydown', llSinifListesiEsc, true);
     } catch (e) { }
 }

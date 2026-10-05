@@ -5851,3 +5851,53 @@ bilgiler olmasın."
    sınıfın öğrenci sayısına göre pencere sayısının artması · akşam
    saatlerinde pencerelerin sarı yanması · arşivlenen kurumun soluk
    gri çizime dönmesi.
+
+05.10.2026 — VURGU OKUL SİMGESİNDE · ROZETTE AD ve OK AYRI
+   A) Öğretmen: "listelerde gezerken hâlâ beyaz vurgu çizgisi profilde
+      görünüyor, kurum ve sınıflarla ilgili her şey okul svg
+      vurgulanacak."
+      SEBEBİ: sistem/router.js, changeView içinde başlıktaki AVATARA
+      'profile-open' sınıfını veriyordu; o sınıfın biçimi
+      (#user-info.profile-open{border-bottom:3px solid #fff}) beyaz
+      çizgiyi çiziyor. Koşulda 'listelerim-section' de vardı — sınıf
+      listeleri ekranı. Yani sınıflarda gezerken çizgi PROFİLİN altında
+      yanıyordu.
+      YAPILAN:
+        · 'listelerim-section' profile-open koşulundan çıkarıldı; profil
+          çizgisi artık yalnız profil ve öğretmen paneli ekranlarında.
+        · Okul simgesinin vurgusu TEK YERDEN hesaplanıyor
+          (okulVurguTazele). Şu üçünden biri varsa yanıyor:
+            okul penceresi açık · sınıf seçici liste açık · ekran
+            sınıf listeleri (appState.currentView).
+        · okulTusDurum(acik) silinmedi; artık tazeleyiciyi çağırıyor,
+          hem o an hem bir sonraki tikte (kapatma işlevleri önce tuşu
+          güncelleyip SONRA pencereyi kaldırdığı için).
+      BİR HATA ÇIKTI: tazeleyiciyi router'da currentView ATANMADAN ÖNCE
+      çağırmıştım; eski ekranı okuyordu (listeye girerken yanmıyor,
+      çıkarken sönmüyordu). Çağrı 'appState.currentView = viewName'
+      satırının ALTINA alındı.
+      DENENDİ (her adımda okul çizgisi / profil çizgisi):
+        anasayfa 0px/kapalı · sınıf listeleri %78/kapalı · sınıf seçili
+        %78/kapalı · liste açık %78/kapalı · liste kapalı %78/kapalı ·
+        okul penceresi %78/kapalı · pencere kapalı %78/kapalı ·
+        profil 0px/AÇIK · anasayfa 0px/kapalı.
+
+   B) Öğretmen: "sınıf ismine basınca ilgili liste açılsın, diğer
+      sınıflara geçmek için sınıf isimlerinin yanında bi ok olsun oradan
+      değişilsin."
+      ESKİDEN rozete basınca İKİSİ BİRDEN oluyordu (önce öğrenci listesi,
+      hemen ardından sınıf seçici); listeye bakmak isteyen her seferinde
+      karşısında menü buluyordu.
+      ARTIK: sınıf ADI → yalnız o sınıfın listesi (switchTab 0);
+             yanındaki OK → sınıf seçici (llSinifListesiAc).
+      Ok kendi tuşu (kendi dokunma alanı ve zemini var), tıklaması
+      rozete sıçramasın diye stopPropagation. Tek sınıfı olan
+      öğretmende ok ve sayı hiç çıkmıyor. Ok liste açıkken 180° dönüyor.
+      DENENDİ: ada basınca {switchTab:0, liste açılmadı}; oka basınca
+        {switchTab çağrılmadı, liste açıldı}; geçiş bitince ok dönüşü
+        matrix(-1,0,0,-1,0,0); tek sınıfta ok yok, sayı yok.
+        Ekran görüntüsüyle de bakıldı. Sayfa hatası yok.
+   Dosyalar: hesap/listelerim.js (?v=20261005j), hesap/listelerim.css,
+             sistem/router.js (?v=20261005c), index.html
+   Yedek: _kaynak/yedekler/20261005-okul-vurgu/, -rozet-ok/
+   Betik: _kaynak/uretici/okulVurgu.py, rozetOkAyir.py

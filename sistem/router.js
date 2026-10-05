@@ -281,9 +281,14 @@ function changeView(viewName, isBackAction = false) {
         }
     }
 
-    // Profil butonunu (header emoji) profil goruntusundeyken vurgula
+    /* Profil butonunu (header avatar) profil goruntusundeyken vurgula.
+       'listelerim-section' 05.10.2026'da BU LISTEDEN CIKARILDI — öğretmen:
+       "listelerde gezerken hâlâ beyaz vurgu çizgisi profilde görünüyor,
+       kurum ve sınıflarla ilgili her şey okul svg vurgulanacak". Sınıf
+       listeleri ekranı kurum/sınıf dünyası; vurgusu okul simgesinde
+       (aşağıdaki okulVurguTazele). */
     var _uinfo = document.getElementById('user-info');
-    if (_uinfo) _uinfo.classList.toggle('profile-open', (viewName === 'student-profile-section' || viewName === 'teacher-section' || viewName === 'listelerim-section'));
+    if (_uinfo) _uinfo.classList.toggle('profile-open', (viewName === 'student-profile-section' || viewName === 'teacher-section'));
     var _brandH1 = document.querySelector('header h1');
     if (_brandH1) _brandH1.classList.toggle('home-active', (viewName === 'home-hub-section'));
 
@@ -382,6 +387,11 @@ function changeView(viewName, isBackAction = false) {
 
     // Birleşik sayfa: giriş/profil bilgileri YALNIZCA anasayfada (hub) görünsün; kurs ekranlarında gizli
     appState.currentView = viewName;
+    /* OKUL SİMGESİNİN VURGUSU — currentView ATANDIKTAN SONRA (05.10.2026).
+       Tazeleyici ekranı appState.currentView'den okuyor; bu satırın
+       üstünde çağırmak eski ekranı okumak demekti (sınıf listelerine
+       girerken çizgi yanmıyor, çıkarken sönmüyordu). */
+    try { if (typeof window.okulVurguTazele === 'function') window.okulVurguTazele(); } catch (e) { }
     // Navigasyonda aninda guncelle (500ms polling yerine olay tabanli)
     try{ if(window.updateUnifiedCart) window.updateUnifiedCart(); }catch(e){}
     try{ if(window.updateFeedbackFabVisibility) window.updateFeedbackFabVisibility(); }catch(e){}

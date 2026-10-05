@@ -3000,11 +3000,20 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
 #ll-root #content .tabs #active-class-title.aktif .rz-say{
     background: rgba(216, 67, 21, .13); color: #B03A10;
 }
+/* OK ARTIK KENDİ TUŞU (05.10.2026): ada basmak listeyi açar, oka basmak
+   sınıf seçiciyi. Bu yüzden okun kendi dokunma alanı ve zemini var. */
 #ll-root #content .tabs #active-class-title .rz-ok{
-    width: 15px; height: 15px; flex: 0 0 auto; opacity: .55;
-    transition: transform .2s ease, opacity .18s;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; flex: 0 0 auto; padding: 0;
+    border: 0; border-radius: 8px; cursor: pointer; color: inherit;
+    background: rgba(107, 74, 56, .09); opacity: .7;
+    transition: transform .2s ease, opacity .18s, background .15s;
 }
-#ll-root #content .tabs #active-class-title:hover .rz-ok{ opacity: .9; }
+#ll-root #content .tabs #active-class-title .rz-ok svg{ width: 15px; height: 15px; display: block; }
+#ll-root #content .tabs #active-class-title .rz-ok:hover{ opacity: 1; background: rgba(107, 74, 56, .2); }
+#ll-root #content .tabs #active-class-title .rz-ok:focus-visible{ outline: 2px solid #16A085; outline-offset: 2px; }
+#ll-root #content .tabs #active-class-title.aktif .rz-ok{ background: rgba(216, 67, 21, .12); }
+#ll-root #content .tabs #active-class-title.aktif .rz-ok:hover{ background: rgba(216, 67, 21, .24); }
 #ll-root #content .tabs #active-class-title.acik .rz-ok{ transform: rotate(180deg); opacity: 1; }
 #ll-root #content .tabs #active-class-title.acik{
     box-shadow: inset 0 0 0 2px #16A085, 0 4px 14px rgba(22, 160, 133, .22);
