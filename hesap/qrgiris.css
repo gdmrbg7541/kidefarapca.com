@@ -64,8 +64,11 @@
 
 #qrGirisPencere .qr-anlat, #qr-modal-alan .qr-anlat{
     margin: 0 0 14px;
-    font-size: .95rem;
-    line-height: 1.55;
+    /* EN AZ 3rem (öğretmen, 05.10.2026). Taban kuralda duruyor: alçak
+       ekran kuralının içinde kalsaydı büyük ekranda .95rem'e düşüyordu
+       (1920x1080'de 14,4 px ölçüldü). */
+    font-size: clamp(3rem, 3.6vh, 3.4rem);
+    line-height: 1.26;
     color: #5c6b78;
 }
 
@@ -80,7 +83,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 240px;   /* karekod 216 → 240 oldu (05.10.2026) */
+    min-height: 220px;   /* karekod 220 px (05.10.2026) */
     padding: 12px;
     background: #fff;
     border: 2px solid #E9EEF5;
@@ -304,7 +307,9 @@
 #qr-modal-alan { text-align: center; }
 #qr-modal-alan .qr-ic { padding: 2px 0 0; }
 #qr-modal-alan .qr-bas { margin: 0 0 12px; font-size: 1.12rem; }
-#qr-modal-alan .qr-anlat { font-size: .9rem; margin-bottom: 12px; }
+/* Punto taban kuralda (en az 3rem — öğretmen, 05.10.2026); burada eskiden
+   .9rem vardı ve taban kuralı eziyordu. Yalnız alt boşluk kaldı. */
+#qr-modal-alan .qr-anlat { margin-bottom: 12px; }
 #qr-modal-alan .qr-kutu { min-height: 0; padding: 10px; border-radius: 14px; }
 #qr-modal-alan .qr-durum { font-size: .88rem; padding: 9px 12px; }
 #qr-modal-alan .qr-tani { font-size: .84rem; }
@@ -337,7 +342,8 @@
 
 @media (max-width: 480px) {
     #qr-modal-alan .qr-bas { font-size: 1.02rem; }
-    #qr-modal-alan .qr-anlat { font-size: .85rem; }
+    /* dar ekranda da 3rem tabanı korunuyor; punto taban kuralda. */
+    #qr-modal-alan .qr-anlat { font-size: clamp(2rem, 7vw, 3rem); }
     .qr-elle-tus { padding: 11px 12px; font-size: .88rem; }
 }
 
@@ -635,7 +641,7 @@
     /* AÇIKLAMA KÜÇÜK OLMASIN: öğretmen bu cümleyi adıyla söyledi
        ("Telefonunun kendi kamerasını aç…"). Sığdırma sırasında .88rem'e
        inmişti; okunur punto geri verildi. */
-    #qr-modal-alan .qr-anlat { margin-bottom: 10px; font-size: 1.06rem; line-height: 1.5; }
+    #qr-modal-alan .qr-anlat { margin-bottom: 10px; }
     #qr-modal-alan .qr-sahne { gap: 16px; margin: 2px 0 8px; }
     #qr-modal-alan .qr-anlatim { width: 196px; }
     #qr-modal-alan .qr-kutu { padding: 8px; }
@@ -671,7 +677,7 @@
            kalmıyor. Geniş ekranda çakışma yok: içerik 760 px'lik sütunda
            ortalanıyor, düğme ise sol kenarda. Dar ekran için aşağıda ayrı
            kural var. */
-        padding: clamp(66px, 8.4vh, 96px) clamp(16px, 4vw, 48px)
+        padding: clamp(84px, 10.5vh, 118px) clamp(16px, 4vw, 48px)
                  clamp(12px, 2vh, 22px) !important;
         /* DİKEY ORTALAMA — öğretmen: "dikey alanı çok iyi kullan". İçerik
            kısaldıktan sonra üst yarıya yığılıp alt yarı boş kalıyordu.
@@ -691,26 +697,9 @@
     @media (min-width: 1100px) {
         body #login-modal.ka-tam .modal-content { padding-inline-end: 340px !important; }
     }
-    /* BAŞLIK: BÜYÜK VE GERİ TUŞUNUN HİZASINDA
-       Öğretmen: "geri tuşu satırı bomboş, Sisteme Giriş Yap yazısını
-       yukarı al, bu yazı çok daha büyük olsun."
-       Geri/✕ düğmesi sol üstte SABİT duruyor. Başlık akışta kalırsa
-       içerik dikey ortalandığı için ekranın ortasına düşüyor ve o satır
-       boş kalıyordu; bu yüzden başlık da sabitlenip düğmenin SAĞINA,
-       aynı hizaya kondu. İçeriğe o bandın yüksekliği kadar üst boşluk
-       veriliyor, yani ortalama başlığın ALTINDAKİ alanda yapılıyor —
-       içerik başlığın altına girmiyor. */
-    body #login-modal.ka-tam #auth-title {
-        position: fixed !important;
-        top: clamp(14px, 2.2vh, 26px) !important;
-        inset-inline-start: calc(clamp(12px, 2vw, 26px) + 72px) !important;
-        inset-inline-end: auto !important;
-        margin: 0 !important;
-        text-align: start !important;
-        z-index: 3;
-        font-size: clamp(1.55rem, 3.6vh, 2.6rem) !important;
-        line-height: 1.25 !important;
-    }
+    /* (Başlık kuralı aşağıya, MEDYA SORGUSUNUN DIŞINA alındı: yüksek
+       ekranda bu blok çalışmadığı için başlık 46,4 px'e düşüyordu ve
+       "en az 3 rem" sözü tutmuyordu.) */
     body #login-modal.ka-tam .form-group { margin-bottom: 7px !important; }
     body #login-modal.ka-tam .form-group label {
         margin-bottom: 2px !important;
@@ -760,8 +749,73 @@
 /* DAR EKRAN: başlık düğmenin yanında ama punto küçülmeli, yoksa taşar. */
 @media (max-width: 700px) {
     body #login-modal.ka-tam #auth-title {
-        font-size: clamp(1.15rem, 5vw, 1.6rem) !important;
-        inset-inline-start: calc(clamp(12px, 2vw, 26px) + 58px) !important;
+        /* Dar ekranda da 3rem tabanı korunuyor; başlık düğmenin ALTINA
+           iniyor ki 48 px'lik yazı yan yana sıkışmasın. */
+        font-size: clamp(3rem, 8vw, 3.2rem) !important;
+        inset-inline-start: clamp(12px, 4vw, 20px) !important;
+        top: clamp(58px, 9vh, 76px) !important;
     }
-    body #login-modal.ka-tam .modal-content { padding-top: clamp(58px, 9vh, 78px) !important; }
+    body #login-modal.ka-tam .modal-content { padding-top: clamp(126px, 20vh, 160px) !important; }
+}
+
+/* 48 puntoluk açıklamaya yer açmak için: karekod ekranının küçük
+   "Karekodla Giriş" başlığı alçak ekranda gizleniyor — büyük başlık
+   zaten tepede duruyor, ikisi birden gereksiz. */
+@media (max-height: 960px) {
+    body #login-modal.ka-tam #qr-modal-alan .qr-bas { display: none !important; }
+}
+
+/* ===========================================================================
+   BAŞLIK: HER EKRANDA BÜYÜK VE GERİ TUŞUNUN HİZASINDA        (05.10.2026)
+   ---------------------------------------------------------------------------
+   Öğretmen: "geri tuşu satırı bomboş, Sisteme Giriş Yap yazısını yukarı al,
+   bu yazı çok daha büyük olsun… en az 3 rem olsun."
+
+   Geri/✕ düğmesi sol üstte SABİT. Başlık akışta kalsa içerik dikey
+   ortalandığı için ekranın ortasına düşüyor ve o satır boş kalıyordu;
+   başlık da sabitlenip düğmenin sağına, aynı hizaya kondu. İçeriğe o
+   bandın yüksekliği kadar üst boşluk veriliyor, ortalama başlığın
+   ALTINDAKİ alanda yapılıyor — içerik başlığın altına girmiyor.
+
+   Bu kural MEDYA SORGUSU DIŞINDA: alçak ekran bloğunun içindeyken yüksek
+   ekranda (1920x1080) çalışmıyor, başlık 46,4 px'e düşüyordu.
+   clamp'in alt sınırı 3rem → hiçbir ekranda 48 px'in altına inmiyor.
+   =========================================================================== */
+body #login-modal.ka-tam #auth-title {
+    position: fixed !important;
+    top: clamp(14px, 2.2vh, 26px) !important;
+    inset-inline-start: calc(clamp(12px, 2vw, 26px) + 72px) !important;
+    inset-inline-end: auto !important;
+    margin: 0 !important;
+    text-align: start !important;
+    z-index: 3;
+    font-size: clamp(3rem, 5.2vh, 3.6rem) !important;
+    line-height: 1.12 !important;
+}
+/* Başlık bandı kadar üst boşluk — her ekranda. */
+body #login-modal.ka-tam .modal-content {
+    padding-top: clamp(84px, 10.5vh, 124px) !important;
+}
+@media (max-width: 700px) {
+    body #login-modal.ka-tam #auth-title {
+        font-size: clamp(3rem, 8vw, 3.2rem) !important;
+        inset-inline-start: clamp(12px, 4vw, 20px) !important;
+        top: clamp(58px, 9vh, 76px) !important;
+    }
+    body #login-modal.ka-tam .modal-content { padding-top: clamp(126px, 20vh, 160px) !important; }
+}
+
+/* ALÇAK EKRAN (<=760 px, ör. 1280x720): 48 puntoluk açıklama girince
+   karekod ekranı 37 px taşıyordu. Çizim ve karekod bir tık küçülüyor —
+   yazı büyük kalsın diye küçülen görseller. */
+@media (max-height: 760px) {
+    #qr-modal-alan .qr-anlatim { width: 180px; }
+    #qr-modal-alan .qr-kutu { padding: 7px; min-height: 0; }
+    #qr-modal-alan .qr-kutu svg,
+    #qr-modal-alan .qr-kutu canvas,
+    #qr-modal-alan .qr-kutu img { width: 192px !important; height: 192px !important; }
+    #qr-modal-alan .qr-sahne { gap: 14px; margin: 0 0 4px; }
+    #qr-modal-alan .qr-anlat { margin-bottom: 6px; }
+    #qr-modal-alan .qr-durum { margin: 4px 0; padding: 7px 10px; }
+    #qr-modal-alan .qr-alt { margin-top: 4px; }
 }

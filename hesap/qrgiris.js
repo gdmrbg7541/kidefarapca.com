@@ -475,9 +475,12 @@
         pencereGenislet(true);
         var baglanti = onayBaglantisi(qrDurum.oturumId);
         govdeYaz(
-            '<p class="qr-anlat">Telefonunun <b>kendi kamerasını</b> aç ve sağdaki karekoda tut — ' +
-            '<b>uygulama indirmene gerek yok</b>. Açılan sayfada <b>Onayla</b> dediğinde bu ekran ' +
-            'senin hesabınla açılır; şifre yazmayacaksın.</p>' +
+            /* 05.10.2026 — öğretmen bu yazının "en az 3 rem" olmasını istedi.
+               48 punto ile eski uzun cümle 307 px tutuyor ve ekran taşıyordu;
+               cümle tahtadan okunacak kısalığa çekildi. Onay adımı zaten
+               aşağıdaki durum satırında yazıyor ("Telefondan onay bekleniyor"). */
+            '<p class="qr-anlat">Telefonunun <b>kendi kamerasını</b> aç, karekoda tut — ' +
+            '<b>uygulama gerekmez</b>.</p>' +
             /* Öğretmen (05.10.2026): "karekodun yanında olsun telefon ve
                karekod taraması… gerçek karekod sağda". Solda anlatım çizimi
                (altta telefon, üstte tarama), sağda qrcode.min.js'in çizdiği
@@ -523,8 +526,8 @@
             kutu.innerHTML = q.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
             var sv = kutu.querySelector('svg');
             if (sv) {
-                sv.setAttribute('width', '240');
-                sv.setAttribute('height', '240');
+                sv.setAttribute('width', '220');
+                sv.setAttribute('height', '220');
                 sv.style.display = 'block';
             }
             return true;
@@ -540,7 +543,7 @@
             try {
                 new window.QRCode(kutu, {
                     /* 216 → 240 (öğretmen: "daha büyük olsunlar") */
-                    text: baglanti, width: 240, height: 240,
+                    text: baglanti, width: 220, height: 220,
                     correctLevel: window.QRCode.CorrectLevel ? window.QRCode.CorrectLevel.M : undefined
                 });
                 return;

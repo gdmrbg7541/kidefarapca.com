@@ -5526,3 +5526,40 @@ bilgiler olmasın."
    bilgiyarismasivezinler.html
    Yedekler: _kaynak/yedekler/20261005-qr-yerel/, 20261005-karekod-yedek/
    Betikler: _kaynak/uretici/qrYerelKutuphane.py, karekodYedekBagla.py
+
+── 05.10.2026 · Giriş yazıları en az 3rem
+   Öğretmen: "bu yazıları büyüt ve yukarılarda olsun, en az 3 rem olsun."
+   Başlık ("Sisteme Giriş Yap") ve karekod açıklaması artık hiçbir
+   ekranda 48 px'in (3rem) altına inmiyor; 1920x1080'de başlık 56 px.
+   ÜÇ GİZLİ ENGEL VARDI, üçü de ölçümle bulundu:
+     1. Başlık kuralı "@media (max-height:960px)" bloğunun içindeydi;
+        yüksek ekranda (1920x1080) çalışmıyor, kayitanketi.js'in
+        clamp(1.7rem,3.4vw,2.9rem) kuralı geçiyor ve başlık 46,4 px'e
+        düşüyordu. Kural medya sorgusunun DIŞINA alındı.
+     2. Açıklamanın puntosunu iki ayrı kural daha eziyordu (.9rem ve
+        .85rem, taban kuraldan SONRA geliyorlar). İkisinden de punto
+        kaldırıldı, taban kuralda toplandı.
+     3. 48 punto ile eski uzun cümle 307 px tutuyor ve karekod ekranı
+        231 px taşıyordu.
+   CÜMLE KISALDI — tahtadan 48 punto okunacak uzunluğa:
+     eski: "Telefonunun kendi kamerasını aç ve sağdaki karekoda tut —
+            uygulama indirmene gerek yok. Açılan sayfada Onayla
+            dediğinde bu ekran senin hesabınla açılır; şifre
+            yazmayacaksın."
+     yeni: "Telefonunun kendi kamerasını aç, karekoda tut — uygulama
+            gerekmez."
+   Onay adımı zaten alttaki durum satırında yazıyor ("Telefondan onay
+   bekleniyor…"), o yüzden cümleden çıkarıldı.
+   Yer açmak için ayrıca: karekod 240 → 220 px, küçük "Karekodla Giriş"
+   başlığı alçak ekranda gizli, 720 px yükseklikte çizim 180 px ve
+   karekod 192 px'e iniyor (yazı büyük kalsın diye küçülen görseller).
+   ÖLÇÜLDÜ — başlık / açıklama / kaydırma:
+     1366x768  48 / 48 px · giriş ve karekod sığıyor
+     1920x1080 56 / 48 px · sığıyor
+     1440x900  48 / 48 px · sığıyor
+     1280x720  48 / 48 px · sığıyor
+     390x844 (telefon) 48 / 32 px · karekod ekranı 202 px taşıyor —
+       telefonda 48 puntoluk yazı + karekod + çizim bir ekrana sığmıyor;
+       orada açıklama 2rem'e iniyor ve kaydırma var. Karekodla giriş
+       zaten tahta/bilgisayar içindir, telefondan doğrudan girilir.
+   Dosyalar: hesap/qrgiris.css, hesap/qrgiris.js
