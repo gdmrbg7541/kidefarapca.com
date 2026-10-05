@@ -5666,3 +5666,35 @@ bilgiler olmasın."
    Yedek: _kaynak/yedekler/20261005-okul-pencere/,
           _kaynak/yedekler/20261005-okul-bos-seviye/
    Betik: _kaynak/uretici/okulPencereEkle.py, okulBosSeviye.py
+
+05.10.2026 — "+ KURUM EKLE" BİNALARIN ALTINDA · GERİ TUŞU PROFİLE GİTMİYOR
+   Öğretmen: "kurum ekle yazısı eğer bi kurum varsa o kurumun altında
+   olsun ve dışında olsun, ayrıca geri tuşuna basınca profile gitmesin."
+   1) "+ KURUM EKLE": kurum varken başlık çubuğundaki küçük "+ Kurum"
+      tuşuydu; artık son binanın ALTINDA, hiçbir binanın İÇİNDE olmayan
+      kendi satırında — boş arsa gibi kesik çizgili (.okul-arsa).
+      Genişliği ve ekseni bina kutusuyla aynı (540px, ortalı).
+      Başlık çubuğunda yalnız kapatma (×) kaldı.
+      SIRA TUZAĞI: arsa satırı, boş-durum davetinden ÖNCE eklenmeli.
+      Sonra eklenirse davet `ic`i doldurduğu için hiç kurum yokken de
+      çıkıyor ve ekranda İKİ "+ Kurum Ekle" oluyor (bir kez oldu,
+      okulArsaSira.py ile düzeltildi).
+   2) GERİ TUŞU: goBack() geçmişin tepesindeki 'student-profile-section'
+      kayıtlarını atlıyor — öğretmen bir kez profile girmiş olsa bile
+      geri tuşu oraya düşmüyor, altındaki gerçek sayfaya dönüyor;
+      hiç kalmazsa anasayfa. YALNIZ teacher/admin için.
+      ÖĞRENCİDE DEĞİŞMEDİ: orada profil ana durak, exitLesson ders
+      bitince zaten oraya dönüyor.
+   DENENDİ:
+      Kurum varken  {arsa:1, büyük davet:0, bina içinde:false,
+                     içerikte son:okul-arsa, genişlik 540=bina 540,
+                     merkez 670=bina 670, aralık 26px}; tıklama →
+                     llOkulKurumEkle. Ekran görüntüsüyle de bakıldı.
+      Kurum yokken  {arsa:0, büyük davet:1, toplam "Kurum Ekle" yazısı:1}
+      Geri/öğretmen [dashboard, anasayfa, PROFİL, listelerim] → anasayfa
+                    (profil atlandı); profildeyken geri → anasayfa
+      Geri/öğrenci  [anasayfa, profil, ders] → PROFİL (değişmedi)
+   Dosyalar: hesap/listelerim.js, hesap/listelerim.css, sistem/router.js,
+             index.html (?v=20261005d / router ?v=20261005b)
+   Yedek: _kaynak/yedekler/20261005-arsa-geri/, 20261005-arsa-sira/
+   Betik: _kaynak/uretici/okulArsaGeri.py, okulArsaSira.py

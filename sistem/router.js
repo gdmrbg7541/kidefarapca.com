@@ -415,6 +415,28 @@ function goBack() {
     }
     
     appState.viewHistory.pop();
+
+    /* GERİ TUŞU PROFİLİ ATLAR — ÖĞRETMEN/YÖNETİCİ (05.10.2026)
+       Öğretmen: "geri tuşuna basınca profile gitmesin."
+       Profil artık öğretmenin günlük durağı değil (sınıf ve kurum
+       başlıktaki okul simgesinde). Bir kez profile girmiş olmak
+       geçmişte iz bırakıyordu ve geri tuşu oraya düşebiliyordu.
+       Geçmişin tepesindeki profil kayıtları atılır, altındaki gerçek
+       sayfaya dönülür; hiç kalmazsa aşağıdaki baseView (anasayfa).
+       ÖĞRENCİDE DEĞİŞMEZ: orada profil ana durak, ders bitince
+       exitLesson zaten oraya dönüyor. */
+    try {
+        var _rol = (appState && appState.userRole) || '';
+        var _ogr = (_rol === 'teacher' || _rol === 'admin');
+        if (!_ogr && window.KidefRol && typeof window.KidefRol.ogretmenMi === 'function') {
+            _ogr = !!window.KidefRol.ogretmenMi(_rol);
+        }
+        if (_ogr) {
+            var _h = appState.viewHistory;
+            while (_h.length && _h[_h.length - 1] === 'student-profile-section') _h.pop();
+        }
+    } catch (e) { }
+
     const previousView = appState.viewHistory[appState.viewHistory.length - 1] || baseView;
     changeView(previousView, true);
 }

@@ -4579,6 +4579,16 @@ function llOkulPopupAc() {
     if (gruplar['']) ic += binaYap('GENEL', 'Genel', gruplar[''], true);
     /* HIC KURUM YOKSA: bos bir cumle yerine dogrudan kurulum daveti.
        Ogretmen ilk girisinde bu pencereden isini kurabilsin. */
+    /* "+ KURUM EKLE" BİNALARIN ALTINDA (05.10.2026) — öğretmen: "kurum ekle
+       yazısı eğer bi kurum varsa o kurumun altında olsun ve dışında olsun".
+       Eskiden başlık çubuğundaki küçük tuştu; artık son binanın ALTINDA,
+       hiçbir binanın İÇİNDE olmayan kendi satırında — boş arsa gibi.
+       SIRA ÖNEMLİ: bu satır aşağıdaki boş-durum davetinden ÖNCE olmalı.
+       Sonra olursa, davet `ic`i doldurduğu için hiç kurum yokken de
+       eklenir ve ekranda iki "+ Kurum Ekle" çıkar. */
+    if (ic) ic += '<div class="okul-arsa">' +
+        '<button type="button" class="okul-arsa-tus" title="Yeni kurum ekle"' +
+        ' onclick="llOkulKurumEkle()">+ Kurum Ekle</button></div>';
     if (!ic) ic = '<div class="okul-bosluk">' +
         '<p>Henüz kurum eklenmemiş.</p>' +
         '<button type="button" class="okul-ekle-buyuk" onclick="llOkulKurumEkle()">' +
@@ -4588,9 +4598,9 @@ function llOkulPopupAc() {
     k.id = 'llOkulPopup';
     k.innerHTML = '<div class="okul-panel">' +
         '<div class="okul-baslik"><strong>Kurumlar &amp; Sınıflar</strong>' +
+        /* Başlıkta artık yalnız kapatma var: "+ Kurum Ekle" binaların
+           altındaki arsa satırına taşındı (05.10.2026). */
         '<span class="okul-baslik-tus">' +
-        '<button type="button" class="okul-ekle-kucuk" title="Yeni kurum ekle"' +
-        ' onclick="llOkulKurumEkle()">+ Kurum</button>' +
         '<button type="button" class="okul-kapat" title="Kapat" onclick="llOkulPopupKapat()">&times;</button>' +
         '</span></div>' +
         '<div class="okul-icerik">' + ic + '</div></div>';

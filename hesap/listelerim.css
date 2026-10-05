@@ -2850,6 +2850,24 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
     transition: background .15s, transform .15s;
 }
 #llOkulPopup .okul-ekle-kucuk:hover{ background: rgba(255, 255, 255, .36); transform: translateY(-1px); }
+/* YENİ KURUM ARSASI (05.10.2026) — öğretmen: "kurum ekle yazısı eğer bi
+   kurum varsa o kurumun altında olsun ve dışında olsun". Binaların altında,
+   hiçbirinin içinde değil; boş parsel gibi kesik çizgili. Genişliği ve
+   ekseni .okul-bina ile aynı (max-width:540px, margin auto). */
+#llOkulPopup .okul-arsa{ max-width: 540px; margin: -10px auto 4px; }
+#llOkulPopup .okul-arsa-tus{
+    width: 100%; cursor: pointer; font-family: inherit;
+    font-weight: 800; font-size: .95rem; color: #B9651A;
+    background: rgba(255, 255, 255, .55);
+    border: 2px dashed #E0B37A; border-radius: 14px; padding: 13px 18px;
+    transition: background .15s, border-color .15s, color .15s, transform .12s;
+}
+#llOkulPopup .okul-arsa-tus:hover{
+    background: #FFF6EC; border-color: #E67E22; color: #8E4B10;
+    transform: translateY(-1px);
+}
+#llOkulPopup .okul-arsa-tus:active{ transform: scale(.995); }
+
 #llOkulPopup .okul-bosluk{
     text-align: center; padding: 34px 18px; display: flex; flex-direction: column;
     align-items: center; gap: 12px; font-family: inherit;
