@@ -5609,3 +5609,26 @@ bilgiler olmasın."
    Dosyalar: sistem/router.js, index.html (?v=20261005a)
    Yedek: _kaynak/yedekler/20261005-okul-simgesi/
    Betik: _kaynak/uretici/okulSimgesiYol.py
+
+── 05.10.2026 · Sınıf ağacı profilden GERÇEKTEN kalktı
+   Öğretmen: "hâlâ profile basınca 🏫 Kurumlarım & Sınıflarım çıkıyor."
+   ÖNCEKİ ADIMDA YALNIZ YOLU DÜZELTMİŞİM: avatar artık doğrudan profili
+   açıyor, önce sınıf listesine gitmiyor. Ama blok profil SAYFASININ
+   KENDİSİNDEYDİ — hesap/listelerim.js → renderTeacherProfile() öğretmen
+   profilini çizerken ilk akordiyon olarak okul binası ağacını basıyordu.
+   Yolu düzeltmek yetmemiş, içeriği de çıkarmak gerekiyormuş.
+   YAPILAN: o akordiyon (tpSiniflar) profilden kaldırıldı — hem veri
+   yüklenirken çizilen hâli hem asıl ağaç. Yerine TEK SATIRLIK yönlendirme
+   kaldı: "🏫 Sınıflarım ve kurumlarım — Başlıktaki okul simgesinden
+   açılıyor, sitenin her yerinden" + "Aç" tuşu (llOkulPopupAc). Böylece
+   öğretmen eski yerine bakınca boş bulmuyor, yeni yolu öğreniyor.
+   agac/binalar hesabı SÖKÜLMEDİ, yalnız basılmıyor: sinifToplam gibi
+   değişkenler aşağıda da kullanılıyor, hesabı sökmek gereksiz risk.
+   PROFİLDE KALANLAR: Tatiller · Kişisel Bilgilerim · Veli & Durum
+   Taraması · (yöneticide) Site Erişim Kilidi.
+   DENENDİ — öğretmen rolünde, örnek okul verisiyle profil çizdirildi:
+   tpSiniflar akordiyonu yok, #tpOkullar ağacı yok, yönlendirme satırı
+   var ve "Aç" tuşu okul penceresini çağırıyor. Sayfa hatası yok.
+   Dosyalar: hesap/listelerim.js, index.html (stil + ?v=20261005a)
+   Yedek: _kaynak/yedekler/20261005-profil-sinif/
+   Betik: _kaynak/uretici/profilSinifCikar.py

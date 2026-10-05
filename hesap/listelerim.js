@@ -4820,8 +4820,16 @@ function renderTeacherProfile(deneme) {
     }
     if (typeof data === 'undefined' || !data || !data.levels) {
         deneme = deneme || 0;
-        html += llAkordiyon('tpSiniflar', '#E67E22',
-            '<span>🏫 Kurumlarım &amp; Sınıflarım</span>', 'Sınıf verileri yükleniyor…', true);
+        /* PROFİLDEN ÇIKARILDI (05.10.2026) — öğretmen: "profile basınca
+           hâlâ 🏫 Kurumlarım & Sınıflarım çıkıyor". Sınıf ağacı artık
+           başlıktaki okul simgesinin penceresinde; profilde yalnız oraya
+           götüren tek satır duruyor. */
+        html += '<div class="tp-okul-yol">' +
+            '  <span class="tp-okul-ik">🏫</span>' +
+            '  <span class="tp-okul-yaz"><b>Sınıflarım ve kurumlarım</b>' +
+            '    <small>Başlıktaki okul simgesinden açılıyor — sitenin her yerinden.</small></span>' +
+            '  <button type="button" class="tp-okul-tus" onclick="if(typeof llOkulPopupAc===\'function\') llOkulPopupAc();">Aç</button>' +
+            '</div>';
         sec.innerHTML = html + tatilAkordiyon + kisiselAkordiyon + kilitAkordiyon;
         if (deneme < 10) setTimeout(function () { renderTeacherProfile(deneme + 1); }, 700);
         return;
@@ -4975,8 +4983,18 @@ function renderTeacherProfile(deneme) {
     }
     agac += '<div id="tpOkullar">' + binalar + '</div>';
 
-    html += llAkordiyon('tpSiniflar', '#E67E22',
-        '<span>🏫 Kurumlarım &amp; Sınıflarım</span>' + llRozetHtml(sinifToplam + ' sınıf'), agac, true);
+    /* PROFİLDEN ÇIKARILDI (05.10.2026) — öğretmen: "öğretmenler kurum ve
+       sınıflarına profilden değil header'daki okul svg'sinden ulaşabilsin"
+       → "profile basınca hâlâ 🏫 Kurumlarım & Sınıflarım çıkıyor".
+       Ağaç (agac) yukarıda kuruluyor ama profile BASILMIYOR; aynı içerik
+       başlıktaki okul simgesinin penceresinde (llOkulPopupAc). Hesabı
+       sökmedim: sinifToplam gibi değişkenler aşağıda da kullanılıyor. */
+    html += '<div class="tp-okul-yol">' +
+            '  <span class="tp-okul-ik">🏫</span>' +
+            '  <span class="tp-okul-yaz"><b>Sınıflarım ve kurumlarım</b>' +
+            '    <small>Başlıktaki okul simgesinden açılıyor — sitenin her yerinden.</small></span>' +
+            '  <button type="button" class="tp-okul-tus" onclick="if(typeof llOkulPopupAc===\'function\') llOkulPopupAc();">Aç</button>' +
+            '</div>' + llRozetHtml(sinifToplam + ' sınıf');
 
     /* SIRALAMA: Kurumlarim & Siniflarim -> Tatiller -> Kisisel Bilgilerim ->
        Veli & Durum Taramasi (Kisisel Bilgilerim'in ALTINDA) -> Yonetim kilidi */
