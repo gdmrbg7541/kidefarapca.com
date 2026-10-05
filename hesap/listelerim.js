@@ -4531,8 +4531,12 @@ function llOkulPopupAc() {
         var cIds = lvl.classes ? Object.keys(lvl.classes) : [];
         cIds.forEach(function (cId) {
             var aktif = (typeof curLId !== 'undefined' && lId === curLId && typeof curCId !== 'undefined' && cId === curCId);
-            kapilar += '<button type="button" class="okul-kapi' + (aktif ? ' aktif' : '') + '"' +
-                ' onclick="llOkulSinifSec(\'' + lId + '\',\'' + cId + '\')">' + behKacis(lvl.classes[cId].name) + '</button>';
+            /* SINIFA GİRME EFEKTİ (05.10.2026): kapı artık bir YUVA içinde —
+               yuva, kapı açılırken arkasında yanan ışığı taşıyor. */
+            kapilar += '<span class="okul-kapi-yuva">' +
+                '<button type="button" class="okul-kapi' + (aktif ? ' aktif' : '') + '"' +
+                ' onclick="llOkulKapiAc(this,\'' + lId + '\',\'' + cId + '\')">' +
+                behKacis(lvl.classes[cId].name) + '</button></span>';
         });
         /* Boş seviyede "sınıf yok" yazısı: aşağıdaki "+" her zaman
            eklendiği için bu satır "+"tan ÖNCE olmak zorunda. */
@@ -4540,8 +4544,9 @@ function llOkulPopupAc() {
         /* SINIF EKLE (05.10.2026) — öğretmen: "okul svg'sine basınca sınıf
            kurum ekleme gibi işlemler yapılabilsin". Sınıf ağacı profilden
            kalkınca oradaki "+" da gitmişti; aynı kapı buraya kondu. */
-        kapilar += '<button type="button" class="okul-kapi okul-ekle"' +
-            ' title="Bu seviyeye sınıf ekle" onclick="llOkulSinifEkle(\'' + lId + '\')">+</button>';
+        kapilar += '<span class="okul-kapi-yuva"><button type="button" class="okul-kapi okul-ekle"' +
+            ' title="Bu seviyeye sınıf ekle" onclick="llOkulSinifEkle(\'' + lId + '\')">' +
+            llIcon('arti') + '</button></span>';
         /* SEVIYE AYARLARI: bu pencere eskiden yalniz sinif secmeye yariyordu;
            ayarlara ulasmak icin profildeki okul haritasina gitmek gerekiyordu.
            Artik her seviyenin isminin yaninda dislisi var — hem sinif adi
@@ -4553,7 +4558,15 @@ function llOkulPopupAc() {
             ' onclick="llOkulSeviyeAyar(\'' + lId + '\')">' + llIcon('disli') +
             '<span>Ayarlar</span></button></span>';
         /* animasyonlu SINIF ikonu SADECE kat (seviye) basliginda; kapilarda ikon yok */
-        return '<div class="okul-kat"><span class="okul-kat-ad" title="' + behKacis(lvl.name) + '">' +
+        /* SÜRÜKLENEBİLİR KAT (05.10.2026 — öğretmen: "seviyeleri sürükleyerek
+           dikey yer değiştirilebilir yap"). data-lid sürükleme kodunun
+           tutamağı; başındaki noktalı simge de kullanıcının tutamağı. */
+        return '<div class="okul-kat" data-lid="' + lId + '">' +
+            '<span class="okul-kat-ad" title="' + behKacis(lvl.name) + '">' +
+            '<svg class="okul-tutamac" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+            '<circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/>' +
+            '<circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/>' +
+            '<circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>' +
             llIcon('sinif') + '<span class="okul-kat-yazi">' + behKacis(lvl.name) + '</span></span>' +
             ayarTus +
             '<span class="okul-kapilar">' + kapilar + '</span></div>';
@@ -4568,9 +4581,10 @@ function llOkulPopupAc() {
         /* SEVİYE EKLE (05.10.2026): kurumun altına yeni seviye. 'GENEL'
            kurumsuz bölüm demek — addLevel bunu böyle biliyor. */
         katlar += '<div class="okul-kat okul-kat-ekle">' +
-            '<button type="button" class="okul-mtus okul-seviye-ekle"' +
-            ' title="Bu kuruma seviye ekle" onclick="llOkulSeviyeEkle(\'' +
-            (genelMi ? 'GENEL' : (kId || 'GENEL')) + '\')">+ Seviye</button></div>';
+            '<button type="button" class="okul-seviye-ekle"' +
+            ' title="Bu kuruma yeni seviye (kat) ekle" onclick="llOkulSeviyeEkle(\'' +
+            (genelMi ? 'GENEL' : (kId || 'GENEL')) + '\')">' + llIcon('arti') +
+            '<span>Seviye Ekle</span></button></div>';
         var pencere = '<svg class="okul-pencere" viewBox="0 0 20 16" aria-hidden="true" focusable="false">' +
             '<rect x="0.6" y="0.6" width="18.8" height="14.8" rx="2" fill="#CFE7F5" stroke="#8FB8D4" stroke-width="1.2"/>' +
             '<path d="M10 1.2v13.6M1.2 8h17.6" stroke="#8FB8D4" stroke-width="1.1"/></svg>';
@@ -4579,13 +4593,15 @@ function llOkulPopupAc() {
            yapabilmeliyiz". Bu üçü yalnız profildeki eski ağaçta vardı;
            ağaç kaldırılınca ulaşılamaz olmuşlardı. "Genel" gerçek bir
            kurum değil, onda çıkmaz. */
+        /* EMOJİ YOK (05.10.2026 — öğretmen: "kurumda hiç emoji olmasın svg
+           olsun her şey"): sitenin kendi simge takımı kullanılıyor. */
         var kurumTus = genelMi ? '' : ('<span class="okul-kurum-tus">' +
             '<button type="button" class="okul-ktus" title="Kurum adını değiştir"' +
-            ' onclick="llOkulKurumIslem(\'ad\',\'' + kId + '\')">✏️</button>' +
+            ' onclick="llOkulKurumIslem(\'ad\',\'' + kId + '\')">' + llIcon('kalem') + '</button>' +
             '<button type="button" class="okul-ktus" title="Tüm okulu arşivle"' +
-            ' onclick="llOkulKurumIslem(\'arsiv\',\'' + kId + '\')">🗄</button>' +
+            ' onclick="llOkulKurumIslem(\'arsiv\',\'' + kId + '\')">' + llIcon('klasor') + '</button>' +
             '<button type="button" class="okul-ktus sil" title="Kurumu sil (seviyeler Genel\'e taşınır)"' +
-            ' onclick="llOkulKurumIslem(\'sil\',\'' + kId + '\')">🗑</button>' +
+            ' onclick="llOkulKurumIslem(\'sil\',\'' + kId + '\')">' + llIcon('cop') + '</button>' +
             '</span>');
         return '<div class="okul-bina' + (genelMi ? ' genel' : '') + buyuk + '">' +
             '<svg class="okul-bayrak" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
@@ -4644,6 +4660,14 @@ function llOkulPopupAc() {
         '<div class="okul-icerik">' + ic + '</div></div>';
     k.addEventListener('click', function (e) { if (e.target === k) llOkulPopupKapat(); });
     document.body.appendChild(k);
+    /* SAHNE (05.10.2026): binalar sırayla aşağıdan belirsin + katlar
+       sürüklenebilir olsun. DOM'a eklendikten SONRA yapılmalı. */
+    try {
+        k.querySelectorAll('.okul-bina').forEach(function (b, i) {
+            b.style.setProperty('--gec', (i * 70) + 'ms');
+        });
+        llKatSurukleBagla(k);
+    } catch (e) { console.warn('okul sahnesi:', e && e.message); }
     if (!window._llOkulEsc) {
         window._llOkulEsc = function (e) { if (e.key === 'Escape') llOkulPopupKapat(); };
     }
@@ -4669,6 +4693,8 @@ function llSinifListesiKapat() {
         if (e) e.remove();
         var r = document.getElementById('active-class-title');
         if (r) r.classList.remove('acik');
+        /* Okul penceresi de açık değilse beyaz çizgi sönsün. */
+        if (!document.getElementById('llOkulPopup') && typeof okulTusDurum === 'function') okulTusDurum(false);
         document.removeEventListener('keydown', llSinifListesiEsc, true);
     } catch (e) { }
 }
@@ -4750,12 +4776,110 @@ function llSinifListesiAc() {
     } catch (e) { }
 
     rozet.classList.add('acik');
+    /* Başlıktaki okul simgesinin beyaz vurgu çizgisi sınıf listesi
+       açıkken de yansın (05.10.2026 — öğretmen: "sınıf listesi açıkken
+       okul svg sinde beyaz çizgi vurgusu kalsın"). */
+    try { if (typeof okulTusDurum === 'function') okulTusDurum(true); } catch (e) { }
     k.addEventListener('click', function (e) { if (e.target === k) llSinifListesiKapat(); });
     document.addEventListener('keydown', llSinifListesiEsc, true);
 }
 window.llSinifListesiAc = llSinifListesiAc;
 window.llSinifListesiKapat = llSinifListesiKapat;
 window.llSinifListesiSec = llSinifListesiSec;
+
+/* ======================================================================
+   SINIFA GİRME — kapı açılma efekti  (05.10.2026)
+   Öğretmen: "bi sınıfa basınca kapı açılsın sınıfa girme efekti olsun".
+   Kapı menteşeden açılır, ardındaki ışık yanar, bina hafifçe yaklaşır;
+   animasyon biter bitmez sınıf açılır. Hareket istemeyen kullanıcıda
+   (prefers-reduced-motion) beklemeden geçilir.
+   ====================================================================== */
+function llOkulKapiAc(tus, lId, cId) {
+    var bekle = 430;
+    try {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) bekle = 0;
+        else {
+            var yuva = tus.parentElement;
+            if (yuva) yuva.classList.add('acildi');
+            tus.classList.add('aciliyor');
+            var bina = tus.closest ? tus.closest('.okul-bina') : null;
+            if (bina) bina.classList.add('girildi');
+        }
+    } catch (e) { bekle = 0; }
+    if (!bekle) { llOkulSinifSec(lId, cId); return; }
+    setTimeout(function () { llOkulSinifSec(lId, cId); }, bekle);
+}
+window.llOkulKapiAc = llOkulKapiAc;
+
+/* ======================================================================
+   SEVİYELERİ SÜRÜKLEYEREK SIRALAMA  (05.10.2026)
+   Öğretmen: "seviyeleri sürükleyerek dikey yer değiştirilebilir yap".
+   Kat yukarı/aşağı sürüklenir; bırakılan yere göre data.levelOrder
+   yeniden dizilir ve save() ile kaydedilir. Sıra sitenin HER yerinde
+   bu diziden okunduğu için (sınıf listesi, kenar çubuğu, pencere)
+   tek yerde değişmesi yetiyor.
+   KURUMLAR ARASI TAŞIMA YOK: o, seviyenin kurumunu değiştirmek demek —
+   seviye ayarlarından yapılıyor. Bırakılan kat başka binadaysa sıra
+   yine değişir ama kurum aynı kalır.
+   ====================================================================== */
+function llSeviyeSiraDegistir(tasinan, hedef, ustMu) {
+    try {
+        if (!data || !data.levels || tasinan === hedef) return;
+        if (!Array.isArray(data.levelOrder) || !data.levelOrder.length) {
+            data.levelOrder = Object.keys(data.levels);
+        }
+        var yeni = data.levelOrder.filter(function (x) { return x !== tasinan; });
+        var i = yeni.indexOf(hedef);
+        if (i < 0) return;
+        yeni.splice(ustMu ? i : i + 1, 0, tasinan);
+        data.levelOrder = yeni;
+        if (typeof save === 'function') save();
+    } catch (e) { console.warn('seviye sırası:', e && e.message); return; }
+    setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
+}
+window.llSeviyeSiraDegistir = llSeviyeSiraDegistir;
+
+function llKatSurukleBagla(kok) {
+    var suruklenen = null;
+    var temizle = function () {
+        kok.querySelectorAll('.okul-kat').forEach(function (x) {
+            x.classList.remove('ust', 'alt');
+        });
+    };
+    kok.querySelectorAll('.okul-kat[data-lid]').forEach(function (kat) {
+        kat.setAttribute('draggable', 'true');
+        kat.addEventListener('dragstart', function (e) {
+            suruklenen = kat;
+            kat.classList.add('suruk');
+            try {
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', kat.getAttribute('data-lid'));
+            } catch (x) { }
+        });
+        kat.addEventListener('dragend', function () {
+            kat.classList.remove('suruk'); temizle(); suruklenen = null;
+        });
+        kat.addEventListener('dragover', function (e) {
+            if (!suruklenen || suruklenen === kat) return;
+            e.preventDefault();
+            var r = kat.getBoundingClientRect();
+            var ustMu = (e.clientY - r.top) < r.height / 2;
+            kat.classList.toggle('ust', ustMu);
+            kat.classList.toggle('alt', !ustMu);
+        });
+        kat.addEventListener('dragleave', function () { kat.classList.remove('ust', 'alt'); });
+        kat.addEventListener('drop', function (e) {
+            e.preventDefault();
+            if (!suruklenen || suruklenen === kat) return;
+            var r = kat.getBoundingClientRect();
+            var ustMu = (e.clientY - r.top) < r.height / 2;
+            var tasinan = suruklenen.getAttribute('data-lid');
+            temizle();
+            llSeviyeSiraDegistir(tasinan, kat.getAttribute('data-lid'), ustMu);
+        });
+    });
+}
+window.llKatSurukleBagla = llKatSurukleBagla;
 
 function llOkulSinifSec(lId, cId) {
     llOkulPopupKapat();

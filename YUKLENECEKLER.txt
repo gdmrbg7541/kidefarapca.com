@@ -5796,3 +5796,58 @@ bilgiler olmasın."
              index.html (?v=20261005g)
    Yedek: _kaynak/yedekler/20261005-sinif-secici/
    Betik: _kaynak/uretici/sinifSeciciTasarim.py
+
+05.10.2026 — OKUL PENCERESİ: EMOJİSİZ, SVG VE CANLI
+   Öğretmen: "seviye ekle yazısını büyüt, seviyeleri sürükleyerek dikey
+   yer değiştirilebilir yap, kurumda hiç emoji olmasın svg olsun her şey
+   hatta animasyonlu olsun, mesela bi sınıfa basınca kapı açılsın sınıfa
+   girme efekti olsun" + "sınıf listesi açıkken okul svg sinde beyaz
+   çizgi vurgusu kalsın".
+   1) "SEVİYE EKLE" BÜYÜDÜ: küçük metin tuşuydu; artık kendi satırında
+      geniş, kesik çizgili şerit + SVG artı (.8rem → 1rem).
+   2) SEVİYELER SÜRÜKLENEBİLİR: her katın başında noktalı tutamaç; kat
+      yukarı/aşağı sürükleniyor, bırakılan yere göre data.levelOrder
+      yeniden diziliyor ve save() ile kaydediliyor. Sürüklenirken kat
+      soluklaşıyor, bırakılacak kenarda turuncu çizgi beliriyor.
+      Sıra sitenin her yerinde bu diziden okunduğu için tek yerde
+      değişmesi yetiyor. Kurumlar arası taşıma yok (o, kurum değiştirmek
+      demek — seviye ayarlarından yapılıyor).
+   3) EMOJİ YOK: ✏️🗄🗑 ve "+" yazıları gitti; yerlerine sitenin kendi
+      simgeleri (llIcon kalem / klasör / çöp / artı).
+   4) ANİMASYONLAR
+      · SINIFA GİRME: kapı menteşeden açılıyor (rotateY -78°), ardındaki
+        ışık yanıyor, bina hafifçe yaklaşıyor; 430 ms sonra sınıf açılıyor.
+      · Bayrak dalgalanıyor (2.8 sn döngü).
+      · Binaya gelince giriş katındaki pencereler ışıyor.
+      · Pencere açılınca binalar sırayla beliriyor (70 ms arayla).
+      · Kapı tokmağı üzerine gelince parlıyor; kat satırı ısınıyor.
+      · prefers-reduced-motion: hepsi kapanıyor, kapı efekti beklemeden
+        geçiyor.
+   5) BEYAZ ÇİZGİ: sınıf listesi açıkken de başlıktaki okul simgesinin
+      altındaki beyaz vurgu yanıyor; liste kapanınca (okul penceresi de
+      açık değilse) sönüyor.
+   6) KAT DÜZENİ: bina 540→620px, seviye adı sütunu %31→%25 — kapılar
+      tek sütunda alt alta yığılmıyor, yan yana giriyor.
+   İKİ HATA ÇIKTI, DÜZELTİLDİ:
+      · sahne/sürükleme bağlama bloğunu yanlış bir koşulun ("count != 1")
+        içine koymuştum, hiç eklenmemişti → okulSahneBagla.py
+      · "+" simgesini beyaza boyarken daire+çizgi olan simge beyaz bir
+        daireye dönmüştü → daire saydam, çizgi beyaz
+   DENENDİ: sürüklenebilir kat 3/3, bina animasyonu okulBinaGir, bayrak
+      okulBayrak; kapıya basınca .aciliyor + rotateY matris + ışık
+      opaklığı 1 + bina .girildi, 430 ms sonra doğru sınıf seçiliyor;
+      sıra [L1,L2,L3] → [L3,L1,L2] ve localStorage'a yazıldı; pencerede
+      metin emojisi kalmadı (0); liste açıkken çizgi %78, kapanınca 0px.
+      Ekran görüntüsüyle de bakıldı. Sayfa hatası yok.
+   Dosyalar: hesap/listelerim.js, hesap/listelerim.css,
+             index.html (?v=20261005h)
+   Yedek: _kaynak/yedekler/20261005-okul-canlandir/, -okul-sahne/,
+          -kat-duzen/
+   Betik: _kaynak/uretici/okulCanlandir.py, okulSahneBagla.py,
+          okulKatDuzen.py
+   SIRADAKİ FİKİRLER (yapılmadı, istenirse): kurum silinince binanın
+   yıkılıp tozla kaybolması · yeni sınıf eklenince kapının içeri doğru
+   açılıp "yerleşmesi" · seviye ayarları açılırken dişlinin dönmesi ·
+   sınıfın öğrenci sayısına göre pencere sayısının artması · akşam
+   saatlerinde pencerelerin sarı yanması · arşivlenen kurumun soluk
+   gri çizime dönmesi.

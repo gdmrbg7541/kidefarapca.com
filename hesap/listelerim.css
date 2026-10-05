@@ -2860,6 +2860,125 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
 #llOkulPopup .okul-arsa-tus:active{ transform: scale(.995); }
 
 /* ==========================================================================
+   KAT DÜZENİ (05.10.2026) — sınıf kapıları yan yana sığsın
+   --------------------------------------------------------------------------
+   Bina 540px ve seviye adı sütunu %31 iken kapılara ~200px kalıyor, üç
+   sınıf alt alta yığılıyordu. Bina genişledi, ad sütunu daraldı.
+   ========================================================================== */
+#llOkulPopup .okul-bina{ max-width: 620px; }
+#llOkulPopup .okul-bina.buyuk{ max-width: 740px; }
+#llOkulPopup .okul-arsa{ max-width: 620px; }
+#llOkulPopup .okul-kat-ad{ flex: 0 0 25%; }
+#llOkulPopup .okul-kapi{ font-size: .82rem; padding: 6px 14px 7px 11px; }
+#llOkulPopup .okul-ayar-tus{ white-space: nowrap; }
+
+/* "+" simgesi mavi kapının içinde: yeşil daire kalksın, beyaz artı kalsın.
+   (Önce hepsini beyaz yapmıştım; artı çizgi olduğu için beyaz bir daireye
+   dönüşmüştü — daire saydam, çizgi beyaz olmalı.) */
+#llOkulPopup .okul-kapi.okul-ekle .lli circle{ fill: transparent !important; }
+#llOkulPopup .okul-kapi.okul-ekle .lli path{ stroke: #fff !important; stroke-width: 3 !important; }
+
+/* ==========================================================================
+   OKUL PENCERESİ — CANLANDIRMA  (05.10.2026)
+   --------------------------------------------------------------------------
+   Öğretmen: "kurumda hiç emoji olmasın svg olsun her şey hatta animasyonlu
+   olsun, mesela bi sınıfa basınca kapı açılsın sınıfa girme efekti olsun".
+   Hepsi prefers-reduced-motion ile kapanabiliyor (en altta).
+   ========================================================================== */
+
+/* ---- kapı yuvası: kapı açılırken arkasında yanan ışık ---- */
+#llOkulPopup .okul-kapi-yuva{
+    position: relative; display: inline-flex; perspective: 640px;
+}
+#llOkulPopup .okul-kapi-yuva::after{
+    content: ""; position: absolute; inset: 0; border-radius: 9px 9px 4px 4px;
+    background: radial-gradient(ellipse at 20% 50%, #FFE9A8 0%, #FFC66B 55%, rgba(255,198,107,0) 100%);
+    opacity: 0; pointer-events: none; transition: opacity .18s ease;
+}
+#llOkulPopup .okul-kapi-yuva.acildi::after{ opacity: 1; }
+#llOkulPopup .okul-kapi{ transform-origin: left center; backface-visibility: hidden; }
+#llOkulPopup .okul-kapi.aciliyor{
+    transform: rotateY(-78deg); box-shadow: 10px 2px 16px rgba(0, 0, 0, .25);
+    transition: transform .42s cubic-bezier(.45, .05, .2, 1), box-shadow .42s ease;
+}
+/* bina, girilen kapıya doğru hafifçe yaklaşsın */
+#llOkulPopup .okul-bina.girildi{ animation: okulGir .44s ease-in both; }
+@keyframes okulGir{
+    0%{ transform: scale(1); }
+    100%{ transform: scale(1.035); filter: brightness(1.06); }
+}
+/* kapı tokmağı: üzerine gelince parlar */
+#llOkulPopup .okul-kapi::after{ transition: box-shadow .2s ease, background .2s ease; }
+#llOkulPopup .okul-kapi:hover::after{ background: #FFE9A8; box-shadow: 0 0 7px 2px rgba(255, 220, 140, .85); }
+
+/* ---- "+" sınıf ekle kapısı: SVG artı ---- */
+#llOkulPopup .okul-kapi.okul-ekle{ padding: 6px 13px 7px; }
+#llOkulPopup .okul-kapi.okul-ekle .lli{ width: 15px; height: 15px; display: block; }
+#llOkulPopup .okul-kapi.okul-ekle::after{ display: none; }
+
+/* ---- "Seviye Ekle": büyük, kesik çizgili şerit ---- */
+#llOkulPopup .okul-kat.okul-kat-ekle{ padding: 9px 14px; }
+#llOkulPopup .okul-seviye-ekle{
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    width: 100%; cursor: pointer; font-family: inherit;
+    font-weight: 800; font-size: 1rem; color: #8E5A24;
+    background: rgba(255, 255, 255, .55);
+    border: 2px dashed #DEB88A; border-radius: 12px; padding: 11px 18px;
+    transition: background .15s, border-color .15s, color .15s, transform .12s;
+}
+#llOkulPopup .okul-seviye-ekle .lli{ width: 19px; height: 19px; flex: 0 0 auto; }
+#llOkulPopup .okul-seviye-ekle:hover{
+    background: #FFF4E6; border-color: #E67E22; color: #B9651A; transform: translateY(-1px);
+}
+#llOkulPopup .okul-seviye-ekle:active{ transform: scale(.995); }
+
+/* ---- kurum işlem tuşlarında SVG ---- */
+#llOkulPopup .okul-ktus{ display: inline-flex; align-items: center; justify-content: center; padding: 4px 7px; }
+#llOkulPopup .okul-ktus .lli{ width: 16px; height: 16px; display: block; }
+#llOkulPopup .okul-ktus .lli *{ fill: currentColor; stroke: currentColor; }
+
+/* ---- sürüklenebilir kat ---- */
+#llOkulPopup .okul-kat[data-lid]{ cursor: grab; transition: background .15s, opacity .15s, box-shadow .15s; }
+#llOkulPopup .okul-kat[data-lid]:hover{ background: rgba(255, 246, 232, .75); }
+#llOkulPopup .okul-kat[data-lid]:active{ cursor: grabbing; }
+#llOkulPopup .okul-kat.suruk{ opacity: .38; box-shadow: inset 0 0 0 2px #E67E22; }
+#llOkulPopup .okul-kat.ust{ box-shadow: inset 0 3px 0 0 #E67E22; }
+#llOkulPopup .okul-kat.alt{ box-shadow: inset 0 -3px 0 0 #E67E22; }
+#llOkulPopup .okul-tutamac{
+    width: 15px; height: 15px; flex: 0 0 auto; fill: #C9AE92; opacity: .75;
+    margin-inline-end: -2px; transition: fill .15s, opacity .15s;
+}
+#llOkulPopup .okul-kat[data-lid]:hover .okul-tutamac{ fill: #E67E22; opacity: 1; }
+
+/* ---- binaya gelince giriş katındaki pencereler ışısın ---- */
+#llOkulPopup .okul-pencere rect{ transition: fill .3s ease; }
+#llOkulPopup .okul-bina:hover .okul-pencere rect{ fill: #FDE9A9; }
+
+/* ---- pencere açılınca binalar sırayla belirsin ---- */
+#llOkulPopup .okul-bina{ animation: okulBinaGir .38s ease-out both; animation-delay: var(--gec, 0ms); }
+@keyframes okulBinaGir{
+    from{ opacity: 0; transform: translateY(16px) scale(.985); }
+    to{ opacity: 1; transform: none; }
+}
+
+/* ---- bayrak dalgalansın ---- */
+#llOkulPopup .okul-bayrak .li-bayrakcik{
+    transform-origin: 12px 5px; animation: okulBayrak 2.8s ease-in-out infinite;
+}
+@keyframes okulBayrak{
+    0%, 100%{ transform: skewY(0deg) scaleX(1); }
+    35%{ transform: skewY(-7deg) scaleX(.93); }
+    70%{ transform: skewY(5deg) scaleX(1.03); }
+}
+
+@media (prefers-reduced-motion: reduce){
+    #llOkulPopup .okul-bina,
+    #llOkulPopup .okul-bina.girildi,
+    #llOkulPopup .okul-bayrak .li-bayrakcik{ animation: none !important; }
+    #llOkulPopup .okul-kapi.aciliyor{ transition: none !important; transform: none !important; }
+}
+
+/* ==========================================================================
    SINIF SEÇİCİ  (05.10.2026)
    --------------------------------------------------------------------------
    Öğretmen: "sınıf yazısında tıklanınca başka sınıfların olduğunu gösteren
