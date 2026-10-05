@@ -217,6 +217,19 @@
     }
 
     function ac(baslangic) {
+        /* TEK GİRİŞ PENCERESİ (04.10.2026) — öğretmen: "bilgi yarışmasındaki
+           giriş ve kayıt ekranı indextekinin aynısı olsun".
+           Bu dosyanın kendi küçük paneli yerine artık index'le AYNI pencere
+           açılıyor (hesap/girispenceresi.js + girisdavranis.js). Eski panel
+           kodu aşağıda duruyor: ortak pencere bir sebeple yüklenmediyse
+           yedek olarak devreye giriyor, öğretmen giriş yapamadan kalmasın. */
+        var P = window.KidefGirisPenceresi, D = window.KidefGirisDavranis;
+        if (P && D) {
+            D.durum.girisKipi = (baslangic !== 'kayit');
+            D.rolSec('teacher');          /* yarışmayı öğretmen yönetir */
+            D.ac();
+            return;
+        }
         iskeletKur();
         kip = (baslangic === 'kayit') ? 'kayit' : 'giris';
         ciz();
@@ -224,6 +237,7 @@
     }
 
     function kapat() {
+        if (window.KidefGirisDavranis) window.KidefGirisDavranis.kapat();
         if (panel) panel.classList.remove('acik');
     }
 

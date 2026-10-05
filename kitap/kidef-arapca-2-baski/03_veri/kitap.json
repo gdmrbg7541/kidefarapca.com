@@ -674,6 +674,7 @@
    "ad": "Mazi Fiil",
    "sunum": {
     "klasor": "05_sunumlar/mazi",
+    "sitePdf": "05_sunumlar/mazi/sunu.pdf",
     "adet": 223,
     "ad": "Mazi Fiil Ders Sunusu",
     "pdf": "../1. Knlr/3. Ünite - Fiiller/11. Ders - 🧐 Mazi Fiil/Sunu 🧐 Mazi Fiil.pdf"
@@ -745,6 +746,7 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/basit-fiiller",
+     "sitePdf": "05_sunumlar/basit-fiiller/sunu.pdf",
      "adet": 253,
      "ad": "Basit Fiiller (Aksam-ı Seba) Ders Sunusu",
      "sayfa": 95,
@@ -774,6 +776,7 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/turemis-1",
+     "sitePdf": "05_sunumlar/turemis-1/sunu.pdf",
      "adet": 47,
      "ad": "Türemiş Fiiller 1 — Giriş ve İf’âl",
      "sayfa": 125,
@@ -781,6 +784,7 @@
     },
     {
      "klasor": "05_sunumlar/turemis-2",
+     "sitePdf": "05_sunumlar/turemis-2/sunu.pdf",
      "adet": 60,
      "ad": "Türemiş Fiiller 2 — Tef’îl ve Müfâ’ale",
      "sayfa": 125,
@@ -788,6 +792,7 @@
     },
     {
      "klasor": "05_sunumlar/turemis-3",
+     "sitePdf": "05_sunumlar/turemis-3/sunu.pdf",
      "adet": 83,
      "ad": "Türemiş Fiiller 3 — İnfiâl, İftiâl, İf’ilâl",
      "sayfa": 125,
@@ -795,6 +800,7 @@
     },
     {
      "klasor": "05_sunumlar/turemis-4",
+     "sitePdf": "05_sunumlar/turemis-4/sunu.pdf",
      "adet": 182,
      "ad": "Türemiş Fiiller 4 — Tefe’ul, Tefâ’ul, İstif’âl, Alıştırmalar",
      "sayfa": 125,
@@ -912,7 +918,8 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/kaliplar-dilidir",
-     "adet": 154,
+     "sitePdf": "05_sunumlar/kaliplar-dilidir/sunu.pdf",
+     "adet": 155,
      "ad": "Arapça Kalıplar Dilidir — Ders Sunusu",
      "sayfa": 29,
      "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/2.1 Ders -  37 🛠 Arapça Kalıplar Dilidir/Sunu 🛠 Arapça Kalıplar Dilidir.pdf"
@@ -969,7 +976,8 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/arapcada-kelime",
-     "adet": 28,
+     "sitePdf": "05_sunumlar/arapcada-kelime/sunu.pdf",
+     "adet": 29,
      "ad": "Arapçada Kelime — Ders Sunusu",
      "sayfa": 40,
      "pdf": "../1. Knlr/1. Ünite - Arapçaya Giriş/4.2. Ders - Arapçada Kelime/Sunu - Arapçada Kelime .pdf"
@@ -1035,7 +1043,8 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/harfi-tarif",
-     "adet": 81,
+     "sitePdf": "05_sunumlar/harfi-tarif/sunu.pdf",
+     "adet": 82,
      "ad": "Harf-i Ta’rîf — Ders Sunusu",
      "sayfa": 59,
      "pdf": "../1. Knlr/2. Ünite - İsimler/9. Ders - 🧐 Harf-i Ta’rîf “ال  ” (Elif-Lam Takısı)/Sunu 🧐 Harf-i Tarîf.pdf"
@@ -1050,7 +1059,8 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/mufred-tesniye-cem",
-     "adet": 219,
+     "sitePdf": "05_sunumlar/mufred-tesniye-cem/sunu.pdf",
+     "adet": 220,
      "ad": "Müfred, Tesniye ve Cem’ İsimler — Ders Sunusu",
      "sayfa": 63,
      "pdf": "../1. Knlr/2. Ünite - İsimler/10. Ders - 52 🧐 Müfred, Tesniye, Cem İsimler/Sunu  🧐 Müfred, Tesniye, Cem İsimler.pdf"
@@ -1065,7 +1075,8 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/muennes-muzekker",
-     "adet": 30,
+     "sitePdf": "05_sunumlar/muennes-muzekker/sunu.pdf",
+     "adet": 31,
      "ad": "Müennes-Müzekker İsimler — Ders Sunusu",
      "sayfa": 66,
      "pdf": "../1. Knlr/2. Ünite - İsimler/16. Ders - 38 🧐 Müennes Müzekker (Eril-Dişil)/Sunu 🧐 Müennes Müzekker (Eril-Dişil).pdf"
@@ -1080,7 +1091,8 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/marife-nekra",
-     "adet": 87,
+     "sitePdf": "05_sunumlar/marife-nekra/sunu.pdf",
+     "adet": 88,
      "ad": "Marife-Nekra, Dişil-Eril, Merfu-Mansub-Mecrur — Sunu",
      "sayfa": 70,
      "pdf": "../1. Knlr/2. Ünite - İsimler/41. Ders - 🦾 Marife-Nekra, Dişil-Eril, Merfu-Mansub-Mecrur/Sunu 🦾 Marife-Nekra, Dişil-Eril, Merfu-Mansub-Mecrur.pdf"
@@ -1095,6 +1107,7 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/muzari",
+     "sitePdf": "05_sunumlar/muzari/sunu.pdf",
      "adet": 282,
      "ad": "Muzari Fiil Ders Sunusu",
      "sayfa": 82,
@@ -1115,6 +1128,7 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/emir",
+     "sitePdf": "05_sunumlar/emir/sunu.pdf",
      "adet": 155,
      "ad": "Emir Fiil Ders Sunusu",
      "sayfa": 89,
@@ -1150,6 +1164,7 @@
    "sunum": [
     {
      "klasor": "05_sunumlar/fiil-olumsuz",
+     "sitePdf": "05_sunumlar/fiil-olumsuz/sunu.pdf",
      "adet": 73,
      "ad": "Fiillerin Olumsuzu ve İrabı — Ders Sunusu",
      "sayfa": 121,

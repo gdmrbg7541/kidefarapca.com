@@ -164,14 +164,14 @@ header svg { stroke: white; }
     transition: all 0.3s;
 }
 
-/* "…boşları çok açık gri olsun" — şifre alanındaki placeholder noktaları
+/* "…boşları çok açık gri olsun" — şifre alanındaki placeholder noktaları (04.10 ikinci tur: bir tık daha soldu)
    (••••••••) yalnızca süs; sönük dursunlar ki yazılanla karışmasınlar.
    Bilgi veren placeholder'lara (ornek@mail.com, 5XX XXX XX XX) dokunulmadı,
    onlar okunur kalmalı.
    opacity:1 şart: Firefox placeholder'a kendiliğinden saydamlık veriyor. */
-.form-group input[type="password"]::placeholder { color: #DEE4EB; opacity: 1; }
-.form-group input[type="password"]::-webkit-input-placeholder { color: #DEE4EB; }
-.form-group input[type="password"]::-moz-placeholder { color: #DEE4EB; opacity: 1; }
+.form-group input[type="password"]::placeholder { color: #EAEFF5; opacity: 1; }
+.form-group input[type="password"]::-webkit-input-placeholder { color: #EAEFF5; }
+.form-group input[type="password"]::-moz-placeholder { color: #EAEFF5; opacity: 1; }
 .form-group input:focus, .form-group select:focus {
     outline: none;
     border-color: var(--primary-color);
@@ -979,3 +979,44 @@ details.day-group .slots-grid {
         height: 100% !important;
     }
 }
+
+
+/* ===========================================================================
+   ŞİFRE ALANINDAKİ GÖZ            (04.10.2026, öğretmen isteği)
+   "göz emojisi yerine svg olsun ve tıklanınca göz açılsın, kapalıyken
+    kapalı olsun, kirpikler de olsun."
+   İki duruş aynı SVG'nin içinde üst üste duruyor; hangisinin görüneceğine
+   düğmenin aria-pressed'i karar veriyor (çevirmeyi hesap/auth.js yapar).
+   =========================================================================== */
+/* 04.10.2026 — öğretmen: "gözler kutunun dışında olsun… şifre yazısının
+   yanında". Düğme <label>'in içinde duruyor, o yüzden mutlak konum yok:
+   etiket "Şifre" de olsa "Şifreyi Onayla" da olsa yazının hemen ardına
+   geliyor. */
+.gz-tus{
+    display: inline-grid; place-items: center; vertical-align: -7px;
+    width: 26px; height: 26px; margin-left: 5px;
+    border: 0; background: none; padding: 0; cursor: pointer;
+    color: #8A93A0; border-radius: 8px;
+    transition: color .18s, background .18s;
+}
+.gz-tus:hover{ color: #16A085; background: #F0F6F4; }
+.gz-tus:focus-visible{ outline: 2px solid #16A085; outline-offset: 1px; }
+.gz{
+    width: 18px; height: 18px; display: block; overflow: visible;
+    fill: none; stroke: currentColor; stroke-width: 1.7;
+    stroke-linecap: round; stroke-linejoin: round;
+}
+.gz .gz-bebek{ fill: currentColor; stroke: none; }
+.gz-kapali, .gz-acik{
+    transform-origin: 12px 12px;
+    transition: opacity .2s ease, transform .2s cubic-bezier(.2,.9,.3,1);
+}
+.gz-acik{ opacity: 0; transform: scaleY(.45); }          /* şifre gizliyken */
+.gz-kapali{ opacity: 1; }
+.gz-tus[aria-pressed="true"] .gz-acik{ opacity: 1; transform: none; }
+.gz-tus[aria-pressed="true"] .gz-kapali{ opacity: 0; transform: scaleY(.45); }
+@media (prefers-reduced-motion: reduce){
+    .gz-kapali, .gz-acik{ transition: none; }
+}
+/* Göz kutunun dışında, etiketin yanında; kutunun içinde yer ayırmaya
+   gerek yok — uzun şifre alanın sonuna kadar yazılabiliyor. */

@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+<!-- ====================================================================
+     BU SAYFA ARTIK KULLANILMIYOR                          (04.10.2026)
+     --------------------------------------------------------------------
+     Öğretmen paneli index.html'in içinde çalışıyor. Bu müstakil sayfanın
+     kendi giriş/kayıt kodu vardı ve KAYIT kipi bozuktu: yalnız e-posta +
+     şifre alıp kullanıcı belgesine role/ad/telefon/meslek/cinsiyet ve
+     öğretmen onayı YAZMIYORDU. Firestore kuralı rolsüz belgeyi
+     reddettiği için Firebase hesabı açılıyor ama belge hiç oluşmuyordu —
+     öğretmen bir sonraki girişte öğrenci görünüyor, bilgileri yok ve o
+     e-postayla yeniden kayıt olamıyordu.
+
+     Sayfanın gövdesi silinmedi, yedeği _kaynak/yedekler/20261004-kayit-
+     acigi/ içinde. Geri açmak gerekirse aşağıdaki betiği kaldırmak yeter.
+     ==================================================================== -->
+<script id="kdtEskiSayfa">
+  (function () {
+    try {
+      var k = new URLSearchParams(location.search);
+      if (k.get('eski') === '1') return;        /* bilerek bakmak için: ?eski=1 */
+    } catch (e) {}
+    location.replace('index.html');
+  })();
+</script>
+
 
 
     <meta charset="UTF-8">

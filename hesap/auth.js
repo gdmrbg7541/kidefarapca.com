@@ -253,8 +253,19 @@ function updateAuthUI() {
 
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
-    if(input) {
-        input.type = input.type === "password" ? "text" : "password";
+    if (!input) return;
+    input.type = input.type === "password" ? "text" : "password";
+
+    /* 04.10.2026 — göz artık emoji değil, iki duruşlu çizim. Şifre
+       görünürken göz AÇIK, gizliyken KAPALI dursun diye düğmenin
+       aria-pressed'i çevriliyor; CSS geçişi ona bakıyor. Düğme
+       alanın hemen yanındaki .gz-tus. */
+    const gorunur = input.type === "text";
+    const tus = input.parentNode && input.parentNode.querySelector('.gz-tus');
+    if (tus) {
+        tus.setAttribute('aria-pressed', gorunur ? 'true' : 'false');
+        tus.setAttribute('title', gorunur ? 'Şifreyi gizle' : 'Şifreyi göster');
+        tus.setAttribute('aria-label', gorunur ? 'Şifreyi gizle' : 'Şifreyi göster');
     }
 }
 

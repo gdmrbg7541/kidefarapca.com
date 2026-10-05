@@ -5562,21 +5562,16 @@ async function llAuthIslemi() {
                 localStorage.setItem('teacher_static_code', doc.data().teacherStaticCode);
             }
         } else {
-            // YENİ KAYIT MODU
-            if (pass !== rePass) { throw new Error("Şifreler eşleşmiyor."); }
-            userCredential = await firebase.auth().createUserWithEmailAndPassword(emailInput, pass);
-            
-            const staticCode = "TCH-" + Math.floor(1000 + Math.random() * 9999);
-            localStorage.setItem('teacher_static_code', staticCode);
-
-            let dataToUpload = localStorage.getItem('schoolData') || JSON.stringify({ levels: {}, levelOrder: [] });
-            
-            await db.collection("kullanicilar").doc(userCredential.user.uid).set({
-                userData: dataToUpload,
-                teacherStaticCode: staticCode,
-                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
-            alert("Hesap oluşturuldu! Sabit Kodunuz: " + staticCode);
+            /* KAYIT KİPİ KALDIRILDI (04.10.2026).
+               Buradaki eski kayıt yalnız e-posta + şifre alıyor, kullanıcı
+               belgesine role/ad/telefon/meslek/cinsiyet ve öğretmen onayını
+               YAZMIYORDU. Firestore kuralı rolsüz belgeyi reddettiği için
+               Firebase hesabı açılıyor ama belge hiç oluşmuyordu — öğretmen
+               sonraki girişte öğrenci görünüyor, bilgileri yok oluyordu.
+               Kayıt tek yerden yapılır: hesap/auth.js → authIslemi, alanlar
+               ve belge biçimi hesap/kayitalani.js'ten. */
+            if (typeof window.authIslemi === 'function') { window.authIslemi(); return; }
+            throw new Error("Kayıt bu ekrandan yapılmıyor. Lütfen ana sayfadaki «Kayıt Ol» penceresini kullan.");
         }
         
         modalKapat();

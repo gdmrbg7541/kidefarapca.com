@@ -594,6 +594,21 @@ function biyGeriDon(e){
      kayitalani.js kayıt alanlarının ve kullanicilar belgesinin TEK
      kaynağıdır; index'teki kayıt formu da aynı dosyayı okur. -->
 <script src="hesap/kayitalani.js?v=1"></script>
+<!-- TEK GİRİŞ PENCERESİ (04.10.2026) — öğretmen: "indextekinin aynısını
+     istiyorum". Pencerenin HTML'i girispenceresi.js'te (index'ten
+     çıkarıldı), görünümü kapsanmış girispenceresi.css'te, düğme
+     davranışı girisdavranis.js'te. Alanlar ve kullanıcı belgesi yine
+     kayitalani.js'ten — iki ekran aynı belgeyi yazar. -->
+<link rel="stylesheet" href="hesap/girispenceresi.css?v=1">
+<script src="hesap/girispenceresi.js?v=1"></script>
+<script src="hesap/girisdavranis.js?v=1"></script>
+<!-- NOT: index'teki kayıt anketi (hesap/kayitanketi.js) ve rol tanıtım
+     kartları (sistem/panel-tanitim.js) buraya HENÜZ alınmadı. Denendi:
+     ikisi de kendi stillerini index'in css'inden aldığı için burada
+     ekranlarını basamıyor, üstelik anket "Kayıt Ol" düğmesini kilitli
+     tutuyordu. Pencerenin görünümünde yaptığımız gibi onların da stilleri
+     kapsanıp ayrı dosyaya çıkarılınca eklenecek. O zamana kadar bu sayfada
+     kayıt anketsiz ilerliyor; ALANLAR ve yazılan belge index'le aynı. -->
 <script src="hesap/biygiris.js?v=1"></script>
 <!-- Üretilmiş konular: motordan ÖNCE yüklenir, window.BIY_EK_KONULAR'a eklenirler.
      oyunlar/biy_kaliplar.js → kalıplar tablosunun verisinden üretilen sorular. -->

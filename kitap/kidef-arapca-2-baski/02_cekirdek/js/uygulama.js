@@ -113,8 +113,23 @@
   /* Sunu her yerde sunum.html ile açılır (kullanıcı kararı 01.10.2026): slayt tam ekran,
      düğmeler üstünde. Asıl PDF bilgisayarda gösterici içindeki "PDF" düğmesiyle (&p=). */
   function sunumAdres(k) {
+    /* 05.10.2026 — öğretmen: "HTML'ye çevirdiğimiz PDF sunumlar siyah renkte
+       açılıyor ve kaymalar olabiliyor, PDF'e dönelim."
+       Ölçüldü: sunum.html'de sahne background:#000, slayt çizilemezse siyah
+       görünüyor; ayrıca çevirici kendi başlığında yazıyor ki yazı tipleri
+       PowerPoint'inkiler olmadığı için satırlar taşıyor ve yazı %14'e kadar
+       küçültülüp sığdırılıyor. PDF'te yazı tipleri gömülü olduğu için ikisi
+       de olmaz.
+
+       Üç kademe:
+         1. k.pdf + file://  → asıl PDF (bilgisayardaki kopya, tam kalite)
+         2. k.sitePdf        → sitedeki sıkıştırılmış PDF (ders sunuları)
+         3. yoksa            → sunum.html göstericisi (oyun slaytları)
+       Siteye yalnız ders sunuları konuyor (öğretmenin kararı): oyun
+       slaytları 865 MB ve sınıfta kendi bilgisayarından açılıyor. */
+    if (k.pdf && PDF_VAR) return pdfAdres(k.pdf);
+    if (k.sitePdf) return pdfAdres(k.sitePdf);
     var q = { d: k.klasor, n: k.adet, a: k.ad };
-    if (k.pdf && PDF_VAR) q.p = k.pdf;
     return 'sunum.html?' + new URLSearchParams(q);
   }
   function sunumAc(k, icerde) {

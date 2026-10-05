@@ -5016,3 +5016,286 @@ bilgiler olmasın."
   Denetim: eski/yeni yan yana ölçüldü — yazı rgb(51,51,51) → rgb(22,26,34);
   placeholder "kural yok" → rgb(222,228,235). E-posta placeholder'ı aynı
   kaldı ve okunur.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — ŞİFRE ALANINDAKİ GÖZ: EMOJİ YERİNE ÇİZİM
+────────────────────────────────────────────────────────────────────────
+  İstek: "şifre kısmında şifrenin görünmesi için göz emojisi yerine svg
+  olsun ve tıklanınca göz açılsın, kapalıyken kapalı olsun, kirpikler de
+  olsun."
+
+  👁️ emojisi kalktı. Yerine iki duruşlu bir çizim geldi:
+   · KAPALI (şifre gizliyken) — inen göz kapağı + aşağı bakan beş kirpik
+   · AÇIK   (şifre görünürken) — badem göz, iris, bebek + yukarı beş kirpik
+  İki duruş aynı SVG'nin içinde üst üste duruyor; tıklanınca düğmenin
+  aria-pressed'i çevriliyor, CSS birinden ötekine yumuşakça geçiriyor
+  (0,2 sn). Hareketi kısıtlayan kullanıcıda geçiş yok.
+
+  <span> yerine gerçek <button>: klavyeyle sekmeleniyor, odak halkası
+  var, ekran okuyucu "Şifreyi göster / Şifreyi gizle" diyor ve basılı
+  durumu bildiriyor. Renk site grisinden (#8A93A0) üstüne gelince site
+  yeşiline (#16A085) dönüyor. Alanın sağında dikey ortada; şifre
+  alanlarına 46 px sağ boşluk verildi ki yazı gözün altına girmesin.
+
+  togglePassword (hesap/auth.js) artık alan tipiyle birlikte düğmenin
+  duruşunu, başlığını ve etiketini de çeviriyor.
+
+  Betik: _kaynak/uretici/gozSvg.py
+  Yedek: _kaynak/yedekler/20261004-goz-svg/
+  Sürüm: hesap/kurslar.css?v=20261004b · hesap/auth.js?v=20261004a
+  Denetim (iki kez): önce giriş formunun gerçek parçasıyla, sonra
+  index.html'in KENDİSİ tarayıcıda açılarak. Gerçek sayfada:
+   · açılışta kapalı (açık katman opacity 0, kapalı 1)
+   · tıklayınca alan text'e döndü, göz açıldı, başlık "Şifreyi gizle"
+   · ikinci tıklamada geri kapandı
+   · "Şifreyi Onayla" alanındaki ikinci göz de aynı şekilde çalıştı
+   · göz alanın dikey tam ortasında (önce 3 px yukarıdaydı, top 35→38 px
+     ile düzeltildi), sağdan 9 px içeride, 34×34 px dokunma alanı
+   · duran renk #8A93A0, üstüne gelince #16A085
+   · sayfada hiç emoji kalmadı
+  (Denemede çıkan tek hata firebase'in taklit edilmesinden; kendi
+  değişikliğimizle ilgisi yok — boş taklitle "firebase is not defined"
+  diyor, gerçek sayfada firebase gstatic'ten geliyor.)
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — GÖZ KUTUNUN DIŞINA, ETİKETİN YANINA
+────────────────────────────────────────────────────────────────────────
+  İstek: "gözler kutunun dışında olsun" → "şifre yazısının yanında"
+  → "veya şifreyi onayla yazısının".
+
+  Göz alanın içinde, sağ kenarda duruyordu. Artık kutunun dışında,
+  etiketin hemen yanında: «Şifre 👁» ve «Şifreyi Onayla 👁».
+
+  Nasıl: düğme <label>'in İÇİNE alındı. Böylece mutlak konuma gerek
+  kalmadı — etiket ister "Şifre" ister "Şifreyi Onayla" olsun, göz
+  yazının hemen ardına kendiliğinden yerleşiyor. Düğme satır içi:
+  26×26 px, göz 18 px, yazıyla hizalı.
+
+  Kutunun içindeki 46 px'lik sağ boşluk kaldırıldı — göz orada olmadığı
+  için uzun şifre alanın sonuna kadar yazılabiliyor.
+
+  Betik: _kaynak/uretici/gozEtiketYani.py
+  Yedek: _kaynak/yedekler/20261004-goz-etiket/
+  Sürüm: hesap/kurslar.css?v=20261004c
+  Denetim: index.html'in kendisi tarayıcıda açılarak. Göz etiketin
+  içinde (etiket metni "Şifre"), kutunun dışında/üstünde; açılışta
+  kapalı, tıklayınca açıldı ve başlık "Şifreyi gizle" oldu, ikinci
+  tıklamada kapandı; "Şifreyi Onayla" alanındaki ikinci göz de çalıştı;
+  alanın sağ boşluğu 12 px'e döndü. Sayfa hatası yok.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — BOŞ ALANDAKİ NOKTALAR BİR TIK DAHA SOLDU
+────────────────────────────────────────────────────────────────────────
+  İstek: "kayıt olurken iki şifre istiyor ya, oradaki ilk şifre girme
+  kısmında noktalar da açık gri olsun."
+
+  İki alanı tarayıcıda karşılaştırdım: teknik olarak birbirinin aynısı.
+  Görülen fark, birine yazılmış olmasından — yazılan noktalar koyu,
+  boş alandaki placeholder noktaları açık. Öğretmene soruldu, karar:
+  yazılanlar koyu KALSIN, boş alandaki süs noktaları daha da solsun.
+
+    boş alandaki noktalar  #DEE4EB → #EAEFF5
+    yazılan noktalar       #161A22 (değişmedi)
+
+  Yedek: _kaynak/yedekler/20261004-nokta-daha-acik/
+  Sürüm: hesap/kurslar.css?v=20261004d
+  Denetim: index.html tarayıcıda, kayıt kipinde — ilk alan dolu
+  (rgb(22,26,34)), ikinci alan boş (rgb(234,239,245)). Fark gözle
+  belirgin, boş alan yine de tamamen kaybolmuyor.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — BOZUK KAYIT YOLU KAPATILDI
+────────────────────────────────────────────────────────────────────────
+  Soru: "öğretmenler kayıt olurken form bilgileri bazen kaydolmuyor mu…
+  ya da bi açık var, o bilgileri girmeden kayıt olunabiliyor mu"
+
+  BULGU — evet, açık vardı.
+  Eski müstakil öğretmen paneli sayfası listelerim.html'in KENDİ
+  authIslemi'si, kayıt kipinde yalnız e-posta + şifre istiyordu ve
+  kullanıcı belgesine şunları yazıyordu:
+      userData, teacherStaticCode, lastUpdated
+  role · name · phone · meslek · cinsiyet · ogretmenOnay YOK.
+
+  firestore.rules şöyle diyor:
+      allow create: if isOwner(uid)
+                    && request.resource.data.role in ['student','teacher'];
+  Rol alanı olmadığı için bu yazma REDDEDİLİYORDU. Sonuç:
+   · Firebase Auth hesabı AÇILIYOR (kural ona işlemiyor)
+   · kullanicilar/{uid} belgesi HİÇ OLUŞMUYOR
+   · öğretmen sonraki girişte öğrenci görünüyor, bilgileri yok
+   · e-posta "kullanımda" olduğu için yeniden kayıt da olamıyor
+  Onay kapısı DELİNMİYOR — kural tuttuğu için kimse onaysız öğretmen
+  olamıyor; zarar hesabın yarım kalması.
+
+  Aynı bozuk işlev hesap/listelerim.js içinde de vardı (llAuthIslemi) ama
+  index.html'den erişilemiyordu: pencerenin düğmesi auth.js'teki sağlam
+  authIslemi'ye gidiyor, Enter kancası da onu tercih ediyor.
+
+  YAPILAN
+   1. listelerim.html açılır açılmaz index.html'e yönleniyor. Gövde
+      silinmedi; bakmak için ?eski=1 eklenebilir.
+   2. hesap/listelerim.js → llAuthIslemi'nin KAYIT kipi kaldırıldı,
+      sağlam authIslemi'ye yönleniyor. Giriş kipi olduğu gibi duruyor.
+   3. Kök dizindeki eski kopyalara (listelerim.js, auth.js, checkout.js)
+      dokunulmadı — hiçbir sayfa onları yüklemiyor.
+
+  GERİYE KALAN CANLI KAYIT YOLLARI — ikisi de sağlam, ikisi de
+  hesap/kayitalani.js'teki tek doğrulama ve belge biçimini kullanıyor:
+      hesap/auth.js      index.html
+      hesap/biygiris.js  bilgiyarismasikacom.html + index.html
+  (hesap/auth_index.js hiçbir sayfada yüklü değil — ölü dosya.)
+
+  Betik: _kaynak/uretici/kayitAcigiKapat.py
+  Yedek: _kaynak/yedekler/20261004-kayit-acigi/
+
+  SIRADA (öğretmen kararı): tek giriş sayfası — bilgi yarışmasındaki
+  giriş/kayıt da index'teki tam ekran pencerenin aynısı olacak; ayrıca
+  belgesi olmayan hesaplar girişte "bilgilerini tamamla" formuna düşecek.
+
+────────────────────────────────────────────────────────────────────────
+04.10.2026 — TEK GİRİŞ PENCERESİ
+────────────────────────────────────────────────────────────────────────
+  İstek: "bilgiyarismasikacom.html deki giriş ve kayıt ekranı ile
+  indextekini aynı yapsak daha iyi olmaz mı, indextekinin aynısını
+  istiyorum… tek giriş sayfası olsun yani, farklı yerlerde de olsa."
+
+  PENCERE ARTIK TEK KAYNAKTA
+    hesap/girispenceresi.js   pencerenin HTML'i — index.html'den ÇIKARILDI
+                              (elle yazılmadı, betik kopyaladı). index de
+                              artık pencereyi buradan basıyor; markup'ı
+                              index'te YOK. İki ekran bir daha ayrışamaz.
+    hesap/girispenceresi.css  pencerenin görünümü — kurslar.css'teki 33
+                              kural #login-modal altına KAPSANARAK çıkarıldı.
+                              Böylece başka sayfaya yüklenince o sayfanın
+                              kendi görünümüne dokunmuyor.
+    hesap/girisdavranis.js    düğmelerin davranışı — YALNIZ EKSİKSE kurulur.
+                              index'te auth.js zaten tanımlıyor, orada
+                              hiçbir şey değişmiyor.
+
+  BİLGİ YARIŞMASI
+  Kendi küçük paneli yerine artık index'le AYNI pencere açılıyor.
+  BiyGiris.ac() ortak pencereye yönlendiriyor; ortak pencere bir sebeple
+  yüklenmezse eski panel yedek olarak devrede kalıyor — öğretmen giriş
+  yapamadan kalmasın.
+  Yarışmayı öğretmen yönettiği için pencere «Öğretmen» seçili açılıyor,
+  meslek alanı index'teki gibi "Eğitmen" olarak kilitli geliyor.
+  Karekod satırı bu sayfada gizli (qrgiris.js yüklü değil).
+
+  Doğrulama ve yazılan belge yine hesap/kayitalani.js'ten — iki ekran da
+  AYNI alanları istiyor, AYNI belgeyi yazıyor, öğretmen kaydı aynı onay
+  kapısına düşüyor.
+
+  HENÜZ TAŞINMAYAN: kayıt anketi (hesap/kayitanketi.js) ve rol tanıtım
+  kartları (sistem/panel-tanitim.js). Denendi; ikisi de stillerini
+  index'in css'inden aldığı için yarışma sayfasında ekranlarını
+  basamıyor, üstelik anket "Kayıt Ol" düğmesini kilitli bırakıyordu.
+  Geri alındı, sebebi sayfaya not düşüldü. Pencerede yaptığımız gibi
+  onların da stilleri kapsanıp ayrı dosyaya çıkarılınca eklenebilir.
+
+  Betikler: _kaynak/uretici/girisPenceresiUret.py · girisPenceresiStil.py
+  Yedek:    _kaynak/yedekler/20261004-tek-giris/
+  Sürüm:    girispenceresi.js?v=1 · girispenceresi.css?v=1 ·
+            girisdavranis.js?v=1
+
+  DENETİM
+   index.html: pencere tek kopya, body'ye basılıyor, 16 alanın hepsi
+   yerinde, iki göz düğmesi var; açılıyor, «Öğretmen» seçiliyor, kayıt
+   kipine geçiyor (başlık/düğme/Şifreyi Onayla doğru). Sayfa hatası yok.
+   bilgiyarismasikacom.html: düğmeye basınca aynı pencere açıldı; kayıt
+   kipinde Şifreyi Onayla + telefon + ek alanlar göründü, öğretmen
+   seçiliydi, meslek "Eğitmen" kilitliydi, öğrenci kodu gizliydi;
+   boş gönderimde "Lütfen tüm alanları doldurun.", hatalı telefonda
+   "Geçerli bir telefon numarası girin: 5XX XXX XX XX (zorunlu)." —
+   yani index'in kendi uyarıları. Giriş kipine geçiş çalıştı.
+   Sayfa hatası yok.
+
+── 05.10.2026 · Elif'in bitişme bilgisi düzeltildi
+   Öğretmen: "6. sınıf alfabe.html'de harf tanıtımı kısmında elif için şu
+   cümlede hata var: 'Sağına ve soluna bitişmeyen dört harften biridir.'"
+   İki hata vardı: (1) elif kendinden ÖNCEKİ harfe bitişir, bitişmediği yan
+   yalnız solu; (2) soluna bitişmeyen harf DÖRT değil ALTI (ا د ذ ر ز و).
+   Hata dosyanın kendi verisiyle kanıtlandı: aynı dosyada dal, zel, ra, ze
+   ve vav kayıtları doğru biçimde "soluna bitişmez" diyor — elif ile altı
+   eder. Sitenin kelime çarkı motoru (sarf/kelimecarki.js) da aynı altıyı
+   sayıyor. Cümledeki harfler elle yazılmadı, dosyanın anahtarlarından
+   alındı ve kod noktalarıyla doğrulandı (ALEF, DAL, THAL, REH, ZAIN, WAW).
+   Dosyalar: okumayazma/alfabe_harf_detay.js (alfabe.html bunu yüklüyor),
+   ayrıca kullanılmayan iki kopya: alfabe/alfabe_harf_detay.js ve kökteki
+   alfabe_harf_detay.js. alfabe.html → ?v=33.
+   Yedek: _kaynak/yedekler/20261005-elif-bitisme/
+   Betik: _kaynak/uretici/elifBitisikDuzelt.py
+
+── 05.10.2026 · Ders sunumları PDF'e dönüyor (HTML sunu yerine)
+   Öğretmen: "html'ye çevirdiğimiz pdf sunumlar siyah renkte açılıyor ve
+   kaymalar olabiliyor, pdf'e dönelim."
+   Sebep ölçüldü: sunum.html'de sahne background:#000 (slayt çizilemezse
+   siyah görünüyor) + çevirici yazı tiplerini bulamadığı için satırlar
+   taşıyor ve yazı %14'e kadar küçültülüp sığdırılıyor.
+   uygulama.js/sunumAdres() artık üç kademeli:
+     1. k.pdf + file://  → asıl PDF (bilgisayardaki kopya, tam kalite)
+     2. k.sitePdf        → sitedeki sıkıştırılmış PDF (ders sunuları)
+     3. yoksa            → sunum.html göstericisi (oyun slaytları)
+   Karar: siteye yalnız DERS sunuları (15 sunu, 1957 slayt, ~95 MB).
+   Oyun/etkinlik slaytları (19 sunu, 4333 slayt, 865 MB) siteye konmuyor.
+   Yedek: kitap/kidef-arapca-2-baski/_yedek-20261005-sunu-pdf/
+   Betikler: _kaynak/uretici/sunuPdfVarsay.py, sunumPdfUret.py
+
+── 05.10.2026 · Ders sunumları artık PDF (tamamlandı)
+   15 ders sunusu siteye PDF olarak kondu: 150,8 MB → 89,5 MB.
+   Her sunuda iki yol denendi, KÜÇÜK olan seçildi (tek yöntem her
+   dosyada kazanmıyor):
+     · gs (yazı tiplerini yeniden altkümeleyip birleştirir) — 11 sunu.
+       En iyi: Türemiş 1, 8,6 → 3,1 MB. Ama "Basit Fiiller"de 162
+       saniyede hiç küçültmedi (%100), orada görüntü yolu kazandı.
+     · sayfayı görüntüye çevirip PDF'e koymak (yazı tipi hiç kalmaz) —
+       4 sunu. En iyi: Arapçada Kelime, 29,0 → 3,2 MB (29 slaytta
+       2035 yazı tipi vardı).
+   15 PDF de asıl dosyayla SAYFA SAYISI BİREBİR doğrulandı. Üstelik
+   6 sunuda HTML sürümü birer slayt eksikti (kaliplar-dilidir 154→155,
+   arapcada-kelime 28→29, harfi-tarif 81→82, mufred-tesniye-cem
+   219→220, muennes-muzekker 30→31, marife-nekra 87→88); kitap.json'daki
+   "adet" asıl PDF'e göre düzeltildi.
+   Tarayıcıda denendi: ders sunusu damgası → 05_sunumlar/<deste>/sunu.pdf,
+   oyun slaytı damgası → eskisi gibi sunum.html göstericisi. Hata yok.
+   Çıkarılanlar (SİLİNMEDİ, taşındı): o 15 destenin HTML slaytları ve
+   emir'in 155 kök webp sayfası → _kaynak/gecici/eski-html-sunular/
+   (556 dosya, 24,7 MB). Depodaki net değişim +64,8 MB.
+   DOKUNULMADI: 19 oyun/etkinlik destesi (4333 slayt, 865 MB asıl) —
+   siteye konmadı, HTML slaytları yerinde. Bilgisayarda hepsi asıl PDF.
+   Yedek: _kaynak/yedekler/20261005-sunu-pdf/ (iki flipbook'un
+   uygulama.js'i) ve 20261005-sunu-pdf-yerlestir/ (kitap.json + kitap.js)
+   Betikler: _kaynak/uretici/sunumPdfUret.py, sunumPdfSec.py,
+   sunumPdfYerlestir.py, sunuPdfVarsay.py
+
+── 05.10.2026 · Galeri: yeni görsel + akıştaki iki sessiz arıza kapatıldı
+   Öğretmen galeriye bir görsel ekledi, hızlı gönder'i çalıştırdı, görsel
+   siteye GİTMEDİ. İki sebep vardı, ikisi de sessizdi:
+    1. "galeri: Pillow kurulu degil, atlandi" — Mac'teki python3'te Pillow
+       yok; betik sessizce çıkıyor, gönderim devam ediyor, fotoğraf hiç
+       girmiyordu.
+    2. index.html listeyi "galeriveri.js?v=20261003a" diye yüklüyor. Liste
+       yeniden üretilse bile etiket sabit kaldığı için tarayıcı eski
+       listeyi gösteriyordu.
+   YAPILAN (_kaynak/uretici/galeriPillowsuz.py ile galeriYenile.py yamalandı):
+    · Pillow artık ŞART DEĞİL. Ölçü, saf Python'la JPEG/PNG/WEBP/GIF
+      başlığından okunuyor; Pillow yalnız YENİ bir fotoğrafı küçültmek
+      gerekirse aranıyor. Kopyası hazır fotoğraflar için liste Pillow'suz
+      da doğru üretiliyor (Pillow'suz koşturularak denendi).
+    · Pillow yoksa ve küçültülmeyi bekleyen fotoğraf varsa artık sessiz
+      çıkmıyor: kaç fotoğrafın siteye girmediğini, adlarını ve kurulum
+      komutunu yazıyor. Gönderimi durdurmuyor.
+    · Liste değiştiğinde index.html'deki ?v= etiketi o günün tarihine
+      çekiliyor (şimdi ?v=20261005).
+   Yeni görsel işlendi: Galeri/web + Galeri/kucuk kopyaları üretildi,
+   liste 2 fotoğraf. Tarayıcıda denendi: yeni fotoğraf 1/2'de görünüyor,
+   ok ile ikincisine geçiliyor, ikisi de yükleniyor. Fotoğraf kare
+   (1728x1728) olduğu için çerçevede yanlarda ~76'şar px boşluk kalıyor —
+   object-fit:contain, yani kırpılmıyor, bozulmuyor.
+   Yedek: _kaynak/yedekler/20261005-galeri-pillowsuz/
+
+── 05.10.2026 · Hızlı gönder freni: tek seferlik silme onayı yazıldı
+   Fren haklı olarak durdu: 556 dosya "silinmiş" görünüyordu. Bunlar
+   silinmedi, PDF'e geçen 15 ders sunusunun HTML slaytları
+   _kaynak/gecici/eski-html-sunular/ içine TAŞINDI.
+   _kaynak/gecici/silme-onayi.txt yazıldı (576). Hızlı gönder bu kayıttan
+   sonra onay dosyasını kendisi siliyor; fren tekrar 200'de devreye girer.

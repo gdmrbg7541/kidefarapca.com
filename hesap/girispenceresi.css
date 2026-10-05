@@ -1,0 +1,264 @@
+/* ===========================================================================
+   KİDEF · GİRİŞ PENCERESİNİN GÖRÜNÜMÜ      (hesap/girispenceresi.css)
+   ---------------------------------------------------------------------------
+   ÜRETİLEN DOSYA — _kaynak/uretici/girisPenceresiStil.py yazar.
+   Kurallar hesap/kurslar.css'ten alınıp #login-modal altına KAPSANDI.
+
+   NİYE: pencerenin HTML'i artık tek kaynakta (hesap/girispenceresi.js) ama
+   görünümü kurslar.css'ten geliyordu; o dosya index'in tamamını
+   biçimlendirdiği için başka sayfaya olduğu gibi yüklenemez. Kapsanmış
+   hâli hangi sayfaya yüklenirse yüklensin yalnız pencereye dokunur.
+
+   index.html bu dosyayı yüklemez (zaten kurslar.css var); bilgi yarışması
+   gibi sayfalar yükler. Pencerenin görünümünü değiştirmek gerekirse
+   kurslar.css düzenlenir ve betik yeniden çalıştırılır.
+   =========================================================================== */
+
+#login-modal .glass-card, #login-modal .dark-box {
+    background: #fff;
+    padding: 20px;
+    margin-top: 15px;
+    border-radius: 15px;
+    border: 1px solid #E9EEF5;
+    box-shadow: 0 6px 12px rgba(0,0,0,.08);
+    color: #333;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#login-modal .glass-card h2, #login-modal .glass-card h3, #login-modal .glass-card h4, #login-modal .dark-box h2, #login-modal .dark-box h3, #login-modal .dark-box h4 {
+    color: var(--secondary-color);
+    margin-top: 0;
+}
+
+#login-modal .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 700;
+    font-family: 'Marhey', sans-serif;
+    transition: all 0.3s;
+    font-size: 1em;
+    box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+
+#login-modal .btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+#login-modal .btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+}
+
+#login-modal .btn-success {
+    background: var(--success-color);
+    color: white;
+}
+
+#login-modal .btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+#login-modal .btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0,0,0,.25);
+}
+
+#login-modal .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+#login-modal .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #555;
+}
+
+#login-modal .form-group input, #login-modal .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #E9EEF5;
+    border-radius: 12px;
+    box-sizing: border-box;
+    background: #fff;
+    color: #161A22;
+    font-family: 'Marhey', sans-serif;
+    font-size: 15px;
+    transition: all 0.3s;
+}
+
+#login-modal .form-group input[type="password"]::placeholder {
+    color: #EAEFF5;
+    opacity: 1;
+}
+
+#login-modal .form-group input[type="password"]::-webkit-input-placeholder {
+    color: #EAEFF5;
+}
+
+#login-modal .form-group input[type="password"]::-moz-placeholder {
+    color: #EAEFF5;
+    opacity: 1;
+}
+
+#login-modal .form-group input:focus, #login-modal .form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+}
+
+#login-modal .auth-toggle-text {
+    cursor: pointer;
+    color: #EF5350;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-left: 5px;
+}
+
+#login-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+#login-modal .modal-content {
+    background: #fff;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    border: 2px solid #E9EEF5;
+    position: relative;
+    padding: 30px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#login-modal .modal-close {
+    position: sticky;
+    top: 0;
+    float: right;
+    z-index: 20;
+    margin: -10px -10px 0 0;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #999;
+    font-size: 1.5rem;
+    transition: 0.3s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+#login-modal .modal-close:hover {
+    color: #333;
+}
+
+#login-modal .role-btn {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    background: #F0F2F5;
+    color: #777;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+    font-family: 'Marhey', sans-serif;
+}
+
+#login-modal .role-btn.active-role {
+    background: #E8F0FE;
+    color: #1a73e8;
+    border-color: #1a73e8;
+    font-weight: 700;
+}
+
+#login-modal .gz-tus {
+    display: inline-grid;
+    place-items: center;
+    vertical-align: -7px;
+    width: 26px;
+    height: 26px;
+    margin-left: 5px;
+    border: 0;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    color: #8A93A0;
+    border-radius: 8px;
+    transition: color .18s, background .18s;
+}
+
+#login-modal .gz-tus:hover {
+    color: #16A085;
+    background: #F0F6F4;
+}
+
+#login-modal .gz-tus:focus-visible {
+    outline: 2px solid #16A085;
+    outline-offset: 1px;
+}
+
+#login-modal .gz {
+    width: 18px;
+    height: 18px;
+    display: block;
+    overflow: visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+#login-modal .gz .gz-bebek {
+    fill: currentColor;
+    stroke: none;
+}
+
+#login-modal .gz-kapali, #login-modal .gz-acik {
+    transform-origin: 12px 12px;
+    transition: opacity .2s ease, transform .2s cubic-bezier(.2,.9,.3,1);
+}
+
+#login-modal .gz-acik {
+    opacity: 0;
+    transform: scaleY(.45);
+}
+
+#login-modal .gz-kapali {
+    opacity: 1;
+}
+
+#login-modal .gz-tus[aria-pressed="true"] .gz-acik {
+    opacity: 1;
+    transform: none;
+}
+
+#login-modal .gz-tus[aria-pressed="true"] .gz-kapali {
+    opacity: 0;
+    transform: scaleY(.45);
+}
+
+#login-modal .gz-kapali, #login-modal .gz-acik {
+    transition: none;
+}
