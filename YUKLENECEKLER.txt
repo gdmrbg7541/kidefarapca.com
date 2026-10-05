@@ -5632,3 +5632,37 @@ bilgiler olmasın."
    Dosyalar: hesap/listelerim.js, index.html (stil + ?v=20261005a)
    Yedek: _kaynak/yedekler/20261005-profil-sinif/
    Betik: _kaynak/uretici/profilSinifCikar.py
+
+05.10.2026 — OKUL SİMGESİ: VURGU ÇİZGİSİ + PENCEREDEN SINIF/SEVİYE EKLEME
+   Öğretmen: "okul svg'sine tıklayınca svg'nin altında beyaz vurgu çizgisi
+   olsun, okul svg'sine basınca sınıf kurum ekleme gibi işlemler
+   yapılabilsin."
+   1) VURGU ÇİZGİSİ: #header-okul-btn.acik::after — pencere açıkken
+      simgenin altında beyaz çizgi (width 0 → %78, .18s), zemini de hafif
+      aydınlanıyor. Başlıktaki diğer sekmelerin etkin çizgisiyle aynı dil.
+      Sınıfı llOkulPopupAc/llOkulPopupKapat içindeki okulTusDurum() koyup
+      kaldırıyor; yani tuş pencereyle HER ZAMAN aynı durumda — pencere
+      nasıl kapanırsa kapansın çizgi sönüyor.
+   2) EKLEME İŞLEMLERİ: sınıf ağacını profilden kaldırınca oradaki "+"
+      tuşları da gitmişti, yani öğretmenin sınıf açma yolu kapanmıştı.
+      Pencereye geri kondu:
+        · her seviyenin kapıları arasında "+"  → llOkulSinifEkle → addClass(lId)
+        · her kurumun altında "+ Seviye"       → llOkulSeviyeEkle → addLevel(kId)
+        · kurum hiç yoksa "+ Kurum Ekle" (zaten vardı)
+      İş bitince pencere kendini yeniden çiziyor; eklenen sınıf/seviye
+      hemen görünüyor, vazgeçilse de zararsız.
+      binaYap artık kurum kimliğini de alıyor (addLevel'a vermek için);
+      kurumsuz "Genel" bölüm için 'GENEL' gidiyor.
+   3) Boş seviyede "sınıf yok" yazısı: "+" her zaman eklendiği için o
+      satır "+"tan ÖNCE olmak zorunda — ilk yamada üstüne yazılmıştı,
+      ayrı betikle düzeltildi.
+   DENENDİ — örnek veri 3 seviye / 9 sınıf / kurumsuz:
+      pencere {bina:1, kat:3, sınıf kapısı:9, "+":3, "+ Seviye":1} —
+      veriyle birebir, çift çizim yok.
+      "+" → addClass:L1, "+ Seviye" → addLevel:GENEL (tıklama ile doğrulandı).
+      Boş seviye → "sınıf yok" + "+". Hiç veri yok → "+ Kurum Ekle".
+      Pencere açık {çizgi:%78, beyaz} · kapalı {çizgi:0px}. Sayfa hatası yok.
+   Dosyalar: hesap/listelerim.js, index.html (stil + ?v=20261005c)
+   Yedek: _kaynak/yedekler/20261005-okul-pencere/,
+          _kaynak/yedekler/20261005-okul-bos-seviye/
+   Betik: _kaynak/uretici/okulPencereEkle.py, okulBosSeviye.py

@@ -305,27 +305,6 @@
       /* === AKILLI HEADER: asagi inince kayip gider, yukari cikinca geri gelir === */
       header { transition: transform .34s cubic-bezier(.4,0,.2,1), box-shadow .28s ease; will-change: transform; }
       /* Basliktaki OKUL tusu: sade cerceve, yazi yok, dokunma hedefi bol. */
-      /* PROFİLDEKİ "SINIFLARIM" YÖNLENDİRMESİ (05.10.2026)
-         Sınıf ağacı profilden kalktı; yerinde bu tek satır duruyor ve
-         başlıktaki okul simgesinin penceresini açıyor. */
-      .tp-okul-yol{
-        display:flex; align-items:center; gap:12px; flex-wrap:wrap;
-        margin:0 0 14px; padding:12px 16px;
-        background:linear-gradient(135deg,#FFF6EC 0%,#FFFFFF 70%);
-        border:1px solid #F3DCC2; border-left:5px solid #E67E22; border-radius:14px;
-      }
-      .tp-okul-ik{ font-size:1.6rem; line-height:1; flex:0 0 auto; }
-      .tp-okul-yaz{ flex:1; min-width:170px; }
-      .tp-okul-yaz b{ display:block; color:#B9651A; font-size:1.02rem; }
-      .tp-okul-yaz small{ display:block; margin-top:2px; color:#8A93A0; font-size:.84rem; line-height:1.4; }
-      .tp-okul-tus{
-        flex:0 0 auto; border:0; border-radius:999px; cursor:pointer;
-        background:#E67E22; color:#fff; font:inherit; font-weight:700;
-        padding:9px 22px; transition:background .15s, transform .1s;
-      }
-      .tp-okul-tus:hover{ background:#CF6F18; }
-      .tp-okul-tus:active{ transform:scale(.97); }
-
       #header-okul-btn{
         display:none; align-items:center; justify-content:center; flex:none;
         width:40px; height:40px; padding:0; cursor:pointer;
@@ -335,6 +314,17 @@
       #header-okul-btn svg{ width:26px; height:26px; display:block; }
       #header-okul-btn:hover{ background:rgba(255,255,255,.3); transform:translateY(-1px); }
       #header-okul-btn.gor{ display:inline-flex; }
+      /* AÇIKKEN BEYAZ VURGU ÇİZGİSİ (05.10.2026) — öğretmen: "okul svg'sine
+         tıklayınca svg'nin altında beyaz vurgu çizgisi olsun". Başlıktaki
+         diğer sekmelerin etkin çizgisiyle aynı dil. */
+      #header-okul-btn{ position:relative; }
+      #header-okul-btn::after{
+        content:""; position:absolute; left:50%; bottom:-7px;
+        width:0; height:3px; border-radius:2px; background:#fff;
+        transform:translateX(-50%); transition:width .18s ease;
+      }
+      #header-okul-btn.acik::after{ width:78%; }
+      #header-okul-btn.acik{ background:rgba(255,255,255,.3); }
       @media (max-width:768px){
         #header-okul-btn{ width:34px; height:34px; border-radius:9px; }
         #header-okul-btn svg{ width:22px; height:22px; }
@@ -7533,6 +7523,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     };
     </script>
     <script src="sistem/router.js?v=20261005a"></script>
+    <!-- OKUL TUŞU HER ÖĞRETMENDE (05.10.2026) — tuşun görünürlüğünü
+         yalnız updateHeaderUI veriyordu; rol asenkron geldiği için yeni
+         kayıtlı, henüz kurum/sınıf tanımlamamış öğretmende tuş gizli
+         kalabiliyordu. Bu dosya tuşu rolle eşitliyor. -->
+    <script src="sistem/okultusu.js?v=1"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>
@@ -7552,7 +7547,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/siniftayeni.js?v=20261004d"></script>
     <script src="sistem/galeriveri.js?v=20261005"></script>
     <script src="sistem/galeri.js?v=20261004b"></script>
-    <script src="hesap/listelerim.js?v=20261005a"></script>
+    <script src="hesap/listelerim.js?v=20261005c"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=20260912a"></script>

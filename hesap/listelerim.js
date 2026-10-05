@@ -4428,8 +4428,18 @@ window.llRozetPerdeAc = llRozetPerdeAc;
    kurum adi, her seviye bir KAT, siniflar katin KAPILARI. Cok seviyesi/
    sinifi olan kurumun binasi BUYUR. "Genel" seviyeler gri binada.
    ====================================================================== */
+/* Başlıktaki okul tuşunun altındaki beyaz vurgu çizgisi: pencere
+   açıkken yanar, kapanınca söner (öğretmen, 05.10.2026). */
+function okulTusDurum(acik) {
+    try {
+        var b = document.getElementById('header-okul-btn');
+        if (b) b.classList.toggle('acik', !!acik);
+    } catch (e) { }
+}
+
 function llOkulPopupAc() {
     llOkulPopupKapat();
+    okulTusDurum(true);
     /* BASLIKTAKI OKUL TUSU = LISTEYE DON. Ogretmen anasayfaya gidip bir
        kart actiktan sonra bu tusa basinca yalnizca pencere aciliyor, arkada
        sinif listesi kapali kaliyordu. Artik once Listelerim gorunumune
@@ -4499,7 +4509,14 @@ function llOkulPopupAc() {
             kapilar += '<button type="button" class="okul-kapi' + (aktif ? ' aktif' : '') + '"' +
                 ' onclick="llOkulSinifSec(\'' + lId + '\',\'' + cId + '\')">' + behKacis(lvl.classes[cId].name) + '</button>';
         });
+        /* Boş seviyede "sınıf yok" yazısı: aşağıdaki "+" her zaman
+           eklendiği için bu satır "+"tan ÖNCE olmak zorunda. */
         if (!kapilar) kapilar = '<span class="okul-bos">sınıf yok</span>';
+        /* SINIF EKLE (05.10.2026) — öğretmen: "okul svg'sine basınca sınıf
+           kurum ekleme gibi işlemler yapılabilsin". Sınıf ağacı profilden
+           kalkınca oradaki "+" da gitmişti; aynı kapı buraya kondu. */
+        kapilar += '<button type="button" class="okul-kapi okul-ekle"' +
+            ' title="Bu seviyeye sınıf ekle" onclick="llOkulSinifEkle(\'' + lId + '\')">+</button>';
         /* SEVIYE AYARLARI: bu pencere eskiden yalniz sinif secmeye yariyordu;
            ayarlara ulasmak icin profildeki okul haritasina gitmek gerekiyordu.
            Artik her seviyenin isminin yaninda dislisi var — hem sinif adi
@@ -4516,13 +4533,19 @@ function llOkulPopupAc() {
             ayarTus +
             '<span class="okul-kapilar">' + kapilar + '</span></div>';
     };
-    var binaYap = function (ad, uyeler, genelMi) {
+    var binaYap = function (kId, ad, uyeler, genelMi) {
         var toplamSinif = 0;
         uyeler.forEach(function (lId) { toplamSinif += Object.keys((data.levels[lId] && data.levels[lId].classes) || {}).length; });
         var buyuk = (uyeler.length >= 4 || toplamSinif >= 10) ? ' buyuk' : '';
         var katlar = '';
         uyeler.forEach(function (lId) { katlar += katYap(lId); });
         if (!katlar) katlar = '<div class="okul-kat"><span class="okul-bos">Bu kurumda henüz seviye yok</span></div>';
+        /* SEVİYE EKLE (05.10.2026): kurumun altına yeni seviye. 'GENEL'
+           kurumsuz bölüm demek — addLevel bunu böyle biliyor. */
+        katlar += '<div class="okul-kat okul-kat-ekle">' +
+            '<button type="button" class="okul-mtus okul-seviye-ekle"' +
+            ' title="Bu kuruma seviye ekle" onclick="llOkulSeviyeEkle(\'' +
+            (genelMi ? 'GENEL' : (kId || 'GENEL')) + '\')">+ Seviye</button></div>';
         var pencere = '<svg class="okul-pencere" viewBox="0 0 20 16" aria-hidden="true" focusable="false">' +
             '<rect x="0.6" y="0.6" width="18.8" height="14.8" rx="2" fill="#CFE7F5" stroke="#8FB8D4" stroke-width="1.2"/>' +
             '<path d="M10 1.2v13.6M1.2 8h17.6" stroke="#8FB8D4" stroke-width="1.1"/></svg>';
@@ -4552,8 +4575,8 @@ function llOkulPopupAc() {
         '</div>';
     };
     var ic = '';
-    Object.keys(kurumlar).forEach(function (kId) { ic += binaYap(kurumlar[kId].name, gruplar[kId] || [], false); });
-    if (gruplar['']) ic += binaYap('Genel', gruplar[''], true);
+    Object.keys(kurumlar).forEach(function (kId) { ic += binaYap(kId, kurumlar[kId].name, gruplar[kId] || [], false); });
+    if (gruplar['']) ic += binaYap('GENEL', 'Genel', gruplar[''], true);
     /* HIC KURUM YOKSA: bos bir cumle yerine dogrudan kurulum daveti.
        Ogretmen ilk girisinde bu pencereden isini kurabilsin. */
     if (!ic) ic = '<div class="okul-bosluk">' +
@@ -4579,6 +4602,7 @@ function llOkulPopupAc() {
     document.addEventListener('keydown', window._llOkulEsc);
 }
 function llOkulPopupKapat() {
+    okulTusDurum(false);
     var k = document.getElementById('llOkulPopup');
     if (k) k.remove();
     if (window._llOkulEsc) document.removeEventListener('keydown', window._llOkulEsc);
@@ -4624,6 +4648,22 @@ function llOkulSeviyeAyar(lId, odak) {
         catch (e) { console.warn('seviye ayarları açılamadı:', e && e.message); }
     }, 0);
 }
+/* PENCEREDEN EKLEME (05.10.2026) — öğretmen: "okul svg'sine basınca
+   sınıf kurum ekleme gibi işlemler yapılabilsin".
+   addClass/addLevel soru penceresiyle çalışıyor; iş bitince pencereyi
+   yeniden çiziyoruz ki eklenen hemen görünsün. Vazgeçilirse de yeniden
+   çizmek zararsız. */
+function llOkulSinifEkle(lId) {
+    try { if (typeof addClass === 'function') addClass(lId); } catch (e) { }
+    setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
+}
+function llOkulSeviyeEkle(kId) {
+    try { if (typeof addLevel === 'function') addLevel(kId); } catch (e) { }
+    setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
+}
+window.llOkulSinifEkle = llOkulSinifEkle;
+window.llOkulSeviyeEkle = llOkulSeviyeEkle;
+
 window.llOkulPopupAc = llOkulPopupAc;
 window.llOkulPopupKapat = llOkulPopupKapat;
 window.llOkulSinifSec = llOkulSinifSec;
@@ -4820,16 +4860,11 @@ function renderTeacherProfile(deneme) {
     }
     if (typeof data === 'undefined' || !data || !data.levels) {
         deneme = deneme || 0;
-        /* PROFİLDEN ÇIKARILDI (05.10.2026) — öğretmen: "profile basınca
-           hâlâ 🏫 Kurumlarım & Sınıflarım çıkıyor". Sınıf ağacı artık
-           başlıktaki okul simgesinin penceresinde; profilde yalnız oraya
-           götüren tek satır duruyor. */
-        html += '<div class="tp-okul-yol">' +
-            '  <span class="tp-okul-ik">🏫</span>' +
-            '  <span class="tp-okul-yaz"><b>Sınıflarım ve kurumlarım</b>' +
-            '    <small>Başlıktaki okul simgesinden açılıyor — sitenin her yerinden.</small></span>' +
-            '  <button type="button" class="tp-okul-tus" onclick="if(typeof llOkulPopupAc===\'function\') llOkulPopupAc();">Aç</button>' +
-            '</div>';
+        /* PROFİLDE SINIF/KURUM BÖLÜMÜ YOK (05.10.2026) — öğretmen:
+           "oradan sınıflarım ve kurumlarım başlığı hiç olmayacak".
+           Önce akordiyonu kaldırıp yerine tek satırlık yönlendirme
+           bırakmıştım; o satır da kaldırıldı. Sınıf/kurum yalnız
+           başlıktaki okul simgesinde (llOkulPopupAc). */
         sec.innerHTML = html + tatilAkordiyon + kisiselAkordiyon + kilitAkordiyon;
         if (deneme < 10) setTimeout(function () { renderTeacherProfile(deneme + 1); }, 700);
         return;
@@ -4983,18 +5018,12 @@ function renderTeacherProfile(deneme) {
     }
     agac += '<div id="tpOkullar">' + binalar + '</div>';
 
-    /* PROFİLDEN ÇIKARILDI (05.10.2026) — öğretmen: "öğretmenler kurum ve
-       sınıflarına profilden değil header'daki okul svg'sinden ulaşabilsin"
-       → "profile basınca hâlâ 🏫 Kurumlarım & Sınıflarım çıkıyor".
-       Ağaç (agac) yukarıda kuruluyor ama profile BASILMIYOR; aynı içerik
-       başlıktaki okul simgesinin penceresinde (llOkulPopupAc). Hesabı
-       sökmedim: sinifToplam gibi değişkenler aşağıda da kullanılıyor. */
-    html += '<div class="tp-okul-yol">' +
-            '  <span class="tp-okul-ik">🏫</span>' +
-            '  <span class="tp-okul-yaz"><b>Sınıflarım ve kurumlarım</b>' +
-            '    <small>Başlıktaki okul simgesinden açılıyor — sitenin her yerinden.</small></span>' +
-            '  <button type="button" class="tp-okul-tus" onclick="if(typeof llOkulPopupAc===\'function\') llOkulPopupAc();">Aç</button>' +
-            '</div>' + llRozetHtml(sinifToplam + ' sınıf');
+    /* PROFİLDE SINIF/KURUM BÖLÜMÜ YOK (05.10.2026) — öğretmen:
+       "öğretmenler kurum ve sınıflarına profilden değil header'daki okul
+       svg'sinden ulaşabilsin" → "oradan sınıflarım ve kurumlarım başlığı
+       hiç olmayacak". Ağaç (agac) yukarıda hâlâ kuruluyor ama profile
+       BASILMIYOR; aynı içerik başlıktaki okul simgesinin penceresinde.
+       Hesabı sökmedim: sinifToplam gibi değişkenler aşağıda da kullanılıyor. */
 
     /* SIRALAMA: Kurumlarim & Siniflarim -> Tatiller -> Kisisel Bilgilerim ->
        Veli & Durum Taramasi (Kisisel Bilgilerim'in ALTINDA) -> Yonetim kilidi */
