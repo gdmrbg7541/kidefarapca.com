@@ -80,7 +80,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 216px;
+    min-height: 240px;   /* karekod 216 → 240 oldu (05.10.2026) */
     padding: 12px;
     background: #fff;
     border: 2px solid #E9EEF5;
@@ -404,4 +404,364 @@
     #qr-modal-alan .qr-kart-ikon { width: 50px; height: 50px; }
     #qr-modal-alan .qr-kart-yazi b { font-size: 1.02rem; }
     #qr-modal-alan .qr-kart-yazi small { font-size: .78rem; }
+}
+
+
+/* ===========================================================================
+   TELEFONUN KENDİ KAMERASI — karekodun yanındaki anlatım çizimi (05.10.2026)
+   ---------------------------------------------------------------------------
+   Öğretmen: "telefon svg'sini biraz daha uzun yap, çok şişko olan bi telefon
+   gibi olmuş; telefondan kamera uygulamasını açma animasyonu ekle; telefon
+   altta, karekod tarama animasyonu üstte, gerçek karekod sağda; daha büyük
+   olsunlar."
+
+   DÜZEN: solda çizim (altta telefon, üstte taranan karekod), sağda gerçek
+   karekod. Dar ekranda alt alta.
+
+   6 sn'lik tek döngü, altı adım:
+     %0-8    telefon aşağıdan yükselir, ANA EKRAN görünür
+     %8-15   kamera simgesine dokunuş (halka dalgası)
+     %15-26  simge büyüyüp ekranı kaplar, KAMERA UYGULAMASI açılır
+     %26-34  vizör köşeleri oturur, objektif diyaframı genişler
+     %34-46  ışık konisi yukarı uzanır
+     %46-64  tarama çizgisi karekodun üstünde iner
+     %64-80  karekod yeşile döner, onay belirir
+     %80-92  bekler · %92-100 söner ve başa döner
+   Bütün parçalar AYNI 6 sn'yi paylaşır; sıra yüzdelerle kurulu.
+   =========================================================================== */
+#qr-modal-alan .qr-sahne, #qrGirisPencere .qr-sahne {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    margin: 4px 0 14px;
+}
+#qr-modal-alan .qr-anlatim, #qrGirisPencere .qr-anlatim {
+    /* Gerçek karekod 240 px çiziliyor; çizim onun yanında küçük kalmasın
+       diye sütun ona yakın tutuldu (öğretmen: "daha büyük olsunlar").
+       230 px: SVG kutusu 230x290 olduğu için 1:1 çiziliyor, pencere
+       kaydırmasız sığsın diye bir tık kısıldı. */
+    flex: 0 0 auto;
+    width: 230px;
+}
+/* Sağ sütun: gerçek karekod + doğrulama kodu + sayaç alt alta. */
+#qr-modal-alan .qr-sag, #qrGirisPencere .qr-sag {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+#qr-modal-alan .qr-sag .qr-kod-satir, #qrGirisPencere .qr-sag .qr-kod-satir,
+#qr-modal-alan .qr-sag .qr-sayac, #qrGirisPencere .qr-sag .qr-sayac { margin: 0; }
+#qr-modal-alan .qr-sahne .qr-kutu, #qrGirisPencere .qr-sahne .qr-kutu {
+    margin: 0;
+    min-height: 0;
+}
+#qr-modal-alan .qrk, #qrGirisPencere .qrk {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+#qr-modal-alan .qrk-tel, #qrGirisPencere .qrk-tel {
+    transform-origin: 115px 300px;
+    animation: qrkTelefon 6s cubic-bezier(.22,.9,.3,1) infinite;
+}
+#qr-modal-alan .qrk-ev, #qrGirisPencere .qrk-ev {
+    animation: qrkEv 6s ease-out infinite;
+}
+#qr-modal-alan .qrk-ikon, #qrGirisPencere .qrk-ikon {
+    transform-origin: 121.5px 226px;
+    animation: qrkIkon 6s cubic-bezier(.4,0,.2,1) infinite;
+}
+#qr-modal-alan .qrk-dokunus, #qrGirisPencere .qrk-dokunus {
+    transform-origin: 121.5px 226px;
+    animation: qrkDokunus 6s ease-out infinite;
+}
+#qr-modal-alan .qrk-kam, #qrGirisPencere .qrk-kam {
+    animation: qrkKamera 6s ease-out infinite;
+}
+#qr-modal-alan .qrk-vizor, #qrGirisPencere .qrk-vizor {
+    transform-origin: 115px 228px;
+    animation: qrkVizor 6s ease-out infinite;
+}
+#qr-modal-alan .qrk-lens, #qrGirisPencere .qrk-lens {
+    transform-origin: 115px 228px;
+    animation: qrkLens 6s ease-out infinite;
+}
+#qr-modal-alan .qrk-iris, #qrGirisPencere .qrk-iris {
+    transform-origin: 115px 228px;
+    animation: qrkIris 6s ease-in-out infinite;
+}
+#qr-modal-alan .qrk-koni, #qrGirisPencere .qrk-koni {
+    transform-origin: 115px 160px;
+    animation: qrkKoni 6s ease-out infinite;
+}
+#qr-modal-alan .qrk-tara, #qrGirisPencere .qrk-tara {
+    animation: qrkTarama 6s cubic-bezier(.5,0,.5,1) infinite;
+}
+#qr-modal-alan .qrk-modul, #qrGirisPencere .qrk-modul {
+    animation: qrkModul 6s ease-out infinite;
+}
+#qr-modal-alan .qrk-onay, #qrGirisPencere .qrk-onay {
+    transform-origin: 115px 65px;
+    animation: qrkOnay 6s cubic-bezier(.2,1.5,.4,1) infinite;
+}
+
+@keyframes qrkTelefon {
+    0%        { transform: translateY(26px); opacity: 0; }
+    8%, 90%   { transform: translateY(0); opacity: 1; }
+    100%      { transform: translateY(18px); opacity: 0; }
+}
+/* ana ekran: kamera açılınca kaybolur */
+@keyframes qrkEv {
+    0%, 17%   { opacity: 1; }
+    25%, 100% { opacity: 0; }
+}
+/* kamera simgesi: dokunuşla büyüyüp ekranı kaplar */
+@keyframes qrkIkon {
+    0%, 8%    { transform: scale(1); opacity: 1; }
+    13%       { transform: scale(.86); opacity: 1; }
+    16%       { transform: scale(1); opacity: 1; }
+    26%       { transform: scale(7); opacity: 0; }
+    100%      { transform: scale(7); opacity: 0; }
+}
+@keyframes qrkDokunus {
+    0%, 9%    { transform: scale(.35); opacity: 0; }
+    12%       { opacity: .85; }
+    18%       { transform: scale(2.1); opacity: 0; }
+    100%      { transform: scale(2.1); opacity: 0; }
+}
+/* kamera uygulaması ekranı */
+@keyframes qrkKamera {
+    0%, 19%   { opacity: 0; }
+    27%, 90%  { opacity: 1; }
+    100%      { opacity: 0; }
+}
+@keyframes qrkVizor {
+    0%, 26%   { transform: scale(.6); opacity: 0; }
+    36%, 90%  { transform: scale(1); opacity: 1; }
+    100%      { transform: scale(.8); opacity: 0; }
+}
+@keyframes qrkLens {
+    0%, 27%   { transform: scale(.25); opacity: 0; }
+    38%, 90%  { transform: scale(1); opacity: 1; }
+    100%      { transform: scale(.6); opacity: 0; }
+}
+@keyframes qrkIris {
+    0%, 29%     { r: 4; }
+    40%         { r: 16.5; }
+    46%, 100%   { r: 15; }
+}
+@keyframes qrkKoni {
+    0%, 34%   { transform: scaleY(.04); opacity: 0; }
+    48%, 78%  { transform: scaleY(1); opacity: 1; }
+    92%, 100% { transform: scaleY(1); opacity: 0; }
+}
+@keyframes qrkTarama {
+    0%, 46%   { transform: translateY(0); opacity: 0; }
+    49%       { opacity: .8; }
+    62%       { transform: translateY(96px); opacity: .8; }
+    66%, 100% { transform: translateY(96px); opacity: 0; }
+}
+@keyframes qrkModul {
+    0%, 63%   { fill: #1F2430; }
+    71%, 90%  { fill: #0E7C66; }
+    100%      { fill: #1F2430; }
+}
+@keyframes qrkOnay {
+    0%, 66%   { transform: scale(0); opacity: 0; }
+    78%, 90%  { transform: scale(1); opacity: 1; }
+    100%      { transform: scale(.6); opacity: 0; }
+}
+
+/* Dar ekran: yan yana sığmaz, alt alta dizilir ve çizim küçülür. */
+@media (max-width: 560px) {
+    #qr-modal-alan .qr-sahne, #qrGirisPencere .qr-sahne {
+        flex-direction: column;
+        gap: 12px;
+    }
+    #qr-modal-alan .qr-anlatim, #qrGirisPencere .qr-anlatim { width: 150px; }
+}
+
+/* HAREKET AZALTMA: animasyon durur, çizim okunur son karesinde kalır —
+   telefon dik, kamera uygulaması açık, koni uzanmış, karekod okunmuş. */
+@media (prefers-reduced-motion: reduce) {
+    #qr-modal-alan .qrk *, #qrGirisPencere .qrk * { animation: none !important; }
+    #qr-modal-alan .qrk-ev, #qrGirisPencere .qrk-ev,
+    #qr-modal-alan .qrk-ikon, #qrGirisPencere .qrk-ikon,
+    #qr-modal-alan .qrk-dokunus, #qrGirisPencere .qrk-dokunus,
+    #qr-modal-alan .qrk-tara, #qrGirisPencere .qrk-tara { opacity: 0; }
+    #qr-modal-alan .qrk-kam, #qrGirisPencere .qrk-kam,
+    #qr-modal-alan .qrk-koni, #qrGirisPencere .qrk-koni { opacity: 1; }
+    #qr-modal-alan .qrk-onay, #qrGirisPencere .qrk-onay { transform: scale(1); opacity: 1; }
+}
+
+
+/* ===========================================================================
+   KAYDIRMASIZ SIĞSIN                                            (05.10.2026)
+   ---------------------------------------------------------------------------
+   Öğretmen: "giriş sayfasında scroll olmadan her şey sığsın, dikey alanı çok
+   iyi kullan."  Ölçüm (1366x768): giriş 811 px (+67), kayıt 1106 px (+362),
+   karekod 1009 px (+265) — üçü de kayıyordu.
+
+   ÜÇ KAZANÇ
+     · karekod ekranı iki sütuna ayrıldı (yukarıda)
+     · kayıt kipinde pencere 580 px: alanlar ikişerli diziliyor. 450 px'te
+       min-width:200px yan yana sığmadığı için sekiz alan alt alta iniyordu.
+     · alçak ekranda (<=820 px) başlık, boşluk ve alan yükseklikleri kısılıyor
+   Üstüne güvenlik ağı: pencere hiçbir durumda 94vh'yi geçmiyor.
+   =========================================================================== */
+#login-modal .modal-content {
+    max-height: 94vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+/* NOT: burada bir ara ".kdt-kayit .modal-content{max-width:580px}" vardı;
+   kaldırıldı. Giriş penceresi kayitanketi.js tarafından TAM EKRAN
+   (.ka-tam) yapılıyor, orada pencereyi daraltmak ters etki ediyordu. */
+
+@media (max-height: 820px) {
+    #login-modal .modal-content { padding: 18px 22px; }
+    #login-modal #auth-title { font-size: 1.3rem; margin-bottom: 8px; }
+    #login-modal .form-group { margin-bottom: 8px; }
+    #login-modal .form-group label { margin-bottom: 3px; font-size: .84rem; }
+    #login-modal .form-group input,
+    #login-modal .form-group select { padding: 9px 12px; }
+    #login-modal .role-btn { padding: 9px 10px; }
+    #login-modal #auth-action-btn { padding: 11px; margin-top: 6px; }
+    /* AÇIKLAMA KÜÇÜK OLMASIN: öğretmen bu cümleyi adıyla söyledi
+       ("Telefonunun kendi kamerasını aç…"). Sığdırma sırasında .88rem'e
+       inmişti; okunur punto geri verildi. */
+    #qr-modal-alan .qr-anlat { margin-bottom: 10px; font-size: 1.06rem; line-height: 1.5; }
+    #qr-modal-alan .qr-sahne { gap: 16px; margin: 2px 0 8px; }
+    #qr-modal-alan .qr-anlatim { width: 196px; }
+    #qr-modal-alan .qr-kutu { padding: 8px; }
+}
+@media (max-height: 700px) {
+    #qr-modal-alan .qr-anlatim { width: 168px; }
+    #login-modal #auth-title { font-size: 1.18rem; }
+}
+
+
+/* ===========================================================================
+   TAM EKRAN GİRİŞ PENCERESİ — ALÇAK EKRANDA SIĞDIRMA        (05.10.2026)
+   ---------------------------------------------------------------------------
+   Öğretmen: "giriş sayfasında scroll olmadan her şey sığsın, dikey alanı çok
+   iyi kullan."
+
+   NİYE BU KADAR ÖZEL SEÇİCİ: giriş penceresi 450 px'lik bir kart değil —
+   kayitanketi.js ona .ka-tam verip tam ekran yapıyor ve ölçülerini
+   "!important" ile yazıyor (padding clamp(74px,8vw,104px) …, başlık
+   clamp(1.7rem,3.4vw,2.9rem)). 1366x768'de tek başına 159 px boşluk +
+   74 px başlık ediyordu. Aynı seçiciyle yazarsak kazanamayız; başına
+   "body" eklenerek öncelik bir tık yükseltildi.
+
+   Kurallar yalnız ALÇAK ekranda (<=960 px) devreye giriyor; büyük
+   ekranlarda pencerenin ferah hâli bozulmuyor. (Önce 860 px'ti; 1440x900
+   dizüstünde kayıt kipi 37 px taşıyordu, sınır 960'a çekildi.)
+   =========================================================================== */
+@media (max-height: 960px) {
+    body #login-modal.ka-tam .modal-content {
+        /* ÜST BOŞLUK KISA: öğretmen (05.10.2026) "geri tuşu satırı bomboş,
+           Sisteme Giriş Yap yazısını yukarı al" dedi. Geri/✕ düğmesi sol
+           üstte SABİT duruyor; başlık onun hizasına çıkınca o satır boş
+           kalmıyor. Geniş ekranda çakışma yok: içerik 760 px'lik sütunda
+           ortalanıyor, düğme ise sol kenarda. Dar ekran için aşağıda ayrı
+           kural var. */
+        padding: clamp(66px, 8.4vh, 96px) clamp(16px, 4vw, 48px)
+                 clamp(12px, 2vh, 22px) !important;
+        /* DİKEY ORTALAMA — öğretmen: "dikey alanı çok iyi kullan". İçerik
+           kısaldıktan sonra üst yarıya yığılıp alt yarı boş kalıyordu.
+           "safe center": içerik ekrandan uzunsa ortalama uygulanmaz, üstten
+           başlar — yani hiçbir durumda tepesi kırpılmaz. Desteklemeyen
+           tarayıcı satırı atar, eski (üstten) davranış kalır. */
+        display: flex !important;
+        flex-direction: column;
+        justify-content: safe center;
+    }
+    body #login-modal.ka-tam .modal-content > *:not(.modal-close) {
+        width: 100%;
+        flex: 0 0 auto;
+    }
+    /* Sağ kenardaki tanıtım rafının yerini geri ver: yukarıdaki kısa
+       yazım (padding) onu eziyordu ve içerik rafın altına giriyordu. */
+    @media (min-width: 1100px) {
+        body #login-modal.ka-tam .modal-content { padding-inline-end: 340px !important; }
+    }
+    /* BAŞLIK: BÜYÜK VE GERİ TUŞUNUN HİZASINDA
+       Öğretmen: "geri tuşu satırı bomboş, Sisteme Giriş Yap yazısını
+       yukarı al, bu yazı çok daha büyük olsun."
+       Geri/✕ düğmesi sol üstte SABİT duruyor. Başlık akışta kalırsa
+       içerik dikey ortalandığı için ekranın ortasına düşüyor ve o satır
+       boş kalıyordu; bu yüzden başlık da sabitlenip düğmenin SAĞINA,
+       aynı hizaya kondu. İçeriğe o bandın yüksekliği kadar üst boşluk
+       veriliyor, yani ortalama başlığın ALTINDAKİ alanda yapılıyor —
+       içerik başlığın altına girmiyor. */
+    body #login-modal.ka-tam #auth-title {
+        position: fixed !important;
+        top: clamp(14px, 2.2vh, 26px) !important;
+        inset-inline-start: calc(clamp(12px, 2vw, 26px) + 72px) !important;
+        inset-inline-end: auto !important;
+        margin: 0 !important;
+        text-align: start !important;
+        z-index: 3;
+        font-size: clamp(1.55rem, 3.6vh, 2.6rem) !important;
+        line-height: 1.25 !important;
+    }
+    body #login-modal.ka-tam .form-group { margin-bottom: 7px !important; }
+    body #login-modal.ka-tam .form-group label {
+        margin-bottom: 2px !important;
+        font-size: .82rem !important;
+    }
+    body #login-modal.ka-tam .form-group input,
+    body #login-modal.ka-tam .form-group select {
+        padding: 8px 11px !important;
+    }
+    body #login-modal.ka-tam .form-group small { font-size: .74rem !important; }
+    body #login-modal.ka-tam .role-btn { padding: 8px 10px !important; }
+    body #login-modal.ka-tam #auth-action-btn {
+        padding: 10px !important;
+        margin-top: 4px !important;
+    }
+    /* Boş hata satırı 15 px yer tutuyordu; yazı gelince zaten büyüyor. */
+    body #login-modal.ka-tam #hata-mesaji {
+        min-height: 0 !important;
+        margin: 5px 0 !important;
+    }
+    body #login-modal.ka-tam #qr-giris-satir { margin: 6px 0 !important; }
+    body #login-modal.ka-tam #ka-kayit-kart {
+        margin-top: 2px !important;
+        padding-top: 8px !important;
+    }
+    body #login-modal.ka-tam .qr-bas { margin-bottom: 6px !important; }
+}
+
+/* KAYIT KİPİNDE İKİ PARÇA GİZLİ — birlikte ~164 px:
+     · "Kayıt ol" kartı: zaten kayıt ekranındasın.
+     · "Karekodla Giriş" satırı: karekod GİRİŞ içindir, kayıt için değil.
+   Sınıfı hesap/girisgenislik.js koyuyor. */
+#login-modal.kdt-kayit #ka-kayit-kart,
+#login-modal.kdt-kayit #qr-giris-satir { display: none !important; }
+
+/* DAR EKRAN (telefon): kayıt formunun sekiz alanı tek sütuna iniyor ve
+   hiçbir sıkıştırma onu bir ekrana sığdıramaz — alanları okunmaz hâle
+   getirmek pahasına sığdırmak yerine orada kaydırmaya izin veriliyor.
+   Yine de mümkün olduğunca sıkılaştırılıyor. */
+@media (max-width: 560px) {
+    body #login-modal.ka-tam .modal-content { padding-top: clamp(40px, 7vh, 58px) !important; }
+    body #login-modal.ka-tam .form-group { margin-bottom: 6px !important; }
+    body #login-modal.ka-tam .form-group small { display: none !important; }
+    body #login-modal.ka-tam #auth-title { font-size: 1.18rem !important; }
+}
+
+/* DAR EKRAN: başlık düğmenin yanında ama punto küçülmeli, yoksa taşar. */
+@media (max-width: 700px) {
+    body #login-modal.ka-tam #auth-title {
+        font-size: clamp(1.15rem, 5vw, 1.6rem) !important;
+        inset-inline-start: calc(clamp(12px, 2vw, 26px) + 58px) !important;
+    }
+    body #login-modal.ka-tam .modal-content { padding-top: clamp(58px, 9vh, 78px) !important; }
 }

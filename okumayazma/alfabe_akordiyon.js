@@ -59,8 +59,12 @@
     var GERI_SAY_MS  = 900;    /* 3-2-1 arası                        */
     var CEVAP_BEKLE  = 1600;   /* cevaplar açıkken bakılacak süre     */
     var HAZIR_MS     = 1500;   /* «Hazır ol» perdesi                  */
-    var DOGRU_PUAN  = 10;         /* iki kişilik: her doğru           */
-    var HIZ_PUAN    = 5;          /* iki kişilik: doğru bilenden önce */
+    /* 05.10.2026 — öğretmen: "hız puanı 25 puan, doğru cevap puanları
+       75 olsun". İkisi 100 ediyor: bir soruyu önce ve doğru bilen tam
+       puanı alıyor, doğru ama sonra bilen dörtte üçünü.
+       (Dinle ve Yaz yarışması hâlâ 10/5 — istenirse o da eşitlenir.) */
+    var DOGRU_PUAN  = 75;         /* iki kişilik: her doğru           */
+    var HIZ_PUAN    = 25;         /* iki kişilik: doğru bilenden önce */
     var MOD_ANAHTAR = 'kidef_ak_mod';
 
     /* Tek kişilik mi iki kişilik mi? Öğretmen bir kez seçsin, her
@@ -322,8 +326,12 @@
             g += siklarHtml(s.siklar);
         }
         g += '<div class="as-geri-bildirim ak-bildirim" data-rol="bildirim"></div>';
+        /* Son soruda «Sonraki ›» yanıltıyordu: yeni soru gelecekmiş gibi
+           duruyor, basınca puan çıkıyordu (öğretmen, 05.10.2026). */
+        var sonSoru = (no >= toplam);
         g += '<div class="ak-alt">' +
-             '<button type="button" class="ak-t" data-rol="sonraki" hidden>Sonraki ›</button>' +
+             '<button type="button" class="ak-t" data-rol="sonraki" hidden>' +
+             (sonSoru ? 'Sonucu gör ›' : 'Sonraki ›') + '</button>' +
              '</div>';
         return g;
     }
@@ -770,6 +778,20 @@
     function otomatikGec(s) {
         var sonra = function () {
             zamanKur(function () {
+                /* TUR BİTTİ (05.10.2026) — öğretmen: "tur sonunda yeni bi soru
+                   gelecekmiş oluyor sonra puan gösteriliyor". Son sorudan sonra
+                   da «Hazır ol! Sıradaki soru geliyor…» perdesi iniyordu, perde
+                   kalkınca soru yerine puan tablosu çıkıyordu. Son soruysa artık
+                   doğru perdeyi gösteriyoruz. */
+                var sonMu = (aktif.i + 1) >= aktif.havuz.length;
+                if (sonMu) {
+                    perdeAc('<span class="ak-hazir">Tur bitti</span>' +
+                            '<span class="ak-hazirnot">Puanlar geliyor…</span>', 'hazir');
+                    zamanKur(function () {
+                        perdeKapat(); aktif.i++; soruGoster();
+                    }, HAZIR_MS);
+                    return;
+                }
                 hazirOl(function () { aktif.i++; soruGoster(); });
             }, CEVAP_BEKLE);
         };
@@ -897,7 +919,10 @@
             '#ak-tam .as-siklar{width:min(1600px,96vw);max-width:none;gap:1.6vh 2vw;',
             '  grid-template-columns:repeat(2,minmax(0,1fr));flex:1 1 auto;min-height:0;',
             '  align-content:stretch}',
-            '#ak-tam .as-sik{min-height:0;padding:1vh 1.4vw;gap:1.4vw}',
+            /* 05.10.2026 — öğretmen: "şıklar daha büyük olsun". Ölçüm: kutu
+               677x266 px iken harfler 72 px kalıyordu. Harfler büyütüldü,
+               boş alan harfe gitsin diye kutunun iç boşluğu kısıldı. */
+            '#ak-tam .as-sik{min-height:0;padding:.5vh 1vw;gap:1vw}',
             '#ak-tam .as-mark{width:clamp(32px,4.6vh,56px);height:clamp(32px,4.6vh,56px);',
             '  font-size:clamp(14px,2.2vh,26px);flex:none}',
             /* SATIR + SARMA: harf çifti soruları (د — ج) yan yana durmalı;
@@ -907,11 +932,11 @@
             '#ak-tam .as-ic{flex:1;display:flex;flex-direction:row;flex-wrap:wrap;',
             '  align-items:center;justify-content:center;gap:.25em;min-width:0}',
             /* Arapça ögeler — tahtanın arkasından okunacak punto */
-            '#ak-tam .as-h{font-size:clamp(34px,9vh,104px)}',
-            '#ak-tam .as-uclu{font-size:clamp(30px,8vh,92px)}',
-            '#ak-tam .as-bic{font-size:clamp(30px,8vh,92px)}',
-            '#ak-tam .as-bic-b{font-size:clamp(36px,9.5vh,110px)}',
-            '#ak-tam .as-ayrac{font-size:clamp(22px,5vh,60px)}',
+            '#ak-tam .as-h{font-size:clamp(40px,12vh,136px)}',
+            '#ak-tam .as-uclu{font-size:clamp(40px,12vh,140px)}',
+            '#ak-tam .as-bic{font-size:clamp(40px,12vh,140px)}',
+            '#ak-tam .as-bic-b{font-size:clamp(46px,14vh,160px)}',
+            '#ak-tam .as-ayrac{font-size:clamp(26px,6.5vh,78px)}',
             '#ak-tam .as-etiket{font-size:clamp(13px,2vh,24px);margin-top:.2vh}',
             '#ak-tam .as-esalan{gap:3vw;flex:1 1 auto;min-height:0;align-items:center}',
             '#ak-tam .as-es{font-size:clamp(30px,8vh,96px);min-width:clamp(80px,12vw,180px);',

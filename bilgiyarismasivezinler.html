@@ -15,6 +15,12 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <!-- QR üretimi -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- KAREKOD YEDEĞİ (05.10.2026) — okul ağı cdnjs'i engellerse
+     yukarıdaki kütüphane gelmiyor ve HİÇBİR karekod çizilmiyordu.
+     Depodaki üretici + API köprüsü: CDN gelirse bunlar devreye
+     girmiyor, gelmezse karekodlar yine çiziliyor. -->
+<script src="pano/qrcode.min.js?v=1"></script>
+<script src="sistem/karekodyedek.js?v=1"></script>
 </head>
 <body>
 

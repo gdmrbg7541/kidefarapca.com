@@ -2093,7 +2093,10 @@
         }
         .as-uclu::before {
             content: ""; position: absolute; left: .04em; right: .04em; bottom: .50em;
-            height: 3px; background: #cbd5e1; border-radius: 2px;
+            /* 05.10.2026 — öğretmen: "çizgi daha ince olsun". 3 px çizgi,
+               harfler tam ekranda büyüyünce tabanı yutuyordu; yazı çizgisi
+               harfin oturduğu ince bir iz olmalı. */
+            height: 2px; background: #cbd5e1; border-radius: 2px;
         }
         .as-bic {
             font-family: 'ArapcaKom', 'Traditional Arabic', serif;

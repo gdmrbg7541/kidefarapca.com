@@ -285,7 +285,7 @@
     <link rel="stylesheet" href="hesap/kurslar.css?v=20261004d">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css?v=20260825a">
-    <link rel="stylesheet" href="hesap/qrgiris.css?v=20260814a">
+    <link rel="stylesheet" href="hesap/qrgiris.css?v=20261005d">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
        z-index kilit perdesinin (100000000) ÜSTÜNDE: kilitliyken pencere
@@ -379,6 +379,12 @@
     <!-- Karekodla giriş: callable Cloud Functions için functions bileşeni + karekod çizici -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- KAREKOD YEDEĞİ (05.10.2026) — okul ağı cdnjs'i engellerse
+         yukarıdaki kütüphane gelmiyor ve HİÇBİR karekod çizilmiyordu.
+         Depodaki üretici + API köprüsü: CDN gelirse bunlar devreye
+         girmiyor, gelmezse karekodlar yine çiziliyor. -->
+    <script src="pano/qrcode.min.js?v=1"></script>
+    <script src="sistem/karekodyedek.js?v=1"></script>
     <script src="sistem/kilit.js?v=12"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
     <script src="sistem/erisim.js?v=5"></script>
@@ -3594,6 +3600,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          sistem/ciktiveri.js; o buraya YÜKLENMEZ, cikti.html yükler. -->
     <script src="sistem/ciktivar.js?v=1"></script>
     <script src="sistem/ciktikart.js?v=2"></script>
+    <!-- EK SINIF KARTLARI (05.10.2026) — öğretmen: "5 ve 6. sınıflara
+         harf-i ta'rîf sunusunu, tüm sınıflara kelime çarkını ve sözlüğü,
+         10'a kelime fabrikasını, 9'a Niçin Arapça sunumunu kart olarak
+         ekle." Hangi kart hangi sınıfta: sistem/eksunukart.js -->
+    <script src="sistem/eksunukart.js?v=1"></script>
     <!-- İmam Hatip 7/9/10 «Kitap Etkinlikleri» kartı: sınıfın kart
          ızgarasına girer, ünite listesi kartın altında açılır. 7. sınıfta
          yalnız MEB 2027-2028 kitabı seçiliyken görünür. -->
@@ -7471,7 +7482,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Başlıktaki sözlük simgesinin açtığı pencere -->
     <script src="sarf/sozlukpop.js?v=2"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
-    <script src="hesap/qrgiris.js?v=20260815a"></script>
+    <script src="hesap/qrgiris.js?v=20261005d"></script>
+    <script src="hesap/girisgenislik.js?v=2"></script>
     <!-- KAYIT ANKETI / ROL KAPISI: giris penceresi acilinca once
          "ogretmen misin, ogrenci misin" sorulur; kayitta 4 kisa soru daha.
          Cevaplar kullanicilar/{uid}.anket alaninda, yonetici panelinde gorunur. -->

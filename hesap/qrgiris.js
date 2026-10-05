@@ -204,6 +204,24 @@
             '</div>';
         return true;
     }
+    /* GİRİŞ PENCERESİ GENİŞLİĞİ (05.10.2026)
+       Çizim ile gerçek karekod YAN YANA duruyor; 450 px'e sığmıyorlar.
+       Karekod ekranındayken pencere genişler, e-posta formuna dönünce
+       eski genişliğine döner. Genişliği auth.js / girisdavranis.js
+       satır içi veriyor, o yüzden satır içinden geri alınıyor. */
+    var eskiGenislik = null;
+    function pencereGenislet(ac) {
+        var mc = document.querySelector('#login-modal .modal-content');
+        if (!mc) return;
+        if (ac) {
+            if (eskiGenislik === null) eskiGenislik = mc.style.maxWidth || '';
+            mc.style.maxWidth = '640px';
+        } else if (eskiGenislik !== null) {
+            mc.style.maxWidth = eskiGenislik;
+            eskiGenislik = null;
+        }
+    }
+
     /* Karekod kipine geç (form gizlenir). */
     function qrModAc() {
         var alan = modalAlan();
@@ -223,6 +241,7 @@
         var alan = modalAlan();
         if (!alan) return false;
         qrDurdur();
+        pencereGenislet(false);          /* seçim ekranı dar pencerede */
         qrModAc();
         alan.innerHTML =
             '<div class="qr-sec">' +
@@ -269,6 +288,22 @@
 
     function qrElleGirisAc() {
         qrDurdur();
+        pencereGenislet(false);
+        /* 05.10.2026 — öğretmen: "karekod veya kayıt ola basınca çarpı geri
+           tuşuna dönsün". Karekoda girerken kayitanketi.js tuşu ‹ geri
+           yapıyor; forma dönünce yeniden ✕ olmalı. */
+        try {
+            var _x = document.querySelector('#login-modal .modal-close');
+            if (_x && _x.classList.contains('ka-geri-tus')) {
+                _x.classList.remove('ka-geri-tus');
+                _x.classList.add('ka-x-tus');
+                if (_x.__kaEski != null) _x.innerHTML = _x.__kaEski;
+                _x.setAttribute('title', 'Kapat');
+                _x.onclick = function () {
+                    if (typeof window.closeLoginModal === 'function') window.closeLoginModal();
+                };
+            }
+        } catch (e) {}
         var alan = modalAlan();
         if (alan) { alan.style.display = 'none'; alan.innerHTML = ''; }
         var f = formAlan();
@@ -337,15 +372,129 @@
         return kok + 'index.html?qr=' + encodeURIComponent(oturumId);
     }
 
+    /* TELEFONUN KENDİ KAMERASI — karekodun yanındaki anlatım çizimi.
+       (05.10.2026; öğretmen önce "çok şişko" dedi, sonra "çok uzun olmuş".)
+
+       GÖVDE 78x140 → oran 0.56. İlk hâli 78x106 (1.36) enineydi, ikinci
+       hâli 78x168 (0.46) fazla uzundu. Çizimde telefonun oranının birebir
+       gerçekçi olması gerekmiyor; yanındaki karekodla dengeli durması
+       gerekiyor. Kutu da 230x320'den 230x290'a indi — giriş penceresi
+       kaydırmasız sığsın diye.
+
+       DİKEY KURGU — altta telefon, üstte taranan karekod:
+         ana ekran → kamera simgesine dokunuş → simge büyüyüp ekranı
+         kaplar → vizör + objektif → ışık konisi yukarı uzanır →
+         tarama çizgisi iner → karekod yeşile döner, onay belirir.
+       Anlatılan: indirilecek uygulama yok, telefonun KENDİ kamerası. */
+    function kameraAnlatimSvg() {
+        /* ana ekrandaki küçük uygulama simgeleri (ortadaki kamera hariç) */
+        var sim = '', satir, sutun;
+        for (satir = 0; satir < 3; satir++) {
+            for (sutun = 0; sutun < 3; sutun++) {
+                if (satir === 1 && sutun === 1) continue;
+                sim += '<rect x="' + (86 + sutun * 22) + '" y="' + (178 + satir * 22) +
+                       '" width="15" height="15" rx="4" fill="#1F2430" opacity=".22"/>';
+            }
+        }
+        return '' +
+        '<svg class="qrk" viewBox="0 0 230 290" role="img" ' +
+             'aria-label="Telefonun kendi kamera uygulamasını aç ve karekodu okut; uygulama indirmeye gerek yok">' +
+        '  <defs>' +
+        '    <linearGradient id="qrkIsik" x1="0" y1="1" x2="0" y2="0">' +
+        '      <stop offset="0" stop-color="#16A085" stop-opacity=".34"/>' +
+        '      <stop offset="1" stop-color="#16A085" stop-opacity="0"/>' +
+        '    </linearGradient>' +
+        '    <clipPath id="qrkEkran"><rect x="82" y="158" width="66" height="114" rx="6"/></clipPath>' +
+        '  </defs>' +
+
+        /* ---- ÜSTTE: taranan karekod ---- */
+        '  <g class="qrk-kod">' +
+        '    <rect x="56" y="4" width="118" height="118" rx="15" fill="#FFFFFF" stroke="#E3E8EF" stroke-width="2.5"/>' +
+        '    <g class="qrk-modul" fill="#1F2430">' +
+        '      <path d="M70 18h25v25H70zM76 24h13v13H76z" fill-rule="evenodd"/>' +
+        '      <path d="M135 18h25v25h-25zM141 24h13v13h-13z" fill-rule="evenodd"/>' +
+        '      <path d="M70 83h25v25H70zM76 89h13v13H76z" fill-rule="evenodd"/>' +
+        '      <g opacity=".82">' +
+        '        <rect x="105" y="20" width="8" height="8" rx="1.6"/>' +
+        '        <rect x="117" y="32" width="8" height="8" rx="1.6"/>' +
+        '        <rect x="105" y="44" width="8" height="8" rx="1.6"/>' +
+        '        <rect x="135" y="53" width="8" height="8" rx="1.6"/>' +
+        '        <rect x="147" y="65" width="8" height="8" rx="1.6"/>' +
+        '        <rect x="105" y="68" width="8" height="8" rx="1.6"/>' +
+        '        <rect x="117" y="80" width="8" height="8" rx="1.6"/>' +
+        '        <rect x="135" y="92" width="8" height="8" rx="1.6"/>' +
+        '        <rect x="105" y="92" width="8" height="8" rx="1.6"/>' +
+        '      </g>' +
+        '    </g>' +
+        '    <rect class="qrk-tara" x="62" y="12" width="106" height="4.5" rx="2.2" fill="#16A085" opacity=".75"/>' +
+        '  </g>' +
+        '  <g class="qrk-onay">' +
+        '    <circle cx="115" cy="63" r="26" fill="#16A085"/>' +
+        '    <path d="M103 63.5l8.5 8.5 17-18" fill="none" stroke="#FFFFFF" stroke-width="5.5"' +
+        '          stroke-linecap="round" stroke-linejoin="round"/>' +
+        '  </g>' +
+
+        /* ---- ışık konisi: telefondan yukarı ---- */
+        '  <path class="qrk-koni" d="M100 150 L62 122 L168 122 L130 150 Z" fill="url(#qrkIsik)"/>' +
+
+        /* ---- ALTTA: telefon (78x140, oran 0.56) ---- */
+        '  <g class="qrk-tel">' +
+        '    <rect x="76" y="150" width="78" height="140" rx="13" fill="#FFFFFF" stroke="#1F2430" stroke-width="3"/>' +
+        '    <rect x="82" y="158" width="66" height="114" rx="6" fill="#F4F7FA"/>' +
+        '    <rect x="104" y="153" width="22" height="3.2" rx="1.6" fill="#1F2430" opacity=".5"/>' +
+        '    <rect x="101" y="278" width="28" height="4" rx="2" fill="#1F2430" opacity=".3"/>' +
+        '    <g clip-path="url(#qrkEkran)">' +
+        '      <g class="qrk-ev">' + sim + '</g>' +
+        '      <g class="qrk-ikon">' +
+        '        <rect x="108" y="200" width="15" height="15" rx="4" fill="#16A085"/>' +
+        '        <circle cx="115.5" cy="208" r="4.1" fill="none" stroke="#FFFFFF" stroke-width="1.7"/>' +
+        '        <rect x="111.6" y="201.6" width="4.6" height="2" rx="1" fill="#FFFFFF"/>' +
+        '      </g>' +
+        '      <circle class="qrk-dokunus" cx="115.5" cy="207.5" r="9" fill="none" stroke="#16A085" stroke-width="2.4"/>' +
+        '      <g class="qrk-kam">' +
+        '        <rect x="82" y="158" width="66" height="114" rx="6" fill="#121820"/>' +
+        '        <g class="qrk-vizor" stroke="#16A085" stroke-width="3.2" fill="none" stroke-linecap="round">' +
+        '          <path d="M93 194v-8a3 3 0 0 1 3-3h8"/>' +
+        '          <path d="M126 183h8a3 3 0 0 1 3 3v8"/>' +
+        '          <path d="M137 216v8a3 3 0 0 1-3 3h-8"/>' +
+        '          <path d="M104 227h-8a3 3 0 0 1-3-3v-8"/>' +
+        '        </g>' +
+        '        <g class="qrk-lens">' +
+        '          <circle class="qrk-iris" cx="115" cy="205" r="14" fill="none" stroke="#2FC79F" stroke-width="3.2"/>' +
+        '          <circle cx="115" cy="205" r="5.6" fill="#2FC79F"/>' +
+        '          <circle cx="110.8" cy="201" r="2" fill="#FFFFFF" opacity=".85"/>' +
+        '        </g>' +
+        '        <circle cx="115" cy="254" r="8.5" fill="none" stroke="#FFFFFF" stroke-width="2.2" opacity=".75"/>' +
+        '        <circle cx="115" cy="254" r="5.6" fill="#FFFFFF" opacity=".9"/>' +
+        '      </g>' +
+        '    </g>' +
+        '  </g>' +
+        '</svg>';
+    }
     function karekoduCiz() {
+        pencereGenislet(true);
         var baglanti = onayBaglantisi(qrDurum.oturumId);
         govdeYaz(
-            '<p class="qr-anlat">Telefonundan <b>kamerayı aç</b> ve aşağıdaki karekodu okut. ' +
-            'Açılan sayfada <b>Onayla</b> dediğinde bu ekran senin hesabınla açılır — şifre yazmana gerek yok.</p>' +
-            '<div class="qr-kutu" id="qrKutu"></div>' +
-            '<div class="qr-kod-satir">Doğrulama kodu <b id="qrDogrulama">' + kacis(qrDurum.dogrulama) + '</b>' +
-            '<small>Telefonunda da bu kod yazmalı.</small></div>' +
-            '<div class="qr-sayac" id="qrSayac"></div>' +
+            '<p class="qr-anlat">Telefonunun <b>kendi kamerasını</b> aç ve sağdaki karekoda tut — ' +
+            '<b>uygulama indirmene gerek yok</b>. Açılan sayfada <b>Onayla</b> dediğinde bu ekran ' +
+            'senin hesabınla açılır; şifre yazmayacaksın.</p>' +
+            /* Öğretmen (05.10.2026): "karekodun yanında olsun telefon ve
+               karekod taraması… gerçek karekod sağda". Solda anlatım çizimi
+               (altta telefon, üstte tarama), sağda qrcode.min.js'in çizdiği
+               GERÇEK karekod. Dar ekranda alt alta geçer. */
+            /* İKİ SÜTUN (05.10.2026) — öğretmen: "scroll olmadan her şey
+               sığsın, dikey alanı çok iyi kullan". Doğrulama kodu ve sayaç
+               alt alta değil, karekodun ALTINDA ama çizimin YANINDA duruyor;
+               tek sütunda dizilince ~140 px fazladan yer kaplıyordu. */
+            '<div class="qr-sahne">' +
+            '  <div class="qr-anlatim">' + kameraAnlatimSvg() + '</div>' +
+            '  <div class="qr-sag">' +
+            '    <div class="qr-kutu" id="qrKutu"></div>' +
+            '    <div class="qr-kod-satir">Doğrulama kodu <b id="qrDogrulama">' + kacis(qrDurum.dogrulama) + '</b>' +
+            '    <small>Telefonunda da bu kod yazmalı.</small></div>' +
+            '    <div class="qr-sayac" id="qrSayac"></div>' +
+            '  </div>' +
+            '</div>' +
             '<div class="qr-durum bekliyor" id="qrDurumSatir">Telefondan onay bekleniyor…</div>' +
             '<div class="qr-alt"><a href="' + kacis(baglanti) + '" target="_blank" rel="noopener">Bağlantıyı elle aç</a>' +
             '<button type="button" class="qr-yenile" onclick="qrGirisAc()">Yeni karekod</button></div>'
@@ -361,21 +510,45 @@
         qrDurum.sormaId = setInterval(sor, SORMA_ARALIK);
     }
 
+    /* YEREL ÇİZİCİ (05.10.2026) — depodaki pano/qrcode.min.js
+       (qrcode-generator). API'si CDN'dekinden farklı: nesne değil işlev,
+       SVG üretiyor. CDN engellenirse karekod yine çiziliyor. */
+    function yerelCiz(kutu, baglanti) {
+        var y = window.qrcode;
+        if (typeof y !== 'function') return false;
+        try {
+            var q = y(0, 'M');                 /* 0 = boya göre tip seç */
+            q.addData(baglanti);
+            q.make();
+            kutu.innerHTML = q.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+            var sv = kutu.querySelector('svg');
+            if (sv) {
+                sv.setAttribute('width', '240');
+                sv.setAttribute('height', '240');
+                sv.style.display = 'block';
+            }
+            return true;
+        } catch (e) { return false; }
+    }
+
     function cizmeyiDene(baglanti, deneme) {
         var kutu = document.getElementById('qrKutu');
         if (!kutu) return;
+        /* 1) CDN'den gelen kütüphane (new QRCode) */
         if (window.QRCode) {
             kutu.innerHTML = '';
             try {
                 new window.QRCode(kutu, {
-                    text: baglanti, width: 216, height: 216,
+                    /* 216 → 240 (öğretmen: "daha büyük olsunlar") */
+                    text: baglanti, width: 240, height: 240,
                     correctLevel: window.QRCode.CorrectLevel ? window.QRCode.CorrectLevel.M : undefined
                 });
-            } catch (e) {
-                kutu.innerHTML = '<div class="qr-yok">Karekod çizilemedi. Aşağıdaki bağlantıyı telefonda açabilirsin.</div>';
-            }
-            return;
+                return;
+            } catch (e) { /* aşağıdaki yerel yola düş */ }
         }
+        /* 2) Depodaki yerel kütüphane — CDN engelliyse devreye girer */
+        if (yerelCiz(kutu, baglanti)) return;
+        /* 3) İkisi de yoksa: kısa bir süre bekle, sonra elle açmayı öner */
         if (deneme < 15) {
             kutu.innerHTML = '<div class="qr-yok">Karekod hazırlanıyor…</div>';
             setTimeout(function () { cizmeyiDene(baglanti, deneme + 1); }, 200);

@@ -5299,3 +5299,230 @@ bilgiler olmasın."
    _kaynak/gecici/eski-html-sunular/ içine TAŞINDI.
    _kaynak/gecici/silme-onayi.txt yazıldı (576). Hızlı gönder bu kayıttan
    sonra onay dosyasını kendisi siliyor; fren tekrar 200'de devreye girer.
+
+── 05.10.2026 · Karekodla girişe «telefonun kendi kamerası» animasyonu
+   Öğretmen: "telefonun kendi kamerasını açmasıyla ilgili büyük bi
+   animasyonlu svg olsun, uygulama indirmeye gerek yok çünkü."
+   Ekranda yalnız bir cümle vardı; karekod deyince çoğu kişi önce "hangi
+   uygulamayı indireceğim" diye düşünüyor. Karekodun üstüne geniş,
+   döngülü bir SVG kondu — 5 sn'de dört adım: telefonu al → KENDİ kamerası
+   açılır (vizör köşeleri + objektif) → ışık konisi karekoda uzanır,
+   tarama çizgisi iner → karekod yeşile döner, onay belirir.
+   Metin de değişti: "Telefonunun kendi kamerasını aç… uygulama indirmene
+   gerek yok."
+   Hareketin tamamı CSS'te, dışarıdan dosya yok. prefers-reduced-motion
+   açıksa animasyon durur, çizim okunur son karesinde kalır.
+   Tarayıcıda beş ayrı anda yakalanıp bakıldı; 360x122 px, modal'a sığıyor.
+   Dosyalar: hesap/qrgiris.js (kameraAnlatimSvg), hesap/qrgiris.css
+   Yedek: _kaynak/yedekler/20261005-qr-kamera/
+   Betik: _kaynak/uretici/qrKameraAnimasyon.py
+
+── 05.10.2026 · «Kendini Dene» (Harf Birleştirme): şık, çizgi, tur sonu, puan
+   Öğretmen: "şıklar daha büyük olsun ve çizgi daha ince olsun, tur sonunda
+   yeni bi soru gelecekmiş oluyor sonra puan gösteriliyor bunu düzeltelim,
+   ayrıca hız puanı 25 puan doğru cevap puanları 75 olsun."
+   1. ŞIKLAR: ölçüldü — 1440x900'de şık kutusu 677x266 px ama harfler
+      72 px, kutunun üçte biri. Harfler 8vh → 12vh (72 → 108 px, en çok
+      140 px), as-bic-b 9.5 → 14vh, as-h 9 → 12vh, ayraç 5 → 6.5vh;
+      kutunun iç boşluğu kısıldı. Kutu ölçüsü aynı, boş alan harfe gitti.
+   2. YAZI ÇİZGİSİ: 3 px → 2 px (.as-uclu::before, alfabe.css). Aynı
+      bileşeni Sınav sekmesi de kullanıyor — ikisi bilerek aynı.
+   3. TUR SONU: iki kişilikte son sorudan sonra da «Hazır ol! Sıradaki
+      soru geliyor…» perdesi iniyor, perde kalkınca soru yerine puan
+      tablosu çıkıyordu. Artık son soruda «Tur bitti · Puanlar geliyor…»
+      perdesi iniyor. Tek kişilikte de son sorudaki düğme «Sonraki ›»
+      değil «Sonucu gör ›» yazıyor.
+   4. PUAN: her doğru 10 → 75, hız 5 → 25 (ikisi 100 ediyor).
+      NOT: Dinle ve Yaz yarışması (dinleveyaz_kapisma.js) hâlâ 10/5 —
+      istenirse o da eşitlenir.
+   Tarayıcıda denendi: tek kişilik 3 soruluk tur sonunda düğme "Sonucu
+   gör ›" yazdı ve sonuç geldi; iki kişilikte perde "Tur bitti · Puanlar
+   geliyor…" çıktı, puan tablosu "doğruluk 75 · hız 25 = 100" gösterdi.
+   Dosyalar: okumayazma/alfabe_akordiyon.js, okumayazma/alfabe.css,
+   alfabe.html (?v tazelendi)
+   Yedek: _kaynak/yedekler/20261005-kendini-dene/
+   Betik: _kaynak/uretici/akordiyonDuzelt.py
+
+── 05.10.2026 · Karekod ekranı yeniden kuruldu (öğretmenin düzeltmesi)
+   Öğretmen: "telefon svg'sini biraz daha uzun yap, çok şişko olan bi
+   telefon gibi olmuş; telefondan kamera uygulamasını açma animasyonu
+   ekle; karekodun yanında olsun telefon ve karekod taraması; daha büyük
+   olsunlar; telefon altta, karekod tarama animasyonu üstte, gerçek
+   karekod ise sağda."
+   1. TELEFON ORANI: gövde 78x106 (oran 1.36 — enine) → 78x168 (0.46).
+      Gerçek telefon 9:19.5 civarı; ölçüldü, 0.46 çıktı.
+   2. KAMERA UYGULAMASI AÇILIYOR: önceden ekranda doğrudan vizör vardı.
+      Şimdi ana ekran (8 uygulama simgesi + yeşil kamera simgesi) →
+      simgeye dokunuş halkası → simge büyüyüp ekranı kaplar → kamera
+      uygulaması (koyu ekran, deklanşör) → vizör köşeleri + objektif.
+      Anlatılmak istenen buydu: indirilecek bir şey yok.
+   3. DÜZEN: çizim artık DİKEY ve karekodun YANINDA — solda üstte taranan
+      karekod + ışık konisi, ALTTA telefon; sağda qrcode.min.js'in çizdiği
+      GERÇEK karekod. İkisi de büyüdü: gerçek karekod 216 → 240 px,
+      çizim sütunu 258 px (SVG 258x359).
+      Yan yana sığsın diye karekod ekranındayken giriş penceresi 450 →
+      640 px'e genişliyor, e-posta formuna / seçim ekranına dönünce eski
+      genişliğine dönüyor (pencereGenislet). Dar ekranda (<560 px) alt
+      alta diziliyor.
+   Döngü 6 sn, hepsi CSS'te, dışarıdan dosya yok; prefers-reduced-motion
+   açıkken animasyon durur, çizim okunur son karesinde kalır.
+   Denendi: yedi ayrı anın karesi alınıp bakıldı (ana ekran → dokunuş →
+   kamera açılır → vizör → koni → tarama → onay). Canlı giriş penceresinde
+   de koşturuldu: pencere 640 px'e genişledi, çizim solda karekod sağda
+   (solda:true), forma dönünce genişlik geri geldi.
+   Dosyalar: hesap/qrgiris.js, hesap/qrgiris.css, index.html (?v=20261005b)
+   Yedek: _kaynak/yedekler/20261005-qr-kamera2/
+   Betik: _kaynak/uretici/qrKamera2.py
+
+── 05.10.2026 · Giriş penceresi: telefon kısaldı, kaydırma kalktı, ✕ → ‹ geri
+   Öğretmen: "telefon çok uzun olmuş, ayrıca giriş sayfasında scroll olmadan
+   her şey sığsın, dikey alanı çok iyi kullan, karekod veya kayıt ola
+   basınca çarpı geri tuşuna dönsün."
+
+   1. TELEFON: 78x168 (oran 0.46) → 78x140 (0.56). İlk hâli 78x106 (1.36)
+      enineydi, ikincisi fazla uzundu. SVG kutusu da 230x320 → 230x290.
+
+   2. KAYDIRMA — gerçek sebep başkaymış. Giriş penceresi 450 px'lik bir
+      kart değil: kayitanketi.js ona .ka-tam verip TAM EKRAN yapıyor ve
+      ölçülerini !important ile yazıyor (padding clamp(74px,8vw,104px)…,
+      başlık clamp(1.7rem,3.4vw,2.9rem)). 1366x768'de tek başına 159 px
+      boşluk + 74 px başlık ediyordu; benim ilk kurallarım daha düşük
+      öncelikte kaldığı için işlemiyordu. Kurallar "body #login-modal.ka-tam"
+      ile yazıldı ve yalnız alçak ekranda (<=960 px) devreye giriyor.
+      Kazanılan yer:
+        · karekod ekranı iki sütun (solda çizim, sağda karekod+kod+sayaç)
+        · alçak ekranda iç boşluk, başlık, alan aralıkları kısıldı
+        · KAYIT kipinde "Kayıt ol" kartı ve "Karekodla Giriş" satırı
+          gizleniyor (~164 px) — ikisi de kayıt ekranında anlamsız
+        · içerik dikey ortalandı ("safe center": uzun içerikte tepesi
+          kırpılmaz, üstten başlar)
+      Ölçüm (gereken yükseklik → kaydırma):
+        1366x768  giriş 811→sığıyor · kayıt 1106→sığıyor · karekod 1009→sığıyor
+        1280x720, 1440x900, 1512x982: üç kip de sığıyor
+      TEK İSTİSNA telefon (390x844): kayıt formu hâlâ 226 px taşıyor.
+      Sekiz alan tek sütuna indiğinde hiçbir sıkıştırma onu bir ekrana
+      okunur hâlde sığdırmıyor; orada kaydırmaya izin verildi.
+      Ayrıca: kısa yazım (padding) sağdaki tanıtım rafının 340 px'lik
+      yerini eziyordu, içerik rafın altına giriyordu — geri kondu.
+
+   3. ✕ → ‹ GERİ: karekod yolunda kayitanketi.js'teki kapatTusu() zaten
+      yapıyordu; kayıt yolu eksikti. hesap/girisgenislik.js eklendi.
+      Kipi bayraktan değil EKRANDAN okuyor ("Şifreyi Onayla" görünür mü)
+      ve MutationObserver ile izliyor — kipi auth.js mi girisdavranis.js
+      mi çevirdi, kim moduDegistir'i sarmaladı, hiç fark etmiyor.
+      Karekod ekranı açıkken tuşa dokunmuyor (orayı kayitanketi yönetiyor).
+   Denendi: giriş ✕, kayıt ‹ (iki parça gizli), geri basınca giriş ✕,
+   karekod ‹ — dördünde de kaydırma 0.
+   Dosyalar: hesap/qrgiris.js, hesap/qrgiris.css, hesap/girisgenislik.js
+   (YENİ), index.html (?v=20261005c, girisgenislik.js?v=2)
+   Yedekler: _kaynak/yedekler/20261005-giris-duzen/, 20261005-giris-sigdir/
+   Betikler: _kaynak/uretici/qrDuzen3.py, girisSigdir.py
+
+── 05.10.2026 · Giriş penceresi başlığı: geri tuşunun hizasına, büyük
+   Öğretmen: "sisteme giriş yap kısmında geri tuşu satırı bomboş, sisteme
+   giriş yap yazılarını yukarı al, bu yazı çok daha büyük olsun, küçük yazı
+   olmasın: Telefonunun kendi kamerasını aç ve sağdaki karekoda tut…"
+   SEBEP: içeriği dikey ortalamıştım, başlık da onunla birlikte ortaya
+   düşüyordu; sol üstteki geri/✕ düğmesi SABİT olduğu için o satır boş
+   kalıyordu. Başlık da sabitlenip düğmenin sağına, aynı hizaya alındı
+   (ölçüldü: başlık üstü 17 px, düğme üstü 16 px, çakışma yok).
+   Punto: 1.22rem → clamp(1.55rem, 3.6vh, 2.6rem) (1366x768'de 27,6 px).
+   Karekod açıklaması: .88rem → 1.06rem (16,96 px), satır aralığı 1.5.
+   İçeriğe başlık bandı kadar üst boşluk verildi; ortalama başlığın
+   ALTINDAKİ alanda yapılıyor, içerik başlığın altına girmiyor.
+   Dar ekranda (<700 px) başlık küçülüp düğmeye yaklaşıyor.
+   Yeniden ölçüldü — 1280x720, 1366x768, 1440x900, 1512x982: giriş, kayıt
+   ve karekod kiplerinin üçü de kaydırmasız sığıyor.
+
+── 05.10.2026 · Sınıflara beş yeni kart
+   Öğretmen: "5 ve 6. sınıflara sunumlardan harf-i ta'rîf sunusunu kart
+   olarak ekle, aynı şekilde tüm sınıflara kelime çarkını ekle, sözlük
+   kartını her sınıfa kart olarak ekle, 10. sınıfa kelime fabrikasını
+   ekle, niçin arapça sunumunu 9. sınıfa ekle."
+   YENİ DOSYA: sistem/eksunukart.js — beşi tek yerde, sistem/sinifmodul.js
+   sözleşmesiyle. Sınıf seçimi ayrı liste değil, veriVar() içinde:
+     nicinarapca      9      → sunum%20html/sunumlar.html?s=arapcaninonemi&don=indeks
+     harfitarif       5, 6   → sunum%20html/harfitarif.html   (müstakil sunu)
+     kelimecarki      hepsi  → kelimecarki.html
+     sozluk           hepsi  → sozluk.html
+     kelimefabrikasi  10     → sarf.html  (tek oyun kipi: fabrika)
+   "?sinif=" GÖNDERİLMİYOR: bu beş sayfanın hiçbiri sınıfa göre veri
+   seçmiyor (sozluk.html yalnız q/fav/test/yaz okuyor, diğerleri hiç).
+   Klasör adında boşluk olduğu için adres "sunum%20html/" diye yazıldı.
+   Harf-i Ta'rîf için flipbook PDF'i değil müstakil HTML sunu seçildi:
+   sayfa 69 KB, tek başına açılıyor, siteye ek yük getirmiyor.
+   Tarayıcıda denendi — altı sınıfın kart listesi ve DOM'daki bağlantılar:
+     5: harfitarif, kelimecarki, sozluk
+     6: harfitarif, kelimecarki, sozluk
+     7: kelimecarki, sozluk        8: kelimecarki, sozluk
+     9: nicinarapca, kelimecarki, sozluk
+    10: kelimecarki, sozluk, kelimefabrikasi
+   Sayfa hatası yok.
+   Dosyalar: sistem/eksunukart.js (YENİ), index.html (betik bağlandı)
+
+── 05.10.2026 · Karekodla giriş: CDN bağımlılığı kalktı (iş bitti)
+   Öğretmen: "karekod işini bitir."
+   BİTMEYEN PARÇA BUYDU: karekodu çizen kütüphane yalnız CDN'den
+   geliyordu (cdnjs.cloudflare.com/.../qrcodejs/1.0.0). Okul ağı cdnjs'i
+   engellerse karekod HİÇ çizilmiyor, ekran "Karekod bileşeni yüklenemedi"
+   deyip "Bağlantıyı elle aç"a düşüyordu — yani tahtada şifresiz giriş,
+   tam da en çok gerektiği yerde çalışmayabiliyordu.
+   ÇÖZÜM: depoda zaten bir karekod kütüphanesi vardı — pano/qrcode.min.js
+   (qrcode-generator, 55 KB; pano.html kullanıyor). API'si CDN'dekinden
+   FARKLI ("new QRCode(el,{…})" değil, "qrcode(tip,seviye)" + addData/
+   make/createSvgTag), o yüzden dosya değiştirilmedi; çizici iki API'yi de
+   tanıyacak hâle getirildi:
+     1. window.QRCode varsa (CDN geldi)  → eskisi gibi
+     2. yoksa window.qrcode (yerel)      → SVG karekod
+     3. ikisi de yoksa                   → eski uyarı + "elle aç"
+   index.html yerel kütüphaneyi de yüklüyor, yani 2. yol hep hazır.
+   CDN etiketi duruyor: bilgiyarismasikacom.html, sarf.html ve
+   bilgiyarismasivezinler.html hâlâ "new QRCode" API'sini kullanıyor,
+   onlar bozulmasın. (İstenirse onlara da aynı yedek verilebilir.)
+   DENENDİ — CDN tarayıcıda engellenerek: karekod yine çizildi (240x240
+   SVG) ve ekrandaki görüntü OpenCV ile okundu; çözülen adres
+   "index.html?qr=DENEME123" yani sayfanın ürettiği onay bağlantısının
+   birebir aynısı. Yani karekod gerçekten okunabilir, süs değil.
+   Ayrıca .qr-kutu min-height 216 → 240 (karekod büyümüştü, kutu küçük
+   kalmıştı).
+   Dosyalar: hesap/qrgiris.js, hesap/qrgiris.css, index.html (?v=20261005d)
+   Yedek: _kaynak/yedekler/20261005-qr-yerel/
+   Betik: _kaynak/uretici/qrYerelKutuphane.py
+
+── 05.10.2026 · Karekod işi bitti: CDN engellense de bütün karekodlar çiziliyor
+   Öğretmen: "karekod işini bitir."
+   BİTMEYEN PARÇA: sitedeki BÜTÜN karekodlar tek bir CDN dosyasına
+   bağlıydı (cdnjs.cloudflare.com/.../qrcodejs/1.0.0). Okul ağı cdnjs'i
+   engellerse karekod hiç çizilmiyor. Bu yalnız girişi değil şunları da
+   vuruyordu:
+       hesap/qrgiris.js         karekodla giriş
+       hesap/oturumguvenlik.js  oturum güvenliği karekodu
+       bilgiyarismasikacom.js   yarışmaya katılma karekodu
+       bilgiyarismasivezinler.js
+       sarf.js / sarf/sarf.js   paylaşım karekodu
+   ÇÖZÜM — çağıran hiçbir dosya değişmedi:
+     · Depoda zaten bir karekod üreticisi vardı: pano/qrcode.min.js
+       (qrcode-generator; pano.html kullanıyor). API'si bambaşka —
+       nesne değil işlev: qrcode(tip,seviye)+addData+make+createSvgTag.
+     · YENİ sistem/karekodyedek.js o üreticinin üstüne CDN'dekinin
+       API'sini kuruyor: new QRCode(el,{text,width,height,correctLevel}),
+       makeCode, clear, CorrectLevel. CDN geldiyse hiç devreye girmiyor
+       (window.QRCode doluysa dokunmadan çıkıyor).
+     · CDN etiketi olan dört sayfaya (index, bilgiyarismasikacom, sarf,
+       bilgiyarismasivezinler) etiketin hemen ardına iki satır eklendi.
+       Alt klasördeki sayfalar için yol derinliği hesaplanıyor.
+   DENENDİ — tarayıcıda cdnjs engellenerek:
+     · Dört sayfanın dördünde de window.QRCode geldi, yedek devrede
+       (KidefKarekodYedek=true) ve deneme karekodu 180 px SVG olarak
+       çizildi.
+     · Giriş karekodu 240x240 çizildi ve ekrandaki görüntü OpenCV ile
+       OKUNDU: çözülen adres "index.html?qr=DENEME123" — sayfanın
+       ürettiği onay bağlantısının birebir aynısı. Karekod gerçekten
+       taranabilir.
+   Ayrıca .qr-kutu min-height 216 → 240 (karekod büyümüştü).
+   index.html'de kütüphane iki kez yükleniyordu, yinelenen kaldırıldı.
+   Dosyalar: sistem/karekodyedek.js (YENİ), hesap/qrgiris.js,
+   hesap/qrgiris.css, index.html, bilgiyarismasikacom.html, sarf.html,
+   bilgiyarismasivezinler.html
+   Yedekler: _kaynak/yedekler/20261005-qr-yerel/, 20261005-karekod-yedek/
+   Betikler: _kaynak/uretici/qrYerelKutuphane.py, karekodYedekBagla.py
