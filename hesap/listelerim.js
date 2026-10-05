@@ -989,8 +989,15 @@ function selectClass(lId, cId, element) {
        Bicim satir ici degil CSS'te (#ll-root #content .tabs #active-class-title):
        rozet oteki sekmeler gibi ancak KENDI sekmesi acikken vurgulanmali,
        bu da satir ici stille yapilamiyordu. */
+    /* ROZET = ÖĞRENCİLER SEKMESİ + SINIF SEÇİCİ (05.10.2026)
+       Öğretmen: "okul svg si sadece header de olsun, bi sınıf ismine
+       basınca diğer tüm sınıflar listelensin". Sekme çubuğundaki okul
+       tuşu kalkınca sınıf değiştirmenin panel içi yolu kalmamıştı.
+       Eski iş (switchTab(0)) ÖNCE çalışır — alışkanlık bozulmasın —
+       sonra sınıf listesi açılır. */
     viewTitle.innerHTML = `<span id="active-class-title" class="ll-sinif-rozet"` +
-        ` onclick="switchTab(0)" title="Öğrenciler — ${behKacis(className)} sınıf listesi"` +
+        ` onclick="switchTab(0); llSinifListesiAc();"` +
+        ` title="Öğrenciler — ${behKacis(className)} · başka sınıfa geçmek için tıkla"` +
         ` role="button" tabindex="0">${behKacis(className)}</span>`;
     /* Emniyet: kap hangi kurala takilirsa takilsin gorunur kalsin. */
     viewTitle.style.setProperty('display', 'flex', 'important');
@@ -4549,6 +4556,19 @@ function llOkulPopupAc() {
         var pencere = '<svg class="okul-pencere" viewBox="0 0 20 16" aria-hidden="true" focusable="false">' +
             '<rect x="0.6" y="0.6" width="18.8" height="14.8" rx="2" fill="#CFE7F5" stroke="#8FB8D4" stroke-width="1.2"/>' +
             '<path d="M10 1.2v13.6M1.2 8h17.6" stroke="#8FB8D4" stroke-width="1.1"/></svg>';
+        /* KURUM İŞLEMLERİ (05.10.2026) — öğretmen: "okul svg sine basınca
+           kurumu silme de olsun, tüm işlemleri tek okul svg sinden
+           yapabilmeliyiz". Bu üçü yalnız profildeki eski ağaçta vardı;
+           ağaç kaldırılınca ulaşılamaz olmuşlardı. "Genel" gerçek bir
+           kurum değil, onda çıkmaz. */
+        var kurumTus = genelMi ? '' : ('<span class="okul-kurum-tus">' +
+            '<button type="button" class="okul-ktus" title="Kurum adını değiştir"' +
+            ' onclick="llOkulKurumIslem(\'ad\',\'' + kId + '\')">✏️</button>' +
+            '<button type="button" class="okul-ktus" title="Tüm okulu arşivle"' +
+            ' onclick="llOkulKurumIslem(\'arsiv\',\'' + kId + '\')">🗄</button>' +
+            '<button type="button" class="okul-ktus sil" title="Kurumu sil (seviyeler Genel\'e taşınır)"' +
+            ' onclick="llOkulKurumIslem(\'sil\',\'' + kId + '\')">🗑</button>' +
+            '</span>');
         return '<div class="okul-bina' + (genelMi ? ' genel' : '') + buyuk + '">' +
             '<svg class="okul-bayrak" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
                 '<line x1="12" y1="2.4" x2="12" y2="11" stroke="#7f8c8d" stroke-width="1.6"/>' +
@@ -4561,7 +4581,7 @@ function llOkulPopupAc() {
                 '<path d="M2 9.4L12 4.6l10 4.8-10 4.8z" fill="#F1C40F"/>' +
                 '<path d="M6.4 12.4v3.4c0 1.5 2.6 2.8 5.6 2.8s5.6-1.3 5.6-2.8v-3.4L12 15.2z" fill="#F7DC6F"/>' +
                 '<path d="M20.6 10.2v4.6" stroke="#F1C40F" stroke-width="1.3" stroke-linecap="round"/></svg>' +
-                '<span>' + behKacis(ad) + '</span></div>' +
+                '<span>' + behKacis(ad) + '</span>' + kurumTus + '</div>' +
             '<div class="okul-govde">' + katlar + '</div>' +
             '<div class="okul-giris">' + pencere +
                 '<svg class="okul-kapi-svg" viewBox="0 0 40 32" aria-hidden="true" focusable="false">' +
@@ -4617,6 +4637,87 @@ function llOkulPopupKapat() {
     if (k) k.remove();
     if (window._llOkulEsc) document.removeEventListener('keydown', window._llOkulEsc);
 }
+/* ======================================================================
+   SINIF SEÇİCİ — sınıf adına basınca bütün sınıflar listelenir
+   (05.10.2026 — öğretmen: "bi sınıf ismine basınca diğer tüm sınıflar
+   listelensin ama okul svg si açılmadan, seviyeler arasında bi ayırıcı
+   çizgi olsun")
+   Okul PENCERESİ açılmıyor: bu, yalnız sınıf seçmeye yarayan küçük bir
+   liste. Seviyeler ayrı gruplar hâlinde ve aralarında çizgi var.
+   ====================================================================== */
+function llSinifListesiKapat() {
+    try {
+        var e = document.getElementById('llSinifSec');
+        if (e) e.remove();
+        var r = document.getElementById('active-class-title');
+        if (r) r.classList.remove('acik');
+        document.removeEventListener('keydown', llSinifListesiEsc, true);
+    } catch (e) { }
+}
+function llSinifListesiEsc(e) { if (e.key === 'Escape') llSinifListesiKapat(); }
+function llSinifListesiSec(lId, cId) {
+    llSinifListesiKapat();
+    try { if (typeof llOkulSinifSec === 'function') llOkulSinifSec(lId, cId); } catch (e) { }
+}
+function llSinifListesiAc() {
+    /* ikinci tıklama kapatır */
+    if (document.getElementById('llSinifSec')) { llSinifListesiKapat(); return; }
+    if (!data || !data.levels) return;
+    var rozet = document.getElementById('active-class-title');
+    if (!rozet) return;
+
+    var sira = (data.levelOrder && data.levelOrder.length) ? data.levelOrder : Object.keys(data.levels);
+    var ic = '', grup = 0;
+    sira.forEach(function (lId) {
+        var lvl = data.levels[lId];
+        if (!lvl) return;
+        var cIds = lvl.classes ? Object.keys(lvl.classes) : [];
+        if (!cIds.length) return;              /* boş seviye listede yer kaplamasın */
+        var kapilar = '';
+        cIds.forEach(function (cId) {
+            var aktif = (lId === curLId && cId === curCId);
+            kapilar += '<button type="button" class="lss-sinif' + (aktif ? ' aktif' : '') + '"' +
+                ' onclick="llSinifListesiSec(\'' + lId + '\',\'' + cId + '\')">' +
+                behKacis(lvl.classes[cId].name) + '</button>';
+        });
+        /* AYIRICI ÇİZGİ: ilki hariç her grubun üstünde (.ayrik) */
+        ic += '<div class="lss-grup' + (grup ? ' ayrik' : '') + '">' +
+            '<div class="lss-seviye">' + behKacis(lvl.name || 'Seviye') + '</div>' +
+            '<div class="lss-siniflar">' + kapilar + '</div></div>';
+        grup++;
+    });
+    if (!ic) {
+        ic = '<div class="lss-bos">Henüz sınıf yok.<br><small>Başlıktaki okul simgesinden ekleyebilirsin.</small></div>';
+    }
+
+    var k = document.createElement('div');
+    k.id = 'llSinifSec';
+    k.innerHTML = '<div class="lss-panel">' + ic + '</div>';
+    document.body.appendChild(k);
+
+    /* rozetin altına yerleş; ekrandan taşarsa içeri çek */
+    try {
+        var r = rozet.getBoundingClientRect();
+        var p = k.firstChild;
+        p.style.top = Math.round(r.bottom + 8) + 'px';
+        p.style.left = Math.round(r.left) + 'px';
+        var g = p.getBoundingClientRect();
+        if (g.right > window.innerWidth - 10) {
+            p.style.left = Math.max(10, window.innerWidth - g.width - 10) + 'px';
+        }
+        if (g.bottom > window.innerHeight - 10) {
+            p.style.maxHeight = Math.max(160, window.innerHeight - g.top - 20) + 'px';
+        }
+    } catch (e) { }
+
+    rozet.classList.add('acik');
+    k.addEventListener('click', function (e) { if (e.target === k) llSinifListesiKapat(); });
+    document.addEventListener('keydown', llSinifListesiEsc, true);
+}
+window.llSinifListesiAc = llSinifListesiAc;
+window.llSinifListesiKapat = llSinifListesiKapat;
+window.llSinifListesiSec = llSinifListesiSec;
+
 function llOkulSinifSec(lId, cId) {
     llOkulPopupKapat();
     /* Pencere artik sitenin HER YERINDEN acilabiliyor (baslikta okul tusu).
@@ -4667,6 +4768,19 @@ function llOkulSinifEkle(lId) {
     try { if (typeof addClass === 'function') addClass(lId); } catch (e) { }
     setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
 }
+/* KURUM İŞLEMLERİ KÖPRÜSÜ (05.10.2026): üçü de parola/onay penceresiyle
+   çalışıyor; iş bittikten sonra okul penceresi yeniden çizilir ki sonuç
+   hemen görünsün. Vazgeçilirse yeniden çizmek zararsız. */
+function llOkulKurumIslem(ne, kId) {
+    try {
+        if (ne === 'ad' && typeof kurumAdDegistir === 'function') kurumAdDegistir(kId);
+        else if (ne === 'arsiv' && typeof kurumArsivle === 'function') kurumArsivle(kId);
+        else if (ne === 'sil' && typeof kurumSil === 'function') kurumSil(kId);
+    } catch (e) { console.warn('kurum işlemi:', e && e.message); }
+    setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
+}
+window.llOkulKurumIslem = llOkulKurumIslem;
+
 function llOkulSeviyeEkle(kId) {
     try { if (typeof addLevel === 'function') addLevel(kId); } catch (e) { }
     setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);

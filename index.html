@@ -296,7 +296,7 @@
         z-index:100000001;
     }
     </style>
-    <link rel="stylesheet" href="hesap/listelerim.css?v=20261005e">
+    <link rel="stylesheet" href="hesap/listelerim.css?v=20261005f">
     <style>
       /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
       html { overflow-y: scroll; }
@@ -6823,11 +6823,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          Bu ← tuşu profildeki "Kurumlarım & Sınıflarım" bölümüne
          dönüyordu; o bölüm profilden kalkınca döneceği yer kalmadı.
          Sınıf ve kurumların yeni adresi yanındaki OKUL tuşu. -->
-    <!-- OKUL: butun seviyeler ve siniflar tek pencerede; seviye ayarlarina
-         da buradan ulasilir. Ayni pencere sinif adi rozetinden de acilir. -->
-    <button type="button" class="tab ll-okul-tus" title="Okul — seviyeler, sınıflar ve seviye ayarları"
-            aria-label="Okul — seviyeler, sınıflar ve seviye ayarları"
-            onclick="if(typeof llOkulPopupAc==='function') llOkulPopupAc();"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g></svg></button>
+    <!-- OKUL TUŞU BURADAN KALDIRILDI (05.10.2026) — öğretmen: "okul
+         svg si sadece header de olsun". Aynı pencereyi açan iki tuş
+         vardı; tek kapı başlıktaki #header-okul-btn. Sınıf DEĞİŞTİRMEK
+         için sınıf adı rozetine basılır (llSinifListesiAc). -->
     <div id="viewTitle" style="display:flex; align-items:center; margin:0 6px 0 0;"></div>
     <!-- "Ogrenciler" sekmesi KALDIRILDI: sinif adi rozetinin kendisi o sekme
          (bkz. listelerim.js -> #active-class-title, onclick=switchTab(0)). -->
@@ -7551,7 +7550,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/siniftayeni.js?v=20261004d"></script>
     <script src="sistem/galeriveri.js?v=20261005"></script>
     <script src="sistem/galeri.js?v=20261004b"></script>
-    <script src="hesap/listelerim.js?v=20261005e"></script>
+    <script src="hesap/listelerim.js?v=20261005f"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=20260912a"></script>

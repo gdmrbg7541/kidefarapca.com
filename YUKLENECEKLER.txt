@@ -5725,3 +5725,40 @@ bilgiler olmasın."
              hesap/listelerim.js
    Yedek: _kaynak/yedekler/20261005-geri-tusu/
    Betik: _kaynak/uretici/geriTusuKalk.py
+
+05.10.2026 — TEK KAPI: OKUL SİMGESİ YALNIZ BAŞLIKTA, HER İŞLEM ORADA
+   Öğretmen: "okul svg si sadece header de olsun, bi sınıf ismine basınca
+   diğer tüm sınıflar listelensin ama okul svg si açılmadan seviyeler
+   arasında bi ayırıcı çizgi olsun, okul svg sinde basınca kurumu silme
+   de olsun, tüm işlemleri tek okul svg sinden yapabilmeliyiz."
+   1) İKİNCİ OKUL TUŞU KALKTI: aynı pencereyi açan iki tuş vardı —
+      başlıktaki (#header-okul-btn) ve sınıf panelinin sekme çubuğundaki
+      (.ll-okul-tus). Cubuktaki kaldırıldı; tek kapı başlıktaki.
+   2) SINIF ADI ROZETİ = SINIF SEÇİCİ: çubuktaki okul tuşu gidince sınıf
+      değiştirmenin panel içi yolu kalmıyordu. Rozete basınca küçük bir
+      liste açılıyor: bütün sınıflar, SEVİYELERE GÖRE gruplu, gruplar
+      arasında 1px ayırıcı çizgi (.lss-grup.ayrik). Okul penceresi
+      AÇILMIYOR. Açık sınıf yeşil işaretli; boş seviye listede yer
+      kaplamıyor. Rozetin eski işi (switchTab(0) = Öğrenciler) korundu,
+      önce o çalışıyor. Esc / dışına tıklama / ikinci tıklama kapatır.
+   3) KURUM İŞLEMLERİ PENCEREDE: kurum adını değiştir ✏️ · arşivle 🗄 ·
+      SİL 🗑 bina tabelasına kondu (llOkulKurumIslem → kurumAdDegistir /
+      kurumArsivle / kurumSil). Bu üçü yalnız profildeki eski ağaçta
+      vardı, ağaç kaldırılınca ulaşılamaz olmuştu. "Genel" gerçek bir
+      kurum olmadığı için onda çıkmıyor. İş bitince pencere yeniden
+      çiziliyor.
+   ARTIK TEK SİMGEDEN: kurum ekle · kurum adı · kurum arşivle · kurum sil
+   · seviye ekle · seviye ayarları · sınıf ekle · sınıf seç.
+   DENENDİ:
+     Okul tuşu {sekme çubuğunda:0, başlıkta:1, sayfada popup çağrısı:1}
+     Sınıf listesi {grup:3, seviye adları:[1.,2.,3. Seviye], sınıf:9,
+       aktif işaretli:1, ilk grup çizgi:0px, sonraki gruplar:1px #E3E8EF,
+       okul penceresi açılmadı:true}; sınıfa tıklama → llOkulSinifSec
+       çağrıldı ve liste kapandı. Ekran görüntüsüyle de bakıldı.
+     Kurum işlemleri {tuş grubu:1, başlıklar: ad/arşiv/sil,
+       Genel binada yok:true}; üç tıklama → ad:K1, arsiv:K1, sil:K1.
+     Sayfa hatası yok.
+   Dosyalar: index.html (?v=20261005f), hesap/listelerim.js,
+             hesap/listelerim.css
+   Yedek: _kaynak/yedekler/20261005-okul-tek-kapi/
+   Betik: _kaynak/uretici/okulTekKapi.py
