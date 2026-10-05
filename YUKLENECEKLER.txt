@@ -5698,3 +5698,30 @@ bilgiler olmasın."
              index.html (?v=20261005d / router ?v=20261005b)
    Yedek: _kaynak/yedekler/20261005-arsa-geri/, 20261005-arsa-sira/
    Betik: _kaynak/uretici/okulArsaGeri.py, okulArsaSira.py
+
+05.10.2026 — SINIF PANELİNDEKİ ← GERİ TUŞU KALDIRILDI
+   Öğretmen: "geri tuşuna basınca profile gitmesin" → "hatta geri tuşu
+   olmasın."
+   HANGİ TUŞ: sınıf panelinin sekme çubuğunun BAŞINDAKİ ← (index.html,
+   .ll-geri → llProfilDon). İşi: tam ekrandan çık, sonra PROFİLDEKİ
+   "Kurumlarım & Sınıflarım" bölümüne dön ve o akordiyonu aç.
+   NİYE ANLAMSIZ KALMIŞTI: o bölüm bugün profilden kaldırıldı, yani tuş
+   döneceği yeri kaybetti; geriye yalnız "profile atma" kalmıştı.
+   YAPILAN:
+     · Tuş index.html'den çıktı; sekme çubuğu artık doğrudan OKUL
+       tuşuyla başlıyor (sınıf/kurumun yeni adresi orası).
+     · Kullanılmayan .ll-geri biçimleri listelerim.css'ten alındı.
+     · llProfilDon() SİLİNMEDİ ama artık profile GÖTÜRMÜYOR: tam ekrandan
+       çıkıp okul penceresini açıyor. Sebep: tarayıcısında eski index.html
+       önbellekte kalmış öğretmen o tuşa basarsa profile düşmesin.
+   TAM EKRAN KAYBI YOK: sınıf açılınca tam ekrana geçilmiyor (daha önce
+   kaldırılmıştı) ve başlıktaki ⛶ (#fullscreen-btn) duruyor.
+   DENENDİ: .ll-geri sayısı 0, llProfilDon'u çağıran öğe 0, sekme
+   çubuğunun ilk tuşu "tab ll-okul-tus", llProfilDon artık
+   student-profile-section'a gitmiyor (llOkulPopupAc çağırıyor).
+   index.html'de tam olarak 1 <button>/</button> çifti eksildi, div
+   dengesi değişmedi.
+   Dosyalar: index.html (?v=20261005e), hesap/listelerim.css,
+             hesap/listelerim.js
+   Yedek: _kaynak/yedekler/20261005-geri-tusu/
+   Betik: _kaynak/uretici/geriTusuKalk.py

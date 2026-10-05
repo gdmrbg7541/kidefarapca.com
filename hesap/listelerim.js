@@ -5273,17 +5273,18 @@ window.llTamEkranAc = llTamEkranAc;
 window.llTamEkranKapat = llTamEkranKapat;
 window.llTamEkranDegistir = llTamEkranDegistir;
 
-/* GERI tusu (sekme cubugunun basindaki ←): once TAM EKRANDAN cikar,
-   sonra profildeki Kurumlarim & Siniflarim bolumune doner. */
+/* ESKI GERI TUSU (sekme cubugunun basindaki ←) — ARTIK EKRANDA YOK.
+   (05.10.2026 — öğretmen: "geri tuşuna basınca profile gitmesin" →
+   "hatta geri tuşu olmasın".)
+   Eskiden tam ekrandan çıkıp PROFİLDEKİ "Kurumlarım & Sınıflarım"
+   bölümüne dönüyordu; o bölüm profilden kaldırılınca döneceği yer
+   kalmadı, geriye yalnız "profile atma" davranışı kaldı.
+   İŞLEV SİLİNMEDİ ama artık profile GÖTÜRMÜYOR: tarayıcısında eski
+   index.html önbellekte kalmış bir öğretmen o tuşa basarsa profile
+   düşmesin, doğru yere — okul penceresine — gitsin. */
 function llProfilDon() {
     try { llTamEkranKapat(); } catch (e) { }
-    try { if (typeof changeView === 'function') changeView('student-profile-section'); } catch (e) { }
-    setTimeout(function () {
-        try {
-            var d = document.getElementById('tpSiniflar');
-            if (d) { d.setAttribute('open', ''); d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-        } catch (e) { }
-    }, 140);
+    try { if (typeof llOkulPopupAc === 'function') llOkulPopupAc(); } catch (e) { }
 }
 window.llProfilDon = llProfilDon;
 

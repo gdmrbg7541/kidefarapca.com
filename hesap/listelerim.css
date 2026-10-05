@@ -2452,18 +2452,9 @@ html:-webkit-full-screen header{ display: none !important; }
 html:fullscreen #ll-root.logged-in #content .tabs,
 html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
 
-/* GERI tusu: sekme cubugunun basinda (tam ekran tusu kaldirildi —
-   tam ekran otomatik acilir, cikis geri tusu / ESC ile) */
-#ll-root .ll-geri{
-    display: inline-flex; align-items: center; justify-content: center;
-    align-self: center; flex: 0 0 auto;
-    width: 58px; height: 58px; margin: 0 2px 0 0;
-    border: none; border-radius: 13px; cursor: pointer;
-    background: #F1F3F5; color: #D84315;
-    transition: background .15s ease, transform .15s ease;
-}
-#ll-root .ll-geri:hover{ background: #FFE9DC; transform: translateX(-2px); }
-#ll-root .ll-geri svg{ width: 32px; height: 32px; }
+/* .ll-geri (sekme cubugunun basindaki ← tusu) 05.10.2026'da
+   kaldirildi; bicimleri de alindi. Yedek:
+   _kaynak/yedekler/20261005-geri-tusu/listelerim.css */
 
 /* ==========================================================================
    GOREV GONDER (tab9): yazilar 2 KAT buyuk.
