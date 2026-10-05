@@ -5762,3 +5762,37 @@ bilgiler olmasın."
              hesap/listelerim.css
    Yedek: _kaynak/yedekler/20261005-okul-tek-kapi/
    Betik: _kaynak/uretici/okulTekKapi.py
+
+05.10.2026 — SINIF SEÇİCİ TASARIMI (rozet + açılır menü)
+   Öğretmen: "sınıf yazısında tıklanınca başka sınıfların olduğunu
+   gösteren şık bi tasarım yap."
+   SORUN: rozet düz bir yazıydı; tıklanabildiği ve ARKASINDA BAŞKA
+   SINIFLAR OLDUĞU hiçbir yerden belli olmuyordu.
+   ROZET artık bir açılır menü başlığı gibi okunuyor:
+     sınıf adı · toplam sınıf sayısı rozetçiği (yalnız 1'den fazlaysa)
+     · ▾ oku (liste açıkken 180° dönüyor). İpucu: "Sınıf değiştir — 9 sınıf".
+     Açıkken rozetin çevresinde yeşil halka.
+   MENÜ:
+     · rozetin ORTASINA bakan küçük ok (caret); panel ekrana sığmak için
+       kaysa bile ok JS ile hizalanıyor (--ok değişkeni)
+     · üstte başlık şeridi: "SINIF DEĞİŞTİR" + toplam
+     · her seviye kendi grubu, seviye adının solunda ince çubuk,
+       GRUPLAR ARASINDA AYIRICI ÇİZGİ (1px #EDF1F6)
+     · sınıflar çip değil TAM GENİŞLİK SATIR: solda ad, sağda öğrenci
+       sayısı; hover'da hafif sağa kayma
+     · açık sınıf: yeşil zemin + yeşil sol şerit + ✓
+     · açılışta yumuşak giriş animasyonu (lssGir .16s)
+     · uzun listede yalnız iç alan kayıyor, panel ekrandan taşmıyor
+   İŞLEM YOK: ekleme/silme bu listede değil — öğretmen "tüm işlemleri
+   tek okul svg sinden" dediği için liste yalnız sınıf seçer.
+   DENENDİ (1340x900, 3 seviye / 9 sınıf):
+     rozet {ad:"1-A Şubesi", sayı:"9", ok:var, ipucu:"Sınıf değiştir — 9 sınıf"}
+     açıkken ok dönüşü matrix(-1,0,0,-1,0,0) (180°),
+     caret değişkeni 91px = rozet merkezinin panel içindeki yeri 91px,
+     panel rozetin 10px altında ve ekran içinde,
+     grup:3 · satır:9 · öğrenci sayısı rozeti:9 · aktif satırda ✓ ·
+     ayırıcı çizgi 1px. Ekran görüntüsüyle de bakıldı. Sayfa hatası yok.
+   Dosyalar: hesap/listelerim.js, hesap/listelerim.css,
+             index.html (?v=20261005g)
+   Yedek: _kaynak/yedekler/20261005-sinif-secici/
+   Betik: _kaynak/uretici/sinifSeciciTasarim.py

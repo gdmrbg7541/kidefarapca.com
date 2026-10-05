@@ -995,10 +995,28 @@ function selectClass(lId, cId, element) {
        tuşu kalkınca sınıf değiştirmenin panel içi yolu kalmamıştı.
        Eski iş (switchTab(0)) ÖNCE çalışır — alışkanlık bozulmasın —
        sonra sınıf listesi açılır. */
+    /* Rozet bir AÇILIR MENÜ BAŞLIĞI gibi okunsun (05.10.2026 — öğretmen:
+       "sınıf yazısında tıklanınca başka sınıfların olduğunu gösteren şık
+       bi tasarım yap"): adın yanında toplam sınıf sayısı, sonunda ▾ oku.
+       Sayı yalnız birden fazla sınıf varsa çıkar — tek sınıflı öğretmende
+       anlamsız durmasın. */
+    var _toplamSinif = 0;
+    try {
+        Object.keys((data && data.levels) || {}).forEach(function (l) {
+            _toplamSinif += Object.keys((data.levels[l] && data.levels[l].classes) || {}).length;
+        });
+    } catch (e) { }
+    var _ipucu = (_toplamSinif > 1)
+        ? 'Sınıf değiştir — ' + _toplamSinif + ' sınıf'
+        : 'Öğrenciler — ' + className;
     viewTitle.innerHTML = `<span id="active-class-title" class="ll-sinif-rozet"` +
         ` onclick="switchTab(0); llSinifListesiAc();"` +
-        ` title="Öğrenciler — ${behKacis(className)} · başka sınıfa geçmek için tıkla"` +
-        ` role="button" tabindex="0">${behKacis(className)}</span>`;
+        ` title="${behKacis(_ipucu)}" role="button" tabindex="0">` +
+        `<span class="rz-ad">${behKacis(className)}</span>` +
+        (_toplamSinif > 1 ? `<span class="rz-say">${_toplamSinif}</span>` : '') +
+        `<svg class="rz-ok" viewBox="0 0 24 24" aria-hidden="true" focusable="false">` +
+        `<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4"` +
+        ` stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
     /* Emniyet: kap hangi kurala takilirsa takilsin gorunur kalsin. */
     viewTitle.style.setProperty('display', 'flex', 'important');
     viewTitle.style.alignItems = 'center';
@@ -4667,23 +4685,34 @@ function llSinifListesiAc() {
     if (!rozet) return;
 
     var sira = (data.levelOrder && data.levelOrder.length) ? data.levelOrder : Object.keys(data.levels);
-    var ic = '', grup = 0;
+    var ic = '', grup = 0, toplam = 0;
     sira.forEach(function (lId) {
         var lvl = data.levels[lId];
         if (!lvl) return;
         var cIds = lvl.classes ? Object.keys(lvl.classes) : [];
         if (!cIds.length) return;              /* boş seviye listede yer kaplamasın */
-        var kapilar = '';
+        var satirlar = '';
         cIds.forEach(function (cId) {
+            var sinif = lvl.classes[cId] || {};
             var aktif = (lId === curLId && cId === curCId);
-            kapilar += '<button type="button" class="lss-sinif' + (aktif ? ' aktif' : '') + '"' +
+            var kac = ((sinif.students || []).length);
+            toplam++;
+            satirlar +=
+                '<button type="button" class="lss-sinif' + (aktif ? ' aktif' : '') + '"' +
                 ' onclick="llSinifListesiSec(\'' + lId + '\',\'' + cId + '\')">' +
-                behKacis(lvl.classes[cId].name) + '</button>';
+                '<span class="lss-tik">' + (aktif
+                    ? '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                      '<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor"' +
+                      ' stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+                    : '') + '</span>' +
+                '<span class="lss-ad">' + behKacis(sinif.name || '') + '</span>' +
+                (kac ? '<span class="lss-say">' + kac + '</span>' : '') +
+                '</button>';
         });
         /* AYIRICI ÇİZGİ: ilki hariç her grubun üstünde (.ayrik) */
         ic += '<div class="lss-grup' + (grup ? ' ayrik' : '') + '">' +
-            '<div class="lss-seviye">' + behKacis(lvl.name || 'Seviye') + '</div>' +
-            '<div class="lss-siniflar">' + kapilar + '</div></div>';
+            '<div class="lss-seviye"><i></i>' + behKacis(lvl.name || 'Seviye') + '</div>' +
+            satirlar + '</div>';
         grup++;
     });
     if (!ic) {
@@ -4692,21 +4721,31 @@ function llSinifListesiAc() {
 
     var k = document.createElement('div');
     k.id = 'llSinifSec';
-    k.innerHTML = '<div class="lss-panel">' + ic + '</div>';
+    k.innerHTML = '<div class="lss-panel">' +
+        '<div class="lss-bas"><span>Sınıf değiştir</span>' +
+        (toplam ? '<b>' + toplam + ' sınıf</b>' : '') + '</div>' +
+        '<div class="lss-ic">' + ic + '</div></div>';
     document.body.appendChild(k);
 
     /* rozetin altına yerleş; ekrandan taşarsa içeri çek */
     try {
         var r = rozet.getBoundingClientRect();
         var p = k.firstChild;
-        p.style.top = Math.round(r.bottom + 8) + 'px';
+        p.style.top = Math.round(r.bottom + 10) + 'px';
         p.style.left = Math.round(r.left) + 'px';
         var g = p.getBoundingClientRect();
         if (g.right > window.innerWidth - 10) {
             p.style.left = Math.max(10, window.innerWidth - g.width - 10) + 'px';
         }
-        if (g.bottom > window.innerHeight - 10) {
-            p.style.maxHeight = Math.max(160, window.innerHeight - g.top - 20) + 'px';
+        /* Panel kaydıysa ok (caret) yine rozetin ORTASINI göstersin. */
+        var sol = parseFloat(p.style.left) || 0;
+        var okX = Math.min(Math.max((r.left + r.width / 2) - sol, 18), Math.max(18, g.width - 18));
+        p.style.setProperty('--ok', Math.round(okX) + 'px');
+        /* Uzun listede panel ekrandan taşmasın: yalnız iç alan kaysın. */
+        var ici = p.querySelector('.lss-ic');
+        if (ici) {
+            var yer = window.innerHeight - (r.bottom + 10) - 18;
+            ici.style.maxHeight = Math.max(150, yer - 44) + 'px';
         }
     } catch (e) { }
 
