@@ -420,44 +420,30 @@ function goBack() {
 }
 
 function toggleStudentProfile() {
-    /* ÖĞRETMEN / YÖNETİCİ — BAŞLIKTAKİ AVATAR ÖNCE SINIF LİSTESİNE GÖTÜRÜR.
-       Öğretmenin günlük işi sınıf listesi; profil ikinci sırada. Eskiden
-       ilk basış profili açıyordu, yani öğretmen anasayfadan listeye dönmek
-       için tuşa İKİ KEZ basmak zorundaydı — "basınca liste kapanıyor"
-       şikâyeti bundandı. Artık tuş şöyle çalışır:
-         listede değilsen → LİSTE (en son açık sınıf da geri açılır)
-         listedeysen      → PROFİL
-         profildeysen     → yine LİSTE
-       Öğrencide davranış aynen eskisi gibi kalır. */
-    try {
-        var _rol = (appState && appState.userRole) || '';
-        if ((_rol === 'teacher' || _rol === 'admin') && document.getElementById('listelerim-section')) {
-            if (appState.currentView !== 'listelerim-section') {
-                try {
-                    var h0 = appState.viewHistory || [];
-                    while (h0.length && h0[h0.length - 1] === 'student-profile-section') h0.pop();
-                } catch (e) { }
-                changeView('listelerim-section', true);
-                try { if (typeof initListelerim === 'function') initListelerim(); } catch (e) { }
-                try {
-                    if (typeof window.llSonSinifAcBekle === 'function') window.llSonSinifAcBekle();
-                    else if (typeof window.llSonSinifAc === 'function') setTimeout(window.llSonSinifAc, 120);
-                } catch (e) { }
-                return;
-            }
-            changeView('student-profile-section');
-            return;
-        }
-    } catch (e) { }
+    /* AVATAR = PROFİL. (05.10.2026 — öğretmen: "öğretmenler kurum ve
+       sınıflarına profilden değil header'daki okul svg'sinden ulaşabilsin.")
+
+       ESKİDEN: öğretmen/yönetici için bu tuş önce SINIF LİSTESİNİ açıyordu,
+       profil ancak ikinci basışta geliyordu. O davranış, başlıkta okul tuşu
+       YOKKEN listeye dönmenin başka kolay yolu olmadığı için konmuştu.
+
+       ŞİMDİ başlıkta okul tuşu var (#header-okul-btn → llOkulPopupAc) ve
+       her sayfadan kurumları, seviyeleri, sınıfları ve seviye ayarlarını
+       açıyor. İki yol ayrıştı:
+           okul simgesi → kurum / seviye / sınıf
+           avatar       → profil
+       Böylece öğretmen de öğrenci gibi: profilde değilsen profil, profildeysen
+       anasayfa. (Eski davranışı geri isteyen olursa yedeği
+       _kaynak/yedekler/20261005-okul-simgesi/ içinde.) */
 
     if (appState.currentView !== 'student-profile-section') {
         changeView('student-profile-section');
         return;
     }
-    /* ÖĞRENCİ — profil tuşuna ikinci basış profili kapatır ve ANASAYFAYA
-       döner. Geçmişten de temizlenir ki normal Geri tuşu profile düşmesin.
-       (Öğretmen/yönetici bu satırlara hiç gelmez: yukarıdaki blok
-       liste ⇄ profil geçişini kendi yapıp döner.) */
+    /* Profil tuşuna ikinci basış profili kapatır ve ANASAYFAYA döner.
+       Geçmişten de temizlenir ki normal Geri tuşu profile düşmesin.
+       (05.10.2026'dan beri öğretmen/yönetici de buraya gelir; sınıf
+       listesi artık başlıktaki okul simgesinde.) */
     try {
         var h = appState.viewHistory || [];
         while (h.length && h[h.length - 1] === 'student-profile-section') h.pop();

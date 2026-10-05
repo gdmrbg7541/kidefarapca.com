@@ -864,8 +864,15 @@ function loadOgretmenOnaylari() {
             html += '<div style="display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #E9EEF5; border-radius:10px; padding:11px 14px; margin-bottom:8px; flex-wrap:wrap;">' +
                       '<div style="flex:1; min-width:180px;">' +
                         '<strong style="display:block; color:#2c3e50;">' + ad + '</strong>' +
+                        /* TELEFON KOPYALANABİLİR (05.10.2026) — öğretmen:
+                           "öğretmen telefonunu kolayca kopyalayabilsin".
+                           Eskiden e-posta/meslek ile aynı yazının içindeydi,
+                           fareyle seçmek zordu. Artık kendi rozetinde:
+                           tıkla → panoya kopyalanır. (sistem/telkopya.js) */
                         '<span style="font-size:0.85rem; color:#7f8c8d;">' + (o.email || '') +
-                          (o.meslek ? ' · ' + o.meslek : '') + (o.phone ? ' · ' + o.phone : '') + '</span>' +
+                          (o.meslek ? ' · ' + o.meslek : '') + '</span>' +
+                        (window.KidefTelKopya ? window.KidefTelKopya.rozet(o.phone)
+                                             : (o.phone ? '<span style="font-size:0.85rem; color:#7f8c8d;"> · ' + o.phone + '</span>' : '')) +
                       '</div>' +
                       '<button class="btn" style="background:#27ae60; color:#fff; padding:7px 16px; font-size:0.9rem;" ' +
                         'onclick="ogretmenOnayVer(\'' + o._id + '\', true)">Onayla</button>' +
@@ -1004,7 +1011,11 @@ function renderAdminTeacherList() {
                     '<tr>' +
                       '<td>' + _fbEsc(ad || '(isim yok)') + '</td>' +
                       '<td style="font-size:.88rem;">' + _fbEsc(o.email || '—') + '</td>' +
-                      '<td style="font-size:.88rem;">' + _fbEsc(o.phone && o.phone !== 'Belirtilmedi' ? o.phone : '—') + '</td>' +
+                      /* Telefon burada da kopyalanabilir (05.10.2026). */
+                      '<td style="font-size:.88rem;">' +
+                        ((window.KidefTelKopya && o.phone && o.phone !== 'Belirtilmedi')
+                          ? window.KidefTelKopya.rozet(o.phone)
+                          : _fbEsc(o.phone && o.phone !== 'Belirtilmedi' ? o.phone : '—')) + '</td>' +
                       '<td>' + _ogrDurumRozet(onay) + '</td>' +
                       '<td style="font-family:monospace; font-size:.85rem;">' + _fbEsc(kod) + '</td>' +
                       '<td style="font-size:.85rem; color:#7f8c8d;">' + _ogrTarih(o.createdAt) + '</td>' +

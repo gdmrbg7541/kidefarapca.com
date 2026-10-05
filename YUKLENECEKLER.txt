@@ -5563,3 +5563,49 @@ bilgiler olmasın."
        orada açıklama 2rem'e iniyor ve kaydırma var. Karekodla giriş
        zaten tahta/bilgisayar içindir, telefondan doğrudan girilir.
    Dosyalar: hesap/qrgiris.css, hesap/qrgiris.js
+
+── 05.10.2026 · Yönetici: öğretmen telefonu tek tıkla kopyalanıyor
+   Öğretmen: "yönetici siteye giriş yapınca öğretmen onaylarını yaparken
+   öğretmen telefonunu kolayca kopyalayabilsin."
+   ÖNCESİ: onay satırında telefon e-posta ve mesleğin yanında, hepsi tek
+   <span> içinde düz yazıydı; fareyle tam seçmek zordu, seçim kayıyordu.
+   SONRASI: telefon kendi rozetinde — tıkla, panoya kopyalanır, rozet
+   kısa süre "Kopyalandı ✓" der. Numara okunur yazılıyor
+   (0532 123 45 67), panoya BOŞLUKSUZ gidiyor (05321234567); telefon ve
+   WhatsApp bu hâli kabul ediyor.
+   YENİ DOSYA sistem/telkopya.js — tıklamayı belge üstünde TEK yerden
+   dinliyor, yani liste her yeniden çizildiğinde olay bağlamak ya da
+   inline onclick içinde tırnak kaçırmak gerekmiyor. navigator.clipboard
+   yoksa gizli alan + execCommand yedeği var.
+   İKİ YERDE: Öğretmen Onayları listesi ve Öğretmenler tablosu (ikisinde
+   de telefon düz yazıydı). Numarası olmayan ya da "Belirtilmedi" olan
+   kayıtta rozet basılmıyor.
+   DENENDİ — üç ayrı yazım biçimiyle (5321234567 · "0532 987 65 43" ·
+   "+90 541 222 33 44"): üçü de aynı okunur biçimde göründü, tıklanınca
+   panoya düşen metin beklenenle birebir eşleşti (tarayıcıdan pano
+   okunarak doğrulandı).
+   Dosyalar: sistem/telkopya.js (YENİ), hesap/teacher-admin.js,
+   index.html (?v=20261005a)
+   Yedek: _kaynak/yedekler/20261005-tel-kopya/
+   Betik: _kaynak/uretici/telKopyaBagla.py
+
+── 05.10.2026 · Kurum ve sınıflar: profil değil, başlıktaki okul simgesi
+   Öğretmen: "öğretmenler kurum ve sınıflarına profilden değil header'daki
+   okul svg'sinden ulaşabilsin."
+   SEBEP: başlıktaki avatar (baş harf) öğretmen/yönetici için profil tuşu
+   DEĞİLDİ — önce sınıf listesini açıyordu, profil ancak ikinci basışta
+   geliyordu. O davranış, başlıkta okul tuşu YOKKEN listeye dönmenin başka
+   kolay yolu olmadığı için konmuştu.
+   ARTIK iki yol ayrıştı:
+       okul simgesi (#header-okul-btn → llOkulPopupAc) → kurum/seviye/sınıf
+       avatar                                          → profil
+   Avatar artık öğrencideki gibi: profilde değilsen profil, profildeysen
+   anasayfa. Okul tuşunun ipucu da "Sınıflarım ve kurumlarım…" oldu.
+   Okul tuşu zaten her sayfadan aynı pencereyi açıyor ve giriş anında
+   sınıf verisini önden ısıtıyor (auth.js), yani ilk basışta boş açılmıyor.
+   DENENDİ: öğretmen rolünde avatarın 1. basışı profil, 2. basışı anasayfa;
+   okul tuşu yerinde, ipucu güncel, llOkulPopupAc'a bağlı, "gor" sınıfıyla
+   görünür oluyor. Sayfa hatası yok.
+   Dosyalar: sistem/router.js, index.html (?v=20261005a)
+   Yedek: _kaynak/yedekler/20261005-okul-simgesi/
+   Betik: _kaynak/uretici/okulSimgesiYol.py
