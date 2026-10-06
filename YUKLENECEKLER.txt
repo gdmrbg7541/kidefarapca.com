@@ -6392,3 +6392,40 @@ sayısı 2 → 2), 6/A kapısına basınca aynı sekmede 6/A açılıyor — roz
 kidefarapca.com", site başlığı hâlâ gizli. Hata yok.
 Üretici: _kaynak/uretici/okulTusuKalksin.py
 Yedek:   _kaynak/yedekler/20261006-okul-tusu-kalksin/
+
+── 06.10.2026 (ek 11) · "SINIF AÇILMIYOR" DÜZELTİLDİ ────────────────────
+Öğretmen: "olmamış sanki · sınıf açılmıyor" — üç yolda da (anasayfa kartı,
+okul penceresindeki kapı, sınıf sekmesinde değiştirme).
+
+SEBEP (canlı sitede ölçüldü, tahmin değil): sınıf SEÇİLİYOR — llAktifSinif
+doğru, rozet çizilmiş, Listelerim bölümü açık — ama #content gizli kalıyor,
+yani panel hiç görünmüyor. İki ayrı şey:
+  1. CSS: "#ll-root #content{ display:none !important }" — panel ancak
+     #ll-root.logged-in iken açılıyor. selectClass'ın satır içi
+     display:block'u !important'ı yenemiyor; oturum gelene kadar ekran boş.
+  2. Öğretmenin bulut verisi gelince çalışan showLLPlaceholder() paneli
+     "bir sınıf seç" yer tutucusuna çeviriyor: sekme çubuğunu gizliyor,
+     sınıf adı rozetini siliyor.
+İkisinde de curLId/curCId yerinde kaldığı için korumanın ölçütü "oldu"
+diyordu; perde kalkıyor, arkasından boş ekran çıkıyordu. Benim deney
+düzeneğim bunu göremiyordu: orada paneli görmek için zaten
+"#content{display:block !important}" enjekte ediliyordu — maskeleyen şey oydu.
+
+ÇÖZÜM (sistem/sinifbag.js):
+ · yerindeMi artık EKRANA bakıyor: #content gerçekten görünür mü, "bir
+   sınıf seç" yer tutucusu kapalı mı, sekme çubuğu duruyor mu.
+ · uygula() yer tutucuyu geri alıyor (listelerim.js'in llSonSinifAc'ında
+   yaptığının aynısı).
+ · Koruma süresi 7 → 20 sn: bulut verisi geç gelebiliyor, perde o zamana
+   kadar durup ekranı boş göstermiyor.
+ · index.html: "Başlıktaki okul simgesinden bir sınıf seç" yazısı artık
+   olmayan tuşu gösteriyordu; metin güncellendi.
+
+Üretimdeki sıra deney düzeneğinde birebir canlandırıldı (logged-in +
+showLLPlaceholder sonradan çalışıyor): yer tutucu paneli bozuyor, koruma
+1,5 sn içinde geri alıyor, perde ondan sonra kalkıyor. Hata yok.
+
+NOT: sistem/sinifbag.js bugün İKİ KEZ eski hâline döndü (yazdığım sürümün
+üstüne eski içerik geldi). Bu seferki yama doğrudan dosyanın üstünde
+yapıldı ve içeriği doğrulandı; gönderirken dosyanın hâlâ KORUMA_SURE=20000
+içerdiğinden emin olmakta fayda var.

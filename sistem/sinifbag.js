@@ -51,7 +51,9 @@
     var PERDE_ID = 'sbPerde';
     var YALNIZ = 'sb-yalniz-sinif';   /* <html> işareti: bu sekme sınıf sekmesi */
     var YALNIZ_OKUL = 'sb-yalniz-okul'; /* <html> işareti: bu sekme okul sekmesi */
-    var KORUMA_SURE = 7000;      /* görünümü koruma süresi (ms) */
+    var KORUMA_SURE = 20000;     /* görünümü koruma süresi (ms) — bulut
+                                    verisi geç gelebiliyor, panel ancak o
+                                    zaman gerçekten açılıyor */
     var KARARLI = 3;             /* kaç yoklama yerinde kalırsa perde kalkar */
 
     function parametre() {
@@ -402,6 +404,21 @@
         try {
             var ls = document.getElementById('listelerim-section');
             if (!ls || getComputedStyle(ls).display === 'none') return false;
+
+            /* PANEL GERÇEKTEN AÇIK MI (06.10.2026 — "sınıf açılmıyor").
+               Sınıfın seçili olması yetmiyor: #content, #ll-root.logged-in
+               gelene kadar CSS'te !important ile kapalı; ayrıca bulut
+               verisi gelince çalışan showLLPlaceholder() paneli "bir sınıf
+               seç" yer tutucusuna çeviriyor. İkisinde de curLId/curCId
+               yerinde kalıyor, yani veriye bakan ölçüt "oldu" diyor ama
+               ekran boş. Artık ekrana bakıyoruz. */
+            var c = document.getElementById('content');
+            if (!c || getComputedStyle(c).display === 'none') return false;
+            var ipucu = document.getElementById('ll-select-hint');
+            if (ipucu && getComputedStyle(ipucu).display !== 'none') return false;
+            var cubuk = document.querySelector('#content .tabs');
+            if (cubuk && getComputedStyle(cubuk).display === 'none') return false;
+
             if (!window.llAktifSinif) return true;      /* bilemiyorsak görünüm yeter */
             var a = window.llAktifSinif();
             return !!a && a.lId === h.lId && a.cId === h.cId;
@@ -417,6 +434,16 @@
                 ilkKurulum = false;
             }
             try { selectClass(h.lId, h.cId); } catch (e) { }
+            /* Yer tutucu paneli kapatmış olabilir; listelerim.js'in kendi
+               llSonSinifAc'ında yaptığı gibi geri açıyoruz. */
+            try {
+                var c = document.getElementById('content');
+                if (c) c.style.display = 'block';
+                var ipucu = document.getElementById('ll-select-hint');
+                if (ipucu) ipucu.style.display = 'none';
+                var cubuk = document.querySelector('#content .tabs');
+                if (cubuk) cubuk.style.display = '';
+            } catch (e) { }
         } catch (e) {
             try { console.warn('sınıf bağlantısı:', e && e.message); } catch (x) { }
         }
