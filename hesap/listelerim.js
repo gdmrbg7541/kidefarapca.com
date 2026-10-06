@@ -675,6 +675,20 @@ function llTamEkran(id) {
 window.llTamEkran = llTamEkran;
 
 // Eski switchTab ve showTab fonksiyonlarını SİLİP bunu yapıştırın
+/* AÇIK SINIFIN KİMLİĞİ — DIŞARIYA (06.10.2026)
+   curLId/curCId bu dosyanın içinde yaşıyor; sistem/sinifmateryal.js
+   sınıfın seviyesini bulabilsin diye küçük bir pencere açıldı. Yazma
+   yetkisi yok, yalnız okuma. */
+function llAktifSinif() {
+    try {
+        return {
+            lId: (typeof curLId !== 'undefined') ? curLId : null,
+            cId: (typeof curCId !== 'undefined') ? curCId : null
+        };
+    } catch (e) { return { lId: null, cId: null }; }
+}
+window.llAktifSinif = llAktifSinif;
+
 function switchTab(idx) {
     // 1. Tüm butonlardan ve panellerden 'active' sınıfını kaldır
     const tabs = document.querySelectorAll('.tab');
@@ -705,6 +719,10 @@ function switchTab(idx) {
            cagrilar (kisayol, gecmis bag) bosa dusmesin diye oraya yollanir. */
         case 10: if (typeof llTaramaAc === 'function') llTaramaAc(); return;
         case 11: panelId = "tab0"; llNotModu = 'etkinlik'; break; // -> Etkinlikler modu
+        /* MATERYALLER (06.10.2026): açık sınıfın seviyesine ait İmam Hatip
+           belgeleri ve etkinlik kartları. Panelin içini
+           sistem/sinifmateryal.js çizer. */
+        case 13: panelId = "tab13"; break;
     }
 
     // 2. Tıklanan butonu aktif yap — birlesen sekmelerde ana tus vurgulanir.
@@ -735,6 +753,9 @@ function switchTab(idx) {
     if(panelId === 'tab0') llNotModSec(llNotModu);
     if(panelId === 'tab4') llAracSec(llAracModu);
     if(panelId === 'tab8') renderPlan();
+    /* Materyaller: ağır (SVG'li kartlar), bu yüzden yalnız sekme açılınca
+       ve sınıf değiştiyse çizilir. */
+    if(panelId === 'tab13') { try { if (window.KidefSinifMateryal) KidefSinifMateryal.ciz(); } catch(e){} }
     /* Görev Gönder ve Etkinlikler tetiklemesi llNotModSec içine taşındı.
        Veli & Durum taraması artık profildeki #tpTarama akordiyonunda. */
 }
@@ -1037,6 +1058,9 @@ function selectClass(lId, cId, element) {
 }
 
     switchTab(0); 
+    /* Sınıf değişti: Materyaller sekmesi açıkken içeriği de değişsin
+       (06.10.2026). Sekme kapalıysa çizim yapılmaz, sonraki açılışta. */
+    try { if (window.KidefSinifMateryal) KidefSinifMateryal.ciz(); } catch (e) { }
     renderStudents();
     renderActivityButtons();
 

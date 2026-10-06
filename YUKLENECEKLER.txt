@@ -6053,3 +6053,49 @@ bilgiler olmasın."
              (?v=20261006a), index.html
    Yedek: _kaynak/yedekler/20261006-siniflarim/
    Betik: _kaynak/uretici/siniflarimBagla.py
+
+06.10.2026 — SINIF PANELİNDE "MATERYALLER" SEKMESİ
+   Öğretmen: "eğer imam hatipten bi sınıfı varsa, 5-10 arası sınıf
+   tanımlayınca otomatik olarak imam hatip seviyelerindeki belgeler
+   etkinlik kartları da kendi sınıfları için bi kopya oluşsun, yani
+   pratiklik olsun."
+   YAPILAN: sınıf panelinde "Materyaller" sekmesi. İçinde açık sınıfın
+   SEVİYESİNE ait İmam Hatip belgeleri (üstte, yatay şerit) ve etkinlik
+   kartları (altta). Seviye, seviyenin adındaki rakamdan okunuyor
+   ("7. Sınıflar" → 7), yani 7-B açılınca 7. sınıf materyalleri
+   oradadır; öğretmenin ayrıca bir şey yapması gerekmiyor.
+   NİYE GERÇEK KOPYA DEĞİL: liste kopyalanmıyor, AYNI kaynaktan
+   çiziliyor (index.html → ihdocKur / mhKur; ikisini window.ihIcKur
+   çağırıyor). Böylece siteye yeni bir 7. sınıf belgesi eklenince bütün
+   7. sınıflarda kendiliğinden beliriyor. Gerçek kopyada eski kopyalar
+   yerinde kalır, zamanla her sınıfta farklı bir liste olur, aranan
+   pratiklik tersine dönerdi.
+   DOSYALAR:
+     · sistem/sinifmateryal.js (YENİ) — sekmenin içini çizer. Ağır
+       olduğu için TEMBEL: sekmeye basılmadan kurulmaz, sınıf
+       değişmedikçe yeniden çizilmez (İmam Hatip'in kendi tembel
+       kurulumuyla aynı mantık).
+     · sistem/materyalstil.css (YENİ, ÜRETİLMİŞ) — İmam Hatip'in
+       "#imam-hatip ..." kurallarının materyal kabı için üretilmiş
+       kopyası (123 kural). ELLE DEĞİŞTİRİLMEZ;
+       _kaynak/uretici/materyalStilUret.py ile tazelenir.
+       NİYE: içerik aynı kaynaktan geliyor ama biçimlerin çoğu
+       #imam-hatip altına yazılmış. Onlarsız belge ızgarası yatay şerit
+       olmuyor, sarmalanıyor ve kart rozetleri kırpılıyordu.
+     · index.html — sekme düğmesi, boş #tab13, iki bağlantı
+     · hesap/listelerim.js — switchTab case 13 + panel açılınca çizim +
+       window.llAktifSinif() (curLId/curCId'yi okumaya açan pencere) +
+       sınıf değişince tazeleme
+   SEVİYESİ 5-10 DIŞINDA OLAN SINIF (Hazırlık, 11, kurs grubu): sekme
+   yine açılıyor, içinde kısa bir açıklama duruyor; boş ekran yok.
+   DENENDİ:
+     sekme ve panel var · llAktifSinif doğru sınıfı veriyor ·
+     seviyeNo("7. Sınıflar")=7 · sekme açılınca başlık "7. sınıf
+     belgeleri ve etkinlikleri", belge kabı data-sinif=7 ve dolu,
+     26 etkinlik kartı · 9. sınıf sınıfına geçince başlık ve kap 9
+     oluyor · "Hazırlık" seviyesinde açıklama çıkıyor, kart kabı
+     kurulmuyor · üretilen biçimle belge şeridi yatay ve oklu, rozetler
+     kırpılmıyor (panel 1134px → 854px). Ekran görüntüsüyle bakıldı.
+     Sayfa hatası yok.
+   Yedek: _kaynak/yedekler/20261006-materyal-sekme/
+   Betik: _kaynak/uretici/materyalSekme.py, materyalStilUret.py

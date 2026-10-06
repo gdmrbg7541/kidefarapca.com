@@ -297,6 +297,10 @@
     }
     </style>
     <link rel="stylesheet" href="hesap/listelerim.css?v=20261005j">
+    <!-- MATERYAL SEKMESİ BİÇİMİ (06.10.2026): İmam Hatip kurallarının
+         materyal kabı için üretilmiş kopyası. ÜRETİLMİŞ DOSYA —
+         _kaynak/uretici/materyalStilUret.py ile tazelenir. -->
+    <link rel="stylesheet" href="sistem/materyalstil.css?v=20261006">
     <style>
       /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
       html { overflow-y: scroll; }
@@ -6884,8 +6888,19 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          açılır. Zaten her haftanın çıktısı defter kartının içinde. -->
     <!-- "Veli & Durum" sekmesi buradan KALDIRILDI: artik ogretmen profilinde,
          "Kisisel Bilgilerim"in hemen altindaki akordiyonda yasiyor. -->
+    <!-- MATERYALLER (06.10.2026) — öğretmen: "5-10 arası sınıf
+         tanımlayınca otomatik olarak imam hatip seviyelerindeki
+         belgeler etkinlik kartları da kendi sınıfları için bi kopya
+         oluşsun". Panelin içini sistem/sinifmateryal.js çizer: açık
+         sınıfın SEVİYESİNE ait belgeler ve kartlar, İmam Hatip ile
+         AYNI kaynaktan (window.ihIcKur). -->
+    <button class="tab" title="Materyaller — bu seviyenin belgeleri ve etkinlikleri" aria-label="Materyaller" onclick="switchTab(13)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5.6h6.2l1.6 2h8.2a1.4 1.4 0 0 1 1.4 1.4v9.4a1.4 1.4 0 0 1-1.4 1.4H4a1.4 1.4 0 0 1-1.4-1.4V7a1.4 1.4 0 0 1 1.4-1.4z" fill="#F5B041" stroke="#D68910" stroke-width="1.1" stroke-linejoin="round"/><path d="M7.6 12.4h8.8M7.6 15.4h6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg><span>Materyaller</span></button>
     <button class="tab" title="Sınıf Araçları" aria-label="Sınıf Araçları" onclick="switchTab(4)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.2V5a2.1 2.1 0 0 1 2.1-2.1h1.8A2.1 2.1 0 0 1 15 5v1.2" fill="none" stroke="#8d6e63" stroke-width="1.9" stroke-linecap="round"/><rect x="2.6" y="6.2" width="18.8" height="13.8" rx="2.4" fill="#e67e22"/><path d="M2.6 12.2h7.6v1.5a1.1 1.1 0 0 0 1.1 1.1h1.4a1.1 1.1 0 0 0 1.1-1.1v-1.5h7.6" fill="none" stroke="#b3541e" stroke-width="1.6"/><rect x="10.6" y="11.1" width="2.8" height="3.3" rx=".8" fill="#f6ddc5" stroke="#b3541e" stroke-width="1.1"/><path d="M5.4 9.2h3M15.6 9.2h3" stroke="#f6ddc5" stroke-width="1.5" stroke-linecap="round"/></svg><span>Sınıf Araçları</span></button>
 </div>
+
+    <!-- MATERYALLER PANELİ (06.10.2026): içini
+         sistem/sinifmateryal.js çizer, sekmeye basılınca. -->
+    <div id="tab13" class="tab-panel"></div>
 
     <div id="tab0" class="tab-panel active">
         <div id="llNotModlar" class="ll-mod-serit">
@@ -7574,6 +7589,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          güncellemelerinin üstünde bi kategori olarak hızlıca
          ulaşabilsin." Bölümü kendisi, Güncellemeler'in üstüne koyar. -->
     <script src="sistem/siniflarim.js?v=1"></script>
+    <!-- SINIF MATERYALLERİ SEKMESİ (06.10.2026): açık sınıfın seviyesine
+         ait İmam Hatip belgeleri ve etkinlik kartları, sınıfın kendi
+         panelinde. Kopya değil, aynı kaynaktan çizim. -->
+    <script src="sistem/sinifmateryal.js?v=1"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>
@@ -7593,7 +7612,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/siniftayeni.js?v=20261004d"></script>
     <script src="sistem/galeriveri.js?v=20261006"></script>
     <script src="sistem/galeri.js?v=20261004b"></script>
-    <script src="hesap/listelerim.js?v=20261006a"></script>
+    <script src="hesap/listelerim.js?v=20261006b"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=20260912a"></script>
