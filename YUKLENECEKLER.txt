@@ -6099,3 +6099,20 @@ bilgiler olmasın."
      Sayfa hatası yok.
    Yedek: _kaynak/yedekler/20261006-materyal-sekme/
    Betik: _kaynak/uretici/materyalSekme.py, materyalStilUret.py
+
+06.10.2026 — SINIFLARIM KATEGORİSİ: TEKRAR TEKRAR ÇİZİLME GİDERİLDİ
+   Öğretmen: "index açılınca sınıflarım yazısı 4 kere çiziliyor sanırım."
+   SEBEBİ: rol Firestore'dan asenkron geldiği için modül açılışta yarım
+   saniyede bir ciz() çağırıyor ve görünür olunca 4 tur teyit ediyor
+   (sistem/okultusu.js ile aynı yöntem). ciz() her çağrıldığında
+   innerHTML'i baştan yazdığı için bölüm göz önünde 4 kez yeniden
+   çiziliyordu — öğretmenin gördüğü yanıp sönme buydu.
+   YAPILAN: üretilen HTML bir öncekiyle aynıysa DOM'a hiç dokunulmuyor
+   (bolum.__sonIc karşılaştırması). Yoklama sürüyor ama ekranda tek
+   çizim var; veri değişince (kurum/sınıf eklenince) yine çiziliyor.
+   DENENDİ: Element.prototype.innerHTML yazımları sayıldı —
+     açılıştan 7,5 sn sonra #siniflarim'a yazım sayısı 1 (önceden 4+),
+     bölüm 1, "Sınıflarım" başlığı 1;
+     veri değiştirilip ciz() çağrılınca 1 yazım, arka arkaya iki çağrıda
+     0 yazım. Sayfa hatası yok.
+   Dosya: sistem/siniflarim.js

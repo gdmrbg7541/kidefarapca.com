@@ -245,7 +245,17 @@
             '+ Kurum Ekle</button>';
         ic += '</div>';
 
-        bolum.innerHTML = ic;
+        /* AYNI İÇERİĞİ YENİDEN BASMA (06.10.2026) — öğretmen: "index
+           açılınca sınıflarım yazısı 4 kere çiziliyor sanırım".
+           Rol asenkron geldiği için aşağıdaki yoklama ilk saniyelerde
+           ciz()'i birkaç kez çağırıyordu; her çağrı innerHTML'i baştan
+           yazdığı için bölüm göz önünde 4 kez yeniden çiziliyordu.
+           Artık üretilen HTML öncekiyle aynıysa DOM'a dokunulmuyor:
+           yoklama sürüyor ama ekranda tek çizim görünüyor. */
+        if (bolum.__sonIc !== ic) {
+            bolum.innerHTML = ic;
+            bolum.__sonIc = ic;
+        }
         bolum.classList.add('gor');
     }
 
