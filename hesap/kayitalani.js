@@ -21,6 +21,37 @@
     /* Telefon: 5 ile başlayan 10 hane. Kayıtta "+90" ön eki ekleniyor. */
     K.TELEFON = /^5[0-9]{9}$/;
 
+    /* ----------------------------------------------- AD-SOYAD BAŞ HARFİ
+       Öğretmen (06.10.2026): "isim veya soyisimlerinin baş harflerini
+       bazen küçük yazıyorlar, onları otomatik yapalım."
+
+       TÜRKÇE TUZAĞI: JavaScript'in toUpperCase'i "i" harfini "I" yapar;
+       doğrusu "İ". Aynı şekilde "I" küçülünce "ı" olmalı. Bu iki harf
+       elle ele alınıyor, gerisi tr-TR yerel kurallarıyla.
+
+       Sözcüğün İLK harfi büyük, GERİSİ küçük: böylece caps lock'la
+       yazılmış "MEHMET" de düzeliyor. Sözcük sınırı boşluk ve kısa
+       çizgi; kesme işareti sınır sayılmaz ("Ali'nin" bozulmasın). */
+    function trBuyuk(h) {
+        if (h === 'i') return 'İ';
+        if (h === 'ı') return 'I';
+        try { return h.toLocaleUpperCase('tr-TR'); } catch (e) { return h.toUpperCase(); }
+    }
+    function trKucuk(m) {
+        m = String(m).split('I').join('ı').split('İ').join('i');
+        try { return m.toLocaleLowerCase('tr-TR'); } catch (e) { return m.toLowerCase(); }
+    }
+    K.adDuzelt = function (ad) {
+        var s = String(ad == null ? '' : ad).replace(/\s+/g, ' ').trim();
+        if (!s) return '';
+        return s.split(' ').map(function (sozcuk) {
+            return sozcuk.split('-').map(function (k) {
+                if (!k) return k;
+                return trBuyuk(k.charAt(0)) + trKucuk(k.slice(1));
+            }).join('-');
+        }).join(' ');
+    };
+
     /* Formun doğrulaması. Dönen değer:
          { tamam:true, veri:{…} }            — her şey yolunda
          { tamam:false, hata:'…' }           — ilk hatalı alanın mesajı
@@ -59,7 +90,9 @@
         var d = {
             email: v.email,
             role: rol,
-            name: v.ad || 'Belirtilmedi',
+            /* Baş harfler burada düzeltiliyor; iki kayıt ekranı da bu
+               belgeyi yazdığı için tek yer yetiyor (06.10.2026). */
+            name: K.adDuzelt(v.ad) || 'Belirtilmedi',
             meslek: v.meslek || '',
             cinsiyet: v.cinsiyet || '',
             phone: v.tel ? ('+90' + v.tel) : '',

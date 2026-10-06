@@ -5968,3 +5968,43 @@ bilgiler olmasın."
    Dosyalar: hesap/teacher-admin.js, index.html (?v=20261006a)
    Yedek: _kaynak/yedekler/20261006-takvim-ogretmen/
    Betik: _kaynak/uretici/takvimOgretmenListesi.py
+
+06.10.2026 — AD-SOYAD BAŞ HARFLERİ KENDİLİĞİNDEN BÜYÜK
+   Öğretmen: "öğretmenler kayıt yaparken isim veya soyisimlerinin baş
+   harflerini bazen küçük yazıyorlar, onları otomatik yapalım, kayıtlı
+   olanları da düzeltelim."
+   1) YENİ KAYITLAR — KidefKayit.adDuzelt (hesap/kayitalani.js).
+      Belgeyi yazan tek yer orası olduğu için iki kayıt ekranı da
+      (index ve bilgi yarışması sayfası) aynı düzeltmeyi alıyor.
+      hesap/auth.js'teki yedek biçimde de uygulanıyor.
+      TÜRKÇE TUZAĞI: JavaScript'in toUpperCase'i "i" harfini "I" yapar,
+      doğrusu "İ"; "I" küçülünce de "ı" olmalı. Bu iki harf elle ele
+      alınıyor, gerisi tr-TR yerel kurallarıyla. Sözcüğün ilk harfi
+      büyük, GERİSİ küçük — caps lock'la yazılmış "MEHMET" de düzeliyor.
+      Sözcük sınırı boşluk ve kısa çizgi; kesme işareti sınır değil
+      ("Ali'nin" bozulmasın).
+   2) KAYITLI OLANLAR — yönetici panelinde "👨‍🏫 Öğretmenler" bölümüne
+      "Adları düzelt" tuşu. Tüm kullanicilar koleksiyonunu tarar
+      (öğretmen + öğrenci), düzelecekleri örnekleriyle sorar, onay
+      verilirse toplu yazar (500'lük Firestore sınırı için 450'lik
+      parçalara bölünüyor). 'Belirtilmedi' ve zaten doğru yazılmış
+      kayıtlara dokunulmaz. Bitince öğretmen listesi ve takvim listesi
+      tazelenir.
+   DENENDİ:
+     · Düzeltici birim sınaması (12 örnek, hepsi doğru):
+       "mehmet yılmaz"→"Mehmet Yılmaz" · "AYŞE NUR KAYA"→"Ayşe Nur Kaya"
+       "ılgaz demir"→"Ilgaz Demir" · "irem şahin"→"İrem Şahin"
+       "ali-veli öz"→"Ali-Veli Öz" · "  ahmet   can  "→"Ahmet Can"
+       "İCLAL ÇELİK"→"İclal Çelik" · "a. yılmaz"→"A. Yılmaz"
+       "ışıl ışık"→"Işıl Işık" · doğru yazılmış ad değişmiyor · boş→boş
+     · Panel tuşu sahte Firestore ile: 5 kayıttan 3'ü düzeltildi
+       ("Doğru Yazılmış" ve "Belirtilmedi" atlandı), ikinci çalıştırmada
+       "Düzeltilecek ad yok" dedi ve hiçbir şey yazmadı. Sayfa hatası yok.
+   NOT: Firestore kuralları yöneticinin başka kullanıcının 'name' alanını
+   yazmasına izin vermiyorsa tuş "Yazılamadı: permission-denied" der;
+   o durumda kuralın güncellenmesi gerekir.
+   Dosyalar: hesap/kayitalani.js (?v=20261006), hesap/auth.js,
+             hesap/teacher-admin.js (?v=20261006b), index.html,
+             bilgiyarismasikacom.html
+   Yedek: _kaynak/yedekler/20261006-ad-bas-harf/
+   Betik: _kaynak/uretici/adBasHarf.py

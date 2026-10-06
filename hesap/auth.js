@@ -400,7 +400,11 @@ function authIslemi() {
                 _kayit = {
                     email: email,
                     role: regRole,
-                    name: sName || "Belirtilmedi",
+                    /* Baş harf düzeltmesi (06.10.2026): asıl yer
+                       hesap/kayitalani.js; o dosya yüklenmediyse burada da
+                       uygulanır, iki yol aynı adı yazsın. */
+                    name: ((window.KidefKayit && KidefKayit.adDuzelt)
+                            ? KidefKayit.adDuzelt(sName) : sName) || "Belirtilmedi",
                     meslek: sProf || "",
                     cinsiyet: sGender || "",
                     phone: phone ? ("+90" + phone) : "",

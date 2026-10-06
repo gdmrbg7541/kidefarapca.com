@@ -217,6 +217,17 @@ function renderAdminPanel() {
 
             <details class="admin-details" name="admin-accordion">
                 <summary class="admin-summary">👨‍🏫 Öğretmenler</summary>
+                <!-- ADLARI DÜZELT (06.10.2026) — öğretmen: "isim veya
+                     soyisimlerinin baş harflerini bazen küçük yazıyorlar...
+                     kayıtlı olanları da düzeltelim". Tüm kullanıcı
+                     kayıtlarını tarar, sorar, sonra toplu yazar. -->
+                <div style="margin-top:12px;">
+                    <button class="btn" onclick="adminAdlariDuzelt()"
+                            style="background:#EAF4FF; color:#1f5f99; border:1px solid #CFE3F7; border-radius:9px; padding:8px 16px; font-size:.9rem; font-weight:700;">
+                        Adları düzelt</button>
+                    <span style="display:block; margin-top:6px; font-size:.82rem; color:#8A93A0;">
+                        Küçük harfle yazılmış ad ve soyadların baş harflerini büyütür (öğretmen ve öğrenci kayıtlarının hepsinde).</span>
+                </div>
                 <div id="admin-teacher-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;"></div>
             </details>
 
@@ -560,6 +571,74 @@ function getTeacherCalendarEditorHtml(teacherId, isAdmin) {
    takvimler/{teacherId} altında tutuluyor, böylece gerçek hesapla
    eşleşiyor. Çevrimdışıyken eski DATA_OGRETMENLER dizisi yedek.
    ====================================================================== */
+/* ======================================================================
+   ADLARI DÜZELT  (06.10.2026)
+   Öğretmen: "isim veya soyisimlerinin baş harflerini bazen küçük
+   yazıyorlar, onları otomatik yapalım, kayıtlı olanları da düzeltelim."
+   Yeni kayıtlarda düzeltme hesap/kayitalani.js'te; burası ESKİ kayıtlar
+   için. Düzeltici aynı işlev (KidefKayit.adDuzelt), yani iki yer
+   birbirinden ayrılmaz.
+   Yazmadan önce ne değişeceğini örnekleriyle gösterip soruyor; toplu
+   işlem 500'lük parçalara bölünüyor (Firestore sınırı).
+   ====================================================================== */
+function adminAdlariDuzelt() {
+    if (typeof firebase === 'undefined' || typeof isFirebaseReady === 'undefined' || !isFirebaseReady) {
+        _abUyar('Bu işlem çevrimdışıyken yapılamaz.');
+        return;
+    }
+    if (!window.KidefKayit || typeof KidefKayit.adDuzelt !== 'function') {
+        _abUyar('Ad düzeltici yüklenmemiş (hesap/kayitalani.js).');
+        return;
+    }
+    var db = firebase.firestore();
+    _abUyar('Kayıtlar taranıyor…');
+    db.collection('kullanicilar').get().then(function (snap) {
+        var degisecek = [];
+        snap.forEach(function (d) {
+            var v = d.data() || {};
+            var eski = v.name;
+            if (!eski || eski === 'Belirtilmedi') return;
+            var yeni = KidefKayit.adDuzelt(eski);
+            if (yeni && yeni !== eski) degisecek.push({ id: d.id, eski: eski, yeni: yeni });
+        });
+        if (!degisecek.length) {
+            _abUyar('Düzeltilecek ad yok — hepsi zaten doğru yazılmış.');
+            return;
+        }
+        var ornek = degisecek.slice(0, 10).map(function (x) {
+            return '• ' + x.eski + '  →  ' + x.yeni;
+        }).join('\n');
+        var soru = degisecek.length + ' kaydın adı düzeltilecek:\n\n' + ornek +
+            (degisecek.length > 10 ? '\n… ve ' + (degisecek.length - 10) + ' tane daha' : '') +
+            '\n\nDevam edilsin mi?';
+        _abSor(soru, function () {
+            /* Firestore toplu işlemi en çok 500 yazma alır. */
+            var parcalar = [], i;
+            for (i = 0; i < degisecek.length; i += 450) parcalar.push(degisecek.slice(i, i + 450));
+            var sira = Promise.resolve();
+            parcalar.forEach(function (p) {
+                sira = sira.then(function () {
+                    var toplu = db.batch();
+                    p.forEach(function (x) {
+                        toplu.update(db.collection('kullanicilar').doc(x.id), { name: x.yeni });
+                    });
+                    return toplu.commit();
+                });
+            });
+            sira.then(function () {
+                _abUyar(degisecek.length + ' kaydın adı düzeltildi.');
+                try { renderAdminTeacherList(); } catch (e) { }
+                try { adminTakvimOgretmenDoldur(); } catch (e) { }
+            }).catch(function (e) {
+                _abUyar('Yazılamadı: ' + (e && (e.code || e.message)));
+            });
+        });
+    }).catch(function (e) {
+        _abUyar('Kayıtlar okunamadı: ' + (e && (e.code || e.message)));
+    });
+}
+window.adminAdlariDuzelt = adminAdlariDuzelt;
+
 function adminTakvimOgretmenDoldur() {
     var sec = document.getElementById('admin-teacher-edit-select');
     if (!sec) return;
