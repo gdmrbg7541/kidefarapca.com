@@ -425,9 +425,26 @@
     function uygula(h) {
         try {
             changeView('listelerim-section');
-            if (ilkKurulum && typeof initListelerim === 'function') {
-                initListelerim();
-                ilkKurulum = false;
+            /* initListelerim TEK SEFER DEĞİL, GEREKTİĞİNDE (06.10.2026).
+               O işlev veriyi ancak Firebase oturumu O AN hazırsa çekiyor;
+               sınıf bağlantısı ise yerel kopyayı görür görmez başlıyor, o
+               sırada currentUser henüz null oluyor. Tek çağrıda kalırsak
+               verileriGetir hiç çalışmıyor, "logged-in" eklenmiyor ve
+               panel CSS yüzünden hiç açılmıyor. Oturum sonradan gelince
+               bir kez daha çağırıyoruz; kendi _llLoadedUid koruması veriyi
+               iki kez çekmesini engelliyor. */
+            try {
+                var _u = (window.firebase && firebase.auth && firebase.auth().currentUser) || null;
+                var _gerek = ilkKurulum || (_u && window._llLoadedUid !== _u.uid);
+                if (_gerek && typeof initListelerim === 'function') {
+                    ilkKurulum = false;
+                    initListelerim();
+                }
+            } catch (e) {
+                if (ilkKurulum && typeof initListelerim === 'function') {
+                    ilkKurulum = false;
+                    initListelerim();
+                }
             }
             try { selectClass(h.lId, h.cId); } catch (e) { }
             /* Yer tutucu paneli kapatmış olabilir; listelerim.js'in kendi

@@ -6537,3 +6537,54 @@ Denendi: bölüm açık, panel içeride (gövdede değil), kapatma tuşu yok,
 1 bina · 3 sınıf kapısı · kurum ekleme yerinde; kapıya basınca sınıf yeni
 sekmede açılıyor (sinif=L1&sube=C1), panel yerinde kalıyor, anasayfa
 görünür kalıyor. Hata yok.
+
+── 06.10.2026 (ek 16) · BOŞ SAYFA: ASIL SEBEP BULUNDU ───────────────────
+Öğretmen: "liste açılıyor diyor ama bi türlü girmiyor, en sonda header
+dışında boş bi sayfa açılıyor."
+
+SEBEP (koddan okundu, kesin):
+    function initListelerim(){
+        var u = firebase.auth().currentUser;
+        if (u && window._llLoadedUid !== u.uid) { ...; verileriGetir(u.uid); }
+    }
+Veriyi çekmesi için Firebase oturumunun O AN hazır olması gerekiyor.
+Sınıf bağlantısı ise yerel kopyayı görür görmez işe koyuluyor — o sırada
+currentUser henüz null. initListelerim'i bir kez çağırıp "ilkKurulum"
+bayrağını kapattığımız için o tek şans boşa gidiyordu:
+  verileriGetir hiç çalışmıyor
+  → #ll-root'a "logged-in" hiç eklenmiyor
+  → CSS'teki "#ll-root #content{ display:none !important }" hiç açılmıyor
+  → panel hiç görünmüyor.
+Koruma 20 sn bekleyip pes ediyor, başlık geri geliyor, ekranda yalnız
+başlık kalıyor. Tarif edilen boş sayfa tam olarak bu.
+
+ÇÖZÜM (sistem/sinifbag.js): initListelerim artık tek sefer değil,
+GEREKTİĞİNDE çağrılıyor — oturum sonradan gelince (currentUser oluşup
+_llLoadedUid ondan farklıyken) bir kez daha. İşlevin kendi _llLoadedUid
+koruması veriyi iki kez çekmesini engelliyor.
+
+Denendi (oturumun GEÇ gelmesi birebir canlandırıldı): oturum gelmeden
+çağrı yok; oturum gelir gelmez initListelerim bir kez daha çalışıyor
+(oturum:true) ve _llLoadedUid doluyor, yani verileriGetir gerçekten
+tetikleniyor. Hata yok.
+
+DERS: bu oturumda üç kez aynı tuzağa düştüm — deney düzeneğinde oturum
+yok, bu yüzden "oturumla gelen" her şey (logged-in sınıfı, verileriGetir,
+showLLPlaceholder) orada hiç çalışmıyor ve hata görünmüyor. Bundan sonra
+sınıf/liste akışına dokunan her değişiklikte oturumun GEÇ gelmesi düzenekte
+ayrıca canlandırılmalı.
+
+── 06.10.2026 (ek 16-ek) · SINIF DEĞİŞTİRME: ZİNCİR BAŞTAN SONA DENENDİ ─
+Öğretmen: "bi sınıf listesi açıldıktan sonra diğer sınıflara geçemiyorum
+okul svg sinden."
+
+Bu, ek 16'daki boş sayfa hatasının AYNI KÖKÜ: panel hiç açılmadığı için o
+sekmedeki hiçbir şey (rozet, okul simgesi) iş görmüyordu.
+
+Düzeltmeden sonra zincir, oturumun GEÇ gelmesi birebir canlandırılarak
+baştan sona denendi:
+  oturum gelince → perde kalkıyor, panel açık (tab0), rozet "5/A"
+  okul simgesi   → yeni sekme AÇILMIYOR, pencere aynı sekmede açılıyor
+  6/A kapısı     → yeni sekme AÇILMIYOR, aynı sekme 6/A oluyor
+                   (rozet "6/A", adres ?sinif=L2&sube=C3)
+Hata yok. Yeni bir kod değişikliği gerekmedi.
