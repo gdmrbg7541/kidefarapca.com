@@ -4623,17 +4623,18 @@ function llOkulPopupAc() {
             var aktif = (typeof curLId !== 'undefined' && lId === curLId && typeof curCId !== 'undefined' && cId === curCId);
             /* SINIFA GİRME EFEKTİ (05.10.2026): kapı artık bir YUVA içinde —
                yuva, kapı açılırken arkasında yanan ışığı taşıyor. */
-            /* DÜZENLEME KİPİ (06.10.2026): kalem açıkken kapı sınıfı
-               açmaz, sınıf menüsünü açar (aç / isim / arşivle / sil). */
-            var _duzen = (window._llDuzenLid === lId);
+            /* ÜÇ NOKTA (06.10.2026): kapı her zaman sınıfı açar; adın
+               yanındaki ⋯ düzenleme/silme seçeneklerini açar. */
             kapilar += '<span class="okul-kapi-yuva">' +
-                '<button type="button" class="okul-kapi' + (aktif ? ' aktif' : '') +
-                (_duzen ? ' okul-kapi-duzen' : '') + '"' +
-                ' title="' + (_duzen ? 'Bu sınıfı düzenle veya sil' : '') + '"' +
-                ' onclick="' + (_duzen
-                    ? 'llKatSinifMenu(\'' + lId + '\',\'' + cId + '\')'
-                    : 'llOkulKapiAc(this,\'' + lId + '\',\'' + cId + '\')') + '">' +
-                behKacis(lvl.classes[cId].name) + '</button></span>';
+                '<button type="button" class="okul-kapi' + (aktif ? ' aktif' : '') + '"' +
+                ' onclick="llOkulKapiAc(this,\'' + lId + '\',\'' + cId + '\')">' +
+                behKacis(lvl.classes[cId].name) + '</button>' +
+                '<button type="button" class="okul-nokta" title="Bu sınıf için seçenekler"' +
+                ' aria-label="Seçenekler"' +
+                ' onclick="event.stopPropagation(); llKatSinifMenu(\'' + lId + '\',\'' + cId + '\')">' +
+                '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2"/>' +
+            '<circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>' +
+                '</button></span>';
         });
         /* Boş seviyede "sınıf yok" yazısı: aşağıdaki "+" her zaman
            eklendiği için bu satır "+"tan ÖNCE olmak zorunda. */
@@ -4665,29 +4666,14 @@ function llOkulPopupAc() {
                 '<button type="button" class="okul-sube-bitti" title="Şube eklemeyi bitir"' +
                 ' onclick="llHizliBitir()">Bitti</button></span>';
         }
-        /* DÜZENLEME KİPİ AÇIKKEN SEVİYENİN KENDİ TUŞLARI (06.10.2026):
-           "silme ve düzeltme işlevleri daha görünür ve basit olsun".
-           Saklı değil, yazılı: kapıların yanında açıkça duruyor. */
-        if (window._llDuzenLid === lId) {
-            kapilar += '<span class="okul-kat-islem">' +
-                '<button type="button" class="okul-kislem" title="Seviyenin adını değiştir"' +
-                ' onclick="llKatAdDegistir(\'' + lId + '\')">' + llIcon('kalem') +
-                '<span>Seviye adı</span></button>' +
-                '<button type="button" class="okul-kislem sil" title="Bu seviyeyi sil"' +
-                ' onclick="llKatSil(\'' + lId + '\')">' + llIcon('cop') +
-                '<span>Seviyeyi sil</span></button></span>';
-        }
         /* SEVIYE AYARLARI: bu pencere eskiden yalniz sinif secmeye yariyordu;
            ayarlara ulasmak icin profildeki okul haritasina gitmek gerekiyordu.
            Artik her seviyenin isminin yaninda dislisi var — hem sinif adi
            rozetinden hem sekme cubugundaki OKUL tusundan ayni yere ulasilir.
            Pencere once kapanir ki ayar penceresi ustte kalsin. */
-        var _kip = (window._llDuzenLid === lId);
+        /* "Düzenle kipi" kaldırıldı (06.10.2026): yönetim artık adların
+           yanındaki ⋯ menüsünde. Satırda yalnız Ayarlar kalıyor. */
         var ayarTus = '<span class="okul-kat-tus">' +
-            '<button type="button" class="okul-mtus okul-duzen-tus' + (_kip ? ' acik' : '') + '"' +
-            ' title="' + (_kip ? 'Düzenlemeyi bitir' : 'Seviyeyi ve sınıflarını düzenle') + '"' +
-            ' onclick="llKatDuzen(\'' + lId + '\')">' + llIcon(_kip ? 'onay' : 'kalem') +
-            '<span>' + (_kip ? 'Bitti' : 'Düzenle') + '</span></button>' +
             '<button type="button" class="okul-mtus okul-ayar-tus"' +
             ' title="Seviye ayarları — ders, ağırlık, kura ve davranış başlıkları (seviyedeki tüm sınıflara işler)"' +
             ' onclick="llOkulSeviyeAyar(\'' + lId + '\')">' + llIcon('disli') +
@@ -4702,7 +4688,12 @@ function llOkulPopupAc() {
             '<circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/>' +
             '<circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/>' +
             '<circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>' +
-            llIcon('sinif') + '<span class="okul-kat-yazi">' + behKacis(lvl.name) + '</span></span>' +
+            llIcon('sinif') + '<span class="okul-kat-yazi">' + behKacis(lvl.name) + '</span>' +
+            '<button type="button" class="okul-nokta kat" title="Bu seviye için seçenekler"' +
+            ' aria-label="Seçenekler" onclick="event.stopPropagation(); llKatMenu(\'' + lId + '\')">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2"/>' +
+            '<circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>' +
+            '</button></span>' +
             ayarTus +
             '<span class="okul-kapilar">' + kapilar + '</span></div>';
     };
@@ -5203,6 +5194,46 @@ function llKatSil(lId) {
     }, 600);
 }
 window.llKatSil = llKatSil;
+
+/* SEVİYE MENÜSÜ — sınıf menüsüyle aynı görünüm (.tps-*), yeni bir biçim
+   uydurulmadı. Seviye adının yanındaki ⋯ buna açılıyor. */
+function llKatMenu(lId) {
+    var lvl = (typeof data !== 'undefined' && data && data.levels) ? data.levels[lId] : null;
+    if (!lvl) return;
+    llKatMenuKapat();
+    try { if (typeof tpSinifPopupKapat === 'function') tpSinifPopupKapat(); } catch (e) { }
+    var tus = function (ikon, yazi, alt, tik) {
+        return '<button type="button" class="tps-tus"' +
+            ' onclick="llKatMenuKapat(); ' + tik + '">' +
+            '<span class="tps-ikon">' + ikon + '</span><span class="tps-yazi"><b>' + yazi + '</b>' +
+            '<small>' + alt + '</small></span></button>';
+    };
+    var k = document.createElement('div');
+    k.id = 'tpSinifPopup';           /* aynı biçim kuralları geçerli olsun */
+    k.innerHTML = '<div class="tps-panel">' +
+        '<div class="tps-baslik"><strong>🏫 ' + behKacis(lvl.name) + '</strong>' +
+        '<button type="button" class="tps-kapat" title="Kapat" onclick="llKatMenuKapat()">&times;</button>' +
+        '</div><div class="tps-govde">' +
+        tus('✏️', 'İsmi Değiştir', 'Seviyenin adını güncelle',
+            'llKatAdDegistir(\'' + lId + '\');') +
+        tus('⚙️', 'Seviye Ayarları', 'Ders, ağırlık, kura ve davranış başlıkları',
+            'llOkulSeviyeAyar(\'' + lId + '\');') +
+        tus('🗑', 'Seviyeyi Sil', 'Seviyeyi ve içindeki sınıfları kaldır',
+            'llKatSil(\'' + lId + '\');') +
+        '</div></div>';
+    k.addEventListener('click', function (e) { if (e.target === k) llKatMenuKapat(); });
+    document.body.appendChild(k);
+    window._llKatEsc = function (e) { if (e.key === 'Escape') llKatMenuKapat(); };
+    document.addEventListener('keydown', window._llKatEsc);
+}
+window.llKatMenu = llKatMenu;
+
+function llKatMenuKapat() {
+    var k = document.getElementById('tpSinifPopup');
+    if (k && k.parentNode) k.parentNode.removeChild(k);
+    if (window._llKatEsc) { document.removeEventListener('keydown', window._llKatEsc); window._llKatEsc = null; }
+}
+window.llKatMenuKapat = llKatMenuKapat;
 
 function llKatSinifMenu(lId, cId) {
     try {

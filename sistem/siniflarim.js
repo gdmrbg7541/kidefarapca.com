@@ -142,6 +142,36 @@
             '#' + BOLUM_ID + ' .sn-okul-ici .okul-baslik{ display:none !important; }',
             '#' + BOLUM_ID + ' .sn-okul-ici .okul-icerik{ overflow:visible !important;',
             '  padding:22px 18px 24px; }',
+            /* ÖNİZLEME (misafir): tıklanabilir ama işlevsiz — hepsi
+               tavsiye penceresini açıyor. Soluk ve "yarım" dursun ki
+               gerçek panelle karışmasın. */
+            '#' + BOLUM_ID + ' .sn-onizle{ cursor:pointer; opacity:.9; }',
+            '#' + BOLUM_ID + ' .sn-onizle button{ pointer-events:none; }',
+            '#' + BOLUM_ID + ' .sn-onizle .okul-panel{ position:relative; }',
+            /* giriş tavsiyesi penceresi */
+            '#snGirisTavsiye{ position:fixed; inset:0; z-index:10090;',
+            '  background:rgba(31,36,48,.42); display:flex; align-items:center;',
+            '  justify-content:center; padding:18px; }',
+            '#snGirisTavsiye .sngt-kart{ position:relative; background:#fff;',
+            '  border-radius:18px; padding:30px 26px 24px; max-width:460px; width:100%;',
+            '  text-align:center; box-shadow:0 22px 60px rgba(0,0,0,.3);',
+            '  display:flex; flex-direction:column; align-items:center; gap:4px;',
+            '  animation:sngtGir .22s ease; }',
+            '@keyframes sngtGir{ from{ opacity:0; transform:translateY(10px) scale(.98) } }',
+            '#snGirisTavsiye .sngt-kart svg{ width:64px; height:64px; margin-bottom:6px; }',
+            '#snGirisTavsiye .sngt-bas{ margin:0; font-weight:800; font-size:1.14rem;',
+            '  color:#1F2430; }',
+            '#snGirisTavsiye .sngt-alt{ margin:6px 0 16px; color:#5B6471; font-size:.97rem;',
+            '  line-height:1.55; }',
+            '#snGirisTavsiye .sngt-alt b{ color:#1F2430; }',
+            '#snGirisTavsiye .sngt-tus{ border:0; cursor:pointer; font-family:inherit;',
+            '  font-weight:800; font-size:1rem; color:#fff; background:#16A085;',
+            '  border-radius:12px; padding:11px 26px; }',
+            '#snGirisTavsiye .sngt-tus:hover{ background:#0E7C66; }',
+            '#snGirisTavsiye .sngt-kapat{ position:absolute; top:10px; inset-inline-end:12px;',
+            '  border:0; background:none; cursor:pointer; font-size:26px; line-height:1;',
+            '  color:#8A93A0; padding:2px 6px; }',
+            '#snGirisTavsiye .sngt-kapat:hover{ color:#1F2430; }',
             /* AKORDİYON: kapalıyken panel gizli, ok sola dönük */
             '#' + BOLUM_ID + '.sn-kapali .sn-okul{ display:none; }',
             '#' + BOLUM_ID + ' .sn-okul{ animation:snAc .22s ease; }',
@@ -297,7 +327,10 @@
 
     function ciz() {
         var bolum = document.getElementById(BOLUM_ID);
-        if (!gorunurMu()) { if (bolum) bolum.classList.remove('gor'); return; }
+        /* ÖĞRETMEN OLMAYANA ÖNİZLEME (06.10.2026): bölüm herkese
+           görünüyor; içerik role göre değişiyor. Misafir (hiç oturum
+           yok) da görür — amaç ne yapabileceğini göstermek. */
+        if (!gorunurMu()) { onizlemeCiz(); return; }
 
         /* VERİ HENÜZ YOKKEN DE ÇİZ (06.10.2026) — öğretmen: "hiç sınıf
            kurmayan ama öğretmen olarak giriş yapanlar için kurum seviye
@@ -357,9 +390,172 @@
             bolum.__sonIc = ic;
         }
         bolum.classList.add('gor');
+        gosterildi = true;
         bolum.classList.toggle('sn-kapali', kapaliMi());
         okulIcineKoy(bolum);
     }
+
+    /* ------------------------------------------------- ÖNİZLEME (misafir)
+       Giriş yapmamış ziyaretçi boş bir kurum görüyor; neye basarsa bassın
+       girişin neden gerektiğini anlatan kısa bir tavsiye çıkıyor. Gerçek
+       veriye hiç dokunulmuyor — bu çizim tamamen durağan. */
+    function onizlemeIc() {
+        var rak = '';
+        [5, 6, 7, 8, 9, 10].forEach(function (n) {
+            rak += '<button type="button" class="okul-hizli">' + IH_RAKAM(n) + '</button>';
+        });
+        var pencere = '<svg class="okul-pencere" viewBox="0 0 20 16" aria-hidden="true">' +
+            '<rect x="0.6" y="0.6" width="18.8" height="14.8" rx="2" fill="#CFE7F5"' +
+            ' stroke="#8FB8D4" stroke-width="1.2"/>' +
+            '<path d="M10 1.2v13.6M1.2 8h17.6" stroke="#8FB8D4" stroke-width="1.1"/></svg>';
+        return '<div class="okul-panel"><div class="okul-icerik">' +
+            '<div class="okul-bina">' +
+            '<svg class="okul-cati" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">' +
+            '<path d="M50 0 L98 18 H2 Z" fill="#C0392B"/>' +
+            '<path d="M50 0 L98 18 H88 L50 3.6 L12 18 H2 Z" fill="rgba(255,255,255,.14)"/></svg>' +
+            '<div class="okul-sacak"></div>' +
+            '<div class="okul-tabela">' +
+            '<svg class="okul-kep" viewBox="0 0 24 24" aria-hidden="true">' +
+            '<path d="M2 9.4L12 4.6l10 4.8-10 4.8z" fill="#F1C40F"/>' +
+            '<path d="M6.4 12.4v3.4c0 1.5 2.6 2.8 5.6 2.8s5.6-1.3 5.6-2.8v-3.4L12 15.2z" fill="#F7DC6F"/>' +
+            '</svg><span>Okulun</span></div>' +
+            '<div class="okul-govde">' +
+            '<div class="okul-kat"><span class="okul-kat-ad">' +
+            '<span class="okul-kat-yazi">Henüz seviye yok</span></span>' +
+            '<span class="okul-kapilar"><span class="okul-bos">sınıf yok</span></span></div>' +
+            '<div class="okul-kat okul-kat-ekle">' +
+            '<span class="okul-hizli-bas">Seviye ekle</span>' +
+            '<span class="okul-hizli-sira">' + rak + '</span></div>' +
+            '</div>' +
+            '<div class="okul-giris">' + pencere +
+            '<svg class="okul-kapi-svg" viewBox="0 0 40 32" aria-hidden="true">' +
+            '<path d="M3 32V13a17 13 0 0 1 34 0v19z" fill="#6B4A38"/>' +
+            '<rect x="7.6" y="13.4" width="11" height="18.6" rx="1.6" fill="#8B5E3C"' +
+            ' stroke="#5D4037" stroke-width="1"/>' +
+            '<rect x="21.4" y="13.4" width="11" height="18.6" rx="1.6" fill="#8B5E3C"' +
+            ' stroke="#5D4037" stroke-width="1"/></svg>' + pencere + '</div>' +
+            '<div class="okul-taban"></div></div>' +
+            '<div class="okul-arsa"><button type="button" class="okul-arsa-tus">+ Kurum Ekle</button></div>' +
+            '</div></div>';
+    }
+
+    /* İmam Hatip rakamı — listelerim.js'teki llIhRakam varsa o kullanılır,
+       yoksa burada aynısı çizilir (betik sırası değişirse bozulmasın). */
+    function IH_RAKAM(n) {
+        try { if (typeof window.llIhRakam === 'function') return window.llIhRakam(n); } catch (e) { }
+        return '<span class="ih-num okul-ihn"><svg viewBox="0 0 48 48" aria-hidden="true">' +
+            '<circle cx="24" cy="24" r="21" fill="none" stroke="#16A085" stroke-width="3"' +
+            ' stroke-dasharray="7 7" stroke-linecap="round"/>' +
+            '<circle cx="24" cy="24" r="15" fill="#16A085"/>' +
+            '<text x="24" y="30.5" text-anchor="middle" font-size="19" font-weight="800"' +
+            ' fill="#fff">' + n + '</text></svg></span>';
+    }
+
+    function onizlemeCiz() {
+        var bolum = document.getElementById(BOLUM_ID);
+        if (!bolum) {
+            stilKur();
+            bolum = document.createElement('section');
+            bolum.id = BOLUM_ID;
+            bolum.className = 'content-section';
+            var once = document.getElementById('imam-hatip') ||
+                       document.getElementById('guncellemeler');
+            if (once && once.parentNode) once.parentNode.insertBefore(bolum, once);
+            else {
+                var hub = document.getElementById('home-hub-section');
+                if (!hub) return;
+                hub.insertBefore(bolum, hub.firstChild);
+            }
+        }
+        /* gerçek panel içerideyse (rol geri geldi) karışma */
+        if (bolum.querySelector('#llOkulPopup') && gorunurMu()) return;
+        var ic = '<h2><button type="button" class="sn-bas-tus"' +
+            ' onclick="KidefSiniflarim.katla()" aria-expanded="' +
+            (kapaliMi() ? 'false' : 'true') + '">' +
+            '<svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
+            OKUL_SVG.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') +
+            '</svg><span>Sınıflarım</span>' +
+            '<svg class="sn-bas-ok" viewBox="0 0 24 24" aria-hidden="true">' +
+            '<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4"' +
+            ' stroke-linecap="round" stroke-linejoin="round"/></svg></button></h2>' +
+            '<div class="sn-okul">' +
+            '<div id="llOkulPopup" class="sn-okul-ici sn-onizle"' +
+            ' onclick="KidefSiniflarim.girisTavsiye()">' + onizlemeIc() + '</div>' +
+            '</div>';
+        if (bolum.__sonIc !== ic) { bolum.innerHTML = ic; bolum.__sonIc = ic; }
+        bolum.classList.add('gor');
+        bolum.classList.toggle('sn-kapali', kapaliMi());
+        gosterildi = false;            /* bu önizleme; çıkış nabzı silmesin */
+    }
+
+    /* Tavsiye — uyarı değil. Kapatması kolay, tek paragraf. */
+    function girisTavsiye() {
+        if (document.getElementById('snGirisTavsiye')) return;
+        var k = document.createElement('div');
+        k.id = 'snGirisTavsiye';
+        k.innerHTML =
+            '<div class="sngt-kart" role="dialog" aria-modal="true">' +
+            '<button type="button" class="sngt-kapat" aria-label="Kapat">&times;</button>' +
+            BUYUK_OKUL_SVG +
+            '<p class="sngt-bas">Önce giriş yapmanı öneririz</p>' +
+            '<p class="sngt-alt">Burada kuracağın kurum, seviye ve sınıflar ' +
+            '<b>sana ait</b> olsun diye giriş gerekiyor. Giriş yaptığında ' +
+            'listelerin, sınıf defterin ve notların hesabına kaydedilir; ' +
+            'telefondan da bilgisayardan da aynı sınıfları açarsın. Girişsiz ' +
+            'kurulanlar yalnız bu tarayıcıda kalır ve kaybolabilir.</p>' +
+            '<button type="button" class="sngt-tus">Anladım</button>' +
+            '</div>';
+        k.addEventListener('click', function (e) {
+            if (e.target === k || e.target.classList.contains('sngt-kapat') ||
+                e.target.classList.contains('sngt-tus')) k.remove();
+        });
+        document.body.appendChild(k);
+    }
+
+    /* ---------------------------------------------------------- ÇIKIŞ
+       Öğretmen: "öğretmen çıkış yapınca anında sınıflarım kategorisi
+       kaybolmalı." Eskiden bölüm yalnız ciz() çalışınca gizleniyordu;
+       çıkıştan sonra ciz()'i tetikleyen bir şey olmadığı için kategori
+       ekranda kalıyor, içinde sınıf adları duruyordu. */
+    var gosterildi = false;
+
+    function gizle() {
+        var b = document.getElementById(BOLUM_ID);
+        try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = false; } catch (e) { }
+        if (!b) { gosterildi = false; return; }
+        b.classList.remove('gor');
+        /* içi de boşalsın: okul paneli DOM'da kalmasın, sınıf adları
+           çıkıştan sonra ekranda durmasın */
+        try {
+            var p = document.getElementById('llOkulPopup');
+            if (p && b.contains(p) && p.parentNode) p.parentNode.removeChild(p);
+        } catch (e) { }
+        b.innerHTML = '';
+        b.__sonIc = null;
+        gosterildi = false;
+    }
+
+    function cikisIzle() {
+        if (window.__snCikisIzleniyor) return;
+        try {
+            if (!(window.firebase && firebase.auth)) return;
+            window.__snCikisIzleniyor = 1;
+            firebase.auth().onAuthStateChanged(function (u) {
+                if (!u) gizle();                 /* çıkış: anında */
+                else setTimeout(function () { try { ciz(); } catch (e) { } }, 0);
+            });
+        } catch (e) { }
+    }
+
+    /* Emniyet nabzı: rol temizlenerek yapılan çıkışları da yakalar.
+       "Daha önce görünmüştü" şartı, açılışta rol çözülmeden boşuna
+       silme yapmasını engelliyor. */
+    setInterval(function () {
+        try {
+            cikisIzle();                          /* firebase geç gelirse */
+            if (gosterildi && !gorunurMu()) gizle();
+        } catch (e) { }
+    }, 1200);
 
     /* ------------------------------------------------------- AKORDİYON
        Öğretmen: "istenirse sınıflarım kategorisi akordiyon sistem olarak
@@ -570,7 +766,7 @@
     else ciz();
 
     window.KidefSiniflarim = {
-        okulAc: okulAc, katla: katla,
+        okulAc: okulAc, katla: katla, girisTavsiye: girisTavsiye,
         ciz: ciz, ac: ac, seviyeSec: seviyeSec, sinifKur: sinifKur,
         kurumEkle: kurumEkle, gorunurMu: gorunurMu
     };

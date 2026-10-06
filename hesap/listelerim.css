@@ -3844,3 +3844,27 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
     #llOkulPopup .okul-kislem{ font-size: .96rem; padding: 10px 16px; }
     #llOkulPopup .okul-kislem .lli{ width: 19px; height: 19px; }
 }
+
+/* ==========================================================================
+   ÜÇ NOKTA MENÜLERİ  (06.10.2026)
+   Öğretmen: "sınıf ve seviye kısmının düzenlenmesi ve silinmesi kısmını
+   isimlerde 3 nokta olsun, oraya basınca seçenekler çıksın."
+   Seviye adının ve her sınıf kapısının yanında duruyor; sade kalsın diye
+   soluk, üstüne gelince belirginleşiyor.
+   ========================================================================== */
+#llOkulPopup .okul-kapi-yuva{ display: inline-flex; align-items: center; gap: 2px; }
+#llOkulPopup .okul-nokta{
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 0; background: none; cursor: pointer; padding: 4px 3px;
+    border-radius: 8px; opacity: .45; flex: 0 0 auto;
+    transition: opacity .15s, background .15s;
+}
+#llOkulPopup .okul-nokta svg{ width: 18px; height: 18px; display: block; fill: currentColor; }
+#llOkulPopup .okul-nokta:hover{ opacity: 1; background: rgba(0, 0, 0, .08); }
+#llOkulPopup .okul-nokta:focus-visible{ opacity: 1; outline: 2px solid #16A085; outline-offset: 1px; }
+#llOkulPopup .okul-nokta.kat{ color: #7A5230; margin-inline-start: 4px; }
+#llOkulPopup .okul-kapi-yuva .okul-nokta{ color: #3F79A8; }
+@media (min-width: 900px){
+    #llOkulPopup .okul-nokta svg{ width: 21px; height: 21px; }
+    #llOkulPopup .okul-nokta{ padding: 6px 4px; }
+}

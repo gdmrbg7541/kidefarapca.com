@@ -6756,3 +6756,71 @@ Hatip'in altına kayacaktı. Çapa #imam-hatip'e çevrildi (yedek olarak eski
 Yeni sıra ölçüldü: Sınıflarım (206) → İmam Hatip (863) → Sınıfta Yeni +
 Galeri (1236) → premium-kurslar → temel-beceriler → oyunlar → …
 Sınıfta Yeni de galeri de yerinde, hata yok.
+
+── 06.10.2026 (ek 25) · ÇIKIŞTA SINIFLARIM ANINDA KAYBOLSUN ─────────────
+Öğretmen: "öğretmen çıkış yapınca anında sınıflarım kategorisi kaybolmalı."
+
+ESKİ DURUM: bölüm yalnız ciz() çalışınca gizleniyordu; ciz() ise açılıştaki
+yoklamadan (en çok ~25 sn) ve save()'ten tetikleniyor. Çıkıştan sonra ikisi
+de çalışmıyor — kategori ekranda kalıyor, üstelik içinde SINIF ADLARI
+duruyordu.
+
+ŞİMDİ iki kapı:
+ 1. firebase.auth().onAuthStateChanged — oturum null olur olmaz gizliyor.
+    Anında olan bu.
+ 2. Emniyet nabzı (1,2 sn): "daha önce görünmüştü ama artık öğretmen değil"
+    durumunda gizliyor. Rol temizlenerek yapılan çıkışları da yakalıyor.
+    "Daha önce görünmüştü" şartı önemli — açılışta rol henüz çözülmemişken
+    boşuna silme yapmıyor.
+Gizleme sınıfı kaldırmakla kalmıyor: bölümün içi boşaltılıyor, içindeki
+okul paneli DOM'dan çıkarılıyor ve KidefSinifBag.icerde bayrağı iniyor.
+
+DENENDİ: rolü temizleyerek çıkış → 1,6 sn içinde bölüm gizlendi, içerik 0,
+panel DOM'dan gitti, bayrak indi; tekrar giriş → bölüm geri geldi.
+onAuthStateChanged dinleyicisinin bağlandığı doğrulandı
+(window.__snCikisIzleniyor === 1). Gerçek oturum düzeneğinde olmadığı için
+Firebase yolunun kendisi yerinde denenemedi — signOut, zaten oturum yokken
+durum değişmediği için dinleyiciyi uyandırmıyor. Öğretmen gerçek çıkışta
+bir aksaklık görürse haber versin.
+
+── 06.10.2026 (ek 26) · İSİMLERDE ÜÇ NOKTA MENÜSÜ ───────────────────────
+Öğretmen: "sınıf ve seviye kısmının düzenlenmesi ve silinmesi kısmını şöyle
+yapalım, isimlerde 3 nokta olsun, oraya basınca seçenekler çıksın."
+
+Bir önceki "Düzenle kipi" KALDIRILDI — kip açıp kapamak fazladan adımdı.
+ · Seviye adının yanında ⋯ → 🏫 menü: İsmi Değiştir / Seviye Ayarları /
+   Seviyeyi Sil
+ · Her sınıf kapısının yanında ⋯ → 🚪 menü: Sınıfı Aç / İsmi Değiştir /
+   Arşivle / Sınıfı Sil  (zaten var olan tpSinifPopup)
+Kapılar her zaman sınıfı açıyor; yönetim yalnız üç noktada. Seviye menüsü
+sınıf menüsüyle AYNI biçimi (.tps-*) kullanıyor, yeni görünüm uydurulmadı.
+Noktalar sade dursun diye soluk; üstüne gelince belirginleşiyor.
+
+DİKKAT: aynı satır öğretmen profilindeki okul haritasında da var
+(tpOkullar). Çapa, yalnız okul penceresindeki katYap'a özgü "okul-tutamac"
+bloğuyla benzersizleştirildi — profil haritasına dokunulmadı.
+
+Denendi: seviyede 1, sınıflarda 2 nokta; eski "Düzenle" tuşu 0. Seviye
+menüsü "🏫 5. sınıf" üç seçenekle, sınıf menüsü "🚪 5A" dört seçenekle
+açılıyor. Hata yok.
+
+── 06.10.2026 (ek 27) · MİSAFİRE BOŞ KURUM + GİRİŞ TAVSİYESİ ────────────
+Öğretmen: "öğretmen olmayanları seviye sınıf yapmak için boş bi kurum
+ekleyelim, ama tıkladığı zaman siteye giriş yapması gerektiğini
+hatırlatalım, sadece bi tavsiye yazısı çıksın, verilerin kişiye ait olması
+için girişin gerekliliğinden bahsetsin."
+
+ · Giriş yapmamış ziyaretçi de artık Sınıflarım bölümünü görüyor: BOŞ bir
+   kurum binası ("Okulun" tabelası, "Henüz seviye yok", 5–10 rakamları,
+   "+ Kurum Ekle"). Ne yapabileceğini gözüyle görüyor.
+ · Önizleme GERÇEK veriye dokunmuyor: ayrı, durağan bir çizim; hiçbir tuş
+   kurum/seviye/sınıf oluşturmuyor (pointer-events:none).
+ · Nereye basarsa bassın TAVSİYE çıkıyor — uyarı değil: "Önce giriş
+   yapmanı öneririz" + tek paragraf: kuracağı şeyler SANA AİT olsun diye
+   giriş gerekiyor; girince listeler, sınıf defteri ve notlar hesaba
+   kaydediliyor, telefondan da bilgisayardan da aynı sınıflar açılıyor;
+   girişsiz kurulanlar yalnız o tarayıcıda kalıyor. "Anladım" ile kapanıyor.
+ · Öğretmen girişi gelince önizleme kendiliğinden gerçek panele dönüyor.
+Denendi: misafirde önizleme var (6 rakam, 0 sınıf kapısı, tabela "Okulun");
+tıklayınca tavsiye açılıyor, "Anladım" kapatıyor; rol öğretmen olunca
+gerçek panel geliyor (tabela kurum adı, 3 kapı). Hata yok.
