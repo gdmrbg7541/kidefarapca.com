@@ -6234,3 +6234,23 @@ Sekme simgelerinin sahne gecikmeleri de yeni sıraya göre kaydırıldı —
 simgeler soldan sağa sırayla kıpırdıyor, hepsi aynı anda değil.
 Üretici: _kaynak/uretici/materyalYanaAl.py
 Yedek:   _kaynak/yedekler/20261006-materyal-yana/
+
+── 06.10.2026 (ek 4) · SINIF SEKMESİNDE SİTE BAŞLIĞI YOK ────────────────
+Öğretmen: "yeni sekmede bi sınıf listesi açılınca header görülmesin, sadece
+sınıflar arasında gezilsin, anasayfa için diğer sekme kullanılsın."
+
+sistem/sinifbag.js (v3): sınıf bağlantısıyla açılan sekme artık o sınıfın
+çalışma sekmesi — site başlığı (logo, menü, okul tuşu, profil) gizli.
+Sınıflar arası geçiş panelin kendi rozetinden, adın yanındaki oktan.
+Anasayfa, galeri, kurum işlemleri öbür sekmede.
+
+ · Gizleme CSS ile (html.sb-yalniz-sinif header{display:none}), satır içi
+   stille DEĞİL: changeView her görünüm değişiminde header'ın display'ini
+   kendisi eliyor, satır içi atama anında geri geliyordu.
+ · ÇIKMAZ SOKAK YOK — üç emniyet:
+     · sınıf bu tarayıcıda kayıtlı değilse başlık hiç gizlenmiyor
+       (giriş ekranı başlıksız kalmasın),
+     · 15 saniyede sınıf açılamazsa başlık geri geliyor,
+     · sekmede listeden çıkılırsa (iki yoklama üst üste) başlık geri
+       geliyor — ölçüldü: ~3 sn.
+ · Normal açılışta ve bağlantısız girişte başlık yerinde; denendi.

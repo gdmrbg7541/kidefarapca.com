@@ -49,6 +49,7 @@
     if (window.KidefSinifBag) return;
 
     var PERDE_ID = 'sbPerde';
+    var YALNIZ = 'sb-yalniz-sinif';   /* <html> işareti: bu sekme sınıf sekmesi */
     var KORUMA_SURE = 7000;      /* görünümü koruma süresi (ms) */
     var KARARLI = 3;             /* kaç yoklama yerinde kalırsa perde kalkar */
 
@@ -89,6 +90,38 @@
                 kurum: kurum
             };
         } catch (e) { return null; }
+    }
+
+    /* ------------------------------------------------- ÜST ÇUBUK ----
+       Öğretmen (06.10.2026): "yeni sekmede bi sınıf listesi açılınca
+       header görülmesin, sadece sınıflar arasında gezilsin, anasayfa için
+       diğer sekme kullanılsın."
+
+       Bu sekme artık o sınıfın çalışma sekmesi: site başlığı (logo, menü,
+       okul tuşu, profil) gizleniyor. Sınıflar arasında geçiş panelin kendi
+       rozetinden — adın yanındaki ok — yapılıyor. Anasayfa, galeri, kurum
+       işlemleri öbür sekmede.
+
+       GİZLEME CSS İLE, satır içi stille değil: changeView her görünüm
+       değişiminde header'ın display'ini kendisi eliyor (satır içi atama
+       anında geri geliyordu).
+
+       ÇIKMAZ SOKAK OLMASIN: sınıf açılamazsa ya da sekmede listeden
+       çıkılırsa başlık geri geliyor — öğretmen başlıksız boş bir sayfada
+       kalmasın. */
+    function basligiGizle() {
+        if (document.getElementById('sbYalnizStil')) return;
+        var s = document.createElement('style');
+        s.id = 'sbYalnizStil';
+        s.textContent =
+            'html.' + YALNIZ + ' header{ display:none !important; }\n' +
+            'html.' + YALNIZ + ' #listelerim-section{ padding-top:10px; }';
+        (document.head || document.documentElement).appendChild(s);
+        document.documentElement.classList.add(YALNIZ);
+    }
+
+    function basligiGeriVer() {
+        try { document.documentElement.classList.remove(YALNIZ); } catch (e) { }
     }
 
     function kac(t) {
@@ -222,7 +255,7 @@
     }
 
     /* ----------------------------------------------------- KORUMA --- */
-    var korumaZaman = null, elDegdi = false;
+    var korumaZaman = null, elDegdi = false, basarili = false;
     function elDegdiYaz() { elDegdi = true; }
     function dur() {
         if (korumaZaman) { clearInterval(korumaZaman); korumaZaman = null; }
@@ -236,8 +269,13 @@
         document.addEventListener('keydown', elDegdiYaz, true);
         korumaZaman = setInterval(function () {
             /* Öğretmen ekrana dokunduysa karışma: onun tıklaması kazanır. */
-            if (elDegdi || Date.now() > bitis) { dur(); perdeKapa(); return; }
+            if (elDegdi || Date.now() > bitis) {
+                dur(); perdeKapa();
+                if (!basarili) basligiGeriVer();   /* açılamadı: başlık geri */
+                return;
+            }
             if (!yerindeMi(h)) { kararli = 0; uygula(h); return; }
+            basarili = true;
             kararli++;
             if (kararli >= KARARLI) { dur(); perdeKapa(); }
         }, 300);
@@ -251,7 +289,20 @@
     /* Sekme içinde başka sınıfa geçilirse adres de onu göstersin —
        böylece yenileme/yer imi her zaman EKRANDAKİ sınıfa gider. */
     function adresIzle() {
+        var kacir = 0, basligaBakiliyor = true;
         setInterval(function () {
+            /* (a) sekmede listeden çıkıldıysa site başlığını geri ver —
+               iki yoklama üst üste: koruma sırasındaki anlık geçişler
+               başlığı boşuna geri getirmesin. */
+            try {
+                if (basligaBakiliyor && basarili) {
+                    var ls = document.getElementById('listelerim-section');
+                    var acik = !!ls && getComputedStyle(ls).display !== 'none';
+                    kacir = acik ? 0 : kacir + 1;
+                    if (kacir >= 2) { basligiGeriVer(); basligaBakiliyor = false; }
+                }
+            } catch (e) { }
+            /* (b) sekme içinde sınıf değiştiyse adres de onu göstersin. */
             try {
                 if (!window.llAktifSinif) return;
                 var a = window.llAktifSinif();
@@ -266,18 +317,25 @@
     var hedef = parametre();
     if (hedef) {
         var bilgi = kayitliAd(hedef);
-        if (bilgi) perdeAc(bilgi);           /* eminsek perde; değilsek yok */
+        if (bilgi) {
+            /* Sınıf bu tarayıcıda kayıtlı: hem perde hem başlıksız sekme.
+               Kayıtlı değilse ikisi de yok — giriş ekranı ya da anasayfa
+               başlığıyla birlikte normal açılsın. */
+            perdeAc(bilgi);
+            basligiGizle();
+        }
 
         var tur = 0;
         var zaman = setInterval(function () {
             tur++;
             if (hazirMi(hedef)) { clearInterval(zaman); ac(hedef); adresIzle(); return; }
-            if (tur > 60) { clearInterval(zaman); perdeKapa(); }   /* ~15 sn */
+            if (tur > 60) { clearInterval(zaman); perdeKapa(); basligiGeriVer(); }  /* ~15 sn */
         }, 250);
     }
 
     window.KidefSinifBag = {
         adres: adres, parametre: parametre,
-        ac: ac, perdeKapa: perdeKapa
+        ac: ac, perdeKapa: perdeKapa,
+        basligiGeriVer: basligiGeriVer
     };
 })();
