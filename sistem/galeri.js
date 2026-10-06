@@ -191,6 +191,43 @@
     return liste.length;
   }
 
+  /* ---------------------------------------------------------- resim değişimi
+     Ok'a basınca ekranın donmaması için fotoğraf önce perde arkasında
+     ÇÖZÜLÜYOR, sonra ekrandakine konuyor. Önden indirilenler burada
+     tutuluyor; tutulmazsa tarayıcı çözdüğü görüntüyü atıyor ve sıra
+     gelince yeniden çözüyor (eski "ön yükleme" bu yüzden iş görmüyordu). */
+  var ONBELLEK = [];
+  function ondenAl(yol) {
+    for (var i = 0; i < ONBELLEK.length; i++) {
+      if (ONBELLEK[i].__yol === yol) return ONBELLEK[i];
+    }
+    var o = new Image();
+    o.__yol = yol;
+    o.decoding = 'async';
+    try { o.fetchPriority = 'low'; } catch (e) { }
+    o.src = yol;
+    try { if (o.decode) o.decode().catch(function () { }); } catch (e) { }
+    ONBELLEK.push(o);
+    if (ONBELLEK.length > 10) ONBELLEK.shift();
+    return o;
+  }
+
+  var _istek = 0;
+  function resimKoy(img, yol) {
+    var benim = ++_istek;
+    var o = ondenAl(yol);
+    var koy = function () {
+      if (benim !== _istek) return;      /* hızlı basıldı, bu artık eski */
+      img.src = yol;
+    };
+    try {
+      if (o.decode) { o.decode().then(koy, koy); return; }
+    } catch (e) { }
+    if (o.complete) koy();
+    else { o.addEventListener('load', koy, { once: true });
+           o.addEventListener('error', koy, { once: true }); }
+  }
+
   /* ------------------------------------------------------------------- galeri */
   function galeriKur(bolum, buyut) {
     var foto = [];
@@ -215,14 +252,14 @@
       geriEtiket: 'Önceki fotoğraf', ileriEtiket: 'Sonraki fotoğraf',
       ciz: function (i) {
         var f = foto[i];
-        g.src = 'Galeri/kucuk/' + encodeURIComponent(f.a);
+        resimKoy(g, 'Galeri/kucuk/' + encodeURIComponent(f.a));
         tus.classList.remove('gd-gir');
         void tus.offsetWidth;
         tus.classList.add('gd-gir');
-        /* komşuyu önden indir */
+        /* komşuyu önden indir VE çöz (sonuç tutuluyor) */
         [1, -1].forEach(function (y) {
           var k = foto[(i + y + foto.length) % foto.length];
-          if (k) { var o = new Image(); o.src = 'Galeri/kucuk/' + encodeURIComponent(k.a); }
+          if (k) ondenAl('Galeri/kucuk/' + encodeURIComponent(k.a));
         });
       }
     });
@@ -265,6 +302,7 @@
       resim = new Image();
       resim.className = 'gd-b-resim';
       resim.alt = '';
+      resim.decoding = 'async';
       sahne.appendChild(resim);
 
       sayac = el('div', 'gd-b-sayac');
@@ -303,14 +341,14 @@
     function goster() {
       var f = foto[sira];
       if (!f) return;
-      resim.src = 'Galeri/web/' + encodeURIComponent(f.a);
+      resimKoy(resim, 'Galeri/web/' + encodeURIComponent(f.a));
       sayac.textContent = (sira + 1) + ' / ' + foto.length;
       var tek = foto.length < 2;
       katman.querySelector('.gd-b-geri').style.visibility = tek ? 'hidden' : '';
       katman.querySelector('.gd-b-ileri').style.visibility = tek ? 'hidden' : '';
       [1, -1].forEach(function (y) {
         var k = foto[(sira + y + foto.length) % foto.length];
-        if (k) { var o = new Image(); o.src = 'Galeri/web/' + encodeURIComponent(k.a); }
+        if (k) ondenAl('Galeri/web/' + encodeURIComponent(k.a));
       });
       if (bildir) bildir(sira);
     }

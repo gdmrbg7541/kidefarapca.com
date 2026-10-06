@@ -545,6 +545,11 @@
         okulAdres: okulAdres, okulSekmesiAc: okulSekmesiAc,
         okulPencereAc: okulPencereAc, sinifaGec: sinifaGec,
         kapiSifirla: kapiSifirla,
+        /* Anasayfada okul paneli AÇIK duruyorsa sistem/siniflarim.js bunu
+           true yapıyor; hesap/listelerim.js buna bakıp (a) görünümü
+           değiştirmiyor, (b) sınıfı yeni sekmede açıp paneli yerinde
+           bırakıyor. */
+        icerde: false,
         /* hesap/listelerim.js buna bakıyor: okul sekmesinde arka planı
            açmıyor ve sınıfı yeni sekmede açıyor. */
         get yalnizOkul() { return yalnizOkul; }

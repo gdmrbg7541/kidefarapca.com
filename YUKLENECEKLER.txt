@@ -6480,3 +6480,60 @@ Deney düzeneğinde üretimdeki sıra canlandırıldı (logged-in +
 showLLPlaceholder sonradan): yer tutucu paneli boşaltıyor (açık panel yok,
 liste 0 satır), koruma 1,5 sn içinde geri alıyor (açık panel tab0, liste
 dolu), perde ondan sonra kalkıyor. Hata yok.
+
+── 06.10.2026 (ek 14) · GALERİDE OK BASINCA KASMA ───────────────────────
+Öğretmen: "galeride oklarla görseli değiştirmek istendiğinde görsel bi
+kasma olduktan sonra değişiyor."
+
+ÖLÇÜM ÖNCE: resimler ağır değil — Galeri/web 1600 px, 141–232 KB; küçükler
+560 px, 26–40 KB. Yani indirme sorunu yok, iş değiştirme biçiminde.
+
+SEBEP (üç parça):
+ 1. Yeni fotoğraf, EKRANDAKİ <img>'in src'si değiştirilerek konuyordu.
+    Tarayıcı eski kareyi bırakıp yenisini ÇİZİM SIRASINDA çözüyor; 1600
+    piksellik bir JPEG'in çözümü ana iş parçacığında yapılınca ekran o an
+    donuyor. Görülen kasma buydu.
+ 2. "Komşuyu önden indir" satırları Image nesnesini hiçbir yerde
+    TUTMUYORDU (var o = new Image(); o.src = …; ve bitti). Dosya önbelleğe
+    giriyor ama ÇÖZÜLMÜŞ görüntü atılıyor; sıra o fotoğrafa gelince
+    yeniden çözülüyor. Ön yükleme yarım kalıyordu.
+ 3. Büyüteçteki <img>'de decoding="async" yoktu.
+
+ÇÖZÜM (sistem/galeri.js):
+ · Fotoğraf önce PERDE ARKASINDA çözülüyor (img.decode()), ancak hazır
+   olunca ekrandakine konuyor: ne donma ne boş kare.
+ · Önden indirilenler bir dizide tutuluyor (en çok 10) — çözülmüş hâlleri
+   atılmıyor, komşular gerçekten hazır bekliyor.
+ · Hızlı basıldığında eski istek iptal (istek sayacı); yoksa geç gelen bir
+   çözüm yanlış fotoğrafı koyabilirdi.
+ · Büyüteç resmine decoding="async" eklendi.
+Hem küçük galeri hem büyüteç aynı yolu kullanıyor.
+
+── 06.10.2026 (ek 15) · ANASAYFADA TEK YER: OKUL PANELİ AÇIK ────────────
+Öğretmen: "iki yer karşımıza çıkıyor, biri Sınıflarım kısmında ok olan yer
+biri de onun altında sınıfların açıkça göründüğü yer... tek bi yer olsun,
+okul svg si öğretmen giriş yapınca kataloğun altında açık olsun ve
+sınıflar her şey görünsün."
+
+Sınıflarım bölümünün İÇİ artık okul penceresinin KENDİSİ: binalar,
+kapılar, seviye ayarları, "Seviye Ekle", "+ Kurum Ekle" — hepsi anasayfada
+açık duruyor. Kendi sınıf kartlarımız kaldırıldı; aynı işi iki türlü yapan
+iki yer kalmadı. Başlıktaki ok da kalktı (gidilecek ayrı yer yok).
+
+NASIL: pencere "pencere" gibi davranmıyor —
+ · #llOkulPopup display:contents oluyor; tam ekran karartması, sabit konum
+   ve "boşluğa basınca kapan" davranışı böylece ortadan kalkıyor (kutusu
+   olmayan öğe tıklama hedefi olamıyor),
+ · başlık çubuğu ve kapatma tuşu gizli — bölümün kendi başlığı var,
+ · kurum eklenince pencere kapanıp gövdede yeniden açılıyor; gövde
+   izleniyor ve panel geri içeri alınıyor.
+Bayrak: KidefSinifBag.icerde. hesap/listelerim.js buna bakıp
+ · llOkulPopupAc görünümü Listelerim'e ÇEVİRMİYOR (anasayfada kalıyoruz),
+ · llOkulSinifSec sınıfı YENİ SEKMEDE açıyor ve paneli yerinde bırakıyor —
+   arka arkaya birkaç sınıf açılabilsin.
+Okul sekmesi (?okul=1) ve sınıf sekmesi (?sinif=…) bu düzenekten muaf.
+
+Denendi: bölüm açık, panel içeride (gövdede değil), kapatma tuşu yok,
+1 bina · 3 sınıf kapısı · kurum ekleme yerinde; kapıya basınca sınıf yeni
+sekmede açılıyor (sinif=L1&sube=C1), panel yerinde kalıyor, anasayfa
+görünür kalıyor. Hata yok.

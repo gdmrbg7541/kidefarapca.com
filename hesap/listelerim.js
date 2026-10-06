@@ -4556,7 +4556,9 @@ function llOkulPopupAc() {
        geri açmak istenmiyor — pencere tek başına duruyor. Normal
        sekmede davranış aynı: pencere listenin üstüne gelir. */
     try {
-        var _yalnizOkul = !!(window.KidefSinifBag && window.KidefSinifBag.yalnizOkul);
+        /* içeride (anasayfada) açıkken de görünüm değişmemeli */
+        var _yalnizOkul = !!(window.KidefSinifBag &&
+            (window.KidefSinifBag.yalnizOkul || window.KidefSinifBag.icerde));
         if (!_yalnizOkul) {
             if (typeof appState !== 'undefined' && appState.currentView !== 'listelerim-section' &&
                 typeof changeView === 'function') {
@@ -4978,6 +4980,16 @@ function llOkulSinifSec(lId, cId) {
        yüklenmiyor.
        Normal sekmede (pencere listenin üstündeyken) davranış DEĞİŞMİYOR:
        sınıf aynı sekmede seçilir. */
+    /* ANASAYFADAKİ AÇIK PANEL: sınıf yeni sekmede açılır, panel yerinde
+       kalır — öğretmen arka arkaya birkaç sınıf açabilsin. */
+    try {
+        if (window.KidefSinifBag && window.KidefSinifBag.icerde &&
+            typeof window.KidefSinifBag.adres === 'function') {
+            window.open(window.KidefSinifBag.adres(lId, cId), '_blank', 'noopener');
+            try { if (window.KidefSinifBag.kapiSifirla) window.KidefSinifBag.kapiSifirla(); } catch (e) { }
+            return;
+        }
+    } catch (e) { }
     try {
         if (window.KidefSinifBag && window.KidefSinifBag.yalnizOkul &&
             typeof window.KidefSinifBag.sinifaGec === 'function') {

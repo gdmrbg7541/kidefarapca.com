@@ -130,6 +130,18 @@
             '#' + BOLUM_ID + ' .sn-kurum-ekle:hover{ background:#FFF6EC; border-color:#E67E22; color:#8E4B10; }',
             /* boş durum */
             '#' + BOLUM_ID + ' .sn-bos{ color:#8A93A0; font-size:.92rem; margin:0 0 12px; }',
+            /* OKUL PANELİ İÇERİDE (06.10.2026) — pencere gibi değil,
+               bölümün içeriği gibi dursun. display:contents ile kutusu
+               kalmıyor: tam ekran karartması, sabit konum ve "boşluğa
+               basınca kapan" davranışı da böylece ortadan kalkıyor. */
+            '#' + BOLUM_ID + ' .sn-okul{ display:block; }',
+            '#' + BOLUM_ID + ' #llOkulPopup.sn-okul-ici{ display:contents !important; }',
+            '#' + BOLUM_ID + ' .sn-okul-ici .okul-panel{ max-width:none !important;',
+            '  max-height:none !important; width:100%; border-radius:16px;',
+            '  box-shadow:0 6px 18px rgba(31,36,48,.07) !important; }',
+            '#' + BOLUM_ID + ' .sn-okul-ici .okul-baslik{ display:none !important; }',
+            '#' + BOLUM_ID + ' .sn-okul-ici .okul-icerik{ overflow:visible !important;',
+            '  padding:22px 18px 24px; }',
             /* başlık tuşu: kategori başlığı okulu açıyor */
             '#' + BOLUM_ID + ' .sn-bas-tus{ display:inline-flex; align-items:center;',
             '  gap:9px; border:0; background:none; cursor:pointer; padding:2px 6px 2px 0;',
@@ -302,57 +314,10 @@
            kalmasın istemiyoruz. Kategori başlığının kendisi o yolu
            üstleniyor: okul çizimine ve "Sınıflarım" yazısına basınca okul
            sekmesi açılıyor (kurumlar, seviyeler, sınıflar, ayarlar). */
-        var ic = '<h2><button type="button" class="sn-bas-tus"' +
-            ' onclick="KidefSiniflarim.okulAc()"' +
-            ' title="Okulum — kurumlar, seviyeler ve sınıflar">' +
-            '<svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
+        var ic = '<h2><svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
             OKUL_SVG.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') +
-            '</svg><span>Sınıflarım</span>' +
-            '<svg class="sn-bas-ok" viewBox="0 0 24 24" aria-hidden="true">' +
-            '<path d="M9 5.5l7 6.5-7 6.5" fill="none" stroke="currentColor"' +
-            ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
-            '</svg></button></h2><div class="sn-kutu">';
-
-        var kIdler = Object.keys(v.kurumlar);
-        kIdler.forEach(function (kId) {
-            ic += kurumKutusu(kId, v.kurumlar[kId].name, v.gruplar[kId] || []);
-        });
-        /* Kurumsuz sınıflar: ancak varsa göster. */
-        var kurumsuz = (v.gruplar[''] && v.gruplar[''].length) ? v.gruplar[''] : null;
-        if (kurumsuz) ic += kurumKutusu('GENEL', 'Genel', kurumsuz);
-
-        /* KURUM YOKSA DAVET (06.10.2026) — öğretmen: "hiç sınıf kurmayan
-           ama öğretmen olarak giriş yapanlar için kurum seviye
-           oluşturmasını teşvik amaçlı sınıflarım kategorisi açık olsun".
-           ÖLÇÜT SINIF DEĞİL KURUM: tarayıcıda hiç veri yoksa listelerim.js
-           üç tane ÖRNEK seviye kuruyor, yani yeni öğretmenin ekranı
-           gerçekte boş olmuyor. Kurumu olmayan herkes daveti görüyor;
-           sınıfı hiç olmayana ayrıca "başla" dili ve kurumsuz sınıf
-           seçeneği sunuluyor. */
-        if (!kIdler.length) {
-            var hicYok = !kurumsuz;
-            ic += '<div class="sn-davet">' + BUYUK_OKUL_SVG +
-                '<p class="sn-davet-bas">' +
-                (hicYok ? 'Okulunu ekleyerek başla' : 'Okulunu ekle') + '</p>' +
-                '<p class="sn-davet-alt">' + (hicYok
-                    ? 'Kurumunu ve 5–10. sınıflarını tanımla; her sınıfın listesi, ' +
-                      'defteri ve materyalleri buradan tek tıkla açılsın.'
-                    : 'Sınıfların şu an kurumsuz duruyor. Okulunu ekleyip sınıflarını ' +
-                      'onun altında topla; birden fazla okulda çalışıyorsan hepsini ' +
-                      'ayrı ayrı ekleyebilirsin.') + '</p>' +
-                '<button type="button" class="sn-davet-tus" onclick="KidefSiniflarim.kurumEkle()">' +
-                '+ Kurum Ekle</button>' +
-                (hicYok
-                    ? '<button type="button" class="sn-davet-ikinci"' +
-                      ' onclick="KidefSiniflarim.seviyeSec(this,\'GENEL\')">' +
-                      'Kurumsuz tek sınıf ekle</button>'
-                    : '') +
-                '</div>';
-        } else {
-            ic += '<button type="button" class="sn-kurum-ekle" onclick="KidefSiniflarim.kurumEkle()">' +
-                '+ Kurum Ekle</button>';
-        }
-        ic += '</div>';
+            '</svg> Sınıflarım</h2>' +
+            '<div class="sn-okul"></div>';
 
         /* AYNI İÇERİĞİ YENİDEN BASMA (06.10.2026) — öğretmen: "index
            açılınca sınıflarım yazısı 4 kere çiziliyor sanırım".
@@ -366,6 +331,50 @@
             bolum.__sonIc = ic;
         }
         bolum.classList.add('gor');
+        okulIcineKoy(bolum);
+    }
+
+    /* ----------------------------------------------- OKUL PANELİ İÇERİDE */
+    function baskaSekmeMi() {
+        try {
+            var q = location.search || '';
+            return q.indexOf('okul=1') > -1 || q.indexOf('sinif=') > -1;
+        } catch (e) { return false; }
+    }
+
+    function okulIcineKoy(bolum) {
+        if (baskaSekmeMi()) return;          /* okul/sınıf sekmesine karışma */
+        var yuva = bolum.querySelector('.sn-okul');
+        if (!yuva) return;
+        var p = document.getElementById('llOkulPopup');
+        if (p && yuva.contains(p)) return;   /* zaten içeride */
+        try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = true; } catch (e) { }
+        if (!p) {
+            try { if (typeof llOkulPopupAc === 'function') llOkulPopupAc(); } catch (e) { return; }
+            p = document.getElementById('llOkulPopup');
+        }
+        if (!p) return;
+        p.classList.add('sn-okul-ici');
+        yuva.appendChild(p);
+        okulIzle(bolum);
+    }
+
+    /* Kurum eklenince pencere kapanıp yeniden açılıyor (gövdeye). Yeniden
+       açıldığında geri içeri alınsın diye gövde izleniyor. */
+    function okulIzle(bolum) {
+        if (window.__snOkulIzleniyor || !window.MutationObserver) return;
+        window.__snOkulIzleniyor = 1;
+        new MutationObserver(function (kayitlar) {
+            for (var i = 0; i < kayitlar.length; i++) {
+                var ek = kayitlar[i].addedNodes || [];
+                for (var j = 0; j < ek.length; j++) {
+                    if (ek[j] && ek[j].id === 'llOkulPopup') {
+                        try { okulIcineKoy(bolum); } catch (e) { }
+                        return;
+                    }
+                }
+            }
+        }).observe(document.body, { childList: true });
     }
 
     /* --------------------------------------------------------- İŞLEMLER */
