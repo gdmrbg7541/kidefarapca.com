@@ -6254,3 +6254,21 @@ Anasayfa, galeri, kurum işlemleri öbür sekmede.
      · sekmede listeden çıkılırsa (iki yoklama üst üste) başlık geri
        geliyor — ölçüldü: ~3 sn.
  · Normal açılışta ve bağlantısız girişte başlık yerinde; denendi.
+
+── 06.10.2026 (ek 5) · ROZETTE OK SOLDA, SINIF SAYISI YOK ───────────────
+Öğretmen: "diğer sınıfları açtığımız oku sola alalım, ve kaç sınıf
+olduğunu gösteren sınıf rakamı olmasın."
+
+Rozet artık soldan sağa şöyle okunuyor:
+    ▾  │  simge  Sınıf Listesi  5/A
+    └ başka sınıfa geç        └ bu sınıfın öğrenci listesi
+Ayırıcı okun hemen sağında; iki işi hâlâ ayırıyor, yeri değişti.
+
+ · Sınıf sayısı rozetten kalktı. listelerim.js onu üretmeye devam ediyor
+   (başka yerde işe yarayabilir), rozette DOM'dan çıkarılıp ayrıca CSS ile
+   de gizlendi. Zaten sayı, açılan "Sınıf Değiştir" penceresinin başlığında
+   duruyor ("3 SINIF") — orada yeri var.
+ · Ok yeni yerinde de çalışıyor: tıklayınca sınıf seçici açılıyor, ok
+   yukarı dönüyor, pencere rozetin altına yaslanıyor (denendi, 3 sınıf
+   listelendi, hata yok).
+ · Tek sınıfı olan öğretmende ok yok — ayırıcı da konmuyor.

@@ -183,8 +183,8 @@
                sınıfların açılma kısmı ile sınıf listesinin açıldığı yer
                arasında ayırıcı olsun ama şık olsun".
                Rozet tek bir tuş gibi görünüyor ama iki ayrı iş yapıyor:
-                 sol  → bu sınıfın öğrenci listesi (switchTab 0)
-                 sağ  → başka sınıfa geç (llSinifListesiAc)
+                 sol  → başka sınıfa geç (llSinifListesiAc) — ok
+                 sağ  → bu sınıfın öğrenci listesi (switchTab 0)
                Düz bir çizgi rozeti ikiye bölüp sertleştiriyordu; çizgi
                uçlarda saydama eriyor — ayırıyor ama kesmiyor. */
             '#ll-root #content .tabs #active-class-title .rz-ayr{',
@@ -199,10 +199,12 @@
             '    #000 74%, transparent 100%);',
             '  mask-image:linear-gradient(to bottom, transparent 0%, #000 26%,',
             '    #000 74%, transparent 100%); }',
-            /* sağdaki iki parça (sayı + ok) tek bir öbek olsun: ayırıcının
-               hangi tarafta neyi ayırdığı bakar bakmaz anlaşılsın. */
-            '#ll-root #content .tabs #active-class-title .rz-sag{',
-            '  display:inline-flex; align-items:center; gap:7px; }',
+            /* Ok SOLDA (06.10.2026 — öğretmen: "diğer sınıfları açtığımız
+               oku sola alalım"): rozet soldan sağa "başka sınıf ▾ │ bu
+               sınıfın listesi" diye okunuyor. Sınıf SAYISI kaldırıldı
+               (öğretmen: "kaç sınıf olduğunu gösteren sınıf rakamı
+               olmasın") — okun kendisi zaten başka sınıf olduğunu söylüyor. */
+            '#ll-root #content .tabs #active-class-title .rz-say{ display:none !important; }',
             '#ll-root #content .tabs #active-class-title .rz-bas{ font-size:1.04rem;',
             '  font-weight:600; line-height:1.15; white-space:nowrap; }',
             '@media (max-width:620px){',
@@ -282,10 +284,7 @@
         if (!cubuk) return;
         stilKur();
 
-        /* Gecikmeler çubuktaki SOLDAN SAĞA sıraya göre: simgeler sırayla
-           kıpırdasın, hepsi aynı anda değil. Sıra (06.10.2026):
-           rozet · Materyaller · Sınıf Defteri · Sınıf Araçları */
-        var esle = [[13, S.materyal, 0], [12, S.defter, 900], [4, S.arac, 1800]];
+        var esle = [[12, S.defter, 0], [4, S.arac, 900], [13, S.materyal, 1800]];
         var bulunan = 0;
         esle.forEach(function (e) {
             var t = tusBul(e[0]);
@@ -325,23 +324,25 @@
         dongu(svg, S.liste, 450);
     }
 
-    /* Rozetin iki işini ayır: sayı + ok sağda tek öbek, araya ince çizgi.
-       Tek sınıfı olan öğretmende ok da sayı da yok — o zaman ayrılacak bir
-       şey de yok, çizgi konmuyor. */
+    /* Rozetin iki işini ayır: ok en solda, hemen sağında ince çizgi, sonra
+       bu sınıfın kendi parçası. Tek sınıfı olan öğretmende ok yok — o zaman
+       ayrılacak bir şey de yok, çizgi konmuyor. */
     function rozetAyir(r) {
+        /* Sınıf sayısı rozetten kalkıyor: listelerim.js onu hâlâ üretiyor
+           (başka yerde işe yarayabilir), burada DOM'dan çıkarılıyor. */
+        var say = r.querySelector('.rz-say');
+        if (say && say.parentNode) say.parentNode.removeChild(say);
+
         if (r.querySelector('.rz-ayr')) return;
         var ok = r.querySelector('.rz-ok');
-        if (!ok) return;
-        var say = r.querySelector('.rz-say');
-        var sag = document.createElement('span');
-        sag.className = 'rz-sag';
-        r.insertBefore(sag, say || ok);
-        if (say) sag.appendChild(say);
-        sag.appendChild(ok);
+        if (!ok) return;                      /* tek sınıf: ok da ayırıcı da yok */
+
+        r.insertBefore(ok, r.firstChild);     /* ok en sola */
         var ayr = document.createElement('span');
         ayr.className = 'rz-ayr';
         ayr.setAttribute('aria-hidden', 'true');
-        r.insertBefore(ayr, sag);
+        if (ok.nextSibling) r.insertBefore(ayr, ok.nextSibling);
+        else r.appendChild(ayr);
     }
 
     /* Rozet yeniden çizilince (sınıf değişimi) simge ve başlık geri gelsin.
