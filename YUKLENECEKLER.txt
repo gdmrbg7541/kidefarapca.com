@@ -5901,3 +5901,15 @@ bilgiler olmasın."
              sistem/router.js (?v=20261005c), index.html
    Yedek: _kaynak/yedekler/20261005-okul-vurgu/, -rozet-ok/
    Betik: _kaynak/uretici/okulVurgu.py, rozetOkAyir.py
+
+06.10.2026 — GALERİ: yeni fotoğraf siteye eklendi
+   Öğretmen: "galeriye yeni foto attım siteye ekle."
+   _kaynak/uretici/galeriYenile.py çalıştırıldı:
+     · yeni fotoğrafın web (1600px) ve küçük (560px) kopyaları üretildi
+       → galeri/web/g-12f0dfe3da.jpg, galeri/kucuk/g-12f0dfe3da.jpg
+     · sistem/galeriveri.js yeniden yazıldı: 3 fotoğraf, en yeni en üstte
+       (yeni foto 900x1600, dikey)
+     · index.html'de galeriveri.js ?v=20261006 — önbellek tazelensin diye
+   Asıl dosya galeri/ içinde duruyor, .gitignore ile siteye gitmiyor;
+   yalnız web/ ve kucuk/ kopyaları yayına çıkıyor.
+   Dosyalar: sistem/galeriveri.js, index.html, galeri/web/, galeri/kucuk/

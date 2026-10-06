@@ -11,6 +11,7 @@
    Sıra: en yeni fotoğraf en üstte.
    =========================================================================== */
 window.KIDEF_GALERI = [
+  { a: 'g-12f0dfe3da.jpg', w: 900, h: 1600 },
   { a: 'g-05685aa55f.jpg', w: 1600, h: 1600 },
   { a: 'g-2ecedc95fb.jpg', w: 1600, h: 1200 }
 ];
