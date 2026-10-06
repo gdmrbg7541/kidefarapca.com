@@ -6223,3 +6223,14 @@ ikiye bölüp sertleştirmiyor. Sağdaki sayı ile ok tek öbek yapıldı, böyl
    dolgulu; beyaz çizgi beyaz zeminde görünmüyordu.
  · Tek sınıfı olan öğretmende ok da sayı da yok — ayrılacak bir şey
    olmadığı için çizgi de konmuyor (üç durumda da denendi).
+
+── 06.10.2026 (ek 3) · MATERYALLER SINIF LİSTESİNİN YANINA ──────────────
+Öğretmen: "materyaller sınıf listesinin yanında olsun."
+Sabah en sağa alınmıştı; şimdi rozetin hemen sağında, ilk düğme.
+Yeni sıra: Sınıf Listesi · Materyaller · Sınıf Defteri · Sınıf Araçları
+Taşınan yalnız DÜĞME (ve yorumu); switchTab(13), #tab13 paneli ve
+sistem/sinifmateryal.js olduğu gibi duruyor.
+Sekme simgelerinin sahne gecikmeleri de yeni sıraya göre kaydırıldı —
+simgeler soldan sağa sırayla kıpırdıyor, hepsi aynı anda değil.
+Üretici: _kaynak/uretici/materyalYanaAl.py
+Yedek:   _kaynak/yedekler/20261006-materyal-yana/

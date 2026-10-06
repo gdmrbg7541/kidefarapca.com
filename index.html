@@ -6884,6 +6884,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          tavsiyesi» penceresi YERİNDE; switchTab(9) deftere yönleniyor.
          Geri istenirse bu düğmeyi geri koymak yeterli:
          &lt;button class="tab" title="Haftalık Plan" aria-label="Haftal… -->
+    <!-- MATERYALLER (06.10.2026) — öğretmen: "5-10 arası sınıf
+         tanımlayınca otomatik olarak imam hatip seviyelerindeki
+         belgeler etkinlik kartları da kendi sınıfları için bi kopya
+         oluşsun". Panelin içini sistem/sinifmateryal.js çizer: açık
+         sınıfın SEVİYESİNE ait belgeler ve kartlar, İmam Hatip ile
+         AYNI kaynaktan (window.ihIcKur). -->
+    <button class="tab" title="Materyaller — bu seviyenin belgeleri ve etkinlikleri" aria-label="Materyaller" onclick="switchTab(13)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5.6h6.2l1.6 2h8.2a1.4 1.4 0 0 1 1.4 1.4v9.4a1.4 1.4 0 0 1-1.4 1.4H4a1.4 1.4 0 0 1-1.4-1.4V7a1.4 1.4 0 0 1 1.4-1.4z" fill="#F5B041" stroke="#D68910" stroke-width="1.1" stroke-linejoin="round"/><path d="M7.6 12.4h8.8M7.6 15.4h6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg><span>Materyaller</span></button>
     <!-- SINIF DEFTERİ (04.10.2026) — şubenin 36 haftalık ders defteri.
          Panelin tamamı hesap/sinifdefteri.js içinde çizilir; buraya
          yalnız düğme ile boş #tab12 kutusu kondu. -->
@@ -6896,13 +6903,6 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- "Veli & Durum" sekmesi buradan KALDIRILDI: artik ogretmen profilinde,
          "Kisisel Bilgilerim"in hemen altindaki akordiyonda yasiyor. -->
     <button class="tab" title="Sınıf Araçları" aria-label="Sınıf Araçları" onclick="switchTab(4)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.2V5a2.1 2.1 0 0 1 2.1-2.1h1.8A2.1 2.1 0 0 1 15 5v1.2" fill="none" stroke="#8d6e63" stroke-width="1.9" stroke-linecap="round"/><rect x="2.6" y="6.2" width="18.8" height="13.8" rx="2.4" fill="#e67e22"/><path d="M2.6 12.2h7.6v1.5a1.1 1.1 0 0 0 1.1 1.1h1.4a1.1 1.1 0 0 0 1.1-1.1v-1.5h7.6" fill="none" stroke="#b3541e" stroke-width="1.6"/><rect x="10.6" y="11.1" width="2.8" height="3.3" rx=".8" fill="#f6ddc5" stroke="#b3541e" stroke-width="1.1"/><path d="M5.4 9.2h3M15.6 9.2h3" stroke="#f6ddc5" stroke-width="1.5" stroke-linecap="round"/></svg><span>Sınıf Araçları</span></button>
-    <!-- MATERYALLER (06.10.2026) — öğretmen: "5-10 arası sınıf
-         tanımlayınca otomatik olarak imam hatip seviyelerindeki
-         belgeler etkinlik kartları da kendi sınıfları için bi kopya
-         oluşsun". Panelin içini sistem/sinifmateryal.js çizer: açık
-         sınıfın SEVİYESİNE ait belgeler ve kartlar, İmam Hatip ile
-         AYNI kaynaktan (window.ihIcKur). -->
-    <button class="tab" title="Materyaller — bu seviyenin belgeleri ve etkinlikleri" aria-label="Materyaller" onclick="switchTab(13)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5.6h6.2l1.6 2h8.2a1.4 1.4 0 0 1 1.4 1.4v9.4a1.4 1.4 0 0 1-1.4 1.4H4a1.4 1.4 0 0 1-1.4-1.4V7a1.4 1.4 0 0 1 1.4-1.4z" fill="#F5B041" stroke="#D68910" stroke-width="1.1" stroke-linejoin="round"/><path d="M7.6 12.4h8.8M7.6 15.4h6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg><span>Materyaller</span></button>
 </div>
 
     <!-- MATERYALLER PANELİ (06.10.2026): içini
@@ -7606,7 +7606,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          animasyonlarla içeriğin dikkati çekilsin ... daha büyük
          olsunlar." Simgeleri büyütüp sahneleri sırayla gösteriyor;
          düğmelerin kendisine ve switchTab numaralarına dokunmuyor. -->
-    <script src="sistem/sekmeanim.js?v=1"></script>
+    <script src="sistem/sekmeanim.js?v=2"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>

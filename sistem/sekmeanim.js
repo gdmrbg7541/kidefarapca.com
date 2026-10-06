@@ -282,7 +282,10 @@
         if (!cubuk) return;
         stilKur();
 
-        var esle = [[12, S.defter, 0], [4, S.arac, 900], [13, S.materyal, 1800]];
+        /* Gecikmeler çubuktaki SOLDAN SAĞA sıraya göre: simgeler sırayla
+           kıpırdasın, hepsi aynı anda değil. Sıra (06.10.2026):
+           rozet · Materyaller · Sınıf Defteri · Sınıf Araçları */
+        var esle = [[13, S.materyal, 0], [12, S.defter, 900], [4, S.arac, 1800]];
         var bulunan = 0;
         esle.forEach(function (e) {
             var t = tusBul(e[0]);
