@@ -6618,3 +6618,49 @@ tıklandığında hemen seviye oluşsun, bu sefer de sınıf istensin, mesela
 Denendi: 5 kurulu → listede 6-10; 6'ya basınca "6. sınıf" + 6A-6F
 harfleri; 6A ve 6B'ye basınca sınıflar açıldı, harfler 6C-6F'ye indi;
 "Bitti" satırı kapattı. Hata yok.
+
+── 06.10.2026 (ek 19) · SINIF SİLME: SEVİYEDE DÜZENLEME KİPİ ────────────
+Öğretmen: "okul svg sinde sınıf nasıl siliniyor" — siliniyordu diyemedik:
+okul penceresinde kapı yalnız sınıfı açıyordu. Sınıf menüsü (Aç / İsmi
+Değiştir / Arşivle / Sınıfı Sil) sadece öğretmen profilindeki okul
+haritasının düzenleme modunda vardı; başlıktaki okul tuşu kalkınca oraya
+ulaşmak da zorlaştı.
+
+Öğretmenin seçtiği yol: SEVİYEDE DÜZENLEME KİPİ.
+ · Her seviye satırında "Ayarlar"ın solunda kalem tuşu.
+ · Basınca o satır kipe giriyor: kapılar kırmızı kesik çerçeveye dönüyor,
+   kalem tuşu kırmızı yanıyor.
+ · Kipteyken kapıya basmak sınıfı AÇMIYOR, sınıf menüsünü açıyor. Menü
+   yeniden yazılmadı — profildeki tpSinifPopupAc penceresinin aynısı.
+ · Kalem tuşuna yeniden basınca kip kapanıyor; aynı anda tek seviye kipte.
+ · Menü kapanınca okul paneli kendini tazeliyor, sonuç hemen görünüyor.
+Yanlışlıkla silme riski düşük: kalem → kapı → "Sınıfı Sil" → işlem
+şifresi → onay. Dört adım.
+
+Denendi: başlangıçta kip kapalı, kapı sınıfı açıyor; kaleme basınca iki
+kapı da düzenleme kipine geçiyor; kapıya basınca menü açılıyor ve dört
+seçenek de yerinde (Sınıfı Aç / İsmi Değiştir / Arşivle / Sınıfı Sil);
+menü kapanınca panel tazeleniyor. Hata yok.
+
+── 06.10.2026 (ek 20) · OKUL PANELİ MASAÜSTÜNDE BÜYÜK ───────────────────
+Öğretmen: "okul svg sinde masaüstünde sınıflar yatay olarak daha büyük
+olsun, yazı boyutları genel olarak büyük olsun."
+
+Pencere artık anasayfanın içinde açık duruyor, orada yer bol — telefon
+ölçüsünde kalmasının anlamı yoktu. Kurallar YALNIZ geniş ekranda; telefon
+düzeni bir piksel değişmedi (ölçüldü).
+
+≥900 px:
+ · sınıf kapıları 0,85 → 1,12 rem, en az 92 px genişlik, 92×54 px
+ · seviye adı 0,93 → 1,12 rem · kurum tabelası 1,22 rem
+ · Ayarlar, Seviye Ekle, Başka, + Kurum Ekle, "sınıf yok" yazıları büyüdü
+ · hızlı seviye rakamları 38 → 48 px, şube harfleri 1,06 rem
+ · bina 540 → 820 px
+≥1200 px:
+ · bina 1060 px (büyük binalar 1200 px) — kapılar büyüyünce 820 px'te
+   dördüncü kapı alt satıra kaçıyordu; artık her seviyenin sınıfları TEK
+   YATAY SATIRDA.
+
+Ölçüm: masaüstü (1440) kapı 17,9 px yazı · 92×54 px · bina 1060 px · her
+seviye tek satır · taşma yok. Telefon (390) kapı 13,1 px · bina 302 px —
+değişmedi.

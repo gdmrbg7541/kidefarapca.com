@@ -3625,3 +3625,84 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
     #llOkulPopup .okul-hizli{ transition: none; }
     #llOkulPopup .okul-ihn .ihn-cizgi animateTransform{ display: none; }
 }
+
+/* ==========================================================================
+   SEVİYEDE DÜZENLEME KİPİ  (06.10.2026)
+   Öğretmen: "okul svg sinde sınıf nasıl siliniyor" — silinmiyordu.
+   Seviye satırındaki kalem tuşu o satırı düzenleme kipine alıyor; kipteyken
+   kapıya basmak sınıfı açmıyor, sınıf menüsünü açıyor (isim / arşivle / sil).
+   ========================================================================== */
+#llOkulPopup .okul-duzen-tus{ color: #8B6A57; }
+#llOkulPopup .okul-duzen-tus.acik{
+    background: rgba(192, 57, 43, .14); color: #C0392B;
+}
+#llOkulPopup .okul-duzen-tus.acik .lli{ transform: rotate(-12deg); }
+#llOkulPopup .okul-kapi.okul-kapi-duzen{
+    border: 2px dashed #C0392B; background: #FDEDEC; color: #943126;
+    animation: okulDuzenNabiz 1.6s ease-in-out infinite;
+}
+#llOkulPopup .okul-kapi.okul-kapi-duzen:hover{ background: #C0392B; color: #fff; }
+@keyframes okulDuzenNabiz{ 0%,100%{ box-shadow: 0 0 0 0 rgba(192,57,43,.22) }
+                           50%{ box-shadow: 0 0 0 5px rgba(192,57,43,0) } }
+@media (prefers-reduced-motion: reduce){
+    #llOkulPopup .okul-kapi.okul-kapi-duzen{ animation: none; }
+}
+
+/* ==========================================================================
+   OKUL PANELİ — MASAÜSTÜNDE BÜYÜK  (06.10.2026)
+   --------------------------------------------------------------------------
+   Öğretmen: "okul svg sinde masaüstünde sınıflar yatay olarak daha büyük
+   olsun, yazı boyutları genel olarak büyük olsun."
+   Pencere artık anasayfanın içinde açık duruyor; orada bol yer var, kapılar
+   ve yazılar telefon ölçüsünde kalmasın. Kurallar YALNIZ geniş ekranda
+   (≥900 px) çalışıyor — telefon düzeni olduğu gibi.
+   ========================================================================== */
+@media (min-width: 900px){
+    /* bina genişlesin: kapılar tek satıra sığsın */
+    #llOkulPopup .okul-bina{ max-width: 820px; }
+    #llOkulPopup .okul-bina.buyuk{ max-width: 980px; }
+
+    /* kurum tabelası */
+    #llOkulPopup .okul-tabela{ font-size: 1.22rem; }
+    #llOkulPopup .okul-kep{ width: 30px; height: 30px; }
+
+    /* seviye satırı */
+    #llOkulPopup .okul-kat{ gap: 16px; padding: 14px 20px; }
+    #llOkulPopup .okul-kat-ad{ flex: 0 0 190px; font-size: 1.12rem; gap: 10px; }
+    #llOkulPopup .okul-kat-ad .lli{ width: 28px; height: 28px; }
+    #llOkulPopup .okul-tutamac{ width: 20px; height: 20px; }
+
+    /* SINIF KAPILARI: yatayda belirgin biçimde büyük */
+    #llOkulPopup .okul-kapilar{ gap: 10px; }
+    #llOkulPopup .okul-kapi{
+        font-size: 1.12rem; padding: 11px 26px 12px 20px; min-width: 92px;
+        border-radius: 12px 12px 5px 5px; border-bottom-width: 4px;
+    }
+    #llOkulPopup .okul-kapi::after{ right: 9px; width: 5px; height: 5px; margin-top: -2.5px; }
+    #llOkulPopup .okul-kapi.okul-ekle{ min-width: 0; padding: 11px 16px; }
+    #llOkulPopup .okul-kapi.okul-ekle .lli{ width: 20px; height: 20px; }
+
+    /* tuşlar ve yardımcı yazılar */
+    #llOkulPopup .okul-mtus{ padding: 7px 11px; }
+    #llOkulPopup .okul-mtus .lli{ width: 22px; height: 22px; }
+    #llOkulPopup .okul-ayar-tus{ font-size: .98rem; }
+    #llOkulPopup .okul-bos{ font-size: .95rem; }
+    #llOkulPopup .okul-arsa-tus,
+    #llOkulPopup .okul-seviye-ekle{ font-size: 1.02rem; padding: 11px 20px; }
+    #llOkulPopup .okul-ekle-buyuk{ font-size: 1.08rem; }
+
+    /* hızlı seviye rakamları ve şube harfleri */
+    #llOkulPopup .okul-hizli-bas{ font-size: 1.06rem; }
+    #llOkulPopup .okul-ihn{ width: 48px; height: 48px; }
+    #llOkulPopup .okul-hizli-sira{ gap: 9px; }
+    #llOkulPopup .okul-kapi.okul-sube{ font-size: 1.06rem; min-width: 76px; }
+    #llOkulPopup .okul-sube-bitti{ font-size: .95rem; padding: 9px 15px; }
+    #llOkulPopup .okul-sube-sira{ gap: 9px; margin-inline-start: 12px; padding-inline-start: 14px; }
+}
+
+/* Geniş ekranda bina daha da açılsın: kapılar büyüdüğü için 820 px'te
+   dört kapı alt satıra kaçıyordu. Bölümün içinde yer bol. */
+@media (min-width: 1200px){
+    #llOkulPopup .okul-bina{ max-width: 1060px; }
+    #llOkulPopup .okul-bina.buyuk{ max-width: 1200px; }
+}

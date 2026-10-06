@@ -4623,9 +4623,16 @@ function llOkulPopupAc() {
             var aktif = (typeof curLId !== 'undefined' && lId === curLId && typeof curCId !== 'undefined' && cId === curCId);
             /* SINIFA GİRME EFEKTİ (05.10.2026): kapı artık bir YUVA içinde —
                yuva, kapı açılırken arkasında yanan ışığı taşıyor. */
+            /* DÜZENLEME KİPİ (06.10.2026): kalem açıkken kapı sınıfı
+               açmaz, sınıf menüsünü açar (aç / isim / arşivle / sil). */
+            var _duzen = (window._llDuzenLid === lId);
             kapilar += '<span class="okul-kapi-yuva">' +
-                '<button type="button" class="okul-kapi' + (aktif ? ' aktif' : '') + '"' +
-                ' onclick="llOkulKapiAc(this,\'' + lId + '\',\'' + cId + '\')">' +
+                '<button type="button" class="okul-kapi' + (aktif ? ' aktif' : '') +
+                (_duzen ? ' okul-kapi-duzen' : '') + '"' +
+                ' title="' + (_duzen ? 'Bu sınıfı düzenle veya sil' : '') + '"' +
+                ' onclick="' + (_duzen
+                    ? 'llKatSinifMenu(\'' + lId + '\',\'' + cId + '\')'
+                    : 'llOkulKapiAc(this,\'' + lId + '\',\'' + cId + '\')') + '">' +
                 behKacis(lvl.classes[cId].name) + '</button></span>';
         });
         /* Boş seviyede "sınıf yok" yazısı: aşağıdaki "+" her zaman
@@ -4664,6 +4671,10 @@ function llOkulPopupAc() {
            rozetinden hem sekme cubugundaki OKUL tusundan ayni yere ulasilir.
            Pencere once kapanir ki ayar penceresi ustte kalsin. */
         var ayarTus = '<span class="okul-kat-tus">' +
+            '<button type="button" class="okul-mtus okul-duzen-tus' +
+            ((window._llDuzenLid === lId) ? ' acik' : '') + '"' +
+            ' title="Sınıfları düzenle — isim değiştir, arşivle, sil"' +
+            ' onclick="llKatDuzen(\'' + lId + '\')">' + llIcon('kalem') + '</button>' +
             '<button type="button" class="okul-mtus okul-ayar-tus"' +
             ' title="Seviye ayarları — ders, ağırlık, kura ve davranış başlıkları (seviyedeki tüm sınıflara işler)"' +
             ' onclick="llOkulSeviyeAyar(\'' + lId + '\')">' + llIcon('disli') +
@@ -5153,6 +5164,30 @@ function llHizliSinif(lId, harf) {
     setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
 }
 window.llHizliSinif = llHizliSinif;
+
+/* Seviye satırında düzenleme kipini aç/kapat. Aynı anda tek seviye. */
+function llKatDuzen(lId) {
+    window._llDuzenLid = (window._llDuzenLid === lId) ? null : lId;
+    try { llOkulPopupAc(); } catch (e) { }
+}
+window.llKatDuzen = llKatDuzen;
+
+/* Kipteyken kapıya basıldı: sınıf menüsü (mevcut pencere). Menü kapanınca
+   okul paneli tazelenir ki silme/arşivleme sonucu hemen görünsün. */
+function llKatSinifMenu(lId, cId) {
+    try {
+        if (typeof tpSinifPopupAc !== 'function') return;
+        tpSinifPopupAc(lId, cId);
+    } catch (e) { return; }
+    var tur = 0;
+    var z = setInterval(function () {
+        tur++;
+        if (document.getElementById('tpSinifPopup')) { if (tur > 400) clearInterval(z); return; }
+        clearInterval(z);
+        setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 400);
+    }, 300);
+}
+window.llKatSinifMenu = llKatSinifMenu;
 
 function llHizliBitir() {
     window._llHizliLid = null;
