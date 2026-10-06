@@ -129,6 +129,21 @@
         '<path class="sa-nabiz" d="M6.6 13.4h8.4M6.6 16h5.8" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>'
     ];
 
+    /* Rozetteki okul: anasayfadaki Sınıflarım kategorisiyle ve okul
+       penceresindeki binayla aynı dil — kırmızı çatı, yeşil kapı. */
+    var OKUL_SVG =
+        '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#D84315"/>' +
+        '<rect x="4.4" y="8.8" width="15.2" height="12.6" rx="1.4" fill="#fff"' +
+        ' stroke="#C7D0DA" stroke-width="1.1"/>' +
+        '<rect x="6.6" y="11" width="3.4" height="3" rx=".7" fill="#FDEBD0"' +
+        ' stroke="#E0B37A" stroke-width=".9"/>' +
+        '<rect x="14" y="11" width="3.4" height="3" rx=".7" fill="#FDEBD0"' +
+        ' stroke="#E0B37A" stroke-width=".9"/>' +
+        '<rect x="9.6" y="15.4" width="4.8" height="6" rx=".8" fill="#16A085"/>' +
+        '<circle cx="13.2" cy="18.4" r=".55" fill="#fff"/>' +
+        '</svg>';
+
     /* ---------------------------------------------------------- BİÇİM */
     function stilKur() {
         if (document.getElementById('saStil')) return;
@@ -205,6 +220,24 @@
                (öğretmen: "kaç sınıf olduğunu gösteren sınıf rakamı
                olmasın") — okun kendisi zaten başka sınıf olduğunu söylüyor. */
             '#ll-root #content .tabs #active-class-title .rz-say{ display:none !important; }',
+            /* OKUL SİMGESİ (06.10.2026) — öğretmen: "liste açıkken diğer
+               sınıfları açmak için bastığımız ok yerine okul svg si olsun,
+               sınıflar okul svg si içinden seçilerek açılsın, yani
+               görselleştirelim". Ok yerine okul: basınca okul penceresi
+               kendi sekmesinde açılıyor, sınıflar binanın kapılarından
+               seçiliyor. */
+            /* Tuşun kendisi 26x26 sabitti (küçük ok için yapılmıştı) ve okul
+               çizimini yanlardan eziyordu: yükseklik 28'e çıkıyor ama genişlik
+               16'da kalıyordu. Ölçü artık içeriğe göre. */
+            '#ll-root #content .tabs #active-class-title .rz-ok{',
+            '  width:auto !important; height:auto !important; padding:4px 5px; }',
+            '#ll-root #content .tabs #active-class-title .rz-ok svg{',
+            '  flex:0 0 auto; width:28px !important; height:28px !important; }',
+            '@media (max-width:620px){',
+            '  #ll-root #content .tabs #active-class-title .rz-ok svg{',
+            '    width:24px !important; height:24px !important; } }',
+            /* ok değil artık: açılınca dönmesin */
+            '#ll-root #content .tabs #active-class-title.acik .rz-ok{ transform:none; }',
             '#ll-root #content .tabs #active-class-title .rz-bas{ font-size:1.04rem;',
             '  font-weight:600; line-height:1.15; white-space:nowrap; }',
             '@media (max-width:620px){',
@@ -324,7 +357,23 @@
         dongu(svg, S.liste, 450);
     }
 
-    /* Rozetin iki işini ayır: ok en solda, hemen sağında ince çizgi, sonra
+    /* Oku okul simgesine çevir: artık "aşağı açılır liste" değil, "okuluma
+       gir" demek. Tıklayınca okul penceresi kendi sekmesinde açılıyor;
+       sınıflar oradaki binanın kapılarından seçiliyor. Okul sekmesini açan
+       düzenek yoksa eski iş (küçük sınıf seçici) yedek olarak duruyor. */
+    function okulaCevir(ok) {
+        if (ok.__saOkul) return;
+        ok.innerHTML = OKUL_SVG;
+        ok.setAttribute('title', 'Okulum — sınıflarımı aç');
+        ok.setAttribute('aria-label', 'Okulum — sınıflarımı aç');
+        ok.setAttribute('onclick',
+            'event.stopPropagation();' +
+            'if(window.KidefSinifBag&&KidefSinifBag.okulSekmesiAc){KidefSinifBag.okulSekmesiAc();}' +
+            'else if(typeof llSinifListesiAc===\'function\'){llSinifListesiAc();}');
+        ok.__saOkul = 1;
+    }
+
+    /* Rozetin iki işini ayır: okul simgesi en solda, hemen sağında ince çizgi, sonra
        bu sınıfın kendi parçası. Tek sınıfı olan öğretmende ok yok — o zaman
        ayrılacak bir şey de yok, çizgi konmuyor. */
     function rozetAyir(r) {
@@ -337,7 +386,8 @@
         var ok = r.querySelector('.rz-ok');
         if (!ok) return;                      /* tek sınıf: ok da ayırıcı da yok */
 
-        r.insertBefore(ok, r.firstChild);     /* ok en sola */
+        okulaCevir(ok);
+        r.insertBefore(ok, r.firstChild);     /* okul simgesi en sola */
         var ayr = document.createElement('span');
         ayr.className = 'rz-ayr';
         ayr.setAttribute('aria-hidden', 'true');

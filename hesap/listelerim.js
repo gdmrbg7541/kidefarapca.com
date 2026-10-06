@@ -4549,13 +4549,22 @@ function llOkulPopupAc() {
        sinif listesi kapali kaliyordu. Artik once Listelerim gorunumune
        donulur ve en son acik olan sinif geri acilir; pencere onun ustune
        gelir, kapatilinca liste acik durur. */
+    /* OKUL SEKMESİNDE ARKA PLAN AÇILMAZ (06.10.2026) — öğretmen: "okul
+       svg sine basınca sadece okul svg si açılsın, arka kısımda sınıf
+       listeleri açılmasın". Okul tuşu artık kendi sekmesini açıyor
+       (index.html?okul=1); o sekmede Listelerim'e geçmek ve son sınıfı
+       geri açmak istenmiyor — pencere tek başına duruyor. Normal
+       sekmede davranış aynı: pencere listenin üstüne gelir. */
     try {
-        if (typeof appState !== 'undefined' && appState.currentView !== 'listelerim-section' &&
-            typeof changeView === 'function') {
-            changeView('listelerim-section');
-            try { initListelerim(); } catch (e) { }
+        var _yalnizOkul = !!(window.KidefSinifBag && window.KidefSinifBag.yalnizOkul);
+        if (!_yalnizOkul) {
+            if (typeof appState !== 'undefined' && appState.currentView !== 'listelerim-section' &&
+                typeof changeView === 'function') {
+                changeView('listelerim-section');
+                try { initListelerim(); } catch (e) { }
+            }
+            setTimeout(function () { try { llSonSinifAcBekle(); } catch (e) { } }, 120);
         }
-        setTimeout(function () { try { llSonSinifAcBekle(); } catch (e) { } }, 120);
     } catch (e) { }
     /* VERI HENUZ YUKLENMEMIS OLABILIR. Basliktaki okul tusuna, siteye yeni
        girilip Listelerim'e hic ugranmadan basilirsa "data" bos oluyordu ve
@@ -4961,6 +4970,21 @@ function llKatSurukleBagla(kok) {
 window.llKatSurukleBagla = llKatSurukleBagla;
 
 function llOkulSinifSec(lId, cId) {
+    /* OKUL SEKMESİNDE SINIF AYRI SEKMEDE (06.10.2026) — öğretmen: "açık
+       olan okul svg sinde bi sınıfa basınca da ayrı sekmede sınıf listesi
+       açılsın". Okul sekmesi yalnız seçim yapılan yer; sınıfın kendisi
+       kendi sekmesinde açılıyor ve okul penceresi AÇIK KALIYOR, böylece
+       arka arkaya birkaç sınıf açılabiliyor.
+       Normal sekmede (pencere listenin üstündeyken) davranış DEĞİŞMİYOR:
+       sınıf aynı sekmede seçilir. */
+    try {
+        if (window.KidefSinifBag && window.KidefSinifBag.yalnizOkul &&
+            typeof window.KidefSinifBag.adres === 'function') {
+            window.open(window.KidefSinifBag.adres(lId, cId), '_blank', 'noopener');
+            try { if (window.KidefSinifBag.kapiSifirla) window.KidefSinifBag.kapiSifirla(); } catch (e) { }
+            return;
+        }
+    } catch (e) { }
     llOkulPopupKapat();
     /* Pencere artik sitenin HER YERINDEN acilabiliyor (baslikta okul tusu).
        Listelerim gorunumu acik degilse once oraya gecilmeli; yoksa sinif

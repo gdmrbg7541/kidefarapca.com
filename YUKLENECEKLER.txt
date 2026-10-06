@@ -6272,3 +6272,59 @@ Ayırıcı okun hemen sağında; iki işi hâlâ ayırıyor, yeri değişti.
    yukarı dönüyor, pencere rozetin altına yaslanıyor (denendi, 3 sınıf
    listelendi, hata yok).
  · Tek sınıfı olan öğretmende ok yok — ayırıcı da konmuyor.
+
+── 06.10.2026 (ek 6) · OKUL PENCERESİ KENDİ SEKMESİNDE ──────────────────
+Öğretmen: "hiç sınıf kurmayan ama öğretmen olarak giriş yapanlar için
+kurum seviye oluşturmasını teşvik amaçlı sınıflarım kategorisi açık olsun,
+ayrıca okul svg sine basınca da ayrı sekme açılsın, okul svg sine basınca
+sadece okul svg si açılsın arka kısımda sınıf listeleri açılmasın, açık
+olan okul svg sinde bi sınıfa basınca da ayrı sekmede sınıf listesi
+açılsın." · "liste açıkken diğer sınıfları açmak için bastığımız ok yerine
+okul svg si olsun, sınıflar okul svg si içinden seçilerek açılsın, yani
+görselleştirelim."
+
+1) sistem/siniflarim.js — KURUMU OLMAYAN ÖĞRETMENE DAVET.
+   Keşif: tarayıcıda hiç veri yoksa hesap/listelerim.js ÜÇ ÖRNEK SEVİYE
+   kuruyor ("1./2./3. Seviye"). Yani "hiç sınıf kurmamış" öğretmenin
+   ekranı gerçekte boş değil. Bu yüzden ölçüt sınıf yokluğu değil KURUM
+   yokluğu: kurumu olmayan herkes büyük okul çizimi, bir cümlelik
+   açıklama ve "+ Kurum Ekle" tuşuyla karşılanıyor. Hiç sınıfı da yoksa
+   dil "Okulunu ekleyerek başla" oluyor ve "Kurumsuz tek sınıf ekle"
+   seçeneği de çıkıyor. Ayrıca veri henüz hiç yüklenmemişken de bölüm
+   çiziliyor (eskiden sessizce atlanıyordu).
+2) index.html + sistem/sinifbag.js — OKUL KENDİ SEKMESİNDE.
+   Okul penceresini açan iki tuş da (başlıktaki okul simgesi ve "sınıf
+   seç" davetindeki "Okulu aç") artık index.html?okul=1 adresini yeni
+   sekmede açıyor. O sekmede: site başlığı gizli, pencerenin arka perdesi
+   MAT (arkada anasayfa sızmıyor), Listelerim'e geçilmiyor ve son sınıf
+   geri açılmıyor. Pencere kapatılınca sekme kendini kapatıyor (denendi);
+   tarayıcı izin vermezse başlık geri gelip anasayfaya dönülüyor.
+3) hesap/listelerim.js — iki kural KidefSinifBag.yalnizOkul'a bakıyor:
+   llOkulPopupAc arka planı açmıyor, llOkulSinifSec sınıfı YENİ SEKMEDE
+   açıyor ve okul penceresini AÇIK BIRAKIYOR (arka arkaya birkaç sınıf
+   açılabilsin; kapı animasyonu da başa alınıyor). Normal sekmede ikisi
+   de eskisi gibi.
+4) sistem/sekmeanim.js — ROZETTEKİ OK YERİNE OKUL.
+   Sınıf rozetinin solundaki ok artık okul simgesi; basınca okul penceresi
+   kendi sekmesinde açılıyor ve sınıflar binanın kapılarından seçiliyor.
+   Tuşun ölçüsü 26x26 sabitti (küçük ok için yapılmıştı) ve okul çizimini
+   yanlardan eziyordu — ölçü içeriğe göre yapıldı.
+
+Zincir denendi: okul tuşu → okul sekmesi (pencere tek başına) → kapıya
+bas → sınıf kendi sekmesinde (başlıksız, liste açık), okul penceresi hâlâ
+açık. Hata yok.
+Üretici: _kaynak/uretici/okulSekmesi.py + okulSekmesi2.py
+Yedek:   _kaynak/yedekler/20261006-okul-sekmesi/
+
+── 06.10.2026 (ek 7) · SEKMEDE SINIFIN ADI ──────────────────────────────
+Öğretmen: "bi sınıf açıldığında tarayıcı sekmesinde o sınıfın ismi
+görünsün."
+
+sistem/sinifbag.js: sekme adı artık "5/A · kidefarapca.com".
+ · Sınıfın adı EN BAŞTA: tarayıcı sekmesi dar, yalnız ilk harfler okunuyor;
+   site adı arkada kalıyor.
+ · Ad perde için zaten senkron okunduğundan sayfa daha YÜKLENİRKEN
+   sekmede görünüyor (ölçüldü).
+ · Sekme içinde sınıf değişirse ad da değişiyor (5/A → 6/A).
+ · Okul sekmesi "Okulum · kidefarapca.com".
+ · Normal açılışta ve geçersiz bağlantıda başlık değişmiyor.

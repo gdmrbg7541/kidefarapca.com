@@ -50,6 +50,7 @@
 
     var PERDE_ID = 'sbPerde';
     var YALNIZ = 'sb-yalniz-sinif';   /* <html> işareti: bu sekme sınıf sekmesi */
+    var YALNIZ_OKUL = 'sb-yalniz-okul'; /* <html> işareti: bu sekme okul sekmesi */
     var KORUMA_SURE = 7000;      /* görünümü koruma süresi (ms) */
     var KARARLI = 3;             /* kaç yoklama yerinde kalırsa perde kalkar */
 
@@ -122,6 +123,24 @@
 
     function basligiGeriVer() {
         try { document.documentElement.classList.remove(YALNIZ); } catch (e) { }
+    }
+
+    /* ------------------------------------------------- SEKME ADI ----
+       Öğretmen (06.10.2026): "bi sınıf açıldığında tarayıcı sekmesinde o
+       sınıfın ismi görünsün."
+
+       Tarayıcı sekmesi dar: yalnız ilk birkaç harf okunuyor. O yüzden
+       sınıfın adı EN BAŞA konuyor ("5/A · kidefarapca.com"), site adı
+       arkada kalıyor. Ad, perde için zaten senkron okunduğundan sayfa
+       daha yüklenirken sekmede görünüyor; sınıf değişirse ad da
+       değişiyor (aşağıdaki saniyelik yoklama). */
+    var SITE_ADI = 'kidefarapca.com';
+
+    function sekmeAdi(ad) {
+        try {
+            var yeni = (ad ? ad + ' · ' : '') + SITE_ADI;
+            if (document.title !== yeni) document.title = yeni;
+        } catch (e) { }
     }
 
     function kac(t) {
@@ -213,6 +232,100 @@
         }, 320);
     }
 
+    /* ====================================================== OKUL SEKMESİ
+       Öğretmen (06.10.2026): "okul svg sine basınca da ayrı sekme açılsın,
+       okul svg sine basınca sadece okul svg si açılsın arka kısımda sınıf
+       listeleri açılmasın; açık olan okul svg sinde bi sınıfa basınca da
+       ayrı sekmede sınıf listesi açılsın."
+
+       Adres:  index.html?okul=1
+
+       O sekmede YALNIZ okul penceresi var: site başlığı gizli, pencerenin
+       arka perdesi saydam değil mat (arkada anasayfa sızmasın), Listelerim
+       görünümüne geçilmiyor ve son sınıf geri açılmıyor (bunu
+       hesap/listelerim.js, KidefSinifBag.yalnizOkul'a bakarak yapıyor).
+       Pencereden bir sınıf seçilince sınıf KENDİ sekmesinde açılıyor;
+       okul penceresi açık kalıyor, arka arkaya birkaç sınıf açılabilsin.
+       Pencere kapatılınca sekme kendini kapatıyor; tarayıcı izin vermezse
+       (adres elle açılmışsa olur) başlık geri gelip anasayfaya dönülüyor. */
+    var yalnizOkul = false;
+
+    function okulAdres() { return 'index.html?okul=1'; }
+
+    function okulSekmesiAc() {
+        /* noopener YOK: sekmenin kendini kapatabilmesi için açan pencereyle
+           bağı gerekiyor. Aynı köken, kendi sayfamız. */
+        try { window.open(okulAdres(), '_blank'); }
+        catch (e) { try { location.href = okulAdres(); } catch (x) { } }
+    }
+
+    function okulModuMu() {
+        try { return new URLSearchParams(location.search).get('okul') === '1'; }
+        catch (e) { return false; }
+    }
+
+    function okulStil() {
+        if (document.getElementById('sbOkulStil')) return;
+        var s = document.createElement('style');
+        s.id = 'sbOkulStil';
+        s.textContent = [
+            /* pencerenin arka perdesi mat olsun: arkada site görünmesin */
+            'html.' + YALNIZ_OKUL + ' #llOkulPopup{',
+            '  background:#EEF1F5 !important; backdrop-filter:none !important; }',
+            /* pencere bu sekmede tek başına: biraz daha geniş dursun */
+            'html.' + YALNIZ_OKUL + ' #llOkulPopup .okul-panel{ max-height:94vh; }'
+        ].join('\n');
+        (document.head || document.documentElement).appendChild(s);
+        document.documentElement.classList.add(YALNIZ_OKUL);
+    }
+
+    /* Sınıf yeni sekmede açıldıktan sonra kapı animasyonunu başa al —
+       pencere açık kalıyor, öğretmen hemen başka bir sınıfa basabilsin. */
+    function kapiSifirla() {
+        try {
+            var k = document.getElementById('llOkulPopup');
+            if (!k) return;
+            k.querySelectorAll('.acildi').forEach(function (x) { x.classList.remove('acildi'); });
+            k.querySelectorAll('.aciliyor').forEach(function (x) { x.classList.remove('aciliyor'); });
+            k.querySelectorAll('.girildi').forEach(function (x) { x.classList.remove('girildi'); });
+        } catch (e) { }
+    }
+
+    function okulKur() {
+        yalnizOkul = true;
+        basligiGizle();
+        okulStil();
+        sekmeAdi('Okulum');
+        perdeAc({ ad: 'Okulum', kurum: 'sınıflarım açılıyor' });
+
+        var tur = 0, acildi = false;
+        var z = setInterval(function () {
+            tur++;
+            if (!acildi) {
+                if (typeof llOkulPopupAc === 'function') {
+                    try { llOkulPopupAc(); acildi = true; perdeKapa(); } catch (e) { }
+                } else if (tur > 60) {        /* ~15 sn: açılamadı */
+                    clearInterval(z); perdeKapa(); basligiGeriVer();
+                    try { document.documentElement.classList.remove(YALNIZ_OKUL); } catch (x) { }
+                }
+                return;
+            }
+            /* Pencere kapatıldıysa sekmeyi kapat. */
+            if (!document.getElementById('llOkulPopup')) {
+                clearInterval(z);
+                try { window.close(); } catch (e) { }
+                setTimeout(function () {         /* kapanmadıysa siteye dön */
+                    try {
+                        basligiGeriVer();
+                        document.documentElement.classList.remove(YALNIZ_OKUL);
+                        if (typeof changeView === 'function') changeView('home-hub-section');
+                        history.replaceState(null, '', location.pathname);
+                    } catch (x) { }
+                }, 220);
+            }
+        }, 250);
+    }
+
     /* ------------------------------------------------------ AÇILIŞ -- */
     function hazirMi(h) {
         try {
@@ -302,17 +415,22 @@
                     if (kacir >= 2) { basligiGeriVer(); basligaBakiliyor = false; }
                 }
             } catch (e) { }
-            /* (b) sekme içinde sınıf değiştiyse adres de onu göstersin. */
+            /* (b) sekme içinde sınıf değiştiyse adres ve SEKME ADI da
+               onu göstersin. */
             try {
                 if (!window.llAktifSinif) return;
                 var a = window.llAktifSinif();
                 if (!a || !a.lId || !a.cId) return;
+                var yeniAd = kayitliAd(a);
+                if (yeniAd) sekmeAdi(yeniAd.ad);
                 var su = parametre();
                 if (su && su.lId === a.lId && su.cId === a.cId) return;
                 history.replaceState(null, '', adres(a.lId, a.cId) + location.hash);
             } catch (e) { }
         }, 1000);
     }
+
+    if (okulModuMu()) okulKur();
 
     var hedef = parametre();
     if (hedef) {
@@ -323,19 +441,27 @@
                başlığıyla birlikte normal açılsın. */
             perdeAc(bilgi);
             basligiGizle();
+            sekmeAdi(bilgi.ad);          /* sekmede sınıf adı, daha yüklenirken */
         }
 
         var tur = 0;
         var zaman = setInterval(function () {
             tur++;
             if (hazirMi(hedef)) { clearInterval(zaman); ac(hedef); adresIzle(); return; }
-            if (tur > 60) { clearInterval(zaman); perdeKapa(); basligiGeriVer(); }  /* ~15 sn */
+            if (tur > 60) {                       /* ~15 sn: açılamadı */
+                clearInterval(zaman); perdeKapa(); basligiGeriVer(); sekmeAdi('');
+            }
         }, 250);
     }
 
     window.KidefSinifBag = {
-        adres: adres, parametre: parametre,
+        adres: adres, parametre: parametre, sekmeAdi: sekmeAdi,
         ac: ac, perdeKapa: perdeKapa,
-        basligiGeriVer: basligiGeriVer
+        basligiGeriVer: basligiGeriVer,
+        okulAdres: okulAdres, okulSekmesiAc: okulSekmesiAc,
+        kapiSifirla: kapiSifirla,
+        /* hesap/listelerim.js buna bakıyor: okul sekmesinde arka planı
+           açmıyor ve sınıfı yeni sekmede açıyor. */
+        get yalnizOkul() { return yalnizOkul; }
     };
 })();

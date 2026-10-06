@@ -69,6 +69,21 @@
     }
     function gorunurMu() { return !misafirMi() && ogretmenMi(); }
 
+    /* Davet kutusundaki büyük okul: anasayfadaki küçük okul simgesinin
+       aynısı değil — kapısı ve bayrağı belirgin, "burası senin okulun"
+       desin diye. */
+    var BUYUK_OKUL_SVG =
+        '<svg viewBox="0 0 48 48" aria-hidden="true">' +
+        '<path d="M24 4l19 9.6V17H5v-3.4z" fill="#D84315"/>' +
+        '<rect x="8" y="17" width="32" height="25" rx="2.4" fill="#fff" stroke="#C7D0DA" stroke-width="1.6"/>' +
+        '<rect x="12" y="21" width="7" height="6" rx="1.2" fill="#FDEBD0" stroke="#E0B37A" stroke-width="1.2"/>' +
+        '<rect x="29" y="21" width="7" height="6" rx="1.2" fill="#FDEBD0" stroke="#E0B37A" stroke-width="1.2"/>' +
+        '<rect x="19" y="30" width="10" height="12" rx="1.4" fill="#EAF6F3" stroke="#16A085" stroke-width="1.4"/>' +
+        '<circle cx="26.4" cy="36" r="1" fill="#16A085"/>' +
+        '<path d="M24 4V1.4M24 1.4h5.2l-1.3 1.8 1.3 1.8H24" fill="#16A085"' +
+        ' stroke="#16A085" stroke-width="1.1" stroke-linejoin="round"/>' +
+        '</svg>';
+
     /* -------------------------------------------------------- BİÇİMLER */
     function stilKur() {
         if (document.getElementById('sn-stil')) return;
@@ -115,6 +130,26 @@
             '#' + BOLUM_ID + ' .sn-kurum-ekle:hover{ background:#FFF6EC; border-color:#E67E22; color:#8E4B10; }',
             /* boş durum */
             '#' + BOLUM_ID + ' .sn-bos{ color:#8A93A0; font-size:.92rem; margin:0 0 12px; }',
+            /* HİÇ KURUM YOKKEN ÇIKAN DAVET */
+            '#' + BOLUM_ID + ' .sn-davet{ background:#fff; border:1px dashed #C7D0DA;',
+            '  border-radius:16px; padding:26px 20px 22px; text-align:center;',
+            '  display:flex; flex-direction:column; align-items:center; gap:4px; }',
+            '#' + BOLUM_ID + ' .sn-davet svg{ width:62px; height:62px; margin-bottom:6px; }',
+            '#' + BOLUM_ID + ' .sn-davet-bas{ margin:0; font-weight:800; font-size:1.08rem;',
+            '  color:#1F2430; }',
+            '#' + BOLUM_ID + ' .sn-davet-alt{ margin:0 0 12px; color:#5B6471; font-size:.94rem;',
+            '  max-width:46ch; line-height:1.45; }',
+            '#' + BOLUM_ID + ' .sn-davet-tus{ border:0; cursor:pointer; font-family:inherit;',
+            '  font-weight:800; font-size:1rem; color:#fff; background:#16A085;',
+            '  border-radius:12px; padding:11px 22px;',
+            '  box-shadow:0 4px 12px rgba(22,160,133,.28);',
+            '  transition:transform .12s, box-shadow .15s; }',
+            '#' + BOLUM_ID + ' .sn-davet-tus:hover{ transform:translateY(-1px);',
+            '  box-shadow:0 7px 16px rgba(22,160,133,.34); }',
+            '#' + BOLUM_ID + ' .sn-davet-ikinci{ margin-top:8px; border:0; background:none;',
+            '  cursor:pointer; font-family:inherit; font-size:.9rem; color:#5B6471;',
+            '  text-decoration:underline; text-underline-offset:3px; padding:4px 6px; }',
+            '#' + BOLUM_ID + ' .sn-davet-ikinci:hover{ color:#1F2430; }',
             /* seviye seçici */
             '#snSeviye{ position:fixed; inset:0; z-index:10060; background:rgba(31,36,48,.28); }',
             '#snSeviye .sns-panel{ position:fixed; background:#fff; border:1px solid #E3E8EF;',
@@ -230,8 +265,13 @@
         var bolum = document.getElementById(BOLUM_ID);
         if (!gorunurMu()) { if (bolum) bolum.classList.remove('gor'); return; }
 
-        var v = veriOku();
-        if (!v) return;                    /* veri henüz yok: bir sonraki turda */
+        /* VERİ HENÜZ YOKKEN DE ÇİZ (06.10.2026) — öğretmen: "hiç sınıf
+           kurmayan ama öğretmen olarak giriş yapanlar için kurum seviye
+           oluşturmasını teşvik amaçlı sınıflarım kategorisi açık olsun".
+           Yeni kayıt olmuş öğretmende "data" henüz hiç oluşmamış
+           olabiliyor; eskiden burada çıkılıp hiçbir şey çizilmiyordu ve
+           öğretmen başlamak için nereye basacağını göremiyordu. */
+        var v = veriOku() || { kurumlar: {}, gruplar: {} };
 
         if (!bolum) {
             stilKur();
@@ -255,12 +295,41 @@
         kIdler.forEach(function (kId) {
             ic += kurumKutusu(kId, v.kurumlar[kId].name, v.gruplar[kId] || []);
         });
-        /* Kurumsuz sınıflar: ancak varsa ya da hiç kurum yoksa göster. */
-        if ((v.gruplar[''] && v.gruplar[''].length) || !kIdler.length) {
-            ic += kurumKutusu('GENEL', 'Genel', v.gruplar[''] || []);
+        /* Kurumsuz sınıflar: ancak varsa göster. */
+        var kurumsuz = (v.gruplar[''] && v.gruplar[''].length) ? v.gruplar[''] : null;
+        if (kurumsuz) ic += kurumKutusu('GENEL', 'Genel', kurumsuz);
+
+        /* KURUM YOKSA DAVET (06.10.2026) — öğretmen: "hiç sınıf kurmayan
+           ama öğretmen olarak giriş yapanlar için kurum seviye
+           oluşturmasını teşvik amaçlı sınıflarım kategorisi açık olsun".
+           ÖLÇÜT SINIF DEĞİL KURUM: tarayıcıda hiç veri yoksa listelerim.js
+           üç tane ÖRNEK seviye kuruyor, yani yeni öğretmenin ekranı
+           gerçekte boş olmuyor. Kurumu olmayan herkes daveti görüyor;
+           sınıfı hiç olmayana ayrıca "başla" dili ve kurumsuz sınıf
+           seçeneği sunuluyor. */
+        if (!kIdler.length) {
+            var hicYok = !kurumsuz;
+            ic += '<div class="sn-davet">' + BUYUK_OKUL_SVG +
+                '<p class="sn-davet-bas">' +
+                (hicYok ? 'Okulunu ekleyerek başla' : 'Okulunu ekle') + '</p>' +
+                '<p class="sn-davet-alt">' + (hicYok
+                    ? 'Kurumunu ve 5–10. sınıflarını tanımla; her sınıfın listesi, ' +
+                      'defteri ve materyalleri buradan tek tıkla açılsın.'
+                    : 'Sınıfların şu an kurumsuz duruyor. Okulunu ekleyip sınıflarını ' +
+                      'onun altında topla; birden fazla okulda çalışıyorsan hepsini ' +
+                      'ayrı ayrı ekleyebilirsin.') + '</p>' +
+                '<button type="button" class="sn-davet-tus" onclick="KidefSiniflarim.kurumEkle()">' +
+                '+ Kurum Ekle</button>' +
+                (hicYok
+                    ? '<button type="button" class="sn-davet-ikinci"' +
+                      ' onclick="KidefSiniflarim.seviyeSec(this,\'GENEL\')">' +
+                      'Kurumsuz tek sınıf ekle</button>'
+                    : '') +
+                '</div>';
+        } else {
+            ic += '<button type="button" class="sn-kurum-ekle" onclick="KidefSiniflarim.kurumEkle()">' +
+                '+ Kurum Ekle</button>';
         }
-        ic += '<button type="button" class="sn-kurum-ekle" onclick="KidefSiniflarim.kurumEkle()">' +
-            '+ Kurum Ekle</button>';
         ic += '</div>';
 
         /* AYNI İÇERİĞİ YENİDEN BASMA (06.10.2026) — öğretmen: "index
