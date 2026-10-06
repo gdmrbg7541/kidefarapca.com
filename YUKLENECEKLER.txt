@@ -6205,3 +6205,21 @@ sistem/sekmeanim.js içinde:
  · Kronometrenin ibresi ve zar, SVG'de transform-origin tarayıcıya göre
    farklı okunduğu için simgenin dışına taşıp yazının üstüne biniyordu;
    transform-box:view-box ile çerçeveye sabitlendi.
+
+── 06.10.2026 (ek 2) · ROZETİN İÇİNDEKİ AYIRICI ─────────────────────────
+Öğretmen: "sınıf listesinde diğer sınıfların açılma kısmı ile sınıf
+listesinin açıldığı yer arasında ayırıcı olsun ama şık olsun."
+
+Rozet tek bir tuş gibi görünüyor ama iki ayrı iş yapıyor:
+   sol  (simge · Sınıf Listesi · 5/A) → bu sınıfın öğrenci listesi
+   sağ  (sınıf sayısı · ▾)            → başka sınıfa geç
+Araya ince bir çizgi kondu; uçlarda saydama eriyor — ayırıyor ama rozeti
+ikiye bölüp sertleştirmiyor. Sağdaki sayı ile ok tek öbek yapıldı, böylece
+çizginin neyi neden ayırdığı bakar bakmaz anlaşılıyor.
+
+İki ayrıntı:
+ · Çizgi rengini YAZIDAN alıyor (currentColor + maske). Sabit renk
+   denendi, olmadı: rozet kimi durumda beyaz zeminli, kimi durumda turuncu
+   dolgulu; beyaz çizgi beyaz zeminde görünmüyordu.
+ · Tek sınıfı olan öğretmende ok da sayı da yok — ayrılacak bir şey
+   olmadığı için çizgi de konmuyor (üç durumda da denendi).

@@ -179,6 +179,30 @@
             '  #ll-root #content .tabs #active-class-title .rz-ik{ width:28px; height:28px; } }',
             '#ll-root #content .tabs #active-class-title .rz-ik.sa-sol{ opacity:0; transform:scale(.86); }',
             '#ll-root #content .tabs #active-class-title{ gap:12px; }',
+            /* ROZETİN İÇİNDEKİ AYIRICI (06.10.2026) — öğretmen: "diğer
+               sınıfların açılma kısmı ile sınıf listesinin açıldığı yer
+               arasında ayırıcı olsun ama şık olsun".
+               Rozet tek bir tuş gibi görünüyor ama iki ayrı iş yapıyor:
+                 sol  → bu sınıfın öğrenci listesi (switchTab 0)
+                 sağ  → başka sınıfa geç (llSinifListesiAc)
+               Düz bir çizgi rozeti ikiye bölüp sertleştiriyordu; çizgi
+               uçlarda saydama eriyor — ayırıyor ama kesmiyor. */
+            '#ll-root #content .tabs #active-class-title .rz-ayr{',
+            '  flex:0 0 auto; width:1px; align-self:stretch; margin:3px 0; border-radius:1px;',
+            /* RENGİ YAZIDAN ALIYOR (currentColor): rozet kimi durumda beyaz
+               zeminli, kimi durumda turuncu dolgulu. Sabit bir renk birinde
+               görünmez oluyordu. Uçlardaki erime maskeyle — böylece renk tek
+               yerde kalıyor. Maskeyi desteklemeyen tarayıcıda düz ince çizgi
+               olarak kalır, yine iş görür. */
+            '  background:currentColor; opacity:.24;',
+            '  -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 26%,',
+            '    #000 74%, transparent 100%);',
+            '  mask-image:linear-gradient(to bottom, transparent 0%, #000 26%,',
+            '    #000 74%, transparent 100%); }',
+            /* sağdaki iki parça (sayı + ok) tek bir öbek olsun: ayırıcının
+               hangi tarafta neyi ayırdığı bakar bakmaz anlaşılsın. */
+            '#ll-root #content .tabs #active-class-title .rz-sag{',
+            '  display:inline-flex; align-items:center; gap:7px; }',
             '#ll-root #content .tabs #active-class-title .rz-bas{ font-size:1.04rem;',
             '  font-weight:600; line-height:1.15; white-space:nowrap; }',
             '@media (max-width:620px){',
@@ -293,8 +317,28 @@
         bas.className = 'rz-bas';
         bas.textContent = 'Sınıf Listesi';
         r.insertBefore(bas, ad);
+        rozetAyir(r);
         r.__saKuruldu = 1;
         dongu(svg, S.liste, 450);
+    }
+
+    /* Rozetin iki işini ayır: sayı + ok sağda tek öbek, araya ince çizgi.
+       Tek sınıfı olan öğretmende ok da sayı da yok — o zaman ayrılacak bir
+       şey de yok, çizgi konmuyor. */
+    function rozetAyir(r) {
+        if (r.querySelector('.rz-ayr')) return;
+        var ok = r.querySelector('.rz-ok');
+        if (!ok) return;
+        var say = r.querySelector('.rz-say');
+        var sag = document.createElement('span');
+        sag.className = 'rz-sag';
+        r.insertBefore(sag, say || ok);
+        if (say) sag.appendChild(say);
+        sag.appendChild(ok);
+        var ayr = document.createElement('span');
+        ayr.className = 'rz-ayr';
+        ayr.setAttribute('aria-hidden', 'true');
+        r.insertBefore(ayr, sag);
     }
 
     /* Rozet yeniden çizilince (sınıf değişimi) simge ve başlık geri gelsin.
