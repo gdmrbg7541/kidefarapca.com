@@ -6692,3 +6692,67 @@ PROFESYONELLEŞTİREN diğer dokunuşlar:
    hover'da yalnız yükselme.
  · Genel (kurumsuz) binanın soluk sürümü de aynı hizalara uydu.
 Telefon düzeni bozulmadı (ölçüldü: bina 302 px, taşma yok).
+
+── 06.10.2026 (ek 22) · «YILLIK ÇIKTILAR» KARTI KALDIRILDI ──────────────
+Öğretmen: "yıllık çıktılar kartını kaldır sınıflardan, zaten sınıf
+defterleri var o işi görüyor, tamamen kaldırabilirsin."
+
+index.html'den iki betik çıkarıldı:
+    sistem/ciktikart.js   (kartı kuran)
+    sistem/ciktivar.js    (kartın okuduğu 0,6 KB dizin)
+Dosyalar YERİNDE duruyor, silinmedi; geri istenirse index.html'deki
+yorumda duran iki satırı açmak yeterli.
+
+ÇIKTILAR KAYBOLMADI: sınıf defterinin hafta satırlarında duruyor ve
+cikti.html doğrudan açılabiliyor. Kaldırılan yalnız sınıf kartlarının
+arasındaki giriş. Sekme çubuğundaki eski yorum da güncellendi (artık
+çıktıya tek kapı var).
+
+Denendi: sayfa açılışında çıktı betikleri hiç yüklenmiyor, KidefCiktiKart
+ve KIDEF_CIKTI_VAR tanımsız; sınıf kart modülü çalışıyor (11 kart) ve
+aralarında "yillikcikti" yok. Hata yok.
+
+── 06.10.2026 (ek 23) · TABELA HİZASI + GÖRÜNÜR DÜZENLEME ───────────────
+Öğretmen: "hâlâ lacivert olan kısımla aşağı kısım yatay olarak aynı
+genişlikte değil, ayrıca seviyeyi ve seviye içindeki sınıfların silme ve
+düzeltme işlevleri daha görünür ve basit olsun."
+
+1) HİZA — geçen sefer ikisine de width:%100 vermiştim ama yetmemiş. SEBEP:
+   box-sizing content-box olduğu için %100'ün ÜSTÜNE ekleniyordu:
+       tabela = %100 + 36 px iç boşluk
+       gövde  = %100 + 2 px kenarlık
+   yani lacivert şerit gövdeden birkaç piksel genişti. border-box verildi.
+   Ölçüldü: tabela, gövde ve giriş üçü de sol 190 / sağ 1250 / en 1060 —
+   kenarlar birebir aynı.
+
+2) DÜZENLEME ARTIK YAZILI VE TEK TUŞ:
+   · Her seviye satırında "✏ Düzenle" tuşu (eskiden yalnız kalem simgesi).
+   · Basınca tuş yeşil "✓ Bitti"ye dönüyor ve o satırda her şey AÇIKÇA
+     görünüyor: "Seviye adı" ve "Seviyeyi sil" tuşları yazıyla, sınıflar da
+     kırmızı kesik çerçeveye geçip tıklanınca sınıf menüsünü açıyor
+     (İsmi Değiştir / Arşivle / Sınıfı Sil).
+   · "Bitti"ye basınca satır sadeye dönüyor — kapalıyken hiçbir kalabalık
+     yok.
+   · Seviye adı ve seviye silme mevcut işlevler (editLevelName/deleteLevel),
+     yeniden yazılmadı; iş bitince panel kendini tazeliyor, silinen seviyede
+     kip kendiliğinden kapanıyor.
+
+Denendi: kapalıyken tuş "Düzenle", işlem tuşu yok; açıkken "Bitti",
+"Seviye adı" + "Seviyeyi sil" yerinde, sınıflar düzenleme kipinde. Hata yok.
+
+── 06.10.2026 (ek 24) · «SINIFTA YENİ» + GALERİ İMAM HATİP'İN ALTINA ────
+Öğretmen: "sınıfta yeni ve galeri kısmını imam hatip kategorisinin altına
+al."
+
+İkisi tek bölümde yaşıyor (#guncellemeler: solda Sınıfta Yeni, sağda
+galeri); bölüm olduğu gibi #imam-hatip'in altına taşındı, içeriğine
+dokunulmadı.
+
+YAN ETKİ YAKALANDI: sistem/siniflarim.js kendini "#guncellemeler'in ÖNÜNE"
+koyuyordu. Güncellemeler aşağı inince Sınıflarım da onunla birlikte İmam
+Hatip'in altına kayacaktı. Çapa #imam-hatip'e çevrildi (yedek olarak eski
+çapa duruyor); Sınıflarım yine en üstte kalıyor.
+
+Yeni sıra ölçüldü: Sınıflarım (206) → İmam Hatip (863) → Sınıfta Yeni +
+Galeri (1236) → premium-kurslar → temel-beceriler → oyunlar → …
+Sınıfta Yeni de galeri de yerinde, hata yok.

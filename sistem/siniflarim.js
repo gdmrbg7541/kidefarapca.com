@@ -312,7 +312,12 @@
             bolum = document.createElement('section');
             bolum.id = BOLUM_ID;
             bolum.className = 'content-section';
-            var once = document.getElementById('guncellemeler');
+            /* ÇAPA #imam-hatip (06.10.2026): «Sınıfta Yeni» + Galeri bölümü
+               İmam Hatip'in altına taşındı; eski çapa (#guncellemeler)
+               korunsaydı Sınıflarım da onunla birlikte aşağı inerdi.
+               Sınıflarım en üstte, kataloğun altında kalmalı. */
+            var once = document.getElementById('imam-hatip') ||
+                       document.getElementById('guncellemeler');
             if (once && once.parentNode) once.parentNode.insertBefore(bolum, once);
             else {
                 var hub = document.getElementById('home-hub-section');

@@ -4665,16 +4665,29 @@ function llOkulPopupAc() {
                 '<button type="button" class="okul-sube-bitti" title="Şube eklemeyi bitir"' +
                 ' onclick="llHizliBitir()">Bitti</button></span>';
         }
+        /* DÜZENLEME KİPİ AÇIKKEN SEVİYENİN KENDİ TUŞLARI (06.10.2026):
+           "silme ve düzeltme işlevleri daha görünür ve basit olsun".
+           Saklı değil, yazılı: kapıların yanında açıkça duruyor. */
+        if (window._llDuzenLid === lId) {
+            kapilar += '<span class="okul-kat-islem">' +
+                '<button type="button" class="okul-kislem" title="Seviyenin adını değiştir"' +
+                ' onclick="llKatAdDegistir(\'' + lId + '\')">' + llIcon('kalem') +
+                '<span>Seviye adı</span></button>' +
+                '<button type="button" class="okul-kislem sil" title="Bu seviyeyi sil"' +
+                ' onclick="llKatSil(\'' + lId + '\')">' + llIcon('cop') +
+                '<span>Seviyeyi sil</span></button></span>';
+        }
         /* SEVIYE AYARLARI: bu pencere eskiden yalniz sinif secmeye yariyordu;
            ayarlara ulasmak icin profildeki okul haritasina gitmek gerekiyordu.
            Artik her seviyenin isminin yaninda dislisi var — hem sinif adi
            rozetinden hem sekme cubugundaki OKUL tusundan ayni yere ulasilir.
            Pencere once kapanir ki ayar penceresi ustte kalsin. */
+        var _kip = (window._llDuzenLid === lId);
         var ayarTus = '<span class="okul-kat-tus">' +
-            '<button type="button" class="okul-mtus okul-duzen-tus' +
-            ((window._llDuzenLid === lId) ? ' acik' : '') + '"' +
-            ' title="Sınıfları düzenle — isim değiştir, arşivle, sil"' +
-            ' onclick="llKatDuzen(\'' + lId + '\')">' + llIcon('kalem') + '</button>' +
+            '<button type="button" class="okul-mtus okul-duzen-tus' + (_kip ? ' acik' : '') + '"' +
+            ' title="' + (_kip ? 'Düzenlemeyi bitir' : 'Seviyeyi ve sınıflarını düzenle') + '"' +
+            ' onclick="llKatDuzen(\'' + lId + '\')">' + llIcon(_kip ? 'onay' : 'kalem') +
+            '<span>' + (_kip ? 'Bitti' : 'Düzenle') + '</span></button>' +
             '<button type="button" class="okul-mtus okul-ayar-tus"' +
             ' title="Seviye ayarları — ders, ağırlık, kura ve davranış başlıkları (seviyedeki tüm sınıflara işler)"' +
             ' onclick="llOkulSeviyeAyar(\'' + lId + '\')">' + llIcon('disli') +
@@ -5174,6 +5187,23 @@ window.llKatDuzen = llKatDuzen;
 
 /* Kipteyken kapıya basıldı: sınıf menüsü (mevcut pencere). Menü kapanınca
    okul paneli tazelenir ki silme/arşivleme sonucu hemen görünsün. */
+/* Seviyenin adını değiştir / seviyeyi sil — ikisi de mevcut işlevler,
+   yeniden yazılmadı; iş bitince okul paneli tazeleniyor. */
+function llKatAdDegistir(lId) {
+    try { if (typeof editLevelName === 'function') editLevelName(lId); } catch (e) { }
+    setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 300);
+}
+window.llKatAdDegistir = llKatAdDegistir;
+
+function llKatSil(lId) {
+    try { if (typeof deleteLevel === 'function') deleteLevel(lId); } catch (e) { }
+    setTimeout(function () {
+        try { if (data && data.levels && !data.levels[lId]) window._llDuzenLid = null; } catch (e) { }
+        try { llOkulPopupAc(); } catch (e) { }
+    }, 600);
+}
+window.llKatSil = llKatSil;
+
 function llKatSinifMenu(lId, cId) {
     try {
         if (typeof tpSinifPopupAc !== 'function') return;

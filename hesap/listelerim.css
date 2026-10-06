@@ -3792,3 +3792,55 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
 #llOkulPopup .okul-bina.genel .okul-giris{
     border-left-color: #DCE4E8; border-right-color: #DCE4E8;
 }
+
+/* ==========================================================================
+   TABELA HİZASI + GÖRÜNÜR DÜZENLEME  (06.10.2026)
+   --------------------------------------------------------------------------
+   Öğretmen: "hâlâ lacivert olan kısımla aşağı kısım yatay olarak aynı
+   genişlikte değil, ayrıca seviyeyi ve seviye içindeki sınıfların silme ve
+   düzeltme işlevleri daha görünür ve basit olsun."
+
+   HİZANIN SEBEBİ: tabelanın ve gövdenin box-sizing'i content-box olduğu için
+   width:%100'ün ÜSTÜNE iç boşluk ve kenarlık ekleniyordu —
+       tabela = %100 + 36 px iç boşluk
+       gövde  = %100 + 2 px kenarlık
+   yani lacivert şerit gövdeden birkaç piksel genişti. border-box ile ikisi de
+   tam olarak %100.
+   ========================================================================== */
+#llOkulPopup .okul-tabela,
+#llOkulPopup .okul-govde,
+#llOkulPopup .okul-giris,
+#llOkulPopup .okul-kat{ box-sizing: border-box; }
+
+/* "Düzenle" tuşu: artık yazılı, durumu belli */
+#llOkulPopup .okul-duzen-tus{
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit; font-weight: 700; font-size: .88rem; color: #8B6A57;
+}
+#llOkulPopup .okul-duzen-tus.acik{
+    background: #16A085; color: #fff;
+}
+#llOkulPopup .okul-duzen-tus.acik .lli{ transform: none; }
+
+/* Kip açıkken seviyenin kendi işlemleri — saklı değil, yazılı */
+#llOkulPopup .okul-kat-islem{
+    display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    margin-inline-start: 10px; padding-inline-start: 12px;
+    border-inline-start: 2px dashed rgba(139, 106, 87, .3);
+}
+#llOkulPopup .okul-kislem{
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid #E0D2BE; background: #fff; color: #7A5230; cursor: pointer;
+    font-family: inherit; font-weight: 700; font-size: .86rem;
+    border-radius: 10px; padding: 8px 13px;
+    transition: background .15s, border-color .15s, color .15s;
+}
+#llOkulPopup .okul-kislem .lli{ width: 17px; height: 17px; }
+#llOkulPopup .okul-kislem:hover{ background: #FBF3E9; border-color: #C9B393; }
+#llOkulPopup .okul-kislem.sil{ color: #C0392B; border-color: #EBC2BC; }
+#llOkulPopup .okul-kislem.sil:hover{ background: #C0392B; color: #fff; border-color: #C0392B; }
+@media (min-width: 900px){
+    #llOkulPopup .okul-duzen-tus{ font-size: .98rem; padding: 8px 14px; }
+    #llOkulPopup .okul-kislem{ font-size: .96rem; padding: 10px 16px; }
+    #llOkulPopup .okul-kislem .lli{ width: 19px; height: 19px; }
+}
