@@ -6008,3 +6008,48 @@ bilgiler olmasın."
              bilgiyarismasikacom.html
    Yedek: _kaynak/yedekler/20261006-ad-bas-harf/
    Betik: _kaynak/uretici/adBasHarf.py
+
+06.10.2026 — ANASAYFADA "SINIFLARIM" KATEGORİSİ
+   Öğretmen: "öğretmen giriş yaptığı zaman imam hatip kategorisi gibi bi
+   kategori görünsün anasayfada, + butonu olsun, öğretmen basınca 5-10
+   arası sınıf ekleyebilme, birden fazla kurum ekleyebilme, 5-10 arası
+   sınıf girdiğinde her sınıfın listelerine ulaşabilme... sınıflara
+   header yerine galeri ve site güncellemelerinin üstünde bi kategori
+   olarak hızlıca ulaşabilsin."
+   YENİ DOSYA: sistem/siniflarim.js — bölümü KENDİSİ kuruyor ve
+   "Güncellemeler ve Galeri"nin (#guncellemeler) hemen üstüne koyuyor;
+   index.html'e bölüm işaretlemesi eklenmedi.
+   İÇİNDE:
+     · her kurum kendi kutusunda; sınıflar kart olarak (seviye rakamı
+       rozeti + sınıf adı + öğrenci sayısı)
+     · karta basınca o sınıfın listeleri açılıyor (llOkulSinifSec)
+     · "Sınıf ekle" → 5'ten 10'a seviyeler + "Başka bir seviye…";
+       seviye seçilip şube yazılınca o kurumda seviye yoksa açılıyor,
+       sınıf altına ekleniyor. Aynı adlı sınıf varsa uyarıyor.
+     · "+ Kurum Ekle" → addKurum; birden çok kurum alt alta
+     · YALNIZ öğretmen/yöneticiye görünür; rol asenkron geldiği için
+       kısa aralıklarla yoklanıyor (okultusu.js ile aynı yöntem)
+   VERİ: kendi yapısını kurmuyor — okul penceresi, sınıf seçici ve bu
+   kategori aynı data (kurumlar/levels/classes) üzerinde çalışıyor ve
+   aynı save() ile yazıyor.
+   İKİ DESTEK DEĞİŞİKLİĞİ (hesap/listelerim.js):
+     · llSeviyeTaslak(ad, kurumId) — addLevel içindeki seviye nesnesi
+       (ödev %25x4 ve sınav 25/25/50 varsayılanları dahil) ayrı işleve
+       alındı, addLevel artık onu çağırıyor. Seviye biçimi TEK YERDE;
+       kategori de aynı işlevi kullanıyor, yarım seviye oluşmuyor.
+     · save() sonunda KidefSiniflarim.ciz() — sınıf/kurum nereden
+       değişirse değişsin anasayfadaki kartlar güncel kalıyor.
+   BAŞLIKTAKİ OKUL SİMGESİ DURUYOR (öğretmenin seçimi): kategori
+   anasayfada hızlı yol, okul simgesi başka sayfalardayken erişim yolu.
+   DENENDİ:
+     misafirde bölüm hiç kurulmuyor · öğretmende görünür, başlık
+     "Sınıflarım", #guncellemeler'in üstünde ve hub'ın ilk bölümü ·
+     2 kurum kutusu, 9 sınıf kartı, 2 "Sınıf ekle", 1 "+ Kurum Ekle" ·
+     seçici 5,6,7,8,9,10 + "Başka bir seviye…" · 7 + şube B seçilince
+     "7. Sınıflar" seviyesi K1 kurumunda açıldı, ağırlıkları yerinde,
+     "7-B" sınıfı eklendi, sayı 9→10 · karta basınca llOkulSinifSec
+     çağrıldı. Ekran görüntüsüyle de bakıldı. Sayfa hatası yok.
+   Dosyalar: sistem/siniflarim.js (YENİ), hesap/listelerim.js
+             (?v=20261006a), index.html
+   Yedek: _kaynak/yedekler/20261006-siniflarim/
+   Betik: _kaynak/uretici/siniflarimBagla.py

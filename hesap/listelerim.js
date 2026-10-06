@@ -1326,6 +1326,11 @@ function save() {
         }
     } catch (e) { }
 
+    /* ANASAYFADAKİ "SINIFLARIM" KATEGORİSİ (06.10.2026): sınıf/kurum
+       nereden değişirse değişsin (okul penceresi, sınıf seçici, kategori)
+       anasayfadaki kart dizisi güncel kalsın. */
+    try { if (window.KidefSiniflarim) window.KidefSiniflarim.ciz(); } catch (e) { }
+
     // 2. Eğer giriş yapılmışsa buluta (Firebase) gönder
     const user = firebase.auth().currentUser;
     if (user) {
@@ -1531,6 +1536,33 @@ function kurumAcKapa(kId) {
 }
 window.kurumAcKapa = kurumAcKapa;
 
+/* SEVİYE BİÇİMİ TEK YERDE (06.10.2026) — hem addLevel hem anasayfadaki
+   "Sınıflarım" kategorisi (sistem/siniflarim.js) bu taslağı kullanıyor.
+   İkisi ayrı yerde kurarsa ödev/sınav ağırlıkları olmayan yarım seviyeler
+   oluşur; o yüzden nesne burada, tek kopya. */
+function llSeviyeTaslak(ad, kurumId) {
+    return {
+        name: ad,
+        kurumId: kurumId || undefined,
+        classes: {},
+        planText: {},
+        config: {
+            /* Yeni seviyede otomatik 4 ödev %25 */
+            hw: [
+                { n: '1. Ödev', w: 25 }, { n: '2. Ödev', w: 25 },
+                { n: '3. Ödev', w: 25 }, { n: '4. Ödev', w: 25 }
+            ],
+            /* Yeni seviyede otomatik Sınav Ağırlıkları */
+            ex: [
+                { n: 'Dinleme', w: 25 },
+                { n: 'Konuşma', w: 25 },
+                { n: 'Yazılı', w: 50 }
+            ]
+        }
+    };
+}
+window.llSeviyeTaslak = llSeviyeTaslak;
+
 function addLevel(oncedenKurum) {
     let name = prompt("Yeni Seviye Adı (Örn: 10. Sınıflar):");
     if(name) {
@@ -1541,25 +1573,7 @@ function addLevel(oncedenKurum) {
         else kurumId = kurumSecMenu();
         if (kurumId === undefined) return;            /* kurum seciminden vazgecti */
         let id = 'L' + Date.now();
-        data.levels[id] = { 
-            name: name, 
-            kurumId: kurumId || undefined,
-            classes: {}, 
-            planText: {},
-            config: { 
-                // Yeni seviyede otomatik 4 ödev %25
-                hw: [
-                    {n: '1. Ödev', w: 25}, {n: '2. Ödev', w: 25}, 
-                    {n: '3. Ödev', w: 25}, {n: '4. Ödev', w: 25}
-                ], 
-                // Yeni seviyede otomatik Sınav Ağırlıkları
-                ex: [
-                    {n: 'Dinleme', w: 25}, 
-                    {n: 'Konuşma', w: 25}, 
-                    {n: 'Yazılı', w: 50}
-                ] 
-            } 
-        };
+        data.levels[id] = llSeviyeTaslak(name, kurumId);
         if(!data.levelOrder) data.levelOrder = [];
         data.levelOrder.push(id);
         save();
