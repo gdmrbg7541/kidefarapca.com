@@ -922,6 +922,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       }
     </style>
     <link rel="stylesheet" href="arakom.css?v=2">
+    <!-- SINIFA DOĞRUDAN BAĞLANTI (06.10.2026): index.html?sinif=…&sube=…
+         Öğretmen: "yeni sekme açılırken liste açılmalı, tekrar indexin
+         yeni bi sekmede açılmasının anlamı yok." Betik BURADA, <head>
+         içinde: sınıf bağlantısıyla açılan sekmede anasayfa hiç
+         görünmesin diye perdeyi ilk boyamadan ÖNCE çekiyor. Ayrıca
+         kartların adresini üretiyor; siniflarim.js'ten önce yüklü. -->
+    <script src="sistem/sinifbag.js?v=2"></script>
 </head>
 <body>
 
@@ -6888,6 +6895,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          açılır. Zaten her haftanın çıktısı defter kartının içinde. -->
     <!-- "Veli & Durum" sekmesi buradan KALDIRILDI: artik ogretmen profilinde,
          "Kisisel Bilgilerim"in hemen altindaki akordiyonda yasiyor. -->
+    <button class="tab" title="Sınıf Araçları" aria-label="Sınıf Araçları" onclick="switchTab(4)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.2V5a2.1 2.1 0 0 1 2.1-2.1h1.8A2.1 2.1 0 0 1 15 5v1.2" fill="none" stroke="#8d6e63" stroke-width="1.9" stroke-linecap="round"/><rect x="2.6" y="6.2" width="18.8" height="13.8" rx="2.4" fill="#e67e22"/><path d="M2.6 12.2h7.6v1.5a1.1 1.1 0 0 0 1.1 1.1h1.4a1.1 1.1 0 0 0 1.1-1.1v-1.5h7.6" fill="none" stroke="#b3541e" stroke-width="1.6"/><rect x="10.6" y="11.1" width="2.8" height="3.3" rx=".8" fill="#f6ddc5" stroke="#b3541e" stroke-width="1.1"/><path d="M5.4 9.2h3M15.6 9.2h3" stroke="#f6ddc5" stroke-width="1.5" stroke-linecap="round"/></svg><span>Sınıf Araçları</span></button>
     <!-- MATERYALLER (06.10.2026) — öğretmen: "5-10 arası sınıf
          tanımlayınca otomatik olarak imam hatip seviyelerindeki
          belgeler etkinlik kartları da kendi sınıfları için bi kopya
@@ -6895,7 +6903,6 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          sınıfın SEVİYESİNE ait belgeler ve kartlar, İmam Hatip ile
          AYNI kaynaktan (window.ihIcKur). -->
     <button class="tab" title="Materyaller — bu seviyenin belgeleri ve etkinlikleri" aria-label="Materyaller" onclick="switchTab(13)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5.6h6.2l1.6 2h8.2a1.4 1.4 0 0 1 1.4 1.4v9.4a1.4 1.4 0 0 1-1.4 1.4H4a1.4 1.4 0 0 1-1.4-1.4V7a1.4 1.4 0 0 1 1.4-1.4z" fill="#F5B041" stroke="#D68910" stroke-width="1.1" stroke-linejoin="round"/><path d="M7.6 12.4h8.8M7.6 15.4h6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg><span>Materyaller</span></button>
-    <button class="tab" title="Sınıf Araçları" aria-label="Sınıf Araçları" onclick="switchTab(4)"><svg class="lli tab-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.2V5a2.1 2.1 0 0 1 2.1-2.1h1.8A2.1 2.1 0 0 1 15 5v1.2" fill="none" stroke="#8d6e63" stroke-width="1.9" stroke-linecap="round"/><rect x="2.6" y="6.2" width="18.8" height="13.8" rx="2.4" fill="#e67e22"/><path d="M2.6 12.2h7.6v1.5a1.1 1.1 0 0 0 1.1 1.1h1.4a1.1 1.1 0 0 0 1.1-1.1v-1.5h7.6" fill="none" stroke="#b3541e" stroke-width="1.6"/><rect x="10.6" y="11.1" width="2.8" height="3.3" rx=".8" fill="#f6ddc5" stroke="#b3541e" stroke-width="1.1"/><path d="M5.4 9.2h3M15.6 9.2h3" stroke="#f6ddc5" stroke-width="1.5" stroke-linecap="round"/></svg><span>Sınıf Araçları</span></button>
 </div>
 
     <!-- MATERYALLER PANELİ (06.10.2026): içini
@@ -7588,16 +7595,18 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + butonu olsun ... sınıflara header yerine galeri ve site
          güncellemelerinin üstünde bi kategori olarak hızlıca
          ulaşabilsin." Bölümü kendisi, Güncellemeler'in üstüne koyar. -->
-    <!-- SINIFA DOĞRUDAN BAĞLANTI (06.10.2026): index.html?sinif=…&sube=…
-         Sınıf kartlarının yeni sekmede açılabilmesi için gereken adres.
-         siniflarim.js'ten ÖNCE yüklenmeli — kart çizilirken adresi
-         buradan alıyor. -->
-    <script src="sistem/sinifbag.js?v=1"></script>
     <script src="sistem/siniflarim.js?v=2"></script>
     <!-- SINIF MATERYALLERİ SEKMESİ (06.10.2026): açık sınıfın seviyesine
          ait İmam Hatip belgeleri ve etkinlik kartları, sınıfın kendi
          panelinde. Kopya değil, aynı kaynaktan çizim. -->
     <script src="sistem/sinifmateryal.js?v=1"></script>
+    <!-- SEKME SİMGELERİ — DEĞİŞEN ANİMASYONLAR (06.10.2026): öğretmen
+         "listede neler varsa, sınıf defterinde neler varsa,
+         materyallerde ve sınıf araçlarında değişen svg
+         animasyonlarla içeriğin dikkati çekilsin ... daha büyük
+         olsunlar." Simgeleri büyütüp sahneleri sırayla gösteriyor;
+         düğmelerin kendisine ve switchTab numaralarına dokunmuyor. -->
+    <script src="sistem/sekmeanim.js?v=1"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>

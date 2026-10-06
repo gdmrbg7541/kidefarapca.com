@@ -6146,3 +6146,40 @@ bilgiler olmasın."
              index.html
    Yedek: _kaynak/yedekler/20261006-sinif-yeni-sekme/
    Betik: _kaynak/uretici/sinifYeniSekme.py
+
+── 06.10.2026 · YENİ SEKME DOĞRUDAN LİSTEYLE AÇILIYOR + SEKME SİMGELERİ ──
+Öğretmen: "ayrıca yeni sekme açılırken liste açılmalı, tekrar indexin yeni
+bi sekmede açılmasının anlamı yok." · "materyaller kısmı en sağda ve
+içeriğinde belgeler ve kartlar olduğunu belirtecek şekilde sürekli değişen
+animasyonlar olsun, daha büyük olsunlar."
+
+1) sistem/sinifbag.js (YENİLENDİ, v2) — anasayfa artık görünmüyor.
+   Sınıf bağlantısıyla açılan sekmede, daha ilk boyamadan önce üstüne
+   sınıfın adını ve okulunu taşıyan bir perde çekiliyor; arkada Listelerim'e
+   geçilip sınıf seçiliyor, perde liste OTURUNCA kalkıyor (ölçümde ~1,8 sn).
+   · Betik <head> içine alındı: perde ilk boyamadan önce çekilebilsin.
+   · KORUMA: sitenin açılış akışı görünümü anasayfaya çekiyordu; bir kez
+     changeView çağırmak yetmiyordu. Açılıştan sonra en çok 7 saniye,
+     görünüm yerinde kalana kadar yeniden uygulanıyor. Öğretmen ekrana
+     dokunduğu anda koruma bitiyor — kendi tıklamasıyla yarışmıyor.
+   · Perde yalnız sınıf bu tarayıcıda KAYITLIYSA çekiliyor; değilse hiç
+     çekilmiyor (giriş ekranı perde arkasında kalmasın). Perdeye dokunmak
+     da onu kaldırıyor (iş uzarsa çıkış kapısı).
+   · ?sinif=… adresi artık silinmiyor: sekme o sınıfın sekmesi oluyor,
+     yenileme ve yer imi aynı sınıfı açıyor. Sekme içinde sınıf
+     değiştirilirse adres de güncelleniyor.
+2) index.html — "Materyaller" düğmesi sekme çubuğunun EN SAĞINA alındı.
+3) sistem/sekmeanim.js (YENİ) — sekme simgeleri 27→34 px (telefonda 28 px)
+   ve her biri o sekmenin İÇİNDEKİLERİ sırayla gösteren üçer sahneye
+   dönüştü, 3,4 sn'de bir yumuşak geçişle, sekmeler farklı anlarda:
+     Öğrenciler    → sınıf listesi · yoklama · not yıldızı
+     Sınıf Defteri → açık defter · hafta çizelgesi · işlendi kutusu
+     Sınıf Araçları→ kronometre · kum saati · takım zarı
+     Materyaller   → belge · etkinlik kartları · dolu klasör
+   Sahnelerin içinde de küçük hareketler var (ibre döner, kum akar, zar
+   sallanır, satır yazılır). Hareket istemeyen için (prefers-reduced-motion)
+   sahne değişmiyor, iç hareketler duruyor.
+   Düğmelere ve switchTab numaralarına dokunulmadı; betik devre dışı kalsa
+   site eski simgelerle çalışmaya devam eder.
+Üretici: _kaynak/uretici/sekmeVePerde.py · yedek:
+_kaynak/yedekler/20261006-sekme-ve-perde/
