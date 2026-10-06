@@ -6457,3 +6457,26 @@ checkout, paketler…) sonraya bırakmak. AMA gövdedeki 15 satır içi betik
 bu dosyalardan gelen genel değişkenleri kullanıyor; defer verilirse
 sıralama bozulur. Bu yüzden tek tek ele alınması gereken ayrı bir iş —
 öğretmene söylendi, onayı beklenecek.
+
+── 06.10.2026 (ek 13) · "LİSTELER AÇILMIYOR" — EKSİK PARÇA BULUNDU ──────
+Öğretmen: "listeler açılmıyor."
+
+Bir önceki düzeltme paneli görünür kılıyordu ama yetmiyormuş. SEBEP:
+showLLPlaceholder() yalnız sekme çubuğunu gizleyip rozeti silmiyor,
+BÜTÜN panellerin "active" işaretini de kaldırıyor:
+    content.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'))
+selectClass ise panel AÇMIYOR — işi bitince yalnız sınıf adı rozetini
+çiziyor; panel normalde rozete basınca switchTab(0) ile açılıyor.
+Sonuç: sekme çubuğu geri geliyor, rozet geri geliyor, altındaki liste
+boş kalıyor. Görünen tam olarak "listeler açılmıyor".
+
+ÇÖZÜM (sistem/sinifbag.js):
+ · uygula() sınıfı seçtikten sonra açık panel yoksa switchTab(0) çağırıyor
+   (rozetin kendi işi).
+ · yerindeMi artık açık panel de arıyor — koruma, liste gerçekten ekranda
+   olana kadar sürüyor, perde ondan önce kalkmıyor.
+
+Deney düzeneğinde üretimdeki sıra canlandırıldı (logged-in +
+showLLPlaceholder sonradan): yer tutucu paneli boşaltıyor (açık panel yok,
+liste 0 satır), koruma 1,5 sn içinde geri alıyor (açık panel tab0, liste
+dolu), perde ondan sonra kalkıyor. Hata yok.

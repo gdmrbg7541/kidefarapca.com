@@ -410,6 +410,10 @@
             if (ipucu && getComputedStyle(ipucu).display !== 'none') return false;
             var cubuk = document.querySelector('#content .tabs');
             if (cubuk && getComputedStyle(cubuk).display === 'none') return false;
+            /* Panellerden biri açık mı: yer tutucu hepsinin "active"ini
+               siliyor, selectClass ise panel açmıyor. Çubuk görünüp altı
+               boş kalabiliyordu. */
+            if (!document.querySelector('#content .tab-panel.active')) return false;
 
             if (!window.llAktifSinif) return true;      /* bilemiyorsak görünüm yeter */
             var a = window.llAktifSinif();
@@ -435,6 +439,9 @@
                 if (ipucu) ipucu.style.display = 'none';
                 var cubuk = document.querySelector('#content .tabs');
                 if (cubuk) cubuk.style.display = '';
+                /* Açık panel yoksa listeyi aç — rozete basınca olan şey. */
+                if (!document.querySelector('#content .tab-panel.active') &&
+                    typeof switchTab === 'function') switchTab(0);
             } catch (e) { }
         } catch (e) {
             try { console.warn('sınıf bağlantısı:', e && e.message); } catch (x) { }
