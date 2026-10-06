@@ -928,7 +928,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          içinde: sınıf bağlantısıyla açılan sekmede anasayfa hiç
          görünmesin diye perdeyi ilk boyamadan ÖNCE çekiyor. Ayrıca
          kartların adresini üretiyor; siniflarim.js'ten önce yüklü. -->
-    <script src="sistem/sinifbag.js?v=6"></script>
+    <script src="sistem/sinifbag.js?v=7"></script>
 </head>
 <body>
 
@@ -937,16 +937,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <header>
         <div style="display:flex; align-items:center; gap: 15px;">
             <h1 onclick="changeView('home-hub-section')" style="cursor:pointer; margin:0; white-space:nowrap;"><span id="brand-name">kidefarapca.com</span></h1>
-            <!-- OKUL: yalniz ogretmen/yonetici gorur. Sitenin her yerinden ayni
-                 pencereyi acar (kurumlar, seviyeler, siniflar + seviye ayarlari).
-                 Ayni pencere sinif adi rozetinden ve sekme cubugundaki okul
-                 tusundan da acilir; ucu de llOkulPopupAc() cagirir. -->
-            <!-- display SATIR ICI VERILMEZ: satir ici stil, .gor sinifini ezer.
-                 Varsayilan gizlilik CSS'te (#header-okul-btn{display:none}). -->
-            <button type="button" id="header-okul-btn"
-                    title="Sınıflarım ve kurumlarım — seviyeler, sınıflar ve seviye ayarları"
-                    aria-label="Sınıflarım ve kurumlarım — seviyeler, sınıflar ve seviye ayarları"
-                    onclick="if(window.KidefSinifBag&&KidefSinifBag.okulSekmesiAc){KidefSinifBag.okulSekmesiAc();}else if(typeof llOkulPopupAc==='function'){llOkulPopupAc();}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g></svg></button>
+            <!-- BAŞLIKTAKİ OKUL TUŞU KALDIRILDI (06.10.2026) — öğretmen:
+                 "headerde okul svg si olmasın". Okul penceresine iki yol
+                 kaldı: anasayfadaki "Sınıflarım" kategorisinin başlığı ve
+                 sınıf panelindeki rozetin solundaki okul simgesi.
+                 Eski tuşun kodu: _kaynak/yedekler/20261006-okul-tusu-kalksin/
+                 index.html. sistem/okultusu.js tuşu bulamayınca sessizce
+                 hiçbir şey yapmıyor; dosyaya dokunulmadı. -->
             <div id="header-live-dot" class="live-dot" style="display: none; position: absolute; top: -5px; right: -5px;" title="Canlı yayınınız başlıyor!"></div>
             <nav id="header-nav-tabs" style="display:flex; gap: 15px; margin-left: 20px;">
                 <!-- SÖZLÜK sekmesi başlıktan KALDIRILDI: artık yüzen düğme
@@ -7595,7 +7592,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + butonu olsun ... sınıflara header yerine galeri ve site
          güncellemelerinin üstünde bi kategori olarak hızlıca
          ulaşabilsin." Bölümü kendisi, Güncellemeler'in üstüne koyar. -->
-    <script src="sistem/siniflarim.js?v=3"></script>
+    <script src="sistem/siniflarim.js?v=4"></script>
     <!-- SINIF MATERYALLERİ SEKMESİ (06.10.2026): açık sınıfın seviyesine
          ait İmam Hatip belgeleri ve etkinlik kartları, sınıfın kendi
          panelinde. Kopya değil, aynı kaynaktan çizim. -->
@@ -7606,7 +7603,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          animasyonlarla içeriğin dikkati çekilsin ... daha büyük
          olsunlar." Simgeleri büyütüp sahneleri sırayla gösteriyor;
          düğmelerin kendisine ve switchTab numaralarına dokunmuyor. -->
-    <script src="sistem/sekmeanim.js?v=6"></script>
+    <script src="sistem/sekmeanim.js?v=7"></script>
     <script src="hesap/offline-packages.js"></script>
     <script src="hesap/online-packages.js"></script>
     <script src="hesap/checkout.js"></script>

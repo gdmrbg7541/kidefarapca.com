@@ -130,6 +130,16 @@
             '#' + BOLUM_ID + ' .sn-kurum-ekle:hover{ background:#FFF6EC; border-color:#E67E22; color:#8E4B10; }',
             /* boş durum */
             '#' + BOLUM_ID + ' .sn-bos{ color:#8A93A0; font-size:.92rem; margin:0 0 12px; }',
+            /* başlık tuşu: kategori başlığı okulu açıyor */
+            '#' + BOLUM_ID + ' .sn-bas-tus{ display:inline-flex; align-items:center;',
+            '  gap:9px; border:0; background:none; cursor:pointer; padding:2px 6px 2px 0;',
+            '  font:inherit; color:inherit; border-radius:10px;',
+            '  transition:background .15s; }',
+            '#' + BOLUM_ID + ' .sn-bas-tus:hover{ background:rgba(22,160,133,.09); }',
+            '#' + BOLUM_ID + ' .sn-bas-ok{ width:17px; height:17px; opacity:.45;',
+            '  transition:transform .15s, opacity .15s; }',
+            '#' + BOLUM_ID + ' .sn-bas-tus:hover .sn-bas-ok{ opacity:.9;',
+            '  transform:translateX(2px); }',
             /* HİÇ KURUM YOKKEN ÇIKAN DAVET */
             '#' + BOLUM_ID + ' .sn-davet{ background:#fff; border:1px dashed #C7D0DA;',
             '  border-radius:16px; padding:26px 20px 22px; text-align:center;',
@@ -287,9 +297,21 @@
             }
         }
 
-        var ic = '<h2><svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
+        /* BAŞLIK = OKULA GİRİŞ (06.10.2026) — öğretmen başlıktaki okul
+           tuşunu kaldırttı; anasayfada okul penceresine gidecek yol
+           kalmasın istemiyoruz. Kategori başlığının kendisi o yolu
+           üstleniyor: okul çizimine ve "Sınıflarım" yazısına basınca okul
+           sekmesi açılıyor (kurumlar, seviyeler, sınıflar, ayarlar). */
+        var ic = '<h2><button type="button" class="sn-bas-tus"' +
+            ' onclick="KidefSiniflarim.okulAc()"' +
+            ' title="Okulum — kurumlar, seviyeler ve sınıflar">' +
+            '<svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
             OKUL_SVG.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') +
-            '</svg> Sınıflarım</h2><div class="sn-kutu">';
+            '</svg><span>Sınıflarım</span>' +
+            '<svg class="sn-bas-ok" viewBox="0 0 24 24" aria-hidden="true">' +
+            '<path d="M9 5.5l7 6.5-7 6.5" fill="none" stroke="currentColor"' +
+            ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg></button></h2><div class="sn-kutu">';
 
         var kIdler = Object.keys(v.kurumlar);
         kIdler.forEach(function (kId) {
@@ -347,6 +369,17 @@
     }
 
     /* --------------------------------------------------------- İŞLEMLER */
+    /* Okulu aç: kendi sekmesinde. Başlıktaki kapı kalktığı için
+       anasayfadan okula giden yol burası. */
+    function okulAc() {
+        try {
+            if (window.KidefSinifBag && KidefSinifBag.okulSekmesiAc) {
+                KidefSinifBag.okulSekmesiAc(); return;
+            }
+        } catch (e) { }
+        try { if (typeof llOkulPopupAc === 'function') llOkulPopupAc(); } catch (e) { }
+    }
+
     function ac(lId, cId) {
         try {
             if (typeof llOkulSinifSec === 'function') { llOkulSinifSec(lId, cId); return; }
@@ -476,6 +509,7 @@
     else ciz();
 
     window.KidefSiniflarim = {
+        okulAc: okulAc,
         ciz: ciz, ac: ac, seviyeSec: seviyeSec, sinifKur: sinifKur,
         kurumEkle: kurumEkle, gorunurMu: gorunurMu
     };

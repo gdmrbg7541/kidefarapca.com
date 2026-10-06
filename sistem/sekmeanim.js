@@ -390,9 +390,13 @@
         ok.innerHTML = OKUL_SVG + OK_SVG;
         ok.setAttribute('title', 'Okulum — sınıflarımı aç');
         ok.setAttribute('aria-label', 'Okulum — sınıflarımı aç');
+        /* YENİ SEKME AÇMIYOR (06.10.2026): pencere bu sekmede açılıyor,
+           seçilen sınıf da bu sekmede geliyor — öğretmen sınıflar arasında
+           gezerken sekme birikmesin. */
         ok.setAttribute('onclick',
             'event.stopPropagation();' +
-            'if(window.KidefSinifBag&&KidefSinifBag.okulSekmesiAc){KidefSinifBag.okulSekmesiAc();}' +
+            'if(window.KidefSinifBag&&KidefSinifBag.okulPencereAc){KidefSinifBag.okulPencereAc();}' +
+            'else if(typeof llOkulPopupAc===\'function\'){llOkulPopupAc();}' +
             'else if(typeof llSinifListesiAc===\'function\'){llSinifListesiAc();}');
         ok.__saOkul = 1;
     }

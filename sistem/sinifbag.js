@@ -328,8 +328,38 @@
         }, 250);
     }
 
-    /* Okul sekmesinde bir sınıfa basıldı: YENİ SEKME AÇMA, bu sekmeyi o
-       sınıfın sekmesine çevir (06.10.2026 — öğretmen: "okul svg sine
+    /* OKUL PENCERESİNİ BU SEKMEDE AÇ (06.10.2026) — öğretmen: "sınıflarım
+       kategorisinden bi sınıf ayrı bi sekmede açıldıktan sonra, sınıf
+       değiştirince yeni sekmeden açılmasın."
+
+       Sınıf sekmesindeki okul simgesi artık yeni sekme açmıyor: pencere bu
+       sekmede açılıyor ve seçilen sınıf da bu sekmede geliyor. Böylece
+       öğretmen bir sınıf sekmesinde kalıp sınıflar arasında geziyor, her
+       geçişte yeni bir sekme birikmiyor.
+
+       yalnizOkul bayrağı pencere açıkken kalkıyor; hesap/listelerim.js ona
+       bakıp (a) arka planı değiştirmiyor, (b) sınıfı sinifaGec ile YERİNDE
+       açıyor. Pencere seçim yapılmadan kapatılırsa bayrak iniyor. */
+    function okulPencereAc() {
+        var sinifSekmesi = !!parametre() ||
+            document.documentElement.classList.contains(YALNIZ);
+        if (!sinifSekmesi) {
+            /* Anasayfa sekmesi: pencere eskisi gibi, sınıf da aynı sekmede
+               seçilir (orada başlık da duruyor, bir şey saklamıyoruz). */
+            try { if (typeof llOkulPopupAc === 'function') llOkulPopupAc(); } catch (e) { }
+            return;
+        }
+        yalnizOkul = true;
+        try { if (typeof llOkulPopupAc === 'function') llOkulPopupAc(); } catch (e) { }
+        var z = setInterval(function () {        /* seçim yapılmadan kapatılırsa */
+            if (document.getElementById('llOkulPopup')) return;
+            clearInterval(z);
+            if (!okulModuMu()) yalnizOkul = false;
+        }, 400);
+    }
+
+    /* Okul sekmesinde ya da sınıf sekmesinde bir sınıfa basıldı: YENİ SEKME
+       AÇMA, bu sekmeyi o sınıfın sekmesine çevir (06.10.2026 — öğretmen: "okul svg sine
        basınca ayrı bi sekme açılıyor ya, ordan bi sınıf açınca bi daha
        yeni sekmede açılmasın").
        Sayfa yeniden yüklenmiyor: pencere kapanıyor, okul sekmesi işareti
@@ -426,7 +456,10 @@
 
     /* Sekme içinde başka sınıfa geçilirse adres de onu göstersin —
        böylece yenileme/yer imi her zaman EKRANDAKİ sınıfa gider. */
+    var adresIzleniyor = false;
     function adresIzle() {
+        if (adresIzleniyor) return;          /* iki kez başlamasın */
+        adresIzleniyor = true;
         var kacir = 0, basligaBakiliyor = true;
         setInterval(function () {
             /* (a) sekmede listeden çıkıldıysa site başlığını geri ver —
@@ -484,7 +517,7 @@
         ac: ac, perdeKapa: perdeKapa,
         basligiGeriVer: basligiGeriVer,
         okulAdres: okulAdres, okulSekmesiAc: okulSekmesiAc,
-        sinifaGec: sinifaGec,
+        okulPencereAc: okulPencereAc, sinifaGec: sinifaGec,
         kapiSifirla: kapiSifirla,
         /* hesap/listelerim.js buna bakıyor: okul sekmesinde arka planı
            açmıyor ve sınıfı yeni sekmede açıyor. */

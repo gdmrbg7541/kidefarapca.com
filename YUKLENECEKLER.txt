@@ -6364,3 +6364,31 @@ OKULA açılıyor — kurum/seviye/sınıf ekleme de orada — ve sınıf sekmes
 site başlığı gizli. Yani tek sınıflı öğretmenin okula hiçbir kapısı
 kalmıyordu. Tuş yoksa sekmeanim.js kendisi kuruyor; denendi, tek sınıfta da
 okul sekmesi açılıyor.
+
+── 06.10.2026 (ek 10) · BAŞLIKTA OKUL YOK, SINIF DEĞİŞİMİ AYNI SEKMEDE ──
+Öğretmen: "headerde okul svg si olmasın, sınıflarım kategorisinden bi sınıf
+ayrı bi sekmede açıldıktan sonra sınıf değiştirince yeni sekmeden
+açılmasın."
+
+1) index.html — başlıktaki #header-okul-btn KALDIRILDI.
+   sistem/okultusu.js'e dokunulmadı: tuşu bulamayınca sessizce hiçbir şey
+   yapmıyor. Eski kod yedekte.
+2) sistem/siniflarim.js — "Sınıflarım" kategori başlığı artık bir tuş
+   (okul çizimi + yazı + küçük ok): okul sekmesini açıyor. Başlıktaki kapı
+   kalkınca anasayfada okula gidecek yol kalmıyordu, onu bu üstlendi.
+3) sistem/sekmeanim.js + sistem/sinifbag.js — SINIF SEKMESİNDE OKUL
+   SİMGESİ ARTIK YENİ SEKME AÇMIYOR: pencere o sekmede açılıyor ve
+   seçilen sınıf da o sekmede geliyor (KidefSinifBag.okulPencereAc).
+   Öğretmen bir sınıf sekmesinde kalıp sınıflar arasında geziyor, her
+   geçişte sekme birikmiyor. Anasayfa sekmesinde pencere eskisi gibi
+   davranıyor (orada saklanan bir şey yok).
+   Pencere seçim yapılmadan kapatılırsa bayrak iniyor; adres yoklaması da
+   iki kez başlamasın diye kilitlendi.
+
+Ölçüldü: anasayfada başlıkta okul tuşu yok, kategori başlığı okul
+sekmesini açıyor; sınıf sekmesinde okul simgesi yeni sekme açmıyor (sekme
+sayısı 2 → 2), 6/A kapısına basınca aynı sekmede 6/A açılıyor — rozet
+"Sınıf Listesi 6/A", adres ?sinif=L2&sube=C3, sekme adı "6/A ·
+kidefarapca.com", site başlığı hâlâ gizli. Hata yok.
+Üretici: _kaynak/uretici/okulTusuKalksin.py
+Yedek:   _kaynak/yedekler/20261006-okul-tusu-kalksin/
