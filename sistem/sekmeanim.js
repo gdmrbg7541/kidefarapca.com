@@ -135,29 +135,76 @@
         var s = document.createElement('style');
         s.id = 'saStil';
         s.textContent = [
+            /* ---- BAŞLIKLAR GERİ GELDİ (06.10.2026) ----------------------
+               Öğretmen: "liste satırındaki 4 kısmın da başlığı yazsın ...
+               yazılar svg lerin sağında olsun ve büyük olsunlar ... aralarda
+               dikey ayırıcılar olsun."
+               Başlıklar bir ara gizlenmişti (listelerim.css: "SEKME CUBUGU:
+               YALNIZ SIMGE") çünkü dar ekranda yazılar alta kayıp çubuğu iki
+               satıra çıkarıyordu. O sebep burada başka türlü çözüldü: çubuk
+               artık ALT SATIRA GEÇMİYOR, dar ekranda yatay kayıyor. */
+            '#ll-root #content .tabs{ flex-wrap:nowrap; overflow-x:auto;',
+            '  -webkit-overflow-scrolling:touch; scrollbar-width:thin; }',
+            '#ll-root #content .tabs{ gap:14px; }',   /* ayırıcıya yer açsın */
+            '#ll-root #content .tabs .tab{ flex:0 0 auto;',
+            '  display:inline-flex; flex-direction:row; align-items:center; gap:12px;',
+            '  padding:9px 15px; }',
+            '#ll-root #content .tabs .tab > span{ display:inline; font-size:1.04rem;',
+            '  font-weight:600; line-height:1.15; white-space:nowrap; }',
+            '@media (max-width:620px){',
+            '  #ll-root #content .tabs .tab{ gap:7px; padding:8px 11px; }',
+            '  #ll-root #content .tabs .tab > span{ font-size:.94rem; } }',
+            /* ayırıcılar: boşluğun ortasına ince dikey çizgi. Düğmenin
+               kendisine kenarlık vermek yerine sözde öğe — seçili sekmenin
+               turuncu zeminine çizgi bulaşmasın. */
+            '#ll-root #content .tabs > * + *{ position:relative; }',
+            '#ll-root #content .tabs > * + *::before{ content:""; position:absolute;',
+            '  left:-8px; top:14%; bottom:14%; width:2px; border-radius:1px;',
+            '  background:#D7DEE7; pointer-events:none; }',
+            '@media (max-width:620px){',
+            '  #ll-root #content .tabs{ gap:11px; }',
+            '  #ll-root #content .tabs > * + *::before{ left:-6px; width:1px; } }',
             /* simgeler büyüsün (öğretmen: "daha büyük olsunlar") */
-            '#ll-root #content .tabs .tab .tab-ikon{ width:34px; height:34px; }',
+            '#ll-root #content .tabs .tab .tab-ikon{ width:34px; height:34px; flex:0 0 auto; }',
             '@media (max-width:620px){ #ll-root #content .tabs .tab .tab-ikon{ width:28px; height:28px; } }',
             '#ll-root #content .tabs .tab .tab-ikon{ transition:opacity .32s ease, transform .32s ease; }',
             '#ll-root #content .tabs .tab .tab-ikon.sa-sol{ opacity:0; transform:scale(.86) rotate(-6deg); }',
-            /* rozetin başındaki küçük simge */
+            /* ---- ROZET = "SINIF LİSTESİ" ----------------------------------
+               Rozet öbür sekmelerle aynı dili konuşsun: simge · başlık ·
+               açık sınıfın adı · sınıf sayısı · ok. */
             '#ll-root #content .tabs #active-class-title .rz-ik{',
-            '  width:22px; height:22px; flex:0 0 auto; margin-inline-end:1px;',
+            '  width:34px; height:34px; flex:0 0 auto;',
             '  transition:opacity .32s ease, transform .32s ease; }',
+            '@media (max-width:620px){',
+            '  #ll-root #content .tabs #active-class-title .rz-ik{ width:28px; height:28px; } }',
             '#ll-root #content .tabs #active-class-title .rz-ik.sa-sol{ opacity:0; transform:scale(.86); }',
+            '#ll-root #content .tabs #active-class-title{ gap:12px; }',
+            '#ll-root #content .tabs #active-class-title .rz-bas{ font-size:1.04rem;',
+            '  font-weight:600; line-height:1.15; white-space:nowrap; }',
+            '@media (max-width:620px){',
+            '  #ll-root #content .tabs #active-class-title .rz-bas{ font-size:.94rem; } }',
+            /* açık sınıfın adı başlıktan ayrılsın: ince çizgiyle ve kendi
+               zeminiyle "seçili olan bu" desin. */
+            '#ll-root #content .tabs #active-class-title .rz-ad{',
+            '  padding:2px 9px; border-radius:8px; font-weight:800;',
+            '  background:rgba(107,74,56,.10); }',
+            '#ll-root #content .tabs #active-class-title.aktif .rz-ad{',
+            '  background:rgba(255,255,255,.22); }',
             /* sahne içi küçük hareketler */
             '@keyframes saNabiz{ 0%,100%{ opacity:1 } 50%{ opacity:.35 } }',
             '.sa-nabiz{ animation:saNabiz 1.5s ease-in-out infinite; }',
             '@keyframes saIbre{ from{ transform:rotate(0) } to{ transform:rotate(360deg) } }',
-            '.sa-ibre{ transform-origin:12px 13.4px; animation:saIbre 2.6s linear infinite; }',
+            '.sa-ibre{ transform-box:view-box; transform-origin:12px 13.4px;',
+            '  animation:saIbre 2.6s linear infinite; }',
             '@keyframes saKum{ 0%{ transform:translateY(-2px); opacity:0 }',
             '  40%{ opacity:1 } 100%{ transform:translateY(5px); opacity:0 } }',
-            '.sa-kum{ animation:saKum 1.1s linear infinite; }',
+            '.sa-kum{ transform-box:view-box; animation:saKum 1.1s linear infinite; }',
             '@keyframes saDon{ 0%,70%,100%{ transform:rotate(0) } 80%{ transform:rotate(-12deg) }',
             '  90%{ transform:rotate(10deg) } }',
-            '.sa-don{ transform-origin:12px 12px; animation:saDon 3s ease-in-out infinite; }',
+            '.sa-don{ transform-box:view-box; transform-origin:12px 12px;',
+            '  animation:saDon 3s ease-in-out infinite; }',
             '@keyframes saKalk{ 0%,100%{ transform:translate(0,0) } 50%{ transform:translate(.8px,-1.4px) } }',
-            '.sa-kalk{ animation:saKalk 2.2s ease-in-out infinite; }',
+            '.sa-kalk{ transform-box:view-box; animation:saKalk 2.2s ease-in-out infinite; }',
             '@keyframes saYaz{ from{ stroke-dashoffset:26 } to{ stroke-dashoffset:0 } }',
             '.sa-yaz{ stroke-dasharray:26; animation:saYaz 1.6s ease-out forwards; }',
             '@keyframes saCiz{ from{ stroke-dashoffset:9 } to{ stroke-dashoffset:0 } }',
@@ -227,8 +274,9 @@
         if (bulunan) kuruldu = true;
     }
 
-    /* Rozet (Öğrenciler) her sınıf değişiminde yeniden çizildiği için
-       ayrı izleniyor: içine küçük bir simge konup döngüye alınıyor. */
+    /* Rozet ("Sınıf Listesi" sekmesi) her sınıf değişiminde listelerim.js
+       tarafından baştan çizildiği için ayrı izleniyor: simgesi ve başlığı
+       her çizimden sonra yeniden konuyor (aşağıda MutationObserver). */
     function rozetKur() {
         var r = document.getElementById('active-class-title');
         if (!r || r.__saKuruldu) return;
@@ -240,17 +288,34 @@
         svg.setAttribute('viewBox', '0 0 24 24');
         svg.setAttribute('aria-hidden', 'true');
         r.insertBefore(svg, ad);
+        /* Başlık simgenin sağında, sınıf adından önce: "Sınıf Listesi 5/A" */
+        var bas = document.createElement('span');
+        bas.className = 'rz-bas';
+        bas.textContent = 'Sınıf Listesi';
+        r.insertBefore(bas, ad);
         r.__saKuruldu = 1;
         dongu(svg, S.liste, 450);
+    }
+
+    /* Rozet yeniden çizilince (sınıf değişimi) simge ve başlık geri gelsin.
+       Yoklamaya güvenilmiyor: yoklama bir dakika sonra duruyor, sınıf
+       değişimi ise saatler sonra olabilir. */
+    function rozetIzle() {
+        var kap = document.getElementById('viewTitle');
+        if (!kap || kap.__saIzleniyor || !window.MutationObserver) return;
+        kap.__saIzleniyor = 1;
+        new MutationObserver(function () {
+            try { rozetKur(); } catch (e) { }
+        }).observe(kap, { childList: true, subtree: true });
     }
 
     var tur = 0;
     var zaman = setInterval(function () {
         tur++;
-        try { kur(); rozetKur(); } catch (e) { }
+        try { kur(); rozetKur(); rozetIzle(); } catch (e) { }
         if (tur > 120) clearInterval(zaman);     /* ~60 sn sonra bırak */
     }, 500);
-    try { kur(); rozetKur(); } catch (e) { }
+    try { kur(); rozetKur(); rozetIzle(); } catch (e) { }
 
     window.KidefSekmeAnim = { kur: kur, rozetKur: rozetKur, sahneler: S };
 })();

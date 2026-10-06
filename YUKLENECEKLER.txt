@@ -6183,3 +6183,25 @@ animasyonlar olsun, daha büyük olsunlar."
    site eski simgelerle çalışmaya devam eder.
 Üretici: _kaynak/uretici/sekmeVePerde.py · yedek:
 _kaynak/yedekler/20261006-sekme-ve-perde/
+
+── 06.10.2026 (ek) · SEKME BAŞLIKLARI GERİ GELDİ ────────────────────────
+Öğretmen: "liste satırındaki 4 kısmın da başlığı yazsın — sınıf listesi,
+sınıf defteri, sınıf araçları, materyaller falan · aralarda dikey
+ayırıcılar olsun · yazılar svg lerin sağında olsun ve büyük olsunlar."
+
+sistem/sekmeanim.js içinde:
+ · Dört başlık da yazılı: Sınıf Listesi · Sınıf Defteri · Sınıf Araçları ·
+   Materyaller. Yazılar simgelerin SAĞINDA, 1,04 rem (telefonda 0,94).
+ · Aralarda dikey ayırıcı (2 px, boşluğun ortasında, sözde öğeyle — seçili
+   sekmenin turuncu zeminine çizgi bulaşmasın diye kenarlık kullanılmadı).
+ · Rozet ("Sınıf Listesi") öbür sekmelerle aynı dili konuşuyor: simge ·
+   başlık · açık sınıfın adı (hafif zeminli) · sınıf sayısı · ok.
+   Rozet sınıf değişiminde baştan çizildiği için MutationObserver ile
+   izleniyor; simgesi ve başlığı her çizimden sonra geri geliyor.
+ · Başlıklar bir ara gizlenmişti (listelerim.css "SEKME CUBUGU: YALNIZ
+   SIMGE"): dar ekranda yazılar alta kayıp çubuğu iki satıra çıkarıyordu.
+   O sebep başka türlü çözüldü — çubuk artık alt satıra GEÇMİYOR, dar
+   ekranda yatay kayıyor (telefonda ölçüldü: sayfa taşması yok).
+ · Kronometrenin ibresi ve zar, SVG'de transform-origin tarayıcıya göre
+   farklı okunduğu için simgenin dışına taşıp yazının üstüne biniyordu;
+   transform-box:view-box ile çerçeveye sabitlendi.
