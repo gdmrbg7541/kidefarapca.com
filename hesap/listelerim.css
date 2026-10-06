@@ -3579,3 +3579,49 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
     #tpOkullar .okul-mtus.okul-ayar-tus span{ display:none; }
     #tpOkullar .okul-mtus.okul-ayar-tus{ padding:4px 8px; gap:0; }
 }
+
+/* ==========================================================================
+   HIZLI SEVİYE ve ŞUBE  (06.10.2026)
+   --------------------------------------------------------------------------
+   Öğretmen: "seviye oluştururken hazırda 5-10 arası sayılar olsun, bu
+   sayıların tasarımı imam hatip kategorisindeki sayılarla aynı olsun,
+   tıklandığında hemen seviye oluşsun, bu sefer de sınıf istensin."
+   Rakamın çizimi index.html'deki .ih-num ile aynı; buradaki kurallar yalnız
+   onu okul penceresindeki satıra OTURTUYOR (boy, aralık, dokunma hedefi).
+   ========================================================================== */
+#llOkulPopup .okul-kat-ekle{ flex-wrap: wrap; row-gap: 8px; }
+#llOkulPopup .okul-hizli-bas{
+    font-weight: 800; color: #8B6A57; font-size: .92rem; margin-inline-end: 4px;
+}
+#llOkulPopup .okul-hizli-sira{ display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+#llOkulPopup .okul-hizli{
+    border: 0; background: none; padding: 2px; cursor: pointer; line-height: 0;
+    border-radius: 50%; transition: transform .14s ease, filter .14s ease;
+}
+#llOkulPopup .okul-hizli:hover{ transform: translateY(-2px) scale(1.06); }
+#llOkulPopup .okul-hizli:active{ transform: scale(.96); }
+#llOkulPopup .okul-hizli:focus-visible{ outline: 2px solid #16A085; outline-offset: 3px; }
+#llOkulPopup .okul-ihn{ display: inline-block; width: 38px; height: 38px; }
+#llOkulPopup .okul-ihn svg{ width: 100%; height: 100%; display: block; }
+#llOkulPopup .okul-seviye-elle{ margin-inline-start: auto; opacity: .75; }
+#llOkulPopup .okul-seviye-elle:hover{ opacity: 1; }
+
+/* şube harfleri: yeni kurulan seviyenin satırında açık durur */
+#llOkulPopup .okul-sube-sira{
+    display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    margin-inline-start: 8px; padding-inline-start: 10px;
+    border-inline-start: 2px dashed rgba(139, 106, 87, .35);
+}
+#llOkulPopup .okul-kapi.okul-sube{
+    background: #EAF6F3; color: #0E7C66; border: 1px dashed #16A085; font-weight: 800;
+}
+#llOkulPopup .okul-kapi.okul-sube:hover{ background: #16A085; color: #fff; border-style: solid; }
+#llOkulPopup .okul-sube-bitti{
+    border: 0; background: rgba(139, 106, 87, .12); color: #8B6A57; cursor: pointer;
+    font-family: inherit; font-weight: 800; font-size: .8rem; border-radius: 9px; padding: 6px 11px;
+}
+#llOkulPopup .okul-sube-bitti:hover{ background: rgba(139, 106, 87, .22); }
+@media (prefers-reduced-motion: reduce){
+    #llOkulPopup .okul-hizli{ transition: none; }
+    #llOkulPopup .okul-ihn .ihn-cizgi animateTransform{ display: none; }
+}

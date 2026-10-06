@@ -6588,3 +6588,33 @@ baştan sona denendi:
   6/A kapısı     → yeni sekme AÇILMIYOR, aynı sekme 6/A oluyor
                    (rozet "6/A", adres ?sinif=L2&sube=C3)
 Hata yok. Yeni bir kod değişikliği gerekmedi.
+
+── 06.10.2026 (ek 17) · SINIFLARIM AKORDİYON ────────────────────────────
+Öğretmen: "istenirse sınıflarım kategorisi akordiyon sistem olarak
+kapanabilmeli tıklayınca."
+Başlığa basınca bölüm kapanıp açılıyor; ok aşağıyken açık, sola dönünce
+kapalı. Tercih tarayıcıda saklanıyor — kapattıysan bir dahaki girişte de
+kapalı geliyor. Panel DOM'da duruyor, yalnız gizleniyor; açılınca baştan
+kurulmuyor. (Denendi: açılış açık → tık kapalı/hafıza 1 → tık açık/hafıza
+0 → kapat + sayfayı yenile → yine kapalı. Hata yok.)
+
+── 06.10.2026 (ek 18) · TEK TIKLA SEVİYE VE ŞUBE ────────────────────────
+Öğretmen: "seviye oluştururken hazırda 5-10 arası sayılar olsun, bu
+sayıların tasarımı imam hatip kategorisindeki sayılarla aynı olsun,
+tıklandığında hemen seviye oluşsun, bu sefer de sınıf istensin, mesela
+5A 5B 5C gibi, yani sadece tıklamayla hızlıca oluşturulabilsin."
+
+ · "Seviye Ekle" satırı artık 5–10 rakamlarının kendisi. Çizim İmam Hatip
+   kategorisindekiyle AYNI: dönen kesik yeşil halka + yeşil disk + beyaz
+   rakam (Marhey). 38 px.
+ · Rakama basınca seviye SORMADAN kuruluyor ("6. sınıf").
+ · Hemen ardından o satırda şube harfleri çıkıyor: 6A, 6B, 6C… Harfe
+   basınca sınıf anında açılıyor ve satır AÇIK KALIYOR, arka arkaya
+   eklenebiliyor. "Bitti" ile kapanıyor.
+ · Zaten kurulmuş seviyenin rakamı listede çıkmıyor; zaten açılmış şube de
+   çıkmıyor. Hepsi varsa satır bunu söylüyor.
+ · Elle isim yazmak isteyene "Başka" tuşu duruyor (eski prompt yolu).
+ · Ad biçimi öğretmenin yazdığı gibi: 6A, 6B (bölü işareti yok).
+Denendi: 5 kurulu → listede 6-10; 6'ya basınca "6. sınıf" + 6A-6F
+harfleri; 6A ve 6B'ye basınca sınıflar açıldı, harfler 6C-6F'ye indi;
+"Bitti" satırı kapattı. Hata yok.

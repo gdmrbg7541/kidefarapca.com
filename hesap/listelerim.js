@@ -4637,6 +4637,27 @@ function llOkulPopupAc() {
         kapilar += '<span class="okul-kapi-yuva"><button type="button" class="okul-kapi okul-ekle"' +
             ' title="Bu seviyeye sınıf ekle" onclick="llOkulSinifEkle(\'' + lId + '\')">' +
             llIcon('arti') + '</button></span>';
+        /* HIZLI ŞUBE (06.10.2026): yeni kurulan seviyenin satırında harfler
+           açık durur — 5A, 5B, 5C tek tıkla. Zaten açılmış şube çıkmaz. */
+        if (window._llHizliLid === lId) {
+            var _rk = String(lvl.name || '').match(/\d+/);
+            _rk = _rk ? _rk[0] : '';
+            var _olan = {};
+            Object.keys(lvl.classes || {}).forEach(function (c) {
+                _olan[String(lvl.classes[c].name || '').toUpperCase()] = 1;
+            });
+            var _h = '';
+            'ABCDEF'.split('').forEach(function (harf) {
+                if (_olan[(_rk + harf).toUpperCase()]) return;
+                _h += '<button type="button" class="okul-kapi okul-sube"' +
+                    ' title="' + _rk + harf + ' sınıfını aç"' +
+                    ' onclick="llHizliSinif(\'' + lId + '\',\'' + harf + '\')">' +
+                    _rk + harf + '</button>';
+            });
+            kapilar += '<span class="okul-sube-sira">' + _h +
+                '<button type="button" class="okul-sube-bitti" title="Şube eklemeyi bitir"' +
+                ' onclick="llHizliBitir()">Bitti</button></span>';
+        }
         /* SEVIYE AYARLARI: bu pencere eskiden yalniz sinif secmeye yariyordu;
            ayarlara ulasmak icin profildeki okul haritasina gitmek gerekiyordu.
            Artik her seviyenin isminin yaninda dislisi var — hem sinif adi
@@ -4670,11 +4691,30 @@ function llOkulPopupAc() {
         if (!katlar) katlar = '<div class="okul-kat"><span class="okul-bos">Bu kurumda henüz seviye yok</span></div>';
         /* SEVİYE EKLE (05.10.2026): kurumun altına yeni seviye. 'GENEL'
            kurumsuz bölüm demek — addLevel bunu böyle biliyor. */
+        /* HAZIR SEVİYELER (06.10.2026): 5–10 rakamları; basınca seviye
+           sormadan kurulur. Zaten kurulmuş olanın rakamı çıkmaz. */
+        var _kHedef = genelMi ? 'GENEL' : (kId || 'GENEL');
+        var _var = {};
+        uyeler.forEach(function (lId) {
+            var m = String((data.levels[lId] || {}).name || '').match(/\d+/);
+            if (m) _var[m[0]] = 1;
+        });
+        var _rak = '';
+        [5, 6, 7, 8, 9, 10].forEach(function (n) {
+            if (_var[n]) return;
+            _rak += '<button type="button" class="okul-hizli"' +
+                ' title="' + n + '. sınıf seviyesini ekle"' +
+                ' onclick="llHizliSeviye(\'' + _kHedef + '\',' + n + ')">' +
+                llIhRakam(n) + '</button>';
+        });
         katlar += '<div class="okul-kat okul-kat-ekle">' +
-            '<button type="button" class="okul-seviye-ekle"' +
-            ' title="Bu kuruma yeni seviye (kat) ekle" onclick="llOkulSeviyeEkle(\'' +
-            (genelMi ? 'GENEL' : (kId || 'GENEL')) + '\')">' + llIcon('arti') +
-            '<span>Seviye Ekle</span></button></div>';
+            '<span class="okul-hizli-bas">Seviye ekle</span>' +
+            '<span class="okul-hizli-sira">' +
+            (_rak || '<span class="okul-bos">5–10 arası seviyelerin hepsi kurulu</span>') +
+            '</span>' +
+            '<button type="button" class="okul-seviye-ekle okul-seviye-elle"' +
+            ' title="Başka bir seviye adı yaz" onclick="llOkulSeviyeEkle(\'' +
+            _kHedef + '\')">' + llIcon('arti') + '<span>Başka</span></button></div>';
         var pencere = '<svg class="okul-pencere" viewBox="0 0 20 16" aria-hidden="true" focusable="false">' +
             '<rect x="0.6" y="0.6" width="18.8" height="14.8" rx="2" fill="#CFE7F5" stroke="#8FB8D4" stroke-width="1.2"/>' +
             '<path d="M10 1.2v13.6M1.2 8h17.6" stroke="#8FB8D4" stroke-width="1.1"/></svg>';
@@ -5058,6 +5098,67 @@ function llOkulKurumIslem(ne, kId) {
     setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
 }
 window.llOkulKurumIslem = llOkulKurumIslem;
+
+/* İmam Hatip kategorisindeki rakamın aynısı: dönen kesik halka, yeşil
+   disk, beyaz rakam. (index.html → .ih-num .ihn-cizgi/.ihn-disk/.ihn-rakam) */
+function llIhRakam(n) {
+    return '<span class="ih-num okul-ihn"><svg viewBox="0 0 48 48" aria-hidden="true">' +
+        '<circle class="ihn-cizgi" cx="24" cy="24" r="21" fill="none" stroke="#16A085"' +
+        ' stroke-width="3" stroke-dasharray="7 7" stroke-linecap="round">' +
+        '<animateTransform attributeName="transform" type="rotate" from="0 24 24"' +
+        ' to="360 24 24" dur="7s" repeatCount="indefinite"/></circle>' +
+        '<circle class="ihn-disk" cx="24" cy="24" r="15" fill="#16A085"/>' +
+        '<text class="ihn-rakam" x="24" y="30.5" text-anchor="middle" font-size="19"' +
+        ' font-weight="800" fill="#fff"' +
+        ' font-family="\'Marhey\',system-ui,sans-serif">' + n + '</text>' +
+        '</svg></span>';
+}
+window.llIhRakam = llIhRakam;
+
+/* Rakama basıldı: seviye SORMADAN kurulur, sonra şube harfleri açılır. */
+function llHizliSeviye(kId, n) {
+    try {
+        var kurumId = (kId === 'GENEL') ? null : kId;
+        if (kurumId && !(data.kurumlar && data.kurumlar[kurumId])) kurumId = null;
+        var id = 'L' + Date.now();
+        data.levels[id] = (typeof llSeviyeTaslak === 'function')
+            ? llSeviyeTaslak(n + '. sınıf', kurumId)
+            : { name: n + '. sınıf', kurumId: kurumId || undefined, classes: {}, planText: {}, config: {} };
+        if (!data.levelOrder) data.levelOrder = [];
+        data.levelOrder.push(id);
+        window._llHizliLid = id;          /* şube harfleri bu satırda açılsın */
+        save();
+    } catch (e) { console.warn('hızlı seviye:', e && e.message); }
+    setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
+}
+window.llHizliSeviye = llHizliSeviye;
+
+/* Harfe basıldı: sınıf anında açılır, satır açık kalır. */
+function llHizliSinif(lId, harf) {
+    try {
+        var lvl = data.levels[lId];
+        if (!lvl) return;
+        var m = String(lvl.name || '').match(/\d+/);
+        var ad = (m ? m[0] : '') + harf;
+        if (!lvl.classes) lvl.classes = {};
+        var zaten = Object.keys(lvl.classes).some(function (c) {
+            return String(lvl.classes[c].name || '').toUpperCase() === ad.toUpperCase();
+        });
+        if (!zaten) {
+            lvl.classes['C' + Date.now()] = { name: ad, students: [] };
+            window._llHizliLid = lId;      /* satır açık kalsın */
+            save();
+        }
+    } catch (e) { console.warn('hızlı sınıf:', e && e.message); }
+    setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
+}
+window.llHizliSinif = llHizliSinif;
+
+function llHizliBitir() {
+    window._llHizliLid = null;
+    try { llOkulPopupAc(); } catch (e) { }
+}
+window.llHizliBitir = llHizliBitir;
 
 function llOkulSeviyeEkle(kId) {
     try { if (typeof addLevel === 'function') addLevel(kId); } catch (e) { }

@@ -142,6 +142,18 @@
             '#' + BOLUM_ID + ' .sn-okul-ici .okul-baslik{ display:none !important; }',
             '#' + BOLUM_ID + ' .sn-okul-ici .okul-icerik{ overflow:visible !important;',
             '  padding:22px 18px 24px; }',
+            /* AKORDİYON: kapalıyken panel gizli, ok sola dönük */
+            '#' + BOLUM_ID + '.sn-kapali .sn-okul{ display:none; }',
+            '#' + BOLUM_ID + ' .sn-okul{ animation:snAc .22s ease; }',
+            '@keyframes snAc{ from{ opacity:0; transform:translateY(-5px) } }',
+            '#' + BOLUM_ID + ' .sn-bas-ok{ transform:rotate(0deg);',
+            '  transition:transform .18s ease, opacity .15s ease; }',
+            '#' + BOLUM_ID + ' .sn-bas-tus:hover .sn-bas-ok{ opacity:.9; transform:rotate(0deg); }',
+            '#' + BOLUM_ID + '.sn-kapali .sn-bas-ok,',
+            '#' + BOLUM_ID + '.sn-kapali .sn-bas-tus:hover .sn-bas-ok{ transform:rotate(-90deg); }',
+            '@media (prefers-reduced-motion: reduce){',
+            '  #' + BOLUM_ID + ' .sn-okul{ animation:none }',
+            '  #' + BOLUM_ID + ' .sn-bas-ok{ transition:none } }',
             /* başlık tuşu: kategori başlığı okulu açıyor */
             '#' + BOLUM_ID + ' .sn-bas-tus{ display:inline-flex; align-items:center;',
             '  gap:9px; border:0; background:none; cursor:pointer; padding:2px 6px 2px 0;',
@@ -314,9 +326,18 @@
            kalmasın istemiyoruz. Kategori başlığının kendisi o yolu
            üstleniyor: okul çizimine ve "Sınıflarım" yazısına basınca okul
            sekmesi açılıyor (kurumlar, seviyeler, sınıflar, ayarlar). */
-        var ic = '<h2><svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
+        var _kapali = kapaliMi();
+        var ic = '<h2><button type="button" class="sn-bas-tus"' +
+            ' onclick="KidefSiniflarim.katla()"' +
+            ' aria-expanded="' + (_kapali ? 'false' : 'true') + '"' +
+            ' title="' + (_kapali ? 'Sınıflarımı aç' : 'Sınıflarımı kapat') + '">' +
+            '<svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
             OKUL_SVG.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') +
-            '</svg> Sınıflarım</h2>' +
+            '</svg><span>Sınıflarım</span>' +
+            '<svg class="sn-bas-ok" viewBox="0 0 24 24" aria-hidden="true">' +
+            '<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor"' +
+            ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg></button></h2>' +
             '<div class="sn-okul"></div>';
 
         /* AYNI İÇERİĞİ YENİDEN BASMA (06.10.2026) — öğretmen: "index
@@ -331,7 +352,33 @@
             bolum.__sonIc = ic;
         }
         bolum.classList.add('gor');
+        bolum.classList.toggle('sn-kapali', kapaliMi());
         okulIcineKoy(bolum);
+    }
+
+    /* ------------------------------------------------------- AKORDİYON
+       Öğretmen: "istenirse sınıflarım kategorisi akordiyon sistem olarak
+       kapanabilmeli tıklayınca." Tercih tarayıcıda saklanıyor: kapattıysa
+       bir dahaki girişte de kapalı geliyor. Panel DOM'da duruyor, yalnız
+       gizleniyor — açılınca yeniden kurulmuyor. */
+    var KAPALI_ANAHTAR = 'kidefSiniflarimKapali';
+
+    function kapaliMi() {
+        try { return localStorage.getItem(KAPALI_ANAHTAR) === '1'; }
+        catch (e) { return false; }
+    }
+
+    function katla() {
+        var b = document.getElementById(BOLUM_ID);
+        if (!b) return;
+        var kapandi = !b.classList.contains('sn-kapali');
+        b.classList.toggle('sn-kapali', kapandi);
+        try { localStorage.setItem(KAPALI_ANAHTAR, kapandi ? '1' : '0'); } catch (e) { }
+        var t = b.querySelector('.sn-bas-tus');
+        if (t) {
+            t.setAttribute('aria-expanded', kapandi ? 'false' : 'true');
+            t.title = kapandi ? 'Sınıflarımı aç' : 'Sınıflarımı kapat';
+        }
     }
 
     /* ----------------------------------------------- OKUL PANELİ İÇERİDE */
@@ -518,7 +565,7 @@
     else ciz();
 
     window.KidefSiniflarim = {
-        okulAc: okulAc,
+        okulAc: okulAc, katla: katla,
         ciz: ciz, ac: ac, seviyeSec: seviyeSec, sinifKur: sinifKur,
         kurumEkle: kurumEkle, gorunurMu: gorunurMu
     };
