@@ -317,6 +317,31 @@
       /* AÇIKKEN BEYAZ VURGU ÇİZGİSİ (05.10.2026) — öğretmen: "okul svg'sine
          tıklayınca svg'nin altında beyaz vurgu çizgisi olsun". Başlıktaki
          diğer sekmelerin etkin çizgisiyle aynı dil. */
+      /* BOŞ EKRAN İPUCU (06.10.2026): sınıf seçilmediğinde Listelerim
+         panelinde görünen karşılama. Simge, başlıktaki okul tuşunun
+         aynısı — öğretmen neye basacağını birebir görsün. */
+      #ll-select-hint{ text-align:center; padding:64px 20px 70px; color:#8A93A0; }
+      #ll-select-hint .lsh-simge{
+        width:76px; height:76px; margin:0 auto 18px; display:flex;
+        align-items:center; justify-content:center;
+        background:#fff; border:1px solid #E3E8EF; border-radius:20px;
+        box-shadow:0 8px 22px rgba(31,36,48,.10);
+      }
+      #ll-select-hint .lsh-simge svg{ width:46px; height:46px; display:block; }
+      #ll-select-hint h2{
+        font-family:'Marhey',sans-serif; color:#5B6471; margin:0 0 6px;
+        font-size:1.28rem; line-height:1.4;
+      }
+      #ll-select-hint p{ margin:0 0 20px; font-size:.95rem; color:#8A93A0; }
+      #ll-select-hint .lsh-tus{
+        border:0; border-radius:12px; cursor:pointer; font-family:inherit;
+        font-weight:800; font-size:1rem; color:#fff; padding:12px 28px;
+        background:linear-gradient(135deg,#F39C12,#D84315);
+        box-shadow:0 4px 14px rgba(216,67,21,.28);
+        transition:filter .15s, transform .12s;
+      }
+      #ll-select-hint .lsh-tus:hover{ filter:brightness(1.07); transform:translateY(-1px); }
+      #ll-select-hint .lsh-tus:active{ transform:scale(.98); }
       #header-okul-btn{ position:relative; }
       #header-okul-btn::after{
         content:""; position:absolute; left:50%; bottom:-7px;
@@ -6815,7 +6840,19 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
 <div id="content">
     <!-- Sinif adi karti sekme cubuguyla BIRLESTI (viewTitle .tabs icinde) -->
-    <div id="ll-select-hint" style="display:none; text-align:center; padding:70px 20px; color:#95a5a6;"><div style="margin-bottom:10px;"><svg class="lli lli-xxl" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect class="li-kitap1" x="3.2" y="6.4" width="4" height="14.4" rx="1" fill="#e74c3c"/><rect class="li-kitap2" x="8" y="4.6" width="4" height="16.2" rx="1" fill="#3498db"/><rect class="li-kitap3" x="12.8" y="7.4" width="4" height="13.4" rx="1" fill="#27ae60"/><path d="M17.6 9l4.6 1.4-3 10.4-4.6-1.4z" fill="#f39c12"/></svg> <svg class="lli lli-xxl" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="li-el"><path d="M21 10.6h-8.6l2-2.6a1.6 1.6 0 0 0-2.4-2.1L7.8 10H5.4a2 2 0 0 0-2 2v3.6a2 2 0 0 0 2 2h2.4l4.2 3.2a2 2 0 0 0 1.2.4H21a1.4 1.4 0 0 0 0-2.8 1.4 1.4 0 0 0 0-2.8 1.4 1.4 0 0 0 0-2.8 1.4 1.4 0 0 0 0-2.8" fill="#f5b041"/></g></svg></div><h2 style="font-family:'Marhey',sans-serif; color:#7f8c8d; margin:0;">Profilinden (sağ üstte adının olduğu yer) bir sınıf seç</h2></div>
+    <!-- BOŞ EKRAN İPUCU (06.10.2026) — öğretmen: "okul svg sine basınca ve
+         çarpıya basınca şu yazı çıkıyor: Profilinden ... bir sınıf seç".
+         O metin, sınıf ağacının PROFİLDE olduğu zamandan kalmaydı; ağaç
+         05.10.2026'da profilden kaldırıldı. Artık ipucu başlıktaki okul
+         simgesini gösteriyor ve aynı pencereyi açan bir tuş sunuyor. -->
+    <div id="ll-select-hint" style="display:none;">
+        <div class="lsh-simge"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2l9.4 5.2v1.4H2.6V7.4z" fill="#c0392b"/><path d="M4.4 8.8h15.2v12.6H4.4z" fill="#ecf0f1" stroke="#90A4AE" stroke-width=".9"/><rect x="10.2" y="14.4" width="3.6" height="7" fill="#8d6e63"/><g fill="#3498db"><rect x="6" y="11.4" width="3" height="3" rx=".5"/><rect x="15" y="11.4" width="3" height="3" rx=".5"/><rect x="6" y="16.4" width="3" height="3" rx=".5"/><rect x="15" y="16.4" width="3" height="3" rx=".5"/></g><g class="li-bayrakcik"><line x1="12" y1="1" x2="12" y2="5" stroke="#7f8c8d" stroke-width="1.2"/><path d="M12.4 1.4h3.4l-.8 1.2.8 1.2h-3.4z" fill="#e74c3c"/></g></svg></div>
+        <h2>Başlıktaki okul simgesinden bir sınıf seç</h2>
+        <p>Kurumların, seviyelerin ve sınıfların hepsi orada.</p>
+        <button type="button" class="lsh-tus"
+                onclick="if(typeof llOkulPopupAc==='function') llOkulPopupAc();">
+            Okulu aç</button>
+    </div>
 
 <div class="tabs">
     <!-- GERİ TUŞU KALDIRILDI (05.10.2026) — öğretmen: "geri tuşuna

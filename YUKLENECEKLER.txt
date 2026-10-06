@@ -5913,3 +5913,26 @@ bilgiler olmasın."
    Asıl dosya galeri/ içinde duruyor, .gitignore ile siteye gitmiyor;
    yalnız web/ ve kucuk/ kopyaları yayına çıkıyor.
    Dosyalar: sistem/galeriveri.js, index.html, galeri/web/, galeri/kucuk/
+
+06.10.2026 — BOŞ EKRAN İPUCU: "profilinden seç" yazısı kalktı
+   Öğretmen: "okul svg sine basınca ve çarpıya basınca şu yazı çıkıyor:
+   Profilinden (sağ üstte adının olduğu yer) bir sınıf seç."
+   NİYE YANLIŞTI: o metin sınıf ağacının PROFİLDE olduğu zamandan
+   kalmaydı; ağaç 05.10.2026'da profilden kaldırıldı, kurum ve sınıfların
+   tek adresi başlıktaki okul simgesi oldu. Yani ipucu öğretmeni artık
+   olmayan bir yere yolluyordu — okul penceresini açıp kapatınca ilk
+   karşılaştığı şey de buydu.
+   YAPILAN (#ll-select-hint yeniden yazıldı):
+     · Simge: işaret eden el + kitaplar yerine BAŞLIKTAKİ OKUL SİMGESİNİN
+       AYNISI, beyaz yuvarlak kartın içinde — neye basacağı birebir belli.
+     · Yazı: "Başlıktaki okul simgesinden bir sınıf seç" + tek satır
+       açıklama ("Kurumların, seviyelerin ve sınıfların hepsi orada").
+     · Tuş: "Okulu aç" → doğrudan llOkulPopupAc(); ipucunu okuyup yukarı
+       uzanmak zorunda kalmasın.
+   DENENDİ: eski metin sitede hiç kalmadı (yalnız açıklama yorumunda
+     geçiyor); başlık/alt satır/tuş doğru, simge çiziliyor, tuş
+     llOkulPopupAc'ı çağırıyor. Ekran görüntüsüyle de bakıldı.
+     Sayfa hatası yok.
+   Dosyalar: index.html
+   Yedek: _kaynak/yedekler/20261006-sinif-ipucu/
+   Betik: _kaynak/uretici/sinifIpucu.py
