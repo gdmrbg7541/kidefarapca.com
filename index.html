@@ -7588,7 +7588,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + butonu olsun ... sınıflara header yerine galeri ve site
          güncellemelerinin üstünde bi kategori olarak hızlıca
          ulaşabilsin." Bölümü kendisi, Güncellemeler'in üstüne koyar. -->
-    <script src="sistem/siniflarim.js?v=1"></script>
+    <!-- SINIFA DOĞRUDAN BAĞLANTI (06.10.2026): index.html?sinif=…&sube=…
+         Sınıf kartlarının yeni sekmede açılabilmesi için gereken adres.
+         siniflarim.js'ten ÖNCE yüklenmeli — kart çizilirken adresi
+         buradan alıyor. -->
+    <script src="sistem/sinifbag.js?v=1"></script>
+    <script src="sistem/siniflarim.js?v=2"></script>
     <!-- SINIF MATERYALLERİ SEKMESİ (06.10.2026): açık sınıfın seviyesine
          ait İmam Hatip belgeleri ve etkinlik kartları, sınıfın kendi
          panelinde. Kopya değil, aynı kaynaktan çizim. -->

@@ -6116,3 +6116,33 @@ bilgiler olmasın."
      veri değiştirilip ciz() çağrılınca 1 yazım, arka arkaya iki çağrıda
      0 yazım. Sayfa hatası yok.
    Dosya: sistem/siniflarim.js
+
+06.10.2026 — SINIF KARTLARI AYRI SEKMEDE AÇILIYOR
+   Öğretmen: "sınıf listesine tıklayınca ayrı sekmede açılsın."
+   ÖNCE BİR ADRES GEREKİYORDU: site tek sayfa; sınıf seçimi şimdiye
+   kadar yalnız bellekte yaşıyordu (selectClass), yani "o sınıfa giden
+   bir bağlantı" yoktu. Yeni dosya sistem/sinifbag.js siteye bu kapıyı
+   açtı:
+        index.html?sinif=<seviyeId>&sube=<sinifId>
+   Sayfa bu adresle açılınca Listelerim görünümüne geçip sınıfı seçiyor.
+   data ve selectClass hazır olana kadar kısa aralıklarla bekliyor
+   (~15 sn), gelmezse sessizce vazgeçiyor. Sınıf açıldıktan sonra
+   ?sinif=… adres çubuğundan siliniyor (history.replaceState) ki sayfa
+   yenilenince aynı sınıf zorla yeniden açılmasın.
+   KARTLAR: "Sınıflarım" kategorisindeki sınıf kartı artık <button>
+   değil <a target="_blank" rel="noopener">. Gerçek bağlantı olduğu için
+   orta tuş, Ctrl+tık ve "bağlantıyı kopyala" da çalışıyor; alt çizgi
+   CSS'te kapatıldı, görünüm aynı kaldı. sinifbag.js yüklenmemişse eski
+   davranışa (aynı sekmede açma) düşülüyor.
+   DOKUNULMADI: sınıf adı rozetindeki açılır liste aynı sekmede
+   çalışmaya devam ediyor — oranın işi "bulunduğum sınıfı değiştirmek",
+   yeni sekme açmak oraya ters.
+   DENENDİ: kart <a>, target=_blank, rel=noopener, adres
+     index.html?sinif=L1&sube=C1A, alt çizgi yok; tıklayınca gerçekten
+     yeni sekme açıldı, o sekmede görünüm listelerim-section, seçili
+     sınıf L1/C1A, rozet "1-A Şubesi", adres temizlendi. İki sekmede de
+     sayfa hatası yok.
+   Dosyalar: sistem/sinifbag.js (YENİ), sistem/siniflarim.js (?v=2),
+             index.html
+   Yedek: _kaynak/yedekler/20261006-sinif-yeni-sekme/
+   Betik: _kaynak/uretici/sinifYeniSekme.py

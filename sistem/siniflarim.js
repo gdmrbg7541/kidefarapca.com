@@ -89,6 +89,7 @@
             /* sınıf kartları */
             '#' + BOLUM_ID + ' .sn-siniflar{ display:flex; flex-wrap:wrap; gap:10px; }',
             '#' + BOLUM_ID + ' .sn-sinif{ display:flex; align-items:center; gap:10px; cursor:pointer;',
+            '  text-decoration:none;',   /* kart bir <a>: alt çizgi olmasın */
             '  border:1px solid #E3E8EF; background:#F7F9FC; border-radius:13px; padding:10px 15px 10px 11px;',
             '  font-family:inherit; font-weight:700; color:#1F2430; font-size:.95rem;',
             '  transition:background .15s, border-color .15s, transform .12s, box-shadow .15s; }',
@@ -193,13 +194,30 @@
         }
         h += '<div class="sn-siniflar">';
         siniflar.forEach(function (s) {
-            h += '<button type="button" class="sn-sinif"' +
-                ' onclick="KidefSiniflarim.ac(\'' + kac(s.lId) + '\',\'' + kac(s.cId) + '\')"' +
-                ' title="' + kac(s.ad) + ' listelerini aç">' +
-                '<span class="sn-sv">' + kac(s.rakam) + '</span>' +
-                '<span class="sn-ad">' + kac(s.ad) + '</span>' +
-                (s.ogrenci ? '<span class="sn-ogr">' + s.ogrenci + '</span>' : '') +
-                '</button>';
+            /* YENİ SEKMEDE AÇILSIN (06.10.2026) — öğretmen: "sınıf
+               listesine tıklayınca ayrı sekmede açılsın". Kart <button>
+               değil GERÇEK BAĞLANTI: böylece orta tuş, Ctrl+tık ve
+               "bağlantıyı kopyala" da çalışıyor. Adresi sinifbag.js
+               üretiyor; o dosya yüklenmediyse eski davranışa düşülür. */
+            var bag = (window.KidefSinifBag && KidefSinifBag.adres)
+                ? KidefSinifBag.adres(s.lId, s.cId) : '';
+            if (bag) {
+                h += '<a class="sn-sinif" href="' + kac(bag) + '"' +
+                    ' target="_blank" rel="noopener"' +
+                    ' title="' + kac(s.ad) + ' listelerini yeni sekmede aç">' +
+                    '<span class="sn-sv">' + kac(s.rakam) + '</span>' +
+                    '<span class="sn-ad">' + kac(s.ad) + '</span>' +
+                    (s.ogrenci ? '<span class="sn-ogr">' + s.ogrenci + '</span>' : '') +
+                    '</a>';
+            } else {
+                h += '<button type="button" class="sn-sinif"' +
+                    ' onclick="KidefSiniflarim.ac(\'' + kac(s.lId) + '\',\'' + kac(s.cId) + '\')"' +
+                    ' title="' + kac(s.ad) + ' listelerini aç">' +
+                    '<span class="sn-sv">' + kac(s.rakam) + '</span>' +
+                    '<span class="sn-ad">' + kac(s.ad) + '</span>' +
+                    (s.ogrenci ? '<span class="sn-ogr">' + s.ogrenci + '</span>' : '') +
+                    '</button>';
+            }
         });
         h += '<button type="button" class="sn-ekle"' +
             ' onclick="KidefSiniflarim.seviyeSec(this,\'' + kac(kId || 'GENEL') + '\')"' +
