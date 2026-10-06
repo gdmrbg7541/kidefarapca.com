@@ -5936,3 +5936,35 @@ bilgiler olmasın."
    Dosyalar: index.html
    Yedek: _kaynak/yedekler/20261006-sinif-ipucu/
    Betik: _kaynak/uretici/sinifIpucu.py
+
+06.10.2026 — TAKVİM DÜZENLEYİCİDE GERÇEK ÖĞRETMENLER
+   Öğretmen: "öğretmen takvim düzenleyici kısmında mevcut öğretmenlerin
+   ismi çıkmıyor."
+   SEBEBİ: yönetici panelindeki "🗓️ Öğretmen Takvim Düzenleyici" açılır
+   listesi appState.teachers'tan doluyordu; o da hesap/ogretmen.js
+   içindeki SABİT DATA_OGRETMENLER dizisi — iki demo kayıt (hoca1/hoca2).
+   Siteye kayıt olan gerçek öğretmenlerin hiçbiri orada yoktu. Hemen
+   üstündeki "👨‍🏫 Öğretmenler" tablosu daha önce Firestore'a
+   bağlanmıştı; bu açılır liste o geçişten pay almamış, geride kalmış.
+   YAPILAN: liste kullanicilar koleksiyonundan okunuyor — role 'teacher'
+   veya 'admin' olan herkes. Satırda ad, e-posta ve onay durumu görünüyor
+   ("onay bekliyor" / "onaylı değil"), böylece yanlış kişiye takvim
+   açılmaz. Sıralama ada göre (Türkçe).
+   AYRINTILAR:
+     · Kimlik Firestore belge kimliği (uid). Takvimler zaten
+       takvimler/{teacherId} altında; artık gerçek hesapla eşleşiyorlar.
+     · Hiç takvimi olmayan öğretmende düzenleyici boş kalmıyor:
+       getTeacherCalendarEditorHtml kaydı olmayan güne 09:00–17:00
+       varsayılanını uyguluyor.
+     · Seçili öğretmen liste yenilenince korunuyor.
+     · Çevrimdışıyken ya da sorgu patlarsa eski DATA_OGRETMENLER dizisi
+       yedek olarak basılıyor; panel boş kalmıyor.
+     · Hiç öğretmen yoksa "Kayıtlı öğretmen yok" + ne yapılacağı yazıyor.
+     · Koleksiyon tek seferde okunup JS'te süzülüyor: 'in' sorgusu eski
+       SDK'da ya da dizin eksikken patlayabiliyor.
+   DENENDİ (sahte Firestore ile): 3 öğretmen/yönetici listelendi, öğrenci
+     süzüldü, ada göre sıralı, onay bekleyen etiketli; seçim korundu;
+     düzenleyici çizildi. Sayfa hatası yok.
+   Dosyalar: hesap/teacher-admin.js, index.html (?v=20261006a)
+   Yedek: _kaynak/yedekler/20261006-takvim-ogretmen/
+   Betik: _kaynak/uretici/takvimOgretmenListesi.py

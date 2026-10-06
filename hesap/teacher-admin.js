@@ -262,12 +262,12 @@ function renderAdminPanel() {
         document.head.appendChild(style);
     }
     
-    // Inject teacher options into the new admin select
-    const adminSelect = document.getElementById('admin-teacher-edit-select');
-    if (adminSelect) {
-        adminSelect.innerHTML = appState.teachers.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
-        renderAdminTeacherScheduleEditor();
-    }
+    /* TAKVİM DÜZENLEYİCİ ÖĞRETMEN LİSTESİ (06.10.2026) — öğretmen:
+       "takvim düzenleyici kısmında mevcut öğretmenlerin ismi çıkmıyor".
+       Eskiden burada appState.teachers basılıyordu; o da hesap/ogretmen.js
+       içindeki SABİT DATA_OGRETMENLER dizisi (iki demo kayıt). Gerçek
+       kayıtlar Firestore'da. Liste artık oradan okunuyor. */
+    adminTakvimOgretmenDoldur();
     
     renderTeacherApplications();
     renderAdminTeacherList();
@@ -552,6 +552,79 @@ function getTeacherCalendarEditorHtml(teacherId, isAdmin) {
     
     return html;
 }
+
+/* ======================================================================
+   TAKVİM DÜZENLEYİCİ — ÖĞRETMEN AÇILIR LİSTESİ      (06.10.2026)
+   kullanicilar koleksiyonundan role 'teacher' veya 'admin' olanlar.
+   Kimlik = Firestore belge kimliği (uid); takvimler zaten
+   takvimler/{teacherId} altında tutuluyor, böylece gerçek hesapla
+   eşleşiyor. Çevrimdışıyken eski DATA_OGRETMENLER dizisi yedek.
+   ====================================================================== */
+function adminTakvimOgretmenDoldur() {
+    var sec = document.getElementById('admin-teacher-edit-select');
+    if (!sec) return;
+    var secili = sec.value;
+    var duzenleyici = document.getElementById('admin-teacher-schedule-editor');
+
+    function bas(liste) {
+        if (!liste.length) {
+            sec.innerHTML = '<option value="">Kayıtlı öğretmen yok</option>';
+            if (duzenleyici) {
+                duzenleyici.innerHTML = '<p style="color:#7f8c8d;">Takvim açmak için önce ' +
+                    'bir öğretmen kaydı gerekiyor. Öğretmen siteye kayıt olup onaylandığında ' +
+                    'burada görünür.</p>';
+            }
+            return;
+        }
+        sec.innerHTML = liste.map(function (t) {
+            var etiket = t.ad || t.email || t.id;
+            if (t.ad && t.email) etiket += ' — ' + t.email;
+            if (t.onay === 'bekliyor') etiket += '  (onay bekliyor)';
+            else if (t.onay === 'reddedildi') etiket += '  (onaylı değil)';
+            return '<option value="' + _fbEsc(t.id) + '">' + _fbEsc(etiket) + '</option>';
+        }).join('');
+        /* Liste yenilenince seçili öğretmen kaybolmasın. */
+        if (secili && liste.some(function (t) { return t.id === secili; })) sec.value = secili;
+        renderAdminTeacherScheduleEditor();
+    }
+
+    /* Çevrimdışı yedek: eski sabit dizi. */
+    var yedek = (appState.teachers || []).map(function (t) {
+        return { id: t.id, ad: t.name || '', email: t.email || '', onay: '' };
+    });
+
+    if (typeof firebase === 'undefined' || typeof isFirebaseReady === 'undefined' || !isFirebaseReady) {
+        bas(yedek);
+        return;
+    }
+
+    sec.innerHTML = '<option value="">Yükleniyor…</option>';
+    /* Koleksiyon tek seferde okunup JS'te süzülüyor: 'in' sorgusu eski
+       SDK'da ya da dizin eksikken patlayabiliyor, burada o risk yok. */
+    firebase.firestore().collection('kullanicilar').get()
+        .then(function (snap) {
+            var l = [];
+            snap.forEach(function (d) {
+                var v = d.data() || {};
+                if (v.role !== 'teacher' && v.role !== 'admin') return;
+                l.push({
+                    id: d.id,
+                    ad: (v.name && v.name !== 'Belirtilmedi') ? v.name : '',
+                    email: v.email || '',
+                    onay: v.ogretmenOnay || ''
+                });
+            });
+            l.sort(function (a, b) {
+                return String(a.ad || a.email || '').localeCompare(String(b.ad || b.email || ''), 'tr');
+            });
+            bas(l);
+        })
+        .catch(function (e) {
+            try { console.warn('takvim öğretmen listesi okunamadı:', e && (e.code || e.message)); } catch (x) { }
+            bas(yedek);
+        });
+}
+window.adminTakvimOgretmenDoldur = adminTakvimOgretmenDoldur;
 
 function renderAdminTeacherScheduleEditor() {
     const editor = document.getElementById('admin-teacher-schedule-editor');
