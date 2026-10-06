@@ -54,7 +54,9 @@
     var KORUMA_SURE = 20000;     /* görünümü koruma süresi (ms) — bulut
                                     verisi geç gelebiliyor, panel ancak o
                                     zaman gerçekten açılıyor */
-    var KARARLI = 3;             /* kaç yoklama yerinde kalırsa perde kalkar */
+    var KARARLI = 2;             /* kaç yoklama yerinde kalırsa perde kalkar */
+    var YOKLAMA = 150;           /* koruma yoklama aralığı (ms) — perde liste
+                                    hazır olduktan sonra boşuna beklemesin */
 
     function parametre() {
         try {
@@ -170,10 +172,6 @@
             '#' + PERDE_ID + ' .sb-kurum{ font-size:.9rem; color:#8A93A0;',
             '  margin-top:-10px; }',
             '#' + PERDE_ID + ' .sb-alt{ font-size:.92rem; color:#5B6471; }',
-            '#' + PERDE_ID + ' .sb-gec{ font-size:.86rem; color:#8A93A0;',
-            '  opacity:0; transition:opacity .3s ease; }',
-            '#' + PERDE_ID + '.sb-uzadi{ cursor:pointer; }',
-            '#' + PERDE_ID + '.sb-uzadi .sb-gec{ opacity:1; }',
             '#' + PERDE_ID + ' .sb-okul{ width:74px; height:74px; }',
             '#' + PERDE_ID + ' .sb-cubuk{ width:132px; height:4px; border-radius:2px;',
             '  background:#DCE3EB; overflow:hidden; }',
@@ -207,8 +205,7 @@
             '<div class="sb-ad">' + kac(bilgi.ad) + '</div>' +
             (bilgi.kurum ? '<div class="sb-kurum">' + kac(bilgi.kurum) + '</div>' : '') +
             '<div class="sb-cubuk"><i></i></div>' +
-            '<div class="sb-alt">liste açılıyor…</div>' +
-            '<div class="sb-gec">beklemek istemezsen dokun, siteye geç</div>';
+            '<div class="sb-alt">liste açılıyor…</div>';
         p.addEventListener('click', function () { dur(); perdeKapa(); });
         (document.body || document.documentElement).appendChild(p);
 
@@ -218,11 +215,6 @@
                 try { document.body.appendChild(p); } catch (e) { }
             }, { once: true });
         }
-        /* İş uzarsa çıkış kapısını göster. */
-        setTimeout(function () {
-            var q = document.getElementById(PERDE_ID);
-            if (q) q.classList.add('sb-uzadi');
-        }, 3200);
     }
 
     function perdeKapa() {
@@ -473,7 +465,7 @@
             basarili = true;
             kararli++;
             if (kararli >= KARARLI) { dur(); perdeKapa(); }
-        }, 300);
+        }, YOKLAMA);
     }
 
     function ac(h) {
@@ -533,10 +525,10 @@
         var zaman = setInterval(function () {
             tur++;
             if (hazirMi(hedef)) { clearInterval(zaman); ac(hedef); adresIzle(); return; }
-            if (tur > 60) {                       /* ~15 sn: açılamadı */
+            if (tur > 125) {                      /* ~15 sn: açılamadı */
                 clearInterval(zaman); perdeKapa(); basligiGeriVer(); sekmeAdi('');
             }
-        }, 250);
+        }, 120);
     }
 
     window.KidefSinifBag = {

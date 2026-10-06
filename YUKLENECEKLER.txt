@@ -6429,3 +6429,31 @@ NOT: sistem/sinifbag.js bugün İKİ KEZ eski hâline döndü (yazdığım sür�
 üstüne eski içerik geldi). Bu seferki yama doğrudan dosyanın üstünde
 yapıldı ve içeriği doğrulandı; gönderirken dosyanın hâlâ KORUMA_SURE=20000
 içerdiğinden emin olmakta fayda var.
+
+── 06.10.2026 (ek 12) · PERDEDEN ÇIKIŞ YAZISI KALKTI, BEKLEME KISALDI ───
+Öğretmen: "bi sınıf açılırken 'beklemek istemezsen siteye geç' kısmı
+olmasın, ayrıca sınıflar geç açılıyor."
+
+ · Yazı ve onu getiren zamanlayıcı kaldırıldı. Perdeye dokununca kapanma
+   DURUYOR (yazısız) — takılan olursa çıkışı var.
+ · Bekleme kısaldı: "hazır mı" yoklaması 250 → 120 ms; kararlılık ölçümü
+   3 tur × 300 ms (900 ms) → 2 tur × 150 ms (300 ms). Perde, liste hazır
+   olduktan sonra yarım saniyeden fazla boşuna beklemiyor.
+
+── AÇILIŞ YAVAŞLIĞI: ÖLÇÜM (temizlenecek "çöp" yok, yapı ağır) ─────────
+Canlı sitede ölçüldü (önbellekli, hızlı bağlantı):
+ · 56 JS dosyası + 6 CSS, hepsi ENGELLEYİCİ — tek birinde defer/async YOK.
+   10'u <head> içinde, yani çizimi de durduruyor.
+ · JS'lerin ilk isteğinden sonuncusunun bitişine: ~2,6 sn.
+   DOMContentLoaded 3,0 sn · load 3,2 sn.
+ · index.html 166 KB; içinde SATIR İÇİ 15 betik var, biri 187 KB (!),
+   bir diğeri 27 KB.
+ · Tekrar eden dosya yok (yalnız qrcode için biri cdnjs biri yerel, o da
+   bilerek: karekodyedek.js yedeğe düşüyor).
+Yani silinecek artık dosya sorunu değil; sayfa açılmadan önce 56 betiği
+sırayla indirip çalıştırıyor. Kalıcı çözüm, gövdedeki betiklere defer
+vermek ve ilk açılışta gerekmeyenleri (oyunlar, muhadese, canlı ders,
+checkout, paketler…) sonraya bırakmak. AMA gövdedeki 15 satır içi betik
+bu dosyalardan gelen genel değişkenleri kullanıyor; defer verilirse
+sıralama bozulur. Bu yüzden tek tek ele alınması gereken ayrı bir iş —
+öğretmene söylendi, onayı beklenecek.
