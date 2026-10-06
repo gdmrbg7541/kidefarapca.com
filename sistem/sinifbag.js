@@ -249,6 +249,7 @@
        Pencere kapatılınca sekme kendini kapatıyor; tarayıcı izin vermezse
        (adres elle açılmışsa olur) başlık geri gelip anasayfaya dönülüyor. */
     var yalnizOkul = false;
+    var okulZaman = null;
 
     function okulAdres() { return 'index.html?okul=1'; }
 
@@ -299,20 +300,21 @@
         perdeAc({ ad: 'Okulum', kurum: 'sınıflarım açılıyor' });
 
         var tur = 0, acildi = false;
-        var z = setInterval(function () {
+        okulZaman = setInterval(function () {
+            var z = okulZaman;
             tur++;
             if (!acildi) {
                 if (typeof llOkulPopupAc === 'function') {
                     try { llOkulPopupAc(); acildi = true; perdeKapa(); } catch (e) { }
                 } else if (tur > 60) {        /* ~15 sn: açılamadı */
-                    clearInterval(z); perdeKapa(); basligiGeriVer();
+                    clearInterval(z); okulZaman = null; perdeKapa(); basligiGeriVer();
                     try { document.documentElement.classList.remove(YALNIZ_OKUL); } catch (x) { }
                 }
                 return;
             }
             /* Pencere kapatıldıysa sekmeyi kapat. */
             if (!document.getElementById('llOkulPopup')) {
-                clearInterval(z);
+                clearInterval(z); okulZaman = null;
                 try { window.close(); } catch (e) { }
                 setTimeout(function () {         /* kapanmadıysa siteye dön */
                     try {
@@ -324,6 +326,29 @@
                 }, 220);
             }
         }, 250);
+    }
+
+    /* Okul sekmesinde bir sınıfa basıldı: YENİ SEKME AÇMA, bu sekmeyi o
+       sınıfın sekmesine çevir (06.10.2026 — öğretmen: "okul svg sine
+       basınca ayrı bi sekme açılıyor ya, ordan bi sınıf açınca bi daha
+       yeni sekmede açılmasın").
+       Sayfa yeniden yüklenmiyor: pencere kapanıyor, okul sekmesi işareti
+       kalkıyor, Listelerim'e geçilip sınıf seçiliyor, adres ve sekme adı
+       o sınıfı gösteriyor. Yani sekme sayısı artmıyor; öğretmen okulu açtı,
+       bir sınıfa girdi, aynı yerde kaldı. */
+    function sinifaGec(lId, cId) {
+        if (okulZaman) { clearInterval(okulZaman); okulZaman = null; }  /* "pencere kapandı → sekmeyi kapat" izlemesi dursun */
+        yalnizOkul = false;
+        try { document.documentElement.classList.remove(YALNIZ_OKUL); } catch (e) { }
+        try { if (typeof llOkulPopupKapat === 'function') llOkulPopupKapat(); } catch (e) { }
+
+        var h = { lId: lId, cId: cId };
+        basligiGizle();                       /* sınıf sekmesinde de başlık yok */
+        var b = kayitliAd(h);
+        if (b) { perdeAc(b); sekmeAdi(b.ad); }
+        try { history.replaceState(null, '', adres(lId, cId) + location.hash); } catch (e) { }
+        ac(h);                                /* görünüm + seçim + koruma */
+        adresIzle();
     }
 
     /* ------------------------------------------------------ AÇILIŞ -- */
@@ -459,6 +484,7 @@
         ac: ac, perdeKapa: perdeKapa,
         basligiGeriVer: basligiGeriVer,
         okulAdres: okulAdres, okulSekmesiAc: okulSekmesiAc,
+        sinifaGec: sinifaGec,
         kapiSifirla: kapiSifirla,
         /* hesap/listelerim.js buna bakıyor: okul sekmesinde arka planı
            açmıyor ve sınıfı yeni sekmede açıyor. */

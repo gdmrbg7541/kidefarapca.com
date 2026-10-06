@@ -6328,3 +6328,39 @@ sistem/sinifbag.js: sekme adı artık "5/A · kidefarapca.com".
  · Sekme içinde sınıf değişirse ad da değişiyor (5/A → 6/A).
  · Okul sekmesi "Okulum · kidefarapca.com".
  · Normal açılışta ve geçersiz bağlantıda başlık değişmiyor.
+
+── 06.10.2026 (ek 8) · OKUL SEKMESİ ÜÇÜNCÜ SEKME AÇMIYOR ────────────────
+Öğretmen: "okul svg sine basınca ayrı bi sekme açılıyor ya, ordan bi sınıf
+açınca bi daha yeni sekmede açılmasın."
+
+Okul sekmesi artık YENİ SEKME AÇMIYOR, kendisi o sınıfın sekmesine
+DÖNÜŞÜYOR (KidefSinifBag.sinifaGec):
+  pencere kapanır → okul sekmesi işareti kalkar → Listelerim'e geçilip
+  sınıf seçilir → adres ?sinif=…&sube=… olur → sekme adı "5/A ·
+  kidefarapca.com" olur → site başlığı gizli kalır.
+Sayfa YENİDEN YÜKLENMİYOR; zaten açık olan sayfa yerinde dönüşüyor.
+"Pencere kapandıysa sekmeyi kapat" izlemesi de bu dönüşümde durduruluyor —
+yoksa pencere kapanır kapanmaz sekme kendini kapatırdı.
+
+Ölçüldü: okul tuşuna basınca sekme sayısı 2; kapıya basınca YİNE 2
+(üçüncü sekme açılmıyor), aynı sekmede liste açık, rozet "Sınıf Listesi
+5/A", adres ?sinif=L1&sube=C1, başlık "5/A · kidefarapca.com", sekme
+3 saniye sonra hâlâ açık. Hata yok.
+
+── 06.10.2026 (ek 9) · OKULUN YANINDA KÜÇÜK OK ──────────────────────────
+Öğretmen: "bi sınıf listesi açıkken okul svg sine basınca diğer sınıflara
+ulaşabiliyoruz ya, bunu simgelemek için okul svg sinin yanında bi ok olsun."
+
+Rozetin solundaki okul simgesinin yanına küçük bir ok kondu: okul "nereye
+gidileceğini", ok "burada açılacak bir şey olduğunu" söylüyor.
+ · Ok okuldan belirgin biçimde küçük (14 px / okul 28 px, telefonda 12),
+   rengini yazıdan alıyor ve biraz soluk — okul öne çıksın.
+ · Üstüne gelince netleşip hafifçe aşağı iniyor; pencere açıkken yukarı
+   dönüyor (okul yerinde kalıyor).
+
+AYRICA, bu sırada çıkan bir boşluk kapatıldı: listelerim.js bu tuşu YALNIZ
+birden fazla sınıf varsa basıyordu (işi "başka sınıfa geç"ti). Tuş artık
+OKULA açılıyor — kurum/seviye/sınıf ekleme de orada — ve sınıf sekmesinde
+site başlığı gizli. Yani tek sınıflı öğretmenin okula hiçbir kapısı
+kalmıyordu. Tuş yoksa sekmeanim.js kendisi kuruyor; denendi, tek sınıfta da
+okul sekmesi açılıyor.

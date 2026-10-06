@@ -144,6 +144,16 @@
         '<circle cx="13.2" cy="18.4" r=".55" fill="#fff"/>' +
         '</svg>';
 
+    /* Okulun yanındaki küçük ok (06.10.2026 — öğretmen: "bi sınıf listesi
+       açıkken okul svg sine basınca diğer sınıflara ulaşabiliyoruz ya,
+       bunu simgelemek için okul svg sinin yanında bi ok olsun").
+       Okul "nereye gidileceğini", ok "burada açılacak bir şey olduğunu"
+       söylüyor. */
+    var OK_SVG =
+        '<svg class="rz-okcuk" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6"' +
+        ' stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
     /* ---------------------------------------------------------- BİÇİM */
     function stilKur() {
         if (document.getElementById('saStil')) return;
@@ -230,9 +240,23 @@
                çizimini yanlardan eziyordu: yükseklik 28'e çıkıyor ama genişlik
                16'da kalıyordu. Ölçü artık içeriğe göre. */
             '#ll-root #content .tabs #active-class-title .rz-ok{',
-            '  width:auto !important; height:auto !important; padding:4px 5px; }',
+            '  width:auto !important; height:auto !important; padding:4px 4px 4px 5px;',
+            '  display:inline-flex; align-items:center; gap:1px; }',
             '#ll-root #content .tabs #active-class-title .rz-ok svg{',
             '  flex:0 0 auto; width:28px !important; height:28px !important; }',
+            /* okulun yanındaki küçük ok: okuldan belirgin biçimde küçük,
+               rengini yazıdan alıyor, biraz soluk — okul öne çıksın. */
+            '#ll-root #content .tabs #active-class-title .rz-ok .rz-okcuk{',
+            '  width:14px !important; height:14px !important; opacity:.6;',
+            '  transition:transform .15s ease, opacity .15s ease; }',
+            '#ll-root #content .tabs #active-class-title .rz-ok:hover .rz-okcuk{',
+            '  opacity:1; transform:translateY(1.5px); }',
+            '@media (max-width:620px){',
+            '  #ll-root #content .tabs #active-class-title .rz-ok .rz-okcuk{',
+            '    width:12px !important; height:12px !important; } }',
+            /* pencere açıkken ok yukarı dönsün (okul yerinde kalır) */
+            '#ll-root #content .tabs #active-class-title.acik .rz-ok .rz-okcuk{',
+            '  transform:rotate(180deg); opacity:1; }',
             '@media (max-width:620px){',
             '  #ll-root #content .tabs #active-class-title .rz-ok svg{',
             '    width:24px !important; height:24px !important; } }',
@@ -363,7 +387,7 @@
        düzenek yoksa eski iş (küçük sınıf seçici) yedek olarak duruyor. */
     function okulaCevir(ok) {
         if (ok.__saOkul) return;
-        ok.innerHTML = OKUL_SVG;
+        ok.innerHTML = OKUL_SVG + OK_SVG;
         ok.setAttribute('title', 'Okulum — sınıflarımı aç');
         ok.setAttribute('aria-label', 'Okulum — sınıflarımı aç');
         ok.setAttribute('onclick',
@@ -383,8 +407,20 @@
         if (say && say.parentNode) say.parentNode.removeChild(say);
 
         if (r.querySelector('.rz-ayr')) return;
+
+        /* TEK SINIFLI ÖĞRETMENDE DE OKUL TUŞU (06.10.2026).
+           listelerim.js bu tuşu yalnız birden fazla sınıf varsa basıyordu —
+           o zaman işi "başka sınıfa geç"ti ve tek sınıfta anlamsızdı. Artık
+           tuş OKULA açılıyor (kurum/seviye/sınıf ekleme de orada) ve sınıf
+           sekmesinde site başlığı gizli; tuş olmazsa tek sınıflı öğretmenin
+           okula hiçbir kapısı kalmıyordu. Yoksa kendimiz kuruyoruz. */
         var ok = r.querySelector('.rz-ok');
-        if (!ok) return;                      /* tek sınıf: ok da ayırıcı da yok */
+        if (!ok) {
+            ok = document.createElement('button');
+            ok.type = 'button';
+            ok.className = 'rz-ok';
+            ok.setAttribute('tabindex', '0');
+        }
 
         okulaCevir(ok);
         r.insertBefore(ok, r.firstChild);     /* okul simgesi en sola */

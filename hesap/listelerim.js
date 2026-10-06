@@ -4970,18 +4970,18 @@ function llKatSurukleBagla(kok) {
 window.llKatSurukleBagla = llKatSurukleBagla;
 
 function llOkulSinifSec(lId, cId) {
-    /* OKUL SEKMESİNDE SINIF AYRI SEKMEDE (06.10.2026) — öğretmen: "açık
-       olan okul svg sinde bi sınıfa basınca da ayrı sekmede sınıf listesi
-       açılsın". Okul sekmesi yalnız seçim yapılan yer; sınıfın kendisi
-       kendi sekmesinde açılıyor ve okul penceresi AÇIK KALIYOR, böylece
-       arka arkaya birkaç sınıf açılabiliyor.
+    /* OKUL SEKMESİ SINIF SEKMESİNE DÖNÜŞÜR (06.10.2026) — öğretmen önce
+       "ayrı sekmede açılsın" dedi, sonra "ordan bi sınıf açınca bi daha
+       yeni sekmede açılmasın". Yani okul sekmesi üçüncü bir sekme açmıyor;
+       pencere kapanıyor ve O SEKME seçilen sınıfın sekmesi oluyor (adres,
+       sekme adı, başlıksız görünüm hepsi ona göre). Sayfa yeniden
+       yüklenmiyor.
        Normal sekmede (pencere listenin üstündeyken) davranış DEĞİŞMİYOR:
        sınıf aynı sekmede seçilir. */
     try {
         if (window.KidefSinifBag && window.KidefSinifBag.yalnizOkul &&
-            typeof window.KidefSinifBag.adres === 'function') {
-            window.open(window.KidefSinifBag.adres(lId, cId), '_blank', 'noopener');
-            try { if (window.KidefSinifBag.kapiSifirla) window.KidefSinifBag.kapiSifirla(); } catch (e) { }
+            typeof window.KidefSinifBag.sinifaGec === 'function') {
+            window.KidefSinifBag.sinifaGec(lId, cId);
             return;
         }
     } catch (e) { }
