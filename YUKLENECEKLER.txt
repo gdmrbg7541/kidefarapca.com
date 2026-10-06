@@ -6664,3 +6664,31 @@ düzeni bir piksel değişmedi (ölçüldü).
 Ölçüm: masaüstü (1440) kapı 17,9 px yazı · 92×54 px · bina 1060 px · her
 seviye tek satır · taşma yok. Telefon (390) kapı 13,1 px · bina 302 px —
 değişmedi.
+
+── 06.10.2026 (ek 21) · OKUL BİNASI TASARIMI YENİLENDİ ──────────────────
+Öğretmen: "okul tasarımını yenile, çatının altında lacivert bi yer var,
+orası dar ama seviyelerin olduğu yer daha geniş, çok daha profesyonel
+olsun."
+
+SORUN (ölçüldü): parçalar farklı genişlikteydi —
+    çatı %92 · saçak %94 · TABELA %82 · gövde %88 · taban %96
+Lacivert tabela gövdeden dar kaldığı için bina basamak basamak görünüyordu.
+
+YENİ DÜZEN — hepsi tek hizada:
+    gövde · tabela · giriş  → %100 (aynı kenar çizgisi)
+    saçak                   → %104 (duvardan taşan damlalık)
+    çatı                    → %108 (saçaktan taşan mahya)
+    taban                   → %106 (kaide)
+Taşma yalnız çatı/saçak/tabanda — gerçek binadaki gibi DERİNLİK için.
+Ölçüldü: tabelanın sol kenarı gövdeyle birebir aynı (1060 px), taşma yok.
+
+PROFESYONELLEŞTİREN diğer dokunuşlar:
+ · Tabela bir başlık çubuğu gibi: kurum adı solda (kep ile), kurum tuşları
+   sağda. Eskiden hepsi ortadaydı.
+ · Ağır iç gölgeler ve 2–6 px kenarlıklar kalktı; yerine 1 px saç çizgi
+   ayıraçlar ve tek bir yumuşak dış gölge.
+ · Duvarda hafif dikey degrade, katlarda ince ayıraç.
+ · Kapılar düzleşti: abartılı 3B yerine yumuşak degrade, ince alt kenar;
+   hover'da yalnız yükselme.
+ · Genel (kurumsuz) binanın soluk sürümü de aynı hizalara uydu.
+Telefon düzeni bozulmadı (ölçüldü: bina 302 px, taşma yok).
