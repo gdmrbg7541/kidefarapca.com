@@ -4727,19 +4727,30 @@ function llOkulPopupAc() {
             '<span class="okul-hizli-sira">' +
             (_rak || '<span class="okul-bos">5–10 arası seviyelerin hepsi kurulu</span>') +
             '</span>' +
-            '<button type="button" class="okul-seviye-ekle okul-seviye-elle"' +
-            ' title="Başka bir seviye adı yaz" onclick="llOkulSeviyeEkle(\'' +
-            _kHedef + '\')">' + llIcon('arti') + '<span>Başka</span></button></div>';
-        /* BOŞ KURUMDA ÖNCE EKLEME SATIRI (07.10.2026) — öğretmen: "okul
-           svg sinde seviye ekle yukarda, henüz seviye yok aşağıda olsun".
-           Doğrusu bu: kurum boşken yapılacak tek iş seviye eklemek, o
-           yüzden rakamlar üstte duruyor; "henüz seviye yok" altında
-           sessiz bir not olarak kalıyor. Kurumda seviye varsa düzen
-           eskisi gibi — kat listesi üstte, ekleme satırı en altta. */
-        if (_katBos) katlar = _ekleSatiri +
-            '<div class="okul-kat okul-kat-bos"><span class="okul-bos">' +
-            'Bu kurumda henüz seviye yok</span></div>';
-        else katlar += _ekleSatiri;
+            /* "BAŞKA" ARTIK TEK DAİRE (07.10.2026) — öğretmen: "5-10 arası
+               dışında seviye eklemek için başka ekle kısmı altta bi satır
+               olmasın, sadece en sağda bi çizgili dairenin içinde + olsun".
+               Alttaki geniş kesik çizgili şerit kalktı; satırın en sağında,
+               rakamlarla aynı boyda kesik çizgili bir daire içinde + var.
+               İşi aynı: istenen adla seviye açmak (11, 12, Hazırlık...). */
+            '<button type="button" class="okul-seviye-arti"' +
+            ' title="Başka bir seviye adı yaz (11, 12, Hazırlık...)"' +
+            ' aria-label="Başka bir seviye ekle" onclick="llOkulSeviyeEkle(\'' +
+            _kHedef + '\')">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+            '<path d="M12 6.5v11M6.5 12h11" fill="none" stroke="currentColor"' +
+            ' stroke-width="2.6" stroke-linecap="round"/></svg>' +
+            '</button></div>';
+        /* EKLEME SATIRI HER ZAMAN EN ÜSTTE (07.10.2026) — öğretmen önce
+           "seviye ekle yukarda, henüz seviye yok aşağıda olsun", ardından
+           "giriş yaptıktan sonra da seviye ekle en üstte olsun" dedi.
+           Yani kurum dolu da olsa boş da olsa rakam sırası binanın ilk
+           katında duruyor; seviye eklemek için aşağı inmek gerekmiyor ve
+           yeri her kurumda aynı. Kurum boşsa altında sessiz bir not
+           kalıyor. */
+        katlar = _ekleSatiri + katlar +
+            (_katBos ? ('<div class="okul-kat okul-kat-bos"><span class="okul-bos">' +
+                        'Bu kurumda henüz seviye yok</span></div>') : '');
         var pencere = '<svg class="okul-pencere" viewBox="0 0 20 16" aria-hidden="true" focusable="false">' +
             '<rect x="0.6" y="0.6" width="18.8" height="14.8" rx="2" fill="#CFE7F5" stroke="#8FB8D4" stroke-width="1.2"/>' +
             '<path d="M10 1.2v13.6M1.2 8h17.6" stroke="#8FB8D4" stroke-width="1.1"/></svg>';

@@ -511,12 +511,20 @@
             '<path d="M6.4 12.4v3.4c0 1.5 2.6 2.8 5.6 2.8s5.6-1.3 5.6-2.8v-3.4L12 15.2z" fill="#F7DC6F"/>' +
             '</svg><span>Okulun</span></div>' +
             '<div class="okul-govde">' +
+            /* ÖNİZLEME DE AYNI SIRADA (07.10.2026): gerçek panelde ekleme
+               satırı en üstte duruyor; misafir gördüğü şeyin aynısını
+               bulsun diye burada da öyle. Sağdaki kesik çizgili daire
+               gerçeğindeki "başka seviye" tuşunun karşılığı. */
+            '<div class="okul-kat okul-kat-ekle">' +
+            '<span class="okul-hizli-bas">Seviye ekle</span>' +
+            '<span class="okul-hizli-sira">' + rak + '</span>' +
+            '<span class="okul-seviye-arti" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24"><path d="M12 6.5v11M6.5 12h11" fill="none"' +
+            ' stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>' +
+            '</span></div>' +
             '<div class="okul-kat"><span class="okul-kat-ad">' +
             '<span class="okul-kat-yazi">Henüz seviye yok</span></span>' +
             '<span class="okul-kapilar"><span class="okul-bos">sınıf yok</span></span></div>' +
-            '<div class="okul-kat okul-kat-ekle">' +
-            '<span class="okul-hizli-bas">Seviye ekle</span>' +
-            '<span class="okul-hizli-sira">' + rak + '</span></div>' +
             '</div>' +
             '<div class="okul-giris">' + pencere +
             '<svg class="okul-kapi-svg" viewBox="0 0 40 32" aria-hidden="true">' +

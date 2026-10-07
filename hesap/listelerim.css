@@ -3605,6 +3605,26 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
 #llOkulPopup .okul-ihn svg{ width: 100%; height: 100%; display: block; }
 #llOkulPopup .okul-seviye-elle{ margin-inline-start: auto; opacity: .75; }
 #llOkulPopup .okul-seviye-elle:hover{ opacity: 1; }
+/* BAŞKA SEVİYE = EN SAĞDA KESİK ÇİZGİLİ DAİRE (07.10.2026)
+   Rakamlarla aynı boyda; satırın sonunda durur, aşağı satır açmaz. */
+#llOkulPopup .okul-seviye-arti{
+    margin-inline-start: auto; flex: none; cursor: pointer;
+    width: 38px; height: 38px; display: inline-flex;
+    align-items: center; justify-content: center;
+    border: 2px dashed #DEB88A; border-radius: 50%;
+    background: rgba(255, 255, 255, .55); color: #8E5A24; padding: 0;
+    transition: background .15s, border-color .15s, color .15s, transform .12s;
+}
+#llOkulPopup .okul-seviye-arti svg{ width: 19px; height: 19px; display: block; }
+#llOkulPopup .okul-seviye-arti:hover{
+    background: #FFF4E6; border-color: #E67E22; color: #B9651A;
+    transform: translateY(-2px) scale(1.06);
+}
+#llOkulPopup .okul-seviye-arti:active{ transform: scale(.95); }
+#llOkulPopup .okul-seviye-arti:focus-visible{ outline: 2px solid #E67E22; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce){
+    #llOkulPopup .okul-seviye-arti{ transition: none; }
+}
 
 /* şube harfleri: yeni kurulan seviyenin satırında açık durur */
 #llOkulPopup .okul-sube-sira{
@@ -3698,6 +3718,8 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
     #llOkulPopup .okul-bos{ font-size: .95rem; }
     #llOkulPopup .okul-arsa-tus,
     #llOkulPopup .okul-seviye-ekle{ font-size: 1.02rem; padding: 11px 20px; }
+    #llOkulPopup .okul-seviye-arti{ width: 48px; height: 48px; }
+    #llOkulPopup .okul-seviye-arti svg{ width: 23px; height: 23px; }
     #llOkulPopup .okul-ekle-buyuk{ font-size: 1.08rem; }
 
     /* hızlı seviye rakamları ve şube harfleri */

@@ -6985,3 +6985,32 @@ olsun; yani seviye eklenince aşağı düşecek en alt kata."
    en alt katta. "Henüz seviye yok" satırı kalkıyor.
 Görmüyorsa tarayıcı eski dosyayı tutuyordur — sayfayı sert yenilemek
 (Cmd+Shift+R) yeter.
+
+── 07.10.2026 · "BAŞKA" ARTIK TEK DAİRE ─────────────────────────────────
+Öğretmen: "5-10 arası dışında seviye eklemek için başka ekle kısmı altta
+bi satır olmasın, sadece en sağda bi çizgili dairenin içinde + olsun."
+
+Alttaki geniş kesik çizgili "Başka" şeridi kalktı. Yerine, "Seviye ekle"
+satırının EN SAĞINDA, rakamlarla aynı boyda kesik çizgili bir daire ve
+içinde + var. Aşağı satır açmıyor, satır tek sıra kalıyor.
+İşi aynı: istenen adla seviye açmak (11, 12, Hazırlık...). Üstüne
+gelince turuncuya dönüp hafifçe büyüyor; ipucu yazısı "Başka bir seviye
+adı yaz (11, 12, Hazırlık...)".
+Masaüstünde rakamlar 48px olduğu için daire de 48px.
+Denendi: boş kurumda ve bir seviye eklendikten sonra satır tek sıra;
+"Başka" yazısı hiç yok, daire en sağda duruyor. Hata yok.
+
+── 07.10.2026 · SEVİYE EKLE HER ZAMAN EN ÜST KAT ────────────────────────
+Öğretmen: "giriş yaptıktan sonra da seviye ekle en üstte olsun."
+
+Önceki düzende ekleme satırı yalnız kurum BOŞKEN üstteydi, seviye
+eklenince en alta düşüyordu. Artık kurum dolu da olsa boş da olsa rakam
+sırası binanın ilk katında duruyor: yeri her kurumda aynı, seviye eklemek
+için aşağı inmek gerekmiyor. Kurum boşsa altında "Bu kurumda henüz seviye
+yok" sessiz notu kalıyor.
+Misafir önizlemesi de aynı sıraya alındı (önce "Seviye ekle", sonra
+"Henüz seviye yok") ve sağına gerçeğindeki kesik çizgili + dairesinin
+karşılığı kondu — giriş yapan, gördüğü düzenin aynısını buluyor.
+Denendi: gerçek panelde boş kurum ① Seviye ekle ② henüz seviye yok;
+seviye eklendikten sonra ① Seviye ekle ② 5. sınıf katı. Misafirde
+① Seviye ekle ② Henüz seviye yok. Hata yok.
