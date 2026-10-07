@@ -196,7 +196,10 @@
         /* Kelime tamamlanınca Türkçe anlamı GÖSTERİLMEZ: bu sekmenin
            konusu harflerin birleşmesi, kelimenin anlamı değil. Anlam
            verisi (s.anlam) listede duruyor ama ekrana yazılmıyor. */
-        '    <span class="ab-no">' + (sira + 1) + '</span>' +
+        /* Numara artık bir DÜĞME: dokununca o sıraya kadarki bütün
+           cevaplar açılır (07.10.2026). */
+        '    <span class="ab-no" role="button" tabindex="0"' +
+        '          title="Bu sıraya kadar tüm cevapları aç">' + (sira + 1) + '</span>' +
         '  </div>' +
         '</div>';
     }
@@ -553,6 +556,27 @@
         ses();
     }
 
+    /* SIRAYA ATLA (07.10.2026) — öğretmen: "soru sayısına basınca o
+       sayıya kadarki tüm cevaplar açılsın". Numaraya dokununca o sıra
+       dâhil öncesindeki bütün örnekler ÇÖZÜLMÜŞ hâle gelir, sonrakiler
+       başa döner; etkin satır o sıra olur, "İleri" oradan devam eder. */
+    function sirayaGit(kap, hedef) {
+        var l = kap.querySelectorAll('.ab-satir'), i;
+        if (!l.length) return;
+        if (!(hedef >= 0)) hedef = 0;
+        if (hedef > l.length - 1) hedef = l.length - 1;
+        for (i = 0; i < l.length; i++) {
+            l[i].setAttribute('data-adim', i <= hedef ? l[i].getAttribute('data-top') : 0);
+            adimYaz(l[i]);
+        }
+        var eski = aktif;
+        aktif = hedef;
+        pencereYaz(kap);
+        durumYaz(kap);
+        if (eski !== hedef) girAnimasyon(l[hedef]);
+        ses();
+    }
+
     /* Etkin satıra geçerken kısa bir belirme: göz nereye bakacağını bulsun. */
     function girAnimasyon(satir) {
         if (!satir) return;
@@ -837,6 +861,13 @@
             }
             var nav = t.closest ? t.closest('.ab-nav') : null;
             if (nav) { if (!nav.disabled) ilerle(kap, +nav.getAttribute('data-yon')); return; }
+            /* SIRA NUMARASI: o sıraya kadarki hepsini aç (07.10.2026) */
+            var no = t.closest ? t.closest('.ab-no') : null;
+            if (no) {
+                var sn = no.closest('.ab-satir');
+                if (sn) sirayaGit(kap, +sn.getAttribute('data-sira'));
+                return;
+            }
             /* Yalnız ETKİN örneğin tahtasına dokunmak ilerletir;
                geride kalan çözülmüş örnekler yerinde durur. */
             var ad = t.closest ? t.closest('[data-rol="adim"]') : null;
@@ -855,6 +886,12 @@
             if (ov && ov.style.display === 'flex') return;   /* büyüteç açıkken karışma */
             var hedef = e.target;
             if (hedef && /^(INPUT|TEXTAREA|SELECT)$/.test(hedef.tagName || '')) return;
+            /* Numara odaktayken Enter/boşluk o sıraya atlar (07.10.2026) */
+            if (hedef && hedef.classList && hedef.classList.contains('ab-no') &&
+                (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar')) {
+                var sn2 = hedef.closest('.ab-satir');
+                if (sn2) { sirayaGit(kap, +sn2.getAttribute('data-sira')); e.preventDefault(); return; }
+            }
             var k = e.key;
             if (k === 'ArrowRight' || k === ' ' || k === 'Spacebar' || k === 'PageDown' || k === 'Enter') {
                 ilerle(kap, 1); e.preventDefault();

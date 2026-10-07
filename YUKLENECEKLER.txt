@@ -7567,3 +7567,14 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
                                 sayı sütunu ve ayrık harf boşluğu kısıldı ki
                                 birleşen kelime tahtasına sığsın (taşma yok).
   alfabe.html                   alfabe.css?v=20261007
+
+07.10.2026 — HARF BİRLEŞTİRME: SIRA NUMARASINA BASINCA ORAYA KADAR AÇ
+  okumayazma/alfabe_birlestir.js  Sağdaki sıra numarası artık düğme
+                                (sirayaGit). Dokununca o sıra DÂHİL
+                                öncesindeki bütün örnekler çözülmüş hâle
+                                gelir, sonrakiler başa döner; etkin satır
+                                o sıra olur, "İleri" oradan devam eder.
+                                Numara klavyeyle de seçilebiliyor
+                                (tab + Enter/boşluk). v25
+  okumayazma/alfabe.css         .ab-no imleç/hover/odak biçimi — numaranın
+                                dokunulabilir olduğu belli olsun. v20261007b

@@ -1631,6 +1631,13 @@
             display: flex; align-items: center; justify-content: center;
         }
         .ab-satir.ab-aktif .ab-no { background: #0E6655; box-shadow: 0 0 0 5px rgba(22, 160, 133, .18); }
+        /* NUMARA BİR DÜĞME (07.10.2026): dokununca o sıraya kadarki
+           cevapların hepsi açılır — dokunulabilir olduğu belli olsun. */
+        .ab-no { cursor: pointer; user-select: none; transition: transform .15s, box-shadow .15s; }
+        .ab-no:hover { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(22, 160, 133, .22); }
+        .ab-no:active { transform: scale(.96); }
+        .ab-no:focus-visible { outline: 3px solid #0E6655; outline-offset: 3px; }
+        @media (prefers-reduced-motion: reduce) { .ab-no { transition: none; } }
 
         /* İKİ ALAN DA YAZI ÇİZGİSİ ÜSTÜNDE ve AYNI PUNTODA.
            Harfler çizginin üstüne oturur (align-items: flex-end),
