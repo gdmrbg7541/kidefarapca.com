@@ -6824,3 +6824,20 @@ için girişin gerekliliğinden bahsetsin."
 Denendi: misafirde önizleme var (6 rakam, 0 sınıf kapısı, tabela "Okulun");
 tıklayınca tavsiye açılıyor, "Anladım" kapatıyor; rol öğretmen olunca
 gerçek panel geliyor (tabela kurum adı, 3 kapı). Hata yok.
+
+── 06.10.2026 (ek 28) · SINIFLARIM BAŞLANGIÇTA KAPALI ───────────────────
+Öğretmen: "sınıflarım kategorisi ilk başta kapalı olarak açılsın."
+
+Akordiyon artık kapalı başlıyor; anasayfa ilk açılışta sakin duruyor.
+Tercih tersine saklanıyor: localStorage kidefSiniflarimKapali yalnız '0'
+ise (öğretmen eliyle AÇILMIŞSA) açık geliyor; boşsa ya da '1' ise kapalı.
+Böylece daha önce hiç dokunmamış olan da kapalı başlıyor, bir kez açan
+için açık kalıyor.
+Misafir önizlemesindeki başlığa da aynı ipucu yazısı eklendi
+("Sınıflarımı aç" / "Sınıflarımı kapat") — öğretmen başlığında vardı,
+önizlemede yoktu.
+
+Denendi (beşli tur): ① ilk açılış kapalı, gövde gizli, aria false
+② tıklayınca açılıyor, depo '0' ③ yeniden yüklenince AÇIK kalıyor
+④ tekrar tıklayınca kapanıyor, depo '1' ⑤ yeniden yüklenince KAPALI
+kalıyor. Hata yok.

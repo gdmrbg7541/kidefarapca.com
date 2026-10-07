@@ -469,9 +469,11 @@
         }
         /* gerçek panel içerideyse (rol geri geldi) karışma */
         if (bolum.querySelector('#llOkulPopup') && gorunurMu()) return;
+        var _kpl = kapaliMi();
         var ic = '<h2><button type="button" class="sn-bas-tus"' +
             ' onclick="KidefSiniflarim.katla()" aria-expanded="' +
-            (kapaliMi() ? 'false' : 'true') + '">' +
+            (_kpl ? 'false' : 'true') + '"' +
+            ' title="' + (_kpl ? 'Sınıflarımı aç' : 'Sınıflarımı kapat') + '">' +
             '<svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
             OKUL_SVG.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') +
             '</svg><span>Sınıflarım</span>' +
@@ -561,12 +563,20 @@
        Öğretmen: "istenirse sınıflarım kategorisi akordiyon sistem olarak
        kapanabilmeli tıklayınca." Tercih tarayıcıda saklanıyor: kapattıysa
        bir dahaki girişte de kapalı geliyor. Panel DOM'da duruyor, yalnız
-       gizleniyor — açılınca yeniden kurulmuyor. */
+       gizleniyor — açılınca yeniden kurulmuyor.
+
+       BAŞLANGIÇTA KAPALI (06.10.2026) — öğretmen: "sınıflarım kategorisi
+       ilk başta kapalı olarak açılsın". Anasayfa ilk açılışta sakin
+       duruyor; sınıflara girmek isteyen başlığa basıp açıyor. Tercih
+       tersine saklanıyor artık: yalnız '0' (öğretmen eliyle AÇILMIŞ)
+       açık demek, boş ya da '1' kapalı demek. Böylece daha önce açıp
+       kapatmamış olanlar da kapalı başlıyor; bir kez açan için açık
+       kalıyor. */
     var KAPALI_ANAHTAR = 'kidefSiniflarimKapali';
 
     function kapaliMi() {
-        try { return localStorage.getItem(KAPALI_ANAHTAR) === '1'; }
-        catch (e) { return false; }
+        try { return localStorage.getItem(KAPALI_ANAHTAR) !== '0'; }
+        catch (e) { return true; }
     }
 
     function katla() {
