@@ -1334,8 +1334,44 @@ function openTatiller() {
     }
 
     // --- VERİ YÖNETİMİ ---
+/* ============ ÇIKIŞTAN SONRA SALT GÖRÜNÜM (07.10.2026) ============
+   Öğretmen: "amacımız sınıf defterini ve materyalleri vs kullanmak, ama
+   giriş yapınca not verme vb işlemler yapılabilsin."
+   Çıkış yapılmışken sınıflar görünür kalıyor (tarayıcı hafızası), ama
+   hiçbir değişiklik KAYDEDİLMEZ. Sebebi yalnız yetki değil: giriş
+   yapılmadığı için bulut da güncellenmiyor, bir sonraki girişte bulut
+   verisi yereli eziyor — girişsiz verilen not sessizce kaybolurdu.
+   Bu yüzden değişiklik hiç yazılmaz, ekran hafızadaki doğru hâle
+   döndürülür ve kişiye bir kez söylenir.
+   Misafir modu (auth_status='guest') bundan muaf: o mod zaten bilerek
+   yereldir. */
+function llSaltGorunumMu() {
+    try {
+        if (window.firebase && firebase.auth && firebase.auth().currentUser) return false;
+        if (localStorage.getItem('auth_status') === 'guest') return false;
+        return !!localStorage.getItem('kidefSiniflarimSahip');
+    } catch (e) { return false; }
+}
+
+function llSaltGeriAl() {
+    try { loadDataFromLocal(); } catch (e) { }
+    try { renderSidebar(); } catch (e) { }
+    try { if (curLId && curCId && typeof selectClass === 'function') selectClass(curLId, curCId); } catch (e) { }
+    try { if (window.KidefSiniflarim) KidefSiniflarim.ciz(); } catch (e) { }
+    if (window.__llSaltUyarildi) return;      /* her tuşta pencere açılmasın */
+    window.__llSaltUyarildi = 1;
+    setTimeout(function () { window.__llSaltUyarildi = 0; }, 5000);
+    var m = 'Çıkış yapılmış durumda. Sınıf defterini, listeleri ve materyalleri ' +
+            'görebilirsiniz; ancak not verme ve değişiklik kaydetme için giriş ' +
+            'yapmanız gerekiyor. Girişsiz yapılan değişiklikler kaydedilmez.';
+    try { if (typeof llBilgi === 'function') { llBilgi(m, 'Giriş gerekiyor'); return; } } catch (e) { }
+    try { alert(m); } catch (e) { }
+}
+
 // save() fonksiyonunu şu şekilde güncelleyin
 function save() {
+    /* Girişsizken hiçbir şey yazılmaz — yukarıdaki açıklamaya bak. */
+    if (llSaltGorunumMu()) { llSaltGeriAl(); return; }
     // 1. Önce bilgisayara (Local) kaydet
     localStorage.setItem('schoolData', JSON.stringify(data));
     renderSidebar();
@@ -6351,6 +6387,15 @@ function verileriGetir(uid) {
         }
         // Yerel kopyayi ve ogretmen kodunu da bu hesaba gore guncelle (hesaplar arasi sizinti engellenir)
         try { localStorage.setItem('schoolData', JSON.stringify(data)); } catch(e){}
+        /* ÇIKIŞTAN SONRA DA SINIFLAR GÖRÜNSÜN (07.10.2026) — öğretmen:
+           "eğer çıkarsa da tarayıcı hafızası hatırlasın sınıfları".
+           Bu işaret, yerel kopyanın bir ÖĞRETMENE ait olduğunu söyler;
+           siniflarim.js çıkış sonrası salt görünümü buna bakarak açar.
+           Misafir bayrağı da temizlenir: artık gerçek bir hesap var. */
+        try {
+            localStorage.setItem('kidefSiniflarimSahip', JSON.stringify({ u: uid, t: Date.now() }));
+            localStorage.removeItem('auth_status');
+        } catch(e){}
         try {
             var _sc = (doc.exists && doc.data().teacherStaticCode) ? doc.data().teacherStaticCode : null;
             if (_sc) localStorage.setItem('teacher_static_code', _sc);

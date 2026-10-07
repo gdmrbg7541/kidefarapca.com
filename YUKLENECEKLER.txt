@@ -7578,3 +7578,33 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
                                 (tab + Enter/boşluk). v25
   okumayazma/alfabe.css         .ab-no imleç/hover/odak biçimi — numaranın
                                 dokunulabilir olduğu belli olsun. v20261007b
+
+07.10.2026 — ÇIKIŞTAN SONRA SINIFLAR GÖRÜNÜR KALIYOR (SALT GÖRÜNÜM)
+  sistem/siniflarim.js          Çıkış yapılmışken bölüm boş kurum
+                                önizlemesine dönüyordu. Artık tarayıcıda
+                                öğretmen önbelleği varsa GERÇEK okul paneli
+                                gösteriliyor (.sn-salt): sınıflar, sınıf
+                                defteri ve materyaller açık.
+                                Ekleme/silme/ayar tuşları BEYAZ LİSTEYLE
+                                kapatıldı — okul penceresinde yalnız sınıf
+                                kapıları tıklanır; yarın eklenecek bir tuş
+                                da kendiliğinden kapalı başlar.
+                                Üstte turuncu şerit: "Çıkış yapıldı...
+                                not verme ve kaydetme kapalı" + Giriş tuşu.
+                                v15
+  hesap/listelerim.js           - verileriGetir(): bulut verisi inince
+                                  kidefSiniflarimSahip işareti yazılıyor
+                                  (önbelleğin ÖĞRETMENE ait olduğunu bu
+                                  söyler; öğrenci/misafir tarayıcısındaki
+                                  örnek veri "sınıflarım" sanılmasın).
+                                  auth_status='guest' de temizleniyor.
+                                - save(): girişsizken HİÇBİR ŞEY yazmıyor.
+                                  Sebep yalnız yetki değil: girişsiz
+                                  kaydedilen not buluta gitmez, bir sonraki
+                                  girişte bulut yereli ezer ve not sessizce
+                                  kaybolurdu. Şimdi değişiklik yazılmıyor,
+                                  ekran hafızadaki doğru hâle dönüyor ve
+                                  kişiye bir kez "Giriş gerekiyor" deniyor.
+                                  Misafir modu (auth_status='guest') muaf.
+                                  v20261007e
+  index.html                    siniflarim v15, listelerim v20261007e

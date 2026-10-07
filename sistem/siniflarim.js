@@ -69,6 +69,44 @@
     }
     function gorunurMu() { return !misafirMi() && ogretmenMi(); }
 
+    /* ------------------------------------------- ÇIKIŞTAN SONRA GÖRÜNÜM
+       (07.10.2026) Öğretmen: "öğretmen giriş yapınca sınıflarım kısmında
+       tüm sınıfları görünüyor ya, eğer çıkarsa da tarayıcı hafızası
+       hatırlasın sınıfları, amacımız sınıf defterini ve materyalleri vs
+       kullanmak, ama giriş yapınca not verme vb işlemler yapılabilsin."
+
+       Sınıf listesi zaten tarayıcıda duruyor (listelerim.js -> schoolData),
+       ama çıkış yapılınca bölüm boş kurum önizlemesine dönüyordu. Artık:
+       giriş varsa  -> tam yetki (eskisi gibi)
+       çıkış + önbellek -> SALT GÖRÜNÜM: sınıflar, defter ve materyaller
+                           açık; ekleme/düzenleme tuşları kapalı, kaydetme
+                           listelerim.js tarafında engelli.
+       hiç önbellek yok -> eski boş önizleme.
+       Önbelleğin bir ÖĞRETMENE ait olduğunu kidefSiniflarimSahip işareti
+       söyler; onu listelerim.js, bulut verisi indiğinde yazar. Böylece
+       öğrenci/misafir tarayıcısındaki örnek veri "sınıflarım" sanılmaz. */
+    var SAHIP_ANAHTAR = 'kidefSiniflarimSahip';
+
+    function oturumVarMi() {
+        try { return !!(window.firebase && firebase.auth && firebase.auth().currentUser); }
+        catch (e) { return false; }
+    }
+    function onbellekVarMi() {
+        try {
+            if (!localStorage.getItem(SAHIP_ANAHTAR)) return false;
+            var d = (typeof data !== 'undefined' && data) ? data : null;
+            if (!d || !d.levels) return false;
+            var l = Object.keys(d.levels);
+            for (var i = 0; i < l.length; i++) {
+                var c = d.levels[l[i]] && d.levels[l[i]].classes;
+                if (c && Object.keys(c).length) return true;
+            }
+        } catch (e) { }
+        return false;
+    }
+    /* Çıkış yapılmış ama bu tarayıcıda öğretmen sınıfları duruyor. */
+    function saltMi() { return !oturumVarMi() && onbellekVarMi(); }
+
     /* Davet kutusundaki büyük okul: anasayfadaki küçük okul simgesinin
        aynısı değil — kapısı ve bayrağı belirgin, "burası senin okulun"
        desin diye. */
@@ -116,6 +154,40 @@
             '#' + BOLUM_ID + ' .sn-ogr{ font-size:.76rem; font-weight:800; color:#8A93A0;',
             '  background:#EDF1F6; border-radius:999px; padding:2px 8px; }',
             '#' + BOLUM_ID + ' .sn-sinif:hover .sn-ogr{ background:#D9EDE7; color:#0E7C66; }',
+            /* SALT GÖRÜNÜM (07.10.2026): çıkış sonrası sınıflar açık ama
+               ekleme/düzenleme tuşları kapalı. */
+            /* BEYAZ LİSTE: okul penceresinde yalnız SINIF KAPILARI ve
+               pencere kapatma kalır; ekleme/silme/ayar tuşlarının hepsi
+               gider. Kara liste yazsaydık yarın eklenen bir tuş açıkta
+               kalırdı — burada varsayılan "kapalı". */
+            '#' + BOLUM_ID + '.sn-salt .sn-ekle-tus,',
+            '#' + BOLUM_ID + '.sn-salt .sn-ekle,',
+            /* "Sınıf ekle" tuşu da .okul-kapi taşıyor (kapı görünümlü);
+               beyaz listeden ayrıca çıkarılması gerekiyor. */
+            '#' + BOLUM_ID + '.sn-salt #llOkulPopup .okul-ekle,',
+            /* "Seviye ekle" katı bir DIV; tuş beyaz listesine takılmıyor. */
+            '#' + BOLUM_ID + '.sn-salt #llOkulPopup .okul-kat-ekle,',
+            '#' + BOLUM_ID + '.sn-salt #llOkulPopup .okul-arsa-tus,',
+            '#' + BOLUM_ID + '.sn-salt #llOkulPopup button:not(.okul-kapi):not(.okul-kapat),',
+            '#' + BOLUM_ID + '.sn-salt #llOkulPopup a:not(.okul-kapi):not(.okul-kapat),',
+            '#' + BOLUM_ID + '.sn-salt #llOkulPopup input,',
+            '#' + BOLUM_ID + '.sn-salt #llOkulPopup select,',
+            '#' + BOLUM_ID + '.sn-salt #llOkulPopup textarea{ display:none !important; }',
+            /* Kat başlıkları artık tıklanmıyor: imleç de öyle desin. */
+            '#' + BOLUM_ID + '.sn-salt #llOkulPopup [contenteditable]{ pointer-events:none; }',
+            '#' + BOLUM_ID + ' .sn-salt-serit{ display:flex; align-items:center; gap:10px;',
+            '  flex-wrap:wrap; margin:0 0 12px; padding:9px 13px; border-radius:12px;',
+            '  background:#FEF6E7; border:1px solid #F6D08A; }',
+            '#' + BOLUM_ID + ' .sn-salt-serit .sns-kilit{ width:22px; height:22px; flex:0 0 auto; }',
+            '#' + BOLUM_ID + ' .sn-salt-serit .sns-yazi{ flex:1 1 220px; font-size:.9rem;',
+            '  font-weight:600; color:#7A5B12; line-height:1.4; }',
+            '#' + BOLUM_ID + ' .sn-salt-serit .sns-yazi b{ color:#5C430A; }',
+            '#' + BOLUM_ID + ' .sn-salt-serit .sns-giris{ display:inline-flex; align-items:center;',
+            '  gap:6px; cursor:pointer; border:0; border-radius:10px; padding:8px 14px;',
+            '  background:#16A085; color:#fff; font-family:inherit; font-weight:800;',
+            '  font-size:.88rem; transition:background .15s, transform .12s; }',
+            '#' + BOLUM_ID + ' .sn-salt-serit .sns-giris:hover{ background:#0E7C66; transform:translateY(-1px); }',
+            '#' + BOLUM_ID + ' .sn-salt-serit .sns-giris svg{ width:18px; height:18px; }',
             /* ekleme tuşları */
             '#' + BOLUM_ID + ' .sn-ekle{ display:flex; align-items:center; gap:7px; cursor:pointer;',
             '  border:2px dashed #CBD5E1; background:transparent; border-radius:13px; padding:10px 16px;',
@@ -480,10 +552,53 @@
     function ciz() {
         var bolum = kabukKur();
         if (!bolum) return;
-        if (!gorunurMu()) { onizlemeGovde(bolum); return; }
+        if (!gorunurMu()) {
+            /* SALT GÖRÜNÜM (07.10.2026): çıkış yapılmış ama sınıflar
+               tarayıcıda duruyor — gerçek paneli göster, yazma kapalı. */
+            if (saltMi()) {
+                bolum.classList.add('sn-salt');
+                bolum.__govde = 'gercek';
+                okulIcineKoy(bolum);
+                saltSerit(bolum);
+                return;
+            }
+            bolum.classList.remove('sn-salt');
+            onizlemeGovde(bolum);
+            return;
+        }
+        bolum.classList.remove('sn-salt');
+        saltSeritSil(bolum);
         gosterildi = true;
         bolum.__govde = 'gercek';
         okulIcineKoy(bolum);
+    }
+
+    /* Panelin üstünde duran kısa şerit: neyin açık neyin kapalı olduğunu
+       söyler, yanında da giriş tuşu durur. */
+    function saltSerit(bolum) {
+        var yuva = bolum.querySelector('.sn-okul');
+        if (!yuva || yuva.querySelector('.sn-salt-serit')) return;
+        var s = document.createElement('div');
+        s.className = 'sn-salt-serit';
+        s.innerHTML =
+            '<svg class="sns-kilit" viewBox="0 0 24 24" aria-hidden="true">' +
+            '<rect x="5" y="10.5" width="14" height="9.5" rx="2.2" fill="#F39C12"/>' +
+            '<path d="M8.4 10.5V8a3.6 3.6 0 0 1 7.2 0v2.5" fill="none"' +
+            ' stroke="#D68910" stroke-width="2" stroke-linecap="round"/>' +
+            '<circle cx="12" cy="15" r="1.5" fill="#fff"/></svg>' +
+            '<span class="sns-yazi">Çıkış yapıldı. Sınıf defteri ve materyaller' +
+            ' açık; <b>not verme ve kaydetme kapalı</b>.</span>' +
+            '<button type="button" class="sns-giris">' + GIRIS_SVG +
+            '<span>Giriş yap</span></button>';
+        s.addEventListener('click', function (e) {
+            if (!e.target.closest || !e.target.closest('.sns-giris')) return;
+            try { if (typeof showLoginModal === 'function') showLoginModal(); } catch (e2) { }
+        });
+        yuva.insertBefore(s, yuva.firstChild);
+    }
+    function saltSeritSil(bolum) {
+        var s = bolum && bolum.querySelector('.sn-salt-serit');
+        if (s && s.parentNode) s.parentNode.removeChild(s);
     }
 
     /* ------------------------------------------------- ÖNİZLEME (misafir)
@@ -630,9 +745,12 @@
        adları kalmaz. */
     function gizle() {
         var b = document.getElementById(BOLUM_ID);
-        try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = false; } catch (e) { }
         gosterildi = false;
         if (!b) return;
+        /* ÖNBELLEK VARSA ÖNİZLEMEYE DÜŞME (07.10.2026): çıkışta sınıflar
+           silinmesin, salt görünüme geçsin. */
+        if (saltMi()) { ciz(); return; }
+        try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = false; } catch (e) { }
         b.__govde = null;              /* gövde yeniden kurulsun */
         onizlemeGovde(b);
     }
@@ -898,6 +1016,6 @@
     window.KidefSiniflarim = {
         okulAc: okulAc, katla: katla, sinifEkle: sinifEkle, girisTavsiye: girisTavsiye,
         ciz: ciz, ac: ac, seviyeSec: seviyeSec, sinifKur: sinifKur,
-        kurumEkle: kurumEkle, gorunurMu: gorunurMu
+        kurumEkle: kurumEkle, gorunurMu: gorunurMu, saltMi: saltMi
     };
 })();
