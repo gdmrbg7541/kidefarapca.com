@@ -48,8 +48,13 @@
     return selam + '\n\n' +
       'kidefarapca.com\'da öğretmen hesabınız açıldı. Sınıf listeleri, ' +
       'sınıf defteri, planlar, belgeler ve etkinlikler artık size açık.\n\n' +
-      (kod ? ('Öğrencileriniz kayıt olurken bu kodu girerse sınıfınıza ' +
-              'bağlanma isteği gönderir: ' + kod + '\n\n') : '') +
+      /* KOD AÇIK YAZILMIYOR (07.10.2026) — öğretmen: "kod açık olmasın,
+         .... olsun." Mesaj hazır bir metin; yanlış kişiye yapıştırılma
+         ihtimali olan bir kodu içinde taşımıyor. Yerinde noktalar
+         duruyor, öğretmen göndermeden önce elle yazıyor. Satır her
+         durumda çıkıyor, çünkü boşluk doldurulacak yer orası. */
+      'Öğrencileriniz kayıt olurken bu kodu girerse sınıfınıza bağlanma ' +
+      'isteği gönderir: ....\n\n' +
       /* 07.10.2026 — öğretmen: "'en çok işe yarayan şeyler meslektaşlarımın
          uyarısıyla eklendi' burda böyle bi şey yok, sadece eleştiri ve
          tavsiyeler yeterli." Doğru olmayan cümle çıkarıldı; metin yalnız

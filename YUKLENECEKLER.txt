@@ -7289,3 +7289,13 @@ eklendi' burda böyle bi şey yok; sadece eleştiri ve tavsiyeler yeterli."
 O cümle çıkarıldı. Paragraf artık: "Site hâlâ geliştiriliyor. Eksik
 gördüğünüz, 'şu da olsa' dediğiniz ya da ters giden ne varsa çekinmeden
 yazın; tavsiyenizi de eleştirinizi de bekliyorum."
+
+── 07.10.2026 (ek) · KOD MESAJDA AÇIK YAZILMIYOR ────────────────────────
+Öğretmen: "kod açık olmasın, .... olsun."
+Öğretmen kodu artık mesaja basılmıyor; yerinde noktalar duruyor:
+"...bağlanma isteği gönderir: ...."
+Gerekçesi yerinde: mesaj hazır bir metin, yanlış kişiye yapıştırılabilir;
+kod orada durmasın. Gönderilmeden önce kutudan elle yazılabiliyor —
+metin kutusu düzenlenebilir.
+Satır artık her durumda çıkıyor (eskiden yalnız kod bulunabildiğinde
+çıkıyordu), çünkü doldurulacak yer orası.
