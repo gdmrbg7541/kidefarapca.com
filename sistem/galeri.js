@@ -213,22 +213,49 @@
   }
 
   var _istek = 0;
-  function resimKoy(img, yol) {
+  /* iz = {basla, bitti} — fotoğraf hazır olana kadar geçen süreyi
+     bildirir. Büyük görüntüleyicide bekleme animasyonu bununla
+     açılıyor; küçük resimlerde iz verilmiyor, davranış eskisi gibi. */
+  function resimKoy(img, yol, iz) {
     var benim = ++_istek;
     var o = ondenAl(yol);
+    var bitti = false;
     var koy = function () {
-      if (benim !== _istek) return;      /* hızlı basıldı, bu artık eski */
+      if (benim !== _istek || bitti) return;   /* hızlı basıldı ya da bitti */
+      bitti = true;
       img.src = yol;
+      if (iz && iz.bitti) try { iz.bitti(); } catch (e) { }
     };
-    try {
-      if (o.decode) { o.decode().then(koy, koy); return; }
-    } catch (e) { }
-    if (o.complete) koy();
-    else { o.addEventListener('load', koy, { once: true });
+    /* Çözülmüş fotoğraf anında konuyor; bekleme animasyonu YALNIZ iş
+       uzarsa çıkıyor. Yoksa her geçişte bir an parlayıp sönerdi —
+       titremenin kendisi olurdu. */
+    if (iz && iz.basla) {
+      setTimeout(function () {
+        if (!bitti && benim === _istek) try { iz.basla(); } catch (e) { }
+      }, 110);
+    }
+    /* SIRA ÖNEMLİ (07.10.2026): önce YÜKLENSİN, sonra ÇÖZÜLSÜN.
+       Eskiden doğrudan decode() çağrılıyordu; henüz inmemiş bir görüntüde
+       decode() hemen reddediyor ve reddi de "tamam" sayıldığı için src
+       anında değişiyordu — tarayıcı o anda ana iş parçacığında çözmek
+       zorunda kalıyor, titreme tam buradan geliyordu. Artık load
+       beklenip ondan sonra çözülüyor; src yalnız çözülmüş görüntüyle
+       değişiyor. */
+    var coz = function () {
+      if (benim !== _istek) return;
+      try {
+        if (o.decode) { o.decode().then(koy, koy); return; }
+      } catch (e) { }
+      koy();
+    };
+    if (o.complete && o.naturalWidth) coz();
+    else { o.addEventListener('load', coz, { once: true });
            o.addEventListener('error', koy, { once: true }); }
   }
 
   /* ------------------------------------------------------------------- galeri */
+  var bekle = null;
+
   function galeriKur(bolum, buyut) {
     var foto = [];
     try { foto = (window.KIDEF_GALERI || []).slice(); } catch (e) { foto = []; }
@@ -305,6 +332,25 @@
       resim.decoding = 'async';
       sahne.appendChild(resim);
 
+      /* BEKLEME ANİMASYONU (07.10.2026) — öğretmen: "oklara basınca
+         titreme oluyor sonra geçiyor; eğer kasacaksa bi animasyon ekle,
+         bi görsel svg si animasyonu olsun sonra açılsın."
+         Fotoğraf çerçevesi çizen bir SVG: çerçeve çizilir, içindeki dağ
+         ve güneş belirir, altında üç nokta sırayla yanar. Yalnız fotoğraf
+         110 ms'de hazır olmazsa görünür; hazırsa hiç çıkmaz. */
+      bekle = el('div', 'gd-b-bekle');
+      bekle.setAttribute('aria-hidden', 'true');
+      bekle.innerHTML =
+        '<svg viewBox="0 0 64 56" class="gdb-svg">' +
+        '<rect class="gdb-cerceve" x="4" y="4" width="56" height="42" rx="6"/>' +
+        '<circle class="gdb-gunes" cx="20" cy="18" r="5"/>' +
+        '<path class="gdb-dag" d="M8 42 L24 24 L34 36 L42 29 L56 42 Z"/>' +
+        '</svg>' +
+        '<span class="gdb-noktalar">' +
+        '<span class="gdb-nokta"></span><span class="gdb-nokta"></span>' +
+        '<span class="gdb-nokta"></span></span>';
+      sahne.appendChild(bekle);
+
       sayac = el('div', 'gd-b-sayac');
 
       katman.appendChild(kapat);
@@ -341,7 +387,23 @@
     function goster() {
       var f = foto[sira];
       if (!f) return;
-      resimKoy(resim, 'Galeri/web/' + encodeURIComponent(f.a));
+      resimKoy(resim, 'Galeri/web/' + encodeURIComponent(f.a), {
+        basla: function () {
+          if (bekle) bekle.classList.add('gor');
+          if (resim) resim.classList.add('sol');
+        },
+        bitti: function () {
+          if (bekle) bekle.classList.remove('gor');
+          if (resim) {
+            /* yeni fotoğraf yumuşak açılsın: sınıf bir kare sonra
+               kalkınca geçiş çalışır */
+            resim.classList.add('sol');
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () { resim.classList.remove('sol'); });
+            });
+          }
+        }
+      });
       sayac.textContent = (sira + 1) + ' / ' + foto.length;
       var tek = foto.length < 2;
       katman.querySelector('.gd-b-geri').style.visibility = tek ? 'hidden' : '';

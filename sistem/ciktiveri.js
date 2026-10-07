@@ -19,7 +19,7 @@
    =========================================================================== */
 window.KIDEF_CIKTI = {
  "5": {
-  "program": "2025 Arapça Dersi Öğretim Programı (5-8. sınıflar)",
+  "program": "Arapça Dersi Öğretim Programı (5-8. sınıflar)",
   "saat": "2 saat / 74 saat",
   "yil": "14 Eylül 2026 - 25 Haziran 2027",
   "haftalar": {
@@ -349,7 +349,7 @@ window.KIDEF_CIKTI = {
   "ad": "5. Sınıf"
  },
  "6@2026-2027": {
-  "program": "2025 Arapça Dersi Öğretim Programı (5-8. sınıflar)",
+  "program": "Arapça Dersi Öğretim Programı (5-8. sınıflar)",
   "saat": "2 saat / 74 saat",
   "yil": "14 Eylül 2026 - 25 Haziran 2027",
   "haftalar": {
@@ -1315,7 +1315,7 @@ window.KIDEF_CIKTI = {
   "ad": "8. Sınıf"
  },
  "9": {
-  "program": "2025 Arapça Dersi Öğretim Programı (9-10. sınıflar)",
+  "program": "Arapça Dersi Öğretim Programı (9-10. sınıflar)",
   "saat": "4 saat / 148 saat",
   "yil": "14 Eylül 2026 - 25 Haziran 2027",
   "haftalar": {
@@ -1653,7 +1653,7 @@ window.KIDEF_CIKTI = {
   "ad": "9. Sınıf"
  },
  "10@2026-2027": {
-  "program": "2025 Arapça Dersi Öğretim Programı (9-10. sınıflar)",
+  "program": "Arapça Dersi Öğretim Programı (9-10. sınıflar)",
   "saat": "3 saat / 111 saat",
   "yil": "14 Eylül 2026 - 25 Haziran 2027",
   "haftalar": {

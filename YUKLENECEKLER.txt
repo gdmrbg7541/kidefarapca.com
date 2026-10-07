@@ -7299,3 +7299,158 @@ kod orada durmasın. Gönderilmeden önce kutudan elle yazılabiliyor —
 metin kutusu düzenlenebilir.
 Satır artık her durumda çıkıyor (eskiden yalnız kod bulunabildiğinde
 çıkıyordu), çünkü doldurulacak yer orası.
+
+── 07.10.2026 · GALERİ: ASIL TİTREME SEBEBİ + BEKLEME ANİMASYONU ────────
+Öğretmen: "galeride hâlâ oklara basınca diğer görsele geçmede problem
+var, titreme oluyor sonra geçiyor; eğer kasacaksa bi animasyon ekle, bi
+görsel svg si animasyonu olsun sonra açılsın."
+
+ASIL SEBEP BULUNDU — sıra yanlıştı. Kod, fotoğraf HENÜZ İNMEMİŞKEN
+decode() çağırıyordu. Yüklenmemiş bir görüntüde decode() hemen
+reddediyor; red de "tamam" sayıldığı için (then(koy, koy)) src anında
+değiştiriliyordu. Tarayıcı o anda görüntüyü ANA İŞ PARÇACIĞINDA çözmek
+zorunda kalıyor — titreme tam buradan geliyordu. Önceki düzeltmede
+decode eklenmişti ama bu sıra gözden kaçmıştı.
+Artık: önce load beklenir, SONRA decode edilir, src yalnız çözülmüş
+görüntüyle değişir. Bir de "bitti" bayrağı kondu, koy iki kez
+çalışmıyor.
+
+BEKLEME ANİMASYONU (iş yine de uzarsa): fotoğraf çerçevesi çizilir,
+içinde yeşil dağ ve turuncu güneş belirir, altında üç nokta sırayla
+yanar — sitenin renkleri. Fotoğraf hazırken yeni görüntü yumuşak açılır.
+ÖNEMLİ AYAR: animasyon ancak 110 ms'de hazır olunmazsa çıkıyor. Her
+geçişte çıksaydı bir an parlayıp sönerek titremenin kendisi olurdu;
+önbellekteki fotoğrafta hiç görünmüyor.
+
+Denendi: fotoğraf 3 sn geciktirilerek — 400 ms'de bekleme animasyonu
+görünür, fotoğraf sönük, src henüz yok; fotoğraf gelince animasyon
+kalkıyor ve görüntü açılıyor. Önbellekteki fotoğrafa geçişte animasyon
+hiç çıkmıyor. Hata yok.
+
+── 07.10.2026 · SİTE KILAVUZU (ismin altında ikinci satır) ──────────────
+Öğretmen: "ismimin altında kidefarapca.com bilgilendirme overlayı olsun,
+ismimde olduğu gibi, detaylı ve ekran görüntüsü aldığın bissürü açıklama
+olsun." + "amacımız sitede kaybolmasın, öğretmen mantığı kavrasın, çok ta
+uzun olmasın."
+
+Sosyal pencerede adın altında ikinci bir satır: mavi dünya simgesi +
+"kidefarapca.com · Site nasıl çalışıyor?". Basınca adınkiyle AYNI kart
+açılıyor (ortada, dikey kayan, Esc/✕/dışına tıkla ile kapanan) — ikinci
+bir pencere yazılmadı, aynı kabuk kullanıldı.
+
+İÇERİK ÜÇ ADIM, her birinin EKRAN GÖRÜNTÜSÜ var:
+  1 (yeşil) Hazır malzeme sınıfa göre duruyor — İmam Hatip'te sınıf
+            rakamına basılır  → katalog.jpg
+  2 (turuncu) Bir sınıfın içinde ne var — üstte belgeler, altında
+            etkinlik kartları  → kartlar.jpg
+  3 (mavi)  Kendi sınıfların ayrı yerde — Sınıflarım: kurum → seviye →
+            şube  → siniflarim.jpg
+Sonunda tek cümlelik özet: "katalog herkese açık hazır malzeme,
+Sınıflarım ise yalnız senin verin. İkisi birbirine karışmaz."
+Sayfa sayfa anlatım bilerek YOK; öğretmen "çok uzun olmasın" dedi,
+amaç mantığı kavratmak.
+
+GÖRÜNTÜLER sistem/tanitim-gorsel/ klasöründe (katalog.jpg 17 KB,
+kartlar.jpg 31 KB, siniflarim.jpg 39 KB — toplam ~87 KB). Sitenin
+kendisinden alındı, 880 px enine küçültülüp sıkıştırıldı; loading="lazy"
+ile kart açılmadan inmiyorlar.
+
+Denendi: iki satır da duruyor, kılavuz açılıyor, üç adım ve üç görüntü
+yükleniyor, özet yerinde, Esc kapatıyor; ad kartı eskisi gibi çalışıyor.
+Hata yok.
+
+YENİ KLASÖR: sistem/tanitim-gorsel/ (üç jpg — index'e bağlı).
+
+── 07.10.2026 · KILAVUZA EŞLEŞTİRME VE RAPOR ADIMLARI ───────────────────
+Öğretmen: "giriş yapan öğretmen ve öğrenci eşleştirmesi ve öğretmenin
+öğrenciyi etkinlik kısmında rapor görüntüsü muhakkak olsun, sınav
+notları genel ortalaması vs."
+
+Kılavuza iki adım daha:
+  4 (mor)     Öğrenciler sana nasıl bağlanır — hiç değişmeyen öğretmen
+              kodu, öğrenci kayıtta girince bağlanma isteği düşüyor,
+              "İstekleri Gör" ile onaylanıyor; onaylanmayan listede
+              görünmüyor.  → sinifliste.jpg
+  5 (kırmızı) Sonuçları tek yerde görürsün — sınav, ödev, performans ve
+              davranış aynı tabloda, genel ortalama kendiliğinden;
+              görevleri kimin yaptığı, oyun/etkinlikte kimin nerede
+              olduğu da burada. Öğrenci de kendi karnesini görüyor.
+              → sonuclar.jpg
+Toplam beş adım, hepsinin görseli var.
+
+GÖRSELLER UYDURULMADI: sitenin KENDİ tanıtım maketlerinden alındı
+(sistem/panel-tanitim.js içindeki "Sınıf Listesi" ve "Sonuçlar & Karne"
+çizimleri). O dosya "çizimler paneli tanıtmak içindir, gerçek ekranlar
+kendi sınıfınla dolar" diyor; aynı çizimler burada da kullanıldı, yani
+site iki yerde aynı şeyi gösteriyor.
+
+── 07.10.2026 · AD ÇAKIŞMASI DÜZELTİLDİ (önemli) ────────────────────────
+Yeni sistem/tanitim.js dosyası window.KidefTanitim adını kullanıyordu —
+ama sistem/panel-tanitim.js DE aynı adı kullanıyor ve index.html ikisini
+birden yüklüyor. İkisi de "adım zaten varsa çık" diye başladığı için,
+yeni dosya önce yüklendiğinden panel-tanitim.js SESSİZCE DEVRE DIŞI
+kalıyordu; giriş ekranındaki "Panelde ne var?" kartları
+(KidefTanitim.kartlar / .ac) kırılmıştı.
+Yeni dosyanın adı KidefKimlik yapıldı. Denendi: KidefKimlik çalışıyor ve
+KidefTanitim.kartlar yine yerinde.
+
+── 07.10.2026 · KILAVUZ GÖRSELLERİ HTML MAKETE ÇEVRİLDİ ────────────────
+Öğretmen: "4 için kullanılan görsel alakalı değil; görselleri html olarak
+oluşturalım, görselle net olmuyor."
+
+İkisi de haklıydı:
+ · 4. adımın görseli (sınıf listesi) eşleştirmeyi anlatmıyordu.
+ · JPEG'ler büyütülünce bulanıklaşıyordu.
+Beş görsel dosyasının hepsi kaldırıldı; yerine HTML/CSS maketler çizildi.
+Her ekranda keskin, büyütülünce bozulmuyor, hiçbir dosya inmiyor
+(denendi: kılavuz açılırken tanitim-gorsel'e TEK istek bile gitmiyor).
+
+MAKETLER
+ 1 katalog   5-10 rakamları, 5 seçili, altında açılan şerit
+ 2 sınıf içi belge rozetleri (yıllık/günlük/BEP/zümre/performans) +
+             dört renkli etkinlik kartı
+ 3 sınıflarım kurum çubuğu + seviye satırları + şube rozetleri
+ 4 eşleştirme ÜÇ ADIMLI AKIŞ: "1 · sende TCH-••••" → "2 · öğrencide
+             kayıt olurken kodu yazar" → "3 · sende Zeynep K. · istek
+             ✓ Onayla". Artık tam da anlatılan şeyi gösteriyor.
+ 5 sonuçlar  Sınav/Ödev/Performans/Davranış sütunları + "Genel ortalama"
+             rozeti
+
+ARTIK KULLANILMAYAN: sistem/tanitim-gorsel/ klasörü (beş jpg). Git'e hiç
+eklenmedi; eklenmesine gerek yok, silinebilir.
+
+── 07.10.2026 · BELGELERDEN PROGRAM YILI KALDIRILDI ─────────────────────
+Öğretmen: "program yılını kaldıralım, milletin kafası karışmasın." +
+"hâlâ 2025 program yazısı duruyor" (10. sınıf BEP performans PDF'i).
+
+NE DEĞİŞTİ: "2025 Arapça Dersi Öğretim Programı" → "Arapça Dersi Öğretim
+Programı". Yalnız YIL öneki silindi; programın adı ve kapsamı
+((9-10. sınıflar) / (5-8. sınıflar)) duruyor.
+Başlık satırı artık: "2026-2027 · Arapça Dersi · 10. Sınıf · Arapça Dersi
+Öğretim Programı (9-10. sınıflar) · 3 saat/hafta · 111 saat" — yan yana
+iki yıl yok, karışacak bir şey kalmadı.
+
+KAPSAM: 52 docx'te 101 yer + 52 PDF + sistem/ciktiveri.js'te 4 yer.
+Klasörler: bep (20), performans-proje (13), yillik-plan (8),
+okul-temelli (5), sinif-dosyasi (5), gunluk-plan (1).
+Denetlendi: docx'lerde 0, PDF'lerde 0, sitede 0 geçiş kaldı.
+
+PDF'LER NASIL ÜRETİLDİ — ÖNEMLİ
+Önce öğretmenin bilgisayarında denendi: oradaki LibreOffice 26.2, PDF'leri
+özgününden farklı sayfalıyor (52'nin 21'inde sayfa sayısı değişti, biri
+60→72). Özgün PDF'ler LibreOffice 24.2 ile üretilmiş. Bu yüzden hepsi
+yedekten geri konup dönüştürme BULUT çalışma alanında yapıldı — orada
+LibreOffice 24.2.7.2 var, Arakom yazı tipi de kuruldu.
+Sonuç: 52'nin 46'sı sayfa sayısıyla BİREBİR aynı. Yalnız 6 yıllık planda
+1-2 sayfa uzama var (5 ve 6. sınıf 7→9; AÖİHL dönem planları 4→5/6).
+İçerik tam — denetlendi: eksik tek sözcük "2025", o da kaldırılmak
+istenen. Uzama imza bloğunun kendi sayfasına taşınmasından.
+
+YEDEK: _kaynak/yedekler/20261007-program-yili/ (52 docx + 52 PDF, özgün
+hâlleriyle).
+
+KALAN "2025"LER BİLEREK DURUYOR (18 yer): yönerge tarihleri
+("Yönergesi'nin (21.01.2025) 14'üncü maddesi"), programın resmî yayım
+tarihi atfı, kitap baskı yılları ("2025-2026 ders kitabı") ve
+"2025 öğretim programını ilk kez uygulayan" gibi anlamlı cümleler.
+Bunlar tarih bilgisi; kafa karıştıran başlık etiketi değil.
