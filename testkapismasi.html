@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="oyunlar/testkapismasi.css?v=6">
+<link rel="stylesheet" href="oyunlar/testkapismasi.css?v=7">
 <link rel="stylesheet" href="oyunlar/tk_liste.css?v=3">
 </head>
 <body>
@@ -52,6 +52,51 @@
                     <option value="" disabled selected>Önce Oyuncu Modu Seçin</option>
                 </select>
             </div>
+            <!-- KAPIŞMA AYARLARI (07.10.2026) — öğretmen: "iki kişinin aynı
+                 soruları aynı sırada çözmesi veya aynı soruları farklı
+                 sıralama ile çözülmesi, benzer ama farklı sorular sorulması,
+                 bi turun kaç soru olacağı, hız puanının etkisi vb açıdan
+                 zenginleştirme." Yalnız İKİ KİŞİLİK seçilince görünür; tek
+                 kişilikte anlamı yok. Seçimler tarayıcıda saklanır, her
+                 oyunda yeniden seçmek gerekmez. -->
+            <div class="option-group kap-ayar" id="kapisma-ayar" hidden>
+                <label>Kapışma Ayarları:</label>
+
+                <div class="kap-satir">
+                    <span class="kap-bas">Tur başına soru</span>
+                    <div class="kap-secenek" id="kap-soru">
+                        <button type="button" data-v="5">5</button>
+                        <button type="button" data-v="7">7</button>
+                        <button type="button" data-v="10">10</button>
+                        <button type="button" data-v="15">15</button>
+                    </div>
+                </div>
+
+                <div class="kap-satir">
+                    <span class="kap-bas">Sorular</span>
+                    <div class="kap-secenek kap-genis" id="kap-kaynak">
+                        <button type="button" data-v="ayni"
+                            title="İkisi de aynı soruları aynı sırada görür — tam eşit yarış">Aynı · aynı sıra</button>
+                        <button type="button" data-v="karisik"
+                            title="Aynı sorular, farklı sırada — yan tarafa bakmak işe yaramaz">Aynı · karışık</button>
+                        <button type="button" data-v="farkli"
+                            title="Aynı dersten farklı kelimeler — benzer zorlukta, ayrı sorular">Farklı sorular</button>
+                    </div>
+                </div>
+
+                <div class="kap-satir">
+                    <span class="kap-bas">Hız puanı</span>
+                    <div class="kap-secenek" id="kap-hiz">
+                        <button type="button" data-v="0" title="Yalnız doğru cevap sayılır">Yok</button>
+                        <button type="button" data-v="5" title="Doğru 10, hız 5">Az</button>
+                        <button type="button" data-v="10" title="Doğru 10, hız 10">Normal</button>
+                        <button type="button" data-v="20" title="Doğru 10, hız 20 — hız belirleyici">Çok</button>
+                    </div>
+                </div>
+
+                <p class="kap-not" id="kap-not"></p>
+            </div>
+
             <button disabled id="start-game-btn">Başla</button>
         </div>
     </div>
@@ -78,7 +123,7 @@
          sistem/sinifveri.js'ten). testkapismasi.js'ten ÖNCE yüklenmeli. -->
     <script src="sistem/sinifveri.js?v=20260924a"></script>
     <script src="oyunlar/tk_ortaokul.js?v=20260924h"></script>
-    <script src="oyunlar/testkapismasi.js?v=20260924h"></script>
+    <script src="oyunlar/testkapismasi.js?v=20261007a"></script>
     <!-- DERS LİSTESİ: her dersin kendi animasyonlu simgesiyle açılır liste.
          Asıl <select> yerinde kalır (gizli); bu betik onun üstüne kurulur. -->
     <script src="oyunlar/tk_liste.js?v=4"></script>

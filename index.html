@@ -1440,10 +1440,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       .gd-b-resim{
         max-width:100%; max-height:calc(100vh - 110px); width:auto; height:auto;
         border-radius:12px; box-shadow:0 24px 70px rgba(0,0,0,.55); background:#20262F;
-        transition:opacity .22s ease;
+        transition:opacity .15s ease;
       }
-      /* "sol" = fotoğraf hazır değil; sönük durur, hazır olunca açılır. */
-      .gd-b-resim.sol{ opacity:0; }
+      /* "sol" = fotoğraf hazır değil. YUMUŞAK BİR DÜŞÜŞ (.42) — önce .12
+         idi, karanlık zeminde sert bir kararma oluyordu; fotoğrafın
+         kaybolup gelmesi "flaş" izlenimini besliyordu. Artık hafifçe
+         soluyor, göz değişimi takip ediyor. */
+      .gd-b-resim.sol{ opacity:.42; }
 
       /* ===== BEKLEME ANİMASYONU (07.10.2026) =====
          Öğretmen: "oklara basınca titreme oluyor sonra geçiyor; eğer
@@ -1454,10 +1457,16 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          parlayıp sönerek titremenin kendisi olurdu. */
       .gd-b-bekle{
         display:flex; flex-direction:column; align-items:center; gap:14px;
-        opacity:0; visibility:hidden; transition:opacity .18s ease;
-        pointer-events:none;
+        opacity:0; visibility:hidden; pointer-events:none;
       }
-      .gd-b-bekle.gor{ opacity:1; visibility:visible; }
+      /* AÇILMA SÜRESİ .25 sn (07.10.2026): bekleme katmanı ok'a basıldığı
+         anda açılmaya başlıyor; fotoğraf bundan önce hazır olursa katman
+         görünür hâle gelmeden kapanıyor. Böylece hızlı geçişte göze
+         çarpmıyor, yavaşta ise donma yerine animasyon görünüyor.
+         Kapanış hızlı (.12 sn) — fotoğraf geldiğinde çabuk çekilsin. */
+      .gd-b-bekle.gor{ opacity:1; visibility:visible;
+        transition:opacity .3s ease, visibility 0s; }
+      .gd-b-bekle:not(.gor){ transition:opacity .15s ease, visibility 0s linear .15s; }
       .gd-b-bekle .gdb-svg{ width:92px; height:80px; overflow:visible; }
       .gd-b-bekle .gdb-cerceve{
         fill:none; stroke:rgba(255,255,255,.75); stroke-width:3.2;
@@ -7710,8 +7719,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Güncellemeler ve Galeri bölümü: liste galeriYenile.py'den,
          duyurular yukarıdaki yenilikler.js'ten gelir. -->
     <script src="sistem/siniftayeni.js?v=20261004d"></script>
-    <script src="sistem/galeriveri.js?v=20261006"></script>
-    <script src="sistem/galeri.js?v=20261007b"></script>
+    <script src="sistem/galeriveri.js?v=20261007"></script>
+    <script src="sistem/galeri.js?v=20261007d"></script>
     <script src="hesap/listelerim.js?v=20261007d"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->

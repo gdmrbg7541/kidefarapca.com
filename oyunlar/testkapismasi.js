@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     grade9: { 
         title: "Seviye 1", 
         words: { 
-            unit1: { title: { tr: "1. Ünite" }, description: { tr: "Selamlaşma ve Tanışma" }, lessons: { lesson1: { description: { tr: "Selamlaşma" }, words: [ { id: 1, arabic: 'السَّلام عَلَيْكُمْ', turkish: 'Selam üzerinize olsun!' }, { id: 2, arabic: 'وَعَلَيْكُم السَّلام', turkish: 'Selam sizin de üzerinize olsun!' }, { id: 3, arabic: 'صَباح الخَيْر', turkish: 'Hayırlı Sabahlar' }, { id: 4, arabic: 'صَباح النّور', turkish: 'Günaydın' }, { id: 5, arabic: 'مَساء الخَيْر', turkish: 'Hayırlı akşamlar' }, { id: 6, arabic: 'مَساء النّور', turkish: 'Nurlu akşamlar' }, { id: 7, arabic: 'مَرْحَبًا', turkish: 'Merhaba!' }, { id: 8, arabic: 'أَهْلًا وَسَهْلًا', turkish: 'Hoş geldiniz!' }, { id: 9, arabic: 'أَهْلًا بِك', turkish: 'Hoş bulduk!' }, { id: 10, arabic: 'كَيْف حالُك؟', turkish: 'Nasılsın?' }, { id: 11, arabic: 'أَنا بِخَيْر', turkish: 'İyiyim!' }, { id: 12, arabic: 'إِلى اللِّقاء', turkish: 'Görüşmek üzere!' }, { id: 13, arabic: 'مَع السَّلامَة', turkish: 'Hoşça kal' }, { id: 14, arabic: 'في أَمان الّٰلهِ', turkish: 'Allah’a emanet ol' }, { id: 15, arabic: 'اِقْرَأْ', turkish: 'Oku!' }, { id: 16, arabic: 'اُكْتُبْ', turkish: 'Yaz!' }, { id: 17, arabic: 'أَعِدْ', turkish: 'Tekrar et!' }, { id: 18, arabic: 'اِسْتَمِعْ', turkish: 'Dinle!' } ] }, lesson2: { description: { tr: "Tanışma" }, words: [ { id: 19, arabic: 'طالِب', turkish: 'Erkek öğrenci' }, { id: 20, arabic: 'مُدَرِّس', turkish: 'Erkek öğretmen' }, { id: 21, arabic: 'صَديق', turkish: 'Erkek arkadaş' }, { id: 22, arabic: 'هُوَ', turkish: 'O (erkek)' }, { id: 23, arabic: 'هِيَ', turkish: 'O (kadın)' }, { id: 24, arabic: 'أَنْتَ', turkish: 'Sen (erkek)' }, { id: 25, arabic: 'أَنا', turkish: 'Ben' }, { id: 26, arabic: 'ما اسْمُك؟', turkish: 'Adın ne?' }, { id: 27, arabic: 'اِسْmi', turkish: 'Benim adım' }, { id: 28, arabic: 'مِن أَيْن؟', turkish: 'Nereli?' }, { id: 29, arabic: 'نَعَم', turkish: 'Evet' }, { id: 30, arabic: 'لا', turkish: 'Hayır' }, { id: 31, arabic: 'تَكَلَّمْ', turkish: 'Konuş' }, { id: 32, arabic: 'اُسْكُتْ', turkish: 'Sus' }, { id: 33, arabic: 'تَعالَ', turkish: 'Gel' }, { id: 34, arabic: 'اِذْهَبْ', turkish: 'Git' }, { id: 35, arabic: 'تَشَرَّفْتُ', turkish: 'Tanıştığıma memnun oldum' }, { id: 36, arabic: 'فُرْصَة سَعيدَة', turkish: 'Memnun oldum' }, { id: 37, arabic: 'شُكْرًا', turkish: 'Teşekkür ederim' }, { id: 38, arabic: 'عَفْوًا', turkish: 'Rica ederim' } ] } } }, 
+            unit1: { title: { tr: "1. Ünite" }, description: { tr: "Selamlaşma ve Tanışma" }, lessons: { lesson1: { description: { tr: "Selamlaşma" }, words: [ { id: 1, arabic: 'السَّلام عَلَيْكُمْ', turkish: 'Selam üzerinize olsun!' }, { id: 2, arabic: 'وَعَلَيْكُم السَّلام', turkish: 'Selam sizin de üzerinize olsun!' }, { id: 3, arabic: 'صَباح الخَيْر', turkish: 'Hayırlı Sabahlar' }, { id: 4, arabic: 'صَباح النّور', turkish: 'Günaydın' }, { id: 5, arabic: 'مَساء الخَيْر', turkish: 'Hayırlı akşamlar' }, { id: 6, arabic: 'مَساء النّور', turkish: 'Nurlu akşamlar' }, { id: 7, arabic: 'مَرْحَبًا', turkish: 'Merhaba!' }, { id: 8, arabic: 'أَهْلًا وَسَهْلًا', turkish: 'Hoş geldiniz!' }, { id: 9, arabic: 'أَهْلًا بِك', turkish: 'Hoş bulduk!' }, { id: 10, arabic: 'كَيْف حالُك؟', turkish: 'Nasılsın?' }, { id: 11, arabic: 'أَنا بِخَيْر', turkish: 'İyiyim!' }, { id: 12, arabic: 'إِلى اللِّقاء', turkish: 'Görüşmek üzere!' }, { id: 13, arabic: 'مَع السَّلامَة', turkish: 'Hoşça kal' }, { id: 14, arabic: 'في أَمان الّٰلهِ', turkish: 'Allah’a emanet ol' }, { id: 15, arabic: 'اِقْرَأْ', turkish: 'Oku!' }, { id: 16, arabic: 'اُكْتُبْ', turkish: 'Yaz!' }, { id: 17, arabic: 'أَعِدْ', turkish: 'Tekrar et!' }, { id: 18, arabic: 'اِسْتَمِعْ', turkish: 'Dinle!' } ] }, lesson2: { description: { tr: "Tanışma" }, words: [ { id: 19, arabic: 'طالِب', turkish: 'Erkek öğrenci' }, { id: 20, arabic: 'مُدَرِّس', turkish: 'Erkek öğretmen' }, { id: 21, arabic: 'صَديق', turkish: 'Erkek arkadaş' }, { id: 22, arabic: 'هُوَ', turkish: 'O (erkek)' }, { id: 23, arabic: 'هِيَ', turkish: 'O (kadın)' }, { id: 24, arabic: 'أَنْتَ', turkish: 'Sen (erkek)' }, { id: 25, arabic: 'أَنا', turkish: 'Ben' }, { id: 26, arabic: 'ما اسْمُك؟', turkish: 'Adın ne?' }, { id: 27, arabic: 'اِسْمِي', turkish: 'Benim adım' }, { id: 28, arabic: 'مِن أَيْن؟', turkish: 'Nereli?' }, { id: 29, arabic: 'نَعَم', turkish: 'Evet' }, { id: 30, arabic: 'لا', turkish: 'Hayır' }, { id: 31, arabic: 'تَكَلَّمْ', turkish: 'Konuş' }, { id: 32, arabic: 'اُسْكُتْ', turkish: 'Sus' }, { id: 33, arabic: 'تَعالَ', turkish: 'Gel' }, { id: 34, arabic: 'اِذْهَبْ', turkish: 'Git' }, { id: 35, arabic: 'تَشَرَّفْتُ', turkish: 'Tanıştığıma memnun oldum' }, { id: 36, arabic: 'فُرْصَة سَعيدَة', turkish: 'Memnun oldum' }, { id: 37, arabic: 'شُكْرًا', turkish: 'Teşekkür ederim' }, { id: 38, arabic: 'عَفْوًا', turkish: 'Rica ederim' } ] } } }, 
             unit2: { title: { tr: "2. Ünite" }, description: { tr: "Okulda" }, lessons: { lesson1: { description: { tr: "Sınıf Eşyaları" }, words: [ { id: 101, arabic: 'مَدْرَسَة', turkish: 'Okul' }, { id: 102, arabic: 'صَفّ', turkish: 'Sınıf' }, { id: 103, arabic: 'كِتاب', turkish: 'Kitap' }, { id: 104, arabic: 'دَفْتَر', turkish: 'Defter' }, { id: 105, arabic: 'قَلَم', turkish: 'Kalem' }, { id: 106, arabic: 'سَبّورة', turkish: 'Tahta' }, { id: 107, arabic: 'كُرْسِيّ', turkish: 'Sandalye' }, { id: 108, arabic: 'مَكْتَب', turkish: 'Masa' }, { id: 109, arabic: 'مِمْحاة', turkish: 'Silgi' }, { id: 110, arabic: 'مِسْطَرَة', turkish: 'Cetvel' }, { id: 111, arabic: 'حَقيبَة', turkish: 'Çanta' }, { id: 112, arabic: 'باب', turkish: 'Kapı' }, { id: 113, arabic: 'نافِذَة', turkish: 'Pencere' } ] }, lesson2: { description: { tr: "Yönler ve Eylemler" }, words: [ { id: 114, arabic: 'أَيْن؟', turkish: 'Nerede?' }, { id: 115, arabic: 'هُنا', turkish: 'Burada' }, { id: 116, arabic: 'هُناك', turkish: 'Orada' }, { id: 117, arabic: 'عَلى', turkish: 'Üstünde' }, { id: 118, arabic: 'تَحْت', turkish: 'Altında' }, { id: 119, arabic: 'أَمام', turkish: 'Önünde' }, { id: 120, arabic: 'خَلْفَ', turkish: 'Arkasında' }, { id: 121, arabic: 'فَوْقَ', turkish: 'Üzerinde' }, { id: 122, arabic: 'جانِبَ', turkish: 'Yanında' }, { id: 123, arabic: 'في', turkish: 'İçinde' }, { id: 124, arabic: 'خارِجَ', turkish: 'Dışında' }, { id: 125, arabic: 'اِفْتَح', turkish: 'Kitabı aç' }, { id: 126, arabic: 'اِجْلِسْ', turkish: 'Otur' }, { id: 127, arabic: 'اُدْخُلِ الصَّفَّ', turkish: 'Sınıfa gir' } ] } } }, 
             unit3: { title: { tr: "3. Ünite" }, description: { tr: "Evde" }, lessons: { lesson1: { description: { tr: "Evdeyim" }, words: [ { id: 201, arabic: 'بَيْت', turkish: 'Ev' }, { id: 202, arabic: 'غُرْفَة', turkish: 'Oda' }, { id: 203, arabic: 'غُرْفَة النَّوْم', turkish: 'Yatak odası' }, { id: 204, arabic: 'غُرْفَة جُلوس', turkish: 'Oturma odası' }, { id: 205, arabic: 'مَطْبَخ', turkish: 'Mutfak' }, { id: 206, arabic: 'حَمّام', turkish: 'Banyo' }, { id: 207, arabic: 'سَرير', turkish: 'Yatak' }, { id: 208, arabic: 'طاوِلَة', turkish: 'Masa' }, { id: 209, arabic: 'كُرْسِيّ', turkish: 'Sandalye' }, { id: 210, arabic: 'تِلْفاز', turkish: 'Televizyon' }, { id: 211, arabic: 'ثَلّاجة', turkish: 'Buzdolabı' }, { id: 212, arabic: 'فُرْن', turkish: 'Fırın' }, { id: 213, arabic: 'سَجّادَة', turkish: 'Halı' }, { id: 214, arabic: 'هَاتِف', turkish: 'Telefon' }, { id: 215, arabic: 'مِصْباح', turkish: 'Lamba' } ] }, lesson2: { description: { tr: "Odamda" }, words: [ { id: 216, arabic: 'غُرْفَتي', turkish: 'Odam' }, { id: 217, arabic: 'سَرير', turkish: 'Yatak' }, { id: 218, arabic: 'مَكْتَب', turkish: 'Çalışma masası' }, { id: 219, arabic: 'كُرْسِيّ', turkish: 'Sandalye' }, { id: 220, arabic: 'سِتارَة', turkish: 'Perde' }, { id: 221, arabic: 'مِصْباح', turkish: 'Lamba' }, { id: 222, arabic: 'مِرْآة', turkish: 'Ayna' }, { id: 223, arabic: 'سَجّادَة', turkish: 'Halı' }, { id: 224, arabic: 'دُولاب', turkish: 'Dolap' }, { id: 225, arabic: 'نَظيف', turkish: 'Temiz' }, { id: 226, arabic: 'مُرَتَّب', turkish: 'Düzenli' }, { id: 227, arabic: 'وَسِخ', turkish: 'Kirli' }, { id: 228, arabic: 'يُنَظِّفُ', turkish: 'Temizliyor' }, { id: 229, arabic: 'يُرَتِّبُ', turkish: 'Düzenliyor' } ] } } }, 
-            unit4: { title: { tr: "4. Ünite" }, description: { tr: "Bir Günüm" }, lessons: { lesson1: { description: { tr: "Bir Günüm" }, words: [ { id: 301, arabic: 'صَباح', turkish: 'Sabah' }, { id: 302, arabic: 'ظُهْر', turkish: 'Öğle' }, { id: 303, arabic: 'مَساء', turkish: 'Akşam' }, { id: 304, arabic: 'لَيْل', turkish: 'Gece' }, { id: 305, arabic: 'يَسْتَيْقِظُ', turkish: 'Uyanıyor' }, { id: 306, arabic: 'يَغْسِلُ وَجْهَهُ', turkish: 'Yüzünü yıkıyor' }, { id: 307, arabic: 'يُصَلّي', turkish: 'Namaz kılıyor' }, { id: 308, arabic: 'يَلْبَسُ mَلابِسَهُ', turkish: 'Giyiniyor' }, { id: 309, arabic: 'يَتَناوَلُ الفَطور', turkish: 'Kahvaltı yapıyor' }, { id: 310, arabic: 'يَذْهَبُ إِلى المَدْرَسَة', turkish: 'Okula gidiyor' }, { id: 311, arabic: 'يَدْرُسُ', turkish: 'Ders çalışıyor' }, { id: 312, arabic: 'يَرْجِعُ إِلى البَيْت', turkish: 'Eve dönüyor' }, { id: 313, arabic: 'يَتَغَدّى', turkish: 'Öğle yemeği yiyor' }, { id: 314, arabic: 'يَسْتَريحُ', turkish: 'Dinleniyor' }, { id: 315, arabic: 'يَلْعَبُ', turkish: 'Oynuyor' } ] }, lesson2: { description: { tr: "Günlük Rutin" }, words: [ { id: 316, arabic: 'أَسْتَيْقِظُ مُبَكِّرًا', turkish: 'Erken uyanıyorum' }, { id: 317, arabic: 'أَذْهَبُ إِلى المَدْرَسَة', turkish: 'Okula gidiyorum' }, { id: 318, arabic: 'أُصَلّي صَلاة الظُّهْر', turkish: 'Öğle namazı kılıyorum' }, { id: 319, arabic: 'أَتَغَدّى مَع أُسْرَتي', turkish: 'Ailemle öğle yemeği yiyorum' }, { id: 320, arabic: 'أَقْرَأُ دُروسي', turkish: 'Derslerimi okuyorum' }, { id: 321, arabic: 'أَكْتُبُ واجِباتي', turkish: 'Ödev yazıyorum' }, { id: 322, arabic: 'أَلْعَبُ في السّاحَة', turkish: 'Bahçede oynuyorum' }, { id: 323, arabic: 'أُساعِدُ أُمّي', turkish: 'Anneme yardım ediyorum' }, { id: 324, arabic: 'أَزورُ جَدِي', turkish: 'Dedemi ziyaret ediyorum' }, { id: 325, arabic: 'أَذْهَبُ إِلى المَسْجِد', turkish: 'Camiye gidiyorum' }, { id: 326, arabic: 'أُرَتِّبُ سَريري', turkish: 'Yatağımı düzeltiyorum' }, { id: 327, arabic: 'أُنَظِّفُ غُرْفَتي', turkish: 'Odamı temizliyorum' }, { id: 328, arabic: 'أُراجِعُ دُروسي', turkish: 'Derslerimi tekrar ediyorum' }, { id: 329, arabic: 'أَنامُ مُتَأَخِّرًا', turkish: 'Geç yatıyorum' } ] } } } 
+            unit4: { title: { tr: "4. Ünite" }, description: { tr: "Bir Günüm" }, lessons: { lesson1: { description: { tr: "Bir Günüm" }, words: [ { id: 301, arabic: 'صَباح', turkish: 'Sabah' }, { id: 302, arabic: 'ظُهْر', turkish: 'Öğle' }, { id: 303, arabic: 'مَساء', turkish: 'Akşam' }, { id: 304, arabic: 'لَيْل', turkish: 'Gece' }, { id: 305, arabic: 'يَسْتَيْقِظُ', turkish: 'Uyanıyor' }, { id: 306, arabic: 'يَغْسِلُ وَجْهَهُ', turkish: 'Yüzünü yıkıyor' }, { id: 307, arabic: 'يُصَلّي', turkish: 'Namaz kılıyor' }, { id: 308, arabic: 'يَلْبَسُ مَلابِسَهُ', turkish: 'Giyiniyor' }, { id: 309, arabic: 'يَتَناوَلُ الفَطور', turkish: 'Kahvaltı yapıyor' }, { id: 310, arabic: 'يَذْهَبُ إِلى المَدْرَسَة', turkish: 'Okula gidiyor' }, { id: 311, arabic: 'يَدْرُسُ', turkish: 'Ders çalışıyor' }, { id: 312, arabic: 'يَرْجِعُ إِلى البَيْت', turkish: 'Eve dönüyor' }, { id: 313, arabic: 'يَتَغَدّى', turkish: 'Öğle yemeği yiyor' }, { id: 314, arabic: 'يَسْتَريحُ', turkish: 'Dinleniyor' }, { id: 315, arabic: 'يَلْعَبُ', turkish: 'Oynuyor' } ] }, lesson2: { description: { tr: "Günlük Rutin" }, words: [ { id: 316, arabic: 'أَسْتَيْقِظُ مُبَكِّرًا', turkish: 'Erken uyanıyorum' }, { id: 317, arabic: 'أَذْهَبُ إِلى المَدْرَسَة', turkish: 'Okula gidiyorum' }, { id: 318, arabic: 'أُصَلّي صَلاة الظُّهْر', turkish: 'Öğle namazı kılıyorum' }, { id: 319, arabic: 'أَتَغَدّى مَع أُسْرَتي', turkish: 'Ailemle öğle yemeği yiyorum' }, { id: 320, arabic: 'أَقْرَأُ دُروسي', turkish: 'Derslerimi okuyorum' }, { id: 321, arabic: 'أَكْتُبُ واجِباتي', turkish: 'Ödev yazıyorum' }, { id: 322, arabic: 'أَلْعَبُ في السّاحَة', turkish: 'Bahçede oynuyorum' }, { id: 323, arabic: 'أُساعِدُ أُمّي', turkish: 'Anneme yardım ediyorum' }, { id: 324, arabic: 'أَزورُ جَدِي', turkish: 'Dedemi ziyaret ediyorum' }, { id: 325, arabic: 'أَذْهَبُ إِلى المَسْجِد', turkish: 'Camiye gidiyorum' }, { id: 326, arabic: 'أُرَتِّبُ سَريري', turkish: 'Yatağımı düzeltiyorum' }, { id: 327, arabic: 'أُنَظِّفُ غُرْفَتي', turkish: 'Odamı temizliyorum' }, { id: 328, arabic: 'أُراجِعُ دُروسي', turkish: 'Derslerimi tekrar ediyorum' }, { id: 329, arabic: 'أَنامُ مُتَأَخِّرًا', turkish: 'Geç yatıyorum' } ] } } } 
         } 
     }, 
     grade10: { 
@@ -18,13 +18,13 @@ unit1: { title: { tr: "1. Ünite" }, description: { tr: "Değerlerim ve Ailem" }
 
  lessons: { lesson1: { description: { tr: "Güzel Davranışlar" }, words: [ { id: 401, arabic: 'صِدْق', turkish: 'Doğruluk' }, { id: 402, arabic: 'أَمانَة', turkish: 'Güvenilirlik' }, { id: 403, arabic: 'إِخْلاص', turkish: 'Samimiyet' }, { id: 404, arabic: 'تَعاوُن', turkish: 'Yardımlaşma' }, { id: 405, arabic: 'اِحْتِرام', turkish: 'Saygı' }, { id: 406, arabic: 'مَحَبَّة', turkish: 'Sevgi' }, { id: 407, arabic: 'شُكْر', turkish: 'Teşekkür' }, { id: 408, arabic: 'الاعْتِذار', turkish: 'Özür dileme' }, { id: 409, arabic: 'رَحْمَة', turkish: 'Merhamet' }, { id: 410, arabic: 'صَبْر', turkish: 'Sabır' }, { id: 411, arabic: 'عَدْل', turkish: 'Adalet' }, { id: 412, arabic: 'تَواضُع', turkish: 'Alçakgönüllülük' }, { id: 413, arabic: 'يُساعِدُ', turkish: 'Yardım ediyor' }, { id: 414, arabic: 'يُحِبُّ', turkish: 'Seviyor' }, { id: 415, arabic: 'يَبْتَسِمُ', turkish: 'Gülümsüyor' } ] }, lesson2: { description: { tr: "Mutlu Aile" }, words: [ { id: 416, arabic: 'أُسْرَة', turkish: 'Aile' }, { id: 417, arabic: 'أَب', turkish: 'Baba' }, { id: 418, arabic: 'أُمّ', turkish: 'Anne' }, { id: 419, arabic: 'أَخ', turkish: 'Erkek kardeş' }, { id: 420, arabic: 'أُخْت', turkish: 'Kız kardeş' }, { id: 421, arabic: 'جَدّ', turkish: 'Dede' }, { id: 422, arabic: 'جَدَّة', turkish: 'Nine' }, { id: 423, arabic: 'عَمّ', turkish: 'Amca' }, { id: 424, arabic: 'عَمَّة', turkish: 'Hala' }, { id: 425, arabic: 'خال', turkish: 'Dayı' }, { id: 426, arabic: 'خالَة', turkish: 'Teyze' }, { id: 427, arabic: 'أَقارِب', turkish: 'Akrabalar' }, { id: 428, arabic: 'يَزورُ الأَقارِب', turkish: 'Akrabaları ziyaret ediyor' }, { id: 429, arabic: 'يَحْتَرِمُ الكِبار', turkish: 'Büyüklere saygı gösteriyor' }, { id: 430, arabic: 'يَرْحَمُ الصِّغار', turkish: 'Küçüklere merhamet ediyor' } ] } } }, 
             
-unit2: { title: { tr: "2. Ünite" }, description: { tr: "Kendimi Keşfediyorum" }, lessons: { lesson1: { description: { tr: "Ben Kimim?" }, words: [ { id: 501, arabic: 'مَن أَنا؟', turkish: 'Ben kimim?' }, { id: 502, arabic: 'اِسْم', turkish: 'İsim' }, { id: 503, arabic: 'عُمْر', turkish: 'Yaş' }, { id: 504, arabic: 'مِهْنَة', turkish: 'Meslek' }, { id: 505, arabic: 'هِوايَة', turkish: 'Hobi' }, { id: 506, arabic: 'مَوْهِBَة', turkish: 'Yetenek' }, { id: 507, arabic: 'طَيِّب', turkish: 'İyi kalpli' }, { id: 508, arabic: 'مُجْتَهِد', turkish: 'Çalışkan' }, { id: 509, arabic: 'كَسول', turkish: 'Tembel' }, { id: 510, arabic: 'هادِئ', turkish: 'Sakin' }, { id: 511, arabic: 'نَشيط', turkish: 'Enerjik' }, { id: 512, arabic: 'مُبْتَسِم', turkish: 'Güleryüzlü' }, { id: 513, arabic: 'صَبور', turkish: 'Sabırlı' }, { id: 514, arabic: 'أَحْلامي', turkish: 'Hayallerim' }, { id: 515, arabic: 'مُسْتَقْبَل', turkish: 'Gelecek' } ] }, lesson2: { description: { tr: "Hobilerim" }, words: [ { id: 516, arabic: 'قِراءَة', turkish: 'Okuma' }, { id: 517, arabic: 'كِتابَة', turkish: 'Yazma' }, { id: 518, arabic: 'رَسْم', turkish: 'Resim yapma' }, { id: 519, arabic: 'طَبْخ', turkish: 'Yemek pişirme' }, { id: 520, arabic: 'تَصْوير', turkish: 'Fotoğrafçılık' }, { id: 521, arabic: 'رِياضَة', turkish: 'Spor' }, { id: 522, arabic: 'كُرَة القَدَم', turkish: 'Futbol' }, { id: 523, arabic: 'كُرَة السَّلَّة', turkish: 'Basketbol' }, { id: 524, arabic: 'سَفَر', turkish: 'Seyahat' }, { id: 525, arabic: 'طَبيعَة', turkish: 'Doğa' }, { id: 526, arabic: 'أَفْلام', turkish: 'Filmler' }, { id: 527, arabic: 'موسيقى', turkish: 'Müzik' }, { id: 528, arabic: 'مَكْتَبَة', turkish: 'Kütüphane' }, { id: 529, arabic: 'في الوَقْت الفارِغ', turkish: 'Boş zamanlarda' }, { id: 530, arabic: 'مُفيد', turkish: 'Faydalı' }, { id: 531, arabic: 'مُمْتِع', turkish: 'Eğlenceli' } ] } } }, 
+unit2: { title: { tr: "2. Ünite" }, description: { tr: "Kendimi Keşfediyorum" }, lessons: { lesson1: { description: { tr: "Ben Kimim?" }, words: [ { id: 501, arabic: 'مَن أَنا؟', turkish: 'Ben kimim?' }, { id: 502, arabic: 'اِسْم', turkish: 'İsim' }, { id: 503, arabic: 'عُمْر', turkish: 'Yaş' }, { id: 504, arabic: 'مِهْنَة', turkish: 'Meslek' }, { id: 505, arabic: 'هِوايَة', turkish: 'Hobi' }, { id: 506, arabic: 'مَوْهِبَة', turkish: 'Yetenek' }, { id: 507, arabic: 'طَيِّب', turkish: 'İyi kalpli' }, { id: 508, arabic: 'مُجْتَهِد', turkish: 'Çalışkan' }, { id: 509, arabic: 'كَسول', turkish: 'Tembel' }, { id: 510, arabic: 'هادِئ', turkish: 'Sakin' }, { id: 511, arabic: 'نَشيط', turkish: 'Enerjik' }, { id: 512, arabic: 'مُبْتَسِم', turkish: 'Güleryüzlü' }, { id: 513, arabic: 'صَبور', turkish: 'Sabırlı' }, { id: 514, arabic: 'أَحْلامي', turkish: 'Hayallerim' }, { id: 515, arabic: 'مُسْتَقْبَل', turkish: 'Gelecek' } ] }, lesson2: { description: { tr: "Hobilerim" }, words: [ { id: 516, arabic: 'قِراءَة', turkish: 'Okuma' }, { id: 517, arabic: 'كِتابَة', turkish: 'Yazma' }, { id: 518, arabic: 'رَسْم', turkish: 'Resim yapma' }, { id: 519, arabic: 'طَبْخ', turkish: 'Yemek pişirme' }, { id: 520, arabic: 'تَصْوير', turkish: 'Fotoğrafçılık' }, { id: 521, arabic: 'رِياضَة', turkish: 'Spor' }, { id: 522, arabic: 'كُرَة القَدَم', turkish: 'Futbol' }, { id: 523, arabic: 'كُرَة السَّلَّة', turkish: 'Basketbol' }, { id: 524, arabic: 'سَفَر', turkish: 'Seyahat' }, { id: 525, arabic: 'طَبيعَة', turkish: 'Doğa' }, { id: 526, arabic: 'أَفْلام', turkish: 'Filmler' }, { id: 527, arabic: 'موسيقى', turkish: 'Müzik' }, { id: 528, arabic: 'مَكْتَبَة', turkish: 'Kütüphane' }, { id: 529, arabic: 'في الوَقْت الفارِغ', turkish: 'Boş zamanlarda' }, { id: 530, arabic: 'مُفيد', turkish: 'Faydalı' }, { id: 531, arabic: 'مُمْتِع', turkish: 'Eğlenceli' } ] } } }, 
             
-unit3: { title: { tr: "3. Ünite" }, description: { tr: "Zaman ve Hayat" }, lessons: { lesson1: { description: { tr: "Zamanım ve Hayatım" }, words: [ { id: 601, arabic: 'وَقْتي', turkish: 'Zamanım' }, { id: 602, arabic: 'حَياتI', turkish: 'Hayatım' }, { id: 603, arabic: 'نَوْم', turkish: 'Uyku' }, { id: 604, arabic: 'عَمَل', turkish: 'Çalışma' }, { id: 605, arabic: 'اِسْتِراحَة', turkish: 'Dinlenme' }, { id: 606, arabic: 'نَهار', turkish: 'Gündüz' }, { id: 607, arabic: 'يُنَظِّمُ', turkish: 'Düzenliyor' }, { id: 608, arabic: 'يُخَطِّطُ', turkish: 'Planlıyor' }, { id: 609, arabic: 'يَدْرُسُ', turkish: 'Ders çalışıyor' }, { id: 610, arabic: 'يَسْتَريحُ', turkish: 'Dinleniyor' }, { id: 611, arabic: 'كُلّ يَوْم', turkish: 'Her gün' }, { id: 612, arabic: 'أَحْيانًا', turkish: 'Bazen' }, { id: 613, arabic: 'نادِرًا', turkish: 'Nadiren' }, { id: 614, arabic: 'دائِمًا', turkish: 'Her zaman' }, { id: 615, arabic: 'نَجاح', turkish: 'Başarı' } ] }, lesson2: { description: { tr: "Zamanımı Değerlendiriyorum" }, words: [ { id: 616, arabic: 'تَخْطيط', turkish: 'Planlama' }, { id: 617, arabic: 'فَشَل', turkish: 'Başarısızlık' }, { id: 618, arabic: 'جِدّ', turkish: 'Ciddiyet' }, { id: 619, arabic: 'كَسَل', turkish: 'Tembellik' }, { id: 620, arabic: 'حِكْمَة', turkish: 'Bilgelik' }, { id: 621, arabic: 'إِبْداع', turkish: 'Yaratıcılık' }, { id: 622, arabic: 'لا يُؤَجِّلُ', turkish: 'Ertelemiyor' }, { id: 623, arabic: 'يَسْتَغِلُّ الوَقْت', turkish: 'Zamanı değerlendiriyor' }, { id: 624, arabic: 'يُضَيِّعُ الوَقْت', turkish: 'Zamanı boşa harcıyor' }, { id: 625, arabic: 'يَوْم', turkish: 'Gün' }, { id: 626, arabic: 'أُسْبوع', turkish: 'Hafta' }, { id: 627, arabic: 'مُسْتَقْبَل', turkish: 'Gelecek' }, { id: 628, arabic: 'حاضِر', turkish: 'Şimdi' }, { id: 629, arabic: 'ماضي', turkish: 'Geçmiş' }, { id: 630, arabic: 'تَطْوير النَّفْس', turkish: 'Kendini geliştirme' } ] } } }, 
+unit3: { title: { tr: "3. Ünite" }, description: { tr: "Zaman ve Hayat" }, lessons: { lesson1: { description: { tr: "Zamanım ve Hayatım" }, words: [ { id: 601, arabic: 'وَقْتي', turkish: 'Zamanım' }, { id: 602, arabic: 'حَياتِي', turkish: 'Hayatım' }, { id: 603, arabic: 'نَوْم', turkish: 'Uyku' }, { id: 604, arabic: 'عَمَل', turkish: 'Çalışma' }, { id: 605, arabic: 'اِسْتِراحَة', turkish: 'Dinlenme' }, { id: 606, arabic: 'نَهار', turkish: 'Gündüz' }, { id: 607, arabic: 'يُنَظِّمُ', turkish: 'Düzenliyor' }, { id: 608, arabic: 'يُخَطِّطُ', turkish: 'Planlıyor' }, { id: 609, arabic: 'يَدْرُسُ', turkish: 'Ders çalışıyor' }, { id: 610, arabic: 'يَسْتَريحُ', turkish: 'Dinleniyor' }, { id: 611, arabic: 'كُلّ يَوْم', turkish: 'Her gün' }, { id: 612, arabic: 'أَحْيانًا', turkish: 'Bazen' }, { id: 613, arabic: 'نادِرًا', turkish: 'Nadiren' }, { id: 614, arabic: 'دائِمًا', turkish: 'Her zaman' }, { id: 615, arabic: 'نَجاح', turkish: 'Başarı' } ] }, lesson2: { description: { tr: "Zamanımı Değerlendiriyorum" }, words: [ { id: 616, arabic: 'تَخْطيط', turkish: 'Planlama' }, { id: 617, arabic: 'فَشَل', turkish: 'Başarısızlık' }, { id: 618, arabic: 'جِدّ', turkish: 'Ciddiyet' }, { id: 619, arabic: 'كَسَل', turkish: 'Tembellik' }, { id: 620, arabic: 'حِكْمَة', turkish: 'Bilgelik' }, { id: 621, arabic: 'إِبْداع', turkish: 'Yaratıcılık' }, { id: 622, arabic: 'لا يُؤَجِّلُ', turkish: 'Ertelemiyor' }, { id: 623, arabic: 'يَسْتَغِلُّ الوَقْت', turkish: 'Zamanı değerlendiriyor' }, { id: 624, arabic: 'يُضَيِّعُ الوَقْت', turkish: 'Zamanı boşa harcıyor' }, { id: 625, arabic: 'يَوْم', turkish: 'Gün' }, { id: 626, arabic: 'أُسْبوع', turkish: 'Hafta' }, { id: 627, arabic: 'مُسْتَقْبَل', turkish: 'Gelecek' }, { id: 628, arabic: 'حاضِر', turkish: 'Şimdi' }, { id: 629, arabic: 'ماضي', turkish: 'Geçmiş' }, { id: 630, arabic: 'تَطْوير النَّفْس', turkish: 'Kendini geliştirme' } ] } } }, 
             
-unit4: { title: { tr: "4. Ünite" }, description: { tr: "Sağlık ve Beslenme" }, lessons: { lesson1: { description: { tr: "Sağlıklı Yaşam" }, words: [ { id: 701, arabic: 'جِسْم', turkish: 'Vücut' }, { id: 702, arabic: 'عَقْل', turkish: 'Akıl' }, { id: 703, arabic: 'نَظّافَة', turkish: 'Temizlik' }, { id: 704, arabic: 'غِذاء', turkish: 'Beslenme' }, { id: 705, arabic: 'صِحَّة', turkish: 'Sağlık' }, { id: 706, arabic: 'مَرَض', turkish: 'Hastalık' }, { id: 707, arabic: 'طَبيب', turkish: 'Doktor' }, { id: 708, arabic: 'دَواء', turkish: 'İlaç' }, { id: 709, arabic: 'أَسْنان', turkish: 'Dişler' }, { id: 710, arabic: 'النَّظّافَة مِن الإِيمان', turkish: 'Temizlik imandandır' }, { id: 711, arabic: 'يُfERِّشُ الأَسْنان', turkish: 'Diş fırçalıyor' }, { id: 712, arabic: 'يَسْتَحِمُّ', turkish: 'Banyo yapıyor' }, { id: 713, arabic: 'يَnamُ مُبَكِّرًا', turkish: 'Erken uyuyor' }, { id: 714, arabic: 'صِحِّيّ', turkish: 'Sağlıklı' }, { id: 715, arabic: 'يُمارِسُ الرِّياضَة', turkish: 'Spor yapıyor' } ] }, 
+unit4: { title: { tr: "4. Ünite" }, description: { tr: "Sağlık ve Beslenme" }, lessons: { lesson1: { description: { tr: "Sağlıklı Yaşam" }, words: [ { id: 701, arabic: 'جِسْم', turkish: 'Vücut' }, { id: 702, arabic: 'عَقْل', turkish: 'Akıl' }, { id: 703, arabic: 'نَظّافَة', turkish: 'Temizlik' }, { id: 704, arabic: 'غِذاء', turkish: 'Beslenme' }, { id: 705, arabic: 'صِحَّة', turkish: 'Sağlık' }, { id: 706, arabic: 'مَرَض', turkish: 'Hastalık' }, { id: 707, arabic: 'طَبيب', turkish: 'Doktor' }, { id: 708, arabic: 'دَواء', turkish: 'İlaç' }, { id: 709, arabic: 'أَسْنان', turkish: 'Dişler' }, { id: 710, arabic: 'النَّظّافَة مِن الإِيمان', turkish: 'Temizlik imandandır' }, { id: 711, arabic: 'يُفَرِّشُ الأَسْنان', turkish: 'Diş fırçalıyor' }, { id: 712, arabic: 'يَسْتَحِمُّ', turkish: 'Banyo yapıyor' }, { id: 713, arabic: 'يَنامُ مُبَكِّرًا', turkish: 'Erken uyuyor' }, { id: 714, arabic: 'صِحِّيّ', turkish: 'Sağlıklı' }, { id: 715, arabic: 'يُمارِسُ الرِّياضَة', turkish: 'Spor yapıyor' } ] }, 
 
-lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arabic: 'فَواكِه', turkish: 'Meyveler' }, { id: 717, arabic: 'خُضْراوات', turkish: 'Sebzeler' }, { id: 718, arabic: 'لَحْم', turkish: 'Et' }, { id: 719, arabic: 'سَمَك', turkish: 'Balık' }, { id: 720, arabic: 'لَبَن', turkish: 'Süt' }, { id: 721, arabic: 'جُبْن', turkish: 'Peynir' }, { id: 222, arabic: 'بَيْض', turkish: 'Yumurta' }, { id: 723, arabic: 'خُبْz', turkish: 'Ekmek' }, { id: 724, arabic: 'ماء', turkish: 'Su' }, { id: 725, arabic: 'عَصير', turkish: 'Meyve suyu' }, { id: 726, arabic: 'الطَّعام السَّريع', turkish: 'Fast food' }, { id: 727, arabic: 'المَشْروبات الغازِيَة', turkish: 'Gazlı içecekler' }, { id: 728, arabic: 'فَطور', turkish: 'Kahvaltı' }, { id: 729, arabic: 'غَداء', turkish: 'Öğle yemeği' }, { id: 730, arabic: 'عَشاء', turkish: 'Akşam yemeği' } ] } } },
+lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arabic: 'فَواكِه', turkish: 'Meyveler' }, { id: 717, arabic: 'خُضْراوات', turkish: 'Sebzeler' }, { id: 718, arabic: 'لَحْم', turkish: 'Et' }, { id: 719, arabic: 'سَمَك', turkish: 'Balık' }, { id: 720, arabic: 'لَبَن', turkish: 'Süt' }, { id: 721, arabic: 'جُبْن', turkish: 'Peynir' }, { id: 722, arabic: 'بَيْض', turkish: 'Yumurta' }, { id: 723, arabic: 'خُبْز', turkish: 'Ekmek' }, { id: 724, arabic: 'ماء', turkish: 'Su' }, { id: 725, arabic: 'عَصير', turkish: 'Meyve suyu' }, { id: 726, arabic: 'الطَّعام السَّريع', turkish: 'Fast food' }, { id: 727, arabic: 'المَشْروبات الغازِيَة', turkish: 'Gazlı içecekler' }, { id: 728, arabic: 'فَطور', turkish: 'Kahvaltı' }, { id: 729, arabic: 'غَداء', turkish: 'Öğle yemeği' }, { id: 730, arabic: 'عَشاء', turkish: 'Akşam yemeği' } ] } } },
             unit5: { 
                 title: { tr: "5. Ünite" }, 
                 description: { tr: "Meslekler" }, 
@@ -93,6 +93,98 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
 };
     const Utils = { shuffleArray: (arr) => [...arr].sort(() => 0.5 - Math.random()) };
 
+    /* ===== KAPIŞMA AYARLARI (07.10.2026) =========================
+       İki kişilik kapışmada tur uzunluğu, soruların nasıl dağıtılacağı ve
+       hız puanının ağırlığı öğretmenin elinde. Seçimler tarayıcıda kalır,
+       her oyunda yeniden seçilmesi gerekmez.
+         soru   : tur başına soru sayısı
+         kaynak : 'ayni'    → ikisi de aynı soruları aynı sırada görür
+                  'karisik' → aynı sorular, farklı sırada
+                  'farkli'  → aynı dersten farklı kelimeler (yetmezse karışık)
+         hiz    : önce doğru cevaplayana verilen ek puan (doğru cevap her hâlde 10) */
+    const KapAyar = {
+        ANAHTAR: 'kidefKapismaAyar',
+        VARSAYILAN: { soru: 5, kaynak: 'farkli', hiz: 10 },
+        SORU: [5, 7, 10, 15],
+        KAYNAK: ['ayni', 'karisik', 'farkli'],
+        HIZ: [0, 5, 10, 20],
+        _d: null,
+
+        oku() {
+            if (this._d) return this._d;
+            const d = Object.assign({}, this.VARSAYILAN);
+            try {
+                const k = JSON.parse(localStorage.getItem(this.ANAHTAR) || 'null');
+                if (k && typeof k === 'object') {
+                    if (this.SORU.indexOf(k.soru) >= 0) d.soru = k.soru;
+                    if (this.KAYNAK.indexOf(k.kaynak) >= 0) d.kaynak = k.kaynak;
+                    if (this.HIZ.indexOf(k.hiz) >= 0) d.hiz = k.hiz;
+                }
+            } catch (e) { }
+            this._d = d;
+            return d;
+        },
+        yaz(alan, deger) {
+            const d = this.oku();
+            d[alan] = deger;
+            try { localStorage.setItem(this.ANAHTAR, JSON.stringify(d)); } catch (e) { }
+            this.isaretle();
+            this.notYaz();
+        },
+        isaretle() {
+            const d = this.oku();
+            [['kap-soru', String(d.soru)], ['kap-kaynak', d.kaynak], ['kap-hiz', String(d.hiz)]]
+                .forEach(([kid, deger]) => {
+                    const kap = document.getElementById(kid);
+                    if (!kap) return;
+                    kap.querySelectorAll('button').forEach(b => {
+                        const secili = b.dataset.v === deger;
+                        b.classList.toggle('secili', secili);
+                        b.setAttribute('aria-pressed', secili ? 'true' : 'false');
+                    });
+                });
+        },
+        notYaz() {
+            const el = document.getElementById('kap-not');
+            if (!el) return;
+            const d = this.oku();
+            const kaynakMetin = {
+                ayni: 'İkisi de aynı soruları aynı sırada görür.',
+                karisik: 'Aynı sorular, farklı sırada — yan tarafa bakmak işe yaramaz.',
+                farkli: 'Her oyuncuya aynı dersten farklı kelimeler düşer.'
+            }[d.kaynak];
+            const hizMetin = d.hiz === 0
+                ? 'Hız puanı yok: yalnız doğru cevap sayılır.'
+                : 'Doğru cevap 10 puan, önce doğru cevaplayana +' + d.hiz + ' puan.';
+            el.textContent = d.soru + ' soru. ' + kaynakMetin + ' ' + hizMetin;
+        },
+        gorunur(acik) {
+            const kap = document.getElementById('kapisma-ayar');
+            if (!kap) return;
+            kap.hidden = !acik;
+            if (acik) { this.isaretle(); this.notYaz(); }
+        },
+        kur() {
+            const kap = document.getElementById('kapisma-ayar');
+            if (!kap || kap.dataset.kuruldu) return;
+            kap.dataset.kuruldu = '1';
+            [['kap-soru', 'soru', v => parseInt(v, 10)],
+             ['kap-kaynak', 'kaynak', v => v],
+             ['kap-hiz', 'hiz', v => parseInt(v, 10)]].forEach(([kid, alan, cevir]) => {
+                const grup = document.getElementById(kid);
+                if (!grup) return;
+                grup.addEventListener('click', e => {
+                    const b = e.target.closest('button');
+                    if (!b || !b.dataset.v) return;
+                    try { App.playSound('touch'); } catch (err) { }
+                    this.yaz(alan, cevir(b.dataset.v));
+                });
+            });
+            this.isaretle();
+            this.notYaz();
+        }
+    };
+
     const App = {
         state: {
             selectedPlayers: null, selectedLessonId: null, unlockedLessons: [],
@@ -159,6 +251,7 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
             const sounds = { flip: { f: 200, t: 'triangle', d: 0.1 }, match: { f: 440, t: 'sine', d: 0.2 }, menuClick: { f: 600, t: 'square', d: 0.08 }, touch: { f: 300, t: 'sine', d: 0.05 }, correct: { f: 523.25, t: 'sine', d: 0.2 }, incorrect: { f: 164.81, t: 'square', d: 0.2 }, countdown: { f: 880, t: 'sine', d: 0.15 } }; const sound = sounds[soundKey]; if (!sound) return; const g = this.state.audioCtx.createGain(); g.connect(this.state.audioCtx.destination); g.gain.setValueAtTime(0, this.state.audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.1, this.state.audioCtx.currentTime + 0.01); g.gain.linearRampToValueAtTime(0, this.state.audioCtx.currentTime + sound.d); const o = this.state.audioCtx.createOscillator(); o.type = sound.t; o.frequency.value = sound.f; o.connect(g); o.start(0); o.stop(this.state.audioCtx.currentTime + sound.d);
         },
         initStartScreenListeners() {
+            KapAyar.kur();
             const sf = this.sinifFiltresi();
             if (sf) {
                 const lb = document.querySelector('label[for="lesson-picker"], label[for="lesson-select"]');
@@ -171,6 +264,7 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
                 this.playSound('touch');
                 this.state.selectedPlayers = parseInt(button.dataset.players, 10);
                 this.updateSelection(this.dom.playerSelect, button); this.populateLessonSelector();
+                KapAyar.gorunur(this.state.selectedPlayers === 2);   /* ayarlar yalnız kapışmada */
                 this.dom.lessonSelect.disabled = false; this.state.selectedLessonId = null;
                 this.dom.lessonSelect.value = ""; this.checkStartButtonState();
             });
@@ -213,9 +307,11 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
                     /* 5-8. sınıf dersleri 21-127 kelime: her oyunda rastgele 20 soru */
                     if (this.ortaokulDersMi(selectedLessonId)) wordsForGame = wordsForGame.slice(0, 20);
                 } else {
-                    const questionCount = 5;
-                    if (!words || words.length < 10) {
-                         alert(`İki kişilik mod için bu derste yeterli kelime (en az 10) bulunmamaktadır. (Mevcut: ${words.length})`);
+                    /* SORU SAYISI AYARDAN (07.10.2026) — eskiden 5'te sabitti. */
+                    const questionCount = KapAyar.oku().soru;
+                    const enAz = Math.max(questionCount, 4);
+                    if (!words || words.length < enAz) {
+                         alert(`${questionCount} soruluk kapışma için bu derste yeterli kelime (en az ${enAz}) bulunmamaktadır. (Mevcut: ${words ? words.length : 0})\n\nTur başına soru sayısını düşürebilirsiniz.`);
                          return;
                     }
                     wordsForGame = Utils.shuffleArray(words).slice(0, questionCount);
@@ -443,7 +539,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                      await App.initAudio(); App.playSound('menuClick');
                      App.yeniAlfabeHavuzu();      /* tekrar oynarken sorular yenilensin */
                      const words = App.getWords(App.state.selectedLessonId);
-                     const questionCount = 5; if(words.length < 10) { App.showScreen('start-screen'); return; }
+                     const questionCount = KapAyar.oku().soru; if(words.length < Math.max(questionCount, 4)) { App.showScreen('start-screen'); return; }
                      QuizGame.start(Utils.shuffleArray(words).slice(0, questionCount), 2); App.showScreen('quiz-screen');
                  };
                  resultsScreen.querySelector('#back-to-start-btn').onclick = () => { App.playSound('menuClick'); App.showScreen('start-screen'); };
@@ -469,8 +565,17 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
 
             let p2_html = '';
             if (playerMode === 2) {
+                /* SORU KAYNAĞI AYARDAN (07.10.2026): 'ayni' → birebir aynı
+                   dizi; 'karisik' → aynı sorular farklı sırada; 'farkli' →
+                   dersin kalan kelimeleri (yetmezse karışığa döner). */
+                const kaynak = KapAyar.oku().kaynak;
+                if (kaynak === 'ayni') {
+                    this.state.p2Questions = [...this.state.p1Questions];
+                } else {
                 const allWordsForUnit = App.getWords(App.state.selectedLessonId);
-                const remainingWords = allWordsForUnit.filter(w => !this.state.p1Questions.some(p1w => p1w.id === w.id));
+                const remainingWords = kaynak === 'farkli'
+                    ? allWordsForUnit.filter(w => !this.state.p1Questions.some(p1w => p1w.id === w.id))
+                    : [];
                 if (remainingWords.length >= this.state.questionsPerRound) {
                     this.state.p2Questions = Utils.shuffleArray(remainingWords).slice(0, this.state.questionsPerRound);
                 } else {
@@ -490,6 +595,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                          }
                     }
                     this.state.p2Questions = p2Questions;
+                }
                 }
                 this.state.p2Index = 0; this.state.p2Score = 0; this.state.p2Finished = false;
                 p2_html = `
@@ -795,7 +901,9 @@ const options = Utils.shuffleArray([word.turkish, ...wrongAnswers]);
             if(!p1Answer.isCorrect) p1Answer.button.classList.add('incorrect', 'shake'); if(!p2Answer.isCorrect) p2Answer.button.classList.add('incorrect', 'shake');
             if (p1Answer.isCorrect) { this.state.p1Score += 10; this.showScoreEffect(1, 10); } if (p2Answer.isCorrect) { this.state.p2Score += 10; this.showScoreEffect(2, 10); }
             let bonusWinner = 0; if (p1Answer.isCorrect && p2Answer.isCorrect) { if (p1Answer.timeTaken < p2Answer.timeTaken) bonusWinner = 1; else if (p2Answer.timeTaken < p1Answer.timeTaken) bonusWinner = 2; } else if (p1Answer.isCorrect) bonusWinner = 1; else if (p2Answer.isCorrect) bonusWinner = 2;
-            if (bonusWinner === 1) { this.state.p1Score += 10; setTimeout(() => this.showScoreEffect(1, 10, true), 400); } else if (bonusWinner === 2) { this.state.p2Score += 10; setTimeout(() => this.showScoreEffect(2, 10, true), 400); }
+            /* HIZ PUANI AYARDAN (07.10.2026) — eskiden 10'da sabitti; 0 ise hiç verilmez. */
+            const hizPuan = KapAyar.oku().hiz;
+            if (hizPuan > 0 && bonusWinner === 1) { this.state.p1Score += hizPuan; setTimeout(() => this.showScoreEffect(1, hizPuan, true), 400); } else if (hizPuan > 0 && bonusWinner === 2) { this.state.p2Score += hizPuan; setTimeout(() => this.showScoreEffect(2, hizPuan, true), 400); }
             if(p1Answer.isCorrect || p2Answer.isCorrect) App.playSound('correct'); if(!p1Answer.isCorrect || !p2Answer.isCorrect) App.playSound('incorrect');
             const p1Segments = p1Dom.progressBar?.children; const p2Segments = p2Dom.progressBar?.children;
             if(p1Segments?.[roundIndex]) p1Segments[roundIndex].classList.add(p1Answer.isCorrect ? 'correct' : 'incorrect'); if(p2Segments?.[roundIndex]) p2Segments[roundIndex].classList.add(p2Answer.isCorrect ? 'correct' : 'incorrect');

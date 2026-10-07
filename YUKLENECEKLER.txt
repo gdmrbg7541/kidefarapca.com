@@ -7454,3 +7454,116 @@ KALAN "2025"LER BİLEREK DURUYOR (18 yer): yönerge tarihleri
 tarihi atfı, kitap baskı yılları ("2025-2026 ders kitabı") ve
 "2025 öğretim programını ilk kez uygulayan" gibi anlamlı cümleler.
 Bunlar tarih bilgisi; kafa karıştıran başlık etiketi değil.
+
+── 07.10.2026 · GALERİ: ORTAK SAYAÇ HATASI + GEÇİŞ ANİMASYONU ───────────
+Öğretmen: "galeride hâlâ kasma oluyor; bi yükleniyor animasyonu ekle,
+kasıyormuş gibi olmasın."
+
+İKİNCİ BİR HATA BULUNDU (asıl takılmanın sebebi): resim değiştirme
+işlerini sıralayan sayaç (_istek) TEK ve ORTAKTI. Büyük görüntüleyici
+fotoğrafı beklerken alttaki şeritten bir küçük resim basılınca sayaç
+artıyor, büyük fotoğrafın bekleyen işi "eskidi" sanılıp iptal ediliyordu.
+Sonuç: fotoğraf hiç değişmiyor, ekran takılı kalıyordu — ölçüldü,
+sınıf adları .sol ve .gor üstünde kalıyor, src hiç yazılmıyordu.
+Artık sayaç her resmin KENDİ üstünde (img.__istek); büyük görüntüleyici
+ile şerit birbirini iptal etmiyor.
+
+GEÇİŞ ARTIK HER ZAMAN KASITLI GÖRÜNÜYOR
+ · Ok'a basıldığı anda eski fotoğraf soluyor (saydam değil, %12 — ekran
+   bomboş kalmasın) ve bekleme katmanı AÇILMAYA BAŞLIYOR, gecikme yok.
+ · Katmanın açılma süresi .25 sn. İş ondan önce biterse katman görünür
+   hâle gelmeden kapanıyor: hızlı geçişte göze çarpmıyor.
+ · Yeni fotoğraf en erken 150 ms sonra konuyor — eski fotoğrafın solması
+   tamamlansın, değişim çarpma gibi değil geçiş gibi görünsün.
+Ölçüldü: yavaş yüklemede bekleme opaklığı 1 (animasyon görünüyor),
+fotoğraf 0.12; fotoğraf gelince bekleme 0, fotoğraf 1. Önbellekteki
+fotoğrafta bekleme opaklığı altı ölçümde de 0.00 — hiç görünmüyor.
+
+── 07.10.2026 (ek) · GALERİDE "FLAŞ" GİDERİLDİ ──────────────────────────
+Öğretmen: "basınca sanki flaş çakıyor, sonra flaş söndükten sonra foto
+değişiyor."
+
+İki sebep vardı, ikisi de benim bir önceki düzeltmemden:
+ 1 Bekleme katmanını ok'a basıldığı ANDA açmaya başlamıştım. Katman
+   beyaz çizimli; karanlık zeminde bir anlığına belirip sönünce tam
+   olarak flaş gibi duruyordu. Artık yalnız iş GERÇEKTEN uzarsa
+   (400 ms) çıkıyor; kısa beklemelerde hiç görünmüyor.
+ 2 Yeni fotoğrafı en erken 150 ms sonra koyuyordum ("geçiş gibi
+   görünsün" diye). "Flaş söndükten sonra değişiyor" izlenimini veren
+   buydu. Zorunlu bekleme kalktı: fotoğraf hazırsa HEMEN konuyor.
+Ayrıca eski fotoğrafın solma derecesi .12'den .42'ye çekildi — karanlık
+zeminde sert kararma da değişimi "çakma" gibi gösteriyordu.
+
+Ölçüldü (40 ms aralıkla on ölçüm):
+ · Önbellekteki fotoğrafta bekleme opaklığı on ölçümde de 0.00,
+   fotoğraf opaklığı 1.00 — ne flaş var ne kararma, geçiş anında.
+ · Soğuk açılışta (4 sn geciktirilmiş fotoğraf): 200 ve 500 ms'de hiçbir
+   şey; 900 ms'de animasyon 1.00, fotoğraf 0.42; fotoğraf gelince
+   animasyon 0.00, fotoğraf 1.00.
+
+── 07.10.2026 · GALERİYE YENİ FOTOĞRAF ──────────────────────────────────
+Öğretmen: "galeriye görsel attım, onu da siteye ekle."
+
+Galeri/ klasörüne bırakılan yeni fotoğraf (WhatsApp Image 2026-10-07 at
+10.07.22.jpeg, 2016×1512) işlendi:
+  Galeri/web/g-4d69ce29a7.jpg     1600×1200 · 205 KB
+  Galeri/kucuk/g-4d69ce29a7.jpg     560 px  ·  34 KB
+  sistem/galeriveri.js → listenin BAŞINA eklendi (en yeni üstte)
+Betik: python3 _kaynak/uretici/galeriYenile.py "$K"
+(hizli-gonder.command bunu zaten her gönderimde çalıştırıyor; burada
+elle çalıştırıldı ki sonucu görülebilsin.)
+
+İÇERİK DENETLENDİ: sitenin galeri notu "öğrencilerin yüzleri kapalı
+olmalı" diyor. Fotoğrafta iki öğrenci ARKADAN görünüyor, yüz yok;
+akıllı tahta ve "NEKRA İSİM" konulu beyaz tahta çalışması merkezde.
+Kurala uygun.
+
+Denendi: galeri listesi 4 fotoğraf, yeni olan 1. sırada; büyük
+görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
+
+07.10.2026 — TEST KAPIŞMASI: KAPIŞMA AYARLARI
+  testkapismasi.html            başlangıç ekranına "Kapışma Ayarları" bloğu
+                                (#kapisma-ayar). Yalnız İKİ KİŞİLİK seçilince
+                                görünür. css?v=7, js?v=20261007a
+  oyunlar/testkapismasi.css     .kap-* chip satırları
+  oyunlar/testkapismasi.js      KapAyar modülü (localStorage: kidefKapismaAyar)
+                                - Tur başına soru: 5 / 7 / 10 / 15
+                                  (eskiden 5'te sabitti; "tekrar oyna" da uyar)
+                                - Sorular: Aynı·aynı sıra / Aynı·karışık /
+                                  Farklı sorular  (eskiden hep "farklı"ydı)
+                                - Hız puanı: Yok 0 / Az 5 / Normal 10 / Çok 20
+                                  (eskiden 10'da sabitti)
+                                Varsayılan: 5 soru · Farklı sorular · Normal
+
+07.10.2026 — TEST KAPIŞMASI: BOZUK KELİME KAYITLARI DÜZELTİLDİ
+  oyunlar/testkapismasi.js      Arapça kelimelerin içine latin harf karışmış
+                                7 kayıt onarıldı (harfler kod noktasıyla
+                                kuruldu, elle yazılmadı):
+                                  27  Benim adım        اِسْmi      -> اِسْمِي
+                                  308 Giyiniyor         mَلابِسَهُ   -> مَلابِسَهُ
+                                  506 Yetenek           مَوْهِBَة    -> مَوْهِبَة
+                                  602 Hayatım           حَياتI      -> حَياتِي
+                                  711 Diş fırçalıyor    يُfERِّشُ    -> يُفَرِّشُ
+                                  713 Erken uyuyor      يَnamُ      -> يَنامُ
+                                  723 Ekmek             خُبْz       -> خُبْز
+                                Ayrıca "Yumurta" kaydının id'si 222 -> 722:
+                                222 "Ayna" ile çakışıyordu, bu yüzden iki
+                                kişilik oyunda "farklı sorular" süzgeci
+                                yanlış eşleşiyordu.
+
+07.10.2026 — ALFABE / HARF BİRLEŞTİRME: BÜYÜK EKRANDA PUNTO
+  okumayazma/alfabe.css         1400px üstünde punto 5.8rem'de sabitti; 4K
+                                tahtada bir ekrana 12,5 alıştırma sığıyor,
+                                harfler uzaktan okunmuyordu. Dört yeni kat
+                                eklendi (hem en hem boy şartıyla):
+                                  >=1401x820   7.6rem   (93px -> 122px)
+                                  >=1700x1000 10.5rem   (        168px)
+                                  >=2300x1300 15rem     (        240px)
+                                  >=3000x1800 24rem     (        384px)
+                                Hedef "aynı anda 3 alıştırma": ölçüldü,
+                                her boyutta 3,1-3,2 alıştırma görünüyor.
+                                Sayı dairesi, sol tablonun yazıları, anahtar
+                                şeridi ve İleri/Geri düğmeleri de büyüdü;
+                                sayı sütunu ve ayrık harf boşluğu kısıldı ki
+                                birleşen kelime tahtasına sığsın (taşma yok).
+  alfabe.html                   alfabe.css?v=20261007

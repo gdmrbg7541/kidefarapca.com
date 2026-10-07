@@ -1787,6 +1787,89 @@
             .ab-nav { font-size: .9rem; padding: 8px 14px; }
         }
 
+        /* ===== BÜYÜK EKRAN / AKILLI TAHTA (07.10.2026) ==============
+           4K ve büyük tahtalarda punto 1400px üstünde 5.8rem'de kalıyordu:
+           ekran büyüdükçe harf aynı kalıp bir ekrana 12 alıştırma sığıyor,
+           sınıfın arkasından okunmuyordu. Ölçü artık ekranla büyür; hedef
+           "aynı anda ÜÇ alıştırma görünsün". Değerler tarayıcıda ölçülerek
+           bulundu (satır yüksekliği ~ 1.52 x punto + 18px, kâğıtlık ~ ekran
+           yüksekliği - 180px); sayı sütunu ve ayrık harflerin boşluğu da
+           kısıldı ki birleşen kelime kendi tahtasına sığsın.
+           Hem yükseklik hem genişlik şartı var: alçak-geniş ekranlarda
+           (ultra geniş monitör) punto büyüyüp satır taşmasın. */
+        @media (min-width: 1401px) and (min-height: 820px) {
+            .ab-sar { --ab-punto: 7.6rem; }
+            .ab-satir { gap: 0 18px; }
+            .ab-kaynak { gap: .13em; }
+            .ab-no { width: 52px; height: 52px; font-size: 1.4rem; }
+            .ab-sag { min-width: 104px; padding-left: 18px; }
+            .ab-anahtar { font-size: 1.5rem; padding: 11px 20px; }
+            .ab-tb-baslik, .ab-tb-satir { grid-template-columns: 110px repeat(4, minmax(0, 1fr)); }
+            .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-baslik {
+                grid-template-columns: 110px repeat(4, minmax(0, 1fr));
+            }
+            .ab-tb-satir::after { left: 116px; }
+            .ab-tb-baslik { font-size: 1.6rem; }
+            .ab-tb-ad { font-size: 1.7rem; }
+            .ab-tb-ad b { font-size: 1.4rem; }
+            .ab-tb-svg { width: 92px; height: 74px; }
+            .ab-nav { font-size: 1.12rem; padding: 11px 26px; }
+        }
+        @media (min-width: 1700px) and (min-height: 1000px) {
+            .ab-sar { --ab-punto: 10.5rem; }
+            .ab-satir { gap: 0 20px; }
+            .ab-kaynak { gap: .13em; }
+            .ab-no { width: 64px; height: 64px; font-size: 1.75rem; }
+            .ab-sag { min-width: 120px; padding-left: 20px; }
+            .ab-anahtar { font-size: 1.7rem; padding: 11px 20px; }
+            .ab-tb-baslik, .ab-tb-satir { grid-template-columns: 130px repeat(4, minmax(0, 1fr)); }
+            .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-baslik {
+                grid-template-columns: 130px repeat(4, minmax(0, 1fr));
+            }
+            .ab-tb-satir::after { left: 136px; }
+            .ab-tb-baslik { font-size: 1.85rem; }
+            .ab-tb-ad { font-size: 2rem; }
+            .ab-tb-ad b { font-size: 1.6rem; }
+            .ab-tb-svg { width: 108px; height: 86px; }
+            .ab-nav { font-size: 1.25rem; padding: 11px 26px; }
+        }
+        @media (min-width: 2300px) and (min-height: 1300px) {
+            .ab-sar { --ab-punto: 15rem; }
+            .ab-satir { gap: 0 22px; }
+            .ab-kaynak { gap: .13em; }
+            .ab-no { width: 82px; height: 82px; font-size: 2.2rem; }
+            .ab-sag { min-width: 140px; padding-left: 22px; }
+            .ab-anahtar { font-size: 2.1rem; padding: 11px 20px; }
+            .ab-tb-baslik, .ab-tb-satir { grid-template-columns: 165px repeat(4, minmax(0, 1fr)); }
+            .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-baslik {
+                grid-template-columns: 165px repeat(4, minmax(0, 1fr));
+            }
+            .ab-tb-satir::after { left: 171px; }
+            .ab-tb-baslik { font-size: 2.3rem; }
+            .ab-tb-ad { font-size: 2.5rem; }
+            .ab-tb-ad b { font-size: 2rem; }
+            .ab-tb-svg { width: 132px; height: 106px; }
+            .ab-nav { font-size: 1.5rem; padding: 11px 26px; }
+        }
+        @media (min-width: 3000px) and (min-height: 1800px) {
+            .ab-sar { --ab-punto: 24rem; }
+            .ab-satir { gap: 0 24px; }
+            .ab-kaynak { gap: .13em; }
+            .ab-no { width: 110px; height: 110px; font-size: 3rem; }
+            .ab-sag { min-width: 152px; padding-left: 24px; }
+            .ab-anahtar { font-size: 2.8rem; padding: 11px 20px; }
+            .ab-tb-baslik, .ab-tb-satir { grid-template-columns: 215px repeat(4, minmax(0, 1fr)); }
+            .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-baslik {
+                grid-template-columns: 215px repeat(4, minmax(0, 1fr));
+            }
+            .ab-tb-satir::after { left: 221px; }
+            .ab-tb-baslik { font-size: 3rem; }
+            .ab-tb-ad { font-size: 3.3rem; }
+            .ab-tb-ad b { font-size: 2.6rem; }
+            .ab-tb-svg { width: 170px; height: 136px; }
+            .ab-nav { font-size: 2rem; padding: 11px 26px; }
+        }
+
         /* --- YAZDIRMA: bu sekme slayttır, kâğıda basılmaz --- */
         @media print {
             .ab-serit, .ab-tablo { display: none !important; }

@@ -252,7 +252,34 @@ html { font-size: clamp(16px, 1.6vw, 24px); }
 #back-to-start-btn:hover svg { animation: ev-salla .5s ease-in-out infinite; transform-origin: center bottom; }
 @keyframes ev-salla { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
 
+/* ===== KAPIŞMA AYARLARI (07.10.2026) =========================
+   Yalnız iki kişilik kapışmada görünür. Chip satırları: başlık solda,
+   seçenekler sağda; dar ekranda alt alta geçer. */
+.kap-ayar { gap: 8px; }
+.kap-satir { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.kap-bas { font-size: 1.02rem; font-weight: 600; color: #4C566A; flex: 0 0 auto; }
+.kap-secenek { display: flex; gap: 6px; flex: 1 1 auto; justify-content: flex-end; }
+.kap-secenek button {
+    flex: 0 1 auto; min-width: 48px; padding: 8px 12px; border: none;
+    border-radius: var(--border-radius-md); background-color: var(--button-bg);
+    color: var(--text-color); font-family: inherit; font-size: 1rem; font-weight: 500;
+    cursor: pointer; box-shadow: 0 2px #d8dee9; transition: all .18s ease;
+}
+.kap-secenek.kap-genis button { min-width: 0; padding: 8px 9px; font-size: .94rem; }
+.kap-secenek button:hover { background-color: var(--button-hover-bg); transform: translateY(-1px); }
+.kap-secenek button.secili {
+    background-color: var(--primary-color); color: #fff; box-shadow: 0 2px #4a6a91;
+    transform: translateY(0);
+}
+.kap-not { margin: 2px 0 0; font-size: .92rem; line-height: 1.45; color: #6b7684; text-align: left; min-height: 1.3em; }
+@media (max-width: 420px) {
+    .kap-satir { flex-direction: column; align-items: stretch; gap: 5px; }
+    .kap-secenek { justify-content: stretch; }
+    .kap-secenek button { flex: 1 1 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+    .kap-secenek button { transition: none; }
     .quiz-score-display svg, .star-rating svg, .star-rating svg.yildiz-dolu,
     #quiz-winner-icon-container svg, .score-effect.bonus svg,
     #play-again-btn:hover svg, #back-to-start-btn:hover svg { animation: none; }

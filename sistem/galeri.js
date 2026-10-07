@@ -212,27 +212,50 @@
     return o;
   }
 
-  var _istek = 0;
+  /* İSTEK SAYACI HER RESİM İÇİN AYRI (07.10.2026) — tek bir ortak sayaç
+     vardı; büyük görüntüleyici fotoğrafı beklerken şeritteki küçük
+     resimlerden biri basılınca sayaç artıyor ve büyük fotoğrafın bekleyen
+     işi "eskidi" sanılıp iptal ediliyordu. Sonuç: fotoğraf hiç
+     değişmiyor, bekleme animasyonu ekranda kalıyordu. Artık sayaç
+     img'nin kendi üstünde: ikisi birbirini iptal etmiyor. */
   /* iz = {basla, bitti} — fotoğraf hazır olana kadar geçen süreyi
      bildirir. Büyük görüntüleyicide bekleme animasyonu bununla
      açılıyor; küçük resimlerde iz verilmiyor, davranış eskisi gibi. */
   function resimKoy(img, yol, iz) {
-    var benim = ++_istek;
+    var benim = (img.__istek = (img.__istek || 0) + 1);
     var o = ondenAl(yol);
     var bitti = false;
     var koy = function () {
-      if (benim !== _istek || bitti) return;   /* hızlı basıldı ya da bitti */
+      if (benim !== img.__istek || bitti) return;  /* hızlı basıldı ya da bitti */
       bitti = true;
+      /* ZORUNLU BEKLEME YOK (07.10.2026): fotoğraf hazırsa HEMEN konuyor.
+         Önce 150 ms bekletiliyordu; "flaş söndükten sonra değişiyor"
+         izlenimini veren buydu. Yumuşaklığı CSS geçişi sağlıyor,
+         bekletmek gerekmiyor. */
       img.src = yol;
       if (iz && iz.bitti) try { iz.bitti(); } catch (e) { }
     };
-    /* Çözülmüş fotoğraf anında konuyor; bekleme animasyonu YALNIZ iş
-       uzarsa çıkıyor. Yoksa her geçişte bir an parlayıp sönerdi —
-       titremenin kendisi olurdu. */
+    /* GEÇİŞ HER ZAMAN KASITLI GÖRÜNSÜN (07.10.2026) — öğretmen: "galeride
+       hâlâ kasma oluyor, bi yükleniyor animasyonu ekle, kasıyormuş gibi
+       olmasın."
+       Çözme artık doğru sırada (önce yükle, sonra çöz) ama büyük bir
+       fotoğrafın ekrana BOYANMASI yine bir an sürüyor; o an donma gibi
+       duruyordu. Artık ok'a basıldığı anda eski fotoğraf soluyor ve
+       bekleme katmanı AÇILMAYA BAŞLIYOR (gecikme yok). Katmanın kendi
+       açılma süresi .25 sn; iş ondan önce biterse katman görünür hâle
+       gelmeden kapanıyor, yani hızlı geçişte göze çarpmıyor. Sonuç:
+       yavaşta animasyon, hızlıda yumuşak geçiş — ikisinde de donma
+       izlenimi yok. */
+    /* FLAŞ GİBİ ÇAKMASIN (07.10.2026) — öğretmen: "basınca sanki flaş
+       çakıyor, sonra flaş söndükten sonra foto değişiyor."
+       Bekleme katmanı beyaz çizimli; karanlık zeminde bir anlığına
+       belirip sönünce flaş gibi duruyordu. Artık yalnız iş GERÇEKTEN
+       uzarsa (400 ms) çıkıyor. Kısa beklemelerde hiç görünmüyor;
+       orada göze yeten şey fotoğrafın yumuşak geçişi. */
     if (iz && iz.basla) {
       setTimeout(function () {
-        if (!bitti && benim === _istek) try { iz.basla(); } catch (e) { }
-      }, 110);
+        if (!bitti && benim === img.__istek) try { iz.basla(); } catch (e) { }
+      }, 400);
     }
     /* SIRA ÖNEMLİ (07.10.2026): önce YÜKLENSİN, sonra ÇÖZÜLSÜN.
        Eskiden doğrudan decode() çağrılıyordu; henüz inmemiş bir görüntüde
@@ -242,7 +265,7 @@
        beklenip ondan sonra çözülüyor; src yalnız çözülmüş görüntüyle
        değişiyor. */
     var coz = function () {
-      if (benim !== _istek) return;
+      if (benim !== img.__istek) return;
       try {
         if (o.decode) { o.decode().then(koy, koy); return; }
       } catch (e) { }
