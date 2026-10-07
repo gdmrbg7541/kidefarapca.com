@@ -2226,6 +2226,12 @@
             display: block; width: 100%; direction: ltr; text-align: center;
             font-family: inherit; font-size: 1.05rem; color: #94a3b8; margin-top: 2px;
         }
+        /* SORUDAKİ ÖLÇÜT KELİMESİ (07.10.2026) — öğretmen: "benzer olan
+           kelimesi yeşil, benzer olmayan kelimesi kırmızı olsun."
+           Tahtadan bakan çocuk soruyu okumadan da ne arayacağını anlasın:
+           yeşil = buna benzeyeni bul, kırmızı = benzemeyeni bul. */
+        .as-k-var { color: #0E7C66; font-weight: 900; }
+        .as-k-yok { color: #DC2626; font-weight: 900; }
         /* ÇİZGİDEKİ YAZILIŞ SORULARI (07.10.2026): cevap verildikten
            sonra harfler KENDİ YAZILIŞINA göre renklenir — çizgiye düzgün
            oturan üçlü yeşil, çizgiden kaçan üçlü kırmızı. Şıkkın çerçevesi

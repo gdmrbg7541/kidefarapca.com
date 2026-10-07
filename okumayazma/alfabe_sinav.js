@@ -129,18 +129,31 @@
     /* SORU CÜMLELERİ — hepsi YÜKLEMLİ tam cümledir ("... hangisidir?").
        Vurgulanan kelime BÜYÜK HARFLE değil, kalın ve turuncu yazılır;
        tamamı büyük yazı bağırıyormuş gibi duruyordu ve okuması yorucuydu. */
+    /* SORU METİNLERİ (07.10.2026) — öğretmen: "yazılışı benzer olmayan
+       şık hangisi, yazılışı benzer olan harf hangisi... benzer olan
+       kelimesi yeşil, benzer olmayan kelimesi kırmızı olsun."
+
+       Eski metinler ("...harflerden yanlış olan hangisidir?") çocuğa neyi
+       arayacağını dolaylı söylüyordu: "yanlış" burada harfin yanlış
+       yazıldığı anlamına gelmiyor, çiftin benzememesi demekti. Artık soru
+       doğrudan ölçütü söylüyor ve aranan ölçüt RENKLE de ayrılıyor:
+         benzer OLAN   -> yeşil (as-k-var)
+         benzer OLMAYAN-> kırmızı (as-k-yok)
+       Şıklar tek harf değil HARF ÇİFTİ olduğu için "harfler" denildi. */
+    var K_VAR = '<b class="as-k-var">olan</b>';
+    var K_YOK = '<b class="as-k-yok">olmayan</b>';
     var TIP_SORU = {
-        1: 'Okunuşu benzer harflerden <b>yanlış</b> olan hangisidir?',
-        2: 'Yazılışı benzer harflerden <b>yanlış</b> olan hangisidir?',
-        3: 'Okunuşu benzer harflerden <b>doğru</b> olan hangisidir?',
-        4: 'Yazılışı benzer harflerden <b>doğru</b> olan hangisidir?',
+        1: 'Okunuşu benzer ' + K_YOK + ' harfler hangisi?',
+        2: 'Yazılışı benzer ' + K_YOK + ' harfler hangisi?',
+        3: 'Okunuşu benzer ' + K_VAR + ' harfler hangisi?',
+        4: 'Yazılışı benzer ' + K_VAR + ' harfler hangisi?',
         /* 07.10.2026 — öğretmen: "hangi harf çizgide doğru yazılmış,
            hangi harf çizgide yanlış yazılmış". Soru artık harfi ve çizgiyi
            birlikte anıyor; çocuk neye bakacağını baştan biliyor. */
-        5: 'Hangi harf çizgide <b>yanlış</b> yazılmış?',
-        6: 'Hangi harf çizgide <b>doğru</b> yazılmış?',
-        7: 'Okunuşu benzer harfleri <b>eşleştir</b>.',
-        8: 'Yazılışı benzer harfleri <b>eşleştir</b>.',
+        5: 'Hangi harf çizgide <b class="as-k-yok">yanlış</b> yazılmış?',
+        6: 'Hangi harf çizgide <b class="as-k-var">doğru</b> yazılmış?',
+        7: 'Okunuşu <b class="as-k-var">benzer</b> harfleri eşleştir.',
+        8: 'Yazılışı <b class="as-k-var">benzer</b> harfleri eşleştir.',
         9: 'Boşluğa hangi harf gelir?'
     };
 

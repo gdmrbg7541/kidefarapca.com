@@ -7672,3 +7672,24 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
                                   duran şık da dengelensin diye -.17em'den
                                   -.24em'e alındı. v20261007c
   alfabe.html                   alfabe_sinav.js?v=10, alfabe.css?v=20261007c
+
+07.10.2026 — HARF TANITIMI SORULARI (tip 1-4) + ÖLÇÜT RENGİ
+  okumayazma/alfabe_sinav.js    Soru metinleri doğrudan ölçütü söylüyor:
+                                  1: Okunuşu benzer OLMAYAN harfler hangisi?
+                                  2: Yazılışı benzer OLMAYAN harfler hangisi?
+                                  3: Okunuşu benzer OLAN harfler hangisi?
+                                  4: Yazılışı benzer OLAN harfler hangisi?
+                                Eskiden "...harflerden yanlış olan hangisidir?"
+                                deniyordu; oradaki "yanlış", harfin yanlış
+                                yazıldığı değil ÇİFTİN BENZEMEDİĞİ anlamına
+                                geliyordu — dolaylıydı.
+                                Şıklar tek harf değil HARF ÇİFTİ olduğu için
+                                "harfler" denildi ("şık" yerine).
+                                Eşleştirme sorularında da (7-8) "benzer"
+                                yeşil. v11
+  okumayazma/alfabe.css         .as-k-var (yeşil) / .as-k-yok (kırmızı):
+                                sorudaki ölçüt kelimesi renkli. Tahtadan
+                                bakan çocuk okumadan da ne arayacağını
+                                anlıyor: yeşil = benzeyeni bul,
+                                kırmızı = benzemeyeni bul. v20261007d
+  alfabe.html                   alfabe_sinav.js?v=11, alfabe.css?v=20261007d
