@@ -6920,3 +6920,41 @@ DİKKAT: aynı satır öğretmen profilindeki okul haritasında da var; çapa
 dokunulmadı.
 Denendi: boş kurumda satır sırası ① okul-kat-ekle (Seviye ekle 5 6 7 8 9
 10 Başka) ② okul-kat-bos (Bu kurumda henüz seviye yok). Hata yok.
+
+── 07.10.2026 · AKORDİYON AÇILIP KAPANIRKEN PANEL SİLİNMİYOR ────────────
+Öğretmen: "sınıf kategorisini açınca sınıfların yazdığı kaybolup tekrar
+görünüyor, kapattığımda da aynı şekilde."
+
+SEBEP (asıl titreme buydu): aria-expanded ve title başlığın HTML'inin
+İÇİNDE üretiliyordu. Akordiyon her açılıp kapandığında üretilen metin
+değişiyor, kabuk "başlık değişmiş" sanıp innerHTML'i baştan yazıyordu;
+içerideki gerçek okul paneli siliniyor, hemen ardından geri konuyordu.
+Sınıf adlarının kaybolup gelmesi buydu — bir önceki düzeltme bunu
+yakalamamıştı çünkü aynı kalıp oradan da geçmişti.
+
+ÇÖZÜM: başlığın HTML'i artık hiç değişmiyor; açık/kapalı bilgisi DOM'a
+öznitelik olarak işleniyor (baslikDurum). Akordiyon çalışırken gövdeye
+hiç dokunulmuyor.
+Denendi: üst üste 3 kez aç/kapa → #llOkulPopup düğümü HİÇ değişmedi
+(0 değişim). Önceden her tıklamada siliniyor ve yeniden konuyordu.
+
+── 07.10.2026 · YENİLENİNCE HEP KAPALI ──────────────────────────────────
+Öğretmen: "sınıfların kategorisi eğer açılmışsa sayfa yenilendiğinde
+otomatik kapanmalı."
+
+Tercih artık tarayıcıda saklanmıyor; açık/kapalı yalnız sayfa durduğu
+sürece yaşıyor. Her açılışta kapalı başlıyor. Eskiden kalan
+kidefSiniflarimKapali anahtarı da siliniyor ki eski tercih geri gelmesin.
+Denendi: depoda "açık" tercihi dururken bile sayfa kapalı açılıyor ve
+anahtar temizleniyor.
+
+── 07.10.2026 · BAŞLIKTA "SINIF EKLE" ───────────────────────────────────
+Öğretmen: "sınıflar kategorisi kapalıyken bile sınıf ekle başlığın
+yanında görünsün."
+
+"Sınıflarım" başlığının yanında, akordiyonun DIŞINDA bir "+ Sınıf ekle"
+tuşu duruyor — kategori kapalıyken de görünüyor. Basınca kategori
+açılıyor ve seviye/sınıf ekleme satırına iniyor, böylece önce açıp sonra
+aramak gerekmiyor. Kapalıyken kategori yalnız bir başlık satırı: solda
+okul ve "Sınıflarım", sağında bu tuş.
+Denendi: kapalıyken tuş görünür; basınca kategori açılıyor.

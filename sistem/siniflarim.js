@@ -194,6 +194,24 @@
             '  transition:transform .15s, opacity .15s; }',
             '#' + BOLUM_ID + ' .sn-bas-tus:hover .sn-bas-ok{ opacity:.9;',
             '  transform:translateX(2px); }',
+            /* BAŞLIK SATIRI + "SINIF EKLE" (07.10.2026) — kategori kapalıyken
+               de görünsün diye başlığın yanında, akordiyonun dışında. */
+            '#' + BOLUM_ID + ' h2.sn-bas{ display:flex; align-items:center;',
+            '  gap:10px; flex-wrap:wrap; }',
+            '#' + BOLUM_ID + ' .sn-ekle-tus{ display:inline-flex; align-items:center;',
+            '  gap:6px; cursor:pointer; font-family:inherit; font-weight:700;',
+            '  font-size:.82rem; line-height:1; color:#16A085; padding:7px 13px 7px 10px;',
+            '  border:1px dashed rgba(22,160,133,.55); border-radius:999px;',
+            '  background:rgba(22,160,133,.07); transition:background .15s,',
+            '  border-color .15s, transform .15s; }',
+            '#' + BOLUM_ID + ' .sn-ekle-tus svg{ width:15px; height:15px; }',
+            '#' + BOLUM_ID + ' .sn-ekle-tus:hover{ background:rgba(22,160,133,.15);',
+            '  border-color:#16A085; transform:translateY(-1px); }',
+            '#' + BOLUM_ID + ' .sn-ekle-tus:active{ transform:scale(.97); }',
+            '@media (max-width:600px){',
+            '  #' + BOLUM_ID + ' .sn-ekle-tus{ font-size:.76rem; padding:6px 11px 6px 9px } }',
+            '@media (prefers-reduced-motion: reduce){',
+            '  #' + BOLUM_ID + ' .sn-ekle-tus{ transition:none } }',
             /* HİÇ KURUM YOKKEN ÇIKAN DAVET */
             '#' + BOLUM_ID + ' .sn-davet{ background:#fff; border:1px dashed #C7D0DA;',
             '  border-radius:16px; padding:26px 20px 22px; text-align:center;',
@@ -345,19 +363,50 @@
        görünecek." Bölüm artık role bakmadan herkese açılıyor; rol
        yalnız gövdenin ne göstereceğini belirliyor — öğretmene gerçek
        okul paneli, diğerlerine boş kurum önizlemesi. */
+    /* BAŞLIK DURUMA BAĞLI DEĞİL (07.10.2026) — öğretmen: "sınıf
+       kategorisini açınca sınıfların yazdığı kaybolup tekrar görünüyor,
+       kapattığımda da aynı şekilde."
+       Sebebi: aria-expanded ve title başlık HTML'inin İÇİNDE üretiliyordu.
+       Akordiyon açılıp kapandığında üretilen metin değişiyor, kabuk da
+       "başlık değişmiş" sanıp innerHTML'i baştan yazıyordu; içerideki
+       gerçek okul paneli siliniyor, hemen ardından geri konuyordu —
+       sınıf adlarının kaybolup gelmesi buydu.
+       Artık başlığın HTML'i hiç değişmiyor; açık/kapalı bilgisi DOM'a
+       öznitelik olarak işleniyor (baslikDurum). Böylece akordiyon
+       çalışırken gövdeye hiç dokunulmuyor. */
     function baslikIc() {
-        var k = kapaliMi();
-        return '<h2><button type="button" class="sn-bas-tus"' +
-            ' onclick="KidefSiniflarim.katla()"' +
-            ' aria-expanded="' + (k ? 'false' : 'true') + '"' +
-            ' title="' + (k ? 'Sınıflarımı aç' : 'Sınıflarımı kapat') + '">' +
+        return '<h2 class="sn-bas">' +
+            '<button type="button" class="sn-bas-tus"' +
+            ' onclick="KidefSiniflarim.katla()">' +
             '<svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
             OKUL_SVG.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') +
             '</svg><span>Sınıflarım</span>' +
             '<svg class="sn-bas-ok" viewBox="0 0 24 24" aria-hidden="true">' +
             '<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor"' +
             ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
-            '</svg></button></h2>';
+            '</svg></button>' +
+            /* SINIF EKLE BAŞLIKTA (07.10.2026) — öğretmen: "sınıflar
+               kategorisi kapalıyken bile sınıf ekle başlığın yanında
+               görünsün". Kategori kapalıyken de duruyor: basınca kategori
+               açılıyor ve seviye/sınıf ekleme satırına iniyor. */
+            '<button type="button" class="sn-ekle-tus"' +
+            ' onclick="KidefSiniflarim.sinifEkle()"' +
+            ' title="Seviye ve sınıf ekle">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+            '<path d="M12 5v14M5 12h14" fill="none" stroke="currentColor"' +
+            ' stroke-width="2.6" stroke-linecap="round"/></svg>' +
+            '<span>Sınıf ekle</span></button>' +
+            '</h2>';
+    }
+
+    /* Açık/kapalı bilgisini DOM'a işler — HTML'i yeniden üretmeden. */
+    function baslikDurum(bolum) {
+        var kapali = kapaliMi();
+        bolum.classList.toggle('sn-kapali', kapali);
+        var t = bolum.querySelector('.sn-bas-tus');
+        if (!t) return;
+        t.setAttribute('aria-expanded', kapali ? 'false' : 'true');
+        t.title = kapali ? 'Sınıflarımı aç' : 'Sınıflarımı kapat';
     }
 
     /* Bölümü ve başlığı kurar; zaten duruyorsa DOKUNMAZ. */
@@ -388,7 +437,7 @@
             bolum.__govde = null;
         }
         bolum.classList.add('gor');
-        bolum.classList.toggle('sn-kapali', kapaliMi());
+        baslikDurum(bolum);
         return bolum;
     }
 
@@ -563,24 +612,38 @@
        açık demek, boş ya da '1' kapalı demek. Böylece daha önce açıp
        kapatmamış olanlar da kapalı başlıyor; bir kez açan için açık
        kalıyor. */
-    var KAPALI_ANAHTAR = 'kidefSiniflarimKapali';
+    /* YENİLENİNCE HEP KAPALI (07.10.2026) — öğretmen: "sınıfların
+       kategorisi eğer açılmışsa sayfa yenilendiğinde otomatik kapanmalı".
+       Tercih artık tarayıcıda saklanmıyor; açık/kapalı yalnız o sayfa
+       durduğu sürece yaşıyor. Her yeni açılışta kapalı başlıyor, sayfa
+       sakin duruyor. (Eski anahtar kidefSiniflarimKapali kullanılmıyor;
+       kalmış olanı da temizliyoruz ki eski tercih geri gelmesin.) */
+    var kapali = true;
+    try { localStorage.removeItem('kidefSiniflarimKapali'); } catch (e) { }
 
-    function kapaliMi() {
-        try { return localStorage.getItem(KAPALI_ANAHTAR) !== '0'; }
-        catch (e) { return true; }
-    }
+    function kapaliMi() { return kapali; }
 
     function katla() {
         var b = document.getElementById(BOLUM_ID);
         if (!b) return;
-        var kapandi = !b.classList.contains('sn-kapali');
-        b.classList.toggle('sn-kapali', kapandi);
-        try { localStorage.setItem(KAPALI_ANAHTAR, kapandi ? '1' : '0'); } catch (e) { }
-        var t = b.querySelector('.sn-bas-tus');
-        if (t) {
-            t.setAttribute('aria-expanded', kapandi ? 'false' : 'true');
-            t.title = kapandi ? 'Sınıflarımı aç' : 'Sınıflarımı kapat';
-        }
+        kapali = !kapali;
+        baslikDurum(b);                /* gövdeye dokunulmuyor */
+    }
+
+    /* Başlıktaki "Sınıf ekle": kapalıysa açar, sonra ekleme satırına iner. */
+    function sinifEkle() {
+        var b = document.getElementById(BOLUM_ID);
+        if (!b) return;
+        if (kapali) { kapali = false; baslikDurum(b); }
+        setTimeout(function () {
+            try {
+                var hedef = b.querySelector('.okul-kat-ekle') ||
+                            b.querySelector('.sn-okul');
+                if (hedef && hedef.scrollIntoView) {
+                    hedef.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            } catch (e) { }
+        }, 60);
     }
 
     /* ----------------------------------------------- OKUL PANELİ İÇERİDE */
@@ -774,7 +837,7 @@
     else ciz();
 
     window.KidefSiniflarim = {
-        okulAc: okulAc, katla: katla, girisTavsiye: girisTavsiye,
+        okulAc: okulAc, katla: katla, sinifEkle: sinifEkle, girisTavsiye: girisTavsiye,
         ciz: ciz, ac: ac, seviyeSec: seviyeSec, sinifKur: sinifKur,
         kurumEkle: kurumEkle, gorunurMu: gorunurMu
     };
