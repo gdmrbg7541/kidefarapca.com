@@ -5116,16 +5116,56 @@ window.llOkulKurumIslem = llOkulKurumIslem;
 
 /* İmam Hatip kategorisindeki rakamın aynısı: dönen kesik halka, yeşil
    disk, beyaz rakam. (index.html → .ih-num .ihn-cizgi/.ihn-disk/.ihn-rakam) */
+/* HER SINIFIN KENDİ RAKAMI (07.10.2026) — öğretmen: "bütün sınıfların
+   tasarımı beşinci sınıflar gibi olmuş... öyle olmasın". Doğru: önceki
+   sürüm 5. sınıfın yeşil diskini ve çizgi çizgi dönen halkasını her
+   rakama kopyalıyordu. Artık her rakam anasayfadaki İmam Hatip
+   kategorisindeki KENDİ tasarımını taşıyor — rengi de, etrafındaki
+   hareket de ona ait:
+     5  yeşil   · çizgi çizgi dönen halka   (ih-spin)
+     6  turuncu · nabız gibi büyüyen hale   (ih-pulse)
+     7  mavi    · çevresinde dolanan nokta  (SMIL)
+     8  mor     · hafifçe zıplayan rozet    (ih-bounce)
+     9  kırmızı · parlayan yıldız           (ih-spark)
+    10  turkuaz · kendini çizen halka       (ih-draw)
+   Hareketleri süren CSS kuralları (.ih-pulse .ih-halo, .ih-bounce
+   .ih-badge, .ih-spark .ih-star, .ih-draw .ih-ring) index.html'de
+   #imam-hatip'e bağlı DEĞİL, serbest; buradaki rakamlar da onları
+   kullanıyor — ikinci bir kopya yazılmadı. Listede olmayan bir rakam
+   gelirse (ileride 11, 12) sade bir lacivert disk düşüyor. */
+var LL_IH_DESEN = {
+    5: { renk: '#16A085', kip: 'ih-spin', on: '<circle class="ihn-cizgi" cx="24" cy="24" r="21"' +
+        ' fill="none" stroke="#16A085" stroke-width="3" stroke-dasharray="7 7"' +
+        ' stroke-linecap="round"><animateTransform attributeName="transform" type="rotate"' +
+        ' from="0 24 24" to="360 24 24" dur="7s" repeatCount="indefinite"/></circle>' },
+    6: { renk: '#F39C12', kip: 'ih-pulse',
+        on: '<circle class="ih-halo" cx="24" cy="24" r="15.5" fill="#F39C12"/>' },
+    7: { renk: '#2563EB', kip: '',
+        son: '<g><circle class="ihn-nokta" cx="24" cy="5" r="3.2" fill="#93c5fd"/>' +
+            '<animateTransform attributeName="transform" type="rotate" from="0 24 24"' +
+            ' to="360 24 24" dur="3.6s" repeatCount="indefinite"/></g>' },
+    8: { renk: '#7C3AED', kip: 'ih-bounce', rozet: true },
+    9: { renk: '#EE5253', kip: 'ih-spark',
+        son: '<path class="ih-star" d="M40 8 l1.7 4.3 4.3 1.7 -4.3 1.7 -1.7 4.3' +
+            ' -1.7 -4.3 -4.3 -1.7 4.3 -1.7 Z" fill="#ffd54f"/>' },
+    10: { renk: '#0E9E86', kip: 'ih-draw', on: '<circle class="ih-ring" cx="24" cy="24" r="21"' +
+        ' fill="none" stroke="#0E9E86" stroke-width="3" stroke-linecap="round"/>' }
+};
+
 function llIhRakam(n) {
-    return '<span class="ih-num okul-ihn"><svg viewBox="0 0 48 48" aria-hidden="true">' +
-        '<circle class="ihn-cizgi" cx="24" cy="24" r="21" fill="none" stroke="#16A085"' +
-        ' stroke-width="3" stroke-dasharray="7 7" stroke-linecap="round">' +
-        '<animateTransform attributeName="transform" type="rotate" from="0 24 24"' +
-        ' to="360 24 24" dur="7s" repeatCount="indefinite"/></circle>' +
-        '<circle class="ihn-disk" cx="24" cy="24" r="15" fill="#16A085"/>' +
-        '<text class="ihn-rakam" x="24" y="30.5" text-anchor="middle" font-size="19"' +
+    var d = LL_IH_DESEN[n] || { renk: '#2C3E50', kip: '' };
+    var ikiBasamak = String(n).length > 1;
+    var cekirdek = '<circle class="ihn-disk" cx="24" cy="24" r="15" fill="' + d.renk + '"/>' +
+        '<text class="ihn-rakam" x="24" y="' + (ikiBasamak ? '30' : '30.5') + '"' +
+        ' text-anchor="middle" font-size="' + (ikiBasamak ? '15' : '19') + '"' +
         ' font-weight="800" fill="#fff"' +
-        ' font-family="\'Marhey\',system-ui,sans-serif">' + n + '</text>' +
+        ' font-family="\'Marhey\',system-ui,sans-serif">' + n + '</text>';
+    /* 8'in zıplaması diski ve rakamı BİRLİKTE taşıyor; ikisi ayrı ayrı
+       zıplarsa rakam diskten kayıyor. */
+    if (d.rozet) cekirdek = '<g class="ih-badge">' + cekirdek + '</g>';
+    return '<span class="ih-num okul-ihn' + (d.kip ? ' ' + d.kip : '') + '">' +
+        '<svg viewBox="0 0 48 48" aria-hidden="true">' +
+        (d.on || '') + cekirdek + (d.son || '') +
         '</svg></span>';
 }
 window.llIhRakam = llIhRakam;

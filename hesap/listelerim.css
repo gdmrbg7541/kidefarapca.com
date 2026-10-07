@@ -3623,7 +3623,16 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
 #llOkulPopup .okul-sube-bitti:hover{ background: rgba(139, 106, 87, .22); }
 @media (prefers-reduced-motion: reduce){
     #llOkulPopup .okul-hizli{ transition: none; }
-    #llOkulPopup .okul-ihn .ihn-cizgi animateTransform{ display: none; }
+    /* HAREKETİ AZALT (07.10.2026) — her rakam artık kendi hareketini
+       taşıyor (6 nabız, 8 zıplama, 9 yıldız, 10 çizilen halka). Hareket
+       istemeyen için hepsi duruyor; renkler ve biçim yerinde kalıyor,
+       yalnız kıpırdamıyor. 5 ile 7'nin dönüşü SVG içinde (SMIL) —
+       CSS ile durdurulamaz, onları index.html'deki düşük güç kipi
+       zaten yavaşlatıyor. */
+    #llOkulPopup .okul-ihn .ih-halo,
+    #llOkulPopup .okul-ihn .ih-badge,
+    #llOkulPopup .okul-ihn .ih-star{ animation: none; }
+    #llOkulPopup .okul-ihn .ih-ring{ animation: none; stroke-dashoffset: 0; }
 }
 
 /* ==========================================================================

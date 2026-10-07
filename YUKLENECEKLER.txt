@@ -6841,3 +6841,36 @@ Denendi (beşli tur): ① ilk açılış kapalı, gövde gizli, aria false
 ② tıklayınca açılıyor, depo '0' ③ yeniden yüklenince AÇIK kalıyor
 ④ tekrar tıklayınca kapanıyor, depo '1' ⑤ yeniden yüklenince KAPALI
 kalıyor. Hata yok.
+
+── 07.10.2026 · HER SINIFIN KENDİ RAKAM TASARIMI ────────────────────────
+Öğretmen: "seviye ekle derken bütün sınıfların tasarımı beşinci sınıflar
+gibi olmuş, her sınıfın rakam tasarımı ve etrafındaki tasarım İmam Hatip
+kategorisindeki gibi olsun... öyle olmasın."
+
+Haklı: önceki sürüm 5. sınıfın yeşil diskini ve çizgi çizgi dönen
+halkasını 5'ten 10'a kadar HER rakama kopyalıyordu. Artık her rakam
+anasayfadaki İmam Hatip kategorisindeki kendi tasarımını taşıyor —
+rengi de, etrafındaki hareket de ona ait:
+   5  yeşil   #16A085 · çizgi çizgi dönen halka
+   6  turuncu #F39C12 · nabız gibi büyüyüp sönen hale
+   7  mavi    #2563EB · çevresinde dolanan açık mavi nokta
+   8  mor     #7C3AED · hafifçe zıplayan rozet
+   9  kırmızı #EE5253 · ara ara parlayan sarı yıldız
+  10  turkuaz #0E9E86 · kendini çizen halka
+
+Hareketleri süren CSS kuralları index.html'de #imam-hatip'e bağlı değil,
+serbest (.ih-pulse .ih-halo, .ih-bounce .ih-badge, .ih-spark .ih-star,
+.ih-draw .ih-ring) — buradaki rakamlar onları olduğu gibi kullanıyor,
+ikinci bir kopya yazılmadı. Böylece ileride İmam Hatip tarafında bir renk
+ya da hareket değişirse burası da kendiliğinden uyuyor.
+8'in zıplaması diski ve rakamı birlikte taşıyor (ih-badge); ayrı ayrı
+zıplasalardı rakam diskten kayardı. 10 iki basamaklı olduğu için yazı
+boyu 15, tek basamaklılarda 19 — orada da aynı.
+Hareket istemeyene (prefers-reduced-motion) hale, rozet, yıldız ve halka
+duruyor; renkler ve biçim yerinde kalıyor.
+
+Denendi: altı rakam da ayrı ayrı çizildi — renkler, hareket sınıfları ve
+süsler teker teker doğrulandı (5 ihn-cizgi · 6 ih-halo · 7 ihn-nokta ·
+8 ih-badge · 9 ih-star · 10 ih-ring). Dört ayrı anda ekran görüntüsü
+alındı: 9'un yıldızı parlayıp sönüyor, 10'un halkası kendini çiziyor,
+7'nin noktası dönüyor. Hata yok.
