@@ -168,6 +168,28 @@
             '  font-weight:800; font-size:1rem; color:#fff; background:#16A085;',
             '  border-radius:12px; padding:11px 26px; }',
             '#snGirisTavsiye .sngt-tus:hover{ background:#0E7C66; }',
+            /* TAVSİYEDEKİ GİRİŞ TUŞU (07.10.2026): asıl iş bu, bu yüzden
+               dolgun yeşil ve simgesi başlıktaki tuşun aynısı. Sitenin
+               genel tuş biçimleri araya girmesin diye değerler açıkça
+               yazıldı. "Anladım" ikinci planda kalsın diye sade. */
+            '#snGirisTavsiye .sngt-giris{ display:inline-flex; align-items:center;',
+            '  justify-content:center; gap:10px; border:0; background:#16A085;',
+            '  color:#fff; cursor:pointer; font-family:inherit; font-weight:800;',
+            '  font-size:1.02rem; padding:13px 28px; border-radius:12px;',
+            '  margin:2px 0 0; box-shadow:0 6px 16px rgba(22,160,133,.28);',
+            '  transition:background .15s, transform .15s; }',
+            '#snGirisTavsiye .sngt-giris svg{ width:21px; height:21px; flex:none; }',
+            '#snGirisTavsiye .sngt-giris:hover{ background:#0E7C66;',
+            '  transform:translateY(-1px); }',
+            '#snGirisTavsiye .sngt-giris:active{ transform:scale(.98); }',
+            '#snGirisTavsiye .sngt-nerede{ margin:10px 0 2px; color:#8A93A0;',
+            '  font-size:.84rem; }',
+            '#snGirisTavsiye .sngt-nerede + .sngt-tus{ background:none; color:#7A838F;',
+            '  font-weight:700; font-size:.92rem; padding:8px 18px; margin-top:6px; }',
+            '#snGirisTavsiye .sngt-nerede + .sngt-tus:hover{ background:rgba(0,0,0,.05);',
+            '  color:#4A525E; }',
+            '@media (prefers-reduced-motion: reduce){',
+            '  #snGirisTavsiye .sngt-giris{ transition:none } }',
             '#snGirisTavsiye .sngt-kapat{ position:absolute; top:10px; inset-inline-end:12px;',
             '  border:0; background:none; cursor:pointer; font-size:26px; line-height:1;',
             '  color:#8A93A0; padding:2px 6px; }',
@@ -525,6 +547,15 @@
         var b = kabukKur();
         if (b) onizlemeGovde(b);
     }
+    /* Başlıktaki giriş tuşunun simgesi — index.html'deki
+       #header-login-btn ile birebir aynı çizim. */
+    var GIRIS_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
+        ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round"' +
+        ' aria-hidden="true">' +
+        '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>' +
+        '<polyline points="10 17 15 12 10 7"/>' +
+        '<line x1="15" y1="12" x2="3" y2="12"/></svg>';
+
     /* Tavsiye — uyarı değil. Kapatması kolay, tek paragraf. */
     function girisTavsiye() {
         if (document.getElementById('snGirisTavsiye')) return;
@@ -550,9 +581,29 @@
                    'öğretmen olarak tanımlıysa buradaki okul kendi kurumların ve ' +
                    'sınıflarınla dolar; değilse sitedeki dersleri, kitapları ve ' +
                    'etkinlikleri serbestçe kullanabilirsin.</p>')) +
+            /* GİRİŞ SİMGESİ (07.10.2026) — öğretmen: "giriş yapmanı
+               öneririz uyarısında giriş svg si de olsun ki yeşil oklu
+               giriş kısmının ne işe yaradığı anlaşılsın". Başlıktaki
+               giriş tuşunun AYNISI gösteriliyor (aynı ok simgesi, aynı
+               yeşil) ve altında nerede durduğu yazıyor; böylece kişi
+               sağ üstteki o oku görünce ne olduğunu biliyor. Tuş
+               gerçekten çalışıyor: basınca giriş penceresi açılıyor.
+               Giriş yapmış ama öğretmen olmayana gösterilmiyor. */
+            (misafirMi()
+                ? ('<button type="button" class="sngt-giris">' + GIRIS_SVG +
+                   '<span>Giriş Yap</span></button>' +
+                   '<p class="sngt-nerede">Bu tuş sayfanın sağ üst köşesinde de ' +
+                   'duruyor</p>')
+                : '') +
             '<button type="button" class="sngt-tus">Anladım</button>' +
             '</div>';
         k.addEventListener('click', function (e) {
+            var g = e.target.closest ? e.target.closest('.sngt-giris') : null;
+            if (g) {
+                k.remove();
+                try { if (typeof showLoginModal === 'function') showLoginModal(); } catch (e2) { }
+                return;
+            }
             if (e.target === k || e.target.classList.contains('sngt-kapat') ||
                 e.target.classList.contains('sngt-tus')) k.remove();
         });

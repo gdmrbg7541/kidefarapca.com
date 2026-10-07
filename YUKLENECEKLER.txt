@@ -6958,3 +6958,30 @@ açılıyor ve seviye/sınıf ekleme satırına iniyor, böylece önce açıp so
 aramak gerekmiyor. Kapalıyken kategori yalnız bir başlık satırı: solda
 okul ve "Sınıflarım", sağında bu tuş.
 Denendi: kapalıyken tuş görünür; basınca kategori açılıyor.
+
+── 07.10.2026 · TAVSİYEDE GİRİŞ SİMGESİ ─────────────────────────────────
+Öğretmen: "giriş yapmanı öneririz uyarısında giriş svg si de olsun ki
+yeşil oklu giriş kısmının ne işe yaradığı anlaşılsın."
+
+Tavsiyeye başlıktaki giriş tuşunun AYNISI kondu — aynı ok simgesi
+(index.html'deki #header-login-btn ile birebir aynı çizim), aynı yeşil —
+ve altında "Bu tuş sayfanın sağ üst köşesinde de duruyor" yazıyor. Kişi
+sağ üstteki oku görünce artık ne olduğunu biliyor.
+Tuş süs değil: basınca tavsiye kapanıyor ve giriş penceresi açılıyor.
+Asıl iş o olduğu için dolgun yeşil; "Anladım" ikinci planda, sade.
+Giriş yapmış ama öğretmen olmayana gösterilmiyor — ona zaten "Burası
+öğretmen sınıfları için" yazıyor.
+Denendi: misafirde tuş ve altyazı var, basınca giriş penceresi çağrılıyor
+ve tavsiye kapanıyor; öğrenci rolünde tuş hiç çıkmıyor. Hata yok.
+
+── 07.10.2026 · KAT SIRASI (doğrulama) ──────────────────────────────────
+Öğretmen: "henüz seviye yok yazısı aşağı katta, seviye ekle katı yukarda
+olsun; yani seviye eklenince aşağı düşecek en alt kata."
+
+İstenen davranış zaten kurulu ve gönderilmiş durumda; teyit edildi:
+ · Kurum BOŞken  → ① Seviye ekle (5-10 · Başka)  ② "Bu kurumda henüz
+   seviye yok"
+ · Bir seviye eklenince → ① 5. sınıf katı (şubeleriyle)  ② Seviye ekle
+   en alt katta. "Henüz seviye yok" satırı kalkıyor.
+Görmüyorsa tarayıcı eski dosyayı tutuyordur — sayfayı sert yenilemek
+(Cmd+Shift+R) yeter.
