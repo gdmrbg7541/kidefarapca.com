@@ -7222,3 +7222,70 @@ NOT (işleyişe dair): device_commit_files bu oturumda dosyayı BİR ÇAĞRI
 GERİDEN yazıyor — ilk çağrıda eski içerik gidiyor, aynı çağrı
 tekrarlanınca doğrusu oturuyor. Bu yüzden her yazımdan sonra dosya boyu
 ve içerik grep ile doğrulandı.
+
+── 07.10.2026 · TANITIM: SAĞ OK + RENKLİ ZEMİN ──────────────────────────
+Öğretmen: "popupta hala tam ekran svg si var, ayrıca tanıtım kısmında
+arkaplan biraz daha site renkleriyle dolu olsun, arkası çok sade
+olmasın."
+
+ · Sosyal penceredeki satırda duran "tam ekran/büyüt" oku (dört köşeye
+   açılan simge) KALDIRILDI. Tanıtım artık tam ekran açılmıyor; simge
+   yanlış söz veriyordu. Yerine sade bir sağ oku kondu — "aç" demek.
+   Üstüne gelince hafifçe sağa kayıyor.
+ · KART ZEMİNİ artık beyaz değil: tepede ince bir renk şeridi
+   (yeşil→turuncu→mavi→mor) ve köşelerden yayılan yumuşak lekeler —
+   sol üst yeşil, sağ üst turuncu, sağ orta mavi, sol alt mor, sağ alt
+   kırmızı. Hepsi sitenin kendi renkleri.
+ · Şerit ve lekeler KARTIN KENDİ ZEMİNİNDE (background-image katmanları),
+   ayrı bir öğe değil. İlk denememde şeridi ::before ile koymuştum;
+   6 px yüksekliğinde 24 px köşe yarıçapı verilince köşelerde beyaz kama
+   kalıyordu. Zemine alınınca sorun kalmadı, kutu da eklenmemiş oldu
+   (öğretmen kutu istemiyor).
+ · Yazının okunurluğu gözetildi: lekeler düşük yoğunlukta, metnin
+   arkasında kalan alanlar açık.
+Denendi: satırdaki ok yolu değişti, kart zemininde 5 renk lekesi + şerit
+var, kıdem ve komisyon doğru, kayma ve kapanma sağlam. Hata yok.
+
+── 07.10.2026 · ONAYDAN SONRA PAYLAŞILACAK HOŞ GELDİN MESAJI ────────────
+Öğretmen: "yönetici hesabından bi öğretmeni onayladıktan sonra onun
+ismiyle bi hoşgeldin mesajı ve tavsiyelerini isteyen, eleştirilerini
+bekleyen bi mesaj olsun; ben bu mesajı hızlıca kopyalayabileyim, amacım
+ona WhatsApp'tan kolayca kopyalayıp paylaşmak." + "ismi soyismi olsun."
+
+Yönetici panelinde bir öğretmen ONAYLANDIĞI anda ekranın ortasında küçük
+bir kart açılıyor: içinde o öğretmenin AD SOYADIYLA yazılmış, WhatsApp'a
+yapıştırmaya hazır kısa bir mesaj. Üç tuş:
+  Kopyala        panoya alır (tuş "✓ Kopyalandı" olur)
+  WhatsApp'ta aç wa.me ile doğrudan WhatsApp'ta açar
+  Kapat          (Esc ve kartın dışına basmak da kapatır)
+Metin kutusu DÜZENLENEBİLİR; değiştirilirse hem kopyalanan hem WhatsApp'a
+giden metin değişmiş hâli olur.
+
+MESAJIN İÇİ: selam + hesabın açıldığı + (varsa) öğretmen kodu + "site
+hâlâ geliştiriliyor, eksik gördüğünüzü, 'şu da olsa' dediğinizi yazın;
+tavsiyenizi de eleştirinizi de bekliyorum" + imza.
+
+AD SOYAD: kayıt formunda tek alan var ("Ad soyad"), Firestore'da `name`.
+Mesaj onu olduğu gibi kullanıyor. Ad boşsa "Merhaba hocam," diye
+başlıyor, boş satır kalmıyor; kod yoksa kod satırı hiç çıkmıyor.
+
+SİTE İÇİ MESAJ AYRI DURUYOR: sistem/erisim.js onay anında öğretmenin
+gelen kutusuna uzun "nasıl başlarım" mesajını bırakmaya devam ediyor.
+Bu kart onun yerine geçmiyor, elde paylaşılacak kısa metni veriyor.
+
+İKİ ONAY YOLU DA BAĞLANDI: bekleyen başvurular listesi
+(ogretmenOnayVer) ve öğretmenler tablosu (adminOgretmenDurum). Kart
+açılamazsa onay YİNE GEÇERLİ — hata yutuluyor, asıl iş rol güncellemesi.
+
+Denendi: kart açılıyor, başlık "Ahmet Yılmaz onaylandı", mesaj ad soyadla
+geliyor, Kopyala panoya yazıyor (pano okunup doğrulandı), WhatsApp
+bağlantısı metni taşıyor, adsız ve kodsuz hâller düzgün. Hata yok.
+
+YENİ DOSYA: sistem/hosgeldinmesaj.js (index'e bağlı).
+
+── 07.10.2026 (ek) · MESAJDAN DOĞRU OLMAYAN CÜMLE ÇIKARILDI ─────────────
+Öğretmen: "'en çok işe yarayan şeyler meslektaşlarımın uyarısıyla
+eklendi' burda böyle bi şey yok; sadece eleştiri ve tavsiyeler yeterli."
+O cümle çıkarıldı. Paragraf artık: "Site hâlâ geliştiriliyor. Eksik
+gördüğünüz, 'şu da olsa' dediğiniz ya da ters giden ne varsa çekinmeden
+yazın; tavsiyenizi de eleştirinizi de bekliyorum."

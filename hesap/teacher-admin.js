@@ -1039,6 +1039,21 @@ function loadOgretmenOnaylari() {
 }
 window.loadOgretmenOnaylari = loadOgretmenOnaylari;
 
+/* Onaydan hemen sonra, elle paylaşılacak kısa mesajı gösterir.
+   Öğretmen kodu varsa mesaja girsin diye OH.koduTuret'ten okunuyor;
+   modül ya da kod yoksa kart yine açılıyor, yalnız kod satırı olmuyor.
+   Kart açılmazsa onay YİNE GEÇERLİ — asıl iş rol güncellemesi. */
+function paylasilacakMesaj(uid, bilgi) {
+    try {
+        if (!window.KidefHosgeldin) return;
+        var kod = '';
+        try { if (window.OH && OH.koduTuret) kod = OH.koduTuret(uid) || ''; } catch (e) { kod = ''; }
+        window.KidefHosgeldin.goster((bilgi && bilgi.ad) || '', kod);
+    } catch (e) {
+        try { console.warn('Paylaşılacak mesaj açılamadı:', e); } catch (x) {}
+    }
+}
+
 /* Onaylarken öğretmenin adı/e-postası _onayBekleyen'den okunur ve hoş
    geldin mesajına geçirilir (KidefErisim.onayla). */
 function ogretmenOnayVer(uid, onay) {
@@ -1046,10 +1061,17 @@ function ogretmenOnayVer(uid, onay) {
     var islem = onay
         ? window.KidefErisim.onayla(uid, _onayBekleyen[uid] || {})
         : window.KidefErisim.reddet(uid);
+    var _bilgi = _onayBekleyen[uid] || {};
     islem.then(function () {
         if (typeof showCustomAlert === 'function') {
             showCustomAlert(onay ? 'Öğretmen onaylandı, hoş geldin mesajı gönderildi.' : 'Başvuru reddedildi.');
         }
+        /* PAYLAŞILACAK MESAJ (07.10.2026) — öğretmen: "onayladıktan sonra
+           onun ismiyle bi hoşgeldin mesajı ... hızlıca kopyalayabileyim,
+           WhatsApp'tan paylaşacağım." Site içi mesaj zaten gidiyor
+           (KidefErisim.onayla); bu kart ayrıca elde kopyalanacak kısa
+           metni veriyor. */
+        if (onay) paylasilacakMesaj(uid, _bilgi);
         loadOgretmenOnaylari();
     }).catch(function (e) {
         if (typeof showCustomAlert === 'function') showCustomAlert('İşlem başarısız: ' + (e && (e.code || e.message)));
@@ -1216,11 +1238,13 @@ function adminOgretmenDurum(uid, onay) {
     var islem = onay
         ? window.KidefErisim.onayla(uid, _adminOgretmenler[uid] || {})
         : window.KidefErisim.reddet(uid);
+    var _bilgi = _adminOgretmenler[uid] || {};
     islem.then(function () {
         if (typeof showCustomAlert === 'function') {
             showCustomAlert(onay ? 'Öğretmen onaylandı, hoş geldin mesajı gönderildi.'
                                  : 'Öğretmenin erişimi kapatıldı.');
         }
+        if (onay) paylasilacakMesaj(uid, _bilgi);
         renderAdminTeacherList();
         if (typeof loadOgretmenOnaylari === 'function') loadOgretmenOnaylari();
     }).catch(function (e) {

@@ -128,8 +128,9 @@
       '  font-weight:800; line-height:1.2; }',
       '#kdTanitim .kdt-ad span{ display:block; font-size:.76rem; color:#78828F;',
       '  margin-top:2px; }',
-      '#kdTanitim .kdt-ok{ flex:none; width:17px; height:17px; opacity:.45; }',
-      '#kdTanitim .kdt-tus:hover .kdt-ok{ opacity:.9; }',
+      '#kdTanitim .kdt-ok{ flex:none; width:17px; height:17px; opacity:.45;',
+      '  transition:transform .15s, opacity .15s; }',
+      '#kdTanitim .kdt-tus:hover .kdt-ok{ opacity:.9; transform:translateX(2px); }',
 
       /* --- ORTADA BÜYÜK KART; İÇİNDE KUTU YOK --- */
       '#kdtSahne{ position:fixed; inset:0; z-index:100000; display:flex;',
@@ -139,20 +140,45 @@
       '@keyframes kdtGir{ from{ opacity:0 } to{ opacity:1 } }',
       '@keyframes kdtKalk{ from{ opacity:0; transform:translateY(14px) scale(.985) }',
       '  to{ opacity:1; transform:none } }',
+      /* ARKA PLAN SİTE RENKLERİYLE (07.10.2026) — öğretmen: "tanıtım
+         kısmında arkaplan biraz daha site renkleriyle dolu olsun, arkası
+         çok sade olmasın". Kutu eklemeden, yalnız boyayla: köşelerden
+         yayılan yumuşak yeşil/turuncu/mavi/mor lekeler ve üstte ince bir
+         renk şeridi. Lekeler düşük yoğunlukta, yazının okunurluğunu
+         bozmuyor; kutu değiller, kenarları yok. */
       '#kdtSahne .kdt-kutu{ position:relative; width:min(960px,94vw);',
       '  max-height:min(860px,88vh); overflow-y:auto; overflow-x:hidden;',
       '  -webkit-overflow-scrolling:touch; overscroll-behavior:contain;',
-      '  background:#fff; border-radius:24px; padding:38px 44px 40px;',
+      '  border-radius:24px; padding:40px 44px 40px;',
       '  box-shadow:0 34px 80px rgba(8,45,37,.34);',
-      '  animation:kdtKalk .22s cubic-bezier(.22,1,.36,1); }',
+      '  animation:kdtKalk .22s cubic-bezier(.22,1,.36,1);',
+      '  background-color:#fff;',
+      /* Renk şeridi ve lekeler kartın KENDİ zemininde; ayrı bir öğe yok,
+         bu yüzden yuvarlak köşelerde beyaz kama kalmıyor. İlk katman
+         tepedeki 7px şerit, sonrakiler köşelerden yayılan yumuşak
+         lekeler. Hepsi "local": kart kayarken zeminiyle birlikte kayar. */
+      '  background-image:',
+      '    linear-gradient(90deg,#16A085 0%,#0E9E86 16%,#F39C12 40%,',
+      '      #E67E22 55%,#2563EB 76%,#7C3AED 100%),',
+      '    radial-gradient(52% 38% at 100% 0%, rgba(243,156,18,.34), rgba(243,156,18,0) 72%),',
+      '    radial-gradient(56% 42% at 0% 0%, rgba(22,160,133,.34), rgba(22,160,133,0) 74%),',
+      '    radial-gradient(50% 32% at 100% 48%, rgba(37,99,235,.22), rgba(37,99,235,0) 72%),',
+      '    radial-gradient(54% 36% at 0% 84%, rgba(124,58,237,.20), rgba(124,58,237,0) 74%),',
+      '    radial-gradient(46% 30% at 88% 100%, rgba(238,82,83,.18), rgba(238,82,83,0) 72%),',
+      '    linear-gradient(180deg,#FFFFFF 0%,#F7FCFB 100%);',
+      '  background-size:100% 7px, auto, auto, auto, auto, auto, auto;',
+      '  background-repeat:no-repeat;',
+      '  background-position:top left, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;',
+      '  background-attachment:local, local, local, local, local, local, local; }',
       '#kdtSahne .kdt-kutu::-webkit-scrollbar{ width:11px; }',
       '#kdtSahne .kdt-kutu::-webkit-scrollbar-thumb{ background:rgba(22,160,133,.32);',
       '  border-radius:99px; border:3px solid transparent; background-clip:content-box; }',
-      '#kdtSahne .kdt-kapat{ position:sticky; top:-12px; float:right;',
-      '  margin:-18px -20px 0 0; width:42px; height:42px; border-radius:50%;',
-      '  border:0; cursor:pointer; background:#F2F6F5; color:#55636E;',
-      '  font-size:25px; line-height:1; z-index:3; }',
-      '#kdtSahne .kdt-kapat:hover{ background:#E4EEEB; color:#16A085; }',
+      '#kdtSahne .kdt-kapat{ position:sticky; top:6px; float:right;',
+      '  margin:0 -20px 0 0; width:42px; height:42px; border-radius:50%;',
+      '  border:0; cursor:pointer; background:rgba(255,255,255,.85); color:#55636E;',
+      '  font-size:25px; line-height:1; z-index:3;',
+      '  -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }',
+      '#kdtSahne .kdt-kapat:hover{ background:#fff; color:#16A085; }',
 
       /* ad — kutu yok, renkli ince bir çizgi */
       '#kdtSahne .kdt-isim{ margin:0; font-family:"Marhey",system-ui,sans-serif;',
@@ -184,7 +210,7 @@
 
       /* bölüm başlığı + ayıraç */
       '#kdtSahne .kdt-blok{ margin-top:30px; padding-top:24px;',
-      '  border-top:1px solid #EDF1F0; }',
+      '  border-top:1px solid rgba(18,70,59,.10); }',
       '#kdtSahne .kdt-bslk{ margin:0 0 14px; font-size:.82rem; font-weight:800;',
       '  letter-spacing:1.8px; text-transform:uppercase; color:#9AA3AE; }',
 
@@ -220,7 +246,7 @@
 
       '@media (max-width:760px){',
       '  #kdtSahne{ padding:14px 10px; }',
-      '  #kdtSahne .kdt-kutu{ padding:26px 22px 28px; border-radius:20px;',
+      '  #kdtSahne .kdt-kutu{ padding:28px 22px 28px; border-radius:20px;',
       '    max-height:92vh; }',
       '  #kdtSahne .kdt-calisma{ grid-template-columns:1fr; gap:0; }',
       '  #kdtSahne .kdt-gorev i{ width:96px; font-size:.94rem; } }',
@@ -245,9 +271,13 @@
       '<span class="kdt-bas" aria-hidden="true">GD</span>' +
       '<span class="kdt-ad"><b>' + AD + '</b>' +
       '<span>' + UNVAN + '</span></span>' +
+      /* SİMGE DEĞİŞTİ (07.10.2026) — öğretmen: "popupta hala tam ekran
+         svg si var". Tanıtım artık tam ekran açılmıyor, ortada bir kart
+         olarak açılıyor; dört köşeye açılan "büyüt" oku yanlış söz
+         veriyordu. Yerine sade bir sağ oku kondu: "aç" demek. */
       '<svg class="kdt-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
-      ' stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"' +
-      ' aria-hidden="true"><path d="M4 9V4h5M20 15v5h-5M15 4h5v5M9 20H4v-5"/></svg>' +
+      ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"' +
+      ' aria-hidden="true"><path d="M9 5.5l7 6.5-7 6.5"/></svg>' +
       '</button>';
     h2.parentNode.insertBefore(k, h2.nextSibling);
   }

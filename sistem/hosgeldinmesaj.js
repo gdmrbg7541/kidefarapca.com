@@ -1,0 +1,174 @@
+/* =====================================================================
+   KİDEF · HOŞ GELDİN MESAJI (paylaşmak için)  (sistem/hosgeldinmesaj.js)
+   ---------------------------------------------------------------------
+   Öğretmen (07.10.2026): "yönetici hesabından bi öğretmeni onayladıktan
+   sonra onun ismiyle bi hoşgeldin mesajı ve tavsiyelerini isteyen
+   eleştirilerini bekleyen bi mesaj olsun, ben bu mesajı hızlıca
+   kopyalayabileyim; amacım ona WhatsApp'tan kolayca mesajı kopyalayıp
+   paylaşmak." + "ismi soyismi olsun."
+
+   NE YAPIYOR
+   Yönetici panelinde bir öğretmen ONAYLANDIĞI anda ekranın ortasında
+   küçük bir kart açılıyor: içinde o öğretmenin AD SOYADIYLA yazılmış,
+   WhatsApp'a yapıştırmaya hazır bir mesaj duruyor. Tek tuşla panoya
+   kopyalanıyor; istenirse doğrudan WhatsApp'ta da açılıyor.
+
+   SİTEDEKİ HOŞ GELDİN MESAJINDAN AYRI: sistem/erisim.js onay anında
+   öğretmenin site içi gelen kutusuna uzun bir "nasıl başlarım" mesajı
+   bırakıyor — o duruyor, değişmedi. Buradaki metin onun yerine geçmiyor;
+   WhatsApp'ta okunacak kadar kısa ve sıcak, asıl işi tavsiye ve eleştiri
+   istemek.
+
+   AD SOYAD: kayıt formunda tek alan var ("Ad soyad"), Firestore'da
+   `name` olarak duruyor; mesaj onu olduğu gibi kullanıyor. Ad boşsa
+   "hocam" diye başlıyor, boş bir satır kalmıyor.
+   ===================================================================== */
+(function () {
+  'use strict';
+  if (window.KidefHosgeldin) return;
+
+  var IMZA = 'Geylani Demirbağ';
+
+  function kac(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* Ad soyadı derli toplu hâle getirir: fazladan boşlukları atar.
+     Büyük/küçük harfe karışmıyor — kayıttaki yazım öğretmenin kendi
+     yazdığı hâli, panelde bir "baş harfleri büyüt" aracı zaten var. */
+  function adDuzelt(ad) {
+    return String(ad || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function metin(ad, kod) {
+    var a = adDuzelt(ad);
+    var selam = a ? ('Merhaba ' + a + ' hocam,') : 'Merhaba hocam,';
+    return selam + '\n\n' +
+      'kidefarapca.com\'da öğretmen hesabınız açıldı. Sınıf listeleri, ' +
+      'sınıf defteri, planlar, belgeler ve etkinlikler artık size açık.\n\n' +
+      (kod ? ('Öğrencileriniz kayıt olurken bu kodu girerse sınıfınıza ' +
+              'bağlanma isteği gönderir: ' + kod + '\n\n') : '') +
+      /* 07.10.2026 — öğretmen: "'en çok işe yarayan şeyler meslektaşlarımın
+         uyarısıyla eklendi' burda böyle bi şey yok, sadece eleştiri ve
+         tavsiyeler yeterli." Doğru olmayan cümle çıkarıldı; metin yalnız
+         istediğini istiyor. */
+      'Site hâlâ geliştiriliyor. Eksik gördüğünüz, "şu da olsa" dediğiniz ' +
+      'ya da ters giden ne varsa çekinmeden yazın; tavsiyenizi de ' +
+      'eleştirinizi de bekliyorum.\n\n' +
+      'Kolaylıklar dilerim.\n' + IMZA;
+  }
+
+  function stilKur() {
+    if (document.getElementById('kidef-hgm-stil')) return;
+    var s = document.createElement('style');
+    s.id = 'kidef-hgm-stil';
+    s.textContent = [
+      '#hgmPerde{ position:fixed; inset:0; z-index:100001; display:flex;',
+      '  align-items:center; justify-content:center; padding:24px 16px;',
+      '  background:rgba(12,38,32,.5); -webkit-backdrop-filter:blur(3px);',
+      '  backdrop-filter:blur(3px); }',
+      '#hgmPerde .hgm-kart{ position:relative; width:min(640px,94vw);',
+      '  max-height:88vh; overflow-y:auto; overscroll-behavior:contain;',
+      '  background:#fff; border-radius:20px; padding:26px 28px 24px;',
+      '  box-shadow:0 30px 70px rgba(8,45,37,.34);',
+      '  background-image:linear-gradient(90deg,#16A085 0%,#F39C12 50%,#2563EB 100%);',
+      '  background-size:100% 6px; background-repeat:no-repeat;',
+      '  background-position:top left; }',
+      '#hgmPerde h3{ margin:8px 0 4px; font-size:1.2rem; color:#12463B; }',
+      '#hgmPerde .hgm-alt{ margin:0 0 14px; font-size:.88rem; color:#7C8894; }',
+      '#hgmPerde textarea{ width:100%; min-height:250px; resize:vertical;',
+      '  font-family:inherit; font-size:.95rem; line-height:1.55; color:#2C3E50;',
+      '  border:1px solid #E1E8EE; border-radius:14px; padding:14px 16px;',
+      '  background:#FBFDFC; }',
+      '#hgmPerde textarea:focus{ outline:2px solid rgba(22,160,133,.45);',
+      '  outline-offset:1px; }',
+      '#hgmPerde .hgm-tus{ display:flex; gap:9px; flex-wrap:wrap; margin-top:14px; }',
+      '#hgmPerde button{ cursor:pointer; font-family:inherit; font-weight:700;',
+      '  font-size:.94rem; border:0; border-radius:11px; padding:11px 20px; }',
+      '#hgmPerde .hgm-kopya{ background:#16A085; color:#fff; }',
+      '#hgmPerde .hgm-kopya:hover{ background:#0E7C66; }',
+      '#hgmPerde .hgm-kopya.oldu{ background:#0B6B58; }',
+      '#hgmPerde .hgm-wa{ background:#25D366; color:#fff; text-decoration:none;',
+      '  display:inline-flex; align-items:center; gap:7px; font-weight:700;',
+      '  font-size:.94rem; border-radius:11px; padding:11px 20px; }',
+      '#hgmPerde .hgm-wa:hover{ background:#1DAE52; }',
+      '#hgmPerde .hgm-kapat{ background:#EDF1F0; color:#55636E; margin-inline-start:auto; }',
+      '#hgmPerde .hgm-kapat:hover{ background:#E0E7E5; }'
+    ].join('\n');
+    document.head.appendChild(s);
+  }
+
+  function kapat() {
+    var p = document.getElementById('hgmPerde');
+    if (p && p.parentNode) p.parentNode.removeChild(p);
+    document.removeEventListener('keydown', tus);
+  }
+  function tus(e) { if (e.key === 'Escape') kapat(); }
+
+  function kopyala(dug) {
+    var t = document.getElementById('hgmMetin');
+    if (!t) return;
+    var tamam = function () {
+      dug.textContent = '✓ Kopyalandı';
+      dug.classList.add('oldu');
+      setTimeout(function () {
+        dug.textContent = 'Kopyala';
+        dug.classList.remove('oldu');
+      }, 1800);
+    };
+    /* Pano izni yoksa ya da eski tarayıcıda: seçip execCommand ile.
+       İkisi de olmazsa metin zaten seçili kalıyor, elle kopyalanabilir. */
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(t.value).then(tamam, function () {
+          t.select(); try { document.execCommand('copy'); tamam(); } catch (e) {}
+        });
+        return;
+      }
+    } catch (e) {}
+    t.select();
+    try { document.execCommand('copy'); tamam(); } catch (e) {}
+  }
+
+  /* ad = öğretmenin ad soyadı, kod = varsa TCH- kodu */
+  function goster(ad, kod) {
+    stilKur();
+    kapat();
+    var p = document.createElement('div');
+    p.id = 'hgmPerde';
+    p.setAttribute('role', 'dialog');
+    p.setAttribute('aria-label', 'Hoş geldin mesajı');
+    var m = metin(ad, kod);
+    p.innerHTML =
+      '<div class="hgm-kart">' +
+      '<h3>' + (adDuzelt(ad) ? kac(adDuzelt(ad)) + ' onaylandı' : 'Öğretmen onaylandı') + '</h3>' +
+      '<p class="hgm-alt">Mesaj WhatsApp\'a yapıştırmaya hazır. ' +
+      'İstersen önce üzerinde değiştir.</p>' +
+      '<textarea id="hgmMetin" spellcheck="false">' + kac(m) + '</textarea>' +
+      '<div class="hgm-tus">' +
+      '<button type="button" class="hgm-kopya" onclick="KidefHosgeldin.kopyala(this)">Kopyala</button>' +
+      '<a class="hgm-wa" href="https://wa.me/?text=" target="_blank" rel="noopener"' +
+      ' onclick="return KidefHosgeldin.waAc(this)">WhatsApp\'ta aç</a>' +
+      '<button type="button" class="hgm-kapat" onclick="KidefHosgeldin.kapat()">Kapat</button>' +
+      '</div></div>';
+    p.addEventListener('click', function (e) { if (e.target === p) kapat(); });
+    document.body.appendChild(p);
+    document.addEventListener('keydown', tus);
+    /* WhatsApp bağlantısı metin değiştirilirse de güncel kalsın diye
+       tıklama anında kuruluyor (bkz. waAc). */
+  }
+
+  /* Bağlantıyı tıklama anında kurar: kullanıcı metni değiştirdiyse
+     değiştirilmiş hâli gider. */
+  function waAc(a) {
+    var t = document.getElementById('hgmMetin');
+    a.href = 'https://wa.me/?text=' + encodeURIComponent(t ? t.value : '');
+    return true;
+  }
+
+  window.KidefHosgeldin = {
+    goster: goster, kapat: kapat, kopyala: kopyala, waAc: waAc, metin: metin
+  };
+})();

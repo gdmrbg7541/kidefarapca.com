@@ -428,6 +428,14 @@
     <script src="sistem/kilit.js?v=12"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
     <script src="sistem/erisim.js?v=5"></script>
+    <!-- ONAYDAN SONRA PAYLAŞILACAK MESAJ (07.10.2026) — öğretmen:
+         "bi öğretmeni onayladıktan sonra onun ismiyle bi hoşgeldin
+         mesajı ve tavsiyelerini isteyen, eleştirilerini bekleyen bi
+         mesaj olsun, hızlıca kopyalayabileyim; WhatsApp'tan
+         paylaşacağım." Site içi hoş geldin mesajı erisim.js'te
+         duruyor; bu dosya ayrıca ELDE paylaşılacak kısa metni
+         veriyor. Yönetici panelinden çağrılıyor. -->
+    <script src="sistem/hosgeldinmesaj.js?v=2"></script>
 <style>
 /* ==== ERİŞİM KATMANI (sistem/erisim.js) ================================
    1) ÖĞRENCİ KATEGORİ KISITI — site "Sadece Girişliler" kademesindeyken
@@ -3677,7 +3685,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          açıldığında Geylani Demirbağ yazsın, oraya tıklayınca temel
          bilgilerim görünsün." Satır «Sosyal Hesaplar» başlığının
          altına giriyor; metnin tamamı sistem/tanitim.js içinde. -->
-    <script src="sistem/tanitim.js?v=4"></script>
+    <script src="sistem/tanitim.js?v=6"></script>
     <!-- İmam Hatip 7/9/10 «Kitap Etkinlikleri» kartı: sınıfın kart
          ızgarasına girer, ünite listesi kartın altında açılır. 7. sınıfta
          yalnız MEB 2027-2028 kitabı seçiliyken görünür. -->
@@ -7640,7 +7648,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Telefonu tek tıkla kopyala (05.10.2026) — yönetici öğretmen
          onaylarında numarayı fareyle seçmek zorunda kalmasın. -->
     <script src="sistem/telkopya.js?v=1"></script>
-    <script src="hesap/teacher-admin.js?v=20261006b"></script>
+    <script src="hesap/teacher-admin.js?v=20261007a"></script>
     <script src="sistem/alarm.js?v=20260814c"></script>
     <script src="hesap/live-lesson.js?v=20260722c"></script>
     <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->
