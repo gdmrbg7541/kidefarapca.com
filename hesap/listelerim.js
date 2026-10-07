@@ -4703,7 +4703,7 @@ function llOkulPopupAc() {
         var buyuk = (uyeler.length >= 4 || toplamSinif >= 10) ? ' buyuk' : '';
         var katlar = '';
         uyeler.forEach(function (lId) { katlar += katYap(lId); });
-        if (!katlar) katlar = '<div class="okul-kat"><span class="okul-bos">Bu kurumda henüz seviye yok</span></div>';
+        var _katBos = !katlar;
         /* SEVİYE EKLE (05.10.2026): kurumun altına yeni seviye. 'GENEL'
            kurumsuz bölüm demek — addLevel bunu böyle biliyor. */
         /* HAZIR SEVİYELER (06.10.2026): 5–10 rakamları; basınca seviye
@@ -4722,7 +4722,7 @@ function llOkulPopupAc() {
                 ' onclick="llHizliSeviye(\'' + _kHedef + '\',' + n + ')">' +
                 llIhRakam(n) + '</button>';
         });
-        katlar += '<div class="okul-kat okul-kat-ekle">' +
+        var _ekleSatiri = '<div class="okul-kat okul-kat-ekle">' +
             '<span class="okul-hizli-bas">Seviye ekle</span>' +
             '<span class="okul-hizli-sira">' +
             (_rak || '<span class="okul-bos">5–10 arası seviyelerin hepsi kurulu</span>') +
@@ -4730,6 +4730,16 @@ function llOkulPopupAc() {
             '<button type="button" class="okul-seviye-ekle okul-seviye-elle"' +
             ' title="Başka bir seviye adı yaz" onclick="llOkulSeviyeEkle(\'' +
             _kHedef + '\')">' + llIcon('arti') + '<span>Başka</span></button></div>';
+        /* BOŞ KURUMDA ÖNCE EKLEME SATIRI (07.10.2026) — öğretmen: "okul
+           svg sinde seviye ekle yukarda, henüz seviye yok aşağıda olsun".
+           Doğrusu bu: kurum boşken yapılacak tek iş seviye eklemek, o
+           yüzden rakamlar üstte duruyor; "henüz seviye yok" altında
+           sessiz bir not olarak kalıyor. Kurumda seviye varsa düzen
+           eskisi gibi — kat listesi üstte, ekleme satırı en altta. */
+        if (_katBos) katlar = _ekleSatiri +
+            '<div class="okul-kat okul-kat-bos"><span class="okul-bos">' +
+            'Bu kurumda henüz seviye yok</span></div>';
+        else katlar += _ekleSatiri;
         var pencere = '<svg class="okul-pencere" viewBox="0 0 20 16" aria-hidden="true" focusable="false">' +
             '<rect x="0.6" y="0.6" width="18.8" height="14.8" rx="2" fill="#CFE7F5" stroke="#8FB8D4" stroke-width="1.2"/>' +
             '<path d="M10 1.2v13.6M1.2 8h17.6" stroke="#8FB8D4" stroke-width="1.1"/></svg>';

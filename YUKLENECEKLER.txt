@@ -6874,3 +6874,49 @@ süsler teker teker doğrulandı (5 ihn-cizgi · 6 ih-halo · 7 ihn-nokta ·
 8 ih-badge · 9 ih-star · 10 ih-ring). Dört ayrı anda ekran görüntüsü
 alındı: 9'un yıldızı parlayıp sönüyor, 10'un halkası kendini çiziyor,
 7'nin noktası dönüyor. Hata yok.
+
+── 07.10.2026 · SINIFLARIM TEK SEFERDE ÇİZİLİYOR ────────────────────────
+Öğretmen: "index ilk açıldığında önce sınıflarım çizilmiyor, sonra
+çiziliyor ve sonra kaybolup bir daha çiziliyor."
+
+SEBEP (bulundu): bölüm iki ayrı yerden, iki ayrı HTML ile kuruluyordu —
+misafir için onizlemeCiz(), öğretmen için ciz(). Rol birkaç yüz
+milisaniye geç geldiği için sayfa önce önizlemeyi basıyor, rol gelince
+bölümün TAMAMINI silip baştan yazıyordu. Arada rol bir an boş okunursa
+1.2 sn'lik emniyet nabzı gizle() ile bölümü tümden kaldırıyordu. Gözle
+görülen "çizilmedi → çizildi → kayboldu → yine çizildi" tam olarak buydu.
+
+ÇÖZÜM: başlık bir kez kuruluyor ve bir daha silinmiyor (kabukKur +
+baslikIc); yalnız içindeki gövde (.sn-okul) değişiyor. Gövde de kapalı
+açılan akordiyonun içinde olduğu için değişimi görünmüyor — ekranda tek
+çizim var. gizle() artık bölümü kaldırmıyor, gövdeyi önizlemeye
+döndürüyor (önceki öğretmenin sınıf adları yine de kalmıyor).
+Denendi: üç rolde de dizi "YOK → önizleme" ya da "YOK → önizleme →
+gerçek" ve orada duruyor; geri dönüş, boş ara kare ve ikinci bir kuruluş
+yok. Başlık düğümü ciz() üst üste çağrılsa da aynı kalıyor.
+
+── 07.10.2026 · SINIFLARIM HER ZAMAN GÖRÜNÜR ────────────────────────────
+Öğretmen: "giriş yapılıp yapılmaması önemli değil, her zaman görünecek."
+
+Bölüm artık role hiç bakmadan herkese açılıyor; rol yalnız gövdenin ne
+göstereceğini belirliyor — öğretmene gerçek okul paneli, diğerlerine boş
+kurum önizlemesi. Çıkışta da bölüm ekranda kalıyor.
+Önizlemeye basınca çıkan tavsiye metni oturuma göre değişiyor: giriş
+yapmamışa "Önce giriş yapmanı öneririz", giriş yapmış ama öğretmen
+olmayana "Burası öğretmen sınıfları için" (ona "giriş yap" demek yanlış
+olurdu). İkisi de uyarı değil, kısa bir bilgi.
+
+── 07.10.2026 · BOŞ KURUMDA ÖNCE "SEVİYE EKLE" ──────────────────────────
+Öğretmen: "okul svg sinde seviye ekle yukarda, henüz seviye yok aşağıda
+olsun."
+
+Kurumda hiç seviye yokken sıra ters duruyordu. Artık rakamlar (Seviye
+ekle · 5-10 · Başka) üstte, "Bu kurumda henüz seviye yok" altında sessiz
+bir not olarak duruyor — kurum boşken yapılacak tek iş seviye eklemek.
+Kurumda seviye varsa düzen eskisi gibi: kat listesi üstte, ekleme satırı
+en altta.
+DİKKAT: aynı satır öğretmen profilindeki okul haritasında da var; çapa
+"SEVİYE EKLE (05.10.2026)" açıklamasıyla benzersizleştirildi, haritaya
+dokunulmadı.
+Denendi: boş kurumda satır sırası ① okul-kat-ekle (Seviye ekle 5 6 7 8 9
+10 Başka) ② okul-kat-bos (Bu kurumda henüz seviye yok). Hata yok.

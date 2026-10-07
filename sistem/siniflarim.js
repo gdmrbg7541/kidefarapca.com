@@ -325,21 +325,44 @@
         return h;
     }
 
-    function ciz() {
+    /* ==================================================== TEK ÇİZİM
+       (07.10.2026) Öğretmen: "index ilk açıldığında önce sınıflarım
+       çizilmiyor, sonra çiziliyor, sonra kaybolup bir daha çiziliyor."
+
+       Sebebi: bölüm iki ayrı yerden, iki ayrı HTML ile kuruluyordu —
+       misafir için onizlemeCiz(), öğretmen için ciz(). Rol birkaç yüz
+       milisaniye sonra geldiği için sayfa önce önizlemeyi basıyor,
+       rol gelince TAMAMINI silip baştan yazıyordu; arada rol bir an
+       boş okunursa nabız gizle() ile bölümü tümden kaldırıyordu.
+       Gözle görülen üç aşama buydu.
+
+       Artık BAŞLIK bir kez kuruluyor ve bir daha silinmiyor; yalnız
+       içindeki gövde (.sn-okul) değişiyor. Gövde de kapalı açılan
+       akordiyonun içinde olduğu için değişimi görünmüyor: ekranda tek
+       bir çizim var.
+
+       Öğretmen: "giriş yapılıp yapılmaması önemli değil, her zaman
+       görünecek." Bölüm artık role bakmadan herkese açılıyor; rol
+       yalnız gövdenin ne göstereceğini belirliyor — öğretmene gerçek
+       okul paneli, diğerlerine boş kurum önizlemesi. */
+    function baslikIc() {
+        var k = kapaliMi();
+        return '<h2><button type="button" class="sn-bas-tus"' +
+            ' onclick="KidefSiniflarim.katla()"' +
+            ' aria-expanded="' + (k ? 'false' : 'true') + '"' +
+            ' title="' + (k ? 'Sınıflarımı aç' : 'Sınıflarımı kapat') + '">' +
+            '<svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
+            OKUL_SVG.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') +
+            '</svg><span>Sınıflarım</span>' +
+            '<svg class="sn-bas-ok" viewBox="0 0 24 24" aria-hidden="true">' +
+            '<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor"' +
+            ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg></button></h2>';
+    }
+
+    /* Bölümü ve başlığı kurar; zaten duruyorsa DOKUNMAZ. */
+    function kabukKur() {
         var bolum = document.getElementById(BOLUM_ID);
-        /* ÖĞRETMEN OLMAYANA ÖNİZLEME (06.10.2026): bölüm herkese
-           görünüyor; içerik role göre değişiyor. Misafir (hiç oturum
-           yok) da görür — amaç ne yapabileceğini göstermek. */
-        if (!gorunurMu()) { onizlemeCiz(); return; }
-
-        /* VERİ HENÜZ YOKKEN DE ÇİZ (06.10.2026) — öğretmen: "hiç sınıf
-           kurmayan ama öğretmen olarak giriş yapanlar için kurum seviye
-           oluşturmasını teşvik amaçlı sınıflarım kategorisi açık olsun".
-           Yeni kayıt olmuş öğretmende "data" henüz hiç oluşmamış
-           olabiliyor; eskiden burada çıkılıp hiçbir şey çizilmiyordu ve
-           öğretmen başlamak için nereye basacağını göremiyordu. */
-        var v = veriOku() || { kurumlar: {}, gruplar: {} };
-
         if (!bolum) {
             stilKur();
             bolum = document.createElement('section');
@@ -354,44 +377,41 @@
             if (once && once.parentNode) once.parentNode.insertBefore(bolum, once);
             else {
                 var hub = document.getElementById('home-hub-section');
-                if (!hub) return;
+                if (!hub) return null;
                 hub.insertBefore(bolum, hub.firstChild);
             }
         }
-
-        /* BAŞLIK = OKULA GİRİŞ (06.10.2026) — öğretmen başlıktaki okul
-           tuşunu kaldırttı; anasayfada okul penceresine gidecek yol
-           kalmasın istemiyoruz. Kategori başlığının kendisi o yolu
-           üstleniyor: okul çizimine ve "Sınıflarım" yazısına basınca okul
-           sekmesi açılıyor (kurumlar, seviyeler, sınıflar, ayarlar). */
-        var _kapali = kapaliMi();
-        var ic = '<h2><button type="button" class="sn-bas-tus"' +
-            ' onclick="KidefSiniflarim.katla()"' +
-            ' aria-expanded="' + (_kapali ? 'false' : 'true') + '"' +
-            ' title="' + (_kapali ? 'Sınıflarımı aç' : 'Sınıflarımı kapat') + '">' +
-            '<svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
-            OKUL_SVG.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') +
-            '</svg><span>Sınıflarım</span>' +
-            '<svg class="sn-bas-ok" viewBox="0 0 24 24" aria-hidden="true">' +
-            '<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor"' +
-            ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
-            '</svg></button></h2>' +
-            '<div class="sn-okul"></div>';
-
-        /* AYNI İÇERİĞİ YENİDEN BASMA (06.10.2026) — öğretmen: "index
-           açılınca sınıflarım yazısı 4 kere çiziliyor sanırım".
-           Rol asenkron geldiği için aşağıdaki yoklama ilk saniyelerde
-           ciz()'i birkaç kez çağırıyordu; her çağrı innerHTML'i baştan
-           yazdığı için bölüm göz önünde 4 kez yeniden çiziliyordu.
-           Artık üretilen HTML öncekiyle aynıysa DOM'a dokunulmuyor:
-           yoklama sürüyor ama ekranda tek çizim görünüyor. */
-        if (bolum.__sonIc !== ic) {
-            bolum.innerHTML = ic;
-            bolum.__sonIc = ic;
+        var b = baslikIc();
+        if (bolum.__sonBaslik !== b) {
+            bolum.innerHTML = b + '<div class="sn-okul"></div>';
+            bolum.__sonBaslik = b;
+            bolum.__govde = null;
         }
         bolum.classList.add('gor');
-        gosterildi = true;
         bolum.classList.toggle('sn-kapali', kapaliMi());
+        return bolum;
+    }
+
+    /* Gövde: boş kurum önizlemesi (giriş yapmamış ya da öğretmen değil).
+       Gerçek panel içerideyse çıkarılıyor — eski öğretmenin sınıf adları
+       çıkıştan sonra ekranda durmasın. */
+    function onizlemeGovde(bolum) {
+        if (bolum.__govde === 'onizle') return;
+        var yuva = bolum.querySelector('.sn-okul');
+        if (!yuva) return;
+        try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = false; } catch (e) { }
+        yuva.innerHTML = '<div id="llOkulPopup" class="sn-okul-ici sn-onizle"' +
+            ' onclick="KidefSiniflarim.girisTavsiye()">' + onizlemeIc() + '</div>';
+        bolum.__govde = 'onizle';
+        gosterildi = false;            /* bu önizleme; çıkış nabzı silmesin */
+    }
+
+    function ciz() {
+        var bolum = kabukKur();
+        if (!bolum) return;
+        if (!gorunurMu()) { onizlemeGovde(bolum); return; }
+        gosterildi = true;
+        bolum.__govde = 'gercek';
         okulIcineKoy(bolum);
     }
 
@@ -451,45 +471,11 @@
             ' fill="#fff">' + n + '</text></svg></span>';
     }
 
+    /* Eski ad; dışarıdan çağrı kalmışsa diye duruyor. */
     function onizlemeCiz() {
-        var bolum = document.getElementById(BOLUM_ID);
-        if (!bolum) {
-            stilKur();
-            bolum = document.createElement('section');
-            bolum.id = BOLUM_ID;
-            bolum.className = 'content-section';
-            var once = document.getElementById('imam-hatip') ||
-                       document.getElementById('guncellemeler');
-            if (once && once.parentNode) once.parentNode.insertBefore(bolum, once);
-            else {
-                var hub = document.getElementById('home-hub-section');
-                if (!hub) return;
-                hub.insertBefore(bolum, hub.firstChild);
-            }
-        }
-        /* gerçek panel içerideyse (rol geri geldi) karışma */
-        if (bolum.querySelector('#llOkulPopup') && gorunurMu()) return;
-        var _kpl = kapaliMi();
-        var ic = '<h2><button type="button" class="sn-bas-tus"' +
-            ' onclick="KidefSiniflarim.katla()" aria-expanded="' +
-            (_kpl ? 'false' : 'true') + '"' +
-            ' title="' + (_kpl ? 'Sınıflarımı aç' : 'Sınıflarımı kapat') + '">' +
-            '<svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
-            OKUL_SVG.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') +
-            '</svg><span>Sınıflarım</span>' +
-            '<svg class="sn-bas-ok" viewBox="0 0 24 24" aria-hidden="true">' +
-            '<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4"' +
-            ' stroke-linecap="round" stroke-linejoin="round"/></svg></button></h2>' +
-            '<div class="sn-okul">' +
-            '<div id="llOkulPopup" class="sn-okul-ici sn-onizle"' +
-            ' onclick="KidefSiniflarim.girisTavsiye()">' + onizlemeIc() + '</div>' +
-            '</div>';
-        if (bolum.__sonIc !== ic) { bolum.innerHTML = ic; bolum.__sonIc = ic; }
-        bolum.classList.add('gor');
-        bolum.classList.toggle('sn-kapali', kapaliMi());
-        gosterildi = false;            /* bu önizleme; çıkış nabzı silmesin */
+        var b = kabukKur();
+        if (b) onizlemeGovde(b);
     }
-
     /* Tavsiye — uyarı değil. Kapatması kolay, tek paragraf. */
     function girisTavsiye() {
         if (document.getElementById('snGirisTavsiye')) return;
@@ -499,12 +485,22 @@
             '<div class="sngt-kart" role="dialog" aria-modal="true">' +
             '<button type="button" class="sngt-kapat" aria-label="Kapat">&times;</button>' +
             BUYUK_OKUL_SVG +
-            '<p class="sngt-bas">Önce giriş yapmanı öneririz</p>' +
-            '<p class="sngt-alt">Burada kuracağın kurum, seviye ve sınıflar ' +
-            '<b>sana ait</b> olsun diye giriş gerekiyor. Giriş yaptığında ' +
-            'listelerin, sınıf defterin ve notların hesabına kaydedilir; ' +
-            'telefondan da bilgisayardan da aynı sınıfları açarsın. Girişsiz ' +
-            'kurulanlar yalnız bu tarayıcıda kalır ve kaybolabilir.</p>' +
+            /* OTURUM VARSA BAŞKA METİN (07.10.2026) — bölüm artık herkese
+               görünüyor; giriş yapmış ama öğretmen olmayan birine "önce
+               giriş yap" demek yanlış olurdu. */
+            (misafirMi()
+                ? ('<p class="sngt-bas">Önce giriş yapmanı öneririz</p>' +
+                   '<p class="sngt-alt">Burada kuracağın kurum, seviye ve sınıflar ' +
+                   '<b>sana ait</b> olsun diye giriş gerekiyor. Giriş yaptığında ' +
+                   'listelerin, sınıf defterin ve notların hesabına kaydedilir; ' +
+                   'telefondan da bilgisayardan da aynı sınıfları açarsın. Girişsiz ' +
+                   'kurulanlar yalnız bu tarayıcıda kalır ve kaybolabilir.</p>')
+                : ('<p class="sngt-bas">Burası öğretmen sınıfları için</p>' +
+                   '<p class="sngt-alt">Kurum, seviye ve sınıf kurmak, yoklama almak ve ' +
+                   'sınıf defteri tutmak <b>öğretmen hesabına</b> açık. Hesabın ' +
+                   'öğretmen olarak tanımlıysa buradaki okul kendi kurumların ve ' +
+                   'sınıflarınla dolar; değilse sitedeki dersleri, kitapları ve ' +
+                   'etkinlikleri serbestçe kullanabilirsin.</p>')) +
             '<button type="button" class="sngt-tus">Anladım</button>' +
             '</div>';
         k.addEventListener('click', function (e) {
@@ -521,22 +517,17 @@
        ekranda kalıyor, içinde sınıf adları duruyordu. */
     var gosterildi = false;
 
+    /* Çıkış: bölüm EKRANDA KALIR (07.10.2026 — "her zaman görünecek"),
+       yalnız içi boş kurum önizlemesine döner; önceki öğretmenin sınıf
+       adları kalmaz. */
     function gizle() {
         var b = document.getElementById(BOLUM_ID);
         try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = false; } catch (e) { }
-        if (!b) { gosterildi = false; return; }
-        b.classList.remove('gor');
-        /* içi de boşalsın: okul paneli DOM'da kalmasın, sınıf adları
-           çıkıştan sonra ekranda durmasın */
-        try {
-            var p = document.getElementById('llOkulPopup');
-            if (p && b.contains(p) && p.parentNode) p.parentNode.removeChild(p);
-        } catch (e) { }
-        b.innerHTML = '';
-        b.__sonIc = null;
         gosterildi = false;
+        if (!b) return;
+        b.__govde = null;              /* gövde yeniden kurulsun */
+        onizlemeGovde(b);
     }
-
     function cikisIzle() {
         if (window.__snCikisIzleniyor) return;
         try {
@@ -605,6 +596,13 @@
         var yuva = bolum.querySelector('.sn-okul');
         if (!yuva) return;
         var p = document.getElementById('llOkulPopup');
+        /* ÖNİZLEMEYİ GERÇEK PANEL SANMA (07.10.2026) — misafir kabuğu da
+           aynı id'yi taşıyor; temizlenmezse gerçek panel hiç içeri
+           alınmıyordu. */
+        if (p && p.classList.contains('sn-onizle')) {
+            try { if (p.parentNode) p.parentNode.removeChild(p); } catch (e) { }
+            p = document.getElementById('llOkulPopup');
+        }
         if (p && yuva.contains(p)) return;   /* zaten içeride */
         try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = true; } catch (e) { }
         if (!p) {
