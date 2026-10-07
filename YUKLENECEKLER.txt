@@ -7608,3 +7608,67 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
                                   Misafir modu (auth_status='guest') muaf.
                                   v20261007e
   index.html                    siniflarim v15, listelerim v20261007e
+
+07.10.2026 — DİNLE VE YAZ: SES ÖNBELLEĞİ + İLERLEME ÇUBUĞU
+  okumayazma/dinleveyaz.js      1) SEÇİLEN SEVİYENİN SESLERİ İNDİRİLİYOR
+                                   Seviyeye basılır basılmaz o seviyenin
+                                   bütün .wav dosyaları (11-16 dosya,
+                                   1,2-2,4 MB) arka planda indirilip
+                                   bellekte tutuluyor; oyun boyunca ağa
+                                   çıkılmıyor, internet kopsa da sesler
+                                   çalıyor. Üç dosya aynı anda iner, inmeyen
+                                   bir kez daha denenir, yine inmezse eski
+                                   yola (ağdan çalma) düşülür — oyun durmaz.
+                                   Seviye başlığının altında durum satırı:
+                                   "Sesler indiriliyor… 7 / 13" ->
+                                   "Sesler indirildi — internet kopsa da
+                                   çalışır".
+                                2) TURUNCU ZAMAN BANDININ KAYBOLMASI
+                                   Sebebi ağ DEĞİLMİŞ, sıralamaymış:
+                                   dictate() çizelgeyi baştan kuruyor, yani
+                                   çalışan .sc-progress ögesini siliyor.
+                                   Duraklat->Devam (önce startTimer sonra
+                                   dictate) ve kelime ortasında kulaklık
+                                   tuşuna basmak tam bu sırayı üretiyordu:
+                                   bant siliniyor, yerine gelen yeni bant
+                                   scaleX(0)'da geçişsiz kalıyor — yani
+                                   görünmüyor, kelime bitene kadar da
+                                   gelmiyor. Ölçüldü: eski sürümde bu iki
+                                   işlemden sonra bant genişliği 0,
+                                   geçiş 0s. Artık çizelge her kurulduğunda
+                                   sayaç işliyorsa bant kalan süreye göre
+                                   yeniden başlatılıyor.
+                                3) sesIlerlemeBaslat: bant hiç yoksa sessizce
+                                   vazgeçmiyor, çizelgeyi kuruyor.
+                                4) Son tekrarın 'ended' olayı ağ zayıfken hiç
+                                   gelmeyebiliyordu; çizelge yarı yanık
+                                   kalmasın diye 6 sn emniyet zamanı kondu.
+                                v20261007a
+  dinleveyaz.html               dinleveyaz.js?v=20261007a
+
+07.10.2026 — ÇİZGİDEKİ YAZILIŞ SORULARI (tip 5-6)
+  okumayazma/alfabe_sinav.js    - Soru metinleri öğretmenin istediği gibi:
+                                  "Hangi harf çizgide yanlış yazılmış?" /
+                                  "Hangi harf çizgide doğru yazılmış?"
+                                  (eskiden "Çizgideki yazılışlardan yanlış
+                                  olan hangisidir?")
+                                - Her şık yazılışına göre damgalanıyor:
+                                  as-yaz-dogru / as-yaz-yanlis. v10
+  okumayazma/alfabe.css         - CEVAPTAN SONRA HARFLER RENKLENİYOR:
+                                  çizgiye oturan üçlü YEŞİL, çizgiden kaçan
+                                  üçlü KIRMIZI; çizgi de aynı renge dönüyor,
+                                  harf adının yanında ✓ / ✗ çıkıyor
+                                  (renk körlüğü için).
+                                  ÖNEMLİ: şıkkın çerçevesi CEVABIN doğru
+                                  olup olmadığını söyler; "yanlış yazılanı
+                                  bul" sorusunda doğru cevap, yazılışı BOZUK
+                                  olan şıktır — eskiden o şık yeşil çerçeve
+                                  alıyor, yani kötü yazılmış harf yeşil
+                                  görünüyordu. Artık harfin kendi rengi
+                                  yazılışı söylüyor.
+                                - Çizginin ALTINA kayan yanlış şık çizgiye
+                                  çok yakındı (.14em): .30em'e indirildi,
+                                  gövde çizginin açıkça altında. Havada
+                                  duran şık da dengelensin diye -.17em'den
+                                  -.24em'e alındı. v20261007c
+  alfabe.html                   alfabe_sinav.js?v=10, alfabe.css?v=20261007c

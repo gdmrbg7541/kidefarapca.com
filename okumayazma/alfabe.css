@@ -2203,8 +2203,14 @@
            alfabe_sinav.js → KONUM_HATA); üçü birden kaydığı için işaret
            güçlüdür ve kaydırma az tutulur — harf çizginin aşırı altına
            ya da üstüne düşmez, yalnız çizgiye oturmadığı görülür. */
-        .as-uclu .as-bic.as-havada { transform: translateY(-.17em); }  /* kuyruk çizgiye inmemiş */
-        .as-uclu .as-bic.as-batik  { transform: translateY(.14em); }   /* gövde çizginin altında */
+        /* 07.10.2026 — öğretmen: "çizginin altına yanlış olarak yazılanlar
+           çizgiye çok yakın, daha uzak olsun çizginin altına." Batık
+           şıkkın kayması .14em idi; harf çizgiye değip geçiyor, hata
+           uzaktan seçilmiyordu. .30em'e çıkarıldı: gövde çizginin açıkça
+           altına iniyor. Havada duran şık da buna denk gelsin diye
+           -.17em'den -.24em'e alındı; iki hata da aynı güçte okunuyor. */
+        .as-uclu .as-bic.as-havada { transform: translateY(-.24em); }  /* kuyruk çizgiye inmemiş */
+        .as-uclu .as-bic.as-batik  { transform: translateY(.30em); }   /* gövde çizginin altında */
         .as-bic-b { font-size: 4.8rem; }
         /* SINAVDAKİ HARFLER KALIN DEĞİL. Arapça yazı tipinin gerçek bir
            kalın kesimi olmadığı için tarayıcı sentetik kalınlaştırma
@@ -2220,6 +2226,18 @@
             display: block; width: 100%; direction: ltr; text-align: center;
             font-family: inherit; font-size: 1.05rem; color: #94a3b8; margin-top: 2px;
         }
+        /* ÇİZGİDEKİ YAZILIŞ SORULARI (07.10.2026): cevap verildikten
+           sonra harfler KENDİ YAZILIŞINA göre renklenir — çizgiye düzgün
+           oturan üçlü yeşil, çizgiden kaçan üçlü kırmızı. Şıkkın çerçevesi
+           hâlâ cevabın doğruluğunu söyler; bu renk ise "doğru yazılış
+           hangisiydi"yi gösterir, öğrenci bakarak öğrensin. */
+        .as-sik:disabled .as-yaz-dogru  .as-bic { color: #0E7C66; }
+        .as-sik:disabled .as-yaz-yanlis .as-bic { color: #DC2626; }
+        .as-sik:disabled .as-yaz-dogru::before  { background: #9FD9C9; }
+        .as-sik:disabled .as-yaz-yanlis::before { background: #F5A7A2; }
+        /* Renk tek başına yetmesin (renk körlüğü): küçük bir ✓ / ✗ */
+        .as-sik:disabled .as-yaz-dogru  + .as-etiket::after { content: ' \2713'; color: #0E7C66; font-weight: 900; }
+        .as-sik:disabled .as-yaz-yanlis + .as-etiket::after { content: ' \2717'; color: #DC2626; font-weight: 900; }
         .as-sik.as-dogru { border-color: #16A085; background: #E6FAF5; }
         .as-sik.as-dogru .as-mark { background: #16A085; color: #fff; }
         .as-sik.as-yanlis { border-color: #EF5350; background: #FDECEA; }

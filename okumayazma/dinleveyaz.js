@@ -342,6 +342,11 @@
         }
         // Kırmızı zaman ilerlemesi: süre boyunca soldan sağa dolar
         function sesIlerlemeBaslat(saniye){
+            /* Bant yoksa çizelge hiç kurulmamış demektir: sessizce
+               vazgeçmek yerine kur (07.10.2026). */
+            if (sesCizelgesiEl && !sesCizelgesiEl.querySelector('.sc-progress')) {
+                try { buildSesCizelgesi(Math.max(1, (currentWord && currentWord._tekrar) || 1)); } catch (e) { }
+            }
             const p = sesCizelgesiEl && sesCizelgesiEl.querySelector('.sc-progress');
             if (!p) return;
             p.style.transition = 'none';
@@ -360,14 +365,28 @@
 
         // --- Otomatik tekrar (imla): ses, kırmızı ilerleme her RAKAMA geldiğinde çalar ---
         let dictateTimers = [];
+        let sonSesEmniyet = null;
         function stopDictation(){
             dictateTimers.forEach(t => clearTimeout(t)); dictateTimers = [];
+            clearTimeout(sonSesEmniyet); sonSesEmniyet = null;
             audio.onended = null;
         }
         function dictate(times){
             stopDictation();
             const total = Math.max(1, times);
             buildSesCizelgesi(total);          // çizelgeyi sıfırla/kur
+            /* TURUNCU ZAMAN BANDI KAYBOLMASIN (07.10.2026) — öğretmen:
+               "bazen ilerleme çubuğu kayboluyor... turuncu zaman kısmı
+               görünmüyor."
+               Sebebi ağ değil, sıralamaydı: buildSesCizelgesi çizelgenin
+               içini tamamen yeniden kuruyor, yani çalışan .sc-progress
+               ögesini SİLİYOR. Duraklat→Devam (önce startTimer, sonra
+               dictate) ve kelime ortasında kulaklık tuşuna basmak tam
+               olarak bu sırayı üretiyordu: bant siliniyor, yerine gelen
+               yeni bant scaleX(0)'da geçişsiz duruyor — yani görünmüyor.
+               Artık çizelge her kurulduğunda, sayaç işliyorsa bant da
+               kalan süreye göre yeniden başlatılıyor. */
+            if (gameActive && !paused && remainingTime > 0) sesIlerlemeBaslat(remainingTime);
             // Her nokta (rakam) kelimenin süresi boyunca belli bir konumdadır; kırmızı
             // ilerleme o noktaya geldiğinde o tekrarın sesi çalar ve nokta yanar.
             const totalMs = Math.max(1, remainingTime) * 1000;
@@ -377,9 +396,15 @@
                 const t = setTimeout(() => {
                     markSesCizelgesi(i);
                     try { if (!audio.paused){ audio.pause(); audio.currentTime = 0; } } catch(e){}
-                    audio.src = currentWord.audioSrc;
+                    audio.src = sesKaynak(currentWord.audioSrc);   /* önbellek varsa ondan */
                     const p = audio.play(); if (p) p.catch(()=>{});
-                    if (son) { audio.onended = () => finishSesCizelgesi(); }
+                    if (son) {
+                        audio.onended = () => finishSesCizelgesi();
+                        /* AĞ ZAYIFSA 'ended' HİÇ GELMEYEBİLİR (07.10.2026):
+                           çizelge yarı yanık kalmasın diye emniyet zamanı. */
+                        clearTimeout(sonSesEmniyet);
+                        sonSesEmniyet = setTimeout(finishSesCizelgesi, 6000);
+                    }
                 }, f * totalMs);
                 dictateTimers.push(t);
             }
@@ -472,12 +497,103 @@
         });
         console.log("Game data updated with word audio sources:", gameData);
 
+        /* ============ SES ÖNBELLEĞİ (07.10.2026) =====================
+           Öğretmen: "seçilen seviye sesleri indirilsin... internet
+           zayıflayınca mı oluyor bilemedim ama buna bi önlem alalım."
+           Sesler eskiden çalma anında ağdan çekiliyordu: bağlantı
+           zayıfsa ses geç geliyor, imla sayacı ilerlemiş oluyordu.
+           Artık seviye seçilir seçilmez o seviyenin BÜTÜN ses dosyaları
+           indirilip bellekte tutulur (blob); oyun boyunca ağa hiç
+           çıkılmaz, internet kopsa bile sesler çalar. İnmeyen olursa
+           eski yola (ağdan) düşülür, oyun durmaz. */
+        const sesOnbellek = Object.create(null);   /* yol -> blob adresi */
+        let sesIndirmeNo = 0;                      /* en son başlatılan indirme */
+
+        function sesKaynak(yol) { return (yol && sesOnbellek[yol]) || yol; }
+
+        function sesDurumKutusu() {
+            let el = document.getElementById('dvSesDurum');
+            if (el) return el;
+            const akord = document.getElementById('seviyeAkordiyon');
+            if (!akord || !akord.parentNode) return null;
+            if (!document.getElementById('dvSesDurumStil')) {
+                const st = document.createElement('style');
+                st.id = 'dvSesDurumStil';
+                st.textContent =
+                    '#dvSesDurum{display:none;align-items:center;gap:8px;margin:8px 0 0;' +
+                    'padding:7px 12px;border-radius:10px;font-size:.88rem;font-weight:700;' +
+                    'background:#FEF6E7;color:#7A5B12;border:1px solid #F6D08A;}' +
+                    '#dvSesDurum.gor{display:flex;}' +
+                    '#dvSesDurum.tamam{background:#E9F7F3;color:#0E6655;border-color:#9FD9C9;}' +
+                    '#dvSesDurum .dvs-cark{width:15px;height:15px;flex:none;border-radius:50%;' +
+                    'border:2.4px solid #F6D08A;border-top-color:#D68910;animation:dvsDon .8s linear infinite;}' +
+                    '#dvSesDurum.tamam .dvs-cark{display:none;}' +
+                    '@keyframes dvsDon{to{transform:rotate(360deg)}}' +
+                    '@media (prefers-reduced-motion: reduce){#dvSesDurum .dvs-cark{animation:none}}';
+                document.head.appendChild(st);
+            }
+            el = document.createElement('div');
+            el.id = 'dvSesDurum';
+            el.innerHTML = '<span class="dvs-cark"></span><span class="dvs-yazi"></span>';
+            akord.parentNode.insertBefore(el, akord.nextSibling);
+            return el;
+        }
+        function sesDurumYaz(metin, tamam) {
+            const el = sesDurumKutusu();
+            if (!el) return;
+            el.classList.add('gor');
+            el.classList.toggle('tamam', !!tamam);
+            const y = el.querySelector('.dvs-yazi');
+            if (y) y.textContent = metin;
+        }
+
+        function seviyeSesleriniIndir(level) {
+            const kelimeler = (gameData[level] && gameData[level].words) || [];
+            const yollar = [];
+            kelimeler.forEach(w => {
+                if (w.audioSrc && !sesOnbellek[w.audioSrc] && yollar.indexOf(w.audioSrc) < 0) {
+                    yollar.push(w.audioSrc);
+                }
+            });
+            const benim = ++sesIndirmeNo;          /* başka seviyeye geçilirse bu iptal olur */
+            if (!yollar.length) { sesDurumYaz('Sesler hazır — bu seviye zaten indirildi', true); return; }
+            let bitti = 0, hata = 0;
+            sesDurumYaz('Sesler indiriliyor… 0 / ' + yollar.length);
+            const sira = yollar.slice();
+            function isci() {
+                if (!sira.length || benim !== sesIndirmeNo) return Promise.resolve();
+                const yol = sira.shift();
+                return fetch(yol)
+                    .then(c => { if (!c.ok) throw new Error(c.status); return c.blob(); })
+                    .catch(() => new Promise(r => setTimeout(r, 600))   /* bir kez daha dene */
+                        .then(() => fetch(yol))
+                        .then(c => { if (!c.ok) throw new Error(c.status); return c.blob(); }))
+                    .then(b => {
+                        if (benim !== sesIndirmeNo) return;
+                        try { sesOnbellek[yol] = URL.createObjectURL(b); } catch (e) { hata++; }
+                    })
+                    .catch(() => { hata++; })
+                    .then(() => {
+                        if (benim !== sesIndirmeNo) return;
+                        bitti++;
+                        sesDurumYaz('Sesler indiriliyor… ' + bitti + ' / ' + yollar.length);
+                        return isci();
+                    });
+            }
+            Promise.all([isci(), isci(), isci()]).then(() => {
+                if (benim !== sesIndirmeNo) return;
+                sesDurumYaz(hata
+                    ? (yollar.length - hata) + ' / ' + yollar.length + ' ses indi — kalanı çalarken denenecek'
+                    : 'Sesler indirildi — internet kopsa da çalışır', true);
+            });
+        }
+
         // Kelime sesini çalmak için fonksiyon (HTML Audio elementi ile)
          function playAudio() {
              console.log("playAudio called for word. Word object:", currentWord);
              if (!currentWord || !currentWord.audioSrc) { console.warn("No currentWord or audioSrc set for word audio."); return; }
              if (!audio.paused) { audio.pause(); audio.currentTime = 0; }
-             audio.src = currentWord.audioSrc;
+             audio.src = sesKaynak(currentWord.audioSrc);   /* önbellek varsa ondan */
              console.log("Attempting to play word audio:", audio.src);
              const playPromise = audio.play();
              if (playPromise !== undefined) {
@@ -531,6 +647,9 @@
                 // Seçim yapıldı: başlıkta seçili seviyeyi göster ve akordiyonu kapat (mobil)
                 if (seviyeSecili) seviyeSecili.textContent = 'Seviye ' + selectedLevel;
                 seviyeAkordiyonAyarla(false);
+                /* SEÇİLEN SEVİYENİN SESLERİNİ İNDİR (07.10.2026) — oyun
+                   başlamadan, arka planda. Başla tuşu beklemez. */
+                try { seviyeSesleriniIndir(selectedLevel); } catch (e) { console.warn('Ses indirme:', e); }
             }
         });
         // Ayar arttır/azalt (± tuşları)

@@ -134,8 +134,11 @@
         2: 'Yazılışı benzer harflerden <b>yanlış</b> olan hangisidir?',
         3: 'Okunuşu benzer harflerden <b>doğru</b> olan hangisidir?',
         4: 'Yazılışı benzer harflerden <b>doğru</b> olan hangisidir?',
-        5: 'Çizgideki yazılışlardan <b>yanlış</b> olan hangisidir?',
-        6: 'Çizgideki yazılışlardan <b>doğru</b> olan hangisidir?',
+        /* 07.10.2026 — öğretmen: "hangi harf çizgide doğru yazılmış,
+           hangi harf çizgide yanlış yazılmış". Soru artık harfi ve çizgiyi
+           birlikte anıyor; çocuk neye bakacağını baştan biliyor. */
+        5: 'Hangi harf çizgide <b>yanlış</b> yazılmış?',
+        6: 'Hangi harf çizgide <b>doğru</b> yazılmış?',
         7: 'Okunuşu benzer harfleri <b>eşleştir</b>.',
         8: 'Yazılışı benzer harfleri <b>eşleştir</b>.',
         9: 'Boşluğa hangi harf gelir?'
@@ -296,13 +299,26 @@
         return { u: dogruUclu(h), kaydir: [k, k, k] };
     }
 
+    /* YAZILIŞ DAMGASI (07.10.2026) — öğretmen: "doğru ve yanlış
+       kelimeleri kırmızı ve yeşil olsun."
+       Şıkkın kabuğu zaten CEVABIN doğruluğunu boyuyordu; ama bu iki
+       soruda cevap ile YAZILIŞ ters düşebiliyor: "yanlış yazılanı bul"
+       sorusunda doğru cevap, yazılışı BOZUK olan şıktır — eskiden o şık
+       yeşil çerçeveyle işaretleniyordu, yani kötü yazılmış harf yeşil
+       görünüyordu. Artık her şık yazılışına göre de damgalanıyor
+       (as-yaz-dogru / as-yaz-yanlis) ve cevaptan sonra HARFLER kendi
+       yazılışına göre yeşil ya da kırmızı oluyor: çocuk hangi yazılışın
+       doğru olduğunu görerek öğreniyor. */
     function ucluHtml(u, kaydir) {
         var i, c = [], ek;
+        var bozuk = false;
         for (i = 0; i < u.length; i++) {
             ek = (kaydir && kaydir[i]) ? ' ' + kaydir[i] : '';
+            if (ek) bozuk = true;
             c.push('<span class="as-bic' + ek + '">' + kacis(u[i]) + '</span>');
         }
-        return '<span class="as-uclu">' + c.join('') + '</span>';
+        return '<span class="as-uclu ' + (bozuk ? 'as-yaz-yanlis' : 'as-yaz-dogru') + '">' +
+               c.join('') + '</span>';
     }
 
     function cizgiSoru(tip) {
