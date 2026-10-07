@@ -2146,9 +2146,12 @@
             grid-template-columns: repeat(2, minmax(0, 1fr));
             flex: 1 1 auto; align-content: center;
         }
+        /* 07.10.2026 — öğretmen: "harflerin altında ve üstünde daha fazla
+           boşluk olsun". Dikey iç boşluk 10px idi; 73 punto harfin altında
+           üstünde nefes kalmıyordu. */
         .as-sik {
             display: flex; align-items: center; gap: 10px; cursor: pointer;
-            padding: 10px 18px; min-height: 118px; text-align: right;
+            padding: 26px 18px; min-height: 150px; text-align: right;
             background: #fff; border: 1.5px solid #cfd8e3; border-radius: 14px;
             font-family: inherit; transition: border-color .16s, background .16s, transform .12s;
         }
@@ -2230,8 +2233,9 @@
            kelimesi yeşil, benzer olmayan kelimesi kırmızı olsun."
            Tahtadan bakan çocuk soruyu okumadan da ne arayacağını anlasın:
            yeşil = buna benzeyeni bul, kırmızı = benzemeyeni bul. */
-        .as-k-var { color: #0E7C66; font-weight: 900; }
-        .as-k-yok { color: #DC2626; font-weight: 900; }
+        /* .as-metin b turuncu boyuyor; ölçüt kelimesi onu geçmeli. */
+        .as-k-var, .as-metin b.as-k-var { color: #0E7C66; font-weight: 900; }
+        .as-k-yok, .as-metin b.as-k-yok { color: #DC2626; font-weight: 900; }
         /* ÇİZGİDEKİ YAZILIŞ SORULARI (07.10.2026): cevap verildikten
            sonra harfler KENDİ YAZILIŞINA göre renklenir — çizgiye düzgün
            oturan üçlü yeşil, çizgiden kaçan üçlü kırmızı. Şıkkın çerçevesi
@@ -2341,6 +2345,48 @@
         }
         .as-sonsay { font-size: 1rem; font-weight: 700; color: #475569; }
         .as-sonsoz { margin-top: 8px; font-size: .9rem; color: #64748b; line-height: 1.55; }
+
+        /* ===== BÜYÜK EKRAN / AKILLI TAHTA (07.10.2026) ==============
+           Öğretmen: "şıklar 2x2 satır sütun olsun, harflerin altında ve
+           üstünde daha fazla boşluk olsun, yazı daha büyük olsun."
+           Ölçüm: 4K tahtada kart 1560 px'te sabit kalıyor (ekranın %40'ı),
+           şık kutusu 773x118 px, harf 73 px — dört şık ortada küçük bir
+           şerit gibi duruyor, çevresi bomboş. Kart artık ekranla büyüyor,
+           kutular kare oranına yaklaşıyor ve harfler tahtadan okunacak
+           puntoya çıkıyor. İki sütun her kademede korunur. */
+        @media (min-width: 1500px) and (min-height: 900px) {
+            .as-sar { --as-en: min(2000px, 94vw); }
+            .as-siklar { gap: 22px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .as-sik { padding: 34px 22px; min-height: 200px; }
+            .as-h { font-size: 6rem; }
+            .as-uclu { font-size: 5rem; }
+            .as-bic-b { font-size: 6.4rem; }
+            .as-es { font-size: 4.4rem; }
+            .as-ayrac { font-size: 2.4rem; }
+            .as-etiket { font-size: 1.15rem; }
+        }
+        @media (min-width: 2200px) and (min-height: 1250px) {
+            .as-sar { --as-en: min(2900px, 92vw); }
+            .as-siklar { gap: 30px; }
+            .as-sik { padding: 48px 28px; min-height: 290px; }
+            .as-h { font-size: 8.5rem; }
+            .as-uclu { font-size: 7rem; }
+            .as-bic-b { font-size: 9rem; }
+            .as-es { font-size: 6rem; }
+            .as-ayrac { font-size: 3.2rem; }
+            .as-etiket { font-size: 1.5rem; }
+        }
+        @media (min-width: 3000px) and (min-height: 1700px) {
+            .as-sar { --as-en: min(3500px, 92vw); }
+            .as-siklar { gap: 40px; }
+            .as-sik { padding: 70px 34px; min-height: 420px; }
+            .as-h { font-size: 12rem; }
+            .as-uclu { font-size: 9.5rem; }
+            .as-bic-b { font-size: 12.5rem; }
+            .as-es { font-size: 8rem; }
+            .as-ayrac { font-size: 4.4rem; }
+            .as-etiket { font-size: 2rem; }
+        }
 
         /* --- orta ekran: punto kademeli iner, düzen bozulmaz --- */
         @media (max-width: 1400px) {

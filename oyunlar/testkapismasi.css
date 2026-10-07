@@ -9,7 +9,7 @@ html { font-size: clamp(16px, 1.6vw, 24px); }
 
         html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
 
-        body { font-family: 'Rubik', sans-serif; background-color: var(--bg-start); background-image: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%); color: var(--text-color); text-align: center; text-rendering: optimizeLegibility; }
+        body { font-family: 'Arakom', 'Rubik', sans-serif; background-color: var(--bg-start); background-image: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%); color: var(--text-color); text-align: center; text-rendering: optimizeLegibility; }
         button, input, select { font-family: inherit; }
 
         #game-wrapper { width: 100%; height: 100%; position: relative; }
@@ -200,15 +200,28 @@ html { font-size: clamp(16px, 1.6vw, 24px); }
              .game-over-overlay { padding: 20px; width: 90%; }
          }
 
-        html, body { font-family: 'Rubik', sans-serif !important; }
+        /* YAZI TİPİ ARAKOM (07.10.2026) — öğretmen: "yazı tipi arakom
+           olsun test kapışmasında". Sitenin kendi yazı tipi; Arapça da
+           Türkçe de aynı kalemden çıksın. Rubik yalnız YEDEK: Arakom'da
+           bulunmayan bir işaret (ok, emoji) olursa tarayıcı o harfi
+           ondan alır, gerisi Arakom kalır. */
+        html, body { font-family: 'Arakom', 'Rubik', sans-serif !important; }
         .quiz-question, .status-word { font-family: 'Arakom', 'Noto Naskh Arabic', sans-serif !important; }
-        button, input, select, .start-title, h2, h3, label, .quiz-progress, p { font-family: 'Rubik', sans-serif !important; }
+        button, input, select, .start-title, h2, h3, label, .quiz-progress, p,
+        .kap-bas, .kap-not, .quiz-question, .status-word { font-family: 'Arakom', 'Rubik', sans-serif !important; }
         .quiz-option-btn { font-family: 'Arakom', 'Noto Naskh Arabic', 'Rubik', sans-serif !important; }
+        /* Geri sayım, puan baloncukları ve sonuç ekranı da dâhil */
+        .countdown-overlay, .score-effect, #quiz-start-btn, .win-buttons,
+        #quiz-win-text, .as-sonkart, .game-over-overlay
+            { font-family: 'Arakom', 'Rubik', sans-serif !important; }
 
 /* ============ TEK KİŞİLİK MASAÜSTÜ: TÜM EKRAN, HER ŞEY BÜYÜK ============ */
 @media (min-width: 1100px) {
     #quiz-screen.single-player-mode { padding-top: 15px; }
-    #quiz-screen.single-player-mode #quiz-container { max-width: min(1350px, 94vw); }
+    /* 07.10.2026 — öğretmen: "tuşlar yatay olarak dar olmuş, masaüstünü
+       iyi kullan, tüm ekranı kullan." Ölçüldü: 1350px'te sabitti, 2560
+       genişlikte 1210 piksel boş kalıyordu. Artık ekranla büyüyor. */
+    #quiz-screen.single-player-mode #quiz-container { max-width: min(2300px, 94vw); }
     #quiz-screen.single-player-mode .quiz-player-area { gap: 2.2vh; padding: 2vh 2vw; }
     #quiz-screen.single-player-mode .quiz-player-area .quiz-progress { font-size: min(2.1rem, 3.6vh); width: 100%; }
     #quiz-screen.single-player-mode .quiz-player-area .quiz-question {
@@ -218,6 +231,63 @@ html { font-size: clamp(16px, 1.6vw, 24px); }
         font-size: min(2.6rem, 5vh); min-height: min(96px, 12vh); padding: 1vh 20px;
     }
     #quiz-screen.single-player-mode .quiz-player-area .quiz-options { gap: 1.8vh; }
+}
+
+/* GENİŞ MASAÜSTÜ — TEK KİŞİLİK: dört şık 1900 px'lik tek sütunda uzun
+   şeritlere dönüyordu; iki sütuna alınca 2x2 blok oluyor. Beş şıklı
+   soruda sonuncusu zaten tam satır. */
+@media (min-width: 1700px) {
+    #quiz-screen.single-player-mode .quiz-player-area .quiz-options {
+        grid-template-columns: 1fr 1fr;
+    }
+    #quiz-screen.single-player-mode .quiz-player-area .quiz-options.five-options
+        .quiz-option-btn:last-child { grid-column: 1 / -1; }
+}
+
+/* BAŞLANGIÇ EKRANI MASAÜSTÜNDE (07.10.2026): 400 px'lik tek sütun
+   2560'lık ekranda iğne gibi kalıyordu; ayar chip'leri de iki satıra
+   sarıyordu. Masaüstünde kart genişler, yazılar büyür, chip'ler tek
+   satırda kalır. */
+@media (min-width: 1200px) {
+    .start-options { max-width: min(760px, 62vw); gap: 20px; }
+    .start-options .option-group label { font-size: 1.45rem; }
+    .player-button, #lesson-select, #start-game-btn { font-size: 1.5rem; padding: 16px 20px; }
+    .kap-bas { font-size: 1.22rem; }
+    .kap-secenek button { font-size: 1.18rem; padding: 11px 18px; min-width: 60px; }
+    .kap-secenek.kap-genis button { font-size: 1.1rem; padding: 11px 16px; white-space: nowrap; }
+    .kap-not { font-size: 1.08rem; }
+}
+
+/* ============ İKİ KİŞİLİK MASAÜSTÜ: TÜM EKRAN (07.10.2026) ============
+   Kapışmada kapsayıcı 1500 px'te sabitti: 1920'de 420, 2560'ta 1060
+   piksel boş kalıyor, her oyuncuya 743 px düşüyordu — şıklar dar, yazı
+   küçük. Artık ekranın neredeyse tamamı kullanılıyor; soru ve şıklar
+   yüksekliğe göre büyüyor (tek kişilik bloğunun aynı mantığı). */
+@media (min-width: 1200px) {
+    #quiz-screen:not(.single-player-mode) #quiz-container {
+        max-width: min(2600px, 96vw); gap: min(48px, 3vw);
+    }
+    #quiz-screen:not(.single-player-mode) .quiz-player-area { padding: 1.6vh 1.6vw; gap: 1.8vh; }
+    #quiz-screen:not(.single-player-mode) .quiz-player-area .quiz-progress {
+        font-size: min(1.9rem, 3.2vh);
+    }
+    #quiz-screen:not(.single-player-mode) .quiz-player-area .quiz-question {
+        min-height: 24vh; font-size: min(5.5rem, 11vh); margin-bottom: 0;
+    }
+    /* ŞIKLAR 2x2 (07.10.2026) — öğretmen: "sanki mobil için yapılmış".
+       Haklı: şıklar telefondaki gibi TEK SÜTUNDA alt alta diziliyordu,
+       1123x203 piksellik dört uzun şerit. Masaüstünde her oyuncunun kendi
+       alanı 1200 pikseli geçiyor; iki sütuna alınca şıklar ~580x300'lük
+       kare bloklar oluyor, ekran yatayda da kullanılıyor. Beş şıklı
+       soruda sonuncusu tam satır kalır. */
+    #quiz-screen:not(.single-player-mode) .quiz-player-area .quiz-options {
+        gap: 1.4vh min(26px, 1.6vw); grid-template-columns: 1fr 1fr;
+    }
+    #quiz-screen:not(.single-player-mode) .quiz-player-area .quiz-options.five-options
+        .quiz-option-btn:last-child { grid-column: 1 / -1; }
+    #quiz-screen:not(.single-player-mode) .quiz-player-area .quiz-option-btn {
+        font-size: min(2.2rem, 4.2vh); min-height: min(88px, 10vh); padding: 1vh 18px;
+    }
 }
 
 

@@ -656,13 +656,21 @@
          Soru kökü (Arapça hece/kelime/işaret) ve şıklar. Katman
          alfabe_akordiyon.js'in; buradaki kurallar yalnız Okuma'nın
          kendi ögelerine dokunur. */
+      /* 07.10.2026 — öğretmen: "okuma kısmındaki denemede şıklar dikey
+         olarak çok daralmış bozulmuş."
+         Sebebi şıklar değil, SORU KÖKÜYDÜ: 13vh punto x 1.45 satır
+         yüksekliği + iç boşluk, sahnenin ~20vh'ını yiyordu; işaret
+         sorusunda (24vh) bu ~42vh'a çıkıyordu. Geriye kalan yükseklikte
+         iki şık satırı ince şeritlere iniyordu. Kök küçültüldü, satır
+         yüksekliği ve iç boşluk kısıldı; şıklara da aşağıda taban
+         yükseklik verildi. Kök hâlâ tahtadan rahat okunuyor. */
       '#ak-tam .oc-sor{font-family:"arakom","Noto Naskh Arabic","Amiri",serif;direction:rtl;' +
-        'text-align:center;font-size:clamp(3.4rem,13vh,8.5rem);line-height:1.45;color:#0F2A43;' +
-        'font-weight:400;margin:2px 0 10px;padding:.10em 0 .26em}' +
+        'text-align:center;font-size:clamp(3rem,9.5vh,7rem);line-height:1.25;color:#0F2A43;' +
+        'font-weight:400;margin:2px 0 6px;padding:.06em 0 .18em}' +
       /* Tek başına bir işaretin mürekkebi harfinkinin beşte biri kadar;
          kaşideli de olsa aynı puntoda nokta gibi kalıyor — bu yüzden
          işaret sorusunda kök iki katına yakın büyütülüyor. */
-      '#ak-tam .oc-sor.oc-sor-is{font-size:clamp(6rem,24vh,15rem);padding:.06em 0 .30em}' +
+      '#ak-tam .oc-sor.oc-sor-is{font-size:clamp(5rem,15vh,11rem);padding:.04em 0 .20em}' +
       '#ak-tam .oc-sik-ar{font-family:"arakom","Noto Naskh Arabic","Amiri",serif;direction:rtl;' +
         'font-size:clamp(2rem,6.4vh,4.4rem);line-height:1.5;color:#1f2937;font-weight:400}' +
       '#ak-tam .oc-sik-lat{direction:ltr;font-weight:800;letter-spacing:.4px;' +

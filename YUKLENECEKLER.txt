@@ -7693,3 +7693,76 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
                                 anlıyor: yeşil = benzeyeni bul,
                                 kırmızı = benzemeyeni bul. v20261007d
   alfabe.html                   alfabe_sinav.js?v=11, alfabe.css?v=20261007d
+
+07.10.2026 — SINAV ŞIKLARI BÜYÜDÜ + OKUMA DENEMESİ DÜZELDİ
+  okumayazma/alfabe.css         1) ÖLÇÜT KELİMESİNİN RENGİ TUTMUYORDU:
+                                   .as-metin b turuncu boyuyor, aynı
+                                   öncelikte yazılan .as-k-var/.as-k-yok
+                                   onu geçemiyordu — "olan" yeşil değil
+                                   TURUNCU çıkıyordu. Öncelik düzeltildi.
+                                2) ŞIK KUTUSU: dikey iç boşluk 10px'ti,
+                                   73 punto harfin altında üstünde nefes
+                                   yoktu; 26px'e çıktı, taban yükseklik
+                                   118 -> 150 px.
+                                3) BÜYÜK EKRAN KADEMELERİ (4K tahtada kart
+                                   1560px'te sabitti, ekranın %40'ı; dört
+                                   şık ortada küçük bir şerit gibiydi):
+                                     >=1500x900   kart 2000px, harf  6rem
+                                     >=2200x1250  kart 2900px, harf  8.5rem
+                                     >=3000x1700  kart 3500px, harf 12rem
+                                   İki sütun her kademede korunur (2x2).
+                                   Ölçüldü — 4K: kutu 773x118 -> 1730x420,
+                                   harf 73 -> 192 px. v20261007e
+  okumayazma/alfabe_sinav.js    "Sırasıyla: baş — orta — son yazılışı"
+                                ipucu satırı kaldırıldı (öğretmen: "şu
+                                detaylara gerek yok"). v12
+  okumayazma/okuma-cevir.js     OKUMA DENEMESİNDE ŞIKLAR DARALMIŞTI.
+                                Sebep şıklar değil SORU KÖKÜYDÜ: 13vh punto
+                                x 1.45 satır + iç boşluk sahnenin ~23vh'ını,
+                                işaret sorusunda (24vh) ~43vh'ını yiyordu;
+                                kalan yükseklikte iki şık satırı ince şeride
+                                iniyordu. Kök 9.5vh'a (işaret 15vh'a),
+                                satır yüksekliği 1.25'e çekildi. v36
+  okumayazma/alfabe_akordiyon.js Şıklara taban yükseklik ve gerçek dikey iç
+                                boşluk: min-height:0 -> clamp(84px,13vh,
+                                230px), padding .5vh -> clamp(10px,2vh,36px).
+                                Taşarsa .ak-sahne zaten kaydırıyor. v12
+  alfabe.html                   sinav v12, css v20261007e, okuma-cevir v36,
+                                akordiyon v12
+
+07.10.2026 — TEST KAPIŞMASI: MASAÜSTÜNDE TÜM EKRAN
+  oyunlar/testkapismasi.css     Kapsayıcı 1500 px'te sabitti; ekran
+                                büyüdükçe oyun büyümüyor, kenarlar boş
+                                kalıyordu. Ölçüldü (iki kişilik):
+                                  1920 : kapsayıcı 1500, boş kenar 420,
+                                         oyuncu alanı 743, soru 96 px
+                                  2560 : kapsayıcı 1500, boş kenar 1060,
+                                         oyuncu alanı 743, soru 96 px
+                                Yeni masaüstü bloğu (>=1200px) ile:
+                                  1920 : 1843 / boş 77 / alan 898 / 118.8 px
+                                  2560 : 2458 / boş 102 / alan 1205 / 132 px
+                                         şık 1123x203, yazı 52.8 px
+                                Tek kişilik kapsayıcı da 1350 -> min(2300px,
+                                94vw); 1700 px üstünde dört şık TEK sütunda
+                                uzun şeritlere dönüyordu, iki sütuna alındı
+                                (2x2). Beş şıklı soruda sonuncusu tam satır.
+                                Soru ve şık puntoları yüksekliğe göre
+                                büyüyor (tek kişilikteki mantığın aynısı).
+                                ŞIKLAR 2x2 (öğretmen: "sanki mobil için
+                                yapılmış"): şıklar telefondaki gibi TEK
+                                SÜTUNDA alt alta diziliyordu — 2560'ta
+                                1123x203'lük dört uzun şerit. İki sütuna
+                                alındı: 2560'ta 548x426, 1920'de 405x304
+                                kare bloklar. Ekran yatayda da kullanılıyor.
+                                YAZI TİPİ ARAKOM (öğretmen isteği): html,
+                                body, tuşlar, etiketler, ayar chip'leri,
+                                geri sayım, puan baloncukları ve sonuç
+                                ekranı Arakom. Rubik yalnız YEDEK —
+                                Arakom'da olmayan bir işaret (ok, emoji)
+                                olursa tarayıcı o harfi ondan alır.
+                                BAŞLANGIÇ EKRANI da masaüstünde genişledi:
+                                400 px'lik sütun 2560'ta iğne gibiydi,
+                                min(760px,62vw) oldu; ayar chip'leri artık
+                                iki satıra sarmıyor.
+                                v11
+  testkapismasi.html            testkapismasi.css?v=11

@@ -361,7 +361,10 @@
         return {
             tip: tip, bicim: 'test',
             metin: TIP_SORU[tip],
-            ustlik: '<div class="as-ipucu">Sırasıyla: <b>baş</b> — <b>orta</b> — <b>son</b> yazılışı.</div>',
+            /* 07.10.2026 — öğretmen: "şu detaylara gerek yok: Sırasıyla
+               baş — orta — son yazılışı." Soru zaten çizgiyi işaret
+               ediyor; açıklama satırı yer kaplıyordu, kaldırıldı. */
+            ustlik: '',
             siklar: karistir(siklar)
         };
     }

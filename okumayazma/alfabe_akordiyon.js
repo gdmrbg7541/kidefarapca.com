@@ -922,7 +922,12 @@
             /* 05.10.2026 — öğretmen: "şıklar daha büyük olsun". Ölçüm: kutu
                677x266 px iken harfler 72 px kalıyordu. Harfler büyütüldü,
                boş alan harfe gitsin diye kutunun iç boşluğu kısıldı. */
-            '#ak-tam .as-sik{min-height:0;padding:.5vh 1vw;gap:1vw}',
+            /* 07.10.2026 — şıklar dikeyde çökmesin: taban yükseklik ve
+               gerçek bir dikey iç boşluk. Eskiden min-height:0 idi, satır
+               kalan yüksekliği paylaşınca ince şeride iniyordu. Toplam
+               taşarsa .ak-sahne zaten kaydırıyor. */
+            '#ak-tam .as-sik{min-height:clamp(84px,13vh,230px);',
+            '  padding:clamp(10px,2vh,36px) 1vw;gap:1vw}',
             '#ak-tam .as-mark{width:clamp(32px,4.6vh,56px);height:clamp(32px,4.6vh,56px);',
             '  font-size:clamp(14px,2.2vh,26px);flex:none}',
             /* SATIR + SARMA: harf çifti soruları (د — ج) yan yana durmalı;
