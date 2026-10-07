@@ -1441,9 +1441,14 @@ body.admin-dock-collapsed #admin-dock-tab{ display:flex; align-items:center; gap
    MASAÜSTÜ — SINIF ETKİNLİKLERİ KARTLARI GENİŞ             (Geylani)
    Bu ızgara ortak kuraldan ötürü YATAY KAYDIRAN bir flex şeridiydi;
    önce saran bir ızgaraya çevrildi ve kartlar 126 pxe kadar küçültüldü.
-   Kartlar tahtada uzaktan okunmadığı için ölçü BÜYÜTÜLDÜ: sütun alt
-   sınırı 250 px, yazılar ve ikon buna göre ayarlandı. Bir satıra daha az
-   ama okunur kart giriyor.
+   Sonra tahtada uzaktan okunsun diye büyütüldü (sütun alt sınırı 250 px).
+   07.10.2026 — öğretmen: "etkinlik kartlarını daha küçük yap, yatay
+   olarak biraz daralt, bi satıra 5 tane sığsın." Sınıflara oyun kartları
+   eklenince satır sayısı arttı; sütun alt sınırı yerine SÜTUN SAYISI
+   veriliyor artık: geniş ekranda tam 5, sonra 4, 3, 2. Kart daraldığı
+   için ikon, başlık, açıklama ve rozet de orantılı küçültüldü — yoksa
+   yazı kartı taşırıyordu. Tahtadan okunurluk korunsun diye başlık hâlâ
+   iri (1.26em).
    Ortak kuralların hepsi !important olduğu için burada da gerekiyor.
    İkonun SVG boyu em ile türer (svg = 1.6em), font-size büyüyünce
    görsel de büyür. Mobil blok (768px ve altı) aynen duruyor.
@@ -1451,12 +1456,21 @@ body.admin-dock-collapsed #admin-dock-tab{ display:flex; align-items:center; gap
 @media (min-width: 769px) {
   #imam-hatip .ih-kartlar .mobile-scroll-grid-single {
     display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
     grid-auto-rows: minmax(0, 1fr);
     overflow: visible !important;
     scroll-snap-type: none !important;
     padding: 10px 2px 12px !important;
-    gap: 18px !important;
+    gap: 12px !important;
+  }
+  /* Dar ekranda beş kart okunmaz hâle gelir: kademeli iniyor. */
+  @media (max-width: 1180px) {
+    #imam-hatip .ih-kartlar .mobile-scroll-grid-single {
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  }
+  @media (max-width: 940px) {
+    #imam-hatip .ih-kartlar .mobile-scroll-grid-single {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
   }
   #imam-hatip .ih-kartlar .mobile-scroll-grid-single .game-card {
     flex: initial !important;
@@ -1469,23 +1483,30 @@ body.admin-dock-collapsed #admin-dock-tab{ display:flex; align-items:center; gap
        20 px iken okun altında 1 px kalıp kart 3 px taşıyordu. Boşluk
        YALNIZ o karta verilirse rozeti 6 px yukarı kaçıyor — bu yüzden
        hepsine aynı ölçü veriliyor, rozetler aynı çizgide kalıyor. */
-    padding: 20px 16px 26px !important;
-    border-radius: 14px;
+    padding: 14px 10px 20px !important;
+    border-radius: 13px;
   }
   /* İkon kutusu: kart genişledikçe SVG de büyüyordu (.kg width:100%),
      240 pxe çıkıp kartı yutuyordu. Kutuya sabit ölçü verildi; SVG onun
      %100'ü olduğu için ikon da bu ölçüde kalıyor. */
   #imam-hatip .ih-kartlar .mobile-scroll-grid-single .default-game-emoji,
   #imam-hatip .ih-kartlar .mobile-scroll-grid-single .kss-level-emoji {
-    font-size: 3.15em !important;
-    width: 94px !important;
-    height: 94px !important;
+    font-size: 2.35em !important;
+    width: 70px !important;
+    height: 70px !important;
     min-height: 0 !important;
     margin: 0 auto 10px !important;
     flex: none !important;
   }
+  /* Oyun kartlarının ikon halkası (.oyun-ikon) kendi ölçüsünü taşıyor;
+     daralan kartta o da küçülmeli. */
+  #imam-hatip .ih-kartlar .mobile-scroll-grid-single .oyun-ikon {
+    width: 66px !important; height: 66px !important;
+    font-size: 2.05em !important; margin-bottom: 8px !important;
+  }
+  #imam-hatip .ih-kartlar .mobile-scroll-grid-single .mrf { font-size: .74em; }
   #imam-hatip .ih-kartlar .mobile-scroll-grid-single .game-card h3 {
-    font-size: 1.52em !important;
+    font-size: 1.26em !important;
     min-height: 0 !important;
     line-height: 1.25;
     margin: 0 0 7px;
@@ -1493,9 +1514,9 @@ body.admin-dock-collapsed #admin-dock-tab{ display:flex; align-items:center; gap
   /* Kart daralınca açıklama beş satıra çıkıp kartı yeniden uzatıyordu:
      en fazla dört satır gösterilir. */
   #imam-hatip .ih-kartlar .mobile-scroll-grid-single .game-card-description {
-    font-size: 1.02em !important;
+    font-size: .88em !important;
     min-height: 0 !important;
-    line-height: 1.4 !important;
+    line-height: 1.38 !important;
     margin-bottom: 6px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -1503,8 +1524,8 @@ body.admin-dock-collapsed #admin-dock-tab{ display:flex; align-items:center; gap
     overflow: hidden;
   }
   #imam-hatip .ih-kartlar .mobile-scroll-grid-single .status-badge {
-    font-size: .92em;
-    padding: 7px 14px;
+    font-size: .8em;
+    padding: 6px 11px;
     white-space: nowrap;
     line-height: 1.35;
     margin-top: 11px;

@@ -284,7 +284,7 @@
     <!-- Tekil CSS Dosyası -->
     <link rel="stylesheet" href="hesap/kurslar.css?v=20261004d">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css?v=20260825a">
+    <link rel="stylesheet" href="index.css?v=20261007a">
     <link rel="stylesheet" href="hesap/qrgiris.css?v=20261005d">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
@@ -3644,7 +3644,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="oyunlar/tk_ortaokul.js?v=20260924h"></script>
     <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
     <script src="muhadese/muhadese.js?v=20260924h"></script>
-    <script src="sistem/sinifmodul.js?v=20261002a"></script>
+    <script src="sistem/sinifmodul.js?v=20261007a"></script>
     <!-- «YILLIK ÇIKTILAR» KARTI KALDIRILDI (06.10.2026) — öğretmen:
          "yıllık çıktılar kartını kaldır sınıflardan, zaten sınıf defterleri
          var o işi görüyor, tamamen kaldırabilirsin."
@@ -3659,7 +3659,25 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          harf-i ta'rîf sunusunu, tüm sınıflara kelime çarkını ve sözlüğü,
          10'a kelime fabrikasını, 9'a Niçin Arapça sunumunu kart olarak
          ekle." Hangi kart hangi sınıfta: sistem/eksunukart.js -->
-    <script src="sistem/eksunukart.js?v=1"></script>
+    <script src="sistem/eksunukart.js?v=2"></script>
+    <!-- SINIF OYUN KARTLARI (07.10.2026) — öğretmen: "oyunlar
+         kategorisinden 5. sınıf kategorisine merak çarkı, hangi harf,
+         klavye oyununu ekleyelim, tasarımlar aynı olsun" + "6. sınıflar
+         için merak çarkı, hangi harf, klavye oyunu, hareke avcısı, kökü
+         tanı, ikiki kartları olsun."
+         Kartların ÇİZİMLERİ burada değil: sistem/kartcizim.js'te duruyor
+         ve bu dosyadaki (index.html) Oyunlar kartlarından üretiliyor
+         (_kaynak/uretici/kartCizimUret.py). Böylece aynı oyunun çizimi
+         iki yerde ayrı ayrı tutulmuyor; anasayfadaki değişirse betik
+         yeniden çalıştırılır. kartcizim ÖNCE yüklenmeli. -->
+    <script src="sistem/kartcizim.js?v=3"></script>
+    <script src="sistem/sinifoyun.js?v=3"></script>
+    <!-- SOSYAL BÖLÜMDE TANITIM (07.10.2026) — öğretmen: "sosyal
+         kısımda beni tanıtan bi yazı ekleyelim, sosyal popup
+         açıldığında Geylani Demirbağ yazsın, oraya tıklayınca temel
+         bilgilerim görünsün." Satır «Sosyal Hesaplar» başlığının
+         altına giriyor; metnin tamamı sistem/tanitim.js içinde. -->
+    <script src="sistem/tanitim.js?v=4"></script>
     <!-- İmam Hatip 7/9/10 «Kitap Etkinlikleri» kartı: sınıfın kart
          ızgarasına girer, ünite listesi kartın altında açılır. 7. sınıfta
          yalnız MEB 2027-2028 kitabı seçiliyken görünür. -->

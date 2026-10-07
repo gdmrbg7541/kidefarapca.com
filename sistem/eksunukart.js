@@ -61,6 +61,23 @@
 
   function hepsi() { return true; }
 
+  /* KENDİ KATEGORİSİNDEKİ ÇİZİM (07.10.2026) — öğretmen: "öğretmen özel
+     kategorisinden eklediklerimiz de aynı tasarım olsun."
+     Kelime Çarkı, Sözlük ve Kelime Fabrikası anasayfada kendi kategorisinde
+     ayrıntılı, hareketli birer çizimle duruyor; sınıf kutusunda ise burada
+     elle çizilmiş sade çizgi simgelerle görünüyorlardı — aynı kart iki
+     türlü görünüyordu. Artık sınıf kartı da kategorideki çizimi kullanıyor
+     (sistem/kartcizim.js, index.html'den üretiliyor). Çizim bulunamazsa
+     eski sade simge yedek olarak kalıyor, kart kaybolmuyor.
+     Niçin Arapça? ve Harf-i Ta'rîf birer SUNU; anasayfada kartları yok,
+     onlar sade simgeleriyle kalıyor. */
+  function kendiCizimi(ad, yedek) {
+    return function () {
+      var c = window.KidefKartCizim;
+      return (c && c[ad]) ? c[ad] : yedek;
+    };
+  }
+
   var KARTLAR = [
     {
       id: 'nicinarapca',
@@ -88,7 +105,7 @@
       sira: 40,
       renk: '#E67E22',
       aciklama: function () { return 'Çarkı çevir, kelimeyi kur'; },
-      svg: function () { return IK.cark; },
+      svg: kendiCizimi('kelimecarki', IK.cark),
       veriVar: hepsi,
       url: function () { return 'kelimecarki.html'; }
     },
@@ -98,7 +115,7 @@
       sira: 42,
       renk: '#2E86DE',
       aciklama: function () { return 'Kelime ara, favorine ekle'; },
-      svg: function () { return IK.sozluk; },
+      svg: kendiCizimi('sozluk', IK.sozluk),
       veriVar: hepsi,
       url: function () { return 'sozluk.html'; }
     },
@@ -108,7 +125,7 @@
       sira: 44,
       renk: '#0E7C66',
       aciklama: function () { return 'Kökten kelime üret — öğütücü ve atölye'; },
-      svg: function () { return IK.fabrika; },
+      svg: kendiCizimi('kelimefabrikasi', IK.fabrika),
       veriVar: function (s) { return (s === 10) ? { rozet: 'Oyun' } : null; },
       url: function () { return 'sarf.html'; }
     }

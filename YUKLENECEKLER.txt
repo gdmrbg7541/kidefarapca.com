@@ -7014,3 +7014,211 @@ karşılığı kondu — giriş yapan, gördüğü düzenin aynısını buluyor.
 Denendi: gerçek panelde boş kurum ① Seviye ekle ② henüz seviye yok;
 seviye eklendikten sonra ① Seviye ekle ② 5. sınıf katı. Misafirde
 ① Seviye ekle ② Henüz seviye yok. Hata yok.
+
+── 07.10.2026 · SINIFLARA OYUN KARTLARI (5, 6, 7) ───────────────────────
+Öğretmen:
+ · "oyunlar kategorisinden 5. sınıf kategorisine merak çarkı, hangi harf,
+    klavye oyununu ekleyelim, tasarımlar aynı olsun, öğretmen özel
+    kategorisinden eklediklerimiz de aynı tasarım olsun."
+ · "6. sınıflar için merak çarkı, hangi harf, klavye oyunu, hareke
+    avcısı, kökü tanı, ikiki kartları olsun."
+ · "7. sınıfta merak çarkı, hangi harf, hareke avcısı, kökü tanı, kökten
+    gövdeye, klavye oyunu, ikiki oyunları olsun aynı tasarımla."
+
+HANGİ OYUN HANGİ SINIFTA (sistem/sinifoyun.js — yeni dosya)
+   Merak Çarkı     5, 6, 7      Hareke Avcısı      6, 7
+   Hangi Harf?     5, 6, 7      Kökü Tanı          6, 7
+   Klavye Oyunu    5, 6, 7      Kökten Gövdeye        7
+                                İkiki              6, 7
+Sıra ders akışına göre: ısınma → harf/hareke → kök → klavye → türetme.
+Oyunlar ızgaranın sonunda, belgelerden ve ek kartlardan sonra duruyor.
+Başka sınıfa eklemek için o oyunun "siniflar" dizisine sayı yazmak yeter.
+
+TASARIM: gradyan, ikon halkası (oyun-ikon), Maarif etiketi ve rozet
+anasayfadaki Oyunlar kartının birebir aynısı.
+
+ÇİZİMLER KOPYALANMADI — sistem/kartcizim.js (yeni dosya) index.html'deki
+kartlardan ÜRETİLİYOR (_kaynak/uretici/kartCizimUret.py). Elle kopyalansa
+aynı oyunun çizimi iki yerde dururdu ve biri değişince öbürü eskirdi.
+Anasayfadaki çizim değişince betik yeniden çalıştırılır, sınıf kartları
+kendiliğinden uyar. Çizim bulunamazsa kart hiç basılmıyor (yarım kart
+basmaktansa hiç basmamak).
+
+ÖĞRETMEN ÖZEL KARTLARI DA DÜZELTİLDİ: Kelime Çarkı, Sözlük ve Kelime
+Fabrikası sınıf kutusunda elle çizilmiş sade çizgi simgelerle
+görünüyordu; artık kendi kategorisindeki ayrıntılı çizimi taşıyorlar
+(aynı kart iki türlü görünmüyor). Çizim bulunamazsa eski sade simge yedek
+kalıyor. Niçin Arapça? ve Harf-i Ta'rîf birer SUNU, anasayfada kartları
+yok; onlar sade simgeleriyle kaldı.
+
+sistem/sinifmodul.js'e üç alan eklendi (var olan kartlar etkilenmedi):
+  ikonSinif  ikon kabının sınıfı (oyun kartlarında 'oyun-ikon')
+  maarif     açıklamanın altındaki Maarif etiketi
+  ekstil     kendi gradyanını style= ile taşıyan kartlar için
+
+Denendi: 5. sınıf 9 kart (3 oyun), 6. sınıf 13 kart (6 oyun), 7. sınıf
+13 kart (7 oyun); hepsinin gradyanı, oyun-ikon kabı ve çizimi yerinde.
+Kelime Çarkı'nın çizimi 161 → 1923, Sözlük 161 → 859 karaktere çıktı
+(yani sade simge değil, kendi çizimi). Sayfa hatası yok.
+
+YENİ DOSYALAR: sistem/sinifoyun.js · sistem/kartcizim.js ·
+_kaynak/uretici/kartCizimUret.py (üretici, siteye gitmesi gerekmiyor
+ama index'e bağlı değil; kartcizim.js ve sinifoyun.js index'e bağlı).
+
+── 07.10.2026 · OYUN KARTLARI 8, 9, 10 + ÇAKIŞMA DENETİMİ ───────────────
+Öğretmen: "8. sınıfa tüm oyun kartlarını ekle, ama zaten bazıları varsa
+onları atla; 9. sınıfa merak çarkı, hangi harf, hareke avcısı, kökü tanı,
+klavye oyununu ekleyelim; 10. sınıfa ise merak çarkı ve tüm oyun
+kartlarını ekleyelim, önceden eklenen varsa dikkat et iki kere
+eklemeyelim."
+
+Üç oyun daha katalogdan alındı: İsim x 4, Hafıza Kartları, Zamanla Yarış.
+Toplam on oyun.
+   Merak Çarkı · Hangi Harf · Klavye Oyunu      5, 6, 7, 8, 9, 10
+   Hareke Avcısı · Kökü Tanı                       6, 7, 8, 9, 10
+   İkiki                                              6, 7, 8, 10
+   Kökten Gövdeye                                        7, 8, 10
+   İsim x 4 · Hafıza Kartları · Zamanla Yarış               8, 10
+
+İKİ KERE BASILMIYOR — ve bu elle budanarak değil, denetimle sağlanıyor:
+her oyun basılmadan önce o sınıfta aynı adda ya da aynı sayfaya giden
+bir kart var mı diye bakılıyor (sinifoyun.js → zatenVar). Adres
+karşılaştırması "?" öncesine bakıyor, böylece "testkapismasi.html?sinif=8"
+ile sade "testkapismasi.html" aynı sayılıyor.
+Pratikte Bilgi Yarışması ve Test Kapışması 8, 9 ve 10'a zaten başka bir
+modülden giriyor ve ORADAKİ sürümleri daha iyi: "?sinif=N" ile o sınıfın
+kendi sorularını açıyorlar. Denetim onları eliyor, sınıfa özel sürüm
+yerinde kalıyor. Yarın başka bir modül başka bir oyunu bir sınıfa
+eklerse burası kendiliğinden susar.
+
+Denendi: 5→3 oyun, 6→6, 7→7, 8→10, 9→5, 10→10. Hiçbir sınıfta çift kart
+yok; Bilgi Yarışması ve Test Kapışması her sınıfta tek ve sınıfa özel
+sürümüyle duruyor. Sayfa hatası yok.
+
+── 07.10.2026 · SINIF KARTLARI BİR SATIRA BEŞ ───────────────────────────
+Öğretmen: "etkinlik kartlarını daha küçük yap, yatay olarak biraz daralt,
+bi satıra 5 tane sığsın."
+
+Kuralın yeri index.css'teki "MASAÜSTÜ — SINIF ETKİNLİKLERİ KARTLARI
+GENİŞ" bloğu (zaten bu iş için açılmış blok; yeni bir blok açılmadı).
+Sütun alt sınırı (minmax 250px) yerine artık SÜTUN SAYISI veriliyor:
+geniş ekranda tam 5, 1180px altında 4, 940px altında 3, 768px altında
+mobil şerit aynen duruyor.
+Kart daraldığı için orantılı küçültüldü: ikon 94→70px, oyun kartlarının
+halkası 78→66px, başlık 1.52→1.26em, açıklama 1.02→.88em, rozet
+.92→.8em, kart boşluğu 20/16/26→14/10/20, aradaki boşluk 18→12px.
+Tahtadan okunurluk gözetildi: başlık hâlâ iri.
+DİKKAT: ilk denememde kuralı index.html'e yazmıştım, tutmadı — bu
+ızgaranın asıl kuralı index.css'te ve !important taşıyor
+(.mobile-scroll-grid-single ortak kuralını geçmek için). Geçici blok
+kaldırıldı, değişiklik asıl yerine yazıldı.
+Denendi: 1500px → 5 sütun (kart 249px), 1280 → 5 (206px), 1000 → 4,
+800 → 3. 8. sınıfın 16 kartı beşerli satırlarda, taşma yok.
+
+── 07.10.2026 · SOSYAL BÖLÜMDE TANITIM ──────────────────────────────────
+Öğretmen: "sitede sosyal kısımda beni tanıtan bi yazı ekleyelim, sosyal
+popup açıldığında Geylani Demirbağ yazsın, oraya tıklayınca temel
+bilgilerim görünsün."
+
+«Sosyal Hesaplar» başlığının hemen altında bir satır: yuvarlak içinde
+baş harfler, yanında "Geylani Demirbağ · Arapça öğretmeni ·
+kidefarapca.com". Basınca altında tanıtım açılıyor:
+ · kısa bir paragraf (site niçin var)
+ · GÖREV YERLERİ — 2018-2022 Şırnak · 2022-2026 İstanbul · 2026- Van/Erciş
+ · HAZIRLADIKLARIM — Kidef Arapça kitapları ve dijital sürümleri, ders
+   sunuları, kelime listeleri ve sözlük, oyunlar, sınıf defteri ve
+   öğretmen araçları
+ · İLETİŞİM — kidefarapca@gmail.com · YouTube · Instagram (tıklanır)
+Kapalı başlıyor: pencereyi açan önce hesapları görsün, merak ederse
+tanıtıma baksın.
+
+Bilgiler öğretmenin kendi verdiği gibi yazıldı. OKUL ADI GEÇMİYOR,
+yalnız iller — belgelerdeki kuralıyla aynı çizgi.
+
+Metin ve biçim index.html'de değil, yeni sistem/tanitim.js dosyasında;
+index.html'e yalnız tek betik satırı eklendi. Satır başlığın KARDEŞİ
+olarak giriyor, bu yüzden hem masaüstünde soldan açılan pencerede hem
+telefonda kategori görünümünde aynı yere düşüyor.
+Denendi: pencere açılınca satır var, ad doğru, başta kapalı; tıklayınca
+açılıyor ve üç görev satırı doğru çıkıyor. Hata yok.
+
+YENİ DOSYA: sistem/tanitim.js (index'e bağlı).
+
+── 07.10.2026 · TANITIM TAM EKRAN OLDU (yukarıdaki notun devamı) ────────
+Öğretmen: "amacım bu bilgileri ilk derste açıp öğrencilere kendimi
+tanıtmak, çok büyük olsun ve hazırladıklarım da ben dili olmasın."
+Ayrıca: "2024 ten beri Kitap Yazım Komisyonunda olduğum bilgisi de olsun."
+
+Amaç değişince tasarım da değişti: tanıtım artık sosyal pencerenin
+içinde küçük bir kutu DEĞİL, TAM EKRAN açılıyor — tahtaya yansıtmak
+için. Sosyal penceredeki satır yerinde duruyor, yanındaki simge de
+"büyüt" oku oldu; basınca tam ekran geliyor, Esc ya da ✕ ile kapanıyor.
+
+Yazı boyları vmin ile ölçülüyor: projeksiyon ne kadar büyükse yazı da o
+kadar büyüyor (1600px ekranda ad 67 punto çıktı), sınıfın arkasından
+okunuyor. Dar ekranda tek sütuna iniyor.
+
+BEN DİLİ KALDIRILDI. "Arapça öğretmeniyim / hazırladım" gibi cümleler
+yok; ad cümleleri var: "Kidef Arapça kitapları — basılı ve sayfası
+çevrilen dijital sürümleri", "Ders sunuları — konu konu, tahtaya
+yansıtmak için" gibi. Bölüm başlığı da "Hazırladıklarım" değil,
+"Bu sitedeki çalışmalar". (Denetlendi: metinde ben dili eki yok.)
+
+KOMİSYON kendi şeridinde, görev yerlerinin ÜSTÜNDE ve koyu yeşil:
+"2024 – Kitap Yazım Komisyonu". Görev yerleri listesine karıştırılmadı
+çünkü bir ile atama değil, onlara paralel süren bir görev.
+
+Düzen: yuvarlak baş harfler + ad + unvan + site · komisyon şeridi ·
+Görev yerleri (üç büyük kutu) · Bu sitedeki çalışmalar (beş satır,
+simgeli) · İletişim.
+Denendi: satır açılıyor, tam ekran geliyor, komisyon şeridi doğru, ben
+dili yok, Esc kapatıyor. Hata yok.
+
+── 07.10.2026 · TANITIM: TAM EKRAN DEĞİL, ORTADA BÜYÜK KART ─────────────
+Öğretmen: "ismimin olduğu yerde tam ekran olmasın, ismime basınca ekranın
+merkezinde tam ekran olmayan bi overlay olsun, ama büyük olsun, dikey
+scroll olsun."
+
+Tam ekran kaldırıldı. Artık ekranın ortasında bir kart açılıyor:
+eni 1020px'i, boyu ekranın %88'ini geçmiyor; arkası hafif bulanık
+görünüyor, sayfadan kopulmuyor. Yazılar yine iri (1500px ekranda ad 50
+punto) — tahtaya yansıdığında arkadan okunuyor.
+İçerik sığmazsa KART kendi içinde dikey kayıyor, sayfa kaymıyor
+(overscroll-behavior:contain). Kapat tuşu kart kayarken de görünsün diye
+kartın içinde sabit (position:sticky).
+Kapanma üç yoldan: ✕, Esc, kartın dışına basmak.
+Ölçüler vmin'den px/rem'e çevrildi: kart artık ekran kadar büyük
+olmadığı için vmin ile ölçmek yazıları kart dar kalırken şişiriyordu.
+Telefonda tek sütuna iniyor, kart %92 yüksekliğe çıkıyor.
+Denendi: 1500×900 ekranda kart 1020×792 (tam ekran değil), yatayda tam
+ortada, içerik 982px olduğu için kayıyor; dışına basınca kapanıyor.
+Hata yok.
+
+── 07.10.2026 · TANITIM: KIDEM SAYACI, SİTE RENKLERİ, KUTUSUZ DÜZEN ─────
+Öğretmen: "arapça öğretmeninin altında site ismi yazmasın, 15 ekim 2018
+de öğretmenliğe başladım, yıl ay ve gün olarak sürekli hesaplanan bi şey
+ekle, renklerde site renkleri kullan — turuncu, yeşil, site mavisi vs.
+Çok fazla konteynır tasarımı, kutu tasarımı olmasın."
+Ardından: "kitap yazım komisyonunda 2025 te başladım pardon."
+
+ · Unvanın altındaki "kidefarapca.com" kaldırıldı (küçük satırdan da).
+ · KIDEM SAYACI: "Öğretmenlikte 7 yıl 11 ay 22 gün · 15 Ekim 2018'den
+   beri". Sayı elle yazılmadı, her açılışta o günün tarihine göre
+   hesaplanıyor; kart açık kalırsa dakikada bir tazeleniyor, gece yarısı
+   gün dönünce kendiliğinden değişiyor. Ay uzunlukları eşit olmadığı için
+   gün sayısından değil, tarih tarih sayılıyor.
+ · KUTULAR KALKTI: kart içinde kart yok. Bölümler ince ayıraçlarla ve
+   renkle ayrılıyor. Görev yerleri renkli noktalarla dizilmiş düz satır,
+   çalışmalar iki sütun düz liste, iletişim altı çizili düz bağlantı.
+   Komisyon dolu yeşil şerit değil; mor kenarlı tek satır.
+ · RENKLER sitenin kendi renkleri: yeşil #16A085, turuncu #F39C12 /
+   #E67E22, mavi #2563EB, mor #7C3AED, kırmızı #EE5253. Ad altındaki ince
+   çizgi yeşil→turuncu→mavi geçişi; kıdem sayıları da bu üç renkte.
+ · Komisyon başlangıcı 2025 olarak düzeltildi.
+Denendi: 1500×900'de kart 960×792 (tam ekran değil), ortada, dikey
+kayıyor; kıdem 15 Ekim 2018'den bugüne doğru hesaplanıyor. Hata yok.
+
+NOT (işleyişe dair): device_commit_files bu oturumda dosyayı BİR ÇAĞRI
+GERİDEN yazıyor — ilk çağrıda eski içerik gidiyor, aynı çağrı
+tekrarlanınca doğrusu oturuyor. Bu yüzden her yazımdan sonra dosya boyu
+ve içerik grep ile doğrulandı.

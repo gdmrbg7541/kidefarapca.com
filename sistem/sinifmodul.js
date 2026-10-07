@@ -28,6 +28,11 @@
       denenir; yalnız verisi olan sınıflarda görünür.
 
    İSTEĞE BAĞLI ALANLAR
+      ikonSinif:'oyun-ikon'            // ikon kabının sınıfı; oyun kartları
+                                       // renkli halkayı bununla alır
+                                       // (öntanımlı 'default-game-emoji')
+      maarif: '<span class="mrf mrf-des"><i>Maarif</i>Destekleme</span>'
+      ekstil: 'background:linear-gradient(150deg,#8B7CFF,#5A50E0)'
       yeniSekme:false                  // bağlantı aynı sekmede açılsın
       dugme:true, tikla:'keKartTik'    // kart bağlantı DEĞİL düğme olur;
                                        // tıklayınca adı verilen genel işlev
@@ -89,6 +94,17 @@
         tikla:    t.tikla || '',
         ekic:     cagir(t.ekic, n) || '',
         eksinif:  t.eksinif || '',
+        /* KARTIN KENDİ GÖRÜNÜŞÜ (07.10.2026) — öğretmen: "oyunlar
+           kategorisinden ... ekleyelim, tasarımlar aynı olsun".
+           Bir kart hangi kategoriden geliyorsa oradaki görünüşünü
+           taşısın diye iki alan: ikon kabının sınıfı (oyun kartlarında
+           'oyun-ikon', ötekilerde 'default-game-emoji') ve açıklamanın
+           altındaki Maarif etiketi. */
+        ikonSinif: t.ikonSinif || 'default-game-emoji',
+        maarif:   cagir(t.maarif, n) || '',
+        /* Kendi gradyanını style= ile taşıyan kartlar (Sarf Motoru
+           oyunları) için; renk alanıyla birlikte kullanılmaz. */
+        ekstil:   t.ekstil || '',
         yeniSekme: t.yeniSekme !== false,
         veri:     v
       });
@@ -98,13 +114,15 @@
 
   /* ---------------- HTML ---------------- */
   function kartHtml(k) {
-    var stil = k.renk ? ' style="--smrenk:' + esc(k.renk) + '"' : '';
+    var stil = k.ekstil ? ' style="' + esc(k.ekstil) + '"'
+             : (k.renk ? ' style="--smrenk:' + esc(k.renk) + '"' : '');
     var ortak = stil + ' class="game-card kss-card sm-kart' + (k.eksinif ? ' ' + esc(k.eksinif) : '') +
       '" data-smodul="' + esc(k.id) + '"';
     var ic = '<div class="default-game-content">' +
-      '<div class="default-game-emoji">' + (k.svg || '') + '</div>' +
+      '<div class="' + esc(k.ikonSinif) + '">' + (k.svg || '') + '</div>' +
       '<h3>' + esc(k.ad) + '</h3>' +
       '<span class="game-card-description">' + esc(k.aciklama) + '</span>' +
+      (k.maarif || '') +
       '<span class="status-badge ' + (k.pasif ? 'bekliyor' : 'available') + '">' + esc(k.rozet) + '</span>' +
       (k.ekic || '') + '</div>';
     if (k.dugme) {
