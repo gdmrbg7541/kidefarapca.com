@@ -8347,3 +8347,22 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
   - Olculdu: 11 kelimelik seviyede 8. kelimeye tiklaninca 1-7 "acildi"
     sinifini aldi ve Arapcalari gorundu, 9-10 bos kaldi; otomatik gecis
     yalnizca autoMode'da kuruluyor (kod yollari tek tek tarandi).
+
+--- 2026-10-08 (15) · Dinle ve Yaz Kendini Dene: iki kisilik duzen ---
+* okumayazma/alfabe_akordiyon.js (?v=17)
+  Ogretmen: "dinle ve yazin dene kisminda siklar ve altindaki
+  konteynirlar uyusmuyor, cevaplari ac kismi olmasin, tasarima dikkat et."
+  1) SIKLAR PANELE SIGIYOR. Sebep: tek kisilik icin konan
+     min-height:clamp(84px,13vh,230px) iki kisilikte de geciyordu; alt
+     alta DORT sik o yukseklikle panelin rengi biten yerden tasiyordu.
+     Artik iki kisilikte sik yuksekligi panelin payina gore kuculuyor
+     (.ak-oy .as-siklar flex:1 1 auto, .as-sik min-height:0;height:100%).
+     Olculdu: son sik panel alt kenarinin 38 px ICINDE, sahnede tasma 0.
+  2) «CEVAPLARI AC» TUSU KALKTI. Tus siklarin ustune biniyordu ve bir tus
+     icin butun bir satir gidiyordu. Isini artik BEKLEME SURESI goruyor:
+     biri cevap verdikten sonra oteki 8 saniye icinde cevaplamazsa
+     cevaplar kendiliginden aciliyor; bekleyen oyuncunun satirinda geri
+     sayim yaziyor ("Cevabin bekleniyor… 7"). Boylece tur kilitlenmiyor.
+     Tanitim metni de guncellendi.
+  - Olculdu: tus yok, 1 oyuncu cevaplayinca sayim basliyor, 9 sn sonra
+    cevaplar aciliyor.

@@ -390,10 +390,13 @@
                bir yarış değil, ekranı da ikiye bölünce sığmıyor. */
             g += ikiliHtml(s);
             g += '<div class="as-geri-bildirim ak-bildirim" data-rol="bildirim"></div>';
-            /* Sonraki düğmesi yok: geçiş otomatik (bkz. otomatikGec). */
-            g += '<div class="ak-alt">' +
-                 '<button type="button" class="ak-t ak-ikincil" data-rol="coz">Cevapları aç</button>' +
-                 '</div>';
+            /* «CEVAPLARI AÇ» TUŞU KALDIRILDI (08.10.2026) — öğretmen:
+               "cevapları aç kısmı olmasın". Tuş şıkların üstüne biniyordu
+               ve bir tuş için bütün bir satır gidiyordu. İşini artık
+               BEKLEME SÜRESİ görüyor: biri cevap verdikten sonra öteki
+               BEKLE_SN saniye içinde cevaplamazsa cevaplar kendiliğinden
+               açılıyor (bkz. ikiliCevap). Sonraki düğmesi de yok: geçiş
+               otomatik (bkz. otomatikGec). */
             return g;
         }
         if (s.bicim === 'eslestir') {
@@ -531,7 +534,7 @@
         if (n === 2) {
             return [
                 [SVG_GOZ,    'Soru <b>ortak</b>, şıklar iki ekranda <b>ayrı</b> dizilir — yandakine bakıp kopya çekilemez.'],
-                [SVG_SAYIM,  'Cevabını veren bekler; ikisi de cevaplayınca renkler <b>birlikte</b> açılır. Biri cevaplamazsa «Cevapları aç».'],
+                [SVG_SAYIM,  'Cevabını veren bekler; ikisi de cevaplayınca renkler <b>birlikte</b> açılır. Biri cevaplamazsa <b>8 saniye</b> sonra kendiliğinden açılır.'],
                 [SVG_SIMSEK, 'Her doğru <b>+' + DOGRU_PUAN + '</b> puan; doğru bilenlerden <b>önce</b> basana <b>+' + HIZ_PUAN + '</b> hız puanı.'],
                 [SVG_KUPA,   '<b>3 · 2 · 1</b> sayımıyla başlar, sorular kendiliğinden ilerler. Sonunda puanı yüksek olan kazanır.']
             ];
@@ -664,7 +667,7 @@
             if (!s) return;
             /* «Cevapları aç»: iki kişilikte biri cevap vermezse tur burada
                takılmasın — cevaplamayan boş sayılır. */
-            if (rol === 'coz') { tik(); ikiliCoz(s); return; }
+            /* 'coz' rolü kalktı: cevaplar bekleme süresiyle açılıyor. */
             var dg;
             if ((dg = t.closest('.as-sik')) && s.bicim === 'test')      { tik(); testCevap(s, dg); return; }
             if ((dg = t.closest('.as-es'))  && s.bicim === 'eslestir')  { tik(); esCevap(s, dg); return; }
@@ -791,7 +794,7 @@
         var tipler = (mod === 2)
             ? aktif.tipler.filter(function (t) { return t !== 7 && t !== 8; })
             : aktif.tipler;
-        zamanTemizle(); perdeKapat();
+        zamanTemizle(); perdeKapat(); bekleyiDurdur();
         aktif.giris = false;
         /* Kendi üreticisi olan bölüm (Okuma) havuzunu kendi kurar. */
         aktif.havuz = aktif.uretici ? aktif.uretici(soruSayisi) : havuz(tipler, soruSayisi);
@@ -844,11 +847,36 @@
         yan.classList.add('bekliyor');
         var dr = sahne.querySelector('[data-rol="durum' + n + '"]');
         if (dr) dr.textContent = 'Cevabın alındı…';
-        if (aktif.cevap[1] && aktif.cevap[2]) ikiliCoz(s);
+        if (aktif.cevap[1] && aktif.cevap[2]) { bekleyiDurdur(); ikiliCoz(s); return; }
+        /* Biri cevapladı, öteki susuyor: tur burada kilitlenmesin diye
+           geri sayımla açılıyor. Eski «Cevapları aç» tuşunun yerine. */
+        bekleyiBaslat(s, n === 1 ? 2 : 1);
+    }
+
+    /* Rakip cevaplamazsa kaç saniye beklenir. */
+    var BEKLE_SN = 8;
+    var bekleSayac = null;
+    function bekleyiDurdur() {
+        if (bekleSayac) { clearInterval(bekleSayac); bekleSayac = null; }
+    }
+    function bekleyiBaslat(s, bekleyenNo) {
+        bekleyiDurdur();
+        var kalan = BEKLE_SN;
+        var dr = sahne.querySelector('[data-rol="durum' + bekleyenNo + '"]');
+        var yaz = function () {
+            if (dr) dr.textContent = kalan > 0 ? ('Cevabın bekleniyor… ' + kalan) : '';
+        };
+        yaz();
+        bekleSayac = setInterval(function () {
+            kalan--;
+            if (kalan <= 0) { bekleyiDurdur(); if (!aktif.cevapli) ikiliCoz(s); return; }
+            yaz();
+        }, 1000);
     }
 
     function ikiliCoz(s) {
         if (aktif.cevapli) return;
+        bekleyiDurdur();
         aktif.cevapli = true;
         [1, 2].forEach(function (n) {
             if (!aktif.cevap[n]) aktif.cevap[n] = { dogruMu: false, ms: 0, dugme: null, bos: true };
@@ -1174,6 +1202,16 @@
             '#ak-tam .ak-oy .as-uclu,#ak-tam .ak-oy .as-bic{font-size:clamp(24px,5.4vh,64px)}',
             '#ak-tam .ak-oy .as-bic-b{font-size:clamp(28px,6.4vh,76px)}',
             '#ak-tam .ak-oy .as-sik{padding:.8vh 1vw;gap:1vw}',
+            /* İKİ KİŞİLİKTE ŞIKLAR PANELE SIĞSIN (08.10.2026) — öğretmen:
+               "şıklar ve altındaki konteynırlar uyuşmuyor".
+               Sebep: tek kişilik için konan min-height (clamp(84px,13vh,230px))
+               iki kişilikte de geçerliydi; alt alta DÖRT şık o yükseklikle
+               panelin rengi biten yerden taşıyordu. İki kişilikte şık
+               yüksekliği panelin payına göre küçülüyor, ızgara da panelin
+               kalan yüksekliğini paylaşıyor. */
+            '#ak-tam .ak-oy{min-height:0}',
+            '#ak-tam .ak-oy .as-siklar{flex:1 1 auto;min-height:0;align-content:stretch}',
+            '#ak-tam .ak-oy .as-sik{min-height:0;height:100%}',
 
             /* ---- iki kişilik sonuç kartı ---- */
             '.ak-sonikili{display:flex;gap:2.4vw;justify-content:center;margin:1vh 0}',
