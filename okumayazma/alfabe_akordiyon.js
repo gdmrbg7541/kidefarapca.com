@@ -174,13 +174,38 @@
         '<path d="M4 9.5v5h3.4l4.6 4V5.5l-4.6 4H4z" fill="currentColor"/>' +
         '<path d="M15.6 8.8a4.4 4.4 0 0 1 0 6.4M18.2 6.2a8 8 0 0 1 0 11.6" fill="none"' +
         ' stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
+    /* Kelimenin GÖRÜNEN ilk harfi — harekeler, tatvîl ve boşluk atılır,
+       elif çeşitleri (أ إ آ ٱ) tek harf sayılır. "ال" takısı BİLEREK
+       ayıklanmıyor: amaç şıkların ekranda aynı harfle BAŞLAMASI. */
+    function ilkHarf(ar) {
+        var t = String(ar || '').replace(/[\u064B-\u0652\u0670\u0640\s]/g, '');
+        var c = t.charAt(0);
+        if ('\u0623\u0625\u0622\u0671'.indexOf(c) >= 0) c = '\u0627';
+        return c;
+    }
+
     function dinleHavuzu(adet) {
         var hepsi = dinleKelimeler();
         if (hepsi.length < 4) return [];
         var secili = karistir(hepsi.slice()).slice(0, adet);
         return secili.map(function (k) {
-            var baskalari = hepsi.filter(function (x) { return x.ar !== k.ar; });
-            var yanlis = karistir(baskalari).slice(0, 3);
+            var gorulen = {};
+            var baskalari = hepsi.filter(function (x) {
+                if (x.ar === k.ar || gorulen[x.ar]) return false;
+                gorulen[x.ar] = 1; return true;
+            });
+            /* ÇELDİRİCİLER AYNI HARFLE BAŞLASIN (08.10.2026) — öğretmen:
+               "soruda sesin ilk harfine göre diğer şıklarda da sesteki
+               kelimenin ilk harfinden olan kelimeleri şıklarda
+               artıralım." Rastgele çeldiricide çocuk sesi dinlemeden
+               ilk harfe bakıp eleyebiliyordu. Artık önce AYNI harfle
+               başlayanlardan alınıyor; o kadar kelime yoksa kalanı
+               ötekilerden tamamlanıyor. */
+            var h0 = ilkHarf(k.ar);
+            var ayni = baskalari.filter(function (x) { return ilkHarf(x.ar) === h0; });
+            var oteki = baskalari.filter(function (x) { return ilkHarf(x.ar) !== h0; });
+            var yanlis = karistir(ayni).slice(0, 3);
+            if (yanlis.length < 3) yanlis = yanlis.concat(karistir(oteki).slice(0, 3 - yanlis.length));
             var siklar = [{ html: '<span class="ar dy-sik">' + kacis(k.ar) + '</span>', dogru: true }];
             yanlis.forEach(function (y) {
                 siklar.push({ html: '<span class="ar dy-sik">' + kacis(y.ar) + '</span>', dogru: false });

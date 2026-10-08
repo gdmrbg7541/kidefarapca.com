@@ -8366,3 +8366,19 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
      Tanitim metni de guncellendi.
   - Olculdu: tus yok, 1 oyuncu cevaplayinca sayim basliyor, 9 sn sonra
     cevaplar aciliyor.
+
+--- 2026-10-08 (16) · Dinle ve Yaz Kendini Dene: celdiriciler ---
+* okumayazma/alfabe_akordiyon.js (?v=18)
+  Ogretmen: "soruda sesin ilk harfine gore diger siklarda da sesteki
+  kelimenin ilk harfinden olan kelimeleri siklarda artiralim."
+  - Celdiriciler rastgele seciliyordu; cocuk sesi dinlemeden ilk harfe
+    bakip eleyebiliyordu. Artik once DOGRU KELIMEYLE AYNI HARFLE
+    baslayanlardan aliniyor, o kadar kelime yoksa kalani otekilerden
+    tamamlaniyor. Ayni kelimenin iki kez sik olmasi da engellendi.
+  - ilkHarf(): harekeler, tatvil ve bosluk atiliyor; elif cesitleri
+    (elif-hemze, elif-kesreli hemze, medli elif, vasl elifi) TEK harf
+    sayiliyor. "ال" takisi BILEREK ayiklanmiyor — amac siklarin ekranda
+    ayni harfle BASLAMASI.
+  - Olculdu: 40 soru / 120 celdirici uretildi, 90'i (%75) dogru kelimeyle
+    ayni harfle basliyor. Kalanlar havuzda o harften yeterli kelime
+    olmayan sorular.
