@@ -608,7 +608,7 @@ h1,h2,h3,h4,p{margin:0}
 .odevIzgara::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;
   transform:translateX(-50%);border-radius:2px;
   background:repeating-linear-gradient(180deg,#C9CDD3 0 10px,transparent 10px 20px)}
-.odev{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:10px;
+.odev{display:grid;grid-template-columns:1fr auto;align-items:end;gap:10px;
   padding:5px 8px;border-radius:12px;transition:background .2s, box-shadow .2s}
 /* 08.10.2026 — öğretmen: "örneklerin cevabı tek tek açılsın, OK VE
    NOKTALAR OLMASIN ve örnekler ÇOK BÜYÜK olsun." Noktalı alt çizgi ve
@@ -620,10 +620,31 @@ h1,h2,h3,h4,p{margin:0}
    56 px'te 7 px taşıyor. Cevabın altındaki ÇİZGİ bir yazı çizgisi: kelime
    onun üstüne oturur, çocuk harfleri çizgiye göre yazar. (Eski noktalı
    çizgi "boşluk" demekti, bu ise yazı çizgisi.) */
-.odev .soruMet{font-size:54px;font-weight:800;direction:rtl;color:#1F2430;line-height:1.3}
-.odev .cizgi{min-width:210px;text-align:center;padding:0 10px 10px;
-  border-bottom:3px solid #C9CDD3}
-.odev .cvp{font-size:54px;font-weight:900;direction:rtl;line-height:1.3}
+/* 08.10.2026 — öğretmen: "7 ve 8. sayfalarda örnekler ÇİZGİNİN ÜSTÜNDE
+   olsunlar, çizgideki yazılışını doğru yazsınlar istiyorum."
+   Eskiden çizgi, kutunun alt kenarıydı (border-bottom): kelime çizginin
+   epey YUKARISINDA duruyor, س ص ل ن gibi harflerin kuyruğu çizgiye hiç
+   değmiyordu. Çocuk örneğe bakıp yazınca harfleri çizginin üstüne
+   kaldırıyordu. Artık çizgi gerçek bir YAZI ÇİZGİSİ: kelimenin TABAN
+   HATTI çizginin üstüne oturuyor, kuyruklar çizginin altına iniyor —
+   defterdeki doğru yazılışın aynısı.
+   Ölçü, Dinle ve Yaz çizgisiyle aynı: kutu alt hizalı, padding alt .30em,
+   çizgi alt kenardan .50em yukarıda, içerideki yazı line-height:1.
+   Soru (örnek) de aynı çizgiye oturuyor; iki sütun tek yazı şeridi gibi
+   okunuyor. */
+.odev .soruMet,
+.odev .cizgi{position:relative;display:flex;align-items:flex-end;
+  font-size:54px;line-height:1;padding:0 .10em .30em;min-height:1.52em}
+.odev .soruMet::before,
+.odev .cizgi::before{content:"";position:absolute;left:.03em;right:.03em;
+  bottom:.50em;height:3px;background:#C9CDD3;border-radius:2px}
+.odev .soruMet{font-weight:800;direction:rtl;color:#1F2430;justify-content:flex-start}
+.odev .cizgi{min-width:210px;justify-content:center;border-bottom:0}
+/* Alttaki renk açıklaması bir alıştırma değil: yazı çizgisi almaz. */
+.odev .soruMet.notSatir{min-height:0;padding:0;line-height:1.35;justify-content:center}
+.odev .soruMet.notSatir::before{display:none}
+.odev:has(> .soruMet.notSatir) > .cizgi{display:none}
+.odev .cvp{font-size:1em;font-weight:900;direction:rtl;line-height:1}
 .odev .yesilOk{display:none}
 .odev.simdi{background:#FFF3F1;box-shadow:0 0 0 2px var(--kirmizi) inset;border-radius:14px}
 .odev .yesilOk{color:var(--sema);font-weight:900;font-size:18px}
@@ -1065,7 +1086,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
         <span class="cizgi"><span class="cvp adim sems" data-g="7">اَلتَّفْضِيلِ</span></span></div>
       <div class="odev adim" data-g="1"><span class="soruMet">٧. اَل + ثَلَّاجَةً</span>
         <span class="cizgi"><span class="cvp adim sems" data-g="8">اَلثَّلَّاجَةَ</span></span></div>
-      <div class="odev adim" data-g="1"><span class="soruMet" style="color:var(--sis);font-size:26px">
+      <div class="odev adim" data-g="1"><span class="soruMet notSatir" style="color:var(--sis);font-size:26px">
         Cevaplar için → tuşuna basmaya devam et</span><span></span></div>
     </div>
   </section>
@@ -1101,7 +1122,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
         <span class="cizgi"><span class="cvp adim kamer" data-g="7">اَلْيَوْمُ</span></span></div>
       <div class="odev adim" data-g="1"><span class="soruMet">١٤. اَل + دَوْرٍ</span>
         <span class="cizgi"><span class="cvp adim sems" data-g="8">اَلدَّوْرِ</span></span></div>
-      <div class="odev adim" data-g="1"><span class="soruMet" style="color:var(--sis);font-size:20px">
+      <div class="odev adim" data-g="1"><span class="soruMet notSatir" style="color:var(--sis);font-size:20px">
         Şemsî = <span class="sems">mavi</span> · Kamerî = <span class="kamer">kırmızı</span></span><span></span></div>
     </div>
   </section>

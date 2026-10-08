@@ -8080,3 +8080,20 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
   ogrenciBaglari, davetler, ogrenciOzet, sinifMesajlari, takimlar,
   siparisler gibi koleksiyonlari da kullaniyor. Konsoldaki yayinda olan
   kurallar daha genis olmali; dosya bir ara konsoldakiyle esitlenmeli.
+
+--- 2026-10-08 (3) · Harf-i Tarif sunumu, alistirma sayfalari ---
+* sunum html/harfitarif.html
+  Ogretmen: "7 ve 8. sayfalarda ornekler cizginin ustunde olsunlar,
+  cizgideki yazilisini dogru yazsinlar istiyorum."
+  - Eskiden cizgi kutunun alt kenariydi (border-bottom): kelime cizginin
+    epey YUKARISINDA duruyordu, s/sad/lam/nun gibi harflerin kuyrugu
+    cizgiye hic inmiyordu. Cocuk ornege bakip yazinca harfleri cizginin
+    ustune kaldiriyordu.
+  - Artik gercek YAZI CIZGISI: kelimenin taban hatti cizginin ustune
+    oturuyor, kuyruklar cizginin altina iniyor (defterdeki dogru yazilis).
+    Olcu Dinle ve Yaz cizgisiyle ayni: kutu alt hizali, alt padding .30em,
+    cizgi alt kenardan .50em yukarida, yazi line-height:1.
+  - Soru (ornek) da ayni cizgiye oturuyor; iki sutun tek yazi seridi gibi.
+  - Alttaki renk aciklamasi (kirmizi=Kameri, mavi=Semsi) cizgi almiyor,
+    yanindaki bos cevap kutusu da kalkti (.notSatir).
+  - Olculdu: iki alistirma sayfasinda da tasma 0, satir yuksekligi 122 px.
