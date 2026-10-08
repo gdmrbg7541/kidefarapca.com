@@ -1188,70 +1188,69 @@ function loadDataFromLocal() {
 // Sayfa ilk açıldığında kontrol et
 const ilkKontrol = loadDataFromLocal();
 
-/* ================== DEMO SINIFLAR (08.10.2026) ======================
-   Öğretmen: "1,2,3. sınıflardan 3'er şube tanımlı duruyor, böyle olmasın;
-   zaten site sınıf olarak 5-10. sınıflar arasını hedef alıyor. Demo sınıf
-   olacaksa 5-10 arası her seviyeden bir sınıf tanımlı olsun: 5. Sınıflar
-   -> 5A Demo Sınıfı ... 10. Sınıflar -> 10A Demo Sınıfı."
+/* ============== DEMO/ÖRNEK SINIF KURULMUYOR (08.10.2026) =============
+   Öğretmen: "ilk giriş yapınca demo 1-3. sınıfları acaba firebase'ta
+   kayıt olup öncekileri mi siliyor, demo sınıf kısmını tamamen silelim."
 
-   Bu veri YALNIZCA tarayıcıda hiç kayıt yokken kurulur. Giriş yapılınca
-   verileriGetir() hesabın kendi verisini indirip bunun üzerine yazar.
-   Eski demo (1-3. seviye, A/B/C şubeleri) hiç dokunulmamış hâlde
-   duruyorsa yenisiyle değiştirilir; öğretmenin kendi sınıfları varsa
-   (kidefSiniflarimSahip işareti) asla ellenmez.                        */
-function llDemoVeri() {
-    var v = { levels: {}, levelOrder: [], demo: true };
-    for (var i = 5; i <= 10; i++) {
-        var lId = 'L' + i;
-        v.levelOrder.push(lId);
-        v.levels[lId] = {
-            name: i + '. Sınıflar',
-            classes: {},
-            config: {
-                hw: [{ n: '1. Ödev', w: 25 }, { n: '2. Ödev', w: 25 }, { n: '3. Ödev', w: 25 }, { n: '4. Ödev', w: 25 }],
-                ex: [{ n: 'Dinleme', w: 25 }, { n: 'Konuşma', w: 25 }, { n: 'Yazılı', w: 50 }]
-            }
-        };
-        var students = [];
-        for (var s = 1; s <= 10; s++) {
-            students.push({
-                name: i + 'A Örnek Öğrenci ' + s,
-                hw: [0, 0, 0, 0], ex: [0, 0, 0], history: [],
-                skills: { 'Konuşma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'Sözlük': 5, 'Tercüme': 5 },
-                notes: ""
-            });
-        }
-        v.levels[lId].classes['C' + i + 'A'] = {
-            name: i + 'A Demo Sınıfı',
-            students: students,
-            planStatus: {}, planText: {}, stayedPoint: ""
-        };
-    }
-    return v;
-}
-/* Tarayıcıda duran veri ESKİ demo mu? (1-3. seviye, her birinde A/B/C) */
-function llEskiDemoMu(d) {
+   Olan tam olarak buydu: tarayıcıda hiç kayıt yokken burada örnek bir
+   sınıf listesi kuruluyordu. Giriş yapılır yapılmaz herhangi bir kayıt
+   tetiklendiğinde (save) bu liste buluta yazılıp öğretmenin GERÇEK sınıf
+   listesini eziyordu. Yeni bir cihazda bir kez olması, bütün cihazlarda
+   sınıfların kaybolması için yetiyordu.
+
+   ARTIK HİÇBİR ÖRNEK SINIF KURULMUYOR. Kayıt yoksa liste boş başlar;
+   sınıflar yalnızca buluttan iner ya da öğretmenin kendi eklemesiyle
+   oluşur. Daha önce kurulmuş örnek liste (1-3. seviye A/B/C ya da 5-10
+   demo) varsa temizlenir. Öğretmenin kendi sınıflarına dokunulmaz —
+   llDemoMu yalnızca bire bir örnek listeyi tanır.                     */
+/* Bir veri yapisinda toplam kac sinif var? */
+function llSinifSayisi(d) {
+    var n = 0;
     try {
-        if (!d || !d.levels) return false;
-        if (localStorage.getItem('kidefSiniflarimSahip')) return false;
-        if (Object.keys(d.levels).length !== 3) return false;
-        for (var i = 1; i <= 3; i++) {
-            var l = d.levels['L' + i];
-            if (!l || l.name !== i + '. Seviye') return false;
-            var c = l.classes || {};
-            if (Object.keys(c).length !== 3) return false;
-            for (var j = 0; j < 3; j++) {
-                var h = ['A', 'B', 'C'][j];
-                var sn = c['C' + i + h];
-                if (!sn || sn.name !== i + '-' + h + ' Şubesi') return false;
-            }
-        }
-        return true;
-    } catch (e) { return false; }
+        var L = (d && d.levels) || {};
+        Object.keys(L).forEach(function (x) { n += Object.keys((L[x] && L[x].classes) || {}).length; });
+    } catch (e) { }
+    return n;
 }
-if (!ilkKontrol || llEskiDemoMu(data)) {
-    data = llDemoVeri();
+/* Bu veri DEMO mu? (yeni 5-10 demosu ya da eski 1-3 demosu) */
+function llDemoMu(d) {
+    if (!d || !d.levels) return false;
+    if (d.demo) return true;
+    try {
+        var L = d.levels, ids = Object.keys(L), i, l, c;
+        if (ids.length === 6) {
+            var yeni = true;
+            for (i = 5; i <= 10; i++) {
+                l = L['L' + i]; c = l && l.classes;
+                if (!l || !c || Object.keys(c).length !== 1 ||
+                    !c['C' + i + 'A'] || c['C' + i + 'A'].name !== i + 'A Demo Sınıfı') { yeni = false; break; }
+            }
+            if (yeni) return true;
+        }
+        if (ids.length === 3) {
+            var eski = true;
+            for (i = 1; i <= 3; i++) {
+                l = L['L' + i]; c = l && l.classes;
+                if (!l || l.name !== i + '. Seviye' || !c || Object.keys(c).length !== 3) { eski = false; break; }
+                for (var j = 0; j < 3; j++) {
+                    var h = ['A', 'B', 'C'][j], sn = c['C' + i + h];
+                    if (!sn || sn.name !== i + '-' + h + ' Şubesi') { eski = false; break; }
+                }
+                if (!eski) break;
+            }
+            if (eski) return true;
+        }
+    } catch (e) { }
+    return false;
+}
+if (!ilkKontrol) {
+    /* Hiç kayıt yok: boş başla ve YAZMA — tarayıcıda örnek liste kalmasın */
+    data = { levels: {}, levelOrder: [] };
+} else if (llDemoMu(data)) {
+    /* Eski sürümlerden kalan örnek liste: temizle */
+    data = { levels: {}, levelOrder: [] };
     try { localStorage.setItem('schoolData', JSON.stringify(data)); } catch (e) { }
+    console.warn('Örnek (demo) sınıf listesi kaldırıldı.');
 }
 
 // Global Değişkenler
@@ -1429,7 +1428,14 @@ function save() {
            listesini demo veriyle eziyordu. Artık buluta yalnızca
            verileriGetir() bu hesabın verisini indirdikten SONRA yazılır;
            inmemişse indirme başlatılır, yazma atlanır. */
-        if (window._llBulutGeldi !== user.uid) {
+        var _indi = (window._llBulutGeldi === user.uid);
+        /* İndirme hata verdiyse (çevrimdışı vb.) ve elimizdeki liste
+           GERÇEK sınıflardan oluşuyorsa yazmaya izin ver; engel yalnız
+           demo/boş verinin bulutu ezmesi içindir. */
+        if (!_indi && window._llBulutHata === user.uid) {
+            try { _indi = (llSinifSayisi(data) > 0 && !llDemoMu(data)); } catch (e) { }
+        }
+        if (!_indi) {
             console.warn('Bulut verisi henüz inmedi — buluta yazma atlandı.');
             try {
                 if (typeof verileriGetir === 'function' && window._llLoadedUid !== user.uid) {
@@ -6415,20 +6421,70 @@ function verileriGetir(uid) {
 
     db.collection("kullanicilar").doc(uid).get()
     .then((doc) => {
-        // Her zaman bu hesabin KENDI verisini yukle; baska hesaptan kalan yerel veri asla gorunmesin
+        /* ====== SINIF LİSTESİ NEREDEN GELECEK? (08.10.2026) ==============
+           Eskiden koşulsuz bulut kazanıyordu: bulutta veri yoksa yerel
+           kopya BOŞ veriyle eziliyordu. Bu yüzden bir cihazda oluşan
+           demo/boş veri bir kez buluta gidince, öğretmenin kendi
+           tarayıcısındaki gerçek sınıflar da siliniyordu.
+           Artık: bulutta gerçek sınıf varsa o kullanılır. Bulut boşsa ya
+           da yalnızca DEMO sınıflar varsa, bu tarayıcıda AYNI HESABA ait
+           gerçek sınıflar duruyorsa onlar korunur ve buluta geri yüklenir.
+           Üzerine yazılacak her gerçek liste ayrıca yedeklenir.        */
+        var bulut = null;
         if (doc.exists && doc.data().userData) {
-            try {
-                data = JSON.parse(doc.data().userData); 
-                if (!data || typeof data !== 'object') data = { levels: {}, levelOrder: [] };
-                if (!data.levels) data.levels = {};
-                console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
-            } catch (e) {
-                console.error("JSON ayrıştırma hatası:", e);
-                data = { levels: {}, levelOrder: [] };
-            }
+            try { bulut = JSON.parse(doc.data().userData); }
+            catch (e) { console.error("JSON ayrıştırma hatası:", e); bulut = null; }
+        }
+        if (!bulut || typeof bulut !== 'object') bulut = null;
+        if (bulut && !bulut.levels) bulut.levels = {};
+
+        var yerel = null;
+        try { yerel = JSON.parse(localStorage.getItem('schoolData') || 'null'); } catch (e) { }
+        var yerelSahip = false;
+        try {
+            var _sh = JSON.parse(localStorage.getItem('kidefSiniflarimSahip') || 'null');
+            yerelSahip = !!(_sh && _sh.u === uid);
+        } catch (e) { }
+        var bSay = llSinifSayisi(bulut), ySay = llSinifSayisi(yerel);
+        var bGercek = !!bulut && bSay > 0 && !llDemoMu(bulut);
+        var yGercek = yerelSahip && ySay > 0 && !llDemoMu(yerel);
+        var geriYukle = false;
+
+        if (bGercek) {
+            data = bulut;
+            console.log("Bulut verileri başarıyla senkronize edildi! 🔄");
+        } else if (yGercek) {
+            data = yerel;
+            geriYukle = true;
+            console.warn("Bulutta sınıf yok/demo — bu tarayıcıdaki sınıflar korundu ve buluta geri yükleniyor.");
         } else {
-            // Bu hesabin kendi listesi yok -> bos basla (onceki ogretmenin listeleri gorunmesin)
-            data = { levels: {}, levelOrder: [] };
+            data = bulut || { levels: {}, levelOrder: [] };
+        }
+        if (!data.levels) data.levels = {};
+        /* Üzerine yazılan gerçek liste varsa kaybolmasın */
+        try {
+            if (ySay > 0 && !llDemoMu(yerel) && llSinifSayisi(data) === 0)
+                localStorage.setItem('schoolData_yedek', JSON.stringify({ t: Date.now(), uid: uid, veri: yerel }));
+        } catch (e) { }
+        /* TANI SATIRI — sorun olursa konsolda tek bakışta görünsün */
+        try {
+            console.log('[KIDEF sınıf verisi]', JSON.stringify({
+                uid: uid, belgeVar: !!(doc && doc.exists),
+                userDataVar: !!(doc.exists && doc.data().userData),
+                bulutSinif: bSay, bulutDemo: llDemoMu(bulut),
+                yerelSinif: ySay, yerelSahip: yerelSahip, yerelDemo: llDemoMu(yerel),
+                kaynak: bGercek ? 'bulut' : (yGercek ? 'yerel (geri yüklendi)' : 'boş')
+            }));
+        } catch (e) { }
+        if (geriYukle) {
+            try {
+                db.collection("kullanicilar").doc(uid).set({
+                    userData: JSON.stringify(data),
+                    lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true })
+                .then(function () { console.log("Yerel sınıflar buluta geri yüklendi ✅"); })
+                .catch(function (e) { console.error("Geri yükleme hatası:", e); });
+            } catch (e) { }
         }
         // Yerel kopyayi ve ogretmen kodunu da bu hesaba gore guncelle (hesaplar arasi sizinti engellenir)
         try { localStorage.setItem('schoolData', JSON.stringify(data)); } catch(e){}
@@ -6474,6 +6530,12 @@ function verileriGetir(uid) {
     })
     .catch((err) => {
         console.error("Veritabanı bağlantı hatası:", err);
+        /* İNDİRME BAŞARISIZ (08.10.2026): kilidi aç ki sonraki deneme
+           (initListelerim / sınıf açma) yeniden indirmeyi başlatabilsin.
+           Ayrıca çevrimdışı çalışılabilsin diye save()'in bulut kapısına
+           "bu hesapta indirme hata verdi" işareti bırakılır. */
+        try { if (window._llLoadedUid === uid) window._llLoadedUid = null; } catch (e) { }
+        window._llBulutHata = uid;
         if (overlay) overlay.style.display = 'none';
         renderSidebar();
     });
@@ -6501,7 +6563,8 @@ function verileriGetir(uid) {
                 if (!u || u.isAnonymous) return;
                 if (window._llLoadedUid === u.uid) return;
                 window._llLoadedUid = u.uid;
-                try { verileriGetir(u.uid); } catch (e) { console.error('oto veri', e); }
+                try { verileriGetir(u.uid); }
+                catch (e) { window._llLoadedUid = null; console.error('oto veri', e); }
             });
             return true;
         } catch (e) { return false; }

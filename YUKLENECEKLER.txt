@@ -8053,3 +8053,30 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
     varsa (qr, sinif, sube, okul, giris, gorev, liveRoom, list, view, rol,
     ihsinif, amac) vitrin atlaniyor. Sade adres eskisi gibi vitrine gidiyor.
   - Surumler: sistem/siniflarim.js?v=16, hesap/listelerim.js?v=20261008a
+
+--- 2026-10-08 (2) · Siniflarin kaybolmasinin ASIL sebebi: demo liste ---
+* hesap/listelerim.js (?v=20261008b)
+  SEBEP: Tarayicida hic kayit yokken listelerim.js basinda bir ORNEK
+  (demo) sinif listesi kuruluyordu. Giris yapilir yapilmaz herhangi bir
+  kayit (save) tetiklendiginde bu liste kullanicilar/{uid}.userData
+  alanina yazilip ogretmenin GERCEK sinif listesini eziyordu. Yeni bir
+  cihazda bir kez olmasi, butun cihazlarda sinif listesinin kaybolmasi
+  icin yetiyordu. Firestore kurallariyla ilgisi yok: ayni belgenin
+  okunmasi rol tespitinde de kullaniliyor ve calisiyor.
+  - DEMO LISTE TAMAMEN KALDIRILDI. Kayit yoksa liste BOS baslar; hicbir
+    sey yerel hafizaya yazilmaz. Daha once kurulmus demo liste (1-3.
+    seviye A/B/C ya da 5-10 demo) acilista temizlenir.
+  - KURTARMA: verileriGetir() artik kosulsuz "bulut kazanir" demiyor.
+    Bulutta sinif yoksa ya da yalnizca demo varsa, bu tarayicida AYNI
+    hesaba ait gercek siniflar duruyorsa onlar korunuyor ve buluta geri
+    yukleniyor. Uzerine yazilacak gercek liste ayrica
+    localStorage['schoolData_yedek'] altina yedekleniyor.
+  - Indirme hata verirse kilit aciliyor (tekrar denenebiliyor) ve
+    cevrimdisi yapilan gercek degisiklikler buluta yazilabiliyor.
+  - Konsola tek satirlik tani: [KIDEF sinif verisi] {uid, belgeVar,
+    userDataVar, bulutSinif, bulutDemo, yerelSinif, yerelSahip, kaynak}
+* NOT (ayri konu, acil degil): depodaki firestore.rules dosyasi ESKI.
+  Icinde yalniz kullanicilar/rooms/global var; site mesajlar,
+  ogrenciBaglari, davetler, ogrenciOzet, sinifMesajlari, takimlar,
+  siparisler gibi koleksiyonlari da kullaniyor. Konsoldaki yayinda olan
+  kurallar daha genis olmali; dosya bir ara konsoldakiyle esitlenmeli.
