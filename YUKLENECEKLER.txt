@@ -8323,3 +8323,27 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
   - Kakul tek ve duzgun bir yay oldu (eskiden ucu kirikti).
   - Topuz saca DEGIYOR ve altinda ince bir bag var; eskiden sacin
     ustunde bosta duruyordu.
+
+--- 2026-10-08 (14) · Dinle ve Yaz: otomatik gecis ve onceki kelimeler ---
+* okumayazma/dinleveyaz.js + .css (?v=20261008b), dinleveyaz.html
+  Ogretmen: "tiklanabilir modda bir kelimenin tum harflerine tiklandiktan
+  sonra diger kelime icin geri sayim otomatik basliyor ve ses caliyor,
+  bunu iptal etmek istiyorum... diger kelimeye otomatik gecmesin" +
+  "herhangi bi kelimeye dokununca ondan onceki tum kelimeler de gorunur
+  olsun... 8. kelimeye actiysak 1'den 7'ye tum kelimelerin arapcalari
+  gorunmeli."
+  1) OTOMATIK GECIS YALNIZ OTOMATIK MODDA. Dogru yazilinca Alistirma
+     (tiklama) modunda kelime ekranda KALIYOR, yerine "Ilerle" tusu
+     cikiyor; sonraki kelimeye o tusla ya da listeden geciliyor. Sinav
+     modu eskisi gibi (sure bitince gecer), Otomatik mod kendi akisini
+     surduruyor. Boylece sonraki kelimenin geri sayimi ve sesi de
+     kendiliginden baslamiyor.
+  2) ONCEKILER ACILIYOR. Yeni bir kume: acilanlar. Bir kelimeye gidilince
+     ondan oncekilerin hepsi acilmis sayiliyor ve Arapcalari listede
+     gorunuyor. tamamlananlar'dan AYRI: acilan kelime PUAN GETIRMEZ ve
+     yesil degil SOLUK gorunur (.kelime-satir.acildi) — ogretmen hangisini
+     ogrencinin gercekten yazdigini ayirt edebilsin. Sinav modunda acilma
+     gosterilmez. Seviye basinda sifirlanir.
+  - Olculdu: 11 kelimelik seviyede 8. kelimeye tiklaninca 1-7 "acildi"
+    sinifini aldi ve Arapcalari gorundu, 9-10 bos kaldi; otomatik gecis
+    yalnizca autoMode'da kuruluyor (kod yollari tek tek tarandi).

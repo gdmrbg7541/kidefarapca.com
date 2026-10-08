@@ -92,6 +92,15 @@
         const kelimeGostergeEl = document.getElementById('kelimeGosterge');
         const geriSayimEl = document.getElementById('geriSayim');
         let tamamlananlar = new Set();   // doğru yazılan kelime indeksleri (serbest gezinme için)
+        /* AÇILANLAR (08.10.2026) — öğretmen: "diyelim ki bir gün bir
+           seviyede kelimelerin yarısını işledik, diğer gün diğer kısımdan
+           başlamak için teker teker açmaya gerek olmamalı; 8. kelimeye
+           açtıysak 1'den 7'ye tüm kelimelerin Arapçaları görünmeli."
+           Bir kelimeye gidilince ÖNCEKİLERİN hepsi açılmış sayılır.
+           tamamlananlar'dan AYRI tutuluyor: açılan kelime puan
+           getirmez ve yeşil değil soluk görünür — hangisini öğrencinin
+           gerçekten yazdığı karışmasın. */
+        let acilanlar = new Set();
         let countdownTimer = null;
         const turkishWordEl = document.getElementById('turkishWord');
         const arabicOutputEl = document.getElementById('arabicOutputDisplay');
@@ -213,6 +222,7 @@
                 let cls = 'kelime-satir';
                 if (i === currentWordIndex) cls += ' aktif';
                 else if (tamamlananlar.has(i)) cls += ' tamamlandi';  // yazılan kelime kalır
+                else if (acilanlar.has(i) && !examMode) cls += ' acildi';  // yalnız açıldı
                 satir.className = cls;
                 satir.dataset.index = i;
 
@@ -232,7 +242,7 @@
                 typed.className = 'ks-typed';
                 typed.setAttribute('dir', 'rtl'); typed.setAttribute('lang', 'ar');
                 // tamamlanan: cevabı yeşil göster — ama SINAV MODUNDA cevap gizli kalır
-                if (tamamlananlar.has(i) && i !== currentWordIndex && !examMode){
+                if ((tamamlananlar.has(i) || acilanlar.has(i)) && i !== currentWordIndex && !examMode){
                     typed.textContent = harekeYok
                         ? Array.from(w.ar).filter(c => !HAREKELER.has(c)).join('')
                         : w.ar;
@@ -451,6 +461,7 @@
             clearTimeout(autoNextTimeout); clearTimeout(autoStartTimeout); clearInterval(timerInterval);
             gameActive = false; wordActive = false; waitingForAudioClick = false;
             paused = false; setPauseButtonState();
+            for (let g = 0; g < index; g++) acilanlar.add(g);   /* öncekiler açılır */
             currentWordIndex = index;
             loadWord();
         }
@@ -722,7 +733,7 @@
             if (pauseButton){ pauseButton.style.display = examMode ? 'none' : 'inline-flex'; setPauseButtonState(); }
             levelWords = [...gameData[selectedLevel].words].sort(() => Math.random() - 0.5);
             currentWordIndex = 0;
-            currentLevelScore = 0; incorrectWords = []; tamamlananlar = new Set();
+            currentLevelScore = 0; incorrectWords = []; tamamlananlar = new Set(); acilanlar = new Set();
             const numWords = levelWords.length;
             basePointsPerWord = Math.floor(100 / numWords);
             pointsRemainder = 100 % numWords;
@@ -1003,7 +1014,17 @@
                  // Doğru yazılan satır yeşile döner ve LİSTEDE KALIR (kaybolmaz).
                  const aktifSatir = kelimeListeEl.querySelector('.kelime-satir.aktif');
                  if (aktifSatir){ aktifSatir.classList.add('tamamlandi'); }
-                 autoNextTimeout = setTimeout(nextWord, 1000); // Doğruysa 1sn sonra otomatik geç
+                 /* OTOMATİK GEÇİŞ YALNIZ OTOMATİK MODDA (08.10.2026) —
+                    öğretmen: "tıklanabilir modda bir kelimenin tüm
+                    harflerine tıklandıktan sonra diğer kelime için geri
+                    sayım otomatik başlıyor ve ses çalıyor, bunu iptal
+                    etmek istiyorum... bir kelimenin tüm harflerini
+                    tıkladık, diğer kelimeye otomatik geçmesin."
+                    Alıştırma (tıklama) modunda kelime yazılınca ekranda
+                    KALIYOR; sıradakine ileri tuşuyla ya da listeden
+                    geçiliyor. Otomatik mod kendi akışını sürdürüyor. */
+                 if (autoMode) autoNextTimeout = setTimeout(nextWord, 1000);
+                 else { nextButton.classList.remove('hidden'); }
              } else {
                  if (timeUp || mistakesMade >= mistakesAllowed) { playSound('incorrect'); }
                  arabicOutputContainer.style.boxShadow = 'inset 3px 3px 6px #d35f61, inset -3px -3px 6px #ff8386';

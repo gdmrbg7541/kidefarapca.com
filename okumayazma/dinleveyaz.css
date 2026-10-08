@@ -488,6 +488,10 @@
 /* Doğru tamamlandı: yeşil yazı */
 .kelime-satir.tamamlandi .ks-turkce{ color:var(--color-correct); }
 .kelime-satir.tamamlandi .ks-typed{ color:var(--color-correct); }
+/* AÇILAN (yazılmamış, yalnız gösterilen) kelime: yeşil DEĞİL, soluk.
+   Böylece öğretmen hangisini öğrencinin gerçekten yazdığını görür. */
+.kelime-satir.acildi .ks-turkce{ color:#8A94A3; }
+.kelime-satir.acildi .ks-typed{ color:#6B7683; opacity:.82; }
 
 /* 0) Ses zaman çizgisi — kronometreyle birleşik, UZUN (widget'ı doldurur) */
 .ses-cizelgesi{ display:flex; align-items:center; flex:1 1 auto; min-width:0; padding:0; margin:0; }
