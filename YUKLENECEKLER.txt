@@ -8271,3 +8271,17 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
   metni hazir getirir, numarayi rehbere kaydetmek gerekmez); telefonda
   wa.me oldugu gibi birakildi. Numara yoksa yalniz text ile aciliyor.
   Olculdu: masaustu / iPhone / Android / numarasiz — dordu de dogru.
+
+--- 2026-10-08 (11) · Yeni gorevde baslik alani kalkti ---
+* sistem/gorev.js (?v=38)
+  Ogretmen: "yeni gorev gonderde gorev basligi olmasin, zaten her gorevin
+  kendi ismi yeterince ayirt edici bi ozellik."
+  - Formdaki "Gorev basligi" metin kutusu kaldirildi (gvBaslik).
+  - Baslik artik dogrudan secilen etkinligin adi (oyunAdi). Eskiden bos
+    birakilinca "... Gorevi" ekleniyordu; o ek de kalkti.
+  - GV.basligiDoldur adiyla duruyor ama artik yalniz secime gore
+    performans notu kutusunu acip kapatiyor (sure takipli icerikte yuzde
+    olmadigi icin gizleniyor) — oyun secicinin onchange'i ona bagli.
+  - Olculdu: form sorunsuz ciziliyor, gvBaslik hicbir yerde yok,
+    kalan etiketler: Oyun · Kime · Seviye · Sinif · Ogrenci · Son tarih ·
+    Performans notu · Agirlik. Secicide 21 etkinlik.

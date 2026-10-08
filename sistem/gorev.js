@@ -543,8 +543,6 @@
             '<div style="grid-column:1/-1;"><label style="' + etiket + '">Oyun ' +
             '<small style="font-weight:700; color:#B9987F;">(' + GV.OYUNLAR.length + ' gönderilebilir görev)</small></label>' +
             '<select id="gvOyun" style="' + kutu + '" onchange="GV.basligiDoldur()">' + oyunlar + '</select></div>' +
-            '<div style="grid-column:1/-1;"><label style="' + etiket + '">Görev başlığı</label>' +
-            '<input type="text" id="gvBaslik" maxlength="60" style="' + kutu + '"></div>' +
             '<div><label style="' + etiket + '">Kime</label>' +
             '<select id="gvHedefTur" style="' + kutu + '" onchange="GV.hedefCiz()">' +
             '<option value="seviye">Bütün seviyeye</option>' +
@@ -576,9 +574,13 @@
         GV.hedefCiz();
     };
 
+    /* GÖREV BAŞLIĞI ALANI KALDIRILDI (08.10.2026) — öğretmen: "yeni görev
+       gönderde görev başlığı olmasın, zaten her görevin kendi ismi
+       yeterince ayırt edici bi özellik." Başlık artık seçilen etkinliğin
+       adıdır (bkz. gonder). Bu işlev adıyla kaldı çünkü hâlâ seçime göre
+       performans notu kutusunu açıp kapatıyor. */
     GV.basligiDoldur = function () {
-        var o = document.getElementById('gvOyun'), b = document.getElementById('gvBaslik');
-        if (o && b) b.value = oyunAdi(o.value) + ' Görevi';
+        var o = document.getElementById('gvOyun');
         /* SURE TAKIPLI icerikte yuzde olmadigindan performans notu anlamsiz:
            kutu gizlenir ve isareti kaldirilir. */
         try {
@@ -632,7 +634,7 @@
         if (!u || !D || !ogretmenMi()) { yaz('Bağlantı yok ya da yetki yok.', true); return; }
 
         var oyun = (document.getElementById('gvOyun') || {}).value || '';
-        var baslik = ((document.getElementById('gvBaslik') || {}).value || '').trim() || (oyunAdi(oyun) + ' Görevi');
+        var baslik = oyunAdi(oyun);     /* başlık = etkinliğin kendi adı */
         var tur = (document.getElementById('gvHedefTur') || {}).value || 'seviye';
         var lId = (document.getElementById('gvSeviye') || {}).value || '';
         var cId = (document.getElementById('gvSinif') || {}).value || '';
