@@ -92,7 +92,64 @@
       }
       sahne.classList.toggle('yakin', z.o > 1.02);
       flip.kilitli = z.o > 1.02 || !!panelAcik() || tanitimAcik;
+      oklariGuncelle();
     }
+
+    /* --------------------------------------------------------------
+       DİKEY GEZİNME OKLARI (08.10.2026)
+       Öğretmen: "bir kere dokununca büyüme gerçekleşiyor ya; aşağı ve
+       yukarıda hafif saydam aşağı-yukarı ok görünsün, kademeli 9 adımda
+       sayfada dikey hareket okla yapılabilsin."
+       Yakınlaştırma yokken oklar gizli; büyütülünce beliriyorlar.
+       Tıklama ↑/↓ tuşlarının AYNI yolundan geçiyor (zoomTusu): tek ve
+       çift sayfa kipinde davranış birebir aynı olsun, ayrıca sayfanın
+       ucuna gelince kendiliğinden sonraki sayfaya geçsin.
+       Adım boyu DIKEY_ADIM: sayfa yüksekliğinin 1/9'u. */
+    var okUst = null, okAlt = null;
+    function oklariGuncelle() {
+      var gor = z.o > 1.02;
+      if (okUst) {
+        okUst.classList.toggle('gor', gor);
+        okUst.classList.toggle('pasif', gor && !dikeyGidebilir('yukari'));
+      }
+      if (okAlt) {
+        okAlt.classList.toggle('gor', gor);
+        okAlt.classList.toggle('pasif', gor && !dikeyGidebilir('asagi'));
+      }
+    }
+    (function dikeyOklar() {
+      if (!sahne) return;
+      var yap = function (yon) {
+        var yukari = (yon === 'yukari');
+        var d = document.createElement('button');
+        d.type = 'button';
+        d.className = 'zOk zOk-' + yon;
+        d.setAttribute('aria-label', yukari ? 'Yukarı kaydır' : 'Aşağı kaydır');
+        d.title = yukari ? 'Yukarı (↑)' : 'Aşağı (↓)';
+        d.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' +
+          (yukari ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6') +
+          '" fill="none" stroke="currentColor" stroke-width="2.6"' +
+          ' stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        d.addEventListener('click', function (e) {
+          e.preventDefault(); e.stopPropagation();
+          /* YALNIZ DİKEY KAYDIRMA: ↑/↓ tuşları sayfanın ucunda bölge
+             büyütmeye geçip yakınlaştırma oranını da değiştiriyor; okun
+             işi sadece sayfada aşağı-yukarı gezinmek. Uçtaysa ok zaten
+             soluk duruyor ve bir şey yapmıyor. */
+          dikeyKay(yukari ? 'yukari' : 'asagi');
+          oklariGuncelle();
+        });
+        /* Oka dokunmak sayfayı küçültmesin / çift dokunma sayılmasın */
+        ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'mousedown', 'dblclick']
+          .forEach(function (t) {
+            d.addEventListener(t, function (e) { e.stopPropagation(); }, { passive: true });
+          });
+        sahne.appendChild(d);
+        return d;
+      };
+      okUst = yap('yukari');
+      okAlt = yap('asagi');
+    })();
 
     function sinirla() {
       if (z.o <= 1.001) { z.x = 0; z.y = 0; return; }
@@ -217,6 +274,16 @@
     /* ↑↓ ince adım: sayfa boyunun 1/9'u kadar yumuşak kaydırır.
        Sayfanın ucuna gelmişsek false döner → bir üst kat (bolgeGez) sayfa değiştirir. */
     var DIKEY_ADIM = 9;
+    /* Bu yönde gidilecek yer kaldı mı? (okları soluklaştırmak için de kullanılır) */
+    function dikeyGidebilir(yon) {
+      if (z.o <= 1.02) return false;
+      var k = kitap1x();
+      var gor = k.h / z.o;
+      var py = k.h / 2 - z.y / z.o;
+      var ust = k.y + gor / 2, alt = k.y + k.boy - gor / 2;
+      if (alt < ust) return false;
+      return yon === 'asagi' ? py < alt - 2 : py > ust + 2;
+    }
     function dikeyKay(yon) {
       var k = kitap1x();
       var gor = k.h / z.o;                                    // ekranda görünen yükseklik (1x birimi)
@@ -426,6 +493,10 @@
              '<path d="M3.2 12h17.6" opacity=".45"/>',
       pinch: '<path d="M8.5 15.5 3.6 20.4"/><path d="M3.6 15.1v5.3h5.3"/>' +
              '<path d="M15.5 8.5 20.4 3.6"/><path d="M20.4 8.9V3.6h-5.3"/>',
+      gez:   '<rect x="6.4" y="2.6" width="11.2" height="6.2" rx="2.2" opacity=".45"/>' +
+             '<path d="M9.6 6.6 12 4.2l2.4 2.4"/>' +
+             '<rect x="6.4" y="15.2" width="11.2" height="6.2" rx="2.2" opacity=".45"/>' +
+             '<path d="M9.6 17.4 12 19.8l2.4-2.4"/>',
       tus:   '<rect x="2.6" y="5.6" width="18.8" height="12.8" rx="2.4"/>' +
              '<path d="M6.4 9.6h.01M10 9.6h.01M13.6 9.6h.01M17.2 9.6h.01M8.4 14.2h7.2"/>'
     };
@@ -468,6 +539,10 @@
         [IK.cevir, 'Sayfa çevir',
          'Parmağını <b>yatay kaydır</b> ya da kenardaki <b>oklara</b> bas. ' +
          'Dokunmak sayfayı çevirmez — dokunduğun bölgeyi büyütür.'],
+        [IK.gez, 'Ekrandaki oklar',
+         'Büyütünce sayfanın üstünde ve altında soluk birer ok çıkar; ' +
+         'dokundukça sayfa <b>kademeli</b> aşağı-yukarı kayar. Sayfanın ' +
+         'ucuna gelince ok soluklaşır.'],
         [IK.pinch, 'Dokunmatikte',
          'İki parmakla yakınlaştır. Telefonda ve dikey ekranda çift dokunarak büyüt, tekrar çift dokunarak çık.'],
         [IK.tus, 'Tuşlar',

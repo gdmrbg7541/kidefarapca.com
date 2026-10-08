@@ -194,6 +194,29 @@
   .ust .tus.etiketli span { display: none; }
   .ust .tus.etiketli { width: 38px; padding: 0; justify-content: center; }
 }
+/* ===== DİKEY GEZİNME OKLARI (08.10.2026) =========================
+   Yalnız yakınlaştırılmışken görünür; hafif saydam durur, üstüne
+   gelince belirginleşir. Sayfanın üstünde ve altında ortada. */
+.zOk {
+  position: absolute; left: 50%; transform: translateX(-50%); z-index: 30;
+  width: 66px; height: 42px; padding: 0; border: 0; border-radius: 14px;
+  display: none; align-items: center; justify-content: center; cursor: pointer;
+  background: rgba(17, 24, 39, .26); color: #fff;
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  opacity: .42; transition: opacity .18s ease, background .18s ease;
+}
+.zOk.gor { display: flex; }
+/* Sayfanın ucundayız: ok duruyor ama yapacak işi yok — solgun. */
+.zOk.pasif { opacity: .14; cursor: default; }
+.zOk.pasif:hover { opacity: .18; background: rgba(17, 24, 39, .26); }
+.zOk:hover { opacity: .92; background: rgba(17, 24, 39, .46); }
+.zOk:active { opacity: 1; transform: translateX(-50%) scale(.94); }
+.zOk svg { width: 28px; height: 28px; display: block; }
+.zOk-yukari { top: 10px; }
+.zOk-asagi { bottom: 10px; }
+@media (max-width: 760px) { .zOk { width: 56px; height: 38px; } .zOk svg { width: 24px; height: 24px; } }
+@media (prefers-reduced-motion: reduce) { .zOk { transition: none; } }
+
 @media (max-width: 480px) {
   .ust { gap: 6px; padding: 0 8px; }
   .ust .araclar { gap: 3px; }

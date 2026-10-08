@@ -1188,41 +1188,70 @@ function loadDataFromLocal() {
 // Sayfa ilk açıldığında kontrol et
 const ilkKontrol = loadDataFromLocal();
 
-// Eğer tarayıcıda kayıtlı veri yoksa örnekleri oluştur
-if (!ilkKontrol) {
-    let varsayilanVeri = { levels: {}, levelOrder: [] };
-    for (let i = 1; i <= 3; i++) {
-        let lId = 'L' + i;
-        varsayilanVeri.levelOrder.push(lId);
-        varsayilanVeri.levels[lId] = {
-            name: i + ". Seviye",
+/* ================== DEMO SINIFLAR (08.10.2026) ======================
+   Öğretmen: "1,2,3. sınıflardan 3'er şube tanımlı duruyor, böyle olmasın;
+   zaten site sınıf olarak 5-10. sınıflar arasını hedef alıyor. Demo sınıf
+   olacaksa 5-10 arası her seviyeden bir sınıf tanımlı olsun: 5. Sınıflar
+   -> 5A Demo Sınıfı ... 10. Sınıflar -> 10A Demo Sınıfı."
+
+   Bu veri YALNIZCA tarayıcıda hiç kayıt yokken kurulur. Giriş yapılınca
+   verileriGetir() hesabın kendi verisini indirip bunun üzerine yazar.
+   Eski demo (1-3. seviye, A/B/C şubeleri) hiç dokunulmamış hâlde
+   duruyorsa yenisiyle değiştirilir; öğretmenin kendi sınıfları varsa
+   (kidefSiniflarimSahip işareti) asla ellenmez.                        */
+function llDemoVeri() {
+    var v = { levels: {}, levelOrder: [], demo: true };
+    for (var i = 5; i <= 10; i++) {
+        var lId = 'L' + i;
+        v.levelOrder.push(lId);
+        v.levels[lId] = {
+            name: i + '. Sınıflar',
             classes: {},
-            config: { 
-                hw: [{n: '1. Ödev', w: 25}, {n: '2. Ödev', w: 25}, {n: '3. Ödev', w: 25}, {n: '4. Ödev', w: 25}], 
-                ex: [{n: 'Dinleme', w: 25}, {n: 'Konuşma', w: 25}, {n: 'Yazılı', w: 50}] 
+            config: {
+                hw: [{ n: '1. Ödev', w: 25 }, { n: '2. Ödev', w: 25 }, { n: '3. Ödev', w: 25 }, { n: '4. Ödev', w: 25 }],
+                ex: [{ n: 'Dinleme', w: 25 }, { n: 'Konuşma', w: 25 }, { n: 'Yazılı', w: 50 }]
             }
         };
-
-        ['A', 'B', 'C'].forEach(letter => {
-            let cId = 'C' + i + letter;
-            let students = [];
-            for (let s = 1; s <= 10; s++) {
-                students.push({
-                    name: i + "-" + letter + " Öğrencisi " + s,
-                    hw: [0, 0, 0, 0], ex: [0, 0, 0], history: [],
-                    skills: { 'Konuşma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'Sözlük': 5, 'Tercüme': 5 },
-                    notes: ""
-                });
-            }
-            varsayilanVeri.levels[lId].classes[cId] = {
-                name: i + "-" + letter + " Şubesi",
-                students: students,
-                planStatus: {}, planText: {}, stayedPoint: ""
-            };
-        });
+        var students = [];
+        for (var s = 1; s <= 10; s++) {
+            students.push({
+                name: i + 'A Örnek Öğrenci ' + s,
+                hw: [0, 0, 0, 0], ex: [0, 0, 0], history: [],
+                skills: { 'Konuşma': 5, 'Yazma': 5, 'Okuma': 5, 'Vezin': 5, 'Sözlük': 5, 'Tercüme': 5 },
+                notes: ""
+            });
+        }
+        v.levels[lId].classes['C' + i + 'A'] = {
+            name: i + 'A Demo Sınıfı',
+            students: students,
+            planStatus: {}, planText: {}, stayedPoint: ""
+        };
     }
-    localStorage.setItem('schoolData', JSON.stringify(varsayilanVeri));
-    data = varsayilanVeri;
+    return v;
+}
+/* Tarayıcıda duran veri ESKİ demo mu? (1-3. seviye, her birinde A/B/C) */
+function llEskiDemoMu(d) {
+    try {
+        if (!d || !d.levels) return false;
+        if (localStorage.getItem('kidefSiniflarimSahip')) return false;
+        if (Object.keys(d.levels).length !== 3) return false;
+        for (var i = 1; i <= 3; i++) {
+            var l = d.levels['L' + i];
+            if (!l || l.name !== i + '. Seviye') return false;
+            var c = l.classes || {};
+            if (Object.keys(c).length !== 3) return false;
+            for (var j = 0; j < 3; j++) {
+                var h = ['A', 'B', 'C'][j];
+                var sn = c['C' + i + h];
+                if (!sn || sn.name !== i + '-' + h + ' Şubesi') return false;
+            }
+        }
+        return true;
+    } catch (e) { return false; }
+}
+if (!ilkKontrol || llEskiDemoMu(data)) {
+    data = llDemoVeri();
+    try { localStorage.setItem('schoolData', JSON.stringify(data)); } catch (e) { }
 }
 
 // Global Değişkenler
@@ -1394,6 +1423,22 @@ function save() {
     // 2. Eğer giriş yapılmışsa buluta (Firebase) gönder
     const user = firebase.auth().currentUser;
     if (user) {
+        /* HESABIN KENDİ VERİSİ HENÜZ İNMEDİYSE BULUTA YAZMA (08.10.2026)
+           Yeni bir cihazda sayfa açılır açılmaz yerel DEMO veri kuruluyor.
+           O sırada yapılan herhangi bir kayıt, bulutta duran gerçek sınıf
+           listesini demo veriyle eziyordu. Artık buluta yalnızca
+           verileriGetir() bu hesabın verisini indirdikten SONRA yazılır;
+           inmemişse indirme başlatılır, yazma atlanır. */
+        if (window._llBulutGeldi !== user.uid) {
+            console.warn('Bulut verisi henüz inmedi — buluta yazma atlandı.');
+            try {
+                if (typeof verileriGetir === 'function' && window._llLoadedUid !== user.uid) {
+                    window._llLoadedUid = user.uid;
+                    verileriGetir(user.uid);
+                }
+            } catch (e) { }
+            return;
+        }
         db.collection("kullanicilar").doc(user.uid).set({
             userData: JSON.stringify(data),
             lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
@@ -6387,6 +6432,17 @@ function verileriGetir(uid) {
         }
         // Yerel kopyayi ve ogretmen kodunu da bu hesaba gore guncelle (hesaplar arasi sizinti engellenir)
         try { localStorage.setItem('schoolData', JSON.stringify(data)); } catch(e){}
+        /* Bu hesabin verisi artik elimizde: save() buluta yazabilir. */
+        window._llBulutGeldi = uid;
+        /* OGRETMENIN ADI (08.10.2026) — anasayfadaki "Siniflarim" basligi
+           yaninda gosterilir (sistem/siniflarim.js). */
+        try {
+            var _ad = (doc.exists && doc.data().name) ? String(doc.data().name).trim() : '';
+            if (_ad && _ad !== 'Belirtilmedi' && _ad.indexOf('@') < 0) {
+                window.KidefOgretmenAdi = _ad;
+                if (window.appState && !appState.currentUserName) appState.currentUserName = _ad;
+            }
+        } catch (e) { }
         /* ÇIKIŞTAN SONRA DA SINIFLAR GÖRÜNSÜN (07.10.2026) — öğretmen:
            "eğer çıkarsa da tarayıcı hafızası hatırlasın sınıfları".
            Bu işaret, yerel kopyanın bir ÖĞRETMENE ait olduğunu söyler;
@@ -6405,6 +6461,8 @@ function verileriGetir(uid) {
         // 1. Sidebar'ı oluştur
         renderSidebar(); 
         llRootEl().classList.add('logged-in'); 
+        /* Anasayfadaki "Sınıflarım" kategorisi de taze veriyle çizilsin */
+        try { if (window.KidefSiniflarim) window.KidefSiniflarim.ciz(); } catch (e) { }
 
         // 2. Otomatik secim YOK - kullanici secene kadar placeholder goster
         if (typeof showLLPlaceholder === "function") showLLPlaceholder();
@@ -6420,6 +6478,37 @@ function verileriGetir(uid) {
         renderSidebar();
     });
 }
+
+/* ========= GİRİŞ YAPINCA VERİ OTOMATİK GELSİN (08.10.2026) =========
+   Öğretmen: "başka cihazdan hesabıma giriş yapınca normalde kaydettiğim
+   sınıflar görünmüyor ... giriş yapınca verilerin otomatik gelmesi lazım,
+   hatayı bul."
+
+   HATA: verileriGetir() yalnızca initListelerim() içinden çağrılıyordu;
+   o da ancak "Listelerim" ekranı AÇILINCA çalışıyordu. Anasayfadaki
+   "Sınıflarım" kategorisi ise yerel kopyadan çiziliyor. Yeni bir cihazda
+   yerel kopya olmadığı için yukarıdaki demo veri kuruluyor ve ekranda
+   öğretmenin gerçek sınıfları yerine o görünüyordu. Artık oturum açılır
+   açılmaz — hangi ekranda olunursa olunsun — hesabın kendi verisi
+   buluttan iniyor. (_llLoadedUid koruması iki kez indirmeyi engeller.) */
+(function llBulutOtoYukle() {
+    if (window.__llBulutIzleyici) return;
+    function kur() {
+        try {
+            if (!(window.firebase && firebase.auth)) return false;
+            window.__llBulutIzleyici = 1;
+            firebase.auth().onAuthStateChanged(function (u) {
+                if (!u || u.isAnonymous) return;
+                if (window._llLoadedUid === u.uid) return;
+                window._llLoadedUid = u.uid;
+                try { verileriGetir(u.uid); } catch (e) { console.error('oto veri', e); }
+            });
+            return true;
+        } catch (e) { return false; }
+    }
+    if (kur()) return;
+    var n = 0, t = setInterval(function () { if (kur() || ++n > 100) clearInterval(t); }, 150);
+})();
 
 function misafirGiris() {
     // 1. Önce hafızadaki (varsa misafir modunda girilen) veriyi tazeleyelim

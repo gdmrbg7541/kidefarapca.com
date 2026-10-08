@@ -7997,3 +7997,59 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
       pinch-in               -> 1.50
     Aynı hareket içinde daha fazla açmak kademe eklemiyor.
   DAĞITIM: 6 kitap kopyasına yazıldı, 6 sayfada kitapzoom.js?v=20261008a.
+
+08.10.2026 — SUNUM 5. SLAYT: ROZETLER KALICI + 3. ADIM YAZISI
+  - "3 rakam çıktıktan sonra kamerîye geçince 3 adım kaybolmasın":
+    şemsînin tamamlanmış 1-2-3 rozetleri 7. ve 8. karelerde de ekranda
+    duruyor. Eskiden kamerîye geçince şemsî sütunundan siliniyordu.
+  - "şemsî 3. adımda sadece 'son hareke değişir' yazısı görünsün, 1 ve 2
+    bilgisi olmasın": üç maddeyi birden sayan açıklama satırı kaldırıldı.
+    1 ve 2 zaten kendi karelerinde yazıyor ("El takısı sustu: lâm
+    okunmaz" / "Kelimenin ilk harfi şeddelendi"). 6. karenin notu da
+    "Son hareke değişir: tenvin ـٌ ‹ tek hareke ـُ" oldu.
+
+--- 2026-10-08 · Flipbook dikey oklar + Harf-i Tarif 5. slayt ---
+* _kaynak/ortak-kitap/kitapzoom.js / .css (?v=20261008b) ve 6 kitap kopyasi:
+  - Iki parmakla yaklastirma/uzaklastirma artik kademeli: bir hareket = zoom tusuna bir tiklama.
+  - Yakinlastirildiginda sayfanin ust ve altinda hafif saydam yukari/asagi oklari cikiyor;
+    her tiklamada sayfa 9 adimdan biri kadar dikey kayiyor, buyutme orani degismiyor.
+    Sayfa sonuna gelince ok soluklasiyor (pasif).
+  - Tanitim panosuna "gezin" satiri eklendi.
+* sunum html/harfitarif.html — 5. slayt:
+  - Kameri karelerinde semsi sutunundaki "Son hareke degisir: tenvin ... tek hareke"
+    aciklamasi artik silinmiyor, 1-2-3 rozetleriyle birlikte duruyor.
+  - Alttaki semsi/kameri harf seritleri 44px -> 52px; satir araligi 1.3, harfler
+    gerektiginde iki satira sariyor (nun artik tasmiyor). Baslik 28 -> 30px.
+
+--- 2026-10-08 · Baska cihazda sinif gelmemesi + demo siniflar + ogretmen adi ---
+* hesap/listelerim.js (?v=20261008a)
+  HATA: verileriGetir() (bulut indirme) YALNIZCA initListelerim() icinden
+  cagriliyordu, o da ancak "Listelerim" ekrani ACILINCA calisiyordu.
+  Anasayfadaki "Siniflarim" kategorisi yerel kopyadan ciziliyor; yeni bir
+  cihazda yerel kopya olmadigi icin dosyanin basindaki DEMO veri kuruluyor
+  ve ekranda ogretmenin gercek siniflari yerine o gorunuyordu.
+  - Artik oturum acilir acilmaz (onAuthStateChanged) hangi ekranda olunursa
+    olunsun hesabin kendi verisi buluttan iniyor; inince anasayfadaki
+    kategori de yeniden ciziliyor.
+  - save(): hesabin kendi verisi HENUZ INMEDIYSE buluta YAZMIYOR. Eskiden
+    demo veri bulutu ezip gercek sinif listesini silebiliyordu.
+  - DEMO VERI 5-10. SINIF OLDU: "5. Siniflar -> 5A Demo Sinifi" ...
+    "10. Siniflar -> 10A Demo Sinifi" (her seviyede tek sinif, 10 ornek
+    ogrenci). Eski demo (1-3. seviye, A/B/C subeleri) hic dokunulmamis
+    halde duruyorsa yenisiyle degistiriliyor; ogretmenin kendi siniflari
+    (kidefSiniflarimSahip isareti) asla ellenmiyor.
+  - Ogretmenin adi kullanicilar/{uid}.name alanindan okunup
+    window.KidefOgretmenAdi'ye yaziliyor.
+* sistem/siniflarim.js (?v=16)
+  - "Siniflarim" basliginin yaninda ogretmenin adi soyadi: ince dikey
+    ayirici + yuvarlak rozet (kisi simgesi + ad). Ad asenkron geldigi icin
+    her cizimde ve nabizda tazeleniyor; e-posta ad yerine yazilmiyor,
+    cikista kutu gorunmuyor.
+* index.html
+  - VITRIN KAPISI: sinif/okul sekmeleri index.html?sinif=...&sube=... veya
+    ?okul=1 ile YENI sekmede aciliyordu; yeni sekmede oturum isareti
+    olmadigi icin ilk 3 aciliste indeks.html devreye giriyor ve adresteki
+    sinif bilgisi kayboluyordu. Artik derin baglanti parametrelerinden biri
+    varsa (qr, sinif, sube, okul, giris, gorev, liveRoom, list, view, rol,
+    ihsinif, amac) vitrin atlaniyor. Sade adres eskisi gibi vitrine gidiyor.
+  - Surumler: sistem/siniflarim.js?v=16, hesap/listelerim.js?v=20261008a

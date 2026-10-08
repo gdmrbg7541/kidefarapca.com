@@ -14,10 +14,21 @@
        silmen yeterli.
        İSTİSNA: karekod onay bağlantısı (?qr=...) telefonun kamerasından YENİ bir
        sekmede açılır, o sekmede vitrin işareti yoktur. Yönlendirilirse onay
-       parametresi kaybolurdu; bu yüzden ?qr= varsa kapı açılır. */
+       parametresi kaybolurdu; bu yüzden ?qr= varsa kapı açılır.
+
+       İSTİSNA 2 (08.10.2026) — öğretmen: "bi sınıfı açınca indeks açılmasın;
+       bi tarayıcıda ilk 3 açışta indeks.html görünsün demiştik ama sınıf
+       açınca yeni sekmede açıldığı için indeks.html devreye girmesin."
+       Sınıf ve okul sekmeleri index.html?sinif=…&sube=… / ?okul=1 ile YENİ
+       bir sekmede açılıyor; yeni sekmede oturum işareti olmadığı için vitrin
+       devreye giriyor ve adresteki sınıf bilgisi kayboluyordu. Artık DERİN
+       BAĞLANTI parametrelerinden biri varsa kapı açılır ve işaret bırakılır;
+       aynı oturumdaki sonraki açılışlar da vitrine düşmez. Tanıtım/paylaşım
+       bağlantıları (sade adres) eskisi gibi vitrine gider. */
     (function(){
       try{
-        if(/[?&]qr=/.test(location.search)) sessionStorage.setItem('kidefVitrin','1');
+        var DERIN = /[?&](qr|sinif|sube|okul|giris|gorev|liveRoom|list|view|rol|ihsinif|amac)=/;
+        if(DERIN.test(location.search)) sessionStorage.setItem('kidefVitrin','1');
         if(sessionStorage.getItem('kidefVitrin')) return;
         var acilis = 0;
         try{ acilis = parseInt(localStorage.getItem('kidefVitrinSayac'), 10) || 0; }catch(e){}
@@ -7690,7 +7701,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + butonu olsun ... sınıflara header yerine galeri ve site
          güncellemelerinin üstünde bi kategori olarak hızlıca
          ulaşabilsin." Bölümü kendisi, Güncellemeler'in üstüne koyar. -->
-    <script src="sistem/siniflarim.js?v=15"></script>
+    <script src="sistem/siniflarim.js?v=16"></script>
     <!-- SINIF MATERYALLERİ SEKMESİ (06.10.2026): açık sınıfın seviyesine
          ait İmam Hatip belgeleri ve etkinlik kartları, sınıfın kendi
          panelinde. Kopya değil, aynı kaynaktan çizim. -->
@@ -7721,7 +7732,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/siniftayeni.js?v=20261004d"></script>
     <script src="sistem/galeriveri.js?v=20261007"></script>
     <script src="sistem/galeri.js?v=20261007d"></script>
-    <script src="hesap/listelerim.js?v=20261007e"></script>
+    <script src="hesap/listelerim.js?v=20261008a"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=20260912a"></script>

@@ -576,13 +576,18 @@ h1,h2,h3,h4,p{margin:0}
 .harfSerit{display:grid;grid-template-columns:1fr 1px 1fr;gap:0;flex:0 0 auto;
   border-top:1px dashed #D6DBE2;padding-top:8px;margin-top:6px;direction:rtl}
 .harfSerit .hs{padding:0 10px;text-align:center}
-.harfSerit .hbaslik{font-size:28px;font-weight:900;margin-bottom:4px}
+.harfSerit .hbaslik{font-size:30px;font-weight:900;margin-bottom:4px}
 .harfSerit .hbaslik.s{color:var(--sems)} .harfSerit .hbaslik.k{color:var(--kamer)}
 /* 08.10.2026 — öğretmen: "aşağıdaki şemsî ve kamerî harfleri de büyüt."
    Ölçüldü: 44 px'e kadar liste TEK SATIRDA kalıyor (şerit 124 px, kare
    620/626 — taşma yok). 50 px'te liste iki satıra sarıyor, şerit 217 px'e
    çıkıyor ve sahne taşıyor. Üst sınır 44 px. */
-.harfSerit .hliste{font-size:44px;font-weight:800;direction:rtl;line-height:1.5;letter-spacing:1px}
+/* 08.10.2026 — öğretmen: "şemsî harflerde nûn alt satıra düşüyor;
+   gerekirse harfler 2 satır olsun, daha büyük olsun." Tek satıra sığdırma
+   şartı kaldırıldı: liste iki satıra sarabiliyor, punto 44 -> 52.
+   ÖLÇÜLDÜ: 52 px'te şerit 190 px (iki satır), sahneye 430 px kalıyor,
+   hiçbir karede taşma yok. 58 px'te bir kare, 70 px'te dört kare taşıyor. */
+.harfSerit .hliste{font-size:52px;font-weight:800;direction:rtl;line-height:1.3;letter-spacing:1px}
 .harfSerit .hliste.s{color:var(--sems)} .harfSerit .hliste.k{color:var(--kamer)}
 .harfSerit .vur{color:var(--kirmizi);font-weight:900;background:#FFE9E6;border-radius:6px;padding:0 4px}
 .harfSerit .vurK{color:var(--kamer);font-weight:900;background:#FFE9E6;border-radius:6px;padding:0 4px}
@@ -928,6 +933,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
                  geçince 3 adım kaybolmasın." Şemsînin tamamlanmış üç
                  adımı kamerî karelerinde de duruyor. -->
             <div class="rozetSira" style="direction:rtl"><span class="rz3">1</span><span class="rz3">2</span><span class="rz3">3</span></div>
+            <div class="not" style="transform:none;color:#4B5563">Son hareke değişir: tenvin <span class="ar">ــٌ</span> ‹ tek hareke <span class="ar">ــُ</span></div>
           </div>
           <div class="ayirici"></div>
           <div class="yarim">
@@ -957,6 +963,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
                  geçince 3 adım kaybolmasın." Şemsînin tamamlanmış üç
                  adımı kamerî karelerinde de duruyor. -->
             <div class="rozetSira" style="direction:rtl"><span class="rz3">1</span><span class="rz3">2</span><span class="rz3">3</span></div>
+            <div class="not" style="transform:none;color:#4B5563">Son hareke değişir: tenvin <span class="ar">ــٌ</span> ‹ tek hareke <span class="ar">ــُ</span></div>
             <div class="not" style="transform:none;color:var(--sems)"><b>Şemsî:</b> lâm okunmaz, şedde gelir</div>
           </div>
           <div class="ayirici"></div>

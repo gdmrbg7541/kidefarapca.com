@@ -292,6 +292,25 @@
                de görünsün diye başlığın yanında, akordiyonun dışında. */
             '#' + BOLUM_ID + ' h2.sn-bas{ display:flex; align-items:center;',
             '  gap:10px; flex-wrap:wrap; }',
+            /* ÖĞRETMEN ADI (08.10.2026) — öğretmen: "giriş yapınca
+               Sınıflarım kategorisinde öğretmenin kendi ismi soyismi
+               olsun Sınıflarım yazısının yanında, şık bi kutu veya
+               ayırıcı olsun". İnce dikey ayırıcı + yuvarlak rozet. */
+            '#' + BOLUM_ID + ' .sn-ogretmen{ display:none; align-items:center; gap:11px; }',
+            '#' + BOLUM_ID + ' .sn-ogretmen.gor{ display:inline-flex; }',
+            '#' + BOLUM_ID + ' .sn-ogretmen-ayrac{ width:2px; height:24px; border-radius:2px;',
+            '  background:linear-gradient(180deg, rgba(22,160,133,0), rgba(22,160,133,.42), rgba(22,160,133,0)); }',
+            '#' + BOLUM_ID + ' .sn-ogretmen-kutu{ display:inline-flex; align-items:center; gap:8px;',
+            '  padding:6px 15px 6px 11px; border-radius:999px; border:1px solid rgba(22,160,133,.30);',
+            '  background:linear-gradient(135deg,#EAF7F3 0%,#F6FCFA 100%);',
+            '  box-shadow:0 2px 9px rgba(22,160,133,.13); }',
+            '#' + BOLUM_ID + ' .sn-ogretmen-kutu svg{ width:17px; height:17px; flex:0 0 auto; color:#16A085; }',
+            '#' + BOLUM_ID + ' .sn-ogretmen-ad{ font-size:.87rem; font-weight:800; color:#11806A;',
+            '  letter-spacing:.2px; white-space:nowrap; }',
+            '@media (max-width:620px){',
+            '  #' + BOLUM_ID + ' .sn-ogretmen-ayrac{ display:none; }',
+            '  #' + BOLUM_ID + ' .sn-ogretmen-kutu{ padding:5px 12px 5px 9px; }',
+            '  #' + BOLUM_ID + ' .sn-ogretmen-ad{ font-size:.8rem; } }',
             '#' + BOLUM_ID + ' .sn-ekle-tus{ display:inline-flex; align-items:center;',
             '  gap:6px; cursor:pointer; font-family:inherit; font-weight:700;',
             '  font-size:.82rem; line-height:1; color:#16A085; padding:7px 13px 7px 10px;',
@@ -479,6 +498,9 @@
             '<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor"' +
             ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
             '</svg></button>' +
+            /* Öğretmenin adı: içi isimYaz() ile doldurulur, isim yoksa
+               kutu hiç görünmez (çıkışta, misafirde boş kalır). */
+            '<span class="sn-ogretmen"></span>' +
             /* SINIF EKLE BAŞLIKTA (07.10.2026) — öğretmen: "sınıflar
                kategorisi kapalıyken bile sınıf ekle başlığın yanında
                görünsün". Kategori kapalıyken de duruyor: basınca kategori
@@ -493,10 +515,68 @@
             '</h2>';
     }
 
+    /* ------------------------------------------------- ÖĞRETMENİN ADI
+       Ad birkaç yerden gelebiliyor ve hepsi ASENKRON dolduğu için her
+       çizimde ve nabızda yeniden okunur. E-posta ad değildir: '@'
+       geçen değer kutuya yazılmaz, kutu gizli kalır. */
+    var KISI_SVG =
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+        '<circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="1.9"/>' +
+        '<path d="M4.8 20c.6-3.8 3.6-6 7.2-6s6.6 2.2 7.2 6" fill="none"' +
+        ' stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
+
+    function temizAd(x) {
+        var a = String(x == null ? '' : x).trim();
+        if (!a) return '';
+        if (a.indexOf('@') >= 0) return '';                  /* e-posta */
+        if (a === 'Belirtilmedi' || a === 'Öğrenci') return '';
+        if (a === 'Misafir Öğrenci' || a === 'Anonim') return '';
+        return a;
+    }
+    function ogretmenAdi() {
+        var a = '';
+        try { a = temizAd(window.KidefOgretmenAdi); } catch (e) { }
+        if (!a) { try { a = temizAd(window.appState && appState.currentUserName); } catch (e) { } }
+        if (!a) {
+            try {
+                var u = (window.firebase && firebase.auth && firebase.auth().currentUser) || null;
+                a = temizAd(u && u.displayName);
+            } catch (e) { }
+        }
+        if (!a) {
+            try {
+                if (window.KidefRol && typeof KidefRol.onbellekOku === 'function') {
+                    var o = KidefRol.onbellekOku();
+                    a = temizAd(o && o.isim);
+                }
+            } catch (e) { }
+        }
+        return a;
+    }
+    function isimYaz(bolum) {
+        var b = bolum || document.getElementById(BOLUM_ID);
+        if (!b) return;
+        var kutu = b.querySelector('.sn-ogretmen');
+        if (!kutu) return;
+        var ad = oturumVarMi() ? ogretmenAdi() : '';
+        if (!ad) {
+            if (kutu.className.indexOf('gor') >= 0) { kutu.className = 'sn-ogretmen'; kutu.innerHTML = ''; }
+            return;
+        }
+        if (kutu.getAttribute('data-ad') === ad) return;      /* değişmediyse dokunma */
+        kutu.setAttribute('data-ad', ad);
+        kutu.className = 'sn-ogretmen gor';
+        kutu.innerHTML =
+            '<span class="sn-ogretmen-ayrac" aria-hidden="true"></span>' +
+            '<span class="sn-ogretmen-kutu" title="Giriş yapan öğretmen">' +
+            KISI_SVG + '<span class="sn-ogretmen-ad">' + kac(ad) + '</span></span>';
+    }
+
     /* Açık/kapalı bilgisini DOM'a işler — HTML'i yeniden üretmeden. */
     function baslikDurum(bolum) {
         var kapali = kapaliMi();
         bolum.classList.toggle('sn-kapali', kapali);
+        try { isimYaz(bolum); } catch (e) { }
         var t = bolum.querySelector('.sn-bas-tus');
         if (!t) return;
         t.setAttribute('aria-expanded', kapali ? 'false' : 'true');
@@ -772,6 +852,7 @@
     setInterval(function () {
         try {
             cikisIzle();                          /* firebase geç gelirse */
+            isimYaz();                            /* ad asenkron geliyor */
             if (gosterildi && !gorunurMu()) gizle();
         } catch (e) { }
     }, 1200);
