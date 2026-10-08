@@ -8179,3 +8179,15 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
     kapanabilsin diye.
   - Olculdu: sunumlardan acilinca Geri -> sunum html/sunumlar.html ·
     index'ten acilinca -> index.html · dogrudan acilinca -> index.html
+
+--- 2026-10-08 (7) · Harf-i Ta'rif kartindaki «el» takisi ---
+* sunum html/sunumlar.html
+  Ogretmen: "harfi tarif sunusunun kartlardaki svg sinde el takisi ters olmus."
+  - Sebep: karttaki dizgi elif+fetha+lam+sukun+TATVIL idi. Arakom'da SONDAKI
+    tatvil (U+0640) lamin baglayici cizgisini SAGA koyuyor; lamin kasesi
+    kayboluyor ve harf ters donmus gibi gorunuyor. Buyuk olcekte olculdu:
+    tatvilsiz dizgi dogru, tatvilli dizgi ters.
+  - Kartin iki SVG metni de tatvilsiz «el» ile degistirildi. BASTAKI tatvil
+    (Mufred kartindaki «-ani», «-une») dogru ciziliyor, onlara dokunulmadi.
+  - Sunumun kendi slaytlarindaki dizgiler DEGISTIRILMEDI (7 yerde duruyor);
+    orada tatvil bilerek var ve dogru gorunuyor.
