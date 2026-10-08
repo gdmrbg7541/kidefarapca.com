@@ -1099,7 +1099,36 @@ window.ogretmenOnayVer = ogretmenOnayVer;
    düşmez; o hesaplar bir kez giriş yapınca sistem/rol.js kendiliğinden
    role:'teacher' yazar ve listede belirirler.
    =================================================================== */
-var _adminOgretmenler = {};      /* uid -> {ad, email} (onay mesajı için) */
+var _adminOgretmenler = {};      /* uid -> {ad, email, ogrenci, kullanim, anket} */
+
+/* Öğretmenin KENDİ sınıf listesinden sınıf/öğrenci sayısı.
+   userData, listelerim.js'in buluta yazdığı JSON metindir. "bagli":
+   gerçekten hesabı olan ve bu öğretmene bağlanmış öğrenci sayısı. */
+function _ogrSayisi(userData) {
+    var s = { sinif: 0, ogrenci: 0, bagli: 0, seviye: 0 };
+    if (!userData) return s;
+    var d = null;
+    try { d = (typeof userData === 'string') ? JSON.parse(userData) : userData; } catch (e) { return s; }
+    var L = (d && d.levels) || {};
+    Object.keys(L).forEach(function (lid) {
+        s.seviye++;
+        var C = (L[lid] && L[lid].classes) || {};
+        Object.keys(C).forEach(function (cid) {
+            s.sinif++;
+            var o = (C[cid] && C[cid].students) || [];
+            s.ogrenci += o.length;
+            for (var i = 0; i < o.length; i++) if (o[i] && o[i].hesapUid) s.bagli++;
+        });
+    });
+    return s;
+}
+function _sureBicim(sn) {
+    if (window.KidefKullanim && KidefKullanim.bicim) return KidefKullanim.bicim(sn);
+    sn = Math.max(0, Math.round(sn || 0));
+    if (sn < 60) return sn + ' sn';
+    var d = Math.floor(sn / 60), s2 = Math.floor(d / 60);
+    return s2 < 1 ? d + ' dk' : s2 + ' sa ' + (d % 60) + ' dk';
+}
 
 function _ogrDurumRozet(onay) {
     var r = { renk: '#7f8c8d', zemin: '#EDF1F7', ad: 'Eski kayıt' };
@@ -1147,6 +1176,7 @@ function renderAdminTeacherList() {
             }
 
             var sayac = { onayli: 0, bekliyor: 0, reddedildi: 0, eski: 0 };
+            var toplam = { sure: 0, ogrenci: 0, sinif: 0, anketli: 0 };
             var satirlar = '';
             liste.forEach(function (o) {
                 var uid = o._id;
@@ -1184,6 +1214,23 @@ function renderAdminTeacherList() {
                       'onclick="adminOgretmenSil(\'' + uid + '\')">Sil</button>';
                 }
 
+                /* KULLANIM (08.10.2026) — öğretmen: "kayıtlı olan
+                   öğretmenlerin kendilerine kayıtlı kaç öğrenci olduğunu,
+                   ne kadar sitede zaman geçirdiklerini görebileyim."
+                   Öğrenci sayısı öğretmenin KENDİ sınıf listesinden
+                   (userData) sayılır — ek sorgu yok, belge zaten elimizde.
+                   Süre sistem/kullanimsure.js'in yazdığı kullanim alanından. */
+                var say = _ogrSayisi(o.userData);
+                var kul = o.kullanim || {};
+                var sureYazi = _sureBicim(kul.toplamSn);
+                _adminOgretmenler[uid].ogrenci = say;
+                _adminOgretmenler[uid].kullanim = kul;
+                _adminOgretmenler[uid].anket = o.anket || null;
+                _adminOgretmenler[uid].userData = o.userData || '';
+                toplam.sure += (kul.toplamSn || 0);
+                toplam.ogrenci += say.ogrenci; toplam.sinif += say.sinif;
+                if (o.anket) toplam.anketli++;
+
                 satirlar +=
                     '<tr>' +
                       '<td>' + _fbEsc(ad || '(isim yok)') + '</td>' +
@@ -1196,7 +1243,20 @@ function renderAdminTeacherList() {
                       '<td>' + _ogrDurumRozet(onay) + '</td>' +
                       '<td style="font-family:monospace; font-size:.85rem;">' + _fbEsc(kod) + '</td>' +
                       '<td style="font-size:.85rem; color:#7f8c8d;">' + _ogrTarih(o.createdAt) + '</td>' +
-                      '<td>' + islem + '</td>' +
+                      '<td style="font-size:.88rem; white-space:nowrap;">' +
+                        (say.ogrenci ? '<b>' + say.ogrenci + '</b> öğrenci' : '<span style="color:#A9B2BD;">—</span>') +
+                        (say.sinif ? '<br><span style="color:#8A94A3; font-size:.82rem;">' + say.sinif + ' sınıf</span>' : '') +
+                      '</td>' +
+                      '<td style="font-size:.88rem; white-space:nowrap;">' +
+                        (kul.toplamSn ? '<b>' + sureYazi + '</b>' : '<span style="color:#A9B2BD;">—</span>') +
+                        (kul.sonGoruldu ? '<br><span style="color:#8A94A3; font-size:.82rem;">son: ' +
+                            _ogrTarih(kul.sonGoruldu) + '</span>' : '') +
+                      '</td>' +
+                      '<td>' +
+                        '<button class="btn btn-sm" style="background:#EEF4FF; color:#1B4F9C; border:none;' +
+                        ' border-radius:8px; padding:6px 12px; font-size:.85rem; font-weight:700;"' +
+                        ' onclick="adminOgretmenDetay(\'' + uid + '\')">Detay</button> ' + islem +
+                      '</td>' +
                     '</tr>';
             });
 
@@ -1217,12 +1277,19 @@ function renderAdminTeacherList() {
                     sayac.reddedildi + ' reddedildi' +
                     (sayac.eski ? ' · ' + sayac.eski + ' eski kayıt' : '') +
                   '</span>' +
+                  /* TOPLAMLAR (08.10.2026): bütün öğretmenlerin sitede
+                     geçirdiği süre, kayıtlı öğrenci ve sınıf sayısı. */
+                  '<span style="font-size:.85rem; color:#1B4F9C; font-weight:700;">' +
+                    'Σ ' + _sureBicim(toplam.sure) + ' · ' + toplam.ogrenci + ' öğrenci · ' +
+                    toplam.sinif + ' sınıf · ' + toplam.anketli + ' anket' +
+                  '</span>' +
                   '<button class="btn" onclick="renderAdminTeacherList()" ' +
                     'style="margin-inline-start:auto; font-size:.85rem;">🔄 Yenile</button>' +
                 '</div>' +
                 '<table class="admin-table">' +
                   '<thead><tr><th>Ad Soyad</th><th>E-posta</th><th>Telefon</th>' +
-                  '<th>Durum</th><th>Kod</th><th>Kayıt</th><th></th></tr></thead>' +
+                  '<th>Durum</th><th>Kod</th><th>Kayıt</th><th>Öğrenci</th>' +
+                  '<th>Sitede süre</th><th></th></tr></thead>' +
                   '<tbody>' + satirlar + '</tbody>' +
                 '</table>';
         })

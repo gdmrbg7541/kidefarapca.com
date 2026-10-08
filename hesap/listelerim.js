@@ -5435,6 +5435,62 @@ function llAkordiyon(id, renk, baslikHtml, icerik, acik) {
 function llRozetHtml(yazi) {
     return '<span style="font-size:0.75rem; font-weight:600; background:#EAF7F3; color:#16A085; padding:3px 10px; border-radius:20px;">' + yazi + '</span>';
 }
+/* Profilin tepesindeki "Bu dönem" kartı — bkz. renderTeacherProfile. */
+function llDonemKarti() {
+    var sn = function (x) {
+        if (window.KidefKullanim && KidefKullanim.bicim) return KidefKullanim.bicim(x);
+        x = Math.max(0, Math.round(x || 0));
+        if (x < 60) return x + ' sn';
+        var d = Math.floor(x / 60), s2 = Math.floor(d / 60);
+        return s2 < 1 ? d + ' dk' : s2 + ' sa ' + (d % 60) + ' dk';
+    };
+    /* sınıf ve öğrenci: yerel data */
+    var sinif = 0, ogrenci = 0;
+    try {
+        var L = (typeof data !== 'undefined' && data && data.levels) || {};
+        Object.keys(L).forEach(function (lid) {
+            var C = (L[lid] && L[lid].classes) || {};
+            Object.keys(C).forEach(function (cid) {
+                sinif++;
+                ogrenci += ((C[cid] && C[cid].students) || []).length;
+            });
+        });
+    } catch (e) { }
+    /* süre: bu ay + toplam + bu oturum */
+    var kul = window._llKullanim || {};
+    var buAy = 0;
+    try {
+        var d0 = new Date(), ay = d0.getFullYear() + '-' + ((d0.getMonth() + 1 < 10 ? '0' : '') + (d0.getMonth() + 1));
+        var g = kul.gun || {};
+        Object.keys(g).forEach(function (t) { if (t.indexOf(ay) === 0) buAy += (g[t] || 0); });
+    } catch (e) { }
+    var oturum = 0;
+    try { if (window.KidefKullanim && KidefKullanim.oturum) oturum = KidefKullanim.oturum(); } catch (e) { }
+    if (!sinif && !ogrenci && !kul.toplamSn && oturum < 60) return '';   /* gösterilecek bir şey yok */
+
+    var kutu = function (buyuk, kucuk) {
+        return '<div style="flex:1 1 130px; min-width:130px; background:#fff; border:1px solid #E6EBF2;' +
+            ' border-radius:14px; padding:12px 15px;">' +
+            '<b style="display:block; font-size:1.45rem; color:#1F2430; line-height:1.15;">' + buyuk + '</b>' +
+            '<span style="font-size:.76rem; color:#8A94A3; font-weight:800; letter-spacing:.4px;">' + kucuk + '</span>' +
+            '</div>';
+    };
+    return '<div id="tpDonem" class="glass-card" style="margin-bottom:25px; border-left:5px solid #16A085;">' +
+        '<div style="display:flex; align-items:center; gap:13px; flex-wrap:wrap; margin-bottom:13px;">' +
+          '<span style="display:inline-flex; width:40px; height:40px; border-radius:50%; background:#E8F8F0;' +
+          ' align-items:center; justify-content:center; font-size:1.25rem; flex:none;">🌱</span>' +
+          '<div><b style="color:#11806A; font-size:1.02rem;">Bu dönem</b>' +
+          '<span style="display:block; color:#7A8A94; font-size:.85rem;">Kidef\'te biriken emeğin</span></div>' +
+        '</div>' +
+        '<div style="display:flex; gap:10px; flex-wrap:wrap;">' +
+          kutu(sinif, 'SINIF') + kutu(ogrenci, 'ÖĞRENCİ') +
+          kutu(sn(buAy), 'BU AY') + kutu(sn(kul.toplamSn), 'TOPLAM') +
+        '</div>' +
+        (oturum >= 60 ? '<p style="margin:11px 0 0; font-size:.8rem; color:#A1AEB6;">' +
+            'Bu oturumda ' + sn(oturum) + '.</p>' : '') +
+        '</div>';
+}
+
 function renderTeacherProfile(deneme) {
     var sec = document.getElementById('student-profile-section');
     if (!sec) return;
@@ -5532,6 +5588,16 @@ function renderTeacherProfile(deneme) {
     var tatilAkordiyon = llAkordiyon('tpTatil', '#9b59b6', '<span>🏖 Tatiller</span>', tatilIc, false);
 
     var html = '';
+
+    /* ============ BU DÖNEM: EMEĞİN ÖZETİ (08.10.2026) =================
+       Öğretmen: "siteyi ne kadar kullandıklarını görmeleri önemli olabilir."
+       Kasıtlı olarak SAYAÇ gibi değil, ÖZET gibi duruyor: önce sınıf ve
+       öğrenci, sonra süre. Amaç "şu kadar tükettin" demek değil, dönem
+       içinde biriken emeği bir arada göstermek.
+       Veri: sınıf/öğrenci yereldeki data'dan, süre giriş sırasında okunan
+       kullanicilar/{uid}.kullanim alanından (ek sorgu yok). Bu oturumda
+       sayılan süre ayrıca yazılır — buluttaki toplam girişte donmuş olur. */
+    html += llDonemKarti();
 
     /* --- BILDIRIM: ogrenci gorev tamamlayinca profilin tepesinde serit --- */
     /* --- YENİLİKLER ŞERİDİ: sitede ne değiştiyse öğretmen burada görür ---
@@ -6490,6 +6556,9 @@ function verileriGetir(uid) {
         try { localStorage.setItem('schoolData', JSON.stringify(data)); } catch(e){}
         /* Bu hesabin verisi artik elimizde: save() buluta yazabilir. */
         window._llBulutGeldi = uid;
+        /* Sitede gecirilen sure ozeti (sistem/kullanimsure.js yazar) —
+           belge zaten okundugu icin ayri bir sorgu gerekmiyor. */
+        try { window._llKullanim = (doc.exists && doc.data().kullanim) || {}; } catch (e) { }
         /* OGRETMENIN ADI (08.10.2026) — anasayfadaki "Siniflarim" basligi
            yaninda gosterilir (sistem/siniflarim.js). */
         try {

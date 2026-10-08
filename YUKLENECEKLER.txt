@@ -8191,3 +8191,48 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
     (Mufred kartindaki «-ani», «-une») dogru ciziliyor, onlara dokunulmadi.
   - Sunumun kendi slaytlarindaki dizgiler DEGISTIRILMEDI (7 yerde duruyor);
     orada tatvil bilerek var ve dogru gorunuyor.
+
+--- 2026-10-08 (8) · Ogretmen kullanim suresi + yonetici detayi ---
+* YENI: sistem/kullanimsure.js (?v=1) — index.html ve sarf.html'e eklendi
+  - Giris yapmis (anonim olmayan) kullanicinin sitede gecirdigi ETKIN sure.
+    Sekme gorunur olacak ve son 5 dk icinde hareket gelmis olacak; arka
+    plandaki sekme, acik unutulmus bilgisayar ve uyku sayilmaz. Iki olcum
+    arasi 120 sn'den uzunsa o aralik atilir (uyku / saat sicramasi).
+  - Buluta en sik 60 sn'de bir, ayrica sekme gizlenince/kapanirken yazar.
+    Yazilamayan saniyeler tarayicida bekler, sonraki denemede eklenir.
+  - Yazdigi yer: kullanicilar/{uid}.kullanim = { toplamSn, oturum,
+    sonGoruldu, gun:{ "2026-10-08": saniye } }. Artimla (FieldValue.increment)
+    yazilir, ayri koleksiyon ve yeni kural gerekmez.
+  - Tek yazimda en cok 3 saat eklenebilir (sisme korumasi).
+* hesap/teacher-admin.js (?v=20261008b)
+  - Ogretmen tablosuna iki sutun: "Ogrenci" (ogretmenin kendi sinif
+    listesinden sayilir, ek sorgu yok) ve "Sitede sure" (+ son gorulme).
+  - Ust ozet satirinda TOPLAMLAR: butun ogretmenlerin toplam suresi,
+    ogrenci ve sinif sayisi, anket dolduran sayisi.
+  - Her satirda "Detay" tusu.
+* YENI: hesap/ogretmen-detay.js (?v=1)
+  - Detay penceresi uc bolum: (1) sure — toplam, son 14 gun, oturum,
+    son gorulme ve 14 gunluk cubuk dokumu; (2) siniflar — seviye/sinif/
+    ogrenci/hesabi bagli sayilari ve sinif sinif tablo; (3) KAYIT ANKETI —
+    kullanicilar/{uid}.anket icindeki butun sorular ve cevaplar, tarihiyle.
+  - Yeni sorgu yok: ucu de tablonun zaten okudugu belgeden geliyor.
+* Olculdu: sayac 3,6 sn etkinlikte 4 sn yazdi (toplamSn/gun/oturum artimi
+  ve sonGoruldu damgasi dogru); detay penceresinde 6 ogrenci / 3 sinif /
+  2 seviye / 2 hesabi bagli, 3 sinif satiri, 3 anket sorusu, 14 gun cubugu.
+
+--- 2026-10-08 (9) · Ogretmenin kendi "Bu donem" karti ---
+* hesap/listelerim.js (?v=20261008c)
+  - Ogretmen profilinin tepesine "Bu donem — Kidef'te biriken emegin"
+    karti: SINIF · OGRENCI · BU AY · TOPLAM. Altinda, 1 dakikayi gectiyse
+    "Bu oturumda X" satiri.
+  - Kasitli olarak SAYAC gibi degil OZET gibi duruyor: once sinif ve
+    ogrenci, sonra sure. "Su kadar tukettin" demiyor.
+  - Sinif/ogrenci yereldeki data'dan; sure girişte okunan
+    kullanicilar/{uid}.kullanim alanindan (verileriGetir artik o alani da
+    window._llKullanim'e aliyor — EK SORGU YOK).
+* sistem/kullanimsure.js (?v=2)
+  - KidefKullanim.oturum(): bu sayfa acildigindan beri sayilan etkin
+    saniye. Buluttaki toplam giriste donmus oldugu icin kart canli
+    gorunsun diye ayri satirda gosteriliyor.
+* Olculdu: 3 sinif / 73 ogrenci / bu ay 3 sa 15 dk / toplam 14 sa 33 dk —
+  dordu de verilen ornek veriyle birebir.
