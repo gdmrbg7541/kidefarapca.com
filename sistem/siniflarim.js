@@ -330,6 +330,65 @@
                de görünsün diye başlığın yanında, akordiyonun dışında. */
             '#' + BOLUM_ID + ' h2.sn-bas{ display:flex; align-items:center;',
             '  gap:10px; flex-wrap:wrap; }',
+            /* TÜM SATIRDAN AÇILSIN + DAHA YÜKSEK (08.10.2026) — öğretmen:
+               "akordiyon sadece ok değil tüm satırdan açılsın, dikey
+               olarak daha büyük olsun". Satırın kendisi tıklanabilir
+               (satirTik); içerideki tuşlar kendi işlerini görüyor. */
+            '#' + BOLUM_ID + ' h2.sn-bas{ cursor:pointer; padding:10px 12px;',
+            '  margin:0 0 6px; border-radius:16px; min-height:74px;',
+            '  transition:background .16s; }',
+            '#' + BOLUM_ID + ' h2.sn-bas:hover{ background:rgba(22,160,133,.07); }',
+            /* ÖĞRETMEN FİGÜRÜ + UÇUŞANLAR */
+            '#' + BOLUM_ID + ' .sn-fig{ position:relative; flex:0 0 auto;',
+            '  width:56px; height:56px; display:inline-block;',
+            /* Uçuşanlar kutunun dışına taşıyor: solda bölümün renkli
+               kenar şeridine binmesinler diye pay bırakıldı. */
+            '  margin:0 10px 0 22px; }',
+            /* Figür yuvarlak bir madalyonun içinde: omuzdan kesilmiş
+               portre böylece kazara kırpılmış değil, bilerek öyle
+               duruyor. Uçuşanlar madalyonun DIŞINDA kalsın diye
+               kırpma yalnız iç katmanda. */
+            '#' + BOLUM_ID + ' .sn-fig-ic{ position:absolute; inset:0; border-radius:50%;',
+            '  overflow:hidden; display:block; }',
+            '#' + BOLUM_ID + ' .sn-fig-ic svg{ width:100%; height:100%; display:block; }',
+            '#' + BOLUM_ID + ' .sn-fig.k .sn-fig-ic{ background:#FBEDF4;',
+            '  box-shadow:0 0 0 2px rgba(181,85,138,.20) inset; }',
+            '#' + BOLUM_ID + ' .sn-fig.e .sn-fig-ic{ background:#EAF2FB;',
+            '  box-shadow:0 0 0 2px rgba(47,108,168,.20) inset; }',
+            '#' + BOLUM_ID + ' .sn-fig > svg{ width:100%; height:100%; display:block; }',
+            '#' + BOLUM_ID + ' .sn-uc{ position:absolute; display:block; pointer-events:none; }',
+            '#' + BOLUM_ID + ' .sn-uc svg{ width:100%; height:100%; display:block; }',
+            /* KADIN — zarif: yavaş süzülme, hafif dönüş, yumuşak sönüm */
+            '#' + BOLUM_ID + ' .sn-fig.k .sn-uc1{ width:13px; height:13px; left:-11px; top:6px;',
+            '  animation:snZarif1 5.4s ease-in-out infinite; }',
+            '#' + BOLUM_ID + ' .sn-fig.k .sn-uc2{ width:14px; height:14px; right:-8px; top:-2px;',
+            '  animation:snZarif2 6.6s ease-in-out infinite .9s; }',
+            '#' + BOLUM_ID + ' .sn-fig.k .sn-uc3{ width:12px; height:12px; left:-10px; bottom:4px;',
+            '  animation:snZarif1 6s ease-in-out infinite 2.1s; }',
+            '@keyframes snZarif1{ 0%,100%{ transform:translateY(0) rotate(-6deg); opacity:.45 }',
+            '  50%{ transform:translateY(-9px) rotate(8deg); opacity:1 } }',
+            '@keyframes snZarif2{ 0%,100%{ transform:translate(0,0) rotate(0); opacity:.35 }',
+            '  40%{ opacity:1 } 50%{ transform:translate(4px,-11px) rotate(16deg) } }',
+            /* ERKEK — eğlenceli: uçuş, zıplama, çıt diye parlama */
+            '#' + BOLUM_ID + ' .sn-fig.e .sn-uc1{ width:15px; height:15px; left:-14px; top:4px;',
+            '  animation:snUcak 4.2s ease-in-out infinite; }',
+            '#' + BOLUM_ID + ' .sn-fig.e .sn-uc2{ width:12px; height:12px; right:-9px; bottom:5px;',
+            '  animation:snZipla 1.5s cubic-bezier(.3,.1,.5,1) infinite; }',
+            '#' + BOLUM_ID + ' .sn-fig.e .sn-uc3{ width:13px; height:13px; right:-9px; top:-3px;',
+            '  animation:snCit 3.2s ease-in-out infinite .6s; }',
+            '@keyframes snUcak{ 0%{ transform:translate(0,6px) rotate(-8deg); opacity:0 }',
+            '  25%{ opacity:1 } 100%{ transform:translate(26px,-14px) rotate(10deg); opacity:0 } }',
+            '@keyframes snZipla{ 0%,100%{ transform:translateY(0) scaleY(1) }',
+            '  35%{ transform:translateY(-13px) scaleY(1.06) }',
+            '  70%{ transform:translateY(0) scaleY(.88) } }',
+            '@keyframes snCit{ 0%,70%,100%{ transform:scale(.5) rotate(0); opacity:0 }',
+            '  80%{ transform:scale(1.15) rotate(18deg); opacity:1 }',
+            '  90%{ transform:scale(.9) rotate(26deg); opacity:.7 } }',
+            '@media (prefers-reduced-motion: reduce){',
+            '  #' + BOLUM_ID + ' .sn-uc{ animation:none !important; opacity:.75 } }',
+            '@media (max-width:620px){',
+            '  #' + BOLUM_ID + ' h2.sn-bas{ min-height:62px; padding:8px 10px; }',
+            '  #' + BOLUM_ID + ' .sn-fig{ width:46px; height:46px; } }',
             /* ÖĞRETMEN ADI (08.10.2026) — öğretmen: "giriş yapınca
                Sınıflarım kategorisinde öğretmenin kendi ismi soyismi
                olsun Sınıflarım yazısının yanında, şık bi kutu veya
@@ -413,6 +472,62 @@
         '<rect x="15" y="11.4" width="3" height="3" rx=".5"/>' +
         '<rect x="6" y="16.4" width="3" height="3" rx=".5"/>' +
         '<rect x="15" y="16.4" width="3" height="3" rx=".5"/></g></svg>';
+    /* =============== ÖĞRETMEN FİGÜRÜ (08.10.2026) ====================
+       Öğretmen: "sınıflarım kısmında öğretmenin cinsiyetine göre kadın
+       öğretmen veya erkek öğretmen svg'si olsun ... öğretmen svg'sinin
+       yanında uçuşan eğlenceli şeyler olsun, kadınlarda daha zarif
+       şeyler erkeklerde daha eğlenceli şeyler."
+
+       Figürler YÜZSÜZ: sitenin başka çizimlerinde (harf-i tarif hikâyesi)
+       yerleşen saygılı biçim bu. Cinsiyet bilinmiyorsa okul simgesi
+       kalıyor — kimseye cinsiyet atanmıyor.
+       Uçuşanlar SVG'nin DIŞINDA, kendi katmanlarında: böylece figür
+       değişmeden animasyon ayrı ayarlanabiliyor. */
+    var KADIN_SVG =
+        '<svg viewBox="0 0 44 48" aria-hidden="true" focusable="false">' +
+        /* omuz + elbise */
+        '<path d="M6 48v-5q0-7.5 8-9.4l8-1.6 8 1.6q8 1.9 8 9.4v5z" fill="#B5558A"/>' +
+        '<path d="M18.4 32.6 22 38.4l3.6-5.8-3.6-.8z" fill="#F4DCEA"/>' +
+        /* boyun */
+        '<path d="M18.6 27h6.8v6.2q0 1.4-3.4 1.4t-3.4-1.4z" fill="#E9B894"/>' +
+        /* SAÇ — derli toplu (08.10.2026, öğretmen isteği): başa oturan
+           düzgün bir kubbe, iki yanda kısa ve SİMETRİK tutam; eskisi
+           omuz hizasına kadar yayılıyordu, dağınık duruyordu. */
+        '<path d="M12.6 27.6V21a9.4 9.4 0 0 1 18.8 0v6.6q0 1.5-1.8 1.9V22.4q0-5-7.6-5t-7.6 5v7.1q-1.8-.4-1.8-1.9z" fill="#4A3327"/>' +
+        /* yüz (yüzsüz) */
+        '<circle cx="22" cy="21.4" r="8.6" fill="#F3CEAC"/>' +
+        /* kâkül: alnı saran tek ve düzgün yay */
+        '<path d="M13.9 20.2q1-8 8.1-8t8.1 8q-3.1-3.9-8.1-3.9t-8.1 3.9z" fill="#4A3327"/>' +
+        /* topuz: saça değiyor, altında ince bir bağ */
+        '<circle cx="22" cy="9.1" r="3.3" fill="#4A3327"/>' +
+        '<rect x="19.7" y="11.6" width="4.6" height="1.5" rx=".75" fill="#3B281E"/>' +
+        /* yaka iğnesi — küçük zarif vurgu */
+        '<circle cx="22" cy="41" r="1.7" fill="#F4DCEA"/>' +
+        '</svg>';
+    var ERKEK_SVG =
+        '<svg viewBox="0 0 44 48" aria-hidden="true" focusable="false">' +
+        /* omuz + ceket */
+        '<path d="M6 48v-5q0-7.5 8-9.4l8-1.6 8 1.6q8 1.9 8 9.4v5z" fill="#2F6CA8"/>' +
+        /* gömlek yakası */
+        '<path d="M17.6 32.2 22 39l4.4-6.8-4.4-1z" fill="#F4F8FC"/>' +
+        /* kravat */
+        '<path d="M22 39l-1.6 5.2L22 48l1.6-3.8z" fill="#D94F3D"/>' +
+        /* boyun */
+        '<path d="M18.6 27h6.8v6.2q0 1.4-3.4 1.4t-3.4-1.4z" fill="#E0A87E"/>' +
+        /* yüz (yüzsüz) */
+        '<circle cx="22" cy="21.4" r="8.6" fill="#EFBD92"/>' +
+        /* kısa saç */
+        '<path d="M12.8 20.4q0-10.4 9.2-10.4t9.2 10.4q-1.4-4.2-4-4.8-2.2 1.6-5.2 1.6t-5.2-1.6q-2.6.6-4 4.8z" fill="#3A2A1F"/>' +
+        '</svg>';
+    var UCUS_KADIN =
+        '<i class="sn-uc sn-uc1"><svg viewBox="0 0 16 16"><path d="M8 0l1.7 5.3L15 7l-5.3 1.7L8 14l-1.7-5.3L1 7l5.3-1.7z" fill="#E59ABF"/></svg></i>' +
+        '<i class="sn-uc sn-uc2"><svg viewBox="0 0 16 16"><path d="M13 2q-9 .5-10 7.5Q6 13 10 9.5 14 6 13 2z" fill="#7FC3A9"/><path d="M12.4 2.8Q6 6 4 12" stroke="#4E9B7F" stroke-width="1" fill="none"/></svg></i>' +
+        '<i class="sn-uc sn-uc3"><svg viewBox="0 0 16 16"><path d="M6 12.5V3.2l7-1.4v9" stroke="#C78BB0" stroke-width="1.4" fill="none" stroke-linecap="round"/><circle cx="4.3" cy="12.6" r="2" fill="#C78BB0"/><circle cx="11.3" cy="10.8" r="2" fill="#C78BB0"/></svg></i>';
+    var UCUS_ERKEK =
+        '<i class="sn-uc sn-uc1"><svg viewBox="0 0 16 16"><path d="M15 1 1 7l5 1.7L15 1z" fill="#4C9BE0"/><path d="M6 8.7 7.6 14l2.2-3.3L6 8.7z" fill="#2F6CA8"/></svg></i>' +
+        '<i class="sn-uc sn-uc2"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.4" fill="#F2A33C"/><path d="M8 1.6v12.8M1.6 8h12.8" stroke="#C9792A" stroke-width="1.2"/></svg></i>' +
+        '<i class="sn-uc sn-uc3"><svg viewBox="0 0 16 16"><path d="M8 .8l1.9 4.4 4.8.4-3.6 3.1 1.1 4.7L8 11l-4.2 2.4 1.1-4.7L1.3 5.6l4.8-.4z" fill="#F2C53C"/></svg></i>';
+
     var ARTI_SVG =
         '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
         '<path d="M12 5.4v13.2M5.4 12h13.2" fill="none" stroke="currentColor"' +
@@ -526,12 +641,13 @@
        öznitelik olarak işleniyor (baslikDurum). Böylece akordiyon
        çalışırken gövdeye hiç dokunulmuyor. */
     function baslikIc() {
-        return '<h2 class="sn-bas">' +
+        return '<h2 class="sn-bas" onclick="KidefSiniflarim.satirTik(event)">' +
+            /* Öğretmen figürü: içi figurYaz() ile cinsiyete göre dolar.
+               Cinsiyet bilinmiyorsa okul simgesi kalır. */
+            '<span class="sn-fig"></span>' +
             '<button type="button" class="sn-bas-tus"' +
             ' onclick="KidefSiniflarim.katla()">' +
-            '<svg class="kbas" viewBox="0 0 24 24" aria-hidden="true">' +
-            OKUL_SVG.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') +
-            '</svg><span>Sınıflarım</span>' +
+            '<span>Sınıflarım</span>' +
             '<svg class="sn-bas-ok" viewBox="0 0 24 24" aria-hidden="true">' +
             '<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor"' +
             ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
@@ -591,6 +707,55 @@
         }
         return a;
     }
+    /* Cinsiyet: 'kadin' | 'erkek' | '' (bilinmiyor). Kayıt formundaki
+       değerlerin aynısı; auth.js appState.currentUserGender'a yazıyor. */
+    function ogretmenCinsiyeti() {
+        try {
+            var c = (window.appState && appState.currentUserGender) || '';
+            c = String(c).toLowerCase();
+            if (c === 'kadin' || c === 'kadın') return 'kadin';
+            if (c === 'erkek') return 'erkek';
+        } catch (e) { }
+        return '';
+    }
+    /* Figürü cinsiyete göre yazar. Cinsiyet asenkron geldiği için her
+       çizimde ve nabızda yoklanır; değişmediyse DOM'a dokunulmaz. */
+    function figurYaz(bolum) {
+        var b = bolum || document.getElementById(BOLUM_ID);
+        if (!b) return;
+        var yuva = b.querySelector('.sn-fig');
+        if (!yuva) return;
+        var c = oturumVarMi() ? ogretmenCinsiyeti() : '';
+        var damga = c || 'okul';
+        if (yuva.getAttribute('data-c') === damga) return;
+        yuva.setAttribute('data-c', damga);
+        if (c === 'kadin') {
+            yuva.className = 'sn-fig k';
+            yuva.innerHTML = '<span class="sn-fig-ic">' + KADIN_SVG + '</span>' + UCUS_KADIN;
+            yuva.title = 'Öğretmen';
+        } else if (c === 'erkek') {
+            yuva.className = 'sn-fig e';
+            yuva.innerHTML = '<span class="sn-fig-ic">' + ERKEK_SVG + '</span>' + UCUS_ERKEK;
+            yuva.title = 'Öğretmen';
+        } else {
+            yuva.className = 'sn-fig';
+            yuva.innerHTML = OKUL_SVG;
+            yuva.title = '';
+        }
+    }
+
+    /* SATIRIN TAMAMI AÇAR (08.10.2026): başlığın boşluğuna basmak da
+       akordiyonu katlar. İçerideki tuşlar (Sınıflarım tuşu, Sınıf ekle,
+       ad rozeti) kendi işlerini görsün diye dışarıda bırakılır —
+       sn-bas-tus zaten katla() çağırıyor, ikinci kez çağrılmamalı. */
+    function satirTik(ev) {
+        try {
+            var t = ev && ev.target;
+            if (t && t.closest && t.closest('button, a, .sn-ogretmen-kutu')) return;
+            katla();
+        } catch (e) { }
+    }
+
     function isimYaz(bolum) {
         var b = bolum || document.getElementById(BOLUM_ID);
         if (!b) return;
@@ -615,6 +780,7 @@
         var kapali = kapaliMi();
         bolum.classList.toggle('sn-kapali', kapali);
         try { isimYaz(bolum); } catch (e) { }
+        try { figurYaz(bolum); } catch (e) { }
         var t = bolum.querySelector('.sn-bas-tus');
         if (!t) return;
         t.setAttribute('aria-expanded', kapali ? 'false' : 'true');
@@ -904,6 +1070,7 @@
         try {
             cikisIzle();                          /* firebase geç gelirse */
             isimYaz();                            /* ad asenkron geliyor */
+            figurYaz();                           /* cinsiyet de öyle */
             /* Rol asenkron çözülüyor: öğretmen olduğu anlaşılınca bölüm
                geri gelsin (girişten sonra kısa süre kapalı kalabiliyor). */
             try {
@@ -1154,6 +1321,7 @@
     window.KidefSiniflarim = {
         okulAc: okulAc, katla: katla, sinifEkle: sinifEkle, girisTavsiye: girisTavsiye,
         ciz: ciz, ac: ac, seviyeSec: seviyeSec, sinifKur: sinifKur,
-        kurumEkle: kurumEkle, gorunurMu: gorunurMu, saltMi: saltMi
+        kurumEkle: kurumEkle, gorunurMu: gorunurMu, saltMi: saltMi,
+        satirTik: satirTik
     };
 })();

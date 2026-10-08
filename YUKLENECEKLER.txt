@@ -8285,3 +8285,41 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
   - Olculdu: form sorunsuz ciziliyor, gvBaslik hicbir yerde yok,
     kalan etiketler: Oyun · Kime · Seviye · Sinif · Ogrenci · Son tarih ·
     Performans notu · Agirlik. Secicide 21 etkinlik.
+
+--- 2026-10-08 (12) · Siniflarim basligi: ogretmen figuru + tum satir ---
+* sistem/siniflarim.js (?v=18)
+  Ogretmen: "ogretmenin cinsiyetine gore kadin veya erkek ogretmen svg'si
+  olsun, akordiyon sadece ok degil tum satirdan acilsin, dikey olarak
+  daha buyuk olsun, svg'nin yaninda ucusan eglenceli seyler olsun —
+  kadinlarda daha zarif, erkeklerde daha eglenceli."
+  - CINSIYETE GORE FIGUR: appState.currentUserGender ('kadin' | 'erkek';
+    kayit formundaki degerler, auth.js yaziyor). Bilinmiyorsa eski okul
+    simgesi kaliyor — kimseye cinsiyet atanmiyor. Figurler YUZSUZ:
+    sitenin baska cizimlerindeki (harf-i tarif hikayesi) saygili bicim.
+    Cinsiyet asenkron geldigi icin her cizimde ve nabizda yoklaniyor,
+    degismediyse DOM'a dokunulmuyor.
+  - MADALYON: figur yuvarlak, hafif renkli bir zeminin icinde (kadin
+    pembe, erkek mavi). Omuzdan kesilmis portre boylece kazara kirpilmis
+    degil bilerek oyle duruyor. Kirpma yalniz ic katmanda (.sn-fig-ic),
+    ucusanlar madalyonun disinda kaliyor.
+  - UCUSANLAR: kadin — isilti, yaprak, nota; yavas suzulme, yumusak
+    sonum (snZarif1/2). Erkek — kagit ucak, ziplayan top, yildiz; daha
+    hizli ve zipir (snUcak/snZipla/snCit). Hareket azaltma aciksa hepsi
+    duruyor.
+  - TUM SATIR ACIYOR: h2'nin kendisi tiklanabilir (satirTik). Icerideki
+    tuslar (Siniflarim tusu, Sinif ekle, ad rozeti) disarida birakiliyor,
+    yoksa iki kez katlanirdi.
+  - DIKEY OLARAK BUYUDU: baslik satiri min-height 74px (olculdu: 80px),
+    telefonda 62px; figur 56px, telefonda 46px.
+  - Olculdu: kadin/erkek/bilinmiyor uc durumda da dogru figur, ucusan
+    sayisi 3/3/0, satirin bosluguna tiklama akordiyonu katliyor.
+
+--- 2026-10-08 (13) · Kadin figurunun saci ---
+* sistem/siniflarim.js
+  Ogretmen: "kadin sacini biraz dikkat et biraz daha derli toplu olsun."
+  - Eski sac omuz hizasina kadar yayilan, iki yani farkli genislikte
+    dagink bir kutleydi. Yenisi: basa oturan duzgun bir kubbe, iki yanda
+    KISA ve SIMETRIK tutam (cene hizasinda biter).
+  - Kakul tek ve duzgun bir yay oldu (eskiden ucu kirikti).
+  - Topuz saca DEGIYOR ve altinda ince bir bag var; eskiden sacin
+    ustunde bosta duruyordu.
