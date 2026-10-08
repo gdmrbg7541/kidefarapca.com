@@ -20,7 +20,17 @@
 <body>
 
 <header class="tc-ust">
-  <a href="index.html" class="tc-geri" id="tcGeri" title="Geri" aria-label="Geri">&#10094;</a>
+  <!-- GERİ NEREYE? (08.10.2026) — öğretmen: "sunumlardan açılmışsa
+       sunumdan çıkıldığında diğer sunumların olduğu yere gitsin; eğer
+       öğretmen özelden açılmışsa o zaman index'e gitsin."
+       Düz index.html bağlantısı bunu yapamıyordu: sayfa sunumlardan
+       açıldığında da doğrudan index'e atıyordu. Artık sistem/geri.js'in
+       kidefGeri'si çağrılıyor — yeni sekmeyse sekmeyi kapatır (altta
+       sunumlar sayfası kalır), kapatamazsa GELDİĞİ sayfaya (sunumlar)
+       döner, dışarıdan/doğrudan gelinmişse index'e iner. Yakınlaşma
+       açıkken sayfanın kendi dinleyicisi bu tıklamayı zaten yakalıyor. -->
+  <a href="index.html" class="tc-geri" id="tcGeri" title="Geri" aria-label="Geri"
+     onclick="return kidefGeri(event)">&#10094;</a>
   <!-- BAŞLIK AYNI ZAMANDA TABLOYA DÖNÜŞ TUŞUDUR.
        Sayfanın çapası bu satır: i'rab bölümlerinden hangisi açık olursa
        olsun başlık yerinde durur ve ona dokunmak, dokunmatik büyütmesi

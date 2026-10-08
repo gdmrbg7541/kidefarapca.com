@@ -8161,3 +8161,21 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
     (.tc-sr-ust / .tc-alt-burada). Ogretmen: "sonlara gecerken kirmizi
     vurgu sonlarda olsun" + "Sonlar ve 1-5 Baslarken'in devami oldugunu
     gostersin".
+
+--- 2026-10-08 (6) · Tamlama ve Cumleler: cikis nereye doner ---
+* tamlamavecumleler.html
+  Ogretmen: "sunumlardan acilmissa sunumdan cikildiginda diger sunumlarin
+  oldugu yere gitsin; eger ogretmen ozelden acilmissa o zaman index'e gitsin."
+  - Ust seritteki Geri tusu duz bir index.html baglantisiydi; sayfa
+    sunumlardan acilsa bile dogrudan index'e atiyordu. Artik
+    sistem/geri.js'in kidefGeri'si cagriliyor: yeni sekmeyse sekme kapanir
+    (altta sunumlar sayfasi kalir), kapatilamazsa GELDIGI sayfaya doner,
+    disaridan/dogrudan gelinmisse index'e iner. Yakinlasma acikken
+    sayfanin kendi dinleyicisi tiklamayi zaten once yakaliyor (iki asamali
+    geri davranisi bozulmadi).
+* sunum html/sunumlar.html
+  - "Tamlama ve Cumleler" karti rel="noopener" yerine rel="opener" ile
+    aciliyor (index'in ders baglantilariyla ayni duzen) — cikista sekme
+    kapanabilsin diye.
+  - Olculdu: sunumlardan acilinca Geri -> sunum html/sunumlar.html ·
+    index'ten acilinca -> index.html · dogrudan acilinca -> index.html

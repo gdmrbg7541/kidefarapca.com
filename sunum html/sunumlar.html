@@ -2187,7 +2187,11 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
                cümleler kartını sunumlar içine de ekleyelim, iki yerden
                ulaşılsın yani." Kart bir sunuma değil, kendi sayfasına
                götürür; bu yüzden düğme değil BAĞLANTI. -->
-          <a class="lkart lkart-dis" href="../tamlamavecumleler.html" target="_blank" rel="noopener">
+          <!-- rel="opener" BİLEREK (index'in ders bağlantılarıyla aynı düzen):
+               geri.js, opener'ı olan sayfada çıkışı "sekmeyi kapat"a
+               çevirir; ders sayfasından çıkan öğretmen altta açık duran
+               SUNUMLAR sayfasına düşer, index'e atılmaz. -->
+          <a class="lkart lkart-dis" href="../tamlamavecumleler.html" target="_blank" rel="opener">
           <div class="lust"><span class="lrozet">🧩 Tahlil</span></div>
           <span class="lsvg" aria-hidden="true"><svg viewBox="0 0 200 120">
             <rect class="lp-golge" x="18" y="10" width="164" height="86" rx="8"/>
