@@ -560,6 +560,9 @@ h1,h2,h3,h4,p{margin:0}
 
 /* Adım rozetleri (orijinaldeki kırmızı 1 · 2 · 3) */
 .rozetSira{display:flex;gap:10px;justify-content:center;margin-top:8px}
+.rozetAnlam{margin-top:6px;font-size:17px;font-weight:800;color:#64748B;text-align:center;
+  direction:ltr;line-height:1.45}
+.rozetAnlam b{color:var(--kirmizi);font-weight:900}
 /* 08.10.2026 — öğretmen: "1,2,3 sayılar ve içinde bulundukları daireler
    uymuyor." Rakamlar Arapça yazı tipinden geliyordu; o tipin satır kutusu
    daireden uzun olduğu için sayı yukarı kaçıyordu. Rakam artık arayüz
@@ -573,9 +576,13 @@ h1,h2,h3,h4,p{margin:0}
 .harfSerit{display:grid;grid-template-columns:1fr 1px 1fr;gap:0;flex:0 0 auto;
   border-top:1px dashed #D6DBE2;padding-top:8px;margin-top:6px;direction:rtl}
 .harfSerit .hs{padding:0 10px;text-align:center}
-.harfSerit .hbaslik{font-size:21px;font-weight:900;margin-bottom:3px}
+.harfSerit .hbaslik{font-size:28px;font-weight:900;margin-bottom:4px}
 .harfSerit .hbaslik.s{color:var(--sems)} .harfSerit .hbaslik.k{color:var(--kamer)}
-.harfSerit .hliste{font-size:30px;font-weight:800;direction:rtl;line-height:1.6;letter-spacing:1px}
+/* 08.10.2026 — öğretmen: "aşağıdaki şemsî ve kamerî harfleri de büyüt."
+   Ölçüldü: 44 px'e kadar liste TEK SATIRDA kalıyor (şerit 124 px, kare
+   620/626 — taşma yok). 50 px'te liste iki satıra sarıyor, şerit 217 px'e
+   çıkıyor ve sahne taşıyor. Üst sınır 44 px. */
+.harfSerit .hliste{font-size:44px;font-weight:800;direction:rtl;line-height:1.5;letter-spacing:1px}
 .harfSerit .hliste.s{color:var(--sems)} .harfSerit .hliste.k{color:var(--kamer)}
 .harfSerit .vur{color:var(--kirmizi);font-weight:900;background:#FFE9E6;border-radius:6px;padding:0 4px}
 .harfSerit .vurK{color:var(--kamer);font-weight:900;background:#FFE9E6;border-radius:6px;padding:0 4px}
@@ -819,7 +826,11 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
             <div class="kelime">شَمْسٌ</div>
             <div class="cevron s">⌄<br>⌄</div>
             <div class="kelime kucuk"><span class="sems">اَلْ</span>شَمْسٌ</div>
-            <div class="rozetSira" style="direction:rtl"><span class="rz3">1</span><span class="rz3 bos">2</span><span class="rz3 bos">3</span></div>
+            <!-- 08.10.2026 — öğretmen: "şemsîde 1. rakam lâmın okunmaması,
+                 2 ilk harfin şeddelenmesi, 3 son harekenin değişmesi olacak."
+                 Bu karede takı yeni eklendi; üç değişikliğin HİÇBİRİ henüz
+                 olmadı (lâm hâlâ okunuyor), bu yüzden üç rozet de boş. -->
+            <div class="rozetSira" style="direction:rtl"><span class="rz3 bos">1</span><span class="rz3 bos">2</span><span class="rz3 bos">3</span></div>
           </div>
           <div class="ayirici"></div>
           <div class="yarim"><div class="kelime">قَمَرٌ</div></div>
@@ -834,14 +845,39 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       </div>
 
       <!-- kare 4: şedde kondu, lâm sustu -->
+      <!-- 08.10.2026 — öğretmen: "el takısı gri olduğunda 1, kelimenin ilk
+           harfi şeddelendiğinde 2, sonu değiştiğinde 3 kırmızı olacak."
+           Eskiden lâmın susması ve şedde AYNI karede oluyor, 1 ile 2
+           birlikte yanıyordu. Bu kare ikisini ayırdı: lâm sustu (gri),
+           şedde henüz yok -> yalnız 1. -->
       <div class="kare adim" data-g="4">
+        <div class="sahne2">
+          <div class="yarim">
+            <div class="kelime">شَمْسٌ</div>
+            <div class="cevron s">⌄<br>⌄</div>
+            <div class="kelime kucuk"><span class="sessiz">اَل</span><span class="sems">شَمْسٌ</span></div>
+            <div class="rozetSira" style="direction:rtl"><span class="rz3">1</span><span class="rz3 bos">2</span><span class="rz3 bos">3</span></div>
+            <div class="not" style="transform:none;color:#4B5563">El takısı <b>sustu</b>: lâm <b>okunmaz</b></div>
+          </div>
+          <div class="ayirici"></div>
+          <div class="yarim"><div class="kelime">قَمَرٌ</div></div>
+        </div>
+        <div class="harfSerit">
+          <div class="hs"><div class="hbaslik s">Şemsi Harfler;</div>
+            <div class="hliste s">ت ث د ذ ر ز س <span class="vur">ش</span> ص ض ط ظ ل ن</div></div>
+          <div class="ayirici"></div>
+          <div class="hs"><div class="hbaslik k">Kameri harfler:</div>
+            <div class="hliste k">أ ب ج ح خ ع غ ف ق ك م و ه ي</div></div>
+        </div>
+      </div>
+      <div class="kare adim" data-g="5">
         <div class="sahne2">
           <div class="yarim">
             <div class="kelime">شَمْسٌ</div>
             <div class="cevron s">⌄<br>⌄</div>
             <div class="kelime kucuk"><span class="sessiz">اَل</span><span class="sems">شَّمْسٌ</span></div>
             <div class="rozetSira" style="direction:rtl"><span class="rz3">1</span><span class="rz3">2</span><span class="rz3 bos">3</span></div>
-            <div class="not" style="transform:none;color:#4B5563">Lâm <b>okunmaz</b> · <span class="ar">ش</span> <b>şeddelendi</b></div>
+            <div class="not" style="transform:none;color:#4B5563">Kelimenin <b>ilk harfi</b> şeddelendi</div>
           </div>
           <div class="ayirici"></div>
           <div class="yarim"><div class="kelime">قَمَرٌ</div></div>
@@ -856,15 +892,18 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       </div>
 
       <!-- kare 5: tenvin tek harekeye döndü -->
-      <div class="kare adim" data-g="5">
+      <div class="kare adim" data-g="6">
         <div class="sahne2">
           <div class="yarim">
             <div class="kelime">شَمْسٌ</div>
             <div class="cevron s">⌄<br>⌄</div>
             <div class="kelime kucuk"><span class="sessiz">اَل</span><span class="sems">شَّمْسُ</span></div>
             <div class="rozetSira" style="direction:rtl"><span class="rz3">1</span><span class="rz3">2</span><span class="rz3">3</span></div>
+            <!-- 08.10.2026 — öğretmen: "şemsî 3. adımda sadece 'son hareke
+                 değişir' yazısı görünsün, 1 ve 2 bilgisi olmasın." Üç maddeyi
+                 birden sayan satır kaldırıldı; 1 ve 2 kendi karelerinde yazıyor. -->
             <div class="altOk">↓</div>
-            <div class="not" style="transform:none;color:#4B5563">Tenvin <span class="ar">ــٌ</span> ‹ tek hareke <span class="ar">ــُ</span></div>
+            <div class="not" style="transform:none;color:#4B5563">Son hareke değişir: tenvin <span class="ar">ــٌ</span> ‹ tek hareke <span class="ar">ــُ</span></div>
           </div>
           <div class="ayirici"></div>
           <div class="yarim"><div class="kelime">قَمَرٌ</div></div>
@@ -879,12 +918,16 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       </div>
 
       <!-- kare 6: sıra kamerîde — takı eklendi -->
-      <div class="kare adim" data-g="6">
+      <div class="kare adim" data-g="7">
         <div class="sahne2">
           <div class="yarim">
             <div class="kelime kucuk">شَمْسٌ</div>
             <div class="cevron s">⌄</div>
             <div class="kelime kucuk"><span class="sessiz">اَل</span><span class="sems">شَّمْسُ</span></div>
+            <!-- 08.10.2026 — öğretmen: "3 rakam çıktıktan sonra kamerîye
+                 geçince 3 adım kaybolmasın." Şemsînin tamamlanmış üç
+                 adımı kamerî karelerinde de duruyor. -->
+            <div class="rozetSira" style="direction:rtl"><span class="rz3">1</span><span class="rz3">2</span><span class="rz3">3</span></div>
           </div>
           <div class="ayirici"></div>
           <div class="yarim">
@@ -904,12 +947,16 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       </div>
 
       <!-- kare 7: lâm cezimli, tenvin tek harekeye döndü -->
-      <div class="kare adim" data-g="7">
+      <div class="kare adim" data-g="8">
         <div class="sahne2">
           <div class="yarim">
             <div class="kelime kucuk">شَمْسٌ</div>
             <div class="cevron s">⌄</div>
             <div class="kelime kucuk"><span class="sessiz">اَل</span><span class="sems">شَّمْسُ</span></div>
+            <!-- 08.10.2026 — öğretmen: "3 rakam çıktıktan sonra kamerîye
+                 geçince 3 adım kaybolmasın." Şemsînin tamamlanmış üç
+                 adımı kamerî karelerinde de duruyor. -->
+            <div class="rozetSira" style="direction:rtl"><span class="rz3">1</span><span class="rz3">2</span><span class="rz3">3</span></div>
             <div class="not" style="transform:none;color:var(--sems)"><b>Şemsî:</b> lâm okunmaz, şedde gelir</div>
           </div>
           <div class="ayirici"></div>

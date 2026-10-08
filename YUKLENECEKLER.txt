@@ -7944,3 +7944,56 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
   ÖLÇÜLDÜ: veri köprüsü 8 seviye / 103 kelime taşıyor; yan şeritte dört
     "Kendini Dene" düğmesi var; iki kişilikte 2 oyuncu alanı, 8 şık, ortak
     ses düğmesi; şıklarda Türkçe yok.
+
+08.10.2026 — SUNUM 5. SLAYT: ROZETLERİN ANLAMI + ALT HARF LİSTELERİ
+  Öğretmen: "şemsîde 1. rakam lâmın okunmaması, 2 ilk harfin şeddelenmesi,
+  3 son harekenin değişmesi olacak."
+    - 3. karede takı YENİ eklendi (اَلْشَمْسٌ); üç değişikliğin hiçbiri
+      olmadı, lâm hâlâ okunuyor. Eskiden 1. rozet yanıyordu — düzeltildi,
+      üçü de boş. (Yanan rozet "takı eklendi" demekti; artık rakamlar
+      öğretmenin saydığı üç değişikliği gösteriyor.)
+    - 4. kare: lâm sustu + ش şeddelendi -> 1 ve 2 yanıyor.
+    - 5. kare: tenvin tek harekeye döndü -> 3 de yanıyor; altına rakamların
+      karşılığı yazıldı: "1 lâm okunmaz · 2 ilk harf şeddelenir ·
+      3 son hareke değişir".
+  Alt harf listeleri (öğretmen: "aşağıdaki şemsî ve kamerî harfleri de
+  büyüt"): 30 -> 44 px, başlıkları 21 -> 28 px. ÖLÇÜLDÜ: 44 px'te liste
+  tek satırda kalıyor (şerit 124 px, kare 620/626 — taşma yok); 50 px'te
+  iki satıra sarıp şeridi 217 px'e çıkarıyor ve sahne taşıyor.
+
+08.10.2026 — SUNUM 5. SLAYT: ROZETLER TEK TEK YANIYOR
+  Öğretmen: "birden hem 1 hem 2 kırmızı oluyor; el takısı gri olduğunda 1,
+  kelimenin ilk harfi şeddelendiğinde 2, sonu değiştiğinde 3 kırmızı olacak."
+  SEBEP: lâmın susması ile şedde AYNI karede oluyordu, bu yüzden iki rozet
+  birlikte yanıyordu. Araya yeni bir kare eklendi; şemsî tarafı artık
+  dört adım:
+      kare 3  takı eklendi, lâm hâlâ okunuyor      -> 1 · 2 · 3 boş
+      kare 4  EL TAKISI GRİ (lâm sustu), şedde yok -> 1 yandı
+      kare 5  ilk harf şeddelendi                  -> 1 2 yandı
+      kare 6  tenvin tek harekeye döndü            -> 1 2 3 yandı
+  Kamerî kareleri de buna göre 7-8'e kaydı. Notlar da ayrıldı:
+  "El takısı sustu: lâm okunmaz" / "Kelimenin ilk harfi şeddelendi".
+  (Arapça parçalar dosyadan alındı, elle yazılmadı.)
+
+08.10.2026 — FLIPBOOK MOTORU: PINCH ARTIK TEK KADEME
+  _kaynak/ortak-kitap/kitapzoom.js  (ve 6 kitap kopyası)
+    Öğretmen: "iki parmakla yaklaştırma/uzaklaştırma, sistemdeki
+    yaklaştırma özelliğine bir kere tıklanmış gibi tepki versin; sonsuz
+    yaklaştırma pratik olmuyor."
+    ESKİ: parmak arası sürekli ölçülüp oran anlık güncelleniyordu
+    (zAyarla(pinch.o * d/pinch.d)). Tahtada ve telefonda ölçü parmağın en
+    ufak titremesiyle oynuyor, istenen kademede durmak zorlaşıyordu.
+    YENİ: bir pinch hareketi = + / - düğmesine BİR kez basmak. Parmaklar
+    eşik kadar açılır/kapanırsa tek kademe uygulanır (düğmelerle aynı
+    1.5 kat), hareketin kalanı yok sayılır; yeni kademe için parmakları
+    kaldırıp yeniden sıkıştırmak gerekir.
+    EŞİK çift: %18 oran VE en az 36 piksel. Yalnız orana bakılsaydı
+    parmaklar birbirine yakınken küçük bir kayma yüzde olarak büyük
+    görünüp yanlışlıkla kademe atlatırdı.
+    ÖLÇÜLDÜ (dokunma olayları taklit edilerek):
+      eşik altı küçük pinch  -> 1.00 (değişmedi)
+      pinch-out              -> 1.50 (tek kademe)
+      ikinci pinch-out       -> 2.25
+      pinch-in               -> 1.50
+    Aynı hareket içinde daha fazla açmak kademe eklemiyor.
+  DAĞITIM: 6 kitap kopyasına yazıldı, 6 sayfada kitapzoom.js?v=20261008a.

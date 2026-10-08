@@ -358,22 +358,42 @@
     /* --------------------------------------------------------------
        5) İki parmak pinch (dokunmatik)
        -------------------------------------------------------------- */
+    /* KADEMELİ PINCH (08.10.2026) — öğretmen: "iki parmakla yaklaştırma
+       veya uzaklaştırma, sistemdeki yaklaştırma özelliğine bir kere
+       tıklanmış gibi tepki versin; sonsuz yaklaştırma pratik olmuyor."
+       Eskiden parmak arası sürekli ölçülüp oran anlık güncelleniyordu:
+       tahtada ve telefonda ölçü parmağın en ufak titremesiyle oynuyor,
+       istenen kademede durmak zorlaşıyordu.
+       Artık bir pinch hareketi = + ya da - düğmesine BİR kez basmak:
+       parmaklar EŞİK kadar açılır/kapanırsa tek kademe uygulanır
+       (düğmelerle aynı 1.5 kat), hareketin kalanı yok sayılır. Yeni
+       kademe için parmakları kaldırıp yeniden sıkıştırmak gerekir.
+       Eşik hem orana hem piksele bakar: parmaklar birbirine yakınken
+       küçük bir kayma yüzde olarak büyük görünüyor, o yüzden en az
+       36 piksellik gerçek bir hareket de aranıyor. */
+    var PINCH_ORAN = 1.18;   /* %18 açılma/kapanma */
+    var PINCH_PIKSEL = 36;   /* ... ve en az bu kadar piksel */
     var pinch = null;
     sahne.addEventListener('touchstart', function (e) {
       if (e.touches.length === 2) {
         var a = e.touches[0], b = e.touches[1];
-        pinch = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), o: z.o };
+        pinch = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), bitti: false };
       }
     }, { passive: true });
     sahne.addEventListener('touchmove', function (e) {
-      if (e.touches.length === 2 && pinch) {
-        e.preventDefault();
-        var a = e.touches[0], b = e.touches[1];
-        var d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
-        var r = sahne.getBoundingClientRect();
-        zAyarla(pinch.o * (d / pinch.d),
-          (a.clientX + b.clientX) / 2 - r.left, (a.clientY + b.clientY) / 2 - r.top);
-      }
+      if (e.touches.length !== 2 || !pinch) return;
+      e.preventDefault();
+      if (pinch.bitti) return;                 /* bu harekette kademe verildi */
+      var a = e.touches[0], b = e.touches[1];
+      var d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+      var fark = d - pinch.d, oran = d / pinch.d;
+      var ac  = oran >= PINCH_ORAN      && fark >=  PINCH_PIKSEL;
+      var kap = oran <= 1 / PINCH_ORAN  && fark <= -PINCH_PIKSEL;
+      if (!ac && !kap) return;
+      pinch.bitti = true;
+      var r = sahne.getBoundingClientRect();
+      zAyarla(ac ? z.o * 1.5 : z.o / 1.5,
+        (a.clientX + b.clientX) / 2 - r.left, (a.clientY + b.clientY) / 2 - r.top);
     }, { passive: false });
     sahne.addEventListener('touchend', function (e) { if (e.touches.length < 2) pinch = null; }, { passive: true });
 
