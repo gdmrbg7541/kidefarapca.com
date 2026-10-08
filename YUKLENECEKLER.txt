@@ -7837,3 +7837,31 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
     playClick 1 · playCorrect 3 · playWrong 2 · geri sayım 3+2
     Harf Birleştirme "İleri" 1 · sıra numarası 1
     Sınav başla+şık 2 · Kendini Dene şık 3 (tık + sonuç)
+
+08.10.2026 — HARF-İ TA'RÎF SUNUMU (sunum html/harfitarif.html)
+  4. slayt (Aynı takı, iki yazılış)
+      - Kart başlığındaki takı 44px -> 110px, ortalandı.
+      - ŞEDDE LÂMIN ÜSTÜNDEN ALINDI: "اَلّ" yazılışında şedde lâmın
+        üstündeydi; şemsîde şedde LÂMDAN SONRAKİ harfe gelir. Araya
+        kaşide (U+0640) konup şedde onun üstüne alındı: "اَلـّ".
+        (Arap harfleri elle yazılmadı, kod noktasıyla kuruldu.)
+      - Örnek satırı 18px -> 50px ve ortalı; açıklama 18 -> 23px.
+  5. slayt (شمس / قمر sahnesi)
+      - Kelimeler 74 -> 104px, küçük hâli 62 -> 86px.
+      - Harf listeleri 23 -> 30px, başlıkları 17 -> 21px.
+      - 1-2-3 ROZETLERİ: rakam Arapça yazı tipinden geliyordu, o tipin
+        satır kutusu daireden uzun olduğu için sayı yukarı kaçıyor,
+        daireye oturmuyordu. Rakam arayüz yazı tipine alındı, satır
+        yüksekliği 1 yapıldı, daire 26 -> 40px.
+      - KAMERÎDE 3 DEĞİL 1 ROZET: şemsîde üç değişiklik var (takı, şedde,
+        tenvin); kamerîde isim hiç değişmiyor, yalnız sondaki tenvin tek
+        harekeye düşüyor. Tek rozet + "Tenvin ـٌ ‹ tek hareke ـُ" satırı.
+  7. ve 8. slayt (Alıştırma 1 · 1-7 ve 8-14)
+      - CEVAPLAR TEK TEK AÇILIYOR: eskiden ikişer ikişer geliyordu.
+        Şimdi bütün sorular ilk adımda, cevaplar sırayla 1..7.
+      - Yeşil "‹" oku ve noktalı alt çizgi kaldırıldı.
+      - Soru ve cevap 27 -> 44px; şablon satırı 30 -> 38px.
+  9. slayt (Marife mi, Nekra mı?)
+      - Sayfanın yarısı boştu: kartlar artık kalan yüksekliği paylaşıyor,
+        kelime kartın dikey ortasında duruyor.
+      - Arapça 30 -> 58px, ipucu 13 -> 18px, sıra numarası 28 -> 40px.

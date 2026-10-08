@@ -480,6 +480,9 @@ h1,h2,h3,h4,p{margin:0}
 .izgara.bes{align-content:stretch}
 .izgara.bes .soru{min-height:0;justify-content:center;padding:18px 14px 16px}
 .izgara.bes .soru .verilen{font-size:58px;padding-top:26px;line-height:1.5}
+/* Kelime kartın ORTASINDA dursun: cevap alanının margin-top:auto'su
+   kelimeyi tepeye itiyor, altı bomboş kalıyordu. */
+.izgara.bes .soru .cevapAlan{margin-top:14px}
 .izgara.bes .soru .cevap{font-size:58px;line-height:1.45}
 .izgara.bes .soru .ipucu{font-size:18px}
 .izgara.bes .soru .no{width:40px;height:40px;border-radius:12px;font-size:21px;
@@ -880,7 +883,12 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
             <div class="kelime kucuk">قَمَرٌ</div>
             <div class="cevron k">⌄</div>
             <div class="kelime kucuk"><span class="kamer">اَلْقَمَرُ</span></div>
-            <div class="rozetSira" style="direction:rtl"><span class="rz3">1</span><span class="rz3">2</span><span class="rz3">3</span></div>
+            <!-- 08.10.2026 — öğretmen: "kamerî de 3 değil sadece 1 olacak,
+                 o da sonundaki tenvinin tek harekeye dönmesi." Şemsîde üç
+                 değişiklik var (takı, şedde, tenvin); kamerîde İSİM hiç
+                 değişmiyor, yalnız sondaki tenvin tek harekeye düşüyor. -->
+            <div class="rozetSira" style="direction:rtl"><span class="rz3">1</span></div>
+            <div class="not" style="transform:none;color:#4B5563">Tenvin <span class="ar">ـٌ</span> ‹ tek hareke <span class="ar">ـُ</span></div>
             <div class="not" style="transform:none;color:var(--kamer)"><b>Kamerî:</b> lâm cezimli okunur, isim değişmez</div>
           </div>
         </div>
@@ -956,20 +964,20 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
 
     <div class="odevIzgara">
       <div class="odev adim" data-g="1"><span class="soruMet">١. اَل + سَلَامٍ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim sems" data-g="2">اَلسَّلَامِ</span></span></div>
+        <span class="cizgi"><span class="cvp adim sems" data-g="2">اَلسَّلَامِ</span></span></div>
       <div class="odev adim" data-g="1"><span class="soruMet">٢. اَل + غُرْفَةً</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim kamer" data-g="2">اَلْغُرْفَةَ</span></span></div>
-      <div class="odev adim" data-g="3"><span class="soruMet">٣. اَل + حَالٌ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim kamer" data-g="4">اَلْحَالُ</span></span></div>
-      <div class="odev adim" data-g="3"><span class="soruMet">٤. اَل + طَالِبَةٍ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim sems" data-g="4">اَلطَّالِبَةِ</span></span></div>
-      <div class="odev adim" data-g="5"><span class="soruMet">٥. اَل + شَقَّةٌ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim sems" data-g="6">اَلشَّقَّةُ</span></span></div>
-      <div class="odev adim" data-g="5"><span class="soruMet">٦. اَل + تَفْضِيلٍ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim sems" data-g="6">اَلتَّفْضِيلِ</span></span></div>
-      <div class="odev adim" data-g="7"><span class="soruMet">٧. اَل + ثَلَّاجَةً</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim sems" data-g="8">اَلثَّلَّاجَةَ</span></span></div>
-      <div class="odev adim" data-g="7"><span class="soruMet" style="color:var(--sis);font-size:20px">
+        <span class="cizgi"><span class="cvp adim kamer" data-g="3">اَلْغُرْفَةَ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet">٣. اَل + حَالٌ</span>
+        <span class="cizgi"><span class="cvp adim kamer" data-g="4">اَلْحَالُ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet">٤. اَل + طَالِبَةٍ</span>
+        <span class="cizgi"><span class="cvp adim sems" data-g="5">اَلطَّالِبَةِ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet">٥. اَل + شَقَّةٌ</span>
+        <span class="cizgi"><span class="cvp adim sems" data-g="6">اَلشَّقَّةُ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet">٦. اَل + تَفْضِيلٍ</span>
+        <span class="cizgi"><span class="cvp adim sems" data-g="7">اَلتَّفْضِيلِ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet">٧. اَل + ثَلَّاجَةً</span>
+        <span class="cizgi"><span class="cvp adim sems" data-g="8">اَلثَّلَّاجَةَ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet" style="color:var(--sis);font-size:26px">
         Cevaplar için → tuşuna basmaya devam et</span><span></span></div>
     </div>
   </section>
@@ -992,20 +1000,20 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
 
     <div class="odevIzgara">
       <div class="odev adim" data-g="1"><span class="soruMet">٨. اَل + مَطْبَخٌ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim kamer" data-g="2">اَلْمَطْبَخُ</span></span></div>
+        <span class="cizgi"><span class="cvp adim kamer" data-g="2">اَلْمَطْبَخُ</span></span></div>
       <div class="odev adim" data-g="1"><span class="soruMet">٩. اَل + اِسْمٍ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim kamer" data-g="2">اَلْاِسْمِ</span></span></div>
-      <div class="odev adim" data-g="3"><span class="soruMet">١٠. اَل + سَرِيرٌ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim sems" data-g="4">اَلسَّرِيرُ</span></span></div>
-      <div class="odev adim" data-g="3"><span class="soruMet">١١. اَل + صَحِيفَةً</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim sems" data-g="4">اَلصَّحِيفَةَ</span></span></div>
-      <div class="odev adim" data-g="5"><span class="soruMet">١٢. اَل + فُرْنٍ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim kamer" data-g="6">اَلْفُرْنِ</span></span></div>
-      <div class="odev adim" data-g="5"><span class="soruMet">١٣. اَل + يَوْمٌ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim kamer" data-g="6">اَلْيَوْمُ</span></span></div>
-      <div class="odev adim" data-g="7"><span class="soruMet">١٤. اَل + دَوْرٍ</span>
-        <span class="cizgi"><span class="yesilOk">‹</span> <span class="cvp adim sems" data-g="8">اَلدَّوْرِ</span></span></div>
-      <div class="odev adim" data-g="7"><span class="soruMet" style="color:var(--sis);font-size:20px">
+        <span class="cizgi"><span class="cvp adim kamer" data-g="3">اَلْاِسْمِ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet">١٠. اَل + سَرِيرٌ</span>
+        <span class="cizgi"><span class="cvp adim sems" data-g="4">اَلسَّرِيرُ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet">١١. اَل + صَحِيفَةً</span>
+        <span class="cizgi"><span class="cvp adim sems" data-g="5">اَلصَّحِيفَةَ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet">١٢. اَل + فُرْنٍ</span>
+        <span class="cizgi"><span class="cvp adim kamer" data-g="6">اَلْفُرْنِ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet">١٣. اَل + يَوْمٌ</span>
+        <span class="cizgi"><span class="cvp adim kamer" data-g="7">اَلْيَوْمُ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet">١٤. اَل + دَوْرٍ</span>
+        <span class="cizgi"><span class="cvp adim sems" data-g="8">اَلدَّوْرِ</span></span></div>
+      <div class="odev adim" data-g="1"><span class="soruMet" style="color:var(--sis);font-size:20px">
         Şemsî = <span class="sems">mavi</span> · Kamerî = <span class="kamer">kırmızı</span></span><span></span></div>
     </div>
   </section>
