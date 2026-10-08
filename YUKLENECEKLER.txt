@@ -7865,3 +7865,82 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
       - Sayfanın yarısı boştu: kartlar artık kalan yüksekliği paylaşıyor,
         kelime kartın dikey ortasında duruyor.
       - Arapça 30 -> 58px, ipucu 13 -> 18px, sıra numarası 28 -> 40px.
+
+08.10.2026 — HARF-İ TA'RÎF SUNUMU · 10. SLAYT (Özet şeması)
+  ÖLÇÜLDÜ — cümlenin başladığı yer kareden kareye kayıyordu:
+      kare 1: sol sütun 134 px · cümle x=216
+      kare 2: 192 · 274      kare 3: 226 · 308
+      kare 4: 192 · 274      kare 5:  91 · 173
+      kare 6: 134 · 216      kare 7: 199 · 281
+    Yani 135 piksellik bir salınım; her geçişte bütün metin yer
+    değiştirdiği için göz neyin değiştiğini yakalayamıyordu.
+  YAPILAN
+    - Sol sütun SABİT 470 px, içerik sağa yaslı. Artık hem dev "اَلْ"
+      hem de cümlenin ilk harfi her karede aynı yerde: cümle x=552'de
+      sabit (yedi karede de ölçüldü). Değişen tek şey soldaki
+      örnekler/işaretler oluyor.
+    - Elif-lâmlı örnekler 27 -> 54 px (7. karedeki ikisi 34 -> 66 px,
+      etiketleri 15 -> 22 px). 130 px'lik "اَلْ"ın yanında kayboluyordu.
+    - 4. karedeki tenvinli örnek satırı 26 -> 48 px.
+    - Cümle 31 -> 76 px, içindeki Arapça 34 -> 88 px (öğretmen: "ne kadar
+      olabiliyorsa o kadar"). Sınır ÖLÇÜLEREK bulundu: metne 672 px
+      genişlik, kareye 626 px yükseklik kalıyor; satır yüksekliği 1.42
+      iken en uzun cümle (7. kare) 76 px'te 577 px yer kaplıyor, 49 px
+      pay kalıyor. 80 px'te pay 18 px'e iniyor, 84 px'te taşıyor.
+      Yedi karenin hiçbirinde taşma yok.
+    - İşaretler (✓/✗) 34 -> 46 px, çizelge çubukları büyütüldü.
+
+08.10.2026 — HARF-İ TA'RÎF SUNUMU · 7. ve 8. SLAYT (Alıştırma 1)
+  ÖLÇÜLDÜ: üst harf şeridi + soru ızgarası karenin 626 px'ine sığmalı.
+    harf 36 / soru 54 -> şerit 172 + ızgara 446 = 618, pay 8  ✓
+    harf 38 / soru 56 -> 633, 7 px TAŞIYOR
+  YAPILAN
+    - Soru ve cevaplar 44 -> 54 px (satır yüksekliği 1.45 -> 1.3).
+    - Üstteki şemsî/kamerî harf listeleri 20 -> 36 px, başlıkları
+      17 -> 27 px, şablon satırı 38 -> 50 px.
+    - İKİ SÜTUN ARASINA kesik çizgi ayırıcı: sağ ve sol iki ayrı liste,
+      arada çizgi olmayınca satırlar tek uzun satır gibi okunuyordu.
+    - CEVABIN ALTINA YAZI ÇİZGİSİ (3 px düz): kelime çizginin üstüne
+      oturur, çocuk harfleri çizgiye göre yazar. Eski NOKTALI çizgi
+      "boşluk" demekti ve kaldırılmıştı; bu onun yerine değil, yazı
+      çizgisi olarak kondu.
+
+08.10.2026 — DİNLE VE YAZ: YAZI ÇİZGİSİ + KENDİNİ DENE
+  okumayazma/dinleveyaz.css     - Örnekler arasındaki ayırıcı çizgi kalktı
+                                  (.kelime-satir border-bottom saydam).
+                                - HARFLER ÇİZGİDE: .ks-arapca'ya yazı
+                                  çizgisi kondu. Ölçü Harf Birleştirme'yle
+                                  aynı (.ab-cizgili): kabın font ölçüsü
+                                  harf ölçüsüne eşit, çizgi .50em'de —
+                                  gövde çizgiye oturur, kuyruk altta kalır.
+                                  Çizgi kelime yazılmadan da duruyor ki
+                                  çocuk nereye yazacağını görsün.
+                                  v20261008a
+  okumayazma/dinleveyaz.js      KidefDinleVeri köprüsü: kelime listesi üst
+                                pencereye bırakılıyor (sekme çerçeve içinde
+                                çalışıyor, test katmanı üst pencerede).
+                                v20261008a
+  okumayazma/alfabe_akordiyon.js
+                                DİNLE VE YAZ ARTIK «KENDİNİ DENE»DE
+                                (öğretmen: "diğerlerinde olduğu gibi tek ve
+                                iki kişilik yarışma olsun, tasarım ortak
+                                olsun"). Dördüncü bölüm olarak eklendi:
+                                  - Soru: ses çalar, dört Arapça yazılıştan
+                                    doğrusu seçilir. TÜRKÇE HİÇ GEÇMİYOR
+                                    (öğretmen: "türkçe okunuş olmasın,
+                                    sadece ses ve arapçası").
+                                  - Ses soru açılınca kendiliğinden çalar;
+                                    "Tekrar dinle" düğmesi var.
+                                  - Tek ve iki kişilik, 3/5/10 soru —
+                                    diğer üç bölümle birebir aynı ekran.
+                                  - Test açılırken çerçeve uyandırılıyor
+                                    (dvyAc), sekmeye hiç girilmemişse de
+                                    kelimeler geliyor.
+                                v15
+  okumayazma/dinleveyaz_kapisma.js
+                                Seviye ekranındaki «İkili yarışma» düğmesi
+                                kaldırıldı (öğretmen isteği). Dosyanın kendi
+                                ekranı duruyor, yalnız düğme konmuyor.
+  ÖLÇÜLDÜ: veri köprüsü 8 seviye / 103 kelime taşıyor; yan şeritte dört
+    "Kendini Dene" düğmesi var; iki kişilikte 2 oyuncu alanı, 8 şık, ortak
+    ses düğmesi; şıklarda Türkçe yok.

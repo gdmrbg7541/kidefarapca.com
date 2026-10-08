@@ -581,37 +581,71 @@ h1,h2,h3,h4,p{margin:0}
 .harfSerit .vurK{color:var(--kamer);font-weight:900;background:#FFE9E6;border-radius:6px;padding:0 4px}
 
 /* --- ALIŞTIRMA SAYFASI (orijinal 26-55) --- */
+/* 08.10.2026 — öğretmen: "yukarıdaki şemsî ve kamerî harfler de çok
+   büyük olsun." Liste 20 -> 36 px, başlıkları 17 -> 27 px. */
+.listeUst .hbaslik{font-size:27px}
+.listeUst .hliste{line-height:1.35}
 .listeUst{display:grid;grid-template-columns:1fr 1px 1fr;flex:0 0 auto;direction:rtl;
   border-bottom:1px dashed #D6DBE2;padding-bottom:6px;margin-bottom:8px}
-.sablon{font-size:38px;font-weight:900;direction:rtl;text-align:center;color:#38414F;padding:2px 0}
+.sablon{font-size:50px;font-weight:900;direction:rtl;text-align:center;color:#38414F;padding:0}
 .sablon .sessiz{color:var(--sessiz)}
-.odevIzgara{display:grid;grid-template-columns:1fr 1fr;gap:6px 30px;flex:1 1 auto;direction:rtl;align-content:space-evenly}
+/* İKİ SÜTUN ARASINA AYIRICI (08.10.2026 — öğretmen isteği): sayfanın
+   sağı ve solu iki ayrı liste; arada kesik çizgi olmayınca satırlar tek
+   bir uzun satır gibi okunuyordu. */
+.odevIzgara{display:grid;grid-template-columns:1fr 1fr;gap:4px 34px;flex:1 1 auto;direction:rtl;align-content:stretch;position:relative}
+.odevIzgara::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;
+  transform:translateX(-50%);border-radius:2px;
+  background:repeating-linear-gradient(180deg,#C9CDD3 0 10px,transparent 10px 20px)}
 .odev{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:10px;
   padding:5px 8px;border-radius:12px;transition:background .2s, box-shadow .2s}
 /* 08.10.2026 — öğretmen: "örneklerin cevabı tek tek açılsın, OK VE
    NOKTALAR OLMASIN ve örnekler ÇOK BÜYÜK olsun." Noktalı alt çizgi ve
    yeşil ok kaldırıldı; cevap boşluğu yalnız yer tutuyor. */
-.odev .soruMet{font-size:44px;font-weight:800;direction:rtl;color:#1F2430;line-height:1.45}
-.odev .cizgi{min-width:190px;text-align:center;padding:0 8px 2px}
-.odev .cvp{font-size:44px;font-weight:900;direction:rtl;line-height:1.45}
+/* 08.10.2026 — öğretmen: "7 ve 8. sayfa örneklerin boyutu da çok büyük
+   olsun" + "kelimelerin çizgideki yazılışı yanlış yazmasınlar diye çizgi
+   olsun". Sınır ölçülerek bulundu: üst şerit + ızgara, karenin 626 px'ine
+   sığmalı. Harfler 36 px iken soru/cevap 54 px'te tam oturuyor (8 px pay);
+   56 px'te 7 px taşıyor. Cevabın altındaki ÇİZGİ bir yazı çizgisi: kelime
+   onun üstüne oturur, çocuk harfleri çizgiye göre yazar. (Eski noktalı
+   çizgi "boşluk" demekti, bu ise yazı çizgisi.) */
+.odev .soruMet{font-size:54px;font-weight:800;direction:rtl;color:#1F2430;line-height:1.3}
+.odev .cizgi{min-width:210px;text-align:center;padding:0 10px 10px;
+  border-bottom:3px solid #C9CDD3}
+.odev .cvp{font-size:54px;font-weight:900;direction:rtl;line-height:1.3}
 .odev .yesilOk{display:none}
 .odev.simdi{background:#FFF3F1;box-shadow:0 0 0 2px var(--kirmizi) inset;border-radius:14px}
 .odev .yesilOk{color:var(--sema);font-weight:900;font-size:18px}
 
 /* --- YEŞİL ÖZET ŞEMASI (orijinal 62-81) --- */
-.semaDuzen{display:grid;grid-template-columns:auto 1fr;gap:26px;flex:1 1 auto;align-items:center;padding:0 10px}
-.semaSol{display:flex;align-items:center;gap:14px}
-.buyukAl{font-size:130px;font-weight:900;color:var(--sema);line-height:1;direction:rtl}
+/* 08.10.2026 — öğretmen: "cümlelerin başlangıç yeri SABİT olsun ki cümle
+   değiştikçe sadece değişen yerler anlaşılsın."
+   Ölçüm: sol sütun kareden kareye 91-226 px arasında değişiyor, cümle de
+   173-308 px arasında kayıyordu — her geçişte bütün metin yer
+   değiştirdiği için gözün neyin değiştiğini yakalaması imkânsızdı.
+   Sol sütun artık SABİT genişlikte ve içerik sağa yaslı: hem dev "اَلْ"
+   hem de cümlenin ilk harfi her karede AYNI yerde. Değişen tek şey
+   soldaki örnekler ve işaretler oluyor. */
+.semaDuzen{display:grid;grid-template-columns:470px 1fr;gap:26px;flex:1 1 auto;align-items:center;padding:0 10px}
+.semaSol{display:flex;align-items:center;justify-content:flex-end;gap:16px;width:100%}
+.buyukAl{font-size:130px;font-weight:900;color:var(--sema);line-height:1;direction:rtl;flex:0 0 auto}
 .cizelge{display:flex;flex-direction:column;gap:9px;align-items:flex-start}
-.cizelge .cz{width:44px;height:5px;border-radius:3px;background:var(--sema)}
-.cizelge .cz.kisa{width:26px;height:4px}
-.isaret{font-size:34px;font-weight:900;line-height:1}
+.cizelge .cz{width:58px;height:7px;border-radius:4px;background:var(--sema)}
+.cizelge .cz.kisa{width:34px;height:6px}
+.isaret{font-size:46px;font-weight:900;line-height:1;flex:0 0 auto}
 .isaret.dogru{color:var(--sema)} .isaret.yanlisI{color:var(--kirmizi)}
-.semaMetin{font-size:31px;font-weight:800;color:#1F2430;line-height:1.85;direction:ltr}
+/* 08.10.2026 — öğretmen: "cümleler daha büyük olsun, ne kadar
+   olabiliyorsa o kadar." Ölçerek bulundu: 470 px'lik sabit sol sütunun
+   yanında metne 672 px kalıyor, karenin iç yüksekliği 626 px. Satır
+   yüksekliği 1.42 iken en uzun cümle (7. kare) 76 px'te 577 px yer
+   kaplıyor — 49 px pay kalıyor. 80 px'te 608 (pay 18 px), 84 px'te
+   taşıyor. Güvenli üst sınır olarak 76 px seçildi. */
+.semaMetin{font-size:76px;font-weight:800;color:#1F2430;line-height:1.42;direction:ltr}
 .semaMetin .anahtar{color:var(--kirmizi);font-weight:900}
-.semaMetin .ar{font-size:34px;font-weight:900}
-.ornekSutun{display:flex;flex-direction:column;gap:2px;align-items:center}
-.ornekSutun .ok{font-size:27px;font-weight:900;direction:rtl;line-height:1.6}
+.semaMetin .ar{font-size:88px;font-weight:900}
+/* 08.10.2026 — "elif-lâmlı örnekler çok küçük çıkmış, iyice büyüt."
+   27px, yanındaki 130px'lik "اَلْ"ın yanında kayboluyordu. */
+.ornekSutun{display:flex;flex-direction:column;gap:4px;align-items:center}
+.ornekSutun .ok{font-size:54px;font-weight:900;direction:rtl;line-height:1.45}
 
 /* --- KAPANIŞ (orijinal son slayt) --- */
 #sSon .sukran{color:#0F9D8C}
@@ -951,13 +985,13 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     <div class="listeUst">
       <div class="hs" style="text-align:center">
         <div class="hbaslik s">Şemsi Harfler</div>
-        <div class="hliste s" style="font-size:20px">“ت ث د ذ ر ز س ش ص ض ط ظ ل ن ”</div>
+        <div class="hliste s" style="font-size:36px">“ت ث د ذ ر ز س ش ص ض ط ظ ل ن ”</div>
         <div class="sablon"><span class="sessiz">اَل</span><span class="sems">ّ</span> ...</div>
       </div>
       <div class="ayirici"></div>
       <div class="hs" style="text-align:center">
         <div class="hbaslik k">Kameri harfler:</div>
-        <div class="hliste k" style="font-size:20px">“أ ب ج ح خ ع غ ف ق ك م و ه ي ”</div>
+        <div class="hliste k" style="font-size:36px">“أ ب ج ح خ ع غ ف ق ك م و ه ي ”</div>
         <div class="sablon"><span class="kamer">اَلْ</span> ...</div>
       </div>
     </div>
@@ -987,13 +1021,13 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     <div class="listeUst">
       <div class="hs" style="text-align:center">
         <div class="hbaslik s">Şemsi Harfler</div>
-        <div class="hliste s" style="font-size:20px">“ت ث د ذ ر ز س ش ص ض ط ظ ل ن ”</div>
+        <div class="hliste s" style="font-size:36px">“ت ث د ذ ر ز س ش ص ض ط ظ ل ن ”</div>
         <div class="sablon"><span class="sessiz">اَل</span><span class="sems">ّ</span> ...</div>
       </div>
       <div class="ayirici"></div>
       <div class="hs" style="text-align:center">
         <div class="hbaslik k">Kameri harfler:</div>
-        <div class="hliste k" style="font-size:20px">“أ ب ج ح خ ع غ ف ق ك م و ه ي ”</div>
+        <div class="hliste k" style="font-size:36px">“أ ب ج ح خ ع غ ف ق ك م و ه ي ”</div>
         <div class="sablon"><span class="kamer">اَلْ</span> ...</div>
       </div>
     </div>
@@ -1108,7 +1142,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
           </div>
           <div class="semaMetin"><span class="ar">“ال”</span> takısı <b>almayan</b> isim
             <span class="anahtar">tenvin — çift hareke</span> ile biter.
-            <div style="font-size:26px;margin-top:6px" class="ar">شَمْسٌ · شَمْسًا · شَمْسٍ</div></div>
+            <div style="font-size:48px;margin-top:10px;line-height:1.5" class="ar">شَمْسٌ · شَمْسًا · شَمْسٍ</div></div>
         </div>
       </div>
 
@@ -1133,12 +1167,12 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
         <div class="semaDuzen">
           <div class="semaSol">
             <div class="ornekSutun">
-              <span class="ok sems" style="font-size:34px">اَلشَّـ</span>
-              <span style="font-size:15px;font-weight:900;color:var(--sems)">Şemsî</span>
+              <span class="ok sems" style="font-size:66px">اَلشَّـ</span>
+              <span style="font-size:22px;font-weight:900;color:var(--sems)">Şemsî</span>
             </div>
             <div class="ornekSutun">
-              <span class="ok kamer" style="font-size:34px">اَلْـ</span>
-              <span style="font-size:15px;font-weight:900;color:var(--kamer)">Kamerî</span>
+              <span class="ok kamer" style="font-size:66px">اَلْـ</span>
+              <span style="font-size:22px;font-weight:900;color:var(--kamer)">Kamerî</span>
             </div>
             <span class="buyukAl">اَلْ</span>
           </div>

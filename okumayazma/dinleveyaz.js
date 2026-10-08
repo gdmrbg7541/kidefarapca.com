@@ -497,6 +497,20 @@
         });
         console.log("Game data updated with word audio sources:", gameData);
 
+        /* ===== KENDİNİ DENE KÖPRÜSÜ (08.10.2026) ====================
+           Öğretmen: "dinle ve yazda da diğerlerinde olduğu gibi tek ve
+           iki kişilik yarışma olsun, tasarım ortak olsun."
+           Test katmanı (alfabe_akordiyon.js) ÜST pencerede çalışıyor,
+           bu sekme ise çerçeve içinde. Kelime listesini üst pencereye
+           bırakıyoruz; test oradan okuyup soru üretiyor. Ses yolları
+           köke göre yazıldığı için (okumayazma/ses/...) üst pencerede
+           de aynen çalışır — blob göndermeye gerek yok. */
+        try {
+            var _dvKopru = { veri: gameData, surum: 1 };
+            window.KidefDinleVeri = _dvKopru;
+            if (window.parent && window.parent !== window) window.parent.KidefDinleVeri = _dvKopru;
+        } catch (e) { }
+
         /* ============ SES ÖNBELLEĞİ (07.10.2026) =====================
            Öğretmen: "seçilen seviye sesleri indirilsin... internet
            zayıflayınca mı oluyor bilemedim ama buna bi önlem alalım."

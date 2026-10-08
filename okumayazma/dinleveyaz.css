@@ -435,7 +435,10 @@
     /* Aktif kırmızı kutunun halkası (box-shadow) kenarlara değmesin diye satırlar
        yatayda içeri alınır; kaydırılabilir kapsayıcı kenardan kırpmaz. */
     margin-inline:0.9rem;
-    padding:0.35rem 0.3rem 0.8rem; border-bottom:2px solid rgba(60,80,140,0.16);
+    /* 08.10.2026 — öğretmen: "örnekler arasındaki çizgiye gerek yok,
+       sadece harflerin yazılması gereken çizgi olsa yeter". Satır
+       ayırıcısı kaldırıldı; tek çizgi aşağıdaki YAZI ÇİZGİSİ. */
+    padding:0.35rem 0.3rem 0.8rem; border-bottom:2px solid transparent;
     transition:opacity .45s ease, max-height .45s ease, min-height .45s ease, margin .45s ease,
                padding .45s ease, transform .45s ease, border-color .2s;
 }
@@ -451,24 +454,35 @@
     color:var(--color-text-secondary); background:none; padding:0; box-shadow:none;
     transition:color .2s;
 }
+/* YAZI ÇİZGİSİ (08.10.2026) — öğretmen: "harfler çizgide olsun".
+   Ölçü Harf Birleştirme sekmesindekiyle aynı (bkz. .ab-cizgili):
+   kabın font ölçüsü harf ölçüsüne eşitlenir, taban çizgisi kutunun
+   altından .566em yukarıdadır; çizgi .50em'e, yani tabanın biraz
+   altına konur — gövde çizgiye oturur, kuyruk çizginin altında kalır.
+   Çizgi kelime yazılmadan da duruyor: çocuk nereye yazacağını görsün. */
 .ks-arapca{
-    flex:1 1 0; position:relative; min-height:3.4rem; text-align:left; direction:rtl;
-    background:none; box-shadow:none; overflow:visible; display:flex; align-items:center;
+    flex:1 1 0; position:relative; min-height:1.52em; text-align:left; direction:rtl;
+    background:none; box-shadow:none; overflow:visible; display:flex; align-items:flex-end;
+    font-size:5.6rem; padding:0 .10em .30em;
+}
+.ks-arapca::before{
+    content:""; position:absolute; left:.04em; right:.04em; bottom:.50em;
+    height:3px; background:rgba(15,23,42,.28); border-radius:2px;
 }
 /* Tıklayınca yazılan kısım kırmızı; doğru tamamlanınca yeşile döner (aşağıda) */
 .ks-typed{ direction:rtl; display:inline-block;
-    font-family:var(--font-harmattan); font-weight:700; font-size:5.6rem; line-height:1.15;
+    font-family:var(--font-harmattan); font-weight:700; font-size:1em; line-height:1;
     color:var(--color-error); }
 /* Masaüstünde (fare = pointer:fine) yazılan Arapça çok daha büyük; satır içeriğe
    göre büyüdüğü için (aşağıda overflow düzeltmesi) kelime kutuya sığar. */
 @media (pointer: fine){
-    .ks-typed{ font-size:8rem; }
+    .ks-arapca{ font-size:8rem; }
     /* Büyük Arapça sığsın diye satır yüksekliği artırıldı (grid izi sabit
        yükseklik kullandığından min-height ile garanti ediyoruz). */
     .kelime-satir{ min-height:10rem; max-height:18rem; }
 }
 /* Seslendirilen (aktif) kelime: hafif yuvarlatılmış KIRMIZI KUTU ile vurgulanır */
-.kelime-satir.aktif{ border-bottom-color:transparent; border-radius:0.9rem;
+.kelime-satir.aktif{ border-radius:0.9rem;
     box-shadow:0 0 0 3px var(--color-error); }
 .kelime-satir.aktif .ks-turkce{ color:var(--color-error); }
 /* Doğru tamamlandı: yeşil yazı */

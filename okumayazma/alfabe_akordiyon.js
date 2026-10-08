@@ -115,8 +115,86 @@
                 var O = window.KidefOkumaCevir;
                 return (O && O.sinavHavuzu) ? O.sinavHavuzu(adet) : [];
             }
+        },
+        {
+            /* DİNLE VE YAZ (08.10.2026) — öğretmen: "dinle ve yazda da
+               diğerlerinde olduğu gibi tek ve iki kişilik yarışma olsun,
+               tasarım ortak olsun". Sorular o sekmenin kendi kelime ve
+               seslerinden üretiliyor; veri çerçeveden üst pencereye
+               bırakılıyor (bkz. dinleveyaz.js -> KidefDinleVeri).
+               Öğretmen: "türkçe okunuş olmasın, sadece ses ve arapçası."
+               Bu yüzden soruda Türkçe hiç geçmiyor: ses çalıyor, dört
+               Arapça yazılıştan doğrusu seçiliyor. */
+            anahtar: 'p7',
+            baslik: 'Dinle ve Yaz',
+            not: function () { return soruSayisi + ' soru · sesi dinle, doğru yazılışı seç'; },
+            tipler: [],
+            uretici: function (adet) { return dinleHavuzu(adet); },
+            ikon: '<svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                  '<path d="M4 13v-1.2a8 8 0 0 1 16 0V13" fill="none" stroke="#0E6655" stroke-width="1.7" stroke-linecap="round"/>' +
+                  '<rect x="2.6" y="12.6" width="4" height="6.2" rx="1.6" fill="#3498db"/>' +
+                  '<rect x="17.4" y="12.6" width="4" height="6.2" rx="1.6" fill="#3498db"/>' +
+                  '<circle cx="18.2" cy="17.4" r="3.9" fill="#2ecc71"/>' +
+                  '<path d="M16.4 17.5l1.3 1.3 2.4-2.6" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'
         }
     ];
+
+    /* ---------------- Dinle ve Yaz soruları ----------------
+       Veri çerçeveden gelir; sekmeye hiç girilmediyse çerçeve henüz
+       yüklenmemiş olur. O yüzden test açılırken çerçeve uyandırılıyor
+       (bkz. ac()). Burada veri yoksa boş dönülür, katman da "soru
+       üretilemedi" diyor. */
+    var dinleSes = null;
+    function dinleCal(yol) {
+        if (!yol) return;
+        try {
+            if (!dinleSes) { dinleSes = new Audio(); dinleSes.preload = 'auto'; }
+            if (!dinleSes.paused) { dinleSes.pause(); dinleSes.currentTime = 0; }
+            dinleSes.src = yol;
+            var p = dinleSes.play();
+            if (p && p.catch) p.catch(function () { });
+        } catch (e) { }
+    }
+    function dinleKelimeler() {
+        var D = window.KidefDinleVeri, hepsi = [], gorulen = {};
+        if (!D || !D.veri) return hepsi;
+        Object.keys(D.veri).forEach(function (sv) {
+            var w = D.veri[sv] && D.veri[sv].words;
+            if (!w || !w.length) return;
+            w.forEach(function (k) {
+                if (!k || !k.ar || !k.audioSrc || gorulen[k.ar]) return;
+                gorulen[k.ar] = 1;
+                hepsi.push({ ar: k.ar, ses: k.audioSrc });
+            });
+        });
+        return hepsi;
+    }
+    var SES_SVG =
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M4 9.5v5h3.4l4.6 4V5.5l-4.6 4H4z" fill="currentColor"/>' +
+        '<path d="M15.6 8.8a4.4 4.4 0 0 1 0 6.4M18.2 6.2a8 8 0 0 1 0 11.6" fill="none"' +
+        ' stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
+    function dinleHavuzu(adet) {
+        var hepsi = dinleKelimeler();
+        if (hepsi.length < 4) return [];
+        var secili = karistir(hepsi.slice()).slice(0, adet);
+        return secili.map(function (k) {
+            var baskalari = hepsi.filter(function (x) { return x.ar !== k.ar; });
+            var yanlis = karistir(baskalari).slice(0, 3);
+            var siklar = [{ html: '<span class="ar dy-sik">' + kacis(k.ar) + '</span>', dogru: true }];
+            yanlis.forEach(function (y) {
+                siklar.push({ html: '<span class="ar dy-sik">' + kacis(y.ar) + '</span>', dogru: false });
+            });
+            return {
+                tip: 'dinle', bicim: 'test', ses: k.ses,
+                metin: 'Dinle, doğru yazılışı seç.',
+                ustlik: '<div class="ak-dinle"><button type="button" class="ak-ses"' +
+                        ' data-ses="' + kacis(k.ses) + '" title="Tekrar dinle">' + SES_SVG +
+                        '<span>Tekrar dinle</span></button></div>',
+                siklar: karistir(siklar)
+            };
+        });
+    }
 
     /* ---------------- küçük yardımcılar ---------------- */
 
@@ -579,6 +657,9 @@
                 if (giriste) girisTazele(); else turBaslat();
                 return;
             }
+            /* «Tekrar dinle» (08.10.2026) — dinle sorusunda sesi yeniden çalar. */
+            var sd = t.closest ? t.closest('.ak-ses') : null;
+            if (sd) { tik(); dinleCal(sd.getAttribute('data-ses')); return; }
             var s = aktif && aktif.havuz[aktif.i];
             if (!s) return;
             /* «Cevapları aç»: iki kişilikte biri cevap vermezse tur burada
@@ -674,6 +755,8 @@
         aktif.cevapli = false; aktif.esSol = null; aktif.esDogru = 0; aktif.esHata = 0;
         aktif.cevap = {}; aktif.bas = Date.now();
         sahne.innerHTML = soruHtml(s, aktif.i + 1, aktif.havuz.length);
+        /* Dinle sorusu: ses kendiliğinden çalar, çocuk düğmeye basmasın. */
+        if (s.tip === 'dinle' && s.ses) zamanKur(function () { dinleCal(s.ses); }, 260);
         if (mod === 2) {
             [1, 2].forEach(function (n) {
                 var e = sahne.querySelector('[data-rol="puan' + n + '"]');
@@ -853,6 +936,13 @@
     /* ---------------- aç / kapat ---------------- */
 
     function ac(anahtar) {
+        /* DİNLE VE YAZ ÇERÇEVESİ (08.10.2026): kelimeler o çerçevenin
+           içinden geliyor; sekmeye hiç girilmediyse çerçeve boş durur.
+           Test açılırken uyandırılıyor, kullanıcı kişi sayısını seçip
+           «Başla»ya basana kadar veri gelmiş oluyor. */
+        if (anahtar === 'p7') {
+            try { if (typeof window.dvyAc === 'function') window.dvyAc(); } catch (e) { }
+        }
         katmanKur(); bicemKur();
         var b = bolumBul(anahtar);
         if (!b) return false;
@@ -955,6 +1045,15 @@
             '#ak-tam .as-bic-b{font-size:clamp(46px,14vh,160px)}',
             '#ak-tam .as-ayrac{font-size:clamp(26px,6.5vh,78px)}',
             '#ak-tam .as-etiket{font-size:clamp(13px,2vh,24px);margin-top:.2vh}',
+            /* --- Dinle ve Yaz: ses düğmesi ve Arapça şıklar (08.10.2026) --- */
+            '.ak-dinle{display:flex;justify-content:center;flex:none;margin:.4vh 0 1vh}',
+            '.ak-ses{display:inline-flex;align-items:center;gap:.7vw;cursor:pointer;',
+            '  font-family:inherit;font-size:clamp(15px,2.4vh,28px);font-weight:700;',
+            '  padding:1vh 2.2vw;border-radius:999px;border:2px solid #16A085;',
+            '  background:#fff;color:#0E6655}',
+            '.ak-ses:hover{background:#eaf6f2}',
+            '.ak-ses svg{width:clamp(20px,3.4vh,40px);height:clamp(20px,3.4vh,40px);flex:none}',
+            '#ak-tam .dy-sik{font-size:clamp(34px,10vh,120px);line-height:1.35;direction:rtl}',
             '#ak-tam .as-esalan{gap:3vw;flex:1 1 auto;min-height:0;align-items:center}',
             '#ak-tam .as-es{font-size:clamp(30px,8vh,96px);min-width:clamp(80px,12vw,180px);',
             '  padding:.6vh 1.2vw}',

@@ -575,6 +575,12 @@
             }
         });
 
+        /* DÜĞME KALDIRILDI (08.10.2026) — öğretmen: "ikili yarışma diye
+           seviyelerin seçildiği ekranda olmasın yarışma kısmı." Yarışma
+           artık diğer sekmelerdeki gibi «Kendini Dene» katmanından
+           açılıyor (tek/iki kişilik aynı tasarım). Bu dosyanın kendi
+           ekranı duruyor; yalnız seviye ekranına düğme koymuyor. */
+        if (true) return;
         /* Ana ekrana düğme: mevcut «Başla»nın hemen altına. Mod kutucukları
            (Alıştırma/Sınav/Otomatik) YAZMA modları; yarışma ayrı bir oyun
            olduğu için o üçlünün arasına sokulmadı. */
