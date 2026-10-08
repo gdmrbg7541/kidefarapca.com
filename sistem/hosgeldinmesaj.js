@@ -42,6 +42,33 @@
     return String(ad || '').replace(/\s+/g, ' ').trim();
   }
 
+  /* ---------------------------------------------- TELEFON NUMARASI
+     (08.10.2026) Öğretmen: "direkt öğretmenin kendi numarasına
+     watsaptan mesaj atılabilecek şekilde olsun."
+     wa.me ülke kodlu ve işaretsiz numara ister: 905XXXXXXXXX.
+     Sitede numaralar 05XX…, +90 5XX…, 5XX… gibi farklı yazılmış
+     olabiliyor; hepsi tek hâle getirilir. Tanınmayan bir yazım gelirse
+     numara kullanılmaz, bağlantı eskisi gibi kişi seçtiren hâline
+     döner — yanlış kişiye mesaj açılmasın. */
+  function telDuzelt(t) {
+    var d = String(t == null ? '' : t).replace(/\D/g, '');
+    if (!d) return '';
+    if (d.slice(0, 2) === '00') d = d.slice(2);                      /* 0090… */
+    if (d.length === 13 && d.slice(0, 3) === '090') d = d.slice(3);  /* 090 5XX… */
+    else if (d.length === 12 && d.slice(0, 2) === '90') d = d.slice(2);
+    else if (d.length === 11 && d.charAt(0) === '0') d = d.slice(1);
+    /* elde 10 hane ve 5 ile başlayan bir CEP numarası kalmalı; sabit hat
+       (0212…) ya da eksik yazım wa.me'ye gönderilmez. */
+    if (d.length !== 10 || d.charAt(0) !== '5') return '';
+    return '90' + d;
+  }
+  function telGosterim(t) {
+    var d = telDuzelt(t);
+    if (!d) return '';
+    var y = d.slice(2);                       /* 5XXXXXXXXX */
+    return '0' + y.slice(0, 3) + ' ' + y.slice(3, 6) + ' ' + y.slice(6, 8) + ' ' + y.slice(8);
+  }
+
   function metin(ad, kod) {
     var a = adDuzelt(ad);
     var selam = a ? ('Merhaba ' + a + ' hocam,') : 'Merhaba hocam,';
@@ -53,8 +80,11 @@
          ihtimali olan bir kodu içinde taşımıyor. Yerinde noktalar
          duruyor, öğretmen göndermeden önce elle yazıyor. Satır her
          durumda çıkıyor, çünkü boşluk doldurulacak yer orası. */
+      /* 08.10.2026 — öğretmen: "... olmuş, sadece TCH..... gibi olsun."
+         Kodun kendisi hâlâ yazılmıyor; yalnız biçimi tanınsın diye ön eki
+         duruyor, rakamların yeri noktalı. */
       'Öğrencileriniz kayıt olurken bu kodu girerse sınıfınıza bağlanma ' +
-      'isteği gönderir: ....\n\n' +
+      'isteği gönderir: TCH-....\n\n' +
       /* 07.10.2026 — öğretmen: "'en çok işe yarayan şeyler meslektaşlarımın
          uyarısıyla eklendi' burda böyle bi şey yok, sadece eleştiri ve
          tavsiyeler yeterli." Doğru olmayan cümle çıkarıldı; metin yalnız
@@ -137,8 +167,9 @@
     try { document.execCommand('copy'); tamam(); } catch (e) {}
   }
 
-  /* ad = öğretmenin ad soyadı, kod = varsa TCH- kodu */
-  function goster(ad, kod) {
+  /* ad = öğretmenin ad soyadı, kod = varsa TCH- kodu,
+     tel = öğretmenin telefonu (varsa mesaj doğrudan ona açılır) */
+  function goster(ad, kod, tel) {
     stilKur();
     kapat();
     var p = document.createElement('div');
@@ -146,16 +177,25 @@
     p.setAttribute('role', 'dialog');
     p.setAttribute('aria-label', 'Hoş geldin mesajı');
     var m = metin(ad, kod);
+    var numara = telDuzelt(tel);
+    var numaraYazi = telGosterim(tel);
     p.innerHTML =
       '<div class="hgm-kart">' +
       '<h3>' + (adDuzelt(ad) ? kac(adDuzelt(ad)) + ' onaylandı' : 'Öğretmen onaylandı') + '</h3>' +
-      '<p class="hgm-alt">Mesaj WhatsApp\'a yapıştırmaya hazır. ' +
-      'İstersen önce üzerinde değiştir.</p>' +
+      '<p class="hgm-alt">' +
+        (numara
+          ? ('WhatsApp doğrudan <b>' + kac(numaraYazi) + '</b> numarasına açılır. ' +
+             'İstersen önce metni değiştir.')
+          : ('Bu öğretmenin telefonu kayıtlı değil; WhatsApp açılınca kişiyi ' +
+             'sen seçeceksin. İstersen önce metni değiştir.')) +
+      '</p>' +
       '<textarea id="hgmMetin" spellcheck="false">' + kac(m) + '</textarea>' +
       '<div class="hgm-tus">' +
       '<button type="button" class="hgm-kopya" onclick="KidefHosgeldin.kopyala(this)">Kopyala</button>' +
-      '<a class="hgm-wa" href="https://wa.me/?text=" target="_blank" rel="noopener"' +
-      ' onclick="return KidefHosgeldin.waAc(this)">WhatsApp\'ta aç</a>' +
+      '<a class="hgm-wa" href="https://wa.me/' + numara + '" target="_blank" rel="noopener"' +
+      ' data-tel="' + numara + '"' +
+      ' onclick="return KidefHosgeldin.waAc(this)">' +
+      (numara ? 'WhatsApp\'tan gönder' : 'WhatsApp\'ta aç') + '</a>' +
       '<button type="button" class="hgm-kapat" onclick="KidefHosgeldin.kapat()">Kapat</button>' +
       '</div></div>';
     p.addEventListener('click', function (e) { if (e.target === p) kapat(); });
@@ -169,11 +209,13 @@
      değiştirilmiş hâli gider. */
   function waAc(a) {
     var t = document.getElementById('hgmMetin');
-    a.href = 'https://wa.me/?text=' + encodeURIComponent(t ? t.value : '');
+    var num = (a && a.getAttribute('data-tel')) || '';
+    a.href = 'https://wa.me/' + num + '?text=' + encodeURIComponent(t ? t.value : '');
     return true;
   }
 
   window.KidefHosgeldin = {
-    goster: goster, kapat: kapat, kopyala: kopyala, waAc: waAc, metin: metin
+    goster: goster, kapat: kapat, kopyala: kopyala, waAc: waAc, metin: metin,
+    telDuzelt: telDuzelt, telGosterim: telGosterim
   };
 })();

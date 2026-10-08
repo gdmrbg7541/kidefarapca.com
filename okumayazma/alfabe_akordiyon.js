@@ -132,6 +132,14 @@
     function yanlisSes() {
         if (typeof window.playWrong === 'function') { try { window.playWrong(); } catch (e) {} }
     }
+    /* 3-2-1 geri sayımı: her sayıda bir tık, sıfırda başlangıç sesi. */
+    function sayimSes(n) {
+        if (typeof window.playCountdown === 'function') { try { window.playCountdown(n); } catch (e) {} }
+        else tik();
+    }
+    function baslaSes() {
+        if (typeof window.playStart === 'function') { try { window.playStart(); } catch (e) {} }
+    }
     function S() { return window.AlfabeSinav; }
     function karistir(a) {
         var i, j, t;
@@ -620,12 +628,12 @@
     function geriSay(bit) {
         var n = 3;
         var adim = function () {
-            if (n <= 0) { perdeKapat(); if (bit) bit(); return; }
+            if (n <= 0) { perdeKapat(); baslaSes(); if (bit) bit(); return; }
             perdeAc('<span class="ak-sayi">' + n + '</span>', 'sayim');
             /* Her sayıda animasyon baştan oynasın diye yeniden akış. */
             var e = katman.querySelector('.ak-sayi');
             if (e) { e.classList.remove('oyna'); void e.offsetWidth; e.classList.add('oyna'); }
-            tik();
+            sayimSes(n);
             n--;
             zamanKur(adim, GERI_SAY_MS);
         };
@@ -702,11 +710,15 @@
         aktif.cevapli = true;
         var secilen = s.siklar[+dugme.getAttribute('data-i')];
         var hepsi = sahne.querySelectorAll('.as-sik');
-        for (var j = 0; j < hepsi.length; j++) {
-            hepsi[j].disabled = true;
-            if (s.siklar[j].dogru) hepsi[j].classList.add('as-dogru');
-        }
-        if (!secilen.dogru) dugme.classList.add('as-yanlis');
+        /* CEVAP GÖSTERİLMİYOR (08.10.2026) — öğretmen: "kendini dene-oku
+           kısmında cevapları göster olmasın."
+           Eskiden yanlış cevaplayınca doğru şık da yeşile dönüyordu;
+           çocuk düşünmeden önce cevabı görüyor, aynı soru bir daha
+           çıktığında da ezberden işaretliyordu. Artık yalnız SEÇİLEN şık
+           renklenir: doğruysa yeşil, yanlışsa kırmızı. Doğru şık
+           açılmıyor — tekrar denemek anlamlı kalsın. */
+        for (var j = 0; j < hepsi.length; j++) hepsi[j].disabled = true;
+        dugme.classList.add(secilen.dogru ? 'as-dogru' : 'as-yanlis');
         if (secilen.dogru) { aktif.dogru++; dogruSes(); } else { yanlisSes(); }
         bildir(sahne, secilen.dogru ? 'iyi' : 'kotu');
         ileriAc(s);
@@ -1056,9 +1068,24 @@
             '.ak-sonoyayr{font-size:clamp(11px,1.8vh,20px);color:#7b8b97}',
 
             /* ---- geri bildirim + düğmeler ---- */
+            /* 08.10.2026 — öğretmen: "şıklar ve altındaki konteynır tam
+               örtüşmüyor". Şık ızgarası min(1600px,96vw) genişliğindeydi,
+               altındaki geri bildirim ve düğme satırı ise içeriği kadar
+               daralıyordu; kenarlar tutmuyordu. İkisi de aynı genişliği
+               alıyor, böylece blok tek bir sütun gibi duruyor. */
             '.ak-bildirim{min-height:1.4em;text-align:center;flex:none;',
+            '  width:min(1600px,96vw);max-width:100%;',
             '  font-size:clamp(15px,2.6vh,32px)}',
-            '.ak-alt{display:flex;gap:1.2rem;justify-content:center;flex:none;flex-wrap:wrap}',
+            '.ak-alt{display:flex;gap:1.2rem;justify-content:center;flex:none;flex-wrap:wrap;',
+            '  width:min(1600px,96vw);max-width:100%}',
+            /* Şık yazısı kutunun TAM ORTASINDA: harf rozeti akışta durunca
+               yazıyı sağa itiyor, kutuyla ortası tutmuyordu. Rozet artık
+               sol kenara mutlak konumla oturuyor. */
+            '#ak-tam .as-sik{position:relative}',
+            '#ak-tam .as-mark{position:absolute;left:1vw;top:50%;',
+            '  transform:translateY(-50%);margin:0}',
+            '#ak-tam .as-ic{flex:1 1 auto;width:100%;',
+            '  padding-inline:clamp(42px,5vw,96px)}',
             '.ak-t{font-family:inherit;font-size:clamp(16px,2.6vh,30px);',
             '  padding:1vh 2.4vw;border-radius:999px;border:2px solid #16A085;',
             '  background:#16A085;color:#fff;cursor:pointer}',

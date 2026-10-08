@@ -98,13 +98,32 @@ const harfGrup = {
 let audioCtx;
 function initAudio() {
     if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        try {
+            const C = window.AudioContext || window.webkitAudioContext;
+            if (!C) return null;                 /* ses desteklemeyen tarayıcı */
+            audioCtx = new C();
+        } catch (e) { return null; }
     }
+    return audioCtx;
 }
 
+/* SES KİLİDİNİ İLK DOKUNUŞTA AÇ (08.10.2026) — tarayıcılar sesi ancak
+   kullanıcı etkileşiminden sonra çalıyor. Sayfa açılır açılmaz bir kez
+   dinleyici kurulur; ilk dokunuş/tuş AudioContext'i uyandırır, böylece
+   ilk "tık" sesi de yutulmaz. */
+(function sesKilidi() {
+    const ac = function () {
+        const c = initAudio();
+        if (c && c.state === 'suspended') { try { c.resume(); } catch (e) { } }
+    };
+    ['pointerdown', 'touchstart', 'keydown'].forEach(function (t) {
+        document.addEventListener(t, ac, { once: true, passive: true, capture: true });
+    });
+})();
+
 function playSineTone(freq1, freq2, duration) {
-    initAudio();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (!initAudio()) return;
+    if (audioCtx.state === 'suspended') { try { audioCtx.resume(); } catch (e) { } }
     
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -140,6 +159,32 @@ const playWrong = () => {
     playSineTone(250, null, 0.15); // Kalın bip
     setTimeout(() => playSineTone(200, null, 0.25), 150); // Daha kalın bip
 };
+
+/* GERİ SAYIM: 3-2-1 giderek tizleşir, "başla"da kısa bir çıkış sesi. */
+const playCountdown = (n) => {
+    const hz = (n >= 3) ? 520 : (n === 2 ? 620 : 740);
+    playSineTone(hz, null, 0.12);
+};
+const playStart = () => {
+    playSineTone(660, null, 0.10);
+    setTimeout(() => playSineTone(880, null, 0.22), 90);
+};
+
+/* ===== SESLER PENCEREYE AÇILIYOR (08.10.2026) =====================
+   Öğretmen: "alfabe.html deki tüm etkinliklerde dokunma sesi, doğru
+   yanlış sesi, geri sayım sesi vb olsun, şu an çalışmıyor."
+   Sebebi: bu fonksiyonlar `const` ile tanımlı. const/let üst düzeyde
+   GLOBAL SÖZCÜKSEL kapsama girer, window'un ÖZELLİĞİ olmaz. Sekme
+   dosyaları (alfabe_sinav.js, alfabe_akordiyon.js, alfabe_birlestir.js)
+   ise sesi `typeof window.playClick === 'function'` diye arıyordu; bu
+   kontrol her zaman false dönüyor, hiçbir ses çıkmıyordu. Adları
+   pencereye açınca üç dosya da sesi buluyor. */
+window.playSineTone = playSineTone;
+window.playClick    = playClick;
+window.playCorrect  = playCorrect;
+window.playWrong    = playWrong;
+window.playCountdown = playCountdown;
+window.playStart    = playStart;
 // -----------------------------------------------------------------
 
 window.handleFlipBox = function(el) {

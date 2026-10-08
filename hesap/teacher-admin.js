@@ -1012,7 +1012,9 @@ function loadOgretmenOnaylari() {
         _onayBekleyen = {};
         liste.forEach(function (o) {
             var ad = o.name || o.email || o._id;
-            _onayBekleyen[o._id] = { ad: (o.name || ''), email: (o.email || '') };
+            /* TELEFON DA TAŞINIYOR (08.10.2026) — hoş geldin mesajı
+               doğrudan öğretmenin numarasına açılabilsin diye. */
+            _onayBekleyen[o._id] = { ad: (o.name || ''), email: (o.email || ''), tel: (o.phone || '') };
             html += '<div style="display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #E9EEF5; border-radius:10px; padding:11px 14px; margin-bottom:8px; flex-wrap:wrap;">' +
                       '<div style="flex:1; min-width:180px;">' +
                         '<strong style="display:block; color:#2c3e50;">' + ad + '</strong>' +
@@ -1048,7 +1050,8 @@ function paylasilacakMesaj(uid, bilgi) {
         if (!window.KidefHosgeldin) return;
         var kod = '';
         try { if (window.OH && OH.koduTuret) kod = OH.koduTuret(uid) || ''; } catch (e) { kod = ''; }
-        window.KidefHosgeldin.goster((bilgi && bilgi.ad) || '', kod);
+        window.KidefHosgeldin.goster((bilgi && bilgi.ad) || '', kod,
+                                    (bilgi && bilgi.tel) || '');
     } catch (e) {
         try { console.warn('Paylaşılacak mesaj açılamadı:', e); } catch (x) {}
     }
@@ -1148,7 +1151,7 @@ function renderAdminTeacherList() {
             liste.forEach(function (o) {
                 var uid = o._id;
                 var ad = o.name && o.name !== 'Belirtilmedi' ? o.name : '';
-                _adminOgretmenler[uid] = { ad: ad, email: o.email || '' };
+                _adminOgretmenler[uid] = { ad: ad, email: o.email || '', tel: o.phone || '' };
 
                 var onay = o.ogretmenOnay;
                 if (onay === 'onayli') sayac.onayli++;

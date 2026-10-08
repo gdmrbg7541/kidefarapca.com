@@ -7766,3 +7766,74 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
                                 iki satıra sarmıyor.
                                 v11
   testkapismasi.html            testkapismasi.css?v=11
+
+08.10.2026 — HOŞ GELDİN MESAJI: KOD BİÇİMİ + DOĞRUDAN NUMARAYA WHATSAPP
+  sistem/hosgeldinmesaj.js      - Mesajdaki kod satırı "...." yerine
+                                  "TCH-...." (öğretmen: "sadece TCH.....
+                                  gibi olsun"). Kodun kendisi hâlâ
+                                  yazılmıyor; yalnız biçimi tanınıyor.
+                                - WhatsApp artık ÖĞRETMENİN KENDİ
+                                  NUMARASINA açılıyor: wa.me/90XXXXXXXXXX
+                                  ?text=... Numara yoksa ya da cep
+                                  numarası değilse (sabit hat, eksik
+                                  yazım) eskisi gibi kişi seçtiren hâline
+                                  düşer — yanlış kişiye mesaj açılmasın.
+                                  telDuzelt() şu yazımların hepsini tanır:
+                                  05551234567 · 5551234567 · +90 555 123 45 67
+                                  90 555… · 090 555… · 0090 555… ·
+                                  +90(555) 123-45-67
+                                  Kartta hangi numaraya gideceği yazıyor.
+                                  v4
+  hesap/teacher-admin.js        _onayBekleyen ve _adminOgretmenler
+                                kayıtlarına telefon eklendi; onay sonrası
+                                mesaja geçiriliyor. v20261008a
+  index.html                    hosgeldinmesaj v4, teacher-admin v20261008a
+
+08.10.2026 — KENDİNİ DENE: CEVAP AÇILMIYOR + HİZA
+  okumayazma/alfabe_akordiyon.js
+                                - CEVAP GÖSTERİLMİYOR (öğretmen: "kendini
+                                  dene-oku kısmında cevapları göster
+                                  olmasın"): yanlış cevaplayınca doğru şık
+                                  da yeşile dönüyordu, çocuk cevabı
+                                  görüyordu. Artık yalnız SEÇİLEN şık
+                                  renklenir — doğruysa yeşil, yanlışsa
+                                  kırmızı.
+                                - HİZA (öğretmen: "şıklar ve altındaki
+                                  konteynır tam örtüşmüyor"): şık ızgarası
+                                  min(1600px,96vw) idi, altındaki geri
+                                  bildirim ve düğme satırı içeriği kadar
+                                  daralıyordu. İkisi de aynı genişlikte;
+                                  kenarlar artık birebir tutuyor.
+                                - Şık yazısı kutunun tam ortasında: A/B/C/D
+                                  rozeti akışta durup yazıyı sağa itiyordu,
+                                  rozet sol kenara mutlak konumlandı.
+                                  v13
+  alfabe.html                   alfabe_akordiyon.js?v=13
+
+08.10.2026 — ALFABE SEKMELERİNDE SESLER ÇALIŞMIYORDU
+  okumayazma/alfabe.js          SEBEP: playClick / playCorrect / playWrong
+                                `const` ile tanımlıydı. const ve let üst
+                                düzeyde GLOBAL SÖZCÜKSEL kapsama girer,
+                                window'un ÖZELLİĞİ OLMAZ. Sekme dosyaları
+                                (alfabe_sinav.js, alfabe_akordiyon.js,
+                                alfabe_birlestir.js) sesi
+                                `typeof window.playClick === 'function'`
+                                diye arıyordu; bu kontrol her zaman false
+                                dönüyor, hiçbir ses çıkmıyordu. Adlar
+                                pencereye açıldı.
+                                Eklenenler: playCountdown(n) — 3-2-1
+                                giderek tizleşir; playStart() — sayım
+                                bitince kısa çıkış sesi.
+                                Ayrıca: AudioContext ilk dokunuşta/tuşta
+                                uyandırılıyor (tarayıcılar sesi ancak
+                                etkileşimden sonra çalıyor; ilk "tık"
+                                yutulmasın). Ses desteklemeyen tarayıcıda
+                                sessizce geçer, hata vermez. v36
+  okumayazma/alfabe_akordiyon.js Geri sayımda her sayıda tık yerine
+                                sayimSes(n), sıfırda baslaSes(). v14
+  alfabe.html                   alfabe.js?v=36, alfabe_akordiyon.js?v=14
+
+  ÖLÇÜLDÜ (osilatör sayarak):
+    playClick 1 · playCorrect 3 · playWrong 2 · geri sayım 3+2
+    Harf Birleştirme "İleri" 1 · sıra numarası 1
+    Sınav başla+şık 2 · Kendini Dene şık 3 (tık + sonuç)
