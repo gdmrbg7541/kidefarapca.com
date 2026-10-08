@@ -34,7 +34,11 @@ INDEKS = os.path.join(KOK, 'indeks.html')
 HARIC = {'indeks.html', 'index.html', 'sozluk_veri_giris.html',
          '_yolkontrol.html', 'surekontrol.html'}
 
-ATLA_KLASOR = {'.git', 'node_modules', '_kidef_tmp', '_to_delete', 'functions'}
+# 08.10.2026 — _kaynak (yedekler, site dışı kopyalar, ortak kaynak) ölçüme
+# giriyordu: 275 HTML ve milyonlarca satır oradan geliyordu. Vitrin yalnız
+# YAYINDAKİ siteyi anlatmalı, bu yüzden yedek/arşiv klasörleri dışarıda.
+ATLA_KLASOR = {'.git', 'node_modules', '_kidef_tmp', '_to_delete', 'functions',
+               '_kaynak', 'yedekler', '_yedek', 'arsiv', '_arsiv', 'site-disi'}
 # Sayfa sayımına girmeyen ek klasörler: dış kaynaktan alınmış kopyalar ve
 # tek başına açılmayan yardımcı sayfalar.
 ATLA_SAYFA_KLASOR = {'alfabe github', 'flipbooks'}

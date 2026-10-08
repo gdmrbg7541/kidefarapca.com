@@ -8097,3 +8097,41 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
   - Alttaki renk aciklamasi (kirmizi=Kameri, mavi=Semsi) cizgi almiyor,
     yanindaki bos cevap kutusu da kalkti (.notSatir).
   - Olculdu: iki alistirma sayfasinda da tasma 0, satir yuksekligi 122 px.
+
+--- 2026-10-08 (4) · Cizgi katmani, hikaye kumandasi, ogrenci kapisi, vitrin ---
+* sunum html/harfitarif.html
+  - Yazi cizgisi artik HARFLERIN ARKASINDA: kutular z-index:0 ile kendi
+    katman baglamini kuruyor, cizgi (::before) z-index:-1 ile metnin
+    altina dusuyor ama kutunun zemininin ustunde kaliyor. Kuyruklar
+    cizgiyi keserken harf ustte gorunuyor.
+* dilbilgisi/tamlamavecumleler.css + .js (?v=20261008a), tamlamavecumleler.html
+  Ogretmen: "hikayenin sonunda sonlara gec tusu belirsin, hikayede ileri
+  geri oklari en sagda olsun."
+  - Kumanda dizilimi: noktalar solda · bosluk · Sonlara gec · geri · ileri.
+    Oklar artik EN SAGDA (flex order + noktalarda margin-inline-end:auto).
+  - "Sonlara gec" tusu hikaye boyunca gizli; SON adimda yumusak bir
+    animasyonla beliriyor (sahnede data-son="1"). Eskiden hep gorunuyor ve
+    son adimda metni degisiyordu; artik tek metin: "Sonlara gec".
+* sistem/siniflarim.js (?v=17)
+  Ogretmen: "ogrenciler icin ASLA siniflarim kategorisi cikmasin."
+  Iki acik vardi:
+  1) Rol onbellegi HESAPSIZ okunuyordu. Ayni tarayicida daha once bir
+     ogretmen giris yaptiysa, sonra giren OGRENCI icin onbellekteki
+     'teacher' hala gecerli sayiliyor ve kategori aciliyordu. Artik
+     onbellek o anki hesabin uid'siyle okunuyor.
+  2) Ogretmen olmayan hesapta bos "kurum onizlemesi" yine de ciziliyordu.
+     Artik oturum ACIK ama ogretmen degilse bolum tumden kapali
+     (display:none). Giris YAPMAMIS ziyaretcide davet onizlemesi duruyor.
+  - Rol asenkron coezuldugu icin nabiz, ogretmen oldugu anlasilinca
+     bolumu geri aciyor.
+  - Olculdu: ogrenci gizli · ogretmen gorunur · rolu cozulmemis gizli ·
+     girissiz ziyaretci gorunur · misafir gizli.
+* olcum.py + indeks.html
+  - olcum.py'nin kapsamindan _kaynak (yedekler, site disi kopyalar) cikti:
+    275 HTML ve milyonlarca satir oradan geliyordu. Vitrin yalniz
+    YAYINDAKI siteyi anlatiyor.
+  - Vitrin sayilari yenilendi: 285 sayfa · %90 etkilesimli · %74 gorsel
+    destekli · %40 cok kisili; 562 kok, 5352 turetilmis kelime, 2868
+    cekimli fiil, 4965 ornek cumle, 781 sozluk kelimesi, 40 tematik liste,
+    183 semantik not; 11.805 etkilesim noktasi, 4007 svg/tuval, 2770
+    animasyon, 1.205.696 satir kod.

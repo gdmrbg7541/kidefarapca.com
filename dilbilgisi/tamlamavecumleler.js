@@ -4661,8 +4661,11 @@
       b.classList.toggle('aktif', s2);
       b.setAttribute('aria-selected', s2 ? 'true' : 'false');
     });
-    /* Son adımda "Tahlile geç" tuşu asıl davete dönüşür. */
-    if (atla) atla.textContent = (n === ADET) ? 'Sonlara başla \u276F' : 'Sonlara geç \u276F';
+    /* "SONLARA GEÇ" YALNIZ SON ADIMDA (08.10.2026) — öğretmen:
+       "hikâyenin sonunda sonlara geç tuşu belirsin". Tuş hikâye boyunca
+       gizli; son adıma gelince beliriyor (görünürlüğü CSS'te data-son). */
+    sah.setAttribute('data-son', (n === ADET) ? '1' : '0');
+    if (atla) atla.textContent = 'Sonlara geç \u276F';
     /* İki okunuş yalnız 1. adımda dönüyor; başka adımda sayaç boşa işlemesin. */
     if (n === 1) { sah.setAttribute('data-oku', '1'); okuBasla(); } else okuDur();
   }

@@ -3103,10 +3103,19 @@ body.tc-irab-yakin{ overflow-x:hidden; }
 
 
 /* --- kumanda --- */
+/* 08.10.2026 — öğretmen: "hikâyenin sonunda 'sonlara geç' tuşu belirsin,
+   hikâyede ileri geri okları en sağda olsun."
+   Dizilim: noktalar solda · (boşluk) · Sonlara geç · geri · ileri.
+   Oklar en sağda, "Sonlara geç" yalnız SON adımda beliriyor — hikâye
+   bitmeden çıkışa davet etmiyor, bitince de aramaya gerek kalmıyor. */
 .tc-hik .hik-kum{
   display:flex; align-items:center; gap:10px; flex-wrap:wrap;
   margin-top:clamp(8px,1.2vh,14px); padding-top:10px; border-top:1px dashed #E3D6BC;
 }
+.tc-hik .hik-puan{ order:1; margin-inline-end:auto; }
+.tc-hik .hik-atla{ order:2; }
+.tc-hik #tcHikGeri{ order:3; }
+.tc-hik #tcHikIleri{ order:4; }
 .tc-hik .hik-tus{
   width:38px; height:38px; flex:0 0 auto; border-radius:50%;
   border:2px solid #E3D6BC; background:#fff; color:#7A2B12; cursor:pointer;
@@ -3128,10 +3137,17 @@ body.tc-irab-yakin{ overflow-x:hidden; }
 }
 .tc-hik .hik-p1.aktif{ background:var(--hik-al); border-color:var(--hik-al); transform:scale(1.25); }
 .tc-hik .hik-atla{
-  margin-inline-start:auto; padding:8px 18px; border-radius:999px; border:0; cursor:pointer;
+  display:none; padding:8px 18px; border-radius:999px; border:0; cursor:pointer;
   background:var(--hik-ys); color:#fff; font-family:inherit; font-weight:800;
   font-size:clamp(.78rem,1.8vh,.96rem); transition:filter .16s, transform .16s;
 }
+/* Yalnız son adımda: yumuşakça belirir, gözden kaçmaz. */
+.tc-hik[data-son="1"] .hik-atla{ display:inline-flex; align-items:center; gap:6px;
+  animation:hikAtlaBelir .34s cubic-bezier(.22,.9,.3,1) both; }
+@keyframes hikAtlaBelir{ from{ opacity:0; transform:translateX(10px) scale(.94); }
+  to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){
+  .tc-hik[data-son="1"] .hik-atla{ animation:none; } }
 .tc-hik .hik-atla:hover{ filter:brightness(1.07); transform:translateY(-1px); }
 
 /* Hareket duyarlılığı: süsleme animasyonları durur, geçişler kalır. */

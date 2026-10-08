@@ -53,21 +53,59 @@
             return !u && !appState.userRole;
         } catch (e) { return false; }
     }
+    /* ÖĞRENCİYE ASLA GÖRÜNMEZ (08.10.2026) — öğretmen: "öğrenciler için
+       asla sınıflarım kategorisi çıkmasın."
+       İki açık vardı:
+       1) Rol önbelleği hesapsız okunuyordu. Aynı tarayıcıda daha önce bir
+          öğretmen giriş yaptıysa, sonra giren ÖĞRENCİ için önbellekteki
+          'teacher' hâlâ geçerli sayılıyor ve kategori açılıyordu. Artık
+          önbellek O ANKİ hesabın kimliğiyle okunuyor; başka hesabın izi
+          işe yaramıyor.
+       2) Öğrenci rolü bilinse bile yalnız "öğretmen mi" diye bakılıyordu.
+          Artık rol 'student' ise her şeyden önce KAPALI — salt görünüm
+          dâhil hiçbir yol kategoriyi açamıyor. */
+    function suankiUid() {
+        try {
+            var u = (window.firebase && firebase.auth && firebase.auth().currentUser) || null;
+            return (u && u.uid) || '';
+        } catch (e) { return ''; }
+    }
+    function ogrenciMi() {
+        try {
+            var r = (typeof appState !== 'undefined' && appState.userRole) || '';
+            if (r === 'student' || r === 'parent') return true;
+            var uid = suankiUid();
+            if (uid && window.KidefRol && typeof window.KidefRol.onbellekOku === 'function') {
+                var o = window.KidefRol.onbellekOku(uid);
+                if (o && o.rol && o.rol !== 'teacher' && o.rol !== 'admin') return true;
+            }
+        } catch (e) { }
+        return false;
+    }
     function ogretmenMi() {
+        if (ogrenciMi()) return false;            /* öğrenci: kesin kapalı */
         try {
             var r = (typeof appState !== 'undefined' && appState.userRole) || '';
             if (r === 'teacher' || r === 'admin') return true;
             if (window.KidefRol && typeof window.KidefRol.ogretmenMi === 'function') {
                 if (window.KidefRol.ogretmenMi(r)) return true;
                 if (typeof window.KidefRol.onbellekOku === 'function') {
-                    var o = window.KidefRol.onbellekOku();
-                    if (o && window.KidefRol.ogretmenMi(o)) return true;
+                    /* Önbellek YALNIZ o anki hesap içindir (uid ile okunur).
+                       Oturum yokken izin sahibi belirsiz: önbelleğe bakılmaz. */
+                    var uid = suankiUid();
+                    if (uid) {
+                        var o = window.KidefRol.onbellekOku(uid);
+                        if (o && window.KidefRol.ogretmenMi(o)) return true;
+                    }
                 }
             }
         } catch (e) { }
         return false;
     }
-    function gorunurMu() { return !misafirMi() && ogretmenMi(); }
+    function gorunurMu() {
+        if (ogrenciMi()) return false;
+        return !misafirMi() && ogretmenMi();
+    }
 
     /* ------------------------------------------- ÇIKIŞTAN SONRA GÖRÜNÜM
        (07.10.2026) Öğretmen: "öğretmen giriş yapınca sınıflarım kısmında
@@ -632,6 +670,19 @@
     function ciz() {
         var bolum = kabukKur();
         if (!bolum) return;
+        /* ÖĞRENCİDE BÖLÜM HİÇ YOK (08.10.2026) — öğretmen: "öğrenciler için
+           ASLA sınıflarım kategorisi çıkmasın". Boş kurum önizlemesi bile
+           görünmesin diye bölüm tümden kapatılıyor. */
+        /* Oturum AÇIK ama öğretmen değilse de kapalı: rolü henüz
+           çözülmemiş bir hesaba davet önizlemesi bile gösterilmez.
+           Giriş YAPMAMIŞ ziyaretçide önizleme eskisi gibi duruyor. */
+        if (ogrenciMi() || (oturumVarMi() && !ogretmenMi())) {
+            bolum.classList.remove('gor', 'sn-salt');
+            try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = false; } catch (e) { }
+            bolum.__govde = null;
+            gosterildi = false;
+            return;
+        }
         if (!gorunurMu()) {
             /* SALT GÖRÜNÜM (07.10.2026): çıkış yapılmış ama sınıflar
                tarayıcıda duruyor — gerçek paneli göster, yazma kapalı. */
@@ -853,6 +904,12 @@
         try {
             cikisIzle();                          /* firebase geç gelirse */
             isimYaz();                            /* ad asenkron geliyor */
+            /* Rol asenkron çözülüyor: öğretmen olduğu anlaşılınca bölüm
+               geri gelsin (girişten sonra kısa süre kapalı kalabiliyor). */
+            try {
+                var _b = document.getElementById(BOLUM_ID);
+                if (_b && !_b.classList.contains('gor') && gorunurMu()) ciz();
+            } catch (e) { }
             if (gosterildi && !gorunurMu()) gizle();
         } catch (e) { }
     }, 1200);
