@@ -2126,9 +2126,26 @@ body.tc-irab-yakin{ overflow-x:hidden; }
 .tc-serit.acilmis .tc-sr:not(.aktif){ padding:8px 12px; opacity:.58; }
 .tc-serit.acilmis .tc-sr:not(.aktif) .tc-sr-tam{ display:none; }
 .tc-serit.acilmis .tc-sr:not(.aktif) .tc-sr-kis{ display:inline; }
+/* ŞERİT BİR YOL (08.10.2026) — öğretmen: "Sonlar ve 1-5 kısmı
+   Başlarken'in devamı olduğunu gösteren bi tasarım yapalım."
+   Üst pil yolun başı, araya kısa bir bağlayıcı çizgi, sonra duraklar.
+   Durakta isek kırmızı O duraktadır; üst pil içi boş bölüm adına döner
+   (bkz. .tc-sr.aktif.tc-sr-ust) — iki parça tek bir çizgi gibi okunur. */
 .tc-serit-alt{
-  flex:0 0 auto; display:flex; align-items:center; gap:5px;
-  padding:4px 7px; border-radius:999px; background:#F2F4F8;
+  position:relative; flex:0 0 auto; display:flex; align-items:center; gap:5px;
+  padding:4px 7px 4px 15px; border-radius:999px; background:#F2F4F8;
+}
+.tc-serit-alt::before{
+  content:""; position:absolute; left:3px; top:50%; width:9px; height:2px;
+  transform:translateY(-50%); border-radius:2px; background:var(--cerceve);
+}
+.tc-serit-alt.tc-alt-burada{
+  background:linear-gradient(90deg, rgba(192,0,0,.13) 0%, #F2F4F8 38%);
+}
+.tc-serit-alt.tc-alt-burada::before{ background:var(--kirmizi); }
+/* Alt durakta isek üst pil dolu kırmızı olmaz: vurgu durağın kendisinde. */
+.tc-sr.aktif.tc-sr-ust{
+  background:#fff; color:var(--kirmizi); border-color:var(--kirmizi);
 }
 .tc-serit-alt[hidden]{ display:none !important; }
 .tc-sra{
@@ -2138,7 +2155,8 @@ body.tc-irab-yakin{ overflow-x:hidden; }
   transition:background .15s, color .15s;
 }
 .tc-sra:hover{ color:var(--kirmizi); }
-.tc-sra.aktif{ background:#fff; color:#1E2A38; box-shadow:0 1px 3px rgba(15,23,42,.16); }
+.tc-sra.aktif{ background:var(--kirmizi); color:#fff;
+  box-shadow:0 2px 7px rgba(192,0,0,.30); }
 /* Girişte biten adım: küçük bir tik, nerede kalındığı bir bakışta görünsün. */
 .tc-sra.tamam::after{ content:' ✓'; color:#12A05F; font-weight:900; }
 .tc-sra:focus-visible{ outline:2px solid var(--kirmizi); outline-offset:1px; }
@@ -3113,9 +3131,15 @@ body.tc-irab-yakin{ overflow-x:hidden; }
   margin-top:clamp(8px,1.2vh,14px); padding-top:10px; border-top:1px dashed #E3D6BC;
 }
 .tc-hik .hik-puan{ order:1; margin-inline-end:auto; }
-.tc-hik .hik-atla{ order:2; }
-.tc-hik #tcHikGeri{ order:3; }
-.tc-hik #tcHikIleri{ order:4; }
+.tc-hik #tcHikGeri{ order:2; }
+.tc-hik #tcHikIleri{ order:3; }
+/* SON ADIMDA İLERİ OKU "DEVAM" TUŞUDUR (08.10.2026): ayrı bir "Sonlara
+   geç" tuşu yok — sağ ok doğrudan Sonlar'a götürüyor, bunu da dolu
+   kırmızı hâli söylüyor. */
+.tc-hik[data-son="1"] #tcHikIleri{
+  background:var(--hik-ys); border-color:var(--hik-ys); color:#fff;
+  box-shadow:0 2px 10px rgba(0,0,0,.14); }
+.tc-hik[data-son="1"] #tcHikIleri:hover{ filter:brightness(1.08); background:var(--hik-ys); }
 .tc-hik .hik-tus{
   width:38px; height:38px; flex:0 0 auto; border-radius:50%;
   border:2px solid #E3D6BC; background:#fff; color:#7A2B12; cursor:pointer;
@@ -3136,18 +3160,7 @@ body.tc-irab-yakin{ overflow-x:hidden; }
   border:2px solid #D8C7A4; background:#fff; transition:background .2s, transform .2s, border-color .2s;
 }
 .tc-hik .hik-p1.aktif{ background:var(--hik-al); border-color:var(--hik-al); transform:scale(1.25); }
-.tc-hik .hik-atla{
-  display:none; padding:8px 18px; border-radius:999px; border:0; cursor:pointer;
-  background:var(--hik-ys); color:#fff; font-family:inherit; font-weight:800;
-  font-size:clamp(.78rem,1.8vh,.96rem); transition:filter .16s, transform .16s;
-}
-/* Yalnız son adımda: yumuşakça belirir, gözden kaçmaz. */
-.tc-hik[data-son="1"] .hik-atla{ display:inline-flex; align-items:center; gap:6px;
-  animation:hikAtlaBelir .34s cubic-bezier(.22,.9,.3,1) both; }
-@keyframes hikAtlaBelir{ from{ opacity:0; transform:translateX(10px) scale(.94); }
-  to{ opacity:1; transform:none; } }
-@media (prefers-reduced-motion:reduce){
-  .tc-hik[data-son="1"] .hik-atla{ animation:none; } }
+/* (Ayrı "Sonlara geç" tuşu kaldırıldı — sağ ok devam tuşu.) */
 .tc-hik .hik-atla:hover{ filter:brightness(1.07); transform:translateY(-1px); }
 
 /* Hareket duyarlılığı: süsleme animasyonları durur, geçişler kalır. */

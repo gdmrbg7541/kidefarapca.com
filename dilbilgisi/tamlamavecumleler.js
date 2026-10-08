@@ -659,6 +659,20 @@
       if (pil && ALT[k]) pil.setAttribute('aria-expanded', goster ? 'true' : 'false');
     });
     if (serit) serit.classList.toggle('acilmis', acilmis);
+    /* KIRMIZI VURGU NEREDE? (08.10.2026) — öğretmen: "sonlara geçerken
+       kırmızı vurgu sonlarda olsun, Başlarken kısmında değil" ve "Sonlar
+       ile 1-5, Başlarken'in devamı olduğunu gösteren bir tasarım olsun."
+       Alt duraklardan biri seçiliyse vurgu ONDA; üst pil o sırada içi boş
+       bir "bölüm adı"na döner ve yanındaki gruba bir bağlayıcıyla
+       bağlanır — şerit tek bir yol gibi okunur. */
+    [].forEach.call(seritRay.querySelectorAll('.tc-sr'), function (pil) {
+      var y = pil.nextElementSibling;
+      var altVar = !!(y && y.classList && y.classList.contains('tc-serit-alt') &&
+                      !y.hidden && y.querySelector('.tc-sra.aktif'));
+      pil.classList.toggle('tc-sr-ust', altVar);
+      if (y && y.classList && y.classList.contains('tc-serit-alt'))
+        y.classList.toggle('tc-alt-burada', altVar);
+    });
     seritKaydir(seritRay.querySelector('.tc-sr.aktif'));
   }
   if (seritRay) {
@@ -4624,7 +4638,6 @@
   var geri = document.getElementById('tcHikGeri');
   var ileri = document.getElementById('tcHikIleri');
   var puan = document.getElementById('tcHikPuan');
-  var atla = document.getElementById('tcHikAtla');
   var n = 1;
 
   /* Noktalar: adım sayısı kadar, tıklanabilir. */
@@ -4650,8 +4663,15 @@
      çalışır: son adımdan ileri başa, ilk adımdan geri sona gider. */
   function git(k) {
     if (ADET < 1) return;
+    /* SON ADIMDAN SONRASI DOĞRUDAN "SONLAR" (08.10.2026) — öğretmen:
+       "sonlara geç tuşuna gerek yok, direkt geçsin; zaten devamı, ille
+       ayırmanın gereği yok." İleri oku son adımda hikâyeyi başa
+       sarmıyor, İsmin sonları görünümünü açıyor. */
+    if (k > ADET) {
+      if (window.tcTahlilGorunum) { window.tcTahlilGorunum('kesif'); return; }
+      k = 1;
+    }
     if (k < 1) k = ADET;
-    if (k > ADET) k = 1;
     n = k;
     sah.setAttribute('data-h', String(n));
     if (geri)  geri.disabled  = false;
@@ -4661,11 +4681,13 @@
       b.classList.toggle('aktif', s2);
       b.setAttribute('aria-selected', s2 ? 'true' : 'false');
     });
-    /* "SONLARA GEÇ" YALNIZ SON ADIMDA (08.10.2026) — öğretmen:
-       "hikâyenin sonunda sonlara geç tuşu belirsin". Tuş hikâye boyunca
-       gizli; son adıma gelince beliriyor (görünürlüğü CSS'te data-son). */
+    /* Son adımda ileri oku "Sonlara geç" olur: ayrı bir tuş yok,
+       sağ ok devam tuşudur (data-son ile vurgusu da değişir). */
     sah.setAttribute('data-son', (n === ADET) ? '1' : '0');
-    if (atla) atla.textContent = 'Sonlara geç \u276F';
+    if (ileri) {
+      var et = (n === ADET) ? 'Sonlara geç' : 'Sonraki adım';
+      ileri.title = et; ileri.setAttribute('aria-label', et);
+    }
     /* İki okunuş yalnız 1. adımda dönüyor; başka adımda sayaç boşa işlemesin. */
     if (n === 1) { sah.setAttribute('data-oku', '1'); okuBasla(); } else okuDur();
   }
@@ -4734,10 +4756,6 @@
 
   /* "Tahlile geç": hikâyeyi bırakıp keşif/cümle kısmına kaydırır. */
   /* "Tahlile geç": kaydırmaz — bir sonraki SEKMEYİ açar. */
-  if (atla) atla.addEventListener('click', function () {
-    if (window.tcTahlilGorunum) window.tcTahlilGorunum('kesif');
-  });
-
   git(1);
   window.tcHikGit = git;
 })();

@@ -1295,6 +1295,10 @@ body.tamekran.seritli #dCikis{transform:translateY(calc(-1 * var(--seritY, 182px
   display:flex;flex-direction:column;gap:6px;text-align:left;border:0;font-family:inherit;
   transition:transform .18s, box-shadow .18s}
 .lkart:hover{transform:translateY(-5px);box-shadow:var(--golge2)}
+/* Dış sayfaya giden kart bir BAĞLANTI: altı çizili çıkmasın, rengi
+   kartın kendi yazı renginden gelsin (08.10.2026). */
+.lkart-dis{text-decoration:none;color:inherit}
+.lkart-dis:focus-visible{outline:3px solid var(--kirmizi);outline-offset:3px}
 .lkart .lust{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .lkart .lrozet{font-size:14px;color:#8A6412;background:#FDF1D9;border-radius:999px;padding:5px 11px}
 .lkart .lar{font-size:40px;font-weight:900;direction:rtl;color:var(--kahve)}
@@ -2179,31 +2183,35 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
           <p>Şemsî ve kamerî harfler, şedde ve cezim, tenvinin tek harekeye dönüşü, marife–nekra ayrımı.</p>
           <div class="lalt2"><span class="ladet">10 slayt · alıştırmalı</span><span class="lac">Aç ›</span></div>
           </button>
-          <button class="lkart" data-git="cogulirab">
-          <div class="lust"><span class="lrozet">🔬 İ'râb</span></div>
+          <!-- TAMLAMA VE CÜMLELER (08.10.2026) — öğretmen: "tamlama ve
+               cümleler kartını sunumlar içine de ekleyelim, iki yerden
+               ulaşılsın yani." Kart bir sunuma değil, kendi sayfasına
+               götürür; bu yüzden düğme değil BAĞLANTI. -->
+          <a class="lkart lkart-dis" href="../tamlamavecumleler.html" target="_blank" rel="noopener">
+          <div class="lust"><span class="lrozet">🧩 Tahlil</span></div>
           <span class="lsvg" aria-hidden="true"><svg viewBox="0 0 200 120">
             <rect class="lp-golge" x="18" y="10" width="164" height="86" rx="8"/>
             <rect class="lp-ekran" x="18" y="10" width="164" height="86" rx="8"/>
             <g class="lp-kayan">
-              <g class="lp-slayt s1"><rect x="30" y="22" width="60" height="7" rx="3.5" fill="#00A651"/>
+              <g class="lp-slayt s1"><rect x="30" y="22" width="60" height="7" rx="3.5" fill="#1F7A8C"/>
                 <rect x="30" y="36" width="120" height="5" rx="2.5" fill="#DCE3EB"/>
                 <rect x="30" y="48" width="96" height="5" rx="2.5" fill="#DCE3EB"/>
-                <text x="150" y="80" class="lp-ar" fill="#00A651">ـُونَ</text></g>
+                <text x="150" y="80" class="lp-ar" fill="#1F7A8C">&#1602;&#1614;&#1604;&#1614;&#1605;</text></g>
               <g class="lp-slayt s2"><rect x="30" y="22" width="40" height="7" rx="3.5" fill="#94A3B4"/>
                 <rect x="30" y="40" width="52" height="34" rx="5" fill="#EEF3F8"/>
                 <rect x="90" y="40" width="52" height="34" rx="5" fill="#EEF3F8"/>
-                <text x="56" y="64" class="lp-ar2" fill="#00A651">ـُونَ</text>
-                <text x="116" y="64" class="lp-ar2" fill="#94A3B4">؟</text></g>
+                <text x="56" y="64" class="lp-ar2" fill="#1F7A8C">&#1605;&#1615;&#1590;&#1614;&#1575;&#1601;</text>
+                <text x="116" y="64" class="lp-ar2" fill="#94A3B4">&#1567;</text></g>
             </g>
             <g class="lp-imlec"><circle cx="150" cy="88" r="4.5"/></g>
             <path class="lp-ayak" d="M92 96 h16 v10 h-16 Z"/>
             <rect class="lp-taban" x="62" y="106" width="76" height="6" rx="3"/>
             <g class="lp-isik"><path d="M100 96 L54 118 h92 Z"/></g>
           </svg></span>
-          <h3>Çoğul İsimlerin Merfu · Mansub · Mecrur Hâlleri</h3>
-          <p>Düzenli eril/dişil ve kırık çoğulda hareke ve harf değişimi, üç hâlin özet tablosu.</p>
-          <div class="lalt2"><span class="ladet">16 slayt · alıştırmalı</span><span class="lac">Aç ›</span></div>
-          </button>
+          <h3>Tamlama ve Cümleler</h3>
+          <p>İsim ve sıfat tamlaması, isim ve fiil cümlesi; i'râbın hikâyesi, ismin sonları ve beş cümlenin tahlili.</p>
+          <div class="lalt2"><span class="ladet">Tam ders · alıştırmalı</span><span class="lac">Aç ›</span></div>
+          </a>
           <button class="lkart" data-git="sayiisimleri">
           <div class="lust"><span class="lrozet">🧐 Sayı</span></div>
           <span class="lsvg" aria-hidden="true"><svg viewBox="0 0 200 120">
@@ -3204,562 +3212,8 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
 
   </div>
 
-  <div class="sunum" data-s="cogulirab" data-ad="Çoğul İsimlerin İ'râbı">
-<!-- ================= 1. KAPAK ================= -->
-  <section class="slayt" id="cg-s1" data-ad="Kapak">
-    <div class="kapakKart adim" data-g="1">
-      <h1><span class="mikro">🔬</span> Çoğul İsimlerin;<br>Merfu, Mansub ve Mecrur Halleri</h1>
-      <div class="altbaslik">Sayfa 95 · Arapça Dil Bilgisi</div>
-      <div class="rozetler">
-        <span class="rz">Düzenli Eril Çoğul</span>
-        <span class="rz">Düzenli Dişil Çoğul</span>
-        <span class="rz">Düzensiz (Teksir) Çoğul</span>
-      </div>
-      <div class="basla">Başlamak için → tuşuna bas</div>
-    </div>
-    <div class="imza">Kidef Arapça · kidefarapca.com</div>
-  </section>
-
-  <!-- ================= 3. HATIRLAYALIM ================= -->
-  <section class="slayt" data-ad="Hatırlayalım — Çoğul İsimler">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">📚</div>
-      <div>
-        <h2>Hatırlayalım: <span class="kirmizi">Cem' (Çoğul) İsimler</span></h2>
-        <div class="alt">Çoğullar iki yolla yapılır</div>
-      </div>
-    </div>
-
-    <div class="ikili">
-      <div class="kart adim" data-g="2">
-        <div class="sutunBaslik a">1 · Düzenli (Salim) Çoğullar</div>
-        <p style="font-size:16.5px;font-weight:700;color:#4B5563;margin-bottom:8px">Bazı <b class="mavi">eklerle</b> oluşturulur.</p>
-        <div class="esatir"><span class="tr">Öğretmenler (eril, merfu)</span><span class="ar orta">مُعَلِّمٌ ‹ <b class="mavi">مُعَلِّمُونَ</b></span></div>
-        <div class="esatir"><span class="tr">Öğretmenler (eril, mansub/mecrur)</span><span class="ar orta">مُعَلِّمٍ ‹ <b class="mavi">مُعَلِّمِيـنَ</b></span></div>
-        <div class="esatir"><span class="tr">Öğretmenler (dişil)</span><span class="ar orta">مُعَلِّمَة ‹ <b class="pembe">مُعَلِّمَات</b></span></div>
-      </div>
-
-      <div class="kart adim" data-g="3">
-        <div class="sutunBaslik b">2 · Düzensiz (Teksir) Çoğullar</div>
-        <p style="font-size:16.5px;font-weight:700;color:#4B5563;margin-bottom:10px">Bazı <b class="pembe">kalıplarla</b> oluşturulur.</p>
-        <div style="display:flex;align-items:center;justify-content:center;gap:22px;margin:6px 0 10px">
-          <span class="kalipRozet">فُعُل</span>
-          <div style="text-align:center">
-            <div class="ar buyuk"><b class="kirmizi">كُتُب</b></div>
-            <div class="tr" style="font-size:15px;color:#6B7280;font-weight:700">Kitaplar</div>
-          </div>
-          <span style="font-size:22px;color:#C3CBD5">←</span>
-          <div style="text-align:center">
-            <div class="ar buyuk">كِتَاب</div>
-            <div class="tr" style="font-size:15px;color:#6B7280;font-weight:700">Kitap</div>
-          </div>
-        </div>
-        <div class="notKutu">Düzensiz olan çoğul kelimeleri <b>ezberlememiz</b> gerekir.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 3. İKİ TÜR DEĞİŞİM ================= -->
-  <section class="slayt" data-ad="İki tür değişim: hareke / harf">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">🧭</div>
-      <div>
-        <h2>Arapçada cümlenin ögeleri yapı bakımından <span class="kirmizi">iki şekilde</span> ayırt edilir</h2>
-        <div class="alt">İsmin sonu ya harekeyle ya da harfle değişir</div>
-      </div>
-    </div>
-
-    <div class="kopru">
-      <div class="kopruKart h adim" data-g="2">
-        <h3>1 · Kelime sonundaki <u>HAREKE</u> değişir</h3>
-        <p>Kelimenin son harfinin harekesi ötre / üstün / esre olur.</p>
-        <div class="liste">
-          <span>Tekil isimler</span>
-          <span>Düzenli Dişil Çoğul &nbsp;<span class="ek">ـ ـ ـَات</span></span>
-          <span>Düzensiz (Teksir) Çoğul</span>
-        </div>
-      </div>
-      <div class="kopruKart f adim" data-g="3">
-        <h3>2 · Kelime sonundaki <u>HARF</u> değişir</h3>
-        <p>Kelimenin sonundaki ek harf değişir; hareke değil.</p>
-        <div class="liste">
-          <span>İkil isimler &nbsp;<span class="ek">ـَانِ / ـَيْنِ</span></span>
-          <span>Düzenli Eril Çoğul &nbsp;<span class="ek">ـُونَ / ـِينَ</span></span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 4. HAREKE DEĞİŞENLER ================= -->
-  <section class="slayt" data-ad="Hareke değişenler">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">🎯</div>
-      <div>
-        <h2>Kelime sonundaki <span class="kirmizi">hareke</span> değişir</h2>
-        <div class="alt">Tekil · Düzenli Dişil Çoğul · Düzensiz Çoğul</div>
-      </div>
-    </div>
-
-    <div class="uclu">
-      <!-- Tekil -->
-      <div class="tur t1 adim" data-g="2">
-        <div class="tbas">Tekil<small>مُعَلِّم</small></div>
-        <div class="gov">
-          <div class="hsat m1"><span class="et">Merfu</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــٌــ &nbsp;|&nbsp; ـ ـ ـ ــُ</span>
-              <span class="kelime yesil">مُعَلِّمٌ &nbsp;·&nbsp; اَلْمُعَلِّمُ</span></div></div>
-          <div class="hsat m2"><span class="et">Mansub</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــًا &nbsp;|&nbsp; ـ ـ ـ ــَـ</span>
-              <span class="kelime mavi">مُعَلِّمًا &nbsp;·&nbsp; اَلْمُعَلِّمَ</span></div></div>
-          <div class="hsat m3"><span class="et">Mecrur</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــٍــ &nbsp;|&nbsp; ـ ـ ـ ــِـ</span>
-              <span class="kelime pembe">مُعَلِّمٍ &nbsp;·&nbsp; اَلْمُعَلِّمِ</span></div></div>
-        </div>
-      </div>
-
-      <!-- Düzenli dişil çoğul -->
-      <div class="tur t2 adim" data-g="3">
-        <div class="tbas">Düzenli Dişil Çoğul<small>ـ ـ ـ ـَات</small></div>
-        <div class="gov">
-          <div class="hsat m1"><span class="et">Merfu</span>
-            <div class="ornekler"><span class="ek">ـ ـَاتٌ &nbsp;|&nbsp; ـ ـَاتُ</span>
-              <span class="kelime yesil">مُعَلِّمَاتٌ &nbsp;·&nbsp; اَلْمُعَلِّمَاتُ</span></div></div>
-          <div class="hsat m2"><span class="et">Mansub</span>
-            <div class="ornekler">
-              <span class="yanlisSatir"><span class="ek yanlis">ـ ـَاتًا</span><span class="carpi">✕ üstün değil</span>
-                <span class="ek">ـ ـَاتٍ | ـ ـَاتِ</span></span>
-              <span class="kelime mavi">مُعَلِّمَاتٍ &nbsp;·&nbsp; اَلْمُعَلِّمَاتِ</span></div></div>
-          <div class="hsat m3"><span class="et">Mecrur</span>
-            <div class="ornekler"><span class="ek">ـ ـَاتٍ &nbsp;|&nbsp; ـ ـَاتِ</span>
-              <span class="kelime pembe">مُعَلِّمَاتٍ &nbsp;·&nbsp; اَلْمُعَلِّمَاتِ</span></div></div>
-        </div>
-      </div>
-
-      <!-- Düzensiz çoğul -->
-      <div class="tur t3 adim" data-g="4">
-        <div class="tbas">Düzensiz (Teksir) Çoğul<small>طُلَّـاب</small></div>
-        <div class="gov">
-          <div class="hsat m1"><span class="et">Merfu</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــٌــ &nbsp;|&nbsp; ـ ـ ـ ــُ</span>
-              <span class="kelime yesil">طُلَّـابٌ &nbsp;·&nbsp; اَلطُّلَّـابُ</span></div></div>
-          <div class="hsat m2"><span class="et">Mansub</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــًا &nbsp;|&nbsp; ـ ـ ـ ــَـ</span>
-              <span class="kelime mavi">طُلَّـابًا &nbsp;·&nbsp; اَلطُّلَّـابَ</span></div></div>
-          <div class="hsat m3"><span class="et">Mecrur</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــٍــ &nbsp;|&nbsp; ـ ـ ـ ــِـ</span>
-              <span class="kelime pembe">طُلَّـابٍ &nbsp;·&nbsp; اَلطُّلَّـابِ</span></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="notSerit adim" data-g="5">
-      <b>Not:</b> Düzenli dişil çoğulların <b>mansub</b> halinde üstün değil <b class="kirmizi">esre</b> kullanılır;
-      böylece mansub hâli ile mecrur hâli <b>aynı</b> olur.
-    </div>
-  </section>
-
-  <!-- ================= 5. HARF DEĞİŞENLER ================= -->
-  <section class="slayt" data-ad="Harf değişenler">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">🔤</div>
-      <div>
-        <h2>Kelime sonundaki eklerde <span class="kirmizi">harfler</span> değişir</h2>
-        <div class="alt">İkil · Düzenli Eril Çoğul</div>
-      </div>
-    </div>
-
-    <div class="uclu" style="grid-template-columns:1fr 1fr;max-width:960px;margin:0 auto;width:100%">
-      <div class="tur t4 adim" data-g="2">
-        <div class="tbas">Düzenli Eril Çoğul<small>مُعَلِّمُونَ</small></div>
-        <div class="gov">
-          <div class="hsat m1"><span class="et">Merfu</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــُونَ</span>
-              <span class="kelime yesil">مُعَلِّمُونَ &nbsp;·&nbsp; اَلْمُعَلِّمُونَ</span></div></div>
-          <div class="hsat m2"><span class="et">Mansub</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــِيـنَ</span>
-              <span class="kelime mavi">مُعَلِّمِيـنَ &nbsp;·&nbsp; اَلْمُعَلِّمِيـنَ</span></div></div>
-          <div class="hsat m3"><span class="et">Mecrur</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــِيـنَ</span>
-              <span class="kelime pembe">مُعَلِّمِيـنَ &nbsp;·&nbsp; اَلْمُعَلِّمِيـنَ</span></div></div>
-        </div>
-      </div>
-
-      <div class="tur t2 adim" data-g="3">
-        <div class="tbas">İkil<small>مُعَلِّمَانِ</small></div>
-        <div class="gov">
-          <div class="hsat m1"><span class="et">Merfu</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــَانِ</span>
-              <span class="kelime yesil">مُعَلِّمَانِ &nbsp;·&nbsp; اَلْمُعَلِّمَانِ</span></div></div>
-          <div class="hsat m2"><span class="et">Mansub</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــَيْـنِ</span>
-              <span class="kelime mavi">مُعَلِّمَيْـنِ &nbsp;·&nbsp; اَلْمُعَلِّمَيْـنِ</span></div></div>
-          <div class="hsat m3"><span class="et">Mecrur</span>
-            <div class="ornekler"><span class="ek">ـ ـ ـ ــَيْـنِ</span>
-              <span class="kelime pembe">مُعَلِّمَيْـنِ &nbsp;·&nbsp; اَلْمُعَلِّمَيْـنِ</span></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="notSerit adim" data-g="4">
-      Bu iki grupta <b>hareke değil, ek harf</b> değişir: <span class="ek yesil">ـُونَ</span> → <span class="ek mavi">ـِيـنَ</span> &nbsp;·&nbsp;
-      <span class="ek yesil">ـَانِ</span> → <span class="ek mavi">ـَيْـنِ</span>
-    </div>
-  </section>
-
-  <!-- ================= 6. ANA TABLO ================= -->
-  <section class="slayt" data-ad="Özet tablo (3 × 3)">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">📋</div>
-      <div>
-        <h2>Çoğul İsimlerin <span class="yesil">Merfu</span> · <span class="mavi">Mansub</span> · <span class="pembe">Mecrur</span> Halleri</h2>
-        <div class="alt">İsmin sonundaki bazı <u>hareke veya harf</u> değişimleridir</div>
-      </div>
-    </div>
-
-    <table class="anatablo">
-      <tr class="adim" data-g="2">
-        <th class="bos"></th>
-        <th class="h1">Merfu</th>
-        <th class="h2">Mansub</th>
-        <th class="h3">Mecrur</th>
-      </tr>
-      <tr class="adim" data-g="3">
-        <td class="satirbas">Düzenli Eril Çoğul<small>ـ ـ ـ ــُونَ | ـ ـ ـ ــِيـنَ</small></td>
-        <td class="hucre"><span class="ek yesil">ـ ـ ـ ــُونَ</span><span class="kelime yesil">اَلْمُعَلِّمُونَ</span></td>
-        <td class="hucre"><span class="ek mavi">ـ ـ ـ ــِيـنَ</span><span class="kelime mavi">اَلْمُعَلِّمِيـنَ</span></td>
-        <td class="hucre"><span class="ek pembe">ـ ـ ـ ــِيـنَ</span><span class="kelime pembe">اَلْمُعَلِّمِيـنَ</span></td>
-      </tr>
-      <tr class="adim" data-g="4">
-        <td class="satirbas">Düzenli Dişil Çoğul<small>ـ ـ ـ ــَات</small></td>
-        <td class="hucre"><span class="ek yesil">ـ ـَاتٌ | ـ ـَاتُ</span><span class="kelime yesil">مُعَلِّمَاتٌ · اَلْمُعَلِّمَاتُ</span></td>
-        <td class="hucre"><span class="ek mavi">ـ ـَاتٍ | ـ ـَاتِ</span><span class="kelime mavi">مُعَلِّمَاتٍ · اَلْمُعَلِّمَاتِ</span></td>
-        <td class="hucre"><span class="ek pembe">ـ ـَاتٍ | ـ ـَاتِ</span><span class="kelime pembe">مُعَلِّمَاتٍ · اَلْمُعَلِّمَاتِ</span></td>
-      </tr>
-      <tr class="adim" data-g="5">
-        <td class="satirbas">Düzensiz (Teksir) Çoğul<small>Hareke</small></td>
-        <td class="hucre"><span class="ek yesil">ـ ـ ــٌــ | ـ ـ ــُ</span><span class="kelime yesil">طُلَّـابٌ · اَلطُّلَّـابُ</span></td>
-        <td class="hucre"><span class="ek mavi">ـ ـ ــًا | ـ ـ ــَـ</span><span class="kelime mavi">طُلَّـابًا · اَلطُّلَّـابَ</span></td>
-        <td class="hucre"><span class="ek pembe">ـ ـ ــٍــ | ـ ـ ــِـ</span><span class="kelime pembe">طُلَّـابٍ · اَلطُّلَّـابِ</span></td>
-      </tr>
-    </table>
-  </section>
-
-  <!-- ================= 7. MERFU ÖGELER ================= -->
-  <section class="slayt" data-ad="Hangi ögeler Merfu olur?">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">🟢</div>
-      <div><h2>Hangi ögeler <span class="yesil">Merfu</span> olur?</h2>
-      <div class="alt">Cümlenin öznesi merfu okunur</div></div>
-    </div>
-    <div class="ogeDuzen">
-      <div class="ogeSol g1 adim" data-g="2">
-        <h3>Merfu olan ögeler</h3>
-        <ul><li>Özneler <span style="opacity:.85">(Fâil veya Mübtedâ)</span></li></ul>
-        <p style="margin-top:16px;font-size:16px;font-weight:700;opacity:.92;line-height:1.5">
-          Cümlede <b>işi yapan</b> ya da hakkında <b>hüküm verilen</b> isim merfu olur.
-        </p>
-      </div>
-      <div class="cumleler">
-        <div class="cumle adim" data-g="3"><span class="ar">ذَهَبَ <b class="yesil">الْمُعَلِّمُونَ</b></span><span class="tr">Öğretmenler gitti.</span></div>
-        <div class="cumle adim" data-g="4"><span class="ar">ذَهَبَتْ <b class="yesil">اَلْمُعَلِّمَاتُ</b></span><span class="tr">(Bayan) öğretmenler gitti.</span></div>
-        <div class="cumle adim" data-g="5"><span class="ar">ذَهَبَ <b class="yesil">الطُّلَّـابُ</b></span><span class="tr">Öğrenciler gitti.</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 8. MANSUB ÖGELER ================= -->
-  <section class="slayt" data-ad="Hangi ögeler Mansub olur?">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">🔵</div>
-      <div><h2>Hangi ögeler <span class="mavi">Mansub</span> olur?</h2>
-      <div class="alt">Nesne, zaman ve mekân bildirenler</div></div>
-    </div>
-    <div class="ogeDuzen">
-      <div class="ogeSol g2 adim" data-g="2">
-        <h3>Mansub olan ögeler</h3>
-        <ul>
-          <li>Nesneler</li>
-          <li>Zamanla ilgili kelimeler</li>
-          <li>Mekânla ilgili kelimeler</li>
-        </ul>
-      </div>
-      <div class="cumleler">
-        <div class="cumle adim" data-g="3"><span class="ar">رَأَيْتُ <b class="mavi">الْمُعَلِّمِيـنَ</b></span><span class="tr">Öğretmenleri gördüm.</span></div>
-        <div class="cumle adim" data-g="4"><span class="ar">رَأَيْتُ <b class="mavi">الْمُعَلِّمَاتِ</b></span><span class="tr">(Bayan) öğretmenleri gördüm.</span></div>
-        <div class="cumle adim" data-g="5"><span class="ar">رَأَيْتُ <b class="mavi">الطُّلَّـابَ</b></span><span class="tr">Öğrencileri gördüm.</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 9. MECRUR ÖGELER ================= -->
-  <section class="slayt" data-ad="Hangi ögeler Mecrur olur?">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">🟣</div>
-      <div><h2>Hangi ögeler <span class="pembe">Mecrur</span> olur?</h2>
-      <div class="alt">Cer harfi alanlar ve tamlayanlar</div></div>
-    </div>
-    <div class="ogeDuzen">
-      <div class="ogeSol g3 adim" data-g="2">
-        <h3>Mecrur olan ögeler</h3>
-        <ul>
-          <li>Cer harfi (ek) almış kelimeler</li>
-          <li>Tamlayan <span style="opacity:.85">(muzâfun ileyh)</span></li>
-        </ul>
-      </div>
-      <div class="cumleler">
-        <div class="cumle adim" data-g="3"><span class="ar">سَلَّمْتُ عَلَى <b class="pembe">الْمُعَلِّمِيـنَ</b></span><span class="tr">Öğretmenlere selam verdim.</span></div>
-        <div class="cumle adim" data-g="4"><span class="ar">سَلَّمْتُ عَلَى <b class="pembe">الْمُعَلِّمَاتِ</b></span><span class="tr">(Bayan) öğretmenlere selam verdim.</span></div>
-        <div class="cumle adim" data-g="5"><span class="ar">سَلَّمْتُ عَلَى <b class="pembe">الطُّلَّـابِ</b></span><span class="tr">Öğrencilere selam verdim.</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 10. ALIŞTIRMA — MERFU ================= -->
-  <section class="slayt" data-ad="Alıştırma 1 — çoğul + merfu">
-    <div class="alistirmaUst adim" data-g="1">
-      <div class="yonerge">Aşağıda verilen kelimeleri; <b>çoğul</b> ve <b class="yesil">merfu</b> olarak tekrar yazalım.</div>
-      <div class="dugmeler">
-        <button class="mdug" data-is="kapat">Gizle</button>
-        <button class="mdug ana" data-is="ac">Hepsini göster</button>
-      </div>
-    </div>
-
-    <div class="izgara adim" data-g="2">
-      <div class="soru m1"><span class="no">۱</span><div class="verilen">وَرَقَةٍ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">أَوْرَاقٌ</div>
-          <div class="turet">وَرَق ‹ أَوْرَاق<span class="kal">٢. أَفْعَال</span></div>
-          <div class="turetTr">Kağıt → Kağıtlar</div></div></div>
-
-      <div class="soru m1"><span class="no">۲</span><div class="verilen">اَلْمُعَلِّمِيـنَ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">اَلْمُعَلِّمُونَ</div>
-          <div class="turet">Düzenli eril çoğul<span class="kal">ـُونَ</span></div>
-          <div class="turetTr">Öğretmenler</div></div></div>
-
-      <div class="soru m1"><span class="no">۳</span><div class="verilen">مُهَنْدِسَةً</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">مُهَنْدِسَاتٌ</div>
-          <div class="turet">Düzenli dişil çoğul<span class="kal">ـَاتٌ</span></div>
-          <div class="turetTr">Mühendisler</div></div></div>
-
-      <div class="soru m1"><span class="no">٤</span><div class="verilen">اَلشَّخْصِ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">اَلْأَشْخَاصُ</div>
-          <div class="turet">شَخْص ‹ أَشْخَاص<span class="kal">٢. أَفْعَال</span></div>
-          <div class="turetTr">Şahıs → Şahıslar</div></div></div>
-
-      <div class="soru m1"><span class="no">٥</span><div class="verilen">مُمَرِّضَتَـيْـنِ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">مُمَرِّضَاتٌ</div>
-          <div class="turet">Düzenli dişil çoğul<span class="kal">ـَاتٌ</span></div>
-          <div class="turetTr">Hemşireler</div></div></div>
-
-      <div class="soru m1"><span class="no">٦</span><div class="verilen">اَلْحَارِسِ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">اَلْحُرَّاسُ</div>
-          <div class="turet">حَارِس ‹ حُرَّاس<span class="kal">٤. فُعَّال</span></div>
-          <div class="turetTr">Bekçi → Bekçiler</div></div></div>
-
-      <div class="soru m1"><span class="no">٧</span><div class="verilen">مُدَرِّسًا</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">مُدَرِّسُونَ</div>
-          <div class="turet">Düzenli eril çoğul<span class="kal">ـُونَ</span></div>
-          <div class="turetTr">Öğretmenler</div></div></div>
-
-      <div class="soru m1"><span class="no">٨</span><div class="verilen">طَالِبٍ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">طُلَّـابٌ</div>
-          <div class="turet">طَالِب ‹ طُلَّـاب<span class="kal">٤. فُعَّال</span></div>
-          <div class="turetTr">Öğrenci → Öğrenciler</div></div></div>
-    </div>
-
-    <div class="hatirlatmaSerit adim" data-g="3">
-      <span class="par">Merfu ekleri:</span>
-      <span class="par yesil"><span class="ek">ـ ـ ــُونَ</span> eril</span><span class="ayrac"></span>
-      <span class="par yesil"><span class="ek">ـ ـَاتٌ / ـَاتُ</span> dişil</span><span class="ayrac"></span>
-      <span class="par yesil"><span class="ek">ـ ـ ــٌــ / ـ ـ ــُ</span> düzensiz</span>
-    </div>
-  </section>
-
-  <!-- ================= 11. ALIŞTIRMA — MANSUB ================= -->
-  <section class="slayt" data-ad="Alıştırma 2 — çoğul + mansub">
-    <div class="alistirmaUst adim" data-g="1">
-      <div class="yonerge">Aşağıda verilen kelimeleri; <b>çoğul</b> ve <b class="mavi">mansub</b> olarak tekrar yazalım.</div>
-      <div class="dugmeler">
-        <button class="mdug" data-is="kapat">Gizle</button>
-        <button class="mdug ana" data-is="ac">Hepsini göster</button>
-      </div>
-    </div>
-
-    <div class="izgara dort adim" data-g="2">
-      <div class="soru m2"><span class="no">۱</span><div class="verilen">اَلطَّالِبَتَانِ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">اَلطَّالِبَاتِ</div>
-          <div class="turet">Düzenli dişil çoğul<span class="kal">ـَاتِ</span></div>
-          <div class="turetTr">Öğrenciler (kız) — mansubda esre</div></div></div>
-
-      <div class="soru m2"><span class="no">۲</span><div class="verilen">قَلَمٍ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">أَقْلَـامًا</div>
-          <div class="turet">قَلَم ‹ أَقْلَـام<span class="kal">٢. أَفْعَال</span></div>
-          <div class="turetTr">Kalem → Kalemler</div></div></div>
-
-      <div class="soru m2"><span class="no">۳</span><div class="verilen">مُدِيرَتَـيْـنِ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">مُدِيرَاتٍ</div>
-          <div class="turet">Düzenli dişil çoğul<span class="kal">ـَاتٍ</span></div>
-          <div class="turetTr">Müdireler</div></div></div>
-
-      <div class="soru m2"><span class="no">٤</span><div class="verilen">اَلْكِتَابِ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">اَلْكُتُبَ</div>
-          <div class="turet">كِتَاب ‹ كُتُب<span class="kal">١. فُعُل</span></div>
-          <div class="turetTr">Kitap → Kitaplar</div></div></div>
-    </div>
-
-    <div class="hatirlatmaSerit adim" data-g="3">
-      <span class="par">Mansub ekleri:</span>
-      <span class="par mavi"><span class="ek">ـ ـ ــِيـنَ</span> eril</span><span class="ayrac"></span>
-      <span class="par mavi"><span class="ek">ـ ـَاتٍ / ـَاتِ</span> dişil</span><span class="ayrac"></span>
-      <span class="par mavi"><span class="ek">ـ ـ ــًا / ـ ـ ــَـ</span> düzensiz</span>
-    </div>
-  </section>
-
-  <!-- ================= 12. ALIŞTIRMA — MECRUR ================= -->
-  <section class="slayt" data-ad="Alıştırma 3 — çoğul + mecrur">
-    <div class="alistirmaUst adim" data-g="1">
-      <div class="yonerge">Aşağıda verilen kelimeleri; <b>çoğul</b> ve <b class="pembe">mecrur</b> olarak tekrar yazalım.</div>
-      <div class="dugmeler">
-        <button class="mdug" data-is="kapat">Gizle</button>
-        <button class="mdug ana" data-is="ac">Hepsini göster</button>
-      </div>
-    </div>
-
-    <div class="izgara dort adim" data-g="2">
-      <div class="soru m3"><span class="no">٥</span><div class="verilen">مُهَنْدِسَانِ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">مُهَنْدِسِيـنَ</div>
-          <div class="turet">Düzenli eril çoğul<span class="kal">ـِيـنَ</span></div>
-          <div class="turetTr">Mühendisler</div></div></div>
-
-      <div class="soru m3"><span class="no">٦</span><div class="verilen">اَلْفَقِيـرُ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">اَلْفُقَرَاءِ</div>
-          <div class="turet">فَقِيـر ‹ فُقَرَاء<span class="kal">٦. فُعَلَـاء</span></div>
-          <div class="turetTr">Fakir → Fakirler</div></div></div>
-
-      <div class="soru m3"><span class="no">٧</span><div class="verilen">مُدَرِّسَةً</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">مُدَرِّسَاتٍ</div>
-          <div class="turet">Düzenli dişil çoğul<span class="kal">ـَاتٍ</span></div>
-          <div class="turetTr">Öğretmenler (bayan)</div></div></div>
-
-      <div class="soru m3"><span class="no">٨</span><div class="verilen">تَاجِرٌ</div><div class="ipucu">cevabı görmek için tıkla</div>
-        <div class="cevapAlan"><div class="cevap">تُجَّارٍ</div>
-          <div class="turet">تَاجِر ‹ تُجَّار<span class="kal">٤. فُعَّال</span></div>
-          <div class="turetTr">Tacir → Tacirler</div></div></div>
-    </div>
-
-    <div class="hatirlatmaSerit adim" data-g="3">
-      <span class="par">Mecrur ekleri:</span>
-      <span class="par pembe"><span class="ek">ـ ـ ــِيـنَ</span> eril</span><span class="ayrac"></span>
-      <span class="par pembe"><span class="ek">ـ ـَاتٍ / ـَاتِ</span> dişil</span><span class="ayrac"></span>
-      <span class="par pembe"><span class="ek">ـ ـ ــٍــ / ـ ـ ــِـ</span> düzensiz</span>
-    </div>
-  </section>
-
-  <!-- ================= 13. KARŞILAŞTIRMA ================= -->
-  <section class="slayt" data-ad="Tekil · İkil · Çoğul karşılaştırması">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">⚖️</div>
-      <div><h2>Tekil · İkil · Çoğul — <span class="kirmizi">ne değişiyor?</span></h2>
-      <div class="alt">Sonu değiştiren şey hareke mi, harf mi?</div></div>
-    </div>
-
-    <div class="karsi">
-      <div class="kkart k1 adim" data-g="2">
-        <div class="kb">Tekil İsimlerde</div>
-        <div class="rozet2">Sadece hareke</div>
-        <div class="gov2">
-          <div class="donusum"><span class="yesil">مُعَلِّمٌ</span><span class="ok">→</span><span class="pembe">مُعَلِّمٍ</span></div>
-        </div>
-      </div>
-      <div class="kkart k2 adim" data-g="3">
-        <div class="kb">İkil İsimlerde</div>
-        <div class="rozet2">Sadece harf</div>
-        <div class="gov2">
-          <div class="donusum"><span class="yesil">اَلطَّالِبَانِ</span><span class="ok">→</span><span class="pembe">اَلطَّالِبَيْـنِ</span></div>
-        </div>
-      </div>
-      <div class="kkart k3 adim" data-g="4">
-        <div class="kb">Çoğul İsimlerde</div>
-        <div class="rozet2">Hem hareke hem harf</div>
-        <div class="gov2">
-          <div class="donusum"><span class="yesil">مُعَلِّمُونَ</span><span class="ok">→</span><span class="pembe">مُعَلِّمِيـنَ</span></div>
-          <div class="donusum"><span class="yesil">اَلْمُعَلِّمَاتُ</span><span class="ok">→</span><span class="pembe">اَلْمُعَلِّمَاتِ</span></div>
-          <div class="donusum"><span class="yesil">اَلطُّلَّـابُ</span><span class="ok">→</span><span class="pembe">اَلطُّلَّـابَ</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="notSerit adim" data-g="5">
-      <b>Not:</b> Çoğullar; tekil ve ikillerden farklı olarak cümledeki yerine veya öncelerine eklenen eklere göre
-      <b class="kirmizi">hem hareke hem harf</b> açısından sonları değişebilir.
-    </div>
-  </section>
-
-  <!-- ================= 14. TEKİL HATIRLATMA ================= -->
-  <section class="slayt" data-ad="Hatırlatma — Tekil isimler">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">🔬</div>
-      <div><h2>Tekil İsimlerin Ref, Nasb ve Cer Halleri</h2>
-      <div class="alt">İsmin sonundaki bazı <u>hareke</u> değişimleridir</div></div>
-    </div>
-    <div class="halListe">
-      <div class="halKart h1 adim" data-g="2">
-        <div class="etiket">Ref' — Merfu</div>
-        <div class="aciklama">Ötre veya iki ötreye <b>ref alameti</b> denir. <span class="ek yesil">ــــُ</span> · <span class="ek yesil">ــــٌ</span><br>
-          Sonu ötre veya iki ötre ile biten kelimeye <b>Merfu</b> denir.</div>
-        <div class="ornek"><span class="yesil">طَالِبٌ</span><span class="yesil">اَلطَّالِبُ</span></div>
-      </div>
-      <div class="halKart h2 adim" data-g="3">
-        <div class="etiket">Nasb — Mansub</div>
-        <div class="aciklama">Üstün veya iki üstüne <b>nasb alameti</b> denir. <span class="ek mavi">ــــَ</span> · <span class="ek mavi">ــــًا</span><br>
-          Sonu üstün veya iki üstünle biten kelimeye <b>Mansub</b> denir.</div>
-        <div class="ornek"><span class="mavi">طَالِبًا</span><span class="mavi">اَلطَّالِبَ</span></div>
-      </div>
-      <div class="halKart h3 adim" data-g="4">
-        <div class="etiket">Cer — Mecrur</div>
-        <div class="aciklama">Esre veya iki esreye <b>cer alameti</b> denir. <span class="ek pembe">ــــِ</span> · <span class="ek pembe">ــــٍ</span><br>
-          Sonu esre veya iki esre ile biten kelimeye <b>Mecrur</b> denir.</div>
-        <div class="ornek"><span class="pembe">طَالِبٍ</span><span class="pembe">اَلطَّالِبِ</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 15. İKİL HATIRLATMA ================= -->
-  <section class="slayt" data-ad="Hatırlatma — İkil isimler">
-    <div class="sbaslik adim" data-g="1">
-      <div class="rozet">🔬</div>
-      <div><h2>İkil İsimlerin Ref, Nasb ve Cer Halleri</h2>
-      <div class="alt">İsmin sonundaki bazı <u>harf</u> değişimleridir</div></div>
-    </div>
-    <div class="halListe">
-      <div class="halKart h1 adim" data-g="2">
-        <div class="etiket">Merfu</div>
-        <div class="aciklama">Sonu <span class="ek yesil">ـ ـ ـ ــَانِ</span> ile biten ikil kelime <b>Merfu</b> olur.</div>
-        <div class="ornek"><span class="yesil">طَالِبَانِ</span><span class="yesil">اَلطَّالِبَـانِ</span></div>
-      </div>
-      <div class="halKart h2 adim" data-g="3">
-        <div class="etiket">Mansub</div>
-        <div class="aciklama">Sonu <span class="ek mavi">ـ ـ ـ ــَيْـنِ</span> ile biten ikil kelime <b>Mansub</b> olur.</div>
-        <div class="ornek"><span class="mavi">طَالِبَـيْـنِ</span><span class="mavi">اَلطَّالِبَـيْـنِ</span></div>
-      </div>
-      <div class="halKart h3 adim" data-g="4">
-        <div class="etiket">Mecrur</div>
-        <div class="aciklama">Sonu <span class="ek pembe">ـ ـ ـ ــَيْـنِ</span> ile biten kelime <b>Mecrur</b> olur.</div>
-        <div class="ornek"><span class="pembe">طَالِبَـيْـنِ</span><span class="pembe">اَلطَّالِبَـيْـنِ</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 16. KAPANIŞ ================= -->
-  <section class="slayt" id="cg-sSon" data-ad="Kapanış">
-    <div style="text-align:center">
-      <div class="sukran adim" data-g="1">شُكْرًا</div>
-      <div class="emoji adim" data-g="2">👌 👍 😎</div>
-      <div class="marka adim" data-g="3">Kidef Arapça</div>
-      <div class="site adim" data-g="3">kidefarapca.com</div>
-    </div>
-  </section>
-
-    </div>
+  <!-- "Çoğul İsimlerin İ'râbı" sunumu kaldırıldı (08.10.2026, öğretmen isteği).
+     Yedeği: _kaynak/yedekler/2026-10-08-sunum-ve-serit/sunumlar.html -->
 
 <div class="sunum" data-s="sayiisimleri" data-ad="Müfred, Tesniye, Cem’">
 <section class="slayt mt" data-ad="Sayı bakımından isimler">
@@ -4202,7 +3656,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
 
     tekil:{ad:'Tekil (müfred)',ik:'tekil',ar:'مُفْرَد',not:'Bir tek varlığı gösterir.'},
     ikil:{ad:'İkil (müsennâ)',ik:'ikil',ar:'ـَانِ / ـَيْنِ',not:'İki varlığı gösterir.'},
-    cogul:{ad:'Çoğul (cem)',ik:'cogul',ar:'جَمْع',not:'Üç ve daha fazla varlığı gösterir.',sunum:'cogulirab',
+    cogul:{ad:'Çoğul (cem)',ik:'cogul',ar:'جَمْع',not:'Üç ve daha fazla varlığı gösterir.',
       g:[{ad:'Çoğul türleri',d:['cemmuz','cemmuen','mukesser']},{ad:'İ’râb hâlleri',d:['merfu','mansub','mecrur']}]},
     cemmuz:{ad:'Cem-i müzekker sâlim',ik:'cogul',ar:'ـُونَ / ـِينَ',not:'Eril düzenli çoğul; kelimenin yapısı bozulmaz.'},
     cemmuen:{ad:'Cem-i müennes sâlim',ik:'disi',ar:'ـَاتٌ',not:'Dişil düzenli çoğul.'},

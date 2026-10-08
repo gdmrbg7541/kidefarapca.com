@@ -8135,3 +8135,29 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
     cekimli fiil, 4965 ornek cumle, 781 sozluk kelimesi, 40 tematik liste,
     183 semantik not; 11.805 etkilesim noktasi, 4007 svg/tuval, 2770
     animasyon, 1.205.696 satir kod.
+
+--- 2026-10-08 (5) · Cogul sunumu kaldirildi, serit "yol" oldu ---
+* sunum html/sunumlar.html
+  - "Cogul Isimlerin Merfu · Mansub · Mecrur Halleri" sunumu KALDIRILDI:
+    karti, 16 slaytlik bolumu ve terim baglantisi silindi.
+  - Yerine "Tamlama ve Cumleler" KARTI eklendi (bir sunum degil, kendi
+    sayfasina giden baglanti: ../tamlamavecumleler.html). Boylece sayfaya
+    hem anasayfadan hem sunumlar icinden ulasiliyor. .lkart-dis bicimi
+    baglantinin alti cizili cikmasini engelliyor.
+* sunum html/maarif1.html, maarif2.html, denge.html — terim kartindaki
+  sunum:'cogulirab' baglantisi kalkti.
+* katalog/index.html — "Cogul Isimlerin I'rabi · 16 slayt" cipi kalkti.
+* sunum html/sayfa95cogulirab.html -> _kaynak/site-disi/kaldirilan-sunumlar/
+  (silinmedi, site disina alindi; yedegi
+   _kaynak/yedekler/2026-10-08-sunum-ve-serit/ altinda da var)
+* dilbilgisi/tamlamavecumleler.js + .css (?v=20261008b), tamlamavecumleler.html
+  - Hikayede ayri "Sonlara gec" tusu KALKTI. Son adimda SAG OK dogrudan
+    Sonlar'a goturuyor (ogretmen: "zaten devami, ille ayirmanin geregi
+    yok"); o adimda ok dolu kirmizi oluyor ve ipucu metni "Sonlara gec".
+    Sol ok her zaman geri.
+  - SERIT ARTIK BIR YOL: ust pil (Baslarken) ile alt grup (Sonlar · 1-5)
+    arasinda kisa bir baglayici cizgi var; gruptaki bir durak seciliyken
+    kirmizi vurgu O DURAKTA, ust pil ici bos "bolum adi"na doniyor
+    (.tc-sr-ust / .tc-alt-burada). Ogretmen: "sonlara gecerken kirmizi
+    vurgu sonlarda olsun" + "Sonlar ve 1-5 Baslarken'in devami oldugunu
+    gostersin".
