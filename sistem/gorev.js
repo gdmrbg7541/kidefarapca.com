@@ -29,12 +29,20 @@
         { d: 'hangiharf.html',     ad: 'Hangi Harf?' },
         { d: 'klavyeoyunu.html',   ad: 'Klavye Oyunu' },
         { d: 'testkapismasi.html', ad: 'Test Kapışması' },
-        { d: 'renkler.html',       ad: 'Renkler' },
+        /* Renkler KALDIRILDI (08.10.2026): oyun kategorisinden çıkarıldı;
+           yayındaki renkler.html zaten köprüyü yüklemiyordu, görev
+           gönderilse de sonuç hiç dönmüyordu. */
         { d: 'kokutani.html',      ad: 'Kökü Tanı' },
         { d: 'zamanlayaris.html',  ad: 'Zamanla Yarış' },
         /* Alfabe sayfasindaki Yarisma sekmesi — puan YALNIZ tek kisilik
            moddan gelir (iki kisilik mod sonuc gondermez). */
-        { d: 'alfabe.html',        ad: 'Alfabe Yarışması (Tek Kişilik)' },
+        /* 08.10.2026 — alfabe.html artık İKİ yerden puan bildiriyor:
+           Yarışma sekmesi (tek kişilik) ve Kendini Dene akordiyonu
+           (Harf Tanıtımı · Harf Birleştirme · Okuma · Dinle ve Yaz).
+           Köprü sayfa düzeyinde çalıştığı için ikisi tek görevde
+           toplanır; hangisinin yapıldığı sonuçlardaki DETAY alanında
+           yazar ("Kendini Dene — Harf Birleştirme" gibi). */
+        { d: 'alfabe.html',        ad: 'Alfabe: Yarışma ve Kendini Dene (Tek Kişilik)' },
         /* Kaliplar tablosuna bagli oyunlar. (ikikidijital OLCULEMEZ:
            tamamen iki kisilik + hakem puanli — katalog disi birakildi.
            bilgiyarismasikacom SISTEME BAGLANMAZ: ogretmen sinifta uygular.) */
@@ -44,6 +52,11 @@
            Her tur 20 soru x 5 puan = 100 puan. */
         { d: 'alfabesinav.html',   ad: 'Alfabe Sınavı (20 soruluk tur)' },
         { d: 'koktengovdeye.html', ad: 'Kökten Gövdeye' },
+        /* kaliplartablosudijital.html KATALOGA ALINMADI (08.10.2026):
+           index'e bağlı değil (öksüz sayfa) ve yüklediği KÖK kopyası
+           kaliplartablosudijital.js bildir çağırmıyor — görev
+           gönderilse sonuç dönmezdi (Renkler'in aynı hatası).
+           Dijital tur zaten koktengovdeye.html üzerinden sayılıyor. */
         /* Tamlama ve Cumleler sayfasindaki TEST paneli. Sayfanin kendisi
            anlatim/zoom ekranidir; puani YALNIZ "Test" turundan gelir.
            Her tur 10 soru x 10 puan = 100 puan. */
@@ -59,7 +72,10 @@
         { d: 'sozluksimulasyonu.html',    ad: 'Sözlük Simülasyonu',                      tur: 'sure' },
         { d: 'fiiller.html',              ad: 'Fiil Çekim Atlası',                       tur: 'sure' },
         { d: 'yenisozlukdedektifi.html',  ad: 'Sözlük Dedektifi',                        tur: 'sure' },
-        { d: 'muhadese.html',             ad: 'Muhadese',                                tur: 'sure' }
+        { d: 'muhadese.html',             ad: 'Muhadese',                                tur: 'sure' },
+        /* İsim x 4: dört adımlı çözümleme oyunu, puan üretmiyor —
+           süre takipli olarak eklendi. (08.10.2026) */
+        { d: 'isimx4.html',               ad: 'İsim x 4 (Çözümleme)',                    tur: 'sure' }
     ];
     /* ============ PUANLI DOSYA SAYISI ============
        Sistemde puan ureten (tur != 'sure') dosya adedi. "3/48 puanli

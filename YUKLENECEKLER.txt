@@ -8236,3 +8236,38 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
     gorunsun diye ayri satirda gosteriliyor.
 * Olculdu: 3 sinif / 73 ogrenci / bu ay 3 sa 15 dk / toplam 14 sa 33 dk —
   dordu de verilen ornek veriyle birebir.
+
+--- 2026-10-08 (10) · Gorev katalogu + WhatsApp baglantisi ---
+* okumayazma/alfabe_akordiyon.js (?v=16)  — EN ONEMLISI
+  Kendini Dene bolumleri (Harf Tanitimi · Harf Birlestirme · Okuma ·
+  Dinle ve Yaz) ekranda puan hesapliyor ama ogretmene HIC ulasmiyordu;
+  alfabe.html'den giden tek puan Yarisma sekmesininkiydi. Artik
+  tamamlanan her TEK KISILIK tur KidefGorev.bildir ile gidiyor; hangi
+  bolum oldugu DETAY alaninda ("Kendini Dene — Harf Birlestirme").
+  Iki kisilik mod bildirmez (sitedeki butun oyunlarda kural ayni).
+  Ayni tur iki kez bildirmesin diye aktif.bildirildi bayragi var.
+  Olculdu: dort bolumun dordu de tam bir kez bildirdi, dogru/toplam ve
+  bolum adi dogru.
+* sistem/gorev.js (?v=37)
+  - RENKLER katalogdan KALDIRILDI: oyun kategorisinden cikarildi, ayrica
+    yayindaki renkler.html koprüyu hic yuklemiyordu — gorev gonderilse
+    sonuc donmuyordu.
+  - alfabe.html girisinin adi "Alfabe: Yarisma ve Kendini Dene (Tek
+    Kisilik)" oldu; kopru sayfa duzeyinde calistigi icin ikisi tek
+    gorevde toplaniyor, ayrimi DETAY aliyor.
+  - isimx4.html eklendi (tur: 'sure') — puan uretmiyor, sure takipli.
+  - kaliplartablosudijital.html EKLENMEDI: index'e bagli degil ve
+    yukledigi KOK kopyasi bildir cagirmiyor (Renkler'in ayni hatasi
+    olurdu). Dijital tur zaten koktengovdeye.html uzerinden sayiliyor.
+* isimx4.html — sistem/gorevkopru.js + KidefGorev.sureTakibiBaslat()
+  eklendi; katalogdaki giris bunsuz calismazdi.
+* sistem/hosgeldinmesaj.js (?v=5)
+  Ogretmen: "yonetici olarak bi ogretmeni onayladiktan sonra onun
+  numarasina BILGISAYARDAN WhatsApp'tan mesaj yazma kismina tiklayinca
+  acilmiyor." SEBEP: wa.me masaustunde WhatsApp Web'e gitmez; uygulamayi
+  protokolle acmaya calisan bir ara sayfaya gider, uygulama kayitli
+  degilse bos ekranda kalir. ARTIK masaustunde
+  web.whatsapp.com/send?phone=...&text=... kullaniliyor (sohbeti acar,
+  metni hazir getirir, numarayi rehbere kaydetmek gerekmez); telefonda
+  wa.me oldugu gibi birakildi. Numara yoksa yalniz text ile aciliyor.
+  Olculdu: masaustu / iPhone / Android / numarasiz — dordu de dogru.

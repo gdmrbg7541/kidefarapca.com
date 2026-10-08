@@ -750,6 +750,26 @@
             sahne.innerHTML = (mod === 2)
                 ? ikiliSonucHtml(aktif.puan, aktif.havuz.length || soruSayisi)
                 : sonucHtml(aktif.dogru, aktif.havuz.length || soruSayisi);
+            /* GÖREV KÖPRÜSÜ (08.10.2026) — öğretmen: "görev gönder kısmına
+               eklenmesi gereken bir şey var mı?" Kendini Dene bölümleri
+               ekranda puan hesaplıyordu ama öğretmene HİÇ ulaşmıyordu;
+               alfabe.html'den giden tek puan Yarışma sekmesininkiydi.
+               Artık tamamlanan her tek kişilik tur bildiriliyor; hangi
+               bölüm olduğu DETAY alanına yazılıyor. İki kişilik mod
+               bildirmez (sitedeki bütün oyunlarda kural aynı). */
+            if (mod !== 2 && !aktif.bildirildi) {
+                aktif.bildirildi = true;
+                try {
+                    if (window.KidefGorev && KidefGorev.aktif) KidefGorev.bildir({
+                        dogru: aktif.dogru,
+                        toplam: aktif.havuz.length || soruSayisi,
+                        mod: 'dene',
+                        detay: 'Kendini Dene — ' + (bolumBul(aktif.anahtar) || {}).baslik,
+                        sureSn: aktif.basZaman
+                            ? Math.round((Date.now() - aktif.basZaman) / 1000) : null
+                    });
+                } catch (e) { }
+            }
             return;
         }
         aktif.cevapli = false; aktif.esSol = null; aktif.esDogru = 0; aktif.esHata = 0;
@@ -777,6 +797,7 @@
         aktif.havuz = aktif.uretici ? aktif.uretici(soruSayisi) : havuz(tipler, soruSayisi);
         aktif.i = 0; aktif.dogru = 0;
         aktif.puan = { 1: { dogru: 0, hiz: 0 }, 2: { dogru: 0, hiz: 0 } };
+        aktif.basZaman = Date.now(); aktif.bildirildi = false;
         if (!aktif.havuz.length) {
             sahne.innerHTML = '<div class="ak-sonuc"><div class="ak-sonsoz">' +
                 'Soru üretilemedi — sayfayı yenileyip tekrar dener misin?</div></div>';

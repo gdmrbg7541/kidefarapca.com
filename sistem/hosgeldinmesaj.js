@@ -184,7 +184,8 @@
       '<h3>' + (adDuzelt(ad) ? kac(adDuzelt(ad)) + ' onaylandı' : 'Öğretmen onaylandı') + '</h3>' +
       '<p class="hgm-alt">' +
         (numara
-          ? ('WhatsApp doğrudan <b>' + kac(numaraYazi) + '</b> numarasına açılır. ' +
+          ? ('WhatsApp doğrudan <b>' + kac(numaraYazi) + '</b> numarasına açılır ' +
+             '(bilgisayarda WhatsApp Web, telefonda uygulama). ' +
              'İstersen önce metni değiştir.')
           : ('Bu öğretmenin telefonu kayıtlı değil; WhatsApp açılınca kişiyi ' +
              'sen seçeceksin. İstersen önce metni değiştir.')) +
@@ -210,7 +211,22 @@
   function waAc(a) {
     var t = document.getElementById('hgmMetin');
     var num = (a && a.getAttribute('data-tel')) || '';
-    a.href = 'https://wa.me/' + num + '?text=' + encodeURIComponent(t ? t.value : '');
+    var metin = encodeURIComponent(t ? t.value : '');
+    /* MASAÜSTÜNDE AÇILMIYORDU (08.10.2026) — öğretmen: "yönetici olarak bi
+       öğretmeni onayladıktan sonra onun numarasına bilgisayardan
+       WhatsApp'tan mesaj yazma kısmına tıklayınca açılmıyor".
+       SEBEP: wa.me masaüstünde WhatsApp Web'e GİTMEZ; uygulamayı protokolle
+       açmaya çalışan bir ara sayfaya gider. Uygulama kurulu/kayıtlı değilse
+       indirme sayfasında ya da boş ekranda kalır — tıklama "hiçbir şey
+       olmamış" gibi görünür. Masaüstünde doğru adres web.whatsapp.com/send:
+       sohbeti numarayla açar, metni de hazır getirir ve numarayı rehbere
+       kaydetmek gerekmez. Telefonda ise wa.me uygulamayı doğrudan açtığı
+       için orada olduğu gibi bırakıldı. */
+    var mobil = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile Safari/i
+      .test(navigator.userAgent || '');
+    a.href = mobil
+      ? ('https://wa.me/' + num + (metin ? '?text=' + metin : ''))
+      : ('https://web.whatsapp.com/send?' + (num ? 'phone=' + num + '&' : '') + 'text=' + metin);
     return true;
   }
 
