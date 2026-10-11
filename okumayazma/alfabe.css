@@ -494,7 +494,8 @@
            gölge, yeşil yazı (Geylani, 11.10.2026: "büyüt ve şık olsun"). */
         .yp-or-et {
             position: relative; z-index: 1;     /* şeridin üstünde kalsın */
-            font-size: clamp(.95rem, 2.3vh, 1.62rem); font-weight: bold;
+            display: inline-flex; align-items: center; gap: .42em; direction: ltr;
+            font-size: clamp(1.12rem, 2.9vh, 2rem); font-weight: bold;
             color: #117A65; letter-spacing: .015em; white-space: nowrap;
             line-height: 1.1; background: #fff; border-radius: 999px;
             padding: clamp(4px, .85vh, 10px) clamp(12px, 1.5vw, 28px);
@@ -506,6 +507,10 @@
             box-shadow: 0 3px 10px rgba(239, 83, 80, .28); }
         .yp-or-et.yp-et-ok { background: #16A085; color: #fff;
             box-shadow: 0 3px 10px rgba(22, 160, 133, .28); }
+        /* Rozet işaretleri: kırmızıda çarpı, yeşilde tik. */
+        .yp-et-im { width: 1.05em; height: 1.05em; flex: 0 0 auto; display: block;
+            fill: none; stroke: currentColor; stroke-width: 3.2;
+            stroke-linecap: round; stroke-linejoin: round; }
         .yp-or-satir::before {
             content: ""; position: absolute; z-index: 0;
             left: 0; right: -3000px; bottom: var(--yp-cizgi, 30%);

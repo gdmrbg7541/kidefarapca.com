@@ -763,10 +763,16 @@ function ypKatmanAc() {
     /* Rozet rengi biçimi anlatır: bu harfler BAŞTA ve YALIN iken yalın
        yazılır (kırmızı = sonrakiyle birleşmez), ORTADA ve SONDA iken
        öncekine bitişir (yeşil). Geylani, 11.10.2026. */
+    const etIm = {
+        ok: '<svg class="yp-et-im" viewBox="0 0 24 24" aria-hidden="true">'
+          + '<path d="M4.5 12.9 L9.4 17.8 L19.5 6.6"></path></svg>',
+        no: '<svg class="yp-et-im" viewBox="0 0 24 24" aria-hidden="true">'
+          + '<path d="M6.4 6.4 L17.6 17.6 M17.6 6.4 L6.4 17.6"></path></svg>'
+    };
     s += '<div class="yp-or-satir yp-or-bas">'
        + [['Başta', 'no'], ['Ortada', 'ok'], ['Sonda', 'ok'], ['Yalın', 'no']].map(function (t) {
              return '<div class="yp-or-kart"><span class="yp-or-et yp-et-' + t[1] + '">'
-                  + t[0] + '</span></div>';
+                  + etIm[t[1]] + '<span>' + t[0] + '</span></span></div>';
          }).join('')
        + '</div>';
     harfler.filter(i => i.nobind).forEach((i, gi) => {
