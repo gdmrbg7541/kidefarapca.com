@@ -780,11 +780,16 @@
         .arabic-seq::before { background-color: rgba(0, 0, 0, 0.22); }
 
         /* --- HARF DETAY (BÜYÜTEÇ) OVERLAY --- */
+        /* BULANIKLIK KALDIRILDI (09.10.2026). backdrop-filter: blur(6px)
+           tam ekran bir katmanda her kareyi yeniden bulandırıyor; ölçüm:
+           büyüteç açıkken sayfa 19 kare/sn'den 13'e düşüyordu. Kare sayısı
+           düşünce yazım animasyonunda kalem bir karede çok yol alıyor ve
+           mürekkep kalemsiz beliriyor ("iki farklı çizim"). Yerine biraz
+           daha koyu düz perde: arka plan yine okunmuyor, bedeli yok. */
         #hd-overlay {
             position: fixed; inset: 0; z-index: 5000; display: none;
             align-items: center; justify-content: center;
-            background: rgba(30, 41, 59, 0.45);
-            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            background: rgba(23, 33, 48, 0.66);
         }
         #hd-card {
             background: var(--bg-glass); border: 1px solid rgba(255,255,255,0.4);
@@ -826,6 +831,13 @@
             padding: 10px; cursor: pointer; transition: border-color 0.2s, transform 0.2s;
         }
         .hd-col-box:hover { border-color: var(--accent); transform: translateY(-3px); }
+        /* SIRASI GELEN BİÇİM (09.10.2026): dört biçim artık sırayla
+           yazılıyor; yazılmakta olan kutu belirgin dursun, göz kalemi
+           aramasın. */
+        .hd-col.hd-yazan .hd-col-box { border-color: #16A085;
+            box-shadow: 0 0 0 4px rgba(22,160,133,.16); }
+        .hd-col.hd-yazan .hd-col-label { text-decoration: underline;
+            text-underline-offset: 4px; }
         .hd-yaz-svg { width: 100%; height: 100%; }
         /* Büyüteç kutusunda da satır çizgisi: harfin çizginin neresine oturduğu,
            kuyruğun altına inip inmediği burada da görünsün. Çizgi harfin
@@ -939,6 +951,17 @@
            kendi konumunu belirlemez, kumandayla birlikte taşınır. */
         .hdr-switch { position: static; padding: 4px 11px; gap: 7px; }
         .hdr-switch.gizli { display: none; }
+        /* ARAÇ ŞERİDİ YALNIZ KUMANDA KAPALIYKEN (09.10.2026).
+           Öğretmen: "bunlar kumanda açıkken görünmesin, eğer kumanda
+           kapatılırsa ve harf tanıtımı kısmındaysa görünsün."
+           Kumanda açıkken zaten sekme seçiliyor, araçlar o sırada yalnız
+           panoyu uzatıyordu; kapatılınca tahtada harfler kalıyor ve
+           gruplama / diziliş / yazılış / tam ekran orada gerekiyor.
+           Görünme şartı ikisi birden: .nav-gizli (kumanda kapalı) VE
+           sekme Harf Tanıtımı (yukarıdaki .gizli sınıfı bunu yapıyor).
+           ODAK KİPİ AYRI: orada şerit açık kalabiliyor ve bu düğmelerin
+           biri odaktan ÇIKIŞ tuşu — gizlenirse çıkış yalnız Esc'te kalır. */
+        body:not(.harf-tam) .main-app:not(.nav-gizli) .hdr-switch { display: none; }
         .grp-ico { width: 34px; height: 34px; padding: 3px; }
         .grp-ico--yazi:hover { background: rgba(22,160,133,.10); }
         .grp-ico--ses:hover  { background: rgba(243,156,18,.12); }

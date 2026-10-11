@@ -92,6 +92,34 @@
                   '<path d="M15.4 16.5l1.3 1.3 2.4-2.6" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'
         },
         {
+            /* İSTENEN HARF — Harf Tanıtımı'ndan hemen sonra (öğretmen
+               isteği). Soruları istenenHavuzu üretir; tip listesi boş.
+
+               ANAHTAR 'p2' DEĞİL (09.10.2026): alfabe.html'de p2 başka
+               bir panel (Ölçme & Etkinlik grubunda) ve yan tuşlar konu
+               sekmesinin yanına anahtarla eşleşerek konuyor. 'p2' iken
+               bu bölümün tuşu HİÇ KONMUYORDU — etkinlik açılamıyordu.
+               Kendi sayfa sekmesi olmadığı için şeritte kendi SATIRI
+               kuruluyor (konu: hangi satırın altına gireceği), ötekiler
+               gibi: solda konu adı, sağında kendi «Dene» tuşu.
+               Konu adına basınca KONU ANLATIMI açılıyor (şıksız; bkz.
+               yazAc), «Dene» ise şıklı ölçmeyi açıyor. */
+            anahtar: 'ihf',
+            konu: 'p1',
+            altSatir: true,
+            baslik: 'İstenen Harfi Yaz',
+            not: function () { return soruSayisi + ' soru · baştaki, ortadaki ve sondaki yazılışlar'; },
+            tipler: [],
+            uretici: function (adet) { return istenenHavuzu(adet); },
+            ikon: '<svg class="tab-ikon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                  '<path d="M3.4 17.6h17.2" stroke="#CBD5E1" stroke-width="1.6" stroke-linecap="round"/>' +
+                  '<path d="M6.6 17.3v-3.6a2.1 2.1 0 0 1 4.2 0v3.6" fill="none" stroke="#9b59b6" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>' +
+                  '<circle cx="15.6" cy="8.4" r="4.3" fill="none" stroke="#0E6655" stroke-width="1.8"/>' +
+                  '<path d="M18.8 11.6 21.4 14.2" stroke="#0E6655" stroke-width="2" stroke-linecap="round"/>' +
+                  '<circle cx="18.2" cy="17.4" r="3.9" fill="#2ecc71"/>' +
+                  '<path d="M16.4 17.5l1.3 1.3 2.4-2.6" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        },
+        {
             anahtar: 'p5',
             baslik: 'Harf Birleştirme',
             not: function () { return soruSayisi + ' soru · çizgideki yazılışlar ve boşluk doldurma'; },
@@ -174,6 +202,283 @@
         '<path d="M4 9.5v5h3.4l4.6 4V5.5l-4.6 4H4z" fill="currentColor"/>' +
         '<path d="M15.6 8.8a4.4 4.4 0 0 1 0 6.4M18.2 6.2a8 8 0 0 1 0 11.6" fill="none"' +
         ' stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
+    /* ============ İSTENEN HARF (09.10.2026) ==========================
+       Öğretmen: "alfabe.html'de 'istenen harfi bulabilir misin?'
+       etkinliğini ekleyelim, harf tanıtımından sonra olsun, zaten pdf
+       olan bi şey."
+       KAYNAK: _kaynak/gecici/sunum-pdf/istenen-harf-1.pdf —
+       "Harflerin Yazılışları · İstenen Harfi Yazabilir misin?" destesi.
+       Orada çocuk "Lâm harfinin normal yazılışı", "Şin harfinin ortadaki
+       yazılışı" gibi istekleri çizgiye YAZIYOR. Ekranda yazdırmak yerine
+       dört şıktan SEÇTİRİYORUZ; asıl beceri zaten ayırt etmek.
+
+       Veri alfabe.js'teki `harfler` dizisinden gelir: h (normal),
+       b (baştaki), o (ortadaki), s (sondaki), tr (adı), nobind
+       (kendinden sonrakine bağlanmaz). nobind harflerde baş/orta/son
+       neredeyse aynı göründüğü için o harfler soru harfi olarak
+       kullanılmıyor — cevabı gözle ayırt etmek mümkün olmazdı. */
+    var IH_KONUM = [
+        { k: 'b', ad: 'baştaki' },
+        { k: 'o', ad: 'ortadaki' },
+        { k: 's', ad: 'sondaki' }
+    ];
+    function ihSec(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+    /* Dört yazılışı da birbirinden ayrı görünen harfler. Harfin `harfler`
+       dizisindeki SIRASI da taşınıyor: yazılış animasyonu (harfDetay.open)
+       sırayla çağrılıyor. */
+    function ihUygunHarfler() {
+        var hepsi = [];
+        try { if (typeof harfler !== 'undefined' && harfler) hepsi = harfler; } catch (e) { }
+        var u = [], i, x;
+        for (i = 0; i < hepsi.length; i++) {
+            x = hepsi[i];
+            if (!x || x.nobind || !x.b || !x.o || !x.s) continue;
+            if (x.b === x.o || x.o === x.s || x.b === x.s) continue;
+            u.push({ h: x, i: i });
+        }
+        return u;
+    }
+    function ihAile() {
+        try { if (typeof HARF_AILE !== 'undefined' && HARF_AILE) return HARF_AILE; } catch (e) { }
+        return {};
+    }
+
+    /* İSTEK LİSTESİ — "şu harfin şu yazılışı", tekrarsız. İki etkinlik de
+       buradan besleniyor: konu anlatımı (şıksız) ve Dene (şıklı). */
+    function ihIstekler(adet) {
+        var uygun = ihUygunHarfler();
+        if (!uygun.length) return [];
+        var liste = [], kul = {}, tur = 0;
+        while (liste.length < adet && tur++ < adet * 30) {
+            var u = ihSec(uygun), kon = ihSec(IH_KONUM);
+            var a = u.h.h + kon.k;
+            if (kul[a]) continue;
+            kul[a] = 1;
+            liste.push({ harf: u.h, idx: u.i, kon: kon });
+        }
+        return liste;
+    }
+
+    function istenenHavuzu(adet) {
+        var uygun = ihUygunHarfler();
+        if (uygun.length < 4) return [];
+        var aile = ihAile(), sorular = [];
+        /* Çeldirici bulunamayan istek eleniyor; bu yüzden fazladan isteniyor. */
+        ihIstekler(adet + 6).forEach(function (is) {
+            if (sorular.length >= adet) return;
+            var h = is.harf, kon = is.kon, dogru = h[kon.k];
+            /* Çeldiriciler: AYNI harfin öteki iki yazılışı (asıl ayrım) +
+               mümkünse AYNI AİLEDEN başka bir harfin aynı yazılışı. */
+            var celd = [];
+            IH_KONUM.forEach(function (d) { if (d.k !== kon.k) celd.push(h[d.k]); });
+            var ailem = aile[h.h];
+            var kardes = uygun.filter(function (x) {
+                return x.h.h !== h.h && (ailem ? aile[x.h.h] === ailem : true);
+            });
+            if (!kardes.length) kardes = uygun.filter(function (x) { return x.h.h !== h.h; });
+            var k2 = ihSec(kardes);
+            if (k2) celd.push(k2.h[kon.k]);
+            /* Doğruyla ya da birbiriyle aynı görünen şık kalmasın */
+            var gorulen = {}; gorulen[dogru] = 1;
+            celd = celd.filter(function (x) {
+                if (!x || gorulen[x]) return false;
+                gorulen[x] = 1; return true;
+            }).slice(0, 3);
+            if (celd.length < 3) return;
+
+            var sik = [{ html: '<span class="as-h ih-harf">' + kacis(dogru) + '</span>', dogru: true }];
+            celd.forEach(function (x) {
+                sik.push({ html: '<span class="as-h ih-harf">' + kacis(x) + '</span>', dogru: false });
+            });
+            sorular.push({
+                tip: 'istenen', bicim: 'test',
+                metin: '<b>' + kacis(h.tr) + '</b> harfinin <b>' + kon.ad + '</b> yazılışı hangisi?',
+                siklar: karistir(sik),
+                /* Cevap açılınca dört yazılış animasyonunu çağırmak için
+                   harfin `harfler` dizisindeki sırası (bkz. ihYazilisAc). */
+                harfIdx: is.idx, harfAd: h.tr
+            });
+        });
+        return sorular;
+    }
+
+    /* --- CEVAPTA DÖRT YAZILIŞ ANİMASYONU (09.10.2026) ----------------
+       Öğretmen: "bunu önce soruyorum öğrenciler deftere yazıyor, sonra
+       doğru yazılışı açıyorum… harf tanıtımında kullandığımız bi harfe
+       tıklayınca 4 yazılış animasyonunun açıldığı hali bi cevapta
+       kullanabiliriz, hatta doğru cevap kırmızı çerçeveyle
+       belirleyebiliriz hem yazılışı da öğrenirler."
+
+       İSTENEN HARF, cevabın GÖSTERİLDİĞİ tek bölüm (öteki bölümlerde
+       doğru şık bilerek saklı — bkz. testCevap). Sebebi: burada doğru
+       şıkkın kendisi öğretilecek bilgi; çocuk defterine yazdıktan sonra
+       doğru yazılışı görmeli. Cevap verilince doğru şık kırmızı çerçeveye
+       alınır, tıklanabilir kalır ve harf kartlarındaki katmanı açar:
+       alfabe_harf_detay.js'teki harfDetay.open(idx) — aynı dört biçim,
+       aynı kalem animasyonu. O dosya da klasik betik olduğu için
+       `harfDetay` buradan adıyla görünür; bir şekilde yüklenmemişse
+       sessizce vazgeçilir, soru akışı bozulmaz. */
+    function ihYazilisAc(s) {
+        if (!s || s.tip !== 'istenen') return false;
+        var i = s.harfIdx;
+        if (typeof i !== 'number' || i < 0) return false;
+        try {
+            if (typeof harfDetay === 'undefined' || !harfDetay || !harfDetay.open) return false;
+            harfDetay.open(i);
+            return true;
+        } catch (e) { return false; }
+    }
+
+    function ihYazilisAcikMi() {
+        var ov = document.getElementById('hd-overlay');
+        return !!(ov && ov.style.display === 'flex');
+    }
+
+    function ihYazilisKapat() {
+        try { if (typeof harfDetay !== 'undefined' && harfDetay) harfDetay.close(); }
+        catch (e) { }
+    }
+
+    /* Doğru şıkkı kırmızı çerçeveye alır ve tıklanabilir bırakır; alttaki
+       «Yazılışı izle» düğmesini de görünür kılar. */
+    function ihDogruyuAc(s) {
+        if (!s || s.tip !== 'istenen' || !sahne) return;
+        var d = sahne.querySelector('.as-sik[data-d="1"]');
+        if (d && !d.classList.contains('ih-dogru')) {
+            d.classList.add('ih-dogru');
+            d.disabled = false;              /* katmanı açmak için açık kalsın */
+            d.setAttribute('data-rol', 'ihyaz');
+            d.setAttribute('title', 'Nasıl yazıldığını izle');
+            d.insertAdjacentHTML('beforeend',
+                '<span class="ih-etiket">doğru yazılış · ✍️ izle</span>');
+        }
+        var b = sahne.querySelector('.ak-ihyaz');
+        if (b) b.hidden = false;
+    }
+
+    /* ===== KONU ANLATIMI: İSTENEN HARFİ YAZ (09.10.2026) ==============
+       Öğretmen: "Yani konu anlatımı ayrı soru ayrı; konu anlatımında
+       sözlü olarak soruyoruz ve sonra öğrenciler düşündükten sonra
+       yazılışını gösteriyoruz."
+
+       Burada ŞIK YOK, PUAN YOK, SÜRE YOK. Tahtada yalnız istek durur —
+       «Cim harfinin baştaki yazılışını yaz» — çocuklar deftere yazar.
+       Öğretmen hazır olunca «Yazılışı göster»e basar: harf çizginin
+       ÜSTÜNE gelir. Sonra isterse «Nasıl yazılır? izle» ile dört biçimin
+       kalem animasyonunu açar (harf kartlarındaki katmanın aynısı).
+       Şıklı ölçme aynı satırdaki «Dene» düğmesinde — ikisi ayrı. */
+    var YAZ = { havuz: [], i: 0, dolu: false };
+    var YAZ_ADET = 30;
+    var yazAnim = null;              /* ekranda yazan biçim (harfDetay) */
+
+    /* Biçim rengi harf kartındakiyle AYNI: başta yeşil, ortada mavi,
+       sonda mor — çocuk iki yerde aynı rengi görsün. */
+    function ihRenk(k) {
+        try {
+            var m = (harfDetay.FORM_META || []).filter(function (x) { return x.key === k; })[0];
+            if (m && m.color) return m.color;
+        } catch (e) { }
+        return '#0E6655';
+    }
+    function yazAnimDur() {
+        if (!yazAnim) return;
+        try { harfDetay.cancelForm(yazAnim); } catch (e) { }
+        yazAnim = null;
+    }
+    /* Harfi KALEMLE yazar (öğretmen: "birden görülmesin"). Kutuyu harf
+       kartındaki yazım SVG'si dolduruyor: kendi satır çizgisi, kendi kalem
+       ucu, aynı darbe sırası. Bir kez yazar ve ekranda kalır; kutuya
+       dokunmak ya da «Tekrar yaz» yeniden oynatır. Yazım verisi bir
+       şekilde yoksa harf olduğu gibi yazılır (aşağıdaki yedek yol). */
+    function yazCiz(is, kutu) {
+        try {
+            if (typeof HARF_YAZIM === 'undefined' || typeof harfDetay === 'undefined') return false;
+            if (!harfDetay || !harfDetay.buildSvg) return false;
+            var d = HARF_YAZIM[is.harf.h];
+            if (!d || !d[is.kon.k]) return false;
+            var a = harfDetay.buildSvg(d[is.kon.k], ihRenk(is.kon.k));
+            if (!a || !a.svg) return false;
+            kutu.innerHTML = '';
+            kutu.appendChild(a.svg);
+            yazAnim = a;
+            harfDetay.sifirla(a);
+            harfDetay.playForm(a, true, true);     /* bir kez yaz, silme */
+            return true;
+        } catch (e) { return false; }
+    }
+    function yazTekrar() {
+        if (!yazAnim) return;
+        try {
+            harfDetay.cancelForm(yazAnim);
+            harfDetay.sifirla(yazAnim);
+            harfDetay.playForm(yazAnim, true, true);
+        } catch (e) { }
+    }
+
+    function yazAc() {
+        katmanKur(); bicemKur();
+        var liste = ihIstekler(YAZ_ADET);
+        if (!liste.length) return false;
+        YAZ.havuz = liste; YAZ.i = 0;
+        zamanTemizle(); perdeKapat();
+        katman.classList.add('ak-yaz');       /* başlıktaki kip/sayı tuşları gizlenir */
+        basEl.textContent = 'İstenen Harfi Yaz';
+        notEl.textContent = 'Sor · düşünsünler · yazılışını göster';
+        var ana = document.querySelector('.main-app');
+        seritAcikti = !!(ana && !ana.classList.contains('nav-gizli'));
+        katman.hidden = false;
+        document.body.classList.add('ak-acik');
+        yazGoster();
+        return true;
+    }
+
+    function yazGoster() {
+        ihYazilisKapat(); yazAnimDur(); YAZ.dolu = false;
+        if (YAZ.i >= YAZ.havuz.length) YAZ.i = 0;    /* liste biterse başa */
+        var is = YAZ.havuz[YAZ.i];
+        if (!is || !sahne) return;
+        sahne.innerHTML =
+            '<div class="ak-sayac">' + (YAZ.i + 1) + ' / ' + YAZ.havuz.length + '</div>' +
+            '<div class="as-metin ak-metin"><b>' + kacis(is.harf.tr) + '</b> harfinin <b>' +
+            kacis(is.kon.ad) + '</b> yazılışını yaz</div>' +
+            '<div class="ihy-tahta">' +
+            '  <div class="ihy-cizgi" data-rol="ihyCizgi"><span class="ihy-bos">؟</span></div>' +
+            '</div>' +
+            '<div class="ak-alt">' +
+            '  <button type="button" class="ak-t" data-rol="ihyGoster">✍️ Yazılışı göster</button>' +
+            '  <button type="button" class="ak-t ak-ikincil" data-rol="ihyTekrar" hidden>' +
+            '↻ Tekrar yaz</button>' +
+            '  <button type="button" class="ak-t ak-ikincil" data-rol="ihyIzle" hidden>' +
+            'Dört yazılışı birden</button>' +
+            '  <button type="button" class="ak-t" data-rol="ihySonraki" hidden>Sonraki ›</button>' +
+            '</div>';
+    }
+
+    /* Birinci basış: harf çizginin üstüne gelir (cevap). İkinci düğme:
+       dört biçimin yazım animasyonu. İkisi ayrı, tahtada sırayla. */
+    function yazAcikla() {
+        var is = YAZ.havuz[YAZ.i];
+        if (!is || !sahne) return;
+        var c = sahne.querySelector('[data-rol="ihyCizgi"]');
+        if (c) {
+            c.classList.add('ihy-dolu');
+            yazAnimDur();
+            if (yazCiz(is, c)) { c.title = 'Tekrar yaz'; }
+            else { c.innerHTML = '<span class="ihy-harf">' + kacis(is.harf[is.kon.k]) + '</span>'; }
+        }
+        YAZ.dolu = true;
+        var g = sahne.querySelector('[data-rol="ihyGoster"]'); if (g) g.hidden = true;
+        var t = sahne.querySelector('[data-rol="ihyTekrar"]'); if (t) t.hidden = !yazAnim;
+        var z = sahne.querySelector('[data-rol="ihyIzle"]');   if (z) z.hidden = false;
+        var n = sahne.querySelector('[data-rol="ihySonraki"]'); if (n) n.hidden = false;
+    }
+
+    function yazIzle() {
+        var is = YAZ.havuz[YAZ.i];
+        if (is) ihYazilisAc({ tip: 'istenen', harfIdx: is.idx });
+    }
+
     /* Kelimenin GÖRÜNEN ilk harfi — harekeler, tatvîl ve boşluk atılır,
        elif çeşitleri (أ إ آ ٱ) tek harf sayılır. "ال" takısı BİLEREK
        ayıklanmıyor: amaç şıkların ekranda aynı harfle BAŞLAMASI. */
@@ -444,6 +749,13 @@
            duruyor, basınca puan çıkıyordu (öğretmen, 05.10.2026). */
         var sonSoru = (no >= toplam);
         g += '<div class="ak-alt">' +
+             /* İstenen Harf: cevap verilince açılır (bkz. ihDogruyuAc).
+                Şıkka dokunmak da aynı katmanı açıyor; tahtada uzaktan
+                gösterirken düğme daha kolay bulunuyor. */
+             (s.tip === 'istenen'
+                ? '<button type="button" class="ak-t ak-ikincil ak-ihyaz" data-rol="ihyaz"' +
+                  ' hidden>✍️ Yazılışı izle</button>'
+                : '') +
              '<button type="button" class="ak-t" data-rol="sonraki" hidden>' +
              (sonSoru ? 'Sonucu gör ›' : 'Sonraki ›') + '</button>' +
              '</div>';
@@ -660,6 +972,17 @@
             var t = e.target; if (!t || !t.closest) return;
             var d = t.closest('[data-rol]');
             var rol = d && d.dataset ? d.dataset.rol : '';
+            /* İstenen Harf: kırmızı çerçeveli doğru şık ve alttaki düğme
+               dört yazılış animasyonunu açar. Şıkka rol cevaptan SONRA
+               veriliyor, bu yüzden cevaplama akışını kesmiyor. */
+            if (rol === 'ihyaz')   { tik(); ihYazilisAc(aktif && aktif.havuz[aktif.i]); return; }
+            /* Konu anlatımı (şıksız) — bkz. yazAc */
+            if (rol === 'ihyGoster')  { tik(); yazAcikla(); return; }
+            if (rol === 'ihyTekrar')  { tik(); yazTekrar(); return; }
+            /* Yazılan kutuya dokunmak da yeniden yazdırır. */
+            if (rol === 'ihyCizgi')   { if (YAZ.dolu && yazAnim) { tik(); yazTekrar(); } return; }
+            if (rol === 'ihyIzle')    { tik(); yazIzle(); return; }
+            if (rol === 'ihySonraki') { tik(); YAZ.i++; yazGoster(); return; }
             if (rol === 'kapat')   { tik(); kapat(); return; }
             if (rol === 'sonraki') { tik(); aktif.i++; soruGoster(); return; }
             if (rol === 'yeniden') { tik(); turBaslat(); return; }
@@ -703,7 +1026,18 @@
            yoksa arkadaki slayt kayıyor. */
         document.addEventListener('keydown', function (e) {
             if (katman.hidden) return;
-            if (e.key === 'Escape') { kapat(); return; }
+            if (e.key === 'Escape') {
+                /* Yazılış katmanı açıkken Esc YALNIZ onu kapatır. Bu
+                   dinleyici yakalama evresinde; durdurmasak harfDetay'ın
+                   kendi Esc dinleyicisiyle birlikte çalışıp etkinliği de
+                   kapatıyordu. */
+                if (ihYazilisAcikMi()) {
+                    ihYazilisKapat();
+                    e.stopPropagation(); e.preventDefault();
+                    return;
+                }
+                kapat(); return;
+            }
             e.stopPropagation();
         }, true);
     }
@@ -773,6 +1107,7 @@
     /* ---------------- tur mantığı ---------------- */
 
     function soruGoster() {
+        ihYazilisKapat();     /* önceki sorunun yazılış katmanı kalmasın */
         var s = aktif.havuz[aktif.i];
         if (!s) {
             sahne.innerHTML = (mod === 2)
@@ -848,11 +1183,20 @@
            çocuk düşünmeden önce cevabı görüyor, aynı soru bir daha
            çıktığında da ezberden işaretliyordu. Artık yalnız SEÇİLEN şık
            renklenir: doğruysa yeşil, yanlışsa kırmızı. Doğru şık
-           açılmıyor — tekrar denemek anlamlı kalsın. */
+           açılmıyor — tekrar denemek anlamlı kalsın.
+           TEK İSTİSNA İSTENEN HARF (09.10.2026): orada doğru şıkkın
+           kendisi öğretilecek bilgi, çocuk defterine yazdıktan sonra
+           doğru yazılışı görmeli (bkz. ihDogruyuAc). */
         for (var j = 0; j < hepsi.length; j++) hepsi[j].disabled = true;
         dugme.classList.add(secilen.dogru ? 'as-dogru' : 'as-yanlis');
         if (secilen.dogru) { aktif.dogru++; dogruSes(); } else { yanlisSes(); }
-        bildir(sahne, secilen.dogru ? 'iyi' : 'kotu');
+        if (s.tip === 'istenen') {
+            ihDogruyuAc(s);
+            bildir(sahne, secilen.dogru ? 'iyi' : 'kotu',
+                   'Kırmızı çerçeveli yazılışa dokun — nasıl yazıldığını izle.');
+        } else {
+            bildir(sahne, secilen.dogru ? 'iyi' : 'kotu');
+        }
         ileriAc(s);
     }
 
@@ -1018,6 +1362,7 @@
             try { if (typeof window.dvyAc === 'function') window.dvyAc(); } catch (e) { }
         }
         katmanKur(); bicemKur();
+        katman.classList.remove('ak-yaz');   /* konu anlatımından gelmiş olabilir */
         var b = bolumBul(anahtar);
         if (!b) return false;
         if (!durumlar[anahtar]) {
@@ -1051,7 +1396,9 @@
     }
     function kapat() {
         if (!katman) return;
+        ihYazilisKapat(); yazAnimDur(); YAZ.dolu = false;
         katman.hidden = true;
+        katman.classList.remove('ak-yaz');
         zamanTemizle(); perdeKapat();
         document.body.classList.remove('ak-acik');
         seridiGeriAc();
@@ -1264,6 +1611,60 @@
             /* Şık yazısı kutunun TAM ORTASINDA: harf rozeti akışta durunca
                yazıyı sağa itiyor, kutuyla ortası tutmuyordu. Rozet artık
                sol kenara mutlak konumla oturuyor. */
+            /* İstenen Harf şıkları: tek bir harf biçimi, iri ve ortalı. */
+            '#ak-tam .ih-harf{font-size:clamp(40px,11vh,150px);line-height:1.1;direction:rtl}',
+            /* DOĞRU YAZILIŞ — öğretmen: "doğru cevap kırmızı çerçeveyle
+               belirleyebiliriz". Kırmızı DOLGU değil ÇERÇEVE: yanlış şıkkın
+               (as-yanlis) kırmızı dolgusuyla karışmasın. İkisi yan yana
+               durunca ince çerçeve yetmiyordu; çerçeve kalın (outline,
+               yerinden oynatmasın diye) ve altında "doğru yazılış" yazan
+               dolu bir etiket var — hangisinin doğru olduğu okunarak da
+               anlaşılsın. */
+            /* Dolgu VERİLMİYOR: öğrenci doğruyu işaretlediyse as-dogru'nun
+               yeşili görünsün, çerçeve onun üstüne binsin. */
+            '#ak-tam .as-sik.ih-dogru{cursor:pointer;',
+            '  outline:4px solid #E11D48;outline-offset:-4px;',
+            '  box-shadow:0 0 0 5px rgba(225,29,72,.16);animation:ihCerc .5s ease-out}',
+            '#ak-tam .as-sik.ih-dogru[disabled]{opacity:1}',
+            '@keyframes ihCerc{from{box-shadow:0 0 0 0 rgba(225,29,72,.6)}}',
+            '#ak-tam .ih-etiket{position:absolute;inset-inline-end:10px;bottom:8px;',
+            '  background:#E11D48;color:#fff;border-radius:999px;',
+            '  padding:.18em .7em;font-weight:700;letter-spacing:.01em;',
+            '  font-size:clamp(11px,1.6vh,17px);pointer-events:none}',
+            /* Yazılış katmanı (#hd-overlay, z-index 5000) tam ekran
+               etkinliğin (9000) ARKASINDA kalıyordu. */
+            'body.ak-acik #hd-overlay{z-index:9600}',
+            /* ---- KONU ANLATIMI: İstenen Harfi Yaz ---- */
+            /* Kip ve soru sayısı tuşları burada anlamsız: puan yok. */
+            '#ak-tam.ak-yaz .ak-mod{display:none}',
+            '#ak-tam .ihy-tahta{flex:1 1 auto;display:flex;align-items:center;',
+            '  justify-content:center;width:min(1600px,96vw);max-width:100%;min-height:0}',
+            /* DEFTER KUTUSU. Harf, yazım SVG'si ekranda ne kadar YÜKSEK
+               yer bulursa o kadar büyüyor (SVG en-boy oranını koruyor,
+               yüksekliğe sığıyor): kutu bu yüzden boyuna geniş, enine
+               ölçülü. Boş ve dolu hâlin ölçüsü AYNI — «göster»e basınca
+               kutu zıplamasın. Dolu hâlde çizgi SVG'nin kendi içinde,
+               bizimki kalkar. */
+            '#ak-tam .ihy-cizgi{position:relative;display:flex;align-items:center;',
+            '  justify-content:center;box-sizing:border-box;',
+            '  width:min(680px,74vw);height:min(58vh,520px);',
+            '  background:#fff;border:2px solid #dbe7e4;border-radius:26px;padding:10px 14px}',
+            '#ak-tam .ihy-cizgi::before{content:"";position:absolute;left:16px;right:16px;',
+            '  top:56%;height:3px;background:#C9CDD3;border-radius:2px}',
+            '#ak-tam .ihy-bos{font-size:clamp(40px,9vh,96px);line-height:1;color:#dfeaee;',
+            '  position:relative;top:-.42em}',
+            /* Yazım verisi bulunamazsa (yedek yol) harf çizginin üstüne. */
+            '#ak-tam .ihy-harf{position:absolute;left:0;right:0;top:56%;',
+            '  transform:translateY(-100%);text-align:center;direction:rtl;',
+            '  font-size:clamp(56px,26vh,250px);line-height:1;color:#0E6655;',
+            '  animation:ihyGel .45s ease-out}',
+            '#ak-tam .ihy-cizgi.ihy-dolu{border-color:#bfe3d8;cursor:pointer;',
+            '  box-shadow:0 0 0 5px rgba(22,160,133,.10)}',
+            '#ak-tam .ihy-cizgi.ihy-dolu::before{display:none}',
+            '#ak-tam .ihy-cizgi .hd-yaz-svg{width:100%;height:100%}',
+            '@keyframes ihyGel{from{opacity:0;transform:translateY(-.12em)}}',
+            /* Şeritte kendi satırındaki konu adı: ötekilerle aynı görünsün. */
+            '.nav-tabs .tab-satir > .ak-konu{flex:1 1 auto;width:auto;min-width:0}',
             '#ak-tam .as-sik{position:relative}',
             '#ak-tam .as-mark{position:absolute;left:1vw;top:50%;',
             '  transform:translateY(-50%);margin:0}',
@@ -1422,6 +1823,31 @@
             }
             return null;
         }
+        /* Sayfa sekmesi olmayan bölüm (İstenen Harfi Yaz) KENDİ SATIRINI
+           kurar ve `konu` satırının hemen ALTINA girer: solda konu adı,
+           sağında kendi «Dene» tuşu — ötekilerle aynı düzen. Konu adına
+           basınca konu anlatımı açılır (ak-konu, bkz. yazAc). */
+        function kendiSatir(b, tus) {
+            var konu = konuBul(b.konu);
+            if (!konu || !tus) return false;
+            var ust = (konu.parentNode && konu.parentNode.classList &&
+                       konu.parentNode.classList.contains('tab-satir'))
+                      ? konu.parentNode : konu;
+            if (!ust.parentNode) return false;
+            var satir = document.createElement('div');
+            satir.className = 'tab-satir';
+            var ad = document.createElement('button');
+            ad.type = 'button';
+            ad.className = 'tab-trigger ak-konu';
+            ad.dataset.ihy = '1';
+            ad.title = b.baslik;
+            ad.setAttribute('aria-label', b.baslik);
+            ad.innerHTML = b.ikon + '<span class="tab-ad">' + b.baslik + '</span>';
+            satir.appendChild(ad);
+            satir.appendChild(tus);
+            ust.parentNode.insertBefore(satir, ust.nextSibling);
+            return true;
+        }
         function sar(konu, tus) {
             if (!konu || !konu.parentNode || !tus) return false;
             var satir = document.createElement('div');
@@ -1440,7 +1866,8 @@
             d.title = 'Kendini Dene — ' + b.baslik;
             d.setAttribute('aria-label', d.title);
             d.innerHTML = DENE_IKON + '<span class="ak-yanad">Dene</span>';
-            sar(konuBul(b.anahtar), d);
+            if (b.altSatir) kendiSatir(b, d);
+            else sar(konuBul(b.konu || b.anahtar), d);
         });
 
         /* Dinle ve Yaz'ın yanına kelime listesi PDF'i: tek dosyada önce boş
@@ -1482,6 +1909,9 @@
         sira.appendChild(defter);
 
         sira.addEventListener('click', function (e) {
+            /* Konu adı: konu anlatımı (şıksız). */
+            var ky = e.target.closest ? e.target.closest('.ak-konu') : null;
+            if (ky) { e.stopPropagation(); tik(); yazAc(); return; }
             var d = e.target.closest ? e.target.closest('.ak-tetik') : null;
             if (!d) return;
             e.stopPropagation();

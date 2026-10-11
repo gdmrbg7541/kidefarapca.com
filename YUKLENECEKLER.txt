@@ -8382,3 +8382,611 @@ görüntüleyici "1 / 4" diyor ve yeni fotoğrafı açıyor.
   - Olculdu: 40 soru / 120 celdirici uretildi, 90'i (%75) dogru kelimeyle
     ayni harfle basliyor. Kalanlar havuzda o harften yeterli kelime
     olmayan sorular.
+
+--- 2026-10-09 · Alfabe: "Istenen Harf" etkinligi ---
+* okumayazma/alfabe_akordiyon.js (?v=19)
+  Ogretmen: "alfabe.html de 'istenen harfi bulabilir misin?' etkinligini
+  ekleyelim, harf tanitimindan sonra olsun, zaten pdf olan bi sey."
+  - KAYNAK: _kaynak/gecici/sunum-pdf/istenen-harf-1.pdf (44 slayt) —
+    "Harflerin Yazilislari · Istenen Harfi Yazabilir misin?" destesi.
+    Orada cocuk "Lam harfinin normal yazilisi", "Sin harfinin ortadaki
+    yazilisi" gibi istekleri cizgiye YAZIYOR.
+  - Ekranda yazdirmak yerine DORT SIKTAN sectiriyoruz; asil beceri zaten
+    ayirt etmek. Soru: "<Harf adi> harfinin <bastaki/ortadaki/sondaki>
+    yazilisi hangisi?"
+  - CELDIRICILER kasitli: ayni harfin oteki iki yazilisi (asil ayrim) +
+    mumkunse AYNI AILEDEN baska bir harfin ayni yazilisi (HARF_AILE).
+    Ornek: Fe'nin bastakisi sorulunca qaf'in bastakisi da sikta.
+  - Veri alfabe.js'teki `harfler` dizisinden (h/b/o/s/tr/nobind).
+    nobind harfler (elif, dal, zel, ra, ze, vav...) SORU HARFI OLARAK
+    KULLANILMIYOR: onlarda bas/orta/son neredeyse ayni gorunur, gozle
+    ayirt edilemezdi. Dort yazilisi birbirinden farkli olmayan harf de
+    eleniyor.
+  - Bolum Harf Tanitimi'ndan HEMEN SONRA: p1 Harf Tanitimi · p2 Istenen
+    Harf · p5 Harf Birlestirme · p8 Okuma · p7 Dinle ve Yaz.
+  - Olculdu: 30 soru uretildi, sik tekrari 0, hepsinde tam bir dogru sik.
+
+=== 09.10.2026 — İstenen Harf: cevapta dört yazılış animasyonu + şeritteki tuş ===
+Öğretmen: "bunu önce soruyorum öğrenciler deftere yazıyor, sonra doğru
+yazılışı açıyorum, harf tanıtımında kullandığımız bi harfe tıklayınca 4
+yazılış animasyonunun açıldığı hali bi cevapta kullanabiliriz, hatta
+doğru cevap kırmızı çerçeveyle belirleyebiliriz hem yazılışı da
+öğrenirler."
+
+1) ÖNEMLİ DÜZELTME — etkinlik AÇILMIYORDU.
+   İstenen Harf bölümünün anahtarı 'p2' idi; yan "Dene" tuşları konu
+   sekmesinin yanına ANAHTARLA eşleşerek konuyor ve alfabe.html'de p2
+   başka bir panel (Ölçme & Etkinlik grubunda). Eşleşme Alfabe grubu
+   içinde arandığı için tuş hiç konmuyordu — bölüme girilemiyordu.
+   Anahtar 'ihf' yapıldı; kendi sayfa sekmesi olmadığı için tuşu yeni
+   `konu` alanıyla Harf Tanıtımı (p1) satırının sağına ekleniyor, adı
+   da "Dene" değil "İstenen Harf". Şerit artık:
+   [Harf Tanıtımı] [Dene] [İstenen Harf]
+
+2) CEVAPTA DÖRT YAZILIŞ.
+   Soruya harfin `harfler` dizisindeki sırası (harfIdx) eklendi. Cevap
+   verilince doğru şık kırmızı ÇERÇEVEYE alınıyor (dolgu değil: yanlış
+   şıkkın kırmızı dolgusuyla karışmasın), köşesine "doğru yazılış ·
+   ✍️ izle" etiketi geliyor ve şık tıklanabilir kalıyor. Tıklayınca
+   harf kartlarındaki katman açılıyor: alfabe_harf_detay.js'teki
+   harfDetay.open(idx) — mahreç, dört biçimin kalem animasyonu, nasıl
+   yazılır notu. Alt satıra ayrıca "✍️ Yazılışı izle" düğmesi kondu
+   (tahtada uzaktan göstermek kolay olsun).
+   Doğru bilindiyse yeşil dolgu + kırmızı çerçeve birlikte duruyor.
+
+3) Bu açılma YALNIZ İstenen Harf'te. Öteki bölümlerde doğru şık hâlâ
+   saklı (08.10.2026 kararı); orada cevabı göstermek ezbere yarıyordu,
+   burada ise doğru yazılışın kendisi öğretilecek bilgi.
+
+4) Esc: yazılış katmanı açıkken yalnız onu kapatıyor (eskiden iki
+   dinleyici birlikte çalışıp etkinliği de kapatırdı). Soru değişince
+   ve etkinlik kapanınca katman kendiliğinden kapanıyor.
+   #hd-overlay z-index'i tam ekran etkinliğin (9000) üstüne alındı.
+
+Dosyalar: okumayazma/alfabe_akordiyon.js (?v=20), alfabe.html
+Yedek: _kaynak/yedekler/2026-10-09-istenen-harf-yazilis/
+
+--- aynı gün, devam: KONU ANLATIMI AYRI, SORU AYRI ---
+Öğretmen: "istenen harfi yaz olsun, harf tanıtımının altında olsun, onun
+da ayrı bi dene kısmı olsun, amacımız öğrenciye düşündürtmek sonra
+yazılışını göstermek" / "konu anlatımı ayrı soru ayrı; konu anlatımında
+sözlü olarak soruyoruz ve sonra öğrenciler düşündükten sonra yazılışını
+gösteriyoruz."
+
+ADI: "İstenen Harf" -> "İSTENEN HARFİ YAZ".
+ŞERİT: artık Harf Tanıtımı'nın ALTINDA kendi satırı var, ötekilerle aynı
+düzende — solda konu adı, sağında kendi «Dene» tuşu:
+    [Harf Tanıtımı]      [Dene]
+    [İstenen Harfi Yaz]  [Dene]
+    [Harf Birleştirme]   [Dene]   ...
+(Sayfa sekmesi olmayan bölüm için seritKur'a `altSatir` + `kendiSatir()`
+eklendi; `konu` alanı hangi satırın altına gireceğini söylüyor.)
+
+İKİ AYRI ETKİNLİK, AYNI İSTEK LİSTESİNDEN (ihIstekler):
+1) KONU ANLATIMI — konu adına basılınca açılır (yazAc). Şık yok, puan
+   yok, süre yok. Tahtada yalnız istek durur: «Cim harfinin baştaki
+   yazılışını yaz». Çocuklar deftere yazar. Öğretmen «Yazılışı göster»e
+   basınca harf çizginin ÜSTÜNE gelir (harfi tarif sunusundaki yazı
+   çizgisinin aynısı). Sonra «✍️ Nasıl yazılır? İzle» dört biçimin kalem
+   animasyonunu açar. «Sonraki ›» yeni istek getirir (30 istek, tekrarsız).
+   Başlıktaki kip/soru sayısı tuşları bu kipte gizli (#ak-tam.ak-yaz).
+2) DENE — satırdaki «Dene» tuşu; şıklı ölçme (önceki not).
+
+Dosya: okumayazma/alfabe_akordiyon.js (?v=20)
+
+--- aynı gün, devam (2): YAZILIŞ ANİMASYONLU + ARAÇ ŞERİDİ ---
+Öğretmen: "istenen harfi yaz kısmında yazılışı göster tuşuna bastığımız
+zaman o harfin direkt yazılışı animasyon olarak görülsün yani birden
+görülmesin."
+  «Yazılışı göster» artık harfi KALEMLE yazdırıyor: kutuyu harf
+  kartındaki yazım SVG'si dolduruyor (harfDetay.buildSvg + playForm,
+  tek sefer), kendi satır çizgisi ve kalem ucuyla. Harf bir kez yazılıp
+  ekranda kalıyor; kutuya dokunmak ya da «↻ Tekrar yaz» yeniden
+  oynatıyor. Renk harf kartındakiyle aynı: başta yeşil, ortada mavi,
+  sonda mor (harfDetay.FORM_META). Üçüncü düğme «Dört yazılışı birden»
+  dört biçimin olduğu katmanı açıyor.
+  Kutu boş ve dolu hâlde AYNI ölçüde (680x520'ye kadar), basınca
+  zıplamıyor; harf SVG en-boy oranını koruyup yüksekliğe sığdığı için
+  kutu boyuna geniş tutuldu. 1440x900 ve 1920x1080'de taşma yok.
+  Yazım verisi bulunamazsa harf olduğu gibi yazılıyor (yedek yol).
+
+Öğretmen: "harf tanıtımı araçları ... kumanda açıkken görünmesin, eğer
+kumanda kapatılırsa ve harf tanıtımı kısmındaysa görünsün."
+  okumayazma/alfabe.css (?v=20261009a) — tek kural:
+    body:not(.harf-tam) .main-app:not(.nav-gizli) .hdr-switch{display:none}
+  Araç şeridi (gruplama · diziliş · yazılış · tam ekran) artık yalnız
+  KUMANDA KAPALIYKEN ve Harf Tanıtımı sekmesindeyken görünüyor.
+  ODAK (tam ekran) kipi dışarıda bırakıldı: oradaki düğmelerden biri
+  odaktan ÇIKIŞ tuşu, gizlenirse çıkış yalnız Esc'te kalırdı.
+  Denendi: kumanda açık/p1 gizli · kapalı/p1 görünür · kapalı/p5 gizli ·
+  odak kipi görünür.
+
+Dosyalar: okumayazma/alfabe_akordiyon.js (?v=20), okumayazma/alfabe.css
+(?v=20261009a), alfabe.html
+Yedek: _kaynak/yedekler/2026-10-09-arac-seridi-kumanda/
+
+=== 09.10.2026 — HARF YAZIM VERİSİ HARF HARF AYRILDI ===
+Öğretmen: "her harfi ayrı bi küme yapıp sadece istediğimizi güncelleyelim."
+
+SORUN: Yazım verisi (HARF_YAZIM) alfabe_harf_detay.js içindeydi; 470 KB,
+dosyanın %90'ı. Tek bir harfin tek bir biçimini düzeltmek için 519 KB'lik
+dosyaya dokunmak gerekiyordu, neyin değiştiği görünmüyordu.
+
+YENİ YAPI
+  _kaynak/harf-yazim/01-elif.json ... 28-ye.json   KAYNAK (harf başına bir dosya)
+  okumayazma/alfabe_harf_yazim.js                   ÜRETİLEN (site bunu yükler)
+  _kaynak/uretici/harfYazim.py                      --bol · --kur · --denetle
+  okumayazma/alfabe_harf_detay.js                   519 KB -> 50 KB
+
+Harf dosyasında dört biçim ayrı: b baştaki, o ortadaki, s sondaki, n yalın.
+Yanlarında "durum" alanı var (siteye gitmez): "üretilmiş" (makineden geldi,
+gözden geçirilmedi) / "onaylı 2026-10-09" / "bozuk: 2. darbe ters".
+
+Üretilen dosyada HER BİÇİM TEK SATIR (212 satır, 112'si biçim): bir biçim
+değişince git farkında tek satır değişiyor.
+
+AKIŞ: "sâd'ın baştakini düzelt" -> 14-sad-kalin-s.json açılır, yalnız
+yazim.b değişir, --kur çalışır, denenir, durum.b güncellenir.
+
+GERİ DÖNÜŞLÜ: --bol üretilmiş JS'ten 28 dosyayı her zaman yeniden çıkarır.
+_kaynak git'e girmediği için bu önemli: kaynak kaybolsa bile siteye giden
+dosyadan geri üretilir. --bol var olan durum notlarını korur.
+
+DOĞRULAMA: yeniden üretilen veri eskisiyle birebir aynı (derin karşılaştırma
+True), 471.575 bayt; sayfada 28 harf, harf kartı dört biçimi yazıyor,
+İstenen Harfi Yaz animasyonu çalışıyor, 112 biçimin hepsi tam, konsol hatası
+yok.
+
+DİKKAT: alfabe.html'de alfabe_harf_yazim.js?v=1, alfabe_harf_detay.js?v=34'ten
+ÖNCE yüklenmeli (HARF_YAZIM orada adıyla kullanılıyor). Veriyi kullanan öteki
+dosyalarda değişiklik gerekmedi; ad aynı kaldı.
+
+İsteğe bağlı: hizli-gonder.command bu klasörde değil (yalnız yedeği var).
+İstenirse içine "python3 _kaynak/uretici/harfYazim.py --denetle" satırı
+eklenebilir; JSON'lar JS'ten yeniyse uyarır.
+
+Dosyalar: okumayazma/alfabe_harf_yazim.js (YENİ),
+okumayazma/alfabe_harf_detay.js, alfabe.html
+Yedek: _kaynak/yedekler/2026-10-09-harf-yazim-bolme/
+
+=== 09.10.2026 — ṢĀD SONDAKİ: "İKİNCİ BİR EL YAZIYOR" ===
+Öğretmen: "sadın sondaki yazılışını incele, imleç doğru hareket ediyor ama
+imleç dışında ikinci bi boyama başlıyor, tek bi kişi çiziyormuş gibi olmalı."
+
+BULGU — hata ṣād'ın verisinde DEĞİL, ortak motorun hız profilinde.
+Kalem yolunun "git-gel" (aynı yerden geri dönen) sayılan kesimleri
+hızlandırılıyordu (IZ_AGIRLIK 0.26 = 3,8 kat). Ölçüm: ص sondaki biçiminde
+kalem bir karede 154 birim yol alıyor (normal 8-36). O karede 154 birimlik
+şerit birden boyanıyor; göz kalemi orada görmediği için "başka biri boyadı"
+diyor. Kalem konumu ile maskenin açıldığı yer her an BİREBİR aynı (ölçüldü),
+yani imleç gerçekten doğru gidiyor — sorun hızda.
+
+İkinci sebep: git-gel eşiği kalem eninin 0.45'iydi (64 enli kalemde 29
+birim). Kalemin yarıçapı 32; 29 birim yana kaymış bir dönüş YENİ şerit
+açıyor, üstelik hızlandırılmış olarak. Eşik 0.22'ye (14 birim) indi.
+
+DEĞİŞİKLİK (okumayazma/alfabe_harf_detay.js ?v=35)
+  IZ_AGIRLIK: 0.26 -> 0.7          (hızlanma 3,8 kat -> 1,4 kat)
+  git-gel eşiği: 0.45*w -> 0.22*w  (29 birim -> 14 birim)
+
+ÖLÇÜM (kare başına en büyük sıçrama, birim)
+  ص sondaki   154 -> 94      ص baştaki    56 -> 44
+  ك baştaki    58 -> 29      ث ortadaki   59 -> 30
+  (sayılar sınama ortamının ~12 fps'ine göre; 60 fps'te beşte birine iner)
+
+BEDELİ: 112 biçimin 57'si ortalama 0,2 sn uzuyor, en çok 0,7 sn (ه baştaki).
+Hiçbiri 3,6 sn tavanını aşmıyor.
+
+NOT: Bu bütün harfleri etkileyen ORTAK bir ayar. ṣād'ın kendi verisine
+dokunulmadı; 14-sad-kalin-s.json içinde durum.s notu güncellendi.
+
+Dosyalar: okumayazma/alfabe_harf_detay.js (?v=35), alfabe.html,
+_kaynak/harf-yazim/14-sad-kalin-s.json
+Yedek: _kaynak/yedekler/2026-10-09-gitgel-hizi/
+
+=== 09.10.2026 — "İKİ FARKLI ÇİZİM"İN ASIL SEBEBİ: KARE SAYISI ===
+Öğretmen: "bu motoru her harf için teker teker değiştirmeye uygun hale
+getirelim, hâlâ iki farklı çizim oluyor."
+
+ÖLÇÜM (sınama ortamı, alfabe.html)
+  katman kapalı          19-20 kare/sn
+  büyüteç açık           13 kare/sn      <-- yazım burada oynuyor
+  bulanıklık kapatılınca 19 kare/sn
+  ayar aracı (yalın sayfa) 61 kare/sn
+Kare sayısı düşünce kalem bir karede 130-150 birim birden atlıyor
+(kalem eni 64). Göz kalemi o aralıkta görmüyor, "ikinci bir el boyadı"
+diyor. Yani kusur çizimde değil, SAYFANIN AĞIRLIĞINDA.
+
+İKİ DÜZELTME
+1) Tablodaki 203 darbe, üstte katman varken ARKADA yazmaya devam
+   ediyordu (görünmüyorlar bile). Artık büyüteç (#hd-overlay) ya da
+   Kendini Dene / İstenen Harfi Yaz (body.ak-acik) açıkken duruyor.
+   harfGrid.tick içinde tek koşul.
+2) #hd-overlay'deki backdrop-filter: blur(6px) kaldırıldı — tam ekran
+   bulanıklık her kareyi yeniden hesaplatıyordu. Yerine biraz daha koyu
+   düz perde: rgba(23,33,48,.66).
+SONUÇ: büyüteç açıkken 13 -> 21 kare/sn. ص sondaki: kare 43 -> 70,
+en büyük sıçrama 132 -> 83 birim. (Öğretmenin bilgisayarı bu sınama
+ortamından hızlı; orada 60 kare/sn'ye yaklaşması beklenir.)
+
+HARFE ÖZEL MOTOR AYARI
+Motor artık biçim biçim ayarlanabiliyor. Harfin json dosyasında:
+  "s": { ..., "motor": { "iz": 1, "esik": 0.14, "sure": 4600, "hiz": 0.8 } }
+  iz    git-gel hızlanması (1 = hiç hızlanma yok)   varsayılan 0.7
+  esik  git-gel yakınlık eşiği (kalem eninin oranı) varsayılan 0.22
+  sure  bu biçimin süresi (ms); yoksa yoldan hesaplanır
+  hiz   süre bölücüsü
+Kalem eni ayrı: darbenin kendi "w" değeri (büyüteçte de tabloda da geçerli).
+Motor ayarı olan biçim araçta turuncu çizgiyle işaretli.
+
+YENİ ARAÇ: _kaynak/arac/yazim-ayar.html (siteye gitmez)
+  Üreten: python3 _kaynak/uretici/yazimAracUret.py
+  112 biçim listesi · büyük önizleme · Yaz / Yavaş (×4) / kare kare ileri
+  geri · iz, eşik, en, süre kaydıraçları · her yazımda ÖLÇÜM (kare sayısı,
+  kare başına ortalama ve en büyük sıçrama; sıçrama kalem eninin 1,2
+  katını geçerse kırmızı uyarı) · "Ayarı kopyala".
+
+Dosyalar: okumayazma/alfabe_harf_detay.js (?v=36),
+okumayazma/alfabe.css (?v=20261009b), alfabe.html,
+_kaynak/arac/yazim-ayar.html (YENİ), _kaynak/uretici/yazimAracUret.py (YENİ)
+Yedek: _kaynak/yedekler/2026-10-09-gitgel-hizi/
+
+=== 09.10.2026 — BULUNDU: DÖRT BİÇİM AYNI ANDA YAZILIYORMUŞ ===
+Öğretmen: "her harf için sadece bir kalem kullanılıyor gibi olsun, ama iki
+hatta üç kalemle birden yazılıyormuş gibi oluyor; biri başı boyuyor biri
+harfin ortasını veya sonunu."
+
+SEBEP: büyüteçte tur başlarken DÖRT BİÇİM DE AYNI ANDA başlıyordu.
+turBaslat() şöyleydi:
+    this.anims.forEach(a => { a.bitince = ...; this.playForm(a, false, true); });
+Yani dört kutuda dört kalem birden yazıyordu. "Biri başı, biri ortası,
+biri sonu" tam olarak bu: baştaki/ortadaki/sondaki yazılışlar.
+(Dosyadaki "ŞİMDİ sıra: Başta -> Ortada -> Sonda -> Yalın" açıklaması
+eskimişti; kod artık öyle çalışmıyordu. Açıklama da düzeltildi.)
+
+DÜZELTME: turBaslat artık sırayla gidiyor — Başta, bitince Ortada, sonra
+Sonda, sonra Yalın (sağdan sola, okuma yönü). Biten biçim ekranda kalır.
+Ekranda HER AN TEK KALEM. Tur bitince 1,7 sn bekleyip baştan.
+Yazılmakta olan kutu belirgin duruyor (.hd-yazan: yeşil çerçeve + altı
+çizili etiket) — göz kalemi aramasın.
+Bir kutuya tıklamak yine yalnız o biçimi oynatıyor.
+
+ÖLÇÜM: aynı anda yazan biçim sayısı 4 -> 1.
+  Başta 0,5-3,8 sn · Ortada 3,8-7,5 · Sonda 7,5-11,3 · Yalın 11,3-14,5
+Bir tur ṣād'da ~15 sn. Uzun gelirse motor ayarındaki "hiz" ile kısaltılır.
+
+NOT: Tablodaki 28 kartın hepsinin aynı anda yazması AYRI bir şey ve
+öğretmenin kendi isteğiydi (29.09). Orada da bir kartın İÇİNDEKİ dört
+biçim zaten sırayla yazılıyor. Ayrıca o animasyon varsayılan KAPALI.
+
+Dosyalar: okumayazma/alfabe_harf_detay.js (?v=37),
+okumayazma/alfabe.css (?v=20261009c), alfabe.html
+
+=== 09.10.2026 — KALEM KALKAN HARFLER: ج ح خ ط ظ ===
+Öğretmen: "harfler teker teker yazılıyor ama bazı harflerde yine iki kalem
+birden yazıyor aynı harfi."
+
+TARAMA (132 gövde darbesi, 71 nokta, 112 biçim)
+- Hiçbir darbe birden çok parçadan oluşmuyor (çoklu M yok) — yani bir
+  darbe içinde iki yerde birden boyama OLAMAZ.
+- Gövdesi TEK darbe olan biçim: 92. Bunlarda tek kalem garantili.
+- Gövdesi İKİ darbe olan biçim: 20 — yalnız ج ح خ ط ظ (her birinin dört
+  biçimi). Kalem birinci darbeyi bitirip İKİNCİSİNE UZAKTAN başlıyor:
+      ج ح خ ortadaki 301 · sondaki 287 · yalın 137 · baştaki 113-136
+      ط ظ   sondaki/yalın 141 · baştaki/ortadaki 100
+  Göz bunu "ikinci bir kalem" diye okuyor. "Bazı harflerde" denmesinin
+  sebebi bu: sorun yalnız bu beş harfte.
+
+ÖĞRETMENİN KENDİ METNİYLE KARŞILAŞTIRMA (HARF_DETAY_INFO.yazilis)
+  ط: "önce yumurta biçimli gövde, sonra üzerine dik bir elif İNDİRİLİR"
+     -> veride dik elif AŞAĞIDAN YUKARI yazılıyordu. TERS ÇEVRİLDİ (8 biçim).
+  ج ح خ: "önce üstte SAĞDAN SOLA yatay bir kaş, sonra kase"
+     -> baştaki biçimde kaş SOLDAN SAĞA yazılıyordu. TERS ÇEVRİLDİ (3 biçim).
+  Kalemin kalkması ط ظ'de doğru (gövde ayrı, elif ayrı); ج ح خ'de kaş ile
+  kase gerçekte tek hareket, oradaki sıçrama yanlış.
+
+AÇIK KALAN: ج ح خ'nin ortadaki/sondaki/yalın biçimleri (9 biçim). İki
+darbe arasında 137-301 birim sıçrama var; kaş ile kasenin birleştirilmesi
+ya da yeniden çizilmesi gerekiyor. Dosyalarında durum alanına "BAKILACAK"
+yazıldı; ayar aracında seçilince görünür.
+
+YENİ KOMUT: python3 _kaynak/uretici/harfYazim.py --ters <dosya> <biçim> <darbe>
+  Bir darbenin YÖNÜNÜ çevirir (şekil değişmez, yalnız yazılma yönü).
+  Örn: --ters 16-ta b 1
+
+Dosyalar: _kaynak/harf-yazim/{05-cim,06-ha,07-ha-hiriltili,16-ta,17-za}.json,
+okumayazma/alfabe_harf_yazim.js (?v=2), alfabe.html,
+_kaynak/uretici/harfYazim.py
+
+=== 09.10.2026 — YAZIM TEZGÂHI (yeni, siteye bağlı değil) ===
+Öğretmen: "yeni bi html yapalım ama siteye bağlamayalım, harflerin 4
+yazılışının animasyonunu baştan tasarlayalım... her harf için bi kalemle
+çiziyormuş gibi yapacağız, herhangi bi harfin animasyonunda hata olursa
+düzeltebilelim."
+
+DOSYA: _kaynak/arac/yazim-tezgah.html  (çift tıkla açılır)
+  Üreten: python3 _kaynak/uretici/yazimTezgahUret.py
+  Şablon: _kaynak/uretici/yazim-tezgah.sablon.html
+  Siteye bağlı değil, git'e girmez, hiçbir dosyayı kendiliğinden
+  değiştirmez. Veriyi okumayazma/alfabe_harf_yazim.js'ten OKUR.
+
+YENİ ÇİZİCİ (alfabe_harf_detay.js'ten bağımsız, baştan yazıldı)
+  · TEK KALEM — yapı gereği. Parçalar sırayla yazılır, biri bitmeden
+    öteki başlamaz. Ölçüldü: bir karede değişen maske sayısı hep 1.
+  · SABİT HIZ (varsayılan 420 birim/sn). Eski çizicide süre 1,1-3,6 sn'ye
+    sıkıştırılıyordu; uzun harfte kalem hızlanıp mürekkebi kalemsiz
+    bırakıyordu. Artık uzun harf uzun sürüyor, el hızı hep aynı.
+  · GİT-GEL HIZLANDIRMASI YOK. Kalem geri dönüyorsa dönüşü de görülür.
+  · KALKIŞ GÖRÜNÜR: kalem yay çizerek uçar, soluklaşır, bu sırada
+    hiçbir yer boyanmaz.
+
+EKRANDA NE VAR
+  Sol: 28 harf x 4 biçim. Alt çizgi yeşil = gövde tek darbe (tek kalem
+       garantili), kırmızı = kalem kalkıyor. Şu an 20 biçim kırmızı:
+       ج ح خ ط ظ (her birinin dört biçimi).
+  Orta: büyük önizleme, hüküm satırı ("TEK KALEM" / "KALEM n KEZ
+       KALKIYOR"), Yaz / Yavaş / Dur / Kalem izi / Temizle, sürgü.
+       «Kalem izi»: yol turuncu, yön okları, parça numaraları, kalkışlar
+       kırmızı kesik çizgi.
+  Sağ: parça listesi ve işlemler — ⇄ yönü çevir · ↑↓ sırayı değiştir ·
+       ⛓ bir öncekine bağla · ✂ sürgüdeki yerden böl · Geri al.
+       Kaydıraçlar: hız, kalem eni, yapışık sayılma eşiği.
+       «Bu biçimi dök» / «Değişenleri dök» → panoya kopyalar.
+
+BAĞLAMAK NEDEN GÜVENLİ: iki parça birleşince kalem aradaki boşluğu düz
+geçer; maske yalnız harfin olduğu yeri açtığı için harfin DIŞINDAN
+geçerken hiçbir yer boyanmaz. Denendi: ح sondakinde ⛓ ile hüküm
+"KALEM 1 KEZ KALKIYOR" -> "TEK KALEM".
+
+AKIŞ: öğretmen tezgâhta düzeltir, «dök» ile veriyi alır, bana verir;
+ben o harfin _kaynak/harf-yazim/*.json dosyasına yazar ve --kur ile
+siteye derlerim. Çizici beğenilirse alfabe_harf_detay.js'in yerine
+geçebilir.
+
+--- aynı gün, devam: TEZGÂHTA ELLE ÇİZİM VE YÖN ARAYÜZÜ ---
+Öğretmen: "daha kolay yönleri değiştirebileceğim bi arayüz yap" /
+"bi harfi çizerken kaç kerede yazılacağını seçebileyim, her defada
+çizgilerin nerden geçeceğini kendim fareyi kullanarak ve sürükleyerek
+belirleyebileyim."
+
+YÖN ARAYÜZÜ
+  · Harfin üstünde her parçanın BAŞLANGICI yeşil yuvarlak, BİTİŞİ kırmızı
+    ok ucu, yanında numarası. Yön tek bakışta okunuyor.
+  · Parçaya tıkla seç, ÇİFT TIKLA yönü dönsün (kalın saydam tutma yolu
+    sayesinde dokunmak kolay).
+  · Sağda her parça için bir kart: yön KELİMEYLE yazıyor ("sağdan sola",
+    "yukarıdan aşağı", "sağdan sola · yukarıdan aşağı") — öğretmenin
+    kendi "nasıl yazılır" metniyle karşılaştırılabilsin diye. Kartta koca
+    bir «⇄ Yönü çevir» düğmesi, yanında ↑ ↓ ⛓ ✂.
+  · Klavye: R yönü çevirir, 1-9 parça seçer, boşluk oynatır.
+  · «⇄ Tümünü tersine»: bütün yolun sırası ve yönü birden döner.
+
+ELLE ÇİZİM
+  · «Harf kaç kerede yazılıyor?» 1 · 2 · 3 · 4.
+  · «✏️ Baştan çiz»: gövde boşalır (noktalar yerinde kalır), birinci
+    darbe için çizim açılır. Harfin üstünde fareyi basılı tutup sürükle;
+    bırakınca o darbe biter ve sırası gelen darbe için çizim yeniden
+    açılır. Seçilen sayı kadar darbe çizilince kapanır.
+  · «Seçili darbeyi yeniden çiz»: yalnız o darbeyi yeniden çizer.
+  · Çizilen yol seyreltilip (6 birimden sık nokta tutulmaz) yumuşatılıyor;
+    veri biçimi mevcutla aynı (M/L çoklu çizgi), doğrudan kalem yolu olur.
+  · Kalem harfin DIŞINDAN geçerse orası boyanmaz — maske yalnız harfin
+    olduğu yeri açar. Yani yanlış yerden geçmek harfi bozmaz, eksik
+    bırakır; neyin eksik kaldığı hemen görünür.
+
+HÜKÜM SATIRI artık seçilen darbe sayısını da biliyor:
+  "1 darbede yazılıyor — TEK KALEM, kalem hiç kalkmıyor" (yeşil)
+  "2 darbede yazılıyor + 1 nokta — kalem 1 kez kalkıyor (seçtiğin gibi)" (yeşil)
+  beklenenden fazla kalkış varsa kırmızı.
+
+DENENDİ (Playwright): 1 ve 2 darbe seçilip fareyle çizildi, kartlar ve
+yönler doğru güncellendi, R ile yön döndü, oynatmada bir karede değişen
+maske sayısı 1 (tek kalem).
+
+Dosya: _kaynak/arac/yazim-tezgah.html
+Üreten: python3 _kaynak/uretici/yazimTezgahUret.py
+
+--- aynı gün, devam: NOKTA NOKTA ÇİZİM ---
+Öğretmen: "çizgi zıplamadan ilerlesin doğrusal, birden fazla noktada
+durabileyim."
+
+İKİ ÇİZİM KİPİ eklendi, varsayılan NOKTA NOKTA:
+  · Nokta nokta (tıkla): kalemin duracağı yerlere sırayla TIKLANIR.
+    Duraklar arası DÜZ ÇİZGİ — fare titremesi yok, çizgi zıplamıyor.
+    İstenildiği kadar durak konabilir. Son duraktan imlece kesik bir
+    "lastik" çizgi uzanır, nereye gideceği önceden görünür.
+    Bitirme: «✓ Bu darbeyi bitir» · çift tık · Enter
+    Son durağı sil: «↩ Son nokta» · Backspace
+    Vazgeç: «Vazgeç» · Esc
+  · Serbest (sürükle): eski kip; fareyi basılı tutup sürükle.
+
+Nokta nokta kipinde yol SEYRELTİLMEZ ve YUMUŞATILMAZ: ne tıklandıysa
+o. Serbest kipte 6 birimden sık noktalar atılır ve üçlü ortalamayla
+yumuşatılır.
+
+DENENDİ: 7 durak tıklandı (7 durak göründü), lastik çizgi imleci
+izledi, «↩ Son nokta» 6'ya indirdi, «bitir» 6 noktalı düz çizgili
+darbeyi kurdu, hüküm "1 darbede yazılıyor — TEK KALEM".
+
+Dosya: _kaynak/arac/yazim-tezgah.html
+
+=== 09.10.2026 — ḤA (ح) TEZGÂHTA YENİDEN ÇİZİLDİ ===
+Öğretmen tezgâhta çizip "bu iyi" dediği biçimler dosyaya yazıldı:
+  ح baştaki  : TEK DARBE (78 nokta, uzunluk 611, kalem eni 64) — kalem hiç kalkmıyor
+  ح ortadaki : 2 darbe (giriş kuyruğu + kaş-kase), eni 64
+  ح sondaki  : 2 darbe (kaş sağdan sola + kase tek hamle), eni 70
+  ح yalın    : henüz eski veri
+Gövde (vb ve fill) hiç değişmedi; yalnız kalemin yolu değişti. Yazarken
+vb/fill tutmazsa işlem durduruluyor (yanlış harfe yazma emniyeti).
+
+YENİ KOMUT: python3 _kaynak/uretici/harfYazim.py --yaz <dosya> <biçim> <json> ["durum notu"]
+  Tezgâhtan dökülen biçimi harfin dosyasına yazar, durum notunu günceller.
+
+ج ve خ İÇİN: ikisinin de fill'i = ح'nin GÖVDESİ + nokta alt yolu.
+  Gövde birebir aynı olanlar: ج baştaki · ج ortadaki · ج yalın · خ ortadaki
+    -> ح'nin darbeleri buralara olduğu gibi kopyalanabilir.
+  Gövde birkaç birim farklı olanlar: ج sondaki · خ baştaki · خ sondaki · خ yalın
+    -> kopyalamak büyük ihtimalle yeter (kalem 64-70 enli) ama birebir değil.
+  Noktalar taps olarak kendi yerinde kalır.
+
+Dosyalar: _kaynak/harf-yazim/06-ha.json, okumayazma/alfabe_harf_yazim.js (?v=3)
+Yedek: _kaynak/yedekler/2026-10-09-harf-yazim-bolme/06-ha-oncesi.json
+
+--- ح TAMAMLANDI (dört biçim de öğretmenin çizimi) ---
+  baştaki : 1 darbe, kalem eni 64 — kalem hiç kalkmıyor
+  ortadaki: 2 darbe, eni 64
+  sondaki : 2 darbe, eni 70
+  yalın   : 1 darbe, eni 68 — kalem hiç kalkmıyor
+Dördü de kartta tam mürekkepleniyor (ölçüldü), aynı anda yazan biçim 1.
+Gövde (vb/fill) hiçbirinde değişmedi.
+Harf dosyasındaki durum alanları "onaylı 2026-10-09 — tezgâhta yeniden
+çizildi" diye işaretlendi. Böylece 112 biçimin 4'ü onaylı.
+okumayazma/alfabe_harf_yazim.js ?v=3
+
+=== 09.10.2026 — TEZGÂH: NOKTALAR DÜZELTİLDİ ===
+Öğretmen: "cimde nokta için tezgahta değişiklik yapamıyorum, baştan yaza
+tıklıyorum ama nokta için olan numara ve yön silinmiyor" / "diğer
+noktalılarda da var bu."
+
+SEBEP: Nokta da öteki parçalar gibi çiziliyordu — yön oku, başlangıç
+yuvarlağı, bitiş oku, numara. Oysa noktanın YÖNÜ YOKTUR: kalem oraya
+dokunup kalkar. «Baştan çiz» de yalnız gövdeyi boşaltıyordu (doğrusu
+budur, nokta ayrı), ama ekranda nokta yön işaretleriyle durduğu için
+silinmemiş gibi görünüyordu.
+
+DÜZELTME
+  · Nokta artık yönsüz çiziliyor: yalnız kesik çizgili küçük bir halka
+    ve numarası. Yön oku / başlangıç-bitiş işareti YOK. Gövde çizilirken
+    nokta soluklaşıyor, karışmıyor.
+  · Nokta kartı ayrı: "nokta — kalem dokunup kalkar" yazıyor, düğmesi
+    «⇄ Çevir» değil «● Yerini değiştir», yanında 🗑 (kaldır).
+  · Yeni satır: «Nokta: 0 1 2 3» + «● Noktaları yeniden koy». Seçilen
+    sayı kadar nokta, harfin üstüne TIKLAYARAK konuyor (sürükleme yok).
+  · Yeni konan noktaya KALKAN da üretiliyor (maskede siyah daire):
+    gövde darbesi oradan geçse bile nokta sırası gelmeden boyanmıyor.
+    Eskiden kalkan elle hazırlanmıştı; nokta taşınınca yanlış yerde
+    kalırdı.
+
+DENENDİ: ج yalın (2 darbe + 1 nokta) — kartlar doğru, izde yalnız 2
+başlangıç yuvarlağı ve 2 bitiş oku (noktada yok), «Yerini değiştir» ile
+nokta tek tıkla taşındı, kalkan üretildi.
+
+=== ظ YALIN UYGULANDI ===
+Öğretmen tezgâhta çizdi: TEK DARBE (dik elif yukarıdan inip gövdeye
+bağlanıyor, 910 birim, en 68) + 1 nokta. Kalem gövdede hiç kalkmıyor.
+Gönderdiği başlıkta "başta" yazıyordu ama veri YALIN biçimine ait;
+gövde (vb/fill) karşılaştırmasıyla bulundu ve doğru yere yazıldı —
+--yaz komutundaki emniyet tam da bunun içindi.
+Tek seferde 4,2 sn'de tamamlanıyor, ölçüldü.
+
+Onaylı biçim sayısı: 5 / 112  (ح dördü + ظ yalın)
+okumayazma/alfabe_harf_yazim.js ?v=3
+
+=== 09.10.2026 — ظ (ẒA): ÜÇ BİÇİM UYGULANDI ===
+Öğretmen tezgâhta çizdi, dosyaya yazıldı:
+  ظ baştaki : TEK DARBE (dik elif inip gövdeye bağlanıyor) + 1 nokta, en 72
+  ظ ortadaki: 2 darbe (gövde, sonra dik elif iniyor) + 1 nokta, en 64
+  ظ yalın   : TEK DARBE + 1 nokta, en 68
+  ظ sondaki : henüz eski veri (yalnız dik elifin yönü düzeltilmişti)
+Dördü de tek seferde tamamlanıyor: başta 4,2 sn · ortada 6,2 · sonda 6,0 ·
+yalın 4,2 (ölçüldü).
+"normal ظ n" diye ikinci kez gelen veri, daha önce yazılanla BİREBİR
+aynıydı; tekrar yazılmadı.
+Biçimin hangi harfe/bice ait olduğu her seferinde gövde (vb+fill)
+karşılaştırmasıyla bulunuyor — başlıktaki ad yanlış olsa da doğru yere
+gidiyor.
+
+Onaylı biçim sayısı: 7 / 112  (ح dördü + ظ üçü)
+okumayazma/alfabe_harf_yazim.js ?v=3
+
+--- TEZGÂH: İKİ ANA DÜĞME + ÇİZDİKTEN SONRA DÜZELTME ---
+Öğretmen: "tezgahta harfi çiz ve nokta koy tuşları olsun, çizme
+bittikten sonra bi çizgiye tıklayınca o çizgiyi tekrar düzeltebilelim."
+
+İKİ ANA DÜĞME (büyük, yan yana):
+  «✏️ Harfi çiz»  — gövdeyi boşaltır, seçilen darbe sayısınca sırayla
+                    çizdirir (noktalar yerinde kalır).
+  «● Nokta koy»   — seçilen sayıda noktayı tıklayarak koydurur.
+                    Sayı seçilmemişse 1 varsayılır.
+
+ÇİZGİYİ SONRADAN DÜZELTME: bir çizgiye tıklayınca noktaları TUTAMAK
+olarak çıkıyor (baş yeşil, son kırmızı, aradakiler beyaz).
+  · tutamağı SÜRÜKLE            -> o nokta yerinden oynar
+  · tutamağa ÇİFT TIK           -> o nokta silinir (en az iki nokta kalır)
+  · seçili çizginin üstüne TIKLA -> tıklanan yere yeni nokta eklenir
+                                    (en yakın aralığa giriyor)
+  · kartta ✏️ düğmesi           -> o darbeyi baştan çizdirir
+«Geri al» bu düzeltmeleri de geri alıyor.
+
+İNCE NOKTA: sürükleme bitince ekran yalnız nokta GERÇEKTEN oynadıysa
+yenileniyor. Önce her bırakışta yenileniyordu; tutamaklar yeniden
+kurulduğu için ÇİFT TIK ikinci tıklamada boşa düşüyor, nokta
+silinemiyordu.
+
+DENENDİ: 6 duraklı darbe çizildi; çift tıkla 6->5, çizgiye tıklayınca
+5->6, sürüklemede yol değişti ve nokta sayısı korundu, geri al çalıştı.
+
+Dosya: _kaynak/arac/yazim-tezgah.html
+
+--- س (SİN) BAŞTAKİ UYGULANDI ---
+TEK DARBE, 21 durak, kalem eni 64, nokta yok — üç diş sağdan sola tek
+hamlede. Kalem hiç kalkmıyor. 2,0 sn'de tamamlanıyor, tam mürekkepleniyor
+(ölçüldü).
+Onaylı biçim: 8 / 112  (ح 4 · ظ 3 · س 1)
+okumayazma/alfabe_harf_yazim.js ?v=3
+
+--- س (SİN) SONDAKİ UYGULANDI ---
+TEK DARBE, 41 durak, kalem eni 64 — üç diş, sonra satır altına sarkan
+kase; kalem hiç kalkmıyor. 3,5 sn'de tamamlanıyor, tam mürekkepleniyor.
+(baştaki 2,0 sn — o da tek darbe)
+Sin'de kalan: ortadaki, yalın.
+Onaylı biçim: 9 / 112  (ح 4 · ظ 3 · س 2)
+
+--- س (SİN) YALIN UYGULANDI ---
+TEK DARBE, 29 durak, kalem eni 64 — üç diş + sarkan kase, kalem hiç
+kalkmıyor. 3,4 sn.
+س durumu: baştaki ✓ (1,9 sn) · ortadaki (eski veri, 2,3 sn) · sondaki ✓
+(3,5 sn) · yalın ✓ (3,4 sn). Dördü de tek darbe ve tam mürekkepleniyor.
+Kalan: س ortadaki.
+Onaylı biçim: 10 / 112  (ح 4 · ظ 3 · س 3)
+
+--- ش (ŞIN) BAŞTAKİ UYGULANDI ---
+TEK DARBE (18 durak, en 64) + 3 NOKTA. Noktalar tezgâhta elle konmuş;
+kalkanları da araç üretmiş (her biri 33 yarıçaplı daire) — gövde oradan
+geçse bile noktalar sırası gelmeden boyanmıyor, doğrulandı (3 kalkan,
+4 beyaz yol). 4,1 sn'de tamamlanıyor, tam mürekkepleniyor.
+Onaylı biçim: 11 / 112  (ح 4 · ظ 3 · س 3 · ش 1)
+
+--- ص (SAD) DÖRT BİÇİM UYGULANDI ---
+Dördü de TEK DARBE, kalem hiç kalkmıyor:
+  baştaki  : 21 durak, en 64 — kase, sonra dişler
+  ortadaki : 25 durak, en 64 — bağlantı → kuyruk → kase → dişler
+  sondaki  : 37 durak, en 60 — bağlantı → kase → dişler → büyük kuyruk kâsesi
+  yalın    : 33 durak, en 64 — kuyruk ucundan kase, dişler, sonra büyük kâse
+Dördü de tam mürekkepleniyor (tek beyaz yol, kalan 0).
+
+--- ض (DAD) ← ص'DEN KOPYALANDI + NOKTA ---
+Gövde darbeleri ص'nin onaylı darbeleriyle birebir aynı (iki harfin konturu
+sadece 1 birim farkla aynı; kalem 64/60 olduğu için sorun çıkmıyor).
+Nokta ELLE değil, harfin kendi konturundan ölçülerek kondu: fill'deki nokta
+alt yolu düzleştirilip tam merkezi bulundu, kalem çapı 76 seçildi (elmasın
+merkezden en uzak köşesi 37,3 → 76 çap köşeleri de boyuyor). Kalkan
+yarıçapı 43; gövdeye en yakın mesafe 76-85 birim, yani kalkan gövdeden hiç
+ısırmıyor (ölçüldü).
+Dört biçimde de 2 beyaz yol (gövde + nokta), kalan 0, ekran görüntüsüyle
+doğrulandı.
+
+--- ش (ŞIN) SONDAKİ + YALIN ← س'DEN KOPYALANDI + 3 NOKTA ---
+Yalın biçimde ش'nin gövde konturu س ile BİREBİR aynı; sondakinde font
+düğümleri farklı yazılmış ama şekil 1 birimden az sapıyor — kalem 64
+olduğu için ikisinde de tam mürekkepleniyor (doğrulandı).
+Üç nokta yine konturdan ölçüldü: üstteki tek nokta kendi alt yolundan,
+alttaki iki nokta tek alt yolda birleşik olduğu için sağ/sol ayrılıp her
+birinin kendi merkezi hesaplandı. Üçü de kalem 76, kalkan 43.
+ش BAŞTAKİ'nin noktaları da düzeltildi: elle tıklanan yerler 5-7 birim
+kaçıktı ve kalem 56'ydı — elmasın köşeleri boyanmadan kalıyordu. Gövde
+darbesi (öğretmenin çizdiği) aynen duruyor, sadece üç nokta konturdan
+ortalanıp 76'ya çıkarıldı.
+ش ortadaki hâlâ eski veri — س ortadaki çizilince o da kopyalanacak.
+
+Onaylı biçim: 21 / 112  (ح 4 · ظ 3 · س 3 · ش 3 · ص 4 · ض 4)
