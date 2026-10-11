@@ -9118,3 +9118,63 @@ Denendi (ح ortadaki, 2 darbe + 2 nokta): çizim yokken "✓1 ✓2";
 "2. darbeyi bitir"; nokta kipinde "✓1 ✓2 ✏1.nokta ○2.nokta".
 Dosya: _kaynak/uretici/yazim-tezgah.sablon.html → _kaynak/arac/yazim-tezgah.html
 (_kaynak git'e gitmiyor; tezgâhı bilgisayardan açıyorsun.)
+
+--- ك (KEF) TAMAMLANDI · ل (LAM) TAMAMLANDI · م (MİM) BAŞTAKİ ---
+ك baştaki  : TEK DARBE (en 64)
+ك ortadaki : İKİ DARBE — üstteki uzun eğik çizgi, sonra alttaki çanak
+ك sondaki  : İKİ DARBE — gövde, sonra içteki hemze işareti
+ك yalın    : İKİ DARBE — gövde, sonra içteki hemze işareti
+ل dördü de : TEK DARBE (en 64)
+م dördü de : TEK DARBE (en 64)
+   baştaki  — başın halkası dönüp sola bağlanıyor
+   ortadaki — bağlantıdan gelip halkayı dönüp sola bağlanıyor
+   sondaki  — bağlantı, halka, sonra satır altına inen dik kuyruk
+   yalın    — yuvarlak baş, sonra satır altına inen dik kuyruk
+Hepsi tam mürekkepleniyor (kalan 0), ekran görüntüleriyle doğrulandı.
+
+--- NOKTA SAYISINA ARTIK TEZGÂH KARAR VERİYOR ---
+ك'in içindeki hemze işareti ayrı bir adacık olduğu için kontur onu "2 nokta"
+sanıyordu. Kural değişti: KAÇ nokta olacağını öğretmenin çizimi söyler,
+NEREDE duracağını kontur. Tezgâhtan nokta gelmediyse nokta üretilmez
+(ك sondaki/yalında olan bu); sayılar tutuyorsa konturdan ortalanır; sayılar
+tutmuyorsa tezgâhtaki yerler kalem 76 ile kullanılır ve ekrana not düşülür.
+Dosya: _kaynak/uretici/bicimUygula.py
+
+Onaylı biçim: 54 / 112
+  (ج 4 · ح 4 · خ 4 · س 3 · ش 3 · ص 4 · ض 4 · ظ 3 · ع 3 · غ 3 · ف 3 · ق 4 ·
+   ك 4 · ل 4 · م 4)
+Dört biçimi de biten harfler: ج ح خ ص ض ق ك ل م  (dokuz harf)
+Kalan tek biçimler: س ortadaki · ش ortadaki · ظ sondaki · ع baştaki ·
+غ baştaki (ع çizilince kopyalanacak) · ف ortadaki
+
+--- و (VAV) ve ه (HE) TAMAMLANDI ---
+و dördü de TEK DARBE (en 64): yuvarlak baş + satır altına sarkan kuyruk;
+  ortadaki/sondaki bağlantıdan geliyor.
+ه dördü de TEK DARBE (en 64): baştaki iki göz tek kalemle, ortadaki üst
+  göz + alt göz, sondaki bağlantıdan yukarı çıkıp gözü dönüyor, yalın tek
+  kapalı halka.
+Sekizi de tam mürekkepleniyor (kalan 0), ekran görüntüsüyle doğrulandı.
+
+--- AYNI GLİFİ PAYLAŞAN BİÇİMLER AYIRT EDİLİYOR ---
+و kendinden sonrakiyle birleşmediği için fontta baştaki = yalın ve
+ortadaki = sondaki, yani aynı vb+fill. bicimUygula.py ilk eşleşmeyi
+alıyordu: "و sondaki" gönderildiğinde ortadakinin üstüne yazacaktı.
+Artık bütün eşleşmeler toplanıyor ve seçim şöyle: komut satırında biçim
+verildiyse o, verilmediyse henüz ONAYLANMAMIŞ olan, o da yoksa ilki.
+Ekrana da not düşüyor: 'bu glif 2 biçimde aynı (وo وs) — "وs" seçildi'.
+Kullanım: python3 _kaynak/uretici/bicimUygula.py <json> "<not>" [b|o|s|n]
+
+Onaylı biçim: 62 / 112
+Dört biçimi de biten harfler: ج ح خ ص ض ق ك ل م و ه  (on bir harf)
+
+--- ط (TI) ÜÇ BİÇİM + ظ (ZI) ← ط'DEN KOPYALANDI ---
+ط baştaki : TEK DARBE (en 72) — dikme inip kaseyi dönüyor, sola bağlanıyor
+ط ortadaki: İKİ DARBE (64/64) — önce taban ve kase, sonra dikme
+ط yalın   : TEK DARBE (en 72) — dikme iniyor, kase dönüp tabana oturuyor
+ظ baştaki/ortadaki/yalın: gövde ط'den birebir kopyalandı (09.10'da çizilen
+eski ظ darbelerinin yerine), nokta konturdan ortalandı (kalem 76, kalkan
+gövdeden 90-95 birim uzak). Altısı da tam mürekkepleniyor.
+ط SONDAKİ hâlâ eski veri; o çizilince ظ sondaki de ondan kopyalanacak —
+ikisi de o zaman kapanır.
+
+Onaylı biçim: 67 / 112
