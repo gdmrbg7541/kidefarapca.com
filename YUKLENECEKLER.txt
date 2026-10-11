@@ -9178,3 +9178,271 @@ gövdeden 90-95 birim uzak). Altısı da tam mürekkepleniyor.
 ikisi de o zaman kapanır.
 
 Onaylı biçim: 67 / 112
+
+--- YAZIM KİPİ: VARSAYILAN ARTIK "HEPSİ BİRDEN" + SEKME TASARIMI ---
+(Geylani: "harf yazılış animasyonu ve bilgi popupunda harflerin animasyonu
+hepsi birden açılsın ve bu varsayılan olsun; bu switch tasarımı okuma
+kısmındaki Cezim/Şedde/Uzatma sekmeleri tasarımında olsun ve yukarıda daha
+görünür olsun")
+1) Varsayılan kip HEPSİ BİRDEN. Tarayıcıdaki saklama anahtarı da yenilendi
+   (kidefHarfYazimModu → kidefHarfYazimKipi); eskiden "Sırayla" seçmiş bir
+   tarayıcı yeni varsayılanı bastırmıyor. Öğretmen isterse "Sırayla"ya
+   geçebiliyor, seçim yine saklanıyor.
+2) Anahtar, "Nasıl Yazılır?" kartındaki küçük düğmeden alınıp DÖRT KUTUNUN
+   HEMEN ÜSTÜNE taşındı; artık perdede uzaktan da görünüyor.
+3) Tasarım Okuma bölümündeki HAREKE JETONLARININ aynısı (.ok-cip): yuvarlak
+   hap, seçili olan KIRMIZI dolgu + BEYAZ kalın yazı, seçili olmayan açık
+   gri hap. (Önce sekme şeridi denendi; öğretmen "kırmızı dolgu beyaz yazı"
+   olanı istedi — okuma bölümünde jetonlar öyle.)
+4) DİKEY KAYDIRMA KALKTI: kart sabit yükseklikli kutular yüzünden kısa
+   ekranlarda kayıyordu. Artık kutular kalan boşluğu dolduruyor
+   (#hd-cols flex, .hd-col-box esnek, en az 96 px / en çok 300 px); ekran
+   kısaldıkça kutu kısalıyor, kart kaymıyor. 1400x900, 1280x720 ve 1024x640
+   ölçüldü: üçünde de kaydırma yok.
+Aynı pencere soru tarafında da kullanılıyor: İstenen Harf'te "✍️ Yazılışı
+izle" ve doğru şıkka dokunmak harfDetay.open'ı çağırıyor — yani orada da
+dört biçim artık birlikte yazılıyor.
+Doğrulandı: açılışta kip "hepsi", dört biçim de aynı anda başlıyor, sekme
+şeridi adın altında ve kutuların üstünde, seçim saklanıyor.
+Dosyalar: alfabe_harf_detay.js (v39), alfabe.css (v20261011b), alfabe.html
+Yedek: _kaynak/yedekler/2026-10-11-kip-sekmesi/
+
+--- BÜYÜTEÇTE BİÇİM ÖRNEKLERİ + 5 KADEMELİ YAZMA HIZI ---
+(Geylani: "bi harfin örneğin baştaki yazılışına basınca örnek açılsın…
+tüm yazılışların örneklerine bakılabilsin; ayrıca yazma animasyonlarının
+hızını 5 ayar olarak herkes ayarlayabilsin")
+
+1) ÖRNEKLER. Kutulardan birine dokununca kutuların altındaki şeritte o
+   biçimin KELİME ÖRNEĞİ açılıyor: biçim adı (Başta/Ortada/Sonda/Yalın),
+   kelime ve Türkçesi; harfin kendisi kelimenin içinde KIRMIZI. Dördüne de
+   tek tek dokunulup bakılabiliyor. Dokunmak animasyonu da yeniden oynatıyor
+   (eski davranış duruyor). Şerit yeri sabit ayrıldı, kart zıplamıyor.
+   VERİ: okumayazma/alfabe_harf_ornek.js — ÜRETİLEN dosya.
+   Üretici: _kaynak/uretici/harfOrnek.py. Kelimeler uydurulmadı; sitenin
+   kendi listelerinden seçildi (Harf Birleştirme kelimeleri, Okuma
+   kelimeleri, Dinle ve Yaz seviye kelimeleri, sonra veri_sozluk.js ve
+   veri_kokler.js). Harfin o kelimede hangi biçimde yazıldığı, Arap
+   yazısının bağlanma kuralından hesaplanıyor (önceki harf sola bağlanıyor
+   mu + harfin kendisi sola bağlanıyor mu), yani etiket ile kelime
+   birbirini tutuyor. Kısa ve harekeli kelimeler tercih ediliyor.
+   DURUM: 112 biçimin 99'unda örnek var. Olmayan 13'ün 12'si zaten
+   imkânsız: ا د ذ ر ز و soluna bitişmez, baştaki/ortadaki biçimleri
+   kelimede oluşmaz — orada açıklama çıkıyor. Geriye tek bir gerçek
+   eksik kaldı: ع'nin kardeşi غ'ın SONDAKİ biçimi; listelerimizde sonu
+   bitişik غ ile biten kelime yok (فَرَغَ'de önceki harf ر olduğu için غ
+   yalın yazılıyor). İstersen بَلَغَ gibi bir kelime eklenip üretici
+   yeniden çalıştırılabilir.
+
+2) HIZ. Kip jetonlarının yanına 1-2-3-4-5 jetonları kondu (aynı kırmızı
+   dolgu tasarımı). Çarpanlar: 0,5 · 0,72 · 1 · 1,45 · 2,1 — 3 eski normal
+   hız, varsayılan o. Seçim tarayıcıda saklanıyor (kidefYazimHizi).
+   Çarpan playForm'da uygulandığı için YALNIZ büyüteç değil, Harf
+   Birleştirme tablosundaki yazı ve İstenen Harfi Yaz da aynı hızı
+   kullanıyor. Hız değişince animasyon baştan oynuyor.
+
+Doğrulandı: üç ekran ölçüsünde de dikey kaydırma yok; örnek şeridi doğru
+kelimeleri gösteriyor (Be başta بَابٌ, Be sonda لَعِبَ, Mim ortada قَمَرٌ);
+Dal'da "soluna bitişmez" açıklaması çıkıyor; hız seçimi saklanıyor.
+Dosyalar: alfabe_harf_detay.js (v40), alfabe_harf_ornek.js (YENİ),
+alfabe.css (v20261011e), alfabe.html
+
+--- BİRLEŞMEYEN HARFLER PANELİ: BÜYÜK KATMAN + ÜÇ ÖRNEK ---
+(Geylani: "sağdaki yere basınca merkeze gelsin ve daha büyük olsun, overlay
+ekranı olsun diğer yerler gri bulanık olsun, başlık 5 rem civarı ve tek
+satır olsun, diğer harfler de büyük olsun ve sol tarafta örnekler açılsın,
+hepsi için 3 örnek olsun")
+· Yan panele (g1yan) dokununca ekranın ortasında büyük bir katman açılıyor;
+  arkası gri + bulanık (backdrop-filter). Esc, çarpı ya da boşluğa dokunmak
+  kapatıyor.
+· Başlık TEK SATIR: 5 rem'den (80 px) başlıyor, sığmazsa 2'şer px küçülüyor.
+  Ölçüldü: 1600px ekranda 78 px, 1366'da 66 px, 1280'de 62 px — üçünde de
+  tek satır ve kart taşmıyor.
+· Sağda tablo büyütüldü; sütunların anlamı artık yazıyla da duruyor
+  ("kendinden ÖNCEKİYLE birleşir" / "kendinden SONRAKİYLE birleşmez").
+  Harf kutuları tıklanabilir; seçili harf kırmızı çerçeveyle belli oluyor.
+· Solda seçili harfin ÜÇ ÖRNEĞİ: kelime, Türkçesi, harfin o kelimedeki
+  biçimi (Yalın/Sonda) ve yeri (başında/ortasında/sonunda). Harf kelimenin
+  içinde kırmızı. Katman açılınca elif seçili geliyor.
+· Veri: alfabe_harf_ornek.js içine HARF_ORNEKLER eklendi — 28 harfin
+  HEPSİ için üçer örnek (yalnız bu altı harf için değil; ileride başka
+  yerlerde de kullanılabilir). Üretici yine _kaynak/uretici/harfOrnek.py;
+  örnekler harfin kelimede farklı biçim/yerlerde görünmesine göre seçiliyor.
+Dosyalar: alfabe.js (v38), alfabe.css (v20261011h), alfabe_harf_ornek.js
+(v2), alfabe.html.  Yedek: _kaynak/yedekler/2026-10-11-birlesmeyen-katman/
+
+--- BÜYÜTEÇ: TEK BİÇİM GÖRÜNÜMÜ + ÖRNEKTE BİRLEŞME DÜZELTMESİ ---
+(Geylani: "harfler doğru birleşmemişler… bir harfe basınca 4 yazılışı,
+4 yazılıştan birine tıklayınca sadece o harf ve örnekleri çıksın, çok
+büyük olsun, altında 3 örnek")
+
+1) BİRLEŞME. Önce ölçüldü: kelimeyi parçalara bölüp harfi <b> ile
+   sarmak Chrome'da harf birleşmesini BOZMUYOR — aynı kelimenin düz ve
+   parçalı yazımı piksel piksel aynı çıktı (arakom yüklü, doğrulandı).
+   Kopuk görünmesinin sebebi RENKTİ: harf kırmızıya boyanınca, iki harfi
+   birbirine bağlayan kalem izi de renk değiştiriyor ve göz bunu "ayrı
+   duruyor" diye okuyor. Artık harf RENGİNİ DEĞİŞTİRMİYOR; altına
+   fosforlu kalem izi gibi kırmızı bir bant çiziliyor. Hem büyüteçteki
+   örneklerde hem birleşmeyen harfler katmanında aynı yöntem.
+
+2) TEK BİÇİM GÖRÜNÜMÜ. Dört kutudan birine dokununca dört kutulu görünüm
+   kapanıyor; seçilen biçim TEK BAŞINA, kartın yarısı kadar büyük
+   yazılıyor (harfin viewBox'ı kendi sınırlarına kırpılıyor, yoksa geniş
+   kutunun ortasında ufak kalıyordu) ve altında o biçimin ÜÇ kelime
+   örneği büyük büyük duruyor. Üstte "‹ Dört yazılış" ile geri dönülüyor,
+   "↻ Tekrar yaz" o biçimi yeniden oynatıyor; Kip ve Hız jetonları orada
+   da duruyor. Mahreç ve "Nasıl Yazılır?" kartları bu görünümde gizlenip
+   yerlerini harfe bırakıyor.
+   Örnekler biçime göre: ör. Be/Ortada → كَبِيرٌ · قَبْلَ · جَبَلٌ,
+   Mim/Sonda → لَمْ · قَلَمٌ · عِلْمٌ.
+   Veri: alfabe_harf_ornek.js içine HARF_ORNEK_BICIM eklendi — 99 biçimin
+   98'inde üç örnek var (tek eksik ğayn/sondaki; sonu bitişik غ ile biten
+   kelime listelerimizde yok). Soluna bitişmeyen harflerin baştaki/
+   ortadaki biçiminde kelime yerine açıklama çıkıyor.
+   Ölçüldü: 1500x900 ve 1280x720'de dikey kaydırma yok.
+Dosyalar: alfabe_harf_detay.js (v42), alfabe_harf_ornek.js (v3),
+alfabe.css (v20261011l), alfabe.html
+
+--- ODAK GÖRÜNÜMÜ + KATMANDA ALTI SATIR (11.10.2026, ikinci tur) ---
+(Geylani: "4 harften birine tıklayınca diğer üçü küçülsün seçilen çok büyük
+olsun, seçilene tıklanınca tekrar 4 yazılışa dönülsün, örneklerde ilgili
+harf kırmızı olsun, altlarında açık kırmızı çizgiye gerek yok, birleşmeyen
+harflerde 6 harfin örneği de aynı satırda olsun, başlığı 4 rem'e düşürelim")
+1) BÜYÜTEÇ — ODAK. Kutulardan birine dokununca o kutu şeridin çoğunu
+   kaplıyor (4,6 pay / 1 pay), diğer üçü küçülüp TAMAMLANMIŞ hâlleriyle
+   yanda duruyor; seçilen biçim döngüyle yazılıyor ve harfin çerçevesi
+   kendi sınırlarına kırpıldığı için kutuyu dolduruyor. Altında o biçimin
+   ÜÇ kelime örneği. Seçili kutuya yeniden dokunmak dört yazılışa
+   döndürüyor. Odakta mahreç ve "Nasıl Yazılır?" kartları gizleniyor, geri
+   dönünce açılıyor. (Önceki turdaki ayrı "tek biçim paneli" kaldırıldı.)
+2) ÖRNEKLERDE HARF KIRMIZI, alttaki açık kırmızı bant kaldırıldı — hem
+   büyüteçte hem birleşmeyen harfler katmanında.
+3) KATMAN. Artık seçim yok: ALTI HARFİN HER BİRİ KENDİ SATIRINDA, sağda
+   iki yazılışı, solda üç örneği. 6 satır × 3 kart = 18 örnek bir arada.
+   Satır çizgisi harf hücrelerinde kalıyor (örnek kartlarının üstünden
+   geçmiyor), Türkçe karşılıklar soldan sağa yazılıyor ("Artır!").
+4) Katman başlığı 5 rem yerine 4 REM'den başlıyor (sığmazsa küçülüyor);
+   1500px ekranda 64 px, tek satır, kart taşmıyor.
+Dosyalar: alfabe_harf_detay.js (v45), alfabe.js (v39), alfabe.css
+(v20261011o), alfabe.html
+
+--- BİRLEŞMEYEN HARFLER KATMANI: DÖRT ÖRNEK · BEYAZ ZEMİN · ÇİZGİ ---
+(Geylani: "örneği 4'e çıkaralım, en sağda baştaki en solda normal yazılışı
+olsun, arkası gri olmasın, çizgi her yerde olsun — şu an birleşmeyenler
+sütununda çizgi yok")
+· Her harf için DÖRT örnek, sağdan sola sırayla:
+    1) harf kelimenin BAŞINDA   2) ORTASINDA
+    3) SONUNDA (önceki harfe bitişik)   4) YALIN hâliyle
+  Örnek (dal): دُبّ · جِدًّا · يَدٌ · زِدْ. 6 satır × 4 kart = 24 örnek.
+  Üretici bu sırayı dört "oluk" ile kuruyor; bir oluk boşsa en iyi kalan
+  örnekle dolduruluyor (28 harfin hepsinde dördü de dolu).
+· Arka plan artık gri değil: hafif beyaz buğu (blur duruyor), kart düz
+  beyaz, gölge yeşile çalıyor.
+· ÇİZGİ HER YERDE: satır çizgisi artık yalnız ✓ sütununda değil, İKİ harf
+  sütununda da var; ayrıca her örnek kelimenin altında da aynı çizgi
+  geçiyor — kelimeler satıra oturmuş görünüyor.
+· Ölçüldü (1600x900 ve 1280x720): 24 kart, ilk kart sağda, kart taşmıyor.
+Dosyalar: alfabe_harf_ornek.js (v4), alfabe.css (v20261011p), alfabe.html
+
+--- KATMAN SADELEŞTİ: KUTUSUZ, TÜRKÇESİZ, DAHA BÜYÜK ---
+(Geylani: "lamdan sonra elif geleni kaldır, başlığı 3 rem'e indir,
+örnekler kutu içinde olmasın, harflerin arasındaki dikey boşluğu azalt,
+harfleri ve örnekleri çok daha büyük yap, türkçeleri olmasın")
+· LAM-ELİF ELENDİ: لا tek bir bitişik şekle dönüştüğü için ne lamın ne
+  elifin kendi yazılışını gösteriyor. Üretici artık vurgulanan harf
+  lam-elif bağlamasının içindeyse o kelimeyi örnek saymıyor (hem elif
+  hem lam tarafı). Elifin "sonda" örneği لَا yerine مَا oldu. Kural üç
+  örnek üreticisinin de içinde.
+· Başlık 3 REM'den başlıyor (48 px; sığmazsa küçülür).
+· Örnekler artık KUTUSUZ: beyaz kart, kenarlık ve gölge kalktı; kelime
+  doğrudan satır çizgisinin üstünde duruyor.
+· TÜRKÇE KARŞILIKLAR YAZILMIYOR (fare ile üzerine gelince ipucunda
+  duruyor) — tahtada konuşulacak olan harfin kelimedeki hâli.
+· Satırlar arası boşluk sıfırlandı, harfler ve örnekler büyütüldü;
+  1600x900, 1366x768 ve 1280x720'de altı satır da tam sığıyor (ölçüldü,
+  son satır kartın içinde).
+Dosyalar: alfabe_harf_ornek.js (v5), alfabe.js (v40), alfabe.css
+(v20261011t), alfabe.html
+
+--- ANA SAYFA "SINIFTA YENİ": ALFABE DUYURULARI ---
+sistem/siniftayeni.js listesinin başına dört kayıt eklendi (teknik dil yok,
+hepsi "sınıfta ne işe yarar" diliyle):
+  11.10 · Harf Tanıtımı · Harfler tahtada tek kalemle yazılıyor
+          (dört yazılış birlikte, gerçek yazım sırası, 5 kademeli hız,
+           istenirse sırayla)
+  11.10 · Harf Tanıtımı · Bir yazılışa dokun, kelimedeki hâlini göster
+          (seçilen büyür, diğer üçü küçülür, altında üç kelime, harf kırmızı)
+  11.10 · Harf Tanıtımı · Sonrakiyle birleşmeyen altı harf tek ekranda
+          (katman; her harfin iki yazılışı + dört örneği aynı satırda)
+  09.10 · Harf Tanıtımı · İstenen harfi yaz: önce düşünsünler, sonra göster
+          (konu anlatımı + şıklı Dene; bu yenilik duyurulmamıştı)
+index.html'de dosyanın sürümü 20261011a yapıldı. Duyuru köşesinde ilk sırada
+göründüğü doğrulandı (1 / 24).
+
+[11.10.2026] Alfabe — "kendinden sonrakiyle birleşmeyenler" katmanında her satırda tek, satır boyunca uzanan yazı çizgisi; harf ve örnek kelimeler bu çizgiye oturuyor (alfabe.css?v=20261011u, alfabe.js?v=41).
+[11.10.2026] Katmanda ÇİFT çizgi düzeltildi: harf hücresinin eski kısa çizgisi (.yp-c-ok .yp-harf-svg::before) yalnız yan panelde kalıyor, katmanda kapalı; tek satır çizgisi artık harfin taban çizgisinden tam geçiyor (SVG kendi yüksekliğinden ölçülüyor). alfabe.css?v=20261011v, alfabe.js?v=42.
+[11.10.2026] Örnek kelimelerde SON tenvin kaldırıldı (39 kelime): üretici harfOrnek.py içinde tenvinSil() kaynak listeden geçerken uygular, alfabe_harf_ornek.js yeniden üretildi (?v=6). Tenvinin elifi duruyor: جِدًّا -> جِدّا, مَعًا -> مَعا.
+[11.10.2026] Birleşmeyen harfler katmanı büyütüldü: kart dikeyde %100 (100vh), yatayda %80 (80vw); harf 11vh / SVG 11.6vh, örnek kelimeler 9.4vh; satır arası boşluk row-gap clamp(10px,2.2vh,26px); .yp-or-kart overflow gizli -> görünür (şedde/ötre/esre kırpılmıyor). alfabe.css?v=20261011w. 1600x900, 1280x720, 1024x640 denendi: taşma/çakışma yok.
+[11.10.2026] Birleşmeyen harfler katmanı — tasarım + animasyon:
+  · Yazı çizgileri biraz yukarı alındı: taban oranı %43.84 -> %47.67
+    (alfabe.js YP_TABAN, alfabe.css .yp-c-ok .yp-harf-svg::before).
+  · ✓ / ✗ sütunları artık yumuşak renkli birer şeridin içinde (.yp-bant,
+    yeri ypBantYerlestir() ile ölçülüyor; ızgara sütunları 'auto' olduğu
+    için CSS ile hizalanamıyor). Kapat düğmesi kartın DIŞINA alındı.
+  · Açılış animasyonu: yan paneldeki harfler katmandaki yerlerine UÇUYOR
+    (FLIP — ypKaynakOlc + ypUcusOynat), örnekler satır satır süzülerek
+    giriyor, şeritler yukarıdan açılıyor. prefers-reduced-motion kapalı.
+  · Başlık en solda, DİKEY ve aşağıdan yukarıya (writing-mode: vertical-rl
+    + rotate(180deg)); ypBaslikSigdir artık yüksekliğe sığdırıyor.
+  · En soldaki örnek artık harfin kelimenin SONUNDA olduğu kelime
+    (harfOrnek.py oluk listesi); ör. ذ için أُسْتَاذ. alfabe_harf_ornek.js ?v=7.
+  Sürümler: alfabe.css?v=20261011x, alfabe.js?v=43, alfabe_harf_ornek.js?v=7.
+[11.10.2026] Hizalama düzeltildi: örnek kelimeler harflerle AYNI satırda.
+  Eskiden kelimenin yazı tabanı kaba bir katsayıyla (0.2 x punto) tahmin
+  ediliyordu ve kelimeler harflerin taban çizgisinden ~11px YUKARIDA
+  kalıyordu — "iki ayrı satır" hissinin sebebi buydu. Artık kelimenin
+  tabanı görünmez bir ölçü imiyle (.yp-olc) gerçekten ölçülüyor, harfin
+  tabanı da SVG viewBox'ındaki y=410 biriminden hesaplanıyor; üçü (harf,
+  kelime, çizgi) ölçümde 0.00px sapmayla üst üste. Çizgi de yine tam
+  taban çizgisinde (oran %43.84). alfabe.css?v=20261011y, alfabe.js?v=44.
+[11.10.2026] Katman başlıkları: "Kelimelerde" de ızgaranın üstünden alınıp
+  ana başlığın yanına, DİKEY ve aşağıdan yukarıya yerleştirildi (#yp-kel).
+  Boşalan hücreye örnek sütunlarının başlıkları kondu: sağdan sola
+  Başta · Ortada · Sonda · Yalın (.yp-or-bas / .yp-or-et). Bu satır yazı
+  çizgisi çizmez (#yp-govde .yp-or-bas::before { content: none }) ve
+  ypCizgiHizala onu :not(.yp-or-bas) ile atlar.
+  alfabe.css?v=20261011z, alfabe.js?v=45.
+[11.10.2026] Başlıklar büyütüldü ve rozete çevrildi: Başta/Ortada/Sonda/Yalın artık beyaz zeminli, ince çerçeveli, yumuşak gölgeli yeşil rozetler (.yp-or-et, clamp(.95rem,2.3vh,1.62rem)); "Kelimelerde" clamp(1.25rem,3.1vh,2.2rem) + harf aralığı; ✓/✗ etiketleri de katmanda biraz büyütüldü (.yp-sira .yp-th-ad). 1600x900 / 1366x768 / 1280x720 / 1024x640 denendi: hiza sapması 0, çakışma yok, şeritler içeride. alfabe.css?v=20261011z.
+[11.10.2026] "Kendinden öncekiyle birleşir" (✓) sütununda TATVİL (bağlama
+  çizgisi) ayrı renkte: turuncu #E39B2F (.yp-tatvil). İki parça var —
+  (1) gerçek bağlama payı: bitişik yazılış yalın yazılıştan ne kadar
+      genişse o kadarlık sağ dilim (ör. ـد 317-222 = 95 birim),
+  (2) sağa uzatma: glifin GERÇEK mürekkep sınırından ince bir dilim alınıp
+      yatayda esnetiliyor (ypTatvilUzat), böylece çizgi kalınlığı birebir
+      aynı kalıyor ve "önceki harf buraya bağlanır" görünüyor.
+  Not: viewBox'ın sağında boşluk var, ölçüm getBBox ile yapılmalı; ayrıca
+  clip-path elemanın KENDİ dönüşümünden sonraki uzayda uygulandığı için
+  esnetme ayrı bir <g> üzerinde. Hem yan panelde hem katmanda geçerli.
+  1600x900 / 1366x768 / 1280x720 / 1024x640: uzatma şeridi aşmıyor.
+  alfabe.css?v=20261011za, alfabe.js?v=46.
+[11.10.2026] Büyüteç (harf detay) odak görünümü:
+  · Büyüme/küçülme animasyonu 280ms CSS geçişinden 820ms FLIP'e alındı
+    (flipOlc/flipOynat): yeni düzen anında kurulup her sütun eski yerinden
+    yenisine yumuşakça kayıyor. CSS geçişiyle yükseklik auto -> uzunluk
+    olduğu için zıplıyordu. Yazma animasyonu da 460ms sonra başlıyor,
+    iki hareket üst üste binmesin. Geri dönüşte de aynı geçiş var.
+  · Sütun fonları: Başta açık yeşil #E9F7EF, Ortada açık mavi #E8F1FD,
+    Sonda açık mor #F3EBFD, Yalın açık gri #F1F3F6 (.hd-f-b/o/s/n).
+  alfabe.css?v=20261011zb, alfabe_harf_detay.js?v=46.
+[11.10.2026] DÜZELTME: Büyüteçteki sütun fonları GERİ ALINDI (kutular yine
+  beyaz). Renkler birleşmeyen harfler KATMANININ örnek sütunları içinmiş:
+  Başta açık yeşil, Ortada açık mavi, Sonda açık mor, Yalın açık gri
+  (.yp-bant-or-b/o/s/n; yerleri ypBantYerlestir ile ölçülüyor, altı şeridin
+  üst/alt hizası ortak). Rozetler: Başta ve Yalın kırmızı dolgu, Ortada ve
+  Sonda yeşil dolgu, yazılar beyaz (.yp-et-no / .yp-et-ok).
+[11.10.2026] Büyüteçte HARFLER ARASI GEZİNME: kartın solunda ve sağında iki
+  düğme; üstlerinde gidilecek harf ve adı yazar. Alfabe sağdan sola aktığı
+  için SOL = sonraki (Be -> Te), SAĞ = önceki (Be -> Elif); klavyede sol/sağ
+  okları da aynı işi yapar. Uçlarda (Elif'te geri, Ye'de ileri) düğme gizli.
+  harfDetay.komsu/gezGuncelle/kaydir. Dar ekranda düğme küçülür.
+  alfabe.css?v=20261011zc, alfabe.js?v=47, alfabe_harf_detay.js?v=47.
+[11.10.2026] Büyüteç kartı yatayda %85 (85vw, eski: min(1050px,95vw)); gezinme düğmeleri büyütüldü (ok clamp(2rem,4.4vh,3.3rem), harf clamp(1.9rem,4.8vh,3.5rem), ad clamp(.74rem,1.6vh,1.08rem), genişlik clamp(60px,5.6vw,104px)). 1600x900 / 1366x768 / 1280x720 / 1024x640: düğmeler karta binmiyor, dikey kayma yok. alfabe.css?v=20261011zd.

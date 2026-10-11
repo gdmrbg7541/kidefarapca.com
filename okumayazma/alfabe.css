@@ -352,6 +352,204 @@
         }
         /* Başlığın altındaki ayırıcı çizgi kaldırıldı: kutunun kendi çerçevesi
            zaten bölümü sınırlıyor, ikinci bir çizgi kalabalık yapıyordu. */
+        /* ============ BİRLEŞMEYEN HARFLER — BÜYÜK KATMAN (11.10.2026) ====
+           Yan panele dokununca açılır: arka plan gri + bulanık, kart ortada,
+           başlık tek satır (5 rem'den başlayıp sığana kadar küçülür), harfler
+           iri, solda seçili harfin üç örneği. */
+        #yp-overlay {
+            position: fixed; inset: 0; z-index: 5200; display: none;
+            align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.42);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            opacity: 0; transition: opacity .18s ease;
+        }
+        #yp-overlay.yp-open { opacity: 1; }
+        #yp-card {
+            /* Geylani 11.10.2026: katman dikeyde ekranın TAMAMI, yatayda %80. */
+            position: relative; width: 80vw; height: 100vh; max-height: 100vh;
+            background: #ffffff; border: 1px solid #E9EEF5;
+            border-radius: 26px; box-shadow: 0 28px 60px -18px rgba(17, 122, 101, .45);
+            /* Başlık en solda dikey durduğu için kart artık YATAY dizilir:
+               [dikey başlık] [gövde]  (Geylani, 11.10.2026) */
+            padding: 18px clamp(26px, 3.2vw, 56px) 20px 10px;
+            display: flex; flex-direction: row; gap: clamp(8px, 1.2vw, 20px);
+            overflow: hidden;
+            transform: scale(.82); transition: transform .22s cubic-bezier(.34,1.3,.64,1);
+        }
+        #yp-overlay.yp-open #yp-card { transform: scale(1); }
+        #yp-close {
+            position: absolute; top: 18px; right: 18px; width: 46px; height: 46px;
+            border: none; border-radius: 50%; background: var(--danger); color: #fff;
+            font-size: 1.7rem; line-height: 1; cursor: pointer; z-index: 3;
+            display: flex; align-items: center; justify-content: center;
+        }
+        /* DİKEY BAŞLIK: en solda, aşağıdan yukarıya okunur. */
+        #yp-ust {
+            flex: 0 0 auto; font-family: 'arakom'; font-weight: bold; color: #117A65;
+            white-space: nowrap; overflow: hidden; line-height: 1.1; font-size: 3rem;
+            writing-mode: vertical-rl; transform: rotate(180deg);
+            display: flex; align-items: center; justify-content: center;
+            height: 100%; padding: 10px 0; letter-spacing: .01em;
+        }
+        /* "Kelimelerde" — başlığın yanında, yine dikey ve aşağıdan yukarıya;
+           örnek sütunlarının sol kenarını etiketler (Geylani, 11.10.2026). */
+        #yp-kel {
+            flex: 0 0 auto; font-family: 'arakom'; font-weight: bold; color: #7b8a99;
+            writing-mode: vertical-rl; transform: rotate(180deg);
+            display: flex; align-items: center; justify-content: center;
+            height: 100%; white-space: nowrap; letter-spacing: .02em;
+            font-size: clamp(1.25rem, 3.1vh, 2.2rem); padding: 10px 0;
+            letter-spacing: .07em; color: #8a99a8;
+        }
+        #yp-govde { flex: 1 1 auto; min-width: 0; min-height: 0; overflow: hidden; }
+        /* Altı harf, her biri KENDİ SATIRINDA: sağda iki yazılışı, solda
+           üç kelime örneği (Geylani, 11.10.2026). */
+        .yp-sira {
+            position: relative;
+            /* Sağ kenarda pay: ✓ sütununun şeridi kartın kenarına yapışmasın. */
+            padding-inline-start: clamp(10px, 1.1vw, 20px);
+            height: 100%; direction: rtl; display: grid;
+            grid-template-columns: auto auto minmax(0, 1fr);
+            grid-template-rows: auto repeat(6, minmax(0, 1fr));
+            column-gap: clamp(8px, 1.4vw, 20px);
+            /* Satır arası boşluk: harekeler (şedde, ötre, esre) satırın dışına
+               taşıyor; aralık olmayınca üstteki satıra giriyorlardı. */
+            row-gap: clamp(10px, 2.2vh, 26px); align-items: center;
+        }
+        /* ====== ✓ / ✗ SÜTUNLARI (katman) ======================================
+           Her harf kendi yumuşak kiremidinin içinde: ✓ sütunu yeşil, ✗ sütunu
+           kırmızı tonda. Kiremitler sütun genişliğine göre eşitlenir (justify-self
+           stretch), yazı çizgisi üstlerinden geçer. (Geylani, 11.10.2026) */
+        /* İki sütun, harfleri ve başlığı içine alan YUMUŞAK BİR ŞERİDİN içinde
+           durur: ✓ sütunu yeşil, ✗ sütunu kırmızı tonda. Şeridin yeri sütun
+           genişliklerine göre ypBantYerlestir() ile ölçülür (ızgara sütunları
+           'auto' olduğu için CSS ile hizalanamıyor). Yazı çizgisi şeridin
+           üstünden, harfler de çizginin üstünden geçer. */
+        .yp-sira .yp-th { margin-bottom: 0; align-self: end; position: relative; z-index: 1; }
+        .yp-sira .yp-hucre { justify-self: stretch; }
+        .yp-bant {
+            position: absolute; z-index: 0; pointer-events: none;
+            border-radius: clamp(16px, 2.6vh, 30px);
+        }
+        .yp-bant-ok {
+            background: linear-gradient(180deg, rgba(22, 160, 133, .15) 0,
+                        rgba(22, 160, 133, .055) 22%, rgba(22, 160, 133, .022) 100%);
+            box-shadow: inset 0 0 0 1.6px rgba(22, 160, 133, .20);
+        }
+        .yp-bant-no {
+            background: linear-gradient(180deg, rgba(239, 83, 80, .15) 0,
+                        rgba(239, 83, 80, .055) 22%, rgba(239, 83, 80, .022) 100%);
+            box-shadow: inset 0 0 0 1.6px rgba(239, 83, 80, .20);
+        }
+        /* ÖRNEK SÜTUNLARININ FONU (Geylani, 11.10.2026): Başta açık yeşil,
+           Ortada açık mavi, Sonda açık mor, Yalın açık gri. */
+        .yp-bant-or-b { background: linear-gradient(180deg, rgba(22, 163, 74, .13) 0,
+                        rgba(22, 163, 74, .05) 24%, rgba(22, 163, 74, .022) 100%); }
+        .yp-bant-or-o { background: linear-gradient(180deg, rgba(37, 99, 235, .13) 0,
+                        rgba(37, 99, 235, .05) 24%, rgba(37, 99, 235, .022) 100%); }
+        .yp-bant-or-s { background: linear-gradient(180deg, rgba(147, 51, 234, .13) 0,
+                        rgba(147, 51, 234, .05) 24%, rgba(147, 51, 234, .022) 100%); }
+        .yp-bant-or-n { background: linear-gradient(180deg, rgba(100, 116, 139, .14) 0,
+                        rgba(100, 116, 139, .055) 24%, rgba(100, 116, 139, .025) 100%); }
+        .yp-sira .yp-im { width: clamp(28px, 2.6vw, 40px); height: clamp(28px, 2.6vw, 40px); }
+        .yp-sira .yp-yon { width: clamp(34px, 3vw, 48px); height: clamp(30px, 2.8vw, 44px); }
+        .yp-th-ad { font-size: clamp(.72rem, 1.4vh, .95rem); font-weight: bold;
+            line-height: 1.15; text-align: center; max-width: 9em; }
+        /* Katmanda ✓/✗ etiketleri de biraz büyük (Geylani, 11.10.2026). */
+        .yp-sira .yp-th-ad { font-size: clamp(.8rem, 1.72vh, 1.14rem); max-width: 8.4em; }
+        .yp-sira .yp-ok .yp-th-ad { color: #16A085; }
+        .yp-sira .yp-no .yp-th-ad { color: #EF5350; }
+        .yp-th-or { font-size: clamp(.9rem, 1.8vh, 1.15rem); font-weight: bold; color: #7b8a99;
+            display: flex; align-items: flex-end; justify-content: center; height: 100%; }
+        .yp-sira .yp-harf { font-size: clamp(3rem, 11vh, 7rem); line-height: 1; }
+        .yp-sira .yp-harf-svg .yp-svg { height: clamp(60px, 11.6vh, 126px); }
+        .yp-or-satir { display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: clamp(6px, 1vw, 14px); height: 100%; align-items: stretch; }
+        /* Kutu yok: örnekler doğrudan satırın üstünde durur. */
+        /* overflow GÖRÜNÜR: harekeler satır kutusunun dışına çıkıyor, kırpılınca
+           şedde/ötre/esre yarım görünüyordu (Geylani, 11.10.2026). */
+        .yp-or-kart { min-height: 0; display: flex; align-items: center;
+            justify-content: center; background: none; border: 0; padding: 0;
+            overflow: visible; }
+        .yp-or-yok { color: #cbd5e1; font-size: 1.4rem; }
+        .yp-or-ar { font-family: 'arakom'; font-size: clamp(2.4rem, 9.4vh, 6rem);
+            line-height: 1.05; color: #1e293b; }
+        .yp-or-ar b { font-weight: inherit; color: var(--danger); }
+        .yp-or-tr { display: none; }
+        /* Satır çizgisi katmanda iki harf hücresinde kalsın: örnek kartlarının
+           üstünden geçmesin. */
+        /* TEK SATIR ÇİZGİSİ (Geylani, 11.10.2026: "her satırda bir çizgi
+           olsun"): harf hücrelerinin ve örneklerin altındaki ayrı ayrı kısa
+           çizgiler kaldırıldı; her satırda baştan sona TEK çizgi var.
+           Çizginin yeri ve kelimelerin o çizgiye oturması ypCizgiHizala()
+           ile ölçülerek ayarlanır — harfin taban çizgisi neredeyse çizgi
+           orada, kelimeler de oraya kaydırılır. */
+        .yp-or-satir { position: relative; }
+        /* Örnek sütunlarının başlık satırı: yazı çizgisi çizmez.
+           (id ile yazıldı: .yp-or-satir::before kuralı aşağıda ve aynı
+           özgüllükte olduğu için onu geçmesi gerekiyor.) */
+        #yp-govde .yp-or-bas::before { content: none; }
+        .yp-or-bas { align-self: end; }
+        /* Sütun başlıkları birer ROZET: beyaz zemin, ince çerçeve, yumuşak
+           gölge, yeşil yazı (Geylani, 11.10.2026: "büyüt ve şık olsun"). */
+        .yp-or-et {
+            position: relative; z-index: 1;     /* şeridin üstünde kalsın */
+            font-size: clamp(.95rem, 2.3vh, 1.62rem); font-weight: bold;
+            color: #117A65; letter-spacing: .015em; white-space: nowrap;
+            line-height: 1.1; background: #fff; border-radius: 999px;
+            padding: clamp(4px, .85vh, 10px) clamp(12px, 1.5vw, 28px);
+            box-shadow: inset 0 0 0 1.6px #DCE7E4, 0 2px 7px rgba(17, 122, 101, .07);
+        }
+        .yp-or-bas .yp-or-kart { padding-bottom: clamp(4px, .9vh, 12px); }
+        /* Dolgu rengi: Başta/Yalın kırmızı, Ortada/Sonda yeşil; yazı beyaz. */
+        .yp-or-et.yp-et-no { background: var(--danger); color: #fff;
+            box-shadow: 0 3px 10px rgba(239, 83, 80, .28); }
+        .yp-or-et.yp-et-ok { background: #16A085; color: #fff;
+            box-shadow: 0 3px 10px rgba(22, 160, 133, .28); }
+        .yp-or-satir::before {
+            content: ""; position: absolute; z-index: 0;
+            left: 0; right: -3000px; bottom: var(--yp-cizgi, 30%);
+            height: 2px; background-color: rgba(0, 0, 0, 0.22);
+        }
+        .yp-or-ar { position: relative; z-index: 1; }
+        /* Görünmez ölçü imi: kelimenin yazı tabanını okumak için eklenir. */
+        .yp-olc { display: inline-block; width: 0; height: 0; overflow: hidden;
+            vertical-align: baseline; font-size: 0; }
+        /* ====== AÇILIŞ ANİMASYONU =============================================
+           Yan panele dokununca harfler bulundukları yerden katmandaki yerlerine
+           UÇAR (JS: ypUcusOynat, FLIP). Uçuş sürerken kart ölçeklenmez ve
+           kırpmaz; örnek kelimeler satır satır süzülerek girer. */
+        #yp-overlay.yp-ucus #yp-card { transform: none; }
+        #yp-overlay.yp-ucus #yp-card,
+        #yp-overlay.yp-ucus #yp-govde { overflow: visible; }
+        #yp-govde.yp-giris .yp-or-kart {
+            animation: ypKartGel .44s cubic-bezier(.2, .9, .3, 1) both;
+            animation-delay: calc(var(--g, 0) * .055s + .14s);
+        }
+        @keyframes ypKartGel {
+            from { opacity: 0; transform: translateX(-30px) scale(.92); }
+            to   { opacity: 1; transform: none; }
+        }
+        #yp-govde.yp-giris .yp-th {
+            animation: ypBasGel .42s cubic-bezier(.2, .9, .3, 1) both;
+        }
+        #yp-govde.yp-giris .yp-bant {
+            animation: ypBantGel .5s cubic-bezier(.2, .9, .3, 1) both;
+            transform-origin: top center;
+        }
+        @keyframes ypBantGel { from { opacity: 0; transform: scaleY(.72); } to { opacity: 1; transform: none; } }
+        @keyframes ypBasGel { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+        @media (prefers-reduced-motion: reduce) {
+            #yp-govde.yp-giris .yp-or-kart, #yp-govde.yp-giris .yp-th,
+            #yp-govde.yp-giris .yp-bant { animation: none; }
+        }
+        .yp-tikla { cursor: pointer; }
+        @media (max-width: 900px) {
+            #yp-govde { grid-template-columns: 1fr; }
+            #yp-ust { padding: 0 46px; }
+            .yp-or-kart { gap: 8px; padding: 5px 10px; }
+        }
+
         .yp-baslik {
             background: transparent; color: #117A65; text-align: center;
             padding: 0 2px 3px; line-height: 1.2;
@@ -475,7 +673,8 @@
         .yp-harf-svg { display: flex; align-items: center; justify-content: center; max-width: 100%; position: relative; }
         .yp-svg { height: clamp(3.2rem, 9.4vh, 6.4rem); width: auto; max-width: 100%; display: block; overflow: visible; position: relative; z-index: 1; }
         /* SATIR (referans) ÇİZGİSİ — kartlardaki ile aynı mantık: harflerin
-           taban çizgisi SVG'nin altından %43.84 yukarıda (viewBox 730, taban 410).
+           taban çizgisi SVG'nin altından %47.67 yukarıda (Geylani 11.10.2026:
+           "çizgileri çok az yukarı taşı"; önceki değer %43.84 idi).
            Böylece dal/ra/vav gibi harflerin kuyruğunun çizginin ALTINA indiği
            görülür. Çizgi satırın tamamına uzasın diye hücre sınırını aşar; ızgara
            overflow: hidden olduğu için panelin kenarında biter. Yalnız ✓ sütunu
@@ -485,7 +684,14 @@
             left: -400px; right: -400px; bottom: 43.84%;
             height: 2px; background-color: rgba(0, 0, 0, 0.22);
         }
+        /* KATMANDA (büyük ekranda) bu kısa çizgi KAPALI: orada satırın tamamına
+           uzanan tek çizgiyi .yp-or-satir::before çiziyor. İkisi birden açıkken
+           birkaç piksellik farkla ÇİFT çizgi görünüyordu (Geylani, 11.10.2026). */
+        #yp-overlay .yp-c-ok .yp-harf-svg::before { content: none; }
         .yp-svg path { fill: currentColor; stroke: none; }
+        /* Bağlama (tatvil) çizgisi: harfin gövdesinden ayrı, sıcak turuncu —
+           çocuk "önceki harf buraya bağlanıyor"u görsün. */
+        .yp-svg path.yp-tatvil { fill: #E39B2F; }
         /* harfin metni ekran okuyucu/testler için durur, görünmez */
         .yp-gizli { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
@@ -794,12 +1000,42 @@
         #hd-card {
             background: var(--bg-glass); border: 1px solid rgba(255,255,255,0.4);
             border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            width: min(1050px, 95vw); max-height: 94vh; overflow-y: auto;
-            padding: 25px 30px; position: relative;
+            /* Geylani, 11.10.2026: büyüteç yatayda ekranın %85'i. */
+            width: 85vw; max-width: 85vw; max-height: 94vh; overflow-y: auto;
+            padding: 22px 30px; position: relative;
             transform: scale(0.6); opacity: 0; transition: transform 0.28s cubic-bezier(.34,1.4,.64,1), opacity 0.22s ease;
-            display: flex; flex-direction: column; gap: 18px;
+            display: flex; flex-direction: column; gap: 14px;
         }
         #hd-overlay.hd-open #hd-card { transform: scale(1); opacity: 1; }
+        /* ---- HARFLER ARASI GEZİNME DÜĞMELERİ (11.10.2026) ----
+           Kartın solunda ve sağında; üstünde gidilecek harf ve adı yazar.
+           Alfabe sağdan sola aktığı için SOL = sonraki, SAĞ = önceki. */
+        .hd-gez {
+            position: absolute; top: 50%; transform: translateY(-50%); z-index: 20;
+            border: 0; cursor: pointer; background: #fff; color: #117A65;
+            border-radius: clamp(18px, 2.6vh, 30px);
+            box-shadow: 0 16px 34px -10px rgba(0, 0, 0, .55);
+            padding: clamp(10px, 2vh, 22px) clamp(6px, .9vw, 16px);
+            min-width: clamp(60px, 5.6vw, 104px);
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        .hd-gez:hover { transform: translateY(-50%) scale(1.07);
+            box-shadow: 0 18px 36px -10px rgba(0, 0, 0, .6); }
+        #hd-ileri { left: clamp(4px, 1vw, 22px); }
+        #hd-geri  { right: clamp(4px, 1vw, 22px); }
+        .hd-gez-ok { font-size: clamp(2rem, 4.4vh, 3.3rem); line-height: 1; font-weight: bold;
+            color: #16A085; }
+        .hd-gez-ar { font-family: 'arakom'; line-height: 1.05; color: #117A65;
+            font-size: clamp(1.9rem, 4.8vh, 3.5rem); }
+        .hd-gez-ad { font-size: clamp(.74rem, 1.6vh, 1.08rem); font-weight: bold; color: #7b8a99;
+            white-space: nowrap; max-width: 10ch; overflow: hidden; text-overflow: ellipsis; }
+        /* Dar ekranda düğme kartın kenarına binmesin diye küçülür. */
+        @media (max-width: 900px) {
+            .hd-gez { min-width: 44px; padding: 7px 4px; border-radius: 14px; }
+            .hd-gez-ad { display: none; }
+            #hd-ileri { left: 4px; } #hd-geri { right: 4px; }
+        }
         #hd-close {
             position: absolute; top: 14px; right: 14px; width: 42px; height: 42px;
             border: none; border-radius: 50%; background: var(--danger); color: white;
@@ -821,16 +1057,62 @@
         #hd-name { font-size: 2.6rem; font-weight: bold; color: #117A65; text-align: center; padding: 0 62px; }
 
         /* 4 sütun: başta / ortada / sonda / yalın */
-        #hd-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .hd-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        /* ===== ODAK GÖRÜNÜMÜ (11.10.2026) ==============================
+           Dört kutudan birine dokununca o kutu şeridin çoğunu kaplar,
+           öbür üçü küçülür; altında o biçimin üç kelime örneği açılır.
+           Seçilene yeniden dokunmak dört yazılışa döndürür. */
+        /* Odakta mahreç ve "Nasıl Yazılır?" gizlenir: yer harfe ve örneklere
+           kalsın; dört yazılışa dönünce geri gelirler. */
+        #hd-card:has(#hd-tek-ornek:not([hidden])) .hd-sec-mahrec,
+        #hd-card:has(#hd-tek-ornek:not([hidden])) .hd-sec-yazilis { display: none; }
+        /* Geçiş CSS ile DEĞİL, FLIP ile yapılıyor (alfabe_harf_detay.js
+           flipOlc/flipOynat): grid-template-columns geçişi açıkken yeni
+           düzen anında ölçülemiyor ve yükseklik auto -> uzunluk geçişi
+           zıplıyordu. Burada geçiş tanımlamıyoruz. */
+        .hd-col.hd-kucuk .hd-col-label { font-size: clamp(.8rem, 1.7vh, 1.05rem); }
+        .hd-col.hd-kucuk { justify-content: center; }
+        .hd-col.hd-kucuk .hd-col-box { opacity: .8; flex: 0 0 auto;
+            height: clamp(90px, 22vh, 210px); }
+        .hd-col.hd-buyuk .hd-col-label { font-size: clamp(1.4rem, 3.2vh, 2.2rem); }
+        .hd-col.hd-buyuk .hd-col-box { border-color: var(--accent); max-height: none; }
+        /* Üç örnek — kutuların altında, büyük */
+        #hd-tek-ornek { flex: 0 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        #hd-tek-ornek[hidden] { display: none; }
+        .hd-tek-kart {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 2px; background: #fff; border-radius: 16px; padding: 8px 12px;
+            box-shadow: var(--shadow-sm);
+        }
+        .hd-tek-ar { font-family: 'arakom'; font-size: clamp(2rem, 7vh, 4.2rem);
+            line-height: 1.15; color: #1e293b; }
+        .hd-tek-ar b { font-weight: inherit; color: var(--danger); }
+        .hd-tek-tr { font-size: clamp(1rem, 2.4vh, 1.45rem); color: #475569; font-weight: 600;
+            direction: ltr; }
+        .hd-tek-bos { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center;
+            text-align: center; background: #fff; border-radius: 16px; padding: 10px 18px;
+            box-shadow: var(--shadow-sm); font-size: clamp(1rem, 2.4vh, 1.4rem); color: #475569; }
+        @media (max-width: 768px) {
+            #hd-tek-ornek { grid-template-columns: 1fr; }
+            .hd-tek-ar { font-size: clamp(1.6rem, 5vh, 2.6rem); }
+        }
+
+        /* Kutular kalan boşluğu doldurur: ekran kısaldıkça kutu kısalır,
+           kart DİKEY KAYMAZ (Geylani: "dikey scroll olmasın"). */
+        #hd-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+            flex: 1 1 auto; min-height: 0; }
+        .hd-col { display: flex; flex-direction: column; align-items: center; gap: 8px;
+            min-height: 0; }
         .hd-col-label { font-size: 1.35rem; font-weight: bold; }
         .hd-col-box {
-            width: 100%; height: min(38vh, 320px); background: white; border-radius: 16px;
+            width: 100%; flex: 1 1 auto; min-height: 96px; max-height: 300px;
+            background: white; border-radius: 16px;
             box-shadow: var(--shadow-sm); border: 2px solid #eef2f7;
             display: flex; align-items: center; justify-content: center;
             padding: 10px; cursor: pointer; transition: border-color 0.2s, transform 0.2s;
         }
         .hd-col-box:hover { border-color: var(--accent); transform: translateY(-3px); }
+        /* (Büyüteçteki renkli fonlar geri alındı — Geylani 11.10.2026:
+           renkler birleşmeyen harfler katmanının sütunları içindi.) */
         /* SIRASI GELEN BİÇİM (09.10.2026): dört biçim artık sırayla
            yazılıyor; yazılmakta olan kutu belirgin dursun, göz kalemi
            aramasın. */
@@ -859,19 +1141,31 @@
         }
         #hd-replay:active { transform: scale(0.94); }
 
-        /* Yazım sırası anahtarı: Sırayla / Hepsi birden */
-        .hd-mod { display: inline-flex; vertical-align: middle; margin-left: 10px;
-            background: #eef2f7; border-radius: 999px; padding: 3px; gap: 2px; }
-        .hd-mod button { border: none; background: transparent; cursor: pointer;
-            font-family: inherit; font-size: 0.95rem; font-weight: 600; color: #64748b;
-            padding: 5px 14px; border-radius: 999px;
-            transition: background 0.15s, color 0.15s, transform 0.12s; }
-        .hd-mod button.hd-mod-acik { background: white; color: var(--primary);
-            box-shadow: 0 2px 6px -2px rgba(15, 23, 42, 0.35); }
-        .hd-mod button:active { transform: scale(0.95); }
+        /* YAZIM KİPİ JETONLARI — Okuma bölümündeki hareke jetonlarının
+           (.ok-cip) tasarımı: yuvarlak hap, seçili olan KIRMIZI dolgu +
+           BEYAZ yazı. Kutuların hemen üstünde, ortada durur. Şerit ince
+           tutuldu: pencere dikey kaymasın. */
+        #hd-ayar { display: flex; justify-content: center; align-items: center;
+            gap: 10px 22px; flex-wrap: wrap; flex: 0 0 auto; }
+        #hd-kip, #hd-hiz { display: flex; align-items: center; gap: 8px; }
+        #hd-hiz .hd-ayar-ad { font-size: .95rem; color: #7b8a99; font-weight: bold; }
+        #hd-hiz button { min-width: 40px; padding-left: 0; padding-right: 0; text-align: center; }
+        #hd-kip button, #hd-hiz button {
+            font-family: 'arakom'; font-size: 1.05rem; line-height: 1;
+            padding: 8px 18px; border-radius: 999px; cursor: pointer;
+            border: 2px solid #E3EAF2; background: #F7F9FC; color: #7b8a99;
+            transition: all 0.25s ease; user-select: none;
+        }
+        #hd-kip button:hover, #hd-hiz button:hover { transform: translateY(-2px); }
+        #hd-kip button.hd-kip-acik, #hd-hiz button.hd-kip-acik {
+            background: var(--danger); color: #fff; border-color: transparent;
+            font-weight: bold; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
+        }
         @media (max-width: 768px) {
-            .hd-mod { margin-left: 6px; }
-            .hd-mod button { font-size: 0.82rem; padding: 4px 10px; }
+            #hd-kip { gap: 6px; }
+            #hd-kip button, #hd-hiz button { padding: 6px 12px; font-size: .9rem; }
+            #hd-ayar { gap: 6px 12px; }
+            #hd-hiz button { min-width: 32px; padding-left: 0; padding-right: 0; }
         }
 
         .hd-sec { background: white; border-radius: 18px; padding: 16px 22px; box-shadow: var(--shadow-sm); border-left: 6px solid var(--accent); }
@@ -886,7 +1180,7 @@
             #hd-name { font-size: 1.9rem; padding: 0 46px; }
             .hd-sec-text { font-size: 1.1rem; }
             .hd-col-label { font-size: 1.1rem; }
-            .hd-col-box { height: min(26vh, 220px); }
+            .hd-col-box { min-height: 88px; max-height: 220px; }
         }
 
         /* Kartlar (Flip) */

@@ -26,6 +26,36 @@
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
 
+  { t: '2026-10-11', e: 'Harf Tanıtımı', b: 'Harfler tahtada tek kalemle yazılıyor',
+    m: 'Bir harfe dokununca dört yazılışı birlikte yazılıyor ve kalem harfin '
+     + 'gerçek yazım sırasını izliyor; ekranın başka bir yerinde ikinci bir '
+     + 'kalem başlamıyor, çocuk gözüyle takip edebiliyor. Yazma hızı beş '
+     + 'kademe: sınıf yeni başlıyorsa yavaşlatıp deftere birlikte yazdırırsın, '
+     + 'tekrar turunda hızlandırırsın. İstersen dört yazılışı sırayla da '
+     + 'yazdırabilirsin — seçimin bir sonraki harfte de geçerli kalıyor.' },
+
+  { t: '2026-10-11', e: 'Harf Tanıtımı', b: 'Bir yazılışa dokun, kelimedeki hâlini göster',
+    m: 'Dört yazılıştan birine dokununca o biçim tek başına büyüyor, diğer üçü '
+     + 'yanda küçülüyor; altında o biçimin geçtiği üç kelime çıkıyor ve harf '
+     + 'kelimenin içinde kırmızı duruyor. "Bu harf kelimenin başında nasıl '
+     + 'yazılıyor?" sorusunun cevabı tek harfin üstünde değil, gerçek kelimede '
+     + 'görünüyor. Seçili yazılışa yeniden dokunmak dört yazılışa döndürüyor.' },
+
+  { t: '2026-10-11', e: 'Harf Tanıtımı', b: 'Sonrakiyle birleşmeyen altı harf tek ekranda',
+    m: 'Sağdaki köşeye dokununca altı harf ekranın ortasında büyüyor: her harfin '
+     + 'iki yazılışı ve dört örneği aynı satırda — kelimenin başında, ortasında, '
+     + 'sonunda ve yalın hâliyle, harf kırmızı. "Bunlar niçin kendinden sonrakine '
+     + 'bitişmiyor?" sorusunu altı harfin örnekleri üzerinden tek seferde '
+     + 'anlatıyorsun; arka sıra da rahat okuyor.' },
+
+  { t: '2026-10-09', e: 'Harf Tanıtımı', b: 'İstenen harfi yaz: önce düşünsünler, sonra göster',
+    m: 'Tahtaya "cim harfinin baştaki yazılışını yazın" gibi bir istek düşüyor; '
+     + 'çocuklar deftere yazarken ekranda yalnız istek duruyor. Sen hazır olunca '
+     + '"Yazılışı göster" ile harf satırın üstüne kalemle yazılıyor, istersen '
+     + 'dört yazılışın tamamını da açıyorsun. Ölçmek istersen aynı satırdaki '
+     + 'Dene düğmesi şıklı hâlini veriyor; doğru şık kırmızı çerçeveyle '
+     + 'belirlenip yazılışı açılıyor.' },
+
   { t: '2026-10-04', e: 'Sınıf defteri', b: 'Her haftanın öğrenme çıktısı kitabına göre hazır',
     m: 'Şubenin defterini açtığında o haftanın ünitesi ve öğrenme çıktıları kazanım '
      + 'kodlarıyla karşında duruyor; hangi kitabı kullanıyorsan ona ait olanlar '

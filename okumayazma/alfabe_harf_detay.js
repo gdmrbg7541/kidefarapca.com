@@ -172,6 +172,12 @@ const harfDetay = {
         const ov = document.createElement('div');
         ov.id = 'hd-overlay';
         ov.innerHTML = `
+            <button id="hd-ileri" class="hd-gez" type="button">
+                <span class="hd-gez-ok">&#8249;</span>
+                <span class="hd-gez-ar"></span><span class="hd-gez-ad"></span></button>
+            <button id="hd-geri" class="hd-gez" type="button">
+                <span class="hd-gez-ar"></span><span class="hd-gez-ad"></span>
+                <span class="hd-gez-ok">&#8250;</span></button>
             <div id="hd-card" role="dialog" aria-modal="true">
                 <button id="hd-close" title="Kapat" aria-label="Kapat">&times;</button>
                 <div id="hd-no" title="Alfabedeki sırası"></div>
@@ -180,9 +186,24 @@ const harfDetay = {
                     <div class="hd-sec-title">📍 Mahreç <span class="hd-sec-sub">(sesin çıkış yeri)</span></div>
                     <div class="hd-sec-text" id="hd-mahrec"></div>
                 </div>
+                <div id="hd-ayar">
+                    <div id="hd-kip" role="group" aria-label="Yazım sırası">
+                        <button type="button" data-mod="hepsi" title="Dört biçim aynı anda yazılır">Hepsi birden</button>
+                        <button type="button" data-mod="sira" title="Biçimler sırayla yazılır: Başta → Ortada → Sonda → Yalın">Sırayla</button>
+                    </div>
+                    <div id="hd-hiz" role="group" aria-label="Yazma hızı">
+                        <span class="hd-ayar-ad">Hız</span>
+                        <button type="button" data-hiz="0" title="Çok yavaş">1</button>
+                        <button type="button" data-hiz="1" title="Yavaş">2</button>
+                        <button type="button" data-hiz="2" title="Normal">3</button>
+                        <button type="button" data-hiz="3" title="Hızlı">4</button>
+                        <button type="button" data-hiz="4" title="Çok hızlı">5</button>
+                    </div>
+                </div>
                 <div id="hd-cols" dir="rtl"></div>
+                <div id="hd-tek-ornek" hidden></div>
                 <div class="hd-sec hd-sec-yazilis">
-                    <div class="hd-sec-title">✍️ Nasıl Yazılır? <button id="hd-replay" title="Tekrar izle">↻ Tekrar Yaz</button><span id="hd-mod" class="hd-mod" role="group" aria-label="Yazım sırası"><button type="button" data-mod="sira" title="Biçimler sırayla yazılır: Başta → Ortada → Sonda → Yalın">Sırayla</button><button type="button" data-mod="hepsi" title="Dört biçim aynı anda yazılır">Hepsi birden</button></span></div>
+                    <div class="hd-sec-title">✍️ Nasıl Yazılır? <button id="hd-replay" title="Tekrar izle">↻ Tekrar Yaz</button></div>
                     <div class="hd-sec-text" id="hd-yazilis"></div>
                 </div>
             </div>`;
@@ -193,7 +214,7 @@ const harfDetay = {
         /* SIRAYLA / HEPSİ BİRDEN (11.10.2026, Geylani isteği): büyüteçte
            dört biçimin sırayla mı yoksa aynı anda mı yazılacağını seçen
            anahtar. Seçim tarayıcıda saklanır, sonraki harfte de geçerli. */
-        document.getElementById('hd-mod').onclick = function (e) {
+        document.getElementById('hd-kip').onclick = function (e) {
             const d = e.target.closest('button[data-mod]');
             if (!d) return;
             if (typeof playClick === 'function') playClick();
@@ -201,7 +222,62 @@ const harfDetay = {
             harfDetay.animate();
         };
         this.modSec(this.modOku());
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') harfDetay.close(); });
+        /* YAZMA HIZI — 5 kademe, herkes kendi ayarlar (11.10.2026). Çarpan
+           playForm'da uygulandığı için büyüteç, Harf Birleştirme tablosu ve
+           İstenen Harfi Yaz aynı hızda yazar. */
+        document.getElementById('hd-hiz').onclick = function (e) {
+            const d = e.target.closest('button[data-hiz]');
+            if (!d) return;
+            if (typeof playClick === 'function') playClick();
+            harfDetay.hizSec(+d.dataset.hiz);
+            harfDetay.animate();
+        };
+        this.hizSec(this.hizOku());
+        /* HARFLER ARASI GEZİNME (Geylani, 11.10.2026): alfabe tablosu sağdan
+           sola aktığı için SOLDAKİ düğme SONRAKİ harfe, SAĞDAKİ düğme ÖNCEKİ
+           harfe gider; üstlerinde hangi harfe gidileceği yazar. */
+        document.getElementById('hd-ileri').onclick = () => harfDetay.kaydir(1);
+        document.getElementById('hd-geri').onclick = () => harfDetay.kaydir(-1);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { harfDetay.close(); return; }
+            const ov2 = document.getElementById('hd-overlay');
+            if (!ov2 || !ov2.classList.contains('hd-open')) return;
+            if (e.key === 'ArrowLeft') { e.preventDefault(); harfDetay.kaydir(1); }
+            else if (e.key === 'ArrowRight') { e.preventDefault(); harfDetay.kaydir(-1); }
+        });
+    },
+
+    /* Yönüne göre bir sonraki GÖSTERİLEBİLİR harfin sırası (-1: yok). */
+    komsu: function (yon) {
+        if (typeof harfler === 'undefined' || this.idx == null) return -1;
+        let j = this.idx;
+        for (let n = 0; n < harfler.length; n++) {
+            j += yon;
+            if (j < 0 || j >= harfler.length) return -1;
+            const x = harfler[j];
+            if (x && HARF_DETAY_INFO[x.h] && HARF_YAZIM[x.h]) return j;
+        }
+        return -1;
+    },
+
+    gezGuncelle: function () {
+        [['hd-ileri', 1], ['hd-geri', -1]].forEach((c) => {
+            const el = document.getElementById(c[0]);
+            if (!el) return;
+            const j = this.komsu(c[1]);
+            el.style.visibility = (j < 0) ? 'hidden' : '';
+            if (j < 0) return;
+            el.querySelector('.hd-gez-ar').innerText = harfler[j].h;
+            el.querySelector('.hd-gez-ad').innerText = harfler[j].tr;
+            el.title = harfler[j].tr + ' harfine geç';
+            el.setAttribute('aria-label', harfler[j].tr + ' harfine geç');
+        });
+    },
+
+    kaydir: function (yon) {
+        const j = this.komsu(yon);
+        if (j < 0) return;
+        this.open(j);
     },
 
     open: function(idx) {
@@ -211,6 +287,8 @@ const harfDetay = {
         const yaz = HARF_YAZIM[h.h];
         if (!h || !info || !yaz) return;
         if (typeof playClick === 'function') playClick();
+        this.idx = idx;
+        this.gezGuncelle();
 
         /* Sol üstte harfin sıra numarası: karttaki .card-num ile aynı sayı (idx + 1) */
         document.getElementById('hd-no').innerText = (idx + 1);
@@ -222,6 +300,7 @@ const harfDetay = {
            kutular DOM'dan silinse de kareler (raf) dönmeye devam ediyordu.
            Sıralı yazımda bu, eski turun yeni harfte ikinci bir kalem
            başlatmasına yol açıyordu. */
+        this.tekKapat();
         this.stopAll();
 
         const cols = document.getElementById('hd-cols');
@@ -242,7 +321,9 @@ const harfDetay = {
             box.title = 'Bu formu tekrar izlemek için tıkla';
             /* stopAll: sıra da dursun, yoksa tıklanan kutu yazarken sıradaki
                biçim de başlayıp ekranda ikinci bir kalem açar. */
-            box.onclick = () => { this.stopAll(); this.sifirla(anim); this.playForm(anim, true); };
+            box.onclick = () => {
+                if (this.odakIdx === fi) this.tekKapat(); else this.tekAc(h, fm, fi);
+            };
             col.appendChild(lbl); col.appendChild(box);
             cols.appendChild(col);
             this.anims.push(anim);
@@ -491,7 +572,7 @@ const harfDetay = {
     playForm: function(anim, solo, tekSefer) {
         if (!anim) return;
         if (solo && typeof playClick === 'function') playClick();
-        const hz = anim.hiz || 1;
+        const hz = (anim.hiz || 1) * harfDetay.hizCarpani();
         const items = anim.strokes.map(s => {
             const len = s.el.getTotalLength();
             /* Süre, yolun HAM uzunluğuna değil "etkin" uzunluğuna göre:
@@ -636,26 +717,188 @@ const harfDetay = {
        yönü; FORM_META sırası). Biten biçim ekranda kalır, sıradaki başlar;
        ekranda HER AN TEK KALEM olur. Tur bitince kısa bekleme, sonra
        hepsi silinip baştan. Bir kutuya tıklamak yalnız onu oynatır. */
-    /* Hangi kipte yazılacağı: 'sira' (varsayılan) ya da 'hepsi'. */
-    mod: 'sira',
+    /* Hangi kipte yazılacağı. VARSAYILAN: 'hepsi' — dört biçim aynı anda
+       (Geylani, 11.10.2026: "hepsi birden açılsın ve bu varsayılan olsun").
+       Anahtar adı da yenilendi: eski tarayıcılarda saklı 'sira' seçimi yeni
+       varsayılanı bastırmasın. */
+    mod: 'hepsi',
     modOku: function () {
         try {
-            const v = localStorage.getItem('kidefHarfYazimModu');
+            const v = localStorage.getItem('kidefHarfYazimKipi');
             if (v === 'sira' || v === 'hepsi') return v;
         } catch (e) {}
-        return 'sira';
+        return 'hepsi';
     },
     modSec: function (m) {
-        this.mod = (m === 'hepsi') ? 'hepsi' : 'sira';
-        try { localStorage.setItem('kidefHarfYazimModu', this.mod); } catch (e) {}
-        const kutu = document.getElementById('hd-mod');
+        this.mod = (m === 'sira') ? 'sira' : 'hepsi';
+        try { localStorage.setItem('kidefHarfYazimKipi', this.mod); } catch (e) {}
+        const kutu = document.getElementById('hd-kip');
         if (!kutu) return;
         const self = this;
         kutu.querySelectorAll('button[data-mod]').forEach(function (b) {
             const acik = (b.dataset.mod === self.mod);
-            b.classList.toggle('hd-mod-acik', acik);
+            b.classList.toggle('hd-kip-acik', acik);
             b.setAttribute('aria-pressed', acik ? 'true' : 'false');
         });
+    },
+
+    /* 5 kademe hız: 3 = eskiden beri kullanılan normal hız. */
+    HIZ_KADEME: [0.5, 0.72, 1, 1.45, 2.1],
+    hiz: 2,
+    hizOku: function () {
+        try {
+            const v = parseInt(localStorage.getItem('kidefYazimHizi'), 10);
+            if (v >= 0 && v <= 4) return v;
+        } catch (e) {}
+        return 2;
+    },
+    hizSec: function (i) {
+        this.hiz = (i >= 0 && i <= 4) ? i : 2;
+        try { localStorage.setItem('kidefYazimHizi', String(this.hiz)); } catch (e) {}
+        const kutu = document.getElementById('hd-hiz');
+        if (!kutu) return;
+        const self = this;
+        kutu.querySelectorAll('button[data-hiz]').forEach(function (b) {
+            const acik = (+b.dataset.hiz === self.hiz);
+            b.classList.toggle('hd-kip-acik', acik);
+            b.setAttribute('aria-pressed', acik ? 'true' : 'false');
+        });
+    },
+    hizCarpani: function () {
+        return this.HIZ_KADEME[this.hiz] || 1;
+    },
+
+    /* BİÇİM ÖRNEĞİ (11.10.2026) — bir kutuya dokununca o biçimin kelime
+       içinde nasıl göründüğü alttaki şeritte açılır. Kelimeler sitenin
+       kendi listelerinden (Kidef Arapça kitabının kelimeleri) seçildi;
+       harf kırmızıyla vurgulanır. Soluna bitişmeyen altı harfin baştaki /
+       ortadaki biçimi yoktur — orada bunun açıklaması çıkar. */
+    /* ===== ODAK GÖRÜNÜMÜ (11.10.2026) ==========================
+       Geylani: "4 harften birine tıklayınca diğer üçü küçülsün, seçilen
+       çok büyük olsun; seçilene tekrar tıklanınca 4 yazılışa dönülsün;
+       altında o biçimin üç örneği."
+       Dört kutu yerinde kalır, seçilen kutu şeridin çoğunu kaplar,
+       öbür üçü küçülür ve tamamlanmış hâlleriyle beklerler. Seçilen
+       biçim döngüyle yazılır; altında o biçimin ÜÇ kelime örneği. */
+    odakIdx: -1,
+
+    /* Bir biçimi tamamlanmış göster (küçülen kutular boş kalmasın). */
+    doldur: function (a) {
+        if (!a) return;
+        this.cancelForm(a);
+        a.strokes.forEach(st => { st.el.style.strokeDashoffset = 0; });
+        if (a.nib) a.nib.style.visibility = 'hidden';
+    },
+
+    /* ---- Odak geçişi: FLIP ----------------------------------------
+       Sütunların yeni düzeni ANINDA kurulur, sonra her sütun eski yerinden
+       yenisine yumuşakça kayar/ölçeklenir. CSS geçişiyle yapınca yükseklik
+       auto -> uzunluk olduğu için zıplıyordu (Geylani, 11.10.2026:
+       "büyüme animasyonu çok daha yavaş ve akışkan olsun"). */
+    ODAK_SURE: 820,
+    ODAK_EGRI: 'cubic-bezier(.22,.75,.24,1)',
+
+    flipOlc: function () {
+        return [...document.querySelectorAll('#hd-cols .hd-col')]
+            .map(function (e) { return e.getBoundingClientRect(); });
+    },
+
+    flipOynat: function (ilk) {
+        const kol = [...document.querySelectorAll('#hd-cols .hd-col')];
+        const sure = this.ODAK_SURE, egri = this.ODAK_EGRI;
+        kol.forEach(function (e, j) {
+            const a = ilk[j]; if (!a || !a.width) return;
+            const b = e.getBoundingClientRect(); if (!b.width || !b.height) return;
+            const sx = a.width / b.width, sy = a.height / b.height;
+            const dx = (a.left + a.width / 2) - (b.left + b.width / 2);
+            const dy = (a.top + a.height / 2) - (b.top + b.height / 2);
+            if (Math.abs(dx) < .5 && Math.abs(dy) < .5 &&
+                Math.abs(sx - 1) < .01 && Math.abs(sy - 1) < .01) return;
+            if (!e.animate) return;
+            e.animate([
+                { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')' },
+                { transform: 'none' }
+            ], { duration: sure, easing: egri, fill: 'none' });
+        });
+    },
+
+    tekAc: function (h, fm, i) {
+        this.stopAll();
+        if (typeof playClick === 'function') playClick();
+        this.odakIdx = i;
+        const ilkYer = this.flipOlc();           /* FLIP: eski yerler */
+        const cols = document.getElementById('hd-cols');
+        if (cols) {
+            cols.classList.add('hd-odakli');
+            /* RTL ızgara: sütun sırası dizideki sıra. Seçilen geniş, ötekiler dar. */
+            cols.style.gridTemplateColumns = this.anims.map((x, j) => (j === i ? '4.6fr' : '1fr')).join(' ');
+        }
+        const kutular = document.querySelectorAll('#hd-cols .hd-col');
+        for (let j = 0; j < kutular.length; j++) {
+            kutular[j].classList.toggle('hd-buyuk', j === i);
+            kutular[j].classList.toggle('hd-kucuk', j !== i);
+        }
+        /* Seçilen yazılırken ötekiler tamamlanmış dursun. */
+        this.anims.forEach((a, j) => { if (j !== i) this.doldur(a); });
+        const sec = this.anims[i];
+        if (sec) {
+            /* Harf büyük kutuyu doldursun: viewBox kendi sınırlarına kırpılır. */
+            try {
+                if (!sec.vbAsil) sec.vbAsil = sec.svg.getAttribute('viewBox');
+                const hayalet = sec.svg.querySelector('.hd-ghost');
+                const bb = hayalet ? hayalet.getBBox() : null;
+                if (bb && bb.width > 0) {
+                    const pay = Math.max(bb.width, bb.height) * 0.08 + 18;
+                    const y1 = Math.min(bb.y, 400) - pay, y2 = Math.max(bb.y + bb.height, 420) + pay;
+                    sec.svg.setAttribute('viewBox',
+                        (bb.x - pay) + ' ' + y1 + ' ' + (bb.width + pay * 2) + ' ' + (y2 - y1));
+                }
+            } catch (e) { }
+            this.sifirla(sec);
+            /* Yazma, büyüme bitmeye yakın başlasın: ikisi üst üste binince
+               hareket karışık görünüyordu. */
+            this.timers.push(setTimeout(() => this.playForm(sec, false), 460));
+        }
+        this.flipOynat(ilkYer);                  /* FLIP: yumuşak geçiş */
+        /* Üç örnek */
+        const liste = (typeof HARF_ORNEK_BICIM !== 'undefined' && HARF_ORNEK_BICIM[h.h])
+            ? (HARF_ORNEK_BICIM[h.h][fm.key] || []) : [];
+        const bitismez = (typeof HARF_BITISMEZ !== 'undefined') && HARF_BITISMEZ.indexOf(h.h) >= 0;
+        const oku = document.getElementById('hd-tek-ornek');
+        oku.hidden = false;
+        if (!liste.length) {
+            oku.innerHTML = '<div class="hd-tek-bos">' +
+                (bitismez && (fm.key === 'b' || fm.key === 'o')
+                    ? h.tr + ' soluna bitişmez: kelimede bu biçimde yazılmaz, ' +
+                      '<b>yalın</b> ya da <b>sondaki</b> biçimiyle görünür.'
+                    : 'Bu biçim için örnek kelime eklenmedi.') + '</div>';
+        } else {
+            oku.innerHTML = liste.map(function (o) {
+                return '<div class="hd-tek-kart">'
+                    + '<span class="hd-tek-ar" dir="rtl">' + o.on
+                    + '<b>' + o.vu + '</b>' + o.son + '</span>'
+                    + '<span class="hd-tek-tr">' + o.tr + '</span></div>';
+            }).join('');
+        }
+    },
+
+    tekKapat: function () {
+        const oku = document.getElementById('hd-tek-ornek');
+        if (oku) { oku.hidden = true; oku.innerHTML = ''; }
+        const cols = document.getElementById('hd-cols');
+        const geri = this.odakIdx >= 0;
+        const ilkYer = geri ? this.flipOlc() : null;
+        if (cols) { cols.classList.remove('hd-odakli'); cols.style.gridTemplateColumns = ''; }
+        const kutular = document.querySelectorAll('#hd-cols .hd-col');
+        for (let j = 0; j < kutular.length; j++) {
+            kutular[j].classList.remove('hd-buyuk', 'hd-kucuk');
+        }
+        (this.anims || []).forEach(a => {
+            if (a.vbAsil) { a.svg.setAttribute('viewBox', a.vbAsil); a.vbAsil = null; }
+        });
+        if (ilkYer) this.flipOynat(ilkYer);
+        this.odakIdx = -1;
+        if (geri) this.timers.push(setTimeout(() => this.animate(), this.ODAK_SURE * 0.55));
     },
 
     turBaslat: function() {

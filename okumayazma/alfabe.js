@@ -529,14 +529,66 @@ const dizilis = {
    olarak çizilir — kartlarda harfGrid.init() de aynı veriyi kullanıyor.
    Veri yoksa düz metne düşer. Harfin kendisi görünmez bir span'da da durur:
    ekran okuyucu ve testler metni yine bulabilsin. */
+let ypTatNo = 0;          /* tatvil kırpma yollarına benzersiz kimlik */
+
+/** Bağlama (tatvil) çizgisini sağa uzatır: glifin sağ kenarından ince bir
+ *  dilim alınıp yatayda esnetilir, böylece çizginin kalınlığı birebir aynı
+ *  kalır. Ölçüm gerektiği için öge ekrana geldikten SONRA çağrılır. */
+function ypTatvilUzat(kok) {
+    (kok || document).querySelectorAll('.yp-svg g.yp-uzat').forEach(function (g) {
+        if (g.dataset.ok) return;
+        const svg = g.closest('.yp-svg');
+        const taban = svg && svg.querySelector('path:not(.yp-tatvil)');
+        const dilim = svg && svg.querySelector('rect.yp-dilim');
+        if (!taban || !dilim) return;
+        let bb;
+        try { bb = taban.getBBox(); } catch (e) { return; }
+        if (!bb || !bb.width) return;                 /* henüz görünmüyor */
+        const sag = bb.x + bb.width;                  /* mürekkebin sağ ucu */
+        const dil = Math.max(3, bb.width * 0.045);
+        const uz = (svg.viewBox.baseVal.height || 730) * 0.13;
+        const k = (dil + uz) / dil;
+        dilim.setAttribute('x', (sag - dil).toFixed(2));
+        dilim.setAttribute('width', dil.toFixed(2));
+        g.setAttribute('transform', 'translate(' + (sag - dil).toFixed(2) + ',0) scale('
+            + k.toFixed(3) + ',1) translate(' + (-(sag - dil)).toFixed(2) + ',0)');
+        g.dataset.ok = '1';
+    });
+}
 function ypHarf(i, form) {
     const g = (form === 's') ? i.s : i.b;
     const yaz = (typeof HARF_YAZIM !== 'undefined') ? HARF_YAZIM[i.h] : null;
     const d = yaz && yaz[form];
     if (!d || !d.fill) return `<span class="yp-harf">${g}</span>`;
     const H = 100, W = Math.round(d.vb[2] / d.vb[3] * H);
+    /* TATVİL AYRI RENKTE (Geylani, 11.10.2026: "kendinden öncekiyle birleşir
+       kısmında tatvil çizgilerini renkli yap ki anlaşılsın").
+       Bitişik (sonda) yazılış, yalın yazılıştan ne kadar GENİŞSE sağdaki o
+       kadarlık dilim bağlama çizgisidir (ör. ـد 317-222 = 95 birim). Aynı
+       yol ikinci kez, bu dilime kırpılarak, vurgu renginde çiziliyor. */
+    let tat = '';
+    const yal = yaz && yaz.n;
+    if (form === 's' && yal && yal.vb) {
+        const t = d.vb[2] - yal.vb[2];
+        if (t > 2) {
+            const sag = d.vb[0] + d.vb[2];          /* viewBox'ın sağ kenarı */
+            const no = ++ypTatNo;
+            /* <g class="yp-uzat">: bağlama çizgisini sağa uzatır. Dilimin yeri
+               ve esnetme oranı, glifin GERÇEK mürekkep sınırı ölçülerek
+               ypTatvilUzat() içinde veriliyor — viewBox'ın sağında boşluk var,
+               oraya göre hesaplayınca uzatma görünmüyordu. */
+            tat = `<defs><clipPath id="ypt${no}">`
+                + `<rect x="${sag - t}" y="${d.vb[1]}" width="${t}" height="${d.vb[3]}"></rect>`
+                + `</clipPath><clipPath id="ypd${no}">`
+                + `<rect class="yp-dilim" x="${sag}" y="${d.vb[1]}" width="1" height="${d.vb[3]}"></rect>`
+                + `</clipPath></defs>`
+                + `<g class="yp-uzat">`
+                + `<path class="yp-tatvil" d="${d.fill}" clip-path="url(#ypd${no})"></path></g>`
+                + `<path class="yp-tatvil" d="${d.fill}" clip-path="url(#ypt${no})"></path>`;
+        }
+    }
     return `<span class="yp-harf yp-harf-svg"><svg class="yp-svg" viewBox="${d.vb.join(' ')}"`
-        + ` width="${W}" height="${H}" aria-hidden="true"><path d="${d.fill}"></path></svg>`
+        + ` width="${W}" height="${H}" aria-hidden="true"><path d="${d.fill}"></path>${tat}</svg>`
         + `<span class="yp-gizli">${g}</span></span>`;
 }
 
@@ -579,6 +631,284 @@ function yanPaneliKur() {
     });
     s += '</div>';
     yan.innerHTML = s;
+    requestAnimationFrame(function () { ypTatvilUzat(yan); });
+    /* Panele dokunmak BÜYÜK KATMANI açar (11.10.2026, Geylani: "sağdaki
+       yere basınca merkeze gelsin ve daha büyük olsun"). */
+    yan.classList.add('yp-tikla');
+    yan.setAttribute('title', 'Büyütmek için dokun');
+    yan.onclick = function () {
+        if (typeof playClick === 'function') playClick();
+        ypKatmanAc();
+    };
+}
+
+/* ====================================================================
+   BİRLEŞMEYEN HARFLER — BÜYÜK KATMAN (11.10.2026)
+   Yan paneldeki tablo, tahtadan görünsün diye ekranın ortasında büyük
+   bir katmanda açılır: arkası gri ve bulanık, başlık tek satır, harfler
+   iri. Soldaki sütunda seçili harfin ÜÇ örneği durur (harf kelimenin
+   başında, ortasında, sonunda nasıl görünüyor) — çocuk harfin bütün
+   hâllerini bir arada görsün. Örnek verisi: alfabe_harf_ornek.js
+   ==================================================================== */
+/* Harfin taban çizgisi, arakom tasarım ızgarasında y = 410 (viewBox 730).
+   Oran yerine BİRİM kullanılıyor: her harfin viewBox'ı ayrı olabilir, oranla
+   hesaplayınca kayıyordu. Örnek kelimeler de ölçülen gerçek yazı tabanıyla
+   (görünmez bir ölçü imi ile) tam bu çizgiye oturtulur — eskiden kaba bir
+   katsayı kullanılıyordu ve kelimeler harflerden ~11px yukarıda kalıyordu
+   (Geylani, 11.10.2026: "örnekler ve harfler aynı satırda olsun"). */
+const YP_TABAN_BIRIM = 410;
+let ypUcusKaynak = null;   /* yan paneldeki harflerin açılış öncesi yerleri */
+
+/** Katman açılmadan ÖNCE yan paneldeki harflerin ekran konumları. */
+function ypKaynakOlc() {
+    const yan = document.getElementById('g1yan');
+    if (!yan) return null;
+    const l = [...yan.querySelectorAll('.yp-hucre')].map(function (h) {
+        const e = h.querySelector('.yp-svg') || h.querySelector('.yp-harf');
+        if (!e) return null;
+        const r = e.getBoundingClientRect();
+        return r.height ? r : null;
+    });
+    return l.some(Boolean) ? l : null;
+}
+
+/** FLIP: harfler yan paneldeki yerlerinden katmandaki yerlerine uçar. */
+function ypUcusOynat(ov) {
+    const kay = ypUcusKaynak;
+    const hed = [...document.querySelectorAll('#yp-govde .yp-hucre')];
+    if (!kay || kay.length !== hed.length) { ov.classList.remove('yp-ucus'); return; }
+    const ilk = hed.map(function (h, i) {
+        const k = kay[i]; if (!k) return null;
+        const e = h.querySelector('.yp-svg') || h.querySelector('.yp-harf');
+        const y = e.getBoundingClientRect();
+        if (!y.height) return null;
+        return { dx: (k.left + k.width / 2) - (y.left + y.width / 2),
+                 dy: (k.top + k.height / 2) - (y.top + y.height / 2),
+                 sc: Math.max(0.15, k.height / y.height) };
+    });
+    hed.forEach(function (h, i) {
+        const f = ilk[i]; if (!f) return;
+        h.style.transition = 'none';
+        h.style.transform = 'translate(' + f.dx + 'px,' + f.dy + 'px) scale(' + f.sc + ')';
+        h.style.opacity = '.45';
+    });
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+        hed.forEach(function (h, i) {
+            if (!ilk[i]) return;
+            h.style.transition = 'transform .58s cubic-bezier(.2,.86,.26,1) '
+                + (Math.floor(i / 2) * 0.04).toFixed(2) + 's, opacity .36s ease';
+            h.style.transform = '';
+            h.style.opacity = '';
+        });
+    }); });
+    clearTimeout(ypUcusOynat.z);
+    ypUcusOynat.z = setTimeout(function () {
+        hed.forEach(function (h) { h.style.transition = ''; h.style.transform = ''; h.style.opacity = ''; });
+        ov.classList.remove('yp-ucus');
+    }, 1150);
+}
+
+const YP_BICIM_AD = { b: 'Başta', o: 'Ortada', s: 'Sonda', n: 'Yalın' };
+const YP_YER_AD = { ilk: 'kelimenin başında', orta: 'kelimenin ortasında', son: 'kelimenin sonunda' };
+
+function ypKatmanKur() {
+    if (document.getElementById('yp-overlay')) return;
+    const ov = document.createElement('div');
+    ov.id = 'yp-overlay';
+    /* Kapat düğmesi KARTIN DIŞINDA: kart %80 genişlikte olduğu için sağda
+       boşluk var; içeride kalsa ✓ sütununun şeridiyle çakışıyordu. */
+    ov.innerHTML = '<button id="yp-close" title="Kapat" aria-label="Kapat">&times;</button>'
+        + '<div id="yp-card" role="dialog" aria-modal="true">'
+        + '<div id="yp-ust"></div>'
+        + '<div id="yp-kel">Kelimelerde</div>'
+        + '<div id="yp-govde"></div>'
+        + '</div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function (e) { if (e.target === ov) ypKatmanKapat(); });
+    document.getElementById('yp-close').onclick = ypKatmanKapat;
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') ypKatmanKapat();
+    });
+    window.addEventListener('resize', function () {
+        if (document.getElementById('yp-overlay').style.display === 'flex') {
+            ypBaslikSigdir(); ypCizgiHizala(); ypBantYerlestir(); ypTatvilUzat(document);
+        }
+    });
+}
+
+function ypKatmanAc() {
+    ypUcusKaynak = ypKaynakOlc();   /* katman açılmadan ölç */
+    ypKatmanKur();
+    const ov = document.getElementById('yp-overlay');
+    document.getElementById('yp-ust').textContent = 'Kendinden Sonrakiyle Birleşmeyen Harfler';
+    const okSag = '<svg class="yp-yon" viewBox="0 0 46 42" aria-hidden="true">'
+        + '<path class="yp-ok-govde" d="M15 39C15 23 17 10 32 10"></path>'
+        + '<path class="yp-ok-uc" d="M26 4.5L33 10L26 15.5"></path></svg>';
+    const okSol = '<svg class="yp-yon" viewBox="0 0 46 42" aria-hidden="true">'
+        + '<path class="yp-ok-govde" d="M31 39C31 23 29 10 14 10"></path>'
+        + '<path class="yp-ok-uc" d="M20 4.5L13 10L20 15.5"></path></svg>';
+    /* HER HARF KENDİ SATIRINDA: sağda iki yazılışı, solda ÜÇ örneği
+       (Geylani: "6 harfin örneği de aynı satırda olsun"). */
+    let s = '<div class="yp-sira">';
+    s += '<div class="yp-bant yp-bant-ok"></div><div class="yp-bant yp-bant-no"></div>'
+       + '<div class="yp-bant yp-bant-or-b"></div><div class="yp-bant yp-bant-or-o"></div>'
+       + '<div class="yp-bant yp-bant-or-s"></div><div class="yp-bant yp-bant-or-n"></div>';
+    s += '<div class="yp-th yp-ok">' + IM_TIK + okSag
+       + '<span class="yp-th-ad">kendinden ÖNCEKİYLE birleşir</span></div>';
+    s += '<div class="yp-th yp-no">' + IM_CARPI + okSol
+       + '<span class="yp-th-ad">kendinden SONRAKİYLE birleşmez</span></div>';
+    /* "Kelimelerde" artık ızgaranın üstünde değil, solda dikey duruyor
+       (#yp-kel). Bu hücrede örnek sütunlarının başlıkları var: sağdan sola
+       Başta · Ortada · Sonda · Yalın (Geylani, 11.10.2026). */
+    /* Rozet rengi biçimi anlatır: bu harfler BAŞTA ve YALIN iken yalın
+       yazılır (kırmızı = sonrakiyle birleşmez), ORTADA ve SONDA iken
+       öncekine bitişir (yeşil). Geylani, 11.10.2026. */
+    s += '<div class="yp-or-satir yp-or-bas">'
+       + [['Başta', 'no'], ['Ortada', 'ok'], ['Sonda', 'ok'], ['Yalın', 'no']].map(function (t) {
+             return '<div class="yp-or-kart"><span class="yp-or-et yp-et-' + t[1] + '">'
+                  + t[0] + '</span></div>';
+         }).join('')
+       + '</div>';
+    harfler.filter(i => i.nobind).forEach((i, gi) => {
+        s += '<div class="yp-hucre yp-c-ok" style="--g:' + gi + '" title="' + i.tr + ': öncesine bağlanır">' + ypHarf(i, 's') + '</div>';
+        s += '<div class="yp-hucre yp-c-no" style="--g:' + gi + '" title="' + i.tr + ': sonrasına bağlanmaz">' + ypHarf(i, 'b') + '</div>';
+        const liste = (typeof HARF_ORNEKLER !== 'undefined' && HARF_ORNEKLER[i.h]) ? HARF_ORNEKLER[i.h] : [];
+        s += '<div class="yp-or-satir" style="--g:' + gi + '">' + (liste.length
+            ? liste.map(function (o) {
+                /* Türkçesi yazılmıyor (Geylani): tahtada harfin kelimedeki
+                   hâli konuşulacak, anlam değil. Karşılık ipucunda duruyor. */
+                return '<div class="yp-or-kart" title="' + (o.tr || '') + '">'
+                    + '<span class="yp-or-ar" dir="rtl">' + o.on + '<b>' + o.vu + '</b>' + o.son + '</span></div>';
+              }).join('')
+            : '<div class="yp-or-kart"><span class="yp-or-yok">—</span></div>')
+          + '</div>';
+    });
+    s += '</div>';
+    const govde = document.getElementById('yp-govde');
+    govde.innerHTML = s;
+    govde.classList.remove('yp-giris');
+    ov.style.display = 'flex';
+    ov.classList.toggle('yp-ucus', !!ypUcusKaynak);
+    requestAnimationFrame(function () {
+        ov.classList.add('yp-open');
+        ypBaslikSigdir();
+        ypCizgiHizala();                 /* ÖLÇÜM: animasyon başlamadan */
+        ypBantYerlestir();
+        ypTatvilUzat(document);
+        govde.classList.add('yp-giris'); /* örnekler sırayla süzülerek gelir */
+        ypUcusOynat(ov);
+    });
+}
+
+/* Her satırda TEK çizgi: çizgi harfin taban çizgisinden geçer, örnek
+   kelimeler de o çizgiye oturacak kadar kaydırılır. Ölçerek yapılır,
+   çünkü harf SVG'si ile yazı kutusunun taban çizgisi farklı yerlerde. */
+/** ✓/✗ sütunlarının arkasındaki yumuşak şeridi sütun genişliğine oturtur. */
+function ypBantYerlestir() {
+    const sira = document.querySelector('#yp-govde .yp-sira');
+    if (!sira) return;
+    const sr = sira.getBoundingClientRect();
+    const pd = Math.max(8, Math.round(sr.height * 0.018));
+    const satirlar = [...sira.querySelectorAll('.yp-or-satir:not(.yp-or-bas)')];
+    const basSatir = sira.querySelector('.yp-or-bas');
+    const okHucre = [...sira.querySelectorAll('.yp-c-ok')];
+    const thOk = sira.querySelector('.yp-th.yp-ok');
+    if (!satirlar.length || !okHucre.length) return;
+    /* Bütün şeritler AYNI üst ve alt hizada olsun. */
+    const ust = Math.min(thOk ? thOk.getBoundingClientRect().top : Infinity,
+                         basSatir ? basSatir.getBoundingClientRect().top : Infinity,
+                         okHucre[0].getBoundingClientRect().top);
+    const alt = Math.max(okHucre[okHucre.length - 1].getBoundingClientRect().bottom,
+                         satirlar[satirlar.length - 1].getBoundingClientRect().bottom);
+    function yerlestir(bant, l, r, yanPay) {
+        if (!bant) return;
+        /* Şerit gövdenin dışına taşmasın: kenarda kırpılmış görünüyordu. */
+        const sl = Math.max(l - yanPay, sr.left);
+        const sg = Math.min(r + yanPay, sr.right);
+        bant.style.left = (sl - sr.left) + 'px';
+        bant.style.width = (sg - sl) + 'px';
+        bant.style.top = Math.max(0, ust - sr.top - pd) + 'px';
+        bant.style.height = (alt - ust + pd * 2) + 'px';
+    }
+    /* ✓ / ✗ harf sütunları */
+    [['ok', '.yp-c-ok'], ['no', '.yp-c-no']].forEach(function (c) {
+        const hep = [...sira.querySelectorAll(c[1])];
+        const bas = sira.querySelector('.yp-th.yp-' + c[0]);
+        if (!hep.length) return;
+        let l = Infinity, r = -Infinity;
+        hep.concat(bas ? [bas] : []).forEach(function (h) {
+            const q = h.getBoundingClientRect();
+            l = Math.min(l, q.left); r = Math.max(r, q.right);
+        });
+        yerlestir(sira.querySelector('.yp-bant-' + c[0]), l, r, pd);
+    });
+    /* Örnek sütunları: Başta · Ortada · Sonda · Yalın (sağdan sola) */
+    const kutular = satirlar[0].querySelectorAll('.yp-or-kart');
+    if (kutular.length >= 4) {
+        const a = kutular[0].getBoundingClientRect();
+        const b = kutular[1].getBoundingClientRect();
+        const bosluk = Math.max(0, a.left - b.right);        /* rtl: 0 sağda */
+        const yan = Math.max(2, bosluk / 2 - 1);
+        ['b', 'o', 's', 'n'].forEach(function (k, j) {
+            const q = kutular[j].getBoundingClientRect();
+            yerlestir(sira.querySelector('.yp-bant-or-' + k), q.left, q.right, yan);
+        });
+    }
+}
+
+function ypCizgiHizala() {
+    const satirlar = document.querySelectorAll('#yp-govde .yp-or-satir:not(.yp-or-bas)');
+    const harfler = document.querySelectorAll('#yp-govde .yp-c-ok');
+    for (let i = 0; i < satirlar.length; i++) {
+        /* Taban çizgisi SVG'nin KENDİ yüksekliğinden hesaplanır (sarmalayıcı
+           .yp-harf-svg esnek kutu olduğu için birkaç piksel daha yüksekti ve
+           çizgi harfin tabanının altına düşüyordu). */
+        const svg = harfler[i] ? harfler[i].querySelector('.yp-svg') : null;
+        if (!svg) continue;
+        const sr = svg.getBoundingClientRect();
+        const vb = svg.viewBox && svg.viewBox.baseVal;
+        const olc = (vb && vb.height) ? sr.height / vb.height : 0;
+        const hedef = olc ? sr.top + (YP_TABAN_BIRIM - vb.y) * olc
+                          : sr.bottom - sr.height * 0.4384;   /* harfin taban çizgisi */
+        const satir = satirlar[i];
+        const yr = satir.getBoundingClientRect();
+        satir.style.setProperty('--yp-cizgi', (yr.bottom - hedef) + 'px');
+        satir.querySelectorAll('.yp-or-ar').forEach(function (k) {
+            k.style.transform = '';
+            /* Kelimenin GERÇEK yazı tabanı: sıfır boyutlu, taban çizgisine
+               hizalanan bir ölçü imi ekleyip altını okuyoruz. */
+            const im = document.createElement('span');
+            im.className = 'yp-olc';
+            k.appendChild(im);
+            const taban = im.getBoundingClientRect().bottom;
+            im.remove();
+            k.style.transform = 'translateY(' + (hedef - taban) + 'px)';
+        });
+    }
+}
+
+function ypKatmanKapat() {
+    const ov = document.getElementById('yp-overlay');
+    if (!ov) return;
+    ov.classList.remove('yp-open', 'yp-ucus');
+    const g = document.getElementById('yp-govde');
+    if (g) g.classList.remove('yp-giris');
+    setTimeout(function () { ov.style.display = 'none'; }, 180);
+}
+
+/* Başlık TEK SATIR: 5 rem'den başlar, sığana kadar küçülür. */
+function ypBaslikSigdir() {
+    const el = document.getElementById('yp-ust');
+    if (!el) return;
+    /* Başlık DİKEY: en solda, aşağıdan yukarıya (Geylani, 11.10.2026).
+       Tek satırda kalsın diye artık GENİŞLİĞE değil YÜKSEKLİĞE sığdırılır. */
+    let px = 48;                      /* 3 rem */
+    el.style.fontSize = px + 'px';
+    let n = 0;
+    while (el.scrollHeight > el.clientHeight + 1 && px > 16 && n++ < 60) {
+        px -= 2;
+        el.style.fontSize = px + 'px';
+    }
 }
 
 /* ============================================================
