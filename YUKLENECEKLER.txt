@@ -8990,3 +8990,80 @@ ortalanıp 76'ya çıkarıldı.
 ش ortadaki hâlâ eski veri — س ortadaki çizilince o da kopyalanacak.
 
 Onaylı biçim: 21 / 112  (ح 4 · ظ 3 · س 3 · ش 3 · ص 4 · ض 4)
+
+--- ع (AYN) ORTADAKİ UYGULANDI ---
+TEK DARBE, 21 durak, kalem eni 64 — sağdaki bağlantıdan gelip göze giriyor,
+göz dönüp sola kuyruğa bağlanıyor; kalem hiç kalkmıyor. 2,3 sn.
+Tek beyaz yol, kalan 0 — tam mürekkepleniyor (ekran görüntüsüyle doğrulandı).
+ع'nin baştaki/sondaki/yalın biçimleri hâlâ eski veri.
+Onaylı biçim: 22 / 112  (ح 4 · ظ 3 · س 3 · ش 3 · ص 4 · ض 4 · ع 1)
+
+--- ع (AYN) SONDAKİ + YALIN UYGULANDI ---
+sondaki : TEK DARBE, 26 durak, en 64 — bağlantı → göz → satır altına sarkan
+          geniş kase. 3,9 sn.
+yalın   : TEK DARBE, 25 durak, en 64 — göz üstten dönüyor, sonra geniş kase.
+          3,8 sn.
+İkisi de tam mürekkepleniyor. ع baştaki hâlâ eski veri.
+
+--- غ (ĞAYN) ← ع'DEN KOPYALANDI + NOKTA (ortadaki, sondaki, yalın) ---
+Yalın biçimde gövde konturu ع ile BİREBİR aynı; ortadaki ve sondakinde göz
+kısmı 5 birime kadar farklı yazılmış ama kalem 64 olduğu için ikisi de tam
+mürekkepleniyor (ekran görüntüsüyle doğrulandı).
+غ BAŞTAKİ bilerek kopyalanmadı: ع baştaki henüz çizilmedi, o çizilince
+kopyalanacak.
+
+--- ف (FE) BAŞTAKİ + SONDAKİ + YALIN UYGULANDI ---
+baştaki : TEK DARBE, 14 durak, en 78 + nokta
+sondaki : TEK DARBE, 19 durak, en 66 + nokta
+yalın   : TEK DARBE, 20 durak, en 64 + nokta
+Üçü de tam mürekkepleniyor. ف ortadaki hâlâ eski veri (o da tam çalışıyor).
+
+--- NOKTA BULMADA HATA BULUNDU VE DÜZELTİLDİ ---
+Noktaları harfin konturundan ölçen kod, harfin İÇİNDEKİ DELİKLERİ de nokta
+sanıyordu: ف baştakinde harfin gözüne (başındaki boşluğa) sahte bir nokta
+kondu, kalkanı da gövdeyi ısırıyordu. Artık dış kontur bulunup içinde kalan
+küçük yollar (ف'nin gözü, ص'nin kâsesi gibi) eleniyor. 28 harfin hepsinde
+nokta sayısı tek tek doğrulandı: ب1 ت2 ث3 ج1 خ1 ذ1 ز1 ش3 ض1 ظ1 غ1 ف1 ق2 ن1
+ي2, kalanlar 0 — tamamı doğru. (ك'nin sondaki/yalın biçimindeki küçük işaret
+de ayrı adacık; sıra ona gelince ayrıca bakılacak.)
+
+--- TEZGÂHIN NOKTA KALEMİ 56 → 76 ---
+Tezgâhta elle konan noktanın varsayılan kalem çapı 56'ydı; elmas noktanın
+merkezden en uzak köşesi 37,3 birim olduğu için köşeler boyanmadan kalıyordu.
+Varsayılan 76 yapıldı, araç yeniden üretildi (_kaynak/arac/yazim-tezgah.html).
+Ayrıca artık uygulama sırasında noktanın YERİ de tezgâhtaki tıklamadan değil,
+harfin kendi konturundan ölçülüyor — elle 5-10 birim kaçık tıklansa bile
+nokta tam ortasına oturuyor.
+
+--- YENİ ARAÇ: _kaynak/uretici/bicimUygula.py ---
+  python3 _kaynak/uretici/bicimUygula.py <disaAktarim.json> "<not>"
+vb+fill ile harfi/biçimi kendi buluyor, gövdeyi aynen alıyor, noktaları
+konturdan üretip kalkan–gövde mesafesini raporluyor. Bundan sonraki biçimler
+bununla uygulanacak.
+
+--- ق (QAF) BAŞTAKİ + ORTADAKİ + SONDAKİ UYGULANDI ---
+baştaki  : TEK DARBE, 12 durak, en 78 + 2 nokta
+ortadaki : TEK DARBE, serbest çizim (yoğun nokta dizisi), en 78 + 2 nokta
+sondaki  : TEK DARBE, 17 durak, en 84 + 2 nokta — derin kase dâhil tek kalem
+yalın    : TEK DARBE, 17 durak, en 80 + 2 nokta
+ق'ın DÖRT BİÇİMİ DE TAMAM; dördünde de 3 beyaz yol (gövde + 2 nokta),
+kalan 0, ekran görüntüsüyle doğrulandı.
+İkisi de tam mürekkepleniyor (3 beyaz yol: gövde + 2 nokta, kalan 0),
+ekran görüntüsüyle doğrulandı. İki nokta konturdan ayrı ayrı ortalandı
+(fontta ikisi tek alt yolda birleşik; sağ/sol ayrılıp her birinin kendi
+merkezi hesaplanıyor).
+
+--- ج (CİM) ve خ (HIRILTILI HA) ← ح'DEN KOPYALANDI + NOKTA ---
+Her iki harfin dört biçimi de ح'nin onaylı darbeleriyle yazılıyor artık
+(baştaki ve yalın 1 darbe, ortadaki ve sondaki 2 darbe — ح'de olduğu gibi).
+Gövde konturları ح ile ya birebir aynı ya da 2-3 birim farklı; kalem 64-70
+olduğu için sekizinin de mürekkeplemesi tam (doğrulandı, kalan 0).
+Noktalar yine konturdan ölçülüp ortalandı, kalem 76:
+  ج — nokta kasenin İÇİNE (altına) geliyor; kalkan gövdeden 70-135 birim
+      uzak, yani kaseyi sırası gelmeden gizlemiyor.
+  خ — nokta kaşın ÜSTÜNE; kalkan gövdeden 81-94 birim uzak.
+Eski 'BAKILACAK' ve 'kaş' notları bu iki harften kalkmış oldu.
+
+Onaylı biçim: 42 / 112
+  (ج 4 · ح 4 · خ 4 · ظ 3 · س 3 · ش 3 · ص 4 · ض 4 · ع 3 · غ 3 · ف 3 · ق 4)
+Tamamlanan harfler: ج ح خ ص ض ق (dört biçimi de onaylı).
