@@ -9067,3 +9067,54 @@ Eski 'BAKILACAK' ve 'kaş' notları bu iki harften kalkmış oldu.
 Onaylı biçim: 42 / 112
   (ج 4 · ح 4 · خ 4 · ظ 3 · س 3 · ش 3 · ص 4 · ض 4 · ع 3 · غ 3 · ف 3 · ق 4)
 Tamamlanan harfler: ج ح خ ص ض ق (dört biçimi de onaylı).
+
+--- BÜYÜTEÇTE YAZIM SIRASI ANAHTARI (Sırayla / Hepsi birden) ---
+Harf Tanıtımı'nda bir harfe basınca açılan pencerede, "Tekrar Yaz" düğmesinin
+yanına iki konumlu bir anahtar kondu:
+  Sırayla      — Başta → Ortada → Sonda → Yalın; ekranda her an tek kalem,
+                 yazılan kutu yeşil çerçeveyle belli olur (varsayılan).
+  Hepsi birden — dört biçim aynı anda yazılır; tur en geç biteni bekler,
+                 sonra hepsi birlikte silinip baştan başlar. Bu kipte
+                 "yazan kutu" işareti olmaz.
+Seçim tarayıcıda saklanıyor (kidefHarfYazimModu), sayfa yenilense ve başka
+harfe geçilse de kalıyor. Doğrulandı: sırayla kipinde 1,5 sn sonra yarım
+kalan biçim 1 tane; hepsi birden kipinde dördü de başlamış, işaretli kutu 0;
+yenileme sonrası seçim korunuyor.
+Dosyalar: alfabe_harf_detay.js (v38), alfabe.css (v20261011a), alfabe.html.
+Yedek: _kaynak/yedekler/2026-10-11-yazim-modu-anahtari/
+
+--- ك (KEF) BAŞTAKİ + ORTADAKİ UYGULANDI ---
+baştaki  : TEK DARBE, 15 durak, kalem 64 — üstten eğik iniş, alta çanak.
+ortadaki : İKİ DARBE (64/64) — önce üstteki uzun eğik çizgi, sonra alttaki
+           çanak; tezgâhta iki darbeli çizilen ilk biçim. İkisi de tam
+           mürekkepleniyor (2 beyaz yol, kalan 0).
+NOT (test aracı): doğrulama betiği biçimi ölçmeden önce harfDetay.stopAll()
+çağırmıyordu; arka planda dönen tur ölçümün ortasında 1. biçimi sıfırlıyor,
+"kalan 18" gibi sahte artıklar çıkıyordu. (ع ve غ baştaki için görülen
+artıklar da bu yüzdenmiş, veride sorun yokmuş.) Betik düzeltildi.
+ك'in sondaki ve yalın biçimindeki küçük işaret (hemze benzeri) ayrı bir
+adacık; nokta sayacı onu 2 nokta diye görüyor — ك'e sıra gelince o işaretin
+ayrı darbe mi yoksa nokta gibi mi konacağına bakılacak.
+Onaylı biçim: 44 / 112
+
+--- TEZGÂHTA ADIM GÖSTERGESİ ---
+(Geylani: "iki darbede bir harf yazacağım zaman ilk darbeden sonra
+'birinci darbeyi bitir' yazsın; nokta ve harf için kaç darbe varsa, hangi
+darbe yazılıyorsa daha iyi gösterilsin")
+1) Bitir düğmesi artık hangi darbeyi kapatacağını söylüyor:
+   "✓ Bu darbeyi bitir" yerine "✓ 1. darbeyi bitir", sonra "✓ 2. darbeyi
+   bitir".
+2) Düğmelerin altına ADIM ŞERİDİ kondu: biçimin bütün adımları sırayla
+   rozet olarak duruyor — önce gövde darbeleri, sonra noktalar.
+     ✓ yeşil  = bitti
+     ✏ turuncu = şu an yazılan (çerçevesi parlak)
+     ○ gri    = sırasını bekliyor
+   Noktalar kesik çerçeveli rozetle ayrılıyor. Şerit çizim yokken de
+   duruyor: seçilen biçimin kaç darbe + kaç nokta olduğu tek bakışta
+   görünüyor.
+3) Nokta kipinde uyarı da sayıyor: "1. noktayı koy (2 nokta kaldı)".
+Denendi (ح ortadaki, 2 darbe + 2 nokta): çizim yokken "✓1 ✓2";
+1. darbede "✏1 ○2" + düğme "1. darbeyi bitir"; bitirince "✓1 ✏2" + düğme
+"2. darbeyi bitir"; nokta kipinde "✓1 ✓2 ✏1.nokta ○2.nokta".
+Dosya: _kaynak/uretici/yazim-tezgah.sablon.html → _kaynak/arac/yazim-tezgah.html
+(_kaynak git'e gitmiyor; tezgâhı bilgisayardan açıyorsun.)

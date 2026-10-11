@@ -182,7 +182,7 @@ const harfDetay = {
                 </div>
                 <div id="hd-cols" dir="rtl"></div>
                 <div class="hd-sec hd-sec-yazilis">
-                    <div class="hd-sec-title">✍️ Nasıl Yazılır? <button id="hd-replay" title="Tekrar izle">↻ Tekrar Yaz</button></div>
+                    <div class="hd-sec-title">✍️ Nasıl Yazılır? <button id="hd-replay" title="Tekrar izle">↻ Tekrar Yaz</button><span id="hd-mod" class="hd-mod" role="group" aria-label="Yazım sırası"><button type="button" data-mod="sira" title="Biçimler sırayla yazılır: Başta → Ortada → Sonda → Yalın">Sırayla</button><button type="button" data-mod="hepsi" title="Dört biçim aynı anda yazılır">Hepsi birden</button></span></div>
                     <div class="hd-sec-text" id="hd-yazilis"></div>
                 </div>
             </div>`;
@@ -190,6 +190,17 @@ const harfDetay = {
         ov.addEventListener('click', (e) => { if (e.target === ov) harfDetay.close(); });
         document.getElementById('hd-close').onclick = () => harfDetay.close();
         document.getElementById('hd-replay').onclick = () => harfDetay.animate();
+        /* SIRAYLA / HEPSİ BİRDEN (11.10.2026, Geylani isteği): büyüteçte
+           dört biçimin sırayla mı yoksa aynı anda mı yazılacağını seçen
+           anahtar. Seçim tarayıcıda saklanır, sonraki harfte de geçerli. */
+        document.getElementById('hd-mod').onclick = function (e) {
+            const d = e.target.closest('button[data-mod]');
+            if (!d) return;
+            if (typeof playClick === 'function') playClick();
+            harfDetay.modSec(d.dataset.mod);
+            harfDetay.animate();
+        };
+        this.modSec(this.modOku());
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') harfDetay.close(); });
     },
 
@@ -625,8 +636,34 @@ const harfDetay = {
        yönü; FORM_META sırası). Biten biçim ekranda kalır, sıradaki başlar;
        ekranda HER AN TEK KALEM olur. Tur bitince kısa bekleme, sonra
        hepsi silinip baştan. Bir kutuya tıklamak yalnız onu oynatır. */
+    /* Hangi kipte yazılacağı: 'sira' (varsayılan) ya da 'hepsi'. */
+    mod: 'sira',
+    modOku: function () {
+        try {
+            const v = localStorage.getItem('kidefHarfYazimModu');
+            if (v === 'sira' || v === 'hepsi') return v;
+        } catch (e) {}
+        return 'sira';
+    },
+    modSec: function (m) {
+        this.mod = (m === 'hepsi') ? 'hepsi' : 'sira';
+        try { localStorage.setItem('kidefHarfYazimModu', this.mod); } catch (e) {}
+        const kutu = document.getElementById('hd-mod');
+        if (!kutu) return;
+        const self = this;
+        kutu.querySelectorAll('button[data-mod]').forEach(function (b) {
+            const acik = (b.dataset.mod === self.mod);
+            b.classList.toggle('hd-mod-acik', acik);
+            b.setAttribute('aria-pressed', acik ? 'true' : 'false');
+        });
+    },
+
     turBaslat: function() {
         if (!this.anims || !this.anims.length) return;
+        return (this.mod === 'hepsi') ? this.turHepsi() : this.turSirayla();
+    },
+
+    turSirayla: function() {
         this.anims.forEach(a => this.sifirla(a));
         const self = this;
         const sirayla = function (i) {
@@ -640,6 +677,27 @@ const harfDetay = {
             self.playForm(a, false, true);
         };
         sirayla(0);
+    },
+
+    /* HEPSİ BİRDEN: dört biçim aynı anda başlar. Boyları farklı olduğu
+       için bitiş anları da farklıdır; tur EN GEÇ biteni bekler, sonra
+       hepsi birlikte silinip birlikte yeniden başlar (her biçim kendi
+       döngüsünde dönerse turlar birbirine göre kayıyordu). Bu kipte
+       ekranda dört kalem birden olur — öğretmenin seçimi. */
+    turHepsi: function() {
+        this.anims.forEach(a => this.sifirla(a));
+        this.yazanIsaretle(-1);
+        const self = this;
+        let kalan = this.anims.length;
+        this.anims.forEach(function (a) {
+            a.bitince = function () {
+                a.bitince = null;
+                if (--kalan <= 0) {
+                    self.timers.push(setTimeout(function () { self.turBaslat(); }, 1700));
+                }
+            };
+            self.playForm(a, false, true);
+        });
     },
 
     /* Hangi biçim yazılıyorsa onun kutusu belirgin dursun: göz sıranın
