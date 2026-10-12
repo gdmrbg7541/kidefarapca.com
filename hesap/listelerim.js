@@ -2242,6 +2242,11 @@ function renderSidebar() {
             for(let cId in lvl.classes) {
                 html += `
                 <div class="class-item">
+                    <button type="button" class="ll-rapor-ok"
+                        title="Materyal raporu — bu sınıfta hangi dosyayı ne kadar açtım"
+                        aria-label="Materyal raporu"
+                        onclick="event.stopPropagation(); if(window.KidefMateryalRapor) KidefMateryalRapor.ac('${lId}','${cId}');"
+                    ><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                     <a class="class-link" onclick="selectClass('${lId}','${cId}')">${lvl.classes[cId].name}</a>
                     <div class="class-actions">
                         <button onclick="editClassName('${lId}','${cId}')" title="İsmi Değiştir">${llIcon('kalem')}</button>

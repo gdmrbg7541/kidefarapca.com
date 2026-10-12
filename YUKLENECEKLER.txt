@@ -9447,3 +9447,17 @@ göründüğü doğrulandı (1 / 24).
   alfabe.css?v=20261011zc, alfabe.js?v=47, alfabe_harf_detay.js?v=47.
 [11.10.2026] Büyüteç kartı yatayda %85 (85vw, eski: min(1050px,95vw)); gezinme düğmeleri büyütüldü (ok clamp(2rem,4.4vh,3.3rem), harf clamp(1.9rem,4.8vh,3.5rem), ad clamp(.74rem,1.6vh,1.08rem), genişlik clamp(60px,5.6vw,104px)). 1600x900 / 1366x768 / 1280x720 / 1024x640: düğmeler karta binmiyor, dikey kayma yok. alfabe.css?v=20261011zd.
 [11.10.2026] Katman rozetleri: kırmızı olanlara (Başta, Yalın) çarpı, yeşil olanlara (Ortada, Sonda) tik işareti eklendi (.yp-et-im, beyaz çizgi SVG); yazı boyutu clamp(.95rem,2.3vh,1.62rem) -> clamp(1.12rem,2.9vh,2rem). 1600x900 / 1280x720 / 1024x640: rozet sütundan taşmıyor, hiza sapması 0, alt taşma yok. alfabe.css?v=20261011ze, alfabe.js?v=48.
+[12.10.2026] YENİ — Materyal kullanım raporu (sistem/materyalrapor.js, index.html ?v=1):
+  · ÖLÇÜM: Sınıf panelindeki "Materyaller" sekmesinde (#llMateryalKap) bir dosyaya
+    tıklanınca dosya betikle açılır, pencere tutamacı saklanır ve sekme kapanana
+    kadar geçen süre o anki SINIFA yazılır. Yalnız bu kabın içi dinlenir; sitenin
+    geri kalanındaki bağlantılara dokunulmadı. Açılan sayfalara hiçbir şey eklenmedi.
+  · SÜRE: öğretmenin seçimi — "sekmenin AÇIK KALDIĞI süre" (panonun altında not var).
+  · KAYIT: önce localStorage (kidefMateryalKayit, son 500). Buluta yalnız değişiklik
+    olunca ve en sık 90 sn'de bir: kullanicilar/{uid}.materyalKayit. Giriş yoksa
+    yalnız tarayıcıda durur. kullanimsure.js'e dokunulmadı.
+  · RAPOR: sınıf listesinde her sınıfın SOLUNDAKİ ok düğmesi (hesap/listelerim.js,
+    .ll-rapor-ok) sağdan dikey pano açar: DOSYA / AÇILIŞ / TOPLAM özeti, dosya dosya
+    süre + kaç kez + son açılış + çubuk, altında son 10 günün dökümü.
+  · Denendi: 5 örnek kayıtla pano (3 dosya, 4 açılış, 1 sa 57 dk, 4 gün çubuğu) ve
+    gerçek ölçüm (bağlantı tıklandı, sekme kapandı, 9 sn kaydedildi).
