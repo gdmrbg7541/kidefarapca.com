@@ -9461,3 +9461,4 @@ göründüğü doğrulandı (1 / 24).
     süre + kaç kez + son açılış + çubuk, altında son 10 günün dökümü.
   · Denendi: 5 örnek kayıtla pano (3 dosya, 4 açılış, 1 sa 57 dk, 4 gün çubuğu) ve
     gerçek ölçüm (bağlantı tıklandı, sekme kapandı, 9 sn kaydedildi).
+[12.10.2026] Rapor oku görünmüyordu: index.html içinde hesap/listelerim.js SÜRÜMÜ yükseltilmemişti (?v=20261008c), tarayıcı eski dosyayı veriyordu -> ?v=20261012a. Ayrıca ok düğmesi belirginleştirildi (26px, açık yeşil zemin, 17px ok) ve materyalrapor.js ?v=2 oldu.

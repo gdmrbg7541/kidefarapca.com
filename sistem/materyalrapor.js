@@ -276,12 +276,13 @@
             '#mrp-not{ flex:0 0 auto; padding:9px 18px 13px; border-top:1px solid #eef2f7;',
             '  font-size:.7rem; color:#9AA5B1; line-height:1.5; }',
             /* sınıf listesindeki ok */
-            '#ll-root .ll-rapor-ok{ flex:0 0 auto; width:22px; height:22px; margin-right:4px; padding:0;',
-            '  border:0; background:transparent; cursor:pointer; color:#16A085; opacity:.72;',
-            '  display:flex; align-items:center; justify-content:center; border-radius:6px; }',
-            '#ll-root .ll-rapor-ok:hover{ opacity:1; background:rgba(22,160,133,.13); }',
-            '#ll-root .ll-rapor-ok svg{ width:16px; height:16px; }',
-            '#ll-root .class-item.active-class .ll-rapor-ok{ color:#fff; opacity:.9; }'
+            '#ll-root .ll-rapor-ok{ flex:0 0 auto; width:26px; height:26px; margin:0 6px 0 0;',
+            '  padding:0; border:0; cursor:pointer; color:#16A085; line-height:0;',
+            '  background:rgba(22,160,133,.12); border-radius:8px;',
+            '  display:inline-flex !important; align-items:center; justify-content:center; }',
+            '#ll-root .ll-rapor-ok:hover{ color:#0E7A66; background:rgba(22,160,133,.26); }',
+            '#ll-root .ll-rapor-ok svg{ width:17px; height:17px; display:block; }',
+            '#ll-root .class-item.active-class .ll-rapor-ok{ color:#fff; background:rgba(255,255,255,.26); }'
         ].join('\n');
         document.head.appendChild(s);
     }
