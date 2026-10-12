@@ -4981,7 +4981,18 @@ function llSinifListesiAc() {
             var aktif = (lId === curLId && cId === curCId);
             var kac = ((sinif.students || []).length);
             toplam++;
+            /* Satırın SOLUNDA materyal raporu oku (12.10.2026). Satırın
+               kendisi düğme olduğu için iç içe düğme olmasın diye kuşak
+               içine alındı. */
             satirlar +=
+                '<div class="lss-sat">' +
+                '<button type="button" class="ll-rapor-ok lss-rapor"' +
+                ' title="Materyal raporu — bu sınıfta hangi dosyayı ne kadar açtım"' +
+                ' aria-label="Materyal raporu"' +
+                ' onclick="event.stopPropagation(); if(window.KidefMateryalRapor) KidefMateryalRapor.ac(\'' + lId + '\',\'' + cId + '\');">' +
+                '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none"' +
+                ' stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+                '</button>' +
                 '<button type="button" class="lss-sinif' + (aktif ? ' aktif' : '') + '"' +
                 ' onclick="llSinifListesiSec(\'' + lId + '\',\'' + cId + '\')">' +
                 '<span class="lss-tik">' + (aktif
@@ -4991,7 +5002,7 @@ function llSinifListesiAc() {
                     : '') + '</span>' +
                 '<span class="lss-ad">' + behKacis(sinif.name || '') + '</span>' +
                 (kac ? '<span class="lss-say">' + kac + '</span>' : '') +
-                '</button>';
+                '</button></div>';
         });
         /* AYIRICI ÇİZGİ: ilki hariç her grubun üstünde (.ayrik) */
         ic += '<div class="lss-grup' + (grup ? ' ayrik' : '') + '">' +

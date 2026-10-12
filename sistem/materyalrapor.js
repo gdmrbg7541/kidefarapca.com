@@ -282,7 +282,16 @@
             '  display:inline-flex !important; align-items:center; justify-content:center; }',
             '#ll-root .ll-rapor-ok:hover{ color:#0E7A66; background:rgba(22,160,133,.26); }',
             '#ll-root .ll-rapor-ok svg{ width:17px; height:17px; display:block; }',
-            '#ll-root .class-item.active-class .ll-rapor-ok{ color:#fff; background:rgba(255,255,255,.26); }'
+            '#ll-root .class-item.active-class .ll-rapor-ok{ color:#fff; background:rgba(255,255,255,.26); }',
+            /* "Sınıf değiştir" açılır listesinde de aynı ok (12.10.2026). */
+            '#llSinifSec .lss-sat{ display:flex; align-items:center; gap:2px; }',
+            '#llSinifSec .lss-sat .lss-sinif{ flex:1 1 auto; min-width:0; }',
+            '#llSinifSec .lss-rapor{ flex:0 0 auto; width:26px; height:26px; margin:0 0 0 7px;',
+            '  padding:0; border:0; cursor:pointer; color:#16A085; line-height:0;',
+            '  background:rgba(22,160,133,.12); border-radius:8px;',
+            '  display:inline-flex !important; align-items:center; justify-content:center; }',
+            '#llSinifSec .lss-rapor:hover{ color:#0E7A66; background:rgba(22,160,133,.26); }',
+            '#llSinifSec .lss-rapor svg{ width:17px; height:17px; display:block; }'
         ].join('\n');
         document.head.appendChild(s);
     }

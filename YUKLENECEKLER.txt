@@ -9462,3 +9462,15 @@ göründüğü doğrulandı (1 / 24).
   · Denendi: 5 örnek kayıtla pano (3 dosya, 4 açılış, 1 sa 57 dk, 4 gün çubuğu) ve
     gerçek ölçüm (bağlantı tıklandı, sekme kapandı, 9 sn kaydedildi).
 [12.10.2026] Rapor oku görünmüyordu: index.html içinde hesap/listelerim.js SÜRÜMÜ yükseltilmemişti (?v=20261008c), tarayıcı eski dosyayı veriyordu -> ?v=20261012a. Ayrıca ok düğmesi belirginleştirildi (26px, açık yeşil zemin, 17px ok) ve materyalrapor.js ?v=2 oldu.
+[12.10.2026] Ok iki yerde birden: sınıf listesi perdesindeki satırlarda (.class-item) ve "Sınıf değiştir" açılır listesinde (#llSinifSec .lss-sat > .lss-rapor). Açılır listede satır kendisi düğme olduğu için satır bir kuşağa alındı. alfabe... hayır: index.html ?v: materyalrapor.js=3, hesap/listelerim.js=20261012b.
+[12.10.2026] 7. sınıf 1. ünite 1. ders (veri/y2627/7_1_1.js + muhadese kopyası) —
+  Mektep Yayınları 2026-2027 kitabının 10-23. sayfalarıyla ve
+  Arapca_Hareke_Kuralları ile karşılaştırıldı.
+  · 37 cümlenin tamamı kitapla birebir eşleşiyor; kitabın 11 mesleğinin
+    (خَيّاط بائِع طَيّار شُرْطِيّ عامِل قُبْطان طَبيب مُمَرِّض جَزّار مُتَقاعِد رَبّة البَيْت)
+    hepsi sözlükte var. Ötre/esre tenvini hiç yok (kural 2 ve 5'e uygun).
+  · Düzeltilenler (hepsi hareke): طبيبة -> طَبيبة (harekesiz yazılmıştı) ·
+    طَبيبَة -> طَبيبة (ة öncesi hareke; dosyadaki bütün müennes isimlerde ة
+    öncesi harekesiz) · الطائِرة -> الطّائِرة (şemsî ط'nın şeddesi, kural 3b) ·
+    الأسنان -> الأَسْنان (harekesizdi) · غُرفة -> غُرْفة (sükûn eksikti; kitapta
+    غُرْفة) · «من فَضْلِك» -> «مِنْ فَضْلِك» (kural 6: مِنْ yapısal sükûnunu korur).
