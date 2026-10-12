@@ -9490,3 +9490,23 @@ göründüğü doğrulandı (1 / 24).
   hesap/listelerim.js → selectClass/viewTitle). Perdedeki ve «Sınıf değiştir»
   listesindeki oklar duruyor; üçü de aynı panoyu açıyor.
   index.html ?v: hesap/listelerim.js=20261012c, sistem/materyalrapor.js=4.
+[12.10.2026] 6. sınıf muhadese kartlarında cümle/diyalog boştu — DOLDURULDU.
+  SEBEBİ: yeni 2026-2027 kitabı için yalnız kelimeler girilmişti ("CÜMLELER
+  HENÜZ GİRİLMEDİ" notu dosyalarda duruyordu). Yeni kitabın PDF'inde metin
+  katmanı bozuk (çıkarılan 530 kelimenin yalnız 4'ü kitabın kendi kâmûsuyla
+  birebir tutuyor), bu yüzden kitaptan birebir çıkarılamadı. Geylani'nin
+  kararıyla ESKİ kitapların cümleleri taşındı:
+     6_1_1 Akrabalar      <- 5_3_1 Aile Bireyleri        17 cümle ·  5 diyalog
+     6_1_2 Meslekler      <- 5_3_2 Meslekler             16 cümle ·  4 diyalog
+     6_2_1 Okul bölümleri <- eski 6_1_1 Okulda           40 cümle ·  7 diyalog
+     6_2_2 Sıra sayıları  <- 5_4_4 Sayılar               14 cümle ·  4 diyalog
+     6_3_1 Organlar       <- eski 6_3_1 Vücut Organları  23 cümle ·  8 diyalog
+     6_4_1 Hava durumu    <- eski 6_4_1 Mevsimler        19 cümle ·  9 diyalog
+     6_4_2 Renkler        <- eski 6_4_2+6_4_3 (kıyafet), yalnız dersin kendi
+                             kelimesi geçenler süzüldü  37 cümle · 13 diyalog
+     6_3_2 Hisler/Duygular: eski kitapta karşılığı yok — boş kaldı, dosyaya
+                             sebebi yazıldı.
+  Taşırken isim sonundaki ÖTRE/ESRE tenvinleri atıldı (hareke kuralı 2);
+  fetha tenvini korundu (kural 5). Geriye yalnız مُحامٍ kaldı — o doğru.
+  Hem muhadese/veri/y2627/ hem veri/y2627/ kopyaları güncellendi.
+  Yedek: _kaynak/yedekler/2026-10-12-6sinif-cumle/

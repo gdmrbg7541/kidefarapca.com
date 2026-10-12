@@ -1,7 +1,9 @@
 /* 6. sınıf — 6_3_2 (3. Ünite 2. Ders: Hisler ve Duygular | اَلإِحْساس وَالْمَشاعِر) */
 /* Kaynak: 6. Sınıf Arapça ders kitabı 2026-2027, 3. Ünite (جِسْمي), s. 118-135. */
 /* Kelimeler kitabın kendi kâmûsuyla (s.194-203) karşılaştırılarak yazıldı. */
-/* CÜMLELER HENÜZ GİRİLMEDİ — sentence ve dialog bilerek boştur. */
+/* CÜMLE ve DİYALOG henüz yok: eski kitapta «Hisler ve Duygular»
+   karşılığı bir ders bulunmadığı için taşınacak cümle çıkmadı
+   (12.10.2026). Kelimeler yeni kitabın kâmûsundan. */
 window.data = {
     "sentence": [],
     "dialog": [],
