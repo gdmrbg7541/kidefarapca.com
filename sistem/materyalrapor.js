@@ -291,7 +291,17 @@
             '  background:rgba(22,160,133,.12); border-radius:8px;',
             '  display:inline-flex !important; align-items:center; justify-content:center; }',
             '#llSinifSec .lss-rapor:hover{ color:#0E7A66; background:rgba(22,160,133,.26); }',
-            '#llSinifSec .lss-rapor svg{ width:17px; height:17px; display:block; }'
+            '#llSinifSec .lss-rapor svg{ width:17px; height:17px; display:block; }',
+            /* Sınıf başlığının yanındaki RAPOR tuşu — sınıf açıkken hep görünür. */
+            '.ll-rapor-tus{ display:inline-flex !important; align-items:center; gap:6px;',
+            '  margin-inline-start:8px; padding:6px 13px; border:0; cursor:pointer;',
+            '  border-radius:999px; background:#16A085; color:#fff; font-family:inherit;',
+            '  font-weight:700; font-size:.86rem; line-height:1; white-space:nowrap;',
+            '  box-shadow:0 3px 10px rgba(22,160,133,.30); flex:0 0 auto; }',
+            '.ll-rapor-tus:hover{ background:#0E7A66; }',
+            '.ll-rapor-tus svg{ width:16px; height:16px; display:block; }',
+            '@media (max-width: 700px){ .ll-rapor-tus span{ display:none; }',
+            '  .ll-rapor-tus{ padding:7px; } }'
         ].join('\n');
         document.head.appendChild(s);
     }

@@ -1050,7 +1050,16 @@ function selectClass(lId, cId, element) {
               `<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4"` +
               ` stroke-linecap="round" stroke-linejoin="round"/></svg></button>`
             : '') +
-        `</span>`;
+        `</span>` +
+        /* MATERYAL RAPORU (12.10.2026): sınıf açıkken başlığın hemen
+           yanında, her zaman görünür. Perdedeki ve «Sınıf değiştir»
+           listesindeki oklarla aynı panoyu açar. */
+        `<button type="button" class="ll-rapor-tus"` +
+        ` title="Sınıf takip raporu — bu sınıfta hangi materyali ne kadar açtım"` +
+        ` onclick="if(window.KidefMateryalRapor) KidefMateryalRapor.ac('${lId}','${cId}');">` +
+        `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"` +
+        ` fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"` +
+        ` stroke-linejoin="round"/></svg><span>Rapor</span></button>`;
     /* Emniyet: kap hangi kurala takilirsa takilsin gorunur kalsin. */
     viewTitle.style.setProperty('display', 'flex', 'important');
     viewTitle.style.alignItems = 'center';

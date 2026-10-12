@@ -9485,3 +9485,8 @@ göründüğü doğrulandı (1 / 24).
   · yazIleri()/yazGeri()/yazEkraninda() eklendi; eski «YAZ.i++» kaldırıldı.
   Denendi: 1→2 (Sonraki), 2→1 (Önceki), 1→30 (başta geriye = sarma),
   30→1 (→ tuşu), 1→30 (← tuşu); konsol hatası yok.
+[12.10.2026] Rapor üçüncü ve en görünür yere kondu: sınıf AÇILINCA başlıktaki
+  sınıf rozetinin hemen yanında yeşil «Rapor» tuşu (.ll-rapor-tus,
+  hesap/listelerim.js → selectClass/viewTitle). Perdedeki ve «Sınıf değiştir»
+  listesindeki oklar duruyor; üçü de aynı panoyu açıyor.
+  index.html ?v: hesap/listelerim.js=20261012c, sistem/materyalrapor.js=4.
