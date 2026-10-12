@@ -230,9 +230,11 @@
             '#mrp-ort{ position:fixed; inset:0; z-index:6000; display:none;',
             '  background:rgba(23,33,48,.45); backdrop-filter:blur(3px); }',
             '#mrp-ort.acik{ display:block; }',
-            '#mrp-pano{ position:absolute; top:0; right:0; height:100%;',
-            '  width:min(430px, 94vw); background:#fff; box-shadow:-18px 0 44px -16px rgba(0,0,0,.45);',
-            '  display:flex; flex-direction:column; transform:translateX(100%);',
+            /* SOLDAN açılır (Geylani, 12.10.2026): ok sınıf listesinin
+               solunda, pano da aynı yönden girsin. */
+            '#mrp-pano{ position:absolute; top:0; left:0; height:100%;',
+            '  width:min(430px, 94vw); background:#fff; box-shadow:18px 0 44px -16px rgba(0,0,0,.45);',
+            '  display:flex; flex-direction:column; transform:translateX(-100%);',
             '  transition:transform .32s cubic-bezier(.22,.8,.26,1); }',
             '#mrp-ort.acik #mrp-pano{ transform:none; }',
             '#mrp-bas{ flex:0 0 auto; padding:16px 18px 12px; border-bottom:1px solid #eef2f7;',
