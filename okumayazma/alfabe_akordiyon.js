@@ -433,6 +433,24 @@
         return true;
     }
 
+    /* İLERİ / GERİ (12.10.2026, Geylani: "ileri geri tuşu çalışsın").
+       Liste döngüsel: sondan sonrakine basınca başa, baştan geriye
+       basınca sona gider — tahtada takılıp kalınmasın. */
+    function yazIleri() {
+        if (!YAZ.havuz.length) return;
+        YAZ.i = (YAZ.i + 1) % YAZ.havuz.length;
+        yazGoster();
+    }
+    function yazGeri() {
+        if (!YAZ.havuz.length) return;
+        YAZ.i = (YAZ.i - 1 + YAZ.havuz.length) % YAZ.havuz.length;
+        yazGoster();
+    }
+    /* Yaz ekranında mıyız? (ok tuşları yalnız orada çalışsın) */
+    function yazEkraninda() {
+        return !!(sahne && sahne.querySelector('[data-rol="ihySonraki"]'));
+    }
+
     function yazGoster() {
         ihYazilisKapat(); yazAnimDur(); YAZ.dolu = false;
         if (YAZ.i >= YAZ.havuz.length) YAZ.i = 0;    /* liste biterse başa */
@@ -446,12 +464,17 @@
             '  <div class="ihy-cizgi" data-rol="ihyCizgi"><span class="ihy-bos">؟</span></div>' +
             '</div>' +
             '<div class="ak-alt">' +
+            /* İleri/geri HEP açık: öğretmen tahtada harfler arasında
+               serbest gezebilsin, cevabı açmak zorunda kalmasın. */
+            '  <button type="button" class="ak-t ak-ikincil ak-gez" data-rol="ihyOnceki"' +
+            ' title="Önceki harf (← tuşu)">‹ Önceki</button>' +
             '  <button type="button" class="ak-t" data-rol="ihyGoster">✍️ Yazılışı göster</button>' +
             '  <button type="button" class="ak-t ak-ikincil" data-rol="ihyTekrar" hidden>' +
             '↻ Tekrar yaz</button>' +
             '  <button type="button" class="ak-t ak-ikincil" data-rol="ihyIzle" hidden>' +
             'Dört yazılışı birden</button>' +
-            '  <button type="button" class="ak-t" data-rol="ihySonraki" hidden>Sonraki ›</button>' +
+            '  <button type="button" class="ak-t ak-gez" data-rol="ihySonraki"' +
+            ' title="Sonraki harf (→ tuşu)">Sonraki ›</button>' +
             '</div>';
     }
 
@@ -982,7 +1005,8 @@
             /* Yazılan kutuya dokunmak da yeniden yazdırır. */
             if (rol === 'ihyCizgi')   { if (YAZ.dolu && yazAnim) { tik(); yazTekrar(); } return; }
             if (rol === 'ihyIzle')    { tik(); yazIzle(); return; }
-            if (rol === 'ihySonraki') { tik(); YAZ.i++; yazGoster(); return; }
+            if (rol === 'ihySonraki') { tik(); yazIleri(); return; }
+            if (rol === 'ihyOnceki')  { tik(); yazGeri();  return; }
             if (rol === 'kapat')   { tik(); kapat(); return; }
             if (rol === 'sonraki') { tik(); aktif.i++; soruGoster(); return; }
             if (rol === 'yeniden') { tik(); turBaslat(); return; }
@@ -1037,6 +1061,15 @@
                     return;
                 }
                 kapat(); return;
+            }
+            /* Ok tuşlarıyla harf değiştir (yalnız «İstenen Harfi Yaz»
+               konu anlatımında ve yazılış katmanı kapalıyken). */
+            if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') &&
+                !ihYazilisAcikMi() && yazEkraninda()) {
+                tik();
+                if (e.key === 'ArrowLeft') yazGeri(); else yazIleri();
+                e.preventDefault(); e.stopPropagation();
+                return;
             }
             e.stopPropagation();
         }, true);
