@@ -294,16 +294,22 @@
             '  display:inline-flex !important; align-items:center; justify-content:center; }',
             '#llSinifSec .lss-rapor:hover{ color:#0E7A66; background:rgba(22,160,133,.26); }',
             '#llSinifSec .lss-rapor svg{ width:17px; height:17px; display:block; }',
-            /* Sınıf başlığının yanındaki RAPOR tuşu — sınıf açıkken hep görünür. */
-            '.ll-rapor-tus{ display:inline-flex !important; align-items:center; gap:6px;',
-            '  margin-inline-start:8px; padding:6px 13px; border:0; cursor:pointer;',
-            '  border-radius:999px; background:#16A085; color:#fff; font-family:inherit;',
-            '  font-weight:700; font-size:.86rem; line-height:1; white-space:nowrap;',
-            '  box-shadow:0 3px 10px rgba(22,160,133,.30); flex:0 0 auto; }',
-            '.ll-rapor-tus:hover{ background:#0E7A66; }',
-            '.ll-rapor-tus svg{ width:16px; height:16px; display:block; }',
-            '@media (max-width: 700px){ .ll-rapor-tus span{ display:none; }',
-            '  .ll-rapor-tus{ padding:7px; } }'
+            /* ---- SOL KENARDAKİ DİKEY «RAPOR» DİLİ (Geylani, 12.10.2026:
+                 "rapor yazısı solda aşağıdan yukarıya olsun, tıklanınca
+                  açılsın") — sınıf açıkken ekranın sol kenarında durur. */
+            '#mrp-dil{ position:fixed; left:0; top:50%; transform:translateY(-50%);',
+            '  z-index:5900; display:none; flex-direction:column; align-items:center; gap:9px;',
+            '  background:#16A085; color:#fff; border:0; cursor:pointer; font-family:inherit;',
+            '  border-radius:0 16px 16px 0; padding:20px 8px 16px;',
+            '  box-shadow:4px 0 18px -5px rgba(0,0,0,.40); }',
+            '#mrp-dil.mrp-gor{ display:inline-flex; }',
+            '#mrp-dil:hover{ background:#0E7A66; padding-inline-end:12px; }',
+            '#mrp-dil .mrp-dil-yaz{ writing-mode:vertical-rl; transform:rotate(180deg);',
+            '  font-weight:800; letter-spacing:.17em; font-size:.84rem; line-height:1;',
+            '  white-space:nowrap; }',
+            '#mrp-dil .mrp-dil-ok{ width:15px; height:15px; display:block; flex:0 0 auto; }',
+            '@media (max-width: 700px){ #mrp-dil{ padding:14px 6px 11px; }',
+            '  #mrp-dil .mrp-dil-yaz{ font-size:.74rem; letter-spacing:.12em; } }'
         ].join('\n');
         document.head.appendChild(s);
     }
@@ -423,7 +429,46 @@
             'stroke-linecap="round" stroke-linejoin="round"/></svg>';
     }
 
+    /* ---- SOL KENARDAKİ DİKEY DİL -------------------------------- */
+    var dilL = '', dilC = '';
+
+    function dilKur() {
+        if (document.getElementById('mrp-dil')) return;
+        stil();
+        var b = document.createElement('button');
+        b.id = 'mrp-dil';
+        b.type = 'button';
+        b.title = 'Sınıf takip raporu — bu sınıfta hangi materyali ne kadar açtım';
+        b.setAttribute('aria-label', 'Sınıf takip raporu');
+        b.innerHTML = '<span class="mrp-dil-yaz">RAPOR</span>'
+            + '<svg class="mrp-dil-ok" viewBox="0 0 24 24" aria-hidden="true">'
+            + '<path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6"'
+            + ' stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        b.onclick = function () { ac(dilL, dilC); };
+        document.body.appendChild(b);
+    }
+
+    /* Hangi sınıfın raporu? listelerim.js sınıf seçtikçe bildirir. */
+    function sinifSec(lId, cId) {
+        dilL = lId || ''; dilC = cId || '';
+        dilKur();
+        dilYokla();
+    }
+
+    /* Dil yalnız Listelerim açıkken ve bir sınıf seçiliyken görünür. */
+    function dilYokla() {
+        var b = document.getElementById('mrp-dil');
+        if (!b) return;
+        var bol = document.getElementById('listelerim-section');
+        var acik = !!(bol && getComputedStyle(bol).display !== 'none' && dilL && dilC);
+        b.classList.toggle('mrp-gor', acik);
+    }
+    setInterval(dilYokla, 900);
+
     kayit = yerelOku();
     stil();
-    window.KidefMateryalRapor = { ac: ac, kapat: kapat, okSvg: okSvg, kayitlar: function () { return kayit.slice(); } };
+    window.KidefMateryalRapor = {
+        ac: ac, kapat: kapat, okSvg: okSvg, sinifSec: sinifSec,
+        kayitlar: function () { return kayit.slice(); }
+    };
 })();

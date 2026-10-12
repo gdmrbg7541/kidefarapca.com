@@ -9511,3 +9511,11 @@ göründüğü doğrulandı (1 / 24).
   Hem muhadese/veri/y2627/ hem veri/y2627/ kopyaları güncellendi.
   Yedek: _kaynak/yedekler/2026-10-12-6sinif-cumle/
 [12.10.2026] Materyal raporu panosu SOLDAN açılıyor (eskiden sağdan): #mrp-pano left:0, translateX(-100%), gölge yön değişti. Ok zaten sınıf satırlarının solunda. sistem/materyalrapor.js ?v=5.
+[12.10.2026] Rapor girişi değişti: başlığın yanındaki tuş kaldırıldı; yerine
+  ekranın SOL kenarında, aşağıdan yukarıya yazılı dikey «RAPOR» dili geldi
+  (#mrp-dil, writing-mode: vertical-rl + rotate(180deg), altında ok).
+  Yalnız Listelerim açıkken ve bir sınıf seçiliyken görünür; hangi sınıf
+  olduğunu selectClass → KidefMateryalRapor.sinifSec(lId,cId) bildiriyor.
+  Tıklanınca pano yine soldan açılıyor. Sınıf satırlarındaki küçük oklar da
+  duruyor (o sınıfın raporunu doğrudan açar).
+  index.html ?v: materyalrapor.js=6, hesap/listelerim.js=20261012d.
