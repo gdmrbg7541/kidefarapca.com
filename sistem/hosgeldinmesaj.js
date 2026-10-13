@@ -95,6 +95,33 @@
       'Kolaylıklar dilerim.\n' + IMZA;
   }
 
+  /* ---------------------------------------------- ÖĞRETMENLİK İSPATI
+     (13.10.2026) Yönetici: "onaylamadan önce öğretmen olduğunu ispatlamasını
+     istediğim bi mesaj olacak, öğretmenin ismi de olacak."
+     Onay mesajının kardeşi: aynı kart, başka metin. ONAY VERMEDEN önce
+     gönderilir; kart onay tuşuna basmadan, listedeki «Belge iste»den açılır.
+     KVKK: belgede gereksiz kişisel veri istenmiyor, karalanabileceği ve
+     doğrulama bitince silineceği açıkça yazıyor. */
+  function ispatMetni(ad) {
+    var a = adDuzelt(ad);
+    var selam = a ? ('Merhaba ' + a + ' hocam,') : 'Merhaba hocam,';
+    return selam + '\n\n' +
+      'kidefarapca.com\'a öğretmen başvurunuz ulaştı. Hesabı açmadan önce ' +
+      'öğretmen olduğunuzu doğrulamam gerekiyor; sitede sınıf listeleri, ' +
+      'sınav ve belge arşivi gibi yalnız öğretmene açık bölümler olduğu için ' +
+      'bu adımı herkese uyguluyorum.\n\n' +
+      'Şunlardan biri yeterli:\n' +
+      '• Kurum kimlik kartınızın fotoğrafı\n' +
+      '• e-Devlet\'ten aldığınız çalışma/görev belgesi (kare kodlu)\n' +
+      '• Kurum e-posta adresinizden bana kısa bir mesaj\n\n' +
+      'Belgedeki T.C. kimlik numarası, doğum tarihi gibi bilgileri ' +
+      'karalayabilirsiniz; bana yalnız ad soyad, kurum ve görev bilgisi lazım. ' +
+      'Gönderdiğiniz görsel sadece doğrulama için kullanılır, doğrulama biter ' +
+      'bitmez silinir.\n\n' +
+      'Belgeyi aldığım gibi hesabınızı açıp size haber vereceğim.\n\n' +
+      'Kolaylıklar dilerim.\n' + IMZA;
+  }
+
   function stilKur() {
     if (document.getElementById('kidef-hgm-stil')) return;
     var s = document.createElement('style');
@@ -167,21 +194,21 @@
     try { document.execCommand('copy'); tamam(); } catch (e) {}
   }
 
-  /* ad = öğretmenin ad soyadı, kod = varsa TCH- kodu,
-     tel = öğretmenin telefonu (varsa mesaj doğrudan ona açılır) */
-  function goster(ad, kod, tel) {
+  /* ORTAK KART — iki mesaj da aynı pencereyi kullanır (13.10.2026).
+     o = { baslik, metin, tel } */
+  function kartAc(o) {
     stilKur();
     kapat();
     var p = document.createElement('div');
     p.id = 'hgmPerde';
     p.setAttribute('role', 'dialog');
-    p.setAttribute('aria-label', 'Hoş geldin mesajı');
-    var m = metin(ad, kod);
-    var numara = telDuzelt(tel);
-    var numaraYazi = telGosterim(tel);
+    p.setAttribute('aria-label', o.baslik || 'Mesaj');
+    var m = o.metin || '';
+    var numara = telDuzelt(o.tel);
+    var numaraYazi = telGosterim(o.tel);
     p.innerHTML =
       '<div class="hgm-kart">' +
-      '<h3>' + (adDuzelt(ad) ? kac(adDuzelt(ad)) + ' onaylandı' : 'Öğretmen onaylandı') + '</h3>' +
+      '<h3>' + kac(o.baslik || 'Mesaj') + '</h3>' +
       '<p class="hgm-alt">' +
         (numara
           ? ('WhatsApp doğrudan <b>' + kac(numaraYazi) + '</b> numarasına açılır ' +
@@ -204,6 +231,24 @@
     document.addEventListener('keydown', tus);
     /* WhatsApp bağlantısı metin değiştirilirse de güncel kalsın diye
        tıklama anında kuruluyor (bkz. waAc). */
+  }
+
+  /* ONAY SONRASI hoş geldin mesajı */
+  function goster(ad, kod, tel) {
+    kartAc({
+      baslik: (adDuzelt(ad) ? adDuzelt(ad) + ' onaylandı' : 'Öğretmen onaylandı'),
+      metin: metin(ad, kod),
+      tel: tel
+    });
+  }
+
+  /* ONAYDAN ÖNCE öğretmenlik belgesi isteyen mesaj */
+  function ispatIste(ad, tel) {
+    kartAc({
+      baslik: (adDuzelt(ad) ? adDuzelt(ad) + ' — belge iste' : 'Öğretmenlik belgesi iste'),
+      metin: ispatMetni(ad),
+      tel: tel
+    });
   }
 
   /* Bağlantıyı tıklama anında kurar: kullanıcı metni değiştirdiyse
@@ -231,7 +276,8 @@
   }
 
   window.KidefHosgeldin = {
-    goster: goster, kapat: kapat, kopyala: kopyala, waAc: waAc, metin: metin,
+    goster: goster, ispatIste: ispatIste, kapat: kapat, kopyala: kopyala,
+    waAc: waAc, metin: metin, ispatMetni: ispatMetni,
     telDuzelt: telDuzelt, telGosterim: telGosterim
   };
 })();

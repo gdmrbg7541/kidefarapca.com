@@ -1028,6 +1028,14 @@ function loadOgretmenOnaylari() {
                         (window.KidefTelKopya ? window.KidefTelKopya.rozet(o.phone)
                                              : (o.phone ? '<span style="font-size:0.85rem; color:#7f8c8d;"> · ' + o.phone + '</span>' : '')) +
                       '</div>' +
+                      /* BELGE İSTE (13.10.2026) — yönetici: "onaylamadan
+                         önce öğretmen olduğunu ispatlamasını istediğim bi
+                         mesaj olacak, öğretmenin ismi de olacak."
+                         Onaylamadan açılır; metin öğretmenin adıyla gelir,
+                         kopyalanıp WhatsApp'tan gönderilir. */
+                      '<button class="btn" style="background:#FEF3E2; color:#B5670A; padding:7px 14px; font-size:0.9rem; font-weight:700;" ' +
+                        'title="Onaylamadan önce öğretmenlik belgesi iste" ' +
+                        'onclick="ogretmenBelgeIste(\'' + o._id + '\')">Belge iste</button>' +
                       '<button class="btn" style="background:#27ae60; color:#fff; padding:7px 16px; font-size:0.9rem;" ' +
                         'onclick="ogretmenOnayVer(\'' + o._id + '\', true)">Onayla</button>' +
                       '<button class="btn" style="background:#EDF1F7; color:#5b6b80; padding:7px 16px; font-size:0.9rem;" ' +
@@ -1081,6 +1089,22 @@ function ogretmenOnayVer(uid, onay) {
     });
 }
 window.ogretmenOnayVer = ogretmenOnayVer;
+
+/* ONAYDAN ÖNCE: öğretmenlik belgesi isteyen mesajı açar (13.10.2026).
+   Onay durumuna dokunmaz — yalnız kopyalanacak metni gösterir. */
+function ogretmenBelgeIste(uid) {
+    var b = _onayBekleyen[uid] || {};
+    try {
+        if (window.KidefHosgeldin && KidefHosgeldin.ispatIste) {
+            KidefHosgeldin.ispatIste(b.ad || '', b.tel || '');
+        } else if (typeof showCustomAlert === 'function') {
+            showCustomAlert('Mesaj penceresi yüklenemedi.');
+        }
+    } catch (e) {
+        try { console.warn('Belge isteme mesajı açılamadı:', e); } catch (x) { }
+    }
+}
+window.ogretmenBelgeIste = ogretmenBelgeIste;
 
 /* ===================================================================
    ÖĞRETMENLER — GERÇEK LİSTE (Firestore)

@@ -9519,3 +9519,14 @@ göründüğü doğrulandı (1 / 24).
   Tıklanınca pano yine soldan açılıyor. Sınıf satırlarındaki küçük oklar da
   duruyor (o sınıfın raporunu doğrudan açar).
   index.html ?v: materyalrapor.js=6, hesap/listelerim.js=20261012d.
+[13.10.2026] Yönetici panelinde ikinci mesaj: ÖĞRETMENLİK BELGESİ İSTE.
+  · Onay bekleyen her satıra «Belge iste» tuşu kondu (hesap/teacher-admin.js
+    → ogretmenBelgeIste). Onay durumuna DOKUNMAZ, yalnız kopyalanacak metni
+    açar; onaylamadan önce gönderilir.
+  · Metin öğretmenin ADIYLA başlar, neden doğrulama istendiğini söyler ve üç
+    seçenek sunar (kurum kimliği · e-Devlet görev belgesi · kurum e-postası).
+    KVKK: TC/doğum tarihi gibi alanların karalanabileceği ve görselin
+    doğrulamadan sonra silineceği yazılı.
+  · Hoş geldin mesajıyla aynı pencereyi kullanıyor (kartAc ortak yapıldı):
+    Kopyala · WhatsApp'tan gönder · Kapat. Numara varsa doğrudan ona açılır.
+  index.html ?v: sistem/hosgeldinmesaj.js=6, hesap/teacher-admin.js=20261013a.
