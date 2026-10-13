@@ -9530,3 +9530,5 @@ göründüğü doğrulandı (1 / 24).
   · Hoş geldin mesajıyla aynı pencereyi kullanıyor (kartAc ortak yapıldı):
     Kopyala · WhatsApp'tan gönder · Kapat. Numara varsa doğrudan ona açılır.
   index.html ?v: sistem/hosgeldinmesaj.js=6, hesap/teacher-admin.js=20261013a.
+[13.10.2026] Belge isteme mesajına üniversite diploması seçeneği eklendi: «Üniversite diplomanız ya da e-Devlet'ten aldığınız mezuniyet belgesi». Henüz atanmamış ya da kuruma bağlı olmayan meslektaşlar için de yol açıldı; karalanabilir alanlara diploma numarası da eklendi, istenen bilgi «ad soyad ile kurum/bölüm» oldu. sistem/hosgeldinmesaj.js ?v=7.
+[13.10.2026] Belge isteme mesajından iki şey çıkarıldı (yönetici): «Kurum e-posta adresinizden bana kısa bir mesaj» maddesi ve e-Devlet maddesindeki «(kare kodlu)» parantezi. Kalan üç seçenek: kurum kimliği · e-Devlet çalışma/görev belgesi · üniversite diploması veya mezuniyet belgesi. sistem/hosgeldinmesaj.js ?v=8.
