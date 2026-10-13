@@ -110,19 +110,24 @@
       'öğretmen olduğunuzu doğrulamam gerekiyor; sitede sınıf listeleri, ' +
       'sınav ve belge arşivi gibi yalnız öğretmene açık bölümler olduğu için ' +
       'bu adımı herkese uyguluyorum.\n\n' +
-      'Şunlardan biri yeterli:\n' +
-      '• Kurum kimlik kartınızın fotoğrafı\n' +
-      '• e-Devlet\'ten aldığınız çalışma/görev belgesi\n' +
       /* 13.10.2026 — yönetici: "üniversite diploması tarzında bi şey de
-         olabilir." Henüz atanmamış ya da kuruma bağlı olmayan meslektaşlar
-         için de bir yol açılsın. */
-      '• Üniversite diplomanız ya da e-Devlet\'ten aldığınız mezuniyet belgesi\n\n' +
-      'Belgedeki T.C. kimlik numarası, doğum tarihi, diploma numarası gibi ' +
-      'bilgileri karalayabilirsiniz; bana yalnız ad soyad ile kurum/bölüm ' +
-      'bilgisi lazım. ' +
+         olabilir", "mebbis ten ekran görüntüsü de olabilir", "pdf yerine
+         foto veya ekran görüntüsü gibi ifadeler olsun, resmi bi istek değil
+         sonuçta". Henüz atanmamış ya da kuruma bağlı olmayan meslektaşlara
+         da yol açılsın; istek resmî evrak isteği gibi durmasın. */
+      'Şunlardan birinin fotoğrafı ya da ekran görüntüsü yeterli:\n' +
+      '• Kurum kimlik kartınız\n' +
+      '• MEBBİS ekranınız\n' +
+      '• e-Devlet\'ten aldığınız çalışma/görev belgeniz\n' +
+      '• Üniversite diplomanız ya da e-Devlet\'ten aldığınız mezuniyet belgeniz\n\n' +
+      'Resmî bir evrak göndermenize gerek yok; telefonla çekeceğiniz bir ' +
+      'fotoğraf ya da ekrandan alacağınız bir görüntü de olur. ' +
+      'T.C. kimlik numarası, doğum tarihi, diploma numarası gibi bilgileri ' +
+      'karalayabilirsiniz; bana yalnız ad soyad ile kurum/bölüm bilgisi ' +
+      'lazım. ' +
       'Gönderdiğiniz görsel sadece doğrulama için kullanılır, doğrulama biter ' +
       'bitmez silinir.\n\n' +
-      'Belgeyi aldığım gibi hesabınızı açıp size haber vereceğim.\n\n' +
+      'Görseli aldığım gibi hesabınızı açıp size haber vereceğim.\n\n' +
       'Kolaylıklar dilerim.\n' + IMZA;
   }
 
