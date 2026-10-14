@@ -9857,3 +9857,51 @@ göründüğü doğrulandı (1 / 24).
   Üreticiler (_kaynak, git'e gitmez): _kaynak/uretici/hemzeYazim.py ·
             _kaynak/uretici/hemzeBilgi.py
   Yedek: _kaynak/yedekler/2026-10-14-hemze-sekmesi/
+
+14.10.2026 — hemzenin kalemi öğretmenin çizdiği yola geçti
+  Öğretmen kürsüsüz hemzeyi (ء) yazım tezgâhında çizip verdi; yol
+  _kaynak/harf-yazim/00-hemze.json içine yazıldı. hemzeYazim.py artık
+  hemze işaretinin ÖRNEK yolu olarak bunu kullanıyor: şekil her kürsüde
+  aynı, yalnız boyu değişiyor — tek çizim 12 biçimin hepsini düzeltti.
+  (Önceki örnek kef'in iç işaretiydi; o da hemzedir ama oturması zayıftı:
+  kalem eni 82-93 birime çıkmak zorunda kalıyordu, şimdi 41-46.)
+  Kürsüsüz hemzede kapsama 64 birimlik kalemle %100 — eskiden 127 birim
+  gerekiyordu. On iki biçimin tamamında kapsama %100 ölçüldü, ekranda
+  kare kare bakıldı: önce kürsü, en son hemze.
+  Dosyalar: okumayazma/alfabe_hemze_yazim.js (üretilen)
+  Kaynak: _kaynak/harf-yazim/00-hemze.json · _kaynak/uretici/hemzeYazim.py
+
+14.10.2026 — hemzenin on iki yazılışı da öğretmenin kaleminden
+  Öğretmen yazım tezgâhında on iki biçimin hepsini tek tek çizdi; yollar
+  _kaynak/harf-yazim/00-hemze.json içinde duruyor, üretici hesapladığı
+  yolun yerine bunları koyuyor (vb ve fill yine arakom.ttf'ten).
+  Çizimler gövde + hemze olarak iki darbe halinde geliyor; üretici hangi
+  darbenin işaret olduğunu YERİNDEN anlıyor (noktalarının çoğu hemze/med
+  konturunun içindeyse) ve onu en sona alıp kalkanlıyor — gövde yazılırken
+  hemze açılmıyor. أ sonda'da kuyruğun ucunda kalmış bir nokta parçası
+  vardı, atıldı (kürsülü hemzede nokta yoktur).
+  DENETİM: on üç biçimin hepsi maskeli/maskesiz piksel piksel karşılaştırıldı;
+  açılmayan mürekkep en çok %0,59 (dağınık kenar pikselleri, gözle görünmez),
+  dokuz biçimde tam sıfır. Yazım sırası kare kare izlendi: gövde → hemze.
+  AYRICA: işaret süresi yola göre hesaplanıyor artık (alfabe_harf_detay.js).
+  Nokta tek dokunuş olduğu için 260 ms'de kalıyor; yolu olan hemze ve med
+  çizgisi 260-900 ms arasında kalemle çiziliyor, damga gibi birden belirmiyor.
+  Dosyalar: okumayazma/alfabe_hemze_yazim.js · okumayazma/alfabe_harf_detay.js
+  Kaynak: _kaynak/harf-yazim/00-hemze.json
+
+14.10.2026 — hemze yazılışları yatay şeritte, açıklamalar sayfa sayfa
+  Öğretmen: "hemzenin yazılışları da diğer harfler gibi büyük olsun tek fark
+  yatay scroll olsun, elifteki iki açıklama yatay oklarla bakılsın, yani
+  scroll olmasın elifte, elif eskisi gibi büyük olsun dikey olarak."
+  · Hemze panosu kalktı; on iki yazılış artık harf büyütecinin kendi
+    kutularıyla TEK ŞERİTTE. Dördü ekrana sığıyor, gerisi yana kayarak
+    geliyor (parmakla, fareyle, tekerlekle). Her kutunun üstünde kürsüsü
+    (ء أ إ ؤ ئ آ) ve biçimi, altında örnek kelimesi.
+  · Alttaki açıklama kutusu artık SAYFALI: başlıkta ‹ › okları ve "2 / 3".
+    Harflerde tek sayfa (Nasıl Yazılır) — ok çıkmaz, hiçbir şey değişmez.
+    Elifte iki sayfa: Nasıl Yazılır + "Elif ayrıca uzatma (med) harfidir".
+    Hemzede üç sayfa: Nasıl Yazılır + kürsü kuralları + özellikler.
+  · Böylece elif ekranı eskisi gibi: dört kutu büyük, pencere dikey
+    kaymıyor. Ölçtüm: elif ve hemze sekmelerinde kart dikey kaydırmasız,
+    kutu yüksekliği 300 px (harflerdekiyle aynı), şerit yatay kayıyor.
+  Dosyalar: okumayazma/alfabe_harf_detay.js · okumayazma/alfabe.css

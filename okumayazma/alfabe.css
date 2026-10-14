@@ -2885,35 +2885,44 @@ body.nav-kenar:not(.nav-kapali) #navKol svg { transform: rotate(180deg); }
         /* Anahtar varken harfin adı zaten tuşun üstünde yazıyor. */
         #hd-card:has(#hd-sekme:not([hidden])) #hd-name { display: none; }
 
-        #hd-hemze { display: flex; flex-direction: column; gap: 14px; }
-        .hz-ozet { font-size: 1.15rem; color: #334155; line-height: 1.5;
-            background: #F2FBF8; border: 1px solid #CFEFE6; border-radius: 14px;
-            padding: 12px 16px; }
-        .hz-grup { background: #fff; border-radius: 18px; padding: 14px 18px;
-            box-shadow: var(--shadow-sm); border-left: 6px solid #16A085; }
-        .hz-bas { display: flex; align-items: center; gap: 12px; }
-        .hz-bas-ar { font-family: 'arakom'; font-size: 2.4rem; color: #117A65; line-height: 1; }
-        .hz-bas-ad { font-size: 1.35rem; font-weight: bold; color: var(--primary); }
-        .hz-kural { font-size: 1.05rem; color: #475569; line-height: 1.45; margin: 6px 0 10px; }
-        /* Kutular ortalanır: bir grupta 1-2 biçim varsa şerit sağa yapışmasın. */
-        .hz-kutular { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
-        .hz-kutular .hd-col { flex: 0 1 calc(25% - 11px); min-width: 120px; }
-        .hz-kutular .hd-col-box { min-height: 118px; max-height: 190px; }
+        /* HEMZE ŞERİDİ: kutular harf büyütecindeki ölçüde, dördü ekranda,
+           gerisi yatay kaydırılarak gelir (Geylani 14.10.2026). */
+        #hd-cols.hd-yatay { display: flex; overflow-x: auto; overflow-y: hidden;
+            gap: 16px; padding-bottom: 10px; scroll-snap-type: x proximity;
+            overscroll-behavior-x: contain; scroll-behavior: smooth; }
+        #hd-cols.hd-yatay .hd-col { flex: 0 0 calc(25% - 12px); scroll-snap-align: center; }
+        #hd-cols.hd-yatay::-webkit-scrollbar { height: 12px; }
+        #hd-cols.hd-yatay::-webkit-scrollbar-track { background: #EDF3F8; border-radius: 999px; }
+        #hd-cols.hd-yatay::-webkit-scrollbar-thumb { background: #B6D2E6; border-radius: 999px;
+            border: 3px solid #EDF3F8; }
+        #hd-cols.hd-yatay::-webkit-scrollbar-thumb:hover { background: #8FB6D1; }
+        .hz-k { display: block; direction: ltr; font-size: .78em; font-weight: normal; color: #7b8a99;
+            line-height: 1.2; margin-bottom: 2px; white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; }
         .hz-ornek { display: flex; align-items: baseline; justify-content: center;
             gap: 8px; flex-wrap: wrap; text-align: center; }
-        .hz-o-ar { font-family: 'arakom'; font-size: 1.7rem; color: #117A65; line-height: 1.2; }
-        .hz-o-tr { font-size: .95rem; color: #7b8a99; }
-        .hz-ozellik-bas { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
-        .hz-ozellik { margin: 0; padding-inline-start: 22px; display: grid; gap: 7px; }
-        .hz-ozellik li { font-size: 1.05rem; color: #334155; line-height: 1.45; }
-        .hd-sec-med { border-left-color: #E67E22; }
-        /* Odakta (bir biçim büyütülünce) med notu da gizlenir: yer harfe kalsın. */
-        #hd-card:has(#hd-tek-ornek:not([hidden])) .hd-sec-med { display: none; }
+        .hz-o-ar { font-family: 'arakom'; font-size: 1.5rem; color: #117A65; line-height: 1.2; }
+        .hz-o-tr { font-size: .9rem; color: #7b8a99; }
+
+        /* ALT AÇIKLAMA SAYFALARI: başlık satırında oklar ve sayfa sayacı. */
+        #hd-aciklama .hd-sec-title { display: flex; align-items: center; gap: 10px; }
+        #hd-ac-bas { flex: 1 1 auto; min-width: 0; }
+        .hd-ac-ok { font-family: 'arakom'; font-size: 1.5rem; line-height: 1;
+            width: 40px; height: 40px; flex: 0 0 auto; border-radius: 999px;
+            border: 2px solid #E3EAF2; background: #F7F9FC; color: #117A65;
+            cursor: pointer; transition: all .2s ease; }
+        .hd-ac-ok:hover { background: #E6FAF5; border-color: #16A085; transform: translateY(-2px); }
+        .hd-ac-sayac { flex: 0 0 auto; font-size: .95rem; color: #94a3b8; font-weight: normal; }
+        #hd-aciklama .hd-sec-text { max-height: 24vh; overflow-y: auto; }
+        .hd-ac-onsoz { margin: 0 0 8px; }
+        .hd-ac-liste { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; }
+        .hd-ac-liste li { line-height: 1.4; }
+        .hd-ac-ar { font-family: 'arakom'; color: #117A65; display: inline-block;
+            margin: 0 7px 0 0; }
+
         @media (max-width: 768px) {
             #hd-sekme button { font-size: 1.15rem; padding: 7px 18px; }
-            .hz-kutular .hd-col { flex: 0 1 calc(50% - 7px); }
-            .hz-bas-ar { font-size: 1.9rem; }
-            .hz-bas-ad { font-size: 1.1rem; }
-            .hz-kural, .hz-ozellik li, .hz-ozet { font-size: .95rem; }
-            .hz-o-ar { font-size: 1.35rem; }
+            #hd-cols.hd-yatay .hd-col { flex: 0 0 calc(50% - 8px); }
+            .hz-o-ar { font-size: 1.2rem; }
+            .hd-ac-ok { width: 34px; height: 34px; font-size: 1.2rem; }
         }

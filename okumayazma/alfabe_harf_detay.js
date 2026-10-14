@@ -206,10 +206,16 @@ const harfDetay = {
                 </div>
                 <div id="hd-cols" dir="rtl"></div>
                 <div id="hd-tek-ornek" hidden></div>
-                <div id="hd-hemze" hidden></div>
-                <div class="hd-sec hd-sec-med" id="hd-med-not" hidden></div>
-                <div class="hd-sec hd-sec-yazilis">
-                    <div class="hd-sec-title">✍️ Nasıl Yazılır? <button id="hd-replay" title="Tekrar izle">↻ Tekrar Yaz</button></div>
+                <div class="hd-sec hd-sec-yazilis" id="hd-aciklama">
+                    <div class="hd-sec-title">
+                        <button class="hd-ac-ok" id="hd-ac-geri" type="button"
+                                title="Önceki açıklama" aria-label="Önceki açıklama" hidden>&#8249;</button>
+                        <span id="hd-ac-bas">✍️ Nasıl Yazılır?</span>
+                        <button id="hd-replay" title="Tekrar izle">↻ Tekrar Yaz</button>
+                        <span class="hd-ac-sayac" id="hd-ac-sayac" hidden></span>
+                        <button class="hd-ac-ok" id="hd-ac-ileri" type="button"
+                                title="Sonraki açıklama" aria-label="Sonraki açıklama" hidden>&#8250;</button>
+                    </div>
                     <div class="hd-sec-text" id="hd-yazilis"></div>
                 </div>
             </div>`;
@@ -231,6 +237,19 @@ const harfDetay = {
         /* HEMZE / ELİF ANAHTARI (14.10.2026, Geylani): elif açılınca başlığın
            yerinde çıkar; görünüşü bilerek "Hepsi birden / Sırayla" tuşlarıyla
            aynıdır. */
+        /* ALT AÇIKLAMA SAYFALARI (14.10.2026, Geylani: "elifteki iki açıklama
+           yatay oklarla bakılsın, yani scroll olmasın elifte"). Mahreç üstte
+           kalır; alttaki kutu sayfa sayfa gezilir, pencere uzamaz. */
+        document.getElementById('hd-ac-geri').onclick = () => harfDetay.aciklamaKaydir(-1);
+        document.getElementById('hd-ac-ileri').onclick = () => harfDetay.aciklamaKaydir(1);
+        /* Hemze şeridi yatay kayar; farede dikey tekerlek de yatay kaydırsın. */
+        document.getElementById('hd-cols').addEventListener('wheel', function (e) {
+            if (!this.classList.contains('hd-yatay')) return;
+            if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+            if (this.scrollWidth <= this.clientWidth + 2) return;
+            this.scrollLeft += e.deltaY;
+            e.preventDefault();
+        }, { passive: false });
         document.getElementById('hd-sekme').onclick = function (e) {
             const d = e.target.closest('button[data-sekme]');
             if (!d) return;
@@ -333,26 +352,21 @@ const harfDetay = {
     harfKur: function () {
         const h = this.harf, info = this.bilgi, yaz = this.yaz;
         if (!h || !info || !yaz) return;
-        const hemzeYuva = document.getElementById('hd-hemze');
-        if (hemzeYuva) { hemzeYuva.hidden = true; hemzeYuva.innerHTML = ''; }
         const no = document.getElementById('hd-no');
         no.innerText = (this.idx + 1); no.hidden = false;
         document.getElementById('hd-name').innerText = h.tr;
         document.getElementById('hd-mahrec').innerText = info.mahrec;
-        document.getElementById('hd-yazilis').innerText = info.yazilis;
-        /* Elif sekmesinde MED notu: elif-vav-ye uzatma harfleridir (Geylani). */
-        const not = document.getElementById('hd-med-not');
-        if (not) {
-            const goster = this.hemzeVarMi() && h.h === this.HEMZE_HARF;
-            not.hidden = !goster;
-            if (goster) {
-                not.innerHTML = '<div class="hd-sec-title">\u27A1\uFE0F Elif ayrıca' +
-                    ' <span class="hd-sec-sub">uzatma (med) harfidir</span></div>' +
-                    '<div class="hd-sec-text"></div>';
-                not.querySelector('.hd-sec-text').innerText = HEMZE_BILGI.elifNotu;
-            }
+        /* ALT AÇIKLAMA: harflerde tek sayfa. Elifte ikinci sayfa MED notudur
+           (elif-vav-ye uzatma harfleridir) — alt alta değil, oklarla gezilir;
+           böylece pencere eskisi gibi kalır, dikey kaydırmaya düşmez. */
+        const sayfalar = [{ baslik: '\u270D\uFE0F Nasıl Yazılır?', metin: info.yazilis }];
+        if (this.hemzeVarMi() && h.h === this.HEMZE_HARF) {
+            sayfalar.push({ baslik: '\u27A1\uFE0F Elif ayrıca uzatma (med) harfidir',
+                            metin: HEMZE_BILGI.elifNotu });
         }
+        this.aciklamaKur(sayfalar);
         const cols = document.getElementById('hd-cols');
+        cols.classList.remove('hd-yatay');
         cols.hidden = false;
         cols.innerHTML = '';
         this.anims = [];
@@ -418,42 +432,24 @@ const harfDetay = {
        her grupta o kürsünün biçim kutuları + örnek kelime; altta özellikler. */
     hemzeKur: function () {
         const B = HEMZE_BILGI;
-        const yuva = document.getElementById('hd-hemze');
-        if (!yuva) return;
         const no = document.getElementById('hd-no');
         if (no) no.hidden = true;
-        const not = document.getElementById('hd-med-not');
-        if (not) { not.hidden = true; not.innerHTML = ''; }
         document.getElementById('hd-name').innerText = B.ad;
         document.getElementById('hd-mahrec').innerText = B.mahrec;
-        document.getElementById('hd-yazilis').innerText = B.yazilis;
+
+        /* ON İKİ YAZILIŞ TEK ŞERİTTE (14.10.2026, Geylani: "hemzenin yazılışları
+           da diğer harfler gibi büyük olsun, tek fark yatay scroll olsun").
+           Kutular harf büyütecindeki ölçüde; dördü ekrana sığar, gerisi yana
+           kaydırılarak gelir. Her kutunun üstünde kürsüsü, altında örneği var. */
         const cols = document.getElementById('hd-cols');
-        cols.innerHTML = ''; cols.hidden = true;
-        yuva.hidden = false; yuva.innerHTML = '';
+        cols.classList.add('hd-yatay');
+        cols.hidden = false;
+        cols.innerHTML = '';
         this.anims = [];
         const renk = {};
         this.FORM_META.forEach(function (f) { renk[f.key] = f.color; });
 
-        const ozet = document.createElement('div');
-        ozet.className = 'hz-ozet';
-        ozet.innerText = B.ozet;
-        yuva.appendChild(ozet);
-
         B.gruplar.forEach((g) => {
-            const grup = document.createElement('section');
-            grup.className = 'hz-grup';
-            const bas = document.createElement('div');
-            bas.className = 'hz-bas';
-            const bar = document.createElement('span');
-            bar.className = 'hz-bas-ar'; bar.dir = 'rtl'; bar.innerText = g.ar;
-            const bad = document.createElement('span');
-            bad.className = 'hz-bas-ad'; bad.innerText = g.ad;
-            bas.appendChild(bar); bas.appendChild(bad);
-            const kural = document.createElement('div');
-            kural.className = 'hz-kural'; kural.innerText = g.kural;
-            const sira = document.createElement('div');
-            sira.className = 'hz-kutular'; sira.dir = 'rtl';
-            grup.appendChild(bas); grup.appendChild(kural); grup.appendChild(sira);
             g.bicimler.forEach((bc) => {
                 const veri = HEMZE_YAZIM[bc.k];
                 if (!veri) return;
@@ -462,7 +458,11 @@ const harfDetay = {
                 const lbl = document.createElement('div');
                 lbl.className = 'hd-col-label';
                 lbl.style.color = renk[bc.form] || '#1e293b';
-                lbl.innerText = bc.etiket;
+                const kursu = document.createElement('span');
+                kursu.className = 'hz-k';
+                kursu.innerText = g.ar + '  ' + g.ad;
+                lbl.appendChild(kursu);
+                lbl.appendChild(document.createTextNode(bc.etiket));
                 const box = document.createElement('div');
                 box.className = 'hd-col-box';
                 const anim = this.buildSvg(veri, renk[bc.form] || '#1e293b');
@@ -490,21 +490,79 @@ const harfDetay = {
                     orn.appendChild(ot);
                 }
                 col.appendChild(lbl); col.appendChild(box); col.appendChild(orn);
-                sira.appendChild(col);
+                cols.appendChild(col);
                 this.anims.push(anim);
             });
-            yuva.appendChild(grup);
         });
+        cols.scrollLeft = 0;
 
-        const obas = document.createElement('div');
-        obas.className = 'hz-ozellik-bas';
-        obas.innerText = 'Hemzenin özellikleri';
-        const liste = document.createElement('ul');
-        liste.className = 'hz-ozellik';
-        B.ozellikler.forEach(function (o) {
-            const li = document.createElement('li'); li.innerText = o; liste.appendChild(li);
+        /* Kürsü kuralları ve özellikler alttaki açıklama kutusunda, oklarla. */
+        this.aciklamaKur([
+            { baslik: '\u270D\uFE0F Nasıl Yazılır?', metin: B.yazilis },
+            { baslik: '\uD83E\uDE91 Hemze hangi kürsüye biner?', onsoz: B.ozet,
+              liste: B.gruplar.map(function (g) {
+                  return { ar: g.ar, metin: g.ad + ' — ' + g.kural };
+              }) },
+            { baslik: '\uD83D\uDCCC Hemzenin özellikleri',
+              liste: B.ozellikler.map(function (o) { return { metin: o }; }) }
+        ]);
+    },
+
+    /* ===== ALT AÇIKLAMA SAYFALARI =====================================
+       Mahreç üstte sabit; alttaki kutu birden çok sayfa taşıyabilir ve
+       oklarla gezilir (Geylani 14.10.2026). Böylece yeni bir açıklama
+       eklemek pencereyi uzatmıyor, harfin kutuları küçülmüyor. */
+    aciklamaSayfalar: [],
+    aciklamaIdx: 0,
+    aciklamaKur: function (sayfalar) {
+        this.aciklamaSayfalar = sayfalar || [];
+        this.aciklamaIdx = 0;
+        this.aciklamaGoster();
+    },
+    aciklamaGoster: function () {
+        const s = this.aciklamaSayfalar, n = s.length;
+        if (!n) return;
+        if (this.aciklamaIdx >= n) this.aciklamaIdx = 0;
+        if (this.aciklamaIdx < 0) this.aciklamaIdx = n - 1;
+        const sayfa = s[this.aciklamaIdx];
+        document.getElementById('hd-ac-bas').innerText = sayfa.baslik;
+        const kutu = document.getElementById('hd-yazilis');
+        kutu.innerHTML = '';
+        kutu.scrollTop = 0;
+        if (sayfa.onsoz) {
+            const p = document.createElement('p');
+            p.className = 'hd-ac-onsoz'; p.innerText = sayfa.onsoz;
+            kutu.appendChild(p);
+        }
+        if (sayfa.liste) {
+            const ul = document.createElement('ul');
+            ul.className = 'hd-ac-liste';
+            sayfa.liste.forEach(function (x) {
+                const li = document.createElement('li');
+                if (x.ar) {
+                    const b = document.createElement('b');
+                    b.className = 'hd-ac-ar'; b.dir = 'rtl'; b.innerText = x.ar;
+                    li.appendChild(b);
+                }
+                li.appendChild(document.createTextNode(x.metin || ''));
+                ul.appendChild(li);
+            });
+            kutu.appendChild(ul);
+        } else if (sayfa.metin) {
+            kutu.appendChild(document.createTextNode(sayfa.metin));
+        }
+        ['hd-ac-geri', 'hd-ac-ileri'].forEach(function (id) {
+            const b = document.getElementById(id);
+            if (b) b.hidden = (n < 2);
         });
-        yuva.appendChild(obas); yuva.appendChild(liste);
+        const sc = document.getElementById('hd-ac-sayac');
+        if (sc) { sc.hidden = (n < 2); sc.innerText = (this.aciklamaIdx + 1) + ' / ' + n; }
+    },
+    aciklamaKaydir: function (yon) {
+        if (this.aciklamaSayfalar.length < 2) return;
+        if (typeof playClick === 'function') playClick();
+        this.aciklamaIdx += yon;
+        this.aciklamaGoster();
     },
 
     close: function() {
@@ -755,7 +813,11 @@ const harfDetay = {
                hız bölücüsünü (motor.hiz). Yoksa yolun uzunluğundan. */
             const ozelSure = harfDetay.motorAl(s, 'sure', null);
             const ozelHiz = harfDetay.motorAl(s, 'hiz', 1) * hz;
-            const taban = s.tap ? 260
+            /* İŞARET SÜRESİ (14.10.2026): nokta tek dokunuştur, 260 ms yeter.
+               Hemze ve med çizgisi de "tap" olarak yazılıyor (en sonda, kalkanlı)
+               ama onların bir YOLU var — damgalanmasın, kalemle çizilsin.
+               Noktaların yolu sıfır uzunlukta olduğu için onlar 260 ms'de kalır. */
+            const taban = s.tap ? Math.max(260, Math.min(900, len * 2.2))
                         : (ozelSure !== null ? ozelSure
                            : Math.max(1100, Math.min(3600, etkin * 3.4)));
             return { el: s.el, len, tap: s.tap, pr, dur: taban / ozelHiz };
@@ -1118,7 +1180,7 @@ const harfDetay = {
     /* Hangi biçim yazılıyorsa onun kutusu belirgin dursun: göz sıranın
        nerede olduğunu arama sın. -1 / sınır dışı = hiçbiri. */
     yazanIsaretle: function (i) {
-        const kutular = document.querySelectorAll('#hd-cols .hd-col, #hd-hemze .hd-col');
+        const kutular = document.querySelectorAll('#hd-cols .hd-col');
         for (let j = 0; j < kutular.length; j++) {
             kutular[j].classList.toggle('hd-yazan', j === i);
         }
