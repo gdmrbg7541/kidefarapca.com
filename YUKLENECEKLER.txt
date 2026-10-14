@@ -9685,3 +9685,36 @@ göründüğü doğrulandı (1 / 24).
     yeni damgalar sayesinde bütün js/css de anında tazelenir.
   Dosyalar: _kaynak/uretici/surumle.py (git'e girmez), hizli-gonder.command
             ve damgaları tazelenen 226 sayfa + 4 betik
+
+14.10.2026 — ولد köküne 37. kalıp eklendi
+  37 = مَفْعِل (İsmi Zaman / Mekân) → مَوْلِد "Doğum yeri, doğum zamanı;
+  mevlit". Örnek: مَكَّةُ مَوْلِدُ النَّبِيِّ.
+  veri/veri_kokler.js içindeki wordEasterEggs["ولد"] bloğuna 36 ile 40
+  arasına kondu. (Bu nesne açılışta Object.assign ile sozlukVerileri'ne
+  katılıyor; tabloda ZAMAN MEKAN sütununda çıkıyor, denendi.)
+  Yedek: _kaynak/yedekler/20261014-veld-37/
+
+14.10.2026 — «Anlam açık olduğu hâlde bazen çıkmıyor» hatası bulundu
+  Öğretmen: "ayarlardan anlam kısmı açık olduğu halde bi vezne basılıp
+  kökün vezne girmesini sağladıktan sonra anlamı çıkmayabiliyor."
+  TEŞHİS (tarayıcıda izlenerek bulundu): anlamGoster paneli açıyor,
+  hemen ardından çağırdığı konumla() onu KAPATIYORDU. Yığın izi:
+      anlamGoster → konumla → anlamGizle
+  konumla, "ekranda perde (kılavuz/klavye/çekim penceresi…) açıksa paneli
+  kapat" diyor; bu doğru. Hata perdeAcikMi()'nin ÖNBELLEĞİNDE: cevabı
+  150 ms saklıyordu ve "perde AÇIK" cevabını da saklıyordu. Bir pencere
+  kapandıktan sonraki 150 ms içinde bir vezne basılınca fonksiyon hâlâ
+  "açık" diyordu → kelime vezne giriyor, yeşile dönüyor, ama anlam
+  paneli açıldığı karede kapanıyordu. 150 ms geçtikten sonra basılınca
+  sorun çıkmıyordu; "bazen" olmasının sebebi buydu.
+  Tetikleyenler: ilk girişte kendiliğinden açılan Kılavuz (kt-kilavuz),
+  klavye/kök menüsü, çekim penceresi, günün kökü, «hazır çekimler»
+  yükleme göstergesi — hepsi PERDELER listesinde.
+  ÇÖZÜM: artık yalnız OLUMSUZ cevap (perde yok) önbelleğe alınıyor;
+  "açık" cevabı her çağrıda yeniden ölçülüyor. Kaydırmadaki hız kazancı
+  korunuyor, yanlış "açık" cevabı kalkıyor.
+  Dosya: sarf/vezingezinti.js
+  Yedek: _kaynak/yedekler/20261014-anlam-perde/
+  DENENDİ: kılavuz açıkken anlam çıkmıyor (doğru), kılavuz kapanır
+  kapanmaz basınca çıkıyor, art arda vezinlerde ve perde açılıp
+  kapandıktan hemen sonra da çıkıyor.

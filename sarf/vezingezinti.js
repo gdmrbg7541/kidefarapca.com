@@ -135,7 +135,24 @@
     var perdeSon = 0, perdeDurum = false;
     function perdeAcikMi() {
         var simdi = Date.now();
-        if (simdi - perdeSon < 150) return perdeDurum;
+        /* YALNIZ "PERDE YOK" CEVABI ÖNBELLEKTE TUTULUR (14.10.2026)
+           ------------------------------------------------------------------
+           Öğretmen: "ayarlardan anlam kısmı açık olduğu halde bi vezne
+           basılıp kökün vezne girmesini sağladıktan sonra anlamı
+           çıkmayabiliyor."
+           SEBEBİ: bu önbellek. Eskiden "perde AÇIK" cevabı da 150 ms
+           saklanıyordu. Kapanan bir pencereden (kılavuz, klavye, çekim
+           penceresi, günün kökü, «hazır çekimler» yükleme göstergesi…)
+           hemen sonra bir vezne basılınca konumla() hâlâ "perde açık"
+           sanıyor ve anlamGoster'in az önce açtığı paneli aynı karede
+           kapatıyordu: kelime vezne giriyor, yeşile dönüyor, ama anlamı
+           hiç görünmüyordu. Pencere kapandıktan 150 ms sonra basılınca
+           sorun çıkmıyordu — "bazen" olmasının sebebi buydu.
+           ÇÖZÜM: hızlı olsun diye yalnız OLUMSUZ cevap (perde yok)
+           saklanıyor; "açık" cevabı her seferinde yeniden ölçülüyor.
+           Ölçüm on beş getElementById + getComputedStyle, kaydırmada bile
+           hissedilmiyor. */
+        if (!perdeDurum && simdi - perdeSon < 150) return false;
         perdeSon = simdi;
         perdeDurum = true;
         /* Bâb odağı / kalıp odağı üst çubuğu kilitler */
