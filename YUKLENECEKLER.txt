@@ -9542,3 +9542,45 @@ göründüğü doğrulandı (1 / 24).
   • index.html: sistem/hosgeldinmesaj.js?v=8 -> ?v=9
   Dosyalar: sistem/hosgeldinmesaj.js, index.html
   Yedek: _kaynak/yedekler/20261013-ispat-mesaji-foto/
+
+14.10.2026 — Sınıf kapısı açılma animasyonu yenilendi (sarı ışık kalktı)
+  Öğretmen: "kurum svg sinden bi sınıfa basınca kapı açılma animasyonunu
+  güncelleyelim sarı renkli kısmı hoşuma gitmedi".
+  • Kapının ardındaki sarı-turuncu leke gitti; yerine kapının ayak izi
+    kadar, menteşe kenarı koyu, içi serin-aydınlık bir AÇIKLIK geldi
+    (açılan kapının ardındaki sınıf). .okul-kapi-yuva::after
+  • Açıklığın ölçüsü llOkulKapiAc içinde --kg/--kh ile yazılıyor; eskiden
+    inset:0 olduğu için ışık ⋯ tuşunun üstüne de taşıyordu.
+  • Kapı artık kaybolmuyor: 78 yerine 64 derece dönüyor, gölgeleniyor
+    (brightness .82) ve açıklığın önünde duruyor (z-index).
+  • Kapı tokmağının üstüne gelince yanan sarı parıltı da nötr beyaz oldu.
+  • prefers-reduced-motion: yeni filter/animation da kapatılıyor.
+  Dosyalar: hesap/listelerim.css (?v=20261014a), hesap/listelerim.js
+            (?v=20261014a), index.html
+  Yedek: _kaynak/yedekler/20261014-kapi-animasyon/
+
+14.10.2026 — İstenen Harfi Yaz: tek ilerleme tuşu + sürekli yazım
+  Öğretmen: "ilerleme tuşu sonraki soru cevabı göster şeklinde olsun",
+  "sonraki soruya geçene kadar yazma animasyonu devam etsin".
+  • Alt satırdaki ayrı «✍️ Yazılışı göster» ve «Sonraki ›» tuşları tek
+    tuşta birleşti: 1. basış cevabı yazar («✍️ Cevabı göster»), 2. basış
+    sonraki soruya geçer («Sonraki soru ›»). Sağ ok tuşu da aynı sırayı
+    izliyor; sol ok / «‹ Önceki» eskisi gibi.
+  • Cevap yazılırken animasyon artık bir kez değil, soru değişene kadar
+    DÖNGÜDE yazıyor (motorun kendi döngüsü; yazar, kısa bekler, baştan).
+    Soru değişince ya da katman kapanınca kesiliyor.
+  Dosyalar: okumayazma/alfabe_akordiyon.js (alfabe.html ?v=23)
+  Yedek: _kaynak/yedekler/20261014-ihy-ilerleme-tusu/
+
+14.10.2026 — İstenen Harfi Yaz: iki sütun, her şey daha iri
+  Öğretmen: "soru cümlesi sağda çok daha büyük olsun, harflerin yazılışı
+  vs solda olsun o da çok daha büyük olsun".
+  • Sahne artık iki sütun: SOLDA defter kutusu (yazım animasyonu),
+    SAĞDA sayaç + istek cümlesi. Tuş satırı altta, tam genişlikte.
+  • Kutu 680x520'den ekranın %60 genişliğine ve 76vh'ye (en çok 840 px)
+    çıktı; harf yüksekliğe göre büyüdüğü için yazı belirgin iri.
+  • İstek yazısı en çok 52 px iken 112 px'e çıktı, sağ sütunun tamamını
+    kullanıyor.
+  • Dar ya da dik ekranda (telefon) alt alta: istek üstte, tahta altta.
+  Dosyalar: okumayazma/alfabe_akordiyon.js (alfabe.html ?v=24)
+  Yedek: _kaynak/yedekler/20261014-ihy-ilerleme-tusu/

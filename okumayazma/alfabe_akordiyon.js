@@ -403,7 +403,13 @@
             kutu.appendChild(a.svg);
             yazAnim = a;
             harfDetay.sifirla(a);
-            harfDetay.playForm(a, true, true);     /* bir kez yaz, silme */
+            /* SÜREKLİ YAZSIN (14.10.2026) — öğretmen: "sonraki soruya
+               geçene kadar yazma animasyonu devam etsin". Eskiden bir kez
+               yazıp duruyordu (tekSefer); çocuk tahtaya geç baktıysa
+               darbe sırasını kaçırıyordu. Artık motorun kendi döngüsü
+               çalışıyor: yazar, kısa bekler, baştan yazar. Soru değişince
+               ya da katman kapanınca yazAnimDur() döngüyü kesiyor. */
+            harfDetay.playForm(a, true, false);
             return true;
         } catch (e) { return false; }
     }
@@ -412,7 +418,7 @@
         try {
             harfDetay.cancelForm(yazAnim);
             harfDetay.sifirla(yazAnim);
-            harfDetay.playForm(yazAnim, true, true);
+            harfDetay.playForm(yazAnim, true, false);   /* döngü baştan */
         } catch (e) { }
     }
 
@@ -457,24 +463,37 @@
         var is = YAZ.havuz[YAZ.i];
         if (!is || !sahne) return;
         sahne.innerHTML =
-            '<div class="ak-sayac">' + (YAZ.i + 1) + ' / ' + YAZ.havuz.length + '</div>' +
-            '<div class="as-metin ak-metin"><b>' + kacis(is.harf.tr) + '</b> harfinin <b>' +
-            kacis(is.kon.ad) + '</b> yazılışını yaz</div>' +
-            '<div class="ihy-tahta">' +
-            '  <div class="ihy-cizgi" data-rol="ihyCizgi"><span class="ihy-bos">؟</span></div>' +
+            /* İKİ SÜTUN (14.10.2026) — öğretmen: "soru cümlesi sağda çok daha
+               büyük olsun, harflerin yazılışı vs solda olsun o da çok daha
+               büyük olsun". Tahta solda, istek sağda; ikisi de sahnenin
+               yüksekliğini paylaşıyor. Dar/dik ekranda istek üste, tahta
+               altına geçiyor (column-reverse). */
+            '<div class="ihy-duzen">' +
+            '  <div class="ihy-tahta">' +
+            '    <div class="ihy-cizgi" data-rol="ihyCizgi"><span class="ihy-bos">؟</span></div>' +
+            '  </div>' +
+            '  <div class="ihy-sag">' +
+            '    <div class="ak-sayac">' + (YAZ.i + 1) + ' / ' + YAZ.havuz.length + '</div>' +
+            '    <div class="as-metin ak-metin ihy-soru"><b>' + kacis(is.harf.tr) +
+            '</b> harfinin <b>' + kacis(is.kon.ad) + '</b> yazılışını yaz</div>' +
+            '  </div>' +
             '</div>' +
             '<div class="ak-alt">' +
-            /* İleri/geri HEP açık: öğretmen tahtada harfler arasında
-               serbest gezebilsin, cevabı açmak zorunda kalmasın. */
+            /* TEK İLERLEME TUŞU (14.10.2026) — öğretmen: "istenen harfi yaz
+               kısmında ilerleme tuşu sonraki soru cevabı göster şeklinde
+               olsun". Eskiden ayrı ayrı «Yazılışı göster» ve «Sonraki ›»
+               vardı; tahtada hangisine basılacağı karışıyordu. Artık sağdaki
+               tuş dersin akışını yürütüyor:
+                 1. basış → cevabı yazar,   2. basış → sonraki soruya geçer.
+               Geri tuşu olduğu gibi duruyor, hep açık. */
             '  <button type="button" class="ak-t ak-ikincil ak-gez" data-rol="ihyOnceki"' +
-            ' title="Önceki harf (← tuşu)">‹ Önceki</button>' +
-            '  <button type="button" class="ak-t" data-rol="ihyGoster">✍️ Yazılışı göster</button>' +
+            ' title="Önceki soru (← tuşu)">‹ Önceki</button>' +
             '  <button type="button" class="ak-t ak-ikincil" data-rol="ihyTekrar" hidden>' +
             '↻ Tekrar yaz</button>' +
             '  <button type="button" class="ak-t ak-ikincil" data-rol="ihyIzle" hidden>' +
             'Dört yazılışı birden</button>' +
-            '  <button type="button" class="ak-t ak-gez" data-rol="ihySonraki"' +
-            ' title="Sonraki harf (→ tuşu)">Sonraki ›</button>' +
+            '  <button type="button" class="ak-t ak-gez ak-ilerle" data-rol="ihySonraki"' +
+            ' title="Cevabı göster (→ tuşu)">✍️ Cevabı göster</button>' +
             '</div>';
     }
 
@@ -494,7 +513,23 @@
         var g = sahne.querySelector('[data-rol="ihyGoster"]'); if (g) g.hidden = true;
         var t = sahne.querySelector('[data-rol="ihyTekrar"]'); if (t) t.hidden = !yazAnim;
         var z = sahne.querySelector('[data-rol="ihyIzle"]');   if (z) z.hidden = false;
-        var n = sahne.querySelector('[data-rol="ihySonraki"]'); if (n) n.hidden = false;
+        /* Cevap yazıldı: aynı tuş artık sonraki soruya geçiriyor. */
+        var n = sahne.querySelector('[data-rol="ihySonraki"]');
+        if (n) {
+            n.hidden = false;
+            n.textContent = 'Sonraki soru \u203A';
+            n.title = 'Sonraki soru (\u2192 tuşu)';
+            n.classList.add('ak-ilerle-son');
+        }
+    }
+
+    /* İLERLEME: cevap kapalıysa cevabı yazar, açıksa sonraki soruya geçer.
+       Ok tuşu (→) ve sağdaki tuş aynı işi yapıyor ki tahtada tek ritim
+       olsun: sor · düşünsünler · bas (cevap) · bas (sonraki). */
+    function yazIlerle() {
+        if (!YAZ.havuz.length) return;
+        if (!YAZ.dolu) { yazAcikla(); return; }
+        yazIleri();
     }
 
     function yazIzle() {
@@ -1005,7 +1040,7 @@
             /* Yazılan kutuya dokunmak da yeniden yazdırır. */
             if (rol === 'ihyCizgi')   { if (YAZ.dolu && yazAnim) { tik(); yazTekrar(); } return; }
             if (rol === 'ihyIzle')    { tik(); yazIzle(); return; }
-            if (rol === 'ihySonraki') { tik(); yazIleri(); return; }
+            if (rol === 'ihySonraki') { tik(); yazIlerle(); return; }
             if (rol === 'ihyOnceki')  { tik(); yazGeri();  return; }
             if (rol === 'kapat')   { tik(); kapat(); return; }
             if (rol === 'sonraki') { tik(); aktif.i++; soruGoster(); return; }
@@ -1067,7 +1102,7 @@
             if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') &&
                 !ihYazilisAcikMi() && yazEkraninda()) {
                 tik();
-                if (e.key === 'ArrowLeft') yazGeri(); else yazIleri();
+                if (e.key === 'ArrowLeft') yazGeri(); else yazIlerle();
                 e.preventDefault(); e.stopPropagation();
                 return;
             }
@@ -1695,6 +1730,30 @@
             '  box-shadow:0 0 0 5px rgba(22,160,133,.10)}',
             '#ak-tam .ihy-cizgi.ihy-dolu::before{display:none}',
             '#ak-tam .ihy-cizgi .hd-yaz-svg{width:100%;height:100%}',
+            /* ---- İKİ SÜTUN: tahta solda, istek sağda (14.10.2026) ----
+               Harf, kutuda YÜKSEKLİĞE göre büyüdüğü için (SVG en-boy
+               oranını koruyor) kutunun boyu 58vh'den 72vh'ye çıktı; soru
+               da sağ sütunun tamamını kullandığı için çok daha iri. */
+            '#ak-tam .ihy-duzen{display:flex;flex:1 1 auto;min-height:0;',
+            '  width:min(1900px,98vw);max-width:100%;align-items:center;',
+            '  justify-content:center;gap:clamp(14px,2.6vw,56px)}',
+            '#ak-tam .ihy-duzen .ihy-tahta{flex:1 1 60%;width:auto;min-width:0}',
+            '#ak-tam .ihy-duzen .ihy-cizgi{width:100%;height:min(76vh,840px)}',
+            '#ak-tam .ihy-sag{flex:1 1 42%;min-width:0;display:flex;',
+            '  flex-direction:column;align-items:flex-start;justify-content:center;',
+            '  gap:1.2vh;text-align:start}',
+            '#ak-tam .ihy-sag .ak-sayac{font-size:clamp(16px,2.6vh,34px)}',
+            '#ak-tam .ihy-soru{font-size:clamp(30px,8.2vh,112px);line-height:1.16;',
+            '  padding:0;text-align:start;width:100%}',
+            '#ak-tam .ihy-duzen .ihy-bos{font-size:clamp(56px,13vh,160px)}',
+            /* Dar ya da dik ekran: istek üstte, tahta altta. */
+            '@media (max-width:900px),(orientation:portrait){',
+            '  #ak-tam .ihy-duzen{flex-direction:column-reverse;gap:1vh}',
+            '  #ak-tam .ihy-duzen .ihy-tahta{flex:1 1 auto;width:100%}',
+            '  #ak-tam .ihy-duzen .ihy-cizgi{height:min(54vh,560px)}',
+            '  #ak-tam .ihy-sag{flex:none;width:100%;align-items:center;text-align:center}',
+            '  #ak-tam .ihy-soru{text-align:center;font-size:clamp(26px,5.4vh,64px)}',
+            '}',
             '@keyframes ihyGel{from{opacity:0;transform:translateY(-.12em)}}',
             /* Şeritte kendi satırındaki konu adı: ötekilerle aynı görünsün. */
             '.nav-tabs .tab-satir > .ak-konu{flex:1 1 auto;width:auto;min-width:0}',

@@ -5074,7 +5074,17 @@ function llOkulKapiAc(tus, lId, cId) {
         if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) bekle = 0;
         else {
             var yuva = tus.parentElement;
-            if (yuva) yuva.classList.add('acildi');
+            /* AÇIKLIK TAM KAPI KADAR (14.10.2026): yuva artık kapı + ⋯
+               tuşunu birlikte sarıyor; ışık inset:0 ile ikisini birden
+               kaplıyor, kapı biçiminde durmuyordu. Ölçüyü tıklama anında
+               yazıyoruz, CSS de --kg/--kh ile onu kullanıyor. */
+            if (yuva) {
+                try {
+                    yuva.style.setProperty('--kg', tus.offsetWidth + 'px');
+                    yuva.style.setProperty('--kh', tus.offsetHeight + 'px');
+                } catch (e2) { }
+                yuva.classList.add('acildi');
+            }
             tus.classList.add('aciliyor');
             var bina = tus.closest ? tus.closest('.okul-bina') : null;
             if (bina) bina.classList.add('girildi');
