@@ -81,10 +81,15 @@
             '.kn-et{ font-size:1rem; font-weight:bold; color:#7b8a99; }',
             '.kn-kel{ font-family:"arakom"; font-size:clamp(1.8rem,5vh,3rem); color:#16324F;',
             '  direction:rtl; text-align:center; white-space:nowrap; }',
-            '.kn-son{ display:inline-block; transition:opacity .4s ease, transform .4s ease, color .4s ease; }',
-            '.kn-son.kn-cikis{ opacity:0; transform:scale(.45) translateX(14px); color:#E74C3C; }',
-            '.kn-son.kn-giris{ opacity:0; transform:scale(1.5) translateX(-16px); color:#16A085; }',
-            '.kn-son.kn-yerinde{ opacity:1; transform:none; color:#16A085; }',
+            /* DİKKAT: buraya display:inline-block ya da transform KOYMA — ek,
+               gövdeye bitişmeyi bırakıyor (ـمـ yerine ـم + تـ görünüyordu).
+               Satır içi kalsın; hareket gerekiyorsa kelimenin TAMAMI oynatılır. */
+            '.kn-son{ transition:opacity .38s ease, color .38s ease; }',
+            '.kn-son.kn-cikis{ opacity:0; color:#E74C3C; }',
+            '.kn-son.kn-giris{ opacity:0; color:#16A085; }',
+            '.kn-son.kn-yerinde{ opacity:1; color:#16A085; }',
+            '.kn-kel.kn-pop{ animation:knPop .55s cubic-bezier(.3,.8,.3,1); }',
+            '@keyframes knPop{ 0%{ transform:scale(.88); } 55%{ transform:scale(1.06); } 100%{ transform:none; } }',
             '.kn-oku{ text-align:start; }',
             '.kn-oku b{ display:block; font-size:1.05rem; color:#117A65; }',
             '.kn-oku span{ font-size:.98rem; color:#7b8a99; }',
@@ -167,6 +172,10 @@
                 sonra(function () {
                     son.innerText = s.son;
                     son.className = 'kn-son kn-giris';
+                    var kel = el.querySelector('.kn-kel');
+                    kel.classList.remove('kn-pop');
+                    void kel.offsetWidth;            /* animasyonu yeniden başlat */
+                    kel.classList.add('kn-pop');
                 }, gec + 960);
                 sonra(function () { son.className = 'kn-son kn-yerinde'; }, gec + 1010);
                 gec += 1500;

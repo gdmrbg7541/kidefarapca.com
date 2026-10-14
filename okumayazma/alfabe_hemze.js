@@ -9,6 +9,13 @@ const HEMZE_BILGI = {
   "mahrec": "Boğazın en dibinden (aksa'l-halk) çıkar; ses yolunun bir an kapanıp açılmasıyla oluşan keskin bir kesme sesidir. He (ه) harfi de aynı bölgeden çıkar.",
   "yazilis": "Hemze küçük bir ع başı gibidir: kalem sağ üstten sola iner, kısa bir dönüşle sağa çıkar, sonra sola doğru kuyrukla biter. Kürsülü biçimlerde ÖNCE kürsü harfi (elif, vav, ye) yazılır; hemze EN SON konur.",
   "elifNotu": "Elif tek başına ses vermez: kendinden önceki üstünlü (fethalı) harfi bir elif miktarı uzatır. Aynı şekilde vav (و) ötreli, ye (ي) esreli harfi uzatır — bu üçüne MED (uzatma) harfleri denir. Elif ayrıca hemzenin en çok kullanılan kürsüsüdür (أ إ آ); orada uzatma değil, hemzeyi taşıma görevi görür.",
+  "birlesme": {
+    "bas": "أ",
+    "ek": "ا",
+    "son": "آ",
+    "baslik": "Medli elif nasıl oluşur?",
+    "aciklama": "Elif kürsüsündeki hemzenin (أ) hemen arkasından uzatma elifi (ا) gelirse ikisi tek harfte birleşir ve medli elif (آ) olur. Üstündeki med (~) işareti, o elifin artık uzatılarak okunacağını gösterir: آمَنَ (âmene), قُرْآن (Kur'ân)."
+  },
   "gruplar": [
     {
       "id": "kursusuz",

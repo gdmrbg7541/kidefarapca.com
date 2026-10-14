@@ -9959,3 +9959,25 @@ göründüğü doğrulandı (1 / 24).
   hesaplanmış display değeri ölçülüyor; Be, Ḥa, Şın, Kef, Ye ve elifte tek
   bir sapma yok — anahtar yalnız elifte çıkıyor.
   Dosya: okumayazma/alfabe.css
+
+14.10.2026 — medli elifin oluşumu, sıra numarası, elifin sondaki örnekleri,
+             tâ-i merbûtada ek birleşmesi
+  · HEMZE sekmesine dördüncü açıklama sayfası: "Medli elif nasıl oluşur?"
+    Elif kürsülü hemze ile uzatma elifi birbirine yaklaşır, ikisi sönerken
+    yerlerinde medli elif büyüyerek belirir (أ + ا ← آ); sonra kaynak parçalar
+    soluk hâlleriyle geri gelir ki denklem bütün hâlde okunabilsin.
+    "Tekrar izle" tuşu var, sayfa açılınca bir kez kendiliğinden oynuyor.
+  · Hemze sekmesine geçince sol üstteki SIRA NUMARASI (1) artık kaybolmuyor —
+    hemze de elifin kartında duruyor.
+  · Elifin SONDAKİ örnekleri değişti: eskiden ikisinde elif kelime ortasındaydı
+    (بَاب, مَاء). Artık üçü de elifle biten kelimeler: مَا (Ne?) · أَنَا (ben) ·
+    هُنَا (burada). Ortadaki biçimin kendi örnekleri zaten var.
+  · TÂ-İ MERBÛTA DÖNÜŞÜMÜNDE EK GÖVDEYE BİTİŞMİYORDU: değişen son parçasına
+    display:inline-block verilmişti; satır içi akışı bölünce harf birleşmesi
+    kayboluyor (مُعَلِّمَ + تَانِ ayrı ayrı görünüyordu). Düzeltildi: parça satır
+    içi kaldı, hareket için kelimenin tamamı hafifçe zıplatılıyor.
+    ÖLÇÜLDÜ: üç satırda da parçalı yazımın genişliği tek parça yazımla birebir
+    aynı (86,16 · 115,64 · 119,28) — yani bitişikler korunuyor.
+  Dosyalar: okumayazma/alfabe_harf_detay.js · okumayazma/alfabe.css ·
+            okumayazma/alfabe_konu.js · okumayazma/alfabe_harf_ornek.js ·
+            okumayazma/alfabe_hemze.js (üretilen)

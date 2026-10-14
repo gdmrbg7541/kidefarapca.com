@@ -2945,6 +2945,38 @@ body.nav-kenar:not(.nav-kapali) #navKol svg { transform: rotate(180deg); }
         .hz-tek-bas b { font-size: 1.15rem; color: var(--primary); }
         .hz-tek-metin { font-size: 1rem; color: #475569; line-height: 1.45; }
 
+        /* MEDLİ ELİFİN OLUŞUMU: أ + ا = آ gösterisi (14.10.2026). */
+        .hd-birles { margin-top: 10px; padding: 10px 6px 4px; text-align: center; }
+        /* Parçalar kendi satırında ve ortada dursun; tuş altta kendi satırında.
+           (Tuşa flex-basis + auto kenar verince boş alanı o yutuyordu, parçalar
+           sağa yapışıyordu — 14.10.2026.) */
+        .hb-satir { display: flex; direction: rtl; align-items: center;
+            justify-content: center; gap: clamp(10px, 1.6vw, 24px); flex-wrap: wrap; }
+        .hd-birles .hb-p { font-family: 'arakom'; font-size: clamp(2.2rem, 8vh, 4.2rem);
+            line-height: 1.1; color: #16324F;
+            transition: transform .6s cubic-bezier(.3,.7,.2,1), opacity .35s ease, color .4s ease; }
+        .hd-birles .hb-im { font-size: clamp(1.4rem, 3.4vh, 2.2rem); color: #94a3b8;
+            transition: opacity .4s ease, transform .4s ease; }
+        .hd-birles .hb-son { opacity: 0; transform: scale(.4); color: #16A085; }
+        .hd-birles .hb-ok { opacity: .35; }
+        /* 1) iki parça birbirine yaklaşır */
+        .hd-birles.hb-yaklas .hb-bas { transform: translateX(-26px); }
+        .hd-birles.hb-yaklas .hb-ek { transform: translateX(26px); }
+        .hd-birles.hb-yaklas .hb-im:not(.hb-ok) { opacity: 0; }
+        /* 2) sönerler */
+        .hd-birles.hb-kaybol .hb-bas, .hd-birles.hb-kaybol .hb-ek { opacity: 0; transform: scale(.75); }
+        .hd-birles.hb-kaybol .hb-ok { opacity: 1; color: #16A085; }
+        /* 3) medli elif büyüyerek gelir */
+        .hd-birles.hb-gel .hb-son { opacity: 1; transform: scale(1); }
+        /* 4) denklem okunur kalsın: kaynak parçalar soluk hâlleriyle geri gelir */
+        .hd-birles.hb-geri .hb-bas, .hd-birles.hb-geri .hb-ek { opacity: .42; transform: scale(.82); }
+        .hd-birles.hb-geri .hb-im:not(.hb-ok) { opacity: .42; }
+        .hb-tekrar { display: block; margin: 12px auto 0;
+            border: 0; border-radius: 999px; cursor: pointer;
+            background: #E67E22; color: #fff; font-family: inherit; font-weight: bold;
+            padding: 8px 16px; font-size: .95rem; box-shadow: 0 4px 10px rgba(230,126,34,.3); }
+        .hb-tekrar:hover { filter: brightness(1.06); }
+
         /* ALT AÇIKLAMA SAYFALARI: başlık satırında oklar ve sayfa sayacı. */
         #hd-aciklama .hd-sec-title { display: flex; align-items: center; gap: 10px; }
         #hd-ac-bas { flex: 1 1 auto; min-width: 0; }

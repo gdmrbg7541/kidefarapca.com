@@ -337,6 +337,10 @@ const harfDetay = {
         if (typeof playClick === 'function') playClick();
         this.idx = idx;
         this.harf = h; this.bilgi = info; this.yaz = yaz;
+        /* Sıra numarası sekme değişince kaybolmasın (Geylani 14.10.2026):
+           hemze de elifin kartında duruyor, numara elifin numarasıdır. */
+        const noKutu = document.getElementById('hd-no');
+        if (noKutu) { noKutu.innerText = (idx + 1); noKutu.hidden = false; }
         this.gezGuncelle();
 
         /* Önceki harfin animasyonları DURDURULUR. Eskiden durdurulmuyordu:
@@ -447,8 +451,6 @@ const harfDetay = {
        her grupta o kürsünün biçim kutuları + örnek kelime; altta özellikler. */
     hemzeKur: function () {
         const B = HEMZE_BILGI;
-        const no = document.getElementById('hd-no');
-        if (no) no.hidden = true;
         document.getElementById('hd-name').innerText = B.ad;
         document.getElementById('hd-mahrec').innerText = B.mahrec;
 
@@ -519,7 +521,10 @@ const harfDetay = {
               }) },
             { baslik: '\uD83D\uDCCC Hemzenin özellikleri',
               liste: B.ozellikler.map(function (o) { return { metin: o }; }) }
-        ]);
+        ].concat(B.birlesme ? [{
+            baslik: '\u2795 ' + B.birlesme.baslik,
+            metin: B.birlesme.aciklama, birlesme: B.birlesme
+        }] : []));
     },
 
     /* ===== YATAY ŞERİT: OKLAR VE ODAK ================================
@@ -673,6 +678,10 @@ const harfDetay = {
         } else if (sayfa.metin) {
             kutu.appendChild(document.createTextNode(sayfa.metin));
         }
+        /* MEDLİ ELİFİN OLUŞUMU (14.10.2026, Geylani: "hemzeye elif eklenince
+           medli elife dönüşsün"): أ + ا önce birbirine yaklaşır, sonra ikisi
+           sönerken yerlerinde آ büyüyerek belirir. */
+        if (sayfa.birlesme) kutu.appendChild(this.birlesmeKur(sayfa.birlesme));
         ['hd-ac-geri', 'hd-ac-ileri'].forEach(function (id) {
             const b = document.getElementById(id);
             if (b) b.hidden = (n < 2);
@@ -680,6 +689,49 @@ const harfDetay = {
         const sc = document.getElementById('hd-ac-sayac');
         if (sc) { sc.hidden = (n < 2); sc.innerText = (this.aciklamaIdx + 1) + ' / ' + n; }
     },
+    /* أ + ا = آ — küçük birleşme gösterisi; açılınca bir kez oynar, tuşla tekrar. */
+    birlesmeKur: function (b) {
+        const yuva = document.createElement('div');
+        yuva.className = 'hd-birles';
+        const yap = function (sinif, metin) {
+            const e = document.createElement('span');
+            e.className = sinif; e.dir = 'rtl'; e.innerText = metin;
+            return e;
+        };
+        const bas = yap('hb-p hb-bas', b.bas);
+        const arti = yap('hb-im', '+');
+        const ek = yap('hb-p hb-ek', b.ek);
+        const ok = yap('hb-im hb-ok', '\u2190');
+        const son = yap('hb-p hb-son', b.son);
+        const satir = document.createElement('div');
+        satir.className = 'hb-satir';
+        [bas, arti, ek, ok, son].forEach(function (e) { satir.appendChild(e); });
+        yuva.appendChild(satir);
+        const tus = document.createElement('button');
+        tus.type = 'button'; tus.className = 'hb-tekrar';
+        tus.innerText = '\u21BB Tekrar izle';
+        const self = this;
+        tus.onclick = function () {
+            if (typeof playClick === 'function') playClick();
+            self.birlesmeOynat(yuva);
+        };
+        yuva.appendChild(tus);
+        this.timers.push(setTimeout(function () { self.birlesmeOynat(yuva); }, 260));
+        return yuva;
+    },
+    birlesmeOynat: function (yuva) {
+        const d = ['hb-yaklas', 'hb-kaybol', 'hb-gel'];
+        d.forEach(function (x) { yuva.classList.remove(x); });
+        const self = this;
+        const d2 = ['hb-geri'];
+        d2.forEach(function (x) { yuva.classList.remove(x); });
+        this.timers.push(setTimeout(function () { yuva.classList.add('hb-yaklas'); }, 900));
+        this.timers.push(setTimeout(function () { yuva.classList.add('hb-kaybol'); }, 1650));
+        this.timers.push(setTimeout(function () { yuva.classList.add('hb-gel'); }, 1920));
+        /* Son durumda denklem bütün hâlde okunsun: أ + ا ← آ */
+        this.timers.push(setTimeout(function () { yuva.classList.add('hb-geri'); }, 2900));
+    },
+
     aciklamaKaydir: function (yon) {
         if (this.aciklamaSayfalar.length < 2) return;
         if (typeof playClick === 'function') playClick();
