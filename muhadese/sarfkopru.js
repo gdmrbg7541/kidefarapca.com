@@ -441,6 +441,10 @@
             var e = document.getElementById(id);
             return !!e && getComputedStyle(e).display !== 'none';
         };
+        /* METİN TAHLİLİ (14.10.2026): okuma ekranında muhâdesenin kip
+           kutuları yok; sayfanın kendisi zaten cümle/diyalog ekranı, şerit
+           orada da açılmalı. */
+        if (document.documentElement.classList.contains('mt-okuma')) return true;
         return g('sentence-mode') || g('dialog-mode');
     }
     function seritGorunurluk() {

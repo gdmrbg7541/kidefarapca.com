@@ -10210,3 +10210,33 @@ Kart, kelime, Arapça yazı ve Tercüme tuşunun üstünde tek tek denendi:
 hem tek başına sayfada hem kitabın içinde kaydırıyor.
 DEĞİŞEN  metintahlili/metintahlili.css · metintahlili/metintahlili.js ·
          metintahlili.html (v=20261014e)
+
+────────────────────────────────────────────────────────────────────────
+14.10.2026 (10) — METİN TAHLİLİ VERİSİ TAMAMLANDI (KÖK/TÜR EŞLEŞMESİ)
+Geylani: "tüm sınıfların verisini tamamla metin tahlillerini."
+
+ÖLÇÜM: 9 kitabın 105 dersindeki 13.478 kelime geçişinin kaçında kök
+bulunuyor? Listeye yeni giren kitaplar haritasızdı:
+    7. sınıf Mektep %75 · 10. Seçmeli %82 · genel %90
+EKLEME: kok_haritasi.js'e 448 biçim eklendi. Kök ve tür UYDURULMADI:
+  · çekimli biçim ekleri atılarak tabanına indirgendi (ممحاتك→ممحاة,
+    كتابان→كتاب, سأطبخ→طبخ, ساعتان→ساعة; ت→ة kuralı dahil),
+  · taban, kalıplar tablosunun KENDİ sözlük motoruna (KidefSozlukDizin)
+    soruldu, kök oradan alındı,
+  · tür (fiil/isim/zarf/edat/ifade), mevcut haritanın kalıp-no → tür
+    dağılımından öğrenilip uygulandı.
+  Mevcut girdilere dokunulmadı; ekleme dosyanın sonuna ayrı blok.
+SONUÇ: %90,0 → %96,2 (12.966/13.478). En zayıf kitap %75 → %92.
+KALAN: 325 biçim sözlükte hiç yok (شاب، وصفة، طبية، فساتين، الطماطم…).
+  Listesi: _kaynak/gecici/kok-eksik-kelimeler.txt — bu kelimeler kalıplar
+  tablosunun sözlüğüne girerse harita yeniden üretilip bağlanabilir.
+
+HATA DÜZELTME — KÖK ŞERİDİ METİN TAHLİLİNDE HİÇ AÇILMIYORMUŞ
+sarfkopru.js şeridi yalnız muhâdesenin kip kutuları (#sentence-mode /
+#dialog-mode) görünürken açıyordu; metin tahlili ekranında o kutular yok,
+kelimenin kökü bulunsa bile şerit çıkmıyordu. Artık html.mt-okuma da
+"pratik açık" sayılıyor: kelimeye dokununca şerit yanıyor ve oradan
+kalıplar tablosuna geçiliyor (denendi: علم → Fiil yandı).
+DEĞİŞEN  muhadese/veri/kok_haritasi.js · muhadese/sarfkopru.js
+YEDEK    _kaynak/yedekler/2026-10-14-metintahlili-arayuz/
+         (kok_haritasi-oncesi.js, sarfkopru.js)
