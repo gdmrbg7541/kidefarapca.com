@@ -9664,3 +9664,24 @@ göründüğü doğrulandı (1 / 24).
   sola doğru bağlantı çizgisine iniyor.
   Dosya: okumayazma/alfabe_harf_yazim.js (alfabe.html ?v=4)
   Yedek: _kaynak/yedekler/20261014-mim-bastaki/
+
+14.10.2026 — TARAYICI ESKİ DOSYAYI GÖSTERMESİN: otomatik sürüm damgası
+  Öğretmen: "siteye eklenen dosyalar tarayıcının hafızası nedeniyle güncel
+  olarak durmuyor, bunu otomatik olarak yenileyebilir miyiz, tarayıcı
+  güncel hallerini açsın."
+  • YENİ: _kaynak/uretici/surumle.py — sayfalardaki .js/.css adreslerine
+    dosyanın İÇERİĞİNDEN hesaplanan ?v= damgası (md5'in ilk 8 hanesi)
+    yazıyor. Dosya değiştiyse damga değişir, tarayıcı yeniyi indirir;
+    değişmediyse damga aynı kalır, boşuna indirme ve gereksiz git farkı
+    olmaz. JS içinden yüklenen betikleri de (new URL('...js?v=..')) tarıyor
+    ve zincir bitene kadar (en çok 5 tur) dönüyor.
+  • hizli-gonder.command'a eklendi: galeriden sonra, güvenlik denetiminden
+    önce çalışıyor. Yani her gönderimde damgalar kendiliğinden tazeleniyor.
+  • ARTIK ELLE ?v= ARTIRMAK GEREKMİYOR.
+  • İlk çalıştırma 226 sayfadaki 790 bağlantıyı damgaladı; o yüzden bu
+    gönderimde çok dosya değişmiş görünecek, normal.
+  • NOT: sayfanın KENDİSİ (index.html gibi) GitHub Pages tarafından ~10
+    dakika önbelleğe alınıyor; o süre dolunca yeni sayfa gelir ve içindeki
+    yeni damgalar sayesinde bütün js/css de anında tazelenir.
+  Dosyalar: _kaynak/uretici/surumle.py (git'e girmez), hizli-gonder.command
+            ve damgaları tazelenen 226 sayfa + 4 betik

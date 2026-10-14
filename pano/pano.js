@@ -127,7 +127,7 @@
         if (hatIsteniyor) { setTimeout(function () { hatYukle(bitti, olmadi); }, 120); return; }
         hatIsteniyor = true;
         var e = document.createElement('script');
-        e.src = 'pano/panohat.js?v=1';
+        e.src = 'pano/panohat.js?v=755ab04a';
         e.onload = function () { window.PANO_HAT ? bitti() : olmadi(); };
         e.onerror = olmadi;
         document.head.appendChild(e);
@@ -345,7 +345,7 @@
     function kutuphane(bitti, olmadi) {
         if (window.html2canvas) { bitti(); return; }
         var e = document.createElement('script');
-        e.src = 'pano/html2canvas.min.js?v=1';
+        e.src = 'pano/html2canvas.min.js?v=d7530aa0';
         e.onload = function () { window.html2canvas ? bitti() : olmadi(); };
         e.onerror = olmadi;
         document.head.appendChild(e);

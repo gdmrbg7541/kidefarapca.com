@@ -164,7 +164,7 @@
     if (window.KIDEF_CIKTI) { kitapDurum = 2; bitince && bitince(); return; }
     kitapDurum = 1;
     var t = document.createElement('script');
-    t.src = 'sistem/ciktiveri.js?v=1';
+    t.src = 'sistem/ciktiveri.js?v=5894cc11';
     t.onload = function () { kitapDurum = 2; bitince && bitince(); };
     t.onerror = function () { kitapDurum = 3; bitince && bitince(); };
     document.head.appendChild(t);

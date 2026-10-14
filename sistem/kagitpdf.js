@@ -36,7 +36,7 @@ window.KidefKagit = (function () {
     var JPEG_KALITE = 0.95;
     /* Kütüphane pano klasöründe duruyor (oraya girmişti); iki yerde iki
        kopya tutmamak için buradan da o yol kullanılıyor. */
-    var KUTUPHANE = 'pano/html2canvas.min.js?v=1';
+    var KUTUPHANE = 'pano/html2canvas.min.js?v=d7530aa0';
 
     function kutuphane(bitti, olmadi) {
         if (window.html2canvas) { bitti(); return; }

@@ -17,8 +17,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="oyunlar/bilgiyarismasikacom.css?v=139">
-<link rel="stylesheet" href="oyunlar/cevrimdisi.css?v=2">
+<link rel="stylesheet" href="oyunlar/bilgiyarismasikacom.css?v=41f21127">
+<link rel="stylesheet" href="oyunlar/cevrimdisi.css?v=6d7eec98">
 
 <!-- Firebase 8.10.1 (compat) — siteyle aynı proje: kidefarapca-98f9c -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -30,8 +30,8 @@
      yukarıdaki kütüphane gelmiyor ve HİÇBİR karekod çizilmiyordu.
      Depodaki üretici + API köprüsü: CDN gelirse bunlar devreye
      girmiyor, gelmezse karekodlar yine çiziliyor. -->
-<script src="pano/qrcode.min.js?v=1"></script>
-<script src="sistem/karekodyedek.js?v=1"></script>
+<script src="pano/qrcode.min.js?v=fbb6b69b"></script>
+<script src="sistem/karekodyedek.js?v=20a3ba23"></script>
 </head>
 <body>
 
@@ -567,7 +567,7 @@
 
 </div>
 
-<script src="sistem/geri.js?v=20260916a"></script>
+<script src="sistem/geri.js?v=f87d1337"></script>
 <script>
 /* Ev (anasayfa) tusunun otomatik eklenmemesi icin onclick icinde "kidefGeriDon" gecmiyor. */
 function biyGeriDon(e){
@@ -587,27 +587,27 @@ function biyGeriDon(e){
 <!-- Sınıf veri kaydı (tek kaynak): hangi konu hangi sınıfa ait.
      index.html de aynı dosyayı okur; bu yüzden bilgi yarışmasının
      TEK html dosyası kalır, veriler sınıfa göre değişir. -->
-<script src="sistem/sinifveri.js?v=20260924a"></script>
+<script src="sistem/sinifveri.js?v=ac8127de"></script>
 <!-- OTURUM GÜVENLİĞİ — 40 dakika boşta kalma sayacı.
      Bu sayfa index'ten YENİ SEKMEDE açılıyor. Dosya burada da yüklü olmazsa
      buradaki dokunuşlar sayaca yazılmaz; index sekmesi öğretmeni "masadan
      kalkmış" sayıp 40. dakikada oturumu kapatır (sunum ortasında atılma).
      Sayaç localStorage üzerinden sekmeler arası ortaktır. Firebase yüklü
      olmayan sayfalarda dosya yalnız hareket yazar, kimseyi çıkarmaz. -->
-<script src="hesap/oturumguvenlik.js?v=20260911a"></script>
-<script src="sistem/rol.js?v=20260805a"></script>
+<script src="hesap/oturumguvenlik.js?v=05cd7ad6"></script>
+<script src="sistem/rol.js?v=df95fe98"></script>
 <!-- YERİNDE GİRİŞ / KAYIT — giriş kapısındaki iki düğme bunu açar.
      kayitalani.js kayıt alanlarının ve kullanicilar belgesinin TEK
      kaynağıdır; index'teki kayıt formu da aynı dosyayı okur. -->
-<script src="hesap/kayitalani.js?v=20261006"></script>
+<script src="hesap/kayitalani.js?v=1f613da8"></script>
 <!-- TEK GİRİŞ PENCERESİ (04.10.2026) — öğretmen: "indextekinin aynısını
      istiyorum". Pencerenin HTML'i girispenceresi.js'te (index'ten
      çıkarıldı), görünümü kapsanmış girispenceresi.css'te, düğme
      davranışı girisdavranis.js'te. Alanlar ve kullanıcı belgesi yine
      kayitalani.js'ten — iki ekran aynı belgeyi yazar. -->
-<link rel="stylesheet" href="hesap/girispenceresi.css?v=1">
-<script src="hesap/girispenceresi.js?v=1"></script>
-<script src="hesap/girisdavranis.js?v=1"></script>
+<link rel="stylesheet" href="hesap/girispenceresi.css?v=d0495581">
+<script src="hesap/girispenceresi.js?v=357bc8c3"></script>
+<script src="hesap/girisdavranis.js?v=024b3260"></script>
 <!-- NOT: index'teki kayıt anketi (hesap/kayitanketi.js) ve rol tanıtım
      kartları (sistem/panel-tanitim.js) buraya HENÜZ alınmadı. Denendi:
      ikisi de kendi stillerini index'in css'inden aldığı için burada
@@ -615,24 +615,24 @@ function biyGeriDon(e){
      tutuyordu. Pencerenin görünümünde yaptığımız gibi onların da stilleri
      kapsanıp ayrı dosyaya çıkarılınca eklenecek. O zamana kadar bu sayfada
      kayıt anketsiz ilerliyor; ALANLAR ve yazılan belge index'le aynı. -->
-<script src="hesap/biygiris.js?v=1"></script>
+<script src="hesap/biygiris.js?v=094d7d8c"></script>
 <!-- Üretilmiş konular: motordan ÖNCE yüklenir, window.BIY_EK_KONULAR'a eklenirler.
      oyunlar/biy_kaliplar.js → kalıplar tablosunun verisinden üretilen sorular. -->
-<script src="oyunlar/biy_kaliplar.js?v=1"></script>
+<script src="oyunlar/biy_kaliplar.js?v=732cf787"></script>
 <!-- MAARİF SEMİNERİ soru bankası: YALNIZ ?set=ara1|ara2|ara3|final ile gelindiğinde
      yüklenir (sunum html/maarif.html'deki düğmeler). Normal açılışta konu
      listesine karışmaz. Motordan önce yüklenmeli. -->
 <script>
 (function(){
   var m = /[?&]set=(ara1|ara2|ara3|final)(?:&|$)/.exec(location.search);
-  if (m){ window.MAARIF_SET = m[1]; document.write('<script src="oyunlar/biy_maarif.js?v=1"><\/script>'); }
+  if (m){ window.MAARIF_SET = m[1]; document.write('<script src="oyunlar/biy_maarif.js?v=350b277e"><\/script>'); }
 })();
 </script>
-<script src="oyunlar/bilgiyarismasikacom.js?v=20260924h"></script>
+<script src="oyunlar/bilgiyarismasikacom.js?v=bd91b0d6"></script>
 <!-- ÇEVRİMDIŞI MOD — jsPDF + html2canvas dosyanın içinde gömülü,
      internet gerekmez. Ana dosyadan SONRA yüklenmeli. -->
-<script src="oyunlar/cevrimdisi_pdf.js?v=20260924h" defer></script>
-<script src="oyunlar/cevrimdisi.js?v=20260924h"></script>
+<script src="oyunlar/cevrimdisi_pdf.js?v=e1a8d8f7" defer></script>
+<script src="oyunlar/cevrimdisi.js?v=31e4bee8"></script>
 <script>
 /* MAARİF SEMİNERİ — ?set= ile gelindiğinde: öğretmen girişi tamamlanınca
    ilgili set hazır seçili, bütün soruları havuzda işaretli, Bireysel Yarış
@@ -660,7 +660,7 @@ function biyGeriDon(e){
 </script>
 <!-- Canlı tahta: kalıplar tablosunu iframe'de açar ve postMessage ile sürer.
      Alıcı taraf sarf/yarismakopru.js (kaliplartablosu.html içinde). -->
-<script src="oyunlar/biy_tahta.js?v=1"></script>
+<script src="oyunlar/biy_tahta.js?v=7c733978"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */

@@ -25923,6 +25923,7 @@ Bu kural sadece 'vech' köküne has değildir. Dilimizde kullandığımız diğe
         41: { tekilId: 17, base: { emoji: "👨‍👩‍👧‍👦", arText: "أَوْلَاد", trText: "Çocuklar (وَلَد çoğulu)" } },
         33: { tip: "aile", base: { emoji: "👨", arText: "وَالِد", trText: "Baba (doğuran)", ornek: { ar: "وَالِدِي مُحَامٍ", tr: "Babam avukattır." }, cogul: "وَالِدُونَ" }, suggestsPlus: true, "ة": { tip: "aile", emoji: "👩", arText: "وَالِدَة", trText: "Anne (doğuran)", ornek: { ar: "وَالِدَتِي مُعَلِّمَةٌ", tr: "Annem öğretmendir." }, cogul: "وَالِدَات" } },
         36: { base: { emoji: "🍼", arText: "مَوْلُود", trText: "Doğmuş olan, yeni doğan" } },
+        37: { base: { emoji: "📍", arText: "مَوْلِد", trText: "Doğum yeri, doğum zamanı; mevlit", ornek: { ar: "مَكَّةُ مَوْلِدُ النَّبِيِّ", tr: "Mekke, Peygamber’in doğduğu yerdir." } } },
         40: { base: { emoji: "🎂", arText: "مِيلَاد", trText: "Doğum, doğum zamanı", ornek: { ar: "عِيدُ مِيلَادِي فِي الرَّبِيعِ", tr: "Doğum günüm ilkbahardadır." } } },
         58: { base: { emoji: "⚙️", arText: "وَلَّدَ", trText: "Doğurttu; (enerji) üretti" } },
         61: { base: { emoji: "📘", arText: "تَوْلِيد", trText: "Doğurtma; üretim (masdar)" } }

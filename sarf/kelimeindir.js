@@ -312,7 +312,7 @@
     if (!kagitYukleniyor) {
       kagitYukleniyor = new Promise(function (ok, hata) {
         var s = document.createElement('script');
-        s.src = new URL('sistem/kagitpdf.js?v=2', location.href).href;
+        s.src = new URL('sistem/kagitpdf.js?v=e3461821', location.href).href;
         s.onload = function () { window.KidefKagit ? ok() : hata(new Error('yok')); };
         s.onerror = function () { kagitYukleniyor = null; hata(new Error('yüklenemedi')); };
         document.head.appendChild(s);

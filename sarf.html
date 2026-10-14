@@ -24,20 +24,20 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <!-- Sitede gecirilen sure (yalniz etkin sure) -->
-<script src="sistem/kullanimsure.js?v=2"></script>
+<script src="sistem/kullanimsure.js?v=c876df2f"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <!-- KAREKOD YEDEĞİ (05.10.2026) — okul ağı cdnjs'i engellerse
      yukarıdaki kütüphane gelmiyor ve HİÇBİR karekod çizilmiyordu.
      Depodaki üretici + API köprüsü: CDN gelirse bunlar devreye
      girmiyor, gelmezse karekodlar yine çiziliyor. -->
-<script src="pano/qrcode.min.js?v=1"></script>
-<script src="sistem/karekodyedek.js?v=1"></script>
+<script src="pano/qrcode.min.js?v=fbb6b69b"></script>
+<script src="sistem/karekodyedek.js?v=20a3ba23"></script>
 <!-- ?v=NN: tarayıcı eski sarf.css/sarf.js kopyasını önbellekten sunmasın diye
      sürüm etiketi. Oyunda görsel/işlevsel değişiklik yapıldığında bu sayı
      artırılırsa kullanıcıların ctrl+F5 yapmasına gerek kalmaz. -->
-<link rel="stylesheet" href="sarf/sarf.css?v=125">
-    <link rel="stylesheet" href="arakom.css?v=2">
+<link rel="stylesheet" href="sarf/sarf.css?v=7f01e232">
+    <link rel="stylesheet" href="arakom.css?v=4383f21b">
 </head>
 <!-- Bu sayfa artık "tek oyun" kipindedir: data-tek-oyun="game2" menüyü
      tamamen atlatır, sayfa açılır açılmaz Kelime Fabrikası'nın kendisi
@@ -87,16 +87,16 @@
 <!-- Kök verisi artık merkezî: veri_kokler.js (wordEasterEggs) +
      veri_vezin_numaralari.js (KALIP_DATA). Atölyedeki isim vezinleri,
      kaliplartablosu'ndaki "Günün Kökü" ile aynı kaynaktan gelir. -->
-<script src="veri/veri_vezin_numaralari.js"></script>
-<script src="veri/veri_kokler.js?v=20260924h"></script>
+<script src="veri/veri_vezin_numaralari.js?v=27a3837a"></script>
+<script src="veri/veri_kokler.js?v=1265dfeb"></script>
 <!-- Kok sira numaralari + ebced + KOK·KALIP·SIGA adresi.
      sarf.js'ten ONCE yuklenmeli; yuklenmezse sayfa eskisi gibi calisir. -->
-<script src="veri/veri_kok_numaralari.js?v=133"></script>
-<script src="sistem/gorevkopru.js?v=9"></script>
+<script src="veri/veri_kok_numaralari.js?v=389fce39"></script>
+<script src="sistem/gorevkopru.js?v=50232a80"></script>
 <script>/* Sarf konu anlatimi/simulasyon sayfasidir: puan degil SURE takip edilir. */
 try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
-<script src="sarf/sarf.js?v=129"></script>
-<script src="sistem/geri.js?v=20260915a"></script>
+<script src="sarf/sarf.js?v=c57ebb4e"></script>
+<script src="sistem/geri.js?v=f87d1337"></script>
 <!-- Eski derin bağlantı betiği kalktı: sayfa zaten doğrudan fabrikayı
      açtığı için sarf.html#fabrika kendiliğinden doğru yere düşer.
      sarf.html#carki artık kelimecarki.html'e taşındı. -->

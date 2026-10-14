@@ -293,10 +293,10 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2320C997' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/></svg>">
     <!-- Tekil CSS Dosyası -->
-    <link rel="stylesheet" href="hesap/kurslar.css?v=20261004d">
+    <link rel="stylesheet" href="hesap/kurslar.css?v=bb03b3cb">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css?v=20261007a">
-    <link rel="stylesheet" href="hesap/qrgiris.css?v=20261005d">
+    <link rel="stylesheet" href="index.css?v=48dac683">
+    <link rel="stylesheet" href="hesap/qrgiris.css?v=55822f4c">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
        z-index kilit perdesinin (100000000) ÜSTÜNDE: kilitliyken pencere
@@ -307,11 +307,11 @@
         z-index:100000001;
     }
     </style>
-    <link rel="stylesheet" href="hesap/listelerim.css?v=20261014a">
+    <link rel="stylesheet" href="hesap/listelerim.css?v=73b679d6">
     <!-- MATERYAL SEKMESİ BİÇİMİ (06.10.2026): İmam Hatip kurallarının
          materyal kabı için üretilmiş kopyası. ÜRETİLMİŞ DOSYA —
          _kaynak/uretici/materyalStilUret.py ile tazelenir. -->
-    <link rel="stylesheet" href="sistem/materyalstil.css?v=20261006">
+    <link rel="stylesheet" href="sistem/materyalstil.css?v=19be2940">
     <style>
       /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
       html { overflow-y: scroll; }
@@ -434,11 +434,11 @@
          yukarıdaki kütüphane gelmiyor ve HİÇBİR karekod çizilmiyordu.
          Depodaki üretici + API köprüsü: CDN gelirse bunlar devreye
          girmiyor, gelmezse karekodlar yine çiziliyor. -->
-    <script src="pano/qrcode.min.js?v=1"></script>
-    <script src="sistem/karekodyedek.js?v=1"></script>
-    <script src="sistem/kilit.js?v=12"></script>
+    <script src="pano/qrcode.min.js?v=fbb6b69b"></script>
+    <script src="sistem/karekodyedek.js?v=20a3ba23"></script>
+    <script src="sistem/kilit.js?v=b8b64959"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
-    <script src="sistem/erisim.js?v=5"></script>
+    <script src="sistem/erisim.js?v=292f0d52"></script>
     <!-- ONAYDAN SONRA PAYLAŞILACAK MESAJ (07.10.2026) — öğretmen:
          "bi öğretmeni onayladıktan sonra onun ismiyle bi hoşgeldin
          mesajı ve tavsiyelerini isteyen, eleştirilerini bekleyen bi
@@ -446,7 +446,7 @@
          paylaşacağım." Site içi hoş geldin mesajı erisim.js'te
          duruyor; bu dosya ayrıca ELDE paylaşılacak kısa metni
          veriyor. Yönetici panelinden çağrılıyor. -->
-    <script src="sistem/hosgeldinmesaj.js?v=9"></script>
+    <script src="sistem/hosgeldinmesaj.js?v=233e3dcc"></script>
 <style>
 /* ==== ERİŞİM KATMANI (sistem/erisim.js) ================================
    1) ÖĞRENCİ KATEGORİ KISITI — site "Sadece Girişliler" kademesindeyken
@@ -940,14 +940,14 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         #ll-root #viewTitle #active-class-title{ width:100%; justify-content:center; }
       }
     </style>
-    <link rel="stylesheet" href="arakom.css?v=2">
+    <link rel="stylesheet" href="arakom.css?v=4383f21b">
     <!-- SINIFA DOĞRUDAN BAĞLANTI (06.10.2026): index.html?sinif=…&sube=…
          Öğretmen: "yeni sekme açılırken liste açılmalı, tekrar indexin
          yeni bi sekmede açılmasının anlamı yok." Betik BURADA, <head>
          içinde: sınıf bağlantısıyla açılan sekmede anasayfa hiç
          görünmesin diye perdeyi ilk boyamadan ÖNCE çekiyor. Ayrıca
          kartların adresini üretiyor; siniflarim.js'ten önce yüklü. -->
-    <script src="sistem/sinifbag.js?v=12"></script>
+    <script src="sistem/sinifbag.js?v=fc7d3d9d"></script>
 </head>
 <body>
 
@@ -998,7 +998,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          "tek giriş sayfası olsun, farklı yerlerde de olsa".
          Dosya yüklenince pencereyi buraya, body'ye basıyor.
          Pencereyi düzenlemek için o dosyaya bak. -->
-    <script src="hesap/girispenceresi.js?v=1"></script>
+    <script src="hesap/girispenceresi.js?v=357bc8c3"></script>
 
     <!-- PAKET DETAY MODALI (Info Iconuna basıldığında açılır) -->
     <div id="package-info-modal" class="modal-overlay">
@@ -3719,12 +3719,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + o sınıfın kartını İmam Hatip akordiyonuna basan kayıtçı.
          muhadese.js'TEN ÖNCE: educationData ağacı artık seçili öğretim
          yılına göre değişiyor, yılı bu dosya söylüyor. -->
-    <script src="sistem/sinifveri.js?v=20260924a"></script>
+    <script src="sistem/sinifveri.js?v=ac8127de"></script>
     <!-- Test Kapışması 5-8. sınıf ders ağacı: sınıf kartlarının ders sayısı (sistem/sinifmodul.js) -->
-    <script src="oyunlar/tk_ortaokul.js?v=20260924h"></script>
+    <script src="oyunlar/tk_ortaokul.js?v=65275d1c"></script>
     <!-- Muhâdese ders listesi (educationData) — sınıf panellerinde yerinde açılır liste için -->
-    <script src="muhadese/muhadese.js?v=20260924h"></script>
-    <script src="sistem/sinifmodul.js?v=20261007a"></script>
+    <script src="muhadese/muhadese.js?v=50231b93"></script>
+    <script src="sistem/sinifmodul.js?v=b33d2082"></script>
     <!-- «YILLIK ÇIKTILAR» KARTI KALDIRILDI (06.10.2026) — öğretmen:
          "yıllık çıktılar kartını kaldır sınıflardan, zaten sınıf defterleri
          var o işi görüyor, tamamen kaldırabilirsin."
@@ -3733,13 +3733,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          Çıktıların kendisi kaybolmadı: sınıf defterinin hafta satırlarında
          duruyor, cikti.html de doğrudan açılabiliyor. Geri istenirse bu iki
          satırı yeniden açmak yeterli:
-         <script src="sistem/ciktivar.js?v=1"></script>
-         <script src="sistem/ciktikart.js?v=2"></script> -->
+         <script src="sistem/ciktivar.js?v=828b2bf1"></script>
+         <script src="sistem/ciktikart.js?v=7c91e0f0"></script> -->
     <!-- EK SINIF KARTLARI (05.10.2026) — öğretmen: "5 ve 6. sınıflara
          harf-i ta'rîf sunusunu, tüm sınıflara kelime çarkını ve sözlüğü,
          10'a kelime fabrikasını, 9'a Niçin Arapça sunumunu kart olarak
          ekle." Hangi kart hangi sınıfta: sistem/eksunukart.js -->
-    <script src="sistem/eksunukart.js?v=2"></script>
+    <script src="sistem/eksunukart.js?v=66f3ba6f"></script>
     <!-- SINIF OYUN KARTLARI (07.10.2026) — öğretmen: "oyunlar
          kategorisinden 5. sınıf kategorisine merak çarkı, hangi harf,
          klavye oyununu ekleyelim, tasarımlar aynı olsun" + "6. sınıflar
@@ -3750,18 +3750,18 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          (_kaynak/uretici/kartCizimUret.py). Böylece aynı oyunun çizimi
          iki yerde ayrı ayrı tutulmuyor; anasayfadaki değişirse betik
          yeniden çalıştırılır. kartcizim ÖNCE yüklenmeli. -->
-    <script src="sistem/kartcizim.js?v=3"></script>
-    <script src="sistem/sinifoyun.js?v=3"></script>
+    <script src="sistem/kartcizim.js?v=c7196fb1"></script>
+    <script src="sistem/sinifoyun.js?v=a860ffb8"></script>
     <!-- SOSYAL BÖLÜMDE TANITIM (07.10.2026) — öğretmen: "sosyal
          kısımda beni tanıtan bi yazı ekleyelim, sosyal popup
          açıldığında Geylani Demirbağ yazsın, oraya tıklayınca temel
          bilgilerim görünsün." Satır «Sosyal Hesaplar» başlığının
          altına giriyor; metnin tamamı sistem/tanitim.js içinde. -->
-    <script src="sistem/tanitim.js?v=10"></script>
+    <script src="sistem/tanitim.js?v=09fda6a3"></script>
     <!-- İmam Hatip 7/9/10 «Kitap Etkinlikleri» kartı: sınıfın kart
          ızgarasına girer, ünite listesi kartın altında açılır. 7. sınıfta
          yalnız MEB 2027-2028 kitabı seçiliyken görünür. -->
-    <script src="sistem/kitapetkinlik.js?v=20260924h"></script>
+    <script src="sistem/kitapetkinlik.js?v=0bcddcae"></script>
     <script>
     (function () {
       /* --- açılış/kapanış: içerik dinamik olduğu için (sınıf içindeki döküman
@@ -7649,32 +7649,32 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
 
     <!-- TEKİL JS DOSYASI -->
-        <script src="hesap/ogretmen.js"></script>
-        <script src="hesap/paketler.js"></script>
-        <script src="sistem/state.js"></script>
-    <script src="sistem/rol.js?v=20260805a"></script>
+        <script src="hesap/ogretmen.js?v=1cc98ca7"></script>
+        <script src="hesap/paketler.js?v=febac679"></script>
+        <script src="sistem/state.js?v=81172f83"></script>
+    <script src="sistem/rol.js?v=df95fe98"></script>
     <!-- Kayıt alanlarının ve kullanicilar belgesinin tek kaynağı; auth.js'ten
          ÖNCE yüklenmeli. Aynı dosyayı bilgi yarışmasındaki yerinde kayıt
          paneli de okuyor (hesap/biygiris.js). -->
-    <script src="hesap/kayitalani.js?v=20261006"></script>
-    <script src="hesap/auth.js?v=20261006"></script>
+    <script src="hesap/kayitalani.js?v=1f613da8"></script>
+    <script src="hesap/auth.js?v=62b5c7bd"></script>
     <!-- Sitede gecirilen sure: yalniz etkin sure sayilir, kullanicilar/{uid}.kullanim -->
-    <script src="sistem/kullanimsure.js?v=2"></script>
+    <script src="sistem/kullanimsure.js?v=c876df2f"></script>
     <!-- Materyal kullanım raporu: Materyaller sekmesinde açılan dosyaları ve
          sekmenin açık kaldığı süreyi ölçer; sınıf listesindeki oktan açılır. -->
-    <script src="sistem/materyalrapor.js?v=6"></script>
+    <script src="sistem/materyalrapor.js?v=c7623e4e"></script>
     <!-- Başlıktaki sözlük simgesinin açtığı pencere -->
-    <script src="sarf/sozlukpop.js?v=2"></script>
+    <script src="sarf/sozlukpop.js?v=9c572bdc"></script>
     <!-- Karekodla giriş: auth.js firebase.initializeApp yaptıktan SONRA yüklenmeli -->
-    <script src="hesap/qrgiris.js?v=20261005d"></script>
-    <script src="hesap/girisgenislik.js?v=2"></script>
+    <script src="hesap/qrgiris.js?v=5163db0a"></script>
+    <script src="hesap/girisgenislik.js?v=8ef478b8"></script>
     <!-- KAYIT ANKETI / ROL KAPISI: giris penceresi acilinca once
          "ogretmen misin, ogrenci misin" sorulur; kayitta 4 kisa soru daha.
          Cevaplar kullanicilar/{uid}.anket alaninda, yonetici panelinde gorunur. -->
-    <script src="hesap/kayitanketi.js?v=9"></script>
+    <script src="hesap/kayitanketi.js?v=0d614331"></script>
     <!-- Rol tanıtımı: giriş penceresindeki öğrenci/öğretmen kartları ve
          çizimli panel tanıtımı (indeks.html de aynı dosyayı kullanır). -->
-    <script src="sistem/panel-tanitim.js?v=20260925a"></script>
+    <script src="sistem/panel-tanitim.js?v=f428cd0c"></script>
     <script>
       (function () {
         function kur() {
@@ -7695,60 +7695,60 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               'Sitede "hesap/qrgiris.js" ve "hesap/qrgiris.css" dosyalarının bulunduğundan emin olun.');
     };
     </script>
-    <script src="sistem/router.js?v=20261005c"></script>
+    <script src="sistem/router.js?v=5e3ddb6d"></script>
     <!-- OKUL TUŞU HER ÖĞRETMENDE (05.10.2026) — tuşun görünürlüğünü
          yalnız updateHeaderUI veriyordu; rol asenkron geldiği için yeni
          kayıtlı, henüz kurum/sınıf tanımlamamış öğretmende tuş gizli
          kalabiliyordu. Bu dosya tuşu rolle eşitliyor. -->
-    <script src="sistem/okultusu.js?v=1"></script>
+    <script src="sistem/okultusu.js?v=6075d301"></script>
     <!-- ANASAYFADA "SINIFLARIM" KATEGORİSİ (06.10.2026) — öğretmen:
          "öğretmen giriş yapınca ... anasayfada bi kategori görünsün,
          + butonu olsun ... sınıflara header yerine galeri ve site
          güncellemelerinin üstünde bi kategori olarak hızlıca
          ulaşabilsin." Bölümü kendisi, Güncellemeler'in üstüne koyar. -->
-    <script src="sistem/siniflarim.js?v=18"></script>
+    <script src="sistem/siniflarim.js?v=b00b7aeb"></script>
     <!-- SINIF MATERYALLERİ SEKMESİ (06.10.2026): açık sınıfın seviyesine
          ait İmam Hatip belgeleri ve etkinlik kartları, sınıfın kendi
          panelinde. Kopya değil, aynı kaynaktan çizim. -->
-    <script src="sistem/sinifmateryal.js?v=1"></script>
+    <script src="sistem/sinifmateryal.js?v=88f016fd"></script>
     <!-- SEKME SİMGELERİ — DEĞİŞEN ANİMASYONLAR (06.10.2026): öğretmen
          "listede neler varsa, sınıf defterinde neler varsa,
          materyallerde ve sınıf araçlarında değişen svg
          animasyonlarla içeriğin dikkati çekilsin ... daha büyük
          olsunlar." Simgeleri büyütüp sahneleri sırayla gösteriyor;
          düğmelerin kendisine ve switchTab numaralarına dokunmuyor. -->
-    <script src="sistem/sekmeanim.js?v=7"></script>
-    <script src="hesap/offline-packages.js"></script>
-    <script src="hesap/online-packages.js"></script>
-    <script src="hesap/checkout.js"></script>
-    <script src="hesap/course-content.js"></script>
+    <script src="sistem/sekmeanim.js?v=b673e837"></script>
+    <script src="hesap/offline-packages.js?v=521d8b46"></script>
+    <script src="hesap/online-packages.js?v=469534a7"></script>
+    <script src="hesap/checkout.js?v=e3c91785"></script>
+    <script src="hesap/course-content.js?v=a0a9c136"></script>
     <!-- Telefonu tek tıkla kopyala (05.10.2026) — yönetici öğretmen
          onaylarında numarayı fareyle seçmek zorunda kalmasın. -->
-    <script src="sistem/telkopya.js?v=1"></script>
-    <script src="hesap/teacher-admin.js?v=20261013a"></script>
+    <script src="sistem/telkopya.js?v=303ac4d1"></script>
+    <script src="hesap/teacher-admin.js?v=f45ed79d"></script>
     <!-- Yonetici > ogretmen detayi: sure, siniflar, kayit anketi -->
-    <script src="hesap/ogretmen-detay.js?v=1"></script>
-    <script src="sistem/alarm.js?v=20260814c"></script>
-    <script src="hesap/live-lesson.js?v=20260722c"></script>
+    <script src="hesap/ogretmen-detay.js?v=56eec268"></script>
+    <script src="sistem/alarm.js?v=5436e931"></script>
+    <script src="hesap/live-lesson.js?v=cb8c8026"></script>
     <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->
-    <script src="sistem/kazanimoneri.js?v=20260924h"></script>
+    <script src="sistem/kazanimoneri.js?v=689f584d"></script>
     <!-- Öğretmen profilindeki "sitede yenilikler" şeridi -->
-    <script src="sistem/yenilikler.js?v=20260924h"></script>
+    <script src="sistem/yenilikler.js?v=fda4968d"></script>
     <!-- Güncellemeler ve Galeri bölümü: liste galeriYenile.py'den,
          duyurular yukarıdaki yenilikler.js'ten gelir. -->
-    <script src="sistem/siniftayeni.js?v=20261011a"></script>
-    <script src="sistem/galeriveri.js?v=20261007"></script>
-    <script src="sistem/galeri.js?v=20261007d"></script>
-    <script src="hesap/listelerim.js?v=20261014a"></script>
+    <script src="sistem/siniftayeni.js?v=d701f510"></script>
+    <script src="sistem/galeriveri.js?v=b5d6af07"></script>
+    <script src="sistem/galeri.js?v=2aae6e0f"></script>
+    <script src="hesap/listelerim.js?v=a3bbe9e6"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
-    <script src="hesap/oturumguvenlik.js?v=20260912a"></script>
+    <script src="hesap/oturumguvenlik.js?v=05cd7ad6"></script>
     <!-- Sınıf Defteri: şubenin 36 haftalık ders defteri.
          listelerim.js ve oturumguvenlik.js'ten SONRA: switchTab'ı sarıyor. -->
-    <script src="hesap/sinifdefteri.js?v=4"></script>
-    <script src="hesap/ogrencihesap.js?v=20260919e"></script>
-    <script src="sistem/ihoneri.js?v=20260805a"></script>
-    <script src="sistem/gorev.js?v=38"></script>
+    <script src="hesap/sinifdefteri.js?v=a5cac0d2"></script>
+    <script src="hesap/ogrencihesap.js?v=9684ddfe"></script>
+    <script src="sistem/ihoneri.js?v=c5f6b6cd"></script>
+    <script src="sistem/gorev.js?v=ccd7693c"></script>
 
     <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->
     <script>
@@ -7852,8 +7852,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             }
         }
     </script>
-    <script src="index.js?v=20260825a"></script>
-    <script src="sistem/geri.js?v=20260915a"></script>
+    <script src="index.js?v=252a524a"></script>
+    <script src="sistem/geri.js?v=f87d1337"></script>
     <script>
     /* Baska sayfalardan "Girise git" ile gelindiginde giris-kayit penceresini ac.
        Kullanim: index.html?giris=1  ya da  index.html#giris
