@@ -368,8 +368,16 @@
        ÜSTÜNE gelir. Sonra isterse «Nasıl yazılır? izle» ile dört biçimin
        kalem animasyonunu açar (harf kartlarındaki katmanın aynısı).
        Şıklı ölçme aynı satırdaki «Dene» düğmesinde — ikisi ayrı. */
-    var YAZ = { havuz: [], i: 0, dolu: false };
+    var YAZ = { havuz: [], i: 0, dolu: false, kalanMs: 0, saat: null, durdu: false, sonSn: -1 };
     var YAZ_ADET = 30;
+    /* GERİ SAYIM (14.10.2026) — öğretmen: "her harf 15 saniye geri sayım
+       ekleyelim, daire olsun geri sayım", "ses te ekleyelim".
+       Daire boşalınca cevap kendiliğinden yazılır; öğretmen daha önce
+       «Cevabı göster»e basarsa sayım orada durur. Daireye dokunmak
+       duraklatır (sınıfta söz araya girer). Son 5 saniyede tik sesi,
+       bitişte kısa bir çıkış sesi. */
+    var YAZ_SURE = 15;                     /* saniye */
+    var YAZ_CEVRE = 2 * Math.PI * 44;      /* r=44 olan dairenin çevresi */
     var yazAnim = null;              /* ekranda yazan biçim (harfDetay) */
 
     /* Biçim rengi harf kartındakiyle AYNI: başta yeşil, ortada mavi,
@@ -430,7 +438,7 @@
         zamanTemizle(); perdeKapat();
         katman.classList.add('ak-yaz');       /* başlıktaki kip/sayı tuşları gizlenir */
         basEl.textContent = 'İstenen Harfi Yaz';
-        notEl.textContent = 'Sor · düşünsünler · yazılışını göster';
+        notEl.textContent = 'Sor · ' + YAZ_SURE + ' sn düşünsünler · yazılışı açılır';
         var ana = document.querySelector('.main-app');
         seritAcikti = !!(ana && !ana.classList.contains('nav-gizli'));
         katman.hidden = false;
@@ -458,7 +466,7 @@
     }
 
     function yazGoster() {
-        ihYazilisKapat(); yazAnimDur(); YAZ.dolu = false;
+        ihYazilisKapat(); yazAnimDur(); yazSayimDur(); YAZ.dolu = false;
         if (YAZ.i >= YAZ.havuz.length) YAZ.i = 0;    /* liste biterse başa */
         var is = YAZ.havuz[YAZ.i];
         if (!is || !sahne) return;
@@ -473,7 +481,15 @@
             '    <div class="ihy-cizgi" data-rol="ihyCizgi"><span class="ihy-bos">؟</span></div>' +
             '  </div>' +
             '  <div class="ihy-sag">' +
-            '    <div class="ak-sayac">' + (YAZ.i + 1) + ' / ' + YAZ.havuz.length + '</div>' +
+            '    <div class="ihy-ust">' +
+            '      <div class="ihy-sayim" data-rol="ihySayim" role="timer"' +
+            ' title="' + YAZ_SURE + ' saniye — duraklatmak için tıkla">' +
+            '        <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
+            '          <circle class="ihy-s-iz" cx="50" cy="50" r="44"/>' +
+            '          <circle class="ihy-s-yay" cx="50" cy="50" r="44"/>' +
+            '        </svg><span class="ihy-s-say">' + YAZ_SURE + '</span></div>' +
+            '      <div class="ak-sayac">' + (YAZ.i + 1) + ' / ' + YAZ.havuz.length + '</div>' +
+            '    </div>' +
             '    <div class="as-metin ak-metin ihy-soru"><b>' + kacis(is.harf.tr) +
             '</b> harfinin <b>' + kacis(is.kon.ad) + '</b> yazılışını yaz</div>' +
             '  </div>' +
@@ -495,6 +511,7 @@
             '  <button type="button" class="ak-t ak-gez ak-ilerle" data-rol="ihySonraki"' +
             ' title="Cevabı göster (→ tuşu)">✍️ Cevabı göster</button>' +
             '</div>';
+        yazSayimBaslat();
     }
 
     /* Birinci basış: harf çizginin üstüne gelir (cevap). İkinci düğme:
@@ -510,6 +527,7 @@
             else { c.innerHTML = '<span class="ihy-harf">' + kacis(is.harf[is.kon.k]) + '</span>'; }
         }
         YAZ.dolu = true;
+        yazSayimDur(); yazSayimCiz();          /* daire burada donar */
         var g = sahne.querySelector('[data-rol="ihyGoster"]'); if (g) g.hidden = true;
         var t = sahne.querySelector('[data-rol="ihyTekrar"]'); if (t) t.hidden = !yazAnim;
         var z = sahne.querySelector('[data-rol="ihyIzle"]');   if (z) z.hidden = false;
@@ -530,6 +548,50 @@
         if (!YAZ.havuz.length) return;
         if (!YAZ.dolu) { yazAcikla(); return; }
         yazIleri();
+    }
+
+    /* ---- geri sayım dairesi ---- */
+    function yazSayimDur() {
+        if (YAZ.saat) { clearInterval(YAZ.saat); YAZ.saat = null; }
+    }
+    function yazSayimCiz() {
+        var d = sahne && sahne.querySelector('[data-rol="ihySayim"]');
+        if (!d) return;
+        var sn = Math.max(0, Math.ceil(YAZ.kalanMs / 1000));
+        var oran = Math.max(0, Math.min(1, YAZ.kalanMs / (YAZ_SURE * 1000)));
+        var y = d.querySelector('.ihy-s-yay');
+        if (y) y.style.strokeDashoffset = (YAZ_CEVRE * (1 - oran)).toFixed(1);
+        var t = d.querySelector('.ihy-s-say');
+        if (t) t.textContent = YAZ.durdu ? '❚❚' : sn;
+        d.classList.toggle('ihy-s-az', sn <= 5 && !YAZ.dolu);
+        d.classList.toggle('ihy-s-bitti', YAZ.dolu || sn <= 0);
+        d.classList.toggle('ihy-s-durdu', !!YAZ.durdu);
+    }
+    function yazSayimBaslat() {
+        yazSayimDur();
+        YAZ.kalanMs = YAZ_SURE * 1000; YAZ.durdu = false; YAZ.sonSn = YAZ_SURE;
+        yazSayimCiz();
+        var son = Date.now();
+        /* 100 ms'de bir: daire akıcı boşalsın. Geçen süre saatten
+           ölçülüyor — sekme arkaya atılıp geri gelince kaymasın. */
+        YAZ.saat = setInterval(function () {
+            var simdi = Date.now(), gecen = simdi - son; son = simdi;
+            if (YAZ.durdu || YAZ.dolu) return;
+            YAZ.kalanMs -= gecen;
+            var sn = Math.max(0, Math.ceil(YAZ.kalanMs / 1000));
+            if (sn !== YAZ.sonSn) {
+                YAZ.sonSn = sn;
+                if (sn > 0 && sn <= 5) ses('playCountdown', sn);
+            }
+            yazSayimCiz();
+            if (YAZ.kalanMs <= 0) { yazSayimDur(); ses('playStart'); yazAcikla(); }
+        }, 100);
+    }
+    /* Daireye dokunmak duraklatır / sürdürür. */
+    function yazSayimDuraklat() {
+        if (YAZ.dolu || !YAZ.saat) return;
+        YAZ.durdu = !YAZ.durdu;
+        yazSayimCiz();
     }
 
     function yazIzle() {
@@ -588,6 +650,10 @@
 
     function kacis(s) {
         return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    /* Sesler alfabe.js'te pencereye açılıyor; yoksa sessizce geçilir. */
+    function ses(ad, arg) {
+        try { if (typeof window[ad] === 'function') window[ad](arg); } catch (e) { }
     }
     function tik() {
         if (typeof window.playClick === 'function') { try { window.playClick(); } catch (e) {} }
@@ -1040,6 +1106,7 @@
             /* Yazılan kutuya dokunmak da yeniden yazdırır. */
             if (rol === 'ihyCizgi')   { if (YAZ.dolu && yazAnim) { tik(); yazTekrar(); } return; }
             if (rol === 'ihyIzle')    { tik(); yazIzle(); return; }
+            if (rol === 'ihySayim')   { tik(); yazSayimDuraklat(); return; }
             if (rol === 'ihySonraki') { tik(); yazIlerle(); return; }
             if (rol === 'ihyOnceki')  { tik(); yazGeri();  return; }
             if (rol === 'kapat')   { tik(); kapat(); return; }
@@ -1464,7 +1531,7 @@
     }
     function kapat() {
         if (!katman) return;
-        ihYazilisKapat(); yazAnimDur(); YAZ.dolu = false;
+        ihYazilisKapat(); yazAnimDur(); yazSayimDur(); YAZ.dolu = false;
         katman.hidden = true;
         katman.classList.remove('ak-yaz');
         zamanTemizle(); perdeKapat();
@@ -1742,7 +1809,29 @@
             '#ak-tam .ihy-sag{flex:1 1 42%;min-width:0;display:flex;',
             '  flex-direction:column;align-items:flex-start;justify-content:center;',
             '  gap:1.2vh;text-align:start}',
+            '#ak-tam .ihy-ust{display:flex;align-items:center;gap:clamp(10px,1.4vw,26px)}',
             '#ak-tam .ihy-sag .ak-sayac{font-size:clamp(16px,2.6vh,34px)}',
+            /* ---- 15 saniyelik geri sayım dairesi (14.10.2026) ---- */
+            '#ak-tam .ihy-sayim{position:relative;flex:none;cursor:pointer;',
+            '  width:clamp(72px,13vh,150px);height:clamp(72px,13vh,150px);',
+            '  -webkit-user-select:none;user-select:none}',
+            '#ak-tam .ihy-sayim svg{width:100%;height:100%;display:block;',
+            '  transform:rotate(-90deg)}',
+            '#ak-tam .ihy-s-iz{fill:none;stroke:#e3eff0;stroke-width:9}',
+            '#ak-tam .ihy-s-yay{fill:none;stroke:#16A085;stroke-width:9;',
+            '  stroke-linecap:round;stroke-dasharray:' + YAZ_CEVRE.toFixed(1) + ';',
+            '  stroke-dashoffset:0;transition:stroke .35s ease}',
+            '#ak-tam .ihy-s-say{position:absolute;inset:0;display:flex;',
+            '  align-items:center;justify-content:center;line-height:1;',
+            '  font-size:clamp(24px,4.6vh,54px);color:#0E6655}',
+            '#ak-tam .ihy-sayim.ihy-s-az .ihy-s-yay{stroke:#E67E22}',
+            '#ak-tam .ihy-sayim.ihy-s-az .ihy-s-say{color:#C0560C}',
+            '#ak-tam .ihy-sayim.ihy-s-az{animation:ihySayNabiz 1s ease-in-out infinite}',
+            '#ak-tam .ihy-sayim.ihy-s-durdu{animation:none}',
+            '#ak-tam .ihy-sayim.ihy-s-durdu .ihy-s-say{font-size:clamp(16px,3vh,34px);color:#7b8b97}',
+            '#ak-tam .ihy-sayim.ihy-s-bitti{opacity:.4;animation:none;cursor:default}',
+            '#ak-tam .ihy-sayim.ihy-s-bitti .ihy-s-yay{stroke:#cbd5dd}',
+            '@keyframes ihySayNabiz{50%{transform:scale(1.06)}}',
             '#ak-tam .ihy-soru{font-size:clamp(30px,8.2vh,112px);line-height:1.16;',
             '  padding:0;text-align:start;width:100%}',
             '#ak-tam .ihy-duzen .ihy-bos{font-size:clamp(56px,13vh,160px)}',

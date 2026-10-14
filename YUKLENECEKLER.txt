@@ -9584,3 +9584,20 @@ göründüğü doğrulandı (1 / 24).
   • Dar ya da dik ekranda (telefon) alt alta: istek üstte, tahta altta.
   Dosyalar: okumayazma/alfabe_akordiyon.js (alfabe.html ?v=24)
   Yedek: _kaynak/yedekler/20261014-ihy-ilerleme-tusu/
+
+14.10.2026 — İstenen Harfi Yaz: 15 saniyelik geri sayım dairesi + ses
+  Öğretmen: "her harf 15 saniye geri sayım ekleyelim, daire olsun geri
+  sayım", "ses te ekleyelim".
+  • Sağ sütunda, sayacın yanında bir halka: içinde kalan saniye, halka
+    boşaldıkça eriyor (100 ms'de bir, saatten ölçülerek — sekme arkaya
+    atılınca kaymıyor).
+  • Süre bitince cevap KENDİLİĞİNDEN yazılıyor; öğretmen daha önce
+    «Cevabı göster»e basarsa sayım orada donuyor (halka soluklaşır).
+  • Daireye dokunmak duraklatır / sürdürür (sınıfta söz araya girerse).
+  • Ses: son 5 saniyede tik (playCountdown, gitgide tizleşir), bitişte
+    kısa çıkış sesi (playStart). Sesler alfabe.js'ten geliyor; yoksa
+    sessizce geçiliyor.
+  • Son 5 saniyede halka turuncuya dönüyor ve hafifçe nabız atıyor.
+  • Başlık altı not: "Sor · 15 sn düşünsünler · yazılışı açılır".
+  Dosyalar: okumayazma/alfabe_akordiyon.js (alfabe.html ?v=25)
+  Yedek: _kaynak/yedekler/20261014-ihy-ilerleme-tusu/
