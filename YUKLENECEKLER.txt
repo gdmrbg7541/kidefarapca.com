@@ -9905,3 +9905,57 @@ göründüğü doğrulandı (1 / 24).
     kaymıyor. Ölçtüm: elif ve hemze sekmelerinde kart dikey kaydırmasız,
     kutu yüksekliği 300 px (harflerdekiyle aynı), şerit yatay kayıyor.
   Dosyalar: okumayazma/alfabe_harf_detay.js · okumayazma/alfabe.css
+
+14.10.2026 — şeritte büyütme, kaydırma okları, elifin ortadaki biçimi
+  Öğretmen: "hemzede de bi harfe tıklayınca büyüsün, ayrıca yatay scroll için
+  ok olsun tıklayarak ta gezilebilsin" · "elifin ortadaki yazılışına da örnek
+  ekle, başta yazılamayacağını yazılırsa hemze olması gerektiğini belirt".
+  · Hemze şeridinde bir kutuya dokununca o yazılış harflerdeki gibi büyüyor,
+    ötekiler küçülüyor; altta kürsünün kuralı ve o biçimin örnek kelimesi
+    açılıyor. Aynı kutuya yeniden dokunmak şeride döndürüyor.
+  · Şeridin iki ucunda ok düğmeleri: bir öbek kaydırıyor, uçta sönüyorlar,
+    şerit kaymıyorsa hiç çıkmıyorlar (harflerde görünmezler).
+  · Elifin ORTADAKİ biçimine üç örnek eklendi (kitap · dedi · ateş) — elif
+    soluna bitişmese de kelime ortasında bolca geçiyor.
+  · Elifin BAŞTAKİ biçiminde artık harfe özel not var: elif kelime başında
+    bu biçimde yazılmaz, baştaki elif daima hemze taşır; tek ayrıksı durum
+    elif-i vasldır. (Boş biçimler için HARF_ORNEK_NOT eklendi; başka harfe
+    de not yazılabilir.)
+  Dosyalar: okumayazma/alfabe_harf_detay.js · okumayazma/alfabe.css ·
+            okumayazma/alfabe_harf_ornek.js
+
+14.10.2026 — alt şerit kutularına konu penceresi (tâ-i merbûta dönüşümlü)
+  Öğretmen: "aşağıda tayı marbuta, uzatma harfleri, cezim şedde tenvin ve
+  harekelere tıklayınca da konu popup olsun, hem konu özet anlatımı tarzında
+  hem bilgi şeklinde olsun" · "3 satırda tekillerde ikillerde ve cemi müennese
+  dönüşümünü dönüşüm animasyonuyla örnekle".
+  · Alfabe sayfasının altındaki beş kutu (Harekeler · Tenvin · Cezim-Şedde ·
+    Uzatma harfleri · Tâ-i Merbûta) artık tıklanıyor; her biri bir konu
+    penceresi açıyor: KONU ANLATIMI (akıcı anlatım), BİLGİ KARTI (maddeler),
+    ÖRNEKLER (üç kelime).
+  · Tâ-i merbûtada ayrıca DÖNÜŞÜM bölümü: üç satırda tekil → ikil → cemi
+    müennes. Gövde yerinde durur, yalnız son değişir: kapalı te kırmızıya
+    dönüp küçülerek kaybolur, yerine yeni son yeşil büyüyerek gelir
+    (مُعَلِّمَة → مُعَلِّمَتَانِ → مُعَلِّمَات). "Dönüşümü tekrar izle" tuşu var.
+  · Metinlerin tamamı üretilen dosyada; Arapça kelimeler kod noktalarından
+    kuruluyor, elle yazılmıyor. Yeni konu eklemek için üreticiye bir giriş
+    yazmak yetiyor (kutunun adı anahtarla aynı olsun).
+  DENENDİ: beş kutunun hepsi data-konu alıyor, pencere açılıyor, dönüşüm
+  animasyonu üç satırda akıyor, Esc/çarpı/dışına tıklama kapatıyor.
+  Harf birleşmesi bölünmüş span'larda da bozulmuyor (genişlik ölçüldü: aynı).
+  Dosyalar: alfabe.html · okumayazma/alfabe.js · okumayazma/alfabe.css ·
+            okumayazma/alfabe_konu.js (YENİ) ·
+            okumayazma/alfabe_konu_veri.js (YENİ, üretilen)
+  Üretici (_kaynak, git'e gitmez): _kaynak/uretici/konuAnlatim.py
+
+14.10.2026 — DÜZELTME: "Hemze / Elif" anahtarı bütün harflerde görünüyordu
+  Öğretmen: "diğer harflerde de elif ve hemze yazıyor, bu çok büyük bi hata."
+  Sebep: #hd-sekme'ye display:flex verilmişti; CSS'teki display, HTML'in
+  hidden niteliğini eziyor. Anahtar JS'te gizleniyordu (element.hidden = true)
+  ama ekranda duruyordu. Ben de yalnız .hidden özelliğini ölçtüğüm için
+  denemede yakalayamamıştım.
+  Çözüm: #hd-sekme[hidden] ve #hd-cols[hidden] için display:none kuralı.
+  DENETİM: artık her harf açılırken karttaki hidden nitelikli BÜTÜN ögelerin
+  hesaplanmış display değeri ölçülüyor; Be, Ḥa, Şın, Kef, Ye ve elifte tek
+  bir sapma yok — anahtar yalnız elifte çıkıyor.
+  Dosya: okumayazma/alfabe.css

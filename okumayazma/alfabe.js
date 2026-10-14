@@ -953,7 +953,12 @@ function altSeridiKur() {
     const alt = document.getElementById('g1alt');
     if (!alt) return;
     alt.innerHTML = ALT_KUTULAR.map(k =>
-        `<div class="as-kutu${k.genis ? ' as-genis' : ''}${k.kls ? ' ' + k.kls : ''}">`
+        /* KONU PENCERESİ (14.10.2026, Geylani): anlatımı olan kutu tıklanabilir;
+           metinler okumayazma/alfabe_konu_veri.js, pencere alfabe_konu.js. */
+        `<div class="as-kutu${k.genis ? ' as-genis' : ''}${k.kls ? ' ' + k.kls : ''}`
+        + `${(typeof KONU_ANLATIM !== 'undefined' && KONU_ANLATIM[k.ad]) ? ' as-tiklanir' : ''}"`
+        + `${(typeof KONU_ANLATIM !== 'undefined' && KONU_ANLATIM[k.ad])
+             ? ` data-konu="${k.ad}" role="button" tabindex="0" title="${k.ad} — konu anlatımını aç"` : ''}>`
         + `<div class="as-baslik">${k.ad}</div>`
         + `<div class="as-liste">`
         + k.ogeler.map(o => `<div class="as-oge${k.kesik ? ' as-oge-kesik' : ''}${o.kls ? ' ' + o.kls : ''}" title="${o.ad}">`
@@ -961,6 +966,7 @@ function altSeridiKur() {
             + `<span class="as-harf">${o.g}</span></div>`).join('')
         + '</div></div>'
     ).join('');
+    try { if (window.KidefKonu) KidefKonu.bagla(); } catch (e) { }
 }
 
 /* ============================================================

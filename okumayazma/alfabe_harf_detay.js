@@ -204,7 +204,13 @@ const harfDetay = {
                         <button type="button" data-hiz="4" title="Çok hızlı">5</button>
                     </div>
                 </div>
-                <div id="hd-cols" dir="rtl"></div>
+                <div id="hd-serit">
+                    <button class="hd-serit-ok hd-ok-sol" id="hd-ok-sol" type="button"
+                            title="Sola kaydır" aria-label="Sola kaydır" hidden>&#8249;</button>
+                    <div id="hd-cols" dir="rtl"></div>
+                    <button class="hd-serit-ok hd-ok-sag" id="hd-ok-sag" type="button"
+                            title="Sağa kaydır" aria-label="Sağa kaydır" hidden>&#8250;</button>
+                </div>
                 <div id="hd-tek-ornek" hidden></div>
                 <div class="hd-sec hd-sec-yazilis" id="hd-aciklama">
                     <div class="hd-sec-title">
@@ -242,6 +248,14 @@ const harfDetay = {
            kalır; alttaki kutu sayfa sayfa gezilir, pencere uzamaz. */
         document.getElementById('hd-ac-geri').onclick = () => harfDetay.aciklamaKaydir(-1);
         document.getElementById('hd-ac-ileri').onclick = () => harfDetay.aciklamaKaydir(1);
+        /* ŞERİT OKLARI (14.10.2026, Geylani: "yatay scroll için ok olsun,
+           tıklayarak da gezilebilsin"). Tahtada parmakla kaydırmak her zaman
+           kolay olmuyor; oklar bir kutu öbeği kadar kaydırır, uçta sönerler. */
+        document.getElementById('hd-ok-sol').onclick = () => harfDetay.seritKaydir(-1);
+        document.getElementById('hd-ok-sag').onclick = () => harfDetay.seritKaydir(1);
+        document.getElementById('hd-cols').addEventListener('scroll', function () {
+            harfDetay.seritOkGuncelle();
+        }, { passive: true });
         /* Hemze şeridi yatay kayar; farede dikey tekerlek de yatay kaydırsın. */
         document.getElementById('hd-cols').addEventListener('wheel', function (e) {
             if (!this.classList.contains('hd-yatay')) return;
@@ -366,8 +380,9 @@ const harfDetay = {
         }
         this.aciklamaKur(sayfalar);
         const cols = document.getElementById('hd-cols');
-        cols.classList.remove('hd-yatay');
+        cols.classList.remove('hd-yatay', 'hz-odak');
         cols.hidden = false;
+        this.seritOkGuncelle();
         cols.innerHTML = '';
         this.anims = [];
         this.FORM_META.forEach((fm, fi) => {
@@ -467,15 +482,13 @@ const harfDetay = {
                 box.className = 'hd-col-box';
                 const anim = this.buildSvg(veri, renk[bc.form] || '#1e293b');
                 box.appendChild(anim.svg);
-                box.title = 'Bu yazılışı tekrar izlemek için tıkla';
-                /* Tek kutuya dokunulunca ekranda tek kalem kalsın: sıra durur,
-                   öbür kutular tamamlanmış hâlleriyle bekler. */
+                box.title = 'Büyütmek için tıkla';
+                /* Harflerdeki gibi: dokunulan yazılış büyür, ötekiler küçülür;
+                   aynı kutuya yeniden dokunmak şeride döndürür. */
+                const sira = this.anims.length;
                 box.onclick = () => {
-                    this.stopAll();
-                    (this.anims || []).forEach((a) => this.doldur(a));
-                    this.yazanIsaretle(-1);
-                    this.sifirla(anim);
-                    this.playForm(anim, true, true);
+                    if (this.odakIdx === sira) this.tekKapat();
+                    else this.hemzeOdak(sira, g, bc);
                 };
                 const orn = document.createElement('div');
                 orn.className = 'hz-ornek';
@@ -495,6 +508,7 @@ const harfDetay = {
             });
         });
         cols.scrollLeft = 0;
+        this.timers.push(setTimeout(() => this.seritOkGuncelle(), 60));
 
         /* Kürsü kuralları ve özellikler alttaki açıklama kutusunda, oklarla. */
         this.aciklamaKur([
@@ -506,6 +520,114 @@ const harfDetay = {
             { baslik: '\uD83D\uDCCC Hemzenin özellikleri',
               liste: B.ozellikler.map(function (o) { return { metin: o }; }) }
         ]);
+    },
+
+    /* ===== YATAY ŞERİT: OKLAR VE ODAK ================================
+       Hemze sekmesinde on iki yazılış tek şeritte duruyor. Oklar bir öbek
+       kaydırır; bir kutuya dokununca o kutu büyür (harflerdeki gibi), altında
+       kürsünün kuralı ve örnek kelimesi açılır. */
+    seritAdim: function () {
+        const cols = document.getElementById('hd-cols');
+        return Math.max(180, (cols ? cols.clientWidth : 600) * 0.72);
+    },
+    seritKaydir: function (yon) {
+        const cols = document.getElementById('hd-cols');
+        if (!cols) return;
+        if (typeof playClick === 'function') playClick();
+        cols.scrollBy({ left: yon * this.seritAdim(), behavior: 'smooth' });
+        this.timers.push(setTimeout(() => this.seritOkGuncelle(), 420));
+    },
+    /* Seçilen kutuyu şeridin ortasına getirir. */
+    seritOrtala: function (i) {
+        const cols = document.getElementById('hd-cols');
+        const kutu = cols ? cols.querySelectorAll('.hd-col')[i] : null;
+        if (!cols || !kutu) return;
+        const a = cols.getBoundingClientRect(), b = kutu.getBoundingClientRect();
+        cols.scrollBy({ left: (b.left - a.left) - (a.width - b.width) / 2, behavior: 'smooth' });
+        this.timers.push(setTimeout(() => this.seritOkGuncelle(), 420));
+    },
+    seritOkGuncelle: function () {
+        const cols = document.getElementById('hd-cols');
+        const sol = document.getElementById('hd-ok-sol');
+        const sag = document.getElementById('hd-ok-sag');
+        if (!cols || !sol || !sag) return;
+        const kayar = cols.classList.contains('hd-yatay') &&
+                      cols.scrollWidth > cols.clientWidth + 2;
+        sol.hidden = !kayar; sag.hidden = !kayar;
+        if (!kayar) return;
+        /* Sağdan sola dizilişte scrollLeft 0'dan başlayıp eksiye gider. */
+        const enb = cols.scrollWidth - cols.clientWidth;
+        const rtl = getComputedStyle(cols).direction === 'rtl';
+        const x = cols.scrollLeft;
+        const enAz = rtl ? -enb : 0, enCok = rtl ? 0 : enb;
+        sol.disabled = (x <= enAz + 2);
+        sag.disabled = (x >= enCok - 2);
+    },
+
+    /* Şeritte bir yazılışa dokununca: o kutu büyür, ötekiler küçülür,
+       altta kürsünün kuralı ile örnek kelimesi açılır. Tekrar dokunmak kapatır. */
+    hemzeOdak: function (i, g, bc) {
+        this.stopAll();
+        if (typeof playClick === 'function') playClick();
+        const cols = document.getElementById('hd-cols');
+        const ilkYer = this.flipOlc();
+        this.odakIdx = i;
+        if (cols) cols.classList.add('hz-odak');
+        const kutular = document.querySelectorAll('#hd-cols .hd-col');
+        for (let j = 0; j < kutular.length; j++) {
+            kutular[j].classList.toggle('hd-buyuk', j === i);
+            kutular[j].classList.toggle('hd-kucuk', j !== i);
+        }
+        this.anims.forEach((a, j) => { if (j !== i) this.doldur(a); });
+        const sec = this.anims[i];
+        if (sec) {
+            /* Harf büyük kutuyu doldursun: viewBox kendi sınırlarına kırpılır. */
+            try {
+                if (!sec.vbAsil) sec.vbAsil = sec.svg.getAttribute('viewBox');
+                const hayalet = sec.svg.querySelector('.hd-ghost');
+                const bb = hayalet ? hayalet.getBBox() : null;
+                if (bb && bb.width > 0) {
+                    const pay = Math.max(bb.width, bb.height) * 0.08 + 18;
+                    const y1 = Math.min(bb.y, 400) - pay, y2 = Math.max(bb.y + bb.height, 420) + pay;
+                    sec.svg.setAttribute('viewBox',
+                        (bb.x - pay) + ' ' + y1 + ' ' + (bb.width + pay * 2) + ' ' + (y2 - y1));
+                }
+            } catch (e) { }
+            this.sifirla(sec);
+            this.timers.push(setTimeout(() => this.playForm(sec, false), 460));
+        }
+        this.flipOynat(ilkYer);
+        const oku = document.getElementById('hd-tek-ornek');
+        oku.hidden = false;
+        oku.className = 'hz-tek';
+        oku.innerHTML = '';
+        const kural = document.createElement('div');
+        kural.className = 'hd-tek-kart hz-tek-kural';
+        const bas = document.createElement('div');
+        bas.className = 'hz-tek-bas';
+        const bar = document.createElement('span');
+        bar.className = 'hz-tek-ar'; bar.dir = 'rtl'; bar.innerText = g.ar;
+        const bad = document.createElement('b');
+        bad.innerText = g.ad + ' · ' + bc.etiket;
+        bas.appendChild(bar); bas.appendChild(bad);
+        const met = document.createElement('div');
+        met.className = 'hz-tek-metin'; met.innerText = g.kural;
+        kural.appendChild(bas); kural.appendChild(met);
+        oku.appendChild(kural);
+        const kelime = document.createElement('div');
+        kelime.className = 'hd-tek-kart';
+        if (bc.ornek && bc.ornek.ar) {
+            const ka = document.createElement('span');
+            ka.className = 'hd-tek-ar'; ka.dir = 'rtl'; ka.innerText = bc.ornek.ar;
+            kelime.appendChild(ka);
+        }
+        if (bc.ornek && bc.ornek.tr) {
+            const kt = document.createElement('span');
+            kt.className = 'hd-tek-tr'; kt.innerText = bc.ornek.tr;
+            kelime.appendChild(kt);
+        }
+        oku.appendChild(kelime);
+        this.timers.push(setTimeout(() => this.seritOrtala(i), 60));
     },
 
     /* ===== ALT AÇIKLAMA SAYFALARI =====================================
@@ -1101,11 +1223,18 @@ const harfDetay = {
         const oku = document.getElementById('hd-tek-ornek');
         oku.hidden = false;
         if (!liste.length) {
-            oku.innerHTML = '<div class="hd-tek-bos">' +
-                (bitismez && (fm.key === 'b' || fm.key === 'o')
-                    ? h.tr + ' soluna bitişmez: kelimede bu biçimde yazılmaz, ' +
-                      '<b>yalın</b> ya da <b>sondaki</b> biçimiyle görünür.'
-                    : 'Bu biçim için örnek kelime eklenmedi.') + '</div>';
+            /* Harfe özel not varsa o gösterilir (elifin baştaki biçimi gibi). */
+            const ozelNot = (typeof HARF_ORNEK_NOT !== 'undefined' && HARF_ORNEK_NOT[h.h])
+                ? HARF_ORNEK_NOT[h.h][fm.key] : null;
+            const kutu = document.createElement('div');
+            kutu.className = 'hd-tek-bos';
+            if (ozelNot) kutu.innerText = ozelNot;
+            else if (bitismez && (fm.key === 'b' || fm.key === 'o')) {
+                kutu.innerText = h.tr + ' soluna bitişmez: kelimede bu biçimde yazılmaz, ' +
+                    'yalın ya da sondaki biçimiyle görünür.';
+            } else kutu.innerText = 'Bu biçim için örnek kelime eklenmedi.';
+            oku.innerHTML = '';
+            oku.appendChild(kutu);
         } else {
             oku.innerHTML = liste.map(function (o) {
                 return '<div class="hd-tek-kart">'
@@ -1118,11 +1247,11 @@ const harfDetay = {
 
     tekKapat: function () {
         const oku = document.getElementById('hd-tek-ornek');
-        if (oku) { oku.hidden = true; oku.innerHTML = ''; }
+        if (oku) { oku.hidden = true; oku.innerHTML = ''; oku.className = ''; }
         const cols = document.getElementById('hd-cols');
         const geri = this.odakIdx >= 0;
         const ilkYer = geri ? this.flipOlc() : null;
-        if (cols) { cols.classList.remove('hd-odakli'); cols.style.gridTemplateColumns = ''; }
+        if (cols) { cols.classList.remove('hd-odakli', 'hz-odak'); cols.style.gridTemplateColumns = ''; }
         const kutular = document.querySelectorAll('#hd-cols .hd-col');
         for (let j = 0; j < kutular.length; j++) {
             kutular[j].classList.remove('hd-buyuk', 'hd-kucuk');
@@ -1132,6 +1261,7 @@ const harfDetay = {
         });
         if (ilkYer) this.flipOynat(ilkYer);
         this.odakIdx = -1;
+        this.timers.push(setTimeout(() => this.seritOkGuncelle(), 60));
         if (geri) this.timers.push(setTimeout(() => this.animate(), this.ODAK_SURE * 0.55));
     },
 

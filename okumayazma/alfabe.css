@@ -750,6 +750,12 @@
             gap: clamp(9px, 1.4vw, 26px); min-height: 0; min-width: 0;
         }
         /* üç ögeli kutular (harekeler / tenvin) tek satırda rahat sığsın */
+        /* Konu anlatımı olan kutu tıklanabilir (14.10.2026). */
+        .as-kutu.as-tiklanir { cursor: pointer; transition: transform .16s ease,
+            box-shadow .16s ease, border-color .16s ease; }
+        .as-kutu.as-tiklanir:hover { transform: translateY(-2px); border-color: #16A085;
+            box-shadow: 0 8px 18px rgba(22,160,133,.18); }
+        .as-kutu.as-tiklanir:focus-visible { outline: 3px solid #16A085; outline-offset: 2px; }
         .as-kutu.as-genis { flex: 1.5; }
         .as-kutu.as-genis .as-liste { gap: clamp(16px, 2vw, 40px); }
         .as-oge { display: flex; align-items: center; justify-content: center; min-width: 0; }
@@ -2870,6 +2876,11 @@ body.nav-kenar:not(.nav-kapali) #navKol svg { transform: rotate(180deg); }
            tuşlarıyla aynıdır (Geylani isteği). */
         /* Hemze sekmesinde sıra numarası yok: boş yuvarlak kalmasın. */
         #hd-no[hidden] { display: none; }
+        /* DİKKAT: display veren kural, HTML'in hidden niteliğini ezer. Anahtar
+           yalnız elifte çıkmalı — öbür harflerde "Hemze / Elif" görünmesin
+           (Geylani, 14.10.2026: "bu çok büyük bi hata"). */
+        #hd-sekme[hidden] { display: none !important; }
+        #hd-cols[hidden] { display: none !important; }
         #hd-sekme { display: flex; justify-content: center; align-items: center; gap: 10px; }
         #hd-sekme button {
             font-family: 'arakom'; font-size: 1.5rem; line-height: 1; font-weight: bold;
@@ -2884,6 +2895,23 @@ body.nav-kenar:not(.nav-kapali) #navKol svg { transform: rotate(180deg); }
         }
         /* Anahtar varken harfin adı zaten tuşun üstünde yazıyor. */
         #hd-card:has(#hd-sekme:not([hidden])) #hd-name { display: none; }
+
+        /* ŞERİT SARMALI VE OKLARI: kutular şeridin içinde kayar, oklar üstte
+           durur; uçlara gelince sönerler (Geylani 14.10.2026). */
+        #hd-serit { position: relative; display: flex; flex: 1 1 auto;
+            min-height: 0; min-width: 0; }
+        #hd-serit > #hd-cols { flex: 1 1 auto; min-width: 0; }
+        .hd-serit-ok { position: absolute; top: 50%; transform: translateY(-50%);
+            z-index: 6; width: 48px; height: 48px; flex: 0 0 auto;
+            border-radius: 999px; border: 2px solid #E3EAF2; cursor: pointer;
+            background: rgba(255,255,255,.95); color: #117A65;
+            font-family: 'arakom'; font-size: 1.8rem; line-height: 1;
+            box-shadow: 0 6px 16px rgba(23,33,48,.18); transition: all .2s ease; }
+        .hd-serit-ok:hover { background: #E6FAF5; border-color: #16A085; }
+        .hd-serit-ok[disabled] { opacity: .25; cursor: default; box-shadow: none; }
+        .hd-serit-ok[hidden] { display: none; }
+        .hd-ok-sol { left: -10px; }
+        .hd-ok-sag { right: -10px; }
 
         /* HEMZE ŞERİDİ: kutular harf büyütecindeki ölçüde, dördü ekranda,
            gerisi yatay kaydırılarak gelir (Geylani 14.10.2026). */
@@ -2904,6 +2932,19 @@ body.nav-kenar:not(.nav-kapali) #navKol svg { transform: rotate(180deg); }
         .hz-o-ar { font-family: 'arakom'; font-size: 1.5rem; color: #117A65; line-height: 1.2; }
         .hz-o-tr { font-size: .9rem; color: #7b8a99; }
 
+        /* ŞERİTTE ODAK: dokunulan yazılış büyür, ötekiler küçülür. */
+        #hd-cols.hd-yatay.hz-odak .hd-col { flex: 0 0 calc(11% - 10px); }
+        #hd-cols.hd-yatay.hz-odak .hd-col.hd-buyuk { flex: 0 0 calc(52% - 10px); }
+        .hd-col.hd-kucuk .hz-ornek { display: none; }
+        .hd-col.hd-kucuk .hz-k { display: none; }
+        /* Odakta açılan şerit: solda kürsünün kuralı, sağda örnek kelime. */
+        #hd-tek-ornek.hz-tek { display: grid; grid-template-columns: 1.7fr 1fr; gap: 14px; }
+        .hz-tek-kural { align-items: flex-start; text-align: start; }
+        .hz-tek-bas { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+        .hz-tek-ar { font-family: 'arakom'; font-size: 2rem; color: #117A65; line-height: 1; }
+        .hz-tek-bas b { font-size: 1.15rem; color: var(--primary); }
+        .hz-tek-metin { font-size: 1rem; color: #475569; line-height: 1.45; }
+
         /* ALT AÇIKLAMA SAYFALARI: başlık satırında oklar ve sayfa sayacı. */
         #hd-aciklama .hd-sec-title { display: flex; align-items: center; gap: 10px; }
         #hd-ac-bas { flex: 1 1 auto; min-width: 0; }
@@ -2923,6 +2964,10 @@ body.nav-kenar:not(.nav-kapali) #navKol svg { transform: rotate(180deg); }
         @media (max-width: 768px) {
             #hd-sekme button { font-size: 1.15rem; padding: 7px 18px; }
             #hd-cols.hd-yatay .hd-col { flex: 0 0 calc(50% - 8px); }
+            #hd-cols.hd-yatay.hz-odak .hd-col { flex: 0 0 calc(18% - 8px); }
+            #hd-cols.hd-yatay.hz-odak .hd-col.hd-buyuk { flex: 0 0 calc(70% - 8px); }
+            .hd-serit-ok { width: 38px; height: 38px; font-size: 1.4rem; }
+            #hd-tek-ornek.hz-tek { grid-template-columns: 1fr; }
             .hz-o-ar { font-size: 1.2rem; }
             .hd-ac-ok { width: 34px; height: 34px; font-size: 1.2rem; }
         }
