@@ -827,7 +827,8 @@
         var yuva = bolum.querySelector('.sn-okul');
         if (!yuva) return;
         try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = false; } catch (e) { }
-        yuva.innerHTML = '<div id="llOkulPopup" class="sn-okul-ici sn-onizle"' +
+        yuva.innerHTML = davetSerit() +
+            '<div id="llOkulPopup" class="sn-okul-ici sn-onizle"' +
             ' onclick="KidefSiniflarim.girisTavsiye()">' + onizlemeIc() + '</div>';
         bolum.__govde = 'onizle';
         gosterildi = false;            /* bu önizleme; çıkış nabzı silmesin */
@@ -839,10 +840,18 @@
         /* ÖĞRENCİDE BÖLÜM HİÇ YOK (08.10.2026) — öğretmen: "öğrenciler için
            ASLA sınıflarım kategorisi çıkmasın". Boş kurum önizlemesi bile
            görünmesin diye bölüm tümden kapatılıyor. */
-        /* Oturum AÇIK ama öğretmen değilse de kapalı: rolü henüz
-           çözülmemiş bir hesaba davet önizlemesi bile gösterilmez.
-           Giriş YAPMAMIŞ ziyaretçide önizleme eskisi gibi duruyor. */
-        if (ogrenciMi() || (oturumVarMi() && !ogretmenMi())) {
+        /* KATEGORİ HER ZAMAN DURUR (14.10.2026) — öğretmen: "sınıflarım
+           kategorisi her zaman görünmeli, giriş yapılmamışsa girişi veya
+           kayıt olmayı teşvik etmeli, bazen görünmüyor o kategori."
+           ESKİDEN: oturum açıksa ama rol 'teacher' değilse bölüm tümden
+           kapatılıyordu. Rol Firestore'dan ASENKRON geliyor; giriş yapmış
+           bir öğretmende rol gelene kadar (bazen hiç gelmeyince) kategori
+           yok oluyordu — "bazen görünmüyor"un sebebi buydu.
+           ŞİMDİ: yalnız rolü BİLİNEN öğrenci/veli için kapalı. Rolü
+           bilinmeyen ya da öğretmen olmayan herkes en azından davet
+           önizlemesini görür; rol gelince gerçek panele kendiliğinden
+           döner (aşağıdaki nabız zaten yokluyor). */
+        if (ogrenciMi()) {
             bolum.classList.remove('gor', 'sn-salt');
             try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = false; } catch (e) { }
             bolum.__govde = null;
@@ -976,6 +985,48 @@
         '<polyline points="10 17 15 12 10 7"/>' +
         '<line x1="15" y1="12" x2="3" y2="12"/></svg>';
 
+    /* ÖNİZLEMENİN ÜSTÜNDEKİ DAVET ŞERİDİ (14.10.2026)
+       Öğretmen: "giriş yapılmamışsa girişi veya kayıt olmayı teşvik
+       etmeli." Eskiden davet yalnız önizlemeye TIKLAYINCA çıkıyordu;
+       artık şerit hep görünür ve iki tuşu var. Giriş yapmış ama öğretmen
+       olmayan kullanıcıda tuşlar yok, yalnız kısa bir açıklama var. */
+    function davetSerit() {
+        if (misafirMi()) {
+            return '<div class="sn-davet">' +
+                '<div class="sn-davet-yazi"><b>Kendi sınıflarını buraya kur</b>' +
+                '<span>Giriş yapınca kurduğun kurum, seviye ve sınıflar hesabına ' +
+                'kaydedilir; telefondan da bilgisayardan da aynı sınıfları açarsın. ' +
+                'Girişsiz kurulanlar yalnız bu tarayıcıda kalır.</span></div>' +
+                '<div class="sn-davet-tus">' +
+                '<button type="button" class="sn-dt sn-dt-giris" ' +
+                'onclick="event.stopPropagation(); KidefSiniflarim.girisAc()">' +
+                GIRIS_SVG + '<span>Giriş Yap</span></button>' +
+                '<button type="button" class="sn-dt sn-dt-kayit" ' +
+                'onclick="event.stopPropagation(); KidefSiniflarim.kayitAc()">Kayıt Ol</button>' +
+                '</div></div>';
+        }
+        return '<div class="sn-davet sn-davet-sade">' +
+            '<div class="sn-davet-yazi"><b>Burası öğretmen sınıfları için</b>' +
+            '<span>Hesabın öğretmen olarak tanımlandığında buradaki okul kendi ' +
+            'kurumların ve sınıflarınla dolar.</span></div></div>';
+    }
+
+    function girisAc() {
+        try { if (typeof window.showLoginModal === 'function') window.showLoginModal(); } catch (e) { }
+    }
+    /* Kayıt: giriş penceresi açılır, kipi "Kayıt Ol"a çevrilir. Pencere
+       zaten kayıt kipindeyse dokunulmaz (düğmenin yazısından anlaşılıyor). */
+    function kayitAc() {
+        girisAc();
+        setTimeout(function () {
+            try {
+                var b = document.getElementById('auth-action-btn');
+                if (b && /Giriş/i.test(b.innerText || '') &&
+                    typeof window.moduDegistir === 'function') window.moduDegistir();
+            } catch (e) { }
+        }, 80);
+    }
+
     /* Tavsiye — uyarı değil. Kapatması kolay, tek paragraf. */
     function girisTavsiye() {
         if (document.getElementById('snGirisTavsiye')) return;
@@ -1012,6 +1063,7 @@
             (misafirMi()
                 ? ('<button type="button" class="sngt-giris">' + GIRIS_SVG +
                    '<span>Giriş Yap</span></button>' +
+                   '<button type="button" class="sngt-kayit">Hesabın yok mu? Kayıt Ol</button>' +
                    '<p class="sngt-nerede">Bu tuş sayfanın sağ üst köşesinde de ' +
                    'duruyor</p>')
                 : '') +
@@ -1019,11 +1071,9 @@
             '</div>';
         k.addEventListener('click', function (e) {
             var g = e.target.closest ? e.target.closest('.sngt-giris') : null;
-            if (g) {
-                k.remove();
-                try { if (typeof showLoginModal === 'function') showLoginModal(); } catch (e2) { }
-                return;
-            }
+            if (g) { k.remove(); girisAc(); return; }
+            var ky = e.target.closest ? e.target.closest('.sngt-kayit') : null;
+            if (ky) { k.remove(); kayitAc(); return; }
             if (e.target === k || e.target.classList.contains('sngt-kapat') ||
                 e.target.classList.contains('sngt-tus')) k.remove();
         });
