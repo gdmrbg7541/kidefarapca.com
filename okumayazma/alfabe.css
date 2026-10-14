@@ -2797,7 +2797,10 @@
    ========================================================================== */
 .nav-mini.nm-kenar {
     position: fixed; left: 0; top: 0; bottom: 0; height: 100dvh;
-    width: min(260px, 78vw); max-width: 78vw;
+    /* 14.10.2026 — öğretmen: "side bar yatay olarak daha geniş olsun,
+       dinle yaz satırında sığmıyor." Sekme adı + yanındaki Dene/PDF
+       tuşu 260 px'e sığmıyordu. */
+    width: min(320px, 86vw); max-width: 86vw;
     justify-content: flex-start; gap: 7px;
     padding: 12px 12px 14px 10px;
     border-radius: 0 20px 20px 0; border-left: none;
@@ -2854,9 +2857,63 @@ body.nav-kenar:not(.nav-kapali) #navKol svg { transform: rotate(180deg); }
 .nav-mini.nm-yuzen .nm-yapis svg { width: 15px; height: 15px; display: block; }
 
 @media (max-width: 640px) {
-    .nav-mini.nm-kenar { width: min(240px, 84vw); }
+    .nav-mini.nm-kenar { width: min(290px, 90vw); }
     #navKol { width: 26px; height: 66px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .nav-mini.nm-kenar, #navKol { transition: none; }
 }
+
+        /* ===== HEMZE SEKMESİ (14.10.2026) ==============================
+           Elif büyütecinde başlığın yerine geçen "Hemze / Elif" anahtarı ve
+           hemze panosu. Anahtarın görünüşü bilerek "Hepsi birden / Sırayla"
+           tuşlarıyla aynıdır (Geylani isteği). */
+        /* Hemze sekmesinde sıra numarası yok: boş yuvarlak kalmasın. */
+        #hd-no[hidden] { display: none; }
+        #hd-sekme { display: flex; justify-content: center; align-items: center; gap: 10px; }
+        #hd-sekme button {
+            font-family: 'arakom'; font-size: 1.5rem; line-height: 1; font-weight: bold;
+            padding: 10px 30px; border-radius: 999px; cursor: pointer;
+            border: 2px solid #E3EAF2; background: #F7F9FC; color: #7b8a99;
+            transition: all 0.25s ease; user-select: none;
+        }
+        #hd-sekme button:hover { transform: translateY(-2px); }
+        #hd-sekme button.hd-kip-acik {
+            background: var(--danger); color: #fff; border-color: transparent;
+            box-shadow: 0 4px 10px rgba(0,0,0,.14);
+        }
+        /* Anahtar varken harfin adı zaten tuşun üstünde yazıyor. */
+        #hd-card:has(#hd-sekme:not([hidden])) #hd-name { display: none; }
+
+        #hd-hemze { display: flex; flex-direction: column; gap: 14px; }
+        .hz-ozet { font-size: 1.15rem; color: #334155; line-height: 1.5;
+            background: #F2FBF8; border: 1px solid #CFEFE6; border-radius: 14px;
+            padding: 12px 16px; }
+        .hz-grup { background: #fff; border-radius: 18px; padding: 14px 18px;
+            box-shadow: var(--shadow-sm); border-left: 6px solid #16A085; }
+        .hz-bas { display: flex; align-items: center; gap: 12px; }
+        .hz-bas-ar { font-family: 'arakom'; font-size: 2.4rem; color: #117A65; line-height: 1; }
+        .hz-bas-ad { font-size: 1.35rem; font-weight: bold; color: var(--primary); }
+        .hz-kural { font-size: 1.05rem; color: #475569; line-height: 1.45; margin: 6px 0 10px; }
+        /* Kutular ortalanır: bir grupta 1-2 biçim varsa şerit sağa yapışmasın. */
+        .hz-kutular { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+        .hz-kutular .hd-col { flex: 0 1 calc(25% - 11px); min-width: 120px; }
+        .hz-kutular .hd-col-box { min-height: 118px; max-height: 190px; }
+        .hz-ornek { display: flex; align-items: baseline; justify-content: center;
+            gap: 8px; flex-wrap: wrap; text-align: center; }
+        .hz-o-ar { font-family: 'arakom'; font-size: 1.7rem; color: #117A65; line-height: 1.2; }
+        .hz-o-tr { font-size: .95rem; color: #7b8a99; }
+        .hz-ozellik-bas { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
+        .hz-ozellik { margin: 0; padding-inline-start: 22px; display: grid; gap: 7px; }
+        .hz-ozellik li { font-size: 1.05rem; color: #334155; line-height: 1.45; }
+        .hd-sec-med { border-left-color: #E67E22; }
+        /* Odakta (bir biçim büyütülünce) med notu da gizlenir: yer harfe kalsın. */
+        #hd-card:has(#hd-tek-ornek:not([hidden])) .hd-sec-med { display: none; }
+        @media (max-width: 768px) {
+            #hd-sekme button { font-size: 1.15rem; padding: 7px 18px; }
+            .hz-kutular .hd-col { flex: 0 1 calc(50% - 7px); }
+            .hz-bas-ar { font-size: 1.9rem; }
+            .hz-bas-ad { font-size: 1.1rem; }
+            .hz-kural, .hz-ozellik li, .hz-ozet { font-size: .95rem; }
+            .hz-o-ar { font-size: 1.35rem; }
+        }

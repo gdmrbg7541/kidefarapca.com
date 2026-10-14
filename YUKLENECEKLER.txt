@@ -9790,3 +9790,70 @@ göründüğü doğrulandı (1 / 24).
     ekran zaten bunu açıklıyor.
   Dosya: okumayazma/alfabe_harf_ornek.js
   Yedek: _kaynak/yedekler/20261014-harf-ornek-eksik/
+
+14.10.2026 — "Sınıflarım" kategorisi her zaman görünür + giriş/kayıt daveti
+  Öğretmen: "sınıflarım kategorisi her zaman görünmeli, giriş yapılmamışsa
+  girişi veya kayıt olmayı teşvik etmeli, bazen görünmüyor o kategori."
+  SEBEP BULUNDU: ciz() içinde
+      if (ogrenciMi() || (oturumVarMi() && !ogretmenMi())) { ...bölümü kapat... }
+  Rol Firestore'dan ASENKRON geliyor. Giriş yapmış bir öğretmende rol
+  gelene kadar — bazen hiç gelmeyince — kategori tümden yok oluyordu.
+  "Bazen görünmüyor"un sebebi buydu.
+  ÇÖZÜM: artık yalnız rolü BİLİNEN öğrenci/veli için kapalı (eski
+  "öğrenciye asla çıkmasın" kuralı korundu). Rolü bilinmeyen ya da
+  öğretmen olmayan herkes en azından davet önizlemesini görüyor; rol
+  gelince gerçek panele kendiliğinden dönüyor.
+  TEŞVİK:
+   · Başlıkta küçük bir "Giriş yap / Kayıt ol" hapı — kategori kapalıyken
+     de duruyor (kategori sayfa yenilenince kapalı başlıyor, 07.10 kuralı).
+   · Önizlemenin üstünde davet şeridi: kısa açıklama + Giriş Yap + Kayıt Ol.
+   · Tavsiye penceresine de "Hesabın yok mu? Kayıt Ol" eklendi.
+   · Kayıt tuşu giriş penceresini açıp kipini "Kayıt Ol"a çeviriyor.
+   · Öğretmen paneline geçilince davet şeridi kalkıyor.
+  DENENDİ: ziyaretçi (hap + şerit + iki tuş), rolü bilinmeyen oturum
+  (görünür kalıyor — eski hata), öğrenci (gizli), öğretmen (gerçek panel,
+  davet yok).
+  Dosya: sistem/siniflarim.js
+  Yedek: _kaynak/yedekler/20261014-siniflarim-gorunur/
+
+14.10.2026 — alfabe.html kenar çubuğu genişletildi
+  Öğretmen: "side bar yatay olarak daha geniş olsun, dinle yaz satırında
+  sığmıyor." 260 px → 320 px (dar ekranda 240 → 290). "Dinle ve Yaz"
+  satırındaki PDF ve Dene tuşları artık tek satıra sığıyor; ölçtüm,
+  hiçbir sekmede taşma yok.
+  Dosya: okumayazma/alfabe.css
+
+14.10.2026 — alfabe.html büyütecine HEMZE sekmesi
+  Öğretmen: "elife tıklayınca yukarda elif yazıyor ya bir de hemze yazsın,
+  hemzeye basınca hemzenin tüm yazılışları ve özellikleri hakkında bilgi
+  versin, hatta varsayılan olarak hemze olsun, elife geçince elif-vav-ye
+  harflerinin uzatma işine de yaradığını belirtsin, elif ve hemze arasında
+  sekme geçişi hepsi birden ve sırayla tuşlarındaki gibi olsun."
+  · Elif büyütecinde başlığın yerinde "Hemze / Elif" anahtarı çıkıyor;
+    görünüşü bilerek "Hepsi birden / Sırayla" tuşlarıyla aynı. Varsayılan
+    HEMZE. Öbür harflerde anahtar yok, ekran eskisi gibi.
+  · Hemze panosu: altı kürsü grubu (kürsüsüz ء · elif üstü أ · elif altı إ ·
+    vav üstü ؤ · ye üstü ئ · medli elif آ), 12 yazılış kutusu, her grupta
+    kuralı ve örnek kelimesi; altta "Hemzenin özellikleri" listesi.
+  · 12 yazılışın HEPSİ kalemle yazılıyor: önce kürsü harfi, en son hemze
+    (hemze, noktalar gibi kalkanlı). Kutuya dokununca tek tek izlenir;
+    Hepsi birden / Sırayla ve 5 kademe hız burada da geçerli.
+  · Elif sekmesinde yeni turuncu not: elif-vav-ye uzatma (med) harfleridir,
+    elif ayrıca hemzenin en çok kullanılan kürsüsüdür.
+  NASIL ÜRETİLDİ: site yazım verisinin (HARF_YAZIM) dönüşümü geri bulundu
+  (0,3 ölçek · satır y=410 · 26 pay); 112 biçimin tamamında üretilen dolgu
+  kayıtlı dolguyla BİREBİR aynı çıktı. Hemzeli glifler de aynı yoldan
+  arakom.ttf'ten çıkarıldı. Kürsü kalemi o harfin onaylı yolundan, hemze
+  kalemi KEF'in iç işaretinden (bu yazı tipinde o işaret hemzenin kendisi)
+  geliyor; her kalem eni şeklin tamamını açacak kadar genişletildi —
+  kapsama ölçüldü, 12 biçimde de %100.
+  DENENDİ: hemze panosu (12 kutu, hata yok), yazım sırası (gövde → hemze,
+  kare kare bakıldı), Elif sekmesi (4 biçim + med notu), başka harfe geçiş
+  (anahtar ve pano kayboluyor, Be normal açılıyor), elife dönüş (yine
+  hemze), telefon ölçüsü 420 px (yatay taşma yok).
+  Dosyalar: alfabe.html · okumayazma/alfabe_harf_detay.js ·
+            okumayazma/alfabe.css · okumayazma/alfabe_hemze.js (YENİ) ·
+            okumayazma/alfabe_hemze_yazim.js (YENİ)
+  Üreticiler (_kaynak, git'e gitmez): _kaynak/uretici/hemzeYazim.py ·
+            _kaynak/uretici/hemzeBilgi.py
+  Yedek: _kaynak/yedekler/2026-10-14-hemze-sekmesi/

@@ -181,6 +181,10 @@ const harfDetay = {
             <div id="hd-card" role="dialog" aria-modal="true">
                 <button id="hd-close" title="Kapat" aria-label="Kapat">&times;</button>
                 <div id="hd-no" title="Alfabedeki sırası"></div>
+                <div id="hd-sekme" role="group" aria-label="Hemze / Elif" hidden>
+                    <button type="button" data-sekme="hemze" title="Hemzenin bütün yazılışları">Hemze</button>
+                    <button type="button" data-sekme="elif" title="Elif harfi">Elif</button>
+                </div>
                 <div id="hd-name"></div>
                 <div class="hd-sec hd-sec-mahrec">
                     <div class="hd-sec-title">📍 Mahreç <span class="hd-sec-sub">(sesin çıkış yeri)</span></div>
@@ -202,6 +206,8 @@ const harfDetay = {
                 </div>
                 <div id="hd-cols" dir="rtl"></div>
                 <div id="hd-tek-ornek" hidden></div>
+                <div id="hd-hemze" hidden></div>
+                <div class="hd-sec hd-sec-med" id="hd-med-not" hidden></div>
                 <div class="hd-sec hd-sec-yazilis">
                     <div class="hd-sec-title">✍️ Nasıl Yazılır? <button id="hd-replay" title="Tekrar izle">↻ Tekrar Yaz</button></div>
                     <div class="hd-sec-text" id="hd-yazilis"></div>
@@ -222,6 +228,15 @@ const harfDetay = {
             harfDetay.animate();
         };
         this.modSec(this.modOku());
+        /* HEMZE / ELİF ANAHTARI (14.10.2026, Geylani): elif açılınca başlığın
+           yerinde çıkar; görünüşü bilerek "Hepsi birden / Sırayla" tuşlarıyla
+           aynıdır. */
+        document.getElementById('hd-sekme').onclick = function (e) {
+            const d = e.target.closest('button[data-sekme]');
+            if (!d) return;
+            if (typeof playClick === 'function') playClick();
+            harfDetay.sekmeSec(d.dataset.sekme);
+        };
         /* YAZMA HIZI — 5 kademe, herkes kendi ayarlar (11.10.2026). Çarpan
            playForm'da uygulandığı için büyüteç, Harf Birleştirme tablosu ve
            İstenen Harfi Yaz aynı hızda yazar. */
@@ -288,13 +303,8 @@ const harfDetay = {
         if (!h || !info || !yaz) return;
         if (typeof playClick === 'function') playClick();
         this.idx = idx;
+        this.harf = h; this.bilgi = info; this.yaz = yaz;
         this.gezGuncelle();
-
-        /* Sol üstte harfin sıra numarası: karttaki .card-num ile aynı sayı (idx + 1) */
-        document.getElementById('hd-no').innerText = (idx + 1);
-        document.getElementById('hd-name').innerText = h.tr;
-        document.getElementById('hd-mahrec').innerText = info.mahrec;
-        document.getElementById('hd-yazilis').innerText = info.yazilis;
 
         /* Önceki harfin animasyonları DURDURULUR. Eskiden durdurulmuyordu:
            kutular DOM'dan silinse de kareler (raf) dönmeye devam ediyordu.
@@ -303,7 +313,47 @@ const harfDetay = {
         this.tekKapat();
         this.stopAll();
 
+        /* HEMZE SEKMESİ (14.10.2026): elif açıldığında başlıkta "Hemze / Elif"
+           anahtarı çıkar ve VARSAYILAN hemzedir. Hemze alfabede ayrı bir harf
+           olarak sayılmıyor ama yazıda kürsüsünün çoğu elif — en doğal yeri
+           elifin yanı. Öbür harflerde anahtar görünmez, ekran eskisi gibi. */
+        const sekmeKutu = document.getElementById('hd-sekme');
+        const hemzeli = this.hemzeVarMi() && h.h === this.HEMZE_HARF;
+        if (sekmeKutu) sekmeKutu.hidden = !hemzeli;
+        this.sekmeIsaretle(hemzeli ? 'hemze' : 'elif');
+        if (this.sekme === 'hemze') this.hemzeKur(); else this.harfKur();
+
+        const ov = document.getElementById('hd-overlay');
+        ov.style.display = 'flex';
+        requestAnimationFrame(() => ov.classList.add('hd-open'));
+        this.timers.push(setTimeout(() => this.animate(), 420));
+    },
+
+    /* Bir harfin ekranı: başlık, mahreç, yazılış metni ve dört biçim kutusu. */
+    harfKur: function () {
+        const h = this.harf, info = this.bilgi, yaz = this.yaz;
+        if (!h || !info || !yaz) return;
+        const hemzeYuva = document.getElementById('hd-hemze');
+        if (hemzeYuva) { hemzeYuva.hidden = true; hemzeYuva.innerHTML = ''; }
+        const no = document.getElementById('hd-no');
+        no.innerText = (this.idx + 1); no.hidden = false;
+        document.getElementById('hd-name').innerText = h.tr;
+        document.getElementById('hd-mahrec').innerText = info.mahrec;
+        document.getElementById('hd-yazilis').innerText = info.yazilis;
+        /* Elif sekmesinde MED notu: elif-vav-ye uzatma harfleridir (Geylani). */
+        const not = document.getElementById('hd-med-not');
+        if (not) {
+            const goster = this.hemzeVarMi() && h.h === this.HEMZE_HARF;
+            not.hidden = !goster;
+            if (goster) {
+                not.innerHTML = '<div class="hd-sec-title">\u27A1\uFE0F Elif ayrıca' +
+                    ' <span class="hd-sec-sub">uzatma (med) harfidir</span></div>' +
+                    '<div class="hd-sec-text"></div>';
+                not.querySelector('.hd-sec-text').innerText = HEMZE_BILGI.elifNotu;
+            }
+        }
         const cols = document.getElementById('hd-cols');
+        cols.hidden = false;
         cols.innerHTML = '';
         this.anims = [];
         this.FORM_META.forEach((fm, fi) => {
@@ -328,11 +378,133 @@ const harfDetay = {
             cols.appendChild(col);
             this.anims.push(anim);
         });
+    },
 
-        const ov = document.getElementById('hd-overlay');
-        ov.style.display = 'flex';
-        requestAnimationFrame(() => ov.classList.add('hd-open'));
-        this.timers.push(setTimeout(() => this.animate(), 420));
+    /* ===== HEMZE SEKMESİ ============================================
+       Geylani (14.10.2026): "elife tıklayınca yukarda elif yazıyor ya bir de
+       hemze yazsın, hemzeye basınca hemzenin tüm yazılışları ve özellikleri
+       hakkında bilgi versin, hatta varsayılan olarak hemze olsun, elife
+       geçince elif-vav-ye harflerinin uzatma işine de yaradığını belirtsin."
+       Veri iki üretilmiş dosyada:
+         okumayazma/alfabe_hemze_yazim.js  HEMZE_YAZIM  (kalem yolları)
+         okumayazma/alfabe_hemze.js        HEMZE_BILGI  (metinler, gruplar)
+       Üreticileri: _kaynak/uretici/hemzeYazim.py ve hemzeBilgi.py */
+    HEMZE_HARF: '\u0627',
+    sekme: 'elif',
+    hemzeVarMi: function () {
+        return (typeof HEMZE_BILGI !== 'undefined') && (typeof HEMZE_YAZIM !== 'undefined');
+    },
+    sekmeIsaretle: function (s) {
+        this.sekme = (s === 'hemze') ? 'hemze' : 'elif';
+        const kutu = document.getElementById('hd-sekme');
+        if (!kutu) return;
+        const self = this;
+        kutu.querySelectorAll('button[data-sekme]').forEach(function (b) {
+            const acik = (b.dataset.sekme === self.sekme);
+            b.classList.toggle('hd-kip-acik', acik);
+            b.setAttribute('aria-pressed', acik ? 'true' : 'false');
+        });
+    },
+    sekmeSec: function (s) {
+        if (this.sekme === s) return;
+        this.tekKapat();
+        this.stopAll();
+        this.sekmeIsaretle(s);
+        if (this.sekme === 'hemze') this.hemzeKur(); else this.harfKur();
+        this.timers.push(setTimeout(() => this.animate(), 260));
+    },
+
+    /* Hemze panosu: kürsü grupları (kürsüsüz, elif üstü/altı, vav, ye, medli),
+       her grupta o kürsünün biçim kutuları + örnek kelime; altta özellikler. */
+    hemzeKur: function () {
+        const B = HEMZE_BILGI;
+        const yuva = document.getElementById('hd-hemze');
+        if (!yuva) return;
+        const no = document.getElementById('hd-no');
+        if (no) no.hidden = true;
+        const not = document.getElementById('hd-med-not');
+        if (not) { not.hidden = true; not.innerHTML = ''; }
+        document.getElementById('hd-name').innerText = B.ad;
+        document.getElementById('hd-mahrec').innerText = B.mahrec;
+        document.getElementById('hd-yazilis').innerText = B.yazilis;
+        const cols = document.getElementById('hd-cols');
+        cols.innerHTML = ''; cols.hidden = true;
+        yuva.hidden = false; yuva.innerHTML = '';
+        this.anims = [];
+        const renk = {};
+        this.FORM_META.forEach(function (f) { renk[f.key] = f.color; });
+
+        const ozet = document.createElement('div');
+        ozet.className = 'hz-ozet';
+        ozet.innerText = B.ozet;
+        yuva.appendChild(ozet);
+
+        B.gruplar.forEach((g) => {
+            const grup = document.createElement('section');
+            grup.className = 'hz-grup';
+            const bas = document.createElement('div');
+            bas.className = 'hz-bas';
+            const bar = document.createElement('span');
+            bar.className = 'hz-bas-ar'; bar.dir = 'rtl'; bar.innerText = g.ar;
+            const bad = document.createElement('span');
+            bad.className = 'hz-bas-ad'; bad.innerText = g.ad;
+            bas.appendChild(bar); bas.appendChild(bad);
+            const kural = document.createElement('div');
+            kural.className = 'hz-kural'; kural.innerText = g.kural;
+            const sira = document.createElement('div');
+            sira.className = 'hz-kutular'; sira.dir = 'rtl';
+            grup.appendChild(bas); grup.appendChild(kural); grup.appendChild(sira);
+            g.bicimler.forEach((bc) => {
+                const veri = HEMZE_YAZIM[bc.k];
+                if (!veri) return;
+                const col = document.createElement('div');
+                col.className = 'hd-col hz-col';
+                const lbl = document.createElement('div');
+                lbl.className = 'hd-col-label';
+                lbl.style.color = renk[bc.form] || '#1e293b';
+                lbl.innerText = bc.etiket;
+                const box = document.createElement('div');
+                box.className = 'hd-col-box';
+                const anim = this.buildSvg(veri, renk[bc.form] || '#1e293b');
+                box.appendChild(anim.svg);
+                box.title = 'Bu yazılışı tekrar izlemek için tıkla';
+                /* Tek kutuya dokunulunca ekranda tek kalem kalsın: sıra durur,
+                   öbür kutular tamamlanmış hâlleriyle bekler. */
+                box.onclick = () => {
+                    this.stopAll();
+                    (this.anims || []).forEach((a) => this.doldur(a));
+                    this.yazanIsaretle(-1);
+                    this.sifirla(anim);
+                    this.playForm(anim, true, true);
+                };
+                const orn = document.createElement('div');
+                orn.className = 'hz-ornek';
+                if (bc.ornek && bc.ornek.ar) {
+                    const oa = document.createElement('span');
+                    oa.className = 'hz-o-ar'; oa.dir = 'rtl'; oa.innerText = bc.ornek.ar;
+                    orn.appendChild(oa);
+                }
+                if (bc.ornek && bc.ornek.tr) {
+                    const ot = document.createElement('span');
+                    ot.className = 'hz-o-tr'; ot.innerText = bc.ornek.tr;
+                    orn.appendChild(ot);
+                }
+                col.appendChild(lbl); col.appendChild(box); col.appendChild(orn);
+                sira.appendChild(col);
+                this.anims.push(anim);
+            });
+            yuva.appendChild(grup);
+        });
+
+        const obas = document.createElement('div');
+        obas.className = 'hz-ozellik-bas';
+        obas.innerText = 'Hemzenin özellikleri';
+        const liste = document.createElement('ul');
+        liste.className = 'hz-ozellik';
+        B.ozellikler.forEach(function (o) {
+            const li = document.createElement('li'); li.innerText = o; liste.appendChild(li);
+        });
+        yuva.appendChild(obas); yuva.appendChild(liste);
     },
 
     close: function() {
@@ -946,7 +1118,7 @@ const harfDetay = {
     /* Hangi biçim yazılıyorsa onun kutusu belirgin dursun: göz sıranın
        nerede olduğunu arama sın. -1 / sınır dışı = hiçbiri. */
     yazanIsaretle: function (i) {
-        const kutular = document.querySelectorAll('#hd-cols .hd-col');
+        const kutular = document.querySelectorAll('#hd-cols .hd-col, #hd-hemze .hd-col');
         for (let j = 0; j < kutular.length; j++) {
             kutular[j].classList.toggle('hd-yazan', j === i);
         }

@@ -168,6 +168,38 @@
         s.textContent = [
             '#' + BOLUM_ID + '{ display:none; }',
             '#' + BOLUM_ID + '.gor{ display:block; }',
+            /* ---- davet şeridi (14.10.2026): giriş / kayıt teşviki ---- */
+            '.sn-davet{ display:flex; align-items:center; gap:clamp(10px,1.4vw,20px);',
+            '  flex-wrap:wrap; margin:0 0 10px; padding:clamp(11px,1.4vw,16px) clamp(13px,1.6vw,20px);',
+            '  border:1.5px solid #CFE7E0; border-radius:14px;',
+            '  background:linear-gradient(135deg,#F2FBF8 0%,#EAF6F3 100%); }',
+            '.sn-davet-yazi{ flex:1 1 260px; min-width:0; }',
+            '.sn-davet-yazi b{ display:block; font-size:clamp(.98rem,1.3vw,1.14rem);',
+            '  color:#0E7C66; line-height:1.25; }',
+            '.sn-davet-yazi span{ display:block; margin-top:3px; color:#5A6B78;',
+            '  font-size:clamp(.83rem,1.05vw,.95rem); line-height:1.35; }',
+            '.sn-davet-tus{ display:flex; gap:8px; flex-wrap:wrap; flex:none; }',
+            '.sn-dt{ display:inline-flex; align-items:center; gap:7px; cursor:pointer;',
+            '  font-family:inherit; font-weight:700; border-radius:999px;',
+            '  padding:9px 18px; font-size:clamp(.88rem,1.1vw,1rem); border:1.5px solid transparent; }',
+            '.sn-dt svg{ width:17px; height:17px; flex:none; }',
+            '.sn-dt-giris{ background:#16A085; color:#fff; box-shadow:0 3px 10px rgba(22,160,133,.28); }',
+            '.sn-dt-giris:hover{ filter:brightness(1.06); }',
+            '.sn-dt-kayit{ background:#fff; color:#0E7C66; border-color:#16A085; }',
+            '.sn-dt-kayit:hover{ background:#EAF6F3; }',
+            '.sn-davet-sade{ background:#F7F9FB; border-color:#E3E9F0; }',
+            '.sn-davet-sade .sn-davet-yazi b{ color:#4A5A6B; }',
+            '.sngt-kayit{ display:block; margin:8px auto 0; cursor:pointer;',
+            '  font-family:inherit; font-weight:700; font-size:.95rem; color:#0E7C66;',
+            '  background:#fff; border:1.5px solid #16A085; border-radius:999px;',
+            '  padding:9px 20px; }',
+            '.sngt-kayit:hover{ background:#EAF6F3; }',
+            '.sn-giris-hap{ display:inline-flex; align-items:center; gap:7px; cursor:pointer;',
+            '  font-family:inherit; font-weight:700; font-size:.86rem; color:#0E7C66;',
+            '  background:#EAF6F3; border:1.5px solid #9FD8CC; border-radius:999px;',
+            '  padding:6px 14px; margin-inline-start:6px; white-space:nowrap; }',
+            '.sn-giris-hap svg{ width:15px; height:15px; flex:none; }',
+            '.sn-giris-hap:hover{ background:#16A085; border-color:#16A085; color:#fff; }',
             '#' + BOLUM_ID + ' .sn-kutu{ display:flex; flex-direction:column; gap:14px; }',
             /* kurum kutusu */
             '#' + BOLUM_ID + ' .sn-kurum{ background:#fff; border:1px solid #E3E8EF; border-radius:16px;',
@@ -666,6 +698,17 @@
             '<path d="M12 5v14M5 12h14" fill="none" stroke="currentColor"' +
             ' stroke-width="2.6" stroke-linecap="round"/></svg>' +
             '<span>Sınıf ekle</span></button>' +
+            /* BAŞLIKTA GİRİŞ DAVETİ (14.10.2026) — öğretmen: "giriş
+               yapılmamışsa girişi veya kayıt olmayı teşvik etmeli."
+               Kategori yenilenince KAPALI başlıyor (07.10 kuralı), bu
+               yüzden içerideki davet şeridi görünmüyordu. Başlıktaki bu
+               küçük hap kapalıyken de duruyor. */
+            (misafirMi()
+                ? ('<button type="button" class="sn-giris-hap"' +
+                   ' onclick="event.stopPropagation(); KidefSiniflarim.girisAc()"' +
+                   ' title="Sınıfların hesabına kaydedilsin">' + GIRIS_SVG +
+                   '<span>Giriş yap / Kayıt ol</span></button>')
+                : '') +
             '</h2>';
     }
 
@@ -864,6 +907,7 @@
             if (saltMi()) {
                 bolum.classList.add('sn-salt');
                 bolum.__govde = 'gercek';
+                davetSil(bolum);
                 okulIcineKoy(bolum);
                 saltSerit(bolum);
                 return;
@@ -874,6 +918,7 @@
         }
         bolum.classList.remove('sn-salt');
         saltSeritSil(bolum);
+        davetSil(bolum);
         gosterildi = true;
         bolum.__govde = 'gercek';
         okulIcineKoy(bolum);
@@ -1011,6 +1056,15 @@
             'kurumların ve sınıflarınla dolar.</span></div></div>';
     }
 
+    /* Gerçek panele geçerken davet şeridi kalkar: öğretmen kendi
+       sınıflarını görürken "kayıt ol" daveti durmasın. */
+    function davetSil(bolum) {
+        try {
+            var d = bolum.querySelectorAll('.sn-davet');
+            for (var i = 0; i < d.length; i++) d[i].parentNode.removeChild(d[i]);
+        } catch (e) { }
+    }
+
     function girisAc() {
         try { if (typeof window.showLoginModal === 'function') window.showLoginModal(); } catch (e) { }
     }
@@ -1018,13 +1072,18 @@
        zaten kayıt kipindeyse dokunulmaz (düğmenin yazısından anlaşılıyor). */
     function kayitAc() {
         girisAc();
-        setTimeout(function () {
-            try {
-                var b = document.getElementById('auth-action-btn');
-                if (b && /Giriş/i.test(b.innerText || '') &&
-                    typeof window.moduDegistir === 'function') window.moduDegistir();
-            } catch (e) { }
-        }, 80);
+        /* Pencere bazen bir kare sonra kuruluyor: kısa aralıklarla aranır. */
+        var dene = 0;
+        var saat = setInterval(function () {
+            var b = document.getElementById('auth-action-btn');
+            if (b || ++dene > 12) {
+                clearInterval(saat);
+                try {
+                    if (b && /Giriş/i.test(b.innerText || '') &&
+                        typeof window.moduDegistir === 'function') window.moduDegistir();
+                } catch (e) { }
+            }
+        }, 60);
     }
 
     /* Tavsiye — uyarı değil. Kapatması kolay, tek paragraf. */
@@ -1372,6 +1431,6 @@
         okulAc: okulAc, katla: katla, sinifEkle: sinifEkle, girisTavsiye: girisTavsiye,
         ciz: ciz, ac: ac, seviyeSec: seviyeSec, sinifKur: sinifKur,
         kurumEkle: kurumEkle, gorunurMu: gorunurMu, saltMi: saltMi,
-        satirTik: satirTik
+        satirTik: satirTik, girisAc: girisAc, kayitAc: kayitAc
     };
 })();
