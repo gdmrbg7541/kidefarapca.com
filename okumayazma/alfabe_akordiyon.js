@@ -368,7 +368,8 @@
        ÜSTÜNE gelir. Sonra isterse «Nasıl yazılır? izle» ile dört biçimin
        kalem animasyonunu açar (harf kartlarındaki katmanın aynısı).
        Şıklı ölçme aynı satırdaki «Dene» düğmesinde — ikisi ayrı. */
-    var YAZ = { havuz: [], i: 0, dolu: false, kalanMs: 0, saat: null, durdu: false, sonSn: -1 };
+    var YAZ = { havuz: [], i: 0, dolu: false, kalanMs: 0, saat: null, durdu: false,
+                sonSn: -1, basladi: false, sure: 15, bekleMs: 0 };
     var YAZ_ADET = 30;
     /* GERİ SAYIM (14.10.2026) — öğretmen: "her harf 15 saniye geri sayım
        ekleyelim, daire olsun geri sayım", "ses te ekleyelim".
@@ -376,8 +377,34 @@
        «Cevabı göster»e basarsa sayım orada durur. Daireye dokunmak
        duraklatır (sınıfta söz araya girer). Son 5 saniyede tik sesi,
        bitişte kısa bir çıkış sesi. */
-    var YAZ_SURE = 15;                     /* saniye */
+    /* SÜRE ARTIK SEÇİLİYOR (14.10.2026) — öğretmen: "saniye seçilebilsin".
+       0 = süre yok (daire çıkmaz, cevap kendiliğinden açılmaz). Seçim
+       tarayıcıda kalıyor, her derste yeniden ayarlamak gerekmiyor. */
+    var YAZ_SURELER = [0, 10, 15, 20, 30, 45];
+    var YAZ_SURE_ANAHTAR = 'kidefIhySure';
     var YAZ_CEVRE = 2 * Math.PI * 44;      /* r=44 olan dairenin çevresi */
+    function yazSureOku() {
+        try {
+            var v = parseInt(localStorage.getItem(YAZ_SURE_ANAHTAR), 10);
+            if (YAZ_SURELER.indexOf(v) >= 0) return v;
+        } catch (e) { }
+        return 15;
+    }
+    function yazSureYaz(n) {
+        YAZ.sure = n;
+        try { localStorage.setItem(YAZ_SURE_ANAHTAR, String(n)); } catch (e) { }
+    }
+    /* Yazma hızı harf kartlarıyla ORTAK (harfDetay.hizSec): orada seçilen
+       hız burada da geçerli, burada seçilen orada. Tek ayar, iki yer. */
+    function yazHizOku() {
+        try { if (typeof harfDetay !== 'undefined' && harfDetay.hizOku) return harfDetay.hizOku(); }
+        catch (e) { }
+        return 2;
+    }
+    function yazHizSec(i) {
+        try { if (typeof harfDetay !== 'undefined' && harfDetay.hizSec) harfDetay.hizSec(i); }
+        catch (e) { }
+    }
     var yazAnim = null;              /* ekranda yazan biçim (harfDetay) */
 
     /* Biçim rengi harf kartındakiyle AYNI: başta yeşil, ortada mavi,
@@ -437,13 +464,19 @@
         YAZ.havuz = liste; YAZ.i = 0;
         zamanTemizle(); perdeKapat();
         katman.classList.add('ak-yaz');       /* başlıktaki kip/sayı tuşları gizlenir */
+        YAZ.basladi = false;
+        YAZ.sure = yazSureOku();
         basEl.textContent = 'İstenen Harfi Yaz';
-        notEl.textContent = 'Sor · ' + YAZ_SURE + ' sn düşünsünler · yazılışı açılır';
+        notEl.textContent = 'Sor · düşünsünler · yazılışı göster';
         var ana = document.querySelector('.main-app');
         seritAcikti = !!(ana && !ana.classList.contains('nav-gizli'));
         katman.hidden = false;
         document.body.classList.add('ak-acik');
-        yazGoster();
+        /* AÇILIR AÇILMAZ SORU SORMUYOR (14.10.2026) — öğretmen: "tıklanınca
+           hemen harf istemesin, ileri tuşuna basınca görünsün ilk örnek".
+           Önce süre ve hız seçilen hazırlık ekranı geliyor; ilk soru ileri
+           tuşuyla (ya da → tuşuyla) açılıyor. */
+        yazHazirlik();
         return true;
     }
 
@@ -456,13 +489,46 @@
         yazGoster();
     }
     function yazGeri() {
-        if (!YAZ.havuz.length) return;
+        if (!YAZ.havuz.length || !YAZ.basladi) return;
         YAZ.i = (YAZ.i - 1 + YAZ.havuz.length) % YAZ.havuz.length;
         yazGoster();
     }
     /* Yaz ekranında mıyız? (ok tuşları yalnız orada çalışsın) */
     function yazEkraninda() {
         return !!(sahne && sahne.querySelector('[data-rol="ihySonraki"]'));
+    }
+
+    /* ---- hazırlık ekranı: süre ve hız ---- */
+    function yazHazirlik() {
+        ihYazilisKapat(); yazAnimDur(); yazSayimDur();
+        YAZ.dolu = false; YAZ.basladi = false;
+        if (!sahne) return;
+        var hiz = yazHizOku();
+        var sureTus = YAZ_SURELER.map(function (n) {
+            return '<button type="button" class="ihy-h-tus' + (n === YAZ.sure ? ' secili' : '') +
+                '" data-rol="ihySure" data-sn="' + n + '">' +
+                (n ? n + ' sn' : 'Süresiz') + '</button>';
+        }).join('');
+        var hizAd = ['Çok yavaş', 'Yavaş', 'Normal', 'Hızlı', 'Çok hızlı'];
+        var hizTus = hizAd.map(function (ad, i) {
+            return '<button type="button" class="ihy-h-tus' + (i === hiz ? ' secili' : '') +
+                '" data-rol="ihyHiz" data-h="' + i + '" title="' + ad + '">' + (i + 1) + '</button>';
+        }).join('');
+        sahne.innerHTML =
+            '<div class="ihy-hazir">' +
+            '  <div class="ihy-h-bas">Hazır mısınız?</div>' +
+            '  <p class="ihy-h-not">Harf ekranda istenir, çocuklar deftere yazar;' +
+            ' süre bitince ya da sen basınca yazılışı açılır.</p>' +
+            '  <div class="ihy-h-sira"><span class="ihy-h-et">Süre</span>' +
+            '<span class="ihy-h-tuslar">' + sureTus + '</span></div>' +
+            '  <div class="ihy-h-sira"><span class="ihy-h-et">Yazma hızı</span>' +
+            '<span class="ihy-h-tuslar">' + hizTus + '</span></div>' +
+            '  <div class="ihy-h-say">' + YAZ.havuz.length + ' soru hazır</div>' +
+            '</div>' +
+            '<div class="ak-alt">' +
+            '  <button type="button" class="ak-t ak-gez ak-ilerle" data-rol="ihySonraki"' +
+            ' title="Başla (→ tuşu)">Başla ›</button>' +
+            '</div>';
     }
 
     function yazGoster() {
@@ -482,12 +548,13 @@
             '  </div>' +
             '  <div class="ihy-sag">' +
             '    <div class="ihy-ust">' +
-            '      <div class="ihy-sayim" data-rol="ihySayim" role="timer"' +
-            ' title="' + YAZ_SURE + ' saniye — duraklatmak için tıkla">' +
-            '        <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
-            '          <circle class="ihy-s-iz" cx="50" cy="50" r="44"/>' +
-            '          <circle class="ihy-s-yay" cx="50" cy="50" r="44"/>' +
-            '        </svg><span class="ihy-s-say">' + YAZ_SURE + '</span></div>' +
+            (YAZ.sure ?
+            ('      <div class="ihy-sayim" data-rol="ihySayim" role="timer"' +
+             ' title="' + YAZ.sure + ' saniye — duraklatmak için tıkla">' +
+             '        <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
+             '          <circle class="ihy-s-iz" cx="50" cy="50" r="44"/>' +
+             '          <circle class="ihy-s-yay" cx="50" cy="50" r="44"/>' +
+             '        </svg><span class="ihy-s-say">' + YAZ.sure + '</span></div>') : '') +
             '      <div class="ak-sayac">' + (YAZ.i + 1) + ' / ' + YAZ.havuz.length + '</div>' +
             '    </div>' +
             '    <div class="as-metin ak-metin ihy-soru"><b>' + kacis(is.harf.tr) +
@@ -502,6 +569,8 @@
                tuş dersin akışını yürütüyor:
                  1. basış → cevabı yazar,   2. basış → sonraki soruya geçer.
                Geri tuşu olduğu gibi duruyor, hep açık. */
+            '  <button type="button" class="ak-t ak-ikincil ihy-ayar-tus" data-rol="ihyAyar"' +
+            ' title="Süre ve hız">\u2699</button>' +
             '  <button type="button" class="ak-t ak-ikincil ak-gez" data-rol="ihyOnceki"' +
             ' title="Önceki soru (← tuşu)">‹ Önceki</button>' +
             '  <button type="button" class="ak-t ak-ikincil" data-rol="ihyTekrar" hidden>' +
@@ -546,6 +615,7 @@
        olsun: sor · düşünsünler · bas (cevap) · bas (sonraki). */
     function yazIlerle() {
         if (!YAZ.havuz.length) return;
+        if (!YAZ.basladi) { YAZ.basladi = true; yazGoster(); return; }   /* ilk soru */
         if (!YAZ.dolu) { yazAcikla(); return; }
         yazIleri();
     }
@@ -553,23 +623,34 @@
     /* ---- geri sayım dairesi ---- */
     function yazSayimDur() {
         if (YAZ.saat) { clearInterval(YAZ.saat); YAZ.saat = null; }
+        YAZ.bekleMs = 0;
     }
     function yazSayimCiz() {
         var d = sahne && sahne.querySelector('[data-rol="ihySayim"]');
         if (!d) return;
         var sn = Math.max(0, Math.ceil(YAZ.kalanMs / 1000));
-        var oran = Math.max(0, Math.min(1, YAZ.kalanMs / (YAZ_SURE * 1000)));
+        var oran = Math.max(0, Math.min(1, YAZ.kalanMs / ((YAZ.sure || 1) * 1000)));
         var y = d.querySelector('.ihy-s-yay');
         if (y) y.style.strokeDashoffset = (YAZ_CEVRE * (1 - oran)).toFixed(1);
         var t = d.querySelector('.ihy-s-say');
         if (t) t.textContent = YAZ.durdu ? '❚❚' : sn;
-        d.classList.toggle('ihy-s-az', sn <= 5 && !YAZ.dolu);
+        var bekliyor = YAZ.bekleMs > 0 && !YAZ.dolu;
+        d.classList.toggle('ihy-s-bekle', bekliyor);
+        d.classList.toggle('ihy-s-az', !bekliyor && sn <= 5 && !YAZ.dolu);
         d.classList.toggle('ihy-s-bitti', YAZ.dolu || sn <= 0);
         d.classList.toggle('ihy-s-durdu', !!YAZ.durdu);
     }
+    /* OKUMA PAYI (14.10.2026) — öğretmen: "önce soru çıksın 3 saniye sonra
+       zaman başlasın". Soru ekrana gelir gelmez sayaç işlemeye başlayınca
+       çocuk daha isteği okuyamadan saniye eriyordu. Artık ilk 3 saniye
+       daire dolu bekliyor (ihy-s-bekle, soluk yeşil, nefes alır), süre
+       ondan sonra işlemeye başlıyor. */
+    var YAZ_OKUMA_PAYI = 3000;
     function yazSayimBaslat() {
         yazSayimDur();
-        YAZ.kalanMs = YAZ_SURE * 1000; YAZ.durdu = false; YAZ.sonSn = YAZ_SURE;
+        if (!YAZ.sure) return;                 /* «Süresiz» seçildi */
+        YAZ.kalanMs = YAZ.sure * 1000; YAZ.durdu = false; YAZ.sonSn = YAZ.sure;
+        YAZ.bekleMs = YAZ_OKUMA_PAYI;
         yazSayimCiz();
         var son = Date.now();
         /* 100 ms'de bir: daire akıcı boşalsın. Geçen süre saatten
@@ -577,6 +658,11 @@
         YAZ.saat = setInterval(function () {
             var simdi = Date.now(), gecen = simdi - son; son = simdi;
             if (YAZ.durdu || YAZ.dolu) return;
+            if (YAZ.bekleMs > 0) {             /* okuma payı dolmadı */
+                YAZ.bekleMs -= gecen;
+                if (YAZ.bekleMs <= 0) { YAZ.bekleMs = 0; yazSayimCiz(); }
+                return;
+            }
             YAZ.kalanMs -= gecen;
             var sn = Math.max(0, Math.ceil(YAZ.kalanMs / 1000));
             if (sn !== YAZ.sonSn) {
@@ -587,6 +673,24 @@
             if (YAZ.kalanMs <= 0) { yazSayimDur(); ses('playStart'); yazAcikla(); }
         }, 100);
     }
+    /* Hazırlık ekranındaki süre ve hız tuşları. */
+    function yazSureSec(d) {
+        var n = parseInt(d.getAttribute('data-sn'), 10);
+        if (YAZ_SURELER.indexOf(n) < 0) return;
+        yazSureYaz(n);
+        if (sahne) sahne.querySelectorAll('[data-rol="ihySure"]').forEach(function (b) {
+            b.classList.toggle('secili', parseInt(b.getAttribute('data-sn'), 10) === n);
+        });
+    }
+    function yazHizTus(d) {
+        var i = parseInt(d.getAttribute('data-h'), 10);
+        if (!(i >= 0 && i <= 4)) return;
+        yazHizSec(i);
+        if (sahne) sahne.querySelectorAll('[data-rol="ihyHiz"]').forEach(function (b) {
+            b.classList.toggle('secili', parseInt(b.getAttribute('data-h'), 10) === i);
+        });
+    }
+
     /* Daireye dokunmak duraklatır / sürdürür. */
     function yazSayimDuraklat() {
         if (YAZ.dolu || !YAZ.saat) return;
@@ -1107,6 +1211,9 @@
             if (rol === 'ihyCizgi')   { if (YAZ.dolu && yazAnim) { tik(); yazTekrar(); } return; }
             if (rol === 'ihyIzle')    { tik(); yazIzle(); return; }
             if (rol === 'ihySayim')   { tik(); yazSayimDuraklat(); return; }
+            if (rol === 'ihySure')    { tik(); yazSureSec(d); return; }
+            if (rol === 'ihyHiz')     { tik(); yazHizTus(d); return; }
+            if (rol === 'ihyAyar')    { tik(); yazHazirlik(); return; }
             if (rol === 'ihySonraki') { tik(); yazIlerle(); return; }
             if (rol === 'ihyOnceki')  { tik(); yazGeri();  return; }
             if (rol === 'kapat')   { tik(); kapat(); return; }
@@ -1831,7 +1938,32 @@
             '#ak-tam .ihy-sayim.ihy-s-durdu .ihy-s-say{font-size:clamp(16px,3vh,34px);color:#7b8b97}',
             '#ak-tam .ihy-sayim.ihy-s-bitti{opacity:.4;animation:none;cursor:default}',
             '#ak-tam .ihy-sayim.ihy-s-bitti .ihy-s-yay{stroke:#cbd5dd}',
+            /* okuma payı: daire dolu bekler, hafifçe nefes alır */
+            '#ak-tam .ihy-sayim.ihy-s-bekle .ihy-s-yay{stroke:#9fd8cc}',
+            '#ak-tam .ihy-sayim.ihy-s-bekle .ihy-s-say{color:#7fa9a0}',
+            '#ak-tam .ihy-sayim.ihy-s-bekle{animation:ihySayNefes 1.5s ease-in-out infinite}',
+            '@keyframes ihySayNefes{50%{opacity:.6}}',
             '@keyframes ihySayNabiz{50%{transform:scale(1.06)}}',
+            /* ---- hazırlık ekranı: süre ve hız (14.10.2026) ---- */
+            '#ak-tam .ihy-hazir{flex:1 1 auto;min-height:0;display:flex;',
+            '  flex-direction:column;align-items:center;justify-content:center;',
+            '  gap:clamp(10px,2vh,26px);text-align:center;padding:0 2vw}',
+            '#ak-tam .ihy-h-bas{font-size:clamp(26px,6vh,72px);font-weight:800;',
+            '  color:#0E6655;line-height:1.1}',
+            '#ak-tam .ihy-h-not{margin:0;font-size:clamp(14px,2.4vh,30px);color:#7b8b97;',
+            '  max-width:32ch;line-height:1.35}',
+            '#ak-tam .ihy-h-sira{display:flex;align-items:center;gap:clamp(8px,1.4vw,20px);',
+            '  flex-wrap:wrap;justify-content:center}',
+            '#ak-tam .ihy-h-et{font-size:clamp(13px,2vh,26px);font-weight:800;color:#0E6655;',
+            '  letter-spacing:.4px;min-width:7ch;text-align:end}',
+            '#ak-tam .ihy-h-tuslar{display:flex;gap:clamp(6px,.8vw,12px);flex-wrap:wrap}',
+            '#ak-tam .ihy-h-tus{font-family:inherit;cursor:pointer;font-weight:700;',
+            '  font-size:clamp(14px,2.2vh,28px);padding:.6vh 1.6vw;min-width:3.4em;',
+            '  border-radius:999px;border:2px solid #bfe3d8;background:#fff;color:#0E6655}',
+            '#ak-tam .ihy-h-tus:hover{background:#eefaf6}',
+            '#ak-tam .ihy-h-tus.secili{background:#16A085;border-color:#16A085;color:#fff}',
+            '#ak-tam .ihy-h-say{font-size:clamp(13px,1.9vh,24px);color:#94a3b8}',
+            '#ak-tam .ihy-ayar-tus{min-width:2.6em;font-size:clamp(17px,2.8vh,32px)}',
             '#ak-tam .ihy-soru{font-size:clamp(30px,8.2vh,112px);line-height:1.16;',
             '  padding:0;text-align:start;width:100%}',
             '#ak-tam .ihy-duzen .ihy-bos{font-size:clamp(56px,13vh,160px)}',

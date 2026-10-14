@@ -9618,3 +9618,49 @@ göründüğü doğrulandı (1 / 24).
     ötekiler gibi hatırlanıyor (öntanımı açık).
   Dosyalar: sarf/kaliplartablosu.js (kaliplartablosu.html ?v=238)
   Yedek: _kaynak/yedekler/20261014-kalip-ayar-varsayilan/
+
+14.10.2026 — Merak Çarkı'na KİTAP ÖNERİSİ bölümü (yeni)
+  Öğretmen: "merak çarkına yeni bi özellik ekle, amacımız ortaokul ve lise
+  öğrencilerine sevdiği alanla ilgili kitap önermek, yaşlar için filtre
+  olsun, alan ve yaş veya seviye filtreleri olsun." Yer olarak "sadece ayrı
+  bölüm", kitap bilgisi olarak "ad · yazar · alan · seviye · 1 cümle" seçildi.
+  • merak/kitapveri.js — 413 kitap, 19 alan, 4 seviye (Ortaokul 5-6 / 7-8,
+    Lise 9-10 / 11-12; yaş aralıkları da yazılı). Bir kitap birden çok alana
+    girebiliyor.
+  • merak/kitaponeri.js — sayfanın ALTINA kendini ekleyen bölüm: alan ve
+    seviye filtreleri, ad/yazar araması, «Bana kitap öner» (aynı filtrede
+    tekrar etmez), «Hepsini listele», «okudum» işareti (tarayıcıda).
+    Seçili seviyede kitabı olmayan alanlar soluklaşıyor ve her alanın
+    yanında kaç kitap olduğu yazıyor; boş sonuçta en yakın seviye öneriliyor.
+  • merakcarki.html — iki betik eklendi; çarkın kendisine DOKUNULMADI.
+  NOT (önemli): 500 hedeflenmişti, 413'te durduk. Yayınevi/ISBN/yıl bilerek
+  yazılmadı ve listeye yalnız adından ve yazarından emin olunan, Türkçesi
+  yaygın basılan eserler alındı; doğrulayamadığım ~70 kayıt elendi. İstenirse
+  alan alan genişletilebilir (en ince alanlar: teknoloji, sanat, çizgi roman).
+  Dosyalar: merak/kitapveri.js, merak/kitaponeri.js, merakcarki.html
+  Yedek: _kaynak/yedekler/20261014-kitap-onerisi/
+
+14.10.2026 — İstenen Harfi Yaz: hazırlık ekranı, süre ve hız seçimi
+  Öğretmen: "saniye seçilebilsin, tıklanınca hemen harf istemesin, ileri
+  tuşuna basınca görünsün ilk örnek, hız da 5 aşama olarak seçilebilsin",
+  ardından "önce soru çıksın 3 saniye sonra zaman başlasın".
+  • Etkinlik artık HAZIRLIK ekranıyla açılıyor: süre (Süresiz · 10 · 15 ·
+    20 · 30 · 45 sn) ve yazma hızı (5 kademe) seçiliyor, ilk soru ancak
+    «Başla ›» (ya da → tuşu) ile geliyor.
+  • Hız, harf kartlarındaki hız ayarının AYNISI (harfDetay.hizSec) —
+    birinde seçilen ötekinde de geçerli. Süre kidefIhySure'de saklanıyor.
+  • Soru geldikten sonra ilk 3 saniye OKUMA PAYI: daire dolu ve soluk
+    yeşil bekler (nefes alır), süre ondan sonra işlemeye başlar.
+  • «Süresiz» seçilince daire hiç çıkmıyor ve cevap kendiliğinden
+    açılmıyor; akışı tamamen öğretmen yürütüyor.
+  • Soru ekranının alt satırına küçük bir ⚙ tuşu kondu: hazırlık ekranına
+    (süre/hız) ders ortasında dönmek için.
+  Dosya: okumayazma/alfabe_akordiyon.js (alfabe.html ?v=26)
+  Yedek: _kaynak/yedekler/20261014-ihy-sure-hiz/
+
+14.10.2026 — م harfinin BAŞTAKİ yazım animasyonu düzeltildi
+  Öğretmen yeni darbe yolunu gönderdi; yalnız strokes[0].d değişti,
+  vb ve fill aynı kaldı. Artık önce göz (halka) yazılıyor, sonra kuyruk
+  sola doğru bağlantı çizgisine iniyor.
+  Dosya: okumayazma/alfabe_harf_yazim.js (alfabe.html ?v=4)
+  Yedek: _kaynak/yedekler/20261014-mim-bastaki/
