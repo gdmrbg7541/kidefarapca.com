@@ -12,12 +12,14 @@
       gtag('js', new Date());
       gtag('config', 'G-FV9JD15KLW');
     </script>
-    <link rel="stylesheet" href="okumayazma/alfabe.css?v=62df64ce">
+    <link rel="stylesheet" href="okumayazma/alfabe.css?v=519f4486">
     <link rel="stylesheet" href="arakom.css?v=4383f21b">
 </head>
 <body>
 
-<div class="main-app">
+<!-- ÇEKMECE KAPALI BAŞLAR (14.10.2026): sidebar kipinde sayfa açılınca
+     sol kenarda yalnız ok durur, ekran tamamen etkinliğe kalır. -->
+<div class="main-app nav-gizli">
     <!-- ŞERİT GİZLİYKEN görünen küçük düğme. Amaç tam ekran: LİSTE
          simgesine basınca şerit katlanır, yerine bu kumanda kalır; aynı
          simgeye tekrar basınca geri açılır. Sekme seçmek şeridi kapatmaz.
@@ -28,7 +30,18 @@
          Ana Sayfa + şerit aç/kapa, altta Harf Tanıtımı araç şeridi.
          Şerit açıkken sayfanın başka bir yerine dokunulursa kendiliğinden
          katlanır. -->
-    <div id="navMini" class="nav-mini">
+    <!-- SOL KENARDAKİ OK (14.10.2026) — öğretmen: "kumandayı bi sidebar
+         şeklinde soldan okla çıkacak şekilde ayarlayalım". Kumanda kenara
+         yapışıkken görünür; basınca çekmece içeri kayar, ok ters döner.
+         Kumanda sürüklenip yüzen kipe geçerse ok gizlenir. -->
+    <button type="button" id="navKol" onclick="navAc(event)"
+            title="Kumandayı aç / kapat" aria-label="Kumandayı aç / kapat">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" fill="none" stroke="currentColor"
+                  stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+    <div id="navMini" class="nav-mini nm-kenar">
         <div class="nav-mini-tut" id="navMiniTut" title="Tutup sürükleyerek taşıyın">
             <svg class="nm-tutamac" viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/>
@@ -36,6 +49,14 @@
                 <circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/>
             </svg>
             <span id="navMiniAd" class="nav-mini-ad">Harf Tanıtımı</span>
+            <!-- Yalnız YÜZEN kipte görünür: kumandayı sol kenara geri yapıştırır. -->
+            <button type="button" class="nm-yapis" onclick="navKenaraAl(event)"
+                    title="Sol kenara yapıştır" aria-label="Sol kenara yapıştır">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 4v16M20 12H9M13 7l-5 5 5 5" fill="none" stroke="currentColor"
+                          stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
         </div>
         <div class="nav-mini-sira">
             <!-- data-kidef-home: sistem/geri.js sayfada anasayfa tuşu bulamazsa
@@ -527,7 +548,38 @@ function navAdYaz() {
         ev.setAttribute('title', ip);
         ev.setAttribute('aria-label', ip);
     }
+    navKolYerlestir();
 }
+
+/* ---- SOLDAN AÇILAN ÇEKMECE (14.10.2026) ----------------------------
+   Ok, çekmece KAPALIYKEN sol kenarda (left:0), AÇIKKEN çekmecenin sağ
+   kenarında durur — böylece "kapat" tuşu da odur. Genişlik CSS'te
+   clamp'li olduğu için ölçü koddan değil, elemandan okunuyor. */
+function navKolYerlestir() {
+    var kol = document.getElementById('navKol');
+    var m = document.getElementById('navMini');
+    var k = document.querySelector('.main-app');
+    if (!kol || !m) return;
+    var kenarda = m.classList.contains('nm-kenar');
+    document.body.classList.toggle('nav-kenar', kenarda);
+    document.body.classList.toggle('nav-kapali', !!(k && k.classList.contains('nav-gizli')));
+    if (!kenarda) { kol.style.left = ''; return; }
+    var acik = !(k && k.classList.contains('nav-gizli'));
+    kol.style.left = acik ? (m.offsetWidth + 'px') : '0px';
+}
+
+/* Kumandayı sol kenara geri yapıştırır (yüzen kipten çekmece kipine). */
+function navKenaraAl(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    var m = document.getElementById('navMini');
+    if (!m) return;
+    m.classList.remove('nm-yuzen');
+    m.classList.add('nm-kenar');
+    m.style.left = ''; m.style.top = ''; m.style.right = ''; m.style.bottom = '';
+    navKolYerlestir();
+    if (typeof playClick === 'function') { try { playClick(); } catch (h) { } }
+}
+window.navKenaraAl = navKenaraAl;
 
 /* ---- KUMANDAYI SÜRÜKLE ---------------------------------------------
    Kumanda HER AÇILIŞTA SOL ÜST köşede başlar; kullanıcı isterse
@@ -552,7 +604,24 @@ function navAdYaz() {
             return [x, y];
         }
         tut.addEventListener('pointerdown', function (e) {
+            /* Tutamacın içindeki "kenara al" tuşu sürükleme başlatmasın:
+               preventDefault onun tıklamasını yutuyordu. */
+            if (e.target && e.target.closest && e.target.closest('.nm-yapis')) return;
             var g = kap.getBoundingClientRect();
+            /* ÇEKMECEDEN KOPMA: kenara yapışıkken tutamaçtan çekilince
+               kumanda yüzen kipe geçer ve bulunduğu yerden sürüklenmeye
+               başlar (zıplamasın diye ölçüsü o anki yerinden alınır). */
+            if (kap.classList.contains('nm-kenar')) {
+                kap.classList.remove('nm-kenar');
+                kap.classList.add('nm-yuzen');
+                kap.style.left = g.left + 'px'; kap.style.top = g.top + 'px';
+                kap.style.right = 'auto'; kap.style.bottom = 'auto';
+                kap.style.height = ''; kap.style.width = '';
+                var k0 = document.querySelector('.main-app');
+                if (k0) k0.classList.remove('nav-gizli');   /* yüzerken açık dursun */
+                navKolYerlestir();
+                g = kap.getBoundingClientRect();
+            }
             suruk = true; sx = e.clientX; sy = e.clientY; bx = g.left; by = g.top;
             kap.classList.add('nm-tasiniyor');
             try { tut.setPointerCapture(e.pointerId); } catch (h) { }
@@ -566,6 +635,10 @@ function navAdYaz() {
         function bit() {
             if (!suruk) return;
             suruk = false; kap.classList.remove('nm-tasiniyor');
+            /* SOL KENARA BIRAKILIRSA YİNE YAPIŞIR: ayrı bir tuşa basmak
+               gerekmesin, çekmece sezgisel olsun. */
+            var g = kap.getBoundingClientRect();
+            if (g.left <= 52) { navKenaraAl(); }
         }
         tut.addEventListener('pointerup', bit);
         tut.addEventListener('pointercancel', bit);
@@ -598,6 +671,10 @@ document.addEventListener('pointerdown', function (e) {
     if (!k || k.classList.contains('nav-gizli')) return;
     var m = document.getElementById('navMini');
     if (m && e.target && (e.target === m || m.contains(e.target))) return;
+    /* SOL KENARDAKİ OK "dışarısı" DEĞİLDİR (14.10.2026): burada kapanıp
+       hemen ardından okun kendi tıklaması yeniden açıyordu — çekmece
+       kapanmıyor gibi görünüyordu. Okun işini navAc yapar. */
+    if (e.target && e.target.closest && e.target.closest('#navKol')) return;
     navKapat();
 }, true);
 /* Gömülü çerçevedeki (Dinle ve Yaz) tıklamalar üst sayfaya ulaşmaz;
@@ -628,7 +705,7 @@ function dvyAc() {
 </script>
 <!-- Harf yazım verisi: üretilen dosya (kaynak _kaynak/harf-yazim/*.json).
      alfabe_harf_detay.js'ten ÖNCE yüklenmeli: HARF_YAZIM orada kullanılıyor. -->
-<script src="okumayazma/alfabe_harf_yazim.js?v=72e2f590"></script>
+<script src="okumayazma/alfabe_harf_yazim.js?v=ff8490d7"></script>
 <!-- Biçim örnekleri (üretilen): _kaynak/uretici/harfOrnek.py -->
 <script src="okumayazma/alfabe_harf_ornek.js?v=0a31e8e4"></script>
 <script src="okumayazma/alfabe_harf_detay.js?v=15e4b436"></script>

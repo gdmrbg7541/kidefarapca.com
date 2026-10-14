@@ -9718,3 +9718,36 @@ göründüğü doğrulandı (1 / 24).
   DENENDİ: kılavuz açıkken anlam çıkmıyor (doğru), kılavuz kapanır
   kapanmaz basınca çıkıyor, art arda vezinlerde ve perde açılıp
   kapandıktan hemen sonra da çıkıyor.
+
+14.10.2026 — ر ve ز yazım animasyonları düzeltildi
+  Öğretmen ر'nın dört biçimi için (b · o · s · n) yeni darbe yollarını
+  gönderdi; yalnız strokes[0].d değişti, vb ve fill'e dokunulmadı.
+  ز için: "aynı şekilde sadece noktalarını ekleyerek yap" — ز'nin vb'si ve
+  gövde fill'i ر ile birebir aynı olduğu için darbeler ر'dan kopyalandı,
+  ز'nin kendi noktası (taps) olduğu gibi bırakıldı. Dört biçimde de
+  nokta yerinde yazılıyor, denendi.
+  Dosya: okumayazma/alfabe_harf_yazim.js
+  Yedek: _kaynak/yedekler/20261014-ra-bastaki/, 20261014-ra-ze/
+
+14.10.2026 — alfabe.html kumandası: soldan açılan sidebar
+  Öğretmen: "kumandayı bi sidebar şeklinde soldan okla çıkacak şekilde
+  ayarlayalım, yüzebilir bi kumanda olsun."
+  İKİ KİP:
+  1) KENARDA (öntanımlı): kumanda sol kenara yapışık tam boy bir çekmece.
+     Sayfa KAPALI açılıyor — ekranın tamamı etkinliğe kalıyor, sol kenarda
+     yalnız yeşil bir ok duruyor. Oka basınca çekmece içeri kayıyor, ok
+     çekmecenin sağ kenarına geçip ters dönüyor (kapatma tuşu oluyor).
+     Çekmece içeriğin ÜSTÜNDE yüzüyor, sayfayı itmiyor.
+  2) YÜZEN: tutamaçtan sürükleyince çekmece kenardan kopuyor ve eski
+     yüzen kumandaya dönüyor; istenen yere konabiliyor. Sol kenara yakın
+     bırakılırsa kendiliğinden geri yapışıyor, ayrıca tutamaktaki ⇤ tuşu
+     da yapıştırıyor.
+  Açık/kapalı durumu eskisi gibi .main-app'teki "nav-gizli" ile tutuluyor;
+  navAc(), dışarı tıklayınca kapanma ve klavye kısayolu aynen çalışıyor.
+  İKİ KÜÇÜK HATA DA ÇIKTI, DÜZELTİLDİ:
+   · "dışarı tıklayınca kapan" kuralı oku da dışarısı sayıyordu; çekmece
+     kapanıp okun kendi tıklaması hemen geri açıyordu (kapanmıyor gibi).
+   · Tutamacın pointerdown'ı preventDefault yaptığı için ⇤ tuşunun
+     tıklaması yutuluyordu.
+  Dosyalar: alfabe.html, okumayazma/alfabe.css
+  Yedek: _kaynak/yedekler/20261014-kumanda-sidebar/

@@ -2776,3 +2776,87 @@
             .km-ok { width: 26px; height: 26px; font-size: 1.1rem; }
             .km-tur-yazi { font-size: .74rem; min-width: 58px; }
         }
+
+/* ==========================================================================
+   KUMANDA: SOLDAN AÇILAN SİDEBAR  (14.10.2026)
+   --------------------------------------------------------------------------
+   Öğretmen: "alfabe.html deki kumandayı bi sidebar şeklinde soldan okla
+   çıkacak şekilde ayarlayalım, yüzebilir bi kumanda olsun."
+
+   İKİ KİP
+     1) KENARDA (öntanımlı, .nm-kenar): kumanda sol kenara yapışık tam boy
+        bir çekmecedir. Kapalıyken tamamen ekran dışına kayar; geriye sol
+        kenardaki ok kalır. Oka basınca içeri kayar, ok ters döner.
+     2) YÜZEN (.nm-yuzen): tutamaçtan sürüklenince çekmece kenardan kopar ve
+        eski hâline, ekranda istenen yere konabilen yüzen kumandaya döner.
+        Sol kenara yakın bırakılırsa ya da ⇤ tuşuna basılırsa yine yapışır.
+
+   Açık/kapalı durumu eskisi gibi .main-app'teki "nav-gizli" ile tutuluyor;
+   böylece navAc(), dışarı tıklayınca kapanma ve klavye kısayolu olduğu
+   gibi çalışmaya devam ediyor.
+   ========================================================================== */
+.nav-mini.nm-kenar {
+    position: fixed; left: 0; top: 0; bottom: 0; height: 100dvh;
+    width: min(260px, 78vw); max-width: 78vw;
+    justify-content: flex-start; gap: 7px;
+    padding: 12px 12px 14px 10px;
+    border-radius: 0 20px 20px 0; border-left: none;
+    background: linear-gradient(135deg, rgba(22, 160, 133, .62) 0%, rgba(17, 122, 101, .62) 100%);
+    -webkit-backdrop-filter: blur(9px); backdrop-filter: blur(9px);
+    box-shadow: 6px 0 26px rgba(17, 122, 101, .3);
+    transition: transform .3s cubic-bezier(.3, .7, .2, 1);
+    transform: none; overflow: hidden;
+}
+/* Kapalı: tamamen sola kayar. "nav-gizli"nin yüzen kipteki soluklaştırma
+   kuralları burada geçmez — çekmece zaten ekran dışında. */
+.main-app.nav-gizli .nav-mini.nm-kenar { transform: translateX(-101%); }
+.main-app.nav-gizli .nav-mini.nm-kenar,
+.main-app.nav-gizli .nav-mini.nm-kenar:hover {
+    background: linear-gradient(135deg, rgba(22, 160, 133, .62) 0%, rgba(17, 122, 101, .62) 100%);
+    border-color: rgba(255, 255, 255, .3);
+    box-shadow: 6px 0 26px rgba(17, 122, 101, .3);
+}
+.main-app.nav-gizli .nav-mini.nm-kenar > .nav-mini-tut,
+.main-app.nav-gizli .nav-mini.nm-kenar > .nav-mini-sira { opacity: 1; }
+/* Çekmecede sekme listesi her zaman açık durur ve kalan boyu doldurur. */
+.main-app.nav-gizli .nav-mini.nm-kenar .nav-tabs { display: flex; }
+.nav-mini.nm-kenar .nav-tabs { flex: 1 1 auto; max-height: none; min-height: 0; }
+.nav-mini.nm-kenar .nav-mini-tut { flex: none; }
+.nav-mini.nm-kenar .nav-mini-sira { flex: none; }
+
+/* ---- sol kenardaki ok ---- */
+#navKol {
+    position: fixed; left: 0; top: 50%; transform: translateY(-50%);
+    z-index: 61; display: none; align-items: center; justify-content: center;
+    width: 30px; height: 74px; padding: 0; cursor: pointer;
+    border: none; border-radius: 0 14px 14px 0;
+    background: linear-gradient(135deg, rgba(22, 160, 133, .92) 0%, rgba(17, 122, 101, .92) 100%);
+    color: #fff; box-shadow: 3px 0 12px rgba(17, 122, 101, .34);
+    transition: left .3s cubic-bezier(.3, .7, .2, 1), background .18s, width .18s;
+}
+body.nav-kenar #navKol { display: inline-flex; }
+#navKol:hover { width: 36px; background: linear-gradient(135deg, #16A085 0%, #0E7C66 100%); }
+#navKol svg { width: 19px; height: 19px; display: block; transition: transform .3s ease; }
+/* Çekmece açıkken ok ters döner: "kapat" demek */
+body.nav-kenar:not(.nav-kapali) #navKol svg { transform: rotate(180deg); }
+#navKol:focus-visible { outline: 3px solid #fff; outline-offset: -3px; }
+
+/* ---- yüzen kipe dönünce: eski görünüm (kural yok, .nm-kenar kalkıyor) ---- */
+/* Yüzerken tutamakta "kenara al" tuşu çıkar. */
+.nm-yapis { display: none; }
+.nav-mini.nm-yuzen .nm-yapis {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; flex: none; margin-inline-start: 4px;
+    border: none; border-radius: 9px; cursor: pointer;
+    background: rgba(6, 62, 51, .55); color: #fff;
+}
+.nav-mini.nm-yuzen .nm-yapis:hover { background: rgba(6, 62, 51, .85); }
+.nav-mini.nm-yuzen .nm-yapis svg { width: 15px; height: 15px; display: block; }
+
+@media (max-width: 640px) {
+    .nav-mini.nm-kenar { width: min(240px, 84vw); }
+    #navKol { width: 26px; height: 66px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .nav-mini.nm-kenar, #navKol { transition: none; }
+}
