@@ -25,11 +25,17 @@
    _kaynak/uretici/metinTahliliListe.py ile yeniden üretiliyor.
    ===================================================================== */
 (function () {
-  var KOK = 'metintahlili/', MK = 'muhadese/', S = '?v=20261014c';
+  var KOK = 'metintahlili/', MK = 'muhadese/', S = '?v=20261014d';
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   if (!/^[0-9]+(_[0-9]+)+$/.test(d)) d = '';
+  /* Aynı sınıfın birden çok kitabı var (6 ve 7. sınıfın ikinci kitabı,
+     10. sınıf Seçmeli): dersin HANGİ kitaptan olduğu k parametresiyle
+     geliyor — k=y2627 / k=sec10 / k= (varsayılan kitap). Bağlantıda k
+     yoksa eskisi gibi seçili kitaba göre bulunur. */
+  var onek = (p.get('k') || '').replace(/[^a-z0-9]/gi, '');
   window.KIDEF_MT_DERS = d;
+  window.KIDEF_MT_ONEK = p.has('k') ? onek : null;
   document.documentElement.className += (d ? ' mt-okuma' : ' mt-liste');
 
   var y = [];
@@ -40,9 +46,11 @@
   y.push('<link rel="stylesheet" href="' + KOK + 'metintahlili.css' + S + '">');
   y.push('<scr' + 'ipt src="' + KOK + 'dersler.js' + S + '"><\/scr' + 'ipt>');
   if (d) {
-    var veri = (window.KidefSinifVeri && KidefSinifVeri.dersYolu)
-      ? KidefSinifVeri.dersYolu(d, MK + 'veri/')
-      : MK + 'veri/' + d + '.js';
+    var veri = p.has('k')
+      ? MK + 'veri/' + (onek ? onek + '/' : '') + d + '.js'
+      : ((window.KidefSinifVeri && KidefSinifVeri.dersYolu)
+          ? KidefSinifVeri.dersYolu(d, MK + 'veri/')
+          : MK + 'veri/' + d + '.js');
     y.push('<scr' + 'ipt src="' + veri + S + '"><\/scr' + 'ipt>');
     /* SARF KÖPRÜSÜ — muhâdesedeki ile aynı: kelime→[kök, tür] haritası ve
        sol alttaki tür şeridi. Tıklanan kelimenin türü yanar, şeritteki

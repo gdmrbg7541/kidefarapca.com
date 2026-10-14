@@ -26,6 +26,23 @@
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
 
+  { t: '2026-10-14', e: 'Metin Tahlili', b: '5-10. sınıfın metinleri Kidef Arapça kitabının içinde',
+    m: 'Kitabın içindekiler sayfasının hemen ardına her sınıf için bir sayfa geldi: '
+     + 'sınıfın üniteleri ve dersleri sırayla duruyor, kaç metin olduğu yanında '
+     + 'yazıyor. Bir derse dokununca o dersin cümleleri ve diyalogları tam ekran '
+     + 'açılıyor — ayrı bir dosya açmana, bağlantı aramana gerek yok. Hangi sınıfa '
+     + 'girersen gir, o sınıfın metni iki dokunuş uzakta.' },
+
+  { t: '2026-10-14', e: 'Metin Tahlili', b: 'Cümleyi çocuk kendi kuruyor, tercümeyi sen açtırıyorsun',
+    m: 'Arapça kelimeye dokununca yalnız o kelimenin Türkçesi tam üstünde beliriyor; '
+     + 'cümlenin düzgün Türkçesi, bütün kelimeler açılana kadar aşağıda gizli '
+     + 'duruyor. Böylece sınıf kelimeleri toplayıp cümleyi önce zihninden kuruyor, '
+     + 'sonra kendi kurduğuyla karşılaştırıyor. Üstteki anahtarlardan "Hepsi '
+     + 'açılınca tercüme"yi kapatırsan cümle hiç açılmıyor; sen Tercüme düğmesine '
+     + 'basana kadar sınıf uğraşıyor. "Harekesiz oku" anahtarı harekeleri gizliyor, '
+     + 'aynı metni ileri seviyede bir daha okutabilirsin. Kökü bilinen kelimeden '
+     + 'kalıplar tablosuna geçmek de muhâdesedeki gibi duruyor.' },
+
   { t: '2026-10-11', e: 'Harf Tanıtımı', b: 'Harfler tahtada tek kalemle yazılıyor',
     m: 'Bir harfe dokununca dört yazılışı birlikte yazılıyor ve kalem harfin '
      + 'gerçek yazım sırasını izliyor; ekranın başka bir yerinde ikinci bir '

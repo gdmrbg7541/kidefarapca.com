@@ -28,6 +28,14 @@
 
 * { box-sizing: border-box; }
 
+/* KAYDIRMA (14.10.2026, Geylani: "touch padten iki parmakla aşağı yukarı
+   hareket edebilelim"): metin kitabın içinde çerçevede açıldığı için
+   kaydırma arkadaki kitaba zincirlenmesin, dokunmatikte dikey hareket her
+   zaman sayfayı kaydırsın. */
+html { overscroll-behavior-y: contain; }
+body { overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
+.mt-govde, .mt-liste-govde { touch-action: pan-y pinch-zoom; }
+
 body {
     margin: 0;
     font-family: 'Marhey', system-ui, sans-serif;
@@ -115,8 +123,20 @@ html.mt-cerceve .mt-ust { padding-inline-end: 64px; }
 .mt-sw.acik .mt-sw-ad { color: var(--mt-yesil-k); font-weight: 600; }
 .mt-sw:hover .mt-sw-ad { color: var(--mt-murekkep); }
 
+/* ---------- simgeler (emoji değil, çizgi SVG) ---------- */
+.mt-sim {
+    width: 1.15em; height: 1.15em; flex: 0 0 auto; display: block;
+    fill: none; stroke: currentColor; stroke-width: 1.7;
+    stroke-linecap: round; stroke-linejoin: round;
+}
+.mt-bolum-sim { width: 1.25em; height: 1.25em; color: var(--mt-yesil); }
+.mt-t .mt-sim { width: 1.25em; height: 1.25em; }
+.mt-kisi .mt-sim { width: 62%; height: 62%; color: #4E7BA6; stroke-width: 1.8; }
+.mt-kisi-2 .mt-sim { color: #C07C3A; }
+
 /* ---------- tuşlar ---------- */
 .mt-t {
+    display: inline-flex; align-items: center; gap: 7px;
     border: 1.5px solid var(--mt-cizgi); background: #F7F9FC; color: #5b6b7b;
     border-radius: 999px; padding: 7px 15px; font-family: inherit; font-size: .96rem;
     cursor: pointer; transition: all .18s ease;
@@ -249,6 +269,12 @@ html.mt-cerceve .mt-ust { padding-inline-end: 64px; }
 .mt-sinif > summary .mt-sayi { margin-inline-start: auto; font-size: .92rem;
     color: var(--mt-gri); font-weight: normal; }
 .mt-sinif[open] > summary { border-bottom: 1px solid var(--mt-cizgi); background: #F7FBFF; }
+/* Sınıfın birden çok kitabı varsa kitap başlığı (6, 7, 10. sınıf) */
+.mt-kitap { margin: 12px 18px 2px; padding: 8px 12px; border-radius: 12px;
+    background: #F2FBF8; border: 1px solid #CFEFE6; }
+.mt-kitap b { display: block; font-size: 1.02rem; color: var(--mt-yesil-k); }
+.mt-kitap small { display: block; color: var(--mt-gri); font-size: .88rem; }
+
 .mt-u { padding: 10px 18px 4px; }
 .mt-u h3 { margin: 0 0 8px; font-size: 1.02rem; color: var(--mt-murekkep); font-weight: 700; }
 .mt-u h3 span { font-family: 'arakom'; color: var(--mt-yesil-k); margin-inline-start: 8px; }

@@ -29,6 +29,15 @@
   text-align: center; margin: 0 0 9px; }
 
 /* ---- ünite / ders satırları ---- */
+/* Ders sayısı çoksa (6 ve 8. sınıf: 6 ünite + 18 ders) liste sayfayı
+   aşıyordu; iki sütuna bölünüyor. Satırlar sütun ortasında bölünmüyor. */
+.hs-mt .mtp-iki { column-count: 2; column-gap: 22px; }
+.hs-mt .mtp-iki > * { break-inside: avoid; -webkit-column-break-inside: avoid; }
+.hs-mt .mtp-iki .mtp-u { break-after: avoid; -webkit-column-break-after: avoid; }
+.hs-mt .mtp-iki .mtp-d { font-size: 9.6px; padding: 2px 4px; }
+.hs-mt .mtp-iki .mtp-sy { min-width: 44px; flex: 0 0 44px; font-size: 8.8px; }
+.hs-mt .mtp-iki .ar { font-size: 1.15em; }
+
 .hs-mt .mtp-u { color: #C00000; font-size: 11px; margin: 9px 0 2px;
   display: flex; gap: 7px; align-items: baseline; }
 .hs-mt .mtp-u:first-child { margin-top: 0; }
@@ -37,8 +46,15 @@
   text-decoration: none; color: inherit; }
 .hs-mt a.mtp-d { cursor: pointer; transition: background .12s; }
 .hs-mt a.mtp-d:hover, .hs-mt a.mtp-d:active { background: #FBEFD6; }
-.hs-mt .mtp-sim { font-family: 'Apple Color Emoji', 'Segoe UI Emoji',
-  'Noto Color Emoji', sans-serif; font-size: 8.5px; width: 13px; flex: 0 0 13px; }
+/* Simgeler çizgi SVG (emoji değil): kutusu sabit, rengi satırdan gelir. */
+.hs-mt .mtp-sim { width: 12px; height: 12px; flex: 0 0 12px; color: #17817E;
+  position: relative; top: 1.5px; }
+.hs-mt .mtp-yok .mtp-sim { color: #E3A02A; }
+.hs-mt .mtp-sim-i { width: 100%; height: 100%; display: block; }
+.hs-mt .mtp-yonerge .mtp-sim-i, .hs-mt .mtp-bekle .mtp-sim-i {
+  width: 1.25em; height: 1.25em; display: inline-block;
+  vertical-align: -.28em; margin-inline-end: .3em; }
+.hs-mt .mtp-yonerge .mtp-sim-ic { color: #17817E; }
 .hs-mt .mtp-ad { flex: 1; }
 .hs-mt .mtp-sy { color: #17817E; font-size: 9.5px; min-width: 52px;
   text-align: right; flex: 0 0 52px; font-variant-numeric: tabular-nums; }
@@ -48,13 +64,22 @@
 /* ---- basılı İçindekiler sayfasındaki (s.4) şerit ---- */
 .hs-icindekiler .i-mt { margin-top: 13px; border-top: 1px solid #222; padding-top: 7px; }
 .hs-icindekiler .i-mt-bas { color: #C00000; font-size: 9px; letter-spacing: .8px;
-  margin-bottom: 5px; }
+  margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+.hs-icindekiler .i-mt-sim { width: 12px; height: 12px; flex: 0 0 12px; }
 .hs-icindekiler .i-mt-cips { display: flex; flex-wrap: wrap; gap: 4px; }
 .hs-icindekiler .i-mt-c { display: inline-flex; gap: 5px; align-items: baseline;
   border: .6px solid #c9c9c9; border-radius: 3px; padding: 1.6px 7px;
   text-decoration: none; color: inherit; cursor: pointer; }
 .hs-icindekiler .i-mt-c:hover, .hs-icindekiler .i-mt-c:active { background: #FBEFD6; }
 .hs-icindekiler .i-mt-c b { font-variant-numeric: tabular-nums; color: #17817E; }
+
+/* Sınıfın birden çok kitabı varsa kitap başlığı (6, 7 ve 10. sınıf) */
+.hs-mt .mtp-kt { margin: 10px 0 3px; padding: 4px 7px; border-radius: 4px;
+  background: #F2FBF8; border: 1px solid #CFEFE6; break-inside: avoid; }
+.hs-mt .mtp-kt b { display: block; font-size: 10.5px; color: #17817E; }
+.hs-mt .mtp-kt span { display: block; font-size: 8.6px; color: #8a8a8a; }
+.hs-mt .mtp-kt:first-child { margin-top: 0; }
+.hs-mt .mtp-ust .mtp-kitap { line-height: 1.15; }
 
 /* ==========================================================================
    TAM SAYFA ALIŞTIRMA  (#pEtkinlik.tam)                        14.10.2026
@@ -82,3 +107,41 @@
 }
 .panel.orta.tam > .pbas .kapat:hover { background: #FDECEA; border-color: #F3BDB4; color: #C0392B; }
 .panel.orta.tam > .pgovde { flex: 1 1 auto; min-height: 0; }
+
+/* İçindekiler panelindeki Metin Tahlili simgeleri (emoji değil, çizgi SVG) */
+#tocListe .toc-sim { width: 1.05em; height: 1.05em; display: inline-block;
+  vertical-align: -.18em; }
+#tocListe .unite h3 .toc-sim { color: #17817E; }
+
+/* ==========================================================================
+   İÇİNDEKİLER AKORDİYONU                                       14.10.2026
+   Geylani: "akordiyon sistem olsun". Gruplar kapalı duruyor, başlığa
+   basınca açılıyor; tek seferde bir grup açık.
+   ========================================================================== */
+#tocListe .unite > h3 {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  padding: 9px 10px; margin: 0 0 2px; border-radius: 10px;
+  background: #F6F9FC; border: 1px solid transparent;
+  transition: background .16s ease, border-color .16s ease, color .16s ease;
+  user-select: none;
+}
+#tocListe .unite > h3:hover { background: #EDF4FA; border-color: #DCE7F1; }
+#tocListe .unite > h3:focus-visible { outline: 3px solid #9ED8CB; outline-offset: 2px; }
+#tocListe .unite > h3 > .u-sayi {
+  margin-inline-start: auto; font-size: 10.5px; font-weight: 700;
+  color: #7b8a99; background: #fff; border: 1px solid #E3EAF2;
+  border-radius: 999px; padding: 1px 8px; letter-spacing: 0;
+}
+#tocListe .unite > h3 > .u-ok {
+  width: 15px; height: 15px; flex: 0 0 15px; color: #94a3b8;
+  transition: transform .22s ease;
+}
+#tocListe .unite.acik > h3 { background: #E8F6F2; border-color: #BFE9DE; color: #0E7C66; }
+#tocListe .unite.acik > h3 > .u-ok { transform: rotate(180deg); color: #16A085; }
+#tocListe .unite.acik > h3 > .u-sayi { color: #0E7C66; border-color: #BFE9DE; }
+#tocListe .unite > .dersler { display: none; }
+#tocListe .unite.acik > .dersler {
+  display: flex; padding: 4px 0 8px;
+  animation: tocAcil .18s cubic-bezier(.3, .8, .3, 1);
+}
+@keyframes tocAcil { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }

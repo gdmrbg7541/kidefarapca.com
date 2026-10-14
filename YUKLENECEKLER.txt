@@ -10120,3 +10120,77 @@ DEĞİŞEN  metintahlili/metintahlili.js · metintahlili/metintahlili.css ·
          kitap/kidef-arapca-2-baski/02_cekirdek/js/uygulama.js (tam bayrağı) ·
          kitap/kidef-arapca-2-baski/02_cekirdek/css/sayfa-metintahlili.css
 YEDEK    _kaynak/yedekler/2026-10-14-metintahlili-arayuz/
+
+────────────────────────────────────────────────────────────────────────
+14.10.2026 (6) — OKUMA EKRANI: YATAYDA TÜM ALAN, DEVASA YAZI, SVG SİMGE
+Geylani: "yatay olarak tüm alanı kullan, yazılar devasa olsun" ·
+"emojiler yerine svg ler kullan".
+
+· Kartların 980 px sınırı kalktı: ekranı boydan boya kullanıyor.
+· Arapça clamp(2.2rem, 5.2vw, 6rem) — 1600 px ekranda ~83 px; kelimenin
+  Türkçesi ~24 px, cümlenin tam Türkçesi ~35 px. Satır araları, kelime
+  boşlukları, konuşmacı rozeti ve kart payları da ekrana göre büyüyor.
+· EMOJİ YOK: okuma ekranı, 5-10. sınıf sayfaları, İçindekiler şeridi ve
+  kapak reklamı artık çizgi SVG kullanıyor (24x24, currentColor). Emoji
+  işletim sistemine göre değişiyordu, baskıda ve akıllı tahtada bozuktu.
+  Kitabın KENDİ simgeleri (🎯🧐🛠 … basılı kitapta da olanlar) duruyor.
+DEĞİŞEN  metintahlili/metintahlili.css · metintahlili/metintahlili.js ·
+         _kaynak/uretici/metinTahliliSayfa.py + 03_veri/metintahlili_sayfalar.js ·
+         02_cekirdek/css/sayfa-metintahlili.css ·
+         kapakreklam.js (altı kitapta birden)
+
+────────────────────────────────────────────────────────────────────────
+14.10.2026 (7) — SINIFTA YENİ, PANEL SIRASI, SAYFA TAŞMASI, KAYDIRMA
+· SINIFTA YENİ: ana sayfadaki duyuru köşesine iki kayıt eklendi
+  (sistem/siniftayeni.js, en üstte): metinlerin kitabın içine girdiği ve
+  tercümeyi öğrencinin kendi kurması. Teknik dil yok, dosya adı geçmiyor.
+· İÇİNDEKİLER PANELİ: "Metin Tahlili · N. Sınıf" grupları artık listenin
+  EN BAŞINDA; kitabın kendi üniteleri altta. Grup başlığındaki ve satır
+  başındaki emoji de çizgi SVG oldu.
+· SAYFA TAŞMASI (hata): 6 ve 8. sınıf sayfalarında 6 ünite + 18 ders
+  sayfanın altından taşıyordu, son dersler GÖRÜNMÜYORDU. Satır sayısı
+  18'i geçince liste iki sütuna bölünüyor (.mtp-iki). İki sayfa da
+  artık tam sığıyor; 5-7-9-10 tek sütun.
+· KAYDIRMA: okuma ekranında dikey hareket arkadaki kitaba zincirlenmesin
+  diye overscroll-behavior:contain, dokunmatikte touch-action:pan-y.
+  (Kitabın sayfasında iki parmakla gezinme zaten kitapzoom.js'te var:
+  büyütülmüş sayfada düz kaydırma gezdirir.)
+· ÖNBELLEK: bugün değişen bütün dosyaların ?v= damgası tazelendi
+  (uygulama.js, flip.js, metin.js, sayfa-metintahlili.css, kapakreklam.js,
+  metintahlili_sayfalar.js, dersler.js + beş kitapta kapakreklam.js).
+  Damgasız kalsa tarayıcı eski dosyaları gösterirdi.
+DEĞİŞEN  sistem/siniftayeni.js · metintahlili/metintahlili.css ·
+         _kaynak/uretici/metinTahliliSayfa.py + 03_veri/metintahlili_sayfalar.js ·
+         02_cekirdek/js/uygulama.js · 02_cekirdek/css/sayfa-metintahlili.css ·
+         altı kitabın index.html'i (damga)
+
+────────────────────────────────────────────────────────────────────────
+14.10.2026 (8) — İÇİNDEKİLER AKORDİYONU + BÜTÜN KİTAPLARIN METİNLERİ
+AKORDİYON (Geylani: "akordiyon sistem olsun")
+  Soldan açılan içindekiler artık akordiyon: gruplar kapalı başlıyor,
+  başlığa basınca açılıyor, başka grup açılınca öteki kapanıyor. Başlıkta
+  ders sayısı ve dönen ok var. Arama yapılırken bulunan gruplar açık gelir.
+
+BÜTÜN KİTAPLAR (Geylani: "5-10 arası tüm tahlilleri tamamlayalım")
+  Liste sarf/ihkelime.js MUFREDAT'ından kuruluyordu; orada her sınıfın
+  YALNIZ BİR kitabı var. Muhâdesenin kendi ağacında ise sınıfın bütün
+  kitapları duruyor. Kaynak muhadese/muhadese.js oldu:
+      educationData      → sınıfın varsayılan kitabı
+      educationDataYil   → sınıfın öteki kitapları
+  Böylece listeye 38 ders daha girdi:
+      6. sınıf  2026-2027 yeni MEB kitabı        8 ders   (y2627/)
+      7. sınıf  Mektep Yayınları 2026-2027      18 ders   (y2627/)
+      10. sınıf Ortaöğretim Seçmeli Arapça      12 ders   (sec10/)
+  TOPLAM: 6 sınıf · 9 kitap · 42 ünite · 105 ders · 2.786 metin
+  (önce 67 ders · 1.768 metin).
+  Dersin hangi kitaptan olduğu bağlantıda k= ile taşınıyor
+  (metintahlili.html?ders=7_1_1&k=y2627) — seçili kitaba bakılmıyor,
+  doğru dosya açılıyor. Kitabın sayfalarında ve listede sınıfın birden
+  çok kitabı varsa her kitap kendi başlığıyla ayrılıyor.
+DEĞİŞEN  _kaynak/uretici/metinTahliliListe.py (yeniden yazıldı; node ister)
+         _kaynak/uretici/metinTahliliSayfa.py (kaynağı artık dersler.js)
+         metintahlili/dersler.js · metintahlili/metintahlili.js · .css ·
+         metintahlili.html (k= parametresi, v=20261014d) ·
+         02_cekirdek/js/uygulama.js · css/sayfa-metintahlili.css ·
+         03_veri/metintahlili_sayfalar.js · index.html (damgalar)
+YEDEK    _kaynak/yedekler/2026-10-14-metintahlili-arayuz/dersler-67ders.js

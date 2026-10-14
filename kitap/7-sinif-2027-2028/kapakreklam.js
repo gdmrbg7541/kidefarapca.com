@@ -40,19 +40,35 @@
     '.kr-liste{display:flex;flex-direction:column;gap:.85em;font-size:1.34em;',
     '    color:#2b4660;text-align:start;max-width:24em;}',
     '.kr-s{display:flex;align-items:flex-start;gap:.7em;}',
-    ".kr-s i{font-style:normal;font-family:'Apple Color Emoji','Segoe UI Emoji',",
-    "    'Noto Color Emoji',sans-serif;font-size:1.1em;line-height:1.2;}",
+    '.kr-s i{display:block;flex:0 0 auto;width:1.45em;height:1.45em;color:#16A085;}',
+    '.kr-s i svg{width:100%;height:100%;display:block;}',
     '.kr-kare{display:flex;flex-direction:column;align-items:center;gap:.5em;margin-top:.2em;}',
     '.kr-qr{width:11.5em;height:11.5em;display:block;}',
     '.kr-url{font-size:1.65em;font-weight:700;color:#16A085;letter-spacing:.01em;}',
     '.kr-not{font-size:1.05em;color:#92a3b4;max-width:26em;line-height:1.45;}'
   ].join('\n');
 
+  /* Simgeler çizgi SVG — emoji kullanılmıyor (14.10.2026): emoji işletim
+     sistemine göre değişiyor, baskıda ve akıllı tahtada bozuk çıkıyor. */
+  function svg(ic) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+      + ' stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"'
+      + ' aria-hidden="true">' + ic + '</svg>';
+  }
   var SATIR = [
-    ['\uD83D\uDCDA', 'Bütün sınıfların dijital ders kitapları'],
-    ['\uD83D\uDEE0\uFE0F', 'Sözlük, kalıplar tablosu, sarf ve kelime araçları'],
-    ['\uD83C\uDFAF', 'Sunular, oyunlar ve sınıf etkinlikleri'],
-    ['\uD83D\uDDA8\uFE0F', 'Çıktılar, planlar ve sınav hazırlığı']
+    [svg('<rect x="3" y="15.4" width="18" height="4.2" rx="1.3"/>'
+       + '<rect x="4.6" y="10.9" width="14.8" height="4.2" rx="1.3"/>'
+       + '<rect x="6.2" y="6.4" width="11.6" height="4.2" rx="1.3"/>'),
+     'Bütün sınıfların dijital ders kitapları'],
+    [svg('<circle cx="10.8" cy="10.8" r="6.2"/><path d="m15.4 15.4 5 5"/>'
+       + '<path d="M8.4 10.8h4.8"/>'),
+     'Sözlük, kalıplar tablosu, sarf ve kelime araçları'],
+    [svg('<rect x="3" y="4.6" width="18" height="12" rx="2.2"/>'
+       + '<path d="M9.9 8.5 14.6 11 9.9 13.6z"/><path d="M8.6 20h6.8"/>'),
+     'Sunular, oyunlar ve sınıf etkinlikleri'],
+    [svg('<path d="M7 9V3.8h10V9"/><rect x="3.6" y="9" width="16.8" height="7" rx="2"/>'
+       + '<rect x="7" y="14" width="10" height="6.2" rx="1.2"/>'),
+     'Çıktılar, planlar ve sınav hazırlığı']
   ];
 
   function yap(sinif, ic) {

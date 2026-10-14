@@ -767,6 +767,55 @@
     });
   }
 
+  /* İÇİNDEKİLER AKORDİYONU (14.10.2026, Geylani: "akordiyon sistem olsun")
+     Panel uzun bir liste olmaktan çıktı: gruplar kapalı başlıyor, başlığa
+     basınca açılıyor ve başka grup açılınca öteki kapanıyor (tek açılır).
+     Arama yapılırken bulunan grupların hepsi açık gelir; aramasızken o an
+     açık olan sayfanın grubu kendiliğinden açılır. */
+  function akordiyonKur(l, filtreVar) {
+    var gruplar = [].slice.call(l.querySelectorAll('.unite'));
+    var OK = '<svg class="u-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+      + ' stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"'
+      + ' aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>';
+    gruplar.forEach(function (g) {
+      var h = g.querySelector('h3'), dd = g.querySelector('.dersler');
+      if (!h || !dd) return;
+      var sayac = document.createElement('span');
+      sayac.className = 'u-sayi';
+      sayac.textContent = dd.children.length;
+      h.appendChild(sayac);
+      h.insertAdjacentHTML('beforeend', OK);
+      h.setAttribute('role', 'button');
+      h.tabIndex = 0;
+      g.tocAc = function (durum) {
+        g.classList.toggle('acik', !!durum);
+        h.setAttribute('aria-expanded', durum ? 'true' : 'false');
+      };
+      var tikla = function () {
+        var acik = g.classList.contains('acik');
+        if (!acik) gruplar.forEach(function (x) { if (x !== g && x.tocAc) x.tocAc(false); });
+        g.tocAc(!acik);
+        if (!acik) setTimeout(function () {
+          try { g.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { }
+        }, 60);
+      };
+      h.addEventListener('click', tikla);
+      h.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tikla(); }
+      });
+      g.tocAc(false);
+    });
+    if (filtreVar) {                       /* aramada hepsi açık */
+      gruplar.forEach(function (g) { if (g.tocAc) g.tocAc(true); });
+      return;
+    }
+    /* okunan sayfanın grubu açık gelsin */
+    var ders = dersBul(EK.b(flip && flip.aktif ? flip.aktif : 1));
+    var b = ders && l.querySelector('.ders[data-sayfa="' + ders.sayfa + '"]');
+    var g = b && b.closest ? b.closest('.unite') : null;
+    if (g && g.tocAc) g.tocAc(true);
+  }
+
   /* ============================================================
      FLIP MOTORU
      ============================================================ */
@@ -805,7 +854,8 @@
     if (!a) return;
     e.preventDefault(); e.stopPropagation();
     etkinlikAc({ ad: a.dataset.metinAd || 'Metin Tahlili', tam: true,
-                 dosya: '../../metintahlili.html?ders=' + a.dataset.metin });
+                 dosya: '../../metintahlili.html?ders=' + a.dataset.metin
+                        + '&k=' + (a.dataset.metinK || '') });
   });
 
   /* Ekranda yazan sayfa: basılı numara; ek sayfada "M5" gibi kısa etiket. */
@@ -909,11 +959,23 @@
        kökü bilinen kelimeden kalıplar tablosuna geçiliyor (muhâdesedeki
        köprünün aynısı). Liste: metintahlili/dersler.js (üretilen dosya),
        metin: ../../metintahlili.html?ders=<id> — alıştırma çerçevesinde açılır. */
+    /* SIRA (14.10.2026, Geylani: "soldan açılan içindekiler kısmında da öne
+       çek, en başlarda olsun sınıflara göre metin tahlilleri"): gruplar bir
+       parçada toplanıp listenin BAŞINA konuyor, kitabın kendi üniteleri
+       altta kalıyor. */
+    var mtParca = document.createDocumentFragment();
+    var mtGruplar = [];
     (window.METIN_TAHLILI || []).forEach(function (sf) {
-      var satirlar = [];
-      sf.uniteler.forEach(function (u) {
+      var cok = (sf.kitaplar || []).length > 1;
+      (sf.kitaplar || []).forEach(function (kt) {
+        mtGruplar.push({ sf: sf, kt: kt, ad: sf.ad + (cok ? ' · ' + kt.ad : '') });
+      });
+    });
+    mtGruplar.forEach(function (gr) {
+      var sf = gr.sf, kt = gr.kt, satirlar = [];
+      kt.uniteler.forEach(function (u) {
         u.dersler.forEach(function (d) {
-          if (f && kucuk(sf.ad + ' ' + u.ad + ' ' + d.ad + ' ' + (d.ar || '') +
+          if (f && kucuk(gr.ad + ' ' + u.ad + ' ' + d.ad + ' ' + (d.ar || '') +
                          ' metin tahlili').indexOf(f) < 0) return;
           satirlar.push({ u: u, d: d });
         });
@@ -921,28 +983,42 @@
       if (!satirlar.length) return;
       var g = document.createElement('div');
       g.className = 'unite';
-      g.innerHTML = '<h3>📖 Metin Tahlili · ' + sf.ad + '</h3>';
+      g.innerHTML = '<h3><svg class="toc-sim" viewBox="0 0 24 24" fill="none"'
+        + ' stroke="currentColor" stroke-width="1.8" stroke-linecap="round"'
+        + ' stroke-linejoin="round" aria-hidden="true">'
+        + '<path d="M12 7C10 5.5 7.6 5 5 5.2v12C7.6 17 10 17.5 12 19"/>'
+        + '<path d="M12 7c2-1.5 4.4-2 7-1.8v12c-2.6-.2-5 .3-7 1.8"/>'
+        + '<path d="M12 7v12"/></svg> Metin Tahlili · ' + gr.ad + '</h3>';
       var dd = document.createElement('div');
       dd.className = 'dersler';
       satirlar.forEach(function (x) {
         sayi++;
         var b = document.createElement('button');
         b.className = 'ders';
-        b.innerHTML = '<span class="sim" style="color:#17817E">🙇</span>' +
+        b.innerHTML = '<span class="sim" style="color:#17817E">'
+          + '<svg class="toc-sim" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+          + ' stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"'
+          + ' aria-hidden="true"><path d="M3.4 17.2 6.8 8.6l3.4 8.6"/>'
+          + '<path d="M4.7 14.3h4.3"/><path d="M12.4 7.6h8.2"/><path d="M16.5 6v1.6"/>'
+          + '<path d="M19.9 10.3c-1 3.4-3.4 6-6.4 7.5"/>'
+          + '<path d="M15.1 10.3c.9 2.7 2.7 4.8 5.1 6"/></svg></span>' +
           '<span class="ad">' + x.u.ad.replace(/^(\d+)\. Ünite:\s*/, '$1. ') +
           ' — ' + x.d.ad + '</span><span class="sy">' + (x.d.cumle || '') + '</span>';
-        b.title = sf.ad + ' · ' + x.u.ad + ' — ' + (x.d.cumle || 0) + ' cümle/diyalog';
+        b.title = gr.ad + ' · ' + x.u.ad + ' — ' + (x.d.cumle || 0) + ' cümle/diyalog';
         b.addEventListener('click', function () {
-          etkinlikAc({ ad: 'Metin Tahlili · ' + sf.ad + ' · ' + x.d.ad, tam: true,
-                       dosya: '../../metintahlili.html?ders=' + x.d.id });
+          etkinlikAc({ ad: 'Metin Tahlili · ' + gr.ad + ' · ' + x.d.ad, tam: true,
+                       dosya: '../../metintahlili.html?ders=' + x.d.id
+                              + '&k=' + (kt.onek ? kt.onek.replace(/\//g, '') : '') });
         });
         dd.appendChild(b);
       });
       g.appendChild(dd);
-      l.appendChild(g);
+      mtParca.appendChild(g);
     });
+    if (mtParca.childNodes.length) l.insertBefore(mtParca, l.firstChild);
 
     if (!sayi) l.innerHTML = '<div class="bos-sonuc">Sonuç bulunamadı.</div>';
+    else akordiyonKur(l, !!f);
   }
   tocKur();
 
