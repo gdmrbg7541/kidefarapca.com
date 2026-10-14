@@ -1,0 +1,181 @@
+/* ==========================================================================
+   METİN TAHLİLİ                              metintahlili/metintahlili.css
+   --------------------------------------------------------------------------
+   İKİ EKRAN
+     html.mt-liste  → sınıf / ünite / ders listesi
+     html.mt-okuma  → bir dersin metni (cümle kartları)
+
+   TASARIM KARARI — TÜRKÇE SATIRI HER ZAMAN YER TUTAR
+   Kelimenin Türkçesi kapalıyken de kutusu duruyor (görünmez). Böylece:
+     · kelimeye tıklayınca satır zıplamıyor,
+     · cümle iki satıra düşünce iki satır arasında Türkçe için boşluk
+       kendiliğinden kalıyor (Geylani'nin istediği buydu).
+   ========================================================================== */
+:root {
+    --mt-murekkep: #16324F;
+    --mt-gri: #7b8a99;
+    --mt-yesil: #16A085;
+    --mt-yesil-k: #0E7C66;
+    --mt-cizgi: #E3EAF2;
+    --mt-kagit: #FFFFFF;
+    --mt-zemin: #F2F7FB;
+    --mt-turuncu: #E67E22;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Marhey', system-ui, sans-serif;
+    color: var(--mt-murekkep);
+    background:
+        radial-gradient(130% 120% at 50% 0%, #FBFDFF 0%, var(--mt-zemin) 62%);
+    min-height: 100vh;
+}
+
+/* ---------- üst şerit ---------- */
+.mt-ust {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px clamp(12px, 2.4vw, 26px);
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--mt-cizgi);
+}
+.mt-geri {
+    flex: 0 0 auto; width: 42px; height: 42px; border-radius: 999px;
+    border: 2px solid var(--mt-cizgi); background: #F7F9FC; color: var(--mt-yesil-k);
+    font-size: 1.4rem; line-height: 1; cursor: pointer; font-family: inherit;
+}
+.mt-geri:hover { background: #E6FAF5; border-color: var(--mt-yesil); }
+.mt-bas { flex: 1 1 auto; min-width: 0; }
+.mt-bas b { display: block; font-size: clamp(1rem, 2.2vw, 1.35rem); line-height: 1.2; }
+.mt-bas small { display: block; color: var(--mt-gri); font-size: .95rem; }
+.mt-bas .mt-bas-ar { font-family: 'arakom'; color: var(--mt-yesil-k); }
+.mt-ust-tus { display: flex; gap: 8px; flex: 0 0 auto; flex-wrap: wrap; }
+.mt-t {
+    border: 2px solid var(--mt-cizgi); background: #F7F9FC; color: #5b6b7b;
+    border-radius: 999px; padding: 8px 16px; font-family: inherit; font-size: .98rem;
+    cursor: pointer; transition: all .2s ease;
+}
+.mt-t:hover { background: #E6FAF5; border-color: var(--mt-yesil); color: var(--mt-yesil-k); }
+.mt-t.mt-t-ana { background: var(--mt-yesil); border-color: transparent; color: #fff; font-weight: 600; }
+.mt-t.mt-t-ana:hover { filter: brightness(1.06); }
+
+/* ---------- cümle kartları ---------- */
+.mt-govde { padding: clamp(14px, 2.4vw, 28px) clamp(10px, 2.4vw, 26px) 120px; }
+.mt-yonerge {
+    max-width: 980px; margin: 0 auto 16px; color: #475569; line-height: 1.5;
+    background: #F2FBF8; border: 1px solid #CFEFE6; border-radius: 14px;
+    padding: 12px 16px; font-size: 1.02rem;
+}
+.mt-c {
+    max-width: 980px; margin: 0 auto 14px; background: var(--mt-kagit);
+    border: 1.5px solid var(--mt-cizgi); border-radius: 18px;
+    padding: 14px clamp(12px, 2vw, 22px) 12px; position: relative;
+    box-shadow: 0 2px 10px rgba(23, 33, 48, .05);
+}
+.mt-no {
+    position: absolute; top: 10px; inset-inline-start: 12px;
+    font-size: .9rem; color: #B7C4D1; font-weight: 700;
+}
+.mt-satir {
+    display: flex; flex-wrap: wrap; direction: rtl;
+    justify-content: center; align-items: flex-end;
+    gap: 2px clamp(6px, 1vw, 14px);
+    padding: 4px 0 2px;
+}
+/* kelime kutusu: üstte Türkçe (yer tutar), altta Arapça */
+.mt-k {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    border: 0; background: none; padding: 2px 4px 0; cursor: pointer;
+    font-family: inherit; color: inherit; border-radius: 10px;
+    transition: background .18s ease;
+}
+.mt-k:hover { background: #F1F8FF; }
+.mt-k .mt-tr {
+    display: block; direction: ltr; min-height: 1.35em; line-height: 1.3;
+    font-size: clamp(.78rem, 1.5vw, 1rem); color: var(--mt-gri);
+    opacity: 0; transform: translateY(7px);
+    transition: opacity .22s ease, transform .22s ease, color .22s ease;
+    white-space: nowrap;
+}
+.mt-k.acik .mt-tr { opacity: 1; transform: none; color: var(--mt-yesil-k); font-weight: 600; }
+.mt-k .mt-a {
+    display: block; font-family: 'arakom';
+    font-size: clamp(1.6rem, 4.4vw, 2.5rem); line-height: 1.35;
+    color: var(--mt-murekkep); white-space: nowrap;
+    border-bottom: 3px solid transparent; transition: border-color .2s ease, color .2s ease;
+}
+.mt-k.acik .mt-a { color: var(--mt-yesil-k); border-bottom-color: #BFE9DE; }
+/* kökü bilinen kelime: altında ince nokta (muhâdesedeki gibi tıklanınca şerit yanar) */
+.mt-k[data-kidef-kok] .mt-a { border-bottom-color: #EEF2F7; }
+
+/* konuşma sırası kutusu (cümlede tek, diyalogda iki tane) */
+.mt-s { display: flex; align-items: flex-start; gap: 10px; }
+.mt-s + .mt-s { margin-top: 10px; border-top: 1px dashed var(--mt-cizgi); padding-top: 10px; }
+.mt-s-ic { flex: 1 1 auto; min-width: 0; }
+.mt-kisi {
+    flex: 0 0 auto; width: 38px; height: 38px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
+    background: #EEF6FF; border: 1.5px solid #D8E7F5; margin-top: 18px;
+}
+.mt-kisi-2 { background: #FDF1E7; border-color: #F6DCC3; }
+.mt-bolum {
+    max-width: 980px; margin: 22px auto 10px; font-size: 1.15rem;
+    color: var(--mt-yesil-k); border-bottom: 2px solid #D9ECE6; padding-bottom: 6px;
+}
+.mt-alt {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    flex-wrap: wrap; border-top: 1px dashed var(--mt-cizgi);
+    margin-top: 10px; padding-top: 10px;
+}
+.mt-tam {
+    flex: 1 1 260px; text-align: center; font-size: clamp(1rem, 1.8vw, 1.22rem);
+    color: var(--mt-murekkep); line-height: 1.45;
+    opacity: 0; transform: translateY(-5px);
+    transition: opacity .3s ease, transform .3s ease;
+}
+.mt-s.cevrildi .mt-tam { opacity: 1; transform: none; }
+.mt-tam b { color: var(--mt-yesil-k); }
+.mt-tam .mt-tam-et { display: block; font-size: .85rem; color: var(--mt-gri); font-weight: normal; }
+
+/* ---------- liste ekranı ---------- */
+.mt-liste-govde { padding: clamp(14px, 2.4vw, 30px) clamp(12px, 2.6vw, 30px) 60px;
+    max-width: 1100px; margin: 0 auto; }
+.mt-l-bas { text-align: center; margin-bottom: clamp(14px, 2.6vw, 26px); }
+.mt-l-bas h1 { margin: 0 0 6px; font-size: clamp(1.5rem, 3.4vw, 2.3rem); color: var(--mt-yesil-k); }
+.mt-l-bas p { margin: 0; color: var(--mt-gri); font-size: 1.02rem; line-height: 1.5; }
+.mt-sinif { background: var(--mt-kagit); border: 1.5px solid var(--mt-cizgi);
+    border-radius: 18px; margin-bottom: 12px; overflow: hidden; }
+.mt-sinif > summary {
+    cursor: pointer; list-style: none; padding: 14px 18px;
+    display: flex; align-items: center; gap: 12px; font-size: 1.2rem; font-weight: 700;
+}
+.mt-sinif > summary::-webkit-details-marker { display: none; }
+.mt-sinif > summary .mt-sayi { margin-inline-start: auto; font-size: .92rem;
+    color: var(--mt-gri); font-weight: normal; }
+.mt-sinif[open] > summary { border-bottom: 1px solid var(--mt-cizgi); background: #F7FBFF; }
+.mt-u { padding: 10px 18px 4px; }
+.mt-u h3 { margin: 0 0 8px; font-size: 1.02rem; color: var(--mt-murekkep); font-weight: 700; }
+.mt-u h3 span { font-family: 'arakom'; color: var(--mt-yesil-k); margin-inline-start: 8px; }
+.mt-d-kat { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px; padding-bottom: 12px; }
+.mt-d {
+    display: flex; flex-direction: column; gap: 2px; text-align: start;
+    border: 1.5px solid var(--mt-cizgi); border-radius: 14px; background: #FBFDFF;
+    padding: 10px 14px; cursor: pointer; font-family: inherit; color: inherit;
+    transition: all .18s ease;
+}
+.mt-d:hover { border-color: var(--mt-yesil); box-shadow: 0 6px 16px rgba(22, 160, 133, .14);
+    transform: translateY(-2px); }
+.mt-d b { font-size: 1rem; }
+.mt-d .mt-d-ar { font-family: 'arakom'; color: var(--mt-yesil-k); font-size: 1.1rem; }
+.mt-d small { color: var(--mt-gri); font-size: .88rem; }
+
+@media (max-width: 640px) {
+    .mt-ust { flex-wrap: wrap; }
+    .mt-bas b { font-size: 1rem; }
+    .mt-satir { gap: 2px 8px; }
+    .mt-d-kat { grid-template-columns: 1fr; }
+}

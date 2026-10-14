@@ -19,6 +19,9 @@
     this.kucukYolu = ayar.kucukYolu || null;      // (no) => url  düşük çözünürlük
     this.katmanKur = ayar.katmanKur || null;      // (sayfaNo, katmanEl) => void
     this.degisti = ayar.degisti || function () {};
+    /* Sayfa köşesindeki numara: kitaba ek sayfa girince flip sırası ile basılı
+       numara ayrışıyor; etiket(no) verilirse köşede o yazar. (14.10.2026) */
+    this.etiket = ayar.etiket || null;
     this.komsu = ayar.komsu == null ? 3 : ayar.komsu;   // önden/arkadan yüklenecek yaprak
     this.pencere = ayar.pencere == null ? 2 : ayar.pencere; // DOM'da tutulacak yaprak yarıçapı
 
@@ -71,7 +74,7 @@
 
     var n = document.createElement('div');
     n.className = 'no';
-    n.textContent = no;
+    n.textContent = this.etiket ? this.etiket(no) : no;
     f.appendChild(n);
     return f;
   };

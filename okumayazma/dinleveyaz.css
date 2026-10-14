@@ -39,8 +39,17 @@
            olduğundan görünür bir "kutu"/çerçeve kalmaz. */
         body { background:
             radial-gradient(120% 120% at 50% 0%, #f7fbff 0%, var(--color-bg) 60%); }
+        /* TUVAL GENİŞLİĞİ (14.10.2026, Geylani: "dinle ve yaz kısmında yatay
+           olarak ekranı 100'de 100 kullanalım").
+           Ölçek yine min(genişlik, yükseklik) ile belirleniyor — yazılar ve
+           kutular ekrana sığmaya devam ediyor. Değişen şu: tuval artık sabit
+           120rem değil, bulunduğu alanın TAMAMI. Ekran 16:9'dan genişse
+           (alfabe.html'deki sekme çoğu dizüstünde öyle) yanlarda boş bant
+           kalmıyor; dar/uzun ekranda 100% zaten 120rem'e eşit, bir şey
+           değişmiyor. */
         #gameWrapper {
-            width: 120rem; height: 67.5rem; position: relative;
+            width: 100%; max-width: 100vw;
+            height: 67.5rem; max-height: 100dvh; position: relative;
             overflow: hidden; background: transparent; box-shadow: none;
         }
 

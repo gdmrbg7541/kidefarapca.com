@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metin Tahlili</title>
+<!-- Öğretim yılı öneki (5-7. sınıfta ders dosyası yıla göre değişiyor):
+     yükleyiciden ÖNCE gelmeli. -->
+<script src="sistem/sinifveri.js"></script>
+<script>
+/* =====================================================================
+   METİN TAHLİLİ — TEK KAPI                                 (14.10.2026)
+   Öğretmen: "5-10 arası kitap ismine ve konulara göre diyalogları ve
+   cümleleri metin tahlili olarak ... arapça kelimelerin üstüne tıklayınca
+   türkçesi yukarısında belirecek ... tüm kelimelere tıklayınca veya bi
+   tercüme tuşuna tıklayınca tüm cümlenin türkçesi arapça cümlenin altında
+   çıkacak ... muhadese.html'deki gibi kelimelerin kaliplartablosu.html'ye
+   bağlanması."
+
+     metintahlili.html            -> LİSTE (sınıf / ünite / ders)
+     metintahlili.html?ders=7_1   -> OKUMA (o dersin metni)
+
+   Metin verisi muhâdese ile ORTAK: muhadese/veri/<ders>.js. Yeni ders
+   eklemek için oraya dosya düşmesi yetiyor; liste
+   _kaynak/uretici/metinTahliliListe.py ile yeniden üretiliyor.
+   ===================================================================== */
+(function () {
+  var KOK = 'metintahlili/', MK = 'muhadese/', S = '?v=20261014a';
+  var p = new URLSearchParams(location.search);
+  var d = p.get('ders') || '';
+  if (!/^[0-9]+(_[0-9]+)+$/.test(d)) d = '';
+  window.KIDEF_MT_DERS = d;
+  document.documentElement.className += (d ? ' mt-okuma' : ' mt-liste');
+
+  var y = [];
+  y.push('<link rel="preconnect" href="https://fonts.googleapis.com">');
+  y.push('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
+  y.push('<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&display=swap" rel="stylesheet">');
+  y.push('<link rel="stylesheet" href="arakom.css">');
+  y.push('<link rel="stylesheet" href="' + KOK + 'metintahlili.css' + S + '">');
+  y.push('<scr' + 'ipt src="' + KOK + 'dersler.js' + S + '"><\/scr' + 'ipt>');
+  if (d) {
+    var veri = (window.KidefSinifVeri && KidefSinifVeri.dersYolu)
+      ? KidefSinifVeri.dersYolu(d, MK + 'veri/')
+      : MK + 'veri/' + d + '.js';
+    y.push('<scr' + 'ipt src="' + veri + S + '"><\/scr' + 'ipt>');
+    /* SARF KÖPRÜSÜ — muhâdesedeki ile aynı: kelime→[kök, tür] haritası ve
+       sol alttaki tür şeridi. Tıklanan kelimenin türü yanar, şeritteki
+       simgeye basınca kalıplar tablosu sekmesi o kökle açılır. */
+    y.push('<scr' + 'ipt src="' + MK + 'veri/kok_haritasi.js' + S + '"><\/scr' + 'ipt>');
+    y.push('<scr' + 'ipt src="' + MK + 'lehce.js' + S + '"><\/scr' + 'ipt>');
+    y.push('<scr' + 'ipt src="' + MK + 'sarfkopru.js' + S + '"><\/scr' + 'ipt>');
+  }
+  y.push('<scr' + 'ipt src="' + KOK + 'metintahlili.js' + S + '"><\/scr' + 'ipt>');
+  document.write(y.join(''));
+})();
+</script>
+</head>
+<body>
+<div id="mtKok"></div>
+</body>
+</html>

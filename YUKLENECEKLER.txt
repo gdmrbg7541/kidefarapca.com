@@ -9981,3 +9981,120 @@ göründüğü doğrulandı (1 / 24).
   Dosyalar: okumayazma/alfabe_harf_detay.js · okumayazma/alfabe.css ·
             okumayazma/alfabe_konu.js · okumayazma/alfabe_harf_ornek.js ·
             okumayazma/alfabe_hemze.js (üretilen)
+
+14.10.2026 — Dinle ve Yaz yatayda ekranın tamamını kullanıyor
+  Öğretmen: "dinle ve yaz kısmında yatay olarak ekranı 100'de yüz kullanalım."
+  Oyun sabit 16:9 bir tuvalde (120rem × 67,5rem) duruyordu; alfabe.html'deki
+  sekme çoğu dizüstünde 16:9'dan geniş olduğu için ölçek YÜKSEKLİĞE göre
+  hesaplanıyor, yanlarda boş bant kalıyordu (1500×760'ta iki yanda 74'er px).
+  Tuvalin eni artık bulunduğu alanın tamamı; ölçek yine min(en, boy) ile
+  belirlendiği için yazılar ve kutular ekrana sığmaya devam ediyor.
+  ÖLÇÜLDÜ: 1500×760 · 1920×900 · 1366×650 · 1024×768 · 1180×820'de tuval
+  soldan 0'da başlıyor ve pencere eni kadar; hiçbirinde yatay taşma yok.
+  Dikey ekran kuralları (telefon/tablet) değişmedi: 420×820 ve 820×1180
+  denendi, eskisi gibi.
+  Dosya: okumayazma/dinleveyaz.css
+
+14.10.2026 — METİN TAHLİLİ: 5-10. sınıf metinleri flipbook içindekilerinde
+  Öğretmen: "kidefarapca 2. baskı flipbook'a 5-10 arası kitap ismine ve
+  konulara göre diyalogları ve cümleleri metin tahlili olarak içindekiler
+  kısmına ekle ... arapça kelimelerin üstüne tıklayınca türkçesi yukarısında
+  belirecek ... tüm kelimelere tıklayınca veya bi tercüme tuşuna tıklayınca
+  tüm cümlenin türkçesi arapça cümlenin altında çıkacak ... muhadese.html'deki
+  gibi kelimelerin kaliplartablosu.html'ye bağlanması."
+  · YENİ SAYFA: metintahlili.html
+      liste kipi  → sınıf / ünite / ders (6 sınıf · 28 ünite · 67 ders)
+      okuma kipi  → metintahlili.html?ders=7_1 gibi
+  · Kelime kutusunun ÜSTÜNDE Türkçe için her zaman yer ayrılıyor; kapalıyken
+    görünmüyor. Böylece tıklayınca satır zıplamıyor ve cümle iki satıra
+    düşünce iki satır arasındaki boşluk kendiliğinden kalıyor (istenen buydu).
+  · Bir cümlenin bütün kelimeleri açılınca ya da "Tercüme" tuşuna basılınca
+    cümlenin düzgün Türkçesi altta çıkıyor. Üstte "Hepsini aç" ve "Sıfırla".
+  · Diyaloglar iki konuşmacı rozetiyle, her sırası kendi tercümesiyle.
+  · KALIPLAR TABLOSU BAĞI muhâdesedeki köprünün aynısı: kelime kutusu .word
+    sınıfı alıyor, KidefSarf.kelimeIsaretle() kökünü işaretliyor; sol alttaki
+    tür şeridinden kalıplar tablosu sekmesine geçiliyor.
+  · VERİ ORTAK: metinler muhadese/veri/<ders>.js (yeni ders eklemek için oraya
+    dosya düşmesi yetiyor). Liste _kaynak/uretici/metinTahliliListe.py ile
+    sarf/ihkelime.js'teki müfredat ağacından üretiliyor → metintahlili/dersler.js
+  · FLIPBOOK İÇİNDEKİLER: kitabın kendi üniteleri bittikten sonra
+    "📖 Metin Tahlili · N. Sınıf" başlıklı altı öbek; satıra basınca metin
+    alıştırma çerçevesinde açılıyor. Arama kutusu bu satırları da buluyor.
+  DENENDİ: liste 67 ders, 7_1 metninde 84 kart (74 cümle + 10 diyalog),
+  237 kelimenin 235'inde kök bulundu; kelimeye tıklayınca Türkçesi üstte,
+  üçü de açılınca tam tercüme altta; flipbook içindekilerinde altı öbek,
+  arama "metin tahlili" → 67 satır, tıklayınca çerçevede açılıyor.
+  Dosyalar: metintahlili.html (YENİ) · metintahlili/metintahlili.js (YENİ) ·
+            metintahlili/metintahlili.css (YENİ) · metintahlili/dersler.js (YENİ,
+            üretilen) · kitap/kidef-arapca-2-baski/index.html ·
+            kitap/kidef-arapca-2-baski/02_cekirdek/js/uygulama.js
+  Üretici (_kaynak): _kaynak/uretici/metinTahliliListe.py
+
+────────────────────────────────────────────────────────────────────────
+14.10.2026 — METİN TAHLİLİ: KİTABIN SAYFA ŞEKLİNDEKİ İÇİNDEKİLERİNE EKLENDİ
+Kidef Arapça 2. baskı flipbook'unun SONUNA 5-10. sınıf için birer sayfa
+geldi (s.232-237). Sayfanın tepesinde sınıf ve kitap adı büyük, altında o
+sınıfın üniteleri ve dersleri var; derse dokununca metin alıştırma
+çerçevesinde açılıyor. Metni olmayan dersin yanında "Yakında" yazıyor
+(şu an 67 dersin de metni hazır olduğu için hiçbirinde çıkmıyor).
+Basılı İÇİNDEKİLER sayfasına (s.4) da sütunların altına "METİN TAHLİLİ —
+5-10. SINIF" şeridi düştü: 6 sınıf, sayfa numarasıyla.
+
+YENİ
+  kitap/kidef-arapca-2-baski/03_veri/metintahlili_sayfalar.js   (üretilen)
+  kitap/kidef-arapca-2-baski/02_cekirdek/css/sayfa-metintahlili.css
+  _kaynak/uretici/metinTahliliSayfa.py                          (üretici)
+DEĞİŞEN
+  kitap/kidef-arapca-2-baski/index.html         (2 satır: css + veri)
+  kitap/kidef-arapca-2-baski/02_cekirdek/js/uygulama.js  ([data-metin] tıklama)
+  metintahlili/dersler.js                       (cümle sayıları düzeldi)
+  _kaynak/uretici/metinTahliliListe.py          (sayma deseni düzeltildi)
+
+NOTLAR
+ · kitap.js ve html_sayfalar.js'e DOKUNULMADI; sayfalar çalışma anında
+   kitabın sonuna ekleniyor (toplamSayfa 231 → 237).
+ · Kitap adları _kaynak/uretici/metinTahliliSayfa.py içindeki KITAP_AD
+   tablosunda. 5-6-7 kendi kitap dosyalarından, 8-9-10 sitede kitap
+   dosyası olmadığı için seri adı + programı yazıldı; oradan değişir.
+ · Bir dersi elle "Yakında" yapmak için aynı dosyadaki YAKINDA kümesine
+   ders id'si yazılıp üretici yeniden çalıştırılır.
+ · Cümle sayma deseni "words:" idi, bir kısım ders dosyası '"words":'
+   yazdığı için 0 sayıyordu; düzeldi (toplam 1065 → 1768 metin).
+ YEDEK: _kaynak/yedekler/2026-10-14-metintahlili-sayfa/
+
+────────────────────────────────────────────────────────────────────────
+14.10.2026 (2) — METİN TAHLİLİ SAYFALARI 4. SAYFANIN ARDINA ALINDI
+5-10. sınıf Metin Tahlili sayfaları artık kitabın sonunda değil, basılı
+İÇİNDEKİLER sayfasının (s.4) hemen ardında. Açık sayfa çiftinde solda
+içindekiler, sağda 5. sınıf duruyor.
+
+KİTABIN KENDİ SAYFA NUMARALARI DEĞİŞMEDİ. Veri (kitap.js dersler/sayfa,
+hotspot, metin katmanı, belgeler, kaynaklar) hep basılı numarayla duruyor;
+yalnız flip sırası kayıyor. Köprü: window.KIDEF_EK (metintahlili_sayfalar.js)
+    f(basılı) → flip sırası        b(flip) → basılı   (0 = ek sayfa)
+Sayfanın köşesinde basılı numara yazıyor; ek sayfalarda "M5 … M10".
+Dosya yüklenmezse kitap eskisi gibi çalışır.
+DEĞİŞEN  03_veri/metintahlili_sayfalar.js · 02_cekirdek/js/uygulama.js ·
+         02_cekirdek/js/flip.js (etiket kancası) · 02_cekirdek/js/metin.js ·
+         index.html (kaydırıcı 237) · _kaynak/uretici/metinTahliliSayfa.py
+
+14.10.2026 (3) — İMAM HATİP'E "KİDEF ARAPÇA" YARDIMCI KAYNAK KUTUSU
+index.html → İmam Hatip bölümünde 10. sınıfın yanına 7. kutu geldi:
+altın renkli kitap rozeti, "Yardımcı" çipi; açılınca kısa açıklama ve
+flipbook'u açan kart. Izgara 6 → 7 sütun; dar ekranda rozet 44 → 40 px.
+Sınıf kutusu DEĞİL: data-sinif yok, sınıf belgelerini dolduran kayıtçılar
+dokunmuyor.
+DEĞİŞEN  index.html     YEDEK _kaynak/yedekler/2026-10-14-ih-kidef-karti/
+
+14.10.2026 (4) — FLİPBOOKLARA KAPAK REKLAMI (kidefarapca.com)
+Kitap kapağı açıkken karşı sayfa boş duruyordu; oraya tam sayfa tanıtım
+geldi: kidefarapca.com, dört satır özet, karekod ve çevrimdışı notu.
+Sayfa kitabın numaralarına GİRMİYOR — .kitap kabının ilk çocuğu olarak
+yaprakların altında duruyor, kapak çevrilince 2. sayfa üstünü örtüyor.
+Arapça (rtl) kitaplarda sağa, soldan sağa kitapta sola yerleşiyor.
+Telefonda (tek sayfa modu) görünmüyor.
+YENİ  kitap/kidef-arapca-2-baski/02_cekirdek/js/kapakreklam.js
+      ve aynı dosyanın kopyası: kitap/5-sinif-2026-2027, 5-sinif-2025-2026,
+      5-sinif-2024-2025, 6-sinif-2026-2027, 7-sinif-2027-2028
+DEĞİŞEN  bu altı kitabın index.html'i (uygulama.js'ten sonra tek satır)
+NOT  Karekod dosya değil, JS içinde SVG — çevrimdışı kopyada da çalışır.

@@ -30,6 +30,19 @@
 
   function uretilmis(no) { return K.uretilmisSayfalar.indexOf(no) >= 0; }
 
+  /* ---------- KİTABA EKLENEN SAYFALAR (14.10.2026) ----------------------
+     03_veri/metintahlili_sayfalar.js basılı 4. sayfadan sonra 5-10. sınıf
+     Metin Tahlili sayfalarını ekliyor. Kitabın KENDİ numaraları değişmiyor:
+     veri (dersler, hotspot, metin katmanı, belgeler, kaynaklar) hep basılı
+     numarayla duruyor; yalnız flip sırası kayıyor.
+       EK.f(basılı) -> flip sırası        EK.b(flip) -> basılı (0 = ek sayfa)
+     Dosya yüklenmezse kitap eskisi gibi çalışır (birebir eşleme). */
+  var EK = window.KIDEF_EK || {
+    bas: 0, adet: 0, toplam: K.toplamSayfa,
+    f: function (b) { return b; }, b: function (f) { return f; },
+    etiket: function () { return ''; }, ad: function () { return ''; }
+  };
+
   /* ---------- tost ---------- */
   var tostZ;
   function tost(m) {
@@ -640,7 +653,7 @@
           '<span class="sy">s. ' + d.ders.sayfa + '</span></button>';
         kutu.querySelector('.ad').textContent = d.ders.ad;
         kutu.querySelector('.ktp-ders-bas').addEventListener('click', function () {
-          flip.git(d.ders.sayfa);
+          flip.git(EK.f(d.ders.sayfa));
           panelKapat();
           if (!uretilmis(d.ders.sayfa)) tost(d.ders.ad + ' — bu sayfa henüz üretilmedi');
         });
@@ -702,6 +715,8 @@
      ============================================================ */
   function katmanKur(no, el) {
     el.innerHTML = '';
+    no = EK.b(no);                       /* ek sayfaların hotspotu yok */
+    if (!no) return;
     var s = K.sayfa[String(no)];
     if (!s || !s.hotspot || !s.hotspot.length) return;
     var k = sayfaKaynaklari(no);
@@ -751,10 +766,11 @@
      FLIP MOTORU
      ============================================================ */
   var flip = new window.Flip($('#kaydir'), {
-    toplam: K.toplamSayfa,
+    toplam: EK.toplam,
     oran: K.oran,
-    gorselYolu: function (n) { return '01_sayfalar/' + ('00' + n).slice(-3) + '.webp'; },
-    kucukYolu: function (n) { return '01_sayfalar/kucuk/' + ('00' + n).slice(-3) + '.webp'; },
+    gorselYolu: function (n) { return '01_sayfalar/' + ('00' + EK.b(n)).slice(-3) + '.webp'; },
+    kucukYolu: function (n) { return '01_sayfalar/kucuk/' + ('00' + EK.b(n)).slice(-3) + '.webp'; },
+    etiket: function (n) { return EK.b(n) || EK.etiket(n); },
     katmanKur: katmanKur,
     degisti: durumGuncelle
   });
@@ -768,26 +784,46 @@
   }
   htmlOlcek();
   document.addEventListener('click', function (e) {
-    var a = e.target.closest && e.target.closest('.html-sayfa [data-git]');
+    var a = e.target.closest &&
+      e.target.closest('.html-sayfa [data-git],.html-sayfa [data-gitf]');
     if (!a) return;
     e.preventDefault(); e.stopPropagation();
-    flip.git(+a.dataset.git);
+    /* data-git basılı sayfa numarası, data-gitf doğrudan flip sırası (ek sayfa) */
+    flip.git(a.dataset.gitf ? +a.dataset.gitf : EK.f(+a.dataset.git));
   });
+
+  /* METİN TAHLİLİ SAYFALARI (14.10.2026): kitabın sonundaki 5-10. sınıf
+     sayfalarında bir ders satırına basınca metin alıştırma çerçevesinde
+     açılır (metintahlili.html?ders=<id>). */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.html-sayfa [data-metin]');
+    if (!a) return;
+    e.preventDefault(); e.stopPropagation();
+    etkinlikAc({ ad: a.dataset.metinAd || 'Metin Tahlili',
+                 dosya: '../../metintahlili.html?ders=' + a.dataset.metin });
+  });
+
+  /* Ekranda yazan sayfa: basılı numara; ek sayfada "M5" gibi kısa etiket. */
+  function sayfaEtiketi(f) { return f ? (EK.b(f) || EK.etiket(f)) : ''; }
 
   function durumGuncelle(d) {
     var no = d.aktif;
     // tek sayfa modunda (telefon) yalnız görünen sayfa yazılır: "26 / 231"
-    $('#sayfaEt').textContent = (!d.tekli && d.sol ? d.sol + '–' + (d.sag || '') : no) + ' / ' + K.toplamSayfa;
+    $('#sayfaEt').textContent = (!d.tekli && d.sol
+      ? sayfaEtiketi(d.sol) + '–' + sayfaEtiketi(d.sag)
+      : sayfaEtiketi(no)) + ' / ' + K.toplamSayfa;
     var kd = $('#kaydiracInput');
     kd.value = no;
-    kd.style.setProperty('--dolu', ((no - 1) / (K.toplamSayfa - 1) * 100) + '%');
+    kd.style.setProperty('--dolu', ((no - 1) / (EK.toplam - 1) * 100) + '%');
     $('#okSol').disabled = d.ilk;
     $('#okSag').disabled = d.son;
 
-    var ders = dersBul(no);
-    $('#uniteEt').textContent = ders ? (ders.unite ? 'Ünite ' + ders.unite : 'Giriş') : 'Ünite —';
+    var ekAd = EK.b(no) ? '' : EK.ad(no);
+    var ders = dersBul(EK.b(no));
+    $('#uniteEt').textContent = ekAd ? 'Ek' :
+      (ders ? (ders.unite ? 'Ünite ' + ders.unite : 'Giriş') : 'Ünite —');
     var sim = ders && simgeHar[ders.simge] ? simgeHar[ders.simge].simge + ' ' : '';
-    $('#dersEt').textContent = ders ? sim + ders.ad : '—';
+    $('#dersEt').textContent = ekAd || (ders ? sim + ders.ad : '—');
 
     document.querySelectorAll('#tocListe .ders').forEach(function (b) {
       b.classList.toggle('simdi', ders && +b.dataset.sayfa === ders.sayfa);
@@ -800,8 +836,8 @@
   $('#okSag').addEventListener('click', function () { flip.ileri(); });
   $('#kaydiracInput').addEventListener('input', function () {
     var n = +this.value;
-    this.style.setProperty('--dolu', ((n - 1) / (K.toplamSayfa - 1) * 100) + '%');
-    $('#sayfaEt').textContent = n + ' / ' + K.toplamSayfa;
+    this.style.setProperty('--dolu', ((n - 1) / (EK.toplam - 1) * 100) + '%');
+    $('#sayfaEt').textContent = sayfaEtiketi(n) + ' / ' + K.toplamSayfa;
   });
   $('#kaydiracInput').addEventListener('change', function () { flip.git(+this.value); });
   $('#gitInput').addEventListener('keydown', function (e) {
@@ -809,7 +845,7 @@
     var n = parseInt(this.value, 10);
     if (!n || n < 1 || n > K.toplamSayfa) { tost('1–' + K.toplamSayfa + ' arası bir sayfa yaz'); return; }
     if (!uretilmis(n)) tost(n + '. sayfa henüz üretilmedi');
-    flip.git(n); this.blur();
+    flip.git(EK.f(n)); this.blur();
   });
 
   /* ============================================================
@@ -852,7 +888,7 @@
           '<span class="ad">' + d.ad + '</span><span class="sy">' + d.sayfa + '</span>';
         b.title = s.ad + ' · ' + d.sayfa + '–' + d.bitis + '. sayfa';
         b.addEventListener('click', function () {
-          flip.git(d.sayfa);
+          flip.git(EK.f(d.sayfa));
           panelKapat();
           if (!uretilmis(d.sayfa)) tost(d.ad + ' — bu sayfa henüz üretilmedi');
         });
@@ -861,6 +897,46 @@
       g.appendChild(dd);
       l.appendChild(g);
     });
+    /* ---- METİN TAHLİLİ (14.10.2026, Geylani isteği) --------------------
+       5-10. sınıf kitaplarının ünite/ders metinleri (cümleler ve diyaloglar)
+       içindekilerin sonuna sınıf sınıf giriyor. Kelimeye dokununca Türkçesi
+       üstünde beliriyor, tamamı açılınca cümlenin tercümesi altında çıkıyor;
+       kökü bilinen kelimeden kalıplar tablosuna geçiliyor (muhâdesedeki
+       köprünün aynısı). Liste: metintahlili/dersler.js (üretilen dosya),
+       metin: ../../metintahlili.html?ders=<id> — alıştırma çerçevesinde açılır. */
+    (window.METIN_TAHLILI || []).forEach(function (sf) {
+      var satirlar = [];
+      sf.uniteler.forEach(function (u) {
+        u.dersler.forEach(function (d) {
+          if (f && kucuk(sf.ad + ' ' + u.ad + ' ' + d.ad + ' ' + (d.ar || '') +
+                         ' metin tahlili').indexOf(f) < 0) return;
+          satirlar.push({ u: u, d: d });
+        });
+      });
+      if (!satirlar.length) return;
+      var g = document.createElement('div');
+      g.className = 'unite';
+      g.innerHTML = '<h3>📖 Metin Tahlili · ' + sf.ad + '</h3>';
+      var dd = document.createElement('div');
+      dd.className = 'dersler';
+      satirlar.forEach(function (x) {
+        sayi++;
+        var b = document.createElement('button');
+        b.className = 'ders';
+        b.innerHTML = '<span class="sim" style="color:#17817E">🙇</span>' +
+          '<span class="ad">' + x.u.ad.replace(/^(\d+)\. Ünite:\s*/, '$1. ') +
+          ' — ' + x.d.ad + '</span><span class="sy">' + (x.d.cumle || '') + '</span>';
+        b.title = sf.ad + ' · ' + x.u.ad + ' — ' + (x.d.cumle || 0) + ' cümle/diyalog';
+        b.addEventListener('click', function () {
+          etkinlikAc({ ad: 'Metin Tahlili · ' + sf.ad + ' · ' + x.d.ad,
+                       dosya: '../../metintahlili.html?ders=' + x.d.id });
+        });
+        dd.appendChild(b);
+      });
+      g.appendChild(dd);
+      l.appendChild(g);
+    });
+
     if (!sayi) l.innerHTML = '<div class="bos-sonuc">Sonuç bulunamadı.</div>';
   }
   tocKur();
@@ -940,7 +1016,7 @@
       case 'ArrowRight': case 'PageDown': case ' ': e.preventDefault(); flip.ileri(); break;
       case 'ArrowLeft': case 'PageUp': e.preventDefault(); flip.geri(); break;
       case 'Home': flip.git(1); break;
-      case 'End': flip.git(K.toplamSayfa); break;
+      case 'End': flip.git(EK.toplam); break;
       case '+': case '=': Z.ayarla(Z.oran() * 1.5); break;
       case '-': case '_': Z.ayarla(Z.oran() / 1.5); break;
       case '0': Z.sifirla(); break;
@@ -970,7 +1046,7 @@
 
   /* ---------- açılış ---------- */
   var basla = new URLSearchParams(location.search).get('s');
-  flip.git(basla ? parseInt(basla, 10) : (K.uretilmisSayfalar[0] || 1));
+  flip.git(basla ? EK.f(parseInt(basla, 10)) : (K.uretilmisSayfalar[0] || 1));
   Z.uygula(true);
 
   setTimeout(function () {

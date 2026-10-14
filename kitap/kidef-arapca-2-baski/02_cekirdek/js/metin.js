@@ -42,6 +42,9 @@
   }
   /* flip.js her sayfa yüzü yüklenince çağırır */
   k.metinKatmani = function (no, yuz) {
+    /* Kitaba ek sayfa girdiyse (03_veri/metintahlili_sayfalar.js) flip sırası
+       basılı numaradan farklı; metin verisi basılı numarayla duruyor. */
+    if (k.KIDEF_EK) { no = k.KIDEF_EK.b(no); if (!no) return; }
     if (!k.METIN_SAYFALARI || k.METIN_SAYFALARI.indexOf(no) < 0) return;
     if (k.SAYFA_METIN && k.SAYFA_METIN[no]) { koy(no, yuz); return; }
     (bekleyen[no] = bekleyen[no] || []).push(yuz);

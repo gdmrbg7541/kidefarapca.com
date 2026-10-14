@@ -1828,6 +1828,47 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           </div></div>
         </div>
 
+
+        <!-- YARDIMCI KAYNAK (14.10.2026): sınıf kitaplarının yanında, kendi
+             yazdığımız Kidef Arapça flipbook'u. Sınıf değil; rozeti kitap,
+             paneli tek kart. data-sinif YOK: sınıf belgelerini dolduran
+             kayıtçılar (sinifmodul.js, ihdoc) buraya hiç dokunmaz. -->
+        <div class="ih-item ih-yardimci" style="--ihc:#E3A02A;--ihcy:rgba(227,160,42,.10);--ihcb:rgba(227,160,42,.34);--ihck:rgba(227,160,42,.26)">
+          <button type="button" class="ih-head" onclick="ihToggle(this)">
+            <span class="ih-num">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle class="ihn-disk" cx="24" cy="24" r="15" fill="#E3A02A"/>
+                <path class="ihn-rakam" fill="#fff" d="M23.1 16.6a9.6 9.6 0 0 0-7.1-1.5 1.3 1.3 0 0 0-1 1.3v13.9c0 .8.7 1.4 1.5 1.3a7.6 7.6 0 0 1 6.6 1.6Z"/>
+                <path class="ihn-rakam" fill="#fff" d="M24.9 16.6a9.6 9.6 0 0 1 7.1-1.5c.6.1 1 .7 1 1.3v13.9c0 .8-.7 1.4-1.5 1.3a7.6 7.6 0 0 0-6.6 1.6Z"/>
+              </svg>
+            </span>
+            <span class="ih-title">Kidef Arapça</span>
+            <span class="ih-maarif">Yardımcı</span>
+            <span class="ih-chevron">▾</span>
+          </button>
+          <div class="ih-panel"><div class="ih-panel-in">
+            <div class="ihsec-acc">
+              <div class="ihsec-item ihsec-bassiz">
+                <div class="ihsec-panel"><div class="ihsec-panel-in">
+                  <p class="ihy-not">Sınıf kitaplarının yanında kullanılan <b>yardımcı kaynak</b>:
+                    temel dilbilgisi, kalıplar, kelime çalışmaları ve 5-10. sınıf metin
+                    tahlilleri tek kitapta. Sayfa çevirmeli; içindekilerden derse,
+                    simgelerden sunulara ve çıktılara gider.</p>
+                  <div class="game-grid mobile-scroll-grid-single">
+                    <a href="kitap/kidef-arapca-2-baski/index.html" target="_blank" rel="opener" class="game-card kss-card">
+                      <div class="default-game-content">
+                        <img src="kidef.jpg" alt="Kidef Arapça kitap kapağı" class="book-cover-img">
+                        <h3>Kidef Arapça 📒 2. Baskı</h3>
+                        <span class="status-badge available">Aç</span>
+                      </div>
+                    </a>
+                  </div>
+                </div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
       </div>
 
       <!-- Öğretmen belgeleri: İmam Hatip bölümünün hep açık alt listesi -->
@@ -2855,7 +2896,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       .ih-panel-in, .dok-panel-in { padding:4px 20px 20px; }
 
       /* --- İmam Hatip: altı sınıf tek satırda rozet, panel her zaman altta 2. satırda --- */
-      #imam-hatip .ih-acc { display:grid; grid-template-columns:repeat(6,minmax(0,1fr));
+      #imam-hatip .ih-acc { display:grid; grid-template-columns:repeat(7,minmax(0,1fr));
                             column-gap:8px; row-gap:14px; max-width:100%; margin:10px auto 0; }
       /* geniş panelde belge kartları boş sütun bırakmadan yayılsın */
       @media (min-width:821px) {
@@ -2915,8 +2956,13 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         #imam-hatip .ih-title { font-size:.7rem; }
         #imam-hatip .ih-panel-in { padding:14px 12px 18px; }
       }
+      /* YARDIMCI KAYNAK kutusu (14.10.2026): sınıf rozetleriyle aynı
+         ölçüde; paneldeki açıklama satırı. */
+      #imam-hatip .ihy-not { margin:0 0 12px; font-size:.95rem; line-height:1.5;
+                             color:#45607a; text-align:center; }
+      #imam-hatip .ih-yardimci .game-grid { justify-content:center; }
       @media (max-width:520px) {
-        #imam-hatip .ih-num { width:44px; height:44px; }
+        #imam-hatip .ih-num { width:40px; height:40px; }
         #imam-hatip .ih-title { font-size:.58rem; letter-spacing:0; }
         #imam-hatip .ih-chevron { font-size:.5rem; }
       }
