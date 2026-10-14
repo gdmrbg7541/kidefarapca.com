@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Merak Çarkı — Kidef Arapça</title>
+<title>Merak Köşesi — Kidef Arapça</title>
 <meta name="description" content="Ders başında sınıfın dikkatini toplamak için çark: fıkra, kelime kökeni, kültür-bilim ve gizemli bulmaca kartları. Aynı kart aynı sınıfa iki kez çıkmaz.">
 <!-- Google Analytics (GA4) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
@@ -31,11 +31,19 @@
        simgeCark). Ayrı dosya yok, hepsi kodun içinde. -->
   <span class="mc-ust-ikon" aria-hidden="true"></span>
   <div class="mc-ust-sol">
-    <h1>Merak Çarkı</h1>
-    <p>Ders başı ısınma · fıkra, kelime kökeni, kültür ve bulmaca — aynı kart aynı sınıfa iki kez çıkmaz<br>Sayfanın altında <b>Kitap Önerisi</b>: alanına ve seviyene göre kitap seç</p>
+    <h1>Merak Köşesi</h1>
+    <p>Ders başı köşesi · aşağıdaki modüllerden birini seç</p>
   </div>
 </header>
 
+<!-- MODÜL ŞERİDİ (14.10.2026) — öğretmen: "merak çarkının ismini
+     değiştirelim, içeriği de sadece bi çark olmasın, modül modül olsun."
+     Kartlar merak/moduller.js tarafından doldurulur; birine basınca o
+     modülün bölümü altta açılır, ötekiler kapanır. Yeni modül eklemek
+     için moduller.js'teki MODULLER dizisine bir satır yetiyor. -->
+<nav id="mkSerit" class="mk-serit" aria-label="Modüller"></nav>
+
+<section class="mk-modul" data-modul="cark">
 <!-- Giriş yapılmamışsa: kayıt yalnız bu tarayıcıda tutulur -->
 <p id="mcGiris">Öğretmen hesabınla giriş yaparsan çıkan kartlar <b>sınıf sınıf</b> kaydedilir ve
   bütün cihazlarında aynı kalır. Girişsiz kullanımda kayıt yalnız bu tarayıcıda tutulur.</p>
@@ -79,6 +87,23 @@
 
   <section class="mc-kart" id="mcKart" hidden aria-live="polite"></section>
 </main>
+</section><!-- /modul: cark -->
+
+<!-- GÜNÜN SÖZÜ: pencere olarak zaten var (merak/gunsozu.js); bu modül onu
+     istendiği an yeniden açar ve ne olduğunu anlatır. -->
+<section class="mk-modul" data-modul="soz" hidden>
+  <div class="mk-bos">
+    <h2>Günün Sözü</h2>
+    <p>Her gün değişen bir âyet, hadis ya da özlü söz — tahtaya yansıt, sınıfça oku.
+       Türünü pencerenin içinden seçebilir, karekodunu öğrencilere okutabilirsin.</p>
+    <button type="button" class="mk-buyuk" id="mkSozAc">Bugünün sözünü aç</button>
+  </div>
+</section>
+
+<!-- KİTAP ÖNERİSİ: bölümü merak/kitaponeri.js buraya kuruyor. -->
+<section class="mk-modul" data-modul="kitap" hidden>
+  <div id="koYuva"></div>
+</section>
 
 <script src="merak/merakveri.js?v=465eba93"></script>
 <script src="merak/merakcarki.js?v=fb9099ca"></script>
@@ -88,8 +113,9 @@
      ekle, amacımız ortaokul ve lise öğrencilerine sevdiği alanla ilgili kitap
      önermek, alan ve yaş veya seviye filtreleri olsun". Çarka dokunulmadı;
      bölüm sayfanın ALTINA kendini ekliyor (kitaponeri.js). -->
+<script src="merak/moduller.js?v=e292962f"></script>
 <script src="merak/kitapveri.js?v=d556c213"></script>
-<script src="merak/kitaponeri.js?v=330cfc8d"></script>
+<script src="merak/kitaponeri.js?v=9055799c"></script>
 <script src="merak/gunsozu-veri.js?v=70c3fc92"></script>
 <script src="merak/gunsozu-ayet.js?v=e1f90430"></script>
 <script src="merak/gunsozu.js?v=556efafb"></script>

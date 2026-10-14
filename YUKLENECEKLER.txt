@@ -9751,3 +9751,42 @@ göründüğü doğrulandı (1 / 24).
      tıklaması yutuluyordu.
   Dosyalar: alfabe.html, okumayazma/alfabe.css
   Yedek: _kaynak/yedekler/20261014-kumanda-sidebar/
+
+14.10.2026 — Merak Çarkı → MERAK KÖŞESİ, sayfa modüllere ayrıldı
+  Öğretmen: "merak çarkının ismini değiştirelim, uygun bi isim bul,
+  içeriği de sadece bi çark olmasın, modül modül olsun."
+  • Ad: MERAK KÖŞESİ. Çark artık köşedeki modüllerden yalnız biri.
+    (Dosya adı merakcarki.html olarak KALDI: eski bağlantılar, yer
+    imleri ve karekodlar kırılmasın.)
+  • YENİ: merak/moduller.js — üstte modül kartları (Merak Çarkı ·
+    Günün Sözü · Kitap Önerisi). Karta basınca o modül açılıyor,
+    ötekiler kapanıyor; son seçilen modül tarayıcıda saklanıyor.
+    Yeni modül eklemek: merakcarki.html'e bir <section class="mk-modul"
+    data-modul="..."> + moduller.js'teki MODULLER dizisine bir satır.
+  • Günün Sözü modülü var olan pencereyi açıyor (KidefGunSozu.ac).
+  • Kitap Önerisi artık body'nin sonuna değil kendi modülüne kuruluyor
+    (#koYuva).
+  • Görünen ad index.html kartında, katalogda ve sınıf etkinlik
+    listesinde (sistem/sinifoyun.js) de değişti.
+  Dosyalar: merakcarki.html, merak/moduller.js (YENİ), merak/kitaponeri.js,
+            index.html, katalog/index.html, sistem/sinifoyun.js
+  Yedek: _kaynak/yedekler/20261014-merak-kosesi/
+
+14.10.2026 — Harf büyüteci: biçim örnekleri tamamlandı
+  Öğretmen: "bi harfe tıklayınca 4 yazılışı çıkıyor, ordan birine
+  basınca büyüyor ve örnekler çıkıyor; bazı harflerin örnekleri
+  çıkmıyor, orayı tamamla ve hata varsa düzelt."
+  TARAMA: 28 harf x 4 biçim = 112 bileşim tarayıcıda tek tek açıldı.
+  • EKSİK OLANLAR: غ / Sonda (hiç örnek yoktu) ve ظ / Yalın (üç yerine
+    iki örnek). Eklendi:
+      غ sonda : بَلَغَ (ulaştı) · مَبْلَغ (meblağ) · تَبْلِيغ (tebliğ)
+                — üçünde de غ'dan önceki harf sola bitiştiği için
+                  gerçekten BİTİŞİK son biçim görünüyor.
+      ظ yalın : حُفَّاظ (hafızlar)
+  • Veri denetimi: 300 örneğin hepsinde on+vu+son = ar ve vurgulanan
+    parça harfi içeriyor — bozuk kayıt yok.
+  • Kalan 12 "örnek yok" durumu doğaldır: bitişmeyen altı harfin
+    (ا د ذ ر ز و) baştaki/ortadaki biçimi kelimede hiç yazılmaz;
+    ekran zaten bunu açıklıyor.
+  Dosya: okumayazma/alfabe_harf_ornek.js
+  Yedek: _kaynak/yedekler/20261014-harf-ornek-eksik/

@@ -93,6 +93,8 @@
         s.textContent = [
             '#koBolum{ padding:clamp(18px,3vw,40px) clamp(14px,2.4vw,32px) clamp(40px,6vw,80px);',
             '  border-top:1px solid var(--mc-cizgi,#E3E9F0); margin-top:clamp(20px,3vw,44px); }',
+            /* Kendi modülünün içindeyken üstteki ayraç ve boşluk gereksiz. */
+            '#koYuva #koBolum{ border-top:none; margin-top:0; padding-top:clamp(10px,1.6vw,22px); }',
             '#koBolum .ko-bas{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;',
             '  margin:0 0 4px; }',
             '#koBolum h2{ margin:0; font-size:clamp(1.3rem,2.4vw,2.3rem); font-weight:800;',
@@ -213,7 +215,11 @@
             '  <button type="button" class="ko-buyuk ko-ikincil" data-ko-rol="liste">Hepsini listele</button>' +
             '</div>' +
             '<div id="koKart"></div><div id="koListe"></div>';
-        document.body.appendChild(kap);
+        /* MODÜL YUVASI (14.10.2026): sayfa modüllere ayrılınca bölüm
+           artık body'nin sonuna değil, kendi modülünün içine kuruluyor.
+           Yuva yoksa (başka bir sayfaya konulursa) eski davranış sürer. */
+        var yuva = document.getElementById('koYuva');
+        (yuva || document.body).appendChild(kap);
 
         kap.addEventListener('click', function (ev) {
             var t = ev.target.closest ? ev.target.closest('[data-ko-alan],[data-ko-sev],[data-ko-rol],[data-ko-id]') : null;

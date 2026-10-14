@@ -75,7 +75,7 @@
   var OYUNLAR = [
     {
       id: 'oyunmerakcarki', cizim: 'merakcarki',
-      ad: 'Merak Çarkı', siniflar: [5, 6, 7, 8, 9, 10], sira: 60,
+      ad: 'Merak Köşesi', siniflar: [5, 6, 7, 8, 9, 10], sira: 60,
       eksinif: 'oyun-card oyun-mor',
       ekstil: 'background:linear-gradient(150deg,#7C4DBE,#5B2E9E)',
       maarif: DES, rozet: '🎡 Çarkı Çevir',
