@@ -370,7 +370,7 @@
             satirlar.forEach(function (x) { x.mtAc(false); });
             if (swAcik.mtKur) swAcik.mtKur(false);
             ilerlemeYaz();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            try { g.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { g.scrollTop = 0; }
             tusSes();
         });
         secenek.appendChild(sifirla);
@@ -434,9 +434,9 @@
         if (AYAR.acik) satirlar.forEach(function (x) { x.mtAc(true); });
         ilerlemeYaz();
 
-        /* Üst şerit kayarken gölgelensin (sayfa hissi). */
-        window.addEventListener('scroll', function () {
-            var k = window.scrollY > 4;
+        /* Gövde kayarken üst şerit gölgelensin (sayfa hissi). */
+        g.addEventListener('scroll', function () {
+            var k = g.scrollTop > 4;
             ust.classList.toggle('kaydi', k);
             secenek.classList.toggle('kaydi', k);
         }, { passive: true });

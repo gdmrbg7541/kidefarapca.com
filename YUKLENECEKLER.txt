@@ -10194,3 +10194,19 @@ DEĞİŞEN  _kaynak/uretici/metinTahliliListe.py (yeniden yazıldı; node ister)
          02_cekirdek/js/uygulama.js · css/sayfa-metintahlili.css ·
          03_veri/metintahlili_sayfalar.js · index.html (damgalar)
 YEDEK    _kaynak/yedekler/2026-10-14-metintahlili-arayuz/dersler-67ders.js
+
+────────────────────────────────────────────────────────────────────────
+14.10.2026 (9) — OKUMA EKRANI KENDİ KAYDIRMA ALANINA ALINDI
+Geylani: "iki parmak cümle konteynırlarında çalışmıyor."
+Metin, kitabın içinde bir ÇERÇEVEDE açılıyordu ve belgenin kendi kaydırması
+kullanılıyordu; yapışkan üst şerit + arka plan bulanıklığı + çerçeve bir
+araya gelince bazı makinelerde kartın üzerinde tekerlek/iki parmak tepki
+vermiyordu. Artık:
+  · html.mt-okuma → belge kaydırması kapalı (height:100%, overflow:hidden)
+  · üst şerit ve anahtar çubuğu SABİT (position:sticky değil)
+  · .mt-govde kendi kaydırma kutusu (overflow-y:auto, kendi kaydırma çubuğu)
+  · "Sıfırla" ve gölge takibi de bu kutuya bağlandı
+Kart, kelime, Arapça yazı ve Tercüme tuşunun üstünde tek tek denendi:
+hem tek başına sayfada hem kitabın içinde kaydırıyor.
+DEĞİŞEN  metintahlili/metintahlili.css · metintahlili/metintahlili.js ·
+         metintahlili.html (v=20261014e)

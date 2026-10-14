@@ -29,12 +29,24 @@
 * { box-sizing: border-box; }
 
 /* KAYDIRMA (14.10.2026, Geylani: "touch padten iki parmakla aşağı yukarı
-   hareket edebilelim"): metin kitabın içinde çerçevede açıldığı için
-   kaydırma arkadaki kitaba zincirlenmesin, dokunmatikte dikey hareket her
-   zaman sayfayı kaydırsın. */
+   hareket edebilelim ... iki parmak cümle konteynırlarında çalışmıyor")
+   OKUMA EKRANI ARTIK BELGEYİ DEĞİL, KENDİ ALANINI KAYDIRIYOR.
+   Metin kitabın içinde bir çerçevede açılıyor; belgenin kendi kaydırması
+   çerçeve/yapışkan başlık/arka plan bulanıklığı karışınca bazı
+   makinelerde kart üzerinde tepki vermiyordu. Üst şerit ile anahtar
+   çubuğu artık sabit duruyor, aşağısı kendi kaydırma kutusu: tekerlek
+   ya da iki parmak kartın üstündeyken de o kutuyu kaydırıyor. */
 html { overscroll-behavior-y: contain; }
 body { overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
-.mt-govde, .mt-liste-govde { touch-action: pan-y pinch-zoom; }
+html.mt-okuma, html.mt-okuma body { height: 100%; overflow: hidden; }
+html.mt-okuma body { display: flex; flex-direction: column; }
+html.mt-okuma #mtKok { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+html.mt-okuma .mt-ust, html.mt-okuma .mt-secenek { position: static; flex: 0 0 auto; }
+html.mt-okuma .mt-govde {
+    flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden;
+    overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+}
 
 body {
     margin: 0;
