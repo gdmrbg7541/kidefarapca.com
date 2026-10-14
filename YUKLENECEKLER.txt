@@ -9601,3 +9601,20 @@ göründüğü doğrulandı (1 / 24).
   • Başlık altı not: "Sor · 15 sn düşünsünler · yazılışı açılır".
   Dosyalar: okumayazma/alfabe_akordiyon.js (alfabe.html ?v=25)
   Yedek: _kaynak/yedekler/20261014-ihy-ilerleme-tusu/
+
+14.10.2026 — Kalıplar Tablosu: ayarların varsayılanı sabitlendi
+  Öğretmen: "kaliplartablosu.html de tarayıcıdan ilk açıldığında
+  varsayılan olarak ayarlar kısmında sadece şunlar açık olsun, anlam ve
+  dilbilgisi başlıkları".
+  • Öntanımlı AÇIK: ANLAM · DİLBİLGİSİ BAŞLIKLARI
+    Öntanımlı KAPALI: FİİL ÇEKİMLERİ HAZIR · VEZİN ÖRNEK LİSTESİ ·
+    GÜNÜN KÖKÜ   (kodun varsayılanı zaten buydu)
+  • SEBEP: daha önce açılan anahtarlar tarayıcı belleğinde kalıyordu;
+    sayfa o yüzden "varsayılan buymuş" gibi açılıyordu. Artık bir sürüm
+    damgası var (kidef_ayar_surum): damga değişince eski seçimler BİR
+    KEZ temizleniyor, ayarlar öntanımlı duruma dönüyor. Sonraki
+    seçimler yine hatırlanıyor.
+  • ANLAM anahtarının belleği yoktu — kapatmak kalıcı olmuyordu; artık
+    ötekiler gibi hatırlanıyor (öntanımı açık).
+  Dosyalar: sarf/kaliplartablosu.js (kaliplartablosu.html ?v=238)
+  Yedek: _kaynak/yedekler/20261014-kalip-ayar-varsayilan/

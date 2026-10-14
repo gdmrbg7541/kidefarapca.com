@@ -12906,11 +12906,36 @@ document.addEventListener('keydown', function (e) {
     if (m) m.classList.remove('acik');
 });
 
-/* AYAR BELLEĞİ — iki anahtar da ÖNTANIMLI KAPALI, açılırsa tarayıcı
-   belleğinde kalıyor: bir tarayıcıda açıldıysa elle kapatılana kadar
-   sonraki açılışlarda da açık geliyor (Geylani). Bellek okunamıyorsa
-   (gizli sekme, engelli depolama) anahtar kapalı kabul ediliyor. */
+/* AYAR BELLEĞİ — her anahtarın bir ÖNTANIMLI durumu var; kullanıcı
+   değiştirirse tarayıcı belleğinde kalıyor ve sonraki açılışlarda da
+   öyle geliyor. Bellek okunamıyorsa (gizli sekme, engelli depolama)
+   öntanımlı durum geçerli.
+
+   ÖNTANIMLI AÇIK OLANLAR (14.10.2026 — öğretmen: "tarayıcıdan ilk
+   açıldığında varsayılan olarak ayarlar kısmında sadece şunlar açık
+   olsun, anlam ve dilbilgisi başlıkları"):
+       ANLAM · DİLBİLGİSİ BAŞLIKLARI
+   Öntanımlı kapalı: FİİL ÇEKİMLERİ HAZIR · VEZİN ÖRNEK LİSTESİ ·
+   GÜNÜN KÖKÜ.
+   ANLAM'ın daha önce belleği yoktu: her açılışta açık geliyordu,
+   kapatmak kalıcı olmuyordu. Artık o da ötekiler gibi hatırlanıyor
+   (öntanımı açık). */
 (function () {
+    /* BİR KEZLİK SIFIRLAMA: eskiden açılmış anahtarlar tarayıcılarda
+       kayıtlı kalıyor ve sayfa "varsayılanı buymuş" gibi açılıyordu.
+       Sürüm damgası değişince eski seçimler bir kez temizlenir, ayarlar
+       yukarıdaki öntanımlı duruma döner; ondan sonraki seçimler yine
+       hatırlanır. Damgayı yalnız varsayılanlar değişince artır. */
+    var AYAR_SURUM = 'kidef_ayar_surum', SURUM = '2026-10-14';
+    try {
+        if (localStorage.getItem(AYAR_SURUM) !== SURUM) {
+            ['kidef_anlam', 'kidef_cekim_hazir', 'kidef_gramer_baslik',
+             'kidef_gunun_koku', 'kidef_ornek_liste'].forEach(function (a) {
+                localStorage.removeItem(a);
+            });
+            localStorage.setItem(AYAR_SURUM, SURUM);
+        }
+    } catch (x) { }
     function bellek(anahtar, oge, sonra, ontanimli) {
         var c = document.getElementById(oge);
         if (!c) return;
@@ -12927,6 +12952,8 @@ document.addEventListener('keydown', function (e) {
         });
     }
     function kur() {
+        /* ANLAM öntanımlı AÇIK, artık hatırlanıyor. */
+        bellek('kidef_anlam', 'anlamToggleCheckbox', null, true);
         bellek('kidef_cekim_hazir', 'cekimHazirCheckbox', function (acik) {
             if (acik) { window.fdmCekimHazirla(); return; }
             /* ANAHTAR KAPANINCA HAZIR ÇEKİMLER DE KAPANSIN (Geylani).
