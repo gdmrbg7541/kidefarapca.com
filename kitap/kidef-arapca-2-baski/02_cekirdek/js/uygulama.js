@@ -303,6 +303,11 @@
      ============================================================ */
   function etkinlikAc(e) {
     $('#etkinlikBaslik').textContent = e.ad;
+    /* TAM SAYFA (14.10.2026, Geylani: "bi sayfa gibi açılsın, popup veya
+       overlay şeklinde değil"): kendi başlığı olan belgeler kitabın üstünde
+       kutu gibi değil, sayfayı kaplayarak açılır; paneldeki ikinci başlık
+       gizlenir, yalnız kapatma tuşu kalır. */
+    $('#pEtkinlik').classList.toggle('tam', !!e.tam);
     // SIRA ÖNEMLİ: önce panelAc — o, önceki paneli kapatırken alıştırma
     // çerçevesini about:blank'e sıfırlar. src ondan SONRA verilmeli.
     panelAc('#pEtkinlik');
@@ -799,7 +804,7 @@
     var a = e.target.closest && e.target.closest('.html-sayfa [data-metin]');
     if (!a) return;
     e.preventDefault(); e.stopPropagation();
-    etkinlikAc({ ad: a.dataset.metinAd || 'Metin Tahlili',
+    etkinlikAc({ ad: a.dataset.metinAd || 'Metin Tahlili', tam: true,
                  dosya: '../../metintahlili.html?ders=' + a.dataset.metin });
   });
 
@@ -928,7 +933,7 @@
           ' — ' + x.d.ad + '</span><span class="sy">' + (x.d.cumle || '') + '</span>';
         b.title = sf.ad + ' · ' + x.u.ad + ' — ' + (x.d.cumle || 0) + ' cümle/diyalog';
         b.addEventListener('click', function () {
-          etkinlikAc({ ad: 'Metin Tahlili · ' + sf.ad + ' · ' + x.d.ad,
+          etkinlikAc({ ad: 'Metin Tahlili · ' + sf.ad + ' · ' + x.d.ad, tam: true,
                        dosya: '../../metintahlili.html?ders=' + x.d.id });
         });
         dd.appendChild(b);

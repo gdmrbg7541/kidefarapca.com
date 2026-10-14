@@ -55,3 +55,30 @@
   text-decoration: none; color: inherit; cursor: pointer; }
 .hs-icindekiler .i-mt-c:hover, .hs-icindekiler .i-mt-c:active { background: #FBEFD6; }
 .hs-icindekiler .i-mt-c b { font-variant-numeric: tabular-nums; color: #17817E; }
+
+/* ==========================================================================
+   TAM SAYFA ALIŞTIRMA  (#pEtkinlik.tam)                        14.10.2026
+   Geylani: "5-10 cümleleri bi sayfa gibi açılsın, popup veya overlay
+   şeklinde değil." Metin Tahlili gibi KENDİ başlığı olan belgeler ekranı
+   kaplar; panelin başlığı gizlenir, köşede yalnız kapatma tuşu kalır.
+   ========================================================================== */
+.panel.orta.tam {
+  top: 0; left: 0; width: 100%; height: 100%;
+  max-width: none; max-height: none; border-radius: 0;
+  transform: none; box-shadow: none;
+  transition: opacity .22s ease;
+}
+.panel.orta.tam.acik { transform: none; }
+.panel.orta.tam > .pbas {
+  position: absolute; top: 9px; inset-inline-end: 12px; z-index: 5;
+  padding: 0; margin: 0; background: none; border: 0; box-shadow: none; gap: 0;
+}
+.panel.orta.tam > .pbas .rozet,
+.panel.orta.tam > .pbas h2 { display: none; }
+.panel.orta.tam > .pbas .kapat {
+  width: 40px; height: 40px; border-radius: 999px;
+  background: #fff; border: 1.5px solid #E3EAF2; color: #5b6b7b;
+  box-shadow: 0 4px 14px rgba(16, 42, 67, .14);
+}
+.panel.orta.tam > .pbas .kapat:hover { background: #FDECEA; border-color: #F3BDB4; color: #C0392B; }
+.panel.orta.tam > .pgovde { flex: 1 1 auto; min-height: 0; }

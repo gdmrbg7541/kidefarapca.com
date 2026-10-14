@@ -10098,3 +10098,25 @@ YENİ  kitap/kidef-arapca-2-baski/02_cekirdek/js/kapakreklam.js
       5-sinif-2024-2025, 6-sinif-2026-2027, 7-sinif-2027-2028
 DEĞİŞEN  bu altı kitabın index.html'i (uygulama.js'ten sonra tek satır)
 NOT  Karekod dosya değil, JS içinde SVG — çevrimdışı kopyada da çalışır.
+
+────────────────────────────────────────────────────────────────────────
+14.10.2026 (5) — METİN TAHLİLİ OKUMA EKRANI: TAM SAYFA + ANAHTARLI SEÇENEK
+Geylani: "bi sayfa gibi açılsın, popup veya overlay şeklinde değil; switch
+şeklinde seçenekler olsun (mesela tüm kelimelere tıklayınca hemen cümle
+açılması gibi); biraz daha profesyonel olsun."
+
+· Ders metni artık kitabın ortasında kutu olarak değil, EKRANI KAPLAYARAK
+  açılıyor: #pEtkinlik.tam — panelin başlığı gizleniyor (belgenin kendi
+  başlığı var), köşede yuvarlak kapatma tuşu kalıyor.
+· Okuma ekranının üstünde dört ANAHTAR (localStorage'da saklanır):
+    Hepsi açılınca tercüme · Türkçeler açık · Harekesiz oku · Kök şeridi
+  "Harekesiz" yalnız ekranda gizler; özgün yazım data-ar'da durur, veri
+  dosyalarına dokunulmuyor.
+· Sağ üstte ilerleme: kaç metnin tercümesi açıldı (çubuk + sayı).
+· Üst şerit ve anahtar çubuğu yapışkan, kayınca gölgeleniyor; kartlar
+  sadeleşti, "Tercüme" tuşu okunur hâle geldi.
+DEĞİŞEN  metintahlili/metintahlili.js · metintahlili/metintahlili.css ·
+         metintahlili.html (sürüm damgası v=20261014c) ·
+         kitap/kidef-arapca-2-baski/02_cekirdek/js/uygulama.js (tam bayrağı) ·
+         kitap/kidef-arapca-2-baski/02_cekirdek/css/sayfa-metintahlili.css
+YEDEK    _kaynak/yedekler/2026-10-14-metintahlili-arayuz/
