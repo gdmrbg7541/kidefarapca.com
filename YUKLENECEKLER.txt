@@ -10551,3 +10551,17 @@ DENENDİ  6. sınıf: onay kutusu çıktı, 2025-2026 seçilince 18 ders,
          (7 ve 10. sınıfta denendi).
 NOT      Hesaba yazma yalnız giriş yapmış öğretmende çalışır; girişsiz
          kullanımda eskisi gibi tarayıcıda kalır.
+
+   EK (aynı gün) — "bi sınıftan metin tahlili açıldı diyelim geriye
+   basınca tekrar aynı sınıfa gitsin, tüm sınıfların metin tahlili
+   kısmına gitmesin":
+   · Sınıf listesindeki ders bağlantıları artık sınıfı da taşıyor
+     (?ders=6_1_1&k=y2627&sinif=6).
+   · Okuma ekranındaki ‹ tuşu buna bakıyor: sınıftan gelindiyse o
+     sınıfın listesine (metintahlili.html?sinif=6&k=y2627), bütün
+     sınıflar ekranından gelindiyse eskisi gibi düz listeye dönüyor.
+     Tuşun ipucu da "6. sınıfın ders listesi" diye yazıyor.
+   · Bağlantıdaki k artık eğik çizgisiz (k=y2627), adres temiz.
+   EK DOSYA  _kaynak/uretici/mtGeri.py · damga v=20261015f
+   DENENDİ   Sınıf listesinden açılan derste geri → ?sinif=6&k=y2627;
+             bütün sınıflardan açılanda geri → düz liste.

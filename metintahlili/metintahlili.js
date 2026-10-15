@@ -40,8 +40,20 @@
     var ONEK = (typeof window.KIDEF_MT_ONEK === 'string') ? window.KIDEF_MT_ONEK : null;
     var SINIF = window.KIDEF_MT_SINIF || null;      /* sınıf kartından gelindi */
     function dersBag(d, onek) {
+        /* Sınıf listesinden açılan derse sınıfı da yazıyoruz: okuma
+           ekranındaki ‹ tuşu geldiği sınıfa dönebilsin (15.10.2026,
+           öğretmen: "bi sınıftan metin tahlili açıldı diyelim geriye
+           basınca tekrar aynı sınıfa gitsin"). */
         return 'metintahlili.html?ders=' + encodeURIComponent(d)
-             + '&k=' + encodeURIComponent(onek || '');
+             + '&k=' + encodeURIComponent(String(onek || '').replace(/\//g, ''))
+             + (SINIF ? '&sinif=' + encodeURIComponent(SINIF) : '');
+    }
+
+    /* ‹ tuşunun gideceği adres: sınıftan gelindiyse o sınıfın listesi. */
+    function geriAdres() {
+        if (!SINIF) return 'metintahlili.html';
+        return 'metintahlili.html?sinif=' + encodeURIComponent(SINIF) +
+               (ONEK != null ? '&k=' + encodeURIComponent(ONEK) : '');
     }
 
     /* Harekeler + Kur'an işaretleri. Veriye DOKUNULMAZ: özgün yazım
@@ -583,9 +595,10 @@
         /* ---------- üst şerit: başlık + ilerleme ---------- */
         var ust = el('header', 'mt-ust');
         var geri = tus('mt-geri');
-        geri.title = 'Ders listesi'; geri.setAttribute('aria-label', 'Ders listesi');
+        var geriAd = SINIF ? (SINIF + '. sınıfın ders listesi') : 'Ders listesi';
+        geri.title = geriAd; geri.setAttribute('aria-label', geriAd);
         geri.innerHTML = '&#8249;';
-        geri.addEventListener('click', function () { location.href = 'metintahlili.html'; });
+        geri.addEventListener('click', function () { location.href = geriAdres(); });
         ust.appendChild(geri);
 
         var bas = el('div', 'mt-bas');
