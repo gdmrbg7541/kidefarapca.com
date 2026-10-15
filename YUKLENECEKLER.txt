@@ -10287,3 +10287,27 @@ DEĞİŞEN  sistem/sinifmodul.js (dosyanın kendi "yeni kart buraya" yerine
 DENENDİ  5-6-7-8-9-10: altısında da iki kart var, bağlantılar doğru,
          svg'ler yerinde; konsolda hata yok.
 YEDEK    _kaynak/yedekler/2026-10-15-vezin-tamlama-kart/
+
+────────────────────────────────────────────────────────────────────────
+15.10.2026 (3) — MATERYALLER SEKMESİ: KARTLAR YATAY KAYMIYOR, SARIYOR
+Geylani: "bir sınıfın materyaller kısmındaki dökümanlar değil de kartlar
+yatay scroll olmasın, ikinci satır olsun kartlar."
+
+Sebep: kartların ızgarası .mobile-scroll-grid-single sınıfını taşıyor;
+index.css bunu masaüstünde yatay şeride çeviriyor. İmam Hatip bölümünde
+bu, "#imam-hatip .ih-kartlar .mobile-scroll-grid-single" kurallarıyla
+sarmalı ızgaraya döndürülüyordu — ama o kurallar index.css'te duruyor,
+materyalstil.css'i üreten betik ise yalnız index.html'in <style>
+bloklarına bakıyordu. Bu yüzden materyal sekmesine geçmemişler.
+
+ÇÖZÜM: üretici (materyalStilUret.py) artık index.css'i de kaynak alıyor.
+index.css'teki 23 "#imam-hatip" kuralının hepsi kart ızgarasına ait, yani
+materyal kabına birebir taşındı: masaüstünde 5 sütunlu sarmalı ızgara
+(1180px altı 4, 940px altı 3) ve telefon ölçüleri. Kural sayısı 137 → 164.
+BELGELER ESKİSİ GİBİ: .a4-grid hâlâ yatay şerit (grid-auto-flow:column).
+DENENDİ  900px genişlikte materyal kabında 17 kart → 4 satır, yatay
+         kaydırma yok, kart genişliği 164px (eskisiyle aynı).
+DEĞİŞEN  _kaynak/uretici/materyalStilUret.py · sistem/materyalstil.css
+NOT      materyalstil.css ÜRETİLEN dosya; elle değil üreticiyle değişir
+         (python3 _kaynak/uretici/materyalStilUret.py <site kökü>).
+YEDEK    _kaynak/yedekler/2026-10-15-materyal-kart-sarma/
