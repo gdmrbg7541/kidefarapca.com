@@ -10661,3 +10661,45 @@ DEĞİŞEN  index.html (kart, defterAc, betik satırı)
 DENENDİ  İmam Hatip 6. sınıf: pencere 5. haftayı ve o haftanın
          kazanımını gösterdi; sınıf açık taklidiyle "deftere yaz"
          5. hafta satırını yazdı ve save() çağrıldı.
+
+   EK (aynı gün) — öğretmen: "deftere yaz olmasın, direkt hafta hafta
+   öğrenme çıktılarının olduğu kısım çıksın dikey scrolla bakılabilsin"
+   + "bi liste açıkken sınıf defterine basmak gibi, ama imam hatip
+   kategorisinde bi sütun olsun haftalar":
+   · Pencere artık tek sütunda 36 HAFTAYI listeliyor: hafta numarası,
+     tarih aralığı ve o haftanın öğrenme çıktısı. Liste kendi içinde
+     dikey kayıyor; açılışta BU HAFTA vurgulanıp ortaya getiriliyor
+     ("bu hafta" rozeti).
+   · Ara tatiller kendi satırında görünüyor (1. Ara Tatil, Sömestr,
+     2. Ara Tatil).
+   · "Deftere yaz" tuşu KALDIRILDI; pencere yalnız okunur. Bir sınıf
+     açıkken o şubenin defterine yazılmış satır, ait olduğu haftanın
+     altında yeşil notla görünüyor ve altta "Defteri aç" duruyor.
+   · Yıl sonu hedefi pencerenin altındaki şeritte.
+   DENENDİ  6. sınıf: 36 hafta + 3 tatil satırı, liste kayıyor, 5. hafta
+            vurgulu geldi.
+
+   EK (aynı gün) — öğretmen: "6 olmayan sınıflarda ... · 6A yazıyor";
+   "veriler sınıf listesindekilerin aynısı olsun, ayrı olmasın; ortaokulda
+   haftada iki ders olduğu için iki şey yazılmalı"; "defteri aç tuşu
+   olmasın, orada popup şeklinde açılacak":
+   · VERİ KAYNAĞI DEĞİŞTİ: pencere artık sınıf defteriyle AYNI havuzdan
+     okuyor — sistem/ciktiveri.js (window.KIDEF_CIKTI), yani yıllık plan
+     belgelerinden üretilen KİTABA göre haftalık çıktılar. Anahtar
+     sinifdefteri.js ile birebir aynı kuruluyor ("8", "6@2026-2027" …),
+     seçili kitaba göre. Böylece sınıf listesindeki satırlarla pencere
+     birebir aynı; ortaokulda haftada iki ders olan haftalarda iki çıktı
+     alt alta görünüyor.
+   · Her haftada: ünite/tema başlığı (yapışkan ayraç), öğrenme çıktıları
+     madde madde ve "• Konu · Sözcük · Dil bilgisi" içerik satırı; altta
+     programın adı ve ders saati.
+   · Dosya 157 KB olduğu için ana sayfaya yüklenmiyor; pencere ilk
+     açıldığında bir kez getiriliyor (sinifdefteri.js de öyle yapıyor).
+     Kitabın planı havuzda yoksa genel öneriye (kazanimoneri.js) düşülüyor.
+   · "6A" HATASI: açık sınıf başka seviyedeyse artık hiç kullanılmıyor —
+     8. sınıf kartının başlığında 6-A yazmıyor, o şubenin defter satırları
+     da görünmüyor. Yalnız aynı seviyedeki şube gösteriliyor.
+   · "Defteri aç" tuşu kaldırıldı; pencere tamamen kendi içinde.
+   DENENDİ  8. sınıf kartı: başlıkta sınıf adı yok, 36 hafta + 6 tema
+            ayracı, haftalarda 2/1 çıktı (plandaki gibi), altta "2016
+            İlköğretim Arapça Dersi Öğretim Programı · 2 saat / 74 saat".
