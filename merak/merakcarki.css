@@ -28,13 +28,26 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; }
+/* AÇILIŞTA DİKEY KAYDIRMA YOK (15.10.2026, öğretmen: "merak köşesi
+   açıldığında dikey scroll olmayacak şekilde elementleri dizelim").
+   Gövde ekran boyunda ve kaydırmasız; çark kalan yüksekliği kullanıyor.
+   Kart açılınca (body.mc-kart-acik) eski davranışa dönülüyor: kart uzun
+   olabildiği için sayfa yeniden kayıyor (29.09.2026 isteği). */
+html { height: 100%; }
 body {
-    min-height: 100dvh;
+    height: 100dvh; overflow: hidden;
     font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
     color: var(--mc-murekkep);
     background: var(--mc-zemin);
     display: flex; flex-direction: column;
 }
+body.mc-kart-acik { height: auto; min-height: 100dvh; overflow: auto; }
+/* Modül gövdesi kalan yüksekliği doldurur ki çark ekrana sığsın.
+   :not([hidden]) şart: gizli modüller gizli kalmalı. */
+.mk-serit { flex: none; }
+.mk-modul:not([hidden]) { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+body.mc-kart-acik .mk-modul:not([hidden]) { flex: 1 0 auto; }
+#mcGiris, .mc-ayar { flex: none; }
 /* 29.09.2026 (öğretmen isteği: "scroll olsun sayfa"): kaydırma artık
    SAYFANIN KENDİSİNDE. Önce orta alan (.mc-sahne) kendi içinde kayıyordu;
    kart yazıları büyüyünce o dar pencerede okumak zorlaştı. Üst şerit
@@ -134,13 +147,26 @@ a.mc-geri svg { width: clamp(24px, 1.9vw, 30px); height: clamp(24px, 1.9vw, 30px
 
 /* ---------- sahne: çark + kart ---------- */
 .mc-sahne {
-    flex: 1 0 auto; overflow: visible;
-    display: flex; flex-direction: column; align-items: center;
+    flex: 1 1 auto; min-height: 0; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: clamp(10px, 1.4vw, 20px);
+    padding: clamp(10px, 1.6vw, 22px) clamp(14px, 3vw, 44px) clamp(12px, 2vw, 26px);
+}
+body.mc-kart-acik .mc-sahne {
+    flex: 1 0 auto; overflow: visible; justify-content: flex-start;
     gap: clamp(14px, 2vw, 26px);
     padding: clamp(16px, 2.4vw, 34px) clamp(14px, 3vw, 44px) clamp(28px, 4vw, 56px);
 }
 
-.mc-cark-kutu { position: relative; width: clamp(240px, 40vh, 480px); flex: none; }
+/* Çark kalan yüksekliğe göre: SVG YÜKSEKLİKTEN ölçülüyor, kutu da onun
+   genişliğini alıyor (kare oran SVG'nin viewBox'ından geliyor). Kart
+   açıkken eski sabit ölçüye dönüyor. */
+.mc-cark-kutu { position: relative; flex: 1 1 0; min-height: 0; display: flex;
+    width: auto; max-height: min(48vh, 470px); margin-inline: auto; }
+.mc-cark-kutu > svg { width: auto; height: 100%; max-width: 100%; }
+body.mc-kart-acik .mc-cark-kutu { flex: none; display: block;
+    width: clamp(240px, 36vh, 440px); max-height: none; }
+body.mc-kart-acik .mc-cark-kutu > svg { width: 100%; height: auto; }
 .mc-cark-kutu svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
 /* Gölge SVG'ye filtre olarak değil, altına YUVARLAK bir katman olarak
    veriliyor: filtre kutusu açık zeminde soluk bir kare bırakıyordu. */
@@ -162,9 +188,10 @@ a.mc-geri svg { width: clamp(24px, 1.9vw, 30px); height: clamp(24px, 1.9vw, 30px
 .mc-ibre svg { width: 34px; }
 
 #mcCevir {
+    flex: none;
     display: inline-flex; align-items: center; gap: .55em;
-    font: inherit; font-size: clamp(1.3rem, 2vw, 2rem); font-weight: 900; cursor: pointer;
-    padding: clamp(15px, 1.8vh, 22px) clamp(36px, 4vw, 66px);
+    font: inherit; font-size: clamp(1.2rem, 1.8vw, 1.9rem); font-weight: 900; cursor: pointer;
+    padding: clamp(11px, 1.3vh, 18px) clamp(30px, 3.4vw, 58px);
     border: 0; border-radius: 999px; color: #fff;
     background: linear-gradient(135deg, #1ABC9C, var(--mc-yesil) 55%, var(--mc-yesil-k));
     box-shadow: 0 8px 20px rgba(22, 160, 133, .34);
@@ -174,7 +201,7 @@ a.mc-geri svg { width: clamp(24px, 1.9vw, 30px); height: clamp(24px, 1.9vw, 30px
 #mcCevir:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(22, 160, 133, .42); }
 #mcCevir:focus-visible { outline: 3px solid var(--mc-yesil-k); outline-offset: 3px; }
 #mcCevir:disabled { filter: grayscale(.45); opacity: .65; cursor: default; }
-.mc-ipucu { margin: 0; font-size: clamp(1rem, 1.3vw, 1.25rem); color: var(--mc-gri); }
+.mc-ipucu { flex: none; margin: 0; font-size: clamp(.92rem, 1.15vw, 1.15rem); color: var(--mc-gri); }
 
 /* ---------- kart ---------- */
 .mc-kart {
@@ -502,3 +529,24 @@ html.dusuk-guc .mcs-mini * { animation: none !important; }
 @media (prefers-reduced-motion:reduce){
   .gs-katman, .gs-kart{ transition:none; }
 }
+
+/* ---------- AÇILIŞ EKRANA SIĞSIN (15.10.2026) -------------------------
+   Öğretmen: "merak köşesi açıldığında dikey scroll olmayacak şekilde
+   elementleri dizelim." Dikey boşluklar ve yazı boyları artık ekran
+   YÜKSEKLİĞİNE (vh) göre: büyük ekranda ferah, kısa ekranda derli toplu.
+   Böylece çarka daha çok yer kalıyor ve sayfa kaymıyor. */
+.mc-ust { padding-top: clamp(8px, 1.5vh, 20px); padding-bottom: clamp(8px, 1.5vh, 20px); }
+.mc-ust h1 { font-size: clamp(1.15rem, 3vh, 2.1rem); }
+.mc-ust p { font-size: clamp(.84rem, 1.7vh, 1.2rem); }
+.mk-serit { padding-top: clamp(7px, 1.2vh, 18px); }
+.mk-kart { padding-top: clamp(6px, 1vh, 14px); padding-bottom: clamp(6px, 1vh, 14px); }
+.mk-kart b { font-size: clamp(.95rem, 1.9vh, 1.25rem); }
+.mk-kart small { font-size: clamp(.74rem, 1.35vh, .95rem); }
+#mcGiris { padding-top: clamp(5px, .9vh, 12px); padding-bottom: clamp(5px, .9vh, 12px);
+    font-size: clamp(.8rem, 1.5vh, 1.1rem); }
+.mc-ayar { padding-top: clamp(6px, 1.1vh, 16px); padding-bottom: clamp(6px, 1.1vh, 16px); }
+#mcTurNot { font-size: clamp(.84rem, 1.5vh, 1.15rem); }
+.mc-tur-tus { padding-top: clamp(5px, .9vh, 12px); padding-bottom: clamp(5px, .9vh, 12px); }
+#mcDurum { padding-top: clamp(5px, .9vh, 13px); padding-bottom: clamp(5px, .9vh, 13px);
+    font-size: clamp(.9rem, 1.6vh, 1.25rem); }
+.mc-cark-kutu { max-height: min(54vh, 470px); }

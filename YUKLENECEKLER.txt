@@ -10425,3 +10425,129 @@ DENENDİ  1440 px ve 390 px; sınıf şeridinden 7. sınıfa basınca yalnız o
    · 1600 px üstünde (akıllı tahta) yazılar bir tık büyüyor.
    · Telefon/tablet tek sütun olarak kalıyor.
    EK DOSYA  _kaynak/uretici/mtGenis.py · damga v=20261015c
+
+   EK (aynı gün) — "sınıfların yanında kitap etiketleri de olsun":
+   · Sınıf başlığında her kitap KENDİ ÇİPİNDE: "Arapça 6 · 2026-2027",
+     "Arapça 6 · 2025-2026". Eskiden hepsi tek satırda birleşik yazılıp
+     nerede bitip başladığı anlaşılmıyordu.
+   · Üstteki sınıf şeridindeki haplarda da kitap etiketi var; yer
+     kazanmak için kısa hâli ("2026-2027", "Mektep Yayınları 2026-2027",
+     "Seçmeli Arapça"). Uzun ad üç noktayla kesiliyor, tamamı ipucunda.
+   · Etiketler sınıfın kendi rengini taşıyor.
+   EK DOSYA  _kaynak/uretici/mtKitapEtiket.py · damga v=20261015d
+
+15.10.2026 · HARF-İ TA'RÎF KARTININ SİMGESİ DÜZELDİ (RTL)
+----------------------------------------------------------------
+Öğretmen: "harfi tarif kartlarında svg ters olmuş, rtl olsun, lam harfi
+solda elif sağda, elifin kuyruğu sol tarafa bakacak, şuan ters."
+· Simge soldan sağa çizilmişti: düz elif solda, kuyruğu SAĞA dönen lâm
+  sağdaydı — Arapça yazıya ters.
+· Çizimin tamamı x=12 ekseninde aynalandı: kitabın sırtı sağa geçti,
+  harfler sağdan sola dizildi — sağda düz elif, solda kuyruğu sola
+  dönen lâm.
+· Simge tek yerde tanımlı (sistem/eksunukart.js → IK.takı); kart hem
+  İmam Hatip hem Materyaller sekmesinde bu çizimi kullanıyor, ikisi de
+  kendiliğinden düzeldi.
+DEĞİŞEN  sistem/eksunukart.js
+YEDEK    _kaynak/yedekler/2026-10-15-harfitarif-rtl/
+DENENDİ  6. sınıf kartı büyütülerek bakıldı: elif sağda, lâmın kuyruğu
+         solda.
+
+15.10.2026 · MERAK KÖŞESİ — DÖRT DÜZELTME
+----------------------------------------------------------------
+1) LAFZATULLAH YAZIMI
+   Öğretmen: "merak köşesinde günün sözü kısmında ... şeklinde hata var."
+   · Veride harekeler ters sıradaydı: önce fetha sonra şedde
+     (U+064E U+0651). Doğrusu harf + ŞEDDE, uzun elif de üstteki küçük
+     elif (U+0670). Yanlış sıra yüzünden iki hareke üst üste biniyordu.
+   · 13 yerde düzeltildi: merak/gunsozu-veri.js (5), kaliplar.js (7),
+     kaliplartablosu.js (1). Harfler kod noktasıyla yazıldı.
+2) AÇILIŞTA DİKEY KAYDIRMA YOK
+   Öğretmen: "merak köşesi açıldığında dikey scroll olmayacak şekilde
+   elementleri dizelim."
+   · Sayfa 900 px ekranda 1139 px sürüyordu; artık 900/768/800 px
+     ekranların hepsinde tam oturuyor.
+   · Çark kalan yüksekliğe göre büyüyüp küçülüyor (900'de 318 px,
+     768'de 222 px); başlık, modül şeridi ve ayar satırlarının dikey
+     boşlukları ekran yüksekliğine (vh) bağlandı.
+   · KART ÇIKINCA eski davranış geri geliyor (29.09.2026: "scroll olsun
+     sayfa"): gövdeye mc-kart-acik sınıfı yazılıyor, sayfa yine kayıyor.
+3) KURUMA GÖRE SINIF LİSTESİ
+   Öğretmen: "sınıf seçerken birden fazla kurum varsa sınıflar o kurumun
+   altında dizilsin."
+   · Seçicide her kurum kendi başlığı altında (<optgroup>); tek kurumda
+     liste eskisi gibi düz. Kurum adı schoolData → levels[].kurumId →
+     kurumlar[].name üzerinden geliyor.
+4) AÇIK SINIF KENDİLİĞİNDEN SEÇİLİ
+   Öğretmen: "bi sınıfın listesi açıkken materyallere tıklayıp merak
+   köşesini açıyorsam otomatik olarak o sınıf seçili olsun."
+   · Materyaller sekmesi, merak köşesi bağlantısına açık sınıfın
+     kimliğini ekliyor (?sinif=<lId>&sube=<cId> — sinifbag.js ile aynı
+     yazım); sayfa o sınıfı seçip son seçim olarak da kaydediyor.
+YENİ     _kaynak/uretici/merakDuzen.py
+DEĞİŞEN  merak/merakcarki.js · merak/merakcarki.css · merak/gunsozu-veri.js
+         kaliplar.js · kaliplartablosu.js · sistem/sinifmateryal.js
+YEDEK    _kaynak/yedekler/2026-10-15-merak-duzen/
+DENENDİ  1440x900, 1366x768, 1280x800: kaydırma yok; iki kurumlu sahte
+         veriyle optgroup'lar doğru; ?sinif=L3&sube=C4 ile o sınıf
+         seçili geldi; çark dönüp kart çıkınca sayfa yine kaydı.
+
+15.10.2026 · OKUL PENCERESİ GENİŞLEDİ
+----------------------------------------------------------------
+Öğretmen: "bir liste açıkken en solda okul svg sine tıklayınca okul
+biraz dar oluyor, bi seviye ikinci satıra sarkıyor, orayı yatay olarak
+genişletelim, yüzde 75 olsun, mümkün olduğunca geniş olsun."
+· Pencere 700 px ile sınırlıydı, içindeki okul binası da 540/640 px.
+  Bir seviyenin şubeleri bu yüzden ikinci satıra düşüyordu.
+· Artık pencere ekranın %75'i, bina da pencereyi dolduruyor (çok geniş
+  ekranda okunaklı kalsın diye bina 1280/1480 px'de duruyor).
+  1440 px ekranda şube alanı 460 px'den 790 px'e çıktı.
+· 1100 px altındaki ekranlarda pencere eskisi gibi neredeyse tam
+  genişlik (%94).
+DEĞİŞEN  hesap/listelerim.css (dosyanın sonuna eklendi; eski kurallara
+         dokunulmadı)
+YEDEK    _kaynak/yedekler/2026-10-15-okul-penceresi/
+
+15.10.2026 · HANGİ SINIFTA HANGİ KİTAP — SEÇİM, ONAY, HESAPTA TAKİP
+----------------------------------------------------------------
+Öğretmen: "kitaplara göre metin tahlilleri cümleleri de farklı olacak,
+iki kitabın da cümleleri varmış gibi duruyor, kitap seçilince tahliller
+ona göre değişmeli, verilere tıklamadan önce hangi kitabın seçili olduğu
+ve iki kitaplı seçeneklerde öğretmenin emin olmasını sağlayalım, giriş
+yapan öğretmenlerin hangi sınıfta hangi kitabı kullandığı iyi takip
+edilsin."  (Üç soru soruldu; seçilenler aşağıda uygulandı.)
+
+1) LİSTEDE YALNIZ SEÇİLİ KİTAP
+   · Metin tahlili listesi artık sınıfın SEÇİLİ kitabını gösteriyor;
+     "8 ders · 174 metin" gibi sayılar da yalnız o kitabın. Eskiden iki
+     kitabın üniteleri ve toplam sayıları alt alta duruyordu.
+   · Panelin üstünde "SEÇİLİ KİTAP · <ad>" şeridi; iki kitaplı sınıfta
+     yanında "Bu sınıfta şunu kullanıyorum: <öteki kitap>" düğmesi.
+     Geçiş sınıfın kitap seçimini de değiştiriyor (site geneli).
+   · Başlıktaki etiket seçili kitabı gösteriyor, yanında "2 kitaplı
+     sınıf" notu.
+2) İKİ KİTAPLI SINIFTA BİR KEZ ONAY
+   · Onay verilmemişse üniteler yerine "Bu sınıfta hangi kitabı
+     kullanıyorsun?" kutusu çıkıyor; kitap seçilince kaydediliyor,
+     onaylanıyor ve bir daha sorulmuyor.
+   · Onay, onaylanan YILI tutuyor: kitap değişirse onay düşer.
+   · Kitap seçicisinden (sınıf paneli / materyaller şeridi) seçim yapmak
+     da onay sayılıyor.
+3) HESAPTA SAKLAMA VE PANELDE TAKİP
+   · Seçim ve onay, giriş yapan öğretmenin kullanicilar/{uid} belgesine
+     (veriYili / veriYiliOnay) yazılıyor; açılışta oradan okunup yerel
+     kayıtla birleşiyor. Telefonda da, okulda da aynı kitap geliyor.
+   · Öğretmen panelinde yeni kart: "Hangi sınıfta hangi kitap?" — her
+     sınıf, seçili kitabı (seçiciyle değiştirilebilir), öğretmenin o
+     seviyedeki şubeleri ve onay durumu ("tek kitap / onay bekliyor /
+     onaylandı" + "Bu kitabı kullanıyorum" düğmesi).
+YENİ     sistem/kitaptakip.js · _kaynak/uretici/kitapSecim.py
+DEĞİŞEN  sistem/sinifveri.js · metintahlili/metintahlili.js · .css ·
+         index.html (betik) · metintahlili.html (damga v=20261015e)
+YEDEK    _kaynak/yedekler/2026-10-15-kitap-secim/
+DENENDİ  6. sınıf: onay kutusu çıktı, 2025-2026 seçilince 18 ders,
+         "öteki kitap" ile 2026-2027'de 8 ders; seçim ve onay yerel
+         kayda yazıldı. Panel kartında onay düğmesi ve seçici çalışıyor
+         (7 ve 10. sınıfta denendi).
+NOT      Hesaba yazma yalnız giriş yapmış öğretmende çalışır; girişsiz
+         kullanımda eskisi gibi tarayıcıda kalır.

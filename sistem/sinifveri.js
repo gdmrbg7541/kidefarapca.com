@@ -237,8 +237,9 @@
     return veriYili(n, yilKaydiOku()[String(n)]);
   }
 
-  /* Seçimi kaydeder ve seçilen kaydı döner. Geçersiz yıl yok sayılır. */
-  function veriYiliSec(sinif, yil) {
+  /* Seçimi kaydeder ve seçilen kaydı döner. Geçersiz yıl yok sayılır.
+     `sessiz` yalnız şeridin kendi dinleyicisi için: olayı o yayıyor. */
+  function veriYiliSec(sinif, yil, sessiz) {
     var n = sayi(sinif), d = veriYillari(n);
     if (!n || !d.length) return null;
     var bulundu = null;
@@ -247,8 +248,139 @@
     var k = yilKaydiOku();
     k[String(n)] = yil;
     yilKaydiYaz(k);
+    hesabaYaz();
+    if (!sessiz) yayinla(n, bulundu);
     return bulundu;
   }
+
+  /* ------------------------------------------------------------------
+     KİTAP ONAYI (15.10.2026) — öğretmen: "iki kitaplı seçeneklerde
+     öğretmenin emin olmasını sağlayalım."
+     Onay ONAYLANAN YILI tutuyor: kitap değişirse onay da düşer, bir
+     daha sorulur. Tek kitaplı sınıfta onay zaten gerekmiyor.
+     ------------------------------------------------------------------ */
+  var ONAY_ANAHTAR = 'kidef_veri_yili_onay';
+
+  function onayOku() {
+    try { return JSON.parse(localStorage.getItem(ONAY_ANAHTAR) || '{}') || {}; }
+    catch (e) { return {}; }
+  }
+  function onayYaz(k) {
+    try { localStorage.setItem(ONAY_ANAHTAR, JSON.stringify(k || {})); } catch (e) {}
+  }
+  function onayliMi(sinif) {
+    var n = sayi(sinif);
+    if (!n) return true;
+    if (veriYillari(n).length < 2) return true;     /* tek kitap: soru yok */
+    var s = seciliVeriYili(n);
+    return !!(s && onayOku()[String(n)] === s.yil);
+  }
+  /* Onaylar (gerekirse kitabı da değiştirerek) ve kaydı döner. */
+  function onayla(sinif, yil) {
+    var n = sayi(sinif);
+    if (!n) return null;
+    var kayit = yil ? veriYiliSec(n, yil, true) : seciliVeriYili(n);
+    if (!kayit) return null;
+    var k = onayOku();
+    k[String(n)] = kayit.yil;
+    onayYaz(k);
+    hesabaYaz();
+    yayinla(n, kayit);
+    return kayit;
+  }
+  /* Panel tablosu için: her sınıfın kitabı, kitap sayısı ve onay durumu. */
+  function tumSecimler() {
+    var n = Object.keys(VERI_YILI).map(function (x) { return parseInt(x, 10); });
+    n.sort(function (a, b) { return a - b; });
+    return n.map(function (s) {
+      var d = veriYillari(s);
+      return { sinif: s, kitap: seciliVeriYili(s), kitaplar: d,
+               cok: d.length > 1, onay: onayliMi(s) };
+    });
+  }
+
+  function yayinla(n, kayit) {
+    try {
+      document.dispatchEvent(new CustomEvent('kidef:veriyili', {
+        detail: { sinif: sayi(n), yil: kayit && kayit.yil, kayit: kayit }
+      }));
+    } catch (e) {}
+  }
+
+  /* ------------------------------------------------------------------
+     HESAPTA SAKLAMA (15.10.2026) — öğretmen: "giriş yapan öğretmenlerin
+     hangi sınıfta hangi kitabı kullandığı iyi takip edilsin."
+     Seçim ve onay kullanicilar/{uid} belgesinde veriYili / veriYiliOnay
+     alanlarında duruyor. Açılışta hesaptaki kayıt yerelle birleşiyor
+     (hesap önce), sonra birleşmiş hâl hesaba geri yazılıyor: başka
+     cihazda yapılan seçim de, burada yapılan da kaybolmuyor.
+     Firebase yoksa ya da giriş yapılmamışsa her şey eskisi gibi yalnız
+     bu tarayıcıda kalır.
+     ------------------------------------------------------------------ */
+  var hesapZaman = 0;
+
+  function fb() {
+    try {
+      var f = window.firebase;
+      if (!f || !f.apps || !f.apps.length || !f.firestore || !f.auth) return null;
+      var u = f.auth().currentUser;
+      return (u && !u.isAnonymous) ? { f: f, uid: u.uid } : null;
+    } catch (e) { return null; }
+  }
+  function hesabaYaz() {
+    var h = fb();
+    if (!h) return;
+    clearTimeout(hesapZaman);
+    hesapZaman = setTimeout(function () {
+      try {
+        h.f.firestore().collection('kullanicilar').doc(h.uid).set({
+          veriYili: yilKaydiOku(),
+          veriYiliOnay: onayOku(),
+          veriYiliTs: Date.now()
+        }, { merge: true });
+      } catch (e) {}
+    }, 400);
+  }
+  function karistir(yerel, hesap) {
+    var o = {}, k;
+    for (k in yerel) if (Object.prototype.hasOwnProperty.call(yerel, k)) o[k] = yerel[k];
+    for (k in hesap) if (Object.prototype.hasOwnProperty.call(hesap, k)) o[k] = hesap[k];
+    return o;
+  }
+  function hesaptanOku() {
+    var h = fb();
+    if (!h) return;
+    try {
+      h.f.firestore().collection('kullanicilar').doc(h.uid).get().then(function (d) {
+        if (!d || !d.exists) { hesabaYaz(); return; }
+        var v = d.data() || {}, degisti = false;
+        if (v.veriYili && typeof v.veriYili === 'object') {
+          yilKaydiYaz(karistir(yilKaydiOku(), v.veriYili)); degisti = true;
+        }
+        if (v.veriYiliOnay && typeof v.veriYiliOnay === 'object') {
+          onayYaz(karistir(onayOku(), v.veriYiliOnay)); degisti = true;
+        }
+        hesabaYaz();
+        if (degisti) yayinla(0, null);      /* dinleyenler kendini tazelesin */
+      }).catch(function () {});
+    } catch (e) {}
+  }
+  /* Firebase sayfadan sayfaya farklı anda hazır oluyor: kısa süre yoklanır. */
+  (function hesapIzle() {
+    var say = 0;
+    var t = setInterval(function () {
+      say++;
+      try {
+        var f = window.firebase;
+        if (f && f.apps && f.apps.length && f.auth) {
+          clearInterval(t);
+          f.auth().onAuthStateChanged(function (u) {
+            if (u && !u.isAnonymous) hesaptanOku();
+          });
+        } else if (say > 60) { clearInterval(t); }
+      } catch (e) { clearInterval(t); }
+    }, 500);
+  })();
 
   /* ------------------------------------------------------------------
      DERS DOSYASININ YOLU — öğretim yılı seçimi TEK YERDE uygulanır.
@@ -336,8 +468,11 @@
       if (!el || !el.getAttribute) return;
       var n = el.getAttribute('data-kd-yil-sinif');
       if (!n) return;
-      var kayit = veriYiliSec(n, el.value);
+      var kayit = veriYiliSec(n, el.value, true);
       if (!kayit) return;
+      /* Şeritten seçmek "bu sınıfta bu kitabı kullanıyorum" demektir:
+         onay da burada veriliyor, metin tahlili bir daha sormuyor. */
+      try { onayla(n, kayit.yil); } catch (h2) {}
       var kutu = el.closest ? el.closest('.kd-yil') : null;
       if (kutu) kutu.setAttribute('title', kayit.program);
       try {
@@ -399,6 +534,9 @@
     veriYili:        veriYili,
     seciliVeriYili:  seciliVeriYili,
     veriYiliSec:     veriYiliSec,
+    onayliMi:        onayliMi,
+    onayla:          onayla,
+    tumSecimler:     tumSecimler,
     yilRozetHtml:    yilRozetHtml,
     yilStilKur:      yilStilKur,
     yilBagla:        yilBagla

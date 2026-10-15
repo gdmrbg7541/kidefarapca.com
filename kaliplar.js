@@ -2215,7 +2215,7 @@ const wordEasterEggs = {
         46: { 
             base: { emoji: "👥", arText: "الْعُلَمَاءُ وَرَثَةُ الْأَنْبِيَاءِ", trText: "Âlimler peygamberlerin varisleridir. (Hadis-i Şerif)" },
             suggestsPlus: true,
-            "ا": { emoji: "🤲", arText: "إِنَّمَا يَخْشَى اللَّهَ مِنْ عِبَادِهِ الْعُلَمَاءُ", trText: "Kulları içinden ancak âlimler, Allah'tan korkar. (Fâtır Suresi)" }
+            "ا": { emoji: "🤲", arText: "إِنَّمَا يَخْشَى اللّٰهَ مِنْ عِبَادِهِ الْعُلَمَاءُ", trText: "Kulları içinden ancak âlimler, Allah'tan korkar. (Fâtır Suresi)" }
         },
 
         // --- 58 Numaralı Kalıp (فَعَّلَ - Mazi / Tef'îl Babı) ---
@@ -2379,7 +2379,7 @@ const wordEasterEggs = {
 
         22: { base: { emoji: "💰", arText: "خَرَاج", trText: "Vergi / Haraç." } }, 
         33: { base: { emoji: "🏞️", arText: "خَارِج", trText: "Dış / Hariç." } }, 
-        38: { base: { emoji: "🚪", arText: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا", trText: "Kim Allah'a karşı gelmekten sakınırsa, Allah ona bir çıkış yolu (mahreç) açar. (Talak Suresi)" } }, 
+        38: { base: { emoji: "🚪", arText: "وَمَن يَتَّقِ اللّٰهَ يَجْعَل لَّهُ مَخْرَجًا", trText: "Kim Allah'a karşı gelmekten sakınırsa, Allah ona bir çıkış yolu (mahreç) açar. (Talak Suresi)" } }, 
         
         // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı) ---
         52: { base: { emoji: "📤", arText: "أَخْرَجَ", trText: "Çıkardı." } },
@@ -2521,7 +2521,7 @@ const wordEasterEggs = {
         54: { base: { emoji: "❤️", arText: "أَحْسِنْ", trText: "İyilik yap / İhsan et!" } },
 
         55: { base: { emoji: "💖", arText: "هَلْ جَزَاءُ الْإِحْسَانِ إِلَّا الْإِحْسَانُ", trText: "İyiliğin (ihsanın) karşılığı, iyilikten başka bir şey midir? (Rahmân Suresi)" } }, 
-        56: { base: { emoji: "😇", arText: "إِنَّ اللَّهَ يُحِبُّ الْمُحْسِنِينَ", trText: "Şüphesiz Allah, iyilik edenleri (muhsinleri) sever. (Bakara Suresi)" } }, 
+        56: { base: { emoji: "😇", arText: "إِنَّ اللّٰهَ يُحِبُّ الْمُحْسِنِينَ", trText: "Şüphesiz Allah, iyilik edenleri (muhsinleri) sever. (Bakara Suresi)" } }, 
         61: { base: { emoji: "📈", arText: "تَحْسِين", trText: "İyileştirmek (Tahsin)." } } 
     },
 
@@ -2637,7 +2637,7 @@ const wordEasterEggs = {
 
         22: { base: { emoji: "🕊️", arText: "أَفْشُوا السَّلَامَ بَيْنَكُمْ", trText: "Aranızda selamı yayınız. (Hadis-i Şerif)" }, suggestsPlus: true, "ة": { emoji: "🛡️", arText: "فِي التَّأَنِّي السَّلَامَةُ", trText: "Acele etmemekte (teennide) selamet vardır. (Atasözü)" } }, 
         33: { base: { emoji: "😌", arText: "سَالِم", trText: "Sağ salim / Güvende." } }, 
-        35: { base: { emoji: "🫀", arText: "إِلَّا مَنْ أَتَى اللَّهَ بِقَلْبٍ سَلِيمٍ", trText: "Ancak Allah'a temiz (selim) bir kalple gelenler müstesna. (Şuarâ Suresi)" } }, 
+        35: { base: { emoji: "🫀", arText: "إِلَّا مَنْ أَتَى اللّٰهَ بِقَلْبٍ سَلِيمٍ", trText: "Ancak Allah'a temiz (selim) bir kalple gelenler müstesna. (Şuarâ Suresi)" } }, 
 
         // --- 52, 53, 54 Numaralı Kalıplar (İf'âl Babı) ---
         52: { base: { emoji: "🤲", arText: "أَسْلَمَ", trText: "Teslim oldu / Müslüman oldu." } },
@@ -3023,7 +3023,7 @@ const wordEasterEggs = {
         
         // --- 63 Numaralı Kalıp (مُفَعَّل - Tef'îl Babı İsm-i Mef'ulü) ---
         63: { 
-            base: { emoji: "💯", arText: "أَمْرٌ مُحَقَّقٌ بِإِذْنِ اللَّهِ", trText: "Allah'ın izniyle muhakkak (kesinleşmiş/gerçekleşmiş) bir durum." } 
+            base: { emoji: "💯", arText: "أَمْرٌ مُحَقَّقٌ بِإِذْنِ اللّٰهِ", trText: "Allah'ın izniyle muhakkak (kesinleşmiş/gerçekleşmiş) bir durum." } 
         },
         
         // --- 103 Numaralı Kalıp (اِسْتِفْعَال) ---
@@ -3143,7 +3143,7 @@ const wordEasterEggs = {
     "حمد": {
         19: { base: { emoji: "🤲", arText: "الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ", trText: "Hamd (övgü ve şükür), alemlerin Rabbi olan Allah'a mahsustur. (Fâtiha Suresi)" }, suggestsPlus: true, "يَّة": { emoji: "🌸", arText: "حَمْدِيَّة", trText: "Hamdiye (İsim)." } }, // حَمْد + يَّة = حَمْدِيَّة
         30: { base: { emoji: "🌟", arText: "وَمُبَشِّرًا بِرَسُولٍ يَأْتِي مِن بَعْدِي اسْمُهُ أَحْمَدُ", trText: "Benden sonra gelecek 'Ahmet' (çok övülen) adındaki bir peygamberi müjdeleyici olarak... (Saf Suresi)" } }, // أَحْمَد
-        35: { base: { emoji: "💎", arText: "إِنَّ اللَّهَ هُوَ الْغَنِيُّ الْحَمِيدُ", trText: "Şüphesiz Allah, hiçbir şeye muhtaç değildir, her türlü övgüye layıktır (Hamit'tir). (Lokmân Suresi)" } }, // حَمِيد
+        35: { base: { emoji: "💎", arText: "إِنَّ اللّٰهَ هُوَ الْغَنِيُّ الْحَمِيدُ", trText: "Şüphesiz Allah, hiçbir şeye muhtaç değildir, her türlü övgüye layıktır (Hamit'tir). (Lokmân Suresi)" } }, // حَمِيد
         36: { base: { emoji: "🏅", arText: "عَسَىٰ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَّحْمُودًا", trText: "Umulur ki Rabbin seni Makam-ı Mahmud'a (övülmüş bir makama) ulaştırır. (İsrâ Suresi)" } }, // مَحْمُود
         63: { base: { emoji: "🌹", arText: "مُحَمَّدٌ رَّسُولُ اللهِ", trText: "Muhammed (s.a.v), Allah'ın elçisidir. (Fetih Suresi)" } } // مُحَمَّد
     },
@@ -3158,7 +3158,7 @@ const wordEasterEggs = {
 
     // 55. Sh-K-R (ش ك ر) KÖKÜ - Teşekkür Etmek / Şükretmek
     "شكر": {
-        21: { base: { emoji: "🙏", arText: "مَنْ لَا يَشْكُرُ النَّاسَ لَا يَشْكُرُ اللَّهَ", trText: "İnsanlara teşekkür etmeyen, Allah'a da şükretmez. (Hadis-i Şerif)" }, suggestsPlus: true, "يّ": { emoji: "👨", arText: "شُكْرِيّ", trText: "Şükrü." }, "يَّة": { emoji: "👩", arText: "شُكْرِيَّة", trText: "Şükriye." } }, // شُكْر + ekler
+        21: { base: { emoji: "🙏", arText: "مَنْ لَا يَشْكُرُ النَّاسَ لَا يَشْكُرُ اللّٰهَ", trText: "İnsanlara teşekkür etmeyen, Allah'a da şükretmez. (Hadis-i Şerif)" }, suggestsPlus: true, "يّ": { emoji: "👨", arText: "شُكْرِيّ", trText: "Şükrü." }, "يَّة": { emoji: "👩", arText: "شُكْرِيَّة", trText: "Şükriye." } }, // شُكْر + ekler
         27: { base: { emoji: "🌹", arText: "شُكْرَانًا جَزِيلًا عَلَى حُسْنِ صَنِيعِكُمْ", trText: "Güzel davranışınız için çok şükran (teşekkür) ederim." } }, // شُكْرَان
         33: { base: { emoji: "😇", arText: "أَنَا شَاكِرٌ لَكَ عَلَى مَعْرُوفِكَ", trText: "İyiliğin için sana şâkirim (teşekkür ederim/minnettarım)." } }, // شَاكِر
         91: { base: { emoji: "🤝", arText: "تَشَكُّرَاتِي الْقَلْبِيَّةُ لَكُمْ جَمِيعًا", trText: "Hepinize kalbi teşekkürlerimi (teşekkürlerimi) sunarım." } }, // تَشَكُّر

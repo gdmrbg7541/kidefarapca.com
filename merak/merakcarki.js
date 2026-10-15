@@ -96,12 +96,21 @@
         try {
             var d = (typeof ham === 'string') ? JSON.parse(ham) : ham;
             if (!d || !d.levels) return l;
+            /* KURUM (15.10.2026, öğretmen: "birden fazla kurum varsa
+               sınıflar o kurumun altında dizilsin"): seviyenin kurumId'si
+               data.kurumlar[kId].name ile ada çevriliyor; kurumu olmayan
+               seviyeler "Kurum belirtilmemiş" başlığında toplanıyor. */
+            var kurumlar = d.kurumlar || {};
             Object.keys(d.levels).forEach(function (lId) {
                 var lv = d.levels[lId] || {}, cls = lv.classes || {};
+                var kId = (lv.kurumId && kurumlar[lv.kurumId]) ? lv.kurumId : '';
+                var kAd = kId ? ((kurumlar[kId] || {}).name || 'Kurum') : '';
                 Object.keys(cls).forEach(function (cId) {
                     l.push({
                         anahtar: lId + '/' + cId,
-                        ad: (lv.name ? lv.name + ' · ' : '') + (cls[cId].name || cId)
+                        ad: (lv.name ? lv.name + ' · ' : '') + (cls[cId].name || cId),
+                        kurumId: kId,
+                        kurum: kAd
                     });
                 });
             });
@@ -111,6 +120,32 @@
     function sinifYerelden() {
         try { return sinifAgaci(localStorage.getItem('schoolData')); } catch (e) { return []; }
     }
+    /* KAYDIRMA (15.10.2026, öğretmen: "merak köşesi açıldığında dikey
+       scroll olmayacak şekilde elementleri dizelim"): açılışta sayfa
+       kaymıyor, her şey ekrana sığıyor. Kart çıkınca eski davranış geri
+       geliyor (29.09.2026: "scroll olsun sayfa") — kart uzun olabilir.
+       Kartın görünürlüğünü izleyip gövdeye sınıf yazıyoruz; böylece
+       kartı açan/kapatan her yere ayrı satır eklemek gerekmiyor. */
+    /* Adresteki sınıf: ?sinif=<lId>&sube=<cId> (sistem/sinifbag.js ile
+       aynı yazım). Yoksa boş döner. */
+    function adresSinifi() {
+        try {
+            var p = new URLSearchParams(location.search);
+            var l = p.get('sinif'), c = p.get('sube');
+            return (l && c) ? (l + '/' + c) : '';
+        } catch (e) { return ''; }
+    }
+
+    function kartKaydirmaKur() {
+        var k = document.getElementById('mcKart');
+        if (!k || !window.MutationObserver) return;
+        function yaz() {
+            document.body.classList.toggle('mc-kart-acik', !k.hidden);
+        }
+        new MutationObserver(yaz).observe(k, { attributes: true, attributeFilter: ['hidden'] });
+        yaz();
+    }
+
     function sinifSeciciCiz() {
         var kutu = $('#mcSinifKutu'), sec = $('#mcSinif');
         if (!kutu || !sec) return;
@@ -121,13 +156,37 @@
             return;
         }
         kutu.hidden = false;
-        sec.innerHTML = sinifOgeleri.map(function (s) {
+        /* Birden fazla kurum varsa sınıflar kurum başlıkları altında
+           gruplanır (<optgroup>); tek kurumda düz liste. */
+        var kurumSira = [], kurumVar = {};
+        sinifOgeleri.forEach(function (s) {
+            var a = s.kurumId || '';
+            if (!kurumVar[a]) { kurumVar[a] = []; kurumSira.push(a); }
+            kurumVar[a].push(s);
+        });
+        function secenek(s) {
             return '<option value="' + kac(s.anahtar) + '">' + kac(s.ad) + '</option>';
-        }).join('');
-        var son = '';
-        try { son = localStorage.getItem('merakCarkiSonSinif') || ''; } catch (e) { }
+        }
+        if (kurumSira.length > 1) {
+            sec.innerHTML = kurumSira.map(function (a) {
+                var ad = (kurumVar[a][0] && kurumVar[a][0].kurum) || 'Kurum belirtilmemiş';
+                return '<optgroup label="' + kac(ad) + '">' +
+                       kurumVar[a].map(secenek).join('') + '</optgroup>';
+            }).join('');
+        } else {
+            sec.innerHTML = sinifOgeleri.map(secenek).join('');
+        }
+        /* AÇIK SINIF ADRESTEN (15.10.2026, öğretmen: "bi sınıfın listesi
+           açıkken materyallere tıklayıp merak köşesini açıyorsam otomatik
+           olarak o sınıf seçili olsun"): sınıf panelindeki Materyaller
+           sekmesi bağlantıya ?sinif=<lId>&sube=<cId> ekliyor; o sınıf
+           listede varsa en baştan seçili gelir, son seçim geri plana
+           düşer. */
+        var son = adresSinifi();
+        if (!son) { try { son = localStorage.getItem('merakCarkiSonSinif') || ''; } catch (e) { } }
         var varMi = sinifOgeleri.some(function (s) { return s.anahtar === son; });
         seciliSinif = varMi ? son : sinifOgeleri[0].anahtar;
+        try { localStorage.setItem('merakCarkiSonSinif', seciliSinif); } catch (e) { }
         sec.value = seciliSinif;
         durumYaz();
     }
@@ -485,6 +544,7 @@
         sinifOgeleri = sinifYerelden();
         carkCiz();
         sinifSeciciCiz();
+        kartKaydirmaKur();
         olaylar();
         simgeleriYerlestir();
         MC.turSec('');                       /* "tür seçmedin" notunu yaz */

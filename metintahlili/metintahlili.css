@@ -311,6 +311,11 @@ html.mt-cerceve .mt-ust { padding-inline-end: 64px; }
 .mt-s-ad { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .mt-s-ad b { font-size: 1.16rem; font-weight: 800; color: var(--mt-murekkep); line-height: 1.2; }
 .mt-s-ad small { font-size: .84rem; color: var(--mt-gri); }
+/* kitap etiketleri (15.10.2026) — her kitap kendi çipinde */
+.mt-s-kitaplar { display: flex; flex-wrap: wrap; gap: 6px; }
+.mt-s-kitap { font-size: .78rem; font-weight: 700; line-height: 1.1;
+    color: var(--mtc, #0E7C66); background: var(--mtcy, #F2FBF8);
+    border: 1px solid var(--mtcb, #CFE9E2); border-radius: 999px; padding: 3px 10px; }
 .mt-sayi { margin-inline-start: auto; display: flex; align-items: center; gap: 6px; }
 .mt-sayi b, .mt-sayi i { font-style: normal; font-size: .8rem; font-weight: 700;
     border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
@@ -391,9 +396,18 @@ html.mt-cerceve .mt-ust { padding-inline-end: 64px; }
     box-shadow: 0 8px 16px -8px var(--mtc); }
 .mt-serit-t.acik { border-color: var(--mtc); background: var(--mtcy);
     box-shadow: 0 8px 18px -8px var(--mtc); }
-.mt-serit-no { width: 28px; height: 28px; border-radius: 50%; display: flex;
+.mt-serit-no { flex: none; width: 28px; height: 28px; border-radius: 50%; display: flex;
     align-items: center; justify-content: center; font-size: .9rem; font-weight: 800;
     color: #fff; background: var(--mtc, #16A085); }
+.mt-serit-ad { display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+    line-height: 1.15; }
+.mt-serit-kitaplar { display: flex; flex-wrap: wrap; gap: 4px; }
+.mt-serit-kitap { max-width: 170px; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; font-size: .68rem; font-weight: 700; line-height: 1.3;
+    color: var(--mt-gri); background: #F4F8FC; border: 1px solid var(--mt-cizgi);
+    border-radius: 999px; padding: 2px 7px; }
+.mt-serit-t.acik .mt-serit-kitap { color: var(--mtc, #0E7C66);
+    background: #fff; border-color: var(--mtcb, #CFE9E2); }
 
 /* çok geniş ekran (akıllı tahta): ünite sütunu ve yazılar büyür */
 @media (min-width: 1600px) {
@@ -424,4 +438,49 @@ html.mt-cerceve .mt-ust { padding-inline-end: 64px; }
     .mt-sinif > summary { padding: 12px 12px; gap: 10px; }
     .mt-s-disk { width: 40px; height: 40px; font-size: 1.1rem; }
     .mt-sayi { flex-direction: column; align-items: flex-end; gap: 3px; }
+}
+
+/* ---------- SEÇİLİ KİTAP ŞERİDİ (15.10.2026) --------------------------
+   Öğretmen: "kitap seçilince tahliller ona göre değişmeli ... verilere
+   tıklamadan önce hangi kitabın seçili olduğu ve iki kitaplı
+   seçeneklerde öğretmenin emin olmasını sağlayalım."
+   Panelin en üstünde duruyor: solda seçili kitap, sağda öteki kitaba
+   geçiş. Onaylanmamış iki kitaplı sınıfta ünitelerin yerine soru
+   kutusu çıkıyor. */
+.mt-ks { grid-column: 1 / -1;            /* panel ızgarasında tam genişlik */
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+    margin: 10px 0 2px; padding: 10px 14px; border-radius: 14px;
+    background: var(--mtcy, #F2FBF8); border: 1px solid var(--mtcb, #CFE9E2); }
+.mt-ks-et { font-size: .8rem; font-weight: 800; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--mt-gri); }
+.mt-ks-ad { font-size: 1.04rem; font-weight: 800; color: var(--mt-murekkep); }
+.mt-ks-gec { margin-inline-start: auto; display: inline-flex; align-items: center; gap: 5px;
+    font-family: inherit; font-size: .88rem; color: var(--mt-murekkep);
+    background: #fff; border: 1.4px solid var(--mt-cizgi); border-radius: 999px;
+    padding: 7px 14px; cursor: pointer;
+    transition: border-color .16s, box-shadow .16s, transform .16s; }
+.mt-ks-gec b { color: var(--mtc, #0E7C66); }
+.mt-ks-gec:hover { transform: translateY(-1px); border-color: var(--mtc, #16A085);
+    box-shadow: 0 6px 14px -8px var(--mtc, #16A085); }
+
+/* onay kutusu */
+.mt-ks-soru { flex-direction: column; align-items: stretch; gap: 10px;
+    background: #FFF9EC; border-color: #F3DEB3; padding: 16px 18px; }
+.mt-ks-bas { font-size: 1.08rem; font-weight: 800; color: #8A5A00; }
+.mt-ks-not { margin: 0; font-size: .92rem; line-height: 1.5; color: #7A6744; }
+.mt-ks-tuslar { display: flex; flex-wrap: wrap; gap: 10px; }
+.mt-ks-tus { flex: 1 1 260px; text-align: start; font-family: inherit; cursor: pointer;
+    background: #fff; border: 1.6px solid #EBD9AE; border-radius: 14px; padding: 12px 16px;
+    transition: border-color .16s, box-shadow .16s, transform .16s; }
+.mt-ks-tus b { display: block; font-size: 1.02rem; font-weight: 800; color: var(--mt-murekkep); }
+.mt-ks-tus small { display: block; margin-top: 3px; font-size: .86rem; color: var(--mt-gri); line-height: 1.4; }
+.mt-ks-tus:hover { transform: translateY(-2px); border-color: #16A085;
+    box-shadow: 0 10px 20px -10px rgba(22, 160, 133, .6); }
+
+.mt-s-coklu { font-size: .74rem; font-weight: 700; color: var(--mt-gri);
+    background: #F4F8FC; border: 1px solid var(--mt-cizgi); border-radius: 999px;
+    padding: 3px 9px; }
+
+@media (max-width: 640px) {
+    .mt-ks-gec { margin-inline-start: 0; }
 }

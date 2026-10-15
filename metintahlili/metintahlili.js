@@ -148,6 +148,29 @@
         });
         return { ders: ders, metin: metin };
     }
+    /* Kitap etiketinin kısa hâli: "Arapça 6 · 2026-2027" → "2026-2027".
+       Şeritteki hap dar olduğu için orada bu kullanılıyor. */
+    function kitapYil(kt) {
+        if (!kt || !kt.yil) return '';
+        return (kt.yil === 'secmeli') ? 'Seçmeli' : String(kt.yil);
+    }
+    function kitapKisa(kt) {
+        var ad = String((kt && kt.ad) || '').trim();
+        /* "Arapça 6 · 2026-2027" → "2026-2027" */
+        var k = ad.replace(/^Arapça\s*\d+\s*[·\-—]\s*/i, '').trim();
+        /* "Arapça 5" gibi yalnız sınıfın adı kalıyorsa yıl daha anlamlı;
+           "Mektep Yayınları 2026-2027" gibi kendi adı olan kitap korunur. */
+        if (!k || /^Arapça\s*\d+$/i.test(k)) return kitapYil(kt) || ad;
+        return k;
+    }
+    /* Kitap etiketi (çip). kisa=true ise şerit için kısaltılmış ad. */
+    function kitapCip(kt, kisa, cipSinif) {
+        var c = el('span', cipSinif, kisa ? kitapKisa(kt) : (kt.ad || kitapKisa(kt)));
+        var ipucu = [kt.ad || '', kt.alt || ''].filter(Boolean).join(' — ');
+        if (ipucu) c.title = ipucu;
+        return c;
+    }
+
     /* "1. Ünite: Akrabalarım" → { no: '1', ad: 'Akrabalarım' }
        Numara artık kutuda yazdığı için başlıktan ayrılıyor. */
     function adBol(ad, tur, sira) {
@@ -156,6 +179,103 @@
         if (m) return { no: m[1], ad: m[2] };
         return { no: String(sira), ad: String(ad || '') };
     }
+
+    /* ---- seçili kitap, onay ve kitap şeridi (15.10.2026) ------------ */
+    function onekAd(kt) { return String((kt && kt.onek) || '').replace(/\//g, ''); }
+    function V() { return window.KidefSinifVeri; }
+
+    /* Listede hangi kitap gösterilecek: adreste k varsa o, yoksa sınıfın
+       seçili kitabı, o da yoksa listenin ilki. */
+    function kitapSayac(kt) {
+        var ders = 0, metin = 0;
+        ((kt && kt.uniteler) || []).forEach(function (u) {
+            ders += u.dersler.length;
+            u.dersler.forEach(function (x) { metin += (x.cumle || 0); });
+        });
+        return { ders: ders, metin: metin };
+    }
+    function kitapSec(s, kl) {
+        var i, v = V();
+        if (ONEK != null) {
+            for (i = 0; i < kl.length; i++) if (onekAd(kl[i]) === ONEK) return kl[i];
+        }
+        if (v) {
+            var sy = null;
+            try { sy = v.seciliVeriYili(s.sinif); } catch (e) { sy = null; }
+            if (sy) for (i = 0; i < kl.length; i++) if (kl[i].yil === sy.yil) return kl[i];
+        }
+        return kl[0];
+    }
+    /* İki kitaplı sınıfta öğretmen henüz "bu kitabı kullanıyorum" demediyse
+       önce onu soruyoruz; üniteler o zamana kadar basılmıyor. */
+    function onayGerek(s, kl) {
+        var v = V();
+        if (!v || !v.onayliMi || kl.length < 2) return false;
+        try { return !v.onayliMi(s.sinif); } catch (e) { return false; }
+    }
+    function gosterilsinMi(s, kl) { return !onayGerek(s, kl); }
+
+    function kitabaGec(s, kt) {
+        var v = V();
+        try { if (v && v.onayla) v.onayla(s.sinif, kt.yil); } catch (e) {}
+        if (SINIF) {                       /* adres kitabı sabitliyor: yenile */
+            location.href = 'metintahlili.html?sinif=' + encodeURIComponent(SINIF) +
+                            '&k=' + encodeURIComponent(onekAd(kt));
+            return;
+        }
+        listeYenile();
+    }
+
+    /* Panelin üstündeki şerit: seçili kitap + (iki kitaplıysa) geçiş. */
+    function kitapSerit(s, kl, sec) {
+        var kutu = el('div', 'mt-ks');
+        if (onayGerek(s, kl)) {
+            kutu.className = 'mt-ks mt-ks-soru';
+            kutu.appendChild(el('b', 'mt-ks-bas',
+                s.ad + ': bu sınıfta hangi kitabı kullanıyorsun?'));
+            kutu.appendChild(el('p', 'mt-ks-not',
+                'Metin tahlilleri seçtiğin kitaba göre listelenir. Seçimin ' +
+                'bütün sitede geçerli olur; panelden her zaman değiştirebilirsin.'));
+            var sir = el('div', 'mt-ks-tuslar');
+            kl.forEach(function (kt) {
+                var t = tus('mt-ks-tus');
+                t.appendChild(el('b', null, kt.ad || kt.yil));
+                if (kt.alt) t.appendChild(el('small', null, kt.alt));
+                t.addEventListener('click', function () { kitabaGec(s, kt); });
+                sir.appendChild(t);
+            });
+            kutu.appendChild(sir);
+            return kutu;
+        }
+        var et = el('span', 'mt-ks-et', 'Seçili kitap');
+        kutu.appendChild(et);
+        var ad = el('b', 'mt-ks-ad', (sec && (sec.ad || sec.yil)) || '—');
+        if (sec && sec.alt) ad.title = sec.alt;
+        kutu.appendChild(ad);
+        if (kl.length > 1) {
+            kl.forEach(function (kt) {
+                if (kt === sec) return;
+                var t = tus('mt-ks-gec');
+                t.appendChild(el('span', null, 'Bu sınıfta şunu kullanıyorum: '));
+                t.appendChild(el('b', null, kt.ad || kt.yil));
+                if (kt.alt) t.title = kt.alt;
+                t.addEventListener('click', function () { kitabaGec(s, kt); });
+                kutu.appendChild(t);
+            });
+        }
+        return kutu;
+    }
+
+    /* Kitap değişince (şeritten, panelden ya da başka sekmeden) liste
+       kendini yeniden çiziyor. */
+    function listeYenile() {
+        if (!KOK || DERS) return;
+        KOK.innerHTML = '';
+        listeKur();
+    }
+    document.addEventListener('kidef:veriyili', function () {
+        try { if (!DERS) listeYenile(); } catch (e) {}
+    });
 
     function listeKur() {
         var g = el('div', 'mt-liste-govde');
@@ -193,8 +313,9 @@
                 rozet.textContent = String(a[0].sinif);
                 renkVer(rozet, a[0].sinif);
                 bas.insertBefore(rozet, bas.firstChild);
-                var t0 = sayac(a[0]);
-                if (kt0 && kt0.ad) cipler.appendChild(el('span', 'mt-cip mt-cip-kitap', kt0.ad));
+                var ks0 = kitapSec(a[0], (a[0].kitaplar || []));
+                var t0 = kitapSayac(ks0);
+                if (ks0 && ks0.ad) cipler.appendChild(el('span', 'mt-cip mt-cip-kitap', ks0.ad));
                 cipler.appendChild(el('span', 'mt-cip', t0.ders + ' ders'));
                 cipler.appendChild(el('span', 'mt-cip', t0.metin + ' metin'));
                 var hepsi = el('a', 'mt-hepsi', 'Bütün sınıflar →');
@@ -222,7 +343,13 @@
                 p.setAttribute('data-sinif', s.sinif);
                 if (si === 0) p.classList.add('acik');
                 p.appendChild(el('span', 'mt-serit-no', String(s.sinif)));
-                p.appendChild(el('span', 'mt-serit-ad', s.ad));
+                var pad = el('span', 'mt-serit-ad');
+                pad.appendChild(el('b', null, s.ad));
+                var pk = el('span', 'mt-serit-kitaplar');
+                var ps = kitapSec(s, (s.kitaplar || []));
+                if (ps) pk.appendChild(kitapCip(ps, true, 'mt-serit-kitap'));
+                pad.appendChild(pk);
+                p.appendChild(pad);
                 p.addEventListener('click', function () {
                     d.open = true;
                     try { d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
@@ -247,11 +374,22 @@
             sm.appendChild(el('span', 'mt-s-disk', String(s.sinif)));
             var sad = el('span', 'mt-s-ad');
             sad.appendChild(el('b', null, s.ad));
-            var kAd = (s.kitaplar || []).map(function (k) { return k.ad; })
-                        .filter(Boolean).join(' · ');
-            if (kAd) sad.appendChild(el('small', null, kAd));
+            /* Kitap etiketleri: her kitap kendi çipinde (6, 7 ve 10. sınıfın
+               iki kitabı var; eskiden tek satırda birleşik yazılıyordu). */
+            /* Başlıkta SEÇİLİ kitabın etiketi; iki kitaplı sınıfta yanına
+               "2 kitap" notu düşülüyor (hangisinin açık olduğu belli olsun). */
+            var kle = (s.kitaplar || []).filter(function (k) { return k && (k.ad || k.yil); });
+            if (kle.length) {
+                var ks = el('span', 'mt-s-kitaplar');
+                var se = kitapSec(s, kle);
+                if (se) ks.appendChild(kitapCip(se, false, 'mt-s-kitap'));
+                if (kle.length > 1) ks.appendChild(el('span', 'mt-s-coklu', kle.length + ' kitaplı sınıf'));
+                sad.appendChild(ks);
+            }
             sm.appendChild(sad);
-            var t = sayac(s);
+            /* Sayılar da YALNIZ seçili kitabın (iki kitabın toplamı
+               gösterilirse "iki kitabın da cümleleri var" izlenimi doğuyor). */
+            var t = kitapSayac(kitapSec(s, (s.kitaplar || [])));
             var sy = el('span', 'mt-sayi');
             sy.appendChild(el('b', null, t.ders + ' ders'));
             sy.appendChild(el('i', null, t.metin + ' metin'));
@@ -260,16 +398,16 @@
             d.appendChild(sm);
 
             var ic = el('div', 'mt-s-ic');
-            /* Sınıfın birden çok kitabı varsa (6, 7 ve 10. sınıf) her kitap
-               kendi başlığıyla ayrılıyor. */
-            var cokKitap = (s.kitaplar || []).length > 1;
-            (s.kitaplar || []).forEach(function (kt) {
-                if (cokKitap) {
-                    var kb = el('div', 'mt-kitap');
-                    kb.appendChild(el('b', null, kt.ad));
-                    if (kt.alt) kb.appendChild(el('small', null, kt.alt));
-                    ic.appendChild(kb);
-                }
+            /* SEÇİLİ KİTAP (15.10.2026) — öğretmen: "kitap seçilince
+               tahliller ona göre değişmeli, iki kitabın da cümleleri
+               varmış gibi duruyor". Artık yalnız o sınıfta SEÇİLİ olan
+               kitabın üniteleri listeleniyor; öteki kitaba üstteki
+               şeritten geçiliyor (geçiş sınıfın kitap seçimini de
+               değiştiriyor, yani site genelinde geçerli). */
+            var kl = (s.kitaplar || []).slice();
+            var sec = kitapSec(s, kl);
+            ic.appendChild(kitapSerit(s, kl, sec));
+            if (gosterilsinMi(s, kl)) [sec].forEach(function (kt) {
                 (kt.uniteler || []).forEach(function (u, ui) {
                     var ub = adBol(u.ad, 'Ünite', ui + 1);
                     var uk = document.createElement('details');

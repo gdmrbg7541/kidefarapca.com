@@ -3932,3 +3932,20 @@ html:-webkit-full-screen #ll-root.logged-in #content .tabs{ top: 0; }
     #llOkulPopup .okul-nokta svg{ width: 21px; height: 21px; }
     #llOkulPopup .okul-nokta{ padding: 6px 4px; }
 }
+
+/* ==========================================================================
+   GENIS OKUL PENCERESI (15.10.2026)
+   Ogretmen: "bir liste acikken en solda okul svg sine tiklayinca okul
+   biraz dar oluyor, bi seviye ikinci satira sarkiyor, orayi yatay olarak
+   genisletelim, yuzde 75 olsun, mumkun oldugunca genis olsun."
+   Pencere 700 px ile sinirliydi; bina da 540/640 px idi. Bu yuzden bir
+   seviyenin siniflari ikinci satira dusuyordu. Artik pencere ekranin
+   %75'i, bina da pencereyi dolduruyor (cok genis ekranda okunakli
+   kalsin diye ust sinir var). Dar ekranda eskisi gibi tam genislik.
+   ========================================================================== */
+#llOkulPopup .okul-panel{ max-width: 75vw; }
+#llOkulPopup .okul-bina{ max-width: min(100%, 1280px); }
+#llOkulPopup .okul-bina.buyuk{ max-width: min(100%, 1480px); }
+@media (max-width: 1100px){
+    #llOkulPopup .okul-panel{ max-width: 94vw; }
+}

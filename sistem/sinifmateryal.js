@@ -141,9 +141,33 @@
         try {
             var kap = document.getElementById(KAP_ID);
             if (window.ihIcKur) window.ihIcKur(kap);
+            /* AÇIK SINIFI BAĞLANTILARA YAZ (15.10.2026, öğretmen: "bi
+               sınıfın listesi açıkken materyallere tıklayıp merak köşesini
+               açıyorsam otomatik olarak o sınıf seçili olsun"). Kartlar
+               sonradan basılabildiği için bir de kısa gecikmeyle bakılıyor. */
+            sinifiBagla(kap, a);
+            setTimeout(function () { sinifiBagla(document.getElementById(KAP_ID), a); }, 400);
         } catch (e) {
             try { console.warn('materyal kurulamadı:', e && e.message); } catch (x) { }
         }
+    }
+
+    /* Sınıfa bağlı açılması gereken sayfalar: adreslerine açık sınıfın
+       kimliği ekleniyor (?sinif=<lId>&sube=<cId> — sistem/sinifbag.js ile
+       aynı yazım). Sayfa o sınıfı kendisi seçiyor. */
+    var SINIFLI_SAYFA = ['merakcarki.html'];
+    function sinifiBagla(kap, a) {
+        if (!kap || !a || !a.lId || !a.cId) return;
+        SINIFLI_SAYFA.forEach(function (sayfa) {
+            var liste = kap.querySelectorAll('a[href^="' + sayfa + '"]');
+            Array.prototype.forEach.call(liste, function (b) {
+                var h = b.getAttribute('href') || '';
+                if (h.indexOf('sinif=') >= 0) return;
+                b.setAttribute('href', h + (h.indexOf('?') < 0 ? '?' : '&') +
+                    'sinif=' + encodeURIComponent(a.lId) +
+                    '&sube=' + encodeURIComponent(a.cId));
+            });
+        });
     }
 
     /* Kitap/veri yılı değişince İmam Hatip de tazeleniyor; burası da. */

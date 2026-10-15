@@ -8401,7 +8401,7 @@ window.openAtlasOverlay = function(stage) {
                 <h4 style="margin: 0 0 10px 0; color: #000000;">Kur'an'da ve Klasik Arapça'da Farklı Kullanımları:</h4>
                 <ul style="margin: 0; padding-left: 20px;">
                     <li style="margin-bottom: 8px;"><strong>1. Dua ve Beddua (Temenni):</strong> Mazi fiil çok sık olarak dua veya beddua bildirmek için kullanılır. "رَضِيَ اللهُ عَنْهُ" (Allah ondan razı olsun - Geçmiş zaman değil duadır). Veya "تَبَّتْ يَدَا أَبِي لَهَبٍ" (Ebu Leheb'in elleri kurusun).</li>
-                    <li style="margin-bottom: 8px;"><strong>2. Kesin Gelecek Zaman (Mazi-i Muhakkak):</strong> Kur'an'da kıyamet sahneleri veya Allah'ın kesin vaatleri, <em>"gerçekleşmesi o kadar kesindir ki sanki geçmişte olmuş bitmiş gibidir"</em> vurgusu vermek için Mazi kipiyle anlatılır. Örn: "أَتَىٰ أَمْرُ اللَّهِ" (Allah'ın emri geldi/gelecek).</li>
+                    <li style="margin-bottom: 8px;"><strong>2. Kesin Gelecek Zaman (Mazi-i Muhakkak):</strong> Kur'an'da kıyamet sahneleri veya Allah'ın kesin vaatleri, <em>"gerçekleşmesi o kadar kesindir ki sanki geçmişte olmuş bitmiş gibidir"</em> vurgusu vermek için Mazi kipiyle anlatılır. Örn: "أَتَىٰ أَمْرُ اللّٰهِ" (Allah'ın emri geldi/gelecek).</li>
                     <li><strong>3. Şart (Koşul) Cümlelerinde:</strong> Şart edatlarından sonra mazi fiil gelse de anlam geleceğe dönüktür. Örn: "مَنْ دَخَلَ..." (Kim girerse...).</li>
                 </ul>
             </div>

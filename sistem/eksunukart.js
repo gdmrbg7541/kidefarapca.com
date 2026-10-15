@@ -42,9 +42,13 @@
     /* dünya — "bir dil, iki dünya" */
     dunya: svg('<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/>' +
                '<path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/>'),
-    /* kitap + üstünde harf takısı vurgusu */
-    takı: svg('<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15.5H6.5A2.5 2.5 0 0 0 4 21z"/>' +
-              '<path d="M8.5 8.2v5.6"/><path d="M12.4 8.2v4a1.6 1.6 0 0 0 1.6 1.6h1.5"/>'),
+    /* kitap + üstünde harf takısı vurgusu.
+       RTL (15.10.2026, Geylani: "svg ters olmuş, rtl olsun; lâm solda,
+       elif sağda, lâmın kuyruğu sola baksın"): çizimin tamamı x=12
+       ekseninde aynalandı — kitabın sırtı sağda, harfler sağdan sola:
+       sağda düz elif, solda kuyruğu sola dönen lâm. */
+    takı: svg('<path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H5v15.5h12.5A2.5 2.5 0 0 1 20 21z"/>' +
+              '<path d="M15.5 8.2v5.6"/><path d="M11.6 8.2v4a1.6 1.6 0 0 1-1.6 1.6h-1.5"/>'),
     /* çark */
     cark: svg('<circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="2.4"/>' +
               '<path d="M12 3.8v3M12 17.2v3M3.8 12h3M17.2 12h3"/>' +
