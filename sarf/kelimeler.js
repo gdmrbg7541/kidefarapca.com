@@ -1297,6 +1297,9 @@ function initMemoryGrid(key, forceShuffle = false) {
                        '</li>';
             }).join('') + '</ol></div>';
         klOtoSutun(key);
+        /* Listeden kelime çıkarma (15.10.2026): her satıra çarpı, altına
+           "Çıkarılanlar" havuzu — sarf/kelimecikar.js */
+        if (window.KidefKelimeCikar) KidefKelimeCikar.kur(key);
         state.scores = [0, 0];
         state.currentPlayer = 1;
         state.activeFlipped = [];

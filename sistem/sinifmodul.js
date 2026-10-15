@@ -590,6 +590,37 @@
     }
   });
 
+
+  /* Vezinler Tablosu — bütün vezinler tek tabloda; sınıfa göre değişmez
+     Her sınıfta görünür: sınıfa göre değişen verisi yok, sarf/nahiv
+     aracı olarak bütün sınıflara açık (15.10.2026, Geylani: "tüm
+     sınıflarda vezinler tablosu ve tamlama ve cümleler kartı olsun"). */
+  ekle({
+    id: "vezinler",
+    ad: "Vezinler Tablosu",
+    sira: 45,
+    renk: "#6B4BB4",
+    aciklama: function () { return "Bütün vezinler tek tabloda!"; },
+    svg: function () { return "<svg viewBox=\"0 0 64 64\" class=\"kg\" aria-hidden=\"true\"> <rect x=\"4\" y=\"4\" width=\"56\" height=\"56\" rx=\"7\" fill=\"#fff\" stroke=\"#16A085\" stroke-width=\"2.6\"/> <rect x=\"6.6\" y=\"6.4\" width=\"25\" height=\"6.6\" rx=\"2.6\" fill=\"#C0392B\"/> <rect x=\"33.4\" y=\"6.4\" width=\"24\" height=\"6.6\" rx=\"2.6\" fill=\"#EDF2F7\" stroke=\"#DCE4EC\" stroke-width=\".8\"/> <rect x=\"43\" y=\"15.4\" width=\"14\" height=\"6\" rx=\"2.4\" fill=\"#22c55e\"/> <rect x=\"25\" y=\"15.4\" width=\"14\" height=\"6\" rx=\"2.4\" fill=\"#1FB255\"/> <rect x=\"7\" y=\"15.4\" width=\"14\" height=\"6\" rx=\"2.4\" fill=\"#3b82f6\"/> <rect x=\"5.6\" y=\"33.6\" width=\"52.8\" height=\"11\" rx=\"2.6\" fill=\"#FBE4E9\"/> <rect x=\"5.6\" y=\"45.6\" width=\"52.8\" height=\"11\" rx=\"2.6\" fill=\"#FCEFE0\"/> <rect x=\"43\" y=\"23\" width=\"14\" height=\"8\" rx=\"2.6\" fill=\"#E9F7EF\" stroke=\"#D6EADF\" stroke-width=\".9\"/> <rect x=\"25\" y=\"23\" width=\"14\" height=\"8\" rx=\"2.6\" fill=\"#E9F7EF\" stroke=\"#D6EADF\" stroke-width=\".9\"/> <rect x=\"7\" y=\"23\" width=\"14\" height=\"8\" rx=\"2.6\" fill=\"#EDF2F7\" stroke=\"#DCE4EC\" stroke-width=\".9\"/> <rect x=\"43\" y=\"35\" width=\"14\" height=\"8\" rx=\"2.6\" fill=\"#fff\" stroke=\"#F0D3DA\" stroke-width=\".9\"/> <rect x=\"25\" y=\"35\" width=\"14\" height=\"8\" rx=\"2.6\" fill=\"#fff\" stroke=\"#F0D3DA\" stroke-width=\".9\"/> <rect x=\"7\" y=\"35\" width=\"14\" height=\"8\" rx=\"2.6\" fill=\"#fff\" stroke=\"#F0D3DA\" stroke-width=\".9\"/> <rect x=\"43\" y=\"47\" width=\"14\" height=\"8\" rx=\"2.6\" fill=\"#fff\" stroke=\"#F2DEC6\" stroke-width=\".9\"/> <rect x=\"25\" y=\"47\" width=\"14\" height=\"8\" rx=\"2.6\" fill=\"#fff\" stroke=\"#F2DEC6\" stroke-width=\".9\"/> <rect x=\"7\" y=\"47\" width=\"14\" height=\"8\" rx=\"2.6\" fill=\"#fff\" stroke=\"#F2DEC6\" stroke-width=\".9\"/> <rect class=\"kga-vez-vurgu\" x=\"7\" y=\"23\" width=\"14\" height=\"8\" rx=\"3\" fill=\"rgba(243,156,18,.32)\" stroke=\"#F39C12\" stroke-width=\"1.8\"/> <text x=\"50\" y=\"29.6\" font-size=\"6\" text-anchor=\"middle\" fill=\"#2c3e50\">فَعَلَ</text> <text x=\"32\" y=\"29.6\" font-size=\"6\" text-anchor=\"middle\" fill=\"#2c3e50\">يَفْعُلُ</text> <text x=\"14\" y=\"29.6\" font-size=\"6\" text-anchor=\"middle\" fill=\"#2c3e50\">فَاعِل</text> <text x=\"50\" y=\"41.6\" font-size=\"6\" text-anchor=\"middle\" fill=\"#2c3e50\">أَفْعَلَ</text> <text x=\"32\" y=\"41.6\" font-size=\"6\" text-anchor=\"middle\" fill=\"#2c3e50\">يُفْعِلُ</text> <text x=\"14\" y=\"41.6\" font-size=\"6\" text-anchor=\"middle\" fill=\"#2c3e50\">إِفْعَال</text> <text x=\"50\" y=\"53.6\" font-size=\"6\" text-anchor=\"middle\" fill=\"#2c3e50\">فَعَّلَ</text> <text x=\"32\" y=\"53.6\" font-size=\"6\" text-anchor=\"middle\" fill=\"#2c3e50\">يُفَعِّلُ</text> <text x=\"14\" y=\"53.6\" font-size=\"6\" text-anchor=\"middle\" fill=\"#2c3e50\">تَفْعِيل</text> </svg>"; },
+    veriVar: function () { return { rozet: "Hemen Başla" }; },
+    url: function () { return "kaliplartablosu.html"; }
+  });
+
+  /* Tamlama ve Cümleler — dört yapı: isim/sıfat tamlaması, isim/fiil cümlesi
+     Her sınıfta görünür: sınıfa göre değişen verisi yok, sarf/nahiv
+     aracı olarak bütün sınıflara açık (15.10.2026, Geylani: "tüm
+     sınıflarda vezinler tablosu ve tamlama ve cümleler kartı olsun"). */
+  ekle({
+    id: "tamlamacumle",
+    ad: "Tamlama ve Cümleler",
+    sira: 50,
+    renk: "#17817E",
+    aciklama: function () { return "Dört yapı ve i'rab tek tabloda."; },
+    svg: function () { return "<svg viewBox=\"0 0 64 64\" class=\"kg\" aria-hidden=\"true\"> <rect x=\"4\" y=\"11\" width=\"56\" height=\"45\" rx=\"5\" fill=\"#fff\" stroke=\"#16A085\" stroke-width=\"2.6\"/> <g><rect x=\"6.6\" y=\"13.6\" width=\"4.4\" height=\"8.2\" rx=\"2\" fill=\"#0E8074\"/><rect x=\"13\" y=\"16\" width=\"17\" height=\"2.3\" rx=\"1.15\" fill=\"#dbe2ea\"/><rect x=\"32\" y=\"16\" width=\"24\" height=\"2.3\" rx=\"1.15\" fill=\"#dbe2ea\"/></g> <g><rect x=\"6.6\" y=\"24.2\" width=\"4.4\" height=\"8.2\" rx=\"2\" fill=\"#8B1A1A\"/><rect x=\"13\" y=\"26.6\" width=\"21\" height=\"2.3\" rx=\"1.15\" fill=\"#dbe2ea\"/><rect x=\"36\" y=\"26.6\" width=\"20\" height=\"2.3\" rx=\"1.15\" fill=\"#dbe2ea\"/></g> <g><rect x=\"6.6\" y=\"34.8\" width=\"4.4\" height=\"8.2\" rx=\"2\" fill=\"#7C8794\"/><rect x=\"13\" y=\"37.2\" width=\"15\" height=\"2.3\" rx=\"1.15\" fill=\"#dbe2ea\"/><rect x=\"30\" y=\"37.2\" width=\"26\" height=\"2.3\" rx=\"1.15\" fill=\"#dbe2ea\"/></g> <g><rect x=\"6.6\" y=\"45.4\" width=\"4.4\" height=\"8.2\" rx=\"2\" fill=\"#9C0F9C\"/><rect x=\"13\" y=\"47.8\" width=\"23\" height=\"2.3\" rx=\"1.15\" fill=\"#dbe2ea\"/><rect x=\"38\" y=\"47.8\" width=\"18\" height=\"2.3\" rx=\"1.15\" fill=\"#dbe2ea\"/></g> <g class=\"kga-tc-mercek\"> <line x1=\"47.5\" y1=\"22.5\" x2=\"54\" y2=\"29\" stroke=\"#F39C12\" stroke-width=\"3.4\" stroke-linecap=\"round\"/> <circle cx=\"41\" cy=\"17.7\" r=\"9.6\" fill=\"#fffdf5\" stroke=\"#F39C12\" stroke-width=\"2.8\"/> <text class=\"kga-tc-h\" x=\"41\" y=\"20.3\" font-size=\"23\" fill=\"#12A05F\" text-anchor=\"middle\">ـــُ</text> <text class=\"kga-tc-h h2\" x=\"41\" y=\"20.3\" font-size=\"23\" fill=\"#2C7BE5\" text-anchor=\"middle\">ـــَ</text> <text class=\"kga-tc-h h3\" x=\"41\" y=\"20.3\" font-size=\"23\" fill=\"#8B4BD8\" text-anchor=\"middle\">ـــِ</text> </g> </svg>"; },
+    veriVar: function () { return { rozet: "Hemen Başla" }; },
+    url: function () { return "tamlamavecumleler.html"; }
+  });
+
   /* ---- Sonraki kartlar buraya: aynı kalıpla ekle({...}) ---- */
 
   stilKur();

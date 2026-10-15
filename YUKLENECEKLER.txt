@@ -10240,3 +10240,50 @@ kalıplar tablosuna geçiliyor (denendi: علم → Fiil yandı).
 DEĞİŞEN  muhadese/veri/kok_haritasi.js · muhadese/sarfkopru.js
 YEDEK    _kaynak/yedekler/2026-10-14-metintahlili-arayuz/
          (kok_haritasi-oncesi.js, sarfkopru.js)
+
+────────────────────────────────────────────────────────────────────────
+15.10.2026 — KELİME DAĞARCIĞI: LİSTEDEN KELİME ÇIKAR / GERİ EKLE
+Geylani: "liste indirme özelliği olduğu için öğretmen bir kelimeyi
+çıkarmak isterse yanına bir çarpı ekle; çarpıya basılanlar listeden
+çıksın ama aşağıda başka bir havuza eklensin, istenirse geri listeye
+eklenebilsin; tamamen silinmediğini animasyonla hissetsin."
+
+· Liste modundaki her satırın sonunda küçük bir çarpı var.
+· Basılınca satır aşağı doğru süzülerek küçülüyor ve hemen altındaki
+  "Çıkarılanlar (N) — silinmedi; geri eklemek için dokun" havuzunda
+  rozet olarak beliriyor (Arapçası + Türkçesi + geri oku).
+· Rozete dokununca kelime eski yerine dönüyor ve bir an sarıya çalıyor.
+  "Hepsini geri al" düğmesi de var. Havuz boşsa hiç görünmüyor.
+· Liste numaraları her değişiklikte yeniden veriliyor (1, 2, 3…).
+· İNDİRME: PDF / Word / Excel / Yazdır çıktıları çıkarılanları
+  İÇERMİYOR (kelimeindir.js → liste() modüle soruyor). Denendi:
+  21 kelimelik listede 3 çıkarılınca çıktı 18 kelime.
+· Çıkarma listeye özel ve OTURUMLUK: sayfa yenilenince liste tam gelir.
+  Kalıcı istenirse kelimecikar.js'te localStorage'a yazmak yeter.
+· Emoji yok, simgeler çizgi SVG.
+YENİ     sarf/kelimecikar.js
+DEĞİŞEN  sarf/kelimeler.js (liste çizilince kur) ·
+         sarf/kelimeindir.js (çıktı süzgeci) ·
+         kelimeler.html + kaliplartablosu.html (betik satırı)
+NOT      İmam Hatip kelime listeleri de aynı ekranı kullandığı için
+         (ihkelime.js kategorileri sayfanın kendi mekanizmasına ekliyor)
+         çarpı orada da çalışıyor. Test modu listenin tamamını kullanır.
+YEDEK    _kaynak/yedekler/2026-10-15-kelime-cikar/
+
+────────────────────────────────────────────────────────────────────────
+15.10.2026 (2) — HER SINIFTA "VEZİNLER TABLOSU" VE "TAMLAMA VE CÜMLELER"
+Geylani: "tüm sınıflarda vezinler tablosu ve tamlama ve cümleler kartı
+olsun."
+İmam Hatip bölümünde 5-10. sınıfın kart ızgarasına iki kart eklendi:
+  · Vezinler Tablosu     → kaliplartablosu.html   (sıra 45)
+  · Tamlama ve Cümleler  → tamlamavecumleler.html (sıra 50)
+Sözlük'ten sonra, oyun kartlarından önce duruyorlar — kolaydan zora
+sırası bozulmadı (harf → kelime → tanıma → çözümleme → cümle → konuşma).
+Simgeler ana sayfadaki kartların KENDİ svg'leri; elle çizilmedi,
+index.html'den programla çıkarılıp kayıt dosyasına taşındı.
+Sınıfa göre değişen verileri olmadığı için her sınıfta görünüyorlar.
+DEĞİŞEN  sistem/sinifmodul.js (dosyanın kendi "yeni kart buraya" yerine
+         iki ekle({...}) bloğu; başka dosyaya dokunulmadı)
+DENENDİ  5-6-7-8-9-10: altısında da iki kart var, bağlantılar doğru,
+         svg'ler yerinde; konsolda hata yok.
+YEDEK    _kaynak/yedekler/2026-10-15-vezin-tamlama-kart/

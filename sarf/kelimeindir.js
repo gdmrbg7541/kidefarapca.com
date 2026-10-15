@@ -140,8 +140,13 @@
     return {
       baslik: String(cat.title || 'Kelime Listesi').replace(/<[^>]*>/g, '').trim(),
       arBaslik: String(cat.arTitle || '').replace(/<[^>]*>/g, '').trim(),
+      /* Öğretmenin çarpıyla çıkardığı kelimeler çıktıya girmez
+         (sarf/kelimecikar.js). Modül yoksa liste olduğu gibi iner. */
       kelimeler: cat.items.map(function (w) {
         return { ar: String(w.arText || '').trim(), tr: String(w.trText || '').trim() };
+      }).filter(function (w) {
+        var C = window.KidefKelimeCikar;
+        return !(C && C.cikarikMi && C.cikarikMi(key, w.ar));
       })
     };
   }
