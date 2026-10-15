@@ -10565,3 +10565,99 @@ NOT      Hesaba yazma yalnız giriş yapmış öğretmende çalışır; girişsi
    EK DOSYA  _kaynak/uretici/mtGeri.py · damga v=20261015f
    DENENDİ   Sınıf listesinden açılan derste geri → ?sinif=6&k=y2627;
              bütün sınıflardan açılanda geri → düz liste.
+
+   EK (aynı gün) — öğretmen: "günün sözü kısmında <lafzatullah> şeklinde
+   hata var düzeltmedin sanırım":
+   · İlk düzeltme ا ل ل + fetha + şedde + ه biçimini kapsıyordu; elifin
+     üstünde de fetha olan bir biçim (بِاَللَّهِ) kaçmıştı. O da düzeltildi.
+   · Günün sözü verisindeki altı lafzatullah'ın HEPSİ artık şedde + üstte
+     küçük elif taşıyor; âyet dosyasında lafzatullah geçmiyor.
+   · Not: değişiklik dosyada; siteye yansıması için gönderim (hizli-gonder)
+     gerekiyor — sürüm damgası o sırada kendiliğinden tazeleniyor.
+
+15.10.2026 · KİTAP ÖNERİSİ — ALAN / SEVİYE BAŞLIKLARI KIRMIZI
+----------------------------------------------------------------
+Öğretmen: "kitap önerisi kısmında alan ve seviye başlıkları kırmızı
+dolgu ve beyaz yazı olsun."
+· ALAN · SEVİYE · ARA başlıkları soluk gri yazıydı, filtre haplarının
+  yanında kayboluyordu. Artık sitenin kırmızısıyla (#EE5253) dolu,
+  beyaz yazılı rozetler.
+· Üçü aynı sütunda durduğu için ARA da aynı biçimi aldı; istenirse tek
+  satırla gri bırakılabilir.
+YENİ     _kaynak/uretici/koEtiket.py
+DEĞİŞEN  merak/kitaponeri.js · merak/gunsozu-veri.js
+
+15.10.2026 · SINIF DEFTERİ KARTI (İMAM HATİP BELGE ŞERİDİ)
+----------------------------------------------------------------
+Öğretmen: "sınıf defterlerini imam hatip kategorilerinde ders kitabının
+yanında döküman svg si gibi olsun, üstünde o seviyenin rakamı olsun,
+sınıf defterine benzesin yani."
+· Belge şeridinde Ders Kitabı'nın HEMEN YANINDA "Sınıf Defteri" kartı.
+  Öteki belge kartlarıyla aynı A4 görünümü; antet "9. SINIF · DEFTER",
+  rozet "36 HAFTA".
+· İkon gerçek bir sınıf defteri: dikişli sırt (üç halka), sayfa
+  kenarları ve ortada beyaz etiket — etikette O SEVİYENİN RAKAMI
+  (5-10). Rakam SVG metni, her ölçekte net.
+· Karta basınca panelde defterin ne olduğu yazıyor ve "Sınıf Defterini
+  Aç" düğmesi çıkıyor: sınıf paneli açıksa doğrudan o şubenin defter
+  sekmesine geçiyor, sınıf seçili değilse kurum/sınıf penceresini
+  açıyor.
+· Dosyası olmayan anlatım kartları için küçük bir düzen: altına
+  "PDF'ler yakında" kutusu konmuyor, panel başlığındaki rozet kartın
+  kendi etiketini gösteriyor (a4IzgaraKur · t.dosyasiz / t.etiket).
+· Aynı şerit sınıf panelindeki Materyaller sekmesinde de kullanıldığı
+  için kart orada da kendiliğinden görünüyor.
+· Renk #92400E (koyu kehribar): ders kitabının amberinden ayrılsın ama
+  aynı aileden olsun diye seçildi.
+YENİ     _kaynak/uretici/sinifDefteriKart.py
+DEĞİŞEN  index.html
+YEDEK    _kaynak/yedekler/2026-10-15-sinif-defteri-kart/
+DENENDİ  6 ve 9. sınıfta kart ders kitabının yanında çıkıyor, rakam
+         doğru; panel açılıyor, rozet "36 HAFTA" yazıyor.
+
+15.10.2026 · BELGE İKONLARI KATMANLI (3B) + DEFTER LACİVERT
+----------------------------------------------------------------
+Öğretmen: "güzel, diğer döküman svg lerini de bu şekilde gerçeğe
+benzet 3d şeklinde, sınıf defterinin rengini koyu lacivert yap."
+· Yedi ikon sınıf defteri ikonundaki gibi KATMANLI çizildi: altta koyu
+  gölge yaprağı, üstte gövde, kenarda ışık.
+    Sınıf Dosyası → halkalı klasör (koyu sırt, beyaz kâğıt destesi)
+    Planlar       → spiralli masa takvimi, kırmızı başlık bandı
+    Sınavlar      → üst üste iki yaprak, katlanmış köşe, damga
+    Çalışma Kâğ.  → kâğıt + gerçek kalem (gövde, ahşap uç, grafit)
+    Performans    → sehpalı sunum panosu
+    Proje Ödevi   → kıskaçlı pano + camı parlayan mercek
+    BEP           → dosya panosu, öğrenci silüeti, yeşil onay
+· Animasyon kancaları (ik-sayfa, ik-halka, ik-tik, ik-damga, ik-kalem,
+  ik-yazi3, ik-grafik, ik-yildiz, ik-mercek) aynen korundu; düşük güç
+  ve "hareketi azalt" ayarı eskisi gibi çalışıyor.
+· Sınıf defteri koyu lacivert: kapak #1F3A68, sırt #13284A, kart rengi
+  #1E3A5F.
+DEĞİŞEN  index.html (a4IkonIc yeniden yazıldı)
+YENİ     _kaynak/uretici/belgeIkon3d.py
+YEDEK    _kaynak/yedekler/2026-10-15-belge-ikon-3d/
+
+15.10.2026 · SINIF DEFTERİ PENCERESİ (AYRI SEKME YOK)
+----------------------------------------------------------------
+Öğretmen: "sınıf defterine basınca o haftaki öğrenme çıktısını veya
+deftere ne yazması gerekiyorsa ayrı bi sekme olmadan direkt popup
+şeklinde açılsın — hem imam hatip kategorisinde hem bi sınıf
+açılmışken."
+· Kart artık akordiyon paneli değil PENCERE açıyor. Pencerede:
+    · kaçıncı hafta ve tarih aralığı (sınıf defteriyle aynı takvim),
+    · o haftanın ÖĞRENME ÇIKTISI (sistem/kazanimoneri.js),
+    · yıl sonu hedefi,
+    · sınıf açıksa o şubenin defterindeki bu haftanın satırı.
+· Sınıf açıkken: "Bu haftayı deftere yaz" (doğrudan
+  data.levels[lId].classes[cId].defter[hafta] + save() — sınıf
+  defteriyle AYNI yer, ayrı depo yok; dolu satır varsa önce sorar) ve
+  "Defteri aç". İmam Hatip kategorisinde: "Metni kopyala" ve
+  "sınıfını seçince yazabilirsin" notu.
+· Belge kartlarına genel bir yetenek eklendi: `tikla` alanı taşıyan
+  kart panel açmaz, verilen işi yapar (kitap kartının `bag` alanı
+  gibi).
+YENİ     sistem/defterpop.js · _kaynak/uretici/defterPopBagla.py
+DEĞİŞEN  index.html (kart, defterAc, betik satırı)
+DENENDİ  İmam Hatip 6. sınıf: pencere 5. haftayı ve o haftanın
+         kazanımını gösterdi; sınıf açık taklidiyle "deftere yaz"
+         5. hafta satırını yazdı ve save() çağrıldı.

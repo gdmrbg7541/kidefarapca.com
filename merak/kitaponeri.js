@@ -107,8 +107,13 @@
             '.ko-filtre{ display:flex; flex-direction:column; gap:clamp(10px,1.4vw,16px);',
             '  margin-bottom:clamp(14px,2vw,22px); }',
             '.ko-satir{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }',
-            '.ko-etiket{ flex:none; font-weight:800; font-size:clamp(.82rem,1.1vw,1rem);',
-            '  letter-spacing:.4px; color:var(--mc-gri,#6B7A8C); min-width:72px; }',
+            /* ALAN / SEVİYE / ARA rozeti (15.10.2026, öğretmen: "alan ve
+               seviye başlıkları kırmızı dolgu ve beyaz yazı olsun") —
+               kırmızı sitenin kendi paletinden (#EE5253). */
+            '.ko-etiket{ flex:none; font-weight:800; font-size:clamp(.78rem,1vw,.94rem);',
+            '  letter-spacing:.7px; color:#fff; background:#EE5253;',
+            '  border-radius:999px; padding:6px 14px; min-width:84px; text-align:center;',
+            '  line-height:1.1; box-shadow:0 4px 10px -6px rgba(238,82,83,.95); }',
             '.ko-tus{ font-family:inherit; cursor:pointer; border:1.5px solid var(--mc-cizgi,#E3E9F0);',
             '  background:#fff; color:var(--mc-murekkep,#16324F); border-radius:999px;',
             '  padding:7px 15px; font-size:clamp(.86rem,1.15vw,1.05rem); font-weight:600;',

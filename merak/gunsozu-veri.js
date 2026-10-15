@@ -144,7 +144,7 @@ window.KIDEF_SOZ_HADIS = [
     s: 'Sizden biriniz, kendisi için istediğini kardeşi için de istemedikçe iman etmiş olmaz.',
     n: 'Sıra arkadaşına, kendine istediğini iste.',
     k: 'Buhârî, Sahîh, 13; Müslim, Sahîh, 45', s2: 'kalp' },
-  { ar: 'مَنْ كَانَ يُؤْمِنُ بِاَللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ',
+  { ar: 'مَنْ كَانَ يُؤْمِنُ بِاللّٰهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ',
     s: 'Allah\'a ve âhiret gününe iman eden ya hayır söylesin ya da sussun.',
     n: 'Söz almadan önce sorulacak tek soru.',
     k: 'Buhârî ve Müslim · Nevevî, Kırk Hadis, 15 (ilk cümlesi)', s2: 'konusma' },
