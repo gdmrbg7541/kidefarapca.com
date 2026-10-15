@@ -10703,3 +10703,40 @@ DENENDİ  İmam Hatip 6. sınıf: pencere 5. haftayı ve o haftanın
    DENENDİ  8. sınıf kartı: başlıkta sınıf adı yok, 36 hafta + 6 tema
             ayracı, haftalarda 2/1 çıktı (plandaki gibi), altta "2016
             İlköğretim Arapça Dersi Öğretim Programı · 2 saat / 74 saat".
+
+15.10.2026 · ÖNBELLEK: TARAYICI ARTIK ESKİ DOSYA AÇMIYOR
+----------------------------------------------------------------
+Öğretmen: "siteye yüklendiğinde tarayıcı eski dosyayı açmaması için
+gerekli dokunuşları yap."
+DURUM  surumle.py zaten her gönderimden önce src/href ile çağrılan
+yerel .js/.css adreslerine dosyanın İÇERİĞİNDEN hesaplanan ?v= damgası
+koyuyordu. İki sayfa bunun dışındaydı; damgayı bir değişkende (S)
+tutup yollara ekliyorlardı, değişken birleştirmeyle kurulduğu için
+görünmüyorlardı:
+    metintahlili.html  ?v=20261015f  (her değişiklikte elle artırılıyordu)
+    muhadese.html      ?v=20260918d  (18 EYLÜL'den beri sabitti — bu
+                       yüzden simultane.js, sarfkopru.js, lehce.js ve
+                       muhâdese verisi tarayıcıda eski kalabiliyordu)
+YAPILAN
+ 1) Her iki sayfada sabit yollar artık kendi "?v=1" damgasıyla yazılıyor;
+    surumle.py bunları gönderimde dosyanın içeriğinden hesaplıyor.
+    Elle damga tutulan yer KALMADI.
+ 2) Ders verisinin yolu hesaplanarak kurulduğu için (önek + ders
+    kimliği) damgası, veriyle birlikte yeniden üretilen bir dosyadan
+    alınıyor:  metintahlili.html → metintahlili/dersler.js
+               muhadese.html     → muhadese/veri/kok_haritasi.js
+    Veri değişince o dosyalar da değiştiği için damga kendiliğinden
+    tazeleniyor.
+ 3) surumle.py genişletildi: artık SAYFA İÇİNDEKİ <script> bloklarında
+    tırnak içinde yazılan "…/dosya.js?v=…" yollarını da tazeliyor
+    (eskiden yalnız src/href nitelikleri ve .js dosyalarının içi).
+    Bu turda 7 sayfa tazelendi.
+DENETİM  Siteye giden sayfalarda damgasız yerel .js/.css kalmadı
+    (yalnız dış CDN adresi damgasız — doğrusu da o). Servis
+    çalışanı (service worker) yok, yani eski sürümü tutan bir önbellek
+    katmanı da yok.
+DEĞİŞEN  metintahlili.html · muhadese.html · _kaynak/uretici/surumle.py
+YENİ     _kaynak/uretici/onbellekDamga.py
+YEDEK    _kaynak/yedekler/2026-10-15-onbellek-damga/ (iki sayfa + surumle.py)
+NOT      Bundan sonra yapılacak tek şey hizli-gonder: damgaları o
+         çalıştırıyor, elle sürüm artırmak gerekmiyor.

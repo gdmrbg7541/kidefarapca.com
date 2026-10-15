@@ -31,7 +31,15 @@
    TUM MUHADESE DOSYALARI  muhadese/  klasorunde, ders verileri  muhadese/veri/ icinde. */
 (function(){
   var KOK = 'muhadese/';           /* klasor yolu tek yerden yonetilsin */
-  var S   = '?v=20260918d';        /* onbellek surumu */
+  /* ÖNBELLEK (15.10.2026) — damga artık ELLE tutulmuyor: sabit yollar
+     kendi "?v=1" damgasıyla yazılıyor, surumle.py gönderimden önce
+     dosyanın içeriğinden hesaplıyor. Ders verisinin yolu hesaplanarak
+     kurulduğu için damgası kok_haritasi.js'inkinden alınıyor; harita
+     ders verisiyle birlikte yeniden üretildiğinden veri değişince damga
+     da değişiyor. (Eski hâli 18.09.2026'dan beri sabitti; bu yüzden
+     bazı dosyalar tarayıcıda eski kalabiliyordu.) */
+  var KOKH = 'muhadese/veri/kok_haritasi.js?v=aac92799';
+  var S    = '?v=' + (KOKH.split('?v=')[1] || '1');
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   /* Gecerli bicimler: 10_1_1 (okul) | kalip_xxx | alan_xxx */
@@ -60,12 +68,12 @@
     /* Site arayuz yazi tipi: Turkce kabuk yazilari Marhey ile gosterilsin.
        Arapca metinler Arakom'da kalir (bkz. simultane.css). */
     y.push('<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&display=swap" rel="stylesheet">');
-    y.push('<link rel="stylesheet" href="' + KOK + 'simultane.css' + S + '">');
+    y.push('<link rel="stylesheet" href="muhadese/simultane.css?v=39badc18">');
   } else {
     y.push('<link rel="preconnect" href="https://fonts.googleapis.com">');
     y.push('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
     y.push('<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&family=Harmattan:wght@400;700&display=swap" rel="stylesheet">');
-    y.push('<link rel="stylesheet" href="' + KOK + 'muhadese.css' + S + '">');
+    y.push('<link rel="stylesheet" href="muhadese/muhadese.css?v=f7782c1f">');
   }
   y.push('<link rel="stylesheet" href="arakom.css?v=4383f21b">');
   if (d){
@@ -73,19 +81,19 @@
     /* SARF KÖPRÜSÜ: kökü bilinen kelimelerin altına rozet konur, tıklanınca
        kalıplar tablosu sekmesine geçilir. Harita küçük (35 KB), sarf motoru
        burada YÜKLENMEZ. Yeni ünite eklenince kok_haritasi.js yeniden üretilmeli. */
-    y.push('<scr'+'ipt src="' + KOK + 'veri/kok_haritasi.js' + S + '"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="' + KOKH + '"><\/scr'+'ipt>');
     /* LEHÇE KATMANI: hem sarfkopru.js hem simultane.js'ten ÖNCE gelmeli.
        Sarf köprüsü lehçe seçiliyken kendini kapatıyor (kök rozetleri ve
        tür şeridi yalnız fushada anlamlı), o karara varabilmesi için
        window.KIDEF_LEHCE yüklenmiş olmalı. */
-    y.push('<scr'+'ipt src="' + KOK + 'lehce.js' + S + '"><\/scr'+'ipt>');
-    y.push('<scr'+'ipt src="' + KOK + 'sarfkopru.js' + S + '"><\/scr'+'ipt>');
-    y.push('<scr'+'ipt src="' + KOK + 'simultane.js' + S + '"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="muhadese/lehce.js?v=5275266c"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="muhadese/sarfkopru.js?v=a537527a"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="muhadese/simultane.js?v=b8778019"><\/scr'+'ipt>');
   } else {
     /* Liste modu: kalip ve alan basliklarini da bu iki dosyadan okur */
-    y.push('<scr'+'ipt src="' + KOK + 'lehce.js' + S + '"><\/scr'+'ipt>');
-    y.push('<scr'+'ipt src="' + KOK + 'veri/kalip.js' + S + '"><\/scr'+'ipt>');
-    y.push('<scr'+'ipt src="' + KOK + 'veri/alan.js'  + S + '"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="muhadese/lehce.js?v=5275266c"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="muhadese/veri/kalip.js?v=b1db0db0"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="muhadese/veri/alan.js?v=d2f0d497"><\/scr'+'ipt>');
   }
   document.write(y.join(''));
 })();

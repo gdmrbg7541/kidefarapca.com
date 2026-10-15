@@ -25,7 +25,16 @@
    _kaynak/uretici/metinTahliliListe.py ile yeniden üretiliyor.
    ===================================================================== */
 (function () {
-  var KOK = 'metintahlili/', MK = 'muhadese/', S = '?v=20261015f';
+  var KOK = 'metintahlili/', MK = 'muhadese/';
+  /* ÖNBELLEK (15.10.2026) — damga artık ELLE tutulmuyor. Sabit yollar
+     kendi "?v=1" damgasıyla yazılıyor; _kaynak/uretici/surumle.py
+     gönderimden önce her birini dosyanın İÇERİĞİNDEN hesaplıyor.
+     Ders verisinin yolu hesaplanarak kurulduğu için (önek + ders
+     kimliği) onun damgası dersler.js'inkinden alınıyor: ders verisi
+     değişince dersler.js de yeniden üretildiğinden damga kendiliğinden
+     tazeleniyor. */
+  var DERSLER = 'metintahlili/dersler.js?v=fb875b70';
+  var S = '?v=' + (DERSLER.split('?v=')[1] || '1');
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   if (!/^[0-9]+(_[0-9]+)+$/.test(d)) d = '';
@@ -47,8 +56,8 @@
   y.push('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
   y.push('<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&display=swap" rel="stylesheet">');
   y.push('<link rel="stylesheet" href="arakom.css?v=4383f21b">');
-  y.push('<link rel="stylesheet" href="' + KOK + 'metintahlili.css' + S + '">');
-  y.push('<scr' + 'ipt src="' + KOK + 'dersler.js' + S + '"><\/scr' + 'ipt>');
+  y.push('<link rel="stylesheet" href="metintahlili/metintahlili.css?v=94699cf7">');
+  y.push('<scr' + 'ipt src="' + DERSLER + '"><\/scr' + 'ipt>');
   if (d) {
     var veri = p.has('k')
       ? MK + 'veri/' + (onek ? onek + '/' : '') + d + '.js'
@@ -59,11 +68,11 @@
     /* SARF KÖPRÜSÜ — muhâdesedeki ile aynı: kelime→[kök, tür] haritası ve
        sol alttaki tür şeridi. Tıklanan kelimenin türü yanar, şeritteki
        simgeye basınca kalıplar tablosu sekmesi o kökle açılır. */
-    y.push('<scr' + 'ipt src="' + MK + 'veri/kok_haritasi.js' + S + '"><\/scr' + 'ipt>');
-    y.push('<scr' + 'ipt src="' + MK + 'lehce.js' + S + '"><\/scr' + 'ipt>');
-    y.push('<scr' + 'ipt src="' + MK + 'sarfkopru.js' + S + '"><\/scr' + 'ipt>');
+    y.push('<scr' + 'ipt src="muhadese/veri/kok_haritasi.js?v=aac92799"><\/scr' + 'ipt>');
+    y.push('<scr' + 'ipt src="muhadese/lehce.js?v=5275266c"><\/scr' + 'ipt>');
+    y.push('<scr' + 'ipt src="muhadese/sarfkopru.js?v=a537527a"><\/scr' + 'ipt>');
   }
-  y.push('<scr' + 'ipt src="' + KOK + 'metintahlili.js' + S + '"><\/scr' + 'ipt>');
+  y.push('<scr' + 'ipt src="metintahlili/metintahlili.js?v=43c5df6d"><\/scr' + 'ipt>');
   document.write(y.join(''));
 })();
 </script>
