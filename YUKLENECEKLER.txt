@@ -10311,3 +10311,117 @@ DEĞİŞEN  _kaynak/uretici/materyalStilUret.py · sistem/materyalstil.css
 NOT      materyalstil.css ÜRETİLEN dosya; elle değil üreticiyle değişir
          (python3 _kaynak/uretici/materyalStilUret.py <site kökü>).
 YEDEK    _kaynak/yedekler/2026-10-15-materyal-kart-sarma/
+
+────────────────────────────────────────────────────────────────────────
+15.10.2026 (4) — METİN TAHLİLLERİ KARTI: SEÇİLİ KİTABA EŞLENDİ
+Geylani: "kidefarapça 2. baskıdaki metin tahlillerini bir kart olarak her
+sınıfın ilgili kitabına eşle; 6. sınıfta mevcut kitap seçilince o kitabın
+cümlelerinden metin tahlili yapılmışsa kart görünsün materyaller kısmında,
+aynı şekilde giriş yapılmamışsa İmam Hatip kategorisinde de."
+
+· Kart sınıf modül kayıtçısına eklendi (sistem/sinifmodul.js) — aynı kayıt
+  hem İmam Hatip bölümünde hem sınıf panelindeki Materyaller sekmesinde
+  basılıyor, ikisi de aynı mekanizmayı kullanıyor.
+· Kart YALNIZ o sınıfın O ANKİ KİTABINDA metin varsa görünüyor:
+  seçili kitap sistem/sinifveri.js (seciliVeriYili → önek),
+  hangi kitapta kaç ders olduğu metintahlili/ozet.js (yeni, ~1 KB).
+  Kitap seçicisi değişince kartlar yeniden basıldığı için rozet, açıklama
+  ve bağlantı kendiliğinden güncelleniyor.
+     6. sınıf 2026-2027 → "8 Ders Hazır"  · k=y2627
+     6. sınıf 2025-2026 → "18 Ders Hazır" · k=
+     10. sınıf Seçmeli  → "12 Ders Hazır" · k=sec10
+· Kart metintahlili.html?sinif=N&k=<önek> açıyor; liste ekranı artık bu
+  süzgeci biliyor: yalnız o sınıfın o kitabı listeleniyor, başlıkta sınıf
+  ve kitap adı, altta "Bütün sınıflar →" bağlantısı.
+YENİ     metintahlili/ozet.js (üretilen; metinTahliliListe.py yazıyor)
+DEĞİŞEN  _kaynak/uretici/metinTahliliListe.py · sistem/sinifmodul.js ·
+         index.html (ozet.js betiği) · metintahlili.html (v=20261015a) ·
+         metintahlili/metintahlili.js · .css
+DENENDİ  6 sınıfta kart var, rozetler doğru; kitap değişince kart
+         güncelleniyor; süzgeçli liste 8 / 18 / 12 ders gösteriyor;
+         süzgeçsiz liste eskisi gibi 105 ders.
+
+15.10.2026 · METİN TAHLİLİ SİMGESİ — JAPONCA GÖRÜNEN HARF KALKTI
+----------------------------------------------------------------
+Öğretmen: "metin tahlillerinde japoncaya benzer bi harf var onun yerine
+arapça olsun."
+· Tercüme/çeviri simgesinin içindeki çizim uzaktan Japonca 文 harfine
+  benziyordu; yerine Arapça ayın harfi (ع) kondu. Harf Arakom yazı
+  tipiyle çiziliyor (SVG <text>), resim değil — her ölçekte net.
+· Dört yerde geçiyor: okuma ekranının simgesi, kitap sayfalarındaki
+  yönerge, soldan açılan İçindekiler satırı ve sınıfların
+  "Metin Tahlilleri" kartı.
+DEĞİŞEN  metintahlili/metintahlili.js · sistem/sinifmodul.js ·
+         kitap/kidef-arapca-2-baski/02_cekirdek/js/uygulama.js ·
+         kitap/kidef-arapca-2-baski/03_veri/metintahlili_sayfalar.js
+         (üretilen) · _kaynak/uretici/metinTahliliSayfa.py
+DENENDİ  Sınıf kartında ve okuma ekranında harf Arakom'la düzgün
+         çıkıyor; kutu/boş kare görünmüyor.
+
+15.10.2026 · TÜM SINIFLAR (İMAM HATİP) AKORDİYONU — YENİ GÖRÜNÜM
+----------------------------------------------------------------
+Öğretmen: "tüm sınıflar kısmında daha profesyonel ve site renklerini
+barındıran renkler ve tasarımlar kullanılsın, akordiyon sistemi daha
+anlaşılır olsun."
+· Her sınıf artık BEYAZ KART: ince çerçeve, yumuşak gölge, üstünde
+  sınıfın kendi renginde 4 px şerit. Kapalıyken de tıklanabilir olduğu
+  belli oluyor; üstüne gelince kart hafifçe kalkıyor.
+· Aç/kapat oku yuvarlak çipin içine alındı, kartın en altında duruyor
+  (çipi olmayan sınıfta da aynı hizada). Kapalıyken sınıf renginde,
+  açıkken beyaz; tıklayınca dönüyor.
+· Açık sınıfın kutusu düz boya değil: üstte hafif ışık, altta hafif
+  gölge, dışında aynı rengin %10'u halka. Panele bakan ok duruyor.
+· Panel beyazladı; çerçevesi nötr, yalnız ÜST kenarı sınıf rengi
+  (eskiden dört yanı kalın renkli çerçeve + krem zemindi).
+· "Maarif / Yardımcı" çipi amber yerine sınıfın kendi renginin %10
+  zemini + %34 çerçevesi, yazısı lacivert.
+· Başlığın altına tek satır ipucu: "Bir sınıfa dokun — o sınıfın
+  belgeleri ve etkinlikleri hemen altta açılır."
+· Öğretmen Dökümanları akordiyonunun açık rengi turuncudan sitenin
+  yeşiline (#16A085) alındı.
+· Yeni renk uydurulmadı: renkler .ih-item üzerindeki --ihc/--ihcy/
+  --ihcb/--ihck değişkenlerinden, yani sitenin kendi paletinden geliyor.
+YENİ     _kaynak/uretici/ihTasarim.py (yamayı uygulayan betik)
+DEĞİŞEN  index.html · sistem/materyalstil.css (üretilen)
+YEDEK    _kaynak/yedekler/2026-10-15-ih-tasarim/index.html
+DENENDİ  1440 px ve 390 px: yedi kart tek satırda, okların hizası aynı,
+         açık sınıfın oku panele bakıyor, panel beyaz; belge
+         akordiyonlarının oku eskisi gibi kaldı.
+
+15.10.2026 · METİN TAHLİLİ LİSTESİ ARTIK "İÇİNDEKİLER"
+----------------------------------------------------------------
+Öğretmen: "metin tahlillerinde içindekiler kısmı gibi konuların
+bakıldığı kısmı çok daha güzel ve profesyonel yapalım."
+(metintahlili.html ve metintahlili.html?sinif=6&k=y2627)
+· Ders artık kart değil SATIR: numara · adı · Arapçası · noktalı çizgi ·
+  "18 metin" · ok. Kitap içindekileri gibi okunuyor; ünitede iki ders
+  olunca satırın sağı boş kalmıyordu artık o boşluk da yok.
+· Ünite kendi akordiyonu (açık geliyor): numara kutusu, Türkçe adı,
+  yanında Arapçası, "2 ders" ve dönen ok. Ünite adının Türkçesi ile
+  Arapçası bitişik yazılıyordu, o da düzeldi.
+· Sınıf akordiyonu: sınıf rengiyle daire, altında kitap adı, sağda
+  "8 ders / 174 metin" çipleri, üst kenarı sınıf rengi.
+· "Bütün sınıflar" ekranının üstüne SINIF ŞERİDİ kondu (5-10): basınca
+  o sınıf açılır, ötekiler kapanır ve sayfa oraya kayar — aynı anda tek
+  sınıf açık kalıyor.
+· Başlıkta sınıf rozeti + kitap/ders/metin çipleri.
+· Renkler sitenin paletinden: 5 #16A085 · 6 #F39C12 · 7 #2563EB ·
+  8 #7C3AED · 9 #EE5253 · 10 #0E9E86 (index.html'deki sınıf renkleri).
+· Dar ekranda noktalı çizgi kalkıyor, ders adı ile Arapçası alt alta.
+YENİ     _kaynak/uretici/mtListe.py (yamayı uygulayan betik)
+DEĞİŞEN  metintahlili/metintahlili.js · metintahlili/metintahlili.css ·
+         metintahlili.html (damga v=20261015b)
+YEDEK    _kaynak/yedekler/2026-10-15-mt-icindekiler/
+DENENDİ  1440 px ve 390 px; sınıf şeridinden 7. sınıfa basınca yalnız o
+         açılıyor, ders satırına basınca doğru derse gidiyor
+         (?ders=7_1_1&k=y2627).
+
+   EK (aynı gün) — "yatay olarak tüm ekranı kullanalım masaüstünde":
+   · Liste 1100 px'lik sütundan çıktı, ekranın tamamını kullanıyor.
+   · Üniteler yan yana diziliyor: sütun en az 460 px, sığdığı kadar
+     sütun (1440 px'te 2, 1920 px'te 3). 6. sınıfın sekiz dersi artık
+     tek ekrana sığıyor.
+   · Kitap başlığı (6, 7, 10. sınıf) bütün sütunları kaplıyor.
+   · 1600 px üstünde (akıllı tahta) yazılar bir tık büyüyor.
+   · Telefon/tablet tek sütun olarak kalıyor.
+   EK DOSYA  _kaynak/uretici/mtGenis.py · damga v=20261015c

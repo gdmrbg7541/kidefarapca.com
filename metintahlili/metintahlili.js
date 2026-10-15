@@ -38,6 +38,7 @@
     /* Dersin hangi kitaptan olduğu (y2627 / sec10 / '' ) — bağlantıda k ile
        geliyor; null ise kitap ayrımı yapılmaz (eski bağlantılar). */
     var ONEK = (typeof window.KIDEF_MT_ONEK === 'string') ? window.KIDEF_MT_ONEK : null;
+    var SINIF = window.KIDEF_MT_SINIF || null;      /* sınıf kartından gelindi */
     function dersBag(d, onek) {
         return 'metintahlili.html?ders=' + encodeURIComponent(d)
              + '&k=' + encodeURIComponent(onek || '');
@@ -74,9 +75,7 @@
         kisi:  '<circle cx="12" cy="8" r="3.3"/>'
              + '<path d="M5.5 20c.5-3.7 3.2-5.8 6.5-5.8s6 2.1 6.5 5.8"/>',
         ceviri:'<path d="M3.4 17.2 6.8 8.6l3.4 8.6"/><path d="M4.7 14.3h4.3"/>'
-             + '<path d="M12.4 7.6h8.2"/><path d="M16.5 6v1.6"/>'
-             + '<path d="M19.9 10.3c-1 3.4-3.4 6-6.4 7.5"/>'
-             + '<path d="M15.1 10.3c.9 2.7 2.7 4.8 5.1 6"/>',
+             + '<text x="17.4" y="18" font-family="arakom,serif" font-size="13.5" fill="currentColor" stroke="none" text-anchor="middle">ع</text>',
         geri:  '<path d="M19 12a7 7 0 1 1-2.1-5"/><path d="M19 4.6V9.4h-4.8"/>'
     };
 
@@ -123,34 +122,144 @@
     }
 
     /* ================= LİSTE EKRANI ================= */
+    /* ---- sınıf renkleri: sitenin kendi paleti (index.html --ihc) ----- */
+    var SINIF_RENK = { '5': '#16A085', '6': '#F39C12', '7': '#2563EB',
+                       '8': '#7C3AED', '9': '#EE5253', '10': '#0E9E86' };
+    function renkAl(s) { return SINIF_RENK[String(s)] || '#16A085'; }
+    function rgba(hex, a) {
+        var n = parseInt(String(hex).replace('#', ''), 16);
+        return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' +
+               (n & 255) + ',' + a + ')';
+    }
+    function renkVer(e, s) {
+        var r = renkAl(s);
+        e.style.setProperty('--mtc', r);
+        e.style.setProperty('--mtcy', rgba(r, .10));
+        e.style.setProperty('--mtcb', rgba(r, .34));
+        e.style.setProperty('--mtck', rgba(r, .24));
+    }
+    function sayac(s) {                    /* sınıfın ders ve metin sayısı */
+        var ders = 0, metin = 0;
+        (s.kitaplar || []).forEach(function (kt) {
+            (kt.uniteler || []).forEach(function (u) {
+                ders += u.dersler.length;
+                u.dersler.forEach(function (x) { metin += (x.cumle || 0); });
+            });
+        });
+        return { ders: ders, metin: metin };
+    }
+    /* "1. Ünite: Akrabalarım" → { no: '1', ad: 'Akrabalarım' }
+       Numara artık kutuda yazdığı için başlıktan ayrılıyor. */
+    function adBol(ad, tur, sira) {
+        var m = new RegExp('^\\s*(\\d+)\\s*\\.\\s*' + tur + '\\s*:?\\s*(.*)$')
+                    .exec(String(ad || ''));
+        if (m) return { no: m[1], ad: m[2] };
+        return { no: String(sira), ad: String(ad || '') };
+    }
+
     function listeKur() {
         var g = el('div', 'mt-liste-govde');
         var bas = el('div', 'mt-l-bas');
+        var rozet = el('div', 'mt-l-rozet');
         bas.appendChild(el('h1', null, 'Metin Tahlili'));
         bas.appendChild(el('p', null,
             'Sınıf ve konusuna göre cümleler ve diyaloglar. Kelimeye dokununca ' +
             'Türkçesi üstünde belirir; hepsini açınca ya da “Tercüme” tuşuna ' +
             'basınca cümlenin tam Türkçesi altta çıkar.'));
+        var cipler = el('div', 'mt-l-cip');
+        bas.appendChild(cipler);
         g.appendChild(bas);
 
         var a = agac();
+        /* Sınıf kartından gelindiyse yalnız o sınıf — ve k verildiyse yalnız
+           o kitap — listelenir; öteki sınıflara "Bütün sınıflar" bağlantısı. */
+        if (SINIF) {
+            a = a.filter(function (x) { return String(x.sinif) === String(SINIF); })
+                 .map(function (x) {
+                     if (ONEK == null) return x;
+                     var kt = (x.kitaplar || []).filter(function (k) {
+                         return String(k.onek || '').replace('/', '') === ONEK;
+                     });
+                     return kt.length ? { sinif: x.sinif, ad: x.ad, kitaplar: kt } : null;
+                 }).filter(Boolean);
+            if (a.length) {
+                var kt0 = a[0].kitaplar[0];
+                bas.querySelector('h1').textContent =
+                    a[0].ad + ' · Metin Tahlili';
+                bas.querySelector('p').textContent =
+                    'Kitabın cümleleri ve diyalogları; kelimeye dokununca Türkçesi ' +
+                    'üstünde belirir, hepsi açılınca cümlenin tamamı altta çıkar.';
+                /* başlıktaki sınıf rozeti ve çipler */
+                rozet.textContent = String(a[0].sinif);
+                renkVer(rozet, a[0].sinif);
+                bas.insertBefore(rozet, bas.firstChild);
+                var t0 = sayac(a[0]);
+                if (kt0 && kt0.ad) cipler.appendChild(el('span', 'mt-cip mt-cip-kitap', kt0.ad));
+                cipler.appendChild(el('span', 'mt-cip', t0.ders + ' ders'));
+                cipler.appendChild(el('span', 'mt-cip', t0.metin + ' metin'));
+                var hepsi = el('a', 'mt-hepsi', 'Bütün sınıflar →');
+                hepsi.href = 'metintahlili.html';
+                bas.appendChild(hepsi);
+            }
+        }
         if (!a.length) g.appendChild(el('p', 'mt-yonerge', 'Ders listesi yüklenemedi.'));
 
+        /* "Bütün sınıflar" ekranında üstte sınıf şeridi: bir sınıfa basınca
+           o sınıf açılır, ötekiler kapanır ve sayfa oraya kayar. */
+        var serit = null;
+        if (!SINIF && a.length > 1) { serit = el('div', 'mt-serit'); g.appendChild(serit); }
+
+        /* ---- SINIF: akordiyon başlığı + içinde üniteler --------------- */
         a.forEach(function (s, si) {
             var d = document.createElement('details');
             d.className = 'mt-sinif';
+            renkVer(d, s.sinif);
+            d.id = 'mtS' + s.sinif;
             if (si === 0) d.open = true;
-            var sm = document.createElement('summary');
-            sm.appendChild(el('span', null, s.ad));
-            var ders = 0, cumle = 0;
-            (s.kitaplar || []).forEach(function (kt) {
-                kt.uniteler.forEach(function (u) {
-                    ders += u.dersler.length;
-                    u.dersler.forEach(function (x) { cumle += (x.cumle || 0); });
+            if (serit) {
+                var p = tus('mt-serit-t');
+                renkVer(p, s.sinif);
+                p.setAttribute('data-sinif', s.sinif);
+                if (si === 0) p.classList.add('acik');
+                p.appendChild(el('span', 'mt-serit-no', String(s.sinif)));
+                p.appendChild(el('span', 'mt-serit-ad', s.ad));
+                p.addEventListener('click', function () {
+                    d.open = true;
+                    try { d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                    catch (e) { d.scrollIntoView(); }
                 });
+                serit.appendChild(p);
+            }
+            /* akordiyon: aynı anda tek sınıf açık kalsın */
+            d.addEventListener('toggle', function () {
+                if (d.open) {
+                    g.querySelectorAll('details.mt-sinif').forEach(function (o) {
+                        if (o !== d) o.open = false;
+                    });
+                }
+                if (serit) {
+                    var t = serit.querySelector('[data-sinif="' + s.sinif + '"]');
+                    if (t) t.classList.toggle('acik', d.open);
+                }
             });
-            sm.appendChild(el('span', 'mt-sayi', ders + ' ders · ' + cumle + ' metin'));
+
+            var sm = document.createElement('summary');
+            sm.appendChild(el('span', 'mt-s-disk', String(s.sinif)));
+            var sad = el('span', 'mt-s-ad');
+            sad.appendChild(el('b', null, s.ad));
+            var kAd = (s.kitaplar || []).map(function (k) { return k.ad; })
+                        .filter(Boolean).join(' · ');
+            if (kAd) sad.appendChild(el('small', null, kAd));
+            sm.appendChild(sad);
+            var t = sayac(s);
+            var sy = el('span', 'mt-sayi');
+            sy.appendChild(el('b', null, t.ders + ' ders'));
+            sy.appendChild(el('i', null, t.metin + ' metin'));
+            sm.appendChild(sy);
+            sm.appendChild(el('span', 'mt-s-ok', '▾'));
             d.appendChild(sm);
+
+            var ic = el('div', 'mt-s-ic');
             /* Sınıfın birden çok kitabı varsa (6, 7 ve 10. sınıf) her kitap
                kendi başlığıyla ayrılıyor. */
             var cokKitap = (s.kitaplar || []).length > 1;
@@ -159,28 +268,53 @@
                     var kb = el('div', 'mt-kitap');
                     kb.appendChild(el('b', null, kt.ad));
                     if (kt.alt) kb.appendChild(el('small', null, kt.alt));
-                    d.appendChild(kb);
+                    ic.appendChild(kb);
                 }
-                kt.uniteler.forEach(function (u) {
-                    var uk = el('div', 'mt-u');
-                    var h3 = el('h3', null, u.ad);
-                    if (u.ar) { var sp = el('span', null, u.ar); sp.dir = 'rtl'; h3.appendChild(sp); }
-                    uk.appendChild(h3);
+                (kt.uniteler || []).forEach(function (u, ui) {
+                    var ub = adBol(u.ad, 'Ünite', ui + 1);
+                    var uk = document.createElement('details');
+                    uk.className = 'mt-u';
+                    uk.open = true;                    /* içindekiler hep açık gelsin */
+                    var us = document.createElement('summary');
+                    us.appendChild(el('span', 'mt-u-no', ub.no));
+                    var uad = el('span', 'mt-u-ad');
+                    uad.appendChild(el('b', null, ub.ad));
+                    if (u.ar) {
+                        var sp = el('span', 'mt-u-ar', u.ar);
+                        sp.dir = 'rtl';
+                        uad.appendChild(sp);
+                    }
+                    us.appendChild(uad);
+                    us.appendChild(el('span', 'mt-u-sayi', u.dersler.length + ' ders'));
+                    us.appendChild(el('span', 'mt-u-ok', '▾'));
+                    uk.appendChild(us);
+
                     var kat = el('div', 'mt-d-kat');
-                    u.dersler.forEach(function (x) {
+                    u.dersler.forEach(function (x, di) {
+                        var db = adBol(x.ad, 'Ders', di + 1);
                         var b = tus('mt-d');
-                        b.appendChild(el('b', null, x.ad));
-                        if (x.ar) { var ar = el('span', 'mt-d-ar', x.ar); ar.dir = 'rtl'; b.appendChild(ar); }
-                        b.appendChild(el('small', null, (x.cumle || 0) + ' cümle/diyalog'));
+                        b.appendChild(el('span', 'mt-d-no', db.no));
+                        var orta = el('span', 'mt-d-orta');
+                        orta.appendChild(el('b', 'mt-d-ad', db.ad));
+                        if (x.ar) {
+                            var ar = el('span', 'mt-d-ar', x.ar);
+                            ar.dir = 'rtl';
+                            orta.appendChild(ar);
+                        }
+                        b.appendChild(orta);
+                        b.appendChild(el('span', 'mt-d-nokta'));
+                        b.appendChild(el('span', 'mt-d-sayi', (x.cumle || 0) + ' metin'));
+                        b.appendChild(el('span', 'mt-d-ok', '›'));
                         b.addEventListener('click', function () {
                             location.href = dersBag(x.id, kt.onek);
                         });
                         kat.appendChild(b);
                     });
                     uk.appendChild(kat);
-                    d.appendChild(uk);
+                    ic.appendChild(uk);
                 });
             });
+            d.appendChild(ic);
             g.appendChild(d);
         });
         KOK.appendChild(g);

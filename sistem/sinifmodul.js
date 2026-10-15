@@ -621,6 +621,56 @@
     url: function () { return "tamlamavecumleler.html"; }
   });
 
+
+  /* Metin Tahlilleri — SEÇİLİ KİTABA BAĞLI
+     (15.10.2026, Geylani: "kidefarapça 2. baskıdaki metin tahlillerini bir
+     kart olarak her sınıfın ilgili kitabına eşle; 6. sınıfta mevcut kitap
+     seçilince o kitabın cümlelerinden metin tahlili yapılmışsa kart
+     görünsün — materyallerde de, giriş yapılmamışken İmam Hatip'te de.")
+
+     Kart yalnız O SINIFIN O ANKİ KİTABINDA metin varsa çıkar: sınıfın
+     seçili kitabı sistem/sinifveri.js'ten (seciliVeriYili → önek), hangi
+     kitapta kaç ders olduğu metintahlili/ozet.js'ten okunuyor. Kitap
+     seçicisi değişince kartlar yeniden basıldığı için (index.html →
+     kidef:veriyili → mhKur → modulKartlari) kart kendiliğinden
+     güncelleniyor; metni olmayan kitapta hiç görünmüyor. */
+  function mtOzet(s) {
+    try {
+      var O = window.METIN_TAHLILI_OZET;
+      if (!O) return null;
+      var g = O[String(sayi(s))];
+      if (!g) return null;
+      var onek = '';
+      var V = window.KidefSinifVeri;
+      if (V && V.seciliVeriYili) {
+        var y = V.seciliVeriYili(s);
+        if (y && y.onek) onek = String(y.onek).replace(/\//g, '');
+      }
+      return g[onek] ? { onek: onek, k: g[onek] } : null;
+    } catch (e) { return null; }
+  }
+
+  ekle({
+    id: 'metintahlili',
+    ad: 'Metin Tahlilleri',
+    sira: 55,
+    renk: '#17817E',
+    aciklama: function (s) {
+      var o = mtOzet(s);
+      return o ? o.k.ad + ' · kelime kelime Türkçesi' : s + '. Sınıf metinleri';
+    },
+    svg: function () { return "<svg viewBox=\"0 0 64 64\" class=\"kg\" aria-hidden=\"true\"><rect x=\"9\" y=\"6\" width=\"38\" height=\"50\" rx=\"5\" fill=\"#fff\" stroke=\"#17817E\" stroke-width=\"2.6\"/><path d=\"M39 6 h2 a6 6 0 0 1 6 6 v2 h-8z\" fill=\"#CFEFE6\"/><rect x=\"15\" y=\"16\" width=\"20\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><rect x=\"15\" y=\"23\" width=\"26\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><rect x=\"15\" y=\"30\" width=\"16\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><rect x=\"15\" y=\"37\" width=\"23\" height=\"2.8\" rx=\"1.4\" fill=\"#BFD3E2\"/><g transform=\"translate(30 30)\"><circle cx=\"14\" cy=\"14\" r=\"13\" fill=\"#16A085\"/><path d=\"M7.6 19.2 11 10.4l3.4 8.8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M8.9 16.3h4.2\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.9\" stroke-linecap=\"round\"/><text x=\"19.4\" y=\"19.2\" font-family=\"arakom,serif\" font-size=\"12\" fill=\"#fff\" stroke=\"none\" text-anchor=\"middle\">ع</text></g></svg>"; },
+    veriVar: function (s) {
+      var o = mtOzet(s);
+      return o ? { rozet: o.k.ders + ' Ders Hazır' } : null;
+    },
+    url: function (s) {
+      var o = mtOzet(s);
+      return 'metintahlili.html?sinif=' + encodeURIComponent(sayi(s))
+           + '&k=' + encodeURIComponent(o ? o.onek : '');
+    }
+  });
+
   /* ---- Sonraki kartlar buraya: aynı kalıpla ekle({...}) ---- */
 
   stilKur();

@@ -999,9 +999,12 @@
           + '<svg class="toc-sim" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
           + ' stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"'
           + ' aria-hidden="true"><path d="M3.4 17.2 6.8 8.6l3.4 8.6"/>'
-          + '<path d="M4.7 14.3h4.3"/><path d="M12.4 7.6h8.2"/><path d="M16.5 6v1.6"/>'
-          + '<path d="M19.9 10.3c-1 3.4-3.4 6-6.4 7.5"/>'
-          + '<path d="M15.1 10.3c.9 2.7 2.7 4.8 5.1 6"/></svg></span>' +
+          + '<path d="M4.7 14.3h4.3"/>'
+          /* Sağdaki işaret önce 文 benzeri bir çizimdi, Japonca sanılıyordu
+             (15.10.2026, Geylani); yerine Arapça ayın harfi kondu. */
+          + '<text x="17.4" y="18" font-family="arakom,serif" font-size="13.5"'
+          + ' fill="currentColor" stroke="none" text-anchor="middle">ع</text>'
+          + '</svg></span>' +
           '<span class="ad">' + x.u.ad.replace(/^(\d+)\. Ünite:\s*/, '$1. ') +
           ' — ' + x.d.ad + '</span><span class="sy">' + (x.d.cumle || '') + '</span>';
         b.title = gr.ad + ' · ' + x.u.ad + ' — ' + (x.d.cumle || 0) + ' cümle/diyalog';

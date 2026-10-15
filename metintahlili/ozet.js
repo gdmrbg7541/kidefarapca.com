@@ -1,0 +1,4 @@
+/* ÜRETİLEN DOSYA — _kaynak/uretici/metinTahliliListe.py
+   Sınıf → kitap öneki → {ad, yıl, ders, metin}. Sınıf kartı
+   (sistem/sinifmodul.js) seçili kitapta metin var mı diye buna bakar. */
+window.METIN_TAHLILI_OZET = {"5": {"": {"ad": "Arapça 5", "yil": "2025-2026", "ders": 11, "metin": 185}}, "6": {"y2627": {"ad": "Arapça 6 · 2026-2027", "yil": "2026-2027", "ders": 8, "metin": 174}, "": {"ad": "Arapça 6 · 2025-2026", "yil": "2025-2026", "ders": 18, "metin": 470}}, "7": {"y2627": {"ad": "Mektep Yayınları 2026-2027", "yil": "2026-2027", "ders": 18, "metin": 686}, "": {"ad": "2027-2028", "yil": "2027-2028", "ders": 4, "metin": 208}}, "8": {"": {"ad": "Arapça 8", "yil": "2026-2027", "ders": 18, "metin": 531}}, "9": {"": {"ad": "Arapça 9", "yil": "2026-2027", "ders": 8, "metin": 140}}, "10": {"": {"ad": "Arapça 10 · 2026-2027", "yil": "2026-2027", "ders": 8, "metin": 234}, "sec10": {"ad": "Seçmeli Arapça", "yil": "secmeli", "ders": 12, "metin": 158}}};

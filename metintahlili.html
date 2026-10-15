@@ -25,7 +25,7 @@
    _kaynak/uretici/metinTahliliListe.py ile yeniden üretiliyor.
    ===================================================================== */
 (function () {
-  var KOK = 'metintahlili/', MK = 'muhadese/', S = '?v=20261014e';
+  var KOK = 'metintahlili/', MK = 'muhadese/', S = '?v=20261015c';
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
   if (!/^[0-9]+(_[0-9]+)+$/.test(d)) d = '';
@@ -36,6 +36,10 @@
   var onek = (p.get('k') || '').replace(/[^a-z0-9]/gi, '');
   window.KIDEF_MT_DERS = d;
   window.KIDEF_MT_ONEK = p.has('k') ? onek : null;
+  /* Sınıf kartından gelindiyse (metintahlili.html?sinif=6&k=y2627) liste
+     yalnız o sınıfın O KİTABINI gösterir. */
+  var sf = (p.get('sinif') || '').replace(/[^0-9]/g, '');
+  window.KIDEF_MT_SINIF = sf || null;
   document.documentElement.className += (d ? ' mt-okuma' : ' mt-liste');
 
   var y = [];
