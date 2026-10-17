@@ -88,7 +88,7 @@
      dil/*.js dosyalarının içeriğinden hesaplayıp aşağıdaki satırı
      yeniler; ELLE DÜZENLENMEZ. Yeni çeviri yüklenince tarayıcı
      önbellekteki eski sözlüğü açmıyor. */
-  var SURUM = {/* @dil-surum */'ar':'152c2615','az':'4a821e3b','bn':'ac3ad9ba','bs':'311bd799','ckb':'734a2da8','de':'1db641df','en':'5d675388','es':'035a4db4','fa':'19e82a00','fr':'cca271eb','hi':'915a15c3','id':'6c9a755c','kmr-arab':'1dfb5dda','ms':'c92bcf41','ps':'e6a82be4','ru':'d64d280a','sq':'b9922323','ur':'9c1ecfa2','uz':'d323827f','zh':'0e191214'};
+  var SURUM = {/* @dil-surum */'ar':'b20e4834','az':'3b04b10f','bn':'28580139','bs':'e3800056','ckb':'7982775d','de':'5280c1e1','en':'0e84e902','es':'880bd150','fa':'f167df5f','fr':'3b08b461','hi':'c59280c7','id':'ef647db6','kmr-arab':'7c352c6b','ms':'f5deab9c','ps':'c63b628a','ru':'0039c9ed','sq':'a0a9333f','ur':'5ab3d446','uz':'ac5c6ac9','zh':'d78c34a6'};
   var EV = 'kidef:dil';
 
   /* --------------------------------------------------------- diller

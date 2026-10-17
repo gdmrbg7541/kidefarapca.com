@@ -8,7 +8,7 @@
 <script>
 /* Çerçeve (iframe) içindeyiz: geri/ev tuşu gizlensin — pencerenin kendi
    kapatma tuşu var. <head>'de çalışır ki tuş bir an görünüp kaybolmasın. */
-try{ if (window.top !== window.self) document.documentElement.className += ' cerceve'; }catch(e){}
+try{ if (window.top !== window.self && window.name !== 'kidefTahta') document.documentElement.className += ' cerceve'; }catch(e){}
 /* GOOGLE ANALYTICS — sitenin geri kalanıyla aynı ölçüm kimliği (GA4).
    Çerçevedeyken yüklenmez: katalog index'in içinde açıldığında index'in
    sayfa görüntülemesi zaten sayılıyor, ikisi birden çift sayardı. */
@@ -391,7 +391,7 @@ html.cerceve .ust-serit .geri-alan{display:none}
 </style>
     <!-- DİL KATMANI — sayfa dil seçimini localStorage'dan okur,
          başka sekmede dil değişirse anında döner (sistem/dil.js). -->
-    <script src="../sistem/dil.js?v=c488020d"></script>
+    <script src="../sistem/dil.js?v=4f0ae31c"></script>
 </head>
 <body>
 

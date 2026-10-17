@@ -24,6 +24,67 @@
   var DEPO = 'kidef-arapcaklavye-v1';
   var ta = $('#metin');
 
+  /* DİL (17.10.2026) — klavyenin yazıları seçili dilde (sistem/dil.js).
+     Kodun yazdığı her yazı kdMetin ile; tuş, sekme ve bölüm adları Türkçe
+     adından anahtara AD_ANAHTAR ile bulunur (veri değişmedi). Türkçede
+     yazılar birebir eskisi gibi. Dil değişince klavye yeniden çizilir
+     (en altta). Bilgi pencereleri (ⓘ) şimdilik Türkçe. */
+  function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+      return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+  }
+  var AD_ANAHTAR = {
+    /* sekmeler */
+    'Harfler': 'ak.t_harf', 'Harf': 'ak.t_harf_k', 'Noktalama': 'ak.t_nokta', 'Rakamlar': 'ak.t_rakam', 'Rakam': 'ak.t_rakam_k',
+    'Mühür · İfade': 'ak.t_muhur', 'Mühür': 'ak.t_muhur_k', 'Kur\u2019an': 'ak.t_kuran', 'Özel': 'ak.t_ozel',
+    /* sembol bölümleri */
+    'Arapça noktalama': 'ak.s_ar_nokta', 'Ayraç ve tırnak': 'ak.s_ayrac', 'Arapça rakamlar': 'ak.s_ar_rakam',
+    'Latin rakamlar': 'ak.s_lat_rakam', 'İşlem': 'ak.s_islem', 'Tek karakterlik mühürler': 'ak.s_tek_muhur',
+    'Açık yazılışlar': 'ak.s_acik', 'Günlük dinî ifadeler': 'ak.s_gunluk', 'Âyet': 'ak.s_ayet',
+    'Vakıf (durak) işaretleri': 'ak.s_vakif', 'Kur\u2019an imlâsı': 'ak.s_imla', 'Uzatma': 'ak.s_uzatma',
+    'Görünmez işaretler': 'ak.s_gorunmez',
+    /* noktalama */
+    'virgül': 'ak.n_virgul', 'noktalı virgül': 'ak.n_noktali_virgul', 'soru': 'ak.n_soru', 'nokta': 'ak.n_nokta',
+    'iki nokta': 'ak.n_iki_nokta', 'ünlem': 'ak.n_unlem', 'üç nokta': 'ak.n_uc_nokta', 'tırnak': 'ak.n_tirnak',
+    'parantez': 'ak.n_parantez', 'köşeli': 'ak.n_koseli', 'süslü': 'ak.n_suslu', 'çift tırnak': 'ak.n_cift_tirnak',
+    'kesme': 'ak.n_kesme', 'kısa çizgi': 'ak.n_kisa_cizgi', 'uzun çizgi': 'ak.n_uzun_cizgi', 'eğik çizgi': 'ak.n_egik_cizgi',
+    'yıldız': 'ak.n_yildiz', 'madde imi': 'ak.n_madde', 'et': 'ak.n_et',
+    /* rakamlar ve işlem */
+    'ondalık': 'ak.n_ondalik', 'binlik': 'ak.n_binlik', 'artı': 'ak.n_arti', 'eksi': 'ak.n_eksi', 'çarpı': 'ak.n_carpi',
+    'bölü': 'ak.n_bolu', 'eşit': 'ak.n_esit', 'yüzde (Arapça)': 'ak.n_yuzde_ar', 'yüzde': 'ak.n_yuzde',
+    /* mühür ve dinî ifadeler */
+    'Allah': 'ak.n_allah', 'cc · celle celâlühû': 'ak.n_cc_uzun', 'sav · sallallâhu aleyhi ve sellem': 'ak.n_sav_uzun',
+    'Besmele': 'ak.n_besmele', 'Muhammed': 'ak.n_muhammed', 'sav': 'ak.n_sav', 'as · aleyhisselâm': 'ak.n_as',
+    'ra · radıyallâhu anh': 'ak.n_ra', 'radıyallâhu anhâ': 'ak.n_ra_anha', 'radıyallâhu anhüm': 'ak.n_ra_anhum',
+    'rh · rahimehullâh': 'ak.n_rh', 'st · sübhânehû ve teâlâ': 'ak.n_st', 'azze ve celle': 'ak.n_azze',
+    'tebâreke ve teâlâ': 'ak.n_tebareke', 'selâmün aleyküm': 'ak.n_selam', 've aleykümüsselâm': 'ak.n_ve_aleykum',
+    'inşâallah': 'ak.n_insallah', 'mâşâallah': 'ak.n_masallah', 'elhamdülillâh': 'ak.n_elhamdulillah',
+    'sübhânallah': 'ak.n_subhanallah', 'Allâhu ekber': 'ak.n_allahu_ekber', 'cezâkallâhu hayran': 'ak.n_cezakallah',
+    /* Kur'an işaretleri */
+    'âyet ayracı': 'ak.n_ayet_ayraci', 'âyet sonu': 'ak.n_ayet_sonu', 'hizb': 'ak.n_hizb', 'secde': 'ak.n_secde',
+    'lâzım (dur)': 'ak.n_lazim', 'lâ (durma)': 'ak.n_la', 'câiz': 'ak.n_caiz', 'sılâ evlâ': 'ak.n_sila',
+    'kılâ evlâ': 'ak.n_kila', 'muânaka': 'ak.n_muanaka', 'sekte': 'ak.n_sekte', 'vasla elifi': 'ak.n_vasla',
+    'küçük vav': 'ak.n_kucuk_vav', 'küçük ye': 'ak.n_kucuk_ye', 'iklâb mimi': 'ak.n_iklab',
+    'Kur\u2019an cezmi': 'ak.n_kuran_cezmi', 'küçük nun': 'ak.n_kucuk_nun', 'alt mim': 'ak.n_alt_mim',
+    /* özel */
+    'tatvil': 'ak.n_tatvil', 'üçlü tatvil': 'ak.n_uclu_tatvil', 'bitiştirme': 'ak.n_zwnj', 'bitiştir': 'ak.n_zwj',
+    'sağdan-sola': 'ak.n_rlm', 'soldan-sağa': 'ak.n_lrm', 'bölünmez boşluk': 'ak.n_nbsp', 'taşıyıcı çember': 'ak.n_cember',
+    /* hareke alanı */
+    'üstün': 'ak.n_ustun', 'esre': 'ak.n_esre', 'ötre': 'ak.n_otre', 'cezm': 'ak.n_cezm', 'dik üstün': 'ak.n_dik_ustun',
+    'dik esre': 'ak.n_dik_esre', 'ters ötre': 'ak.n_ters_otre', 'med': 'ak.n_med', 'şedde': 'ak.n_sedde',
+    'iki üstün': 'ak.n_iki_ustun', 'iki esre': 'ak.n_iki_esre', 'iki ötre': 'ak.n_iki_otre',
+    'üstte hemze': 'ak.n_ustte_hemze', 'altta hemze': 'ak.n_altta_hemze', 'cc': 'ak.n_cc',
+    'celle celâlühû': 'ak.n_celle', 'sallallâhu aleyhi ve sellem': 'ak.n_sallallahu',
+    /* kopyalama hedefleri */
+    'Google Dokümanlar': 'ak.h_gdocs', 'Not Defteri · TXT': 'ak.h_duz', 'WhatsApp · Telegram · E-posta': 'ak.h_mesaj'
+  };
+  function kdAd(tr) {
+    return Object.prototype.hasOwnProperty.call(AD_ANAHTAR, tr) ? kdMetin(AD_ANAHTAR[tr], tr) : tr;
+  }
+
   /* =====================================================================
      1) VERİ
      ===================================================================== */
@@ -205,7 +266,7 @@
   function ytGerekirse(eklenen) {
     if (ayar.yt === 'amiri' || !AMIRI_GEREK.test(eklenen)) return;
     ayar.yt = 'amiri'; ytUygula(); kaydet();
-    bildir('Bu işaret Arakom yazı tipinde görünmüyor — yazı tipi Amiri yapıldı.');
+    bildir(kdMetin('ak.b_amiri', 'Bu işaret Arakom yazı tipinde görünmüyor — yazı tipi Amiri yapıldı.'));
   }
   function titret() { try { if (navigator.vibrate) navigator.vibrate(7); } catch (e) {} }
   function kaydet() {
@@ -338,19 +399,19 @@
     var harf = (v.match(/[\u0621-\u063F\u0641-\u064A\u0671-\u06D3\uFB50-\uFDFF\uFE70-\uFEFC]/g) || []).length;
     var hareke = (v.match(ISARETLER) || []).length;
     var kelime = v.trim() ? v.trim().split(/\s+/).length : 0;
-    $('#sayac').textContent = kelime + ' kelime · ' + harf + ' harf · ' + hareke + ' hareke';
+    $('#sayac').textContent = kdMetin('ak.sayac', '{k} kelime · {h} harf · {r} hareke', { k: kelime, h: harf, r: hareke });
   }
 
   /* =====================================================================
      3) TUŞ ÇİZİMİ
      ===================================================================== */
   function bilgiRozet(konu) {
-    return konu ? '<span class="bilgi-dug" role="button" tabindex="0" data-bilgi="' + konu + '" aria-label="Bilgi"></span>' : '';
+    return konu ? '<span class="bilgi-dug" role="button" tabindex="0" data-bilgi="' + konu + '" aria-label="' + kac(kdMetin('ak.bilgi', 'Bilgi')) + '"></span>' : '';
   }
   function harfSatirlari() {
     return DIZILIM.map(function (satir) {
       return '<div class="kb-row">' + satir.map(function (c) {
-        if (c === 'SIL') return '<button type="button" class="tus sil" data-is="sil" aria-label="Sil">' +
+        if (c === 'SIL') return '<button type="button" class="tus sil" data-is="sil" aria-label="' + kac(kdMetin('ak.sil', 'Sil')) + '">' +
           '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/></svg></button>';
         var bg = RENK[c] ? ' style="--key-bg:' + RENK[c] + '"' : '';
         return '<button type="button" class="tus" data-c="' + c + '"' + bg + '>' + (c === 'ه' ? 'هـ' : c) +
@@ -361,23 +422,23 @@
   /* alt sıra iki katmanda ortak; sembol katmanında sil tuşu da çıkar */
   function altSatir() {
     return '<div class="kb-row kb-alt">' +
-      '<button type="button" class="tus katman" data-is="katman" aria-label="Semboller ve noktalama">؟ ١٢ ﷺ</button>' +
-      '<button type="button" class="tus" data-c="ـ" style="--key-bg:#FFF4E5" aria-label="Tatvil (uzatma çizgisi)">ـــ' +
-        '<span class="alt-ad">tatvil</span>' + bilgiRozet('tatvil') + '</button>' +
-      '<button type="button" class="tus" data-c="،" aria-label="Arapça virgül">،</button>' +
-      '<button type="button" class="tus bosluk" data-c=" " aria-label="Boşluk"></button>' +
-      '<button type="button" class="tus" data-c="." aria-label="Nokta">.</button>' +
-      '<button type="button" class="tus" data-c="؟" aria-label="Soru işareti">؟</button>' +
-      '<button type="button" class="tus sil sem-sil" data-is="sil" aria-label="Sil" hidden>' +
+      '<button type="button" class="tus katman" data-is="katman" aria-label="' + kac(kdMetin('ak.semboller', 'Semboller ve noktalama')) + '">؟ ١٢ ﷺ</button>' +
+      '<button type="button" class="tus" data-c="ـ" style="--key-bg:#FFF4E5" aria-label="' + kac(kdMetin('ak.tatvil_aria', 'Tatvil (uzatma çizgisi)')) + '">ـــ' +
+        '<span class="alt-ad">' + kac(kdAd('tatvil')) + '</span>' + bilgiRozet('tatvil') + '</button>' +
+      '<button type="button" class="tus" data-c="،" aria-label="' + kac(kdMetin('ak.ar_virgul', 'Arapça virgül')) + '">،</button>' +
+      '<button type="button" class="tus bosluk" data-c=" " aria-label="' + kac(kdMetin('ak.bosluk', 'Boşluk')) + '"></button>' +
+      '<button type="button" class="tus" data-c="." aria-label="' + kac(kdMetin('ak.nokta', 'Nokta')) + '">.</button>' +
+      '<button type="button" class="tus" data-c="؟" aria-label="' + kac(kdMetin('ak.soru_isareti', 'Soru işareti')) + '">؟</button>' +
+      '<button type="button" class="tus sil sem-sil" data-is="sil" aria-label="' + kac(kdMetin('ak.sil', 'Sil')) + '" hidden>' +
         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/></svg></button>' +
-      '<button type="button" class="tus enter" data-c="\n" aria-label="Yeni satır">' +
+      '<button type="button" class="tus enter" data-c="\n" aria-label="' + kac(kdMetin('ak.yeni_satir', 'Yeni satır')) + '">' +
         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 5v7a3 3 0 0 1-3 3H5"/><path d="M9 11l-4 4 4 4"/></svg></button>' +
     '</div>';
   }
 
   /* ---------- sembol katmanı: başlık solda, tuşlar yanında ---------- */
   function semTus(x, bolumBilgi) {
-    var c = x[0], ad = x[1], bilgi = x[2], tur = x[3], kisa = x[4];
+    var c = x[0], ad = kdAd(x[1]), bilgi = x[2], tur = x[3], kisa = x[4];
     var cift = tur === 'cift', isr = c.length === 1 && !!IS_YOL[c];
     var gor = tur === 'gorunmez' ? (kisa || '') : (cift ? c.charAt(0) + ' ' + c.charAt(1) : c);
     if (c === '﴿﴾') gor = '﴿ ﴾';
@@ -392,12 +453,12 @@
       (ad ? '<span class="ad">' + kac(ad) + '</span>' : '') + rozet + '</button>';
   }
   function semSayfa(t) {
-    return '<div class="sem-sayfa" data-sekme="' + t.id + '" role="tabpanel" aria-label="' + kac(t.ad) + '">' +
+    return '<div class="sem-sayfa" data-sekme="' + t.id + '" role="tabpanel" aria-label="' + kac(kdAd(t.ad)) + '">' +
       t.bolum.map(function (b) {
-        return '<div class="sem-bolum"><div class="sem-baslik"><span>' + kac(b.baslik) + '</span>' + bilgiRozet(b.bilgi) + '</div>' +
+        return '<div class="sem-bolum"><div class="sem-baslik"><span>' + kac(kdAd(b.baslik)) + '</span>' + bilgiRozet(b.bilgi) + '</div>' +
           '<div class="sem-tuslar">' + b.tus.map(function (x) { return semTus(x, b.bilgi); }).join('') +
-          (b.bilgi === 'ayet' ? '<div class="ayet-sat"><span>Âyet numarası:</span><input type="number" id="ayetNo" min="1" max="286" value="1" aria-label="Âyet numarası">' +
-            '<button type="button" id="ayetEkle">﴿…﴾ ۝ ekle</button></div>' : '') + '</div></div>';
+          (b.bilgi === 'ayet' ? '<div class="ayet-sat"><span>' + kac(kdMetin('ak.ayet_no_et', 'Âyet numarası:')) + '</span><input type="number" id="ayetNo" min="1" max="286" value="1" aria-label="' + kac(kdMetin('ak.ayet_no', 'Âyet numarası')) + '">' +
+            '<button type="button" id="ayetEkle">' + kac(kdMetin('ak.ayet_ekle', '﴿…﴾ ۝ ekle')) + '</button></div>' : '') + '</div></div>';
       }).join('') + '</div>';
   }
 
@@ -411,14 +472,14 @@
   function klavyeKur() {
     $('#klGovde').innerHTML =
       '<div class="kl-pencere" id="semPencere"><div class="sem-bant" id="semBant">' +
-        '<div class="sem-sayfa harf-sayfa" data-sekme="harf" role="tabpanel" aria-label="Harfler">' + harfSatirlari() + '</div>' +
+        '<div class="sem-sayfa harf-sayfa" data-sekme="harf" role="tabpanel" aria-label="' + kac(kdAd('Harfler')) + '">' + harfSatirlari() + '</div>' +
         SEMBOL.map(semSayfa).join('') + '</div></div>' + altSatir();
     var sek = $('#klSekmeler');
     sek.setAttribute('role', 'tablist');
     sek.style.setProperty('--n', SEKMELER.length);
     sek.innerHTML = '<span class="sekme-isik" aria-hidden="true"></span>' + SEKMELER.map(function (t) {
       return '<button type="button" class="kl-sekme" role="tab" data-sekme="' + t.id + '" aria-selected="false">' +
-        (t.kisa ? '<span class="sk-uzun">' + kac(t.ad) + '</span><span class="sk-kisa">' + kac(t.kisa) + '</span>' : kac(t.ad)) + '</button>';
+        (t.kisa ? '<span class="sk-uzun">' + kac(kdAd(t.ad)) + '</span><span class="sk-kisa">' + kac(kdAd(t.kisa)) + '</span>' : kac(kdAd(t.ad))) + '</button>';
     }).join('');
   }
   function katmanGoster() { sekmeGit(katman, false); }
@@ -446,7 +507,7 @@
     $('#klGovde .sem-sil').hidden = !sem;
     k.classList.toggle('acik', sem);
     k.textContent = sem ? 'ا ب ت' : '؟ ١٢ ﷺ';
-    k.setAttribute('aria-label', sem ? 'Harflere dön' : 'Semboller ve noktalama');
+    k.setAttribute('aria-label', sem ? kdMetin('ak.harflere_don', 'Harflere dön') : kdMetin('ak.semboller', 'Semboller ve noktalama'));
     pencereBoy();
   }
   /* pencere = harf sayfasının doğal yüksekliği; sembol sayfaları bu yüksekliğe sığmazsa içinde kayar */
@@ -467,9 +528,9 @@
       return '<div class="hr-blok ' + (bi ? 'sol' : 'sag') + '">' + blok.map(function (satir) {
         return satir.map(function (t) {
           return '<button type="button" class="hk ' + t.grup + '" data-h="' + kac(t.c) + '"' + (t.harfli ? ' data-harf="1"' : '') +
-            ' title="' + kac(t.uzun || t.ad) + '">' +
+            ' title="' + kac(kdAd(t.uzun || t.ad)) + '">' +
             '<span class="gl" dir="rtl">' + (t.harfli ? kac(t.c) : gosterge(t.c)) + '</span>' +
-            '<span class="ad">' + kac(t.ad) + '</span>' + (t.bilgi ? bilgiRozet(t.bilgi) : '') + '</button>';
+            '<span class="ad">' + kac(kdAd(t.ad)) + '</span>' + (t.bilgi ? bilgiRozet(t.bilgi) : '') + '</button>';
         }).join('');
       }).join('') + '</div>';
     }).join('');
@@ -972,10 +1033,13 @@
 
   function kopyala() {
     var metin = cikti();
-    if (!metin.trim()) { bildir('Önce bir şey yaz.', true); return; }
+    if (!metin.trim()) { bildir(kdMetin('ak.b_once', 'Önce bir şey yaz.'), true); return; }
     var h = HEDEF[ayar.hedef] || HEDEF.word;
     var duz = duzYap(metin, h), html = h.duz ? null : htmlYap(metin, h);
-    var tamam = function () { bildir('Kopyalandı — ' + h.ad + (h.duz ? ' (düz metin)' : ' · ' + h.font + ' ' + h.pt + ' pt')); };
+    var tamam = function () {
+      bildir(h.duz ? kdMetin('ak.b_kopya_duz', 'Kopyalandı — {ad} (düz metin)', { ad: kdAd(h.ad) })
+                   : kdMetin('ak.b_kopya', 'Kopyalandı — {ad} · {f}', { ad: kdAd(h.ad), f: h.font + ' ' + h.pt + ' pt' }));
+    };
     var yedek = function () {
       /* eski yol: kopyalama olayında iki biçimi birden koy */
       var dinle = function (e) {
@@ -987,7 +1051,7 @@
       var ok = false;
       try { ok = document.execCommand('copy'); } catch (x) {}
       document.removeEventListener('copy', dinle);
-      if (ok) tamam(); else bildir('Kopyalanamadı. Metni seçip Ctrl+C ile kopyala.', true);
+      if (ok) tamam(); else bildir(kdMetin('ak.b_kopyalanamadi', 'Kopyalanamadı. Metni seçip Ctrl+C ile kopyala.'), true);
     };
     try {
       if (navigator.clipboard && window.ClipboardItem && html) {
@@ -1032,20 +1096,20 @@
     return 'arapca-metin-' + d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2);
   }
   function kaydetRtf() {
-    var m = cikti(); if (!m.trim()) { bildir('Önce bir şey yaz.', true); return; }
+    var m = cikti(); if (!m.trim()) { bildir(kdMetin('ak.b_once', 'Önce bir şey yaz.'), true); return; }
     var h = HEDEF[ayar.hedef]; var font = h.font || 'Sakkal Majalla', pt = h.pt || 20;
     indirDosya(dosyaKoku() + '.rtf', rtfYap(m, font, pt), 'application/rtf');
-    bildir('.rtf kaydedildi · ' + font + ' ' + pt + ' pt');
+    bildir(kdMetin('ak.b_rtf', '.rtf kaydedildi · {f}', { f: font + ' ' + pt + ' pt' }));
   }
   function kaydetTxt() {
-    var m = cikti(); if (!m.trim()) { bildir('Önce bir şey yaz.', true); return; }
+    var m = cikti(); if (!m.trim()) { bildir(kdMetin('ak.b_once', 'Önce bir şey yaz.'), true); return; }
     /* Not Defteri için: UTF-8 imzası (BOM) + Windows satır sonu + RLM */
     var t = '\uFEFF' + duzYap(m, { rlm: true }).replace(/\n/g, '\r\n');
     indirDosya(dosyaKoku() + '.txt', t, 'text/plain;charset=utf-8');
-    bildir('.txt kaydedildi (UTF-8)');
+    bildir(kdMetin('ak.b_txt', '.txt kaydedildi (UTF-8)'));
   }
   function kaydetPng() {
-    var m = cikti(); if (!m.trim()) { bildir('Önce bir şey yaz.', true); return; }
+    var m = cikti(); if (!m.trim()) { bildir(kdMetin('ak.b_once', 'Önce bir şey yaz.'), true); return; }
     var fontAd = ayar.yt === 'amiri' ? 'AmiriK, Arakom' : 'Arakom, AmiriK';
     var hazir = document.fonts && document.fonts.load ? Promise.all([document.fonts.load('64px Arakom', m), document.fonts.load('64px AmiriK', m)]) : Promise.resolve();
     hazir.then(function () {
@@ -1072,7 +1136,7 @@
       satirlar.forEach(function (s, i) { x.fillText(s, G - pad, pad + boy + i * satirY); });
       x.direction = 'ltr'; x.textAlign = 'left'; x.font = '22px Arakom, sans-serif'; x.fillStyle = '#0E7C66';
       x.fillText('kidefarapca.com', 30, H - 16);
-      cv.toBlob(function (b) { indirDosya(dosyaKoku() + '.png', b); bildir('Resim kaydedildi (.png)'); }, 'image/png');
+      cv.toBlob(function (b) { indirDosya(dosyaKoku() + '.png', b); bildir(kdMetin('ak.b_png', 'Resim kaydedildi (.png)')); }, 'image/png');
     });
   }
 
@@ -1090,26 +1154,26 @@
   }
   function hedefMenuCiz() {
     var m = $('#hedefMenu');
-    m.innerHTML = '<h4>Nereye yapıştıracaksın?</h4>' + HEDEF_SIRA.map(function (k) {
+    m.innerHTML = '<h4>' + kac(kdMetin('ak.hedef_ip', 'Nereye yapıştıracaksın?')) + '</h4>' + HEDEF_SIRA.map(function (k) {
       var h = HEDEF[k];
       return '<button type="button" class="menu-sec" role="menuitemradio" data-hedef="' + k + '" aria-checked="' + (ayar.hedef === k) + '">' +
         '<span class="ik" style="background:' + h.renk + '">' + (h.harf || (k === 'pages' ? '' : '✉')) + '</span>' +
-        '<span><b>' + h.ad + '</b><small>' + h.not + '</small></span></button>';
+        '<span><b>' + kac(kdAd(h.ad)) + '</b><small>' + kdMetin('ak.not_' + k, h.not) + '</small></span></button>';
     }).join('') +
-      '<label class="menu-alt"><input type="checkbox" id="harekesizKopya"' + (ayar.harekesiz ? ' checked' : '') + '> Harekesiz kopyala / kaydet</label>' +
-      '<div class="menu-alt"><span class="bilgi-dug" role="button" tabindex="0" data-bilgi="kopya" aria-label="Bilgi" style="position:static"></span> Yazı tipi neden taşınmaz?</div>';
+      '<label class="menu-alt"><input type="checkbox" id="harekesizKopya"' + (ayar.harekesiz ? ' checked' : '') + '> ' + kac(kdMetin('ak.harekesiz_kopya', 'Harekesiz kopyala / kaydet')) + '</label>' +
+      '<div class="menu-alt"><span class="bilgi-dug" role="button" tabindex="0" data-bilgi="kopya" aria-label="' + kac(kdMetin('ak.bilgi', 'Bilgi')) + '" style="position:static"></span> ' + kac(kdMetin('ak.neden', 'Yazı tipi neden taşınmaz?')) + '</div>';
   }
   function indirMenuCiz() {
     var h = HEDEF[ayar.hedef];
     var f = h.duz ? 'Sakkal Majalla 20 pt' : h.font + ' ' + h.pt + ' pt';
-    $('#indirMenu').innerHTML = '<h4>Dosya olarak kaydet</h4>' +
-      '<button type="button" class="menu-sec" data-kaydet="rtf"><span class="ik" style="background:#2B579A">RTF</span><span><b>Zengin metin (.rtf)</b><small>Word, WordPad, Pages, TextEdit, LibreOffice’te yazı tipiyle açılır · <code>' + kac(f) + '</code></small></span></button>' +
-      '<button type="button" class="menu-sec" data-kaydet="txt"><span class="ik" style="background:#475569">TXT</span><span><b>Düz metin (.txt)</b><small>UTF-8, Not Defteri uyumlu; yazı tipi taşımaz</small></span></button>' +
-      '<button type="button" class="menu-sec" data-kaydet="png"><span class="ik" style="background:#16A085">PNG</span><span><b>Resim (.png)</b><small>Harekeler ve yazı tipi birebir; WhatsApp’ta, sunumda paylaş</small></span></button>';
+    $('#indirMenu').innerHTML = '<h4>' + kac(kdMetin('ak.kaydet_ip', 'Dosya olarak kaydet')) + '</h4>' +
+      '<button type="button" class="menu-sec" data-kaydet="rtf"><span class="ik" style="background:#2B579A">RTF</span><span><b>' + kac(kdMetin('ak.rtf', 'Zengin metin (.rtf)')) + '</b><small>' + kac(kdMetin('ak.rtf_not', 'Word, WordPad, Pages, TextEdit, LibreOffice’te yazı tipiyle açılır')) + ' · <code>' + kac(f) + '</code></small></span></button>' +
+      '<button type="button" class="menu-sec" data-kaydet="txt"><span class="ik" style="background:#475569">TXT</span><span><b>' + kac(kdMetin('ak.txt', 'Düz metin (.txt)')) + '</b><small>' + kac(kdMetin('ak.txt_not', 'UTF-8, Not Defteri uyumlu; yazı tipi taşımaz')) + '</small></span></button>' +
+      '<button type="button" class="menu-sec" data-kaydet="png"><span class="ik" style="background:#16A085">PNG</span><span><b>' + kac(kdMetin('ak.png', 'Resim (.png)')) + '</b><small>' + kac(kdMetin('ak.png_not', 'Harekeler ve yazı tipi birebir; WhatsApp’ta, sunumda paylaş')) + '</small></span></button>';
   }
   function hedefYaz() {
     var h = HEDEF[ayar.hedef];
-    $('#hedefAd').textContent = h.ad.split(' · ')[0];
+    $('#hedefAd').textContent = kdAd(h.ad).split(' · ')[0];
   }
   $('#hedefDug').addEventListener('click', function (e) {
     e.stopPropagation();
@@ -1124,7 +1188,7 @@
   $('#hedefMenu').addEventListener('click', function (e) {
     e.stopPropagation();
     var b = e.target.closest('[data-hedef]');
-    if (b) { ayar.hedef = b.getAttribute('data-hedef'); kaydet(); hedefYaz(); menuleriKapat(); bildir('Kopyalama hedefi: ' + HEDEF[ayar.hedef].ad); return; }
+    if (b) { ayar.hedef = b.getAttribute('data-hedef'); kaydet(); hedefYaz(); menuleriKapat(); bildir(kdMetin('ak.b_hedef', 'Kopyalama hedefi: {ad}', { ad: kdAd(HEDEF[ayar.hedef].ad) })); return; }
     var r = e.target.closest('.bilgi-dug');
     if (r) { menuleriKapat(); bilgiAc('kopya'); }
   });
@@ -1164,11 +1228,11 @@
     gecmisEkle();
     if (s !== e) { var yeni = harekesizMetin(v.slice(s, e)); ta.setRangeText(yeni, s, e, 'select'); }
     else ta.value = harekesizMetin(v);
-    odak(); sonra(); bildir(s !== e ? 'Seçili kısmın harekeleri kaldırıldı.' : 'Bütün harekeler kaldırıldı. Geri almak için ↶');
+    odak(); sonra(); bildir(s !== e ? kdMetin('ak.b_secili', 'Seçili kısmın harekeleri kaldırıldı.') : kdMetin('ak.b_butun', 'Bütün harekeler kaldırıldı. Geri almak için ↶'));
   });
   $('#temizle').addEventListener('click', function () {
     if (!ta.value) return;
-    gecmisEkle(); ta.value = ''; odak(); sonra(); bildir('Silindi. Geri almak için ↶');
+    gecmisEkle(); ta.value = ''; odak(); sonra(); bildir(kdMetin('ak.b_silindi', 'Silindi. Geri almak için ↶'));
   });
   $$('.yazi-tipi [data-yt]').forEach(function (b) {
     b.addEventListener('click', function () { ayar.yt = b.getAttribute('data-yt'); ytUygula(); kaydet(); odak(); });
@@ -1183,7 +1247,7 @@
     try {
       if (d.fullscreenElement || d.webkitFullscreenElement) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
       else (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
-    } catch (e) { bildir('Tam ekran bu tarayıcıda açılamadı.', true); }
+    } catch (e) { bildir(kdMetin('ak.b_tam_ekran', 'Tam ekran bu tarayıcıda açılamadı.'), true); }
   });
 
   /* =====================================================================
@@ -1196,6 +1260,24 @@
   ta.setSelectionRange(ta.value.length, ta.value.length); imleciGoster();
   /* yazı tipi gelince ölçüler değişir: sembol penceresi ve imleç yeniden */
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { pencereBoy(); imleciGoster(); });
+
+  /* DİL DEĞİŞİNCE (17.10.2026): sözlük yüklenince ya da dil değişince
+     sekmeler, tuş adları, hareke alanı, sayaç ve hedef düğmesi seçili
+     dilde yeniden çizilir; açık sekme ve âyet numarası korunur, açık menü
+     kapanır. Türkçe açılışta bir şey yapılmaz (klavye zaten Türkçe). */
+  var kdIlk = true;
+  document.addEventListener('kidef:dil', function (e) {
+    var kod = (e && e.detail && e.detail.kod) || '';
+    var ilk = kdIlk;
+    kdIlk = false;
+    if (ilk && kod === 'tr') return;
+    try {
+      var no = $('#ayetNo'), noD = no ? no.value : null;
+      menuleriKapat(); klavyeKur(); katmanGoster(); panelCiz(); hedefYaz(); sayacYaz();
+      no = $('#ayetNo');
+      if (no && noD != null) no.value = noD;
+    } catch (x) { }
+  });
 
   window.ArapcaKlavye = { yaz: yaz, harekeYaz: harekeYaz, sil: sil, metin: function () { return ta.value; },
     htmlYap: htmlYap, rtfYap: rtfYap, bilgiAc: bilgiAc, sekmeGit: sekmeGit, BILGI: BILGI, HEDEF: HEDEF };

@@ -12177,3 +12177,86 @@ SINIFLARIM ZİYARETÇİYE · TÜRKÇE DIŞINDA MAARİF ETİKETİ YOK   17.10.202
 Bilgisayarda aynı betiklerle uygulandı — siniflarim.js bayt bayt, dil.js
 (sözlük damga tablosu dışında) bayt bayt aynı. Sonra surumle.py ve
 dilDenetim.py. Yedek: _kaynak/yedekler/2026-10-17-sinif-maarif/
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 28. PARÇA (1): ARAPÇA KLAVYE                17.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "tamam devam edelim" (sırada 28: Arapça Klavye, Kısa Sureler,
+Namaz, Tecvid, Ders Sunumları).        (dilKlavye28.py · dilSozlukEkle28.py)
+  arapcaklavye.html + sinifici/arapcaklavye.js 20 dilde: sekme başlığı,
+  alt yazı, araç çubuğu (Kopyala, Kaydet, Geri al, Yinele, Harekeyi
+  kaldır, yazı boyu, yazı tipi), Cihaz klavyesi, imleç, sayaç, altı
+  sekme, sembol bölümleri, bütün tuş adları (noktalama, rakamlar, mühür
+  ve dinî ifadeler, Kur'an işaretleri, görünmez işaretler), hareke alanı
+  (üstün, esre… cc, sav), kopyalama hedefleri ve notları, Kaydet menüsü,
+  bütün bildirimler, ekran okuyucu adları. 191 anahtar.
+  Her dil kendi Arapça öğretim geleneğinin adlarıyla (fatha/kasra…,
+  zabar/zer/pesh…, baris atas…, 开口符…) ve o dilde Müslümanların
+  kullandığı kısaltmalarla (pbuh, s.a.v.s., с.а.в., SAW, (ص), সা.…).
+  Dil değişince klavye yeniden çizilir; açık sekme ve âyet numarası
+  korunur. Türkçede yazılar ve tuşlar birebir aynı.
+  Bilgi pencereleri (ⓘ, 16 pencere) henüz Türkçe — ayrı parça.
+
+DENETİM
+  Test kopyasında Türkçe eskisiyle aynı (bütün sekmeler, menüler,
+  bildirimler, sayaç); en/ru/ar/zh/de/bn/kmr'de bütün tuş adları
+  çevrili, sayfa hatası yok; Kur'an sekmesi açıkken tr→en→ar→tr.
+  Bilgisayarda aynı betiklerle uygulandı — sözlükler ve klavye
+  dosyaları (sürüm damgası dışında) bayt bayt aynı. Sonra surumle.py
+  ve dilDenetim.py. Yedek: _kaynak/yedekler/2026-10-17-dil28-klavye/
+
+══════════════════════════════════════════════════════════════════════
+TAHTAYA YANSIT — bilgisayardaki site tahtada aynen             17.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "aynı ağa bağlı akıllı tahta ve bilgisayarım var ... bilgisayarı
+kullandığım şekilde tahtada görüntüsünü istiyorum" · "sadece site için
+çalışsa yeter, sadece çok pratik olsun, mümkün olduğu kadar gecikme az
+olsun ... index te güzel bi arayüz ekleyelim".           (tahtaKur.py)
+  YENİ: tahta.html · sistem/tahta.js · sistem/tahtagir.js
+  DEĞİŞEN: index.html (başlıkta Tahta düğmesi + tahtagir.js),
+    katalog/index.html, sozluk.html, metintahlili/metintahlili.js,
+    sarf/yarismakopru.js (tahta çerçevesini "gömülü" saymasınlar).
+  Başlıktaki Tahta düğmesi (öğretmen/yönetici) → "Bu bilgisayardan
+  yansıt" ya da "Bu cihaz tahta". Bilgisayarda açılan sayfa, kaydırma,
+  tıklama, tuş, yazı alanı ve video tahtada aynen; tahta sayfayı kendisi
+  çizer (keskin), hiçbir şey kaydetmez. Üst şerit: Perde (tahtayı
+  karart), Duraklat/Sürdür, Eşitle, Bitir; gecikme şeritte yazar.
+  Tahta cihazı kendini hatırlar: ana sayfası açıkken bilgisayarda
+  yansıtma başlayınca 5 sn geri sayımla kendiliğinden geçer.
+  Şifre, e-posta, PIN alanları gitmez; PIN penceresi açıkken tahta perde.
+
+  !!! BİR KERELİK AYAR (yapılmadan çalışmaz) — Firebase konsolu:
+    1. console.firebase.google.com › kidefarapca projesi › Build ›
+       Realtime Database › "Create Database".
+    2. Konum: Belgium (europe-west1). "Start in locked mode" › Enable.
+    3. "Rules" sekmesine şunu yapıştır › Publish:
+       { "rules": { "tahta": { "$uid": {
+           ".read":  "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider !== 'anonymous'",
+           ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider !== 'anonymous'" } } } }
+       (Firestore kurallarındaki gibi misafir/anonim kimlik giremez.)
+    4. Veritabanı adresi şu olmalı:
+       https://kidefarapca-98f9c-default-rtdb.europe-west1.firebasedatabase.app
+       (başka çıkarsa sistem/tahta.js ve sistem/tahtagir.js'teki
+       VT_ADRES satırına yazılır.)
+  Mevcut Firestore kurallarına DOKUNULMADI; bu ayrı bir veritabanı.
+
+DENETİM
+  Test kopyasında iki cihaz taklidiyle: Arapça Klavye'de yazı, sekme,
+  menü, hedef; ana sayfaya dönüş (tahta bir kez yükledi); kaydırma (aynı
+  bölüm); perde; duraklatma (tahta son görüntüde kaldı) ve sürdürme
+  (eşitlendi); katalogda sekme; sonradan bağlanan ikinci tahta; dil
+  değişimi; PIN perdesi; onay penceresi cevabı; tıklamada karışan liste
+  iki cihazda aynı; tahtada Firestore yazması boşa çıktı; ana sayfada
+  düğme, panel ve tahta cihazının kendiliğinden geçişi. Sayfa hatası yok.
+  Yedek: _kaynak/yedekler/2026-10-17-tahta/
+  Arayüz yazıları şimdilik Türkçe; 20 dile çevirisi sıradaki iş.
+
+TAHTAYA YANSIT — 20 DİL                                        17.10.2026
+  (dilSozlukEkleTahta.py) Panel, geri sayımlı geçiş sorusu, bilgisayardaki
+  üst şerit, tahtadaki bekleme ekranı, perde, şeritler ve bildirimler 20
+  dilde (62 anahtar). Akıllı tahta her dilde kendi sınıf karşılığıyla
+  (board, tableau numérique, digitale Tafel, pizarra digital,
+  интерактивная доска, السبورة الذكية, 智能白板…). index.html'de
+  sistem/tahtagir.js artık "defer" ile yükleniyor (sayfayı bekletmez).
+  Bilgisayarda aynı betiklerle uygulandı; dosyalar (sürüm damgası
+  dışında) test kopyasıyla bayt bayt aynı.

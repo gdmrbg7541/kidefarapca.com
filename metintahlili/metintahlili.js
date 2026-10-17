@@ -733,7 +733,7 @@
         /* Kitabın içinde (tam sayfa alıştırma çerçevesi) açıldıysa sağ üstte
            kitabın kapatma tuşu duruyor: başlık ona çarpmasın. */
         try {
-            if (window.self !== window.top) document.documentElement.classList.add('mt-cerceve');
+            if (window.self !== window.top && window.name !== 'kidefTahta') document.documentElement.classList.add('mt-cerceve');
         } catch (e) { document.documentElement.classList.add('mt-cerceve'); }
         if (DERS) okumaKur(); else listeKur();
     }

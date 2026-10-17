@@ -213,7 +213,7 @@
     /* ---------------------------------------------------------------- */
 
     function iframeDeMi() {
-        try { return window.self !== window.top; } catch (e) { return true; }
+        try { return window.self !== window.top && window.name !== 'kidefTahta'; } catch (e) { return true; }
     }
 
     if (iframeDeMi()) {

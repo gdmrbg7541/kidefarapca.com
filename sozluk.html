@@ -21,7 +21,7 @@
 <script>
 /* Çerçeve içinde mi? EN BAŞTA bilinsin ki pencerenin kendi başlığı
    varken buradaki yeşil şerit bir an görünüp kaybolmasın. */
-try { if (window.parent !== window) document.documentElement.className += ' szk-cerceve'; } catch (e) {}
+try { if (window.parent !== window && window.name !== 'kidefTahta') document.documentElement.className += ' szk-cerceve'; } catch (e) {}
 /* Geri tuşu YALNIZ tam sayfada gerekli; açılır pencerenin kendi ✕'i var.
    Çerçevedeyken sitenin geri yardımcısı hiç yüklenmesin. */
 (function () {
@@ -675,6 +675,6 @@ function kdDil() {
 </script>
     <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
          sekmede dil değişirse anında döner (sistem/dil.js). -->
-    <script src="sistem/dil.js?v=c488020d"></script>
+    <script src="sistem/dil.js?v=4f0ae31c"></script>
 </body>
 </html>
