@@ -589,6 +589,9 @@
             if (d.durum === 'onayli' && d.jeton) {
                 clearInterval(qrDurum.sayacId); clearInterval(qrDurum.sormaId);
                 durumYaz('onayli', 'Onaylandı, giriş yapılıyor…');
+                /* TELEFON KUMANDA (17.10.2026): yenilenen sayfa, telefondaki
+                   "kumanda olsun" cevabını BU oturum için bekler (hesap/kumanda.js). */
+                try { sessionStorage.setItem('kidef_qr_son', JSON.stringify({ id: qrDurum.oturumId, t: Date.now() })); } catch (e) { }
                 firebase.auth().signInWithCustomToken(d.jeton).then(function () {
                     durumYaz('onayli', (d.ad || d.eposta || 'Hoş geldin') + ' — giriş yapıldı, sayfa yenileniyor…');
                     /* Aynı tarayıcının ÖTEKİ sekmelerine haber ver: Firebase
@@ -730,6 +733,9 @@
                         ? '<div class="qr-bitti iyi">✓ Onaylandı. ' +
                           (onayKipi ? 'Tahtadaki işlem birkaç saniye içinde açılır.' : 'Diğer cihazda giriş birkaç saniye içinde tamamlanır.') + '</div>'
                         : '<div class="qr-bitti">İstek reddedildi.</div>');
+                    /* TELEFON KUMANDA (17.10.2026): yeni girişte "bu telefon
+                       tahtanın kumandası olsun mu?" (hesap/kumanda.js) */
+                    if (secim === 'onay' && !onayKipi) { try { if (window.KidefKumanda) window.KidefKumanda.sor(id); } catch (e) { } }
                 }).catch(function (e) {
                     durumYaz('hata', hataMetni(e));
                     if (t1) t1.disabled = false;

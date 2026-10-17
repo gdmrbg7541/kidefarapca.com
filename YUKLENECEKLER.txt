@@ -12450,3 +12450,15 @@ TAHTAYA YANSIT 2. SÜRÜM: İKİ CİHAZDAN KULLANIM · TAM EKRAN      17.10.2026
   YAPILACAK: materyal-gonder.command'a çift tıkla (9. sınıfı gönderir; 10. sınıf
   zaten gitti), sonra siteyi hizli-gonder ile gönder (9. sınıfın yeni adresleri).
   Yedek: _kaynak/yedekler/2026-10-17-materyal9/
+
+ARZ (العرض) — 9. VE 10. SINIF                                    17.10.2026
+  Öğretmen: "bazı arz yazan yerlerde dikkat et, klasörlerde türkçe arz yazan
+  dosyaları ekle". Bilgisayarda adında "arz" geçen tek kaynak 9. sınıfın
+  IHL_Arp9_arz.zip'i; 9 dosyasının hepsi zaten 9. sınıf kitabında, her biri
+  kendi "العرض N" işaretinin üstünde (s.48, 50, 80, 100, 122, 146, 168, 170, 186).
+  10. sınıfın MEB paketinde arz videosu yok; kitaptaki 8 "العرض N" işaretinin
+  (her dersin başı: s.12, 34, 56, 82, 106, 128, 152, 174) karekodu EBA'ya
+  gidiyor → işaretlerin üstüne EBA düğmesi kondu (karekodun adresi, yeni
+  sekmede açılır). Dosyaları gelirse doğrudan çalan videoyla değiştirilir.
+  · DEĞİŞEN: kitap/10-sinif-2026-2027/veri.js, index.html (kitap10Kur.py)
+  · Yedek: _kaynak/yedekler/2026-10-17-kitap10-arz/
