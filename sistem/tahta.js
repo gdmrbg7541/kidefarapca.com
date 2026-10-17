@@ -842,8 +842,11 @@
       if (yazmaEngelle(w)) return;
       if (SIMDI() < bitis) setTimeout(engelle, 30);
     })();
-    /* ziyaretçi turu (vitrin) gibi bir kerelik pencereler tahtada çıkmasın */
-    try { if (!localStorage.getItem('kidefVitrinSayac')) localStorage.setItem('kidefVitrinSayac', '9'); } catch (e) { }
+    /* ziyaretçi turu (vitrin), dil önerisi gibi bir kerelik pencereler tahtada çıkmasın */
+    try {
+      if (!localStorage.getItem('kidefVitrinSayac')) localStorage.setItem('kidefVitrinSayac', '9');
+      if (localStorage.getItem('kidef_dil_oneri') !== 'yok') localStorage.setItem('kidef_dil_oneri', 'yok');
+    } catch (e) { }
   }
   function zYeniBelge(w, d) {
     Z.win = w; Z.belge = d; Z.hazir = false;
@@ -1105,6 +1108,12 @@
         zNoktaYaz();
       });
     } catch (e) { kaydol(); }
+    /* OTURUM: bilgisayar yansıttığı sürece tahta "boşta" sayılmaz — 40
+       dakikalık boşta kalma uyarısı tahtada çıkmasın. Bilgisayar ayrılınca
+       tahtanın kendi sayacı yine işler (unutulan tahta kapanır). */
+    setInterval(function () {
+      if (Z.kok && Z.yayin && Z.yayin.cevrimici) hareketYaz();
+    }, 30000);
     /* gecikmeyi bilgisayara bildir (seyrek) */
     setInterval(function () {
       if (!Z.kok) return;
@@ -1139,12 +1148,16 @@
           var once = Z.yayin;
           Z.yayin = y;
           if (y && y.id !== Z.yayinId) { Z.yayinId = y.id; Z.sonN = null; Z.bek = {}; }
+          clearTimeout(Z.ayrildiZ);
           if (y && y.cevrimici) {
             bekleGoster(null);
             zSerit(y.durak ? kd('th.serit_durak', 'Öğretmen yansıtmayı duraklattı') : null);
             zGecikme(null);
           } else if (Z.belge) {
-            zSerit(kd('th.serit_ayrildi', 'Bilgisayar ayrıldı — son görüntü'));
+            /* kısa bağlantı kopmalarında şerit çıkmasın: 8 sn bekle */
+            Z.ayrildiZ = setTimeout(function () {
+              if (!(Z.yayin && Z.yayin.cevrimici)) zSerit(kd('th.serit_ayrildi', 'Bilgisayar ayrıldı — son görüntü'));
+            }, 8000);
           } else {
             bekleGoster('izle');
           }
@@ -1160,6 +1173,10 @@
 
   /* --------------------------------------------------------- başlangıç */
   function basla() {
+    /* kabuk başka bir çerçevenin içinde açıldıysa (kabuk içinde kabuk) çalışma */
+    var icte = false;
+    try { icte = window.top !== window.self; } catch (e) { icte = true; }
+    if (icte) { try { location.replace('index.html'); } catch (e) { } return; }
     stilKur();
     if (ROL === 'yansit') {
       var m = /[?&]sayfa=([^&#]*)/.exec(location.search);

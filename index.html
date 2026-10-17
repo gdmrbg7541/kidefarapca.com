@@ -1228,6 +1228,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          da sabit olacak"). İkisi de bu boyda; içerik ne olursa olsun
          bölümün yüksekliği değişmiyor. */
       #guncellemeler{ margin:0 0 10px; --gd-boy:280px; }
+      /* YALNIZ GİRİŞ YAPANA (17.10.2026) — öğretmen: "sınıfta yeni kısmı ve
+         galeri kısmı sadece hesaba giriş yapanlar tarafından görülsün".
+         <html>'e kd-girisli'yi bölümün altındaki küçük betik koyar;
+         ziyaretçi ve misafir (anonim) kimlik görmez. */
+      html:not(.kd-girisli) #guncellemeler{ display:none !important; }
       #guncellemeler .gd-kutu{
         display:grid; grid-template-columns:1fr 1fr; gap:20px;
         background:linear-gradient(140deg,#FBFDFC,#FFFFFF 58%);
@@ -1981,6 +1986,29 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         </div>
       </div>
     </section>
+    <script>
+    /* SINIFTA YENİ + GALERİ YALNIZ GİRİŞ YAPANA (17.10.2026): hesapla giriş
+       yapılınca <html>'e kd-girisli konur, çıkışta kalkar. Misafir (anonim)
+       kimlik sayılmaz. Firebase'i hesap/auth.js kuruyor; o yüzden kurulunca
+       bağlanır. */
+    (function () {
+      function yaz(u) {
+        document.documentElement.classList.toggle('kd-girisli', !!(u && !u.isAnonymous));
+      }
+      function bagla() {
+        try {
+          if (!window.firebase || !firebase.apps || !firebase.apps.length) return false;
+          firebase.auth().onAuthStateChanged(yaz);
+          return true;
+        } catch (e) { return false; }
+      }
+      if (bagla()) return;
+      document.addEventListener('DOMContentLoaded', function () {
+        if (bagla()) return;
+        var n = 0, t = setInterval(function () { if (bagla() || ++n > 40) clearInterval(t); }, 250);
+      });
+    })();
+    </script>
 
 
 
@@ -7981,7 +8009,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/listelerim.js?v=a3bbe9e6"></script>
     <!-- TAHTAYA YANSIT (17.10.2026): başlıktaki Tahta düğmesi, paneli ve tahta
          cihazının kendiliğinden geçişi. Motor: sistem/tahta.js (tahta.html). -->
-    <script defer src="sistem/tahtagir.js?v=44f16c32"></script>
+    <script defer src="sistem/tahtagir.js?v=db4eba92"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=05cd7ad6"></script>

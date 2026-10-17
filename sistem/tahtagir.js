@@ -22,6 +22,24 @@
   'use strict';
   if (window.KidefTahtaGir) return;
 
+  /* TAHTA KABUĞUNUN İÇİNDE HİÇBİR ŞEY YAPMA (17.10.2026) — öğretmen:
+     "akıllı tahtada yansıtma açılmışken gereksiz yere bir süre sonra
+     bildirim çıkıyor". tahta.html siteyi kidefTahta adlı çerçevede açar;
+     tahtanın çerçevesindeki ana sayfa "Bilgisayarın yansıtıyor" sorusunu
+     gösterip 5 saniye sonra kabuğun içinde ikinci bir kabuk açıyordu
+     (bilgisayarda da "Tahta bağlandı" tekrar tekrar). Kabuğun kendi
+     şeridi var: çerçevede düğme, panel ve soru yok. */
+  var KABUKTA = (function () {
+    try {
+      if (window.name === 'kidefTahta') return true;
+      return window.parent !== window && !!window.parent.KidefTahta;
+    } catch (e) { return window.name === 'kidefTahta'; }
+  })();
+  if (KABUKTA) {
+    window.KidefTahtaGir = { ac: function () { }, kapat: function () { }, kabukta: true };
+    return;
+  }
+
   /* sistem/tahta.js'teki adresle aynı olmalı */
   var VT_ADRES = 'https://kidefarapca-98f9c-default-rtdb.europe-west1.firebasedatabase.app';
   var SDK = 'https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js';

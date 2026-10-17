@@ -12260,3 +12260,24 @@ TAHTAYA YANSIT — 20 DİL                                        17.10.2026
   sistem/tahtagir.js artık "defer" ile yükleniyor (sayfayı bekletmez).
   Bilgisayarda aynı betiklerle uygulandı; dosyalar (sürüm damgası
   dışında) test kopyasıyla bayt bayt aynı.
+
+TAHTA BİLDİRİMİ · SINIFTA YENİ VE GALERİ YALNIZ GİRİŞLİYE      17.10.2026
+  1) Öğretmen: "akıllı tahtada yansıtma açılmışken gereksiz yere bir süre
+     sonra bildirim çıkıyor".
+     Sebep: tahtanın çerçevesinde açılan ana sayfa da "Bilgisayarın
+     yansıtıyor — tahtada aç" sorusunu gösteriyor, 5 sn sonra kabuğun
+     içinde ikinci bir kabuk açıyordu (döngü; bilgisayarda "Tahta
+     bağlandı" tekrar tekrar). Düzeltme: sistem/tahtagir.js tahta
+     çerçevesinde hiçbir şey yapmıyor (düğme, panel, soru yok);
+     tahta.html başka bir çerçevede açılırsa çalışmıyor. Ayrıca tahtada:
+     bilgisayar yansıttığı sürece 40 dakikalık boşta kalma uyarısı
+     çıkmıyor; dil önerisi şeridi çıkmıyor; kısa bağlantı kopmalarında
+     "Bilgisayar ayrıldı" şeridi 8 saniye beklemeden görünmüyor.
+  2) Öğretmen: "sınıfta yeni kısmı ve galeri kısmı sadece hesaba giriş
+     yapanlar tarafından görülsün".                  (girisGorunur.py)
+     index.html: #guncellemeler (Sınıfta Yeni + Galeri) yalnız hesabıyla
+     giriş yapmış kullanıcıya; ziyaretçi ve misafir (anonim) görmez,
+     çıkış yapınca hemen kaybolur.
+  Bilgisayarda aynı betiklerle uygulandı; dosyalar (sürüm damgası
+  dışında) test kopyasıyla bayt bayt aynı.
+  Yedek: _kaynak/yedekler/2026-10-17-tahta-duzeltme/
