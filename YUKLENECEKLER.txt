@@ -12398,3 +12398,55 @@ TAHTAYA YANSIT 2. SÜRÜM: İKİ CİHAZDAN KULLANIM · TAM EKRAN      17.10.2026
     3. O depoda Settings → Pages → Deploy from a branch → main / (root) → Save
     4. Siteyi her zamanki gibi gönder (hizli-gonder).
   Adres: https://gdmrbg7541.github.io/kidefarapca-materyal/
+
+10. SINIF ARAPÇA FLIPBOOK (2026-2027)                         17.10.2026
+  Öğretmen: "10. sınıfı da". Kaynak: Meb/5-10/10/2026-2027 Maarif/Güncel
+  Kitap Dosyaları/ (kitap PDF'i 216 sayfa + sesler ve videolar zip'i;
+  hiçbirine dokunulmadı).
+  · Ana site 1 GB sınırında olduğu için bu kitabın SAYFALARI da ses ve
+    videolarla birlikte YENİ, AYRI bir depoda: ka.com/GitHub/
+    kidefarapca-materyal-10/10-sinif-2026-2027/ — 217 sayfa (24 MB),
+    94 ses (126 → 46 MB, 64 kbps mono), 36 animasyon + 4 ünite tanıtım
+    videosu (MEB'in dosyaları, yeniden sıkıştırılmadı), kapak resimleri.
+    Toplam 620 MB. (9. sınıfın deposu 596 MB'ta, ikisi bir depoya sığmıyor.)
+  · Ana sitede yalnız kitabın kabuğu: kitap/10-sinif-2026-2027/ (15 dosya,
+    250 KB) — sayfaları ve medyayı materyal deposundan yükler. Depo yayında
+    değilken kitap "sayfalar yüklenemedi" uyarısı gösterir.
+  · 134 ses/video, kitaptaki işaretinin ("صوت 24", "رسوم متحركة 3",
+    "فيديو الوحدة") TAM ÜSTÜNDE; hepsi yerinde. "İndir" ZIP'i sayfaları da
+    alır (23 MB), bilgisayardan internetsiz açılır.
+  · Etkinlik konmadı: 10. sınıf kitap etkinlikleri 25.09'da kapatılmıştı.
+  · DEĞİŞEN (bu sitede): index.html (10. sınıf ders kitabı kartı artık
+    sitedeki kitaba gider; önceki muallimun bağlantısı yorumda),
+    _kaynak/ortak-kitap/kitapsecici.js → bütün kitapların kitapsecici.js'i
+    (kitap seçicide Arapça 10), kitapların index.html damgaları,
+    YENİ kitap/10-sinif-2026-2027/
+  · materyal-gonder.command artık İKİ depoyu da gönderir (önce 9, sonra 10);
+    GitHub'da açılmamış depoyu atlar, ötekini gönderir.
+  YAPILACAK (bir kez):
+    1. github.com → + → New repository → ad: kidefarapca-materyal-10 ·
+       Public · README ekleme → Create   (9. sınıfınki açılmadıysa
+       kidefarapca-materyal'i de aynı şekilde)
+    2. GitHub klasöründeki materyal-gonder.command'a çift tıkla
+    3. Her iki depoda Settings → Pages → Deploy from a branch →
+       main / (root) → Save
+    4. Siteyi her zamanki gibi gönder (hizli-gonder).
+  Adres: https://gdmrbg7541.github.io/kidefarapca-materyal-10/
+  Betikler: _kaynak/uretici/kitap10Sayfa.py · materyal10.py · kitap10Kur.py ·
+  kitap10Bagla.py · Yedek: _kaynak/yedekler/2026-10-17-kitap10/
+
+9. SINIF MATERYAL DEPOSUNUN ADI: kidefarapca-materyal-9           17.10.2026
+  Öğretmen GitHub'da 9. sınıfın deposunu "kidefarapca-materyal-9" adıyla açtı
+  (10. sınıfınkiyle aynı düzen; Pages zaten açık). Buna göre:
+  · ka.com/GitHub/kidefarapca-materyal → kidefarapca-materyal-9 (klasör adı =
+    depo adı); README ve tanıtım sayfası yeni adla
+  · materyal-gonder.command: kidefarapca-materyal-N klasörlerini sırayla (9, 10…)
+    aynı adlı depoya gönderir; klasör adı değişirse GitHub bağlantısını
+    kendisi düzeltir
+  · kitap/9-sinif-2026-2027/veri.js yeniden üretildi (kitap9Kur.py): ses ve
+    video adresleri https://gdmrbg7541.github.io/kidefarapca-materyal-9/ —
+    başka hiçbir şey değişmedi (karşılaştırıldı)
+  · Yukarıdaki 9. sınıf bloğundaki "kidefarapca-materyal" adı artık geçersiz.
+  YAPILACAK: materyal-gonder.command'a çift tıkla (9. sınıfı gönderir; 10. sınıf
+  zaten gitti), sonra siteyi hizli-gonder ile gönder (9. sınıfın yeni adresleri).
+  Yedek: _kaynak/yedekler/2026-10-17-materyal9/

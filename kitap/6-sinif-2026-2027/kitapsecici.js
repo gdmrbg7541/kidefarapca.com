@@ -52,6 +52,10 @@
     /* 9. sınıf (17.10.2026): Anadolu İmam Hatip Lisesi, MEB'in güncel 2026-2027 kitabı */
     { id: '9-sinif-2026-2027',    ad: 'Arapça 9',     alt: 'Anadolu İmam Hatip Lisesi · 2026-2027',
       renk: '#8E44AD', im: '9', guncel: true },
+    /* 10. sınıf (17.10.2026): Anadolu İmam Hatip Lisesi, MEB'in güncel 2026-2027
+       kitabı. Sayfaları, sesleri ve videoları kidefarapca-materyal-10 deposunda. */
+    { id: '10-sinif-2026-2027',   ad: 'Arapça 10',    alt: 'Anadolu İmam Hatip Lisesi · 2026-2027',
+      renk: '#C0392B', im: '10', guncel: true },
     { id: 'kidef-arapca-2-baski', ad: 'Kidef Arapça', alt: '2. Baskı · flipbook',
       renk: '#E3A02A', im: 'K', asil: 'FLIPBOOK' }
   ];

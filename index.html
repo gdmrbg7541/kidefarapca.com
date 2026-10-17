@@ -5810,7 +5810,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
                ipucu: '9. sınıf Arapça ders kitabı (2026-2027, Anadolu İmam Hatip Lisesi) — ' +
                       'sayfa çevirmeli kitap; hafıza kartları ve ünite sonu değerlendirmeleri ' +
                       'içinde; yeni sekmede açılır' },
-        '10': flipKitap('10', 'https://arapca.muallimun.net/flipbook/ihlar102026/')
+        /* 10. sınıf kitabı sitede (17.10.2026): kitap/10-sinif-2026-2027/ — MEB'in
+           güncel 2026-2027 kitabından sayfa çevirmeli kitap; 94 ses, 36 animasyon
+           ve 4 ünite tanıtım videosu içinden açılır. Sayfa resimleri, sesler ve
+           videolar ana sitede değil, kidefarapca-materyal-10 deposunda (ana site
+           GitHub Pages'in 1 GB sınırında).
+           Önceki bağlantı: https://arapca.muallimun.net/flipbook/ihlar102026/ */
+        '10': { url: 'kitap/10-sinif-2026-2027/index.html', etiket: 'DİJİTAL KİTAP',
+                ipucu: '10. sınıf Arapça ders kitabı (2026-2027, Anadolu İmam Hatip Lisesi) — ' +
+                       'sayfa çevirmeli kitap; sesler ve videolar içinde; yeni sekmede açılır' }
       };
       function kitapKarti(sinif) {
         var k = DERS_KITABI[sinif]; if (!k) return null;
