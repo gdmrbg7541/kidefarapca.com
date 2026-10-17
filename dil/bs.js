@@ -1909,12 +1909,19 @@ window.KIDEF_DIL['bs'] = Object.assign(window.KIDEF_DIL['bs'] || {}, {
   'th.p_izle': 'Ovaj uređaj je tabla',
   'th.p_izle_alt': 'Ono što radiš na računaru pojavljuje se na ovom ekranu. Tabla će to zapamtiti: na sljedećim časovima dovoljno je da pokreneš preslikavanje na računaru.',
   'th.p_izle_dug': 'Otvori prikaz table',
-  'th.p_not': 'Preslikava se samo ova stranica. Polja za lozinku, e-mail i PIN nikad ne stižu na tablu, a tabla ništa ne pohranjuje.',
+  'th.p_not': 'Preslikava se samo ova stranica. Polja za lozinku, e-mail i PIN nikad ne stižu na tablu, i ništa se ne pohranjuje dvaput.',
   'th.p_unut': 'Ovaj uređaj nije tabla',
   'th.s_bas': 'Tvoj računar preslikava',
   'th.s_ac': 'Otvori na tabli',
   'th.s_vazgec': 'Odustani',
   'th.s_alt': 'Prikaz table otvara se za {n} s',
-  'th.dugme': 'Preslikaj na tablu'
+  'th.dugme': 'Preslikaj na tablu',
+  'th.kip': 'Koristi i s table',
+  'th.kip_ip': 'Kad je uključeno, stranicu možeš koristiti i dodirom table; kad je isključeno, tabla samo prikazuje računar',
+  'th.b_kip_cift': 'Sada je možeš koristiti i dodirom table.',
+  'th.tahtadan': 'Koristi se s table',
+  'th.b_tahtadan': 'Koristi se s table; klikni na računaru da ponovo preuzmeš kontrolu.',
+  'th.cift_metin': 'Možeš je koristiti i dodirom table; računar prikazuje isto.',
+  'th.tam_dokun': 'Dodirni ekran jednom za prikaz preko cijelog ekrana'
 });
 /* @dil-parca-tahta son */

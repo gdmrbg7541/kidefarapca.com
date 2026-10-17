@@ -1922,12 +1922,19 @@ window.KIDEF_DIL['en'] = Object.assign(window.KIDEF_DIL['en'] || {}, {
   'th.p_izle': 'This device is the board',
   'th.p_izle_alt': 'What you do on your computer appears on this screen. The board remembers this: in later lessons, just start on the computer.',
   'th.p_izle_dug': 'Open the board view',
-  'th.p_not': 'Only this site is mirrored. Password, e-mail and PIN fields never reach the board, and the board saves nothing.',
+  'th.p_not': 'Only this site is mirrored. Password, e-mail and PIN fields never reach the board, and nothing is saved twice.',
   'th.p_unut': 'This device is not the board',
   'th.s_bas': 'Your computer is mirroring',
   'th.s_ac': 'Open on the board',
   'th.s_vazgec': 'Cancel',
   'th.s_alt': 'Board view opens in {n} s',
-  'th.dugme': 'Mirror to the board'
+  'th.dugme': 'Mirror to the board',
+  'th.kip': 'Use from the board too',
+  'th.kip_ip': 'When on, you can also use the site by touching the board; when off, the board only shows the computer',
+  'th.b_kip_cift': 'You can now also use it by touching the board.',
+  'th.tahtadan': 'In use from the board',
+  'th.b_tahtadan': 'In use from the board; click on the computer to take control back.',
+  'th.cift_metin': 'You can also use it by touching the board; the computer shows the same thing.',
+  'th.tam_dokun': 'Touch the screen once for full screen'
 });
 /* @dil-parca-tahta son */

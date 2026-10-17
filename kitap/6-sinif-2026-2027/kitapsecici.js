@@ -49,6 +49,9 @@
        verilmez, site kartı da portala gider. */
     { id: '7-sinif-2027-2028',    ad: 'Arapça 7',     alt: 'Dijital ders kitabı · 2027-2028',
       renk: '#2563EB', im: '7', gizli: true },
+    /* 9. sınıf (17.10.2026): Anadolu İmam Hatip Lisesi, MEB'in güncel 2026-2027 kitabı */
+    { id: '9-sinif-2026-2027',    ad: 'Arapça 9',     alt: 'Anadolu İmam Hatip Lisesi · 2026-2027',
+      renk: '#8E44AD', im: '9', guncel: true },
     { id: 'kidef-arapca-2-baski', ad: 'Kidef Arapça', alt: '2. Baskı · flipbook',
       renk: '#E3A02A', im: 'K', asil: 'FLIPBOOK' }
   ];

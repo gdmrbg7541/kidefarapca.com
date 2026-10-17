@@ -1909,12 +1909,19 @@ window.KIDEF_DIL['fr'] = Object.assign(window.KIDEF_DIL['fr'] || {}, {
   'th.p_izle': 'Cet appareil est le tableau numérique',
   'th.p_izle_alt': 'Ce que tu fais sur ton ordinateur apparaît sur cet écran. Le tableau s’en souvient : aux prochains cours, il suffit de lancer la duplication depuis l’ordinateur.',
   'th.p_izle_dug': 'Ouvrir la vue tableau',
-  'th.p_not': 'Seul ce site est dupliqué. Les champs mot de passe, e-mail et PIN n’arrivent jamais sur le tableau, et le tableau n’enregistre rien.',
+  'th.p_not': 'Seul ce site est dupliqué. Les champs mot de passe, e-mail et PIN n’arrivent jamais sur le tableau, et rien n’est enregistré deux fois.',
   'th.p_unut': 'Cet appareil n’est pas le tableau numérique',
   'th.s_bas': 'Ton ordinateur duplique son écran',
   'th.s_ac': 'Ouvrir sur le tableau',
   'th.s_vazgec': 'Annuler',
   'th.s_alt': 'La vue tableau s’ouvre dans {n} s',
-  'th.dugme': 'Dupliquer sur le tableau numérique'
+  'th.dugme': 'Dupliquer sur le tableau numérique',
+  'th.kip': 'Utiliser aussi depuis le tableau',
+  'th.kip_ip': 'Activé : tu peux aussi utiliser le site en touchant le tableau ; désactivé : le tableau affiche seulement l’ordinateur',
+  'th.b_kip_cift': 'Tu peux maintenant l’utiliser aussi en touchant le tableau.',
+  'th.tahtadan': 'Utilisé depuis le tableau',
+  'th.b_tahtadan': 'Utilisé depuis le tableau ; clique sur l’ordinateur pour reprendre la main.',
+  'th.cift_metin': 'Tu peux aussi l’utiliser en touchant le tableau ; l’ordinateur affiche la même chose.',
+  'th.tam_dokun': 'Touche l’écran une fois pour passer en plein écran'
 });
 /* @dil-parca-tahta son */

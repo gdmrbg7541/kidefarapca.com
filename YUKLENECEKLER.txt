@@ -12323,3 +12323,78 @@ MOBİL YAN MENÜ · ALFABE TELEFON DÜZENİ · TAHTA DUYURUSU      17.10.2026
   Bilgisayarda aynı betiklerle uygulandı; dosyalar (sürüm damgası
   dışında) test kopyasıyla bayt bayt aynı.
   Yedek: _kaynak/yedekler/2026-10-17-mobil/
+
+TAHTAYA YANSIT 2. SÜRÜM: İKİ CİHAZDAN KULLANIM · TAM EKRAN      17.10.2026
+  Öğretmen: "yansıtma başlayınca akıllı tahtada otomatik tam ekrana
+  geçsin, akıllı tahtada herhangi bir yere dokununca da kullanılabilsin
+  ... istersek sadece bilgisayardan istersek her iki cihazdan da
+  kullanabilmek için özellik ekleyelim" · "duraklatıp devam edince ekran
+  kararmasın".                                            (tahtaKur2.py)
+  · O an kullanılan cihaz yönetir: tahtaya dokununca kontrol tahtaya
+    geçer, bilgisayar onu izler; bilgisayarda tıklayınca, kaydırınca ya da
+    yazınca kontrol yeniden bilgisayarda. Kayıt hep tek cihazdan yapılır
+    (hiçbir şey iki kez kaydedilmez).
+  · Bilgisayarın üst şeridinde "Tahtadan da kullan" (açık: iki cihazdan,
+    kapalı: tahta yalnız gösterir). Seçim hatırlanır.
+  · Tahta yansıtma başlayınca tam ekrana geçer; tarayıcı izin vermezse
+    "Tam ekran için ekrana bir kez dokun" yazar, ilk dokunuşta geçer ve
+    kapanana dek tam ekranda kalır. Tahtada "Ana ekrana ekle / Uygulamayı
+    yükle" yapılırsa her açılışta kendiliğinden tam ekran açılır.
+  · Duraklat → Sürdür: aynı sayfada tahta yenilenmez, ekran kararmaz;
+    aradaki işlemler sırayla gider. Kabuğun zemini beyaz.
+  · Sonradan bağlanan tahta (ya da bağlantısı kopup olay kaçıran cihaz)
+    yalnız kendisi eşitlenir; öbür tahtalar yenilenmez.
+  DEĞİŞEN: sistem/tahta.js, sistem/tahtagir.js (panel notu), tahta.html
+           (beyaz zemin, tema rengi), index.html (damga), dil/*.js (20 dil,
+           7 yeni yazı)
+  YENİ:    tahta.webmanifest, sistem/tahta-ikon-192.png,
+           sistem/tahta-ikon-512.png
+  (tahta.html, sistem/tahta.js, sistem/tahtagir.js git'te yoksa onlar da
+  eklenmeli.)
+  Bilgisayarda aynı betiklerle uygulandı; dosyalar (sürüm damgası
+  dışında) test kopyasıyla bayt bayt aynı (simgeler piksel piksel aynı).
+  Yedek: _kaynak/yedekler/2026-10-17-tahta2/
+
+9. SINIF ARAPÇA FLIPBOOK (2026-2027)                          17.10.2026
+  Öğretmen: "9. sınıf için de flipbook yapalım, MEB klasörü güncel
+  klasörden kitabı ekleyelim".     (kitap9Sayfa.py · kitap9Kur.py · kitap9Bagla.py)
+  · Kaynak: Meb/5️⃣-🔟/9️⃣/2026-2027/Güncel Kitap.pdf (218 sayfa, 158 MB;
+    dokunulmadı). Flipbook: kitap/9-sinif-2026-2027/ — 219 yaprak (ön ve
+    arka kapak yayılımdan ayrıldı), 20,9 MB. Öbür kitaplarla aynı motor
+    (dokununca büyütme, içindekiler, kaynaklar, İndir, kitap seçici).
+  · İçindekiler: 1. Haydi Tanışalım (10) · 2. Okuldayım (78) · 3. Evdeyim
+    (120) · 4. Bir Günüm (166) · Sözlük (204) · Cevap anahtarı ve kaynakça
+    (215). Ünite adları sitedeki 9. sınıf etkinlik kaydından.
+  · Kaynaklar: sitede duran 13 etkinlik (7 hafıza kartı, 4 ünite sonu
+    değerlendirmesi, Kelime Oyunları, Harf Yarışı) kitap sayfasıyla.
+  · Ana sayfadaki 9. sınıf ders kitabı kartı artık bu kitaba gidiyor
+    (önceki dış bağlantı açıklamada). Kitap seçicide "Arapça 9" (bütün
+    kitaplara kitapOrtakla.py ile dağıtıldı).
+  DEĞİŞEN: index.html, kitap/*/kitapsecici.js ve kitap/*/index.html (damga)
+  YENİ:    kitap/9-sinif-2026-2027/ (klasörün tamamı)
+  Yedek: _kaynak/yedekler/2026-10-17-kitap9/
+
+9. SINIF FLIPBOOK: SES VE VİDEOLAR — AYRI MATERYAL SİTESİ          17.10.2026
+  Öğretmen: "sıkıştırma git kaldırır bence". Ölçüldü: mp4/mp3 git'te
+  küçülmüyor; GitHub 100 MB'tan büyük dosyayı kabul etmiyor (1. ünite
+  tanıtım videosu 177 MB); GitHub Pages sitesi en çok 1 GB ve bu site
+  ~1016 MB. Öğretmen "ayrı materyal sitesi"ni seçti.
+                                      (materyal9.py · kitap9Kur.py yeniden)
+  · Yeni klasör (bu sitenin DIŞINDA): ka.com/GitHub/kidefarapca-materyal/
+    9-sinif-2026-2027/ — 118 ses (128 → 47 MB, 64 kbps mono), 4 ünite
+    şarkısı, 17 harfler ve sesler + 9 arz + 37 animasyon videosu (MEB'in
+    dosyaları; zaten verimli, yeniden sıkıştırılmadı), 4 ünite tanıtım
+    videosu (HEVC'den H.264'e: 297 → 83 MB, artık her tarayıcıda açılıyor),
+    her videoya kapak resmi. Toplam 596 MB.
+  · Kitap: 189 ses/video/şarkı, kitaptaki numaralı işaretinin ("صوت 24",
+    "رسوم متحركة 3"…) TAM ÜSTÜNDE düğme; Kaynaklar panelinde 202 kaynak.
+    Arz 1'in sayfası kitaba göre düzeltildi (MEB dosyasında 41, kitapta 48).
+  · DEĞİŞEN (bu sitede): kitap/9-sinif-2026-2027/veri.js, index.html
+  YAPILACAK (bir kez):
+    1. github.com → + → New repository → ad: kidefarapca-materyal ·
+       Public · README ekleme → Create
+    2. GitHub klasöründeki materyal-gonder.command'a çift tıkla
+       (~600 MB parça parça gider)
+    3. O depoda Settings → Pages → Deploy from a branch → main / (root) → Save
+    4. Siteyi her zamanki gibi gönder (hizli-gonder).
+  Adres: https://gdmrbg7541.github.io/kidefarapca-materyal/

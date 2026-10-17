@@ -1,0 +1,19 @@
+{
+  "id": "tahta",
+  "name": "Kidef Arapça · Tahta",
+  "short_name": "Kidef Tahta",
+  "description": "Bilgisayarda açılan Kidef Arapça sayfaları akıllı tahtada; tahtaya dokunarak da kullanılır.",
+  "start_url": "tahta.html?rol=izle",
+  "scope": "tahta.html",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "background_color": "#ffffff",
+  "theme_color": "#0f2a43",
+  "lang": "tr",
+  "dir": "ltr",
+  "icons": [
+    { "src": "sistem/tahta-ikon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "sistem/tahta-ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "sistem/tahta-ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

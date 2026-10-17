@@ -1909,12 +1909,19 @@ window.KIDEF_DIL['az'] = Object.assign(window.KIDEF_DIL['az'] || {}, {
   'th.p_izle': 'Bu cihaz lövhədir',
   'th.p_izle_alt': 'Kompüterində etdiklərin bu ekranda görünür. Lövhə bunu xatırlayacaq: sonrakı dərslərdə kompüterdə başlatmağın kifayətdir.',
   'th.p_izle_dug': 'Lövhə görünüşünü aç',
-  'th.p_not': 'Yalnız bu sayt yayımlanır. Şifrə, e-poçt və PIN sahələri lövhəyə getmir; lövhə heç nə saxlamır.',
+  'th.p_not': 'Yalnız bu sayt yayımlanır. Şifrə, e-poçt və PIN sahələri lövhəyə getmir; heç nə iki dəfə saxlanmır.',
   'th.p_unut': 'Bu cihaz lövhə deyil',
   'th.s_bas': 'Kompüterin yayımlayır',
   'th.s_ac': 'Lövhədə aç',
   'th.s_vazgec': 'Ləğv et',
   'th.s_alt': 'Lövhə görünüşü {n} saniyədən sonra açılacaq',
-  'th.dugme': 'Lövhəyə yayımla'
+  'th.dugme': 'Lövhəyə yayımla',
+  'th.kip': 'Lövhədən də istifadə et',
+  'th.kip_ip': 'Açıq olanda sayta lövhəyə toxunaraq da istifadə edə bilərsən; bağlı olanda lövhə yalnız kompüteri göstərir',
+  'th.b_kip_cift': 'İndi lövhəyə toxunaraq da istifadə edə bilərsən.',
+  'th.tahtadan': 'Lövhədən istifadə olunur',
+  'th.b_tahtadan': 'Lövhədən istifadə olunur; kompüterdə klikləyəndə idarə yenidən səndə olur.',
+  'th.cift_metin': 'Lövhəyə toxunaraq da istifadə edə bilərsən; kompüter də eynisini göstərir.',
+  'th.tam_dokun': 'Tam ekran üçün ekrana bir dəfə toxun'
 });
 /* @dil-parca-tahta son */

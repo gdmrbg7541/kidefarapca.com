@@ -215,7 +215,7 @@
       '<button type="button" class="thg-dug ikincil" data-thg="izle">' + kac(kd('th.p_izle_dug', 'Tahta görünümünü aç')) + '</button></div>' +
       '</div>' +
       '<div class="thg-durum" id="thgDurum"></div>' +
-      '<p class="thg-not">' + kac(kd('th.p_not', 'Yalnız bu site yansır. Şifre, e-posta ve PIN alanları tahtaya gitmez; tahta hiçbir şey kaydetmez.')) +
+      '<p class="thg-not">' + kac(kd('th.p_not', 'Yalnız bu site yansır. Şifre, e-posta ve PIN alanları tahtaya gitmez; hiçbir şey iki kez kaydedilmez.')) +
       (tahta ? ' <a data-thg="unut">' + kac(kd('th.p_unut', 'Bu cihaz tahta değil')) + '</a>' : '') + '</p>' +
       '</div>';
     p.addEventListener('click', function (e) {

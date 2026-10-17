@@ -1909,12 +1909,19 @@ window.KIDEF_DIL['sq'] = Object.assign(window.KIDEF_DIL['sq'] || {}, {
   'th.p_izle': 'Kjo pajisje është tabela interaktive',
   'th.p_izle_alt': 'Ato që bën në kompjuter shfaqen në këtë ekran. Tabela e mban mend këtë: në orët e ardhshme mjafton ta nisësh nga kompjuteri.',
   'th.p_izle_dug': 'Hap pamjen e tabelës',
-  'th.p_not': 'Pasqyrohet vetëm kjo faqe. Fushat e fjalëkalimit, të email-it dhe të kodit PIN nuk arrijnë kurrë në tabelë, dhe tabela nuk ruan asgjë.',
+  'th.p_not': 'Pasqyrohet vetëm kjo faqe. Fushat e fjalëkalimit, të email-it dhe të kodit PIN nuk arrijnë kurrë në tabelë, dhe asgjë nuk ruhet dy herë.',
   'th.p_unut': 'Kjo pajisje nuk është tabela interaktive',
   'th.s_bas': 'Kompjuteri yt po pasqyron',
   'th.s_ac': 'Hap në tabelë',
   'th.s_vazgec': 'Anulo',
   'th.s_alt': 'Pamja e tabelës hapet pas {n} s',
-  'th.dugme': 'Pasqyro në tabelën interaktive'
+  'th.dugme': 'Pasqyro në tabelën interaktive',
+  'th.kip': 'Përdore edhe nga tabela',
+  'th.kip_ip': 'Kur është aktive, faqen mund ta përdorësh edhe duke prekur tabelën; kur është joaktive, tabela vetëm shfaq kompjuterin',
+  'th.b_kip_cift': 'Tani mund ta përdorësh edhe duke prekur tabelën.',
+  'th.tahtadan': 'Po përdoret nga tabela',
+  'th.b_tahtadan': 'Po përdoret nga tabela; kliko në kompjuter që ta marrësh sërish kontrollin.',
+  'th.cift_metin': 'Mund ta përdorësh edhe duke prekur tabelën; kompjuteri shfaq të njëjtën gjë.',
+  'th.tam_dokun': 'Prek ekranin një herë për ekran të plotë'
 });
 /* @dil-parca-tahta son */

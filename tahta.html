@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0f2a43">
   <title>Tahta — Kidef Arapça</title>
   <!-- TAHTAYA YANSIT (17.10.2026): bilgisayarda gezilen site tahtada aynen
        görünür. tahta.html?rol=yansit → bilgisayar, tahta.html?rol=izle →
-       tahta. Açıklama ve veritabanı kuralı: sistem/tahta.js -->
+       tahta. 2. sürüm: tahtaya dokunarak da kullanılır, tahta tam ekrana
+       geçer. Açıklama ve veritabanı kuralı: sistem/tahta.js -->
   <style>
-    html, body { margin: 0; height: 100%; overflow: hidden; background: #0f2a43; }
+    /* zemin beyaz: sayfa geçişlerinde ve duraklat-sürdürde koyu ekran görünmez */
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #fff; }
   </style>
 </head>
 <body data-kd-dil="yok">
@@ -24,7 +27,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script src="sistem/tahta.js?v=6933875c"></script>
-  <script src="sistem/dil.js?v=4f0ae31c"></script>
+  <script src="sistem/tahta.js?v=c81e22ae"></script>
+  <script src="sistem/dil.js?v=58ae20e9"></script>
 </body>
 </html>

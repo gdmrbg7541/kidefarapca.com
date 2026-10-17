@@ -1909,12 +1909,19 @@ window.KIDEF_DIL['de'] = Object.assign(window.KIDEF_DIL['de'] || {}, {
   'th.p_izle': 'Dieses Gerät ist die digitale Tafel',
   'th.p_izle_alt': 'Was du am Computer machst, erscheint auf diesem Bildschirm. Die Tafel merkt sich das: In den nächsten Stunden musst du nur noch am Computer starten.',
   'th.p_izle_dug': 'Tafelansicht öffnen',
-  'th.p_not': 'Nur diese Website wird gespiegelt. Passwort-, E-Mail- und PIN-Felder gelangen nie auf die Tafel, und die Tafel speichert nichts.',
+  'th.p_not': 'Nur diese Website wird gespiegelt. Passwort-, E-Mail- und PIN-Felder gelangen nie auf die Tafel, und nichts wird doppelt gespeichert.',
   'th.p_unut': 'Dieses Gerät ist nicht die digitale Tafel',
   'th.s_bas': 'Dein Computer spiegelt',
   'th.s_ac': 'Auf der Tafel öffnen',
   'th.s_vazgec': 'Abbrechen',
   'th.s_alt': 'Tafelansicht öffnet sich in {n} s',
-  'th.dugme': 'Auf die digitale Tafel spiegeln'
+  'th.dugme': 'Auf die digitale Tafel spiegeln',
+  'th.kip': 'Auch an der Tafel bedienen',
+  'th.kip_ip': 'Ein: Du kannst die Website auch durch Berühren der Tafel bedienen; aus: Die Tafel zeigt nur den Computer',
+  'th.b_kip_cift': 'Du kannst sie jetzt auch durch Berühren der Tafel bedienen.',
+  'th.tahtadan': 'Wird an der Tafel bedient',
+  'th.b_tahtadan': 'Wird an der Tafel bedient; klicke am Computer, um die Steuerung zurückzuholen.',
+  'th.cift_metin': 'Du kannst sie auch durch Berühren der Tafel bedienen; der Computer zeigt dasselbe.',
+  'th.tam_dokun': 'Tippe einmal auf den Bildschirm für den Vollbildmodus'
 });
 /* @dil-parca-tahta son */

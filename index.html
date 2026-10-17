@@ -3866,7 +3866,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          sitenin farklı dillerde kullanılmasını istiyorum; öğrenci ve
          öğretmenler profil kısmından dil seçebilsinler".
          Yazılar data-i18n ile işaretli; sözlükler dil/<kod>.js. -->
-    <script src="sistem/dil.js?v=4f0ae31c"></script>
+    <script src="sistem/dil.js?v=58ae20e9"></script>
 <script src="sistem/kitaptakip.js?v=03abd53a"></script>
     <!-- SINIF DEFTERİ PENCERESİ (15.10.2026) — kart ayrı sekme açmadan
          bu haftanın öğrenme çıktısını pencerede gösterir. -->
@@ -5802,7 +5802,14 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           '2027-2028': portalKitap('7')
         },
         '8': flipKitap('8', 'https://arapca.muallimun.net/flipbook/iho08_2026/'),
-        '9': flipKitap('9', 'https://arapca.muallimun.net/flipbook/ihlar092026/'),
+        /* 9. sınıf kitabı sitede (17.10.2026): kitap/9-sinif-2026-2027/ — MEB'in
+           güncel 2026-2027 kitabından sayfa çevirmeli kitap; hafıza kartları ve
+           ünite sonu değerlendirmeleri (kitapetkinlikleri/9/) içinden açılır.
+           Önceki bağlantı: https://arapca.muallimun.net/flipbook/ihlar092026/ */
+        '9': { url: 'kitap/9-sinif-2026-2027/index.html', etiket: 'DİJİTAL KİTAP',
+               ipucu: '9. sınıf Arapça ders kitabı (2026-2027, Anadolu İmam Hatip Lisesi) — ' +
+                      'sayfa çevirmeli kitap; hafıza kartları ve ünite sonu değerlendirmeleri ' +
+                      'içinde; yeni sekmede açılır' },
         '10': flipKitap('10', 'https://arapca.muallimun.net/flipbook/ihlar102026/')
       };
       function kitapKarti(sinif) {
@@ -8014,7 +8021,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/listelerim.js?v=a3bbe9e6"></script>
     <!-- TAHTAYA YANSIT (17.10.2026): başlıktaki Tahta düğmesi, paneli ve tahta
          cihazının kendiliğinden geçişi. Motor: sistem/tahta.js (tahta.html). -->
-    <script defer src="sistem/tahtagir.js?v=db4eba92"></script>
+    <script defer src="sistem/tahtagir.js?v=88a8859e"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=05cd7ad6"></script>

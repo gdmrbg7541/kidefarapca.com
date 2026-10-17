@@ -1909,12 +1909,19 @@ window.KIDEF_DIL['uz'] = Object.assign(window.KIDEF_DIL['uz'] || {}, {
   'th.p_izle': 'Bu qurilma — doska',
   'th.p_izle_alt': 'Kompyuteringda qilganlaring shu ekranda koʻrinadi. Doska buni eslab qoladi: keyingi darslarda kompyuterda boshlashing kifoya.',
   'th.p_izle_dug': 'Doska koʻrinishini ochish',
-  'th.p_not': 'Faqat shu sayt uzatiladi. Parol, e-pochta va PIN maydonlari doskaga bormaydi; doska hech narsani saqlamaydi.',
+  'th.p_not': 'Faqat shu sayt uzatiladi. Parol, e-pochta va PIN maydonlari doskaga bormaydi; hech narsa ikki marta saqlanmaydi.',
   'th.p_unut': 'Bu qurilma doska emas',
   'th.s_bas': 'Kompyutering uzatmoqda',
   'th.s_ac': 'Doskada ochish',
   'th.s_vazgec': 'Bekor qilish',
   'th.s_alt': 'Doska koʻrinishi {n} soniyadan soʻng ochiladi',
-  'th.dugme': 'Doskaga uzatish'
+  'th.dugme': 'Doskaga uzatish',
+  'th.kip': 'Doskadan ham foydalanish',
+  'th.kip_ip': 'Yoqilganda saytdan doskaga tegib ham foydalanasan; oʻchirilganda doska faqat kompyuterni koʻrsatadi',
+  'th.b_kip_cift': 'Endi doskaga tegib ham foydalanishing mumkin.',
+  'th.tahtadan': 'Doskadan foydalanilmoqda',
+  'th.b_tahtadan': 'Doskadan foydalanilmoqda; kompyuterda bossang, boshqaruv yana senda boʻladi.',
+  'th.cift_metin': 'Doskaga tegib ham foydalanishing mumkin; kompyuter ham xuddi shuni koʻrsatadi.',
+  'th.tam_dokun': 'Toʻliq ekran uchun ekranga bir marta teg'
 });
 /* @dil-parca-tahta son */

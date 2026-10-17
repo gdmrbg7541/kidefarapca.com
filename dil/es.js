@@ -1909,12 +1909,19 @@ window.KIDEF_DIL['es'] = Object.assign(window.KIDEF_DIL['es'] || {}, {
   'th.p_izle': 'Este dispositivo es la pizarra digital',
   'th.p_izle_alt': 'Lo que hagas en tu ordenador aparece en esta pantalla. La pizarra lo recuerda: en las próximas clases, basta con empezar desde el ordenador.',
   'th.p_izle_dug': 'Abrir la vista de pizarra',
-  'th.p_not': 'Solo se duplica este sitio. Los campos de contraseña, correo y PIN nunca llegan a la pizarra, y la pizarra no guarda nada.',
+  'th.p_not': 'Solo se duplica este sitio. Los campos de contraseña, correo y PIN nunca llegan a la pizarra, y nada se guarda dos veces.',
   'th.p_unut': 'Este dispositivo no es la pizarra digital',
   'th.s_bas': 'Tu ordenador está duplicando',
   'th.s_ac': 'Abrir en la pizarra',
   'th.s_vazgec': 'Cancelar',
   'th.s_alt': 'La vista de pizarra se abre en {n} s',
-  'th.dugme': 'Duplicar en la pizarra digital'
+  'th.dugme': 'Duplicar en la pizarra digital',
+  'th.kip': 'Usar también desde la pizarra',
+  'th.kip_ip': 'Activado: también puedes usar el sitio tocando la pizarra; desactivado: la pizarra solo muestra el ordenador',
+  'th.b_kip_cift': 'Ahora también puedes usarlo tocando la pizarra.',
+  'th.tahtadan': 'En uso desde la pizarra',
+  'th.b_tahtadan': 'En uso desde la pizarra; haz clic en el ordenador para recuperar el control.',
+  'th.cift_metin': 'También puedes usarlo tocando la pizarra; el ordenador muestra lo mismo.',
+  'th.tam_dokun': 'Toca la pantalla una vez para verla a pantalla completa'
 });
 /* @dil-parca-tahta son */

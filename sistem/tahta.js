@@ -8,41 +8,60 @@
    bilgisayarı kullandığım şekilde tahtada görüntüsünü istiyorum" ·
    "sadece site için çalışsa yeter, sadece çok pratik olsun, mümkün
    olduğu kadar gecikme az olsun".
+   2. SÜRÜM (17.10.2026) — öğretmen: "yansıtma başlayınca akıllı tahtada
+   otomatik tam ekrana geçsin, akıllı tahtada herhangi bir yere dokununca
+   da kullanılabilsin; amacımız sadece bilgisayarı yansıtmak değil,
+   oturarak da akıllı tahta başında da siteyi kullanabilmek; ama istersek
+   sadece bilgisayardan, istersek her iki cihazdan kullanabilmek için
+   özellik ekleyelim" · "duraklatıp devam edince ekran kararmasın".
 
    NASIL ÇALIŞIR
-   tahta.html bir KABUK: site sayfası tam ekran bir çerçevede (iframe,
-   aynı site) açılır; kabuk sayfa değişse de kapanmaz, bağlantı hep açık.
-   · BİLGİSAYAR (tahta.html?rol=yansit): öğretmen çerçevede siteyi her
-     zamanki gibi gezer. Kabuk açık sayfayı, kaydırmayı, tıklamaları,
-     tuşları, yazı alanlarını ve video oynat/durdur'u hesabın canlı
-     veritabanına yazar (Firebase Realtime Database: tahta/<uid>).
-   · TAHTA (tahta.html?rol=izle): aynı hesapla açık tahta aynı sayfayı
-     KENDİSİ açar, aynı hareketleri sırayla uygular. Görüntü tahtanın
-     kendi çözünürlüğünde, keskin. Kablo, ekran paylaşımı, aynı ağ
-     gerekmez; internet yeter. Gecikme tahtadaki noktanın ipucunda ve
-     bilgisayarın üst şeridinde yazar (genelde 0,1 sn civarı).
+   tahta.html bir KABUK: site sayfası tam ekran bir çerçevede (iframe, aynı
+   site) açılır; kabuk sayfa değişse de kapanmaz, bağlantı hep açık.
+   · BİLGİSAYAR (tahta.html?rol=yansit) ve TAHTA (tahta.html?rol=izle)
+     aynı motoru çalıştırır. O an kullanılan cihaz LİDER'dir: açık sayfayı,
+     kaydırmayı, tıklamaları, tuşları, yazı alanlarını ve video oynat/durdur'u
+     hesabın canlı veritabanına yazar (Firebase Realtime Database:
+     tahta/<uid>); öbür cihaz aynı sayfayı KENDİSİ açar, aynı hareketleri
+     sırayla uygular. Görüntü her cihazda kendi çözünürlüğünde, keskin.
+     Kablo, ekran paylaşımı, aynı ağ gerekmez; internet yeter.
+   · İKİ CİHAZDAN DA (varsayılan): tahtaya dokunulunca lider tahta olur,
+     bilgisayar onu izler; bilgisayarda tıklanınca, kaydırılınca ya da tuşa
+     basılınca lider yeniden bilgisayar. Bilgisayarın üst şeridindeki
+     "Tahtadan da kullan" kapatılırsa tahta yalnız gösterir (dokunmak bir
+     şey değiştirmez; dokununca küçük durum penceresi açılır).
+   · TAM EKRAN: tahta yansıtma başlayınca tam ekrana geçmeyi dener;
+     tarayıcı buna dokunmadan izin vermiyorsa ilk dokunuşta geçer ve kabuk
+     açık kaldıkça tam ekranda kalır (sonraki sayfalarda da). Öğretmen tam
+     ekrandan kendisi çıkarsa o yansıtmada yeniden zorlanmaz. Tahtada
+     "Ana ekrana ekle / Uygulamayı yükle" yapılırsa (tahta.webmanifest)
+     oradan her açılışta kendiliğinden tam ekran açılır.
 
    TUTARLILIK
    · Rastgele karıştıran oyunlar iki cihazda aynı karışsın diye çerçevenin
      Math.random'u tohumlu bir üreteçle değişir: sayfa açılırken ve her
-     tıklama/tuşta bilgisayar yeni tohum seçer, tahta aynı tohumla uygular.
-   · Tahta HİÇBİR ŞEY KAYDETMEZ: çerçevedeki Firestore yazmaları tahtada
-     boşa çıkar (aynı işlem iki kez kaydedilmesin). Onay pencerelerinde
-     (confirm) tahta bilgisayardaki cevabı kullanır, pencere açılmaz.
-   · Şifre, e-posta ve PIN alanları tahtaya gitmez; doğrulama penceresi
-     (oturum güvenliği) açıkken tahta perde gösterir.
-   · Sonradan bağlanan tahta, duraklatmadan dönüş ya da "Eşitle":
-     bilgisayar o sayfada yapılanları baştan gönderir, tahta sayfayı
-     yenileyip sırayla uygular.
-   · Tahta yalnız gösterir; dokunulunca küçük durum penceresi açılır.
-   · Tahtanın oturumu, bilgisayar kullanıldıkça "hareketli" sayılır
-     (40 dakikalık boşta kalma çıkışı öğretmen bilgisayardayken işlemez).
+     tıklama/tuşta lider yeni tohum seçer, izleyen aynı tohumla uygular.
+   · Bir işlem İKİ KEZ KAYDEDİLMEZ: yansıtma sürerken çerçevedeki Firestore
+     yazmaları yalnız liderde çalışır, izleyende boşa çıkar. Onay
+     pencerelerinde (confirm) izleyen liderdeki cevabı kullanır.
+   · Şifre, e-posta ve PIN alanları öbür cihaza gitmez; bilgisayarda
+     doğrulama penceresi (oturum güvenliği) açıkken tahta perde gösterir.
+   · Sonradan bağlanan tahta (ya da bağlantısı kopup olay kaçıran cihaz)
+     liderden "bu sayfanın geçmişini" ister; lider yalnız ONA baştan
+     gönderir, öbür cihazlar yenilenmez. "Eşitle": bütün tahtalar sayfayı
+     yeniler, baştan uygular.
+   · Duraklat → Sürdür: bilgisayar aynı sayfadaysa tahta YENİLENMEZ (ekran
+     kararmaz); duraklatmada yapılanlar sırayla gider. Başka sayfaya
+     geçildiyse tahta o sayfayı açar. Kabuğun zemini beyaz: sayfa
+     geçişlerinde koyu ekran görünmez.
+   · Yansıtma sürdükçe tahtanın oturumu "hareketli" sayılır (40 dakikalık
+     boşta kalma çıkışı öğretmen kullanırken işlemez).
 
    VERİTABANI KURALI (Firebase konsolu › Realtime Database › Kurallar):
      { "rules": { "tahta": { "$uid": {
          ".read":  "auth != null && auth.uid === $uid",
          ".write": "auth != null && auth.uid === $uid" } } } }
-   Veri yolu: tahta/<uid>/ yayin · olay/0..63 · kay · alan · izle/<tahta>
+   Veri yolu: tahta/<uid>/ yayin · olay/0..63 · kay · alan · ayar · izle/<cihaz>
    ===================================================================== */
 (function () {
   'use strict';
@@ -65,8 +84,10 @@
   var HALKA = 64;                       /* olay yuvası sayısı */
   var GUNLUK_EN = 500;                  /* bir sayfada saklanan en çok olay (eşitleme için) */
   var ROL = /[?&]rol=izle\b/.test(location.search) ? 'izle' : 'yansit';
+  var CIHAZ = ROL === 'izle' ? 'tahta' : 'bilgisayar';
   var CERCEVE = document.getElementById('tahtaCerceve');
   var SIMDI = function () { return Date.now(); };
+  var has = function (o, k) { return Object.prototype.hasOwnProperty.call(o, k); };
 
   /* -------------------------------------------------------- yardımcılar */
   function $(id) { return document.getElementById(id); }
@@ -74,7 +95,7 @@
     var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
     if (!yer || m == null) return m;
     return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
-      return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+      return has(yer, ad) ? String(yer[ad]) : t;
     });
   }
   function kac(s) {
@@ -106,6 +127,9 @@
   function adresAl(w) {
     try { return w.location.pathname + w.location.search + w.location.hash; } catch (e) { return ''; }
   }
+  function gercekSayfa(w) {               /* çerçevede sitenin bir sayfası açık mı (about:blank değil) */
+    try { return !!(w && w.location.href !== 'about:blank' && w.location.origin === location.origin); } catch (e) { return false; }
+  }
   function ayniSite(u, taban) {
     try { var a = new URL(u, taban || location.href); return a.origin === location.origin ? a : null; } catch (e) { return null; }
   }
@@ -114,17 +138,29 @@
     for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
     return h.toString(36);
   }
-  function hareketYaz() {                  /* oturum güvenliği: öğretmen bilgisayarda hareketli */
+  function hareketYaz() {                  /* oturum güvenliği: cihaz kullanılıyor */
     var z = SIMDI();
     if (hareketYaz.son && z - hareketYaz.son < 5000) return;
     hareketYaz.son = z;
     try { localStorage.setItem('kg_son_hareket', String(z)); } catch (e) { }
   }
 
+  var BEN = rastgeleId();                  /* bu cihazın kimliği: liderlik ve tahta kaydı */
+
+  /* ------------------------------------------------------- ortak durum */
+  var S = {
+    kok: null, lider: false, yayin: null, belge: null, s0: 0, baglanti: true,
+    izle: {}, isteGoruldu: {}, tahtadanDendi: false,
+    ayar: { kip: 'cift', perde: false, kg: false }
+  };
+  function oturumVar() { return !!(S.yayin && S.yayin.cevrimici); }
+  function cift() { return S.ayar.kip !== 'tek'; }
+  function takipte() { return !S.lider && oturumVar(); }      /* başka cihazı izliyor */
+
   /* ----------------------------------------------------------- öğe yolu
      Öğe, en yakın kimlikli (id) atasından çocuk sıralarıyla bulunur; parmak
-     izi (etiket + data-* + ad/tür/rol/bağlantı) doğrulama içindir. Tahtada
-     yol tutmazsa aynı parmak izli öğeler arasından en yakını seçilir. */
+     izi (etiket + data-* + ad/tür/rol/bağlantı) doğrulama içindir. Öbür
+     cihazda yol tutmazsa aynı parmak izli öğeler arasından en yakını seçilir. */
   var PARMAK_NIT = /^(data-(?!i18n|kd-|tahta)[a-z0-9-]+|name|type|role|for|aria-controls|value)$/;
   function parmak(el) {
     var p = el.tagName.toLowerCase(), n = [];
@@ -174,7 +210,7 @@
   }
   function yolMetni(y) { return y ? (y.k + '/' + (y.p || []).join('.') + '/' + y.f) : 'b'; }
 
-  /* yazı alanı mı, tahtaya gidebilir mi */
+  /* yazı alanı mı, öbür cihaza gidebilir mi */
   function yaziAlani(el) {
     if (!el || el.nodeType !== 1) return false;
     if (el.isContentEditable) return true;
@@ -202,6 +238,7 @@
 
   /* ------------------------------------------------------------ arayüz */
   var STIL = [
+    'html,body{background:#fff}',
     '.th-cubuk{position:fixed;left:0;right:0;top:0;height:36px;z-index:20;display:flex;align-items:center;gap:10px;padding:0 10px;',
     ' background:#0f2a43;color:#fff;font:600 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.25)}',
     '.th-cubuk .th-isim{display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}',
@@ -216,9 +253,10 @@
     ' font:700 12px/1 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}',
     '.th-dug:hover{background:rgba(255,255,255,.2)}',
     '.th-dug[aria-pressed="true"]{background:#f59e0b;border-color:#f59e0b;color:#1f2937}',
+    '.th-dug.th-kip[aria-pressed="true"]{background:#16A085;border-color:#16A085;color:#fff}',
     '.th-dug.kirmizi{background:#dc2626;border-color:#dc2626}',
     '.th-dug svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}',
-    '@media (max-width:720px){.th-dug span{display:none}.th-cip{max-width:42vw}}',
+    '@media (max-width:820px){.th-dug span{display:none}.th-cip{max-width:42vw}}',
     'body.th-yansit .th-cerceve{top:36px;height:calc(100% - 36px)}',
     '.th-cerceve{position:fixed;left:0;top:0;width:100%;height:100%;border:0;background:#fff;display:block}',
     '.th-koruma{position:fixed;inset:0;z-index:15;background:transparent;cursor:default}',
@@ -246,6 +284,11 @@
     '.th-pencere .th-tuslar{display:flex;gap:6px;flex-wrap:wrap}',
     '.th-serit{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:26;background:rgba(15,42,67,.92);color:#fff;',
     ' border-radius:999px;padding:8px 16px;font:700 14px/1.2 system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:90vw;text-align:center}',
+    '.th-ipucu{position:fixed;left:50%;top:54px;transform:translateX(-50%);z-index:27;display:flex;align-items:center;gap:10px;pointer-events:none;',
+    ' background:rgba(15,42,67,.92);color:#fff;border-radius:999px;padding:10px 18px;font:700 clamp(14px,1.5vw,20px)/1.2 system-ui,sans-serif;',
+    ' box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:90vw;animation:thIpucu 1.8s ease-in-out infinite}',
+    '.th-ipucu svg{width:1.3em;height:1.3em;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}',
+    '@keyframes thIpucu{50%{box-shadow:0 8px 24px rgba(0,0,0,.25),0 0 0 8px rgba(22,160,133,.25)}}',
     '.th-bildirim{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:50;background:#0f2a43;color:#fff;border-radius:12px;',
     ' padding:10px 16px;font:700 14px/1.3 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:calc(100vw - 32px);text-align:center}',
     '[hidden]{display:none !important}'
@@ -269,7 +312,9 @@
     devam: '<svg viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg>',
     esitle: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>',
     bitir: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
-    tam: '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>'
+    tam: '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+    dokun: '<svg viewBox="0 0 24 24"><path d="M9 11.5V5.2a1.6 1.6 0 0 1 3.2 0v5.6"/><path d="M12.2 10.2V8.8a1.6 1.6 0 0 1 3.2 0v2.4"/>' +
+      '<path d="M15.4 10.6a1.6 1.6 0 0 1 3.2 0V15a6 6 0 0 1-6 6h-.9a6 6 0 0 1-4.7-2.3L4.3 15.8a1.6 1.6 0 0 1 2.5-2l2.2 2.4"/></svg>'
   };
   function cizim() {
     return '<svg class="th-cizim" viewBox="0 0 320 150" aria-hidden="true">' +
@@ -307,6 +352,17 @@
     b.innerHTML = '<div class="th-kutu">' + ic + '</div>';
     b.hidden = false;
   }
+
+  /* TAM EKRAN — tarayıcılar sayfanın kendi kendine tam ekrana geçmesine
+     yalnız bir dokunuştan hemen sonra izin veriyor: yansıtma başlayınca
+     denenir, olmazsa tahtadaki ilk dokunuşta (çerçevenin içinde de) geçilir.
+     Kabuk hiç değişmediği için sonraki sayfalarda tam ekran sürer. */
+  var TAM = { istek: true, oldu: false };
+  function tamEkranda() {
+    if (document.fullscreenElement || document.webkitFullscreenElement) return true;
+    try { if (window.matchMedia && window.matchMedia('(display-mode: fullscreen)').matches) return true; } catch (e) { }
+    return false;
+  }
   function tamEkran() {
     var d = document, el = d.documentElement;
     try {
@@ -315,9 +371,40 @@
       if (f) { var p = f.call(el); if (p && p.catch) p.catch(function () { }); }
     } catch (e) { }
   }
+  function tamEkranDene() { if (CIHAZ === 'tahta' && TAM.istek && !tamEkranda()) tamEkran(); }
+  var ipucuZ = null;
+  function ipucuGoster() {
+    if (CIHAZ !== 'tahta' || tamEkranda() || !TAM.istek) return;
+    var p = $('thIpucu');
+    if (!p) { p = document.createElement('div'); p.id = 'thIpucu'; p.className = 'th-ipucu'; document.body.appendChild(p); }
+    p.innerHTML = SVG.tam + '<span>' + kac(kd('th.tam_dokun', 'Tam ekran için ekrana bir kez dokun')) + '</span>';
+    p.hidden = false;
+    clearTimeout(ipucuZ);
+    ipucuZ = setTimeout(function () { p.hidden = true; }, 15000);
+  }
+  function ipucuGizle() { var p = $('thIpucu'); if (p) p.hidden = true; }
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (t) {
+    document.addEventListener(t, function () {
+      if (tamEkranda()) { TAM.oldu = true; ipucuGizle(); }
+      else if (TAM.oldu) { TAM.oldu = false; TAM.istek = false; }     /* öğretmen kendisi çıktı: bu yansıtmada zorlanmaz */
+    });
+  });
+
   function cik(adres) {
-    try { if (Y.kok) Y.bitir(); } catch (e) { }
-    try { if (Z.kok) Z.bitir(); } catch (e) { }
+    var k = S.kok, liderdim = S.lider;
+    S.lider = false; S.kok = null;
+    try {
+      if (k) k.child('yayin').onDisconnect().cancel();
+      if (k && CIHAZ === 'bilgisayar') {
+        k.update({ 'yayin/cevrimici': false, 'yayin/ts': TS(), 'olay': null, 'kay': null, 'alan': null, 'ayar/perde': false, 'ayar/kg': false });
+        k.child('izle/' + BEN).remove();
+      } else if (k) {
+        /* tahta kullanılırken çıkılırsa kontrol bilgisayara döner */
+        if (liderdim && S.yayin && S.yayin.cevrimici && S.yayin.id === BEN) k.child('yayin').update({ cevrimici: false, ts: TS() });
+        k.child('izle/' + BEN).onDisconnect().cancel();
+        k.child('izle/' + BEN).remove();
+      }
+    } catch (e) { }
     var u = adres || 'index.html';
     setTimeout(function () { location.href = u; }, 120);
   }
@@ -328,12 +415,13 @@
     if (is === 'anasayfa') cik('index.html');
     else if (is === 'yenile') location.reload();
     else if (is === 'cik') cik(ROL === 'izle' ? 'index.html' : (adresAl(CERCEVE.contentWindow) || 'index.html'));
-    else if (is === 'tam') { tamEkran(); }
+    else if (is === 'tam') { TAM.istek = true; tamEkran(); }
   });
 
   /* ---------------------------------------------------------- Firebase */
   var vt = null, auth = null, ofset = 0;
   function sunucuZaman() { return SIMDI() + ofset; }
+  var TS = function () { return (window.firebase && firebase.database && firebase.database.ServerValue) ? firebase.database.ServerValue.TIMESTAMP : SIMDI(); };
   function baglan(hazir) {
     if (!window.firebase || !firebase.initializeApp || !firebase.database) { bekleGoster('vt'); return; }
     try {
@@ -344,7 +432,7 @@
     try {
       vt.ref('.info/serverTimeOffset').on('value', function (s) {
         ofset = s.val() || 0;
-        if (Z.kok && !Z.ofsetGeldi) { Z.ofsetGeldi = true; Z.katilma = sunucuZaman(); }   /* saat farkı belli olunca */
+        if (CIHAZ === 'tahta' && S.kok && !Z.ofsetGeldi) { Z.ofsetGeldi = true; Z.katilma = sunucuZaman(); }   /* saat farkı belli olunca */
       });
     } catch (e) { }
     var cevap = false;
@@ -352,37 +440,58 @@
     auth.onAuthStateChanged(function (u) {
       cevap = true; clearTimeout(zaman);
       if (!u || u.isAnonymous) {
-        try { if (Y.kok) Y.bitir(); if (Z.kok) Z.bitir(); } catch (e) { }
+        if (S.kok) { var k = S.kok; S.kok = null; S.lider = false; try { k.child('izle/' + BEN).remove(); } catch (e) { } }
         bekleGoster('giris'); return;
       }
       hazir(vt.ref('tahta/' + u.uid));
     });
   }
-  var TS = function () { return (window.firebase && firebase.database && firebase.database.ServerValue) ? firebase.database.ServerValue.TIMESTAMP : SIMDI(); };
+  /* bağlantı koparsa yansıtmayı yalnız LİDER kapatır (izleyenin kopması oturumu bitirmez) */
+  function kopmaKur() {
+    if (!S.kok) return;
+    try {
+      var r = S.kok.child('yayin').onDisconnect();
+      if (S.lider) r.update({ cevrimici: false, ts: TS() }); else r.cancel();
+    } catch (e) { }
+  }
+  /* bu cihaz izle/ altında: tahta varlığı ve "bu sayfanın geçmişini gönder" isteği */
+  function varlikYaz(iste) {
+    if (!S.kok) return;
+    try {
+      var r = S.kok.child('izle/' + BEN);
+      r.onDisconnect().remove();
+      var v = { cevrimici: true, cihaz: CIHAZ, ts: TS(), gecikme: zOrtalama() };
+      if (iste) { Z.esitJeton = rastgeleId(); v.iste = Z.esitJeton; v.isteZ = TS(); }
+      r.update(v);
+    } catch (e) { }
+  }
 
-  /* ================================================== YANSIT (bilgisayar) */
+  /* ======================================================= LİDER (yayın)
+     Bu cihaz kullanılıyorken çalışır: hareketleri veritabanına yazar. */
   var Y = {
-    id: rastgeleId(), kok: null, n: 0, d: 0, s0: 0, belge: null, win: null,
-    perde: false, durak: false, devralindi: false, gunluk: [], aktif: null,
-    alanSon: {}, alanIz: [], kayBek: {}, kayZ: null, kaySon: 0, izle: {}, gecikme: null,
-    sonTik: null, baglanti: true
+    n: 0, d: Math.floor(SIMDI() / 1000) * 100,      /* sayfa sayacı: her oturumda öncekilerden büyük başlar */
+    s0: 0, belge: null, win: null, durak: false, durakD: -1, durakG: 0, durakYeni: [],
+    gunluk: [], gSay: 0, aktif: null, alanSon: {}, alanIz: [], kayBek: {}, kayZ: null, kaySon: 0,
+    sonTik: null, kgPerde: false, gecisZ: 0
   };
-  function yYaz(yol, deger) { if (Y.kok && !Y.durak && !Y.devralindi) Y.kok.child(yol).set(deger); }
-  function yGuncelle(nesne) { if (Y.kok && !Y.durak && !Y.devralindi) Y.kok.update(nesne); }
+  function yayinda() { return !!(S.kok && S.lider && !Y.durak); }
   function olayGonder(o) {
     if (!Y.belge) return;
-    o.d = Y.d;
+    o.d = Y.d; o.g = ++Y.gSay;
     Y.gunluk.push(o);
     if (Y.gunluk.length > GUNLUK_EN) Y.gunluk.shift();
-    if (!Y.kok || Y.durak || Y.devralindi) return;
+    if (!yayinda()) return;               /* duraklatılmışken günlükte bekler, sürdürünce gider */
     olayYazHam(o);
   }
-  function olayYazHam(o) {
+  var OLAY_DIS = { g: 1, hd: 1, n: 1, i: 1, z: 1, d: 1, bos: 1 };
+  function olayYazHam(o, hedef) {
+    if (!S.kok) return;
     Y.n += 1;
     var k = {};
-    for (var a in o) if (Object.prototype.hasOwnProperty.call(o, a) && o[a] !== undefined) k[a] = o[a];
-    k.n = Y.n; k.i = Y.id; k.d = Y.d; k.z = sunucuZaman();
-    Y.kok.child('olay/' + (Y.n % HALKA)).set(k);
+    for (var a in o) if (has(o, a) && o[a] !== undefined && !OLAY_DIS[a]) k[a] = o[a];
+    k.n = Y.n; k.i = BEN; k.d = Y.d; k.z = sunucuZaman();
+    if (hedef) k.hd = hedef;
+    S.kok.child('olay/' + (Y.n % HALKA)).set(k);
   }
   function sayfaBilgisi() {
     var dil = 'tr';
@@ -390,89 +499,38 @@
     return { u: adresAl(Y.win), dil: dil };
   }
   function yayinYaz(temizle) {
-    if (!Y.kok || Y.devralindi || Y.durak) return;           /* duraklatılmışken tahta son görüntüde kalır */
+    if (!yayinda() || !gercekSayfa(Y.win)) return;
     var b = sayfaBilgisi(), g = {};
-    g['yayin'] = { id: Y.id, cevrimici: true, d: Y.d, u: b.u, dil: b.dil, s0: Y.s0, perde: !!(Y.perde || Y.kgPerde), durak: !!Y.durak, ts: TS() };
+    g['yayin'] = { id: BEN, cihaz: CIHAZ, cevrimici: true, d: Y.d, u: b.u, dil: b.dil, s0: Y.s0, durak: false, ts: TS() };
     if (temizle) { g['kay'] = null; g['alan'] = null; }
-    Y.kok.update(g);
+    S.kok.update(g);
+  }
+  function baslikYaz(d) {
+    if (CIHAZ !== 'bilgisayar') return;
+    try { document.title = '📺 ' + ((d && d.title) || 'Kidef Arapça'); } catch (e) { }
   }
   var sonAdres = '';
   function adresKontrol() {
-    if (!Y.win) return;
+    if (!S.lider || !Y.win) return;
     var u = adresAl(Y.win);
     if (u === sonAdres) return;
     sonAdres = u;
-    try { document.title = '📺 ' + (Y.belge.title || 'Kidef Arapça'); } catch (e) { }
-    if (Y.kok && !Y.durak && !Y.devralindi) Y.kok.child('yayin').update({ u: u, ts: TS() });
+    baslikYaz(Y.belge);
+    if (yayinda() && gercekSayfa(Y.win)) S.kok.child('yayin').update({ u: u, ts: TS() });
   }
 
-  /* çerçevedeki yeni sayfa — mümkün olan en erken anda yakalanır */
+  /* çerçevede yeni sayfa açıldı (lider) */
   function yYeniBelge(w, d) {
-    Y.win = w; Y.belge = d; Y.d += 1; Y.s0 = yeniTohum();
-    Y.gunluk = []; Y.alanSon = {}; Y.alanIz = []; Y.kayBek = {}; Y.kgPerde = false;
+    Y.win = w; Y.belge = d; Y.d += 1; Y.s0 = yeniTohum(); S.s0 = Y.s0;
+    Y.gunluk = []; Y.alanSon = {}; Y.alanIz = []; Y.kayBek = {};
     rastgeleKur(w, Y.s0);
-    yKopruKur(w, d);
     sonAdres = adresAl(w);
     yayinYaz(true);
     var hazirsa = function () {
-      alanTara();
-      try { document.title = '📺 ' + (d.title || 'Kidef Arapça'); } catch (e) { }
-      adresKontrol();
+      if (!S.lider || Y.belge !== d) return;
+      alanTara(); baslikYaz(d); adresKontrol();
     };
     if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', hazirsa); else hazirsa();
-  }
-  function yKopruKur(w, d) {
-    /* 1) yeni pencere/sekme açan bağlantılar çerçevede açılsın (site dışı gerçek sekmede) */
-    try {
-      var asilAc = w.open;
-      w.open = function (url, ad, ozellik) {
-        var a = ayniSite(url || '', w.location.href);
-        if (a) { Y.gecisZ = SIMDI(); w.location.assign(a.href); return w; }
-        return window.open(url, ad || '_blank', ozellik);
-      };
-      w.open.__asil = asilAc;
-    } catch (e) { }
-    w.addEventListener('click', function (e) {
-      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-      if (!a) return;
-      var hedef = (a.getAttribute('target') || '').toLowerCase();
-      if (!hedef || hedef === '_self') return;
-      var u = ayniSite(a.getAttribute('href'), w.location.href);
-      if (!u) return;
-      e.preventDefault();
-      if (Y.aktif) Y.aktif.gecis = true;
-      var ilk = SIMDI();
-      setTimeout(function () { if (!(Y.gecisZ && Y.gecisZ >= ilk) && Y.belge === d) w.location.assign(u.href); }, 0);
-    }, true);
-    /* 2) onay pencerelerinin cevabı tahtaya gitsin */
-    ['confirm', 'prompt'].forEach(function (ad) {
-      try {
-        var asil = w[ad];
-        w[ad] = function () {
-          var c = asil.apply(w, arguments);
-          if (Y.aktif) Y.aktif.c.push(ad === 'confirm' ? !!c : c);
-          return c;
-        };
-      } catch (e) { }
-    });
-    /* 3) sayfa içi adres değişimi */
-    ['pushState', 'replaceState'].forEach(function (ad) {
-      try {
-        var asil = w.history[ad];
-        w.history[ad] = function () { var r = asil.apply(w.history, arguments); setTimeout(adresKontrol, 0); return r; };
-      } catch (e) { }
-    });
-    w.addEventListener('hashchange', adresKontrol);
-    w.addEventListener('popstate', adresKontrol);
-    /* 4) olaylar — pencereye, yakalama evresinde: sayfanın kendi dinleyicilerinden önce */
-    w.addEventListener('click', yTik, true);
-    w.addEventListener('keydown', yTus, true);
-    w.addEventListener('keyup', yTus, true);
-    w.addEventListener('input', yAlanOlay, true);
-    w.addEventListener('change', yAlanOlay, true);
-    w.addEventListener('submit', yGonder, true);
-    w.addEventListener('scroll', yKay, true);
-    ['play', 'pause', 'seeked', 'ratechange'].forEach(function (t) { w.addEventListener(t, yMedya, true); });
   }
   function hedefOge(e) {
     var t = e.target;
@@ -489,7 +547,7 @@
     return !(u.pathname === w.location.pathname && u.search === w.location.search && u.hash);
   }
   function yTik(e) {
-    if (!e.isTrusted) return;
+    if (!e.isTrusted || !S.lider) return;
     var el = hedefOge(e);
     if (!el || !Y.belge) return;
     var s = yeniTohum();
@@ -510,7 +568,7 @@
   }
   var OZEL_TUS = /^(Enter|Escape|Esc|ArrowUp|ArrowDown|ArrowLeft|ArrowRight|PageUp|PageDown|Home|End|F\d+| |Spacebar)$/;
   function yTus(e) {
-    if (!e.isTrusted || !Y.belge) return;
+    if (!e.isTrusted || !S.lider || !Y.belge) return;
     if (/^(Shift|Control|Alt|Meta|CapsLock|Tab|OS|AltGraph)$/.test(e.key)) return;
     var el = hedefOge(e);
     var alan = yaziAlani(el);
@@ -529,7 +587,7 @@
     setTimeout(function () { Y.aktif = null; if (!o.c2.length) delete o.c2; olayGonder(o); alanTaraYakin(); }, 0);
   }
   function yGonder(e) {
-    if (!e.isTrusted || !Y.belge) return;
+    if (!e.isTrusted || !S.lider || !Y.belge) return;
     var f = e.target;
     if (!f || f.tagName !== 'FORM') return;
     /* gönder tuşuna tıklamayla gelen gönderim tıklamayla zaten gidiyor */
@@ -538,9 +596,10 @@
     setTimeout(function () { olayGonder(o); }, 0);
   }
   function yMedya(e) {
+    if (!S.lider) return;
     var m = e.target;
     if (!m || !/^(VIDEO|AUDIO)$/.test(m.tagName) || !Y.belge) return;
-    olayGonder({ t: 'm', y: yolAl(m, Y.belge), e: e.type, zt: Math.round((m.currentTime || 0) * 100) / 100, h: m.playbackRate || 1 });
+    olayGonder({ t: 'm', y: yolAl(m, Y.belge), e: e.type, zt: Math.round((m.currentTime || 0) * 100) / 100, hz: m.playbackRate || 1 });
   }
   /* --- yazı alanları: girişte ve kod değiştirdiğinde (ekran klavyesi) */
   function alanAnahtar(el) { return 'a' + ozet(yolMetni(yolAl(el, Y.belge))); }
@@ -557,7 +616,7 @@
     alanKontrol();
   }
   function yAlanOlay(e) {
-    if (!e.isTrusted) return;
+    if (!e.isTrusted || !S.lider) return;
     var el = hedefOge(e);
     if (!izlenecekAlan(el)) return;
     alanIzle(el);
@@ -566,7 +625,7 @@
   var alanZ = null;
   function alanTaraYakin() { clearTimeout(alanZ); alanZ = setTimeout(alanKontrol, 30); }
   function alanKontrol() {
-    if (!Y.belge || !Y.kok || Y.durak || Y.devralindi) return;
+    if (!Y.belge || !yayinda()) return;
     var g = {}, var_ = false;
     Y.alanIz = Y.alanIz.filter(function (el) { return el.isConnected; });
     Y.alanIz.forEach(function (el) {
@@ -578,7 +637,7 @@
       g[k] = { d: Y.d, y: yolAl(el, Y.belge), v: v, z: sunucuZaman() };
       var_ = true;
     });
-    if (var_) Y.kok.child('alan').update(g);
+    if (var_) S.kok.child('alan').update(g);
   }
   /* --- kaydırma: belge (çapa öğeyle) ve içte kayan kutular (oranla) */
   function belgeKonumu() {
@@ -601,7 +660,7 @@
     return k;
   }
   function yKay(e) {
-    if (!Y.belge) return;
+    if (!S.lider || !Y.belge) return;
     var t = e.target, d = Y.belge;
     var belgeMi = (t === d || t === d.documentElement || t === d.body || t === d.scrollingElement);
     if (belgeMi) Y.kayBek.b = true;
@@ -614,10 +673,10 @@
     Y.kayZ = setTimeout(function () { Y.kayZ = null; Y.kaySon = SIMDI(); kayGonder(); }, bekle);
   }
   function kayGonder() {
-    if (!Y.kok || !Y.belge || Y.durak || Y.devralindi) { Y.kayBek = {}; return; }
+    if (!Y.belge || !yayinda()) { Y.kayBek = {}; return; }
     var g = {}, var_ = false;
     for (var k in Y.kayBek) {
-      if (!Object.prototype.hasOwnProperty.call(Y.kayBek, k)) continue;
+      if (!has(Y.kayBek, k)) continue;
       if (k === 'b') g.b = belgeKonumu();
       else {
         var el = Y.kayBek[k];
@@ -629,7 +688,7 @@
       var_ = true;
     }
     Y.kayBek = {};
-    if (var_) Y.kok.child('kay').update(g);
+    if (var_) S.kok.child('kay').update(g);
   }
   function kayHepsi() {
     if (!Y.belge) return;
@@ -645,146 +704,72 @@
     } catch (e) { }
     kayGonder();
   }
-  /* --- eşitleme: o sayfada yapılanlar baştan (sonradan gelen tahta, duraklatmadan dönüş) */
-  function yEsitle() {
-    if (!Y.kok || !Y.belge || Y.devralindi) return;
+  /* --- eşitleme
+     hedef verilirse: bu sayfada yapılanlar YALNIZ o cihaza baştan gider
+     (sonradan bağlanan ya da olay kaçıran) — öbür tahtalar yenilenmez.
+     Başta bir işaret olayı (t:'es') gider: isteyen cihaz işareti görene
+     dek gelen olayları uygulamaz (hepsi bu eşitlemenin içinde).
+     hedef yoksa ("Eşitle" düğmesi): bütün tahtalar sayfayı yeniler. */
+  function yEsitle(hedef, jeton) {
+    if (!S.kok || !S.lider || !Y.belge) return;
+    if (hedef) {
+      if (Y.durak) { Y.durakYeni.push([hedef, jeton]); return; }
+      yayinYaz(false);
+      olayYazHam({ t: 'es', ist: jeton || '' }, hedef);
+      Y.gunluk.forEach(function (o) { olayYazHam(o, hedef); });
+      setTimeout(function () { Y.alanSon = {}; alanKontrol(); kayHepsi(); }, 60);
+      return;
+    }
+    Y.durak = false; Y.durakYeni = [];
     Y.d += 1;
     yayinYaz(true);
-    var l = Y.gunluk.slice();
-    l.forEach(function (o) { o.d = Y.d; olayYazHam(o); });
+    olayYazHam({ t: 'es' });
+    Y.gunluk.forEach(function (o) { olayYazHam(o); });
     Y.alanSon = {};
     setTimeout(function () { alanKontrol(); kayHepsi(); }, 60);
   }
-  /* --- doğrulama penceresi (oturum güvenliği) açıkken tahta perde */
+  /* --- duraklat / sürdür: aynı sayfada sürdürünce tahta YENİLENMEZ */
+  function durakla() {
+    if (!S.lider || Y.durak || !S.kok) return;
+    Y.durak = true; Y.durakD = Y.d; Y.durakG = Y.gSay; Y.durakYeni = [];
+    S.kok.child('yayin').update({ durak: true, ts: TS() });
+  }
+  function surdur() {
+    if (!Y.durak) return;
+    Y.durak = false;
+    var yeni = Y.durakYeni; Y.durakYeni = [];
+    if (!S.kok || !S.lider) return;
+    if (Y.d === Y.durakD) {
+      /* aynı sayfa: duraklatmada yapılanlar sırayla gider, tahta yerinde yetişir */
+      yayinYaz(false);
+      Y.gunluk.forEach(function (o) { if (o.g > Y.durakG) olayYazHam(o); });
+      /* duraklatmadayken bağlanan tahta: sayfanın tamamı yalnız ona */
+      yeni.forEach(function (h) { yEsitle(h[0], h[1]); });
+      setTimeout(function () { alanKontrol(); kayHepsi(); }, 30);
+    } else {
+      /* başka sayfaya geçilmiş: tahta o sayfayı açar, sayfada yapılanları uygular */
+      yayinYaz(true);
+      olayYazHam({ t: 'es' });
+      Y.gunluk.forEach(function (o) { olayYazHam(o); });
+      Y.alanSon = {};
+      setTimeout(function () { alanKontrol(); kayHepsi(); }, 60);
+    }
+  }
+  /* --- doğrulama penceresi (oturum güvenliği) bilgisayarda açıkken tahta perde
+     (yalnız bilgisayar kullanılıyorken: tahta kullanılıyorsa tahta kapanmaz) */
   function kgKontrol() {
-    if (!Y.belge) return;
+    if (CIHAZ !== 'bilgisayar' || !S.kok || !S.belge) return;
     var var_ = false;
-    try { var_ = !!Y.belge.querySelector('.kg-perde'); } catch (e) { }
-    if (var_ !== !!Y.kgPerde) { Y.kgPerde = var_; if (Y.kok && !Y.durak && !Y.devralindi) Y.kok.child('yayin').update({ perde: !!(Y.perde || var_) }); }
+    if (S.lider) { try { var_ = !!S.belge.querySelector('.kg-perde'); } catch (e) { } }
+    if (var_ !== !!Y.kgPerde) { Y.kgPerde = var_; S.kok.child('ayar').update({ kg: var_ }); }
   }
 
-  /* --- üst şerit */
-  function cubukKur() {
-    var c = $('thCubuk');
-    c.innerHTML =
-      '<span class="th-isim"><span class="th-nokta bekle" id="thNokta"></span><span id="thBaslik">' + kac(kd('th.yansitiliyor', 'Tahtaya yansıtılıyor')) + '</span></span>' +
-      '<span class="th-cip" id="thCip">' + kac(kd('th.tahta_bekleniyor', 'Tahta bekleniyor…')) + '</span>' +
-      '<span class="th-bos"></span>' +
-      '<button type="button" class="th-dug" id="thPerdeDug" aria-pressed="false" title="' + kac(kd('th.perde_ip', 'Tahtayı karart (öğrenciler ekranı görmesin)')) + '">' + SVG.perde + '<span>' + kac(kd('th.perde', 'Perde')) + '</span></button>' +
-      '<button type="button" class="th-dug" id="thDurakDug" aria-pressed="false" title="' + kac(kd('th.durak_ip', 'Tahta son görüntüde dursun; sen burada serbestçe gez')) + '">' + SVG.durak + '<span>' + kac(kd('th.durak', 'Duraklat')) + '</span></button>' +
-      '<button type="button" class="th-dug" id="thEsitleDug" title="' + kac(kd('th.esitle_ip', 'Tahtadaki sayfayı bu ekranla yeniden eşitle')) + '">' + SVG.esitle + '<span>' + kac(kd('th.esitle', 'Eşitle')) + '</span></button>' +
-      '<button type="button" class="th-dug kirmizi" id="thBitirDug" title="' + kac(kd('th.bitir_ip', 'Yansıtmayı bitir, bu sayfada kal')) + '">' + SVG.bitir + '<span>' + kac(kd('th.bitir', 'Bitir')) + '</span></button>';
-    c.hidden = false;
-    $('thPerdeDug').addEventListener('click', function () {
-      Y.perde = !Y.perde; this.setAttribute('aria-pressed', String(Y.perde));
-      if (Y.kok && !Y.devralindi) Y.kok.child('yayin').update({ perde: !!(Y.perde || Y.kgPerde) });
-      bildir(Y.perde ? kd('th.b_perde_acik', 'Tahta karartıldı.') : kd('th.b_perde_kapali', 'Tahta yeniden görünüyor.'));
-    });
-    $('thDurakDug').addEventListener('click', function () {
-      Y.durak = !Y.durak;
-      this.setAttribute('aria-pressed', String(Y.durak));
-      this.innerHTML = (Y.durak ? SVG.devam : SVG.durak) + '<span>' + kac(Y.durak ? kd('th.devam', 'Sürdür') : kd('th.durak', 'Duraklat')) + '</span>';
-      if (Y.kok && !Y.devralindi) {
-        if (Y.durak) Y.kok.child('yayin').update({ durak: true });
-        else { Y.kok.child('yayin').update({ durak: false }); yEsitle(); }
-      }
-      durumYaz();
-      bildir(Y.durak ? kd('th.b_durak', 'Duraklatıldı: tahta son görüntüde bekliyor.') : kd('th.b_devam', 'Sürdürüldü: tahta bu ekrana eşitlendi.'));
-    });
-    $('thEsitleDug').addEventListener('click', function () {
-      if (Y.devralindi) { yDevral(); return; }
-      yEsitle(); bildir(kd('th.b_esitle', 'Tahta bu ekrana eşitleniyor…'));
-    });
-    $('thBitirDug').addEventListener('click', function () { cik(adresAl(Y.win) || 'index.html'); });
-  }
-  function durumYaz() {
-    var nokta = $('thNokta'), cip = $('thCip');
-    if (!nokta || !cip) return;
-    var tahtalar = [], g = null;
-    for (var k in Y.izle) {
-      if (!Object.prototype.hasOwnProperty.call(Y.izle, k)) continue;
-      var t = Y.izle[k];
-      if (t && t.cevrimici) { tahtalar.push(t); if (typeof t.gecikme === 'number') g = (g == null) ? t.gecikme : Math.max(g, t.gecikme); }
-    }
-    var sinif = 'bekle', yazi;
-    if (Y.devralindi) { sinif = 'hata'; yazi = kd('th.devralindi', 'Başka bir cihaz yansıtıyor — Eşitle’ye basarak geri al'); }
-    else if (!Y.baglanti) { sinif = 'hata'; yazi = kd('th.baglanti_yok', 'İnternet bağlantısı yok'); }
-    else if (!tahtalar.length) { yazi = kd('th.tahta_bekleniyor', 'Tahta bekleniyor…'); }
-    else {
-      sinif = Y.durak ? 'bekle' : 'canli';
-      yazi = tahtalar.length > 1 ? kd('th.tahta_cok', '{n} tahta bağlı', { n: tahtalar.length }) : kd('th.tahta_bagli', 'Tahta bağlı');
-      if (g != null) yazi += ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, Math.round(g)) });
-      if (Y.durak) yazi += ' · ' + kd('th.duraklatildi', 'duraklatıldı');
-    }
-    nokta.className = 'th-nokta ' + sinif;
-    cip.textContent = yazi;
-    $('thBaslik').textContent = Y.durak ? kd('th.duraklatildi_bas', 'Yansıtma duraklatıldı') : kd('th.yansitiliyor', 'Tahtaya yansıtılıyor');
-  }
-  function yDevral() {
-    Y.devralindi = false;
-    yayinYaz(true);
-    yEsitle();
-    durumYaz();
-  }
-  Y.bitir = function () {
-    if (!Y.kok) return;
-    try {
-      if (!Y.devralindi) Y.kok.update({ 'yayin/cevrimici': false, 'yayin/ts': TS(), 'olay': null, 'kay': null, 'alan': null });
-      Y.kok.child('yayin').onDisconnect().cancel();
-    } catch (e) { }
-    Y.kok = null;
-  };
-  function yansitBasla(kok) {
-    if (Y.kok) return;
-    Y.kok = kok;
-    stilKur(); bekleGoster(null);
-    document.body.classList.add('th-yansit');
-    cubukKur();
-    kok.child('yayin').onDisconnect().update({ cevrimici: false, ts: TS() });
-    yayinYaz(true);
-    kok.child('yayin/id').on('value', function (s) {
-      var id = s.val();
-      var once = Y.devralindi;
-      Y.devralindi = !!(id && id !== Y.id);
-      if (Y.devralindi && !once) bildir(kd('th.b_devralindi', 'Başka bir cihaz yansıtmaya başladı. Bu cihaz durdu.'), 5000);
-      durumYaz();
-    });
-    kok.child('izle').on('value', function (s) {
-      var v = s.val() || {}, yeni = false;
-      for (var k in v) {
-        if (Object.prototype.hasOwnProperty.call(v, k) && v[k] && v[k].cevrimici && !(Y.izle[k] && Y.izle[k].cevrimici)) yeni = true;
-      }
-      Y.izle = v;
-      if (yeni && !Y.durak) { yEsitle(); bildir(kd('th.b_tahta_geldi', 'Tahta bağlandı.')); }
-      durumYaz();
-    });
-    try {
-      vt.ref('.info/connected').on('value', function (s) {
-        Y.baglanti = !!s.val();
-        if (Y.baglanti && Y.kok) { kok.child('yayin').onDisconnect().update({ cevrimici: false, ts: TS() }); yayinYaz(false); }
-        durumYaz();
-      });
-    } catch (e) { }
-    /* çerçevede yeni sayfa açıldı mı (en erken anda) + periyodik denetimler */
-    setInterval(function () {
-      var w, d;
-      try { w = CERCEVE.contentWindow; d = w.document; } catch (e) { return; }
-      if (!d || d === Y.belge) return;
-      try { if (!w.location || w.location.href === 'about:blank') return; } catch (e) { return; }
-      yYeniBelge(w, d);
-    }, 20);
-    setInterval(function () { alanKontrol(); kgKontrol(); adresKontrol(); }, 250);
-    /* başka sekmede dil değişirse */
-    window.addEventListener('storage', function (e) {
-      if (e && e.key === 'kidef_dil' && Y.kok && !Y.durak && !Y.devralindi) Y.kok.child('yayin').update({ dil: e.newValue || 'tr' });
-    });
-  }
-
-  /* ======================================================= İZLE (tahta) */
+  /* ================================================ İZLEYEN (öbür cihaz) */
   var Z = {
-    id: rastgeleId(), kok: null, yayin: null, yayinId: null, d: -1, belge: null, win: null, hazir: false,
-    bek: {}, sonN: null, kay: {}, alan: {}, cevap: [], gecikmeler: [], kendiGezdi: 0, gezilen: null,
-    perde: false, bosZ: null, katilma: Infinity
+    win: null, belge: null, d: -1, hazir: false, yayin: null, yayinId: null,
+    bek: {}, sonN: null, enN: 0, kay: {}, alan: {}, cevap: [], gecikmeler: [], kendiGezdi: 0, gezilen: null,
+    gezSay: { d: null, n: 0, z: 0 }, gunluk: [], esit: null, esitJeton: null, esitAkis: false, bosluk: null,
+    katilma: Infinity, boslukZ: null, adresZ: null, ayrildiZ: null, sonBildirilen: null, ofsetGeldi: false
   };
   function zGecikme(z) {
     if (typeof z !== 'number' || z < Z.katilma) return;      /* bağlanmadan önceki kayıtlar ölçülmez */
@@ -799,75 +784,50 @@
     var l = Z.gecikmeler.slice().sort(function (a, b) { return a - b; });
     return Math.round(l[Math.floor(l.length / 2)]);
   }
-  /* çerçevedeki sayfa tahtada hiçbir şey kaydetmesin */
+  /* Firestore yazmaları yalnız liderde: izleyende boşa çıkar (aynı işlem iki
+     kez kaydedilmesin). Kontrol her yazmada yapılır: kim kullanıyorsa o kaydeder. */
   function yazmaEngelle(w) {
     try {
       var fs = w.firebase && w.firebase.firestore;
-      if (!fs || fs.__kidefTahta) return !!(fs && fs.__kidefTahta);
+      if (!fs) return false;
+      if (fs.__kidefTahta) return true;
+      var sar = function (proto, ad, sahte) {
+        if (!proto || typeof proto[ad] !== 'function') return;
+        var asil = proto[ad];
+        proto[ad] = function () { return takipte() ? sahte() : asil.apply(this, arguments); };
+      };
       var bos = function () { return Promise.resolve(); };
       var ref = function () { return Promise.resolve({ id: 'tahta', path: 'tahta' }); };
-      if (fs.DocumentReference && fs.DocumentReference.prototype) {
-        fs.DocumentReference.prototype.set = bos;
-        fs.DocumentReference.prototype.update = bos;
-        fs.DocumentReference.prototype['delete'] = bos;
+      if (fs.DocumentReference) {
+        sar(fs.DocumentReference.prototype, 'set', bos);
+        sar(fs.DocumentReference.prototype, 'update', bos);
+        sar(fs.DocumentReference.prototype, 'delete', bos);
       }
-      if (fs.CollectionReference && fs.CollectionReference.prototype) fs.CollectionReference.prototype.add = ref;
-      if (fs.WriteBatch && fs.WriteBatch.prototype) fs.WriteBatch.prototype.commit = bos;
-      if (fs.Firestore && fs.Firestore.prototype) fs.Firestore.prototype.runTransaction = bos;
+      if (fs.CollectionReference) sar(fs.CollectionReference.prototype, 'add', ref);
+      if (fs.WriteBatch) sar(fs.WriteBatch.prototype, 'commit', bos);
+      if (fs.Firestore) sar(fs.Firestore.prototype, 'runTransaction', bos);
       fs.__kidefTahta = true;
       return true;
     } catch (e) { return false; }
   }
-  function zKopruKur(w, d) {
-    try { w.alert = function () { }; } catch (e) { }
-    try { w.confirm = function () { return Z.cevap.length ? !!Z.cevap.shift() : false; }; } catch (e) { }
-    try { w.prompt = function () { return Z.cevap.length ? Z.cevap.shift() : null; }; } catch (e) { }
-    try {
-      w.open = function (url) {
-        var a = ayniSite(url || '', w.location.href);
-        if (a) { Z.kendiGezdi = SIMDI(); w.location.assign(a.href); }
-        return w;
-      };
-    } catch (e) { }
-    w.addEventListener('click', function (e) {
-      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-      if (!a) return;
-      var hedef = (a.getAttribute('target') || '').toLowerCase();
-      if (hedef && hedef !== '_self') e.preventDefault();          /* tahtada yeni sekme açılmasın */
-      else if (gidenBaglanti(a, w)) Z.kendiGezdi = SIMDI();
-    }, true);
-    var bitis = SIMDI() + 20000;
-    (function engelle() {
-      if (Z.belge !== d) return;
-      if (yazmaEngelle(w)) return;
-      if (SIMDI() < bitis) setTimeout(engelle, 30);
-    })();
-    /* ziyaretçi turu (vitrin), dil önerisi gibi bir kerelik pencereler tahtada çıkmasın */
-    try {
-      if (!localStorage.getItem('kidefVitrinSayac')) localStorage.setItem('kidefVitrinSayac', '9');
-      if (localStorage.getItem('kidef_dil_oneri') !== 'yok') localStorage.setItem('kidef_dil_oneri', 'yok');
-    } catch (e) { }
-  }
   function zYeniBelge(w, d) {
-    Z.win = w; Z.belge = d; Z.hazir = false;
-    var u = adresAl(w);
-    var y = Z.yayin;
-    if (Z.gezilen && Z.gezilen.u === u) {
-      /* bizim açtığımız sayfa */
-      rastgeleKur(w, Z.gezilen.s0); Z.d = Z.gezilen.d; Z.gezilen = null;
+    Z.win = w; Z.belge = d; Z.hazir = false; Z.gunluk = [];
+    var u = adresAl(w), y = Z.yayin, s;
+    if (Z.gezilen) {                                   /* bizim açtığımız sayfa */
+      s = Z.gezilen.s0; Z.d = Z.gezilen.d; Z.gezilen = null;
     } else if (y && y.cevrimici && y.u === u && SIMDI() - Z.kendiGezdi < 4000) {
-      rastgeleKur(w, y.s0); Z.d = y.d;               /* tıklamayla kendisi aynı sayfaya geçti */
+      s = y.s0; Z.d = y.d;                             /* tıklamayla kendisi aynı sayfaya geçti */
     } else {
-      rastgeleKur(w, yeniTohum());
-      Z.d = -1;                                       /* beklenen sayfa değil: yayın gelince düzelir */
+      s = yeniTohum(); Z.d = -1;                       /* beklenen sayfa değil: yayın gelince düzelir */
     }
-    zKopruKur(w, d);
+    rastgeleKur(w, s); S.s0 = s;
+    baslikYaz(d);
     var bitti = false;
     var hazir = function () {
       if (bitti || Z.belge !== d) return;
       bitti = true;
       setTimeout(function () {
-        if (Z.belge !== d) return;
+        if (Z.belge !== d || S.lider) return;
         Z.hazir = true;
         zIsle(); zKayUygula(); zAlanUygula();
         if (Z.yayin) zYayinUygula(Z.yayin);
@@ -881,6 +841,9 @@
   }
   function zGezin(y) {
     var w = CERCEVE.contentWindow;
+    /* sayfa kendini başka yere yönlendiriyorsa döngüye girilmez */
+    if (Z.gezSay.d === y.d && SIMDI() - Z.gezSay.z < 15000) { if (++Z.gezSay.n > 3) return; }
+    else Z.gezSay = { d: y.d, n: 1, z: SIMDI() };
     Z.gezilen = { d: y.d, u: y.u, s0: y.s0 };
     Z.hazir = false;
     try { if (y.dil && localStorage.getItem('kidef_dil') !== y.dil) localStorage.setItem('kidef_dil', y.dil); } catch (e) { }
@@ -890,10 +853,7 @@
     } catch (e) { CERCEVE.src = y.u || 'index.html'; }
   }
   function zYayinUygula(y) {
-    if (!y) return;
-    /* perde */
-    var p = !!(y.cevrimici && y.perde);
-    if (p !== Z.perde) { Z.perde = p; $('thPerde').hidden = !p; }
+    if (!y || S.lider) return;
     /* dil */
     try { if (y.dil && localStorage.getItem('kidef_dil') !== y.dil) localStorage.setItem('kidef_dil', y.dil); } catch (e) { }
     if (!y.cevrimici) return;
@@ -909,7 +869,7 @@
       clearTimeout(Z.adresZ);
       Z.adresZ = setTimeout(function () {
         var w = Z.win, u = adresAl(w);
-        if (!Z.yayin || Z.yayin.d !== Z.d || u === Z.yayin.u) return;
+        if (S.lider || !Z.yayin || Z.yayin.d !== Z.d || u === Z.yayin.u) return;
         var a = ayniSite(Z.yayin.u, w.location.href);
         if (a && a.pathname === w.location.pathname && a.search === w.location.search) {
           try { w.location.hash = a.hash; } catch (e) { }
@@ -919,28 +879,59 @@
   }
   function zOlay(s) {
     var o = s.val();
-    if (!o || o.i !== Z.yayinId || typeof o.n !== 'number') return;
+    if (!o || typeof o.n !== 'number') return;
+    if (o.n > Z.enN) Z.enN = o.n;                                 /* yeni lider sırayı buradan sürdürür */
+    if (S.lider || o.i !== Z.yayinId) return;
     if (Z.sonN != null && o.n <= Z.sonN) return;
-    zGecikme(o.z);                                     /* gecikme: veritabanından geliş anında */
+    if (o.hd && o.hd !== BEN) o = { n: o.n, d: o.d, bos: true };   /* başka cihazın eşitlemesi: yalnız sıra tutulur */
+    else zGecikme(o.z);                                         /* gecikme: veritabanından geliş anında */
     Z.bek[o.n] = o;
     zIsle();
   }
+  function isaretIsle(o) {                     /* eşitleme işareti (t:'es') */
+    if (!o.hd) { Z.esit = null; Z.esitJeton = null; Z.esitAkis = false; return; }   /* "Eşitle": herkes baştan */
+    if (o.hd !== BEN) return;
+    if (Z.esitJeton && o.ist === Z.esitJeton) { Z.esit = null; Z.esitJeton = null; Z.esitAkis = true; }
+    else Z.esitAkis = false;                   /* eski bir isteğin cevabı: uygulanmaz */
+  }
   function zIsle() {
-    if (!Z.hazir || !Z.belge) return;
+    if (!Z.hazir || !Z.belge || S.lider) return;
     var nler = Object.keys(Z.bek).map(Number).sort(function (a, b) { return a - b; });
     for (var i = 0; i < nler.length; i++) {
       var n = nler[i], o = Z.bek[n];
-      if (o.d < Z.d) { delete Z.bek[n]; if (Z.sonN == null || n > Z.sonN) Z.sonN = n; continue; }
+      if (o.d < Z.d) {                                              /* önceki sayfanın olayı */
+        delete Z.bek[n]; if (Z.sonN == null || n > Z.sonN) Z.sonN = n;
+        if (o.t === 'es') isaretIsle(o);
+        continue;
+      }
       if (o.d > Z.d) break;                                         /* sonraki sayfanın olayı */
       if (Z.sonN != null && n > Z.sonN + 1) {                       /* arada eksik var: kısa bekle */
-        if (!Z.boslukZ) { Z.boslukZ = setTimeout(function () { Z.boslukZ = null; Z.sonN = null; zIsle(); }, 900); }
+        if (!Z.bosluk || Z.bosluk.n !== Z.sonN) Z.bosluk = { n: Z.sonN, z: SIMDI() };
+        else if (SIMDI() - Z.bosluk.z > 900) { Z.bosluk = null; esitIste(); return; }   /* gelmedi: baştan iste */
+        if (!Z.boslukZ) Z.boslukZ = setTimeout(function () { Z.boslukZ = null; zIsle(); }, 950);
         break;
       }
       delete Z.bek[n];
-      Z.sonN = n;
+      Z.sonN = n; Z.bosluk = null;
+      if (o.bos) continue;
+      if (o.t === 'es') { isaretIsle(o); continue; }
+      if (o.hd === BEN) { if (!Z.esitAkis) continue; }              /* eski bir eşitlemenin parçası */
+      else if (Z.esit) continue;                                    /* bana gelecek eşitlemenin içinde */
       try { zUygula(o); } catch (e) { }
+      Z.gunluk.push(o);
+      if (Z.gunluk.length > GUNLUK_EN) Z.gunluk.shift();
       if (Z.belge && Z.belge.readyState === 'loading') break;       /* olay sayfayı değiştirdi */
     }
+  }
+  /* olay kaçırıldı (bağlantı koptu): sayfayı yeniden aç, liderden bu sayfanın geçmişini iste */
+  function esitIste() {
+    if (!S.kok || S.lider || !oturumVar()) return;
+    var en = Z.sonN || 0;
+    for (var k in Z.bek) if (has(Z.bek, k) && +k > en) en = +k;
+    Z.sonN = en; Z.bek = {}; Z.bosluk = null; Z.esitAkis = false;
+    Z.esit = { z: SIMDI(), tekrar: 0 };
+    zGezin(S.yayin);
+    varlikYaz(true);
   }
   function zTikla(w, el) {
     var r = el.getBoundingClientRect();
@@ -982,7 +973,7 @@
       if (m) {
         try {
           if (Math.abs((m.currentTime || 0) - (o.zt || 0)) > 0.4) m.currentTime = o.zt || 0;
-          if (o.h) m.playbackRate = o.h;
+          if (o.hz) m.playbackRate = o.hz;
           if (o.e === 'play') { var p = m.play(); if (p && p.catch) p.catch(function () { }); }
           else if (o.e === 'pause') m.pause();
         } catch (e) { }
@@ -1006,9 +997,9 @@
     try { w.scrollTo({ top: hedef, left: 0, behavior: 'instant' }); } catch (e) { se.scrollTop = hedef; }
   }
   function zKayUygula() {
-    if (!Z.hazir || !Z.belge) return;
+    if (!Z.hazir || !Z.belge || S.lider) return;
     for (var k in Z.kay) {
-      if (!Object.prototype.hasOwnProperty.call(Z.kay, k)) continue;
+      if (!has(Z.kay, k)) continue;
       var s = Z.kay[k];
       if (!s || s.d !== Z.d) continue;
       try {
@@ -1023,10 +1014,10 @@
     }
   }
   function zAlanUygula() {
-    if (!Z.hazir || !Z.belge) return;
+    if (!Z.hazir || !Z.belge || S.lider) return;
     var w = Z.win;
     for (var k in Z.alan) {
-      if (!Object.prototype.hasOwnProperty.call(Z.alan, k)) continue;
+      if (!has(Z.alan, k)) continue;
       var a = Z.alan[k];
       if (!a || a.d !== Z.d) continue;
       var el = yolBul(a.y, Z.belge);
@@ -1038,7 +1029,294 @@
       } catch (e) { }
     }
   }
-  /* durum noktası ve dokunulunca açılan pencere */
+
+  /* ============================================== LİDERLİK (kim kullanıyor)
+     Bilgisayar her zaman kontrolü alabilir; tahta yalnız "Tahtadan da
+     kullan" açıkken, yansıtma sürüp duraklatılmamışken ve aynı sayfa
+     tamamen yüklenip eşitlenmişken. */
+  function dokunuldu() {
+    hareketYaz();
+    if (S.lider || !S.kok) return;
+    if (CIHAZ === 'tahta') {
+      if (!cift() || !oturumVar() || S.yayin.durak) return;
+      if (!Z.hazir || !Z.belge || Z.d !== S.yayin.d || Z.esit) return;
+    }
+    liderOl();
+  }
+  function liderOl() {
+    if (S.lider || !S.kok) return;
+    var w = CERCEVE.contentWindow, belge = null, y = S.yayin;
+    try { belge = w.document; } catch (e) { }
+    var ayni = !!(belge && Z.belge === belge && y && y.cevrimici && Z.d === y.d && !Z.esit && belge.readyState !== 'loading');
+    if (ayni) { Z.hazir = true; try { zIsle(); } catch (e) { } }     /* gelmiş olaylar önce uygulanır */
+    S.lider = true;
+    Y.win = w; Y.belge = belge;
+    Y.durak = false; Y.durakYeni = []; Y.aktif = null; Y.alanSon = {}; Y.alanIz = []; Y.kayBek = {};
+    Y.n = Math.max(Y.n, Z.enN);
+    if (ayni) {
+      Y.d = Z.d;
+      Y.s0 = (y.s0 != null) ? y.s0 : S.s0;
+      Y.gunluk = Z.gunluk.slice();
+    } else {
+      /* sayfa belli değil: yeni sayfa sayılır, öbür cihaz bu sayfayı açar */
+      Y.d = Math.max(Y.d, Z.d, (y && y.d) || 0) + 1;
+      Y.s0 = S.s0;
+      Y.gunluk = [];
+    }
+    Z.esit = null; Z.esitJeton = null; Z.esitAkis = false; Z.bek = {}; Z.bosluk = null;
+    clearTimeout(Z.boslukZ); Z.boslukZ = null;
+    sonAdres = adresAl(w);
+    kopmaKur();
+    yayinYaz(!ayni);
+    if (Y.belge && Y.belge.readyState !== 'loading') alanTara();
+    arayuzTazele();
+  }
+  function liderBirak(y) {
+    if (!S.lider) return;
+    S.lider = false;
+    Y.aktif = null; clearTimeout(Y.kayZ); Y.kayZ = null; Y.kayBek = {}; Y.durak = false; Y.durakYeni = [];
+    Z.win = Y.win; Z.belge = Y.belge; Z.d = Y.d;
+    Z.hazir = !!(Y.belge && Y.belge === S.belge);
+    Z.gunluk = Y.gunluk.slice();
+    Z.yayinId = (y && y.cevrimici) ? y.id : null; Z.sonN = null; Z.bek = {}; Z.gezilen = null;
+    Z.esit = null; Z.esitJeton = null; Z.esitAkis = false; Z.bosluk = null;
+    Z.gecikmeler = []; Z.katilma = sunucuZaman();
+    kopmaKur();
+    if (CIHAZ === 'bilgisayar' && y && y.cevrimici) {
+      if (y.cihaz === 'tahta') {
+        if (!S.tahtadanDendi) { S.tahtadanDendi = true; bildir(kd('th.b_tahtadan', 'Tahtadan kullanılıyor; bilgisayardan dokununca kontrol yeniden sende.'), 4500); }
+      } else bildir(kd('th.b_devralindi', 'Başka bir cihaz yansıtmaya başladı. Bu cihaz durdu.'), 4500);
+    }
+  }
+
+  /* ================================================= ÇERÇEVE KÖPRÜSÜ
+     Her yeni sayfada, iki rolde de: kontrolü alma, tam ekran, yeni
+     pencereler, uyarı ve onaylar, adres değişimi, gönderilecek olaylar,
+     kayıt engeli. */
+  function kopruKur(w, d) {
+    /* 0) bu cihazda dokunuldu/tuşa basıldı: kontrol bu cihaza geçer (en önce) */
+    ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (t) {
+      try { w.addEventListener(t, function (e) { if (e.isTrusted) dokunuldu(); }, { capture: true, passive: true }); } catch (e) { }
+    });
+    if (CIHAZ === 'tahta') {
+      /* 0b) tahtada ilk dokunuş tam ekrana geçirir */
+      ['pointerup', 'touchend', 'click', 'keydown'].forEach(function (t) {
+        w.addEventListener(t, function (e) { if (e.isTrusted) tamEkranDene(); }, true);
+      });
+      /* 0c) kontrol alınamadıysa (sayfa yükleniyor, eşitleniyor) dokunuş
+         sayfaya gitmesin: tahta bilgisayardan ayrı düşmesin */
+      ['pointerdown', 'mousedown', 'touchstart', 'click', 'dblclick', 'contextmenu', 'keydown', 'keypress'].forEach(function (t) {
+        var pasif = (t === 'touchstart' || t === 'pointerdown');
+        w.addEventListener(t, function (e) {
+          if (!e.isTrusted || !takipte()) return;
+          e.stopImmediatePropagation();
+          if (!pasif && e.cancelable) e.preventDefault();
+        }, { capture: true, passive: pasif });
+      });
+    }
+    /* 1) yeni pencere/sekme açan bağlantılar çerçevede açılsın (site dışı gerçek sekmede) */
+    try {
+      w.open = function (url, ad, ozellik) {
+        var a = ayniSite(url || '', w.location.href);
+        if (takipte()) { if (a) { Z.kendiGezdi = SIMDI(); w.location.assign(a.href); } return w; }
+        if (a) { Y.gecisZ = SIMDI(); w.location.assign(a.href); return w; }
+        return window.open(url, ad || '_blank', ozellik);
+      };
+    } catch (e) { }
+    w.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      var hedef = (a.getAttribute('target') || '').toLowerCase();
+      if (takipte()) {
+        if (hedef && hedef !== '_self') e.preventDefault();          /* izleyende yeni sekme açılmasın */
+        else if (gidenBaglanti(a, w)) Z.kendiGezdi = SIMDI();
+        return;
+      }
+      if (!hedef || hedef === '_self') return;
+      var u = ayniSite(a.getAttribute('href'), w.location.href);
+      if (!u) return;
+      e.preventDefault();
+      if (Y.aktif) Y.aktif.gecis = true;
+      var ilk = SIMDI();
+      setTimeout(function () { if (!(Y.gecisZ && Y.gecisZ >= ilk) && S.belge === d) w.location.assign(u.href); }, 0);
+    }, true);
+    /* 2) uyarı ve onay pencereleri: izleyen açmaz, liderin cevabını kullanır */
+    try {
+      var asilA = w.alert, asilC = w.confirm, asilP = w.prompt;
+      w.alert = function () { if (takipte()) return; return asilA.apply(w, arguments); };
+      w.confirm = function () {
+        if (takipte()) return Z.cevap.length ? !!Z.cevap.shift() : false;
+        var c = asilC.apply(w, arguments);
+        if (S.lider && Y.aktif) Y.aktif.c.push(!!c);
+        return c;
+      };
+      w.prompt = function () {
+        if (takipte()) return Z.cevap.length ? Z.cevap.shift() : null;
+        var c = asilP.apply(w, arguments);
+        if (S.lider && Y.aktif) Y.aktif.c.push(c);
+        return c;
+      };
+    } catch (e) { }
+    /* 3) sayfa içi adres değişimi */
+    ['pushState', 'replaceState'].forEach(function (ad) {
+      try {
+        var asil = w.history[ad];
+        w.history[ad] = function () { var r = asil.apply(w.history, arguments); setTimeout(adresKontrol, 0); return r; };
+      } catch (e) { }
+    });
+    w.addEventListener('hashchange', adresKontrol);
+    w.addEventListener('popstate', adresKontrol);
+    /* 4) olaylar — pencereye, yakalama evresinde: sayfanın kendi dinleyicilerinden önce */
+    w.addEventListener('click', yTik, true);
+    w.addEventListener('keydown', yTus, true);
+    w.addEventListener('keyup', yTus, true);
+    w.addEventListener('input', yAlanOlay, true);
+    w.addEventListener('change', yAlanOlay, true);
+    w.addEventListener('submit', yGonder, true);
+    w.addEventListener('scroll', yKay, true);
+    ['play', 'pause', 'seeked', 'ratechange'].forEach(function (t) { w.addEventListener(t, yMedya, true); });
+    /* 5) kayıt yalnız liderde */
+    var bitis = SIMDI() + 20000;
+    (function engelle() {
+      if (S.belge !== d) return;
+      if (yazmaEngelle(w)) return;
+      if (SIMDI() < bitis) setTimeout(engelle, 30);
+    })();
+    /* 6) tahtada ziyaretçi turu (vitrin), dil önerisi gibi bir kerelik pencereler çıkmasın */
+    if (CIHAZ === 'tahta') {
+      try {
+        if (!localStorage.getItem('kidefVitrinSayac')) localStorage.setItem('kidefVitrinSayac', '9');
+        if (localStorage.getItem('kidef_dil_oneri') !== 'yok') localStorage.setItem('kidef_dil_oneri', 'yok');
+      } catch (e) { }
+    }
+  }
+  /* çerçevede yeni sayfa açıldı mı — mümkün olan en erken anda */
+  function belgeDenetle() {
+    var w, d;
+    try { w = CERCEVE.contentWindow; d = w.document; } catch (e) { return; }
+    if (!d || d === S.belge) return;
+    try { if (!w.location || w.location.href === 'about:blank') return; } catch (e) { return; }
+    S.belge = d;
+    kopruKur(w, d);
+    if (S.lider) yYeniBelge(w, d); else zYeniBelge(w, d);
+  }
+  function belgeIzle() {
+    if (belgeIzle.kuruldu) return;
+    belgeIzle.kuruldu = true;
+    belgeDenetle();
+    setInterval(belgeDenetle, 20);
+    setInterval(function () { if (S.lider) { alanKontrol(); adresKontrol(); } kgKontrol(); }, 250);
+    setInterval(nobet, 1000);
+    window.addEventListener('storage', function (e) {      /* başka sekmede dil değişirse */
+      if (e && e.key === 'kidef_dil' && yayinda()) S.kok.child('yayin').update({ dil: e.newValue || 'tr' });
+    });
+  }
+  /* saniyede bir: istenen eşitleme gelmediyse bir kez daha iste */
+  function nobet() {
+    if (!Z.esit) return;
+    if (S.lider || !oturumVar()) { Z.esit = null; Z.esitJeton = null; return; }
+    if (S.yayin.durak) { Z.esit.z = SIMDI(); return; }          /* duraklatılmışken beklenir */
+    if (SIMDI() - Z.esit.z < 6000) return;
+    if (Z.esit.tekrar < 1) { Z.esit.tekrar += 1; Z.esit.z = SIMDI(); varlikYaz(true); }
+    else { Z.esit = null; Z.esitJeton = null; zIsle(); }
+  }
+
+  /* ======================================================== ARAYÜZLER */
+  /* bilgisayar: üst şerit */
+  function kipYaz(k) {
+    S.ayar.kip = k;
+    try { localStorage.setItem('kidef_tahta_kip', k); } catch (e) { }
+    if (S.kok) S.kok.child('ayar').update({ kip: k });
+    arayuzTazele();
+  }
+  function cubukKur() {
+    var c = $('thCubuk');
+    c.innerHTML =
+      '<span class="th-isim"><span class="th-nokta bekle" id="thNokta"></span><span id="thBaslik">' + kac(kd('th.yansitiliyor', 'Tahtaya yansıtılıyor')) + '</span></span>' +
+      '<span class="th-cip" id="thCip">' + kac(kd('th.tahta_bekleniyor', 'Tahta bekleniyor…')) + '</span>' +
+      '<span class="th-bos"></span>' +
+      '<button type="button" class="th-dug th-kip" id="thKipDug" aria-pressed="false" title="' + kac(kd('th.kip_ip', 'Açıkken tahtaya dokunarak da kullanabilirsin; kapalıyken tahta yalnız bilgisayarı gösterir')) + '">' + SVG.dokun + '<span>' + kac(kd('th.kip', 'Tahtadan da kullan')) + '</span></button>' +
+      '<button type="button" class="th-dug" id="thPerdeDug" aria-pressed="false" title="' + kac(kd('th.perde_ip', 'Tahtayı karart (öğrenciler ekranı görmesin)')) + '">' + SVG.perde + '<span>' + kac(kd('th.perde', 'Perde')) + '</span></button>' +
+      '<button type="button" class="th-dug" id="thDurakDug" aria-pressed="false" title="' + kac(kd('th.durak_ip', 'Tahta son görüntüde dursun; sen burada serbestçe gez')) + '"></button>' +
+      '<button type="button" class="th-dug" id="thEsitleDug" title="' + kac(kd('th.esitle_ip', 'Tahtadaki sayfayı bu ekranla yeniden eşitle')) + '">' + SVG.esitle + '<span>' + kac(kd('th.esitle', 'Eşitle')) + '</span></button>' +
+      '<button type="button" class="th-dug kirmizi" id="thBitirDug" title="' + kac(kd('th.bitir_ip', 'Yansıtmayı bitir, bu sayfada kal')) + '">' + SVG.bitir + '<span>' + kac(kd('th.bitir', 'Bitir')) + '</span></button>';
+    c.hidden = false;
+    $('thDurakDug').dataset.durum = '';
+    $('thKipDug').addEventListener('click', function () {
+      var yeni = cift() ? 'tek' : 'cift';
+      kipYaz(yeni);
+      if (yeni === 'tek') liderOl();                 /* tahta yalnız göstersin: kontrol bilgisayarda */
+      bildir(yeni === 'cift' ? kd('th.b_kip_cift', 'Artık tahtaya dokunarak da kullanabilirsin.')
+                             : kd('th.yalniz_gosterir', 'Tahta şu an bilgisayarı gösteriyor; dokununca bir şey değişmez.'));
+    });
+    $('thPerdeDug').addEventListener('click', function () {
+      var p = !S.ayar.perde;
+      S.ayar.perde = p;
+      if (S.kok) S.kok.child('ayar').update({ perde: p });
+      arayuzTazele();
+      bildir(p ? kd('th.b_perde_acik', 'Tahta karartıldı.') : kd('th.b_perde_kapali', 'Tahta yeniden görünüyor.'));
+    });
+    $('thDurakDug').addEventListener('click', function () {
+      if (!S.lider) liderOl();
+      if (!Y.durak) { durakla(); bildir(kd('th.b_durak', 'Duraklatıldı: tahta son görüntüde bekliyor.')); }
+      else { surdur(); bildir(kd('th.b_devam', 'Sürdürüldü: tahta bu ekrana eşitlendi.')); }
+      arayuzTazele();
+    });
+    $('thEsitleDug').addEventListener('click', function () {
+      if (!S.lider) liderOl();
+      yEsitle(); bildir(kd('th.b_esitle', 'Tahta bu ekrana eşitleniyor…'));
+      arayuzTazele();
+    });
+    $('thBitirDug').addEventListener('click', function () { cik(adresAl(CERCEVE.contentWindow) || 'index.html'); });
+    arayuzTazele();
+  }
+  function cubukTazele() {
+    var k = $('thKipDug'), p = $('thPerdeDug'), d = $('thDurakDug');
+    if (k) k.setAttribute('aria-pressed', cift() ? 'true' : 'false');
+    if (p) p.setAttribute('aria-pressed', S.ayar.perde ? 'true' : 'false');
+    if (d) {
+      var durum = Y.durak ? 'durak' : 'devam';
+      if (d.dataset.durum !== durum) {
+        d.dataset.durum = durum;
+        d.setAttribute('aria-pressed', Y.durak ? 'true' : 'false');
+        d.innerHTML = (Y.durak ? SVG.devam : SVG.durak) + '<span>' + kac(Y.durak ? kd('th.devam', 'Sürdür') : kd('th.durak', 'Duraklat')) + '</span>';
+      }
+    }
+  }
+  function durumYaz() {
+    var nokta = $('thNokta'), cip = $('thCip');
+    if (!nokta || !cip) return;
+    var tahtalar = [], g = null;
+    for (var k in S.izle) {
+      if (!has(S.izle, k)) continue;
+      var t = S.izle[k];
+      if (t && t.cevrimici && t.cihaz !== 'bilgisayar') { tahtalar.push(t); if (typeof t.gecikme === 'number') g = (g == null) ? t.gecikme : Math.max(g, t.gecikme); }
+    }
+    var sinif = 'bekle', yazi;
+    if (!S.baglanti) { sinif = 'hata'; yazi = kd('th.baglanti_yok', 'İnternet bağlantısı yok'); }
+    else if (!S.lider && oturumVar()) {
+      sinif = 'canli';
+      if (S.yayin.cihaz === 'tahta') {
+        yazi = kd('th.tahtadan', 'Tahtadan kullanılıyor');
+        var zg = zOrtalama();
+        if (zg != null) yazi += ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, zg) });
+      } else {
+        sinif = 'hata';
+        yazi = kd('th.devralindi', 'Başka bir cihaz yansıtıyor — Eşitle’ye basarak geri al');
+      }
+    }
+    else if (!tahtalar.length) { yazi = kd('th.tahta_bekleniyor', 'Tahta bekleniyor…'); }
+    else {
+      sinif = Y.durak ? 'bekle' : 'canli';
+      yazi = tahtalar.length > 1 ? kd('th.tahta_cok', '{n} tahta bağlı', { n: tahtalar.length }) : kd('th.tahta_bagli', 'Tahta bağlı');
+      if (g != null) yazi += ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, Math.round(g)) });
+      if (Y.durak) yazi += ' · ' + kd('th.duraklatildi', 'duraklatıldı');
+    }
+    nokta.className = 'th-nokta ' + sinif;
+    cip.textContent = yazi;
+    $('thBaslik').textContent = Y.durak ? kd('th.duraklatildi_bas', 'Yansıtma duraklatıldı') : kd('th.yansitiliyor', 'Tahtaya yansıtılıyor');
+  }
+  /* tahta: durum noktası, dokunulunca açılan pencere, koruma ve perde */
   function zDurumKur() {
     var d = $('thDurum');
     d.innerHTML = '<div class="th-pencere" id="thPencere" hidden></div><span class="th-nokta bekle" id="thNokta" role="button" tabindex="0"></span>';
@@ -1049,11 +1327,14 @@
   }
   var pencereZ = null;
   function zPencere() {
-    var p = $('thPencere'), g = zOrtalama(), y = Z.yayin;
-    var durum = !y || !y.cevrimici ? kd('th.bilgisayar_yok', 'Bilgisayar bağlı değil.')
-      : (y.durak ? kd('th.bilgisayar_durak', 'Bilgisayar yansıtmayı duraklattı.')
-        : kd('th.bilgisayar_bagli', 'Bilgisayar bağlı') + (g != null ? ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, g) }) : '') + '.');
-    p.innerHTML = '<p>' + kac(durum) + '</p><p style="opacity:.8;font-weight:500">' + kac(kd('th.yalniz_gosterir', 'Tahta şu an bilgisayarı gösteriyor; dokununca bir şey değişmez.')) + '</p>' +
+    var p = $('thPencere'), g = zOrtalama(), y = S.yayin;
+    var durum = S.lider ? kd('th.tahtadan', 'Tahtadan kullanılıyor') + '.'
+      : (!y || !y.cevrimici ? kd('th.bilgisayar_yok', 'Bilgisayar bağlı değil.')
+        : (y.durak ? kd('th.bilgisayar_durak', 'Bilgisayar yansıtmayı duraklattı.')
+          : kd('th.bilgisayar_bagli', 'Bilgisayar bağlı') + (g != null ? ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, g) }) : '') + '.'));
+    var kip = cift() ? kd('th.cift_metin', 'Tahtaya dokunarak da kullanabilirsin; bilgisayar da aynısını gösterir.')
+                     : kd('th.yalniz_gosterir', 'Tahta şu an bilgisayarı gösteriyor; dokununca bir şey değişmez.');
+    p.innerHTML = '<p>' + kac(durum) + '</p><p style="opacity:.8;font-weight:500">' + kac(kip) + '</p>' +
       '<div class="th-tuslar"><button type="button" class="th-dug" data-th="tam">' + SVG.tam + '<span>' + kac(kd('th.tam_ekran', 'Tam ekran')) + '</span></button>' +
       '<button type="button" class="th-dug kirmizi" data-th="cik">' + SVG.bitir + '<span>' + kac(kd('th.cik', 'Çık')) + '</span></button></div>';
     p.hidden = false;
@@ -1063,13 +1344,14 @@
   function zNoktaYaz() {
     var n = $('thNokta');
     if (!n) return;
-    var y = Z.yayin, sinif = 'bekle';
-    if (!Z.baglanti) sinif = 'hata';
+    var y = S.yayin, sinif = 'bekle';
+    if (!S.baglanti) sinif = 'hata';
     else if (y && y.cevrimici && !y.durak) sinif = 'canli';
     n.className = 'th-nokta ' + sinif;
     var g = zOrtalama();
-    n.title = (y && y.cevrimici ? kd('th.bilgisayar_bagli', 'Bilgisayar bağlı') : kd('th.bilgisayar_yok', 'Bilgisayar bağlı değil.')) +
-      (g != null ? ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, g) }) : '');
+    n.title = S.lider ? kd('th.tahtadan', 'Tahtadan kullanılıyor')
+      : (y && y.cevrimici ? kd('th.bilgisayar_bagli', 'Bilgisayar bağlı') : kd('th.bilgisayar_yok', 'Bilgisayar bağlı değil.')) +
+        (g != null ? ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, g) }) : '');
   }
   function zSerit(m) {
     var s = $('thSerit');
@@ -1077,96 +1359,188 @@
     if (!m) { s.hidden = true; return; }
     s.textContent = m; s.hidden = false;
   }
-  Z.bitir = function () {
-    if (!Z.kok) return;
+  function zArayuz() {
+    var os = oturumVar();
+    /* dokunmayı engelleyen katman: yalnız göster kipinde ya da duraklatılmışken */
+    var koruma = !cift() || (os && !!S.yayin.durak);
+    var kr = $('thKoruma');
+    if (kr && kr.hidden === koruma) kr.hidden = !koruma;
+    var p = !!(os && (S.ayar.perde || S.ayar.kg));
+    var pe = $('thPerde');
+    if (pe && pe.hidden === p) pe.hidden = !p;
+    zNoktaYaz();
+  }
+  function zOturumGoster(y) {
+    clearTimeout(Z.ayrildiZ);
+    if (y && y.cevrimici) {
+      bekleGoster(null);
+      zSerit(y.durak ? kd('th.serit_durak', 'Öğretmen yansıtmayı duraklattı') : null);
+    } else if (Z.belge) {
+      if (cift()) zSerit(null);
+      /* kısa bağlantı kopmalarında bir şey gösterilmez: 8 sn bekle */
+      Z.ayrildiZ = setTimeout(function () {
+        if (oturumVar()) return;
+        if (cift()) bildir(kd('th.bilgisayar_yok', 'Bilgisayar bağlı değil.'), 4000);   /* tahta kendi başına kullanılabilir */
+        else zSerit(kd('th.serit_ayrildi', 'Bilgisayar ayrıldı — son görüntü'));
+      }, 8000);
+    } else {
+      bekleGoster('izle');
+    }
+  }
+  function arayuzTazele() {
+    if (CIHAZ === 'bilgisayar') { durumYaz(); cubukTazele(); }
+    else zArayuz();
+  }
+
+  /* ======================================================== DİNLEYİCİLER */
+  function yayinGeldi(s) {
+    var y = s.val(), once = S.yayin;
+    S.yayin = y; Z.yayin = y;
+    var liderId = (y && y.cevrimici) ? y.id : null;
+    if (S.lider && liderId !== BEN) {
+      if (CIHAZ === 'bilgisayar' && !liderId && S.kok) {
+        /* bağlantı koptu-geri geldi: yansıtma bu bilgisayarda, kaldığı yerden sürer */
+        if (Y.durak) S.kok.child('yayin').update({ cevrimici: true, id: BEN, ts: TS() }); else yayinYaz(false);
+        arayuzTazele();
+        return;
+      }
+      liderBirak(y);
+    }
+    if (!S.lider && CIHAZ === 'bilgisayar' && !liderId && S.kok) {
+      liderOl();                                 /* tahta kullanılırken bağlantısı koptu ya da çıktı: kontrol bilgisayara */
+      return;
+    }
+    if (!S.lider) {
+      if (y && y.cevrimici && y.id !== Z.yayinId) {
+        Z.yayinId = y.id; Z.sonN = null; Z.bek = {}; Z.bosluk = null;
+        if (Z.esit) varlikYaz(true);             /* eşitleme beklerken lider değişti: yeni liderden iste */
+      }
+      if (CIHAZ === 'tahta') zOturumGoster(y);
+      zYayinUygula(y);
+    }
+    if (CIHAZ === 'tahta' && y && y.cevrimici && !(once && once.cevrimici)) { TAM.istek = true; tamEkranDene(); ipucuGoster(); }
+    arayuzTazele();
+  }
+  function izleGeldi(s) {
+    var v = s.val() || {}, istek = [], yeniTahta = false;
+    for (var k in v) {
+      if (!has(v, k) || k === BEN) continue;
+      var t = v[k];
+      if (!t) continue;
+      if (t.iste && t.iste !== S.isteGoruldu[k]) {
+        S.isteGoruldu[k] = t.iste;
+        /* eski istekler (önceki yansıtmadan kalan) karşılanmaz */
+        if (typeof t.isteZ === 'number' && sunucuZaman() - t.isteZ < 15000) istek.push([k, t.iste]);
+      }
+      if (t.cevrimici && t.cihaz !== 'bilgisayar' && !(S.izle[k] && S.izle[k].cevrimici)) yeniTahta = true;
+    }
+    S.izle = v;
+    if (S.lider) istek.forEach(function (h) { yEsitle(h[0], h[1]); });     /* yalnız isteyene */
+    if (yeniTahta && S.lider && CIHAZ === 'bilgisayar') bildir(kd('th.b_tahta_geldi', 'Tahta bağlandı.'));
+    arayuzTazele();
+  }
+  function ortakDinle(kok) {
+    kok.child('olay').on('child_added', zOlay);
+    kok.child('olay').on('child_changed', zOlay);
+    kok.child('yayin').on('value', yayinGeldi);
+    kok.child('kay').on('value', function (s) {
+      Z.kay = s.val() || {};
+      if (S.lider) return;
+      zKayUygula();
+      var b = Z.kay.b; if (b) zGecikme(b.z);
+      hareketYaz();
+    });
+    kok.child('alan').on('value', function (s) { Z.alan = s.val() || {}; if (!S.lider) zAlanUygula(); });
+    kok.child('ayar').on('value', function (s) {
+      var v = s.val() || {};
+      S.ayar = { kip: v.kip === 'tek' ? 'tek' : 'cift', perde: !!v.perde, kg: !!v.kg };
+      arayuzTazele();
+    });
+    kok.child('izle').on('value', izleGeldi);
+  }
+
+  /* ======================================================= BAŞLATMA */
+  function yansitBasla(kok) {
+    if (S.kok) return;
+    S.kok = kok; S.lider = true;
+    stilKur(); bekleGoster(null);
+    document.body.classList.add('th-yansit');
+    var kip = 'cift';
+    try { if (localStorage.getItem('kidef_tahta_kip') === 'tek') kip = 'tek'; } catch (e) { }
+    S.ayar = { kip: kip, perde: false, kg: false };
+    /* yeni yansıtma: önceki oturumdan kalan lider (varsa) bırakır */
+    kok.update({ 'yayin/id': BEN, 'yayin/cihaz': CIHAZ, 'yayin/cevrimici': false, 'yayin/durak': false, 'yayin/ts': TS(),
+                 'ayar': { kip: kip, perde: false, kg: false } });
+    cubukKur();
+    kopmaKur();
+    belgeIzle();
+    if (Y.belge) {                                 /* sayfa giriş beklenirken açıldı: şimdi yayınla */
+      yayinYaz(true);
+      Y.gunluk.forEach(function (o) { olayYazHam(o); });
+      setTimeout(function () { alanKontrol(); kayHepsi(); }, 60);
+    }
+    ortakDinle(kok);
     try {
-      Z.kok.child('izle/' + Z.id).remove();
-      Z.kok.child('izle/' + Z.id).onDisconnect().cancel();
+      vt.ref('.info/connected').on('value', function (s) {
+        S.baglanti = !!s.val();
+        if (S.baglanti && S.kok) {
+          kopmaKur();
+          if (S.lider) { if (Y.durak) S.kok.child('yayin').update({ cevrimici: true, ts: TS() }); else yayinYaz(false); }
+          else if (!oturumVar()) liderOl();
+          else if (Z.esit) varlikYaz(true);
+        }
+        arayuzTazele();
+      });
     } catch (e) { }
-    Z.kok = null;
-  };
+  }
   function izleBasla(kok) {
-    if (Z.kok) return;
-    Z.kok = kok;
+    if (S.kok) return;
+    S.kok = kok;
     Z.katilma = sunucuZaman() + 300;
     stilKur();
     document.body.classList.add('th-izle');
-    $('thKoruma').hidden = false;
     $('thPerde').innerHTML = '<b>Kidef Arapça</b><span>' + kac(kd('th.perde_metin', 'Ekran kısa bir süre kapalı')) + '</span>';
     zDurumKur();
     bekleGoster('izle');
-    var benim = kok.child('izle/' + Z.id);
-    var kaydol = function () {
-      benim.onDisconnect().remove();
-      benim.set({ cevrimici: true, ts: TS(), gecikme: zOrtalama() });
-    };
-    Z.baglanti = true;
-    try {
-      vt.ref('.info/connected').on('value', function (s) {
-        Z.baglanti = !!s.val();
-        if (Z.baglanti && Z.kok) kaydol();
-        zNoktaYaz();
-      });
-    } catch (e) { kaydol(); }
-    /* OTURUM: bilgisayar yansıttığı sürece tahta "boşta" sayılmaz — 40
-       dakikalık boşta kalma uyarısı tahtada çıkmasın. Bilgisayar ayrılınca
-       tahtanın kendi sayacı yine işler (unutulan tahta kapanır). */
-    setInterval(function () {
-      if (Z.kok && Z.yayin && Z.yayin.cevrimici) hareketYaz();
-    }, 30000);
+    zArayuz();
+    belgeIzle();
+    tamEkranDene();
+    /* OTURUM: yansıtma sürdükçe tahta "boşta" sayılmaz (bilgisayar ayrılınca
+       tahtanın kendi sayacı yine işler — unutulan tahta kapanır). */
+    setInterval(function () { if (S.kok && oturumVar()) hareketYaz(); }, 30000);
     /* gecikmeyi bilgisayara bildir (seyrek) */
     setInterval(function () {
-      if (!Z.kok) return;
+      if (!S.kok) return;
       var g = zOrtalama();
-      if (g != null && g !== Z.sonBildirilen) { Z.sonBildirilen = g; benim.update({ gecikme: g, ts: TS() }); }
+      if (g != null && g !== Z.sonBildirilen && !S.lider) { Z.sonBildirilen = g; S.kok.child('izle/' + BEN).update({ gecikme: g, ts: TS() }); }
       zNoktaYaz();
     }, 2500);
-    /* tahtadaki çerçevede yeni sayfa */
-    setInterval(function () {
-      var w, d;
-      try { w = CERCEVE.contentWindow; d = w.document; } catch (e) { return; }
-      if (!d || d === Z.belge) return;
-      try { if (!w.location || w.location.href === 'about:blank') return; } catch (e) { return; }
-      zYeniBelge(w, d);
-    }, 20);
-    /* önce yuvalardaki eski olaylar: uygulanmaz (bilgisayar bağlanınca baştan gönderir) */
+    /* önce yuvalardaki eski olaylar: uygulanmaz. Yansıtma sürüyorsa tahta
+       liderden bu sayfanın geçmişini ister; istek ANCAK dinleyiciler
+       kurulduktan sonra yazılır, cevap kaçmasın. */
     kok.child('olay').once('value', function (s) {
-      var v = s.val() || {}, en = null;
+      var v = s.val() || {};
       kok.child('yayin').once('value', function (ys) {
-        var yy = ys.val();
+        var yy = ys.val(), en = null;
         for (var k in v) {
-          if (!Object.prototype.hasOwnProperty.call(v, k)) continue;
+          if (!has(v, k)) continue;
           var o = v[k];
-          if (o && yy && o.i === yy.id && typeof o.n === 'number' && (en == null || o.n > en)) en = o.n;
+          if (!o || typeof o.n !== 'number') continue;
+          if (o.n > Z.enN) Z.enN = o.n;
+          if (yy && o.i === yy.id && (en == null || o.n > en)) en = o.n;
         }
         Z.sonN = en;
         Z.yayinId = yy ? yy.id : null;
-        kok.child('olay').on('child_added', zOlay);
-        kok.child('olay').on('child_changed', zOlay);
-        kok.child('yayin').on('value', function (s2) {
-          var y = s2.val();
-          var once = Z.yayin;
-          Z.yayin = y;
-          if (y && y.id !== Z.yayinId) { Z.yayinId = y.id; Z.sonN = null; Z.bek = {}; }
-          clearTimeout(Z.ayrildiZ);
-          if (y && y.cevrimici) {
-            bekleGoster(null);
-            zSerit(y.durak ? kd('th.serit_durak', 'Öğretmen yansıtmayı duraklattı') : null);
-            zGecikme(null);
-          } else if (Z.belge) {
-            /* kısa bağlantı kopmalarında şerit çıkmasın: 8 sn bekle */
-            Z.ayrildiZ = setTimeout(function () {
-              if (!(Z.yayin && Z.yayin.cevrimici)) zSerit(kd('th.serit_ayrildi', 'Bilgisayar ayrıldı — son görüntü'));
-            }, 8000);
-          } else {
-            bekleGoster('izle');
-          }
-          zYayinUygula(y);
-          zNoktaYaz();
-          if (y && once && !once.cevrimici && y.cevrimici) zSerit(null);
-        });
-        kok.child('kay').on('value', function (s3) { Z.kay = s3.val() || {}; zKayUygula(); var b = Z.kay.b; if (b) zGecikme(b.z); hareketYaz(); });
-        kok.child('alan').on('value', function (s4) { Z.alan = s4.val() || {}; zAlanUygula(); });
+        if (yy && yy.cevrimici) Z.esit = { z: SIMDI(), tekrar: 0 };
+        ortakDinle(kok);
+        S.baglanti = true;
+        try {
+          vt.ref('.info/connected').on('value', function (s2) {
+            S.baglanti = !!s2.val();
+            if (S.baglanti && S.kok) { varlikYaz(!!Z.esit); kopmaKur(); }
+            arayuzTazele();
+          });
+        } catch (e) { varlikYaz(!!Z.esit); }
       });
     });
   }
@@ -1182,17 +1556,38 @@
       var m = /[?&]sayfa=([^&#]*)/.exec(location.search);
       var hedef = 'index.html';
       if (m) { try { var a = ayniSite(decodeURIComponent(m[1])); if (a && !/\/tahta\.html$/.test(a.pathname)) hedef = a.pathname + a.search + a.hash; } catch (e) { } }
+      /* bilgisayar baştan lider: ilk sayfanın tohumu ve köprüsü giriş beklenmeden kurulur */
+      S.lider = true;
       CERCEVE.src = hedef;
+      belgeIzle();
       baglan(yansitBasla);
     } else {
       try { localStorage.setItem('kidef_tahta_cihaz', 'tahta'); } catch (e) { }
+      /* tahtada "Ana ekrana ekle / Uygulamayı yükle": her açılışta tam ekran
+         açılan uygulama (bilgisayarda yükleme önerisi çıkmasın diye yalnız burada) */
+      try {
+        if (!document.querySelector('link[rel="manifest"]')) {
+          var mf = document.createElement('link');
+          mf.rel = 'manifest'; mf.href = 'tahta.webmanifest';
+          document.head.appendChild(mf);
+        }
+      } catch (e) { }
+      /* kabuktaki her dokunuş (koruma katmanı, nokta, bekleme ekranı) tam ekrana geçirir */
+      ['pointerup', 'touchend', 'click', 'keydown'].forEach(function (t) {
+        document.addEventListener(t, function (e) { if (e.isTrusted) tamEkranDene(); }, true);
+      });
       baglan(izleBasla);
     }
     document.addEventListener('kidef:dil', function () {
-      if (ROL === 'yansit' && $('thCubuk') && !$('thCubuk').hidden && Y.kok) { cubukKur(); durumYaz(); }
-      if (ROL === 'izle' && !$('thBekle').hidden && !(Z.yayin && Z.yayin.cevrimici)) bekleGoster('izle');
+      if (ROL === 'yansit' && $('thCubuk') && !$('thCubuk').hidden && S.kok) cubukKur();
+      if (ROL === 'izle' && !$('thBekle').hidden && !oturumVar()) bekleGoster('izle');
+      var ip = $('thIpucu');
+      if (ip && !ip.hidden) ipucuGoster();
     });
   }
-  window.KidefTahta = { rol: ROL, Y: Y, Z: Z, yolAl: yolAl, yolBul: yolBul, VT_ADRES: VT_ADRES };
+  window.KidefTahta = {
+    rol: ROL, cihaz: CIHAZ, id: BEN, S: S, Y: Y, Z: Z, yolAl: yolAl, yolBul: yolBul, VT_ADRES: VT_ADRES,
+    liderOl: liderOl, lider: function () { return S.lider; }
+  };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', basla); else basla();
 })();

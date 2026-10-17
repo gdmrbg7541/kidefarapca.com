@@ -1909,12 +1909,19 @@ window.KIDEF_DIL['id'] = Object.assign(window.KIDEF_DIL['id'] || {}, {
   'th.p_izle': 'Perangkat ini adalah papan pintar',
   'th.p_izle_alt': 'Apa yang kamu lakukan di komputer tampil di layar ini. Papan pintar akan mengingatnya: di pelajaran berikutnya, cukup mulai dari komputer.',
   'th.p_izle_dug': 'Buka tampilan papan pintar',
-  'th.p_not': 'Hanya situs ini yang ditayangkan. Kolom kata sandi, email, dan PIN tidak pernah sampai ke papan pintar, dan papan pintar tidak menyimpan apa pun.',
+  'th.p_not': 'Hanya situs ini yang ditayangkan. Kolom kata sandi, email, dan PIN tidak pernah sampai ke papan pintar, dan tidak ada yang tersimpan dua kali.',
   'th.p_unut': 'Perangkat ini bukan papan pintar',
   'th.s_bas': 'Komputermu sedang menayangkan',
   'th.s_ac': 'Buka di papan pintar',
   'th.s_vazgec': 'Batal',
   'th.s_alt': 'Tampilan papan pintar dibuka dalam {n} detik',
-  'th.dugme': 'Tayangkan ke papan pintar'
+  'th.dugme': 'Tayangkan ke papan pintar',
+  'th.kip': 'Gunakan juga dari papan pintar',
+  'th.kip_ip': 'Jika aktif, kamu juga bisa memakai situs dengan menyentuh papan pintar; jika mati, papan pintar hanya menampilkan komputer',
+  'th.b_kip_cift': 'Sekarang kamu juga bisa memakainya dengan menyentuh papan pintar.',
+  'th.tahtadan': 'Sedang dipakai dari papan pintar',
+  'th.b_tahtadan': 'Sedang dipakai dari papan pintar; klik di komputer untuk mengambil alih kembali.',
+  'th.cift_metin': 'Kamu juga bisa memakainya dengan menyentuh papan pintar; komputer menampilkan hal yang sama.',
+  'th.tam_dokun': 'Sentuh layar sekali untuk layar penuh'
 });
 /* @dil-parca-tahta son */
