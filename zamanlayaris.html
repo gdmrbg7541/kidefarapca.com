@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Zamana Karşı! ⏱️ - Tek Atış</title>
+    <title data-i18n="zy.sayfa_baslik">Zamana Karşı! ⏱️ - Tek Atış</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="sarf/oyun/zamanlayaris.css?v=2d934082">
-        <link rel="stylesheet" href="arakom.css?v=4383f21b">
+        <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
     <div id="game-container">
@@ -27,7 +27,7 @@
             <div id="l2-top-bar">
                 <div class="back-button" id="game-back-button">&#8617;</div>
                 <div id="l2-timer">01:00</div>
-                <div id="l2-score-display">Puan: <span id="l2-score-value">0</span></div>
+                <div id="l2-score-display"><span data-i18n="oyn.puan_k">Puan:</span> <span id="l2-score-value">0</span></div>
                 <div id="l2-turkish-word-area"></div>
             </div>
             
@@ -43,12 +43,12 @@
         <div id="start-screen" class="overlay"> 
             <div class="overlay-content"> 
                 <div class="back-button" id="start-back-button" data-kidef-done="1">&#8617;</div>
-                <h1>Zamana Karşı! ⏱️</h1>
-                <h2>Seviye Seç:</h2> 
+                <h1><span data-i18n="zy.baslik">Zamana Karşı!</span> ⏱️</h1>
+                <h2 data-i18n="oyn.seviye_sec">Seviye Seç:</h2> 
                 <div class="start-options"> 
-                    <button class="start-button-option" data-difficulty="easy">Kolay</button> 
-                    <button class="start-button-option" data-difficulty="medium">Orta</button> 
-                    <button class="start-button-option" data-difficulty="hard">Zor</button> 
+                    <button class="start-button-option" data-difficulty="easy" data-i18n="oyn.kolay">Kolay</button> 
+                    <button class="start-button-option" data-difficulty="medium" data-i18n="oyn.orta">Orta</button> 
+                    <button class="start-button-option" data-difficulty="hard" data-i18n="oyn.zor">Zor</button> 
                 </div> 
             </div> 
         </div>
@@ -66,8 +66,8 @@
                     </div> 
                 
                 <div id="results-button-wrapper">
-                    <button id="next-round-button">Sonraki Tur ➡️</button>
-                    <button id="play-again-button">Seviyeler 📊</button>
+                    <button id="next-round-button"><span data-i18n="alf.sonraki_tur">Sonraki Tur</span> ➡️</button>
+                    <button id="play-again-button"><span data-i18n="zy.seviyeler">Seviyeler</span> 📊</button>
                 </div>
                 
             </div> 
@@ -75,8 +75,8 @@
     
     </div>
 
-<script src="sistem/gorevkopru.js?v=50232a80"></script>
-    <script src="sarf/oyun/zamanlayaris.js?v=cbd34326"></script>
+<script src="sistem/gorevkopru.js?v=d5377b75"></script>
+    <script src="sarf/oyun/zamanlayaris.js?v=558dca80"></script>
     <script src="sistem/geri.js?v=f87d1337"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
@@ -89,5 +89,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

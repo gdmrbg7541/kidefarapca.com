@@ -412,7 +412,7 @@
 </main>
 
 <div class="controls">
-    <button class="nav-btn" onclick="changeSentence(-1)">❮ GERİ</button>
+    <button class="nav-btn" onclick="changeSentence(-1)" data-i18n="nav.geri_ok">❮ GERİ</button>
     <button class="nav-btn" onclick="changeSentence(1)">İLERİ ❯</button>
 </div>
 
@@ -1290,5 +1290,8 @@ function handleMove(order, ar, trId, arId, playerNum) {
 
 
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

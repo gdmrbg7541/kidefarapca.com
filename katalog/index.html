@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kidef Arapça — Hangi ihtiyaç için hangi araç?</title>
+<title data-i18n="ktl.title">Kidef Arapça — Hangi ihtiyaç için hangi araç?</title>
 <meta name="description" content="kidefarapca.com'daki bütün uygulamalar, sunumlar ve öğretmen dokümanları; her biri hangi sınıf ihtiyacını karşıladığıyla birlikte.">
 <script>
 /* Çerçeve (iframe) içindeyiz: geri/ev tuşu gizlensin — pencerenin kendi
@@ -389,24 +389,27 @@ html.cerceve .ust-serit .geri-alan{display:none}
   .bbas h2{white-space:normal;min-width:0}
 }
 </style>
+    <!-- DİL KATMANI — sayfa dil seçimini localStorage'dan okur,
+         başka sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="../sistem/dil.js?v=c488020d"></script>
 </head>
 <body>
 
 <div class="ust-serit">
   <div class="geri-alan">
-    <button type="button" onclick="katalogGeri(event)" aria-label="Geri" title="Geri">
+    <button type="button" onclick="katalogGeri(event)" aria-label="Geri" title="Geri" data-i18n-aria="nav.geri" data-i18n-title="nav.geri">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5.4"/><path d="M11.8 5.6 5 12l6.8 6.4"/></svg>
     </button>
   </div>
-  <div class="ad">Araç Kataloğu <span>· kidefarapca.com</span></div>
+  <div class="ad" data-i18n-html="ktl.ad">Araç Kataloğu <span>· kidefarapca.com</span></div>
   <div class="tuslar">
-    <a class="tus ikincil" href="#" onclick="window.print();return false;" title="Kendi yazıcından dök (⌘P)">
+    <a class="tus ikincil" href="#" onclick="window.print();return false;" title="Kendi yazıcından dök (⌘P)" data-i18n-title="ktl.yazdir_ip">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M7 17h10v4H7z"/></svg>
-      Yazdır
+      <span data-i18n="oyn.yazdir">Yazdır</span>
     </a>
-    <a class="tus" href="katalog.pdf" download="Kidef-Arapca-Arac-Katalogu.pdf" title="Hazır PDF'i indir">
+    <a class="tus" href="katalog.pdf" download="Kidef-Arapca-Arac-Katalogu.pdf" title="Hazır PDF'i indir" data-i18n-title="ktl.pdf_ip">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
-      PDF indir
+      <span data-i18n="ktl.pdf">PDF indir</span>
     </a>
   </div>
 </div>
@@ -417,31 +420,31 @@ html.cerceve .ust-serit .geri-alan{display:none}
        kalınca, katalog açılır açılmaz kategoriler görünmüyordu ve şerit
        ancak iki paragraf kaydırdıktan sonra üste yapışıyordu. Kâğıtta
        gizlendiği için (bkz. @media print) PDF'in düzeni değişmiyor. -->
-  <nav class="seksrt" aria-label="Katalog bölümleri">
-    <button type="button" class="sektus secili" data-sek="hepsi" aria-pressed="true" style="--sr:#0E7C66;--sy:#0C7A64;--sa:#E8F4F1;--sg:14,124,102"><b>Hepsi</b><small>bütün araçlar</small></button>
-    <button type="button" class="sektus" data-sek="isinma" aria-pressed="false" style="--sr:#E08A00;--sy:#9D6100;--sa:#FDF3E0;--sg:224,138,0"><b>Isınma oyunları</b><small>dersin ilk beş dakikası</small></button>
-    <button type="button" class="sektus" data-sek="dil" aria-pressed="false" style="--sr:#8E44AD;--sy:#8F42AF;--sa:#F3EAF8;--sg:142,68,173"><b>Dilbilgisi ve sözlük</b><small>kelime · sarf · nahiv</small></button>
-    <button type="button" class="sektus" data-sek="okuma" aria-pressed="false" style="--sr:#2E86DE;--sy:#1B6EC0;--sa:#EAF3FC;--sg:46,134,222"><b>Okuma-yazma ve konuşma</b><small>harf, metin, konuşma, ezber</small></button>
-    <button type="button" class="sektus" data-sek="sunum" aria-pressed="false" style="--sr:#E8735E;--sy:#C8341A;--sa:#FCEDEA;--sg:232,115,94"><b>Sunumlar</b><small>ders anlatımı ve seminer</small></button>
-    <button type="button" class="sektus" data-sek="olcme" aria-pressed="false" style="--sr:#1B3A6B;--sy:#1A3A6C;--sa:#E9EEF6;--sg:27,58,107"><b>Ölçme ve dokümanlar</b><small>sınav, kitap, form ve plan</small></button>
+  <nav class="seksrt" aria-label="Katalog bölümleri" data-i18n-aria="ktl.bolumler">
+    <button type="button" class="sektus secili" data-sek="hepsi" aria-pressed="true" style="--sr:#0E7C66;--sy:#0C7A64;--sa:#E8F4F1;--sg:14,124,102"><b data-i18n="ktl.t_hepsi">Hepsi</b><small data-i18n="ktl.t_hepsi_k">bütün araçlar</small></button>
+    <button type="button" class="sektus" data-sek="isinma" aria-pressed="false" style="--sr:#E08A00;--sy:#9D6100;--sa:#FDF3E0;--sg:224,138,0"><b data-i18n="ktl.t_isinma">Isınma oyunları</b><small data-i18n="ktl.t_isinma_k">dersin ilk beş dakikası</small></button>
+    <button type="button" class="sektus" data-sek="dil" aria-pressed="false" style="--sr:#8E44AD;--sy:#8F42AF;--sa:#F3EAF8;--sg:142,68,173"><b data-i18n="ktl.t_dil">Dilbilgisi ve sözlük</b><small data-i18n="ktl.t_dil_k">kelime · sarf · nahiv</small></button>
+    <button type="button" class="sektus" data-sek="okuma" aria-pressed="false" style="--sr:#2E86DE;--sy:#1B6EC0;--sa:#EAF3FC;--sg:46,134,222"><b data-i18n="ktl.t_okuma">Okuma-yazma ve konuşma</b><small data-i18n="ktl.t_okuma_k">harf, metin, konuşma, ezber</small></button>
+    <button type="button" class="sektus" data-sek="sunum" aria-pressed="false" style="--sr:#E8735E;--sy:#C8341A;--sa:#FCEDEA;--sg:232,115,94"><b data-i18n="ktl.t_sunum">Sunumlar</b><small data-i18n="ktl.t_sunum_k">ders anlatımı ve seminer</small></button>
+    <button type="button" class="sektus" data-sek="olcme" aria-pressed="false" style="--sr:#1B3A6B;--sy:#1A3A6C;--sa:#E9EEF6;--sg:27,58,107"><b data-i18n="ktl.t_olcme">Ölçme ve dokümanlar</b><small data-i18n="ktl.t_olcme_k">sınav, kitap, form ve plan</small></button>
   </nav>
   <p class="seksay" id="seksay"></p>
 
   <header class="bas">
-    <div class="ust">Arapça Öğretmenleri İçin · Araç Kataloğu</div>
-    <h1>Hangi ihtiyaç için hangi araç?</h1>
-    <p class="alt">Sınıfta karşılaştığınız durumu bulun, kartın altındaki adrese dokunun.</p>
+    <div class="ust" data-i18n="ktl.ust">Arapça Öğretmenleri İçin · Araç Kataloğu</div>
+    <h1 data-i18n="kat.baslik">Hangi ihtiyaç için hangi araç?</h1>
+    <p class="alt" data-i18n="ktl.alt">Sınıfta karşılaştığınız durumu bulun, kartın altındaki adrese dokunun.</p>
     <div class="site">kidefarapca.com</div>
   </header>
 
-  <p class="not">
+  <p class="not" data-i18n-html="ktl.not">
     Her kartta <b>araç adı</b>, <b>hangi ihtiyacı karşıladığı</b> ve <b>doğrudan adresi</b> vardır.
     Bağlantılar PDF'e çevrildiğinde de tıklanabilir kalır; kâğıda basarsanız adresler yazılı olduğu
     için tarayıcıya elle de yazabilirsiniz. Hepsi ücretsizdir, kurulum istemez, akıllı tahtada ve
     telefonda açılır.
   </p>
 
-  <p class="not oyun-not">
+  <p class="not oyun-not" data-i18n-html="ktl.oyun_not">
     <b>«Oyun» etiketli araçlar dersin başı içindir.</b> Zil çaldıktan sonraki ilk beş dakika:
     sınıfın dikkatini derse çeker, geçen haftanın kelimesini tazeler, sonraki anlatıma ısınmış
     bir sınıf bırakır. Konu anlatımının yerine değil, <em>önüne</em> konur — «Uygulama» ve
@@ -451,62 +454,62 @@ html.cerceve .ust-serit .geri-alan{display:none}
   <section data-sek="okuma">
     <div class="bbas b-mavi">
       <span class="bno">1</span>
-      <h2>Harf, okuma ve yazı</h2>
-      <span class="bnot">Yılın ilk haftaları ve okumaya geçemeyen öğrenciler için</span>
+      <h2 data-i18n="ktl.b1">Harf, okuma ve yazı</h2>
+      <span class="bnot" data-i18n="ktl.b1_not">Yılın ilk haftaları ve okumaya geçemeyen öğrenciler için</span>
       <span class="bsay">6 araç</span>
     </div>
     <div class="kgrid">
       <div class="kart k-mavi">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19L12 5l7 14"/><path d="M8 14h8"/></svg></span>
         <div class="govde">
-          <h3>Alfabe</h3>
-          <div class="etiket">Uygulama</div>
-          <p>Sınıf harfleri karıştırıyor, okumaya geçemiyorsa: harf harf tanıma, birleştirme, seviyeli okuma ve dinle-yaz — dördü aynı sayfada sekme.</p>
+          <h3 data-i18n="alf.alfabe">Alfabe</h3>
+          <div class="etiket" data-i18n="ktl.e_uyg">Uygulama</div>
+          <p data-i18n="ktl.d_alfabe">Sınıf harfleri karıştırıyor, okumaya geçemiyorsa: harf harf tanıma, birleştirme, seviyeli okuma ve dinle-yaz — dördü aynı sayfada sekme.</p>
           <a href="https://kidefarapca.com/alfabe.html">kidefarapca.com/alfabe.html</a>
         </div>
       </div>
       <div class="kart k-mavi">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="6" width="18.8" height="12" rx="2.2"/><path d="M6 9.4h.01M9.2 9.4h.01M12.4 9.4h.01M15.6 9.4h.01M18.4 9.4h.01M6 12.6h.01M9.2 12.6h.01M12.4 12.6h.01M15.6 12.6h.01M18.4 12.6h.01M8 15.6h8"/></svg></span>
         <div class="govde">
-          <h3>Arapça Klavye</h3>
-          <div class="etiket">Uygulama</div>
-          <p>Tahtada ya da belgede harekeli Arapça yazmak gerekiyorsa: dokunarak yazma, Kur'an işaretleri ve Word'e okunaklı aktarma.</p>
+          <h3 data-i18n="kart.klavye">Arapça Klavye</h3>
+          <div class="etiket" data-i18n="ktl.e_uyg">Uygulama</div>
+          <p data-i18n="ktl.d_klavye">Tahtada ya da belgede harekeli Arapça yazmak gerekiyorsa: dokunarak yazma, Kur'an işaretleri ve Word'e okunaklı aktarma.</p>
           <a href="https://kidefarapca.com/arapcaklavye.html">kidefarapca.com/arapcaklavye.html</a>
         </div>
       </div>
       <div class="kart k-mavi" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg></span>
         <div class="govde">
-          <h3>Hangi Harf?<span class="isin">ders başı ısınma</span></h3>
-          <div class="etiket">Oyun</div>
-          <p>Benzeyen harfleri (ب ت ث · ج ح خ) ayırt edemiyorlarsa: hızlı tanıma çalışması.</p>
+          <h3><span data-i18n="kart.hangi_harf">Hangi Harf?</span><span class="isin" data-i18n="ktl.isin">ders başı ısınma</span></h3>
+          <div class="etiket" data-i18n="ktl.e_oyun">Oyun</div>
+          <p data-i18n="ktl.d_hangi">Benzeyen harfleri (ب ت ث · ج ح خ) ayırt edemiyorlarsa: hızlı tanıma çalışması.</p>
           <a href="https://kidefarapca.com/hangiharf.html">kidefarapca.com/hangiharf.html</a>
         </div>
       </div>
       <div class="kart k-mavi" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16h16"/><circle cx="9" cy="7" r="1.6"/><path d="M14 5l3 4"/></svg></span>
         <div class="govde">
-          <h3>Hareke Avcısı<span class="isin">ders başı ısınma</span></h3>
-          <div class="etiket">Oyun</div>
-          <p>Harekeyi görmezden gelip kelimeyi yanlış okuyorlarsa: doğru harekeyi yakalama.</p>
+          <h3><span data-i18n="kart.hareke">Hareke Avcısı</span><span class="isin" data-i18n="ktl.isin">ders başı ısınma</span></h3>
+          <div class="etiket" data-i18n="ktl.e_oyun">Oyun</div>
+          <p data-i18n="ktl.d_hareke">Harekeyi görmezden gelip kelimeyi yanlış okuyorlarsa: doğru harekeyi yakalama.</p>
           <a href="https://kidefarapca.com/harekeavcisi.html">kidefarapca.com/harekeavcisi.html</a>
         </div>
       </div>
       <div class="kart k-mavi" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M9.5 10h.01M13 10h.01M16.5 10h.01M8 14h8"/></svg></span>
         <div class="govde">
-          <h3>Klavye Oyunu<span class="isin">ders başı ısınma</span></h3>
-          <div class="etiket">Oyun</div>
-          <p>Arapça klavyede harf aramakla vakit geçiyorsa: tuş yerlerini oyunla öğrenme.</p>
+          <h3><span data-i18n="kart.klavye_oyunu">Klavye Oyunu</span><span class="isin" data-i18n="ktl.isin">ders başı ısınma</span></h3>
+          <div class="etiket" data-i18n="ktl.e_oyun">Oyun</div>
+          <p data-i18n="ktl.d_klavye_oyunu">Arapça klavyede harf aramakla vakit geçiyorsa: tuş yerlerini oyunla öğrenme.</p>
           <a href="https://kidefarapca.com/klavyeoyunu.html">kidefarapca.com/klavyeoyunu.html</a>
         </div>
       </div>
       <div class="kart k-mor" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8.4"/><path d="M12 4.6V13l5.9 5.9"/><path d="M3.6 13h16.8"/><path d="M12 1.4 9.6 5h4.8Z" fill="currentColor"/></svg></span>
         <div class="govde">
-          <h3>Merak Köşesi<span class="isin">ders başı köşesi</span></h3>
-          <div class="etiket">Uygulama · 144 kart</div>
-          <p>Zilden sonra sınıfı toplamak için: çark fıkra, kelime kökeni, kültür ya da bulmaca seçer; çıkan kart o sınıfa bir daha çıkmaz.</p>
+          <h3><span data-i18n="kart.merak">Merak Köşesi</span><span class="isin" data-i18n="ktl.isin_kose">ders başı köşesi</span></h3>
+          <div class="etiket" data-i18n="ktl.e_merak" data-i18n-tr="Uygulama · {n} kart" data-i18n-yer='{"n":"144"}'>Uygulama · 144 kart</div>
+          <p data-i18n="ktl.d_merak">Zilden sonra sınıfı toplamak için: çark fıkra, kelime kökeni, kültür ya da bulmaca seçer; çıkan kart o sınıfa bir daha çıkmaz.</p>
           <a href="https://kidefarapca.com/merakcarki.html">kidefarapca.com/merakcarki.html</a>
         </div>
       </div>
@@ -515,71 +518,71 @@ html.cerceve .ust-serit .geri-alan{display:none}
   <section data-sek="dil">
     <div class="bbas b-mor">
       <span class="bno">2</span>
-      <h2>Kelime ve sözlük</h2>
-      <span class="bnot">Ünite kelimesi, ezberin kalıcılığı ve sözlük kullanımı</span>
+      <h2 data-i18n="ktl.b2">Kelime ve sözlük</h2>
+      <span class="bnot" data-i18n="ktl.b2_not">Ünite kelimesi, ezberin kalıcılığı ve sözlük kullanımı</span>
       <span class="bsay">7 araç</span>
     </div>
     <div class="kgrid">
       <div class="kart k-mor">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5V4.5h4v16zM10 20.5V7h4v13.5z"/><path d="M16.4 8.6l3.9 1.2-2.9 10.3-3.9-1.2z"/></svg></span>
         <div class="govde">
-          <h3>Kelime Dağarcığı</h3>
-          <div class="etiket">Uygulama</div>
-          <p>Ünitenin kelimelerini toplu vermek gerekiyorsa: konu konu listeler, çalışma kartı, hafıza oyunu ve test aynı yerde.</p>
+          <h3 data-i18n="kl.baslik">Kelime Dağarcığı</h3>
+          <div class="etiket" data-i18n="ktl.e_uyg">Uygulama</div>
+          <p data-i18n="ktl.d_kelimeler">Ünitenin kelimelerini toplu vermek gerekiyorsa: konu konu listeler, çalışma kartı, hafıza oyunu ve test aynı yerde.</p>
           <a href="https://kidefarapca.com/kelimeler.html">kidefarapca.com/kelimeler.html</a>
         </div>
       </div>
       <div class="kart k-mor">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.6A2 2 0 0 1 6 3.6h5.2v16.8H6a2 2 0 0 1-2-2z"/><path d="M20 5.6a2 2 0 0 0-2-2h-5.2v16.8H18a2 2 0 0 0 2-2z"/><path d="M6.8 7.6h3M6.8 10.6h2.2"/></svg></span>
         <div class="govde">
-          <h3>Sözlük</h3>
-          <div class="etiket">Uygulama</div>
-          <p>Kelimenin anlamına sınıfça bakmak gerekiyorsa: kök ve vezin olmadan yalnız arama; Simülasyon ve Dedektif de bu sayfanın sekmeleri.</p>
+          <h3 data-i18n="soz.baslik">Sözlük</h3>
+          <div class="etiket" data-i18n="ktl.e_uyg">Uygulama</div>
+          <p data-i18n="ktl.d_sozluk">Kelimenin anlamına sınıfça bakmak gerekiyorsa: kök ve vezin olmadan yalnız arama; Simülasyon ve Dedektif de bu sayfanın sekmeleri.</p>
           <a href="https://kidefarapca.com/sozluk.html">kidefarapca.com/sozluk.html</a>
         </div>
       </div>
       <div class="kart k-mor" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="11" height="14" rx="2"/><path d="M8 6V4.6A1.6 1.6 0 0 1 9.6 3h9.8A1.6 1.6 0 0 1 21 4.6v11.8"/></svg></span>
         <div class="govde">
-          <h3>Hafıza Kartları<span class="isin">ders başı ısınma</span></h3>
-          <div class="etiket">Oyun</div>
-          <p>Ezberlenen kelime ertesi hafta uçuyorsa: eşleştirmeli tekrar.</p>
+          <h3><span data-i18n="kart.hafiza">Hafıza Kartları</span><span class="isin" data-i18n="ktl.isin">ders başı ısınma</span></h3>
+          <div class="etiket" data-i18n="ktl.e_oyun">Oyun</div>
+          <p data-i18n="ktl.d_hafiza">Ezberlenen kelime ertesi hafta uçuyorsa: eşleştirmeli tekrar.</p>
           <a href="https://kidefarapca.com/hafizakartlari.html">kidefarapca.com/hafizakartlari.html</a>
         </div>
       </div>
       <div class="kart k-mor" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 20c.6-4 2.8-6 5.5-6s4.9 2 5.5 6"/><path d="M13.5 14.6c.9-.4 1.7-.6 2.5-.6 2.7 0 4.9 2 5.5 6"/></svg></span>
         <div class="govde">
-          <h3>Test Kapışması<span class="isin">ders başı ısınma</span></h3>
-          <div class="etiket">Oyun · iki kişilik</div>
-          <p>Tekrarı sınıfça oyuna çevirmek istiyorsanız: iki öğrenci tahtada yarışır.</p>
+          <h3><span data-i18n="kart.test">Test Kapışması</span><span class="isin" data-i18n="ktl.isin">ders başı ısınma</span></h3>
+          <div class="etiket" data-i18n="ktl.e_iki">Oyun · iki kişilik</div>
+          <p data-i18n="ktl.d_test">Tekrarı sınıfça oyuna çevirmek istiyorsanız: iki öğrenci tahtada yarışır.</p>
           <a href="https://kidefarapca.com/testkapismasi.html">kidefarapca.com/testkapismasi.html</a>
         </div>
       </div>
       <div class="kart k-mor" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/><path d="M8 10.5h5"/></svg></span>
         <div class="govde">
-          <h3>Sözlük Dedektifi<span class="isin">ders başı ısınma</span></h3>
-          <div class="etiket">Oyun</div>
-          <p>Çekimli fiilin sözlükteki hâlini bulamıyorlarsa: yalın hâle gitme alıştırması.</p>
+          <h3><span data-i18n="ktl.ad_dedektif">Sözlük Dedektifi</span><span class="isin" data-i18n="ktl.isin">ders başı ısınma</span></h3>
+          <div class="etiket" data-i18n="ktl.e_oyun">Oyun</div>
+          <p data-i18n="ktl.d_dedektif">Çekimli fiilin sözlükteki hâlini bulamıyorlarsa: yalın hâle gitme alıştırması.</p>
           <a href="https://kidefarapca.com/sozluk.html#dedektif">kidefarapca.com/sozluk.html#dedektif</a>
         </div>
       </div>
       <div class="kart k-mor">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/><path d="M8 10.5h5"/></svg></span>
         <div class="govde">
-          <h3>Sözlük Simülasyonu</h3>
-          <div class="etiket">Uygulama</div>
-          <p>Sözlük kullanmayı adım adım göstermek gerekiyorsa: aramanın nasıl yapıldığı ekranda canlanır.</p>
+          <h3 data-i18n="ktl.ad_simulasyon">Sözlük Simülasyonu</h3>
+          <div class="etiket" data-i18n="ktl.e_uyg">Uygulama</div>
+          <p data-i18n="ktl.d_simulasyon">Sözlük kullanmayı adım adım göstermek gerekiyorsa: aramanın nasıl yapıldığı ekranda canlanır.</p>
           <a href="https://kidefarapca.com/sozluk.html#simulasyon">kidefarapca.com/sozluk.html#simulasyon</a>
         </div>
       </div>
       <div class="kart k-mor">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="4" width="18.8" height="12.5" rx="2"/><path d="M12 16.5v3.5M8.5 20h7"/><path d="M6.6 8.4h7M6.6 11.6h4.4"/></svg></span>
         <div class="govde">
-          <h3>Kelimenin Serüveni</h3>
-          <div class="etiket">Sunum + etkinlik · 6 seviye</div>
-          <p>Kelimeyi köküyle, hikâyesiyle öğretmek istiyorsanız: anlatım ve etkinlik bir arada.</p>
+          <h3 data-i18n="kt.serven">Kelimenin Serüveni</h3>
+          <div class="etiket" data-i18n="ktl.e_kss" data-i18n-tr="Sunum + etkinlik · {n} seviye" data-i18n-yer='{"n":"6"}'>Sunum + etkinlik · 6 seviye</div>
+          <p data-i18n="ktl.d_kss">Kelimeyi köküyle, hikâyesiyle öğretmek istiyorsanız: anlatım ve etkinlik bir arada.</p>
           <a href="https://kidefarapca.com/kssi.html">kidefarapca.com/kssi.html</a>
         </div>
       </div>
@@ -588,80 +591,80 @@ html.cerceve .ust-serit .geri-alan{display:none}
   <section data-sek="dil">
     <div class="bbas b-yesil">
       <span class="bno">3</span>
-      <h2>Sarf — kök, vezin ve türeme</h2>
-      <span class="bnot">Kökten kelimenin nasıl türediğini göstermek için</span>
+      <h2 data-i18n="ktl.b3">Sarf — kök, vezin ve türeme</h2>
+      <span class="bnot" data-i18n="ktl.b3_not">Kökten kelimenin nasıl türediğini göstermek için</span>
       <span class="bsay">8 araç</span>
     </div>
     <div class="kgrid">
       <div class="kart k-yesil">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3M5.4 5.4l2.1 2.1M16.5 16.5l2.1 2.1M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1"/></svg></span>
         <div class="govde">
-          <h3>Kelime Fabrikası</h3>
-          <div class="etiket">Uygulama</div>
-          <p>Kökten kelimenin nasıl türediğini gösteremiyorsanız: kök girilir, vezinler tek tek işler.</p>
+          <h3 data-i18n="kart.fabrika">Kelime Fabrikası</h3>
+          <div class="etiket" data-i18n="ktl.e_uyg">Uygulama</div>
+          <p data-i18n="ktl.d_fabrika">Kökten kelimenin nasıl türediğini gösteremiyorsanız: kök girilir, vezinler tek tek işler.</p>
           <a href="https://kidefarapca.com/sarf.html">kidefarapca.com/sarf.html</a>
         </div>
       </div>
       <div class="kart k-yesil">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3M5.4 5.4l2.1 2.1M16.5 16.5l2.1 2.1M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1"/></svg></span>
         <div class="govde">
-          <h3>Kelime Çarkı</h3>
-          <div class="etiket">Uygulama</div>
-          <p>Kök sabitken veznin neyi değiştirdiğini canlı göstermek için: çark döner, kelime türer.</p>
+          <h3 data-i18n="kc.baslik">Kelime Çarkı</h3>
+          <div class="etiket" data-i18n="ktl.e_uyg">Uygulama</div>
+          <p data-i18n="ktl.d_cark">Kök sabitken veznin neyi değiştirdiğini canlı göstermek için: çark döner, kelime türer.</p>
           <a href="https://kidefarapca.com/kelimecarki.html">kidefarapca.com/kelimecarki.html</a>
         </div>
       </div>
       <div class="kart k-yesil" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M12 11c-3 0-5 2-5 5v3M12 11c3 0 5 2 5 5v3"/><circle cx="12" cy="3.2" r="1.4"/></svg></span>
         <div class="govde">
-          <h3>Kökü Tanı<span class="isin">ders başı ısınma</span></h3>
-          <div class="etiket">Oyun</div>
-          <p>Kelimenin kökünü ayıklamakta zorlanıyorlarsa: aynı kökten türeyenleri bulma.</p>
+          <h3><span data-i18n="kart.koku_tani">Kökü Tanı</span><span class="isin" data-i18n="ktl.isin">ders başı ısınma</span></h3>
+          <div class="etiket" data-i18n="ktl.e_oyun">Oyun</div>
+          <p data-i18n="ktl.d_koku">Kelimenin kökünü ayıklamakta zorlanıyorlarsa: aynı kökten türeyenleri bulma.</p>
           <a href="https://kidefarapca.com/kokutani.html">kidefarapca.com/kokutani.html</a>
         </div>
       </div>
       <div class="kart k-yesil" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5h4.5v4.5H7z"/><path d="M14 15h4.5v4.5H14z"/><path d="M11.5 6.8h4a3 3 0 0 1 3 3v5"/><path d="M16.5 12.6l2 2.4 2-2.4"/></svg></span>
         <div class="govde">
-          <h3>Kökten Gövdeye<span class="isin">ders başı ısınma</span></h3>
-          <div class="etiket">Oyun · sürükle-bırak</div>
-          <p>Kökü doğru kalıba yerleştirme alıştırması gerekiyorsa: kök sürüklenir, vezne oturur.</p>
+          <h3><span data-i18n="kart.kokten">Kökten Gövdeye</span><span class="isin" data-i18n="ktl.isin">ders başı ısınma</span></h3>
+          <div class="etiket" data-i18n="ktl.e_surukle">Oyun · sürükle-bırak</div>
+          <p data-i18n="ktl.d_kokten">Kökü doğru kalıba yerleştirme alıştırması gerekiyorsa: kök sürüklenir, vezne oturur.</p>
           <a href="https://kidefarapca.com/koktengovdeye.html">kidefarapca.com/koktengovdeye.html</a>
         </div>
       </div>
       <div class="kart k-yesil" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 8.5V13l3 2"/><path d="M9 2.5h6"/></svg></span>
         <div class="govde">
-          <h3>Zamanla Yarış<span class="isin">ders başı ısınma</span></h3>
-          <div class="etiket">Oyun · süreli</div>
-          <p>Türetmeyi hıza bağlayıp tekrarı canlandırmak için: süre dolmadan gövdeyi kur.</p>
+          <h3><span data-i18n="kart.zamanla">Zamanla Yarış</span><span class="isin" data-i18n="ktl.isin">ders başı ısınma</span></h3>
+          <div class="etiket" data-i18n="ktl.e_sureli">Oyun · süreli</div>
+          <p data-i18n="ktl.d_zamanla">Türetmeyi hıza bağlayıp tekrarı canlandırmak için: süre dolmadan gövdeyi kur.</p>
           <a href="https://kidefarapca.com/zamanlayaris.html">kidefarapca.com/zamanlayaris.html</a>
         </div>
       </div>
       <div class="kart k-yesil" data-isinma="1">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 20c.6-4 2.8-6 5.5-6s4.9 2 5.5 6"/><path d="M13.5 14.6c.9-.4 1.7-.6 2.5-.6 2.7 0 4.9 2 5.5 6"/></svg></span>
         <div class="govde">
-          <h3>İkiki<span class="isin">ders başı ısınma</span></h3>
-          <div class="etiket">Oyun · iki kişilik</div>
-          <p>Sınıfı ikili yarışmayla türetmeye sokmak için: kelimeyi ilk kim türetecek?</p>
+          <h3>İkiki<span class="isin" data-i18n="ktl.isin">ders başı ısınma</span></h3>
+          <div class="etiket" data-i18n="ktl.e_iki">Oyun · iki kişilik</div>
+          <p data-i18n="ktl.d_ikiki">Sınıfı ikili yarışmayla türetmeye sokmak için: kelimeyi ilk kim türetecek?</p>
           <a href="https://kidefarapca.com/ikikidijital.html">kidefarapca.com/ikikidijital.html</a>
         </div>
       </div>
       <div class="kart k-yesil genis">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/><path d="M8 10.5h5"/></svg></span>
         <div class="govde">
-          <h3>Vezinler Tablosu</h3>
-          <div class="etiket">Başvuru tablosu · kök sözlüğü</div>
-          <p><b>Sınıf ortamı için tasarlanmış ilk sözlük.</b> Büyüteç Arapça klavyeyi açar; üç harfli kökü (<span dir="rtl">ك ت ب</span>) yazarsınız, tablodaki <em>bütün</em> vezinler o kökten türeyen kelimeyle dolar — anlamı, örnek cümlesi ve fiil çekimiyle birlikte. Sıradan sözlük kelimeden anlama gider; burası kökten bütün kelime ailesine gider. Kök yazmadan da gezilir: kutularda kalıbın kendisi durur. Ayrıca konu konu kelime listeleri ve ilk harfine göre dizilmiş kök listesi içinde.</p>
+          <h3 data-i18n="kart.vezinler">Vezinler Tablosu</h3>
+          <div class="etiket" data-i18n="ktl.e_vezin">Başvuru tablosu · kök sözlüğü</div>
+          <p data-i18n-html="ktl.d_vezin"><b>Sınıf ortamı için tasarlanmış ilk sözlük.</b> Büyüteç Arapça klavyeyi açar; üç harfli kökü (<span dir="rtl">ك ت ب</span>) yazarsınız, tablodaki <em>bütün</em> vezinler o kökten türeyen kelimeyle dolar — anlamı, örnek cümlesi ve fiil çekimiyle birlikte. Sıradan sözlük kelimeden anlama gider; burası kökten bütün kelime ailesine gider. Kök yazmadan da gezilir: kutularda kalıbın kendisi durur. Ayrıca konu konu kelime listeleri ve ilk harfine göre dizilmiş kök listesi içinde.</p>
           <a href="https://kidefarapca.com/kaliplartablosu.html">kidefarapca.com/kaliplartablosu.html</a>
         </div>
       </div>
       <div class="kart k-yesil">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M3 9.5h18M3 14.5h18M9 4.5v15M15 4.5v15"/></svg></span>
         <div class="govde">
-          <h3>Fiil Çekim Atlası</h3>
-          <div class="etiket">Başvuru</div>
-          <p>Mazi, muzari ve emir çekimi tahtada tek tek yazılıyorsa: üç çekim hazır ve karşılaştırmalı.</p>
+          <h3 data-i18n="kart.atlas">Fiil Çekim Atlası</h3>
+          <div class="etiket" data-i18n="ktl.e_basvuru">Başvuru</div>
+          <p data-i18n="ktl.d_atlas">Mazi, muzari ve emir çekimi tahtada tek tek yazılıyorsa: üç çekim hazır ve karşılaştırmalı.</p>
           <a href="https://kidefarapca.com/fiiller.html">kidefarapca.com/fiiller.html</a>
         </div>
       </div>
@@ -670,26 +673,26 @@ html.cerceve .ust-serit .geri-alan{display:none}
   <section data-sek="dil">
     <div class="bbas b-turuncu">
       <span class="bno">4</span>
-      <h2>Nahiv — isim, tamlama ve cümle</h2>
-      <span class="bnot">İ'râb ve cümle yapısı</span>
+      <h2 data-i18n="ktl.b4">Nahiv — isim, tamlama ve cümle</h2>
+      <span class="bnot" data-i18n="ktl.b4_not">İ'râb ve cümle yapısı</span>
       <span class="bsay">2 araç</span>
     </div>
     <div class="kgrid">
       <div class="kart k-turuncu">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M7 9.5h4M7 13h7M15.5 9.5h1.5"/></svg></span>
         <div class="govde">
-          <h3>İsim x 4</h3>
-          <div class="etiket">Uygulama</div>
-          <p>İsmin dört özelliğini (marife-nekra, cinsiyet, sayı, i'râb) birlikte sormak için: tek kelime, dört pencere.</p>
+          <h3 data-i18n="kart.isimx4">İsim x 4</h3>
+          <div class="etiket" data-i18n="ktl.e_uyg">Uygulama</div>
+          <p data-i18n="ktl.d_isimx4">İsmin dört özelliğini (marife-nekra, cinsiyet, sayı, i'râb) birlikte sormak için: tek kelime, dört pencere.</p>
           <a href="https://kidefarapca.com/isimx4.html">kidefarapca.com/isimx4.html</a>
         </div>
       </div>
       <div class="kart k-turuncu">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span>
         <div class="govde">
-          <h3>Tamlama ve Cümleler</h3>
-          <div class="etiket">Başvuru tablosu</div>
-          <p>Dört yapıyı ve i'râbı karşılaştırmak gerekiyorsa: isim tamlaması, sıfat tamlaması, isim ve fiil cümlesi tek tabloda.</p>
+          <h3 data-i18n="tc.sayfa_baslik">Tamlama ve Cümleler</h3>
+          <div class="etiket" data-i18n="ktl.e_tablo">Başvuru tablosu</div>
+          <p data-i18n="ktl.d_tamlama">Dört yapıyı ve i'râbı karşılaştırmak gerekiyorsa: isim tamlaması, sıfat tamlaması, isim ve fiil cümlesi tek tabloda.</p>
           <a href="https://kidefarapca.com/tamlamavecumleler.html">kidefarapca.com/tamlamavecumleler.html</a>
         </div>
       </div>
@@ -698,44 +701,44 @@ html.cerceve .ust-serit .geri-alan{display:none}
   <section data-sek="okuma">
     <div class="bbas b-kirmizi">
       <span class="bno">5</span>
-      <h2>Konuşma, dinleme ve ezber</h2>
-      <span class="bnot">Sözlü beceri ve ezber takibi</span>
+      <h2 data-i18n="ktl.b5">Konuşma, dinleme ve ezber</h2>
+      <span class="bnot" data-i18n="ktl.b5_not">Sözlü beceri ve ezber takibi</span>
       <span class="bsay">4 araç</span>
     </div>
     <div class="kgrid">
       <div class="kart k-kirmizi">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5h11v8h-7l-4 3z"/><path d="M9.5 9.5h11v7h-3l-3 2.5V16.5h-5z"/></svg></span>
         <div class="govde">
-          <h3>Muhadese</h3>
-          <div class="etiket">Uygulama · sınıf seçimli</div>
-          <p>Konuşma dersinde hazır kalıp ve diyalog lazımsa: kelime, cümle, diyalog ve kalıp pratiği.</p>
+          <h3 data-i18n="kart.muhadese">Muhadese</h3>
+          <div class="etiket" data-i18n="ktl.e_muhadese">Uygulama · sınıf seçimli</div>
+          <p data-i18n="ktl.d_muhadese">Konuşma dersinde hazır kalıp ve diyalog lazımsa: kelime, cümle, diyalog ve kalıp pratiği.</p>
           <a href="https://kidefarapca.com/muhadese.html">kidefarapca.com/muhadese.html</a>
         </div>
       </div>
       <div class="kart k-kirmizi">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-8-4.6-8-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 8 2.7c0 5.6-8 10.2-8 10.2z"/></svg></span>
         <div class="govde">
-          <h3>Kısa Sureler</h3>
-          <div class="etiket">Uygulama</div>
-          <p>Ezber takibi yapmanız gerekiyorsa: sûreleri dinleyerek ve tekrarlayarak çalışma.</p>
+          <h3 data-i18n="kart.sureler">Kısa Sureler</h3>
+          <div class="etiket" data-i18n="ktl.e_uyg">Uygulama</div>
+          <p data-i18n="ktl.d_sureler">Ezber takibi yapmanız gerekiyorsa: sûreleri dinleyerek ve tekrarlayarak çalışma.</p>
           <a href="https://kidefarapca.com/kisasureler.html">kidefarapca.com/kisasureler.html</a>
         </div>
       </div>
       <div class="kart k-kirmizi">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 5.4A2 2 0 0 1 6.2 3.4h11.6a2 2 0 0 1 2 2v13.2a2 2 0 0 1-2 2H6.2a2 2 0 0 1-2-2z"/><path d="M8 8.2h8M8 11.6h8M8 15h5"/></svg></span>
         <div class="govde">
-          <h3>Tecvid</h3>
-          <div class="etiket">Sunum + PDF</div>
-          <p>Med, sâkin nûn, idgâm ve kalkaleyi göstermek için: canlandırmalı etkileşimli sunum ve yanında PDF ders notu.</p>
+          <h3 data-i18n="kart.tecvid">Tecvid</h3>
+          <div class="etiket" data-i18n="ktl.e_sunum_pdf">Sunum + PDF</div>
+          <p data-i18n="ktl.d_tecvid">Med, sâkin nûn, idgâm ve kalkaleyi göstermek için: canlandırmalı etkileşimli sunum ve yanında PDF ders notu.</p>
           <a href="https://kidefarapca.com/tecvid.html">kidefarapca.com/tecvid.html</a>
         </div>
       </div>
       <div class="kart k-kirmizi">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-8-4.6-8-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 8 2.7c0 5.6-8 10.2-8 10.2z"/></svg></span>
         <div class="govde">
-          <h3>Namaz</h3>
-          <div class="etiket">Uygulama</div>
-          <p>Namaz sûre ve duâlarını çalıştırmak için: okunuş ve anlamıyla birlikte.</p>
+          <h3 data-i18n="kart.namaz">Namaz</h3>
+          <div class="etiket" data-i18n="ktl.e_uyg">Uygulama</div>
+          <p data-i18n="ktl.d_namaz">Namaz sûre ve duâlarını çalıştırmak için: okunuş ve anlamıyla birlikte.</p>
           <a href="https://kidefarapca.com/namaz.html">kidefarapca.com/namaz.html</a>
         </div>
       </div>
@@ -744,12 +747,12 @@ html.cerceve .ust-serit .geri-alan{display:none}
   <section data-sek="olcme">
     <div class="bbas b-lacivert">
       <span class="bno">6</span>
-      <h2>Ölçme, sınav ve kitap</h2>
-      <span class="bnot">Ders sonunda kanıt toplamak ve sınava hazırlık</span>
+      <h2 data-i18n="ktl.b6">Ölçme, sınav ve kitap</h2>
+      <span class="bnot" data-i18n="ktl.b6_not">Ders sonunda kanıt toplamak ve sınava hazırlık</span>
       <span class="bsay">8 araç</span>
     </div>
     <div class="kgrid">
-      <div class="kart k-lacivert">
+      <div class="kart k-lacivert" data-kd-yalniz-tr>
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h9l4 4v13H6z"/><path d="M15 3.5v4h4"/><path d="M9 13.2l2 2 4.2-4.6"/></svg></span>
         <div class="govde">
           <h3>Soru Hazırla</h3>
@@ -758,7 +761,7 @@ html.cerceve .ust-serit .geri-alan{display:none}
           <a href="https://kidefarapca.com/sinav.html">kidefarapca.com/sinav.html</a>
         </div>
       </div>
-      <div class="kart k-lacivert">
+      <div class="kart k-lacivert" data-kd-yalniz-tr>
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.6h12a1.4 1.4 0 0 1 1.4 1.4v14a1.4 1.4 0 0 1-1.4 1.4H6a1.4 1.4 0 0 1-1.4-1.4V5A1.4 1.4 0 0 1 6 3.6z"/><path d="M8 8.4h8M8 12h8M8 15.6h4"/><path d="M15.4 15l1.4 1.4 2.6-2.8"/></svg></span>
         <div class="govde">
           <h3>Değerlendirme Ölçeği</h3>
@@ -770,13 +773,13 @@ html.cerceve .ust-serit .geri-alan{display:none}
       <div class="kart k-lacivert">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4h9v5.5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 5.5H5a2 2 0 0 0 2.5 4.2M16.5 5.5H19a2 2 0 0 1-2.5 4.2"/><path d="M10.5 14h3v3.5h-3zM8 20.5h8"/></svg></span>
         <div class="govde">
-          <h3>Bilgi Yarışması</h3>
-          <div class="etiket">Canlı · çevrimdışı da çalışır</div>
-          <p>Ders sonunda öğrenme kanıtı toplamak ya da sınıfları canlı yarıştırmak istiyorsanız: öğrenciler telefon, tablet ya da bilgisayarla karekodu okutup katılır. <em>İnternet yoksa kâğıt ve tahtayla çevrimdışı kipi yürür.</em></p>
+          <h3 data-i18n="kart.bilgi">Bilgi Yarışması</h3>
+          <div class="etiket" data-i18n="ktl.e_bilgi">Canlı · çevrimdışı da çalışır</div>
+          <p data-i18n-html="ktl.d_bilgi">Ders sonunda öğrenme kanıtı toplamak ya da sınıfları canlı yarıştırmak istiyorsanız: öğrenciler telefon, tablet ya da bilgisayarla karekodu okutup katılır. <em>İnternet yoksa kâğıt ve tahtayla çevrimdışı kipi yürür.</em></p>
           <a href="https://kidefarapca.com/bilgiyarismasikacom.html">kidefarapca.com/bilgiyarismasikacom.html</a>
         </div>
       </div>
-      <div class="kart k-lacivert">
+      <div class="kart k-lacivert" data-kd-yalniz-tr>
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h9l4 4v13H6z"/><path d="M15 3.5v4h4"/><path d="M9 12h6M9 15.5h4"/></svg></span>
         <div class="govde">
           <h3>YDT Arapça</h3>
@@ -785,7 +788,7 @@ html.cerceve .ust-serit .geri-alan{display:none}
           <a href="https://kidefarapca.com/ydtarapca.html">kidefarapca.com/ydtarapca.html</a>
         </div>
       </div>
-      <div class="kart k-lacivert">
+      <div class="kart k-lacivert" data-kd-yalniz-tr>
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 4.8 7.4 4.4 4 5v13c3.4-.6 6 0 8 1.6"/><path d="M12 6.5C14 4.8 16.6 4.4 20 5v13c-3.4-.6-6 0-8 1.6"/></svg></span>
         <div class="govde">
           <h3>Kidef Arapça</h3>
@@ -794,7 +797,7 @@ html.cerceve .ust-serit .geri-alan{display:none}
           <a href="https://kidefarapca.com/kitap/kidef-arapca-2-baski/">kidefarapca.com/kitap/kidef-arapca-2-baski</a>
         </div>
       </div>
-      <div class="kart k-lacivert">
+      <div class="kart k-lacivert" data-kd-yalniz-tr>
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h8l4.5 4.5V20.5H6z"/><path d="M14 3.5V8h4.5"/><path d="M9 12.5h7M9 16h5"/></svg></span>
         <div class="govde">
           <h3>Pratik Sayfalar</h3>
@@ -803,7 +806,7 @@ html.cerceve .ust-serit .geri-alan{display:none}
           <a href="https://kidefarapca.com/flipbooks/pratiksayfalar/flipbookpratiksayfalar.html">kidefarapca.com/flipbooks/pratiksayfalar/…</a>
         </div>
       </div>
-      <div class="kart k-lacivert genis">
+      <div class="kart k-lacivert genis" data-kd-yalniz-tr>
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.2A2 2 0 0 1 6 3.4h12a1.6 1.6 0 0 1 1.6 1.6v12.6H6A2 2 0 0 0 4 19.6z"/><path d="M4 19.6a2 2 0 0 0 2 2h13.6"/><path d="M8.4 7.6h7M8.4 11h5"/></svg></span>
         <div class="govde">
           <h3>MEB Ders Kitapları</h3>
@@ -814,7 +817,7 @@ html.cerceve .ust-serit .geri-alan{display:none}
           <div class="cipler"><span class="cip-on">Sınıf:</span><a class="cip" href="https://kidefarapca.com/kitap/5-sinif-2026-2027/">5</a><a class="cip" href="https://kidefarapca.com/kitap/6-sinif-2026-2027/">6</a><a class="cip" href="https://kidefarapca.com/kitap/7-sinif-2027-2028/">7</a></div>
         </div>
       </div>
-      <div class="kart k-lacivert">
+      <div class="kart k-lacivert" data-kd-yalniz-tr>
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="7.4" width="18.8" height="11.2" rx="4"/><path d="M7 11.4v3.2M5.4 13h3.2"/><circle cx="16" cy="12.4" r="1.1"/><circle cx="18.2" cy="15" r="1.1"/><path d="M9 7.4 10.2 4h3.6l1.2 3.4"/></svg></span>
         <div class="govde">
           <h3>Kitap Etkinlikleri</h3>
@@ -829,26 +832,28 @@ html.cerceve .ust-serit .geri-alan{display:none}
   <section data-sek="sunum">
     <div class="bbas b-amber">
       <span class="bno">7</span>
-      <h2>Ders sunumları</h2>
-      <span class="bnot">Konuyu adım adım anlatan, kumandayla ilerleyen slaytlar</span>
+      <h2 data-i18n="kart.sunumlar">Ders sunumları</h2>
+      <span class="bnot" data-i18n="ktl.b7_not">Konuyu adım adım anlatan, kumandayla ilerleyen slaytlar</span>
       <span class="bsay">4 deste · 47 slayt</span>
     </div>
     <div class="kgrid">
       <div class="kart k-amber genis">
         <span class="karo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="4" width="18.8" height="12.5" rx="2"/><path d="M12 16.5v3.5M8.5 20h7"/><path d="M6.6 8.4h7M6.6 11.6h4.4"/></svg></span>
         <div class="govde">
-          <h3>Sunum Merkezi</h3>
-          <div class="etiket">Kumandayla ilerler · tam ekran</div>
-          <p>Konuyu adım adım anlatacak hazır slayt lazımsa: dört deste tek sayfada, kart listesi
+          <h3 data-i18n="ktl.ad_sunum">Sunum Merkezi</h3>
+          <div class="etiket" data-i18n="ktl.e_sunum">Kumandayla ilerler · tam ekran</div>
+          <p data-i18n="ktl.d_sunum">Konuyu adım adım anlatacak hazır slayt lazımsa: dört deste tek sayfada, kart listesi
              ya da konu haritası olarak. Slaytlar tek tuşla ilerler, alıştırmanın cevabı bir
              sonraki adımda açılır.</p>
-          <div class="cipler"><span class="cip-on">Destelere doğrudan:</span><a class="cip" href="https://kidefarapca.com/sunum%20html/sunumlar.html?s=arapcaninonemi">Niçin Arapça? · 12 slayt</a><a class="cip" href="https://kidefarapca.com/sunum%20html/sunumlar.html?s=harfitarif">Harf-i Ta'rîf <bdi>«ال»</bdi> · 10 slayt</a><a class="cip" href="https://kidefarapca.com/sunum%20html/sunumlar.html?s=sayiisimleri">Müfred, Tesniye, Cem' · 9 slayt</a></div>
+          <div class="cipler"><span class="cip-on" data-i18n="ktl.c_deste">Destelere doğrudan:</span><a class="cip" href="https://kidefarapca.com/sunum%20html/sunumlar.html?s=arapcaninonemi"><span data-i18n="ktl.s_onem">Niçin Arapça?</span> · <span data-i18n="ktl.n_slayt" data-i18n-tr="{n} slayt" data-i18n-yer='{"n":"12"}'>12 slayt</span></a><a class="cip" href="https://kidefarapca.com/sunum%20html/sunumlar.html?s=harfitarif"><span data-i18n="ktl.s_tarif">Harf-i Ta'rîf</span> <bdi>«ال»</bdi> · <span data-i18n="ktl.n_slayt" data-i18n-tr="{n} slayt" data-i18n-yer='{"n":"10"}'>10 slayt</span></a><a class="cip" href="https://kidefarapca.com/sunum%20html/sunumlar.html?s=sayiisimleri"><span data-i18n="ktl.s_sayi">Müfred, Tesniye, Cem'</span> · <span data-i18n="ktl.n_slayt" data-i18n-tr="{n} slayt" data-i18n-yer='{"n":"9"}'>9 slayt</span></a></div>
           <a href="https://kidefarapca.com/sunum%20html/sunumlar.html?don=liste">kidefarapca.com/sunum html/sunumlar.html</a>
         </div>
       </div>
     </div>
   </section>
-  <section data-sek="sunum">
+  <!-- data-kd-yalniz-tr (17.10.2026): seminerler (Maarif Modeli…) ve aşağıdaki
+       öğretmen dokümanları Türkiye'ye özel — başka dil seçilince gizli (sistem/dil.js). -->
+  <section data-sek="sunum" data-kd-yalniz-tr>
     <div class="bbas b-kahve">
       <span class="bno">8</span>
       <h2>Öğretmen seminerleri</h2>
@@ -881,7 +886,7 @@ html.cerceve .ust-serit .geri-alan{display:none}
       </div>
     </div>
   </section>
-  <section data-sek="olcme">
+  <section data-sek="olcme" data-kd-yalniz-tr>
     <div class="bbas b-gri">
       <span class="bno">9</span>
       <h2>Öğretmen dokümanları</h2>
@@ -1039,7 +1044,9 @@ html.cerceve .ust-serit .geri-alan{display:none}
     </div>
   </section>
 
-<div class="avbolum">
+<!-- data-kd-yalniz-tr: kayıt avantajları Sınıflarım'ı anlatıyor; Sınıflarım
+     Türkçe dışında gizli olduğu için bu bölüm de gizli. -->
+<div class="avbolum" data-kd-yalniz-tr>
   <!-- ============ 10 ============ -->
   <section>
     <h2>Kayıt olunca ne kazanırsınız? <span class="sayi">Ücretsiz · öğretmen hesabı</span></h2>
@@ -1111,7 +1118,7 @@ html.cerceve .ust-serit .geri-alan{display:none}
 </div>
 
   <footer class="dip">
-    <span>Hepsi tek adreste: <b>kidefarapca.com</b> — ücretsiz, kurulumsuz, akıllı tahtada ve telefonda çalışır.</span>
+    <span data-i18n-html="ktl.dip">Hepsi tek adreste: <b>kidefarapca.com</b> — ücretsiz, kurulumsuz, akıllı tahtada ve telefonda çalışır.</span>
     <span>Kidef Arapça</span>
   </footer>
 
@@ -1153,6 +1160,20 @@ function katalogGeri(e){
 (function(){
   var srt = document.querySelector('.seksrt');
   if (!srt) return;
+  /* ÇOK DİLLİ (17.10.2026) — sayılar ve sekme sayacı seçili dilde
+     (sistem/dil.js sözlüğü; dil Türkçeyse ya da sözlük yoksa Türkçesi).
+     Türkçe dışında data-kd-yalniz-tr altındaki kartlar (sınav, ölçek,
+     YDT, dijital kitaplar, MEB belgeleri) gizli; sayılmazlar. */
+  function kdMetin(k, tr, yer){
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function(t, ad){
+      return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+  }
+  function dilGizli(c){
+    return document.documentElement.getAttribute('data-kd-tr') === '0' && !!c.closest('[data-kd-yalniz-tr]');
+  }
   var bolumler = [].slice.call(document.querySelectorAll('.sayfa section[data-sek]'));
   var avBolum  = document.querySelector('.avbolum');
   var say      = document.getElementById('seksay');
@@ -1163,7 +1184,7 @@ function katalogGeri(e){
   function sec(k){
     var gorunen = 0;
     bolumler.forEach(function(b){
-      var kartlar = [].slice.call(b.querySelectorAll('.kart'));
+      var kartlar = [].slice.call(b.querySelectorAll('.kart')).filter(function(c){ return !dilGizli(c); });
       var kalan;
       if (k === 'isinma'){
         kalan = 0;
@@ -1180,7 +1201,11 @@ function katalogGeri(e){
       var sy = b.querySelector('.bsay');
       if (sy){
         if (!sy.dataset.tam) sy.dataset.tam = sy.textContent;
-        sy.textContent = (k === 'isinma' && kalan) ? kalan + ' ısınma oyunu' : sy.dataset.tam;
+        var tam = sy.dataset.tam, m;
+        if (k === 'isinma' && kalan) sy.textContent = kdMetin('ktl.n_isinma', '{n} ısınma oyunu', {n: kalan});
+        else if (/^\d+ araç$/.test(tam)) sy.textContent = kdMetin('ktl.n_arac', '{n} araç', {n: kartlar.length});
+        else if ((m = /^(\d+) deste · (\d+) slayt$/.exec(tam))) sy.textContent = kdMetin('ktl.n_deste', '{d} deste · {s} slayt', {d: m[1], s: m[2]});
+        else sy.textContent = tam;
       }
       gizle(b, kalan === 0);
       gorunen += kalan;
@@ -1195,7 +1220,7 @@ function katalogGeri(e){
     if (say){
       say.textContent = (k === 'hepsi')
         ? ''
-        : gorunen + ' araç gösteriliyor · «Hepsi» sekmesi kataloğun tamamını açar.';
+        : kdMetin('ktl.gosterilen', '{n} araç gösteriliyor · «Hepsi» sekmesi kataloğun tamamını açar.', {n: gorunen});
     }
     try{ history.replaceState(null, '', k === 'hepsi' ? location.pathname : '#' + k); }catch(_){}
     /* SAYFA BAŞINA DÖNÜLMÜYOR: şerit zaten üste yapışık durduğu için
@@ -1221,6 +1246,12 @@ function katalogGeri(e){
   /* Adres çubuğundaki #sekme ile doğrudan açılabilsin */
   var bas = (location.hash || '').replace('#','');
   sec(tuslar.some(function(d){ return d.dataset.sek === bas; }) ? bas : 'hepsi');
+
+  /* Dil değişince (sözlük ilk yüklendiğinde de) sayılar ve sayaç yeniden */
+  document.addEventListener('kidef:dil', function(){
+    var d = srt.querySelector('.sektus.secili');
+    sec((d && d.dataset.sek) || 'hepsi');
+  });
 })();
 </script>
 

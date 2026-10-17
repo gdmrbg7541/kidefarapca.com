@@ -1,3 +1,42 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
 /* --- WEB AUDIO API SES SİSTEMİ --- */
         let audioCtx;
         function initAudio() { if (audioCtx) { if (audioCtx.state === 'suspended') audioCtx.resume(); return; } try { if (window.__audioCtx) { audioCtx = window.__audioCtx; if (audioCtx.state === 'suspended') audioCtx.resume(); } else { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); window.__audioCtx = audioCtx; } console.log("AudioContext başlatıldı/devam ettirildi. Durum:", audioCtx.state); } catch(e) { console.error("Web Audio API desteklenmiyor", e); } }
@@ -35,6 +74,20 @@
             { html: 'اَلنَّافِذَةِ', turkish: 'Pencere', answers: ['Marife', 'Müennes', 'Müfret', Q4_ANSWERS.Q4_3] } 
         ];
         const questionTitles = [ "1. Tür?", "2. Cinsiyet?", "3. Sayı?", "4. İ'rab?" ];
+        /* 16.10.2026 — çok dilli site: soru başlığı ve seçeneğin GÖRÜNEN adı
+           seçilen dilde. Cevap denetimi data-value'daki Türkçe adla yapılır;
+           bu yüzden oyunun mantığı dil değişince etkilenmez. */
+        const IX_SORU = ['ix.soru_tur', 'ix.soru_cinsiyet', 'ix.soru_sayi', 'ix.soru_irab'];
+        const IX_ETIKET = { 'Marife': 'ix.marife', 'Nekra': 'ix.nekra', 'Müzekker': 'ix.muzekker',
+            'Müennes': 'ix.muennes', 'Müfret': 'ix.mufret', 'Tesniye': 'ix.tesniye', "Cem'": 'ix.cem',
+            'Merfu': 'ix.merfu', 'Mansub': 'ix.mansub', 'Mecrur': 'ix.mecrur', 'Mansub-Mecrur': 'ix.mansub_mecrur' };
+        function ixEtiket(option) {
+            const s = String(option);
+            const m = s.match(/^([^<]+?)(\s*<.*)?$/);   // "Merfu <span class=\"ar\">…</span>"
+            const ad = m ? m[1].trim() : s;
+            const kuyruk = (m && m[2]) ? m[2] : '';
+            return IX_ETIKET[ad] ? kdIsaretli(IX_ETIKET[ad], ad) + kuyruk : s;
+        }
         const questionOptions = [ ['Marife', 'Nekra'], ['Müzekker', 'Müennes'], ['Müfret', 'Tesniye', 'Cem\''], [ Q4_ANSWERS.Q4_1, Q4_ANSWERS.Q4_2, Q4_ANSWERS.Q4_3, Q4_ANSWERS.Q4_4, Q4_ANSWERS.Q4_5, Q4_ANSWERS.Q4_6, Q4_ANSWERS.Q4_7, Q4_ANSWERS.Q4_8, Q4_ANSWERS.Q4_9 ] ];
         
         // --- Element Tanımlamaları ---
@@ -131,7 +184,7 @@
         function loadNextWord() { 
             playClickSound(); 
             proceedContainerEl.classList.add('hidden'); 
-            if (shuffledWords.length < gameMode) { shuffledWords = [...finalList]; shuffleArray(shuffledWords); if (shuffledWords.length < gameMode && gameMode > 1) { alert("2 farklı kelime için yeterli kelime listesi yok!"); goToDifficultySelection(); return; } } 
+            if (shuffledWords.length < gameMode) { shuffledWords = [...finalList]; shuffleArray(shuffledWords); if (shuffledWords.length < gameMode && gameMode > 1) { alert(kdMetin('ix.kelime_yok', "2 farklı kelime için yeterli kelime listesi yok!")); goToDifficultySelection(); return; } } 
             currentQuestionIndex = 0; mistakesP1 = []; mistakesP2 = []; player1Answered = false; player2Answered = false; feedbackDataP1 = null; feedbackDataP2 = null; 
             mainGameContentEl.style.opacity = 1; 
             mainGameContentEl.style.pointerEvents = 'auto'; 
@@ -139,7 +192,7 @@
             currentWordP1 = shuffledWords.pop(); 
             arabicWordElP1.innerHTML = colorizeSarf(currentWordP1.html); 
             turkishMeaningElP1.textContent = currentWordP1.turkish; 
-            if (gameMode === 2) { currentWordP2 = shuffledWords.pop(); while(currentWordP1.html === currentWordP2.html && shuffledWords.length > 0) { shuffledWords.unshift(currentWordP2); currentWordP2 = shuffledWords.pop(); } if (currentWordP1.html === currentWordP2.html) { alert("Listede kalan son iki kelime aynı."); goToDifficultySelection(); return; } arabicWordElP2.innerHTML = colorizeSarf(currentWordP2.html); turkishMeaningElP2.textContent = currentWordP2.turkish; player2AreaEl.classList.remove('hidden'); } else { player2AreaEl.classList.add('hidden'); } 
+            if (gameMode === 2) { currentWordP2 = shuffledWords.pop(); while(currentWordP1.html === currentWordP2.html && shuffledWords.length > 0) { shuffledWords.unshift(currentWordP2); currentWordP2 = shuffledWords.pop(); } if (currentWordP1.html === currentWordP2.html) { alert(kdMetin('ix.ayni_kelime', "Listede kalan son iki kelime aynı.")); goToDifficultySelection(); return; } arabicWordElP2.innerHTML = colorizeSarf(currentWordP2.html); turkishMeaningElP2.textContent = currentWordP2.turkish; player2AreaEl.classList.remove('hidden'); } else { player2AreaEl.classList.add('hidden'); } 
             optionsContainerP1.innerHTML = ''; 
             if (optionsContainerP2) optionsContainerP2.innerHTML = ''; 
             optionsContainerP1.style.pointerEvents = 'auto'; 
@@ -156,7 +209,7 @@
         }
         
         function updateTimer() { timeLeft--; updateTimerDisplay(); if (timeLeft <= 5 && timeLeft > 0) { playTimerTickSound(); } if (timeLeft <= 0) { clearInterval(timerInterval); handleTimeUp('timeup'); } }
-        function updateTimerDisplay() { timerDisplayEl.textContent = `Süre: ${timeLeft}s`; timerDisplayEl.style.color = timeLeft <= 5 ? '#dc3545' : 'var(--text-light)'; }
+        function updateTimerDisplay() { kdYaz(timerDisplayEl, 'ix.sure', 'Süre: {n}s', { n: timeLeft }); timerDisplayEl.style.color = timeLeft <= 5 ? '#dc3545' : 'var(--text-light)'; }
         
         function handleTimeUp(reason = 'timeup') { 
             playIncorrectSound(); 
@@ -168,13 +221,13 @@
         
         function displayQuestion() { 
             const questionText = questionTitles[currentQuestionIndex]; 
-            questionTitleElP1.textContent = questionText; 
+            kdYaz(questionTitleElP1, IX_SORU[currentQuestionIndex], questionText); 
             optionsContainerP1.innerHTML = ''; 
             optionsContainerP1.className = 'options-container'; 
             if (currentQuestionIndex === 3) optionsContainerP1.classList.add('q4-grid'); 
             
             if (gameMode === 2) { 
-                questionTitleElP2.textContent = questionText; 
+                kdYaz(questionTitleElP2, IX_SORU[currentQuestionIndex], questionText); 
                 optionsContainerP2.innerHTML = ''; 
                 optionsContainerP2.className = 'options-container'; 
                 if (currentQuestionIndex === 3) optionsContainerP2.classList.add('q4-grid'); 
@@ -204,7 +257,7 @@
         function createOptionButton(option, player) { 
             const button = document.createElement('button'); 
             button.dataset.value = option;
-            button.innerHTML = option; 
+            button.innerHTML = ixEtiket(option); 
             
             if (currentQuestionIndex === 3) { 
                 button.classList.add('q4-option'); 
@@ -214,13 +267,13 @@
             } else { 
                 let hintHTML = ''; 
                 switch (option) { 
-                    case 'Marife': hintHTML = ' <span class="hint-icon"><span class="al-hint">ال</span> ✓</span>'; button.innerHTML = option + hintHTML; break; 
-                    case 'Nekra': hintHTML = ' <span class="hint-icon"><span class="al-hint">ال</span> ✗</span>'; button.innerHTML = option + hintHTML; break; 
+                    case 'Marife': hintHTML = ' <span class="hint-icon"><span class="al-hint">ال</span> ✓</span>'; button.innerHTML = ixEtiket(option) + hintHTML; break; 
+                    case 'Nekra': hintHTML = ' <span class="hint-icon"><span class="al-hint">ال</span> ✗</span>'; button.innerHTML = ixEtiket(option) + hintHTML; break; 
                     case 'Müennes': button.classList.add('hint-pink'); break; 
                     case 'Müzekker': button.classList.add('hint-blue'); break; 
-                    case 'Müfret': hintHTML = ' <span class="hint-icon"><span class="num-hint">1</span></span>'; button.innerHTML = option + hintHTML; break; 
-                    case 'Tesniye': hintHTML = ' <span class="hint-icon"><span class="num-hint">2</span></span>'; button.innerHTML = option + hintHTML; break; 
-                    case 'Cem\'': hintHTML = ' <span class="hint-icon"><span class="num-hint">3+</span></span>'; button.innerHTML = option + hintHTML; break; 
+                    case 'Müfret': hintHTML = ' <span class="hint-icon"><span class="num-hint">1</span></span>'; button.innerHTML = ixEtiket(option) + hintHTML; break; 
+                    case 'Tesniye': hintHTML = ' <span class="hint-icon"><span class="num-hint">2</span></span>'; button.innerHTML = ixEtiket(option) + hintHTML; break; 
+                    case 'Cem\'': hintHTML = ' <span class="hint-icon"><span class="num-hint">3+</span></span>'; button.innerHTML = ixEtiket(option) + hintHTML; break; 
                 } 
             } 
             
@@ -344,9 +397,9 @@
             backButton.classList.remove('hidden'); 
             
             if (type === 'question') {
-                proceedButtonEl.textContent = 'Sonraki Soru'; 
+                kdYaz(proceedButtonEl, 'oyn.sonraki_soru', 'Sonraki Soru'); 
             } else { 
-                proceedButtonEl.textContent = 'Yeni Kelime'; 
+                kdYaz(proceedButtonEl, 'oyn.yeni_kelime', 'Yeni Kelime'); 
             }
             proceedContainerEl.classList.remove('hidden'); 
         }

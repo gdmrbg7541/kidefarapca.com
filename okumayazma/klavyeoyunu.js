@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- DATA MODULE (TAMAMEN DÜZELTİLDİ) ---
@@ -64,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log("Start game button clicked"); App.playSound('menuClick');
                     if (!App.state.selectedDifficulty) return;
                     const wordsForGame = Utils.shuffleArray(App.state.allWords).slice(0, App.state.gameSettings.wordCount);
-                    if (wordsForGame.length < App.state.gameSettings.wordCount) { alert(`Yeterli kelime bulunamadı (${wordsForGame.length}/${App.state.gameSettings.wordCount}). Lütfen daha fazla kelime ekleyin.`); return; }
+                    if (wordsForGame.length < App.state.gameSettings.wordCount) { alert(kdMetin('ko.kelime_yok', 'Yeterli kelime bulunamadı ({n}/{toplam}). Lütfen daha fazla kelime ekleyin.', { n: wordsForGame.length, toplam: App.state.gameSettings.wordCount })); return; }
                     TypingGame.start(wordsForGame, App.state.gameSettings); App.showScreen('typing-screen');
                 };
             } else { console.error("Başla butonu bulunamadı!"); }
@@ -76,28 +116,28 @@ document.addEventListener('DOMContentLoaded', () => {
         showResults(score, mistakes, accuracy, wpm, timeTaken) {
              const resultsScreen = document.getElementById('results-screen');
              resultsScreen.innerHTML = `
-                 <div class="header-navigation"><button class="back-btn" title="Ana Menü"><svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"></path></svg></button></div>
-                 <h2 id="results-title">Oyun Bitti!</h2>
+                 <div class="header-navigation"><button class="back-btn" data-i18n-title="nav.ana_menu" title="Ana Menü"><svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"></path></svg></button></div>
+                 <h2 id="results-title" data-i18n="oyn.oyun_bitti">Oyun Bitti!</h2>
                  <div class="results-stats">
-                     <div class="results-stat-item">Skor: <strong id="results-score">${Math.round(score)}</strong></div>
-                     <div class="results-stat-item">Doğruluk: <strong id="results-accuracy">${accuracy}%</strong></div>
-                     <div class="results-stat-item">Dakikadaki Kelime Sayısı: <strong id="results-wpm">${wpm}</strong></div>
-                     <div class="results-stat-item">Süre: <strong id="results-time">${Math.floor(timeTaken / 60)}dk ${timeTaken % 60}sn</strong></div>
+                     <div class="results-stat-item"><span data-i18n="oyn.skor_k">Skor:</span> <strong id="results-score">${Math.round(score)}</strong></div>
+                     <div class="results-stat-item"><span data-i18n="oyn.dogruluk_k">Doğruluk:</span> <strong id="results-accuracy">${accuracy}%</strong></div>
+                     <div class="results-stat-item"><span data-i18n="ko.wpm">Dakikadaki Kelime Sayısı:</span> <strong id="results-wpm">${wpm}</strong></div>
+                     <div class="results-stat-item"><span data-i18n="oyn.sure_k">Süre:</span> <strong id="results-time">${kdMetin('ko.dk_sn', '{dk}dk {sn}sn', { dk: Math.floor(timeTaken / 60), sn: timeTaken % 60 })}</strong></div>
                  </div>
                  <div id="results-details">
-                     ${mistakes.length > 0 ? '<h3>Yanlış Yazılanlar:</h3>' : '<h3>Tebrikler! Hiç hatanız yok!</h3>'}
+                     ${mistakes.length > 0 ? '<h3 data-i18n="ko.yanlislar">Yanlış Yazılanlar:</h3>' : '<h3 data-i18n="ko.hatasiz">Tebrikler! Hiç hatanız yok!</h3>'}
                      ${mistakes.length > 0 ? `<ul>${mistakes.map(m => `<li>
                         <div><span class="prompt">${m.prompt}:</span> <span class="user-answer">${m.incorrect}</span> ➜ <span class="correct-answer">${m.correct}</span></div>
-                        <div class="turkish-translation">(Anlamı: ${m.turkish})</div>
+                        <div class="turkish-translation">(<span data-i18n="ko.anlami">Anlamı:</span> ${m.turkish})</div>
                      </li>`).join('')}</ul>` : ''}
                  </div>
                  <div class="win-buttons">
-                     <button class="icon-btn" id="play-again-btn" title="Tekrar Oyna (Aynı Zorluk)"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg></button>
-                     <button class="icon-btn" id="change-difficulty-btn" title="Yeni Zorluk Seç"><svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path></svg></button>
+                     <button class="icon-btn" id="play-again-btn" data-i18n-title="ko.tekrar_ayni" title="Tekrar Oyna (Aynı Zorluk)"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg></button>
+                     <button class="icon-btn" id="change-difficulty-btn" data-i18n-title="ko.yeni_zorluk" title="Yeni Zorluk Seç"><svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path></svg></button>
                  </div>
              `;
               resultsScreen.querySelector('.back-btn').onclick = () => { App.playSound('menuClick'); App.showScreen('start-screen'); };
-              document.getElementById('play-again-btn').onclick = () => { App.playSound('menuClick'); const wordsForGame = Utils.shuffleArray(this.state.allWords).slice(0, this.state.gameSettings.wordCount); if (wordsForGame.length < this.state.gameSettings.wordCount) { alert("Yeterli kelime bulunamadı."); return; } TypingGame.start(wordsForGame, this.state.gameSettings); App.showScreen('typing-screen'); };
+              document.getElementById('play-again-btn').onclick = () => { App.playSound('menuClick'); const wordsForGame = Utils.shuffleArray(this.state.allWords).slice(0, this.state.gameSettings.wordCount); if (wordsForGame.length < this.state.gameSettings.wordCount) { alert(kdMetin('ko.kelime_yok_k', 'Yeterli kelime bulunamadı.')); return; } TypingGame.start(wordsForGame, this.state.gameSettings); App.showScreen('typing-screen'); };
               document.getElementById('change-difficulty-btn').onclick = () => { App.playSound('menuClick'); App.showScreen('start-screen'); };
              this.showScreen('results-screen');
          }
@@ -113,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
              this.state = { words: words, currentIndex: 0, score: 0, timeLeft: settings.time, timer: null, mistakes: [], nextWordTimeout: null, totalCharsInRound: words.reduce((acc, word) => acc + Utils.normalizeForTyping(word.arabic).length, 0) || 1, correctChars: 0, totalTypedChars: 0, startTime: null, endTime: null };
             const typingScreen = document.getElementById('typing-screen');
             typingScreen.innerHTML = `
-                <div class="header-navigation"><button class="back-btn" title="Ana Menü"><svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"></path></svg></button></div>
+                <div class="header-navigation"><button class="back-btn" data-i18n-title="nav.ana_menu" title="Ana Menü"><svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"></path></svg></button></div>
                 <div id="typing-main-container"> <div id="typing-game-area"> <div id="typing-interactive-elements">
                     <div class="typing-stats">
                          <div class="stat-item" id="score-stat-item"> <div class="score-effects-container-typing"></div> <svg viewBox="0 0 24 24"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"></path></svg> <span id="score-value">0</span> </div>
@@ -122,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="progress-container">
                         <div class="word-progress-bar" id="typing-progress-bar"></div>
                     </div>
-                    <div id="typing-prompt">Kelime Yükleniyor...</div>
+                    <div id="typing-prompt"><span data-i18n="ko.yukleniyor">Kelime Yükleniyor...</span></div>
                     <div class="typing-input-area"> <input inputmode="none" autocomplete="off" id="typing-input" readonly spellcheck="false" type="text"/ tabindex="-1">
                     <div id="typing-input-proxy" class="typing-input-proxy" aria-hidden="false"></div> <button id="typing-submit-btn"><svg viewBox="0 0 24 24"><path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"></path></svg></button> </div>
                 </div> <div id="virtual-keyboard"></div> </div> </div> <div class="countdown-overlay" id="countdown-overlay"></div>`;
@@ -202,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!promptEl) return;
                 const applyStartModeDir = () => {
                     if (promptEl.classList.contains('start-mode')) {
-                        promptEl.textContent = 'Hazır';
+                        promptEl.textContent = kdMetin('ko.hazir', 'Hazır');
                         promptEl.setAttribute('dir','ltr');
                     }
                 };
@@ -221,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             typingScreen.querySelector('.back-btn').onclick = () => { App.playSound('menuClick'); App.showScreen('start-screen'); this.stop(); };
             this.dom.input.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); this.checkAnswer(); } }; this.dom.submit.onclick = () => this.checkAnswer();
             this.dom.score.textContent = '0'; this.updateTimerDisplay();
-            this.dom.prompt.textContent = 'Hazır'; this.dom.prompt.className = 'start-mode'; this.dom.prompt.onclick = () => this.handleStartClick();
+            this.dom.prompt.textContent = kdMetin('ko.hazir', 'Hazır'); this.dom.prompt.className = 'start-mode'; this.dom.prompt.onclick = () => this.handleStartClick();
             
             this.dom.input.disabled = true; this.dom.input.readOnly = true; this.dom.input.value = '';
             

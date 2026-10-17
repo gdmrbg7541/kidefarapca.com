@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 /* =====================================================================
    TEST KAPIŞMASI — ALFABE SORULARI            (oyunlar/tk_alfabe.js)
    ---------------------------------------------------------------------
@@ -158,8 +198,8 @@
         return {
             tip: 'alfabe', alt: 'bag', soruTuru: 'cumle',
             soruHtml: baglanmazAra
-                ? 'Hangi harf kendinden sonrakine <b>bağlanmaz</b>?'
-                : 'Hangi harf kendinden sonrakine <b>bağlanır</b>?',
+                ? kdMetin('tk.s_baglanmaz', 'Hangi harf kendinden sonrakine <b>bağlanmaz</b>?')
+                : kdMetin('tk.s_baglanir', 'Hangi harf kendinden sonrakine <b>bağlanır</b>?'),
             ustlik: '', siklar: siklar
         };
     }
@@ -211,7 +251,7 @@
             tip: 'alfabe', alt: 'ayrik', soruTuru: 'arapca',
             soruHtml: '<span class="tka-kelime">' + kacis(k.h.join('')) + '</span>' +
                       '<span class="tka-anlam">' + kacis(k.anlam) + '</span>',
-            ustlik: 'Bu kelimenin <b>harf harf</b> yazılışı hangisidir?',
+            ustlik: kdMetin('tk.s_harf_harf', 'Bu kelimenin <b>harf harf</b> yazılışı hangisidir?'),
             siklar: karistir(siklar)
         };
     }
@@ -240,7 +280,7 @@
             tip: 'alfabe', alt: 'bosluk', soruTuru: 'arapca',
             soruHtml: '<span class="tka-ayrik">' + parcalar.join('') + '</span>' +
                       '<span class="tka-anlam">' + kacis(k.anlam) + '</span>',
-            ustlik: 'Boşluğa hangi <b>yazılış</b> gelir?',
+            ustlik: kdMetin('tk.s_bosluk', 'Boşluğa hangi <b>yazılış</b> gelir?'),
             siklar: siklar
         };
     }
@@ -271,9 +311,9 @@
         return {
             tip: 'alfabe', alt: dogruAra ? 'cizgi-dogru' : 'cizgi-yanlis', soruTuru: 'cumle',
             soruHtml: dogruAra
-                ? 'Çizgideki yazılışlardan <b>doğru</b> olan hangisidir?'
-                : 'Çizgideki yazılışlardan <b>yanlış</b> olan hangisidir?',
-            ustlik: 'Sırasıyla: <b>baş</b> — <b>orta</b> — <b>son</b> yazılışı.',
+                ? kdMetin('tk.s_cizgi_dogru', 'Çizgideki yazılışlardan <b>doğru</b> olan hangisidir?')
+                : kdMetin('tk.s_cizgi_yanlis', 'Çizgideki yazılışlardan <b>yanlış</b> olan hangisidir?'),
+            ustlik: kdMetin('tk.s_sirasiyla', 'Sırasıyla: <b>baş</b> — <b>orta</b> — <b>son</b> yazılışı.'),
             siklar: karistir(siklar)
         };
     }
@@ -300,7 +340,7 @@
             tip: 'alfabe', alt: 'konum', soruTuru: 'arapca',
             soruHtml: '<span class="tka-h">' + kacis(h) + '</span>' +
                       '<span class="tka-anlam">' + ad(h) + '</span>',
-            ustlik: '<b>' + BICIM_AD[anahtar[k]] + '</b> yazılışı hangisidir?',
+            ustlik: kdMetin('tk.s_konum', '<b>{yer}</b> yazılışı hangisidir?', { yer: kdMetin({ n: 'alf.yer_yalin', b: 'alf.yer_bas', o: 'alf.yer_orta', s: 'alf.yer_son' }[anahtar[k]], BICIM_AD[anahtar[k]]) }),
             siklar: siklar
         };
     }
@@ -326,9 +366,9 @@
     /* Ders → soru tipi sırası. Sıra döndürülerek geziliyor ki bir turda
        aynı tip üst üste üç kez çıkmasın. */
     var DERSLER = [
-        { id: 'alfabe-birlestirme', ad: 'Harf Birleştirme',
+        { id: 'alfabe-birlestirme', ad: 'Harf Birleştirme', k: 'tk.d_birlestirme',
           uretecler: [bagSoru, ayrikSoru, boslukSoru] },
-        { id: 'alfabe-cizgi',       ad: 'Çizgideki Yazılış',
+        { id: 'alfabe-cizgi',       ad: 'Çizgideki Yazılış', k: 'tk.d_cizgi',
           uretecler: [function () { return cizgiSoru(false); },
                       function () { return cizgiSoru(true); },
                       konumSoru] }
@@ -428,7 +468,7 @@
     } else { bicemKur(); }
 
     window.TKAlfabe = {
-        dersler: DERSLER.map(function (d) { return { id: d.id, ad: d.ad }; }),
+        dersler: DERSLER.map(function (d) { return { id: d.id, ad: d.ad, k: d.k }; }),
         uret: uret,
         denetle: denetle,
         /* ölçüm için dışarı açılanlar — t_tkalfabe.py bunları

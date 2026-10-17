@@ -63,7 +63,7 @@
     .sv-nokta.n2 { animation-delay: .25s; } .sv-nokta.n3 { animation-delay: .5s; }
     @keyframes svNokta { 0%,60%,100%{opacity:.25;transform:translateY(0)} 30%{opacity:1;transform:translateY(-2.5px)} }
     </style>
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
 
@@ -135,7 +135,7 @@
                 <g class="sv-kok"><path d="M32 52 q-6 2 -11 7 M32 52 q6 2 11 7 M32 52 v8" stroke="#a9743f" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="3.5 3"/></g>
               </svg></span>
             <h3>Seviye 5: Kökten gövdeye</h3>
-            <div class="oyun-tipi tip-takim">Takım Oyunu</div>
+            <div class="oyun-tipi tip-takim" data-i18n="oyn.takim">Takım Oyunu</div>
         </div>
 
         <div class="seviye-kutu seviye-6">
@@ -200,5 +200,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

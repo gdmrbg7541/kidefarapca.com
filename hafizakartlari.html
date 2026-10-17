@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
-    <title>Hafıza Kartları</title>
+    <title data-i18n="kart.hafiza">Hafıza Kartları</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -23,12 +23,12 @@
     <!-- Sabitlenen Bölüm -->
     <div class="sticky-header">
         <!-- Anasayfa İkon Butonu -->
-        <a href="index.html" onclick="return kidefGeriDon(event)" class="home-btn" title="Anasayfa">
+        <a href="index.html" onclick="return kidefGeriDon(event)" class="home-btn" data-i18n-title="nav.anasayfa" title="Anasayfa">
             <svg viewBox="0 0 24 24" width="24" height="24">
                 <path d="M3.4 10.5 12 3.5l8.6 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.4 9.4V19a1.5 1.5 0 0 0 1.5 1.5h10.2a1.5 1.5 0 0 0 1.5-1.5V9.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.6 20.5v-5a1.3 1.3 0 0 1 1.3-1.3h2.2a1.3 1.3 0 0 1 1.3 1.3v5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </a>
-        <h1 class="menu-title">Konu Seç!</h1>
+        <h1 class="menu-title" data-i18n="hk.konu_sec">Konu Seç!</h1>
     </div>
 
     <!-- Kaydırılabilir Bölüm -->
@@ -49,9 +49,9 @@
         </button>
 
         <div style="display: flex; gap: 8px; align-items: center;">
-            <button class="btn active" id="btn-study" onclick="setMode('study')">Kartlar</button>
+            <button class="btn active" id="btn-study" onclick="setMode('study')" data-i18n="alf.kartlar">Kartlar</button>
             <button class="btn" id="lang-btn-main" onclick="toggleLang()" style="background:var(--accent); color:white;"> T ⇄ ع</button>
-            <button class="btn" id="btn-memory-start" onclick="setMode('mem1')" style="background: #e9ecef;">Hafıza Oyunu</button>
+            <button class="btn" id="btn-memory-start" onclick="setMode('mem1')" style="background: #e9ecef;" data-i18n="hk.hafiza_oyunu">Hafıza Oyunu</button>
 
             <!-- Hafıza Oyunu Özel Kontrolleri -->
             <div id="memory-controls" style="display: none; align-items: center; gap: 8px;">
@@ -95,7 +95,7 @@
 <audio id="snd-match" preload="none" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bbfa83e354.mp3"></audio>
 <audio id="snd-click" preload="none" src="https://cdn.pixabay.com/audio/2022/03/10/audio_c350780443.mp3"></audio>
 
-<script src="oyunlar/hafizakartlari.js?v=4f4397bd"></script>
+<script src="oyunlar/hafizakartlari.js?v=2e5997ea"></script>
 
     <script src="sistem/geri.js?v=f87d1337"></script>
 <script id="kidef-koruma">
@@ -109,5 +109,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

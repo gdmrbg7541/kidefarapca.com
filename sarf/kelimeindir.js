@@ -219,8 +219,8 @@
     for (var c = 0; c < n; c++) {
       if (c) h += bosBas;
       h += '<th style="' + kn + 'background:#E5E7EB;font-family:Arial,sans-serif;font-size:' + noPt + 'pt;width:' + o.s.toFixed(2) + '%">#</th>' +
-        '<th style="' + kn + 'background:#E5E7EB;font-family:Arial,sans-serif;font-size:' + noPt + 'pt;width:' + o.a.toFixed(2) + '%">Arapça</th>' +
-        '<th style="' + kn + 'background:#E5E7EB;font-family:Arial,sans-serif;font-size:' + noPt + 'pt;width:' + o.t.toFixed(2) + '%">Türkçe</th>';
+        '<th style="' + kn + 'background:#E5E7EB;font-family:Arial,sans-serif;font-size:' + noPt + 'pt;width:' + o.a.toFixed(2) + '%" data-i18n="kl.arapca">Arapça</th>' +
+        '<th style="' + kn + 'background:#E5E7EB;font-family:Arial,sans-serif;font-size:' + noPt + 'pt;width:' + o.t.toFixed(2) + '%" data-i18n="kl.turkce">Türkçe</th>';
     }
     h += '</tr></thead><tbody>';
     /* satır satır: 1-2-3 üstte, 4-5-6 altta; numaralar sırayı belli eder */
@@ -348,8 +348,8 @@
       col += '<col style="width:' + o.s.toFixed(2) + '%"><col style="width:' + o.a.toFixed(2) +
              '%"><col style="width:' + o.t.toFixed(2) + '%">';
       th += '<th class="s" style="width:' + o.s.toFixed(2) + '%">#</th>' +
-            '<th class="a" style="width:' + o.a.toFixed(2) + '%">Arapça</th>' +
-            '<th class="t" style="width:' + o.t.toFixed(2) + '%">Türkçe</th>';
+            '<th class="a" style="width:' + o.a.toFixed(2) + '%" data-i18n="kl.arapca">Arapça</th>' +
+            '<th class="t" style="width:' + o.t.toFixed(2) + '%" data-i18n="kl.turkce">Türkçe</th>';
     }
     k.innerHTML = bas +
       '<div class="kl-govde"><table><colgroup>' + col + '</colgroup>' +
@@ -437,7 +437,7 @@
     /* Önce "kaç sütun?" — sayfadaki liste kaç sütunsa o seçili gelir. */
     var sut = sayfaSutunu(key);
     var sutHtml = '<div class="kl-indir-sut"><span>Kaç sütun?<br>A4 boş kalmasın</span>' +
-      '<div class="kl-sut-grup" role="group" aria-label="Sütun sayısı">';
+      '<div class="kl-sut-grup" role="group" data-i18n-aria="kl.sutun_sayi" aria-label="Sütun sayısı">';
     for (var c = 1; c <= 3; c++) {
       sutHtml += '<button type="button" data-s="' + c + '" class="' + (c === sut ? 'aktif' : '') +
         '" title="' + c + ' sütun" aria-label="' + c + ' sütun" aria-pressed="' +
@@ -447,12 +447,12 @@
     m.innerHTML = '<b>' + kacis(L.baslik) + ' · ' + L.kelimeler.length + ' kelime</b>' + sutHtml +
       '<button data-b="word"><i style="background:#2B579A">W</i><span>Word<small>Düzenlenebilir tablo (.doc)</small></span></button>' +
       '<button data-b="excel"><i style="background:#217346">X</i><span>Excel<small>Tablo (.xlsx)</small></span></button>' +
-      '<button data-b="pdf"><i style="background:#B91C1C">PDF</i><span>PDF indir<small>Dosya doğrudan iner, pencere açılmaz</small></span></button>' +
+      '<button data-b="pdf"><i style="background:#B91C1C">PDF</i><span>PDF indir<small data-i18n="kl.pdf_not">Dosya doğrudan iner, pencere açılmaz</small></span></button>' +
       '<button data-b="yazdir"><i style="background:#334155">' +
         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9V3.5h11V9"/>' +
         '<path d="M6.5 17.5h-2A1.5 1.5 0 0 1 3 16v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a1.5 1.5 0 0 1-1.5 1.5h-2"/>' +
         '<rect x="6.5" y="14" width="11" height="6.5" rx="1"/></svg>' +
-        '</i><span>Yazdır<small>Yazıcıya gönder (oradan PDF de kaydedilir)</small></span></button>';
+        '</i><span>Yazdır<small data-i18n="kl.yazdir_not">Yazıcıya gönder (oradan PDF de kaydedilir)</small></span></button>';
     document.body.appendChild(m);
     var r = dugme.getBoundingClientRect(), mw = m.offsetWidth, mh = m.offsetHeight;
     var x = Math.min(Math.max(8, r.right - mw), window.innerWidth - mw - 8);
@@ -550,7 +550,7 @@
       b.id = 'btn-indir-' + key;
       b.title = 'Bu listeyi indir — Word, Excel, PDF ya da yazdır';
       b.setAttribute('aria-label', 'Listeyi indir');
-      b.innerHTML = IKON + '<span>İndir</span>';
+      b.innerHTML = IKON + '<span data-i18n="kl.indir">İndir</span>';
       b.addEventListener('click', function (e) {
         e.stopPropagation();
         if (acikMenu) { menuKapat(); return; }

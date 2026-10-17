@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 /* ===========================================================================
    GÜNÜN SÖZÜ — Merak Çarkı sayfasının üstünde açılan pop-up     03.10.2026
    04.10.2026 — öğretmen: "günün sözünü öğretmen isterse sadece dinî konular,
@@ -103,12 +143,12 @@
      birlesik birkaç türü birleştiren seçenek (bileşenlerinin anahtarları)
      en az iki bileşeni dolu değilse birleşik seçenek gösterilmez. */
   var TURLER = [
-    { k: 'hepsi',   ad: 'Hepsi',    birlesik: ['ayet', 'hadis', 'atasozu', 'deyim'] },
-    { k: 'ayet',    ad: 'Âyet',     dizi: 'KIDEF_SOZ_AYET',    etiket: 'Kur\'an-ı Kerim' },
-    { k: 'hadis',   ad: 'Hadis',    dizi: 'KIDEF_SOZ_HADIS',   etiket: 'Hadis' },
-    { k: 'dini',    ad: 'Dinî',     birlesik: ['ayet', 'hadis'] },
-    { k: 'atasozu', ad: 'Atasözü',  dizi: 'KIDEF_SOZ_ATASOZU', etiket: 'Türk atasözü' },
-    { k: 'deyim',   ad: 'Deyim',    dizi: 'KIDEF_SOZ_DEYIM',   etiket: 'Türkçe deyim' }
+    { k: 'hepsi',   ad: 'Hepsi',    birlesik: ['ayet', 'hadis', 'atasozu', 'deyim'], kt: 'gs.t_hepsi' },
+    { k: 'ayet',    ad: 'Âyet',     dizi: 'KIDEF_SOZ_AYET',    etiket: 'Kur\'an-ı Kerim', kt: 'gs.t_ayet', ke: 'gs.e_ayet' },
+    { k: 'hadis',   ad: 'Hadis',    dizi: 'KIDEF_SOZ_HADIS',   etiket: 'Hadis', kt: 'gs.t_hadis', ke: 'gs.e_hadis' },
+    { k: 'dini',    ad: 'Dinî',     birlesik: ['ayet', 'hadis'], kt: 'gs.t_dini' },
+    { k: 'atasozu', ad: 'Atasözü',  dizi: 'KIDEF_SOZ_ATASOZU', etiket: 'Türk atasözü', kt: 'gs.t_atasozu', ke: 'gs.e_atasozu' },
+    { k: 'deyim',   ad: 'Deyim',    dizi: 'KIDEF_SOZ_DEYIM',   etiket: 'Türkçe deyim', kt: 'gs.t_deyim', ke: 'gs.e_deyim' }
   ];
 
   function turBul(k) {
@@ -125,7 +165,7 @@
     for (var i = 0; i < ham.length; i++) {
       var o = ham[i], y = {};
       for (var p in o) if (Object.prototype.hasOwnProperty.call(o, p)) y[p] = o[p];
-      y._e = t.etiket || t.ad;
+      y._e = kdMetin(t.ke || '', t.etiket || t.ad);
       cik.push(y);
     }
     return cik;
@@ -211,6 +251,9 @@
     }
   }
 
+  /* dil değişince kaynak satırındaki tür adı da yeniden yazılsın */
+  document.addEventListener('kidef:dil', function () { try { if (katman) ciz(); } catch (e) { } });
+
   function turSec(k) {
     if (k === tur) return;
     tur = k;
@@ -226,33 +269,35 @@
     katman.id = 'gsKatman';
     katman.setAttribute('role', 'dialog');
     katman.setAttribute('aria-modal', 'false');
-    katman.setAttribute('aria-label', 'Günün sözü');
+    katman.setAttribute('data-i18n-aria', 'gs.baslik');
+    katman.setAttribute('data-i18n-aria-tr', 'Günün sözü');
+    katman.setAttribute('aria-label', kdMetin('gs.baslik', 'Günün sözü'));
     katman.hidden = true;
 
     var g = gorunurTurler(), serit = '';
     if (g.length > 1) {
-      serit = '<div class="gs-turler" role="group" aria-label="Söz türü">' +
-                '<span class="gs-turler-bas">Hangi türden gelsin?</span>';
+      serit = '<div class="gs-turler" role="group" data-i18n-aria="gs.tur_aria" data-i18n-aria-tr="Söz türü" aria-label="' + kdMetin('gs.tur_aria', 'Söz türü') + '">' +
+                '<span class="gs-turler-bas">' + kdIsaretli('gs.hangi_tur', 'Hangi türden gelsin?') + '</span>';
       for (var i = 0; i < g.length; i++) {
         serit += '<button type="button" class="gs-tur-t" data-tur="' + g[i].k +
-                 '" aria-pressed="false">' + g[i].ad + '</button>';
+                 '" aria-pressed="false">' + kdIsaretli(g[i].kt || '', g[i].ad) + '</button>';
       }
       serit += '</div>';
     }
 
     katman.innerHTML =
       '<div class="gs-kart" role="document">' +
-        '<button type="button" class="gs-kapat" aria-label="Kapat">' +
+        '<button type="button" class="gs-kapat" data-i18n-aria="g.kapat" data-i18n-aria-tr="Kapat" aria-label="' + kdMetin('g.kapat', 'Kapat') + '">' +
           '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
         '</button>' +
-        '<span class="gs-etiket">' + TIRNAK + 'Günün Sözü</span>' +
+        '<span class="gs-etiket">' + TIRNAK + kdIsaretli('gs.baslik', 'Günün Sözü') + '</span>' +
         '<div class="gs-simge" aria-hidden="true"><svg viewBox="0 0 24 24"></svg></div>' +
         '<p class="gs-arapca" dir="rtl" lang="ar" hidden></p>' +
         '<p class="gs-soz"></p>' +
         '<p class="gs-not"></p>' +
         serit +
         '<div class="gs-alt"><span class="gs-kaynak"></span>' +
-          '<button type="button" class="gs-tamam">Anladım</button></div>' +
+          '<button type="button" class="gs-tamam">' + kdIsaretli('gs.anladim', 'Anladım') + '</button></div>' +
       '</div>';
     document.body.appendChild(katman);
 
@@ -275,8 +320,10 @@
       var t = document.createElement('button');
       t.type = 'button';
       t.className = 'gs-tus';
-      t.title = 'Günün sözünü göster';
-      t.innerHTML = TIRNAK + '<span>Günün sözü</span>';
+      t.setAttribute('data-i18n-title', 'gs.goster');
+      t.setAttribute('data-i18n-title-tr', 'Günün sözünü göster');
+      t.title = kdMetin('gs.goster', 'Günün sözünü göster');
+      t.innerHTML = TIRNAK + kdIsaretli('gs.baslik', 'Günün sözü');
       t.addEventListener('click', ac);
       ust.appendChild(t);
     }

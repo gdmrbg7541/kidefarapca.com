@@ -1,3 +1,62 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+/* ÇOK DİLLİ SİTE (16.10.2026) — tablolardaki görünen adlar her okunuşta
+   seçili dilde (kimlikler, yani tablo anahtarları Türkçe kalır).
+     kdAdlar(tablo, alan, {anahtar: sözlükAnahtarı})   tablo[anahtar][alan]
+     kdHarita(tablo, {anahtar: sözlükAnahtarı})        tablo[anahtar]          */
+function kdAdlar(t, alan, h) {
+    Object.keys(h).forEach(function (k) {
+        var e = t[k]; if (!e) return;
+        var tr = e[alan];
+        Object.defineProperty(e, alan, { get: function () { return kdMetin(h[k], tr); }, enumerable: true, configurable: true });
+    });
+    return t;
+}
+function kdHarita(t, h) {
+    Object.keys(h).forEach(function (k) {
+        var tr = t[k];
+        Object.defineProperty(t, k, { get: function () { return kdMetin(h[k], tr); }, enumerable: true, configurable: true });
+    });
+    return t;
+}
+
 /* ===========================================================
    Bilgi Yarışması — 7. Sınıf · 1. Ünite (ماذا فَعَلْت اليَوْم؟)
    Firebase 8.10.1 (compat) · proje: bilgiyarismasi7sinif1unite
@@ -44,6 +103,7 @@ const SURE_VARSAYILAN = { 1: 30, 2: 45, 3: 60 };
 const SURE_SECENEK = [15, 20, 30, 45, 60, 90, 120];
 const SURE_ENAZ = 5, SURE_ENCOK = 300;
 const SURE_ETIKET = { 1: "Kolay", 2: "Orta", 3: "Zor" };
+kdHarita(SURE_ETIKET, { 1: 'oyn.kolay', 2: 'oyn.orta', 3: 'oyn.zor' });
 
 function sureOku(){
   const s = { 1: SURE_VARSAYILAN[1], 2: SURE_VARSAYILAN[2], 3: SURE_VARSAYILAN[3] };
@@ -88,6 +148,8 @@ const BICIM_BILGI = {
   "dogruyanlis":{ ad: "Doğru / Yanlış",  emoji: "✅" },
   "cumlesira":  { ad: "Cümle sıralama",  emoji: "🔀" }
 };
+kdAdlar(BICIM_BILGI, 'ad', { test: 'biy.b_test', surukle: 'biy.b_surukle', eslestir: 'biy.b_eslestir',
+  yazma: 'biy.b_yazma', bosluk: 'biy.b_bosluk', dogruyanlis: 'biy.b_dogruyanlis', cumlesira: 'biy.b_cumlesira' });
 // çoktan-seçmeli altyapısını paylaşan biçimler (test/bosluk/dogruyanlis)
 function testGibiMi(b){ return b === "test" || b === "bosluk" || b === "dogruyanlis"; }
 // sıralama altyapısını paylaşan biçimler (surukle/cumlesira)
@@ -1601,7 +1663,11 @@ const TIP_BILGI = {
   "gramer":     { ad: "Dilbilgisi",      emoji: "📝" },
   "irab":       { ad: "İ'rab",           emoji: "📐" }
 };
+kdAdlar(TIP_BILGI, 'ad', { harf: 'biy.t_harf', bosluk: 'biy.t_bosluk', dogruyanlis: 'biy.t_dogruyanlis',
+  edat: 'biy.t_edat', kok: 'biy.t_kok', vezin: 'biy.t_vezin', anlam: 'biy.t_anlam', 'ters-vezin': 'biy.t_ters_vezin',
+  ayet: 'biy.t_ayet', cumle: 'biy.t_cumle', gramer: 'biy.t_gramer', irab: 'biy.t_irab' });
 const ZORLUK_AD = { 1: "Kolay", 2: "Orta", 3: "Zor" };
+kdHarita(ZORLUK_AD, { 1: 'oyn.kolay', 2: 'oyn.orta', 3: 'oyn.zor' });
 /* SÜZGEÇ PANELİ AÇIKLAMALARI ------------------------------------------
    Panelde her seçeneğin altında bir cümlelik açıklama var: öğretmen ikonu
    çözmeye çalışmasın, ne kapattığını okusun. */
@@ -1614,11 +1680,14 @@ const BICIM_ACIKLAMA = {
   "dogruyanlis":"Verilen yargı doğru mu yanlış mı seçilir.",
   "cumlesira":  "Cümlenin kelimeleri doğru sıraya dizilir."
 };
+kdHarita(BICIM_ACIKLAMA, { test: 'biy.ba_test', surukle: 'biy.ba_surukle', eslestir: 'biy.ba_eslestir',
+  yazma: 'biy.ba_yazma', bosluk: 'biy.ba_bosluk', dogruyanlis: 'biy.ba_dogruyanlis', cumlesira: 'biy.ba_cumlesira' });
 const ZORLUK_ACIKLAMA = {
   1: "Tek kelime, doğrudan anlam soruları.",
   2: "Cümle kurma ve çeviri soruları.",
   3: "Uzun cümle, dilbilgisi ve ayrıntı soruları."
 };
+kdHarita(ZORLUK_ACIKLAMA, { 1: 'biy.za_1', 2: 'biy.za_2', 3: 'biy.za_3' });
 /* SORU İÇERİĞİ — üçüncü süzgeç ekseni.
    Komisyon sürümü içeriği metinden SEZGİSEL olarak çıkarıyor; burada buna
    gerek yok, çünkü ka.com sorularının hepsinde zaten `tip` alanı var
@@ -1638,6 +1707,9 @@ const ICERIK_NOT = {
   "gramer":"Dilbilgisi kuralı.",
   "irab":"Cümle çözümlemesi."
 };
+kdHarita(ICERIK_NOT, { harf: 'biy.in_harf', bosluk: 'biy.in_bosluk', dogruyanlis: 'biy.in_dogruyanlis',
+  edat: 'biy.in_edat', kok: 'biy.in_kok', vezin: 'biy.in_vezin', anlam: 'biy.in_anlam', 'ters-vezin': 'biy.in_ters_vezin',
+  ayet: 'biy.in_ayet', cumle: 'biy.in_cumle', gramer: 'biy.in_gramer', irab: 'biy.in_irab' });
 /* Sorunun içerik kategorisi. Tanımsız/bilinmeyen tip "anlam" sayılır ki
    hiçbir soru süzgecin dışında kaybolmasın. */
 function icerikAl(q){
@@ -1765,6 +1837,7 @@ const BIY_SINIFLAR = (function () {
   return c.sort((a, b) => a - b);
 })();
 const SEVIYE_BASLIK = { 1: "Temel · Alfabe ve Kelimeler", 2: "Orta · Cümleler ve Kalıplar", 3: "İleri · Sarf ve Dilbilgisi" };
+kdHarita(SEVIYE_BASLIK, { 1: 'biy.sv_1', 2: 'biy.sv_2', 3: 'biy.sv_3' });
 /* Sinif konulari tek baslik altinda toplanir (kelime + cumle ayrimi yok) */
 const SINIF_BASLIK = "Sınıflar · kelime ve cümleler bir arada";
 
@@ -1816,7 +1889,7 @@ function sikKartHtml(s, dogruGoster){
     return h;
   }
   const bb = BICIM_BILGI[b] || { ad: b, emoji: "❓" };
-  const govde = dogruGoster ? dogruCevapMetni(s) : ("Soru · " + bb.ad);
+  const govde = dogruGoster ? dogruCevapMetni(s) : (kdMetin('biy.soru', 'Soru') + " · " + bb.ad);
   return '<div class="biy-secenek'+(dogruGoster?' dogru':'')+' biy-arapca-secenek biy-bicim-kutu">' +
          '<span class="biy-sik">'+bb.emoji+'</span><span class="biy-secenek-metin">'+kacis(govde)+'</span></div>';
 }
@@ -2062,12 +2135,18 @@ function rastgeleKod(uzunluk){
   let s = ""; for (let i=0;i<uzunluk;i++) s += harf[Math.floor(Math.random()*harf.length)];
   return s;
 }
+/* ÇOK DİLLİ SİTE (16.10.2026): sayfa Türkçe değilse bağlantıya "&dil=" eklenir;
+   öğrencinin cihazı öğretmenin seçtiği dilde açılır. */
+function kdDilEki(){
+  try { const k = (window.KidefDil && window.KidefDil.kod) ? window.KidefDil.kod() : "tr"; return (k && k !== "tr") ? "&dil=" + encodeURIComponent(k) : ""; }
+  catch(e){ return ""; }
+}
 function takimLinki(oda, takim){
-  return location.origin + location.pathname + "?oda=" + encodeURIComponent(oda) + "&takim=" + encodeURIComponent(takim);
+  return location.origin + location.pathname + "?oda=" + encodeURIComponent(oda) + "&takim=" + encodeURIComponent(takim) + kdDilEki();
 }
 /* Birey/Okul modunda tek bir bağlantı herkese yeter: takım parametresi yok. */
 function odaLinki(oda){
-  return location.origin + location.pathname + "?oda=" + encodeURIComponent(oda);
+  return location.origin + location.pathname + "?oda=" + encodeURIComponent(oda) + kdDilEki();
 }
 /* ---- Yarışma modları ----
    takim : öğretmen takım adlarını yazar, her takım kendi karekodunu okutur (eski davranış)
@@ -2078,6 +2157,8 @@ const MOD_BILGI = {
   birey: { ad: "Öğrenciler Arası Bilgi Yarışması", emoji: "🙋", kisi: "Katılımcı",  cog: "katılımcı", baslik: "Katılımcılar & Lobi" },
   okul:  { ad: "Sınıflar Arası Bilgi Yarışması",  emoji: "🏫", kisi: "Sınıf", cog: "sınıf",      baslik: "Sınıf Oluştur & Lobi" }
 };
+kdAdlar(MOD_BILGI, 'ad', { takim: 'biy.mod_takim', birey: 'biy.mod_birey', okul: 'biy.mod_okul' });
+kdAdlar(MOD_BILGI, 'baslik', { takim: 'biy.lobi_takim', birey: 'biy.lobi_birey', okul: 'biy.lobi_okul' });
 function modAl(){ return MOD_BILGI[state.oyunModu] ? state.oyunModu : "takim"; }
 function tekKarekod(){ return modAl() === "birey"; }   // yalnız birey: tek ortak karekod
 function kartliMod(){ return modAl() !== "birey"; }    // takım & okul: her katılımcıya ayrı karekod
@@ -2160,13 +2241,13 @@ function isimTemizle(t){
 /* uygunsa "" döner, değilse kullanıcıya gösterilecek sebebi döner */
 function isimSorunu(ad){
   const ham = isimTemizle(ad);
-  if (ham.length < 2) return "Adını en az iki harfle yaz.";
-  if (!/[a-zA-ZçğıöşüÇĞİÖŞÜ]/.test(ham)) return "İsimde harf olmalı.";
+  if (ham.length < 2) return kdMetin('biy.j_ad_kisa', "Adını en az iki harfle yaz.");
+  if (!/[a-zA-ZçğıöşüÇĞİÖŞÜ]/.test(ham) && !/\p{L}/u.test(ham)) return kdMetin('biy.j_ad_harf', "İsimde harf olmalı.");
   const n = isimNormal(ham);
   const kelimeler = n.split(" ").filter(Boolean);
-  for (const k of kelimeler){ if (YASAK_TAM.indexOf(k) >= 0) return "Bu isim uygun değil; gerçek adını yaz."; }
+  for (const k of kelimeler){ if (YASAK_TAM.indexOf(k) >= 0) return kdMetin('biy.j_ad_uygunsuz', "Bu isim uygun değil; gerçek adını yaz."); }
   const bitisik = n.replace(/ /g,"");
-  for (const p of YASAK_PARCA){ if (bitisik.indexOf(p) >= 0) return "Bu isim uygun değil; gerçek adını yaz."; }
+  for (const p of YASAK_PARCA){ if (bitisik.indexOf(p) >= 0) return kdMetin('biy.j_ad_uygunsuz', "Bu isim uygun değil; gerçek adını yaz."); }
   return "";
 }
 /* aynı isimden ikinci kişi gelirse "Ahmet (2)" yapılır */
@@ -2244,7 +2325,7 @@ const BIY = {
   // Geri: dosyadan çık. Bağlı cihaz varsa onay iste; çıkışta odayı kapat (cihazlar ayrılsın).
   geriDon(){
     if (state.odaId && (state.takimListe || []).some(t => t.bagli)){
-      BIY._onay("Çıkıyor musun?", "Bağlı cihazlar var — çıkarsan bağlantıları kopar.", "Evet, çık", function(){ BIY._geriCik(); });
+      BIY._onay(kdMetin('biy.cikiyor_mu', "Çıkıyor musun?"), kdMetin('biy.bagli_var', "Bağlı cihazlar var — çıkarsan bağlantıları kopar."), kdMetin('biy.evet_cik', "Evet, çık"), function(){ BIY._geriCik(); });
       return;
     }
     BIY._geriCik();
@@ -2317,7 +2398,7 @@ const BIY = {
   _konuVurgu(){
     const sel = $("konuSecim"); if (sel){ sel.classList.toggle("secili", !!state.konuId); sel.value = state.konuId || ""; }
     const k = BIY._aktifKonu();
-    const ad = $("konuSeciciAd"); if (ad) ad.textContent = k ? k.ad : "Konu seç\u2026";
+    const ad = $("konuSeciciAd"); if (ad) ad.textContent = k ? k.ad : kdMetin('biy.konu_sec', "Konu seç\u2026");
     const btn = $("konuSeciciBtn"); if (btn) btn.classList.toggle("secili", !!state.konuId);
     document.querySelectorAll("#konuSeciciListe .biy-ds-oge").forEach(o => {
       const s = o.getAttribute("data-konu") === state.konuId;
@@ -2366,9 +2447,9 @@ const BIY = {
   },
   _konulariHazirla(){
     const sel = $("konuSecim"); if (!sel) return;
-    sel.innerHTML = '<option value=""'+(state.konuId?'':' selected')+' disabled hidden>Konu seçin…</option>' +
-      '<option value="'+HEPSI_ID+'"'+(state.konuId===HEPSI_ID?' selected':'')+'>Hepsi</option>' +
-      KONULAR.map(k => '<option value="'+k.id+'"'+(k.pasif?' disabled':'')+(k.id===state.konuId?' selected':'')+'>'+kacis(k.ad)+(k.pasif?' · yakında':'')+'</option>').join("");
+    sel.innerHTML = '<option value=""'+(state.konuId?'':' selected')+' disabled hidden>'+kacis(kdMetin('biy.konu_secin', 'Konu seçin…'))+'</option>' +
+      '<option value="'+HEPSI_ID+'"'+(state.konuId===HEPSI_ID?' selected':'')+'>'+kacis(kdMetin('biy.hepsi', 'Hepsi'))+'</option>' +
+      KONULAR.map(k => '<option value="'+k.id+'"'+(k.pasif?' disabled':'')+(k.id===state.konuId?' selected':'')+'>'+kacis(k.ad)+(k.pasif?' · '+kacis(kdMetin('biy.yakinda', 'yakında')):'')+'</option>').join("");
     if (!state.konuId) sel.value = "";
     const liste = $("konuSeciciListe");
     if (liste){
@@ -2377,10 +2458,10 @@ const BIY = {
          NOT: sabit «Hepsi 7 9 10» sinif cipleri KALDIRILDI. */
       const hepsiSay = KONULAR.reduce((t, k) => t + (k.pasif ? 0 : (k.sorular || []).length), 0);
       let h = '<button type="button" role="option" style="--i:0" data-konu="'+HEPSI_ID+'" data-sinif="0"'
-        + ' class="biy-ds-oge biy-ds-hepsi" title="Bütün listelerin soruları">'
+        + ' class="biy-ds-oge biy-ds-hepsi" title="'+kacis(kdMetin('biy.hepsi_ip', 'Bütün listelerin soruları'))+'">'
         + '<span class="biy-ds-nokta" aria-hidden="true"></span>'
-        + '<span class="biy-ds-ad2">Hepsi</span>'
-        + '<span class="biy-ds-rozet biy-ds-sinifroz genel">Tümü</span>'
+        + '<span class="biy-ds-ad2">'+kacis(kdMetin('biy.hepsi', 'Hepsi'))+'</span>'
+        + '<span class="biy-ds-rozet biy-ds-sinifroz genel">'+kacis(kdMetin('biy.tumu', 'Tümü'))+'</span>'
         + '<span class="biy-ds-rozet biy-ds-say">'+hepsiSay+'</span>'
         + '<svg class="biy-ds-tik" viewBox="0 0 24 24" aria-hidden="true" fill="none"'
         + ' stroke="currentColor" stroke-width="3.4" stroke-linecap="round"'
@@ -2392,7 +2473,7 @@ const BIY = {
         if (g !== grup){
           grup = g;
           h += k.sinif
-            ? '<div class="biy-ds-seviye biy-ds-sinifbas"><i aria-hidden="true">▦</i>'+SINIF_BASLIK+'</div>'
+            ? '<div class="biy-ds-seviye biy-ds-sinifbas"><i aria-hidden="true">▦</i>'+kacis(kdMetin('biy.sinif_baslik', SINIF_BASLIK))+'</div>'
             : '<div class="biy-ds-seviye"><i>'+('●'.repeat(k.seviye))+'</i>'+(SEVIYE_BASLIK[k.seviye]||"")+'</div>';
         }
         h += '<button type="button" role="option" style="--i:'+(sira++)+'" data-konu="'+kacis(k.id)+'" data-sinif="'+(k.sinif||0)+'"'
@@ -2400,10 +2481,10 @@ const BIY = {
           + ' class="biy-ds-oge'+(k.pasif ? ' biy-ds-pasif' : '')+'">'
           + '<span class="biy-ds-nokta" aria-hidden="true"></span>'
           + '<span class="biy-ds-ad2">'+kacis(k.ad)+'</span>'
-          + '<span class="biy-ds-rozet biy-ds-sinifroz'+(k.sinif ? '' : ' genel')+'">'+(k.sinif || 'Genel')+'</span>'
+          + '<span class="biy-ds-rozet biy-ds-sinifroz'+(k.sinif ? '' : ' genel')+'">'+(k.sinif || kacis(kdMetin('biy.genel', 'Genel')))+'</span>'
           + BIY._yilRozet(k.sinif)
           + '<span class="biy-ds-rozet biy-ds-say">'+((k.sorular||[]).length)+'</span>'
-          + (k.pasif ? '<span class="biy-ds-yakinda">yakında</span>'
+          + (k.pasif ? '<span class="biy-ds-yakinda">'+kacis(kdMetin('biy.yakinda', 'yakında'))+'</span>'
                      : '<svg class="biy-ds-tik" viewBox="0 0 24 24" aria-hidden="true" fill="none"'
                        + ' stroke="currentColor" stroke-width="3.4" stroke-linecap="round"'
                        + ' stroke-linejoin="round"><polyline points="4 12.5 9.5 18 20 6.5"/></svg>')
@@ -2566,9 +2647,9 @@ const BIY = {
     ov.innerHTML =
       '<div class="biy-soru-sec-kutu">' +
         '<div class="biy-soru-sec-bas">' +
-          '<h3><span class="biy-hs-bas-ikon biy-anim">' + hvIkon + '</span> Soruları Seç!' +
-            (kSinir ? '<span class="biy-hs-konu-rozet" title="Seçili liste: ' + kacis(kSinir.ad) +
-                      ' — başka listeden soru seçilemez">' + kacis(kSinir.ad) + '</span>' : '') +
+          '<h3><span class="biy-hs-bas-ikon biy-anim">' + hvIkon + '</span> ' + kacis(kdMetin('biy.soru_sec', 'Soruları Seç!')) +
+            (kSinir ? '<span class="biy-hs-konu-rozet" title="' + kacis(kdMetin('biy.secili_liste_ip', 'Seçili liste: {ad} — başka listeden soru seçilemez', { ad: kSinir.ad })) +
+                      '">' + kacis(kSinir.ad) + '</span>' : '') +
           '</h3>' +
           '<span class="biy-soru-sec-tavan" id="soruSecTavan" hidden></span>' +
           '<span class="biy-soru-sec-say" id="soruSecSecili"></span>' +
@@ -2582,8 +2663,8 @@ const BIY = {
         '<div class="biy-soru-sec-alt">' +
           BIY._sepetHtml() +
           '<div class="biy-soru-sec-butonlar">' +
-            '<button class="biy-btn biy-onay-hayir" onclick="BIY.soruSecTemizle()">Tümünü temizle</button>' +
-            '<button class="biy-btn biy-btn-yesil" onclick="BIY.soruSecKapat()">Bitti</button>' +
+            '<button class="biy-btn biy-onay-hayir" onclick="BIY.soruSecTemizle()">' + kacis(kdMetin('biy.tumunu_temizle', 'Tümünü temizle')) + '</button>' +
+            '<button class="biy-btn biy-btn-yesil" onclick="BIY.soruSecKapat()">' + kacis(kdMetin('biy.tamam', 'Bitti')) + '</button>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -2640,11 +2721,11 @@ const BIY = {
     const oran = hedef ? Math.min(100, (n / hedef) * 100) : (n ? Math.min(100, n * 4) : 0);
     const dolu = BIY._havuzDoluMu();
     const sy = $("sepetSayi"); if (sy) sy.textContent = n;
-    const hd = $("sepetHedef"); if (hd) hd.textContent = hedef ? (" / " + hedef) : " soru";
+    const hd = $("sepetHedef"); if (hd) hd.textContent = hedef ? (" / " + hedef) : " " + kdMetin('biy.soru_k', 'soru');
     const br = $("sepetBar"); if (br) br.style.width = oran + "%";
     const dg = $("sepetDolgu"); if (dg) dg.setAttribute("y", String(46 - (oran / 100) * 26));
     const nt = $("sepetNot");
-    if (nt) nt.textContent = !hedef ? "" : (dolu ? "Sayı tamamlandı" : ("Daha seçebilirsin: " + (hedef - n) + " tane"));
+    if (nt) nt.textContent = !hedef ? "" : (dolu ? kdMetin('biy.sayi_tamam', "Sayı tamamlandı") : kdMetin('biy.daha_sec', "Daha seçebilirsin: {n} tane", { n: hedef - n }));
     kap.classList.toggle("dolu", dolu);
     kap.classList.toggle("bos", n === 0);
     if (dusenVar){
@@ -2658,7 +2739,7 @@ const BIY = {
     kap.classList.remove("biy-salla"); void kap.offsetWidth; kap.classList.add("biy-salla");
     const nt = $("sepetNot");
     if (nt){
-      nt.textContent = "Belirlenen sayıya ulaştın (" + BIY._havuzSinir() + ")";
+      nt.textContent = kdMetin('biy.sayiya_ulastin', "Belirlenen sayıya ulaştın ({n})", { n: BIY._havuzSinir() });
       nt.classList.add("uyari");
       setTimeout(() => { nt.classList.remove("uyari"); BIY._sepetGuncelle(); }, 1800);
     }
@@ -2674,7 +2755,7 @@ const BIY = {
     return '<div class="biy-hs-tipler">' + Object.keys(BICIM_BILGI).map(b => {
       const kapali = state.bicimSecim[b] === false;
       return '<span class="biy-hs-tip biy-hs-b-' + b + (kapali ? ' kapali' : '') + '"'
-        + (kapali ? ' title="Bu tür süzgeçte kapalı"' : '') + '>' + (ETIKET_BICIM[b] || "")
+        + (kapali ? ' title="' + kacis(kdMetin('biy.tur_kapali', 'Bu tür süzgeçte kapalı')) + '"' : '') + '>' + (ETIKET_BICIM[b] || "")
         + kacis(BICIM_BILGI[b].ad) + '</span>';
     }).join("") + '</div>';
   },
@@ -2687,7 +2768,7 @@ const BIY = {
     const kid = BIY._sinirKonuId();
     const listeler = (kid ? KONULAR.filter(k => k.id === kid) : KONULAR)
                        .filter(k => Array.isArray(k.sorular) && k.sorular.length);
-    const kapsamAd = kid ? ((KONULAR.find(k => k.id === kid) || {}).ad || "") : "Bütün listeler";
+    const kapsamAd = kid ? ((KONULAR.find(k => k.id === kid) || {}).ad || "") : kdMetin('biy.butun_listeler', "Bütün listeler");
     let html = '<div class="biy-hs-kapsam">' + BIY._kapsamSvg()
              + '<span>' + kacis(kapsamAd) + '</span></div>'
              + BIY._tipEfsanesi();
@@ -2705,14 +2786,14 @@ const BIY = {
       const kume = k.sinif ? "sinif" : ("seviye" + k.seviye);
       if (cokKume && kume !== sonKume){
         sonKume = kume;
-        const kumeAd = k.sinif ? SINIF_BASLIK : (SEVIYE_BASLIK[k.seviye] || "");
+        const kumeAd = k.sinif ? kdMetin('biy.sinif_baslik', SINIF_BASLIK) : (SEVIYE_BASLIK[k.seviye] || "");
         const kumeIm = k.sinif ? "▦" : "●".repeat(k.seviye || 1);
         const kumeSay = listeler.filter(x => (x.sinif ? "sinif" : ("seviye" + x.seviye)) === kume)
                                 .reduce((t, x) => t + x.sorular.length, 0);
         html += '<div class="biy-hs-kume">'
           + '<span class="biy-hs-kume-im">' + kumeIm + '</span>'
           + '<span class="biy-hs-kume-ad">' + kacis(kumeAd) + '</span>'
-          + '<span class="biy-hs-kume-say">' + kumeSay + ' soru</span>'
+          + '<span class="biy-hs-kume-say">' + kacis(kdMetin('biy.n_soru', '{n} soru', { n: kumeSay })) + '</span>'
           + '</div>';
       }
       const acik = ara ? true : !!(state.soruSecAcik && state.soruSecAcik[k.id]);
@@ -2720,8 +2801,8 @@ const BIY = {
         '<div class="biy-hs-baslik" onclick="BIY.soruSecAkordiyon(\''+k.id+'\')">' +
         '<span class="biy-hs-ok">▸</span>' +
         '<b>'+kacis(k.ad)+'</b> <span class="biy-hs-say'+(seciliSay>0?' dolu':'')+((seciliSay===uygun.length&&uygun.length)?' tam':'')+'"><b>'+seciliSay+'</b><i>/</i>'+uygun.length+'</span>' +
-        (disiSay ? '<span class="biy-hs-disi-say" title="Süzgeç dışında kaldığı için seçilemeyen soru">'+disiSay+' pasif</span>' : '') +
-        '<button class="biy-hs-tumu" title="Tümünü seç" aria-label="Tümünü seç" onclick="event.stopPropagation();BIY.soruSecTumu(\''+k.id+'\')">' +
+        (disiSay ? '<span class="biy-hs-disi-say" title="'+kacis(kdMetin('biy.disi_ip', 'Süzgeç dışında kaldığı için seçilemeyen soru'))+'">'+kacis(kdMetin('biy.n_pasif', '{n} pasif', { n: disiSay }))+'</span>' : '') +
+        '<button class="biy-hs-tumu" title="'+kacis(kdMetin('biy.tumunu_sec', 'Tümünü seç'))+'" aria-label="'+kacis(kdMetin('biy.tumunu_sec', 'Tümünü seç'))+'" onclick="event.stopPropagation();BIY.soruSecTumu(\''+k.id+'\')">' +
           '<svg viewBox="0 0 24 24" class="biy-hs-tumu-svg" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
           '<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.5"/><path class="biy-ea-ciz" d="M7.4 12.6l3 3 6.2-7.2"/></svg></button></div>' +
         '<div class="biy-hs-govde">';
@@ -2733,8 +2814,9 @@ const BIY = {
         const kapali = disi || (!sec && doluMu);
         const ipucu = disi
           ? (state.bicimSecim[b] === false
-              ? (BICIM_BILGI[b] || {}).ad + " türü süzgeçte kapalı"
-              : (ZORLUK_AD[z] || "Bu zorlukta") + " sorular süzgeçte kapalı")
+              ? kdMetin('biy.tur_suzgecte', "{tur} türü süzgeçte kapalı", { tur: (BICIM_BILGI[b] || {}).ad })
+              : (ZORLUK_AD[z] ? kdMetin('biy.zorluk_suzgecte', "{z} sorular süzgeçte kapalı", { z: ZORLUK_AD[z] })
+                              : kdMetin('biy.bu_zorluk_suzgecte', "Bu zorlukta sorular süzgeçte kapalı")))
           : ((BICIM_BILGI[b] || {}).ad || "") + (ZORLUK_AD[z] ? " · " + ZORLUK_AD[z] : "");
         html += '<label class="biy-hs-satir biy-hs-b-'+b+' biy-hs-z'+z+(sec?' secili':'')+(disi?' biy-hs-disi':'')+(kapali?' biy-hs-kapali':'')+'" data-key="'+key+'"' +
             ' data-b="'+b+'" data-z="'+z+'" data-t="'+kacis(q.tip || "")+'" title="'+kacis(ipucu)+'">' +
@@ -2743,7 +2825,7 @@ const BIY = {
           (ZORLUK_AD[z] ? '<span class="biy-hs-zor z'+z+'">'+kacis(ZORLUK_AD[z])+'</span>' : '') +
           '<span class="biy-hs-metin">'+soruHtml(q)+(q.arapca?' <i>'+kacis(q.arapca)+'</i>':'')+
             ' <b class="biy-hs-dogru">✓ '+kacis(dogruSik)+'</b></span>' +
-          (disi ? '<span class="biy-hs-disi-not">süzgeç dışı</span>' : '') +
+          (disi ? '<span class="biy-hs-disi-not">'+kacis(kdMetin('biy.suzgec_disi', 'süzgeç dışı'))+'</span>' : '') +
         '</label>';
       });
       html += '</div></div>';
@@ -2751,7 +2833,7 @@ const BIY = {
     kap.innerHTML = html;
     if (!kap.querySelector(".biy-hs-grup"))
       kap.insertAdjacentHTML("beforeend", '<p class="biy-alt" style="text-align:center">' +
-        (kid ? 'Bu listede gösterilecek soru yok.' : 'Sonuç yok.') + '</p>');
+        kacis(kid ? kdMetin('biy.listede_yok', 'Bu listede gösterilecek soru yok.') : kdMetin('biy.sonuc_yok', 'Sonuç yok.')) + '</p>');
     BIY._soruSecSayilar();
   },
 
@@ -2807,15 +2889,15 @@ const BIY = {
         tb.classList.toggle("tam", tam);
       }
     });
-    const say = $("soruSecSecili"); if (say) say.innerHTML = 'Seçili <b class="biy-say-rozet">' + set.size + '</b>';
+    const say = $("soruSecSecili"); if (say) say.innerHTML = kacis(kdMetin('biy.secili', 'Seçili')) + ' <b class="biy-say-rozet">' + set.size + '</b>';
     /* Asagidan soru sayisi secildiyse tavani her zaman goster (asilirsa kirmizi) */
     const tv = $("soruSecTavan"), tavan = BIY._hsTavan();
     if (tv){
       tv.hidden = !tavan;
       if (tavan){
-        tv.innerHTML = 'En çok <b>' + tavan + '</b>';
+        tv.innerHTML = kacis(kdMetin('biy.en_cok', 'En çok')) + ' <b>' + tavan + '</b>';
         tv.classList.toggle("asildi", set.size > tavan);
-        tv.title = "Aşağıdan " + tavan + " soru seçtin; havuzdan en çok o kadar soru işaretlenebilir.";
+        tv.title = kdMetin('biy.tavan_ip', "Aşağıdan {n} soru seçtin; havuzdan en çok o kadar soru işaretlenebilir.", { n: tavan });
       }
     }
     /* Tavan dolunca seçilmemiş satırlar kapanır; süzgeç dışı olanlar
@@ -2852,7 +2934,7 @@ const BIY = {
       ' stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' +
       '<path d="M12 3.6 22 20.4H2z"/><path d="M12 9.6v4.6"/><circle cx="12" cy="17.4" r=".9" fill="currentColor" stroke="none"/></svg>' +
       '<span class="biy-hs-uyari-metin">' + kacis(metin) + '</span>' +
-      '<button type="button" class="biy-hs-uyari-btn" onclick="BIY.soruSecSinirKaldir()">Sınırı kaldır</button>';
+      '<button type="button" class="biy-hs-uyari-btn" onclick="BIY.soruSecSinirKaldir()">' + kacis(kdMetin('biy.siniri_kaldir', 'Sınırı kaldır')) + '</button>';
     u.hidden = false;
     /* liste asagi kaydirilmissa baslik gizlenmis olabilir; uyari gorunsun diye geri ac */
     const bas = document.querySelector("#biySoruSec .biy-soru-sec-bas");
@@ -2884,7 +2966,7 @@ const BIY = {
       if (tavan && set.size >= tavan){
         if (cb) cb.checked = false;                      // isaret geri alinir
         BIY._sinirUyar();
-        BIY._soruSecUyar("Aşağıdan " + tavan + " soru seçtin; daha fazlasını işaretleyemezsin.");
+        BIY._soruSecUyar(kdMetin('biy.tavan_dolu', "Aşağıdan {n} soru seçtin; daha fazlasını işaretleyemezsin.", { n: tavan }));
         return;
       }
       set.add(key); eklendi = true;
@@ -2937,8 +3019,8 @@ const BIY = {
         if (eklenecek.length > yer){
           eklenecek = eklenecek.slice(0, yer);
           BIY._soruSecUyar(yer
-            ? "Aşağıdan " + tavan + " soru seçtin; yalnız " + yer + " soru eklenebildi."
-            : "Aşağıdan seçtiğin " + tavan + " sorunun tamamı dolu; yeni soru eklenmedi.");
+            ? kdMetin('biy.tavan_yer', "Aşağıdan {n} soru seçtin; yalnız {yer} soru eklenebildi.", { n: tavan, yer: yer })
+            : kdMetin('biy.tavan_tam', "Aşağıdan seçtiğin {n} sorunun tamamı dolu; yeni soru eklenmedi.", { n: tavan }));
         }
       }
       eklenecek.forEach(a => set.add(a));
@@ -2961,8 +3043,8 @@ const BIY = {
     const kalan = BIY._havuzKalan();
     const d = document.createElement("div");
     d.className = "biy-havuz-eksik";
-    d.innerHTML = '<span><b>' + kalan + '</b> soru daha seçebilirsin.</span>'
-      + '<button type="button" class="biy-he-tus" onclick="BIY.soruSecKapat(true)">Yine de kapat</button>';
+    d.innerHTML = '<span>' + kdMetin('biy.kalan_sec', '<b>{n}</b> soru daha seçebilirsin.', { n: kalan }) + '</span>'
+      + '<button type="button" class="biy-he-tus" onclick="BIY.soruSecKapat(true)">' + kacis(kdMetin('biy.yine_kapat', 'Yine de kapat')) + '</button>';
     kutu.appendChild(d);
     setTimeout(() => { d.classList.add("biy-gec"); setTimeout(() => d.remove(), 500); }, 4200);
   },
@@ -3021,12 +3103,12 @@ const BIY = {
     });
     const sayi = n => '<em class="biy-bs-sayi">' + (n || 0) + '</em>';
     p.innerHTML =
-      '<div class="biy-bs-bas">Soru süzgeci'
-      + '<button type="button" class="biy-bs-kapat" title="Kapat" aria-label="Kapat"'
+      '<div class="biy-bs-bas">' + kacis(kdMetin('biy.suzgec', 'Soru süzgeci'))
+      + '<button type="button" class="biy-bs-kapat" title="' + kacis(kdMetin('g.kapat', 'Kapat')) + '" aria-label="' + kacis(kdMetin('g.kapat', 'Kapat')) + '"'
       + ' onclick="BIY.bicimKapat()">✕</button></div>'
       + '<div class="biy-bs-iki">'
       + '<div class="biy-bs-sutun biy-bs-sutun-tip">'
-      +   '<div class="biy-pn-grup">Soru tipi <small>nasıl cevaplanır</small></div>'
+      +   '<div class="biy-pn-grup">' + kdMetin('biy.tip_bas', 'Soru tipi <small>nasıl cevaplanır</small>') + '</div>'
       +   Object.keys(BICIM_BILGI).map(b =>
         '<button type="button" class="biy-bs-oge biy-hs-b-'+b+(state.bicimSecim[b] ? ' secili' : '')+'" data-b="'+b+'"' +
         ' title="'+kacis(BICIM_BILGI[b].ad)+'" aria-pressed="'+(state.bicimSecim[b] ? 'true' : 'false')+'"' +
@@ -3036,7 +3118,7 @@ const BIY = {
       ).join("")
       + '</div>'
       + '<div class="biy-bs-sutun biy-bs-sutun-icerik">'
-      +   '<div class="biy-pn-grup">Soru içeriği <small>ne soruluyor</small></div>'
+      +   '<div class="biy-pn-grup">' + kdMetin('biy.icerik_bas', 'Soru içeriği <small>ne soruluyor</small>') + '</div>'
       +   '<div class="biy-ic-izgara">'
       +   BIY._icerikListesi().map(k => {
         const bi = TIP_BILGI[k], ac = state.icerikSecim[k] !== false, n = icerikSay[k] || 0;
@@ -3048,7 +3130,7 @@ const BIY = {
           '<small>'+kacis(ICERIK_NOT[k] || "")+'</small></span>' + tik + '</button>'; }).join("")
       +   '</div>'
       + '</div></div>'
-      + '<p class="biy-bs-not">Kapattığın tip ya da içerikteki sorular havuzda soluk görünür, seçilemez. Her başlıkta en az bir seçenek açık kalır.</p>';
+      + '<p class="biy-bs-not">' + kacis(kdMetin('biy.suzgec_not', 'Kapattığın tip ya da içerikteki sorular havuzda soluk görünür, seçilemez. Her başlıkta en az bir seçenek açık kalır.')) + '</p>';
   },
   bicimToggle(b){
     const sec = state.bicimSecim;
@@ -3172,8 +3254,8 @@ const BIY = {
       const z = +q.zorluk || 2; if (say[z] != null) say[z]++;
     });
     p.innerHTML =
-      '<div class="biy-bs-bas">Zorluk'
-      + '<button type="button" class="biy-bs-kapat" title="Kapat" aria-label="Kapat"'
+      '<div class="biy-bs-bas">' + kacis(kdMetin('biy.zorluk', 'Zorluk'))
+      + '<button type="button" class="biy-bs-kapat" title="' + kacis(kdMetin('g.kapat', 'Kapat')) + '" aria-label="' + kacis(kdMetin('g.kapat', 'Kapat')) + '"'
       + ' onclick="BIY.zorlukKapat()">✕</button></div>'
       + [1,2,3].map(z =>
         '<button type="button" class="biy-bs-oge biy-bs-zor biy-hs-z'+z+(state.zorlukSecim[z] !== false ? ' secili' : '')+'"' +
@@ -3183,7 +3265,7 @@ const BIY = {
           + '<em class="biy-bs-sayi">'+(say[z] || 0)+'</em></b>' +
           '<small>'+kacis(ZORLUK_ACIKLAMA[z] || "")+'</small></span>' + tik + '</button>'
       ).join("")
-      + '<p class="biy-bs-not">Kapattığın zorluktaki sorular havuzda soluk görünür, seçilemez.</p>';
+      + '<p class="biy-bs-not">' + kacis(kdMetin('biy.zorluk_not', 'Kapattığın zorluktaki sorular havuzda soluk görünür, seçilemez.')) + '</p>';
   },
   zorlukToggle(z){
     z = +z;
@@ -3250,18 +3332,18 @@ const BIY = {
         '<span class="biy-sr-elle">' +
           '<input type="number" class="biy-sr-input" id="sureInput' + z + '"' +
           ' min="' + SURE_ENAZ + '" max="' + SURE_ENCOK + '" step="1" value="' + v + '"' +
-          ' aria-label="' + SURE_ETIKET[z] + ' için saniye"' +
+          ' aria-label="' + kacis(kdMetin('biy.sure_saniye', '{z} için saniye', { z: SURE_ETIKET[z] })) + '"' +
           ' oninput="BIY.sureElle(' + z + ', this.value)">' +
-          '<span class="biy-sr-sn">sn</span>' +
+          '<span class="biy-sr-sn">' + kacis(kdMetin('biy.sn', 'sn')) + '</span>' +
         '</span>' +
       '</div>';
     };
     p.innerHTML =
-      '<div class="biy-sr-baslik">Soru süresi <small>zorluğa göre</small></div>' +
+      '<div class="biy-sr-baslik">' + kdMetin('biy.sure_bas', 'Soru süresi <small>zorluğa göre</small>') + '</div>' +
       [1,2,3].map(satir).join("") +
       '<div class="biy-sr-alt">' +
         '<button type="button" class="biy-sr-sifirla" onclick="BIY.sureSifirla()">' +
-        'Varsayılana dön (30 · 45 · 60)</button></div>';
+        kacis(kdMetin('biy.varsayilana', 'Varsayılana dön (30 · 45 · 60)')) + '</button></div>';
   },
   /* Hazır düğme */
   sureSec(z, n){ BIY._sureUygula(z, n, true); },
@@ -3368,9 +3450,9 @@ const BIY = {
     if (svg){
       svg.classList.toggle("biy-ss-havuz",  kip === "havuz");
       svg.classList.toggle("biy-ss-secili", kip === "secili");
-      const metin = kip === "havuz"  ? "Soru sayısı (havuzdan " + n + ")"
-                  : kip === "secili" ? "Soru sayısı: " + n
-                                     : "Soru sayısı (en çok " + n + ")";
+      const metin = kip === "havuz"  ? kdMetin('biy.ss_havuz', "Soru sayısı (havuzdan {n})", { n: n })
+                  : kip === "secili" ? kdMetin('biy.ss_secili', "Soru sayısı: {n}", { n: n })
+                                     : kdMetin('biy.ss_encok', "Soru sayısı (en çok {n})", { n: n });
       const bas = svg.querySelector("title"); if (bas) bas.textContent = metin;
       svg.setAttribute("aria-label", metin);
     }
@@ -3434,7 +3516,7 @@ const BIY = {
   _pdfOnizleGuncelle(){
     const havuz = BIY._secSet().size;
     const k = BIY._aktifKonu();
-    const baslik = $("pdfBaslik"); if (baslik) baslik.textContent = havuz > 0 ? "Karışık" : (k ? (k.ad || "") : "");
+    const baslik = $("pdfBaslik"); if (baslik) baslik.textContent = havuz > 0 ? kdMetin('biy.karisik', "Karışık") : (k ? (k.ad || "") : "");
     const kart = $("pdfKart"), indir = $("pdfIndir");
     // PDF'ler henüz hazır değil → tüm önizleme bloğunu gizle (PDF_AKTIF=true olunca geri gelir)
     const blok = kart && kart.closest(".biy-pdf-onizleme");
@@ -3460,7 +3542,7 @@ const BIY = {
     document.querySelectorAll(".biy-sekme").forEach(b => b.classList.toggle("secili", +b.getAttribute("data-z") === z));
     const liste = $("sorularListe"); liste.innerHTML = "";
     const list = BIY._aktifSorular().filter(s => s.zorluk === z);
-    if (!list.length){ liste.innerHTML = '<p class="biy-alt" style="text-align:center">Bu seviyede henüz örnek yok.</p>'; return; }
+    if (!list.length){ liste.innerHTML = '<p class="biy-alt" style="text-align:center">' + kacis(kdMetin('biy.ornek_yok', 'Bu seviyede henüz örnek yok.')) + '</p>'; return; }
     // her soru tipinden yalnızca bir örnek göster (tüm sorular değil)
     const gorulen = new Set(); const ornekler = [];
     list.forEach(s => { if (!gorulen.has(s.tip)){ gorulen.add(s.tip); ornekler.push(s); } });
@@ -3500,7 +3582,7 @@ const BIY = {
       const bu = aktifOda && modAl() === m;
       el.classList.toggle("biy-bagli-var", bu);
       const r = el.querySelector(".biy-bagli-rozet");
-      if (r){ r.textContent = "● " + bagli + " bağlı cihaz"; r.classList.toggle("gizli", !bu); }
+      if (r){ r.textContent = "● " + kdMetin('biy.bagli_cihaz', "{n} bağlı cihaz", { n: bagli }); r.classList.toggle("gizli", !bu); }
     });
   },
 
@@ -3510,10 +3592,10 @@ const BIY = {
     if (!MOD_BILGI[mod]) mod = "takim";
     // başka modda açık bir oda varsa önce onay iste
     if (state.odaId && state.oyunModu !== mod){
-      const eskiAd = (MOD_BILGI[state.oyunModu] || {}).ad || "Yarışma";
-      BIY._onay("Sistem değiştirilsin mi?",
-        "Açık bir oda var: " + eskiAd + ". Sistemi değiştirirsen o oda ve cihazları bırakılır.",
-        "Evet, değiştir", () => BIY._lobiAc(mod));
+      const eskiAd = (MOD_BILGI[state.oyunModu] || {}).ad || kdMetin('biy.l_yarisma', "Yarışma");
+      BIY._onay(kdMetin('biy.l_sistem', "Sistem değiştirilsin mi?"),
+        kdMetin('biy.l_sistem_not', "Açık bir oda var: {ad}. Sistemi değiştirirsen o oda ve cihazları bırakılır.", { ad: eskiAd }),
+        kdMetin('biy.l_degistir', "Evet, değiştir"), () => BIY._lobiAc(mod));
       return;
     }
     BIY._lobiAc(mod);
@@ -3536,7 +3618,7 @@ const BIY = {
     // birey/okul: oda hemen kurulur ki ortak karekod ekranda dursun
     if (tekKarekod()){
       try { await BIY._odayiHazirla(); BIY._odaKarekodCiz(); }
-      catch(e){ console.error(e); $("baslatNot").textContent = "Oda kurulamadı: " + (e.code || e.message); }
+      catch(e){ console.error(e); $("baslatNot").textContent = kdMetin('biy.l_oda_hata', "Oda kurulamadı: {e}", { e: (e.code || e.message) }); }
     }
   },
   // odayı bırak (silmez): abonelikleri kapat, ekranı temizle
@@ -3562,9 +3644,9 @@ const BIY = {
     if (grid) grid.className = (m === "birey") ? "biy-kat-liste" : "biy-takimlar-grid";
     // ekleme alanının yazıları moda göre (takım adı / sınıf adı)
     const inp = $("takimAdiInput");
-    if (inp) inp.placeholder = (m === "okul") ? "Sınıf adı (7/A)" : "Takım adı";
+    if (inp) inp.placeholder = (m === "okul") ? kdMetin('biy.l_sinif_ad', "Sınıf adı (7/A)") : kdMetin('biy.l_takim_ad', "Takım adı");
     const ekleBtn = $("takimEkleBtn");
-    if (ekleBtn) ekleBtn.textContent = (m === "okul") ? "+ Sınıf Ekle" : "+ Takım Ekle";
+    if (ekleBtn) ekleBtn.textContent = "+ " + ((m === "okul") ? kdMetin('biy.l_sinif_ekle', "Sınıf Ekle") : kdMetin('biy.l_takim_ekle', "Takım Ekle"));
   },
   // --- Kalıcılık (sayfa yenilense de oyun kaybolmasın) ---
   _kaydet(){
@@ -3604,7 +3686,7 @@ const BIY = {
     const eski = $("biyOnay"); if (eski) eski.remove();
     const ov = document.createElement("div"); ov.id = "biyOnay"; ov.className = "biy-onay-ov";
     ov.innerHTML = '<div class="biy-onay-kutu"><h3>'+kacis(baslik)+'</h3><p>'+kacis(metin)+'</p>' +
-      '<div class="biy-onay-btnlar"><button class="biy-onay-hayir">Vazgeç</button><button class="biy-onay-evet">'+kacis(evetMetin)+'</button></div></div>';
+      '<div class="biy-onay-btnlar"><button class="biy-onay-hayir">'+kacis(kdMetin('g.vazgec', 'Vazgeç'))+'</button><button class="biy-onay-evet">'+kacis(evetMetin)+'</button></div></div>';
     document.body.appendChild(ov);
     const kapat = () => { if (ov.parentNode) ov.remove(); };
     ov.querySelector(".biy-onay-hayir").onclick = kapat;
@@ -3613,9 +3695,9 @@ const BIY = {
   },
   // canlı yarışmadan çıkış → lobiye dön (takım bağlantıları KORUNUR)
   yaristanCik(){
-    BIY._onay("Lobiye dönülsün mü?",
-      "Yarışma durur ve lobiye dönülür. Cihazlar bağlı kalır — konuyu ya da soru sayısını değiştirip yeniden başlayabilirsin.",
-      "Evet, dön", function(){ BIY.lobiyeDon(); });
+    BIY._onay(kdMetin('biy.l_lobi_don', "Lobiye dönülsün mü?"),
+      kdMetin('biy.l_lobi_don_not', "Yarışma durur ve lobiye dönülür. Cihazlar bağlı kalır — konuyu ya da soru sayısını değiştirip yeniden başlayabilirsin."),
+      kdMetin('biy.l_evet_don', "Evet, dön"), function(){ BIY.lobiyeDon(); });
   },
   // oyunu durdurup lobiye döner; oda + takım karekod bağlantıları kopmaz
   async lobiyeDon(){
@@ -3706,7 +3788,7 @@ const BIY = {
       await db.collection(KOLEKSIYON).doc(oda).collection("takimlar").doc(takimId).set({
         ad: ad, bagli: false, puan: 0, olusturmaZamani: firebase.firestore.FieldValue.serverTimestamp()
       });
-    } catch(e){ console.error(e); $("baslatNot").textContent = (modAl()==="okul"?"Sınıf":"Takım") + " Eklenmedi: " + (e.code || e.message); }
+    } catch(e){ console.error(e); $("baslatNot").textContent = (modAl()==="okul" ? kdMetin('biy.l_sinif_eklenmedi', "Sınıf Eklenmedi: {e}", { e: (e.code || e.message) }) : kdMetin('biy.l_takim_eklenmedi', "Takım Eklenmedi: {e}", { e: (e.code || e.message) })); }
   },
   _takimlariCiz(snap){
     state.takimListe = []; state.bekleyenListe = [];
@@ -3755,7 +3837,7 @@ const BIY = {
   kopyala(btn){
     const inp = btn.parentElement.querySelector("input");
     inp.select(); inp.setSelectionRange(0, 99999);
-    try { navigator.clipboard.writeText(inp.value); btn.textContent = "✓"; setTimeout(()=>btn.textContent="Kopyala", 1200); } catch(e){ document.execCommand("copy"); }
+    try { navigator.clipboard.writeText(inp.value); btn.textContent = "✓"; setTimeout(()=>btn.textContent=kdMetin('biy.kopyala', "Kopyala"), 1200); } catch(e){ document.execCommand("copy"); }
   },
 
   /* ---------- YARIŞMAYI BAŞLAT (oyun döngüsü) ---------- */
@@ -3805,7 +3887,7 @@ const BIY = {
       yedek = [];   // görülmemiş yedek sorulmaz
     } else {
       const tumu = BIY._bicimliSorular().slice();   // konunun tüm soruları (yalnız seçili biçimler)
-      if (!tumu.length){ $("baslatNot").textContent = "«" + (BIY._aktifKonu() ? BIY._aktifKonu().ad : "") + "» konusunda henüz soru yok."; return; }
+      if (!tumu.length){ $("baslatNot").textContent = kdMetin('biy.l_konu_bos', "«{ad}» konusunda henüz soru yok.", { ad: (BIY._aktifKonu() ? BIY._aktifKonu().ad : "") }); return; }
       for (let i = tumu.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); const g = tumu[i]; tumu[i] = tumu[j]; tumu[j] = g; }
       const hedefSayi = Math.max(1, Math.min(50, state.soruSayisi || TUR_SORU_SAYISI));
       secilen = tumu.slice(0, Math.min(hedefSayi, tumu.length)).map(soruHazirla);
@@ -3832,7 +3914,7 @@ const BIY = {
       });
       BIY._kaydet();
       BIY._adminOyunaGec();
-    } catch(e){ console.error(e); $("baslatNot").textContent = "Başlatılamadı: " + (e.code || e.message); }
+    } catch(e){ console.error(e); $("baslatNot").textContent = kdMetin('biy.l_baslatilamadi', "Başlatılamadı: {e}", { e: (e.code || e.message) }); }
   },
 
   _adminOyunaGec(){
@@ -3871,7 +3953,7 @@ const BIY = {
     const ber = (o.durum === "beraberlik");
     const idx = o.aktifIndex || 0;
     const soru = BIY._soruByIndex(idx);
-    if (!soru){ kap.innerHTML = '<div class="biy-oyun-orta"><p class="biy-alt">Bu turun soruları bulunamadı (sayfa yenilenmiş olabilir). Yarışmayı yeniden başlat.</p><button class="biy-btn biy-btn-mavi" onclick="BIY.anasayfa()">Ana Menü</button></div>'; return; }
+    if (!soru){ kap.innerHTML = '<div class="biy-oyun-orta"><p class="biy-alt">'+kacis(kdMetin('biy.o_kayip', "Bu turun soruları bulunamadı (sayfa yenilenmiş olabilir). Yarışmayı yeniden başlat."))+'</p><button class="biy-btn biy-btn-mavi" onclick="BIY.anasayfa()">'+kacis(kdMetin('biy.o_ana_menu', "Ana Menü"))+'</button></div>'; return; }
     const sonuc = (o.faz === "sonuc");
     const t = TIP_BILGI[soru.tip] || { ad: soru.tip, emoji: "❓" };
     // SONUÇ EKRANI — soru ekranından tamamen ayrı (adım adım animasyonlu)
@@ -3908,16 +3990,16 @@ const BIY = {
     const gozSvg = state.soruGizli
       ? '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
       : '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
-    const gozBtn = '<button class="biy-gizle-svg" title="'+(state.soruGizli?'Soruyu göster':'Soruyu gizle')+'" onclick="BIY.soruGizleToggle()">'+gozSvg+'</button>';
+    const gozBtn = '<button class="biy-gizle-svg" title="'+kacis(state.soruGizli ? kdMetin('biy.o_soru_goster', "Soruyu göster") : kdMetin('biy.o_soru_gizle', "Soruyu gizle"))+'" onclick="BIY.soruGizleToggle()">'+gozSvg+'</button>';
 
     const cips = BIY._ciplerHtml(katilan, buCevaplar);
     const hepsi = katilan.length > 0 && cevapSayisi >= katilan.length;
 
-    const sayacHtml = '<div class="biy-sayac"><span id="sayacNum">'+kalan+'</span><small>sn</small></div>';
+    const sayacHtml = '<div class="biy-sayac"><span id="sayacNum">'+kalan+'</span><small>'+kacis(kdMetin('biy.sn', "sn"))+'</small></div>';
     const barHtml = '<div class="biy-sayac-bar"><i style="width:'+yuzde+'%"></i></div>';
     const siraMetin = ber
-      ? '⚔️ '+(o.berHedef===1?'Liderlik':'İkincilik')+' · Yedek Soru '+o.berNo
-      : 'Soru '+(idx+1)+' / '+(o.toplamSoru||state.oyunSorulari.length);
+      ? '⚔️ '+kacis(o.berHedef===1 ? kdMetin('biy.o_ber_lider', "Liderlik · Yedek Soru {n}", { n: o.berNo }) : kdMetin('biy.o_ber_ikinci', "İkincilik · Yedek Soru {n}", { n: o.berNo }))
+      : kacis(kdMetin('biy.o_soru_n', "Soru {n} / {top}", { n: idx+1, top: (o.toplamSoru||state.oyunSorulari.length) }));
 
     let govde =
       '<div class="biy-oyun-ust">' +
@@ -3936,11 +4018,11 @@ const BIY = {
     }
     // sınıfların durumu (gizliyken çok daha büyük)
     const kaydir = (modAl() === "birey" && katilan.length > 10) ? " biy-kaydir" : "";
-    govde += '<div class="biy-cevap-durum'+(gizli?' biy-dev':'')+'">'+cevapSayisi+' / '+katilan.length+' cevapladı'+(hepsi?' — sonuç açılıyor…':'')+'</div>' +
+    govde += '<div class="biy-cevap-durum'+(gizli?' biy-dev':'')+'">'+kacis(kdMetin('biy.o_cevapladi', "{n} / {top} cevapladı", { n: cevapSayisi, top: katilan.length }))+(hepsi?' — '+kacis(kdMetin('biy.o_sonuc_aciliyor', "sonuç açılıyor…")):'')+'</div>' +
              '<div class="biy-cipler'+(gizli?' biy-dev':'')+kaydir+'">'+cips+'</div>';
     // gizliyken geri sayım AŞAĞIDA ve devasa
     if (gizli){
-      govde += '<div class="biy-alt-sayac">'+barHtml+'<div class="biy-sayac biy-sayac-dev"><span id="sayacNum">'+kalan+'</span><small>sn</small></div></div>';
+      govde += '<div class="biy-alt-sayac">'+barHtml+'<div class="biy-sayac biy-sayac-dev"><span id="sayacNum">'+kalan+'</span><small>'+kacis(kdMetin('biy.sn', "sn"))+'</small></div></div>';
     }
 
     kap.innerHTML = '<div class="biy-oyun-orta">'+govde+'</div>';
@@ -4094,7 +4176,7 @@ const BIY = {
       const c = buCevaplar[tk.id]; const dogruMu = !!(c && cevapDogruMu(soru, c.secilen));
       const kesik = BIY._cevapIptalMi(idx, tk.id);
       const secim = c ? secimHtml(soru, c.secilen) : '<span class="biy-rev-yok">—</span>';
-      const durum = kesik ? '🚫 İptal' : (c ? (dogruMu ? '✅ Doğru' : '❌ Yanlış') : '⏳ Cevapsız');
+      const durum = kesik ? '🚫 '+kacis(kdMetin('biy.r_iptal', "İptal")) : (c ? (dogruMu ? '✅ '+kacis(kdMetin('biy.r_dogru', "Doğru")) : '❌ '+kacis(kdMetin('biy.r_yanlis', "Yanlış"))) : '⏳ '+kacis(kdMetin('biy.r_cevapsiz', "Cevapsız")));
       const sinif = (kesik ? 'iptal ' : '') + (c ? (dogruMu ? 'dogru' : 'yanlis') : 'yok');
       // yalnız iptal modunda: satır başına tek düğme (bas → iptal, yine bas → geri al)
       let islem = '';
@@ -4102,7 +4184,7 @@ const BIY = {
         islem = soruIptalli
           ? '<td class="biy-rev-islem"><span class="biy-rev-islem-bos">—</span></td>'
           : '<td class="biy-rev-islem"><button class="biy-mini-iptal'+(kesik?' geri':'')+'" onclick="BIY.cevapIptal('+idx+',\''+kacis(tk.id)+'\')" title="'+
-            (kesik ? 'İptali geri al' : 'Bu cevabı iptal et (kopya)')+'">'+(kesik ? '↩' : '🚫')+'</button></td>';
+            kacis(kesik ? kdMetin('biy.r_iptal_geri', "İptali geri al") : kdMetin('biy.r_cevap_iptal', "Bu cevabı iptal et (kopya)"))+'">'+(kesik ? '↩' : '🚫')+'</button></td>';
       }
       /* SÜTUN SIRASI: ad → durum → verilen cevap.
          Ad ile durum yan yana dursun ki "kim doğru bildi" tek bakışta
@@ -4131,7 +4213,7 @@ const BIY = {
     const adOf  = id => { const t = state.takimListe.find(x => x.id === id) || {}; return t.ad || ""; };
     const krkOf = id => { const t = state.takimListe.find(x => x.id === id) || {}; return t.krk || ""; };
     // sonuç tablosunun ilk sütun başlığı moda göre
-    const basSutun = modAl() === "birey" ? "Katılımcı" : (modAl() === "okul" ? "Sınıf" : "Takım");
+    const basSutun = modAl() === "birey" ? kdMetin('biy.r_katilimci', "Katılımcı") : (modAl() === "okul" ? kdMetin('biy.r_sinif', "Sınıf") : kdMetin('biy.r_takim', "Takım"));
     const lider = newOrder.map((id, i) => {
       const ns = newR[id] || ids.length, ps = prevR[id] || ids.length, delta = ps - ns;
       const ok = delta > 0 ? '<span class="biy-ok biy-ok-yukari">▲</span>' : (delta < 0 ? '<span class="biy-ok biy-ok-asagi">▼</span>' : '<span class="biy-ok biy-ok-sabit"></span>');
@@ -4144,22 +4226,24 @@ const BIY = {
     const step = taze ? 0 : 2;   // yenileme olursa doğrudan son sahne (liderlik)
     const t = TIP_BILGI[soru.tip] || { ad: soru.tip, emoji: "❓" };
     const baslik = ber
-      ? '⚔️ '+(o.berHedef===1?'Liderlik':'İkincilik')+' · Beraberlik · Soru '+o.berNo
-      : '📊 Sonuç · Soru '+(idx+1)+' / '+toplam;
+      ? '⚔️ '+kacis(o.berHedef===1 ? kdMetin('biy.s_ber_lider', "Liderlik · Beraberlik · Soru {n}", { n: o.berNo }) : kdMetin('biy.s_ber_ikinci', "İkincilik · Beraberlik · Soru {n}", { n: o.berNo }))
+      : '📊 '+kacis(kdMetin('biy.s_sonuc_n', "Sonuç · Soru {n} / {top}", { n: idx+1, top: toplam }));
     /* İptal düğmesi başlık çubuğuna konuldu: alt kontrol satırı ancak son
        sahnede görünür hâle geliyor, oysa iptal tam da cevaplar sahnesinde
        gerekiyor. Başlıkta durunca her sahnede elin altında ve tabloya
        dokunmadığı için mevcut düzen aynen korunuyor. */
     const iptalDugme = '<button class="biy-iptal-ac'+(iptalAcik?' acik':'')+'" onclick="BIY.iptalModuToggle()" title="'+
-      (iptalAcik ? 'İptal düğmelerini gizle' : 'Kopya ya da hatalı soru: iptal düğmelerini göster')+'">'+
-      (iptalAcik ? '✓' : '🚫')+'<span>İptal</span></button>';
+      kacis(iptalAcik ? kdMetin('biy.s_ip_gizle', "İptal düğmelerini gizle") : kdMetin('biy.s_ip_goster', "Kopya ya da hatalı soru: iptal düğmelerini göster"))+'">'+
+      (iptalAcik ? '✓' : '🚫')+'<span>'+kacis(kdMetin('biy.r_iptal_tus', "İptal"))+'</span></button>';
     const iptalUyari = soruIptalli
-      ? '<div class="biy-iptal-uyari">🚫 Bu soru iptal edildi — hiç kimseye puan yazılmıyor.</div>' : '';
+      ? '<div class="biy-iptal-uyari">🚫 '+kacis(kdMetin('biy.s_soru_iptal', "Bu soru iptal edildi — hiç kimseye puan yazılmıyor."))+'</div>' : '';
     const iptalPanel = iptalAcik
       ? '<div class="biy-iptal-panel">' +
-          '<span class="biy-iptal-not">Satırdaki 🚫 tek '+kisiSozu()+'ın cevabını (kopya), aşağıdaki düğme sorunun tamamını (hatalı soru) iptal eder. Aynı düğmeye yeniden basmak iptali geri alır.</span>' +
+          '<span class="biy-iptal-not">'+kacis(modAl() === "birey" ? kdMetin('biy.s_ip_not_birey', "Satırdaki 🚫 tek Katılımcının cevabını (kopya), aşağıdaki düğme sorunun tamamını (hatalı soru) iptal eder. Aynı düğmeye yeniden basmak iptali geri alır.")
+            : modAl() === "okul" ? kdMetin('biy.s_ip_not_okul', "Satırdaki 🚫 tek Sınıfın cevabını (kopya), aşağıdaki düğme sorunun tamamını (hatalı soru) iptal eder. Aynı düğmeye yeniden basmak iptali geri alır.")
+            : kdMetin('biy.s_ip_not_takim', "Satırdaki 🚫 tek Takımın cevabını (kopya), aşağıdaki düğme sorunun tamamını (hatalı soru) iptal eder. Aynı düğmeye yeniden basmak iptali geri alır."))+'</span>' +
           '<button class="biy-btn biy-btn-mini biy-iptal-tum'+(soruIptalli?' geri':'')+'" onclick="BIY.soruIptal('+idx+')">'+
-            (soruIptalli ? '↩ Soruyu Geri Al' : '🚫 Tüm Soruyu İptal Et')+'</button>' +
+            (soruIptalli ? '↩ '+kacis(kdMetin('biy.s_soru_geri', "Soruyu Geri Al")) : '🚫 '+kacis(kdMetin('biy.s_soru_iptal_et', "Tüm Soruyu İptal Et")))+'</button>' +
         '</div>'
       : '';
     // Son soruda (veya beraberlik kesinleşince) "Yarışmayı Bitir" düğmesi
@@ -4176,11 +4260,11 @@ const BIY = {
         '</div>' +
         // SAHNE 2: sınıfların verdiği cevaplar (devasa)
         '<div class="biy-sahne-oge oge-reveal">' + iptalPanel +
-          '<div class="biy-reveal'+(cevapTakimlari.length > 8 && modAl() === "birey" ? ' biy-kaydir' : '')+'"><table class="biy-reveal-tablo"><thead><tr><th class="biy-rev-adbas">'+basSutun+'</th><th class="biy-rev-durumbas">Durum</th><th class="biy-rev-cevapbas">Cevap</th>'+(iptalAcik?'<th class="biy-rev-islembas">İşlem</th>':'')+'</tr></thead><tbody>'+satir+'</tbody></table></div>' +
+          '<div class="biy-reveal'+(cevapTakimlari.length > 8 && modAl() === "birey" ? ' biy-kaydir' : '')+'"><table class="biy-reveal-tablo"><thead><tr><th class="biy-rev-adbas">'+basSutun+'</th><th class="biy-rev-durumbas">'+kacis(kdMetin('biy.r_durum', "Durum"))+'</th><th class="biy-rev-cevapbas">'+kacis(kdMetin('biy.r_cevap', "Cevap"))+'</th>'+(iptalAcik?'<th class="biy-rev-islembas">'+kacis(kdMetin('biy.r_islem', "İşlem"))+'</th>':'')+'</tr></thead><tbody>'+satir+'</tbody></table></div>' +
         '</div>' +
         // SAHNE 3: güncel puan durumu (devasa)
         '<div class="biy-sahne-oge oge-lider">' +
-          '<div class="biy-sonuc-lider"><h4>🏆 Puan Durumu</h4><ol class="biy-lider-ol'+(newOrder.length>10?' biy-kaydir':'')+'">'+lider+'</ol></div>' +
+          '<div class="biy-sonuc-lider"><h4>🏆 '+kacis(kdMetin('biy.s_puan_durumu', "Puan Durumu"))+'</h4><ol class="biy-lider-ol'+(newOrder.length>10?' biy-kaydir':'')+'">'+lider+'</ol></div>' +
         '</div>' +
       '</div>' +
       /* ALT BAR: üç ilerleme çizgisi ORTADA, "Sonraki Soru" düğmesi aynı
@@ -4188,13 +4272,13 @@ const BIY = {
          dikeyde daha çok nefes alıyor (tablo/liste için daha çok yükseklik). */
       '<div class="biy-sonuc-altbar">' +
         '<div class="biy-sonuc-nokta">' +
-          '<button class="biy-nokta" data-adim="0" onclick="BIY.sonucAdim(0)" title="Soru & doğru cevap"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M8.2 12.4l2.6 2.6 5-5.8"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
-          '<button class="biy-nokta" data-adim="1" onclick="BIY.sonucAdim(1)" title="Katılımcı cevapları"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.6" cy="6" r="1.5"/><path d="M10 6h8.4"/><circle cx="5.6" cy="12" r="1.5"/><path d="M10 12h8.4"/><circle cx="5.6" cy="18" r="1.5"/><path d="M10 18h8.4"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
-          '<button class="biy-nokta" data-adim="2" onclick="BIY.sonucAdim(2)" title="Puan durumu"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="13" width="4.6" height="7.4" rx="1.2"/><rect x="9.7" y="8.4" width="4.6" height="12" rx="1.2"/><rect x="15.4" y="15" width="4.6" height="5.4" rx="1.2"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
+          '<button class="biy-nokta" data-adim="0" onclick="BIY.sonucAdim(0)" title="'+kacis(kdMetin('biy.s_nk_soru', "Soru & doğru cevap"))+'"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M8.2 12.4l2.6 2.6 5-5.8"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
+          '<button class="biy-nokta" data-adim="1" onclick="BIY.sonucAdim(1)" title="'+kacis(kdMetin('biy.s_nk_cevaplar', "Katılımcı cevapları"))+'"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.6" cy="6" r="1.5"/><path d="M10 6h8.4"/><circle cx="5.6" cy="12" r="1.5"/><path d="M10 12h8.4"/><circle cx="5.6" cy="18" r="1.5"/><path d="M10 18h8.4"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
+          '<button class="biy-nokta" data-adim="2" onclick="BIY.sonucAdim(2)" title="'+kacis(kdMetin('biy.s_nk_puan', "Puan durumu"))+'"><span class="biy-nk-ikon"><svg viewBox="0 0 24 24" class="biy-nk-svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="13" width="4.6" height="7.4" rx="1.2"/><rect x="9.7" y="8.4" width="4.6" height="12" rx="1.2"/><rect x="15.4" y="15" width="4.6" height="5.4" rx="1.2"/></svg></span><i class="biy-nk-cizgi"></i></button>' +
         '</div>' +
         '<div class="biy-oyun-kontrol"><button class="biy-btn biy-btn-buyuk" onclick="BIY.sonrakiSoru()">'+
-          (ber ? ((BIY._beraberlikCozuldu() || state.berNo >= state.yedekSorular.length) ? '🏁 Sıralamayı Kesinleştir' : 'Sonraki Yedek Soru ›')
-               : (son ? '🏁 Yarışmayı Bitir' : 'Sonraki Soru ›')) +
+          (ber ? ((BIY._beraberlikCozuldu() || state.berNo >= state.yedekSorular.length) ? '🏁 '+kacis(kdMetin('biy.s_kesinlestir', "Sıralamayı Kesinleştir")) : kacis(kdMetin('biy.s_sonraki_yedek', "Sonraki Yedek Soru"))+' ›')
+               : (son ? '🏁 '+kacis(kdMetin('biy.s_bitir', "Yarışmayı Bitir")) : kacis(kdMetin('biy.s_sonraki', "Sonraki Soru"))+' ›')) +
         '</button></div>' +
       '</div>' +
     '</div>';
@@ -4220,7 +4304,7 @@ const BIY = {
     return state.takimListe.slice().sort((a,b) => (b.puan||0) - (a.puan||0));
   },
   _miniLiderHtml(){
-    return '<h4>Puan Durumu</h4><ol class="biy-lider-ol">' +
+    return '<h4>'+kacis(kdMetin('biy.s_puan_durumu', "Puan Durumu"))+'</h4><ol class="biy-lider-ol">' +
       BIY._siraliTakimlar().map(t => '<li><span>'+kacis(t.ad)+'</span><b>'+(t.puan||0)+'</b></li>').join("") + '</ol>';
   },
   /* ---------- DETAYLI RAPOR (akordiyon) ----------
@@ -4261,11 +4345,11 @@ const BIY = {
       const soruKesik = BIY._soruIptalMi(i);
       const dogruMu = !!(s && c && cevapDogruMu(s, c.secilen));
       const p = (c && dogruMu) ? BIY._puanParca(c) : null;   // puan yalnız doğru cevapta oluşur
-      const durum = kesik ? '🚫 İptal' : (c ? (dogruMu ? '✅ Doğru' : '❌ Yanlış') : '⏳ Cevapsız');
+      const durum = kesik ? '🚫 '+kacis(kdMetin('biy.r_iptal', "İptal")) : (c ? (dogruMu ? '✅ '+kacis(kdMetin('biy.r_dogru', "Doğru")) : '❌ '+kacis(kdMetin('biy.r_yanlis', "Yanlış"))) : '⏳ '+kacis(kdMetin('biy.r_cevapsiz', "Cevapsız")));
       const cevap = (c && s) ? secimHtml(s, c.secilen) : '<span class="biy-rev-yok">—</span>';
       // hız kırılımı: kaç saniye kala cevapladı, süresinin yüzde kaçı kaldı, kaç puan bonus
       const hiz = p
-        ? '<b class="biy-rap-bonus">+'+p.hizPuan+'</b><small>'+(p.kalan == null ? 'süre bilinmiyor' : (p.kalan+' sn kala · %'+p.yuzde))+'</small>'
+        ? '<b class="biy-rap-bonus">+'+p.hizPuan+'</b><small>'+kacis(p.kalan == null ? kdMetin('biy.r_sure_yok', "süre bilinmiyor") : kdMetin('biy.r_kala', "{n} sn kala · %{y}", { n: p.kalan, y: p.yuzde }))+'</small>'
         : '<span class="biy-rev-yok">—</span>';
       const taban = p ? String(p.sabit) : '<span class="biy-rev-yok">—</span>';
       // iptal edilmişse kazanılacak puan üstü çizili gösterilir, yerine 0 yazılır
@@ -4273,7 +4357,7 @@ const BIY = {
       const dugme = soruKesik
         ? '<span class="biy-rev-islem-bos">—</span>'
         : '<button class="biy-mini-iptal'+(kesik?' geri':'')+'" onclick="BIY.cevapIptal('+i+',\''+kacis(takimId)+'\')" title="'+
-          (kesik ? 'İptali geri al' : 'Bu cevabı iptal et (kopya)')+'">'+(kesik ? '↩' : '🚫')+'</button>';
+          kacis(kesik ? kdMetin('biy.r_iptal_geri', "İptali geri al") : kdMetin('biy.r_cevap_iptal', "Bu cevabı iptal et (kopya)"))+'">'+(kesik ? '↩' : '🚫')+'</button>';
       return '<tr class="'+(kesik ? 'iptal' : (c ? (dogruMu ? 'dogru' : 'yanlis') : 'yok'))+'">' +
         '<td class="biy-rap-no">'+BIY._soruEtiket(i)+'</td>' +
         '<td class="biy-rap-cevap">'+cevap+'</td>' +
@@ -4292,21 +4376,21 @@ const BIY = {
     const sirali = state.takimListe.slice().sort((a,b) => (P[b.id]||0) - (P[a.id]||0));
     // hatalı soruyu tümüyle iptal etmek yarışma bittikten sonra da mümkün olsun
     const cipler = idxs.map(i => '<button class="biy-rap-schip'+(BIY._soruIptalMi(i)?' kesik':'')+'" onclick="BIY.soruIptal('+i+')" title="'+
-      (BIY._soruIptalMi(i) ? 'Bu sorunun iptalini geri al' : 'Bu sorunun tamamını iptal et (hatalı soru)')+'">'+BIY._soruEtiket(i)+'</button>').join("");
+      kacis(BIY._soruIptalMi(i) ? kdMetin('biy.r_soru_iptal_geri', "Bu sorunun iptalini geri al") : kdMetin('biy.r_soru_iptal_et', "Bu sorunun tamamını iptal et (hatalı soru)"))+'">'+BIY._soruEtiket(i)+'</button>').join("");
     const kisiler = sirali.map((t,i) =>
       '<details class="biy-rap-kisi" data-anahtar="k'+t.id+'" ontoggle="BIY.raporToggle(this)"'+(BIY._raporAcikMi("k"+t.id)?' open':'')+'>' +
         '<summary><span class="biy-rap-sira">'+(i+1)+'</span>'+krkSvg(t.krk, "biy-krk-mini")+
           '<span class="biy-rap-ad">'+kacis(t.ad)+'</span><b>'+(P[t.id]||0)+'</b></summary>' +
         '<div class="biy-rap-kaydir"><table class="biy-rap-tablo">' +
-          '<thead><tr><th>Soru</th><th>Verdiği Cevap</th><th>Durum</th><th>Taban</th><th>Hız Puanı</th><th>Puan</th><th>İptal</th></tr></thead>' +
+          '<thead><tr><th>'+kacis(kdMetin('biy.r_soru', "Soru"))+'</th><th>'+kacis(kdMetin('biy.r_verdigi', "Verdiği Cevap"))+'</th><th>'+kacis(kdMetin('biy.r_durum', "Durum"))+'</th><th>'+kacis(kdMetin('biy.r_taban', "Taban"))+'</th><th>'+kacis(kdMetin('biy.r_hiz', "Hız Puanı"))+'</th><th>'+kacis(kdMetin('biy.r_puan', "Puan"))+'</th><th>'+kacis(kdMetin('biy.r_iptal_tus', "İptal"))+'</th></tr></thead>' +
           '<tbody>'+BIY._raporGovde(t.id)+'</tbody>' +
         '</table></div>' +
       '</details>').join("");
     return '<details class="biy-rapor" data-anahtar="rapor" ontoggle="BIY.raporToggle(this)"'+(BIY._raporAcikMi("rapor")?' open':'')+'>' +
-      '<summary>📋 Detaylı Rapor — soru soru cevaplar ve hız puanları</summary>' +
+      '<summary>📋 '+kacis(kdMetin('biy.r_rapor', "Detaylı Rapor — soru soru cevaplar ve hız puanları"))+'</summary>' +
       '<div class="biy-rapor-govde">' +
-        '<div class="biy-rap-sorular"><span class="biy-rap-sorular-not">Hatalı soruyu tümüyle iptal et / geri al:</span>'+cipler+'</div>' +
-        '<p class="biy-rap-aciklama">Her sorunun puanının %'+Math.round((1-ZAMAN_PAYI)*100)+'\'i doğru cevaba (taban), en çok %'+Math.round(ZAMAN_PAYI*100)+'\'i kalan süreye (hız) verilir. İptal edilen cevap toplama katılmaz.</p>' +
+        '<div class="biy-rap-sorular"><span class="biy-rap-sorular-not">'+kacis(kdMetin('biy.r_hatali_not', "Hatalı soruyu tümüyle iptal et / geri al:"))+'</span>'+cipler+'</div>' +
+        '<p class="biy-rap-aciklama">'+kacis(kdMetin('biy.r_aciklama', "Her sorunun puanının %{a}'i doğru cevaba (taban), en çok %{b}'i kalan süreye (hız) verilir. İptal edilen cevap toplama katılmaz.", { a: Math.round((1-ZAMAN_PAYI)*100), b: Math.round(ZAMAN_PAYI*100) }))+'</p>' +
         kisiler +
       '</div>' +
     '</details>';
@@ -4332,14 +4416,14 @@ const BIY = {
     }
     const madalya = ["🥇","🥈","🥉"];
     return '<div class="biy-oyun-orta biy-final">' +
-      '<div class="biy-logo">'+simge("🏆")+'</div><h1>Yarışma Bitti!</h1>' +
+      '<div class="biy-logo">'+simge("🏆")+'</div><h1>'+kacis(kdMetin('biy.f_bitti', "Yarışma Bitti!"))+'</h1>' +
       '<ol class="biy-final-ol'+(sirali.length>10?' biy-kaydir':'')+'">' +
         sirali.map((t,i) => '<li class="'+(i<3?'podyum':'')+(i===0?' birinci':'')+'" style="--i:'+i+'"><span class="biy-final-sira">'+(madalya[i]||(i+1))+'</span><span class="biy-final-ad">'+kacis(t.ad)+'</span><b>'+puanOf(t)+'</b></li>').join("") +
       '</ol>' +
       BIY._raporHtml() +
       '<div class="biy-final-butonlar">' +
-        '<button class="biy-btn biy-btn-yesil" onclick="BIY.lobiyeDon()">🔄 Lobiye Dön (' + cogSozu() + ' bağlı kalır)</button>' +
-        '<button class="biy-btn biy-btn-mavi" onclick="BIY.oyunuBitir()">Bitir &amp; Menü</button>' +
+        '<button class="biy-btn biy-btn-yesil" onclick="BIY.lobiyeDon()">🔄 ' + kacis(modAl() === "birey" ? kdMetin('biy.f_lobi_birey', "Lobiye Dön (katılımcı bağlı kalır)") : modAl() === "okul" ? kdMetin('biy.f_lobi_okul', "Lobiye Dön (sınıf bağlı kalır)") : kdMetin('biy.f_lobi_takim', "Lobiye Dön (takım bağlı kalır)")) + '</button>' +
+        '<button class="biy-btn biy-btn-mavi" onclick="BIY.oyunuBitir()">'+kacis(kdMetin('biy.f_bitir_menu', "Bitir & Menü"))+'</button>' +
       '</div>' +
     '</div>';
   },
@@ -4504,8 +4588,8 @@ const BIY = {
     const takimRef = db.collection(KOLEKSIYON).doc(oda).collection("takimlar").doc(takim);
     try {
       const snap = await takimRef.get();
-      if (!snap.exists){ BIY._takimIcerik('❌','Takım bulunamadı','Bağlantı geçersiz ya da takım silinmiş.'); return; }
-      state.takimAd = snap.data().ad || "Takım";
+      if (!snap.exists){ BIY._takimIcerik('❌', kdMetin('biy.t_bulunamadi', "Takım bulunamadı"), kdMetin('biy.t_bulunamadi_not', "Bağlantı geçersiz ya da takım silinmiş.")); return; }
+      state.takimAd = snap.data().ad || kdMetin('biy.r_takim', "Takım");
       state.takimKrk = snap.data().krk || "";
       BIY._krkIzle(oda);                     // alinan avatarlari canli izle
       // yenileme sonrası: bu soruyu zaten cevapladıysa hatırla
@@ -4517,7 +4601,7 @@ const BIY = {
 
       if (state.odaAbone) state.odaAbone();
       state.odaAbone = db.collection(KOLEKSIYON).doc(oda).onSnapshot(d => { state.oda = d.data() || null; BIY._renderTakim(); });
-    } catch(e){ console.error(e); BIY._takimIcerik('⚠️','Bağlanılamadı','İnterneti ve bağlantıyı kontrol et.'); }
+    } catch(e){ console.error(e); BIY._takimIcerik('⚠️', kdMetin('biy.t_baglanilamadi', "Bağlanılamadı"), kdMetin('biy.t_baglanilamadi_not', "İnterneti ve bağlantıyı kontrol et.")); }
   },
   /* =================================================================
      KARAKTER SECIMI — herkes bir avatar alir, ikincisi ayni avatari
@@ -4583,7 +4667,7 @@ const BIY = {
   _krkSecEkrani(){
     if ($("takimKrkAlan")){ BIY._krkTazele(); return; }   // acik ekrani bozma
     const mod = BIY._krkModu();
-    const baslik = mod === "okul" ? "Sınıf amblemini seç" : "Takım amblemini seç";
+    const baslik = mod === "okul" ? kdMetin('biy.t_amblem_sinif', "Sınıf amblemini seç") : kdMetin('biy.t_amblem_takim', "Takım amblemini seç");
     /* Amblem izgarasi masaustunde 480 px'lik dar kolona sigmiyordu;
        bu ekran icin kart genisler (bkz. .biy-krk-orta).             */
     $("takimIcerik").className = "biy-orta biy-krk-orta";
@@ -4593,7 +4677,7 @@ const BIY = {
         '<p class="biy-alt">' + kacis(state.takimAd || "") + '</p>' +
         '<div id="takimKrkAlan"></div>' +
         '<p id="takimKrkNot" class="biy-not"></p>' +
-        '<button id="takimKrkBtn" class="biy-btn biy-btn-yesil" disabled onclick="BIY.krkOnayla()">Onayla</button>' +
+        '<button id="takimKrkBtn" class="biy-btn biy-btn-yesil" disabled onclick="BIY.krkOnayla()">'+kacis(kdMetin('biy.t_onayla', "Onayla"))+'</button>' +
       '</div>';
     BIY._krkTazele();
   },
@@ -4603,7 +4687,7 @@ const BIY = {
     if (!oda || !takim || !state.krkSecili) return;
     const btn = $("takimKrkBtn"); if (btn) btn.disabled = true;
     const not = $("takimKrkNot");
-    if (not){ not.classList.remove("biy-not-hata"); not.textContent = "Ayrılıyor…"; }
+    if (not){ not.classList.remove("biy-not-hata"); not.textContent = kdMetin('biy.t_ayriliyor', "Ayrılıyor…"); }
     try {
       await BIY._krkKap(oda, takim, state.krkSecili);
       await db.collection(KOLEKSIYON).doc(oda).collection("takimlar").doc(takim)
@@ -4612,7 +4696,7 @@ const BIY = {
       BIY._renderTakim();
     } catch(e){
       state.krkSecili = ""; BIY._krkTazele();
-      if (not){ not.classList.add("biy-not-hata"); not.textContent = "Bu amblem kapılmış. Başkasını seç."; }
+      if (not){ not.classList.add("biy-not-hata"); not.textContent = kdMetin('biy.t_amblem_kapildi', "Bu amblem kapılmış. Başkasını seç."); }
     }
   },
   _takimIcerik(emoji, baslik, metin, ekstra){
@@ -4634,7 +4718,7 @@ const BIY = {
       state.sonCevapIndex = -1; try { localStorage.removeItem('biy_cevap'); } catch(e){}
       // avatar secilmediyse once o: herkes bir karakter alir, ikincisi alamaz
       if (!state.takimKrk){ BIY._krkSecEkrani(); sayacDurdur(); return; }
-      BIY._takimIcerik('✅', state.takimAd, 'Bağlandın! Öğretmenin başlatması bekleniyor.',
+      BIY._takimIcerik('✅', state.takimAd, kdMetin('biy.t_baglandin', "Bağlandın! Öğretmenin başlatması bekleniyor."),
         '<div class="biy-krk-benim">'+krkSvg(state.takimKrk, "biy-krk-buyuk")+'<span>'+kacis(krkAd(state.takimKrk))+'</span></div>' +
         '<div class="biy-bekle-nokta"><span></span><span></span><span></span></div>');
       sayacDurdur(); return;
@@ -4644,11 +4728,11 @@ const BIY = {
       const ss = Array.isArray(o.sonSira) ? o.sonSira : null;
       if (ss){
         const r = ss.indexOf(state.odaTakim.takim) + 1;
-        if (r === 1) BIY._takimIcerik('🎉','Tebrikler!', 'Birincisin! 🥇');
-        else if (r > 0) BIY._takimIcerik('🏅', r + '. sıra', 'Yarışmayı bitirdiğin sıra: ' + r + '.');
-        else BIY._takimIcerik('🏁','Yarışma Bitti!', 'Sıralama ekranda.');
+        if (r === 1) BIY._takimIcerik('🎉', kdMetin('oyn.tebrikler', "Tebrikler!"), kdMetin('biy.t_birinci', "Birincisin!") + ' 🥇');
+        else if (r > 0) BIY._takimIcerik('🏅', kdMetin('biy.t_sira', "{n}. sıra", { n: r }), kdMetin('biy.t_sira_not', "Yarışmayı bitirdiğin sıra: {n}.", { n: r }));
+        else BIY._takimIcerik('🏁', kdMetin('biy.f_bitti', "Yarışma Bitti!"), kdMetin('biy.t_sira_ekranda', "Sıralama ekranda."));
       } else {
-        BIY._takimIcerik('🏁','Yarışma Bitti!', 'Sıralama öğretmenin ekranında.');
+        BIY._takimIcerik('🏁', kdMetin('biy.f_bitti', "Yarışma Bitti!"), kdMetin('biy.t_sira_ogretmen', "Sıralama öğretmenin ekranında."));
       }
       sayacDurdur(); return;
     }
@@ -4656,19 +4740,19 @@ const BIY = {
       const amTied = (o.berTakimlar||[]).indexOf(state.odaTakim.takim) >= 0;
       if (!amTied){
         const rank = (o.berSabit||{})[state.odaTakim.takim];
-        if (rank === 1) BIY._takimIcerik('🎉','Tebrikler!', 'Birincisin! 🥇');
-        else if (rank) BIY._takimIcerik('🏅', rank + '. sıradasın', 'Yarışmayı bitirdiğin sıra: ' + rank + '.');
-        else BIY._takimIcerik('⏳','Beraberlik!', 'Diğerleri yedek soruda…');
+        if (rank === 1) BIY._takimIcerik('🎉', kdMetin('oyn.tebrikler', "Tebrikler!"), kdMetin('biy.t_birinci', "Birincisin!") + ' 🥇');
+        else if (rank) BIY._takimIcerik('🏅', kdMetin('biy.t_siradasin', "{n}. sıradasın", { n: rank }), kdMetin('biy.t_sira_not', "Yarışmayı bitirdiğin sıra: {n}.", { n: rank }));
+        else BIY._takimIcerik('⏳', kdMetin('biy.t_beraberlik', "Beraberlik!"), kdMetin('biy.t_digerleri', "Diğerleri yedek soruda…"));
         sayacDurdur(); return;
       }
-      if (o.faz === "sonuc"){ BIY._takimIcerik('📺','Cevaplar ekranda!', 'Sonraki yedek soru bekleniyor…'); sayacDurdur(); return; }
+      if (o.faz === "sonuc"){ BIY._takimIcerik('📺', kdMetin('biy.t_cevaplar_ekranda', "Cevaplar ekranda!"), kdMetin('biy.t_yedek_bekle', "Sonraki yedek soru bekleniyor…")); sayacDurdur(); return; }
       // beraberlikte olan takım → aşağıdaki cevap akışıyla yedek soruyu cevaplar
     }
     // oyun
     const idx = o.aktifIndex, s = o.aktifSoru;
-    if (!s){ BIY._takimIcerik('⏳','Hazırlanıyor…',''); return; }
+    if (!s){ BIY._takimIcerik('⏳', kdMetin('biy.t_hazirlaniyor', "Hazırlanıyor…"), ''); return; }
     if (o.faz === "sonuc"){
-      BIY._takimIcerik('📺','Cevaplar ekranda!', 'Sonraki soru bekleniyor…');
+      BIY._takimIcerik('📺', kdMetin('biy.t_cevaplar_ekranda', "Cevaplar ekranda!"), kdMetin('biy.t_soru_bekle', "Sonraki soru bekleniyor…"));
       sayacDurdur(); return;
     }
     // cevap fazı
@@ -4680,8 +4764,8 @@ const BIY = {
     const kilit = cevapVerildi || kalan <= 0;
     BIY._calismaHazirla(idx, s);
     const alt = cevapVerildi
-      ? '<div class="biy-t-alindi">✅ Cevabın alındı</div>'
-      : (kalan<=0 ? '<div class="biy-t-alindi biy-gec">⌛ Süre doldu</div>'
+      ? '<div class="biy-t-alindi">✅ '+kacis(kdMetin('biy.t_alindi', "Cevabın alındı"))+'</div>'
+      : (kalan<=0 ? '<div class="biy-t-alindi biy-gec">⌛ '+kacis(kdMetin('biy.t_sure_doldu', "Süre doldu"))+'</div>'
                   : '<div class="biy-t-ipucu">'+BIY._ipucuMetni(s)+'</div>');
     $("takimIcerik").className = "biy-oyun-orta";
     $("takimIcerik").innerHTML =
@@ -4700,7 +4784,7 @@ const BIY = {
           .forEach(b => b.setAttribute("disabled",""));
         const kap = $("biyCalisma"); if (kap) kap.classList.add("kilitli");
         const ip = document.querySelector(".biy-t-ipucu");
-        if (ip){ ip.className = "biy-t-alindi biy-gec"; ip.textContent = "⌛ Süre doldu"; }
+        if (ip){ ip.className = "biy-t-alindi biy-gec"; ip.textContent = "⌛ " + kdMetin('biy.t_sure_doldu', "Süre doldu"); }
       }
     });
   },
@@ -4726,15 +4810,15 @@ const BIY = {
   },
   _ipucuMetni(s){
     const b = bicimAl(s);
-    if (siraGibiMi(b))  return "Parçaları sürükleyerek sırala";
-    if (b === "eslestir") return "Kartları doğru satıra taşı";
-    if (b === "yazma")    return "Kelimeyi harflerle yaz";
-    return "Bir şık seç";
+    if (siraGibiMi(b))  return kdMetin('biy.t_ip_sirala', "Parçaları sürükleyerek sırala");
+    if (b === "eslestir") return kdMetin('biy.t_ip_eslestir', "Kartları doğru satıra taşı");
+    if (b === "yazma")    return kdMetin('biy.t_ip_yaz', "Kelimeyi harflerle yaz");
+    return kdMetin('biy.t_ip_sik', "Bir şık seç");
   },
   _gonderHtml(kilit, tam){
     return '<div class="biy-t-gonder-sar"><button class="biy-t-gonder" ' +
            ((kilit || !tam) ? 'disabled' : '') +
-           ' onclick="BIY.cevapGonder()">Gönder ✔</button></div>';
+           ' onclick="BIY.cevapGonder()">'+kacis(kdMetin('biy.t_gonder', "Gönder"))+' ✔</button></div>';
   },
 
   /* ---------- takım tarafı: biçime göre cevap alanı ---------- */
@@ -4761,7 +4845,7 @@ const BIY = {
       return '<div class="biy-t-calisma" id="biyCalisma">' +
                '<div class="biy-t-slotlar" dir="rtl">'+slot+'</div>' +
                '<div class="biy-t-havuz" data-drop="havuz" dir="rtl">' +
-                 (havuz || '<span class="biy-t-bos">Hepsi sıralandı ✔</span>') +
+                 (havuz || '<span class="biy-t-bos">'+kacis(kdMetin('biy.t_siralandi', "Hepsi sıralandı"))+' ✔</span>') +
                '</div>' +
              '</div>' + BIY._gonderHtml(kilit, tam);
     }
@@ -4786,7 +4870,7 @@ const BIY = {
       return '<div class="biy-t-calisma" id="biyCalisma">' +
                '<div class="biy-t-ciftler">'+satir+'</div>' +
                '<div class="biy-t-havuz" data-drop="havuz">' +
-                 (havuz || '<span class="biy-t-bos">Hepsi yerleşti ✔</span>') +
+                 (havuz || '<span class="biy-t-bos">'+kacis(kdMetin('biy.t_yerlesti', "Hepsi yerleşti"))+' ✔</span>') +
                '</div>' +
              '</div>' + BIY._gonderHtml(kilit, tam);
     }
@@ -4799,7 +4883,7 @@ const BIY = {
       return '<div class="biy-t-yazma" id="biyCalisma">' +
                '<div class="biy-t-yazekran" dir="rtl">' +
                  (c.yazi ? kacis(c.yazi) : '<span class="biy-t-bos">…</span>') + '</div>' +
-               (hedef ? '<div class="biy-t-sayi">'+c.yazi.length+' / '+hedef+' harf</div>' : '') +
+               (hedef ? '<div class="biy-t-sayi">'+kacis(kdMetin('biy.t_harf_n', "{n} / {top} harf", { n: c.yazi.length, top: hedef }))+'</div>' : '') +
                '<div class="biy-t-klavye" dir="rtl">'+tus +
                  '<button class="biy-t-tus sil" '+(kilit?'disabled':'')+' onclick="BIY.tusSil()">⌫</button>' +
                '</div>' +
@@ -5004,17 +5088,18 @@ const BIY = {
     const sayi  = state.takimListe.length;
     const bagli = state.takimListe.filter(t => t.bagli).length;
     const bek   = state.bekleyenListe.length;
-    const bekNot = bek ? " · " + bek + " Onay bekleyenler" : "";
+    const bekNot = bek ? " · " + kdMetin('biy.b_onay_bek', "{n} Onay bekleyenler", { n: bek }) : "";
     // Takım ve Okul: her ada bir karekod → hepsi bağlanınca başlar (aynı mantık)
     if (m !== "birey"){
       const c = cogSozu();                        // "takım" | "sınıf"
       if (sayi === 0) return { olur:false, not:"" };
-      if (sayi < 2)   return { olur:false, not: c + ": " + sayi + " · en az iki kişi gerekli" };
-      if (bagli < sayi) return { olur:false, not: c + ": " + sayi + " · bağlı " + bagli + " · bekliyoruz " + (sayi-bagli) };
-      return { olur:true, not: "✓ " + c + ": " + sayi + " · başlayabilirsin" };
+      const ok = (m === "okul");                  // dil değişince cümle bütün kalsın
+      if (sayi < 2)   return { olur:false, not: ok ? kdMetin('biy.b_az_okul', "sınıf: {n} · en az iki kişi gerekli", { n: sayi }) : kdMetin('biy.b_az_takim', "takım: {n} · en az iki kişi gerekli", { n: sayi }) };
+      if (bagli < sayi) return { olur:false, not: ok ? kdMetin('biy.b_bekle_okul', "sınıf: {n} · bağlı {b} · bekliyoruz {k}", { n: sayi, b: bagli, k: sayi-bagli }) : kdMetin('biy.b_bekle_takim', "takım: {n} · bağlı {b} · bekliyoruz {k}", { n: sayi, b: bagli, k: sayi-bagli }) };
+      return { olur:true, not: "✓ " + (ok ? kdMetin('biy.b_olur_okul', "sınıf: {n} · başlayabilirsin", { n: sayi }) : kdMetin('biy.b_olur_takim', "takım: {n} · başlayabilirsin", { n: sayi })) };
     }
-    if (sayi < 2) return { olur:false, not: "Katılımcı: " + sayi + " · en az iki kişi gerekli" + bekNot };
-    return { olur:true, not: "✓ Katılımcı: " + sayi + " · başlayabilirsin" + bekNot };
+    if (sayi < 2) return { olur:false, not: kdMetin('biy.b_az_birey', "Katılımcı: {n} · en az iki kişi gerekli", { n: sayi }) + bekNot };
+    return { olur:true, not: "✓ " + kdMetin('biy.b_olur_birey', "Katılımcı: {n} · başlayabilirsin", { n: sayi }) + bekNot };
   },
 
   /* ---------- TAKIM & OKUL lobisi: her takıma/sınıfa ayrı karekod ---------- */
@@ -5026,11 +5111,11 @@ const BIY = {
       const kart = document.createElement("div");
       kart.className = "biy-takim-kart " + (t.bagli ? "biy-kart-bagli" : "biy-kart-bekliyor");
       kart.innerHTML =
-        '<button class="biy-sil" title="Sil" onclick="BIY.takimSil(&quot;'+t.id+'&quot;)">✕</button>' +
+        '<button class="biy-sil" title="'+kacis(kdMetin('cd.sil', "Sil"))+'" onclick="BIY.takimSil(&quot;'+t.id+'&quot;)">✕</button>' +
         '<h3>'+ krkSvg(t.krk, "biy-krk-kart-ikon") + kacis(t.ad) +'</h3>' +
-        '<div class="biy-takim-durum '+(t.bagli?"biy-bagli":"biy-bekliyor")+'">'+(t.bagli?"● bağlı":"○ bekliyor")+'</div>' +
+        '<div class="biy-takim-durum '+(t.bagli?"biy-bagli":"biy-bekliyor")+'">'+(t.bagli ? "● "+kacis(kdMetin('biy.k_bagli', "bağlı")) : "○ "+kacis(kdMetin('biy.k_bekliyor', "bekliyor")))+'</div>' +
         '<div class="biy-qr" id="'+qrId+'"></div>' +
-        '<div class="biy-takim-link"><input readonly value="'+ kacis(link) +'"><button class="biy-kopya" onclick="BIY.kopyala(this)">Kopyala</button></div>';
+        '<div class="biy-takim-link"><input readonly value="'+ kacis(link) +'"><button class="biy-kopya" onclick="BIY.kopyala(this)">'+kacis(kdMetin('biy.kopyala', "Kopyala"))+'</button></div>';
       grid.appendChild(kart);
       try { const box = $(qrId); if (box && window.QRCode){ box.innerHTML=""; new QRCode(box, { text: link, width: 170, height: 170, correctLevel: QRCode.CorrectLevel.M }); } }
       catch(err){ console.warn("QR:", err); }
@@ -5041,13 +5126,13 @@ const BIY = {
   _odaKarekodCiz(){
     const kap = $("lobiOdaAlan"); if (!kap || !state.odaId) return;
     const link = odaLinki(state.odaId);
-    const ipucu = "Herkes bu karekodu okutup adını yazar; onayınla listeye girerler.";
+    const ipucu = kacis(kdMetin('biy.k_oda_ipucu', "Herkes bu karekodu okutup adını yazar; onayınla listeye girerler."));
     kap.innerHTML =
       '<div class="biy-oda-kart">' +
         '<div class="biy-oda-sol">' +
-          '<span class="biy-oda-etiket">Oda kodu</span>' +
+          '<span class="biy-oda-etiket">'+kacis(kdMetin('biy.k_oda_kodu', "Oda kodu"))+'</span>' +
           '<span class="biy-oda-kod">'+ kacis(state.odaId) +'</span>' +
-          '<div class="biy-takim-link"><input readonly value="'+ kacis(link) +'"><button class="biy-kopya" onclick="BIY.kopyala(this)">Kopyala</button></div>' +
+          '<div class="biy-takim-link"><input readonly value="'+ kacis(link) +'"><button class="biy-kopya" onclick="BIY.kopyala(this)">'+kacis(kdMetin('biy.kopyala', "Kopyala"))+'</button></div>' +
           '<p class="biy-oda-ipucu">'+ ipucu +'</p>' +
         '</div>' +
         '<div class="biy-qr biy-oda-qr" id="odaQrKutu"></div>' +
@@ -5064,16 +5149,16 @@ const BIY = {
     if (bek){
       const b = state.bekleyenListe;
       bek.innerHTML = !b.length
-        ? '<div class="biy-bek-bos">⏳ Bekleyen yok — karekodu okutan burada görünür.</div>'
-        : '<div class="biy-bek-ust"><h3>⏳ Onay bekleyenler ('+b.length+')</h3>' +
-            (b.length > 1 ? '<button class="biy-btn biy-btn-yesil biy-btn-mini" onclick="BIY.hepsiniOnayla()">Hepsini Onayla</button>' : '') +
+        ? '<div class="biy-bek-bos">⏳ '+kacis(kdMetin('biy.k_bekleyen_yok', "Bekleyen yok — karekodu okutan burada görünür."))+'</div>'
+        : '<div class="biy-bek-ust"><h3>⏳ '+kacis(kdMetin('biy.k_onay_bek', "Onay bekleyenler ({n})", { n: b.length }))+'</h3>' +
+            (b.length > 1 ? '<button class="biy-btn biy-btn-yesil biy-btn-mini" onclick="BIY.hepsiniOnayla()">'+kacis(kdMetin('biy.k_hepsini_onayla', "Hepsini Onayla"))+'</button>' : '') +
           '</div>' +
           '<div class="biy-bek-liste">' + b.map(k =>
             '<div class="biy-bek-kart">' +
-              '<button class="biy-bek-ad" title="İsmi düzelt" onclick="BIY.katilimciAdDegistir(&quot;'+k.id+'&quot;)">'+krkSvg(k.krk, "biy-krk-mini")+kacis(k.ad)+'</button>' +
+              '<button class="biy-bek-ad" title="'+kacis(kdMetin('biy.k_isim_duzelt', "İsmi düzelt"))+'" onclick="BIY.katilimciAdDegistir(&quot;'+k.id+'&quot;)">'+krkSvg(k.krk, "biy-krk-mini")+kacis(k.ad)+'</button>' +
               '<span class="biy-bek-btnlar">' +
-                '<button class="biy-onay-ok" title="Onayla" onclick="BIY.katilimciOnayla(&quot;'+k.id+'&quot;)">✓</button>' +
-                '<button class="biy-onay-red" title="Reddet" onclick="BIY.katilimciReddet(&quot;'+k.id+'&quot;)">✕</button>' +
+                '<button class="biy-onay-ok" title="'+kacis(kdMetin('biy.k_onayla', "Onayla"))+'" onclick="BIY.katilimciOnayla(&quot;'+k.id+'&quot;)">✓</button>' +
+                '<button class="biy-onay-red" title="'+kacis(kdMetin('biy.k_reddet', "Reddet"))+'" onclick="BIY.katilimciReddet(&quot;'+k.id+'&quot;)">✕</button>' +
               '</span>' +
             '</div>').join("") +
           '</div>';
@@ -5082,18 +5167,18 @@ const BIY = {
     const grid = $("takimlarGrid"); if (!grid) return;
     const L = state.takimListe;
     if (!L.length){
-      grid.innerHTML = '<div class="biy-kat-bos">Henüz katılan yok.</div>';
+      grid.innerHTML = '<div class="biy-kat-bos">'+kacis(kdMetin('biy.k_katilan_yok', "Henüz katılan yok."))+'</div>';
       return;
     }
     grid.innerHTML =
-      '<div class="biy-kat-ust"><span>👥 Katılımcılar ('+L.length+')</span>' +
-        '<span class="biy-kat-ipucu">İsme dokunup düzelt · ✕ ile çıkar</span></div>' +
+      '<div class="biy-kat-ust"><span>👥 '+kacis(kdMetin('biy.k_katilimcilar', "Katılımcılar ({n})", { n: L.length }))+'</span>' +
+        '<span class="biy-kat-ipucu">'+kacis(kdMetin('biy.k_kat_ipucu', "İsme dokunup düzelt · ✕ ile çıkar"))+'</span></div>' +
       '<div class="biy-kat-satirlar'+(L.length > 12 ? ' biy-kaydir' : '')+'">' +
         L.map(k =>
           '<div class="biy-kat-satir '+(k.bagli ? 'bagli' : 'kopuk')+'">' +
-            '<span class="biy-kat-nokta" title="'+(k.bagli?'bağlı':'bağlı değil')+'"></span>' +
-            '<button class="biy-kat-ad" title="İsmi düzelt" onclick="BIY.katilimciAdDegistir(&quot;'+k.id+'&quot;)">'+krkSvg(k.krk, "biy-krk-mini")+kacis(k.ad)+'</button>' +
-            '<button class="biy-kat-at" title="Yarışmadan çıkar" onclick="BIY.katilimciAt(&quot;'+k.id+'&quot;)">✕</button>' +
+            '<span class="biy-kat-nokta" title="'+kacis(k.bagli ? kdMetin('biy.k_bagli', "bağlı") : kdMetin('biy.k_bagli_degil', "bağlı değil"))+'"></span>' +
+            '<button class="biy-kat-ad" title="'+kacis(kdMetin('biy.k_isim_duzelt', "İsmi düzelt"))+'" onclick="BIY.katilimciAdDegistir(&quot;'+k.id+'&quot;)">'+krkSvg(k.krk, "biy-krk-mini")+kacis(k.ad)+'</button>' +
+            '<button class="biy-kat-at" title="'+kacis(kdMetin('biy.k_cikar_ip', "Yarışmadan çıkar"))+'" onclick="BIY.katilimciAt(&quot;'+k.id+'&quot;)">✕</button>' +
           '</div>').join("") +
       '</div>';
   },
@@ -5114,18 +5199,18 @@ const BIY = {
   },
   katilimciReddet(id){
     const k = state.bekleyenListe.find(x => x.id === id) || {};
-    BIY._onay("Katılım reddedilsin mi?", "«" + (k.ad||"") + "» listeye girmeyecek. Yeni bir isimle deneyebilir.",
-      "Reddet", async () => { try { await BIY._katilimciRef(id).update({ red: true }); } catch(e){ console.error(e); } });
+    BIY._onay(kdMetin('biy.k_red_bas', "Katılım reddedilsin mi?"), kdMetin('biy.k_red_not', "«{ad}» listeye girmeyecek. Yeni bir isimle deneyebilir.", { ad: (k.ad||"") }),
+      kdMetin('biy.k_reddet', "Reddet"), async () => { try { await BIY._katilimciRef(id).update({ red: true }); } catch(e){ console.error(e); } });
   },
   katilimciAt(id){
     const k = state.takimListe.find(x => x.id === id) || {};
-    BIY._onay("Yarışmadan çıkarılsın mı?", "«" + (k.ad||"") + "» listeden çıkacak ve cihazında bildirim görünecek.",
-      "Çıkar", async () => { try { await BIY._katilimciRef(id).update({ atildi: true, bagli: false }); } catch(e){ console.error(e); } });
+    BIY._onay(kdMetin('biy.k_at_bas', "Yarışmadan çıkarılsın mı?"), kdMetin('biy.k_at_not', "«{ad}» listeden çıkacak ve cihazında bildirim görünecek.", { ad: (k.ad||"") }),
+      kdMetin('biy.k_cikar', "Çıkar"), async () => { try { await BIY._katilimciRef(id).update({ atildi: true, bagli: false }); } catch(e){ console.error(e); } });
   },
   katilimciAdDegistir(id){
     const k = state.takimListe.find(x => x.id === id) || state.bekleyenListe.find(x => x.id === id);
     if (!k) return;
-    BIY._metinSor("İsmi düzelt", k.ad, "Kaydet", async (yeni) => {
+    BIY._metinSor(kdMetin('biy.k_isim_duzelt', "İsmi düzelt"), k.ad, kdMetin('biy.k_kaydet', "Kaydet"), async (yeni) => {
       const ad = isimTemizle(yeni);
       if (ad.length < 2) return;
       try { await BIY._katilimciRef(id).update({ ad: ad }); } catch(e){ console.error(e); }
@@ -5137,7 +5222,7 @@ const BIY = {
     const ov = document.createElement("div"); ov.id = "biyOnay"; ov.className = "biy-onay-ov";
     ov.innerHTML = '<div class="biy-onay-kutu"><h3>'+kacis(baslik)+'</h3>' +
       '<input id="biyMetinInput" class="biy-onay-input" type="text" maxlength="18" value="'+kacis(mevcut||"")+'">' +
-      '<div class="biy-onay-btnlar"><button class="biy-onay-hayir">Vazgeç</button><button class="biy-onay-evet">'+kacis(evetMetin)+'</button></div></div>';
+      '<div class="biy-onay-btnlar"><button class="biy-onay-hayir">'+kacis(kdMetin('g.vazgec', 'Vazgeç'))+'</button><button class="biy-onay-evet">'+kacis(evetMetin)+'</button></div></div>';
     document.body.appendChild(ov);
     const kapat = () => { if (ov.parentNode) ov.remove(); };
     const inp = ov.querySelector("#biyMetinInput");
@@ -5167,7 +5252,7 @@ const BIY = {
     ekranGoster("ekranKatil");
     try {
       const snap = await db.collection(KOLEKSIYON).doc(oda).get();
-      if (!snap.exists){ BIY._katilNot("Oda bulunamadı. Karekodu yeniden okut ya da öğretmenine sor.", true); return; }
+      if (!snap.exists){ BIY._katilNot(kdMetin('biy.j_oda_yok', "Oda bulunamadı. Karekodu yeniden okut ya da öğretmenine sor."), true); return; }
       const o = snap.data() || {};
       state.oyunModu = "birey";   // ortak karekod bağlantısı yalnız birey odalarında üretilir
       BIY._krkIzle(oda);          // hangi karakterler kapılmış, canlı izlenir
@@ -5181,7 +5266,7 @@ const BIY = {
       BIY._katilFormu();
     } catch(e){
       console.error(e);
-      BIY._katilNot("Bağlanılamadı. İnterneti kontrol et.", true);
+      BIY._katilNot(kdMetin('biy.j_baglanilamadi', "Bağlanılamadı. İnterneti kontrol et."), true);
     }
   },
   _katilFormu(){
@@ -5202,9 +5287,9 @@ const BIY = {
     const inp = $("katilAdInput"); const ham = inp ? inp.value : "";
     const sorun = isimSorunu(ham);
     if (sorun){ BIY._katilNot(sorun, true); if (inp) inp.focus(); return; }
-    if (!state.krkSecili){ BIY._katilNot("Önce karakterini seç.", true); return; }
+    if (!state.krkSecili){ BIY._katilNot(kdMetin('biy.j_krk_sec', "Önce karakterini seç."), true); return; }
     let ad = isimTemizle(ham);
-    BIY._katilNot("Gönderiliyor…", false);
+    BIY._katilNot(kdMetin('biy.j_gonderiliyor', "Gönderiliyor…"), false);
     try {
       // aynı isim varsa numaralandır
       const hepsi = await db.collection(KOLEKSIYON).doc(oda).collection("takimlar").get();
@@ -5215,7 +5300,7 @@ const BIY = {
       try { await BIY._krkKap(oda, id, state.krkSecili); }
       catch(err){
         state.krkSecili = ""; BIY._krkTazele();
-        BIY._katilNot("Bu karakter kapılmış. Başkasını seç.", true); return;
+        BIY._katilNot(kdMetin('biy.j_krk_kapildi', "Bu karakter kapılmış. Başkasını seç."), true); return;
       }
       await db.collection(KOLEKSIYON).doc(oda).collection("takimlar").doc(id).set({
         ad: ad, onay: false, bagli: true, puan: 0, krk: state.krkSecili,
@@ -5225,7 +5310,7 @@ const BIY = {
       BIY._katilimIzle(oda, id);
     } catch(e){
       console.error(e);
-      BIY._katilNot("Katılım başarısız: " + (e.code || e.message), true);
+      BIY._katilNot(kdMetin('biy.j_basarisiz', "Katılım başarısız: {e}", { e: (e.code || e.message) }), true);
     }
   },
   // kendi kaydını dinle: onay / ret / çıkarılma
@@ -5236,7 +5321,7 @@ const BIY = {
     state.katilimAbone = ref.onSnapshot(d => {
       if (!d.exists){ try { localStorage.removeItem("biy_katilim"); } catch(e){} BIY._katilFormu(); return; }
       const t = d.data() || {};
-      state.takimAd = t.ad || "Katılımcı";
+      state.takimAd = t.ad || kdMetin('biy.r_katilimci', "Katılımcı");
       state.takimKrk = t.krk || "";
       if (t.atildi){
         state.atildiMi = true;
@@ -5245,17 +5330,17 @@ const BIY = {
         if (state.odaAbone){ state.odaAbone(); state.odaAbone = null; }
         try { localStorage.removeItem("biy_katilim"); } catch(e){}
         sayacDurdur(); ekranGoster("ekranTakim");
-        BIY._takimIcerik("🚪", "Yarışmadan çıkarıldın", "Öğretmen seni listeden çıkardı.");
+        BIY._takimIcerik("🚪", kdMetin('biy.j_cikarildin', "Yarışmadan çıkarıldın"), kdMetin('biy.j_cikarildin_not', "Öğretmen seni listeden çıkardı."));
         return;
       }
       if (t.red){
         try { localStorage.removeItem("biy_katilim"); } catch(e){}
-        BIY._katilBeklemeEkrani("✋", "İsim kabul edilmedi", "Gerçek adınla tekrar dene.",
-          '<button class="biy-btn biy-btn-yesil" onclick="BIY.katilYeniden()">Yeni isimle katıl</button>');
+        BIY._katilBeklemeEkrani("✋", kacis(kdMetin('biy.j_red_bas', "İsim kabul edilmedi")), kdMetin('biy.j_red_not', "Gerçek adınla tekrar dene."),
+          '<button class="biy-btn biy-btn-yesil" onclick="BIY.katilYeniden()">'+kacis(kdMetin('biy.j_yeni_isim', "Yeni isimle katıl"))+'</button>');
         return;
       }
       if (t.onay !== true){
-        BIY._katilBeklemeEkrani("⏳", kacis(t.ad || ""), "Öğretmenin onayı bekleniyor…",
+        BIY._katilBeklemeEkrani("⏳", kacis(t.ad || ""), kdMetin('biy.j_onay_bek', "Öğretmenin onayı bekleniyor…"),
           '<div class="biy-bekle-nokta"><span></span><span></span><span></span></div>');
         return;
       }
@@ -5264,7 +5349,7 @@ const BIY = {
         state.katilBagli = true;
         BIY.takimBagla(oda, id);
       }
-    }, err => { console.error(err); BIY._katilNot("Bağlantı koptu: " + (err.code || err.message), true); });
+    }, err => { console.error(err); BIY._katilNot(kdMetin('biy.j_koptu', "Bağlantı koptu: {e}", { e: (err.code || err.message) }), true); });
   },
   _katilBeklemeEkrani(emoji, baslik, metin, ekstra){
     ekranGoster("ekranKatil");
@@ -5471,6 +5556,42 @@ window.addEventListener("beforeunload", function(e){
   }
 })();
 function biyGirisSonrasiTanimla(){}
+/* ÇOK DİLLİ SİTE (16.10.2026): dil değişince kurulum ekranında kodun yazdığı
+   yerler (konu listesi, sayı etiketi, PDF başlığı, açık paneller, örnekler)
+   yeniden yazılır. Liste henüz kurulmadıysa (giriş öncesi) dokunulmaz. */
+document.addEventListener('kidef:dil', function(){
+  const liste = $("konuSeciciListe");
+  if (!liste || !liste.children.length) return;
+  try { BIY._konulariHazirla(); BIY._soruSayiSinir(); BIY._dijitalKartDurum(); } catch(e){}
+  try { const p = $("bicimSecPanel"); if (p && !p.hidden) BIY._bicimPanelDoldur(); } catch(e){}
+  try { const p = $("zorlukSecPanel"); if (p && !p.hidden) BIY._zorlukPanelDoldur(); } catch(e){}
+  try { const p = $("sureSecPanel"); if (p && !p.hidden) BIY._surePanelDoldur(); } catch(e){}
+  try { if ($("biySoruSec")) BIY.soruSecAc(); } catch(e){}
+  try { const e = $("ekranSorular"); if (e && !e.classList.contains("gizli")) BIY.sorularSekme(state.sorularZ || 1); } catch(e){}
+});
+/* ÇOK DİLLİ SİTE (16.10.2026): canlı yarışmada dil değişince açık ekran
+   (lobi ve karekodlar, yansıtılan soru / sonuç ekranı, öğrencinin cihazı)
+   yeniden çizilir. Karekod bağlantısına yeni dil eklenir. */
+document.addEventListener('kidef:dil', function(){
+  const acik = id => { const x = $(id); return !!(x && !x.classList.contains("gizli")); };
+  try {
+    if (acik("ekranTakimlar")){
+      BIY._lobiDuzen();
+      if (state.odaId){
+        if (kartliMod()) BIY._takimKartlariCiz();
+        else { BIY._odaKarekodCiz(); BIY._katilimcilariCiz(); }
+        const d = BIY._baslatDurumu(), n = $("baslatNot"); if (n) n.textContent = d.not;
+      }
+    }
+  } catch(e){}
+  try { if (acik("ekranOyunAdmin") && state.oda) BIY._renderAdminOyun(); } catch(e){}
+  try {
+    if (acik("ekranTakim") && state.oda && !state.atildiMi){
+      const ka = $("takimKrkAlan"); if (ka) ka.removeAttribute("id");   // açık amblem ekranı da baştan çizilsin
+      BIY._renderTakim();
+    }
+  } catch(e){}
+});
 BIY._girisSonrasi = function(){
   try {
     BIY._konulariHazirla();

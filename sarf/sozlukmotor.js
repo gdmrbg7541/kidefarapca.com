@@ -191,8 +191,15 @@
         var t = kap.querySelector('.szk-boyut');
         if (!t) return;
         t.setAttribute('aria-pressed', dar ? 'true' : 'false');
-        t.setAttribute('title', dar ? 'Klavyeyi genişlet (tam boy)'
-                                    : 'Klavyeyi daralt — dokunarak yazmak kolaylaşır');
+        /* 15.10.2026 — ipucu duruma göre değişiyor, anahtarı da onunla. */
+        var klvA = dar ? 'soz.klavye_genis' : 'soz.klavye_dar';
+        var klvT = dar ? 'Klavyeyi genişlet (tam boy)'
+                       : 'Klavyeyi daralt — dokunarak yazmak kolaylaşır';
+        if (window.KidefDil && window.KidefDil.nitelik) {
+            window.KidefDil.nitelik(t, 'title', klvA, klvT);
+        } else {
+            t.setAttribute('title', klvT);
+        }
         var ad = t.querySelector('.szk-boyutad');
         if (ad) ad.textContent = dar ? 'Tam' : 'Dar';
     }
@@ -214,7 +221,7 @@
             h += '</div>';
         });
         h += '<div class="szk-satir">' +
-               '<button type="button" class="szk-tus szk-bosluk" data-h=" " aria-label="Boşluk"></button>' +
+               '<button type="button" class="szk-tus szk-bosluk" data-h=" " data-i18n-aria="soz.bosluk" aria-label="Boşluk"></button>' +
                '<button type="button" class="szk-boyut" data-boyut="1" aria-pressed="false">' +
                  BOYUT_IK + '<span class="szk-boyutad">Dar</span></button>' +
              '</div>';

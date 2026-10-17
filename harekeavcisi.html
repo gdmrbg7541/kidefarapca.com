@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Hareke Avcısı 🏹</title>
+    <title data-i18n="ha.baslik">Hareke Avcısı 🏹</title>
      <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@300..700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="okumayazma/harekeavcisi.css?v=855e93db">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
 
@@ -25,9 +25,9 @@
         <a href="index.html" onclick="return kidefGeriDon(event)" class="back-button" id="back-to-kidef" data-kidef-done="1">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
         </a>
-        <h1 style="padding-top: 7vmin; margin-bottom: 2vmin;">Hareke Avcısı 🏹</h1>
-        <button id="one-player-btn" class="mode-button">Tek Kişilik Oyun</button>
-        <button id="two-player-btn" class="mode-button">İki Kişilik Yarış</button>
+        <h1 style="padding-top: 7vmin; margin-bottom: 2vmin;" data-i18n="ha.baslik">Hareke Avcısı 🏹</h1>
+        <button id="one-player-btn" class="mode-button" data-i18n="ha.tek">Tek Kişilik Oyun</button>
+        <button id="two-player-btn" class="mode-button" data-i18n="ha.iki">İki Kişilik Yarış</button>
     </div>
 
     <div id="game-wrapper-1p" class="screen">
@@ -36,7 +36,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </button>
             <div id="question-area-1p" class="question-area">
-                <h1>Hareke Avcısı 🏹</h1>
+                <h1 data-i18n="ha.baslik">Hareke Avcısı 🏹</h1>
                 <div id="player-info-1p" class="player-info">⭐️ 0</div>
                 <div id="word-display-1p" class="word-display">...</div>
             </div>
@@ -84,11 +84,11 @@
 
     <div id="game-over-screen" class="screen">
         <div id="final-score">Skorunuz: 10 / 10</div>
-        <button id="restart-button">Geri</button>
+        <button id="restart-button" data-i18n="nav.geri">Geri</button>
     </div>
     
-    <script src="sistem/gorevkopru.js?v=50232a80"></script>
-<script src="okumayazma/harekeavcisi.js?v=470ed708"></script>
+    <script src="sistem/gorevkopru.js?v=d5377b75"></script>
+<script src="okumayazma/harekeavcisi.js?v=dc6ac91c"></script>
     <script src="sistem/geri.js?v=f87d1337"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
@@ -101,5 +101,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

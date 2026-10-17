@@ -115,7 +115,7 @@
         <h3>Öğrenci Yönetimi</h3>
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <input type="text" id="singleStuName" placeholder="Öğrenci Adı Soyadı...">
-            <button class="btn-add" onclick="addSingleStudent()" style="margin:0;">+ Ekle</button>
+            <button data-i18n="g.ekle" class="btn-add" onclick="addSingleStudent()" style="margin:0;">+ Ekle</button>
         </div>
         <table id="stuTable"></table>
     </div>
@@ -148,9 +148,9 @@
         <div class="tool-display" id="countdown-display">00:00</div>
         <div class="tool-controls">
             <input type="number" id="countdown-input" placeholder="Dakika" style="width:100px; padding:10px; font-size:1.2em;">
-            <button class="tool-btn btn-start" onclick="startCountdown()">Başlat</button>
+            <button data-i18n="g.baslat" class="tool-btn btn-start" onclick="startCountdown()">Başlat</button>
             <button class="tool-btn btn-stop" onclick="stopCountdown()">Durdur</button>
-            <button class="tool-btn btn-reset" onclick="resetCountdown()">Sıfırla</button>
+            <button data-i18n="g.sifirla" class="tool-btn btn-reset" onclick="resetCountdown()">Sıfırla</button>
         </div>
     </div>
 
@@ -158,10 +158,10 @@
         <h3>⏱️ Kronometre</h3>
         <div class="tool-display" id="stopwatch-display">00:00:00</div>
         <div class="tool-controls">
-            <button class="tool-btn btn-start" onclick="startStopwatch()">Başlat</button>
+            <button data-i18n="g.baslat" class="tool-btn btn-start" onclick="startStopwatch()">Başlat</button>
             <button class="tool-btn btn-stop" onclick="stopStopwatch()">Durdur</button>
             <button class="tool-btn btn-lap" onclick="recordLap()">Tur</button>
-            <button class="tool-btn btn-reset" onclick="resetStopwatch()">Sıfırla</button>
+            <button data-i18n="g.sifirla" class="tool-btn btn-reset" onclick="resetStopwatch()">Sıfırla</button>
         </div>
         <div id="lapList" style="margin-top:20px; max-height:200px; overflow-y:auto; border-top:1px solid #ddd;"></div>
     </div>
@@ -174,7 +174,7 @@
             <button class="tool-btn btn-start" onclick="createTeams(3)">3'lü Takımlar</button>
             <button class="tool-btn btn-start" onclick="createTeams(4)">4'lü Takımlar</button>
             <button class="tool-btn btn-start" onclick="createTeams(5)">5'li Takımlar</button>
-            <button class="tool-btn btn-reset" onclick="clearTeams()">Temizle</button>
+            <button class="tool-btn btn-reset" onclick="clearTeams()" data-i18n="oyn.temizle">Temizle</button>
         </div>
         <div id="teamContainer" class="team-grid"></div>
     </div>
@@ -196,7 +196,7 @@
     </div>
     <div style="text-align: right; margin-top:20px;">
         <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Kaydet</button>
-        <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px; cursor:pointer;">Kapat</button>
+        <button data-i18n="g.kapat" onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px; cursor:pointer;">Kapat</button>
     </div>
 </div>
 
@@ -206,7 +206,7 @@
         <hr>
         <div id="skillSliders"></div>
         <div style="text-align:right; margin-top:20px;">
-            <button onclick="closeSkillModal()" style="padding:10px 20px; cursor:pointer; background:var(--success); color:white; border:none; border-radius:5px;">Kaydet ve Kapat</button>
+            <button data-i18n="g.kaydetkapat" onclick="closeSkillModal()" style="padding:10px 20px; cursor:pointer; background:var(--success); color:white; border:none; border-radius:5px;">Kaydet ve Kapat</button>
         </div>
     </div>
 </div>
@@ -217,7 +217,7 @@
         <div id="alertTitle" style="font-size:1.2em; font-weight:bold; margin:10px 0;">Uyarı</div>
         <div id="alertText" style="color:#666; margin-bottom:20px;">Bu işlemi onaylıyor musunuz?</div>
         <div class="alert-buttons">
-            <button id="alertCancelBtn" class="alert-btn btn-cancel" onclick="closeAlert(false)">Vazgeç</button>
+            <button data-i18n="g.vazgec" id="alertCancelBtn" class="alert-btn btn-cancel" onclick="closeAlert(false)">Vazgeç</button>
             <button id="alertConfirmBtn" class="alert-btn btn-confirm" onclick="closeAlert(true)">Tamam</button>
         </div>
     </div>
@@ -760,5 +760,8 @@
     renderSidebar();
 
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

@@ -466,7 +466,11 @@
         katman.classList.add('ak-yaz');       /* başlıktaki kip/sayı tuşları gizlenir */
         YAZ.basladi = false;
         YAZ.sure = yazSureOku();
-        basEl.textContent = 'İstenen Harfi Yaz';
+        if (window.KidefDil && window.KidefDil.yaz) {
+            window.KidefDil.yaz(basEl, 'alf.istenen_harf', 'İstenen Harfi Yaz');
+        } else {
+            basEl.textContent = 'İstenen Harfi Yaz';
+        }
         notEl.textContent = 'Sor · düşünsünler · yazılışı göster';
         var ana = document.querySelector('.main-app');
         seritAcikti = !!(ana && !ana.classList.contains('nav-gizli'));
@@ -1007,7 +1011,7 @@
                ' puan, önce bilene ' + HIZ_PUAN + ' puan hız</div>' +
                '  <div class="ak-alt">' +
                '    <button type="button" class="ak-t" data-rol="yeniden">Yeniden dene</button>' +
-               '    <button type="button" class="ak-t ak-ikincil" data-rol="kisi">Kişi sayısı</button>' +
+               '    <button type="button" class="ak-t ak-ikincil" data-rol="kisi" data-i18n="alf.kisi">Kişi sayısı</button>' +
                '    <button type="button" class="ak-t ak-ikincil" data-rol="kapat">Kapat</button>' +
                '  </div></div>';
     }
@@ -1023,7 +1027,7 @@
                '  <div class="ak-sonsoz">' + soz + '</div>' +
                '  <div class="ak-alt">' +
                '    <button type="button" class="ak-t" data-rol="yeniden">Yeniden dene</button>' +
-               '    <button type="button" class="ak-t ak-ikincil" data-rol="kisi">Kişi sayısı</button>' +
+               '    <button type="button" class="ak-t ak-ikincil" data-rol="kisi" data-i18n="alf.kisi">Kişi sayısı</button>' +
                '    <button type="button" class="ak-t ak-ikincil" data-rol="kapat">Kapat</button>' +
                '  </div></div>';
     }
@@ -2153,9 +2157,14 @@
             ad.type = 'button';
             ad.className = 'tab-trigger ak-konu';
             ad.dataset.ihy = '1';
+            /* 15.10.2026 — çok dilli site: bölüm adı anahtarıyla (dil.js çevirir) */
+            var kdA = { 'Harf Tanıtımı': 'alf.harf_tanitim', 'İstenen Harfi Yaz': 'alf.istenen_harf',
+                        'Harf Birleştirme': 'alf.harf_birlestir', 'Okuma': 'alf.okuma',
+                        'Dinle ve Yaz': 'alf.dinle_yaz' }[b.baslik];
             ad.title = b.baslik;
             ad.setAttribute('aria-label', b.baslik);
-            ad.innerHTML = b.ikon + '<span class="tab-ad">' + b.baslik + '</span>';
+            if (kdA) { ad.setAttribute('data-i18n-title', kdA); ad.setAttribute('data-i18n-aria', kdA); }
+            ad.innerHTML = b.ikon + '<span class="tab-ad"' + (kdA ? ' data-i18n="' + kdA + '"' : '') + '>' + b.baslik + '</span>';
             satir.appendChild(ad);
             satir.appendChild(tus);
             ust.parentNode.insertBefore(satir, ust.nextSibling);
@@ -2216,9 +2225,11 @@
         defter.rel = 'noopener';
         defter.title = 'Hat Atölyesi — Öğrenci Defteri · Rik\'a ile güzel yazı · 24 sayfa PDF';
         defter.setAttribute('aria-label', defter.title);
+        defter.setAttribute('data-i18n-title', 'alf.hat_defter_ip');
+        defter.setAttribute('data-i18n-aria', 'alf.hat_defter_ip');
         defter.innerHTML = DEFTER_IKON +
-            '<span class="tab-ad">Hat Atölyesi</span>' +
-            '<span class="ak-defternot">Defter · 24 s. PDF</span>';
+            '<span class="tab-ad" data-i18n="alf.hat_atolyesi">Hat Atölyesi</span>' +
+            '<span class="ak-defternot" data-i18n="alf.hat_defter_not">Defter · 24 s. PDF</span>';
         sira.appendChild(defter);
 
         sira.addEventListener('click', function (e) {

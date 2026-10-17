@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kelime Dağarcığı · kidefarapca.com</title>
+<title data-i18n="kl.sayfa_baslik">Kelime Dağarcığı · kidefarapca.com</title>
     <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
     <script>
@@ -33,7 +33,7 @@
 <link rel="stylesheet" href="sarf/kaliplartablosu.css?v=d0d81a07">
 <link rel="stylesheet" href="sarf/kelimetest.css?v=1d76219c">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="arakom.css?v=4383f21b">
+<link rel="stylesheet" href="arakom.css?v=896e5892">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -108,7 +108,7 @@
     <button type="button" class="kd-geri" onclick="kdGeri()">
         <span aria-hidden="true">←</span><span id="kd-geri-yazi">Geri</span>
     </button>
-    <div class="kd-bas"><b>Kelime Dağarcığı</b><span id="kd-alt">konu konu kelime listeleri</span></div>
+    <div class="kd-bas"><b data-i18n="kl.baslik">Kelime Dağarcığı</b><span id="kd-alt" data-i18n="kl.alt">konu konu kelime listeleri</span></div>
 </div>
 
 <div class="kd-govde">
@@ -119,26 +119,65 @@
 
 <script src="veri/veri_kokler.js?v=1265dfeb"></script>
 <script src="veri/veri_sozluk.js?v=1d2a0a84"></script>
-<script src="sarf/kelimeler.js?v=ffebff92"></script>
-<script src="sarf/kelimetest.js?v=611eb715"></script>
+<script src="sarf/kelimeler.js?v=8dd9295c"></script>
+<script src="sarf/kelimetest.js?v=7fc30941"></script>
 <!-- ihkelime.js ders dosyasının yolunu KidefSinifVeri.dersYolu()
      ile kuruyor (öğretim yılı öneki); bu yüzden ondan ÖNCE. -->
 <script src="sistem/sinifveri.js?v=6baf2d98"></script>
 <script src="sarf/ihkelime.js?v=42b952e4"></script>
-<script src="sarf/kelimecikar.js?v=701f8c6a"></script>
-<script src="sarf/kelimeindir.js?v=c22c96ba"></script>
+<script src="sarf/kelimecikar.js?v=3973f480"></script>
+<script src="sarf/kelimeindir.js?v=3c052ebb"></script>
 <script>
 /* ---- GERİ DÖNÜŞ ----
    donus=tablo        → kalıplar tablosuna
    liste=ih-N…        → index'te İmam Hatip, o sınıf açık (kalınan yer)
    ötekiler           → index'te Öğretmen Özel bölümü               */
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
 function kdHedef() {
     var p = new URLSearchParams(location.search);
-    if (p.get('donus') === 'tablo') return { url: 'kaliplartablosu.html', ad: 'Kalıplar Tablosu' };
+    if (p.get('donus') === 'tablo') return { url: 'kaliplartablosu.html', ad: 'Kalıplar Tablosu', k: 'kt.ad' };
     var l = p.get('liste') || '';
     var m = /^ih-(\d+)/.exec(l);
-    if (m) return { url: 'index.html?ihsinif=' + m[1] + '#imam-hatip', ad: m[1] + '. Sınıf' };
-    return { url: 'index.html#ogretmen-ozel', ad: 'Ana Sayfa' };
+    if (m) return { url: 'index.html?ihsinif=' + m[1] + '#imam-hatip', ad: m[1] + '. Sınıf', k: 'sin.' + m[1] };
+    return { url: 'index.html#ogretmen-ozel', ad: 'Ana Sayfa', k: 'nav.anasayfa' };
 }
 /* ÇIKIŞTA SEKMEYİ KAPAT. Bu sayfa index'ten YENİ SEKMEDE açılıyor;
    geri gitmek yerine yönlendirince ikinci bir index açılıyordu ve
@@ -159,11 +198,11 @@ function kdGeri() {
 (function () {
     var h = kdHedef();
     var y = document.getElementById('kd-geri-yazi');
-    if (y) y.textContent = h.ad;
+    if (y) kdYaz(y, h.k, h.ad);
     /* İmam Hatip kipinde alt başlık sınıfı söylesin */
     var m = /^ih-(\d+)/.exec(new URLSearchParams(location.search).get('liste') || '');
     var alt = document.getElementById('kd-alt');
-    if (m && alt) alt.textContent = m[1] + '. Sınıf müfredatı — ünite ve ders listeleri';
+    if (m && alt) kdYaz(alt, 'kl.alt_sinif', '{n}. Sınıf müfredatı — ünite ve ders listeleri', { n: m[1] });
     /* İmam Hatip kipi kendi açılışını yapıyor; öteki girişlerde listeyi
        burada çiziyoruz. */
     if (!m && typeof renderThematicLists === 'function') renderThematicLists();
@@ -182,5 +221,8 @@ document.addEventListener('keydown', function (e) {
     kdGeri();
 });
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İsim x 4</title>
+    <title data-i18n="kart.isimx4">İsim x 4</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -23,40 +23,40 @@
     <div id="game-container">
 
         <div id="selection-screen">
-            <button id="home-button" class="top-left-button" title="Geri" aria-label="Geri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="6" y2="12"/><polyline points="12 18 6 12 12 6"/></svg></button>
+            <button id="home-button" class="top-left-button" data-i18n-title="nav.geri" title="Geri" data-i18n-aria="nav.geri" aria-label="Geri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="6" y2="12"/><polyline points="12 18 6 12 12 6"/></svg></button>
 
             <div id="difficulty-selection">
-                <h1>Arapça Kelime Analizi</h1>
-                <h3>Önce Zorluk Seviyesini Seçin:</h3>
+                <h1 data-i18n="ix.baslik">Arapça Kelime Analizi</h1>
+                <h3 data-i18n="ix.zorluk_sec">Önce Zorluk Seviyesini Seçin:</h3>
                 <div id="difficulty-buttons">
-                    <button data-time="60">Kolay</button>
-                    <button data-time="40">Orta</button>
-                    <button data-time="20">Zor</button>
+                    <button data-time="60" data-i18n="oyn.kolay">Kolay</button>
+                    <button data-time="40" data-i18n="oyn.orta">Orta</button>
+                    <button data-time="20" data-i18n="oyn.zor">Zor</button>
                 </div>
             </div>
 
             <div id="player-mode-selection">
-                 <h3>Şimdi Oyuncu Modunu Seçin:</h3>
+                 <h3 data-i18n="ix.mod_sec">Şimdi Oyuncu Modunu Seçin:</h3>
                  <div id="player-mode-buttons">
-                     <button data-mode="1">1 Kişilik</button>
-                     <button data-mode="2">2 Kişilik</button>
+                     <button data-mode="1" data-i18n="oyn.tek">1 Kişilik</button>
+                     <button data-mode="2" data-i18n="oyn.iki">2 Kişilik</button>
                  </div>
              </div>
 
-             <button id="start-game-button" disabled>BAŞLA</button>
+             <button id="start-game-button" disabled data-i18n="kl.basla">BAŞLA</button>
         </div>
 
 
         <div id="game-area" class="hidden">
 
-             <button id="back-button" class="top-left-button hidden" title="Geri" aria-label="Geri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="6" y2="12"/><polyline points="12 18 6 12 12 6"/></svg></button>
+             <button id="back-button" class="top-left-button hidden" data-i18n-title="nav.geri" title="Geri" data-i18n-aria="nav.geri" aria-label="Geri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="6" y2="12"/><polyline points="12 18 6 12 12 6"/></svg></button>
              
-             <div id="timer-display">Süre: --s</div>
+             <div id="timer-display" data-i18n="ix.sure" data-i18n-tr="Süre: {n}s" data-i18n-yer='{"n":"--"}'>Süre: --s</div>
 
              <div id="main-game-content" style="flex-grow: 1; display: flex; flex-direction: column; transition: opacity 0.3s ease;">
                   <div id="players-container">
                       <div id="player1-area" class="player-area">
-                          <h4 style="color:#007bff;">Oyuncu 1</h4>
+                          <h4 style="color:#007bff;" data-i18n="hh.oyuncu1">Oyuncu 1</h4>
                           <div class="progress-bar-container" id="progress-bar-p1">
                               <div class="progress-step" data-step="1">1</div>
                               <div class="progress-line"></div>
@@ -76,7 +76,7 @@
                       </div>
 
                       <div id="player2-area" class="player-area hidden">
-                           <h4 style="color:#dc3545;">Oyuncu 2</h4>
+                           <h4 style="color:#dc3545;" data-i18n="hh.oyuncu2">Oyuncu 2</h4>
                            <div class="progress-bar-container" id="progress-bar-p2">
                               <div class="progress-step" data-step="1">1</div>
                               <div class="progress-line"></div>
@@ -98,19 +98,19 @@
             </div>
 
             <div id="proceed-container" class="hidden">
-                 <button id="proceed-button">Yeni Soru</button>
+                 <button id="proceed-button" data-i18n="oyn.yeni_soru">Yeni Soru</button>
              </div>
 
             </div>
     </div>
 
 
-    <script src="sarf/isimx4.js?v=051372c3"></script>
+    <script src="sarf/isimx4.js?v=b04f83a6"></script>
 
     <!-- GÖREV KÖPRÜSÜ (08.10.2026): İsim x 4 puan üretmiyor; süre
          takipli görev olarak gönderilebilsin diye köprü eklendi.
          Etkinlikler sekmesinde saat satırı olarak görünür. -->
-    <script src="sistem/gorevkopru.js?v=50232a80"></script>
+    <script src="sistem/gorevkopru.js?v=d5377b75"></script>
     <script>try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
     <script src="sistem/geri.js?v=f87d1337"></script>
 <script id="kidef-koruma">
@@ -124,5 +124,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

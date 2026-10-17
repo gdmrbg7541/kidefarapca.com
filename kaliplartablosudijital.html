@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Kelimenin Serüveni - Seviye 2</title>
+    <title data-i18n="kt.sayfa_baslik">Kelimenin Serüveni - Seviye 2</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
     <script>
@@ -37,18 +37,18 @@
 
             <div id="l2-bottom-area">
                 <div class="l2-passive-suffixes">  ـ ـ ـة - ـ ـ ة   |   ـ ـ ـيّ - ـ ـ ـيَّة   |   ـ ـ ـات  |   ـ ـ ـًا </div>
-                <button id="next-button" class="hidden">İlerle ▶</button>
+                <button id="next-button" class="hidden" data-i18n="kt.ilerle">İlerle ▶</button>
             </div>
         </main>
 
         <div id="start-screen" class="overlay"> 
             <div class="overlay-content"> 
                 <div class="back-button" id="start-back-button">&#8617;</div>
-                <h1>Kelimenin Serüveni</h1> 
-                <h2>Seviye 2: Kökü Kalıba Yerleştir</h2> 
+                <h1 data-i18n="kt.serven">Kelimenin Serüveni</h1> 
+                <h2 data-i18n="kt.seviye2">Seviye 2: Kökü Kalıba Yerleştir</h2> 
                 <div class="image-previews"> 
-                     <div class="image-preview"> <img src="sayfa1.png" alt="Kalıp Tablosu Sayfa 1"> <p>Kalıp Tablosu 1</p> </div> 
-                     <div class="image-preview"> <img src="sayfa2.png" alt="Kalıp Tablosu Sayfa 2"> <p>Kalıp Tablosu 2</p> </div> 
+                     <div class="image-preview"> <img src="sayfa1.png" data-i18n-alt="kt.tablo1" alt="Kalıp Tablosu Sayfa 1"> <p data-i18n="kt.tablo1">Kalıp Tablosu 1</p> </div> 
+                     <div class="image-preview"> <img src="sayfa2.png" data-i18n-alt="kt.tablo2" alt="Kalıp Tablosu Sayfa 2"> <p data-i18n="kt.tablo2">Kalıp Tablosu 2</p> </div> 
                 </div> 
                 <div class="start-options"> 
                     <button class="start-button-option" data-mode="1"> Kendini Dene!</button> 
@@ -61,19 +61,22 @@
                 <div class="back-button" id="results-back-button">&#8617;</div> 
                 <h2 id="results-title">Oyun Bitti!</h2> 
                 <div id="results-details"></div> 
-                <button id="play-again-button">Ana Menüye Dön</button> 
+                <button id="play-again-button" data-i18n="nav.menu_don">Ana Menüye Dön</button> 
             </div> 
         </div>
     
         <div id="orientation-warning" class="overlay">
             <div class="overlay-content">
-                <h2>Lütfen Cihazı Dik Tutun</h2>
-                <p>Bu oyun en iyi dikey modda çalışır.</p>
+                <h2 data-i18n="oyn.dik_tut">Lütfen Cihazı Dik Tutun</h2>
+                <p data-i18n="oyn.dikey_not">Bu oyun en iyi dikey modda çalışır.</p>
             </div>
         </div>
     </div>
 
     <script src="kaliplartablosudijital.js?v=caf60d70"></script>
     <script src="geri.js?v=66ae34be"></script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

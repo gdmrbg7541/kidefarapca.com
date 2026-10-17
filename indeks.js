@@ -1,3 +1,18 @@
+/* ÇOK DİLLİ SİTE (17.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+
 /* Tüm animasyonlar el yazması — tek rAF döngüsü + sticky scrub. */
 try{ sessionStorage.setItem('kidefVitrin','1'); }catch(e){}
 const azHareket = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -53,26 +68,44 @@ function heroCiz(zaman, kayHiz){
   }
   hCtx.globalAlpha = 1;
 }
+/* SLOGAN seçili dilde (17.10.2026). Düşme animasyonu Latin, Kiril ve
+   Çince yazıda harf (görünen karakter) başına; Arap harfli ve Hint
+   yazılarında KELİME başına — harfi ayrı kutuya koymak bitişik harfleri
+   koparırdı. Her satır kendi yönünde: slogan dir=auto (Arapçada sağdan
+   sola dizilir), "Kidef Arapça" soldan sağa. Dil değişince yeniden yazılır. */
 (function(){
   const b = $('heroBaslik');
-  const bol = (s, sinif, kayma) => [...s].map((h,i) =>
-    h===' ' ? ' ' : '<span class="harf'+(sinif?' '+sinif:'')+'" style="--i:'+(i+kayma)+'">'+h+'</span>').join('');
-  const s1 = 'Marka değil, Misyon:', s2 = 'Kidef Arapça';
-  b.innerHTML = bol(s1,'soluk',0) + '<br>' + bol(s2,'',s1.length+2);
+  const parca = s => {
+    if (/[\u0590-\u08FF\u0900-\u0DFF]/.test(s)) return s.split(/(\s+)/).filter(x => x !== '');
+    try {
+      if (window.Intl && Intl.Segmenter)
+        return Array.from(new Intl.Segmenter(undefined, {granularity:'grapheme'}).segment(s), x => x.segment);
+    } catch(e) {}
+    return [...s];
+  };
+  const bol = (s, sinif, kayma) => parca(s).map((h,i) =>
+    /^\s+$/.test(h) ? ' ' : '<span class="harf'+(sinif?' '+sinif:'')+'" style="--i:'+(i+kayma)+'">'+h+'</span>').join('');
+  const yaz = () => {
+    const s1 = kdMetin('vtr.slogan', 'Marka değil, Misyon:'), s2 = 'Kidef Arapça';
+    b.innerHTML = '<span dir="auto">' + bol(s1,'soluk',0) + '</span><br><span dir="ltr">' +
+                  bol(s2,'',parca(s1).length+2) + '</span>';
+  };
+  yaz();
+  document.addEventListener('kidef:dil', yaz);
 })();
 
 /* ============ 2 · KELİME FABRİKASI ============ */
 const KALIPLAR = [
-  {vezin:'فاعِل',    ar:'كاتِب',    tr:'yazar'},
-  {vezin:'مَفْعول',  ar:'مَكْتوب',  tr:'mektup'},
-  {vezin:'فِعال',    ar:'كِتاب',    tr:'kitap'},
-  {vezin:'مَفْعَل',  ar:'مَكْتَب',  tr:'masa / büro'},
-  {vezin:'مَفْعَلة', ar:'مَكْتَبة', tr:'kütüphane'}
+  {vezin:'فاعِل',    ar:'كاتِب',    tr:'yazar', k:'vtr.k_yazar'},
+  {vezin:'مَفْعول',  ar:'مَكْتوب',  tr:'mektup', k:'vtr.k_mektup'},
+  {vezin:'فِعال',    ar:'كِتاب',    tr:'kitap', k:'vtr.k_kitap'},
+  {vezin:'مَفْعَل',  ar:'مَكْتَب',  tr:'masa / büro', k:'vtr.k_masa'},
+  {vezin:'مَفْعَلة', ar:'مَكْتَبة', tr:'kütüphane', k:'vtr.k_kutuphane'}
 ];
 const dovmeKap = $('dovme');
 KALIPLAR.forEach(k => {
   const d = document.createElement('div'); d.className='kelime';
-  d.innerHTML = '<div class="ar arabic">'+k.ar+'</div><div class="tr">'+k.tr+'</div>';
+  d.innerHTML = '<div class="ar arabic">'+k.ar+'</div><div class="tr" data-i18n="'+k.k+'">'+k.tr+'</div>';
   dovmeKap.appendChild(d);
 });
 const kelimeler = [...dovmeKap.children];
@@ -437,7 +470,7 @@ function oyunGuncelle(p){
     '<circle cx="60" cy="84" r="5" fill="#F39C12"/>' +
     '<g stroke="#48c9b0" stroke-width="3.5" stroke-linecap="round" opacity=".8">' +
     '<line id="hiz1" x1="2" y1="66" x2="20" y2="66"/><line id="hiz2" x1="-4" y1="84" x2="18" y2="84"/><line id="hiz3" x1="2" y1="102" x2="20" y2="102"/></g>' +
-    '</svg><div class="ad">Kısa sürede</div><div class="alt">dakikalar yeter</div>';
+    '</svg><div class="ad" data-i18n="vtr.oz1">Kısa sürede</div><div class="alt" data-i18n="vtr.oz1_alt">dakikalar yeter</div>';
 
   /* 2) hedef — etkili */
   $('ozHedef').innerHTML =
@@ -453,7 +486,7 @@ function oyunGuncelle(p){
     '<path d="M94,46 L96.5,35 L100,39 Z" fill="#16A085"/>' +
     '</g>' +
     '<circle id="hedefGoz" cx="60" cy="80" r="6" fill="#F39C12" opacity="0"/>' +
-    '</svg><div class="ad">Etkili</div><div class="alt">tam on ikiden</div>';
+    '</svg><div class="ad" data-i18n="vtr.oz2">Etkili</div><div class="alt" data-i18n="vtr.oz2_alt">tam on ikiden</div>';
 
   /* 3) odak — konsantre: dağınık harfler tek kelimede toplanır */
   const dagilim = [[-46,-34,'ع'],[44,-40,'ل'],[-52,18,'م'],[50,26,'ك'],[-16,-52,'ب'],[20,52,'ت']];
@@ -462,7 +495,7 @@ function oyunGuncelle(p){
     '<circle cx="60" cy="80" r="48" fill="#ffffff" stroke="#16A085" stroke-width="3" stroke-dasharray="5 7" id="odakCember"/>' +
     dagilim.map((d,i)=>'<text class="odak-harf ar-harf" data-dx="'+d[0]+'" data-dy="'+d[1]+'" x="'+(60+d[0])+'" y="'+(84+d[1])+'" text-anchor="middle" font-size="18" fill="#48c9b0">'+d[2]+'</text>').join('') +
     '<text id="odakSoz" x="60" y="90" text-anchor="middle" font-size="26" fill="#16A085" opacity="0" style="font-family:\'Arakom\',\'Amiri\',serif">عِلْم</text>' +
-    '</svg><div class="ad">Konsantre</div><div class="alt">tek hedef: öğrenmek</div>';
+    '</svg><div class="ad" data-i18n="vtr.oz3">Konsantre</div><div class="alt" data-i18n="vtr.oz3_alt">tek hedef: öğrenmek</div>';
 })();
 const kronIbre = $('kronIbre'), okG = $('okG'), vurus = $('vurus'), hedefGoz = $('hedefGoz');
 const odakHarfler = [...document.querySelectorAll('.odak-harf')], odakSoz = $('odakSoz'), odakCember = $('odakCember');

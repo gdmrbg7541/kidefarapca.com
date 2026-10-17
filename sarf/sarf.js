@@ -1472,9 +1472,9 @@ const Game2 = {
         if (this.ilkYonerge) {
             this.ilkYonerge = false;
             this.yonergeGoster(
-                'Kelimeye bas, kökünü çıkar.'
+                '<span data-i18n="sf.ipucu_kok">Kelimeye bas, kökünü çıkar.</span>'
                 + '<br>' +
-                'Bir kök, sonra bir vezin seç; yeni bir kelime üret.',
+                '<span data-i18n="sf.ipucu_uret">Bir kök, sonra bir vezin seç; yeni bir kelime üret.</span>',
                 6000);
         }
         document.getElementById('g2-kapIc').innerHTML = '';
@@ -1950,7 +1950,13 @@ const Game2 = {
         raf.querySelectorAll('.g2-kok-kulce').forEach(k => {
             const uygun = bekliyor && this.kalanVezin(k.dataset.kok) > 0;
             k.classList.toggle('bas-bana', uygun);
-            if (uygun) k.setAttribute('title', 'Bu köke bas, vezinleri gelsin');
+            if (uygun) {
+                if (window.KidefDil && window.KidefDil.nitelik) {
+                    window.KidefDil.nitelik(k, 'title', 'sf.ipucu_bas', 'Bu köke bas, vezinleri gelsin');
+                } else {
+                    k.setAttribute('title', 'Bu köke bas, vezinleri gelsin');
+                }
+            }
             else k.removeAttribute('title');
         });
     },
@@ -2485,7 +2491,7 @@ function quizSorulariUret() {
         ornekle(M, 26).forEach(x => {
             const k = qzSoruYap(formatRootDisplay(x.root), kokGorunum);
             S.push({ ar: x.word,
-                s: 'ما جَذْرُ هٰذِهِ الكَلِمَة؟', tr: 'Bu kelimenin kökü hangisidir?',
+                s: 'ما جَذْرُ هٰذِهِ الكَلِمَة؟', k: 'sf.s_kok', tr: 'Bu kelimenin kökü hangisidir?',
                 secenekler: k.secenekler, dogru: k.dogru });
         });
 
@@ -2496,7 +2502,7 @@ function quizSorulariUret() {
             const disHavuz = M.filter(y => y.root !== r).map(y => y.word);
             const k = qzSoruYap(dogru, disHavuz);
             S.push({ ar: formatRootDisplay(r),
-                s: 'أَيُّ كَلِمَةٍ مُشْتَقَّةٌ مِنْ هٰذا الجَذْر؟', tr: 'Bu kökten türeyen kelime hangisidir?',
+                s: 'أَيُّ كَلِمَةٍ مُشْتَقَّةٌ مِنْ هٰذا الجَذْر؟', k: 'sf.s_turev', tr: 'Bu kökten türeyen kelime hangisidir?',
                 secenekler: k.secenekler, dogru: k.dogru });
         });
 
@@ -2504,7 +2510,7 @@ function quizSorulariUret() {
         ornekle(M.filter(x => x.vezinAr), 26).forEach(x => {
             const k = qzSoruYap(x.vezinAr, vezinAdlari);
             S.push({ ar: x.word,
-                s: 'ما وَزْنُ هٰذِهِ الكَلِمَة؟', tr: 'Bu kelimenin vezni hangisidir?',
+                s: 'ما وَزْنُ هٰذِهِ الكَلِمَة؟', k: 'sf.s_vezin', tr: 'Bu kelimenin vezni hangisidir?',
                 secenekler: k.secenekler, dogru: k.dogru });
         });
 
@@ -2525,7 +2531,7 @@ function quizSorulariUret() {
             const disAnlam = anlamli.filter(y => y.root !== x.root).map(y => y.tr);
             const k = qzSoruYap(x.tr, disAnlam);
             S.push({ ar: x.word,
-                s: 'ما مَعْنى هٰذِهِ الكَلِمَة؟', tr: 'Bu kelimenin anlamı nedir?',
+                s: 'ما مَعْنى هٰذِهِ الكَلِمَة؟', k: 'sf.s_anlam', tr: 'Bu kelimenin anlamı nedir?',
                 secenekler: k.secenekler, dogru: k.dogru });
         });
 
@@ -2534,7 +2540,7 @@ function quizSorulariUret() {
             const disKelime = anlamli.filter(y => y.root !== x.root).map(y => y.word);
             const k = qzSoruYap(x.word, disKelime);
             S.push({ ar: '«' + x.tr + '»',
-                s: 'أَيُّ كَلِمَةٍ تَحْمِلُ هٰذا المَعْنى؟', tr: 'Bu anlamı taşıyan kelime hangisidir?',
+                s: 'أَيُّ كَلِمَةٍ تَحْمِلُ هٰذا المَعْنى؟', k: 'sf.s_anlamli', tr: 'Bu anlamı taşıyan kelime hangisidir?',
                 secenekler: k.secenekler, dogru: k.dogru });
         });
 
@@ -2546,7 +2552,7 @@ function quizSorulariUret() {
             const havuz = qzKaristir(aynikok).concat(qzKaristir(tumKelimeler.filter(w => w !== x.word)));
             const k = qzSoruYap(x.word, havuz);
             S.push({ ar: x.ornek.ar.split(/\s+/).map(t => t === x.word ? '______' : t).join(' '),
-                s: 'أَكْمِلِ الفَراغ.', tr: 'Boşluğa uygun kelimeyi seç.',
+                s: 'أَكْمِلِ الفَراغ.', k: 'sf.s_bosluk', tr: 'Boşluğa uygun kelimeyi seç.',
                 secenekler: k.secenekler, dogru: k.dogru });
         });
 
@@ -2559,7 +2565,7 @@ function quizSorulariUret() {
             const yabanci = kokKelimeleri[digerKok][Math.floor(Math.random() * kokKelimeleri[digerKok].length)].word;
             const secenekler = qzKaristir(ucu.concat([yabanci]));
             S.push({ ar: '',
-                s: 'أَيُّ كَلِمَةٍ مِنْ جَذْرٍ مُخْتَلِف؟', tr: 'Hangi kelime diğerlerinden FARKLI bir kökten gelir?',
+                s: 'أَيُّ كَلِمَةٍ مِنْ جَذْرٍ مُخْتَلِف؟', k: 'sf.s_farkli', tr: 'Hangi kelime diğerlerinden FARKLI bir kökten gelir?',
                 secenekler: secenekler, dogru: secenekler.indexOf(yabanci) });
         });
 
@@ -2583,7 +2589,7 @@ function quizSorulariUret() {
         ornekle(zaidli, 18).forEach(x => {
             const secenekler = qzKaristir([x.dogru].concat(x.rootHarf));
             S.push({ ar: x.word,
-                s: 'أَيُّ حَرْفٍ زائِدٌ في هٰذِهِ الكَلِمَة؟', tr: 'Bu kelimedeki zâid (kökten olmayan) harf hangisidir?',
+                s: 'أَيُّ حَرْفٍ زائِدٌ في هٰذِهِ الكَلِمَة؟', k: 'sf.s_zaid', tr: 'Bu kelimedeki zâid (kökten olmayan) harf hangisidir?',
                 secenekler: secenekler, dogru: secenekler.indexOf(x.dogru) });
         });
     }
@@ -2700,7 +2706,7 @@ const Quiz = {
         this.ciz(
             this.baslikHtml() +
             '<div class="qz-kart">' +
-              '<div class="qz-bekle">🔌 Odaya yeniden bağlanılıyor…</div>' +
+              '<div class="qz-bekle" data-i18n="sf.yeniden_bag">🔌 Odaya yeniden bağlanılıyor…</div>' +
               '<div class="qz-durum" style="margin-top:10px">Oda: <b>' +
                 this.kacis(s.odaKod) + '</b></div>' +
             '</div>'
@@ -2755,7 +2761,7 @@ const Quiz = {
               '<h3>' + this.kacis(baslik) + '</h3>' +
               '<p>' + this.kacis(mesaj) + '</p>' +
               '<div class="qz-satir" style="margin-top:6px">' +
-                '<button class="qz-btn gri" id="qz-onay-hayir">Vazgeç</button>' +
+                '<button class="qz-btn gri" id="qz-onay-hayir" data-i18n="sf.vazgec">Vazgeç</button>' +
                 '<button class="qz-btn kirmizi" id="qz-onay-evet">' + this.kacis(evetMetin) + '</button>' +
               '</div>' +
             '</div>';
@@ -2819,17 +2825,17 @@ const Quiz = {
                                  '" data-n="' + n + '">' + n + '</button>').join('') +
               '</div>' +
               '<div class="qz-satir" style="margin-top:16px">' +
-                '<button class="qz-btn" id="qz-kur">🚀 Odayı Kur</button>' +
+                '<button class="qz-btn" id="qz-kur" data-i18n="sf.oda_kur">🚀 Odayı Kur</button>' +
               '</div>' +
             '</div>') +
 
             '<div class="qz-kart">' +
-              '<h3>👥 Odaya katıl</h3>' +
+              '<h3 data-i18n="sf.katil_bas">👥 Odaya katıl</h3>' +
               '<div class="qz-satir">' +
                 '<input class="qz-input" id="qz-kod-in" placeholder="Oda kodu" maxlength="6" ' +
                        'value="' + (this.state.hazirKod || '') + '" style="max-width:150px;text-transform:uppercase">' +
-                '<input class="qz-input" id="qz-ad-in" placeholder="Takım / kişi adı" maxlength="24">' +
-                '<button class="qz-btn yesil" id="qz-katil">Katıl</button>' +
+                '<input class="qz-input" id="qz-ad-in" data-i18n-ph="sf.ad_ph" placeholder="Takım / kişi adı" maxlength="24">' +
+                '<button class="qz-btn yesil" id="qz-katil" data-i18n="sf.katil">Katıl</button>' +
               '</div>' +
               '<div class="qz-durum" id="qz-giris-durum" style="margin-top:10px"></div>' +
               '<div class="qz-kod-not" style="margin-top:8px">Tek başına da katılabilirsin; ' +
@@ -2995,13 +3001,14 @@ const Quiz = {
             this.baslikHtml() +
             '<div class="qz-kart qz-iptal">' +
               '<div class="qz-iptal-emoji">' + (bittiMi ? '🏁' : '🚪') + '</div>' +
-              '<h3>' + (bittiMi ? 'Yarışma sona erdi' : 'Yarışma iptal edildi') + '</h3>' +
+              '<h3' + (bittiMi ? ' data-i18n="sf.yarisma_bitti"' : ' data-i18n="sf.yarisma_iptal"') +
+              '>' + (bittiMi ? 'Yarışma sona erdi' : 'Yarışma iptal edildi') + '</h3>' +
               '<div class="qz-durum" style="margin-top:6px">' + (bittiMi
                   ? 'Odayı kuran kişi odayı kapattı. Katıldığın için teşekkürler!'
                   : 'Odayı kuran kişi yarışmadan çıktı, bu yüzden yarışma iptal edildi. ' +
                     'Kalan soru yok; yeni bir oda kodu geldiğinde tekrar katılabilirsin.') + '</div>' +
               '<div class="qz-satir" style="margin-top:18px">' +
-                '<button class="qz-btn" id="qz-iptal-tamam">Tamam</button>' +
+                '<button class="qz-btn" id="qz-iptal-tamam" data-i18n="sf.tamam">Tamam</button>' +
               '</div>' +
             '</div>'
         );
@@ -3033,7 +3040,7 @@ const Quiz = {
             (yonetici
                 ? '<div class="qz-kart">' +
                     '<div class="qz-kod">' + this.state.odaKod + '</div>' +
-                    '<div class="qz-kod-not">Oda kodu · öğrenciler karekodu okutabilir ya da bu kodu girebilir</div>' +
+                    '<div class="qz-kod-not" data-i18n="sf.oda_kod_not">Oda kodu · öğrenciler karekodu okutabilir ya da bu kodu girebilir</div>' +
                     '<div class="qz-lobi-orta" style="margin-top:16px">' +
                       '<div class="qz-qr" id="qz-qr"></div>' +
                       '<div><div class="qz-link">' + link + '</div>' +
@@ -3042,7 +3049,7 @@ const Quiz = {
                     '</div>' +
                     '<div class="qz-takimlar" id="qz-takimlar"></div>' +
                     '<div class="qz-satir" style="margin-top:18px">' +
-                      '<button class="qz-btn yesil" id="qz-baslat">🚀 Yarışı Başlat</button>' +
+                      '<button class="qz-btn yesil" id="qz-baslat" data-i18n="sf.baslat">🚀 Yarışı Başlat</button>' +
                       '<button class="qz-btn kirmizi" id="qz-kapat">Odayı Kapat</button>' +
                     '</div>' +
                     '<div class="qz-durum" id="qz-lobi-durum" style="margin-top:10px"></div>' +
@@ -3127,7 +3134,13 @@ const Quiz = {
         if (icerik) icerik.classList.toggle('gizli', this.soruGizli);
         if (goz) {
             goz.innerHTML = this._gozSvg(this.soruGizli);
-            goz.title = this.soruGizli ? 'Soruyu göster' : 'Soruyu gizle';
+            var gozA = this.soruGizli ? 'sf.soru_goster' : 'sf.soru_gizle';
+            var gozT = this.soruGizli ? 'Soruyu göster' : 'Soruyu gizle';
+            if (window.KidefDil && window.KidefDil.nitelik) {
+                window.KidefDil.nitelik(goz, 'title', gozA, gozT);
+            } else {
+                goz.title = gozT;
+            }
         }
     },
     oyunCiz() {
@@ -3141,7 +3154,8 @@ const Quiz = {
               '<span>' + (o.index + 1) + ' / ' + o.sorular.length + '</span>' +
               '<span class="qz-sayac" id="qz-sayac">--</span>' +
               (yonetici
-                ? '<button class="qz-goz" id="qz-goz" title="' +
+                ? '<button class="qz-goz" id="qz-goz" data-i18n-title="' +
+                  (gizli ? 'sf.soru_goster' : 'sf.soru_gizle') + '" title="' +
                   (gizli ? 'Soruyu göster' : 'Soruyu gizle') + '">' + this._gozSvg(gizli) + '</button>'
                 : '') +
               '<span id="qz-cevap-sayi"></span>' +
@@ -3151,7 +3165,8 @@ const Quiz = {
                 '<div id="qz-soru-icerik" class="qz-soru-icerik' + (gizli ? ' gizli' : '') + '">' +
                   '<div class="qz-soru" dir="rtl">' + this.kacis(soru.s) + '</div>' +
                   '<div class="qz-soru-ar">' + this.kacis(soru.ar) + '</div>' +
-                  '<div class="qz-durum">' + this.kacis(soru.tr) + '</div>' +
+                  '<div class="qz-durum"' + (soru.k ? ' data-i18n="' + soru.k + '"' : '') +
+                  '>' + this.kacis(soru.tr) + '</div>' +
                   '<div class="qz-secenekler" id="qz-secenekler">' +
                     soru.secenekler.map((sec, i) =>
                         '<div class="qz-secenek' + (yonetici ? ' kilit' : '') + '" data-i="' + i + '">' +
@@ -3167,9 +3182,11 @@ const Quiz = {
                 ? '<div class="qz-satir" style="margin-top:14px">' +
                     '<button class="qz-btn gri" id="qz-sonuc">👁 Cevabı Göster</button>' +
                     '<button class="qz-btn" id="qz-sonraki">' +
-                      (o.index + 1 < o.sorular.length ? 'Sonraki Soru ▶' : 'Yarışı Bitir 🏁') +
+                      (o.index + 1 < o.sorular.length
+                        ? '<span data-i18n="sf.sonraki">Sonraki Soru ▶</span>'
+                        : '<span data-i18n="sf.bitir">Yarışı Bitir 🏁</span>') +
                     '</button>' +
-                    '<button class="qz-btn kirmizi" id="qz-oyundan-cik">🚪 Oyundan Çık</button>' +
+                    '<button class="qz-btn kirmizi" id="qz-oyundan-cik" data-i18n="sf.cik">🚪 Oyundan Çık</button>' +
                   '</div>' +
                   '<div class="qz-kod-not" style="margin-top:8px">Yarışmayı iptal etmek için ' +
                   '“Oyundan Çık” tuşunu kullan. Geri (←) tuşu yarışmayı bitirmez; sadece menüye ' +
@@ -3311,7 +3328,8 @@ const Quiz = {
                 '<div class="qz-sahne-oge oge-dogru">' +
                   '<div class="qz-soru" dir="rtl">' + this.kacis(soru.s) + '</div>' +
                   '<div class="qz-soru-ar">' + this.kacis(soru.ar) + '</div>' +
-                  '<div class="qz-durum">' + this.kacis(soru.tr) + '</div>' +
+                  '<div class="qz-durum"' + (soru.k ? ' data-i18n="' + soru.k + '"' : '') +
+                  '>' + this.kacis(soru.tr) + '</div>' +
                   '<div class="qz-secenekler">' + sikHtml + '</div>' +
                 '</div>' +
                 /* SAHNE 2 — kim ne cevapladı */
@@ -3337,9 +3355,10 @@ const Quiz = {
                 (yonetici
                   ? '<div class="qz-satir">' +
                       '<button class="qz-btn" id="qz-sonraki">' +
-                        (son ? 'Yarışı Bitir 🏁' : 'Sonraki Soru ▶') +
+                        (son ? '<span data-i18n="sf.bitir">Yarışı Bitir 🏁</span>'
+                             : '<span data-i18n="sf.sonraki">Sonraki Soru ▶</span>') +
                       '</button>' +
-                      '<button class="qz-btn kirmizi" id="qz-oyundan-cik">🚪 Oyundan Çık</button>' +
+                      '<button class="qz-btn kirmizi" id="qz-oyundan-cik" data-i18n="sf.cik">🚪 Oyundan Çık</button>' +
                     '</div>'
                   : '<div class="qz-durum" id="qz-benim-sonuc"></div>' +
                     '<div class="qz-kod-not" style="margin-top:8px">' +
@@ -3686,8 +3705,9 @@ const Quiz = {
                     : (this.state.secim === soru.dogru ? 'Doğru! 🎉' : 'Bu sefer olmadı.');
             } else {
                 durum.textContent = this.state.secim === null
-                    ? 'Bir şık seç.'
-                    : 'Cevabın kaydedildi, diğerleri bekleniyor…';
+                    ? ((window.KidefDil && window.KidefDil.metin('sf.sik_sec', '')) || 'Bir şık seç.')
+                    : ((window.KidefDil && window.KidefDil.metin('sf.kaydedildi', '')) ||
+                       'Cevabın kaydedildi, diğerleri bekleniyor…');
             }
         }
     },

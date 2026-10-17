@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="okumayazma/dinleveyaz.css?v=ab91b65e">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
 <script>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            <button id="baslaButton" class="action-btn key-button" disabled><span>Başla</span><svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
+            <button id="baslaButton" class="action-btn key-button" disabled><span data-i18n="oyn.basla">Başla</span><svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
             </div>
 
         <div id="gameScreen" class="screen">
@@ -179,7 +179,7 @@
   },false);
 })();
 </script>
-<script src="sistem/gorevkopru.js?v=50232a80"></script>
+<script src="sistem/gorevkopru.js?v=d5377b75"></script>
 <script>/* SURE TAKIBI (Beceri - Ogretmen Ozel): puan degil, sayfada GORUNUR
    kalinan sure raporlanir; Etkinlikler sekmesinde saat satiri olarak gorunur. */
 /* Gömülü kipte süre YAZILMAZ: sayfa alfabe.html içinde açılmıştır ve
@@ -189,5 +189,8 @@ try {
   try { gomulu = new URLSearchParams(location.search).get('gomulu') === '1'; } catch (e) { }
   if (!gomulu && window.KidefGorev) KidefGorev.sureTakibiBaslat();
 } catch (e) { }</script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

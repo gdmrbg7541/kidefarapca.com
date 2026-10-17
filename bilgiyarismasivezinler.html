@@ -47,7 +47,7 @@
   <!-- Yükleniyor -->
   <section id="ekranYukleniyor" class="biy-ekran">
     <div class="biy-spinner"></div>
-    <p>Yükleniyor…</p>
+    <p data-i18n="g.yukleniyor">Yükleniyor…</p>
   </section>
 
   <!-- Hata ekrani: giris kapisi kaldirildi, burasi yalnizca acilis sirasinda
@@ -285,13 +285,13 @@
   <!-- ADMIN — Sorular önizleme -->
   <section id="ekranSorular" class="biy-ekran gizli">
     <div class="biy-ust-bar">
-      <button class="biy-geri-tus" onclick="BIY.anasayfa()" title="Menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+      <button class="biy-geri-tus" onclick="BIY.anasayfa()" data-i18n-title="nav.menu_don" title="Menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
       <h2>Örnek Sorular</h2>
     </div>
     <div class="biy-sekme-bar">
-      <button class="biy-sekme secili" data-z="1" onclick="BIY.sorularSekme(1)">Kolay</button>
-      <button class="biy-sekme" data-z="2" onclick="BIY.sorularSekme(2)">Orta</button>
-      <button class="biy-sekme" data-z="3" onclick="BIY.sorularSekme(3)">Zor</button>
+      <button class="biy-sekme secili" data-z="1" onclick="BIY.sorularSekme(1)" data-i18n="oyn.kolay">Kolay</button>
+      <button class="biy-sekme" data-z="2" onclick="BIY.sorularSekme(2)" data-i18n="oyn.orta">Orta</button>
+      <button class="biy-sekme" data-z="3" onclick="BIY.sorularSekme(3)" data-i18n="oyn.zor">Zor</button>
     </div>
     <div id="sorularListe" class="biy-sorular-liste"></div>
   </section>
@@ -299,7 +299,7 @@
   <!-- ADMIN — Takım / Sınıf oluştur + lobi -->
   <section id="ekranTakimlar" class="biy-ekran gizli">
     <div class="biy-ust-bar">
-      <button class="biy-geri-tus" onclick="BIY.anasayfa()" title="Menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+      <button class="biy-geri-tus" onclick="BIY.anasayfa()" data-i18n-title="nav.menu_don" title="Menüye dön"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
       <h2 id="lobiBaslik">Takım Oluştur &amp; Lobi</h2>
     </div>
 
@@ -392,5 +392,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 /* ==========================================================================
    TEST KAPIŞMASI · DERS LİSTESİ (oyunlar/tk_liste.js)
    --------------------------------------------------------------------------
@@ -629,8 +669,14 @@
         if (/^grade10-/.test(id)) return 'g10';
         return 'diger';
     }
-    var GRUP_AD = { harf: 'Harfler', g5: '5. Sınıf', g6: '6. Sınıf', g7: '7. Sınıf', g8: '8. Sınıf',
+    var GRUP_AD_TR = { harf: 'Harfler', g5: '5. Sınıf', g6: '6. Sınıf', g7: '7. Sınıf', g8: '8. Sınıf',
                     g9: '9. Sınıf', g10: '10. Sınıf', diger: 'Diğer' };
+    /* 16.10.2026 — çok dilli site: grup adı her okunuşta seçili dilde */
+    var GRUP_AD_K = { harf: 'tk.g_harfler', g5: 'sin.5', g6: 'sin.6', g7: 'sin.7', g8: 'sin.8',
+                      g9: 'sin.9', g10: 'sin.10', diger: 'kart.diger' };
+    var GRUP_AD = (typeof Proxy === 'function') ? new Proxy(GRUP_AD_TR, {
+        get: function (o, k) { return (typeof k === 'string' && GRUP_AD_K[k]) ? kdMetin(GRUP_AD_K[k], o[k]) : o[k]; }
+    }) : GRUP_AD_TR;
     /* seçenekteki data-grup (testkapismasi.js yazar) önce; yoksa kimlikten */
     function grupSec(o) { return (o.dataset && o.dataset.grup) || grupOf(o.value); }
     function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -674,7 +720,7 @@
             var kilitli = o.disabled, secili = (o.value === sel.value);
             var alt = o.dataset && o.dataset.alt ? '<small class="tkl-alt">' + esc(o.dataset.alt) + '</small>' : '';
             bolum.satir.push('<button type="button" style="--i:' + bolum.satir.length + '" class="tkl-oge' + (kilitli ? ' kilitli' : '') + (secili ? ' secili' : '') + '" data-v="' + esc(o.value) + '" role="option"' +
-                 ' aria-selected="' + secili + '"' + (kilitli ? ' aria-disabled="true" title="Önceki dersi bitirince açılır"' : '') + '>' +
+                 ' aria-selected="' + secili + '"' + (kilitli ? ' aria-disabled="true" title="' + kdMetin('tk.kilitli_ip', 'Önceki dersi bitirince açılır') + '"' : '') + '>' +
                  ikon(o.value) + '<span class="tkl-ad">' + esc(temizAd(o.textContent)) + alt + '</span>' + (kilitli ? KILIT : (secili ? ONAY : '')) + '</button>');
         });
         if (acikGrup && !gruplar.some(function (b) { return b.g === acikGrup; })) acikGrup = null;
@@ -691,7 +737,7 @@
                     '<button type="button" class="tkl-grup-dug" data-grup="' + b.g + '" aria-expanded="' + acik + '" aria-controls="tkl-gv-' + b.g + '">' +
                         ikon('grup-' + b.g) + '<span class="tkl-grup-ad">' + GRUP_AD[b.g] + '</span></button>' +
                     (rozet ? '<span class="tkl-yil">' + rozet + '</span>' : '') +
-                    '<span class="tkl-sayi">' + b.satir.length + ' ders</span>' + CHEV +
+                    '<span class="tkl-sayi">' + kdMetin('tk.n_ders', '{n} ders', { n: b.satir.length }) + '</span>' + CHEV +
                 '</div>' +
                 '<div class="tkl-govde" id="tkl-gv-' + b.g + '" role="group" aria-label="' + GRUP_AD[b.g] + '"><div class="tkl-govde-ic">' + b.satir.join('') + '</div></div>' +
             '</div>';
@@ -736,7 +782,7 @@
             var g = grupSec(o), uNo = (o.dataset && o.dataset.alt) ? o.dataset.alt.split(' · ')[0] : '';
             if (g !== 'harf') altDug = '<small class="tkl-alt">' + esc(GRUP_AD[g] + (uNo ? ' · ' + uNo : '')) + '</small>';
         }
-        dug.innerHTML = (bos ? '<span class="tkl-yer">' + esc(o ? temizAd(o.textContent) : 'Ders Seçin') + '</span>'
+        dug.innerHTML = (bos ? '<span class="tkl-yer">' + esc(o ? temizAd(o.textContent) : kdMetin('tk.ders_secin', 'Ders Seçin')) + '</span>'
                              : ikon(o.value, 'buyuk') + '<span class="tkl-ad">' + esc(temizAd(o.textContent)) + altDug + '</span>') + OK;
         if (sel.disabled) ac(false);
     }

@@ -8,14 +8,14 @@
     <script src="veri/veri_kokler.js?v=1265dfeb"></script>
     <script src="veri/veri_sozluk.js?v=1d2a0a84"></script>
     <link rel="stylesheet" href="sozluk/sozluk_veri_giris.css?v=54495c64">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
 
 <!-- GLOBAL LOADING SCREEN -->
 <div id="global-loading-screen" style="position: fixed; top:0; left:0; width:100vw; height:100vh; background:white; z-index:9999999; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#333; transition: opacity 0.3s ease;">
     <div style="width: 50px; height: 50px; border: 4px solid rgba(41, 128, 185, 0.2); border-left-color: #2980b9; border-radius: 50%; animation: spin-loader 1s linear infinite;"></div>
-    <h2 style="margin-top:20px; font-family:'Arakom', 'Arial', sans-serif; font-size: 20px; font-weight: normal; color: #7f8c8d;">Yükleniyor...</h2>
+    <h2 data-i18n="g.yukleniyor" style="margin-top:20px; font-family:'Arakom', 'Arial', sans-serif; font-size: 20px; font-weight: normal; color: #7f8c8d;">Yükleniyor...</h2>
     
 </div>
 
@@ -137,5 +137,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

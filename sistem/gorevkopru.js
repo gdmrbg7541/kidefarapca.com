@@ -33,6 +33,16 @@
 (function () {
     'use strict';
 
+    /* ÇOK DİLLİ (17.10.2026) — rozet yazıları seçili dilde (sistem/dil.js
+       sözlüğü); dil Türkçeyse ya da sözlük yoksa Türkçesi kalır. */
+    function kdMetin(k, tr, yer) {
+        var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+        if (!yer || m == null) return m;
+        return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+            return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+        });
+    }
+
     var KG = window.KidefGorev = window.KidefGorev || {};
     KG.aktif = false;          /* en az bir kayit kanali acik mi?           */
     KG.gorev = null;           /* gorev kipi dokumani                       */
@@ -115,10 +125,19 @@
                 tur === 'hata' ? 'linear-gradient(135deg,#E74C3C,#C0392B)' :
                 tur === 'rekor' ? 'linear-gradient(135deg,#20C997,#16A085)' :
                 'linear-gradient(135deg,#F39C12,#D84315)';
-            rozetEl.textContent = metin;
+            /* metin bir işlev de olabilir (17.10.2026): sözlük rozetten sonra
+               yüklenirse ya da dil değişirse yazı seçili dilde yeniden kurulur. */
+            rozetUret = (typeof metin === 'function') ? metin : null;
+            rozetEl.textContent = rozetUret ? rozetUret() : metin;
             rozetEl.style.display = 'flex';
         } catch (e) { }
     }
+    var rozetUret = null;
+    try {
+        document.addEventListener('kidef:dil', function () {
+            try { if (rozetEl && rozetUret && rozetEl.style.display !== 'none') rozetEl.textContent = rozetUret(); } catch (e) { }
+        });
+    } catch (e) { }
     function rozetGizle(gecikme) {
         if (rozetSayac) clearTimeout(rozetSayac);
         rozetSayac = setTimeout(function () { try { if (rozetEl) rozetEl.style.display = 'none'; } catch (e) { } }, gecikme || 0);
@@ -155,7 +174,7 @@
         }).then(function (u) {
             user = u;
             if (!u || u.isAnonymous || !u.email) {
-                if (gorevId) { rozet('Görev sayılması için siteye e-posta ile giriş yapmalısın', 'hata'); rozetGizle(6000); }
+                if (gorevId) { rozet(function () { return kdMetin('grv.giris', 'Görev sayılması için siteye e-posta ile giriş yapmalısın'); }, 'hata'); rozetGizle(6000); }
                 return;
             }
             var isler = [];
@@ -171,7 +190,7 @@
                 }).catch(function () { }));
             }
             return Promise.all(isler).then(function () {
-                if (gorevId && !KG.gorev) { rozet('Görev bulunamadı', 'hata'); rozetGizle(6000); }
+                if (gorevId && !KG.gorev) { rozet(function () { return kdMetin('grv.yok', 'Görev bulunamadı'); }, 'hata'); rozetGizle(6000); }
                 /* 29.09.2026 (öğretmen isteği): KAYIT ARTIK ÖĞRETMEN BAĞINA
                    BAĞLI DEĞİL. Buraya gelindiğinde kullanıcı zaten e-posta
                    hesabıyla girmiş demektir (yukarıdaki anonim/e-postasız
@@ -180,7 +199,7 @@
                    ogretmenUid de yazılır, yoksa boş kalır. */
                 KG.aktif = true;
                 if (KG.aktif) KG.bildir = gonder;
-                if (KG.gorev) rozet('📋 GÖREV: ' + (KG.gorev.baslik || KG.gorev.oyun || ''));
+                if (KG.gorev) rozet(function () { return kdMetin('grv.gorev', '📋 GÖREV: {ad}', {ad: KG.gorev.baslik || KG.gorev.oyun || ''}); });
                 sureKur();   /* sayfa sure takibi istediyse simdi kurulur */
             });
         }).catch(function (e) {
@@ -325,7 +344,7 @@
            normal kalp atisi araligiyla surer. */
         setTimeout(atis, Math.min(15000, sure.aralikMs));
         setInterval(atis, sure.aralikMs);
-        rozet('⏱ Süre takibi açık — bu sayfada kaldığın süre kaydedilir');
+        rozet(function () { return kdMetin('grv.sure', '⏱ Süre takibi açık — bu sayfada kaldığın süre kaydedilir'); });
         rozetGizle(4500);
     }
     function sureTopla() {
@@ -426,15 +445,20 @@
             var il = r[0], gv = r[1];
             if (!il && !gv) {
                 var kod = hatalar.join(', ');
-                rozet(/permission|insufficient/i.test(kod)
-                    ? 'Kaydedilemedi: izin hatası — site kuralları (firestore.rules) yayınlanmamış, öğretmenine söyle'
-                    : 'Sonuç kaydedilemedi' + (kod ? ' (' + kod + ')' : '') + ' — tekrar dene', 'hata');
+                rozet(function () {
+                    return /permission|insufficient/i.test(kod)
+                        ? kdMetin('grv.izin', 'Kaydedilemedi: izin hatası — site kuralları (firestore.rules) yayınlanmamış, öğretmenine söyle')
+                        : kdMetin('grv.hata', 'Sonuç kaydedilemedi{kod} — tekrar dene', {kod: kod ? ' (' + kod + ')' : ''});
+                }, 'hata');
                 rozetGizle(8000);
                 return false;
             }
-            if (il && il.kirildi) rozet('🎉 YENİ REKOR: %' + yuzde + (gv ? ' — görev de kaydedildi' : ''), 'rekor');
-            else if (il && !il.yok) rozet('✓ Kaydedildi: %' + yuzde + ' (rekorun: %' + il.rekor + ')' + (gv ? ' — görev sayıldı' : ''));
-            else if (gv) rozet('✓ Görev kaydedildi: %' + yuzde + (gv.enIyi > yuzde ? ' (en iyin: %' + gv.enIyi + ')' : ''));
+            if (il && il.kirildi) rozet(function () { return kdMetin('grv.rekor', '🎉 YENİ REKOR: %{y}', {y: yuzde}) +
+                (gv ? ' ' + kdMetin('grv.rekor_gorev', '— görev de kaydedildi') : ''); }, 'rekor');
+            else if (il && !il.yok) rozet(function () { return kdMetin('grv.kayit', '✓ Kaydedildi: %{y} (rekorun: %{r})', {y: yuzde, r: il.rekor}) +
+                (gv ? ' ' + kdMetin('grv.gorev_sayildi', '— görev sayıldı') : ''); });
+            else if (gv) rozet(function () { return kdMetin('grv.gorev_kayit', '✓ Görev kaydedildi: %{y}', {y: yuzde}) +
+                (gv.enIyi > yuzde ? ' ' + kdMetin('grv.en_iyi', '(en iyin: %{e})', {e: gv.enIyi}) : ''); });
             rozetGizle(6000);
             return true;
         });

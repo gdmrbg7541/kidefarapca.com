@@ -10740,3 +10740,1440 @@ YENİ     _kaynak/uretici/onbellekDamga.py
 YEDEK    _kaynak/yedekler/2026-10-15-onbellek-damga/ (iki sayfa + surumle.py)
 NOT      Bundan sonra yapılacak tek şey hizli-gonder: damgaları o
          çalıştırıyor, elle sürüm artırmak gerekmiyor.
+
+15.10.2026 · ÇOK DİLLİ SİTE — 1. PARÇA (ALTYAPI + index kabuğu)
+----------------------------------------------------------------
+Öğretmen: "en önemli 20 dil için sitenin farklı dillerde kullanılmasını
+istiyorum, öğrenci ve öğretmenler profil kısmından dil seçebilsinler ...
+tercüme yaparken o dilde kullanımlara dikkat et, moda mod çevirmek
+yerine kullanıma önem ver ... Irak'taki Kürtçeleri Arap harfleriyle de
+seçenek olarak ekleyelim ... diller seçilirken bayrakları da olsun ...
+acelem yok, indexten başla, diğer tüm dosyaları parça parça yapalım."
+SORULDU/KARARLAŞTI  20 dil + Türkçe taban · arabirim YÖNÜ değişmiyor
+(yalnız yazılar çevriliyor) · seçici hem profilde hem başlıkta.
+
+DİLLER (21)  Türkçe · English · العربية · فارسی · اردو · پښتو ·
+  کوردیی سۆرانی · کوردیی بادینی · Bahasa Indonesia · Bahasa Melayu ·
+  বাংলা · हिन्दी · 中文 · Русский · Français · Deutsch · Español ·
+  Azərbaycan dili · O'zbekcha · Shqip · Bosanski
+
+NASIL ÇALIŞIYOR
+ · Çevrilecek yazı HTML'de işaretli:
+       <span data-i18n="blm.oyunlar">Oyunlar</span>
+       <a data-i18n-title="bas.paketler" title="Paketler">
+   Türkçesi ilk görüşte data-i18n-tr'ye saklanıyor; Türkçeye dönünce
+   oradan geri yazılıyor — yani Türkçe sözlük dosyası GEREKMİYOR.
+ · Sözlükler dil/<kod>.js; yalnız seçilen dilinki indiriliyor.
+   Karşılığı olmayan anahtar Türkçe kalıyor (yarım çeviri sayfayı
+   bozmuyor).
+ · Sonradan basılan kartlar da çevrilsin diye gövde izleniyor
+   (MutationObserver, 150 ms gecikmeli).
+ · Seçim localStorage 'kidef_dil' + giriş yapanda kullanicilar/{uid}.dil
+   (kitap seçimiyle aynı yöntem) — cihaz değişse de aynı dil geliyor.
+ · BAYRAKLAR emoji değil SVG: Windows'ta emoji bayraklar "TR" gibi iki
+   harf olarak çıkıyor, akıllı tahtada kötü duruyordu.
+ · Seçici iki yerde: başlıktaki bayrak düğmesi (#kdDilTus) ve
+   profil/panel kartı (öğretmen paneli + öğrenci profili).
+
+BU PARÇADA ÇEVRİLEN (19 işaret)
+ · Başlık çubuğu: Paketler · Canlı Ders Paketleri · Ders Talep Et ·
+   Panelim · Bekleyen öğrenci istekleri · Yönetici Paneli · Giriş Yap
+ · Bölüm başlıkları: İmam Hatip · Alan Becerileri & Dilbilgisi
+   (+Öğretmen Özel) · Oyunlar (+Derse Isınma) · Etkileşimli Kitaplar
+   (+Akademi) · Sınıfiçi Materyaller · Değerler Eğitimi · Sosyal
+   Hesaplar · Listelerim
+ · İmam Hatip ipucu satırı ve Öğretmen Dökümanları başlığı/alt yazısı
+ · Dil seçicinin kendi yazıları
+
+ÇEVİRİ İLKESİ  kelime kelime değil, o dildeki kullanım:
+   "Ders Talep Et" → "Book a lesson" · "Panelim" → "My dashboard" ·
+   "Derse Isınma" → "Warm-ups" · "Sınıfiçi Materyaller" → "Classroom
+   Resources". Kurum/program adları (İmam Hatip, Maarif) çevrilmiyor.
+
+YENİ     sistem/dil.js · dil/en.js · _kaynak/uretici/dilIsaretle1.py
+DEĞİŞEN  index.html (19 işaret + betik satırı)
+YEDEK    _kaynak/yedekler/2026-10-15-dil-1/
+DENENDİ  21 dil listeleniyor, bayraklar çiziliyor; İngilizce seçilince
+         başlık ve bölümler anında değişti, Türkçeye dönünce geri geldi;
+         seçim localStorage'a yazıldı, <html lang> güncellendi.
+SIRADAKİ · belge kartlarının adları (Ders Kitabı, Sınavlar, Planlar …)
+         · sınıf paneli sekmeleri ve kart yazıları
+         · giriş penceresi · metin tahlili · muhâdese · merak köşesi
+         · kalan 19 dilin sözlükleri (önce Arapça, Endonezce, Malayca,
+           Farsça — öğretmenin öncelik sırası)
+
+15.10.2026 · ÇOK DİLLİ SİTE — TARAMA + 20 DİLİN İLK SÖZLÜĞÜ
+----------------------------------------------------------------
+Öğretmen: "tercüme edilecek tüm yerleri iyice analiz et, dil değişince
+tüm türkçeler o dile dönmeli."
+
+TARAMA (_kaynak/uretici/dilTarama.py — rapor _kaynak/gecici/dil-tarama.txt)
+  ARAYÜZ  ~6.980 benzersiz Türkçe yazı · 372 dosya
+            kabuk (index + sistem + hesap) 2.218 · 71 dosya
+            araçlar (metin tahlili, muhâdese, sarf, kelime, kalıplar,
+                     merak…)                3.038 · 106 dosya
+            oyunlar                           684 ·  37 dosya
+            kitap/flipbook arayüzü            475 ·  47 dosya
+            öteki sayfalar                  2.760 · 111 dosya
+  İÇERİK  ~94.500 yazı: sözlük anlamları, kök listesi, soru bankaları,
+          ders cümlelerinin Türkçe karşılıkları, yıllık plan çıktıları.
+  AYIKLANAN  hazır kütüphaneler (.min.js, /lib/, html5 etkinlik
+          dışa aktarımları), sunum dosyaları, yorumlar, console, CSS.
+
+KARARLAR (soruldu)
+  · Kapsam: ARAYÜZÜN TAMAMI + kelime/sözlük anlamları. Soru bankaları ve
+    ders cümlelerinin Türkçesi şimdilik dışarıda.
+  · Sıra: çekirdek → araçlar → oyunlar.
+  · Diller: her parçanın çevirisi 20 dile BİRDEN yazılacak.
+
+BU TURDA YAPILAN
+  · 1. parçanın (26 anahtar) çevirisi 20 dile birden yazıldı:
+    dil/ar.js fa ur ps ckb kmr-arab id ms bn hi zh ru fr de es az uz sq bs
+    (+ önceki turdan en.js). Üretici: _kaynak/uretici/dilSozlukUret.py
+  · Dil listesinde "yakında" rozeti kalktı; 21 dilin de sözlüğü var.
+  · Denendi: Arapça, Endonezce, Çince, Soranice ve Rusçada işaretli
+    yazılar anında değişiyor, Türkçeye dönünce geri geliyor.
+
+SIRADAKİ PARÇALAR (çekirdek)
+  1) index.html'in kalan kabuğu: "Hangi ihtiyaç için hangi araç",
+     Sınıflarım şeridi, giriş/kayıt düğmeleri, kart başlıkları
+  2) belge kartlarının adları (Ders Kitabı, Sınıf Defteri, Sınavlar…)
+  3) sınıf paneli sekmeleri ve kart yazıları (hesap/listelerim.js)
+  4) giriş penceresi (hesap/girispenceresi.js)
+  Her parçada aynı yöntem: işaretle → 20 dile çevir → dene.
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 2. PARÇA (anasayfanın gövdesi)        15.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "tercüme edilecek tüm yerleri iyice analiz et, dil değişince
+tüm türkçeler o dile dönmeli."
+
+ANASAYFADA İŞARETLENEN 104 YER (58 anahtar, 20 dil)
+  · Çok geçen tuş ve rozetler — bir anahtar, çok yer:
+      Hemen Başla (12), Zenginleştirme (11), Destekleme (9),
+      İncele / İncele! / Aç, Kapat, Vazgeç, İptal, Gönder,
+      Kaydet ve Kapat, Değişiklikleri Kaydet, + Ekle, Başlat,
+      Sıfırla, Yükleniyor, Katılımcılar, "Tüm sınıfın görmesi için
+      tam ekran", "Çok Yakında Sizlerle", Listeyi aç ›, Haritayı aç ›
+  · Katalog şeridi: başlık, açıklama, "Kataloğu aç", "PDF indir"
+  · Sınıf başlıkları 5.–10. Sınıf + defter penceresinin sekmeleri
+  · Kidef Arapça yardımcı kitap kartı: "Yardımcı" rozeti, açıklama
+    (içindeki <b> korunuyor), kapak alt yazısı, "2. Baskı" başlığı
+  · Panel: Dersten Çık, Veriler Yükleniyor, Öğrenci Dünyası,
+    "Hoş geldin!", Yukarı Topla, perde ipuçları, "Okul simgesinden
+    bir sınıf seç" kutusunun üçü, Çıkış Yap
+  · Giriş-kayıt penceresi: İsim Soyisim, Şifre, Şifreyi Onayla,
+    Telefon Numarası, Giriş Yap, Kayıt Ol, "Hesabınız yok mu?"
+  · «Sınıfta Yeni» bölüm başlığı
+
+İKİ YENİ İŞARET TÜRÜ (sistem/dil.js)
+  · data-i18n-html → içinde <b> gibi etiket taşıyan yazı. Kitap
+    kartının açıklaması böyle; textContent ile değiştirilse <b>
+    silinirdi.
+  · data-i18n-alt  → resim alt yazıları (ekran okuyucular için).
+  İkon taşıyan öğelerde (Maarif rozetleri, Öğrenci Dünyası başlığı,
+  "Kataloğu aç" tuşu) yazı kendi <span>'ine alındı; ikonlar yerinde.
+
+TARAYICI ESKİ SÖZLÜĞÜ AÇMIYOR (düzeltme)
+  dil.js sözlükleri "dil/<kod>.js?v=1" diye çağırıyordu; yol kod içinde
+  birleştirildiği için surumle.py göremiyordu — yeni çeviri eklenince
+  tarayıcı önbellekteki eskiyi açardı. Artık:
+    · dil.js'te tek satırlık sürüm tablosu: var SURUM = {…}
+    · surumle.py'ye dil_surum() adımı: her gönderimde dil/*.js
+      içeriğinden damga hesaplar, o satırı yeniler. Satır değişince
+      dil.js'in damgası da değişir, sayfalar da tazelenir.
+  Elle sürüm tutulan yer kalmadı.
+
+ÜRETİCİLER
+  _kaynak/uretici/dilIsaretle2.py    → anasayfayı işaretler
+  _kaynak/uretici/dilSozlukEkle2.py  → 58 anahtarı 20 sözlüğe ekler
+  _kaynak/uretici/dilHtmlAlan.py     → motora iki yeni alan
+  _kaynak/uretici/dilSurumDamga.py   → sözlük sürüm tablosu
+  Hepsi iki kez çalıştırılsa da dosyada tek kopya bırakır.
+
+DENENDİ
+  İngilizce, Arapça, Çince, Soranice ve Özbekçede 20 işaretli yer
+  anında değişiyor; <b> ve ikonlar yerinde; Türkçeye dönünce hepsi
+  geri geliyor. Sözlük adresi artık dil/ar.js?v=8f0cf1f9 gibi.
+
+SIRADAKİ (çekirdek)
+  3) araç kartlarının başlıkları ve açıklamaları (anasayfada ~80 yazı)
+  4) belge kartlarının adları (Ders Kitabı, Sınıf Defteri, Sınavlar…)
+  5) sınıf paneli sekmeleri ve kart yazıları (hesap/listelerim.js)
+  6) giriş penceresi (hesap/girispenceresi.js)
+  JS içinde yazılan metinler (innerText ile değişen tuşlar) o parçalarda
+  KidefDil.metin() ile bağlanacak.
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — MOTOR ARTIK HER SAYFADA                15.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "index dışındaki dosyaların da dilin değiştiğini anlayan ve
+ona göre dili değiştiren sisteme geçelim, diğer dosyalara da geçelim."
+
+ÜÇ DOKUNUŞ (sistem/dil.js)
+  1. KÖK KENDİNİ BULUYOR. dil.js kendi <script src>'ine bakıp sitenin
+     kökünü çıkarıyor; alt klasördeki sayfada "../sistem/dil.js" →
+     "../dil/ar.js" oluyor. Sözlükler her derinlikten doğru geliyor.
+  2. ÖTEKİ AÇIK SEKMELER. Bir sekmede dil değişince tarayıcı bütün
+     sekmelere 'storage' haberi yolluyor; dil.js onu dinliyor ve açık
+     duran araç/oyun sayfası da ANINDA o dile dönüyor. Yeni açılan
+     sayfa seçimi zaten localStorage'dan okuyor.
+  3. DÜĞME HER SAYFADA. Anasayfada başlık çubuğundaki yerinde;
+     başlığı olmayan sayfada sol alt köşede küçük solgun bayrak
+     düğmesi (üstüne gelince belirginleşiyor, baskıda görünmüyor).
+     Düğme YALNIZ çevrilecek yazısı olan sayfada çıkıyor — henüz
+     işaretlenmemiş sayfada boşuna görünmüyor. Sayfa istemezse
+     <body data-kd-dil="yok">, kendi yerini vermek isterse
+     <div id="kdDilYuva"></div> koyar.
+
+SİTENİN TAMAMINA YAYILDI
+  · 98 sayfanın </body> öncesine dil.js satırı eklendi (kapsam dışı:
+    flipbook kitapları, kitap etkinlikleri, sunum dışa aktarımları,
+    Gizem Sandığı, eski _stg kopyaları).
+  · Sözlüklerde ÇEVİRİSİ ZATEN OLAN ortak sözler bütün sayfalarda
+    bağlandı: 39 yazı + 25 nitelik. Yeni çeviri gerekmedi, 20 dil
+    hazırdı. (Kapat, Vazgeç, Gönder, Başlat, Sıfırla, + Ekle,
+    Giriş Yap, Kayıt Ol, Şifre, 5.–10. Sınıf, Sınıf Defteri,
+    Sınıf Araçları, Çıkış Yap, "tam ekran" ipuçları…)
+
+GÜVENLİK KURALLARI (dilOrtakIsaret.py)
+  · Yalnız içinde başka etiket OLMAYAN öğeler işaretleniyor; ikon
+    taşıyan tuşlar elle ele alınıyor.
+  · <script>/<style>/yorum blokları maskeleniyor — JS dizgelerine
+    dokunulmuyor (tırnak bozulmasın).
+  · Niteliklerde tam eşleşme; başında data-i18n-* varsa atlanıyor.
+  · Betik iki kez çalışsa da tek kopya bırakıyor.
+
+DENENDİ (üç davranış)
+  · Alt klasördeki sayfa sözlüğü ../dil/ar.js'ten aldı.
+  · Önceden Arapça seçilmişse sayfa Arapça açıldı (lang="ar").
+  · İkinci sekmede İngilizce seçilince birinci sayfa kendiliğinden
+    İngilizceye döndü.
+
+BUNDAN SONRASI — araç sayfalarının çoğu arayüzünü JS ile çiziyor
+  Statik HTML'de az yazı var; asıl iş o sayfaların JS dosyalarında.
+  İki yol kullanılacak:
+    · JS ürettiği HTML'e data-i18n="anahtar" yazar — gözcü (observer)
+      sonradan basılan kartı da çeviriyor.
+    · Düz yazı gereken yerde KidefDil.metin('anahtar', 'Türkçesi').
+  Sıra: sınıf paneli (hesap/listelerim.js) → giriş penceresi →
+  metin tahlili → muhâdese → merak köşesi → kelime araçları → oyunlar.
+
+ÜRETİCİLER
+  _kaynak/uretici/dilHerSayfa.py     → motordaki üç dokunuş
+  _kaynak/uretici/dilOrtakIsaret.py  → her sayfaya motor + ortak sözler
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 3. PARÇA: BÜTÜN SAYFALAR DİLİ ANLIYOR   15.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "index dışındaki dosyaların da dilin değiştiğini anlayan ve
+ona göre dili değiştiren sisteme geçelim, diğer dosyalara da geçelim"
+· "parça parça yap".
+
+SİSTEM ZATEN HER SAYFADA
+  · sistem/dil.js sitenin 100 sayfasında yüklü; sözlük klasörünü kendi
+    <script src>'inden buluyor, alt klasörde de doğru adrese gidiyor.
+  · Bir sekmede dil değişince tarayıcının 'storage' haberi öteki açık
+    sekmelerde yakalanıyor; o sayfalar da anında dönüyor.
+  · Dil düğmesinin yeri: başlık çubuğu varsa oraya, sayfa #kdDilYuva
+    verdiyse oraya, ikisi de yoksa sol alt köşeye yüzen düğme olarak.
+    Düğme YALNIZ işaretli yazısı olan sayfada çıkıyor.
+    <body data-kd-dil="yok"> diyen sayfaya düğme konmaz.
+  · Eksik olan tek sayfa katalog/index.html'di; ../sistem/dil.js ile
+    eklendi.
+
+BU TURDA ÇEVRİLEN: ORTAK ÇERÇEVE (25 anahtar · 20 dil · 124 yer · 50 sayfa)
+  Ana Sayfaya Dön · Ana Sayfa · Ana Menüye Dön · ↩ Menü · ❮ GERİ ·
+  İleri · Başla · Oyna · Tekrar Oyna · Yeni Soru · Tek Kişilik ·
+  İki Kişilik · Takım Oyunu · Lütfen Cihazı Dik Tutun · "Bu oyun en iyi
+  dikey modda çalışır." · Tam Ekran · Gizle/Göster · Kolay · Orta ·
+  Zor · Temizle · Yazdır · Karıştır · Ayarlar
+  Bir anahtara birden çok Türkçe yazım bağlanabiliyor ("Tek Kişilik" ve
+  "1 Kişilik" aynı anahtar); Türkçeye dönünce her öğe KENDİ yazısını
+  geri alıyor, çünkü Türkçesi data-i18n-tr'de duruyor.
+
+YENİ ARAÇ: _kaynak/uretici/dilIsaretleGenel.py
+  Anahtar → Türkçe karşılıklar tablosunu alıp verilen sayfalarda
+  işaretliyor. İki güvenli geçiş yapıyor:
+    1. Yazı düğümü — açılış etiketinin içinde başka etiket YOKSA
+       (ikon, <b>, <svg>) işaretler; varsa dokunmaz.
+    2. Nitelik — title / placeholder / aria-label / alt.
+  Zaten işaretli öğeyi atlıyor. Sonraki parçalar da bu araçla:
+  tabloya satır ekle, çalıştır.
+
+DENETİM
+  İşaretlenen 97 sayfa, işaretler sökülünce yedekle BİREBİR aynı —
+  yani hiçbir sayfanın yapısı bozulmadı. Sayfa yazılarını karşılaştıran
+  JS kodu yok (arandı), dil değişince hiçbir oyunun mantığı etkilenmez.
+  Denendi: hangiharf.html İngilizce/Arapça/Rusçada dönüyor, köşe dil
+  düğmesi çıkıyor, ikinci sekmede seçilen dil birinci sekmeye geçiyor.
+
+SIRADAKİ
+  · anasayfadaki araç kartlarının başlıkları ve açıklamaları (~80 yazı)
+  · belge kartlarının adları (Ders Kitabı, Sınıf Defteri, Sınavlar…)
+  · sayfa başlıkları (<title>) ve her aracın kendi başlığı
+  · sınıf paneli (hesap/listelerim.js) ve giriş penceresi
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 4. PARÇA                                15.10.2026
+İMAM HATİP VE SINIFLARIM BAŞKA DİLDE GİZLENİYOR · KELİME ÇARKI ÇEVRİLDİ
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "özellikle öğretmen özel ve oyun kategorisini diller için
+uygun hale getirelim, imam hatip kategorisi sadece türkiyeyle ilgili
+çünkü … hatta türkçe dışındaki diller seçilince sınıflarım ve imam
+hatip kategorileri kaybolsun." · "her yerde dil değişmiyor mesela
+kelime çarkında falan."
+
+1) TÜRKİYE'YE ÖZEL İKİ BÖLÜM ARTIK BAŞKA DİLDE GİZLİ
+   Türkçe dışında bir dil seçilince #imam-hatip ve #siniflarim
+   bölümleri kapanıyor; Türkçeye dönülünce geri geliyor. Sayfa
+   yenilenince de (dil kayıtlı olduğu için) gizli kalıyor.
+   NASIL: dil.js <html> üzerine data-kd-tr="1|0" koyuyor, CSS kuralı
+   o niteliğe bağlı. Bölümler sonradan çizildiği için (siniflarim.js)
+   JS ile tek tek gizlemek yetmezdi; kural ne zaman çizilirse
+   çizilsin geçerli. (_kaynak/uretici/dilTrOzel.py)
+   Böylece çeviri bekleyen MEB belgesi, yıllık plan, zümre ve sınıf
+   defteri kalmadı; geriye Alan Becerileri, Oyunlar, Kitaplar,
+   Materyaller, Değerler ve Sosyal Hesaplar kalıyor.
+
+2) KELİME ÇARKI (23 anahtar · 22 yer · 20 dil)
+   Bu aracın arayüzü HTML'de DEĞİL, sarf/kelimecarki.js içinde
+   üretiliyor — o yüzden sayfada hiç işaret yoktu ve dil değişince
+   hiçbir şey dönmüyordu. İşaretler artık JS dosyasındaki HTML
+   kalıplarının içinde (dilIsaretleGenel.py 'kc' parçası; araç artık
+   .js dosyalarında da çalışıyor).
+   Çevrilenler: başlık, Şık/Sade görünüm anahtarı ve ipuçları, vezin
+   kutusu, önceki/sonraki kelime okları, vezinler penceresi
+   ("En Çok Kullanılan Vezinler", kırmızı harf notu), kumanda tuşları
+   (Oynat/Durdur, önceki/sonraki vezin).
+   setAttribute ile verilen iki aria yazısı da bağlandı
+   (_kaynak/uretici/dilKelimeCarki.py).
+
+   TERİM KARARI — "vezin":
+     Arapça/Farsça/Urduca/Peştuca/Kürtçe → kendi terimi (وزن/اوزان)
+     Endonezce/Malayca → "wazan" (medrese dilinde zaten böyle)
+     İngilizce "pattern" · Fransızca "schème" · Rusça "модель"
+     Almanca "Wortmuster" · İspanyolca "esquema" · Boşnakça "obrazac"
+   Türkçeden geri çevirmek yerine o dilin kendi gramer terimi alındı.
+
+   DENENDİ: İngilizce, Arapça, Fransızca ve Endonezcede başlık, tuşlar
+   ve ipuçları dönüyor; vezinler penceresi sonradan çizildiği hâlde
+   içindeki yazılar da dönüyor (dil katmanının MutationObserver'ı).
+
+3) SIRADAKİ — İKİ KATEGORİ, 22 SAYFA
+   ALAN BECERİLERİ & DİLBİLGİSİ (10):
+     alfabe · kelimecarki ✓ · kelimeler · sozluk · fiiller · sarf ·
+     muhadese · kaliplartablosu · tamlamavecumleler · sunumlar
+   OYUNLAR (12):
+     merakcarki · hangiharf · harekeavcisi · kokutani · koktengovdeye ·
+     isimx4 · klavyeoyunu · hafizakartlari · zamanlayaris ·
+     bilgiyarismasikacom · testkapismasi · ikikidijital
+   Her birinin ortak çerçevesi (3. parça) zaten dönüyor; kalan, her
+   aracın KENDİ yazıları. Çoğu Kelime Çarkı gibi JS içinde üretiliyor.
+   Ayrıca kelime anlamları (çarkın balonundaki Türkçe karşılıklar,
+   vezin tablosundaki örnek anlamlar) ayrı bir tur olarak duruyor.
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 5. PARÇA: ALFABE (OKUMA-YAZMA)          15.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "sırayla gidelim." Alan Becerileri kategorisinin ilk aracı.
+
+41 ANAHTAR · 58 YER · 20 DİL
+  · Sekme şeridi: Harf Tanıtımı · Harf Birleştirme · Dinle ve Yaz ·
+    Ölçme & Etkinlik · Hafıza · Sınav · Yarışma
+  · Kumanda ipuçları: aç/kapat, sürükleyerek taşı, sol kenara yapıştır,
+    sekme şeridini aç/kapat
+  · Harf tahtası: okunuşu/yazılışı benzeyenleri renklendir, aileye göre
+    diz, yazılış animasyonunu başlat/durdur, alfabetik sıraya dön,
+    sadece harfleri göster, "Detay için tıkla: mahreç ve yazılış",
+    "Büyütmek için dokun", "Kendinden Sonrakiyle Birleşmeyen Harfler"
+  · Sınav/hafıza denetimleri: Harf adı · Yazılış yeri · Sorulacak
+    yazılışlar · Yalın/Başta/Ortada/Sonda · 6-9-12-14 Çift ·
+    İki Oyuncu · Kişi sayısı · Önceki tur · BAŞLA ·
+    🔄 Yeniden Başlat · SONRAKİ SORU ➔ · İstenen Harfi Yaz
+  · Sekme başlığı (<title>) da çevriliyor artık.
+
+TERİM KARARI — harfin kelimedeki yeri
+  Yalın/Başta/Ortada/Sonda → Arapçada منفصل · في البداية · في الوسط ·
+  في النهاية; İngilizcede dilbilim terimleriyle isolated · initial ·
+  medial · final. "mahreç" → المخرج / articulation point / makhraj
+  (Endonezce-Malayca zaten "makhraj" diyor).
+
+ARAÇ GELİŞTİ
+  dilIsaretleGenel.py artık (1) birden çok dosyayı birlikte işliyor,
+  (2) .js dosyalarındaki HTML kalıplarını da işaretliyor, (3) <title>
+  etiketini de görüyor. Yeni parça = tabloya satır + bir çalıştırma.
+
+DENETİM
+  Beş dosya (alfabe.html + okumayazma/alfabe.js, alfabe_akordiyon.js,
+  alfabe_sinav.js, alfabe_birlestir.js) işaretler sökülünce yedekle
+  birebir aynı. node --check hepsinde temiz.
+  Tarayıcıda denendi: İngilizce, Arapça ve Rusçada sekmeler, tuşlar,
+  ipuçları ve konum etiketleri dönüyor.
+
+ALFABEDE KALAN (ayrı tur)
+  Harf adları (Şın, Ğayn…), hareke adları (üstün/esre/ötre), örnek
+  kelimeler ve harf tanıtım açıklamaları — bunlar İÇERİK; "kelime
+  anlamları" turunda. Ayrıca JS'in textContent ile yazdığı iki-üç
+  sonuç cümlesi (✔ Doğru / ✘ Yanlış / OYUNCU 1 KAZANDI) kod dokunuşu
+  istiyor, onlar da o turda.
+
+SIRADAKİ (sırayla)
+  Alan Becerileri: kelimeler · sozluk · fiiller · sarf · muhadese ·
+  kaliplartablosu · tamlamavecumleler · sunumlar
+  Sonra Oyunlar (12 sayfa).
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 6. PARÇA: KELİME DAĞARCIĞI + GALERİ GİZLEME 15.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam" · "türkçe dışında bi dil seçilince galeri ve sitede
+yeni kısmı da görünmesin."
+
+1) GALERİ VE «SINIFTA YENİ» DE GİZLENİYOR
+   Türkçe dışı dillerde gizlenen bölümler artık ÜÇ:
+       #imam-hatip     İmam Hatip sınıfları, belgeleri, planları
+       #guncellemeler  «Sınıfta Yeni» duyuruları + okul galerisi
+       #siniflarim     öğretmenin kurum/sınıf şeridi
+   dilTrOzel.py artık iki durumu da biliyor: kurulu değilse kurar,
+   kuruluysa eksik bölümü kuralın içine katar. Denendi: Arapçada üçü
+   de gizli, Oyunlar yerinde, Türkçeye dönünce üçü de geri geliyor.
+
+2) KELİME DAĞARCIĞI (30 anahtar · 37 yer · 20 dil)
+   · Liste görünümü: Sütun sayısı · Tek sütun (büyük yazı) · İki/Üç
+     sütun · "Kapat — listeden çık" · 6 Çift
+   · Test ve kapışma: Kelime Listesi · Listeye dön · 🧑‍🎓 Tek Kişilik ·
+     ⚔️ Kapışma · BAŞLA · 1./2. Oyuncu · puan · Puan · Doğru · İsabet ·
+     Bitti · Tekrar bakılacaklar · Rövanş
+   · Listeden çıkarma havuzu: Çıkarılanlar · "— silinmedi; geri
+     eklemek için dokun"
+   · İndirme-yazdırma paneli: Arapça/Türkçe sütun başlıkları, PDF ve
+     yazdırma açıklamaları, İndir
+   · Sekme başlığı (Kelime Dağarcığı · kidefarapca.com)
+
+   YÖNTEM DEĞİŞİKLİĞİ (zaman kazandırdı): önce işaretledim, SONRA
+   yalnız işaretlenen anahtarları çevirdim. Şablon parçası olduğu için
+   bulunamayanlar (textContent ile yazılan sonuç cümleleri: "Tebrikler!",
+   "1. Oyuncu Kazandı!", "Anlamı?/Arapçası?", indirme uyarıları) kod
+   dokunuşu istiyor; onlar sonraki tura.
+
+3) YENİ DENETİM ARACI: _kaynak/uretici/dilDenetim.py
+   Bütün sözlükleri okuyup söylüyor: hangi dilde kaç anahtar var,
+   İngilizcede olup başka dilde eksik olan, fazlalık, çift yazılmış
+   anahtar ve çevirisi Türkçeyle birebir aynı kalanlar.
+   BUGÜNKÜ SONUÇ: 20 dilin HEPSİNDE 203 anahtar · eksik 0 · fazla 0 ·
+   çift 0. "Türkçeyle aynı" listesi yalnız Azerice (Başla, Oyna, Orta,
+   Doğru… — diller yakın olduğu için doğal) ve Almanca "↩ Menü".
+
+DURUM: 203 anahtar × 20 dil = 4.060 çeviri hazır.
+
+SIRADAKİ (sırayla)
+  Alan Becerileri: sozluk · fiiller · sarf · muhadese ·
+  kaliplartablosu · tamlamavecumleler · sunumlar
+  Sonra Oyunlar (12 sayfa).
+
+══════════════════════════════════════════════════════════════════════
+HIZLI DİL DEĞİŞTİRME                                     15.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "daha pratik bi şekilde dil değiştirmek için sistemde
+yapmamız gereken şeyler var mı" → üç dokunuş yapıldı
+(_kaynak/uretici/dilHizli.py · sözlükler dilSozlukEkle7.py).
+
+1) ADRESTEN DİL
+   kidefarapca.com/index.html?dil=ar  (?lang=ar ve #dil=ar de olur)
+   Bağlantı hangi dilde gönderildiyse sayfa o dilde açılıyor; ar-SA
+   gibi gelirse ana koda düşüyor. Seçim cihaza kaydediliyor ama
+   HESABA yazılmıyor — bu bağlantının isteği, kullanıcının kendi
+   seçimi değil. Böylece yurt dışındaki bir öğretmene gönderdiğin
+   link doğrudan onun dilinde açılıyor.
+
+2) TEK DOKUNUŞLA GERİ (sınıfta TR ↔ AR)
+   · Bayrağa dokun → son kullandığın ÖTEKİ dile geçer.
+   · Düğmenin OKUNA dokun ya da uzun bas (0,55 sn) → bütün dillerin
+     listesi açılır, dil değişmez.
+   · Henüz ikinci dil yoksa dokunmak doğrudan listeyi açar.
+   · İpucu ne olacağını söylüyor ve o anki dilde yazıyor:
+     Türkçeyken "العربية diline geç · Bütün diller ▾",
+     Arapçayken "انتقل إلى Türkçe · كل اللغات ▾".
+
+3) İLK ZİYARETTE ÖNERİ (zorlamıyor)
+   Seçim yapılmamışsa ve tarayıcı dili Türkçe değilse altta tek satır
+   çıkıyor — ÖNERİLEN DİLİN KENDİ DİLİNDE:
+     "هل تريد عرض الموقع بالعربية؟  [نعم، بالعربية] [أبقِ التركية]"
+     "Ingin melihat situs ini dalam bahasa Indonesia? [Ya…] [Biarkan…]"
+   Kendiliğinden DEĞİŞTİRMİYOR (okulda Türkçe kalmalı). Kapatılırsa
+   bir daha sorulmuyor. Yalnız çevrilmiş yazısı olan sayfada çıkıyor.
+   Üstte değil altta: sitenin başlığını kapatmasın.
+   Tarayıcı kodu eşlemesi: ku→Badinice, ckb→Soranice, pes/prs→Farsça,
+   in→Endonezce, hr/sr/sh→Boşnakça.
+
+DENENDİ (Playwright, ayrı tarayıcı oturumlarıyla)
+  ?dil=ar → dil ar, kayıt ar, Türkiye'ye özel bölümler gizli, yazılar
+  Arapça · bayrağa dokun → tr · tekrar dokun → ar · oka dokun →
+  liste açılıyor, dil değişmiyor · Arapça tarayıcıda öneri Arapça
+  çıkıyor, "evet" dili değiştirip çubuğu kapatıyor, sayfa yenilenince
+  bir daha çıkmıyor · Endonezce tarayıcıda öneri Endonezce ·
+  Türkçe tarayıcıda öneri YOK. Konsolda hata yok.
+
+SÖZLÜK DURUMU: 208 anahtar × 20 dil. Denetim (dilDenetim.py) temiz:
+eksik 0 · fazla 0 · çift 0.
+
+SONRAKİ ADIM İÇİN ÖNERİLERİM (öğretmene sunuldu, seçilmedi)
+  · Otomatik işaretleme + tek çeviri listesi (işi en çok hızlandıran)
+  · Dil yedek zinciri: eksik anahtar Türkçe kalmasın, yakın dile düşsün
+    (Soranice→Arapça, Badini→Soranice, Malayca→Endonezce, Peştuca→Farsça)
+  · JS'in textContent ile yazdığı cümleler için ortak yardımcı
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 8. PARÇA: SÖZLÜK + FİİL ÇEKİM ATLASI    15.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "sırayla gidelim" · "devam et". Alan Becerileri'nde üçüncü
+ve dördüncü araç. 20 anahtar · 20 dil.
+
+SÖZLÜK
+  Arama kutusu, "Favori Kelimelerim" başlığı ve listesi, "Tümünü sil",
+  yıldız düğmesi (duruma göre "Favorilerden çıkar" ↔ "Favorilere
+  ekle"), Arapça klavye ve genişlet/daralt ipucu, "Boşluk" tuşu,
+  sekme şeridi (Simülasyon · Dedektif), "Sözlüğe dön", "Seviye".
+
+FİİL ÇEKİM ATLASI
+  Sayfa başlığı, "Kidef Arapça'ya Dön" ve üç kip adı.
+  TERİM KARARI: kip adları her dilin kendi geleneğiyle —
+    ar/fa/ur/ps/ckb/kmr → الماضي · المضارع · الأمر
+    id/ms → MADHI · MUDHARI' · AMR (pesantren dilinde böyle geçiyor)
+    az → MAZİ · MÜZARİ · ƏMR   ·  uz → MOZIY · MUZORIʼ · AMR
+    en PAST/PRESENT/IMPERATIVE · fr ACCOMPLI/INACCOMPLI/IMPÉRATIF
+    de PERFEKT/IMPERFEKT/IMPERATIV · ru ПРОШЕДШЕЕ/НАСТОЯЩЕЕ/…
+  Fiillerin Türkçe anlamları ve zamir çekim etiketleri İÇERİK; onlar
+  "kelime anlamları" turunda.
+
+İKİ KALICI KAZANÇ (her araçta işe yarayacak)
+  1. KidefDil.yaz(öğe, anahtar, türkçe) ve
+     KidefDil.nitelik(öğe, 'aria-label', anahtar, türkçe)
+     — JS'in elle yazdığı, duruma göre değişen yazılar için. Anahtarı
+     öğeye işaretliyor ve TÜRKÇESİNİ data-i18n-tr'ye yazıyor; yoksa
+     dil katmanı çevrilmiş yazıyı "Türkçe özgün" diye saklar ve
+     Türkçeye dönüş bozulurdu. (_kaynak/uretici/dilJsYardimci.py)
+     Sözlükte dört yerde kullanıldı; sıradaki araçlarda tek satır.
+  2. SEKME BAŞLIĞI DÜZELTMESİ — sayfaların <title>'ı işaretliydi ama
+     çevrilmiyordu: uygula() taramayı document.body içinde yapıyor,
+     <title> ise <head> içinde. Artık gövde taramasının sonunda baş
+     kısımdaki başlık da çevriliyor. (dilBaslik.py)
+     Denendi: fiiller.html "Arabic Verb Conjugation Atlas" /
+     "أطلس تصريف الأفعال العربية", sozluk.html "Dictionary" /
+     "القاموس" oluyor.
+
+DENETİM
+  sozluk.html'de tek yapı değişikliği var ve bilerek: "Favori
+  Kelimelerim" yazısı kendi <span>'ine alındı (içinde boş bir <span>
+  olduğu için işaretlenemiyordu). fiiller.html ve sarf/fiiller.js
+  işaretler sökülünce yedekle birebir aynı. node --check temiz.
+  Tarayıcıda İngilizce, Arapça ve Endonezcede denendi; bir sayfadan
+  ötekine geçerken dil korunuyor (localStorage).
+  dilDenetim.py: 20 dilde 228 anahtar · eksik 0 · fazla 0 · çift 0.
+
+SIRADAKİ (sırayla)
+  Alan Becerileri: sarf · muhadese · kaliplartablosu ·
+  tamlamavecumleler · sunumlar
+  Sonra Oyunlar (12 sayfa).
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 9. PARÇA: SARF + ALFABEDE DİL DÜĞMESİ KAPALI 15.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam" · "alfabe.html de dil seçme olmasın ayrıca".
+
+1) ALFABE SAYFASINDA DİL DÜĞMESİ YOK
+   alfabe.html'in <body>'sine data-kd-dil="yok" kondu. ÇEVİRİ AÇIK
+   KALIYOR — başka yerde seçilen dil alfabede de geçerli; yalnız
+   köşedeki dil düğmesi konmuyor, tahtada ders anlatılırken
+   yanlışlıkla basılmasın. (Motordaki bu kapı 1. parçadan beri
+   vardı, ilk kez kullanıldı.)
+
+2) SARF — KÖK/VEZİN OYUNLARI VE YARIŞMA ODASI (29 anahtar · 20 dil)
+   sarf.html'in kendi HTML'inde Türkçe yok (başlığı bile Arapça);
+   bütün arayüz sarf/sarf.js içinde üretiliyor.
+
+   EN ÖNEMLİ KISIM — SORU YÖNERGELERİ: her soru nesnesinde Arapçası
+   (s) ve Türkçe açıklaması (tr) varmış; ekranda Arapça soru + altında
+   Türkçe satır görünüyor. Nesnelere anahtar (k) eklendi, çizim de onu
+   data-i18n olarak basıyor. Artık ARAPÇA SORU OLDUĞU GİBİ KALIYOR,
+   altındaki açıklama öğrencinin dilinde:
+     "ما جَذْرُ هٰذِهِ الكَلِمَة؟" + "Which is the root of this word?"
+   Sekiz soru türü çevrildi: kök, türev, vezin, anlam, anlamı taşıyan
+   kelime, boşluk doldurma, farklı kök, zâid harf.
+
+   Ayrıca: Soruyu göster/gizle, Sonraki Soru ▶ / Yarışı Bitir 🏁,
+   Oyundan Çık, Vazgeç, Tamam, "Bir şık seç.", "Cevabın kaydedildi…",
+   oyun yönergeleri (kelimeye bas / kök+vezin seç / köke bas), odayı
+   kur, odaya katıl, takım adı, Katıl, Yarışı Başlat, yeniden
+   bağlanılıyor, yarışma bitti/iptal, oda kodu açıklaması.
+
+   KODA DOKUNUŞ: 18 yer (_kaynak/uretici/dilSarfKod.py). Duruma göre
+   değişen yazılar yeni KidefDil.nitelik()/metin() yardımcılarıyla
+   bağlandı — 8. parçada eklenen o yardımcı ilk işini burada gördü.
+
+DENETİM
+  node --check sarf.js ve 20 sözlük temiz. Kalıp üretimi node ile tek
+  tek denendi:
+    <div class="qz-durum" data-i18n="sf.s_kok">Bu kelimenin kökü…</div>
+    <span data-i18n="sf.sonraki">Sonraki Soru ▶</span>
+  dilDenetim.py: 20 dilde 257 anahtar · eksik 0 · fazla 0 · çift 0.
+
+SARF'TA KALAN
+  Firebase ayar yardımı (öğretmene özel, uzun teknik metin), oda
+  kurma/katılma hata iletileri ve "Bu kökün … çekimi (mâzî/muzâri)"
+  gibi parçalı cümleler. Hepsi yer tutucu ister; ayrı turda.
+
+SIRADAKİ (sırayla)
+  Alan Becerileri: muhadese · kaliplartablosu · tamlamavecumleler ·
+  sunumlar — sonra Oyunlar (12 sayfa).
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 10. PARÇA: MUHÂDESE + DENETİM ARACI BÜYÜDÜ 15.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam". Alan Becerileri'nde beşinci araç.
+
+MUHÂDESE — ARAPÇA KONUŞMA MODÜLÜ (15 yeni anahtar · 27 yer · 20 dil)
+  Sayfa ve modül başlığı, Kelimeler / Cümle Pratiği / Diyalog Pratiği
+  sekmeleri, kelime kipi, lehçe seçimi ve LEHÇE etiketi, kartın ön
+  yüzünü değiştirme, bilgi sekmeleri, sesli okuma (kapalı/oku) ve iki
+  dış bağlantı ipucu (Tamlama ve Cümle · Sarf Motoru).
+
+  ANAHTAR YENİDEN KULLANIMI: sütun seçimi yazıları (Sütun sayısı ·
+  Tek/İki/Üç sütun) Kelime Dağarcığı'ndakiyle birebir aynıydı; o
+  anahtarlar yeniden kullanıldı, yeniden çevrilmedi. Bir anahtar iki
+  araçta çalışıyor — işaretleyici tabloda hangi anahtarın hangi
+  Türkçe yazıya bağlandığını söylediği için bu kendiliğinden oluyor.
+
+  Ünite ve ders adları ("3. Ünite: Ailem | عَائِلَتِي") İÇERİK: Türkçesi
+  ve Arapçası veride yan yana duruyor, kelime anlamları turunda.
+
+DENETİM ARACI BÜYÜDÜ — artık iki soruya cevap veriyor
+  _kaynak/uretici/dilDenetim.py
+  A) Sözlükler birbiriyle tutarlı mı? (eksik/fazla/çift anahtar,
+     Türkçeyle aynı kalan çeviriler)
+  B) SİTEDE KULLANILAN HER ANAHTARIN KARŞILIĞI VAR MI? Sayfalardaki
+     data-i18n işaretleri, KidefDil.metin/nitelik/yaz çağrıları ve
+     veri nesnelerindeki k: 'x' anahtarları toplanıp sözlükle
+     karşılaştırılıyor. Yazım hatası ya da unutulmuş çeviri burada
+     yakalanır.
+
+  BUGÜNKÜ SONUÇ
+    20 dilde 272 anahtar · eksik 0 · fazla 0 · çift 0
+    sitede kullanılan 244 anahtar · KARŞILIĞI OLMAYAN: 0
+    sözlükte olup sitede görünmeyen 28 — bunların çoğu dil.js'in
+    kendi yazıları (dil.baslik, dil.oneri…) ve değişkenle çağrılan
+    anahtarlar (kc.tablo, sf.soru_goster…); tarama onları görmüyor.
+    Gerçekten işaretlenmemiş dört tane var: alf.alfabetik,
+    alf.anim_dur, alf.buyut, alf.istenen_harf — alfabenin JS'inde
+    kalan ipuçları; küçük bir kod dokunuşu bekliyor.
+    "Türkçeyle aynı" listesi yalnız Azerice (diller yakın) ve
+    Almanca "↩ Menü".
+
+DENETİM: muhadese.html ve iki betik işaretler sökülünce yedekle
+birebir aynı; node --check ve 20 sözlük temiz.
+
+SIRADAKİ (sırayla)
+  Alan Becerileri: kaliplartablosu · tamlamavecumleler · sunumlar
+  Sonra Oyunlar (12 sayfa).
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 11. PARÇA: KALIPLAR TABLOSU             15.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam". Alan Becerileri'nde altıncı araç. Üç sayfa birden:
+kaliplartablosu.html · …dijital.html · …mobil.html
+
+15 ANAHTAR · 30 YER · 20 DİL
+  Kelimenin Serüveni başlığı, "Seviye 2: Kökü Kalıba Yerleştir",
+  Kalıp Tablosu 1/2, İlerle ▶, TESTİ BİTİR, BAŞLA!, Bab Adı,
+  Örnek Fiiller, "Hangi fiili çalışmak istersiniz?",
+  SÜLASİ MÜCERRED · SÜLASİ MEZİD, Aksam-ı Seb'a (+ "Nedir?").
+  MAZİ · MUZARİ · EMİR: Fiil Atlası'nın anahtarları yeniden kullanıldı.
+
+TERİM KARARLARI
+  · "bab" sarf terimi: ar اسم الباب · id/ms "bab" · ru "порода"
+    (Rus Arapça çalışmalarının terimi) · de "Stamm" · fr/es "forme"
+  · SÜLASİ MÜCERRED/MEZİD: Arap harfli dillerde kendi terimi
+    (ثلاثي مجرّد · ثلاثي مزيد); Endonezce-Malaycada okunuşuyla
+    (TSULATSI MUJARRAD); ötekilerde tanım + parantezde terim
+    (TRILITERAL (MUJARRAD) · ТРЁХБУКВЕННЫЙ ПРОСТОЙ (муджаррад))
+  · Aksam-ı Seb'a → الأقسام السبعة · Aqsam Sab'ah · Семь классов глагола
+
+SAYFADAKİ ANLATIM ÇEVRİLMEDİ (bilerek)
+  kaliplartablosu.html'de 331 Türkçe yazı var ve büyük kısmı DERS
+  ANLATIMI: bab açıklamaları, çekim tabloları, örnek fiiller,
+  Aksam-ı Seb'a metinleri, İsmi Fâil/Mef'ûl kartları. Bunlar
+  öğretilen malzeme; "kelime anlamları ve ders metinleri" turunda.
+  Sayfanın altındaki oyun kartları (Kelime Çarkı, Hareke Avcısı,
+  İkiki…) anasayfadaki kartlarla AYNI yazılar — ikisini birlikte,
+  "araç kartları" parçasında yapacağım.
+
+ALFABENİN DÖRT İPUCU DA BAĞLANDI
+  Denetim aracının yakaladığı dört yazı (animasyonu durdur, alfabetik
+  sıraya dön, "Büyütmek için dokun", "İstenen Harfi Yaz") koddan
+  yazılıyordu; KidefDil.nitelik()/yaz() ile bağlandı.
+  (_kaynak/uretici/dilAlfabeKod.py)
+
+DENETİM
+  Üç sayfa işaretler sökülünce yedekle birebir aynı · node --check
+  temiz · 20 dilde 287 anahtar, eksik/fazla/çift 0 · sitede
+  kullanılan 261 anahtarın hepsinin çevirisi var.
+
+SIRADAKİ (sırayla)
+  Alan Becerileri: tamlamavecumleler · sunumlar — sonra Oyunlar (12).
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 12. PARÇA                               15.10.2026
+TAMLAMA VE CÜMLELER + DERS SUNUMLARI → ALAN BECERİLERİ TAMAM
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam". Bu parçayla ALAN BECERİLERİ & DİLBİLGİSİ
+kategorisinin ON SAYFASI da arayüz olarak çok dilli oldu:
+  alfabe ✓ · kelimecarki ✓ · kelimeler ✓ · sozluk ✓ · fiiller ✓ ·
+  sarf ✓ · muhadese ✓ · kaliplartablosu ✓ · tamlamavecumleler ✓ ·
+  sunumlar ✓
+
+19 ANAHTAR · 79 YER · 8 DOSYA · 20 DİL
+  Tamlama ve Cümleler: sayfa başlığı, tabloya dönüş, Bölümler ve
+  bölüm başlıkları, "Dikkat edilmesi gereken özellikler!", Örnek,
+  "yeni sekmede açılır".
+  DERS SUNUMU OYNATICISI (altı sunum dosyasında aynı yazılar):
+  Sunumu aç · İçindekiler (O) · Önceki (←) · Sonraki (→) ·
+  Tam ekran (F) · Sunumdan çık · Siteye dön · Kapat (Esc) ·
+  Şeridi kapat · Sunum listesine dön · Bir kademe uzaklaş.
+  "Kapat" için g.kapat yeniden kullanıldı (13 yerde).
+
+  KISAYOL HARFLERİ OLDUĞU GİBİ KALIYOR: (O) (F) (Esc) (←) (→) —
+  tuşlar dilden dile değişmiyor, yalnız yazı çevriliyor.
+
+ÇEVRİLMEYENLER (bilerek)
+  tamlamavecumleler.html'de 376, sunumlar.html'de 336 Türkçe yazı
+  var; neredeyse hepsi DERS ANLATIMI: i'rab kuralları, muzâf-sıfat
+  uyumu, gayr-i âkil çoğul, cem-i müennes sâlim, maksûr-menkûs,
+  slayt metinleri. Bunlar öğretilen malzeme — ayrı turda.
+  Tablonun dört sütun başlığı ("Ne işe yarar, nasıl anlaşılır?" gibi)
+  hücre içinde parçalı yazıldığı için işaretlenemedi; onlar da o
+  turda.
+  Sayfa altındaki oyun kartları anasayfadakilerle aynı yazılar —
+  "araç kartları" parçasında birlikte yapılacak.
+
+DENETİM
+  İki sayfa işaretler sökülünce yedekle birebir aynı · 20 dilde
+  306 anahtar, eksik/fazla/çift 0 · sitede kullanılan anahtarların
+  hepsinin çevirisi var.
+
+SIRADAKİ: OYUNLAR (12 sayfa)
+  merakcarki · hangiharf · harekeavcisi · kokutani · koktengovdeye ·
+  isimx4 · klavyeoyunu · hafizakartlari · zamanlayaris ·
+  bilgiyarismasikacom · testkapismasi · ikikidijital
+  Ortak çerçeveleri (3. parça) zaten dönüyor; sıra her oyunun kendi
+  yazılarında.
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 13. PARÇA                               15.10.2026
+OYUNLAR 1. GRUP: HANGİ HARF · HAREKE AVCISI · KÖKÜ TANI · KÖKTEN GÖVDEYE
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "tamam devam". Dört oyunun giriş ekranları, mod/zorluk
+seçimleri, oyuncu adları ve sayfa başlıkları 20 dile çevrildi.
+
+19 YENİ ANAHTAR · 30 YER · 4 SAYFA · 20 DİL
+  Doğru Harfi Seç · Modunu ve Zorluğunu Seç · Zamana Karşı Yarış ·
+  Arkadaşınla Yarış · Oyuncu 1/2 · Hareke Avcısı · Tek Kişilik Oyun ·
+  İki Kişilik Yarış · Kelimenin Serüveni (Seviye 1 / Kökten Gövdeye) ·
+  Hangi kelimeler bu kökten geliyor? · Oyuncular bekleniyor… ·
+  Kökü Tanı · Oyun dilini/modunu seçin · Türkçe/Arapça Kelimeler ·
+  Kökü Kalıba Yerleştir.
+  Önceki parçalardan yeniden kullanılan: İlerle ▶, Kelimenin
+  Serüveni, Kalıp Tablosu 1/2, Tek/İki Kişilik, Kolay/Orta/Zor,
+  Başla, menüye dön, "cihazı dik tutun".
+
+TERİM: "hareke" → حركات · Harakat (id) · baris (ms, Malezya okul
+  dili) · harekat (bs) · огласовки (ru) · voyelles (fr) ·
+  Vokalzeichen (de). "Kelimenin Serüveni" → The Word's Journey ·
+  رحلة الكلمة · Le voyage du mot (11. parçadakiyle aynı).
+
+ÇEVRİLMEYENLER (bilerek)
+  Oyunların KELİME VERİSİ: bu oyunlar Türkçedeki Arapça kökenli
+  kelimelerle (Hâfız, Münazara, İhsan…) kök öğretiyor; veri Türkçeye
+  özgü. "Arapça Kelimeler" kipi her dilde aynı işi görüyor.
+  OYUN İÇİ MESAJLAR (sonuç ekranı, "Doğru! 🎉", "Oyuncu 1 Kazandı!",
+  "Süre Bitti!" gibi kodun o anda yazdıkları) — sıradaki parça.
+
+DENETİM
+  Dört sayfa işaretler sökülünce yedekle birebir aynı (yalnız sürüm
+  damgası değişti) · betikler değişmedi · 20 dilde 325 anahtar,
+  eksik/fazla/çift 0 · sitede kullanılan 299 anahtarın hepsinin
+  çevirisi var · tarayıcı denemesi: dört sayfa ar/fr/zh/ru'da
+  44/44 yazı çevrildi, sayfa hatası 0.
+
+SIRADAKİ
+  Bu dört oyunun oyun içi mesajları → merakcarki · isimx4 ·
+  klavyeoyunu · hafizakartlari · zamanlayaris · bilgiyarismasikacom ·
+  testkapismasi · ikikidijital
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 14. PARÇA                               15.10.2026
+OYUN İÇİ MESAJLAR · MOTORDA BİR HATA SINIFI KAPANDI · HAREKE AVCISI VERİSİ
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "tamam devam".
+
+1) OYUN İÇİ MESAJLAR — 33 ANAHTAR · 20 DİL           (dilOyun1Kod.py)
+  Doğru Harfi Seç: sonuç başlığı ve sütunlar, "Süre Bitti! Skor",
+    "Tebrikler! Skor", kazanan, berabere, "Tekrar Oyna", kelime/soru
+    yok uyarıları.
+  Hareke Avcısı: tek ve iki kişilik sonuç, "Geri" tuşu.
+  Kökü Tanı: oyunun bütün yazı tablosu (uiText) — doğru/yanlış geri
+    bildirimi, yönerge, yarışma soruları ("Hangisi … kökünden
+    türemiştir?"), tur sayacı, sonuçlar, hata ekranı.
+  Kökten Gövdeye: "Kendini Dene!", sonuç ekranı.
+  oyn.* anahtarları ortak: sıradaki oyunlar aynı yazılar için bunları
+  kullanacak.
+  SAYI UYUMU: Arapça/Rusça/Boşnakçada sayıdan sonraki isim sayıya göre
+  değiştiği için "Puan: 12" kuruluşu seçildi.
+
+2) MOTORDA BİR HATA SINIFI KAPANDI — sistem/dil.js     (dilKodaSaygi.py)
+  dilDenetim.py'ye yeni tarama (C): işaretli bir öğenin yazısını
+  sayfanın kodu sonradan değiştiriyor mu? Motor her düğüm eklenişinde
+  işaretli öğeleri anahtarlarına göre yeniden yazdığı için Türkçe dışı
+  dillerde:
+    · anasayfada açılan dersin içeriği "Yükleniyor" çevirisiyle siliniyordu
+    · giriş penceresi kayıt kipine geçince düğme yine "Giriş Yap" oluyordu
+    · Sözlük'te "Emin misin? Sil" onayı "Tümünü sil"e dönüyordu
+    · Kalıplar Tablosu'nda MUZARİ/EMİR aşaması hep MAZİ yazıyordu
+    · Kökü Tanı'da tur sayacı "Oyuncular bekleniyor"a dönüyordu
+    · Doğru Harfi Seç'te tek kişilik sonuç başlığı "Oyuncu 2" diyordu
+  DÜZELTME: motor her öğeye en son ne yazdığını aklında tutuyor; öğedeki
+  yazı ne onun yazdığı ne de Türkçe aslıysa yazı artık kodundur, dokunmuyor.
+  Kod Türkçe aslını yeniden yazarsa çeviri sürüyor. Türkçede değişen yok.
+  KALAN: bu yerler artık bozulmuyor ama kodun yazdığı Türkçe görünüyor
+  (ör. kayıt kipinde "Kayıt Ol"). Her birine kendi anahtarı verilecek:
+  anasayfa ve Listelerim giriş/kayıt geçişleri, Sözlük silme onayı,
+  Kalıplar Tablosu aşama adı ve bab başlığı, Alfabe "YENİDEN BAŞLAT",
+  Kelime Dağarcığı sınıf alt başlığı, İsim x4 tuşu.
+  Taramada Kökü Tanı'nın 14 satırı zararsız (oyun aynı anlamı yazıyor).
+
+3) HAREKE AVCISI VERİSİ TEMİZLENDİ — okumayazma/harekeavcisi.js
+                                                    (harekeVeriDuzelt.py)
+  216 kökün 171'inde Arapça harf yerine Kiril harf (м н р к л…), 9
+  harekeli kelimede Latin harf (AD, iq, r) vardı — ilk yüklemeden beri.
+  Oyun yanlış şıkları "aynı kökten" seçerken bunları farklı kök sayıyor,
+  sorular kolaylaşıyordu. Harfler düzeltildi; birden çok karşılığı olan
+  harfte kaydın kendi kelimesindeki seçildi (х-л-с → خ-ل-ص). Farklı
+  görünen 54 kök gerçek sayısı olan 47'ye indi. Ekrandaki kelimeler,
+  Türkçe karşılıklar ve kalıp numaraları değişmedi. Kullanılmayan iki
+  kopyaya (kökteki ve sarf/oyun/ altındaki harekeavcisi.js) dokunulmadı.
+
+DENETİM
+  Her şey önce test kopyasında denendi, sonra bilgisayarda aynı
+  betiklerle uygulandı; iki taraftaki dosyalar bayt bayt aynı.
+  Tarayıcı: fr/ar/ru/de/zh'de dört oyunun sonuç ekranları ve Kökü
+  Tanı'nın yarışma + tek kişilik akışı (soru, geri bildirim, tur sayacı)
+  çevrili; Türkçede yazılar birebir eskisi gibi; sayfa hatası 0.
+  20 dilde 358 anahtar, eksik/fazla/çift 0 · sitede kullanılan 332
+  anahtarın hepsinin çevirisi var · sayfalar işaretler sökülünce
+  yedekle aynı.
+
+SIRADAKİ
+  Yukarıdaki KALAN yerlerin anahtarları → sonra oyunlar: merakcarki ·
+  isimx4 · klavyeoyunu · hafizakartlari · zamanlayaris ·
+  bilgiyarismasikacom · testkapismasi · ikikidijital
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 15. PARÇA                               15.10.2026
+KODUN DURUMA GÖRE YAZDIĞI YAZILAR KENDİ ANAHTARLARIYLA
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam edelim sıradakiyle". 14. parçada bozulmaz hâle gelen
+ama Türkçe kalan yerler artık seçilen dilde. 34 ANAHTAR · 20 DİL.
+
+  ANASAYFA   ödeme penceresinin giriş ⇄ kayıt geçişi (başlık, düğme,
+             "Hesabınız yok mu?" ⇄ "Zaten hesabınız var mı?").
+             Açılan dersin kutusunda "Yükleniyor..." kendi <span>'ine
+             alındı: içerik gelince kutu işaretsiz kalıyor, sözlük geç
+             yüklense bile içerik silinemez.
+  SÖZLÜK     "Tümünü sil" ⇄ "Emin misin? Sil"; başlık, Favorilerim, Test,
+             geri tuşunun ipucu.
+  KALIPLAR TABLOSU (masaüstü + mobil) aşama adı MAZİ/MUZARİ/EMİR,
+             bab penceresinin başlığı ("Nasara Babı" → "Stamm Nasara").
+  ALFABE     sekmeler (Alfabe, Okuma, Kartlar, İstenen Harfi Yaz, Hat
+             Atölyesi ve defter satırı), kısa sekme adı (dil değişince
+             döner), OYUN MODU, Soru tipi, skor başlıkları, tur sayacı,
+             "Şın harfinin baştaki yazılışı hangisidir?" (her dilin söz
+             dizimiyle), bitiş uyarıları, "🏆 YENİDEN BAŞLAT", Hafıza
+             oyununun sonucu.
+  KELİME DAĞARCIĞI geri tuşunun yazısı (Ana Sayfa / Kalıplar Tablosu /
+             7. Sınıf), İmam Hatip kipinde sınıf alt başlığı.
+  İSİM X4    "Sonraki Soru" ⇄ "Yeni Kelime".
+
+MOTOR: YER TUTUCULU YAZI (dilYerTutucu.py)
+  "{n}. Sınıf müfredatı", "{ad} Babı", "Tur {n} / {toplam}" gibi yazılar
+  değerleriyle birlikte öğede duruyor (data-i18n-yer); sözlük sonradan
+  yüklense de, dil değişse de doğru yazı çıkıyor.
+  KidefDil.yaz(öğe, anahtar, türkçe, {n: 7}).
+
+YARDIMCILAR 2. SÜRÜM (dilKodYazilari.py) — kdMetin · kdYaz · kdIsaretli ·
+  kdSerbest · kdDil. kdYaz dil.js henüz yüklenmemişse işaretleri kendisi
+  koyuyor. 14. parçanın dört oyun dosyasındaki 1. sürüm bununla
+  değiştirildi (davranış aynı).
+
+DOKUNULMAYAN: listelerim.html — emekliye ayrılmış, açılınca anasayfaya
+  yönleniyor. Kökü Tanı'nın 14 satırı zararsız (aynı anlamı yazıyor).
+
+DENETİM
+  Her şey önce test kopyasında denendi, sonra bilgisayarda aynı
+  betiklerle uygulandı; iki taraftaki dosyalar bayt bayt aynı.
+  Tarayıcı: fr/de/ar/ru'da anasayfa giriş⇄kayıt (iki yönde), ders
+  içeriği korunuyor, Sözlük, Alfabe sekmeleri ve sorusu, Kelime
+  Dağarcığı geri tuşu ve alt başlık çevrili; Türkçe birebir eskisi gibi.
+  20 dilde 392 anahtar, eksik/fazla/çift 0 · sitede kullanılan 358
+  anahtarın hepsinin çevirisi var · sayfaların işaretli yapısı yedekle
+  aynı (betikler dışında).
+
+SIRADAKİ
+  Kalıplar Tablosu'nun arayüz yazıları (ayarlar paneli, "Vezinlere
+  Bak", ön/son ekler, yan çevir uyarısı…) · Alfabe'nin tablo ipuçları
+  ve odak kipi → sonra kalan oyunlar: merakcarki · isimx4 ·
+  klavyeoyunu · hafizakartlari · zamanlayaris · bilgiyarismasikacom ·
+  testkapismasi · ikikidijital
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 16. PARÇA                               15.10.2026
+KALIPLAR TABLOSU + ALFABE: ARAYÜZDE KALAN YAZILAR
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam". 52 ANAHTAR · 20 DİL · 68 yer + 14 kod yaması.
+                                                     (dilKtAlf16.py)
+  KALIPLAR TABLOSU (masaüstü + mobil)
+    araç çubuğunun bütün ipuçları · AYARLAR paneli (beş anahtar ve
+    açıklamaları) · Sözlük / Vezinlere Bak · ÖN EKLER / SON EKLER ·
+    "Lütfen Telefonu Yan Çevirin" · Fiil Çekim Tablosu · Okuma Testi
+    Raporu · Maraton / Telaffuz Filtresi · SOR + ipucu · Tamam · mobil
+    alt çubuk (BÜYÜTME, Kökler, Kelimeler, Telaffuz, Dilbilgisi) ·
+    arama kutusu · Büyütme açık ⇄ kapalı ipucu (kodla değişiyor).
+    Simgeyle aynı satırdaki yazılar ("Sözlük", "ANLAM…") kendi
+    <span>'ine alındı.
+  ALFABE
+    sekme ipuçları, "Sonraki tur", "Tek Oyuncu" · harf kartı ipucu ·
+    birleşme tablosunun iki başlığı ve ✓/✗ işaretleri · hücre ipucu
+    "Elif: öncesine bağlanır" (harf adı yer tutucuyla) · "konu
+    anlatımını aç" · odak kipi tuşu.
+
+BİLEREK BIRAKILAN (ayrı parçalar)
+  · Kalıplar Tablosu KULLANIM KILAVUZU (271 yazı) — işaretlemeye hiç
+    dokunulmadı.
+  · Tablo başlıkları ve bab adları (MAZİ, İSMİ FAİL, Birinci Bab,
+    İf'al…), Aksâm-ı Seb'a şeması, dilbilgisi menüsü — dilbilgisi
+    terimleri; içerik turunda tek terim listesiyle.
+  · Sayfa altındaki oyun kartları — anasayfa kartlarıyla birlikte.
+
+DENETİM
+  Önce test kopyasında denendi, bilgisayarda aynı betikle uygulandı;
+  betikler bayt bayt aynı. Tarayıcı: de/fr/ru'da ayarlar paneli,
+  ipuçları, Alfabe hücre ipucu çevrili; Türkçe birebir eskisi gibi.
+  20 dilde 444 anahtar, eksik/fazla/çift 0 · sitede kullanılan 410
+  anahtarın hepsinin çevirisi var.
+
+SIRADAKİ
+  Oyunlar (8): merakcarki · isimx4 · klavyeoyunu · hafizakartlari ·
+  zamanlayaris · bilgiyarismasikacom · testkapismasi · ikikidijital
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 17. PARÇA                               16.10.2026
+ANASAYFA KARTLARI: BAŞLIK, AÇIKLAMA, ROZET
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "indexteki kartlardaki açıklamalar da değişsin dil
+değiştirince". 96 YENİ ANAHTAR · 20 DİL · anasayfada 109, Kalıplar
+Tablosu panellerinde 28 yer + 5 kod yaması.
+                              (dilIndexKart17.py · dilSozlukEkle17.py)
+  ANASAYFA
+    Temel Beceriler, Oyunlar, Etkileşimli Kitaplar, Sınıfiçi
+    Materyaller, Değerler Eğitimi ve Sosyal kartlarının başlığı,
+    açıklaması ve rozeti ("Hemen Oyna", "Çarkı Çevir", "Hazırla!",
+    "Abone Ol"…; emoji yerinde kalır) · Ders Sunumları şeridi ("4 sunum
+    · 47 slayt" yer tutuculu) · Sarf Motoru düğmesi ve penceresi
+    (seviyeler) · alt bilgi (İletişim, Destek Ol, telif satırı) · Destek
+    Ol penceresi · Öneri & İletişim penceresi (başlık, açıklama, dört
+    seçenek, iki kutu ipucu, gönderim iletileri). Seçeneklerin
+    gönderilen değeri Türkçe kalır; yönetici paneli değişmez.
+    Alfabe, Kelime Çarkı, Kelime Dağarcığı, Sözlük, Tamlama ve
+    Cümleler, Kelimenin Serüveni kartları sayfalarının çevrili adını
+    kullanır.
+  KALIPLAR TABLOSU (masaüstü + mobil)
+    sayfanın altındaki oyunlar paneli aynı oyun adları ve aynı
+    anahtarlarla ("Kelimenin Serüveni • Kökten kalıba", "Yakında").
+
+DOKUNULMAYAN
+  Türkiye'ye özel bölümler (İmam Hatip, Güncellemeler, Premium,
+  paketler, ders talebi, ödeme, Listelerim, canlı ders) · yazışma
+  penceresi (başlığını kod yazıyor) · Kalıplar Tablosu kılavuzu ·
+  Maarif, Kidef Arapça, @kidefarapca, YDT Arapça, İkiki.
+
+DENETİM
+  Önce test kopyasında denendi, bilgisayarda aynı betiklerle
+  uygulandı; sürüm damgaları dışında dosyalar bayt bayt aynı.
+  Tarayıcı: fr/ar/de/ru'da kartlar, rozetler, pencereler çevrili;
+  çalışırken dil değişince hepsi anında geçiyor; Türkçe birebir
+  eskisi gibi; işaretler sökülünce sayfa yapısı aynı. 20 dilde 540
+  anahtar, eksik/fazla 0 · sitede kullanılan 506 anahtarın hepsinin
+  çevirisi var.
+
+SIRADAKİ
+  Oyunlar (8): merakcarki · isimx4 · klavyeoyunu · hafizakartlari ·
+  zamanlayaris · bilgiyarismasikacom · testkapismasi · ikikidijital
+  — sayfa başlıkları anasayfa kartlarındaki adlarla (kart.*).
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 18. PARÇA                               16.10.2026
+OYUNLAR 2. GRUP (a): İSİM x 4 · KLAVYE OYUNU · HAFIZA KARTLARI ·
+ZAMANA KARŞI
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam". 55 ANAHTAR · 20 DİL · 23 işaret + 37 kod yaması.
+                              (dilOyun2Kod18.py · dilSozlukEkle18.py)
+  İSİM x 4
+    başlık, iki seçim başlığı, BAŞLA, Oyuncu 1/2, süre (yer tutuculu,
+    dil değişince canlı döner) · dört soru başlığı · seçeneklerin
+    GÖRÜNEN adı her dilin dilbilgisi terimiyle (Marife → Definite /
+    معرفة / Ma'rifah / Défini…). Cevap denetimi Türkçe adla
+    yapılmaya devam ediyor; oyunun mantığı değişmedi · iki uyarı.
+  KLAVYE OYUNU
+    başlık · "Hazır", "Kelime Yükleniyor..." · sonuç ekranı (Oyun
+    Bitti!, Skor, Doğruluk, Dakikadaki Kelime Sayısı, Süre "1dk 0sn",
+    Yanlış Yazılanlar / Tebrikler, Anlamı, tuş ipuçları) · iki uyarı.
+  HAFIZA KARTLARI
+    başlık · "Konu Seç!" · Kartlar / Hafıza Oyunu · "{n} kelime".
+  ZAMANA KARŞI
+    başlık · Seviye Seç · Puan · Sonraki Tur / Seviyeler · BAŞLA! ·
+    Tur Bitti! · hata iletileri · sonuç ekranı (Süre Doldu! / Tur
+    Tamamlandı!, Puan, Doğru, Hata, Cevap Anahtarı, Doğru Kök/Kalıp).
+  ORTAK (kalan oyunlar da kullanacak): Ana Menü · Oyun Bitti! · Skor:
+    · Doğruluk: · Süre: · Puan: · Doğru: · Hata: · Cevap Anahtarı ·
+    Süre Doldu! · Tur Tamamlandı! · Seviye Seç:
+
+BİLEREK BIRAKILAN (içerik turu)
+  kelime verisi ve Türkçe anlamlar · Hafıza Kartları konu adları ·
+  Zamana Karşı'nın Türkçe kelimeleri (oyun Türkçedeki Arapça kökenli
+  kelimelerle oynanıyor) ve vezin grubu adları (İsm-i Fâil, İf'âl…).
+
+DENETİM
+  Önce test kopyasında denendi, bilgisayarda aynı betiklerle
+  uygulandı; sekiz dosya bayt bayt aynı. Tarayıcı: fr/ar/de/ru/es'de
+  seçim ekranları, oyun içi yazılar ve sonuç ekranları çevrili;
+  İsim x 4'te oyun sırasında dil değişince soru ve seçenekler anında
+  dönüyor; Türkçe birebir eskisi gibi; sayfa hatası yok. 20 dilde
+  595 anahtar, eksik/fazla 0 · sitede kullanılan anahtarların hepsinin
+  çevirisi var.
+
+SIRADAKİ
+  Oyunlar 2. grup (b): testkapismasi · ikikidijital · merakcarki ·
+  bilgiyarismasikacom
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 19. PARÇA                               16.10.2026
+OYUNLAR 2. GRUP (b): TEST KAPIŞMASI · İKİKİ
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam et". 83 ANAHTAR · 20 DİL · 42 işaret + 52 kod yaması.
+                              (dilOyun3Kod19.py · dilSozlukEkle19.py)
+  TEST KAPIŞMASI (testkapismasi.html · oyunlar/testkapismasi.js ·
+  tk_liste.js · tk_alfabe.js)
+    başlangıç ekranı · kapışma ayarları: tuşlar, ipuçları ve alt not
+    (dil değişince alt not da döner) · ders listesi: grup adları
+    (Harfler, N. Sınıf…), "N ders", kilit ipucu, "Ders Seçin" · sınıf
+    süzgeçli başlık ("{n}. Sınıf Dersleri") · uyarılar · alfabe
+    soruları (bağlanır/bağlanmaz, harf harf, boşluk, çizgideki doğru/
+    yanlış, "<b>baştaki</b> yazılışı hangisidir?" — konum adı Alfabe'nin
+    çevirisinden) · iki alfabe dersinin adı · BAŞLA · Bitti! · sonuç
+    ekranları (Mükemmel!/İyi İş!/Fena Değil!/Tekrar Deneyin!, Skor,
+    kazanan, tuş ipuçları). Dil değişince ders listesi yeniden kurulur,
+    seçili ders korunur.
+  İKİKİ (ikikidijital.html · sarf/oyun/ikikidijital.js)
+    başlık · dört deste · "Kartta görünsün" + Vezin/Numara/İpucu
+    tuşları ve ipuçları (dil değişince döner) · önizleme · iki uyarı ·
+    KART · puan tuşu ipuçları · SORUYU GÖSTER → CEVABI GÖSTER →
+    SIRADAKİ KART · deste adı her dilin büyük harfiyle.
+
+BİLEREK BIRAKILAN (içerik turu)
+  Test Kapışması'nın kelime verisi, ünite ve ders adları ("3. Ünite ·
+  Okulda"), alfabe sorularındaki kelimelerin Türkçe anlamı ve harf
+  adları (Cim, Mim…) · İkiki kartlarının ipucu cümleleri ve Türkçe
+  cevapları (oyun Türkçedeki Arapça kökenli kelimelerle oynanıyor).
+
+DENETİM
+  Önce test kopyasında denendi, bilgisayarda aynı betiklerle
+  uygulandı; altı dosya ve sözlükler bayt bayt aynı (sözlüklerde
+  yalnız eski bir boş satır farkı). Tarayıcı: fr/ar/ru/de/tr'de
+  başlangıç, kapışma ayarı, ders listesi, tek ve iki kişilik oyun
+  sonuç ekranına kadar (zamanlayıcılar hızlandırılarak); İkiki'de
+  akış ve dil değişimi; Türkçe birebir eskisi gibi; sayfa hatası yok.
+  20 dilde 678 anahtar, eksik/fazla 0 · sitede kullanılan 625
+  anahtarın hepsinin çevirisi var.
+
+SIRADAKİ
+  Merak Köşesi (çark, modül şeridi, Günün Sözü, Kitap Önerisi
+  arayüzü) · Bilgi Yarışması
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 20. PARÇA                               16.10.2026
+MERAK KÖŞESİ ARAYÜZÜ
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam et". 105 ANAHTAR · 20 DİL · 19 işaret + 57 kod yaması.
+                              (dilMerak20.py · dilSozlukEkle20.py)
+  merakcarki.html
+    başlık · üst yazı · modül şeridi · giriş notu · Sınıf / Tür ·
+    dört tür tuşu · ÇARKI ÇEVİR · boşluk tuşu ipucu · Günün Sözü
+    modülünün yazısı ve tuşu · geri tuşu ve erişilebilirlik adları.
+  merak/merakcarki.js
+    tür adları (çark dilimleri, sayaç, kart rozeti) · "{n} / {top}
+    kart çıktı" · "bu tarayıcı" · tür notu · bitti kartı ve sıfırlama
+    tuşu · Cevap / Cevabı Aç / Bunu sayma · kurum adı yoksa yazılan.
+    Dil değişince not, sayaç ve dilimler yeniden yazılır.
+  merak/moduller.js — modül kartlarının adı ve alt yazısı.
+  merak/kitaponeri.js — Kitap Önerisi: başlık, not, ALAN / SEVİYE /
+    ARA, 19 alan adı, 4 seviye ve yaş aralığı, arama kutusu, sayaç
+    ("{n} kitap (süzülmüş)"), öner / listele / listeyi kapat, boş
+    sonuç uyarıları ve önerilen seviye tuşu, Başka bir kitap, Okudum.
+  merak/gunsozu.js — Günün Sözü penceresi: başlık, "Hangi türden
+    gelsin?", tür tuşları, kaynak satırındaki tür adı (Kur'an-ı Kerim,
+    Türk atasözü…), Anladım, Kapat, üst çubuk tuşu.
+
+BİLEREK BIRAKILAN (içerik turu)
+  fıkra / köken / kültür / bulmaca kartlarının metinleri · Günün Sözü
+  metinleri ve kaynakları (sure ve hadis künyeleri) · kitap adları,
+  yazarlar ve tanıtımlar · öğretmenin kendi sınıf adları.
+
+DENETİM
+  Önce test kopyasında denendi, bilgisayarda aynı betiklerle
+  uygulandı; beş dosya ve sözlükler bayt bayt aynı. Tarayıcı:
+  fr/ar/de/ru/zh/tr'de çark, kart, Günün Sözü penceresi, Kitap Önerisi
+  (öneri, okudum, liste, boş sonuç) ve çalışırken dil değişimi;
+  Türkçe birebir eskisi gibi; sayfa hatası yok. 20 dilde 783 anahtar,
+  eksik/fazla 0 · sitede kullanılan 689 anahtarın hepsinin çevirisi
+  var.
+
+SIRADAKİ
+  Bilgi Yarışması (bilgiyarismasikacom + çevrimdışı, PDF, tahta, giriş)
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 21. PARÇA                               16.10.2026
+BİLGİ YARIŞMASI (1/4): SAYFA VE KURULUM
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "böl devam et". 139 ANAHTAR · 20 DİL · 44 işaret + 68 kod yaması.
+                              (dilBiy21.py · dilSozlukEkle21.py)
+  bilgiyarismasikacom.html
+    sayfa başlığı · giriş kapısı (neden giriş gerekir, dört madde,
+    kayıt notu) · Konu · Soruları Seç! · PDF'i aç / İndir · soru
+    sayısı · süzgeç, zorluk, süre düğmeleri · üç yarışma türü ve alt
+    yazıları · başlama notu · Örnek Sorular · Yarışı Başlat · öğrenci
+    katılım ekranı (ad, karakter, Katıl) · Yarışmadan çık.
+  oyunlar/bilgiyarismasikacom.js
+    soru biçimi ve soru tipi adları ile açıklamaları · zorluk adları
+    ve açıklamaları · seviye başlıkları · yarışma türü ve lobi
+    başlıkları (tablolardaki adlar her okunuşta seçili dilde, kimlikler
+    Türkçe kalır) · konu seçici (Hepsi, Tümü, Genel, yakında) ·
+    Soruları Seç! penceresi (sayaç, süzgeç uyarıları, en çok / sınırı
+    kaldır, Tümünü seç / temizle, Bitti) · süzgeç / zorluk / süre
+    panelleri · soru sayısı etiketi · PDF Karışık · örnek yok · bağlı
+    cihaz sayısı · çıkış onayı ve Vazgeç. Dil değişince konu listesi,
+    sayı etiketi, açık paneller, Soruları Seç! penceresi ve örnek
+    sorular yeniden yazılır.
+
+BİLEREK BIRAKILAN
+  liste, konu ve sınıf adları (Alfabe, Kelimeler, 6. Sınıf…), soru
+  metinleri → içerik turu · kurulum sihirbazı (cevrimdisi.js) →
+  22. parça · canlı oyun ve lobi → 23. parça · çevrimdışı oyun, PDF,
+  tahta, giriş penceresi → 24. parça.
+
+DENETİM
+  Önce test kopyasında denendi, bilgisayarda aynı betiklerle
+  uygulandı; iki dosya ve sözlükler bayt bayt aynı. Tarayıcı (giriş
+  taklitli, 19 dil + tr): kurulum düğmeleri, konu listesi, süzgeç /
+  zorluk / süre panelleri, Soruları Seç! penceresi, örnek sorular,
+  çıkış onayı, katılım ekranı, giriş kapısı; çalışırken tr→de→ar→tr
+  dil değişimi; Türkçe birebir eskisi gibi; sayfa hatası yok.
+  20 dilde 922 anahtar, eksik/fazla 0 · sitede kullanılan 781
+  anahtarın hepsinin çevirisi var.
+
+SIRADAKİ
+  22. parça: Bilgi Yarışması kurulum sihirbazı (oyunlar/cevrimdisi.js)
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 22. PARÇA                               16.10.2026
+BİLGİ YARIŞMASI (2): KURULUM SİHİRBAZI
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam". 130 ANAHTAR · 20 DİL · 67 kod yaması.
+                              (dilBiy22.py · dilSozlukEkle22.py)
+  oyunlar/cevrimdisi.js (öğretmenin ilk gördüğü ekran)
+    karşılama: "Nasıl yarışacağız?", Canlı / Çevrimdışı bölümleri,
+    Seçili ✓, Nasıl işler?, Canlı başla / Çevrimdışı başla, beş adımlık
+    akış şeritleri · adım şeridi (adım adları, "— eksik" ipucu, geri
+    tuşları) ve alt çubuk ("2. adım / 3", İleri, Soruları hazırla,
+    Her şey hazır, eksik sayısı) · "Hangi dersten soru gelsin?" ve
+    sırayla parlayan iki kutunun etiketi · "Kimler yarışacak?" üç kartı
+    · takım listesi (sıra numaraları, gelmeyenler, kaç takım, Listeyi
+    kur, öğrenci sayısı, numara taşıma notları, Vazgeç) ve sınıf
+    listesi (sınıf ekle / sil) · 12 renkli takım adı + "{n}. takım" ·
+    "Kâğıda dökmek istersen" çıktı bölümü · eksik iletileri ve
+    kurulumun bütün uyarıları · mod anahtarı. Dil değişince sihirbaz
+    baştan çizilir, takım adları yenilenir; yarışma sunumu açıksa ona
+    dokunulmaz.
+
+BİLEREK BIRAKILAN
+  Arapça adlar (نِظام الفِرَق, الفَريق الأَخْضَر…) Arapça kalır · liste ve
+  konu adları → içerik turu · Başlat ekranları ve "Nasıl işler?"
+  anlatımları → 23. parça · canlı oyun ve lobi → 24 · çevrimdışı oyun,
+  PDF, tahta, giriş penceresi → 25.
+
+DENETİM
+  Önce test kopyasında denendi, bilgisayarda aynı betiklerle
+  uygulandı; dosya ve sözlükler bayt bayt aynı. Tarayıcı (giriş
+  taklitli): fr/ar/de/ru/zh/tr'de karşılamadan canlı ve çevrimdışı
+  kuruluma, takım ve sınıf listesine, uyarılara kadar; çalışırken
+  tr→de→ar→tr dil değişimi; Türkçe birebir eskisi gibi (yalnız
+  takımlara rastgele dağıtılan numaralar farklı); sayfa hatası yok.
+  20 dilde 1052 anahtar, eksik/fazla 0.
+
+SIRADAKİ
+  23. parça: Başlat ekranları ve "Nasıl işler?" anlatımları
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 23. PARÇA                               16.10.2026
+BİLGİ YARIŞMASI (3): BAŞLAT VE "NASIL İŞLER?"
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "tamam devam". 67 ANAHTAR · 20 DİL · 28 kod yaması.
+                              (dilBiy23.py · dilSozlukEkle23.py)
+  oyunlar/cevrimdisi.js
+    çevrimdışı Başlat adımı: "Hazır! Tahtaya yansıtalım mı?" / "Bir adım
+    kaldı", eksikler ve "Ders / Takım sekmesine git", özet (Kimler ·
+    Ders · Soru · Süre), "Tahtaya yansıt" kartı ve defter notu · canlı
+    Başlat adımı ("Karekodu aç" / "Odaya geri dön", üç biçimin
+    açıklaması, internet notu) · "Nasıl işler?" anlatımı: canlıda beş,
+    çevrimdışında altı perde, adım noktaları, Geri / İleri / Atla /
+    Kapat, "Anladım, kuruluma dön", "Yarışmayı başlat" · "Tahtaya
+    yansıtma nasıl işler?" dört adımı · süre özetindeki "sn". Dil
+    değişince açık ekran baştan çizilir.
+  Kullanım: "sekme" öbür dillerde "adım" (step, étape, Schritt…);
+  EBA yalnız Türkçede anılır, öbür dillerde "öğrencilerin cihazı da
+  internete bağlı olsun" denir.
+
+BİLEREK BIRAKILAN
+  Anlatım ekranı sağdan sola dillerde de soldan sağa duruyor → RTL
+  turu · canlı oyun ve lobi → 24 · çevrimdışı oyun (sunum), PDF,
+  tahta, giriş penceresi → 25.
+
+DENETİM
+  Önce test kopyasında denendi, bilgisayarda aynı betiklerle
+  uygulandı; dosya ve sözlükler bayt bayt aynı. Tarayıcı (giriş
+  taklitli): en/fr/ar/ru/az/bs/tr'de Başlat adımı, canlı ve çevrimdışı
+  anlatım perdeleri, defter anlatımı, canlı Başlat kartı (takım /
+  sınıf / birey); anlatım açıkken tr→es→tr, Başlat adımında
+  tr→de→fa→tr dil değişimi; Türkçe birebir eskisi gibi; sayfa hatası
+  yok. 20 dilde 1119 anahtar, eksik/fazla 0.
+
+SIRADAKİ
+  24. parça: canlı oyun ve lobi
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 24. PARÇA                               16.10.2026
+BİLGİ YARIŞMASI (4): CANLI OYUN VE LOBİ
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "devam". 153 ANAHTAR · 20 DİL · 94 kod yaması.
+                              (dilBiy24.py · dilSozlukEkle24.py)
+  oyunlar/bilgiyarismasikacom.js (canlı yarışma)
+    lobi: sistem değiştirme ve lobiye dönme onayı, takım / sınıf
+    ekleme, takım kartları (bağlı / bekliyor, Sil, Kopyala), tek karekod
+    ve oda kodu, onay bekleyenler, katılımcı listesi, onay / ret / çıkar
+    / ismi düzelt pencereleri, Başlat düğmesinin altındaki not ·
+    yansıtılan soru ekranı (Soru n / N, yedek soru başlıkları, "n / N
+    cevapladı", sn, Soruyu göster / gizle) · sonuç ekranı (Doğru /
+    Yanlış / Cevapsız / İptal, tablo başlıkları, iptal düğmeleri ve
+    açıklaması, Puan Durumu, Sonraki Soru / Yarışmayı Bitir /
+    Sıralamayı Kesinleştir) · ayrıntılı rapor · yarışma sonu (Lobiye
+    Dön, Bitir & Menü) · öğrencinin cihazı (amblem seçimi, Bağlandın!,
+    sıra, Cevabın alındı, Süre doldu, cevap ipuçları, Gönder, "n / N
+    harf") · tek karekodla katılımın iletileri ve ad denetimi.
+  Ayrıca: sayfa Türkçe değilse takım / oda bağlantısına "&dil=xx"
+  eklenir, öğrencinin cihazı öğretmenin dilinde açılır (Türkçede
+  bağlantı aynı) · öğrenci adında her dilin harfi geçer (Arapça,
+  Kiril, Çince…; önceden yalnız Latin harfi) · Türkçede tek düzeltme:
+  "tek Katılımcıın" → "tek Katılımcının" · dil değişince lobi,
+  yansıtılan ekran ve öğrencinin cihazı yeniden çizilir.
+
+BİLEREK BIRAKILAN
+  Soru metinleri, şıklar, konu adları → içerik turu · Arapça amblem
+  adları (فَريق النَّجْم…) Arapça kalır · çevrimdışı oyun (sunum), PDF,
+  canlı tahta, giriş penceresi → 25.
+
+DENETİM
+  Önce test kopyasında denendi, bilgisayarda aynı betiklerle
+  uygulandı; dosya ve sözlükler bayt bayt aynı. Tarayıcı (giriş
+  taklitli, sahte oda verisiyle): 20 dilde lobi (takım / sınıf /
+  birey), onay pencereleri, soru ekranı, sonuç ve iptal ekranları,
+  beraberlik, yarışma sonu ve rapor, öğrencinin cihazındaki bütün
+  durumlar; çalışırken tr→de→tr (lobi), tr→ru→tr (soru ekranı),
+  tr→ar→tr (öğrenci cihazı); Türkçe birebir eskisi gibi (yalnız
+  yukarıdaki düzeltme ve Latin dışı adların kabulü); sayfa hatası yok.
+  20 dilde 1272 anahtar, eksik/fazla 0.
+
+SIRADAKİ
+  25. parça: çevrimdışı oyun (sunum), cevrimdisi_pdf.js, biy_tahta.js,
+  hesap/biygiris.js
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — DİL DÜĞMESİ HER ZAMAN LİSTEYİ AÇAR      16.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "index te dile tıklayınca her zaman liste açılsın türkçeyle
+son dil arasında dönüp durmasın".                  (dilListeAc.py)
+  sistem/dil.js: düğmeye dokunmak artık her zaman bütün dillerin
+  listesini açıyor (önceden bayrağa tek dokunuş Türkçe ile son dil
+  arasında geçiyordu, liste yalnız okla ya da uzun basınca açılıyordu).
+  Düğmenin ipucu "Dil / Language". Düğme her sayfada aynı olduğu için
+  değişiklik sitenin 100 sayfasında geçerli; sayfaların dil.js?v=
+  damgası tazelendi.
+
+DENETİM
+  Test kopyasında anasayfada: dokununca liste açılıyor, Deutsch
+  seçilince liste kapanıp dil değişiyor, yeniden dokununca yine liste
+  açılıyor (Türkçeye dönmüyor), dışarı tıklayınca kapanıyor; sayfa
+  hatası yok. Bilgisayarda aynı betikle uygulandı, dil.js bayt bayt
+  aynı.
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — ARAKOM'A DİLLERİN HARFLERİ               16.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "diller için arakoma uygun harfler yaz, mesela almancada
+kürtçeye has harflerde vs şapkalı vs harfler başka yazı tipine
+dönmesin".        (arakomHarf.py · kirilYaziTipi.py · dilKiril.py)
+  arakom.ttf: 110 yeni harf biçimi, Arakom'un KENDİ harf ve
+  işaretlerinden kuruldu (Â Î Û'deki kuralla):
+    Latin   ä á í ì ó ò č ć ž ñ đ ə ī ū ḍ ḥ ṣ ṭ ẓ ᵉ ß ·
+            Ä Ë Ï É È Ê Á Í Ó Ú Ò Ù Ô Č Ć Ž Ñ Đ Ə Ā Ī Ū Ḍ Ḥ Ṣ Ṭ Ẓ ·
+            ʻ ʼ ʿ ʾ (Özbekçe oʻ, eʼ)
+    Kürtçe  ڕ ڵ ۆ ێ · Urduca ٹ ڈ ڑ ں ھ ے · Peştuca ټ ډ ړ ږ ښ ځ څ ڼ ۍ ې
+            (başta / ortada / sonda biçimleriyle) · Farsça rakamlar
+  ß Arakom'da "ss" olarak görünür (yazıdaki harf yine ß).
+  Rusça: Arakom'da Kiril harf yok. Garamond tarzı EB Garamond'un Kiril
+  harfleri (OFL lisanslı, Arakom'un taban çizgisine oturtuldu) →
+  YENİ DOSYA ebgaramond-kiril.woff2 (kök klasörde, 17 KB).
+  sistem/dil.js onu her sayfada 'Arakom' ailesine ekliyor; yalnız
+  sayfada Kiril harf görünürse iner (oyun sayfaları dahil).
+  arakom.css: yazı tipi adresinin sürümü ve notu tazelendi; sayfaların
+  arakom.css?v= ve dil.js?v= damgaları tazelendi.
+
+BİLEREK BIRAKILAN
+  Çince, Hintçe, Bengalce: ayrı yazı sistemleri, cihazın kendi yazı
+  tipiyle görünür · ✓ ✕ ▾ ⌫ gibi işaretler (Türkçede de öyle) ·
+  Arakom'daki eski harflere dokunulmadı.
+
+DENETİM
+  Önce test kopyasında: 17 dilde anasayfa, Bilgi Yarışması ve sözlük
+  sayfalarında her yazının hangi yazı tipiyle çizildiğine tarayıcının
+  kendisinden bakıldı. Önce ä, É, ó, č ž đ ć, ə, ʻ, ێ ۆ ڵ ڕ,
+  ے ں ٹ ھ ڈ, ې ټ ښ ړ څ ځ ډ ږ ڼ ve bütün Rusça harfler başka yazı
+  tipine düşüyordu; şimdi hiçbir dilde harf düşmüyor. Eski 445 harfin
+  çizimi bayt bayt aynı. Bilgisayara test edilen dosyalar kondu; arakom.css
+  ve dil.js aynı betiklerle güncellendi — hepsi bayt bayt aynı.
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 26. PARÇA: TÜRKİYE'YE ÖZEL KARTLAR · VİTRİN    17.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "tamam devam edelim" (denetimde çıkan eksikler; gizlenecekleri
+öğretmen seçti: YDT Arapça bölümü; Sınav, Pano, Ölçek; dijital kitaplar).
+                                  (dilVitrin26.py · dilSozlukEkle26.py)
+  GİZLEME: Türkçe dışındaki dillerde Etkileşimli Kitaplar bölümü (iki
+  kitap + YDT Arapça), Soru Hazırla ve Pano kartları görünmez. Kural
+  sistem/dil.js'te tek satır: data-kd-yalniz-tr taşıyan öğe gizlenir.
+  Kelimenin Serüveni görünür kalıyor (arayüzü 29. parçada).
+  VİTRİNE GEÇİŞ: ilk 3 açılıştaki vitrin yönlendirmesi ?dil= parametresini
+  atıyordu; artık taşıyor (index.html).
+  VİTRİN (indeks.html, indeks.js): sekme başlığı, düşen slogan (Arap
+  harfli ve Hint yazılarında kelime kelime — harfler kopmasın), Kelime
+  Fabrikası anlamları, "Kısa sürede, etkili ve konsantre", etkileşim
+  analizi, "Kime Ne Katar?", "Siteye Gir / Giriş Yap", kilit notu.
+  Sayılar seçili dilin biçiminde. Vitrinde artık sol altta dil düğmesi
+  var (çevrilecek yazısı olan her sayfadaki gibi).
+  PANEL TANITIMI (sistem/panel-tanitim.js — vitrin + giriş penceresi):
+  kartlar, pencere, on ekranın adı/açıklaması, çizimdeki yazılar; dil
+  değişince açık pencere de yeniden yazılır.
+  GÖREV ROZETİ (sistem/gorevkopru.js): "⏱ Süre takibi açık…", rekor,
+  kaydedildi, görev ve hata iletileri; sözlük geç gelirse ya da dil
+  değişirse rozet de yeni dile döner.
+  YAZI DÜZENİ: Arap harfli dillerde ve Hintçe/Bengalcede harf aralığı
+  kapalı (harfler kopuyordu); vitrin başlığı sağdan sola doğru sırada.
+
+DENETİM
+  Test kopyasında tr/en/ar gizleme, ?dil=en ile vitrine geçiş, İngilizce
+  /Arapça/Hintçe vitrin ve panel penceresi, açıkken dil değişimi, sarf ve
+  kelime çarkında İngilizce rozet sınandı; sayfa hatası yok. Türkçede
+  anasayfa yazısı birebir aynı, vitrinde tek fark dil düğmesi.
+  Bilgisayarda aynı betiklerle uygulandı — 26 dosya test kopyasıyla
+  bayt bayt aynı. Sonra surumle.py (100 sayfanın damgası) ve
+  dilDenetim.py: sorun yok.
+  Yedek: _kaynak/yedekler/2026-10-17-dil26/
+
+══════════════════════════════════════════════════════════════════════
+SOSYAL HESAPLARA TELEGRAM KANALI                            17.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "sitedeki sol sosyal popupa telegram kanalımızı da ekle
+t.me/kidefarapca".                                  (sosyalTelegram.py)
+  index.html · Sosyal Hesaplar (masaüstünde soldan açılan pencere,
+  telefonda kategori): YouTube ve Instagram'ın altına üçüncü kart —
+  Kidef Arapça @kidefarapca, "Duyurular ve yeni içerikler ilk burada.",
+  "✈️ Katıl" → https://t.me/kidefarapca (yeni sekmede). Simge genel bir
+  kâğıt uçak (Telegram mavisi), süzülür; düşük güç kipinde durur.
+  Pencereyi açan sol kenardaki sekmeye üçüncü küçük simge (uçak).
+  dil/*.js: kartın iki yazısı 20 dilde (@dil-parca-tg bloğu).
+DENETİM: test kopyasında masaüstü (tr/en/ar) ve telefon görünümü;
+bilgisayarda aynı betikle uygulandı — 21 dosya bayt bayt aynı. Sonra
+surumle.py ve dilDenetim.py. Yedek: _kaynak/yedekler/2026-10-17-telegram/
+  Aynı gün, öğretmen: "sosyal popup ta emoji değil svg kullan" →
+  sosyalRozetSvg.py: üç kartın düğme rozetindeki ▶ 📸 ✈️ yerine yazı
+  rengini alan küçük SVG simgeler (oynat, fotoğraf makinesi, kâğıt uçak).
+
+══════════════════════════════════════════════════════════════════════
+ÇOK DİLLİ SİTE — 27. PARÇA: ARAÇ KATALOĞU                    17.10.2026
+══════════════════════════════════════════════════════════════════════
+Öğretmen: "tamam devam edelim" (denetimde katalog tamamen Türkçe
+çıkmıştı).                          (dilKatalog27.py · dilSozlukEkle27.py)
+  katalog/index.html 20 dilde: sekme başlığı, Geri / Yazdır / PDF, altı
+  sekme ve alt yazıları, sekme sayacı, başlık ve iki not, yedi bölümün
+  başlığı ve notu, bölüm sayıları, "ders başı ısınma" rozeti, etiketler,
+  29 kartın ihtiyaç cümlesi, sunum desteleri, alt bilgi. Kart adları
+  anasayfadaki çevirileriyle.
+  TÜRKİYE'YE ÖZEL (başka dilde gizli): Soru Hazırla, Değerlendirme
+  Ölçeği, YDT Arapça, Kidef Arapça ve MEB dijital kitapları, Pratik
+  Sayfalar, Kitap Etkinlikleri, Öğretmen seminerleri (Maarif Modeli),
+  Öğretmen dokümanları (Pano + MEB belgeleri), "Kayıt olunca ne
+  kazanırsınız?" (Sınıflarım'ı anlatıyor). Bölüm sayıları ve sekme
+  sayacı gizlenenleri saymıyor (öbür dillerde Ölçme bölümü 1 araç).
+  Öbür dillerde PDF düğmesi "PDF (Turkish)": hazır PDF Türkçe; sayfa her
+  dilde Yazdır ile kâğıda/PDF'e alınabilir.
+  Türkçede yazılar birebir aynı; katalogda artık sol altta dil düğmesi
+  var (yazdırırken görünmez).
+
+DENETİM
+  Test kopyasında Türkçe altı sekmenin hepsinde eskisiyle aynı;
+  en/ar/ru/zh/de'de bütün bölümler, ısınma/ölçme/sunum sekmeleri ve
+  sayılar, ısınma sekmesindeyken tr→en→tr; sayfa hatası yok. Bilgisayarda
+  aynı betiklerle uygulandı — sözlükler bayt bayt, katalog (sürüm damgası
+  dışında) bayt bayt aynı. Sonra surumle.py ve dilDenetim.py.
+  Yedek: _kaynak/yedekler/2026-10-17-dil27/
+
+══════════════════════════════════════════════════════════════════════
+SINIFLARIM ZİYARETÇİYE · TÜRKÇE DIŞINDA MAARİF ETİKETİ YOK   17.10.2026
+══════════════════════════════════════════════════════════════════════
+1) Öğretmen: "siteye girildiğinde eğer giriş yapılmamışsa da her zaman
+   sınıflarım kategorisi görünmeli (türkçe versiyonda) amaç siteye kayıt
+   veya giriş yapmayı sağlamak".                       (sinifMisafir.py)
+   Sebep: auth.js giriş yapmamış ziyaretçiye userRole = 'student'
+   yazıyor; sistem/siniflarim.js ziyaretçiyi öğrenci sanıp kategoriyi
+   kapatıyordu (sayfa açılırken bir an görünüp kayboluyordu).
+   Şimdi: hesap oturumu yoksa ziyaretçi öğrenci sayılmıyor; kategori
+   başlıkta "Giriş yap / Kayıt ol" hapı ve boş okul önizlemesiyle duruyor
+   (neye basılsa giriş/kayıt tavsiyesi). Hesabıyla giren öğrenciye yine
+   asla görünmez; Türkçe dışındaki dillerde gizli kalır.
+   Test: ziyaretçi (tr) görünür · ziyaretçi (en) gizli · giriş yapmış
+   öğrenci gizli. Eski dosyada ziyaretçide gizliydi.
+2) Öğretmen: "türkçe dışındaki diller seçilince kartlardaki maarif
+   etiketleri görünmesin".                            (dilMaarifGizle.py)
+   sistem/dil.js'e tek kural: Türkçe dışında "Maarif · Destekleme /
+   Zenginleştirme" çipleri (.mrf) ve sınıf rozetindeki MAARİF etiketi
+   gizli. Türkçede değişiklik yok (anasayfada 55 çip, tr'de 55 görünür,
+   en/ar'da 0).
+Bilgisayarda aynı betiklerle uygulandı — siniflarim.js bayt bayt, dil.js
+(sözlük damga tablosu dışında) bayt bayt aynı. Sonra surumle.py ve
+dilDenetim.py. Yedek: _kaynak/yedekler/2026-10-17-sinif-maarif/

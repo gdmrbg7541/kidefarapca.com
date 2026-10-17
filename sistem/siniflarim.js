@@ -72,6 +72,17 @@
     }
     function ogrenciMi() {
         try {
+            /* ZİYARETÇİ ÖĞRENCİ SAYILMAZ (17.10.2026) — öğretmen: "siteye
+               girildiğinde eğer giriş yapılmamışsa da her zaman sınıflarım
+               kategorisi görünmeli (türkçe versiyonda) amaç siteye kayıt
+               veya giriş yapmayı sağlamak". auth.js giriş yapmamış
+               ziyaretçiye initAppAsGuest() ile userRole = 'student'
+               yazıyor; ziyaretçi öğrenci sanılıp kategori kapanıyordu.
+               Hesap oturumu yoksa öğrenci sayılmaz: kategori davet
+               önizlemesiyle ("Giriş yap / Kayıt ol") durur. Hesabıyla
+               giren öğrenciye (anonim katılım dahil) yine asla görünmez;
+               Türkçe dışındaki dillerde sistem/dil.js gizler. */
+            if (!oturumVarMi()) return false;
             var r = (typeof appState !== 'undefined' && appState.userRole) || '';
             if (r === 'student' || r === 'parent') return true;
             var uid = suankiUid();

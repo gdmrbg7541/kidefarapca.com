@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="sarf/kaliplartablosumobil.css?v=9faa22e4">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
 
@@ -72,7 +72,7 @@
 <div id="conjugation-overlay" class="conjugation-overlay">
     <div class="conjugation-container">
         <div onclick="closeConjugationModal()" style="position: absolute; top: 10px; right: 15px; color: #000; font-size: 1.5rem; cursor: pointer; font-weight: bold; padding: 5px 10px; z-index: 10;">✕</div>
-        <h3 id="conjugation-title" style="text-align: center; margin-top: 10px; font-family: 'Arakom' !important; font-weight: normal !important;">Fiil Çekim Tablosu</h3>
+        <h3 id="conjugation-title" style="text-align: center; margin-top: 10px; font-family: 'Arakom' !important; font-weight: normal !important;" data-i18n="kt.cekim_tablosu">Fiil Çekim Tablosu</h3>
         <div id="conjugation-content"></div>
     </div>
 </div>
@@ -85,13 +85,13 @@
             
             <!-- Sağ Taraf (RTL'de ilk eleman sağa yaslanır): Sözlük -->
             <div style="box-sizing: border-box; width: calc(65% - 2.5px); height: 100%; flex-shrink: 0; display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.4); border: 3px solid #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: left; padding: 8px 8px 8px 12px; font-size: 1.4rem; display: flex; align-items: center; justify-content: flex-start; gap: 8px; direction: ltr; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><div onclick="closeKeyboard()" style="position: absolute; right: 8px; color: #000; font-size: 1.4rem; cursor: pointer; font-weight: bold; opacity: 0.5; z-index: 20; padding: 0 5px;">✕</div><span id="dict-status-dot" style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:#ccc; flex-shrink:0;"></span><i class="fas fa-book-open"></i> Sözlük</h3>
+                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: left; padding: 8px 8px 8px 12px; font-size: 1.4rem; display: flex; align-items: center; justify-content: flex-start; gap: 8px; direction: ltr; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><div onclick="closeKeyboard()" style="position: absolute; right: 8px; color: #000; font-size: 1.4rem; cursor: pointer; font-weight: bold; opacity: 0.5; z-index: 20; padding: 0 5px;">✕</div><span id="dict-status-dot" style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:#ccc; flex-shrink:0;"></span><i class="fas fa-book-open"></i> <span data-i18n="soz.baslik">Sözlük</span></h3>
                 <div id="dictionary-results" class="dictionary-results" dir="rtl" style="display:block; flex: 1; min-height: 0; overflow-y: auto; color: #000; padding: 15px 10px 20px 10px; text-align: center; overflow-x: hidden;"></div>
             </div>
 
             <!-- Sol Taraf (RTL'de ikinci eleman sola yaslanır): Kökler -->
             <div style="box-sizing: border-box; width: calc(35% - 2.5px); height: 100%; flex-shrink: 0; display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.4); border: 3px solid #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: left; padding: 8px 8px 8px 12px; font-size: 1.4rem; display: flex; align-items: center; justify-content: flex-start; gap: 8px; direction: ltr; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><span id="root-status-dot" style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:#ccc; flex-shrink:0;"></span><i class="fas fa-sitemap"></i> Vezinlere Bak</h3>
+                <h3 style="background: #ffffff; color: #000000; margin: 0; text-align: left; padding: 8px 8px 8px 12px; font-size: 1.4rem; display: flex; align-items: center; justify-content: flex-start; gap: 8px; direction: ltr; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.05);"><span id="root-status-dot" style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:#ccc; flex-shrink:0;"></span><i class="fas fa-sitemap"></i> <span data-i18n="kt.vezinlere_bak">Vezinlere Bak</span></h3>
                 <div id="root-predictions-box" class="root-predictions" dir="rtl" style="display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 10px; flex: 1; min-height: 0; overflow-y: auto; padding: 15px 10px 20px 10px; box-sizing: border-box;"></div>
             </div>
 
@@ -99,7 +99,7 @@
         
         <div class="keyboard-bottom-area" style="display: flex; flex-direction: column; align-items: center;">
             <div id="temp-root-display" style="margin-bottom: 10px; min-height: 60px; display: flex; align-items: center; justify-content: center;"></div>
-            <input type="text" id="mobile-native-search" class="mobile-native-search" placeholder="Arapça kök veya kelime ara..." dir="rtl" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="display: none; width: 90%; max-width: 400px; height: 50px; border-radius: 12px; border: 2px solid #bdc3c7; font-size: 1.5rem; padding: 0 15px; text-align: center; font-family: 'Arakom', sans-serif; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); outline: none;">
+            <input type="text" id="mobile-native-search" class="mobile-native-search" data-i18n-ph="kt.ara_ph" placeholder="Arapça kök veya kelime ara..." dir="rtl" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="display: none; width: 90%; max-width: 400px; height: 50px; border-radius: 12px; border: 2px solid #bdc3c7; font-size: 1.5rem; padding: 0 15px; text-align: center; font-family: 'Arakom', sans-serif; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); outline: none;">
             <div id="main-keyboard-inner" class="keyboard-inner"></div>
         </div>
 
@@ -111,11 +111,11 @@
 <div class="top-bar">
     <div id="root-display-box" onclick="openRootsModal()" style="cursor: pointer;">
         <div style="width: 100%; display: flex; gap: 15px; justify-content: space-evenly; align-items: center;">
-            <i class="fas fa-search root-icon" onclick="event.stopPropagation(); openKeyboard()" title="Arama"></i>
+            <i class="fas fa-search root-icon" onclick="event.stopPropagation(); openKeyboard()" data-i18n-title="kt.arama" title="Arama"></i>
             <i class="fas fa-sync-alt root-icon" onclick="event.stopPropagation(); resetTableOnly()"></i>
-            <i class="fas fa-plus root-icon" onclick="event.stopPropagation(); toggleSuffixMenu(event)" title="Ek Ekle" style="font-size: 1.15rem;"></i>
-            <i class="fas fa-book root-icon" onclick="event.stopPropagation(); openVerbModal()" title="Hazır Fiiller"></i>
-            <span id="root-text-display"><i class="fas fa-sitemap root-icon sitemap-wave-hint" onclick="event.stopPropagation(); openRootsModal()" title="Kökler Listesi"></i></span>
+            <i class="fas fa-plus root-icon" onclick="event.stopPropagation(); toggleSuffixMenu(event)" data-i18n-title="kt.ek_ekle" title="Ek Ekle" style="font-size: 1.15rem;"></i>
+            <i class="fas fa-book root-icon" onclick="event.stopPropagation(); openVerbModal()" data-i18n-title="kt.hazir_fiiller" title="Hazır Fiiller"></i>
+            <span id="root-text-display"><i class="fas fa-sitemap root-icon sitemap-wave-hint" onclick="event.stopPropagation(); openRootsModal()" data-i18n-title="kt.kokler_listesi" title="Kökler Listesi"></i></span>
         </div>
     </div>  
 
@@ -123,18 +123,18 @@
         <div class="switch-slider"></div>
         
         <button class="switch-btn mucerred-btn" onclick="setTab(0)" style="position: relative; display: inline-flex; align-items: center; justify-content: center; text-decoration: none !important;">
-            <span style="text-decoration: none; font-weight: 700;">SÜLASİ MÜCERRED</span>
+            <span style="text-decoration: none; font-weight: 700;" data-i18n="kt.sulasi_mucerred">SÜLASİ MÜCERRED</span>
             <span style="position: absolute; right: 15px; background: rgba(128, 128, 128, 0.2); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.95rem; font-family: 'Inter', sans-serif; border: 1px solid rgba(128, 128, 128, 0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.05); letter-spacing: 0.5px;">3</span>
         </button>
         
         <button class="switch-btn mezid-btn" onclick="setTab(1)" style="position: relative; display: inline-flex; align-items: center; justify-content: center; text-decoration: none !important;">
-            <span style="text-decoration: none; font-weight: 700;">SÜLASİ MEZİD</span>
+            <span style="text-decoration: none; font-weight: 700;" data-i18n="kt.sulasi_mezid">SÜLASİ MEZİD</span>
             <span style="position: absolute; right: 15px; background: rgba(128, 128, 128, 0.2); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.95rem; font-family: 'Inter', sans-serif; border: 1px solid rgba(128, 128, 128, 0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.05); letter-spacing: 0.5px; direction: ltr;">3+</span>
         </button>
     </div>
 
     <div class="zoom-toggle-area">
-        <span class="zoom-toggle-label">BÜYÜTME</span>
+        <span class="zoom-toggle-label" data-i18n="kt.buyutme_bas">BÜYÜTME</span>
         <label class="toggle-switch">
             <input type="checkbox" id="zoomToggleCheckbox" checked>
             <span class="toggle-slider"></span>
@@ -143,7 +143,7 @@
 
     
     <div class="back-btn-area">
-        <a href="index.html" onclick="return kidefAnasayfa(event)" class="back-link" title="Ana sayfaya dön">
+        <a href="index.html" onclick="return kidefAnasayfa(event)" class="back-link" data-i18n-title="nav.anasayfa_don" title="Ana sayfaya dön">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
@@ -166,24 +166,24 @@
         <!-- Kök Listesi -->
         <div class="mobile-grid-item" onclick="openRootsModal()">
             <i class="fas fa-sitemap"></i>
-            <span>Kökler</span>
+            <span data-i18n="kt.kokler">Kökler</span>
         </div>
         <!-- Kelime Listesi -->
         <div class="mobile-grid-item" onclick="openVerbModal()">
             <i class="fas fa-list-ul"></i>
-            <span>Kelimeler</span>
+            <span data-i18n="kt.kelimeler">Kelimeler</span>
         </div>
         <!-- Telaffuz -->
         <div class="mobile-grid-item" onclick="if(typeof openTelaffuz === 'function') openTelaffuz(); else alert('Telaffuz özelliği yakında eklenecektir!');">
             <i class="fas fa-stopwatch"></i>
-            <span>Telaffuz</span>
+            <span data-i18n="kt.telaffuz">Telaffuz</span>
         </div>
         <!-- Kitap (Dilbilgisi) -->
         <div class="mobile-grid-item" onclick="document.getElementById('mobile-grammar-menu-overlay').style.display='flex'">
             <i class="fas fa-book"></i>
-            <span>Dilbilgisi</span>
+            <span data-i18n="kt.dilbilgisi">Dilbilgisi</span>
         </div>
-    <button id="mobile-search-btn" class="mobile-search-btn" onclick="if (window.openMobileSearch) openMobileSearch();" title="Arama" aria-label="Arama">
+    <button id="mobile-search-btn" class="mobile-search-btn" onclick="if (window.openMobileSearch) openMobileSearch();" data-i18n-title="kt.arama" title="Arama" data-i18n-aria="kt.arama" aria-label="Arama">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -193,21 +193,21 @@
     <!-- ===== OYUNLAR akordiyonu (kapalı; açınca yatay scroll) ===== -->
     <div id="sarfOyunlarAcc">
       <button type="button" class="soa-head" onclick="toggleSarfOyunlarAcc()" aria-expanded="false">
-        <span class="soa-title">🎮 Oyunlar</span><span class="soa-chev">▾</span>
+        <span class="soa-title">🎮 <span data-i18n="blm.oyunlar">Oyunlar</span></span><span class="soa-chev">▾</span>
       </button>
       <div class="soa-body">
-        <div class="soa-strip-title">Kelimenin Serüveni • Kökten kalıba 👣</div>
+        <div class="soa-strip-title"><span data-i18n="kart.serven_kalip">Kelimenin Serüveni • Kökten kalıba</span> 👣</div>
         <div class="soa-strip">
-          <a href="harekeavcisi.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#FF7A7A,#EE5253)"><div class="soa-num">1</div><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><g class="spa-halka"><circle cx="28" cy="36" r="20" fill="#fff"/><circle cx="28" cy="36" r="13.5" fill="#EE5253"/><circle cx="28" cy="36" r="7" fill="#fff"/><circle cx="28" cy="36" r="2.8" fill="#EE5253"/></g><g class="spa-ok"><line x1="28" y1="36" x2="46" y2="18" stroke="#ffd54f" stroke-width="3.6" stroke-linecap="round" transform="rotate(-45 28 36)"/><path d="M46 18 l-7 1.5 M46 18 l-1.5 7" stroke="#ffd54f" stroke-width="3.6" stroke-linecap="round" transform="rotate(-45 28 36)"/></g></svg></div><div class="soa-name">Hareke Avcısı</div><div class="soa-desc">Doğru harekeleri yakala.</div></a>
-          <a href="ikikidijital.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#8B7CFF,#5A50E0)"><div class="soa-num">2</div><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><g class="spa-carpisma"><path d="M32 16 l2.6 6.5 6.6 2.5 -6.6 2.5 -2.6 6.5 -2.6 -6.5 -6.6 -2.5 6.6 -2.5 Z" fill="#ffe082"/></g><g class="spa-kilicL"><rect x="12.4" y="16" width="4.4" height="26" rx="2.2" fill="#fff"/><rect x="8.5" y="41" width="12" height="3.6" rx="1.8" fill="#ffd54f"/><rect x="12.9" y="44" width="3.4" height="8" rx="1.7" fill="rgba(255,255,255,.75)"/></g><g class="spa-kilicR"><rect x="47.2" y="16" width="4.4" height="26" rx="2.2" fill="#fff"/><rect x="43.5" y="41" width="12" height="3.6" rx="1.8" fill="#ffd54f"/><rect x="47.7" y="44" width="3.4" height="8" rx="1.7" fill="rgba(255,255,255,.75)"/></g></svg></div><div class="soa-name">İkiki</div><div class="soa-desc">Kelimeleri ilk sen türet!</div></a>
-          <a href="kokutani.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#2BD4B5,#0E9E86)"><div class="soa-num">3</div><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><text x="32" y="40" font-size="17" fill="rgba(255,255,255,.9)" text-anchor="middle">ك ت ب</text><g class="spa-mercek"><circle cx="30" cy="33" r="10.5" fill="rgba(255,255,255,.2)" stroke="#fff" stroke-width="3.6"/><line x1="38" y1="41" x2="46" y2="49" stroke="#fff" stroke-width="4.6" stroke-linecap="round"/></g></svg></div><div class="soa-name">Kökü Tanı</div><div class="soa-desc">Kökten türeyen kelimeleri bul!</div></a>
-          <a href="koktengovdeye.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#FFB84D,#F39C12)"><div class="soa-num">4</div><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><polygon points="32,27 39.5,31.3 39.5,39.9 32,44.2 24.5,39.9 24.5,31.3" fill="rgba(255,255,255,.85)"/><circle cx="32" cy="35.6" r="3.2" fill="rgba(0,0,0,.25)"/><g class="spa-somun"><path d="M32 36 L47 49 a5.2 5.2 0 1 1 -6.6 5.6 l-12.4 -13" fill="none" stroke="#fff" stroke-width="5.6" stroke-linecap="round"/></g></svg></div><div class="soa-name">Kökten Gövdeye</div><div class="soa-desc">Kökü doğru kalıba sürükle!</div></a>
-          <a href="zamanlayaris.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#FF7EB3,#FF2D75)"><div class="soa-num">5</div><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><g class="spa-dugme"><rect x="28.6" y="8" width="6.8" height="6" rx="2" fill="#fff"/></g><line x1="43" y1="15" x2="48" y2="20" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="38" r="18" fill="#fff"/><circle cx="32" cy="38" r="14" fill="rgba(255,45,117,.15)"/><line class="spa-ibre" x1="32" y1="38" x2="32" y2="27" stroke="#FF2D75" stroke-width="3.2" stroke-linecap="round"/><circle cx="32" cy="38" r="2.4" fill="#FF2D75"/></svg></div><div class="soa-name">Zamanla Yarış</div><div class="soa-desc">Kök&kalıptan gövdeye!</div></a>
+          <a href="harekeavcisi.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#FF7A7A,#EE5253)"><div class="soa-num">1</div><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><g class="spa-halka"><circle cx="28" cy="36" r="20" fill="#fff"/><circle cx="28" cy="36" r="13.5" fill="#EE5253"/><circle cx="28" cy="36" r="7" fill="#fff"/><circle cx="28" cy="36" r="2.8" fill="#EE5253"/></g><g class="spa-ok"><line x1="28" y1="36" x2="46" y2="18" stroke="#ffd54f" stroke-width="3.6" stroke-linecap="round" transform="rotate(-45 28 36)"/><path d="M46 18 l-7 1.5 M46 18 l-1.5 7" stroke="#ffd54f" stroke-width="3.6" stroke-linecap="round" transform="rotate(-45 28 36)"/></g></svg></div><div class="soa-name" data-i18n="kart.hareke">Hareke Avcısı</div><div class="soa-desc" data-i18n="kart.hareke_ac">Doğru harekeleri yakala.</div></a>
+          <a href="ikikidijital.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#8B7CFF,#5A50E0)"><div class="soa-num">2</div><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><g class="spa-carpisma"><path d="M32 16 l2.6 6.5 6.6 2.5 -6.6 2.5 -2.6 6.5 -2.6 -6.5 -6.6 -2.5 6.6 -2.5 Z" fill="#ffe082"/></g><g class="spa-kilicL"><rect x="12.4" y="16" width="4.4" height="26" rx="2.2" fill="#fff"/><rect x="8.5" y="41" width="12" height="3.6" rx="1.8" fill="#ffd54f"/><rect x="12.9" y="44" width="3.4" height="8" rx="1.7" fill="rgba(255,255,255,.75)"/></g><g class="spa-kilicR"><rect x="47.2" y="16" width="4.4" height="26" rx="2.2" fill="#fff"/><rect x="43.5" y="41" width="12" height="3.6" rx="1.8" fill="#ffd54f"/><rect x="47.7" y="44" width="3.4" height="8" rx="1.7" fill="rgba(255,255,255,.75)"/></g></svg></div><div class="soa-name">İkiki</div><div class="soa-desc" data-i18n="kart.ikiki_ac">Kelimeleri ilk sen türet!</div></a>
+          <a href="kokutani.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#2BD4B5,#0E9E86)"><div class="soa-num">3</div><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><text x="32" y="40" font-size="17" fill="rgba(255,255,255,.9)" text-anchor="middle">ك ت ب</text><g class="spa-mercek"><circle cx="30" cy="33" r="10.5" fill="rgba(255,255,255,.2)" stroke="#fff" stroke-width="3.6"/><line x1="38" y1="41" x2="46" y2="49" stroke="#fff" stroke-width="4.6" stroke-linecap="round"/></g></svg></div><div class="soa-name" data-i18n="kart.koku_tani">Kökü Tanı</div><div class="soa-desc" data-i18n="kart.koku_tani_ac">Kökten türeyen kelimeleri bul!</div></a>
+          <a href="koktengovdeye.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#FFB84D,#F39C12)"><div class="soa-num">4</div><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><polygon points="32,27 39.5,31.3 39.5,39.9 32,44.2 24.5,39.9 24.5,31.3" fill="rgba(255,255,255,.85)"/><circle cx="32" cy="35.6" r="3.2" fill="rgba(0,0,0,.25)"/><g class="spa-somun"><path d="M32 36 L47 49 a5.2 5.2 0 1 1 -6.6 5.6 l-12.4 -13" fill="none" stroke="#fff" stroke-width="5.6" stroke-linecap="round"/></g></svg></div><div class="soa-name" data-i18n="kart.kokten">Kökten Gövdeye</div><div class="soa-desc" data-i18n="kart.kokten_ac">Kökü doğru kalıba sürükle!</div></a>
+          <a href="zamanlayaris.html" target="_blank" rel="opener" class="soa-card soa-av" style="background:linear-gradient(150deg,#FF7EB3,#FF2D75)"><div class="soa-num">5</div><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><g class="spa-dugme"><rect x="28.6" y="8" width="6.8" height="6" rx="2" fill="#fff"/></g><line x1="43" y1="15" x2="48" y2="20" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="38" r="18" fill="#fff"/><circle cx="32" cy="38" r="14" fill="rgba(255,45,117,.15)"/><line class="spa-ibre" x1="32" y1="38" x2="32" y2="27" stroke="#FF2D75" stroke-width="3.2" stroke-linecap="round"/><circle cx="32" cy="38" r="2.4" fill="#FF2D75"/></svg></div><div class="soa-name" data-i18n="kart.zamanla">Zamanla Yarış</div><div class="soa-desc" data-i18n="kart.zamanla_ac">Kök&kalıptan gövdeye!</div></a>
         </div>
-        <div class="soa-strip-title">Yakında</div>
+        <div class="soa-strip-title" data-i18n="kart.yakinda">Yakında</div>
         <div class="soa-strip">
-          <div class="soa-card soa-passive"><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><g class="spa-simsek"><path d="M14 20 l5 3 M50 20 l-5 3 M32 8 v6" stroke="#F39C12" stroke-width="3.4" stroke-linecap="round"/></g><g class="spa-simsek s2"><path d="M12 34 h6 M46 34 h6" stroke="#F39C12" stroke-width="3.4" stroke-linecap="round"/></g><circle cx="32" cy="32" r="12.5" fill="#FFD54F" stroke="#F39C12" stroke-width="2.4"/><path d="M27.5 47 h9" stroke="#B9770E" stroke-width="3.2" stroke-linecap="round"/><path d="M28.5 52 h7" stroke="#B9770E" stroke-width="3.2" stroke-linecap="round"/></svg></div><div class="soa-name">Bilgi Yarışması</div><div class="soa-badge">Yakında</div></div>
-          <div class="soa-card soa-passive"><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 22 h11 a7 7 0 0 1 14 0 h11 v11 a7 7 0 0 1 0 14 v11 H14 Z" fill="#8B7CFF" stroke="#5A50E0" stroke-width="2.2" stroke-linejoin="round"/><g class="spa-halka"><text x="30" y="48" font-size="21" font-weight="800" fill="#fff" text-anchor="middle">?</text></g></svg></div><div class="soa-name">Gizemli Bulmaca</div><div class="soa-badge">Yakında</div></div>
+          <div class="soa-card soa-passive"><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><g class="spa-simsek"><path d="M14 20 l5 3 M50 20 l-5 3 M32 8 v6" stroke="#F39C12" stroke-width="3.4" stroke-linecap="round"/></g><g class="spa-simsek s2"><path d="M12 34 h6 M46 34 h6" stroke="#F39C12" stroke-width="3.4" stroke-linecap="round"/></g><circle cx="32" cy="32" r="12.5" fill="#FFD54F" stroke="#F39C12" stroke-width="2.4"/><path d="M27.5 47 h9" stroke="#B9770E" stroke-width="3.2" stroke-linecap="round"/><path d="M28.5 52 h7" stroke="#B9770E" stroke-width="3.2" stroke-linecap="round"/></svg></div><div class="soa-name" data-i18n="kart.bilgi">Bilgi Yarışması</div><div class="soa-badge" data-i18n="kart.yakinda">Yakında</div></div>
+          <div class="soa-card soa-passive"><div class="soa-emoji"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 22 h11 a7 7 0 0 1 14 0 h11 v11 a7 7 0 0 1 0 14 v11 H14 Z" fill="#8B7CFF" stroke="#5A50E0" stroke-width="2.2" stroke-linejoin="round"/><g class="spa-halka"><text x="30" y="48" font-size="21" font-weight="800" fill="#fff" text-anchor="middle">?</text></g></svg></div><div class="soa-name" data-i18n="kart.gizemli">Gizemli Bulmaca</div><div class="soa-badge" data-i18n="kart.yakinda">Yakında</div></div>
         </div>
       </div>
     </div>
@@ -285,7 +285,7 @@
 <div id="mobile-grammar-menu-overlay" class="mobile-grammar-overlay" style="display: none;">
     <div class="mobile-grammar-content">
         <div class="mobile-grammar-header">
-            <h2 class="mobile-grammar-title">📚 Dilbilgisi</h2>
+            <h2 class="mobile-grammar-title">📚 <span data-i18n="kt.dilbilgisi">Dilbilgisi</span></h2>
             <button onclick="document.getElementById('mobile-grammar-menu-overlay').style.display='none'" class="slide-close">✕</button>
         </div>
         <div class="mobile-grammar-grid">
@@ -309,7 +309,7 @@
     <div style="display: flex; flex-direction: row; gap: 24px; align-items: stretch;">
         
         <div style="display: flex; flex-direction: column; gap: 6px; min-width: 90px;">
-            <div style="font-size: 11px; font-weight: 700; color: #8e8e93; margin-bottom: 3px; text-align: center; letter-spacing: 0.5px; font-family: system-ui, -apple-system, sans-serif;">ÖN EKLER</div>
+            <div style="font-size: 11px; font-weight: 700; color: #8e8e93; margin-bottom: 3px; text-align: center; letter-spacing: 0.5px; font-family: system-ui, -apple-system, sans-serif;" data-i18n="kt.on_ekler">ÖN EKLER</div>
             
             <button class="suffix-btn" onclick="applyPrefix('ال')"><span style="color: #2B88D9;">الـ ـ ـ</span></button>
             <button class="suffix-btn" onclick="applyPrefix('وَ')"><span style="color: #34C759;">وَ <span style="color: #2B88D9;">ـ ـ</span></span></button>
@@ -322,7 +322,7 @@
         <div style="width: 1px; background: linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.1) 80%, rgba(0,0,0,0.0)); border-radius: 1px;"></div>
 
         <div style="display: flex; flex-direction: column; gap: 20px; min-width: 200px;">
-            <div style="font-size: 11px; font-weight: 700; color: #8e8e93; margin-bottom: 4px; text-align: center; letter-spacing: 0.5px; font-family: system-ui, -apple-system, sans-serif;">SON EKLER</div>
+            <div style="font-size: 11px; font-weight: 700; color: #8e8e93; margin-bottom: 4px; text-align: center; letter-spacing: 0.5px; font-family: system-ui, -apple-system, sans-serif;" data-i18n="kt.son_ekler">SON EKLER</div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <button class="suffix-btn" onclick="applySuffix('ا')"><span style="color: #2B88D9;">ـ ـ ـًا</span></button>
@@ -350,8 +350,8 @@
 <!-- EK BİLGİ PERDESİ: "+" menüsünde bir eke, hiçbir kutu seçili değilken
      basılırsa açılır. İçini ekBilgiAc() doldurur (sarf/kaliplartablosumobil.js). -->
 <div id="ek-bilgi-perde" onclick="if(event.target===this) ekBilgiKapat()">
-    <div class="ekb-kart" role="dialog" aria-label="Ek bilgisi">
-        <button class="ekb-kapat" onclick="ekBilgiKapat()" aria-label="Kapat">
+    <div class="ekb-kart" role="dialog" data-i18n-aria="kt.ek_bilgi" aria-label="Ek bilgisi">
+        <button class="ekb-kapat" onclick="ekBilgiKapat()" data-i18n-aria="g.kapat" aria-label="Kapat">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
         <div class="ekb-govde"></div>
@@ -618,12 +618,12 @@
 <script src="veri/veri_sozluk.js?v=1d2a0a84"></script>
 <script src="veri/veri_gramer.js?v=37b2f4b6"></script>
 <script src="sistem/geri.js?v=f87d1337"></script>
-<script src="sarf/kaliplartablosumobil.js?v=384667c8"></script>
+<script src="sarf/kaliplartablosumobil.js?v=3a209235"></script>
 <script src="sarf/muhadesekopru.js?v=7d30f823"></script>
 <div id="marathon-overlay" class="marathon-overlay">
     <div id="game-wrapper">
                         <div id="top-bar-panel">
-            <div class="header-item"><button class="back-nav" onclick="goBackFromMarathon()">❮ GERİ</button></div>
+            <div class="header-item"><button class="back-nav" onclick="goBackFromMarathon()" data-i18n="nav.geri_ok">❮ GERİ</button></div>
             <div class="header-item" id="atlas-selector-container" style="display:none; margin:0 15px;">
                 <select id="atlas-verb-selector" onchange="handleAtlasVerbChange()" style="font-family: 'Arakom', sans-serif; padding: 5px 10px; font-size: 1.5rem; border-radius: 8px; border: 2px solid #e2e8f0; outline: none; cursor: pointer; text-align: center; text-align-last: center; font-weight: normal; color: #2563eb; background: white;">
                     <option value="كتب">كتب ✍️</option>
@@ -649,7 +649,7 @@
                     <option value="غسل">غسل 🧼</option>
                 </select>
             </div>
-            <div class="header-item"><div id="stage-label" class="stage-badge ui-hidden">MAZİ</div></div>
+            <div class="header-item"><div id="stage-label" class="stage-badge ui-hidden" data-i18n="fi.mazi">MAZİ</div></div>
             <div class="header-item"><button id="chrono-main" class="chrono-btn" style="display:none;" onclick="handleMarathonChronoClick()">⏱️</button></div>
             <div class="header-item"><button id="pause-btn" class="pause-circle ui-hidden" onclick="toggleMarathonPause()">||</button></div>
             <div class="header-item"><div class="timer-val ui-hidden" id="timer-display">0.00</div></div>
@@ -661,7 +661,7 @@
                 
                     <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 201; transition: 0.2s;">✕</button>
 
-                <h2 style="color: #6c5ce7; font-size: 2.5rem; font-family: 'Poppins', sans-serif; text-align: center; margin-bottom: 25px;">Hangi fiili çalışmak istersiniz?</h2>
+                <h2 style="color: #6c5ce7; font-size: 2.5rem; font-family: 'Poppins', sans-serif; text-align: center; margin-bottom: 25px;" data-i18n="kt.hangi_fiil">Hangi fiili çalışmak istersiniz?</h2>
                 
                 <div id="marathon-verb-buttons" style="display: flex; flex-direction: column; gap: 20px; justify-content: center; align-items: center; width: 100%; max-width: 600px;">
                     </div>
@@ -751,7 +751,7 @@
                     <button onclick="closeMarathon()" style="position: absolute; top: 20px; right: 20px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 22px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; z-index: 10;">✕</button>
                     <!-- 1 Column for Sidebar -->
                     <div id="atlas-right-sidebar" style="width: 280px; min-width: 280px; flex: none; background: #f8fafc; border-left: 2px solid #e2e8f0; display: flex; flex-direction: column; padding: 20px; box-shadow: -4px 0 10px rgba(0,0,0,0.02); padding-top: 60px;">
-                        <h3 id="atlas-sidebar-title" style="text-align: right; color: #FF9800; font-family: sans-serif; font-size: 1.1rem; margin-bottom: 15px; font-weight: 700; padding-right: 5px;">Örnek Fiiller</h3>
+                        <h3 id="atlas-sidebar-title" style="text-align: right; color: #FF9800; font-family: sans-serif; font-size: 1.1rem; margin-bottom: 15px; font-weight: 700; padding-right: 5px;" data-i18n="kt.ornek_fiiller">Örnek Fiiller</h3>
                         <div id="atlas-verb-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;">
                             <button class="atlas-verb-btn active" onclick="changeAtlasVerb('كتب', this)"><span>✍️</span> <span>كتب</span></button>
                             <button class="atlas-verb-btn" onclick="changeAtlasVerb('دخل', this)"><span>🚪</span> <span>دخل</span></button>
@@ -770,10 +770,10 @@
                     </div>
                 </div>
 <div id="screen-result" class="marathon-screen" style="text-align:center; overflow-y:auto; padding: 40px; width: 100%;">
-                    <h1 style="color:#6c5ce7;">Okuma Testi Raporu</h1>
+                    <h1 style="color:#6c5ce7;" data-i18n="kt.okuma_rapor">Okuma Testi Raporu</h1>
                     <div style="font-size: 7rem; color: #2ecc71; font-weight: bold;" id="final-score">0</div>
                     <div id="error-list"></div>
-                    <button class="back-nav" style="margin-top:40px; background:#6c5ce7; color:white;" onclick="closeMarathon()">TESTİ BİTİR</button>
+                    <button class="back-nav" style="margin-top:40px; background:#6c5ce7; color:white;" onclick="closeMarathon()" data-i18n="kt.testi_bitir">TESTİ BİTİR</button>
                 </div>
             </div>
         </div>
@@ -785,7 +785,7 @@
 <div id="bab-info-overlay" class="bab-info-overlay" onclick="closeBabInfo(event)">
     <div class="bab-info-content">
         <button class="close-info-btn" onclick="closeBabInfo(event)">✕</button>
-        <h2 id="bab-info-title" class="bab-info-title">Bab Adı</h2>
+        <h2 id="bab-info-title" class="bab-info-title" data-i18n="kt.bab_adi">Bab Adı</h2>
         <div id="bab-info-text" class="bab-info-text">Bilgiler buraya gelecek...</div>
     </div>
 </div>
@@ -802,12 +802,12 @@
     <div class="fdm-tabs-row" style="display: flex; flex-direction: row; width: 100%; background: transparent; padding: 0 15px;" dir="rtl">
         <!-- Mücerred Sekmesi -->
         <div onclick="triggerFDMTab('mucerred')" id="fdm-mucerred-tab" style="flex: 1; position: relative; display: flex; align-items: center; justify-content: center; padding: 12px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.3s; margin: 10px 5px 0 5px; border-radius: 12px;">
-            <span>SÜLASİ MÜCERRED</span>
+            <span data-i18n="kt.sulasi_mucerred">SÜLASİ MÜCERRED</span>
             <span style="position: absolute; right: 15px; background: rgba(255, 255, 255, 0.3); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.95rem; font-family: 'Inter', sans-serif;">3</span>
         </div>
         <!-- Mezid Sekmesi -->
         <div onclick="triggerFDMTab('mezid')" id="fdm-mezid-tab" style="flex: 1; position: relative; display: flex; align-items: center; justify-content: center; padding: 12px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.3s; margin: 10px 5px 0 5px; border-radius: 12px;">
-            <span>SÜLASİ MEZİD</span>
+            <span data-i18n="kt.sulasi_mezid">SÜLASİ MEZİD</span>
             <span style="position: absolute; right: 15px; background: rgba(255, 255, 255, 0.3); padding: 2px 10px; border-radius: 12px; font-weight: 900; font-size: 0.95rem; font-family: 'Inter', sans-serif; direction: ltr;">3+</span>
         </div>
     </div>
@@ -825,7 +825,7 @@
     </div>
 </div>
     <div id="marathon-countdown-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #ffffff;  z-index: 999999999 !important; display: none; align-items: center; justify-content: center; flex-direction: column;">
-        <button id="start-btn-ui" class="back-nav" style="padding: 20px 60px; font-size: 2.2rem; background: #2ecc71; color: white; border: none; border-radius: 50px;" onclick="startMarathonCountdown()">BAŞLA!</button>
+        <button id="start-btn-ui" class="back-nav" style="padding: 20px 60px; font-size: 2.2rem; background: #2ecc71; color: white; border: none; border-radius: 50px;" onclick="startMarathonCountdown()" data-i18n="kt.basla">BAŞLA!</button>
         <div id="countdown-text" style="font-size: 12rem; font-weight: bold; color: #6c5ce7; display: none;">3</div>
     </div>
     
@@ -833,7 +833,7 @@
     <div id="telaffuz-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: #f8f9fa; z-index: 5000; display: none; flex-direction: column; overflow: hidden; font-family: 'Inter', sans-serif;">
         <div style="background: #ffffff; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
             <div style="font-size: 1.15rem; font-weight: 800; color: #FF9800;">
-                <i class="fas fa-stopwatch" style="color: #FF9800; margin-right: 8px;"></i>Telaffuz Filtresi
+                <i class="fas fa-stopwatch" style="color: #FF9800; margin-right: 8px;"></i><span data-i18n="kt.telaffuz_filtre">Telaffuz Filtresi</span>
             </div>
             <i class="fas fa-times" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.8rem; color: #95a5a6; cursor: pointer;" onclick="document.getElementById('telaffuz-overlay').style.display='none';document.documentElement.style.overflow='';document.body.style.overflow='';"></i>
         </div>
@@ -842,7 +842,7 @@
         <div style="flex-shrink: 0; padding: 14px 16px 10px 16px; box-sizing: border-box;">
             <div style="display: flex; gap: 12px; align-items: stretch;">
                 <div style="flex: 1; background: #ffffff; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;"><span style="font-weight: 700; color: #d97706; font-size: 0.95rem;">Aksam-ı Seb'a</span><i class="fas fa-info-circle" onclick="showAksamSebaGenelInfo(event)" style="color: #FF9800; cursor: pointer; font-size: 1rem;"></i></div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;"><span style="font-weight: 700; color: #d97706; font-size: 0.95rem;" data-i18n="kt.aksam">Aksam-ı Seb'a</span><i class="fas fa-info-circle" onclick="showAksamSebaGenelInfo(event)" style="color: #FF9800; cursor: pointer; font-size: 1rem;"></i></div>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;" id="telaffuz-aksam-filters">
                         <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Sahih')">Sahih (Salim)</div>
                         <div class="t-filter-chip" onclick="toggleTFilter(this, 'aksam', 'Mehmuz')">Mehmuz</div>
@@ -874,7 +874,7 @@
     <div id="aksam-info-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: rgba(0,0,0,0.5); z-index: 2000000000; display: none; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; font-family: 'Inter', sans-serif;" onclick="if(event.target===this)this.style.display='none';">
         <div style="background: #ffffff; width: 100%; max-width: 480px; max-height: 88dvh; border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 12px 40px rgba(0,0,0,0.25);">
             <div style="background: linear-gradient(45deg, #FFC107, #FF9800); padding: 16px 18px; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0;">
-                <span id="aksam-info-title" style="color: #ffffff; font-weight: 800; font-size: 1.1rem;">Aksam-ı Seb'a Nedir?</span>
+                <span id="aksam-info-title" style="color: #ffffff; font-weight: 800; font-size: 1.1rem;" data-i18n="kt.aksam_nedir">Aksam-ı Seb'a Nedir?</span>
                 <i class="fas fa-times" onclick="document.getElementById('aksam-info-overlay').style.display='none';" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #ffffff; font-size: 1.5rem; cursor: pointer;"></i>
             </div>
             <div id="aksam-info-text" style="overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0;"></div>
@@ -891,9 +891,12 @@
   },false);
 })();
 </script>
-<script src="sistem/gorevkopru.js?v=50232a80"></script>
+<script src="sistem/gorevkopru.js?v=d5377b75"></script>
 <script>/* SURE TAKIBI (Beceri - Ogretmen Ozel): puan degil, sayfada GORUNUR
    kalinan sure raporlanir; Etkinlikler sekmesinde saat satiri olarak gorunur. */
 try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

@@ -13,13 +13,13 @@
       gtag('config', 'G-FV9JD15KLW');
     </script>
     <link rel="stylesheet" href="okumayazma/okuma.css?v=7859d3a2">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
 
 <div class="main-app">
     <nav class="nav-tabs">
-        <a href="index.html" onclick="return kidefGeriDon(event)" target="_blank" class="home-link" title="Ana Sayfa">
+        <a href="index.html" onclick="return kidefGeriDon(event)" target="_blank" class="home-link" data-i18n-title="nav.anasayfa" title="Ana Sayfa">
             <svg viewBox="0 0 24 24">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -112,7 +112,7 @@
 <!-- Büyük gösterim: bir hücreye tıklayınca tahtaya yansıtmalık dev okuyuş -->
 <div class="ok-buyut" id="ok-buyut" onclick="okuma.buyutKapat()">
     <div class="ok-buyut-kutu" onclick="event.stopPropagation()">
-        <button class="ok-buyut-kapat" onclick="okuma.buyutKapat()" title="Kapat">&times;</button>
+        <button class="ok-buyut-kapat" onclick="okuma.buyutKapat()" data-i18n-title="g.kapat" title="Kapat">&times;</button>
         <div class="ok-buyut-ar" id="ok-buyut-ar"></div>
         <div class="ok-buyut-tr" id="ok-buyut-tr"></div>
         <div class="ok-buyut-not" id="ok-buyut-not"></div>
@@ -136,9 +136,12 @@
   },false);
 })();
 </script>
-<script src="sistem/gorevkopru.js?v=50232a80"></script>
+<script src="sistem/gorevkopru.js?v=d5377b75"></script>
 <script>/* SURE TAKIBI (Beceri - Ogretmen Ozel): puan degil, sayfada GORUNUR
    kalinan sure raporlanir; Etkinlikler sekmesinde saat satiri olarak gorunur. */
 try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

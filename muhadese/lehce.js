@@ -259,7 +259,7 @@
         var l = bul(secili);
         kap.className = 'lehce-serit';
         kap.innerHTML =
-            '<span class="lh-etiket">LEHÇE</span>' +
+            '<span class="lh-etiket" data-i18n="mh.lehce_etiket">LEHÇE</span>' +
             '<span class="lh-secili' + (secili === 'fus' ? ' fusha' : '') + '">' +
               '<span class="lh-bayrak" aria-hidden="true">' + l.bayrak + '</span>' +
               '<b>' + l.ad + '</b><i>' + l.alt + '</i>' +
@@ -273,7 +273,7 @@
     window.KIDEF_LEHCE.seritCiz = function (kap) {
         if (!kap) return;
         kap.innerHTML =
-            '<span class="lh-etiket">LEHÇE</span>' +
+            '<span class="lh-etiket" data-i18n="mh.lehce_etiket">LEHÇE</span>' +
             '<div class="lh-tuslar" role="group" aria-label="Lehçe seçimi">' +
             LISTE.map(function (l) {
                 return '<button type="button" class="lh-tus' + (l.id === secili ? ' aktif' : '') +

@@ -1,3 +1,42 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
 const harfler = [
         {h: 'ا', tr: 'Elif', b:'ا', o:'ـا', s:'ـا', nobind: true}, 
         {h: 'ب', tr: 'Be', b:'بـ', o:'ـبـ', s:'ـب'},
@@ -84,7 +123,7 @@ const harfGrup = {
         /* kartın ipucu metni de aktif gruba göre değişsin */
         document.querySelectorAll('#g1 .char-card').forEach(c => {
             const ad = (this.mod === 'ses') ? (c.dataset.sesAd || '') : (c.dataset.aileAd || '');
-            c.title = 'Detay için tıkla: mahreç ve yazılış' + (ad ? ' — ' + ad : '');
+            c.title = kdMetin('alf.detay_ip', 'Detay için tıkla: mahreç ve yazılış') + (ad ? ' — ' + ad : '');
         });
         /* Dizili moddayken switch sadece rengi değil dizilişi de değiştirir:
            kalem tarafında yazılış aileleri, hoparlör tarafında ses grupları
@@ -385,8 +424,15 @@ const yazimAnim = {
         const b = document.getElementById('yaz-btn');
         if (!b) return;
         b.classList.toggle('on', this.acik);
-        b.title = this.acik ? 'Yazılış animasyonunu durdur'
-                            : 'Harflerin yazılış animasyonunu başlat';
+        /* 15.10.2026 — ipucu duruma göre değişiyor, anahtarı da onunla. */
+        var animA = this.acik ? 'alf.anim_dur' : 'alf.anim_basla';
+        var animT = this.acik ? 'Yazılış animasyonunu durdur'
+                              : 'Harflerin yazılış animasyonunu başlat';
+        if (window.KidefDil && window.KidefDil.nitelik) {
+            window.KidefDil.nitelik(b, 'title', animA, animT);
+        } else {
+            b.title = animT;
+        }
     }
 };
 
@@ -422,8 +468,14 @@ const dizilis = {
         if (t) t.classList.toggle('dizili', this.acik);
         document.querySelectorAll('.grp-ico--diz').forEach(e => {
             e.classList.toggle('on', this.acik);
-            e.title = this.acik ? 'Alfabetik sıraya (labirente) dön'
-                                : 'Harfleri ailelerine göre diz';
+            var dizA = this.acik ? 'alf.alfabetik' : 'alf.aile_diz';
+            var dizT = this.acik ? 'Alfabetik sıraya (labirente) dön'
+                                 : 'Harfleri ailelerine göre diz';
+            if (window.KidefDil && window.KidefDil.nitelik) {
+                window.KidefDil.nitelik(e, 'title', dizA, dizT);
+            } else {
+                e.title = dizT;
+            }
         });
     },
 
@@ -599,9 +651,9 @@ function ypHarf(i, form) {
               çatlama efekti vardı; gözü yorduğu için kaldırıldı, işaret artık
               sakin biçimde belirip duruyor. */
 const IM_TIK = '<svg class="yp-im yp-im-ok" viewBox="0 0 34 34" role="img"'
-    + ' aria-label="öncesine bağlanır"><path class="yi-tik" d="M6 18.5L13.5 26L28 8"></path></svg>';
+    + ' aria-label="öncesine bağlanır" data-i18n-aria="alf.oncesine_baglanir"><path class="yi-tik" d="M6 18.5L13.5 26L28 8"></path></svg>';
 const IM_CARPI = '<svg class="yp-im yp-im-no" viewBox="0 0 34 34" role="img"'
-    + ' aria-label="sonrasına bağlanmaz">'
+    + ' aria-label="sonrasına bağlanmaz" data-i18n-aria="alf.sonrasina_baglanmaz">'
     + '<g class="yi-x">'
     + '<path class="yi-x1" d="M8.5 8.5L25.5 25.5"></path>'
     + '<path class="yi-x2" d="M25.5 8.5L8.5 25.5"></path></g>'
@@ -611,7 +663,7 @@ function yanPaneliKur() {
     const yan = document.getElementById('g1yan');
     if (!yan) return;
     /* Başlıkta her kelimenin ilk harfi büyük */
-    let s = '<div class="yp-baslik">Kendinden Sonrakiyle Birleşmeyen Harfler</div>';
+    let s = '<div class="yp-baslik" data-i18n="alf.birlesmeyen">Kendinden Sonrakiyle Birleşmeyen Harfler</div>';
     s += '<div class="yp-tablo">';
     /* Başlık satırı: sağ sütun = önceki harfe bağlanır (✓), sol sütun = sonraki
        harfe bağlanmaz (✗). İşaretin altındaki özel SVG ok, alttaki harften
@@ -626,8 +678,8 @@ function yanPaneliKur() {
     s += '<div class="yp-th yp-ok">' + IM_TIK + okSag + '</div>';
     s += '<div class="yp-th yp-no">' + IM_CARPI + okSol + '</div>';
     harfler.filter(i => i.nobind).forEach(i => {
-        s += `<div class="yp-hucre yp-c-ok" title="${i.tr}: öncesine bağlanır">${ypHarf(i, 's')}</div>`;
-        s += `<div class="yp-hucre yp-c-no" title="${i.tr}: sonrasına bağlanmaz">${ypHarf(i, 'b')}</div>`;
+        s += `<div class="yp-hucre yp-c-ok" title="${i.tr}: öncesine bağlanır" data-i18n-title="alf.harf_oncesine" data-i18n-title-tr="{harf}: öncesine bağlanır" data-i18n-yer='{"harf":"${i.tr}"}'>${ypHarf(i, 's')}</div>`;
+        s += `<div class="yp-hucre yp-c-no" title="${i.tr}: sonrasına bağlanmaz" data-i18n-title="alf.harf_sonrasina" data-i18n-title-tr="{harf}: sonrasına bağlanmaz" data-i18n-yer='{"harf":"${i.tr}"}'>${ypHarf(i, 'b')}</div>`;
     });
     s += '</div>';
     yan.innerHTML = s;
@@ -635,7 +687,11 @@ function yanPaneliKur() {
     /* Panele dokunmak BÜYÜK KATMANI açar (11.10.2026, Geylani: "sağdaki
        yere basınca merkeze gelsin ve daha büyük olsun"). */
     yan.classList.add('yp-tikla');
-    yan.setAttribute('title', 'Büyütmek için dokun');
+    if (window.KidefDil && window.KidefDil.nitelik) {
+        window.KidefDil.nitelik(yan, 'title', 'alf.buyut', 'Büyütmek için dokun');
+    } else {
+        yan.setAttribute('title', 'Büyütmek için dokun');
+    }
     yan.onclick = function () {
         if (typeof playClick === 'function') playClick();
         ypKatmanAc();
@@ -720,7 +776,7 @@ function ypKatmanKur() {
     ov.innerHTML = '<button id="yp-close" title="Kapat" aria-label="Kapat">&times;</button>'
         + '<div id="yp-card" role="dialog" aria-modal="true">'
         + '<div id="yp-ust"></div>'
-        + '<div id="yp-kel">Kelimelerde</div>'
+        + '<div id="yp-kel" data-i18n="alf.kelimelerde">Kelimelerde</div>'
         + '<div id="yp-govde"></div>'
         + '</div>';
     document.body.appendChild(ov);
@@ -754,9 +810,9 @@ function ypKatmanAc() {
        + '<div class="yp-bant yp-bant-or-b"></div><div class="yp-bant yp-bant-or-o"></div>'
        + '<div class="yp-bant yp-bant-or-s"></div><div class="yp-bant yp-bant-or-n"></div>';
     s += '<div class="yp-th yp-ok">' + IM_TIK + okSag
-       + '<span class="yp-th-ad">kendinden ÖNCEKİYLE birleşir</span></div>';
+       + '<span class="yp-th-ad" data-i18n="alf.onceki_birlesir">kendinden ÖNCEKİYLE birleşir</span></div>';
     s += '<div class="yp-th yp-no">' + IM_CARPI + okSol
-       + '<span class="yp-th-ad">kendinden SONRAKİYLE birleşmez</span></div>';
+       + '<span class="yp-th-ad" data-i18n="alf.sonraki_birlesmez">kendinden SONRAKİYLE birleşmez</span></div>';
     /* "Kelimelerde" artık ızgaranın üstünde değil, solda dikey duruyor
        (#yp-kel). Bu hücrede örnek sütunlarının başlıkları var: sağdan sola
        Başta · Ortada · Sonda · Yalın (Geylani, 11.10.2026). */
@@ -776,8 +832,8 @@ function ypKatmanAc() {
          }).join('')
        + '</div>';
     harfler.filter(i => i.nobind).forEach((i, gi) => {
-        s += '<div class="yp-hucre yp-c-ok" style="--g:' + gi + '" title="' + i.tr + ': öncesine bağlanır">' + ypHarf(i, 's') + '</div>';
-        s += '<div class="yp-hucre yp-c-no" style="--g:' + gi + '" title="' + i.tr + ': sonrasına bağlanmaz">' + ypHarf(i, 'b') + '</div>';
+        s += '<div class="yp-hucre yp-c-ok" style="--g:' + gi + '" title="' + i.tr + ': öncesine bağlanır" data-i18n-title="alf.harf_oncesine" data-i18n-title-tr="{harf}: öncesine bağlanır" data-i18n-yer=\'{"harf":"' + i.tr + '"}\'>' + ypHarf(i, 's') + '</div>';
+        s += '<div class="yp-hucre yp-c-no" style="--g:' + gi + '" title="' + i.tr + ': sonrasına bağlanmaz" data-i18n-title="alf.harf_sonrasina" data-i18n-title-tr="{harf}: sonrasına bağlanmaz" data-i18n-yer=\'{"harf":"' + i.tr + '"}\'>' + ypHarf(i, 'b') + '</div>';
         const liste = (typeof HARF_ORNEKLER !== 'undefined' && HARF_ORNEKLER[i.h]) ? HARF_ORNEKLER[i.h] : [];
         s += '<div class="yp-or-satir" style="--g:' + gi + '">' + (liste.length
             ? liste.map(function (o) {
@@ -958,7 +1014,7 @@ function altSeridiKur() {
         `<div class="as-kutu${k.genis ? ' as-genis' : ''}${k.kls ? ' ' + k.kls : ''}`
         + `${(typeof KONU_ANLATIM !== 'undefined' && KONU_ANLATIM[k.ad]) ? ' as-tiklanir' : ''}"`
         + `${(typeof KONU_ANLATIM !== 'undefined' && KONU_ANLATIM[k.ad])
-             ? ` data-konu="${k.ad}" role="button" tabindex="0" title="${k.ad} — konu anlatımını aç"` : ''}>`
+             ? ` data-konu="${k.ad}" role="button" tabindex="0" title="${k.ad} — ${kdMetin('alf.konu_ac', 'konu anlatımını aç')}"` : ''}>`
         + `<div class="as-baslik">${k.ad}</div>`
         + `<div class="as-liste">`
         + k.ogeler.map(o => `<div class="as-oge${k.kesik ? ' as-oge-kesik' : ''}${o.kls ? ' ' + o.kls : ''}" title="${o.ad}">`
@@ -1081,7 +1137,7 @@ const ui = {
                     + (r === HT_SATIR - 1 ? ' ht-son-satir' : '')
                     + (c === HT_SUTUN - 1 ? ' ht-son-sutun' : '');
                 html += `<td class="${hucre}" data-n="${n}" data-r="${r}" data-c="${c}">
-                    <div class="char-card ${nc} ${fc} ${sc} ${mz}" data-idx="${idx}" data-aile-ad="${AILE_ADI[HARF_AILE[i.h] || 'tek']}" data-ses-ad="${SES_ADI[HARF_SES[i.h] || 'tek']}" onclick="harfDetay.open(${idx})" title="Detay için tıkla: mahreç ve yazılış">
+                    <div class="char-card ${nc} ${fc} ${sc} ${mz}" data-idx="${idx}" data-aile-ad="${AILE_ADI[HARF_AILE[i.h] || 'tek']}" data-ses-ad="${SES_ADI[HARF_SES[i.h] || 'tek']}" onclick="harfDetay.open(${idx})" data-i18n-title="alf.detay" title="Detay için tıkla: mahreç ve yazılış">
                         <span class="card-num">${n}</span>${mzOk}
                         <div class="arabic-seq" style="display: flex; justify-content: center; width: 100%;">
                             <span class="b-green">${i.b}</span>
@@ -1197,7 +1253,7 @@ const kartMod = {
         /* tur şeridi: tek tur varsa oklara gerek yok */
         const kutu = document.getElementById('kmTur');
         const yazi = document.getElementById('kmTurYazi');
-        if (yazi) yazi.textContent = 'Tur ' + (this.tur + 1) + ' / ' + n;
+        if (yazi) kdYaz(yazi, 'oyn.tur_sayac', 'Tur {n} / {toplam}', { n: this.tur + 1, toplam: n });
         if (kutu) kutu.style.display = (n > 1) ? 'inline-flex' : 'none';
     }
 };
@@ -1253,7 +1309,7 @@ const tamEkran = {
         this.acik = true;
         document.body.classList.add('harf-tam');
         const btn = document.getElementById('tam-btn');
-        if (btn) btn.title = 'Odak modundan çık (Esc)';
+        if (btn) { if (window.KidefDil && KidefDil.nitelik) KidefDil.nitelik(btn, 'title', 'alf.odak_cik', 'Odak modundan çık (Esc)'); else btn.title = 'Odak modundan çık (Esc)'; }
         this.olcumYenile();
         const kok = document.documentElement;
         if (kok.requestFullscreen) { const q = kok.requestFullscreen(); if (q && q.catch) q.catch(() => {}); }
@@ -1265,7 +1321,7 @@ const tamEkran = {
         this.acik = false;
         document.body.classList.remove('harf-tam');
         const btn = document.getElementById('tam-btn');
-        if (btn) btn.title = 'Sadece harfleri göster (tam ekran)';
+        if (btn) { if (window.KidefDil && KidefDil.nitelik) KidefDil.nitelik(btn, 'title', 'alf.odak_ac', 'Sadece harfleri göster (tam ekran)'); else btn.title = 'Sadece harfleri göster (tam ekran)'; }
         this.olcumYenile();
         const fs = document.fullscreenElement || document.webkitFullscreenElement;
         if (fs) {
@@ -1365,12 +1421,12 @@ const memoryGame = {
         const title1 = document.getElementById('p1-title');
 
         if (this.mode === 'single') {
-            title1.innerText = "SKOR";
+            kdYaz(title1, 'oyn.skor', "SKOR");
             p1Box.style.display = 'flex';
             p1Box.classList.remove('active-p'); 
             p2Box.style.display = 'none';
         } else {
-            title1.innerText = "OYUNCU 1";
+            kdYaz(title1, 'hh.oyuncu1', "OYUNCU 1");
             p1Box.style.display = 'flex';
             p2Box.style.display = 'flex';
             p1Box.classList.toggle('active-p', this.turn === 1);
@@ -1404,8 +1460,8 @@ const memoryGame = {
             if (this.matchedCount === this.targetPairs) {
                 document.getElementById('resetArea').style.display = 'block';
                 setTimeout(() => {
-                    let msg = "Tebrikler!";
-                    if (this.mode === 'multi') msg = this.scores.p1 > this.scores.p2 ? "OYUNCU 1 KAZANDI! 🎉" : (this.scores.p2 > this.scores.p1 ? "OYUNCU 2 KAZANDI! 🎉" : "BERABERE! 🤝");
+                    let msg = kdMetin('oyn.tebrikler', "Tebrikler!");
+                    if (this.mode === 'multi') msg = this.scores.p1 > this.scores.p2 ? kdMetin('oyn.oyuncu1_kaz', "OYUNCU 1 KAZANDI!") + " 🎉" : (this.scores.p2 > this.scores.p1 ? kdMetin('oyn.oyuncu2_kaz', "OYUNCU 2 KAZANDI!") + " 🎉" : kdMetin('oyn.berabere', "BERABERE!") + " 🤝");
                     alert(msg);
                 }, 400);
             }
@@ -1505,12 +1561,12 @@ const game = {
         if (this.mode === 'single') {
             document.getElementById('z2').style.display = 'none';
             document.getElementById('pb2-container').style.display = 'none';
-            document.getElementById('z1-title').innerHTML = 'SKOR: <b id="sc1">' + this.score.p1 + '</b>';
+            document.getElementById('z1-title').innerHTML = kdIsaretli('oyn.skor', 'SKOR') + ': <b id="sc1">' + this.score.p1 + '</b>';
         } else {
             document.getElementById('z2').style.display = 'flex';
             document.getElementById('pb2-container').style.display = 'block';
-            document.getElementById('z1-title').innerHTML = 'OYUNCU 1 SKOR: <b id="sc1">' + this.score.p1 + '</b>';
-            document.getElementById('z2-title').innerHTML = 'OYUNCU 2 SKOR: <b id="sc2">' + this.score.p2 + '</b>';
+            document.getElementById('z1-title').innerHTML = kdIsaretli('alf.oyuncu1_skor', 'OYUNCU 1 SKOR') + ': <b id="sc1">' + this.score.p1 + '</b>';
+            document.getElementById('z2-title').innerHTML = kdIsaretli('alf.oyuncu2_skor', 'OYUNCU 2 SKOR') + ': <b id="sc2">' + this.score.p2 + '</b>';
         }
 
         document.getElementById('z1').classList.remove('zone-correct', 'zone-wrong');
@@ -1530,7 +1586,7 @@ const game = {
             /* "Şın harfinin baştaki yazılışı hangisidir?"  şıklar: dört yazılış */
             const alan = this.bicimler[Math.floor(Math.random() * this.bicimler.length)];
             this.cur = target[alan];
-            soru = target.tr + ' harfinin ' + this.bicimAd[alan] + ' yazılışı hangisidir?';
+            soru = kdMetin('alf.soru_yer', '{harf} harfinin {yer} yazılışı hangisidir?', { harf: target.tr, yer: kdMetin({ h: 'alf.yer_yalin', b: 'alf.yer_bas', o: 'alf.yer_orta', s: 'alf.yer_son' }[alan], this.bicimAd[alan]) });
             opts = [target.h, target.b, target.o, target.s];
             harfSik = true;
         } else {
@@ -1649,7 +1705,7 @@ const game = {
         // Bitiş Kontrolü
         if(this.score.p1 >= 100 || this.score.p2 >= 100) {
             const nBtn = document.getElementById('nextBtn');
-            nBtn.innerText = "🏆 YENİDEN BAŞLAT";
+            kdYaz(nBtn, 'alf.yeniden_baslat', "🏆 YENİDEN BAŞLAT");
             nBtn.onclick = () => this.resetGame();
             nBtn.style.display = 'block'; 
             
@@ -1657,11 +1713,11 @@ const game = {
                 if (this.mode === 'single') {
                     /* GOREV KOPRUSU: yalniz TEK KISILIK mod sonucu sayilir */
                     try { if (window.KidefGorev) KidefGorev.bildir({ dogru: this.tekDogru, toplam: this.tekToplam, mod: 'tek', sureSn: this.tekBas ? Math.round((Date.now() - this.tekBas) / 1000) : null }); } catch (e) { }
-                    alert("HARİKA! 100 PUANLA OYUNU TAMAMLADIN! 🎉");
+                    alert(kdMetin('alf.tamamladin', "HARİKA! 100 PUANLA OYUNU TAMAMLADIN!") + " 🎉");
                 } else {
-                    if(this.score.p1 === 100 && this.score.p2 === 100) alert("İNANILMAZ! BERABERE BİTTİ! 🤝");
-                    else if(this.score.p1 >= 100) alert("OYUNCU 1 KAZANDI! 🎉");
-                    else alert("OYUNCU 2 KAZANDI! 🎉");
+                    if(this.score.p1 === 100 && this.score.p2 === 100) alert(kdMetin('alf.berabere', "İNANILMAZ! BERABERE BİTTİ!") + " 🤝");
+                    else if(this.score.p1 >= 100) alert(kdMetin('oyn.oyuncu1_kaz', "OYUNCU 1 KAZANDI!") + " 🎉");
+                    else alert(kdMetin('oyn.oyuncu2_kaz', "OYUNCU 2 KAZANDI!") + " 🎉");
                 }
             }, 500);
         } else {

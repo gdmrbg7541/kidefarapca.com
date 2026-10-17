@@ -1,3 +1,42 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
 
 window.isAtlasFullscreen = false;
 
@@ -9537,7 +9576,7 @@ window.showBabInfo = function(rawName) {
     let info = getBabInfo(rawName);
 
     if(overlay && titleEl && textEl && info) {
-        titleEl.innerText = info.title + " Babı";
+        kdYaz(titleEl, 'kt.babi', '{ad} Babı', { ad: info.title });
         textEl.innerHTML = info.desc; 
         
         overlay.style.display = 'flex';
@@ -10242,7 +10281,7 @@ window.loadMarathonTable = function() {
     const end = window.mRanges[window.mCurrentStage][1];
     
     const stageLabel = document.getElementById('stage-label');
-    if (stageLabel) stageLabel.innerText = ["MAZİ (Geçmiş Zaman)", "MUZARİ (Şimdiki / Geniş)", "EMİR (Emir Kipi)"][window.mCurrentStage];
+    if (stageLabel) kdYaz(stageLabel, ['kt.asama_mazi', 'kt.asama_muzari', 'kt.asama_emir'][window.mCurrentStage], ["MAZİ (Geçmiş Zaman)", "MUZARİ (Şimdiki / Geniş)", "EMİR (Emir Kipi)"][window.mCurrentStage]);
 
     window.mActiveSet.slice(start, end).forEach((w, i) => {
         const absoluteIdx = start + i;
@@ -12999,7 +13038,13 @@ window.buyutmeTusYenile = function () {
     if (!c || !b) return;
     b.classList.toggle('acik', c.checked);
     b.setAttribute('aria-pressed', c.checked ? 'true' : 'false');
-    b.setAttribute('title', c.checked ? 'Büyütme açık' : 'Büyütme kapalı');
+    /* 15.10.2026 — çok dilli site: ipucu duruma göre, anahtarı da onunla */
+    if (window.KidefDil && window.KidefDil.nitelik) {
+        window.KidefDil.nitelik(b, 'title', c.checked ? 'kt.buyutme_acik' : 'kt.buyutme_kapali',
+                                c.checked ? 'Büyütme açık' : 'Büyütme kapalı');
+    } else {
+        b.setAttribute('title', c.checked ? 'Büyütme açık' : 'Büyütme kapalı');
+    }
 };
 window.buyutmeTuslaDegis = function (e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }

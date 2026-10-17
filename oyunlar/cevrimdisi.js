@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 /* ==========================================================================
    ÇEVRİMDIŞI MOD — sınıfta internetsiz yarışma
    --------------------------------------------------------------------------
@@ -36,11 +76,14 @@ const arRakam = n => String(n).split("").map(c => AR_RAKAM[+c] !== undefined ? A
 /* i. takımın adı ve rengi. Listedeki renkler bittiğinde renk tekerleğinden
    eşit aralıklı yeni bir ton üretilir; böylece takım sayısında üst sınır
    yoktur, sadece sınıftaki öğrenci sayısı kadar takım kurulabilir. */
+/* ÇOK DİLLİ SİTE (16.10.2026): takım adı seçili dilde; Arapça ad (ad) Arapça kalır. */
+const TAKIM_ANAHTAR = ['cd.t_yesil', 'cd.t_mavi', 'cd.t_kirmizi', 'cd.t_sari', 'cd.t_mor', 'cd.t_gri',
+  'cd.t_turuncu', 'cd.t_pembe', 'cd.t_turkuaz', 'cd.t_lacivert', 'cd.t_kahve', 'cd.t_zeytin'];
 function takimBilgi(i){
   const t = TAKIM_RENK[i];
-  if (t) return { ad:t.ad, tr:t.tr + " takım", renk:t.renk };
+  if (t) return { ad:t.ad, tr:kdMetin(TAKIM_ANAHTAR[i], t.tr + " takım"), renk:t.renk };
   const ton = (i * 47) % 360;
-  return { ad:"الفَريق " + arRakam(i + 1), tr:(i + 1) + ". takım",
+  return { ad:"الفَريق " + arRakam(i + 1), tr:kdMetin('cd.t_no', "{n}. takım", { n: i + 1 }),
            renk:"hsl(" + ton + " 55% 46%)" };
 }
 
@@ -176,8 +219,8 @@ function toplamSure(s){ return (soruSuresi(s) || 1) + (D.sureEk || 0); }
 function sureOzet(){
   try {
     const y = z => (state.sureler && state.sureler[z]) || D.sure;
-    return "★ " + y(1) + " · ★★ " + y(2) + " · ★★★ " + y(3) + " sn";
-  } catch(e){ return D.sure + " sn"; }
+    return "★ " + y(1) + " · ★★ " + y(2) + " · ★★★ " + y(3) + " " + kdMetin('biy.sn', "sn");
+  } catch(e){ return D.sure + " " + kdMetin('biy.sn', "sn"); }
 }
 
 /* Kısa ve yumuşak kaydırma — tarayıcının smooth davranışı bazı kaplamalarda
@@ -902,10 +945,10 @@ CIZ.swCanli = `<svg viewBox="0 0 45 32" class="cdw-sw-ciz" aria-hidden="true">
 
 function switchHtml(aktif, pasif){
   /* Canlı solda ve varsayılan; çevrimdışı sağda. */
-  const yol = [["canli","Canlı","Kendi cihazından katılım", CIZ.swCanli],
-               ["cevrimdisi","Çevrimdışı","Kâğıt ve tahta", CIZ.swCevrimdisi]];
-  const ipucu = pasif ? "Mod 1. adımda seçilir" : "";
-  return `<div class="cdw-switch${pasif?" pasif":""}" role="group" aria-label="Yarışma modu"
+  const yol = [["canli",kacisi(kdMetin('cd.canli', "Canlı")),kacisi(kdMetin('cd.canli_not', "Kendi cihazından katılım")), CIZ.swCanli],
+               ["cevrimdisi",kacisi(kdMetin('cd.cevrimdisi', "Çevrimdışı")),kacisi(kdMetin('cd.cevrimdisi_not', "Kâğıt ve tahta")), CIZ.swCevrimdisi]];
+  const ipucu = pasif ? kacisi(kdMetin('cd.mod_ip', "Mod 1. adımda seçilir")) : "";
+  return `<div class="cdw-switch${pasif?" pasif":""}" role="group" aria-label="${kacisi(kdMetin('cd.mod_aria', "Yarışma modu"))}"
        title="${ipucu}">
     ${yol.map(([v, ad, not, ciz]) => `<button type="button" class="cdw-sw${aktif===v?" ac":""}" data-mod="${v}"
         ${pasif ? "disabled" : `onclick="COFF.modDegis('${v}')"`}
@@ -941,32 +984,37 @@ const ADIM_CD    = [["ders","Ders ve sorular"], ["bicim","Takımlar ve çıktı"
    doğrudan karekodu açıyor. Yarışma başlayınca hiçbir şerit görünmez. */
 const ADIM_CANLI = [["ders","Ders ve sorular"], ["bicim","Kimler yarışacak?"],
                     ["karekod","Karekod"]];
+/* ÇOK DİLLİ SİTE (16.10.2026): adım adları her çağrıda seçili dilde; anahtarlar Türkçe kalır. */
+const ADIM_AD = { ders: { k: 'cd.a_ders', tr: "Ders ve sorular" }, bicim: { k: 'cd.a_takim', tr: "Takımlar ve çıktı" },
+  sinif: { k: 'cd.a_sinif', tr: "Sınıflar ve çıktı" }, kimler: { k: 'cd.a_kimler', tr: "Kimler yarışacak?" },
+  bas: { k: 'g.baslat', tr: "Başlat" }, karekod: { k: 'cd.a_karekod', tr: "Karekod" } };
+const adimAdi = a => kdMetin(ADIM_AD[a].k, ADIM_AD[a].tr);
 function adimlar(){
-  if (D.mod === "canli") return ADIM_CANLI;
-  const ad = D.bicim === "sinif" ? "Sınıflar ve çıktı" : "Takımlar ve çıktı";
-  return ADIM_CD.map(a => a[0] === "bicim" ? ["bicim", ad] : a);
+  if (D.mod === "canli") return ADIM_CANLI.map(a => [a[0], adimAdi(a[0] === "bicim" ? "kimler" : a[0])]);
+  const ad = adimAdi(D.bicim === "sinif" ? "sinif" : "bicim");
+  return ADIM_CD.map(a => [a[0], a[0] === "bicim" ? ad : adimAdi(a[0])]);
 }
 /* Kurulumda eksik kalan ne varsa listeler. Sekmeler arasında serbestçe
    gezilebilir; ama bu liste boşalmadan yarışma başlatılamaz. */
 function eksikler(){
   const e = [];
-  if (!D.konuId) e.push({ ad: "ders", yazi: "Ders seçilmedi", git: "ders", hedef: "konu" });
+  if (!D.konuId) e.push({ ad: "ders", yazi: kdMetin('cd.e_ders', "Ders seçilmedi"), git: "ders", hedef: "konu" });
   else if (!seciliSorular().length)
-    e.push({ ad: "ders", yazi: "Seçtiğin süzgeçlerde soru kalmadı", git: "ders", hedef: "suzgec" });
+    e.push({ ad: "ders", yazi: kdMetin('cd.e_suzgec', "Seçtiğin süzgeçlerde soru kalmadı"), git: "ders", hedef: "suzgec" });
   else {
     /* Sorular elle seçilmeden yarışma başlamaz: soru sayısı süzgecindeki
        sayı kadar soru havuzdan işaretlenmiş olmalı. */
     const s = havuzSecili(), h = Math.min(hedefSoru(), seciliSorular().length);
     if (s < h)
       e.push({ ad: "ders", git: "ders", hedef: "havuz",
-               yazi: s ? "Havuzdan " + h + " soru seçmelisin — şu an " + s + " seçili"
-                       : "Havuzdan " + h + " soru seç" });
+               yazi: s ? kdMetin('cd.e_havuz_az', "Havuzdan {h} soru seçmelisin — şu an {s} seçili", { h: h, s: s })
+                       : kdMetin('cd.e_havuz', "Havuzdan {h} soru seç", { h: h }) });
   }
   if (D.mod === "cevrimdisi"){
     if (D.bicim === "sinif" && !sinifAdlari().length)
-      e.push({ ad: "bicim", yazi: "Yarışan sınıf yazılmadı", git: "bicim", hedef: "liste" });
+      e.push({ ad: "bicim", yazi: kdMetin('cd.e_sinif', "Yarışan sınıf yazılmadı"), git: "bicim", hedef: "liste" });
     else if (!D.katilim.length)
-      e.push({ ad: "bicim", yazi: "Takım/sınıf listesi boş", git: "bicim", hedef: "liste" });
+      e.push({ ad: "bicim", yazi: kdMetin('cd.e_liste', "Takım/sınıf listesi boş"), git: "bicim", hedef: "liste" });
   }
   return e;
 }
@@ -1048,7 +1096,7 @@ function eksikVurgula(hedef, yazi){
     k.classList.remove("cdw-eksik-vurgu"); void k.offsetWidth;
     k.classList.add("cdw-eksik-vurgu");
     const r = document.createElement("span");
-    r.className = "cdw-eksik-rozet"; r.textContent = yazi || "Burası eksik";
+    r.className = "cdw-eksik-rozet"; r.textContent = yazi || kdMetin('cd.eksik_rozet', "Burası eksik");
     k.appendChild(r);
     try { k.scrollIntoView({ block: "center", behavior: "smooth" }); } catch(e){}
     if (k._eksikZ) clearTimeout(k._eksikZ);
@@ -1067,7 +1115,7 @@ function yolSeridi(){
       const durum = (simdi ? "simdi " : "") + (tamam ? "bitti" : (n < D.adim ? "eksik" : ""));
       return `<li class="${durum.trim()}">
         <button type="button" class="cdw-yol-tus"
-                title="${kacisi(a)}${tamam ? "" : " — eksik"}" onclick="COFF.adimGit(${n})">
+                title="${kacisi(tamam ? a : kdMetin('cd.yol_eksik', "{ad} — eksik", { ad: a }))}" onclick="COFF.adimGit(${n})">
           <span class="cdw-yol-no">${n}</span>
           <span class="cdw-yol-ad">${a}</span>
         </button></li>`;
@@ -1101,7 +1149,7 @@ function canliYolCiz(){
   }
   const onceki = yolKonumAl();
   s.innerHTML = `<button type="button" class="cdw-geri-tus" onclick="COFF.yolGeri()"
-      title="Bir önceki adım" aria-label="Geri">
+      title="${kacisi(kdMetin('cd.onceki_adim', "Bir önceki adım"))}" aria-label="${kacisi(kdMetin('nav.geri', "Geri"))}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
@@ -1129,7 +1177,7 @@ function kurulumHtml(){
   <div class="cdw" dir="ltr">
     <div class="cdw-ust">
       <button type="button" class="cdw-geri-tus" onclick="COFF.geriCik()"
-              title="${D.adim > 1 ? (D.adim - 1) + ". adıma dön" : "Oyunlara dön"}" aria-label="Geri">
+              title="${kacisi(D.adim > 1 ? kdMetin('cd.adima_don', "{n}. adıma dön", { n: D.adim - 1 }) : kdMetin('cd.oyunlara_don', "Oyunlara dön"))}" aria-label="${kacisi(kdMetin('nav.geri', "Geri"))}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
@@ -1141,17 +1189,17 @@ function kurulumHtml(){
     <div class="cdw-govde cdw-govde-${adimAnahtar()}">${adimHtml()}</div>
 
     <div class="cdw-alt">
-      <span class="cdw-adim-not">${D.adim}. adım / ${yol.length}</span>
+      <span class="cdw-adim-not">${kacisi(kdMetin('cd.adim_not', "{n}. adım / {top}", { n: D.adim, top: yol.length }))}</span>
       <span class="cdw-uyari" id="cdUyari"></span>
       <span class="cdw-bosluk"></span>
       ${son
         ? (adimTamam("bas")
-            ? `<span class="cdw-bitti-not">Her şey hazır 🎉</span>`
-            : `<span class="cdw-bitti-not eksik">${eksikler().length} eksik var</span>`)
+            ? `<span class="cdw-bitti-not">${kacisi(kdMetin('cd.hazir', "Her şey hazır"))} 🎉</span>`
+            : `<span class="cdw-bitti-not eksik">${kacisi(kdMetin('cd.n_eksik', "{n} eksik var", { n: eksikler().length }))}</span>`)
         : `<button type="button" class="cdw-tus cdw-tus-ana" onclick="COFF.adimIleri()">
-             ${sonrakiAnahtar() === "bas" ? "Soruları hazırla ›"
-               : sonrakiAnahtar() === "karekod" ? "Soruları hazırla ve karekodu aç ›"
-               : "İleri ›"}</button>`}
+             ${kacisi(sonrakiAnahtar() === "bas" ? kdMetin('cd.hazirla', "Soruları hazırla")
+               : sonrakiAnahtar() === "karekod" ? kdMetin('cd.hazirla_karekod', "Soruları hazırla ve karekodu aç")
+               : kdMetin('nav.ileri', "İleri"))} ›</button>`}
     </div>
   </div>`;
 }
@@ -1186,9 +1234,9 @@ const hepsi = [
             </g>
           </svg>
         </span>
-        <span class="biy-menu-ad">Sınıfça Yarış</span>
+        <span class="biy-menu-ad">${kacisi(kdMetin('cd.k_sinif', "Sınıfça Yarış"))}</span>
         <span class="biy-menu-ar">نِظام الصُّفوف</span>
-        <span class="biy-menu-desc">Her sınıfa bir karekod · sınıflar yarışır</span>
+        <span class="biy-menu-desc">${kacisi(kdMetin('biy.mod_okul_ac', "Her sınıfa bir karekod · sınıflar yarışır"))}</span>
         <span class="cdw-menu-tik">✓</span>
       </button>`,
   `<button class="biy-menu-kart${D.bicim==='takim'?' cdw-secili':''}" onclick="COFF.bicimSec('takim')">
@@ -1206,14 +1254,14 @@ const hepsi = [
             <path class="biy-tk-bag" d="M24 20 Q32 12 40 20" fill="none" stroke="url(#biyGrTuruncu)" stroke-width="3" stroke-linecap="round"/>
           </svg>
         </span>
-        <span class="biy-menu-ad">Takım Olarak Yarış</span>
+        <span class="biy-menu-ad">${kacisi(kdMetin('cd.k_takim', "Takım Olarak Yarış"))}</span>
         <span class="biy-menu-ar">نِظام الفِرَق</span>
-        <span class="biy-menu-desc">Her takıma bir karekod · takımlar yarışır</span>
+        <span class="biy-menu-desc">${kacisi(kdMetin('biy.mod_takim_ac', "Her takıma bir karekod · takımlar yarışır"))}</span>
         <span class="cdw-menu-tik">✓</span>
       </button>`,
   `<button class="biy-menu-kart${D.bicim==='kisi'?' cdw-secili':''}${
         D.mod === "cevrimdisi" ? " cdw-kart-pasif" : ""}"
-        ${D.mod === "cevrimdisi" ? 'disabled title="Bireysel Yarış yalnız çevrimiçi yarışmada kullanılır"' : ""}
+        ${D.mod === "cevrimdisi" ? 'disabled title="' + kacisi(kdMetin('cd.k_birey_ip', "Bireysel Yarış yalnız çevrimiçi yarışmada kullanılır")) + '"' : ""}
         onclick="COFF.bicimSec('kisi')">
         <span class="biy-menu-emoji biy-anim" aria-hidden="true">
           <svg viewBox="0 0 64 64" class="biy-svg biy-svg-birey">
@@ -1228,13 +1276,13 @@ const hepsi = [
             <circle class="biy-br-nokta" cx="46.5" cy="9" r="3.2" fill="url(#biyGrTuruncu)"/>
           </svg>
         </span>
-        <span class="biy-menu-ad">Bireysel Yarış</span>
+        <span class="biy-menu-ad">${kacisi(kdMetin('cd.k_birey', "Bireysel Yarış"))}</span>
         <span class="biy-menu-ar">نِظام الأَفْراد</span>
         <span class="biy-menu-desc">${D.mod === "cevrimdisi"
-          ? "Yalnız çevrimiçi · puanı sistem işler"
-          : "Tek karekod · herkes kendi adıyla girer"}</span>
+          ? kacisi(kdMetin('cd.k_birey_cd', "Yalnız çevrimiçi · puanı sistem işler"))
+          : kacisi(kdMetin('cd.k_birey_ac', "Tek karekod · herkes kendi adıyla girer"))}</span>
         ${D.mod === "cevrimdisi"
-          ? `<span class="cdw-menu-kilit">Çevrimiçine geç</span>` : `<span class="cdw-menu-tik">✓</span>`}
+          ? `<span class="cdw-menu-kilit">${kacisi(kdMetin('cd.k_cevrimicine', "Çevrimiçine geç"))}</span>` : `<span class="cdw-menu-tik">✓</span>`}
       </button>`
 ];
   return (D.mod === "cevrimdisi") ? hepsi.slice(0, 2) : hepsi;
@@ -1247,7 +1295,7 @@ function adim1(){
   return `
   <div class="cdw-sahne cdw-genis${cd ? " cdw-birlesik" : ""}${
       cd && D.katilim.length ? " liste-hazir" : ""}">
-    <h2 class="cdw-bas cdw-bas-ince">Kimler yarışacak?</h2>
+    <h2 class="cdw-bas cdw-bas-ince">${kacisi(kdMetin('cd.a_kimler', "Kimler yarışacak?"))}</h2>
     ${cd ? "" : `<p class="cdw-alt-bas cdw-alt-ar">نِظام المُسابَقَة</p>`}
     <div class="biy-menu cdw-menu" dir="rtl">
       ${menuKartlar().join("")}
@@ -1266,44 +1314,44 @@ function listeGovdesi(){
   const kacSinif = sinifAdlari().length;
   return `
   <div class="cdw-liste-bolum">
-    <h3 class="cdw-bolum-bas">${sinifMi ? "Yarışan sınıflar" : "Takımları kuralım"}</h3>
+    <h3 class="cdw-bolum-bas">${kacisi(sinifMi ? kdMetin('cd.l_siniflar', "Yarışan sınıflar") : kdMetin('cd.l_takimlar', "Takımları kuralım"))}</h3>
     <p class="cdw-bolum-alt">${sinifMi
-      ? "Hangi sınıflar yarışacak? Adını yaz, ekle; istemediğini ✕ ile çıkar."
-      : "Sınıfın sıra numaralarını yaz, <b>bugün gelmeyenleri çıkar</b>; kalan numaralar takımlara dağılsın."}</p>
+      ? kacisi(kdMetin('cd.l_sinif_not', "Hangi sınıflar yarışacak? Adını yaz, ekle; istemediğini ✕ ile çıkar."))
+      : kdMetin('cd.l_takim_not', "Sınıfın sıra numaralarını yaz, <b>bugün gelmeyenleri çıkar</b>; kalan numaralar takımlara dağılsın.")}</p>
     ${sinifMi ? "" : `
     <ol class="cdw-liste-adim">
       <li>
         ${CIZ.adimNo}
-        <b>Sıra numaraları</b>
-        <small>Kaçtan kaça? Örnek: <i>1 → 24</i></small>
+        <b>${kacisi(kdMetin('cd.l_sira', "Sıra numaraları"))}</b>
+        <small>${kdMetin('cd.l_sira_not', "Kaçtan kaça? Örnek: <i>1 → 24</i>")}</small>
       </li>
       <li class="cdw-la-vurgu">
         ${CIZ.adimYok}
-        <b>Gelmeyenleri çıkar</b>
-        <small>Bugün olmayanların numarasını yaz — takımlara girmezler.</small>
+        <b>${kacisi(kdMetin('cd.l_yok', "Gelmeyenleri çıkar"))}</b>
+        <small>${kacisi(kdMetin('cd.l_yok_not', "Bugün olmayanların numarasını yaz — takımlara girmezler."))}</small>
       </li>
       <li>
         ${CIZ.adimTakim}
-        <b>Takımlar hazır</b>
-        <small>Numaralar eşit dağılır; sürükleyerek değiştirebilirsin.</small>
+        <b>${kacisi(kdMetin('cd.l_hazir', "Takımlar hazır"))}</b>
+        <small>${kacisi(kdMetin('cd.l_hazir_not', "Numaralar eşit dağılır; sürükleyerek değiştirebilirsin."))}</small>
       </li>
     </ol>`}
 
     <div class="cdw-serit">
       ${sinifMi ? `
       <div class="cdw-serit-alan buyur">
-        <label>Sınıf adı ekle</label>
+        <label>${kacisi(kdMetin('cd.l_sinif_ad', "Sınıf adı ekle"))}</label>
         <input type="text" class="gen" id="cdSinifAd" value="" maxlength="24"
-               placeholder="örnek: 7-A"
+               placeholder="${kacisi(kdMetin('cd.l_sinif_ph', "örnek: 7-A"))}"
                onkeydown="if(event.key==='Enter'){event.preventDefault();COFF.sinifEkle();}">
       </div>
       <div class="cdw-serit-alan">
         <label>&nbsp;</label>
         <button type="button" class="cdw-tus cdw-tus-ana" onclick="COFF.sinifEkle()">
-          + Sınıf ekle</button>
+          + ${kacisi(kdMetin('cd.l_sinif_ekle', "Sınıf ekle"))}</button>
       </div>` : `
       <div class="cdw-serit-alan">
-        <label>Sıra numaraları</label>
+        <label>${kacisi(kdMetin('cd.l_sira', "Sıra numaraları"))}</label>
         <div class="cdw-ikili">
           <input type="number" id="cdBas" value="${D.bas}" min="1" onchange="COFF.ayar('bas',this.value)">
           <span class="cdw-ok">→</span>
@@ -1311,13 +1359,13 @@ function listeGovdesi(){
         </div>
       </div>
       <div class="cdw-serit-alan buyur">
-        <label>Bugün gelmeyenler <i>(boş bırakabilirsin)</i></label>
-        <input type="text" class="gen" id="cdYok" value="${kacisi(D.yok)}" placeholder="örnek: 3, 7, 15"
+        <label>${kdMetin('cd.l_gelmeyen', "Bugün gelmeyenler <i>(boş bırakabilirsin)</i>")}</label>
+        <input type="text" class="gen" id="cdYok" value="${kacisi(D.yok)}" placeholder="${kacisi(kdMetin('cd.l_yok_ph', "örnek: 3, 7, 15"))}"
                onchange="COFF.ayar('yok',this.value)">
       </div>`}
       ${takimMi ? `
       <div class="cdw-serit-alan">
-        <label>Kaç takım</label>
+        <label>${kacisi(kdMetin('cd.l_kac_takim', "Kaç takım"))}</label>
         <div class="cdw-sayac-kutu ufak">
           <button type="button" class="cdw-yuvarlak" onclick="COFF.takimDegis(-1)"
                   ${D.takimSayi <= 2 ? "disabled" : ""}>−</button>
@@ -1330,11 +1378,11 @@ function listeGovdesi(){
       <div class="cdw-serit-alan">
         <label>&nbsp;</label>
         <button type="button" class="cdw-tus cdw-tus-ana" onclick="COFF.listeKur()">
-          Listeyi kur</button>
+          ${kacisi(kdMetin('cd.l_kur', "Listeyi kur"))}</button>
       </div>`}
       ${sinifMi ? "" : `
       <div class="cdw-serit-say">
-        <b>${toplam > 0 ? toplam : 0}</b><span>öğrenci</span>
+        <b>${toplam > 0 ? toplam : 0}</b><span>${kacisi(kdMetin('cd.l_ogrenci', "öğrenci"))}</span>
       </div>`}
     </div>
 
@@ -1345,8 +1393,8 @@ function listeGovdesi(){
 /* --- 3 · ders, soru sayısı, süre ve soru türleri: hepsi tek ekranda --- */
 /* Cevap kâğıdının adı yarışma biçimine göre değişir. */
 function kagitAdi(){
-  return D.bicim === "kisi" ? "Kişi cevap kâğıdı"
-       : D.bicim === "sinif" ? "Sınıf cevap kâğıdı" : "Takım yarışma kâğıdı";
+  return D.bicim === "kisi" ? kdMetin('cd.c_kisi_kagit', "Kişi cevap kâğıdı")
+       : D.bicim === "sinif" ? kdMetin('cd.c_sinif_kagit', "Sınıf cevap kâğıdı") : kdMetin('cd.c_takim_kagit', "Takım yarışma kâğıdı");
 }
 
 /* Çıktı bölümü: süzgeç değişince tek başına tazelenebilsin diye ayrı. */
@@ -1361,35 +1409,37 @@ function ciktiHtml(){
   const cikabilir = !!D.konuId && havuz > 0 && secili >= hedef && !listeEksik;
   return `
     <div class="cdw-cikti${cikabilir ? "" : " kapali"}">
-      <span class="cdw-cikti-bas">Kâğıda dökmek istersen</span>
+      <span class="cdw-cikti-bas">${kacisi(kdMetin('cd.c_bas', "Kâğıda dökmek istersen"))}</span>
       ${cikabilir ? "" : `<span class="cdw-cikti-not">
         ${!D.konuId || havuz === 0
-          ? `Önce bir ders seç, sonra havuzdan soruları işaretle.`
+          ? kacisi(kdMetin('cd.c_once_ders', "Önce bir ders seç, sonra havuzdan soruları işaretle."))
           : secili < hedef
-            ? `Havuzdan <b>${hedef}</b> soru işaretle${secili ? ` — şu an <b>${secili}</b> seçili` : ""}.`
-            : kacisi(listeEksik ? listeEksik.yazi + " — cevap kâğıdı listeye göre basılır." : "")}
+            ? (secili ? kdMetin('cd.c_isaretle_s', "Havuzdan <b>{h}</b> soru işaretle — şu an <b>{s}</b> seçili.", { h: hedef, s: secili })
+                      : kdMetin('cd.c_isaretle', "Havuzdan <b>{h}</b> soru işaretle.", { h: hedef }))
+            : kacisi(listeEksik ? kdMetin('cd.c_liste_eksik', "{yazi} — cevap kâğıdı listeye göre basılır.", { yazi: listeEksik.yazi }) : "")}
         ${(!D.konuId || havuz === 0 || secili < hedef)
           ? `<button type="button" class="cdw-cikti-git" ${D.konuId && havuz > 0 ? "" : "disabled"}
-                     onclick="COFF.havuzAc()">Soruları seç ›</button>`
+                     onclick="COFF.havuzAc()">${kacisi(kdMetin('cd.c_sec', "Soruları seç"))} ›</button>`
           : ""}
       </span>`}
       <div class="cdw-cikti-tuslar">
         <button type="button" class="cdw-cikti-tus" ${cikabilir ? "" : "disabled"}
-                onclick="COFF.pdf('kitapcik')" title="Seçtiğin soruları PDF olarak indir">
+                onclick="COFF.pdf('kitapcik')" title="${kacisi(kdMetin('cd.c_kitapcik_ip', "Seçtiğin soruları PDF olarak indir"))}">
           ${CIZ.yazici}
-          <span><b>Soru kitapçığı</b><small>Bütün sorular kâğıtta — klasik test gibi dağıt.</small></span>
+          <span><b>${kacisi(kdMetin('cd.c_kitapcik', "Soru kitapçığı"))}</b><small>${kacisi(kdMetin('cd.c_kitapcik_not', "Bütün sorular kâğıtta — klasik test gibi dağıt."))}</small></span>
           <i class="cdw-cikti-ok">⭳ PDF</i>
         </button>
         <button type="button" class="cdw-cikti-tus" ${cikabilir ? "" : "disabled"}
-                onclick="COFF.pdf('kart')" title="Boş cevap kâğıdını PDF olarak indir">
+                onclick="COFF.pdf('kart')" title="${kacisi(kdMetin('cd.c_kart_ip', "Boş cevap kâğıdını PDF olarak indir"))}">
           ${CIZ.kart}
-          <span><b>${kacisi(kagitAdi())}</b><small>Boş cevap kâğıdı — öğrenciler buraya yazar.</small></span>
+          <span><b>${kacisi(kagitAdi())}</b><small>${kacisi(kdMetin('cd.c_kart_not', "Boş cevap kâğıdı — öğrenciler buraya yazar."))}</small></span>
           <i class="cdw-cikti-ok">⭳ PDF</i>
         </button>
       </div>
       <span class="cdw-pdf-durum" id="cdPdfDurum1">${cikabilir
-        ? kacisi(hedef + " soru kâğıda gidecek" + (secili > hedef
-            ? " (havuzda " + secili + " seçili, ilk " + hedef + " kullanılır)." : "."))
+        ? kacisi(secili > hedef
+            ? kdMetin('cd.c_durum_fazla', "{h} soru kâğıda gidecek (havuzda {s} seçili, ilk {h} kullanılır).", { h: hedef, s: secili })
+            : kdMetin('cd.c_durum', "{h} soru kâğıda gidecek.", { h: hedef }))
         : ""}</span>
     </div>`;
 }
@@ -1477,25 +1527,25 @@ function akisAdimlari(){
 }
 function akisAdimlariMod(mod){
   if (mod === "canli") return [
-    { ik:AKIS_IK.ders,    bas:"Ders ve sorular",   alt:"Süzgeç ve havuzdan soru seçimi" },
-    { ik:AKIS_IK.kimler,  bas:"Kimler yarışacak?", alt:"Takım, sınıf ya da bireysel" },
-    { ik:AKIS_IK.karekod, bas:"Karekod",           alt:"Öğrenciler kendi cihazından katılır" },
-    { ik:AKIS_IK.yarisma, bas:"Yarışma",           alt:"Soru tahtada, cevap öğrencide" },
-    { ik:AKIS_IK.sonuc,   bas:"Sonuç",             alt:"Sıralama ve kupa" }
+    { ik:AKIS_IK.ders,    bas:adimAdi("ders"),   alt:kdMetin('cd.ak_ders_not', "Süzgeç ve havuzdan soru seçimi") },
+    { ik:AKIS_IK.kimler,  bas:adimAdi("kimler"), alt:kdMetin('cd.ak_kimler_not', "Takım, sınıf ya da bireysel") },
+    { ik:AKIS_IK.karekod, bas:adimAdi("karekod"), alt:kdMetin('cd.ak_karekod_not', "Öğrenciler kendi cihazından katılır") },
+    { ik:AKIS_IK.yarisma, bas:kdMetin('cd.ak_yarisma', "Yarışma"), alt:kdMetin('cd.ak_yarisma_not', "Soru tahtada, cevap öğrencide") },
+    { ik:AKIS_IK.sonuc,   bas:kdMetin('cd.ak_sonuc', "Sonuç"), alt:kdMetin('cd.ak_sonuc_not', "Sıralama ve kupa") }
   ];
-  const kim = D.bicim === "sinif" ? "Sınıflar" : "Takımlar";
+  const kim = adimAdi(D.bicim === "sinif" ? "sinif" : "bicim");
   return [
-    { ik:AKIS_IK.ders,       bas:"Ders ve sorular", alt:"Süzgeç ve havuzdan soru seçimi" },
-    { ik:AKIS_IK.takimcikti, bas:kim + " ve çıktı",  alt:"Liste ve isteğe bağlı PDF" },
-    { ik:AKIS_IK.tahta,      bas:"Tahtaya yansıt",   alt:"Herkes defterine yazar" },
-    { ik:AKIS_IK.puan,       bas:"Cevabı aç, puanla", alt:"Her takıma ✓ ya da ✗ ver" },
-    { ik:AKIS_IK.siralama,   bas:"Sıralama",         alt:"Puan durumu ve kupa" }
+    { ik:AKIS_IK.ders,       bas:adimAdi("ders"), alt:kdMetin('cd.ak_ders_not', "Süzgeç ve havuzdan soru seçimi") },
+    { ik:AKIS_IK.takimcikti, bas:kim,  alt:kdMetin('cd.ak_cikti_not', "Liste ve isteğe bağlı PDF") },
+    { ik:AKIS_IK.tahta,      bas:kdMetin('cd.ak_tahta', "Tahtaya yansıt"),   alt:kdMetin('cd.ak_tahta_not', "Herkes defterine yazar") },
+    { ik:AKIS_IK.puan,       bas:kdMetin('cd.ak_puan', "Cevabı aç, puanla"), alt:kdMetin('cd.ak_puan_not', "Her takıma ✓ ya da ✗ ver") },
+    { ik:AKIS_IK.siralama,   bas:kdMetin('cd.ak_sira', "Sıralama"),         alt:kdMetin('cd.ak_sira_not', "Puan durumu ve kupa") }
   ];
 }
 function akisHtml(buyuk, mod){
   const a = akisAdimlariMod(mod || D.mod);
   return `
-  <div class="cdw-akis${buyuk ? " cdw-akis-buyuk" : ""}" role="list" aria-label="Uygulama akışı"
+  <div class="cdw-akis${buyuk ? " cdw-akis-buyuk" : ""}" role="list" aria-label="${kacisi(kdMetin('cd.akis_aria', "Uygulama akışı"))}"
        style="--n:${a.length}">
     ${a.map((x, i) => `<div class="cdw-akis-adim${i < 3 ? " sekme" : ""}" role="listitem" style="--i:${i}">
         <span class="cdw-akis-no">${i + 1}</span>
@@ -1503,7 +1553,7 @@ function akisHtml(buyuk, mod){
         <span class="cdw-akis-yazi"><b>${kacisi(x.bas)}</b><small>${kacisi(x.alt)}</small></span>
       </div>${i < a.length - 1 ? `<span class="cdw-akis-ok" aria-hidden="true" style="--i:${i}">›</span>` : ""}`).join("")}
     ${buyuk ? "" : `<button type="button" class="cdw-akis-tus" onclick="COFF.akisAc()"
-            title="Adım adım anlatım">Nasıl işler? ›</button>`}
+            title="${kacisi(kdMetin('cd.nasil_ip', "Adım adım anlatım"))}">${kacisi(kdMetin('cd.nasil', "Nasıl işler?"))} ›</button>`}
   </div>`;
 }
 
@@ -1514,36 +1564,38 @@ function karsilamaHtml(){
   <div class="cdw cdw-karsilama" dir="ltr">
     <div class="cdw-ust">
       <button type="button" class="cdw-geri-tus" onclick="COFF.disariCik()"
-              title="Geri dön" aria-label="Geri dön">
+              title="${kacisi(kdMetin('nav.geri', "Geri dön"))}" aria-label="${kacisi(kdMetin('nav.geri', "Geri dön"))}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
         </svg>
       </button>
       <ol class="cdw-yol"><li class="simdi"><button type="button" class="cdw-yol-tus" disabled>
-        <span class="cdw-yol-no cdw-yol-kupa">${CIZ.kupaKucuk}</span><span class="cdw-yol-ad">Bilgi Yarışması</span></button></li></ol>
+        <span class="cdw-yol-no cdw-yol-kupa">${CIZ.kupaKucuk}</span><span class="cdw-yol-ad">${kacisi(kdMetin('kart.bilgi', "Bilgi Yarışması"))}</span></button></li></ol>
     </div>
     <div class="cdw-govde cdw-govde-karsilama">
       <div class="cdw-sahne cdw-genis cdw-kars-sahne">
-        <p class="cdw-kars-ust">Nasıl yarışacağız?</p>
-        ${[["canli", "Canlı", "Kendi cihazından katılım · internet gerekir",
-             "Öğrenciler telefon, tablet ya da bilgisayardan katılır; cevaplar kendi cihazlarından gelir, puanlar kendiliğinden işlenir.", CIZ.modCanli],
-           ["cevrimdisi", "Çevrimdışı", "Kâğıt ve tahta · internet gerekmez",
-             "Sorular tahtaya yansır, öğrenciler defterine yazar, puanı sen verirsin.", CIZ.modCevrimdisi]
-          ].map(([m, ad, kisa, uzun, ciz]) => `
+        <p class="cdw-kars-ust">${kacisi(kdMetin('cd.nasil_yaris', "Nasıl yarışacağız?"))}</p>
+        ${[["canli", kdMetin('cd.canli', "Canlı"), kdMetin('cd.m_canli_kisa', "Kendi cihazından katılım · internet gerekir"),
+             kdMetin('cd.m_canli_uzun', "Öğrenciler telefon, tablet ya da bilgisayardan katılır; cevaplar kendi cihazlarından gelir, puanlar kendiliğinden işlenir."), CIZ.modCanli,
+             kdMetin('cd.m_canli_basla', "Canlı başla")],
+           ["cevrimdisi", kdMetin('cd.cevrimdisi', "Çevrimdışı"), kdMetin('cd.m_cd_kisa', "Kâğıt ve tahta · internet gerekmez"),
+             kdMetin('cd.m_cd_uzun', "Sorular tahtaya yansır, öğrenciler defterine yazar, puanı sen verirsin."), CIZ.modCevrimdisi,
+             kdMetin('cd.m_cd_basla', "Çevrimdışı başla")]
+          ].map(([m, ad, kisa, uzun, ciz, bas]) => `
         <section class="cdw-mod-bolum${D.mod === m ? " secili" : ""} cdw-mod-${m}"
                  onclick="COFF.modSec('${m}')" role="button" tabindex="0" aria-pressed="${D.mod === m}"
                  onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();COFF.modSec('${m}');}">
           <div class="cdw-mod-bas">
             <span class="cdw-mod-ciz-yuva">${ciz}</span>
             <div class="cdw-mod-yazi">
-              <h2 class="cdw-mod-ad">${ad}<span class="cdw-mod-secili-rozet">Seçili ✓</span></h2>
-              <p class="cdw-mod-kisa">${kisa}</p>
-              <p class="cdw-mod-uzun">${uzun}</p>
+              <h2 class="cdw-mod-ad">${kacisi(ad)}<span class="cdw-mod-secili-rozet">${kacisi(kdMetin('cd.secili_rozet', "Seçili"))} ✓</span></h2>
+              <p class="cdw-mod-kisa">${kacisi(kisa)}</p>
+              <p class="cdw-mod-uzun">${kacisi(uzun)}</p>
             </div>
             <div class="cdw-mod-tuslar">
-              <button type="button" class="cdw-tus" onclick="event.stopPropagation();COFF.modAkis('${m}')">Nasıl işler? ›</button>
-              <button type="button" class="cdw-tus cdw-tus-ana" onclick="event.stopPropagation();COFF.modBasla('${m}')">${ad} başla ›</button>
+              <button type="button" class="cdw-tus" onclick="event.stopPropagation();COFF.modAkis('${m}')">${kacisi(kdMetin('cd.nasil', "Nasıl işler?"))} ›</button>
+              <button type="button" class="cdw-tus cdw-tus-ana" onclick="event.stopPropagation();COFF.modBasla('${m}')">${kacisi(bas)} ›</button>
             </div>
           </div>
           ${akisHtml(true, m)}
@@ -1556,7 +1608,7 @@ function karsilamaHtml(){
 function adim3(){
   return `
   <div class="cdw-sahne cdw-genis cdw-ust-hizali">
-    <h2 class="cdw-bas">Hangi dersten soru gelsin?</h2>
+    <h2 class="cdw-bas">${kacisi(kdMetin('cd.ders_bas', "Hangi dersten soru gelsin?"))}</h2>
     <div class="cdw-panel cdw-panel-ayar" id="cdPanelAyar"></div>
     <div class="cdw-panel" id="cdPanelSure"></div>
     <div class="cdw-panel" id="cdPanelDers"></div>
@@ -1566,16 +1618,16 @@ function adim3(){
 /* --- 5 · başlat --- */
 function adim5(){
   const kacKisi = D.katilim.length;
-  const kimNot = D.bicim === "kisi" ? kacKisi + " öğrenci"
-               : D.bicim === "sinif" ? (kacKisi > 1 ? kacKisi + " sınıf" : "bütün sınıf")
-               : kacKisi + " takım";
+  const kimNot = D.bicim === "kisi" ? kdMetin('cd.kim_ogrenci', "{n} öğrenci", { n: kacKisi })
+               : D.bicim === "sinif" ? (kacKisi > 1 ? kdMetin('cd.kim_sinif', "{n} sınıf", { n: kacKisi }) : kdMetin('cd.kim_butun', "bütün sınıf"))
+               : kdMetin('cd.kim_takim', "{n} takım", { n: kacKisi });
   const ders = D.konuId ? dersTr(konuBul(D.konuId) || { id:"", ad:"" }) : "—";
   const eks = eksikler();
   const hazir = !eks.length && D.sorular.length > 0;
   const kilit = hazir ? "" : "disabled";
   return `
   <div class="cdw-sahne">
-    <h2 class="cdw-bas">${hazir ? "Hazır! Tahtaya yansıtalım mı?" : "Bir adım kaldı"}</h2>
+    <h2 class="cdw-bas">${kacisi(hazir ? kdMetin('cd.b_hazir', "Hazır! Tahtaya yansıtalım mı?") : kdMetin('cd.b_kaldi', "Bir adım kaldı"))}</h2>
     ${eks.length ? `
     <div class="cdw-eksik" role="status">
       <span class="cdw-eksik-bas">
@@ -1584,34 +1636,33 @@ function adim5(){
           <circle cx="12" cy="12" r="9"/><line x1="12" y1="7.5" x2="12" y2="13"/>
           <circle cx="12" cy="16.6" r="1.1" fill="currentColor" stroke="none"/>
         </svg>
-        Yarışmayı başlatmak için önce şunlar gerekli:
+        ${kacisi(kdMetin('cd.b_gerekli', "Yarışmayı başlatmak için önce şunlar gerekli:"))}
       </span>
       <ul class="cdw-eksik-liste">
         ${eks.map(x => `<li><b>${kacisi(x.yazi)}</b>
           <button type="button" class="cdw-eksik-tus" onclick="COFF.eksigeGit(${adimNo(x.git)}, '${x.hedef || ""}', '${kacisi(x.yazi).replace(/'/g, "&#39;")}')">
-            ${x.git === "ders" ? "Ders sekmesine git" : "Takım sekmesine git"} ›</button></li>`).join("")}
+            ${kacisi(x.git === "ders" ? kdMetin('cd.git_ders', "Ders sekmesine git") : kdMetin('cd.git_takim', "Takım sekmesine git"))} ›</button></li>`).join("")}
       </ul>
     </div>` : ""}
     <div class="cdw-ozet">
-      <span><i>Kimler</i>${kacisi(kimNot)}</span>
-      <span><i>Ders</i>${kacisi(ders)}</span>
-      <span><i>Soru</i>${D.sorular.length} soru</span>
-      <span><i>Süre</i>${sureOzet()}</span>
+      <span><i>${kacisi(kdMetin('cd.oz_kimler', "Kimler"))}</i>${kacisi(kimNot)}</span>
+      <span><i>${kacisi(kdMetin('cd.oz_ders', "Ders"))}</i>${kacisi(ders)}</span>
+      <span><i>${kacisi(kdMetin('cd.oz_soru', "Soru"))}</i>${kacisi(kdMetin('cd.oz_soru_n', "{n} soru", { n: D.sorular.length }))}</span>
+      <span><i>${kacisi(kdMetin('cd.oz_sure', "Süre"))}</i>${sureOzet()}</span>
     </div>
     <!-- Turnuva kartı kaldırıldı: çevrimdışında tek yol "Tahtaya yansıt". -->
     <div class="cdw-secim3 cdw-tekli cdw-is">
       <button type="button" class="cdw-kart cdw-is-kart" ${kilit}
               onclick="COFF.yansitBasla()">
         ${CIZ.perde}
-        <b>Tahtaya yansıt</b>
-        <small>Sorular tek tek büyük görünür, geri sayım çalışır, cevabı sen açarsın.</small>
-        <span class="cdw-kagit-not">📓 Yazıcı gerekmez — her takım cevabını <i class="cdw-kn-vur">kendi defterine</i> yazar,
-          kâğıt ve kalem hazır olsun.</span>
-        <span class="cdw-is-tus">▶ Başlat</span>
+        <b>${kacisi(kdMetin('cd.ak_tahta', "Tahtaya yansıt"))}</b>
+        <small>${kacisi(kdMetin('cd.yansit_not', "Sorular tek tek büyük görünür, geri sayım çalışır, cevabı sen açarsın."))}</small>
+        <span class="cdw-kagit-not">📓 ${kdMetin('cd.kagit_not', "Yazıcı gerekmez — her takım cevabını <i>kendi defterine</i> yazar, kâğıt ve kalem hazır olsun.").replace('<i>', '<i class="cdw-kn-vur">')}</span>
+        <span class="cdw-is-tus">▶ ${kacisi(kdMetin('g.baslat', "Başlat"))}</span>
         <span class="cdw-nasil" role="button" tabindex="0"
               onclick="event.stopPropagation();COFF.defterAc()"
               onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();COFF.defterAc();}"
-        >Nasıl işler?</span>
+        >${kacisi(kdMetin('cd.nasil', "Nasıl işler?"))}</span>
       </button>
     </div>
     <div class="cdw-pdf-durum" id="cdPdfDurum"></div>
@@ -1622,44 +1673,44 @@ function adim5(){
    her biri kendi animasyonuyla. Bir kez görülünce tekrar açılmaz. */
 function anlatimPerdeleri(){
   if (D.mod === "canli") return [
-    { bas: "Sorular ve katılımcılar",
-      alt: "1. sekmede dersi seç, süzgeçleri ayarla ve havuzdan soruları işaretle. 2. sekmede takım, sınıf ya da bireysel yarışa karar ver.",
+    { bas: kdMetin('cd.pc1', "Sorular ve katılımcılar"),
+      alt: kdMetin('cd.pc1_not', "1. sekmede dersi seç, süzgeçleri ayarla ve havuzdan soruları işaretle. 2. sekmede takım, sınıf ya da bireysel yarışa karar ver."),
       ciz: CIZ.liste, sinif: "p0" },
-    { bas: "Karekodu aç, öğrenciler katılsın",
-      alt: "3. sekmede karekod ekranı açılır. Öğrenciler EBA'ya giriş yapıp karekodu telefon ya da tabletle okutur; bilgisayarda karekodun yanındaki bağlantıyı açar ve takımına katılır.",
+    { bas: kdMetin('cd.pc2', "Karekodu aç, öğrenciler katılsın"),
+      alt: kdMetin('cd.pc2_not', "3. sekmede karekod ekranı açılır. Öğrenciler EBA'ya giriş yapıp karekodu telefon ya da tabletle okutur; bilgisayarda karekodun yanındaki bağlantıyı açar ve takımına katılır."),
       ciz: CIZ.karekod, sinif: "p2" },
-    { bas: "Soru tahtada, cevap öğrencide",
-      alt: "Yarışmayı başlatınca soru tahtaya yansır, geri sayım işler. Öğrenciler cevabı kendi cihazından işaretler.",
+    { bas: kdMetin('cd.pc3', "Soru tahtada, cevap öğrencide"),
+      alt: kdMetin('cd.pc3_not', "Yarışmayı başlatınca soru tahtaya yansır, geri sayım işler. Öğrenciler cevabı kendi cihazından işaretler."),
       ciz: CIZ.tahta, sinif: "p2" },
-    { bas: "Puanlar kendiliğinden işlenir",
-      alt: "Süre bitince doğru cevap ve puan tablosu ekrana gelir; senin puan girmene gerek yok.",
+    { bas: kdMetin('cd.pc4', "Puanlar kendiliğinden işlenir"),
+      alt: kdMetin('cd.pc4_not', "Süre bitince doğru cevap ve puan tablosu ekrana gelir; senin puan girmene gerek yok."),
       ciz: CIZ.puanSatir, sinif: "p4" },
-    { bas: "Sonuç ve kupa",
-      alt: "Son sorudan sonra sıralama açıklanır, kazanan kutlanır.",
+    { bas: kdMetin('cd.pc5', "Sonuç ve kupa"),
+      alt: kdMetin('cd.pc5_not', "Son sorudan sonra sıralama açıklanır, kazanan kutlanır."),
       ciz: CIZ.kupa, sinif: "p5" }
   ];
-  const kimNot = D.bicim === "kisi" ? "Her öğrenci kendi defterine yazar."
-               : D.bicim === "sinif" ? "Her sınıf kendi arasında karar verir, sözcüsü söyler."
-               : "Her takım tek bir deftere yazar, sözcü okur.";
+  const kimNot = D.bicim === "kisi" ? kdMetin('cd.kn_ogrenci', "Her öğrenci kendi defterine yazar.")
+               : D.bicim === "sinif" ? kdMetin('cd.kn_sinif', "Her sınıf kendi arasında karar verir, sözcüsü söyler.")
+               : kdMetin('cd.kn_takim', "Her takım tek bir deftere yazar, sözcü okur.");
   const n = D.sorular.length || hedefSoru();
   return [
-    { bas: "Sorular ve takımlar",
-      alt: "1. sekmede dersi seç ve havuzdan soruları işaretle. 2. sekmede takım ya da sınıf listesini kur; istersen soru kitapçığını ve yarışma kâğıdını PDF olarak yazdır.",
+    { bas: kdMetin('cd.pd1', "Sorular ve takımlar"),
+      alt: kdMetin('cd.pd1_not', "1. sekmede dersi seç ve havuzdan soruları işaretle. 2. sekmede takım ya da sınıf listesini kur; istersen soru kitapçığını ve yarışma kâğıdını PDF olarak yazdır."),
       ciz: CIZ.liste, sinif: "p0" },
-    { bas: "Defter ve kalem hazır olsun",
-      alt: "Herkes defterine 1'den " + n + "'e kadar numara yazsın. " + kimNot,
+    { bas: kdMetin('cd.pd2', "Defter ve kalem hazır olsun"),
+      alt: kdMetin('cd.numara_yaz', "Herkes defterine 1'den {n}'e kadar numara yazsın. {kim}", { n: n, kim: kimNot }),
       ciz: CIZ.kaldiranlar, sinif: "p1" },
-    { bas: "Soru tahtada, süre işliyor",
-      alt: "Soru büyük görünür, geri sayım başlar. Cevabı kimse söylemez — herkes defterine yazar.",
+    { bas: kdMetin('cd.pd3', "Soru tahtada, süre işliyor"),
+      alt: kdMetin('cd.pd3_not', "Soru büyük görünür, geri sayım başlar. Cevabı kimse söylemez — herkes defterine yazar."),
       ciz: CIZ.tahta, sinif: "p2" },
-    { bas: "Herkes cevabını defterine yazar",
-      alt: "Süre boyunca yazarlar. Son 5 saniyede uyarı sesi gelir.",
+    { bas: kdMetin('cd.pd4', "Herkes cevabını defterine yazar"),
+      alt: kdMetin('cd.pd4_not', "Süre boyunca yazarlar. Son 5 saniyede uyarı sesi gelir."),
       ciz: CIZ.yazanlar, sinif: "p3" },
-    { bas: "Cevabı aç, puanı işle",
-      alt: "Doğru cevap pankartta açılır. Sağdaki tabloda her takıma ✓ ya da ✗ verirsin; hepsi işaretlenmeden sonraki soruya geçilmez.",
+    { bas: kdMetin('cd.pd5', "Cevabı aç, puanı işle"),
+      alt: kdMetin('cd.pd5_not', "Doğru cevap pankartta açılır. Sağdaki tabloda her takıma ✓ ya da ✗ verirsin; hepsi işaretlenmeden sonraki soruya geçilmez."),
       ciz: CIZ.puanSatir, sinif: "p4" },
-    { bas: "Sıralama ve kupa",
-      alt: "Her sorudan sonra puan durumu görünür; son soruda sıralama açıklanır.",
+    { bas: kdMetin('cd.pd6', "Sıralama ve kupa"),
+      alt: kdMetin('cd.pd6_not', "Her sorudan sonra puan durumu görünür; son soruda sıralama açıklanır."),
       ciz: CIZ.kupa, sinif: "p5" }
   ];
 }
@@ -1672,15 +1723,15 @@ function anlatimHtml(){
   <div class="cdw" dir="ltr">
     <div class="cdw-ust">
       <button type="button" class="cdw-geri-tus" onclick="${D.anlKaynak === "akis" ? "COFF.anlatimKapat()" : "COFF.basaDon()"}"
-              title="Geri" aria-label="Geri">
+              title="${kacisi(kdMetin('nav.geri', "Geri"))}" aria-label="${kacisi(kdMetin('nav.geri', "Geri"))}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
         </svg>
       </button>
       <ol class="cdw-yol"><li class="simdi"><button type="button" class="cdw-yol-tus" disabled>
-        <span class="cdw-yol-no">▶</span><span class="cdw-yol-ad">Nasıl işler?</span></button></li></ol>
-      <button type="button" class="cd-tus cd-tus-ufak" onclick="${D.anlKaynak === "akis" ? "COFF.anlatimKapat()" : "COFF.anlatimBitir()"}">${D.anlKaynak === "akis" ? "Kapat ✕" : "Atla ›"}</button>
+        <span class="cdw-yol-no">▶</span><span class="cdw-yol-ad">${kacisi(kdMetin('cd.nasil', "Nasıl işler?"))}</span></button></li></ol>
+      <button type="button" class="cd-tus cd-tus-ufak" onclick="${D.anlKaynak === "akis" ? "COFF.anlatimKapat()" : "COFF.anlatimBitir()"}">${D.anlKaynak === "akis" ? kacisi(kdMetin('g.kapat', "Kapat")) + " ✕" : kacisi(kdMetin('cd.atla', "Atla")) + " ›"}</button>
     </div>
     <div class="cdw-govde cdw-govde-anl">
       <div class="cdw-sahne cdw-genis">
@@ -1689,51 +1740,51 @@ function anlatimHtml(){
         <p class="cdw-alt-bas cd-anl-alt">${kacisi(s.alt)}</p>
         <div class="cd-anl-nokta">${p.map((_, j) =>
           `<button type="button" class="cd-anl-n${j === i ? " ac" : ""}${j < i ? " gecti" : ""}"
-             onclick="COFF.anlatimGit(${j})" aria-label="${j + 1}. adım"></button>`).join("")}</div>
+             onclick="COFF.anlatimGit(${j})" aria-label="${kacisi(kdMetin('cd.n_adim', "{n}. adım", { n: j + 1 }))}"></button>`).join("")}</div>
       </div>
     </div>
     <div class="cdw-alt">
       <span class="cdw-adim-not">${i + 1} / ${p.length}</span>
       <span class="cdw-bosluk"></span>
-      ${i > 0 ? `<button type="button" class="cdw-tus" onclick="COFF.anlatimGit(${i - 1})">‹ Geri</button>` : ""}
+      ${i > 0 ? `<button type="button" class="cdw-tus" onclick="COFF.anlatimGit(${i - 1})">‹ ${kacisi(kdMetin('nav.geri', "Geri"))}</button>` : ""}
       ${i < p.length - 1
-        ? `<button type="button" class="cdw-tus cdw-tus-ana" onclick="COFF.anlatimGit(${i + 1})">İleri ›</button>`
+        ? `<button type="button" class="cdw-tus cdw-tus-ana" onclick="COFF.anlatimGit(${i + 1})">${kacisi(kdMetin('nav.ileri', "İleri"))} ›</button>`
         : (D.anlKaynak === "akis"
-            ? `<button type="button" class="cdw-tus cdw-tus-ana" onclick="COFF.anlatimKapat()">Anladım, kuruluma dön ›</button>`
-            : `<button type="button" class="cdw-tus cdw-tus-ana" onclick="COFF.anlatimBitir()">▶ Yarışmayı başlat</button>`)}
+            ? `<button type="button" class="cdw-tus cdw-tus-ana" onclick="COFF.anlatimKapat()">${kacisi(kdMetin('cd.anladim', "Anladım, kuruluma dön"))} ›</button>`
+            : `<button type="button" class="cdw-tus cdw-tus-ana" onclick="COFF.anlatimBitir()">▶ ${kacisi(kdMetin('cd.yaris_baslat', "Yarışmayı başlat"))}</button>`)}
     </div>
   </div>`;
 }
 
 function defterHtml(){
-  const kimNot = D.bicim === "kisi" ? "Her öğrenci kendi defterine yazar."
+  const kimNot = D.bicim === "kisi" ? kdMetin('cd.kn_ogrenci', "Her öğrenci kendi defterine yazar.")
                : D.bicim === "sinif" ? (D.katilim.length > 1
-                   ? "Her sınıf kendi arasında karar verir, sözcüsü söyler."
-                   : "Sınıf birlikte karar verir, sözcü söyler.")
-               : "Her takım tek bir deftere yazar, sözcü okur.";
+                   ? kdMetin('cd.kn_sinif', "Her sınıf kendi arasında karar verir, sözcüsü söyler.")
+                   : kdMetin('cd.kn_sinif1', "Sınıf birlikte karar verir, sözcü söyler."))
+               : kdMetin('cd.kn_takim', "Her takım tek bir deftere yazar, sözcü okur.");
   const adimlar = [
-    ["Defterleri açtırın", "Herkes defterine 1'den " + D.sorular.length + "'e kadar numara yazsın. " + kimNot],
-    ["Soruyu yansıtın", "Soru ekranda büyük görünür. Süreyi başlatın, herkes cevabını defterine yazsın."],
-    ["Süre bitince cevabı açın", "Boşluk tuşuna basınca doğru cevap ekranda işaretlenir; herkes kendi defterini kontrol eder."],
-    ["Puanı işleyin", "Sağdaki puan tablosunda + ve − tuşlarıyla puan verin. Tablo hep açık durur."]
+    [kdMetin('cd.d1', "Defterleri açtırın"), kdMetin('cd.numara_yaz', "Herkes defterine 1'den {n}'e kadar numara yazsın. {kim}", { n: D.sorular.length, kim: kimNot })],
+    [kdMetin('cd.d2', "Soruyu yansıtın"), kdMetin('cd.d2_not', "Soru ekranda büyük görünür. Süreyi başlatın, herkes cevabını defterine yazsın.")],
+    [kdMetin('cd.d3', "Süre bitince cevabı açın"), kdMetin('cd.d3_not', "Boşluk tuşuna basınca doğru cevap ekranda işaretlenir; herkes kendi defterini kontrol eder.")],
+    [kdMetin('cd.d4', "Puanı işleyin"), kdMetin('cd.d4_not', "Sağdaki puan tablosunda + ve − tuşlarıyla puan verin. Tablo hep açık durur.")]
   ];
   return `
   <div class="cdw" dir="ltr">
     <div class="cdw-ust">
       <button type="button" class="cdw-geri-tus" onclick="COFF.basaDon()"
-              title="Geri" aria-label="Geri">
+              title="${kacisi(kdMetin('nav.geri', "Geri"))}" aria-label="${kacisi(kdMetin('nav.geri', "Geri"))}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
         </svg>
       </button>
       <ol class="cdw-yol"><li class="simdi"><button type="button" class="cdw-yol-tus" disabled>
-        <span class="cdw-yol-no">✎</span><span class="cdw-yol-ad">Tahtaya yansıt · nasıl işler?</span></button></li></ol>
+        <span class="cdw-yol-no">✎</span><span class="cdw-yol-ad">${kacisi(kdMetin('cd.d_yol', "Tahtaya yansıt · nasıl işler?"))}</span></button></li></ol>
       
     </div>
     <div class="cdw-govde"><div class="cdw-sahne">
-      <h2 class="cdw-bas">Tahtaya yansıtma nasıl işler?</h2>
-      <p class="cdw-alt-bas">Yazıcı gerekmez. Bu dört adımı sınıfa okuyup başlayabilirsin.</p>
+      <h2 class="cdw-bas">${kacisi(kdMetin('cd.d_bas', "Tahtaya yansıtma nasıl işler?"))}</h2>
+      <p class="cdw-alt-bas">${kacisi(kdMetin('cd.d_alt', "Yazıcı gerekmez. Bu dört adımı sınıfa okuyup başlayabilirsin."))}</p>
       <div class="cdw-defter">
         <div class="cdw-defter-ciz">${CIZ.defter}</div>
         <ol class="cdw-adimlar">
@@ -1742,40 +1793,40 @@ function defterHtml(){
       </div>
     </div></div>
     <div class="cdw-alt">
-      <span class="cdw-adim-not">${D.sorular.length} soru · ${sureOzet()}</span>
+      <span class="cdw-adim-not">${kacisi(kdMetin('biy.n_soru', "{n} soru", { n: D.sorular.length }))} · ${sureOzet()}</span>
       <span class="cdw-bosluk"></span>
       <button type="button" class="cdw-tus cdw-tus-ana" onclick="COFF.defterBasla()">
-        ▶ Yarışmayı başlat</button>
+        ▶ ${kacisi(kdMetin('cd.yaris_baslat', "Yarışmayı başlat"))}</button>
     </div>
   </div>`;
 }
 
 /* --- son adım · canlı --- */
 function adimCanliBas(){
-  const kimNot = D.bicim === "kisi" ? "Her öğrenci kendi adıyla katılır"
-               : D.bicim === "sinif" ? "Her sınıf kendi adıyla katılır"
-               : "Her takım kendi karekodunu okutur";
+  const kimNot = D.bicim === "kisi" ? kdMetin('cd.kc_birey', "Her öğrenci kendi adıyla katılır")
+               : D.bicim === "sinif" ? kdMetin('cd.kc_sinif', "Her sınıf kendi adıyla katılır")
+               : kdMetin('cd.kc_takim', "Her takım kendi karekodunu okutur");
   const ders = D.konuId ? dersTr(konuBul(D.konuId) || { id:"", ad:"" }) : "—";
   const odaVar = !!state.odaId;
   return `
   <div class="cdw-sahne">
-    <h2 class="cdw-bas">Hazır! Karekodu açalım mı?</h2>
+    <h2 class="cdw-bas">${kacisi(kdMetin('cd.cb_bas', "Hazır! Karekodu açalım mı?"))}</h2>
     <div class="cdw-ozet">
-      <span><i>Kimler</i>${kacisi(kimNot)}</span>
-      <span><i>Ders</i>${kacisi(ders)}</span>
-      <span><i>Soru</i>${D.soruSayisi} soru</span>
+      <span><i>${kacisi(kdMetin('cd.oz_kimler', "Kimler"))}</i>${kacisi(kimNot)}</span>
+      <span><i>${kacisi(kdMetin('cd.oz_ders', "Ders"))}</i>${kacisi(ders)}</span>
+      <span><i>${kacisi(kdMetin('cd.oz_soru', "Soru"))}</i>${kacisi(kdMetin('cd.oz_soru_n', "{n} soru", { n: D.soruSayisi }))}</span>
     </div>
     <div class="cdw-secim3 cdw-tekli cdw-is">
       <button type="button" class="cdw-kart cdw-is-kart" onclick="COFF.canliBaslat()">
         ${CIZ.karekod}
-        <b>${odaVar ? "Odaya geri dön" : "Karekodu aç"}</b>
-        <small>${kacisi(D.bicim === "takim" ? "Takım adlarını yaz, her takıma bir karekod çıksın. Öğrenciler telefon ya da tabletle okutur, bilgisayarda bağlantıyı açar."
-                      : D.bicim === "sinif" ? "Sınıf adlarını yaz, her sınıfa bir karekod çıksın. Öğrenciler telefon ya da tabletle okutur, bilgisayarda bağlantıyı açar."
-                      : "Tek karekod ekranda durur; öğrenciler okutup ya da bağlantıyı açıp adını yazar, sen onaylarsın.")}</small>
-        <span class="cdw-is-tus">▶ ${odaVar ? "Devam et" : "Başlat"}</span>
+        <b>${kacisi(odaVar ? kdMetin('cd.odaya_don', "Odaya geri dön") : kdMetin('cd.karekod_ac', "Karekodu aç"))}</b>
+        <small>${kacisi(D.bicim === "takim" ? kdMetin('cd.cb_takim', "Takım adlarını yaz, her takıma bir karekod çıksın. Öğrenciler telefon ya da tabletle okutur, bilgisayarda bağlantıyı açar.")
+                      : D.bicim === "sinif" ? kdMetin('cd.cb_sinif', "Sınıf adlarını yaz, her sınıfa bir karekod çıksın. Öğrenciler telefon ya da tabletle okutur, bilgisayarda bağlantıyı açar.")
+                      : kdMetin('cd.cb_birey', "Tek karekod ekranda durur; öğrenciler okutup ya da bağlantıyı açıp adını yazar, sen onaylarsın."))}</small>
+        <span class="cdw-is-tus">▶ ${kacisi(odaVar ? kdMetin('cd.devam', "Devam et") : kdMetin('g.baslat', "Başlat"))}</span>
       </button>
     </div>
-    <p class="cdw-bilgi">İnternet gerekir. Öğrencilerin EBA'ya giriş yapmış olması gerekir.</p>
+    <p class="cdw-bilgi">${kacisi(kdMetin('cd.cb_bilgi', "İnternet gerekir. Öğrencilerin EBA'ya giriş yapmış olması gerekir."))}</p>
   </div>`;
 }
 
@@ -1783,8 +1834,8 @@ function katHtml(){
   if (!D.katilim.length){
     return `<div class="cdw-kat-bos">${CIZ.liste}
       <p>${D.bicim === "sinif"
-        ? `Henüz sınıf eklenmedi.<br>Yukarıya sınıf adını yazıp <b>“+ Sınıf ekle”</b> tuşuna bas.`
-        : `Henüz liste kurulmadı.<br><b>“Listeyi kur”</b> tuşuna bas.`}</p></div>`;
+        ? kdMetin('cd.kat_bos_sinif', "Henüz sınıf eklenmedi.<br>Yukarıya sınıf adını yazıp <b>“+ Sınıf ekle”</b> tuşuna bas.")
+        : kdMetin('cd.kat_bos', "Henüz liste kurulmadı.<br><b>“Listeyi kur”</b> tuşuna bas.")}</p></div>`;
   }
   if (D.bicim === "kisi"){
     return `<div class="cdw-nolar">` + D.katilim.map(k =>
@@ -1797,7 +1848,7 @@ function katHtml(){
           <span class="cdw-bayrak">${bayrakSvg(k.renk)}</span>
           <b>${kacisi(k.tr || k.ad)}</b>
           <button type="button" class="cdw-sinif-sil" onclick="COFF.sinifSil(${i})"
-                  title="Bu sınıfı sil" aria-label="Sil">✕</button>
+                  title="${kacisi(kdMetin('cd.sinif_sil_ip', "Bu sınıfı sil"))}" aria-label="${kacisi(kdMetin('cd.sil', "Sil"))}">✕</button>
         </div>
       </div>`).join("") + `</div>`;
   }
@@ -1819,11 +1870,12 @@ function katHtml(){
                ondragstart="COFF._suruklBasla(event,${n})"
                ondragend="COFF._suruklBitir()"
                onclick="event.stopPropagation();COFF.noSec(${n})"
-               title="Taşımak için dokun ya da sürükle">${n}</span>`).join("")}</div>
+               title="${kacisi(kdMetin('cd.tasi_ip', "Taşımak için dokun ya da sürükle"))}">${n}</span>`).join("")}</div>
     </div>`).join("") + `</div>
     <p class="cdw-tasima-not">${el_ != null
-      ? `<b>${el_}</b> numarayı taşıyorsun — bırakmak istediğin takıma dokun, yer değiştirmek için başka bir numaraya dokun. <button type="button" class="cdw-tasima-vaz" onclick="COFF.noSec(${el_})">Vazgeç</button>`
-      : `Numaraları takımlar arasında <b>sürükleyip bırakabilir</b> ya da önce numaraya, sonra takıma dokunarak taşıyabilirsin. İki numaraya arka arkaya dokunursan yerleri değişir.`}</p>`;
+      ? kdMetin('cd.tasiniyor', "<b>{n}</b> numarayı taşıyorsun — bırakmak istediğin takıma dokun, yer değiştirmek için başka bir numaraya dokun.", { n: el_ }) +
+        ` <button type="button" class="cdw-tasima-vaz" onclick="COFF.noSec(${el_})">${kacisi(kdMetin('g.vazgec', "Vazgeç"))}</button>`
+      : kdMetin('cd.tasima_not', "Numaraları takımlar arasında <b>sürükleyip bırakabilir</b> ya da önce numaraya, sonra takıma dokunarak taşıyabilirsin. İki numaraya arka arkaya dokunursan yerleri değişir.")}</p>`;
 }
 
 function bayrakSvg(renk){
@@ -2511,8 +2563,8 @@ const COFF = {
     if (!a || !d) return;
     if (COFF._vurguZ) COFF._vurguZ.forEach(clearTimeout);
     [a, d].forEach(x => x.classList.remove("cdw-vurgu"));
-    a.dataset.vurgu = "1 · Önce süzgeçler";
-    d.dataset.vurgu = "2 · Sonra ders ve soru havuzu";
+    a.dataset.vurgu = "1 · " + kdMetin('cd.vurgu1', "Önce süzgeçler");
+    d.dataset.vurgu = "2 · " + kdMetin('cd.vurgu2', "Sonra ders ve soru havuzu");
     a.classList.add("cdw-vurgu");
     COFF._vurguZ = [
       setTimeout(() => { a.classList.remove("cdw-vurgu"); d.classList.add("cdw-vurgu"); }, 2800),
@@ -2561,7 +2613,7 @@ const COFF = {
     /* Çevrimdışında her öğrenciye tek tek puan vermek zor; bireysel sistem
        yalnız karekodlu (çevrimiçi) yarışmada kullanılabilir. */
     if (v === "kisi" && D.mod === "cevrimdisi"){
-      uyar("Bireysel Yarış yalnız çevrimiçi yarışmada kullanılır.");
+      uyar(kdMetin('cd.u_birey', "Bireysel Yarış yalnız çevrimiçi yarışmada kullanılır."));
       return;
     }
     D.bicim = v;
@@ -2592,11 +2644,11 @@ const COFF = {
     switchTazele(D.mod);
   },
   canliBaslat(){
-    if (!D.sorular.length && !seciliSorular().length){ uyar("Önce bir ders seç."); return; }
+    if (!D.sorular.length && !seciliSorular().length){ uyar(kdMetin('cd.u_once_ders', "Önce bir ders seç.")); return; }
     canliyaAktar();
     canliYolGozle();
     try { BIY.acLobi(BICIM_ES[D.bicim] || "takim"); }
-    catch(e){ console.warn("[CD] lobi:", e); uyar("Lobi açılamadı."); }
+    catch(e){ console.warn("[CD] lobi:", e); uyar(kdMetin('cd.u_lobi', "Lobi açılamadı.")); }
     setTimeout(canliYolCiz, 0);
   },
 
@@ -2615,7 +2667,7 @@ const COFF = {
       const eks = eksikler();
       if (eks.length){ COFF.eksigeGit(adimNo(eks[0].git), eks[0].hedef, eks[0].yazi); return; }
       /* Ayrı "Başlat" sayfası kalmadığı için soru seti burada kuruluyor. */
-      if (turGerekli() && !setKur()){ uyar("Bu derste seçtiğin çeşitlerde soru yok."); return; }
+      if (turGerekli() && !setKur()){ uyar(kdMetin('cd.u_soru_yok', "Bu derste seçtiğin çeşitlerde soru yok.")); return; }
       D.adim = n; COFF.canliBaslat(); return;
     }
     D.adim = n;
@@ -2644,7 +2696,7 @@ const COFF = {
     }
     if (k === "bicim" && D.mod === "cevrimdisi"){
       if (D.bicim === "sinif" && !D.katilim.length){
-        uyar("En az bir sınıf ekle.");
+        uyar(kdMetin('cd.u_sinif_ekle', "En az bir sınıf ekle."));
         const g = el("cdSinifAd"); if (g) g.focus();
         return;
       }
@@ -2661,8 +2713,9 @@ const COFF = {
       const d5 = el("cdPdfDurum");
       if (d5 && D.sorular.length){
         d5.className = "cdw-pdf-durum ok";
-        d5.textContent = D.sorular.length + " soru hazır" + (eski && !turGerekli() ? "" : "landı")
-          + ". Yukarıdaki seçeneklerden birini kullan.";
+        d5.textContent = (eski && !turGerekli())
+          ? kdMetin('cd.u_hazir', "{n} soru hazır. Yukarıdaki seçeneklerden birini kullan.", { n: D.sorular.length })
+          : kdMetin('cd.u_hazirlandi', "{n} soru hazırlandı. Yukarıdaki seçeneklerden birini kullan.", { n: D.sorular.length });
       }
       return;
     }
@@ -2671,7 +2724,7 @@ const COFF = {
   /* Canlı tarafın kendi soru havuzu penceresi — kaplama olarak açılır. */
   havuzAc(){
     try { if (BIY.soruSecAc) BIY.soruSecAc(); }
-    catch(e){ uyar("Soru havuzu açılamadı."); }
+    catch(e){ uyar(kdMetin('cd.u_havuz', "Soru havuzu açılamadı.")); }
   },
   basaDon(){ COFF.adimGit(adimNo("bas")); },
   /* Süzgeç penceresi açıkken bütün ekranı yeniden çizmek pencereyi bir an
@@ -2683,7 +2736,7 @@ const COFF = {
     if (y) y.innerHTML = ciktiHtml();
   },
   defterAc(){
-    if (!D.sorular.length){ uyar("Önce soruları hazırla."); return; }
+    if (!D.sorular.length){ uyar(kdMetin('cd.u_once_hazirla', "Önce soruları hazırla.")); return; }
     D.anlAdim = 0; D.anlKaynak = "bas";
     const e = el("ekranCevrimdisi"); if (e) e.innerHTML = anlatimHtml();
   },
@@ -2697,7 +2750,7 @@ const COFF = {
   defterBasla(){ D.yanAcik = true; COFF.sunumAc(); },
   /* Kart: ilk seferde akış anlatımı, sonrasında doğrudan yarışma. */
   yansitBasla(){
-    if (!D.sorular.length){ uyar("Önce soruları hazırla."); return; }
+    if (!D.sorular.length){ uyar(kdMetin('cd.u_once_hazirla', "Önce soruları hazırla.")); return; }
     if (!D.anlatimGoruldu){ D.anlatimGoruldu = true; COFF.defterAc(); return; }
     COFF.sunumAc();
   },
@@ -2799,7 +2852,7 @@ const COFF = {
     const kaynak = COFF._takimBul(no);
     const hedef = D.katilim.find(k => k.id === hedefId);
     if (!hedef || !kaynak || kaynak === hedef) return false;
-    if (kaynak.uyeler.length <= 1){ uyar("Bir takım boş kalamaz."); return false; }
+    if (kaynak.uyeler.length <= 1){ uyar(kdMetin('cd.u_bos_takim', "Bir takım boş kalamaz.")); return false; }
     kaynak.uyeler.splice(kaynak.uyeler.indexOf(no), 1);
     hedef.uyeler.push(no);
     hedef.uyeler.sort((x, y) => x - y);
@@ -2850,12 +2903,12 @@ const COFF = {
   sinifEkle(){
     const g = el("cdSinifAd"); if (!g) return;
     const ad = String(g.value || "").trim();
-    if (!ad){ uyar("Önce sınıf adını yaz."); g.focus(); return; }
+    if (!ad){ uyar(kdMetin('cd.u_sinif_yaz', "Önce sınıf adını yaz.")); g.focus(); return; }
     const var_ = sinifAdlari();
     if (var_.some(x => x.toLocaleLowerCase("tr") === ad.toLocaleLowerCase("tr"))){
-      uyar("Bu sınıf zaten listede."); g.value = ""; g.focus(); return;
+      uyar(kdMetin('cd.u_sinif_var', "Bu sınıf zaten listede.")); g.value = ""; g.focus(); return;
     }
-    if (var_.length >= 24){ uyar("En fazla 24 sınıf eklenebilir."); return; }
+    if (var_.length >= 24){ uyar(kdMetin('cd.u_sinif_max', "En fazla 24 sınıf eklenebilir.")); return; }
     var_.push(ad);
     D.sinifAdlari = var_.join(", ");
     listeKur();
@@ -2872,7 +2925,7 @@ const COFF = {
   },
 
   turKur(){
-    if (!setKur()){ uyar("Bu derste seçtiğin çeşitlerde soru yok."); return false; }
+    if (!setKur()){ uyar(kdMetin('cd.u_soru_yok', "Bu derste seçtiğin çeşitlerde soru yok.")); return false; }
     COFF.ciz();
   },
 
@@ -3146,7 +3199,7 @@ const COFF = {
 
   /* ---- turnuva ---- */
   turnuvaAc(){
-    if (!D.sorular.length){ uyar("Önce soruları hazırla."); return; }
+    if (!D.sorular.length){ uyar(kdMetin('cd.u_once_hazirla', "Önce soruları hazırla.")); return; }
     if (D.katilim.length < 2){ uyar("Turnuva için en az iki yarışmacı gerekir."); return; }
     D.katilim.forEach(k => k.puan = 0);
     D.turPuan = {}; D.mac = null;
@@ -3175,7 +3228,7 @@ const COFF = {
     const sm = siradakiMac(); if (!sm) return;
     const t = D.turnuva;
     const havuz = D.sorular;
-    if (!havuz.length){ uyar("Önce soruları hazırla."); return; }
+    if (!havuz.length){ uyar(kdMetin('cd.u_once_hazirla', "Önce soruları hazırla.")); return; }
     const sorular = [];
     for (let i = 0; i < t.macSoru; i++) sorular.push(havuz[(t.soruImleci + i) % havuz.length]);
     t.soruImleci = (t.soruImleci + t.macSoru) % havuz.length;
@@ -3257,18 +3310,34 @@ const COFF = {
   pdf(tur){
     /* Ders sekmesinden de çıktı alınabiliyor: soru seti hazır değilse
        (ya da seçimler değiştiyse) önce burada kurulur. */
-    if (!D.konuId || !seciliSorular().length){ uyar("Önce bir ders seç."); return; }
-    if (turGerekli() && !setKur()){ uyar("Bu derste seçtiğin çeşitlerde soru yok."); return; }
+    if (!D.konuId || !seciliSorular().length){ uyar(kdMetin('cd.u_once_ders', "Önce bir ders seç.")); return; }
+    if (turGerekli() && !setKur()){ uyar(kdMetin('cd.u_soru_yok', "Bu derste seçtiğin çeşitlerde soru yok.")); return; }
     if (!D.katilim.length) listeKur();
     CDPDF.uret(tur, D);
     const n1 = el("cdPdfDurum1");
     if (n1){ n1.className = "cdw-pdf-durum ok";
-      n1.textContent = D.sorular.length + " soruluk PDF hazırlandı."; }
+      n1.textContent = kdMetin('cd.u_pdf', "{n} soruluk PDF hazırlandı.", { n: D.sorular.length }); }
   },
 
   _D: D
 };
 
+/* ÇOK DİLLİ SİTE (16.10.2026): dil değişince kurulum sihirbazı (karşılama,
+   adımlar, liste, çıktı, anlatım) seçili dilde yeniden çizilir; takım adları
+   yenilenir. Yarışma sunumu açıksa ona dokunulmaz. */
+document.addEventListener('kidef:dil', function(){
+  try { D.katilim.forEach(function(k){ if (/^t[0-9]+$/.test(k.id)) k.tr = takimBilgi(+k.id.slice(1)).tr; }); } catch(e){}
+  try { switchTazele(D.mod); } catch(e){}
+  try { if (el("cdYolCanli")) canliYolCiz(); } catch(e){}
+  const e = el("ekranCevrimdisi");
+  if (!e || e.classList.contains("gizli") || el("cdSunum")) return;
+  try {
+    if (D.turnuva) COFF.turnuvaCiz();
+    else if (el("cdAnl")) e.innerHTML = anlatimHtml();
+    else if (e.querySelector(".cdw-defter")) e.innerHTML = defterHtml();
+    else COFF.ciz();
+  } catch(x){}
+});
 window.CDTR = { unite: UNITE_TR, ders: DERS_TR, soruBaslik: soruBaslik };
 window.COFF = COFF;
 

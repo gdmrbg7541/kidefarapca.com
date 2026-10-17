@@ -37,7 +37,7 @@
      sürüm etiketi. Oyunda görsel/işlevsel değişiklik yapıldığında bu sayı
      artırılırsa kullanıcıların ctrl+F5 yapmasına gerek kalmaz. -->
 <link rel="stylesheet" href="sarf/sarf.css?v=7f01e232">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <!-- Bu sayfa artık "tek oyun" kipindedir: data-tek-oyun="game2" menüyü
      tamamen atlatır, sayfa açılır açılmaz Kelime Fabrikası'nın kendisi
@@ -92,10 +92,10 @@
 <!-- Kok sira numaralari + ebced + KOK·KALIP·SIGA adresi.
      sarf.js'ten ONCE yuklenmeli; yuklenmezse sayfa eskisi gibi calisir. -->
 <script src="veri/veri_kok_numaralari.js?v=389fce39"></script>
-<script src="sistem/gorevkopru.js?v=50232a80"></script>
+<script src="sistem/gorevkopru.js?v=d5377b75"></script>
 <script>/* Sarf konu anlatimi/simulasyon sayfasidir: puan degil SURE takip edilir. */
 try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
-<script src="sarf/sarf.js?v=c57ebb4e"></script>
+<script src="sarf/sarf.js?v=d5308d74"></script>
 <script src="sistem/geri.js?v=f87d1337"></script>
 <!-- Eski derin bağlantı betiği kalktı: sayfa zaten doğrudan fabrikayı
      açtığı için sarf.html#fabrika kendiliğinden doğru yere düşer.
@@ -111,5 +111,8 @@ try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</scr
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

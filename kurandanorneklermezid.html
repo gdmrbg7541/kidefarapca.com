@@ -14,13 +14,13 @@
 </script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="sarf/mezid/kurandanorneklermezid.css?v=4687c6f3">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
 
 <div class="container" id="main-container">
     <div class="header-bar">
-        <a href="kaliplartablosu.html" class="icon-btn" title="Ana Sayfa">
+        <a href="kaliplartablosu.html" class="icon-btn" data-i18n-title="nav.anasayfa" title="Ana Sayfa">
             <svg class="icon-svg" viewBox="0 0 24 24">
                 <path d="M3.4 10.5 12 3.5l8.6 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.4 9.4V19a1.5 1.5 0 0 0 1.5 1.5h10.2a1.5 1.5 0 0 0 1.5-1.5V9.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.6 20.5v-5a1.3 1.3 0 0 1 1.3-1.3h2.2a1.3 1.3 0 0 1 1.3 1.3v5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -28,7 +28,7 @@
         
         <div class="header-title">Kelime Tahlili</div>
 
-        <button class="icon-btn" onclick="toggleFullScreen()" title="Tam Ekran">
+        <button class="icon-btn" onclick="toggleFullScreen()" data-i18n-title="oyn.tam_ekran" title="Tam Ekran">
             <svg class="icon-svg" viewBox="0 0 24 24">
                 <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
             </svg>
@@ -106,5 +106,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

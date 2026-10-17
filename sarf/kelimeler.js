@@ -883,9 +883,9 @@ function renderThematicLists() {
             let maxPairs = cat.items ? cat.items.length : 0;
             if (maxPairs < 6) {
                 pairOptions += `<option value="${maxPairs}" selected>${maxPairs} Çift</option>`;
-                pairOptions += `<option value="6" disabled>6 Çift</option>`;
+                pairOptions += `<option value="6" disabled data-i18n="kl.cift6">6 Çift</option>`;
             } else {
-                pairOptions += `<option value="6" selected>6 Çift</option>`;
+                pairOptions += `<option value="6" selected data-i18n="kl.cift6">6 Çift</option>`;
             }
             pairOptions += `<option value="8" ${maxPairs < 8 ? 'disabled' : ''}>8 Çift</option>`;
             pairOptions += `<option value="10" ${maxPairs < 10 ? 'disabled' : ''}>10 Çift</option>`;
@@ -945,13 +945,13 @@ function renderThematicLists() {
                                      için), üç sütunda bütün liste tek ekrana sığar.
                                      Seçim yapılmazsa sütun sayısı içeriğe göre
                                      kendiliğinden ayarlanır. -->
-                                <div class="kdf-sutun" id="sutun-sec-${key}" role="group" aria-label="Sütun sayısı">
-                                    <button type="button" class="kdf-sutun-t aktif" data-sutun="1" onclick="klSutunKur('${key}',1)" title="Tek sütun — büyük yazı" aria-label="Tek sütun" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/></svg></button>
-                                    <button type="button" class="kdf-sutun-t" data-sutun="2" onclick="klSutunKur('${key}',2)" title="İki sütun" aria-label="İki sütun" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="7.4" height="15" rx="1.8"/><rect x="13.1" y="4.5" width="7.4" height="15" rx="1.8"/></svg></button>
-                                    <button type="button" class="kdf-sutun-t" data-sutun="3" onclick="klSutunKur('${key}',3)" title="Üç sütun" aria-label="Üç sütun" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="4.3" height="15" rx="1.5"/><rect x="9.85" y="4.5" width="4.3" height="15" rx="1.5"/><rect x="16.2" y="4.5" width="4.3" height="15" rx="1.5"/></svg></button>
+                                <div class="kdf-sutun" id="sutun-sec-${key}" role="group" data-i18n-aria="kl.sutun_sayi" aria-label="Sütun sayısı">
+                                    <button type="button" class="kdf-sutun-t aktif" data-sutun="1" onclick="klSutunKur('${key}',1)" data-i18n-title="kl.tek_sutun_b" title="Tek sütun — büyük yazı" data-i18n-aria="kl.tek_sutun" aria-label="Tek sütun" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/></svg></button>
+                                    <button type="button" class="kdf-sutun-t" data-sutun="2" onclick="klSutunKur('${key}',2)" data-i18n-title="kl.iki_sutun" title="İki sütun" data-i18n-aria="kl.iki_sutun" aria-label="İki sütun" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="7.4" height="15" rx="1.8"/><rect x="13.1" y="4.5" width="7.4" height="15" rx="1.8"/></svg></button>
+                                    <button type="button" class="kdf-sutun-t" data-sutun="3" onclick="klSutunKur('${key}',3)" data-i18n-title="kl.uc_sutun" title="Üç sütun" data-i18n-aria="kl.uc_sutun" aria-label="Üç sütun" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="4.3" height="15" rx="1.5"/><rect x="9.85" y="4.5" width="4.3" height="15" rx="1.5"/><rect x="16.2" y="4.5" width="4.3" height="15" rx="1.5"/></svg></button>
                                 </div>
                                 <button class="memory-btn kl-tamekran" id="btn-fs-${key}" type="button"
-                                        title="Kapat — listeden çık" aria-label="Kapat"
+                                        data-i18n-title="kl.kapat_liste" title="Kapat — listeden çık" aria-label="Kapat"
                                         onclick="klListeKapat('${key}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6.6" y1="6.6" x2="17.4" y2="17.4"/><line x1="17.4" y1="6.6" x2="6.6" y2="17.4"/></svg></button>
                             </div>
 

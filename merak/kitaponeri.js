@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 /* ==========================================================================
    KİTAP ÖNERİSİ                                merak/kitaponeri.js
    --------------------------------------------------------------------------
@@ -39,7 +79,7 @@
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
     function alanAd(k) {
-        for (var i = 0; i < V.alanlar.length; i++) if (V.alanlar[i].k === k) return V.alanlar[i].ad;
+        for (var i = 0; i < V.alanlar.length; i++) if (V.alanlar[i].k === k) return kdMetin(KN_AL[k] || '', V.alanlar[i].ad);
         return k;
     }
     function alanRenk(k) {
@@ -47,13 +87,36 @@
         return '#6B7A8C';
     }
     function sevAd(n) {
-        for (var i = 0; i < V.seviyeler.length; i++) if (V.seviyeler[i].n === n) return V.seviyeler[i].ad;
+        for (var i = 0; i < V.seviyeler.length; i++) if (V.seviyeler[i].n === n) return kdMetin(KN_SEV[V.seviyeler[i].k] || '', V.seviyeler[i].ad);
         return '';
     }
     /* Kitabın seviye aralığını "Ortaokul 7-8 — Lise 9-10" gibi yazar. */
     function sevYazi(k) {
         if (k.s1 === k.s2) return sevAd(k.s1);
         return sevAd(k.s1) + ' – ' + sevAd(k.s2);
+    }
+    /* ÇOK DİLLİ SİTE (16.10.2026): alan ve seviye adlarının sözlük anahtarları
+       (veri dosyasındaki k → anahtar). innerHTML'e konan adlar işaretli <span> —
+       dil değişince motor kendisi çevirir. */
+    var KN_AL = { roman: 'kn.al_roman', klasik: 'kn.al_klasik', macera: 'kn.al_macera',
+        bilimkurgu: 'kn.al_bilimkurgu', polisiye: 'kn.al_polisiye', tarih: 'kn.al_tarih',
+        bilim: 'kn.al_bilim', uzay: 'kn.al_uzay', matematik: 'kn.al_matematik',
+        teknoloji: 'kn.al_teknoloji', doga: 'kn.al_doga', psikoloji: 'kn.al_psikoloji',
+        felsefe: 'kn.al_felsefe', din: 'kn.al_din', sanat: 'kn.al_sanat',
+        biyografi: 'kn.al_biyografi', gezi: 'kn.al_gezi', siir: 'kn.al_siir', cizgi: 'kn.al_cizgi' };
+    var KN_SEV = { o56: 'kn.sev_o56', o78: 'kn.sev_o78', l910: 'kn.sev_l910', l1112: 'kn.sev_l1112' };
+    var KN_YAS = { o56: 'kn.yas_o56', o78: 'kn.yas_o78', l910: 'kn.yas_l910', l1112: 'kn.yas_l1112' };
+    function sevIsaretli(n) {
+        for (var i = 0; i < V.seviyeler.length; i++) if (V.seviyeler[i].n === n) return kdIsaretli(KN_SEV[V.seviyeler[i].k] || '', V.seviyeler[i].ad);
+        return '';
+    }
+    function sevYaziIsaretli(k) {
+        if (k.s1 === k.s2) return sevIsaretli(k.s1);
+        return sevIsaretli(k.s1) + ' – ' + sevIsaretli(k.s2);
+    }
+    function alanIsaretli(k) {
+        for (var i = 0; i < V.alanlar.length; i++) if (V.alanlar[i].k === k) return kdIsaretli(KN_AL[k] || '', V.alanlar[i].ad);
+        return kacis(k);
     }
     function okunanlar() {
         try { return JSON.parse(localStorage.getItem(OKUNDU_ANAHTAR) || '{}') || {}; }
@@ -193,31 +256,31 @@
         var alanTus = V.alanlar.map(function (a) {
             var n = V.kitaplar.filter(function (k) { return k.al.indexOf(a.k) >= 0; }).length;
             return '<button type="button" class="ko-tus" data-ko-alan="' + a.k + '"' +
-                ' data-renk="' + a.renk + '" title="' + n + ' kitap">' + kacis(a.ad) +
+                ' data-renk="' + a.renk + '" title="' + kacis(kdMetin('kn.n_kitap', '{n} kitap', { n: n })) + '">' + kdIsaretli(KN_AL[a.k] || '', a.ad) +
                 '<span class="ko-adet"></span></button>';
         }).join('');
         var sevTus = V.seviyeler.map(function (s) {
             return '<button type="button" class="ko-tus" data-ko-sev="' + s.n + '">' +
-                kacis(s.ad) + ' <span style="opacity:.6">· ' + kacis(s.yas) + '</span></button>';
+                kdIsaretli(KN_SEV[s.k] || '', s.ad) + ' <span style="opacity:.6">· ' + kdIsaretli(KN_YAS[s.k] || '', s.yas) + '</span></button>';
         }).join('');
         kap.innerHTML =
-            '<div class="ko-bas"><h2>Kitap Önerisi</h2>' +
+            '<div class="ko-bas"><h2>' + kdIsaretli('mk.kitap', 'Kitap Önerisi') + '</h2>' +
             '<span class="ko-say" id="koSay"></span></div>' +
-            '<p class="ko-not">Sevdiğin alanı ve sınıfını seç — sana uygun bir kitap önerelim.</p>' +
+            '<p class="ko-not">' + kdIsaretli('kn.not', 'Sevdiğin alanı ve sınıfını seç — sana uygun bir kitap önerelim.') + '</p>' +
             '<div class="ko-filtre">' +
-            '  <div class="ko-satir"><span class="ko-etiket">ALAN</span>' +
-            '    <button type="button" class="ko-tus ko-genel secili" data-ko-alan="">Hepsi</button>' +
+            '  <div class="ko-satir"><span class="ko-etiket">' + kdIsaretli('kn.alan', 'ALAN') + '</span>' +
+            '    <button type="button" class="ko-tus ko-genel secili" data-ko-alan="">' + kdIsaretli('kn.hepsi', 'Hepsi') + '</button>' +
             alanTus + '</div>' +
-            '  <div class="ko-satir"><span class="ko-etiket">SEVİYE</span>' +
-            '    <button type="button" class="ko-tus ko-genel secili" data-ko-sev="0">Fark etmez</button>' +
+            '  <div class="ko-satir"><span class="ko-etiket">' + kdIsaretli('kn.seviye', 'SEVİYE') + '</span>' +
+            '    <button type="button" class="ko-tus ko-genel secili" data-ko-sev="0">' + kdIsaretli('kn.fark_etmez', 'Fark etmez') + '</button>' +
             sevTus + '</div>' +
-            '  <div class="ko-satir"><span class="ko-etiket">ARA</span>' +
-            '    <input type="search" class="ko-ara" id="koAra" placeholder="Kitap adı ya da yazar…"' +
-            ' aria-label="Kitap adı ya da yazar ara"></div>' +
+            '  <div class="ko-satir"><span class="ko-etiket">' + kdIsaretli('kn.ara', 'ARA') + '</span>' +
+            '    <input type="search" class="ko-ara" id="koAra" data-i18n-ph="kn.ara_ph" data-i18n-ph-tr="Kitap adı ya da yazar…" placeholder="' + kacis(kdMetin('kn.ara_ph', 'Kitap adı ya da yazar…')) + '"' +
+            ' data-i18n-aria="kn.ara_aria" data-i18n-aria-tr="Kitap adı ya da yazar ara" aria-label="' + kacis(kdMetin('kn.ara_aria', 'Kitap adı ya da yazar ara')) + '"></div>' +
             '</div>' +
             '<div class="ko-eylem">' +
-            '  <button type="button" class="ko-buyuk" data-ko-rol="oner">Bana kitap öner</button>' +
-            '  <button type="button" class="ko-buyuk ko-ikincil" data-ko-rol="liste">Hepsini listele</button>' +
+            '  <button type="button" class="ko-buyuk" data-ko-rol="oner">' + kdIsaretli('kn.oner', 'Bana kitap öner') + '</button>' +
+            '  <button type="button" class="ko-buyuk ko-ikincil" data-ko-rol="liste" data-i18n="kn.listele" data-i18n-tr="Hepsini listele">' + kacis(kdMetin('kn.listele', 'Hepsini listele')) + '</button>' +
             '</div>' +
             '<div id="koKart"></div><div id="koListe"></div>';
         /* MODÜL YUVASI (14.10.2026): sayfa modüllere ayrılınca bölüm
@@ -264,7 +327,7 @@
     function yenile() {
         var n = suzulmus().length;
         var s = kap.querySelector('#koSay');
-        if (s) s.textContent = n + ' kitap' + (durum.alan || durum.sev || durum.ara ? ' (süzülmüş)' : '');
+        if (s) s.textContent = kdMetin('kn.n_kitap', '{n} kitap', { n: n }) + (durum.alan || durum.sev || durum.ara ? ' ' + kdMetin('kn.suzulmus', '(süzülmüş)') : '');
         alanSayilari();
         if (durum.liste) listeCiz();
     }
@@ -292,7 +355,7 @@
             }
             say.textContent = ' ' + n;
             b.classList.toggle('ko-yok', n === 0);
-            b.title = n + ' kitap';
+            b.title = kdMetin('kn.n_kitap', '{n} kitap', { n: n });
         });
     }
 
@@ -314,12 +377,12 @@
                             return (!durum.alan || k.al.indexOf(durum.alan) >= 0) && y >= k.s1 && y <= k.s2;
                         }).length;
                         if (m) oneri = '<button type="button" class="ko-buyuk ko-ikincil"' +
-                            ' data-ko-sev="' + y + '">' + kacis(sevAd(y)) + ' için ' + m + ' kitap var</button>';
+                            ' data-ko-sev="' + y + '">' + kacis(kdMetin('kn.icin_var', '{sev} için {n} kitap var', { sev: sevAd(y), n: m })) + '</button>';
                     });
                 }
             }
-            yer.innerHTML = '<p class="ko-bos">Bu alanda bu seviye için kitap yok.' +
-                (oneri ? ' Buna ne dersin?' : ' Filtreyi biraz gevşet.') + '</p>' +
+            yer.innerHTML = '<p class="ko-bos">' + kacis(kdMetin('kn.bos', 'Bu alanda bu seviye için kitap yok.')) + ' ' +
+                kacis(oneri ? kdMetin('kn.ne_dersin', 'Buna ne dersin?') : kdMetin('kn.gevset', 'Filtreyi biraz gevşet.')) + '</p>' +
                 (oneri ? '<div class="ko-k-alt">' + oneri + '</div>' : '');
             return;
         }
@@ -341,8 +404,8 @@
         var ok = okunanlar();
         var rozet = k.al.map(function (a) {
             return '<span class="ko-rozet ko-alan" style="background:' + alanRenk(a) + '">' +
-                kacis(alanAd(a)) + '</span>';
-        }).join('') + '<span class="ko-rozet">' + kacis(sevYazi(k)) + '</span>';
+                alanIsaretli(a) + '</span>';
+        }).join('') + '<span class="ko-rozet">' + sevYaziIsaretli(k) + '</span>';
         yer.innerHTML =
             '<article class="ko-kart" style="--ko-renk:' + renk + '">' +
             '<p class="ko-k-ad">' + kacis(k.ad) + '</p>' +
@@ -350,10 +413,11 @@
             '<p class="ko-k-nt">' + kacis(k.nt) + '</p>' +
             '<div class="ko-rozetler">' + rozet + '</div>' +
             '<div class="ko-k-alt">' +
-            '<button type="button" class="ko-buyuk" data-ko-rol="baska">Başka bir kitap</button>' +
+            '<button type="button" class="ko-buyuk" data-ko-rol="baska">' + kdIsaretli('kn.baska', 'Başka bir kitap') + '</button>' +
             '<button type="button" class="ko-buyuk ko-ikincil ko-isaret-buyuk' +
-            (ok[k.id] ? ' okundu' : '') + '" data-ko-id="' + k.id + '">' +
-            (ok[k.id] ? '✓ Okudum' : 'Okudum olarak işaretle') + '</button>' +
+            (ok[k.id] ? ' okundu' : '') + '" data-ko-id="' + k.id + '"' +
+            (ok[k.id] ? ' data-i18n="kn.okudum" data-i18n-tr="✓ Okudum">' + kacis(kdMetin('kn.okudum', '✓ Okudum'))
+                      : ' data-i18n="kn.isaretle" data-i18n-tr="Okudum olarak işaretle">' + kacis(kdMetin('kn.isaretle', 'Okudum olarak işaretle'))) + '</button>' +
             '</div></article>';
     }
 
@@ -361,19 +425,19 @@
     function listeCiz() {
         var yer = kap.querySelector('#koListe');
         var tus = kap.querySelector('[data-ko-rol="liste"]');
-        if (!durum.liste) { yer.innerHTML = ''; if (tus) tus.textContent = 'Hepsini listele'; return; }
-        if (tus) tus.textContent = 'Listeyi kapat';
+        if (!durum.liste) { yer.innerHTML = ''; if (tus) kdYaz(tus, 'kn.listele', 'Hepsini listele'); return; }
+        if (tus) kdYaz(tus, 'kn.liste_kapat', 'Listeyi kapat');
         var h = suzulmus();
-        if (!h.length) { yer.innerHTML = '<p class="ko-bos">Bu seçimle kitap bulunamadı.</p>'; return; }
+        if (!h.length) { yer.innerHTML = '<p class="ko-bos">' + kacis(kdMetin('kn.bulunamadi', 'Bu seçimle kitap bulunamadı.')) + '</p>'; return; }
         var ok = okunanlar();
         yer.innerHTML = '<div class="ko-liste">' + h.map(function (k) {
             return '<div class="ko-sat" style="--ko-renk:' + alanRenk(k.al[0]) + '">' +
                 '<div class="ko-s-ic"><b>' + kacis(k.ad) + '</b>' +
-                '<small>' + kacis(k.yz) + ' · ' + kacis(sevYazi(k)) + '</small>' +
+                '<small>' + kacis(k.yz) + ' · ' + sevYaziIsaretli(k) + '</small>' +
                 '<div class="ko-s-nt">' + kacis(k.nt) + '</div></div>' +
                 '<button type="button" class="ko-isaret' + (ok[k.id] ? ' okundu' : '') + '"' +
-                ' data-ko-id="' + k.id + '" title="Okudum olarak işaretle"' +
-                ' aria-label="Okudum olarak işaretle">✓</button></div>';
+                ' data-ko-id="' + k.id + '" title="' + kacis(kdMetin('kn.isaretle', 'Okudum olarak işaretle')) + '"' +
+                ' aria-label="' + kacis(kdMetin('kn.isaretle', 'Okudum olarak işaretle')) + '">✓</button></div>';
         }).join('') + '</div>';
     }
 
@@ -385,12 +449,14 @@
         var acik = !!o[id];
         tus.classList.toggle('okundu', acik);
         if (tus.classList.contains('ko-isaret-buyuk')) {
-            tus.textContent = acik ? '✓ Okudum' : 'Okudum olarak işaretle';
+            if (acik) kdYaz(tus, 'kn.okudum', '✓ Okudum'); else kdYaz(tus, 'kn.isaretle', 'Okudum olarak işaretle');
         }
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
     else kur();
 
+    /* dil değişince sayaç, alan ipuçları ve açık liste yeniden yazılsın */
+    document.addEventListener('kidef:dil', function () { try { if (kap) yenile(); } catch (e) { } });
     window.KidefKitapOneri = { ac: kur, veri: function () { return V; } };
 })();

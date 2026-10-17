@@ -94,7 +94,7 @@
   }
 </style>
 <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
-<link rel="stylesheet" href="arakom.css?v=4383f21b">
+<link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
 
@@ -229,7 +229,7 @@ function ycGeri(e) {
     }
     h += '<input type="search" id="ycAra" placeholder="Çıktı, konu ya da kod ara…" value="'+esc(suzgec)+'">';
     h += '<button type="button" class="yc-tus" id="ycBugun">Bu haftaya git</button>';
-    h += '<button type="button" class="yc-tus ikincil" id="ycYaz">Yazdır</button>';
+    h += '<button type="button" class="yc-tus ikincil" id="ycYaz" data-i18n="oyn.yazdir">Yazdır</button>';
     el('ycArac').innerHTML = h;
 
     el('ycSinif').onchange = function () { sinif = parseInt(this.value,10); sinifYaz(sinif); ciz(); };
@@ -330,5 +330,8 @@ function ycGeri(e) {
   else ciz();
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

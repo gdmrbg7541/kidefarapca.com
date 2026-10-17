@@ -127,7 +127,14 @@
             var dolu = d.hasOwnProperty(kimlik(k[i].getAttribute('data-ar'), k[i].getAttribute('data-tr')));
             t.classList.toggle('dolu', dolu);
             t.setAttribute('aria-pressed', dolu ? 'true' : 'false');
-            t.setAttribute('aria-label', dolu ? 'Favorilerden çıkar' : 'Favorilere ekle');
+            /* 15.10.2026 — yazı duruma göre değişiyor, anahtarı da onunla. */
+            var favA = dolu ? 'soz.favori_cikar' : 'soz.favori_ekle';
+            var favT = dolu ? 'Favorilerden çıkar' : 'Favorilere ekle';
+            if (window.KidefDil && window.KidefDil.nitelik) {
+                window.KidefDil.nitelik(t, 'aria-label', favA, favT);
+            } else {
+                t.setAttribute('aria-label', favT);
+            }
         }
     }
 
@@ -147,7 +154,14 @@
                              kart.getAttribute('data-tur'));
             t.classList.toggle('dolu', dolu);
             t.setAttribute('aria-pressed', dolu ? 'true' : 'false');
-            t.setAttribute('aria-label', dolu ? 'Favorilerden çıkar' : 'Favorilere ekle');
+            /* 15.10.2026 — yazı duruma göre değişiyor, anahtarı da onunla. */
+            var favA = dolu ? 'soz.favori_cikar' : 'soz.favori_ekle';
+            var favT = dolu ? 'Favorilerden çıkar' : 'Favorilere ekle';
+            if (window.KidefDil && window.KidefDil.nitelik) {
+                window.KidefDil.nitelik(t, 'aria-label', favA, favT);
+            } else {
+                t.setAttribute('aria-label', favT);
+            }
             if (typeof sonra === 'function') sonra(kart, dolu);
         });
     }

@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const Data = {
@@ -149,14 +189,14 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
             if (!el) return;
             const d = this.oku();
             const kaynakMetin = {
-                ayni: 'İkisi de aynı soruları aynı sırada görür.',
-                karisik: 'Aynı sorular, farklı sırada — yan tarafa bakmak işe yaramaz.',
-                farkli: 'Her oyuncuya aynı dersten farklı kelimeler düşer.'
+                ayni: kdMetin('tk.not_ayni', 'İkisi de aynı soruları aynı sırada görür.'),
+                karisik: kdMetin('tk.not_karisik', 'Aynı sorular, farklı sırada — yan tarafa bakmak işe yaramaz.'),
+                farkli: kdMetin('tk.not_farkli', 'Her oyuncuya aynı dersten farklı kelimeler düşer.')
             }[d.kaynak];
             const hizMetin = d.hiz === 0
-                ? 'Hız puanı yok: yalnız doğru cevap sayılır.'
-                : 'Doğru cevap 10 puan, önce doğru cevaplayana +' + d.hiz + ' puan.';
-            el.textContent = d.soru + ' soru. ' + kaynakMetin + ' ' + hizMetin;
+                ? kdMetin('tk.not_hiz_yok', 'Hız puanı yok: yalnız doğru cevap sayılır.')
+                : kdMetin('tk.not_hiz', 'Doğru cevap 10 puan, önce doğru cevaplayana +{n} puan.', { n: d.hiz });
+            el.textContent = kdMetin('tk.not_soru', '{n} soru.', { n: d.soru }) + ' ' + kaynakMetin + ' ' + hizMetin;
         },
         gorunur(acik) {
             const kap = document.getElementById('kapisma-ayar');
@@ -209,7 +249,7 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
             if (screenId === 'start-screen') {
                  this.state.selectedPlayers = null; this.state.selectedLessonId = null;
                  this.updateSelection(this.dom.playerSelect, null);
-                 this.dom.lessonSelect.innerHTML = '<option value="" disabled selected>Önce Oyuncu Modu Seçin</option>';
+                 this.dom.lessonSelect.innerHTML = '<option value="" disabled selected data-i18n="tk.once_mod">Önce Oyuncu Modu Seçin</option>';
                  this.dom.lessonSelect.disabled = true; this.checkStartButtonState();
             }
         },
@@ -252,11 +292,22 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
         },
         initStartScreenListeners() {
             KapAyar.kur();
+            /* dil değişince kapışma ayarının alt notu ve ders listesindeki adlar da yenilensin */
+            document.addEventListener('kidef:dil', () => {
+                try { KapAyar.notYaz(); } catch (e) { }
+                try {
+                    if (this.state.selectedPlayers) {
+                        const v = this.dom.lessonSelect.value;
+                        this.populateLessonSelector();
+                        if (v) this.dom.lessonSelect.value = v;
+                    }
+                } catch (e) { }
+            });
             const sf = this.sinifFiltresi();
             if (sf) {
                 const lb = document.querySelector('label[for="lesson-picker"], label[for="lesson-select"]');
-                if (lb) lb.textContent = sf + '. Sınıf Dersleri:';
-                document.title = 'Test Kapışması · ' + sf + '. Sınıf';
+                if (lb) kdYaz(lb, 'tk.sinif_dersleri', '{n}. Sınıf Dersleri:', { n: sf });
+                document.title = kdMetin('tk.baslik_sinif', 'Test Kapışması · {n}. Sınıf', { n: sf });
             }
             this.dom.playerSelect.addEventListener('click', async e => {
                 const button = e.target.closest('.player-button'); if (!button) return;
@@ -300,7 +351,7 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
 
                 if (selectedPlayers === 1) {
                     if (!words || words.length < 4) {
-                         alert(`Bu ders için test oyunu oynamaya yetecek kadar (en az 4) kelime bulunmamaktadır.`);
+                         alert(kdMetin('tk.az_kelime', 'Bu ders için test oyunu oynamaya yetecek kadar (en az 4) kelime bulunmamaktadır.'));
                          return;
                     }
                     wordsForGame = Utils.shuffleArray(words);
@@ -311,13 +362,13 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
                     const questionCount = KapAyar.oku().soru;
                     const enAz = Math.max(questionCount, 4);
                     if (!words || words.length < enAz) {
-                         alert(`${questionCount} soruluk kapışma için bu derste yeterli kelime (en az ${enAz}) bulunmamaktadır. (Mevcut: ${words ? words.length : 0})\n\nTur başına soru sayısını düşürebilirsiniz.`);
+                         alert(kdMetin('tk.az_kelime2', '{n} soruluk kapışma için bu derste yeterli kelime (en az {enaz}) bulunmamaktadır. (Mevcut: {mevcut})', { n: questionCount, enaz: enAz, mevcut: words ? words.length : 0 }) + '\n\n' + kdMetin('tk.az_kelime2_not', 'Tur başına soru sayısını düşürebilirsiniz.'));
                          return;
                     }
                     wordsForGame = Utils.shuffleArray(words).slice(0, questionCount);
                 }
 
-                if (wordsForGame.length === 0) { alert("Bu ders için hiç kelime bulunamadı."); return; }
+                if (wordsForGame.length === 0) { alert(kdMetin('tk.kelime_yok', 'Bu ders için hiç kelime bulunamadı.')); return; }
 
                 QuizGame.start(wordsForGame, selectedPlayers);
                 this.showScreen('quiz-screen');
@@ -346,7 +397,7 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
         },
         populateLessonSelector() {
             if (!this.dom.lessonSelect) return;
-            this.dom.lessonSelect.innerHTML = '<option value="" disabled selected>Ders Seçin</option>';
+            this.dom.lessonSelect.innerHTML = '<option value="" disabled selected data-i18n="tk.ders_secin">Ders Seçin</option>';
             const allLessonIds = this.getAllLessonIdsOrdered();
             /* GÖRÜNÜM SIRASI: harflerle ilgili alıştırmalar (alfabe) listenin
                EN BAŞINDA. Kilit zinciri getAllLessonIdsOrdered()'daki sırayı
@@ -374,7 +425,7 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
                     her ders seçilebilir. İlerleme yine kaydediliyor (unlockNextLesson). */
                  const isUnlocked = true;
                  const parts = lessonId.split('-'); const gradeKey = parts[0]; const unitKey = parts[1]; const lessonKey = parts[2];
-                 const lessonDesc = alfabeDers ? alfabeDers.ad : ortaDers ? ortaDers.ad
+                 const lessonDesc = alfabeDers ? kdMetin(alfabeDers.k || '', alfabeDers.ad) : ortaDers ? ortaDers.ad
                      : (Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.description?.tr || lessonKey);
 const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görünür
                  const option = document.createElement('option');
@@ -465,7 +516,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
              // Sonuç ekranındaki geri butonu için HTML
              let htmlContent = `
              <div class="back-button-container">
-                <button class="back-button" id="results-back-btn" title="Ana Menüye Dön">
+                <button class="back-button" id="results-back-btn" data-i18n-title="nav.menu_don" title="Ana Menüye Dön">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                     </svg>
@@ -493,18 +544,18 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                  const starHtml = getStarHtml(starCount, starSize);
 
                  if (starCount === 3) {
-                     title = "Mükemmel!";
-                     messageHtml = `<p class="unlocked-message">Tebrikler! Bu dersi başarıyla tamamladın.</p>`;   /* kilit kalktı: "sonraki seviye" iletisi yok */
-                 } else if (starCount === 2) { title = "İyi İş!"; messageHtml = `<p>Biraz daha gayretle 3 yıldıza ulaşabilirsin!</p>`; } else if (starCount === 1) { title = "Fena Değil!"; messageHtml = `<p>Tekrar deneyerek puanını yükseltebilirsin.</p>`; } else { title = "Tekrar Deneyin!"; messageHtml = `<p>Daha iyi bir sonuç için tekrar oyna.</p>`; }
+                     title = kdMetin('tk.mukemmel', 'Mükemmel!');
+                     messageHtml = `<p class="unlocked-message" data-i18n="tk.mukemmel_not">Tebrikler! Bu dersi başarıyla tamamladın.</p>`;   /* kilit kalktı: "sonraki seviye" iletisi yok */
+                 } else if (starCount === 2) { title = kdMetin('tk.iyi_is', 'İyi İş!'); messageHtml = `<p data-i18n="tk.iyi_is_not">Biraz daha gayretle 3 yıldıza ulaşabilirsin!</p>`; } else if (starCount === 1) { title = kdMetin('tk.fena_degil', 'Fena Değil!'); messageHtml = `<p data-i18n="tk.fena_degil_not">Tekrar deneyerek puanını yükseltebilirsin.</p>`; } else { title = kdMetin('tk.tekrar_dene', 'Tekrar Deneyin!'); messageHtml = `<p data-i18n="tk.tekrar_dene_not">Daha iyi bir sonuç için tekrar oyna.</p>`; }
 
                  htmlContent += `
                      <h2 id="quiz-win-text">${title}</h2>
                      ${starHtml}
-                     <h3>Skor: ${finalScore} Puan</h3>
+                     <h3>${kdMetin('tk.skor_puan', 'Skor: {n} Puan', { n: finalScore })}</h3>
                      ${messageHtml}
                      <div class="win-buttons">
-                         <button class="icon-btn" id="play-again-btn" title="Tekrar Oyna (Aynı Ders)"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg></button>
-                         <button class="icon-btn" id="back-to-start-btn" title="Ana Menü"><svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path></svg></button>
+                         <button class="icon-btn" id="play-again-btn" data-i18n-title="tk.tekrar_ayni" title="Tekrar Oyna (Aynı Ders)"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg></button>
+                         <button class="icon-btn" id="back-to-start-btn" data-i18n-title="nav.ana_menu" title="Ana Menü"><svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path></svg></button>
                      </div>`;
 
                  resultsScreen.innerHTML = htmlContent;
@@ -522,16 +573,16 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
              }
              else { // 2 Kişilik Mod
                  let text, winnerClass, iconHtml = '';
-                 if (data.winner === 1) { text = '1. Oyuncu Kazandı!'; winnerClass = 'p1-win'; iconHtml = iconSVG; }
-                 else if (data.winner === 2) { text = '2. Oyuncu Kazandı!'; winnerClass = 'p2-win'; iconHtml = iconSVG; }
-                 else { text = 'Berabere!'; winnerClass = 'draw'; iconHtml = iconSVG + iconSVG; }
+                 if (data.winner === 1) { text = kdMetin('oyn.oyuncu1_kaz', '1. Oyuncu Kazandı!'); winnerClass = 'p1-win'; iconHtml = iconSVG; }
+                 else if (data.winner === 2) { text = kdMetin('oyn.oyuncu2_kaz', '2. Oyuncu Kazandı!'); winnerClass = 'p2-win'; iconHtml = iconSVG; }
+                 else { text = kdMetin('oyn.berabere', 'Berabere!'); winnerClass = 'draw'; iconHtml = iconSVG + iconSVG; }
                  htmlContent += `
                      <div id="quiz-winner-icon-container" class="${winnerClass}">${iconHtml}</div>
                      <h2 id="quiz-win-text" class="${winnerClass}">${text}</h2>
-                     <h3>Skor: ${data.score1} - ${data.score2}</h3>
+                     <h3><span data-i18n="oyn.skor_k">Skor:</span> ${data.score1} - ${data.score2}</h3>
                      <div class="win-buttons">
-                         <button class="icon-btn" id="play-again-btn" title="Tekrar Oyna (Aynı Ders)"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg></button>
-                         <button class="icon-btn" id="back-to-start-btn" title="Ana Menü"><svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path></svg></button>
+                         <button class="icon-btn" id="play-again-btn" data-i18n-title="tk.tekrar_ayni" title="Tekrar Oyna (Aynı Ders)"><svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"></path></svg></button>
+                         <button class="icon-btn" id="back-to-start-btn" data-i18n-title="nav.ana_menu" title="Ana Menü"><svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"></path></svg></button>
                      </div>`;
                  resultsScreen.innerHTML = htmlContent;
                  resultsScreen.querySelector('#results-back-btn').onclick = () => { App.playSound('menuClick'); App.showScreen('start-screen'); };
@@ -624,7 +675,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                 ${backBtnHTML}
                 <div class="countdown-overlay" id="quiz-countdown-overlay"></div>
                 <div class="game-start-overlay" id="quiz-start-overlay">
-                    <button id="quiz-start-btn">BAŞLA</button>
+                    <button id="quiz-start-btn" data-i18n="kl.basla">BAŞLA</button>
                 </div>
                 <div id="quiz-container">
                     <div class="quiz-player-area p1">
@@ -690,7 +741,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
 
             if (playerState.i >= playerState.q.length) {
                 if (playerNum === 1) this.state.p1Finished = true; else this.state.p2Finished = true;
-                playerDom.question.textContent = 'Bitti!'; playerDom.options.innerHTML = '';
+                playerDom.question.textContent = kdMetin('tk.bitti', 'Bitti!'); playerDom.options.innerHTML = '';
                 const scoreIcon = `<svg viewBox="0 0 24 24"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" /></svg>`;
 
                 let displayScore;

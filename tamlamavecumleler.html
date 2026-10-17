@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tamlama ve Cümleler</title>
+<title data-i18n="tc.sayfa_baslik">Tamlama ve Cümleler</title>
 <!-- Sekme ikonu: dâd harfi — i'rab ikonunun küçük hâli. -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='12' y='17.5' text-anchor='middle' font-size='16' font-weight='bold' fill='%23C00000'>%D8%B6%D9%8F</text></svg>">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
@@ -14,7 +14,7 @@
   gtag('config', 'G-FV9JD15KLW');
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="arakom.css?v=4383f21b">
+<link rel="stylesheet" href="arakom.css?v=896e5892">
 <link rel="stylesheet" href="dilbilgisi/tamlamavecumleler.css?v=a5897d08">
 </head>
 <body>
@@ -37,8 +37,8 @@
        çalışan ASIL tabloya geri getirir. -->
   <h1 class="tc-ustad">
    <button type="button" class="tc-ustad-don" id="tcTabloDon"
-           title="Tamlama ve cümleler tablosuna dön"
-           aria-label="Tamlama ve cümleler tablosuna dön">
+           data-i18n-title="tc.geri" title="Tamlama ve cümleler tablosuna dön"
+           data-i18n-aria="tc.geri" aria-label="Tamlama ve cümleler tablosuna dön">
     <!-- Adın önünde geri oku YOK: tuş öbür başlıklarla birebir aynı
          görünsün istendi. Hangi durumda olduğunu zaten dolgusu söylüyor
          (kırmızı = buradasın, beyaz = oraya götürür). -->
@@ -55,7 +55,7 @@
       <path class="tci-kivilcim" fill="#F1A208"
             d="M19.6 2.2l.72 1.62 1.62.72-1.62.72-.72 1.62-.72-1.62-1.62-.72 1.62-.72z"/>
     </svg>
-    <span class="tc-ustad-yazi">Tamlama ve Cümleler</span>
+    <span class="tc-ustad-yazi" data-i18n="tc.sayfa_baslik">Tamlama ve Cümleler</span>
    </button>
   </h1>
   <!-- İ'RAB VE TEST TEK ŞERİTTE — SAYFANIN TEK GEZİNME ARACI.
@@ -63,9 +63,9 @@
        Bir başlığın alt ögesi varsa (Sonlar/Esmâ-i hamse, Tamlama/İ'rab
        testi gibi) hemen yanında açılır, öbürleri akordiyon gibi büzülür.
        Düğmeleri betik kurar (bkz. seritKur). -->
-  <nav class="tc-gez" id="tcGez" aria-label="Bölümler">
+  <nav class="tc-gez" id="tcGez" data-i18n-aria="tc.bolumler" aria-label="Bölümler">
     <div class="tc-serit" id="tcSerit">
-      <div class="tc-serit-ray" id="tcSeritRay" role="tablist" aria-label="Bölüm başlıkları"></div>
+      <div class="tc-serit-ray" id="tcSeritRay" role="tablist" data-i18n-aria="tc.bolum_bas" aria-label="Bölüm başlıkları"></div>
       <!-- OYUN ÇEKMECESİNİN TUTAMACI — en sağda, Test'in ardından.
            Rayın DIŞINDA durur: başlıklar kaysa da hep göz önündedir. -->
       <button type="button" class="tc-oyun-ac" id="tcOyunAc" aria-haspopup="dialog" aria-expanded="false">
@@ -88,8 +88,8 @@
         <th class="tc-w-ne">Ne işe yarar,<br>Nasıl anlaşılır?</th>
         <th class="tc-w-oge">Ögeleri nelerdir,<br>Türkçe'ye nasıl çevrilir?</th>
         <th class="tc-w-uyum">Uyum</th>
-        <th class="tc-w-dikkat">Dikkat edilmesi gereken özellikler!</th>
-        <th class="tc-w-ornek">Örnek</th>
+        <th class="tc-w-dikkat" data-i18n="tc.dikkat">Dikkat edilmesi gereken özellikler!</th>
+        <th class="tc-w-ornek" data-i18n="tc.ornek">Örnek</th>
       </tr>
     </thead>
     <tbody>
@@ -383,7 +383,7 @@
         <p class="sv-ozet" id="svOzet"></p>
         <div class="sv-alt">
           <button type="button" class="sv-basla" id="svTekrar">Yeni Tur</button>
-          <button type="button" class="sv-ikincil" id="svBitir">Kapat</button>
+          <button data-i18n="g.kapat" type="button" class="sv-ikincil" id="svBitir">Kapat</button>
         </div>
       </div>
       </div>
@@ -462,7 +462,7 @@
 <div class="tc-bp-perde" id="tcBpPerde" aria-hidden="true">
   <div class="tc-bp" id="tcBp" role="dialog" aria-modal="true" aria-labelledby="tcBpBas">
     <h3 class="tc-bp-bas" id="tcBpBas"><span></span>
-      <button type="button" class="tc-kapat" id="tcBpKapat" title="Kapat" aria-label="Kapat">&times;</button>
+      <button type="button" class="tc-kapat" id="tcBpKapat" data-i18n-title="g.kapat" title="Kapat" data-i18n-aria="g.kapat" aria-label="Kapat">&times;</button>
     </h3>
     <div id="tcBpGovde"></div>
   </div>
@@ -1625,8 +1625,8 @@
        aria-label="Oyunlar" aria-hidden="true">
   <div class="oyn-bas">
     <span class="oyn-ad">Oyun</span>
-    <span class="oyn-not">yeni sekmede açılır</span>
-    <button type="button" class="oyn-kapat" id="tcOyunKapat" title="Kapat" aria-label="Kapat">&times;</button>
+    <span class="oyn-not" data-i18n="tc.yeni_sekme">yeni sekmede açılır</span>
+    <button type="button" class="oyn-kapat" id="tcOyunKapat" data-i18n-title="g.kapat" title="Kapat" data-i18n-aria="g.kapat" aria-label="Kapat">&times;</button>
   </div>
   <div class="oyn-govde">
     <!-- rel="opener" BİLEREK: geri.js, opener'ı olan sayfada çıkışı
@@ -1659,9 +1659,12 @@
   </div>
 </aside>
 
-<script src="dilbilgisi/tamlamavecumleler.js?v=5e480a67"></script>
+<script src="dilbilgisi/tamlamavecumleler.js?v=3fb03393"></script>
 <script src="sistem/geri.js?v=f87d1337"></script>
 <!-- Görev/ilerleme köprüsü: Test turu bitince 0-100 puan buluta yazılır. -->
-<script src="sistem/gorevkopru.js?v=50232a80"></script>
+<script src="sistem/gorevkopru.js?v=d5377b75"></script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

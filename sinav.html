@@ -15,7 +15,7 @@
   </script>
   <link rel="stylesheet" href="sinifici/sinav.css?v=ef57c661">
   <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
-  <link rel="stylesheet" href="arakom.css?v=4383f21b">
+  <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body data-sekme="havuz">
 
@@ -176,7 +176,7 @@
         <small id="sepetOzet">Havuzdan <b>+ Kâğıda ekle</b> ile başla</small>
         <span class="sepet-ok" aria-hidden="true">▴</span>
       </button>
-      <button type="button" id="kagitTemizle">Temizle</button>
+      <button type="button" id="kagitTemizle" data-i18n="oyn.temizle">Temizle</button>
     </div>
 
     <!-- Sınav yolunda çıktısı bağlanmamış soru varsa kâğıt çıkmaz.
@@ -243,7 +243,7 @@
     <div class="eylemler">
       <button type="button" id="btnDagilim" hidden title="Konu ve kazanım dağılım tablosu — yazılı dosyasına konur">Dağılım tablosu</button>
       <button type="button" id="btnOnizle" disabled>Önizle</button>
-      <button type="button" id="btnYazdir" disabled title="Tarayıcının baskı penceresi — en keskin çıktı, 'PDF olarak kaydet' de buradan">Yazdır</button>
+      <button type="button" id="btnYazdir" disabled title="Tarayıcının baskı penceresi — en keskin çıktı, 'PDF olarak kaydet' de buradan" data-i18n="oyn.yazdir">Yazdır</button>
       <button type="button" id="btnPdf" class="ana" disabled>PDF İndir</button>
     </div>
     <div id="durum" class="durum" hidden role="status"></div>
@@ -255,7 +255,7 @@
   <div class="oz-ust">
     <h2 id="onizlemeBaslik">Önizleme</h2>
     <span id="onizlemeBilgi"></span>
-    <button type="button" id="onizlemeYazdir">Yazdır</button>
+    <button type="button" id="onizlemeYazdir" data-i18n="oyn.yazdir">Yazdır</button>
     <button type="button" id="onizlemePdf" class="ana">PDF İndir</button>
     <button type="button" id="onizlemeKapat" aria-label="Önizlemeyi kapat">✕</button>
   </div>
@@ -300,5 +300,8 @@
   catch (e) { [400, 1200, 2500].forEach(function (ms) { setTimeout(kur, ms); }); }
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

@@ -1,3 +1,42 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
 document.addEventListener('DOMContentLoaded', () => {
         
         // --- VERİ SETLERİ ---
@@ -112,7 +151,59 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         };
         
-        const uiText = {
+        /* ÇOK DİLLİ SİTE (15.10.2026) — uiText her okunuşta sözlüğe bakar
+           (sistem/dil.js). k: sözlük anahtarı · sar: çevirinin çevresindeki
+           işaretleme. Türkçe yazılar aşağıdaki uiText'te olduğu gibi duruyor;
+           dil Türkçeyse ya da çeviri yoksa onlar okunur. */
+        const KD_UI = {
+            startTitle: { k: 'kt.serven' },
+            startSubtitle: { k: 'ku.seviye1' },
+            donutFeedbackCorrect: { k: 'oyn.dogru_unlem', sar: '%s 🎉' },
+            donutFeedbackIncorrect: { k: 'ku.yanlis_kok' },
+            donutWinRound: { k: 'ku.tur_kazandin' },
+            startLangP: { k: 'ku.dil_sec' },
+            startModeP: { k: 'ku.mod_sec' },
+            langBtnTR: { k: 'ku.tr_kelime' },
+            langBtnAR: { k: 'ku.ar_kelime' },
+            modeBtn1P: { k: 'oyn.tek' },
+            modeBtn2P: { k: 'oyn.iki' },
+            startButton: { k: 'oyn.basla' },
+            donutInstruction: { k: 'ku.hangi' },
+            nextButton: { k: 'kt.ilerle' },
+            versusQuestionMatch: { k: 'ku.vs_turemis', sar: '<span style="color: var(--success-color);">✓</span> %s' },
+            versusQuestionOddOne: { k: 'ku.vs_turememis', sar: '<span style="color: var(--error-color);">X</span> %s' },
+            versusWaiting: { k: 'ku.bekleniyor' },
+            versusRoundEnd: { k: 'oyn.tur_bitti' },
+            resultsTitleDonut: { k: 'ku.bitti' },
+            resultsTitleVersus: { k: 'oyn.yarisma_bitti' },
+            resultsWinText: { k: 'oyn.harika_is', sar: '<p>%s</p>' },
+            resultsTotalScore: { k: 'oyn.toplam_puan' },
+            resultsTotalMistakes: { k: 'oyn.toplam_hata' },
+            resultsP1Won: { k: 'oyn.oyuncu1_kaz', sar: '<p>🏆 %s 🏆</p>' },
+            resultsP2Won: { k: 'oyn.oyuncu2_kaz', sar: '<p>🏆 %s 🏆</p>' },
+            resultsDraw: { k: 'oyn.berabere', sar: '<p>🤝 %s 🤝</p>' },
+            resultsP1Score: { k: 'oyn.oyuncu1_puan' },
+            resultsP2Score: { k: 'oyn.oyuncu2_puan' },
+            resultsP1Stats: { k: 'oyn.dogru_hata' },
+            resultsP2Stats: { k: 'oyn.dogru_hata' },
+            playAgainButton: { k: 'nav.menu_don' },
+            orientationTitle: { k: 'oyn.dik_tut' },
+            orientationP: { k: 'oyn.dikey_not' }
+        };
+        function kdUiCevir(tr, harita) {
+            if (typeof Proxy !== 'function') return tr;
+            return new Proxy(tr, {
+                get: function (o, ad) {
+                    var h = harita[ad];
+                    if (h && window.KidefDil && window.KidefDil.metin) {
+                        var c = window.KidefDil.metin(h.k, '');
+                        if (c) return h.sar ? h.sar.replace('%s', function () { return c; }) : c;
+                    }
+                    return o[ad];
+                }
+            });
+        }
+        const uiText = kdUiCevir({
             startTitle: "Kelimenin Serüveni",
             startSubtitle: "Seviye 1: Kökü Tanı",
             donutFeedbackCorrect: "Doğru! 🎉",
@@ -148,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
             playAgainButton: "Ana Menüye Dön",
             orientationTitle: "Lütfen Cihazı Dik Tutun",
             orientationP: "Bu oyun en iyi dikey modda çalışır."
-        };
+        }, KD_UI);
 
         // --- DOM Elementleri ---
         const body = document.body;
@@ -820,8 +911,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     </p>
                  `;
              } else { 
-                resultsTitle.textContent = "Hata Oluştu";
-                resultsDetails.innerHTML = "<p>Oyun verisi yüklenirken bir hata oluştu.</p>";
+                resultsTitle.textContent = kdMetin('oyn.hata_olustu', "Hata Oluştu");
+                resultsDetails.innerHTML = "<p>" + kdMetin('oyn.veri_hata', "Oyun verisi yüklenirken bir hata oluştu.") + "</p>";
              }
              showScreen('results');
         }
@@ -859,7 +950,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gameState.player2.wasCorrect = false;
             gameState.player2.clickedButton = null;
             
-            vsFeedbackArea.textContent = `Tur ${roundIndex + 1} / ${gameState.versusTotalRounds}`;
+            kdSerbest(vsFeedbackArea).textContent = kdMetin('oyn.tur_sayac', 'Tur {n} / {toplam}').replace('{n}', roundIndex + 1).replace('{toplam}', gameState.versusTotalRounds);
             
             const q1 = gameState.versusQuestions[roundIndex * 2];
             const q2 = gameState.versusQuestions[roundIndex * 2 + 1];
@@ -1000,7 +1091,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     updateVersusScoreboard();
                     
-                    vsFeedbackArea.textContent = uiText.versusRoundEnd;
+                    kdSerbest(vsFeedbackArea).textContent = uiText.versusRoundEnd;
                     setTimeout(() => {
                         setupVersusRound(gameState.versusRoundIndex + 1);
                     }, 2000);

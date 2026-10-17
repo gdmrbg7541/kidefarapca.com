@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
-<title>Arapça Test Oyunu</title>
+<title data-i18n="tk.sayfa_baslik">Arapça Test Oyunu</title>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -20,7 +20,7 @@
 </head>
 <body>
 <div id="game-wrapper">
-    <button id="fullscreen-btn" title="Tam Ekran">
+    <button id="fullscreen-btn" data-i18n-title="oyn.tam_ekran" title="Tam Ekran">
         <svg class="icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M5 10h2V7h3V5H5v5zM14 5v2h3v3h2V5h-5zM5 19v-5h2v3h3v2H5zM14 19v-2h3v-3h2v5h-5z"/>
         </svg>
@@ -31,7 +31,7 @@
 
     <div class="screen active" id="start-screen">
         <div class="back-button-container">
-            <a href="index.html" onclick="return kidefGeriDon(event)" class="back-button" title="Siteye Dön" data-kidef-done="1">
+            <a href="index.html" onclick="return kidefGeriDon(event)" class="back-button" data-i18n-title="sn.siteye_don" title="Siteye Dön" data-kidef-done="1">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                 </svg>
@@ -40,16 +40,16 @@
 
         <div class="start-options">
             <div class="option-group">
-                <label for="player-select">Oyuncu Sayısı:</label>
+                <label for="player-select" data-i18n="tk.oyuncu_sayisi">Oyuncu Sayısı:</label>
                 <div class="player-buttons" id="player-select">
-                    <button class="player-button" data-players="1">Tek Kişilik</button>
-                    <button class="player-button" data-players="2">İki Kişilik</button>
+                    <button class="player-button" data-players="1" data-i18n="oyn.tek">Tek Kişilik</button>
+                    <button class="player-button" data-players="2" data-i18n="oyn.iki">İki Kişilik</button>
                 </div>
             </div>
             <div class="option-group">
-                <label for="lesson-select">Ders Seçimi:</label>
+                <label for="lesson-select" data-i18n="tk.ders_secimi">Ders Seçimi:</label>
                 <select id="lesson-select" disabled required>
-                    <option value="" disabled selected>Önce Oyuncu Modu Seçin</option>
+                    <option value="" disabled selected data-i18n="tk.once_mod">Önce Oyuncu Modu Seçin</option>
                 </select>
             </div>
             <!-- KAPIŞMA AYARLARI (07.10.2026) — öğretmen: "iki kişinin aynı
@@ -60,10 +60,10 @@
                  kişilikte anlamı yok. Seçimler tarayıcıda saklanır, her
                  oyunda yeniden seçmek gerekmez. -->
             <div class="option-group kap-ayar" id="kapisma-ayar" hidden>
-                <label>Kapışma Ayarları:</label>
+                <label data-i18n="tk.kapisma_ayar">Kapışma Ayarları:</label>
 
                 <div class="kap-satir">
-                    <span class="kap-bas">Tur başına soru</span>
+                    <span class="kap-bas" data-i18n="tk.tur_basina">Tur başına soru</span>
                     <div class="kap-secenek" id="kap-soru">
                         <button type="button" data-v="5">5</button>
                         <button type="button" data-v="7">7</button>
@@ -73,37 +73,37 @@
                 </div>
 
                 <div class="kap-satir">
-                    <span class="kap-bas">Sorular</span>
+                    <span class="kap-bas" data-i18n="tk.sorular">Sorular</span>
                     <div class="kap-secenek kap-genis" id="kap-kaynak">
                         <button type="button" data-v="ayni"
-                            title="İkisi de aynı soruları aynı sırada görür — tam eşit yarış">Aynı · aynı sıra</button>
+                            data-i18n-title="tk.ayni_sira_ip" title="İkisi de aynı soruları aynı sırada görür — tam eşit yarış" data-i18n="tk.ayni_sira">Aynı · aynı sıra</button>
                         <button type="button" data-v="karisik"
-                            title="Aynı sorular, farklı sırada — yan tarafa bakmak işe yaramaz">Aynı · karışık</button>
+                            data-i18n-title="tk.ayni_karisik_ip" title="Aynı sorular, farklı sırada — yan tarafa bakmak işe yaramaz" data-i18n="tk.ayni_karisik">Aynı · karışık</button>
                         <button type="button" data-v="farkli"
-                            title="Aynı dersten farklı kelimeler — benzer zorlukta, ayrı sorular">Farklı sorular</button>
+                            data-i18n-title="tk.farkli_ip" title="Aynı dersten farklı kelimeler — benzer zorlukta, ayrı sorular" data-i18n="tk.farkli">Farklı sorular</button>
                     </div>
                 </div>
 
                 <div class="kap-satir">
-                    <span class="kap-bas">Hız puanı</span>
+                    <span class="kap-bas" data-i18n="tk.hiz_puani">Hız puanı</span>
                     <div class="kap-secenek" id="kap-hiz">
-                        <button type="button" data-v="0" title="Yalnız doğru cevap sayılır">Yok</button>
-                        <button type="button" data-v="5" title="Doğru 10, hız 5">Az</button>
-                        <button type="button" data-v="10" title="Doğru 10, hız 10">Normal</button>
-                        <button type="button" data-v="20" title="Doğru 10, hız 20 — hız belirleyici">Çok</button>
+                        <button type="button" data-v="0" data-i18n-title="tk.hiz_yok_ip" title="Yalnız doğru cevap sayılır" data-i18n="tk.hiz_yok">Yok</button>
+                        <button type="button" data-v="5" data-i18n-title="tk.hiz_az_ip" title="Doğru 10, hız 5" data-i18n="tk.hiz_az">Az</button>
+                        <button type="button" data-v="10" data-i18n-title="tk.hiz_normal_ip" title="Doğru 10, hız 10" data-i18n="tk.hiz_normal">Normal</button>
+                        <button type="button" data-v="20" data-i18n-title="tk.hiz_cok_ip" title="Doğru 10, hız 20 — hız belirleyici" data-i18n="tk.hiz_cok">Çok</button>
                     </div>
                 </div>
 
                 <p class="kap-not" id="kap-not"></p>
             </div>
 
-            <button disabled id="start-game-btn">Başla</button>
+            <button disabled id="start-game-btn" data-i18n="oyn.basla">Başla</button>
         </div>
     </div>
 
     <div class="screen" id="quiz-screen">
         <div class="back-button-container">
-            <button class="back-button" id="quiz-back-btn" title="Ana Menüye Dön">
+            <button class="back-button" id="quiz-back-btn" data-i18n-title="nav.menu_don" title="Ana Menüye Dön">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                 </svg>
@@ -114,19 +114,19 @@
     <div class="screen results-screen" id="results-screen"></div>
 </div>
 
-<script src="sistem/gorevkopru.js?v=50232a80"></script>
+<script src="sistem/gorevkopru.js?v=d5377b75"></script>
     <!-- ALFABE SORULARI: «Harf Birleştirme» ve «Çizgideki Yazılış» derslerini
          ekler. testkapismasi.js'ten ÖNCE yüklenmeli — ders listesi kurulurken
          window.TKAlfabe hazır olmalı. -->
-    <script src="oyunlar/tk_alfabe.js?v=c5f2c835"></script>
+    <script src="oyunlar/tk_alfabe.js?v=cbef69c7"></script>
     <!-- 5-8. SINIF: ders ağacı + kelimeler muhadese/veri'den (öğretim yılı seçimi
          sistem/sinifveri.js'ten). testkapismasi.js'ten ÖNCE yüklenmeli. -->
     <script src="sistem/sinifveri.js?v=6baf2d98"></script>
     <script src="oyunlar/tk_ortaokul.js?v=65275d1c"></script>
-    <script src="oyunlar/testkapismasi.js?v=e8324916"></script>
+    <script src="oyunlar/testkapismasi.js?v=69740728"></script>
     <!-- DERS LİSTESİ: her dersin kendi animasyonlu simgesiyle açılır liste.
          Asıl <select> yerinde kalır (gizli); bu betik onun üstüne kurulur. -->
-    <script src="oyunlar/tk_liste.js?v=a64cc582"></script>
+    <script src="oyunlar/tk_liste.js?v=fd95d6c6"></script>
     <script src="sistem/geri.js?v=f87d1337"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
@@ -139,5 +139,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

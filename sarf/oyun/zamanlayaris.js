@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 // *** Data (Temizlenmiş) ***
     
     const embeddedGameData = {
@@ -268,7 +308,7 @@
                     count--;
                     setTimeout(doCount, 1000);
                 } else {
-                    countdownText.textContent = "BAŞLA!";
+                    countdownText.textContent = kdMetin('kt.basla', 'BAŞLA!');
                     countdownText.style.animation = 'none'; 
                     playGenericSound('set_complete');
                     setTimeout(() => {
@@ -829,7 +869,7 @@
                  // OYUN BİTİŞ KONTROLÜ
                  if (remainingWords === 0 || currentWordIndex === currentWordQueue.length) {
                      playGenericSound('set_complete');
-                     l2GlobalResult.textContent = "Tur Bitti!";
+                     l2GlobalResult.textContent = kdMetin('oyn.tur_bitti', 'Tur Bitti!');
                      
                      setTimeout(() => {
                          endGame(false); // Oyunu bitir (timeout değil)
@@ -847,7 +887,7 @@
                  
                  // Durum 1: Doğru KÖK, Yanlış KALIP (Tek atış hakkı biter)
                  if (isRootCorrect && !isPatternCorrect) {
-                     l2GlobalResult.textContent = 'Yanlış kalıp! Bu kelime hakkı bitti.';
+                     l2GlobalResult.textContent = kdMetin('zy.yanlis_kalip', 'Yanlış kalıp! Bu kelime hakkı bitti.');
                      activeWordEl.classList.add('failed'); // Kırmızı dolgu yap
                      currentWordQueue[currentWordIndex].failed = true; // Durumu kaydet
                      
@@ -861,7 +901,7 @@
                      
                      if (remainingWords === 0 || currentWordIndex === currentWordQueue.length) {
                          playGenericSound('set_complete');
-                         l2GlobalResult.textContent = "Tur Bitti!";
+                         l2GlobalResult.textContent = kdMetin('oyn.tur_bitti', 'Tur Bitti!');
                          setTimeout(() => {
                              endGame(false); 
                          }, 1000); 
@@ -884,7 +924,7 @@
                          activeWordEl.classList.remove('incorrect-flash'); 
                      }, 500);
 
-                     l2GlobalResult.textContent = 'Yanlış kök!';
+                     l2GlobalResult.textContent = kdMetin('zy.yanlis_kok', 'Yanlış kök!');
                      
                      const correctRootEl = l2RootsSidebar.querySelector(`.l2-draggable-root[data-root-key="${correctRootKey}"]`);
                      const correctPatternEl = l2PatternsWrapper.querySelector(`.l2-pattern-group[data-pattern-id="${correctPatternId}"]`);
@@ -920,16 +960,16 @@
             let resultsHTML = '';
             
             if (isTimeOut) {
-                resultsHTML += `<h2>Süre Doldu! ⌛</h2>`;
+                resultsHTML += `<h2><span data-i18n="oyn.sure_doldu">Süre Doldu!</span> ⌛</h2>`;
             } else {
-                resultsHTML += `<h2>Tur Tamamlandı! 🎉</h2>`;
+                resultsHTML += `<h2><span data-i18n="oyn.tur_tamam">Tur Tamamlandı!</span> 🎉</h2>`;
             }
 
             // Puan ve Özet
-            resultsHTML += `<p class="final-score">Puan: <span id="final-score-value">${finalScore}</span></p>`;
+            resultsHTML += `<p class="final-score"><span data-i18n="oyn.puan_k">Puan:</span> <span id="final-score-value">${finalScore}</span></p>`;
             resultsHTML += `<div style="display:flex; justify-content:center; gap:20px;">
-                                <p style="color: var(--success-color); font-weight: bold;">Doğru: ${correctCount}</p>
-                                <p style="color: var(--error-color); font-weight: bold;">Hata: ${failedCount}</p>
+                                <p style="color: var(--success-color); font-weight: bold;"><span data-i18n="oyn.dogru_k">Doğru:</span> ${correctCount}</p>
+                                <p style="color: var(--error-color); font-weight: bold;"><span data-i18n="oyn.hata_k">Hata:</span> ${failedCount}</p>
                             </div>`;
 
             // Yıldız Mantığı
@@ -947,7 +987,7 @@
             // --- YENİ EKLENEN KISIM: Hatalı Kelimeler Listesi ---
             if (failedWords.length > 0) {
                 resultsHTML += `<div class="mistakes-wrapper">
-                                    <div class="mistakes-title">⚠️ Cevap Anahtarı</div>`;
+                                    <div class="mistakes-title">⚠️ <span data-i18n="oyn.cevap_anahtari">Cevap Anahtarı</span></div>`;
                 
                 failedWords.forEach(word => {
                     // Kökü düzgün göster (dizi ise birleştir, değilse direkt yaz)
@@ -957,8 +997,8 @@
                         <div class="mistake-item">
                             <div class="mistake-info">
                                 <span class="m-turkce">${word.turkce}</span>
-                                <span class="m-details">Doğru Kök: <b>${rootDisplay}</b></span>
-                                <span class="m-details">Doğru Kalıp: <b>${word.kalipNo}</b></span>
+                                <span class="m-details"><span data-i18n="zy.dogru_kok">Doğru Kök:</span> <b>${rootDisplay}</b></span>
+                                <span class="m-details"><span data-i18n="zy.dogru_kalip">Doğru Kalıp:</span> <b>${word.kalipNo}</b></span>
                             </div>
                             <span class="m-arapca">${word.arapca}</span>
                         </div>`;

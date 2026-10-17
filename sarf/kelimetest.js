@@ -269,9 +269,9 @@
             '<div class="kt-serit">' +
             '<div class="kt-serit-grup" id="kt-kisi-' + key + '">' +
                 '<button type="button" class="kt-mini secili" data-kisi="1" ' +
-                'onclick="KidefKelimeTest.kisi(\'' + key + '\',1)">🧑‍🎓 Tek Kişilik</button>' +
+                'onclick="KidefKelimeTest.kisi(\'' + key + '\',1)" data-i18n="kl.tek_kisi">🧑‍🎓 Tek Kişilik</button>' +
                 '<button type="button" class="kt-mini" data-kisi="2" ' +
-                'onclick="KidefKelimeTest.kisi(\'' + key + '\',2)">⚔️ Kapışma</button>' +
+                'onclick="KidefKelimeTest.kisi(\'' + key + '\',2)" data-i18n="kl.kapisma">⚔️ Kapışma</button>' +
             '</div>' +
             '<div class="kt-serit-grup" id="kt-adet-' + key + '">' +
                 secenek.map(function (n) {
@@ -283,7 +283,7 @@
             (liste.length < SIK_SAYI
                 ? '<span class="kt-serit-not">Şıklar öteki listelerden tamamlanacak.</span>' : '') +
             '<button type="button" class="kt-serit-basla" ' +
-            'onclick="KidefKelimeTest.basla(\'' + key + '\')">BAŞLA</button>' +
+            'onclick="KidefKelimeTest.basla(\'' + key + '\')" data-i18n="kl.basla">BAŞLA</button>' +
             '</div>');
         klavyeBagla(key);
     }
@@ -316,7 +316,7 @@
             '<div class="kt-ust">' +
                 '<span class="kt-kim">' + ad + '</span>' +
                 '<span class="kt-seri" id="kt-seri-' + p + '-' + key + '">🔥 <b>0</b></span>' +
-                '<span class="kt-puan"><b id="kt-puan-' + p + '-' + key + '">0</b><span>puan</span></span>' +
+                '<span class="kt-puan"><b id="kt-puan-' + p + '-' + key + '">0</b><span data-i18n="kl.puan_k">puan</span></span>' +
             '</div>' +
             '<div class="kt-sure" id="kt-sure-' + p + '-' + key + '"><i></i></div>' +
             '<div class="kt-soru" id="kt-soru-' + p + '-' + key + '"></div>' +
@@ -574,7 +574,7 @@
             if (sik) sik.innerHTML = '';
             if (sor) sor.innerHTML =
                 '<div class="kt-bekle"><b>' + s.puan + '</b>' +
-                (o.kisi === 2 ? '<span>Bitirdin — rakip oynuyor…</span>' : '<span>Bitti</span>') + '</div>';
+                (o.kisi === 2 ? '<span>Bitirdin — rakip oynuyor…</span>' : '<span data-i18n="kl.bitti">Bitti</span>') + '</div>';
         }
         var hepsi = o.oyuncular.every(function (x) { return o.durum[x].bitti; });
         if (hepsi) setTimeout(function () { sonuc(key); }, 700);
@@ -605,7 +605,7 @@
         });
         if (!tekil.length) return '';
         var fazla = tekil.length - YANLIS_EN_COK;
-        return '<div class="kt-yanlis-liste"><h4>Tekrar bakılacaklar</h4><ul>' +
+        return '<div class="kt-yanlis-liste"><h4 data-i18n="kl.tekrar_bak">Tekrar bakılacaklar</h4><ul>' +
             tekil.slice(0, YANLIS_EN_COK).map(function (y) {
                 return '<li><span class="ar" dir="rtl">' + esc(y.item.arText) + '</span>' +
                        (y.item.emoji ? '<span class="em">' + y.item.emoji + '</span>' : '') +
@@ -638,18 +638,18 @@
                     '</div>' +
                     '<div class="kt-dueello">' +
                         '<div class="kt-taraf p1' + (kazanan === 'p1' ? ' kazandi' : '') + '">' +
-                            '<div class="kt-ad">1. Oyuncu</div><div class="kt-skor">' + a.puan + '</div>' +
+                            '<div class="kt-ad" data-i18n="kl.oyuncu1">1. Oyuncu</div><div class="kt-skor">' + a.puan + '</div>' +
                             '<div class="kt-ad">' + a.dogru + '/' + a.sorular.length + ' doğru</div></div>' +
                         '<div class="kt-vs">VS</div>' +
                         '<div class="kt-taraf p2' + (kazanan === 'p2' ? ' kazandi' : '') + '">' +
-                            '<div class="kt-ad">2. Oyuncu</div><div class="kt-skor">' + b.puan + '</div>' +
+                            '<div class="kt-ad" data-i18n="kl.oyuncu2">2. Oyuncu</div><div class="kt-skor">' + b.puan + '</div>' +
                             '<div class="kt-ad">' + b.dogru + '/' + b.sorular.length + ' doğru</div></div>' +
                     '</div>' +
                     yanlisListe({ yanlislar: a.yanlislar.concat(b.yanlislar) }) +
                     '<div class="kt-dugmeler">' +
-                        '<button type="button" class="kt-dug ana" onclick="KidefKelimeTest.basla(\'' + key + '\')">Rövanş</button>' +
+                        '<button type="button" class="kt-dug ana" onclick="KidefKelimeTest.basla(\'' + key + '\')" data-i18n="kl.rovans">Rövanş</button>' +
                         '<button type="button" class="kt-dug" onclick="KidefKelimeTest.ac(\'' + key + '\')">Ayarlar</button>' +
-                        '<button type="button" class="kt-dug" onclick="KidefKelimeTest.kapat(\'' + key + '\')">Listeye dön</button>' +
+                        '<button type="button" class="kt-dug" onclick="KidefKelimeTest.kapat(\'' + key + '\')" data-i18n="kl.listeye_don">Listeye dön</button>' +
                     '</div>' +
                 '</div>';
         } else {
@@ -665,16 +665,16 @@
                     yildiz(yil) +
                     '<div class="kt-sonuc-bas">' + soz + '</div>' +
                     '<div class="kt-ozet">' +
-                        '<div class="kt-kutu"><b>' + s.puan + '</b><span>Puan</span></div>' +
-                        '<div class="kt-kutu"><b>' + s.dogru + '/' + s.sorular.length + '</b><span>Doğru</span></div>' +
-                        '<div class="kt-kutu"><b>%' + oran + '</b><span>İsabet</span></div>' +
+                        '<div class="kt-kutu"><b>' + s.puan + '</b><span data-i18n="kl.puan">Puan</span></div>' +
+                        '<div class="kt-kutu"><b>' + s.dogru + '/' + s.sorular.length + '</b><span data-i18n="kl.dogru">Doğru</span></div>' +
+                        '<div class="kt-kutu"><b>%' + oran + '</b><span data-i18n="kl.isabet">İsabet</span></div>' +
                         '<div class="kt-kutu"><b>' + s.enSeri + '</b><span>En uzun seri</span></div>' +
                     '</div>' +
                     yanlisListe(s) +
                     '<div class="kt-dugmeler">' +
                         '<button type="button" class="kt-dug ana" onclick="KidefKelimeTest.basla(\'' + key + '\')">Tekrar</button>' +
                         '<button type="button" class="kt-dug" onclick="KidefKelimeTest.ac(\'' + key + '\')">Ayarlar</button>' +
-                        '<button type="button" class="kt-dug" onclick="KidefKelimeTest.kapat(\'' + key + '\')">Listeye dön</button>' +
+                        '<button type="button" class="kt-dug" onclick="KidefKelimeTest.kapat(\'' + key + '\')" data-i18n="kl.listeye_don">Listeye dön</button>' +
                     '</div>' +
                 '</div>';
         }

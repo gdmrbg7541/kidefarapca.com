@@ -1,3 +1,42 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
 
 window.isAtlasFullscreen = false;
 window.toggleAtlasFullscreen = function() {
@@ -7019,7 +7058,7 @@ window.showBabInfo = function(rawName) {
     let info = getBabInfo(rawName);
 
     if(overlay && titleEl && textEl && info) {
-        titleEl.innerText = info.title + " Babı";
+        kdYaz(titleEl, 'kt.babi', '{ad} Babı', { ad: info.title });
         textEl.innerHTML = info.desc; 
         
         overlay.style.display = 'flex';
@@ -7753,9 +7792,9 @@ window.loadMarathonTable = function() {
     const stageLabel = document.getElementById('stage-label');
     if (stageLabel) {
         if (window.innerWidth <= 1024) {
-            stageLabel.innerText = ["MAZİ", "MUZARİ", "EMİR"][window.mCurrentStage];
+            kdYaz(stageLabel, ['fi.mazi', 'fi.muzari', 'fi.emir'][window.mCurrentStage], ["MAZİ", "MUZARİ", "EMİR"][window.mCurrentStage]);
         } else {
-            stageLabel.innerText = ["MAZİ", "MUZARİ", "EMİR"][window.mCurrentStage];
+            kdYaz(stageLabel, ['fi.mazi', 'fi.muzari', 'fi.emir'][window.mCurrentStage], ["MAZİ", "MUZARİ", "EMİR"][window.mCurrentStage]);
         }
     }
 
@@ -10488,7 +10527,7 @@ window.closeRootOfDay = function() {
 function showAksamSebaGenelInfo(e) {
     if (e) e.stopPropagation();
     var titleEl = document.getElementById('aksam-info-title');
-    if (titleEl) titleEl.innerText = "Aksam-ı Seb'a Nedir?";
+    if (titleEl) kdYaz(titleEl, 'kt.aksam_nedir', "Aksam-ı Seb'a Nedir?");
     var ov = document.getElementById('aksam-info-overlay');
     if (ov) ov.style.display = 'flex';
     var txt = document.getElementById('aksam-info-text');

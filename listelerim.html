@@ -55,7 +55,7 @@
             <div id="password-main-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
                 <div class="input-group" style="flex: 1; margin-bottom: 0;">
                     <input type="password" id="password" placeholder=" " required>
-                    <label id="password-label" class="marhey-text">Şifre</label>
+                    <label data-i18n="gir.sifre" id="password-label" class="marhey-text">Şifre</label>
                 </div>
                 <span class="toggle-pass-btn" onclick="togglePassword('password')">👁️</span>
             </div>
@@ -63,19 +63,19 @@
             <div id="re-password-group" style="display: none; align-items: center; gap: 10px; margin-bottom: 15px;">
                 <div class="input-group" style="flex: 1; margin-bottom: 0;">
                     <input type="password" id="re-password" placeholder=" ">
-                    <label class="marhey-text">Şifreyi Onayla</label>
+                    <label data-i18n="gir.sifre_onay" class="marhey-text">Şifreyi Onayla</label>
                 </div>
                 <span class="toggle-pass-btn" onclick="togglePassword('re-password')">👁️</span>
             </div>
         </div>
         
-        <button id="auth-action-btn" class="index-btn-style marhey-text" onclick="authIslemi()">Giriş Yap</button>
+        <button data-i18n="gir.giris" id="auth-action-btn" class="index-btn-style marhey-text" onclick="authIslemi()">Giriş Yap</button>
         
         <p id="hata-mesaji" class="marhey-text" style="color:red; font-size:12px; height: 15px;"></p>
 
         <div class="auth-footer marhey-text" id="auth-footer-links">
-            <span id="auth-switch-text">Hesabınız yok mu?</span> 
-            <a href="javascript:void(0)" id="auth-switch-link" onclick="moduDegistir()">Kayıt Ol</a>
+            <span data-i18n="gir.hesap_yok" id="auth-switch-text">Hesabınız yok mu?</span> 
+            <a data-i18n="gir.kayit" href="javascript:void(0)" id="auth-switch-link" onclick="moduDegistir()">Kayıt Ol</a>
         </div>
             
         </div>
@@ -967,7 +967,7 @@ body.role-student button[onclick*="switchView"] {
 <!-- Yükleniyor Ekranı -->
 <div id="loading-overlay" style="display:none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: white; flex-direction: column; align-items: center; justify-content: center;">
     <div style="border: 8px solid #f3f3f3; border-top: 8px solid var(--accent); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
-    <h2 style="color: var(--primary); font-family: sans-serif;">Veriler Yükleniyor...</h2>
+    <h2 data-i18n="sp.veri_yuk" style="color: var(--primary); font-family: sans-serif;">Veriler Yükleniyor...</h2>
 </div>
 
 <style>
@@ -975,7 +975,7 @@ body.role-student button[onclick*="switchView"] {
 </style>
 
 <div id="sidebar">
-    <div style="position:relative; display:flex; align-items:center; justify-content:center; min-height:1.8em; margin-bottom:0;"><a href="index.html" id="listelerim-home-ico" title="Ana Sayfa" aria-label="Ana Sayfa" style="position:absolute; left:0; color:#fff; display:inline-flex; align-items:center; text-decoration:none; opacity:0.9;"><svg viewBox="0 0 24 24" fill="currentColor" style="width:1.6em; height:1.6em; pointer-events:none;"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></a><h2 style="margin:0; text-align:center;">🏫 Listelerim</h2></div>
+    <div style="position:relative; display:flex; align-items:center; justify-content:center; min-height:1.8em; margin-bottom:0;"><a href="index.html" id="listelerim-home-ico" data-i18n-title="nav.anasayfa" title="Ana Sayfa" data-i18n-aria="nav.anasayfa" aria-label="Ana Sayfa" style="position:absolute; left:0; color:#fff; display:inline-flex; align-items:center; text-decoration:none; opacity:0.9;"><svg viewBox="0 0 24 24" fill="currentColor" style="width:1.6em; height:1.6em; pointer-events:none;"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></a><h2 style="margin:0; text-align:center;">🏫 Listelerim</h2></div>
     <div id="teacher-code-display" style="font-size: 0.8rem; color: #f1c40f; margin-bottom: 15px; font-weight: bold; opacity: 0.8;"></div>
     
     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
@@ -1007,7 +1007,7 @@ body.role-student button[onclick*="switchView"] {
                 <h1 style="color: #7B1FA2; margin: 0; font-size: 2rem;">Öğrenci Dünyası 🚀</h1>
                 <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">Hoş geldin! Bugün harika işler çıkaracaksın.</p>
             </div>
-            <button onclick="switchView('teacher')" style="padding: 12px 25px; border-radius: 12px; border: 2px solid #7B1FA2; background: transparent; color: #7B1FA2; cursor: pointer; font-family: 'Marhey'; font-weight: bold; transition: 0.3s;">
+            <button data-i18n="g.cikis" onclick="switchView('teacher')" style="padding: 12px 25px; border-radius: 12px; border: 2px solid #7B1FA2; background: transparent; color: #7B1FA2; cursor: pointer; font-family: 'Marhey'; font-weight: bold; transition: 0.3s;">
                 Çıkış Yap
             </button>
         </div>
@@ -1042,7 +1042,7 @@ body.role-student button[onclick*="switchView"] {
         <h3>Öğrenci Yönetimi</h3>
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <input type="text" id="singleStuName" placeholder="Öğrenci Adı Soyadı...">
-            <button class="btn-add" onclick="addSingleStudent()" style="margin:0;">+ Ekle</button>
+            <button data-i18n="g.ekle" class="btn-add" onclick="addSingleStudent()" style="margin:0;">+ Ekle</button>
         </div>
         <table id="stuTable"></table> </div>
 
@@ -1096,10 +1096,10 @@ body.role-student button[onclick*="switchView"] {
     <h3>⏱️ Kronometre</h3>
     <div class="tool-display" id="stopwatch-display">00:00:00</div>
     <div class="tool-controls">
-        <button class="tool-btn btn-start" onclick="startStopwatch()">Başlat</button>
+        <button data-i18n="g.baslat" class="tool-btn btn-start" onclick="startStopwatch()">Başlat</button>
         <button class="tool-btn btn-stop" onclick="stopStopwatch()">Durdur</button>
         <button class="tool-btn btn-lap" onclick="recordLap()">Tur</button>
-        <button class="tool-btn btn-reset" onclick="resetStopwatch()">Sıfırla</button>
+        <button data-i18n="g.sifirla" class="tool-btn btn-reset" onclick="resetStopwatch()">Sıfırla</button>
     </div>
     <div id="lapList" style="margin-top:20px; max-height:200px; overflow-y:auto; border-top:1px solid #ddd; padding-top:10px;"></div>
 </div>
@@ -1114,7 +1114,7 @@ body.role-student button[onclick*="switchView"] {
         <button class="tool-btn btn-start" onclick="createTeams(4)">4'lü Takımlar</button>
         <button class="tool-btn btn-start" onclick="createTeams(5)">5'li Takımlar</button>
         <button class="tool-btn btn-start" onclick="createTeams(6)">6'lı Takımlar</button>
-        <button class="tool-btn btn-reset" onclick="clearTeams()">Temizle</button>
+        <button class="tool-btn btn-reset" onclick="clearTeams()" data-i18n="oyn.temizle">Temizle</button>
     </div>
     <div id="teamContainer" class="team-grid"></div>
 </div>
@@ -1180,7 +1180,7 @@ body.role-student button[onclick*="switchView"] {
         <h3 id="patchTitle" class="marhey-text">Görev Yama Düzenle</h3>
         <textarea id="patchCodeInput" class="note-textarea" style="height:150px;" placeholder="Bu göreve özel açıklama veya kod yamasını buraya yazın..."></textarea>
         <div style="display:flex; gap:10px; justify-content: flex-end; margin-top:15px;">
-            <button onclick="closePatchModal()" class="tool-btn btn-reset">İptal</button>
+            <button data-i18n="g.iptal" onclick="closePatchModal()" class="tool-btn btn-reset">İptal</button>
             <button onclick="savePatch()" class="tool-btn btn-start">Yamayı Kaydet</button>
         </div>
     </div>
@@ -1192,7 +1192,7 @@ body.role-student button[onclick*="switchView"] {
         <div id="alertTitle" style="font-size:1.2em; font-weight:bold; margin:10px 0;">Uyarı</div>
         <div id="alertText" style="color:#666; margin-bottom:20px;">Bu işlemi onaylıyor musunuz?</div>
         <div class="alert-buttons">
-            <button id="alertCancelBtn" class="alert-btn btn-cancel" onclick="closeAlert(false)">Vazgeç</button>
+            <button data-i18n="g.vazgec" id="alertCancelBtn" class="alert-btn btn-cancel" onclick="closeAlert(false)">Vazgeç</button>
             <button id="alertConfirmBtn" class="alert-btn btn-confirm" onclick="closeAlert(true)">Tamam</button>
         </div>
     </div>
@@ -1203,7 +1203,7 @@ body.role-student button[onclick*="switchView"] {
         <h3 id="skillModalTitle" style="margin-top:0; color:var(--primary);">Öğrenci Becerileri</h3>
         <hr><div id="skillSliders"></div>
         <div style="text-align:right; margin-top:20px;">
-            <button onclick="closeSkillModal()" style="padding:10px 20px; background:var(--success); color:white; border:none; border-radius:5px; cursor:pointer;">Kaydet ve Kapat</button>
+            <button data-i18n="g.kaydetkapat" onclick="closeSkillModal()" style="padding:10px 20px; background:var(--success); color:white; border:none; border-radius:5px; cursor:pointer;">Kaydet ve Kapat</button>
         </div>
     </div>
 </div>
@@ -1230,8 +1230,8 @@ body.role-student button[onclick*="switchView"] {
     </div>
 
     <div style="text-align: right; margin-top:20px; padding-top:15px; border-top:1px solid #eee;">
-        <button onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px 15px; cursor:pointer; border:none; background:#eee; border-radius:5px; margin-right:10px; font-weight:bold;">İptal</button>
-        <button onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 25px; border-radius:5px; cursor:pointer; font-weight:bold;">Değişiklikleri Kaydet</button>
+        <button data-i18n="g.iptal" onclick="document.getElementById('lvlModal').style.display='none'" style="padding:10px 15px; cursor:pointer; border:none; background:#eee; border-radius:5px; margin-right:10px; font-weight:bold;">İptal</button>
+        <button data-i18n="g.kaydet" onclick="saveLvlConfig()" style="background:var(--success); color:white; border:none; padding:10px 25px; border-radius:5px; cursor:pointer; font-weight:bold;">Değişiklikleri Kaydet</button>
     </div>
 </div>
 
@@ -3069,10 +3069,10 @@ function togglePassword(id) {
         </div>
         <hr>
         <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:20px;">
-            <button class="tab" onclick="showKazanım(5)">5. Sınıf</button>
-            <button class="tab" onclick="showKazanım(6)">6. Sınıf</button>
-            <button class="tab" onclick="showKazanım(7)">7. Sınıf</button>
-            <button class="tab" onclick="showKazanım(8)">8. Sınıf</button>
+            <button data-i18n="sin.5" class="tab" onclick="showKazanım(5)">5. Sınıf</button>
+            <button data-i18n="sin.6" class="tab" onclick="showKazanım(6)">6. Sınıf</button>
+            <button data-i18n="sin.7" class="tab" onclick="showKazanım(7)">7. Sınıf</button>
+            <button data-i18n="sin.8" class="tab" onclick="showKazanım(8)">8. Sınıf</button>
         </div>
         <div id="kazanimContent" style="background:#f9f9f9; padding:15px; border-radius:8px; min-height:200px;">
             Lütfen sınıf seçiniz. (Kazanım verileri buraya eklenecek)
@@ -3393,5 +3393,8 @@ function renderStudentDashboardContent() {
 }
 
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

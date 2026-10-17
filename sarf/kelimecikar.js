@@ -133,8 +133,8 @@
             h.className = 'kdf-havuz';
             h.innerHTML =
                 '<div class="kdf-havuz-bas">'
-                + '<b>Çıkarılanlar</b><span class="kdf-havuz-sayi"></span>'
-                + '<span class="kdf-havuz-not">— silinmedi; geri eklemek için dokun</span>'
+                + '<b data-i18n="kl.cikarilanlar">Çıkarılanlar</b><span class="kdf-havuz-sayi"></span>'
+                + '<span class="kdf-havuz-not" data-i18n="kl.cikar_not">— silinmedi; geri eklemek için dokun</span>'
                 + '<button type="button" class="kdf-havuz-geri">Hepsini geri al</button>'
                 + '</div><div class="kdf-cipler"></div>';
             defter.parentNode.insertBefore(h, defter.nextSibling);

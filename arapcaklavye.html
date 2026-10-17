@@ -15,14 +15,14 @@
   </script>
   <link rel="stylesheet" href="sinifici/arapcaklavye.css?v=e4f1b94b">
   <!-- site geneli yazı tipi: her sayfada EN SON yüklenir -->
-  <link rel="stylesheet" href="arakom.css?v=4383f21b">
+  <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
 
 <header class="ust">
   <div class="ust-ic">
-    <a href="index.html" class="ust-geri" onclick="return kidefAnasayfa(event)" title="Ana sayfaya dön" aria-label="Ana sayfaya dön">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5.4"/><path d="M11.8 5.6 5 12l6.8 6.4"/></svg><span>Ana sayfa</span>
+    <a href="index.html" class="ust-geri" onclick="return kidefAnasayfa(event)" data-i18n-title="nav.anasayfa_don" title="Ana sayfaya dön" data-i18n-aria="nav.anasayfa_don" aria-label="Ana sayfaya dön">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5.4"/><path d="M11.8 5.6 5 12l6.8 6.4"/></svg><span data-i18n="nav.anasayfa">Ana sayfa</span>
     </a>
     <div class="ust-sol">
       <h1>Arapça Klavye</h1>
@@ -64,7 +64,7 @@
         <button type="button" data-yt="amiri" aria-pressed="false" title="Kur'an işaretlerini de gösteren klasik nesih">Amiri</button>
       </div>
       <button type="button" id="temizle" class="tehlike" title="Hepsini sil">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg><span class="yazi-k">Temizle</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg><span class="yazi-k" data-i18n="oyn.temizle">Temizle</span>
       </button>
     </div>
 
@@ -105,7 +105,7 @@
 <!-- bilgi penceresi -->
 <div id="bilgi" class="perde" hidden>
   <div class="bilgi-kutu" role="dialog" aria-modal="true" aria-labelledby="bilgiBaslik">
-    <button type="button" class="bilgi-kapat" id="bilgiKapat" aria-label="Kapat">✕</button>
+    <button type="button" class="bilgi-kapat" id="bilgiKapat" data-i18n-aria="g.kapat" aria-label="Kapat">✕</button>
     <div class="bilgi-svg" id="bilgiSvg"></div>
     <h2 id="bilgiBaslik"></h2>
     <div class="bilgi-metin" id="bilgiMetin"></div>
@@ -117,5 +117,8 @@
 
 <script src="sinifici/arapcaklavye.js?v=0120a3eb"></script>
 <script src="sistem/geri.js?v=f87d1337"></script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

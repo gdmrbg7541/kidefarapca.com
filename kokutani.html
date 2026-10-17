@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Kelimenin Serüveni - Seviye 1 (Tüm Modlar)</title>
+    <title data-i18n="ku.sayfa_baslik">Kelimenin Serüveni - Seviye 1 (Tüm Modlar)</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="sarf/kokutani.css?v=fd4c00b7">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body class="lang-tr">
     <div id="game-container">
@@ -26,12 +26,12 @@
         <div class="back-button hidden" id="back-button-versus">◀</div>
         
         <main id="level1-donut-container" class="main-game-panel hidden">
-            <div id="l1-main-instruction">Hangi kelimeler bu kökten geliyor?</div>
+            <div id="l1-main-instruction" data-i18n="ku.hangi">Hangi kelimeler bu kökten geliyor?</div>
             <div id="l1-root-display-mobile">H-K-M</div>
             <div id="l1-choices-grid"></div>
             <div id="l1-feedback-area">&nbsp;</div>
             <div id="l1-bottom-area">
-                <button id="next-button" class="hidden">İlerle ▶</button>
+                <button id="next-button" class="hidden" data-i18n="kt.ilerle">İlerle ▶</button>
             </div>
         </main>
 
@@ -59,7 +59,7 @@
                     <div class="options-area-vs" id="p2-options"></div>
                 </div>
             </div>
-            <div id="vs-feedback-area">Oyuncular bekleniyor...</div>
+            <div id="vs-feedback-area" data-i18n="ku.bekleniyor">Oyuncular bekleniyor...</div>
         </main>
 
         <div id="start-screen" class="overlay"> 
@@ -67,28 +67,28 @@
                 
                 <div class="back-button" id="back-button-start">◀</div>
                 
-                <h1 id="start-title">Kelimenin Serüveni</h1> 
-                <h2 id="start-subtitle">Seviye 1: Kökü Tanı</h2> 
+                <h1 id="start-title" data-i18n="kt.serven">Kelimenin Serüveni</h1> 
+                <h2 id="start-subtitle" data-i18n="ku.seviye1">Seviye 1: Kökü Tanı</h2> 
                 
-                <p style="margin-top: 20px; font-size: 2.0em;" id="start-p-lang">
+                <p style="margin-top: 20px; font-size: 2.0em;" id="start-p-lang" data-i18n="ku.dil_sec">
                     Oyun dilini seçin:
                 </p>
                 <div class="start-options-group" id="lang-select-group"> 
-                    <button class="selection-button" data-lang="tr" id="lang-button-tr">Türkçe Kelimeler</button> 
-                    <button class="selection-button" data-lang="ar" id="lang-button-ar">Arapça Kelimeler</button> 
+                    <button class="selection-button" data-lang="tr" id="lang-button-tr" data-i18n="ku.tr_kelime">Türkçe Kelimeler</button> 
+                    <button class="selection-button" data-lang="ar" id="lang-button-ar" data-i18n="ku.ar_kelime">Arapça Kelimeler</button> 
                 </div> 
 
-                <p style="margin-top: 25px; font-size: 2.0em;" id="start-p-mode">
+                <p style="margin-top: 25px; font-size: 2.0em;" id="start-p-mode" data-i18n="ku.mod_sec">
                     Oyun modunu seçin:
                 </p>
                 <div class="start-options-group" id="mode-select-group"> 
-                    <button class="selection-button" data-mode="donut" id="mode-button-1p">Tek Kişilik</button> 
-                    <button class="selection-button" data-mode="versus" id="mode-button-2p">İki Kişilik</button> 
+                    <button class="selection-button" data-mode="donut" id="mode-button-1p" data-i18n="oyn.tek">Tek Kişilik</button> 
+                    <button class="selection-button" data-mode="versus" id="mode-button-2p" data-i18n="oyn.iki">İki Kişilik</button> 
                 </div> 
 
                 <button id="start-game-button" disabled>
                     <span id="start-button-fill"></span>
-                    <span id="start-button-text">Başla</span>
+                    <span id="start-button-text" data-i18n="oyn.basla">Başla</span>
                 </button>
             </div> 
         </div>
@@ -97,20 +97,20 @@
             <div class="overlay-content"> 
                 <h2 id="results-title">Oyun Bitti!</h2> 
                 <div id="results-details"></div> 
-                <button id="play-again-button">Ana Menüye Dön</button> 
+                <button id="play-again-button" data-i18n="nav.menu_don">Ana Menüye Dön</button> 
             </div> 
         </div>
     
         <div id="orientation-warning" class="overlay">
             <div class="overlay-content">
-                <h2 id="orientation-title">Lütfen Cihazı Dik Tutun</h2>
-                <p id="orientation-p">Bu oyun en iyi dikey modda çalışır.</p>
+                <h2 id="orientation-title" data-i18n="oyn.dik_tut">Lütfen Cihazı Dik Tutun</h2>
+                <p id="orientation-p" data-i18n="oyn.dikey_not">Bu oyun en iyi dikey modda çalışır.</p>
             </div>
         </div>
     </div>
 
-<script src="sistem/gorevkopru.js?v=50232a80"></script>
-    <script src="sarf/kokutani.js?v=8613b983"></script>
+<script src="sistem/gorevkopru.js?v=d5377b75"></script>
+    <script src="sarf/kokutani.js?v=bd10d0cc"></script>
 <script id="kidef-koruma">
 /* KAYNAK KORUMA (CAYDIRICI) — sag tik + gelistirici araclari kisayollari.
    Not: Tam guvenlik degildir; asil koruma Firestore kurallarindadir. */
@@ -122,5 +122,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

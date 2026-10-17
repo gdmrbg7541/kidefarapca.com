@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;500;700&family=Marhey:wght@300..700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="sozluk/sozluksimulasyonu.css?v=e88a0232">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
     
@@ -32,7 +32,7 @@
                 <div class="header">
                     <h1>Arapça Sözlük Alıştırması</h1>
                     <div class="header-buttons">
-                        <a href="index.html" id="back-btn" title="Ana sayfaya dön" aria-label="Ana sayfaya dön">&#8592;</a> <button id="joker-btn">Joker (3)</button> <button id="hint-btn">💡 İpuçları</button>
+                        <a href="index.html" id="back-btn" data-i18n-title="nav.anasayfa_don" title="Ana sayfaya dön" data-i18n-aria="nav.anasayfa_don" aria-label="Ana sayfaya dön">&#8592;</a> <button id="joker-btn">Joker (3)</button> <button id="hint-btn">💡 İpuçları</button>
                     </div>
                 </div>
 
@@ -73,7 +73,7 @@
                         <div id="start-prompt">
                             <div id="start-rules-container">
                                 </div>
-                            <button id="start-btn" type="button">Başla</button>
+                            <button id="start-btn" type="button" data-i18n="oyn.basla">Başla</button>
                         </div>
 
                        <div class="prompt-container" id="prompt-container">
@@ -134,7 +134,7 @@
     <!-- Klavye sözlükten geliyor: çizen işlev sozlukmotor.js'te
          (KidefSozluk.klavyeCiz), görünümü sozluk/klavye.css'te. -->
     <link rel="stylesheet" href="sozluk/klavye.css?v=4fb2d209">
-    <script src="sarf/sozlukmotor.js?v=8c940703"></script>
+    <script src="sarf/sozlukmotor.js?v=cef5d83b"></script>
     <script src="sozluk/sozluksimulasyonu.js?v=62ae51e1"></script>
 <!-- GOMULU KIP: sozluk.html icinde sekme olarak acildiginda (?gomulu=1)
      kendi geri/ana sayfa tuslarini ve baslik satirini gizler, ust seride
@@ -152,9 +152,12 @@
   },false);
 })();
 </script>
-<script src="sistem/gorevkopru.js?v=50232a80"></script>
+<script src="sistem/gorevkopru.js?v=d5377b75"></script>
 <script>/* SURE TAKIBI (Beceri - Ogretmen Ozel): puan degil, sayfada GORUNUR
    kalinan sure raporlanir; Etkinlikler sekmesinde saat satiri olarak gorunur. */
 try { if (window.KidefGorev) KidefGorev.sureTakibiBaslat(); } catch (e) { }</script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

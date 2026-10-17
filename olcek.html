@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="olcek/olcek.css?v=e40012e6">
 <!-- Arakom EN SON: site geneli yazı tipi (Arapça metinler onunla çizilir). -->
-<link rel="stylesheet" href="arakom.css?v=4383f21b">
+<link rel="stylesheet" href="arakom.css?v=896e5892">
 <style>
   /* Form alanları ve Latin başlıklar Arakom'a düşmesin diye kimlikli
      seçiciyle (öncelik) Nunito'da tutuluyor; arakom.css'e dokunulmadı. */
@@ -59,7 +59,7 @@
         <path d="M12 3.5v11"></path><path d="M7.4 10.2 12 14.8l4.6-4.6"></path>
         <path d="M4.5 19.5h15"></path>
       </svg>
-      <span id="olcIndirYazi">PDF indir</span>
+      <span data-i18n="kat.pdf" id="olcIndirYazi">PDF indir</span>
     </button>
   </div>
 </header>
@@ -122,5 +122,8 @@
 <script src="sistem/kagitpdf.js?v=e3461821"></script>
 <script src="olcek/olcek.js?v=f03f008f"></script>
 <script src="sistem/geri.js?v=f87d1337"></script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

@@ -18,7 +18,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;500;700&family=Marhey:wght@300..700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="sozluk/sozluksimulasyon.css?v=1999a1eb">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
     
@@ -49,7 +49,7 @@
                         <div id="start-prompt">
                             <div id="start-rules-container">
                                 </div>
-                            <button id="start-btn" type="button">Başla</button>
+                            <button id="start-btn" type="button" data-i18n="oyn.basla">Başla</button>
                         </div>
 
                         <div class="prompt-container" id="prompt-container">
@@ -99,5 +99,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

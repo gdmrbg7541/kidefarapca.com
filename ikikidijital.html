@@ -13,21 +13,21 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>İkiki - İnteraktif Kelime Oyunu</title>
+    <title data-i18n="ik.sayfa_baslik">İkiki - İnteraktif Kelime Oyunu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="sarf/oyun/ikikidijital.css?v=e76c4398">
-    <link rel="stylesheet" href="arakom.css?v=4383f21b">
+    <link rel="stylesheet" href="arakom.css?v=896e5892">
 </head>
 <body>
 
-    <a href="index.html" onclick="return ikikiGeri(event)" class="home-link" id="home-btn" title="Geri">
+    <a href="index.html" onclick="return ikikiGeri(event)" class="home-link" id="home-btn" data-i18n-title="nav.geri" title="Geri">
         <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
     </a>
 
     <div class="screen active" id="screen-intro">
         <div class="intro-top">
             <h1 class="title-main">İkiki</h1>
-            <p class="subtitle">Kelimenin Serüveni</p>
+            <p class="subtitle" data-i18n="kt.serven">Kelimenin Serüveni</p>
         </div>
 
         <div class="color-menu">
@@ -42,7 +42,7 @@
     <path d="M4.5 15.5h5.5" />
     <path d="M6.5 18.5h3.5" />
 </svg>
-                <span>Kırmızı Kartlar</span>
+                <span data-i18n="ik.kirmizi">Kırmızı Kartlar</span>
             </div>
             <div class="color-btn btn-green" onclick="startGame('Yeşil Kartlar')">
                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="custom-card-icon">
@@ -55,7 +55,7 @@
     <path d="M4.5 15.5h5.5" />
     <path d="M6.5 18.5h3.5" />
 </svg>
-                <span>Yeşil Kartlar</span>
+                <span data-i18n="ik.yesil">Yeşil Kartlar</span>
             </div>
             <div class="color-btn btn-purple"onclick="startGame('Mor Kartlar')">
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="custom-card-icon">
@@ -68,7 +68,7 @@
     <path d="M4.5 15.5h5.5" />
     <path d="M6.5 18.5h3.5" />
 </svg>
-                <span>Mor Kartlar</span>
+                <span data-i18n="ik.mor">Mor Kartlar</span>
             </div>
             <div class="color-btn btn-blue" onclick="startGame('Mavi Kartlar')">
                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="custom-card-icon">
@@ -81,7 +81,7 @@
     <path d="M4.5 15.5h5.5" />
     <path d="M6.5 18.5h3.5" />
 </svg>
-                <span>Mavi Kartlar</span>
+                <span data-i18n="ik.mavi">Mavi Kartlar</span>
             </div>
         </div>
 
@@ -108,29 +108,29 @@
              anlar. -->
         <div class="setup-row" id="setup-row">
             <div class="setup-anahtarlar">
-                <span class="setup-label">Kartta görünsün</span>
+                <span class="setup-label" data-i18n="ik.kartta">Kartta görünsün</span>
                 <button type="button" class="setup-toggle" data-alan="pattern"
                         onclick="gosterimCevir('pattern')" aria-pressed="true" title="Veznin kendisi">
                     <span class="setup-sim" dir="rtl">فَعَلَ</span>
-                    <span class="setup-ad">Vezin</span>
+                    <span class="setup-ad" data-i18n="ik.vezin">Vezin</span>
                     <span class="setup-anahtar" aria-hidden="true"><span class="setup-topuz"></span></span>
                 </button>
                 <button type="button" class="setup-toggle" data-alan="num"
                         onclick="gosterimCevir('num')" aria-pressed="true" title="Vezin numarası">
                     <span class="setup-sim setup-sim-no">17</span>
-                    <span class="setup-ad">Numara</span>
+                    <span class="setup-ad" data-i18n="ik.numara">Numara</span>
                     <span class="setup-anahtar" aria-hidden="true"><span class="setup-topuz"></span></span>
                 </button>
                 <button type="button" class="setup-toggle" data-alan="hint"
                         onclick="gosterimCevir('hint')" aria-pressed="true" title="İpucu cümlesi">
                     <span class="setup-sim">👉🏼</span>
-                    <span class="setup-ad">İpucu</span>
+                    <span class="setup-ad" data-i18n="ik.ipucu">İpucu</span>
                     <span class="setup-anahtar" aria-hidden="true"><span class="setup-topuz"></span></span>
                 </button>
             </div>
 
             <div class="setup-onizleme">
-                <span class="onz-etiket">Kart böyle görünecek</span>
+                <span class="onz-etiket" data-i18n="ik.onizleme">Kart böyle görünecek</span>
                 <div class="onz-kart" id="onz-kart">
                     <div class="onz-vezin" id="onz-pattern" dir="rtl">فَعَلَ</div>
                     <div class="onz-satir">
@@ -141,7 +141,7 @@
                 </div>
             </div>
 
-            <span class="setup-uyari" id="setup-uyari" role="status">En az bir ipucu açık kalmalı</span>
+            <span class="setup-uyari" id="setup-uyari" role="status"><span data-i18n="ik.uyari_ipucu">En az bir ipucu açık kalmalı</span></span>
         </div>
     </div>
 
@@ -150,29 +150,29 @@
         
         <div class="arena-header">
             <div class="arena-title" id="active-category">KIRMIZI KARTLAR</div>
-            <div class="subtitle" style="margin: 0;">KART <span id="current-index">1</span> / <span id="total-cards">12</span></div>
+            <div class="subtitle" style="margin: 0;"><span data-i18n="ik.kart">KART</span> <span id="current-index">1</span> / <span id="total-cards">12</span></div>
         </div>
 
         <div class="arena-workspace">
             <div class="student-side student-1">
                 <div class="score-box" id="score-1">0</div>
                 <div class="score-ctrl">
-                    <button class="plus-btn" onclick="addScore(1)" title="Puan ekle">+</button>
-                    <button class="minus-btn" id="minus-1" onclick="addScore(1, -1)" title="Yanlış eklenen puanı geri al" disabled>&minus;</button>
+                    <button class="plus-btn" onclick="addScore(1)" data-i18n-title="ik.puan_ekle" title="Puan ekle">+</button>
+                    <button class="minus-btn" id="minus-1" onclick="addScore(1, -1)" data-i18n-title="ik.puan_geri" title="Yanlış eklenen puanı geri al" disabled>&minus;</button>
                 </div>
-                <p class="student-label">ÖĞRENCİ 1</p>
+                <p class="student-label" data-i18n="ik.ogrenci1">ÖĞRENCİ 1</p>
             </div>
 
             <div class="main-display">
                 <div class="question-wrapper" id="question-wrapper">
-                    <div class="pattern-name clickable-item" id="display-pattern-name" onclick="smartToggleBlur('pattern')" title="Gizle/Göster">فَعَلَ</div>
+                    <div class="pattern-name clickable-item" id="display-pattern-name" onclick="smartToggleBlur('pattern')" data-i18n-title="oyn.gizle_goster" title="Gizle/Göster">فَعَلَ</div>
                     
                     <div class="root-line">
                         <div class="root-word" id="display-root">حـ ـكـ ـم</div>
-                        <div class="pattern-num clickable-item" id="display-pattern-num" onclick="smartToggleBlur('num')" title="Gizle/Göster">17</div>
+                        <div class="pattern-num clickable-item" id="display-pattern-num" onclick="smartToggleBlur('num')" data-i18n-title="oyn.gizle_goster" title="Gizle/Göster">17</div>
                     </div>
 
-                    <div class="hint-text clickable-item" id="display-hint" onclick="toggleHintBlur()" title="Gizle/Göster">👉🏼 Maçı yönetir</div>
+                    <div class="hint-text clickable-item" id="display-hint" onclick="toggleHintBlur()" data-i18n-title="oyn.gizle_goster" title="Gizle/Göster">👉🏼 Maçı yönetir</div>
                 </div>
 
                 <div class="answer-container" id="answer-container">
@@ -184,10 +184,10 @@
             <div class="student-side student-2">
                 <div class="score-box" id="score-2">0</div>
                 <div class="score-ctrl">
-                    <button class="plus-btn" onclick="addScore(2)" title="Puan ekle">+</button>
-                    <button class="minus-btn" id="minus-2" onclick="addScore(2, -1)" title="Yanlış eklenen puanı geri al" disabled>&minus;</button>
+                    <button class="plus-btn" onclick="addScore(2)" data-i18n-title="ik.puan_ekle" title="Puan ekle">+</button>
+                    <button class="minus-btn" id="minus-2" onclick="addScore(2, -1)" data-i18n-title="ik.puan_geri" title="Yanlış eklenen puanı geri al" disabled>&minus;</button>
                 </div>
-                <p class="student-label">ÖĞRENCİ 2</p>
+                <p class="student-label" data-i18n="ik.ogrenci2">ÖĞRENCİ 2</p>
             </div>
         </div>
 
@@ -196,7 +196,7 @@
         </div>
     </div>
 
-    <script src="sarf/oyun/ikikidijital.js?v=5a3f9eec"></script>
+    <script src="sarf/oyun/ikikidijital.js?v=ab7f51ee"></script>
     <script src="sistem/geri.js?v=f87d1337"></script>
     <script>
       // Geri butonu: oyun ekranındaysa menüye (intro) dön; menüdeyse index'e (yoksa siteye)
@@ -221,5 +221,8 @@
   },false);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

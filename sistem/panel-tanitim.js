@@ -20,6 +20,23 @@
   'use strict';
   if (window.KidefTanitim) return;
 
+  /* ÇOK DİLLİ (17.10.2026) — yazılar sistem/dil.js sözlüğünden; dil
+     Türkçeyse ya da sözlük yoksa Türkçesi kalır. Çizimlerdeki örnek
+     öğrenci adları (Ali Y., Zeynep K.…) çevrilmez. Dil değişince açık
+     kartlar ve pencere yeniden yazılır (dosyanın sonunda). */
+  function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+      return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+  }
+  /* tablodaki görünen yazı her okunuşta seçili dilde */
+  function cevir(o, alan, k) {
+    var tr = o[alan];
+    Object.defineProperty(o, alan, { get: function () { return kdMetin(k, tr); }, enumerable: true, configurable: true });
+  }
+
   var YESIL = '#16A085', TURUNCU = '#E67E22', MOR = '#7C3AED',
       MAVI = '#2563EB', KIRMIZI = '#EE5253', YESIL2 = '#059669';
 
@@ -52,7 +69,8 @@
     var ic = '';
     ic += '<path d="M160 44 L288 82 H32 Z" fill="' + KIRMIZI + '" opacity=".9"/>';
     ic += '<rect x="44" y="82" width="232" height="104" rx="6" fill="#FBF7F2" stroke="#E7D9CC" stroke-width="1.6"/>';
-    var katlar = [['5. Sınıflar', 96], ['8. Sınıflar', 126], ['10. Sınıflar', 156]];
+    var katlar = [[kdMetin('pt.m_siniflar', '{n}. Sınıflar', {n: 5}), 96], [kdMetin('pt.m_siniflar', '{n}. Sınıflar', {n: 8}), 126],
+                  [kdMetin('pt.m_siniflar', '{n}. Sınıflar', {n: 10}), 156]];
     katlar.forEach(function (k, i) {
       ic += '<text x="56" y="' + (k[1] + 12) + '" font-size="9.5" font-weight="700" fill="#7A5230">' + k[0] + '</text>';
       for (var d = 0; d < 3; d++) {
@@ -62,14 +80,14 @@
       }
     });
     ic += '<rect x="146" y="176" width="28" height="10" rx="2" fill="#8B5E3C"/>';
-    return pencere('Kurumlarım & Sınıflarım', KIRMIZI, ic);
+    return pencere(kdMetin('pt.ogt_kurum', 'Kurumlarım & Sınıflarım'), KIRMIZI, ic);
   }
 
   function mListe() {
     var ic = '<rect x="18" y="42" width="284" height="16" rx="5" fill="#F3F7FA"/>' +
-      '<text x="30" y="54" font-size="9" font-weight="700" fill="#5B7590">Öğrenci</text>' +
-      '<text x="196" y="54" font-size="9" font-weight="700" fill="#5B7590">Artı / Eksi</text>' +
-      '<text x="262" y="54" font-size="9" font-weight="700" fill="#5B7590">Puan</text>';
+      '<text x="30" y="54" font-size="9" font-weight="700" fill="#5B7590">' + kdMetin('pt.m_ogrenci', 'Öğrenci') + '</text>' +
+      '<text x="196" y="54" font-size="9" font-weight="700" fill="#5B7590">' + kdMetin('pt.m_arti', 'Artı / Eksi') + '</text>' +
+      '<text x="262" y="54" font-size="9" font-weight="700" fill="#5B7590">' + kdMetin('pt.m_puan', 'Puan') + '</text>';
     var adlar = ['Ali Y.', 'Zeynep K.', 'Ömer D.', 'Elif S.'];
     var renkler = [MAVI, MOR, TURUNCU, YESIL2];
     var puan = [92, 78, 85, 96];
@@ -86,7 +104,7 @@
       ic += '<text x="274" y="' + (y + 13) + '" font-size="9" font-weight="800" fill="#B9770E" text-anchor="middle">' + puan[i] + '</text>';
       if (i < 3) ic += '<path d="M18 ' + (y + 24) + 'h284" stroke="#F0E6DC" stroke-width="1"/>';
     });
-    return pencere('Sınıf Listesi', YESIL, ic);
+    return pencere(kdMetin('pt.ogt_liste', 'Sınıf Listesi'), YESIL, ic);
   }
 
   function mKura() {
@@ -103,13 +121,13 @@
       ic += '<text x="116" y="' + (y + 14) + '" font-size="9.5" fill="#8CA3B5">' + a + '</text>';
       ic += '<rect x="252" y="' + (y + 4) + '" width="32" height="12" rx="6" fill="#EDF3F7"/>';
     });
-    ic += '<text x="57" y="150" font-size="9" font-weight="700" fill="#A6836E" text-anchor="middle">Kura</text>';
-    return pencere('Kurayla Seç', KIRMIZI, ic);
+    ic += '<text x="57" y="150" font-size="9" font-weight="700" fill="#A6836E" text-anchor="middle">' + kdMetin('pt.m_kura', 'Kura') + '</text>';
+    return pencere(kdMetin('pt.ogt_kura', 'Kurayla Seç'), KIRMIZI, ic);
   }
 
   function mEtkinlik() {
     var ic = '';
-    var k = [['Kelime Avı', MOR], ['Hafıza', TURUNCU], ['Eşleştir', YESIL2]];
+    var k = [[kdMetin('pt.m_avi', 'Kelime Avı'), MOR], [kdMetin('pt.m_hafiza', 'Hafıza'), TURUNCU], [kdMetin('pt.m_eslestir', 'Eşleştir'), YESIL2]];
     k.forEach(function (x, i) {
       var cx = 24 + i * 96;
       ic += '<rect x="' + cx + '" y="46" width="84" height="96" rx="10" fill="#fff" stroke="#E7D9CC" stroke-width="1.6"/>';
@@ -118,20 +136,20 @@
       ic += '<path d="M' + (cx + 34) + ' 76 h16 M' + (cx + 34) + ' 84 h11" stroke="' + x[1] + '" stroke-width="3" stroke-linecap="round"/>';
       ic += '<text x="' + (cx + 42) + '" y="116" font-size="9.5" font-weight="700" fill="#3A5670" text-anchor="middle">' + x[0] + '</text>';
       ic += '<rect x="' + (cx + 20) + '" y="124" width="44" height="13" rx="6.5" fill="#F3F7FA"/>';
-      ic += '<text x="' + (cx + 42) + '" y="134" font-size="8" font-weight="700" fill="' + x[1] + '" text-anchor="middle">Hazır</text>';
+      ic += '<text x="' + (cx + 42) + '" y="134" font-size="8" font-weight="700" fill="' + x[1] + '" text-anchor="middle">' + kdMetin('pt.m_hazir', 'Hazır') + '</text>';
     });
     ic += satir(154, 150, '#C9B7A8', .5) + satir(168, 90, '#C9B7A8', .35);
-    return pencere('Etkinlikler & Oyunlar', MOR, ic);
+    return pencere(kdMetin('pt.ogt_etk', 'Etkinlikler & Oyunlar'), MOR, ic);
   }
 
   function mGorev() {
     var ic = '';
     ic += '<rect x="22" y="52" width="140" height="106" rx="10" fill="#fff" stroke="#E7D9CC" stroke-width="1.6"/>';
     ic += '<path d="M22 62a10 10 0 0 1 10-10h120a10 10 0 0 1 10 10v12H22z" fill="' + TURUNCU + '" opacity=".92"/>';
-    ic += '<text x="34" y="68" font-size="9.5" font-weight="700" fill="#fff">Yeni görev</text>';
+    ic += '<text x="34" y="68" font-size="9.5" font-weight="700" fill="#fff">' + kdMetin('pt.m_yeni', 'Yeni görev') + '</text>';
     ic += satir(88, 110, TURUNCU, .45) + satir(102, 84, TURUNCU, .3) + satir(116, 98, TURUNCU, .22);
     ic += '<rect x="34" y="132" width="60" height="16" rx="8" fill="#FFF4E3"/>';
-    ic += '<text x="64" y="144" font-size="8.5" font-weight="700" fill="#B9770E" text-anchor="middle">3 gün</text>';
+    ic += '<text x="64" y="144" font-size="8.5" font-weight="700" fill="#B9770E" text-anchor="middle">' + kdMetin('pt.m_gun', '{n} gün', {n: 3}) + '</text>';
     ic += '<path d="M176 105 h34" stroke="' + YESIL + '" stroke-width="3" stroke-linecap="round"/>';
     ic += '<path d="M204 98 l9 7 -9 7z" fill="' + YESIL + '"/>';
     ic += '<rect x="228" y="48" width="64" height="114" rx="12" fill="#fff" stroke="#3A5670" stroke-width="2.4"/>';
@@ -141,7 +159,7 @@
     ic += '<rect x="236" y="102" width="48" height="8" rx="4" fill="#EDF3F7"/>';
     ic += '<rect x="236" y="116" width="34" height="8" rx="4" fill="#EDF3F7"/>';
     ic += '<circle cx="260" cy="150" r="7" fill="#EDF3F7"/>';
-    return pencere('Görev Gönder', TURUNCU, ic);
+    return pencere(kdMetin('pt.ogt_gorev', 'Görev Gönder'), TURUNCU, ic);
   }
 
   function mSonuc() {
@@ -154,9 +172,9 @@
       ic += '<text x="' + (x + 13) + '" y="' + (152 - h) + '" font-size="8.5" font-weight="700" fill="#6B4A38" text-anchor="middle">' + h + '</text>';
     });
     ic += '<rect x="28" y="42" width="104" height="16" rx="8" fill="#E8F8F2"/>';
-    ic += '<text x="80" y="54" font-size="9" font-weight="700" fill="#0E7A68" text-anchor="middle">Sınıf ortalaması</text>';
-    ic += '<text x="28" y="176" font-size="8.5" fill="#A6836E">Sınav · Ödev · Performans · Davranış</text>';
-    return pencere('Sonuçlar & Karne', YESIL2, ic);
+    ic += '<text x="80" y="54" font-size="9" font-weight="700" fill="#0E7A68" text-anchor="middle">' + kdMetin('pt.m_ort', 'Sınıf ortalaması') + '</text>';
+    ic += '<text x="28" y="176" font-size="8.5" fill="#A6836E">' + kdMetin('pt.m_turler', 'Sınav · Ödev · Performans · Davranış') + '</text>';
+    return pencere(kdMetin('pt.ogt_sonuc', 'Sonuçlar & Karne'), YESIL2, ic);
   }
 
   /* ==================================================================
@@ -164,7 +182,8 @@
      ================================================================== */
   function oGorev() {
     var ic = '';
-    var g = [['Ünite 2 kelimeleri', true], ['Dinle ve seç', true], ['Boşluk doldurma', false]];
+    var g = [[kdMetin('pt.m_unite', 'Ünite 2 kelimeleri'), true], [kdMetin('pt.m_dinle', 'Dinle ve seç'), true],
+             [kdMetin('pt.m_bosluk', 'Boşluk doldurma'), false]];
     g.forEach(function (x, i) {
       var y = 50 + i * 34;
       ic += '<rect x="20" y="' + y + '" width="280" height="28" rx="9" fill="' + (x[1] ? '#E8F8F2' : '#F6F9FB') + '"/>';
@@ -173,11 +192,11 @@
       ic += '<text x="56" y="' + (y + 18) + '" font-size="10" fill="#3A5670">' + x[0] + '</text>';
       ic += '<rect x="242" y="' + (y + 6) + '" width="48" height="16" rx="8" fill="#fff"/>';
       ic += '<text x="266" y="' + (y + 17) + '" font-size="8.5" font-weight="700" fill="' + (x[1] ? '#0E7A68' : '#B9770E') + '" text-anchor="middle">' +
-            (x[1] ? 'bitti' : '2 gün') + '</text>';
+            (x[1] ? kdMetin('pt.m_bitti', 'bitti') : kdMetin('pt.m_gun', '{n} gün', {n: 2})) + '</text>';
     });
     ic += '<rect x="20" y="156" width="280" height="24" rx="9" fill="#FFF4E3"/>';
-    ic += '<text x="160" y="172" font-size="9.5" font-weight="700" fill="#B9770E" text-anchor="middle">Öğretmenin gönderdiği görevler burada</text>';
-    return pencere('Görevlerim', TURUNCU, ic);
+    ic += '<text x="160" y="172" font-size="9.5" font-weight="700" fill="#B9770E" text-anchor="middle">' + kdMetin('pt.m_burada', 'Öğretmenin gönderdiği görevler burada') + '</text>';
+    return pencere(kdMetin('pt.ogr_gorev', 'Görevlerim'), TURUNCU, ic);
   }
 
   function oPuan() {
@@ -185,8 +204,9 @@
     ic += '<circle cx="86" cy="112" r="42" fill="none" stroke="#EDF3F7" stroke-width="13"/>';
     ic += '<circle cx="86" cy="112" r="42" fill="none" stroke="' + YESIL + '" stroke-width="13" stroke-linecap="round" stroke-dasharray="198 264" transform="rotate(-90 86 112)"/>';
     ic += '<text x="86" y="118" font-size="20" font-weight="800" fill="#0E7A68" text-anchor="middle">75</text>';
-    ic += '<text x="86" y="170" font-size="9" font-weight="700" fill="#6B4A38" text-anchor="middle">Bu haftaki puanın</text>';
-    var rz = [['Kelime', YESIL2, 84], ['Okuma', MOR, 62], ['Konuşma', TURUNCU, 46]];
+    ic += '<text x="86" y="170" font-size="9" font-weight="700" fill="#6B4A38" text-anchor="middle">' + kdMetin('pt.m_hafta', 'Bu haftaki puanın') + '</text>';
+    var rz = [[kdMetin('pt.m_kelime', 'Kelime'), YESIL2, 84], [kdMetin('pt.m_okuma', 'Okuma'), MOR, 62],
+              [kdMetin('pt.m_konusma', 'Konuşma'), TURUNCU, 46]];
     rz.forEach(function (r, i) {
       var y = 52 + i * 42;
       ic += '<circle cx="176" cy="' + (y + 16) + '" r="15" fill="' + r[1] + '" opacity=".16"/>';
@@ -194,12 +214,13 @@
       ic += '<text x="200" y="' + (y + 14) + '" font-size="10" font-weight="700" fill="#3A5670">' + r[0] + '</text>';
       ic += '<rect x="200" y="' + (y + 20) + '" width="' + r[2] + '" height="7" rx="3.5" fill="' + r[1] + '" opacity=".55"/>';
     });
-    return pencere('Puanlarım & Rozetlerim', YESIL, ic);
+    return pencere(kdMetin('pt.ogr_puan', 'Puanlarım & Rozetlerim'), YESIL, ic);
   }
 
   function oOyun() {
     var ic = '';
-    var o = [['Kelime Avı', MOR], ['Hafıza Kartı', TURUNCU], ['Harf Yarışı', MAVI], ['Sözlük', YESIL2]];
+    var o = [[kdMetin('pt.m_avi', 'Kelime Avı'), MOR], [kdMetin('pt.m_hkarti', 'Hafıza Kartı'), TURUNCU],
+             [kdMetin('pt.m_harf', 'Harf Yarışı'), MAVI], [kdMetin('pt.m_sozluk', 'Sözlük'), YESIL2]];
     o.forEach(function (x, i) {
       var cx = 22 + (i % 2) * 150, cy = 46 + Math.floor(i / 2) * 76;
       ic += '<rect x="' + cx + '" y="' + cy + '" width="138" height="64" rx="11" fill="' + x[1] + '" opacity=".1"/>';
@@ -208,12 +229,12 @@
       ic += '<text x="' + (cx + 62) + '" y="' + (cy + 30) + '" font-size="10" font-weight="700" fill="#3A5670">' + x[0] + '</text>';
       ic += '<rect x="' + (cx + 62) + '" y="' + (cy + 38) + '" width="56" height="7" rx="3.5" fill="' + x[1] + '" opacity=".4"/>';
     });
-    return pencere('Oyunlar & Sözlük', MOR, ic);
+    return pencere(kdMetin('pt.ogr_oyun', 'Oyunlar & Sözlük'), MOR, ic);
   }
 
   function oKarne() {
     var ic = '<path d="M28 156 h268" stroke="#D9C7B8" stroke-width="1.6"/>';
-    var v = [62, 78, 92, 70], r = [MAVI, YESIL, TURUNCU, MOR], ad = ['1.Yz', '2.Yz', 'Ödev', 'Perf'];
+    var v = [62, 78, 92, 70], r = [MAVI, YESIL, TURUNCU, MOR], ad = [kdMetin('pt.m_yz1', '1.Yz'), kdMetin('pt.m_yz2', '2.Yz'), kdMetin('pt.m_odev', 'Ödev'), kdMetin('pt.m_perf', 'Perf')];
     v.forEach(function (h, i) {
       var x = 52 + i * 62;
       ic += '<rect x="' + x + '" y="' + (156 - h) + '" width="34" height="' + h + '" rx="6" fill="' + r[i] + '" opacity=".85"/>';
@@ -222,8 +243,8 @@
     });
     /* ortalama rozeti SOLDA: sağda 3. sütunun değer yazısıyla çakışıyordu */
     ic += '<rect x="24" y="42" width="104" height="18" rx="9" fill="#E8F8F2"/>';
-    ic += '<text x="76" y="55" font-size="9.5" font-weight="800" fill="#0E7A68" text-anchor="middle">Ortalama 75,5</text>';
-    return pencere('Karnem', MAVI, ic);
+    ic += '<text x="76" y="55" font-size="9.5" font-weight="800" fill="#0E7A68" text-anchor="middle">' + kdMetin('pt.m_ortalama', 'Ortalama 75,5') + '</text>';
+    return pencere(kdMetin('pt.ogr_karne', 'Karnem'), MAVI, ic);
   }
 
   /* ==================================================================
@@ -256,6 +277,19 @@
     }
   };
 
+  cevir(VERI.ogretmen, 'ad', 'pt.ogt_ad');
+  cevir(VERI.ogretmen, 'alt', 'pt.ogt_alt');
+  cevir(VERI.ogrenci, 'ad', 'pt.ogr_ad');
+  cevir(VERI.ogrenci, 'alt', 'pt.ogr_alt');
+  ['kurum', 'liste', 'kura', 'etk', 'gorev', 'sonuc'].forEach(function (k, i) {
+    cevir(VERI.ogretmen.ekranlar[i], 'ad', 'pt.ogt_' + k);
+    cevir(VERI.ogretmen.ekranlar[i], 'not', 'pt.ogt_' + k + '_n');
+  });
+  ['gorev', 'puan', 'oyun', 'karne'].forEach(function (k, i) {
+    cevir(VERI.ogrenci.ekranlar[i], 'ad', 'pt.ogr_' + k);
+    cevir(VERI.ogrenci.ekranlar[i], 'not', 'pt.ogr_' + k + '_n');
+  });
+
   /* rol simgeleri (kartların ve pencere başlığının ikonu) */
   function rolSvg(rol) {
     if (rol === 'ogretmen') {
@@ -285,9 +319,9 @@
     var v = VERI[rol];
     return '<button type="button" class="kdt-kart kdt-' + rol + '" onclick="KidefTanitim.ac(\'' + rol + '\')">' +
       '<span class="kdt-kart-ik">' + rolSvg(rol) + '</span>' +
-      '<span class="kdt-kart-yazi"><b>' + (rol === 'ogretmen' ? 'Öğretmen misin?' : 'Öğrenci misin?') + '</b>' +
+      '<span class="kdt-kart-yazi"><b>' + esc(rol === 'ogretmen' ? kdMetin('pt.ogretmen_mi', 'Öğretmen misin?') : kdMetin('pt.ogrenci_mi', 'Öğrenci misin?')) + '</b>' +
       '<small>' + esc(v.alt) + '</small></span>' +
-      '<span class="kdt-kart-ok">İçeriye bak</span></button>';
+      '<span class="kdt-kart-ok">' + esc(kdMetin('pt.iceri_bak', 'İçeriye bak')) + '</span></button>';
   }
 
   function kartlar(mount) {
@@ -295,13 +329,17 @@
     if (!mount) return;
     stilKur();
     mount.innerHTML = '<div class="kdt-kartlar">' + kartHtml('ogrenci') + kartHtml('ogretmen') + '</div>';
+    if (MOUNTLAR.indexOf(mount) < 0) MOUNTLAR.push(mount);
   }
+  var MOUNTLAR = [], ACIK_ROL = null;
 
   /* ---------------------------------------------------------------- pencere */
   function ac(rol) {
     stilKur();
     kapat();
     var v = VERI[rol] || VERI.ogretmen;
+    ACIK_ROL = rol;
+    var kapatYazi = esc(kdMetin('g.kapat', 'Kapat'));
     var k = document.createElement('div');
     k.id = 'kdtPencere';
     k.innerHTML =
@@ -309,7 +347,7 @@
         '<div class="kdt-bas" style="--kdt:' + v.renk + '">' +
           '<span class="kdt-bas-ik">' + rolSvg(rol) + '</span>' +
           '<span class="kdt-bas-yazi"><b>' + esc(v.ad) + '</b><small>' + esc(v.alt) + '</small></span>' +
-          '<button type="button" class="kdt-kapat" title="Kapat" aria-label="Kapat">&times;</button>' +
+          '<button type="button" class="kdt-kapat" title="' + kapatYazi + '" aria-label="' + kapatYazi + '">&times;</button>' +
         '</div>' +
         '<div class="kdt-govde"><div class="kdt-izgara">' +
           v.ekranlar.map(function (e) {
@@ -317,7 +355,7 @@
               '<figcaption><b>' + esc(e.ad) + '</b><span>' + esc(e.not) + '</span></figcaption></figure>';
           }).join('') +
         '</div>' +
-        '<p class="kdt-not">Çizimler paneli tanıtmak içindir; gerçek ekranlar kendi sınıfınla dolar.</p>' +
+        '<p class="kdt-not">' + esc(kdMetin('pt.not', 'Çizimler paneli tanıtmak içindir; gerçek ekranlar kendi sınıfınla dolar.')) + '</p>' +
         '</div>' +
       '</div>' +
       '<div class="kdt-buyut" hidden><div class="kdt-buyut-ic"></div></div>';
@@ -353,6 +391,7 @@
   function kapat() {
     var k = document.getElementById('kdtPencere');
     if (k) k.remove();
+    ACIK_ROL = null;
     document.body.classList.remove('kdt-acik');
     if (window.__kdtEsc) document.removeEventListener('keydown', window.__kdtEsc);
   }
@@ -420,6 +459,15 @@
         '.kdt-kart,#kdtPencere .kdt-madde{transition:none}#kdtPencere{animation:none}}';
     (document.head || document.documentElement).appendChild(s);
   }
+
+  /* dil değişince (17.10.2026) açık kartlar ve pencere seçili dilde yeniden yazılır */
+  document.addEventListener('kidef:dil', function () {
+    MOUNTLAR.forEach(function (m) {
+      if (m && document.documentElement.contains(m) && m.querySelector('.kdt-kartlar'))
+        m.innerHTML = '<div class="kdt-kartlar">' + kartHtml('ogrenci') + kartHtml('ogretmen') + '</div>';
+    });
+    if (ACIK_ROL && document.getElementById('kdtPencere')) ac(ACIK_ROL);
+  });
 
   window.KidefTanitim = { ac: ac, kapat: kapat, kartlar: kartlar, kartHtml: kartHtml };
 })();

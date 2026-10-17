@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 /* ==========================================================================
    MERAK ÇARKI — ders başı ısınma çarkı        merak/merakcarki.js
    --------------------------------------------------------------------------
@@ -40,11 +80,15 @@
        Yeni palet eklenmedi; kartın üst çizgisi, rozeti ve çark dilimi bu
        renkten çiziliyor. */
     var TUR = [
-        { id: 'fikra',   ad: 'Fıkra',          kisa: 'Fıkra',   renk: '#E67E22', ikon: '😄' },
-        { id: 'koken',   ad: 'Kelime Kökeni',  kisa: 'Köken',   renk: '#16A085', ikon: '🌿' },
-        { id: 'kultur',  ad: 'Kültür & Bilim', kisa: 'Kültür',  renk: '#2E86DE', ikon: '🌍' },
-        { id: 'bulmaca', ad: 'Gizemli Bulmaca', kisa: 'Bulmaca', renk: '#8E44AD', ikon: '🔍' }
+        { id: 'fikra',   ad: 'Fıkra',          kisa: 'Fıkra',   renk: '#E67E22', ikon: '😄', k: 'mc.fikra', kk: 'mc.fikra_k' },
+        { id: 'koken',   ad: 'Kelime Kökeni',  kisa: 'Köken',   renk: '#16A085', ikon: '🌿', k: 'mc.koken', kk: 'mc.koken_k' },
+        { id: 'kultur',  ad: 'Kültür & Bilim', kisa: 'Kültür',  renk: '#2E86DE', ikon: '🌍', k: 'mc.kultur', kk: 'mc.kultur_k' },
+        { id: 'bulmaca', ad: 'Gizemli Bulmaca', kisa: 'Bulmaca', renk: '#8E44AD', ikon: '🔍', k: 'mc.bulmaca', kk: 'mc.bulmaca_k' }
     ];
+    /* ÇOK DİLLİ SİTE (16.10.2026): tür adları seçili dilde (k: uzun ad, kk: çark dilimindeki
+       kısa ad); kimlikler (id) ve geçmiş kayıtları Türkçe kalır */
+    function turAd(t) { return kdMetin(t.k || '', t.ad); }
+    function turKisa(t) { return kdMetin(t.kk || '', t.kisa); }
 
     var MC = window.MerakCarki = {};
     var db = null, user = null;
@@ -104,7 +148,7 @@
             Object.keys(d.levels).forEach(function (lId) {
                 var lv = d.levels[lId] || {}, cls = lv.classes || {};
                 var kId = (lv.kurumId && kurumlar[lv.kurumId]) ? lv.kurumId : '';
-                var kAd = kId ? ((kurumlar[kId] || {}).name || 'Kurum') : '';
+                var kAd = kId ? ((kurumlar[kId] || {}).name || kdMetin('mc.kurum', 'Kurum')) : '';
                 Object.keys(cls).forEach(function (cId) {
                     l.push({
                         anahtar: lId + '/' + cId,
@@ -169,7 +213,7 @@
         }
         if (kurumSira.length > 1) {
             sec.innerHTML = kurumSira.map(function (a) {
-                var ad = (kurumVar[a][0] && kurumVar[a][0].kurum) || 'Kurum belirtilmemiş';
+                var ad = (kurumVar[a][0] && kurumVar[a][0].kurum) || kdMetin('mc.kurum_yok', 'Kurum belirtilmemiş');
                 return '<optgroup label="' + kac(ad) + '">' +
                        kurumVar[a].map(secenek).join('') + '</optgroup>';
             }).join('');
@@ -283,16 +327,16 @@
     function durumYaz() {
         var e = $('#mcDurum'); if (!e) return;
         var c = cikanlar(seciliSinif), top = toplamKart();
-        var ad = 'bu tarayıcı';
+        var ad = kdMetin('mc.bu_tarayici', 'bu tarayıcı');
         for (var i = 0; i < sinifOgeleri.length; i++) if (sinifOgeleri[i].anahtar === seciliSinif) ad = sinifOgeleri[i].ad;
         var parca = TUR.map(function (t) {
             var tum = (veri()[t.id] || []).length;
             var kalan = tum - c.filter(function (id) { return (veri()[t.id] || []).some(function (k) { return k.id === id; }); }).length;
             return '<span class="mc-kalan" style="--r:' + t.renk + '">' + simge(t.id) +
-                t.kisa + ' <b>' + kalan + '</b></span>';
+                kac(turKisa(t)) + ' <b>' + kalan + '</b></span>';
         }).join('');
         e.innerHTML = '<span class="mc-durum-ad">' + kac(ad) + '</span>' +
-            '<span class="mc-durum-say">' + c.length + ' / ' + top + ' kart çıktı</span>' +
+            '<span class="mc-durum-say">' + kac(kdMetin('mc.kart_cikti', '{n} / {top} kart çıktı', { n: c.length, top: top })) + '</span>' +
             '<span class="mc-kalanlar">' + parca + '</span>';
     }
 
@@ -314,7 +358,7 @@
                aşağı okunuyordu. Düz duruyorlar, dört dilimde de rahat okunur. */
             html += '<g transform="translate(' + tx.toFixed(2) + ',' + ty.toFixed(2) + ')">' +
                 simgeIc(TUR[i].id, -11, -27, 22) +
-                '<text class="mc-dilim-ad" text-anchor="middle" y="14">' + kac(TUR[i].kisa) + '</text></g>';
+                '<text class="mc-dilim-ad" text-anchor="middle" y="14">' + kac(turKisa(TUR[i])) + '</text></g>';
         }
         g.innerHTML = html;
     }
@@ -365,12 +409,12 @@
         var k = $('#mcKart'); if (!k) return;
         k.hidden = false;
         k.className = 'mc-kart mc-bitti';
-        k.innerHTML = '<h2>' + (t ? kac(t.ad) + ' kartlarının hepsi çıktı' : 'Bütün kartlar çıktı') + '</h2>' +
-            '<p>Bu sınıfa ' + (t ? 'bu türden ' : '') + 'gösterilmemiş kart kalmadı. ' +
-            'Yeni bir yıl başlıyorsa ya da baştan başlamak istiyorsan bu sınıfın geçmişini sıfırlayabilirsin.</p>' +
+        k.innerHTML = '<h2>' + kac(t ? kdMetin('mc.bitti_tur', '{tur} kartlarının hepsi çıktı', { tur: turAd(t) }) : kdMetin('mc.bitti', 'Bütün kartlar çıktı')) + '</h2>' +
+            '<p>' + kac(t ? kdMetin('mc.bitti_tur_not', 'Bu sınıfa bu türden gösterilmemiş kart kalmadı.') : kdMetin('mc.bitti_not', 'Bu sınıfa gösterilmemiş kart kalmadı.')) + ' ' +
+            kac(kdMetin('mc.sifirla_not', 'Yeni bir yıl başlıyorsa ya da baştan başlamak istiyorsan bu sınıfın geçmişini sıfırlayabilirsin.')) + '</p>' +
             '<div class="mc-kart-tuslar">' +
             '<button type="button" class="mc-t-ana" onclick="MerakCarki.sifirla(' +
-            (t ? "'" + t.id + "'" : '') + ')">' + (t ? kac(t.ad) + ' geçmişini sıfırla' : 'Bu sınıfın geçmişini sıfırla') + '</button>' +
+            (t ? "'" + t.id + "'" : '') + ')">' + kac(t ? kdMetin('mc.sifirla_tur', '{tur} geçmişini sıfırla', { tur: turAd(t) }) : kdMetin('mc.sifirla', 'Bu sınıfın geçmişini sıfırla')) + '</button>' +
             '</div>';
     }
 
@@ -387,14 +431,14 @@
         k.className = 'mc-kart';
         k.style.setProperty('--r', t.renk);
         k.innerHTML =
-            '<div class="mc-kart-ust"><span class="mc-rozet">' + simge(t.id) + kac(t.ad) + '</span>' +
+            '<div class="mc-kart-ust"><span class="mc-rozet">' + simge(t.id) + kdIsaretli(t.k || '', t.ad) + '</span>' +
             (kart.ar ? '<span class="mc-ar ar">' + kac(kart.ar) + '</span>' : '') + '</div>' +
             '<h2>' + kac(kart.bas) + '</h2>' +
             '<p class="mc-govde">' + kac(kart.ic) + '</p>' +
-            '<div class="mc-cevap" id="mcCevap" hidden><b>Cevap</b><p>' + kac(kart.cevap) + '</p></div>' +
+            '<div class="mc-cevap" id="mcCevap" hidden><b>' + kdIsaretli('mc.cevap', 'Cevap') + '</b><p>' + kac(kart.cevap) + '</p></div>' +
             '<div class="mc-kart-tuslar">' +
-            '<button type="button" class="mc-t-ana" id="mcAc" onclick="MerakCarki.cevapAc()">Cevabı Aç</button>' +
-            '<button type="button" class="mc-t-yan" onclick="MerakCarki.geriAl()">Bunu sayma</button>' +
+            '<button type="button" class="mc-t-ana" id="mcAc" onclick="MerakCarki.cevapAc()">' + kdIsaretli('mc.cevap_ac', 'Cevabı Aç') + '</button>' +
+            '<button type="button" class="mc-t-yan" onclick="MerakCarki.geriAl()">' + kdIsaretli('mc.sayma', 'Bunu sayma') + '</button>' +
             '</div>';
         /* Kart büyük; ekranın tepesine gelsin ki tamamı görünsün. Şerit
            kaydırmadan HEMEN ÖNCE yeniden ölçülüyor: yazı tipi sonradan
@@ -441,11 +485,18 @@
             b.classList.toggle('acik', s);
             b.setAttribute('aria-pressed', s ? 'true' : 'false');
         });
+        turNotYaz();
+    };
+    function turNotYaz() {
         var n = $('#mcTurNot');
         if (n) n.textContent = seciliTur
-            ? turBul(seciliTur).ad + ' seçili — çark hep bu dilimde duracak.'
-            : 'Tür seçmedin: çark rastgele bir türde duracak.';
-    };
+            ? kdMetin('mc.tur_secili', '{tur} seçili — çark hep bu dilimde duracak.', { tur: turAd(turBul(seciliTur)) })
+            : kdMetin('mc.tur_yok', 'Tür seçmedin: çark rastgele bir türde duracak.');
+    }
+    /* dil değişince kodun yazdığı not, sayaç ve çark dilimleri yeniden yazılsın */
+    document.addEventListener('kidef:dil', function () {
+        try { turNotYaz(); durumYaz(); carkCiz(); } catch (e) { }
+    });
 
     /* ==================================================== 5) AÇILIŞ */
     function olaylar() {

@@ -2599,7 +2599,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
     <div class="lbas">
       <!-- Sunum listesinden siteye dönüş (öğretmen kategorisinden gelindiğinde
            çıkış buraya bırakıyor; buradan da ana sayfaya dönülebilsin). -->
-      <button class="lsite" id="dSite" title="Siteye dön" aria-label="Siteye dön">
+      <button class="lsite" id="dSite" data-i18n-title="sn.siteye_don" title="Siteye dön" data-i18n-aria="sn.siteye_don" aria-label="Siteye dön">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <div class="lbast">
@@ -2924,19 +2924,19 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
 </div>
 </section>
 </div>
-<div id="mfPop" hidden><div class="mfPopKart" role="dialog" aria-modal="true"><button class="mfPopKapat" type="button" title="Kapat" aria-label="Kapat">✕</button><div class="mfPopUst">KAVRAM</div><h3 id="mfPopAd"></h3><p id="mfPopTanim"></p><p id="mfPopNot"></p><div class="mfPopOrn" id="mfPopOrn"><div class="k"><b>Böyle değil</b><span id="mfPopKotu"></span></div><div class="i"><b>Böyle</b><span id="mfPopIyi"></span></div></div><div id="mfPopKay"></div><div class="mfPopIp">Kapatmak için dışına dokun ya da Esc</div></div></div>
+<div id="mfPop" hidden><div class="mfPopKart" role="dialog" aria-modal="true"><button class="mfPopKapat" type="button" data-i18n-title="g.kapat" title="Kapat" data-i18n-aria="g.kapat" aria-label="Kapat">✕</button><div class="mfPopUst">KAVRAM</div><h3 id="mfPopAd"></h3><p id="mfPopTanim"></p><p id="mfPopNot"></p><div class="mfPopOrn" id="mfPopOrn"><div class="k"><b>Böyle değil</b><span id="mfPopKotu"></span></div><div class="i"><b>Böyle</b><span id="mfPopIyi"></span></div></div><div id="mfPopKay"></div><div class="mfPopIp">Kapatmak için dışına dokun ya da Esc</div></div></div>
 
   <!-- ================= KUMANDA ================= -->
 <div id="kumanda">
-    <button class="kdug" id="dOnce" title="Önceki (←)"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="kdug" id="dOnce" data-i18n-title="sn.onceki" title="Önceki (←)"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
     <span id="sayac">1 / 11</span>
-    <button class="kdug" id="dSonra" title="Sonraki (→)"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-    <button class="kdug" id="dIcindekiler" title="İçindekiler (O)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-    <button class="kdug" id="dTam" title="Tam ekran (F)"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    <button class="kdug" id="dSonra" data-i18n-title="sn.sonraki" title="Sonraki (→)"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button class="kdug" id="dIcindekiler" data-i18n-title="sn.icindekiler_ip" title="İçindekiler (O)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <button class="kdug" id="dTam" data-i18n-title="sn.tam_ekran" title="Tam ekran (F)"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
   </div>
 
   <!-- ÇIKIŞ: kumandadan ayrı, tam ekranın SAĞ kenarında durur. -->
-  <button id="dCikis" title="Sunumdan çık" aria-label="Sunumdan çık">
+  <button id="dCikis" data-i18n-title="sn.cik" title="Sunumdan çık" data-i18n-aria="sn.cik" aria-label="Sunumdan çık">
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
       <path d="M16 17l5-5-5-5M21 12H9"/>
@@ -2945,9 +2945,9 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
 
   <!-- ================= İÇİNDEKİLER ================= -->
   <div id="icindekiler">
-    <h3>İçindekiler</h3>
+    <h3 data-i18n="sn.icindekiler">İçindekiler</h3>
     <!-- Yalnız şerit (Esc) kipinde görünür -->
-    <button id="seritKapat" title="Kapat (Esc)" aria-label="Şeridi kapat">
+    <button id="seritKapat" data-i18n-title="sn.kapat_esc" title="Kapat (Esc)" data-i18n-aria="sn.serit_kapat" aria-label="Şeridi kapat">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <div id="icListe"></div>
@@ -3238,7 +3238,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
       var ic = hxAdlarDuz(c);
       p.push('<span class="hxm'+(c===isaret?' hxburada':'')+(sunumlu&&k.sunum?' hxsunlu':'')+'" data-id="'+c+'">'+k.ad+
              (ic?' <em>('+ic+')</em>':'') + (c===isaret?HXPIN:'') +
-             (sunumlu && k.sunum ? '<button class="hxsun mini" data-sunum="'+k.sunum+'" title="Sunumu aç">'+HXSUNSIM+'</button>' : '') +
+             (sunumlu && k.sunum ? '<button class="hxsun mini" data-sunum="'+k.sunum+'" data-i18n-title="sn.sunumu_ac" title="Sunumu aç">'+HXSUNSIM+'</button>' : '') +
              '</span>');
     }); });
     return p.length ? '<span class="hxmini">'+p.join('')+'</span>' : '';
@@ -3293,7 +3293,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
           '<path d="M17.5 13.5V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8.5a2 2 0 0 1 2-2h4.6"/></svg></a>' : '') +
         (d >= 3 ? hxAdlar(id, isaret, sunumlu) : '') +
         (id === isaret ? HXPIN : '') +
-        (sunumlu && n.sunum ? '<button class="hxsun" data-sunum="'+n.sunum+'" title="Sunumu aç">' +
+        (sunumlu && n.sunum ? '<button class="hxsun" data-sunum="'+n.sunum+'" data-i18n-title="sn.sunumu_ac" title="Sunumu aç">' +
            HXSUNSIM + '<span>Sunum</span></button>' : '') +
       '</div>' + dal + '</div>';
   }
@@ -3970,7 +3970,7 @@ html, body, #tuval, #tuval *, #liste, #liste *, #onay, #onay *,
   });
 })();
 </script>
-<link rel="stylesheet" href="../arakom.css?v=4383f21b">
+<link rel="stylesheet" href="../arakom.css?v=896e5892">
 
 <script>
 /* KAVRAM SÖZLÜĞÜ — slayttaki noktalı altı çizili terime dokununca açıklama. */

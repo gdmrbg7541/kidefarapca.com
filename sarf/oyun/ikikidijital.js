@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 // Tamamen Arapça harflerden oluşan temiz veritabanı
 const RED_CARDS = [
     { root: "حـ ـكـ ـم", num: "17", pattern: "فَعَل", hint: "👉🏼 Maçı yönetir:", ar: "حَكَم", tr: "Hakem" },
@@ -173,6 +213,17 @@ const GOSTERIM_ID = { pattern: 'display-pattern-name', num: 'display-pattern-num
 /* Önizlemedeki karşılıkları: küçük kart oyun ekranındaki soru kartının
    birebir küçüğü, anahtarla aynı anda değişiyor. */
 const GOSTERIM_ONZ = { pattern: 'onz-pattern', num: 'onz-num', hint: 'onz-hint' };
+/* 16.10.2026 — çok dilli site: anahtarların ipucu yazısı ve başlıktaki
+   deste adı seçili dilde (dil değişince gosterimYaz yeniden çalışır). */
+const IK_BASLIK = { pattern: 'ik.vezin_ip', num: 'ik.numara_ip', hint: 'ik.ipucu_ip' };
+const IK_RENK = { 'Kırmızı Kartlar': 'ik.kirmizi', 'Yeşil Kartlar': 'ik.yesil', 'Mor Kartlar': 'ik.mor', 'Mavi Kartlar': 'ik.mavi' };
+function ikKategori(cat) {
+    const d = kdDil();
+    if (d === 'tr' || !IK_RENK[cat]) return cat.toUpperCase();
+    const m = kdMetin(IK_RENK[cat], cat);
+    try { return m.toLocaleUpperCase(d); } catch (e) { return m.toUpperCase(); }
+}
+document.addEventListener('kidef:dil', function () { try { gosterimYaz(); } catch (e) { } });
 const GOSTERIM_ALAN = ['pattern', 'num', 'hint'];
 let gosterim = { pattern: true, num: true, hint: true };
 
@@ -197,8 +248,8 @@ function gosterimKapanabilir(alan) {
 function gosterimUyariMetni(alan) {
     const es = GOSTERIM_ESI[alan];
     return (es && gosterim[alan] && !gosterim[es] && gosterimAcikSayi() > 1)
-        ? 'Vezin ile numaradan biri açık kalmalı'
-        : 'En az bir ipucu açık kalmalı';
+        ? kdMetin('ik.uyari_vezin', 'Vezin ile numaradan biri açık kalmalı')
+        : kdMetin('ik.uyari_ipucu', 'En az bir ipucu açık kalmalı');
 }
 /* Anahtarlar YALNIZ ilk ekranda çevrilir: oyun başladıktan sonra karar
    değişmez (oyun içi bulanıklaştırma ayrı bir şey, o duruyor). */
@@ -230,7 +281,7 @@ function gosterimYaz() {
         b.classList.toggle('kilitli', kilit);
         b.setAttribute('aria-pressed', acik ? 'true' : 'false');
         b.setAttribute('aria-disabled', kilit ? 'true' : 'false');
-        b.setAttribute('title', kilit ? gosterimUyariMetni(a) : b.dataset.baslik);
+        b.setAttribute('title', kilit ? gosterimUyariMetni(a) : kdMetin(IK_BASLIK[a] || '', b.dataset.baslik));
     });
     GOSTERIM_ALAN.forEach(a => {
         const e = document.getElementById(GOSTERIM_ONZ[a]);
@@ -306,13 +357,13 @@ function startGame(cat) {
         if(GREEN_CARDS.length > 0) {
              activeCards = shuffleArray([...GREEN_CARDS]);
         } else {
-             alert("Yeşil kartlar henüz eklenmedi!");
+             alert(kdMetin('ik.yesil_yok', 'Yeşil kartlar henüz eklenmedi!'));
              return; // Boşsa başlatma
         }
     }
 
     document.getElementById('total-cards').innerText = activeCards.length;
-    document.getElementById('active-category').innerText = cat.toUpperCase();
+    document.getElementById('active-category').innerText = ikKategori(cat);
     updateDisplay();
     showScreen('screen-arena');
 }
@@ -350,7 +401,7 @@ function updateDisplay() {
 function resetArenaVisuals() {
     gameState = 0;
     const btn = document.getElementById('btn-action-main');
-    btn.innerText = "SORUYU GÖSTER";
+    btn.innerText = kdMetin('ik.soruyu_goster', 'SORUYU GÖSTER');
     btn.style.display = 'block';
 
     const bar = document.getElementById('timer-bar');
@@ -424,7 +475,7 @@ function triggerAction() {
                 acilacak.forEach(a => { document.getElementById(GOSTERIM_ID[a]).classList.add('active'); });
             }, 50);
             
-            btn.innerText = "CEVABI GÖSTER"; btn.style.display = 'block';
+            btn.innerText = kdMetin('ik.cevabi_goster', 'CEVABI GÖSTER'); btn.style.display = 'block';
             gameState = 1;
         }, 1100);
 
@@ -436,7 +487,7 @@ function triggerAction() {
             document.getElementById('display-ar-answer').classList.add('active');
             document.getElementById('display-tr-answer').classList.add('active');
         }, 50);
-        btn.innerText = "SIRADAKİ KART";
+        btn.innerText = kdMetin('ik.siradaki', 'SIRADAKİ KART');
         gameState = 2;
 
     } else if (gameState === 2) {

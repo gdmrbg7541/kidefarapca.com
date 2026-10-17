@@ -32,7 +32,8 @@
        ya da seçili sekmeye bir daha. */
     var SEKME = [
         {
-            id: 'simulasyon', ad: 'Simülasyon', url: 'sozluksimulasyonu.html',
+            id: 'simulasyon', ad: 'Simülasyon', anahtar: 'soz.simulasyon',
+            url: 'sozluksimulasyonu.html',
             /* Oyunun kendi başlık satırı (başlık + geri + Joker + İpuçları)
                gizleniyor: sekme şeridi zaten üstte duruyor, o satır bir
                şeritlik yeri boşuna yiyordu. */
@@ -48,7 +49,8 @@
             ]
         },
         {
-            id: 'dedektif', ad: 'Dedektif', url: 'yenisozlukdedektifi.html'
+            id: 'dedektif', ad: 'Dedektif', anahtar: 'soz.dedektif',
+            url: 'yenisozlukdedektifi.html'
             /* Dedektif'in ayrı bir başlık satırı yok; yalnız iki "ana sayfa"
                simgesi var, onlar da aşağıdaki ortak kuralla gizleniyor. */
         }
@@ -296,7 +298,7 @@
         if (sev.length > 1) {
             var sv = document.createElement('div');
             sv.className = 'szs-sev';
-            sv.innerHTML = '<span class="szs-sev-et">Seviye</span>';
+            sv.innerHTML = '<span class="szs-sev-et" data-i18n="soz.seviye">Seviye</span>';
             var yuva = document.createElement('div');
             yuva.className = 'szs-sev-yuva';
             sev.forEach(function (v, i) {
@@ -366,6 +368,7 @@
         var ic = '<div id="szsYuva"><span id="szsKaydirak"></span>';
         SEKME.forEach(function (s) {
             ic += '<button type="button" role="tab" data-s="' + s.id + '" ' +
+                  (s.anahtar ? 'data-i18n="' + s.anahtar + '" ' : '') +
                   'aria-selected="false">' + s.ad + '</button>';
         });
         ic += '</div>';
@@ -376,7 +379,11 @@
         /* Soldaki "Sözlük" başlığı (yazı + simge) sözlüğe dönüş tuşu. */
         var bas = ust.querySelector('h1');
         if (bas) {
-            bas.setAttribute('title', 'Sözlüğe dön');
+            if (window.KidefDil && window.KidefDil.nitelik) {
+                window.KidefDil.nitelik(bas, 'title', 'soz.sozluge_don', 'Sözlüğe dön');
+            } else {
+                bas.setAttribute('title', 'Sözlüğe dön');
+            }
             bas.setAttribute('role', 'button');
             bas.setAttribute('tabindex', '0');
             bas.onclick = function () { sec('sozluk'); };

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sözlük — Kidef Arapça</title>
+<title data-i18n="soz.sayfa_baslik">Sözlük — Kidef Arapça</title>
 <!--
   SÖZLÜK — vezinler tablosundaki sözlük panelinin tek başına hâli.
   Aynı veriyi okur (veri/veri_sozluk.js); kök çipi, "vezinlere bak",
@@ -47,7 +47,7 @@ try { if (window.parent !== window) document.documentElement.className += ' szk-
 })();
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="arakom.css?v=4383f21b">
+<link rel="stylesheet" href="arakom.css?v=896e5892">
 <style>
   :root{
     --mur:#1F2430; --gri:#5B6471; --soluk:#8A93A0; --cizgi:#E3E8EF;
@@ -389,7 +389,7 @@ try { if (window.parent !== window) document.documentElement.className += ' szk-
 
 <header class="szk-ust">
   <button type="button" class="szk-geri" onclick="return kidefGeri(event)"
-          title="Geri" aria-label="Geri">
+          title="Geri" aria-label="Geri" data-i18n-title="nav.geri" data-i18n-aria="nav.geri">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
          stroke-linecap="round" stroke-linejoin="round" style="width:1.15em;height:1.15em"
          aria-hidden="true"><path d="M20 12H5.4"></path><path d="M11.8 5.6 5 12l6.8 6.4"></path></svg>
@@ -401,40 +401,40 @@ try { if (window.parent !== window) document.documentElement.className += ' szk-
       <circle cx="33" cy="30" r="8" fill="none" stroke="#F39C12" stroke-width="3.2"/>
       <line x1="39" y1="36" x2="45" y2="42" stroke="#F39C12" stroke-width="3.6" stroke-linecap="round"/>
     </svg>
-    Sözlük
+    <span data-i18n="soz.baslik">Sözlük</span>
   </h1>
   <span class="szk-sayac" id="szkSayac"></span>
 </header>
 
 <div class="szk-arama">
   <input id="szkGiris" type="text" dir="rtl" autocomplete="off" spellcheck="false"
-         aria-label="Sözlükte ara">
-  <button type="button" class="szk-temizle" id="szkTemizle" aria-label="Temizle">✕</button>
+         data-i18n-aria="soz.ara" aria-label="Sözlükte ara">
+  <button type="button" class="szk-temizle" id="szkTemizle" data-i18n-aria="oyn.temizle" aria-label="Temizle">✕</button>
   <button type="button" class="szk-favtus" id="szkFavTus" aria-pressed="false"
-          title="Favori kelimelerim">
+          data-i18n-title="soz.favori" title="Favori kelimelerim">
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 3.4l2.65 5.37 5.93.86-4.29 4.18 1.01 5.9L12 16.92l-5.3 2.79 1.01-5.9L3.42 9.63l5.93-.86z"/>
     </svg>
-    <span class="szk-favad">Favorilerim</span>
+    <span class="szk-favad" data-i18n="soz.favorilerim">Favorilerim</span>
     <span id="szkFavSay">0</span>
   </button>
 </div>
 
 <div id="szkSonuc" aria-live="polite"></div>
 
-<section id="szkFav" hidden aria-label="Favori kelimelerim">
+<section id="szkFav" hidden data-i18n-aria="soz.favori" aria-label="Favori kelimelerim">
   <div class="szk-fav-arac">
-    <button type="button" id="szkFavTest" aria-pressed="false">Test</button>
-    <button type="button" id="szkFavKar">Karıştır</button>
-    <button type="button" id="szkFavYaz">Yazdır</button>
+    <button type="button" id="szkFavTest" aria-pressed="false" data-i18n="soz.test">Test</button>
+    <button type="button" id="szkFavKar" data-i18n="oyn.karistir">Karıştır</button>
+    <button type="button" id="szkFavYaz" data-i18n="oyn.yazdir">Yazdır</button>
     <span class="szk-fav-not" id="szkFavNot"></span>
-    <button type="button" id="szkFavSil" class="szk-tehlike">Tümünü sil</button>
+    <button type="button" id="szkFavSil" class="szk-tehlike" data-i18n="soz.tumunu_sil">Tümünü sil</button>
   </div>
-  <h2 id="szkYaziBas">Favori Kelimelerim <span id="szkYaziNot"></span></h2>
+  <h2 id="szkYaziBas"><span data-i18n="soz.favori_bas">Favori Kelimelerim</span> <span id="szkYaziNot"></span></h2>
   <div class="szk-fav-liste" id="szkFavListe"></div>
 </section>
 
-<div id="szkKlavye" aria-label="Arapça klavye"></div>
+<div id="szkKlavye" data-i18n-aria="soz.klavye" aria-label="Arapça klavye"></div>
 
 <!-- SIRA ÖNEMLİ: sözlüğün gövdesi (fiil kökleri) veri_kokler.js
      içindeki wordEasterEggs'te duruyor; veri_sozluk.js sonunda
@@ -442,12 +442,12 @@ try { if (window.parent !== window) document.documentElement.className += ' szk-
      sözlük 786 kelimede kalıyor (ölçüldü) — tabloyla aynı sıra. -->
 <script src="veri/veri_kokler.js?v=1265dfeb"></script>
 <script src="veri/veri_sozluk.js?v=1d2a0a84"></script>
-<script src="sarf/sozlukfavori.js?v=a18ba440"></script>
-<script src="sarf/sozlukmotor.js?v=8c940703"></script>
+<script src="sarf/sozlukfavori.js?v=2a1aeed0"></script>
+<script src="sarf/sozlukmotor.js?v=cef5d83b"></script>
 <!-- SEKMELER: Sozluk | Simulasyon | Dedektif. Ogretmen Ozel kategorisindeki
      uc kart tek karta indirildi; oyunlar burada iframe ile aciliyor.
      Imam Hatip kartlarindaki Sozluk Simulasyonu yerinde duruyor. -->
-<script src="sozluk/sozluksekme.js?v=129f1755"></script>
+<script src="sozluk/sozluksekme.js?v=fe171be2"></script>
 <script>
 (function () {
   var S = window.KidefSozluk, F = window.KidefFavori;
@@ -592,17 +592,56 @@ try { if (window.parent !== window) document.documentElement.className += ' szk-
     window.print();
   });
 
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
   /* "Tümünü sil" iki basışta: yanlışlıkla bütün listeyi silmesin. */
   function silSifirla() {
     clearTimeout(_silSor); _silSor = null;
     silTus.classList.remove('sor');
-    silTus.textContent = 'Tümünü sil';
+    kdYaz(silTus, 'soz.tumunu_sil', 'Tümünü sil');
   }
   silTus.addEventListener('click', function () {
     if (!F.sayi()) return;
     if (!silTus.classList.contains('sor')) {
       silTus.classList.add('sor');
-      silTus.textContent = 'Emin misin? Sil';
+      kdYaz(silTus, 'soz.emin_sil', 'Emin misin? Sil');
       _silSor = setTimeout(silSifirla, 4000);
       return;
     }
@@ -634,5 +673,8 @@ try { if (window.parent !== window) document.documentElement.className += ' szk-
   else setTimeout(function () { S.dizin(); }, 800);
 })();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

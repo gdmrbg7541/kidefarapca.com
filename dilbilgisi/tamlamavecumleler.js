@@ -913,7 +913,7 @@
     bpGovde.innerHTML =
       '<p><span class="tc-bp-etiket">Nedir?</span><br>' + t.tanim + '</p>' +
       '<p><span class="tc-bp-etiket">Nasıl anlarım?</span><br>' + t.nasil + '</p>' +
-      '<span class="tc-bp-etiket">Örnek</span>' +
+      '<span class="tc-bp-etiket" data-i18n="tc.ornek">Örnek</span>' +
       '<div class="tc-bp-ornek">' + t.ornek + '</div>' +
       '<p>' + t.ornekTr + '</p>';
     bpPerde.classList.add('acik');
@@ -3500,7 +3500,7 @@
         '<span><b>' + b.ad + '</b> <span dir="rtl" class="efh-ik-ar">' + b.ar + '</span><br>' +
         '<span class="efh-ik-neden">' + b.neden + '</span></span></div>' +
       '<div class="efh-ik-sat"><span class="efh-ik-et">Fâil</span><span>' + kaynak.f + '</span></div>' +
-      '<div class="efh-ik-sat"><span class="efh-ik-et">Örnek</span>' +
+      '<div class="efh-ik-sat"><span class="efh-ik-et" data-i18n="tc.ornek">Örnek</span>' +
         '<span><span class="efh-ik-cumle" dir="rtl"><b>' + kaynak.m + '</b> دَرْسًا.</span>' +
         '<span class="efh-ik-tr">' + kaynak.tr + '</span></span></div>' +
       (kaynak.not ? '<div class="efh-ik-sat"><span class="efh-ik-et">Dikkat</span><span>' + kaynak.not + '</span></div>' : '') +

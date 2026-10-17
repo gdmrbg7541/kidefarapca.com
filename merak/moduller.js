@@ -1,3 +1,43 @@
+/* ÇOK DİLLİ SİTE (15.10.2026) — kodun yazdığı yazılar seçilen dilde.
+   Yazı sistem/dil.js sözlüğünden gelir; dil Türkçeyse, sözlük henüz
+   yüklenmemişse ya da çeviri yoksa Türkçesi kalır.
+     kdMetin(anahtar, türkçe, {ad: değer})  yazıyı verir, {…} yerlerini doldurur
+     kdYaz(öğe, anahtar, türkçe, {…})        öğeye anahtarıyla yazar; sözlük sonradan
+                                             yüklense de dil değişse de yazı döner
+     kdIsaretli(anahtar, türkçe)             innerHTML içine konacak işaretli <span>
+     kdSerbest(öğe)                          öğenin işaretini kaldırır (kod oraya her
+                                             an başka yazı yazıyorsa)
+     kdDil()                                 sayfanın o anki dili */
+function kdDoldur(m, yer) {
+    if (!yer || m == null) return m;
+    return String(m).replace(/\{([A-Za-z0-9_]+)\}/g, function (t, ad) {
+        return Object.prototype.hasOwnProperty.call(yer, ad) ? String(yer[ad]) : t;
+    });
+}
+function kdMetin(k, tr, yer) {
+    var m = (window.KidefDil && window.KidefDil.metin) ? window.KidefDil.metin(k, tr) : tr;
+    return kdDoldur(m, yer);
+}
+function kdYaz(el, k, tr, yer) {
+    if (!el) return;
+    if (window.KidefDil && window.KidefDil.yaz) { window.KidefDil.yaz(el, k, tr, yer); return; }
+    el.setAttribute('data-i18n', k);
+    el.setAttribute('data-i18n-tr', tr);
+    if (yer) el.setAttribute('data-i18n-yer', JSON.stringify(yer)); else el.removeAttribute('data-i18n-yer');
+    el.textContent = kdDoldur(tr, yer);
+}
+function kdIsaretli(k, tr) {
+    var e = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+    return '<span data-i18n="' + k + '" data-i18n-tr="' + e(tr) + '">' + e(kdMetin(k, tr)) + '</span>';
+}
+function kdSerbest(el) {
+    if (el && el.removeAttribute) el.removeAttribute('data-i18n');
+    return el;
+}
+function kdDil() {
+    return document.documentElement.getAttribute('lang') || 'tr';
+}
+
 /* ==========================================================================
    MERAK KÖŞESİ — MODÜL ŞERİDİ                   merak/moduller.js
    --------------------------------------------------------------------------
@@ -42,9 +82,9 @@
     };
 
     var MODULLER = [
-        { k: 'cark',  ad: 'Merak Çarkı',    not: 'Fıkra · köken · kültür · bulmaca' },
-        { k: 'soz',   ad: 'Günün Sözü',     not: 'Âyet, hadis ya da özlü söz' },
-        { k: 'kitap', ad: 'Kitap Önerisi',  not: 'Alanına ve seviyene göre' }
+        { k: 'cark',  ad: 'Merak Çarkı',    not: 'Fıkra · köken · kültür · bulmaca', ka: 'mk.cark', kn: 'mk.cark_not' },
+        { k: 'soz',   ad: 'Günün Sözü',     not: 'Âyet, hadis ya da özlü söz', ka: 'gs.baslik', kn: 'mk.soz_kisa' },
+        { k: 'kitap', ad: 'Kitap Önerisi',  not: 'Alanına ve seviyene göre', ka: 'mk.kitap', kn: 'mk.kitap_not' }
     ];
 
     var serit = null;
@@ -131,7 +171,7 @@
         serit.innerHTML = liste.map(function (m) {
             return '<button type="button" class="mk-kart" data-mk="' + m.k + '"' +
                 ' aria-pressed="false"><span class="mk-i">' + (IKON[m.k] || '') + '</span>' +
-                '<span class="mk-y"><b>' + m.ad + '</b><small>' + m.not + '</small></span></button>';
+                '<span class="mk-y"><b>' + kdIsaretli(m.ka, m.ad) + '</b><small>' + kdIsaretli(m.kn, m.not) + '</small></span></button>';
         }).join('');
         serit.addEventListener('click', function (e) {
             var t = e.target.closest ? e.target.closest('[data-mk]') : null;

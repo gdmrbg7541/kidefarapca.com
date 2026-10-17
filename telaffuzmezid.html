@@ -231,7 +231,7 @@
 
 <div id="game-wrapper">
     <div id="top-bar-panel">
-        <div class="header-item"><button class="back-nav" onclick="goBack()">❮ GERİ</button></div>
+        <div class="header-item"><button class="back-nav" onclick="goBack()" data-i18n="nav.geri_ok">❮ GERİ</button></div>
         <div class="header-item"><div id="stage-label" class="stage-badge ui-hidden">MAZİ</div></div>
         <div class="header-item"><button id="chrono-main" class="chrono-btn" onclick="handleChronoClick()">⏱️</button></div>
         <div class="header-item"><button id="pause-btn" class="pause-circle ui-hidden" onclick="togglePause()">||</button></div>
@@ -757,5 +757,8 @@ function goBack() {
 
     init();
 </script>
+    <!-- DİL: sayfa seçili dili localStorage'dan okur, başka
+         sekmede dil değişirse anında döner (sistem/dil.js). -->
+    <script src="sistem/dil.js?v=c488020d"></script>
 </body>
 </html>

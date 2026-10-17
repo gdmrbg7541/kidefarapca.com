@@ -197,13 +197,13 @@ var KC_SIK_SVG  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l
 var KC_SADE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.3 2L5 13.4h5.1L9.6 22 18 10.6h-5.1z"/></svg>';
 
 function kcGorunumTusuHtml() {
-    return '<div class="kc-gorunum" id="kcGorunum" role="group" aria-label="Görünüm seçimi">' +
+    return '<div class="kc-gorunum" id="kcGorunum" role="group" data-i18n-aria="kc.gorunum" aria-label="Görünüm seçimi">' +
         '<button type="button" class="kc-gr" data-mod="sik" aria-pressed="true"' +
-        ' title="Şık görünüm: ahşap damar, gölge ve dönen harfler">' +
-        KC_SIK_SVG + '<span>Şık</span></button>' +
+        ' data-i18n-title="kc.sik_ip" title="Şık görünüm: ahşap damar, gölge ve dönen harfler">' +
+        KC_SIK_SVG + '<span data-i18n="kc.sik">Şık</span></button>' +
         '<button type="button" class="kc-gr" data-mod="sade" aria-pressed="false"' +
-        ' title="Sade görünüm: güçsüz cihazlarda kasmayan yalın çizim">' +
-        KC_SADE_SVG + '<span>Sade</span></button></div>';
+        ' data-i18n-title="kc.sade_ip" title="Sade görünüm: güçsüz cihazlarda kasmayan yalın çizim">' +
+        KC_SADE_SVG + '<span data-i18n="kc.sade">Sade</span></button></div>';
 }
 
 function kcHarfler(s) { return Array.from(s); }
@@ -662,7 +662,7 @@ function kcKur() {
            kök satırının yerleşimine hiç karışmaz. */
         kcGorunumTusuHtml() +
         '<div class="kc-baslik"><span class="kc-baslik-ar">عَجَلَةُ الْكَلِمَاتِ</span>' +
-        '<span class="kc-baslik-tr">Kelime Çarkı</span></div>' +
+        '<span class="kc-baslik-tr" data-i18n="kc.baslik">Kelime Çarkı</span></div>' +
         '<div class="kc-kap">' +
         '  <div class="kc-ustsatir">' +
         '    <div class="kc-kokler" id="kcKokler">' + kokTus + '</div>' +
@@ -670,14 +670,14 @@ function kcKur() {
            vezinlerin tablosu (ism-i fâil, mefʿûl, mekân, âlet, tasgîr,
            tafdîl, çoğul, ifʿâl, tefʿîl) animasyonlu olarak açılır. */
         '    <button type="button" class="kc-vezinkutu kc-vk-bos" id="kcVezinKutu"' +
-        '            title="Vezinler tablosunu aç" aria-label="Vezinler tablosunu aç" aria-haspopup="dialog">' +
+        '            data-i18n-title="kc.vezin_ac" title="Vezinler tablosunu aç" data-i18n-aria="kc.vezin_ac" aria-label="Vezinler tablosunu aç" aria-haspopup="dialog">' +
         '      <b id="kcVzAr"></b><i id="kcVzTr"></i>' +
-        '      <span class="kc-vk-ipucu" aria-hidden="true">vezinler ⤢</span></button>' +
+        '      <span class="kc-vk-ipucu" aria-hidden="true" data-i18n="kc.vezinler_ip">vezinler ⤢</span></button>' +
         '  </div>' +
         '  <div class="kc-govde">' +
         '    <div class="kc-oklar">' +
-        '      <button type="button" class="kc-ok" data-yon="-1" title="Önceki kelime (geri)" aria-label="Önceki kelime">' + KC_OK_YUKARI + '</button>' +
-        '      <button type="button" class="kc-ok" data-yon="1" title="Sonraki kelime (ileri)" aria-label="Sonraki kelime">' + KC_OK_ASAGI + '</button>' +
+        '      <button type="button" class="kc-ok" data-yon="-1" data-i18n-title="kc.onceki_kelime_ip" title="Önceki kelime (geri)" data-i18n-aria="kc.onceki_kelime" aria-label="Önceki kelime">' + KC_OK_YUKARI + '</button>' +
+        '      <button type="button" class="kc-ok" data-yon="1" data-i18n-title="kc.sonraki_kelime_ip" title="Sonraki kelime (ileri)" data-i18n-aria="kc.sonraki_kelime" aria-label="Sonraki kelime">' + KC_OK_ASAGI + '</button>' +
         '    </div>' +
         '    <div class="kc-kitap">' +
         '      <span class="kc-olcu" id="kcOlcu" aria-hidden="true"></span>' +
@@ -1425,26 +1425,28 @@ function kcVezinPopKur() {
     per.id = 'kcVezinPop';
     per.setAttribute('role', 'dialog');
     per.setAttribute('aria-modal', 'true');
+    /* Dil katmanı penceyi açıldığında çevirsin (15.10.2026). */
+    per.setAttribute('data-i18n-aria', 'kc.tablo');
     per.setAttribute('aria-label', 'Vezinler tablosu');
     per.innerHTML =
         '<div class="kcv-pencere" role="document">' +
         '  <button type="button" class="kcv-kapat" id="kcVpKapat" aria-label="Kapat">✕</button>' +
         '  <div class="kcv-basrol">' +
         '    <span class="kcv-basrol-ar" dir="rtl">أَشْهَرُ الْأَوْزَانِ</span>' +
-        '    <span class="kcv-basrol-tr">En Çok Kullanılan Vezinler</span>' +
-        '    <span class="kcv-basrol-not">Kırmızı harfler ZÂİDDİR: kökte yoktur, vezinden gelir — bir vezne dokun, harfler yerine insin.</span>' +
+        '    <span class="kcv-basrol-tr" data-i18n="kc.basrol">En Çok Kullanılan Vezinler</span>' +
+        '    <span class="kcv-basrol-not" data-i18n="kc.basrol_not">Kırmızı harfler ZÂİDDİR: kökte yoktur, vezinden gelir — bir vezne dokun, harfler yerine insin.</span>' +
         /* KUMANDA — akıllı tahtada öğretmen ekrana uzanmadan da sunum
            yapabilsin diye: "Oynat" bütün vezinleri sırayla açıp
            oynatır, ileri/geri tuşları tek tek yürütür. Sunum
            kumandalarının PageUp/PageDown'u da bu tuşlara bağlıdır. */
         '    <div class="kcv-kumanda">' +
-        '      <button type="button" class="kcv-tus" id="kcVpGeri" title="Önceki vezin (PageUp)" aria-label="Önceki vezin">' +
+        '      <button type="button" class="kcv-tus" id="kcVpGeri" data-i18n-title="kc.onceki_vezin_ip" title="Önceki vezin (PageUp)" data-i18n-aria="kc.onceki_vezin" aria-label="Önceki vezin">' +
         '        <span class="kcv-ikon" aria-hidden="true">' + KC_SVG_GERI + '</span></button>' +
         '      <button type="button" class="kcv-tus kcv-tus-oynat" id="kcVpOynat" aria-pressed="false"' +
-        '              title="Vezinleri sırayla oynat (boşluk)" aria-label="Vezinleri sırayla oynat">' +
+        '              data-i18n-title="kc.oynat_ip" title="Vezinleri sırayla oynat (boşluk)" data-i18n-aria="kc.oynat_aria" aria-label="Vezinleri sırayla oynat">' +
         '        <span class="kcv-ikon" aria-hidden="true">' + KC_SVG_OYNAT + '</span>' +
-        '        <span class="kcv-etiket">Oynat</span></button>' +
-        '      <button type="button" class="kcv-tus" id="kcVpIleri" title="Sonraki vezin (PageDown)" aria-label="Sonraki vezin">' +
+        '        <span class="kcv-etiket" data-i18n="kc.oynat">Oynat</span></button>' +
+        '      <button type="button" class="kcv-tus" id="kcVpIleri" data-i18n-title="kc.sonraki_vezin_ip" title="Sonraki vezin (PageDown)" data-i18n-aria="kc.sonraki_vezin" aria-label="Sonraki vezin">' +
         '        <span class="kcv-ikon" aria-hidden="true">' + KC_SVG_ILERI + '</span></button>' +
         '      <span class="kcv-sayac" id="kcVpSayac" aria-live="polite">— / ' + KC_VEZIN_TABLO.length + '</span>' +
         '    </div>' +
@@ -1615,7 +1617,13 @@ function kcvOynatTusu() {
     /* Simge SVG olduğu için metin değil içerik değişir (bkz. KC_SVG_*) */
     if (ik) ik.innerHTML = KC_VP_OYNAT ? KC_SVG_DUR : KC_SVG_OYNAT;
     if (et) et.textContent = KC_VP_OYNAT ? 'Durdur' : 'Oynat';
-    t.setAttribute('aria-label', KC_VP_OYNAT ? 'Sunumu durdur' : 'Vezinleri sırayla oynat');
+    /* Yazı duruma göre değişiyor; anahtarı da onunla değişiyor ki
+       dil katmanı doğru karşılığı koysun (15.10.2026). */
+    var kcAd = KC_VP_OYNAT ? 'kc.durdur' : 'kc.oynat_aria';
+    var kcTr = KC_VP_OYNAT ? 'Sunumu durdur' : 'Vezinleri sırayla oynat';
+    t.setAttribute('data-i18n-aria', kcAd);
+    t.setAttribute('aria-label',
+        (window.KidefDil && window.KidefDil.metin(kcAd, '')) || kcTr);
 }
 
 /* UÇUŞ ÖLÇÜMÜ — işin özü.
