@@ -167,7 +167,11 @@
     ust.appendChild(etiket); ust.appendChild(tarih); ust.appendChild(rozet);
     var h4 = el('h4');
     var p = el('p');
-    kart.appendChild(ust); kart.appendChild(h4); kart.appendChild(p);
+    /* KAYIT GÖRSELİ (17.10.2026): kayıtta g varsa başlıkla metin arasına
+       sistem/siniftayeni.js'teki KIDEF_SINIFTA_YENI_GORSEL[g] konur. */
+    var gorsel = el('div', 'gd-gorsel');
+    gorsel.hidden = true;
+    kart.appendChild(ust); kart.appendChild(h4); kart.appendChild(gorsel); kart.appendChild(p);
     sahne.appendChild(kart);
     sahne.setAttribute('aria-live', 'polite');
 
@@ -181,6 +185,9 @@
         tarih.textContent = tarihYaz(f.t);
         rozet.hidden = i !== 0;
         h4.textContent = f.b || '';
+        var G = window.KIDEF_SINIFTA_YENI_GORSEL || {};
+        if (f.g && G[f.g]) { gorsel.innerHTML = G[f.g]; gorsel.hidden = false; }
+        else { gorsel.innerHTML = ''; gorsel.hidden = true; }
         p.textContent = f.m || '';
         kart.scrollTop = 0;               /* sabit boy kâğıt: yeni kayıt baştan */
         kart.classList.remove('gd-gir');

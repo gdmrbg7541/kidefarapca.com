@@ -1002,6 +1002,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             <button id="logout-btn" class="btn btn-danger" style="display:none; align-items:center; justify-content:center; gap:5px;" onclick="cikisOnayla()" data-i18n-title="g.cikis" title="Çıkış Yap" data-i18n-aria="g.cikis" aria-label="Çıkış Yap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
         </div>
     </header>
+    <!-- MOBİL YAN MENÜ (17.10.2026) — öğretmen: "mobilde giriş tuşu ve profil
+         hariç headerdeki tüm elementler sidebar olarak soldan açılsın".
+         Başlığın hemen altında çağrılır ki telefonda başlık ilk boyanmadan
+         yeni düzene geçsin. Açıklama: sistem/yanmenu.js -->
+    <script src="sistem/yanmenu.js?v=379100fa"></script>
 
     <!-- GENEL GİRİŞ MODALI (Header üzerinden tıklanırsa açılır) -->
     <!-- GİRİŞ PENCERESİ ARTIK BURADA DEĞİL (04.10.2026).
@@ -8003,9 +8008,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/yenilikler.js?v=fda4968d"></script>
     <!-- Güncellemeler ve Galeri bölümü: liste galeriYenile.py'den,
          duyurular yukarıdaki yenilikler.js'ten gelir. -->
-    <script src="sistem/siniftayeni.js?v=46843e68"></script>
+    <script src="sistem/siniftayeni.js?v=7fa25636"></script>
     <script src="sistem/galeriveri.js?v=b5d6af07"></script>
-    <script src="sistem/galeri.js?v=2aae6e0f"></script>
+    <script src="sistem/galeri.js?v=31382e3d"></script>
     <script src="hesap/listelerim.js?v=a3bbe9e6"></script>
     <!-- TAHTAYA YANSIT (17.10.2026): başlıktaki Tahta düğmesi, paneli ve tahta
          cihazının kendiliğinden geçişi. Motor: sistem/tahta.js (tahta.html). -->

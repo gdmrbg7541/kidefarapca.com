@@ -1,0 +1,153 @@
+/* =====================================================================
+   ALFABE — TELEFON DÜZENİ (17.10.2026)
+   Öğretmen: "alfabe html'nin harflerin yazılış animasyonu başta olmak
+   üzere tam olarak mobile uyarla".
+   alfabe.css'ten SONRA yüklenir; yalnız dar ekranda (en çok 600px) devreye
+   girer. Bilgisayar, tahta ve tablet görünümü değişmez.
+   Tablonun 4 sütunlu kurulumu: okumayazma/alfabe_mobil.js
+   ===================================================================== */
+@media (max-width: 600px) {
+
+    /* ---------------- HARF TABLOSU: 4 sütun x 7 satır labirent ---------------- */
+    .tablo-sar { overflow-x: hidden; }
+    .harf-tablo.t4 { min-width: 0; width: 100%; height: auto;
+        --ht-w: 3px; --ht-kalin: 5px; --ht-pad: 3px; }
+    .harf-tablo.t4 .ht-cell { width: 25%; height: auto; }
+    .harf-tablo.t4 .ht-cell > .char-card { min-height: 96px; border-radius: 10px; }
+    .harf-tablo.t4 .char-card .tr-label { font-size: .86rem; line-height: 1.15; }
+    /* Çıkış (28) telefonda SOL altta: ok da sola, kapıdan dışarı baksın. */
+    .harf-tablo.t4:not(.dizili) .char-card.maze-end .mz-ok { transform: scaleX(-1); }
+    /* Tam ekran (odak): tablo ekranın boyunu doldurur, 7 satır eşit bölünür. */
+    body.harf-tam .harf-tablo.t4 { min-width: 0; height: 100%; }
+    body.harf-tam .harf-tablo.t4 .ht-cell { height: calc(100% / 7); }
+    body.harf-tam .harf-tablo.t4 .ht-cell > .char-card { min-height: 0; }
+
+    /* ---------------- BÜYÜTEÇ: yazılış animasyonu öne ve büyük ---------------- */
+    #hd-overlay { align-items: flex-start; }
+    #hd-card {
+        width: calc(100vw - 12px); max-width: calc(100vw - 12px);
+        margin-top: 6px; max-height: calc(100vh - 76px); max-height: calc(100dvh - 76px);
+        padding: 14px 12px 16px; border-radius: 20px; gap: 10px;
+        overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+    }
+    /* Sıra: ad → hız/kip → DÖRT YAZILIŞ → örnekler → nasıl yazılır → mahreç */
+    #hd-card > #hd-ayar { order: 1; }
+    #hd-card > #hd-serit { order: 2; }
+    #hd-card > #hd-tek-ornek { order: 3; }
+    #hd-card > #hd-aciklama { order: 4; }
+    #hd-card > .hd-sec-mahrec { order: 5; }
+    #hd-name { font-size: 1.75rem; line-height: 1.25; }
+    #hd-serit { flex: 0 0 auto; }
+    #hd-cols { flex: 0 0 auto; gap: 10px; }
+    #hd-cols:not(.hd-yatay) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hd-col { gap: 4px; }
+    .hd-col-label { font-size: 1.02rem; }
+    /* Kutular kare gibi: harf telefonda da büyük yazılır (eskiden 88px'e sıkışıyordu). */
+    #hd-cols:not(.hd-yatay) .hd-col-box { flex: 0 0 auto; height: auto; aspect-ratio: 1 / .9;
+        min-height: 0; max-height: none; padding: 4px; border-radius: 14px; }
+    .hd-col-box:hover { transform: none; }
+    /* Odak: dokunulan yazılış tam genişlikte üstte, öbür üçü altında küçük. */
+    #hd-cols.hd-odakli:not(.hd-yatay) { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    #hd-cols.hd-odakli:not(.hd-yatay) .hd-col.hd-buyuk { grid-column: 1 / -1; order: -1; }
+    #hd-cols.hd-odakli:not(.hd-yatay) .hd-col.hd-buyuk .hd-col-box { aspect-ratio: 1 / .78; }
+    #hd-cols.hd-odakli:not(.hd-yatay) .hd-col.hd-kucuk .hd-col-box { aspect-ratio: 1 / .85; height: auto; }
+    .hd-col.hd-buyuk .hd-col-label { font-size: 1.25rem; }
+    #hd-tek-ornek { gap: 8px; }
+    .hd-sec { padding: 12px 14px; border-radius: 16px; }
+    .hd-sec-title { font-size: 1.15rem; }
+    .hd-sec-text { font-size: 1.02rem; }
+    #hd-aciklama .hd-sec-text { max-height: none; overflow: visible; }
+    #hd-replay { padding: 6px 12px; font-size: .95rem; }
+    /* Harfler arası geçiş: ekranın altında iki geniş düğme (kutuların üstüne binmez). */
+    .hd-gez { top: auto; bottom: 10px; transform: none; flex-direction: row; justify-content: center;
+        align-items: center; gap: 8px; width: calc(50% - 14px); min-width: 0; height: 54px;
+        padding: 0 12px; border-radius: 16px; box-shadow: 0 10px 24px -8px rgba(0, 0, 0, .5); }
+    .hd-gez:hover { transform: none; }
+    #hd-ileri { left: 8px; }
+    #hd-geri { right: 8px; }
+    .hd-gez-ok { font-size: 1.7rem; }
+    .hd-gez-ar { font-size: 1.75rem; }
+    .hd-gez-ad { display: inline; font-size: .95rem; max-width: 9ch; }
+
+    /* ---------------- HARF BİRLEŞTİRME: başlık sütunları çakışmasın ---------------- */
+    .ab-tb-baslik { font-size: .8rem; letter-spacing: 0; }
+    .ab-tb-baslik, .ab-tb-satir,
+    .ab-sar.ab-tablo-kapali.ab-katlaniyor .ab-tb-baslik { grid-template-columns: 64px repeat(4, minmax(0, 1fr)); }
+    .ab-tb-satir::after { left: 70px; }
+    .ab-tb-ad { font-size: 1.02rem; }
+    .ab-tb-ad b { font-size: .9rem; }
+
+    /* ---------------- İSTENEN HARFİ YAZ: istek iki satıra sığsın, kutu tuşlara binmesin ----------------
+       (bu katmanın stili sayfaya sonradan ekleniyor; kurallar #ak-tam.ak-yaz ile güçlendirildi) */
+    #ak-tam.ak-yaz .ihy-soru { font-size: clamp(22px, 7.2vw, 30px); line-height: 1.2; }
+    #ak-tam.ak-yaz .ihy-sayim { width: 74px; height: 74px; }
+    #ak-tam.ak-yaz .ihy-s-say { font-size: 26px; }
+    #ak-tam.ak-yaz .ihy-duzen .ihy-cizgi { height: min(50vh, 440px); border-radius: 22px; }
+    #ak-tam.ak-yaz .ihy-h-tus { padding: 6px 12px; }
+}
+
+/* Kumandadaki "Dinle ve Yaz" satırına üç tuş sığsın (PDF + Dene). */
+@media (max-width: 600px) {
+    .nav-tabs .tab-satir > .ak-yan { padding-left: 7px; padding-right: 7px; gap: 4px; }
+
+    /* KENDİNİ DENE başlığı: ad ve kapat üst satırda, soru sayısı ve
+       tek/iki kişilik alt satırda (eskiden hepsi tek satıra sıkışıyor,
+       başlık kelime kelime alt alta diziliyordu). */
+    #ak-tam .ak-bas { flex-wrap: wrap; gap: 8px 10px; }
+    #ak-tam .ak-bas-yazi { flex: 1 1 calc(100% - 70px); order: 0; }
+    #ak-tam .ak-bas .ak-kapa { order: 1; width: 46px; height: 46px; }
+    #ak-tam .ak-bas .ak-mod { order: 2; }
+    #ak-tam .ak-bas b { font-size: 22px; }
+    #ak-tam .ak-bas .ak-not { font-size: 14px; }
+}
+
+/* =====================================================================
+   YAN ÇEVRİLMİŞ TELEFON (yükseklik en çok 500px)
+   Tablo 7 sütun kalır ama sayfa aşağı kayar: kartlar ezilmez, harfler
+   kartından taşmaz; birleşmeyen harfler paneli yanda, alt şerit aşağıda.
+   Tam ekran (odak) düğmesine basılınca eskisi gibi ekranı doldurur.
+   ===================================================================== */
+@media (orientation: landscape) and (max-height: 500px) {
+    body:not(.harf-tam) .content-area { overflow-y: auto !important; }
+    body:not(.harf-tam) #p1 { height: auto; }
+    body:not(.harf-tam) #p1 .p1-duzen { height: auto; }
+    body:not(.harf-tam) #p1 .p1-ust { flex: none; height: auto; }
+    body:not(.harf-tam) #p1 .tablo-sar { height: auto; }
+    body:not(.harf-tam) .harf-tablo { height: auto; }
+    body:not(.harf-tam) .harf-tablo .ht-cell { height: auto; }
+    body:not(.harf-tam) .harf-tablo .ht-cell > .char-card { height: 104px; }
+    body:not(.harf-tam) #p1 .alt-serit { flex: none; height: auto; min-height: 92px; }
+
+    /* Büyüteç: ekranın boyu kısa — kart kayar, dört yazılış yan yana ve büyük. */
+    #hd-card { width: calc(100vw - 150px); max-width: calc(100vw - 150px);
+        max-height: calc(100vh - 12px); max-height: calc(100dvh - 12px);
+        padding: 10px 16px 12px; gap: 8px; overscroll-behavior: contain; }
+    #hd-card > #hd-ayar { order: 1; }
+    #hd-card > #hd-serit { order: 2; }
+    #hd-card > #hd-tek-ornek { order: 3; }
+    #hd-card > #hd-aciklama { order: 4; }
+    #hd-card > .hd-sec-mahrec { order: 5; }
+    #hd-name { font-size: 1.6rem; line-height: 1.2; }
+    #hd-no { top: 8px; left: 8px; min-width: 36px; height: 36px; font-size: 1.1rem; }
+    #hd-close { top: 8px; right: 8px; width: 36px; height: 36px; }
+    #hd-serit { flex: 0 0 auto; }
+    #hd-cols { flex: 0 0 auto; gap: 10px; }
+    #hd-cols:not(.hd-yatay) .hd-col-box { flex: 0 0 auto; height: auto; aspect-ratio: 1 / .8;
+        min-height: 0; max-height: none; padding: 4px; }
+    #hd-cols.hd-odakli:not(.hd-yatay) .hd-col-box { aspect-ratio: auto; height: min(58vh, 230px); }
+    #hd-cols.hd-odakli:not(.hd-yatay) .hd-col.hd-kucuk .hd-col-box { height: min(36vh, 140px); }
+    .hd-col-label { font-size: 1.05rem; }
+    #hd-aciklama .hd-sec-text { max-height: none; overflow: visible; }
+    .hd-sec { padding: 10px 14px; }
+    .hd-sec-title { font-size: 1.15rem; }
+    .hd-sec-text { font-size: 1.02rem; }
+
+    /* İstenen Harfi Yaz: yan çevrilince defter kutusu solda, istek sağda. */
+    #ak-tam.ak-yaz .ihy-duzen { flex-direction: row; gap: 14px; }
+    #ak-tam.ak-yaz .ihy-duzen .ihy-tahta { flex: 1 1 58%; width: auto; }
+    #ak-tam.ak-yaz .ihy-duzen .ihy-cizgi { height: calc(100vh - 150px); height: calc(100dvh - 150px); }
+    #ak-tam.ak-yaz .ihy-sag { flex: 1 1 42%; width: auto; }
+    #ak-tam.ak-yaz .ihy-soru { font-size: clamp(20px, 3.4vw, 28px); line-height: 1.2; }
+    #ak-tam.ak-yaz .ihy-sayim { width: 64px; height: 64px; }
+    #ak-tam.ak-yaz .ihy-s-say { font-size: 22px; }
+}

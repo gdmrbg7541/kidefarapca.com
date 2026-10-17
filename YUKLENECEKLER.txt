@@ -12281,3 +12281,45 @@ TAHTA BİLDİRİMİ · SINIFTA YENİ VE GALERİ YALNIZ GİRİŞLİYE      17.10.
   Bilgisayarda aynı betiklerle uygulandı; dosyalar (sürüm damgası
   dışında) test kopyasıyla bayt bayt aynı.
   Yedek: _kaynak/yedekler/2026-10-17-tahta-duzeltme/
+
+MOBİL YAN MENÜ · ALFABE TELEFON DÜZENİ · TAHTA DUYURUSU      17.10.2026
+  1) Öğretmen: "mobilde giriş tuşu ve profil hariç headerdeki tüm
+     elementler sidebar olarak soldan açılsın".            (yanMenu.py)
+     YENİ: sistem/yanmenu.js — index.html'de </header>'ın hemen altında.
+     Telefonda (dikey ≤576px, yatay ≤500px yükseklik) başlık tek satır:
+     solda ☰, ortada site adı, sağda profil ya da giriş tuşu. Sekmeler
+     (Paketler, Canlı Ders, Ders Talep, istek zili, Tahtaya yansıt,
+     Yönetici), dil düğmesi ve Çıkış soldan açılan menüde; en üstte "Ana
+     sayfa". Öğeler kopyalanmadı, taşındı: rozetler, etkin sayfa vurgusu,
+     "yakında" sekmeleri aynen çalışıyor; içeride bekleyen istek ya da
+     canlı tahta varsa ☰ üstünde yeşil nokta. Kapanış: dışarı dokunma,
+     ✕, Esc, sola kaydırma ya da bir öğeye basma. Yazılar sözlükteki hazır
+     anahtarlardan (20 dil). Tablet ve bilgisayarda başlık değişmedi.
+  2) Öğretmen: "alfabe html'nin harflerin yazılış animasyonu başta olmak
+     üzere tam olarak mobile uyarla".                   (alfabeMobil.py)
+     YENİ: okumayazma/alfabe_mobil.css + okumayazma/alfabe_mobil.js
+     · Harf tablosu telefonda 4 sütun x 7 satır labirent (1 sağ üstte,
+       28 sol altta çıkış); yan yana kaydırma kalktı. Aileler dizilişi
+       4 sütuna göre paketleniyor, tam ekranda 7 satır ekranı dolduruyor.
+       Telefon yan çevrilince tablo yeniden 7 sütun.
+     · Büyüteç: dört yazılış adın hemen altında ve büyük (kare kutular);
+       nasıl yazılır ve mahreç aşağıda; harfler arası geçiş ekranın
+       altında iki geniş düğme; odakta seçilen yazılış tam genişlik.
+     · İstenen Harfi Yaz: istek iki satıra sığıyor, defter kutusu
+       tuşlara binmiyor; yan çevrilince kutu solda, istek sağda.
+     · Kendini Dene başlığı iki satır (ad + kapat / soru sayısı + kip).
+     · Harf Birleştirme tablosunun başlık sütunları çakışmıyor.
+     Bilgisayar ve tahta görünümü değişmedi (piksel piksel aynı).
+  3) Öğretmen: "sınıfta yeni kısmında bol svg'li ve animasyonlu bir
+     şekilde öğretmenlerin bilgisayarlarıyla derste akıllı tahtaya siteyi
+     yansıtabileceklerini belirt; diz ve ayaklarında problem olanlar için
+     kolaylık".                                        (sinifYeniTahta.py)
+     sistem/siniftayeni.js: en başa "Masandan kalkmadan tahtayı yönet"
+     (Akıllı tahta · 17.10.2026) ve animasyonlu sahne: masasında oturan
+     öğretmen, dizüstünde yazılan harf tahtada aynı anda beliriyor,
+     kablosuz sinyal, "tahtaya yürümeye gerek yok" işareti, dizde kalp;
+     altında Kablo yok · Oturarak anlat · İki cihaz, aynı hesap.
+     sistem/galeri.js: kayıtta görsel varsa başlıkla metin arasına koyar.
+  Bilgisayarda aynı betiklerle uygulandı; dosyalar (sürüm damgası
+  dışında) test kopyasıyla bayt bayt aynı.
+  Yedek: _kaynak/yedekler/2026-10-17-mobil/

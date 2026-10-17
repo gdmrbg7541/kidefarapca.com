@@ -26,6 +26,15 @@
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
 
+  { t: '2026-10-17', e: 'Akıllı tahta', g: 'tahta', b: 'Masandan kalkmadan tahtayı yönet',
+    m: 'Bilgisayarında başlıktaki ekran simgesinden "Bu bilgisayardan yansıt"ı, tahtada aynı '
+     + 'hesapla "Bu cihaz tahta"yı seç: açtığın sayfa, kaydırdığın yer, bastığın düğme ve '
+     + 'yazdığın kelime kablosuz, ekran paylaşımı olmadan tahtada aynı anda görünür. '
+     + 'Dizlerinden ya da ayaklarından rahatsızsan ders boyunca tahtanın önüne gidip gelmen, '
+     + 'ayakta durman gerekmez; masanda oturarak anlatırsın. Öğrencilerin görmemesi gereken '
+     + 'bir şeye bakacaksan üstteki şeritten "Perde" ile tahtayı karartır, "Duraklat" ile son '
+     + 'görüntüde bekletirsin.' },
+
   { t: '2026-10-14', e: 'Metin Tahlili', b: '5-10. sınıfın metinleri Kidef Arapça kitabının içinde',
     m: 'Kitabın içindekiler sayfasının hemen ardına her sınıf için bir sayfa geldi: '
      + 'sınıfın üniteleri ve dersleri sırayla duruyor, kaç metin olduğu yanında '
@@ -177,3 +186,153 @@ window.KIDEF_SINIFTA_YENI = [
      + 'etkinliği eklendi. Sınıfın seviyesine göre yukarıdan aşağı ilerler, hangi '
      + 'etkinliğin erken geldiğini denemeden görürsün.' }
 ];
+
+/* ---------------------------------------------------------------------------
+   KAYIT GÖRSELLERİ (17.10.2026) — kayıtta g: '<ad>' varsa sistem/galeri.js
+   bu HTML'i başlıkla metin arasına koyar. İçerik sabit, dışarıdan gelmez.
+   --------------------------------------------------------------------------- */
+window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
+(function () {
+  /* ayak izi (tabanı sağa, tahtaya doğru; yandan bakışta basık) */
+  var IZ = function (x, y, sinif) {
+    return '<g class="ty-iz ' + sinif + '" transform="translate(' + x + ' ' + y + ') scale(1 .6) rotate(90)">' +
+      '<ellipse cx="0" cy="-3" rx="3.4" ry="5"/><ellipse cx="0" cy="5.4" rx="2.6" ry="2.8"/></g>';
+  };
+  /* Masasında oturan öğretmen; dizüstündeki harf tahtada aynı anda yazılıyor */
+  var SAHNE =
+    '<div class="ty-kutu"><svg class="ty-svg" viewBox="0 0 480 214" role="img" aria-label="Öğretmen masasında oturuyor; bilgisayarındaki sayfa akıllı tahtada aynı anda görünüyor">' +
+    '<rect x="0" y="0" width="480" height="214" rx="16" fill="#F4F8FB"/>' +
+    '<path d="M0 174H480V198a16 16 0 0 1-16 16H16a16 16 0 0 1-16-16Z" fill="#E7F2EF"/>' +
+    '<path d="M0 174H480" stroke="#CFE3DD" stroke-width="2"/>' +
+    /* akıllı tahta */
+    '<rect x="262" y="14" width="206" height="116" rx="8" fill="#0F2A43"/>' +
+    '<rect x="270" y="22" width="190" height="98" rx="4" fill="#fff"/>' +
+    '<rect x="278" y="29" width="174" height="9" rx="4.5" fill="#E8F6F2"/>' +
+    '<rect x="280" y="31" width="34" height="5" rx="2.5" fill="#16A085"/>' +
+    '<rect class="ty-dug" x="414" y="31" width="30" height="5" rx="2.5" fill="#94A3B8"/>' +
+    '<path d="M296 100H436" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="2 5"/>' +
+    '<path class="ty-harf" d="M424 62C430 80 420 96 398 96L326 96C312 96 304 88 306 74" pathLength="100" fill="none" stroke="#16324F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle class="ty-nokta" cx="364" cy="110" r="5" fill="#E74C3C"/>' +
+    '<circle class="ty-tik" cx="429" cy="33.5" r="7" fill="none" stroke="#F39C12" stroke-width="2.5"/>' +
+    '<rect x="258" y="130" width="214" height="6" rx="3" fill="#94A3B8"/>' +
+    /* sinyal akışı ve dalgalar */
+    '<path class="ty-akis" d="M160 90C198 38 228 34 256 52" fill="none" stroke="#16A085" stroke-width="3.2" stroke-linecap="round"/>' +
+    '<g fill="none" stroke="#16A085" stroke-width="2.4" stroke-linecap="round">' +
+      '<path class="ty-dalga" d="M172 78a12 12 0 0 1 10 -8"/>' +
+      '<path class="ty-dalga d2" d="M176 84a20 20 0 0 1 16 -14"/>' +
+      '<path class="ty-dalga d3" d="M180 90a28 28 0 0 1 22 -20"/>' +
+    '</g>' +
+    /* sandalye */
+    '<rect x="28" y="84" width="9" height="52" rx="4" fill="#0E7C66"/>' +
+    '<path d="M36 138V172M74 138V172" stroke="#0B5E4E" stroke-width="4" stroke-linecap="round"/>' +
+    '<rect x="28" y="128" width="54" height="9" rx="4" fill="#0E7C66"/>' +
+    /* bacaklar: oturuyor, diz rahat */
+    '<path d="M52 130H98" stroke="#334155" stroke-width="11" stroke-linecap="round"/>' +
+    '<path d="M98 132V164" stroke="#334155" stroke-width="10" stroke-linecap="round"/>' +
+    '<path d="M98 168H112" stroke="#1F2937" stroke-width="7" stroke-linecap="round"/>' +
+    '<g class="ty-kalp"><path d="M76 146c-2.6-3.6-8.4-2.2-8 2.4.3 3.6 8 8.4 8 8.4s7.7-4.8 8-8.4c.4-4.6-5.4-6-8-2.4z" fill="#EF4444"/></g>' +
+    /* masa */
+    '<rect x="86" y="128" width="130" height="7" rx="3" fill="#B7794B"/>' +
+    '<path d="M98 135V172M204 135V172" stroke="#9A6440" stroke-width="5" stroke-linecap="round"/>' +
+    /* dizüstü: ekranı tahtanın küçüğü */
+    '<path d="M98 128H176L171 122H103Z" fill="#475569"/>' +
+    '<rect x="108" y="88" width="58" height="35" rx="3" fill="#1F2937"/>' +
+    '<rect x="111" y="91" width="52" height="29" rx="2" fill="#fff"/>' +
+    '<g transform="translate(111 91) scale(.2737 .2959) translate(-270 -22)">' +
+      '<rect x="278" y="29" width="174" height="9" rx="4.5" fill="#E8F6F2"/>' +
+      '<rect x="280" y="31" width="34" height="5" rx="2.5" fill="#16A085"/>' +
+      '<rect class="ty-dug a" x="414" y="31" width="30" height="5" rx="2.5" fill="#94A3B8"/>' +
+      '<path class="ty-harf a" d="M424 62C430 80 420 96 398 96L326 96C312 96 304 88 306 74" pathLength="100" fill="none" stroke="#16324F" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<circle class="ty-nokta a" cx="364" cy="110" r="6" fill="#E74C3C"/>' +
+      '<circle class="ty-tik a" cx="429" cy="33.5" r="8" fill="none" stroke="#F39C12" stroke-width="3"/>' +
+      '<path class="ty-imlec" d="M0 0V22L6 16L11 26L15 24L10 14H18Z" fill="#0F2A43" stroke="#fff" stroke-width="2"/>' +
+    '</g>' +
+    /* öğretmen */
+    '<path d="M44 128C42 104 46 90 58 86C70 88 75 100 72 128Z" fill="#2563EB"/>' +
+    '<path class="ty-kol" d="M64 96C80 104 94 114 112 121" fill="none" stroke="#2563EB" stroke-width="9" stroke-linecap="round"/>' +
+    '<circle class="ty-kol" cx="114" cy="121.5" r="4.6" fill="#F2C9A0"/>' +
+    '<circle cx="58" cy="70" r="12" fill="#F2C9A0"/>' +
+    '<path d="M46 69C45 55 71 53 70 67C66 62 53 60 46 69Z" fill="#3B2F2F"/>' +
+    '<circle cx="63" cy="70" r="1.3" fill="#3B2F2F"/>' +
+    '<path d="M61 76q2.5 1.8 5 0" fill="none" stroke="#B9724F" stroke-width="1.4" stroke-linecap="round"/>' +
+    /* tahtaya yürümeye gerek yok: masadan tahtaya giden ayak izleri ve "yürüme" işareti */
+    '<g fill="#94A3B8">' +
+      IZ(136, 190, 'i1') + IZ(158, 198, 'i2') + IZ(180, 190, 'i3') + IZ(202, 198, 'i4') + IZ(224, 190, 'i5') + IZ(246, 198, 'i6') +
+    '</g>' +
+    '<g class="ty-yasak">' +
+      '<circle cx="284" cy="192" r="17" fill="rgba(255,255,255,.88)" stroke="#E74C3C" stroke-width="3.4"/>' +
+      '<circle cx="285.6" cy="182.6" r="2.5" fill="#475569"/>' +
+      '<path d="M284.6 186.6L283 194.6M283 194.6L279 201M283 194.6L287.6 200.6M284.3 188.6L280 192.2M284.3 188.6L288.6 191.2" fill="none" stroke="#475569" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M272 180L296 204" stroke="#E74C3C" stroke-width="3.4" stroke-linecap="round"/>' +
+    '</g>' +
+    '</svg>';
+
+  var CIP = function (sim, yazi) {
+    return '<span class="ty-cip"><svg viewBox="0 0 24 24" aria-hidden="true">' + sim + '</svg>' + yazi + '</span>';
+  };
+  var CIPLER = '<div class="ty-cipler">' +
+    CIP('<path d="M3 12h5M16 12h5"/><path d="M8 9v6h3V9zM13 9v6h3V9z"/><path class="ty-kes" d="M5 4l14 16"/>', 'Kablo yok') +
+    CIP('<path d="M7 3v11M7 14h10M8 14l-1 7M16 14l1 7"/><path d="M7 10h7"/>', 'Oturarak anlat') +
+    CIP('<rect x="2" y="5" width="9" height="7" rx="1.5"/><path d="M4 15h5"/><rect x="13" y="3" width="9" height="11" rx="1.5"/><path class="ty-yanson" d="M11 8.5h2"/>', 'İki cihaz, aynı hesap') +
+    '</div>';
+
+  window.KIDEF_SINIFTA_YENI_GORSEL.tahta = SAHNE + CIPLER + '</div>';
+
+  var STIL = [
+    '#guncellemeler .gd-gorsel{ margin:4px 0 14px; }',
+    '#guncellemeler .gd-gorsel[hidden]{ display:none; }',
+    '.ty-kutu{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; }',
+    '.ty-svg{ display:block; flex:1 1 300px; width:100%; max-width:340px; height:auto; border-radius:14px; box-shadow:0 2px 10px rgba(15,42,67,.08); }',
+    '.ty-akis{ stroke-dasharray:3 9; animation:tyAkis 1s linear infinite; }',
+    '@keyframes tyAkis{ to{ stroke-dashoffset:-12; } }',
+    '.ty-dalga{ opacity:0; animation:tyDalga 2.4s ease-out infinite; }',
+    '.ty-dalga.d2{ animation-delay:.35s; } .ty-dalga.d3{ animation-delay:.7s; }',
+    '@keyframes tyDalga{ 0%{ opacity:0; } 30%{ opacity:1; } 100%{ opacity:0; } }',
+    '.ty-harf{ stroke-dasharray:100 120; stroke-dashoffset:101; animation:tyHarf 7s ease-in-out infinite; }',
+    '.ty-harf.a{ animation-delay:-.25s; }',
+    '@keyframes tyHarf{ 0%,10%{ stroke-dashoffset:101; } 42%,82%{ stroke-dashoffset:0; } 92%,100%{ stroke-dashoffset:101; } }',
+    '.ty-nokta{ opacity:0; animation:tyNokta 7s ease-in-out infinite; }',
+    '.ty-nokta.a{ animation-delay:-.25s; }',
+    '@keyframes tyNokta{ 0%,44%{ opacity:0; } 49%,84%{ opacity:1; } 92%,100%{ opacity:0; } }',
+    '.ty-tik{ opacity:0; transform-box:fill-box; transform-origin:center; animation:tyTik 7s ease-out infinite; }',
+    '.ty-tik.a{ animation-delay:-.25s; }',
+    '@keyframes tyTik{ 0%,58%{ opacity:0; transform:scale(.3); } 61%{ opacity:1; } 72%,100%{ opacity:0; transform:scale(2.2); } }',
+    '.ty-dug{ animation:tyDug 7s ease-in-out infinite; }',
+    '.ty-dug.a{ animation-delay:-.25s; }',
+    '@keyframes tyDug{ 0%,60%{ fill:#94A3B8; } 62%,88%{ fill:#F39C12; } 93%,100%{ fill:#94A3B8; } }',
+    '.ty-imlec{ animation:tyImlec 7s ease-in-out infinite; }',
+    '@keyframes tyImlec{ 0%,46%{ transform:translate(320px,70px); } 58%,74%{ transform:translate(428px,30px); } 90%,100%{ transform:translate(320px,70px); } }',
+    '.ty-kol{ transform-origin:64px 96px; animation:tyKol 3.5s ease-in-out infinite; }',
+    '@keyframes tyKol{ 0%,100%{ transform:rotate(0); } 50%{ transform:rotate(-3deg); } }',
+    '.ty-kalp{ transform-box:fill-box; transform-origin:center; animation:tyKalp 1.6s ease-in-out infinite; }',
+    '@keyframes tyKalp{ 0%,100%{ transform:scale(1); } 45%{ transform:scale(1.22); } }',
+    '.ty-iz{ opacity:0; animation:tyIz 7s ease-in-out infinite; }',
+    '.ty-iz.i2{ animation-delay:.2s; } .ty-iz.i3{ animation-delay:.4s; } .ty-iz.i4{ animation-delay:.6s; } .ty-iz.i5{ animation-delay:.8s; } .ty-iz.i6{ animation-delay:1s; }',
+    '@keyframes tyIz{ 0%,6%{ opacity:0; } 12%,62%{ opacity:.7; } 70%,100%{ opacity:0; } }',
+    '.ty-yasak{ opacity:0; transform-box:fill-box; transform-origin:center; animation:tyYasak 7s ease-in-out infinite; }',
+    '@keyframes tyYasak{ 0%,34%{ opacity:0; transform:scale(.5); } 40%,64%{ opacity:1; transform:scale(1); } 72%,100%{ opacity:0; transform:scale(1); } }',
+    '.ty-cipler{ flex:1 1 170px; display:flex; flex-wrap:wrap; align-content:center; gap:8px; }',
+    '.ty-cip{ display:inline-flex; align-items:center; gap:7px; padding:6px 13px 6px 9px; border-radius:999px; background:#E8F6F2; color:#0E7C66;',
+    '  border:1px solid #BFE6DE; font-weight:800; font-size:17px; line-height:1.25; }',
+    '.ty-cip svg{ width:21px; height:21px; flex:none; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;',
+    '  animation:tyCip 2.8s ease-in-out infinite; }',
+    '.ty-cip:nth-child(2) svg{ animation-delay:.4s; } .ty-cip:nth-child(3) svg{ animation-delay:.8s; }',
+    '@keyframes tyCip{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-2px); } }',
+    '.ty-kes{ stroke:#E74C3C; }',
+    '.ty-yanson{ animation:tyYanson 1.2s ease-in-out infinite; }',
+    '@keyframes tyYanson{ 50%{ opacity:.2; } }',
+    '@media (max-width:860px){ .ty-cip{ font-size:14px; padding:5px 11px 5px 8px; } .ty-cip svg{ width:18px; height:18px; } }',
+    '@media (prefers-reduced-motion:reduce){',
+    '  .ty-svg *, .ty-cip svg, .ty-cip svg *{ animation:none !important; }',
+    '  .ty-harf{ stroke-dashoffset:0; } .ty-nokta, .ty-iz{ opacity:.8; } .ty-yasak{ opacity:1; } .ty-imlec{ transform:translate(428px,30px); }',
+    '}'
+  ].join('\n');
+  try {
+    if (!document.getElementById('syGorselStil')) {
+      var s = document.createElement('style');
+      s.id = 'syGorselStil';
+      s.textContent = STIL;
+      (document.head || document.documentElement).appendChild(s);
+    }
+  } catch (e) { }
+})();
