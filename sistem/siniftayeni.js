@@ -28,7 +28,9 @@ window.KIDEF_SINIFTA_YENI = [
 
   { t: '2026-10-17', e: 'Akıllı tahta', g: 'tahta', b: 'Masandan kalkmadan tahtayı yönet',
     m: 'Bilgisayarında başlıktaki ekran simgesinden "Bu bilgisayardan yansıt"ı, tahtada aynı '
-     + 'hesapla "Bu cihaz tahta"yı seç: açtığın sayfa, kaydırdığın yer, bastığın düğme ve '
+     + 'hesapla "Bu cihaz tahta"yı seç. Telefonla daha da kısa: tahtadaki giriş karekodunu '
+     + 'telefonunla okut, onaylayınca gelen "kumanda olsun mu?" sorusuna "Evet" de. Açtığın '
+     + 'sayfa, kaydırdığın yer, bastığın düğme ve '
      + 'yazdığın kelime kablosuz, ekran paylaşımı olmadan tahtada aynı anda görünür. '
      + 'Dizlerinden ya da ayaklarından rahatsızsan ders boyunca tahtanın önüne gidip gelmen, '
      + 'ayakta durman gerekmez; masanda oturarak anlatırsın. Öğrencilerin görmemesi gereken '
@@ -200,7 +202,7 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
   };
   /* Masasında oturan öğretmen; dizüstündeki harf tahtada aynı anda yazılıyor */
   var SAHNE =
-    '<div class="ty-kutu"><svg class="ty-svg" viewBox="0 0 480 214" role="img" aria-label="Öğretmen masasında oturuyor; bilgisayarındaki sayfa akıllı tahtada aynı anda görünüyor">' +
+    '<div class="ty-kutu"><svg class="ty-svg" viewBox="0 0 480 214" role="img" aria-label="Öğretmen masasında oturuyor; bilgisayarındaki ya da telefonundaki sayfa akıllı tahtada aynı anda görünüyor">' +
     '<rect x="0" y="0" width="480" height="214" rx="16" fill="#F4F8FB"/>' +
     '<path d="M0 174H480V198a16 16 0 0 1-16 16H16a16 16 0 0 1-16-16Z" fill="#E7F2EF"/>' +
     '<path d="M0 174H480" stroke="#CFE3DD" stroke-width="2"/>' +
@@ -234,7 +236,10 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
     /* masa */
     '<rect x="86" y="128" width="130" height="7" rx="3" fill="#B7794B"/>' +
     '<path d="M98 135V172M204 135V172" stroke="#9A6440" stroke-width="5" stroke-linecap="round"/>' +
-    /* dizüstü: ekranı tahtanın küçüğü */
+    /* dizüstü: ekranı tahtanın küçüğü. BİLGİSAYAR ⇄ TELEFON (17.10.2026):
+       dizüstü (ty-pc) ile öğretmenin elindeki telefon (ty-tel) 14 sn'de bir
+       yer değiştirir; tahta sabit. */
+    '<g class="ty-pc">' +
     '<path d="M98 128H176L171 122H103Z" fill="#475569"/>' +
     '<rect x="108" y="88" width="58" height="35" rx="3" fill="#1F2937"/>' +
     '<rect x="111" y="91" width="52" height="29" rx="2" fill="#fff"/>' +
@@ -246,6 +251,23 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
       '<circle class="ty-nokta a" cx="364" cy="110" r="6" fill="#E74C3C"/>' +
       '<circle class="ty-tik a" cx="429" cy="33.5" r="8" fill="none" stroke="#F39C12" stroke-width="3"/>' +
       '<path class="ty-imlec" d="M0 0V22L6 16L11 26L15 24L10 14H18Z" fill="#0F2A43" stroke="#fff" stroke-width="2"/>' +
+    '</g>' +
+    '</g>' +
+    /* telefon: öğretmenin elinde; ekranı tahtanın küçüğü, akış tahtaya bağlanır */
+    '<g class="ty-tel">' +
+      '<rect x="114" y="84" width="26" height="44" rx="5" fill="#1F2937"/>' +
+      '<rect x="116.5" y="89" width="21" height="34" rx="2.5" fill="#fff"/>' +
+      '<rect x="123" y="86" width="8" height="1.5" rx=".75" fill="#64748B"/>' +
+      '<g transform="translate(116.5 91) scale(.1105) translate(-270 -22)">' +
+        '<rect x="278" y="29" width="174" height="9" rx="4.5" fill="#E8F6F2"/>' +
+        '<rect x="280" y="31" width="34" height="5" rx="2.5" fill="#16A085"/>' +
+        '<rect class="ty-dug a" x="414" y="31" width="30" height="5" rx="2.5" fill="#94A3B8"/>' +
+        '<path class="ty-harf a" d="M424 62C430 80 420 96 398 96L326 96C312 96 304 88 306 74" pathLength="100" fill="none" stroke="#16324F" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle class="ty-nokta a" cx="364" cy="110" r="9" fill="#E74C3C"/>' +
+        '<circle class="ty-tik a" cx="429" cy="33.5" r="12" fill="none" stroke="#F39C12" stroke-width="5"/>' +
+      '</g>' +
+      '<path d="M119.5 108H134.5M119.5 112.5H131M119.5 117H133" stroke="#CBD5E1" stroke-width="1.5" stroke-linecap="round"/>' +
+      '<path class="ty-akis" d="M140 89C147 88 153 88 160 90" fill="none" stroke="#16A085" stroke-width="3.2" stroke-linecap="round"/>' +
     '</g>' +
     /* öğretmen */
     '<path d="M44 128C42 104 46 90 58 86C70 88 75 100 72 128Z" fill="#2563EB"/>' +
@@ -270,10 +292,23 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
   var CIP = function (sim, yazi) {
     return '<span class="ty-cip"><svg viewBox="0 0 24 24" aria-hidden="true">' + sim + '</svg>' + yazi + '</span>';
   };
-  var CIPLER = '<div class="ty-cipler">' +
+  /* VURGU (17.10.2026) — öğretmen: "bilgisayar ve telefon değişsin, akıllı
+     tahta sabit olsun; vurgu telefonun ve bilgisayarın kullanılabileceği
+     kısım". Değişen kelime çizimdeki cihazla aynı anda (14 sn'de bir) döner. */
+  var SIM = function (ic) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ic + '</svg>'; };
+  var VURGU = '<div class="ty-vurgu">' +
+    '<span class="ty-gizli">Bilgisayarından ya da telefonundan akıllı tahtaya</span>' +
+    '<span class="ty-donen" aria-hidden="true">' +
+      '<span class="ty-d ty-d1">' + SIM('<rect x="4" y="5" width="16" height="10.5" rx="1.6"/><path d="M2 18.5h20"/>') + 'Bilgisayarından</span>' +
+      '<span class="ty-d ty-d2">' + SIM('<rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/>') + 'Telefonundan</span>' +
+    '</span>' +
+    '<span class="ty-ok" aria-hidden="true">' + SIM('<path class="ty-okc" d="M3 12h15"/><path d="M14 7l5 5-5 5"/>') + '</span>' +
+    '<span class="ty-sabit" aria-hidden="true">' + SIM('<rect x="2.5" y="4" width="19" height="12" rx="1.6"/><path d="M8 20h8M12 16v4"/>') + 'akıllı tahtaya</span>' +
+    '</div>';
+  var CIPLER = '<div class="ty-cipler">' + VURGU +
     CIP('<path d="M3 12h5M16 12h5"/><path d="M8 9v6h3V9zM13 9v6h3V9z"/><path class="ty-kes" d="M5 4l14 16"/>', 'Kablo yok') +
     CIP('<path d="M7 3v11M7 14h10M8 14l-1 7M16 14l1 7"/><path d="M7 10h7"/>', 'Oturarak anlat') +
-    CIP('<rect x="2" y="5" width="9" height="7" rx="1.5"/><path d="M4 15h5"/><rect x="13" y="3" width="9" height="11" rx="1.5"/><path class="ty-yanson" d="M11 8.5h2"/>', 'İki cihaz, aynı hesap') +
+    CIP('<rect x="2" y="5" width="9" height="7" rx="1.5"/><path d="M4 15h5"/><rect x="13" y="3" width="9" height="11" rx="1.5"/><path class="ty-yanson" d="M11 8.5h2"/>', 'Aynı hesap') +
     '</div>';
 
   window.KIDEF_SINIFTA_YENI_GORSEL.tahta = SAHNE + CIPLER + '</div>';
@@ -321,10 +356,31 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
     '.ty-kes{ stroke:#E74C3C; }',
     '.ty-yanson{ animation:tyYanson 1.2s ease-in-out infinite; }',
     '@keyframes tyYanson{ 50%{ opacity:.2; } }',
+    /* bilgisayar ⇄ telefon (14 sn; harf çizimi 7 sn — değişim harf silinirken) */
+    '.ty-pc{ animation:tyPc 14s ease-in-out infinite; }',
+    '.ty-tel{ opacity:0; animation:tyTel 14s ease-in-out infinite; }',
+    '@keyframes tyPc{ 0%,46%{ opacity:1; } 50%,96%{ opacity:0; } 100%{ opacity:1; } }',
+    '@keyframes tyTel{ 0%,46%{ opacity:0; } 50%,96%{ opacity:1; } 100%{ opacity:0; } }',
+    '.ty-vurgu{ flex:1 1 100%; display:flex; flex-wrap:wrap; align-items:center; gap:6px 9px; margin:0 0 4px; color:#0F2A43;',
+    '  font-weight:900; font-size:21px; line-height:1.25; }',
+    '.ty-vurgu svg{ width:23px; height:23px; flex:none; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }',
+    '.ty-donen{ display:inline-grid; }',
+    '.ty-d{ grid-area:1/1; display:inline-flex; align-items:center; gap:7px; padding:6px 13px 6px 10px; border-radius:12px;',
+    '  background:#FFF1D6; color:#B45309; border:1.5px solid #F6C878; box-shadow:0 3px 10px rgba(180,83,9,.14); }',
+    '.ty-d1{ animation:tyD1 14s ease-in-out infinite; }',
+    '.ty-d2{ opacity:0; animation:tyD2 14s ease-in-out infinite; }',
+    '@keyframes tyD1{ 0%,46%{ opacity:1; transform:none; } 50%,96%{ opacity:0; transform:translateY(-7px); } 100%{ opacity:1; transform:none; } }',
+    '@keyframes tyD2{ 0%,46%{ opacity:0; transform:translateY(7px); } 50%,96%{ opacity:1; transform:none; } 100%{ opacity:0; transform:translateY(7px); } }',
+    '.ty-ok{ display:inline-flex; color:#16A085; }',
+    '.ty-okc{ stroke-dasharray:3 4; animation:tyAkis 1s linear infinite; }',
+    '.ty-sabit{ display:inline-flex; align-items:center; gap:7px; padding:6px 12px 6px 9px; border-radius:12px; background:#0F2A43; color:#fff; }',
+    '.ty-gizli{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }',
+    '@media (max-width:860px){ .ty-vurgu{ font-size:17px; } .ty-vurgu svg{ width:19px; height:19px; } }',
     '@media (max-width:860px){ .ty-cip{ font-size:14px; padding:5px 11px 5px 8px; } .ty-cip svg{ width:18px; height:18px; } }',
     '@media (prefers-reduced-motion:reduce){',
     '  .ty-svg *, .ty-cip svg, .ty-cip svg *{ animation:none !important; }',
     '  .ty-harf{ stroke-dashoffset:0; } .ty-nokta, .ty-iz{ opacity:.8; } .ty-yasak{ opacity:1; } .ty-imlec{ transform:translate(428px,30px); }',
+    '  .ty-d, .ty-okc{ animation:none !important; opacity:1 !important; transform:none !important; } .ty-donen{ display:inline-flex; gap:6px; }',
     '}'
   ].join('\n');
   try {

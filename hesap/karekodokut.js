@@ -36,7 +36,7 @@
     } catch (e) { }
     return location.href.replace(/[^\/]*([?#].*)?$/, '');
   })();
-  var JSQR = KOK + 'sistem/jsqr.js?v=1.4.0';
+  var JSQR = KOK + 'sistem/jsqr.js?v=8d9cb20c';
   var SITELER = /^(www\.)?kidefarapca\.com$/i;
 
   function $(id) { return document.getElementById(id); }

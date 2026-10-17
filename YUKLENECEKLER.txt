@@ -12462,3 +12462,47 @@ ARZ (العرض) — 9. VE 10. SINIF                                    17.10.20
   sekmede açılır). Dosyaları gelirse doğrudan çalan videoyla değiştirilir.
   · DEĞİŞEN: kitap/10-sinif-2026-2027/veri.js, index.html (kitap10Kur.py)
   · Yedek: _kaynak/yedekler/2026-10-17-kitap10-arz/
+
+TELEFON: KAREKODU OKUT + "TELEFON KUMANDA OLSUN MU?"               17.10.2026
+  Öğretmen: "giriş kayıt sayfasında direkt kamerayı açan bi tuş olsun
+  mobillerde" · "siteye mobilden karekod taranarak giriş yapınca telefonu
+  site kumandası olarak kullanıp kullanmayacağını da soralım".
+  · Giriş/kayıt penceresinin başında, YALNIZ telefon ve tablette "Karekodu
+    okut" tuşu: kamera sayfanın içinde açılır, karekod çerçeveye girince
+    kendiliğinden okunur (tarayıcının okuyucusu, yoksa sistem/jsqr.js —
+    iPhone'da). Kamera açılamazsa "Fotoğraf çek". Yalnız bu sitenin
+    bağlantıları açılır; başka siteye giden karekod açılmaz.
+  · Tahtadaki giriş karekodu telefonda onaylanınca soru: "Bu telefon
+    tahtanın kumandası olsun mu?" (öğrenci hesabına sorulmaz). Evet →
+    telefon yansıtmaya geçer, tahta (karekodla giriş yaptığı oturum 3 dk
+    bunu bekler) kendiliğinden tahta görünümüne geçer ve "tahta" olarak
+    işaretlenir. Hayır → hiçbir şey olmaz.
+  · YENİ: hesap/karekodokut.js, hesap/kumanda.js, sistem/jsqr.js (karekod
+    okuyucu, 130 KB, yalnız gerekince yüklenir)
+  · DEĞİŞEN: index.html (iki betik satırı), hesap/qrgiris.js (iki kanca)
+  · Veritabanı kuralı değişmedi (tahta/$uid zaten yalnız o hesaba açık).
+  · Betik: _kaynak/uretici/telefonKur.py · Yedek: _kaynak/yedekler/2026-10-17-telefon/
+
+SINIFTA YENİ — TAHTA DUYURUSU: BİLGİSAYAR ⇄ TELEFON              17.10.2026
+  Öğretmen: "bilgisayar ve telefon değişsin, akıllı tahta sabit olsun; vurgu
+  telefonun ve bilgisayarın kullanılabileceği kısmı".
+  · Çizimde masadaki dizüstü ile öğretmenin elindeki telefon 14 saniyede bir
+    yer değiştirir, tahta sabit; çiplerin başında vurgulu "Bilgisayarından ⇄
+    Telefonundan → akıllı tahtaya" (kelime çizimle aynı anda döner).
+  · Metne telefonla yolun kısa tarifi eklendi.
+  · DEĞİŞEN: sistem/siniftayeni.js · Betik: _kaynak/uretici/duyuruTelefon.py
+
+FLIPBOOK YAKINLAŞTIRMA: TELEFONDA DA 6 BÖLGE                      17.10.2026
+  Öğretmen: "mobil ve masaüstünde flipbook zoomunda problem var, 6
+  yaklaştırma yerinden yaklaşma özelliği vs mobilde de çalışsın".
+  · Sorun 1 (masaüstü/tahta): çift tıklayınca ikinci tıklama büyütmeyi hemen
+    geri alıyordu (ekran bir an yakınlaşıp dönüyordu). Artık büyütmeden
+    sonra 0,35 sn içindeki dokunuş yok sayılıyor.
+  · Sorun 2 (telefon): tek sayfada 6 bölge yoktu. Artık sayfa 2 sütun × 3
+    satır: bölgeye dokun → büyür, tekrar dokun → küçülür. Büyükken görüntü
+    sayfanın dışına taşmıyor. "Nasıl kullanılır?" telefonda tek sayfalı
+    şemayı gösteriyor.
+  · DEĞİŞEN: _kaynak/ortak-kitap/kitapzoom.js, .css → bütün kitaplara
+    (kitapOrtakla), kitapların index.html damgaları
+  · Betik: _kaynak/uretici/zoomMobil.py · Yedek: _kaynak/yedekler/2026-10-17-zoom/
+  HEPSİ İÇİN: siteyi hizli-gonder ile gönder.

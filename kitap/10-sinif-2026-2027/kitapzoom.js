@@ -24,8 +24,11 @@
    · YÖN TUŞLARI (büyükken): ↑↓ sayfa boyunun 1/9'u kadar yumuşak kaydırır,
      sayfanın ucunda okuma sırasına göre öbür sayfaya / sonraki yayılıma geçer.
      ←→ sayfa değiştirir. Boşluk ve PageDown/PageUp da çalışır.
-   · TEK SAYFADA (telefon/dikey): çift dokunma ile büyütme, yön tuşlarıyla
-     kaydırma.
+   · TEK SAYFADA (telefon/dikey) DA 6 BÖLGE (17.10.2026): sayfa 2 sütun ×
+     3 satır; bölgeye tek dokunuş büyütür, tekrar dokunuş küçültür. Yön
+     tuşlarıyla kaydırma.
+   · ÇİFT TIKLAMA GÜVENCESİ (17.10.2026): büyütme/küçültmeden sonra 0,35 sn
+     içinde gelen dokunuş yok sayılır; çift tıklama büyütmeyi geri almaz.
    · İki parmak pinch, tekerlek, trackpad pinch, sürükleyerek gezinme.
 
    SAĞDAN SOLA KİTAPLAR (rtl: true)
@@ -87,7 +90,7 @@
       if (etiket) etiket.textContent = y;
       if (bilgi) {
         bilgi.textContent = y + ' — sürükleyerek gezin, ' +
-          (flip.tekli ? 'çift dokunarak çık' : 'yön tuşlarıyla geç, dokununca küçülür');
+          (flip.tekli ? 'dokununca küçülür' : 'yön tuşlarıyla geç, dokununca küçülür');
         bilgi.classList.toggle('gor', z.o > 1.02);
       }
       sahne.classList.toggle('yakin', z.o > 1.02);
@@ -157,6 +160,19 @@
       var mx = (r.width * (z.o - 1)) / 2, my = (r.height * (z.o - 1)) / 2;
       z.x = Math.max(-mx, Math.min(mx, z.x));
       z.y = Math.max(-my, Math.min(my, z.y));
+      if (flip.tekli) sayfayaSinirla();
+    }
+    /* TEK SAYFADA görüntü SAYFANIN içinde kalır (17.10.2026): telefonda sayfa
+       sahneyi dikeyde doldurmuyor; üst/alt bölge büyütülünce ya da
+       sürüklenince sayfanın dışındaki boşluk görünüyordu. Sayfa görünen
+       alandan büyükse kenarına dayanır, küçükse ortalanır. */
+    function sayfayaSinirla() {
+      var g = tekSayfa1x(), o = z.o;
+      var yw = g.w / (2 * o), yh = g.h / (2 * o);          /* görünen alanın yarısı (1x) */
+      var cx = g.w / 2 - z.x / o, cy = g.h / 2 - z.y / o;  /* ekran ortasının sayfadaki yeri */
+      cx = g.en >= 2 * yw ? Math.max(g.x + yw, Math.min(g.x + g.en - yw, cx)) : g.x + g.en / 2;
+      cy = g.boy >= 2 * yh ? Math.max(g.y + yh, Math.min(g.y + g.boy - yh, cy)) : g.y + g.boy / 2;
+      z.x = (g.w / 2 - cx) * o; z.y = (g.h / 2 - cy) * o;
     }
 
     /* yeni oran; mx,my verilirse O NOKTA sabit kalacak şekilde büyütür */
@@ -222,6 +238,14 @@
     var bolgeDokun = null;
     function bolgeHedefi(e) {
       if (e.target.closest(YOKSAY)) return null;
+      if (flip.tekli) {
+        /* TEK SAYFA (17.10.2026): sayfa 2 sütun × 3 satır = 6 bölge */
+        var g = tekSayfa1x(), sr = sahne.getBoundingClientRect();
+        var px = e.clientX - sr.left - g.x, py = e.clientY - sr.top - g.y;
+        if (px < 0 || px > g.en || py < 0 || py > g.boy) return null;
+        return { tek: true, sutun: px >= g.en / 2 ? 1 : 0,
+          satir: Math.min(BOLGE_SATIR - 1, Math.floor(py / (g.boy / BOLGE_SATIR))) };
+      }
       var kitap = sahne.querySelector('.kitap');
       if (!kitap) return null;
       var kr = kitap.getBoundingClientRect();            // ekrandaki (o anki zoom'lu) kitap
@@ -244,7 +268,24 @@
         en: kt.offsetWidth, boy: kt.offsetHeight, w: sahne.clientWidth, h: sahne.clientHeight };
     }
 
+    /* Görünen sayfanın zoom'suz dikdörtgeni (TEK SAYFA kipi). Kitap kabı
+       iki sayfa genişliğinde durur, flip.js etkin sayfayı sahnenin ortasına
+       kaydırır (_tekliHiza); kaydırma transform olduğu için offset*
+       değerlerinde görünmez — sayfanın yeri buradan hesaplanır. */
+    function tekSayfa1x() {
+      var k = kitap1x(), en = flip.sayfaEn || k.en / 2;
+      return { x: kaydir.offsetLeft + (k.w - en) / 2, y: k.y, en: en, boy: k.boy, w: k.w, h: k.h };
+    }
+
     function bolgeyiBuyut(h) {
+      if (h.tek) {
+        var g = tekSayfa1x(), tEn = g.en / 2, tBoy = g.boy / BOLGE_SATIR;
+        var to = Math.min(ENCOK, Math.min(g.w / tEn, g.h / tBoy) * 0.98);
+        var tx = g.x + h.sutun * tEn + tEn / 2 - g.w / 2, ty = g.y + h.satir * tBoy + tBoy / 2 - g.h / 2;
+        z.o = to; z.x = -tx * to; z.y = -ty * to;
+        sinirla(); zUygula(true);
+        return;
+      }
       var k = kitap1x(), en = k.en / 2;
       var bx = k.x + (h.sag ? en : 0), by = k.y + h.satir * k.boy / BOLGE_SATIR;
       var bEn = en, bBoy = k.boy / BOLGE_SATIR;
@@ -365,18 +406,27 @@
       return true;
     }
 
-    /* bölgeye dokunma */
+    /* bölgeye dokunma — çift sayfada da tek sayfada da (17.10.2026).
+       ÇİFT TIKLAMA GÜVENCESİ: büyütme/küçültmeden sonra CIFT_ARALIK içinde
+       gelen dokunuş yok sayılır. Eskiden bölgeyi büyütmek için çift tıklayan
+       (ya da çift dokunan) kişinin ikinci tıklaması büyütmeyi hemen geri
+       alıyordu; ekran bir an yakınlaşıp dönüyor, "yakınlaşmıyor" sanılıyordu. */
+    var CIFT_ARALIK = 350, sonBolge = 0;
     sahne.addEventListener('pointerdown', function (e) {
-      if (flip.tekli || panelAcik() || tanitimAcik || e.button > 0) { bolgeDokun = null; return; }
-      bolgeDokun = { x: e.clientX, y: e.clientY, t: Date.now(), h: bolgeHedefi(e) };
+      if (panelAcik() || tanitimAcik || e.button > 0 || e.isPrimary === false) { bolgeDokun = null; return; }
+      bolgeDokun = { x: e.clientX, y: e.clientY, t: Date.now(), id: e.pointerId, h: bolgeHedefi(e) };
     });
     kok.addEventListener('pointerup', function (e) {
-      var d = bolgeDokun; bolgeDokun = null;
-      if (!d || flip.tekli || panelAcik() || tanitimAcik) return;
+      var d = bolgeDokun;
+      if (!d || e.pointerId !== d.id) return;
+      bolgeDokun = null;
+      if (panelAcik() || tanitimAcik) return;
       if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10 || Date.now() - d.t > 600) return; // sürükleme
-      if (z.o > 1.02) { if (!e.target.closest(YOKSAY)) zAyarla(1); return; }
-      if (d.h) bolgeyiBuyut(d.h);
+      if (Date.now() - sonBolge < CIFT_ARALIK) return;                       // çift tıklamanın ikincisi
+      if (z.o > 1.02) { if (!e.target.closest(YOKSAY)) { zAyarla(1); sonBolge = Date.now(); } return; }
+      if (d.h) { bolgeyiBuyut(d.h); sonBolge = Date.now(); }
     });
+    kok.addEventListener('pointercancel', function () { bolgeDokun = null; });
 
     /* --------------------------------------------------------------
        3) TEK SAYFA: çift tıklama / çift dokunma
@@ -384,25 +434,9 @@
        hızlı sayfa kaydırma yakınlaştırmayı açmasın. İki dokunuş aynı yere
        düşmeli.
        -------------------------------------------------------------- */
-    var sonDokunma = 0, dokunmaYer = null;
-    kok.addEventListener('pointerup', function (e) {
-      if (dokunmaYer && Math.hypot(e.clientX - dokunmaYer.x, e.clientY - dokunmaYer.y) > 12) sonDokunma = 0;
-    });
-    sahne.addEventListener('pointerdown', function (e) {
-      if (!flip.tekli) return;                 // çift sayfada 6 bölge kullanılır
-      if (e.target.closest(YOKSAY)) return;
-      var t = Date.now();
-      var yakin = dokunmaYer && Math.hypot(e.clientX - dokunmaYer.x, e.clientY - dokunmaYer.y) < 40;
-      dokunmaYer = { x: e.clientX, y: e.clientY };
-      if (t - sonDokunma < 320 && yakin) {
-        var r = sahne.getBoundingClientRect();
-        if (z.o > 1.02) zAyarla(1);
-        else zAyarla(2.4, e.clientX - r.left, e.clientY - r.top);
-        sonDokunma = 0;
-        return;
-      }
-      sonDokunma = t;
-    });
+    /* 17.10.2026: tek sayfadaki çift dokunma işleyicisi kaldırıldı — tek
+       sayfada da 6 bölge var (yukarıda); çift dokunma bölgeyi büyütür,
+       ikinci dokunuş güvenceye takılır, büyütmeyi geri almaz. */
 
     /* --------------------------------------------------------------
        4) Sürükleyerek gezinme (zoom'luyken)
@@ -445,6 +479,7 @@
       if (e.touches.length === 2) {
         var a = e.touches[0], b = e.touches[1];
         pinch = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), bitti: false };
+        bolgeDokun = null;                     /* kıstırma: bekleyen bölge dokunuşu iptal */
       }
     }, { passive: true });
     sahne.addEventListener('touchmove', function (e) {
@@ -517,15 +552,29 @@
         }
         return h + '</div>';
       }
+      /* TEK SAYFA ŞEMASI (17.10.2026): telefonda bir sayfa, 2 sütun × 3 satır;
+         numaralar okuma sırasına göre (sağdan sola kitapta sağ sütun önce). */
+      function tekSayfa() {
+        var h = '<div class="kz-sayfa kz-tek6" data-ad="tek">';
+        for (var s = 0; s < 3; s++) {
+          for (var c = 0; c < 2; c++) {            /* c: ekranda soldan sağa */
+            var no = s * 2 + ((c === 0) === !rtl ? 1 : 2), ilk = (no === 1);
+            h += '<span class="kz-bolge' + (ilk ? ' kz-bolge-ilk' : '') + '">' + no +
+                 (ilk ? '<span class="kz-dokunus">' + svg(IK.dokun) + '</span>' : '') + '</span>';
+          }
+        }
+        return h + '</div>';
+      }
       return '<div class="kz-sema" aria-hidden="true">' +
-        '<div class="kz-kitap">' + sayfa(solBas, 'sol') + sayfa(sagBas, 'sağ') + '</div>' +
-        '<p class="kz-sema-not">Açık iki sayfa <b>6 bölge</b>. Bir bölgeye dokun — ' +
+        '<div class="kz-kitap kz-cift-sema">' + sayfa(solBas, 'sol') + sayfa(sagBas, 'sağ') + '</div>' +
+        '<div class="kz-kitap kz-tek-sema" hidden>' + tekSayfa() + '</div>' +
+        '<p class="kz-sema-not kz-cift-not">Açık iki sayfa <b>6 bölge</b>. Bir bölgeye dokun — ' +
         'o bölge ekranı doldurur. Tekrar dokununca eski hâline döner.</p>' +
         /* Telefonda/dikey ekranda kitap tek sayfa açılır, orada bölge yok —
            pencere açılırken duruma göre gösterilir (tanitimAc). */
-        '<p class="kz-sema-not kz-tekli-not" hidden>Şu an <b>tek sayfa</b> görünüyorsun ' +
-        '(telefon ya da dikey ekran). Burada bölge yerine <b>çift dokunarak</b> büyütülür; ' +
-        'ekranı yatay çevirirsen altı bölge açılır.</p></div>';
+        '<p class="kz-sema-not kz-tekli-not" hidden>Telefonda (tek sayfa) da <b>6 bölge</b> var: ' +
+        'sayfanın iki yarısı, üçer satır. Bir bölgeye dokun — o bölge ekranı doldurur. ' +
+        'Tekrar dokununca eski hâline döner.</p></div>';
     }
 
     function tanitimHtml() {
@@ -544,7 +593,7 @@
          'dokundukça sayfa <b>kademeli</b> aşağı-yukarı kayar. Sayfanın ' +
          'ucuna gelince ok soluklaşır.'],
         [IK.pinch, 'Dokunmatikte',
-         'İki parmakla yakınlaştır. Telefonda ve dikey ekranda çift dokunarak büyüt, tekrar çift dokunarak çık.'],
+         'İki parmakla yakınlaştır. Telefonda da bölgeye bir kez dokunmak yeter; tekrar dokununca küçülür.'],
         [IK.tus, 'Tuşlar',
          '<b>+</b> <b>−</b> yakınlaştırma, <b>0</b> eski hâli, <b>Esc</b> çıkış, <b>F</b> tam ekran.']
       ].map(function (x) {
@@ -576,8 +625,11 @@
     function tanitimAc() {
       tanitimKur();
       /* Tek sayfa modundaysa şemanın altına o duruma özel not çıkar. */
-      var tn = tanitimKutu.querySelector('.kz-tekli-not');
-      if (tn) tn.hidden = !flip.tekli;
+      [['.kz-tekli-not', !flip.tekli], ['.kz-tek-sema', !flip.tekli],
+       ['.kz-cift-not', flip.tekli], ['.kz-cift-sema', flip.tekli]].forEach(function (x) {
+        var el = tanitimKutu.querySelector(x[0]);
+        if (el) el.hidden = x[1];
+      });
       tanitimKutu.hidden = false;
       tanitimAcik = true;
       flip.kilitli = true;
