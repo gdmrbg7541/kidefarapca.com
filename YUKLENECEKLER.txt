@@ -12612,3 +12612,17 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                      şimdi 0 (iki yönde de).
   Betik: _kaynak/uretici/girisFlas.py. Yedekler: _kaynak/yedekler/2026-10-18-giris-flas,
   -alfabe-kumanda.
+
+18.10.2026 (akşam, 3) — KUMANDA UYUYUNCA TAHTA SÜRER · KUMANDA KALDIĞI YERDEN
+  sistem/tahta.js     telefon (kumanda) kilitlenince, ağı değişince ya da tarayıcısı kapanınca
+                      tahtada hiçbir şey değişmez (yazı, bekleme ekranı, perde yok); tahta dersi
+                      görünmeden tutar. Telefon uyanınca sessizce geri alır; bu arada tahtadan
+                      kullanıldıysa tahtadaki hâli alır. Sekme yenilenir ya da site yeniden
+                      açılırsa tahtadaki sayfa telefonda geçmişiyle açılır. Hiçbirinde tahta
+                      yenilenmez, titremez. Kilitlenirken tarayıcının durdurduğu video tahtada
+                      sürer. Ders sürerken tahtanın ekranı kararmaz (ekran uyanık kilidi);
+                      kumanda uykudayken en çok 90 dk, sonra tahtanın 40 dk kuralı işler.
+  sistem/tahtagir.js  kumanda olan telefon siteyi yeniden açınca ana sayfa kendiliğinden
+                      kumandaya döner (ders tahtada sürüyorsa; "Bitir"den sonra dönmez).
+  Betik: _kaynak/uretici/kumandaDonus.py · kaynak ve deneme: _kaynak/kumanda-donus/
+  Yedek: _kaynak/yedekler/2026-10-18-kumanda-donus/

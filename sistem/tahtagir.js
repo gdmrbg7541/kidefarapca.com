@@ -20,8 +20,14 @@
      doğrudan tahta görünümünü açar. Tahta görünümünden "Çık" ile
      ayrılınca aynı yansıtma sürdükçe geri dönülmez; yeni yansıtmada döner.
      "Bu cihaz tahta değil" bağlantısı tahta görünümünün bekleme ekranında.)
+   · KUMANDA DÖNÜŞÜ (18.10.2026): bir dersin kumandası olan telefon/bilgisayar
+     siteyi yeniden açınca (tarayıcı kapanmıştı, sekme gitti) ders tahtada hâlâ
+     sürüyorsa ana sayfa kendiliğinden kumandaya döner, kaldığı yerden
+     (tahtadaki sayfa geçmişiyle açılır; tahta yenilenmez). "Bitir" ile
+     bitirilen derse dönülmez.
    · Canlı veritabanı (Firebase Realtime Database) yalnız gerektiğinde
-     yüklenir: panel açılınca ya da cihaz tahta olarak işaretliyse.
+     yüklenir: panel açılınca, cihaz tahta olarak işaretliyse ya da bu cihaz
+     az önce bir dersin kumandasıysa.
    Motor ve veritabanı kuralı: sistem/tahta.js.
    ===================================================================== */
 (function () {
@@ -164,7 +170,7 @@
     }
     vtYukleniyor.push(cb);
   }
-  var durumDinle = null, yayin = null, izle = null;
+  var durumDinle = null, yayin = null, izle = null, yayinOkundu = false, izleOkundu = false;
   function canliDinle() {
     var u = kullanici();
     if (!u || durumDinle) return;
@@ -172,14 +178,14 @@
       if (durumDinle || !kullanici()) return;
       var kok = db.ref('tahta/' + kullanici().uid);
       durumDinle = kok;
-      kok.child('yayin').on('value', function (s) { yayin = s.val(); durumYaz(); soruKontrol(); noktaYaz(); }, function () { });
-      kok.child('izle').on('value', function (s) { izle = s.val(); durumYaz(); noktaYaz(); }, function () { });
+      kok.child('yayin').on('value', function (s) { yayin = s.val(); yayinOkundu = true; durumYaz(); soruKontrol(); noktaYaz(); donusKontrol(); }, function () { });
+      kok.child('izle').on('value', function (s) { izle = s.val(); izleOkundu = true; durumYaz(); noktaYaz(); donusKontrol(); }, function () { });
     });
   }
   function canliBirak() {
     if (!durumDinle) return;
     try { durumDinle.child('yayin').off(); durumDinle.child('izle').off(); } catch (e) { }
-    durumDinle = null; yayin = null; izle = null;
+    durumDinle = null; yayin = null; izle = null; yayinOkundu = false; izleOkundu = false;
   }
   function yayinVar() { return !!(yayin && yayin.cevrimici); }
   function tahtaSayisi() {
@@ -282,6 +288,52 @@
     if (s) s.parentNode.removeChild(s);
   }
 
+  /* --------------------------------------- KUMANDA DÖNÜŞÜ (18.10.2026)
+     Öğretmen: "kumanda tekrar tarayıcıda site açılırsa otomatik bağlansın ...
+     tekrar açtığında telefonda kaldığı yerden devam edebilmeli". Bu cihaz az
+     önce bir dersin kumandasıydı (sistem/tahta.js → localStorage
+     kidef_kumanda_son) ve o ders tahtada hâlâ sürüyorsa ana sayfa açılır
+     açılmaz kumandaya dönülür: tahtadaki sayfa geçmişiyle açılır, tahta
+     yenilenmez. Dönülmez: "Bitir" ile bitmişse, başka cihaz yansıtıyorsa,
+     tahtada açık değilse, ana sayfaya tarayıcının Geri tuşuyla gelinmişse
+     (öğretmen bilerek çıktı), karekod bağlantısıyla açılmışsa, kumanda
+     100 dakikadır kullanılmıyorsa. */
+  var donusBitti = false;
+  function kumandaSon() { try { return JSON.parse(localStorage.getItem('kidef_kumanda_son') || 'null'); } catch (e) { return null; } }
+  function yeniAcilis() {
+    try {
+      var n = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      if (n && n.type === 'back_forward') return false;
+    } catch (e) { }
+    return !/[?&]qr=/.test(location.search);
+  }
+  function donusKontrol() {
+    if (donusBitti || gidiyor || tahtaCihazi()) return;
+    var son = kumandaSon(), u = kullanici();
+    if (!son || !son.bas) { donusBitti = true; return; }
+    if (!u || !ogretmenMi()) return;                       /* giriş / rol henüz gelmedi */
+    if (son.uid !== u.uid || Date.now() - (son.t || 0) > 100 * 60000 || !yeniAcilis()) { donusBitti = true; return; }
+    if (!durumDinle) { canliDinle(); return; }
+    if (!yayinOkundu || !izleOkundu) return;
+    donusBitti = true;
+    var y = yayin;
+    if (!y || y.bas !== son.bas || y.bitir || !y.u) return;
+    var tahta = false;
+    if (izle) for (var k in izle) {
+      if (!Object.prototype.hasOwnProperty.call(izle, k)) continue;
+      var t = izle[k];
+      if (t && t.cevrimici && t.cihaz !== 'bilgisayar' && t.d === y.d) tahta = true;
+    }
+    /* ders sürüyor: tahta tutuyor (vekil ya da tahtadan kullanılıyor) ya da kumanda
+       koptu ama tahta o sayfada. Bir bilgisayar/telefon şu an yansıtıyorsa (başka
+       cihaz ya da bu telefonun açık kumanda sekmesi) dönülmez. */
+    var surer = y.cevrimici ? y.cihaz === 'tahta' : tahta;
+    if (!surer) return;
+    gidiyor = true;
+    soruKapat(); panelKapat();
+    location.replace('tahta.html?rol=yansit');
+  }
+
   /* ------------------------------------------------- başlıktaki düğme */
   function noktaYaz() {
     var n = $('tab-tahta-nokta');
@@ -292,6 +344,7 @@
     var gor = ogretmenMi();
     if (d) d.style.display = gor ? 'inline-flex' : 'none';
     if (gor && tahtaCihazi()) canliDinle();
+    if (gor) donusKontrol();
     if (!kullanici()) { canliBirak(); soruKapat(); }
   }
   function basla() {
