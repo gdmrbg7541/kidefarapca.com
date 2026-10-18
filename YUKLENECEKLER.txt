@@ -12557,3 +12557,30 @@ Ana sitenin gidecek boyutu: ~819 MiB (sınır 1024; Kidef sunuları çıkmadan �
 GÖNDERİLDİ: 18.10.2026 10:14–10:17 (ana site 368bf51f; materyal-7, -8, -kidef ilk kez). Pages bütün
   depolarda açık, yayınlar başarılı. gonder.command 2. sürüm: Pages'i anahtarsız denetliyor
   ("açılamadı (401)" uyarısı yersizdi).
+
+==============================================================================
+18.10.2026 (öğleden sonra) — 8. SINIF: EBA YERİNE SİTENİN ETKİNLİKLERİ ·
+               7. SINIF KİTAP BAĞLANTISI · SINIFTA YENİ + GALERİ SIRASI
+==============================================================================
+8. SINIF KİTABI — 74 "نشاط" KAREKODU ARTIK EBA'YA DEĞİL SİTENİN ETKİNLİĞİNE:
+  kitap/8-sinif-2026-2027/etkinlik/ (4,2 MB; index.html?n=1…74, numarasız açılınca
+  bütün liste ünite ünite). Her biri kitaptaki o alıştırmanın etkileşimli sürümü:
+  eşleştirme 40 · seçmeli 11 · boşluk doldurma 8 · cümle kur 4 · açık uçlu 4 ·
+  doğru/yanlış 3 · sıralama 2 · tablo 2. "Kontrol et / Cevapları göster / Baştan";
+  dinleme alıştırmalarında ses çalar. Cevaplar: 31'i MEB cevap anahtarından
+  (Meb/…/8️⃣/2026-2027/ARP08_CEVAP ANAHTARI.pdf), 37'si kitap sayfasından, 6'sı
+  örnek çözüm. Kitaptaki düğmeler aynı yerde; simgesi "Etkinlik N"; panelde açılır.
+  veri.js'te asıl EBA adresi "eba" alanında saklı. 6. ve 10. sınıftaki EBA
+  bağlantıları alıştırma değil (ünite özeti, sunum, oyun, ölçek) — yerinde kaldı.
+  Betikler: ebaHazirla8.py (PDF + cevap anahtarından hazırlık) → _kaynak/eba8/
+  (json/, motor/, SEMA.md, dogrula.py, kur.py, test.py) → eba8Bagla.py.
+  kitap78Kur.py yeniden çalışırsa ardından eba8Bagla.py'yi yeniden çalıştır.
+7. SINIF KİTAP BAĞLANTISI: index.html'de 7. sınıf ders kitabı kartı 2027-2028
+  seçiliyken de portala değil bizim flipbook'a (kitap/7-sinif-2026-2027/) gider;
+  katalog/index.html'de "MEB Ders Kitapları" çipleri 5·6·7·8·9·10 (7 eskiden gizli
+  2027-2028 kopyasına gidiyordu).
+SINIFTA YENİ + GALERİ: ana sayfada Sınıflarım'ın hemen altında (katalog →
+  Sınıflarım → Sınıfta Yeni + Galeri → İmam Hatip). sistem/siniflarim.js çapası
+  #guncellemeler. Öğrenciye Sınıflarım yine hiç görünmez.
+Yedekler: _kaynak/yedekler/2026-10-18-eba8, -yedinci-link, -yeni-galeri-sira.
+Ana sitenin gidecek boyutu: ~823 MiB.

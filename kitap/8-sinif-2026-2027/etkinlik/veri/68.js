@@ -1,0 +1,2 @@
+/* Etkinlik 68 · kitap s. 157, التمرين 12 — kaynak: cevap (_kaynak/eba8/json/68.json) */
+window.ETK_VERI={"no":68,"sayfa":157,"tamrin":12,"tur":"eslestir","yonerge":"صِلْ بَيْن الكَلِمات كَما في المِثال.","yonerge_tr":"Her fiili uygun zamirle eşleştir; bir zamir artar.","baslik_tr":"Zamir–fiil eşleştirme","kaynak":"cevap","ornek":"هي: تَقْرَأُ","a":[{"m":"تَقْرَأُ"},{"m":"يَقْرَأُ"},{"m":"أَقْرَأُ"},{"m":"تَقْرَئينَ"}],"b":[{"m":"أَنْتَ"},{"m":"أَنْتِ"},{"m":"هو"},{"m":"أَنا"},{"m":"نَحْنُ"}],"dogru":[0,2,3,1],"sesler":[]};

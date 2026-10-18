@@ -1,0 +1,2 @@
+/* Etkinlik 11 · kitap s. 29, التمرين 7 — kaynak: sayfa (_kaynak/eba8/json/11.json) */
+window.ETK_VERI={"no":11,"sayfa":29,"tamrin":7,"tur":"eslestir","yonerge":"اِقْرَأ الكَلِمات وتَأَمَّلْ مَعانِيَها مُسْتَعينًا بِالصّورة.","yonerge_tr":"Haritadaki her yön okunu (yukarısı kuzey) doğru yön adıyla eşleştir.","baslik_tr":"Yönler — eşleştirme","kaynak":"sayfa","a":[{"m":"↑"},{"m":"→"},{"m":"←"},{"m":"↓"}],"b":[{"m":"شَمال"},{"m":"شَرْق"},{"m":"غَرْب"},{"m":"جَنوب"}],"dogru":[0,1,2,3],"sesler":[]};
