@@ -12727,3 +12727,18 @@ Ana sitenin gidecek boyutu: ~823 MiB.
   Damgalar: surumle.py (101 sayfa; dil.js sözlük tablosu)
   Betik: _kaynak/uretici/tkFiil.py · kaynak, üretici ve denemeler: _kaynak/tk-fiil/ (OKU.txt)
   Yedek: _kaynak/yedekler/2026-10-18-tk-fiil/
+
+18.10.2026 (gece, 12) — BİLGİ YARIŞMASI · GİRİŞ VE KAYIT = INDEX'İN KENDİ EKRANI
+  hesap/biygiris.js   «Giriş yap» / «Hesabım yok, kayıt olayım» artık index'in giriş
+                      ekranını yarışma sayfasının üstünde tam ekran bir çerçevede açıyor
+                      (index.html?giris=1&rol=ogretmen&gomulu=1). Ekran birebir aynı: tam
+                      sayfa düzen, karekodla giriş, kayıt anketi, rol kartları, dil. Sekme
+                      değişmiyor; giriş bitince çerçeve kalkıyor ve yarışma kurulumu açılıyor
+                      (onay bekleyen kayıtta kapı «onay bekliyor» der). Çerçeve 20 sn'de
+                      açılmazsa 04.10'daki ortak pencere yedek olarak açılır.
+  hesap/girisgomulu.js YENİ — index tarafı: yalnız çerçevedeyken çalışır, üst sayfaya
+                      hazır / tamam / kapat der; kayıt mesajı okunana kadar bekler.
+  index.html          girisgomulu.js betik satırı (index'in kendi davranışı değişmedi)
+  Damgalar: surumle.py (index.html, bilgiyarismasikacom.html)
+  Betik: _kaynak/uretici/biyGomuluGiris.py · kaynak ve deneme: _kaynak/biy-giris/
+  Yedek: _kaynak/yedekler/2026-10-18-biy-giris/

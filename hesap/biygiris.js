@@ -216,13 +216,128 @@
             });
     }
 
-    function ac(baslangic) {
+    /* ===================================================================
+       GÖMÜLÜ GİRİŞ (18.10.2026) — öğretmen: "index te giriş ve kayıt ekranı
+       varya onun aynısı bilgi yarışmasında da olsun".
+       index'in KENDİ giriş ekranı bu sayfanın üstünde, tam ekran bir
+       çerçevede açılır: index.html?giris=1|kayit&rol=ogretmen&gomulu=1.
+       Ekran birebir aynı (aynı dosyalar: pencere, karekodla giriş, kayıt
+       anketi, rol kartları, dil); index'teki değişince bu da değişir.
+       index tarafındaki hesap/girisgomulu.js haber verir:
+         hazir → çerçeve görünür (o ana kadar turuncu zemin + dönen halka)
+         tamam → çerçeve kalkar; oturum Firebase deposundan bu sayfaya geçer,
+                 onAuthStateChanged kapıyı kendisi kaldırır (2,5 sn'de
+                 geçmezse sayfa yenilenir)
+         kapat → çerçeve kalkar, kapı ekranı yerinde
+       Sekme değişmez. Çerçeve 20 sn'de açılmazsa (bağlantı yavaş/kesik)
+       04.10'daki ortak pencere, o da yoksa eski panel yedek olarak açılır.
+       =================================================================== */
+    var gom = null;
+
+    function gomStil() {
+        if ($('bgg-stil')) return;
+        var s = document.createElement('style');
+        s.id = 'bgg-stil';
+        s.textContent =
+            /* zemin index'in giriş penceresiyle aynı turuncu: geçişte sıçrama olmasın */
+            '#biyGomuluGiris{position:fixed;inset:0;z-index:2147483000;' +
+            'background:linear-gradient(135deg,#FFC107 0%,#F39C12 45%,#EF5350 100%)}' +
+            '#biyGomuluGiris iframe{position:absolute;inset:0;width:100%;height:100%;border:0;' +
+            'background:transparent;opacity:0;transition:opacity .2s ease}' +
+            '#biyGomuluGiris.hazir iframe{opacity:1}' +
+            '#biyGomuluGiris .bgg-don{position:absolute;left:50%;top:50%;width:46px;height:46px;' +
+            'margin:-23px 0 0 -23px;border-radius:50%;border:4px solid rgba(255,255,255,.35);' +
+            'border-top-color:#fff;animation:bggDon .8s linear infinite}' +
+            '#biyGomuluGiris.hazir .bgg-don{display:none}' +
+            '@keyframes bggDon{to{transform:rotate(360deg)}}' +
+            '@media (prefers-reduced-motion:reduce){#biyGomuluGiris .bgg-don{animation-duration:2.4s}}';
+        document.head.appendChild(s);
+    }
+
+    function gomAc(baslangic) {
+        if (gom) return true;
+        if (!document.body || typeof window.postMessage !== 'function') return false;
+        gomStil();
+        var kap = document.createElement('div');
+        kap.id = 'biyGomuluGiris';
+        kap.setAttribute('role', 'dialog');
+        kap.setAttribute('aria-modal', 'true');
+        kap.setAttribute('aria-label', 'Giriş');
+        var ifr = document.createElement('iframe');
+        ifr.title = 'Giriş';
+        ifr.src = 'index.html?giris=' + (baslangic === 'kayit' ? 'kayit' : '1') + '&rol=ogretmen&gomulu=1';
+        kap.innerHTML = '<span class="bgg-don" aria-hidden="true"></span>';
+        /* Çerçeve index'ten başka bir sayfaya geçerse (bildirim gelmeden) kapat. */
+        ifr.addEventListener('load', function () {
+            if (!gom) return;
+            var p = '';
+            try { p = ifr.contentWindow.location.pathname; } catch (x) { p = ''; }
+            if (/(^|\/)(index\.html)?$/.test(p)) return;
+            var u = null;
+            try { u = firebase.auth().currentUser; } catch (x) { }
+            gomKapat();
+            if (!(u && !u.isAnonymous)) oturumuBekle();
+        });
+        kap.appendChild(ifr);
+        document.body.appendChild(kap);
+        var tasma = document.documentElement.style.overflow;
+        document.documentElement.style.overflow = 'hidden';
+        gom = {
+            kap: kap, ifr: ifr, tasma: tasma, baslangic: baslangic,
+            sure: setTimeout(function () {
+                if (gom && !gom.kap.classList.contains('hazir')) {
+                    var b = gom.baslangic;
+                    gomKapat();
+                    yedekAc(b);
+                }
+            }, 20000)
+        };
+        return true;
+    }
+
+    function gomKapat() {
+        if (!gom) return;
+        clearTimeout(gom.sure);
+        try { gom.kap.parentNode.removeChild(gom.kap); } catch (e) { }
+        document.documentElement.style.overflow = gom.tasma || '';
+        gom = null;
+    }
+
+    /* Giriş çerçevede yapıldı: oturum bu sayfaya Firebase deposundan geçer. */
+    function oturumuBekle() {
+        var bas = Date.now();
+        (function bak() {
+            var u = null;
+            try { u = firebase.auth().currentUser; } catch (e) { }
+            if (u && !u.isAnonymous) return;
+            if (Date.now() - bas > 2500) { location.reload(); return; }
+            setTimeout(bak, 200);
+        })();
+    }
+
+    window.addEventListener('message', function (e) {
+        if (!gom || e.origin !== location.origin || !e.data || !e.data.kidefGiris) return;
+        if (e.source && gom.ifr && e.source !== gom.ifr.contentWindow) return;
+        var d = e.data.kidefGiris;
+        if (d === 'hazir') {
+            gom.kap.classList.add('hazir');
+            try { gom.ifr.focus(); } catch (x) { }
+        } else if (d === 'tamam') {
+            gomKapat();
+            oturumuBekle();
+        } else if (d === 'kapat') {
+            gomKapat();
+        }
+    });
+
+    function yedekAc(baslangic) {
         /* TEK GİRİŞ PENCERESİ (04.10.2026) — öğretmen: "bilgi yarışmasındaki
            giriş ve kayıt ekranı indextekinin aynısı olsun".
            Bu dosyanın kendi küçük paneli yerine artık index'le AYNI pencere
            açılıyor (hesap/girispenceresi.js + girisdavranis.js). Eski panel
            kodu aşağıda duruyor: ortak pencere bir sebeple yüklenmediyse
-           yedek olarak devreye giriyor, öğretmen giriş yapamadan kalmasın. */
+           yedek olarak devreye giriyor, öğretmen giriş yapamadan kalmasın.
+           18.10.2026'dan beri bu yol yalnız YEDEK (yukarıdaki çerçeve açılmazsa). */
         var P = window.KidefGirisPenceresi, D = window.KidefGirisDavranis;
         if (P && D) {
             D.durum.girisKipi = (baslangic !== 'kayit');
@@ -236,13 +351,21 @@
         panel.classList.add('acik');
     }
 
+    function ac(baslangic) {
+        if (gomAc(baslangic)) return;
+        yedekAc(baslangic);
+    }
+
     function kapat() {
+        gomKapat();
         if (window.KidefGirisDavranis) window.KidefGirisDavranis.kapat();
         if (panel) panel.classList.remove('acik');
     }
 
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && panel && panel.classList.contains('acik')) kapat();
+        if (e.key !== 'Escape') return;
+        if (gom) { gomKapat(); return; }
+        if (panel && panel.classList.contains('acik')) kapat();
     });
 
     window.BiyGiris = { ac: ac, kapat: kapat };
