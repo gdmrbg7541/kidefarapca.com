@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['uz'] = Object.assign(window.KIDEF_DIL['uz'] || {}, {
   'th.tam_dokun': 'Toʻliq ekran uchun ekranga bir marta teg'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['uz'] = Object.assign(window.KIDEF_DIL['uz'] || {}, {
+  'tk.d_fiil': 'Feʼl tuslanishi',
+  'tk.f_alt': '{n} ta feʼl',
+  'tk.f_k_emir': 'oʻgʻil / qizga buyruq',
+  'tk.f_k_tekil': 'birlik',
+  'tk.f_k_tekilbiz': 'birlik + biz',
+  'tk.f_k_tam': 'toʻliq tuslanish',
+  'tk.f_mazi': 'oʻtgan zamon',
+  'tk.f_muzari': 'hozirgi zamon',
+  'tk.f_gelecek': 'kelasi zamon',
+  'tk.f_emir': 'buyruq',
+  'tk.f_nehiy': 'boʻlishsiz buyruq',
+  'tk.f_s_cekim': 'Toʻgʻri shakl qaysi?',
+  'tk.f_s_zamir': 'Qaysi olmosh bilan ishlatiladi?',
+  'tk.f_s_tr': 'Turkchasi qaysi?',
+  'tk.f_s_ar': 'Arabchasi qaysi?'
+});
+/* @dil-parca-tkfiil son */

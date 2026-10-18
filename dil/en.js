@@ -1938,3 +1938,24 @@ window.KIDEF_DIL['en'] = Object.assign(window.KIDEF_DIL['en'] || {}, {
   'th.tam_dokun': 'Touch the screen once for full screen'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['en'] = Object.assign(window.KIDEF_DIL['en'] || {}, {
+  'tk.d_fiil': 'Verb Conjugation',
+  'tk.f_alt': '{n} verbs',
+  'tk.f_k_emir': 'imperative to a boy / a girl',
+  'tk.f_k_tekil': 'singular',
+  'tk.f_k_tekilbiz': 'singular + we',
+  'tk.f_k_tam': 'full conjugation',
+  'tk.f_mazi': 'past tense',
+  'tk.f_muzari': 'present tense',
+  'tk.f_gelecek': 'future tense',
+  'tk.f_emir': 'imperative',
+  'tk.f_nehiy': 'negative imperative',
+  'tk.f_s_cekim': 'Which form is correct?',
+  'tk.f_s_zamir': 'Which pronoun is it used with?',
+  'tk.f_s_tr': 'Which is the Turkish meaning?',
+  'tk.f_s_ar': 'Which is the Arabic?'
+});
+/* @dil-parca-tkfiil son */

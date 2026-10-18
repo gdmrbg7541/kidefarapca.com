@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['de'] = Object.assign(window.KIDEF_DIL['de'] || {}, {
   'th.tam_dokun': 'Tippe einmal auf den Bildschirm für den Vollbildmodus'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['de'] = Object.assign(window.KIDEF_DIL['de'] || {}, {
+  'tk.d_fiil': 'Verbkonjugation',
+  'tk.f_alt': '{n} Verben',
+  'tk.f_k_emir': 'Imperativ an Jungen / Mädchen',
+  'tk.f_k_tekil': 'Singular',
+  'tk.f_k_tekilbiz': 'Singular + wir',
+  'tk.f_k_tam': 'vollständige Konjugation',
+  'tk.f_mazi': 'Vergangenheit',
+  'tk.f_muzari': 'Präsens',
+  'tk.f_gelecek': 'Futur',
+  'tk.f_emir': 'Imperativ',
+  'tk.f_nehiy': 'verneinter Imperativ',
+  'tk.f_s_cekim': 'Welche Form ist richtig?',
+  'tk.f_s_zamir': 'Zu welchem Pronomen gehört es?',
+  'tk.f_s_tr': 'Was bedeutet es auf Türkisch?',
+  'tk.f_s_ar': 'Wie heißt es auf Arabisch?'
+});
+/* @dil-parca-tkfiil son */

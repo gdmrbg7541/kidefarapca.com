@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['ru'] = Object.assign(window.KIDEF_DIL['ru'] || {}, {
   'th.tam_dokun': 'Коснись экрана один раз, чтобы открыть на весь экран'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['ru'] = Object.assign(window.KIDEF_DIL['ru'] || {}, {
+  'tk.d_fiil': 'Спряжение глаголов',
+  'tk.f_alt': 'глаголов: {n}',
+  'tk.f_k_emir': 'повеление мальчику / девочке',
+  'tk.f_k_tekil': 'единственное число',
+  'tk.f_k_tekilbiz': 'ед. число + мы',
+  'tk.f_k_tam': 'полное спряжение',
+  'tk.f_mazi': 'прошедшее время',
+  'tk.f_muzari': 'настоящее время',
+  'tk.f_gelecek': 'будущее время',
+  'tk.f_emir': 'повелительное наклонение',
+  'tk.f_nehiy': 'запрет (отрицательное повеление)',
+  'tk.f_s_cekim': 'Какая форма верна?',
+  'tk.f_s_zamir': 'С каким местоимением употребляется?',
+  'tk.f_s_tr': 'Что это значит по-турецки?',
+  'tk.f_s_ar': 'Как это по-арабски?'
+});
+/* @dil-parca-tkfiil son */

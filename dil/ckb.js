@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['ckb'] = Object.assign(window.KIDEF_DIL['ckb'] || {}, {
   'th.tam_dokun': 'بۆ پڕشاشە، جارێک دەست لە شاشەکە بدە'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['ckb'] = Object.assign(window.KIDEF_DIL['ckb'] || {}, {
+  'tk.d_fiil': 'گەردانی کردار',
+  'tk.f_alt': '{n} کردار',
+  'tk.f_k_emir': 'فەرمان بۆ کوڕ / کچ',
+  'tk.f_k_tekil': 'تاک',
+  'tk.f_k_tekilbiz': 'تاک + ئێمە',
+  'tk.f_k_tam': 'گەردانی تەواو',
+  'tk.f_mazi': 'ڕابردوو',
+  'tk.f_muzari': 'ڕانەبردوو',
+  'tk.f_gelecek': 'داهاتوو',
+  'tk.f_emir': 'فەرمان',
+  'tk.f_nehiy': 'فەرمانی نەرێنی',
+  'tk.f_s_cekim': 'کام شێوە ڕاستە؟',
+  'tk.f_s_zamir': 'لەگەڵ کام جێناو بەکاردێت؟',
+  'tk.f_s_tr': 'واتای تورکییەکەی کامەیە؟',
+  'tk.f_s_ar': 'عەرەبییەکەی کامەیە؟'
+});
+/* @dil-parca-tkfiil son */

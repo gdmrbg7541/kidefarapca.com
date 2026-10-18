@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['az'] = Object.assign(window.KIDEF_DIL['az'] || {}, {
   'th.tam_dokun': 'Tam ekran üçün ekrana bir dəfə toxun'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['az'] = Object.assign(window.KIDEF_DIL['az'] || {}, {
+  'tk.d_fiil': 'Feilin təsrifi',
+  'tk.f_alt': '{n} feil',
+  'tk.f_k_emir': 'oğlana / qıza əmr',
+  'tk.f_k_tekil': 'tək',
+  'tk.f_k_tekilbiz': 'tək + biz',
+  'tk.f_k_tam': 'tam təsrif',
+  'tk.f_mazi': 'keçmiş zaman',
+  'tk.f_muzari': 'indiki zaman',
+  'tk.f_gelecek': 'gələcək zaman',
+  'tk.f_emir': 'əmr',
+  'tk.f_nehiy': 'inkar əmri',
+  'tk.f_s_cekim': 'Düzgün forma hansıdır?',
+  'tk.f_s_zamir': 'Hansı əvəzliklə işlənir?',
+  'tk.f_s_tr': 'Türkcəsi hansıdır?',
+  'tk.f_s_ar': 'Ərəbcəsi hansıdır?'
+});
+/* @dil-parca-tkfiil son */

@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['ar'] = Object.assign(window.KIDEF_DIL['ar'] || {}, {
   'th.tam_dokun': 'المس الشاشة مرة واحدة لملء الشاشة'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['ar'] = Object.assign(window.KIDEF_DIL['ar'] || {}, {
+  'tk.d_fiil': 'تصريف الأفعال',
+  'tk.f_alt': 'عدد الأفعال: {n}',
+  'tk.f_k_emir': 'الأمر للمذكر / للمؤنث',
+  'tk.f_k_tekil': 'المفرد',
+  'tk.f_k_tekilbiz': 'المفرد + نحن',
+  'tk.f_k_tam': 'التصريف الكامل',
+  'tk.f_mazi': 'الماضي',
+  'tk.f_muzari': 'المضارع',
+  'tk.f_gelecek': 'المستقبل',
+  'tk.f_emir': 'الأمر',
+  'tk.f_nehiy': 'النهي',
+  'tk.f_s_cekim': 'ما الصيغة الصحيحة؟',
+  'tk.f_s_zamir': 'مع أي ضمير يُستعمل؟',
+  'tk.f_s_tr': 'ما معناه بالتركية؟',
+  'tk.f_s_ar': 'ما مقابله بالعربية؟'
+});
+/* @dil-parca-tkfiil son */

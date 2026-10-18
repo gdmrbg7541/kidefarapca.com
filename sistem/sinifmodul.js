@@ -582,6 +582,7 @@
     veriVar: function (s) {
       var n = TK_DERS_9_10[String(s)] || 0;
       if (!n && window.TKOrtaokul && window.TKOrtaokul.dersSayisi) n = window.TKOrtaokul.dersSayisi(s);
+      if (n) n += 1;               /* + «Fiil Çekimi» dersi (oyunlar/tk_fiil.js, 18.10.2026) */
       return n ? { rozet: n + ' Ders Hazır' } : null;
     },
     url: function (s) {

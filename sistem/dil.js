@@ -88,7 +88,7 @@
      dil/*.js dosyalarının içeriğinden hesaplayıp aşağıdaki satırı
      yeniler; ELLE DÜZENLENMEZ. Yeni çeviri yüklenince tarayıcı
      önbellekteki eski sözlüğü açmıyor. */
-  var SURUM = {/* @dil-surum */'ar':'566946f4','az':'831addce','bn':'9695dcc3','bs':'16471c09','ckb':'a6148a4e','de':'114cffe6','en':'69c6d53a','es':'6d6bb44e','fa':'183f15f3','fr':'38487654','hi':'8e03b3fe','id':'e20c1ea2','kmr-arab':'d9ea64f2','ms':'a0db4247','ps':'fded6f64','ru':'1c35c5de','sq':'5d6eb0c4','ur':'ee97a7ac','uz':'12f2ccaf','zh':'ac572232'};
+  var SURUM = {/* @dil-surum */'ar':'1abb1932','az':'6b1c75c2','bn':'4278db89','bs':'3eedbe9e','ckb':'7abe1945','de':'3514c1e0','en':'856ee9b8','es':'41d3c3e1','fa':'bfa5faa5','fr':'a2b7cf20','hi':'d7cb830b','id':'40aeffdc','kmr-arab':'1a41e027','ms':'835a913e','ps':'139f1e3a','ru':'f537f98b','sq':'cbf24796','ur':'2d1dabc9','uz':'d1fad6e5','zh':'cfa132a4'};
   var EV = 'kidef:dil';
 
   /* --------------------------------------------------------- diller
@@ -604,27 +604,23 @@
     var kart = document.querySelector('.kd-dil-kart');
     if (kart) kartDoldur(kart);
   }
-  /* Düğmenin yeri: anasayfada başlık çubuğu; sayfa kendi yerini
-     vermişse #kdDilYuva; ikisi de yoksa sol alt köşedeki yüzen düğme.
-     <body data-kd-dil="yok"> diyen sayfada düğme konmaz. */
+  /* DİL YALNIZ ANASAYFADAN SEÇİLİR (18.10.2026) — öğretmen: "dil seçimi
+     sadece index ten seçilebilsin, index ten seçildikten sonra index e ve
+     indexe bağlı sayfalara bağlı dosyaların hepsi aynı dile geçsin, örneğin
+     şuan test kapışmasında, kamusta ve diğer bazı dosyalarda dil
+     seçilemesin sadece index te".
+     Öbür sayfalarda dil düğmesi (eskiden sol alttaki yüzen düğme) ve ilk
+     ziyaret önerisi ÇIKMAZ. Anasayfada (ya da profilde) seçilen dil
+     localStorage 'kidef_dil'de durur; her sayfa açılırken onu uygular,
+     açık sekmeler de anında geçer (sekmeleriDinle). Adresteki ?dil= de
+     eskisi gibi geçerli. Anasayfa = #home-hub-section'ı olan sayfa
+     (index.html; tahtadaki çerçevede açılan index de). */
+  function anaSayfaMi() {
+    return !!document.getElementById('home-hub-section');
+  }
   function tusYeri() {
-    var y = document.querySelector('header .user-controls') ||
-            document.getElementById('kdDilYuva');
-    if (y) return y;
-    if (!document.body || document.body.getAttribute('data-kd-dil') === 'yok') return null;
-    /* Köşe düğmesi YALNIZ çevrilecek yazısı olan sayfada çıkar: henüz
-       işaretlenmemiş sayfada düğme görünüp hiçbir şeyi değiştirmesin.
-       Yazıyı JS sonradan basıyorsa basla()'nın gecikmeli tusKur()
-       çağrısı düğmeyi o zaman koyar. */
-    if (!document.querySelector('[data-i18n],[data-i18n-title],[data-i18n-ph],' +
-                                '[data-i18n-aria],[data-i18n-html],[data-i18n-alt]')) return null;
-    var k = document.getElementById('kdDilKose');
-    if (!k) {
-      k = document.createElement('div');
-      k.id = 'kdDilKose';
-      document.body.appendChild(k);
-    }
-    return k;
+    if (!anaSayfaMi()) return null;
+    return document.querySelector('header .user-controls') || document.getElementById('kdDilYuva');
   }
 
   function tusKur() {
@@ -749,6 +745,7 @@
      değilse teklif edilir. Kendiliğinden değiştirmiyor. Yazı önerilen
      dilin KENDİ dilinde: sözlüğü sessizce yükleniyor. */
   function oneriKur() {
+    if (!anaSayfaMi()) return;                 /* öneri de yalnız anasayfada (18.10.2026) */
     if (oku() || adresDili() || oku2(ONERI) === 'yok') return;
     var k = tarayiciDili();
     if (!k || !document.body) return;

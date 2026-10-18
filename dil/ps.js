@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['ps'] = Object.assign(window.KIDEF_DIL['ps'] || {}, {
   'th.tam_dokun': 'د بشپړې پردې لپاره یو ځل پرده لمس کړه'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['ps'] = Object.assign(window.KIDEF_DIL['ps'] || {}, {
+  'tk.d_fiil': 'د فعل ګردان',
+  'tk.f_alt': '{n} فعلونه',
+  'tk.f_k_emir': 'هلک / نجلۍ ته امر',
+  'tk.f_k_tekil': 'مفرد',
+  'tk.f_k_tekilbiz': 'مفرد + موږ',
+  'tk.f_k_tam': 'بشپړ ګردان',
+  'tk.f_mazi': 'تېر مهال',
+  'tk.f_muzari': 'اوسنی مهال',
+  'tk.f_gelecek': 'راتلونکی مهال',
+  'tk.f_emir': 'امر',
+  'tk.f_nehiy': 'نهي',
+  'tk.f_s_cekim': 'کومه بڼه سمه ده؟',
+  'tk.f_s_zamir': 'له کوم ضمیر سره راځي؟',
+  'tk.f_s_tr': 'په ترکي یې مانا کومه ده؟',
+  'tk.f_s_ar': 'په عربي کومه ده؟'
+});
+/* @dil-parca-tkfiil son */

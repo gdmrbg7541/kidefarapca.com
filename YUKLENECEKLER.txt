@@ -12702,3 +12702,28 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       ekranında da). Yansıtma başlarken bir kez kendiliğinden denenir.
   Betik: _kaynak/uretici/tahtaTamTus.py · kaynak ve deneme: _kaynak/tahta-tam-tus/
   Yedek: _kaynak/yedekler/2026-10-18-tahta-tam-tus/
+
+18.10.2026 (akşam, 10) — DİL YALNIZ ANASAYFADAN SEÇİLİR
+  sistem/dil.js       dil düğmesi yalnız anasayfanın başlığında (telefonda çekmecede) ve
+                      profildeki dil kartında; öbür sayfalardaki sol alt köşe düğmesi ve ilk
+                      ziyaret önerisi kalktı (Test Kapışması, Kamus, oyunlar…). Anasayfada
+                      seçilen dil her sayfada uygulanır, açık sekmeler de anında geçer.
+  Damgalar: dil.js'i yükleyen bütün sayfalar (surumle.py).
+  Betik: _kaynak/uretici/dilYalnizIndex.py · Yedek: _kaynak/yedekler/2026-10-18-dil-yalniz-index/
+
+18.10.2026 (akşam, 11) — TEST KAPIŞMASI · FİİL ÇEKİMİ (5-10. sınıf)
+  oyunlar/tk_fiil.js  YENİ — her sınıfa «Fiil Çekimi» dersi; sorular o sınıfın kitabındaki
+                      fiillerden ve kitabın işlediği kişilerden üretilir (kitapta olmayan kişi
+                      şıkta bile çıkmaz). 5: 6 fiil, emir erkeğe/kıza · 6: 8 fiil, tekil ·
+                      7: 10 fiil, tekil+biz · 8: 12 fiil, tekil+biz, emir · 9: 12 fiil, yalnız
+                      tekil · 10: 16 fiil, tam çekim (ikil/çoğul), gelecek, emir, nehiy.
+                      6. ve 7. sınıfta seçili kitap yılına göre değişir. Dört soru türü:
+                      zamir→çekim, çekim→zamir, çekim→Türkçe, Türkçe→çekim.
+  oyunlar/testkapismasi.js  ders her sınıfın listesinin sonunda; tek kişilikte 10 soru,
+                      iki kişilikte ayardaki soru sayısı (havuz 40).
+  testkapismasi.html  tk_fiil.js betik satırı · oyunlar/tk_liste.js derse animasyonlu simge
+  sistem/sinifmodul.js  index sınıf kartında Test Kapışması ders sayısı +1
+  dil/*.js            15 yeni anahtar, 20 dil (dilSozlukEkleFiil.py)
+  Damgalar: surumle.py (101 sayfa; dil.js sözlük tablosu)
+  Betik: _kaynak/uretici/tkFiil.py · kaynak, üretici ve denemeler: _kaynak/tk-fiil/ (OKU.txt)
+  Yedek: _kaynak/yedekler/2026-10-18-tk-fiil/

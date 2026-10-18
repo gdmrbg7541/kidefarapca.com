@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['hi'] = Object.assign(window.KIDEF_DIL['hi'] || {}, {
   'th.tam_dokun': 'पूरी स्क्रीन के लिए स्क्रीन को एक बार छुएँ'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['hi'] = Object.assign(window.KIDEF_DIL['hi'] || {}, {
+  'tk.d_fiil': 'क्रिया के रूप',
+  'tk.f_alt': '{n} क्रियाएँ',
+  'tk.f_k_emir': 'लड़के / लड़की को आज्ञा',
+  'tk.f_k_tekil': 'एकवचन',
+  'tk.f_k_tekilbiz': 'एकवचन + हम',
+  'tk.f_k_tam': 'पूरे रूप',
+  'tk.f_mazi': 'भूतकाल',
+  'tk.f_muzari': 'वर्तमान काल',
+  'tk.f_gelecek': 'भविष्य काल',
+  'tk.f_emir': 'आज्ञार्थ',
+  'tk.f_nehiy': 'निषेध आज्ञा',
+  'tk.f_s_cekim': 'सही रूप कौन-सा है?',
+  'tk.f_s_zamir': 'यह किस सर्वनाम के साथ आता है?',
+  'tk.f_s_tr': 'इसका तुर्की अर्थ कौन-सा है?',
+  'tk.f_s_ar': 'इसका अरबी रूप कौन-सा है?'
+});
+/* @dil-parca-tkfiil son */

@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['kmr-arab'] = Object.assign(window.KIDEF_DIL['kmr-arab'] || {},
   'th.tam_dokun': 'بۆ تەمامیا شاشێ، جارەکێ دەستێ خۆ ل شاشێ بدە'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['kmr-arab'] = Object.assign(window.KIDEF_DIL['kmr-arab'] || {}, {
+  'tk.d_fiil': 'تەواندنا لێکەران',
+  'tk.f_alt': '{n} لێکەر',
+  'tk.f_k_emir': 'فەرمان بۆ کوڕ / کچێ',
+  'tk.f_k_tekil': 'یەکژمار',
+  'tk.f_k_tekilbiz': 'یەکژمار + ئەم',
+  'tk.f_k_tam': 'تەواندنا تەمام',
+  'tk.f_mazi': 'دەمێ بۆری',
+  'tk.f_muzari': 'دەمێ نوکە',
+  'tk.f_gelecek': 'دەمێ بێت',
+  'tk.f_emir': 'فەرمان',
+  'tk.f_nehiy': 'فەرمانا نەرێنی',
+  'tk.f_s_cekim': 'کیژ شێوە دروستە؟',
+  'tk.f_s_zamir': 'دگەل کیژ جهناڤێ تێتە بکارئینان؟',
+  'tk.f_s_tr': 'واتەیا وێ ب تورکی کیژە؟',
+  'tk.f_s_ar': 'ب عەرەبی کیژە؟'
+});
+/* @dil-parca-tkfiil son */

@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['bs'] = Object.assign(window.KIDEF_DIL['bs'] || {}, {
   'th.tam_dokun': 'Dodirni ekran jednom za prikaz preko cijelog ekrana'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['bs'] = Object.assign(window.KIDEF_DIL['bs'] || {}, {
+  'tk.d_fiil': 'Konjugacija glagola',
+  'tk.f_alt': 'glagola: {n}',
+  'tk.f_k_emir': 'imperativ dječaku / djevojčici',
+  'tk.f_k_tekil': 'jednina',
+  'tk.f_k_tekilbiz': 'jednina + mi',
+  'tk.f_k_tam': 'potpuna konjugacija',
+  'tk.f_mazi': 'prošlo vrijeme',
+  'tk.f_muzari': 'sadašnje vrijeme',
+  'tk.f_gelecek': 'buduće vrijeme',
+  'tk.f_emir': 'imperativ',
+  'tk.f_nehiy': 'zabrana (negativni imperativ)',
+  'tk.f_s_cekim': 'Koji je oblik tačan?',
+  'tk.f_s_zamir': 'Uz koju se zamjenicu koristi?',
+  'tk.f_s_tr': 'Šta znači na turskom?',
+  'tk.f_s_ar': 'Kako je na arapskom?'
+});
+/* @dil-parca-tkfiil son */

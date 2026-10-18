@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['id'] = Object.assign(window.KIDEF_DIL['id'] || {}, {
   'th.tam_dokun': 'Sentuh layar sekali untuk layar penuh'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['id'] = Object.assign(window.KIDEF_DIL['id'] || {}, {
+  'tk.d_fiil': 'Konjugasi Kata Kerja',
+  'tk.f_alt': '{n} kata kerja',
+  'tk.f_k_emir': 'perintah untuk laki-laki / perempuan',
+  'tk.f_k_tekil': 'tunggal',
+  'tk.f_k_tekilbiz': 'tunggal + kami',
+  'tk.f_k_tam': 'konjugasi lengkap',
+  'tk.f_mazi': 'lampau',
+  'tk.f_muzari': 'sekarang',
+  'tk.f_gelecek': 'masa depan',
+  'tk.f_emir': 'perintah',
+  'tk.f_nehiy': 'larangan',
+  'tk.f_s_cekim': 'Bentuk mana yang benar?',
+  'tk.f_s_zamir': 'Dipakai dengan kata ganti apa?',
+  'tk.f_s_tr': 'Apa artinya dalam bahasa Turki?',
+  'tk.f_s_ar': 'Mana bahasa Arabnya?'
+});
+/* @dil-parca-tkfiil son */

@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['fa'] = Object.assign(window.KIDEF_DIL['fa'] || {}, {
   'th.tam_dokun': 'برای تمام‌صفحه، یک بار صفحه را لمس کن'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['fa'] = Object.assign(window.KIDEF_DIL['fa'] || {}, {
+  'tk.d_fiil': 'صرف فعل',
+  'tk.f_alt': '{n} فعل',
+  'tk.f_k_emir': 'امر به پسر / دختر',
+  'tk.f_k_tekil': 'مفرد',
+  'tk.f_k_tekilbiz': 'مفرد + ما',
+  'tk.f_k_tam': 'صرف کامل',
+  'tk.f_mazi': 'ماضی (گذشته)',
+  'tk.f_muzari': 'مضارع (حال)',
+  'tk.f_gelecek': 'آینده',
+  'tk.f_emir': 'امر',
+  'tk.f_nehiy': 'نهی',
+  'tk.f_s_cekim': 'کدام صیغه درست است؟',
+  'tk.f_s_zamir': 'با کدام ضمیر به کار می‌رود؟',
+  'tk.f_s_tr': 'معنای ترکی آن کدام است؟',
+  'tk.f_s_ar': 'معادل عربی آن کدام است؟'
+});
+/* @dil-parca-tkfiil son */

@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['ms'] = Object.assign(window.KIDEF_DIL['ms'] || {}, {
   'th.tam_dokun': 'Sentuh skrin sekali untuk skrin penuh'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['ms'] = Object.assign(window.KIDEF_DIL['ms'] || {}, {
+  'tk.d_fiil': 'Konjugasi Kata Kerja',
+  'tk.f_alt': '{n} kata kerja',
+  'tk.f_k_emir': 'suruhan kepada lelaki / perempuan',
+  'tk.f_k_tekil': 'tunggal',
+  'tk.f_k_tekilbiz': 'tunggal + kami',
+  'tk.f_k_tam': 'konjugasi lengkap',
+  'tk.f_mazi': 'lampau',
+  'tk.f_muzari': 'kini',
+  'tk.f_gelecek': 'masa hadapan',
+  'tk.f_emir': 'suruhan',
+  'tk.f_nehiy': 'larangan',
+  'tk.f_s_cekim': 'Bentuk manakah yang betul?',
+  'tk.f_s_zamir': 'Digunakan dengan kata ganti nama apa?',
+  'tk.f_s_tr': 'Apakah maksudnya dalam bahasa Turki?',
+  'tk.f_s_ar': 'Manakah bahasa Arabnya?'
+});
+/* @dil-parca-tkfiil son */

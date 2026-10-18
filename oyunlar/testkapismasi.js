@@ -357,6 +357,8 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
                     wordsForGame = Utils.shuffleArray(words);
                     /* 5-8. sınıf dersleri 21-127 kelime: her oyunda rastgele 20 soru */
                     if (this.ortaokulDersMi(selectedLessonId)) wordsForGame = wordsForGame.slice(0, 20);
+                    /* fiil çekimi: 40'lık havuzdan 10 soru (soru başına 10 puan) */
+                    if (this.fiilDersMi(selectedLessonId)) wordsForGame = wordsForGame.slice(0, 10);
                 } else {
                     /* SORU SAYISI AYARDAN (07.10.2026) — eskiden 5'te sabitti. */
                     const questionCount = KapAyar.oku().soru;
@@ -406,9 +408,12 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
             /* 5-8. SINIF (oyunlar/tk_ortaokul.js): Harflerin ardından, 9. sınıftan
                önce. Kilit zincirinde yoklar, HEP AÇIKLAR. */
             const ortaDersler = window.TKOrtaokul ? window.TKOrtaokul.dersler() : [];
-            const gosterimSirasi = alfabeIds.filter(id => allLessonIds.includes(id))
+            /* FİİL ÇEKİMİ (oyunlar/tk_fiil.js, 18.10.2026): her sınıfın «Fiil Çekimi»
+               dersi o sınıfın derslerinin ARDINA konur (ders listesi bir sınıfı tek
+               bölümde topluyor; araya giren ders ikinci bir bölüm açardı). */
+            const gosterimSirasi = this.fiilYerlestir(alfabeIds.filter(id => allLessonIds.includes(id))
                 .concat(ortaDersler.map(d => d.id))
-                .concat(allLessonIds.filter(id => !alfabeIds.includes(id)));
+                .concat(allLessonIds.filter(id => !alfabeIds.includes(id))));
             /* SINIF KARTI (index → İmam Hatip → N. Sınıf → Test Kapışması):
                ?sinif=N ile gelinince listede YALNIZ o sınıfın dersleri. O sınıfın
                dersi yoksa süzgeç yok sayılır, bütün liste gelir. */
@@ -421,11 +426,13 @@ lesson2: { description: { tr: "Sağlıklı Beslenme" }, words: [ { id: 716, arab
                  const alfabeDers = window.TKAlfabe
                      ? window.TKAlfabe.dersler.find(d => d.id === lessonId) : null;
                  const ortaDers = window.TKOrtaokul ? window.TKOrtaokul.bul(lessonId) : null;
+                 const fiilDers = window.TKFiil ? window.TKFiil.bul(lessonId) : null;
                  /* 21.09.2026: BÜTÜN KİLİTLER KALDIRILDI (öğretmen kararı) — tek kişilikte de
                     her ders seçilebilir. İlerleme yine kaydediliyor (unlockNextLesson). */
                  const isUnlocked = true;
                  const parts = lessonId.split('-'); const gradeKey = parts[0]; const unitKey = parts[1]; const lessonKey = parts[2];
                  const lessonDesc = alfabeDers ? kdMetin(alfabeDers.k || '', alfabeDers.ad) : ortaDers ? ortaDers.ad
+                     : fiilDers ? fiilDers.ad
                      : (Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.description?.tr || lessonKey);
 const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görünür
                  const option = document.createElement('option');
@@ -434,6 +441,9 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                  if (ortaDers) {
                      option.dataset.grup = 'g' + ortaDers.sinif;
                      option.dataset.alt = ortaDers.unite + '. Ünite · ' + ortaDers.uniteAd;
+                 } else if (fiilDers) {
+                     option.dataset.grup = 'g' + fiilDers.sinif;
+                     option.dataset.alt = fiilDers.alt;
                  } else if (!alfabeDers) {
                      const u = Data[gradeKey]?.words[unitKey];
                      if (u) option.dataset.alt = [u.title?.tr, u.description?.tr].filter(Boolean).join(' · ');
@@ -456,6 +466,19 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
         alfabeHavuz: {},
         yeniAlfabeHavuzu() { this.alfabeHavuz = {}; },
         ortaokulDersMi(lessonId) { return !!(window.TKOrtaokul && window.TKOrtaokul.mi(lessonId)); },
+        /* FİİL ÇEKİMİ dersi mi (oyunlar/tk_fiil.js) */
+        fiilDersMi(lessonId) { return !!(window.TKFiil && window.TKFiil.mi(lessonId)); },
+        /* Her sınıfın fiil dersini, o sınıfın listedeki son dersinin hemen ardına koyar. */
+        fiilYerlestir(liste) {
+            if (!window.TKFiil) return liste;
+            const r = liste.slice();
+            window.TKFiil.dersler().forEach(d => {
+                let son = -1;
+                r.forEach((id, i) => { if (this.dersSinifi(id) === d.sinif) son = i; });
+                if (son >= 0) r.splice(son + 1, 0, d.id); else r.push(d.id);
+            });
+            return r;
+        },
         /* ?sinif=N (5-10): sınıf kartından gelindiyse o sınıf, yoksa 0 */
         sinifFiltresi() {
             const m = /[?&]sinif=(\d+)/.exec(location.search || '');
@@ -465,6 +488,8 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
         dersSinifi(lessonId) {
             const o = window.TKOrtaokul ? window.TKOrtaokul.bul(lessonId) : null;
             if (o) return o.sinif;
+            const f = window.TKFiil ? window.TKFiil.bul(lessonId) : null;
+            if (f) return f.sinif;
             const m = /^grade(\d+)-/.exec(String(lessonId || ''));
             return m ? parseInt(m[1], 10) : 0;
         },
@@ -477,6 +502,12 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                 return this.alfabeHavuz[lessonId];
             }
             if (this.ortaokulDersMi(lessonId)) return window.TKOrtaokul.kelimeler(lessonId);
+            /* FİİL ÇEKİMİ: alfabe gibi anında üretilir, bir oyun boyunca aynı havuz.
+               40 soru: iki kişilik «farklı sorular» 2×15'e yetsin; tek kişilikte 10'u. */
+            if (this.fiilDersMi(lessonId)) {
+                if (!this.alfabeHavuz[lessonId]) this.alfabeHavuz[lessonId] = window.TKFiil.uret(lessonId, 40);
+                return this.alfabeHavuz[lessonId];
+            }
             try { const parts = lessonId.split('-'); const gradeKey = parts[0]; const unitKey = parts[1]; const lessonKey = parts[2]; return Data[gradeKey]?.words[unitKey]?.lessons[lessonKey]?.words || []; } catch (e) { console.error("Kelime alınırken hata:", e); return []; } },
         getAllWords() { return Object.values(Data).flatMap(grade => Object.values(grade.words).flatMap(unit => Object.values(unit.lessons).flatMap(lesson => lesson.words || []))); },
         initNavigation() {
@@ -566,7 +597,7 @@ const optionText = lessonDesc; // Sadece "Selamlaşma", "Tanışma" vb. görün�
                      const words = App.getWords(App.state.selectedLessonId);
                      const questionCount = words.length; if(words.length < 4) { App.showScreen('start-screen'); return; }
                      const karisik = Utils.shuffleArray(words);   /* 5-8 dersi: yine rastgele 20 soru */
-                     QuizGame.start(App.ortaokulDersMi(App.state.selectedLessonId) ? karisik.slice(0, 20) : karisik, 1); App.showScreen('quiz-screen');
+                     QuizGame.start(App.ortaokulDersMi(App.state.selectedLessonId) ? karisik.slice(0, 20) : App.fiilDersMi(App.state.selectedLessonId) ? karisik.slice(0, 10) : karisik, 1); App.showScreen('quiz-screen');
                  };
                  resultsScreen.querySelector('#back-to-start-btn').onclick = () => { App.playSound('menuClick'); App.showScreen('start-screen'); };
 

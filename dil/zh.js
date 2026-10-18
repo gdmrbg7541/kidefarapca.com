@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['zh'] = Object.assign(window.KIDEF_DIL['zh'] || {}, {
   'th.tam_dokun': '轻触屏幕一次即可全屏'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['zh'] = Object.assign(window.KIDEF_DIL['zh'] || {}, {
+  'tk.d_fiil': '动词变位',
+  'tk.f_alt': '{n} 个动词',
+  'tk.f_k_emir': '对男生 / 女生的命令式',
+  'tk.f_k_tekil': '单数',
+  'tk.f_k_tekilbiz': '单数 + 我们',
+  'tk.f_k_tam': '完整变位',
+  'tk.f_mazi': '过去时',
+  'tk.f_muzari': '现在时',
+  'tk.f_gelecek': '将来时',
+  'tk.f_emir': '命令式',
+  'tk.f_nehiy': '否定命令式',
+  'tk.f_s_cekim': '哪个形式正确？',
+  'tk.f_s_zamir': '与哪个代词搭配？',
+  'tk.f_s_tr': '土耳其语意思是哪个？',
+  'tk.f_s_ar': '阿拉伯语是哪个？'
+});
+/* @dil-parca-tkfiil son */

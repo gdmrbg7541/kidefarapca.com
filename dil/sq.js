@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['sq'] = Object.assign(window.KIDEF_DIL['sq'] || {}, {
   'th.tam_dokun': 'Prek ekranin një herë për ekran të plotë'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['sq'] = Object.assign(window.KIDEF_DIL['sq'] || {}, {
+  'tk.d_fiil': 'Zgjedhimi i foljeve',
+  'tk.f_alt': '{n} folje',
+  'tk.f_k_emir': 'urdhërore për djalë / vajzë',
+  'tk.f_k_tekil': 'njëjës',
+  'tk.f_k_tekilbiz': 'njëjës + ne',
+  'tk.f_k_tam': 'zgjedhim i plotë',
+  'tk.f_mazi': 'koha e shkuar',
+  'tk.f_muzari': 'koha e tashme',
+  'tk.f_gelecek': 'koha e ardhme',
+  'tk.f_emir': 'urdhërore',
+  'tk.f_nehiy': 'urdhërore mohore',
+  'tk.f_s_cekim': 'Cila formë është e saktë?',
+  'tk.f_s_zamir': 'Me cilin përemër përdoret?',
+  'tk.f_s_tr': 'Cili është kuptimi në turqisht?',
+  'tk.f_s_ar': 'Cila është në arabisht?'
+});
+/* @dil-parca-tkfiil son */

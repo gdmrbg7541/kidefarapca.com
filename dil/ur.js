@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['ur'] = Object.assign(window.KIDEF_DIL['ur'] || {}, {
   'th.tam_dokun': 'پوری اسکرین کے لیے اسکرین کو ایک بار چھوئیں'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['ur'] = Object.assign(window.KIDEF_DIL['ur'] || {}, {
+  'tk.d_fiil': 'فعل کی گردان',
+  'tk.f_alt': '{n} افعال',
+  'tk.f_k_emir': 'لڑکے / لڑکی کو امر',
+  'tk.f_k_tekil': 'واحد',
+  'tk.f_k_tekilbiz': 'واحد + ہم',
+  'tk.f_k_tam': 'مکمل گردان',
+  'tk.f_mazi': 'ماضی',
+  'tk.f_muzari': 'مضارع (حال)',
+  'tk.f_gelecek': 'مستقبل',
+  'tk.f_emir': 'امر',
+  'tk.f_nehiy': 'نہی',
+  'tk.f_s_cekim': 'درست صیغہ کون سا ہے؟',
+  'tk.f_s_zamir': 'یہ کس ضمیر کے ساتھ آتا ہے؟',
+  'tk.f_s_tr': 'اس کا ترکی مطلب کون سا ہے؟',
+  'tk.f_s_ar': 'اس کی عربی کون سی ہے؟'
+});
+/* @dil-parca-tkfiil son */

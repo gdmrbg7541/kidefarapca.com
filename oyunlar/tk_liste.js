@@ -629,6 +629,15 @@ function kdDil() {
         'grup-g8':
             '<circle class="tka-rozet" cx="24" cy="24" r="17" fill="#27AE60"/><circle cx="24" cy="24" r="21" fill="none" stroke="#27AE60" stroke-width="2" stroke-dasharray="4 4" class="tka-halka"/>' +
             '<text x="24" y="31" text-anchor="middle" font-size="19" font-weight="700" fill="#fff" font-family="Rubik,sans-serif">8</text>',
+        /* --- FİİL ÇEKİMİ (oyunlar/tk_fiil.js) — her sınıfta aynı simge --- */
+        'fiil':                      /* «فَعَلَ» kartı; köşede çekim eki «تُ» belirir, alttaki üç nokta sırayla yanar */
+            '<rect x="3" y="9" width="38" height="31" rx="7" fill="#EDE7F6" stroke="#7E57C2" stroke-width="1.8"/>' +
+            '<text x="22" y="29" text-anchor="middle" font-size="16" fill="#4527A0" ' + AR + '>فَعَلَ</text>' +
+            '<circle class="tkg-yanip" style="--t:1.5s;--m:.2" cx="15" cy="35" r="1.8" fill="#7E57C2"/>' +
+            '<circle class="tkg-yanip" style="--t:1.5s;--m:.2;--g:-1s" cx="22" cy="35" r="1.8" fill="#7E57C2"/>' +
+            '<circle class="tkg-yanip" style="--t:1.5s;--m:.2;--g:-.5s" cx="29" cy="35" r="1.8" fill="#7E57C2"/>' +
+            '<g class="tkg-belir" style="--t:2.8s"><circle cx="39" cy="11" r="7.5" fill="#F39C12"/>' +
+            '<text x="39" y="15.5" text-anchor="middle" font-size="11" fill="#fff" ' + AR + '>تُ</text></g>',
         /* --- GRUP BAŞLIKLARI --- */
         'grup-harf':
             '<rect x="3" y="7" width="20" height="30" rx="6" fill="#FFF1CF" stroke="#F39C12" stroke-width="2"/>' +
@@ -655,7 +664,7 @@ function kdDil() {
     S['ortaokul-6_3_1'] = S['grade10-unit7-lesson1'];          /* Vücut Organları */
 
     function ikon(id, sinif) {
-        var ic = S[id] || S.varsayilan;
+        var ic = S[id] || (/^fiil-\d+$/.test(id) ? S.fiil : '') || S.varsayilan;
         return '<svg class="tki ' + (sinif || '') + '" viewBox="0 0 48 48" aria-hidden="true" focusable="false">' + ic + '</svg>';
     }
     var KILIT = '<svg class="tkl-kilit" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="#95A5A6"/>' +

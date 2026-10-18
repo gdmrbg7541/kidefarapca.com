@@ -1925,3 +1925,24 @@ window.KIDEF_DIL['bn'] = Object.assign(window.KIDEF_DIL['bn'] || {}, {
   'th.tam_dokun': 'পুরো পর্দার জন্য পর্দা একবার ছুঁয়ে দিন'
 });
 /* @dil-parca-tahta son */
+
+/* @dil-parca-tkfiil */
+/* Test Kapışması · Fiil Çekimi */
+window.KIDEF_DIL['bn'] = Object.assign(window.KIDEF_DIL['bn'] || {}, {
+  'tk.d_fiil': 'ক্রিয়ার রূপ',
+  'tk.f_alt': '{n}টি ক্রিয়া',
+  'tk.f_k_emir': 'ছেলেকে / মেয়েকে আদেশ',
+  'tk.f_k_tekil': 'একবচন',
+  'tk.f_k_tekilbiz': 'একবচন + আমরা',
+  'tk.f_k_tam': 'সম্পূর্ণ রূপ',
+  'tk.f_mazi': 'অতীত কাল',
+  'tk.f_muzari': 'বর্তমান কাল',
+  'tk.f_gelecek': 'ভবিষ্যৎ কাল',
+  'tk.f_emir': 'অনুজ্ঞা',
+  'tk.f_nehiy': 'নিষেধাজ্ঞা',
+  'tk.f_s_cekim': 'সঠিক রূপ কোনটি?',
+  'tk.f_s_zamir': 'কোন সর্বনামের সঙ্গে বসে?',
+  'tk.f_s_tr': 'এর তুর্কি অর্থ কোনটি?',
+  'tk.f_s_ar': 'এর আরবি কোনটি?'
+});
+/* @dil-parca-tkfiil son */
