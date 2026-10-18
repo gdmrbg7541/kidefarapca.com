@@ -934,6 +934,7 @@
         gosterildi = true;
         bolum.__govde = 'gercek';
         okulIcineKoy(bolum);
+        otoAc(bolum);                  /* 18.10: sınıfı olana açık başla */
     }
 
     /* Panelin üstünde duran kısa şerit: neyin açık neyin kapalı olduğunu
@@ -1199,6 +1200,7 @@
                 if (_b && !_b.classList.contains('gor') && gorunurMu()) ciz();
             } catch (e) { }
             if (gosterildi && !gorunurMu()) gizle();
+            try { otoAc(); } catch (e) { }        /* sınıflar buluttan geç gelirse */
         } catch (e) { }
     }, 1200);
 
@@ -1226,9 +1228,35 @@
 
     function kapaliMi() { return kapali; }
 
+    /* KURUMU VE SINIFI OLANA AÇIK (18.10.2026) — öğretmen: "artık giriş
+       yapanlarda sınıflarım kategorisinde kurum ve sınıf eklemişse okul
+       svg si açık olsun, akordiyon sistemi açık olsun". Giriş yapmış ve
+       en az bir sınıfı olan öğretmende kategori AÇIK başlar: okul paneli
+       (kurumlar ve sınıf kartları) hemen görünür. Sınıfı olmayan, giriş
+       yapmamış ya da çıkış yapmış (salt görünüm) için 07.10 kuralı aynen:
+       kapalı başlar. Sınıflar buluttan geç gelirse geldiği an bir kez
+       açılır; öğretmen başlığa basıp kapatırsa o sayfa durdukça kapalı kalır. */
+    var elleKatlandi = false, otoAcildi = false;
+    function sinifiVarMi() {
+        var v = veriOku();
+        if (!v) return false;
+        for (var g in v.gruplar) if ((v.gruplar[g] || []).length) return true;
+        return false;
+    }
+    function otoAc(bolum) {
+        if (otoAcildi || elleKatlandi || !kapali) return;
+        if (!oturumVarMi() || !gorunurMu() || saltMi() || !sinifiVarMi()) return;
+        var b = bolum || document.getElementById(BOLUM_ID);
+        if (!b || b.__govde !== 'gercek') return;
+        otoAcildi = true;
+        kapali = false;
+        baslikDurum(b);
+    }
+
     function katla() {
         var b = document.getElementById(BOLUM_ID);
         if (!b) return;
+        elleKatlandi = true;           /* öğretmenin kendi tercihi: oto açma bir daha karışmaz */
         kapali = !kapali;
         baslikDurum(b);                /* gövdeye dokunulmuyor */
     }

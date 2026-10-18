@@ -12584,3 +12584,15 @@ SINIFTA YENİ + GALERİ: ana sayfada Sınıflarım'ın hemen altında (katalog �
   #guncellemeler. Öğrenciye Sınıflarım yine hiç görünmez.
 Yedekler: _kaynak/yedekler/2026-10-18-eba8, -yedinci-link, -yeni-galeri-sira.
 Ana sitenin gidecek boyutu: ~823 MiB.
+
+18.10.2026 (akşam) — DUYURU · SINIFLARIM AÇIK BAŞLIYOR
+  sistem/siniftayeni.js  "Sınıfta Yeni"ye ilk kayıt: "6-10. sınıfın ders kitapları
+                         sitede, sayfa sayfa" (sesler/videolar/etkinlikler düğmede,
+                         bölge büyütme, 8. sınıf etkinlikleri EBA'sız). Sınıfta Yeni
+                         + Galeri zaten yalnız giriş yapana görünüyor.
+  sistem/siniflarim.js   giriş yapmış, en az bir sınıfı olan öğretmende Sınıflarım
+                         AÇIK başlar (okul çizimi ve sınıf kartları hemen görünür);
+                         sınıfı olmayan, misafir ve çıkış yapmışta eskisi gibi kapalı.
+                         Sınıflar buluttan geç gelirse geldiği an bir kez açılır;
+                         öğretmen kapatırsa sayfa durdukça kapalı kalır.
+  Yedek: _kaynak/yedekler/2026-10-18-duyuru-siniflarim/

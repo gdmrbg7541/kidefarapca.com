@@ -26,6 +26,15 @@
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
 
+  { t: '2026-10-18', e: 'Dijital kitap', b: '6-10. sınıfın ders kitapları sitede, sayfa sayfa',
+    m: '6, 7, 8, 9 ve 10. sınıfın ders kitabı artık sitede sayfa çevirmeli olarak açılıyor: '
+     + 'İmam Hatip bölümünde sınıfının ilk kartı «Ders Kitabı». Kitaptaki karekodların sesleri, '
+     + 'videoları ve etkinlikleri sayfanın üstünde düğme olarak duruyor; telefonla karekod '
+     + 'okutmadan tahtada dinletir, izletirsin. Yazı küçük kalırsa sayfanın bir bölgesine dokun, '
+     + 'o bölge tahtayı doldurur. 8. sınıf kitabının etkinlikleri de EBA\'ya gitmeden kitabın '
+     + 'içinde açılıyor: sınıf tahtada çözüyor, «Kontrol et» hemen gösteriyor, cevap anahtarı '
+     + 'tek dokunuşta.' },
+
   { t: '2026-10-17', e: 'Akıllı tahta', g: 'tahta', b: 'Masandan kalkmadan tahtayı yönet',
     m: 'Bilgisayarında başlıktaki ekran simgesinden "Bu bilgisayardan yansıt"ı, tahtada aynı '
      + 'hesapla "Bu cihaz tahta"yı seç. Telefonla daha da kısa: tahtadaki giriş karekodunu '
