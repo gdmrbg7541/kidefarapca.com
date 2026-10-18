@@ -31,8 +31,9 @@
      "Tahtadan da kullan" kapatılırsa tahta yalnız gösterir (dokunmak bir
      şey değiştirmez; dokununca küçük durum penceresi açılır).
    · TAM EKRAN: tahta yansıtma başlayınca tam ekrana geçmeyi dener;
-     tarayıcı buna dokunmadan izin vermiyorsa ilk dokunuşta geçer ve kabuk
-     açık kaldıkça tam ekranda kalır (sonraki sayfalarda da). Öğretmen tam
+     tarayıcı buna dokunmadan izin vermiyorsa sol ortadaki soluk tuşla geçilir
+     (18.10.2026'ya dek ilk dokunuşta geçiyordu) ve kabuk açık kaldıkça tam
+     ekranda kalır (sonraki sayfalarda da). Öğretmen tam
      ekrandan kendisi çıkarsa o yansıtmada yeniden zorlanmaz. Tahtada
      "Ana ekrana ekle / Uygulamayı yükle" yapılırsa (tahta.webmanifest)
      oradan her açılışta kendiliğinden tam ekran açılır.
@@ -57,6 +58,17 @@
      durmaz. Ders sürerken tahtanın ekranı kararmaz (ekran uyanık kilidi);
      kumanda uykudayken en çok 90 dakika (iki ders) sonra tahtanın kendi
      ayarları ve 40 dakika kuralı yeniden işler.
+   · 18.10.2026 akşam: tahtada "tam ekran için dokun" uyarısı ve dokununca
+     tam ekrana geçme kalktı; sol ortadaki soluk tuş tam ekran değilken
+     "Tam ekrana geç", tam ekrandayken "Tam ekrandan çık".
+   · 5. SÜRÜM (18.10.2026) — AÇILIR SÖZLÜK VE GERİ TUŞU. Öğretmen: "kamusa
+     basınca popup şeklinde açıldı ama klavyeden yazınca akıllı tahtada
+     görünmedi ... sözlüğü kapatınca akıllı tahtada sadece siyah ekran
+     oluyor". (1) Sayfanın içindeki aynı site çerçeveleri (açılır sözlük)
+     de köprüleniyor: yazılan, tıklanan, kaydırılan tahtada da olur
+     (İÇ ÇERÇEVELER). (2) Bir sayfanın "Geri" tuşu tahtayı kabuktan
+     çıkarıp boş/siyah ekranda bırakıyordu; geçmiş artık yalnız çerçevenin
+     içinde gezer, tahta lideri adresle izler (GEÇMİŞ).
 
    TUTARLILIK
    · Rastgele karıştıran oyunlar iki cihazda aynı karışsın diye çerçevenin
@@ -203,7 +215,7 @@
     n.sort();
     return p + (n.length ? '|' + n.join('|') : '');
   }
-  function yolAl(el, belge) {
+  function yolAlTek(el, belge) {
     var p = [], e = el;
     while (e && e.nodeType === 1 && e !== belge.body && e !== belge.documentElement) {
       if (e.id && /^[A-Za-z][\w:.-]*$/.test(e.id) && belge.getElementById(e.id) === e) {
@@ -216,7 +228,7 @@
     }
     return { k: '^', p: p.reverse(), f: parmak(el) };
   }
-  function yolBul(y, belge) {
+  function yolBulTek(y, belge) {
     if (!y || !belge || !belge.body) return null;
     var kok = y.k === '^' ? belge.body : belge.getElementById(String(y.k).slice(1));
     if (!kok) return null;
@@ -231,7 +243,7 @@
     if (aday.length > 1) {
       var en = null, enPuan = -1;
       aday.forEach(function (a) {
-        var ay = yolAl(a, belge).p, puan = 0;
+        var ay = yolAlTek(a, belge).p, puan = 0;
         for (var k = 0; k < Math.min(ay.length, p.length); k++) { if (ay[k] === p[k]) puan++; else break; }
         if (puan > enPuan) { enPuan = puan; en = a; }
       });
@@ -239,7 +251,52 @@
     }
     return (e && e.tagName && e.tagName.toLowerCase() === etiket) ? e : null;
   }
-  function yolMetni(y) { return y ? (y.k + '/' + (y.p || []).join('.') + '/' + y.f) : 'b'; }
+  /* İÇ ÇERÇEVE (18.10.2026): öğe sayfanın içindeki bir çerçevedeyse (açılır
+     sözlük gibi, sitenin kendi sayfası) yolun başına çerçeve zinciri eklenir:
+     c = dıştan içe iframe yolları. Öbür cihaz önce o çerçeveyi, sonra öğeyi bulur. */
+  function icZincir(dd, belge) {
+    var z = [], d = dd, n = 0;
+    while (d && d !== belge) {
+      if (++n > 3) return null;
+      var fe = null;
+      try { fe = d.defaultView && d.defaultView.frameElement; } catch (e) { return null; }
+      if (!fe || !fe.ownerDocument) return null;
+      z.unshift(yolAlTek(fe, fe.ownerDocument));
+      d = fe.ownerDocument;
+    }
+    return d === belge ? z : null;
+  }
+  function yolAl(el, belge) {
+    var dd = el && el.ownerDocument;
+    if (dd && belge && dd !== belge) {
+      var z = icZincir(dd, belge);
+      if (z && z.length) { var y = yolAlTek(el, dd); y.c = z; return y; }
+    }
+    return yolAlTek(el, belge);
+  }
+  function icBelge(c, belge) {
+    var d = belge;
+    for (var i = 0; i < c.length; i++) {
+      var f = yolBulTek(c[i], d);
+      if (!f || f.tagName !== 'IFRAME') return null;
+      try { d = f.contentDocument; } catch (e) { return null; }
+      if (!d || !d.body) return null;
+    }
+    return d;
+  }
+  function yolBul(y, belge) {
+    if (y && y.c && y.c.length) { var d = icBelge(y.c, belge); return d ? yolBulTek(y, d) : null; }
+    return yolBulTek(y, belge);
+  }
+  function yolMetniTek(y) { return y.k + '/' + (y.p || []).join('.') + '/' + y.f; }
+  function yolMetni(y) {
+    if (!y) return 'b';
+    return (y.c && y.c.length ? y.c.map(yolMetniTek).join('>') + '>' : '') + yolMetniTek(y);
+  }
+  /* öğenin kendi penceresi (iç çerçevedeyse onunki) */
+  function penceresi(el, w) {
+    try { return (el && el.ownerDocument && el.ownerDocument.defaultView) || w; } catch (e) { return w; }
+  }
 
   /* yazı alanı mı, öbür cihaza gidebilir mi */
   function yaziAlani(el) {
@@ -404,8 +461,9 @@
 
   /* TAM EKRAN — tarayıcılar sayfanın kendi kendine tam ekrana geçmesine
      yalnız bir dokunuştan hemen sonra izin veriyor: yansıtma başlayınca
-     denenir, olmazsa tahtadaki ilk dokunuşta (çerçevenin içinde de) geçilir.
-     Kabuk hiç değişmediği için sonraki sayfalarda tam ekran sürer. */
+     denenir, olmazsa sol ortadaki soluk tuşla geçilir (eskiden tahtadaki
+     ilk dokunuşta). Kabuk hiç değişmediği için sonraki sayfalarda tam
+     ekran sürer. */
   var TAM = { istek: true, oldu: false };
   function tamEkranda() {
     if (document.fullscreenElement || document.webkitFullscreenElement) return true;
@@ -421,22 +479,21 @@
     } catch (e) { }
   }
   function tamEkranDene() { if (CIHAZ === 'tahta' && TAM.istek && !tamEkranda()) tamEkran(); }
-  var ipucuZ = null;
-  function ipucuGoster() {
-    if (CIHAZ !== 'tahta' || tamEkranda() || !TAM.istek) return;
-    var p = $('thIpucu');
-    if (!p) { p = document.createElement('div'); p.id = 'thIpucu'; p.className = 'th-ipucu'; document.body.appendChild(p); }
-    p.innerHTML = SVG.tam + '<span>' + kac(kd('th.tam_dokun', 'Tam ekran için ekrana bir kez dokun')) + '</span>';
-    p.hidden = false;
-    clearTimeout(ipucuZ);
-    ipucuZ = setTimeout(function () { p.hidden = true; }, 15000);
-  }
+  /* "TAM EKRAN İÇİN EKRANA DOKUN" UYARISI KALKTI (18.10.2026) — öğretmen:
+     "yansıtmayı başlayınca akıllı tahtada bi yere basıp tam ekran yapma
+     uyarısı olmasın, tam ekrandan çıkma için kullandığımız saydam svg gibi
+     tam ekran yapmak için de kullanılsın". Tahtaya dokunmak artık tam
+     ekrana geçirmiyor (sayfa dokunuşla birden büyümesin); sol ortadaki soluk
+     yüzen tuş tam ekran değilken "Tam ekrana geç", tam ekrandayken "Tam
+     ekrandan çık" (tamTusTazele). Yansıtma başlarken bir kez kendiliğinden
+     denenir; tarayıcı izin verirse (uygulama kipi, kiosk) doğrudan geçer. */
+  function ipucuGoster() { ipucuGizle(); }
   function ipucuGizle() { var p = $('thIpucu'); if (p) p.hidden = true; }
   ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (t) {
     document.addEventListener(t, function () {
       if (tamEkranda()) { TAM.oldu = true; ipucuGizle(); }
       else if (TAM.oldu) { TAM.oldu = false; TAM.istek = false; }     /* öğretmen kendisi çıktı: bu yansıtmada zorlanmaz */
-      tamCikTazele();
+      tamTusTazele();
     });
   });
   /* TAM EKRANDAN ÇIKIŞ TUŞU (18.10.2026) — öğretmen: "akıllı tahta olarak
@@ -446,24 +503,35 @@
      tarayıcının tam ekranı açıkken görünür (ana ekrana eklenmiş uygulama
      kipinde çıkılacak tam ekran yok). Kabuğun içinde durur: dokunuşu
      çerçevedeki sayfaya ve bilgisayara gitmez. */
-  function tamCikTazele() {
-    if (CIHAZ !== 'tahta') return;
+  /* 18.10.2026 (akşam): aynı soluk tuş tam ekran DEĞİLKEN tam ekrana geçirir.
+     Ana ekrana eklenmiş uygulama tam ekran kipinde açıldıysa (çıkılacak ya
+     da girilecek tam ekran yok) tuş görünmez. */
+  function tamTusTazele() {
+    if (CIHAZ !== 'tahta' || !document.body) return;
     var d = document, acik = !!(d.fullscreenElement || d.webkitFullscreenElement);
+    var el = d.documentElement, destek = !!(el.requestFullscreen || el.webkitRequestFullscreen);
+    var uyg = false;
+    try { uyg = !!(window.matchMedia && window.matchMedia('(display-mode: fullscreen)').matches) && !acik; } catch (e) { }
     var b = $('thTamCik');
-    if (!b && acik) {
+    if (!b) {
+      if (!(acik || (destek && !uyg))) return;
       stilKur();
       b = d.createElement('button');
       b.type = 'button';
       b.id = 'thTamCik';
       b.className = 'th-tamcik';
-      b.setAttribute('data-th', 'tamcik');
-      b.title = kd('th.tam_cik', 'Tam ekrandan çık');
-      b.setAttribute('aria-label', b.title);
-      b.innerHTML = SVG.tamcik;
       d.body.appendChild(b);
     }
-    if (b) b.hidden = !acik;
+    var is = acik ? 'tamcik' : 'tam';
+    if (b.getAttribute('data-th') !== is) {
+      b.setAttribute('data-th', is);
+      b.title = acik ? kd('th.tam_cik', 'Tam ekrandan çık') : kd('th.tam_gec', 'Tam ekrana geç');
+      b.setAttribute('aria-label', b.title);
+      b.innerHTML = acik ? SVG.tamcik : SVG.tam;
+    }
+    b.hidden = !(acik || (destek && !uyg));
   }
+  function tamCikTazele() { tamTusTazele(); }
   function tamCik() {
     var d = document;
     try {
@@ -502,7 +570,7 @@
     if (is === 'anasayfa') cik('index.html');
     else if (is === 'yenile') location.reload();
     else if (is === 'cik') cik(ROL === 'izle' ? 'index.html' : (adresAl(CERCEVE.contentWindow) || 'index.html'));
-    else if (is === 'tam') { TAM.istek = true; tamEkran(); }
+    else if (is === 'tam') { TAM.istek = true; tamEkran(); setTimeout(tamTusTazele, 400); }
     else if (is === 'tamcik') tamCik();
     else if (is === 'unut') {
       try { localStorage.removeItem('kidef_tahta_cihaz'); localStorage.removeItem('kidef_tahta_birakti'); } catch (e) { }
@@ -670,13 +738,24 @@
     if (hedef && hedef !== '_self') return true;        /* çerçevede açılacak */
     return !(u.pathname === w.location.pathname && u.search === w.location.search && u.hash);
   }
+  /* öğenin yolu — öğe bu sayfanın ya da bu sayfadaki bir iç çerçevenin değilse null */
+  function liderYolu(el) {
+    if (!el || !Y.belge) return null;
+    var y = yolAl(el, Y.belge);
+    if (el.ownerDocument !== Y.belge && !(y.c && y.c.length)) return null;
+    return y;
+  }
   function yTik(e) {
     if (!e.isTrusted || !S.lider) return;
     var el = hedefOge(e);
     if (!el || !Y.belge) return;
+    var yol = liderYolu(el);
+    if (!yol) return;
     var s = yeniTohum();
+    var ew = penceresi(el, Y.win), ic = ew !== Y.win;
     tohumla(Y.win, s);
-    var o = { t: 'k', y: yolAl(el, Y.belge), s: s, c: [] };
+    if (ic) tohumla(ew, s);
+    var o = { t: 'k', y: yol, s: s, c: [] };
     Y.aktif = o;
     Y.sonTik = { z: SIMDI(), el: el };
     var w = Y.win;
@@ -684,7 +763,7 @@
       if (Y.aktif === o) Y.aktif = null;
       if (o.gecis) return;
       var a = el.closest ? el.closest('a[href]') : null;
-      if (a && !e.defaultPrevented && gidenBaglanti(a, w)) return;   /* sayfa değişecek: adresle gider */
+      if (a && !ic && !e.defaultPrevented && gidenBaglanti(a, w)) return;   /* sayfa değişecek: adresle gider */
       if (!o.c.length) delete o.c;
       olayGonder(o);
       alanTaraYakin();
@@ -697,13 +776,19 @@
     var el = hedefOge(e);
     var alan = yaziAlani(el);
     if (alan && (gizliAlan(el) || !OZEL_TUS.test(e.key) || e.key === ' ')) return;
-    var s = null;
-    if (e.type === 'keydown') { s = yeniTohum(); tohumla(Y.win, s); }
     var govde = !el || el === Y.belge.body || el === Y.belge.documentElement;
+    var yol = govde ? null : liderYolu(el);
+    if (!govde && !yol) return;
+    var s = null;
+    if (e.type === 'keydown') {
+      s = yeniTohum(); tohumla(Y.win, s);
+      var ew = penceresi(el, Y.win);
+      if (ew !== Y.win) tohumla(ew, s);
+    }
     var o = {
       t: 'b', e: e.type === 'keyup' ? 'u' : 'd', k: e.key, c: e.code || '', kc: e.keyCode || 0,
       m: (e.ctrlKey ? 1 : 0) | (e.shiftKey ? 2 : 0) | (e.altKey ? 4 : 0) | (e.metaKey ? 8 : 0),
-      y: govde ? null : yolAl(el, Y.belge), s: s, c2: []
+      y: yol, s: s, c2: []
     };
     if (s == null) delete o.s;
     if (!o.y) delete o.y;
@@ -716,14 +801,18 @@
     if (!f || f.tagName !== 'FORM') return;
     /* gönder tuşuna tıklamayla gelen gönderim tıklamayla zaten gidiyor */
     if (Y.sonTik && SIMDI() - Y.sonTik.z < 80 && f.contains(Y.sonTik.el)) return;
-    var o = { t: 'g', y: yolAl(f, Y.belge) };
+    var yol = liderYolu(f);
+    if (!yol) return;
+    var o = { t: 'g', y: yol };
     setTimeout(function () { olayGonder(o); }, 0);
   }
   function yMedya(e) {
     if (!S.lider) return;
     var m = e.target;
     if (!m || !/^(VIDEO|AUDIO)$/.test(m.tagName) || !Y.belge) return;
-    var o = { t: 'm', y: yolAl(m, Y.belge), e: e.type, zt: Math.round((m.currentTime || 0) * 100) / 100, hz: m.playbackRate || 1 };
+    var yol = liderYolu(m);
+    if (!yol) return;
+    var o = { t: 'm', y: yol, e: e.type, zt: Math.round((m.currentTime || 0) * 100) / 100, hz: m.playbackRate || 1 };
     /* KUMANDA KİLİTLENİRKEN (18.10.2026): telefon kilitlenince tarayıcı videoyu
        kendisi durdurur; bu "durdur" tahtaya gitmemeli, tahtada video sürmeli.
        Bu cihazda dokunuş yokken gelen oynat/durdur bir an bekletilir: o arada
@@ -747,10 +836,12 @@
   }
   function alanTara() {
     if (!Y.belge) return;
-    try {
-      var l = Y.belge.querySelectorAll('textarea, input, select');
-      for (var i = 0; i < l.length && i < 120; i++) alanIzle(l[i]);
-    } catch (e) { }
+    [Y.belge].concat(icBelgeler(Y.belge)).forEach(function (d) {
+      try {
+        var l = d.querySelectorAll('textarea, input, select');
+        for (var i = 0; i < l.length && i < 120; i++) alanIzle(l[i]);
+      } catch (e) { }
+    });
     alanKontrol();
   }
   function yAlanOlay(e) {
@@ -767,12 +858,14 @@
     var g = {}, var_ = false;
     Y.alanIz = Y.alanIz.filter(function (el) { return el.isConnected; });
     Y.alanIz.forEach(function (el) {
+      var y = liderYolu(el);
+      if (!y) return;                                   /* eski bir iç çerçevenin alanı */
       var v = String(el.value == null ? '' : el.value);
       if (v.length > 20000) v = v.slice(0, 20000);
-      var k = alanAnahtar(el);
+      var k = 'a' + ozet(yolMetni(y));
       if (Y.alanSon[k] === v) return;
       Y.alanSon[k] = v;
-      g[k] = { d: Y.d, y: yolAl(el, Y.belge), v: v, z: sunucuZaman() };
+      g[k] = { d: Y.d, y: y, v: v, z: sunucuZaman() };
       var_ = true;
     });
     if (var_) S.kok.child('alan').update(g);
@@ -803,9 +896,20 @@
        kaydırması tahtaya gitmez: tahtada sıçrama olmasın */
     if (CIHAZ === 'bilgisayar' && (gizliMi() || (SIMDI() - GOR.acik < 1500 && GOR.girdi < GOR.acik))) return;
     var t = e.target, d = Y.belge;
+    /* iç çerçevenin kendi sayfası kaydı: çerçeve öğesiyle anılır (ic) */
+    if (t && t.nodeType === 9 && t !== d) {
+      var fe = null;
+      try { fe = t.defaultView && t.defaultView.frameElement; } catch (x) { }
+      var fy = fe ? liderYolu(fe) : null;
+      if (fy) { Y.kayBek['i' + ozet(yolMetni(fy))] = fe; kayZamanla(); }
+      return;
+    }
     var belgeMi = (t === d || t === d.documentElement || t === d.body || t === d.scrollingElement);
     if (belgeMi) Y.kayBek.b = true;
-    else if (t && t.nodeType === 1) Y.kayBek['e' + ozet(yolMetni(yolAl(t, d)))] = t;
+    else if (t && t.nodeType === 1) {
+      var ty = liderYolu(t);
+      if (ty) Y.kayBek['e' + ozet(yolMetni(ty))] = t;
+    }
     kayZamanla();
   }
   function kayZamanla() {
@@ -822,9 +926,17 @@
       else {
         var el = Y.kayBek[k];
         if (!el || !el.isConnected) continue;
-        var my = el.scrollHeight - el.clientHeight, mx = el.scrollWidth - el.clientWidth;
-        g[k] = { d: Y.d, y: yolAl(el, Y.belge), f: my > 0 ? Math.round(el.scrollTop / my * 100000) / 100000 : 0,
-                 x: mx > 0 ? Math.round(el.scrollLeft / mx * 100000) / 100000 : 0, z: sunucuZaman() };
+        var y = liderYolu(el);
+        if (!y) continue;
+        var ic = k.charAt(0) === 'i', se = el;
+        if (ic) {                                     /* iç çerçevenin sayfası */
+          try { var dd = el.contentDocument; se = dd && (dd.scrollingElement || dd.documentElement); } catch (x) { se = null; }
+          if (!se) continue;
+        }
+        var my = se.scrollHeight - se.clientHeight, mx = se.scrollWidth - se.clientWidth;
+        g[k] = { d: Y.d, y: y, f: my > 0 ? Math.round(se.scrollTop / my * 100000) / 100000 : 0,
+                 x: mx > 0 ? Math.round(se.scrollLeft / mx * 100000) / 100000 : 0, z: sunucuZaman() };
+        if (ic) g[k].ic = 1;
       }
       var_ = true;
     }
@@ -843,6 +955,22 @@
         }
       }
     } catch (e) { }
+    /* iç çerçeveler: sayfaları ve içte kayan kutuları */
+    icBelgeler(Y.belge).forEach(function (dd) {
+      try {
+        var fe = dd.defaultView.frameElement, se = dd.scrollingElement || dd.documentElement;
+        var fy = fe && liderYolu(fe);
+        if (fy && (se.scrollTop > 0 || se.scrollLeft > 0)) Y.kayBek['i' + ozet(yolMetni(fy))] = fe;
+        var l2 = dd.querySelectorAll('*'), m = 0;
+        for (var j = 0; j < l2.length && m < 12; j++) {
+          var el2 = l2[j];
+          if ((el2.scrollTop > 0 || el2.scrollLeft > 0) && el2 !== dd.documentElement && el2 !== dd.body) {
+            var y2 = liderYolu(el2);
+            if (y2) { Y.kayBek['e' + ozet(yolMetni(y2))] = el2; m++; }
+          }
+        }
+      } catch (e) { }
+    });
     kayGonder();
   }
   /* --- eşitleme
@@ -993,7 +1121,7 @@
     try { if (y.dil && localStorage.getItem('kidef_dil') !== y.dil) localStorage.setItem('kidef_dil', y.dil); } catch (e) { }
     try {
       if (adresAl(w) === y.u && w.document && w.document.readyState !== 'loading') w.location.reload();
-      else w.location.replace(y.u || 'index.html');
+      else { GECMIS.yerine = true; w.location.replace(y.u || 'index.html'); }
     } catch (e) { CERCEVE.src = y.u || 'index.html'; }
   }
   function zYayinUygula(y) {
@@ -1117,10 +1245,19 @@
     Z.cevap = (o.c || o.c2 || []).slice();
     if (o.t === 'k') {
       var el = yolBul(o.y, d);
-      if (el) zTikla(w, el);
+      if (el) {
+        var ew = penceresi(el, w);                          /* iç çerçevedeki öğe: kendi penceresiyle */
+        if (ew !== w && o.s != null) tohumla(ew, o.s);
+        zTikla(ew, el);
+      }
     } else if (o.t === 'b') {
       var h = o.y ? yolBul(o.y, d) : null;
-      zTusla(w, h || d.activeElement || d.body, o);
+      if (o.y && !h && o.y.c) { Z.cevap = []; return; }  /* iç çerçeve henüz açılmadı */
+      var hh = h || d.activeElement || d.body;
+      if (hh && hh.tagName === 'IFRAME' && !h) hh = d.body;   /* odak iç çerçevedeyse tuş sayfaya */
+      var hw = penceresi(hh, w);
+      if (hw !== w && o.s != null) tohumla(hw, o.s);
+      zTusla(hw, hh, o);
     } else if (o.t === 'g') {
       var f = yolBul(o.y, d);
       if (f) { try { if (f.requestSubmit) f.requestSubmit(); else f.submit(); } catch (e) { } }
@@ -1163,6 +1300,11 @@
         else {
           var el = yolBul(s.y, Z.belge);
           if (!el) continue;
+          if (s.ic) {                                 /* iç çerçevenin sayfası */
+            var dd = el.contentDocument;
+            el = dd && (dd.scrollingElement || dd.documentElement);
+            if (!el) continue;
+          }
           el.scrollTop = Math.round((s.f || 0) * (el.scrollHeight - el.clientHeight));
           el.scrollLeft = Math.round((s.x || 0) * (el.scrollWidth - el.clientWidth));
         }
@@ -1179,9 +1321,10 @@
       var el = yolBul(a.y, Z.belge);
       if (!el || el.value === a.v) continue;
       try {
+        var ew = penceresi(el, w);
         el.value = a.v;
-        el.dispatchEvent(new w.Event('input', { bubbles: true }));
-        if (el.tagName === 'SELECT' || el.type === 'range' || el.type === 'color') el.dispatchEvent(new w.Event('change', { bubbles: true }));
+        el.dispatchEvent(new ew.Event('input', { bubbles: true }));
+        if (el.tagName === 'SELECT' || el.type === 'range' || el.type === 'color') el.dispatchEvent(new ew.Event('change', { bubbles: true }));
       } catch (e) { }
     }
   }
@@ -1365,15 +1508,16 @@
      Her yeni sayfada, iki rolde de: kontrolü alma, tam ekran, yeni
      pencereler, uyarı ve onaylar, adres değişimi, gönderilecek olaylar,
      kayıt engeli. */
-  function kopruKur(w, d) {
-    /* 0) bu cihazda dokunuldu/tuşa basıldı: kontrol bu cihaza geçer (en önce) */
+  /* 0) bu cihazda dokunuldu/tuşa basıldı: kontrol bu cihaza geçer (en önce) */
+  function dokunusKur(w) {
     ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (t) {
       try { w.addEventListener(t, function (e) { if (e.isTrusted) dokunuldu(); }, { capture: true, passive: true }); } catch (e) { }
     });
     if (CIHAZ === 'tahta') {
-      /* 0b) tahtada ilk dokunuş tam ekrana geçirir */
+      /* 0b) tahtada dokunuş: ekran uyanık kilidi alınamadıysa yeniden denenir.
+         (Dokunuş artık tam ekrana geçirmiyor — sol ortadaki tuş; 18.10.2026.) */
       ['pointerup', 'touchend', 'click', 'keydown'].forEach(function (t) {
-        w.addEventListener(t, function (e) { if (e.isTrusted) { tamEkranDene(); if (!UYANIK.k) { UYANIK.hata = 0; uyanikDenetle(); } } }, true);
+        w.addEventListener(t, function (e) { if (e.isTrusted && !UYANIK.k) { UYANIK.hata = 0; uyanikDenetle(); } }, true);
       });
       /* 0c) kontrol alınamadıysa (sayfa yükleniyor, eşitleniyor) dokunuş
          sayfaya gitmesin: tahta bilgisayardan ayrı düşmesin */
@@ -1387,12 +1531,19 @@
         }, { capture: true, passive: pasif });
       });
     }
-    /* 1) yeni pencere/sekme açan bağlantılar çerçevede açılsın (site dışı gerçek sekmede) */
+  }
+  /* 1) yeni pencere/sekme açan bağlantılar çerçevede açılsın (site dışı gerçek sekmede)
+     2) uyarı ve onay pencereleri: izleyen açmaz, liderin cevabını kullanır
+     ic: iç çerçeve — yeni sayfa iç çerçevede değil, sayfanın kendisinde açılır */
+  function pencereKur(w, ust, ic) {
+    var gez = function (href) {
+      try { (ic ? CERCEVE.contentWindow : w).location.assign(href); } catch (e) { }
+    };
     try {
       w.open = function (url, ad, ozellik) {
         var a = ayniSite(url || '', w.location.href);
-        if (takipte()) { if (a) { Z.kendiGezdi = SIMDI(); w.location.assign(a.href); } return w; }
-        if (a) { Y.gecisZ = SIMDI(); w.location.assign(a.href); return w; }
+        if (takipte()) { if (a) { Z.kendiGezdi = SIMDI(); gez(a.href); } return w; }
+        if (a) { Y.gecisZ = SIMDI(); gez(a.href); return w; }
         return window.open(url, ad || '_blank', ozellik);
       };
     } catch (e) { }
@@ -1402,7 +1553,7 @@
       var hedef = (a.getAttribute('target') || '').toLowerCase();
       if (takipte()) {
         if (hedef && hedef !== '_self') e.preventDefault();          /* izleyende yeni sekme açılmasın */
-        else if (gidenBaglanti(a, w)) Z.kendiGezdi = SIMDI();
+        else if (!ic && gidenBaglanti(a, w)) Z.kendiGezdi = SIMDI();
         return;
       }
       if (!hedef || hedef === '_self') return;
@@ -1411,9 +1562,8 @@
       e.preventDefault();
       if (Y.aktif) Y.aktif.gecis = true;
       var ilk = SIMDI();
-      setTimeout(function () { if (!(Y.gecisZ && Y.gecisZ >= ilk) && S.belge === d) w.location.assign(u.href); }, 0);
+      setTimeout(function () { if (!(Y.gecisZ && Y.gecisZ >= ilk) && S.belge === ust) gez(u.href); }, 0);
     }, true);
-    /* 2) uyarı ve onay pencereleri: izleyen açmaz, liderin cevabını kullanır */
     try {
       var asilA = w.alert, asilC = w.confirm, asilP = w.prompt;
       w.alert = function () { if (takipte()) return; return asilA.apply(w, arguments); };
@@ -1430,6 +1580,33 @@
         return c;
       };
     } catch (e) { }
+    gecmisKoru(w, ic);
+  }
+  /* 4) olaylar — pencereye, yakalama evresinde: sayfanın kendi dinleyicilerinden önce */
+  function olayKur(w) {
+    w.addEventListener('click', yTik, true);
+    w.addEventListener('keydown', yTus, true);
+    w.addEventListener('keyup', yTus, true);
+    w.addEventListener('input', yAlanOlay, true);
+    w.addEventListener('change', yAlanOlay, true);
+    w.addEventListener('submit', yGonder, true);
+    w.addEventListener('scroll', yKay, true);
+    ['play', 'pause', 'seeked', 'ratechange'].forEach(function (t) { w.addEventListener(t, yMedya, true); });
+  }
+  /* 5) kayıt yalnız liderde */
+  function engelKur(w, ust, sure) {
+    var bitis = SIMDI() + sure;
+    (function engelle() {
+      if (S.belge !== ust) return;
+      if (yazmaEngelle(w)) return;
+      if (SIMDI() < bitis) setTimeout(engelle, 30);
+    })();
+  }
+  function kopruKur(w, d) {
+    if (d.__kidefTahtaKopru) return;            /* aynı belge geri geldi: dinleyiciler zaten kurulu */
+    d.__kidefTahtaKopru = 1;
+    dokunusKur(w);
+    pencereKur(w, d, false);
     /* 3) sayfa içi adres değişimi */
     ['pushState', 'replaceState'].forEach(function (ad) {
       try {
@@ -1439,22 +1616,8 @@
     });
     w.addEventListener('hashchange', adresKontrol);
     w.addEventListener('popstate', adresKontrol);
-    /* 4) olaylar — pencereye, yakalama evresinde: sayfanın kendi dinleyicilerinden önce */
-    w.addEventListener('click', yTik, true);
-    w.addEventListener('keydown', yTus, true);
-    w.addEventListener('keyup', yTus, true);
-    w.addEventListener('input', yAlanOlay, true);
-    w.addEventListener('change', yAlanOlay, true);
-    w.addEventListener('submit', yGonder, true);
-    w.addEventListener('scroll', yKay, true);
-    ['play', 'pause', 'seeked', 'ratechange'].forEach(function (t) { w.addEventListener(t, yMedya, true); });
-    /* 5) kayıt yalnız liderde */
-    var bitis = SIMDI() + 20000;
-    (function engelle() {
-      if (S.belge !== d) return;
-      if (yazmaEngelle(w)) return;
-      if (SIMDI() < bitis) setTimeout(engelle, 30);
-    })();
+    olayKur(w);
+    engelKur(w, d, 20000);
     /* 6) tahtada ziyaretçi turu (vitrin), dil önerisi gibi bir kerelik pencereler çıkmasın */
     if (CIHAZ === 'tahta') {
       try {
@@ -1463,6 +1626,124 @@
       } catch (e) { }
     }
   }
+
+  /* ================================================ GEÇMİŞ (18.10.2026)
+     Öğretmen: "sözlüğü tam ekran olarak açınca ... sözlüğü kapatınca akıllı
+     tahtada sadece siyah ekran oluyor". Sözlüğün (ve sitenin her sayfasının)
+     "Geri" tuşu history.back() çağırıyor. Tahta sayfaları çerçevede YERİNE
+     KOYARAK açtığı için çerçevesinin geri gidecek kaydı yoktu; tarayıcı geri
+     adımı kabuğa uyguluyor, tahta tahta.html'den çıkıp boş sayfada kalıyordu.
+     Artık çerçevedeki sayfalar geçmişte yalnız ÇERÇEVENİN İÇİNDE gezer:
+       · izleyen (tahta): geri/ileri hiçbir şey yapmaz — lider hangi sayfaya
+         döndüyse tahta adresle oraya gider;
+       · lider: adım çerçevenin içinde kalıyorsa olur; kalmıyorsa (çerçevenin
+         ilk sayfası) çerçevede geldiği sayfa ya da ana sayfa açılır. Kabuk
+         hiçbir durumda kapanmaz. İç çerçevede (açılır sözlük) dışarı taşan
+         adım yok sayılır. */
+  var GECMIS = { adim: -1, yerine: false };   /* Navigation API yoksa: çerçevede geri gidilebilecek sayfa sayısı */
+  function gecmisSay(w) {
+    var tur = '';
+    try { var e = w.performance.getEntriesByType('navigation')[0]; tur = (e && e.type) || ''; } catch (x) { }
+    if (GECMIS.adim < 0) GECMIS.adim = 0;
+    else if (tur === 'back_forward') GECMIS.adim = Math.max(0, GECMIS.adim - 1);
+    else if (tur !== 'reload' && !GECMIS.yerine) GECMIS.adim += 1;
+    GECMIS.yerine = false;
+  }
+  function icindeMi(w, n, ic) {
+    try {
+      var nv = w.navigation;
+      if (nv && nv.currentEntry && typeof nv.currentEntry.index === 'number' && nv.currentEntry.index >= 0 && nv.entries) {
+        var i = nv.currentEntry.index + n;
+        return i >= 0 && i < nv.entries().length;
+      }
+    } catch (e) { }
+    if (ic) return false;
+    return n < 0 && GECMIS.adim + n >= 0;
+  }
+  function gecmisKoru(w, ic) {
+    var h = null;
+    try { h = w.history; } catch (e) { return; }
+    if (!h || h.__kidefTahta) return;
+    var asilGo = h.go, asilBack = h.back, asilFwd = h.forward;
+    function git(n, asil) {
+      if (takipte()) return;                                    /* izleyen: lider sürüyor */
+      if (icindeMi(w, n, ic)) { asil(); return; }
+      if (n > 0 || ic) return;
+      var hedef = 'index.html';                                 /* çerçevenin ilk sayfasından geri */
+      try {
+        var a = ayniSite(w.document.referrer || '', w.location.href);
+        if (a && a.href !== w.location.href && !/\/tahta\.html$/.test(a.pathname)) hedef = a.href;
+      } catch (e) { }
+      try { w.location.assign(hedef); } catch (e) { }
+    }
+    try {
+      h.back = function () { git(-1, function () { asilBack.call(h); }); };
+      h.forward = function () { git(1, function () { asilFwd.call(h); }); };
+      h.go = function (n) {
+        n = +n || 0;
+        if (!n) return asilGo.call(h, 0);                       /* go(0): yenile */
+        git(n, function () { asilGo.call(h, n); });
+      };
+      h.__kidefTahta = true;
+    } catch (e) { }
+  }
+
+  /* ================================================ İÇ ÇERÇEVELER (18.10.2026)
+     Öğretmen: "kamusa basınca popup şeklinde açıldı ama klavyeden yazınca
+     akıllı tahtada görünmedi". Açılır sözlük, sayfanın İÇİNDE ayrı bir
+     çerçeve (iframe, sozluk.html). Köprü yalnız sayfanın kendisine kuruluyordu;
+     içteki çerçevede yazılan, tıklanan, kaydırılan hiçbir şey öbür cihaza
+     gitmiyordu. Artık sitenin kendi sayfasını taşıyan iç çerçevelere de aynı
+     köprü kuruluyor (en çok 3 kat); öğenin yolu çerçeve zinciriyle yazılıyor
+     (yolAl). Site dışı çerçeveler (YouTube vb.) ve PDF'ler dokunulmaz. */
+  function icErisim(f) {
+    try {
+      var w2 = f.contentWindow, d2 = w2 && w2.document;
+      if (!d2 || !d2.body) return null;
+      if (w2.location.href === 'about:blank' || w2.location.origin !== location.origin) return null;
+      if (d2.contentType && !/html/i.test(d2.contentType)) return null;
+      return d2;
+    } catch (e) { return null; }
+  }
+  function icBelgeler(d0) {
+    var l = [];
+    (function tara(d, kat) {
+      var f;
+      try { f = d.getElementsByTagName('iframe'); } catch (e) { return; }
+      for (var i = 0; i < f.length && i < 8; i++) {
+        var dd = icErisim(f[i]);
+        if (!dd) continue;
+        l.push(dd);
+        if (kat < 3) tara(dd, kat + 1);
+      }
+    })(d0, 1);
+    return l;
+  }
+  function icKopruKur(w2, d2, ust) {
+    dokunusKur(w2);
+    pencereKur(w2, ust, true);
+    olayKur(w2);
+    rastgeleKur(w2, S.s0 >>> 0);
+    engelKur(w2, ust, 5000);
+    var hazir = function () {
+      setTimeout(function () {
+        if (S.belge !== ust) return;
+        if (S.lider) alanTara();
+        else { zAlanUygula(); zKayUygula(); }
+      }, 200);
+    };
+    if (d2.readyState === 'complete') hazir(); else w2.addEventListener('load', hazir);
+  }
+  function icTara() {
+    var ust = S.belge;
+    if (!ust) return;
+    icBelgeler(ust).forEach(function (d2) {
+      if (d2.__kidefTahtaIc) return;
+      d2.__kidefTahtaIc = 1;
+      try { icKopruKur(d2.defaultView, d2, ust); } catch (e) { }
+    });
+  }
+
   /* çerçevede yeni sayfa açıldı mı — mümkün olan en erken anda */
   function belgeDenetle() {
     var w, d;
@@ -1470,6 +1751,7 @@
     if (!d || d === S.belge) return;
     try { if (!w.location || w.location.href === 'about:blank') return; } catch (e) { return; }
     S.belge = d;
+    gecmisSay(w);
     kopruKur(w, d);
     if (S.lider) yYeniBelge(w, d); else zYeniBelge(w, d);
   }
@@ -1478,7 +1760,7 @@
     belgeIzle.kuruldu = true;
     belgeDenetle();
     setInterval(belgeDenetle, 20);
-    setInterval(function () { if (S.lider) { alanKontrol(); adresKontrol(); } kgKontrol(); }, 250);
+    setInterval(function () { icTara(); if (S.lider) { alanKontrol(); adresKontrol(); } kgKontrol(); }, 250);
     setInterval(nobet, 1000);
     window.addEventListener('storage', function (e) {      /* başka sekmede dil değişirse */
       if (e && e.key === 'kidef_dil' && yayinda()) S.kok.child('yayin').update({ dil: e.newValue || 'tr' });
@@ -2079,10 +2361,10 @@
           document.head.appendChild(mf);
         }
       } catch (e) { }
-      /* kabuktaki her dokunuş (koruma katmanı, nokta, bekleme ekranı) tam ekrana
-         geçirir; ekran uyanık kilidi alınamadıysa yeniden denenir */
+      /* kabuktaki dokunuş: ekran uyanık kilidi alınamadıysa yeniden denenir
+         (tam ekran artık yalnız sol ortadaki tuşla — 18.10.2026) */
       ['pointerup', 'touchend', 'click', 'keydown'].forEach(function (t) {
-        document.addEventListener(t, function (e) { if (e.isTrusted) { tamEkranDene(); if (!UYANIK.k) { UYANIK.hata = 0; uyanikDenetle(); } } }, true);
+        document.addEventListener(t, function (e) { if (e.isTrusted && !UYANIK.k) { UYANIK.hata = 0; uyanikDenetle(); } }, true);
       });
       baglan(izleBasla);
     }

@@ -187,6 +187,8 @@
             p = document.createElement('div');
             p.id = PERDE_ID;
             (document.body || document.documentElement).appendChild(p);
+            /* sayfanın kendi biçimi yoksa (index dışı sayfalar) bu dosyadaki */
+            try { if (getComputedStyle(p).position !== 'fixed') stilKur(); } catch (e) { stilKur(); }
         }
         if (p.dataset.durum !== String(durum)) {
             p.innerHTML = perdeHtml(durum);
@@ -216,34 +218,111 @@
     E.tazele = function () { location.reload(); };
 
     /* ------------------------------------------------------- UYGULAYICI */
+    /* ONAY KARARI ANINDA (18.10.2026) — öğretmen: "öğretmen kayıt olduğunda
+       ben onaylamadan da öğretmen olarak sisteme bakabiliyor".
+       Perde yalnız bu dosyanın KENDİ dinleyicisinden gelen cevapla iniyordu;
+       rol ise hesap/auth.js'te AYRI bir okumayla geliyordu. Arada (ağ
+       yavaşsa saniyelerce) öğretmen arayüzü açık kalıyor; dinleyici bir kez
+       hata verirse (çevrimdışı, kural) perde o oturumda hiç inmiyordu. Artık:
+         · auth.js belgeyi okuyunca aynı veriyi buraya da verir (belgeGeldi):
+           perde, öğretmen arayüzü çizilmeden ÖNCE iner;
+         · bu tarayıcıda aynı hesabın son bilinen onay durumu (sistem/rol.js
+           önbelleği) oturum açılır açılmaz uygulanır;
+         · dinleyici hata verirse son bilinen durum korunur, kapı açılmaz;
+         · karar belgedeki role bakar (uygulamanın rolü geç gelse de);
+         · perdenin biçimi bu dosyada da var: başka sayfada da çalışır. */
     function uygula() {
         kisitUygula();
-        var rol = rolOku();
+        var rol = E._rol || rolOku();
         var izin = E.onayKarar(rol, E._onay);
         if (izin) perdeKaldir(); else perdeGoster(E._onay);
     }
     E.uygula = uygula;
 
+    function stilKur() {
+        if (document.getElementById('eopStil')) return;
+        var s = document.createElement('style');
+        s.id = 'eopStil';
+        s.textContent = [
+            '#ogretmenOnayPerde{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;',
+            ' justify-content:center;padding:22px;box-sizing:border-box;overflow:auto;',
+            ' background:linear-gradient(160deg,#F5A623 0%,#E8830C 55%,#D2740A 100%);',
+            " font-family:'Arakom','Marhey',system-ui,sans-serif}",
+            '#ogretmenOnayPerde .eop-kutu{width:min(560px,100%);background:#fff;border-radius:22px;',
+            ' padding:34px 30px 26px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.28);box-sizing:border-box}',
+            '#ogretmenOnayPerde .eop-ikon{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;',
+            ' background:#FFF3E0;color:#E8830C;display:flex;align-items:center;justify-content:center}',
+            '#ogretmenOnayPerde .eop-ikon svg{width:32px;height:32px}',
+            '#ogretmenOnayPerde h2{margin:0 0 10px;font-size:1.55rem;color:#1d1d1f}',
+            '#ogretmenOnayPerde p{margin:0 0 8px;font-size:1.02rem;line-height:1.6;color:#4B5563}',
+            '#ogretmenOnayPerde .eop-tus{display:flex;gap:10px;justify-content:center;margin:20px 0 6px;flex-wrap:wrap}',
+            '#ogretmenOnayPerde .eop-tus button{border:0;cursor:pointer;font-family:inherit;font-weight:800;',
+            ' font-size:1rem;border-radius:12px;padding:12px 22px;background:#E8830C;color:#fff}',
+            '#ogretmenOnayPerde .eop-tus button.eop-cik{background:#EDF1F7;color:#4B5563}',
+            '#ogretmenOnayPerde .eop-wp{display:inline-flex;align-items:center;gap:8px;margin:12px 0 2px;',
+            ' padding:11px 20px;border-radius:12px;background:#25D366;color:#fff;font-weight:800;text-decoration:none}',
+            '#ogretmenOnayPerde .eop-wp svg{width:20px;height:20px}',
+            '#ogretmenOnayPerde .eop-wp-dip,#ogretmenOnayPerde .eop-dip{font-size:.85rem;color:#8A93A0}',
+            '#ogretmenOnayPerde .eop-adimlar{margin:16px 0 0;text-align:start;background:#FFF8EE;',
+            ' border:1px solid #F6D08A;border-radius:14px;padding:12px 16px;font-size:.93rem;color:#5C430A}',
+            '#ogretmenOnayPerde .eop-adimlar ol{margin:6px 0;padding-inline-start:20px}'
+        ].join('\n');
+        (document.head || document.documentElement).appendChild(s);
+    }
+
+    /* ------------------------------------------- SON BİLİNEN ONAY DURUMU
+       sistem/rol.js önbelleği: { uid, rol, onay } — yalnız AYNI hesap için */
+    function onbellekOnay(uid) {
+        try {
+            var h = JSON.parse(localStorage.getItem('kidefRolBilgi') || 'null');
+            if (h && uid && h.uid === uid && h.rol === 'teacher' && h.onay) return h.onay;
+        } catch (e) { }
+        return undefined;
+    }
+    function kisiYaz(v, u) {
+        v = v || {};
+        E._kisi = {
+            ad: (v.name && v.name !== 'Belirtilmedi') ? v.name : '',
+            email: v.email || (u && u.email) || '',
+            tel: (v.phone && v.phone !== 'Belirtilmedi') ? v.phone : ''
+        };
+    }
+    /* hesap/auth.js belgeyi okuyunca (ya da kayıtta yazınca) çağırır */
+    E.belgeGeldi = function (u, v) {
+        if (!u || !v) return;
+        if (E._uid && E._uid !== u.uid) return;          /* başka hesabın geç kalmış cevabı */
+        E._uid = u.uid;
+        E._onay = v.ogretmenOnay;
+        E._rol = v.role || '';
+        kisiYaz(v, u);
+        uygula();
+    };
+
     /* --------------------------------------------------- BULUT BAĞLANTISI */
     var dinleyici = null;
     function belgeDinle(u) {
+        var uid = u ? u.uid : null;
         if (dinleyici) { try { dinleyici(); } catch (e) { } dinleyici = null; }
-        E._onay = undefined; E._rol = '';
-        E._kisi = {};                     /* WhatsApp mesajı için ad/e-posta/telefon */
+        if (E._uid !== uid) {                              /* hesap değişti: baştan */
+            E._uid = uid;
+            E._onay = undefined; E._rol = '';
+            E._kisi = {};                     /* WhatsApp mesajı için ad/e-posta/telefon */
+            var son = onbellekOnay(uid);
+            if (son) { E._onay = son; E._rol = 'teacher'; kisiYaz(null, u); }
+        }
         if (!u) { uygula(); return; }
+        uygula();
         try {
             dinleyici = firebase.firestore().collection('kullanicilar').doc(u.uid)
                 .onSnapshot(function (doc) {
-                    var v = (doc.exists && doc.data()) || {};
+                    if (E._uid !== uid) return;
+                    if (!doc.exists) return;                 /* kayıt belgesi henüz yazılmadı */
+                    var v = doc.data() || {};
                     E._onay = v.ogretmenOnay;
                     E._rol = v.role || '';
-                    E._kisi = {
-                        ad: (v.name && v.name !== 'Belirtilmedi') ? v.name : '',
-                        email: v.email || (u && u.email) || '',
-                        tel: (v.phone && v.phone !== 'Belirtilmedi') ? v.phone : ''
-                    };
+                    kisiYaz(v, u);
                     uygula();
-                }, function () { /* kural/çevrimdışı: kapı açık kalır */ });
+                }, function () { /* kural/çevrimdışı: son bilinen durum korunur */ });
         } catch (e) { }
     }
 

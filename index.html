@@ -441,7 +441,7 @@
     <script src="sistem/karekodyedek.js?v=20a3ba23"></script>
     <script src="sistem/kilit.js?v=a590505f"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
-    <script src="sistem/erisim.js?v=292f0d52"></script>
+    <script src="sistem/erisim.js?v=f927fb7f"></script>
     <!-- ONAYDAN SONRA PAYLAŞILACAK MESAJ (07.10.2026) — öğretmen:
          "bi öğretmeni onayladıktan sonra onun ismiyle bi hoşgeldin
          mesajı ve tavsiyelerini isteyen, eleştirilerini bekleyen bi
@@ -7958,12 +7958,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         <script src="hesap/ogretmen.js?v=1cc98ca7"></script>
         <script src="hesap/paketler.js?v=febac679"></script>
         <script src="sistem/state.js?v=81172f83"></script>
-    <script src="sistem/rol.js?v=df95fe98"></script>
+    <script src="sistem/rol.js?v=c2c8fb6a"></script>
     <!-- Kayıt alanlarının ve kullanicilar belgesinin tek kaynağı; auth.js'ten
          ÖNCE yüklenmeli. Aynı dosyayı bilgi yarışmasındaki yerinde kayıt
          paneli de okuyor (hesap/biygiris.js). -->
     <script src="hesap/kayitalani.js?v=1f613da8"></script>
-    <script src="hesap/auth.js?v=62b5c7bd"></script>
+    <script src="hesap/auth.js?v=c61798a2"></script>
     <!-- Sitede gecirilen sure: yalniz etkin sure sayilir, kullanicilar/{uid}.kullanim -->
     <script src="sistem/kullanimsure.js?v=c876df2f"></script>
     <!-- Materyal kullanım raporu: Materyaller sekmesinde açılan dosyaları ve
@@ -8017,7 +8017,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + butonu olsun ... sınıflara header yerine galeri ve site
          güncellemelerinin üstünde bi kategori olarak hızlıca
          ulaşabilsin." Bölümü kendisi, Güncellemeler'in üstüne koyar. -->
-    <script src="sistem/siniflarim.js?v=4c57f362"></script>
+    <script src="sistem/siniflarim.js?v=286ac981"></script>
     <!-- SINIF MATERYALLERİ SEKMESİ (06.10.2026): açık sınıfın seviyesine
          ait İmam Hatip belgeleri ve etkinlik kartları, sınıfın kendi
          panelinde. Kopya değil, aynı kaynaktan çizim. -->
@@ -8047,10 +8047,16 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/yenilikler.js?v=fda4968d"></script>
     <!-- Güncellemeler ve Galeri bölümü: liste galeriYenile.py'den,
          duyurular yukarıdaki yenilikler.js'ten gelir. -->
-    <script src="sistem/siniftayeni.js?v=2bf7aaf1"></script>
+    <script src="sistem/siniftayeni.js?v=42f5ee2b"></script>
     <script src="sistem/galeriveri.js?v=b5d6af07"></script>
     <script src="sistem/galeri.js?v=31382e3d"></script>
     <script src="hesap/listelerim.js?v=a3bbe9e6"></script>
+    <!-- SINIFLAR GİRİŞLE AÇILIR (18.10.2026): çıkışta okul penceresi ve sınıf
+         listeleri kapanır, sınıf sekmesi girişi bekler (sistem/oturumkapi.js). -->
+    <script src="sistem/oturumkapi.js?v=b6afc73e"></script>
+    <!-- CİHAZLARIM (18.10.2026): hesabın açık olduğu cihazlar, uzaktan çıkış;
+         çıkış tuşu bu pencereyi açar (hesap/cihazlar.js). -->
+    <script src="hesap/cihazlar.js?v=44f38b60"></script>
     <!-- TAHTAYA YANSIT (17.10.2026): başlıktaki Tahta düğmesi, paneli ve tahta
          cihazının kendiliğinden geçişi. Motor: sistem/tahta.js (tahta.html). -->
     <script defer src="sistem/tahtagir.js?v=2b7bc01f"></script>

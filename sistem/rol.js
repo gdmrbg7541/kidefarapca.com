@@ -28,7 +28,9 @@
      KidefRol.rolCoz(veri)              -> 'admin'|'teacher'|'student'
      KidefRol.ogretmenMi(rol|veri)      -> bool
      KidefRol.coz(user, db).then(o)     -> {rol, ogretmen, isim, kaynak, ...}
-     KidefRol.onbellekOku(uid)          -> {rol, ogretmen, isim} | null
+     KidefRol.onbellekOku(uid)          -> {rol, ogretmen, onay, isim} | null
+     KidefRol.yetkiliMi(rol, onay)      -> bool (öğretmen onaylı mı / yönetici)
+   ogretmen = öğretmen YETKİSİ: onay bekleyen öğretmende false (18.10.2026).
    ===================================================================== */
 (function () {
   'use strict';
@@ -79,6 +81,29 @@
     return r === 'teacher' || r === 'admin';
   }
 
+  /* ---------------------------------------------------------------
+     2b) Öğretmen ONAYI (18.10.2026) — öğretmen: "öğretmen kayıt
+         olduğunda ben onaylamadan da öğretmen olarak sisteme
+         bakabiliyor". Rol çözülürken onay hiç sorulmuyordu: kayıt olur
+         olmaz belgede role:'teacher' durduğu için bilgi yarışması gibi
+         sayfalar hesabı öğretmen sayıyordu. Artık öğretmen YETKİSİ
+         (coz → ogretmen) onaya bağlı:
+            ogretmenOnay alanı yok   -> eski hesap, onaylı sayılır
+            'onayli'                 -> öğretmen
+            'bekliyor'/'reddedildi'  -> öğretmen DEĞİL (rol yine 'teacher':
+                                        ana sayfadaki onay perdesi buna bakar)
+         Önbellek de onay durumunu taşır (sistem/erisim.js okur).
+     --------------------------------------------------------------- */
+  function onayDurumu(v) {
+    var o = v && v.ogretmenOnay;
+    if (o === 'bekliyor' || o === 'reddedildi' || o === 'onayli') return o;
+    return '';
+  }
+  function yetkiliMi(rol, onay) {
+    if (rol === 'admin') return true;
+    return rol === 'teacher' && onay !== 'bekliyor' && onay !== 'reddedildi';
+  }
+
   function isimCoz(v, user) {
     v = v || {};
     if (v.name && v.name !== 'Belirtilmedi') return v.name;
@@ -93,8 +118,9 @@
      --------------------------------------------------------------- */
   function onbellekYaz(uid, o) {
     if (!uid || !o) return;
+    var onay = o.onay || '';
     yerelYaz(ANAHTAR, JSON.stringify({
-      uid: uid, rol: o.rol, ogretmen: !!o.ogretmen,
+      uid: uid, rol: o.rol, ogretmen: !!o.ogretmen && yetkiliMi(o.rol, onay), onay: onay,
       isim: o.isim || '', iz: o.iz || '', t: +new Date()
     }));
   }
@@ -152,8 +178,8 @@
       function yedek(neden) {
         var h = onbellekOku(uid);
         if (h) {
-          bitir({ rol: h.rol, ogretmen: !!h.ogretmen, isim: h.isim || '', uid: uid,
-                  kaynak: 'onbellek', iz: h.iz || '', hata: neden });
+          bitir({ rol: h.rol, ogretmen: !!h.ogretmen && yetkiliMi(h.rol, h.onay || ''), onay: h.onay || '',
+                  isim: h.isim || '', uid: uid, kaynak: 'onbellek', iz: h.iz || '', hata: neden });
           return;
         }
         var yi = yerelOgretmenIzi();
@@ -173,9 +199,9 @@
           if (tamam) return; tamam = true;
           if (!doc || !doc.exists) { yedek('belge-yok'); return; }
           var v = doc.data() || {};
-          var rol = rolCoz(v);
+          var rol = rolCoz(v), onay = onayDurumu(v);
           var o = {
-            rol: rol, ogretmen: (rol === 'teacher' || rol === 'admin'),
+            rol: rol, ogretmen: yetkiliMi(rol, onay), onay: onay,
             isim: isimCoz(v, user), uid: uid, kaynak: 'bulut',
             iz: v.role ? '' : ogretmenIzi(v), veri: v, rolAlani: v.role || null
           };
@@ -196,6 +222,10 @@
     if (o.kaynak === 'yok' && o.misafir) return 'Bu tarayıcıda giriş yapılmamış.';
     if (o.anonim) return 'Misafir olarak giriş yapılmış; yönetim için öğretmen/yönetici hesabı gerekli.';
     if (o.ogretmen) return '';
+    if (o.rol === 'teacher' && o.onay === 'bekliyor')
+      return 'Öğretmen hesabın yönetici onayı bekliyor. Onaylanınca yarışmayı yönetebilirsin.';
+    if (o.rol === 'teacher' && o.onay === 'reddedildi')
+      return 'Öğretmen başvurun onaylanmadı. Bir yanlışlık olduğunu düşünüyorsan iletişim sayfasından yazabilirsin.';
     if (o.kaynak === 'bulut' && o.rolAlani === 'student')
       return 'Bu hesabın rolü “öğrenci”. Yarışmayı yalnızca öğretmen/yönetici yönetebilir.';
     if (o.kaynak === 'bulut' && !o.rolAlani)
@@ -209,6 +239,8 @@
     ANAHTAR: ANAHTAR,
     rolCoz: rolCoz,
     ogretmenMi: ogretmenMi,
+    onayDurumu: onayDurumu,
+    yetkiliMi: yetkiliMi,
     ogretmenIzi: ogretmenIzi,
     yerelOgretmenIzi: yerelOgretmenIzi,
     isimCoz: isimCoz,

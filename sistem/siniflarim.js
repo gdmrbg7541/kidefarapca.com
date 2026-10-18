@@ -153,8 +153,14 @@
         } catch (e) { }
         return false;
     }
-    /* Çıkış yapılmış ama bu tarayıcıda öğretmen sınıfları duruyor. */
-    function saltMi() { return !oturumVarMi() && onbellekVarMi(); }
+    /* Çıkış yapılmış ama bu tarayıcıda öğretmen sınıfları duruyor.
+       SALT GÖRÜNÜM KALDIRILDI (18.10.2026) — öğretmen: "çıkış yapıldığı
+       gibi okul svg'si kapansın ve sınıflarımda öğrencilere, sınıflara
+       ulaşılamasın ve giriş yapılması beklensin". Çıkışta sınıflar artık
+       hiçbir yoldan açılmaz; kategori kapanır ve giriş davetine döner
+       (sekmeler ve okul penceresi: sistem/oturumkapi.js). Tarayıcıdaki
+       kopya silinmez, girişte yine buluttan tazelenir. */
+    function saltMi() { return false; }
 
     /* Davet kutusundaki büyük okul: anasayfadaki küçük okul simgesinin
        aynısı değil — kapısı ve bayrağı belirgin, "burası senin okulun"
@@ -1167,11 +1173,17 @@
         gosterildi = false;
         if (!b) return;
         /* ÖNBELLEK VARSA ÖNİZLEMEYE DÜŞME (07.10.2026): çıkışta sınıflar
-           silinmesin, salt görünüme geçsin. */
+           silinmesin, salt görünüme geçsin. — 18.10.2026'dan beri salt
+           görünüm yok (saltMi hep false). */
         if (saltMi()) { ciz(); return; }
         try { if (window.KidefSinifBag) window.KidefSinifBag.icerde = false; } catch (e) { }
+        /* ÇIKIŞTA OKUL KAPANIR (18.10.2026): girişte sınıfı olana kendiliğinden
+           açılan kategori (otoAc) çıkışta kapanır; bir sonraki girişte yine
+           kendiliğinden açılır. */
+        kapali = true; otoAcildi = false; elleKatlandi = false;
         b.__govde = null;              /* gövde yeniden kurulsun */
         onizlemeGovde(b);
+        baslikDurum(b);
     }
     function cikisIzle() {
         if (window.__snCikisIzleniyor) return;

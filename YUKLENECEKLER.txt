@@ -12638,3 +12638,67 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       dışındaki kopyada (flaş, asıl klasör) kidefarapca.com.
   Damgalar: 10 kitabın index.html'i (kitapsecici.js?v=da4ac0b7).
   Yedek: _kaynak/yedekler/2026-10-18-siteye-don/
+
+18.10.2026 (akşam, 5) — SINIFTA YENİ DUYURUSU: 5-10. SINIF
+  sistem/siniftayeni.js  18.10 "Dijital kitap" duyurusu "6-10. sınıfın…" diyordu; 5. sınıfın
+                      kitabı da sitede olduğu için "5-10. sınıfın ders kitapları sitede" ve
+                      "5, 6, 7, 8, 9 ve 10. sınıfın ders kitabı…" oldu. Başka değişiklik yok.
+  Damga: index.html (siniftayeni.js?v=42f5ee2b).
+  Yedek: _kaynak/yedekler/2026-10-18-sinifta-yeni-5-10/
+
+18.10.2026 (akşam, 6) — TAHTA · AÇILIR SÖZLÜK VE GERİ TUŞU
+  sistem/tahta.js     açılır sözlük (kamus) sayfanın içinde ayrı bir çerçeve; köprü artık
+                      aynı sitenin iç çerçevelerine de kuruluyor (en çok 3 kat): sözlükte
+                      klavyeyle ya da ekran klavyesiyle yazılan, tıklanan, kaydırılan, Esc
+                      ile kapatılan her şey tahtada da olur; tahtadan yazılınca kumandada da.
+                      Sözlüğün (ve her sayfanın) "Geri" tuşu tahtayı tahta.html'den çıkarıp
+                      boş/siyah ekranda bırakıyordu: geçmiş artık yalnız çerçevenin içinde
+                      gezer; izleyen cihaz geri/ileri yapmaz, lideri adresle izler; çerçevenin
+                      ilk sayfasında "Geri" ana sayfayı açar (Navigation API yoksa sayım).
+  Betik: _kaynak/uretici/tahtaIcCerceve.py · kaynak ve deneme: _kaynak/tahta-ic-cerceve/
+  Yedek: _kaynak/yedekler/2026-10-18-tahta-ic-cerceve/
+
+18.10.2026 (akşam, 7) — SINIFLAR GİRİŞLE AÇILIR · ONAYSIZ ÖĞRETMEN ÖĞRETMEN SAYILMAZ
+  sistem/rol.js         öğretmen YETKİSİ (coz → ogretmen) onaya bağlı: ogretmenOnay
+                        'bekliyor'/'reddedildi' ise hiçbir sayfada öğretmen sayılmaz
+                        (bilgi yarışmasında "onay bekliyor" yazar, yönetim açılmaz);
+                        alanı olmayan eski hesaplar onaylı. Önbellek onay durumunu tutar.
+  sistem/erisim.js      onay perdesi rolle AYNI ANDA iner (auth.js belgeyi verir); aynı
+                        hesabın son bilinen durumu hemen uygulanır; dinleyici hata verirse
+                        kapı açılmaz; perdenin biçimi dosyanın içinde (başka sayfada da).
+  hesap/auth.js         belgeyi ve kayıtta yazılan belgeyi erisim.js'e verir, önbelleğe
+                        onay durumunu yazar.
+  sistem/siniflarim.js  07.10'daki çıkış sonrası "salt görünüm" kalktı; çıkışta kategori
+                        kapanır (okul paneli), giriş davetine döner.
+  sistem/oturumkapi.js  (YENİ) çıkışta okul penceresi, sınıf seçici, sınıf listesi kapanır;
+                        okul sekmesi kendini kapatır; sınıf sekmesi girişsiz açılırsa ya da
+                        çıkış yapılırsa "Giriş yapılması bekleniyor" — giriş yapılınca sınıf
+                        yeniden açılır. Girişsiz okul penceresi açılmaz (giriş penceresi açılır).
+                        Tarayıcıdaki sınıf kopyası silinmez, yalnız ekrana gelmez.
+  index.html            oturumkapi.js bağlandı.
+  Betik: _kaynak/uretici/oturumKapi.py · kaynak ve deneme: _kaynak/oturum-kapi/
+  Yedek: _kaynak/yedekler/2026-10-18-oturum-kapi/
+  NOT: asıl veri koruması Firestore kurallarındadır (dokunulmadı).
+
+18.10.2026 (akşam, 8) — CİHAZLARIM: HESABIN AÇIK OLDUĞU CİHAZLAR, UZAKTAN ÇIKIŞ
+  hesap/cihazlar.js   (YENİ) giriş yapılan her cihaz kullanicilar/{uid}.cihazlar alanına
+                      kendini yazar (ad: tarayıcı · sistem, tür: bilgisayar/telefon/tablet/
+                      akıllı tahta, son görülme; en çok 10 dk'da bir). Başlıktaki (telefonda
+                      çekmecedeki) Çıkış tuşu artık "Çıkış yap" penceresini açar: bu cihazdan
+                      çıkış, açık cihazların listesi, her birine "Çıkış yaptır", "Bütün
+                      cihazlardan çıkış yap". Başka cihazda da açıksa tuşun köşesinde sayı.
+                      Kapatılan cihaz açıksa anında, kapalıysa site ilk açıldığında çıkar ve
+                      "oturumun başka bir cihazdan kapatıldı" der. Bu cihazdan çıkılınca (elle,
+                      40 dk boşta, gece yarısı) kayıt silinir. Yeni koleksiyon yok: hesap kendi
+                      belgesini güncelliyor (Firestore kurallarına dokunulmadı).
+  index.html          hesap/cihazlar.js bağlandı.
+  Betik: _kaynak/uretici/cihazlarim.py · kaynak ve deneme: _kaynak/cihazlarim/
+  Yedek: _kaynak/yedekler/2026-10-18-cihazlarim/
+
+18.10.2026 (akşam, 9) — TAHTA · TAM EKRAN TUŞU (dokun uyarısı yok)
+  sistem/tahta.js     "Tam ekran için ekrana bir kez dokun" uyarısı kalktı; tahtaya dokunmak
+                      artık tam ekrana geçirmiyor. Sol ortadaki soluk yüzen tuş tam ekran
+                      değilken "Tam ekrana geç", tam ekrandayken "Tam ekrandan çık" (bekleme
+                      ekranında da). Yansıtma başlarken bir kez kendiliğinden denenir.
+  Betik: _kaynak/uretici/tahtaTamTus.py · kaynak ve deneme: _kaynak/tahta-tam-tus/
+  Yedek: _kaynak/yedekler/2026-10-18-tahta-tam-tus/

@@ -86,13 +86,18 @@ if (typeof firebase !== 'undefined' && isFirebaseReady) {
                             rol: selectedRole,
                             ogretmen: (selectedRole === 'teacher' || selectedRole === 'admin'),
                             isim: KidefRol.isimCoz(data, user),
-                            iz: data.role ? '' : KidefRol.ogretmenIzi(data)
+                            iz: data.role ? '' : KidefRol.ogretmenIzi(data),
+                            onay: data.ogretmenOnay || ''
                         });
                         if (!user.isAnonymous) KidefRol.onar(user, db, data);
                     } catch (e) { }
                 } else {
                     selectedRole = data.role || 'student';
                 }
+                /* ÖĞRETMEN ONAYI (18.10.2026): onay bekleyen öğretmenin perdesi
+                   rolle AYNI ANDA iner — öğretmen arayüzü bir an bile açılmaz
+                   (sistem/erisim.js). */
+                try { if (window.KidefErisim && KidefErisim.belgeGeldi) KidefErisim.belgeGeldi(user, data); } catch (e) { }
                 appState.currentUserGender = data.cinsiyet || '';
                 appState.currentUserMeslek = data.meslek || data.profession || '';
 
@@ -434,6 +439,16 @@ function authIslemi() {
                 showCustomAlert(regRole === 'teacher'
                     ? "Kaydın alındı. Öğretmen hesapları yönetici onayından sonra açılıyor; onaylandığında siteyi kullanabileceksin."
                     : "Kayıt başarılı!");
+                /* ÖĞRETMEN ONAYI (18.10.2026): yeni öğretmen kaydında onay
+                   perdesi, giriş tamamlanmadan önce iner; önbellek de bu
+                   hesabın onay durumunu bilir. */
+                try {
+                    if (window.KidefRol) KidefRol.onbellekYaz(userCredential.user.uid, {
+                        rol: regRole, ogretmen: regRole === 'teacher', isim: sName || '',
+                        onay: _kayit.ogretmenOnay || ''
+                    });
+                    if (window.KidefErisim && KidefErisim.belgeGeldi) KidefErisim.belgeGeldi(userCredential.user, _kayit);
+                } catch (e) { }
                 selectedRole = regRole;
                 isRegistering = false;
                 basariliGiris(email, phone ? ("+90" + phone) : "", sName || "");

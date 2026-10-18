@@ -26,8 +26,8 @@
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
 
-  { t: '2026-10-18', e: 'Dijital kitap', b: '6-10. sınıfın ders kitapları sitede, sayfa sayfa',
-    m: '6, 7, 8, 9 ve 10. sınıfın ders kitabı artık sitede sayfa çevirmeli olarak açılıyor: '
+  { t: '2026-10-18', e: 'Dijital kitap', b: '5-10. sınıfın ders kitapları sitede, sayfa sayfa',
+    m: '5, 6, 7, 8, 9 ve 10. sınıfın ders kitabı artık sitede sayfa çevirmeli olarak açılıyor: '
      + 'İmam Hatip bölümünde sınıfının ilk kartı «Ders Kitabı». Kitaptaki karekodların sesleri, '
      + 'videoları ve etkinlikleri sayfanın üstünde düğme olarak duruyor; telefonla karekod '
      + 'okutmadan tahtada dinletir, izletirsin. Yazı küçük kalırsa sayfanın bir bölgesine dokun, '
