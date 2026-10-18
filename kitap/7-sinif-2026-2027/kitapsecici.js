@@ -26,6 +26,17 @@
    kuruluyor (hem http hem file:// çalışır). Geçmiyorsa — Mac'teki ASIL
    klasör ya da flaşa indirilmiş tek kitap — siteye gider, panelde
    "çevrimdışı" notu çıkar.
+
+   SİTEYE DÖN (18.10.2026) — öğretmen: "flipbooklardan kidef arapça siteye
+   dönen bi tuş ta ekleyelim kitap seçme kısmının üstünde olsun, basınca
+   flip book sekmesi kapansa zaten siteden gelindiği için site anasayfa
+   görünür". Kitap seçme düğmesinin ÜSTÜNDE (yan çubukta; telefonun tek
+   satırlık üst şeridinde solunda, ev simgesi) "Kidef Arapça · siteye dön".
+   · Kitap siteden yeni sekmede açıldıysa (site sekmesi hâlâ açık): sekme
+     kapanır, arkadaki site görünür.
+   · Kapanamıyorsa (kitap doğrudan açıldı, site sekmesi kapanmış, tahtanın
+     çerçevesinde açık): aynı sekmede sitenin ana sayfası açılır. Site
+     dışındaki kopyada (Mac'teki asıl klasör, flaş) kidefarapca.com.
    ========================================================================== */
 (function () {
   'use strict';
@@ -68,6 +79,7 @@
       renk: '#E3A02A', im: 'K', asil: 'FLIPBOOK' }
   ];
   var SITE = 'https://kidefarapca.com/kitap/';
+  var SITE_ANA = 'https://kidefarapca.com/';
 
   function yol() { try { return decodeURIComponent(location.pathname); } catch (e) { return location.pathname; } }
   function kokDizin() {
@@ -92,6 +104,70 @@
     'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M4 4.6h4a2 2 0 0 1 2 2v12.8a1.6 1.6 0 0 0-1.6-1.6H4Z"/>' +
     '<path d="M20 4.6h-4a2 2 0 0 0-2 2v12.8a1.6 1.6 0 0 1 1.6-1.6H20Z"/></svg>';
+  var IK_SITE =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M3.6 10.8 12 4l8.4 6.8"/><path d="M5.9 9.3V20h4.3v-5.4h3.6V20h4.3V9.3"/></svg>';
+
+  /* ---------- siteye dön ---------- */
+  /* sitenin ana sayfası: kitap sitenin içindeyse (internetteki site ya da
+     bilgisayardaki site kopyası) oradaki index.html, değilse kidefarapca.com */
+  function siteAdresi() {
+    var h = location.href.split('#')[0].split('?')[0], i = h.lastIndexOf('/kitap/');
+    return i >= 0 ? h.slice(0, i + 1) + 'index.html' : SITE_ANA;
+  }
+  /* bu sekmeyi sitenin bir sekmesi mi açtı (ve o sekme hâlâ açık mı)? */
+  function siteSekmesi() {
+    try {
+      var o = window.opener;
+      if (!o || o.closed) return null;
+      return o.location.origin === location.origin ? o : null;   /* başka sitenin açtığı sekme kapanmaz */
+    } catch (e) { return null; }
+  }
+  function siteyeDon(e) {
+    if (e) e.preventDefault();
+    var hedef = siteAdresi(), ustte = true;
+    try { ustte = window.top === window.self; } catch (x) { ustte = false; }
+    var site = ustte ? siteSekmesi() : null;
+    if (site) {
+      /* siteden açılan sekme: kapanır, arkadaki site görünür */
+      try { site.focus(); } catch (x) { }
+      try { window.close(); } catch (x) { }
+      if (window.closed) return;
+      setTimeout(function () { if (!window.closed) location.href = hedef; }, 350);
+      return;
+    }
+    location.href = hedef;              /* kapanamaz: sitenin ana sayfası bu sekmede */
+  }
+  function donusKur(m) {
+    if (document.getElementById('ksDon')) return;
+    var ust = document.querySelector('.ust');
+    if (!ust) return;
+    var b = document.createElement('a');
+    b.id = 'ksDon';
+    b.className = 'ks-don';
+    b.href = siteAdresi();
+    b.title = 'Kidef Arapça sitesine dön';
+    b.setAttribute('aria-label', 'Kidef Arapça sitesine dön');
+    b.innerHTML = IK_SITE + '<span class="ks-don-yazi"><b>Kidef Arapça</b><small>siteye dön</small></span>';
+    b.addEventListener('click', siteyeDon);
+    if (m && m.parentNode === ust) ust.insertBefore(b, m);
+    else ust.insertBefore(b, ust.firstChild);
+    /* telefonda ev düğmesi kitap adından yer alır: ad simge çekilince sığacaksa simge çekilir */
+    var z = null;
+    window.addEventListener('resize', function () { clearTimeout(z); z = setTimeout(markaSigdir, 120); });
+    try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(markaSigdir); } catch (e) { }
+    setTimeout(markaSigdir, 60);
+  }
+  function markaSigdir() {
+    var m = document.querySelector('.ust .marka.ks-marka');
+    if (!m) return;
+    m.classList.remove('ks-sik');
+    var b = m.querySelector('b'), ik = m.querySelector('.ks-kik');
+    if (!b || !ik || window.innerWidth >= 760) return;
+    var tasan = b.scrollWidth - b.clientWidth;
+    if (tasan > 1 && tasan <= ik.offsetWidth + 10) m.classList.add('ks-sik');
+  }
 
   /* ---------- biçimler (kitabın CSS'ine dokunulmuyor) ---------- */
   function stilKur() {
@@ -119,6 +195,34 @@
         '.ks-sag{padding:3px 6px;}}' +
       '@media (max-width:480px){.ust .marka.ks-marka{gap:6px;padding:4px 6px;}.ks-kik{display:none;}}' +
       '.ks-tus svg{width:20px;height:20px;}' +
+
+      /* --- siteye dön: telefonun üst şeridinde yalnız ev simgesi (kitap
+             seçmenin solunda), yan çubukta kitap seçmenin üstünde yazılı --- */
+      '.ks-don{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:9px;' +
+        'height:38px;min-width:38px;padding:0 9px;border-radius:12px;box-sizing:border-box;' +
+        'text-decoration:none;color:#0E7C66;background:rgba(22,160,133,.1);' +
+        'border:1px solid rgba(22,160,133,.28);cursor:pointer;-webkit-tap-highlight-color:transparent;' +
+        'transition:background .15s,color .15s,border-color .15s;}' +
+      '.ks-don:hover{background:#16A085;border-color:#16A085;color:#fff;}' +
+      '.ks-don:focus-visible{outline:2px solid #16A085;outline-offset:2px;}' +
+      '.ks-don:active{transform:scale(.98);}' +
+      '.ks-don svg{width:19px;height:19px;flex:none;}' +
+      '.ks-don-yazi{display:none;}' +
+      '@media (min-width:760px){' +
+        'html.yanli .ks-don{width:100%;height:auto;min-height:42px;justify-content:flex-start;' +
+          'padding:6px 10px;flex:0 0 auto;}' +
+        'html.yanli .ks-don-yazi{display:flex;flex-direction:column;min-width:0;line-height:1.18;text-align:left;}' +
+        'html.yanli .ks-don-yazi b{font-size:13px;font-weight:800;white-space:nowrap;' +
+          'overflow:hidden;text-overflow:ellipsis;}' +
+        'html.yanli .ks-don-yazi small{font-size:10.5px;font-weight:700;opacity:.82;}' +
+        'html.yanli.dar .ks-don{width:38px;height:38px;min-height:0;padding:0;' +
+          'justify-content:center;align-self:center;}' +
+        'html.yanli.dar .ks-don-yazi{display:none;}' +
+      '}' +
+      /* dar telefonda kitap adı sığsın: ev düğmesi küçülür; ad yine taşıyorsa ve
+         simge çekilince sığacaksa kitap kartındaki simge çekilir (markaSigdir) */
+      'html .ust .marka.ks-marka.ks-sik .ks-kik{display:none;}' +
+      '@media (max-width:380px){.ks-don{min-width:34px;height:34px;padding:0 7px;}}' +
 
       /* --- perde + SOLDAN açılan panel --- */
       '.ks-perde{position:fixed;inset:0;z-index:9100;background:rgba(12,18,30,.55);' +
@@ -275,6 +379,7 @@
   function kur() {
     stilKur();
     var m = document.querySelector('.ust .marka');
+    donusKur(m);                       /* siteye dön: kitap seçmenin üstünde */
     if (m && !m.getAttribute('data-ks')) {
       m.setAttribute('data-ks', '1');
       m.classList.add('ks-marka');
@@ -308,5 +413,6 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur);
   else kur();
 
-  window.KitapSecici = { ac: ac, kapat: kapat, kitaplar: function () { return KITAPLAR.slice(); } };
+  window.KitapSecici = { ac: ac, kapat: kapat, kitaplar: function () { return KITAPLAR.slice(); },
+    siteyeDon: siteyeDon };
 })();

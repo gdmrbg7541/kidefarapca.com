@@ -12626,3 +12626,15 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       kumandaya döner (ders tahtada sürüyorsa; "Bitir"den sonra dönmez).
   Betik: _kaynak/uretici/kumandaDonus.py · kaynak ve deneme: _kaynak/kumanda-donus/
   Yedek: _kaynak/yedekler/2026-10-18-kumanda-donus/
+
+18.10.2026 (akşam, 4) — FLIPBOOK'LARDA «KİDEF ARAPÇA · SİTEYE DÖN»
+  _kaynak/ortak-kitap/kitapsecici.js → bütün kitaplar (kitapOrtakla.py; 10 kitap + Mac'teki
+                      asıl Kidef klasörü). Yan çubukta kitap seçme kartının ÜSTÜNDE
+                      "Kidef Arapça · siteye dön" (ev simgesi); daraltınca yalnız simge;
+                      telefonun üst şeridinde kitap seçmenin solunda ev simgesi.
+                      Kitap siteden yeni sekmede açıldıysa sekme kapanır, arkadaki site
+                      görünür; kapanamıyorsa (doğrudan açıldı, site sekmesi kapanmış,
+                      tahtanın çerçevesi) aynı sekmede sitenin ana sayfası açılır. Site
+                      dışındaki kopyada (flaş, asıl klasör) kidefarapca.com.
+  Damgalar: 10 kitabın index.html'i (kitapsecici.js?v=da4ac0b7).
+  Yedek: _kaynak/yedekler/2026-10-18-siteye-don/
