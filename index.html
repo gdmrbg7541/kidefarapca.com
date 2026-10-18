@@ -1628,6 +1628,96 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       }
       .dok-tus:hover { background: #0E7C66; border-color: #0E7C66; color: #fff; }
     </style>
+    <!-- «SINIFTA YENİ» + GALERİ — 18.10.2026, öğretmen: "sitede yeni ve galeri
+         kısmını sınıflarım kategorisinden sonraya alalım." Sıra: katalog →
+         Sınıflarım (yalnız öğretmen; sistem/siniflarim.js bu bölümün ÖNÜNE koyar)
+         → Sınıfta Yeni + Galeri → İmam Hatip. (06.10'da İmam Hatip'in altındaydı.)
+         Bölüm olduğu gibi taşındı; içeriğine dokunulmadı. -->
+    <section id="guncellemeler" class="content-section">
+      <div class="gd-kutu">
+        <!-- tabindex: kutu odaktayken ← → tuşlarıyla da gezilebilsin -->
+        <!-- 04.10.2026: yenilikleri DUYURAN bölüm — ama teknik dille değil.
+             Her kayıt, yeniliğin sınıfta ne işe yaradığını ve nasıl
+             uygulandığını anlatır (sistem/siniftayeni.js). Teknik ayrıntı
+             YUKLENECEKLER.txt'ye, site içi şerit yenilikler.js'e yazılır. -->
+        <div class="gd-sol" tabindex="0" data-i18n-aria="yeni.sinifta" aria-label="Sınıfta Yeni">
+          <h3 class="gd-bas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0E9E86" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9.4 17.4h5.2"/><path d="M10 20.2h4"/>
+              <path d="M12 3.4a6 6 0 0 1 3.6 10.8c-.6.5-.9 1.1-1 1.8H9.4c-.1-.7-.4-1.3-1-1.8A6 6 0 0 1 12 3.4z"/>
+              <path d="M10.2 10.4 12 12.2l1.8-1.8"/>
+            </svg>
+            <span data-i18n="yeni.sinifta">Sınıfta Yeni</span>
+          </h3>
+          <!-- oklar .gd-govde'nin iki yanına, dikeyde ortalı olarak
+               sistem/galeri.js tarafından konur -->
+          <div class="gd-govde"><div class="gd-duyuru"></div></div>
+          <div class="gd-sol-alt gd-alt"></div>
+        </div>
+        <div class="gd-sag" tabindex="0" aria-label="Galeri">
+          <!-- Galeri çevresi süsleri: fotoğraf makinesi, polaroid, film şeridi,
+               manzara karesi ve iki parıltı. Yalnız süs; aria-hidden ve
+               pointer-events:none (biçim #gdCss içinde). -->
+          <span class="gd-susler" aria-hidden="true">
+            <svg class="s1" viewBox="0 0 24 24"><path d="M3.4 8.6h3.1l1.5-2.4h8l1.5 2.4h3.1v10.2H3.4z"/><circle cx="12" cy="13.3" r="3.6"/></svg>
+            <svg class="s2" viewBox="0 0 24 24"><rect x="4" y="3.6" width="16" height="16.8" rx="1.6"/><rect x="6.6" y="6.2" width="10.8" height="8.6" rx="1"/><path d="M7.4 17.8h5.2"/></svg>
+            <svg class="s3" viewBox="0 0 24 24"><rect x="2.8" y="5.4" width="18.4" height="13.2" rx="1.6"/><path d="M2.8 9h18.4M2.8 15h18.4M7 5.4v13.2M17 5.4v13.2"/></svg>
+            <svg class="s4" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2.2"/><circle cx="8.6" cy="9.6" r="1.7"/><path d="M3.6 16.6l4.6-4.1a1.8 1.8 0 0 1 2.4 0l3 2.7"/><path d="M14 14.6l1.8-1.6a1.8 1.8 0 0 1 2.4 0l2.2 2"/></svg>
+            <svg class="s5" viewBox="0 0 24 24"><path d="M12 3.4l1.9 4.9 4.9 1.9-4.9 1.9L12 17l-1.9-4.9L5.2 10.2l4.9-1.9z"/></svg>
+            <svg class="s6" viewBox="0 0 24 24"><path d="M12 4.6v5M12 14.4v5M4.6 12h5M14.4 12h5"/></svg>
+          </span>
+          <h3 class="gd-bas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0E9E86" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3.2" y="5" width="17.6" height="14" rx="2.4"/>
+              <circle cx="8.6" cy="10" r="1.7"/>
+              <path d="M3.6 16.4l4.6-4.1a1.8 1.8 0 0 1 2.4 0l3 2.7"/>
+              <path d="M14 14.6l1.8-1.6a1.8 1.8 0 0 1 2.4 0l2.2 2"/>
+            </svg>
+            Galeri
+          </h3>
+          <div class="gd-govde"><div class="gd-foto"></div></div>
+          <div class="gd-sag-alt gd-alt"></div>
+          <!-- 03.10.2026, öğretmen isteği: sınıfından fotoğraf göndermek
+               isteyene çağrı; öğrencilerin yüzü kapalı olmak şartıyla. -->
+          <p class="gd-not">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 11.5a8.5 8.5 0 1 1 3.3 6.7L3 19.5l1.1-3.1A8.4 8.4 0 0 1 3 11.5z"/>
+              <path d="M9 10.8h6M9 13.8h4"/>
+            </svg>
+            <span>Sınıfınızdan fotoğraf paylaşmak isterseniz
+              <a href="mailto:kidefarapca@gmail.com?subject=Galeri%20i%C3%A7in%20foto%C4%9Fraf">kidefarapca@gmail.com</a>
+              adresine gönderebilirsiniz. <b>Öğrencilerin yüzleri kapalı olmalı</b>
+              (bulanıklaştırılmış ya da arkadan çekilmiş).</span>
+          </p>
+        </div>
+      </div>
+    </section>
+    <script>
+    /* SINIFTA YENİ + GALERİ YALNIZ GİRİŞ YAPANA (17.10.2026): hesapla giriş
+       yapılınca <html>'e kd-girisli konur, çıkışta kalkar. Misafir (anonim)
+       kimlik sayılmaz. Firebase'i hesap/auth.js kuruyor; o yüzden kurulunca
+       bağlanır. */
+    (function () {
+      function yaz(u) {
+        document.documentElement.classList.toggle('kd-girisli', !!(u && !u.isAnonymous));
+      }
+      function bagla() {
+        try {
+          if (!window.firebase || !firebase.apps || !firebase.apps.length) return false;
+          firebase.auth().onAuthStateChanged(yaz);
+          return true;
+        } catch (e) { return false; }
+      }
+      if (bagla()) return;
+      document.addEventListener('DOMContentLoaded', function () {
+        if (bagla()) return;
+        var n = 0, t = setInterval(function () { if (bagla() || ++n > 40) clearInterval(t); }, 250);
+      });
+    })();
+    </script>
     <section id="imam-hatip" class="content-section">
       <h2>
         <svg class="kbas" viewBox="0 0 64 64" aria-hidden="true">
@@ -1924,96 +2014,6 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
     </section>
 
-    <!-- «SINIFTA YENİ» + GALERİ (06.10.2026) — öğretmen: "sınıfta yeni
-         ve galeri kısmını imam hatip kategorisinin altına al."
-         Bölüm olduğu gibi buraya taşındı; içeriğine dokunulmadı.
-         NOT: sistem/siniflarim.js çapasını #imam-hatip'e çevirdi,
-         yoksa Sınıflarım da bu bölümle birlikte aşağı inecekti. -->
-    <section id="guncellemeler" class="content-section">
-      <div class="gd-kutu">
-        <!-- tabindex: kutu odaktayken ← → tuşlarıyla da gezilebilsin -->
-        <!-- 04.10.2026: yenilikleri DUYURAN bölüm — ama teknik dille değil.
-             Her kayıt, yeniliğin sınıfta ne işe yaradığını ve nasıl
-             uygulandığını anlatır (sistem/siniftayeni.js). Teknik ayrıntı
-             YUKLENECEKLER.txt'ye, site içi şerit yenilikler.js'e yazılır. -->
-        <div class="gd-sol" tabindex="0" data-i18n-aria="yeni.sinifta" aria-label="Sınıfta Yeni">
-          <h3 class="gd-bas">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#0E9E86" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M9.4 17.4h5.2"/><path d="M10 20.2h4"/>
-              <path d="M12 3.4a6 6 0 0 1 3.6 10.8c-.6.5-.9 1.1-1 1.8H9.4c-.1-.7-.4-1.3-1-1.8A6 6 0 0 1 12 3.4z"/>
-              <path d="M10.2 10.4 12 12.2l1.8-1.8"/>
-            </svg>
-            <span data-i18n="yeni.sinifta">Sınıfta Yeni</span>
-          </h3>
-          <!-- oklar .gd-govde'nin iki yanına, dikeyde ortalı olarak
-               sistem/galeri.js tarafından konur -->
-          <div class="gd-govde"><div class="gd-duyuru"></div></div>
-          <div class="gd-sol-alt gd-alt"></div>
-        </div>
-        <div class="gd-sag" tabindex="0" aria-label="Galeri">
-          <!-- Galeri çevresi süsleri: fotoğraf makinesi, polaroid, film şeridi,
-               manzara karesi ve iki parıltı. Yalnız süs; aria-hidden ve
-               pointer-events:none (biçim #gdCss içinde). -->
-          <span class="gd-susler" aria-hidden="true">
-            <svg class="s1" viewBox="0 0 24 24"><path d="M3.4 8.6h3.1l1.5-2.4h8l1.5 2.4h3.1v10.2H3.4z"/><circle cx="12" cy="13.3" r="3.6"/></svg>
-            <svg class="s2" viewBox="0 0 24 24"><rect x="4" y="3.6" width="16" height="16.8" rx="1.6"/><rect x="6.6" y="6.2" width="10.8" height="8.6" rx="1"/><path d="M7.4 17.8h5.2"/></svg>
-            <svg class="s3" viewBox="0 0 24 24"><rect x="2.8" y="5.4" width="18.4" height="13.2" rx="1.6"/><path d="M2.8 9h18.4M2.8 15h18.4M7 5.4v13.2M17 5.4v13.2"/></svg>
-            <svg class="s4" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2.2"/><circle cx="8.6" cy="9.6" r="1.7"/><path d="M3.6 16.6l4.6-4.1a1.8 1.8 0 0 1 2.4 0l3 2.7"/><path d="M14 14.6l1.8-1.6a1.8 1.8 0 0 1 2.4 0l2.2 2"/></svg>
-            <svg class="s5" viewBox="0 0 24 24"><path d="M12 3.4l1.9 4.9 4.9 1.9-4.9 1.9L12 17l-1.9-4.9L5.2 10.2l4.9-1.9z"/></svg>
-            <svg class="s6" viewBox="0 0 24 24"><path d="M12 4.6v5M12 14.4v5M4.6 12h5M14.4 12h5"/></svg>
-          </span>
-          <h3 class="gd-bas">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#0E9E86" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="3.2" y="5" width="17.6" height="14" rx="2.4"/>
-              <circle cx="8.6" cy="10" r="1.7"/>
-              <path d="M3.6 16.4l4.6-4.1a1.8 1.8 0 0 1 2.4 0l3 2.7"/>
-              <path d="M14 14.6l1.8-1.6a1.8 1.8 0 0 1 2.4 0l2.2 2"/>
-            </svg>
-            Galeri
-          </h3>
-          <div class="gd-govde"><div class="gd-foto"></div></div>
-          <div class="gd-sag-alt gd-alt"></div>
-          <!-- 03.10.2026, öğretmen isteği: sınıfından fotoğraf göndermek
-               isteyene çağrı; öğrencilerin yüzü kapalı olmak şartıyla. -->
-          <p class="gd-not">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M3 11.5a8.5 8.5 0 1 1 3.3 6.7L3 19.5l1.1-3.1A8.4 8.4 0 0 1 3 11.5z"/>
-              <path d="M9 10.8h6M9 13.8h4"/>
-            </svg>
-            <span>Sınıfınızdan fotoğraf paylaşmak isterseniz
-              <a href="mailto:kidefarapca@gmail.com?subject=Galeri%20i%C3%A7in%20foto%C4%9Fraf">kidefarapca@gmail.com</a>
-              adresine gönderebilirsiniz. <b>Öğrencilerin yüzleri kapalı olmalı</b>
-              (bulanıklaştırılmış ya da arkadan çekilmiş).</span>
-          </p>
-        </div>
-      </div>
-    </section>
-    <script>
-    /* SINIFTA YENİ + GALERİ YALNIZ GİRİŞ YAPANA (17.10.2026): hesapla giriş
-       yapılınca <html>'e kd-girisli konur, çıkışta kalkar. Misafir (anonim)
-       kimlik sayılmaz. Firebase'i hesap/auth.js kuruyor; o yüzden kurulunca
-       bağlanır. */
-    (function () {
-      function yaz(u) {
-        document.documentElement.classList.toggle('kd-girisli', !!(u && !u.isAnonymous));
-      }
-      function bagla() {
-        try {
-          if (!window.firebase || !firebase.apps || !firebase.apps.length) return false;
-          firebase.auth().onAuthStateChanged(yaz);
-          return true;
-        } catch (e) { return false; }
-      }
-      if (bagla()) return;
-      document.addEventListener('DOMContentLoaded', function () {
-        if (bagla()) return;
-        var n = 0, t = setInterval(function () { if (bagla() || ++n > 40) clearInterval(t); }, 250);
-      });
-    })();
-    </script>
 
 
 
@@ -5795,7 +5795,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
            2027-2028 MEB kitabının sayfa çevirmeli kopyası kitap/
            7-sinif-2027-2028/ altında DURUYOR ama GİZLİ (02.10.2026):
            resmî olarak yayınlanamadığı için karttan bağlantı verilmez,
-           kitap seçicide görünmez ve indirilemez; kart portala gider. */
+           kitap seçicide görünmez ve indirilemez. Kart iki seçimde de bizim
+           flipbook'a (Mektep kitabı) gider (18.10.2026). */
         '7': {
           /* Mektep kitabı sitede (17.10.2026): kitap/7-sinif-2026-2027/ — sayfa
              çevirmeli kitap, 105 ses içinden açılır; sayfa resimleri ve sesler
@@ -5804,7 +5805,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           '2026-2027': { url: 'kitap/7-sinif-2026-2027/index.html', etiket: 'DİJİTAL KİTAP',
             ipucu: '7. sınıf Arapça ders kitabı (Mektep Yayınları, 2026-2027) — sayfa çevirmeli ' +
                    'kitap; sesler içinde; yeni sekmede açılır' },
-          '2027-2028': portalKitap('7')
+          /* 18.10.2026 — öğretmen: "index te 7. sınıf kitabı için eski link duruyor,
+             onu bizim flipbook için ayarla": 2027-2028 seçiliyken de kart portala
+             değil bizim flipbook'a gider (2027-2028 kopyası yine gizli). */
+          '2027-2028': { url: 'kitap/7-sinif-2026-2027/index.html', etiket: 'DİJİTAL KİTAP',
+            ipucu: '7. sınıf Arapça ders kitabı — bu yıl okutulan Mektep Yayınları kitabı ' +
+                   '(2026-2027), sayfa çevirmeli; 2027-2028 kitabı henüz yayında değil; yeni sekmede açılır' }
         },
         /* 8. sınıf kitabı sitede (17.10.2026): kitap/8-sinif-2026-2027/ — MEB'in
            2026-2027 kitabından sayfa çevirmeli kitap; 132 ses, 2 video ve EBA
@@ -8011,7 +8017,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + butonu olsun ... sınıflara header yerine galeri ve site
          güncellemelerinin üstünde bi kategori olarak hızlıca
          ulaşabilsin." Bölümü kendisi, Güncellemeler'in üstüne koyar. -->
-    <script src="sistem/siniflarim.js?v=f204ebfe"></script>
+    <script src="sistem/siniflarim.js?v=5d7a035e"></script>
     <!-- SINIF MATERYALLERİ SEKMESİ (06.10.2026): açık sınıfın seviyesine
          ait İmam Hatip belgeleri ve etkinlik kartları, sınıfın kendi
          panelinde. Kopya değil, aynı kaynaktan çizim. -->

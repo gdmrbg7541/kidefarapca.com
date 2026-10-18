@@ -849,12 +849,13 @@
             bolum = document.createElement('section');
             bolum.id = BOLUM_ID;
             bolum.className = 'content-section';
-            /* ÇAPA #imam-hatip (06.10.2026): «Sınıfta Yeni» + Galeri bölümü
-               İmam Hatip'in altına taşındı; eski çapa (#guncellemeler)
-               korunsaydı Sınıflarım da onunla birlikte aşağı inerdi.
-               Sınıflarım en üstte, kataloğun altında kalmalı. */
-            var once = document.getElementById('imam-hatip') ||
-                       document.getElementById('guncellemeler');
+            /* ÇAPA #guncellemeler (18.10.2026) — öğretmen: "sitede yeni ve galeri
+               kısmını sınıflarım kategorisinden sonraya alalım". Sıra: katalog →
+               Sınıflarım → Sınıfta Yeni + Galeri → İmam Hatip. Sınıflarım
+               en üstte, kataloğun altında kalmalı. (06.10–18.10 arası bölüm
+               İmam Hatip'in altındaydı, çapa #imam-hatip'ti.) */
+            var once = document.getElementById('guncellemeler') ||
+                       document.getElementById('imam-hatip');
             if (once && once.parentNode) once.parentNode.insertBefore(bolum, once);
             else {
                 var hub = document.getElementById('home-hub-section');
