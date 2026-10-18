@@ -12,8 +12,14 @@
      (tahtan bağlı mı, bilgisayarın yansıtıyor mu).
    · Tahta olarak kullanılan cihaz bunu hatırlar (localStorage
      kidef_tahta_cihaz = 'tahta'): ana sayfası açık dururken bilgisayarda
-     yansıtma başlarsa 5 saniyelik geri sayımla kendiliğinden tahta
-     görünümüne geçer — tahtaya hiç dokunmak gerekmez ("Vazgeç" ile durur).
+     yansıtma başlarsa HEMEN tahta görünümüne geçer — tahtaya hiç dokunmak
+     gerekmez. (18.10.2026, öğretmen: "akıllı tahta olarak kullanılan
+     cihazda geri sayım ve akıllı tahta veya bilgisayar olarak kullan
+     ekranı çıkıyor buna hiç gerek yok": 5 saniyelik geri sayım sorusu
+     kalktı; tahta cihazında başlıktaki düğme de seçim paneli açmadan
+     doğrudan tahta görünümünü açar. Tahta görünümünden "Çık" ile
+     ayrılınca aynı yansıtma sürdükçe geri dönülmez; yeni yansıtmada döner.
+     "Bu cihaz tahta değil" bağlantısı tahta görünümünün bekleme ekranında.)
    · Canlı veritabanı (Firebase Realtime Database) yalnız gerektiğinde
      yüklenir: panel açılınca ya da cihaz tahta olarak işaretliyse.
    Motor ve veritabanı kuralı: sistem/tahta.js.
@@ -195,6 +201,8 @@
     d.innerHTML = '<span class="thg-nokta ' + sinif + '"></span><span>' + kac(m) + '</span>';
   }
   function panelAc() {
+    /* tahta cihazında seçim paneli yok: doğrudan tahta görünümü (18.10.2026) */
+    if (tahtaCihazi() && kullanici()) { git('izle'); return; }
     stilKur();
     panelKapat();
     var p = document.createElement('div');
@@ -246,37 +254,27 @@
     location.href = 'tahta.html?rol=' + rol + (rol === 'yansit' ? '&sayfa=' + encodeURIComponent(sayfa) : '');
   }
 
-  /* ------------------------------- tahta cihazı: yansıtma başlayınca geç */
-  var soruZ = null, soruSayac = 0, soruRed = 0;
+  /* ------------------------------- tahta cihazı: yansıtma başlayınca geç
+     Geri sayım ve soru YOK (18.10.2026): yansıtma başlar başlamaz tahta
+     görünümü açılır. Tahta görünümünden "Çık" ile ayrılınmışsa
+     (sistem/tahta.js → localStorage kidef_tahta_birakti) AYNI yansıtma
+     sürdükçe geri dönülmez — yoksa ana sayfaya çıkan tahta hemen geri
+     sürüklenirdi; bilgisayar yeni bir yansıtma başlatınca döner. */
+  var soruZ = null, gidiyor = false;
+  function birakildiMi() {
+    var b = null;
+    try { b = JSON.parse(localStorage.getItem('kidef_tahta_birakti') || 'null'); } catch (e) { }
+    if (!b) return false;
+    if (b.bas && yayin && yayin.bas) return b.bas === yayin.bas;      /* aynı yansıtma oturumu */
+    return Date.now() - (b.t || 0) < 10 * 60000;                       /* eski bilgisayar sürümü: 10 dk */
+  }
   function soruKontrol() {
-    if (!tahtaCihazi()) return;
+    if (!tahtaCihazi() || gidiyor) return;
     var taze = yayinVar() && !yayin.durak;
-    if (!taze) { soruKapat(); return; }
-    if ($('thgSoru') || Date.now() - soruRed < 10 * 60000) return;
-    stilKur();
-    soruSayac = 5;
-    var s = document.createElement('div');
-    s.id = 'thgSoru';
-    s.innerHTML = '<span><b>' + kac(kd('th.s_bas', 'Bilgisayarın yansıtıyor')) + '</b><small id="thgSoruAlt"></small></span>' +
-      '<button type="button" class="evet" data-thgs="evet">' + kac(kd('th.s_ac', 'Tahtada aç')) + '</button>' +
-      '<button type="button" class="hayir" data-thgs="hayir">' + kac(kd('th.s_vazgec', 'Vazgeç')) + '</button>';
-    s.addEventListener('click', function (e) {
-      var t = e.target.closest ? e.target.closest('[data-thgs]') : null;
-      if (!t) return;
-      if (t.getAttribute('data-thgs') === 'evet') git('izle');
-      else { soruRed = Date.now(); soruKapat(); }
-    });
-    document.body.appendChild(s);
-    var yaz = function () {
-      var a = $('thgSoruAlt');
-      if (a) a.textContent = kd('th.s_alt', '{n} saniye içinde tahta görünümü açılıyor', { n: soruSayac });
-    };
-    yaz();
-    soruZ = setInterval(function () {
-      soruSayac -= 1;
-      if (soruSayac <= 0) { soruKapat(); git('izle'); return; }
-      yaz();
-    }, 1000);
+    if (!taze || birakildiMi()) return;
+    gidiyor = true;
+    soruKapat();
+    git('izle');
   }
   function soruKapat() {
     clearInterval(soruZ); soruZ = null;

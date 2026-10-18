@@ -139,9 +139,15 @@
          2. k.sitePdf        → sitedeki sıkıştırılmış PDF (ders sunuları)
          3. yoksa            → sunum.html göstericisi (oyun slaytları)
        Siteye yalnız ders sunuları konuyor (öğretmenin kararı): oyun
-       slaytları 865 MB ve sınıfta kendi bilgisayarından açılıyor. */
+       slaytları 865 MB ve sınıfta kendi bilgisayarından açılıyor.
+       18.10.2026 — öğretmen: "sunumları html ye çevirmeye çalışmıştık hep siyah
+       olmuş onları da pdf olarak açılsın": 19 oyun/etkinlik sunusu da PDF
+       (ağırları slayt resmiyle küçültüldü) — kidefarapca-materyal-kidef
+       deposunda; sitePdf orayı gösteren tam adres. */
     if (k.pdf && PDF_VAR) return pdfAdres(k.pdf);
-    if (k.sitePdf) return pdfAdres(k.sitePdf);
+    /* 18.10.2026: oyun/etkinlik sunularının PDF'leri ayrı depoda (kidefarapca-materyal-kidef):
+       sitePdf tam adresse olduğu gibi açılır */
+    if (k.sitePdf) return /^https?:\/\//.test(k.sitePdf) ? k.sitePdf : pdfAdres(k.sitePdf);
     var q = { d: k.klasor, n: k.adet, a: k.ad };
     return 'sunum.html?' + new URLSearchParams(q);
   }

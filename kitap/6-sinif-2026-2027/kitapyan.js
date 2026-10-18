@@ -280,3 +280,107 @@
     basla();
   }
 })();
+
+/* ============================================================
+   İNDİR YALNIZ GİRİŞ YAPANLARA                            17.10.2026
+   Öğretmen: "flipbooklardaki indir özelliğine siteye giriş yapanlar
+   sahip olsun" · 18.10.2026: "siteye giriş yapmayanlara 5-10 arası
+   kitapları flipbookları indirme seçeneği görünmesin flipbook
+   motorunda".
+
+   Kitap sitenin içinde (kidefarapca.com/kitap/…) açıldığında, siteye
+   giriş yapılmamışsa "İndir" düğmesi (flaş/bilgisayar paketi) ve
+   Kaynaklar listesindeki tek tek "İndir" bağlantıları HİÇ GÖRÜNMEZ.
+   Giriş anlaşılana kadar da gizli durur (bir an görünüp kaybolmaz);
+   girişliyse belirir. Giriş yapıp bu sekmeye dönünce kendiliğinden
+   görünür. Kitabı okumak, sesleri ve videoları açmak herkese açık.
+
+   Giriş nereden anlaşılıyor: site Firebase'le giriş yapıyor; Firebase
+   oturumu aynı sitedeki tarayıcı deposunda tutuyor (IndexedDB
+   "firebaseLocalStorageDb", oturumluk girişte sessionStorage). Kitap
+   sayfası Firebase'i yüklemeden yalnız orayı okur; misafir (anonim)
+   kimlik giriş sayılmaz. Depo yoksa hiçbir şey OLUŞTURULMAZ.
+   Bilgisayardan (file://) açılan indirilmiş kopyada gizleme yok.
+   ============================================================ */
+(function () {
+  'use strict';
+  if (location.protocol === 'file:') return;
+  var kok = document.documentElement;
+  var izin = null;                                    /* null: henüz bilinmiyor */
+  /* başta gizli: giriş anlaşılınca açılır */
+  try {
+    var st = document.createElement('style');
+    st.id = 'ikStil';
+    st.textContent = 'html.ik-girissiz #tIndir, html.ik-girissiz #pIndir,' +
+      ' html.ik-girissiz a[download]:not([href^="blob:"]):not([href^="data:"]){display:none !important}';
+    (document.head || kok).appendChild(st);
+  } catch (e) { }
+  kok.classList.add('ik-girissiz');
+
+  function depodaVar(depo) {
+    try {
+      for (var i = 0; i < depo.length; i++) {
+        var k = depo.key(i);
+        if (k && k.indexOf('firebase:authUser:') === 0) {
+          var v = JSON.parse(depo.getItem(k) || 'null');
+          if (v && v.uid && !v.isAnonymous) return true;
+        }
+      }
+    } catch (e) { }
+    return false;
+  }
+  function girisVarMi() {
+    return new Promise(function (bitir) {
+      var oldu = false;
+      function son(v) { if (!oldu) { oldu = true; bitir(v); } }
+      try { if (depodaVar(window.localStorage) || depodaVar(window.sessionStorage)) return son(true); } catch (e) { }
+      if (!window.indexedDB) return son(false);
+      setTimeout(function () { son(false); }, 3000);
+      var r;
+      try { r = indexedDB.open('firebaseLocalStorageDb'); } catch (e) { return son(false); }
+      /* depo yoksa açmak onu oluşturur — oluşturmadan vazgeç */
+      r.onupgradeneeded = function () { try { r.transaction.abort(); } catch (e) { } };
+      r.onerror = function (e) { try { e.preventDefault(); } catch (x) { } son(false); };
+      r.onblocked = function () { son(false); };
+      r.onsuccess = function () {
+        var db = r.result;
+        try {
+          if (!db.objectStoreNames.contains('firebaseLocalStorage')) { db.close(); return son(false); }
+          var c = db.transaction('firebaseLocalStorage', 'readonly').objectStore('firebaseLocalStorage').openCursor();
+          c.onsuccess = function () {
+            var k = c.result;
+            if (!k) { db.close(); return son(false); }
+            var x = k.value || {}, v = x.value;
+            if (String(x.fbase_key || k.key || '').indexOf('firebase:authUser:') === 0 && v && v.uid && !v.isAnonymous) {
+              db.close(); return son(true);
+            }
+            k.continue();
+          };
+          c.onerror = function () { db.close(); son(false); };
+        } catch (e) { try { db.close(); } catch (x) { } son(false); }
+      };
+    });
+  }
+
+  /* gizliyken bir yoldan tıklanırsa (ör. kalan bir kısayol) yine açılmasın */
+  document.addEventListener('click', function (e) {
+    if (izin === true || !e.target || !e.target.closest) return;
+    var a = e.target.closest('a[download]');
+    if (a && /^(blob|data):/i.test(a.getAttribute('href') || '')) a = null;   /* hazırlanan ZIP'in kendisi */
+    if (e.target.closest('#tIndir') || a) {
+      e.preventDefault(); e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    }
+  }, true);
+
+  function tazele() {
+    girisVarMi().then(function (v) {
+      izin = v;
+      kok.classList.toggle('ik-girissiz', !v);
+    });
+  }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) tazele(); });
+  window.addEventListener('focus', tazele);
+  window.addEventListener('pageshow', tazele);
+  tazele();
+})();

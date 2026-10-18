@@ -9,6 +9,12 @@
       Hareket sayacı SEKMELER ARASI ORTAKTIR (localStorage + storage
       olayı): index'ten yeni sekmede kart açan öğretmen atılmaz.
       Oynayan video/ses de hareket sayılır.
+      TELEFON VE TABLETTE BU KURAL YOK (17.10.2026, öğretmen: "mobilden
+      çıkış eğer manuel olarak yapılmamışsa her gece 12 de gerçekleşsin 40
+      dakkada bir değil"): telefon öğretmenin cebinde, akıllı tahta değil.
+      Elle çıkış yapılmadıysa oturum GECE 00:00'DA kapanır — sayfa açıksa
+      gece yarısı, kapalıysa ertesi gün site ilk açıldığında. Akıllı tahta
+      ve bilgisayarda 40 dakika kuralı aynen sürer.
 
    2) DUYARLI İŞLEMDE DOĞRULAMA — ÖNCE TELEFON, YEDEK PIN
       Not girişi ve öğrenci verisi, son doğrulamanın üstünden 15 dakika
@@ -51,7 +57,23 @@
     var YANLIS_HAK = 3;
 
     var HAREKET_ANAHTAR = 'kg_son_hareket';
+    var GUN_ANAHTAR = 'kg_giris_gunu';     /* telefonda: { uid, gun } — girişin yapıldığı gün */
     function pinAnahtar(uid) { return 'kg_pin_' + (uid || 'yerel'); }
+
+    /* Telefon / tablet mi? (hesap/karekodokut.js'teki ölçüyle aynı: Android
+       akıllı tahtanın ekranı büyük, tablet sayılmaz; "bu cihaz tahta"
+       olarak işaretlenmiş cihaz da telefon sayılmaz.) */
+    function mobilMi() {
+        try { if (localStorage.getItem('kidef_tahta_cihaz') === 'tahta') return false; } catch (e) { }
+        try {
+            var ua = navigator.userAgent || '';
+            if (navigator.userAgentData && navigator.userAgentData.mobile) return true;
+            if (/iPhone|iPod|Windows Phone|Mobi/i.test(ua)) return true;
+            if (/iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return true;
+            if (/Android/i.test(ua)) return Math.min(screen.width, screen.height) <= 820;
+        } catch (e) { }
+        return false;
+    }
 
     /* ---------------- durum ---------------- */
     var sonHareketZ = Date.now();
@@ -114,6 +136,7 @@
         uyariKapat();
         sonDogrulama = 0;
         try { localStorage.removeItem(HAREKET_ANAHTAR); } catch (e) { }
+        gunSil();
         try {
             if (typeof window.cikisYap === 'function') window.cikisYap();
             else if (window.firebase && firebase.auth) firebase.auth().signOut();
@@ -491,9 +514,29 @@
         return false;
     }
 
+    /* ---------------- telefon: gece 00:00'da çıkış ---------------- */
+    function bugun() {
+        var d = new Date();
+        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    }
+    function gunOku() { try { return JSON.parse(localStorage.getItem(GUN_ANAHTAR) || 'null'); } catch (e) { return null; } }
+    function gunYaz(uid) { try { localStorage.setItem(GUN_ANAHTAR, JSON.stringify({ uid: uid, gun: bugun() })); } catch (e) { } }
+    function gunSil() { try { localStorage.removeItem(GUN_ANAHTAR); } catch (e) { } }
+    /* Girişin günü yazılı değilse (yeni giriş ya da bu sürümden önce açılmış
+       oturum) bugün yazılır; gün değişmişse (gece yarısı geçti) çıkış. */
+    function geceDenetle() {
+        var u = kullanici();
+        if (!u) return;
+        var g = gunOku();
+        if (!g || g.uid !== u.uid) { gunYaz(u.uid); return; }
+        if (g.gun !== bugun()) cik();
+    }
+
     /* ---------------- saat: boşta kalma denetimi ---------------- */
     setInterval(function () {
         if (!girisliMi()) { uyariKapat(); return; }
+        /* telefonda/tablette 40 dakika kuralı yok: gece 00:00'da çıkış */
+        if (mobilMi()) { uyariKapat(); geceDenetle(); return; }
         if (medyaOynuyor()) hareketYaz();
         var gecen = suan() - sonHareket();
         if (gecen >= dk(BOSTA_DK)) { cik(); return; }
@@ -538,8 +581,11 @@
         try {
             if (!window.firebase || !firebase.auth) { setTimeout(girisiIzle, 600); return; }
             firebase.auth().onAuthStateChanged(function (u) {
-                if (u) { sonDogrulama = suan(); yanlis = 0; hareketYaz(); }
-                else { sonDogrulama = 0; uyariKapat(); }
+                if (u) {
+                    sonDogrulama = suan(); yanlis = 0; hareketYaz();
+                    if (mobilMi() && girisliMi()) geceDenetle();
+                }
+                else { sonDogrulama = 0; uyariKapat(); gunSil(); }
             });
         } catch (e) { setTimeout(girisiIzle, 800); }
     }

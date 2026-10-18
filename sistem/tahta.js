@@ -36,6 +36,11 @@
      ekrandan kendisi çıkarsa o yansıtmada yeniden zorlanmaz. Tahtada
      "Ana ekrana ekle / Uygulamayı yükle" yapılırsa (tahta.webmanifest)
      oradan her açılışta kendiliğinden tam ekran açılır.
+   · 3. SÜRÜM (18.10.2026): tahtada tam ekrandayken ekranın SOL ORTASINDA
+     soluk, yüzen "Tam ekrandan çık" düğmesi (dokununca belirginleşir).
+     Tahta görünümünden "Çık" ile ayrılınca aynı yansıtma sürdükçe ana
+     sayfa tahtayı geri götürmez (yayin/bas; sistem/tahtagir.js). Bekleme
+     ekranında "Bu cihaz tahta değil" (tahtada seçim paneli artık açılmıyor).
 
    TUTARLILIK
    · Rastgele karıştıran oyunlar iki cihazda aynı karışsın diye çerçevenin
@@ -291,6 +296,15 @@
     '@keyframes thIpucu{50%{box-shadow:0 8px 24px rgba(0,0,0,.25),0 0 0 8px rgba(22,160,133,.25)}}',
     '.th-bildirim{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:50;background:#0f2a43;color:#fff;border-radius:12px;',
     ' padding:10px 16px;font:700 14px/1.3 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:calc(100vw - 32px);text-align:center}',
+    /* tahta: tam ekrandan çıkış — sol ortada, soluk (18.10.2026) */
+    '.th-tamcik{position:fixed;left:10px;top:50%;transform:translateY(-50%);z-index:45;width:52px;height:52px;padding:0;',
+    ' display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.55);border-radius:16px;',
+    ' background:rgba(15,42,67,.55);color:#fff;opacity:.28;cursor:pointer;-webkit-tap-highlight-color:transparent;',
+    ' box-shadow:0 6px 18px rgba(0,0,0,.18);transition:opacity .2s, transform .15s}',
+    '.th-tamcik:hover,.th-tamcik:focus-visible,.th-tamcik:active{opacity:.95}',
+    '.th-tamcik:active{transform:translateY(-50%) scale(.94)}',
+    '.th-tamcik svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}',
+    '.th-kutu .th-unut{display:inline-block;margin-top:14px;color:#64748b;font:600 13px/1.3 system-ui,sans-serif;text-decoration:underline;cursor:pointer;background:none;border:0;padding:4px}',
     '[hidden]{display:none !important}'
   ].join('\n');
   function stilKur() {
@@ -313,6 +327,7 @@
     esitle: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>',
     bitir: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     tam: '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+    tamcik: '<svg viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>',
     dokun: '<svg viewBox="0 0 24 24"><path d="M9 11.5V5.2a1.6 1.6 0 0 1 3.2 0v5.6"/><path d="M12.2 10.2V8.8a1.6 1.6 0 0 1 3.2 0v2.4"/>' +
       '<path d="M15.4 10.6a1.6 1.6 0 0 1 3.2 0V15a6 6 0 0 1-6 6h-.9a6 6 0 0 1-4.7-2.3L4.3 15.8a1.6 1.6 0 0 1 2.5-2l2.2 2.4"/></svg>'
   };
@@ -347,7 +362,9 @@
       ic = cizim() + '<h1>' + kac(kd('th.bekle_bas', 'Bilgisayarını bekliyorum')) + '</h1>' +
         '<p>' + kd('th.bekle_alt', 'Bilgisayarında kidefarapca.com’da başlıktaki ekran simgesine (<span class="th-adim">Tahtaya yansıt</span>) dokun, sonra <span class="th-adim">Bu bilgisayardan yansıt</span>’a bas. Açtığın her şey burada görünecek.') + '</p>' +
         '<div class="th-tuslar"><button type="button" class="th-ana" data-th="tam">' + kac(kd('th.tam_ekran', 'Tam ekran')) + '</button>' +
-        '<button type="button" class="th-ikinci" data-th="cik">' + kac(kd('th.cik', 'Çık')) + '</button></div>';
+        '<button type="button" class="th-ikinci" data-th="cik">' + kac(kd('th.cik', 'Çık')) + '</button></div>' +
+        /* tahta cihazında seçim paneli artık yok (sistem/tahtagir.js): işaret buradan kalkar */
+        '<button type="button" class="th-unut" data-th="unut">' + kac(kd('th.p_unut', 'Bu cihaz tahta değil')) + '</button>';
     }
     b.innerHTML = '<div class="th-kutu">' + ic + '</div>';
     b.hidden = false;
@@ -387,8 +404,41 @@
     document.addEventListener(t, function () {
       if (tamEkranda()) { TAM.oldu = true; ipucuGizle(); }
       else if (TAM.oldu) { TAM.oldu = false; TAM.istek = false; }     /* öğretmen kendisi çıktı: bu yansıtmada zorlanmaz */
+      tamCikTazele();
     });
   });
+  /* TAM EKRANDAN ÇIKIŞ TUŞU (18.10.2026) — öğretmen: "akıllı tahta olarak
+     ekran yansıtılan cihazda tam ekran olduktan sonra her zaman tam ekrandan
+     çıkmak için bi yüzen tuş olsun ekranın bi yerinde hafif soluk bi
+     şekilde dursun, bu yer ekranın sol ortasında olsun". Yalnız tahtada,
+     tarayıcının tam ekranı açıkken görünür (ana ekrana eklenmiş uygulama
+     kipinde çıkılacak tam ekran yok). Kabuğun içinde durur: dokunuşu
+     çerçevedeki sayfaya ve bilgisayara gitmez. */
+  function tamCikTazele() {
+    if (CIHAZ !== 'tahta') return;
+    var d = document, acik = !!(d.fullscreenElement || d.webkitFullscreenElement);
+    var b = $('thTamCik');
+    if (!b && acik) {
+      stilKur();
+      b = d.createElement('button');
+      b.type = 'button';
+      b.id = 'thTamCik';
+      b.className = 'th-tamcik';
+      b.setAttribute('data-th', 'tamcik');
+      b.title = kd('th.tam_cik', 'Tam ekrandan çık');
+      b.setAttribute('aria-label', b.title);
+      b.innerHTML = SVG.tamcik;
+      d.body.appendChild(b);
+    }
+    if (b) b.hidden = !acik;
+  }
+  function tamCik() {
+    var d = document;
+    try {
+      var f = d.exitFullscreen || d.webkitExitFullscreen;
+      if (f && (d.fullscreenElement || d.webkitFullscreenElement)) { var p = f.call(d); if (p && p.catch) p.catch(function () { }); }
+    } catch (e) { }
+  }
 
   function cik(adres) {
     var k = S.kok, liderdim = S.lider;
@@ -399,6 +449,9 @@
         k.update({ 'yayin/cevrimici': false, 'yayin/ts': TS(), 'olay': null, 'kay': null, 'alan': null, 'ayar/perde': false, 'ayar/kg': false });
         k.child('izle/' + BEN).remove();
       } else if (k) {
+        /* "Çık": aynı yansıtma sürdükçe ana sayfa tahtayı geri sürüklemesin
+           (sistem/tahtagir.js bakar; yeni yansıtmada tahta yine kendiliğinden açılır) */
+        try { localStorage.setItem('kidef_tahta_birakti', JSON.stringify({ bas: (S.yayin && S.yayin.bas) || null, t: Date.now() })); } catch (e) { }
         /* tahta kullanılırken çıkılırsa kontrol bilgisayara döner */
         if (liderdim && S.yayin && S.yayin.cevrimici && S.yayin.id === BEN) k.child('yayin').update({ cevrimici: false, ts: TS() });
         k.child('izle/' + BEN).onDisconnect().cancel();
@@ -416,6 +469,11 @@
     else if (is === 'yenile') location.reload();
     else if (is === 'cik') cik(ROL === 'izle' ? 'index.html' : (adresAl(CERCEVE.contentWindow) || 'index.html'));
     else if (is === 'tam') { TAM.istek = true; tamEkran(); }
+    else if (is === 'tamcik') tamCik();
+    else if (is === 'unut') {
+      try { localStorage.removeItem('kidef_tahta_cihaz'); localStorage.removeItem('kidef_tahta_birakti'); } catch (e) { }
+      cik('index.html');
+    }
   });
 
   /* ---------------------------------------------------------- Firebase */
@@ -501,7 +559,8 @@
   function yayinYaz(temizle) {
     if (!yayinda() || !gercekSayfa(Y.win)) return;
     var b = sayfaBilgisi(), g = {};
-    g['yayin'] = { id: BEN, cihaz: CIHAZ, cevrimici: true, d: Y.d, u: b.u, dil: b.dil, s0: Y.s0, durak: false, ts: TS() };
+    g['yayin'] = { id: BEN, cihaz: CIHAZ, cevrimici: true, d: Y.d, u: b.u, dil: b.dil, s0: Y.s0, durak: false, ts: TS(),
+                   bas: S.bas || (S.yayin && S.yayin.bas) || null };      /* oturum kimliği korunur (lider değişse de) */
     if (temizle) { g['kay'] = null; g['alan'] = null; }
     S.kok.update(g);
   }
@@ -1469,8 +1528,11 @@
     try { if (localStorage.getItem('kidef_tahta_kip') === 'tek') kip = 'tek'; } catch (e) { }
     S.ayar = { kip: kip, perde: false, kg: false };
     /* yeni yansıtma: önceki oturumdan kalan lider (varsa) bırakır */
+    /* yayin/bas: bu yansıtma oturumunun kimliği (tahta "Çık" ile ayrıldıysa
+       aynı oturumda ana sayfa onu geri sürüklemesin — sistem/tahtagir.js) */
+    S.bas = rastgeleId();
     kok.update({ 'yayin/id': BEN, 'yayin/cihaz': CIHAZ, 'yayin/cevrimici': false, 'yayin/durak': false, 'yayin/ts': TS(),
-                 'ayar': { kip: kip, perde: false, kg: false } });
+                 'yayin/bas': S.bas, 'ayar': { kip: kip, perde: false, kg: false } });
     cubukKur();
     kopmaKur();
     belgeIzle();
@@ -1505,6 +1567,7 @@
     zArayuz();
     belgeIzle();
     tamEkranDene();
+    tamCikTazele();
     /* OTURUM: yansıtma sürdükçe tahta "boşta" sayılmaz (bilgisayar ayrılınca
        tahtanın kendi sayacı yine işler — unutulan tahta kapanır). */
     setInterval(function () { if (S.kok && oturumVar()) hareketYaz(); }, 30000);

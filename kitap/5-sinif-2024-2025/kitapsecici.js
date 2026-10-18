@@ -44,11 +44,19 @@
       renk: '#0E7C66', im: '5' },
     { id: '6-sinif-2026-2027',    ad: 'Arapça 6',     alt: 'Dijital ders kitabı · 2026-2027',
       renk: '#F39C12', im: '6', guncel: true },
+    /* 7. sınıf (17.10.2026): bu yıl okutulan Mektep Yayınları kitabı. Sayfaları
+       ve sesleri kidefarapca-materyal-7 deposunda. */
+    { id: '7-sinif-2026-2027',    ad: 'Arapça 7',     alt: 'Mektep Yayınları · 2026-2027',
+      renk: '#2980B9', im: '7', guncel: true },
     /* GİZLİ (02.10.2026): 7. sınıf Maarif kitabı resmî olarak yayınlanamıyor.
        Listede yalnız o kitabın içindeyken görünür; başka kitaptan bağlantı
        verilmez, site kartı da portala gider. */
     { id: '7-sinif-2027-2028',    ad: 'Arapça 7',     alt: 'Dijital ders kitabı · 2027-2028',
       renk: '#2563EB', im: '7', gizli: true },
+    /* 8. sınıf (17.10.2026): İmam Hatip Ortaokulu, MEB'in 2026-2027 kitabı.
+       Sayfaları, sesleri ve videoları kidefarapca-materyal-8 deposunda. */
+    { id: '8-sinif-2026-2027',    ad: 'Arapça 8',     alt: 'İmam Hatip Ortaokulu · 2026-2027',
+      renk: '#6D4C41', im: '8', guncel: true },
     /* 9. sınıf (17.10.2026): Anadolu İmam Hatip Lisesi, MEB'in güncel 2026-2027 kitabı */
     { id: '9-sinif-2026-2027',    ad: 'Arapça 9',     alt: 'Anadolu İmam Hatip Lisesi · 2026-2027',
       renk: '#8E44AD', im: '9', guncel: true },

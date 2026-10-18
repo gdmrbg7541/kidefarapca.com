@@ -5791,17 +5791,30 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           '2025-2026': portalKitap('6')
         },
         /* 7. sınıfın iki kitabı var (bkz. sistem/sinifveri.js → VERI_YILI[7]).
-           Mektep Yayınları'nın kendi sayfa çevirmeli kitabı yayında;
+           Mektep Yayınları kitabı sitede (kitap/7-sinif-2026-2027/, 17.10.2026);
            2027-2028 MEB kitabının sayfa çevirmeli kopyası kitap/
            7-sinif-2027-2028/ altında DURUYOR ama GİZLİ (02.10.2026):
            resmî olarak yayınlanamadığı için karttan bağlantı verilmez,
            kitap seçicide görünmez ve indirilemez; kart portala gider. */
         '7': {
-          '2026-2027': flipKitap('7', 'https://arapca.muallimun.net/flipbook/iho07_mektep/',
-                                 'Mektep Yayınları'),
+          /* Mektep kitabı sitede (17.10.2026): kitap/7-sinif-2026-2027/ — sayfa
+             çevirmeli kitap, 105 ses içinden açılır; sayfa resimleri ve sesler
+             kidefarapca-materyal-7 deposunda (ana site 1 GB sınırında).
+             Önceki bağlantı: https://arapca.muallimun.net/flipbook/iho07_mektep/ */
+          '2026-2027': { url: 'kitap/7-sinif-2026-2027/index.html', etiket: 'DİJİTAL KİTAP',
+            ipucu: '7. sınıf Arapça ders kitabı (Mektep Yayınları, 2026-2027) — sayfa çevirmeli ' +
+                   'kitap; sesler içinde; yeni sekmede açılır' },
           '2027-2028': portalKitap('7')
         },
-        '8': flipKitap('8', 'https://arapca.muallimun.net/flipbook/iho08_2026/'),
+        /* 8. sınıf kitabı sitede (17.10.2026): kitap/8-sinif-2026-2027/ — MEB'in
+           2026-2027 kitabından sayfa çevirmeli kitap; 132 ses, 2 video ve EBA
+           etkinlikleri içinden açılır. Sayfa resimleri, sesler ve videolar
+           kidefarapca-materyal-8 deposunda (ana site 1 GB sınırında).
+           Önceki bağlantı: https://arapca.muallimun.net/flipbook/iho08_2026/ */
+        '8': { url: 'kitap/8-sinif-2026-2027/index.html', etiket: 'DİJİTAL KİTAP',
+               ipucu: '8. sınıf Arapça ders kitabı (2026-2027, İmam Hatip Ortaokulu) — ' +
+                      'sayfa çevirmeli kitap; sesler, videolar ve EBA etkinlikleri içinde; ' +
+                      'yeni sekmede açılır' },
         /* 9. sınıf kitabı sitede (17.10.2026): kitap/9-sinif-2026-2027/ — MEB'in
            güncel 2026-2027 kitabından sayfa çevirmeli kitap; hafıza kartları ve
            ünite sonu değerlendirmeleri (kitapetkinlikleri/9/) içinden açılır.
@@ -7957,7 +7970,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- TELEFON (17.10.2026): giriş penceresinde "Karekodu okut" — kamerayı
          doğrudan açar (yalnız telefon/tablet) — ve karekodla girişten sonra
          "bu telefon tahtanın kumandası olsun mu?" -->
-    <script src="hesap/karekodokut.js?v=1655caaa"></script>
+    <script src="hesap/karekodokut.js?v=7dd34d26"></script>
     <script src="hesap/kumanda.js?v=55892bd7"></script>
     <script src="hesap/girisgenislik.js?v=8ef478b8"></script>
     <!-- KAYIT ANKETI / ROL KAPISI: giris penceresi acilinca once
@@ -8034,10 +8047,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/listelerim.js?v=a3bbe9e6"></script>
     <!-- TAHTAYA YANSIT (17.10.2026): başlıktaki Tahta düğmesi, paneli ve tahta
          cihazının kendiliğinden geçişi. Motor: sistem/tahta.js (tahta.html). -->
-    <script defer src="sistem/tahtagir.js?v=88a8859e"></script>
-    <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış + duyarlı işlemde PIN.
+    <script defer src="sistem/tahtagir.js?v=1cd6b8f1"></script>
+    <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış (telefon ve tablette 40 dk yok,
+         elle çıkılmadıysa gece 00:00'da çıkış) + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
-    <script src="hesap/oturumguvenlik.js?v=05cd7ad6"></script>
+    <script src="hesap/oturumguvenlik.js?v=f6212c20"></script>
     <!-- Sınıf Defteri: şubenin 36 haftalık ders defteri.
          listelerim.js ve oturumguvenlik.js'ten SONRA: switchTab'ı sarıyor. -->
     <script src="hesap/sinifdefteri.js?v=a5cac0d2"></script>

@@ -130,7 +130,9 @@
   var i = Math.min(adet, Math.max(1, parseInt(q.get('s'), 10) || 1));
   var img = $('#slayt'), kay = $('#kaydirac');
   kay.max = adet;
-  function yol(n) { return klasor + '/' + ('00' + n).slice(-3) + '.webp'; }
+  /* 18.10.2026: 05_sunumlar sitede değil, kidefarapca-materyal-kidef deposunda */
+  var UZAK = location.protocol === 'file:' ? '' : 'https://gdmrbg7541.github.io/kidefarapca-materyal-kidef/kidef-arapca-2-baski/';
+  function yol(n) { return UZAK + klasor + '/' + ('00' + n).slice(-3) + '.webp'; }
   // HTML sunu (varsa): <deste>/html/sunu.js → window.SUNU_HTML
   var V = null, sl = $('#slHtml');
   function olcekle() {

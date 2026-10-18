@@ -12506,3 +12506,51 @@ FLIPBOOK YAKINLAŞTIRMA: TELEFONDA DA 6 BÖLGE                      17.10.2026
     (kitapOrtakla), kitapların index.html damgaları
   · Betik: _kaynak/uretici/zoomMobil.py · Yedek: _kaynak/yedekler/2026-10-17-zoom/
   HEPSİ İÇİN: siteyi hizli-gonder ile gönder.
+
+==============================================================================
+17-18.10.2026 — TELEFON 2. TUR · İNDİR GİRİŞE BAĞLI · 7. VE 8. SINIF FLIPBOOK ·
+               TAHTA (GERİ SAYIM YOK, TAM EKRANDAN ÇIKIŞ) · KIDEF SUNULARI PDF
+==============================================================================
+TELEFON (gonder.command ile gider):
+  hesap/karekodokut.js     giriş penceresindeki "Karekodu okut": ÖNCE GİRİŞ, sonra
+                           kamera kendiliğinden açılır · telefonda kenar menüde
+                           "Akıllı tahtayı bağla" → kamera doğrudan ("Tahtam zaten
+                           açık" → Tahtaya yansıt paneli)
+  hesap/oturumguvenlik.js  telefon/tablette 40 dk kuralı yok; elle çıkılmadıysa
+                           gece 00:00'da çıkış (tahta/bilgisayarda 40 dk aynen)
+İNDİR YALNIZ GİRİŞ YAPANLARA (gonder.command ile gider):
+  _kaynak/ortak-kitap/kitapyan.js → kitapOrtakla ile bütün kitaplar
+  Siteye giriş yoksa "İndir" düğmesi ve Kaynaklar'daki tek tek "İndir" hiç
+  görünmez; girişliyse görünür. Bilgisayardan açılan indirilmiş kopyada gizleme yok.
+TAHTA (gonder.command ile gider):
+  sistem/tahtagir.js  tahta cihazında geri sayım sorusu ve "bilgisayardan yansıt /
+                      bu cihaz tahta" paneli yok: yansıtma başlayınca doğrudan
+                      tahta görünümü; başlıktaki düğme de doğrudan tahta görünümü
+  sistem/tahta.js     tam ekrandayken sol ortada soluk "tam ekrandan çık" düğmesi ·
+                      "Çık" ile ayrılan tahta aynı yansıtmada geri sürüklenmez ·
+                      bekleme ekranında "Bu cihaz tahta değil"
+7. SINIF MEKTEP 2026-2027 ve 8. SINIF 2026-2027 FLIPBOOK:
+  Ana sitede yalnız kabuk: kitap/7-sinif-2026-2027/, kitap/8-sinif-2026-2027/
+  (ders kitabı kartları bunlara gidiyor; kitap seçicide Arapça 7 · Mektep, Arapça 8)
+  Sayfalar, sesler, videolar ayrı depolarda (depolar açıldı):
+    ka.com/GitHub/kidefarapca-materyal-7   (~76 MB: 270 sayfa + 105 ses)
+    ka.com/GitHub/kidefarapca-materyal-8   (~111 MB: 192 sayfa + 132 ses + 2 video)
+KIDEF 2. BASKI — SUNULAR VE VİDEOLAR KENDİ DEPOSUNDA (ka.com/GitHub/kidefarapca-materyal-kidef):
+  19 oyun/etkinlik sunusu PDF (siyah görünen HTML slaytlar yerine) → sunu/ (228 MB;
+  ağırlar slayt resmiyle küçültüldü). 15 ders sunusu, 2 Mazi videosu ve slayt
+  resimleri (05_sunumlar, 175 MB) de ana siteden bu depoya taşındı; kitap.json/kitap.js
+  ve sunum.html oradan açıyor. HTML slaytlar → _kaynak/gecici/eski-html-sunular/.
+  Kitabın kendisi (sayfalar, çekirdek, veri, belgeler — 54 MB) SİTEDE kaldı: akıllı
+  tahta yansıtma, telefon kumanda ve girişe bağlı İndir, kitabın sitenin içinde
+  açılmasını gerektiriyor (başka adreste üçü de çalışmıyor).
+  Eski /kitap/kidef-arapca-2-baski/05_sunumlar/… bağlantıları 404.html ile depoya gider.
+GÖNDERME — TEK DOSYA: ka.com/GitHub/gonder.command (çift tık)
+  Önce materyal depoları (7, 8, 9, 10, kidef; 150 MB'lık parçalar; GitHub Pages'i
+  kendisi açmayı dener, açamazsa Settings → Pages adımlarını yazar), sonra ana site.
+  Toplu silme varsa klasör özetini gösterip sorar (bu seferki 1 493 silme önceden
+  onaylı: _kaynak/gecici/silme-onayi.txt). Eski command'lar → _kaynak/yedekler/2026-10-18-commandlar/.
+Betikler: kitapSayfa78.py, materyal78.py, kitap78Bagla.py, kitap78Kur.py,
+  kidefSunuPdf.py, kidefSunuYerlestir.py, kidefTasi.py, kidefKabukGeri.py, damgaTazele.py.
+  Yedekler: _kaynak/yedekler/2026-10-17-kitap78, -indir-giris, -telefon2,
+  2026-10-18-tahta3, -kidef-sunu-pdf, -kidef-tasi, -kidef-kabuk, -commandlar.
+Ana sitenin gidecek boyutu: ~819 MiB (sınır 1024; Kidef sunuları çıkmadan önce ~991).
