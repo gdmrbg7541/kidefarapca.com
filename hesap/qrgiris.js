@@ -83,6 +83,37 @@
     function girisliMi() {
         try { var u = firebase.auth().currentUser; return !!(u && !u.isAnonymous); } catch (e) { return false; }
     }
+    /* GİRİŞLİYKEN "ÖNCE GİRİŞ YAP" YOK (18.10.2026) — öğretmen: "telefondan
+       giriş + karekod tarama yapılınca ve giriş yapıldıktan sonra kısa
+       süreliğine giriş yapma ekranı beliriyor sonra kayboluyor".
+       Karekod okununca telefon index.html?qr=… adresini YENİDEN açıyor; sayfa
+       açılırken Firebase oturumu birkaç yüz ms içinde geri geliyor, bu arada
+       currentUser boş. Oturum durumu netleşene kadar (Firebase'in ilk cevabı,
+       en çok 6 sn) "İstek kontrol ediliyor…" görünür; girişliyse doğrudan
+       onay ekranı, değilse giriş daveti. */
+    function oturumHazir(cb) {
+        var bitti = false, dur = null;
+        function son() {
+            if (bitti) return;
+            bitti = true;
+            try { if (dur) dur(); } catch (e) { }
+            cb(girisliMi());
+        }
+        try {
+            if (girisliMi()) { son(); return; }
+            var n = 0;
+            (function bagla() {
+                if (bitti) return;
+                if (typeof firebase !== 'undefined' && firebase.auth && firebase.apps && firebase.apps.length) {
+                    dur = firebase.auth().onAuthStateChanged(function () { setTimeout(son, 0); });
+                } else if (++n < 40) {
+                    setTimeout(bagla, 150);
+                } else son();
+            })();
+        } catch (e) { son(); return; }
+        setTimeout(son, 6000);
+    }
+
     function hataMetni(e) {
         var k = (e && (e.code || e.message)) || '';
         if (/functions-yok|firebase-yok/.test(k)) return 'Karekodla giriş için gereken bileşen yüklenmemiş. Sayfayı yenileyip tekrar deneyin.';
@@ -666,12 +697,19 @@
         try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) { }
 
         if (!girisliMi()) {
-            qrBeklemedekiOnay = id;
-            qrBeklemedekiAmac = amac;
-            pencere(svgKarekod() + '<span>Karekod onayı</span>',
-                '<p class="qr-anlat">Bu isteği onaylamak için önce <b>kendi hesabınla</b> giriş yapmalısın. ' +
-                'Giriş yaptıktan sonra onay ekranı kendiliğinden açılacak.</p>' +
-                '<div class="qr-alt"><button type="button" class="qr-yenile" onclick="qrGirisKapat(); if(typeof showLoginModal===\'function\') showLoginModal();">Giriş Yap</button></div>');
+            /* 18.10.2026: oturum geri yükleniyor olabilir — önce bekle,
+               "önce giriş yap" yalnız gerçekten giriş yoksa çıkar. */
+            pencere(svgKarekod() + '<span>' + (amac === 'onay' ? 'Güvenlik onayı' : 'Karekod onayı') + '</span>',
+                '<div class="qr-yukleniyor">İstek kontrol ediliyor…</div>');
+            oturumHazir(function (girisli) {
+                if (girisli) { qrOnayAc(id, amac); return; }
+                qrBeklemedekiOnay = id;
+                qrBeklemedekiAmac = amac;
+                pencere(svgKarekod() + '<span>Karekod onayı</span>',
+                    '<p class="qr-anlat">Bu isteği onaylamak için önce <b>kendi hesabınla</b> giriş yapmalısın. ' +
+                    'Giriş yaptıktan sonra onay ekranı kendiliğinden açılacak.</p>' +
+                    '<div class="qr-alt"><button type="button" class="qr-yenile" onclick="qrGirisKapat(); if(typeof showLoginModal===\'function\') showLoginModal();">Giriş Yap</button></div>');
+            });
             return;
         }
         qrOnayAc(id, amac);

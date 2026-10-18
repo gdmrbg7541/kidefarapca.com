@@ -12596,3 +12596,19 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                          Sınıflar buluttan geç gelirse geldiği an bir kez açılır;
                          öğretmen kapatırsa sayfa durdukça kapalı kalır.
   Yedek: _kaynak/yedekler/2026-10-18-duyuru-siniflarim/
+
+18.10.2026 (akşam, 2) — GİRİŞ EKRANI BİR AN ÇIKMIYOR · KUMANDADA ALFABE HARFİ
+  hesap/qrgiris.js   telefon karekodu okuyunca index.html?qr=… yeniden açılıyor; oturum
+                     birkaç yüz ms'de geri yüklenirken "önce giriş yap" penceresi çıkıp
+                     kayboluyordu. Artık oturum netleşene kadar "İstek kontrol ediliyor…",
+                     girişliyse doğrudan onay ekranı.
+  sistem/kilit.js    site "yalnız girişli" kilitliyken aynı arada perde + giriş penceresi
+                     iniyordu: tarayıcıda kayıtlı oturum varsa Firebase'in ilk cevabı
+                     (yönetici kilidinde rol) beklenir, en çok 6 sn; oturumu olmayan
+                     ziyaretçide perde eskisi gibi hemen.
+  okumayazma/alfabe.js  her harf kartına kimlik (harfKart0…27). Telefonda tablo 4×7,
+                     tahtada 7×4 olduğu için kumandadan dokunulan harf tahtada başka harfi
+                     (bazen ilk harfi) açıyordu; denemede 112 dokunuştan 72'si yanlıştı,
+                     şimdi 0 (iki yönde de).
+  Betik: _kaynak/uretici/girisFlas.py. Yedekler: _kaynak/yedekler/2026-10-18-giris-flas,
+  -alfabe-kumanda.

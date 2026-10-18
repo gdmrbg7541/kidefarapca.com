@@ -77,6 +77,76 @@
         } catch (e) { return false; }
     }
 
+    /* OTURUM GERİ GELİRKEN PERDE/GİRİŞ YOK (18.10.2026) — öğretmen: "giriş
+       yapıldıktan sonra bi daha şifre vs ekranı görünmesin". Sayfa açılırken
+       Firebase oturumu birkaç yüz ms'de geri yükleniyor; kilitli sitede perde
+       ve giriş penceresi bu arada iniyordu (yönetici kilidinde rol gelene
+       kadar da). Tarayıcıda kayıtlı oturum varsa Firebase'in ilk cevabı (ve
+       yönetici kilidinde rol) gelene kadar beklenir, en çok 6 sn. Kayıtlı
+       oturumu olmayan ziyaretçide perde eskisi gibi hemen iner. */
+    var authHazir = false;          /* ilk onAuthStateChanged geldi mi */
+    var oturumOlasi = null;         /* null: bakılıyor · true/false */
+
+    /* Tarayıcıda kayıtlı (Firebase'in geri yükleyeceği) bir oturum var mı?
+       Firebase'i beklemeden bakar: localStorage / sessionStorage /
+       IndexedDB "firebaseLocalStorageDb" içinde "firebase:authUser:".
+       Depo yoksa OLUŞTURULMAZ. cb(true|false), en geç 1,5 sn'de. */
+    function oturumIzi(cb) {
+        var bitti = false;
+        function son(v) { if (!bitti) { bitti = true; cb(v); } }
+        function depoda(d) {
+            try {
+                for (var i = 0; i < d.length; i++) {
+                    var k = d.key(i);
+                    if (k && k.indexOf('firebase:authUser:') === 0) {
+                        var v = JSON.parse(d.getItem(k) || 'null');
+                        if (v && v.uid && !v.isAnonymous) return true;
+                    }
+                }
+            } catch (e) { }
+            return false;
+        }
+        try { if (depoda(window.localStorage) || depoda(window.sessionStorage)) return son(true); } catch (e) { }
+        if (!window.indexedDB) return son(false);
+        setTimeout(function () { son(false); }, 1500);
+        var r;
+        try { r = indexedDB.open('firebaseLocalStorageDb'); } catch (e) { return son(false); }
+        r.onupgradeneeded = function () { try { r.transaction.abort(); } catch (e) { } };
+        r.onerror = function (e) { try { e.preventDefault(); } catch (x) { } son(false); };
+        r.onblocked = function () { son(false); };
+        r.onsuccess = function () {
+            var db = r.result;
+            try {
+                if (!db.objectStoreNames.contains('firebaseLocalStorage')) { db.close(); return son(false); }
+                var c = db.transaction('firebaseLocalStorage', 'readonly').objectStore('firebaseLocalStorage').openCursor();
+                c.onsuccess = function () {
+                    var k = c.result;
+                    if (!k) { db.close(); return son(false); }
+                    var x = k.value || {}, v = x.value;
+                    if (String(x.fbase_key || k.key || '').indexOf('firebase:authUser:') === 0 && v && v.uid && !v.isAnonymous) {
+                        db.close(); return son(true);
+                    }
+                    k.continue();
+                };
+                c.onerror = function () { db.close(); son(false); };
+            } catch (e) { try { db.close(); } catch (x) { } son(false); }
+        };
+    }
+
+    oturumIzi(function (v) {
+        oturumOlasi = v;
+        /* sayfa daha yükleniyorsa DOMContentLoaded'daki uygula() karar verir
+           (giriş penceresi o zaman kurulmuş olur) */
+        if (document.readyState !== 'loading') { try { uygula(); } catch (e) { } }
+    });
+    setTimeout(function () { authHazir = true; K._rolGeldi = true; try { uygula(); } catch (e) { } }, 6000);
+    function bekle(k) {
+        if (k.izin) return false;
+        if (!girisliMi()) return !authHazir && oturumOlasi !== false;      /* oturum geri yükleniyor / bakılıyor */
+        if (k.neden === 'yonetici') return !K._rolGeldi;                   /* girişli: rol henüz gelmedi */
+        return false;
+    }
+
     /* ------------------------------------------------ PERDE = DOGRUDAN GIRIS
        Kilitli sitede ara kart YOKTUR: turuncu fon iner ve kayit/giris
        penceresi (login-modal) KENDILIGINDEN acilir — index dogrudan giris
@@ -250,6 +320,7 @@
         var kilit = sonKilit();
         var k = K.karar(kilit, girisliMi(), rolOku());
         if (k.izin) { K._mola = 0; carpiKurali(false); uyariGuncelle('acik', false); perdeKaldir(); return; }
+        if (bekle(k)) return;       /* 18.10: oturum/rol netleşmeden perde ve giriş penceresi yok */
         carpiKurali(true);   /* kilit aktif: pencerede carpi gorunmez */
         /* Giris molasi: Giris Yap'a basildi, giris penceresi acik —
            perde gizli bekler. Pencere KAPATILIRSA (carpi) mola derhal
@@ -303,6 +374,8 @@
                     kilitPanelTazele();
                 }, function (e) { console.warn('kilit ayari okunamadi:', e && (e.code || e.message)); });
             if (firebase.auth) firebase.auth().onAuthStateChanged(function (u) {
+                authHazir = true;            /* 18.10: oturum durumu artık belli */
+                if (!(u && u.email)) K._rolGeldi = true;
                 if (u) K._mola = 0;          /* giris geldi: mola biter, karar netlesir */
                 K._bulutRol = '';
                 /* appState olmayan sayfalarda rol dogrudan buluttan okunur
@@ -311,10 +384,12 @@
                     try {
                         firebase.firestore().collection('kullanicilar').doc(u.uid).get().then(function (doc) {
                             K._bulutRol = ((doc.exists && doc.data()) || {}).role || '';
+                            K._rolGeldi = true;
                             uygula();
-                        }).catch(function () { });
+                        }).catch(function () { K._rolGeldi = true; uygula(); });
                     } catch (e) { }
                 }
+                if (!u) uygula();            /* oturum yok: perde beklemeden */
                 setTimeout(uygula, 400);
             });
         } catch (e) { console.warn('kilit:', e && e.message); }

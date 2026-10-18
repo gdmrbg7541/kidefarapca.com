@@ -1136,8 +1136,17 @@ const ui = {
                 const hucre = 'ht-cell'
                     + (r === HT_SATIR - 1 ? ' ht-son-satir' : '')
                     + (c === HT_SUTUN - 1 ? ' ht-son-sutun' : '');
+                /* KARTIN KİMLİĞİ (18.10.2026) — öğretmen: "telefonu kumanda olarak
+                   kullandığımda alfabe html de harf tanıtımında ben bazen elif hemze
+                   dışında bi harfe bastığımda ilk harf açılıyor". Telefonda tablo
+                   4 sütun x 7 satır (alfabe_mobil.js), tahtada 7 x 4; tahta yansıtma
+                   (sistem/tahta.js) dokunulan öğeyi en yakın KİMLİKLİ atasından satır/
+                   hücre sırasıyla buluyordu — #g1'den gidince telefondaki satır/hücre
+                   tahtada başka harfe (ya da hiç olmayan satıra → ilk harfe) düşüyordu.
+                   Her kartın kendi kimliği olunca yol kartın içinden başlar: hangi
+                   düzende, hangi dizilişte olursa olsun aynı harf açılır. */
                 html += `<td class="${hucre}" data-n="${n}" data-r="${r}" data-c="${c}">
-                    <div class="char-card ${nc} ${fc} ${sc} ${mz}" data-idx="${idx}" data-aile-ad="${AILE_ADI[HARF_AILE[i.h] || 'tek']}" data-ses-ad="${SES_ADI[HARF_SES[i.h] || 'tek']}" onclick="harfDetay.open(${idx})" data-i18n-title="alf.detay" title="Detay için tıkla: mahreç ve yazılış">
+                    <div class="char-card ${nc} ${fc} ${sc} ${mz}" id="harfKart${idx}" data-idx="${idx}" data-aile-ad="${AILE_ADI[HARF_AILE[i.h] || 'tek']}" data-ses-ad="${SES_ADI[HARF_SES[i.h] || 'tek']}" onclick="harfDetay.open(${idx})" data-i18n-title="alf.detay" title="Detay için tıkla: mahreç ve yazılış">
                         <span class="card-num">${n}</span>${mzOk}
                         <div class="arabic-seq" style="display: flex; justify-content: center; width: 100%;">
                             <span class="b-green">${i.b}</span>
