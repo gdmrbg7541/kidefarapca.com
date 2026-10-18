@@ -32,10 +32,16 @@
     if (!gomulu) return;
 
     document.documentElement.classList.add('kd-gomulu');
-    /* Çerçevede yalnız giriş ekranı görünsün: dil önerisi gibi karşılama
-       kutuları burada çıkmaz (index'in kendisinde eskisi gibi çıkar). */
+    /* Çerçevede yalnız giriş ekranı görünsün:
+       · dil önerisi gibi karşılama kutuları burada çıkmaz (index'in
+         kendisinde eskisi gibi çıkar);
+       · index'in dikey kaydırma çubuğu görünmez (index html{overflow-y:scroll}
+         ile çubuğu hep gösteriyor; öğretmen: "sitenin dikey scroll'ü
+         görünüyor"). Giriş penceresinin içi kendi kaydırmasıyla kayar,
+         kısa ekranda da form sonuna kadar iner. */
     var st = document.createElement('style');
-    st.textContent = 'html.kd-gomulu #kdDilOneri{display:none!important}';
+    st.textContent = 'html.kd-gomulu #kdDilOneri{display:none!important}' +
+        'html.kd-gomulu,html.kd-gomulu body{overflow:hidden!important}';
     (document.head || document.documentElement).appendChild(st);
 
     function bildir(durum) {

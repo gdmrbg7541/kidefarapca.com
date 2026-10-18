@@ -12742,3 +12742,10 @@ Ana sitenin gidecek boyutu: ~823 MiB.
   Damgalar: surumle.py (index.html, bilgiyarismasikacom.html)
   Betik: _kaynak/uretici/biyGomuluGiris.py · kaynak ve deneme: _kaynak/biy-giris/
   Yedek: _kaynak/yedekler/2026-10-18-biy-giris/
+
+18.10.2026 (gece, 13) — BİLGİ YARIŞMASI GİRİŞİNDE KAYDIRMA ÇUBUĞU
+  hesap/girisgomulu.js  çerçevede açılan index'in dikey kaydırma çubuğu görünmüyor (index
+                      html{overflow-y:scroll} ile çubuğu hep gösteriyordu). Giriş
+                      penceresinin içi kendi kaydırmasıyla kayıyor; kısa ekranda ve telefonda
+                      kayıt formu sonuna kadar iniyor. index'in kendisi değişmedi.
+  Damga: surumle.py (index.html) · Önceki sürüm: _kaynak/yedekler/2026-10-18-biy-giris/v1/
