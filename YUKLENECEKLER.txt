@@ -12554,3 +12554,6 @@ Betikler: kitapSayfa78.py, materyal78.py, kitap78Bagla.py, kitap78Kur.py,
   Yedekler: _kaynak/yedekler/2026-10-17-kitap78, -indir-giris, -telefon2,
   2026-10-18-tahta3, -kidef-sunu-pdf, -kidef-tasi, -kidef-kabuk, -commandlar.
 Ana sitenin gidecek boyutu: ~819 MiB (sınır 1024; Kidef sunuları çıkmadan önce ~991).
+GÖNDERİLDİ: 18.10.2026 10:14–10:17 (ana site 368bf51f; materyal-7, -8, -kidef ilk kez). Pages bütün
+  depolarda açık, yayınlar başarılı. gonder.command 2. sürüm: Pages'i anahtarsız denetliyor
+  ("açılamadı (401)" uyarısı yersizdi).
