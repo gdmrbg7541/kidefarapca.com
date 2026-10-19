@@ -12817,3 +12817,16 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       (5-6. sınıfta 2. yazılı üste çıkmıştı). Dosyalar ve veri yerinde; yalnız gösterildiği kart değişti.
                       Yedekler: _kaynak/yedekler/2026-10-19-calisma-kagidi-yeri/ (bu değişiklik öncesi)
                                 _kaynak/yedekler/2026-10-19-calisma-kagidi-yeri-2/ (ara sürüm, kullanılmadı)
+
+19.10.2026 (7) — YAZI SAYFASI (sınıf materyallerinde, yalnız öğretmen)
+  sistem/yazisayfasi.js  YENİ. Sınıf materyallerinin başında «Yazı Sayfası» kartı (5-10. sınıf, sınıfın
+                      Materyaller sekmesinde de). Açılır pencere: kalem, silgi (kalemin silgi ucu da), 5 renk,
+                      3 kalınlık, çizgi düzeni (gri çizgiler / Arapça büyük harf / Arapça küçük harf / boş),
+                      geri al · yinele · temizle, defter gibi sayfalar (ekle, kaldır, ‹ ›), tam ekran.
+                      Geçmiş: kapanınca yazıldığı tarihle bu tarayıcıya kaydedilir (IndexedDB, sınıf başına
+                      son 60); «Geçmiş» panelinden açılır — eski dersin kaydı değişmez, yazılırsa yeni kayıt olur.
+                      Seviye notları: ★ ile hesaba kaydedilir (kullanicilar/{uid}.seviyeNotlari.s5 …, seviye
+                      başına 20), her cihazda görünür. Çizimler çizgi olarak saklanır (az yer tutar).
+  index.html          sistem/yazisayfasi.js etiketi (sinifmodul.js'in hemen altında).
+                      Yedek: _kaynak/yedekler/2026-10-19-yazi-sayfasi/
+                      Giriş bitmeden sınıf açılırsa kart, öğretmen hesabı okununca kendiliğinden eklenir (v=ac4513f2).
