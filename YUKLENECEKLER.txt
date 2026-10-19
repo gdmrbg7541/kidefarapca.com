@@ -12830,3 +12830,10 @@ Ana sitenin gidecek boyutu: ~823 MiB.
   index.html          sistem/yazisayfasi.js etiketi (sinifmodul.js'in hemen altında).
                       Yedek: _kaynak/yedekler/2026-10-19-yazi-sayfasi/
                       Giriş bitmeden sınıf açılırsa kart, öğretmen hesabı okununca kendiliğinden eklenir (v=ac4513f2).
+  DEĞİŞTİ (19.10.2026, öğretmen: "kart olmasın, popup olsun ve %de 98 ekranı kaplasın, bu popup sınıf açılınca
+                      her zaman görünecek, sınıf sekmesine bağlı olacak, sadece bi sınıf açılınca açılacak
+                      kapanırsa kapanacak"): KART KALDIRILDI. Sınıflarım'da bir sınıf açılınca pencere kendiliğinden
+                      açılır, ekranın %98'ini kaplar, o sınıfa bağlıdır (başlıkta «5. sınıf · 5-A»). × küçültür:
+                      sağ altta «Yazı Sayfası» düğmesi kalır, basınca geri açılır. Başka sınıfa geçince ya da
+                      Sınıflarım'dan çıkınca defter tarihiyle kaydedilir, pencere kapanır. Aynı sınıf 45 dk içinde
+                      yeniden açılırsa kaldığı defterden sürer. listelerim.js'e dokunulmadı. (v=9cc0a272)

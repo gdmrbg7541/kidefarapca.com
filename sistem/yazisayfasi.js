@@ -10,9 +10,19 @@
    kaydedilebilsin". Seçilen ek: defter gibi çok sayfa. Seviye notları
    hesapta (her cihazda).
 
-   NEREDE: sınıf materyallerinde (İmam Hatip 5-10 ve sınıfın Materyaller
-   sekmesi) «Yazı Sayfası» kartı — yalnız öğretmen/yönetici görür. Karta
-   basınca o sınıfın (seviyenin) yazı sayfası açılır.
+   NEREDE — KART YOK (19.10.2026, öğretmen: "kart olmasın, popup olsun ve
+   %de 98 ekranı kaplasın, bu popup sınıf açılınca her zaman görünecek,
+   sınıf sekmesine bağlı olacak, sadece bi sınıf açılınca açılacak
+   kapanırsa kapanacak"):
+   · Sınıflarım'da bir sınıf açılınca pencere KENDİLİĞİNDEN açılır,
+     ekranın %98'ini kaplar; o sınıfa bağlıdır (seviye + şube).
+   · Sınıf açık kaldıkça durur: × pencereyi KÜÇÜLTÜR, sağ altta
+     «Yazı Sayfası» düğmesi kalır, basınca geri açılır.
+   · Sınıf kapanınca (başka sınıfa geçilince, Sınıflarım'dan çıkılınca)
+     defter tarihiyle kaydedilir, pencere kapanır.
+   · Aynı sınıf 45 dakika içinde yeniden açılırsa kaldığı defterden
+     sürer (aynı ders); daha sonra açılırsa boş sayfa + «Son yazdığın».
+   · Yalnız öğretmen/yönetici; öğrencinin kendi panelinde açılmaz.
 
    ARAÇLAR: kalem · silgi · 5 renk · 3 kalınlık · çizgi düzeni (gri
    çizgiler / Arapça büyük harf / Arapça küçük harf / boş) · geri al,
@@ -388,9 +398,10 @@
         s.id = 'ys-stil';
         s.textContent = [
             '#ysOrt{position:fixed; inset:0; z-index:99990; background:rgba(15,23,42,.62); display:flex; align-items:center;',
-            '  justify-content:center; padding:14px; animation:ysSol .18s ease-out; font-family:inherit;}',
+            '  justify-content:center; padding:0; animation:ysSol .18s ease-out; font-family:inherit;}',
+            '#ysOrt.kucuk{display:none;}',
             '@keyframes ysSol{from{opacity:0}to{opacity:1}}',
-            '#ysKutu{position:relative; width:min(1280px,100%); height:min(860px,100%); background:#EEF1F5; border-radius:18px;',
+            '#ysKutu{position:relative; width:98vw; height:98vh; height:98dvh; background:#EEF1F5; border-radius:16px;',
             '  box-shadow:0 30px 80px rgba(15,23,42,.4); display:flex; flex-direction:column; overflow:hidden;',
             '  animation:ysCik .24s cubic-bezier(.2,1.1,.4,1); color:#1F2430;}',
             '@keyframes ysCik{from{transform:translateY(14px) scale(.985); opacity:0}to{transform:none; opacity:1}}',
@@ -480,13 +491,23 @@
             '.ys-soru .evet{background:#1B4F9C; color:#fff;} .ys-soru .evet.kirmizi{background:#C0392B;}',
             '.ys-soru .hayir{background:#F1F4F9; color:#3D4756;}',
             /* telefonda araç çubuğu satırlara sarılır (kapat tuşu görünür kalsın) */
-            '@media (max-width:760px){#ysOrt{padding:0;} #ysKutu{width:100%; height:100%; border-radius:0;}',
+            '@media (max-width:760px){#ysOrt{padding:0;} #ysKutu{border-radius:12px;}',
             '  .ys-arac{gap:4px; padding:7px 8px;} .ys-baslik small,.ys-ayrac,.ys-t span{display:none;}',
             '  .ys-t{min-width:32px; height:32px; padding:0 5px;} .ys-renk{width:26px; height:26px; min-width:26px;}',
             '  .ys-kal,.ys-mod{width:32px; height:30px; min-width:32px;} .ys-mod svg{width:26px; height:19px;}',
             '  .ys-t.kapat{position:absolute; top:7px; right:8px;} .ys-arac{padding-right:48px;}',
             '  .ys-sahne{padding:8px;} .ys-son{font-size:.78rem; max-width:92%;}}',
-            '@media (prefers-reduced-motion: reduce){#ysOrt,#ysKutu,.ys-bildiri{animation:none;} .ys-panel{transition:none;}}'
+            /* küçültülünce sağ altta kalan düğme */
+            '#ysPil{position:fixed; right:16px; bottom:16px; z-index:99980; display:flex; align-items:center; gap:9px;',
+            '  padding:9px 16px 9px 10px; border:0; border-radius:999px; background:#1B4F9C; color:#fff; cursor:pointer;',
+            '  font-family:inherit; font-weight:800; font-size:.92rem; line-height:1.15; text-align:start;',
+            '  box-shadow:0 10px 28px rgba(15,23,42,.32); animation:ysSol .18s ease-out;}',
+            '#ysPil:hover{background:#163F7D;} #ysPil:focus-visible{outline:3px solid #F2B544; outline-offset:2px;}',
+            '#ysPil i{display:flex; width:34px; height:34px; border-radius:50%; background:#fff; align-items:center; justify-content:center; flex:none;}',
+            '#ysPil i svg{width:24px; height:24px;}',
+            '#ysPil small{display:block; font-size:.72rem; font-weight:700; opacity:.85;}',
+            '@media print{#ysPil{display:none;}}',
+            '@media (prefers-reduced-motion: reduce){#ysOrt,#ysKutu,.ys-bildiri,#ysPil{animation:none;} .ys-panel{transition:none;}}'
         ].join('\n');
         document.head.appendChild(s);
     }
@@ -536,7 +557,7 @@
         kapat(true);
         var t = tercihOku();
         T = { arac: 'kalem', renk: (t.renk >= 0 && t.renk < 5) ? t.renk : 0, kal: t.kal || 'o', mod: t.mod || 'c' };
-        D = kaynak || { id: yeniId(), sinif: sinif, sube: subeAdi(), tarih: Date.now(), guncelleme: 0,
+        D = kaynak || { id: yeniId(), sinif: sinif, sube: BAGLI ? BAGLI.sube : subeAdi(), tarih: Date.now(), guncelleme: 0,
                         sayfalar: [yeniSayfa(T.mod)], aktif: 0, notId: '', notAd: '', kirli: false };
         kur();
         cizimAyarla();
@@ -560,8 +581,7 @@
         ort.innerHTML =
             '<div id="ysKutu" role="dialog" aria-modal="true" aria-label="Yazı Sayfası">' +
               '<div class="ys-arac">' +
-                '<div class="ys-baslik">' + IK.defter + '<span>Yazı Sayfası<small>' + esc(D.sinif) + '. sınıf' +
-                  (D.sube ? ' · ' + esc(D.sube) : '') + '</small></span></div>' +
+                '<div class="ys-baslik">' + IK.defter + '<span>Yazı Sayfası<small>' + esc(etiket()) + '</small></span></div>' +
                 '<div class="ys-grup">' +
                   '<button type="button" class="ys-t" data-is="kalem" title="Kalem (K)">' + IK.kalem + '</button>' +
                   '<button type="button" class="ys-t" data-is="silgi" title="Silgi (S)">' + IK.silgi + '</button>' +
@@ -586,7 +606,7 @@
                   '<span id="ysNotYazi">Seviye notlarına kaydet</span></button>' +
                 '<button type="button" class="ys-t" data-is="panel" title="Geçmiş ve seviye notları">' + IK.saat + '<span>Geçmiş</span></button>' +
                 '<button type="button" class="ys-t" data-is="tamEkran" title="Tam ekran">' + IK.tamEkran + '</button>' +
-                '<button type="button" class="ys-t kapat" data-is="kapat" title="Kapat (Esc) — tarihiyle kaydedilir">&times;</button>' +
+                '<button type="button" class="ys-t kapat" data-is="kucult" title="Küçült (Esc) — sınıf açık kaldıkça sağ altta durur" aria-label="Küçült">&times;</button>' +
               '</div>' +
               '<div class="ys-sahne" id="ysSahne">' +
                 '<div class="ys-kagit" id="ysKagit">' +
@@ -631,6 +651,50 @@
         aracGuncelle();
     }
 
+    /* KÜÇÜLT — sınıf açık kaldıkça pencere kapanmaz, sağ alta iner.
+       Yazılan o ana kadar tarihiyle kaydedilir (sekme kapanırsa kaybolmasın). */
+    function kucult() {
+        if (!UI || UI.kucuk) return;
+        try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) { }
+        var so = UI.ort.querySelector('.ys-soru-ort'); if (so) so.remove();
+        UI.panel.classList.remove('acik');
+        if (D && D.kirli && !bosMu(D.sayfalar)) gecmiseKaydet();
+        UI.kucuk = true;
+        UI.ort.classList.add('kucuk');
+        document.body.style.overflow = _govdeTasma || '';
+        pilGoster();
+    }
+    function buyut() {
+        if (!UI || !UI.kucuk) return;
+        UI.kucuk = false;
+        UI.ort.classList.remove('kucuk');
+        pilKaldir();
+        _govdeTasma = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        cizimAyarla();
+    }
+    function pilGoster() {
+        pilKaldir();
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.id = 'ysPil';
+        b.title = 'Yazı Sayfası — aç';
+        b.innerHTML = '<i>' + IK.defter + '</i><span>Yazı Sayfası<small>' + esc(etiket()) + '</small></span>';
+        b.addEventListener('click', buyut);
+        document.body.appendChild(b);
+    }
+    function pilKaldir() { var b = document.getElementById('ysPil'); if (b) b.remove(); }
+    function sinifAdi(s) {
+        s = String(s == null ? '' : s);
+        if (/^\d+$/.test(s)) return s + '. sınıf';
+        return (BAGLI && BAGLI.sinif === s && BAGLI.seviyeAd) ? BAGLI.seviyeAd : s;
+    }
+    function etiket() {
+        if (!D) return '';
+        var a = sinifAdi(D.sinif);
+        return D.sube ? a + ' · ' + D.sube : a;
+    }
+
     function kapat(sessiz) {
         var ort = document.getElementById('ysOrt');
         if (!ort) return;
@@ -642,8 +706,10 @@
         window.removeEventListener('resize', boyutErtele);
         window.removeEventListener('pagehide', sessizKaydet);
         document.removeEventListener('visibilitychange', gorunurlukDegisti);
+        var kucuktu = UI && UI.kucuk;
         ort.remove();
-        document.body.style.overflow = _govdeTasma || '';
+        pilKaldir();
+        if (!kucuktu) document.body.style.overflow = _govdeTasma || '';
         UI = null; D = null;
     }
     function gorunurlukDegisti() { if (document.visibilityState === 'hidden') sessizKaydet(); }
@@ -872,13 +938,14 @@
         else if (is === 'panel') panelAcKapa();
         else if (is === 'panelKapat') UI.panel.classList.remove('acik');
         else if (is === 'tamEkran') tamEkran();
+        else if (is === 'kucult') kucult();
         else if (is === 'kapat') kapat();
         else if (is === 'sonAc') { var id = b.getAttribute('data-id'); var s = UI.ort.querySelector('.ys-son'); if (s) s.remove(); gecmistenAc(id); }
         else if (is === 'sonKapat') { var s2 = UI.ort.querySelector('.ys-son'); if (s2) s2.remove(); }
     }
 
     function tus(e) {
-        if (!UI) return;
+        if (!UI || UI.kucuk) return;
         var yazi = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA');
         if (e.key === 'Escape') {
             e.preventDefault(); e.stopPropagation();
@@ -886,7 +953,7 @@
             if (so) { so.remove(); return; }
             if (UI.panel.classList.contains('acik')) { UI.panel.classList.remove('acik'); return; }
             if (document.fullscreenElement) return;          /* tarayıcı tam ekrandan çıkar */
-            kapat(); return;
+            kucult(); return;
         }
         if (yazi) return;
         var k = e.key.toLowerCase();
@@ -935,7 +1002,8 @@
         var sinif = D.sinif;
         gecmisListe(sinif).then(function (L) {
             if (!UI || !D || D.sinif !== sinif || !L.length || !bosMu(D.sayfalar)) return;
-            var k = L[0];
+            var k = L.filter(function (x) { return (x.sube || '') === (D.sube || ''); })[0];
+            if (!k) return;                              /* yalnız bu sınıfın (şubenin) son defteri */
             var d = document.createElement('div');
             d.className = 'ys-son';
             d.innerHTML = '<span>Son yazdığın: <b>' + esc(tarihYaz(k.guncelleme, true)) + '</b>' + (k.sayfa > 1 ? ' · ' + k.sayfa + ' sayfa' : '') + '</span>' +
@@ -959,7 +1027,7 @@
         if (UI.sek === 'gecmis') {
             gecmisListe(D.sinif).then(function (L) {
                 if (!UI || UI.sek !== 'gecmis') return;
-                ic.innerHTML = '<p class="ys-bilgi">' + esc(D.sinif) + '. sınıfta bu tarayıcıda yazılanlar. Kapattığında yazıldığı tarihle buraya düşer; ' +
+                ic.innerHTML = '<p class="ys-bilgi">' + esc(sinifAdi(D.sinif)) + ' — bu tarayıcıda yazılanlar. Kapattığında yazıldığı tarihle buraya düşer; ' +
                     'son ' + GECMIS_EN_COK + ' defter tutulur.</p>' +
                     (L.length ? L.map(function (k) {
                         var simdi = (k.id === D.id || k.id === D.kaynakId);
@@ -977,7 +1045,7 @@
                 if (!UI || UI.sek !== 'notlar') return;
                 var L = (H2['s' + D.sinif] || []).slice().sort(function (a, b) { return (b.tarih || 0) - (a.tarih || 0); });
                 ic.innerHTML = '<p class="ys-bilgi">Beğendiğin defterler hesabında saklanır, her cihazda görünür. ' +
-                    esc(D.sinif) + '. sınıf: <b>' + L.length + ' / ' + NOT_EN_COK + '</b></p>' +
+                    esc(sinifAdi(D.sinif)) + ': <b>' + L.length + ' / ' + NOT_EN_COK + '</b></p>' +
                     (L.length ? L.map(function (n) {
                         return '<div class="ys-oge' + (n.id === D.notId ? ' simdi' : '') + '" data-not="' + esc(n.id) + '">' +
                             '<canvas width="240" height="150" data-onizle="' + esc(n.id) + '"></canvas>' +
@@ -1004,7 +1072,7 @@
                    sürer; üzerine yazılırsa kapanınca bugünün tarihiyle ayrıca
                    kaydedilir, yalnız bakılırsa hiçbir şey yazılmaz. */
                 var sayfalar = defterCoz(k.kod);
-                D = { id: yeniId(), kaynakId: k.id, sinif: k.sinif, sube: k.sube || '', tarih: Date.now(), guncelleme: 0,
+                D = { id: yeniId(), kaynakId: k.id, sinif: D.sinif, sube: D.sube || '', tarih: Date.now(), guncelleme: 0,
                       sayfalar: sayfalar, aktif: 0, notId: k.notId || '', notAd: '', kirli: false };
                 if (UI) UI.panel.classList.remove('acik');
                 sayfaCiz();
@@ -1028,7 +1096,7 @@
         if (bosMu(D.sayfalar)) { bildir('Sayfa boş — önce bir şeyler yaz.', true); return; }
         var varsayilan = D.notAd || (kisaTarih(Date.now()) + (D.sube ? ' · ' + D.sube : '') + ' · ' + D.sayfalar.length + ' sayfa');
         soru(D.notId ? 'Seviye notu güncellensin mi? Adını değiştirebilirsin:' :
-             D.sinif + '. sınıf seviye notlarına kaydedilsin. Bir ad ver:', D.notId ? 'Güncelle' : 'Kaydet', false, function (ad) {
+             sinifAdi(D.sinif) + ' seviye notlarına kaydedilsin. Bir ad ver:', D.notId ? 'Güncelle' : 'Kaydet', false, function (ad) {
             notKaydet(ad || varsayilan);
         }, varsayilan);
     }
@@ -1091,82 +1159,65 @@
     }
 
     /* ------------------------------------------------------------------
-       SINIF MATERYALLERİNDE KART
+       SINIFA BAĞLI AÇILIŞ — Sınıflarım'da (hesap/listelerim.js) açık sınıf
+       izlenir. Oraya dokunulmadı: yalnız dışarı açtığı llAktifSinif() ve
+       llSinifGorunurMu() okunuyor. Değişiklik iki ardışık bakışta (~1 sn)
+       aynı kalırsa uygulanır; veri tazelenirken panelin bir an boşalması
+       pencereyi kapatıp açmasın.
        ------------------------------------------------------------------ */
-    window.ysKartTik = function (btn) {
-        var m = btn && btn.closest ? btn.closest('[data-sinif]') : null;
-        var s = m ? m.getAttribute('data-sinif') : '';
-        if (!s) {
-            try { var a = window.llAktifSinif && window.llAktifSinif(); if (a && a.sinif) s = a.sinif; } catch (e) { }
-        }
-        ac(s || '5');
-    };
-    function kartKaydet() {
-        if (!window.KidefSinifModul || !KidefSinifModul.ekle) return false;
-        KidefSinifModul.ekle({
-            id: 'yazisayfasi',
-            ad: 'Yazı Sayfası',
-            sira: 5,
-            renk: '#1B4F9C',
-            aciklama: function () { return 'Tahtaya yaz, çiz · Arapça yazı çizgileri · sayfalar tarihiyle saklanır'; },
-            svg: function () {
-                return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +
-                    '<rect x="9" y="7" width="40" height="50" rx="5" fill="#fff" stroke="#1B4F9C" stroke-width="3"/>' +
-                    '<path d="M15 21h28" stroke="#D0D7E2" stroke-width="2"/><path d="M15 29h28" stroke="#D0D7E2" stroke-width="1.6" stroke-dasharray="3 3"/>' +
-                    '<path d="M15 34h28" stroke="#8C97A5" stroke-width="2.4"/><path d="M15 42h28M15 50h20" stroke="#D0D7E2" stroke-width="2"/>' +
-                    '<path d="M43 7v50" stroke="#F2A0A0" stroke-width="2"/>' +
-                    '<path d="M37 33c-3-6-9-6-11-1s3 7 7 3" fill="none" stroke="#1E5BD8" stroke-width="2.6" stroke-linecap="round"/>' +
-                    '<path d="M44 46 55 35l4.6 4.6-11 11-6.4 1.8z" fill="#F2B544" stroke="#9A6512" stroke-width="2.2" stroke-linejoin="round"/>' +
-                    '</svg>';
-            },
-            veriVar: function () { return ogretmenMi() ? { rozet: 'Yaz · Çiz' } : null; },
-            dugme: true,
-            tikla: 'ysKartTik'
-        });
-        return true;
-    }
-    if (!kartKaydet()) {
-        document.addEventListener('DOMContentLoaded', kartKaydet);
+    var BAGLI = null;                         /* { anahtar, sinif, sube, seviyeAd } */
+    var DEVAM_SN = 45 * 60;                   /* aynı ders sayılan süre */
+    var _aday = '', _adaySay = 0;
+
+    function acikSinif() {
+        try {
+            if (!ogretmenMi()) return null;
+            if (typeof window.llSinifGorunurMu === 'function' && !window.llSinifGorunurMu()) return null;
+            var c = document.getElementById('content');
+            if (!c || !c.getClientRects().length) return null;          /* Sınıflarım ekranda değil */
+            var a = (typeof window.llAktifSinif === 'function') ? window.llAktifSinif() : null;
+            if (!a || !a.lId || !a.cId) return null;
+            var d = (typeof data !== 'undefined' && data) ? data : null;
+            var lvl = d && d.levels ? d.levels[a.lId] : null;
+            var cls = lvl && lvl.classes ? lvl.classes[a.cId] : null;
+            if (!cls) return null;
+            var m = String(lvl.name || '').match(/\d+/);
+            var sinif = m ? String(parseInt(m[0], 10)) : 'x' + String(a.lId).replace(/[^A-Za-z0-9_]/g, '').slice(0, 24);
+            return { anahtar: a.lId + '|' + a.cId, sinif: sinif, sube: String(cls.name || ''), seviyeAd: String(lvl.name || '') };
+        } catch (e) { return null; }
     }
 
-    /* GİRİŞTEN SONRA KART — sınıf kartları sınıf İLK açıldığında bir kez
-       kurulur (index.html → ihIcKur). Hesap henüz okunmadan (giriş sürerken
-       ya da misafirken) sınıf açılırsa kart o an çıkmaz, sonra da kendiliğinden
-       gelmezdi. Rol değişince YALNIZ bu kart, kurulmuş ızgaralara eklenir ya da
-       çıkarılır; öteki kartlara ve açık panellere dokunulmaz. */
-    function kartiTazele() {
-        var M = window.KidefSinifModul;
-        if (!M || !M.html) return;
-        var ogr = ogretmenMi();
-        [].forEach.call(document.querySelectorAll('.ih-kartlar[data-sinif]'), function (m) {
-            var g = m.querySelector('.game-grid');
-            if (!g) return;                               /* henüz kurulmadı: kurulunca doğru çıkar */
-            var k = g.querySelector('[data-smodul="yazisayfasi"]');
-            if (!ogr) { if (k && k.parentNode) k.parentNode.removeChild(k); return; }
-            if (k) return;
-            var kap = document.createElement('div');
-            kap.innerHTML = M.html(m.getAttribute('data-sinif'));
-            var yeni = kap.querySelector('[data-smodul="yazisayfasi"]');
-            if (!yeni) return;
-            /* Kayıt sırasında kendisinden sonra gelen ilk kartın önüne;
-               o yoksa Muhâdese'nin (data-smodul taşımayan kart) önüne. */
-            var once = null;
-            for (var x = yeni.nextElementSibling; x && !once; x = x.nextElementSibling)
-                once = g.querySelector('[data-smodul="' + x.getAttribute('data-smodul') + '"]');
-            if (!once) once = g.querySelector('.game-card:not([data-smodul])');
-            g.insertBefore(yeni, once);
-        });
+    function sinifIcinAc(b) {
+        BAGLI = b;
+        gecmisListe(b.sinif).then(function (L) {
+            if (BAGLI !== b) return;                                    /* bu arada sınıf değişti */
+            var son = L.filter(function (x) { return (x.sube || '') === b.sube; })[0];
+            if (son && son.kod && (Date.now() - (son.guncelleme || 0)) < DEVAM_SN * 1000) {
+                ac(b.sinif, { id: son.id, sinif: b.sinif, sube: b.sube, tarih: son.tarih || son.guncelleme, guncelleme: son.guncelleme,
+                              sayfalar: defterCoz(son.kod), aktif: 0, notId: son.notId || '', notAd: '', kirli: false });
+            } else {
+                ac(b.sinif);
+            }
+        }, function () { if (BAGLI === b) ac(b.sinif); });
     }
-    var _sonRol = null;
-    setInterval(function () {
-        var r = rol();
-        if (r === _sonRol) return;
-        _sonRol = r;
-        try { kartiTazele(); } catch (e) { }
-    }, 1500);
+
+    function sinifIzle() {
+        var b = acikSinif();
+        var k = b ? b.anahtar : '';
+        var simdiki = BAGLI ? BAGLI.anahtar : '';
+        if (k === simdiki) { _aday = ''; _adaySay = 0; return; }
+        if (k !== _aday) { _aday = k; _adaySay = 1; return; }
+        if (++_adaySay < 2) return;
+        _aday = ''; _adaySay = 0;
+        kapat(true);                     /* önceki sınıfın defteri tarihiyle kaydedilir */
+        BAGLI = null;
+        if (b) sinifIcinAc(b);
+    }
+    setInterval(sinifIzle, 500);
 
     window.KidefYaziSayfasi = {
-        ac: ac, kapat: kapat,
+        ac: ac, kapat: kapat, kucult: kucult, buyut: buyut,
+        bagli: function () { return BAGLI; },
         /* test ve öteki modüller için */
         kodla: defterKodla, coz: defterCoz, gecmisListe: gecmisListe
     };
