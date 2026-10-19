@@ -12853,3 +12853,10 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       olsun, çizgili defterde yatay çizgi 6 tane olsun"): Küçült düğmesi yazılı («— Küçült»), mavi ve hep
                       sağ üst köşede (indir okuna benzeyen simge değişti). Sayfa çubuğuna «Tüm sayfalar» (ızgara): bütün
                       sayfalar küçük resim, basınca o sayfa; sonda «Yeni sayfa». Çizgili defter 6 yatay çizgi. (v=01d5c7c6)
+  DEĞİŞTİ (19.10.2026, öğretmen: "sayfalar sola doğru uzasın tek kağıtmış gibi" · "artıya basınca yeni sayfa sola
+                      eklensin" · "sürükleyerek te sayfalar arasında gezebilelim, sadece 6 yatay çizgili defter olsun"):
+                      sayfalar sağdan sola yan yana TEK KÂĞIT; çizgiler kesintisiz, kırmızı kenar yalnız başta (sağda).
+                      ‹ sola (son sayfada yazı varsa kâğıt uzar), › sağa. Yanlarda «Kaydır» (↔) aracı; fare orta tuşu,
+                      iki parmak, kalemle çalışırken tek parmak, tekerlek de kaydırır. Artı yeni sayfayı açık sayfanın
+                      soluna ekler. Yalnız 6 çizgili defter. Geri al bütün defterde. Kayıt biçimi Y2 (sayfa genişliği
+                      1000); eski defterler açılır. (v=f64da553)
