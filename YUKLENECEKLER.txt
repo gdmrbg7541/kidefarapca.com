@@ -12806,10 +12806,14 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       değil, yalnız yöneticinin okuyabildiği siparisler/_destekAyar'da; açık belgedeki eski
                       alanlar ilk yayında silinir.
 
-19.10.2026 (6) — 5-6. SINIF ÇALIŞMA KÂĞIDI GÖRÜNÜR YERDE
-  index.html          5 ve 6. sınıfın 2026-2027 «1. Ünite Çalışma Kâğıdı» (Word + PDF) artık:
-                      · Çalışma Kâğıtları & Etkinlikler kartında «Çalışma Kâğıtları» grubunun EN BAŞINDA
-                        (önce kapalı açılan «Yazılıya Hazırlık» grubundaydı) + kartın başında not;
-                      · Sınavlar kartında «Sınava Hazırlık Çalışma Kâğıtları» grubunda («2026-2027 1. yazılı»).
-                      Belgelere grup alanı eklendi (grup:'calisma' / 'hazirlik'); 8. sınıf ve öteki belgeler
-                      değişmedi. Yedek: _kaynak/yedekler/2026-10-19-calisma-kagidi-yeri/
+19.10.2026 (6) — SINAVA AİT ÇALIŞMA KÂĞITLARI SINAVLARIN YANINDA · 1. YAZILI 2. YAZILININ ÜSTÜNDE
+  index.html          Yolu dosyalar/sinavlar/… ya da …/sorumluluk/… olan çalışma kâğıtları artık Çalışma
+                      Kâğıtları kartında görünmüyor; Sınavlar kartında sınavlarının yanında:
+                      · 5, 6 ve 8. sınıf 2026-2027 1. ünite çalışma kâğıtları → 1. Dönem Yazılıları › 1. Yazılı
+                        (A-D, anahtar ve dağılım tablosunun hemen altında; 8. sınıfta cevaplı ve temel düzey de)
+                      · sorumluluk çalışma kâğıdı + cevapları → Sorumluluk Sınavları › Hazırlık çalışma kâğıdı
+                        (ayrı «Sınava Hazırlık Çalışma Kâğıtları» grubu bu yüzden kalktı)
+                      Sınavlar kartında alt başlıklar numara sırasında: 1. Yazılı her zaman 2. Yazılının üstünde
+                      (5-6. sınıfta 2. yazılı üste çıkmıştı). Dosyalar ve veri yerinde; yalnız gösterildiği kart değişti.
+                      Yedekler: _kaynak/yedekler/2026-10-19-calisma-kagidi-yeri/ (bu değişiklik öncesi)
+                                _kaynak/yedekler/2026-10-19-calisma-kagidi-yeri-2/ (ara sürüm, kullanılmadı)

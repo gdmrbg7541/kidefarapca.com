@@ -4330,14 +4330,14 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         { kod: 'diger',  ad: 'Diğer Belgeler' }
       ];
       function svSinifla(d) {
-        /* Belge kendi grubunu söylüyorsa o geçerli (19.10.2026: 5-6. sınıf
-           1. yazılı çalışma kâğıdı yolunda "1d1y" geçtiği için "1. Dönem
-           Yazılıları"na düşüyordu; «Sınava Hazırlık» grubunda görünsün). */
-        if (d.grup === 'hazirlik') return { kod: 'hazirlik', alt: d.grupAlt || 'Yazılı öncesi' };
         var u = (d.url || '').toLowerCase(), a = (d.ad || '').toLocaleLowerCase('tr');
         if (u.indexOf('/sorumluluk/') > -1 || a.indexOf('sorumluluk') > -1) {
+          /* ÇALIŞMA KÂĞIDI SINAVIN YANINDA (19.10.2026, öğretmen: "çalışma
+             kağıtlarında sınavla ilgili bi şey varsa onu sınav dökümanı altında
+             sınavların yanına öbekle"): sorumluluk çalışma kâğıdı ayrı «Sınava
+             Hazırlık» grubunda değil, Sorumluluk Sınavları grubunda duruyor. */
           if (u.indexOf('calisma') > -1 || a.indexOf('çalışma kâğıdı') > -1)
-            return { kod: 'hazirlik', alt: 'Sorumluluk sınavına hazırlık' };
+            return { kod: 'sorumlu', alt: 'Hazırlık çalışma kâğıdı' };
           if (u.indexOf('-1donem') > -1) return { kod: 'sorumlu', alt: '1. dönem kapsamı' };
           if (u.indexOf('-2donem') > -1) return { kod: 'sorumlu', alt: '2. dönem kapsamı' };
           return { kod: 'sorumlu', alt: 'Tüm yıl kapsamı' };
@@ -4425,13 +4425,29 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           kodlar: function () { return sira.slice(); }
         };
       }
+      /* 1. YAZILI 2. YAZILININ ÜSTÜNDE (19.10.2026, öğretmen: "2. sınav üstte
+         1. sınav altta olmasın"). Alt başlıklar belgelerin listeye giriş
+         sırasıyla diziliyordu; 5-6. sınıfta eski 1. yazılılar gizlenip yenileri
+         sona eklenince «2. Yazılı» üste çıkmıştı. Numaralı alt başlıklar
+         (N. Yazılı) numara sırasına konur, ötekiler yerinde kalır. */
+      function yaziliSirala(alt) {
+        var yer = [], num = [];
+        alt.forEach(function (a, i) {
+          var m = String(a.baslik).match(/^(\d+)\.\s*Yazılı/);
+          if (m) { yer.push(i); num.push({ n: +m[1], i: i, a: a }); }
+        });
+        num.sort(function (x, y) { return (x.n - y.n) || (x.i - y.i); });
+        var out = alt.slice();
+        yer.forEach(function (p, k) { out[p] = num[k].a; });
+        return out;
+      }
       function sinavAkordiyon(dosyalar) {
         if (!dosyalar || !dosyalar.length) return pdfListe(dosyalar);
         var kova = svKova();
         dosyalar.forEach(function (d) { var g = svSinifla(d); kova.koy(g.kod, g.alt, d); });
         var gruplar = [];
         SV_GRUP.forEach(function (G) {
-          var alt = kova.al(G.kod); if (alt) gruplar.push({ ad: G.ad, alt: alt });
+          var alt = kova.al(G.kod); if (alt) gruplar.push({ ad: G.ad, alt: yaziliSirala(alt) });
         });
         return svCiz(gruplar);
       }
@@ -4464,9 +4480,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       ];
       var BELGE_GRUPLARI = {
         'Çalışma Kâğıtları & Etkinlikler': [
-          /* d.grup === 'calisma': yazılı setiyle gelen çalışma kâğıdı (5-6. sınıf,
-             19.10.2026) da bu grupta, en başta görünsün */
-          { ad: 'Çalışma Kâğıtları', ne: function (d) { return d.grup === 'calisma' || (svYol(d, '/calisma-kagitlari/') && !svYol(d, 'dilbilgisi-ozeti') && !svToplu(d)); } },
+          { ad: 'Çalışma Kâğıtları', ne: function (d) { return svYol(d, '/calisma-kagitlari/') && !svYol(d, 'dilbilgisi-ozeti') && !svToplu(d); } },
           { ad: 'Etkinlikler', ne: function (d) { return svYol(d, '/etkinlikler/') && !svToplu(d); } },
           { ad: 'Yazılıya Hazırlık', ne: function (d) { return svYol(d, '/sinavlar/'); } },
           { ad: 'Dilbilgisi Özeti', ne: function (d) { return svYol(d, 'dilbilgisi-ozeti'); } },
@@ -5266,22 +5280,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           ek('Sınavlar', d);
           SINIF_GIRIS[s]['Sınavlar'] = (SINIF_GIRIS[s]['Sınavlar'] || '') +
             '<div class="dok-not"><b>2026-2027 1. yazılı:</b> dört eşdeğer grup (A-D) · anahtar her dosyanın 3. sayfasında · dağılım tablosu ayrı · ' +
-            KAPSAM.replace('1. Ünite — ', '1. Ünite ') + ' · yalnız açık uçlu ve kısa cevaplı.</div>';
-          /* ÇALIŞMA KÂĞIDI İKİ YERDE (19.10.2026, öğretmen: "5. ve 6. sınıflar
-             için sitede çalışma kağıtlarını göremiyorum"). Önce yalnız Çalışma
-             Kâğıtları kartının kapalı açılan «Yazılıya Hazırlık» grubundaydı,
-             gözden kaçıyordu. Şimdi:
-               · Çalışma Kâğıtları kartında «Çalışma Kâğıtları» grubunun EN BAŞINDA
-               · Sınavlar kartında «Sınava Hazırlık Çalışma Kâğıtları» grubunda */
-          var CK = ikili('1. Ünite Çalışma Kâğıdı (2026-2027)', Y + 'arapca-' + s + '-1-unite-calisma-kagidi',
-            '1. Ünite · yazılı öncesi · cevaplar son sayfada');
-          var ckListe = SINIF_PDF[s]['Çalışma Kâğıtları & Etkinlikler'] ||
-                        (SINIF_PDF[s]['Çalışma Kâğıtları & Etkinlikler'] = []);
-          ckListe.unshift.apply(ckListe, CK.map(function (x) { return Object.assign({ grup: 'calisma' }, x); }));
-          ek('Sınavlar', CK.map(function (x) { return Object.assign({ grup: 'hazirlik', grupAlt: '2026-2027 1. yazılı' }, x); }));
-          SINIF_GIRIS[s]['Çalışma Kâğıtları & Etkinlikler'] = (SINIF_GIRIS[s]['Çalışma Kâğıtları & Etkinlikler'] || '') +
-            '<div class="dok-not"><b>2026-2027 1. yazılıya hazırlık:</b> 1. Ünite çalışma kâğıdı aşağıda «Çalışma Kâğıtları» ' +
-            'grubunun başında (cevaplar son sayfada); Sınavlar kartında da var.</div>';
+            KAPSAM.replace('1. Ünite — ', '1. Ünite ') + ' · yalnız açık uçlu ve kısa cevaplı · ' +
+            '1. ünite çalışma kâğıdı (cevaplar son sayfada) aynı listede, sınavların yanında.</div>';
+          ek('Çalışma Kâğıtları & Etkinlikler',
+            ikili('1. Ünite Çalışma Kâğıdı (2026-2027)', Y + 'arapca-' + s + '-1-unite-calisma-kagidi',
+              '1. Ünite · yazılı öncesi · cevaplar son sayfada'));
         });
       })();
       /* <<< 5. VE 6. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ */
@@ -5952,6 +5955,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         } catch (e) { }
       };
 
+      /* SINAVA AİT ÇALIŞMA KÂĞIDI SINAVLAR KARTINDA (19.10.2026): yolu
+         dosyalar/sinavlar/… ya da …/sorumluluk/… olan belge Çalışma Kâğıtları
+         kartında GÖSTERİLMEZ; Sınavlar kartında sınavlarının yanında durur
+         (svSinifla dönemi ve yazılıyı yoldan tanır: …-1d1y-… → 1. Dönem ›
+         1. Yazılı). Veri yerinde kalıyor; yalnız gösterildiği kart değişiyor. */
+      function sinavaAitCalisma(d) {
+        var u = (d && d.url || '').toLowerCase();
+        return u.indexOf('/sinavlar/') > -1 || u.indexOf('/sorumluluk/') > -1;
+      }
       function ihdocKur(mount) {
         var sinif = mount.getAttribute('data-sinif');
         var sec = (sinif === '10' && seciliKitap('10') === 'secmeli');
@@ -5963,7 +5975,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
           if (sec && SEC10_PDF[t.ad]) return SEC10_PDF[t.ad];
           /* "kitap" alanı taşıyan satır yalnız o kitap seçiliyken görünür
              (01.10.2026 — okul temelli planlama). */
-          return ((SINIF_PDF[sinif] && SINIF_PDF[sinif][t.ad]) || []).filter(function (d) {
+          var P = SINIF_PDF[sinif] || {}, ds = P[t.ad] || [];
+          if (t.ad === 'Çalışma Kâğıtları & Etkinlikler') ds = ds.filter(function (d) { return !sinavaAitCalisma(d); });
+          else if (t.ad === 'Sınavlar') ds = ds.concat((P['Çalışma Kâğıtları & Etkinlikler'] || []).filter(sinavaAitCalisma));
+          return ds.filter(function (d) {
             return kitabaUygun(sinif, d);
           });
         }, function (t) {
