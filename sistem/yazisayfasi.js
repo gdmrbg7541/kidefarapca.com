@@ -38,7 +38,11 @@
      = { s5: [ {id, ad, tarih, sayfa, kod} ] } — seviye başına en çok 20.
      Firestore kurallarına dokunulmadı (öğretmen kendi belgesini yazar).
    Çizimler resim değil, ÇİZGİ olarak saklanır (noktalar, sıkıştırılmış):
-   her ekranda keskin görünür, az yer tutar. 1000 × 625 birimlik sayfa.
+   her ekranda keskin görünür, az yer tutar. Sayfa 625 birim yüksekliğinde;
+   GENİŞLİĞİ EKRANA UYAR (19.10.2026, öğretmen: "yatay olarak alanın hepsini
+   kaplasın ... sağda ve solda boşluk olmasın"): 1000 birimlik çekirdeğin
+   iki yanı, ekran ne kadar genişse o kadar açılır. Başka ekranda açılan
+   defterin bütün çizgileri yine görünür (gerekirse küçülür).
    ===================================================================== */
 (function () {
     'use strict';
@@ -209,16 +213,18 @@
         for (var i = 0; i < KALINLIK.length; i++) if (KALINLIK[i].id === k) return KALINLIK[i].w;
         return KALINLIK[1].w;
     }
-    function cizgileriCiz(ctx, mod, o) {
+    function cizgileriCiz(ctx, mod, o, x0, x1) {
+        if (x0 == null) x0 = 0;
+        if (x1 == null) x1 = W;
         ctx.save();
-        ctx.setTransform(o, 0, 0, o, 0, 0);
+        ctx.setTransform(o, 0, 0, o, -x0 * o, 0);
         ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, W, H);
+        ctx.fillRect(x0, 0, x1 - x0, H);
         function yatay(y, renk, kal, kesik) {
             ctx.beginPath();
             ctx.setLineDash(kesik ? [7, 7] : []);
             ctx.strokeStyle = renk; ctx.lineWidth = kal;
-            ctx.moveTo(18, y); ctx.lineTo(W - 18, y); ctx.stroke();
+            ctx.moveTo(x0 + 18, y); ctx.lineTo(x1 - 18, y); ctx.stroke();
         }
         if (mod === 'c') {
             for (var y = 74; y < H - 16; y += 44) yatay(y, '#D6DBE2', 1.3, false);
@@ -228,7 +234,7 @@
             var boy = mod === 'b' ? 150 : 82, ara = mod === 'b' ? 34 : 22, y0 = mod === 'b' ? 36 : 28;
             for (var r = y0; r + boy <= H - 12; r += boy + ara) {
                 ctx.fillStyle = '#F7F9FC';
-                ctx.fillRect(18, r + boy * 0.40, W - 36, boy * 0.25);
+                ctx.fillRect(x0 + 18, r + boy * 0.40, x1 - x0 - 36, boy * 0.25);
                 yatay(r, '#E1E5EB', 1.2, false);
                 yatay(r + boy * 0.40, '#CDD3DB', 1.1, true);
                 yatay(r + boy * 0.65, '#97A1AD', 1.9, false);
@@ -240,15 +246,15 @@
             ctx.setLineDash([]);
             ctx.beginPath();
             ctx.strokeStyle = 'rgba(232,124,124,.55)'; ctx.lineWidth = 1.4;
-            ctx.moveTo(W - 44, 10); ctx.lineTo(W - 44, H - 10); ctx.stroke();
+            ctx.moveTo(x1 - 44, 10); ctx.lineTo(x1 - 44, H - 10); ctx.stroke();
         }
         ctx.restore();
     }
-    function cizimCiz(ctx, c, o) {
+    function cizimCiz(ctx, c, o, x0) {
         var p = c.p, n = p.length / 2;
         if (!n) return;
         ctx.save();
-        ctx.setTransform(o, 0, 0, o, 0, 0);
+        ctx.setTransform(o, 0, 0, o, -(x0 || 0) * o, 0);
         ctx.globalCompositeOperation = c.s ? 'destination-out' : 'source-over';
         var w = c.s ? SILGI_W : kalinlikW(c.k);
         var renk = c.s ? '#000' : (RENKLER[c.r] || RENKLER[0]).k;
@@ -270,14 +276,34 @@
         ctx.restore();
     }
     /* Küçük önizleme (geçmiş ve notlar listesi için) */
+    /* GÖRÜNÜM — sayfanın ekranda görünen yatay aralığı [x0, x1].
+       Yükseklik hep 0-625. Genişlik: 1000'lik çekirdek, ekran oranı
+       (geniş ekranda iki yana açılır) ve çizgilerin vardığı yer —
+       hangisi büyükse. Böylece aynı ekranda kâğıt alanın hepsini kaplar,
+       başka ekranda hiçbir çizgi dışarıda kalmaz. */
+    function sinirlar(s) {
+        var a = Infinity, z = -Infinity;
+        s.cizimler.forEach(function (c) {
+            if (c.s) return;
+            for (var i = 0; i < c.p.length; i += 2) { if (c.p[i] < a) a = c.p[i]; if (c.p[i] > z) z = c.p[i]; }
+        });
+        return a <= z ? [a, z] : null;
+    }
+    function gorunum(s, oran) {
+        var yari = Math.max(W / 2, H * (oran || W / H) / 2);
+        var b = sinirlar(s);
+        if (b) yari = Math.max(yari, W / 2 - b[0] + 5, b[1] - W / 2 + 5);
+        return { x0: W / 2 - yari, x1: W / 2 + yari };
+    }
     function onizlemeCiz(canvas, sayfa) {
-        var o = canvas.width / W;
+        var g = gorunum(sayfa, canvas.width / canvas.height);
+        var o = Math.min(canvas.width / (g.x1 - g.x0), canvas.height / H);
         var ctx = canvas.getContext('2d');
-        cizgileriCiz(ctx, sayfa.mod, o);
+        cizgileriCiz(ctx, sayfa.mod, o, g.x0, g.x1);
         var tmp = document.createElement('canvas');
         tmp.width = canvas.width; tmp.height = canvas.height;
         var t = tmp.getContext('2d');
-        sayfa.cizimler.forEach(function (c) { cizimCiz(t, c, o); });
+        sayfa.cizimler.forEach(function (c) { cizimCiz(t, c, o, g.x0); });
         ctx.drawImage(tmp, 0, 0);
     }
     function onizlemeUrl(sayfa) {
@@ -439,9 +465,9 @@
             '.ys-t.ana{background:#FFF4DE; color:#9A6512;}',
             '.ys-t.ana:hover{background:#FDEBC8;}',
             '.ys-t.kapat{background:#F1F4F9; font-size:1.25rem; font-weight:700;}',
-            '.ys-sahne{position:relative; flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:14px; min-height:0;}',
-            '.ys-kagit{position:relative; background:#fff; border-radius:6px; box-shadow:0 10px 30px rgba(15,23,42,.14), 0 0 0 1px #DDE3EA;}',
-            '.ys-kagit canvas{position:absolute; inset:0; width:100%; height:100%; border-radius:6px;}',
+            '.ys-sahne{position:relative; flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:0; min-height:0;}',
+            '.ys-kagit{position:relative; background:#fff;}',
+            '.ys-kagit canvas{position:absolute; inset:0; width:100%; height:100%;}',
             '.ys-kagit .ys-ust{touch-action:none; cursor:crosshair;}',
             '.ys-kagit.silgi .ys-ust{cursor:none;}',
             '.ys-silgi-iz{position:absolute; pointer-events:none; border:2px solid rgba(27,79,156,.55); background:rgba(255,255,255,.35);',
@@ -496,7 +522,7 @@
             '  .ys-t{min-width:32px; height:32px; padding:0 5px;} .ys-renk{width:26px; height:26px; min-width:26px;}',
             '  .ys-kal,.ys-mod{width:32px; height:30px; min-width:32px;} .ys-mod svg{width:26px; height:19px;}',
             '  .ys-t.kapat{position:absolute; top:7px; right:8px;} .ys-arac{padding-right:48px;}',
-            '  .ys-sahne{padding:8px;} .ys-son{font-size:.78rem; max-width:92%;}}',
+            '  .ys-son{font-size:.78rem; max-width:92%;}}',
             /* küçültülünce sağ altta kalan düğme */
             '#ysPil{position:fixed; right:16px; bottom:16px; z-index:99980; display:flex; align-items:center; gap:9px;',
             '  padding:9px 16px 9px 10px; border:0; border-radius:999px; background:#1B4F9C; color:#fff; cursor:pointer;',
@@ -734,9 +760,12 @@
     function boyutErtele() { clearTimeout(_boyutZ); _boyutZ = setTimeout(cizimAyarla, 60); }
     function cizimAyarla() {
         if (!UI) return;
-        var r = UI.sahne.getBoundingClientRect();
-        var gw = Math.max(200, r.width - 28), gh = Math.max(140, r.height - 28);
-        var w = Math.min(gw, gh * (W / H)), h = w * (H / W);
+        /* clientWidth: açılış canlandırması (scale) ölçüyü küçültmesin */
+        var gw = Math.max(200, UI.sahne.clientWidth), gh = Math.max(140, UI.sahne.clientHeight);
+        UI.oran = gw / gh;
+        var g = gorunum(sayfa(), UI.oran), Lw = g.x1 - g.x0;
+        UI.x0 = g.x0; UI.x1 = g.x1; UI.gSayfa = sayfa();
+        var w = Math.min(gw, gh * (Lw / H)), h = w * (H / Lw);
         UI.kagit.style.width = Math.round(w) + 'px';
         UI.kagit.style.height = Math.round(h) + 'px';
         var dpr = Math.min(3, window.devicePixelRatio || 1);
@@ -744,8 +773,8 @@
             c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
         });
         UI.dpr = dpr;
-        UI.olcek = (w * dpr) / W;
-        UI.cssOlcek = w / W;
+        UI.olcek = (w * dpr) / Lw;
+        UI.cssOlcek = w / Lw;
         UI.iz.style.width = UI.iz.style.height = (SILGI_W * UI.cssOlcek) + 'px';
         sayfaCiz();
     }
@@ -753,11 +782,13 @@
     function sayfaCiz() {
         if (!UI || !D) return;
         var s = sayfa();
-        cizgileriCiz(UI.alt.getContext('2d'), s.mod, UI.olcek);
+        var b = sinirlar(s);
+        if (s !== UI.gSayfa || (b && (b[0] < UI.x0 || b[1] > UI.x1))) { cizimAyarla(); return; }
+        cizgileriCiz(UI.alt.getContext('2d'), s.mod, UI.olcek, UI.x0, UI.x1);
         var ctx = UI.ust.getContext('2d');
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, UI.ust.width, UI.ust.height);
-        s.cizimler.forEach(function (c) { cizimCiz(ctx, c, UI.olcek); });
+        s.cizimler.forEach(function (c) { cizimCiz(ctx, c, UI.olcek, UI.x0); });
         UI.ipucu.classList.toggle('gizli', !bosMu(D.sayfalar));
         aracGuncelle();
     }
@@ -766,7 +797,7 @@
     var _cz = null, _kalemVar = false;
     function nokta(e) {
         var r = UI.ust.getBoundingClientRect();
-        return [ (e.clientX - r.left) / r.width * W, (e.clientY - r.top) / r.height * H ];
+        return [ UI.x0 + (e.clientX - r.left) / r.width * (UI.x1 - UI.x0), (e.clientY - r.top) / r.height * H ];
     }
     function izKonum(e) {
         var r = UI.kagit.getBoundingClientRect();
@@ -785,7 +816,7 @@
         _cz = { id: e.pointerId, c: { r: T.renk, k: T.kal, s: silgiMi ? 1 : 0, p: [p[0], p[1]] } };
         UI.ipucu.classList.add('gizli');
         var ctx = UI.ust.getContext('2d');
-        cizimCiz(ctx, _cz.c, UI.olcek);
+        cizimCiz(ctx, _cz.c, UI.olcek, UI.x0);
         if (T.arac === 'silgi') { izKonum(e); UI.iz.classList.add('gor'); }
     }
     function kalemOynat(e) {
@@ -803,7 +834,7 @@
             /* yalnız son parça çizilir: önceki orta noktadan yeni orta noktaya */
             var m = c.p.length / 2;
             ctx.save();
-            ctx.setTransform(UI.olcek, 0, 0, UI.olcek, 0, 0);
+            ctx.setTransform(UI.olcek, 0, 0, UI.olcek, -UI.x0 * UI.olcek, 0);
             ctx.globalCompositeOperation = c.s ? 'destination-out' : 'source-over';
             ctx.lineCap = 'round'; ctx.lineJoin = 'round';
             ctx.strokeStyle = c.s ? '#000' : RENKLER[c.r].k;
@@ -1218,6 +1249,7 @@
     window.KidefYaziSayfasi = {
         ac: ac, kapat: kapat, kucult: kucult, buyut: buyut,
         bagli: function () { return BAGLI; },
+        gorunum: function () { return UI ? { x0: UI.x0, x1: UI.x1 } : null; },
         /* test ve öteki modüller için */
         kodla: defterKodla, coz: defterCoz, gecmisListe: gecmisListe
     };
