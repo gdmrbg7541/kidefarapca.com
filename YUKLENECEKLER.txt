@@ -12849,3 +12849,7 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       küçült (çarpı yok). İki yanda yukarıdan aşağı 5 renkli kalem + silgi. Çöpe ya da seçili silgiye
                       ikinci kez basınca «Tüm sayfayı sil» çıkar. Altta ortada yarı saydam büyük sayfa çubuğu.
                       PDF: bütün sayfalar A4 yatay, dış kütüphanesiz. Dar ekranda da kâğıt alanı doldurur. (v=06232411)
+  DEĞİŞTİ (19.10.2026, öğretmen: "simge halne küçültme tuşunu göremedim" · "tüm sayfalara bakabileceğimiz bi özellik
+                      olsun, çizgili defterde yatay çizgi 6 tane olsun"): Küçült düğmesi yazılı («— Küçült»), mavi ve hep
+                      sağ üst köşede (indir okuna benzeyen simge değişti). Sayfa çubuğuna «Tüm sayfalar» (ızgara): bütün
+                      sayfalar küçük resim, basınca o sayfa; sonda «Yeni sayfa». Çizgili defter 6 yatay çizgi. (v=01d5c7c6)

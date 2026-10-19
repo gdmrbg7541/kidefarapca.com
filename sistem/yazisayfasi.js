@@ -39,6 +39,11 @@
    · altta ortada yarı saydam, büyük sayfa çubuğu: ‹ 1 / 3 › + yeni sayfa
      + sayfayı kaldır.
    · PDF: defterin bütün sayfaları (çizgileriyle) A4 yatay PDF olarak iner.
+   · «Tüm sayfalar» (sayfa çubuğundaki ızgara düğmesi): defterin bütün
+     sayfaları küçük resim olarak; basınca o sayfaya gidilir.
+   · Çizgili defter: 6 yatay çizgi ("yatay çizgi 6 tane olsun").
+   · Küçült düğmesi yazılı ve mavi, hep sağ üst köşede ("simge haline
+     küçültme tuşunu göremedim").
    ARAÇLAR: 5 renk kalem · silgi · 3 kalınlık · çizgi düzeni (gri
    çizgiler / Arapça büyük harf / Arapça küçük harf / boş) · geri al,
    yinele, temizle · sayfalar (ekle, kaldır, ‹ ›) · PDF · tam ekran.
@@ -243,7 +248,10 @@
             ctx.moveTo(x0 + 18, y); ctx.lineTo(x1 - 18, y); ctx.stroke();
         }
         if (mod === 'c') {
-            for (var y = 74; y < H - 16; y += 44) yatay(y, '#D6DBE2', 1.3, false);
+            /* çizgili defter: 6 yatay çizgi (öğretmen, 19.10.2026: "çizgili
+               defterde yatay çizgi 6 tane olsun") — sayfa yüksekliğine eşit
+               aralıkla */
+            for (var k = 1; k <= 6; k++) yatay(Math.round(H * k / 7), '#CDD3DB', 1.5, false);
         } else if (mod === 'b' || mod === 'k') {
             /* Arapça yazı satırı: üst çizgi (elif boyu), kesik orta çizgi
                (diş yüksekliği), koyu taban çizgisi, alt çizgi (inen harfler) */
@@ -483,8 +491,12 @@
             '.ys-t.ana{background:#FFF4DE; color:#9A6512;}',
             '.ys-t.ana:hover{background:#FDEBC8;}',
             '.ys-t.kapat{background:#F1F4F9; font-size:1.25rem; font-weight:700;}',
-            '.ys-t.kucult{background:#F1F4F9;}',
-            '.ys-t.kucult:hover{background:#E5EBF3;}',
+            '.ys-t.kucult{background:#1B4F9C; color:#fff; padding:0 13px 0 10px;}',
+            '.ys-t.kucult:hover{background:#163F7D;}',
+            '.ys-t.kucult svg{width:22px; height:22px;}',
+            '.ys-arac{position:relative; padding-right:232px;}',
+            '.ys-pencere{position:absolute; top:9px; right:12px; display:flex; align-items:center; gap:6px;}',
+            '@media (max-width:1200px){.ys-t[data-is="tamEkran"] span{display:none;} .ys-arac{padding-right:150px;}}',
             /* iki yandaki kalem sütunları (kâğıdın üstünde, ortada) */
             '.ys-yan{position:absolute; top:50%; transform:translateY(-50%); z-index:3; display:flex; flex-direction:column; gap:9px;',
             '  padding:9px; background:rgba(255,255,255,.78); border-radius:32px; box-shadow:0 8px 26px rgba(15,23,42,.16), 0 0 0 1px rgba(15,23,42,.06);',
@@ -511,6 +523,25 @@
             '.ys-sayfalar .ys-t svg{width:28px; height:28px;}',
             '.ys-sayfalar .ys-sayfa{font-size:1.25rem; min-width:76px;}',
             '.ys-sayfalar .ys-ara{width:1px; height:30px; background:rgba(15,23,42,.14); margin:0 3px;}',
+            /* «Tüm sayfalar» görünümü */
+            '.ys-genel{position:absolute; inset:0; z-index:6; background:rgba(238,241,245,.97); display:flex; flex-direction:column;',
+            '  animation:ysSol .15s ease-out;}',
+            '.ys-genel-bas{display:flex; align-items:center; gap:10px; padding:14px 18px 6px; flex:none;}',
+            '.ys-genel-bas b{font-size:1.15rem; color:#1F2430;} .ys-genel-bas small{color:#8A94A3; font-weight:700; font-size:.9rem;}',
+            '.ys-genel-bas .ys-t{background:#fff; box-shadow:0 0 0 1px #DDE3EA; padding:0 14px;}',
+            '.ys-genel-izgara{flex:1 1 auto; overflow:auto; padding:10px 18px 24px; display:grid;',
+            '  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:16px; align-content:start;}',
+            '.ys-gkart{border:0; background:#fff; border-radius:12px; padding:8px; cursor:pointer; display:flex; flex-direction:column; gap:7px;',
+            '  font-family:inherit; text-align:start; box-shadow:0 2px 10px rgba(15,23,42,.10), 0 0 0 1px #DDE3EA; transition:transform .12s, box-shadow .12s;}',
+            '.ys-gkart:hover{transform:translateY(-2px); box-shadow:0 8px 22px rgba(15,23,42,.14), 0 0 0 1px #BFD3F2;}',
+            '.ys-gkart canvas{width:100%; height:auto; aspect-ratio:16/10; border-radius:6px; display:block; background:#fff;}',
+            '.ys-gkart span{font-weight:800; color:#3D4756; font-size:.92rem; padding:0 2px;}',
+            '.ys-gkart.simdi{box-shadow:0 0 0 3px #1B4F9C, 0 8px 22px rgba(27,79,156,.18);}',
+            '.ys-gkart.simdi span{color:#1B4F9C;}',
+            '.ys-gkart.yeni{align-items:center; justify-content:center; color:#1B4F9C; min-height:150px; background:rgba(255,255,255,.55);',
+            '  box-shadow:inset 0 0 0 2px #C9D6E8;}',
+            '.ys-gkart.yeni svg{width:36px; height:36px;}',
+            '@media (max-width:760px){.ys-genel-izgara{grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px; padding:8px 10px 18px;}}',
             /* «Tüm sayfayı sil» sorusu */
             '.ys-silsor{position:absolute; z-index:7; background:#fff; border-radius:14px; padding:7px;',
             '  box-shadow:0 14px 34px rgba(15,23,42,.24), 0 0 0 1px rgba(15,23,42,.06); animation:ysSol .12s ease-out;}',
@@ -572,6 +603,8 @@
             /* telefonda araç çubuğu satırlara sarılır (kapat tuşu görünür kalsın) */
             '@media (max-width:760px){#ysOrt{padding:0;} #ysKutu{border-radius:12px;}',
             '  .ys-arac{gap:4px; padding:7px 8px;} .ys-baslik span,.ys-ayrac,.ys-arac .ys-t span{display:none;}',
+            '  .ys-arac .ys-t.kucult span{display:inline;}',
+            '  .ys-arac{padding-right:136px;} .ys-pencere{top:7px; right:8px; gap:4px;}',
             '  .ys-t{min-width:32px; height:32px; padding:0 5px;} .ys-renk{width:26px; height:26px; min-width:26px;}',
             '  .ys-kal,.ys-mod{width:32px; height:30px; min-width:32px;} .ys-mod svg{width:26px; height:19px;}',
             '  .ys-yan{padding:4px; gap:5px;} .ys-yan.sol{left:3px;} .ys-yan.sag{right:3px;}',
@@ -610,7 +643,8 @@
         sayfaSil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6"/></svg>',
         yildiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.2 5.9-.8z"/></svg>',
         saat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3 2"/></svg>',
-        kucult: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="m7.5 9.5 4.5 4.5 4.5-4.5"/><path d="M5 19.5h14"/></svg>',
+        izgara: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg>',
+        kucult: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5.5 17.5h13"/></svg>',
         pdf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6"/><path d="m9.5 14.5 2.5 2.5 2.5-2.5"/></svg>',
         tamEkran: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
         defter: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="8" width="40" height="48" rx="4" fill="#fff" stroke="#1B4F9C" stroke-width="3"/>' +
@@ -685,9 +719,11 @@
                   '<span id="ysNotYazi">Seviye notlarına kaydet</span></button>' +
                 '<button type="button" class="ys-t" data-is="panel" title="Geçmiş ve seviye notları">' + IK.saat + '<span>Geçmiş</span></button>' +
                 '<button type="button" class="ys-t" data-is="pdf" title="PDF olarak indir — bütün sayfalar">' + IK.pdf + '<span>PDF</span></button>' +
-                '<button type="button" class="ys-t" data-is="tamEkran" title="Tam ekran">' + IK.tamEkran + '</button>' +
+                '<div class="ys-pencere">' +
+                '<button type="button" class="ys-t" data-is="tamEkran" title="Tam ekran">' + IK.tamEkran + '<span>Tam ekran</span></button>' +
                 '<button type="button" class="ys-t kucult" data-is="kucult" title="Simge durumuna küçült (Esc) — sınıf açık kaldıkça sağ altta durur" aria-label="Simge durumuna küçült">' +
-                  IK.kucult + '</button>' +
+                  IK.kucult + '<span>Küçült</span></button>' +
+                '</div>' +
               '</div>' +
               '<div class="ys-sahne" id="ysSahne">' +
                 '<div class="ys-kagit" id="ysKagit">' +
@@ -700,6 +736,7 @@
                   '<button type="button" class="ys-t" data-is="onceki" title="Önceki sayfa (←)">' + IK.onceki + '</button>' +
                   '<span class="ys-sayfa" id="ysSayfa">1 / 1</span>' +
                   '<button type="button" class="ys-t" data-is="sonraki" title="Sonraki sayfa (→)">' + IK.sonraki + '</button>' +
+                  '<button type="button" class="ys-t" data-is="tumSayfalar" title="Tüm sayfalar">' + IK.izgara + '</button>' +
                   '<span class="ys-ara"></span>' +
                   '<button type="button" class="ys-t" data-is="yeniSayfa" title="Yeni sayfa">' + IK.yeniSayfa + '</button>' +
                   '<button type="button" class="ys-t" data-is="sayfaSil" title="Bu sayfayı kaldır">' + IK.sayfaSil + '</button>' +
@@ -748,6 +785,7 @@
         try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) { }
         var so = UI.ort.querySelector('.ys-soru-ort'); if (so) so.remove();
         silSorKapat();
+        genelKapat();
         UI.panel.classList.remove('acik');
         if (D && D.kirli && !bosMu(D.sayfalar)) gecmiseKaydet();
         UI.kucuk = true;
@@ -958,15 +996,18 @@
         bildir('Sayfa temizlendi — geri almak için ↶');
     }
     function sayfayaGit(i) {
+        genelKapat();
         if (i < 0 || i >= D.sayfalar.length) return;
         D.aktif = i; sayfaCiz();
     }
     function yeniSayfaEkle() {
+        genelKapat();
         D.sayfalar.splice(D.aktif + 1, 0, yeniSayfa(sayfa().mod));
         D.aktif++;
         D.kirli = true; sayfaCiz();
     }
     function sayfaKaldir() {
+        genelKapat();
         if (D.sayfalar.length < 2) return;
         var s = sayfa();
         var yap = function () {
@@ -1007,6 +1048,40 @@
         UI.sayfa.textContent = (D.aktif + 1) + ' / ' + D.sayfalar.length;
         var ny = UI.ort.querySelector('#ysNotYazi');
         if (ny) ny.textContent = D.notId ? 'Seviye notunu güncelle' : 'Seviye notlarına kaydet';
+    }
+
+    /* ---------------- «Tüm sayfalar» görünümü ----------------
+       Öğretmen: "tüm sayfalara bakabileceğimiz bi özellik olsun". Defterin
+       bütün sayfaları küçük resim olarak dizilir; birine basınca o sayfaya
+       gidilir. Sonda «Yeni sayfa» kartı. Esc, «Kapat» ya da dışarıdaki bir
+       düğme görünümü kapatır. */
+    function genelAc() {
+        genelKapat();
+        silSorKapat();
+        var g = document.createElement('div');
+        g.className = 'ys-genel';
+        g.setAttribute('role', 'dialog');
+        g.setAttribute('aria-label', 'Tüm sayfalar');
+        var kartlar = D.sayfalar.map(function (sy, i) {
+            return '<button type="button" class="ys-gkart' + (i === D.aktif ? ' simdi' : '') + '" data-git="' + i + '" title="Sayfa ' + (i + 1) + '">' +
+                '<canvas width="480" height="300"></canvas><span>Sayfa ' + (i + 1) + (i === D.aktif ? ' · açık' : '') + '</span></button>';
+        }).join('');
+        g.innerHTML =
+            '<div class="ys-genel-bas"><b>Tüm sayfalar</b><small>' + D.sayfalar.length + ' sayfa</small><span class="ys-bos"></span>' +
+              '<button type="button" class="ys-t" data-is="genelKapat" title="Kapat (Esc)">Kapat</button></div>' +
+            '<div class="ys-genel-izgara">' + kartlar +
+              '<button type="button" class="ys-gkart yeni" data-is="genelYeni">' + IK.yeniSayfa + '<span>Yeni sayfa</span></button>' +
+            '</div>';
+        UI.sahne.appendChild(g);
+        [].forEach.call(g.querySelectorAll('canvas'), function (c, i) {
+            try { onizlemeCiz(c, D.sayfalar[i]); } catch (e) { }
+        });
+        UI.genel = g;
+        var su = g.querySelector('.simdi');
+        if (su && su.scrollIntoView) { try { su.scrollIntoView({ block: 'nearest' }); } catch (e) { } }
+    }
+    function genelKapat() {
+        if (UI && UI.genel) { UI.genel.remove(); UI.genel = null; }
     }
 
     /* ---------------- «Tüm sayfayı sil» sorusu ---------------- */
@@ -1127,7 +1202,9 @@
     function tikla(e) {
         var t = e.target;
         if (t === UI.ort) return;                                    /* dışına basınca kapanmaz (yanlışlıkla silinmesin) */
-        var b = t.closest && t.closest('[data-is],[data-renk],[data-kal],[data-mod],[data-sek],[data-ac],[data-sil],[data-not],[data-notsil]');
+        var b = t.closest && t.closest('[data-is],[data-renk],[data-kal],[data-mod],[data-sek],[data-ac],[data-sil],[data-not],[data-notsil],[data-git]');
+        /* «Tüm sayfalar» açıkken dışındaki bir düğmeye basılırsa görünüm kapanır */
+        if (UI.genel && !UI.genel.contains(t) && !(b && b.getAttribute('data-is') === 'tumSayfalar')) genelKapat();
         /* açık «Tüm sayfayı sil» sorusu: dışına basınca kapanır; onu açan
            düğmeye yeniden basmak da yalnız kapatır */
         if (UI.silSor && !UI.silSor.contains(t)) {
@@ -1136,6 +1213,7 @@
             if (b && b === acan) return;
         }
         if (!b) return;
+        if (b.hasAttribute('data-git')) { var gi = +b.getAttribute('data-git'); genelKapat(); sayfayaGit(gi); return; }
         if (b.hasAttribute('data-renk')) { T.renk = +b.getAttribute('data-renk'); T.arac = 'kalem'; tercihKaydet(); aracGuncelle(); return; }
         if (b.hasAttribute('data-kal')) { T.kal = b.getAttribute('data-kal'); T.arac = 'kalem'; tercihKaydet(); aracGuncelle(); return; }
         if (b.hasAttribute('data-mod')) { modSec(b.getAttribute('data-mod')); return; }
@@ -1153,6 +1231,15 @@
         else if (is === 'kalem') { T.arac = 'kalem'; aracGuncelle(); }
         else if (is === 'tumSil') { silSorKapat(); temizle(); bildir('Sayfa silindi — geri almak için ↶'); }
         else if (is === 'pdf') pdfIndir();
+        else if (is === 'tumSayfalar') { if (UI.genel) genelKapat(); else genelAc(); }
+        else if (is === 'genelKapat') genelKapat();
+        else if (is === 'genelYeni') {
+            /* görünümde kart en sonda durur: yeni sayfa da defterin sonuna */
+            genelKapat();
+            D.sayfalar.push(yeniSayfa(D.sayfalar[D.sayfalar.length - 1].mod));
+            D.aktif = D.sayfalar.length - 1;
+            D.kirli = true; sayfaCiz();
+        }
         else if (is === 'geri') geriAl();
         else if (is === 'ileri') yinele();
         else if (is === 'temizle') silSorAc(b);
@@ -1176,6 +1263,7 @@
         if (e.key === 'Escape') {
             e.preventDefault(); e.stopPropagation();
             if (UI.silSor) { silSorKapat(); return; }
+            if (UI.genel) { genelKapat(); return; }
             var so = UI.ort.querySelector('.ys-soru-ort');
             if (so) { so.remove(); return; }
             if (UI.panel.classList.contains('acik')) { UI.panel.classList.remove('acik'); return; }
