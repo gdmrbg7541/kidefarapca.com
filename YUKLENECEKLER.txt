@@ -12796,3 +12796,12 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       bildirimleri; «📋 Tüm kayıt anketleri» tuşu (eski akordiyon gizli).
   sistem/alarm.js     loadMufredat '_' ile başlayan belgeyi (mufredat/_destek) paket saymaz.
   index.html          hesap/destek.js eklendi. Damga: surumle.py · Yedek: _kaynak/yedekler/2026-10-19-destek/
+
+19.10.2026 (5) — BEKLENEN DESTEK: GÜNLÜK BİRİKİM, ÖĞRETMEN SAYISI GİZLİ
+  hesap/destek.js     Borç artık GÜN GÜN birikir (her gün o ayın kişi başı tutarı ÷ 30, kayıt günü dahil).
+                      Öğretmen kartında yalnız «Günlük destek … TL / gün», «bu ay biriken» basamak grafiği
+                      (bugün «+… TL»), beklenen / ödenen / kalan. Öğretmen sayısı, aylık toplam, alt sınır,
+                      «Önizleme» ve alt başlık kartta YOK; «katılan arttıkça tutar azalır» cümlesi duruyor.
+                      Sayı, toplam (30.000) ve alt sınır (500) artık herkesin okuyabildiği mufredat/_destek'te
+                      değil, yalnız yöneticinin okuyabildiği siparisler/_destekAyar'da; açık belgedeki eski
+                      alanlar ilk yayında silinir.
