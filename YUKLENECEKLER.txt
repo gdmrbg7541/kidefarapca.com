@@ -12805,3 +12805,11 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       Sayı, toplam (30.000) ve alt sınır (500) artık herkesin okuyabildiği mufredat/_destek'te
                       değil, yalnız yöneticinin okuyabildiği siparisler/_destekAyar'da; açık belgedeki eski
                       alanlar ilk yayında silinir.
+
+19.10.2026 (6) — 5-6. SINIF ÇALIŞMA KÂĞIDI GÖRÜNÜR YERDE
+  index.html          5 ve 6. sınıfın 2026-2027 «1. Ünite Çalışma Kâğıdı» (Word + PDF) artık:
+                      · Çalışma Kâğıtları & Etkinlikler kartında «Çalışma Kâğıtları» grubunun EN BAŞINDA
+                        (önce kapalı açılan «Yazılıya Hazırlık» grubundaydı) + kartın başında not;
+                      · Sınavlar kartında «Sınava Hazırlık Çalışma Kâğıtları» grubunda («2026-2027 1. yazılı»).
+                      Belgelere grup alanı eklendi (grup:'calisma' / 'hazirlik'); 8. sınıf ve öteki belgeler
+                      değişmedi. Yedek: _kaynak/yedekler/2026-10-19-calisma-kagidi-yeri/
