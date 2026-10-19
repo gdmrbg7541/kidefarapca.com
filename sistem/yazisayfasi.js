@@ -24,9 +24,24 @@
      sürer (aynı ders); daha sonra açılırsa boş sayfa + «Son yazdığın».
    · Yalnız öğretmen/yönetici; öğrencinin kendi panelinde açılmaz.
 
-   ARAÇLAR: kalem · silgi · 5 renk · 3 kalınlık · çizgi düzeni (gri
+   DÜZEN (19.10.2026, öğretmen: "tam ekran simge haline küçültmek (çarpı
+   olmasın) ilerigeri tuşu, çöp yanyana ve solda olsun, kalemler hem sağda
+   hem solda yukardan aşağıya doğru dizilsin, iki tarafta da silgi olsun,
+   dosyayı pdf ye çevirme ve indirme seçeneği olsun, silmeye ikinci kez
+   basınca tüm sayfayı sil seçeneği olsun, sayfalar ve ileri geri tuşu
+   altta ortada olsun ve biraz daha şeffaf ve büyük olsun"):
+   · üst çubuk: solda başlık + geri al · yinele · çöp; ortada çizgi düzeni
+     ve kalınlık; sağda seviye notu · geçmiş · PDF · tam ekran · küçült.
+   · iki yanda (tahtanın iki ucunda duran öğretmen için) yukarıdan aşağı
+     5 renkli kalem + silgi; iki taraf birlikte seçilir.
+   · çöpe bir kez, ya da seçili silgiye İKİNCİ kez basınca yanında
+     «Tüm sayfayı sil» çıkar; ona basınca sayfa temizlenir (geri alınır).
+   · altta ortada yarı saydam, büyük sayfa çubuğu: ‹ 1 / 3 › + yeni sayfa
+     + sayfayı kaldır.
+   · PDF: defterin bütün sayfaları (çizgileriyle) A4 yatay PDF olarak iner.
+   ARAÇLAR: 5 renk kalem · silgi · 3 kalınlık · çizgi düzeni (gri
    çizgiler / Arapça büyük harf / Arapça küçük harf / boş) · geri al,
-   yinele, temizle · sayfalar (ekle, kaldır, ‹ ›) · tam ekran.
+   yinele, temizle · sayfalar (ekle, kaldır, ‹ ›) · PDF · tam ekran.
    Kısayollar: Ctrl+Z / Ctrl+Y, K kalem, S silgi, 1-5 renk, ← → sayfa, Esc.
 
    KAYIT
@@ -40,9 +55,10 @@
    Çizimler resim değil, ÇİZGİ olarak saklanır (noktalar, sıkıştırılmış):
    her ekranda keskin görünür, az yer tutar. Sayfa 625 birim yüksekliğinde;
    GENİŞLİĞİ EKRANA UYAR (19.10.2026, öğretmen: "yatay olarak alanın hepsini
-   kaplasın ... sağda ve solda boşluk olmasın"): 1000 birimlik çekirdeğin
-   iki yanı, ekran ne kadar genişse o kadar açılır. Başka ekranda açılan
-   defterin bütün çizgileri yine görünür (gerekirse küçülür).
+   kaplasın ... sağda ve solda boşluk olmasın"): görünen genişlik ekran
+   oranından gelir (1000 birimlik çekirdeğin ortası esas). Kâğıt alanı
+   hep doldurur; başka ekranda açılan defterin bütün çizgileri yine
+   görünür (gerekirse küçülür).
    ===================================================================== */
 (function () {
     'use strict';
@@ -290,7 +306,9 @@
         return a <= z ? [a, z] : null;
     }
     function gorunum(s, oran) {
-        var yari = Math.max(W / 2, H * (oran || W / H) / 2);
+        /* ekran 16:10'dan dar olsa da kâğıt alanı doldurur: boş kenarlar
+           görünmez, yazılmış bir çizgi varsa o hep içeride kalır */
+        var yari = H * (oran || W / H) / 2;
         var b = sinirlar(s);
         if (b) yari = Math.max(yari, W / 2 - b[0] + 5, b[1] - W / 2 + 5);
         return { x0: W / 2 - yari, x1: W / 2 + yari };
@@ -465,6 +483,41 @@
             '.ys-t.ana{background:#FFF4DE; color:#9A6512;}',
             '.ys-t.ana:hover{background:#FDEBC8;}',
             '.ys-t.kapat{background:#F1F4F9; font-size:1.25rem; font-weight:700;}',
+            '.ys-t.kucult{background:#F1F4F9;}',
+            '.ys-t.kucult:hover{background:#E5EBF3;}',
+            /* iki yandaki kalem sütunları (kâğıdın üstünde, ortada) */
+            '.ys-yan{position:absolute; top:50%; transform:translateY(-50%); z-index:3; display:flex; flex-direction:column; gap:9px;',
+            '  padding:9px; background:rgba(255,255,255,.78); border-radius:32px; box-shadow:0 8px 26px rgba(15,23,42,.16), 0 0 0 1px rgba(15,23,42,.06);',
+            '  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}',
+            '.ys-yan.sol{left:10px;} .ys-yan.sag{right:10px;}',
+            '.ys-yan .ys-renk{width:46px; height:46px; min-width:46px; border:0; border-radius:50%; color:#fff; display:flex;',
+            '  align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(15,23,42,.18); padding:0; cursor:pointer;',
+            '  transition:transform .12s, box-shadow .12s;}',
+            '.ys-yan .ys-renk svg{width:21px; height:21px; opacity:.92;}',
+            '.ys-yan .ys-renk:hover{transform:scale(1.07);}',
+            '.ys-yan .ys-renk.sec{box-shadow:0 0 0 3px #fff, 0 0 0 6px var(--rk); transform:scale(1.06);}',
+            '.ys-yan .ys-t{width:46px; height:46px; min-width:46px; padding:0; border-radius:50%; background:#fff;',
+            '  box-shadow:0 2px 6px rgba(15,23,42,.14);}',
+            '.ys-yan .ys-t svg{width:23px; height:23px;}',
+            '.ys-yan .ys-t.sec{background:#1B4F9C; color:#fff;}',
+            '.ys-yan .ys-ara{height:1px; background:rgba(15,23,42,.12); margin:1px 6px;}',
+            /* altta ortada sayfa çubuğu: yarı saydam, büyük */
+            '.ys-sayfalar{position:absolute; left:50%; bottom:14px; transform:translateX(-50%); z-index:3; display:flex; align-items:center;',
+            '  gap:6px; padding:7px 10px; background:rgba(255,255,255,.55); border-radius:999px; opacity:.72;',
+            '  box-shadow:0 8px 24px rgba(15,23,42,.14), 0 0 0 1px rgba(15,23,42,.06); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);',
+            '  transition:opacity .15s, background .15s;}',
+            '.ys-sayfalar:hover,.ys-sayfalar:focus-within{opacity:1; background:rgba(255,255,255,.88);}',
+            '.ys-sayfalar .ys-t{width:52px; height:52px; min-width:52px; padding:0; border-radius:50%;}',
+            '.ys-sayfalar .ys-t svg{width:28px; height:28px;}',
+            '.ys-sayfalar .ys-sayfa{font-size:1.25rem; min-width:76px;}',
+            '.ys-sayfalar .ys-ara{width:1px; height:30px; background:rgba(15,23,42,.14); margin:0 3px;}',
+            /* «Tüm sayfayı sil» sorusu */
+            '.ys-silsor{position:absolute; z-index:7; background:#fff; border-radius:14px; padding:7px;',
+            '  box-shadow:0 14px 34px rgba(15,23,42,.24), 0 0 0 1px rgba(15,23,42,.06); animation:ysSol .12s ease-out;}',
+            '.ys-silsor button{border:0; background:#C0392B; color:#fff; border-radius:10px; padding:11px 16px; font-family:inherit;',
+            '  font-weight:800; font-size:.95rem; display:flex; align-items:center; gap:8px; cursor:pointer; white-space:nowrap;}',
+            '.ys-silsor button:hover{background:#A93226;}',
+            '.ys-silsor svg{width:20px; height:20px;}',
             '.ys-sahne{position:relative; flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:0; min-height:0;}',
             '.ys-kagit{position:relative; background:#fff;}',
             '.ys-kagit canvas{position:absolute; inset:0; width:100%; height:100%;}',
@@ -477,11 +530,11 @@
             '  color:#A3ADBA; font-weight:800; font-size:1.05rem; transition:opacity .3s;}',
             '.ys-ipucu svg{display:block; margin:0 auto 6px; width:46px; height:46px; opacity:.6;}',
             '.ys-ipucu.gizli{opacity:0;}',
-            '.ys-son{position:absolute; left:50%; bottom:18px; transform:translateX(-50%); background:#1F2430; color:#fff; border-radius:999px;',
+            '.ys-son{position:absolute; left:50%; top:14px; z-index:4; transform:translateX(-50%); background:#1F2430; color:#fff; border-radius:999px;',
             '  padding:8px 8px 8px 16px; display:flex; align-items:center; gap:10px; font-size:.85rem; box-shadow:0 8px 22px rgba(0,0,0,.25);}',
             '.ys-son button{border:0; background:#fff; color:#1F2430; border-radius:999px; padding:6px 13px; font-weight:800; cursor:pointer; font-family:inherit;}',
             '.ys-son .x{background:transparent; color:#fff; padding:6px 8px;}',
-            '.ys-bildiri{position:absolute; left:50%; top:76px; transform:translateX(-50%); background:#1E8449; color:#fff; padding:9px 18px;',
+            '.ys-bildiri{position:absolute; left:50%; top:70px; transform:translateX(-50%); background:#1E8449; color:#fff; padding:9px 18px;',
             '  border-radius:999px; font-weight:800; font-size:.88rem; box-shadow:0 8px 22px rgba(0,0,0,.2); z-index:5;',
             '  animation:ysBildiri 2.6s ease forwards; pointer-events:none;}',
             '.ys-bildiri.hata{background:#B03A2E;}',
@@ -518,10 +571,14 @@
             '.ys-soru .hayir{background:#F1F4F9; color:#3D4756;}',
             /* telefonda araç çubuğu satırlara sarılır (kapat tuşu görünür kalsın) */
             '@media (max-width:760px){#ysOrt{padding:0;} #ysKutu{border-radius:12px;}',
-            '  .ys-arac{gap:4px; padding:7px 8px;} .ys-baslik small,.ys-ayrac,.ys-t span{display:none;}',
+            '  .ys-arac{gap:4px; padding:7px 8px;} .ys-baslik span,.ys-ayrac,.ys-arac .ys-t span{display:none;}',
             '  .ys-t{min-width:32px; height:32px; padding:0 5px;} .ys-renk{width:26px; height:26px; min-width:26px;}',
             '  .ys-kal,.ys-mod{width:32px; height:30px; min-width:32px;} .ys-mod svg{width:26px; height:19px;}',
-            '  .ys-t.kapat{position:absolute; top:7px; right:8px;} .ys-arac{padding-right:48px;}',
+            '  .ys-yan{padding:4px; gap:5px;} .ys-yan.sol{left:3px;} .ys-yan.sag{right:3px;}',
+            '  .ys-yan .ys-renk,.ys-yan .ys-t{width:30px; height:30px; min-width:30px;} .ys-yan .ys-renk svg,.ys-yan .ys-t svg{width:15px; height:15px;}',
+            '  .ys-yan .ys-renk.sec{box-shadow:0 0 0 2px #fff, 0 0 0 4px var(--rk);}',
+            '  .ys-sayfalar{bottom:8px; padding:5px 7px;} .ys-sayfalar .ys-t{width:42px; height:42px; min-width:42px;}',
+            '  .ys-sayfalar .ys-sayfa{font-size:1.05rem; min-width:58px;}',
             '  .ys-son{font-size:.78rem; max-width:92%;}}',
             /* küçültülünce sağ altta kalan düğme */
             '#ysPil{position:fixed; right:16px; bottom:16px; z-index:99980; display:flex; align-items:center; gap:9px;',
@@ -553,6 +610,8 @@
         sayfaSil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6"/></svg>',
         yildiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.2 5.9-.8z"/></svg>',
         saat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3 2"/></svg>',
+        kucult: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="m7.5 9.5 4.5 4.5 4.5-4.5"/><path d="M5 19.5h14"/></svg>',
+        pdf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6"/><path d="m9.5 14.5 2.5 2.5 2.5-2.5"/></svg>',
         tamEkran: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
         defter: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="8" width="40" height="48" rx="4" fill="#fff" stroke="#1B4F9C" stroke-width="3"/>' +
             '<path d="M16 20h28M16 29h28M16 38h28M16 47h20" stroke="#C9D2DE" stroke-width="2.4" stroke-linecap="round"/>' +
@@ -593,10 +652,15 @@
     function kur() {
         var ort = document.createElement('div');
         ort.id = 'ysOrt';
-        var renkler = RENKLER.map(function (r, i) {
-            return '<button type="button" class="ys-renk" data-renk="' + i + '" style="background:' + r.k + '" title="' + esc(r.ad) +
-                   ' (' + (i + 1) + ')" aria-label="' + esc(r.ad) + '"></button>';
+        var kalemler = RENKLER.map(function (r, i) {
+            return '<button type="button" class="ys-renk" data-renk="' + i + '" style="background:' + r.k + '; --rk:' + r.k + '" title="' +
+                   esc(r.ad) + ' kalem (' + (i + 1) + ')" aria-label="' + esc(r.ad) + ' kalem">' + IK.kalem + '</button>';
         }).join('');
+        var yan = function (taraf) {
+            return '<div class="ys-yan ' + taraf + '" aria-label="Kalemler">' + kalemler + '<div class="ys-ara"></div>' +
+                '<button type="button" class="ys-t" data-is="silgi" title="Silgi (S) — seçiliyken bir daha basınca: Tüm sayfayı sil" aria-label="Silgi">' +
+                IK.silgi + '</button></div>';
+        };
         var kalin = KALINLIK.map(function (k, i) {
             var r = [6, 10, 15][i];
             return '<button type="button" class="ys-kal" data-kal="' + k.id + '" title="' + esc(k.ad) + ' kalem"><i style="width:' + r + 'px;height:' + r + 'px"></i></button>';
@@ -609,36 +673,36 @@
               '<div class="ys-arac">' +
                 '<div class="ys-baslik">' + IK.defter + '<span>Yazı Sayfası<small>' + esc(etiket()) + '</small></span></div>' +
                 '<div class="ys-grup">' +
-                  '<button type="button" class="ys-t" data-is="kalem" title="Kalem (K)">' + IK.kalem + '</button>' +
-                  '<button type="button" class="ys-t" data-is="silgi" title="Silgi (S)">' + IK.silgi + '</button>' +
+                  '<button type="button" class="ys-t" data-is="geri" title="Geri al (Ctrl+Z)">' + IK.geri + '</button>' +
+                  '<button type="button" class="ys-t" data-is="ileri" title="Yinele (Ctrl+Y)">' + IK.ileri + '</button>' +
+                  '<button type="button" class="ys-t" data-is="temizle" title="Sayfayı sil">' + IK.temizle + '</button>' +
                 '</div>' +
-                '<div class="ys-grup" style="gap:6px; padding:3px 6px;">' + renkler + '</div>' +
-                '<div class="ys-grup">' + kalin + '</div>' +
+                '<div class="ys-ayrac"></div>' +
                 '<div class="ys-grup">' + modlar + '</div>' +
-                '<div class="ys-ayrac"></div>' +
-                '<button type="button" class="ys-t" data-is="geri" title="Geri al (Ctrl+Z)">' + IK.geri + '</button>' +
-                '<button type="button" class="ys-t" data-is="ileri" title="Yinele (Ctrl+Y)">' + IK.ileri + '</button>' +
-                '<button type="button" class="ys-t" data-is="temizle" title="Sayfayı temizle">' + IK.temizle + '</button>' +
-                '<div class="ys-ayrac"></div>' +
-                '<div class="ys-grup">' +
-                  '<button type="button" class="ys-t" data-is="onceki" title="Önceki sayfa (←)">' + IK.onceki + '</button>' +
-                  '<span class="ys-sayfa" id="ysSayfa">1 / 1</span>' +
-                  '<button type="button" class="ys-t" data-is="sonraki" title="Sonraki sayfa (→)">' + IK.sonraki + '</button>' +
-                  '<button type="button" class="ys-t" data-is="yeniSayfa" title="Yeni sayfa">' + IK.yeniSayfa + '</button>' +
-                  '<button type="button" class="ys-t" data-is="sayfaSil" title="Bu sayfayı kaldır">' + IK.sayfaSil + '</button>' +
-                '</div>' +
+                '<div class="ys-grup">' + kalin + '</div>' +
                 '<span class="ys-bos"></span>' +
                 '<button type="button" class="ys-t ana" data-is="notKaydet" title="Bu defteri seviye notlarına kaydet">' + IK.yildiz +
                   '<span id="ysNotYazi">Seviye notlarına kaydet</span></button>' +
                 '<button type="button" class="ys-t" data-is="panel" title="Geçmiş ve seviye notları">' + IK.saat + '<span>Geçmiş</span></button>' +
+                '<button type="button" class="ys-t" data-is="pdf" title="PDF olarak indir — bütün sayfalar">' + IK.pdf + '<span>PDF</span></button>' +
                 '<button type="button" class="ys-t" data-is="tamEkran" title="Tam ekran">' + IK.tamEkran + '</button>' +
-                '<button type="button" class="ys-t kapat" data-is="kucult" title="Küçült (Esc) — sınıf açık kaldıkça sağ altta durur" aria-label="Küçült">&times;</button>' +
+                '<button type="button" class="ys-t kucult" data-is="kucult" title="Simge durumuna küçült (Esc) — sınıf açık kaldıkça sağ altta durur" aria-label="Simge durumuna küçült">' +
+                  IK.kucult + '</button>' +
               '</div>' +
               '<div class="ys-sahne" id="ysSahne">' +
                 '<div class="ys-kagit" id="ysKagit">' +
                   '<canvas class="ys-alt"></canvas><canvas class="ys-ust"></canvas>' +
                   '<div class="ys-silgi-iz"></div>' +
                   '<div class="ys-ipucu">' + IK.kalem + 'Yazmaya başla — kalem, parmak ya da fare</div>' +
+                '</div>' +
+                yan('sol') + yan('sag') +
+                '<div class="ys-sayfalar" aria-label="Sayfalar">' +
+                  '<button type="button" class="ys-t" data-is="onceki" title="Önceki sayfa (←)">' + IK.onceki + '</button>' +
+                  '<span class="ys-sayfa" id="ysSayfa">1 / 1</span>' +
+                  '<button type="button" class="ys-t" data-is="sonraki" title="Sonraki sayfa (→)">' + IK.sonraki + '</button>' +
+                  '<span class="ys-ara"></span>' +
+                  '<button type="button" class="ys-t" data-is="yeniSayfa" title="Yeni sayfa">' + IK.yeniSayfa + '</button>' +
+                  '<button type="button" class="ys-t" data-is="sayfaSil" title="Bu sayfayı kaldır">' + IK.sayfaSil + '</button>' +
                 '</div>' +
               '</div>' +
               '<aside class="ys-panel" id="ysPanel" aria-label="Geçmiş ve seviye notları">' +
@@ -683,6 +747,7 @@
         if (!UI || UI.kucuk) return;
         try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) { }
         var so = UI.ort.querySelector('.ys-soru-ort'); if (so) so.remove();
+        silSorKapat();
         UI.panel.classList.remove('acik');
         if (D && D.kirli && !bosMu(D.sayfalar)) gecmiseKaydet();
         UI.kucuk = true;
@@ -805,6 +870,7 @@
         UI.iz.style.top = (e.clientY - r.top) + 'px';
     }
     function kalemBas(e) {
+        silSorKapat();
         if (e.pointerType === 'pen') _kalemVar = true;
         if (e.pointerType === 'touch' && _kalemVar) return;      /* avuç içi: kalem varken dokunma çizmez */
         if (e.button !== undefined && e.button > 0 && e.pointerType === 'mouse') return;
@@ -943,10 +1009,132 @@
         if (ny) ny.textContent = D.notId ? 'Seviye notunu güncelle' : 'Seviye notlarına kaydet';
     }
 
+    /* ---------------- «Tüm sayfayı sil» sorusu ---------------- */
+    function silSorAc(btn) {
+        silSorKapat();
+        if (!sayfa().cizimler.length) { bildir('Sayfa zaten boş'); return; }
+        var d = document.createElement('div');
+        d.className = 'ys-silsor';
+        d.setAttribute('role', 'dialog');
+        d.innerHTML = '<button type="button" data-is="tumSil">' + IK.temizle + '<span>Tüm sayfayı sil</span></button>';
+        UI.kutu.appendChild(d);
+        var k = UI.kutu.getBoundingClientRect(), r = btn.getBoundingClientRect();
+        var w = d.offsetWidth, h = d.offsetHeight, x, y;
+        if (btn.closest('.ys-yan.sol')) { x = r.right - k.left + 12; y = r.top - k.top + r.height / 2 - h / 2; }
+        else if (btn.closest('.ys-yan.sag')) { x = r.left - k.left - 12 - w; y = r.top - k.top + r.height / 2 - h / 2; }
+        else { x = r.left - k.left + r.width / 2 - w / 2; y = r.bottom - k.top + 8; }
+        d.style.left = Math.max(8, Math.min(k.width - w - 8, x)) + 'px';
+        d.style.top = Math.max(8, Math.min(k.height - h - 8, y)) + 'px';
+        UI.silSor = d; UI.silSorBtn = btn;
+    }
+    function silSorKapat() {
+        if (UI && UI.silSor) { UI.silSor.remove(); UI.silSor = null; UI.silSorBtn = null; }
+    }
+
+    /* ---------------- PDF ----------------
+       Her sayfa çizgileriyle birlikte yüksek çözünürlüklü bir resme
+       çizilir (silgi izleri de doğru çıksın diye resim), altına sınıf ve
+       tarih yazılır; sayfalar A4 yatay bir PDF'e konup indirilir. Dış
+       kütüphane gerekmez: PDF burada, elle yazılıyor. */
+    function trAscii(x) {
+        var h = { 'ç': 'c', 'Ç': 'C', 'ğ': 'g', 'Ğ': 'G', 'ı': 'i', 'İ': 'I', 'ö': 'o', 'Ö': 'O', 'ş': 's', 'Ş': 'S', 'ü': 'u', 'Ü': 'U' };
+        return String(x || '').replace(/[çÇğĞıİöÖşŞüÜ]/g, function (c) { return h[c]; })
+            .replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'defter';
+    }
+    function sayfaGorseli(s, no, top) {
+        var g = gorunum(s, W / H), Lw = g.x1 - g.x0;
+        var PW = 2400, PH = Math.round(PW * H / Lw), AY = 70;
+        var c = document.createElement('canvas');
+        c.width = PW; c.height = PH + AY;
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, c.width, c.height);
+        var o = PW / Lw;
+        cizgileriCiz(ctx, s.mod, o, g.x0, g.x1);
+        var tmp = document.createElement('canvas');
+        tmp.width = PW; tmp.height = PH;
+        var tc = tmp.getContext('2d');
+        s.cizimler.forEach(function (ci) { cizimCiz(tc, ci, o, g.x0); });
+        ctx.drawImage(tmp, 0, 0);
+        ctx.fillStyle = '#E2E7EE'; ctx.fillRect(28, PH + 6, PW - 56, 2);
+        ctx.fillStyle = '#7A8594';
+        ctx.font = '600 28px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'left';
+        ctx.fillText('Yazı Sayfası · ' + etiket() + ' · ' + tarihYaz(D.tarih || Date.now()), 28, PH + AY / 2 + 4);
+        ctx.textAlign = 'right';
+        ctx.fillText(no + ' / ' + top, PW - 28, PH + AY / 2 + 4);
+        var url = c.toDataURL('image/jpeg', 0.9);
+        var ikili = atob(url.slice(url.indexOf(',') + 1)), u = new Uint8Array(ikili.length);
+        for (var i = 0; i < ikili.length; i++) u[i] = ikili.charCodeAt(i);
+        return { jpeg: u, w: c.width, h: c.height };
+    }
+    function pdfYap(resimler) {
+        var parca = [], boy = 0, yer = [];
+        function yaz(x) {
+            var b = x;
+            if (typeof x === 'string') { b = new Uint8Array(x.length); for (var i = 0; i < x.length; i++) b[i] = x.charCodeAt(i) & 255; }
+            parca.push(b); boy += b.length;
+        }
+        function nesne(no, govde) { yer[no] = boy; yaz(no + ' 0 obj\n'); govde(); yaz('\nendobj\n'); }
+        var n = resimler.length, PW = 841.89, PH = 595.28, PAY = 20, kids = [];
+        for (var i = 0; i < n; i++) kids.push((3 + i * 3) + ' 0 R');
+        yaz('%PDF-1.4\n%âãÏÓ\n');
+        nesne(1, function () { yaz('<< /Type /Catalog /Pages 2 0 R >>'); });
+        nesne(2, function () { yaz('<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + n + ' >>'); });
+        resimler.forEach(function (r, i) {
+            var po = 3 + i * 3, co = po + 1, io = po + 2;
+            var k = Math.min((PW - 2 * PAY) / r.w, (PH - 2 * PAY) / r.h);
+            var iw = r.w * k, ih = r.h * k, ix = (PW - iw) / 2, iy = (PH - ih) / 2;
+            nesne(po, function () {
+                yaz('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + PW + ' ' + PH + '] /Resources << /XObject << /Im' + i + ' ' +
+                    io + ' 0 R >> >> /Contents ' + co + ' 0 R >>');
+            });
+            var akis = 'q ' + iw.toFixed(2) + ' 0 0 ' + ih.toFixed(2) + ' ' + ix.toFixed(2) + ' ' + iy.toFixed(2) + ' cm /Im' + i + ' Do Q';
+            nesne(co, function () { yaz('<< /Length ' + akis.length + ' >>\nstream\n' + akis + '\nendstream'); });
+            nesne(io, function () {
+                yaz('<< /Type /XObject /Subtype /Image /Width ' + r.w + ' /Height ' + r.h +
+                    ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + r.jpeg.length + ' >>\nstream\n');
+                yaz(r.jpeg);
+                yaz('\nendstream');
+            });
+        });
+        var xref = boy, top = 3 + n * 3;
+        yaz('xref\n0 ' + top + '\n0000000000 65535 f \n');
+        for (var j = 1; j < top; j++) yaz(('0000000000' + yer[j]).slice(-10) + ' 00000 n \n');
+        yaz('trailer\n<< /Size ' + top + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF');
+        return new Blob(parca, { type: 'application/pdf' });
+    }
+    function pdfIndir() {
+        if (!D) return;
+        if (bosMu(D.sayfalar)) { bildir('Defter boş — önce bir şey yaz', true); return; }
+        try {
+            var top = D.sayfalar.length;
+            var resimler = D.sayfalar.map(function (s, i) { return sayfaGorseli(s, i + 1, top); });
+            var blob = pdfYap(resimler);
+            var d = new Date(D.tarih || Date.now());
+            var gun = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+            var ad = 'yazi-sayfasi_' + trAscii(D.sube || sinifAdi(D.sinif)) + '_' + gun + '.pdf';
+            var url = URL.createObjectURL(blob), a = document.createElement('a');
+            a.href = url; a.download = ad; a.rel = 'noopener';
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
+            bildir('PDF indirildi · ' + top + ' sayfa');
+        } catch (e) {
+            bildir('PDF hazırlanamadı', true);
+        }
+    }
+
     function tikla(e) {
         var t = e.target;
         if (t === UI.ort) return;                                    /* dışına basınca kapanmaz (yanlışlıkla silinmesin) */
         var b = t.closest && t.closest('[data-is],[data-renk],[data-kal],[data-mod],[data-sek],[data-ac],[data-sil],[data-not],[data-notsil]');
+        /* açık «Tüm sayfayı sil» sorusu: dışına basınca kapanır; onu açan
+           düğmeye yeniden basmak da yalnız kapatır */
+        if (UI.silSor && !UI.silSor.contains(t)) {
+            var acan = UI.silSorBtn;
+            silSorKapat();
+            if (b && b === acan) return;
+        }
         if (!b) return;
         if (b.hasAttribute('data-renk')) { T.renk = +b.getAttribute('data-renk'); T.arac = 'kalem'; tercihKaydet(); aracGuncelle(); return; }
         if (b.hasAttribute('data-kal')) { T.kal = b.getAttribute('data-kal'); T.arac = 'kalem'; tercihKaydet(); aracGuncelle(); return; }
@@ -957,10 +1145,17 @@
         if (b.hasAttribute('data-ac')) { gecmistenAc(b.getAttribute('data-ac')); return; }
         if (b.hasAttribute('data-not')) { nottanAc(b.getAttribute('data-not')); return; }
         var is = b.getAttribute('data-is');
-        if (is === 'kalem' || is === 'silgi') { T.arac = is; aracGuncelle(); }
+        if (is === 'silgi') {
+            /* seçili silgiye İKİNCİ kez basınca: «Tüm sayfayı sil» */
+            if (T.arac === 'silgi') silSorAc(b);
+            else { T.arac = 'silgi'; aracGuncelle(); }
+        }
+        else if (is === 'kalem') { T.arac = 'kalem'; aracGuncelle(); }
+        else if (is === 'tumSil') { silSorKapat(); temizle(); bildir('Sayfa silindi — geri almak için ↶'); }
+        else if (is === 'pdf') pdfIndir();
         else if (is === 'geri') geriAl();
         else if (is === 'ileri') yinele();
-        else if (is === 'temizle') temizle();
+        else if (is === 'temizle') silSorAc(b);
         else if (is === 'onceki') sayfayaGit(D.aktif - 1);
         else if (is === 'sonraki') sayfayaGit(D.aktif + 1);
         else if (is === 'yeniSayfa') yeniSayfaEkle();
@@ -980,6 +1175,7 @@
         var yazi = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA');
         if (e.key === 'Escape') {
             e.preventDefault(); e.stopPropagation();
+            if (UI.silSor) { silSorKapat(); return; }
             var so = UI.ort.querySelector('.ys-soru-ort');
             if (so) { so.remove(); return; }
             if (UI.panel.classList.contains('acik')) { UI.panel.classList.remove('acik'); return; }
@@ -1003,10 +1199,11 @@
     /* ---------------- bildirim ve soru ---------------- */
     function bildir(m, hata) {
         if (!UI) return;
+        [].forEach.call(UI.ort.querySelectorAll('.ys-bildiri'), function (x) { x.remove(); });
         var b = document.createElement('div');
         b.className = 'ys-bildiri' + (hata ? ' hata' : '');
         b.textContent = m;
-        UI.kutu.appendChild(b);
+        UI.sahne.appendChild(b);
         setTimeout(function () { b.remove(); }, 2700);
     }
     function soru(metin, evetYazi, kirmizi, evet, girdi) {
@@ -1250,6 +1447,7 @@
         ac: ac, kapat: kapat, kucult: kucult, buyut: buyut,
         bagli: function () { return BAGLI; },
         gorunum: function () { return UI ? { x0: UI.x0, x1: UI.x1 } : null; },
+        pdf: function () { return D ? pdfYap(D.sayfalar.map(function (s, i) { return sayfaGorseli(s, i + 1, D.sayfalar.length); })) : null; },
         /* test ve öteki modüller için */
         kodla: defterKodla, coz: defterCoz, gecmisListe: gecmisListe
     };
