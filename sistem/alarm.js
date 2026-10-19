@@ -257,6 +257,9 @@ function loadMufredat(){
     firebase.firestore().collection('mufredat').get().then(function(snap){
         var changed = false;
         snap.forEach(function(d){
+            /* '_' ile başlayan belgeler paket değil: mufredat/_destek =
+               Beklenen Destek özeti (hesap/destek.js, 19.10.2026). */
+            if (String(d.id).charAt(0) === '_') return;
             var saved = d.data() || {};
             if (!appState.kazanimData[d.id]) appState.kazanimData[d.id] = { total: saved.total || 0, steps: {} };
             var base = appState.kazanimData[d.id];

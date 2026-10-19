@@ -156,9 +156,12 @@ function renderAdminPanel() {
             </div>
 
             <details class="admin-details" name="admin-accordion" id="admin-orders-details" ontoggle="if(this.open) loadPaymentOrders()">
-                <summary class="admin-summary">💳 Ödeme Onayları <span id="admin-orders-badge"></span></summary>
+                <summary class="admin-summary">💳 Ödeme Onayları <span id="admin-orders-badge"></span><span id="admin-destek-badge-odeme"></span></summary>
                 <div style="padding:10px 0;">
                     <button class="btn" onclick="loadPaymentOrders()" style="margin-bottom:10px; font-size:0.9rem;">🔄 Yenile</button>
+                    <!-- BEKLENEN DESTEK (19.10.2026): öğretmenlerin "ödedim"
+                         bildirimleri burada da listelenir (hesap/destek.js). -->
+                    <div id="admin-destek-bekleyen"></div>
                     <div id="admin-orders-list" style="max-height:400px; overflow-y:auto;">Bölümü açınca yüklenir…</div>
                 </div>
             </details>
@@ -216,27 +219,30 @@ function renderAdminPanel() {
             </details>
 
             <details class="admin-details" name="admin-accordion">
-                <summary class="admin-summary">👨‍🏫 Öğretmenler</summary>
+                <summary class="admin-summary">👨‍🏫 Öğretmenler <span id="admin-destek-badge"></span></summary>
                 <!-- ADLARI DÜZELT (06.10.2026) — öğretmen: "isim veya
                      soyisimlerinin baş harflerini bazen küçük yazıyorlar...
                      kayıtlı olanları da düzeltelim". Tüm kullanıcı
-                     kayıtlarını tarar, sorar, sonra toplu yazar. -->
-                <div style="margin-top:12px;">
+                     kayıtlarını tarar, sorar, sonra toplu yazar.
+                     TÜM KAYIT ANKETLERİ (19.10.2026): eski "📋 Kayıt Anketi"
+                     akordiyonu artık burada bir tuş; her öğretmenin kendi
+                     anketi de öğretmen penceresinde. -->
+                <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
                     <button class="btn" onclick="adminAdlariDuzelt()"
                             style="background:#EAF4FF; color:#1f5f99; border:1px solid #CFE3F7; border-radius:9px; padding:8px 16px; font-size:.9rem; font-weight:700;">
                         Adları düzelt</button>
-                    <span style="display:block; margin-top:6px; font-size:.82rem; color:#8A93A0;">
-                        Küçük harfle yazılmış ad ve soyadların baş harflerini büyütür (öğretmen ve öğrenci kayıtlarının hepsinde).</span>
+                    <button class="btn" onclick="if(window.KidefOgretmenDetay) KidefOgretmenDetay.anketlerAc()"
+                            style="background:#F4F0FF; color:#5B3FA8; border:1px solid #E1D8FA; border-radius:9px; padding:8px 16px; font-size:.9rem; font-weight:700;">
+                        📋 Tüm kayıt anketleri</button>
+                    <span style="flex-basis:100%; font-size:.82rem; color:#8A93A0;">
+                        Adları düzelt: küçük harfle yazılmış ad ve soyadların baş harflerini büyütür (öğretmen ve öğrenci kayıtlarının hepsinde).</span>
                 </div>
-                <div id="admin-teacher-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 400px; overflow-y: auto;"></div>
-            </details>
-
-            <details class="admin-details" name="admin-accordion">
-                <summary class="admin-summary">🗓️ Öğretmen Takvim Düzenleyici</summary>
-                <div style="padding:10px 0;">
-                    <select id="admin-teacher-edit-select" onchange="renderAdminTeacherScheduleEditor()" style="width:100%; max-width:320px; padding:8px; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:12px; background:#fff;"></select>
-                    <div id="admin-teacher-schedule-editor"></div>
-                </div>
+                <!-- BEKLENEN DESTEK (19.10.2026): aktif öğretmen sayısı, kişi
+                     başı tutar ve ayarlar (hesap/destek.js doldurur). -->
+                <div id="admin-destek-ayar"></div>
+                <!-- ÖĞRETMEN TAKVİM DÜZENLEYİCİ ayrı akordiyon DEĞİL (19.10.2026):
+                     her öğretmenin takvimi kendi penceresinin "Takvim" sekmesinde. -->
+                <div id="admin-teacher-list" style="margin-top: 15px; margin-bottom: 10px; max-height: 560px; overflow-y: auto;"></div>
             </details>
 
             <details class="admin-details" name="admin-accordion">
@@ -300,6 +306,9 @@ function _setOrdersBadge(n) {
 function loadPaymentOrders() {
     const list = document.getElementById('admin-orders-list');
     if (!list) return;
+    /* Öğretmenlerin destek bildirimleri ayrı listede (status alanı yok,
+       aşağıdaki mağaza sorgusuna düşmez) — hesap/destek.js */
+    if (window.KidefDestek && KidefDestek.rozetleriYenile) { try { KidefDestek.rozetleriYenile(); } catch (e) { } }
     if (typeof firebase === 'undefined' || !firebase.firestore) { list.innerHTML = '<p>Firebase hazır değil.</p>'; return; }
     list.innerHTML = 'Yükleniyor…';
     firebase.firestore().collection('siparisler').where('status', '==', 'pending').limit(100).get()
@@ -706,6 +715,14 @@ function adminTakvimOgretmenDoldur() {
 window.adminTakvimOgretmenDoldur = adminTakvimOgretmenDoldur;
 
 function renderAdminTeacherScheduleEditor() {
+    /* 19.10.2026: takvim düzenleyici ayrı akordiyon değil; öğretmen
+       penceresinin "Takvim" sekmesinde (hesap/ogretmen-detay.js). Hafta
+       değiştirince buraya gelinir — pencere açıksa oraya çizilir. */
+    const kutu = document.getElementById('ogd-takvim');
+    if (kutu && kutu.getAttribute('data-uid')) {
+        kutu.innerHTML = getTeacherCalendarEditorHtml(kutu.getAttribute('data-uid'), true);
+        return;
+    }
     const editor = document.getElementById('admin-teacher-schedule-editor');
     if (!editor) return;
     const teacherId = document.getElementById('admin-teacher-edit-select').value;
@@ -1172,9 +1189,24 @@ function _ogrTarih(ts) {
     } catch (e) { return '—'; }
 }
 
+/* ===================================================================
+   ÖĞRETMENLER LİSTESİ — KART + PENCERE              (19.10.2026)
+   Öğretmen: "her öğretmenle ilgili bilgileri bi satırda göstermek
+   yerine her şeyi bi popup içine ekleyelim". Eskiden geniş bir tablo
+   satırıydı (ad, e-posta, telefon, durum, kod, kayıt, öğrenci, süre,
+   tuşlar). Artık her öğretmen küçük bir kart: ad, durum, e-posta, tek
+   satır özet ve destek rozeti. Karta basınca hesap/ogretmen-detay.js
+   penceresi açılır: Genel · Ücret durumu · Takvim · Kayıt anketi ve
+   Onayla / Onayı kaldır / Sil tuşları.
+   Liste gelince Beklenen Destek özeti de hesaplanır (hesap/destek.js →
+   KidefDestek.listeGeldi): son 30 günde giren onaylı öğretmen sayısı
+   ve kişi başı tutar mufredat/_destek'e yazılır.
+   =================================================================== */
+var _aogSuzgec = 'hepsi';
 function renderAdminTeacherList() {
     var container = document.getElementById('admin-teacher-list');
     if (!container) return;
+    if (window.KidefOgretmenDetay && KidefOgretmenDetay.stil) KidefOgretmenDetay.stil();
 
     if (typeof firebase === 'undefined' || typeof isFirebaseReady === 'undefined' || !isFirebaseReady) {
         container.innerHTML = '<p style="color:#7f8c8d;">Bu liste çevrimdışıyken yüklenemiyor.</p>';
@@ -1196,103 +1228,75 @@ function renderAdminTeacherList() {
                 container.innerHTML = '<p style="color:#7f8c8d;">Kayıtlı öğretmen yok.</p>' +
                     '<button class="btn" onclick="renderAdminTeacherList()" ' +
                     'style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
+                if (window.KidefDestek) KidefDestek.listeGeldi(liste);
                 return;
             }
 
             var sayac = { onayli: 0, bekliyor: 0, reddedildi: 0, eski: 0 };
             var toplam = { sure: 0, ogrenci: 0, sinif: 0, anketli: 0 };
-            var satirlar = '';
+            var kartlar = '';
             liste.forEach(function (o) {
                 var uid = o._id;
                 var ad = o.name && o.name !== 'Belirtilmedi' ? o.name : '';
-                _adminOgretmenler[uid] = { ad: ad, email: o.email || '', tel: o.phone || '' };
-
                 var onay = o.ogretmenOnay;
                 if (onay === 'onayli') sayac.onayli++;
                 else if (onay === 'bekliyor') sayac.bekliyor++;
                 else if (onay === 'reddedildi') sayac.reddedildi++;
                 else sayac.eski++;
 
-                var kod = '—';
+                var kod = '';
                 try { if (window.OH && OH.koduTuret) kod = OH.koduTuret(uid); } catch (e) {}
 
-                /* Onaylı ise "onayı kaldır", değilse "onayla". Onaylama
-                   KidefErisim.onayla üzerinden gider ki hoş geldin mesajı
-                   da otomatik gitsin. */
-                var acik = (onay === 'onayli') || (onay === undefined || onay === null || onay === '');
-                var islem = acik
-                    ? '<button class="btn btn-sm" style="background:#FDEDEC; color:#B03A2E; border:none; border-radius:8px; padding:6px 12px; font-size:.85rem; font-weight:700;" ' +
-                      'onclick="adminOgretmenDurum(\'' + uid + '\', false)">Onayı kaldır</button>'
-                    : '<button class="btn btn-sm" style="background:#E8F6EF; color:#1E8449; border:none; border-radius:8px; padding:6px 12px; font-size:.85rem; font-weight:700;" ' +
-                      'onclick="adminOgretmenDurum(\'' + uid + '\', true)">Onayla</button>';
-
-                /* SİL yalnız ERİŞİMİ KAPALI kayıtta çıkar (bekliyor /
-                   reddedildi). Sebebi kasıtlı: silme iki adımlı olsun, yanlış
-                   tuşa basınca çalışan bir hesap yok olmasın. Yani sıra
-                   "Onayı kaldır" → "Sil". Onaylı ya da eski (alanı boş)
-                   kayıtta bu tuş hiç basılmaz. */
-                if (!acik) {
-                    islem += ' <button class="btn btn-sm" title="Kaydı Firestore\'dan tamamen sil" ' +
-                      'style="background:#fff; color:#B03A2E; border:1.5px solid #F3C7C1; border-radius:8px; ' +
-                      'padding:6px 12px; font-size:.85rem; font-weight:700; margin-inline-start:6px;" ' +
-                      'onclick="adminOgretmenSil(\'' + uid + '\')">Sil</button>';
-                }
-
-                /* KULLANIM (08.10.2026) — öğretmen: "kayıtlı olan
-                   öğretmenlerin kendilerine kayıtlı kaç öğrenci olduğunu,
-                   ne kadar sitede zaman geçirdiklerini görebileyim."
-                   Öğrenci sayısı öğretmenin KENDİ sınıf listesinden
-                   (userData) sayılır — ek sorgu yok, belge zaten elimizde.
-                   Süre sistem/kullanimsure.js'in yazdığı kullanim alanından. */
+                /* KULLANIM (08.10.2026): öğrenci sayısı öğretmenin KENDİ sınıf
+                   listesinden (userData), süre kullanimsure.js'in yazdığı
+                   kullanim alanından — ek sorgu yok. */
                 var say = _ogrSayisi(o.userData);
                 var kul = o.kullanim || {};
-                var sureYazi = _sureBicim(kul.toplamSn);
-                _adminOgretmenler[uid].ogrenci = say;
-                _adminOgretmenler[uid].kullanim = kul;
-                _adminOgretmenler[uid].anket = o.anket || null;
-                _adminOgretmenler[uid].userData = o.userData || '';
+                _adminOgretmenler[uid] = {
+                    ad: ad, email: o.email || '', tel: o.phone || '', kod: kod,
+                    ogrenci: say, kullanim: kul, anket: o.anket || null,
+                    userData: o.userData || '', doc: o
+                };
                 toplam.sure += (kul.toplamSn || 0);
                 toplam.ogrenci += say.ogrenci; toplam.sinif += say.sinif;
                 if (o.anket) toplam.anketli++;
 
-                satirlar +=
-                    '<tr>' +
-                      '<td>' + _fbEsc(ad || '(isim yok)') + '</td>' +
-                      '<td style="font-size:.88rem;">' + _fbEsc(o.email || '—') + '</td>' +
-                      /* Telefon burada da kopyalanabilir (05.10.2026). */
-                      '<td style="font-size:.88rem;">' +
-                        ((window.KidefTelKopya && o.phone && o.phone !== 'Belirtilmedi')
-                          ? window.KidefTelKopya.rozet(o.phone)
-                          : _fbEsc(o.phone && o.phone !== 'Belirtilmedi' ? o.phone : '—')) + '</td>' +
-                      '<td>' + _ogrDurumRozet(onay) + '</td>' +
-                      '<td style="font-family:monospace; font-size:.85rem;">' + _fbEsc(kod) + '</td>' +
-                      '<td style="font-size:.85rem; color:#7f8c8d;">' + _ogrTarih(o.createdAt) + '</td>' +
-                      '<td style="font-size:.88rem; white-space:nowrap;">' +
-                        (say.ogrenci ? '<b>' + say.ogrenci + '</b> öğrenci' : '<span style="color:#A9B2BD;">—</span>') +
-                        (say.sinif ? '<br><span style="color:#8A94A3; font-size:.82rem;">' + say.sinif + ' sınıf</span>' : '') +
-                      '</td>' +
-                      '<td style="font-size:.88rem; white-space:nowrap;">' +
-                        (kul.toplamSn ? '<b>' + sureYazi + '</b>' : '<span style="color:#A9B2BD;">—</span>') +
-                        (kul.sonGoruldu ? '<br><span style="color:#8A94A3; font-size:.82rem;">son: ' +
-                            _ogrTarih(kul.sonGoruldu) + '</span>' : '') +
-                      '</td>' +
-                      '<td>' +
-                        '<button class="btn btn-sm" style="background:#EEF4FF; color:#1B4F9C; border:none;' +
-                        ' border-radius:8px; padding:6px 12px; font-size:.85rem; font-weight:700;"' +
-                        ' onclick="adminOgretmenDetay(\'' + uid + '\')">Detay</button> ' + islem +
-                      '</td>' +
-                    '</tr>';
+                var ton = (window.KidefOgretmenDetay && KidefOgretmenDetay.renkTonu) ? KidefOgretmenDetay.renkTonu(uid) : 210;
+                var harf = (window.KidefOgretmenDetay && KidefOgretmenDetay.basHarf) ? KidefOgretmenDetay.basHarf(ad, o.email) : '?';
+                var ozet = [];
+                ozet.push(say.ogrenci ? '<b>' + say.ogrenci + '</b> öğrenci' : 'öğrenci yok');
+                if (say.sinif) ozet.push(say.sinif + ' sınıf');
+                if (kul.toplamSn) ozet.push('<b>' + _sureBicim(kul.toplamSn) + '</b>');
+                if (kul.sonGoruldu) ozet.push('son ' + _ogrTarih(kul.sonGoruldu));
+                var ara = (ad + ' ' + (o.email || '') + ' ' + kod + ' ' + (o.phone || '')).toLocaleLowerCase('tr-TR');
+                var durumAd = onay === 'bekliyor' ? 'bekliyor' : (onay === 'reddedildi' ? 'reddedildi' : 'onayli');
+
+                kartlar +=
+                    '<button type="button" class="aog-kart" data-aog-ara="' + _fbEsc(ara) + '" data-aog-durum="' + durumAd + '"' +
+                    ' onclick="adminOgretmenDetay(\'' + uid + '\')" title="Ayrıntılar, ücret durumu, takvim ve anket">' +
+                      '<span class="aog-avatar" style="background:hsl(' + ton + ',70%,93%); color:hsl(' + ton + ',45%,32%);">' + _fbEsc(harf) + '</span>' +
+                      '<span class="aog-govde">' +
+                        '<span class="aog-ust"><span class="aog-ad">' + _fbEsc(ad || '(isim yok)') + '</span>' + _ogrDurumRozet(onay) + '</span>' +
+                        '<span class="aog-eposta">' + _fbEsc(o.email || '—') + '</span>' +
+                        '<span class="aog-alt">' + ozet.join(' · ') + '</span>' +
+                        '<span data-dst-rozet="' + uid + '"></span>' +
+                      '</span>' +
+                      '<span class="aog-ok" aria-hidden="true">›</span>' +
+                    '</button>';
             });
 
+            var suz = function (id, yazi) {
+                return '<button type="button" class="aog-suz' + (_aogSuzgec === id ? ' sec' : '') + '" data-aog-suz="' + id + '"' +
+                    ' onclick="adminOgretmenSuz(\'' + id + '\')">' + yazi + '</button>';
+            };
             container.innerHTML =
-                /* Firebase Authentication'dan kullanıcı silmek bu tabloyu
-                   DEĞİŞTİRMEZ: tablo kullanicilar koleksiyonundan okunuyor,
-                   Authentication'dan değil. Konsolda hesabı silip satırın
-                   durmasının sebebi budur — satır buradaki "Sil" ile gider. */
+                /* Firebase Authentication'dan kullanıcı silmek bu listeyi
+                   DEĞİŞTİRMEZ: liste kullanicilar koleksiyonundan okunuyor.
+                   Kart, öğretmen penceresindeki "Onayı kaldır" → "Sil" ile gider. */
                 '<p style="font-size:.82rem; color:#8A94A3; margin:0 0 10px; line-height:1.5;">' +
-                  'Liste Firestore\'daki <code>kullanicilar</code> koleksiyonundan gelir. ' +
-                  'Firebase konsolunda <b>Authentication</b>\'dan hesabı silmek bu satırı ' +
-                  'kaldırmaz; satırı kaldırmak için önce <b>Onayı kaldır</b>, sonra <b>Sil</b>.' +
+                  'Bir öğretmene basınca penceresi açılır: <b>sınıflar ve süre</b>, <b>ücret durumu</b>, ' +
+                  '<b>takvim</b>, <b>kayıt anketi</b>. Liste Firestore\'daki <code>kullanicilar</code> koleksiyonundan gelir; ' +
+                  'Authentication\'dan hesabı silmek kartı kaldırmaz — pencerede önce <b>Onayı kaldır</b>, sonra <b>Sil</b>.' +
                 '</p>' +
                 '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">' +
                   '<strong style="color:#2c3e50;">' + liste.length + ' öğretmen</strong>' +
@@ -1301,8 +1305,6 @@ function renderAdminTeacherList() {
                     sayac.reddedildi + ' reddedildi' +
                     (sayac.eski ? ' · ' + sayac.eski + ' eski kayıt' : '') +
                   '</span>' +
-                  /* TOPLAMLAR (08.10.2026): bütün öğretmenlerin sitede
-                     geçirdiği süre, kayıtlı öğrenci ve sınıf sayısı. */
                   '<span style="font-size:.85rem; color:#1B4F9C; font-weight:700;">' +
                     'Σ ' + _sureBicim(toplam.sure) + ' · ' + toplam.ogrenci + ' öğrenci · ' +
                     toplam.sinif + ' sınıf · ' + toplam.anketli + ' anket' +
@@ -1310,12 +1312,17 @@ function renderAdminTeacherList() {
                   '<button class="btn" onclick="renderAdminTeacherList()" ' +
                     'style="margin-inline-start:auto; font-size:.85rem;">🔄 Yenile</button>' +
                 '</div>' +
-                '<table class="admin-table">' +
-                  '<thead><tr><th>Ad Soyad</th><th>E-posta</th><th>Telefon</th>' +
-                  '<th>Durum</th><th>Kod</th><th>Kayıt</th><th>Öğrenci</th>' +
-                  '<th>Sitede süre</th><th></th></tr></thead>' +
-                  '<tbody>' + satirlar + '</tbody>' +
-                '</table>';
+                '<div class="aog-ara">' +
+                  '<input type="search" id="aogAra" placeholder="Ad, e-posta, kod ya da telefon ara…" oninput="adminOgretmenSuz()">' +
+                  suz('hepsi', 'Hepsi') + suz('onayli', 'Onaylı') + suz('bekliyor', 'Onay bekleyen') +
+                  suz('destek', '💛 Destek bildirimi') +
+                '</div>' +
+                '<div class="aog-grid" id="aogGrid">' + kartlar +
+                  '<p class="aog-bos" id="aogBos" style="display:none;">Bu süzgece uyan öğretmen yok.</p></div>';
+            adminOgretmenSuz();
+
+            if (window.KidefDestek && KidefDestek.listeGeldi) KidefDestek.listeGeldi(liste);
+            if (window.KidefOgretmenDetay && KidefOgretmenDetay.tazele) KidefOgretmenDetay.tazele();
         })
         .catch(function (e) {
             container.innerHTML = '<p style="color:#EF5350;">Liste alınamadı: ' +
@@ -1324,6 +1331,28 @@ function renderAdminTeacherList() {
                 'style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
         });
 }
+
+/* Arama kutusu ve süzgeç çipleri: kartları gizler/gösterir (yeniden
+   sorgu yok). "Destek bildirimi" = onay bekleyen ödeme bildirimi olan. */
+function adminOgretmenSuz(yeni) {
+    if (yeni) _aogSuzgec = yeni;
+    var ara = ((document.getElementById('aogAra') || {}).value || '').trim().toLocaleLowerCase('tr-TR');
+    var gorunen = 0;
+    [].forEach.call(document.querySelectorAll('#aogGrid .aog-kart'), function (k) {
+        var uy = !ara || (k.getAttribute('data-aog-ara') || '').indexOf(ara) >= 0;
+        if (uy && _aogSuzgec === 'onayli') uy = k.getAttribute('data-aog-durum') === 'onayli';
+        else if (uy && _aogSuzgec === 'bekliyor') uy = k.getAttribute('data-aog-durum') === 'bekliyor';
+        else if (uy && _aogSuzgec === 'destek') uy = !!k.querySelector('[data-dst-rozet] .dst-cip.bekliyor');
+        k.style.display = uy ? '' : 'none';
+        if (uy) gorunen++;
+    });
+    [].forEach.call(document.querySelectorAll('.aog-suz'), function (b) {
+        b.classList.toggle('sec', b.getAttribute('data-aog-suz') === _aogSuzgec);
+    });
+    var bos = document.getElementById('aogBos');
+    if (bos) bos.style.display = gorunen ? 'none' : '';
+}
+window.adminOgretmenSuz = adminOgretmenSuz;
 
 /* Tablodan onay verme / geri alma. Onaylama KidefErisim.onayla ile gider:
    rol + onay alanını yazar VE hoş geldin mesajını gönderir. */
@@ -2064,6 +2093,8 @@ function loadTeacherSchedules(){
         if (changed) {
             if (typeof renderTeacherScheduleEditor === 'function' && document.getElementById('teacher-schedule-editor')) renderTeacherScheduleEditor();
             if (typeof renderAdminTeacherScheduleEditor === 'function' && document.getElementById('admin-teacher-schedule-editor') && document.getElementById('admin-teacher-schedule-editor').innerHTML.trim() !== '') renderAdminTeacherScheduleEditor();
+            /* öğretmen penceresinin Takvim sekmesi açıksa onu da tazele */
+            if (document.getElementById('ogd-takvim') && window.KidefOgretmenDetay && KidefOgretmenDetay.takvimCiz) KidefOgretmenDetay.takvimCiz();
         }
     }).catch(function(e){ console.warn('takvimler okunamadı:', e && e.code); });
 }

@@ -672,6 +672,22 @@
     }
   });
 
+  /* Kidef Arapça 2. Baskı — YARDIMCI KAYNAK (19.10.2026, Geylani: "kidef
+     arapça 2. baskı flipbookunu her sınıfın materyal kısmına yardımcı
+     kaynak olarak ekleyelim"). 5-10. sınıfların hepsinde görünür (İmam
+     Hatip akordiyonu ve sınıfın Materyaller sekmesi aynı kaynaktan
+     çiziliyor); flipbook ana sitedeki kopyasından açılır. */
+  ekle({
+    id: 'kidefyardimci',
+    ad: 'Kidef Arapça 📒 2. Baskı',
+    sira: 90,
+    renk: '#E3A02A',
+    aciklama: function () { return 'Dilbilgisi, kalıplar ve metin tahlilleri tek kitapta'; },
+    svg: function () { return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true"><path d="M30.4 13.4C24 9.8 15.6 9 7.8 10.6a2.2 2.2 0 0 0-1.8 2.2v30.6c0 1.4 1.3 2.5 2.7 2.2 7.6-1.4 15.4-.2 21.7 3.8Z" fill="#E3A02A"/><path d="M33.6 13.4c6.4-3.6 14.8-4.4 22.6-2.8a2.2 2.2 0 0 1 1.8 2.2v30.6c0 1.4-1.3 2.5-2.7 2.2-7.6-1.4-15.4-.2-21.7 3.8Z" fill="#F0B94A"/><path d="M11.5 19.5c4.6-.7 9.4-.2 13.6 1.5M11.5 26c4.6-.7 9.4-.2 13.6 1.5M11.5 32.5c3.4-.5 7-.3 10.2.6" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M52.5 19.5c-4.6-.7-9.4-.2-13.6 1.5M52.5 26c-4.6-.7-9.4-.2-13.6 1.5M52.5 32.5c-3.4-.5-7-.3-10.2.6" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/><text x="32" y="61" font-family="Calibri,Carlito,sans-serif" font-size="10" font-weight="700" fill="#B9770E" text-anchor="middle">2. BASKI</text></svg>'; },
+    veriVar: function () { return { rozet: 'Yardımcı Kaynak' }; },
+    url: function () { return 'kitap/kidef-arapca-2-baski/index.html'; }
+  });
+
   /* ---- Sonraki kartlar buraya: aynı kalıpla ekle({...}) ---- */
 
   stilKur();

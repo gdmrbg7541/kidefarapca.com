@@ -3862,7 +3862,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Metin Tahlilleri kartı: hangi sınıfın hangi kitabında metin var?
          (küçük özet; bütün ders listesi yüklenmiyor) -->
     <script src="metintahlili/ozet.js?v=51bd2b6d"></script>
-    <script src="sistem/sinifmodul.js?v=49752288"></script>
+    <script src="sistem/sinifmodul.js?v=27518f31"></script>
     <!-- KİTAP TAKİBİ (15.10.2026) — öğretmen: "giriş yapan öğretmenlerin
          hangi sınıfta hangi kitabı kullandığı iyi takip edilsin".
          Öğretmen panelinde "sınıf → kullandığı kitap" kartını kurar. -->
@@ -4817,6 +4817,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
               url: 'dosyalar/sinavlar/' + s + '-sinif/arapca-' + s + '-sinif-yazili-sinavlar.pdf' }
           );
           SINAV[s].forEach(function (v) {
+            /* 19.10.2026 (öğretmen: "bu belgeleri sitedeki sınavlarla değiştir"):
+               5. ve 6. sınıfın 1. dönem 1. yazılısında eski klasik/beceri kâğıtları
+               yerine 2026-2027 seti (A-D grupları, dosyalar/sinavlar/<s>-sinif/2026-2027-1d1y/)
+               listeleniyor. Eski dosyalar silinmedi, yerinde duruyor. */
+            if ((String(s) === '5' || String(s) === '6') && v[0] === 1 && v[1] === 1) return;
             var kod = 'arapca-' + s + '-' + v[0] + 'd' + v[1] + 'y-' + v[2];
             var yol = 'dosyalar/sinavlar/' + s + '-sinif/' + kod;
             var ad  = v[0] + '. Dönem ' + v[1] + '. Yazılı — ' + YONTEM[v[2]][0];
@@ -5216,6 +5221,52 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
             'Cevaplı sürüm')));
       })();
       /* <<< 8. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ */
+      /* >>> 5. VE 6. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ (19.10.2026) */
+      /* Öğretmenin güncel kitaplardan hazırladığı sınav seti: dört eşdeğer grup
+         (A-D; her grubun cevap anahtarı kendi dosyasının 3. sayfasında) + dört
+         grubun anahtarı tek dosyada + konu-soru dağılım tablosu + 1. ünite
+         çalışma kâğıdı (cevaplar son sayfada). Dosyalar
+         dosyalar/sinavlar/<5|6>-sinif/2026-2027-1d1y/ altındadır.
+         Var olan klasik/beceri sınav satırlarına DOKUNULMAZ; bunlar listenin
+         sonuna eklenir. */
+      (function () {
+        [[5, '1. Ünite — Merhaba (kitap s. 10-66)'],
+         [6, '1. Ünite — Akrabalarım (kitap s. 10-50)']].forEach(function (v) {
+          var s = v[0], KAPSAM = v[1];
+          var Y = 'dosyalar/sinavlar/' + s + '-sinif/2026-2027-1d1y/';
+          var K = Y + 'arapca-' + s + '-1d1y-';
+          function ikili(ad, kok, kaynak) {
+            return [
+              { ad: ad + ' — düzenlenebilir (Word)', tur: 'doc', kaynak: kaynak, url: kok + '.docx' },
+              { ad: ad + ' — yazdırmaya hazır (PDF)', url: kok + '.pdf' }
+            ];
+          }
+          function ek(tur, satirlar) {
+            var liste = SINIF_PDF[s][tur] || (SINIF_PDF[s][tur] = []);
+            satirlar.forEach(function (x) { liste.push(x); });
+          }
+          var ETI = '2026-2027 1. DÖNEM 1. YAZILI · ';
+          var d = [];
+          d.push({ ad: ETI + 'Dört grup tek dosyada — yazdırmaya hazır (PDF)',
+                   url: K + 'tum-gruplar.pdf' });
+          ['a', 'b', 'c', 'd'].forEach(function (g) {
+            ikili(ETI + g.toLocaleUpperCase('tr') + ' Grubu', K + g + '-grubu',
+              KAPSAM + '  ·  eşdeğer dört gruptan biri · anahtarı 3. sayfada').forEach(function (x) { d.push(x); });
+          });
+          ikili(ETI + 'Cevap Anahtarı ve Puanlama (A-D)', K + 'cevap-anahtari',
+            'Dört grubun anahtarı ve puanlama notları').forEach(function (x) { d.push(x); });
+          ikili(ETI + 'Konu-Soru Dağılım Tablosu', K + 'konu-soru-dagilim',
+            'Hangi sorunun hangi öğrenme çıktısını ve konuyu ölçtüğü').forEach(function (x) { d.push(x); });
+          ek('Sınavlar', d);
+          SINIF_GIRIS[s]['Sınavlar'] = (SINIF_GIRIS[s]['Sınavlar'] || '') +
+            '<div class="dok-not"><b>2026-2027 1. yazılı:</b> dört eşdeğer grup (A-D) · anahtar her dosyanın 3. sayfasında · dağılım tablosu ayrı · ' +
+            KAPSAM.replace('1. Ünite — ', '1. Ünite ') + ' · yalnız açık uçlu ve kısa cevaplı.</div>';
+          ek('Çalışma Kâğıtları & Etkinlikler',
+            ikili('1. Ünite Çalışma Kâğıdı (2026-2027)', Y + 'arapca-' + s + '-1-unite-calisma-kagidi',
+              '1. Ünite · yazılı öncesi · cevaplar son sayfada'));
+        });
+      })();
+      /* <<< 5. VE 6. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ */
       /* >>> 8. SINIF DİLBİLGİSİ ÖZETİ (24.09.2026) */
       /* İki sayfalık özet: ayrık ve bitişik zamirler, mâzi-muzâri çekimi
          (tekil kişiler ve "biz"), soru edatları + kısa alıştırma ve cevaplar.
@@ -8040,10 +8091,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Telefonu tek tıkla kopyala (05.10.2026) — yönetici öğretmen
          onaylarında numarayı fareyle seçmek zorunda kalmasın. -->
     <script src="sistem/telkopya.js?v=303ac4d1"></script>
-    <script src="hesap/teacher-admin.js?v=f45ed79d"></script>
-    <!-- Yonetici > ogretmen detayi: sure, siniflar, kayit anketi -->
-    <script src="hesap/ogretmen-detay.js?v=56eec268"></script>
-    <script src="sistem/alarm.js?v=5436e931"></script>
+    <script src="hesap/teacher-admin.js?v=909a70b5"></script>
+    <!-- Yonetici > ogretmen penceresi (19.10.2026): genel (sure, siniflar),
+         ucret durumu, takvim, kayit anketi — ogretmenler listesi kart kart -->
+    <script src="hesap/ogretmen-detay.js?v=a40f5c0a"></script>
+    <!-- BEKLENEN DESTEK (19.10.2026): ogretmen profilinde aylik destek karti
+         (ogretmen sayisina gore tutar, odeme bildirimi); yoneticide odeme
+         kaydi ve ozet (hesap/destek.js) -->
+    <script src="hesap/destek.js?v=221ed068"></script>
+    <script src="sistem/alarm.js?v=5af5693a"></script>
     <script src="hesap/live-lesson.js?v=cb8c8026"></script>
     <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->
     <script src="sistem/kazanimoneri.js?v=689f584d"></script>

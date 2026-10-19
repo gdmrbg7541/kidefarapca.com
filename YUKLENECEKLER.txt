@@ -12749,3 +12749,50 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       penceresinin içi kendi kaydırmasıyla kayıyor; kısa ekranda ve telefonda
                       kayıt formu sonuna kadar iniyor. index'in kendisi değişmedi.
   Damga: surumle.py (index.html) · Önceki sürüm: _kaynak/yedekler/2026-10-18-biy-giris/v1/
+
+19.10.2026 — 5. VE 6. SINIF 2026-2027 1. DÖNEM 1. YAZILI SETİ (güncel kitaplardan)
+  dosyalar/sinavlar/5-sinif/2026-2027-1d1y/  YENİ, 15 dosya — A-D grupları (Word+PDF; 2 sayfa öğrenci
+                      kâğıdı + 3. sayfa cevap anahtarı), dört grup tek dosyada (PDF, yalnız öğrenci
+                      sayfaları), Cevap Anahtarı ve Puanlama (A-D), Konu-Soru Dağılım Tablosu,
+                      1. Ünite Çalışma Kâğıdı (cevaplar son sayfada). Kapsam: 1. Ünite Merhaba, s. 10-66.
+  dosyalar/sinavlar/6-sinif/2026-2027-1d1y/  YENİ, 15 dosya — aynı düzen. Kapsam: 1. Ünite Akrabalarım, s. 10-50.
+  index.html          «5. VE 6. SINIF 2026-2027 1. DÖNEM 1. YAZILI BELGELERİ» bloğu eklendi (Sınavlar
+                      kartına 1. yazılı satırları + kart notu, Çalışma Kâğıtları kartına çalışma kâğıdı).
+                      Var olan klasik/beceri sınav satırlarına dokunulmadı.
+  Mac (Türkçe adlarla, aynı dosyalar + Arapça Kaynak Raporu.txt):
+                      Meb/5️⃣-🔟/5️⃣/2026-2027 Maarif Eğitim Modeli/2026-2027 1. Dönem 1. Yazılı/
+                      Meb/5️⃣-🔟/6️⃣/6 Arapça 2026-2027/2026-2027 1. Dönem 1. Yazılı/
+  Kaynak ve betikler: _kaynak/sinav56/sinav56-kaynak.zip · Yedek: _kaynak/sinav56/index.yedek-*.html
+
+19.10.2026 (2) — KİDEF ARAPÇA 2. BASKI FLIPBOOK'U HER SINIFIN MATERYALLERİNDE «YARDIMCI KAYNAK»
+  sistem/sinifmodul.js  yeni kart «Kidef Arapça 📒 2. Baskı» (id kidefyardimci, rozet «Yardımcı Kaynak»):
+                      5-10. sınıfların hepsinde, İmam Hatip akordiyonundaki sınıf kartlarının sonunda
+                      (Muhâdese'den önce) ve aynı kaynaktan çizilen sınıfın «Materyaller» sekmesinde.
+                      Tıklayınca kitap/kidef-arapca-2-baski/index.html yeni sekmede açılır.
+  Damga: surumle.py (index.html → sinifmodul.js?v=) · Yedek: _kaynak/yedekler/2026-10-19-kidef-yardimci/
+
+19.10.2026 (3) — 5. VE 6. SINIF 1. YAZILI: ESKİ KÂĞITLARIN YERİNE YENİ SET + ALLAH LAFZI DÜZELTMESİ
+  index.html          5. ve 6. sınıfın Sınavlar listesinde 1. dönem 1. yazılı «Klasik» ve «Beceri temelli»
+                      satırları artık listelenmiyor; yerlerinde 2026-2027 seti (A-D) duruyor. Eski
+                      dosyalar (arapca-5/6-1d1y-klasik/beceri) silinmedi, yerinde.
+  dosyalar/sinavlar/5-sinif/2026-2027-1d1y/  B, C, D grupları, dört grup, cevap anahtarı ve çalışma
+                      kâğıdı yeniden üretildi: «لِلّه» elle şeddeli yazıldığı için Arakom iki şedde
+                      gösteriyordu → «لِله» (şeddeyi yazı tipi koyuyor). Mac'teki kopyalar da güncellendi.
+  Yedek: _kaynak/yedekler/2026-10-19-sinav-degisim/
+
+19.10.2026 (4) — BEKLENEN DESTEK (ÖĞRETMEN PROFİLİ) + YÖNETİCİDE ÖĞRETMEN PENCERESİ
+  hesap/destek.js     YENİ. Öğretmen profilinde «Beklenen Destek» kartı: kişi başı aylık tutar =
+                      aylık toplam (30.000 TL) ÷ son 30 günde giren onaylı öğretmen, en az 500 TL
+                      (alt sınır öğretmene GÖSTERİLMEZ; yalnız yönetici panelinde); animasyonlu eğri
+                      (öğretmen arttıkça tutar düşer, sınıra varmadan biter), kayıttan beri
+                      beklenen / ödenen / kalan, 1-12 ay · yıllık · birikenin tamamı · başka tutar,
+                      IBAN (checkout.js'ten okunur), «Ödemeyi yaptım, bildir». Yöneticide onay, red,
+                      elle ödeme, ödeme defteri, toplam/taban ayarı. Veri: mufredat/_destek,
+                      siparisler (tur destek / destekKayit), kullanicilar/{uid}.destek. Kural değişmedi.
+  hesap/ogretmen-detay.js  Öğretmen penceresi: Genel · Ücret durumu · Takvim · Kayıt anketi sekmeleri,
+                      Onayla / Onayı kaldır / Sil tuşları pencerede.
+  hesap/teacher-admin.js   Öğretmenler listesi satır yerine kart (arama + süzgeç); «Öğretmen Takvim
+                      Düzenleyici» akordiyonu kalktı (takvim pencerede); Ödeme Onayları'nda destek
+                      bildirimleri; «📋 Tüm kayıt anketleri» tuşu (eski akordiyon gizli).
+  sistem/alarm.js     loadMufredat '_' ile başlayan belgeyi (mufredat/_destek) paket saymaz.
+  index.html          hesap/destek.js eklendi. Damga: surumle.py · Yedek: _kaynak/yedekler/2026-10-19-destek/
