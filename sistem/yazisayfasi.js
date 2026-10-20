@@ -1,5 +1,5 @@
 /* =====================================================================
-   KİDEF · YAZI SAYFASI                         (sistem/yazisayfasi.js)
+   KİDEF · DEFTER (eski adı: Yazı Sayfası)      (sistem/yazisayfasi.js)
    ---------------------------------------------------------------------
    Öğretmen (19.10.2026): "popup şeklinde bi tane yazı sayfası yapalım,
    diyelimki dijital olarak bi şeyler çizmek istedim, 5 renk olsun, 1 kalem
@@ -14,12 +14,12 @@
    %de 98 ekranı kaplasın, bu popup sınıf açılınca her zaman görünecek,
    sınıf sekmesine bağlı olacak, sadece bi sınıf açılınca açılacak
    kapanırsa kapanacak"):
-   · Sınıflarım'da bir sınıf açılınca pencere sağ altta «Yazı Sayfası»
+   · Sınıflarım'da bir sınıf açılınca pencere sağ altta «Defter»
      düğmesi olarak hazır bekler; basınca ekranın %98'ini kaplar. O sınıfa
      bağlıdır (seviye + şube). (20.10.2026, öğretmen: "bi liste açılınca
      hemen yazı tahtası açılmasın")
-   · Sınıf açık kaldıkça durur: × pencereyi KÜÇÜLTÜR, sağ altta
-     «Yazı Sayfası» düğmesi kalır, basınca geri açılır.
+   · Sınıf açık kaldıkça durur: «Küçült» pencereyi KÜÇÜLTÜR, sağ altta
+     «Defter» düğmesi kalır, basınca geri açılır.
    · Sınıf kapanınca (başka sınıfa geçilince, Sınıflarım'dan çıkılınca)
      defter tarihiyle kaydedilir, pencere kapanır.
    · Aynı sınıf 45 dakika içinde yeniden açılırsa kaldığı defterden
@@ -54,12 +54,36 @@
      sürüklenir; tekerlek/dokunmatik yüzey de kaydırır. Artı, yeni sayfayı
      açık sayfanın hemen SOLUNA ekler. Sayfa genişliği 1000 birim (Y2
      biçiminde saklanır); eski (Y1) defterlerde çizgilerden hesaplanır.
-   · Yalnız 6 yatay çizgili defter (öteki düzenler kaldırıldı).
+   · Yalnız yatay çizgili defter (öteki düzenler kaldırıldı); çizgi
+     sayısı 20.10.2026'dan beri seçiliyor (aşağıda DEFTER).
    · Küçült düğmesi yazılı ve mavi, hep sağ üst köşede ("simge haline
      küçültme tuşunu göremedim").
-   ARAÇLAR: 5 renk kalem · silgi · 3 kalınlık · çizgi düzeni (gri
-   çizgiler / Arapça büyük harf / Arapça küçük harf / boş) · geri al,
-   yinele, temizle · sayfalar (ekle, kaldır, ‹ ›) · PDF · tam ekran.
+   DEFTER (20.10.2026, öğretmen: "yazı sayfasını defter olarak değiştir ve
+   yatay çizgiler sayı olarak değiştirilebilsin, 2 ile 8 çizgi
+   seçilebilsin, ileri sayfaya sol okla geçsin ve sayfalar arası geçiş
+   için aşağıda kalın bi scroll çubuğu olsun ... scroll çubuğu aşağıda
+   olsun", "defterde en üstte biraz boşluk olsun", "sınıflarımdan birini
+   açınca aşağıdaki defter popup kısmında sayfa çevirme ve yazma
+   animasyonu olsun"):
+   · Adı «Defter»: başlık, sağ alttaki düğme, PDF (defter_<şube>_<gün>.pdf).
+     Dosya adı, kayıtlar ve dışarı açılan ad (KidefYaziSayfasi) aynı.
+   · Üst çubukta «Çizgi 2 3 4 5 6 7 8»: yatay çizgi sayısı. Defterle
+     birlikte saklanır (Y3 biçimi); son seçilen, yeni defterlerde de gelir.
+   · ÜSTTE BOŞLUK: ilk çizginin üstünde öteki aralıklardan UST_BOSLUK
+     birim büyük bir pay. Eski (Y1/Y2) defterler yazıldıkları çizgilerle
+     açılır (pay yok, 6 çizgi); çizgi sayısı değiştirilince yeni düzene
+     geçer.
+   · ‹ HEP İLERİ: son sayfadaysa yeni sayfa açar (boş olsa da). Sondaki
+     boş sayfalar kaydedilmez, PDF'e girmez.
+   · EN ALTTA KALIN KAYDIRMA ÇUBUĞU: kâğıdın küçük haritası (1. sayfa
+     sağda, sayfa numaraları üstünde); tutamaç ekrandaki pencere ve
+     açık sayfanın numarasını taşır. Sürüklenir; çubuğun başka bir yerine
+     basınca o sayfaya gidilir; tekerlek de kaydırır.
+   · Sağ alttaki düğmede defter canlanır: kalem sağdan sola yazar, sayfa
+     çevrilir (hareket azaltma tercihinde durur).
+   ARAÇLAR: 5 renk kalem · silgi · 3 kalınlık · çizgi sayısı (2-8) · geri
+   al, yinele, temizle · sayfalar (ekle, kaldır, ‹ ›, kaydırma çubuğu) ·
+   PDF · tam ekran.
    Kısayollar: Ctrl+Z / Ctrl+Y, K kalem, S silgi, 1-5 renk, ← → sayfa, Esc.
 
    KAYIT
@@ -99,6 +123,9 @@
         { id: 'k', ad: 'Kalın', w: 8 }
     ];
     var SILGI_W = 28;
+    /* YATAY ÇİZGİLER (20.10.2026): 2-8 arası seçilir, en üstte başlık payı */
+    var CIZGI_EN_AZ = 2, CIZGI_EN_COK = 8, CIZGI_VARSAYILAN = 6;
+    var UST_BOSLUK = 56;                       /* ilk çizginin üstündeki ek pay (birim) */
     var MODLAR = [
         { id: 'c', ad: 'Gri çizgiler' },
         { id: 'b', ad: 'Arapça · büyük harf' },
@@ -157,9 +184,12 @@
        ÇİZGİLERİ SAKLAMA BİÇİMİ
        Noktalar yarım birim hassasiyetle tam sayıya çevrilir, ardışık
        farklar "polyline" kodlamasıyla (ASCII 63-126) yazılır.
-       Defter: "Y1|" + sayfalar (\n ile); sayfa: düzen harfi + çizgiler
-       (boşlukla); çizgi: renk harfi ('0'-'4', silgi 'x') + kalınlık
-       harfi ('i','o','k','s') + noktalar.
+       Defter: "Y3|<sayfa genişliği>|<çizgi sayısı>|<üst pay>|" + sayfalar
+       (\n ile); sayfa: düzen harfi + çizgiler (boşlukla); çizgi: renk
+       harfi ('0'-'4', silgi 'x') + kalınlık harfi ('i','o','k','s') +
+       noktalar. Eski biçimler okunur: "Y2|<genişlik>|", "Y1|" (6 çizgi,
+       üst pay yok). Başlık alanları rakam olduğu için ilk üç '|' ayraçtır
+       (noktaların kodunda da '|' geçebilir: bölme sırayla yapılır).
        ------------------------------------------------------------------ */
     function sayiKodla(n, out) {
         var v = n < 0 ? ~(n << 1) : (n << 1);
@@ -193,19 +223,34 @@
         var silgi = t.charAt(0) === 'x';
         return { r: silgi ? 0 : Math.max(0, Math.min(4, +t.charAt(0) || 0)), k: silgi ? 'o' : t.charAt(1), s: silgi ? 1 : 0, p: p };
     }
-    function defterKodla(sayfalar, pw) {
-        return 'Y2|' + Math.round(pw || W) + '|' + sayfalar.map(function (s) {
+    function cizgiSayisi(n) {
+        n = parseInt(n, 10);
+        return (n >= CIZGI_EN_AZ && n <= CIZGI_EN_COK) ? n : CIZGI_VARSAYILAN;
+    }
+    function defterKodla(sayfalar, pw, R) {
+        var n = cizgiSayisi(R && R.n), ust = (R && R.ust != null) ? Math.max(0, Math.round(R.ust)) : UST_BOSLUK;
+        return 'Y3|' + Math.round(pw || W) + '|' + n + '|' + ust + '|' + sayfalar.map(function (s) {
             return 'c' + s.cizimler.map(cizgiKodla).map(function (x) { return ' ' + x; }).join('');
         }).join('\n');
     }
     function defterCoz(kod) {
-        var govde = null, pw = 0;
-        if (kod && kod.indexOf('Y2|') === 0) {
+        var govde = null, pw = 0, cn = CIZGI_VARSAYILAN, ust = UST_BOSLUK;
+        if (kod && kod.indexOf('Y3|') === 0) {
+            var a1 = kod.indexOf('|', 3), a2 = kod.indexOf('|', a1 + 1), a3 = kod.indexOf('|', a2 + 1);
+            if (a1 > 0 && a2 > a1 && a3 > a2) {
+                pw = parseInt(kod.slice(3, a1), 10) || W;
+                cn = cizgiSayisi(kod.slice(a1 + 1, a2));
+                ust = Math.max(0, parseInt(kod.slice(a2 + 1, a3), 10) || 0);
+                govde = kod.slice(a3 + 1);
+            }
+        } else if (kod && kod.indexOf('Y2|') === 0) {
             var k = kod.indexOf('|', 3);
             pw = parseInt(kod.slice(3, k), 10) || W;
             govde = kod.slice(k + 1);
+            ust = 0;                                 /* eski: 6 çizgi, üst pay yok */
         } else if (kod && kod.indexOf('Y1|') === 0) {
             govde = kod.slice(3);
+            ust = 0;
         }
         var L = govde == null ? [] : govde.split('\n').map(function (ps) {
             var c = ps.slice(1).split(' ').filter(Boolean).map(cizgiCoz).filter(Boolean);
@@ -222,7 +267,15 @@
             });
         }
         L.pw = pw;
+        L.cizgi = cn;
+        L.ust = ust;
         return L;
+    }
+    /* sondaki boş sayfalar (‹ ile açılıp yazılmayan) kaydedilmez, PDF'e girmez */
+    function kayitSayfalari(L) {
+        var n = L.length;
+        while (n > 1 && !L[n - 1].cizimler.length) n--;
+        return L.slice(0, n);
     }
     function yeniSayfa(mod) { return { mod: mod || 'c', cizimler: [], geri: [], ileri: [] }; }
 
@@ -264,13 +317,25 @@
         for (var i = 0; i < KALINLIK.length; i++) if (KALINLIK[i].id === k) return KALINLIK[i].w;
         return KALINLIK[1].w;
     }
-    /* 6 yatay çizgi (öğretmen: "sadece 6 yatay çizgili defter olsun") */
-    function cizgiDesen(ctx, a, b) {
+    /* YATAY ÇİZGİLER — R = { n: çizgi sayısı (2-8), ust: en üstteki ek pay }.
+       Aralık g = (H - ust) / (n + 1); k. çizgi ust + k·g'de. Eski defterlerde
+       (ust 0, n 6) eskisinin aynısı: H·k/7. */
+    function cizgiDuzeni(d) {
+        if (d === undefined) d = D;
+        return { n: cizgiSayisi(d && d.cizgi), ust: (d && d.ust != null) ? d.ust : UST_BOSLUK };
+    }
+    function cizgiYerleri(R) {
+        var n = cizgiSayisi(R && R.n), ust = (R && R.ust != null) ? R.ust : UST_BOSLUK;
+        var g = (H - ust) / (n + 1), L = [];
+        for (var k = 1; k <= n; k++) L.push(Math.round(ust + g * k));
+        return L;
+    }
+    function cizgiDesen(ctx, a, b, R) {
         if (b <= a) return;
         ctx.setLineDash([]);
         ctx.strokeStyle = '#CDD3DB'; ctx.lineWidth = 1.5;
         ctx.beginPath();
-        for (var k = 1; k <= 6; k++) { var y = Math.round(H * k / 7); ctx.moveTo(a, y); ctx.lineTo(b, y); }
+        cizgiYerleri(R).forEach(function (y) { ctx.moveTo(a, y); ctx.lineTo(b, y); });
         ctx.stroke();
     }
     /* Arapça sağdan başlar: kırmızı kenar çizgisi kâğıdın başında (sağda) */
@@ -281,14 +346,14 @@
         ctx.moveTo(x, 10); ctx.lineTo(x, H - 10); ctx.stroke();
     }
     /* Tek sayfa (önizleme, PDF). sagKenar: 1. sayfada kâğıdın sağ ucu */
-    function cizgileriCiz(ctx, mod, o, x0, x1, sagKenar) {
+    function cizgileriCiz(ctx, mod, o, x0, x1, sagKenar, R) {
         if (x0 == null) x0 = 0;
         if (x1 == null) x1 = W;
         ctx.save();
         ctx.setTransform(o, 0, 0, o, -x0 * o, 0);
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(x0, 0, x1 - x0, H);
-        cizgiDesen(ctx, x0, sagKenar != null ? Math.min(x1, sagKenar - 18) : x1);
+        cizgiDesen(ctx, x0, sagKenar != null ? Math.min(x1, sagKenar - 18) : x1, R || cizgiDuzeni());
         if (sagKenar != null) kenarCiz(ctx, sagKenar - 44);
         ctx.restore();
     }
@@ -299,7 +364,7 @@
         ctx.setTransform(o, 0, 0, o, -vx0 * o, 0);
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(vx0, 0, vx1 - vx0, H);
-        cizgiDesen(ctx, vx0, Math.min(vx1, sag - 18));
+        cizgiDesen(ctx, vx0, Math.min(vx1, sag - 18), cizgiDuzeni());
         if (sag - 44 >= vx0 - 2 && sag - 44 <= vx1 + 2) kenarCiz(ctx, sag - 44);
         ctx.restore();
     }
@@ -350,12 +415,12 @@
         if (b) yari = Math.max(yari, W / 2 - b[0] + 5, b[1] - W / 2 + 5);
         return { x0: W / 2 - yari, x1: W / 2 + yari };
     }
-    function onizlemeCiz(canvas, sayfa, kenar, pw) {
+    function onizlemeCiz(canvas, sayfa, kenar, pw, R) {
         pw = pw || (D && D.pw) || W;
         var g = gorunum(sayfa, canvas.width / canvas.height, pw);
         var o = Math.min(canvas.width / (g.x1 - g.x0), canvas.height / H);
         var ctx = canvas.getContext('2d');
-        cizgileriCiz(ctx, 'c', o, g.x0, g.x1, kenar ? W / 2 + pw / 2 : null);
+        cizgileriCiz(ctx, 'c', o, g.x0, g.x1, kenar ? W / 2 + pw / 2 : null, R || cizgiDuzeni());
         var tmp = document.createElement('canvas');
         tmp.width = canvas.width; tmp.height = canvas.height;
         var t = tmp.getContext('2d');
@@ -517,6 +582,35 @@
             '.ys-mod.sec{background:#DCE7F7;}',
             '.ys-mod:hover{background:#E5EBF3;}',
             '.ys-sayfa{font-weight:900; font-size:.85rem; min-width:46px; text-align:center; color:#1F2430; font-variant-numeric:tabular-nums;}',
+            /* çizgi sayısı seçici */
+            '.ys-csay{min-width:30px; height:32px; padding:0 4px; border:0; background:transparent; border-radius:8px; cursor:pointer;',
+            '  font-family:inherit; font-weight:900; font-size:.92rem; color:#3D4756; font-variant-numeric:tabular-nums;}',
+            '.ys-csay:hover{background:#E5EBF3;}',
+            '.ys-csay.sec{background:#1B4F9C; color:#fff;}',
+            '.ys-cet{display:inline-flex; align-items:center; gap:5px; padding:0 5px 0 4px; color:#55606D; font-weight:800; font-size:.8rem; white-space:nowrap;}',
+            '.ys-cet svg{width:20px; height:20px; flex:none;}',
+            '@media (max-width:1500px){.ys-cet span{display:none;}}',
+            /* dar masaüstü / tablet (≤1100): üst çubuk tek satırda kalsın */
+            '@media (max-width:1100px) and (min-width:761px){.ys-arac{gap:4px;} .ys-t[data-is="panel"] span,.ys-t[data-is="pdf"] span{display:none;}',
+            '  .ys-cet{display:none;} .ys-csay{min-width:27px;}}',
+            /* en altta kalın kaydırma çubuğu */
+            '.ys-kaydirma{flex:none; padding:7px 14px 9px; background:#fff; border-top:1px solid #E2E7EE;}',
+            '.ys-ray{position:relative; height:34px; border-radius:999px; background:#E7ECF3; box-shadow:inset 0 1px 3px rgba(15,23,42,.14);',
+            '  cursor:pointer; touch-action:none; -webkit-user-select:none; user-select:none;}',
+            '.ys-ray-sayfalar{position:absolute; inset:0; border-radius:999px; overflow:hidden;}',
+            '.ys-ray-sayfalar span{position:absolute; top:0; bottom:0; display:flex; align-items:center; justify-content:center;',
+            '  font-size:.8rem; font-weight:800; color:#94A0B0; font-variant-numeric:tabular-nums; pointer-events:none;}',
+            '.ys-ray-sayfalar span.ara{border-left:1.5px solid rgba(15,23,42,.13);}',
+            '.ys-tutamak{position:absolute; top:3px; bottom:3px; left:0; min-width:44px; border-radius:999px; background:#1B4F9C; color:#fff;',
+            '  display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(27,79,156,.38); cursor:grab;',
+            '  font-weight:900; font-size:.9rem; font-variant-numeric:tabular-nums; transition:background .12s;}',
+            '.ys-tutamak::before,.ys-tutamak::after{content:""; flex:none; width:2px; height:12px; border-radius:2px; background:rgba(255,255,255,.5); margin:0 8px;}',
+            '.ys-ray:hover .ys-tutamak{background:#1A5DBB;}',
+            '.ys-tutamak.suruk,.ys-ray:hover .ys-tutamak.suruk{cursor:grabbing; background:#163F7D;}',
+            '.ys-ray.tek,.ys-ray.tek .ys-tutamak{cursor:default;}',
+            /* kaydırılacak yer yoksa tutamaç sönük */
+            '.ys-ray.tek .ys-tutamak,.ys-ray.tek:hover .ys-tutamak{background:#C7D5EA; color:#1B4F9C; box-shadow:none;}',
+            '.ys-ray.tek .ys-tutamak::before,.ys-ray.tek .ys-tutamak::after{background:rgba(27,79,156,.35);}',
             '.ys-bos{flex:1 1 auto;}',
             '.ys-t.ana{background:#FFF4DE; color:#9A6512;}',
             '.ys-t.ana:hover{background:#FDEBC8;}',
@@ -639,6 +733,10 @@
             '  .ys-yan .ys-renk.sec{box-shadow:0 0 0 2px #fff, 0 0 0 4px var(--rk);}',
             '  .ys-sayfalar{bottom:8px; padding:5px 7px;} .ys-sayfalar .ys-t{width:42px; height:42px; min-width:42px;}',
             '  .ys-sayfalar .ys-sayfa{font-size:1.05rem; min-width:58px;}',
+            '  .ys-csay{min-width:26px; height:28px; font-size:.84rem; padding:0 3px;} .ys-cet{padding:0 2px;}',
+            '  .ys-csec{order:9;}',
+            '  .ys-kaydirma{padding:5px 8px 7px;} .ys-ray{height:28px;} .ys-tutamak{min-width:38px; font-size:.82rem;}',
+            '  .ys-tutamak::before,.ys-tutamak::after{margin:0 5px; height:10px;}',
             '  .ys-son{font-size:.78rem; max-width:92%;}}',
             /* küçültülünce sağ altta kalan düğme */
             '#ysPil{position:fixed; right:16px; bottom:16px; z-index:99980; display:flex; align-items:center; gap:9px;',
@@ -649,6 +747,26 @@
             '#ysPil i{display:flex; width:34px; height:34px; border-radius:50%; background:#fff; align-items:center; justify-content:center; flex:none;}',
             '#ysPil i svg{width:24px; height:24px;}',
             '#ysPil small{display:block; font-size:.72rem; font-weight:700; opacity:.85;}',
+            /* canlanan defter: açık defter, sağ sayfaya kalem sağdan sola yazar,
+               sol yaprak sağa çevrilir (4,8 sn, sürekli) */
+            '#ysPil i.ys-pil-ikon{position:relative; width:48px; height:36px; border-radius:11px; overflow:visible;}',
+            '#ysPil .pd{position:relative; width:38px; height:24px; perspective:64px;}',
+            '#ysPil .pd-s{position:absolute; top:0; bottom:0; width:50%; box-sizing:border-box; border:1.5px solid #1B4F9C; background:#fff;',
+            '  background-image:repeating-linear-gradient(to bottom, transparent 0 5.2px, #C9D2DE 5.2px 6.4px);}',
+            '#ysPil .pd-sol{left:0; border-radius:4px 0 0 4px; border-right-width:.75px;}',
+            '#ysPil .pd-sag{right:0; border-radius:0 4px 4px 0; border-left-width:.75px;}',
+            '#ysPil .pd-yaprak{left:0; border-radius:4px 0 0 4px; border-right-width:.75px; transform-origin:100% 50%;',
+            '  background-color:#F3F7FF; animation:pdCevir 4.8s ease-in-out infinite;}',
+            '#ysPil .pd-yazi{position:absolute; left:1px; top:3.5px; width:15px; height:9px; overflow:visible;}',
+            '#ysPil .pd-yazi path{fill:none; stroke:#1E5BD8; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round;',
+            '  stroke-dasharray:40; stroke-dashoffset:0; animation:pdYaz 4.8s linear infinite;}',
+            '#ysPil .pd-kalem{position:absolute; width:15px; height:15px; left:37px; top:4px; animation:pdKalem 4.8s ease-in-out infinite;',
+            '  filter:drop-shadow(0 1px 1px rgba(0,0,0,.25));}',
+            '@keyframes pdYaz{0%,10%{stroke-dashoffset:40}50%,100%{stroke-dashoffset:0}}',
+            '@keyframes pdKalem{0%,10%{transform:translate(0,0); opacity:1}30%{transform:translate(-6px,1px)}50%{transform:translate(-12px,0); opacity:1}',
+            '  58%{transform:translate(-12px,-6px); opacity:0}92%{transform:translate(0,-6px); opacity:0}100%{transform:translate(0,0); opacity:1}}',
+            '@keyframes pdCevir{0%,58%{transform:rotateY(0deg)}80%,100%{transform:rotateY(180deg)}}',
+            '@media (prefers-reduced-motion: reduce){#ysPil .pd-yaprak,#ysPil .pd-yazi path,#ysPil .pd-kalem{animation:none;}}',
             '@media print{#ysPil{display:none;}}',
             '@media (prefers-reduced-motion: reduce){#ysOrt,#ysKutu,.ys-bildiri,#ysPil{animation:none;} .ys-panel{transition:none;}}'
         ].join('\n');
@@ -674,6 +792,7 @@
         izgara: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg>',
         kucult: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5.5 17.5h13"/></svg>',
         pdf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6"/><path d="m9.5 14.5 2.5 2.5 2.5-2.5"/></svg>',
+        cizgiler: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9.5h16M4 14h16M4 18.5h16"/><path d="M4 4.5h7" stroke-dasharray="1 2.6"/></svg>',
         tamEkran: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
         defter: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="8" width="40" height="48" rx="4" fill="#fff" stroke="#1B4F9C" stroke-width="3"/>' +
             '<path d="M16 20h28M16 29h28M16 38h28M16 47h20" stroke="#C9D2DE" stroke-width="2.4" stroke-linecap="round"/>' +
@@ -703,9 +822,11 @@
         stilKur();
         kapat(true);
         var t = tercihOku();
-        T = { arac: 'kalem', renk: (t.renk >= 0 && t.renk < 5) ? t.renk : 0, kal: t.kal || 'o', mod: t.mod || 'c' };
+        T = { arac: 'kalem', renk: (t.renk >= 0 && t.renk < 5) ? t.renk : 0, kal: t.kal || 'o', mod: t.mod || 'c',
+              cizgi: cizgiSayisi(t.cizgi) };
         D = kaynak || { id: yeniId(), sinif: sinif, sube: BAGLI ? BAGLI.sube : subeAdi(), tarih: Date.now(), guncelleme: 0,
-                        sayfalar: [yeniSayfa('c')], aktif: 0, notId: '', notAd: '', kirli: false, pw: W };
+                        sayfalar: [yeniSayfa('c')], aktif: 0, notId: '', notAd: '', kirli: false, pw: W,
+                        cizgi: T.cizgi, ust: UST_BOSLUK };
         defterHazirla(D);
         kur(kucukBasla);
         cizimAyarla();
@@ -731,13 +852,18 @@
             var r = [6, 10, 15][i];
             return '<button type="button" class="ys-kal" data-kal="' + k.id + '" title="' + esc(k.ad) + ' kalem"><i style="width:' + r + 'px;height:' + r + 'px"></i></button>';
         }).join('');
+        var csay = '';
+        for (var cn = CIZGI_EN_AZ; cn <= CIZGI_EN_COK; cn++) {
+            csay += '<button type="button" class="ys-csay" data-cizgi="' + cn + '" aria-pressed="false" title="' + cn +
+                    ' yatay çizgi" aria-label="' + cn + ' yatay çizgi">' + cn + '</button>';
+        }
         var modlar = MODLAR.map(function (m) {
             return '<button type="button" class="ys-mod" data-mod="' + m.id + '" title="' + esc(m.ad) + '">' + modSvg(m.id) + '</button>';
         }).join('');
         ort.innerHTML =
-            '<div id="ysKutu" role="dialog" aria-modal="true" aria-label="Yazı Sayfası">' +
+            '<div id="ysKutu" role="dialog" aria-modal="true" aria-label="Defter">' +
               '<div class="ys-arac">' +
-                '<div class="ys-baslik">' + IK.defter + '<span>Yazı Sayfası<small>' + esc(etiket()) + '</small></span></div>' +
+                '<div class="ys-baslik">' + IK.defter + '<span>Defter<small>' + esc(etiket()) + '</small></span></div>' +
                 '<div class="ys-grup">' +
                   '<button type="button" class="ys-t" data-is="geri" title="Geri al (Ctrl+Z)">' + IK.geri + '</button>' +
                   '<button type="button" class="ys-t" data-is="ileri" title="Yinele (Ctrl+Y)">' + IK.ileri + '</button>' +
@@ -745,6 +871,10 @@
                 '</div>' +
                 '<div class="ys-ayrac"></div>' +
                 '<div class="ys-grup">' + kalin + '</div>' +
+                '<div class="ys-ayrac"></div>' +
+                '<div class="ys-grup ys-csec" role="group" aria-label="Yatay çizgi sayısı" title="Yatay çizgi sayısı (2-8)">' +
+                  '<span class="ys-cet">' + IK.cizgiler + '<span>Çizgi</span></span>' + csay +
+                '</div>' +
                 '<span class="ys-bos"></span>' +
                 '<button type="button" class="ys-t ana" data-is="notKaydet" title="Bu defteri seviye notlarına kaydet">' + IK.yildiz +
                   '<span id="ysNotYazi">Seviye notlarına kaydet</span></button>' +
@@ -763,13 +893,21 @@
                 '</div>' +
                 yan('sol') + yan('sag') +
                 '<div class="ys-sayfalar" aria-label="Sayfalar">' +
-                  '<button type="button" class="ys-t" data-is="sola" title="Sola — sonraki sayfa (←)">' + IK.onceki + '</button>' +
+                  '<button type="button" class="ys-t" data-is="sola" title="İleri — sonraki sayfa (←); son sayfadaysa yeni sayfa" aria-label="İleri — sonraki sayfa">' + IK.onceki + '</button>' +
                   '<span class="ys-sayfa" id="ysSayfa">1 / 1</span>' +
-                  '<button type="button" class="ys-t" data-is="saga" title="Sağa — önceki sayfa (→)">' + IK.sonraki + '</button>' +
+                  '<button type="button" class="ys-t" data-is="saga" title="Geri — önceki sayfa (→)" aria-label="Geri — önceki sayfa">' + IK.sonraki + '</button>' +
                   '<button type="button" class="ys-t" data-is="tumSayfalar" title="Tüm sayfalar">' + IK.izgara + '</button>' +
                   '<span class="ys-ara"></span>' +
                   '<button type="button" class="ys-t" data-is="yeniSayfa" title="Yeni sayfa — açık sayfanın soluna">' + IK.yeniSayfa + '</button>' +
                   '<button type="button" class="ys-t" data-is="sayfaSil" title="Bu sayfayı kaldır">' + IK.sayfaSil + '</button>' +
+                '</div>' +
+              '</div>' +
+              '<div class="ys-kaydirma" id="ysKaydirma">' +
+                '<div class="ys-ray" id="ysRay" role="scrollbar" aria-orientation="horizontal" aria-controls="ysKagit"' +
+                  ' aria-label="Sayfalar arasında kaydır" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1"' +
+                  ' title="Sürükle ya da bir sayfaya bas — 1. sayfa sağda">' +
+                  '<div class="ys-ray-sayfalar"></div>' +
+                  '<div class="ys-tutamak" id="ysTutamak"><b>1</b></div>' +
                 '</div>' +
               '</div>' +
               '<aside class="ys-panel" id="ysPanel" aria-label="Geçmiş ve seviye notları">' +
@@ -793,10 +931,18 @@
             alt: kagit.querySelector('.ys-alt'), ust: kagit.querySelector('.ys-ust'),
             iz: kagit.querySelector('.ys-silgi-iz'),
             sayfa: ort.querySelector('#ysSayfa'), panel: ort.querySelector('#ysPanel'), panelIc: ort.querySelector('#ysPanelIc'),
-            sek: 'gecmis', olcek: 1, dpr: 1, kucuk: !!kucuk
+            sek: 'gecmis', olcek: 1, dpr: 1, kucuk: !!kucuk,
+            ray: ort.querySelector('#ysRay'), tutamak: ort.querySelector('#ysTutamak'),
+            raySayfa: ort.querySelector('.ys-ray-sayfalar'), rayAnahtar: ''
         };
         ort.addEventListener('click', tikla);
         UI.sahne.addEventListener('wheel', tekerlek, { passive: false });
+        ort.querySelector('#ysKaydirma').addEventListener('wheel', tekerlek, { passive: false });
+        UI.ray.addEventListener('pointerdown', rayBas);
+        UI.ray.addEventListener('pointermove', rayOynat);
+        UI.ray.addEventListener('pointerup', rayBirak);
+        UI.ray.addEventListener('pointercancel', rayBirak);
+        UI.ray.addEventListener('lostpointercapture', rayBirak);
         UI.ust.addEventListener('pointerdown', kalemBas);
         UI.ust.addEventListener('pointermove', kalemOynat);
         UI.ust.addEventListener('pointerup', kalemBirak);
@@ -842,8 +988,18 @@
         var b = document.createElement('button');
         b.type = 'button';
         b.id = 'ysPil';
-        b.title = 'Yazı Sayfası — aç';
-        b.innerHTML = '<i>' + IK.defter + '</i><span>Yazı Sayfası<small>' + esc(etiket()) + '</small></span>';
+        b.title = 'Defter — aç';
+        b.setAttribute('aria-label', 'Defter — aç · ' + etiket());
+        /* canlanan defter (20.10.2026, öğretmen: "aşağıdaki defter popup
+           kısmında sayfa çevirme ve yazma animasyonu olsun"): kalem sağdan
+           sola bir satır yazar, soldaki yaprak sağa çevrilir, baştan */
+        b.innerHTML = '<i class="ys-pil-ikon" aria-hidden="true"><span class="pd">' +
+            '<span class="pd-s pd-sol"></span>' +
+            '<span class="pd-s pd-sag"><svg class="pd-yazi" viewBox="0 0 20 12"><path d="M18.4 7.2c-1.6-3.4-3.4 1.6-5.2-.6s-2.6-2.6-4.4.2-3.4 0-5.6-1"/></svg></span>' +
+            '<span class="pd-s pd-yaprak"></span></span>' +
+            '<svg class="pd-kalem" viewBox="0 0 24 24"><path d="M15.2 4.8l4 4L8.4 19.6 3.6 20.4l.8-4.8z" fill="#F2B544" stroke="#9A6512" stroke-width="1.8" stroke-linejoin="round"/>' +
+            '<path d="M13.6 6.4l4 4" stroke="#9A6512" stroke-width="1.8"/></svg></i>' +
+            '<span>Defter<small>' + esc(etiket()) + '</small></span>';
         b.addEventListener('click', buyut);
         document.body.appendChild(b);
     }
@@ -883,7 +1039,7 @@
         document.removeEventListener('visibilitychange', gorunurlukDegisti);
         var kucuktu = UI && UI.kucuk;
         if (UI && UI.anim) cancelAnimationFrame(UI.anim);
-        _cz = null; _kay = null; _dok = {};
+        _cz = null; _kay = null; _dok = {}; _ray = null;
         ort.remove();
         pilKaldir();
         if (!kucuktu) document.body.style.overflow = _govdeTasma || '';
@@ -898,10 +1054,11 @@
         var simdi = Date.now();
         D.guncelleme = simdi;
         D.kirli = false;
+        var sy = kayitSayfalari(D.sayfalar);
         var kayit = {
             id: D.id, sinif: D.sinif, sube: D.sube || '', tarih: D.tarih || simdi, guncelleme: simdi,
-            sayfa: D.sayfalar.length, kod: defterKodla(D.sayfalar, D.pw),
-            onizleme: onizlemeUrl(D.sayfalar[0]), notId: D.notId || ''
+            sayfa: sy.length, kod: defterKodla(sy, D.pw, cizgiDuzeni()),
+            onizleme: onizlemeUrl(sy[0]), notId: D.notId || ''
         };
         return gecmisKoy(kayit);
     }
@@ -920,6 +1077,8 @@
     function sinirli(c) { return Math.max(enAzC(), Math.min(enCokC(), c)); }
     function defterHazirla(d) {
         if (!d.pw) d.pw = (d.sayfalar && d.sayfalar.pw) || W;
+        if (!(d.cizgi >= CIZGI_EN_AZ && d.cizgi <= CIZGI_EN_COK)) d.cizgi = cizgiSayisi(d.sayfalar && d.sayfalar.cizgi);
+        if (d.ust == null) d.ust = (d.sayfalar && d.sayfalar.ust != null) ? d.sayfalar.ust : UST_BOSLUK;
         d.geri = d.geri || []; d.ileri = d.ileri || [];
         d.sayfalar.forEach(function (sy) { sy.mod = 'c'; });
         d.aktif = Math.max(0, Math.min(d.aktif || 0, d.sayfalar.length - 1));
@@ -977,6 +1136,91 @@
             UI.anim = k < 1 ? requestAnimationFrame(adim) : 0;
         };
         UI.anim = requestAnimationFrame(adim);
+    }
+    /* ---------------- alttaki kalın kaydırma çubuğu ----------------
+       Öğretmen (20.10.2026): "sayfalar arası geçiş için aşağıda kalın bi
+       scroll çubuğu olsun sayfalar arasında rahatlıkla geçiş yapılabilsin".
+       Çubuk kâğıdın küçük haritası: sağ ucu 1. sayfanın başı, sol ucu son
+       sayfanın sonu, üstünde sayfa numaraları. Tutamaç ekrandaki pencere
+       (üstünde açık sayfanın numarası): sürüklenince kâğıt onunla kayar.
+       Çubuğun başka bir yerine basınca o sayfaya gidilir; basılı tutup
+       sürüklemek tutamacı parmağın altına alır. */
+    var _ray = null;
+    function rayToplam() { return Math.max(D.sayfalar.length * D.pw, UI.Lw); }
+    function rayKagitX(clientX) {
+        var r = UI.ray.getBoundingClientRect(), T2 = rayToplam();
+        var f = r.width ? (clientX - r.left) / r.width : 0;
+        return SAG() - T2 + Math.max(0, Math.min(1, f)) * T2;
+    }
+    function rayGuncelle() {
+        if (!UI || !UI.ray || !D || UI.Lw == null || UI.vx0 == null) return;
+        var w = UI.ray.clientWidth;
+        if (!w) return;
+        var n = D.sayfalar.length, pw = D.pw, T2 = rayToplam(), sol = SAG() - T2;
+        var anahtar = n + '|' + pw + '|' + Math.round(T2) + '|' + Math.round(w);
+        if (anahtar !== UI.rayAnahtar) {
+            UI.rayAnahtar = anahtar;
+            var segW = pw / T2 * w, html = '';
+            for (var j = 0; j < n; j++) {
+                var a = (T2 - (j + 1) * pw) / T2 * 100, gen = pw / T2 * 100;
+                html += '<span' + (j < n - 1 && segW >= 4 ? ' class="ara"' : '') + ' style="left:' + a.toFixed(3) +
+                        '%;width:' + gen.toFixed(3) + '%">' + (segW >= 18 ? (j + 1) : '') + '</span>';
+            }
+            UI.raySayfa.innerHTML = html;
+        }
+        var L = (UI.vx0 - sol) / T2 * w, R = (UI.vx1 - sol) / T2 * w, en = Math.min(w, 46);
+        if (R - L < en) { var m = (L + R) / 2; L = m - en / 2; R = m + en / 2; }
+        if (L < 0) { R -= L; L = 0; }
+        if (R > w) { L -= R - w; R = w; }
+        if (L < 0) L = 0;
+        UI.tutamak.style.left = L.toFixed(1) + 'px';
+        UI.tutamak.style.width = (R - L).toFixed(1) + 'px';
+        var no = String(D.aktif + 1), bb = UI.tutamak.firstChild;
+        if (bb && bb.textContent !== no) bb.textContent = no;
+        UI.ray.setAttribute('aria-valuemax', String(n));
+        UI.ray.setAttribute('aria-valuenow', no);
+        UI.ray.setAttribute('aria-valuetext', 'Sayfa ' + no + ' / ' + n);
+        UI.ray.classList.toggle('tek', enAzC() >= enCokC() - 0.5);
+    }
+    function rayBas(e) {
+        if (!UI || !D || UI.kucuk) return;
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        e.preventDefault();
+        genelKapat(); silSorKapat();
+        if (UI.anim) { cancelAnimationFrame(UI.anim); UI.anim = 0; }
+        try { UI.ray.setPointerCapture(e.pointerId); } catch (x) { }
+        var th = UI.tutamak.getBoundingClientRect();
+        var ustunde = e.clientX >= th.left - 2 && e.clientX <= th.right + 2;
+        _ray = { id: e.pointerId, x0: e.clientX, x: e.clientX, suruk: ustunde };
+        if (ustunde) UI.tutamak.classList.add('suruk');
+    }
+    function rayOynat(e) {
+        if (!_ray || e.pointerId !== _ray.id || !UI || !D) return;
+        e.preventDefault();
+        if (!_ray.suruk) {
+            if (Math.abs(e.clientX - _ray.x0) < 6) return;
+            _ray.suruk = true;
+            UI.tutamak.classList.add('suruk');
+            UI.c = sinirli(rayKagitX(e.clientX));
+            kaydirUygula();
+            _ray.x = e.clientX;
+            return;
+        }
+        var dx = e.clientX - _ray.x, w = UI.ray.clientWidth;
+        _ray.x = e.clientX;
+        if (dx && w) { UI.c = sinirli(UI.c + dx / w * rayToplam()); kaydirUygula(); }
+    }
+    function rayBirak(e) {
+        if (!_ray || (e && e.pointerId !== _ray.id)) return;
+        var r = _ray;
+        _ray = null;
+        if (!UI || !D) return;
+        UI.tutamak.classList.remove('suruk');
+        if (!r.suruk) {
+            /* çubuğa basıldı: o noktadaki sayfaya git */
+            var j = Math.floor((SAG() - rayKagitX(r.x0)) / D.pw);
+            kaydirGit(Math.max(0, Math.min(D.sayfalar.length - 1, j)));
+        }
     }
     function sayfa() { return D.sayfalar[D.aktif]; }
     function sayfaCiz() {
@@ -1138,12 +1382,13 @@
         if (i < 0 || i >= D.sayfalar.length) return;
         kaydirGit(i);
     }
-    /* ‹ sola: sonraki sayfa — son sayfada yazı varsa kâğıt bir sayfa uzar */
+    /* ‹ sola: İLERİ — sonraki sayfa; son sayfadaysa yeni sayfa açılır, boş
+       olsa da (20.10.2026, öğretmen: "ileri sayfaya sol okla geçsin").
+       Sondaki boş sayfalar kaydedilmez (kayitSayfalari). */
     function sola() {
         genelKapat();
         var n = D.sayfalar.length, j = D.aktif + 1;
         if (j >= n) {
-            if (!D.sayfalar[n - 1].cizimler.length) { kaydirGit(n - 1); return; }
             D.sayfalar.push(yeniSayfa('c'));
             D.kirli = true;
         }
@@ -1177,7 +1422,18 @@
         soru('Bu sayfa (' + (D.aktif + 1) + '. sayfa) üzerindeki yazılarla birlikte kaldırılsın mı?', 'Kaldır', true, yap);
     }
     function modSec() { /* tek düzen: 6 çizgili defter */ }
-    function tercihKaydet() { tercihYaz({ renk: T.renk, kal: T.kal, mod: T.mod }); }
+    function tercihKaydet() { tercihYaz({ renk: T.renk, kal: T.kal, mod: T.mod, cizgi: T.cizgi }); }
+    /* ÇİZGİ SAYISI (20.10.2026): defterin kendi ayarı (kaydedilir) ve
+       tercih (yeni defterler de böyle başlar). Eski düzenli bir defterde
+       de değiştirilince yeni düzene (üstte pay) geçilir. */
+    function cizgiSec(n) {
+        n = cizgiSayisi(n);
+        T.cizgi = n; tercihKaydet();
+        if (!D || (D.cizgi === n && D.ust === UST_BOSLUK)) { aracGuncelle(); return; }
+        D.cizgi = n; D.ust = UST_BOSLUK;
+        D.kirli = true;
+        sayfaCiz();
+    }
     function tamEkran() {
         try {
             if (document.fullscreenElement) document.exitFullscreen();
@@ -1199,9 +1455,15 @@
         var dz = function (is, kapali) { var b = UI.ort.querySelector('[data-is="' + is + '"]'); if (b) b.disabled = !!kapali; };
         var n = D.sayfalar.length;
         dz('geri', !D.geri.length); dz('ileri', !D.ileri.length); dz('temizle', !s.cizimler.length);
-        dz('sola', D.aktif >= n - 1 && !D.sayfalar[n - 1].cizimler.length);
+        dz('sola', false);                                      /* ‹ hep ileri */
         dz('saga', UI.c >= enCokC() - 1); dz('sayfaSil', n < 2);
         UI.sayfa.textContent = (D.aktif + 1) + ' / ' + D.sayfalar.length;
+        var nC = cizgiSayisi(D.cizgi);
+        [].forEach.call(UI.ort.querySelectorAll('[data-cizgi]'), function (b) {
+            var se = +b.getAttribute('data-cizgi') === nC;
+            b.classList.toggle('sec', se); b.setAttribute('aria-pressed', se ? 'true' : 'false');
+        });
+        rayGuncelle();
         var ny = UI.ort.querySelector('#ysNotYazi');
         if (ny) ny.textContent = D.notId ? 'Seviye notunu güncelle' : 'Seviye notlarına kaydet';
     }
@@ -1280,7 +1542,7 @@
         var ctx = c.getContext('2d');
         ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, c.width, c.height);
         var o = PW / Lw;
-        cizgileriCiz(ctx, 'c', o, g.x0, g.x1, no === 1 ? W / 2 + D.pw / 2 : null);
+        cizgileriCiz(ctx, 'c', o, g.x0, g.x1, no === 1 ? W / 2 + D.pw / 2 : null, cizgiDuzeni());
         var tmp = document.createElement('canvas');
         tmp.width = PW; tmp.height = PH;
         var tc = tmp.getContext('2d');
@@ -1291,7 +1553,7 @@
         ctx.font = '600 28px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'left';
-        ctx.fillText('Yazı Sayfası · ' + etiket() + ' · ' + tarihYaz(D.tarih || Date.now()), 28, PH + AY / 2 + 4);
+        ctx.fillText('Defter · ' + etiket() + ' · ' + tarihYaz(D.tarih || Date.now()), 28, PH + AY / 2 + 4);
         ctx.textAlign = 'right';
         ctx.fillText(no + ' / ' + top, PW - 28, PH + AY / 2 + 4);
         var url = c.toDataURL('image/jpeg', 0.9);
@@ -1339,12 +1601,12 @@
         if (!D) return;
         if (bosMu(D.sayfalar)) { bildir('Defter boş — önce bir şey yaz', true); return; }
         try {
-            var top = D.sayfalar.length;
-            var resimler = D.sayfalar.map(function (s, i) { return sayfaGorseli(s, i + 1, top); });
+            var sy = kayitSayfalari(D.sayfalar), top = sy.length;
+            var resimler = sy.map(function (s, i) { return sayfaGorseli(s, i + 1, top); });
             var blob = pdfYap(resimler);
             var d = new Date(D.tarih || Date.now());
             var gun = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
-            var ad = 'yazi-sayfasi_' + trAscii(D.sube || sinifAdi(D.sinif)) + '_' + gun + '.pdf';
+            var ad = 'defter_' + trAscii(D.sube || sinifAdi(D.sinif)) + '_' + gun + '.pdf';
             var url = URL.createObjectURL(blob), a = document.createElement('a');
             a.href = url; a.download = ad; a.rel = 'noopener';
             document.body.appendChild(a); a.click(); a.remove();
@@ -1358,7 +1620,7 @@
     function tikla(e) {
         var t = e.target;
         if (t === UI.ort) return;                                    /* dışına basınca kapanmaz (yanlışlıkla silinmesin) */
-        var b = t.closest && t.closest('[data-is],[data-renk],[data-kal],[data-mod],[data-sek],[data-ac],[data-sil],[data-not],[data-notsil],[data-git]');
+        var b = t.closest && t.closest('[data-is],[data-renk],[data-kal],[data-cizgi],[data-mod],[data-sek],[data-ac],[data-sil],[data-not],[data-notsil],[data-git]');
         /* «Tüm sayfalar» açıkken dışındaki bir düğmeye basılırsa görünüm kapanır */
         if (UI.genel && !UI.genel.contains(t) && !(b && b.getAttribute('data-is') === 'tumSayfalar')) genelKapat();
         /* açık «Tüm sayfayı sil» sorusu: dışına basınca kapanır; onu açan
@@ -1372,6 +1634,7 @@
         if (b.hasAttribute('data-git')) { var gi = +b.getAttribute('data-git'); genelKapat(); sayfayaGit(gi); return; }
         if (b.hasAttribute('data-renk')) { T.renk = +b.getAttribute('data-renk'); T.arac = 'kalem'; tercihKaydet(); aracGuncelle(); return; }
         if (b.hasAttribute('data-kal')) { T.kal = b.getAttribute('data-kal'); T.arac = 'kalem'; tercihKaydet(); aracGuncelle(); return; }
+        if (b.hasAttribute('data-cizgi')) { cizgiSec(+b.getAttribute('data-cizgi')); return; }
         if (b.hasAttribute('data-mod')) { modSec(b.getAttribute('data-mod')); return; }
         if (b.hasAttribute('data-sek')) { UI.sek = b.getAttribute('data-sek'); panelCiz(); return; }
         if (b.hasAttribute('data-sil')) { e.stopPropagation(); gecmisSilSor(b.getAttribute('data-sil')); return; }
@@ -1529,7 +1792,7 @@
                     }).join('') : '<p class="ys-yok">Bu seviyede kayıtlı not yok.<br>Beğendiğin defteri ★ ile kaydet.</p>');
                 L.forEach(function (n) {
                     var c = ic.querySelector('canvas[data-onizle="' + n.id + '"]');
-                    if (c) { try { var Ln = defterCoz(n.kod); onizlemeCiz(c, Ln[0], true, Ln.pw); } catch (e) { } }
+                    if (c) { try { var Ln = defterCoz(n.kod); onizlemeCiz(c, Ln[0], true, Ln.pw, { n: Ln.cizgi, ust: Ln.ust }); } catch (e) { } }
                 });
             }).catch(function (e) {
                 ic.innerHTML = '<p class="ys-yok">Seviye notları okunamadı (' + esc((e && (e.code || e.message)) || e) + ').</p>';
@@ -1567,14 +1830,15 @@
     function notKaydetSor() {
         if (!benKim()) { bildir('Seviye notları için giriş yapmalısın.', true); return; }
         if (bosMu(D.sayfalar)) { bildir('Sayfa boş — önce bir şeyler yaz.', true); return; }
-        var varsayilan = D.notAd || (kisaTarih(Date.now()) + (D.sube ? ' · ' + D.sube : '') + ' · ' + D.sayfalar.length + ' sayfa');
+        var varsayilan = D.notAd || (kisaTarih(Date.now()) + (D.sube ? ' · ' + D.sube : '') + ' · ' + kayitSayfalari(D.sayfalar).length + ' sayfa');
         soru(D.notId ? 'Seviye notu güncellensin mi? Adını değiştirebilirsin:' :
              sinifAdi(D.sinif) + ' seviye notlarına kaydedilsin. Bir ad ver:', D.notId ? 'Güncelle' : 'Kaydet', false, function (ad) {
             notKaydet(ad || varsayilan);
         }, varsayilan);
     }
     function notKaydet(ad) {
-        var kod = defterKodla(D.sayfalar, D.pw);
+        var sy = kayitSayfalari(D.sayfalar);
+        var kod = defterKodla(sy, D.pw, cizgiDuzeni());
         if (kod.length > NOT_TEK_SINIR) {
             bildir('Bu defter seviye notu için çok yoğun; birkaç sayfasını kaldırıp yeniden dene.', true);
             return;
@@ -1589,7 +1853,7 @@
                 (Hp[s] || []).forEach(function (n) { if (!(s === 's' + D.sinif && n.id === D.notId)) toplam += (n.kod || '').length; });
             });
             if (toplam + kod.length > NOT_TOPLAM_SINIR) throw new Error('alan');
-            var not = { id: i >= 0 ? L[i].id : yeniId(), ad: String(ad).slice(0, 60), tarih: Date.now(), sayfa: D.sayfalar.length, kod: kod };
+            var not = { id: i >= 0 ? L[i].id : yeniId(), ad: String(ad).slice(0, 60), tarih: Date.now(), sayfa: sy.length, kod: kod };
             if (i >= 0) L[i] = not; else L.push(not);
             return notlarYaz(D.sinif, L).then(function () { return not; });
         }).then(function (not) {
@@ -1693,7 +1957,9 @@
         bagli: function () { return BAGLI; },
         gorunum: function () { return UI ? { x0: UI.vx0, x1: UI.vx1, c: UI.c, pw: D.pw, aktif: D.aktif, n: D.sayfalar.length } : null; },
         durum: function () { return D ? { n: D.sayfalar.length, aktif: D.aktif, cizgi: D.sayfalar.map(function (x) { return x.cizimler.length; }), geri: D.geri.length } : null; },
-        pdf: function () { return D ? pdfYap(D.sayfalar.map(function (s, i) { return sayfaGorseli(s, i + 1, D.sayfalar.length); })) : null; },
+        pdf: function () { if (!D) return null; var sy = kayitSayfalari(D.sayfalar); return pdfYap(sy.map(function (s, i) { return sayfaGorseli(s, i + 1, sy.length); })); },
+        cizgi: function () { return D ? { n: cizgiSayisi(D.cizgi), ust: D.ust, y: cizgiYerleri(cizgiDuzeni()) } : null; },
+        cizgiYerleri: cizgiYerleri,
         /* test ve öteki modüller için */
         kodla: defterKodla, coz: defterCoz, gecmisListe: gecmisListe
     };

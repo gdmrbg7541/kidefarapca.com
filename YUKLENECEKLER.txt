@@ -12864,6 +12864,16 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       fare yazısı olmasın"): sınıf açılınca pencere açılmaz; sağ altta «Yazı Sayfası» düğmesi hazır bekler,
                       basınca açılır. Kâğıdın ortasındaki «Yazmaya başla — kalem, parmak ya da fare» yazısı kaldırıldı.
                       (v=f5cb4890)
+  DEĞİŞTİ (20.10.2026, öğretmen: "yazı sayfasını defter olarak değiştir ve yatay çizgiler sayı olarak değiştirilebilsin,
+                      2 ile 8 çizgi seçilebilsin, ileri sayfaya sol okla geçsin ve sayfalar arası geçiş için aşağıda kalın bi
+                      scroll çubuğu olsun" · "defterde en üstte biraz boşluk olsun" · "sınıflarımdan birini açınca aşağıdaki
+                      defter popup kısmında sayfa çevirme ve yazma animasyonu olsun"): adı «Defter» (başlık, sağ alttaki
+                      düğme, PDF: defter_<şube>_<gün>.pdf). Üst çubukta «Çizgi 2–8»: yatay çizgi sayısı defterle saklanır
+                      (Y3 biçimi), son seçilen yeni defterde de gelir. İlk çizginin üstünde başlık payı (eski defterler kendi
+                      çizgileriyle açılır). ‹ hep ileri: son sayfada, boş da olsa yeni sayfa açar; sondaki boş sayfalar
+                      kaydedilmez, PDF'e girmez. En altta kalın kaydırma çubuğu: sayfa numaralı küçük harita, tutamaç
+                      sürüklenir, bir sayfaya basınca oraya gidilir. Sağ alttaki düğmede defter canlanır (kalem sağdan sola
+                      yazar, sayfa çevrilir). Yedek: _kaynak/yedekler/2026-10-20-defter/ (v=38f32b32)
 
 20.10.2026 — HARF TANITIMI ARAÇ ŞERİDİ GERİ GELDİ (öğretmen: "harf tanıtımında bi araç çubuğu vardı tam ekran yazılışı ve
                       okunuşu benzer harfleri sınıflandıran tuşlar")
@@ -12874,3 +12884,13 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       sağından başlar. Çekmece açılınca şerit yerine döner (09.10 kuralı). Telefonda ray yok; şerit açık
                       çekmecenin dibinde görünür.
   alfabe.html         alfabe_ray.js etiketi (alfabe_mobil.js'in altında). Yedek: _kaynak/yedekler/2026-10-20-alfabe-ray/
+
+20.10.2026 — «İSTENEN HARFİ YAZ» KUMANDAYLA GEZİLİR (öğretmen: "alfabe.html de istenen harfi yaza basınca soldaki sidebar
+                      kaybolmasın, çarpı olmasın o kısımda side bar aracılığı ile gezinelim")
+  Sebep: konu anlatımı bütün ekranı kaplayan bir katmandı (z 9000); kumanda ve sol kenardaki ok altında kalıyor, çıkış
+         yalnız ✕ ile oluyordu.
+  okumayazma/alfabe_ihy_kenar.js  YENİ. Konu anlatımı açıkken kumanda ve ok katmanın üstünde: çekmece açık kalır, içeriğe
+                      dokununca öteki sekmelerdeki gibi katlanır, okla açılır. ✕ yok; kumandada başka bir sekmeye basınca
+                      konu anlatımı kapanır, o sekme açılır (çekmece açık kalır). Kumandada «İstenen Harfi Yaz» seçili
+                      görünür. Esc de kapatır. «Dene» (şıklı ölçme) değişmedi: tam ekran, ✕'li.
+  alfabe.html         alfabe_ihy_kenar.js etiketi (alfabe_ray.js'in altında). Yedek: _kaynak/yedekler/2026-10-20-alfabe-ihy/
