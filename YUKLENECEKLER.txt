@@ -12894,3 +12894,10 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       konu anlatımı kapanır, o sekme açılır (çekmece açık kalır). Kumandada «İstenen Harfi Yaz» seçili
                       görünür. Esc de kapatır. «Dene» (şıklı ölçme) değişmedi: tam ekran, ✕'li.
   alfabe.html         alfabe_ihy_kenar.js etiketi (alfabe_ray.js'in altında). Yedek: _kaynak/yedekler/2026-10-20-alfabe-ihy/
+  DEĞİŞTİ (20.10.2026, öğretmen: "alfabe.html deki dene kısımlarına basınca sidebar kaybolmasın"):
+                      alfabe_ihy_kenar.js 2. sürüm — «Dene» (Kendini Dene: Harf Tanıtımı, İstenen Harfi Yaz, Harf
+                      Birleştirme, Okuma, Dinle ve Yaz) açıkken de kumanda ve ok katmanın üstünde; kumandada o bölümün
+                      «Dene»si seçili, tepede «Dene · bölüm». Başka sekmeye basınca test kapanır, o sekme açılır; başka bir
+                      «Dene»ye geçilebilir; açık olana yeniden basmak yalnız çekmeceyi katlar (tur baştan başlamaz).
+                      «Dene»de ✕ ve «Kapat» duruyor; Esc de kapatır. Yedek: _kaynak/yedekler/2026-10-20-alfabe-ihy/
+                      (alfabe_ihy_kenar-v1.js, alfabe-dene-oncesi.html) (v=dff1414f)
