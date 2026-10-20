@@ -12874,6 +12874,12 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       kaydedilmez, PDF'e girmez. En altta kalın kaydırma çubuğu: sayfa numaralı küçük harita, tutamaç
                       sürüklenir, bir sayfaya basınca oraya gidilir. Sağ alttaki düğmede defter canlanır (kalem sağdan sola
                       yazar, sayfa çevrilir). Yedek: _kaynak/yedekler/2026-10-20-defter/ (v=38f32b32)
+  DEĞİŞTİ (20.10.2026, öğretmen: "defterin üstünde çok fazla boşluk olmasın biraz azalt" · "zaten deftere scroll
+                      çubuğu ekledik o yüzden kalemlerin altındaki sağ sol oku olmasın"): en üstteki pay yarıya indi (56 → 28
+                      birim; 6 çizgide ilk çizgi 137 → 113). Bugün yazılan defterler kendi aralığıyla açılır; çizgi sayısına
+                      (aynı sayı da olsa) basılınca yeni aralığa geçer. Yanlardaki «Kaydır» (↔) düğmesi ve H kısayolu kalktı;
+                      kâğıt kaydırma çubuğu, oklar, tekerlek, farenin orta tuşu ve iki parmakla kayıyor.
+                      Yedek: _kaynak/yedekler/2026-10-20-defter/yazisayfasi-v10.js (v=150b0d0f)
 
 20.10.2026 — HARF TANITIMI ARAÇ ŞERİDİ GERİ GELDİ (öğretmen: "harf tanıtımında bi araç çubuğu vardı tam ekran yazılışı ve
                       okunuşu benzer harfleri sınıflandıran tuşlar")

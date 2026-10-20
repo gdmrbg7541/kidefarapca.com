@@ -49,9 +49,12 @@
      sayfalar sağdan sola yan yana dizilmiş tek bir uzun kâğıttır; çizgiler
      kesintisiz sürer, kırmızı kenar çizgisi yalnız kâğıdın başında (sağda).
      Pencere bu kâğıdın üstünde kayar: ‹ sola (sonraki sayfa; son sayfada
-     yazı varsa kâğıt uzar), › sağa; «Kaydır» aracıyla, farenin orta
-     tuşuyla, iki parmakla ya da kalem kullanılırken tek parmakla
-     sürüklenir; tekerlek/dokunmatik yüzey de kaydırır. Artı, yeni sayfayı
+     yazı varsa kâğıt uzar), › sağa; farenin orta tuşuyla, iki parmakla
+     ya da kalem kullanılırken tek parmakla sürüklenir; tekerlek/dokunmatik
+     yüzey ve alttaki kaydırma çubuğu da kaydırır. Yanlardaki «Kaydır» (↔)
+     düğmesi 20.10.2026'da kalktı (öğretmen: "zaten deftere scroll çubuğu
+     ekledik o yüzden kalemlerin altındaki sağ sol oku olmasın"); H kısayolu
+     da kalktı. Artı, yeni sayfayı
      açık sayfanın hemen SOLUNA ekler. Sayfa genişliği 1000 birim (Y2
      biçiminde saklanır); eski (Y1) defterlerde çizgilerden hesaplanır.
    · Yalnız yatay çizgili defter (öteki düzenler kaldırıldı); çizgi
@@ -70,9 +73,12 @@
    · Üst çubukta «Çizgi 2 3 4 5 6 7 8»: yatay çizgi sayısı. Defterle
      birlikte saklanır (Y3 biçimi); son seçilen, yeni defterlerde de gelir.
    · ÜSTTE BOŞLUK: ilk çizginin üstünde öteki aralıklardan UST_BOSLUK
-     birim büyük bir pay. Eski (Y1/Y2) defterler yazıldıkları çizgilerle
-     açılır (pay yok, 6 çizgi); çizgi sayısı değiştirilince yeni düzene
-     geçer.
+     birim büyük bir pay (20.10.2026, öğretmen: "defterin üstünde çok
+     fazla boşluk olmasın biraz azalt": 56 → 28 birim; 6 çizgide ilk çizgi
+     137 → 113, paysız 89). Pay deftere yazılır (Y3): her defter
+     yazıldığı çizgilerle açılır — 56 ile yazılanlar 56, eski (Y1/Y2)
+     defterler paysız 6 çizgi. Çizgi sayısına basılınca (aynı sayı da
+     olsa) defter bugünkü düzene geçer.
    · ‹ HEP İLERİ: son sayfadaysa yeni sayfa açar (boş olsa da). Sondaki
      boş sayfalar kaydedilmez, PDF'e girmez.
    · EN ALTTA KALIN KAYDIRMA ÇUBUĞU: kâğıdın küçük haritası (1. sayfa
@@ -125,7 +131,7 @@
     var SILGI_W = 28;
     /* YATAY ÇİZGİLER (20.10.2026): 2-8 arası seçilir, en üstte başlık payı */
     var CIZGI_EN_AZ = 2, CIZGI_EN_COK = 8, CIZGI_VARSAYILAN = 6;
-    var UST_BOSLUK = 56;                       /* ilk çizginin üstündeki ek pay (birim) */
+    var UST_BOSLUK = 28;                       /* ilk çizginin üstündeki ek pay (birim; v10'da 56) */
     var MODLAR = [
         { id: 'c', ad: 'Gri çizgiler' },
         { id: 'b', ad: 'Arapça · büyük harf' },
@@ -844,9 +850,7 @@
         var yan = function (taraf) {
             return '<div class="ys-yan ' + taraf + '" aria-label="Kalemler">' + kalemler + '<div class="ys-ara"></div>' +
                 '<button type="button" class="ys-t" data-is="silgi" title="Silgi (S) — seçiliyken bir daha basınca: Tüm sayfayı sil" aria-label="Silgi">' +
-                IK.silgi + '</button>' +
-                '<button type="button" class="ys-t" data-is="el" title="Kaydır (H) — sürükleyerek sayfalar arasında gez" aria-label="Kaydır">' +
-                IK.el + '</button></div>';
+                IK.silgi + '</button></div>';
         };
         var kalin = KALINLIK.map(function (k, i) {
             var r = [6, 10, 15][i];
@@ -1260,8 +1264,9 @@
         e.preventDefault();
         try { UI.ust.setPointerCapture(e.pointerId); } catch (x) { }
         if (e.pointerType === 'touch') _dok[e.pointerId] = e.clientX;
-        /* SÜRÜKLEYEREK GEZME: «Kaydır» aracı, farenin orta tuşu, iki parmak ya
-           da kalem kullanılırken parmak (avuç içi çizmez, kâğıdı kaydırır) */
+        /* SÜRÜKLEYEREK GEZME: farenin orta tuşu, iki parmak ya da kalem
+           kullanılırken parmak (avuç içi çizmez, kâğıdı kaydırır). «Kaydır»
+           düğmesi kalktı; T.arac 'el' yalnız eski yoldan gelirse çalışır. */
         var kaydir = T.arac === 'el' || (e.pointerType === 'mouse' && e.button === 1) ||
                      (e.pointerType === 'touch' && (_kalemVar || dokunSay() >= 2));
         if (kaydir) {
@@ -1698,7 +1703,6 @@
         if (k === 'k' || k === 'p') { T.arac = 'kalem'; aracGuncelle(); }
         else if (k === 's' || k === 'e') { T.arac = 'silgi'; aracGuncelle(); }
         else if (/^[1-5]$/.test(k)) { T.renk = +k - 1; T.arac = 'kalem'; tercihKaydet(); aracGuncelle(); }
-        else if (k === 'h') { T.arac = 'el'; aracGuncelle(); }
         else if (e.key === 'ArrowLeft') sola();
         else if (e.key === 'ArrowRight') saga();
         else return;
