@@ -12973,3 +12973,31 @@ Ana sitenin gidecek boyutu: ~823 MiB.
   merak/moduller.js   modül seçilince body'ye mk-kayar sınıfı (çark dışındaki modüllerde).
   merak/merakcarki.css  body.mk-kayar: sayfa kayar, üst şerit yapışık. Çark modülü eskisi gibi kaydırmasız tam ekran.
   merakcarki.html     yalnız ?v= damgaları. Yedek: _kaynak/yedekler/2026-10-20-merak-kitap-kaydirma/
+  DEĞİŞTİ (20.10.2026, öğretmen: "ücret ödeyenlere bi teşekkür mesajı vs gidiyor mu" → mesaj kutusu + kartta şerit):
+                      Ödeme onaylanınca ya da elle kaydedilince öğretmenin ✉️ Mesajlar kutusuna yönetici adına teşekkür mesajı yazılır
+                      (mesajlar: from admin, kategori Teşekkür, okunmamış → yeşil nokta). Öğretmenin destek kartında son ödemeden sonra
+                      30 gün «Son desteğin için teşekkürler · tutar · tarih» şeridi; × ile kapatılır (bu tarayıcıda). kullanicilar.destek'e
+                      sonTutar eklendi. Mesaj yazılamazsa ödeme kaydı bozulmaz, yöneticiye söylenir. Yedek: …/destek-v20.js (v=e07ead55)
+
+20.10.2026 — DESTEKÇİLER KÖŞESİ + SINIFTA YENİ YALNIZ ÖĞRETMENE (öğretmen: "sitede yeni kısmına ücret desteğini ekle, katılım
+                      arttıkça ücretin düşeceğini, ücret ödeyenlere teşekkür kısmı ekleyelim … sitemize layık bi şekilde" · "sitede yeni kısmı
+                      öğrencilerden tamamen gizli olsun" · öneri kabul: chat değil, yarı saydam şerit + köşe + tek cümle + yıl rozeti)
+  index.html          Sınıfta Yeni + Galeri bölümü yalnız öğretmen/yönetici hesabında (html.kd-ogretmen; aynı betik rolü saniyede bir
+                      kontrol eder, sistem/rol.js önbelleğiyle girişte gecikmesiz). Öğrenci hesabı ve ziyaretçi görmez.
+  sistem/siniftayeni.js  «Kidef'i birlikte ayakta tutuyoruz» kaydı (Destek): paylaşım mantığı, günlük tutar, öğretmen arttıkça payın
+                      küçülmesi, teşekkür mesajı, şerit, rozet, tek cümle.
+  sistem/yenilikler.js  id 17: Beklenen Destek ve destekçiler köşesi (profil şeridi, tek cümle).
+  hesap/destek.js     · Öğretmen «ödedim» derken: «Adım destekçiler köşesinde görünsün (Ayşe Y.)» kutusu (açık gelir) + «Meslektaşlarına
+                        bir cümle» (en çok 100 karakter). Bildirime koseGoster / koseNot yazılır.
+                      · Yönetici onaylayınca (ya da elle kaydederken «köşede göster» işaretliyse) kısa ad (Ayşe Y.) + cümle herkese açık
+                        özete (mufredat/_destek.destekciler: {ad, ay, t, not}, en yeni başta, en çok 80) eklenir. Aynı ad aynı ay tek
+                        kayıt. Tutar, sayı, sıralama YOK. Bekleyen bildirim satırında ne yayınlanacağı önceden görünür (moderasyon).
+                      · Yönetici > Öğretmenler > Beklenen Destek: «Destekçiler köşesi (n)» listesi, × ile kaldırma.
+                      · Ana sayfa (yalnız öğretmen/yönetici, liste doluysa): başlığın altında yarı saydam şerit «Bu ay Kidef'e destek
+                        verenler: Mehmet K. · Zeynep A. «cümle» …», sığmazsa yavaş kayar (üstüne gelince durur, hareket azaltmada
+                        kaymaz), «Sen de katıl» profildeki karta götürür. Bu ay kimse yoksa son 12 kişi.
+                      · Destek kartının altında «Destekçiler» köşesi: ay ay kısa adlar ve cümleler; 2 aydan eskisi «Önceki aylar».
+                      · Yıl rozeti «💛 2026 destekçisi»: o yıl ödemesi olan öğretmenin kart başlığında ve profildeki «Kişisel
+                        Bilgilerim» başlığında (kendi belgesinden, destek.sonOdeme).
+                      (v=d931fd36) Yedek: _kaynak/yedekler/2026-10-20-destekciler/ (index-oncesi.html, siniftayeni.js, yenilikler.js,
+                      destek-v21.js)

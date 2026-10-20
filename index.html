@@ -1242,6 +1242,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          <html>'e kd-girisli'yi bölümün altındaki küçük betik koyar;
          ziyaretçi ve misafir (anonim) kimlik görmez. */
       html:not(.kd-girisli) #guncellemeler{ display:none !important; }
+      /* 20.10.2026 — öğretmen: "sitede yeni kısmı öğrencilerden tamamen gizli olsun":
+         bölüm yalnız öğretmen/yönetici hesabında (html.kd-ogretmen, aynı betik koyar). */
+      html:not(.kd-ogretmen) #guncellemeler{ display:none !important; }
       #guncellemeler .gd-kutu{
         display:grid; grid-template-columns:1fr 1fr; gap:20px;
         background:linear-gradient(140deg,#FBFDFC,#FFFFFF 58%);
@@ -1705,9 +1708,27 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
        kimlik sayılmaz. Firebase'i hesap/auth.js kuruyor; o yüzden kurulunca
        bağlanır. */
     (function () {
-      function yaz(u) {
-        document.documentElement.classList.toggle('kd-girisli', !!(u && !u.isAnonymous));
+      var _u = null;
+      function ogretmenMi(u) {
+        if (!u || u.isAnonymous) return false;
+        var r = '';
+        try { r = (typeof appState !== 'undefined' && appState && appState.userRole) || ''; } catch (e) { }
+        if (r === 'teacher' || r === 'admin') return true;
+        /* rol buluttan gelene kadar bu tarayıcıdaki son çözüm (sistem/rol.js önbelleği, uid'ye bağlı) */
+        try {
+          var o = window.KidefRol && KidefRol.onbellekOku ? KidefRol.onbellekOku(u.uid) : null;
+          if (o && (o.rol === 'teacher' || o.rol === 'admin')) return true;
+        } catch (e) { }
+        return false;
       }
+      function yaz(u) {
+        _u = u || null;
+        document.documentElement.classList.toggle('kd-girisli', !!(u && !u.isAnonymous));
+        /* 20.10.2026: Sınıfta Yeni + Galeri yalnız öğretmen/yönetici; öğrenci hesabı görmez */
+        document.documentElement.classList.toggle('kd-ogretmen', ogretmenMi(u));
+      }
+      /* rol girişten biraz sonra çözülür: saniyede bir bakılır (ucuz) */
+      setInterval(function () { if (_u) yaz(_u); }, 1000);
       function bagla() {
         try {
           if (!window.firebase || !firebase.apps || !firebase.apps.length) return false;
@@ -8136,16 +8157,16 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- BEKLENEN DESTEK (19.10.2026): ogretmen profilinde aylik destek karti
          (ogretmen sayisina gore tutar, odeme bildirimi); yoneticide odeme
          kaydi ve ozet (hesap/destek.js) -->
-    <script src="hesap/destek.js?v=7ce63d48"></script>
+    <script src="hesap/destek.js?v=d931fd36"></script>
     <script src="sistem/alarm.js?v=5af5693a"></script>
     <script src="hesap/live-lesson.js?v=cb8c8026"></script>
     <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->
     <script src="sistem/kazanimoneri.js?v=689f584d"></script>
     <!-- Öğretmen profilindeki "sitede yenilikler" şeridi -->
-    <script src="sistem/yenilikler.js?v=fda4968d"></script>
+    <script src="sistem/yenilikler.js?v=ecf41e6f"></script>
     <!-- Güncellemeler ve Galeri bölümü: liste galeriYenile.py'den,
          duyurular yukarıdaki yenilikler.js'ten gelir. -->
-    <script src="sistem/siniftayeni.js?v=42f5ee2b"></script>
+    <script src="sistem/siniftayeni.js?v=b43a3b02"></script>
     <script src="sistem/galeriveri.js?v=b5d6af07"></script>
     <script src="sistem/galeri.js?v=31382e3d"></script>
     <script src="hesap/listelerim.js?v=a3bbe9e6"></script>

@@ -179,10 +179,48 @@
             aylik: aylik,
             gecmis: (o.gecmis && typeof o.gecmis === 'object') ? o.gecmis : {},
             yoneticiler: Array.isArray(o.yoneticiler) ? o.yoneticiler : [],
+            destekciler: destekciDuzen(o.destekciler),
             guncelleme: tarihAl(o.guncelleme),
             /* eski sürümün açık belgeye yazdığı alanlar kaldıysa temizlenir */
             eskiAlan: ['tur', 'toplam', 'taban', 'aktif', 'onayli', 'ayarElle'].some(function (k) { return k in o; })
         };
+    }
+
+    /* DESTEKÇİLER KÖŞESİ (20.10.2026 — öğretmen: "ücret ödeyenlere teşekkür
+       kısmı ekleyelim, hem teşvik olur hem minnetimizi gösteririz … sitemize
+       layık bi şekilde"). Chat değil: ödeme onaylanınca yönetici, öğretmenin
+       KISA adını (Ayşe Y.) ve varsa meslektaşlarına yazdığı tek cümleyi
+       herkese açık özete (mufredat/_destek.destekciler) ekler. Tutar, sayı,
+       sıralama yok. Öğretmen bildirimde "adım görünsün" kutusunu kapatırsa
+       eklenmez. Ana sayfada öğretmenlere yarı saydam şerit, destek kartında
+       "Destekçiler" köşesi, profilde yıl rozeti bu listeden/belgeden çizilir.
+       Kayıt: { ad, ay:'YYYY-MM', t: ms, not } — en yeni başta, en çok 80. */
+    var DESTEKCI_SINIR = 80, KOSE_NOT_SINIR = 100;
+    function kisaAd(ad) {
+        var p = String(ad || '').trim().replace(/\s+/g, ' ').split(' ').filter(Boolean);
+        if (!p.length) return '';
+        if (p.length === 1) return p[0];
+        var son = p[p.length - 1];
+        return p.slice(0, -1).join(' ') + ' ' + son.charAt(0).toLocaleUpperCase('tr-TR') + '.';
+    }
+    function destekciDuzen(L) {
+        if (!Array.isArray(L)) return [];
+        var out = [];
+        L.forEach(function (x) {
+            if (!x || typeof x !== 'object') return;
+            var ad = String(x.ad || '').trim().slice(0, 40);
+            if (!ad) return;
+            out.push({ ad: ad, ay: /^\d{4}-\d{2}$/.test(x.ay) ? x.ay : '', t: +x.t || 0,
+                       not: String(x.not || '').trim().slice(0, KOSE_NOT_SINIR) });
+        });
+        out.sort(function (a, b) { return b.t - a.t; });
+        return out.slice(0, DESTEKCI_SINIR);
+    }
+    function ayAdi(anahtar) {
+        var p = String(anahtar || '').split('-');
+        if (p.length < 2) return anahtar || '';
+        var d = new Date(+p[0], +p[1] - 1, 1);
+        return isNaN(d.getTime()) ? anahtar : d.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
     }
 
     /* YÖNETİCİYE ÖZEL ayarlar (siparisler/_destekAyar, uid = yönetici):
@@ -309,6 +347,8 @@
             tutar: Math.round(+v.tutar || 0), ay: Math.floor(+v.ay || 0),
             aylik: +v.aylik || 0, not: v.not || '', aciklama: v.aciklama || '',
             ad: v.name || '', email: v.email || '', tel: v.phone || '', kod: v.kod || '',
+            /* destekçiler köşesi (20.10.2026): adı görünsün mü, meslektaşlara cümle */
+            koseGoster: v.koseGoster !== false, koseNot: String(v.koseNot || '').trim().slice(0, KOSE_NOT_SINIR),
             tarih: tarihAl(v.createdAt), onay: tarihAl(v.onayTarihi), red: tarihAl(v.redTarihi)
         };
     }
@@ -399,6 +439,173 @@
         return hesapla(kayitTarihi(b), odenen, v.ozet);
     }
 
+    /* Teşekkür şeridi (20.10.2026): son ödemeden sonra 30 gün boyunca
+       kartın "Senin durumun" bölümünün üstünde. × ile kapatılırsa bu
+       tarayıcıda o ödeme için bir daha çıkmaz (yeni ödemede yeniden çıkar). */
+    var TESEKKUR_GUN = 30;
+    function tesekkurAnahtar(v) {
+        var d = v && v.belge && v.belge.destek;
+        var t = d && tarihAl(d.sonOdeme);
+        return t ? String(t.getTime()) : '';
+    }
+    function tesekkurSeridi(v) {
+        var d = v && v.belge && v.belge.destek;
+        var t = d && tarihAl(d.sonOdeme);
+        var anahtar = tesekkurAnahtar(v);
+        if (!t || !anahtar || !(+d.odenen > 0)) return { imza: '', html: '' };
+        if (Date.now() - t.getTime() > TESEKKUR_GUN * GUN) return { imza: '', html: '' };
+        var kapali = '';
+        try { kapali = localStorage.getItem('kidefDestekTesekkur') || ''; } catch (e) { }
+        if (kapali === anahtar) return { imza: '', html: '' };
+        var tutar = +d.sonTutar > 0 ? d.sonTutar : 0;
+        return {
+            imza: anahtar,
+            html: '<div class="dst-tesekkur" role="status">' + kalpSvg('dst-ikon') +
+                '<span><b>Son desteğin için teşekkürler.</b> ' +
+                (tutar ? esc(tl(tutar)) + ' · ' : '') + esc(gunYaz(t)) + ' · hesabına işlendi. ' +
+                'Katkınla yapay zekâ hizmetleri ve yeni içerikler devam ediyor.</span>' +
+                '<button type="button" data-dst-tesekkur-kapat="' + esc(anahtar) + '" title="Kapat" aria-label="Teşekkür notunu kapat">&times;</button>' +
+                '</div>'
+        };
+    }
+    document.addEventListener('click', function (e) {
+        var t = e.target && e.target.closest ? e.target.closest('[data-dst-tesekkur-kapat]') : null;
+        if (!t) return;
+        try { localStorage.setItem('kidefDestekTesekkur', t.getAttribute('data-dst-tesekkur-kapat') || ''); } catch (x) { }
+        var s = t.closest('.dst-tesekkur');
+        if (s) s.remove();
+    });
+
+    /* YIL ROZETİ (20.10.2026): o yıl ödemesi olan öğretmenin profilinde
+       "2026 destekçisi". Kendi belgesinden (destek.sonOdeme) çıkar; sayı ya
+       da tutar içermez. */
+    function rozetYili(v) {
+        var d = v && v.belge && v.belge.destek;
+        var t = d && tarihAl(d.sonOdeme);
+        if (!t || !(+d.odenen > 0)) return 0;
+        var y = t.getFullYear();
+        return y === new Date().getFullYear() ? y : 0;
+    }
+    function rozetHtml(v) {
+        var y = rozetYili(v);
+        return y ? '<span class="dst-rozet-yil" title="Bu yıl Kidef\'e destek verdin — teşekkürler">💛 ' + y + ' destekçisi</span>' : '';
+    }
+    /* Profildeki «Kişisel Bilgilerim» başlığına rozeti koyar (profil yeniden
+       çizilince kaybolur; profilKontrol her çizimde yeniden çağırır). */
+    function rozetYerlestir() {
+        var oz = document.querySelector('#tpKisisel > summary');
+        if (!oz) return;
+        var eski = oz.querySelector('.dst-rozet-yil');
+        var h = rozetHtml(_ben);
+        if (!h) { if (eski) eski.remove(); return; }
+        if (eski) return;
+        var yer = oz.querySelector('.acc-chevron');
+        var k = document.createElement('span');
+        k.innerHTML = h;
+        var r = k.firstChild;
+        if (yer) oz.insertBefore(r, yer); else oz.appendChild(r);
+    }
+
+    /* DESTEKÇİLER KÖŞESİ — kartın altı: ay ay kısa adlar, varsa cümle. */
+    function destekciKose(oz) {
+        var L = (oz && oz.destekciler) || [];
+        if (!L.length) return { imza: '0', html: '' };
+        var aylar = [], H = {};
+        L.forEach(function (x) {
+            var a = x.ay || 'diger';
+            if (!H[a]) { H[a] = []; aylar.push(a); }
+            H[a].push(x);
+        });
+        var buAy = ayAnahtar(new Date());
+        var ilk = aylar.slice(0, 2), kalan = aylar.slice(2);
+        function grup(a) {
+            return '<div class="dst-dk-ay' + (a === buAy ? ' bu-ay' : '') + '"><span class="dst-dk-et">' + esc(a === 'diger' ? 'Diğer' : ayAdi(a)) + '</span>' +
+                '<div class="dst-dk-liste">' + H[a].map(function (x) {
+                    return '<span class="dst-dk"><b>' + esc(x.ad) + '</b>' + (x.not ? '<q>' + esc(x.not) + '</q>' : '') + '</span>';
+                }).join('') + '</div></div>';
+        }
+        var html = '<div class="dst-destekciler">' +
+            '<div class="dst-dk-bas">' + kalpSvg('dst-ikon') + '<b>Destekçiler</b><span>Kidef\'i birlikte ayakta tutan meslektaşların</span></div>' +
+            ilk.map(grup).join('') +
+            (kalan.length ? '<details class="dst-dk-eski"><summary>Önceki aylar</summary>' + kalan.map(grup).join('') + '</details>' : '') +
+            '</div>';
+        return { imza: L.length + ':' + (L[0].t || 0), html: html };
+    }
+
+    /* ANA SAYFADAKİ YARI SAYDAM ŞERİT — yalnız öğretmen/yönetici, liste
+       doluysa. #home-hub-section'ın en üstünde (başlığın hemen altı), adlar
+       yavaşça kayar; sığıyorsa kaymaz; hareket azaltma tercihinde durur. */
+    var _seritImza = '';
+    function seritCiz() {
+        var ev = document.getElementById('home-hub-section');
+        if (!ev) return Promise.resolve();
+        var r = rol();
+        var ogretmen = r === 'teacher' || r === 'admin';
+        var eski = document.getElementById('dstSerit');
+        if (!ogretmen || !db() || !benUid()) { if (eski) eski.remove(); _seritImza = ''; return Promise.resolve(); }
+        return ozetOku().then(function (oz) {
+            var L = oz.destekciler, buAy = ayAnahtar(new Date());
+            var bu = L.filter(function (x) { return x.ay === buAy; });
+            var etiket = 'Bu ay Kidef\'e destek verenler';
+            if (!bu.length) { bu = L.slice(0, 12); etiket = 'Kidef\'e destek verenler'; }
+            if (!bu.length) { if (eski) eski.remove(); _seritImza = ''; return; }
+            var imza = etiket + '|' + bu.map(function (x) { return x.ad + '|' + x.t + '|' + x.not; }).join(';');
+            if (eski && _seritImza === imza) return;
+            _seritImza = imza;
+            stilKur();
+            var ic = bu.map(function (x) {
+                return '<span class="dst-serit-ad">' + esc(x.ad) + (x.not ? '<q>' + esc(x.not) + '</q>' : '') + '</span>';
+            }).join('<span class="dst-serit-nok" aria-hidden="true">·</span>');
+            var el = eski || document.createElement('div');
+            el.id = 'dstSerit';
+            el.className = 'dst-serit';
+            el.setAttribute('role', 'region');
+            el.setAttribute('aria-label', 'Destekçiler');
+            el.innerHTML = '<div class="dst-serit-ic">' +
+                '<span class="dst-serit-et">' + kalpSvg('dst-ikon') + '<span>' + esc(etiket) + '</span></span>' +
+                '<div class="dst-serit-ray"><div class="dst-serit-akis"><span class="dst-serit-tur">' + ic + '</span></div></div>' +
+                '<button type="button" class="dst-serit-katil" data-dst-serit="katil" title="Destek kartını aç">Sen de katıl</button>' +
+                '</div>';
+            if (!eski) ev.insertBefore(el, ev.firstChild);
+            seritOlc(el);
+        }).catch(function () { });
+    }
+    function seritOlc(el) {
+        var ray = el.querySelector('.dst-serit-ray'), akis = el.querySelector('.dst-serit-akis'), tur = el.querySelector('.dst-serit-tur');
+        if (!ray || !akis || !tur) return;
+        akis.classList.remove('kayar'); ray.classList.remove('kayar');
+        var fazla = akis.querySelector('.dst-serit-tur + .dst-serit-tur');
+        if (fazla) fazla.remove();
+        var genis = tur.scrollWidth, yer = ray.clientWidth;
+        if (genis <= yer || azHareket) return;
+        var kopya = tur.cloneNode(true);
+        kopya.setAttribute('aria-hidden', 'true');
+        akis.appendChild(kopya);
+        akis.style.setProperty('--dst-sure', Math.max(18, Math.round(genis / 28)) + 's');
+        akis.classList.add('kayar'); ray.classList.add('kayar');
+    }
+    window.addEventListener('resize', function () { var el = document.getElementById('dstSerit'); if (el) seritOlc(el); });
+    document.addEventListener('click', function (e) {
+        var t = e.target && e.target.closest ? e.target.closest('[data-dst-serit="katil"]') : null;
+        if (!t) return;
+        try { if (typeof window.toggleStudentProfile === 'function') window.toggleStudentProfile(); } catch (x) { }
+        setTimeout(function () {
+            var k = document.getElementById('tpDestek');
+            if (k && k.scrollIntoView) k.scrollIntoView({ behavior: azHareket ? 'auto' : 'smooth', block: 'start' });
+        }, 400);
+    });
+    /* rol giriş sonrasında belirir: 2 sn'de bir bakılır (ucuz: bir değişken) */
+    var _seritSayac = 0;
+    setInterval(function () {
+        if (document.visibilityState === 'hidden') return;
+        _seritSayac++;
+        var var_ = !!document.getElementById('dstSerit');
+        var r = rol(), ogretmen = r === 'teacher' || r === 'admin';
+        if (ogretmen && !var_) seritCiz();
+        else if (!ogretmen && var_) seritCiz();
+        else if (var_ && _seritSayac % 450 === 0) { _ozet = null; seritCiz(); }   /* 15 dk'da bir tazele */
+    }, 2000);
+
     /* ------------------------------------------------------------------
        STİL
        ------------------------------------------------------------------ */
@@ -454,6 +661,60 @@
             '#tpDestek .dst-aciklama{margin:14px 0 0; padding:12px 15px; background:#FBFAF7; border-radius:12px;',
             '  color:#5B5246; font-size:.9rem; line-height:1.65;}',
             '#tpDestek .dst-ben{margin-top:16px; padding-top:14px; border-top:1px dashed #EADFCB;}',
+            /* teşekkür şeridi (20.10.2026): son ödemeden sonra 30 gün görünür */
+            '#tpDestek .dst-tesekkur{display:flex; align-items:center; gap:10px; margin:0 0 12px; padding:10px 12px 10px 14px;',
+            '  border-radius:12px; background:linear-gradient(90deg,#FFF3D6,#FFF9EC); border:1px solid #F3DDAF; color:#6B4E12;',
+            '  font-size:.9rem; line-height:1.45;}',
+            '#tpDestek .dst-tesekkur .dst-ikon{width:22px; height:22px; flex:none;}',
+            '#tpDestek .dst-tesekkur b{color:#9A6512;}',
+            '#tpDestek .dst-tesekkur span{flex:1 1 auto;}',
+            '#tpDestek .dst-tesekkur button{flex:none; border:0; background:transparent; color:#B59A6A; font-size:1.2rem;',
+            '  line-height:1; cursor:pointer; padding:2px 6px; font-family:inherit;}',
+            '#tpDestek .dst-tesekkur button:hover{color:#6B4E12;}',
+            /* yıl rozeti (20.10.2026) */
+            '.dst-rozet-yil{display:inline-flex; align-items:center; gap:4px; font-size:.74rem; font-weight:800; color:#9A6512;',
+            '  background:#FFF1D6; border:1px solid #F3DDAF; border-radius:999px; padding:3px 10px; white-space:nowrap; vertical-align:middle;}',
+            '#tpDestek .dst-baslik .dst-rozet-yil{margin-inline-start:10px;}',
+            '#tpKisisel > summary .dst-rozet-yil{margin-inline-start:4px;}',
+            /* destekçiler köşesi (kart altı) */
+            '#tpDestek .dst-destekciler{margin-top:16px; padding-top:14px; border-top:1px dashed #EADFCB;}',
+            '#tpDestek .dst-dk-bas{display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;}',
+            '#tpDestek .dst-dk-bas .dst-ikon{width:26px; height:26px;}',
+            '#tpDestek .dst-dk-bas b{color:#9A6512; font-size:.98rem;}',
+            '#tpDestek .dst-dk-bas span{color:#8A94A3; font-size:.84rem;}',
+            '#tpDestek .dst-dk-ay{margin-top:8px;}',
+            '#tpDestek .dst-dk-et{display:block; font-size:.74rem; font-weight:900; letter-spacing:.4px; text-transform:uppercase; color:#A0927E; margin-bottom:6px;}',
+            '#tpDestek .dst-dk-ay.bu-ay .dst-dk-et{color:#9A6512;}',
+            '#tpDestek .dst-dk-liste{display:flex; flex-wrap:wrap; gap:7px;}',
+            '#tpDestek .dst-dk{display:inline-flex; flex-direction:column; gap:2px; background:#FFFBF3; border:1px solid #F3DDAF;',
+            '  border-radius:12px; padding:6px 12px; font-size:.86rem; max-width:100%;}',
+            '#tpDestek .dst-dk b{color:#5B4A2A; font-weight:800;}',
+            '#tpDestek .dst-dk q{color:#6B5A3E; font-style:italic; font-size:.8rem; quotes:"«" "»";}',
+            '#tpDestek .dst-dk-eski{margin-top:10px;}',
+            '#tpDestek .dst-dk-eski summary{cursor:pointer; font-size:.82rem; font-weight:800; color:#8A94A3;}',
+            /* ana sayfa şeridi */
+            '.dst-serit{position:relative; z-index:5; background:rgba(255,246,228,.72); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);',
+            '  border-bottom:1px solid rgba(227,160,42,.35); color:#5B4A2A; font-size:.9rem;}',
+            '.dst-serit-ic{display:flex; align-items:center; gap:12px; max-width:1400px; margin:0 auto; padding:7px clamp(12px,2vw,24px); min-height:40px;}',
+            '.dst-serit-et{display:inline-flex; align-items:center; gap:7px; font-weight:800; color:#9A6512; white-space:nowrap; flex:none;}',
+            '.dst-serit-et .dst-ikon{width:22px; height:22px;}',
+            '.dst-serit-ray{flex:1 1 auto; min-width:0; overflow:hidden; position:relative;}',
+            '.dst-serit-ray.kayar{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);',
+            '  mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);}',
+            '.dst-serit-akis{display:inline-flex; white-space:nowrap; will-change:transform;}',
+            '.dst-serit-akis.kayar{animation:dstKay var(--dst-sure,30s) linear infinite;}',
+            '.dst-serit:hover .dst-serit-akis.kayar{animation-play-state:paused;}',
+            '.dst-serit-tur{display:inline-flex; align-items:center; padding-inline-end:48px;}',
+            '.dst-serit-ray.kayar .dst-serit-tur{padding-inline-start:28px;}',
+            '.dst-serit-ad{display:inline-flex; align-items:baseline; gap:6px; font-weight:700;}',
+            '.dst-serit-ad q{font-weight:500; font-style:italic; color:#7A6E5E; quotes:"«" "»";}',
+            '.dst-serit-nok{margin:0 12px; color:#D9B979;}',
+            '.dst-serit-katil{flex:none; border:1px solid #E3A02A; background:#fff; color:#9A6512; font-weight:800; font-size:.8rem;',
+            '  border-radius:999px; padding:5px 12px; cursor:pointer; font-family:inherit; white-space:nowrap;}',
+            '.dst-serit-katil:hover{background:#FFF1D6;}',
+            '@keyframes dstKay{from{transform:translateX(0)} to{transform:translateX(-50%)}}',
+            '@media (max-width:640px){ .dst-serit-et span{display:none;} .dst-serit-katil{display:none;} }',
+            '@media (prefers-reduced-motion:reduce){ .dst-serit-akis.kayar{animation:none;} }',
             '#tpDestek .dst-ben-bas{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:11px;}',
             '#tpDestek .dst-ben-bas b{color:#9A6512; font-size:.98rem;}',
             '#tpDestek .dst-ben-bas span{color:#8A94A3; font-size:.84rem;}',
@@ -545,6 +806,10 @@
             '  font-weight:800; cursor:pointer; font-size:.8rem; font-family:inherit;}',
             '#dstKutu .dst-kucuk.tamam{background:#E8F6EF; color:#1E8449;}',
             '#dstKutu label{display:block; font-size:.76rem; font-weight:900; color:#8A94A3; letter-spacing:.3px; margin:0 0 6px;}',
+            '#dstKutu .dst-onay{display:flex; align-items:flex-start; gap:9px; font-size:.9rem; font-weight:600; color:#4A4336;',
+            '  letter-spacing:0; margin:0 0 12px; cursor:pointer; line-height:1.4;}',
+            '#dstKutu .dst-onay input{width:18px; height:18px; margin:1px 0 0; flex:none; accent-color:#E3A02A;}',
+            '#dstKutu .dst-onay b{color:#9A6512; font-weight:800;}',
             '#dstKutu .dst-dip{margin:10px 0 0; font-size:.82rem; color:#8A7A66; line-height:1.5;}',
             '#dstKutu .dst-tus.ana{width:100%; justify-content:center; margin-top:12px; font-size:1.02rem; padding:13px 20px;}',
             /* yönetici */
@@ -583,6 +848,22 @@
             '#admin-destek-ayar .dst-yb.art:hover{background:#FFF1D6;}',
             '#admin-destek-ayar .dst-a-on{color:#6B5A3E;}',
             '#admin-destek-ayar .dst-a-on b{color:#9A6512;}',
+            '#admin-destek-ayar .dst-a-kose{margin-top:10px; border-top:1px dashed #EADBC0; padding-top:8px;}',
+            '#admin-destek-ayar .dst-a-kose summary{cursor:pointer; font-weight:800; color:#9A6512;}',
+            '#admin-destek-ayar .dst-a-kose summary small{display:block; font-weight:600; color:#A0927E; font-size:.78rem;}',
+            '#admin-destek-ayar .dst-a-kose-liste{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}',
+            '#admin-destek-ayar .dst-a-dk{display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #EADBC0;',
+            '  border-radius:999px; padding:4px 6px 4px 12px; font-size:.84rem; max-width:100%;}',
+            '#admin-destek-ayar .dst-a-dk b{color:#5B4A2A;}',
+            '#admin-destek-ayar .dst-a-dk i{color:#A0927E; font-style:normal; font-size:.76rem;}',
+            '#admin-destek-ayar .dst-a-dk q{color:#6B5A3E; font-style:italic; font-size:.8rem; quotes:"«" "»";}',
+            '#admin-destek-ayar .dst-a-dk button{border:0; background:#FFF1D6; color:#9A6512; width:22px; height:22px; border-radius:50%;',
+            '  cursor:pointer; font-size:1rem; line-height:1; padding:0; font-family:inherit;}',
+            '#admin-destek-ayar .dst-a-dk button:hover{background:#F3C7C1; color:#B03A2E;}',
+            '.dst-y .dst-kose-on b{color:#9A6512;}',
+            '.dst-y .dst-f-kose{flex-direction:row !important; align-items:center !important; gap:6px !important; font-size:.8rem !important;',
+            '  color:#5B4A2A !important; padding-bottom:9px;}',
+            '.dst-y .dst-f-kose input{width:16px; height:16px; accent-color:#E3A02A; margin:0;}',
             '.dst-rozet{display:inline-block; min-width:20px; text-align:center; background:#E08E1B; color:#fff;',
             '  border-radius:12px; padding:1px 8px; font-size:.75rem; margin-inline-start:8px; font-weight:800;}',
             '.dst-y-bekleyen{margin:0 0 14px; padding:12px; border:1px solid #F3DDAF; border-radius:12px; background:#FFFBF3;}',
@@ -710,7 +991,7 @@
     function kartIcerik() {
         var v = _ben;
         var bas = '<div class="dst-bas">' + kalpSvg('dst-ikon') +
-            '<div class="dst-baslik"><b>Beklenen Destek</b></div>';
+            '<div class="dst-baslik"><b>Beklenen Destek</b>' + rozetHtml(v) + '</div>';
         if (!v) {
             return { imza: 'yukleniyor', html: bas + '</div><p class="dst-yok">Yükleniyor…</p>' };
         }
@@ -731,6 +1012,9 @@
         var gunluk = h.gunluk;
         var bekleyen = (v.bildirimler || []).filter(function (x) { return x.durum === 'bekliyor'; });
         var imza = [Math.round(gunluk * 100), h.beklenen, h.odenen, bekleyen.length, (v.bildirimler || []).length].join('|');
+        var tsk = tesekkurSeridi(v);
+        var kose = destekciKose(oz);
+        imza += '|' + tsk.imza + '|' + kose.imza + '|' + rozetYili(v);
 
         var tutar = '<div class="dst-tutar">' +
             '<span class="dst-et">Günlük destek</span>' +
@@ -748,7 +1032,7 @@
 
         /* kişisel durum */
         var kayitYazi = h.kayit ? gunYaz(h.kayit) : '—';
-        var ben = '<div class="dst-ben">' +
+        var ben = '<div class="dst-ben">' + tsk.html +
             '<div class="dst-ben-bas"><b>Senin durumun</b>' +
               '<span>Kayıt ' + esc(kayitYazi) + ' · ' + h.gun + '. gün</span>' +
               (gunluk > 0 ? '<span class="dst-gunluk">her gün +' + esc(tl(gunluk)) + '</span>' : '') + '</div>' +
@@ -782,7 +1066,7 @@
             }).join('') + '</div>';
         }
         ben += '</div>';
-        return { imza: imza, html: bas + '<div class="dst-ust">' + tutar + grafik + '</div>' + aciklama + ben };
+        return { imza: imza, html: bas + '<div class="dst-ust">' + tutar + grafik + '</div>' + aciklama + ben + kose.html };
     }
 
     function sayacOynat(kok) {
@@ -834,6 +1118,7 @@
             else sec.insertBefore(kart, sec.firstChild);
             kartCiz(kart);
         }
+        rozetYerlestir();
         var uid = benUid();
         var taze = _ben && _ben.uid === uid && (Date.now() - _ben.zaman < 60000);
         if (taze || _benYukleniyor || !uid) return;
@@ -842,6 +1127,8 @@
             _benYukleniyor = false;
             var k = document.getElementById('tpDestek');
             if (k) kartCiz(k);
+            rozetYerlestir();
+            seritCiz();
         }).catch(function (e) {
             _benYukleniyor = false;
             _ben = { uid: uid, zaman: Date.now(), hata: hataYaz(e) };
@@ -927,6 +1214,7 @@
         var onizleme = rol() === 'admin';
         var al = alici();
         var aciklama = aciklamaMetni();
+        var u0 = benKim() || {};
         _secim = { tip: 'ay', ay: 1 };
         odemeKapat();
 
@@ -965,6 +1253,17 @@
               '<div class="dst-m-bol">' +
                 '<label for="dstNot">NOT (İSTEĞE BAĞLI)</label>' +
                 '<input id="dstNot" type="text" maxlength="200" placeholder="ör. ödemeyi başka bir hesaptan gönderdim">' +
+              '</div>' +
+              /* destekçiler köşesi (20.10.2026): ad görünsün mü + meslektaşlara tek cümle */
+              '<div class="dst-m-bol dst-kose">' +
+                '<p class="dst-m-et">DESTEKÇİLER KÖŞESİ</p>' +
+                '<label class="dst-onay"><input id="dstKoseGoster" type="checkbox" checked> ' +
+                  '<span>Adım destekçiler köşesinde görünsün' + (kisaAd(durum('currentUserName') || u0.displayName) ? ' <b>(' + esc(kisaAd(durum('currentUserName') || u0.displayName)) + ')</b>' : '') + '</span></label>' +
+                '<label for="dstKoseNot">MESLEKTAŞLARINA BİR CÜMLE (İSTEĞE BAĞLI)</label>' +
+                '<input id="dstKoseNot" type="text" maxlength="' + KOSE_NOT_SINIR + '" placeholder="ör. Öğrencilerim dijital kitabı çok sevdi">' +
+                '<p class="dst-dip">Ödemen onaylanınca adın ve cümlen öğretmenlerin gördüğü köşeye eklenir. Tutar görünmez.</p>' +
+              '</div>' +
+              '<div class="dst-m-bol">' +
                 '<button type="button" class="dst-tus ana" id="dstBildir"' + (onizleme ? ' disabled' : '') + '>Ödemeyi yaptım, bildir</button>' +
                 '<p class="dst-dip">' + (onizleme
                     ? 'Yönetici hesabıyla bildirim gönderilmez; öğretmen hesabında bu tuş çalışır.'
@@ -1013,10 +1312,13 @@
         var tus = document.getElementById('dstBildir');
         if (tus) { tus.disabled = true; tus.textContent = 'Gönderiliyor…'; }
         var not = ((document.getElementById('dstNot') || {}).value || '').trim().slice(0, 200);
+        var kg = document.getElementById('dstKoseGoster');
+        var koseNot = ((document.getElementById('dstKoseNot') || {}).value || '').trim().slice(0, KOSE_NOT_SINIR);
         var belge = {
             uid: u.uid, tur: 'destek', durum: 'bekliyor',
             tutar: Math.round(tutar), ay: _secim.tip === 'ay' ? _secim.ay : 0, aylik: oz.aylik,
             secim: _secim.tip, aciklama: aciklamaMetni(u.uid), not: not, kod: ogretmenKodu(u.uid),
+            koseGoster: !kg || !!kg.checked, koseNot: koseNot,
             email: u.email || durum('currentUser') || '',
             name: durum('currentUserName') || u.displayName || '',
             phone: durum('currentUserPhone') || '',
@@ -1185,6 +1487,21 @@
                 '<p style="margin:8px 0 0; font-size:.8rem; color:#8A7A66;">Kişi başı tutar = aylık toplam ÷ son 30 günde siteye giren onaylı öğretmen ' +
                   '(alt sınır yok). Sayı, sen siteye girince ve sayfa açık kaldıkça 30 dakikada bir yeniden sayılır. ' +
                   'Öğretmenler yalnız günlük tutarı ve kendi birikenini görür; öğretmen sayısı ve aylık toplam onlara gösterilmez.</p>';
+            /* destekçiler köşesi: yayında olanlar, × ile kaldırılır.
+               (innerHTML'e EKLEME yapılmaz: ekleme bütün çocukları yeniden
+               kurar, yazılmakta olan toplam ve işaretler kaybolur.) */
+            var L = oz.destekciler;
+            var koseHtml = '<details class="dst-a-kose"><summary>💛 Destekçiler köşesi (' + L.length + ')' +
+                '<small>ödeme onaylanınca eklenir · ana sayfadaki şeritte ve destek kartında görünür</small></summary>' +
+                (L.length
+                    ? '<div class="dst-a-kose-liste">' + L.map(function (x) {
+                        return '<span class="dst-a-dk"><b>' + esc(x.ad) + '</b><i>' + esc(ayAdi(x.ay)) + '</i>' +
+                            (x.not ? '<q>' + esc(x.not) + '</q>' : '') +
+                            '<button type="button" data-dst="kose-sil" data-t="' + esc(x.t) + '" data-ad="' + esc(x.ad) + '" title="Köşeden kaldır" aria-label="' + esc(x.ad) + ' köşeden kaldır">&times;</button></span>';
+                      }).join('') + '</div>'
+                    : '<p class="dst-y-yok" style="margin:8px 0 0;">Henüz kimse yok. İlk ödeme onaylanınca burada ve öğretmenlerin ekranında görünür.</p>') +
+                '</details>';
+            el.insertAdjacentHTML('beforeend', koseHtml);
             if (yazilan) {
                 var g = document.getElementById('dstAyToplam');
                 if (g) { g.value = yazilan; g.__dstDegisti = true; }
@@ -1294,6 +1611,11 @@
             '<span class="t">' + esc(tl(b.tutar)) + '</span>' +
             '<span class="n">' + (b.ay ? b.ay + ' ay' : 'serbest tutar') + ' · ' + esc(saatliYaz(b.tarih)) + '</span>' +
             (b.not ? '<span class="n" style="font-style:italic;">“' + esc(b.not) + '”</span>' : '') +
+            /* köşe: onaylanınca ne yayınlanacağı burada görünür (yönetici onaylamadan önce okur) */
+            (b.koseGoster
+                ? '<span class="n dst-kose-on" title="Onaylanınca destekçiler köşesine eklenir">💛 köşe: <b>' + esc(kisaAd(b.ad) || 'ad yok') + '</b>' +
+                  (b.koseNot ? ' — «' + esc(b.koseNot) + '»' : '') + '</span>'
+                : '<span class="n dst-kose-on">köşede görünmek istemiyor</span>') +
             '<span class="bos"></span>' +
             '<button type="button" class="dst-yb onay" data-dst="onayla" data-id="' + esc(b.id) + '">✅ Onayla</button>' +
             '<button type="button" class="dst-yb red" data-dst="reddet" data-id="' + esc(b.id) + '">Reddet</button>' +
@@ -1366,6 +1688,8 @@
                   '<label>TUTAR (TL)<input class="dst-f-tutar" type="number" min="1" step="10" style="width:120px;"></label>' +
                   '<label>ÖDEME TARİHİ<input class="dst-f-tarih" type="date" value="' + inputTarih(new Date()) + '"></label>' +
                   '<label style="flex:1 1 180px;">NOT<input class="dst-f-not" type="text" maxlength="200" placeholder="ör. elden / başka hesaptan"></label>' +
+                  '<label class="dst-f-kose" title="Kısa adı (' + esc(kisaAd(bilgi.ad) || '—') + ') destekçiler köşesine eklenir">' +
+                    '<input class="dst-f-goster" type="checkbox" checked> köşede göster</label>' +
                   '<button type="button" class="dst-yb kaydet" data-dst="elle-ekle" data-uid="' + esc(uid) + '">Kaydet</button>' +
                 '</div>' +
                 '<p class="dst-y-bilgi">Ay seçince tutar o ayın tutarıyla dolar; istersen değiştir. Havale bildirimi gelmeden yapılan ödemeleri buradan gir.</p>';
@@ -1400,10 +1724,14 @@
     function ogretmenOzetYaz(uid, defterVar) {
         var p = defterVar ? Promise.resolve(defterVar) : defterOku(uid);
         return p.then(function (L) {
-            var top = 0, son = null;
-            L.forEach(function (k) { top += k.tutar; if (k.tarih && (!son || k.tarih > son)) son = k.tarih; });
+            var top = 0, son = null, sonTutar = 0;
+            L.forEach(function (k) {
+                top += k.tutar;
+                if (k.tarih && (!son || k.tarih > son)) { son = k.tarih; sonTutar = k.tutar; }
+            });
             return db().collection('kullanicilar').doc(uid).set({
-                destek: { odenen: top, adet: L.length, sonOdeme: son || null, guncelleme: sunucuZamani() }
+                /* sonTutar (20.10.2026): öğretmenin kartındaki teşekkür şeridi için */
+                destek: { odenen: top, adet: L.length, sonOdeme: son || null, sonTutar: sonTutar, guncelleme: sunucuZamani() }
             }, { merge: true }).then(function () {
                 var O = window._adminOgretmenler || {};
                 if (O[uid] && O[uid].doc) O[uid].doc.destek = { odenen: top, adet: L.length };
@@ -1412,9 +1740,68 @@
         });
     }
 
+    /* TEŞEKKÜR (20.10.2026 — öğretmen: "ücret ödeyenlere bi teşekkür mesajı
+       vs gidiyor mu" → mesaj kutusu + kartta şerit). Ödeme onaylanınca ya da
+       elle kaydedilince öğretmenin ✉️ Mesajlar kutusuna yönetici adına
+       teşekkür yazılır (index.html'deki mesajlar düzeni: from:'admin',
+       readByUser:false → yeşil nokta yanar). Kart şeridi kullanicilar
+       belgesindeki destek.sonOdeme / sonTutar'dan çizilir. Mesaj yazılamazsa
+       ödeme kaydı bozulmaz; yöneticiye söylenir. */
+    function tesekkurMetni(tutar, ay, tarih) {
+        return 'Desteğin için teşekkürler 💛 ' + gunYaz(tarih) + ' tarihli ' + tl(tutar) +
+            (ay ? ' (' + ay + ' ay)' : '') + ' ödemen hesabına işlendi. ' +
+            'Katkınla sitedeki yapay zekâ hizmetleri ve yeni içerikler devam ediyor. ' +
+            'Durumunu profilindeki Beklenen Destek kartından görebilirsin.';
+    }
+    /* Destekçiler köşesine ekle (yönetici). Aynı ad aynı ay zaten varsa
+       yenisi eklenmez; tarihi ve (doluysa) cümlesi tazelenir. */
+    function destekciEkle(ad, not, tarih) {
+        var kisa = kisaAd(ad);
+        if (!kisa || !db()) return Promise.resolve(false);
+        tarih = (tarih && !isNaN(tarih.getTime())) ? tarih : new Date();
+        var kayit = { ad: kisa, ay: ayAnahtar(tarih), t: tarih.getTime(), not: String(not || '').trim().slice(0, KOSE_NOT_SINIR) };
+        return ozetOku(true).then(function (oz) {
+            var L = oz.destekciler.slice();
+            var ayni = -1;
+            for (var i = 0; i < L.length; i++) {
+                if (L[i].ad === kayit.ad && L[i].ay === kayit.ay) { ayni = i; break; }
+            }
+            if (ayni >= 0) {
+                var e = L[ayni];
+                L[ayni] = { ad: e.ad, ay: e.ay, t: Math.max(e.t, kayit.t), not: kayit.not || e.not };
+            } else L.unshift(kayit);
+            return db().collection('mufredat').doc('_destek').set({ destekciler: destekciDuzen(L) }, { merge: true });
+        }).then(function () { _ozet = null; return true; }, function (e) {
+            try { console.warn('destekçi eklenemedi:', hataYaz(e)); } catch (x) { }
+            return false;
+        });
+    }
+    function destekciSil(t, ad) {
+        return ozetOku(true).then(function (oz) {
+            var L = oz.destekciler.filter(function (x) { return !(x.t === +t && x.ad === ad); });
+            return db().collection('mufredat').doc('_destek').set({ destekciler: L }, { merge: true });
+        }).then(function () { _ozet = null; });
+    }
+
+    function tesekkurGonder(uid, bilgi, tutar, ay, tarih) {
+        bilgi = bilgi || {};
+        var d = db();
+        if (!d || !uid) return Promise.resolve(false);
+        return d.collection('mesajlar').add({
+            uid: uid, email: bilgi.email || '', ad: bilgi.ad || 'Öğretmen',
+            from: 'admin', kategori: 'Teşekkür', text: tesekkurMetni(tutar, ay, tarih),
+            createdAt: sunucuZamani(), readByAdmin: true, readByUser: false
+        }).then(function () { return true; }, function (e) {
+            try { console.warn('teşekkür mesajı yazılamadı:', hataYaz(e)); } catch (x) { }
+            return false;
+        });
+    }
+
     function sonrasi() {
         acikTazele();
         rozetleriYenile();
+        ayarCiz();      /* destekçiler köşesi listesi tazelensin */
+        seritCiz();
     }
 
     function onayla(id) {
@@ -1436,8 +1823,16 @@
                 }).then(function () {
                     return ogretmenOzetYaz(b.uid);
                 }).then(function () {
-                    uyar('Onaylandı ✅ ' + tl(b.tutar) + ' öğretmenin ödenen kısmına işlendi.');
-                    sonrasi();
+                    return tesekkurGonder(b.uid, { ad: b.ad, email: b.email }, b.tutar, b.ay, b.tarih || new Date());
+                }).then(function (gitti) {
+                    var kose = b.koseGoster ? destekciEkle(b.ad, b.koseNot, b.tarih || new Date()) : Promise.resolve(null);
+                    return kose.then(function (eklendi) {
+                        uyar('Onaylandı ✅ ' + tl(b.tutar) + ' öğretmenin ödenen kısmına işlendi.' +
+                             (gitti ? '\nTeşekkür mesajı öğretmenin Mesajlar kutusuna yazıldı.' : '\nTeşekkür mesajı yazılamadı (mesaj kutusu izni).') +
+                             (eklendi === true ? '\nDestekçiler köşesine eklendi: ' + kisaAd(b.ad) + '.'
+                              : eklendi === false ? '\nDestekçiler köşesine eklenemedi.' : ''));
+                        sonrasi();
+                    });
                 });
             });
         }).catch(function (e) { uyar('Onaylanamadı: ' + hataYaz(e)); });
@@ -1460,13 +1855,23 @@
         var tarih = td ? new Date(td + 'T12:00:00') : new Date();
         if (isNaN(tarih.getTime())) tarih = new Date();
         var bilgi = (_acik && _acik.bilgi) || {};
+        var gk = form.querySelector('.dst-f-goster');
+        var kosede = !gk || !!gk.checked;
         sor((bilgi.ad || 'Öğretmen') + ' için ' + tl(tutar) + (ay ? ' (' + ay + ' ay)' : '') + ' ödeme kaydedilsin mi?').then(function (evet) {
             if (!evet) return;
             return db().collection('siparisler').add({
                 uid: benUid(), tur: 'destekKayit', ogretmenUid: uid, tutar: tutar, ay: ay,
                 kaynak: 'elle', siparisId: '', not: not, odemeTarihi: tarih, tarih: sunucuZamani()
             }).then(function () { return ogretmenOzetYaz(uid); })
-              .then(function () { uyar('Ödeme kaydedildi ✅'); sonrasi(); });
+              .then(function () { return tesekkurGonder(uid, bilgi, tutar, ay, tarih); })
+              .then(function (gitti) {
+                  var kose = kosede ? destekciEkle(bilgi.ad, '', tarih) : Promise.resolve(null);
+                  return kose.then(function (eklendi) {
+                      uyar('Ödeme kaydedildi ✅' + (gitti ? '\nTeşekkür mesajı öğretmenin Mesajlar kutusuna yazıldı.' : '\nTeşekkür mesajı yazılamadı (mesaj kutusu izni).') +
+                           (eklendi === true ? '\nDestekçiler köşesine eklendi: ' + kisaAd(bilgi.ad) + '.' : eklendi === false ? '\nDestekçiler köşesine eklenemedi.' : ''));
+                      sonrasi();
+                  });
+              });
         }).catch(function (e) { uyar('Kaydedilemedi: ' + hataYaz(e)); });
     }
 
@@ -1500,6 +1905,12 @@
         else if (is === 'elle-ekle') elleEkle(t.closest('.dst-y-form'), t.getAttribute('data-uid'));
         else if (is === 'ayar-kaydet') ayarKaydet();
         else if (is === 'ayar-art') ayarArt(+t.getAttribute('data-art') || 0);
+        else if (is === 'kose-sil') {
+            sor(t.getAttribute('data-ad') + ' destekçiler köşesinden kaldırılsın mı?').then(function (evet) {
+                if (!evet) return;
+                return destekciSil(+t.getAttribute('data-t'), t.getAttribute('data-ad')).then(function () { ayarCiz(); seritCiz(); });
+            }).catch(function (e) { uyar('Kaldırılamadı: ' + hataYaz(e)); });
+        }
         else if (is === 'ac') {
             if (typeof window.adminOgretmenDetay === 'function') window.adminOgretmenDetay(t.getAttribute('data-uid'), 'ucret');
         }
@@ -1533,6 +1944,7 @@
         odemeAc: odemeAc, oner: oner, profilKontrol: profilKontrol, tazele: kartTazele,
         /* yönetici */
         listeGeldi: listeGeldi, ozetYayinla: ozetYayinla, ayarCiz: ayarCiz, sayimYap: sayimYap,
+        seritCiz: seritCiz, kisaAd: kisaAd, destekciEkle: destekciEkle, destekciSil: destekciSil,
         rozetleriYenile: rozetleriYenile, bekleyenCiz: bekleyenCiz, yoneticiBolum: yoneticiBolum,
         onayla: onayla, reddet: reddet
     };

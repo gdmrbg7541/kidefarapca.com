@@ -24,6 +24,14 @@
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
         {
+            id: 17,
+            tarih: '2026-10-20',
+            baslik: 'Beklenen Destek ve destekçiler köşesi',
+            metin: 'Profilindeki Beklenen Destek kartı günlük tutarını ve birikenini gösterir; ' +
+                   'ödemen onaylanınca teşekkür mesajı gelir, kısa adın ana sayfadaki ' +
+                   'destekçiler şeridinde görünür.'
+        },
+        {
             id: 16,
             tarih: '2026-10-03',
             baslik: 'Ana sayfaya güncellemeler ve galeri bölümü',

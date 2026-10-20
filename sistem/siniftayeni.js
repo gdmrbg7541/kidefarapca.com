@@ -26,6 +26,15 @@
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
 
+  { t: '2026-10-20', e: 'Destek', b: 'Kidef\'i birlikte ayakta tutuyoruz',
+    m: 'Sitedeki yapay zekâ hizmetlerinin giderleri ve materyallerin, oyunların, sınavların arkasındaki '
+     + 'öğretmen emeği, siteyi kullanan öğretmenler arasında paylaşılıyor. Profilindeki «Beklenen Destek» '
+     + 'kartında günlük tutarını, birikenini ve «Destek ver» tuşunu bulursun. Tutar her gün yeniden '
+     + 'hesaplanır; siteye giren öğretmen arttıkça herkesin payı küçülür, yani meslektaşını davet etmek '
+     + 'en iyi destek. Ödemen onaylanınca sana teşekkür mesajı gelir; kısa adın (tutar olmadan) ana '
+     + 'sayfadaki destekçiler şeridinde ve kartın altındaki köşede görünür, profilinde yıl rozeti belirir. '
+     + 'İstersen meslektaşlarına tek cümle de bırakabilirsin.' },
+
   { t: '2026-10-18', e: 'Dijital kitap', b: '5-10. sınıfın ders kitapları sitede, sayfa sayfa',
     m: '5, 6, 7, 8, 9 ve 10. sınıfın ders kitabı artık sitede sayfa çevirmeli olarak açılıyor: '
      + 'İmam Hatip bölümünde sınıfının ilk kartı «Ders Kitabı». Kitaptaki karekodların sesleri, '
