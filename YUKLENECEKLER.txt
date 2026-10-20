@@ -12954,3 +12954,22 @@ Ana sitenin gidecek boyutu: ~823 MiB.
   404.html            eski /kitap/kidef-arapca-2-baski/05_sunumlar/…pdf bağlantıları (karekod) göstericiye; öteki dosyalar
                       kidefarapca.com/kidefarapca-materyal-kidef/… adresine.
   Yedek: _kaynak/yedekler/2026-10-20-kidef-sunu-pdf/ (uygulama-site.js, uygulama-asil.js, 404.html, YUKLENECEKLER-oncesi.txt)
+
+20.10.2026 — BEKLENEN DESTEK: ALT SINIR KALKTI, SAYI SÜREKLİ TAZELENİR, AYLIK TOPLAM PANELDEN ARTIRILIR (öğretmen: "ücreti
+                      minimum 500 tl kuralını kaldır, gerçekten 30.000 tl yi sürekli güncellenen girişe bağla, ama 30.000 tl yi manuel
+                      olarak arttırabileceğim şekilde ayarla, yönetici hesabında yani")
+  hesap/destek.js     Kişi başı = aylık toplam ÷ son 30 günde siteye giren onaylı öğretmen (10 TL'ye yukarı yuvarlanır); 500 TL alt
+                      sınırı yok. Yönetici siteye girince (öğretmen listesini açmasa da) ve sayfa açık kaldıkça 30 dakikada bir yeniden
+                      sayılır, tutar değişince öğretmenlerin kartı güncellenir (eskiden yalnız liste açılınca ve 3 saatte bir).
+                      Yönetici > Öğretmenler > Beklenen Destek: «Aylık toplam» (öntanımlı 30.000 TL) + «+1.000 / +5.000 / +10.000»
+                      tuşları, kaydetmeden önce kişi başı karşılığı görünür; «Kişi başı en az» alanı kalktı. Kayıtlı ayardaki eski
+                      «taban» alanı ilk sayımda silinir. Bu ayın tutarı yeni değerle hesaplanır; biten aylar değişmez. (v=7ce63d48)
+  Yedek: _kaynak/yedekler/2026-10-20-destek-tabansiz/ (destek-v19.js, index-oncesi.html, YUKLENECEKLER-oncesi.txt)
+
+20.10.2026 — MERAK KÖŞESİ: KİTAP ÖNERİSİNDE SAYFA KAYAR (öğretmen: "kitap önerisinde kitaplar aşağıda çıkıyor ama scroll olmadığı
+                      için görünmüyor")
+  Sebep: 15.10'da sayfa açılışta kaydırmasız yapılmıştı (body overflow:hidden); kaydırma yalnız çarkta kart açılınca dönüyordu.
+         Kitap Önerisi ve Günün Sözü modüllerinde liste ekranın altında kalıyor, hiç görünmüyordu.
+  merak/moduller.js   modül seçilince body'ye mk-kayar sınıfı (çark dışındaki modüllerde).
+  merak/merakcarki.css  body.mk-kayar: sayfa kayar, üst şerit yapışık. Çark modülü eskisi gibi kaydırmasız tam ekran.
+  merakcarki.html     yalnız ?v= damgaları. Yedek: _kaynak/yedekler/2026-10-20-merak-kitap-kaydirma/

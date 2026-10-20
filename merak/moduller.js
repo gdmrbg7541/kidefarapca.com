@@ -150,6 +150,11 @@ function kdDil() {
             if (acik) bulundu = true;
         }
         if (!bulundu) return false;
+        /* 20.10.2026 — öğretmen: "kitap önerisinde kitaplar aşağıda çıkıyor ama
+           scroll olmadığı için görünmüyor". Kaydırmasız tam ekran yalnız ÇARK
+           modülü için (15.10 kuralı); öteki modüllerde sayfa kayar (merakcarki.css
+           body.mk-kayar). */
+        document.body.classList.toggle('mk-kayar', k !== 'cark');
         if (serit) {
             var tuslar = serit.querySelectorAll('[data-mk]');
             for (var j = 0; j < tuslar.length; j++) {

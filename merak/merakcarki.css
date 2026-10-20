@@ -47,6 +47,12 @@ body.mc-kart-acik { height: auto; min-height: 100dvh; overflow: auto; }
 .mk-serit { flex: none; }
 .mk-modul:not([hidden]) { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
 body.mc-kart-acik .mk-modul:not([hidden]) { flex: 1 0 auto; }
+/* 20.10.2026 — öğretmen: "kitap önerisinde kitaplar aşağıda çıkıyor ama scroll
+   olmadığı için görünmüyor". Kaydırmasız ekran yalnız çark modülü için;
+   öteki modüller (kitap önerisi listesi uzun) açıkken sayfa kayar, üst şerit
+   yapışık kalır. Sınıfı moduller.js koyar. */
+body.mk-kayar { height: auto; min-height: 100dvh; overflow: auto; }
+body.mk-kayar .mk-modul:not([hidden]) { flex: 1 0 auto; }
 #mcGiris, .mc-ayar { flex: none; }
 /* 29.09.2026 (öğretmen isteği: "scroll olsun sayfa"): kaydırma artık
    SAYFANIN KENDİSİNDE. Önce orta alan (.mc-sahne) kendi içinde kayıyordu;

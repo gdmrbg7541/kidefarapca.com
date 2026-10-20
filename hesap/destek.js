@@ -10,10 +10,15 @@
 
    KARARLAR
      · aylık toplam 30.000 TL (19.10.2026: önce 75.000, sonra "50000 olsun",
-       en son "30.000 olsun");
-       kişi başı en az 500 TL — bu alt sınır ÖĞRETMENE GÖSTERİLMEZ
-       ("bunu bilmemeliler"): kartta yazı yok, grafik sınıra varmadan biter
-     · bölünen sayı = son 30 günde siteye giren onaylı öğretmen
+       en son "30.000 olsun"); yönetici panelinde elle artırılır (20.10.2026:
+       "30.000 tl yi manuel olarak arttırabileceğim şekilde ayarla, yönetici
+       hesabında"): Öğretmenler bölümünde Aylık toplam + 1.000 / 5.000 / 10.000
+     · kişi başı = aylık toplam ÷ son 30 günde siteye giren onaylı öğretmen;
+       ALT SINIR YOK (20.10.2026: "ücreti minimum 500 tl kuralını kaldır,
+       gerçekten 30.000 tl yi sürekli güncellenen girişe bağla"). Sayı,
+       yönetici siteye girince (listeyi açmasa da) ve sayfa açık kaldıkça
+       30 dakikada bir yeniden sayılır (sayimYap); tutar değişince herkese
+       açık özet hemen yazılır
      · ödenmeyen tutar KAYIT TARİHİNDEN itibaren GÜN GÜN birikir (her gün
        aylık tutarın o dönemdeki bir günlüğü); kısmi ödeme serbest; 1-12 ay
        ya da yıllık seçilebilir
@@ -23,12 +28,12 @@
    VERİ — Firestore kurallarına DOKUNMADAN:
      mufredat/_destek          yalnız yönetici yazar, girişli herkes okur
         { aylik, gecmis:{'YYYY-MM':tutar}, yoneticiler:[uid], guncelleme }
-        Öğretmen sayısı, toplam ve alt sınır BURADA YOK (öğretmen okuyabilir).
+        Öğretmen sayısı ve toplam BURADA YOK (öğretmen okuyabilir).
      siparisler/_destekAyar    yalnız yönetici okur/yazar (uid = yönetici)
-        { toplam, taban, ayarElle, aktif, onayli, guncelleme }
+        { toplam, ayarElle, aktif, onayli, guncelleme }  (eski "taban" silinir)
         Yönetici oturumu öğretmen listesini okuyunca (teacher-admin.js →
-        renderAdminTeacherList) yeniden hesaplar; sayı/tutar değiştiyse ya
-        da 6 saat geçtiyse yazar. gecmis = her ayın son tutarı (biten
+        renderAdminTeacherList) ve ayrıca en geç 30 dakikada bir (sayimYap)
+        yeniden hesaplar; sayı/tutar değiştiyse ya da 6 saat geçtiyse yazar. gecmis = her ayın son tutarı (biten
         ayların tutarı sonradan değişmez). sistem/alarm.js loadMufredat
         '_' ile başlayan belgeleri paket saymaz.
      siparisler, tur:'destek'      öğretmenin ödeme bildirimi
@@ -53,7 +58,7 @@
     'use strict';
     if (window.KidefDestek) return;
 
-    var VARSAYILAN = { toplam: 30000, taban: 500 };
+    var VARSAYILAN = { toplam: 30000 };
     var GUN = 864e5;
     var SITE = 'https://kidefarapca.com';
 
@@ -155,15 +160,17 @@
     /* ------------------------------------------------------------------
        HESAP
        ------------------------------------------------------------------ */
-    function aylikHesapla(toplam, taban, aktif) {
+    /* kişi başı aylık = aylık toplam ÷ son 30 günde giren onaylı öğretmen,
+       10 TL'ye yukarı yuvarlanır. Alt sınır yok (20.10.2026). */
+    function aylikHesapla(toplam, aktif) {
         var n = Math.max(1, Math.floor(+aktif || 0));
-        return Math.max(taban, Math.ceil(toplam / n / 10) * 10);
+        return Math.ceil((+toplam || 0) / n / 10) * 10;
     }
 
     /* HERKESE AÇIK özet (mufredat/_destek): öğretmen yalnız aylık tutarı ve
-       geçmişini okur. Öğretmen sayısı, aylık toplam ve alt sınır burada
-       TUTULMAZ ("sayı belli olmasın", alt sınırı "bilmemeliler") — onlar
-       yalnız yöneticinin okuyabildiği siparisler/_destekAyar belgesinde. */
+       geçmişini okur. Öğretmen sayısı ve aylık toplam burada TUTULMAZ
+       ("sayı belli olmasın") — onlar yalnız yöneticinin okuyabildiği
+       siparisler/_destekAyar belgesinde. */
     function ozetDuzen(o) {
         o = o || {};
         var aylik = +o.aylik > 0 ? Math.round(+o.aylik) : 0;
@@ -179,7 +186,7 @@
     }
 
     /* YÖNETİCİYE ÖZEL ayarlar (siparisler/_destekAyar, uid = yönetici):
-       sipariş kuralları gereği yalnız yönetici okur. Toplam/alt sınır
+       sipariş kuralları gereği yalnız yönetici okur. Aylık toplam
        yalnız panelden ELLE kaydedildiyse (ayarElle) geçerli; yoksa koddaki
        değer. Belgeyi bir yönetici yazmadıysa (uid listede değil) hiç
        güvenilmez. */
@@ -192,7 +199,7 @@
             guvenli: guvenli,
             elle: elle,
             toplam: (elle && +o.toplam > 0) ? +o.toplam : VARSAYILAN.toplam,
-            taban: (elle && o.taban != null && +o.taban >= 0) ? +o.taban : VARSAYILAN.taban,
+            eskiTaban: guvenli && ('taban' in o),
             aktif: guvenli ? Math.max(0, Math.floor(+o.aktif || 0)) : 0,
             onayli: guvenli ? Math.max(0, Math.floor(+o.onayli || 0)) : 0,
             var: !!o.uid
@@ -572,6 +579,10 @@
             '#admin-destek-ayar .dst-a-ust b{color:#9A6512;}',
             '#admin-destek-ayar .dst-a-form{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:9px;}',
             '#admin-destek-ayar input{width:110px; border:1.5px solid #EADBC0; border-radius:9px; padding:7px 9px; font-family:inherit; font-size:.9rem;}',
+            '#admin-destek-ayar .dst-yb.art{background:#fff; color:#9A6512; border:1.5px solid #EADBC0; padding:7px 11px;}',
+            '#admin-destek-ayar .dst-yb.art:hover{background:#FFF1D6;}',
+            '#admin-destek-ayar .dst-a-on{color:#6B5A3E;}',
+            '#admin-destek-ayar .dst-a-on b{color:#9A6512;}',
             '.dst-rozet{display:inline-block; min-width:20px; text-align:center; background:#E08E1B; color:#fff;',
             '  border-radius:12px; padding:1px 8px; font-size:.75rem; margin-inline-start:8px; font-weight:800;}',
             '.dst-y-bekleyen{margin:0 0 14px; padding:12px; border:1px solid #F3DDAF; border-radius:12px; background:#FFFBF3;}',
@@ -1057,19 +1068,21 @@
                     if (aktifMi(o, simdi)) aktif++;
                 });
             }
-            var aylik = aylikHesapla(A.toplam, A.taban, aktif);
+            var aylik = aylikHesapla(A.toplam, aktif);
             var ay = ayAnahtar(new Date());
             var me = benUid();
             var degisti = A.aktif !== aktif || A.onayli !== onayli || oz.aylik !== aylik || +oz.gecmis[ay] !== aylik ||
-                          oz.eskiAlan || !A.guvenli || (me && oz.yoneticiler.indexOf(me) < 0);
+                          oz.eskiAlan || A.eskiTaban || !A.guvenli || (me && oz.yoneticiler.indexOf(me) < 0);
             var bayat = !oz.guncelleme || (simdi - oz.guncelleme.getTime() > 6 * 3600e3);
             if (!degisti && !bayat && !zorla) return oz;
             var FV = firebase.firestore.FieldValue, gecmis = {};
             gecmis[ay] = aylik;
             var acik = { aylik: aylik, gecmis: gecmis, yoneticiler: FV.arrayUnion(me), guncelleme: sunucuZamani() };
             if (oz.eskiAlan) ['tur', 'toplam', 'taban', 'aktif', 'onayli', 'ayarElle'].forEach(function (k) { acik[k] = FV.delete(); });
-            var ozel = { uid: me, tur: 'destekAyar', toplam: A.toplam, taban: A.taban, ayarElle: A.elle,
+            var ozel = { uid: me, tur: 'destekAyar', toplam: A.toplam, ayarElle: A.elle,
                          aktif: aktif, onayli: onayli, guncelleme: sunucuZamani() };
+            /* 20.10.2026: alt sınır kalktı; eski belgedeki "taban" alanı silinir */
+            if (A.eskiTaban) ozel.taban = FV.delete();
             return db().collection('mufredat').doc('_destek').set(acik, { merge: true }).then(function () {
                 /* güvenilmeyen (bir yöneticinin yazmadığı) ayar belgesi birleştirilmez, baştan yazılır */
                 return db().collection('siparisler').doc('_destekAyar').set(ozel, A.guvenli ? { merge: true } : {});
@@ -1081,6 +1094,7 @@
     function listeGeldi(liste) {
         _liste = liste || [];
         if (!yoneticiMi()) return;
+        sayimZamani(true);
         stilKur();
         ozetYayinla(_liste).then(function () { _yayinHata = ''; }, function (e) {
             _yayinHata = hataYaz(e);
@@ -1088,17 +1102,45 @@
         }).then(function () { ayarCiz(); rozetleriYenile(); });
     }
 
-    /* Yönetici oturumu uzun açık kalırsa sayı 3 saatte bir tazelenir
-       (listeyi yeniden çizmeden, ayrı sorguyla). */
-    setInterval(function () {
-        if (!yoneticiMi() || !db() || document.visibilityState === 'hidden') return;
-        db().collection('kullanicilar').where('role', '==', 'teacher').get().then(function (snap) {
+    /* 20.10.2026 — öğretmen: "gerçekten 30.000 tl yi sürekli güncellenen
+       girişe bağla". Yönetici siteye girince (öğretmen listesini açmasa da)
+       ve sayfa açık kaldıkça en geç 30 dakikada bir, son 30 günde giren
+       onaylı öğretmenler ayrı sorguyla yeniden sayılır; tutar değiştiyse
+       herkese açık özet hemen yazılır. Sayfa yenilense de 30 dakikadan sık
+       saymaz (zaman bu tarayıcıda saklanır). Eskiden yalnız liste açılınca
+       ve 3 saatte bir sayılıyordu. */
+    var SAYIM_ARA = 30 * 60e3, _sonSayim = 0, _sayimSoz = null;
+    function sayimZamani(yaz) {
+        if (yaz) {
+            _sonSayim = Date.now();
+            try { localStorage.setItem('kidefDestekSayim', String(_sonSayim)); } catch (e) { }
+            return _sonSayim;
+        }
+        var s = _sonSayim;
+        try { s = Math.max(s, +localStorage.getItem('kidefDestekSayim') || 0); } catch (e) { }
+        return s > Date.now() ? 0 : s;
+    }
+    function sayimYap(zorla) {
+        if (!yoneticiMi() || !db() || !benUid()) return Promise.resolve(null);
+        if (_sayimSoz) return _sayimSoz;
+        if (!zorla && Date.now() - sayimZamani() < SAYIM_ARA) return Promise.resolve(null);
+        sayimZamani(true);
+        _sayimSoz = db().collection('kullanicilar').where('role', '==', 'teacher').get().then(function (snap) {
             var L = [];
             snap.forEach(function (d) { var v = d.data() || {}; v._id = d.id; L.push(v); });
             _liste = L;
             return ozetYayinla(L);
-        }).then(function () { _yayinHata = ''; ayarCiz(); }, function (e) { _yayinHata = hataYaz(e); ayarCiz(); });
-    }, 3 * 3600e3);
+        }).then(function () { _yayinHata = ''; }, function (e) {
+            _yayinHata = hataYaz(e);
+            try { console.warn('destek sayımı yapılamadı:', _yayinHata); } catch (x) { }
+        }).then(function () { _sayimSoz = null; ayarCiz(); });
+        return _sayimSoz;
+    }
+    setTimeout(function () { sayimYap(); }, 6000);
+    setInterval(function () {
+        if (document.visibilityState === 'hidden') return;
+        sayimYap();
+    }, 20000);
 
     var _ayar = null;
     function ayarOku(zorla) {
@@ -1116,9 +1158,14 @@
         Promise.all([ozetOku(), ayarOku()]).then(function (r) {
             var oz = r[0], A = ayarDuzen(r[1], oz);
             var bek = _bekleyen ? _bekleyen.length : 0;
+            /* yazılmakta olan (kaydedilmemiş) toplam yeniden çizimde kaybolmasın */
+            var once = document.getElementById('dstAyToplam');
+            var yazilan = (once && once.__dstDegisti) ? once.value : '';
+            el.__dstAktif = A.aktif;
+            el.__dstToplam = A.toplam;
             el.innerHTML =
                 '<div class="dst-a-ust"><b>💛 Beklenen Destek</b>' +
-                  '<span>Son 30 günde aktif: <b>' + A.aktif + '</b> öğretmen' + (A.onayli ? ' (onaylı ' + A.onayli + ')' : '') + '</span>' +
+                  '<span>Son 30 günde siteye giren: <b>' + A.aktif + '</b> öğretmen' + (A.onayli ? ' (onaylı ' + A.onayli + ')' : '') + '</span>' +
                   '<span>Kişi başı: <b>' + esc(oz.hazir ? tl(oz.aylik) : '—') + '</b> / ay · <b>' +
                     esc(oz.hazir ? tl(oz.aylik / 30) : '—') + '</b> / gün</span>' +
                   (oz.guncelleme ? '<span style="color:#A0927E;">yayın ' + esc(saatliYaz(oz.guncelleme)) + '</span>' : '') +
@@ -1127,35 +1174,68 @@
                 (_yayinHata ? '<div style="margin-top:8px; color:#B03A2E; font-weight:700;">Özet yazılamadı (' + esc(_yayinHata) + '). ' +
                     'Firestore kurallarında mufredat koleksiyonuna yönetici yazma izni olmalı; öğretmenlerin kartında tutar görünmez.</div>' : '') +
                 '<div class="dst-a-form">' +
-                  '<span>Aylık toplam</span><input id="dstAyToplam" type="number" min="0" step="500" value="' + A.toplam + '"> TL' +
-                  '<span style="margin-inline-start:6px;">Kişi başı en az</span><input id="dstAyTaban" type="number" min="0" step="50" value="' + A.taban + '"> TL' +
+                  '<span>Aylık toplam</span><input id="dstAyToplam" type="number" min="1" step="1000" inputmode="numeric" value="' + A.toplam + '"> TL' +
+                  [1000, 5000, 10000].map(function (n) {
+                      return '<button type="button" class="dst-yb art" data-dst="ayar-art" data-art="' + n + '" title="Aylık toplamı ' +
+                             esc(tl(n)) + ' artır">+' + esc(sayi(n)) + '</button>';
+                  }).join('') +
                   '<button type="button" class="dst-yb kaydet" data-dst="ayar-kaydet">Kaydet</button>' +
+                  '<span class="dst-a-on" id="dstAyOn" aria-live="polite"></span>' +
                 '</div>' +
-                '<p style="margin:8px 0 0; font-size:.8rem; color:#8A7A66;">Öğretmenler yalnız günlük tutarı ve kendi birikenini görür; ' +
-                  'öğretmen sayısı, aylık toplam ve alt sınır onlara gösterilmez.</p>';
+                '<p style="margin:8px 0 0; font-size:.8rem; color:#8A7A66;">Kişi başı tutar = aylık toplam ÷ son 30 günde siteye giren onaylı öğretmen ' +
+                  '(alt sınır yok). Sayı, sen siteye girince ve sayfa açık kaldıkça 30 dakikada bir yeniden sayılır. ' +
+                  'Öğretmenler yalnız günlük tutarı ve kendi birikenini görür; öğretmen sayısı ve aylık toplam onlara gösterilmez.</p>';
+            if (yazilan) {
+                var g = document.getElementById('dstAyToplam');
+                if (g) { g.value = yazilan; g.__dstDegisti = true; }
+            }
+            onizle();
         }).catch(function (e) {
             el.innerHTML = '<span style="color:#B03A2E;">Destek özeti okunamadı: ' + esc(hataYaz(e)) + '</span>';
         });
     }
 
+    /* yazılan toplamın kişi başı karşılığı (kaydetmeden önce görülsün) */
+    function onizle() {
+        var el = document.getElementById('admin-destek-ayar');
+        var g = document.getElementById('dstAyToplam'), o = document.getElementById('dstAyOn');
+        if (!el || !g || !o) return;
+        var t = Math.round(+g.value || 0);
+        if (!(t > 0) || t === el.__dstToplam) { o.innerHTML = ''; return; }
+        var a = aylikHesapla(t, el.__dstAktif || 0);
+        o.innerHTML = 'Kaydedince kişi başı <b>' + esc(tl(a)) + '</b> / ay · <b>' + esc(tl(a / 30)) + '</b> / gün';
+    }
+    function ayarArt(n) {
+        var g = document.getElementById('dstAyToplam');
+        if (!g || !(n > 0)) return;
+        g.value = Math.max(0, Math.round(+g.value || 0)) + n;
+        g.__dstDegisti = true;
+        onizle();
+    }
+
     function ayarKaydet() {
-        var t = Math.round(+((document.getElementById('dstAyToplam') || {}).value) || 0);
-        var ta = Math.round(+((document.getElementById('dstAyTaban') || {}).value));
-        if (!(t > 0) || isNaN(ta) || ta < 0) { uyar('Aylık toplam 0\'dan büyük, alt sınır 0 ya da daha büyük olmalı.'); return; }
-        sor('Aylık toplam ' + tl(t) + ', kişi başı en az ' + tl(ta) + ' olarak kaydedilsin mi?\n' +
-            'Bugünden itibaren yeni tutarla birikir; geçmiş ayların tutarı değişmez.').then(function (evet) {
+        var g = document.getElementById('dstAyToplam');
+        var t = Math.round(+((g || {}).value) || 0);
+        if (!(t > 0)) { uyar('Aylık toplam 0\'dan büyük olmalı.'); return; }
+        var el = document.getElementById('admin-destek-ayar');
+        var a = aylikHesapla(t, (el && el.__dstAktif) || 0);
+        sor('Aylık toplam ' + tl(t) + ' olarak kaydedilsin mi?\n' +
+            'Kişi başı ' + tl(a) + ' / ay (' + tl(a / 30) + ' / gün) olur. Bu ayın tutarı yeni değerle hesaplanır; ' +
+            'biten ayların tutarı değişmez.').then(function (evet) {
             if (!evet) return;
             Promise.all([ozetOku(true), ayarOku(true)]).then(function (r) {
                 var A = ayarDuzen(r[1], r[0]);
-                return db().collection('siparisler').doc('_destekAyar').set(
-                    { uid: benUid(), tur: 'destekAyar', toplam: t, taban: ta, ayarElle: true },
-                    A.guvenli ? { merge: true } : {});
+                var yaz = { uid: benUid(), tur: 'destekAyar', toplam: t, ayarElle: true };
+                if (A.eskiTaban) yaz.taban = firebase.firestore.FieldValue.delete();
+                return db().collection('siparisler').doc('_destekAyar').set(yaz, A.guvenli ? { merge: true } : {});
             }).then(function () {
                 _ayar = null;
+                var g2 = document.getElementById('dstAyToplam');
+                if (g2) g2.__dstDegisti = false;
                 return ozetYayinla(_liste.length ? _liste : null, true);
             }).then(function () {
                 ayarCiz(); rozetleriYenile();
-                uyar('Destek ayarları kaydedildi.');
+                uyar('Aylık toplam kaydedildi: ' + tl(t) + '.');
             }).catch(function (e) { uyar('Kaydedilemedi: ' + hataYaz(e)); });
         });
     }
@@ -1419,9 +1499,17 @@
         else if (is === 'kayit-sil') kayitSil(t.getAttribute('data-id'));
         else if (is === 'elle-ekle') elleEkle(t.closest('.dst-y-form'), t.getAttribute('data-uid'));
         else if (is === 'ayar-kaydet') ayarKaydet();
+        else if (is === 'ayar-art') ayarArt(+t.getAttribute('data-art') || 0);
         else if (is === 'ac') {
             if (typeof window.adminOgretmenDetay === 'function') window.adminOgretmenDetay(t.getAttribute('data-uid'), 'ucret');
         }
+    });
+    /* aylık toplam yazılırken kişi başı karşılığı */
+    document.addEventListener('input', function (e) {
+        var t = e.target;
+        if (!t || t.id !== 'dstAyToplam') return;
+        t.__dstDegisti = true;
+        onizle();
     });
     /* elle ödeme: ay seçilince tutarı doldur */
     document.addEventListener('change', function (e) {
@@ -1444,7 +1532,7 @@
         /* öğretmen */
         odemeAc: odemeAc, oner: oner, profilKontrol: profilKontrol, tazele: kartTazele,
         /* yönetici */
-        listeGeldi: listeGeldi, ozetYayinla: ozetYayinla, ayarCiz: ayarCiz,
+        listeGeldi: listeGeldi, ozetYayinla: ozetYayinla, ayarCiz: ayarCiz, sayimYap: sayimYap,
         rozetleriYenile: rozetleriYenile, bekleyenCiz: bekleyenCiz, yoneticiBolum: yoneticiBolum,
         onayla: onayla, reddet: reddet
     };
