@@ -14,8 +14,10 @@
    %de 98 ekranı kaplasın, bu popup sınıf açılınca her zaman görünecek,
    sınıf sekmesine bağlı olacak, sadece bi sınıf açılınca açılacak
    kapanırsa kapanacak"):
-   · Sınıflarım'da bir sınıf açılınca pencere KENDİLİĞİNDEN açılır,
-     ekranın %98'ini kaplar; o sınıfa bağlıdır (seviye + şube).
+   · Sınıflarım'da bir sınıf açılınca pencere sağ altta «Yazı Sayfası»
+     düğmesi olarak hazır bekler; basınca ekranın %98'ini kaplar. O sınıfa
+     bağlıdır (seviye + şube). (20.10.2026, öğretmen: "bi liste açılınca
+     hemen yazı tahtası açılmasın")
    · Sınıf açık kaldıkça durur: × pencereyi KÜÇÜLTÜR, sağ altta
      «Yazı Sayfası» düğmesi kalır, basınca geri açılır.
    · Sınıf kapanınca (başka sınıfa geçilince, Sınıflarım'dan çıkılınca)
@@ -586,10 +588,6 @@
             '.ys-silgi-iz{position:absolute; pointer-events:none; border:2px solid rgba(27,79,156,.55); background:rgba(255,255,255,.35);',
             '  border-radius:50%; transform:translate(-50%,-50%); display:none;}',
             '.ys-kagit.silgi .ys-silgi-iz.gor{display:block;}',
-            '.ys-ipucu{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); pointer-events:none; text-align:center;',
-            '  color:#A3ADBA; font-weight:800; font-size:1.05rem; transition:opacity .3s;}',
-            '.ys-ipucu svg{display:block; margin:0 auto 6px; width:46px; height:46px; opacity:.6;}',
-            '.ys-ipucu.gizli{opacity:0;}',
             '.ys-son{position:absolute; left:50%; top:14px; z-index:4; transform:translateX(-50%); background:#1F2430; color:#fff; border-radius:999px;',
             '  padding:8px 8px 8px 16px; display:flex; align-items:center; gap:10px; font-size:.85rem; box-shadow:0 8px 22px rgba(0,0,0,.25);}',
             '.ys-son button{border:0; background:#fff; color:#1F2430; border-radius:999px; padding:6px 13px; font-weight:800; cursor:pointer; font-family:inherit;}',
@@ -698,7 +696,7 @@
     var UI = null;       /* öğeler */
     var _otoKayit = null, _gozBoyut = null, _govdeTasma = '';
 
-    function ac(sinif, kaynak) {
+    function ac(sinif, kaynak, kucukBasla) {
         sinif = String(sinif || '');
         if (!sinif) return;
         if (!ogretmenMi()) return;
@@ -709,14 +707,15 @@
         D = kaynak || { id: yeniId(), sinif: sinif, sube: BAGLI ? BAGLI.sube : subeAdi(), tarih: Date.now(), guncelleme: 0,
                         sayfalar: [yeniSayfa('c')], aktif: 0, notId: '', notAd: '', kirli: false, pw: W };
         defterHazirla(D);
-        kur();
+        kur(kucukBasla);
         cizimAyarla();
-        if (!kaynak) sonDefterOnerisi();
+        if (!kaynak) { if (kucukBasla) UI.oneriBekle = true; else sonDefterOnerisi(); }
     }
 
-    function kur() {
+    function kur(kucuk) {
         var ort = document.createElement('div');
         ort.id = 'ysOrt';
+        if (kucuk) ort.classList.add('kucuk');
         var kalemler = RENKLER.map(function (r, i) {
             return '<button type="button" class="ys-renk" data-renk="' + i + '" style="background:' + r.k + '; --rk:' + r.k + '" title="' +
                    esc(r.ad) + ' kalem (' + (i + 1) + ')" aria-label="' + esc(r.ad) + ' kalem">' + IK.kalem + '</button>';
@@ -761,7 +760,6 @@
                 '<div class="ys-kagit" id="ysKagit">' +
                   '<canvas class="ys-alt"></canvas><canvas class="ys-ust"></canvas>' +
                   '<div class="ys-silgi-iz"></div>' +
-                  '<div class="ys-ipucu">' + IK.kalem + 'Yazmaya başla — kalem, parmak ya da fare</div>' +
                 '</div>' +
                 yan('sol') + yan('sag') +
                 '<div class="ys-sayfalar" aria-label="Sayfalar">' +
@@ -785,15 +783,17 @@
               '</aside>' +
             '</div>';
         document.body.appendChild(ort);
-        _govdeTasma = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
+        if (!kucuk) {
+            _govdeTasma = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+        }
         var kagit = ort.querySelector('#ysKagit');
         UI = {
             ort: ort, kutu: ort.querySelector('#ysKutu'), sahne: ort.querySelector('#ysSahne'), kagit: kagit,
             alt: kagit.querySelector('.ys-alt'), ust: kagit.querySelector('.ys-ust'),
-            iz: kagit.querySelector('.ys-silgi-iz'), ipucu: kagit.querySelector('.ys-ipucu'),
+            iz: kagit.querySelector('.ys-silgi-iz'),
             sayfa: ort.querySelector('#ysSayfa'), panel: ort.querySelector('#ysPanel'), panelIc: ort.querySelector('#ysPanelIc'),
-            sek: 'gecmis', olcek: 1, dpr: 1
+            sek: 'gecmis', olcek: 1, dpr: 1, kucuk: !!kucuk
         };
         ort.addEventListener('click', tikla);
         UI.sahne.addEventListener('wheel', tekerlek, { passive: false });
@@ -809,6 +809,7 @@
         document.addEventListener('visibilitychange', gorunurlukDegisti);
         _otoKayit = setInterval(function () { if (D && D.kirli) sessizKaydet(); }, 20000);
         aracGuncelle();
+        if (kucuk) pilGoster();
     }
 
     /* KÜÇÜLT — sınıf açık kaldıkça pencere kapanmaz, sağ alta iner.
@@ -834,6 +835,7 @@
         _govdeTasma = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
         cizimAyarla();
+        if (UI.oneriBekle) { UI.oneriBekle = false; sonDefterOnerisi(); }
     }
     function pilGoster() {
         pilKaldir();
@@ -925,6 +927,7 @@
     }
     function cizimAyarla() {
         if (!UI || !D) return;
+        if (!UI.sahne.clientWidth || !UI.sahne.clientHeight) return;     /* küçükken (gizli) */
         /* clientWidth: açılış canlandırması (scale) ölçüyü küçültmesin */
         var gw = Math.max(200, UI.sahne.clientWidth), gh = Math.max(140, UI.sahne.clientHeight);
         UI.Lw = H * gw / gh;
@@ -989,7 +992,6 @@
             var ox = vx0 + j * pw;
             D.sayfalar[j].cizimler.forEach(function (c) { cizimCiz(ctx, c, o, ox); });
         }
-        UI.ipucu.classList.toggle('gizli', !bosMu(D.sayfalar));
         aracGuncelle();
     }
 
@@ -1036,7 +1038,6 @@
         var silgiMi = T.arac === 'silgi' || (e.pointerType === 'pen' && (e.button === 5 || (e.buttons & 32)));
         _cz = { id: e.pointerId, j: j, ox: UI.vx0 + j * D.pw,
                 c: { r: T.renk, k: T.kal, s: silgiMi ? 1 : 0, p: [p[0] + j * D.pw, p[1]] } };
-        UI.ipucu.classList.add('gizli');
         var ctx = UI.ust.getContext('2d');
         cizimCiz(ctx, _cz.c, UI.olcek, _cz.ox);
         if (T.arac === 'silgi') { izKonum(e); UI.iz.classList.add('gor'); }
@@ -1666,11 +1667,11 @@
             var son = L.filter(function (x) { return (x.sube || '') === b.sube; })[0];
             if (son && son.kod && (Date.now() - (son.guncelleme || 0)) < DEVAM_SN * 1000) {
                 ac(b.sinif, { id: son.id, sinif: b.sinif, sube: b.sube, tarih: son.tarih || son.guncelleme, guncelleme: son.guncelleme,
-                              sayfalar: defterCoz(son.kod), aktif: 999, notId: son.notId || '', notAd: '', kirli: false });
+                              sayfalar: defterCoz(son.kod), aktif: 999, notId: son.notId || '', notAd: '', kirli: false }, true);
             } else {
-                ac(b.sinif);
+                ac(b.sinif, null, true);
             }
-        }, function () { if (BAGLI === b) ac(b.sinif); });
+        }, function () { if (BAGLI === b) ac(b.sinif, null, true); });
     }
 
     function sinifIzle() {

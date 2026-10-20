@@ -12860,3 +12860,17 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       iki parmak, kalemle çalışırken tek parmak, tekerlek de kaydırır. Artı yeni sayfayı açık sayfanın
                       soluna ekler. Yalnız 6 çizgili defter. Geri al bütün defterde. Kayıt biçimi Y2 (sayfa genişliği
                       1000); eski defterler açılır. (v=f64da553)
+  DEĞİŞTİ (20.10.2026, öğretmen: "bi liste açılınca hemen yazı tahtası açılmasın" · "yazmaya başla, kalem, parmak veya
+                      fare yazısı olmasın"): sınıf açılınca pencere açılmaz; sağ altta «Yazı Sayfası» düğmesi hazır bekler,
+                      basınca açılır. Kâğıdın ortasındaki «Yazmaya başla — kalem, parmak ya da fare» yazısı kaldırıldı.
+                      (v=f5cb4890)
+
+20.10.2026 — HARF TANITIMI ARAÇ ŞERİDİ GERİ GELDİ (öğretmen: "harf tanıtımında bi araç çubuğu vardı tam ekran yazılışı ve
+                      okunuşu benzer harfleri sınıflandıran tuşlar")
+  Sebep: kumanda 14.10'da soldan açılan çekmeceye dönünce şerit çekmeceyle birlikte ekran dışına kayıyordu (açıkken
+         09.10 kuralıyla gizli, kapalıyken ekran dışında: hiç görünmüyordu).
+  okumayazma/alfabe_ray.js  YENİ. Çekmece kapalıyken ve Harf Tanıtımı açıkken şerit sol kenarda, kumanda okunun altında
+                      dikey ray: okunuşu benzer · yazılışı benzer · diziliş · yazılış animasyonu · tam ekran. İçerik rayın
+                      sağından başlar. Çekmece açılınca şerit yerine döner (09.10 kuralı). Telefonda ray yok; şerit açık
+                      çekmecenin dibinde görünür.
+  alfabe.html         alfabe_ray.js etiketi (alfabe_mobil.js'in altında). Yedek: _kaynak/yedekler/2026-10-20-alfabe-ray/
