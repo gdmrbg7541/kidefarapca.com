@@ -21,7 +21,7 @@
    · ÇİFT SAYFADA 6 BÖLGE: açık iki sayfa 6 bölgeye ayrılır (her sayfada 3
      satır). Bir bölgeye tek dokunuş onu ekranı dolduracak kadar büyütür;
      büyükken tek dokunuş küçültür. Akıllı tahtada en çok işe yarayan özellik.
-   · YÖN TUŞLARI (büyükken): ↑↓ sayfa boyunun 1/9'u kadar yumuşak kaydırır,
+   · YÖN TUŞLARI (büyükken): ↑↓ sayfa boyunun 1/5'i kadar yumuşak kaydırır,
      sayfanın ucunda okuma sırasına göre öbür sayfaya / sonraki yayılıma geçer.
      ←→ sayfa değiştirir. Boşluk ve PageDown/PageUp da çalışır.
    · TEK SAYFADA (telefon/dikey) DA 6 BÖLGE (17.10.2026): sayfa 2 sütun ×
@@ -107,7 +107,8 @@
        Tıklama ↑/↓ tuşlarının AYNI yolundan geçiyor (zoomTusu): tek ve
        çift sayfa kipinde davranış birebir aynı olsun, ayrıca sayfanın
        ucuna gelince kendiliğinden sonraki sayfaya geçsin.
-       Adım boyu DIKEY_ADIM: sayfa yüksekliğinin 1/9'u. */
+       Adım boyu DIKEY_ADIM: sayfa yüksekliğinin 1/5'i (20.10.2026, öğretmen:
+       "flipbook motorunda aşağı yukarı 9 kademeydi ya onu 5 kademeye düşür"). */
     var okUst = null, okAlt = null;
     function oklariGuncelle() {
       var gor = z.o > 1.02;
@@ -312,9 +313,9 @@
       return true;
     }
 
-    /* ↑↓ ince adım: sayfa boyunun 1/9'u kadar yumuşak kaydırır.
+    /* ↑↓ ince adım: sayfa boyunun 1/5'i kadar yumuşak kaydırır (eskiden 1/9).
        Sayfanın ucuna gelmişsek false döner → bir üst kat (bolgeGez) sayfa değiştirir. */
-    var DIKEY_ADIM = 9;
+    var DIKEY_ADIM = 5;
     /* Bu yönde gidilecek yer kaldı mı? (okları soluklaştırmak için de kullanılır) */
     function dikeyGidebilir(yon) {
       if (z.o <= 1.02) return false;

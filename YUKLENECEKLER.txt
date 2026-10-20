@@ -12880,6 +12880,24 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       (aynı sayı da olsa) basılınca yeni aralığa geçer. Yanlardaki «Kaydır» (↔) düğmesi ve H kısayolu kalktı;
                       kâğıt kaydırma çubuğu, oklar, tekerlek, farenin orta tuşu ve iki parmakla kayıyor.
                       Yedek: _kaynak/yedekler/2026-10-20-defter/yazisayfasi-v10.js (v=150b0d0f)
+  DEĞİŞTİ (20.10.2026, öğretmen: "defterde çizgi sayısı şöyle olsun, 2,3,4,5,7, ayrıca bi tane de arapça yazmayı
+                      öğretmek için Arapça güzel yazı defteri olsun o da sadece 3 satır olsun, defterde dikey kaydırma olsun,
+                      ve bu varsayılan olsun isteyenler yatay kaydırmalı şekilde kullanabilsin, ileri geri okları daha büyük
+                      ve yukarda ortada olsun, yukarda hat kalemi seçeneği de olsun, defter popup ı tam ekran açılsın ve
+                      küçültünce de simge haline dönsün, simge dolgusu kırmızı svg beyaz olsun" · "site renklerini kullan" ·
+                      "silgi geri ileri tuşunun olduğu yerde olsun"): çizgi seçenekleri 2·3·4·5·7 (yeni defter 5; 6 ve 8
+                      çizgiyle yazılmış defterler kendi çizgileriyle açılır). «Güzel yazı» defteri: sayfada 3 satır; her
+                      satırda üst çizgi, kesikli orta çizgi, kalın taban, alt çizgi, gövde hafif boyalı (kayıtta g3).
+                      Öntanımlı DİKEY kaydırma: sayfalar alt alta, kalın kaydırma çubuğu solda, kalemler yalnız sağda; sayfa
+                      çubuğundaki yön düğmesiyle yatay kaydırmaya geçilir (tercih saklanır, yatayda eski düzen). Sayfa
+                      çubuğu yukarıda ortada, oklar büyük (dikeyde ▲ ▼; sayfanın başı çubuğun altında görünür). Üstte «Hat
+                      kalemi»: eğik uçlu kalem, yatayda kalın, dikeyde ince yazar; kalınlık düğmeleri ucun enini seçer.
+                      Silgi üstte, geri al / yinele'nin yanında (ikinci basışta «Tüm sayfayı sil»). Pencere tam ekran açılır
+                      (tarayıcı izin vermezse yine bütün ekranı kaplar); tam ekranda Esc önce tam ekrandan çıkar, ikinci
+                      Esc küçültür. Küçültünce sağ alttaki simge kırmızı, defter ve yazı beyaz. Renkler sitenin
+                      yeşil / lacivert / turuncusu. Üst çubuk 1024 px'e kadar tek satır, telefonda iki satır («— Küçült»
+                      yazılı kalır). Yedek: _kaynak/yedekler/2026-10-20-defter/yazisayfasi-v11.js, index-v12-oncesi.html
+                      (v=b57bb187)
 
 20.10.2026 — HARF TANITIMI ARAÇ ŞERİDİ GERİ GELDİ (öğretmen: "harf tanıtımında bi araç çubuğu vardı tam ekran yazılışı ve
                       okunuşu benzer harfleri sınıflandıran tuşlar")
@@ -12907,3 +12925,9 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                       «Dene»ye geçilebilir; açık olana yeniden basmak yalnız çekmeceyi katlar (tur baştan başlamaz).
                       «Dene»de ✕ ve «Kapat» duruyor; Esc de kapatır. Yedek: _kaynak/yedekler/2026-10-20-alfabe-ihy/
                       (alfabe_ihy_kenar-v1.js, alfabe-dene-oncesi.html) (v=dff1414f)
+
+20.10.2026 — FLIPBOOK: BÜYÜKKEN AŞAĞI-YUKARI OKLAR 5 ADIM (öğretmen: "flipbook motorunda aşağı yukarı 9 kademeydi ya onu
+                      5 kademeye düşür")
+  Büyütülmüş sayfada ▲ ▼ okları ve ↑ ↓ tuşları bir basışta sayfa boyunun 1/5'ini kaydırır (eskiden 1/9).
+  _kaynak/ortak-kitap/kitapzoom.js → bütün kitaplara (kitapOrtakla; asıl Kidef klasörü dahil), kitapların index.html
+                      damgaları (v=a5756a66). Yedek: _kaynak/yedekler/2026-10-20-zoom5/kitapzoom.js
