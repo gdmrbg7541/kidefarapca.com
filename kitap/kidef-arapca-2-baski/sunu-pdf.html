@@ -22,7 +22,7 @@
   kidefarapca.com'dan alınamazsa aynı dosya GitHub'dan denenir.
   pdf.js 3.11.174 (Mozilla, Apache-2.0): 02_cekirdek/js/pdfjs/
 -->
-<script src="02_cekirdek/js/pdfjs/pdf.min.js?v=3.11.174"></script>
+<script src="02_cekirdek/js/pdfjs/pdf.min.js?v=4d9cc6ff"></script>
 <style>
   :root{--gold:#E3A02A;--ink:#122040;--zemin:#0C1220}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -154,7 +154,7 @@
 
   /* ---------- pdf.js ---------- */
   if (!window.pdfjsLib) { hata('Sunu göstericisi yüklenemedi.', 'Sayfayı yenileyin.', true); return; }
-  pdfjsLib.GlobalWorkerOptions.workerSrc = '02_cekirdek/js/pdfjs/pdf.worker.min.js?v=3.11.174';
+  pdfjsLib.GlobalWorkerOptions.workerSrc = '02_cekirdek/js/pdfjs/pdf.worker.min.js?v=4d4106b4';
   var PARCA = 65536, ILK = 262144;         /* 64 KB'lık parçalar; ilk istek 256 KB */
 
   function parcaAl(url, bas, son) {         /* son dahil */
