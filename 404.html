@@ -10,7 +10,12 @@
    (kidefarapca-materyal-kidef). Eski bağlantılar oraya gider. */
 (function () {
   var p = location.pathname, k = '/kitap/kidef-arapca-2-baski/05_sunumlar/', i = p.indexOf(k);
-  if (i >= 0) location.replace('https://gdmrbg7541.github.io/kidefarapca-materyal-kidef/kidef-arapca-2-baski/05_sunumlar/' + p.slice(i + k.length) + location.search + location.hash);
+  if (i >= 0) {
+    var kalan = p.slice(i + k.length), hedef = 'https://kidefarapca.com/kidefarapca-materyal-kidef/kidef-arapca-2-baski/05_sunumlar/' + kalan;
+    /* 20.10.2026: sunu PDF'i sitenin göstericisinde açılır (adres kidefarapca.com) */
+    if (/\.pdf$/i.test(kalan)) location.replace('/kitap/kidef-arapca-2-baski/sunu-pdf.html?' + new URLSearchParams({ pdf: hedef }));
+    else location.replace(hedef + location.search + location.hash);
+  }
 })();
 </script>
 <style>

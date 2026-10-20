@@ -1,0 +1,119 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/kidefarapca-materyal-7/:yol(.*\\.(?:mp4|MP4))",
+      "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-7/:yol",
+      "permanent": false
+    },
+    {
+      "source": "/kidefarapca-materyal-8/:yol(.*\\.(?:mp4|MP4))",
+      "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-8/:yol",
+      "permanent": false
+    },
+    {
+      "source": "/kidefarapca-materyal-9/:yol(.*\\.(?:mp4|MP4))",
+      "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-9/:yol",
+      "permanent": false
+    },
+    {
+      "source": "/kidefarapca-materyal-10/:yol(.*\\.(?:mp4|MP4))",
+      "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-10/:yol",
+      "permanent": false
+    },
+    {
+      "source": "/kidefarapca-materyal-kidef/:yol(.*\\.(?:mp4|MP4))",
+      "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-kidef/:yol",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/kidefarapca-materyal-7/:yol*",
+      "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-7/:yol*"
+    },
+    {
+      "source": "/kidefarapca-materyal-8/:yol*",
+      "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-8/:yol*"
+    },
+    {
+      "source": "/kidefarapca-materyal-9/:yol*",
+      "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-9/:yol*"
+    },
+    {
+      "source": "/kidefarapca-materyal-10/:yol*",
+      "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-10/:yol*"
+    },
+    {
+      "source": "/kidefarapca-materyal-kidef/:yol*",
+      "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-kidef/:yol*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/kidefarapca-materyal-7/:yol*",
+      "headers": [
+        {
+          "key": "x-vercel-enable-rewrite-caching",
+          "value": "1"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/kidefarapca-materyal-8/:yol*",
+      "headers": [
+        {
+          "key": "x-vercel-enable-rewrite-caching",
+          "value": "1"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/kidefarapca-materyal-9/:yol*",
+      "headers": [
+        {
+          "key": "x-vercel-enable-rewrite-caching",
+          "value": "1"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/kidefarapca-materyal-10/:yol*",
+      "headers": [
+        {
+          "key": "x-vercel-enable-rewrite-caching",
+          "value": "1"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/kidefarapca-materyal-kidef/:yol*",
+      "headers": [
+        {
+          "key": "x-vercel-enable-rewrite-caching",
+          "value": "1"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    }
+  ]
+}

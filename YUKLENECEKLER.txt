@@ -12931,3 +12931,26 @@ Ana sitenin gidecek boyutu: ~823 MiB.
   Büyütülmüş sayfada ▲ ▼ okları ve ↑ ↓ tuşları bir basışta sayfa boyunun 1/5'ini kaydırır (eskiden 1/9).
   _kaynak/ortak-kitap/kitapzoom.js → bütün kitaplara (kitapOrtakla; asıl Kidef klasörü dahil), kitapların index.html
                       damgaları (v=a5756a66). Yedek: _kaynak/yedekler/2026-10-20-zoom5/kitapzoom.js
+
+20.10.2026 — KİDEF SUNULARI SİTENİN GÖSTERİCİSİNDE + MATERYAL DEPOLARI kidefarapca.com ADRESİNDEN (öğretmen: "kidefarapca 2.
+                      baskı sunuları ileri geri tuşu pdf leri html olarak açtığımız şekilde açılsın, ayrıca tüm repolar kidefarapca.com
+                      reposuna bağlı olamaz mı, site ismi hep görünsün istiyorum" · karar: videolar hariç)
+  vercel.json         YENİ. /kidefarapca-materyal-{7,8,9,10,kidef}/… istekleri Vercel'de aynı adla GitHub Pages'teki depolardan
+                      getirilir (rewrite; adres çubuğunda kidefarapca.com kalır). .mp4 videolar 307 ile doğrudan github.io'ya gider
+                      (Hobby kotası: ayda 100 GB aktarım, 10 GB kaynaktan çekme). Önbellek: x-vercel-enable-rewrite-caching +
+                      CDN-Cache-Control 1 gün.
+  Adresler            _kaynak/uretici/materyalAdres.py: 46 dosyada 673 adres github.io → kidefarapca.com (7, 8, 9, 10 veri.js;
+                      8. sınıf etkinlik verileri; Kidef kitap.js, kitap.json, sunum.html; 404.html). .mp4 adresleri (113) github.io'da.
+                      Geri almak: python3 _kaynak/uretici/materyalAdres.py "$R" --geri ve vercel.json'u kaldırmak.
+                      Kitap üreticileri (kitap*Kur/Bagla, materyal*.py, kidef*.py) yeniden çalışırsa adresler github.io'ya döner
+                      (yine çalışır); ardından materyalAdres.py bir kez daha çalıştırılır. Yedek: _kaynak/yedekler/2026-10-20-materyal-adres/
+  kitap/kidef-arapca-2-baski/sunu-pdf.html  YENİ. Sunu PDF'i slayt slayt (pdf.js 3.11.174, 02_cekirdek/js/pdfjs/): sağda alt alta
+                      büyük ileri / geri, kaydırıcı, ok tuşları, tam ekran; rozet «kidefarapca.com». PDF'i parça parça (Range) çeker,
+                      ilk slayt ~1 sn; kidefarapca.com'dan alamazsa github.io'yu dener. pdf.worker.min.js'te tek yama: açılışta bütün
+                      sayfa ağacını dolaşan checkLastPage atlandı (02_cekirdek/js/pdfjs/OKU.txt).
+  02_cekirdek/js/uygulama.js  sunumAdres: sitePdf'i olan sunu sunu-pdf.html?pdf=…&a=… ile açılır; «Slaytları burada göster» de aynı
+                      gösterici. file:// kopyada PDF eskisi gibi doğrudan açılır. Asıl FLIPBOOK klasöründeki kopyada da aynı
+                      değişiklik + sunu-pdf.html + pdfjs/. (v=3b36081c)
+  404.html            eski /kitap/kidef-arapca-2-baski/05_sunumlar/…pdf bağlantıları (karekod) göstericiye; öteki dosyalar
+                      kidefarapca.com/kidefarapca-materyal-kidef/… adresine.
+  Yedek: _kaynak/yedekler/2026-10-20-kidef-sunu-pdf/ (uygulama-site.js, uygulama-asil.js, 404.html, YUKLENECEKLER-oncesi.txt)

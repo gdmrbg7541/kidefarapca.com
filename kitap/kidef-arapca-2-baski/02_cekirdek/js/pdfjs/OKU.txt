@@ -1,0 +1,13 @@
+pdf.js 3.11.174 (Mozilla Foundation, Apache License 2.0 — LICENSE) · "legacy" yapımı
+Kaynak: npm pdfjs-dist@3.11.174 → legacy/build/pdf.min.js, pdf.worker.min.js
+
+Kullanan: ../../../sunu-pdf.html (Kidef 2. baskı sunu göstericisi, 20.10.2026)
+
+TEK DEĞİŞİKLİK (pdf.worker.min.js): belge açılırken yapılan "checkLastPage"
+çağrısı çıkarıldı (yerinde /*kidef:checkLastPage-yok*/ yazıyor). pdf.js açılışta
+son sayfayı denetlemek için sayfa ağacındaki bütün sayfaları tek tek okuyor; bizim
+destelerimizde (doğrusallaştırılmış, her sayfanın nesneleri kendi resminin yanında)
+bu, ilk slayt görünmeden PDF'in neredeyse tamamını indirmek demek. Çıkarılınca
+27,7 MB'lık 80 slaytlık denemede ilk slayt için 459 KB iniyor.
+Sürüm yükseltilirse bu satır yeniden çıkarılmalı:
+    await a.ensureDoc("checkLastPage",[e]);

@@ -147,7 +147,16 @@
     if (k.pdf && PDF_VAR) return pdfAdres(k.pdf);
     /* 18.10.2026: oyun/etkinlik sunularının PDF'leri ayrı depoda (kidefarapca-materyal-kidef):
        sitePdf tam adresse olduğu gibi açılır */
-    if (k.sitePdf) return /^https?:\/\//.test(k.sitePdf) ? k.sitePdf : pdfAdres(k.sitePdf);
+    if (k.sitePdf) {
+      var pu = /^https?:\/\//.test(k.sitePdf) ? k.sitePdf : pdfAdres(k.sitePdf);
+      /* 20.10.2026 — öğretmen: "kidefarapca 2. baskı sunuları ileri geri tuşu pdf leri
+         html olarak açtığımız şekilde açılsın": PDF tarayıcının okuyucusunda değil,
+         sunu-pdf.html'de slayt slayt (pdf.js) açılır; adres çubuğunda kidefarapca.com.
+         Bilgisayardaki / indirilmiş kopyada (file://) pdf.js çalışmadığı için PDF
+         eskisi gibi doğrudan açılır. */
+      if (location.protocol === 'file:') return pu;
+      return 'sunu-pdf.html?' + new URLSearchParams({ pdf: pu, a: k.ad || 'Sunu' });
+    }
     var q = { d: k.klasor, n: k.adet, a: k.ad };
     return 'sunum.html?' + new URLSearchParams(q);
   }
@@ -161,7 +170,7 @@
     }
     // 02.10.2026: içeride de aynı gösterici (sunum.html) çerçevede açılır — HTML sunu varsa
     // onu (adımlı), yoksa resimleri gösterir. Eski resim oynatıcısı (#pSunum) yalnız yedek.
-    if (k.klasor && /^05_sunumlar\//.test(k.klasor)) {
+    if ((k.klasor && /^05_sunumlar\//.test(k.klasor)) || (k.sitePdf && location.protocol !== 'file:')) {
       $('#etkinlikBaslik').textContent = k.ad;
       panelAc('#pEtkinlik');
       $('#etkinlikCerceve').setAttribute('src', sunumAdres(k));
