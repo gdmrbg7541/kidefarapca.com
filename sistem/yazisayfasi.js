@@ -129,6 +129,17 @@
      «Çizgili»ye basınca çizgi sayısı rakamları (2·3·4·5·7) açılır.
    · Yatay kipte dikey (A4) sayfalar yan yana (aralarında boşluk, her sayfada
      kenar ve numara); tek uzun kâğıt yok. Eski 625 boyundaki defterler de A4.
+   DEFTER v18 (21.10.2026, öğretmen: "defterde sayfaları yatay kısmını iptal
+   edelim, sadece dikey mod olsun"): ↕ / ↔ düğmeleri kalktı, defter hep dikey
+   (sayfalar alt alta, çubuk solda, kalemler sağda); eski yatay tercihi yok sayılır.
+   DEFTER v19 (21.10.2026, öğretmen: "araç çubuğunu header kısmına ekleyelim …
+   switchleri alt alta olsun … headerde 2 satır … silgi ileri geri vs tüm elementleri
+   headere ekleyelim", "güzel yazı defterinde en altta ve en üstte çok fazla boşluk
+   var onu azaltalım"): yüzen sayfa çubuğu kalktı, her şey iki satırlı üst çubukta
+   (.ys-ust2: başlık · anahtarlar+kalınlık / defter türü · düzenleme / sayfalar ·
+   sağda tam ekran+ana sayfa / seviye notu+geçmiş+PDF); kâğıt çubuğun hemen
+   altından başlar. Güzel yazı yeni defterlerde «g8»: 8 satır, üstte 28 altta 22
+   birim; eski «g3» defterler eski yerleşimle açılır.
    ARAÇLAR: 5 renk kalem · hat kalemi · silgi · 3 kalınlık · çizgi sayısı
    (2·3·4·5·7) / güzel yazı · geri al, yinele, temizle · sayfalar (ekle,
    kaldır, ileri / geri, kaydırma çubuğu, dikey / yatay) · PDF · tam ekran.
@@ -188,7 +199,8 @@
        sadece 3 satır olsun"). */
     var CIZGI_EN_AZ = 2, CIZGI_EN_COK = 8, CIZGI_VARSAYILAN = 5, ESKI_CIZGI = 6;
     var CIZGI_SECENEK = [2, 3, 4, 5, 7];
-    var GUZEL_SATIR = 3, GUZEL_ALT = 22;       /* güzel yazı: satır sayısı, alttaki pay (birim) */
+    var GUZEL_SATIR = 3, GUZEL_ALT = 22;       /* güzel yazı (eski düzen g3): blok başına satır, alttaki pay (birim) */
+    var GUZEL_SATIR_A4 = 8;                    /* yeni düzen (g8, 21.10.2026): A4 sayfada 8 satır, üstte yalnız ust payı */
     var GUZEL_UST_EK = 56;                     /* güzel yazı: üst paya ek (sayfa çubuğu üstte) */
     /* HAT KALEMİ ("yukarda hat kalemi seçeneği de olsun"): eğik kesilmiş uç;
        yatay giderken kalın, dikey giderken ince yazar. Uç açısı yataydan 65°;
@@ -299,7 +311,7 @@
     }
     function defterKodla(sayfalar, pw, R) {
         /* çizgi alanı: sayı (çizgili) ya da 'g3' (güzel yazı, 3 satır) */
-        var n = (R && R.g) ? 'g' + GUZEL_SATIR : cizgiSayisi(R && R.n);
+        var n = (R && R.g) ? 'g' + ((R.gsat >= 4) ? R.gsat : GUZEL_SATIR) : cizgiSayisi(R && R.n);
         var ust = (R && R.ust != null) ? Math.max(0, Math.round(R.ust)) : UST_BOSLUK;
         var ph = Math.round((R && R.ph) || H);
         return 'Y4|' + Math.round(pw || W) + '|' + ph + '|' + n + '|' + ust + '|' + sayfalar.map(function (s) {
@@ -307,14 +319,15 @@
         }).join('\n');
     }
     function defterCoz(kod) {
-        var govde = null, pw = 0, cn = CIZGI_VARSAYILAN, ust = UST_BOSLUK, ph = H;
+        var govde = null, pw = 0, cn = CIZGI_VARSAYILAN, ust = UST_BOSLUK, ph = H, gsat = 3;
         if (kod && kod.indexOf('Y4|') === 0) {
             var b1 = kod.indexOf('|', 3), b2 = kod.indexOf('|', b1 + 1), b3 = kod.indexOf('|', b2 + 1), b4 = kod.indexOf('|', b3 + 1);
             if (b1 > 0 && b2 > b1 && b3 > b2 && b4 > b3) {
                 pw = parseInt(kod.slice(3, b1), 10) || W;
                 ph = parseInt(kod.slice(b1 + 1, b2), 10) || H;
-                var alan4 = kod.slice(b2 + 1, b3);
+                var alan4 = kod.slice(b2 + 1, b3), gm4 = /^g(\d+)/i.exec(alan4);
                 cn = /^g/i.test(alan4) ? 'g' : cizgiSayisi(alan4);
+                if (gm4) gsat = parseInt(gm4[1], 10) || 3;
                 ust = Math.max(0, parseInt(kod.slice(b3 + 1, b4), 10) || 0);
                 govde = kod.slice(b4 + 1);
             }
@@ -355,6 +368,7 @@
            olmayacak"): eski 625 boyundaki defterler de A4 açılır — yazı üstte aynen */
         L.ph = Math.max(A4_BOY, Math.min(4000, ph));
         L.cizgi = cn;
+        L.gsat = gsat;                                           /* güzel yazı düzeni: 3 eski, 8 yeni */
         L.ust = ust;
         return L;
     }
@@ -447,7 +461,7 @@
     function cizgiDuzeni(d) {
         if (d === undefined) d = D;
         return { n: cizgiSayisi(d && d.cizgi), ust: (d && d.ust != null) ? d.ust : UST_BOSLUK, g: !!(d && d.cizgi === 'g'),
-                 ph: (d && d.ph) || H };
+                 ph: (d && d.ph) || H, gsat: (d && d.gsat) || 3 };
     }
     function cizgiYerleri(R) {
         var n = cizgiSayisi(R && R.n), ust = (R && R.ust != null) ? R.ust : UST_BOSLUK, ph = (R && R.ph) || H;
@@ -474,10 +488,20 @@
        oturduğu çizgi), alt çizgi (inen kuyruklar). Orta ile taban arası
        (harflerin gövdesi) hafifçe boyalı. */
     function guzelYerleri(R) {
-        /* ilk satır, kâğıdın üstündeki sayfa çubuğunun altından başlasın */
-        var ust = ((R && R.ust != null) ? R.ust : UST_BOSLUK) + GUZEL_UST_EK, ph = (R && R.ph) || H;
-        var B = (BLOK - ust - GUZEL_ALT) / GUZEL_SATIR, L = [];
-        var adet = Math.max(1, Math.min(30, Math.floor((ph - ust - GUZEL_ALT) / B + 1e-6)));   /* A4: 7 satır */
+        var ph = (R && R.ph) || H, ust, B, L = [], adet;
+        if (R && R.gsat >= 4) {
+            /* YENİ DÜZEN (21.10.2026, öğretmen: "güzel yazı defterinde en altta ve en üstte
+               çok fazla boşluk var onu azaltalım"): üstte yalnız ust payı, altta GUZEL_ALT;
+               satırlar sayfaya eşit yayılır (A4: 8 satır) */
+            ust = (R.ust != null) ? R.ust : UST_BOSLUK;
+            adet = Math.max(1, Math.min(30, R.gsat));
+            B = (ph - ust - GUZEL_ALT) / adet;
+        } else {
+            /* eski düzen (g3): ilk satır yüzen sayfa çubuğunun altından, blok başına 3 satır */
+            ust = ((R && R.ust != null) ? R.ust : UST_BOSLUK) + GUZEL_UST_EK;
+            B = (BLOK - ust - GUZEL_ALT) / GUZEL_SATIR;
+            adet = Math.max(1, Math.min(30, Math.floor((ph - ust - GUZEL_ALT) / B + 1e-6)));   /* A4: 7 satır */
+        }
         for (var r = 0; r < adet; r++) {
             var t = ust + r * B;
             L.push({ ust: Math.round(t + 0.14 * B), orta: Math.round(t + 0.44 * B),
@@ -1058,7 +1082,38 @@
             '@keyframes pdCevir{0%,58%{transform:rotateY(0deg)}80%,100%{transform:rotateY(180deg)}}',
             '@media (prefers-reduced-motion: reduce){#ysPil .pd-yaprak,#ysPil .pd-yazi path,#ysPil .pd-kalem{animation:none;}}',
             '@media print{#ysPil{display:none;}}',
-            '@media (prefers-reduced-motion: reduce){#ysOrt,#ysKutu,.ys-bildiri,#ysPil{animation:none;} .ys-panel{transition:none;}}'
+            '@media (prefers-reduced-motion: reduce){#ysOrt,#ysKutu,.ys-bildiri,#ysPil{animation:none;} .ys-panel{transition:none;}}',
+            /* İKİ SATIRLI ÜST ÇUBUK (21.10.2026): bloklar yan yana, her blok iki satır */
+            '.ys-arac.ys-ust2{display:flex; align-items:stretch; flex-wrap:nowrap; gap:10px; padding:8px 12px; position:static; row-gap:8px;}',
+            '.ys-arac.ys-ust2::after{content:none;}',
+            '.ys-ust2 .ys-baslik{align-self:center; margin-inline-end:2px;}',
+            '.ys-ust2 .ys-blok{display:flex; flex-direction:column; justify-content:center; gap:6px; flex:none;}',
+            '.ys-ust2 .ys-satir{display:flex; align-items:center; gap:4px; min-height:36px;}',
+            '.ys-ust2 .ys-blok-sec,.ys-ust2 .ys-blok-duzen{padding:5px 7px; background:#F2F5F9; border-radius:16px;}',
+            '.ys-ust2 .ys-blok-sec .ys-anahtar{flex:1 1 auto; min-width:0;}',
+            '.ys-ust2 .ys-blok-sec .ys-kalin{display:inline-flex; align-items:center; gap:2px; margin-inline-start:4px; padding-inline-start:6px; border-inline-start:1px solid #DDE3EA;}',
+            '.ys-ust2 .ys-csec{position:relative;}',
+            '.ys-ust2 .ys-blok-duzen .ys-t{width:38px; height:36px; min-width:38px; padding:0; border-radius:10px; background:#fff; box-shadow:0 0 0 1px #E2E7EE;}',
+            '.ys-ust2 .ys-blok-duzen .ys-t:hover{background:#E5EBF3;}',
+            '.ys-ust2 .ys-blok-duzen .ys-t[disabled]{background:#fff; box-shadow:0 0 0 1px #EEF1F5;}',
+            '.ys-ust2 .ys-blok-duzen .ys-t svg{width:21px; height:21px;}',
+            '.ys-ust2 .ys-gara{width:1px; height:24px; background:#DDE3EA; margin:0 4px; flex:none;}',
+            '.ys-ust2 .ys-nav .ys-ok{width:46px; min-width:46px; color:#0E7C66; box-shadow:0 0 0 1px #CFE6DF;}',
+            '.ys-ust2 .ys-nav .ys-ok svg{width:26px; height:26px;}',
+            '.ys-ust2 .ys-nav .ys-ok:hover{background:#D6F0E9;}',
+            '.ys-ust2 .ys-nav .ys-sayfa{font-size:1.05rem; min-width:64px; text-align:center; font-weight:900;}',
+            '.ys-ust2 .ys-dgrup .ys-t[data-is="silgi"].sec{background:#16A085; color:#fff; box-shadow:none;}',
+            '.ys-ust2 .ys-dgrup .ys-t[data-is="temizle"]:not([disabled]):hover{background:#FDEDEC; color:#C0392B;}',
+            '.ys-ust2 .ys-blok-sag{align-items:flex-end; margin-inline-start:auto;}',
+            '.ys-ust2 .ys-blok-sag .ys-satir{justify-content:flex-end;}',
+            '.ys-ust2 .ys-pencere{position:static; order:0; margin-left:0;}',
+            '@media (max-width:940px){.ys-arac.ys-ust2{flex-wrap:wrap; gap:6px; padding:6px 8px;} .ys-ust2 .ys-blok{gap:4px;}',
+            '  .ys-ust2 .ys-blok-sag{margin-inline-start:auto;} .ys-ust2 #ysNotYazi{display:none;} .ys-ust2 .ys-baslik span{display:none;}}',
+            '@media (max-width:760px){.ys-ust2 .ys-satir{min-height:32px;} .ys-ust2 .ys-blok-duzen .ys-t{width:34px; height:32px; min-width:34px;}',
+            '  .ys-ust2 .ys-blok-duzen{order:5;}',                     /* telefon: 1. satır anahtarlar + sağ blok, 2. satır düzenleme/sayfalar */
+            '  .ys-ust2 .ys-blok-duzen .ys-t svg{width:19px; height:19px;} .ys-ust2 .ys-nav .ys-ok{width:40px; min-width:40px;} .ys-ust2 .ys-nav .ys-ok svg{width:23px; height:23px;}',
+            '  .ys-ust2 .ys-nav .ys-sayfa{font-size:.95rem; min-width:48px;} .ys-ust2 .ys-blok-sec,.ys-ust2 .ys-blok-duzen{padding:4px 5px; border-radius:13px;}',
+            '  .ys-ust2 .ys-blok-sec .ys-kalin{margin-inline-start:2px; padding-inline-start:3px;} .ys-ust2 .ys-gara{margin:0 2px;}}'
         ].join('\n');
         document.head.appendChild(s);
     }
@@ -1129,12 +1184,12 @@
         kapat(true);
         var t = tercihOku();
         T = { arac: 'kalem', renk: (t.renk >= 0 && t.renk < 5) ? t.renk : 0, kal: t.kal || 'o', mod: t.mod || 'c',
-              cizgi: tercihCizgi(t.cizgi), yon: t.yon === 'y' ? 'y' : 'd', uc: t.uc === 'h' ? 'h' : 'y',
+              cizgi: tercihCizgi(t.cizgi), yon: 'd', uc: t.uc === 'h' ? 'h' : 'y',
               sayi: CIZGI_SECENEK.indexOf(+t.sayi) >= 0 ? +t.sayi : null };      /* güzel yazıdan dönünce gelen çizgi sayısı */
         if (T.sayi == null) T.sayi = T.cizgi === 'g' ? CIZGI_VARSAYILAN : T.cizgi;
         D = kaynak || { id: yeniId(), sinif: sinif, sube: BAGLI ? BAGLI.sube : subeAdi(), tarih: Date.now(), guncelleme: 0,
                         sayfalar: [yeniSayfa('c')], aktif: 0, notId: '', notAd: '', kirli: false, pw: W, ph: A4_BOY,
-                        cizgi: T.cizgi, ust: UST_BOSLUK };
+                        cizgi: T.cizgi, ust: UST_BOSLUK, gsat: GUZEL_SATIR_A4 };
         defterHazirla(D);
         kur(kucukBasla);
         cizimAyarla();
@@ -1166,39 +1221,64 @@
         }).join('');
         ort.innerHTML =
             '<div id="ysKutu" role="dialog" aria-modal="true" aria-label="Defter">' +
-              '<div class="ys-arac">' +
+              /* İKİ SATIRLI ÜST ÇUBUK (21.10.2026, öğretmen: "araç çubuğunu header kısmına
+                 ekleyelim, defter çeşitleri ve kalem çeşitlerinin switchleri alt alta olsun …
+                 silgi ileri geri vs tüm elementleri headere ekleyelim"): yüzen sayfa çubuğu
+                 yok; bloklar iki satır. */
+              '<div class="ys-arac ys-ust2">' +
                 '<div class="ys-baslik">' + IK.defter + '<span>Defter<small>' + esc(etiket()) + '</small></span></div>' +
-                /* ANAHTARLAR (21.10.2026, öğretmen: "güzel yazı defteri ile çizgili defter
-                   arasındaki geçişi ve kalem çeşitlerini değiştirme sistemini switch şeklinde
-                   yap, çizgiliye basınca çizgi sayısı için rakam çıksın") */
-                '<div class="ys-grup ys-kgrup" role="group" aria-label="Kalem çeşidi ve kalınlık">' +
-                  '<div class="ys-anahtar ys-ucsec" role="radiogroup" aria-label="Kalem çeşidi"><i class="ys-top"></i>' +
-                    '<button type="button" class="ys-asec" data-uc="y" role="radio" aria-checked="true" title="Kalem — yuvarlak uçlu">' + IK.kalem + '<span>Kalem</span></button>' +
-                    '<button type="button" class="ys-asec" data-uc="h" role="radio" aria-checked="false" title="Hat kalemi — eğik uçlu kalem: yatayda kalın, dikeyde ince yazar">' + IK.hatUc + '<span>Hat kalemi</span></button>' +
+                '<div class="ys-blok ys-blok-sec" role="group" aria-label="Kalem ve defter türü">' +
+                  '<div class="ys-satir">' +
+                    '<div class="ys-anahtar ys-ucsec" role="radiogroup" aria-label="Kalem çeşidi"><i class="ys-top"></i>' +
+                      '<button type="button" class="ys-asec" data-uc="y" role="radio" aria-checked="true" title="Kalem — yuvarlak uçlu">' + IK.kalem + '<span>Kalem</span></button>' +
+                      '<button type="button" class="ys-asec" data-uc="h" role="radio" aria-checked="false" title="Hat kalemi — eğik uçlu kalem: yatayda kalın, dikeyde ince yazar">' + IK.hatUc + '<span>Hat kalemi</span></button>' +
+                    '</div>' +
+                    '<span class="ys-kalin" role="group" aria-label="Kalınlık">' + kalin + '</span>' +
                   '</div>' +
-                  '<span class="ys-gara"></span>' + kalin +
+                  '<div class="ys-satir ys-csec">' +
+                    '<div class="ys-anahtar ys-dtsec" role="radiogroup" aria-label="Çizgili defter ya da güzel yazı defteri"><i class="ys-top"></i>' +
+                      '<button type="button" class="ys-asec" data-dt="c" role="radio" aria-checked="true" title="Çizgili defter — basınca çizgi sayısı seçilir">' + IK.cizgiler + '<span>Çizgili</span><b class="ys-csn">5</b></button>' +
+                      '<button type="button" class="ys-asec" data-dt="g" role="radio" aria-checked="false" title="Arapça güzel yazı defteri — yardımcı çizgili satırlar">' + IK.guzel + '<span>Güzel yazı</span></button>' +
+                    '</div>' +
+                    '<div class="ys-cpop" id="ysCpop" role="group" aria-label="Çizgi sayısı" hidden>' +
+                      '<span class="ys-cet">' + IK.cizgiler + '<span>Çizgi</span></span>' + csay + '</div>' +
+                  '</div>' +
                 '</div>' +
-                '<div class="ys-ayrac"></div>' +
-                '<div class="ys-grup ys-csec" role="group" aria-label="Defter türü">' +
-                  '<div class="ys-anahtar ys-dtsec" role="radiogroup" aria-label="Çizgili defter ya da güzel yazı defteri"><i class="ys-top"></i>' +
-                    '<button type="button" class="ys-asec" data-dt="c" role="radio" aria-checked="true" title="Çizgili defter — basınca çizgi sayısı seçilir">' + IK.cizgiler + '<span>Çizgili</span><b class="ys-csn">5</b></button>' +
-                    '<button type="button" class="ys-asec" data-dt="g" role="radio" aria-checked="false" title="Arapça güzel yazı defteri — yardımcı çizgili satırlar">' + IK.guzel + '<span>Güzel yazı</span></button>' +
+                '<div class="ys-blok ys-blok-duzen" role="group" aria-label="Düzenleme ve sayfalar">' +
+                  '<div class="ys-satir ys-dgrup" role="group" aria-label="Düzenleme">' +
+                    '<button type="button" class="ys-t" data-is="geri" title="Geri al (Ctrl+Z)" aria-label="Geri al">' + IK.geri + '</button>' +
+                    '<button type="button" class="ys-t" data-is="ileri" title="Yinele (Ctrl+Y)" aria-label="Yinele">' + IK.ileri + '</button>' +
+                    '<i class="ys-gara"></i>' +
+                    '<button type="button" class="ys-t" data-is="silgi" title="Silgi (S) — seçiliyken bir daha basınca: Tüm sayfayı sil" aria-label="Silgi">' + IK.silgi + '</button>' +
+                    '<button type="button" class="ys-t" data-is="temizle" title="Sayfayı sil" aria-label="Sayfayı sil">' + IK.temizle + '</button>' +
                   '</div>' +
-                  '<div class="ys-cpop" id="ysCpop" role="group" aria-label="Çizgi sayısı" hidden>' +
-                    '<span class="ys-cet">' + IK.cizgiler + '<span>Çizgi</span></span>' + csay + '</div>' +
+                  '<div class="ys-satir ys-nav" role="group" aria-label="Sayfalar">' +
+                    '<button type="button" class="ys-t ys-ok" data-is="saga" title="Geri — önceki sayfa" aria-label="Geri — önceki sayfa">' +
+                      '<span class="ik-y">' + IK.sonraki + '</span><span class="ik-d">' + IK.yukari + '</span></button>' +
+                    '<span class="ys-sayfa" id="ysSayfa">1 / 1</span>' +
+                    '<button type="button" class="ys-t ys-ok" data-is="sola" title="İleri — sonraki sayfa; son sayfadaysa yeni sayfa" aria-label="İleri — sonraki sayfa">' +
+                      '<span class="ik-y">' + IK.onceki + '</span><span class="ik-d">' + IK.asagi + '</span></button>' +
+                    '<i class="ys-gara"></i>' +
+                    '<button type="button" class="ys-t" data-is="tumSayfalar" title="Tüm sayfalar">' + IK.izgara + '</button>' +
+                    '<button type="button" class="ys-t" data-is="yeniSayfa" title="Yeni sayfa — açık sayfadan hemen sonra">' + IK.yeniSayfa + '</button>' +
+                  '</div>' +
                 '</div>' +
                 '<span class="ys-bos"></span>' +
-                '<button type="button" class="ys-t ana" data-is="notKaydet" title="Bu defteri seviye notlarına kaydet">' + IK.yildiz +
-                  '<span id="ysNotYazi">Seviye notlarına kaydet</span></button>' +
-                '<button type="button" class="ys-t" data-is="panel" title="Geçmiş ve seviye notları">' + IK.saat + '<span>Geçmiş</span></button>' +
-                '<button type="button" class="ys-t" data-is="pdf" title="PDF olarak indir — bütün sayfalar">' + IK.pdf + '<span>PDF</span></button>' +
-                '<div class="ys-pencere">' +
-                '<button type="button" class="ys-t" data-is="tamEkran" title="Tam ekran">' + IK.tamEkran + '<span>Tam ekran</span></button>' +
-                (TEK
-                  ? '<a class="ys-t kucult ys-ana" href="index.html" data-is="anasayfa" title="Kidef Arapça ana sayfasına git" aria-label="Ana sayfaya git">' +
-                      IK.ev + '<span>Ana sayfa</span></a>'
-                  : '<button type="button" class="ys-t kucult" data-is="kucult" title="Simge durumuna küçült (Esc) — sınıf açık kaldıkça sağ altta durur" aria-label="Simge durumuna küçült">' +
-                      IK.kucult + '<span>Küçült</span></button>') +
+                '<div class="ys-blok ys-blok-sag">' +
+                  '<div class="ys-satir ys-pencere">' +
+                    '<button type="button" class="ys-t" data-is="tamEkran" title="Tam ekran">' + IK.tamEkran + '<span>Tam ekran</span></button>' +
+                    (TEK
+                      ? '<a class="ys-t kucult ys-ana" href="index.html" data-is="anasayfa" title="Kidef Arapça ana sayfasına git" aria-label="Ana sayfaya git">' +
+                          IK.ev + '<span>Ana sayfa</span></a>'
+                      : '<button type="button" class="ys-t kucult" data-is="kucult" title="Simge durumuna küçült (Esc) — sınıf açık kaldıkça sağ altta durur" aria-label="Simge durumuna küçült">' +
+                          IK.kucult + '<span>Küçült</span></button>') +
+                  '</div>' +
+                  '<div class="ys-satir ys-islem">' +
+                    '<button type="button" class="ys-t ana" data-is="notKaydet" title="Bu defteri seviye notlarına kaydet">' + IK.yildiz +
+                      '<span id="ysNotYazi">Seviye notlarına kaydet</span></button>' +
+                    '<button type="button" class="ys-t" data-is="panel" title="Geçmiş ve seviye notları">' + IK.saat + '<span>Geçmiş</span></button>' +
+                    '<button type="button" class="ys-t" data-is="pdf" title="PDF olarak indir — bütün sayfalar">' + IK.pdf + '<span>PDF</span></button>' +
+                  '</div>' +
                 '</div>' +
               '</div>' +
               '<div class="ys-sahne" id="ysSahne">' +
@@ -1214,32 +1294,6 @@
                   '<div class="ys-tutamak" id="ysTutamakD"><b>1</b></div>' +
                 '</div>' +
                 yan('sol') + yan('sag') +
-                /* [geri al · yinele · silgi · çöp] YUKARIDA ORTADA (21.10.2026, öğretmen:
-                   "defterde ileri geri tuşu ve silgi konteynırı yukarda ortada olsun"):
-                   sayfa çubuğunun başında, aynı kutuda */
-                '<div class="ys-sayfalar" aria-label="Sayfalar ve düzenleme">' +
-                  '<span class="ys-dgrup" role="group" aria-label="Düzenleme">' +
-                    '<button type="button" class="ys-t" data-is="geri" title="Geri al (Ctrl+Z)" aria-label="Geri al">' + IK.geri + '</button>' +
-                    '<button type="button" class="ys-t" data-is="ileri" title="Yinele (Ctrl+Y)" aria-label="Yinele">' + IK.ileri + '</button>' +
-                    '<button type="button" class="ys-t" data-is="silgi" title="Silgi (S) — seçiliyken bir daha basınca: Tüm sayfayı sil" aria-label="Silgi">' +
-                      IK.silgi + '</button>' +
-                    '<button type="button" class="ys-t" data-is="temizle" title="Sayfayı sil" aria-label="Sayfayı sil">' + IK.temizle + '</button>' +
-                  '</span>' +
-                  '<span class="ys-ara"></span>' +
-                  '<button type="button" class="ys-t ys-ok" data-is="sola" title="İleri — sonraki sayfa; son sayfadaysa yeni sayfa" aria-label="İleri — sonraki sayfa">' +
-                    '<span class="ik-y">' + IK.onceki + '</span><span class="ik-d">' + IK.asagi + '</span></button>' +
-                  '<span class="ys-sayfa" id="ysSayfa">1 / 1</span>' +
-                  '<button type="button" class="ys-t ys-ok" data-is="saga" title="Geri — önceki sayfa" aria-label="Geri — önceki sayfa">' +
-                    '<span class="ik-y">' + IK.sonraki + '</span><span class="ik-d">' + IK.yukari + '</span></button>' +
-                  '<span class="ys-ara"></span>' +
-                  '<button type="button" class="ys-t" data-is="tumSayfalar" title="Tüm sayfalar">' + IK.izgara + '</button>' +
-                  '<button type="button" class="ys-t" data-is="yeniSayfa" title="Yeni sayfa — açık sayfadan hemen sonra">' + IK.yeniSayfa + '</button>' +
-                  '<span class="ys-ara"></span>' +
-                  '<span class="ys-yon" role="group" aria-label="Kaydırma yönü">' +
-                    '<button type="button" class="ys-yb" data-yon="d" aria-pressed="false" title="Dikey kaydırma — sayfalar alt alta">' + IK.dikey + '</button>' +
-                    '<button type="button" class="ys-yb" data-yon="y" aria-pressed="false" title="Yatay kaydırma — sayfalar sağdan sola">' + IK.yatay + '</button>' +
-                  '</span>' +
-                '</div>' +
               '</div>' +
               '<div class="ys-kaydirma" id="ysKaydirma">' +
                 '<div class="ys-ray" id="ysRay" role="scrollbar" aria-orientation="horizontal" aria-controls="ysKagit"' +
@@ -1276,7 +1330,7 @@
             rayD: ort.querySelector('#ysRayD'), tutamakD: ort.querySelector('#ysTutamakD'),
             raySayfaD: ort.querySelector('#ysRayD .ys-ray-sayfalar'), rayAnahtar: '',
             cpop: ort.querySelector('#ysCpop'),
-            dikey: T.yon !== 'y'
+            dikey: true                                   /* YALNIZ DİKEY (21.10.2026) */
         };
         UI.kutu.classList.toggle('dikey', UI.dikey);
         ort.addEventListener('click', tikla);
@@ -1544,6 +1598,7 @@
             d.cizgi = sc === 'g' ? 'g' : cizgiSayisi(sc);
         }
         if (d.ust == null) d.ust = (d.sayfalar && d.sayfalar.ust != null) ? d.sayfalar.ust : UST_BOSLUK;
+        if (d.gsat == null) d.gsat = (d.sayfalar && d.sayfalar.gsat) || 3;
         d.geri = d.geri || []; d.ileri = d.ileri || [];
         d.sayfalar.forEach(function (sy) { sy.mod = 'c'; });
         d.aktif = Math.max(0, Math.min(d.aktif || 0, d.sayfalar.length - 1));
@@ -2055,6 +2110,7 @@
         T.cizgi = n; if (n !== 'g') T.sayi = n; tercihKaydet();
         if (!D || (D.cizgi === n && D.ust === UST_BOSLUK)) { aracGuncelle(); return; }
         D.cizgi = n; D.ust = UST_BOSLUK;
+        if (n === 'g') D.gsat = GUZEL_SATIR_A4;                 /* güzel yazıya geçen defter yeni düzeni alır (21.10.2026) */
         D.kirli = true;
         sayfaCiz();
         aracGuncelle();              /* seçili düğme ve sayfa bilgisi hemen değişsin (21.10.2026) */
@@ -2086,9 +2142,11 @@
         tercihKaydet();
         aracGuncelle();
     }
-    /* KAYDIRMA YÖNÜ: 'd' dikey (öntanımlı) / 'y' yatay — açık sayfa yerinde kalır */
+    /* KAYDIRMA YÖNÜ — YALNIZ DİKEY (21.10.2026, öğretmen: "defterde sayfaları yatay
+       kısmını iptal edelim, sadece dikey mod olsun"): yatay kip açılmaz, eski
+       tercih yok sayılır. */
     function yonSec(y) {
-        y = y === 'y' ? 'y' : 'd';
+        y = 'd';
         if (T) { T.yon = y; tercihKaydet(); }
         if (!UI || !D) return;
         var dik = y === 'd';
