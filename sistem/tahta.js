@@ -428,6 +428,30 @@
     '.th-dug svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}',
     '@media (max-width:820px){.th-dug span{display:none}.th-cip{max-width:42vw}}',
     'body.th-yansit .th-cerceve{top:36px;height:calc(100% - 36px)}',
+    /* TELEFONDA KUMANDA TUŞU (21.10.2026): çubuk yok, çerçeve tam boy, yüzen tuş + panel */
+    'body.th-yansit.th-mobil .th-cerceve{top:0;height:100%}',
+    'body.th-mobil .th-cubuk{display:none}',
+    '.th-ktus{position:fixed;z-index:46;width:58px;height:58px;border-radius:50%;border:2px solid rgba(255,255,255,.75);padding:0;',
+    ' background:#0f2a43;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.32);display:flex;align-items:center;justify-content:center;',
+    ' cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}',
+    '.th-ktus svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}',
+    '.th-ktus .th-nokta{position:absolute;top:-1px;right:-1px;width:14px;height:14px;border:2px solid #fff;box-shadow:none}',
+    '.th-ktus.acik{background:#16A085}',
+    '.th-ktus.suruk{opacity:.8;transform:scale(1.06)}',
+    '.th-kperde{position:fixed;inset:0;z-index:44;background:transparent}',
+    '.th-kpanel{position:fixed;z-index:45;width:min(360px,calc(100vw - 20px));box-sizing:border-box;background:#0f2a43;color:#fff;border-radius:18px;padding:12px;',
+    ' box-shadow:0 18px 48px rgba(0,0,0,.42);font:600 13px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif}',
+    '.th-kpanel .th-bas{display:flex;align-items:center;gap:8px;margin:2px 2px 10px;min-width:0}',
+    '.th-kpanel .th-isim{display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:none;max-width:55%}',
+    '.th-kpanel .th-cip{flex:1}',
+    '.th-kpanel .th-hedef{display:block;width:100%;height:38px;margin:0 0 10px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);',
+    ' color:#fff;border-radius:10px;padding:0 10px;font:700 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif}',
+    '.th-kpanel .th-hedef option{color:#0f2a43}',
+    '.th-kpanel .th-tuslar{display:grid;grid-template-columns:1fr 1fr;gap:8px}',
+    '.th-kpanel .th-dug{height:44px;border-radius:12px;font-size:14px;justify-content:center;padding:0 10px}',
+    '.th-kpanel .th-dug span{display:inline}',
+    '.th-kpanel .th-dug svg{width:17px;height:17px}',
+    '.th-kpanel .th-dug.kirmizi{grid-column:1/-1}',
     '.th-cerceve{position:fixed;left:0;top:0;width:100%;height:100%;border:0;background:#fff;display:block}',
     '.th-koruma{position:fixed;inset:0;z-index:15;background:transparent;cursor:default}',
     '.th-perde{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;',
@@ -497,6 +521,7 @@
     devam: '<svg viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg>',
     esitle: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>',
     bitir: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    kumanda: '<svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><circle cx="12" cy="7" r="1.1"/><path d="M10 11.5h4M10 15h4M10 18.5h4"/></svg>',
     tam: '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
     tamcik: '<svg viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>',
     dokun: '<svg viewBox="0 0 24 24"><path d="M9 11.5V5.2a1.6 1.6 0 0 1 3.2 0v5.6"/><path d="M12.2 10.2V8.8a1.6 1.6 0 0 1 3.2 0v2.4"/>' +
@@ -1985,18 +2010,21 @@
     arayuzTazele();
   }
   function cubukKur() {
-    var c = $('thCubuk');
-    c.innerHTML =
-      '<span class="th-isim"><span class="th-nokta bekle" id="thNokta"></span><span id="thBaslik">' + kac(kd('th.yansitiliyor', 'Tahtaya yansıtılıyor')) + '</span></span>' +
-      '<span class="th-cip" id="thCip">' + kac(kd('th.tahta_bekleniyor', 'Tahta bekleniyor…')) + '</span>' +
-      '<select class="th-hedef" id="thHedef" title="' + kac(kd('th.hedef_ip', 'Hangi tahtaya yansıtılsın?')) + '" aria-label="' + kac(kd('th.hedef_ip', 'Hangi tahtaya yansıtılsın?')) + '"></select>' +
-      '<span class="th-bos"></span>' +
+    /* telefonda aynı düğmeler yüzen tuşun paneline kurulur (21.10.2026) */
+    var c = MOBIL ? kumandaPanel() : $('thCubuk');
+    var isim = '<span class="th-isim"><span class="th-nokta bekle" id="thNokta"></span><span id="thBaslik">' + kac(kd('th.yansitiliyor', 'Tahtaya yansıtılıyor')) + '</span></span>';
+    var cip = '<span class="th-cip" id="thCip">' + kac(kd('th.tahta_bekleniyor', 'Tahta bekleniyor…')) + '</span>';
+    var hedef = '<select class="th-hedef" id="thHedef" title="' + kac(kd('th.hedef_ip', 'Hangi tahtaya yansıtılsın?')) + '" aria-label="' + kac(kd('th.hedef_ip', 'Hangi tahtaya yansıtılsın?')) + '"></select>';
+    var tuslar =
       '<button type="button" class="th-dug th-kip" id="thKipDug" aria-pressed="false" title="' + kac(kd('th.kip_ip', 'Açıkken tahtaya dokunarak da kullanabilirsin; kapalıyken tahta yalnız bilgisayarı gösterir')) + '">' + SVG.dokun + '<span>' + kac(kd('th.kip', 'Tahtadan da kullan')) + '</span></button>' +
       '<button type="button" class="th-dug" id="thPerdeDug" aria-pressed="false" title="' + kac(kd('th.perde_ip', 'Tahtayı karart (öğrenciler ekranı görmesin)')) + '">' + SVG.perde + '<span>' + kac(kd('th.perde', 'Perde')) + '</span></button>' +
       '<button type="button" class="th-dug" id="thDurakDug" aria-pressed="false" title="' + kac(kd('th.durak_ip', 'Tahta son görüntüde dursun; sen burada serbestçe gez')) + '"></button>' +
       '<button type="button" class="th-dug" id="thEsitleDug" title="' + kac(kd('th.esitle_ip', 'Tahtadaki sayfayı bu ekranla yeniden eşitle')) + '">' + SVG.esitle + '<span>' + kac(kd('th.esitle', 'Eşitle')) + '</span></button>' +
       '<button type="button" class="th-dug kirmizi" id="thBitirDug" title="' + kac(kd('th.bitir_ip', 'Yansıtmayı bitir, bu sayfada kal')) + '">' + SVG.bitir + '<span>' + kac(kd('th.bitir', 'Bitir')) + '</span></button>';
-    c.hidden = false;
+    c.innerHTML = MOBIL
+      ? '<div class="th-bas">' + isim + cip + '</div>' + hedef + '<div class="th-tuslar">' + tuslar + '</div>'
+      : isim + cip + hedef + '<span class="th-bos"></span>' + tuslar;
+    if (MOBIL) kumandaTus(); else c.hidden = false;      /* panel yalnız tuşla açılır */
     $('thDurakDug').dataset.durum = '';
     $('thKipDug').addEventListener('click', function () {
       var yeni = cift() ? 'tek' : 'cift';
@@ -2123,7 +2151,135 @@
     nokta.className = 'th-nokta ' + sinif;
     cip.textContent = yazi;
     $('thBaslik').textContent = Y.durak ? kd('th.duraklatildi_bas', 'Yansıtma duraklatıldı') : kd('th.yansitiliyor', 'Tahtaya yansıtılıyor');
+    var kn = $('thKNokta');
+    if (kn) { kn.className = 'th-nokta ' + sinif; var kt = $('thKTus'); if (kt) kt.title = yazi; }
   }
+
+  /* ------------------------------------- TELEFONDA KUMANDA TUŞU (21.10.2026)
+     Öğretmen: "mobilde cihaz kumandaysa kumanda tuşları yüzebilen açılır kapanır
+     bi popup tuş olsun". Telefon/tablette (dokunmatik, kısa kenar ≤ 820 px)
+     üstteki çubuk yerine yüzen yuvarlak tuş: üstünde durum noktası; dokununca
+     panel (durum, hangi tahta, Tahtadan da kullan / Perde / Duraklat / Eşitle /
+     Bitir) açılır; dışına, tuşa ya da bir düğmeye basınca kapanır. Tuş
+     sürüklenir, kenara yaslanır, yeri hatırlanır (localStorage kidef_kumanda_tus). */
+  var MOBIL = (function () {
+    try {
+      if (ROL !== 'yansit') return false;
+      var ua = navigator.userAgent || '';
+      /* telefon (UA) ya da birincil işaretçisi parmak olan küçük cihaz (tablet);
+         dokunmatik dizüstü (fare/izleme yüzeyi) çubukta kalır */
+      var kaba = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+      var kisa = Math.min(window.screen.width || 9999, window.screen.height || 9999);
+      return /Mobi|iPhone/.test(ua) || (kaba && kisa <= 820);
+    } catch (e) { return false; }
+  })();
+  var KT = { acik: false, suruk: null };
+  function ktKonumOku() { try { var k = JSON.parse(localStorage.getItem('kidef_kumanda_tus') || 'null'); return (k && typeof k.fx === 'number' && typeof k.fy === 'number') ? k : null; } catch (e) { return null; } }
+  function ktKonumYaz(x, y, w, h) {
+    var W = Math.max(1, window.innerWidth - w), H = Math.max(1, window.innerHeight - h);
+    try { localStorage.setItem('kidef_kumanda_tus', JSON.stringify({ fx: Math.min(1, Math.max(0, x / W)), fy: Math.min(1, Math.max(0, y / H)) })); } catch (e) { }
+  }
+  function ktYerlestir(t, x, y) {
+    var w = t.offsetWidth || 58, h = t.offsetHeight || 58, K = 10;
+    x = Math.round(Math.min(window.innerWidth - w - K, Math.max(K, x)));
+    y = Math.round(Math.min(window.innerHeight - h - K, Math.max(K, y)));
+    t.style.left = x + 'px'; t.style.top = y + 'px';
+    return [x, y, w, h];
+  }
+  function ktBaslangic(t) {
+    var w = t.offsetWidth || 58, h = t.offsetHeight || 58, k = ktKonumOku();
+    if (k) ktYerlestir(t, k.fx * (window.innerWidth - w), k.fy * (window.innerHeight - h));
+    else ktYerlestir(t, window.innerWidth - w - 14, window.innerHeight - h - 26);   /* sağ alt */
+  }
+  function ktKenaraYasla(t) {
+    var r = t.getBoundingClientRect(), K = 10;
+    var sol = r.left + r.width / 2 < window.innerWidth / 2;
+    t.style.transition = 'left .18s ease';
+    var k = ktYerlestir(t, sol ? K : window.innerWidth - r.width - K, r.top);
+    setTimeout(function () { t.style.transition = ''; }, 220);
+    ktKonumYaz(k[0], k[1], k[2], k[3]);                 /* hedef yer kaydedilir (geçiş sürerken ölçülmez) */
+  }
+  function kumandaTus() {
+    var t = $('thKTus');
+    if (t) return t;
+    t = document.createElement('button');
+    t.type = 'button'; t.id = 'thKTus'; t.className = 'th-ktus';
+    t.setAttribute('aria-label', kd('th.kumanda_tus', 'Kumanda'));
+    t.setAttribute('aria-expanded', 'false');
+    t.innerHTML = SVG.kumanda + '<span class="th-nokta bekle" id="thKNokta"></span>';
+    document.body.appendChild(t);
+    ktBaslangic(t);
+    t.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      var r = t.getBoundingClientRect();
+      KT.suruk = { id: e.pointerId, x: e.clientX, y: e.clientY, sol: r.left, ust: r.top, tasindi: false };
+      try { t.setPointerCapture(e.pointerId); } catch (x) { }
+      e.preventDefault();
+    });
+    t.addEventListener('pointermove', function (e) {
+      var d = KT.suruk;
+      if (!d || e.pointerId !== d.id) return;
+      var dx = e.clientX - d.x, dy = e.clientY - d.y;
+      if (!d.tasindi && Math.sqrt(dx * dx + dy * dy) < 8) return;
+      if (!d.tasindi) { d.tasindi = true; t.classList.add('suruk'); kumandaKapat(); }
+      ktYerlestir(t, d.sol + dx, d.ust + dy);
+    });
+    var birak = function (e) {
+      var d = KT.suruk;
+      if (!d || e.pointerId !== d.id) return;
+      KT.suruk = null;
+      t.classList.remove('suruk');
+      if (d.tasindi) ktKenaraYasla(t);
+      else if (e.type === 'pointerup') kumandaAcKapat();
+    };
+    t.addEventListener('pointerup', birak);
+    t.addEventListener('pointercancel', birak);
+    window.addEventListener('resize', function () { var tt = $('thKTus'); if (tt) { ktBaslangic(tt); if (KT.acik) kumandaYerlestir(); } });
+    return t;
+  }
+  function kumandaPanel() {
+    var p = $('thKPanel');
+    if (p) return p;
+    p = document.createElement('div');
+    p.id = 'thKPanel'; p.className = 'th-kpanel'; p.hidden = true;
+    p.setAttribute('role', 'dialog'); p.setAttribute('aria-label', kd('th.kumanda_tus', 'Kumanda'));
+    document.body.appendChild(p);
+    /* bir düğmeye basınca panel kapanır (yakalama evresinde: düğmenin kendi işi
+       içini yeniden çizse de hedef henüz yerinde; kapanış düğmenin işinden sonra) */
+    p.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('button')) setTimeout(kumandaKapat, 60); }, true);
+    return p;
+  }
+  function kumandaYerlestir() {
+    var p = $('thKPanel'), t = $('thKTus');
+    if (!p || !t) return;
+    var r = t.getBoundingClientRect(), K = 10, W = window.innerWidth, H = window.innerHeight;
+    var pw = p.offsetWidth, ph = p.offsetHeight;
+    var x = (r.left + r.width / 2 > W / 2) ? r.right - pw : r.left;
+    var y = (r.top + r.height / 2 > H / 2) ? r.top - ph - 10 : r.bottom + 10;
+    x = Math.min(W - pw - K, Math.max(K, x));
+    y = Math.min(H - ph - K, Math.max(K, y));
+    p.style.left = Math.round(x) + 'px'; p.style.top = Math.round(y) + 'px';
+  }
+  function kumandaAc() {
+    var p = $('thKPanel'), t = $('thKTus');
+    if (!p || !t || KT.acik) return;
+    KT.acik = true;
+    var perde = document.createElement('div');
+    perde.id = 'thKPerde'; perde.className = 'th-kperde';
+    perde.addEventListener('pointerdown', function (e) { e.preventDefault(); kumandaKapat(); });
+    document.body.appendChild(perde);
+    p.hidden = false;
+    kumandaYerlestir();
+    t.classList.add('acik'); t.setAttribute('aria-expanded', 'true');
+  }
+  function kumandaKapat() {
+    var p = $('thKPanel'), t = $('thKTus'), perde = $('thKPerde');
+    if (perde) perde.parentNode.removeChild(perde);
+    if (p) p.hidden = true;
+    if (t) { t.classList.remove('acik'); t.setAttribute('aria-expanded', 'false'); }
+    KT.acik = false;
+  }
+  function kumandaAcKapat() { if (KT.acik) kumandaKapat(); else kumandaAc(); }
   /* tahta: durum noktası, dokunulunca açılan pencere, koruma ve perde */
   function zDurumKur() {
     var d = $('thDurum');
@@ -2362,6 +2518,7 @@
     S.kok = kok; S.lider = true;
     stilKur(); bekleGoster(null);
     document.body.classList.add('th-yansit');
+    if (MOBIL) document.body.classList.add('th-mobil');
     var kip = 'cift';
     try { if (localStorage.getItem('kidef_tahta_kip') === 'tek') kip = 'tek'; } catch (e) { }
     S.ayar = { kip: kip, perde: false, kg: false };
@@ -2404,6 +2561,7 @@
     stilKur();
     devamGoster(kd('th.devam_esit', 'Tahtadaki ders açılıyor…'));
     document.body.classList.add('th-yansit');
+    if (MOBIL) document.body.classList.add('th-mobil');
     var kip = 'cift';
     try { if (localStorage.getItem('kidef_tahta_kip') === 'tek') kip = 'tek'; } catch (e) { }
     S.ayar = { kip: kip, perde: false, kg: false };          /* gerçeği dinleyiciden gelir */
@@ -2567,7 +2725,7 @@
       baglan(izleBasla);
     }
     document.addEventListener('kidef:dil', function () {
-      if (ROL === 'yansit' && $('thCubuk') && !$('thCubuk').hidden && S.kok) cubukKur();
+      if (ROL === 'yansit' && S.kok && (MOBIL ? !!$('thKPanel') : ($('thCubuk') && !$('thCubuk').hidden))) cubukKur();
       if (ROL === 'izle' && !$('thBekle').hidden && !oturumVar()) bekleGoster('izle');
       var ip = $('thIpucu');
       if (ip && !ip.hidden) ipucuGoster();

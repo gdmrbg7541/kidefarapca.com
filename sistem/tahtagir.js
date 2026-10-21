@@ -28,6 +28,13 @@
    · Canlı veritabanı (Firebase Realtime Database) yalnız gerektiğinde
      yüklenir: panel açılınca, cihaz tahta olarak işaretliyse ya da bu cihaz
      az önce bir dersin kumandasıysa.
+   · SEÇİM PENCERESİ (21.10.2026) — öğretmen: "akıllı tahtaya dokununca iki
+     seçenek çıksın ama tam sayfa olarak değil popup olarak: bu cihazı kumanda
+     olarak kullan, ya da bu cihazı Sınıf Ekranı olarak kullan". Düğme artık
+     her cihazda — Sınıf Ekranı olarak işaretli cihazda da — aynı küçük
+     pencereyi açar; 18.10'daki "doğrudan tahta görünümü" kestirmesi kalktı.
+     Kumandadan yansıtma başlayınca işaretli cihazın kendiliğinden geçmesi
+     sürüyor (soruKontrol).
    Motor ve veritabanı kuralı: sistem/tahta.js.
    ===================================================================== */
 (function () {
@@ -98,6 +105,25 @@
     '.thg-ust svg{width:118px;height:auto;flex:none}',
     '.thg-ust h2{margin:0 0 4px;font-size:1.45rem;line-height:1.2}',
     '.thg-ust p{margin:0;color:#475569;font-size:.95rem;line-height:1.45}',
+    '#thgKutu.thg-kucuk{width:min(470px,100%);box-sizing:border-box;padding:20px 20px 16px;border-radius:20px}',
+    '.thg-kucuk .thg-ust{margin:0 36px 14px 0;gap:12px}',
+    '.thg-logo{width:48px;height:48px;border-radius:14px;background:#e8f6f2;color:#0E7C66;display:grid;place-items:center;flex:none}',
+    '.thg-logo svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}',
+    '.thg-kucuk .thg-ust h2{font-size:1.3rem}',
+    '.thg-secenekler{display:flex;flex-direction:column;gap:10px}',
+    '.thg-sec{display:flex;align-items:center;gap:12px;width:100%;text-align:start;border:1.5px solid #e2e8f0;border-radius:16px;padding:12px;',
+    ' background:#fbfdff;color:#0f2a43;font:inherit;cursor:pointer;transition:border-color .15s, box-shadow .15s, transform .15s}',
+    '.thg-sec:hover,.thg-sec:focus-visible{border-color:#16A085;box-shadow:0 8px 22px rgba(22,160,133,.15);transform:translateY(-1px);outline:none}',
+    '.thg-sec .thg-sim{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;flex:none;color:#fff;',
+    ' background:linear-gradient(135deg,#16A085,#0E7C66);box-shadow:0 4px 12px rgba(14,124,102,.25)}',
+    '.thg-sec.ikincil .thg-sim{background:#0f2a43;box-shadow:0 4px 12px rgba(15,42,67,.25)}',
+    '.thg-sec .thg-sim svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}',
+    '.thg-sec .thg-yazi{flex:1;min-width:0}',
+    '.thg-sec b{display:block;font-size:1.02rem;line-height:1.25}',
+    '.thg-sec small{display:block;color:#5b6b7c;font-size:.82rem;line-height:1.4;margin-top:3px}',
+    '.thg-sec .thg-ok{width:18px;height:18px;flex:none;color:#94a3b8;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}',
+    '.thg-kucuk .thg-tahtalar{margin:-2px 0 2px 16px;padding-inline-start:12px;border-inline-start:2px solid #cfe9e2}',
+    '.thg-kucuk .thg-tahtalar[hidden]{display:none}',
     '.thg-secim{display:grid;grid-template-columns:1fr 1fr;gap:12px}',
     '.thg-kart{border:1.5px solid #e2e8f0;border-radius:16px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:6px;background:#fbfdff;',
     ' transition:border-color .15s, box-shadow .15s, transform .15s}',
@@ -144,7 +170,10 @@
   }
   var SIM = {
     pc: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M1 20h22"/><path d="M9 10l2 2 4-4"/></svg>',
-    tahta: '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="13" rx="2"/><path d="M8 21h8M12 16v5"/><path d="M6 12.5a3.5 3.5 0 0 1 3.5-3.5M6 9.5a.6.6 0 0 1 .6-.6"/></svg>'
+    tahta: '<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="13" rx="2"/><path d="M8 21h8M12 16v5"/><path d="M6 12.5a3.5 3.5 0 0 1 3.5-3.5M6 9.5a.6.6 0 0 1 .6-.6"/></svg>',
+    /* kumanda (telefon/bilgisayar) ve ok — seçim penceresi (21.10.2026) */
+    kumanda: '<svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><circle cx="12" cy="7" r="1.1"/><path d="M10 11.5h4M10 15h4M10 18.5h4"/></svg>',
+    ok: '<svg class="thg-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>'
   };
   function cizim() {
     return '<svg viewBox="0 0 160 84" aria-hidden="true">' +
@@ -209,38 +238,36 @@
     if (!d) return;
     var n = tahtaSayisi(), sinif = '', m;
     if (!vt) m = kd('th.p_durum_bekle', 'Durum okunuyor…');
-    else if (yayinVar() && n) { sinif = 'canli'; m = kd('th.p_durum_ikisi', 'Yansıtma açık; tahtan bağlı.'); }
-    else if (yayinVar()) { sinif = 'bekle'; m = kd('th.p_durum_yayin', 'Bir bilgisayarın yansıtıyor; tahta bağlı değil.'); }
-    else if (n) { sinif = 'bekle'; m = kd('th.p_durum_tahta', 'Tahtan hazır, bilgisayarını bekliyor.'); }
+    else if (yayinVar() && n) { sinif = 'canli'; m = kd('th.p_durum_ikisi', 'Yansıtma açık; Sınıf Ekranı bağlı.'); }
+    else if (yayinVar()) { sinif = 'bekle'; m = kd('th.p_durum_yayin', 'Bir kumanda yansıtıyor; Sınıf Ekranı bağlı değil.'); }
+    else if (n) { sinif = 'bekle'; m = kd('th.p_durum_tahta', 'Sınıf Ekranı hazır, kumandayı bekliyor.'); }
     else m = kd('th.p_durum_yok', 'Şu an yansıtma yok.');
     d.innerHTML = '<span class="thg-nokta ' + sinif + '"></span><span>' + kac(m) + '</span>';
   }
   function panelAc() {
-    /* tahta cihazında seçim paneli yok: doğrudan tahta görünümü (18.10.2026) */
-    if (tahtaCihazi() && kullanici()) { git('izle'); return; }
+    /* küçük seçim penceresi: iki seçenek (21.10.2026) — Sınıf Ekranı olarak
+       işaretli cihazda da açılır (tahta görünümüne doğrudan gidilmez) */
     stilKur();
     panelKapat();
     var p = document.createElement('div');
     p.id = 'thgPerde';
     var tahta = tahtaCihazi();
-    p.innerHTML = '<div id="thgKutu" role="dialog" aria-modal="true" aria-labelledby="thgBaslik">' +
+    p.innerHTML = '<div id="thgKutu" class="thg-kucuk" role="dialog" aria-modal="true" aria-labelledby="thgBaslik">' +
       '<button type="button" class="thg-kapat" data-thg="kapat" aria-label="' + kac(kd('g.kapat', 'Kapat')) + '">&times;</button>' +
-      '<div class="thg-ust">' + cizim() + '<div><h2 id="thgBaslik">' + kac(kd('th.p_baslik', 'Tahtaya yansıt')) + '</h2>' +
-      '<p>' + kac(kd('th.p_alt', 'Bilgisayarında sitede ne yaparsan tahtada aynen görünür. Kablo, ekran paylaşımı yok; iki cihazda aynı hesap yeter.')) + '</p></div></div>' +
-      '<div class="thg-secim">' +
-      '<div class="thg-kart' + (tahta ? '' : ' secili') + '"><span class="thg-sim">' + SIM.pc + '</span>' +
-      '<h3>' + kac(kd('th.p_yansit', 'Bu bilgisayardan yansıt')) + '</h3>' +
-      '<p>' + kac(kd('th.p_yansit_alt', 'Burada açtığın sayfa, kaydırma, tıklama ve yazdıkların tahtada görünür. Üstteki şeritten tahtayı karartabilir, duraklatabilirsin.')) + '</p>' +
-      '<div class="thg-tahtalar" id="thgTahtalar"></div>' +
-      '<button type="button" class="thg-dug" data-thg="yansit">' + kac(kd('th.p_yansit_dug', 'Yansıtmayı başlat')) + '</button></div>' +
-      '<div class="thg-kart' + (tahta ? ' secili' : '') + '"><span class="thg-sim">' + SIM.tahta + '</span>' +
-      '<h3>' + kac(kd('th.p_izle', 'Bu cihaz tahta')) + '</h3>' +
-      '<p>' + kac(kd('th.p_izle_alt', 'Bilgisayarında yaptıkların bu ekranda görünür. Tahta bunu hatırlar: sonraki derslerde bilgisayarda başlatman yeter.')) + '</p>' +
-      '<button type="button" class="thg-dug ikincil" data-thg="izle">' + kac(kd('th.p_izle_dug', 'Tahta görünümünü aç')) + '</button></div>' +
+      '<div class="thg-ust"><span class="thg-logo">' + SIM.tahta + '</span><div><h2 id="thgBaslik">' + kac(kd('th.p_baslik2', 'Akıllı tahta')) + '</h2>' +
+      '<p>' + kac(kd('th.p_soru', 'Bu cihaz ne olsun?')) + '</p></div></div>' +
+      '<div class="thg-secenekler">' +
+      '<button type="button" class="thg-sec" data-thg="yansit"><span class="thg-sim">' + SIM.kumanda + '</span><span class="thg-yazi">' +
+      '<b>' + kac(kd('th.p_kumanda', 'Bu cihazı kumanda olarak kullan')) + '</b>' +
+      '<small>' + kac(kd('th.p_kumanda_alt', 'Burada açtığın sayfa, kaydırma, tıklama ve yazdıkların Sınıf Ekranı’nda görünür.')) + '</small></span>' + SIM.ok + '</button>' +
+      '<div class="thg-tahtalar" id="thgTahtalar" hidden></div>' +
+      '<button type="button" class="thg-sec ikincil" data-thg="izle"><span class="thg-sim">' + SIM.tahta + '</span><span class="thg-yazi">' +
+      '<b>' + kac(kd('th.p_ekran', 'Bu cihazı Sınıf Ekranı olarak kullan')) + '</b>' +
+      '<small>' + kac(kd('th.p_ekran_alt', 'Kumandadan yaptıkların bu ekranda görünür. Cihaz bunu hatırlar: sonraki derslerde kumandadan başlatman yeter.')) + '</small></span>' + SIM.ok + '</button>' +
       '</div>' +
       '<div class="thg-durum" id="thgDurum"></div>' +
       '<p class="thg-not">' + kac(kd('th.p_not', 'Yalnız bu site yansır. Şifre, e-posta ve PIN alanları tahtaya gitmez; hiçbir şey iki kez kaydedilmez.')) +
-      (tahta ? ' <a data-thg="unut">' + kac(kd('th.p_unut', 'Bu cihaz tahta değil')) + '</a>' : '') + '</p>' +
+      (tahta ? ' ' + kac(kd('th.p_isaretli', 'Bu cihaz Sınıf Ekranı olarak işaretli.')) + ' <a data-thg="unut">' + kac(kd('th.p_isaret_kaldir', 'İşareti kaldır')) + '</a>' : '') + '</p>' +
       '</div>';
     p.addEventListener('click', function (e) {
       if (e.target === p) { panelKapat(); return; }
@@ -254,6 +281,7 @@
     });
     document.body.appendChild(p);
     durumYaz();
+    tahtaImza = '';                                   /* yeni pencere: liste yeniden çizilsin */
     tahtalarCiz();
     canliDinle();
     document.addEventListener('keydown', escKapat);
@@ -314,12 +342,14 @@
     var varMi = false;
     l.forEach(function (t) { if (t.kimlik === secili) varMi = true; });
     if (!varMi) secili = (l.length === 1 && !once) ? l[0].kimlik : '';
-    var s = '<div class="thg-bas">' + kac(kd('th.p_hangi', 'Hangi tahta?')) + '</div>';
+    /* açık Sınıf Ekranı yoksa liste gizli; durum satırı zaten söylüyor (21.10.2026) */
+    el.hidden = !l.length;
+    var s = '<div class="thg-bas">' + kac(kd('th.p_hangi', 'Hangi Sınıf Ekranı?')) + '</div>';
     if (!vt) s += '<div class="thg-yok">' + kac(kd('th.p_durum_bekle', 'Durum okunuyor…')) + '</div>';
-    else if (!l.length) s += '<div class="thg-yok">' + kac(kd('th.p_tahta_yok', 'Şu an açık tahta yok. Tahtada site açılınca burada görünür; yine de başlatabilirsin.')) + '</div>';
+    else if (!l.length) s += '<div class="thg-yok">' + kac(kd('th.p_tahta_yok', 'Şu an açık Sınıf Ekranı yok; yine de başlatabilirsin.')) + '</div>';
     else {
       s += '<label><input type="radio" name="thgHedef" value=""' + (secili ? '' : ' checked') + '><span><b>' + kac(kd('th.hedef_hepsi', 'Bütün tahtalar')) + ' (' + l.length + ')</b>' +
-        '<small>' + kac(kd('th.p_hepsi_alt', 'Açık olan her tahta aynı dersi gösterir.')) + '</small></span></label>';
+        '<small>' + kac(kd('th.p_hepsi_alt', 'Açık olan her Sınıf Ekranı aynı dersi gösterir.')) + '</small></span></label>';
       l.forEach(function (t) {
         s += '<label><input type="radio" name="thgHedef" value="' + kac(t.kimlik) + '" data-ad="' + kac(t.ad || '') + '"' + (t.kimlik === secili ? ' checked' : '') + '>' +
           '<span><b>' + kac(tahtaAdi(t)) + '</b><small>' +
