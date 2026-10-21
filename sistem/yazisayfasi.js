@@ -890,6 +890,8 @@
             '.ys-kagit{position:relative; background:#fff;}',
             '.ys-kagit canvas{position:absolute; inset:0; width:100%; height:100%;}',
             '.ys-kagit .ys-ust{touch-action:none; cursor:crosshair;}',
+            /* çubuk düğmeleri: çift dokunuş gecikmesi yok (21.10.2026) */
+            '.ys-arac button,.ys-yan button,.ys-sayfalar button{touch-action:manipulation;}',
             '.ys-kagit.silgi .ys-ust{cursor:none;}',
             '.ys-kagit.el .ys-ust{cursor:grab;} .ys-kagit.suruk .ys-ust{cursor:grabbing;}',
             '.ys-silgi-iz{position:absolute; pointer-events:none; border:2px solid rgba(22,160,133,.6); background:rgba(255,255,255,.35);',
@@ -1208,6 +1210,10 @@
         UI.kutu.classList.toggle('dikey', UI.dikey);
         ort.addEventListener('click', tikla);
         ort.addEventListener('pointerdown', hizliSec);
+        ort.addEventListener('pointerdown', tapBas);
+        ort.addEventListener('pointerup', tapBirak);
+        ort.addEventListener('pointercancel', function () { _tap = null; });
+        ort.addEventListener('contextmenu', function (e) { if (hizliHedef(e.target) || (UI && e.target === UI.ust)) e.preventDefault(); });
         UI.sahne.addEventListener('wheel', tekerlek, { passive: false });
         ort.querySelector('#ysKaydirma').addEventListener('wheel', tekerlek, { passive: false });
         [UI.ray, UI.rayD].forEach(function (r) {
@@ -2249,10 +2255,44 @@
         T.arac = 'kalem';
         tercihKaydet(); aracGuncelle();
     }
+    /* ÇUBUKLAR DOKUNUŞLA ÇALIŞIR (21.10.2026, öğretmen: "güzel yazı defteri ile
+       normal defter arasında geçiş yapamıyorum", "kalemler arası geçiş olmamış"):
+       bazı dokunmatik tahtalarda yavaş/uzun basışta ya da kalemle «click» olayı
+       gelmiyor (Windows'ta uzun basış sağ tık sayılır). Çubuklardaki düğmeler
+       pointerup'ta işlenir: aynı düğmede basılıp bırakıldıysa ve parmak 10 px'den
+       az kaydıysa. Ardından click gelirse yinelenmez (UI.sonHizli). Tam ekran ve
+       PDF click'te kalır (tarayıcı kullanıcı hareketi ister); listeler click'te
+       kalır (kaydırılabilir). */
+    var _tap = null;
+    function hizliHedef(t) {
+        if (!UI || !t || !t.closest) return null;
+        var b = t.closest('button[data-is],button[data-renk],button[data-kal],button[data-cizgi],button[data-yon],button[data-mod]');
+        if (!b || b.disabled || !UI.ort.contains(b)) return null;
+        var is = b.getAttribute('data-is');
+        if (is === 'tamEkran' || is === 'pdf') return null;
+        return b.closest('.ys-arac,.ys-yan,.ys-sayfalar') ? b : null;
+    }
+    function tapBas(e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) { _tap = null; return; }
+        var b = hizliHedef(e.target);
+        _tap = b ? { b: b, id: e.pointerId, x: e.clientX, y: e.clientY } : null;
+    }
+    function tapBirak(e) {
+        var t = _tap; _tap = null;
+        if (!t || e.pointerId !== t.id || !UI) return;
+        if (Math.abs(e.clientX - t.x) > 10 || Math.abs(e.clientY - t.y) > 10) return;
+        if (hizliHedef(e.target) !== t.b) return;
+        UI.sonHizli = { b: t.b, z: Date.now() };
+        islem(e, e.target, t.b);
+    }
     function tikla(e) {
         var t = e.target;
         if (t === UI.ort) return;                                    /* dışına basınca kapanmaz (yanlışlıkla silinmesin) */
         var b = t.closest && t.closest('[data-is],[data-renk],[data-kal],[data-cizgi],[data-yon],[data-mod],[data-sek],[data-ac],[data-sil],[data-not],[data-notsil],[data-git]');
+        if (b && UI.sonHizli && UI.sonHizli.b === b && Date.now() - UI.sonHizli.z < 800) return;   /* pointerup'ta işlendi */
+        islem(e, t, b);
+    }
+    function islem(e, t, b) {
         /* «Tüm sayfalar» açıkken dışındaki bir düğmeye basılırsa görünüm kapanır */
         if (UI.genel && !UI.genel.contains(t) && !(b && b.getAttribute('data-is') === 'tumSayfalar')) genelKapat();
         /* açık «Tüm sayfayı sil» sorusu: dışına basınca kapanır; onu açan
