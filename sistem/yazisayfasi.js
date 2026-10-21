@@ -146,7 +146,14 @@
     /* ------------------------------------------------------------------
        SABİTLER
        ------------------------------------------------------------------ */
-    var W = 1000, H = 625;                     /* mantıksal sayfa (16:10) */
+    var W = 1000, H = 625;                     /* mantıksal sayfa: en; eski defterlerde boy (16:10) */
+    /* A4 BOYU (21.10.2026, öğretmen: "defter dikeyde a4 gibi uzun olmalı"): yeni
+       defterlerde sayfa 1000 × 1414 birim (A4 dikey oranı). Boy defterin kendi
+       özelliği (D.ph); eski defterler 625 boyuyla olduğu gibi açılır. Çizgi
+       sayısı BLOK (bir ekran boyu, 625) başına sayılır, aynı aralıkla sayfanın
+       sonuna kadar sürer. */
+    var A4_BOY = 1414, BLOK = 625;
+    function sayfaYuk() { return (D && D.ph) || H; }
     var RENKLER = [
         { ad: 'Siyah',   k: '#1F2430' },
         { ad: 'Mavi',    k: '#1E5BD8' },
@@ -281,13 +288,24 @@
         /* çizgi alanı: sayı (çizgili) ya da 'g3' (güzel yazı, 3 satır) */
         var n = (R && R.g) ? 'g' + GUZEL_SATIR : cizgiSayisi(R && R.n);
         var ust = (R && R.ust != null) ? Math.max(0, Math.round(R.ust)) : UST_BOSLUK;
-        return 'Y3|' + Math.round(pw || W) + '|' + n + '|' + ust + '|' + sayfalar.map(function (s) {
+        var ph = Math.round((R && R.ph) || H);
+        return 'Y4|' + Math.round(pw || W) + '|' + ph + '|' + n + '|' + ust + '|' + sayfalar.map(function (s) {
             return 'c' + s.cizimler.map(cizgiKodla).map(function (x) { return ' ' + x; }).join('');
         }).join('\n');
     }
     function defterCoz(kod) {
-        var govde = null, pw = 0, cn = CIZGI_VARSAYILAN, ust = UST_BOSLUK;
-        if (kod && kod.indexOf('Y3|') === 0) {
+        var govde = null, pw = 0, cn = CIZGI_VARSAYILAN, ust = UST_BOSLUK, ph = H;
+        if (kod && kod.indexOf('Y4|') === 0) {
+            var b1 = kod.indexOf('|', 3), b2 = kod.indexOf('|', b1 + 1), b3 = kod.indexOf('|', b2 + 1), b4 = kod.indexOf('|', b3 + 1);
+            if (b1 > 0 && b2 > b1 && b3 > b2 && b4 > b3) {
+                pw = parseInt(kod.slice(3, b1), 10) || W;
+                ph = parseInt(kod.slice(b1 + 1, b2), 10) || H;
+                var alan4 = kod.slice(b2 + 1, b3);
+                cn = /^g/i.test(alan4) ? 'g' : cizgiSayisi(alan4);
+                ust = Math.max(0, parseInt(kod.slice(b3 + 1, b4), 10) || 0);
+                govde = kod.slice(b4 + 1);
+            }
+        } else if (kod && kod.indexOf('Y3|') === 0) {
             var a1 = kod.indexOf('|', 3), a2 = kod.indexOf('|', a1 + 1), a3 = kod.indexOf('|', a2 + 1);
             if (a1 > 0 && a2 > a1 && a3 > a2) {
                 pw = parseInt(kod.slice(3, a1), 10) || W;
@@ -320,9 +338,19 @@
             });
         }
         L.pw = pw;
+        L.ph = Math.max(200, Math.min(4000, ph));
         L.cizgi = cn;
         L.ust = ust;
         return L;
+    }
+    /* kayıt kodundan yalnız sayfa boyu (listeler için, bütün kodu çözmeden) */
+    function kodBoy(kod) {
+        if (kod && kod.indexOf('Y4|') === 0) {
+            var b1 = kod.indexOf('|', 3), b2 = kod.indexOf('|', b1 + 1);
+            var v = parseInt(kod.slice(b1 + 1, b2), 10);
+            if (v >= 200 && v <= 4000) return v;
+        }
+        return H;
     }
     /* sondaki boş sayfalar (‹ ile açılıp yazılmayan) kaydedilmez, PDF'e girmez */
     function kayitSayfalari(L) {
@@ -403,12 +431,13 @@
        (ust 0, n 6) eskisinin aynısı: H·k/7. */
     function cizgiDuzeni(d) {
         if (d === undefined) d = D;
-        return { n: cizgiSayisi(d && d.cizgi), ust: (d && d.ust != null) ? d.ust : UST_BOSLUK, g: !!(d && d.cizgi === 'g') };
+        return { n: cizgiSayisi(d && d.cizgi), ust: (d && d.ust != null) ? d.ust : UST_BOSLUK, g: !!(d && d.cizgi === 'g'),
+                 ph: (d && d.ph) || H };
     }
     function cizgiYerleri(R) {
-        var n = cizgiSayisi(R && R.n), ust = (R && R.ust != null) ? R.ust : UST_BOSLUK;
-        var g = (H - ust) / (n + 1), L = [];
-        for (var k = 1; k <= n; k++) L.push(Math.round(ust + g * k));
+        var n = cizgiSayisi(R && R.n), ust = (R && R.ust != null) ? R.ust : UST_BOSLUK, ph = (R && R.ph) || H;
+        var g = (BLOK - ust) / (n + 1), L = [];
+        for (var y = ust + g; y <= ph - g * 0.45 && L.length < 60; y += g) L.push(Math.round(y));
         return L;
     }
     /* çizgi en az bir tuval pikseli kalınlıkta (telefonda dikey kipte ölçek küçük) */
@@ -431,9 +460,10 @@
        (harflerin gövdesi) hafifçe boyalı. */
     function guzelYerleri(R) {
         /* ilk satır, kâğıdın üstündeki sayfa çubuğunun altından başlasın */
-        var ust = ((R && R.ust != null) ? R.ust : UST_BOSLUK) + GUZEL_UST_EK;
-        var B = (H - ust - GUZEL_ALT) / GUZEL_SATIR, L = [];
-        for (var r = 0; r < GUZEL_SATIR; r++) {
+        var ust = ((R && R.ust != null) ? R.ust : UST_BOSLUK) + GUZEL_UST_EK, ph = (R && R.ph) || H;
+        var B = (BLOK - ust - GUZEL_ALT) / GUZEL_SATIR, L = [];
+        var adet = Math.max(1, Math.min(30, Math.floor((ph - ust - GUZEL_ALT) / B + 1e-6)));   /* A4: 7 satır */
+        for (var r = 0; r < adet; r++) {
             var t = ust + r * B;
             L.push({ ust: Math.round(t + 0.14 * B), orta: Math.round(t + 0.44 * B),
                      taban: Math.round(t + 0.64 * B), alt: Math.round(t + 0.86 * B) });
@@ -461,7 +491,7 @@
         ctx.setLineDash([]);
         ctx.beginPath();
         ctx.strokeStyle = 'rgba(232,124,124,.55)'; ctx.lineWidth = 1.4;
-        ctx.moveTo(x, 10); ctx.lineTo(x, H - 10); ctx.stroke();
+        ctx.moveTo(x, 10); ctx.lineTo(x, sayfaYuk() - 10); ctx.stroke();
     }
     /* Tek sayfa (önizleme, PDF). sagKenar: 1. sayfada kâğıdın sağ ucu */
     function cizgileriCiz(ctx, mod, o, x0, x1, sagKenar, R) {
@@ -470,9 +500,11 @@
         ctx.save();
         ctx.setTransform(o, 0, 0, o, -x0 * o, 0);
         ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x0, 0, x1 - x0, H);
+        var phc = (R && R.ph) || sayfaYuk();
+        ctx.fillRect(x0, 0, x1 - x0, phc);
         cizgiDesen(ctx, x0, sagKenar != null ? Math.min(x1, sagKenar - 18) : x1, R || cizgiDuzeni());
-        if (sagKenar != null) kenarCiz(ctx, sagKenar - 44);
+        if (sagKenar != null) { ctx.setLineDash([]); ctx.beginPath(); ctx.strokeStyle = 'rgba(232,124,124,.55)'; ctx.lineWidth = 1.4;
+            ctx.moveTo(sagKenar - 44, 10); ctx.lineTo(sagKenar - 44, phc - 10); ctx.stroke(); }
         ctx.restore();
     }
     /* Ekrandaki pencere: tek kâğıdın [vx0, vx1] aralığı */
@@ -481,7 +513,7 @@
         ctx.save();
         ctx.setTransform(o, 0, 0, o, -vx0 * o, 0);
         ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(vx0, 0, vx1 - vx0, H);
+        ctx.fillRect(vx0, 0, vx1 - vx0, sayfaYuk());
         cizgiDesen(ctx, vx0, Math.min(vx1, sag - 18), cizgiDuzeni());
         if (sag - 44 >= vx0 - 2 && sag - 44 <= vx1 + 2) kenarCiz(ctx, sag - 44);
         ctx.restore();
@@ -529,15 +561,18 @@
     function gorunum(s, oran, pw) {
         /* önizleme ve PDF için tek sayfanın aralığı: sayfa genişliği (ya da
            oran) ve çizgilerin vardığı yer — hangisi genişse */
-        var yari = Math.max(H * (oran || W / H) / 2, (pw || 0) / 2);
+        var phg = sayfaYuk();
+        var yari = Math.max(phg * (oran || W / phg) / 2, (pw || 0) / 2);
         var b = sinirlar(s);
         if (b) yari = Math.max(yari, W / 2 - b[0] + 5, b[1] - W / 2 + 5);
         return { x0: W / 2 - yari, x1: W / 2 + yari };
     }
     function onizlemeCiz(canvas, sayfa, kenar, pw, R) {
         pw = pw || (D && D.pw) || W;
-        var g = gorunum(sayfa, canvas.width / canvas.height, pw);
-        var o = Math.min(canvas.width / (g.x1 - g.x0), canvas.height / H);
+        var pho = (R && R.ph) || sayfaYuk();
+        /* dikey (A4) sayfa yatay bir kutuya küçültülünce okunmaz: en'e göre sığdır, üstten göster */
+        var g = pho > W ? gorunum(sayfa, canvas.width / canvas.height, pw) : gorunum(sayfa, canvas.width / canvas.height, pw);
+        var o = pho > W && canvas.height < canvas.width ? canvas.width / (g.x1 - g.x0) : Math.min(canvas.width / (g.x1 - g.x0), canvas.height / pho);
         var ctx = canvas.getContext('2d');
         cizgileriCiz(ctx, 'c', o, g.x0, g.x1, kenar ? W / 2 + pw / 2 : null, R || cizgiDuzeni());
         var tmp = document.createElement('canvas');
@@ -1032,7 +1067,7 @@
         T = { arac: 'kalem', renk: (t.renk >= 0 && t.renk < 5) ? t.renk : 0, kal: t.kal || 'o', mod: t.mod || 'c',
               cizgi: tercihCizgi(t.cizgi), yon: t.yon === 'y' ? 'y' : 'd', uc: t.uc === 'h' ? 'h' : 'y' };
         D = kaynak || { id: yeniId(), sinif: sinif, sube: BAGLI ? BAGLI.sube : subeAdi(), tarih: Date.now(), guncelleme: 0,
-                        sayfalar: [yeniSayfa('c')], aktif: 0, notId: '', notAd: '', kirli: false, pw: W,
+                        sayfalar: [yeniSayfa('c')], aktif: 0, notId: '', notAd: '', kirli: false, pw: W, ph: A4_BOY,
                         cizgi: T.cizgi, ust: UST_BOSLUK };
         defterHazirla(D);
         kur(kucukBasla);
@@ -1172,6 +1207,7 @@
         };
         UI.kutu.classList.toggle('dikey', UI.dikey);
         ort.addEventListener('click', tikla);
+        ort.addEventListener('pointerdown', hizliSec);
         UI.sahne.addEventListener('wheel', tekerlek, { passive: false });
         ort.querySelector('#ysKaydirma').addEventListener('wheel', tekerlek, { passive: false });
         [UI.ray, UI.rayD].forEach(function (r) {
@@ -1416,10 +1452,11 @@
        sayfanın sonu pencerenin altında — pencere bir sayfadan uzunsa
        (telefon, dikey tablet) son sayfanın başı çubuğun altında */
     function enAzY() { return -(UI.ustPay || 0); }
-    function enCokY() { var n = D.sayfalar.length, p = UI.ustPay || 0; return Math.max(-p, (n - 1) * H - p, n * H - UI.Lh); }
+    function enCokY() { var n = D.sayfalar.length, p = UI.ustPay || 0, ph = sayfaYuk(); return Math.max(-p, (n - 1) * ph - p, n * ph - UI.Lh); }
     function sinirliY(y) { return Math.max(enAzY(), Math.min(enCokY(), y)); }
     function defterHazirla(d) {
         if (!d.pw) d.pw = (d.sayfalar && d.sayfalar.pw) || W;
+        if (!d.ph) d.ph = (d.sayfalar && d.sayfalar.ph) || H;
         if (d.cizgi !== 'g' && !(d.cizgi >= CIZGI_EN_AZ && d.cizgi <= CIZGI_EN_COK)) {
             var sc = d.sayfalar && d.sayfalar.cizgi;
             d.cizgi = sc === 'g' ? 'g' : cizgiSayisi(sc);
@@ -1453,15 +1490,15 @@
             var sc = UI.ort.querySelector('.ys-sayfalar');
             UI.ustPay = sc ? Math.min(UI.Lh * 0.4, Math.max(0, (sc.offsetTop + sc.offsetHeight + 8) / UI.cssOlcek)) : 0;
         } else {
-            UI.Lw = H * gw / gh;
+            UI.Lw = sayfaYuk() * gw / gh;
             UI.cssOlcek = gw / UI.Lw;
-            UI.Lh = H;
+            UI.Lh = sayfaYuk();
             UI.ustPay = 0;
         }
         UI.olcek = UI.cssOlcek * dpr;
         UI.iz.style.width = UI.iz.style.height = (SILGI_W * UI.cssOlcek) + 'px';
         if (dik) {
-            if (UI.cy == null) UI.cy = D.aktif * H - UI.ustPay;   /* sayfanın başı çubuğun altında */
+            if (UI.cy == null) UI.cy = D.aktif * sayfaYuk() - UI.ustPay;   /* sayfanın başı çubuğun altında */
             UI.cy = sinirliY(UI.cy);
         } else {
             /* Arapça sağdan yazılır: pencerenin sağ ucu sayfanın sağ ucuna oturur */
@@ -1476,10 +1513,11 @@
             UI.vx0 = SOLX(); UI.vx1 = SOLX() + D.pw;
             UI.vy0 = UI.cy; UI.vy1 = UI.cy + UI.Lh;
             var up = UI.ustPay || 0;
-            D.aktif = Math.max(0, Math.min(n - 1, Math.floor((UI.cy + up + Math.min(UI.Lh - up, H) / 2) / H)));
+            var phk = sayfaYuk();
+            D.aktif = Math.max(0, Math.min(n - 1, Math.floor((UI.cy + up + Math.min(UI.Lh - up, phk) / 2) / phk)));
         } else {
             UI.vx0 = UI.c - UI.Lw / 2; UI.vx1 = UI.c + UI.Lw / 2;
-            UI.vy0 = 0; UI.vy1 = H;
+            UI.vy0 = 0; UI.vy1 = sayfaYuk();
             D.aktif = Math.max(0, Math.min(n - 1, Math.floor((SAG() - UI.c) / D.pw)));
         }
         sayfaCiz();
@@ -1507,7 +1545,14 @@
         j = Math.max(0, Math.min(j, D.sayfalar.length - 1));
         var dik = dikeyMi();
         /* yatayda sayfanın sağ ucu pencerenin sağında, dikeyde sayfanın başı çubuğun altında */
-        var hedef = dik ? sinirliY(j * H - (UI.ustPay || 0)) : sinirli(SAG() - j * D.pw - UI.Lw / 2);
+        var hedef = dik ? sinirliY(j * sayfaYuk() - (UI.ustPay || 0)) : sinirli(SAG() - j * D.pw - UI.Lw / 2);
+        kaydirHedef(hedef, aninda);
+    }
+    /* dikeyde y'ye, yatayda x'e yumuşak kaydırma (sayfa içi adımlar için de) */
+    function kaydirHedef(hedef, aninda) {
+        if (!UI || !D) return;
+        var dik = dikeyMi();
+        hedef = dik ? sinirliY(hedef) : sinirli(hedef);
         var simdi = dik ? UI.cy : UI.c;
         var koy = function (v) { if (dik) UI.cy = v; else UI.c = v; };
         if (UI.anim) { cancelAnimationFrame(UI.anim); UI.anim = 0; }
@@ -1537,7 +1582,7 @@
     var _ray = null;
     function aktifRay() { return dikeyMi() ? UI.rayD : UI.ray; }
     function aktifTutamak() { return dikeyMi() ? UI.tutamakD : UI.tutamak; }
-    function sayfaBoy() { return dikeyMi() ? H : D.pw; }
+    function sayfaBoy() { return dikeyMi() ? sayfaYuk() : D.pw; }
     function pencereBoy() { return dikeyMi() ? UI.Lh : UI.Lw; }
     function rayPay() { return dikeyMi() ? (UI.ustPay || 0) : 0; }
     function rayToplam() { return dikeyMi() ? enCokY() + UI.Lh + rayPay() : Math.max(D.sayfalar.length * D.pw, UI.Lw); }
@@ -1634,7 +1679,7 @@
     /* dikeyde pencere: sayfalar alt alta; her sayfada kendi çizgileri,
        aralarda kesik sınır ve sayfa numarası; kırmızı kenar sağda boydan boya */
     function seritCizDikey(ctx, o) {
-        var x0 = UI.vx0, x1 = UI.vx1, y0 = UI.vy0, y1 = UI.vy1, n = D.sayfalar.length, R = cizgiDuzeni(), son = n * H;
+        var x0 = UI.vx0, x1 = UI.vx1, y0 = UI.vy0, y1 = UI.vy1, n = D.sayfalar.length, R = cizgiDuzeni(), H = sayfaYuk(), son = n * H;
         ctx.save();
         ctx.setTransform(o, 0, 0, o, -x0 * o, -y0 * o);
         var b0 = Math.max(y0, 0), b1 = Math.min(y1, son);
@@ -1675,6 +1720,7 @@
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.clearRect(0, 0, UI.ust.width, UI.ust.height);
             /* penceredeki sayfalar ve bir üstü / altı (sınırı aşan çizgiler için) */
+            var H = sayfaYuk();
             jmin = Math.max(0, Math.floor(UI.vy0 / H) - 1); jmax = Math.min(n - 1, Math.floor(UI.vy1 / H) + 1);
             for (j = jmin; j <= jmax; j++) {
                 var oy = UI.vy0 - j * H;
@@ -1709,9 +1755,9 @@
         return [ UI.vx0 + (e.clientX - r.left) / r.width * UI.Lw, UI.vy0 + (e.clientY - r.top) / r.height * UI.Lh ];
     }
     /* şerit noktası hangi sayfada; o sayfanın yerel koordinatına kayma; çizim başlangıcı */
-    function sayfaNo(p) { return Math.max(0, dikeyMi() ? Math.floor(p[1] / H) : Math.floor((SAG() - p[0]) / D.pw)); }
-    function yerelKay(j) { return dikeyMi() ? [0, -j * H] : [j * D.pw, 0]; }
-    function sayfaOfset(j) { return dikeyMi() ? [UI.vx0, UI.vy0 - j * H] : [UI.vx0 + j * D.pw, 0]; }
+    function sayfaNo(p) { return Math.max(0, dikeyMi() ? Math.floor(p[1] / sayfaYuk()) : Math.floor((SAG() - p[0]) / D.pw)); }
+    function yerelKay(j) { return dikeyMi() ? [0, -j * sayfaYuk()] : [j * D.pw, 0]; }
+    function sayfaOfset(j) { return dikeyMi() ? [UI.vx0, UI.vy0 - j * sayfaYuk()] : [UI.vx0 + j * D.pw, 0]; }
     function izKonum(e) {
         var r = UI.kagit.getBoundingClientRect();
         UI.iz.style.left = (e.clientX - r.left) + 'px';
@@ -1865,8 +1911,16 @@
     /* ‹ sola: İLERİ — sonraki sayfa; son sayfadaysa yeni sayfa açılır, boş
        olsa da (20.10.2026, öğretmen: "ileri sayfaya sol okla geçsin").
        Sondaki boş sayfalar kaydedilmez (kayitSayfalari). */
+    /* A4 boyunda sayfa (21.10.2026): dikeyde ▼ önce sayfanın İÇİNDE bir ekran
+       kaydırır, sayfanın sonuna gelince sonraki sayfaya geçer; ▲ tersi.
+       Kısa (eski) sayfalarda eskisi gibi doğrudan sayfa değiştirir. */
+    function ekranAdimi() { return Math.max(sayfaYuk() * 0.25, UI.Lh - (UI.ustPay || 0) - 40); }
     function sola() {
         genelKapat();
+        if (dikeyMi()) {
+            var alt = (D.aktif + 1) * sayfaYuk();
+            if (UI.cy + UI.Lh < alt - 8) { kaydirHedef(Math.min(UI.cy + ekranAdimi(), alt - UI.Lh)); return; }
+        }
         var n = D.sayfalar.length, j = D.aktif + 1;
         if (j >= n) {
             D.sayfalar.push(yeniSayfa('c'));
@@ -1874,9 +1928,13 @@
         }
         kaydirGit(j);
     }
-    /* › sağa: önceki sayfa */
+    /* › sağa: önceki sayfa (dikeyde önce sayfanın içinde yukarı) */
     function saga() {
         genelKapat();
+        if (dikeyMi()) {
+            var ust = D.aktif * sayfaYuk() - (UI.ustPay || 0);
+            if (UI.cy > ust + 8) { kaydirHedef(Math.max(UI.cy - ekranAdimi(), ust)); return; }
+        }
         kaydirGit(Math.max(0, D.aktif - 1));
     }
     /* + : yeni sayfa açık sayfadan hemen SONRA — yatayda soluna ("artıya basınca
@@ -2038,7 +2096,7 @@
         g.setAttribute('aria-label', 'Tüm sayfalar');
         var kartlar = D.sayfalar.map(function (sy, i) {
             return '<button type="button" class="ys-gkart' + (i === D.aktif ? ' simdi' : '') + '" data-git="' + i + '" title="Sayfa ' + (i + 1) + '">' +
-                '<canvas width="480" height="300"></canvas><span>Sayfa ' + (i + 1) + (i === D.aktif ? ' · açık' : '') + '</span></button>';
+                '<canvas width="480" height="' + Math.round(480 * sayfaYuk() / W) + '" style="aspect-ratio:' + W + '/' + Math.round(sayfaYuk()) + '"></canvas><span>Sayfa ' + (i + 1) + (i === D.aktif ? ' · açık' : '') + '</span></button>';
         }).join('');
         g.innerHTML =
             '<div class="ys-genel-bas"><b>Tüm sayfalar</b><small>' + D.sayfalar.length + ' sayfa</small><span class="ys-bos"></span>' +
@@ -2091,8 +2149,9 @@
             .replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'defter';
     }
     function sayfaGorseli(s, no, top) {
-        var g = gorunum(s, W / H, D.pw), Lw = g.x1 - g.x0;
-        var PW = 2400, PH = Math.round(PW * H / Lw), AY = 70;
+        var ph = sayfaYuk();
+        var g = gorunum(s, W / ph, D.pw), Lw = g.x1 - g.x0;
+        var PW = ph > Lw ? 1700 : 2400, PH = Math.round(PW * ph / Lw), AY = 70;   /* dikey sayfa: daha küçük tuval */
         var c = document.createElement('canvas');
         c.width = PW; c.height = PH + AY;
         var ctx = c.getContext('2d');
@@ -2125,7 +2184,9 @@
             parca.push(b); boy += b.length;
         }
         function nesne(no, govde) { yer[no] = boy; yaz(no + ' 0 obj\n'); govde(); yaz('\nendobj\n'); }
-        var n = resimler.length, PW = 841.89, PH = 595.28, PAY = 20, kids = [];
+        /* dikey (A4 boyunda) sayfalar A4 dikey, eski 16:10 sayfalar A4 yatay */
+        var dikeyS = !!(resimler.length && resimler[0].h > resimler[0].w);
+        var n = resimler.length, PW = dikeyS ? 595.28 : 841.89, PH = dikeyS ? 841.89 : 595.28, PAY = 20, kids = [];
         for (var i = 0; i < n; i++) kids.push((3 + i * 3) + ' 0 R');
         yaz('%PDF-1.4\n%âãÏÓ\n');
         nesne(1, function () { yaz('<< /Type /Catalog /Pages 2 0 R >>'); });
@@ -2173,6 +2234,21 @@
         }
     }
 
+    /* Kalem ve kalınlık seçimi DOKUNUR DOKUNMAZ işlenir (21.10.2026, öğretmen:
+       "kalemler arası geçiş olmamış, değiştiremiyorum"): bazı dokunmatik
+       tahtalarda ve kalemle dokununca «click» olayı gelmeyebiliyor; pointerdown
+       her cihazda gelir. Seçim yinelenebilir olduğundan ardından gelen click
+       aynı kalemi bir daha seçer, zararı yok. */
+    function hizliSec(e) {
+        if (!UI || !T || !D) return;
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        var b = e.target && e.target.closest && e.target.closest('[data-renk],[data-kal]');
+        if (!b || b.disabled || !UI.ort.contains(b)) return;
+        if (b.hasAttribute('data-renk')) T.renk = +b.getAttribute('data-renk');
+        else T.kal = b.getAttribute('data-kal');
+        T.arac = 'kalem';
+        tercihKaydet(); aracGuncelle();
+    }
     function tikla(e) {
         var t = e.target;
         if (t === UI.ort) return;                                    /* dışına basınca kapanmaz (yanlışlıkla silinmesin) */
@@ -2351,7 +2427,7 @@
                     }).join('') : '<p class="ys-yok">Bu seviyede kayıtlı not yok.<br>Beğendiğin defteri ★ ile kaydet.</p>');
                 L.forEach(function (n) {
                     var c = ic.querySelector('canvas[data-onizle="' + n.id + '"]');
-                    if (c) { try { var Ln = defterCoz(n.kod); onizlemeCiz(c, Ln[0], true, Ln.pw, { n: Ln.cizgi, ust: Ln.ust }); } catch (e) { } }
+                    if (c) { try { var Ln = defterCoz(n.kod); onizlemeCiz(c, Ln[0], true, Ln.pw, { n: Ln.cizgi, ust: Ln.ust, ph: Ln.ph, g: Ln.cizgi === 'g' }); } catch (e) { } }
                 });
             }).catch(function (e) {
                 ic.innerHTML = '<p class="ys-yok">Seviye notları okunamadı (' + esc((e && (e.code || e.message)) || e) + ').</p>';
@@ -2518,9 +2594,17 @@
         cizimAyarla();
     }
     /* «Ana sayfa»: önce defter kaydedilir, sonra gidilir (en çok 1,5 sn beklenir) */
+    /* «Ana sayfa» (21.10.2026, öğretmen: "basılınca sekme kapansın, kidefarapca.com'a
+       gitmesin"): önce kaydedilir, sonra SEKME KAPANIR; tarayıcı kapatmazsa
+       (adres çubuğundan açılmış sekme) ya da tahta çerçevesindeyse ana sayfaya gidilir. */
     function anaSayfayaGit() {
         var p = (D && D.kirli && !bosMu(D.sayfalar)) ? gecmiseKaydet() : Promise.resolve();
-        var git = function () { location.href = 'index.html'; };
+        var git = function () {
+            if (!kabuktaMi()) {
+                try { window.close(); } catch (e) { }
+                setTimeout(function () { if (!window.closed) location.href = 'index.html'; }, 400);
+            } else location.href = 'index.html';
+        };
         Promise.race([p, new Promise(function (r) { setTimeout(r, 1500); })]).then(git, git);
     }
 
@@ -2558,6 +2642,7 @@
         guzelYerleri: guzelYerleri,
         cizgiYerleri: cizgiYerleri,
         /* test ve öteki modüller için */
-        kodla: defterKodla, coz: defterCoz, gecmisListe: gecmisListe
+        kodla: defterKodla, coz: defterCoz, gecmisListe: gecmisListe, kodBoy: kodBoy,
+        boy: function () { return D ? { pw: D.pw, ph: D.ph } : null; }
     };
 })();

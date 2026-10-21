@@ -142,7 +142,8 @@
 
     function sekmeAdi(ad) {
         try {
-            var yeni = (ad ? ad + ' · ' : '') + SITE_ADI;
+            /* sınıf yokken «Ana sayfa · kidefarapca.com» (21.10.2026) */
+            var yeni = (ad ? ad + ' · ' : 'Ana sayfa · ') + SITE_ADI;
             if (document.title !== yeni) document.title = yeni;
         } catch (e) { }
     }
