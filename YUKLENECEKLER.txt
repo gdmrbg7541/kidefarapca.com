@@ -13035,3 +13035,17 @@ Ana sitenin gidecek boyutu: ~823 MiB.
   Deneme: _kaynak/kumanda-donus/deneme/hedef_dene.py (taklit Firebase, 1 bilgisayar + 2 tahta, 21 denetim) → 0 hata.
   Yedek: _kaynak/yedekler/2026-10-21-hedef-tahta/ (tahta-oncesi.js, tahtagir-oncesi.js, tahta.html, index-oncesi.html,
          YUKLENECEKLER-oncesi.txt)   (tahta.js v=0727eea5 · tahtagir.js v=227b52af · oturumguvenlik.js v=030fbcc3 · dil.js v=a9253d84)
+
+21.10.2026 — DEFTER AYRI SEKMEDE, TAM EKRAN; TAM EKRANDAN ÇIKINCA «ANA SAYFA» (öğretmen: "defter ayrı sekmede ve tam ekran olarak aç,
+                      tam ekrandan çıkınca kidefarapca sitesinin anasayfasına giden bi tuş görünsün")
+  defter.html         YENİ. Yalnız defter: hesap (Firebase, aynı oturum), rol çözümü (sistem/rol.js), sistem/yazisayfasi.js tek başına
+                      kipte. Adres: defter.html?sinif=5&sube=5-A&seviye=5.%20Sınıflar. Giriş yoksa / öğretmen değilse açıklama + «Ana sayfa».
+  sistem/yazisayfasi.js (v13)  · Sınıflarım'daki sağ alt «Defter · sınıf · şube» simgesi artık sayfanın üstünde büyütmez: defter.html'i
+                        adlı sekmede (kidefDefter) açar; bir daha basınca aynı sekme öne gelir. Tahta kabuğunun çerçevesindeyken aynı
+                        çerçevede açılır (kabuk tam ekranda kalır). Açılır pencere engellenirse eski yol.
+                      · Tek başına kipte: açılışta tam ekran denenir, tarayıcı dokunuş isterse ilk dokunuşta geçer (öğretmen çıkarsa bir
+                        daha zorlanmaz). «Küçült» yerine «Ana sayfa» (yeşil, sağ üst) — yalnız tam ekran DEĞİLKEN görünür. «Tam ekran»
+                        tuşu tam ekrandayken «Tam ekrandan çık». Esc tam ekrandan çıkar, küçültmez. 3 sn'de bir kaydeder; «Ana sayfa»
+                        önce kaydeder. Sekme yenilenince 45 dk kuralıyla aynı defter sürer. Sınıf izleme bu kipte kapalı.
+                      Kurulum: _kaynak/uretici/defterSekme.py. Deneme: _kaynak/yedekler/betikler/defter-sekme_dene.py (19 denetim, 0 hata).
+                      Yedek: _kaynak/yedekler/2026-10-21-defter-sekme/ (yazisayfasi-v12.js, index-oncesi.html). (v=39ab59da)

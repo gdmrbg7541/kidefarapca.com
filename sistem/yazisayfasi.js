@@ -758,6 +758,8 @@
             '.ys-t.kucult{background:#16A085; color:#fff; padding:0 13px 0 10px;}',
             '.ys-t.kucult:hover{background:#0E7C66;}',
             '.ys-t.kucult svg{width:22px; height:22px;}',
+            '.ys-t.ys-ana{text-decoration:none;}',
+            '#ysKutu.tam .ys-ana{display:none;}',
             '.ys-arac{position:relative; padding-right:232px;}',
             '.ys-pencere{position:absolute; top:9px; right:12px; display:flex; align-items:center; gap:6px;}',
             /* üst çubuk TEK SATIR kalsın: ≤1500 düğme yazıları gizlenir (simge +
@@ -970,6 +972,7 @@
         el: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="m7.5 8.5-3.5 3.5 3.5 3.5"/><path d="m16.5 8.5 3.5 3.5-3.5 3.5"/></svg>',
         izgara: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg>',
         kucult: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5.5 17.5h13"/></svg>',
+        ev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>',
         pdf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6"/><path d="m9.5 14.5 2.5 2.5 2.5-2.5"/></svg>',
         cizgiler: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9.5h16M4 14h16M4 18.5h16"/><path d="M4 4.5h7" stroke-dasharray="1 2.6"/></svg>',
         tamEkran: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
@@ -1080,8 +1083,11 @@
                 '<button type="button" class="ys-t" data-is="pdf" title="PDF olarak indir — bütün sayfalar">' + IK.pdf + '<span>PDF</span></button>' +
                 '<div class="ys-pencere">' +
                 '<button type="button" class="ys-t" data-is="tamEkran" title="Tam ekran">' + IK.tamEkran + '<span>Tam ekran</span></button>' +
-                '<button type="button" class="ys-t kucult" data-is="kucult" title="Simge durumuna küçült (Esc) — sınıf açık kaldıkça sağ altta durur" aria-label="Simge durumuna küçült">' +
-                  IK.kucult + '<span>Küçült</span></button>' +
+                (TEK
+                  ? '<a class="ys-t kucult ys-ana" href="index.html" data-is="anasayfa" title="Kidef Arapça ana sayfasına git" aria-label="Ana sayfaya git">' +
+                      IK.ev + '<span>Ana sayfa</span></a>'
+                  : '<button type="button" class="ys-t kucult" data-is="kucult" title="Simge durumuna küçült (Esc) — sınıf açık kaldıkça sağ altta durur" aria-label="Simge durumuna küçült">' +
+                      IK.kucult + '<span>Küçült</span></button>') +
                 '</div>' +
               '</div>' +
               '<div class="ys-sahne" id="ysSahne">' +
@@ -1179,7 +1185,7 @@
     /* KÜÇÜLT — sınıf açık kaldıkça pencere kapanmaz, sağ alta iner.
        Yazılan o ana kadar tarihiyle kaydedilir (sekme kapanırsa kaybolmasın). */
     function kucult() {
-        if (!UI || UI.kucuk) return;
+        if (!UI || UI.kucuk || TEK) return;
         fsCik();
         var so = UI.ort.querySelector('.ys-soru-ort'); if (so) so.remove();
         silSorKapat();
@@ -1220,10 +1226,37 @@
             '<svg class="pd-kalem" viewBox="0 0 24 24"><path d="M15.2 4.8l4 4L8.4 19.6 3.6 20.4l.8-4.8z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/>' +
             '<path d="M13.6 6.4l4 4" stroke="#C0392B" stroke-width="1.8"/></svg></i>' +
             '<span>Defter<small>' + esc(etiket()) + '</small></span>';
-        b.addEventListener('click', buyut);
+        b.addEventListener('click', ayriSekmedeAc);
         document.body.appendChild(b);
     }
     function pilKaldir() { var b = document.getElementById('ysPil'); if (b) b.remove(); }
+    /* AYRI SEKME (21.10.2026, öğretmen: "defter ayrı sekmede ve tam ekran
+       olarak aç"): simgeye basınca defter.html adlı bir sekmede açılır (bir
+       daha basınca aynı sekme öne gelir). Tahta kabuğunun çerçevesindeyken
+       aynı çerçevede açılır ki kabuk tam ekranda kalsın. Açılır pencere
+       engellenirse eski yol: sayfanın üstünde büyür. */
+    function defterAdresi(b) {
+        var q = [];
+        q.push('sinif=' + encodeURIComponent(b.sinif || ''));
+        if (b.sube) q.push('sube=' + encodeURIComponent(b.sube));
+        if (b.seviyeAd) q.push('seviye=' + encodeURIComponent(b.seviyeAd));
+        return 'defter.html?' + q.join('&');
+    }
+    function kabuktaMi() {
+        try { return window.name === 'kidefTahta' || (window.parent !== window && !!window.parent.KidefTahta); }
+        catch (e) { return window.name === 'kidefTahta'; }
+    }
+    function ayriSekmedeAc() {
+        var b = BAGLI || (D ? { sinif: D.sinif, sube: D.sube, seviyeAd: '' } : null);
+        if (!b) { buyut(); return; }
+        if (D && D.kirli && !bosMu(D.sayfalar)) gecmiseKaydet();     /* yeni sekme kaldığı yerden sürsün */
+        var url = defterAdresi(b);
+        if (kabuktaMi()) { location.href = url; return; }
+        var w = null;
+        try { w = window.open(url, 'kidefDefter'); } catch (e) { w = null; }
+        if (!w) { buyut(); return; }
+        try { w.focus(); } catch (e) { }
+    }
     function sinifAdi(s) {
         s = String(s == null ? '' : s);
         if (/^\d+$/.test(s)) return s + '. sınıf';
@@ -1860,6 +1893,23 @@
         if (fsEleman()) fsCik(); else fsGir(UI.ort);
         setTimeout(cizimAyarla, 250);
     }
+    function fsDegisti() {
+        if (!UI) return;
+        var tam = !!fsEleman();
+        if (tam) UI.tamDenendi = true;               /* bir kez girildi: çıkarsa bir daha zorlanmaz */
+        UI.kutu.classList.toggle('tam', tam);
+        var b = UI.ort.querySelector('[data-is="tamEkran"]');
+        if (b) { b.title = tam ? 'Tam ekrandan çık' : 'Tam ekran'; var sp = b.querySelector('span'); if (sp) sp.textContent = tam ? 'Tam ekrandan çık' : 'Tam ekran'; }
+    }
+    document.addEventListener('fullscreenchange', fsDegisti);
+    document.addEventListener('webkitfullscreenchange', fsDegisti);
+    /* tek başına kip: açılışta tam ekran denenir; tarayıcı dokunuş isterse ilk
+       dokunuşta geçer (bir kez; öğretmen tam ekrandan kendisi çıkarsa zorlanmaz) */
+    function ilkDokunustaTamEkran() {
+        if (!TEK || !UI || fsEleman() || UI.tamDenendi) return;
+        UI.tamDenendi = true;
+        tamEkranAc();
+    }
     /* açılışta tam ekran (öğretmen: "defter popup ı tam ekran açılsın"). Yalnız
        bir dokunuşla çağrılır (tarayıcı kuralı); izin verilmezse ya da tarayıcı
        desteklemezse (iPhone) pencere yine bütün ekranı kaplar. */
@@ -2108,6 +2158,7 @@
         else if (is === 'panelKapat') UI.panel.classList.remove('acik');
         else if (is === 'tamEkran') tamEkran();
         else if (is === 'kucult') kucult();
+        else if (is === 'anasayfa') { e.preventDefault(); anaSayfayaGit(); }
         else if (is === 'kapat') kapat();
         else if (is === 'sonAc') { var id = b.getAttribute('data-id'); var s = UI.ort.querySelector('.ys-son'); if (s) s.remove(); gecmistenAc(id); }
         else if (is === 'sonKapat') { var s2 = UI.ort.querySelector('.ys-son'); if (s2) s2.remove(); }
@@ -2124,6 +2175,7 @@
             if (so) { so.remove(); return; }
             if (UI.panel.classList.contains('acik')) { UI.panel.classList.remove('acik'); return; }
             if (fsEleman()) { fsCik(); return; }             /* önce tam ekrandan çık; bir daha Esc küçültür */
+            if (TEK) return;                                  /* ayrı sekmede küçültme yok: «Ana sayfa» görünür */
             kucult(); return;
         }
         if (yazi) return;
@@ -2359,21 +2411,50 @@
         } catch (e) { return null; }
     }
 
-    function sinifIcinAc(b) {
+    function sinifIcinAc(b, kucuk) {
+        if (kucuk === undefined) kucuk = true;
         BAGLI = b;
         gecmisListe(b.sinif).then(function (L) {
             if (BAGLI !== b) return;                                    /* bu arada sınıf değişti */
             var son = L.filter(function (x) { return (x.sube || '') === b.sube; })[0];
             if (son && son.kod && (Date.now() - (son.guncelleme || 0)) < DEVAM_SN * 1000) {
                 ac(b.sinif, { id: son.id, sinif: b.sinif, sube: b.sube, tarih: son.tarih || son.guncelleme, guncelleme: son.guncelleme,
-                              sayfalar: defterCoz(son.kod), aktif: 999, notId: son.notId || '', notAd: '', kirli: false }, true);
+                              sayfalar: defterCoz(son.kod), aktif: 999, notId: son.notId || '', notAd: '', kirli: false }, kucuk);
             } else {
-                ac(b.sinif, null, true);
+                ac(b.sinif, null, kucuk);
             }
-        }, function () { if (BAGLI === b) ac(b.sinif, null, true); });
+            if (!kucuk) tekBasinaHazir();
+        }, function () { if (BAGLI === b) { ac(b.sinif, null, kucuk); if (!kucuk) tekBasinaHazir(); } });
+    }
+    /* TEK BAŞINA (defter.html, 21.10.2026): sayfa yalnız defter. Sınıf
+       adresten gelir; Sınıflarım izlenmez, pencere kapanmaz, küçülmez. */
+    var TEK = null;
+    function tekBasina(b) {
+        if (!b || !b.sinif || !ogretmenMi()) return false;
+        TEK = { sinif: String(b.sinif), sube: String(b.sube || ''), seviyeAd: String(b.seviyeAd || '') };
+        var bb = { anahtar: 'tek|' + TEK.sinif + '|' + TEK.sube, sinif: TEK.sinif, sube: TEK.sube, seviyeAd: TEK.seviyeAd };
+        sinifIcinAc(bb, false);
+        return true;
+    }
+    function tekBasinaHazir() {
+        if (!TEK || !UI) return;
+        pilKaldir();
+        fsDegisti();
+        tamEkranAc();
+        ['pointerdown', 'keydown'].forEach(function (t) { document.addEventListener(t, ilkDokunustaTamEkran, { capture: true, passive: true }); });
+        /* sekme kapanırken / yenilenirken kayıp olmasın: 3 sn'de bir kaydedilir */
+        setInterval(function () { if (TEK && D && D.kirli) sessizKaydet(); }, 3000);
+        cizimAyarla();
+    }
+    /* «Ana sayfa»: önce defter kaydedilir, sonra gidilir (en çok 1,5 sn beklenir) */
+    function anaSayfayaGit() {
+        var p = (D && D.kirli && !bosMu(D.sayfalar)) ? gecmiseKaydet() : Promise.resolve();
+        var git = function () { location.href = 'index.html'; };
+        Promise.race([p, new Promise(function (r) { setTimeout(r, 1500); })]).then(git, git);
     }
 
     function sinifIzle() {
+        if (TEK) return;
         var b = acikSinif();
         var k = b ? b.anahtar : '';
         var simdiki = BAGLI ? BAGLI.anahtar : '';
@@ -2388,7 +2469,9 @@
     setInterval(sinifIzle, 500);
 
     window.KidefYaziSayfasi = {
-        ac: ac, kapat: kapat, kucult: kucult, buyut: buyut,
+        ac: ac, kapat: kapat, kucult: kucult, buyut: buyut, tekBasina: tekBasina,
+        tek: function () { return TEK; }, adres: defterAdresi,
+        _tamSifirla: function () { if (UI) UI.tamDenendi = false; },      /* deneme */
         bagli: function () { return BAGLI; },
         gorunum: function () { return UI ? { x0: UI.vx0, x1: UI.vx1, c: UI.c, cy: UI.cy, y0: UI.vy0, y1: UI.vy1, Lh: UI.Lh,
                                              pw: D.pw, aktif: D.aktif, n: D.sayfalar.length, dikey: !!UI.dikey, anim: !!UI.anim, pay: UI.ustPay || 0 } : null; },

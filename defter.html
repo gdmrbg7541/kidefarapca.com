@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#16A085">
+<title>Defter — Kidef Arapça</title>
+<!-- DEFTER AYRI SEKMEDE (21.10.2026) — öğretmen: "defter ayrı sekmede ve tam
+     ekran olarak aç, tam ekrandan çıkınca kidefarapca sitesinin anasayfasına
+     giden bi tuş görünsün". Ana sayfadaki Sınıflarım'da sağ alttaki Defter
+     simgesi bu sayfayı adlı sekmede açar (defter.html?sinif=5&sube=5-A&seviye=…).
+     Defterin kendisi sistem/yazisayfasi.js; burada tek başına kipte çalışır
+     (KidefYaziSayfasi.tekBasina). Hesap: aynı site, oturum paylaşılır;
+     seviye notları hesaba yazılır. -->
+<link rel="stylesheet" href="arakom.css?v=896e5892">
+<style>
+  html, body { margin: 0; height: 100%; background: #F4F6F8; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; color: #2C3E50; }
+  #dfBekle { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  #dfBekle .kutu { max-width: 520px; width: 100%; background: #fff; border-radius: 22px; box-shadow: 0 20px 60px rgba(15,42,67,.14); padding: 30px 30px 24px; text-align: center; }
+  #dfBekle h1 { margin: 0 0 8px; font-size: 1.5rem; color: #0E7C66; }
+  #dfBekle p { margin: 0 0 18px; color: #5B6B7C; line-height: 1.5; }
+  #dfBekle a, #dfBekle button { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 12px; padding: 12px 20px; font: 800 1rem/1 inherit; cursor: pointer; text-decoration: none; }
+  #dfBekle .ana { background: #16A085; color: #fff; }
+  #dfBekle .ikinci { background: #EEF2F6; color: #2C3E50; margin-inline-start: 8px; }
+  #dfBekle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  #dfBekle[hidden] { display: none; }
+</style>
+</head>
+<body data-kd-dil="yok">
+<div id="dfBekle"><div class="kutu"><h1>Defter açılıyor…</h1><p>Hesabın denetleniyor.</p></div></div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="sistem/rol.js?v=c2c8fb6a"></script>
+<script src="sistem/yazisayfasi.js?v=39ab59da"></script>
+<script>
+(function () {
+  'use strict';
+  var AYAR = {
+    apiKey: 'AIzaSyBGIQPJ_Bjm5I3-QmrrGpLR5MqmG3S5F8w',
+    authDomain: 'kidefarapca-98f9c.firebaseapp.com',
+    projectId: 'kidefarapca-98f9c',
+    storageBucket: 'kidefarapca-98f9c.firebasestorage.app',
+    messagingSenderId: '503317118211',
+    appId: '1:503317118211:web:a9c8cf15b854597e0b3d36'
+  };
+  var EV = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>';
+  function kac(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function param(ad) {
+    var m = new RegExp('[?&]' + ad + '=([^&#]*)').exec(location.search);
+    try { return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; } catch (e) { return ''; }
+  }
+  function goster(baslik, metin, girisTusu) {
+    var b = document.getElementById('dfBekle');
+    b.hidden = false;
+    b.innerHTML = '<div class="kutu"><h1>' + kac(baslik) + '</h1><p>' + kac(metin) + '</p>' +
+      '<a class="ana" href="index.html">' + EV + 'Ana sayfa</a>' +
+      (girisTusu ? '<a class="ikinci" href="index.html?giris=1">Giriş yap</a>' : '') + '</div>';
+  }
+  var sinif = param('sinif').replace(/[^0-9A-Za-z_x]/g, '').slice(0, 26);
+  var sube = param('sube').slice(0, 40), seviye = param('seviye').slice(0, 60);
+  if (!sinif) { goster('Sınıf belli değil', 'Defter, ana sayfada Sınıflarım\'dan bir sınıf açıp sağ alttaki Defter simgesine basınca açılır.'); return; }
+  document.title = 'Defter' + (sube ? ' · ' + sube : (/^\d+$/.test(sinif) ? ' · ' + sinif + '. sınıf' : '')) + ' — Kidef Arapça';
+  try { if (!firebase.apps.length) firebase.initializeApp(AYAR); } catch (e) { goster('Bağlantı kurulamadı', 'Sayfayı yenileyip tekrar dene.'); return; }
+  var cevap = false;
+  setTimeout(function () { if (!cevap) goster('Giriş bekleniyor', 'Hesap bilgisi alınamadı. Ana sayfada giriş yapıp Defter simgesine yeniden bas.', true); }, 9000);
+  firebase.auth().onAuthStateChanged(function (u) {
+    if (cevap) return;
+    if (!u || u.isAnonymous) { cevap = true; goster('Önce giriş yap', 'Defter öğretmen hesabıyla açılır. Ana sayfada giriş yaptıktan sonra Sınıflarım\'dan sınıfı açıp Defter simgesine bas.', true); return; }
+    var db = null; try { db = firebase.firestore(); } catch (e) { }
+    window.KidefRol.coz(u, db).then(function (o) {
+      cevap = true;
+      var rol = o && o.rol;
+      var yetkili = !!(o && (o.ogretmen || rol === 'admin'));
+      if (!yetkili) { goster('Bu hesapla açılamaz', (o && o.hata) ? 'Hesap bilgisi okunamadı: ' + o.hata : 'Defter yalnız öğretmen ve yönetici hesabında açılır.'); return; }
+      window.appState = window.appState || {};
+      window.appState.userRole = rol === 'admin' ? 'admin' : 'teacher';
+      window.appState.currentUserName = (o && o.isim) || u.displayName || '';
+      document.getElementById('dfBekle').hidden = true;
+      var acildi = window.KidefYaziSayfasi && window.KidefYaziSayfasi.tekBasina({ sinif: sinif, sube: sube, seviyeAd: seviye });
+      if (!acildi) goster('Defter açılamadı', 'Sayfayı yenileyip tekrar dene.');
+    });
+  });
+})();
+</script>
+</body>
+</html>
