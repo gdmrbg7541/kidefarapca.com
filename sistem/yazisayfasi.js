@@ -811,6 +811,13 @@
             /* dikeyde sıra: ▲ geri · sayfa · ▼ ileri */
             '#ysKutu.dikey .ys-sayfalar [data-is="saga"]{order:-2;} #ysKutu.dikey .ys-sayfalar .ys-sayfa{order:-1;}',
             '.ys-sayfalar .ys-sayfa{font-size:1.3rem; min-width:78px;}',
+            /* düzenleme kutusu çubuğun başında (21.10.2026) */
+            '.ys-sayfalar .ys-dgrup{display:inline-flex; align-items:center; gap:4px; order:-3;}',
+            '.ys-sayfalar .ys-dgrup + .ys-ara{order:-3;}',           /* dikey kipte ▲ ve sayfa öne alınıyor; kutu hep en başta */
+            '.ys-sayfalar .ys-dgrup .ys-t[data-is="silgi"].sec{background:#16A085; color:#fff;}',
+            '.ys-sayfalar .ys-dgrup .ys-t[data-is="temizle"]:not([disabled]):hover{background:#FDEDEC; color:#C0392B;}',
+            /* mutlak konumlu kutu, kalan alana sığmazsa tek satırı bölüyordu: genişlik içeriği kadar; yalnız dar ekranda sarar */
+            '.ys-sayfalar{width:max-content; flex-wrap:wrap; justify-content:center; max-width:calc(100% - 16px); row-gap:4px;}',
             '.ys-sayfalar .ys-ara{width:1px; height:30px; background:rgba(15,23,42,.14); margin:0 3px;}',
             /* kaydırma yönü: dikey / yatay */
             '.ys-yon{display:inline-flex; gap:2px; padding:3px; background:rgba(15,23,42,.06); border-radius:999px;}',
@@ -907,6 +914,8 @@
             '  .ys-sayfalar .ys-t svg{width:19px; height:19px;}',
             '  .ys-sayfalar .ys-ok{width:44px; height:44px; min-width:44px;} .ys-sayfalar .ys-ok svg{width:28px; height:28px;}',
             '  .ys-sayfalar .ys-sayfa{font-size:.98rem; min-width:40px;} .ys-sayfalar .ys-ara{display:none;}',
+            '  .ys-sayfalar .ys-dgrup{gap:2px;} .ys-sayfalar .ys-dgrup .ys-t{width:34px; height:34px; min-width:34px;}',
+            '  .ys-sayfalar{max-width:calc(100% - 56px);}',          /* dikeyde +18 px kaydırılmış: sağ kenar taşmasın */
             '  .ys-yon{padding:2px;} .ys-yb{width:30px; height:30px;} .ys-yb svg{width:17px; height:17px;}',
             '  #ysKutu.dikey .ys-sayfalar{left:calc(50% + 18px);}',
             '  .ys-csay{min-width:26px; height:28px; font-size:.84rem; padding:0 3px;} .ys-csay.ys-guzel{padding:0 3px;}',
@@ -925,6 +934,8 @@
             '  font-family:inherit; font-weight:800; font-size:.92rem; line-height:1.15; text-align:start;',
             '  box-shadow:0 10px 28px rgba(192,57,43,.38); animation:ysSol .18s ease-out;}',
             '#ysPil:hover{--pil:#C0392B;} #ysPil:focus-visible{outline:3px solid #F39C12; outline-offset:2px;}',
+            '#ysPil.yigin{z-index:1001; right:25px; bottom:25px; box-shadow:0 8px 22px rgba(192,57,43,.42);}',
+            '#ysPil[hidden]{display:none;}',
             '#ysPil i{display:flex; width:34px; height:34px; align-items:center; justify-content:center; flex:none;}',
             '#ysPil i svg{width:24px; height:24px;}',
             '#ysPil small{display:block; font-size:.72rem; font-weight:700; opacity:.9;}',
@@ -1056,14 +1067,6 @@
             '<div id="ysKutu" role="dialog" aria-modal="true" aria-label="Defter">' +
               '<div class="ys-arac">' +
                 '<div class="ys-baslik">' + IK.defter + '<span>Defter<small>' + esc(etiket()) + '</small></span></div>' +
-                '<div class="ys-grup ys-dgrup">' +
-                  '<button type="button" class="ys-t" data-is="geri" title="Geri al (Ctrl+Z)">' + IK.geri + '</button>' +
-                  '<button type="button" class="ys-t" data-is="ileri" title="Yinele (Ctrl+Y)">' + IK.ileri + '</button>' +
-                  '<button type="button" class="ys-t" data-is="silgi" title="Silgi (S) — seçiliyken bir daha basınca: Tüm sayfayı sil" aria-label="Silgi">' +
-                    IK.silgi + '</button>' +
-                  '<button type="button" class="ys-t" data-is="temizle" title="Sayfayı sil">' + IK.temizle + '</button>' +
-                '</div>' +
-                '<div class="ys-ayrac"></div>' +
                 '<div class="ys-grup ys-kgrup" role="group" aria-label="Kalınlık ve hat kalemi">' + kalin +
                   '<span class="ys-gara"></span>' +
                   '<button type="button" class="ys-t ys-hat" data-is="hat" aria-pressed="false" title="Hat kalemi — eğik uçlu kalem: yatayda kalın, dikeyde ince yazar">' +
@@ -1103,7 +1106,18 @@
                   '<div class="ys-tutamak" id="ysTutamakD"><b>1</b></div>' +
                 '</div>' +
                 yan('sol') + yan('sag') +
-                '<div class="ys-sayfalar" aria-label="Sayfalar">' +
+                /* [geri al · yinele · silgi · çöp] YUKARIDA ORTADA (21.10.2026, öğretmen:
+                   "defterde ileri geri tuşu ve silgi konteynırı yukarda ortada olsun"):
+                   sayfa çubuğunun başında, aynı kutuda */
+                '<div class="ys-sayfalar" aria-label="Sayfalar ve düzenleme">' +
+                  '<span class="ys-dgrup" role="group" aria-label="Düzenleme">' +
+                    '<button type="button" class="ys-t" data-is="geri" title="Geri al (Ctrl+Z)" aria-label="Geri al">' + IK.geri + '</button>' +
+                    '<button type="button" class="ys-t" data-is="ileri" title="Yinele (Ctrl+Y)" aria-label="Yinele">' + IK.ileri + '</button>' +
+                    '<button type="button" class="ys-t" data-is="silgi" title="Silgi (S) — seçiliyken bir daha basınca: Tüm sayfayı sil" aria-label="Silgi">' +
+                      IK.silgi + '</button>' +
+                    '<button type="button" class="ys-t" data-is="temizle" title="Sayfayı sil" aria-label="Sayfayı sil">' + IK.temizle + '</button>' +
+                  '</span>' +
+                  '<span class="ys-ara"></span>' +
                   '<button type="button" class="ys-t ys-ok" data-is="sola" title="İleri — sonraki sayfa; son sayfadaysa yeni sayfa" aria-label="İleri — sonraki sayfa">' +
                     '<span class="ik-y">' + IK.onceki + '</span><span class="ik-d">' + IK.asagi + '</span></button>' +
                   '<span class="ys-sayfa" id="ysSayfa">1 / 1</span>' +
@@ -1208,13 +1222,63 @@
         cizimAyarla();
         if (UI.oneriBekle) { UI.oneriBekle = false; sonDefterOnerisi(); }
     }
+    /* ANA SAYFADA DEFTER PİLİ — SARF MOTORU'NUN ALTINDA (21.10.2026, öğretmen:
+       "defter popup ı index te sarf motorunun altında da olsun"): pil artık
+       yalnız sınıf açıkken değil, öğretmen/yönetici girişliyken HEP durur.
+       Sarf Motoru'nun bulunduğu yüzen yığının en altına oturur; Sarf Motoru,
+       Kamus ve İletişim onun üstüne kayar (index'teki positionFeedbackFab).
+       Sınıf açıksa o sınıfın defterini, değilse «Genel defter»i ayrı sekmede
+       açar. Sayfa ayrı defter sekmesiyse (TEK) pil yok. */
+    function sarfDugmesi() { return document.querySelector('.floating-tool-button.kaliplar-tablosu-btn'); }
+    function yiginPili() { return !TEK && !!sarfDugmesi(); }
+    function pilEtiketi() {
+        if (BAGLI) return sinifAdi(BAGLI.sinif) + (BAGLI.sube ? ' · ' + BAGLI.sube : '');
+        if (D && !TEK) return etiket();
+        return 'Genel defter';
+    }
+    function pilYerlestir() {
+        var sarf = sarfDugmesi(), b = document.getElementById('ysPil');
+        if (!sarf) return;
+        var acik = !!(b && !b.hidden && b.classList.contains('yigin'));
+        sarf.style.bottom = '';                                   /* biçem dosyasındaki taban (ekran boyuna göre) */
+        if (acik) {
+            var st = getComputedStyle(sarf), taban = parseFloat(st.bottom) || 25;
+            b.style.bottom = taban + 'px'; b.style.right = st.right;
+            sarf.style.bottom = (taban + b.offsetHeight + 10) + 'px';
+        }
+        try { if (typeof window.positionFeedbackFab === 'function') window.positionFeedbackFab(); } catch (e) { }
+    }
+    function anaSayfadaMi() {
+        var h = document.getElementById('home-hub-section');
+        return !!(h && getComputedStyle(h).display !== 'none');
+    }
+    var _pilSonDurum = '';
+    function pilDenetle() {
+        if (!yiginPili()) return;
+        var gor = ogretmenMi() && (anaSayfadaMi() || !!BAGLI) && !(UI && !UI.kucuk);
+        var b = document.getElementById('ysPil');
+        if (gor && !b) { pilGoster(); b = document.getElementById('ysPil'); }
+        if (!b) return;
+        var durum = (gor ? '1' : '0') + '|' + pilEtiketi() + '|' + window.innerWidth + 'x' + window.innerHeight;
+        if (durum === _pilSonDurum) return;
+        _pilSonDurum = durum;
+        b.hidden = !gor;
+        var et = b.querySelector('small'); if (et) et.textContent = pilEtiketi();
+        b.setAttribute('aria-label', 'Defter — aç · ' + pilEtiketi());
+        pilYerlestir();
+    }
+    window.addEventListener('resize', function () { _pilSonDurum = ''; });
+    setInterval(pilDenetle, 500);
     function pilGoster() {
+        if (yiginPili() && document.getElementById('ysPil')) { _pilSonDurum = ''; pilDenetle(); return; }
         pilKaldir();
+        stilKur();                                   /* pil defter açılmadan da kurulabiliyor (yığın) */
         var b = document.createElement('button');
         b.type = 'button';
         b.id = 'ysPil';
+        if (yiginPili()) b.classList.add('yigin');
         b.title = 'Defter — aç';
-        b.setAttribute('aria-label', 'Defter — aç · ' + etiket());
+        b.setAttribute('aria-label', 'Defter — aç · ' + pilEtiketi());
         /* canlanan defter (20.10.2026, öğretmen: "aşağıdaki defter popup
            kısmında sayfa çevirme ve yazma animasyonu olsun"): kalem sağdan
            sola bir satır yazar, soldaki yaprak sağa çevrilir, baştan. Kırmızı
@@ -1225,11 +1289,18 @@
             '<span class="pd-s pd-yaprak"></span></span>' +
             '<svg class="pd-kalem" viewBox="0 0 24 24"><path d="M15.2 4.8l4 4L8.4 19.6 3.6 20.4l.8-4.8z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/>' +
             '<path d="M13.6 6.4l4 4" stroke="#C0392B" stroke-width="1.8"/></svg></i>' +
-            '<span>Defter<small>' + esc(etiket()) + '</small></span>';
+            '<span>Defter<small>' + esc(pilEtiketi()) + '</small></span>';
         b.addEventListener('click', ayriSekmedeAc);
         document.body.appendChild(b);
+        if (yiginPili()) { _pilSonDurum = ''; pilDenetle(); }
     }
-    function pilKaldir() { var b = document.getElementById('ysPil'); if (b) b.remove(); }
+    /* yığın pili kaldırılmaz, yalnız gizlenir (defter sayfanın üstünde büyükken); ötekiler eskisi gibi silinir */
+    function pilKaldir() {
+        var b = document.getElementById('ysPil');
+        if (!b) return;
+        if (b.classList.contains('yigin') && yiginPili()) { b.hidden = true; _pilSonDurum = ''; pilYerlestir(); return; }
+        b.remove();
+    }
     /* AYRI SEKME (21.10.2026, öğretmen: "defter ayrı sekmede ve tam ekran
        olarak aç"): simgeye basınca defter.html adlı bir sekmede açılır (bir
        daha basınca aynı sekme öne gelir). Tahta kabuğunun çerçevesindeyken
@@ -1247,8 +1318,8 @@
         catch (e) { return window.name === 'kidefTahta'; }
     }
     function ayriSekmedeAc() {
-        var b = BAGLI || (D ? { sinif: D.sinif, sube: D.sube, seviyeAd: '' } : null);
-        if (!b) { buyut(); return; }
+        var b = BAGLI || (D && !TEK ? { sinif: D.sinif, sube: D.sube, seviyeAd: '' } : null) ||
+                { sinif: 'genel', sube: '', seviyeAd: 'Genel defter' };      /* sınıf açık değil: genel defter */
         if (D && D.kirli && !bosMu(D.sayfalar)) gecmiseKaydet();     /* yeni sekme kaldığı yerden sürsün */
         var url = defterAdresi(b);
         if (kabuktaMi()) { location.href = url; return; }
@@ -1846,6 +1917,7 @@
         D.cizgi = n; D.ust = UST_BOSLUK;
         D.kirli = true;
         sayfaCiz();
+        aracGuncelle();              /* seçili düğme ve sayfa bilgisi hemen değişsin (21.10.2026) */
     }
     /* HAT KALEMİ aç / kapa — kalınlık düğmeleri ucun enini seçer */
     function hatSec(acik) {
@@ -2440,8 +2512,7 @@
         if (!TEK || !UI) return;
         pilKaldir();
         fsDegisti();
-        tamEkranAc();
-        ['pointerdown', 'keydown'].forEach(function (t) { document.addEventListener(t, ilkDokunustaTamEkran, { capture: true, passive: true }); });
+        /* kendiliğinden tam ekran yok (21.10.2026): «Tam ekran» tuşu isteğe bağlı; ilk dokunuş da zorlamaz */
         /* sekme kapanırken / yenilenirken kayıp olmasın: 3 sn'de bir kaydedilir */
         setInterval(function () { if (TEK && D && D.kirli) sessizKaydet(); }, 3000);
         cizimAyarla();

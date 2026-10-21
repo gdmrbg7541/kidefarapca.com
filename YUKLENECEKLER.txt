@@ -13049,3 +13049,18 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                         önce kaydeder. Sekme yenilenince 45 dk kuralıyla aynı defter sürer. Sınıf izleme bu kipte kapalı.
                       Kurulum: _kaynak/uretici/defterSekme.py. Deneme: _kaynak/yedekler/betikler/defter-sekme_dene.py (19 denetim, 0 hata).
                       Yedek: _kaynak/yedekler/2026-10-21-defter-sekme/ (yazisayfasi-v12.js, index-oncesi.html). (v=39ab59da)
+
+21.10.2026 — DEFTER v14: DÜZENLEME KUTUSU YUKARIDA ORTADA · ÇİZGİ GEÇİŞİ · TAM EKRAN YOK · SARF MOTORU ALTINDA PİL
+  (öğretmen: "defterde ileri geri tuşu ve silgi konteynırı yukarda ortada olsun" · "güzel yazı defteri ile normal defter arası geçiş
+   tam çalışmıyor" · "defter tam ekran açılmasın sadece ayrı sekmede açılsa yeter" · "defter popup ı index te sarf motorunun altında da olsun")
+  sistem/yazisayfasi.js (v=cb9367af)
+    · [geri al · yinele · silgi · çöp] kutusu üst çubuktan çıktı; yukarıda ortadaki yarı saydam sayfa çubuğunun BAŞINDA (▲ sayfa ▼'nin
+      solunda), yuvarlak düğmeler. «Tüm sayfayı sil» sorusu silginin altında. Çubuk genişliği içeriği kadar (dar ekranda sarar).
+    · Güzel yazı ↔ çizgili geçişi: kâğıt değişiyor ama seçili düğme eski seçimde kalıyordu (cizgiSec'te aracGuncelle eksikti) — düzeldi.
+    · Ayrı sekmede kendiliğinden tam ekran kaldırıldı; «Tam ekran» tuşu isteğe bağlı, tam ekrandayken «Ana sayfa» yine gizli.
+    · Ana sayfada Defter pili SARF MOTORU'NUN ALTINDA hep durur (öğretmen/yönetici girişliyken; öğrenci görmez): Sarf Motoru, Kamus ve
+      İletişim onun üstüne kayar. Sınıf açıksa «5. sınıf · 5-A», değilse «Genel defter» (defter.html?sinif=genel). Defter sayfanın
+      üstünde büyükken (açılır pencere engellenirse) pil gizlenir.
+  index.html          positionFeedbackFab dışa açıldı (pil yığını yeniden yerleştirir).
+  Kurulum: _kaynak/uretici/defterUst.py. Deneme: _kaynak/yedekler/betikler/defter-ust_dene.py (23 denetim, 0 hata).
+  Yedek: _kaynak/yedekler/2026-10-21-defter-ust/ (yazisayfasi-v13.js, index-oncesi.html, YUKLENECEKLER-oncesi.txt)
