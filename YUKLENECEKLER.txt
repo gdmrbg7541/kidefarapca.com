@@ -13001,3 +13001,37 @@ Ana sitenin gidecek boyutu: ~823 MiB.
                         Bilgilerim» başlığında (kendi belgesinden, destek.sonOdeme).
                       (v=d931fd36) Yedek: _kaynak/yedekler/2026-10-20-destekciler/ (index-oncesi.html, siniftayeni.js, yenilikler.js,
                       destek-v21.js)
+
+21.10.2026 — DİL KARTI KAPALI AKORDİYON (öğretmen: "dil seçeneği kapalı akordiyon olsun")
+  sistem/dil.js       Profildeki «Dil / Language» kartı artık öbür bölümler gibi kapalı bir akordiyon (details.profile-accordion);
+                      başlıkta seçili dilin bayrağı ve adı. Açınca 20 dilin listesi. dil.js 100 sayfada yüklü olduğu için ?v= damgaları
+                      her sayfada tazelendi (içerik değişmedi). Yedek: _kaynak/yedekler/2026-10-21-dil-oturum/dil.js
+
+21.10.2026 — TAHTADA ESKİ OTURUM ERTESİ GÜN KAPANIR (öğretmen: "birden fazla akıllı tahtada oturum açık kalıyor, 40 dakika dolmasına
+                      rağmen başka gün açıldığında hâlâ çıkış yapılmadığını görüyorum")
+  Sebep: sayfa açılırken tarayıcının sakladığı oturum geri geliyor ve hareket sayacı o anda sıfırlanıyordu (40 dk yeniden başlıyordu).
+         Tahta kabuğu (tahta.html) bekleme ekranındayken çerçevede sayfa yüklü olmadığı için 40 dk kuralı hiç işlemiyordu.
+  hesap/oturumguvenlik.js  Girişin üstünden 2 dakikadan çok geçmişse (saklanan oturum) ve son hareketin ya da girişin üstünden 40 dk
+                      geçmişse oturum açılışta hemen kapanır. Yeni giriş (şifre, karekod) etkilenmez; telefon/tablette gece 00:00 kuralı
+                      sürer. NOT: bilgisayarda da geçerli — ertesi gün açınca yeniden giriş istenir (40 dk kuralının tamamlanması).
+  sistem/tahta.js     Tahta kabuğu da aynı denetimi yapar (CIHAZ tahta): bayat oturumla açılırsa çıkar, «Önce giriş yap» ekranı.
+  Yedek: _kaynak/yedekler/2026-10-21-dil-oturum/
+
+21.10.2026 — HEDEF TAHTA: YANSITIRKEN AÇIK TAHTALAR GÖRÜNÜR, BİRİ SEÇİLİR (öğretmen: "tahtaya yansıtırken açık olan cihazlar görünsün ve
+                      onlardan biri seçilebilsin, hatta eğer o tahtada bi sınıf açılmışsa o sınıf ismi de görünsün")
+  _kaynak/uretici/tahtaHedef.py  (yama; iki kez çalıştırılırsa ikincide dokunmaz)
+  sistem/tahta.js     · KIMLIK: cihazın kalıcı kimliği (kidef_cihaz_kimlik, Cihazlarım ile aynı); tahta izle/ kaydına kimlik, ad
+                        (öğretmenin verdiği: bekleme ekranında «Tahtaya ad ver»), açık sınıf (Listelerim'de açık sınıf; yoksa son
+                        açılan sınıf) yazar; 2,5 sn'de bir tazeler.
+                      · Lider yayin.hedef = kimlik (+hedefAd); boşsa bütün tahtalar izler. Şeritte «Tahta» seçicisi (Bütün tahtalar /
+                        açık tahtalar · açık sınıf); seçim hatırlanır (kidef_tahta_hedef), tahta.html &hedef= ile de açılır.
+                      · Hedef başka tahtaysa o tahta yansıtmayı yok sayar: bekleme ekranında «Yansıtma başka bir tahtaya gidiyor»,
+                        olay/kaydırma/yazı alanı uygulanmaz, ses-video durur, dokununca dersi almaz, vekil olmaz. Hedef dönünce sayfayı
+                        yeniden açıp liderden geçmişi ister (esitIste). Tahta lider olursa (dokunuş / vekil) yayındaki hedef korunur.
+                      · Durum çipi hedef tahtayı sayar: «Tahta bağlı · 7-A sınıfı / 7-A», «7-A sınıfı bekleniyor…».
+  sistem/tahtagir.js  Ana sayfa paneli «Hangi tahta?»: Bütün tahtalar (n), her tahta (ad, açık/son sınıf); tek tahta açıksa o seçili;
+                      «Yansıtmayı başlat» seçimle açar. Liste tahta açılıp kapandıkça canlı.
+  Yeni dil anahtarları (th.*) şimdilik Türkçe karşılığıyla (öbür dillerde Türkçe görünür).
+  Deneme: _kaynak/kumanda-donus/deneme/hedef_dene.py (taklit Firebase, 1 bilgisayar + 2 tahta, 21 denetim) → 0 hata.
+  Yedek: _kaynak/yedekler/2026-10-21-hedef-tahta/ (tahta-oncesi.js, tahtagir-oncesi.js, tahta.html, index-oncesi.html,
+         YUKLENECEKLER-oncesi.txt)   (tahta.js v=0727eea5 · tahtagir.js v=227b52af · oturumguvenlik.js v=030fbcc3 · dil.js v=a9253d84)

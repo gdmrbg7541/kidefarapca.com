@@ -580,6 +580,9 @@
       /* profil kartı */
       '.kd-dil-kart .kd-dil{ max-width:320px; }',
       '.kd-dil-kart h3{ margin:0 0 6px; font-size:1.1rem; color:#0f2a43; }',
+      '.kd-dil-kart .kd-dil-cip{ display:inline-flex; align-items:center; gap:6px; font-size:.78rem; font-weight:600;',
+      '  background:#EAF7F3; color:#16A085; padding:3px 10px; border-radius:20px; }',
+      '.kd-dil-kart .kd-dil-cip svg{ width:18px; height:13px; border-radius:2px; }',
       '.kd-dil-kart p{ margin:0 0 12px; font-size:.92rem; line-height:1.5; color:#5A7186; }'
     ].join('');
     (document.head || document.documentElement).appendChild(s);
@@ -694,20 +697,30 @@
   }
 
   /* --------------------------------------------- profildeki dil kartı */
+  /* KAPALI AKORDİYON (21.10.2026) — öğretmen: "dil seçeneği kapalı akordiyon
+     olsun". Kart, profildeki öbür bölümler gibi (<details class="profile-accordion">,
+     hesap/listelerim.js llAkordiyon) kapalı başlar; başlıkta seçili dil görünür. */
   function kartDoldur(kart) {
-    kart.innerHTML = '<h3>' + metin('dil.baslik', 'Dil / Language') + '</h3>' +
+    var k = dilKaydi(simdiki);
+    kart.innerHTML = '<summary style="cursor:pointer; display:flex; align-items:center; gap:8px; color:#16A085;' +
+      ' font-weight:700; font-size:1.15rem; list-style:none; flex-wrap:wrap;">' +
+      '<span>🌐 ' + metin('dil.baslik', 'Dil / Language') + '</span>' +
+      '<span class="kd-dil-cip">' + bayrakSvg(k.kod) + '<span>' + k.ad + '</span></span>' +
+      '<span class="acc-chevron" style="margin-left:auto; color:#16A085; transition:transform 0.2s;">▸</span></summary>' +
+      '<div style="margin-top:16px; text-align:left;">' +
       '<p>' + metin('dil.kart_alt',
         'Sitenin yazıları seçtiğin dile geçer. Seçimin hesabına kayıtlıdır: ' +
         'telefonda ya da okulda açtığında da aynı dil gelir.') + '</p>' +
       '<div class="kd-liste" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px;">' +
-      DILLER.map(dilSatiri).join('') + '</div>';
+      DILLER.map(dilSatiri).join('') + '</div></div>';
   }
   function kartKur(bolum) {
     if (!bolum || !bolum.firstElementChild) return;
     if (bolum.querySelector('.kd-dil-kart')) return;
     stilKur();
-    var k = document.createElement('div');
-    k.className = 'glass-card kd-dil-kart';
+    var k = document.createElement('details');
+    k.className = 'glass-card profile-accordion kd-dil-kart';
+    k.style.cssText = 'margin-bottom:25px; border-bottom:4px solid #0E9E86;';
     kartDoldur(k);
     k.addEventListener('click', function (e) {
       var t = e.target.closest ? e.target.closest('[data-kd-dil]') : null;

@@ -117,6 +117,15 @@
     '.thg-nokta.bekle{background:#f59e0b}',
     '.thg-not{margin:10px 2px 0;color:#64748b;font-size:.8rem;line-height:1.45}',
     '.thg-not a{color:#0E7C66;font-weight:700;cursor:pointer;text-decoration:underline}',
+    '.thg-tahtalar{margin:4px 0 2px;display:flex;flex-direction:column;gap:6px}',
+    '.thg-tahtalar .thg-bas{font-size:.78rem;font-weight:800;color:#64748b;letter-spacing:.3px;text-transform:uppercase}',
+    '.thg-tahtalar label{display:flex;align-items:flex-start;gap:8px;padding:7px 9px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;cursor:pointer;',
+    ' font-size:.86rem;line-height:1.35;color:#0f2a43}',
+    '.thg-tahtalar label:has(input:checked){border-color:#16A085;background:#effaf6}',
+    '.thg-tahtalar input{margin:3px 0 0;accent-color:#16A085;flex:none}',
+    '.thg-tahtalar b{display:block}',
+    '.thg-tahtalar small{display:block;color:#5b6b7c;font-size:.78rem}',
+    '.thg-tahtalar .thg-yok{font-size:.82rem;color:#64748b;background:#f8fafc;border-radius:10px;padding:8px 10px}',
     '@media (max-width:560px){.thg-secim{grid-template-columns:1fr}.thg-ust svg{width:84px}.thg-ust h2{font-size:1.2rem}}',
     '#thgSoru{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2600;display:flex;align-items:center;gap:12px;',
     ' background:#0f2a43;color:#fff;border-radius:16px;padding:12px 14px 12px 16px;box-shadow:0 16px 40px rgba(0,0,0,.3);',
@@ -179,7 +188,7 @@
       var kok = db.ref('tahta/' + kullanici().uid);
       durumDinle = kok;
       kok.child('yayin').on('value', function (s) { yayin = s.val(); yayinOkundu = true; durumYaz(); soruKontrol(); noktaYaz(); donusKontrol(); }, function () { });
-      kok.child('izle').on('value', function (s) { izle = s.val(); izleOkundu = true; durumYaz(); noktaYaz(); donusKontrol(); }, function () { });
+      kok.child('izle').on('value', function (s) { izle = s.val(); izleOkundu = true; durumYaz(); tahtalarCiz(); noktaYaz(); donusKontrol(); }, function () { });
     });
   }
   function canliBirak() {
@@ -222,6 +231,7 @@
       '<div class="thg-kart' + (tahta ? '' : ' secili') + '"><span class="thg-sim">' + SIM.pc + '</span>' +
       '<h3>' + kac(kd('th.p_yansit', 'Bu bilgisayardan yansıt')) + '</h3>' +
       '<p>' + kac(kd('th.p_yansit_alt', 'Burada açtığın sayfa, kaydırma, tıklama ve yazdıkların tahtada görünür. Üstteki şeritten tahtayı karartabilir, duraklatabilirsin.')) + '</p>' +
+      '<div class="thg-tahtalar" id="thgTahtalar"></div>' +
       '<button type="button" class="thg-dug" data-thg="yansit">' + kac(kd('th.p_yansit_dug', 'Yansıtmayı başlat')) + '</button></div>' +
       '<div class="thg-kart' + (tahta ? ' secili' : '') + '"><span class="thg-sim">' + SIM.tahta + '</span>' +
       '<h3>' + kac(kd('th.p_izle', 'Bu cihaz tahta')) + '</h3>' +
@@ -238,12 +248,13 @@
       if (!t) return;
       var is = t.getAttribute('data-thg');
       if (is === 'kapat') panelKapat();
-      else if (is === 'yansit') { cihazYaz(null); git('yansit'); }
+      else if (is === 'yansit') { cihazYaz(null); var hs = hedefSecili(); hedefYaz(hs); git('yansit', hs); }
       else if (is === 'izle') { cihazYaz('tahta'); git('izle'); }
       else if (is === 'unut') { cihazYaz(null); panelAc(); }
     });
     document.body.appendChild(p);
     durumYaz();
+    tahtalarCiz();
     canliDinle();
     document.addEventListener('keydown', escKapat);
   }
@@ -254,10 +265,69 @@
     document.removeEventListener('keydown', escKapat);
     if (!tahtaCihazi()) canliBirak();
   }
-  function git(rol) {
+  function git(rol, hedef) {
     var adres = location.pathname.replace(/^.*\//, '') || 'index.html';
     var sayfa = adres + location.search + location.hash;
-    location.href = 'tahta.html?rol=' + rol + (rol === 'yansit' ? '&sayfa=' + encodeURIComponent(sayfa) : '');
+    var ek = '';
+    if (rol === 'yansit' && hedef && hedef.k) ek = '&hedef=' + encodeURIComponent(hedef.k) + '&hedefAd=' + encodeURIComponent(hedef.ad || '');
+    location.href = 'tahta.html?rol=' + rol + (rol === 'yansit' ? '&sayfa=' + encodeURIComponent(sayfa) + ek : '');
+  }
+
+  /* ------------------------------------------- HANGİ TAHTA? (21.10.2026)
+     Öğretmen: "tahtaya yansıtırken açık olan cihazlar görünsün ve onlardan
+     biri seçilebilsin, hatta eğer o tahtada bi sınıf açılmışsa o sınıf ismi
+     de görünsün". Açık tahtalar izle/ kayıtlarından (sistem/tahta.js:
+     kimlik, ad, sinif). Seçim hatırlanır (kidef_tahta_hedef); tahta.html
+     &hedef= ile açılır, ders ortasında şeritten değiştirilir. */
+  function hedefOku() {
+    try { var h = JSON.parse(localStorage.getItem('kidef_tahta_hedef') || 'null'); return (h && h.k) ? h : null; } catch (e) { return null; }
+  }
+  function hedefYaz(h) {
+    try { if (h && h.k) localStorage.setItem('kidef_tahta_hedef', JSON.stringify({ k: h.k, ad: h.ad || '' })); else localStorage.removeItem('kidef_tahta_hedef'); } catch (e) { }
+  }
+  function tahtalar() {
+    var l = [];
+    if (izle) for (var k in izle) {
+      if (!Object.prototype.hasOwnProperty.call(izle, k)) continue;
+      var t = izle[k];
+      if (t && t.cevrimici && t.cihaz === 'tahta') l.push({ kimlik: t.kimlik || k, ad: t.ad || '', sinif: t.sinif || '', sinifAcik: !!t.sinifAcik });
+    }
+    l.sort(function (a, b) { return (a.ad || a.kimlik) < (b.ad || b.kimlik) ? -1 : 1; });
+    return l;
+  }
+  function tahtaAdi(t) { return t.ad || kd('th.tahta_n', 'Tahta {n}', { n: String(t.kimlik).slice(-3).toUpperCase() }); }
+  function hedefSecili() {
+    var se = document.querySelector('#thgTahtalar input[name="thgHedef"]:checked');
+    if (!se || !se.value) return null;
+    return { k: se.value, ad: se.getAttribute('data-ad') || '' };
+  }
+  var tahtaImza = '';
+  function tahtalarCiz() {
+    var el = $('thgTahtalar');
+    if (!el) return;
+    var l = tahtalar();
+    var imza = JSON.stringify(l) + '|' + (vt ? 1 : 0);
+    if (imza === tahtaImza) return;
+    tahtaImza = imza;
+    var once = hedefSecili(), h = hedefOku();
+    var secili = once ? once.k : (h ? h.k : '');
+    var varMi = false;
+    l.forEach(function (t) { if (t.kimlik === secili) varMi = true; });
+    if (!varMi) secili = (l.length === 1 && !once) ? l[0].kimlik : '';
+    var s = '<div class="thg-bas">' + kac(kd('th.p_hangi', 'Hangi tahta?')) + '</div>';
+    if (!vt) s += '<div class="thg-yok">' + kac(kd('th.p_durum_bekle', 'Durum okunuyor…')) + '</div>';
+    else if (!l.length) s += '<div class="thg-yok">' + kac(kd('th.p_tahta_yok', 'Şu an açık tahta yok. Tahtada site açılınca burada görünür; yine de başlatabilirsin.')) + '</div>';
+    else {
+      s += '<label><input type="radio" name="thgHedef" value=""' + (secili ? '' : ' checked') + '><span><b>' + kac(kd('th.hedef_hepsi', 'Bütün tahtalar')) + ' (' + l.length + ')</b>' +
+        '<small>' + kac(kd('th.p_hepsi_alt', 'Açık olan her tahta aynı dersi gösterir.')) + '</small></span></label>';
+      l.forEach(function (t) {
+        s += '<label><input type="radio" name="thgHedef" value="' + kac(t.kimlik) + '" data-ad="' + kac(t.ad || '') + '"' + (t.kimlik === secili ? ' checked' : '') + '>' +
+          '<span><b>' + kac(tahtaAdi(t)) + '</b><small>' +
+          kac(t.sinif ? (t.sinifAcik ? kd('th.acik_sinif', 'açık sınıf: {s}', { s: t.sinif }) : kd('th.son_sinif', 'son sınıf: {s}', { s: t.sinif }))
+                      : kd('th.p_sinif_yok', 'açık sınıf yok')) + '</small></span></label>';
+      });
+    }
+    el.innerHTML = s;
   }
 
   /* ------------------------------- tahta cihazı: yansıtma başlayınca geç

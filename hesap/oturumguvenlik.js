@@ -577,11 +577,36 @@
     setTimeout(sar, 4000);
 
     /* ---------------- giriş anını doğrulama say ---------------- */
+    /* GERİ GELEN ESKİ OTURUM (21.10.2026 — öğretmen: "birden fazla akıllı
+       tahtada oturum açık kalıyor, 40 dakika dolmasına rağmen başka gün
+       açıldığında hâlâ çıkış yapılmadığını görüyorum"). Sayfa açılırken
+       tarayıcının sakladığı oturum geri geliyor ve hareket sayacı o anda
+       sıfırlanıyordu: tahta kapatılıp ertesi gün açılınca 40 dakika yeniden
+       başlıyordu. Şimdi: girişin üstünden 2 dakikadan çok geçmişse (yeni
+       giriş değil, saklanan oturum) ve son hareketin — ya da girişin —
+       üstünden BOSTA_DK geçmişse oturum açılışta hemen kapanır. Yeni giriş
+       (şifre, karekod) etkilenmez; telefon/tablette gece yarısı kuralı sürer. */
+    function depodakiHareket() {
+        try { return parseInt(localStorage.getItem(HAREKET_ANAHTAR) || '0', 10) || 0; } catch (e) { return 0; }
+    }
+    function bayatOturum(u) {
+        var giris = 0;
+        try { giris = Date.parse((u && u.metadata && u.metadata.lastSignInTime) || '') || 0; } catch (e) { }
+        if (!giris || suan() - giris < 2 * 60000) return false;
+        var son = Math.max(depodakiHareket(), giris);
+        return suan() - son >= dk(BOSTA_DK);
+    }
     function girisiIzle() {
         try {
             if (!window.firebase || !firebase.auth) { setTimeout(girisiIzle, 600); return; }
+            var ilk = true;
             firebase.auth().onAuthStateChanged(function (u) {
+                var ilkOlay = ilk; ilk = false;
                 if (u) {
+                    if (ilkOlay && !mobilMi() && girisliMi() && bayatOturum(u)) {
+                        try { console.info('Oturum güvenliği: eski oturum kapatıldı (hareketsizlik).'); } catch (e) { }
+                        cik(); return;
+                    }
                     sonDogrulama = suan(); yanlis = 0; hareketYaz();
                     if (mobilMi() && girisliMi()) geceDenetle();
                 }

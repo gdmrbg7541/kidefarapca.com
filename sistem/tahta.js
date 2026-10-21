@@ -181,9 +181,83 @@
   }
 
   var BEN = rastgeleId();                  /* bu cihazın kimliği: liderlik ve tahta kaydı */
+  /* HEDEF TAHTA (21.10.2026) — öğretmen: "tahtaya yansıtırken açık olan cihazlar
+     görünsün ve onlardan biri seçilebilsin, hatta eğer o tahtada bi sınıf
+     açılmışsa o sınıf ismi de görünsün". KIMLIK: cihazın KALICI kimliği
+     (hesap/cihazlar.js ile aynı anahtar; BEN her açılışta değişir, seçim ona
+     bağlanamaz). Tahta izle/ kaydına kimliğini, adını ve açık sınıfı yazar;
+     lider yayin.hedef = kimlik ile tek tahta seçer, boşsa bütün tahtalar izler. */
+  var KIMLIK = (function () {
+    try {
+      if (window.__kidefKimlik) return String(window.__kidefKimlik);
+      var k = localStorage.getItem('kidef_cihaz_kimlik');
+      if (!k || !/^[a-z0-9]{8,24}$/.test(k)) {
+        k = '';
+        try { var a = new Uint32Array(3); crypto.getRandomValues(a); for (var i = 0; i < 3; i++) k += a[i].toString(36); }
+        catch (e) { k = Math.random().toString(36).slice(2) + SIMDI().toString(36); }
+        k = k.replace(/[^a-z0-9]/g, '').slice(0, 20);
+        while (k.length < 8) k += '0';
+        localStorage.setItem('kidef_cihaz_kimlik', k);
+      }
+      return k;
+    } catch (e) { return BEN; }
+  })();
+  function tahtaAdi() {
+    var ad = '';
+    if (window.__kidefTahtaAd != null) return String(window.__kidefTahtaAd).slice(0, 40);     /* deneme kancası */
+    try { ad = (localStorage.getItem('kidef_tahta_ad') || '').trim(); } catch (e) { }
+    return ad.slice(0, 40);
+  }
+  function tahtaAdiVarsayilan() { return kd('th.tahta_n', 'Tahta {n}', { n: KIMLIK.slice(-3).toUpperCase() }); }
+  function tahtaAdiYaz(ad) {
+    ad = String(ad == null ? '' : ad).trim().slice(0, 40);
+    try { if (ad) localStorage.setItem('kidef_tahta_ad', ad); else localStorage.removeItem('kidef_tahta_ad'); } catch (e) { }
+  }
+  /* tahtanın çerçevesinde AÇIK sınıf (Listelerim) ya da bu cihazda SON açılan sınıf */
+  function acikSinif() {
+    try {
+      var w = CERCEVE && CERCEVE.contentWindow, d = w && w.document;
+      if (d) {
+        var b = d.getElementById('active-class-title'), ls = d.getElementById('listelerim-section');
+        if (b && ls && ls.style.display !== 'none' && b.textContent.trim()) return { ad: b.textContent.trim().slice(0, 40), acik: true };
+      }
+    } catch (e) { }
+    try {
+      var k = JSON.parse(localStorage.getItem('ll_son_sinif') || 'null');
+      var sd = JSON.parse(localStorage.getItem('schoolData') || 'null');
+      var c = k && sd && sd.levels && sd.levels[k.l] && sd.levels[k.l].classes && sd.levels[k.l].classes[k.c];
+      var ad = c ? String(c.name || '').trim() : '';
+      if (ad) return { ad: ad.slice(0, 40), acik: false };
+    } catch (e) { }
+    return null;
+  }
+  function tahtaKaydi() {
+    var sn = acikSinif();
+    return { kimlik: KIMLIK, ad: tahtaAdi() || null, sinif: sn ? sn.ad : null, sinifAcik: !!(sn && sn.acik) };
+  }
+  /* yayın başka tahtaya mı? (yalnız tahta cihazı için anlamlı) */
+  function hedefDisi(y) {
+    return !!(CIHAZ === 'tahta' && y && y.cevrimici && y.hedef && y.hedef !== KIMLIK);
+  }
+  function hedefOku() {
+    var m = /[?&]hedef=([a-z0-9]{8,24})/.exec(location.search);
+    if (m) {
+      var ad = /[?&]hedefAd=([^&]*)/.exec(location.search);
+      return { k: m[1], ad: ad ? decodeURIComponent(ad[1].replace(/\+/g, ' ')).slice(0, 40) : '' };
+    }
+    try {
+      var h = JSON.parse(localStorage.getItem('kidef_tahta_hedef') || 'null');
+      if (h && /^[a-z0-9]{8,24}$/.test(h.k || '')) return { k: h.k, ad: String(h.ad || '').slice(0, 40) };
+    } catch (e) { }
+    return null;
+  }
+  function hedefYaz(k, ad) {
+    try { if (k) localStorage.setItem('kidef_tahta_hedef', JSON.stringify({ k: k, ad: ad || '' })); else localStorage.removeItem('kidef_tahta_hedef'); } catch (e) { }
+  }
 
   /* ------------------------------------------------------- ortak durum */
   var S = {
+    hedefTahta: null, hedefTahtaAd: '',       /* seçili tahta (kimlik) — boş: bütün tahtalar */
     kok: null, lider: false, yayin: null, belge: null, s0: 0, baglanti: true,
     izle: {}, isteGoruldu: {}, tahtadanDendi: false,
     ayar: { kip: 'cift', perde: false, kg: false },
@@ -337,6 +411,14 @@
     '@keyframes thNabiz{50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}',
     '.th-cip{background:rgba(255,255,255,.12);border-radius:999px;padding:5px 10px;font-weight:600;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}',
     '.th-bos{flex:1}',
+    '.th-cubuk .th-hedef{height:26px;max-width:220px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;border-radius:8px;',
+    ' padding:0 8px;font:700 12px/1 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}',
+    '.th-cubuk .th-hedef option{color:#0f2a43}',
+    '.th-kutu .th-adsatir{margin:10px 0 0;color:#334155;font:600 14px/1.5 system-ui,sans-serif}',
+    '.th-kutu .th-adsatir b{color:#0f2a43}',
+    '.th-kutu .th-adver{margin-inline-start:8px;border:1px solid #cbd5e1;background:#f8fafc;color:#0E7C66;border-radius:999px;padding:4px 10px;',
+    ' font:700 12px/1 system-ui,sans-serif;cursor:pointer}',
+    '.th-kutu .th-adver:hover{background:#e8f6f2}',
     '.th-dug{height:26px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;border-radius:8px;padding:0 10px;',
     ' font:700 12px/1 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}',
     '.th-dug:hover{background:rgba(255,255,255,.2)}',
@@ -434,11 +516,25 @@
       '<rect x="202" y="34" width="56" height="9" rx="4" fill="#16A085"/><rect x="202" y="52" width="92" height="7" rx="3.5" fill="#cbd5e1"/>' +
       '<rect x="202" y="66" width="76" height="7" rx="3.5" fill="#cbd5e1"/></svg>';
   }
-  function bekleGoster(tur) {
+  function bekleGoster(tur, ek) {
     var b = $('thBekle');
     if (!tur) { b.hidden = true; return; }
     var ic = '';
-    if (tur === 'giris') {
+    /* bu tahtanın adı ve açık sınıfı (lider seçerken görür) + «Tahtaya ad ver» */
+    var adSatir = '';
+    if (CIHAZ === 'tahta') {
+      var sn = acikSinif();
+      adSatir = '<p class="th-adsatir"><b>' + kac(tahtaAdi() || tahtaAdiVarsayilan()) + '</b>' +
+        (sn ? ' · ' + kac(sn.acik ? kd('th.acik_sinif', 'açık sınıf: {s}', { s: sn.ad }) : kd('th.son_sinif', 'son sınıf: {s}', { s: sn.ad })) : '') +
+        ' <button type="button" class="th-adver" data-th="ad">' + kac(kd('th.ad_ver', 'Tahtaya ad ver')) + '</button></p>';
+    }
+    if (tur === 'baska') {
+      ic = cizim() + '<h1>' + kac(kd('th.baska_bas', 'Yansıtma başka bir tahtaya gidiyor')) + '</h1>' +
+        '<p>' + kac(kd('th.baska_alt', 'Öğretmen {ad} tahtasını seçti. Bilgisayarın üst şeridindeki «Tahta» seçicisinden bu tahta seçilince burada da görünür.',
+                        { ad: (ek && ek.baskaAd) || kd('th.baska_tahta', 'başka bir') })) + '</p>' + adSatir +
+        '<div class="th-tuslar"><button type="button" class="th-ana" data-th="tam">' + kac(kd('th.tam_ekran', 'Tam ekran')) + '</button>' +
+        '<button type="button" class="th-ikinci" data-th="cik">' + kac(kd('th.cik', 'Çık')) + '</button></div>';
+    } else if (tur === 'giris') {
       ic = '<h1>' + kac(kd('th.giris_bas', 'Önce giriş yap')) + '</h1>' +
         '<p>' + kac(kd('th.giris_alt', 'Tahtaya yansıtma, bilgisayarla tahtada aynı hesapla giriş yapınca çalışır.')) + '</p>' +
         '<div class="th-tuslar"><button type="button" class="th-ana" data-th="anasayfa">' + kac(kd('th.anasayfaya', 'Ana sayfaya git')) + '</button></div>';
@@ -448,7 +544,7 @@
         '<div class="th-tuslar"><button type="button" class="th-ana" data-th="yenile">' + kac(kd('th.tekrar', 'Tekrar dene')) + '</button>' +
         '<button type="button" class="th-ikinci" data-th="cik">' + kac(kd('th.cik', 'Çık')) + '</button></div>';
     } else {   /* izle: bilgisayar bekleniyor */
-      ic = cizim() + '<h1>' + kac(kd('th.bekle_bas', 'Bilgisayarını bekliyorum')) + '</h1>' +
+      ic = cizim() + '<h1>' + kac(kd('th.bekle_bas', 'Bilgisayarını bekliyorum')) + '</h1>' + adSatir +
         '<p>' + kd('th.bekle_alt', 'Bilgisayarında kidefarapca.com’da başlıktaki ekran simgesine (<span class="th-adim">Tahtaya yansıt</span>) dokun, sonra <span class="th-adim">Bu bilgisayardan yansıt</span>’a bas. Açtığın her şey burada görünecek.') + '</p>' +
         '<div class="th-tuslar"><button type="button" class="th-ana" data-th="tam">' + kac(kd('th.tam_ekran', 'Tam ekran')) + '</button>' +
         '<button type="button" class="th-ikinci" data-th="cik">' + kac(kd('th.cik', 'Çık')) + '</button></div>' +
@@ -456,6 +552,7 @@
         '<button type="button" class="th-unut" data-th="unut">' + kac(kd('th.p_unut', 'Bu cihaz tahta değil')) + '</button>';
     }
     b.innerHTML = '<div class="th-kutu">' + ic + '</div>';
+    b.setAttribute('data-tur', tur);
     b.hidden = false;
   }
 
@@ -572,6 +669,15 @@
     else if (is === 'cik') cik(ROL === 'izle' ? 'index.html' : (adresAl(CERCEVE.contentWindow) || 'index.html'));
     else if (is === 'tam') { TAM.istek = true; tamEkran(); setTimeout(tamTusTazele, 400); }
     else if (is === 'tamcik') tamCik();
+    else if (is === 'ad') {
+      var yeniAd = window.prompt(kd('th.ad_sor', 'Bu tahtanın adı (ör. 7-A sınıfı):'), tahtaAdi() || tahtaAdiVarsayilan());
+      if (yeniAd === null) return;
+      tahtaAdiYaz(yeniAd);
+      if (S.kok) varlikYaz(false);
+      var bk = $('thBekle');
+      if (bk && !bk.hidden) { var bt = bk.getAttribute('data-tur'); if (bt) bekleGoster(bt, S.yayin); }
+      bildir(kd('th.ad_kaydedildi', 'Tahtanın adı: {ad}', { ad: tahtaAdi() || tahtaAdiVarsayilan() }));
+    }
     else if (is === 'unut') {
       try { localStorage.removeItem('kidef_tahta_cihaz'); localStorage.removeItem('kidef_tahta_birakti'); } catch (e) { }
       cik('index.html');
@@ -609,9 +715,29 @@
         }
         bekleGoster('giris'); return;
       }
+      /* GERİ GELEN ESKİ OTURUM (21.10.2026): tahta kapatılıp ertesi gün açılınca
+         kabuk saklanan oturumla "bekliyorum" ekranında girişli kalıyordu
+         (hesap/oturumguvenlik.js çerçevede yüklü değilken 40 dk kuralı işlemiyordu).
+         Girişin üstünden 2 dakikadan çok geçmişse ve son hareketin (kg_son_hareket)
+         ya da girişin üstünden 40 dakika geçmişse tahta açılışta çıkar. */
+      if (CIHAZ === 'tahta' && !bayatBakildi) {
+        bayatBakildi = true;
+        if (bayatOturum(u)) {
+          try { auth.signOut(); } catch (e) { }
+          bekleGoster('giris'); return;
+        }
+      }
       S.uid = u.uid;
       hazir(vt.ref('tahta/' + u.uid));
     });
+  }
+  var bayatBakildi = false;
+  function bayatOturum(u) {
+    var giris = 0, son = 0;
+    try { giris = Date.parse((u && u.metadata && u.metadata.lastSignInTime) || '') || 0; } catch (e) { }
+    if (!giris || Date.now() - giris < 2 * 60000) return false;
+    try { son = parseInt(localStorage.getItem('kg_son_hareket') || '0', 10) || 0; } catch (e) { }
+    return Date.now() - Math.max(son, giris) >= 40 * 60000;
   }
   /* bağlantı koparsa yansıtmayı yalnız LİDER kapatır (izleyenin kopması oturumu bitirmez) */
   function kopmaKur() {
@@ -629,6 +755,7 @@
       r.onDisconnect().remove();
       /* d: bu cihazda açık sayfanın sayacı — dönen kumanda tahtanın dersi tuttuğunu buradan anlar */
       var v = { cevrimici: true, cihaz: CIHAZ, ts: TS(), gecikme: zOrtalama(), d: S.lider ? Y.d : Z.d };
+      if (CIHAZ === 'tahta') { var tk = tahtaKaydi(); for (var ta in tk) if (has(tk, ta)) v[ta] = tk[ta]; }
       if (iste) {
         Z.esitJeton = rastgeleId(); v.iste = Z.esitJeton; v.isteZ = TS();
         /* bu sayfa için yapılmış bütün istekler: hangisinin cevabı önce gelirse o uygulanır, öbürleri atlanır */
@@ -679,6 +806,9 @@
     var y = { id: BEN, cihaz: CIHAZ, cevrimici: true, d: Y.d, u: b.u, dil: b.dil, s0: Y.s0, durak: false, ts: TS(),
               bas: S.bas || (S.yayin && S.yayin.bas) || null };          /* oturum kimliği korunur (lider değişse de) */
     if (Y.vekil) y.vekil = Y.vekil.id;                                     /* tahta, uyuyan kumanda adına tutuyor */
+    /* hedef tahta: bilgisayar seçimini yazar; tahta liderse (dokunuş, vekil) yayındaki hedef korunur */
+    if (CIHAZ === 'bilgisayar') { y.hedef = S.hedefTahta || null; y.hedefAd = S.hedefTahta ? (S.hedefTahtaAd || null) : null; }
+    else { var eh = S.yayin || Z.sonCanli; y.hedef = (eh && eh.hedef) || null; y.hedefAd = (eh && eh.hedef && eh.hedefAd) || null; }
     g['yayin'] = y;
     if (temizle) { g['kay'] = null; g['alan'] = null; }
     S.kok.update(g);
@@ -1153,6 +1283,7 @@
     var o = s.val();
     if (!o || typeof o.n !== 'number') return;
     if (o.n > Z.enN) Z.enN = o.n;                                 /* yeni lider sırayı buradan sürdürür */
+    if (S.yayin && S.yayin.baska) return;                         /* hedef başka tahta: olaylar uygulanmaz (dönünce geçmiş istenir) */
     if (S.lider) {
       /* lider bizken başka cihazdan gelen olay: uyanan kumandanın, bağlantısı
          gelmeden yaptığı dokunuşlar. Devirde (liderBirak) uygulanır. */
@@ -1858,6 +1989,7 @@
     c.innerHTML =
       '<span class="th-isim"><span class="th-nokta bekle" id="thNokta"></span><span id="thBaslik">' + kac(kd('th.yansitiliyor', 'Tahtaya yansıtılıyor')) + '</span></span>' +
       '<span class="th-cip" id="thCip">' + kac(kd('th.tahta_bekleniyor', 'Tahta bekleniyor…')) + '</span>' +
+      '<select class="th-hedef" id="thHedef" title="' + kac(kd('th.hedef_ip', 'Hangi tahtaya yansıtılsın?')) + '" aria-label="' + kac(kd('th.hedef_ip', 'Hangi tahtaya yansıtılsın?')) + '"></select>' +
       '<span class="th-bos"></span>' +
       '<button type="button" class="th-dug th-kip" id="thKipDug" aria-pressed="false" title="' + kac(kd('th.kip_ip', 'Açıkken tahtaya dokunarak da kullanabilirsin; kapalıyken tahta yalnız bilgisayarı gösterir')) + '">' + SVG.dokun + '<span>' + kac(kd('th.kip', 'Tahtadan da kullan')) + '</span></button>' +
       '<button type="button" class="th-dug" id="thPerdeDug" aria-pressed="false" title="' + kac(kd('th.perde_ip', 'Tahtayı karart (öğrenciler ekranı görmesin)')) + '">' + SVG.perde + '<span>' + kac(kd('th.perde', 'Perde')) + '</span></button>' +
@@ -1892,7 +2024,53 @@
       arayuzTazele();
     });
     $('thBitirDug').addEventListener('click', function () { cik(adresAl(CERCEVE.contentWindow) || 'index.html'); });
+    $('thHedef').addEventListener('change', function () {
+      var o = this.options[this.selectedIndex];
+      hedefSec(this.value || null, o ? (o.getAttribute('data-ad') || '') : '');
+    });
+    hedefSeciciTazele();
     arayuzTazele();
+  }
+  /* ------------------------------------------------ HEDEF TAHTA (bilgisayar) */
+  function tahtaListesi() {
+    var l = [];
+    for (var k in S.izle) {
+      if (!has(S.izle, k)) continue;
+      var t = S.izle[k];
+      if (t && t.cevrimici && t.cihaz === 'tahta') l.push({ ben: k, kimlik: t.kimlik || k, ad: t.ad || '', sinif: t.sinif || '', sinifAcik: !!t.sinifAcik, ts: +t.ts || 0 });
+    }
+    l.sort(function (a, b) { return (a.ad || a.kimlik) < (b.ad || b.kimlik) ? -1 : 1; });
+    return l;
+  }
+  function tahtaEtiket(t) {
+    var ad = t.ad || kd('th.tahta_n', 'Tahta {n}', { n: String(t.kimlik).slice(-3).toUpperCase() });
+    if (t.sinif) ad += ' · ' + (t.sinifAcik ? kd('th.acik_sinif', 'açık sınıf: {s}', { s: t.sinif }) : kd('th.son_sinif', 'son sınıf: {s}', { s: t.sinif }));
+    return ad;
+  }
+  function hedefSec(k, ad) {
+    S.hedefTahta = k || null; S.hedefTahtaAd = k ? (ad || '') : '';
+    hedefYaz(S.hedefTahta, S.hedefTahtaAd);
+    if (S.kok) { try { S.kok.child('yayin').update({ hedef: S.hedefTahta || null, hedefAd: S.hedefTahta ? (S.hedefTahtaAd || null) : null, ts: TS() }); } catch (e) { } }
+    bildir(S.hedefTahta ? kd('th.b_hedef', 'Yansıtma {ad} tahtasına gidiyor.', { ad: S.hedefTahtaAd || S.hedefTahta }) : kd('th.b_hedef_hepsi', 'Yansıtma bütün tahtalara gidiyor.'));
+    hedefSeciciTazele();
+    arayuzTazele();
+  }
+  var hedefImza = '';
+  function hedefSeciciTazele() {
+    var se = $('thHedef');
+    if (!se) return;
+    var l = tahtaListesi(), var_ = false, h = '';
+    h += '<option value="">' + kac(kd('th.hedef_hepsi', 'Bütün tahtalar')) + (l.length ? ' (' + l.length + ')' : '') + '</option>';
+    l.forEach(function (t) {
+      if (t.kimlik === S.hedefTahta) var_ = true;
+      h += '<option value="' + kac(t.kimlik) + '" data-ad="' + kac(t.ad || '') + '">' + kac(tahtaEtiket(t)) + '</option>';
+    });
+    if (S.hedefTahta && !var_) h += '<option value="' + kac(S.hedefTahta) + '" data-ad="' + kac(S.hedefTahtaAd || '') + '">' + kac((S.hedefTahtaAd || S.hedefTahta) + ' · ' + kd('th.bagli_degil', 'bağlı değil')) + '</option>';
+    var imza = h + '|' + (S.hedefTahta || '');
+    if (imza === hedefImza) return;
+    hedefImza = imza;
+    se.innerHTML = h;
+    se.value = S.hedefTahta || '';
   }
   function cubukTazele() {
     var k = $('thKipDug'), p = $('thPerdeDug'), d = $('thDurakDug');
@@ -1914,8 +2092,9 @@
     for (var k in S.izle) {
       if (!has(S.izle, k)) continue;
       var t = S.izle[k];
-      if (t && t.cevrimici && t.cihaz !== 'bilgisayar') { tahtalar.push(t); if (typeof t.gecikme === 'number') g = (g == null) ? t.gecikme : Math.max(g, t.gecikme); }
+      if (t && t.cevrimici && t.cihaz !== 'bilgisayar' && (!S.hedefTahta || (t.kimlik || k) === S.hedefTahta)) { tahtalar.push(t); if (typeof t.gecikme === 'number') g = (g == null) ? t.gecikme : Math.max(g, t.gecikme); }
     }
+    hedefSeciciTazele();
     var sinif = 'bekle', yazi;
     if (!S.baglanti) { sinif = 'hata'; yazi = kd('th.baglanti_yok', 'İnternet bağlantısı yok'); }
     else if (S.devam) { yazi = kd('th.esitleniyor', 'Tahtayla eşitleniyor…'); }
@@ -1933,10 +2112,11 @@
         yazi = kd('th.devralindi', 'Başka bir cihaz yansıtıyor — Eşitle’ye basarak geri al');
       }
     }
-    else if (!tahtalar.length) { yazi = kd('th.tahta_bekleniyor', 'Tahta bekleniyor…'); }
+    else if (!tahtalar.length) { yazi = S.hedefTahta ? kd('th.hedef_bekleniyor', '{ad} bekleniyor…', { ad: S.hedefTahtaAd || S.hedefTahta }) : kd('th.tahta_bekleniyor', 'Tahta bekleniyor…'); }
     else {
       sinif = Y.durak ? 'bekle' : 'canli';
       yazi = tahtalar.length > 1 ? kd('th.tahta_cok', '{n} tahta bağlı', { n: tahtalar.length }) : kd('th.tahta_bagli', 'Tahta bağlı');
+      if (tahtalar.length === 1 && (tahtalar[0].ad || tahtalar[0].sinif)) yazi += ' · ' + (tahtalar[0].ad || '') + (tahtalar[0].sinif ? (tahtalar[0].ad ? ' / ' : '') + tahtalar[0].sinif : '');
       if (g != null) yazi += ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, Math.round(g)) });
       if (Y.durak) yazi += ' · ' + kd('th.duraklatildi', 'duraklatıldı');
     }
@@ -2005,6 +2185,12 @@
   }
   function zOturumGoster(y) {
     clearTimeout(Z.ayrildiZ);
+    if (y && y.baska) {
+      zSerit(null); bekleGoster('baska', y);
+      /* hedef dışı tahtada açık kalan sayfanın sesi/videosu durur */
+      try { var ws = Z.win || CERCEVE.contentWindow; [].forEach.call(ws.document.querySelectorAll('video,audio'), function (m) { try { m.pause(); } catch (e) { } }); } catch (e) { }
+      return;
+    }
     if (y && y.cevrimici) {
       bekleGoster(null);
       zSerit(y.durak ? kd('th.serit_durak', 'Öğretmen yansıtmayı duraklattı') : null);
@@ -2029,6 +2215,10 @@
   /* ======================================================== DİNLEYİCİLER */
   function yayinGeldi(s) {
     var y = s.val(), once = S.yayin;
+    /* HEDEF BAŞKA TAHTA: bu tahta yansıtmayı yok sayar — bekleme ekranında söyler,
+       dokununca dersi almaz, vekil olmaz. Hedef buraya dönünce sayfayı açıp
+       liderden geçmişi ister (sonradan bağlanan tahta yolu). */
+    if (hedefDisi(y)) y = { cevrimici: false, bitir: true, baska: y.hedef, baskaAd: y.hedefAd || '', bas: y.bas || null, id: y.id, ts: y.ts || 0 };
     S.yayin = y; Z.yayin = y;
     var liderId = (y && y.cevrimici) ? y.id : null;
     if (liderId && liderId !== BEN) { Z.sonCanli = y; Z.uzak = null; clearTimeout(Z.vekilZ); Z.vekilZ = null; }
@@ -2074,6 +2264,8 @@
         /* kumanda (bu arada başka sayfaya geçmiş olarak) geri geldi: o sayfa açılır,
            geçmişi istenir — olaylar ancak geçmiş gelince uygulanır */
         if (liderId && once && !once.cevrimici && y.d !== Z.d && !Z.esit && Z.belge) Z.esit = { z: SIMDI(), tekrar: 0, gec: true };
+        /* hedef bu tahtaya DÖNDÜ: aradaki olaylar uygulanmadı — sayfa yeniden açılır, liderden geçmiş istenir */
+        if (liderId && once && once.baska && !(y && y.baska)) { Z.esit = null; esitIste(); }
         zOturumGoster(y);
       }
       zYayinUygula(y);
@@ -2113,11 +2305,12 @@
     kok.child('kay').on('value', function (s) {
       Z.kay = s.val() || {};
       if (S.lider) return;
+      if (S.yayin && S.yayin.baska) return;                       /* hedef başka tahta */
       zKayUygula();
       var b = Z.kay.b; if (b) zGecikme(b.z);
       hareketYaz();
     });
-    kok.child('alan').on('value', function (s) { Z.alan = s.val() || {}; if (!S.lider) zAlanUygula(); });
+    kok.child('alan').on('value', function (s) { Z.alan = s.val() || {}; if (!S.lider && !(S.yayin && S.yayin.baska)) zAlanUygula(); });
     kok.child('ayar').on('value', function (s) {
       var v = s.val() || {};
       S.ayar = { kip: v.kip === 'tek' ? 'tek' : 'cift', perde: !!v.perde, kg: !!v.kg };
@@ -2289,6 +2482,10 @@
       var g = zOrtalama(), d = S.lider ? Y.d : Z.d, v = null;
       if (g != null && g !== Z.sonBildirilen && !S.lider) { Z.sonBildirilen = g; v = { gecikme: g }; }
       if (d !== Z.sonBildirilenD) { Z.sonBildirilenD = d; v = v || {}; v.d = d; }
+      if (CIHAZ === 'tahta') {
+        var tk = tahtaKaydi(), tkImza = JSON.stringify(tk);
+        if (tkImza !== Z.sonTahtaKaydi) { Z.sonTahtaKaydi = tkImza; v = v || {}; for (var ta in tk) if (has(tk, ta)) v[ta] = tk[ta]; }
+      }
       if (v) { v.ts = TS(); S.kok.child('izle/' + BEN).update(v); }
       zNoktaYaz();
     }, 2500);
@@ -2308,7 +2505,7 @@
         }
         Z.sonN = en;
         Z.yayinId = yy ? yy.id : null;
-        if (yy && yy.cevrimici) Z.esit = { z: SIMDI(), tekrar: 0 };
+        if (yy && yy.cevrimici && !hedefDisi(yy)) Z.esit = { z: SIMDI(), tekrar: 0 };
         ortakDinle(kok);
         S.baglanti = true;
         try {
@@ -2324,6 +2521,7 @@
 
   /* --------------------------------------------------------- başlangıç */
   function basla() {
+    if (CIHAZ === 'bilgisayar') { var hd = hedefOku(); if (hd) { S.hedefTahta = hd.k; S.hedefTahtaAd = hd.ad; hedefYaz(hd.k, hd.ad); } }
     /* kabuk başka bir çerçevenin içinde açıldıysa (kabuk içinde kabuk) çalışma */
     var icte = false;
     try { icte = window.top !== window.self; } catch (e) { icte = true; }
@@ -2376,6 +2574,7 @@
     });
   }
   window.KidefTahta = {
+    kimlik: KIMLIK, hedefSec: hedefSec, tahtaListesi: tahtaListesi, tahtaAdiYaz: tahtaAdiYaz,
     rol: ROL, cihaz: CIHAZ, id: BEN, S: S, Y: Y, Z: Z, yolAl: yolAl, yolBul: yolBul, VT_ADRES: VT_ADRES,
     liderOl: liderOl, lider: function () { return S.lider; }
   };
