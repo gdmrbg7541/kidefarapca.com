@@ -18,6 +18,11 @@
    dil değişince sistem/dil.js çekmecedeki yazıları da çevirir.
    index.html bu dosyayı </header>'ın hemen altında çağırır: başlık
    ilk boyanmadan önce yeni düzene geçer, sayfa zıplamaz.
+
+   CANLI SİMGELER (21.10.2026) — öğretmen: "mobildeki sidebardaki svg ler
+   animasyonlu olsun". Çekmece açıkken her simge anlamına uygun kısa bir
+   hareket yapar; satırlar yukarıdan aşağı sırayla (simgeSirasi), 6 sn'de bir.
+   «Yakında» satırları ve «hareketi azalt» tercihi hariç.
    ========================================================================== */
 (function () {
   'use strict';
@@ -165,6 +170,73 @@
     '  font:inherit; font-weight:800; font-size:1rem; text-align:left; transform:none !important; }',
     '#kdCekmece #logout-btn svg{ flex:none; box-sizing:content-box; width:20px !important; height:20px !important; padding:8px;',
     '  border-radius:11px; background:#FDE2E2; stroke:currentColor; }',
+    /* ÇEKMECEDE CANLI SİMGELER (21.10.2026) — öğretmen: "mobildeki sidebardaki
+       svg ler animasyonlu olsun". Yalnız çekmece açıkken; satırlar yukarıdan
+       aşağı sırayla oynar (--kc-gec, ac() → simgeSirasi), 6 sn'de bir yinelenir. */
+    '#kdCekmece #header-nav-tabs > a > svg, #kdCekmece .kc-simge svg, #kdCekmece #logout-btn svg{ overflow:visible; }',
+    '#kdCekmece #header-nav-tabs > a > svg *, #kdCekmece .kc-simge svg *, #kdCekmece #logout-btn svg *{ transform-box:view-box; }',
+    '#kdCekmeceKok #kdCekmece #tab-istekler > svg{ animation:none !important; }',
+    '#kdCekmece .kc-ad small{ display:block; margin-top:2px; font-size:.76rem; font-weight:600; color:#8A94A3; line-height:1.25; }',
+    '#kdCekmece #tab-tahta-bagla .kc-tarama{ stroke:#16A085; stroke-width:2.2; opacity:0; }',
+    /* ev zıplar */
+    '#kdCekmeceKok.acik .kc-ev .kc-simge svg{ transform-origin:50% 100%; animation:kcHop 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcHop{ 0%,19%,100%{ transform:translateY(0) scale(1); } 5%{ transform:translateY(-3.5px) scale(1); }',
+    '  9%{ transform:translateY(0) scale(1.08,.9); } 12.5%{ transform:translateY(-1px) scale(.98,1.02); } 15.5%{ transform:translateY(0) scale(1); } }',
+    /* paket sallanır */
+    '#kdCekmeceKok.acik #tab-paketler > svg > *{ transform-origin:50% 92%; animation:kcSalla 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcSalla{ 0%,20%,100%{ transform:rotate(0); } 3.5%{ transform:rotate(-10deg); } 7.5%{ transform:rotate(9deg); }',
+    '  11.5%{ transform:rotate(-6deg); } 15%{ transform:rotate(3deg); } 18%{ transform:rotate(-1deg); } }',
+    /* kamera: mercek kapanıp açılır, gövde kımıldar */
+    '#kdCekmeceKok.acik #tab-online-packages > svg > polygon{ transform-box:fill-box; transform-origin:0 50%;',
+    '  animation:kcMercek 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcMercek{ 0%,19%,100%{ transform:scaleX(1); } 5%{ transform:scaleX(.3); } 10%{ transform:scaleX(1.22); } 14%{ transform:scaleX(.9); } 17%{ transform:scaleX(1.04); } }',
+    '#kdCekmeceKok.acik #tab-online-packages > svg > rect{ animation:kcGovde 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcGovde{ 0%,19%,100%{ transform:translateX(0); } 6%{ transform:translateX(-1px); } 11%{ transform:translateX(.6px); } }',
+    /* takvim: halkalar oynar, tik yeniden çizilir */
+    '#kdCekmeceKok.acik #tab-booking > svg > polyline{ stroke-dasharray:13; animation:kcTik 6s var(--kc-gec,0s) ease-out infinite both; }',
+    '@keyframes kcTik{ 0%{ stroke-dashoffset:0; } 1.5%{ stroke-dashoffset:13; } 15%,100%{ stroke-dashoffset:0; } }',
+    '#kdCekmeceKok.acik #tab-booking > svg > line:nth-of-type(1), #kdCekmeceKok.acik #tab-booking > svg > line:nth-of-type(2){',
+    '  animation:kcHalka 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '#kdCekmeceKok.acik #tab-booking > svg > line:nth-of-type(2){ animation-delay:calc(var(--kc-gec,0s) + .08s); }',
+    '@keyframes kcHalka{ 0%,14%,100%{ transform:translateY(0); } 3.5%{ transform:translateY(-1.8px); } 7%{ transform:translateY(0); } }',
+    /* Panelim: perde iner */
+    '#kdCekmeceKok.acik #tab-teacher-panel > svg > path:nth-of-type(2){ transform-origin:50% 12.5%; animation:kcPerdeIn 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcPerdeIn{ 0%,20%,100%{ transform:scaleY(1); } 6%{ transform:scaleY(.15); } 13%{ transform:scaleY(1.08); } 17%{ transform:scaleY(.98); } }',
+    '#kdCekmeceKok.acik #tab-teacher-panel > svg > path:nth-of-type(3){ animation:kcAyak 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcAyak{ 0%,20%,100%{ transform:translateY(0); } 6%{ transform:translateY(-1.2px); } 13%{ transform:translateY(.6px); } }',
+    /* zil çalar, tokmak gecikmeli sallanır */
+    '#kdCekmeceKok.acik #tab-istekler > svg > path:nth-of-type(1){ transform-origin:50% 8%; animation:kcZil 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '#kdCekmeceKok.acik #tab-istekler > svg > path:nth-of-type(2){ transform-origin:50% 8%; animation:kcTokmak 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcZil{ 0%,21%,100%{ transform:rotate(0); } 3%{ transform:rotate(15deg); } 6.5%{ transform:rotate(-13deg); }',
+    '  10%{ transform:rotate(9deg); } 13.5%{ transform:rotate(-6deg); } 17%{ transform:rotate(3deg); } }',
+    '@keyframes kcTokmak{ 0%,21%,100%{ transform:rotate(0); } 4%{ transform:rotate(22deg); } 7.5%{ transform:rotate(-20deg); }',
+    '  11%{ transform:rotate(13deg); } 14.5%{ transform:rotate(-8deg); } 18%{ transform:rotate(4deg); } }',
+    /* karekod: tarama çizgisi iner-çıkar, çerçeve nefes alır */
+    '#kdCekmeceKok.acik #tab-tahta-bagla > svg > .kc-tarama{ animation:kcTara 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcTara{ 0%{ opacity:0; transform:translateY(-5px); } 2%{ opacity:1; transform:translateY(-5px); } 9%{ opacity:1; transform:translateY(5px); }',
+    '  16%{ opacity:1; transform:translateY(-5px); } 18.5%,100%{ opacity:0; transform:translateY(-5px); } }',
+    '#kdCekmeceKok.acik #tab-tahta-bagla > svg > path:first-child{ transform-origin:50% 50%; animation:kcCerceve 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcCerceve{ 0%,18%,100%{ transform:scale(1); } 9%{ transform:scale(.9); } }',
+    /* tahtaya yansıt: yayın dalgası yanıp söner */
+    '#kdCekmeceKok.acik #tab-tahta > svg > path:nth-of-type(2){ animation:kcDalgaB 6s var(--kc-gec,0s) linear infinite both; }',
+    '#kdCekmeceKok.acik #tab-tahta > svg > path:nth-of-type(3){ animation:kcDalgaA 6s var(--kc-gec,0s) linear infinite both; }',
+    '@keyframes kcDalgaA{ 0%,15%,100%{ opacity:1; } 1.5%{ opacity:.12; } 4%{ opacity:1; } 8%{ opacity:.12; } 10.5%{ opacity:1; } }',
+    '@keyframes kcDalgaB{ 0%,17%,100%{ opacity:1; } 1.5%{ opacity:.12; } 6%{ opacity:1; } 8%{ opacity:.12; } 12.5%{ opacity:1; } }',
+    /* yönetici: dişli döner */
+    '#kdCekmeceKok.acik #tab-admin-panel > svg > *{ transform-origin:50% 50%; animation:kcCark 6s var(--kc-gec,0s) cubic-bezier(.55,0,.3,1) infinite both; }',
+    '@keyframes kcCark{ 0%{ transform:rotate(0); } 20%,100%{ transform:rotate(180deg); } }',
+    /* dil: dünya döner (boylam çizgisi daralıp genişler) */
+    '#kdCekmeceKok.acik .kc-dil .kc-simge svg .kc-meridyen{ transform-origin:50% 50%; animation:kcDunya 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcDunya{ 0%,20%,100%{ transform:scaleX(1); } 5%{ transform:scaleX(.08); } 10%{ transform:scaleX(1); } 15%{ transform:scaleX(.08); } }',
+    /* çıkış: ok kapıdan çıkar, yeniden gelir */
+    '#kdCekmeceKok.acik #logout-btn svg polyline, #kdCekmeceKok.acik #logout-btn svg line{ animation:kcCik 6s var(--kc-gec,0s) ease-in-out infinite both; }',
+    '@keyframes kcCik{ 0%,19%,100%{ transform:translateX(0); opacity:1; } 7%{ transform:translateX(3.5px); opacity:1; }',
+    '  9.5%{ transform:translateX(5.5px); opacity:0; } 10.5%{ transform:translateX(-3px); opacity:0; } 15%{ transform:translateX(0); opacity:1; } }',
+    /* kapalı («yakında») satırlar oynamaz */
+    '#kdCekmece #header-nav-tabs > a[style*="pointer-events: none"] > svg, #kdCekmece #header-nav-tabs > a[style*="pointer-events: none"] > svg *,',
+    '#kdCekmece #header-nav-tabs > a[style*="pointer-events:none"] > svg, #kdCekmece #header-nav-tabs > a[style*="pointer-events:none"] > svg *{ animation:none !important; }',
+    '@media (prefers-reduced-motion:reduce){ #kdCekmece svg, #kdCekmece svg *{ animation:none !important; }',
+    '  #kdCekmece #tab-tahta-bagla .kc-tarama{ opacity:0 !important; } }',
     '@media (prefers-reduced-motion:reduce){ #kdCekmece, #kdCekmeceKok .kc-perde{ transition:none !important; } }',
     'html.kd-cekmece-acik, html.kd-cekmece-acik body{ overflow:hidden !important; }',
     '@media print{ #kdCekmeceKok, #kdMenuTus{ display:none !important; } }'
@@ -224,7 +296,8 @@
   var dilSatir = yap('div', 'kc-oge kc-dil');
   dilSatir.appendChild(yap('span', 'kc-simge',
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-    '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>'));
+    '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/>' +
+    '<path class="kc-meridyen" d="M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>'));
   dilSatir.appendChild(adSpan('dil.baslik', 'Dil / Language'));
   dilSatir.hidden = true;                       /* dil düğmesi gelince açılır */
   govde.appendChild(ev);
@@ -304,6 +377,27 @@
 
   /* ------------------------------------------------------ aç / kapat */
   var acik = false, sonOdak = null;
+  /* simgeler yukarıdan aşağı sırayla oynasın: görünen (ve kapalı olmayan)
+     satırların gecikmesi her açılışta yeniden yazılır */
+  var siraStil = null;
+  function simgeSirasi() {
+    try {
+      if (!siraStil) { siraStil = yap('style'); siraStil.id = 'kdYanMenuSira'; (document.head || document.documentElement).appendChild(siraStil); }
+      var l = [ev], nav = $('header-nav-tabs'), c = $('logout-btn');
+      if (nav && nav.parentNode === navYuva) [].forEach.call(nav.children, function (a) { if (a.tagName === 'A') l.push(a); });
+      l.push(dilSatir);
+      if (c && c.parentNode === alt) l.push(c);
+      var css = '', i = 0;
+      l.forEach(function (e) {
+        if (!e || e.hidden || !e.getClientRects().length) return;
+        if (/pointer-events:\s*none/.test(e.getAttribute('style') || '')) return;
+        var sec = e === ev ? '.kc-ev' : (e === dilSatir ? '.kc-dil' : (e.id ? '#' + e.id : ''));
+        if (!sec) return;
+        css += '#kdCekmece ' + sec + '{ --kc-gec:' + (0.3 + (i++ % 12) * 0.42).toFixed(2) + 's; }\n';
+      });
+      siraStil.textContent = css;
+    } catch (e) { }
+  }
   function etkinTazele() {
     var h1 = bas.querySelector('h1');
     ev.classList.toggle('etkin', !!(h1 && h1.classList.contains('home-active')));
@@ -314,6 +408,7 @@
     etkinTazele();
     altTazele();
     sonOdak = document.activeElement;
+    simgeSirasi();
     kok.classList.add('acik');
     cek.setAttribute('aria-hidden', 'false');
     tus.setAttribute('aria-expanded', 'true');

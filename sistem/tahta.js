@@ -452,6 +452,25 @@
     '.th-kpanel .th-dug span{display:inline}',
     '.th-kpanel .th-dug svg{width:17px;height:17px}',
     '.th-kpanel .th-dug.kirmizi{grid-column:1/-1}',
+    '.th-ktus[hidden]{display:none}',
+    '.th-kpanel .th-dug[disabled]{opacity:.42;cursor:default}',
+    '.th-kpanel .th-dug[hidden]{display:none}',
+    /* TAHTADA KUMANDA TUŞU (21.10.2026): öğrenciler görür — soluk durur, dokununca belirginleşir */
+    'body.th-izle .th-ktus{opacity:.42;transition:opacity .2s}',
+    'body.th-izle .th-ktus:hover,body.th-izle .th-ktus:active,body.th-izle .th-ktus.acik,body.th-izle .th-ktus.suruk{opacity:1}',
+    'body.th-izle .th-kpanel{width:min(400px,calc(100vw - 20px));font-size:15px}',
+    'body.th-izle .th-kpanel .th-dug{height:52px;font-size:15px}',
+    'body.th-izle .th-kpanel .th-dug svg{width:19px;height:19px}',
+    /* panelde tahtanın adı, ipucu ve «Sınıf Ekranı değil» (bekleme ekranı kalktı, 21.10.2026) */
+    '.th-kpanel .th-zad{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-2px 2px 10px;font-size:13px;line-height:1.3}',
+    '.th-kpanel .th-zad b{font-weight:800}',
+    '.th-kpanel .th-zad .th-zsinif{opacity:.78;font-weight:600}',
+    '.th-kpanel .th-zadver{margin-inline-start:auto;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;',
+    ' border-radius:999px;padding:5px 11px;font:700 12px/1 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}',
+    '.th-kpanel .th-zipucu{margin:0 2px 10px;font-size:13px;font-weight:600;line-height:1.4;opacity:.82}',
+    '.th-kpanel .th-zipucu[hidden]{display:none}',
+    '.th-kpanel .th-zunut{display:block;margin:10px auto 0;background:none;border:0;padding:4px 6px;color:rgba(255,255,255,.72);',
+    ' font:600 12.5px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:underline;cursor:pointer}',
     '.th-cerceve{position:fixed;left:0;top:0;width:100%;height:100%;border:0;background:#fff;display:block}',
     '.th-koruma{position:fixed;inset:0;z-index:15;background:transparent;cursor:default}',
     '.th-perde{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;',
@@ -543,7 +562,10 @@
   }
   function bekleGoster(tur, ek) {
     var b = $('thBekle');
-    if (!tur) { b.hidden = true; return; }
+    if (!tur) { b.hidden = true; zKumandaGoster(); return; }
+    /* BEKLEME EKRANI YOK (21.10.2026): Sınıf Ekranı beklerken ya da yansıtma başka
+       tahtadayken sitenin kendisini gösterir; durum ve tuşlar kumanda panelinde */
+    if (CIHAZ === 'tahta' && (tur === 'izle' || tur === 'baska')) { b.hidden = true; zBosGoster(tur, ek); return; }
     var ic = '';
     /* bu tahtanın adı ve açık sınıfı (lider seçerken görür) + «Tahtaya ad ver» */
     var adSatir = '';
@@ -557,7 +579,7 @@
       ic = cizim() + '<h1>' + kac(kd('th.baska_bas', 'Yansıtma başka bir tahtaya gidiyor')) + '</h1>' +
         '<p>' + kac(kd('th.baska_alt', 'Öğretmen {ad} tahtasını seçti. Bilgisayarın üst şeridindeki «Tahta» seçicisinden bu tahta seçilince burada da görünür.',
                         { ad: (ek && ek.baskaAd) || kd('th.baska_tahta', 'başka bir') })) + '</p>' + adSatir +
-        '<div class="th-tuslar"><button type="button" class="th-ana" data-th="tam">' + kac(kd('th.tam_ekran', 'Tam ekran')) + '</button>' +
+        '<div class="th-tuslar"><button type="button" class="th-ana" data-th="tam" data-th-tam="1">' + kac(kd('th.tam_ekran', 'Tam ekran')) + '</button>' +
         '<button type="button" class="th-ikinci" data-th="cik">' + kac(kd('th.cik', 'Çık')) + '</button></div>';
     } else if (tur === 'giris') {
       ic = '<h1>' + kac(kd('th.giris_bas', 'Önce giriş yap')) + '</h1>' +
@@ -571,7 +593,7 @@
     } else {   /* izle: bilgisayar bekleniyor */
       ic = cizim() + '<h1>' + kac(kd('th.bekle_bas', 'Bilgisayarını bekliyorum')) + '</h1>' + adSatir +
         '<p>' + kd('th.bekle_alt', 'Bilgisayarında kidefarapca.com’da başlıktaki ekran simgesine (<span class="th-adim">Tahtaya yansıt</span>) dokun, sonra <span class="th-adim">Bu bilgisayardan yansıt</span>’a bas. Açtığın her şey burada görünecek.') + '</p>' +
-        '<div class="th-tuslar"><button type="button" class="th-ana" data-th="tam">' + kac(kd('th.tam_ekran', 'Tam ekran')) + '</button>' +
+        '<div class="th-tuslar"><button type="button" class="th-ana" data-th="tam" data-th-tam="1">' + kac(kd('th.tam_ekran', 'Tam ekran')) + '</button>' +
         '<button type="button" class="th-ikinci" data-th="cik">' + kac(kd('th.cik', 'Çık')) + '</button></div>' +
         /* tahta cihazında seçim paneli artık yok (sistem/tahtagir.js): işaret buradan kalkar */
         '<button type="button" class="th-unut" data-th="unut">' + kac(kd('th.p_unut', 'Bu cihaz tahta değil')) + '</button>';
@@ -579,6 +601,8 @@
     b.innerHTML = '<div class="th-kutu">' + ic + '</div>';
     b.setAttribute('data-tur', tur);
     b.hidden = false;
+    zKumandaGoster();
+    tamTusTazele();
   }
 
   /* TAM EKRAN — tarayıcılar sayfanın kendi kendine tam ekrana geçmesine
@@ -628,30 +652,31 @@
   /* 18.10.2026 (akşam): aynı soluk tuş tam ekran DEĞİLKEN tam ekrana geçirir.
      Ana ekrana eklenmiş uygulama tam ekran kipinde açıldıysa (çıkılacak ya
      da girilecek tam ekran yok) tuş görünmez. */
+  /* 21.10.2026 — öğretmen: "akıllı tahtadaki müstakil tam ekran svg sini bunun
+     içine taşıyalım": sol ortadaki soluk tuş KALKTI; tam ekran artık tahtadaki
+     kumanda panelinde ve bekleme ekranında (data-th-tam). Tam ekrandayken
+     «Tam ekrandan çık» olur; ana ekrana eklenmiş uygulama tam ekran kipinde
+     açıldıysa (girilecek/çıkılacak tam ekran yok) görünmez. */
   function tamTusTazele() {
     if (CIHAZ !== 'tahta' || !document.body) return;
     var d = document, acik = !!(d.fullscreenElement || d.webkitFullscreenElement);
     var el = d.documentElement, destek = !!(el.requestFullscreen || el.webkitRequestFullscreen);
     var uyg = false;
     try { uyg = !!(window.matchMedia && window.matchMedia('(display-mode: fullscreen)').matches) && !acik; } catch (e) { }
-    var b = $('thTamCik');
-    if (!b) {
-      if (!(acik || (destek && !uyg))) return;
-      stilKur();
-      b = d.createElement('button');
-      b.type = 'button';
-      b.id = 'thTamCik';
-      b.className = 'th-tamcik';
-      d.body.appendChild(b);
-    }
-    var is = acik ? 'tamcik' : 'tam';
-    if (b.getAttribute('data-th') !== is) {
-      b.setAttribute('data-th', is);
-      b.title = acik ? kd('th.tam_cik', 'Tam ekrandan çık') : kd('th.tam_gec', 'Tam ekrana geç');
-      b.setAttribute('aria-label', b.title);
-      b.innerHTML = acik ? SVG.tamcik : SVG.tam;
-    }
-    b.hidden = !(acik || (destek && !uyg));
+    var gor = acik || (destek && !uyg);
+    var yazi = acik ? kd('th.tam_cik', 'Tam ekrandan çık') : kd('th.tam_ekran', 'Tam ekran');
+    [].forEach.call(d.querySelectorAll('[data-th-tam]'), function (b) {
+      b.setAttribute('data-th', acik ? 'tamcik' : 'tam');
+      b.hidden = !gor;
+      b.title = yazi;
+      if (b.classList.contains('th-dug')) {
+        var h = (acik ? SVG.tamcik : SVG.tam) + '<span>' + kac(yazi) + '</span>';
+        if (b.innerHTML !== h) b.innerHTML = h;
+        b.setAttribute('aria-pressed', acik ? 'true' : 'false');
+      } else if (b.textContent !== yazi) b.textContent = yazi;
+    });
+    var eski = $('thTamCik');
+    if (eski) eski.parentNode.removeChild(eski);
   }
   function tamCikTazele() { tamTusTazele(); }
   function tamCik() {
@@ -694,6 +719,9 @@
     else if (is === 'cik') cik(ROL === 'izle' ? 'index.html' : (adresAl(CERCEVE.contentWindow) || 'index.html'));
     else if (is === 'tam') { TAM.istek = true; tamEkran(); setTimeout(tamTusTazele, 400); }
     else if (is === 'tamcik') tamCik();
+    else if (is === 'zkip') zKipDegistir();
+    else if (is === 'zperde') zPerdeDegistir();
+    else if (is === 'zesitle') zEsitle();
     else if (is === 'ad') {
       var yeniAd = window.prompt(kd('th.ad_sor', 'Bu tahtanın adı (ör. 7-A sınıfı):'), tahtaAdi() || tahtaAdiVarsayilan());
       if (yeniAd === null) return;
@@ -701,6 +729,7 @@
       if (S.kok) varlikYaz(false);
       var bk = $('thBekle');
       if (bk && !bk.hidden) { var bt = bk.getAttribute('data-tur'); if (bt) bekleGoster(bt, S.yayin); }
+      if (CIHAZ === 'tahta') zNoktaYaz();
       bildir(kd('th.ad_kaydedildi', 'Tahtanın adı: {ad}', { ad: tahtaAdi() || tahtaAdiVarsayilan() }));
     }
     else if (is === 'unut') {
@@ -1490,6 +1519,7 @@
      kullan" açıkken, yansıtma sürüp duraklatılmamışken ve aynı sayfa
      tamamen yüklenip eşitlenmişken. */
   function dokunuldu() {
+    if (KT.acik && KT.otomatik) kumandaKapat();            /* yansıtma başında açılan panel: sayfaya dokununca kapanır */
     hareketYaz();
     GOR.girdi = SIMDI();
     if (!S.kok) return;
@@ -2189,6 +2219,7 @@
   function ktBaslangic(t) {
     var w = t.offsetWidth || 58, h = t.offsetHeight || 58, k = ktKonumOku();
     if (k) ktYerlestir(t, k.fx * (window.innerWidth - w), k.fy * (window.innerHeight - h));
+    else if (CIHAZ === 'tahta') ktYerlestir(t, 12, (window.innerHeight - h) / 2);  /* tahtada sol orta (eski tam ekran tuşunun yeri) */
     else ktYerlestir(t, window.innerWidth - w - 14, window.innerHeight - h - 26);   /* sağ alt */
   }
   function ktKenaraYasla(t) {
@@ -2247,7 +2278,13 @@
     /* bir düğmeye basınca panel kapanır (yakalama evresinde: düğmenin kendi işi
        içini yeniden çizse de hedef henüz yerinde; kapanış düğmenin işinden sonra) */
     p.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('button')) setTimeout(kumandaKapat, 60); }, true);
+    p.addEventListener('pointerdown', function () { KT.otomatik = false; ktZamanla(); }, true);
     return p;
+  }
+  /* tahtada açık kalan panel kendiliğinden kapanır (öğrenciler görmesin) */
+  function ktZamanla() {
+    clearTimeout(KT.z); KT.z = null;
+    if (CIHAZ === 'tahta' && KT.acik) KT.z = setTimeout(kumandaKapat, KT.otomatik ? 12000 : 15000);
   }
   function kumandaYerlestir() {
     var p = $('thKPanel'), t = $('thKTus');
@@ -2260,19 +2297,26 @@
     y = Math.min(H - ph - K, Math.max(K, y));
     p.style.left = Math.round(x) + 'px'; p.style.top = Math.round(y) + 'px';
   }
-  function kumandaAc() {
+  /* otomatik: tahtada yansıtma başlayınca kendiliğinden açılış — saydam perde
+     yok (sayfaya dokunuş geçer ve paneli kapatır) */
+  function kumandaAc(otomatik) {
     var p = $('thKPanel'), t = $('thKTus');
-    if (!p || !t || KT.acik) return;
-    KT.acik = true;
-    var perde = document.createElement('div');
-    perde.id = 'thKPerde'; perde.className = 'th-kperde';
-    perde.addEventListener('pointerdown', function (e) { e.preventDefault(); kumandaKapat(); });
-    document.body.appendChild(perde);
+    if (!p || !t || t.hidden || KT.acik) return;
+    KT.acik = true; KT.otomatik = !!otomatik;
+    if (!otomatik) {
+      var perde = document.createElement('div');
+      perde.id = 'thKPerde'; perde.className = 'th-kperde';
+      perde.addEventListener('pointerdown', function (e) { e.preventDefault(); kumandaKapat(); });
+      document.body.appendChild(perde);
+    }
+    if (CIHAZ === 'tahta') { tamTusTazele(); zNoktaYaz(); }
     p.hidden = false;
     kumandaYerlestir();
     t.classList.add('acik'); t.setAttribute('aria-expanded', 'true');
+    ktZamanla();
   }
   function kumandaKapat() {
+    clearTimeout(KT.z); KT.z = null; KT.otomatik = false;
     var p = $('thKPanel'), t = $('thKTus'), perde = $('thKPerde');
     if (perde) perde.parentNode.removeChild(perde);
     if (p) p.hidden = true;
@@ -2282,12 +2326,103 @@
   function kumandaAcKapat() { if (KT.acik) kumandaKapat(); else kumandaAc(); }
   /* tahta: durum noktası, dokunulunca açılan pencere, koruma ve perde */
   function zDurumKur() {
+    /* 21.10.2026: sağ alttaki durum noktası + pencere ve sol ortadaki ayrı tam
+       ekran tuşu yerine telefondaki kumandanın aynısı (zKumandaKur) */
     var d = $('thDurum');
-    d.innerHTML = '<div class="th-pencere" id="thPencere" hidden></div><span class="th-nokta bekle" id="thNokta" role="button" tabindex="0"></span>';
-    d.hidden = false;
-    $('thNokta').addEventListener('click', zPencere);
-    $('thKoruma').addEventListener('pointerdown', function (e) { e.preventDefault(); zPencere(); });
+    if (d) { d.innerHTML = ''; d.hidden = true; }
+    zKumandaKur();
+    $('thKoruma').addEventListener('pointerdown', function (e) { e.preventDefault(); kumandaAc(); });
     $('thKoruma').addEventListener('wheel', function (e) { e.preventDefault(); }, { passive: false });
+  }
+  /* ---------------------------- TAHTADA KUMANDA TUŞU (21.10.2026)
+     Öğretmen: "yansıtmayı başlatınca kumandanın aynısı akıllı tahtada da açılsın
+     ve tam ekran özelliği de olsun bu ekranın içinde; akıllı tahtadaki müstakil
+     tam ekran svg sini bunun içine taşıyalım". Telefondaki yüzen tuş + panel
+     (kumandaTus / kumandaPanel); panelde Tam ekran, Tahtadan da kullan, Perde,
+     Eşitle, Çık. Bekleme ekranlarında tuş görünmez (orada kendi tuşları var). */
+  function zKumandaKur() {
+    var p = kumandaPanel();
+    p.innerHTML =
+      '<div class="th-bas"><span class="th-isim"><span class="th-nokta bekle" id="thZNokta"></span><span>' + kac(kd('th.sinif_ekrani', 'Sınıf Ekranı')) + '</span></span>' +
+      '<span class="th-cip" id="thZCip"></span></div>' +
+      '<div class="th-zad"><b id="thZAd"></b><span class="th-zsinif" id="thZSinif"></span>' +
+      '<button type="button" class="th-zadver" data-th="ad">' + kac(kd('th.ad_ver_kisa', 'Ad ver')) + '</button></div>' +
+      '<p class="th-zipucu" id="thZIpucu" hidden>' + kac(kd('th.z_ipucu', 'Telefondan ya da bilgisayardan «Bu cihazı kumanda olarak kullan»a dokun; ders burada kendiliğinden açılır.')) + '</p>' +
+      '<div class="th-tuslar">' +
+      '<button type="button" class="th-dug" data-th="tam" data-th-tam="1"></button>' +
+      '<button type="button" class="th-dug th-kip" data-th="zkip" aria-pressed="false" title="' + kac(kd('th.kip_ip', 'Açıkken tahtaya dokunarak da kullanabilirsin; kapalıyken tahta yalnız bilgisayarı gösterir')) + '">' +
+        SVG.dokun + '<span>' + kac(kd('th.kip', 'Tahtadan da kullan')) + '</span></button>' +
+      '<button type="button" class="th-dug" data-th="zperde" aria-pressed="false" title="' + kac(kd('th.perde_ip', 'Tahtayı karart (öğrenciler ekranı görmesin)')) + '">' +
+        SVG.perde + '<span>' + kac(kd('th.perde', 'Perde')) + '</span></button>' +
+      '<button type="button" class="th-dug" data-th="zesitle" title="' + kac(kd('th.z_esitle_ip', 'Sayfayı kumandadan yeniden iste')) + '">' +
+        SVG.esitle + '<span>' + kac(kd('th.esitle', 'Eşitle')) + '</span></button>' +
+      '<button type="button" class="th-dug kirmizi" data-th="cik" title="' + kac(kd('th.z_cik_ip', 'Sınıf Ekranı görünümünden çık, ana sayfaya dön')) + '">' +
+        SVG.bitir + '<span>' + kac(kd('th.cik', 'Çık')) + '</span></button>' +
+      '</div>' +
+      '<button type="button" class="th-zunut" data-th="unut">' + kac(kd('th.z_unut', 'Bu cihaz Sınıf Ekranı değil')) + '</button>';
+    kumandaTus();
+    zKumandaGoster();
+    tamTusTazele();
+    zNoktaYaz();
+  }
+  /* BEKLERKEN (21.10.2026) — öğretmen: "bu yazının olduğu ekran görünmesin, eğer o
+     cihaz akıllı tahtaysa zaten bi yansıtma için kullandığımız popup üzerinden
+     yapılsın her şey". Çerçeve boşsa (ders yok) ana sayfa açılır; tahtadan normal
+     kullanılır, yansıtma başlayınca kumandanın sayfası gelir. Panel ilk açılışta
+     bir kez kendiliğinden açılır. */
+  function zBosGoster(tur, ek) {
+    Z.bosTur = tur; Z.baskaAd = tur === 'baska' ? ((ek && ek.baskaAd) || '') : '';
+    clearTimeout(Z.bosZ);
+    Z.bosZ = setTimeout(function () {
+      if (oturumVar() || Z.gezilen || gercekSayfa(CERCEVE.contentWindow)) return;
+      try { CERCEVE.src = 'index.html'; } catch (e) { }
+    }, 1200);
+    zKumandaGoster();
+    tamTusTazele();
+    zNoktaYaz();
+    if (!KT.ilkAcildi && tur === 'izle') {
+      KT.ilkAcildi = true;
+      setTimeout(function () { if (!oturumVar() && !KT.acik) kumandaAc(true); }, 900);
+    }
+  }
+  /* tuş yalnız sayfa görünürken (bekleme ekranı yokken) */
+  function zKumandaGoster() {
+    if (CIHAZ !== 'tahta') return;
+    var t = $('thKTus'), b = $('thBekle');
+    if (!t) return;
+    var gor = !!(b && b.hidden);
+    if (t.hidden !== !gor) { t.hidden = !gor; if (!gor) kumandaKapat(); }
+  }
+  /* yeni ders başlayınca panel kendiliğinden açılır (tam ekran tuşu hazır) */
+  function zKumandaOtomatik(y) {
+    if (CIHAZ !== 'tahta' || !y || !y.cevrimici || !y.bas || KT.sonBas === y.bas) return;
+    KT.sonBas = y.bas;
+    if (y.cihaz === 'tahta' || y.id === BEN) return;            /* tahtanın kendisi tutuyor */
+    setTimeout(function () { if (oturumVar() && !KT.acik) kumandaAc(true); }, 500);
+  }
+  function zKipDegistir() {
+    if (!S.kok) return;
+    var yeni = cift() ? 'tek' : 'cift';
+    S.ayar.kip = yeni;
+    S.kok.child('ayar').update({ kip: yeni });
+    /* yalnız göster: tahtadan kullanılıyorsa kontrol kumandaya döner */
+    if (yeni === 'tek' && S.lider && S.yayin && S.yayin.cevrimici && S.yayin.id === BEN) S.kok.child('yayin').update({ cevrimici: false, ts: TS() });
+    arayuzTazele();
+    bildir(yeni === 'cift' ? kd('th.b_kip_cift', 'Artık tahtaya dokunarak da kullanabilirsin.')
+                           : kd('th.yalniz_gosterir', 'Tahta şu an bilgisayarı gösteriyor; dokununca bir şey değişmez.'));
+  }
+  function zPerdeDegistir() {
+    if (!S.kok || !(oturumVar() || uzaktaMi())) return;
+    var p = !S.ayar.perde;
+    S.ayar.perde = p;
+    S.kok.child('ayar').update({ perde: p });
+    arayuzTazele();
+  }
+  function zEsitle() {
+    if (!S.kok) return;
+    if (S.lider) { yEsitle(); bildir(kd('th.b_z_esitle_lider', 'Kumanda bu ekrana eşitleniyor…')); }
+    else if (oturumVar()) { esitIste(); bildir(kd('th.b_z_esitle', 'Sayfa kumandadan yeniden isteniyor…')); }
+    else bildir(kd('th.z_yok', 'Kumanda bağlı değil'));
   }
   var pencereZ = null;
   function zPencere() {
@@ -2308,17 +2443,33 @@
     pencereZ = setTimeout(function () { p.hidden = true; }, 6000);
   }
   function zNoktaYaz() {
-    var n = $('thNokta');
-    if (!n) return;
     var y = S.yayin, sinif = 'bekle', uzak = (S.lider && Y.vekil) || (!S.lider && uzaktaMi());
     if (!S.baglanti) sinif = 'hata';
     else if (y && y.cevrimici && !y.durak && !uzak) sinif = 'canli';
-    n.className = 'th-nokta ' + sinif;
     var g = zOrtalama();
-    n.title = uzak ? kd('th.kumanda_uyku_kisa', 'Kumanda uykuda — tahta olduğu gibi sürüyor')
+    var yazi = !S.baglanti ? kd('th.baglanti_yok', 'İnternet bağlantısı yok')
+      : uzak ? kd('th.kumanda_uyku_kisa', 'Kumanda uykuda — tahta olduğu gibi sürüyor')
       : S.lider ? kd('th.tahtadan', 'Tahtadan kullanılıyor')
-      : (y && y.cevrimici ? kd('th.bilgisayar_bagli', 'Bilgisayar bağlı') : kd('th.bilgisayar_yok', 'Bilgisayar bağlı değil.')) +
-        (g != null ? ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, g) }) : '');
+      : (y && y.cevrimici
+          ? (y.durak ? kd('th.z_durak', 'Kumanda duraklattı')
+                     : kd('th.z_bagli', 'Kumanda bağlı') + (g != null ? ' · ' + kd('th.gecikme', '{ms} ms', { ms: Math.max(1, g) }) : ''))
+          : (y && y.baska ? kd('th.z_baska', 'Yansıtma başka tahtada: {ad}', { ad: y.baskaAd || y.baska })
+                          : kd('th.z_bekle', 'Kumanda bekleniyor')));
+    ['thNokta', 'thKNokta', 'thZNokta'].forEach(function (id) { var n = $(id); if (n) n.className = 'th-nokta ' + sinif; });
+    var za = $('thZAd'), zs = $('thZSinif'), zi = $('thZIpucu');
+    if (za) { var adY = tahtaAdi() || tahtaAdiVarsayilan(); if (za.textContent !== adY) za.textContent = adY; }
+    if (zs) {
+      var sn = acikSinif(), snY = sn ? '· ' + (sn.acik ? kd('th.acik_sinif', 'açık sınıf: {s}', { s: sn.ad }) : kd('th.son_sinif', 'son sınıf: {s}', { s: sn.ad })) : '';
+      if (zs.textContent !== snY) zs.textContent = snY;
+    }
+    if (zi) zi.hidden = !!(S.lider || oturumVar() || uzaktaMi() || (y && y.baska));
+    var n0 = $('thNokta'); if (n0) n0.title = yazi;
+    var kt = $('thKTus'); if (kt) kt.title = yazi;
+    var c = $('thZCip'); if (c && c.textContent !== yazi) c.textContent = yazi;
+    var os = oturumVar() || uzaktaMi(), q = function (s2) { return document.querySelector('#thKPanel [data-th="' + s2 + '"]'); };
+    var bk = q('zkip'); if (bk) bk.setAttribute('aria-pressed', cift() ? 'true' : 'false');
+    var bp = q('zperde'); if (bp) { bp.setAttribute('aria-pressed', S.ayar.perde ? 'true' : 'false'); bp.disabled = !os; }
+    var be = q('zesitle'); if (be) be.disabled = !os;
   }
   function zSerit(m) {
     var s = $('thSerit');
@@ -2337,6 +2488,7 @@
     var pe = $('thPerde');
     if (pe && pe.hidden === p) pe.hidden = !p;
     zNoktaYaz();
+    zKumandaGoster();
     uyanikDenetle();
   }
   function zOturumGoster(y) {
@@ -2348,14 +2500,18 @@
       return;
     }
     if (y && y.cevrimici) {
+      Z.izledi = true; Z.bosTur = null;
       bekleGoster(null);
       zSerit(y.durak ? kd('th.serit_durak', 'Öğretmen yansıtmayı duraklattı') : null);
+      zKumandaOtomatik(y);
     } else if (Z.belge) {
       if (uzaktaMi()) return;               /* kumanda uykuda / bağlantısı koptu: tahtada hiçbir şey değişmez */
       if (cift()) zSerit(null);
+      if (!Z.izledi) return;                /* boşta (ders izlenmedi): uyarı yok (21.10.2026) */
       /* kısa bağlantı kopmalarında bir şey gösterilmez: 8 sn bekle */
       Z.ayrildiZ = setTimeout(function () {
         if (oturumVar()) return;
+        Z.izledi = false;
         if (cift()) bildir(kd('th.bilgisayar_yok', 'Bilgisayar bağlı değil.'), 4000);   /* tahta kendi başına kullanılabilir */
         else zSerit(kd('th.serit_ayrildi', 'Bilgisayar ayrıldı — son görüntü'));
       }, 8000);
@@ -2727,6 +2883,7 @@
     document.addEventListener('kidef:dil', function () {
       if (ROL === 'yansit' && S.kok && (MOBIL ? !!$('thKPanel') : ($('thCubuk') && !$('thCubuk').hidden))) cubukKur();
       if (ROL === 'izle' && !$('thBekle').hidden && !oturumVar()) bekleGoster('izle');
+      if (ROL === 'izle' && $('thKPanel')) zKumandaKur();
       var ip = $('thIpucu');
       if (ip && !ip.hidden) ipucuGoster();
     });

@@ -34,6 +34,12 @@
      "Akıllı tahtayı bağla": dokununca kamera doğrudan açılır, tahtadaki
      giriş karekodu okutulur. Tahta zaten girişliyse kameradaki "Tahtam
      zaten açık" düğmesi Tahtaya yansıt panelini açar.
+   3. «KAREKODU TARA» (21.10.2026) — öğretmen: "akıllı tahtayı bağla başlığını
+   değiştir, yansıtmayla karıştırılmasın, Karekodu Tara olabilir". Kenar menü
+   öğesi, kamera başlığı ve giriş penceresindeki tuşun adı artık hep «Karekodu
+   tara» (eski: «Akıllı tahtayı bağla», «Karekodu okut»); çekmecede altında
+   «Tahtada hesabınla oturum aç». Simgedeki tarama çizgisi (kc-tarama) yalnız
+   çekmecede görünür ve oynar (sistem/yanmenu.js).
    Dışa açılan: window.KidefKarekodOkut = { ac, kapat, mobilMi }
    ====================================================================== */
 (function () {
@@ -130,7 +136,8 @@
   var SIM_BAGLA = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;" aria-hidden="true">' +
     '<path d="M3 8V5.5A2.5 2.5 0 0 1 5.5 3H8M16 3h2.5A2.5 2.5 0 0 1 21 5.5V8M21 16v2.5a2.5 2.5 0 0 1-2.5 2.5H16M8 21H5.5A2.5 2.5 0 0 1 3 18.5V16"/>' +
     '<rect x="7.5" y="7.5" width="3.5" height="3.5" rx=".6"/><rect x="13" y="7.5" width="3.5" height="3.5" rx=".6"/>' +
-    '<rect x="7.5" y="13" width="3.5" height="3.5" rx=".6"/><path d="M13 13h3.5v3.5M13 16.5h.01"/></svg>';
+    '<rect x="7.5" y="13" width="3.5" height="3.5" rx=".6"/><path d="M13 13h3.5v3.5M13 16.5h.01"/>' +
+    '<path class="kc-tarama" d="M5 12h14" opacity="0"/></svg>';      /* tarama çizgisi: yalnız çekmecede oynar */
 
   /* ------------------------------------------------------------ oturum */
   function girisli() {
@@ -173,7 +180,7 @@
   function tusYaz(b) {
     var bekle = niyetVar() && !girisli();
     b.classList.toggle('kko-bekle', bekle);
-    b.querySelector('b').textContent = bekle ? 'Önce giriş yap' : 'Karekodu okut';
+    b.querySelector('b').textContent = bekle ? 'Önce giriş yap' : 'Karekodu tara';
     b.querySelector('small').textContent = bekle
       ? 'Aşağıdan giriş yap; kamera giriş biter bitmez kendiliğinden açılacak'
       : 'Önce giriş yaparsın, sonra kamera açılır: tahtadaki karekodu tara';
@@ -209,7 +216,7 @@
     return true;
   }
 
-  /* ------------------------------------- kenar menü: Akıllı tahtayı bağla */
+  /* ------------------------- kenar menü: Karekodu tara (eski «Akıllı tahtayı bağla») */
   function baglaKur() {
     if (!mobilMi()) return true;
     var t = $('tab-tahta');
@@ -219,11 +226,11 @@
       b = document.createElement('a');
       b.href = '#';
       b.id = 'tab-tahta-bagla';
-      b.title = 'Akıllı tahtayı bağla';
-      b.setAttribute('aria-label', 'Akıllı tahtayı bağla — tahtadaki karekodu okut');
+      b.title = 'Karekodu tara — tahtada hesabınla oturum aç';
+      b.setAttribute('aria-label', 'Karekodu tara — tahtadaki giriş karekodunu okut, tahtada hesabınla oturum açılır');
       /* başlıktaki (tablette) görünüşü Tahtaya yansıt düğmesininki gibi */
       b.setAttribute('style', (t.getAttribute('style') || '').replace(/(^|;)\s*display\s*:[^;]*/i, '$1'));
-      b.innerHTML = SIM_BAGLA + '<span class="kc-ad">Akıllı tahtayı bağla</span>';
+      b.innerHTML = SIM_BAGLA + '<span class="kc-ad">Karekodu tara<small>Tahtada hesabınla oturum aç</small></span>';
       b.addEventListener('click', function (e) {
         e.preventDefault();
         ac({ tahta: true });
@@ -253,10 +260,10 @@
     k.hidden = true;
     k.setAttribute('role', 'dialog');
     k.setAttribute('aria-modal', 'true');
-    k.setAttribute('aria-label', 'Karekodu okut');
+    k.setAttribute('aria-label', 'Karekodu tara');
     k.innerHTML =
       '<video id="kkoVideo" playsinline muted autoplay></video>' +
-      '<div class="kko-ust"><b id="kkoBaslik">Karekodu okut</b><button type="button" class="kko-kapat" id="kkoKapat" aria-label="Kapat">&times;</button></div>' +
+      '<div class="kko-ust"><b id="kkoBaslik">Karekodu tara</b><button type="button" class="kko-kapat" id="kkoKapat" aria-label="Kapat">&times;</button></div>' +
       '<div class="kko-vizor"><span class="kko-kose k1"></span><span class="kko-kose k2"></span>' +
       '<span class="kko-kose k3"></span><span class="kko-kose k4"></span><span class="kko-cizgi"></span></div>' +
       '<div class="kko-alt"><div class="kko-yazi" id="kkoYazi">Karekodu çerçevenin içine getir</div>' +
@@ -322,7 +329,7 @@
     k.classList.remove('kko-tamam');
     k.hidden = false;
     $('kkoFener').hidden = true;
-    $('kkoBaslik').textContent = tahta ? 'Akıllı tahtayı bağla' : 'Karekodu okut';
+    $('kkoBaslik').textContent = 'Karekodu tara';           /* girişten sonra açılan kamera da (21.10.2026) */
     /* "Tahtam zaten açık": yalnız giriş yapmış öğretmende (Tahtaya yansıt düğmesi görünüyorsa) */
     var tt = $('tab-tahta');
     $('kkoTahtaAcik').hidden = !(tahta && girisli() && window.KidefTahtaGir && tt && tt.style.display !== 'none');
