@@ -1248,6 +1248,45 @@ function llDemoMu(d) {
     } catch (e) { }
     return false;
 }
+/* KALAN DEMO ŞUBELER (21.10.2026) — öğretmen: "bazı öğretmenlerde bu demo sınıflar
+   kalmışsa onları sil otomatik olarak". Gerçek sınıfların yanında kalan demo
+   şubeler de silinir: «N-A Şubesi» (N 1-3) adlı ve içinde yalnız «N-A Öğrencisi k»
+   adlı (hesabı bağlı olmayan) öğrenciler bulunan şube; boş «5A Demo Sınıfı».
+   Adı değiştirilmiş ya da gerçek öğrenci eklenmiş şube demo sayılmaz. Boş kalan
+   «N. Seviye» (1-3) ve demo 5-10 seviyeleri de kalkar. Dönüş: silinen şube sayısı. */
+function llDemoSinifMi(c) {
+    if (!c || typeof c !== 'object') return false;
+    var ad = String(c.name || '').trim(), st = Array.isArray(c.students) ? c.students : [];
+    var m = /^([1-3])-([ABC]) Şubesi$/.exec(ad);
+    if (m) {
+        var on = m[1] + '-' + m[2] + ' Öğrencisi ';
+        for (var i = 0; i < st.length; i++) {
+            var o = st[i], sn = String((o && o.name) || '').trim();
+            if (!o || o.hesapUid || sn.indexOf(on) !== 0 || !/^\d{1,2}$/.test(sn.slice(on.length))) return false;
+        }
+        return true;
+    }
+    return /^(5|6|7|8|9|10)A Demo Sınıfı$/.test(ad) && !st.length;
+}
+function llDemoTemizle(d) {
+    var n = 0;
+    try {
+        if (!d || typeof d !== 'object' || !d.levels) return 0;
+        var L = d.levels;
+        Object.keys(L).forEach(function (lId) {
+            var l = L[lId], cls = (l && l.classes) || {}, silindi = 0;
+            Object.keys(cls).forEach(function (cId) { if (llDemoSinifMi(cls[cId])) { delete cls[cId]; silindi++; } });
+            n += silindi;
+            var lAd = String((l && l.name) || '').trim();
+            var demoSeviye = /^[1-3]\. Seviye$/.test(lAd) || (silindi > 0 && /^L(5|6|7|8|9|10)$/.test(lId));
+            if (demoSeviye && !Object.keys(cls).length) { delete L[lId]; if (!silindi) n++; }
+        });
+        if (Array.isArray(d.levelOrder)) d.levelOrder = d.levelOrder.filter(function (id) { return !!L[id]; });
+        if (n && d.demo) delete d.demo;
+    } catch (e) { }
+    return n;
+}
+window.llDemoTemizle = llDemoTemizle;
 if (!ilkKontrol) {
     /* Hiç kayıt yok: boş başla ve YAZMA — tarayıcıda örnek liste kalmasın */
     data = { levels: {}, levelOrder: [] };
@@ -1256,6 +1295,10 @@ if (!ilkKontrol) {
     data = { levels: {}, levelOrder: [] };
     try { localStorage.setItem('schoolData', JSON.stringify(data)); } catch (e) { }
     console.warn('Örnek (demo) sınıf listesi kaldırıldı.');
+} else if (llDemoTemizle(data)) {
+    /* gerçek sınıfların yanında kalan demo şubeler (21.10.2026) */
+    try { localStorage.setItem('schoolData', JSON.stringify(data)); } catch (e) { }
+    console.warn('Kalan demo şubeler kaldırıldı.');
 }
 
 // Global Değişkenler
@@ -6749,6 +6792,8 @@ function verileriGetir(uid) {
             var _sh = JSON.parse(localStorage.getItem('kidefSiniflarimSahip') || 'null');
             yerelSahip = !!(_sh && _sh.u === uid);
         } catch (e) { }
+        /* kalan demo şubeler iki kopyadan da düşülür; buluttan düştüyse aşağıda yazılır (21.10.2026) */
+        var bTemiz = llDemoMu(bulut) ? 0 : llDemoTemizle(bulut); llDemoTemizle(yerel);
         var bSay = llSinifSayisi(bulut), ySay = llSinifSayisi(yerel);
         var bGercek = !!bulut && bSay > 0 && !llDemoMu(bulut);
         var yGercek = yerelSahip && ySay > 0 && !llDemoMu(yerel);
@@ -6788,6 +6833,16 @@ function verileriGetir(uid) {
                 }, { merge: true })
                 .then(function () { console.log("Yerel sınıflar buluta geri yüklendi ✅"); })
                 .catch(function (e) { console.error("Geri yükleme hatası:", e); });
+            } catch (e) { }
+        } else if (bTemiz && data === bulut) {
+            /* buluttaki demo şubeler silindi: temizlenmiş liste buluta (21.10.2026) */
+            try {
+                db.collection("kullanicilar").doc(uid).set({
+                    userData: JSON.stringify(data),
+                    lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true })
+                .then(function () { console.warn("Buluttaki demo şubeler silindi (" + bTemiz + ") 🧹"); })
+                .catch(function (e) { console.error("Demo temizliği yazılamadı:", e); });
             } catch (e) { }
         }
         // Yerel kopyayi ve ogretmen kodunu da bu hesaba gore guncelle (hesaplar arasi sizinti engellenir)

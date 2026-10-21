@@ -1240,8 +1240,19 @@ function renderAdminTeacherList() {
             var sayac = { onayli: 0, bekliyor: 0, reddedildi: 0, eski: 0 };
             var toplam = { sure: 0, ogrenci: 0, sinif: 0, anketli: 0 };
             var kartlar = '';
+            var demoTemizlenecek = [];              /* kalan demo şubeleri olan öğretmenler (21.10.2026) */
             liste.forEach(function (o) {
                 var uid = o._id;
+                /* KALAN DEMO ŞUBELER (21.10.2026) — öğretmen: "bazı öğretmenlerde bu demo
+                   sınıflar kalmışsa onları sil otomatik olarak": liste demo düşülerek sayılır,
+                   aşağıda buluta temizlenmiş yazılır (hesap/listelerim.js → llDemoTemizle) */
+                try {
+                    if (typeof llDemoTemizle === 'function' && o.userData) {
+                        var _dd = (typeof o.userData === 'string') ? JSON.parse(o.userData) : o.userData;
+                        var _dn = llDemoTemizle(_dd);
+                        if (_dn) { o.userData = JSON.stringify(_dd); demoTemizlenecek.push({ uid: uid, userData: o.userData, n: _dn, o: o }); }
+                    }
+                } catch (e) { }
                 var ad = o.name && o.name !== 'Belirtilmedi' ? o.name : '';
                 var onay = o.ogretmenOnay;
                 if (onay === 'onayli') sayac.onayli++;
@@ -1340,6 +1351,7 @@ function renderAdminTeacherList() {
                   '<p class="aog-bos" id="aogBos" style="display:none;">Bu süzgece uyan öğretmen yok.</p></div>';
             adminOgretmenSirala();
             adminOgretmenSuz();
+            adminDemoTemizle(demoTemizlenecek);
 
             if (window.KidefDestek && KidefDestek.listeGeldi) KidefDestek.listeGeldi(liste);
             if (window.KidefOgretmenDetay && KidefOgretmenDetay.tazele) KidefOgretmenDetay.tazele();
@@ -1351,6 +1363,48 @@ function renderAdminTeacherList() {
                 'style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
         });
 }
+
+/* KALAN DEMO ŞUBELER BULUTTAN SİLİNİR (21.10.2026): liste açılınca demo şubesi
+   kalan öğretmenlerin temizlenmiş listesi buluta yazılır. Son 15 dakikada siteyi
+   kullanan öğretmen atlanır: o sırada kendi listesini yazıyor olabilir, kendi
+   tarayıcısı zaten açılışta temizler. Özet satırında rapor. */
+function adminDemoTemizle(L) {
+    if (!L || !L.length) return;
+    var simdi = Date.now(), yaz = [], atla = 0;
+    L.forEach(function (x) {
+        var son = 0, kul = (x.o && x.o.kullanim) || {};
+        try { if (kul.sonGoruldu && kul.sonGoruldu.toDate) son = kul.sonGoruldu.toDate().getTime() || 0; else if (typeof kul.sonGoruldu === 'number') son = kul.sonGoruldu; } catch (e) { }
+        if (son && simdi - son < 15 * 60000) { atla++; return; }
+        yaz.push(x);
+    });
+    var not = function (m) {
+        var c = document.getElementById('admin-teacher-list');
+        if (!c) return;
+        var el = document.getElementById('aogDemoNot');
+        if (!el) {
+            el = document.createElement('p'); el.id = 'aogDemoNot';
+            el.style.cssText = 'margin:0 0 10px; padding:8px 12px; border-radius:10px; background:#FFF7E0; color:#7A5A00; font-size:.85rem; line-height:1.5;';
+            var grid = document.getElementById('aogGrid');
+            if (grid) c.insertBefore(el, grid); else c.appendChild(el);
+        }
+        el.textContent = m;
+    };
+    if (!yaz.length) { not('🧹 ' + atla + ' öğretmende demo sınıf var; şu an sitede olduğu için dokunulmadı — kendi tarayıcısı açılışta siler.'); return; }
+    var db = firebase.firestore(), tamam = 0, hata = 0, toplamSube = 0;
+    var isler = yaz.map(function (x) {
+        return db.collection('kullanicilar').doc(x.uid).set({
+            userData: x.userData, lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true }).then(function () { tamam++; toplamSube += x.n; }, function () { hata++; });
+    });
+    Promise.all(isler).then(function () {
+        var m = '🧹 ' + tamam + ' öğretmende kalan demo sınıflar silindi (' + toplamSube + ' şube).';
+        if (hata) m += ' ' + hata + ' öğretmende yazılamadı.';
+        if (atla) m += ' ' + atla + ' öğretmen şu an sitede, ona dokunulmadı (kendi tarayıcısı siler).';
+        not(m);
+        try { console.warn(m); } catch (e) { }
+    });
+}
+window.adminDemoTemizle = adminDemoTemizle;
 
 /* Arama kutusu ve süzgeç çipleri: kartları gizler/gösterir (yeniden
    sorgu yok). "Destek bildirimi" = onay bekleyen ödeme bildirimi olan. */
