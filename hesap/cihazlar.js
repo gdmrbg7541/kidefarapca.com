@@ -65,6 +65,20 @@
   }
   var CID = cihazId();
 
+  /* CİHAZ ADI TEK (21.10.2026) — öğretmen: "çıkış yaparken ki cihaz isimleri ile kumanda
+     olarak yansıtılan cihaz isimleri aynı olsun". Ad: elle verilen ad (kidef_cihaz_ad; eski
+     tahta adı kidef_tahta_ad) ya da «Tür + kimliğin son 3 harfi» (Telefon 7QX, Tahta 3KD) —
+     sistem/tahta.js kumandada ve Sınıf Ekranı'nda aynı adı gösterir. Tarayıcı ve sistem
+     (Chrome · Windows) ayrı alanda (tarayici); eski kayıtlar da bu adla gösterilir. */
+  var TUR_KISA = { bilgisayar: 'Bilgisayar', telefon: 'Telefon', tablet: 'Tablet' };
+  function varsayilanAd(tur, id) {
+    var n = String(id || '').slice(-3).toUpperCase();
+    if (tur === 'tahta') return kd('th.tahta_n', 'Tahta {n}', { n: n });
+    var t = TUR_KISA[tur] ? tur : 'bilgisayar';
+    return kd('cih.ad_' + t, TUR_KISA[t] + ' {n}', { n: n });
+  }
+  function ozelAd() { return String(yerelAl('kidef_cihaz_ad') || yerelAl('kidef_tahta_ad') || '').trim().slice(0, 40); }
+
   function cihazBilgi() {
     var ua = navigator.userAgent || '';
     var tarayici = /Edg\//.test(ua) ? 'Edge' : (/OPR\/|Opera/.test(ua) ? 'Opera' :
@@ -81,7 +95,7 @@
     else if (/iPhone|iPod|Windows Phone/.test(ua) || (/Android/.test(ua) && /Mobile/.test(ua) && kisa <= 600)) tur = 'telefon';
     else if (ipad || (/Android/.test(ua) && kisa <= 820)) tur = 'tablet';
     else if (/Android/.test(ua)) tur = 'tahta';                     /* büyük ekranlı Android: akıllı tahta */
-    return { tur: tur, ad: [tarayici, sistem].filter(Boolean).join(' · ') || 'Tarayıcı' };
+    return { tur: tur, tarayici: [tarayici, sistem].filter(Boolean).join(' · ') || 'Tarayıcı', ad: ozelAd() || varsayilanAd(tur, CID) };
   }
 
   /* ------------------------------------------------- BULUT */
@@ -112,12 +126,14 @@
     if (!u || u.uid !== D.uid || !D.ilkGeldi || D.cikiyor) return;
     var b = D.liste[CID], simdi = Date.now();
     var son = +yerelAl(ANAHTAR_YAZ + '_' + u.uid) || 0;
-    if (!zorla && b && !b.cik && simdi - Math.max(son, +b.son || 0) < NABIZ) return;
     var bil = cihazBilgi();
+    /* ad, tür ya da tarayıcı değiştiyse (ad verildi, Sınıf Ekranı oldu, dil) hemen yazılır */
+    var eskimis = !!(b && (b.ad !== bil.ad || b.tur !== bil.tur || b.tarayici !== bil.tarayici));
+    if (!zorla && !eskimis && b && !b.cik && simdi - Math.max(son, +b.son || 0) < NABIZ) return;
     var giris = (b && !b.cik && b.giris && !D.yeniGiris) ? +b.giris : simdi;
     D.yeniGiris = false;
     yerelYaz(ANAHTAR_YAZ + '_' + u.uid, String(simdi));
-    alanYaz(u.uid, { ad: bil.ad, tur: bil.tur, giris: giris, son: simdi });
+    alanYaz(u.uid, { ad: bil.ad, tarayici: bil.tarayici, tur: bil.tur, giris: giris, son: simdi });
   }
 
   /* Bu cihazın kaydını sil (çıkıştan ÖNCE: yetki gerekiyor) */
@@ -217,6 +233,12 @@
 
   setInterval(function () { if (!document.hidden) kayitYaz(false); }, 60000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) kayitYaz(false); });
+  /* ad başka sayfada (Sınıf Ekranı «Ad ver», tahta işareti) değişti; dil değişti */
+  window.addEventListener('storage', function (e) {
+    if (e && e.key && !/^kidef_(cihaz_ad|tahta_ad|tahta_cihaz)$/.test(e.key)) return;
+    kayitYaz(false); arayuzTazele();
+  });
+  document.addEventListener('kidef:dil', function () { kayitYaz(false); arayuzTazele(); });
 
   /* ------------------------------------------------- LİSTE */
   function siraliListe() {
@@ -225,7 +247,10 @@
       if (!Object.prototype.hasOwnProperty.call(D.liste, k)) continue;
       var c = D.liste[k];
       if (!c || typeof c !== 'object') continue;
-      l.push({ id: k, ad: c.ad || 'Tarayıcı', tur: c.tur || 'bilgisayar', giris: +c.giris || 0, son: +c.son || 0,
+      var tur = c.tur || 'bilgisayar', yeni = typeof c.tarayici === 'string';
+      var ad = yeni ? (c.ad || varsayilanAd(tur, k)) : varsayilanAd(tur, k), tar = yeni ? c.tarayici : (c.ad || '');
+      if (k === CID) { var bb = cihazBilgi(); tur = bb.tur; ad = bb.ad; tar = bb.tarayici; }      /* bu cihaz: güncel ad */
+      l.push({ id: k, ad: ad, tarayici: tar, tur: tur, giris: +c.giris || 0, son: +c.son || 0,
                cik: +c.cik || 0, ben: k === CID, eski: simdi - (+c.son || 0) > ESKI });
     }
     l.sort(function (a, b) { return (b.ben - a.ben) || (b.son - a.son); });
@@ -342,12 +367,13 @@
     l.forEach(function (c) {
       var istek = D.istenen[c.id];
       var ust;
-      if (c.ben) ust = '<b>' + kac(kd('cih.bu', 'Bu cihaz')) + '</b> · ' + kac(onceMetni(Date.now()));
+      if (c.ben) ust = '<b>' + kac(kd('cih.bu', 'Bu cihaz')) + '</b>';
       else if (c.cik || istek) ust = kac((istek && Date.now() - istek < 15000) || (c.cik && Date.now() - c.cik < 15000)
         ? kd('cih.kapaniyor', 'Kapatılıyor…') : kd('cih.istendi', 'Çıkış istendi · cihaz açılınca kapanır'));
       else ust = kac(kd('cih.son_gorulme', 'son görülme: {z}', { z: onceMetni(c.son) })) +
         (c.eski ? ' · ' + kac(kd('cih.eski', 'uzun süredir kullanılmadı')) : '');
-      var tus = '';
+      if (c.tarayici) ust += ' · ' + kac(c.tarayici);
+      var tus = c.ben ? '<button type="button" class="cih-kucuk gri" data-is="ad">' + kac(kd('cih.ad_ver', 'Ad ver')) + '</button>' : '';
       if (!c.ben) {
         /* İşaretli kayıt silinmez: kapalı cihaz açılınca işareti görüp çıkacak.
            Yalnız uzun süredir görülmeyen kayıt listeden kaldırılabilir. */
@@ -357,7 +383,7 @@
       }
       h += '<div class="cih-oge' + (c.ben ? ' ben' : '') + ((c.cik || c.eski) && !c.ben ? ' soluk' : '') + '">' +
         '<span class="cih-simge" title="' + kac(kd('cih.tur_' + c.tur, TUR_AD[c.tur] || 'Cihaz')) + '">' + turSvg(c.tur) + '</span>' +
-        '<span class="cih-yazi"><div class="cih-ad">' + kac(kd('cih.tur_' + c.tur, TUR_AD[c.tur] || 'Cihaz')) + ' · ' + kac(c.ad) + '</div>' +
+        '<span class="cih-yazi"><div class="cih-ad">' + kac(c.ad) + '</div>' +
         '<div class="cih-ust">' + ust + '</div></span>' + tus + '</div>';
     });
     h += '</div><button type="button" class="cih-tus cih-vazgec" data-is="vazgec">' + kac(kd('cih.vazgec', 'Vazgeç')) + '</button>';
@@ -385,12 +411,26 @@
       else if (is === 'hepsi') { pencereKapat(); hepsindenCik(); }
       else if (is === 'kapat' && id) uzaktanCikar([id]);
       else if (is === 'sil' && id) kayitSil(id);
+      else if (is === 'ad') adVer();
     });
     document.addEventListener('keydown', escKapat, true);
     pencereCiz();
   }
 
   /* ------------------------------------------------- İŞLER */
+  function adVer() {
+    var bil = cihazBilgi();
+    var y = window.prompt(kd('cih.ad_sor', 'Bu cihazın adı (ör. Öğretmen masası, 7-A tahtası):'), bil.ad);
+    if (y === null) return;
+    y = String(y).trim().slice(0, 40);
+    if (y === varsayilanAd(bil.tur, CID)) y = '';
+    try {
+      if (y) localStorage.setItem('kidef_cihaz_ad', y); else localStorage.removeItem('kidef_cihaz_ad');
+      localStorage.removeItem('kidef_tahta_ad');
+    } catch (e) { }
+    kayitYaz(true);
+    pencereCiz();
+  }
   function buradanCik() {
     try { if (typeof window.cikisYap === 'function') { window.cikisYap(); return; } } catch (e) { }
     try { firebase.auth().signOut(); } catch (e) { }
@@ -461,6 +501,7 @@
 
   window.KidefCihazlar = {
     ac: pencereAc, kapat: pencereKapat, liste: siraliListe, kimlik: function () { return CID; },
+    ad: function () { return cihazBilgi().ad; },
     cikar: uzaktanCikar, _d: D
   };
 })();

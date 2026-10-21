@@ -117,6 +117,18 @@
      simgeye döner: kırmızı zemin, beyaz canlanan defter ve yazı.
    · Renkler sitenin renkleri: yeşil #16A085 (seçili düğmeler, tutamaç,
      Küçült), lacivert #2C3E50, turuncu (seviye notu), kırmızı #E74C3C (simge).
+   DEFTER v17 (21.10.2026, öğretmen: "tüm sayfaların olduğu kısım açılınca sayfanın
+   köşesinde eksi görünsün öyle silebilsin ... sadece tüm sayfalar kısmından
+   silinebilsin", "güzel yazı defteri ile çizgili defter arasındaki geçişi ve kalem
+   çeşitlerini değiştirme sistemini switch şeklinde yap, çizgiliye basınca çizgi
+   sayısı için rakam çıksın", "yatayda sayfa yatay olmayacak, sadece dikey
+   sayfaların dizilimi yatay olacak, dikeyde ise sayfalar alt alta dizilecek"):
+   · Sayfa silme yalnız «Tüm sayfalar»da: kartın köşesindeki kırmızı «−».
+     Sayfa çubuğunda «Yeni sayfa» var, «kaldır» yok.
+   · Üst çubukta anahtarlar: «Kalem | Hat kalemi», «Çizgili N | Güzel yazı».
+     «Çizgili»ye basınca çizgi sayısı rakamları (2·3·4·5·7) açılır.
+   · Yatay kipte dikey (A4) sayfalar yan yana (aralarında boşluk, her sayfada
+     kenar ve numara); tek uzun kâğıt yok. Eski 625 boyundaki defterler de A4.
    ARAÇLAR: 5 renk kalem · hat kalemi · silgi · 3 kalınlık · çizgi sayısı
    (2·3·4·5·7) / güzel yazı · geri al, yinele, temizle · sayfalar (ekle,
    kaldır, ileri / geri, kaydırma çubuğu, dikey / yatay) · PDF · tam ekran.
@@ -153,6 +165,7 @@
        sayısı BLOK (bir ekran boyu, 625) başına sayılır, aynı aralıkla sayfanın
        sonuna kadar sürer. */
     var A4_BOY = 1414, BLOK = 625;
+    var SAYFA_ARA = 12;                        /* yatay kipte yan yana sayfaların arasındaki gri boşluk (birim) */
     function sayfaYuk() { return (D && D.ph) || H; }
     var RENKLER = [
         { ad: 'Siyah',   k: '#1F2430' },
@@ -338,7 +351,9 @@
             });
         }
         L.pw = pw;
-        L.ph = Math.max(200, Math.min(4000, ph));
+        /* her defter dikey (A4) sayfa (21.10.2026, öğretmen: "yatayda sayfa yatay
+           olmayacak"): eski 625 boyundaki defterler de A4 açılır — yazı üstte aynen */
+        L.ph = Math.max(A4_BOY, Math.min(4000, ph));
         L.cizgi = cn;
         L.ust = ust;
         return L;
@@ -348,9 +363,9 @@
         if (kod && kod.indexOf('Y4|') === 0) {
             var b1 = kod.indexOf('|', 3), b2 = kod.indexOf('|', b1 + 1);
             var v = parseInt(kod.slice(b1 + 1, b2), 10);
-            if (v >= 200 && v <= 4000) return v;
+            if (v >= 200 && v <= 4000) return Math.max(A4_BOY, v);
         }
-        return H;
+        return A4_BOY;
     }
     /* sondaki boş sayfalar (‹ ile açılıp yazılmayan) kaydedilmez, PDF'e girmez */
     function kayitSayfalari(L) {
@@ -507,15 +522,29 @@
             ctx.moveTo(sagKenar - 44, 10); ctx.lineTo(sagKenar - 44, phc - 10); ctx.stroke(); }
         ctx.restore();
     }
-    /* Ekrandaki pencere: tek kâğıdın [vx0, vx1] aralığı */
+    /* YATAY KİP (21.10.2026, öğretmen: "yatayda sayfa yatay olmayacak, sadece dikey
+       sayfaların dizilimi yatay olacak"): ekrandaki pencere [vx0, vx1]; dikey (A4)
+       sayfalar sağdan sola YAN YANA — aralarında gri boşluk, her sayfada kendi
+       çizgileri, kırmızı kenarı (sağda) ve numarası. Tek uzun kâğıt görünümü yok. */
     function seritCiz(ctx, o, vx0, vx1) {
-        var sag = SAG();
+        var sag = SAG(), pw = D.pw, n = D.sayfalar.length, ph = sayfaYuk(), R = cizgiDuzeni();
         ctx.save();
         ctx.setTransform(o, 0, 0, o, -vx0 * o, 0);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(vx0, 0, vx1 - vx0, sayfaYuk());
-        cizgiDesen(ctx, vx0, Math.min(vx1, sag - 18), cizgiDuzeni());
-        if (sag - 44 >= vx0 - 2 && sag - 44 <= vx1 + 2) kenarCiz(ctx, sag - 44);
+        ctx.fillStyle = '#E9EDF2';                                        /* sayfalar arası ve kâğıdın sonu */
+        ctx.fillRect(vx0, 0, vx1 - vx0, ph);
+        var jmin = Math.max(0, Math.floor((sag - vx1) / pw)), jmax = Math.min(n - 1, Math.floor((sag - vx0) / pw));
+        for (var j = jmin; j <= jmax; j++) {
+            var b = sag - j * pw, a = b - pw + SAYFA_ARA;                  /* boşluk sayfanın solunda */
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(a, 0, b - a, ph);
+            cizgiDesen(ctx, a, b - 18, R);
+            kenarCiz(ctx, b - 44);
+            ctx.save();
+            ctx.fillStyle = '#9AA6B4'; ctx.font = '700 15px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+            ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+            ctx.fillText(String(j + 1), a + 12, 7);
+            ctx.restore();
+        }
         ctx.restore();
     }
     function cizimCiz(ctx, c, o, x0, y0) {
@@ -755,6 +784,35 @@
             '.ys-csay.ys-guzel{display:inline-flex; align-items:center; gap:5px; padding:0 8px; font-size:.8rem; font-weight:800; white-space:nowrap;}',
             '.ys-csay.ys-guzel svg{width:21px; height:21px; flex:none;}',
             '.ys-cet{display:inline-flex; align-items:center; gap:5px; padding:0 5px 0 4px; color:#55606D; font-weight:800; font-size:.8rem; white-space:nowrap;}',
+            /* ANAHTARLAR (21.10.2026): «Kalem | Hat kalemi», «Çizgili N | Güzel yazı» — yeşil
+               tutamak seçili yana kayar; «Çizgili»nin altında çizgi sayısı rakamları açılır */
+            '.ys-anahtar{position:relative; display:inline-flex; align-items:stretch; padding:3px; height:34px; box-sizing:border-box;',
+            '  background:#E3E8EF; border-radius:999px; flex:none;}',
+            '.ys-anahtar .ys-top{position:absolute; top:3px; bottom:3px; left:3px; width:calc(50% - 3px); border-radius:999px;',
+            '  background:#16A085; box-shadow:0 2px 6px rgba(14,124,102,.35); transition:transform .18s ease; pointer-events:none;}',
+            '.ys-anahtar.ikinci .ys-top{transform:translateX(100%);}',
+            '.ys-asec{position:relative; z-index:1; flex:1 1 0; min-width:0; border:0; background:transparent; border-radius:999px;',
+            '  padding:0 11px; height:28px; display:inline-flex; align-items:center; justify-content:center; gap:5px; color:#3D4756;',
+            '  font-family:inherit; font-size:.8rem; font-weight:800; cursor:pointer; white-space:nowrap; transition:color .15s;}',
+            '.ys-asec svg{width:18px; height:18px; flex:none;}',
+            '.ys-asec[aria-checked="true"]{color:#fff;}',
+            '.ys-asec .ys-csn{display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 4px;',
+            '  border-radius:999px; background:rgba(44,62,80,.1); font-size:.74rem; font-weight:900; font-variant-numeric:tabular-nums;}',
+            '.ys-asec[aria-checked="true"] .ys-csn{background:rgba(255,255,255,.3);}',
+            '.ys-csec{position:relative;}',
+            '.ys-cpop{position:absolute; top:calc(100% + 6px); left:0; z-index:9; display:flex; align-items:center; gap:4px; padding:6px;',
+            '  background:#fff; border-radius:12px; box-shadow:0 10px 30px rgba(15,23,42,.18), 0 0 0 1px #DDE3EA; animation:ysSol .15s ease-out;}',
+            '.ys-cpop[hidden]{display:none;}',
+            '.ys-cpop .ys-csay{min-width:38px; height:38px; font-size:1.05rem;}',
+            '.ys-cpop .ys-cet{padding:0 6px 0 4px;}',
+            /* «Tüm sayfalar»: kartın köşesinde kırmızı «−» — sayfa silme yalnız burada */
+            '.ys-gkap{position:relative; display:flex; min-width:0;}',
+            '.ys-gkap .ys-gkart{flex:1 1 auto; width:100%; min-width:0;}',
+            '.ys-gsil{position:absolute; top:-9px; left:-9px; z-index:2; width:30px; height:30px; border:0; border-radius:50%; padding:0;',
+            '  background:#E74C3C; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;',
+            '  box-shadow:0 3px 10px rgba(192,57,43,.4), 0 0 0 2px #fff; transition:transform .12s, background .12s;}',
+            '.ys-gsil svg{width:16px; height:16px;}',
+            '.ys-gsil:hover{background:#C0392B; transform:scale(1.1);}',
             '.ys-cet svg{width:20px; height:20px; flex:none;}',
             /* yatayda en altta kalın kaydırma çubuğu, dikeyde solda */
             '.ys-kaydirma{flex:none; padding:7px 14px 9px; background:#fff; border-top:1px solid #E2E7EE;}',
@@ -804,6 +862,7 @@
             '  .ys-t[data-is="tamEkran"] span{display:none;} .ys-arac{padding-right:150px;}}',
             '@media (max-width:1180px) and (min-width:761px){.ys-arac{gap:4px;} .ys-cet{display:none;} .ys-csay{min-width:27px;}',
             '  .ys-csay.ys-guzel{padding:0 5px;} .ys-gara{margin:0 2px;}}',
+            '@media (max-width:1180px){.ys-asec span{display:none;} .ys-asec{padding:0 9px;}}',
             '@media (max-width:1100px) and (min-width:941px){#ysNotYazi{display:none;}}',
             /* ≤940: üstte başlık · geri/ileri/silgi/çöp · ☆ ⏲ PDF · tam ekran,
                küçült; altta kalınlık + hat kalemi · çizgi sayısı + güzel yazı */
@@ -956,6 +1015,8 @@
             '  .ys-yon{padding:2px;} .ys-yb{width:30px; height:30px;} .ys-yb svg{width:17px; height:17px;}',
             '  #ysKutu.dikey .ys-sayfalar{left:calc(50% + 18px);}',
             '  .ys-csay{min-width:26px; height:28px; font-size:.84rem; padding:0 3px;} .ys-csay.ys-guzel{padding:0 3px;}',
+            '  .ys-anahtar{height:30px;} .ys-asec{height:24px; padding:0 8px;} .ys-asec svg{width:16px; height:16px;}',
+            '  .ys-cpop .ys-csay{min-width:34px; height:34px;} .ys-gsil{width:26px; height:26px; top:-7px; left:-7px;}',
             '  .ys-kaydirma{padding:5px 8px 7px;} .ys-ray{height:28px;} .ys-tutamak{min-width:38px; font-size:.82rem;}',
             '  .ys-dray{left:4px; width:28px; top:6px; bottom:6px;}',
             '  .ys-tutamak::before,.ys-tutamak::after{margin:0 5px; height:10px;}',
@@ -1013,6 +1074,7 @@
         temizle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>',
         onceki: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
         sonraki: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+        eksi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M6 12h12"/></svg>',
         yeniSayfa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14h6"/></svg>',
         sayfaSil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6"/></svg>',
         yildiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.2 5.9-.8z"/></svg>',
@@ -1067,7 +1129,9 @@
         kapat(true);
         var t = tercihOku();
         T = { arac: 'kalem', renk: (t.renk >= 0 && t.renk < 5) ? t.renk : 0, kal: t.kal || 'o', mod: t.mod || 'c',
-              cizgi: tercihCizgi(t.cizgi), yon: t.yon === 'y' ? 'y' : 'd', uc: t.uc === 'h' ? 'h' : 'y' };
+              cizgi: tercihCizgi(t.cizgi), yon: t.yon === 'y' ? 'y' : 'd', uc: t.uc === 'h' ? 'h' : 'y',
+              sayi: CIZGI_SECENEK.indexOf(+t.sayi) >= 0 ? +t.sayi : null };      /* güzel yazıdan dönünce gelen çizgi sayısı */
+        if (T.sayi == null) T.sayi = T.cizgi === 'g' ? CIZGI_VARSAYILAN : T.cizgi;
         D = kaynak || { id: yeniId(), sinif: sinif, sube: BAGLI ? BAGLI.sube : subeAdi(), tarih: Date.now(), guncelleme: 0,
                         sayfalar: [yeniSayfa('c')], aktif: 0, notId: '', notAd: '', kirli: false, pw: W, ph: A4_BOY,
                         cizgi: T.cizgi, ust: UST_BOSLUK };
@@ -1104,17 +1168,24 @@
             '<div id="ysKutu" role="dialog" aria-modal="true" aria-label="Defter">' +
               '<div class="ys-arac">' +
                 '<div class="ys-baslik">' + IK.defter + '<span>Defter<small>' + esc(etiket()) + '</small></span></div>' +
-                '<div class="ys-grup ys-kgrup" role="group" aria-label="Kalınlık ve hat kalemi">' + kalin +
-                  '<span class="ys-gara"></span>' +
-                  '<button type="button" class="ys-t ys-hat" data-is="hat" aria-pressed="false" title="Hat kalemi — eğik uçlu kalem: yatayda kalın, dikeyde ince yazar">' +
-                    IK.hatUc + '<span>Hat kalemi</span></button>' +
+                /* ANAHTARLAR (21.10.2026, öğretmen: "güzel yazı defteri ile çizgili defter
+                   arasındaki geçişi ve kalem çeşitlerini değiştirme sistemini switch şeklinde
+                   yap, çizgiliye basınca çizgi sayısı için rakam çıksın") */
+                '<div class="ys-grup ys-kgrup" role="group" aria-label="Kalem çeşidi ve kalınlık">' +
+                  '<div class="ys-anahtar ys-ucsec" role="radiogroup" aria-label="Kalem çeşidi"><i class="ys-top"></i>' +
+                    '<button type="button" class="ys-asec" data-uc="y" role="radio" aria-checked="true" title="Kalem — yuvarlak uçlu">' + IK.kalem + '<span>Kalem</span></button>' +
+                    '<button type="button" class="ys-asec" data-uc="h" role="radio" aria-checked="false" title="Hat kalemi — eğik uçlu kalem: yatayda kalın, dikeyde ince yazar">' + IK.hatUc + '<span>Hat kalemi</span></button>' +
+                  '</div>' +
+                  '<span class="ys-gara"></span>' + kalin +
                 '</div>' +
                 '<div class="ys-ayrac"></div>' +
-                '<div class="ys-grup ys-csec" role="group" aria-label="Çizgi sayısı ya da güzel yazı defteri" title="Yatay çizgi sayısı ya da Arapça güzel yazı defteri">' +
-                  '<span class="ys-cet">' + IK.cizgiler + '<span>Çizgi</span></span>' + csay +
-                  '<span class="ys-gara"></span>' +
-                  '<button type="button" class="ys-csay ys-guzel" data-cizgi="g" aria-pressed="false" title="Arapça güzel yazı defteri — 3 satır, yardımcı çizgili">' +
-                    IK.guzel + '<span>Güzel yazı</span></button>' +
+                '<div class="ys-grup ys-csec" role="group" aria-label="Defter türü">' +
+                  '<div class="ys-anahtar ys-dtsec" role="radiogroup" aria-label="Çizgili defter ya da güzel yazı defteri"><i class="ys-top"></i>' +
+                    '<button type="button" class="ys-asec" data-dt="c" role="radio" aria-checked="true" title="Çizgili defter — basınca çizgi sayısı seçilir">' + IK.cizgiler + '<span>Çizgili</span><b class="ys-csn">5</b></button>' +
+                    '<button type="button" class="ys-asec" data-dt="g" role="radio" aria-checked="false" title="Arapça güzel yazı defteri — yardımcı çizgili satırlar">' + IK.guzel + '<span>Güzel yazı</span></button>' +
+                  '</div>' +
+                  '<div class="ys-cpop" id="ysCpop" role="group" aria-label="Çizgi sayısı" hidden>' +
+                    '<span class="ys-cet">' + IK.cizgiler + '<span>Çizgi</span></span>' + csay + '</div>' +
                 '</div>' +
                 '<span class="ys-bos"></span>' +
                 '<button type="button" class="ys-t ana" data-is="notKaydet" title="Bu defteri seviye notlarına kaydet">' + IK.yildiz +
@@ -1163,7 +1234,6 @@
                   '<span class="ys-ara"></span>' +
                   '<button type="button" class="ys-t" data-is="tumSayfalar" title="Tüm sayfalar">' + IK.izgara + '</button>' +
                   '<button type="button" class="ys-t" data-is="yeniSayfa" title="Yeni sayfa — açık sayfadan hemen sonra">' + IK.yeniSayfa + '</button>' +
-                  '<button type="button" class="ys-t" data-is="sayfaSil" title="Bu sayfayı kaldır">' + IK.sayfaSil + '</button>' +
                   '<span class="ys-ara"></span>' +
                   '<span class="ys-yon" role="group" aria-label="Kaydırma yönü">' +
                     '<button type="button" class="ys-yb" data-yon="d" aria-pressed="false" title="Dikey kaydırma — sayfalar alt alta">' + IK.dikey + '</button>' +
@@ -1205,6 +1275,7 @@
             raySayfa: ort.querySelector('#ysRay .ys-ray-sayfalar'),
             rayD: ort.querySelector('#ysRayD'), tutamakD: ort.querySelector('#ysTutamakD'),
             raySayfaD: ort.querySelector('#ysRayD .ys-ray-sayfalar'), rayAnahtar: '',
+            cpop: ort.querySelector('#ysCpop'),
             dikey: T.yon !== 'y'
         };
         UI.kutu.classList.toggle('dikey', UI.dikey);
@@ -1213,6 +1284,10 @@
         ort.addEventListener('pointerdown', tapBas);
         ort.addEventListener('pointerup', tapBirak);
         ort.addEventListener('pointercancel', function () { _tap = null; });
+        ort.addEventListener('pointerdown', function (e) {
+            var t = e.target;
+            if (UI && UI.cpop && !UI.cpop.hidden && !UI.cpop.contains(t) && !(t.closest && t.closest('[data-dt]'))) cpopKapat();
+        });
         ort.addEventListener('contextmenu', function (e) { if (hizliHedef(e.target) || (UI && e.target === UI.ust)) e.preventDefault(); });
         UI.sahne.addEventListener('wheel', tekerlek, { passive: false });
         ort.querySelector('#ysKaydirma').addEventListener('wheel', tekerlek, { passive: false });
@@ -1462,7 +1537,8 @@
     function sinirliY(y) { return Math.max(enAzY(), Math.min(enCokY(), y)); }
     function defterHazirla(d) {
         if (!d.pw) d.pw = (d.sayfalar && d.sayfalar.pw) || W;
-        if (!d.ph) d.ph = (d.sayfalar && d.sayfalar.ph) || H;
+        if (!d.ph) d.ph = (d.sayfalar && d.sayfalar.ph) || A4_BOY;
+        d.ph = Math.max(A4_BOY, d.ph);                     /* eski (625) defterler de dikey A4 sayfa */
         if (d.cizgi !== 'g' && !(d.cizgi >= CIZGI_EN_AZ && d.cizgi <= CIZGI_EN_COK)) {
             var sc = d.sayfalar && d.sayfalar.cizgi;
             d.cizgi = sc === 'g' ? 'g' : cizgiSayisi(sc);
@@ -1967,7 +2043,7 @@
         soru('Bu sayfa (' + (D.aktif + 1) + '. sayfa) üzerindeki yazılarla birlikte kaldırılsın mı?', 'Kaldır', true, yap);
     }
     function modSec() { /* tek düzen: çizgili defter (çizgi sayısı / güzel yazı: cizgiSec) */ }
-    function tercihKaydet() { tercihYaz({ renk: T.renk, kal: T.kal, mod: T.mod, cizgi: T.cizgi, yon: T.yon, uc: T.uc }); }
+    function tercihKaydet() { tercihYaz({ renk: T.renk, kal: T.kal, mod: T.mod, cizgi: T.cizgi, yon: T.yon, uc: T.uc, sayi: T.sayi }); }
     /* yeni defter: son seçilen çizgi sayısı (2·3·4·5·7) ya da güzel yazı;
        eski tercih (6, 8) artık seçenek değil → 5 */
     function tercihCizgi(v) { return v === 'g' ? 'g' : (CIZGI_SECENEK.indexOf(+v) >= 0 ? +v : CIZGI_VARSAYILAN); }
@@ -1976,13 +2052,33 @@
        defter bugünkü düzene (üstte pay) geçer. */
     function cizgiSec(v) {
         var n = v === 'g' ? 'g' : cizgiSayisi(v);
-        T.cizgi = n; tercihKaydet();
+        T.cizgi = n; if (n !== 'g') T.sayi = n; tercihKaydet();
         if (!D || (D.cizgi === n && D.ust === UST_BOSLUK)) { aracGuncelle(); return; }
         D.cizgi = n; D.ust = UST_BOSLUK;
         D.kirli = true;
         sayfaCiz();
         aracGuncelle();              /* seçili düğme ve sayfa bilgisi hemen değişsin (21.10.2026) */
     }
+    /* DEFTER TÜRÜ anahtarı: 'c' çizgili (basınca çizgi sayısı rakamları açılır; güzel
+       yazıdan dönünce son sayı), 'g' güzel yazı */
+    function defterTuru(t) {
+        if (!D) return;
+        if (t === 'g') { cpopKapat(); cizgiSec('g'); return; }
+        if (D.cizgi === 'g') { cizgiSec(T.sayi || CIZGI_VARSAYILAN); cpopAc(); return; }
+        if (UI.cpop && !UI.cpop.hidden) cpopKapat(); else cpopAc();
+    }
+    function cpopAc() {
+        if (!UI || !UI.cpop) return;
+        var c = UI.cpop;
+        c.hidden = false; c.style.left = ''; c.style.right = '';
+        /* dar ekranda sağdan taşmasın */
+        try {
+            var r = c.getBoundingClientRect(), k = UI.kutu.getBoundingClientRect();
+            if (r.right > k.right - 6) { c.style.left = 'auto'; c.style.right = '0'; }
+        } catch (e) { }
+        aracGuncelle();
+    }
+    function cpopKapat() { if (UI && UI.cpop) UI.cpop.hidden = true; }
     /* HAT KALEMİ aç / kapa — kalınlık düğmeleri ucun enini seçer */
     function hatSec(acik) {
         T.uc = acik ? 'h' : 'y';
@@ -2065,8 +2161,18 @@
         });
         [].forEach.call(UI.ort.querySelectorAll('[data-renk]'), function (b) { b.classList.toggle('sec', +b.getAttribute('data-renk') === T.renk && T.arac === 'kalem'); });
         [].forEach.call(UI.ort.querySelectorAll('[data-kal]'), function (b) { b.classList.toggle('sec', b.getAttribute('data-kal') === T.kal); });
-        var hb = UI.ort.querySelector('[data-is="hat"]');
-        if (hb) { hb.classList.toggle('sec', T.uc === 'h'); hb.setAttribute('aria-pressed', T.uc === 'h' ? 'true' : 'false'); }
+        var anahtar = function (kok, ikinci) {
+            var a = UI.ort.querySelector(kok);
+            if (!a) return;
+            a.classList.toggle('ikinci', !!ikinci);
+            var d = a.querySelectorAll('.ys-asec');
+            if (d[0]) d[0].setAttribute('aria-checked', ikinci ? 'false' : 'true');
+            if (d[1]) d[1].setAttribute('aria-checked', ikinci ? 'true' : 'false');
+        };
+        anahtar('.ys-ucsec', T.uc === 'h');
+        anahtar('.ys-dtsec', D.cizgi === 'g');
+        var csn = UI.ort.querySelector('.ys-csn');
+        if (csn) csn.textContent = String(D.cizgi === 'g' ? (T.sayi || CIZGI_VARSAYILAN) : D.cizgi);
         var dz = function (is, kapali) { var b = UI.ort.querySelector('[data-is="' + is + '"]'); if (b) b.disabled = !!kapali; };
         var n = D.sayfalar.length;
         dz('geri', !D.geri.length); dz('ileri', !D.ileri.length); dz('temizle', !s.cizimler.length);
@@ -2100,9 +2206,16 @@
         g.className = 'ys-genel';
         g.setAttribute('role', 'dialog');
         g.setAttribute('aria-label', 'Tüm sayfalar');
+        /* SAYFA SİLME YALNIZ BURADA (21.10.2026, öğretmen: "tüm sayfaların olduğu kısım
+           açılınca sayfanın köşesinde eksi görünsün öyle silebilsin ... arayüzde sadece
+           tüm sayfalar kısmından silinebilsin"): kartın köşesinde «−» (tek sayfada yok) */
+        var coklu = D.sayfalar.length > 1;
         var kartlar = D.sayfalar.map(function (sy, i) {
-            return '<button type="button" class="ys-gkart' + (i === D.aktif ? ' simdi' : '') + '" data-git="' + i + '" title="Sayfa ' + (i + 1) + '">' +
-                '<canvas width="480" height="' + Math.round(480 * sayfaYuk() / W) + '" style="aspect-ratio:' + W + '/' + Math.round(sayfaYuk()) + '"></canvas><span>Sayfa ' + (i + 1) + (i === D.aktif ? ' · açık' : '') + '</span></button>';
+            return '<div class="ys-gkap">' +
+                '<button type="button" class="ys-gkart' + (i === D.aktif ? ' simdi' : '') + '" data-git="' + i + '" title="Sayfa ' + (i + 1) + '">' +
+                '<canvas width="480" height="' + Math.round(480 * sayfaYuk() / W) + '" style="aspect-ratio:' + W + '/' + Math.round(sayfaYuk()) + '"></canvas><span>Sayfa ' + (i + 1) + (i === D.aktif ? ' · açık' : '') + '</span></button>' +
+                (coklu ? '<button type="button" class="ys-gsil" data-sayfasil="' + i + '" title="' + (i + 1) + '. sayfayı sil" aria-label="' + (i + 1) + '. sayfayı sil">' + IK.eksi + '</button>' : '') +
+                '</div>';
         }).join('');
         g.innerHTML =
             '<div class="ys-genel-bas"><b>Tüm sayfalar</b><small>' + D.sayfalar.length + ' sayfa</small><span class="ys-bos"></span>' +
@@ -2120,6 +2233,26 @@
     }
     function genelKapat() {
         if (UI && UI.genel) { UI.genel.remove(); UI.genel = null; }
+    }
+    /* «Tüm sayfalar»daki «−»: sayfa silinir (yazılıysa sorarak), görünüm tazelenir */
+    function sayfaSilGenel(i) {
+        if (!D || D.sayfalar.length < 2 || i < 0 || i >= D.sayfalar.length) return;
+        var sy = D.sayfalar[i];
+        var yap = function () {
+            if (D.sayfalar.length < 2) return;
+            D.sayfalar.splice(i, 1);
+            D.geri = []; D.ileri = [];
+            D.kirli = true;
+            var hedef = Math.min(D.aktif > i ? D.aktif - 1 : D.aktif, D.sayfalar.length - 1);
+            D.aktif = hedef;
+            UI.c = null; UI.cy = null;
+            cizimAyarla();
+            kaydirGit(hedef, true);
+            genelAc();
+            bildir((i + 1) + '. sayfa silindi');
+        };
+        if (!sy.cizimler.length) { yap(); return; }
+        soru((i + 1) + '. sayfa üzerindeki yazılarla birlikte silinsin mi?', 'Sil', true, yap);
     }
 
     /* ---------------- «Tüm sayfayı sil» sorusu ---------------- */
@@ -2266,7 +2399,7 @@
     var _tap = null;
     function hizliHedef(t) {
         if (!UI || !t || !t.closest) return null;
-        var b = t.closest('button[data-is],button[data-renk],button[data-kal],button[data-cizgi],button[data-yon],button[data-mod]');
+        var b = t.closest('button[data-is],button[data-renk],button[data-kal],button[data-cizgi],button[data-yon],button[data-mod],button[data-uc],button[data-dt]');
         if (!b || b.disabled || !UI.ort.contains(b)) return null;
         var is = b.getAttribute('data-is');
         if (is === 'tamEkran' || is === 'pdf') return null;
@@ -2288,13 +2421,15 @@
     function tikla(e) {
         var t = e.target;
         if (t === UI.ort) return;                                    /* dışına basınca kapanmaz (yanlışlıkla silinmesin) */
-        var b = t.closest && t.closest('[data-is],[data-renk],[data-kal],[data-cizgi],[data-yon],[data-mod],[data-sek],[data-ac],[data-sil],[data-not],[data-notsil],[data-git]');
+        var b = t.closest && t.closest('[data-is],[data-renk],[data-kal],[data-cizgi],[data-yon],[data-mod],[data-sek],[data-ac],[data-sil],[data-not],[data-notsil],[data-sayfasil],[data-git],[data-uc],[data-dt]');
         if (b && UI.sonHizli && UI.sonHizli.b === b && Date.now() - UI.sonHizli.z < 800) return;   /* pointerup'ta işlendi */
         islem(e, t, b);
     }
     function islem(e, t, b) {
-        /* «Tüm sayfalar» açıkken dışındaki bir düğmeye basılırsa görünüm kapanır */
-        if (UI.genel && !UI.genel.contains(t) && !(b && b.getAttribute('data-is') === 'tumSayfalar')) genelKapat();
+        /* «Tüm sayfalar» açıkken dışındaki bir düğmeye basılırsa görünüm kapanır (silme sorusu hariç) */
+        if (UI.genel && !UI.genel.contains(t) && !(t.closest && t.closest('.ys-soru-ort')) && !(b && b.getAttribute('data-is') === 'tumSayfalar')) genelKapat();
+        /* çizgi sayısı rakamları: dışına basınca kapanır */
+        if (UI.cpop && !UI.cpop.hidden && !UI.cpop.contains(t) && !(b && b.hasAttribute('data-dt'))) cpopKapat();
         /* açık «Tüm sayfayı sil» sorusu: dışına basınca kapanır; onu açan
            düğmeye yeniden basmak da yalnız kapatır */
         if (UI.silSor && !UI.silSor.contains(t)) {
@@ -2303,10 +2438,13 @@
             if (b && b === acan) return;
         }
         if (!b) return;
+        if (b.hasAttribute('data-sayfasil')) { e.stopPropagation(); sayfaSilGenel(+b.getAttribute('data-sayfasil')); return; }
         if (b.hasAttribute('data-git')) { var gi = +b.getAttribute('data-git'); genelKapat(); sayfayaGit(gi); return; }
+        if (b.hasAttribute('data-uc')) { hatSec(b.getAttribute('data-uc') === 'h'); return; }
+        if (b.hasAttribute('data-dt')) { defterTuru(b.getAttribute('data-dt')); return; }
         if (b.hasAttribute('data-renk')) { T.renk = +b.getAttribute('data-renk'); T.arac = 'kalem'; tercihKaydet(); aracGuncelle(); return; }
         if (b.hasAttribute('data-kal')) { T.kal = b.getAttribute('data-kal'); T.arac = 'kalem'; tercihKaydet(); aracGuncelle(); return; }
-        if (b.hasAttribute('data-cizgi')) { var cv = b.getAttribute('data-cizgi'); cizgiSec(cv === 'g' ? 'g' : +cv); return; }
+        if (b.hasAttribute('data-cizgi')) { var cv = b.getAttribute('data-cizgi'); cpopKapat(); cizgiSec(cv === 'g' ? 'g' : +cv); return; }
         if (b.hasAttribute('data-yon')) { yonSec(b.getAttribute('data-yon')); return; }
         if (b.hasAttribute('data-mod')) { modSec(b.getAttribute('data-mod')); return; }
         if (b.hasAttribute('data-sek')) { UI.sek = b.getAttribute('data-sek'); panelCiz(); return; }
@@ -2340,7 +2478,6 @@
         else if (is === 'el') { T.arac = 'el'; aracGuncelle(); }
         else if (is === 'hat') hatSec(T.uc !== 'h');
         else if (is === 'yeniSayfa') yeniSayfaEkle();
-        else if (is === 'sayfaSil') sayfaKaldir();
         else if (is === 'notKaydet') notKaydetSor();
         else if (is === 'panel') panelAcKapa();
         else if (is === 'panelKapat') UI.panel.classList.remove('acik');
@@ -2358,6 +2495,7 @@
         if (e.key === 'Escape') {
             e.preventDefault(); e.stopPropagation();
             if (UI.silSor) { silSorKapat(); return; }
+            if (UI.cpop && !UI.cpop.hidden) { cpopKapat(); return; }
             if (UI.genel) { genelKapat(); return; }
             var so = UI.ort.querySelector('.ys-soru-ort');
             if (so) { so.remove(); return; }
@@ -2593,8 +2731,10 @@
             var lvl = d && d.levels ? d.levels[a.lId] : null;
             var cls = lvl && lvl.classes ? lvl.classes[a.cId] : null;
             if (!cls) return null;
-            var m = String(lvl.name || '').match(/\d+/);
-            var sinif = m ? String(parseInt(m[0], 10)) : 'x' + String(a.lId).replace(/[^A-Za-z0-9_]/g, '').slice(0, 24);
+            /* 21.10.2026: «Yedinci sınıflar» da; seviye adı tanınmazsa sınıfın adı (Okulum → 5-A → 5) */
+            var _sn = (typeof window.llSinifSeviyeNo === 'function') ? window.llSinifSeviyeNo(lvl, cls) : 0;
+            var m = _sn ? null : String(lvl.name || '').match(/\d+/);
+            var sinif = _sn ? String(_sn) : (m ? String(parseInt(m[0], 10)) : 'x' + String(a.lId).replace(/[^A-Za-z0-9_]/g, '').slice(0, 24));
             return { anahtar: a.lId + '|' + a.cId, sinif: sinif, sube: String(cls.name || ''), seviyeAd: String(lvl.name || '') };
         } catch (e) { return null; }
     }
@@ -2683,6 +2823,7 @@
         cizgiYerleri: cizgiYerleri,
         /* test ve öteki modüller için */
         kodla: defterKodla, coz: defterCoz, gecmisListe: gecmisListe, kodBoy: kodBoy,
-        boy: function () { return D ? { pw: D.pw, ph: D.ph } : null; }
+        boy: function () { return D ? { pw: D.pw, ph: D.ph } : null; },
+        sayfaSil: sayfaSilGenel, defterTuru: defterTuru
     };
 })();

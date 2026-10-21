@@ -131,7 +131,8 @@
         return vt().ref('tahta/' + u.uid + '/kumanda').set({ qr: String(oturumId), t: firebase.database.ServerValue.TIMESTAMP });
       }).then(function () {
         durum.textContent = 'Bağlandı — kumanda açılıyor…';
-        setTimeout(function () { location.href = KOK + 'tahta.html?rol=yansit'; }, 400);
+        /* &al=1: kumanda başka cihazdaysa buraya geçer (tek kumanda, 21.10.2026) */
+        setTimeout(function () { location.href = KOK + 'tahta.html?rol=yansit&al=1'; }, 400);
       }).catch(function (e) {
         evet.disabled = hayir.disabled = false;
         durum.className = 'kmd-durum hata';

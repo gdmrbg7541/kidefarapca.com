@@ -1678,22 +1678,245 @@ function llSeviyeTaslak(ad, kurumId) {
     };
 }
 window.llSeviyeTaslak = llSeviyeTaslak;
+/* ======================================================================
+   SEVİYE TANIMA (21.10.2026) — öğretmen: "seviye eklerken 5-10 arasındaki
+   sınıflara basınca o seviyeden sınıf ekleneceğini anlamayıp + kısmına
+   basıyor; oraya bastıktan sonra yine 5-10 arası bi sınıf tanımlamışsa da
+   algılansın ve imam hatip kategorisindeki materyaller vs kullanabilsin".
+   Addan sınıf numarası ve varsa şube harfi:
+     "7. Sınıflar" → 7 · "5-A", "5A", "5/A", "5 A şubesi" → 5, A
+     "Yedinci sınıflar", "yediler" → 7 · "VII. Sınıf" → 7
+     "2026-2027 6. sınıf" → 6 (dört haneli sayılar yıl sayılıp atlanır)
+   Addaki İLK sayı esas (eski davranış); sayı yoksa sıra sayısı sözcüğü,
+   çoğul ya da Roma rakamı. 1–12 dışı / bulunamazsa 0. Seviye adı tanınmazsa
+   SINIFIN adına bakılır (llSinifSeviyeNo): "Okulum" seviyesindeki 5-A → 5.
+   Öbür dosyalar (sinifmateryal, kitaptakip, kazanimoneri, defterpop,
+   sinifdefteri, yazisayfasi, siniflarim) aynı tanımayı kullanır.
+   ====================================================================== */
+var LL_HARF = 'A-Za-zÇĞİIÖŞÜçğıiöşü';
+var LL_SIRA_SOZ = { 'birinci': 1, 'ikinci': 2, 'üçüncü': 3, 'ucuncu': 3, 'dördüncü': 4, 'dorduncu': 4,
+    'beşinci': 5, 'besinci': 5, 'altıncı': 6, 'altinci': 6, 'yedinci': 7, 'sekizinci': 8,
+    'dokuzuncu': 9, 'onuncu': 10 };
+var LL_COGUL_SOZ = { 'beşler': 5, 'besler': 5, 'altılar': 6, 'altilar': 6, 'yediler': 7,
+    'sekizler': 8, 'dokuzlar': 9 };
+var LL_ROMA = { 'V': 5, 'VI': 6, 'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10, 'XI': 11, 'XII': 12 };
+function llSeviyeTani(metin) {
+    var s = String(metin == null ? '' : metin).trim(), no = 0, sube = '', m;
+    var harfSonra = new RegExp('^\\s*[-\\/.]?\\s*([' + LL_HARF + '])(?![' + LL_HARF + '])');
+    var re = /\d+/g;
+    while ((m = re.exec(s))) {
+        if (m[0].length >= 4) continue;                                  /* yıl */
+        no = parseInt(m[0], 10);
+        var hm = s.slice(re.lastIndex).match(harfSonra);
+        if (hm) sube = hm[1];
+        break;
+    }
+    if (!no && !/\d/.test(s.replace(/\d{4,}/g, ''))) {
+        var bol = new RegExp('[^' + LL_HARF + ']+');
+        var tok = s.toLocaleLowerCase('tr-TR').split(bol).filter(Boolean);
+        for (var i = 0; i < tok.length && !no; i++) {
+            var t = tok[i];
+            if (t === 'on' && (tok[i + 1] === 'birinci' || tok[i + 1] === 'ikinci')) no = tok[i + 1] === 'birinci' ? 11 : 12;
+            else if (LL_SIRA_SOZ[t]) no = LL_SIRA_SOZ[t];
+            else if (LL_COGUL_SOZ[t]) no = LL_COGUL_SOZ[t];
+        }
+        if (!no) {
+            var ham = s.split(bol).filter(Boolean);
+            for (var j = 0; j < ham.length && !no; j++) if (LL_ROMA[ham[j]]) no = LL_ROMA[ham[j]];
+        }
+    }
+    if (no && !sube) {
+        var sm = s.match(new RegExp('(?:^|[^' + LL_HARF + '])([' + LL_HARF + '])\\s*-?\\s*şube', 'i'));
+        if (sm) sube = sm[1];
+    }
+    if (no < 1 || no > 12) no = 0;
+    if (!no) sube = '';
+    return { no: no, sube: sube ? sube.toLocaleUpperCase('tr-TR') : '' };
+}
+function llSeviyeNo(ad) { return llSeviyeTani(ad).no; }
+function llSinifSeviyeNo(seviye, sinif) {
+    var n = seviye ? llSeviyeNo(seviye.name) : 0;
+    if (!n && sinif) n = llSeviyeNo(sinif.name);
+    return n;
+}
+window.llSeviyeTani = llSeviyeTani;
+window.llSeviyeNo = llSeviyeNo;
+window.llSinifSeviyeNo = llSinifSeviyeNo;
+
+/* Seviye kur: metin bir rakam (5) ya da yazılan ad ("5-A", "Hazırlık").
+   Tanınan numarada seviye «N. sınıf» adıyla kurulur; aynı kurumda o numaralı
+   seviye varsa ona eklenir. Şube yazıldıysa «5A» sınıfı da açılır. Okul
+   penceresinde şube harfleri satırı açık gelir (_llHizliLid). */
+function llSeviyeKur(kId, metin) {
+    if (typeof data === 'undefined' || !data) return null;
+    if (!data.levels) data.levels = {};
+    var kurumId = (!kId || kId === 'GENEL') ? null : kId;
+    if (kurumId && !(data.kurumlar && data.kurumlar[kurumId])) kurumId = null;
+    var t = (typeof metin === 'number') ? { no: metin, sube: '' } : llSeviyeTani(metin);
+    var ad = String(metin == null ? '' : metin).trim();
+    if (!t.no && !ad) return null;
+    var lId = null, yeni = false, cId = null;
+    if (t.no) {
+        Object.keys(data.levels).forEach(function (id) {
+            var l = data.levels[id];
+            if (!l || lId) return;
+            if ((l.kurumId || null) === kurumId && llSeviyeNo(l.name) === t.no) lId = id;
+        });
+    }
+    if (!lId) {
+        lId = 'L' + Date.now();
+        data.levels[lId] = llSeviyeTaslak(t.no ? (t.no + '. sınıf') : ad, kurumId);
+        if (!data.levelOrder) data.levelOrder = [];
+        data.levelOrder.push(lId);
+        yeni = true;
+    }
+    if (t.no && t.sube) {
+        var lvl = data.levels[lId], cad = t.no + t.sube;
+        var sade = function (x) { return String(x || '').replace(/[\s\-\/.]/g, '').toLocaleUpperCase('tr-TR'); };
+        if (!lvl.classes) lvl.classes = {};
+        Object.keys(lvl.classes).forEach(function (c) { if (!cId && sade(lvl.classes[c].name) === sade(cad)) cId = c; });
+        if (!cId) { cId = 'C' + Date.now(); lvl.classes[cId] = { name: cad, students: [] }; }
+    }
+    if (t.no) window._llHizliLid = lId;
+    try { save(); } catch (e) { }
+    return { lId: lId, cId: cId, no: t.no, sube: t.sube, yeni: yeni };
+}
+window.llSeviyeKur = llSeviyeKur;
+
+/* «+» PENCERESİ — rakamlar + yazı alanı; yazarken ne kurulacağı söylenir */
+function llSevEkleStil() {
+    if (document.getElementById('llSevEkleStil')) return;
+    var s = document.createElement('style');
+    s.id = 'llSevEkleStil';
+    s.textContent = [
+        '#llSevEkle{position:fixed;inset:0;z-index:10080;display:flex;align-items:center;justify-content:center;padding:16px;',
+        '  background:rgba(15,23,42,.45);backdrop-filter:blur(2px);animation:lsvAc .16s ease}',
+        '@keyframes lsvAc{from{opacity:0}}',
+        '#llSevEkle .lsv-kutu{position:relative;width:min(500px,100%);max-height:calc(100vh - 32px);overflow:auto;background:#FFF8F2;',
+        '  border-radius:20px;box-shadow:0 24px 64px rgba(15,23,42,.3);padding:18px 20px 16px;color:#3E2A20;font-family:inherit;box-sizing:border-box}',
+        '#llSevEkle .lsv-ust{display:flex;align-items:center;gap:10px;margin:0 36px 6px 0}',
+        '#llSevEkle .lsv-ust b{font-size:1.2rem;color:#5A3A28}',
+        '#llSevEkle .lsv-kapat{position:absolute;top:12px;right:12px;width:34px;height:34px;border:0;border-radius:50%;background:#F3E6DA;',
+        '  color:#6B4A38;font-size:20px;line-height:34px;cursor:pointer}',
+        '#llSevEkle .lsv-soru{margin:0 0 10px;font-size:.95rem;line-height:1.45;color:#6B4A38}',
+        '#llSevEkle .lsv-rakamlar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:4px 0 8px}',
+        '#llSevEkle .lsv-rakam{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;',
+        '  padding:4px 4px 2px;border-radius:14px;cursor:pointer;font-family:inherit;color:#8B6A57;transition:transform .12s}',
+        '#llSevEkle .lsv-rakam:hover{transform:translateY(-2px) scale(1.05)}',
+        '#llSevEkle .lsv-rakam .ih-num svg{width:52px;height:52px;display:block}',
+        '#llSevEkle .lsv-rakam small{font-size:.7rem;font-weight:800;line-height:1}',
+        '#llSevEkle .lsv-rakam.var small{color:#16A085}',
+        '#llSevEkle .lsv-not{margin:0 0 12px;padding:8px 11px;border-radius:12px;background:#EFFAF6;color:#0E7C66;font-size:.84rem;line-height:1.45}',
+        '#llSevEkle .lsv-ayrac{display:flex;align-items:center;gap:10px;margin:4px 0 10px;color:#A08876;font-size:.8rem;font-weight:700}',
+        '#llSevEkle .lsv-ayrac::before,#llSevEkle .lsv-ayrac::after{content:"";flex:1;height:1px;background:#EADCCF}',
+        '#llSevEkle label{display:block;margin:0 0 6px;font-size:.88rem;font-weight:800;color:#5A3A28}',
+        '#llSevEkle input{width:100%;box-sizing:border-box;border:1.6px solid #E6D3C3;border-radius:12px;padding:11px 12px;font:inherit;',
+        '  font-size:1rem;background:#fff;color:#3E2A20}',
+        '#llSevEkle input:focus{outline:none;border-color:#E67E22;box-shadow:0 0 0 3px rgba(230,126,34,.15)}',
+        '#llSevEkle .lsv-tani{min-height:20px;margin:8px 2px 0;font-size:.88rem;line-height:1.45;color:#6B4A38}',
+        '#llSevEkle .lsv-tani.ih{color:#0E7C66}',
+        '#llSevEkle .lsv-tuslar{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}',
+        '#llSevEkle .lsv-tuslar button{border:0;border-radius:11px;padding:10px 16px;font:inherit;font-weight:800;cursor:pointer}',
+        '#llSevEkle .lsv-vazgec{background:#F3E6DA;color:#6B4A38}',
+        '#llSevEkle .lsv-ekle{background:linear-gradient(135deg,#F39C12,#E67E22);color:#fff;box-shadow:0 4px 12px rgba(230,126,34,.3)}',
+        '#llSevEkle .lsv-ekle[disabled]{opacity:.45;cursor:default;box-shadow:none}',
+        /* okul penceresindeki «Seviye ekle» satırının ipucu */
+        '#llOkulPopup .okul-hizli-ipucu{flex-basis:100%;margin:-2px 0 0;font-size:.8rem;line-height:1.4;color:#8B6A57;font-weight:600}',
+        '#llOkulPopup .okul-hizli-ipucu b{color:#E67E22}'
+    ].join('\n');
+    document.head.appendChild(s);
+}
+function llSeviyeEkleKapat() {
+    var k = document.getElementById('llSevEkle');
+    if (k && k.parentNode) k.parentNode.removeChild(k);
+    if (window._llSevEsc) { document.removeEventListener('keydown', window._llSevEsc, true); window._llSevEsc = null; }
+}
+window.llSeviyeEkleKapat = llSeviyeEkleKapat;
+function llSeviyeEkleAc(kId, sonra) {
+    if (!document.body) return;
+    llSeviyeEkleKapat();
+    llSevEkleStil();
+    var kurumId = (!kId || kId === 'GENEL') ? null : kId;
+    var var_ = {};
+    Object.keys((data && data.levels) || {}).forEach(function (id) {
+        var l = data.levels[id];
+        if (l && (l.kurumId || null) === kurumId) { var n = llSeviyeNo(l.name); if (n) var_[n] = id; }
+    });
+    var rak = '';
+    [5, 6, 7, 8, 9, 10].forEach(function (n) {
+        rak += '<button type="button" class="lsv-rakam' + (var_[n] ? ' var' : '') + '" data-n="' + n + '"' +
+            ' title="' + (var_[n] ? n + '. sınıf zaten var — şube eklemek için aç' : n + '. sınıf seviyesini kur') + '">' +
+            llIhRakam(n) + '<small>' + (var_[n] ? 'kurulu' : '&nbsp;') + '</small></button>';
+    });
+    var kurumAd = (kurumId && data.kurumlar && data.kurumlar[kurumId]) ? data.kurumlar[kurumId].name : '';
+    var k = document.createElement('div');
+    k.id = 'llSevEkle';
+    k.setAttribute('role', 'dialog');
+    k.setAttribute('aria-modal', 'true');
+    k.setAttribute('aria-labelledby', 'lsvBas');
+    k.innerHTML = '<div class="lsv-kutu">' +
+        '<button type="button" class="lsv-kapat" data-lsv="kapat" aria-label="Kapat">&times;</button>' +
+        '<div class="lsv-ust"><b id="lsvBas">Seviye ekle' + (kurumAd ? ' · ' + behKacis(kurumAd) : '') + '</b></div>' +
+        '<p class="lsv-soru">Hangi sınıf? <b>Rakama dokun</b>: o sınıf seviyesi kurulur, sonra şubeleri seçersin (5A, 5B…).</p>' +
+        '<div class="lsv-rakamlar">' + rak + '</div>' +
+        '<p class="lsv-not">5–10. sınıflarda İmam Hatip materyalleri (belgeler, etkinlik kartları, kitap takibi) kendiliğinden açılır.</p>' +
+        '<div class="lsv-ayrac">ya da adını yaz</div>' +
+        '<label for="lsvAd">Başka bir seviye ya da sınıf</label>' +
+        '<input type="text" id="lsvAd" placeholder="Ör. 6-B, 11. sınıf, Hazırlık" autocomplete="off" maxlength="60">' +
+        '<div class="lsv-tani" id="lsvTani" aria-live="polite"></div>' +
+        '<div class="lsv-tuslar"><button type="button" class="lsv-vazgec" data-lsv="kapat">Vazgeç</button>' +
+        '<button type="button" class="lsv-ekle" data-lsv="ekle" disabled>Ekle</button></div>' +
+        '</div>';
+    document.body.appendChild(k);
+    var gir = document.getElementById('lsvAd'), tani = document.getElementById('lsvTani'), ekle = k.querySelector('.lsv-ekle');
+    var bitir = function (sonuc) { llSeviyeEkleKapat(); try { if (sonra) sonra(sonuc); } catch (e) { } };
+    var yazTani = function () {
+        var v = gir.value.trim();
+        ekle.disabled = !v;
+        tani.className = 'lsv-tani';
+        if (!v) { tani.innerHTML = ''; return; }
+        var t = llSeviyeTani(v);
+        if (t.no) {
+            var ih = t.no >= 5 && t.no <= 10;
+            if (ih) tani.className = 'lsv-tani ih';
+            tani.innerHTML = '✓ <b>' + t.no + '. sınıf</b> olarak tanındı' +
+                (var_[t.no] ? ' — var olan ' + t.no + '. sınıfa eklenir' : ' — seviye kurulur') +
+                (t.sube ? ', <b>' + t.no + t.sube + '</b> sınıfı açılır' : '') + '.' +
+                (ih ? ' İmam Hatip materyalleri açık.' : ' (İmam Hatip materyalleri 5–10. sınıflarda.)');
+        } else {
+            tani.innerHTML = '«' + behKacis(v) + '» adıyla yeni seviye kurulur.';
+        }
+    };
+    gir.addEventListener('input', yazTani);
+    gir.addEventListener('keydown', function (e) { if (e.key === 'Enter' && gir.value.trim()) { e.preventDefault(); bitir(llSeviyeKur(kId, gir.value.trim())); } });
+    k.addEventListener('click', function (e) {
+        if (e.target === k) { llSeviyeEkleKapat(); return; }
+        var r = e.target.closest ? e.target.closest('.lsv-rakam') : null;
+        if (r) { bitir(llSeviyeKur(kId, parseInt(r.getAttribute('data-n'), 10))); return; }
+        var b = e.target.closest ? e.target.closest('[data-lsv]') : null;
+        if (!b) return;
+        var is = b.getAttribute('data-lsv');
+        if (is === 'kapat') llSeviyeEkleKapat();
+        else if (is === 'ekle' && gir.value.trim()) bitir(llSeviyeKur(kId, gir.value.trim()));
+    });
+    window._llSevEsc = function (e) { if (e.key === 'Escape') { e.stopPropagation(); llSeviyeEkleKapat(); } };
+    document.addEventListener('keydown', window._llSevEsc, true);
+    setTimeout(function () { try { gir.focus({ preventScroll: true }); } catch (e) { } }, 60);
+}
+window.llSeviyeEkleAc = llSeviyeEkleAc;
+
 
 function addLevel(oncedenKurum) {
+    /* 21.10.2026: ad doğrudan sorulmuyor — «Seviye ekle» penceresi (rakamlar +
+       yazı; yazılan 5–10 ve şube tanınır: llSeviyeEkleAc / llSeviyeKur) */
+    let kurumId;
+    if (oncedenKurum === 'GENEL') kurumId = null;
+    else if (oncedenKurum && data.kurumlar && data.kurumlar[oncedenKurum]) kurumId = oncedenKurum;
+    else kurumId = kurumSecMenu();
+    if (kurumId === undefined) return;                /* kurum seciminden vazgecti */
+    if (document.body) { llSeviyeEkleAc(kurumId || 'GENEL'); return; }
     let name = prompt("Yeni Seviye Adı (Örn: 10. Sınıflar):");
-    if(name) {
-        /* kurum onceden verildiyse sorma; 'GENEL' -> kurumsuz bolume ekle */
-        let kurumId;
-        if (oncedenKurum === 'GENEL') kurumId = null;
-        else if (oncedenKurum && data.kurumlar && data.kurumlar[oncedenKurum]) kurumId = oncedenKurum;
-        else kurumId = kurumSecMenu();
-        if (kurumId === undefined) return;            /* kurum seciminden vazgecti */
-        let id = 'L' + Date.now();
-        data.levels[id] = llSeviyeTaslak(name, kurumId);
-        if(!data.levelOrder) data.levelOrder = [];
-        data.levelOrder.push(id);
-        save();
-    }
+    if (name && name.trim()) llSeviyeKur(kurumId || 'GENEL', name.trim());
 }
 
     function addClass(lId) {
@@ -4745,8 +4968,8 @@ function llOkulPopupAc() {
         /* HIZLI ŞUBE (06.10.2026): yeni kurulan seviyenin satırında harfler
            açık durur — 5A, 5B, 5C tek tıkla. Zaten açılmış şube çıkmaz. */
         if (window._llHizliLid === lId) {
-            var _rk = String(lvl.name || '').match(/\d+/);
-            _rk = _rk ? _rk[0] : '';
+            var _rk = llSeviyeNo(lvl.name);
+            _rk = _rk ? String(_rk) : '';
             var _olan = {};
             Object.keys(lvl.classes || {}).forEach(function (c) {
                 _olan[String(lvl.classes[c].name || '').toUpperCase()] = 1;
@@ -4808,8 +5031,8 @@ function llOkulPopupAc() {
         var _kHedef = genelMi ? 'GENEL' : (kId || 'GENEL');
         var _var = {};
         uyeler.forEach(function (lId) {
-            var m = String((data.levels[lId] || {}).name || '').match(/\d+/);
-            if (m) _var[m[0]] = 1;
+            var _n = llSeviyeNo((data.levels[lId] || {}).name);      /* «Yedinci sınıflar» da 7 */
+            if (_n) _var[_n] = 1;
         });
         var _rak = '';
         [5, 6, 7, 8, 9, 10].forEach(function (n) {
@@ -4837,7 +5060,10 @@ function llOkulPopupAc() {
             '<svg viewBox="0 0 24 24" aria-hidden="true">' +
             '<path d="M12 6.5v11M6.5 12h11" fill="none" stroke="currentColor"' +
             ' stroke-width="2.6" stroke-linecap="round"/></svg>' +
-            '</button></div>';
+            '</button>' +
+            /* İPUCU (21.10.2026): öğretmenler rakamın seviye kurduğunu anlamayıp + 'ya basıyordu */
+            '<span class="okul-hizli-ipucu">Rakama dokun: o sınıf seviyesi kurulur, sonra şubeyi seç (5A, 5B…). ' +
+            'Başka bir seviye ya da sınıf için <b>+</b></span></div>';
         /* EKLEME SATIRI HER ZAMAN EN ÜSTTE (07.10.2026) — öğretmen önce
            "seviye ekle yukarda, henüz seviye yok aşağıda olsun", ardından
            "giriş yaptıktan sonra da seviye ekle en üstte olsun" dedi.
@@ -5311,18 +5537,8 @@ window.llIhRakam = llIhRakam;
 
 /* Rakama basıldı: seviye SORMADAN kurulur, sonra şube harfleri açılır. */
 function llHizliSeviye(kId, n) {
-    try {
-        var kurumId = (kId === 'GENEL') ? null : kId;
-        if (kurumId && !(data.kurumlar && data.kurumlar[kurumId])) kurumId = null;
-        var id = 'L' + Date.now();
-        data.levels[id] = (typeof llSeviyeTaslak === 'function')
-            ? llSeviyeTaslak(n + '. sınıf', kurumId)
-            : { name: n + '. sınıf', kurumId: kurumId || undefined, classes: {}, planText: {}, config: {} };
-        if (!data.levelOrder) data.levelOrder = [];
-        data.levelOrder.push(id);
-        window._llHizliLid = id;          /* şube harfleri bu satırda açılsın */
-        save();
-    } catch (e) { console.warn('hızlı seviye:', e && e.message); }
+    /* aynı kurumda o numaralı seviye varsa ona (şube satırı açılır), yoksa yeni */
+    try { llSeviyeKur(kId, n); } catch (e) { console.warn('hızlı seviye:', e && e.message); }
     setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
 }
 window.llHizliSeviye = llHizliSeviye;
@@ -5332,8 +5548,8 @@ function llHizliSinif(lId, harf) {
     try {
         var lvl = data.levels[lId];
         if (!lvl) return;
-        var m = String(lvl.name || '').match(/\d+/);
-        var ad = (m ? m[0] : '') + harf;
+        var _n = llSeviyeNo(lvl.name);
+        var ad = (_n ? String(_n) : '') + harf;
         if (!lvl.classes) lvl.classes = {};
         var zaten = Object.keys(lvl.classes).some(function (c) {
             return String(lvl.classes[c].name || '').toUpperCase() === ad.toUpperCase();
@@ -5436,8 +5652,9 @@ function llHizliBitir() {
 window.llHizliBitir = llHizliBitir;
 
 function llOkulSeviyeEkle(kId) {
-    try { if (typeof addLevel === 'function') addLevel(kId); } catch (e) { }
-    setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0);
+    /* «+»: seviye ekle penceresi; iş bitince okul penceresi tazelenir */
+    try { llSeviyeEkleAc(kId || 'GENEL', function () { setTimeout(function () { try { llOkulPopupAc(); } catch (e) { } }, 0); }); }
+    catch (e) { try { if (typeof addLevel === 'function') addLevel(kId); } catch (x) { } }
 }
 window.llOkulSinifEkle = llOkulSinifEkle;
 window.llOkulSeviyeEkle = llOkulSeviyeEkle;
@@ -5935,19 +6152,9 @@ function tpKatOnayla(kId) {
     var i = document.getElementById('tpKatAd');
     var ad = i ? String(i.value || '').trim() : '';
     if (!ad) { if (i) i.focus(); return; }
-    var kurumId = (kId && kId !== 'GENEL' && data.kurumlar && data.kurumlar[kId]) ? kId : undefined;
-    var id = 'L' + Date.now();
-    data.levels[id] = {
-        name: ad, kurumId: kurumId, classes: {}, planText: {},
-        config: {
-            hw: [{ n: '1. Ödev', w: 25 }, { n: '2. Ödev', w: 25 }, { n: '3. Ödev', w: 25 }, { n: '4. Ödev', w: 25 }],
-            ex: [{ n: 'Dinleme', w: 25 }, { n: 'Konuşma', w: 25 }, { n: 'Yazılı', w: 50 }]
-        }
-    };
-    if (!data.levelOrder) data.levelOrder = [];
-    data.levelOrder.push(id);
+    /* 21.10.2026: yazılan 5–10 (ve şube) tanınır — llSeviyeKur */
     window._tpYeniKat = null;
-    try { save(); } catch (e) { }
+    try { llSeviyeKur(kId || 'GENEL', ad); } catch (e) { }
     try { renderTeacherProfile(); } catch (e) { }
 }
 function tpSinifPopupKapat() {

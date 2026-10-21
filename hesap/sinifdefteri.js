@@ -174,11 +174,16 @@
   function sinifNo() {
     var sv = seviye();
     if (!sv) return 0;
+    var sb = sube();
     try {
       var K = window.KidefKazanimOneri;
-      if (K && K.sinifCoz) { var n = K.sinifCoz(sv.name || ''); if (n) return parseInt(n, 10); }
+      if (K && K.sinifCoz) {
+        var n = K.sinifCoz(sv.name || '');
+        if (!n && sb) n = K.sinifCoz(sb.name || '');          /* seviye adı tanınmazsa sınıfın adı (21.10.2026) */
+        if (n) return parseInt(n, 10);
+      }
     } catch (e) {}
-    var m = String(sv.name || '').match(/\d{1,2}/);
+    var m = String(sv.name || '').match(/\d{1,2}/) || (sb && String(sb.name || '').match(/\d{1,2}/));
     return m ? parseInt(m[0], 10) : 0;
   }
 

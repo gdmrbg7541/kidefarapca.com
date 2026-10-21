@@ -586,6 +586,7 @@
        Seviye adının başındaki sayı kart rozetine yazılır ("5. Sınıflar"
        → 5). Sayı yoksa rozet seviyenin ilk harfini gösterir. */
     function seviyeRakami(ad) {
+        try { var _n = window.llSeviyeNo ? window.llSeviyeNo(ad) : 0; if (_n) return String(_n); } catch (e) { }   /* 21.10.2026 */
         var m = String(ad || '').match(/\d+/);
         return m ? m[0] : String(ad || '?').trim().charAt(0).toLocaleUpperCase('tr-TR');
     }
@@ -1416,9 +1417,13 @@
             if (!ozel || !ozel.trim()) return;
             seviyeAdi = ozel.trim();
             sinifOn = seviyeRakami(seviyeAdi);
+            /* 21.10.2026: «5», «5-A», «Beşinci» yazıldıysa 5'e basılmış gibi (İmam Hatip
+               materyalleri açılsın); şube yazıldıysa şube sorusunda hazır gelir */
+            var _t = window.llSeviyeTani ? window.llSeviyeTani(seviyeAdi) : null;
+            if (_t && _t.no >= 5 && _t.no <= 10) { no = _t.no; seviyeAdi = no + '. Sınıflar'; sinifOn = String(no); var _hazirSube = _t.sube; }
         }
 
-        var sube = prompt('Şube (örn: A, B, C) — boş bırakırsan tek sınıf açılır:', 'A');
+        var sube = prompt('Şube (örn: A, B, C) — boş bırakırsan tek sınıf açılır:', (typeof _hazirSube === 'string' && _hazirSube) ? _hazirSube : 'A');
         if (sube === null) return;                     /* vazgeçti */
         sube = String(sube).trim().toLocaleUpperCase('tr-TR');
         var sinifAdi = sube ? (sinifOn + '-' + sube) : seviyeAdi.replace(/lar$/i, '');
@@ -1432,7 +1437,8 @@
             var l = data.levels[id];
             if (!l) return;
             var lk = l.kurumId || null;
-            if (lk === kurumId && String(l.name).trim() === seviyeAdi) lId = id;
+            if (lk === kurumId && (String(l.name).trim() === seviyeAdi ||
+                (no && window.llSeviyeNo && window.llSeviyeNo(l.name) === no))) lId = id;      /* aynı numaralı seviye (21.10.2026) */
         });
         if (!lId) {
             if (typeof window.llSeviyeTaslak === 'function') {

@@ -142,7 +142,7 @@
       if (!sb) return null;
       /* 8. sınıf kartında 6-A'nın defteri görünmesin: seviye tutmalı. */
       var n = parseInt(String(sinif).replace(/[^0-9]/g, ''), 10);
-      if (seviyeNo(lv.name) !== n) return null;
+      if ((seviyeNo(lv.name) || seviyeNo(sb.name)) !== n) return null;     /* seviye adı tanınmazsa sınıfın adı (21.10.2026) */
       return { ad: sb.name || '', defter: sb.defter || null };
     } catch (e) { return null; }
   }

@@ -1206,7 +1206,8 @@ var _aogSuzgec = 'hepsi';
 /* SIRALAMA (21.10.2026) — öğretmen: "öğretmenleri isimlerinin baş harfine, en
    çok siteyi kullanandan en az kullanana, en son kullanandan en eski kullanana
    göre sıralayabilelim". ad | sure | son; seçim hatırlanır. */
-var _aogSira = (function () { try { var v = localStorage.getItem('kidef_aog_sira'); return /^(ad|sure|son)$/.test(v || '') ? v : 'ad'; } catch (e) { return 'ad'; } })();
+/* + ogrenci (21.10.2026): "en çok öğrencisi bulunanlardan da" — kendi sınıf listesindeki öğrenci sayısı */
+var _aogSira = (function () { try { var v = localStorage.getItem('kidef_aog_sira'); return /^(ad|sure|son|ogrenci)$/.test(v || '') ? v : 'ad'; } catch (e) { return 'ad'; } })();
 function renderAdminTeacherList() {
     var container = document.getElementById('admin-teacher-list');
     if (!container) return;
@@ -1282,6 +1283,7 @@ function renderAdminTeacherList() {
                 kartlar +=
                     '<button type="button" class="aog-kart" data-aog-ara="' + _fbEsc(ara) + '" data-aog-durum="' + durumAd + '"' +
                     ' data-aog-ad="' + _fbEsc(siraAd) + '" data-aog-sure="' + (kul.toplamSn || 0) + '" data-aog-son="' + sonMs + '"' +
+                    ' data-aog-ogrenci="' + (say.ogrenci || 0) + '" data-aog-sinif="' + (say.sinif || 0) + '"' +
                     ' onclick="adminOgretmenDetay(\'' + uid + '\')" title="Ayrıntılar, ücret durumu, takvim ve anket">' +
                       '<span class="aog-avatar" style="background:hsl(' + ton + ',70%,93%); color:hsl(' + ton + ',45%,32%);">' + _fbEsc(harf) + '</span>' +
                       '<span class="aog-govde">' +
@@ -1299,7 +1301,8 @@ function renderAdminTeacherList() {
                     ' onclick="adminOgretmenSuz(\'' + id + '\')">' + yazi + '</button>';
             };
             var sira = function (id, yazi) {
-                var ip = id === 'sure' ? 'Sitede geçirilen toplam süreye göre, çoktan aza' : (id === 'son' ? 'Son görülme tarihine göre, yeniden eskiye' : 'Ada göre, baş harf başlıklarıyla');
+                var ip = id === 'sure' ? 'Sitede geçirilen toplam süreye göre, çoktan aza' : (id === 'son' ? 'Son görülme tarihine göre, yeniden eskiye'
+                       : (id === 'ogrenci' ? 'Sınıf listesindeki öğrenci sayısına göre, çoktan aza' : 'Ada göre, baş harf başlıklarıyla'));
                 return '<button type="button" class="aog-suz aog-sir' + (_aogSira === id ? ' sec' : '') + '" data-aog-sira="' + id + '" title="' + ip + '"' +
                     ' onclick="adminOgretmenSirala(\'' + id + '\')">' + yazi + '</button>';
             };
@@ -1331,7 +1334,7 @@ function renderAdminTeacherList() {
                   suz('hepsi', 'Hepsi') + suz('onayli', 'Onaylı') + suz('bekliyor', 'Onay bekleyen') +
                   suz('destek', '💛 Destek bildirimi') +
                   '<span class="aog-sira-grup"><span class="aog-sira">Sırala:</span>' +
-                  sira('ad', 'A → Z') + sira('sure', 'En çok kullanan') + sira('son', 'Son kullanan') + '</span>' +
+                  sira('ad', 'A → Z') + sira('sure', 'En çok kullanan') + sira('son', 'Son kullanan') + sira('ogrenci', 'En çok öğrencisi') + '</span>' +
                 '</div>' +
                 '<div class="aog-grid" id="aogGrid">' + kartlar +
                   '<p class="aog-bos" id="aogBos" style="display:none;">Bu süzgece uyan öğretmen yok.</p></div>';
@@ -1378,7 +1381,8 @@ function adminOgretmenSuz(yeni) {
 window.adminOgretmenSuz = adminOgretmenSuz;
 
 /* Kartları yerinde sıralar: ad (A→Z, harf başlıklarıyla) · sure (toplam
-   süre, çoktan aza) · son (son görülme, yeniden eskiye). Eşitlikte ada göre. */
+   süre, çoktan aza) · son (son görülme, yeniden eskiye) · ogrenci (öğrenci
+   sayısı, çoktan aza; eşitlikte sınıf sayısı). Eşitlikte ada göre. */
 function adminOgretmenSirala(yeni) {
     if (yeni) { _aogSira = yeni; try { localStorage.setItem('kidef_aog_sira', yeni); } catch (e) { } }
     var grid = document.getElementById('aogGrid');
@@ -1391,6 +1395,7 @@ function adminOgretmenSirala(yeni) {
         var f = 0;
         if (_aogSira === 'sure') f = say(b, 'data-aog-sure') - say(a, 'data-aog-sure');
         else if (_aogSira === 'son') f = say(b, 'data-aog-son') - say(a, 'data-aog-son');
+        else if (_aogSira === 'ogrenci') f = (say(b, 'data-aog-ogrenci') - say(a, 'data-aog-ogrenci')) || (say(b, 'data-aog-sinif') - say(a, 'data-aog-sinif'));
         return f || ad(a).localeCompare(ad(b), 'tr');
     });
     var bos = document.getElementById('aogBos'), sonHarf = null;

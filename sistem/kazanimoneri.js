@@ -322,6 +322,11 @@
        ve elimizde o sınıfın önerisi varsa onu kullanıyoruz. Bulunamazsa
        null döner ve pencere öğretmene sınıf seçtirir.                  */
     function sinifCoz(ad) {
+        /* 21.10.2026: «Yedinci sınıflar», «2026-2027 6. sınıf» de (listelerim.js) */
+        if (typeof window.llSeviyeNo === 'function') {
+            var t = window.llSeviyeNo(ad);
+            return (t && VERI[String(t)]) ? String(t) : null;
+        }
         var m = String(ad || '').match(/\d{1,2}/);
         if (!m) return null;
         var n = m[0];

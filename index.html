@@ -992,7 +992,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
                 <!-- TAHTAYA YANSIT (17.10.2026) — öğretmen: "index te güzel bi arayüz
                      ekleyelim". Yalnız giriş yapmış öğretmen/yönetici görür;
                      paneli sistem/tahtagir.js açar. -->
-                <a href="#" id="tab-tahta" onclick="if(window.KidefTahtaGir) KidefTahtaGir.ac(); event.preventDefault();" data-i18n-title="th.dugme" title="Tahtaya yansıt" data-i18n-aria="th.dugme" aria-label="Tahtaya yansıt" style="display:none; position:relative; color: rgba(255,255,255,0.8); text-decoration: none; align-items:center; justify-content:center; padding: 5px 9px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.8)'"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><rect x="2" y="3" width="20" height="13" rx="2"/><path d="M8 21h8M12 16v5"/><path d="M6 12.5a3.5 3.5 0 0 1 3.5-3.5"/><path d="M6 9.4a.6.6 0 0 1 .6-.6"/></svg><span id="tab-tahta-nokta" style="display:none; position:absolute; top:3px; right:4px; width:9px; height:9px; border-radius:50%; background:#22c55e; box-shadow:0 0 0 2px rgba(0,0,0,.18);"></span></a>
+                <a href="#" id="tab-tahta" onclick="if(window.KidefTahtaGir) KidefTahtaGir.ac(); event.preventDefault();" data-i18n-title="th.dugme" title="Tahtaya yansıt" data-i18n-aria="th.dugme" aria-label="Tahtaya yansıt" style="display:none; position:relative; color: rgba(255,255,255,0.8); text-decoration: none; align-items:center; justify-content:center; padding: 5px 9px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.8)'"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;" data-sim="kumanda"><rect x="7" y="9" width="10" height="13.5" rx="2.6"/><path d="M12 12.6v.01M10 17.6h4"/><path d="M9.9 6.4a3 3 0 0 1 4.2 0"/><path d="M7.6 4.1a6.2 6.2 0 0 1 8.8 0"/></svg><span id="tab-tahta-nokta" style="display:none; position:absolute; top:3px; right:4px; width:9px; height:9px; border-radius:50%; background:#22c55e; box-shadow:0 0 0 2px rgba(0,0,0,.18);"></span></a>
                 <a href="#" id="tab-admin-panel" onclick="changeView('admin-section'); renderAdminPanel(); event.preventDefault();" data-i18n-title="bas.yonetici" title="Yönetici Paneli" aria-label="Yönetici Paneli" style="display:none; color: rgba(255,255,255,0.8); text-decoration: none; align-items:center; justify-content:center; padding: 5px 9px; transition: all 0.2s; border-bottom: 3px solid transparent;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.8)'"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></a>
             </nav>
         </div>
@@ -3888,7 +3888,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          pencere kendiliğinden açılır, sınıf kapanınca kaydedip kapanır (yalnız öğretmen).
          5 renk, kalem, silgi, Arapça büyük/küçük harf çizgileri, sayfalar; geçmiş bu
          tarayıcıda tarihiyle, seviye notları hesapta (sistem/yazisayfasi.js) -->
-    <script src="sistem/yazisayfasi.js?v=4d2d33c1"></script>
+    <script src="sistem/yazisayfasi.js?v=a6ba7098"></script>
     <!-- KİTAP TAKİBİ (15.10.2026) — öğretmen: "giriş yapan öğretmenlerin
          hangi sınıfta hangi kitabı kullandığı iyi takip edilsin".
          Öğretmen panelinde "sınıf → kullandığı kitap" kartını kurar. -->
@@ -3897,10 +3897,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          öğretmenler profil kısmından dil seçebilsinler".
          Yazılar data-i18n ile işaretli; sözlükler dil/<kod>.js. -->
     <script src="sistem/dil.js?v=a9253d84"></script>
-<script src="sistem/kitaptakip.js?v=03abd53a"></script>
+<script src="sistem/kitaptakip.js?v=cc385c08"></script>
     <!-- SINIF DEFTERİ PENCERESİ (15.10.2026) — kart ayrı sekme açmadan
          bu haftanın öğrenme çıktısını pencerede gösterir. -->
-    <script src="sistem/defterpop.js?v=ff91a933"></script>
+    <script src="sistem/defterpop.js?v=8ebf82b4"></script>
     <!-- «YILLIK ÇIKTILAR» KARTI KALDIRILDI (06.10.2026) — öğretmen:
          "yıllık çıktılar kartını kaldır sınıflardan, zaten sınıf defterleri
          var o işi görüyor, tamamen kaldırabilirsin."
@@ -8091,7 +8091,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          doğrudan açar (yalnız telefon/tablet) — ve karekodla girişten sonra
          "bu telefon tahtanın kumandası olsun mu?" -->
     <script src="hesap/karekodokut.js?v=91b90ddd"></script>
-    <script src="hesap/kumanda.js?v=55892bd7"></script>
+    <script src="hesap/kumanda.js?v=d32dc570"></script>
     <script src="hesap/girisgenislik.js?v=8ef478b8"></script>
     <!-- KAYIT ANKETI / ROL KAPISI: giris penceresi acilinca once
          "ogretmen misin, ogrenci misin" sorulur; kayitta 4 kisa soru daha.
@@ -8131,11 +8131,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + butonu olsun ... sınıflara header yerine galeri ve site
          güncellemelerinin üstünde bi kategori olarak hızlıca
          ulaşabilsin." Bölümü kendisi, Güncellemeler'in üstüne koyar. -->
-    <script src="sistem/siniflarim.js?v=286ac981"></script>
+    <script src="sistem/siniflarim.js?v=32c36721"></script>
     <!-- SINIF MATERYALLERİ SEKMESİ (06.10.2026): açık sınıfın seviyesine
          ait İmam Hatip belgeleri ve etkinlik kartları, sınıfın kendi
          panelinde. Kopya değil, aynı kaynaktan çizim. -->
-    <script src="sistem/sinifmateryal.js?v=0d0eff5b"></script>
+    <script src="sistem/sinifmateryal.js?v=5ef1d94c"></script>
     <!-- SEKME SİMGELERİ — DEĞİŞEN ANİMASYONLAR (06.10.2026): öğretmen
          "listede neler varsa, sınıf defterinde neler varsa,
          materyallerde ve sınıf araçlarında değişen svg
@@ -8150,7 +8150,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Telefonu tek tıkla kopyala (05.10.2026) — yönetici öğretmen
          onaylarında numarayı fareyle seçmek zorunda kalmasın. -->
     <script src="sistem/telkopya.js?v=303ac4d1"></script>
-    <script src="hesap/teacher-admin.js?v=a6bd43de"></script>
+    <script src="hesap/teacher-admin.js?v=f04ac423"></script>
     <!-- Yonetici > ogretmen penceresi (19.10.2026): genel (sure, siniflar),
          ucret durumu, takvim, kayit anketi — ogretmenler listesi kart kart -->
     <script src="hesap/ogretmen-detay.js?v=15c64a17"></script>
@@ -8161,7 +8161,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/alarm.js?v=5af5693a"></script>
     <script src="hesap/live-lesson.js?v=cb8c8026"></script>
     <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->
-    <script src="sistem/kazanimoneri.js?v=689f584d"></script>
+    <script src="sistem/kazanimoneri.js?v=82c9b3e7"></script>
     <!-- Öğretmen profilindeki "sitede yenilikler" şeridi -->
     <script src="sistem/yenilikler.js?v=ecf41e6f"></script>
     <!-- Güncellemeler ve Galeri bölümü: liste galeriYenile.py'den,
@@ -8169,23 +8169,23 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="sistem/siniftayeni.js?v=b43a3b02"></script>
     <script src="sistem/galeriveri.js?v=b5d6af07"></script>
     <script src="sistem/galeri.js?v=31382e3d"></script>
-    <script src="hesap/listelerim.js?v=a3bbe9e6"></script>
+    <script src="hesap/listelerim.js?v=902fd469"></script>
     <!-- SINIFLAR GİRİŞLE AÇILIR (18.10.2026): çıkışta okul penceresi ve sınıf
          listeleri kapanır, sınıf sekmesi girişi bekler (sistem/oturumkapi.js). -->
     <script src="sistem/oturumkapi.js?v=b6afc73e"></script>
     <!-- CİHAZLARIM (18.10.2026): hesabın açık olduğu cihazlar, uzaktan çıkış;
          çıkış tuşu bu pencereyi açar (hesap/cihazlar.js). -->
-    <script src="hesap/cihazlar.js?v=44f38b60"></script>
+    <script src="hesap/cihazlar.js?v=32ee1963"></script>
     <!-- TAHTAYA YANSIT (17.10.2026): başlıktaki Tahta düğmesi, paneli ve tahta
          cihazının kendiliğinden geçişi. Motor: sistem/tahta.js (tahta.html). -->
-    <script defer src="sistem/tahtagir.js?v=198f2a51"></script>
+    <script defer src="sistem/tahtagir.js?v=f19587e9"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış (telefon ve tablette 40 dk yok,
          elle çıkılmadıysa gece 00:00'da çıkış) + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
     <script src="hesap/oturumguvenlik.js?v=030fbcc3"></script>
     <!-- Sınıf Defteri: şubenin 36 haftalık ders defteri.
          listelerim.js ve oturumguvenlik.js'ten SONRA: switchTab'ı sarıyor. -->
-    <script src="hesap/sinifdefteri.js?v=a5cac0d2"></script>
+    <script src="hesap/sinifdefteri.js?v=c88c8d47"></script>
     <script src="hesap/ogrencihesap.js?v=9684ddfe"></script>
     <script src="sistem/ihoneri.js?v=c5f6b6cd"></script>
     <script src="sistem/gorev.js?v=ccd7693c"></script>

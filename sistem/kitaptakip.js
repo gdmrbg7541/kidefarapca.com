@@ -36,8 +36,9 @@
 
   /* Seviye adındaki ilk sayı: "7. Sınıflar" → 7 */
   function seviyeNo(ad) {
-    var m = String(ad || '').match(/\d+/);
-    var n = m ? parseInt(m[0], 10) : 0;
+    var n = 0;
+    if (typeof window.llSeviyeNo === 'function') n = window.llSeviyeNo(ad);     /* 21.10.2026 */
+    else { var m = String(ad || '').match(/\d+/); n = m ? parseInt(m[0], 10) : 0; }
     return (n >= 5 && n <= 12) ? n : 0;
   }
 
@@ -48,11 +49,12 @@
       var d = (typeof data !== 'undefined' && data) ? data : null;
       if (!d || !d.levels) return o;
       Object.keys(d.levels).forEach(function (lId) {
-        var lv = d.levels[lId] || {}, n = seviyeNo(lv.name);
-        if (!n) return;
+        var lv = d.levels[lId] || {}, n0 = seviyeNo(lv.name);
         var cls = lv.classes || {};
         Object.keys(cls).forEach(function (cId) {
-          (o[n] = o[n] || []).push((cls[cId] || {}).name || cId);
+          /* seviye adı tanınmazsa sınıfın adı: "Okulum" → 5-A → 5 (21.10.2026) */
+          var ad = (cls[cId] || {}).name || cId, n = n0 || seviyeNo(ad);
+          if (n) (o[n] = o[n] || []).push(ad);
         });
       });
     } catch (e) { }

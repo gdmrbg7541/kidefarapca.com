@@ -47,8 +47,9 @@
 
     /* Seviye adındaki ilk sayı: "7. Sınıflar" → 7, "Hazırlık" → 0 */
     function seviyeNo(ad) {
-        var m = String(ad || '').match(/\d+/);
-        var n = m ? parseInt(m[0], 10) : 0;
+        var n = 0;
+        if (typeof window.llSeviyeNo === 'function') n = window.llSeviyeNo(ad);   /* «Yedinci», «5-A»… (21.10.2026) */
+        else { var m = String(ad || '').match(/\d+/); n = m ? parseInt(m[0], 10) : 0; }
         return (SEVIYELER.indexOf(n) >= 0) ? n : 0;
     }
 
@@ -67,7 +68,8 @@
                 lId: a.lId, cId: a.cId,
                 seviyeAd: lvl.name || '',
                 sinifAd: (sinif && sinif.name) || '',
-                no: seviyeNo(lvl.name)
+                /* seviye adı tanınmazsa sınıfın adı ("Okulum" → 5-A → 5) */
+                no: seviyeNo(lvl.name) || seviyeNo(sinif && sinif.name)
             };
         } catch (e) { return null; }
     }
