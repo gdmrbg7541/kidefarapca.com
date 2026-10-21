@@ -1203,6 +1203,10 @@ function _ogrTarih(ts) {
    ve kişi başı tutar mufredat/_destek'e yazılır.
    =================================================================== */
 var _aogSuzgec = 'hepsi';
+/* SIRALAMA (21.10.2026) — öğretmen: "öğretmenleri isimlerinin baş harfine, en
+   çok siteyi kullanandan en az kullanana, en son kullanandan en eski kullanana
+   göre sıralayabilelim". ad | sure | son; seçim hatırlanır. */
+var _aogSira = (function () { try { var v = localStorage.getItem('kidef_aog_sira'); return /^(ad|sure|son)$/.test(v || '') ? v : 'ad'; } catch (e) { return 'ad'; } })();
 function renderAdminTeacherList() {
     var container = document.getElementById('admin-teacher-list');
     if (!container) return;
@@ -1269,10 +1273,15 @@ function renderAdminTeacherList() {
                 if (kul.toplamSn) ozet.push('<b>' + _sureBicim(kul.toplamSn) + '</b>');
                 if (kul.sonGoruldu) ozet.push('son ' + _ogrTarih(kul.sonGoruldu));
                 var ara = (ad + ' ' + (o.email || '') + ' ' + kod + ' ' + (o.phone || '')).toLocaleLowerCase('tr-TR');
+                var sonMs = 0;
+                try { if (kul.sonGoruldu && kul.sonGoruldu.toDate) sonMs = kul.sonGoruldu.toDate().getTime() || 0; else if (typeof kul.sonGoruldu === 'number') sonMs = kul.sonGoruldu; } catch (e) { }
+                /* isimsizler en sonda, «#» başlığı altında (U+FFFF her harften sonra dizilir) */
+                var siraAd = ad ? ad.trim().toLocaleLowerCase('tr-TR') : ('￿' + (o.email || '').toLocaleLowerCase('tr-TR'));
                 var durumAd = onay === 'bekliyor' ? 'bekliyor' : (onay === 'reddedildi' ? 'reddedildi' : 'onayli');
 
                 kartlar +=
                     '<button type="button" class="aog-kart" data-aog-ara="' + _fbEsc(ara) + '" data-aog-durum="' + durumAd + '"' +
+                    ' data-aog-ad="' + _fbEsc(siraAd) + '" data-aog-sure="' + (kul.toplamSn || 0) + '" data-aog-son="' + sonMs + '"' +
                     ' onclick="adminOgretmenDetay(\'' + uid + '\')" title="Ayrıntılar, ücret durumu, takvim ve anket">' +
                       '<span class="aog-avatar" style="background:hsl(' + ton + ',70%,93%); color:hsl(' + ton + ',45%,32%);">' + _fbEsc(harf) + '</span>' +
                       '<span class="aog-govde">' +
@@ -1288,6 +1297,11 @@ function renderAdminTeacherList() {
             var suz = function (id, yazi) {
                 return '<button type="button" class="aog-suz' + (_aogSuzgec === id ? ' sec' : '') + '" data-aog-suz="' + id + '"' +
                     ' onclick="adminOgretmenSuz(\'' + id + '\')">' + yazi + '</button>';
+            };
+            var sira = function (id, yazi) {
+                var ip = id === 'sure' ? 'Sitede geçirilen toplam süreye göre, çoktan aza' : (id === 'son' ? 'Son görülme tarihine göre, yeniden eskiye' : 'Ada göre, baş harf başlıklarıyla');
+                return '<button type="button" class="aog-suz aog-sir' + (_aogSira === id ? ' sec' : '') + '" data-aog-sira="' + id + '" title="' + ip + '"' +
+                    ' onclick="adminOgretmenSirala(\'' + id + '\')">' + yazi + '</button>';
             };
             container.innerHTML =
                 /* Firebase Authentication'dan kullanıcı silmek bu listeyi
@@ -1316,9 +1330,12 @@ function renderAdminTeacherList() {
                   '<input type="search" id="aogAra" placeholder="Ad, e-posta, kod ya da telefon ara…" oninput="adminOgretmenSuz()">' +
                   suz('hepsi', 'Hepsi') + suz('onayli', 'Onaylı') + suz('bekliyor', 'Onay bekleyen') +
                   suz('destek', '💛 Destek bildirimi') +
+                  '<span class="aog-sira-grup"><span class="aog-sira">Sırala:</span>' +
+                  sira('ad', 'A → Z') + sira('sure', 'En çok kullanan') + sira('son', 'Son kullanan') + '</span>' +
                 '</div>' +
                 '<div class="aog-grid" id="aogGrid">' + kartlar +
                   '<p class="aog-bos" id="aogBos" style="display:none;">Bu süzgece uyan öğretmen yok.</p></div>';
+            adminOgretmenSirala();
             adminOgretmenSuz();
 
             if (window.KidefDestek && KidefDestek.listeGeldi) KidefDestek.listeGeldi(liste);
@@ -1346,13 +1363,56 @@ function adminOgretmenSuz(yeni) {
         k.style.display = uy ? '' : 'none';
         if (uy) gorunen++;
     });
-    [].forEach.call(document.querySelectorAll('.aog-suz'), function (b) {
+    /* harf başlığı: altındaki kartların hepsi gizliyse o da gizli */
+    [].forEach.call(document.querySelectorAll('#aogGrid .aog-harf'), function (h) {
+        var e = h.nextElementSibling, var_ = false;
+        while (e && !e.classList.contains('aog-harf')) { if (e.classList.contains('aog-kart') && e.style.display !== 'none') { var_ = true; break; } e = e.nextElementSibling; }
+        h.style.display = var_ ? '' : 'none';
+    });
+    [].forEach.call(document.querySelectorAll('.aog-suz:not(.aog-sir)'), function (b) {
         b.classList.toggle('sec', b.getAttribute('data-aog-suz') === _aogSuzgec);
     });
     var bos = document.getElementById('aogBos');
     if (bos) bos.style.display = gorunen ? 'none' : '';
 }
 window.adminOgretmenSuz = adminOgretmenSuz;
+
+/* Kartları yerinde sıralar: ad (A→Z, harf başlıklarıyla) · sure (toplam
+   süre, çoktan aza) · son (son görülme, yeniden eskiye). Eşitlikte ada göre. */
+function adminOgretmenSirala(yeni) {
+    if (yeni) { _aogSira = yeni; try { localStorage.setItem('kidef_aog_sira', yeni); } catch (e) { } }
+    var grid = document.getElementById('aogGrid');
+    if (!grid) return;
+    var kartlar = [].slice.call(grid.querySelectorAll('.aog-kart'));
+    [].forEach.call(grid.querySelectorAll('.aog-harf'), function (h) { h.parentNode.removeChild(h); });
+    var ad = function (k) { return k.getAttribute('data-aog-ad') || ''; };
+    var say = function (k, n) { return parseFloat(k.getAttribute(n)) || 0; };
+    kartlar.sort(function (a, b) {
+        var f = 0;
+        if (_aogSira === 'sure') f = say(b, 'data-aog-sure') - say(a, 'data-aog-sure');
+        else if (_aogSira === 'son') f = say(b, 'data-aog-son') - say(a, 'data-aog-son');
+        return f || ad(a).localeCompare(ad(b), 'tr');
+    });
+    var bos = document.getElementById('aogBos'), sonHarf = null;
+    kartlar.forEach(function (k) {
+        if (_aogSira === 'ad') {
+            var h = (ad(k).charAt(0) || '#').toLocaleUpperCase('tr-TR');
+            if (!/[A-ZÇĞİÖŞÜ]/.test(h)) h = '#';
+            if (h !== sonHarf) {
+                sonHarf = h;
+                var b = document.createElement('div');
+                b.className = 'aog-harf'; b.textContent = h;
+                grid.insertBefore(b, bos);
+            }
+        }
+        grid.insertBefore(k, bos);
+    });
+    [].forEach.call(document.querySelectorAll('.aog-sir'), function (b) {
+        b.classList.toggle('sec', b.getAttribute('data-aog-sira') === _aogSira);
+    });
+    adminOgretmenSuz();
+}
+window.adminOgretmenSirala = adminOgretmenSirala;
 
 /* Tablodan onay verme / geri alma. Onaylama KidefErisim.onayla ile gider:
    rol + onay alanını yazar VE hoş geldin mesajını gönderir. */

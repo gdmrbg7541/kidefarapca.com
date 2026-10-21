@@ -152,6 +152,13 @@
             '.aog-suz{border:1.5px solid #E1E7EF; background:#fff; color:#55606D; border-radius:999px; padding:6px 13px;',
             '  font-size:.82rem; font-weight:800; cursor:pointer; font-family:inherit;}',
             '.aog-suz.sec{background:#1B4F9C; border-color:#1B4F9C; color:#fff;}',
+            /* sıralama (21.10.2026): düğme grubu ve A→Z harf başlıkları */
+            '.aog-sira-grup{display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; margin-inline-start:auto;}',
+            '.aog-sira{font-size:.78rem; font-weight:800; color:#8A94A3; letter-spacing:.3px;}',
+            '.aog-suz.aog-sir.sec{background:#0E7C66; border-color:#0E7C66;}',
+            '.aog-harf{grid-column:1/-1; margin:8px 2px -4px; padding:0 0 4px 2px; border-bottom:1px solid #E6EBF2;',
+            '  font-size:.8rem; font-weight:800; color:#8A94A3; letter-spacing:.5px;}',
+            '.aog-harf:first-child{margin-top:0;}',
             '.aog-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:10px;}',
             '.aog-kart{display:flex; align-items:center; gap:12px; text-align:start; width:100%; min-width:0; box-sizing:border-box; margin:0; background:#fff;',
             '  border:1px solid #E6EBF2; border-radius:14px; padding:11px 13px; cursor:pointer; font-family:inherit;',
