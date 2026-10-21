@@ -1107,13 +1107,26 @@
             '.ys-ust2 .ys-blok-sag{align-items:flex-end; margin-inline-start:auto;}',
             '.ys-ust2 .ys-blok-sag .ys-satir{justify-content:flex-end;}',
             '.ys-ust2 .ys-pencere{position:static; order:0; margin-left:0;}',
+            /* orta blok tek satır, simgeler büyük (21.10.2026) */
+            '.ys-ust2 .ys-duzen-satir{gap:5px;} .ys-ust2 .ys-dgrup,.ys-ust2 .ys-nav{display:inline-flex; align-items:center; gap:5px;}',
+            '.ys-ust2 .ys-blok-duzen .ys-t{width:46px; height:44px; min-width:46px; border-radius:12px;}',
+            '.ys-ust2 .ys-blok-duzen .ys-t svg{width:26px; height:26px;}',
+            '.ys-ust2 .ys-nav .ys-ok{width:56px; min-width:56px;} .ys-ust2 .ys-nav .ys-ok svg{width:34px; height:34px;}',
+            '.ys-ust2 .ys-nav .ys-sayfa{font-size:1.15rem; min-width:70px;}',
+            '.ys-ust2 .ys-gara{height:28px;}',
             '@media (max-width:940px){.ys-arac.ys-ust2{flex-wrap:wrap; gap:6px; padding:6px 8px;} .ys-ust2 .ys-blok{gap:4px;}',
             '  .ys-ust2 .ys-blok-sag{margin-inline-start:auto;} .ys-ust2 #ysNotYazi{display:none;} .ys-ust2 .ys-baslik span{display:none;}}',
-            '@media (max-width:760px){.ys-ust2 .ys-satir{min-height:32px;} .ys-ust2 .ys-blok-duzen .ys-t{width:34px; height:32px; min-width:34px;}',
+            '@media (max-width:760px){.ys-ust2 .ys-satir{min-height:32px;} .ys-ust2 .ys-blok-duzen .ys-t{width:36px; height:36px; min-width:36px;}',
             '  .ys-ust2 .ys-blok-duzen{order:5;}',                     /* telefon: 1. satır anahtarlar + sağ blok, 2. satır düzenleme/sayfalar */
-            '  .ys-ust2 .ys-blok-duzen .ys-t svg{width:19px; height:19px;} .ys-ust2 .ys-nav .ys-ok{width:40px; min-width:40px;} .ys-ust2 .ys-nav .ys-ok svg{width:23px; height:23px;}',
-            '  .ys-ust2 .ys-nav .ys-sayfa{font-size:.95rem; min-width:48px;} .ys-ust2 .ys-blok-sec,.ys-ust2 .ys-blok-duzen{padding:4px 5px; border-radius:13px;}',
-            '  .ys-ust2 .ys-blok-sec .ys-kalin{margin-inline-start:2px; padding-inline-start:3px;} .ys-ust2 .ys-gara{margin:0 2px;}}'
+            '  .ys-ust2 .ys-blok-duzen .ys-t svg{width:22px; height:22px;} .ys-ust2 .ys-nav .ys-ok{width:44px; min-width:44px;} .ys-ust2 .ys-nav .ys-ok svg{width:27px; height:27px;}',
+            '  .ys-ust2 .ys-nav .ys-sayfa{font-size:.95rem; min-width:46px;} .ys-ust2 .ys-blok-sec,.ys-ust2 .ys-blok-duzen{padding:4px 5px; border-radius:13px;}',
+            '  .ys-ust2 .ys-duzen-satir,.ys-ust2 .ys-dgrup,.ys-ust2 .ys-nav{gap:3px;}',
+            '  .ys-ust2 .ys-blok-duzen{max-width:100%; overflow:hidden;}',
+            '  .ys-ust2 .ys-blok-sec .ys-kalin{margin-inline-start:2px; padding-inline-start:3px;} .ys-ust2 .ys-gara{margin:0 2px;}}',
+            /* dar telefon: orta blok tek satırda sığsın */
+            '@media (max-width:440px){.ys-ust2 .ys-blok-duzen .ys-t{width:32px; height:34px; min-width:32px; border-radius:9px;} .ys-ust2 .ys-blok-duzen .ys-t svg{width:20px; height:20px;}',
+            '  .ys-ust2 .ys-nav .ys-ok{width:38px; min-width:38px;} .ys-ust2 .ys-nav .ys-ok svg{width:24px; height:24px;} .ys-ust2 .ys-nav .ys-sayfa{min-width:40px; font-size:.9rem;}',
+            '  .ys-ust2 .ys-duzen-satir,.ys-ust2 .ys-dgrup,.ys-ust2 .ys-nav{gap:2px;} .ys-ust2 .ys-blok-duzen .ys-gara{margin:0 1px;} .ys-ust2 .ys-blok-duzen{padding:3px 4px;}}'
         ].join('\n');
         document.head.appendChild(s);
     }
@@ -1244,15 +1257,19 @@
                       '<span class="ys-cet">' + IK.cizgiler + '<span>Çizgi</span></span>' + csay + '</div>' +
                   '</div>' +
                 '</div>' +
+                /* orta blok TEK SATIR, simgeler büyük (21.10.2026, öğretmen: "orta blok tek
+                   satır olsun ve biraz daha büyük olsun svg ler") */
                 '<div class="ys-blok ys-blok-duzen" role="group" aria-label="Düzenleme ve sayfalar">' +
-                  '<div class="ys-satir ys-dgrup" role="group" aria-label="Düzenleme">' +
+                  '<div class="ys-satir ys-duzen-satir">' +
+                  '<span class="ys-dgrup" role="group" aria-label="Düzenleme">' +
                     '<button type="button" class="ys-t" data-is="geri" title="Geri al (Ctrl+Z)" aria-label="Geri al">' + IK.geri + '</button>' +
                     '<button type="button" class="ys-t" data-is="ileri" title="Yinele (Ctrl+Y)" aria-label="Yinele">' + IK.ileri + '</button>' +
                     '<i class="ys-gara"></i>' +
                     '<button type="button" class="ys-t" data-is="silgi" title="Silgi (S) — seçiliyken bir daha basınca: Tüm sayfayı sil" aria-label="Silgi">' + IK.silgi + '</button>' +
                     '<button type="button" class="ys-t" data-is="temizle" title="Sayfayı sil" aria-label="Sayfayı sil">' + IK.temizle + '</button>' +
-                  '</div>' +
-                  '<div class="ys-satir ys-nav" role="group" aria-label="Sayfalar">' +
+                  '</span>' +
+                  '<i class="ys-gara"></i>' +
+                  '<span class="ys-nav" role="group" aria-label="Sayfalar">' +
                     '<button type="button" class="ys-t ys-ok" data-is="saga" title="Geri — önceki sayfa" aria-label="Geri — önceki sayfa">' +
                       '<span class="ik-y">' + IK.sonraki + '</span><span class="ik-d">' + IK.yukari + '</span></button>' +
                     '<span class="ys-sayfa" id="ysSayfa">1 / 1</span>' +
@@ -1261,6 +1278,7 @@
                     '<i class="ys-gara"></i>' +
                     '<button type="button" class="ys-t" data-is="tumSayfalar" title="Tüm sayfalar">' + IK.izgara + '</button>' +
                     '<button type="button" class="ys-t" data-is="yeniSayfa" title="Yeni sayfa — açık sayfadan hemen sonra">' + IK.yeniSayfa + '</button>' +
+                  '</span>' +
                   '</div>' +
                 '</div>' +
                 '<span class="ys-bos"></span>' +
