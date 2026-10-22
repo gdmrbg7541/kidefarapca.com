@@ -24,10 +24,19 @@
     /* EN YENİSİ EN ÜSTTE */
     var LISTE = [
         {
+            id: 18,
+            tarih: '2026-10-22',
+            baslik: 'Destek artık dönemlik ve sabit',
+            metin: 'Beklenen Destek kartında günlük tutar yerine bu dönemin desteği yazar: tutar ' +
+                   'dönem başında (Eylül ve Şubat) bir kez belirlenir, dönem boyunca değişmez. ' +
+                   'Yeni katılanın ilk ayı ücretsiz; kartta herkesin birlikte doldurduğu ortak ' +
+                   'hedef çubuğu var.'
+        },
+        {
             id: 17,
             tarih: '2026-10-20',
             baslik: 'Beklenen Destek ve destekçiler köşesi',
-            metin: 'Profilindeki Beklenen Destek kartı günlük tutarını ve birikenini gösterir; ' +
+            metin: 'Profilindeki Beklenen Destek kartından destek verebilirsin; ' +
                    'ödemen onaylanınca teşekkür mesajı gelir, kısa adın ana sayfadaki ' +
                    'destekçiler şeridinde görünür.'
         },

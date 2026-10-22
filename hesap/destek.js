@@ -25,6 +25,27 @@
      · öğretmen "ödedim" diye bildirir, yönetici onaylar (ya da elle girer)
      · tutarlar sonradan yönetici panelinden değiştirilebilir
 
+   DÖNEMLİK SABİT PAY (22.10.2026) — öğretmen: "öğretmenler profiline
+   girdiklerinde günlük artan bi fiyat yerine nasıl bi fiyatlandırma bulsalar
+   daha iyi olur" → önerim (dönemlik sabit pay + ortak hedef çubuğu, «borç /
+   kalan» yok, ilk ay ücretsiz) → "tamam önerdiğin gibi olsun".
+     · YUKARIDAKİ "GÜN GÜN BİRİKİR" KURALI KALKTI. Öğretim yılı iki dönem:
+       1. dönem 1 Eylül – 31 Ocak, 2. dönem 1 Şubat – 31 Ağustos (yaz dahil).
+     · dönem payı = kişi başı aylık × 6 (yılda iki dönem = 12 ay); dönem
+       başında (ilk sayımda) bir kez SABİTLENİR, dönem boyunca kendiliğinden
+       değişmez. Katılım arttıkça GELECEK dönemin payı düşer. Yönetici
+       «Kaydet» ya da «yeniden hesapla» ile bu dönemin payını elle değiştirebilir.
+     · yeni öğretmenin ilk 30 günü ücretsiz; dönemin ortasında katılanın payı
+       dönemin kalan süresiyle orantılı (10 TL'ye yukarı yuvarlanır).
+     · ödeme önce YAPILDIĞI dönemin payını doldurur, artanı sonraki döneme
+       geçer (ön ödeme). Geçmiş dönemin eksiği BORÇ SAYILMAZ, geriye taşınmaz.
+     · ORTAK HEDEF: bu döneme düşen bütün desteklerin, dönemin giderine
+       (aylık toplam × 6) oranı — yalnız YÜZDE yayınlanır, tutar/sayı yok.
+     · mufredat/_destek'e: donem {kod:'2026-27/1', pay, yuzde, bas, bit, sabit}
+       ve donemler {kod: pay} (geçmiş dönemlerin payı). kullanicilar/{uid}.
+       destek.odemeler [{t, tutar}] — yönetici defterden yazar; öğretmenin
+       kartı dağıtımı bundan hesaplar.
+
    VERİ — Firestore kurallarına DOKUNMADAN:
      mufredat/_destek          yalnız yönetici yazar, girişli herkes okur
         { aylik, gecmis:{'YYYY-MM':tutar}, yoneticiler:[uid], guncelleme }
@@ -60,6 +81,7 @@
 
     var VARSAYILAN = { toplam: 30000 };
     var GUN = 864e5;
+    var DONEM_AY = 6, ILK_AY_GUN = 30;     /* 22.10.2026: dönem payı = aylık × 6; ilk 30 gün ücretsiz */
     var SITE = 'https://kidefarapca.com';
 
     /* ------------------------------------------------------------------
@@ -174,9 +196,24 @@
     function ozetDuzen(o) {
         o = o || {};
         var aylik = +o.aylik > 0 ? Math.round(+o.aylik) : 0;
+        /* 22.10.2026: dönem payı (sabit) ve ortak hedef yüzdesi */
+        var d = (o.donem && typeof o.donem === 'object') ? o.donem : null;
+        var donem = (d && /^\d{4}-\d{2}\/[12]$/.test(String(d.kod || '')) && +d.pay > 0) ? {
+            kod: String(d.kod), pay: Math.round(+d.pay),
+            yuzde: (d.yuzde === null || d.yuzde === undefined || isNaN(+d.yuzde)) ? null : Math.max(0, Math.round(+d.yuzde)),
+            sabit: +d.sabit || 0
+        } : null;
+        var donemler = {};
+        if (o.donemler && typeof o.donemler === 'object') {
+            Object.keys(o.donemler).forEach(function (k) {
+                if (/^\d{4}-\d{2}\/[12]$/.test(k) && +o.donemler[k] > 0) donemler[k] = Math.round(+o.donemler[k]);
+            });
+        }
         return {
-            hazir: aylik > 0,
+            hazir: aylik > 0 || !!donem,
             aylik: aylik,
+            donem: donem,
+            donemler: donemler,
             gecmis: (o.gecmis && typeof o.gecmis === 'object') ? o.gecmis : {},
             yoneticiler: Array.isArray(o.yoneticiler) ? o.yoneticiler : [],
             destekciler: destekciDuzen(o.destekciler),
@@ -287,6 +324,134 @@
             oran: beklenen > 0 ? Math.min(1, odenen / beklenen) : (odenen > 0 ? 1 : 0)
         };
     }
+    /* (hesapla: 19-21.10'daki gün gün biriken hesap; 22.10.2026'dan beri
+       kartta ve yönetici panelinde KULLANILMIYOR — yerine dönem hesabı.) */
+
+    /* ------------------------------------------------------------------
+       DÖNEM (22.10.2026)
+       ------------------------------------------------------------------ */
+    var AY_KISA = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+    /* d tarihinin dönemi. bit = sonraki dönemin ilk günü (00:00, dahil değil). */
+    function donemBul(d) {
+        d = (d && !isNaN(d.getTime && d.getTime())) ? d : new Date();
+        var y = d.getFullYear(), m = d.getMonth(), yil, no, bas, bit;
+        if (m >= 8) { yil = y; no = 1; bas = new Date(y, 8, 1); bit = new Date(y + 1, 1, 1); }
+        else if (m === 0) { yil = y - 1; no = 1; bas = new Date(y - 1, 8, 1); bit = new Date(y, 1, 1); }
+        else { yil = y - 1; no = 2; bas = new Date(y, 1, 1); bit = new Date(y, 8, 1); }
+        return {
+            kod: yil + '-' + String(yil + 1).slice(2) + '/' + no, yil: yil, no: no, bas: bas, bit: bit,
+            son: new Date(bit.getTime() - GUN / 2),           /* son gün (gösterim için) */
+            ad: no + '. dönem', yilAd: yil + '-' + (yil + 1),
+            aralik: no === 1 ? 'Eylül–Ocak' : 'Şubat–Ağustos'
+        };
+    }
+    function donemSonraki(dn) { return donemBul(new Date(dn.bit.getTime() + GUN / 2)); }
+    function ymd(d) { return d.getFullYear() + '-' + iki(d.getMonth() + 1) + '-' + iki(d.getDate()); }
+    /* dönem payı = kişi başı aylık × 6 (aylık tutarla tutarlı kalsın diye) */
+    function donemPayHesapla(toplam, aktif) { return aylikHesapla(toplam, aktif) * DONEM_AY; }
+    /* bu dönemin genel payı: yayındaki dönem kaydı; yönetici henüz yazmadıysa
+       (dönem yeni başladı) son aylık tutardan aynı kuralla */
+    function donemPayi(oz, kod) {
+        if (!oz) return 0;
+        if (oz.donem && oz.donem.kod === kod) return oz.donem.pay;
+        if (+((oz.donemler || {})[kod]) > 0) return +oz.donemler[kod];
+        if (kod === donemBul(new Date()).kod && oz.aylik > 0) return oz.aylik * DONEM_AY;
+        return 0;
+    }
+    function ilkAyBitis(kayit) {
+        return (kayit && !isNaN(kayit.getTime())) ? new Date(gunBasi(kayit).getTime() + ILK_AY_GUN * GUN) : null;
+    }
+    /* Öğretmenin bu dönemki payı: ilk 30 günü ücretsiz; dönemin ortasında
+       katıldıysa kalan süreyle orantılı (10 TL'ye yukarı). */
+    function kisiPay(dn, pay, kayit) {
+        if (!(pay > 0)) return 0;
+        var bas = dn.bas.getTime(), bit = dn.bit.getTime();
+        var ia = ilkAyBitis(kayit);
+        var b = Math.max(bas, ia ? ia.getTime() : 0);
+        if (b >= bit) return 0;
+        if (b <= bas) return pay;
+        return Math.ceil(pay * (bit - b) / (bit - bas) / 10) * 10;
+    }
+    /* Ödemeleri dönemlere dağıtır. Her ödeme önce YAPILDIĞI dönemin payını
+       doldurur; artanı sonraki dönemlere geçer. Geçmiş dönemin eksiği borç
+       sayılmaz (ödeme geriye gitmez). Payı henüz belli olmayan gelecek dönem
+       artanın tamamını alır.
+       odemeler: [{t: ms, tutar}] · kayit: Date|null · oz: ozetDuzen sonucu */
+    function dagit(odemeler, kayit, oz, simdi) {
+        simdi = simdi || new Date();
+        var dn = donemBul(simdi), ileriD = donemSonraki(dn);
+        var V = {}, toplam = 0, son = null;
+        var L = (odemeler || []).filter(function (x) { return x && +x.tutar > 0 && +x.t > 0; })
+            .map(function (x) { return { t: +x.t, tutar: Math.round(+x.tutar) }; })
+            .sort(function (a, b) { return a.t - b.t; });
+        L.forEach(function (o) {
+            toplam += o.tutar;
+            if (!son || o.t > son) son = o.t;
+            var kalan = o.tutar, d = donemBul(new Date(o.t));
+            for (var i = 0; i < 24 && kalan > 0; i++) {
+                var gelecek = d.kod > dn.kod;
+                var P = gelecek ? Infinity : kisiPay(d, donemPayi(oz, d.kod), kayit);
+                var yer = Math.max(0, P - (V[d.kod] || 0));
+                var koy = Math.min(kalan, yer);
+                if (koy > 0) { V[d.kod] = (V[d.kod] || 0) + koy; kalan -= koy; }
+                if (kalan > 0) d = donemSonraki(d);
+            }
+        });
+        var pay = donemPayi(oz, dn.kod);
+        var kisi = kisiPay(dn, pay, kayit);
+        var verilen = V[dn.kod] || 0;
+        var ia = ilkAyBitis(kayit);
+        var ilkAy = !!(ia && simdi < ia);
+        var durum;
+        if (!(pay > 0)) durum = 'hazirlaniyor';
+        else if (kisi > 0 && verilen >= kisi) durum = 'tamam';
+        else if (ilkAy) durum = 'ilkay';
+        else if (!(kisi > 0)) durum = 'disi';
+        else if (verilen > 0) durum = 'kismi';
+        else durum = 'bos';
+        return {
+            donem: dn, sonraki: ileriD, pay: pay, kisi: kisi, verilen: verilen,
+            eksik: Math.max(0, kisi - verilen), ileri: V[ileriD.kod] || 0,
+            toplam: toplam, son: son ? new Date(son) : null, adet: L.length,
+            ilkAy: ilkAy, ilkAyBitis: ia, durum: durum,
+            oran: kisi > 0 ? Math.min(1, verilen / kisi) : (verilen > 0 ? 1 : 0),
+            dagilim: V
+        };
+    }
+    /* Öğretmenin kendi ödeme listesi: yöneticinin yazdığı destek.odemeler;
+       yoksa (eski özet) onaylanan bildirimler + toplamın kalanı son ödeme
+       tarihinde tek ödeme sayılır. */
+    function odemeListesi(belge, bildirimler) {
+        var d = (belge && belge.destek) || {};
+        if (Array.isArray(d.odemeler)) {
+            return d.odemeler.map(function (x) {
+                var t = tarihAl(x && x.t);
+                return { t: t ? t.getTime() : (+(x && x.t) || 0), tutar: Math.round(+(x && x.tutar) || 0) };
+            }).filter(function (x) { return x.t > 0 && x.tutar > 0; });
+        }
+        var L = [], top = 0;
+        (bildirimler || []).forEach(function (b) {
+            if (b.durum !== 'onaylandi' || !(b.tutar > 0)) return;
+            var t = b.onay || b.tarih;
+            if (!t) return;
+            L.push({ t: t.getTime(), tutar: b.tutar }); top += b.tutar;
+        });
+        var fark = Math.round(+d.odenen || 0) - top;
+        if (fark > 0) {
+            var s = tarihAl(d.sonOdeme) || new Date();
+            L.push({ t: s.getTime(), tutar: fark });
+        }
+        return L;
+    }
+    function secimYazi(b) {
+        var s = b && b.secim;
+        if (s === 'donem') return 'bu dönem';
+        if (s === 'tamamla') return 'dönemi tamamlama';
+        if (s === 'yil') return 'bu yıl (iki dönem)';
+        if (s === 'gelecek') return 'gelecek dönem';
+        if (b && b.ay) return b.ay + ' ay';
+        return 'serbest tutar';
+    }
 
     function kayitTarihi(o) {
         var d = tarihAl(o && o.createdAt);
@@ -349,6 +514,8 @@
             ad: v.name || '', email: v.email || '', tel: v.phone || '', kod: v.kod || '',
             /* destekçiler köşesi (20.10.2026): adı görünsün mü, meslektaşlara cümle */
             koseGoster: v.koseGoster !== false, koseNot: String(v.koseNot || '').trim().slice(0, KOSE_NOT_SINIR),
+            /* 22.10.2026: dönem seçimi (donem | tamamla | yil | gelecek | serbest) */
+            secim: v.secim || '', donem: v.donem || '',
             tarih: tarihAl(v.createdAt), onay: tarihAl(v.onayTarihi), red: tarihAl(v.redTarihi)
         };
     }
@@ -356,9 +523,11 @@
         return {
             id: id, ogretmenUid: v.ogretmenUid || '', tutar: Math.round(+v.tutar || 0),
             ay: Math.floor(+v.ay || 0), kaynak: v.kaynak || 'elle', siparisId: v.siparisId || '',
+            secim: v.secim || '', donem: v.donem || '',
             not: v.not || '', tarih: tarihAl(v.odemeTarihi) || tarihAl(v.tarih)
         };
     }
+    function kayitOdeme(k) { return { t: k.tarih ? k.tarih.getTime() : 0, tutar: k.tutar }; }
     function yeniOnce(a, b) {
         return ((b.tarih && b.tarih.getTime()) || 0) - ((a.tarih && a.tarih.getTime()) || 0);
     }
@@ -393,13 +562,24 @@
             return L.sort(yeniOnce);
         });
     }
-    function tumDefter() {
+    /* 22.10.2026: bütün defter kayıtları öğretmene göre (dönem dağıtımı ve
+       ortak hedef için); tumDefter toplamları bundan çıkarır. */
+    function tumKayitlar() {
         return Promise.all([ozetOku(), db().collection('siparisler').where('tur', '==', 'destekKayit').get()]).then(function (r) {
-            var oz = r[0], T = {};
+            var oz = r[0], K = {};
             r[1].forEach(function (d) {
                 var v = d.data() || {};
                 if (!v.ogretmenUid || !yoneticiYazdi(v, oz)) return;
-                T[v.ogretmenUid] = (T[v.ogretmenUid] || 0) + Math.round(+v.tutar || 0);
+                (K[v.ogretmenUid] = K[v.ogretmenUid] || []).push(kayitDuzen(d.id, v));
+            });
+            return K;
+        });
+    }
+    function tumDefter() {
+        return tumKayitlar().then(function (K) {
+            var T = {};
+            Object.keys(K).forEach(function (u) {
+                T[u] = K[u].reduce(function (a, k) { return a + k.tutar; }, 0);
             });
             return T;
         });
@@ -433,10 +613,10 @@
             return _ben;
         });
     }
+    /* 22.10.2026: dönem hesabı (eskiden gün gün biriken) */
     function benHesap(v) {
         var b = (v && v.belge) || {};
-        var odenen = (b.destek && +b.destek.odenen) || 0;
-        return hesapla(kayitTarihi(b), odenen, v.ozet);
+        return dagit(odemeListesi(b, v && v.bildirimler), kayitTarihi(b), v.ozet);
     }
 
     /* Teşekkür şeridi (20.10.2026): son ödemeden sonra 30 gün boyunca
@@ -487,6 +667,12 @@
         return y === new Date().getFullYear() ? y : 0;
     }
     function rozetHtml(v) {
+        /* 22.10.2026: bu dönemin payı tamamsa «Bu dönemin destekçisi» */
+        try {
+            if (v && v.ozet && !v.hata && benHesap(v).durum === 'tamam') {
+                return '<span class="dst-rozet-yil" title="Bu dönem Kidef\'e destek verdin — teşekkürler">💛 Bu dönemin destekçisi</span>';
+            }
+        } catch (e) { }
         var y = rozetYili(v);
         return y ? '<span class="dst-rozet-yil" title="Bu yıl Kidef\'e destek verdin — teşekkürler">💛 ' + y + ' destekçisi</span>' : '';
     }
@@ -498,7 +684,8 @@
         var eski = oz.querySelector('.dst-rozet-yil');
         var h = rozetHtml(_ben);
         if (!h) { if (eski) eski.remove(); return; }
-        if (eski) return;
+        if (eski && eski.outerHTML === h) return;
+        if (eski) eski.remove();
         var yer = oz.querySelector('.acc-chevron');
         var k = document.createElement('span');
         k.innerHTML = h;
@@ -761,6 +948,39 @@
             '  .dst-cizgi{animation:none; stroke-dashoffset:0;} .dst-alan,.dst-isaret{animation:none; opacity:1;}',
             '  .dst-halka{animation:none; stroke-dashoffset:var(--hedef);} .dst-nabiz,.dst-kalp,.dst-para,.dst-ok,',
             '  .dst-cubuk,.dst-artti,#tpDestek .dst-canli i,#tpDestek .dst-gunluk{animation:none;}}',
+            /* 22.10.2026: dönemlik sabit pay — dönem çipi, ortak hedef, durum, seçenek kartları */
+            '#tpDestek .dst-donem-cip{color:#9A6512; background:#FFF4DE;}',
+            '#tpDestek .dst-donem-cip svg{flex:none;}',
+            '.dst-takvim-tik{stroke-dasharray:10; stroke-dashoffset:10; animation:dstTakvimTik 3s ease-in-out infinite;}',
+            '@keyframes dstTakvimTik{0%,15%{stroke-dashoffset:10}40%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:10}}',
+            '#tpDestek .dst-buyuk.dst-hediye{font-size:1.75rem; color:#1E8449;}',
+            '#tpDestek .dst-sayi b{font-size:inherit; color:#1E8449;}',
+            '.dst-dolum{transform-box:fill-box; transform-origin:left center; animation:dstDolum 1.4s cubic-bezier(.25,.8,.25,1) .2s both;}',
+            '@keyframes dstDolum{from{transform:scaleX(0)}to{transform:scaleX(1)}}',
+            '.dst-parilti{animation:dstParilti 3.4s ease-in-out 1.7s infinite;}',
+            '@keyframes dstParilti{0%{transform:translateX(0) skewX(-18deg)}55%,100%{transform:translateX(var(--dst-gen,300px)) skewX(-18deg)}}',
+            '.dst-durgun .dst-dolum, .dst-durgun .dst-parilti{animation:none;}',
+            '.dst-yuksel{opacity:0; transform-box:fill-box; animation:dstYuksel 3.2s ease-in 2s infinite;}',
+            '.dst-yuksel.y2{animation-delay:3.6s;}',
+            '@keyframes dstYuksel{0%{transform:translateY(4px); opacity:0}20%{opacity:1}100%{transform:translateY(-16px); opacity:0}}',
+            '#tpDestek .dst-ben-sag{flex:1 1 300px; min-width:0; display:flex; flex-direction:column; gap:10px;}',
+            '#tpDestek .dst-ben-sag .dst-kutular{flex:0 0 auto;}',
+            '#tpDestek .dst-durum{margin:0; font-size:.95rem; color:#4A4336; line-height:1.55;}',
+            '#tpDestek .dst-durum b{color:#9A6512;}',
+            '#tpDestek .dst-durum.tamam b{color:#1E8449;}',
+            '#tpDestek .dst-durum.ilkay b{color:#1B4F9C;}',
+            '#tpDestek .dst-durum .dst-bek{display:block; margin-top:4px; font-size:.84rem; color:#B5670A;}',
+            '#dstKutu .dst-secenekler{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:9px;}',
+            '#dstKutu .dst-sec{display:flex; flex-direction:column; align-items:flex-start; gap:3px; text-align:start; border:1.5px solid #EEDFC2;',
+            '  background:#FFFBF3; color:#6B5B45; border-radius:14px; padding:11px 13px; cursor:pointer; font-family:inherit; transition:transform .12s;}',
+            '#dstKutu .dst-sec:hover{transform:translateY(-1px);}',
+            '#dstKutu .dst-sec-ad{font-size:.76rem; font-weight:900; letter-spacing:.3px; color:#B7791F; text-transform:uppercase;}',
+            '#dstKutu .dst-sec b{font-size:1.35rem; color:#1F2430; font-variant-numeric:tabular-nums; line-height:1.2;}',
+            '#dstKutu .dst-sec small{font-size:.76rem; color:#8A7A66;}',
+            '#dstKutu .dst-sec.sec{background:#E9A23B; border-color:#E9A23B;}',
+            '#dstKutu .dst-sec.sec .dst-sec-ad, #dstKutu .dst-sec.sec b, #dstKutu .dst-sec.sec small{color:#fff;}',
+            '#admin-destek-ayar .dst-a-sabit{font-style:normal; color:#A0927E; font-size:.8rem;}',
+            '@media (prefers-reduced-motion: reduce){ .dst-dolum,.dst-parilti,.dst-takvim-tik,.dst-yuksel{animation:none;} .dst-takvim-tik{stroke-dashoffset:0;} }',
             /* ödeme penceresi */
             '#dstOrt{position:fixed; inset:0; z-index:9990; display:flex; align-items:center; justify-content:center;',
             '  padding:16px; background:rgba(34,26,12,.52); animation:dstSol .18s ease-out;}',
@@ -893,56 +1113,67 @@
             '</g></svg>';
     }
 
-    /* "Bu ay biriken": ayın günleri basamak basamak; bugüne kadarki günler
-       dolu, bugün parlar ve "+27 TL" yükselir, kalan günler soluk. Öğretmen
-       sayısı hiçbir yerde yazmaz ("sayı belli olmasın"). W: kutunun gerçek
-       genişliği — yazılar her ekranda aynı boyda kalsın diye SVG
-       ölçeklenmez, genişliğe göre kurulur. */
-    function ayGrafikSvg(v, W) {
-        var oz = v.ozet;
+    /* ORTAK HEDEF (22.10.2026; eski "bu ay biriken" gün grafiğinin yerine):
+       bu döneme düşen bütün desteklerin dönemin giderine oranı — yalnız
+       YÜZDE (tutar ve öğretmen sayısı yok). Altında dönemin zaman çizgisi
+       (Eylül → Ocak ya da Şubat → Ağustos) ve "bugün". W: kutunun gerçek
+       genişliği — yazılar her ekranda aynı boyda kalsın diye SVG ölçeklenmez. */
+    function hedefSvg(oz, dn, W) {
         W = Math.max(260, Math.min(760, Math.round(W || 340)));
-        var H = Math.round(Math.max(176, Math.min(230, W * 0.44)));
-        var x0 = 12, x1 = W - 12, y0 = 40, y1 = H - 26;
-        var simdi = new Date(), bugun = simdi.getDate();
-        var N = new Date(simdi.getFullYear(), simdi.getMonth() + 1, 0).getDate();
-        var gunluk = aylikFiyat(oz, simdi) / 30;
-        var kayit = kayitTarihi((v.belge) || {});
-        var ilk = 1;
-        if (kayit && kayit.getFullYear() === simdi.getFullYear() && kayit.getMonth() === simdi.getMonth()) ilk = kayit.getDate();
-        var enFazla = Math.max(gunluk, gunluk * (N - ilk + 1));
-        var aralik = (x1 - x0) / N, gen = Math.max(3, aralik * 0.62);
+        var H = 186, x0 = 14, x1 = W - 14, gen = x1 - x0;
+        var yuz = (oz && oz.donem && oz.donem.kod === dn.kod && oz.donem.yuzde !== null) ? oz.donem.yuzde : null;
+        var oran = yuz === null ? 0 : Math.min(1, yuz / 100);
+        var simdi = new Date();
+        var gecen = Math.min(1, Math.max(0, (simdi - dn.bas) / (dn.bit - dn.bas)));
+        var by = 70, bh = 24;
+        var dolu = oran > 0 ? Math.max(bh, gen * oran) : 0;
         var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img"' +
-            ' aria-label="Destek her gün birikir">' +
-            '<defs><linearGradient id="dstCubuk" x1="0" y1="0" x2="0" y2="1">' +
-              '<stop offset="0" stop-color="#F2B544"/><stop offset="1" stop-color="#E08E1B"/></linearGradient></defs>' +
-            '<text x="' + x0 + '" y="16" font-size="11.5" font-weight="700" fill="#B7791F">bu ay biriken</text>' +
-            '<text x="' + x1 + '" y="17" text-anchor="end" font-size="13" font-weight="900" fill="#1F2430">' +
-              esc(tl(gunluk * Math.max(0, bugun - ilk + 1))) + '</text>' +
-            '<line x1="' + x0 + '" x2="' + x1 + '" y1="' + y1 + '" y2="' + y1 + '" stroke="#E5DACA" stroke-width="1.2"/>';
-        for (var g = 1; g <= N; g++) {
-            var top = g < ilk ? 0 : gunluk * (g - ilk + 1);
-            var h = Math.max(2, (top / enFazla) * (y1 - y0));
-            var x = x0 + (g - 1) * aralik + (aralik - gen) / 2;
-            var y = y1 - h;
-            if (g < bugun) {
-                s += '<rect class="dst-cubuk" style="animation-delay:' + (g * 22) + 'ms" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) +
-                     '" width="' + gen.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="2" fill="url(#dstCubuk)"' + (g < ilk ? ' opacity=".18"' : '') + '/>';
-            } else if (g === bugun) {
-                var cx = x + gen / 2;
-                s += '<rect class="dst-cubuk dst-bugun" style="animation-delay:' + (g * 22) + 'ms" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) +
-                     '" width="' + gen.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="2" fill="#C0571B"/>' +
-                     '<g class="dst-isaret"><circle class="dst-nabiz" cx="' + cx.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="4" fill="#C0571B"/>' +
-                     '<text class="dst-artti" x="' + Math.min(Math.max(cx, x0 + 26), x1 - 26).toFixed(1) + '" y="' + (y - 9).toFixed(1) +
-                       '" text-anchor="middle" font-size="12" font-weight="900" fill="#C0571B">+' + esc(tl(gunluk)) + '</text></g>';
-            } else {
-                s += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + gen.toFixed(1) + '" height="' + h.toFixed(1) +
-                     '" rx="2" fill="none" stroke="#EADFCB" stroke-width="1" stroke-dasharray="2 2"/>';
-            }
-            if (g === 1 || g === N || g % 5 === 0) {
-                s += '<text x="' + (x + gen / 2).toFixed(1) + '" y="' + (y1 + 15) + '" text-anchor="middle" font-size="10.5" fill="' +
-                     (g === bugun ? '#C0571B' : '#A0927E') + '"' + (g === bugun ? ' font-weight="800"' : '') + '>' + g + '</text>';
-            }
+            ' aria-label="' + esc(yuz === null ? 'Ortak hedef hesaplanıyor' : 'Ortak hedef: bu dönemin giderinin yüzde ' + yuz + ' kadarı karşılandı') + '">' +
+            '<defs><linearGradient id="dstHedefG" x1="0" y1="0" x2="1" y2="0">' +
+              '<stop offset="0" stop-color="#F6C25B"/><stop offset="1" stop-color="#E08E1B"/></linearGradient>' +
+              '<clipPath id="dstHedefK"><rect x="' + x0 + '" y="' + by + '" width="' + dolu.toFixed(1) + '" height="' + bh + '" rx="' + (bh / 2) + '"/></clipPath></defs>' +
+            '<text x="' + x0 + '" y="20" font-size="11.5" font-weight="900" letter-spacing=".6" fill="#B7791F">ORTAK HEDEF</text>' +
+            '<text x="' + x0 + '" y="41" font-size="12.5" fill="#6B5B45">Bu dönemin gideri</text>' +
+            '<text x="' + x1 + '" y="44" text-anchor="end" font-size="31" font-weight="900" fill="#1F2430">' + (yuz === null ? '—' : '%' + yuz) + '</text>' +
+            '<text x="' + x1 + '" y="62" text-anchor="end" font-size="11.5" font-weight="800" fill="#8A7A66">' + (yuz === null ? 'hesaplanıyor' : 'karşılandı') + '</text>' +
+            '<rect x="' + x0 + '" y="' + by + '" width="' + gen + '" height="' + bh + '" rx="' + (bh / 2) + '" fill="#F6EBD6"/>';
+        [0.25, 0.5, 0.75].forEach(function (k) {
+            var x = (x0 + gen * k).toFixed(1);
+            s += '<line x1="' + x + '" x2="' + x + '" y1="' + (by + 5) + '" y2="' + (by + bh - 5) + '" stroke="#EAD9B6" stroke-width="1.5" stroke-linecap="round"/>';
+        });
+        if (dolu > 0) {
+            var xs = x0 + dolu;
+            s += '<rect class="dst-dolum" x="' + x0 + '" y="' + by + '" width="' + dolu.toFixed(1) + '" height="' + bh + '" rx="' + (bh / 2) + '" fill="url(#dstHedefG)"/>' +
+                 '<g clip-path="url(#dstHedefK)"><rect class="dst-parilti" style="--dst-gen:' + Math.round(dolu + 60) + 'px" x="' + (x0 - 50) + '" y="' + by + '" width="38" height="' + bh + '" fill="rgba(255,255,255,.38)" transform="skewX(-18)"/></g>' +
+                 '<g class="dst-isaret">' +
+                   '<path class="dst-yuksel" d="M' + (xs - 9).toFixed(1) + ' ' + (by + 15) + 'c-3.6-2.4-4.8-4.6-3.6-6.2 1-1.4 2.9-1.2 3.6.3.8-1.5 2.7-1.7 3.6-.3 1.2 1.6 0 3.8-3.6 6.2z" fill="#fff"/>' +
+                   '<path class="dst-yuksel y2" d="M' + (xs + 3).toFixed(1) + ' ' + (by + 9) + 'c-2.7-1.8-3.6-3.4-2.7-4.6.8-1 2.2-.9 2.7.2.6-1.1 2-1.2 2.7-.2.9 1.2 0 2.8-2.7 4.6z" fill="#E08E1B"/>' +
+                 '</g>';
+        } else if (yuz === null) {
+            s += '<text x="' + (x0 + gen / 2).toFixed(1) + '" y="' + (by + 16) + '" text-anchor="middle" font-size="11" fill="#A0927E">yönetici sayımından sonra görünür</text>';
         }
+        /* dönemin zaman çizgisi */
+        var ty = 136, xb = x0 + gen * gecen;
+        s += '<line x1="' + x0 + '" x2="' + x1 + '" y1="' + ty + '" y2="' + ty + '" stroke="#EFE4D0" stroke-width="4" stroke-linecap="round"/>' +
+             '<line x1="' + x0 + '" x2="' + xb.toFixed(1) + '" y1="' + ty + '" y2="' + ty + '" stroke="#D9B26A" stroke-width="4" stroke-linecap="round"/>';
+        var t0 = dn.bas.getTime(), t1 = dn.bit.getTime();
+        for (var i = 0; i < 12; i++) {
+            var a = new Date(dn.bas.getFullYear(), dn.bas.getMonth() + i, 1);
+            if (a.getTime() >= t1) break;
+            var b = new Date(a.getFullYear(), a.getMonth() + 1, 1);
+            var xa = x0 + gen * (a.getTime() - t0) / (t1 - t0), xm = x0 + gen * ((a.getTime() + b.getTime()) / 2 - t0) / (t1 - t0);
+            if (i > 0) s += '<line x1="' + xa.toFixed(1) + '" x2="' + xa.toFixed(1) + '" y1="' + (ty - 4) + '" y2="' + (ty + 4) + '" stroke="#E5D3B0" stroke-width="1.2"/>';
+            var buAy = simdi.getFullYear() === a.getFullYear() && simdi.getMonth() === a.getMonth();
+            s += '<text x="' + xm.toFixed(1) + '" y="' + (ty + 19) + '" text-anchor="middle" font-size="10.5"' +
+                 (buAy ? ' font-weight="800" fill="#C0571B"' : ' fill="#A0927E"') + '>' + AY_KISA[a.getMonth()] + '</text>';
+        }
+        var xe = Math.min(Math.max(xb, x0 + 16), x1 - 16);
+        s += '<g class="dst-isaret"><circle class="dst-nabiz" cx="' + xb.toFixed(1) + '" cy="' + ty + '" r="4.5" fill="#C0571B"/>' +
+             '<circle cx="' + xb.toFixed(1) + '" cy="' + ty + '" r="4.5" fill="#C0571B" stroke="#fff" stroke-width="1.5"/>' +
+             '<text x="' + xe.toFixed(1) + '" y="' + (ty - 10) + '" text-anchor="middle" font-size="10.5" font-weight="800" fill="#C0571B">bugün</text></g>' +
+             '<text x="' + x0 + '" y="' + (H - 4) + '" font-size="11" fill="#8A7A66">' + esc(W < 440 ? dn.aralik : dn.yilAd + ' · ' + dn.ad + ' · ' + dn.aralik) + '</text>' +
+             '<text x="' + x1 + '" y="' + (H - 4) + '" text-anchor="end" font-size="11" fill="#8A7A66">' +
+               esc('yeni dönem ' + dn.bit.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })) + '</text>';
         return s + '</svg>';
     }
 
@@ -952,7 +1183,7 @@
         if (!yer || !v || !v.ozet || !v.ozet.hazir) return;
         var W = yer.clientWidth || 340;
         if (durgun) yer.classList.add('dst-durgun');
-        yer.innerHTML = ayGrafikSvg(v, W);
+        yer.innerHTML = hedefSvg(v.ozet, donemBul(new Date()), W);
         yer.__dstW = W;
     }
     var _boyutZaman = null;
@@ -965,15 +1196,15 @@
         }, 180);
     });
 
-    function halkaSvg(oran) {
+    function halkaSvg(oran, etiket) {
         var yuzde = Math.round(oran * 100);
         var hedef = (100 - yuzde).toFixed(1);
         return '<svg viewBox="0 0 44 44" aria-hidden="true">' +
             '<circle cx="22" cy="22" r="18" fill="none" stroke="#EEF2F7" stroke-width="5"/>' +
-            '<circle class="dst-halka" cx="22" cy="22" r="18" fill="none" stroke="#27AE60" stroke-width="5" stroke-linecap="round"' +
-            ' pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" style="--hedef:' + hedef + '" transform="rotate(-90 22 22)"/>' +
+            (yuzde > 0 ? '<circle class="dst-halka" cx="22" cy="22" r="18" fill="none" stroke="#27AE60" stroke-width="5" stroke-linecap="round"' +
+            ' pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" style="--hedef:' + hedef + '" transform="rotate(-90 22 22)"/>' : '') +
             '<text x="22" y="21" text-anchor="middle" font-size="9" font-weight="900" fill="#1F2430">%' + yuzde + '</text>' +
-            '<text x="22" y="30" text-anchor="middle" font-size="5" font-weight="800" fill="#8A94A3">ÖDENEN</text>' +
+            '<text x="22" y="30" text-anchor="middle" font-size="5" font-weight="800" fill="#8A94A3">' + esc(etiket || 'BU DÖNEM') + '</text>' +
             '</svg>';
     }
 
@@ -988,6 +1219,15 @@
         return '<span class="dst-cip bekliyor">Onay bekliyor</span>';
     }
 
+    function takvimSvg() {
+        return '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path class="dst-takvim-tik" d="M9 15l2 2 4-4"/></svg>';
+    }
+    function uzunTarih(d) { return d ? d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' }) : ''; }
+
+    /* 22.10.2026: DÖNEMLİK SABİT PAY — «günlük tutar / biriken / kalan» yok.
+       Kartta: bu dönemin desteği (sabit), ortak hedef çubuğu (yalnız yüzde),
+       öğretmenin bu dönemki durumu (destekçi / kısmi / ilk ay), verdikleri. */
     function kartIcerik() {
         var v = _ben;
         var bas = '<div class="dst-bas">' + kalpSvg('dst-ikon') +
@@ -1000,55 +1240,72 @@
         }
         var oz = v.ozet;
         if (!oz.hazir) {
-            return { imza: 'hazirdegil', html: bas + '</div><p class="dst-yok">Tutar hesaplanıyor; kısa süre içinde burada görünecek.</p>' };
+            return { imza: 'hazirdegil', html: bas + '</div><p class="dst-yok">Bu dönemin payı belirleniyor; kısa süre içinde burada görünecek.</p>' };
         }
-        /* Öğretmen sayısı kartta HİÇ yazmaz (19.10.2026: "kaç öğretmen
-           olduğu görülmesin ... katılan arttıkça azalsın gerçekten,
-           güncellensin sürekli ama sayı belli olmasın"). Hesap yine sayıya
-           göre yapılır; öğretmen yalnız günlük tutarı görür. */
-        bas += '<span class="dst-canli" title="Tutar her gün yeniden hesaplanır"><i></i>her gün güncellenir</span></div>';
-
-        var h = benHesap(v);
-        var gunluk = h.gunluk;
+        /* Öğretmen sayısı ve aylık gider kartta HİÇ yazmaz (19.10.2026: "kaç
+           öğretmen olduğu görülmesin ... sayı belli olmasın"). */
+        var h = benHesap(v), dn = h.donem;
+        bas += '<span class="dst-canli dst-donem-cip" title="Tutar dönem başında belirlenir, dönem boyunca değişmez">' +
+            takvimSvg() + esc(dn.yilAd + ' · ' + dn.ad) + '</span></div>';
         var bekleyen = (v.bildirimler || []).filter(function (x) { return x.durum === 'bekliyor'; });
-        var imza = [Math.round(gunluk * 100), h.beklenen, h.odenen, bekleyen.length, (v.bildirimler || []).length].join('|');
+        var imza = [h.kisi, h.pay, h.verilen, h.ileri, h.toplam, h.durum, dn.kod,
+                    (oz.donem && oz.donem.yuzde), bekleyen.length, (v.bildirimler || []).length].join('|');
         var tsk = tesekkurSeridi(v);
         var kose = destekciKose(oz);
         imza += '|' + tsk.imza + '|' + kose.imza + '|' + rozetYili(v);
 
+        var ayda = h.pay > 0 ? Math.round(h.pay / DONEM_AY) : 0;
         var tutar = '<div class="dst-tutar">' +
-            '<span class="dst-et">Günlük destek</span>' +
-            '<span class="dst-buyuk"><span data-dst-say="' + Math.round(gunluk) + '">' + sayi(gunluk) + '</span><small>TL / gün</small></span>' +
-            '<span class="dst-sayi">Her gün hesabına eklenir.</span>' +
-            '<span class="dst-vurgu">' + okSvg() + '<span><b>Siteye katılan öğretmen arttıkça bu tutar azalır.</b> ' +
+            '<span class="dst-et">Bu dönemin desteği</span>' +
+            (h.kisi > 0
+                ? '<span class="dst-buyuk"><span data-dst-say="' + h.kisi + '">' + sayi(h.kisi) + '</span><small>TL</small></span>'
+                : '<span class="dst-buyuk dst-hediye">İlk ayın bizden</span>') +
+            '<span class="dst-sayi">' + esc(dn.aralik) + ' · ' +
+              (h.kisi > 0 && h.kisi < h.pay ? 'dönemin ortasında katıldığın için kalan süreye göre'
+                                             : (h.kisi > 0 ? '<b>dönem boyunca değişmez</b>' : 'desteğin gelecek dönemden başlar')) +
+              (ayda && h.kisi > 0 ? ' · ayda yaklaşık ' + esc(tl(ayda)) : '') + '</span>' +
+            '<span class="dst-vurgu">' + okSvg() + '<span><b>Siteye katılan öğretmen arttıkça gelecek dönemin payı azalır.</b> ' +
               'Meslektaşlarını davet ettikçe herkesin payı küçülür.</span></span>' +
             '</div>';
         var grafik = '<div class="dst-grafik"><div class="dst-grafik-svg" data-dst-grafik></div>' +
-            '<p>Tutar her gün yeniden hesaplanır.</p></div>';
+            '<p>Her destek çubuğu biraz daha doldurur; tutarlar ve kimin ne verdiği görünmez.</p></div>';
 
         var aciklama = '<p class="dst-aciklama">Sitedeki <b>yapay zekâ hizmetlerinin giderleri</b> ve materyallerin, ' +
             'oyunların, sınavların arkasındaki <b>yoğun öğretmen emeği</b>, siteyi kullanan öğretmenler arasında paylaşılır. ' +
             'Katkın Kidef\'in büyümesini ve yeni içeriklerin hazırlanmasını sağlar.</p>';
 
-        /* kişisel durum */
-        var kayitYazi = h.kayit ? gunYaz(h.kayit) : '—';
+        /* kişisel durum — «borç / kalan» kelimesi yok */
+        var dy;
+        if (h.durum === 'tamam') {
+            dy = '<b>Bu dönemin destekçisisin, teşekkürler!</b> Desteğin ' + esc(uzunTarih(dn.son)) + ' tarihine kadar geçerli.' +
+                 (h.ileri > 0 ? ' Fazlası (' + esc(tl(h.ileri)) + ') gelecek döneme sayılacak.' : '');
+        } else if (h.durum === 'kismi') {
+            dy = '<b>Bu dönem ' + esc(tl(h.verilen)) + ' destek verdin, teşekkürler.</b> Dönemi tamamlamak istersen ' +
+                 esc(tl(h.eksik)) + ' yeterli.';
+        } else if (h.durum === 'ilkay') {
+            dy = '<b>İlk ayın bizden.</b> ' + esc(uzunTarih(h.ilkAyBitis)) + ' tarihine kadar destek beklenmiyor; siteyi rahatça tanı.' +
+                 (h.kisi > 0 ? ' Bu dönem için payın ' + esc(tl(h.kisi)) + '.' : ' Desteğin gelecek dönemden başlar.');
+        } else if (h.durum === 'disi') {
+            dy = 'Desteğin gelecek dönemden başlar.';
+        } else {
+            dy = 'Bu dönem için desteğini bekliyoruz. Dilediğin zaman bir kerede ya da parça parça gönderebilirsin.';
+        }
+        if (bekleyen.length) dy += ' <span class="dst-bek">Onay bekleyen bildirimin var; onaylanınca buraya işlenir.</span>';
+        var kutular = h.toplam > 0
+            ? '<div class="dst-kutular">' +
+                '<div class="dst-k odenen"><b data-dst-say="' + h.verilen + '" data-dst-tl="1">' + esc(tl(h.verilen)) + '</b><span>Bu dönem verdiğin</span></div>' +
+                (h.ileri > 0 ? '<div class="dst-k"><b data-dst-say="' + h.ileri + '" data-dst-tl="1">' + esc(tl(h.ileri)) + '</b><span>Gelecek döneme</span></div>' : '') +
+                '<div class="dst-k"><b data-dst-say="' + h.toplam + '" data-dst-tl="1">' + esc(tl(h.toplam)) + '</b><span>Toplam desteğin</span></div>' +
+              '</div>'
+            : '';
         var ben = '<div class="dst-ben">' + tsk.html +
-            '<div class="dst-ben-bas"><b>Senin durumun</b>' +
-              '<span>Kayıt ' + esc(kayitYazi) + ' · ' + h.gun + '. gün</span>' +
-              (gunluk > 0 ? '<span class="dst-gunluk">her gün +' + esc(tl(gunluk)) + '</span>' : '') + '</div>' +
+            '<div class="dst-ben-bas"><b>Senin durumun</b><span>' + esc(dn.yilAd + ' · ' + dn.ad + ' (' + dn.aralik + ')') + '</span></div>' +
             '<div class="dst-ben-ic">' +
-              '<div class="dst-halka-k">' + halkaSvg(h.oran) + '</div>' +
-              '<div class="dst-kutular">' +
-                '<div class="dst-k"><b data-dst-say="' + h.beklenen + '" data-dst-tl="1">' + esc(tl(h.beklenen)) + '</b><span>Beklenen (bugüne kadar)</span></div>' +
-                '<div class="dst-k odenen"><b data-dst-say="' + h.odenen + '" data-dst-tl="1">' + esc(tl(h.odenen)) + '</b><span>Ödenen</span></div>' +
-                '<div class="dst-k kalan"><b data-dst-say="' + h.kalan + '" data-dst-tl="1">' + esc(tl(h.kalan)) + '</b><span>Kalan</span></div>' +
-              '</div>' +
+              (h.kisi > 0 ? '<div class="dst-halka-k">' + halkaSvg(h.oran, 'BU DÖNEM') + '</div>' : '') +
+              '<div class="dst-ben-sag"><p class="dst-durum ' + h.durum + '">' + dy + '</p>' + kutular + '</div>' +
             '</div>' +
-            (h.fazla > 0
-                ? '<p class="dst-ipucu"><span class="dst-fazla">' + esc(tl(h.fazla)) + ' fazla ödeme</span> sonraki aylara sayılır' +
-                  (oz.aylik && h.fazla >= oz.aylik ? ' (yaklaşık ' + Math.floor(h.fazla / oz.aylik) + ' ay).' : '.') + '</p>'
-                : '<p class="dst-ipucu">Tutar her gün birikir; dilediğin zaman tamamını ya da bir kısmını gönderebilirsin. ' +
-                  'Birkaç ayı ya da yılı bir kerede ödeyebilirsin.</p>') +
+            '<p class="dst-ipucu">Tutar her dönemin başında (1 Eylül ve 1 Şubat) bir kez belirlenir, dönem boyunca değişmez. ' +
+              'Bir kerede ya da parça parça gönderebilirsin; fazlası gelecek döneme sayılır.</p>' +
             '<div class="dst-tuslar">' +
               '<button type="button" class="dst-tus ana" onclick="KidefDestek.odemeAc()">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5C6 16.4 3.5 12.6 5.4 9.6c1.6-2.5 4.9-2.3 6.6.3 1.7-2.6 5-2.8 6.6-.3 1.9 3-.6 6.8-6.6 10.9Z"/></svg>' +
@@ -1061,7 +1318,7 @@
         if (son.length) {
             ben += '<div class="dst-bildirimler">' + son.map(function (b) {
                 return '<div class="dst-b">' + durumCipi(b.durum) +
-                    '<b>' + esc(tl(b.tutar)) + '</b>' + (b.ay ? '<span>' + b.ay + ' ay</span>' : '<span>serbest tutar</span>') +
+                    '<b>' + esc(tl(b.tutar)) + '</b><span>' + esc(secimYazi(b)) + '</span>' +
                     '<span style="margin-inline-start:auto; color:#A0927E;">' + esc(saatliYaz(b.tarih)) + '</span></div>';
             }).join('') + '</div>';
         }
@@ -1161,7 +1418,9 @@
     /* ------------------------------------------------------------------
        ÖDEME PENCERESİ (öğretmen)
        ------------------------------------------------------------------ */
-    var _secim = { tip: 'ay', ay: 1 };
+    /* 22.10.2026: ay seçimi yerine DÖNEM seçimi — bu dönem / dönemi
+       tamamla / bu yıl (iki dönem) / gelecek dönem / başka tutar */
+    var _secim = { tip: 'donem' };
 
     function odemeKapat() {
         var o = document.getElementById('dstOrt');
@@ -1170,33 +1429,46 @@
     }
     function escKapat(e) { if (e.key === 'Escape') odemeKapat(); }
 
-    function seciliTutar(oz, h) {
-        if (_secim.tip === 'ay') return _secim.ay * oz.aylik;
-        if (_secim.tip === 'kalan') return h.kalan;
+    /* gelecek dönemin tahmini: bugünkü genel pay (o dönemin başında yeniden belirlenir) */
+    function secenekler(h) {
+        var L = [], gelecek = Math.max(0, h.pay - h.ileri), sn = h.sonraki;
+        if (h.durum === 'tamam' || !(h.kisi > 0)) {
+            if (gelecek > 0) L.push({ tip: 'gelecek', ad: 'Gelecek dönem', tutar: gelecek,
+                                      alt: sn.aralik + ' · bugünkü payla' });
+        } else {
+            if (h.verilen > 0) L.push({ tip: 'tamamla', ad: 'Dönemi tamamla', tutar: h.eksik,
+                                        alt: 'bu dönem verdiğin ' + tl(h.verilen) });
+            else L.push({ tip: 'donem', ad: 'Bu dönem', tutar: h.kisi, alt: h.donem.aralik });
+            if (gelecek > 0) L.push({ tip: 'yil', ad: 'Bu yıl · iki dönem', tutar: h.eksik + gelecek,
+                                      alt: 'gelecek dönem bugünkü payla' });
+        }
+        return L;
+    }
+    function seciliTutar(h) {
+        var L = secenekler(h);
+        for (var i = 0; i < L.length; i++) if (L[i].tip === _secim.tip) return L[i].tutar;
         var g = document.getElementById('dstSerbest');
-        return Math.round(+(g && g.value) || 0);
+        return _secim.tip === 'serbest' ? Math.round(+(g && g.value) || 0) : 0;
     }
 
     function toplamYaz() {
         var v = _ben; if (!v || !v.ozet) return;
-        var oz = v.ozet, h = benHesap(v);
+        var h = benHesap(v);
         var el = document.getElementById('dstToplam');
         if (!el) return;
-        var t = seciliTutar(oz, h);
-        var acik;
-        if (_secim.tip === 'ay') {
-            acik = (_secim.ay === 12 ? 'Yıllık · 12 ay' : _secim.ay + ' aylık destek') + ':';
-        } else if (_secim.tip === 'kalan') {
-            acik = 'Biriken tutarın tamamı:';
-        } else {
-            acik = 'Gönderdiğin tutar:';
-        }
+        var t = seciliTutar(h);
+        var acik = {
+            donem: 'Bu dönemin desteği:', tamamla: 'Dönemi tamamlamak için:', yil: 'Bu yıl (iki dönem):',
+            gelecek: 'Gelecek dönemin desteği:', serbest: 'Gönderdiğin tutar:'
+        }[_secim.tip] || 'Tutar:';
         el.innerHTML = '<span>' + esc(acik) + '</span><b>' + esc(t > 0 ? tl(t) : '—') + '</b>';
     }
 
     function secimUygula(kutu) {
-        [].forEach.call(kutu.querySelectorAll('.dst-ay'), function (b) {
-            b.classList.toggle('sec', _secim.tip === 'ay' && +b.getAttribute('data-ay') === _secim.ay);
+        [].forEach.call(kutu.querySelectorAll('.dst-sec'), function (b) {
+            var sec = b.getAttribute('data-tip') === _secim.tip;
+            b.classList.toggle('sec', sec);
+            b.setAttribute('aria-pressed', sec ? 'true' : 'false');
         });
         [].forEach.call(kutu.querySelectorAll('.dst-ek'), function (b) {
             b.classList.toggle('sec', b.getAttribute('data-tip') === _secim.tip);
@@ -1209,20 +1481,22 @@
     function odemeAc() {
         stilKur();
         var v = _ben;
-        if (!v || !v.ozet || !v.ozet.hazir) { uyar('Tutar henüz hesaplanmadı. Biraz sonra yeniden deneyin.'); return; }
-        var oz = v.ozet, h = benHesap(v);
+        if (!v || !v.ozet || !v.ozet.hazir) { uyar('Bu dönemin payı henüz belirlenmedi. Biraz sonra yeniden deneyin.'); return; }
+        var h = benHesap(v);
         var onizleme = rol() === 'admin';
         var al = alici();
         var aciklama = aciklamaMetni();
         var u0 = benKim() || {};
-        _secim = { tip: 'ay', ay: 1 };
+        var L = secenekler(h);
+        _secim = { tip: L.length ? L[0].tip : 'serbest' };
         odemeKapat();
 
-        var aylar = '';
-        for (var i = 1; i <= 12; i++) {
-            aylar += '<button type="button" class="dst-ay" data-ay="' + i + '">' + i +
-                '<small>' + (i === 12 ? 'YILLIK' : 'AY') + '</small></button>';
-        }
+        var kartlar = L.map(function (o) {
+            return '<button type="button" class="dst-sec" data-tip="' + o.tip + '" aria-pressed="false">' +
+                '<span class="dst-sec-ad">' + esc(o.ad) + '</span>' +
+                '<b>' + esc(tl(o.tutar)) + '</b>' +
+                '<small>' + esc(o.alt) + '</small></button>';
+        }).join('');
         var ort = document.createElement('div');
         ort.id = 'dstOrt';
         ort.innerHTML =
@@ -1230,14 +1504,16 @@
               '<div class="dst-m-bas">' + kalpSvg() + '<b>Destek ver</b>' +
                 '<button type="button" class="dst-kapat" aria-label="Kapat">&times;</button></div>' +
               '<div class="dst-m-bol">' +
-                '<p class="dst-m-et">KAÇ AYLIK? · GÜNLÜK ' + esc(tl(h.gunluk)) + '</p>' +
-                '<div class="dst-aylar">' + aylar + '</div>' +
+                '<p class="dst-m-et">' + esc((h.donem.yilAd + ' · ' + h.donem.ad).toLocaleUpperCase('tr-TR')) +
+                  (h.kisi > 0 ? ' · PAYIN ' + esc(tl(h.kisi)) : '') + '</p>' +
+                (h.durum === 'tamam' ? '<p class="dst-dip" style="margin:0 0 10px;">Bu dönemin desteği tamam, teşekkürler! Dilersen gelecek dönemi şimdiden gönderebilirsin.</p>' : '') +
+                (kartlar ? '<div class="dst-secenekler">' + kartlar + '</div>' : '') +
                 '<div class="dst-ekler">' +
-                  (h.kalan > 0 ? '<button type="button" class="dst-ek" data-tip="kalan">Birikenin tamamı · ' + esc(tl(h.kalan)) + '</button>' : '') +
                   '<button type="button" class="dst-ek" data-tip="serbest">Başka tutar</button>' +
                 '</div>' +
                 '<div class="dst-serbest"><input id="dstSerbest" type="number" min="10" step="10" inputmode="numeric" placeholder="Tutar"> <b>TL</b></div>' +
                 '<div class="dst-toplam" id="dstToplam"></div>' +
+                '<p class="dst-dip">Tutar dönem boyunca değişmez. Parça parça da gönderebilirsin; fazlası gelecek döneme sayılır.</p>' +
               '</div>' +
               '<div class="dst-m-bol">' +
                 '<p class="dst-m-et">HAVALE / EFT</p>' +
@@ -1267,7 +1543,7 @@
                 '<button type="button" class="dst-tus ana" id="dstBildir"' + (onizleme ? ' disabled' : '') + '>Ödemeyi yaptım, bildir</button>' +
                 '<p class="dst-dip">' + (onizleme
                     ? 'Yönetici hesabıyla bildirim gönderilmez; öğretmen hesabında bu tuş çalışır.'
-                    : 'Bildirimin yöneticiye gider; onaylanınca “Ödenen” kısmına işlenir.') + '</p>' +
+                    : 'Bildirimin yöneticiye gider; onaylanınca kartındaki bu dönemin desteğine işlenir.') + '</p>' +
               '</div>' +
             '</div>';
         document.body.appendChild(ort);
@@ -1277,11 +1553,11 @@
         ort.addEventListener('click', function (e) {
             var t = e.target;
             if (t === ort || (t.closest && t.closest('.dst-kapat'))) { odemeKapat(); return; }
-            var ay = t.closest && t.closest('.dst-ay');
-            if (ay) { _secim = { tip: 'ay', ay: +ay.getAttribute('data-ay') }; secimUygula(kutu); return; }
+            var sc = t.closest && t.closest('.dst-sec');
+            if (sc) { _secim = { tip: sc.getAttribute('data-tip') }; secimUygula(kutu); return; }
             var ek = t.closest && t.closest('.dst-ek');
             if (ek) {
-                _secim = { tip: ek.getAttribute('data-tip'), ay: 0 };
+                _secim = { tip: ek.getAttribute('data-tip') };
                 secimUygula(kutu);
                 if (_secim.tip === 'serbest') { var g = document.getElementById('dstSerbest'); if (g) g.focus(); }
                 return;
@@ -1307,8 +1583,8 @@
         var u = benKim();
         if (!v || !v.ozet || !u) { uyar('Oturum bulunamadı; sayfayı yenileyip tekrar deneyin.'); return; }
         var oz = v.ozet, h = benHesap(v);
-        var tutar = seciliTutar(oz, h);
-        if (!(tutar >= 10)) { uyar('Lütfen bir süre seçin ya da en az 10 TL yazın.'); return; }
+        var tutar = seciliTutar(h);
+        if (!(tutar >= 10)) { uyar('Lütfen bir seçenek seçin ya da en az 10 TL yazın.'); return; }
         var tus = document.getElementById('dstBildir');
         if (tus) { tus.disabled = true; tus.textContent = 'Gönderiliyor…'; }
         var not = ((document.getElementById('dstNot') || {}).value || '').trim().slice(0, 200);
@@ -1316,8 +1592,10 @@
         var koseNot = ((document.getElementById('dstKoseNot') || {}).value || '').trim().slice(0, KOSE_NOT_SINIR);
         var belge = {
             uid: u.uid, tur: 'destek', durum: 'bekliyor',
-            tutar: Math.round(tutar), ay: _secim.tip === 'ay' ? _secim.ay : 0, aylik: oz.aylik,
-            secim: _secim.tip, aciklama: aciklamaMetni(u.uid), not: not, kod: ogretmenKodu(u.uid),
+            tutar: Math.round(tutar), ay: 0, aylik: oz.aylik,
+            /* 22.10.2026: dönem seçimi ve o anki payı */
+            secim: _secim.tip, donem: h.donem.kod, pay: h.kisi,
+            aciklama: aciklamaMetni(u.uid), not: not, kod: ogretmenKodu(u.uid),
             koseGoster: !kg || !!kg.checked, koseNot: koseNot,
             email: u.email || durum('currentUser') || '',
             name: durum('currentUserName') || u.displayName || '',
@@ -1326,7 +1604,7 @@
         };
         db().collection('siparisler').add(belge).then(function () {
             odemeKapat();
-            uyar('Bildirimin alındı ✅\nYönetici ödemeyi görünce onaylayacak; onaylanınca “Ödenen” kısmına işlenir. Desteğin için teşekkürler!');
+            uyar('Bildirimin alındı ✅\nYönetici ödemeyi görünce onaylayacak; onaylanınca kartındaki bu dönemin desteğine işlenir. Desteğin için teşekkürler!');
             kartTazele();
         }).catch(function (e) {
             if (tus) { tus.disabled = false; tus.textContent = 'Ödemeyi yaptım, bildir'; }
@@ -1356,12 +1634,15 @@
     function yoneticiMi() { return rol() === 'admin'; }
 
     /* Öğretmen listesine göre hesaplar; gerekirse açık özeti ve özel ayarı
-       yazar. liste null ise sayılar özel ayardaki son değerden alınır. */
-    function ozetYayinla(liste, zorla) {
+       yazar. liste null ise sayılar özel ayardaki son değerden alınır.
+       22.10.2026: DÖNEM PAYI (dönem başında ilk sayımda bir kez sabitlenir;
+       sec.payYenile ile elle yeniden) ve ORTAK HEDEF yüzdesi de yazılır. */
+    function ozetYayinla(liste, zorla, sec) {
+        sec = sec || {};
         if (!yoneticiMi() || !db()) return Promise.resolve(null);
         var simdi = Date.now();
-        return Promise.all([ozetOku(true), ayarOku()]).then(function (r) {
-            var oz = r[0], A = ayarDuzen(r[1], oz);
+        return Promise.all([ozetOku(true), ayarOku(), tumKayitlar().catch(function () { return null; })]).then(function (r) {
+            var oz = r[0], A = ayarDuzen(r[1], oz), K = r[2];
             var aktif = A.aktif, onayli = A.onayli;
             if (liste) {
                 aktif = 0; onayli = 0;
@@ -1373,13 +1654,38 @@
             var aylik = aylikHesapla(A.toplam, aktif);
             var ay = ayAnahtar(new Date());
             var me = benUid();
+            /* dönem payı: bu dönemin kaydı varsa korunur (sabit) */
+            var dn = donemBul(new Date());
+            var eskiD = (oz.donem && oz.donem.kod === dn.kod) ? oz.donem : null;
+            var yenile = !eskiD || !!sec.payYenile;
+            var pay = yenile ? donemPayHesapla(A.toplam, aktif) : eskiD.pay;
+            var sabit = (!yenile && eskiD.sabit) ? eskiD.sabit : simdi;
+            /* ortak hedef: bu döneme düşen destekler ÷ (aylık toplam × 6) — yalnız yüzde */
+            var yuzde = eskiD ? eskiD.yuzde : null;
+            if (K && liste) {
+                var ozY = { aylik: aylik, donem: { kod: dn.kod, pay: pay }, donemler: {} };
+                Object.keys(oz.donemler || {}).forEach(function (k) { ozY.donemler[k] = oz.donemler[k]; });
+                ozY.donemler[dn.kod] = pay;
+                var top = 0;
+                liste.forEach(function (o) {
+                    var uid = o._id || o.uid;
+                    if (!uid || !K[uid] || !onayliMi(o)) return;
+                    top += dagit(K[uid].map(kayitOdeme), kayitTarihi(o), ozY).verilen;
+                });
+                var gider = A.toplam * DONEM_AY;
+                yuzde = gider > 0 ? Math.round(top / gider * 100) : 0;
+            }
             var degisti = A.aktif !== aktif || A.onayli !== onayli || oz.aylik !== aylik || +oz.gecmis[ay] !== aylik ||
+                          !eskiD || eskiD.pay !== pay || eskiD.yuzde !== yuzde || +(oz.donemler || {})[dn.kod] !== pay ||
                           oz.eskiAlan || A.eskiTaban || !A.guvenli || (me && oz.yoneticiler.indexOf(me) < 0);
             var bayat = !oz.guncelleme || (simdi - oz.guncelleme.getTime() > 6 * 3600e3);
             if (!degisti && !bayat && !zorla) return oz;
-            var FV = firebase.firestore.FieldValue, gecmis = {};
+            var FV = firebase.firestore.FieldValue, gecmis = {}, donemler = {};
             gecmis[ay] = aylik;
-            var acik = { aylik: aylik, gecmis: gecmis, yoneticiler: FV.arrayUnion(me), guncelleme: sunucuZamani() };
+            donemler[dn.kod] = pay;
+            var acik = { aylik: aylik, gecmis: gecmis, yoneticiler: FV.arrayUnion(me), guncelleme: sunucuZamani(),
+                         donem: { kod: dn.kod, pay: pay, yuzde: yuzde, bas: ymd(dn.bas), bit: ymd(dn.son), sabit: sabit },
+                         donemler: donemler };
             if (oz.eskiAlan) ['tur', 'toplam', 'taban', 'aktif', 'onayli', 'ayarElle'].forEach(function (k) { acik[k] = FV.delete(); });
             var ozel = { uid: me, tur: 'destekAyar', toplam: A.toplam, ayarElle: A.elle,
                          aktif: aktif, onayli: onayli, guncelleme: sunucuZamani() };
@@ -1389,6 +1695,30 @@
                 /* güvenilmeyen (bir yöneticinin yazmadığı) ayar belgesi birleştirilmez, baştan yazılır */
                 return db().collection('siparisler').doc('_destekAyar').set(ozel, A.guvenli ? { merge: true } : {});
             }).then(function () { _ayar = null; return ozetOku(true); });
+        });
+    }
+
+    /* 22.10.2026: öğretmenin kartı dönem dağıtımını kendi belgesindeki
+       destek.odemeler'den hesaplar. Eski özetlerde bu liste yok: sayımda
+       defterle karşılaştırılır, eksik ya da tutmayanlar yazılır (bir
+       sayımda en çok 25 öğretmen). */
+    function ozetleriEsitle(liste) {
+        if (!yoneticiMi() || !db() || !liste) return Promise.resolve(0);
+        return tumKayitlar().then(function (K) {
+            var is = [];
+            liste.forEach(function (o) {
+                var uid = o._id || o.uid;
+                if (!uid) return;
+                var L = K[uid] || [], d = o.destek || {};
+                var var_ = Array.isArray(d.odemeler) ? d.odemeler : null;
+                if (!L.length && !var_ && !(+d.odenen > 0)) return;
+                var top = L.reduce(function (a, k) { return a + k.tutar; }, 0);
+                if (!(var_ && var_.length === L.length && (+d.odenen || 0) === top)) is.push(uid);
+            });
+            is = is.slice(0, 25);
+            return Promise.all(is.map(function (uid) {
+                return ogretmenOzetYaz(uid, K[uid] || []).catch(function () { });
+            })).then(function () { return is.length; });
         });
     }
 
@@ -1431,7 +1761,7 @@
             var L = [];
             snap.forEach(function (d) { var v = d.data() || {}; v._id = d.id; L.push(v); });
             _liste = L;
-            return ozetYayinla(L);
+            return ozetYayinla(L).then(function () { return ozetleriEsitle(L); });
         }).then(function () { _yayinHata = ''; }, function (e) {
             _yayinHata = hataYaz(e);
             try { console.warn('destek sayımı yapılamadı:', _yayinHata); } catch (x) { }
@@ -1460,16 +1790,21 @@
         Promise.all([ozetOku(), ayarOku()]).then(function (r) {
             var oz = r[0], A = ayarDuzen(r[1], oz);
             var bek = _bekleyen ? _bekleyen.length : 0;
+            var dn = donemBul(new Date());
+            var dP = (oz.donem && oz.donem.kod === dn.kod) ? oz.donem : null;
             /* yazılmakta olan (kaydedilmemiş) toplam yeniden çizimde kaybolmasın */
             var once = document.getElementById('dstAyToplam');
             var yazilan = (once && once.__dstDegisti) ? once.value : '';
             el.__dstAktif = A.aktif;
             el.__dstToplam = A.toplam;
+            el.__dstPay = dP ? dP.pay : 0;
+            var simdikiPay = donemPayHesapla(A.toplam, A.aktif);
             el.innerHTML =
                 '<div class="dst-a-ust"><b>💛 Beklenen Destek</b>' +
                   '<span>Son 30 günde siteye giren: <b>' + A.aktif + '</b> öğretmen' + (A.onayli ? ' (onaylı ' + A.onayli + ')' : '') + '</span>' +
-                  '<span>Kişi başı: <b>' + esc(oz.hazir ? tl(oz.aylik) : '—') + '</b> / ay · <b>' +
-                    esc(oz.hazir ? tl(oz.aylik / 30) : '—') + '</b> / gün</span>' +
+                  '<span>' + esc(dn.yilAd + ' · ' + dn.ad + ' (' + dn.aralik + ')') + ' payı: <b>' + esc(dP ? tl(dP.pay) : '—') + '</b>' +
+                    (dP && dP.sabit ? ' <i class="dst-a-sabit">' + esc(gunYaz(new Date(dP.sabit))) + ' sabitlendi</i>' : '') + '</span>' +
+                  '<span>Ortak hedef: <b>' + (dP && dP.yuzde !== null ? '%' + dP.yuzde : '—') + '</b></span>' +
                   (oz.guncelleme ? '<span style="color:#A0927E;">yayın ' + esc(saatliYaz(oz.guncelleme)) + '</span>' : '') +
                   (bek ? '<span style="color:#B5670A; font-weight:800;">' + bek + ' bildirim onay bekliyor</span>' : '') +
                 '</div>' +
@@ -1484,9 +1819,18 @@
                   '<button type="button" class="dst-yb kaydet" data-dst="ayar-kaydet">Kaydet</button>' +
                   '<span class="dst-a-on" id="dstAyOn" aria-live="polite"></span>' +
                 '</div>' +
-                '<p style="margin:8px 0 0; font-size:.8rem; color:#8A7A66;">Kişi başı tutar = aylık toplam ÷ son 30 günde siteye giren onaylı öğretmen ' +
-                  '(alt sınır yok). Sayı, sen siteye girince ve sayfa açık kaldıkça 30 dakikada bir yeniden sayılır. ' +
-                  'Öğretmenler yalnız günlük tutarı ve kendi birikenini görür; öğretmen sayısı ve aylık toplam onlara gösterilmez.</p>';
+                '<div class="dst-a-form">' +
+                  '<button type="button" class="dst-yb art" data-dst="pay-yenile" title="Bu dönemin payını şimdiki öğretmen sayısıyla yeniden belirle">' +
+                    'Bu dönemin payını yeniden hesapla</button>' +
+                  '<span class="dst-a-on">şimdiki sayıyla <b>' + esc(tl(simdikiPay)) + '</b>' +
+                    (dP && dP.pay !== simdikiPay ? ' (şu an ' + esc(tl(dP.pay)) + ')' : '') + '</span>' +
+                '</div>' +
+                '<p style="margin:8px 0 0; font-size:.8rem; color:#8A7A66; line-height:1.55;">Dönem payı = kişi başı aylık ' +
+                  '(aylık toplam ÷ son 30 günde giren onaylı öğretmen) × 6. Her dönemin başında (1 Eylül, 1 Şubat) ilk sayımda bir kez ' +
+                  'sabitlenir, dönem boyunca kendiliğinden değişmez; «Kaydet» ya da «yeniden hesapla» bu dönemin payını değiştirir. ' +
+                  'Yeni öğretmenin ilk 30 günü ücretsiz; dönemin ortasında katılanın payı kalan süreyle orantılı. ' +
+                  'Ortak hedef = bu döneme düşen destekler ÷ (aylık toplam × 6). Öğretmenler kendi dönem payını ve ortak hedef ' +
+                  'yüzdesini görür; öğretmen sayısı ve aylık toplam onlara gösterilmez.</p>';
             /* destekçiler köşesi: yayında olanlar, × ile kaldırılır.
                (innerHTML'e EKLEME yapılmaz: ekleme bütün çocukları yeniden
                kurar, yazılmakta olan toplam ve işaretler kaybolur.) */
@@ -1512,7 +1856,7 @@
         });
     }
 
-    /* yazılan toplamın kişi başı karşılığı (kaydetmeden önce görülsün) */
+    /* yazılan toplamın dönem payı karşılığı (kaydetmeden önce görülsün) */
     function onizle() {
         var el = document.getElementById('admin-destek-ayar');
         var g = document.getElementById('dstAyToplam'), o = document.getElementById('dstAyOn');
@@ -1520,7 +1864,7 @@
         var t = Math.round(+g.value || 0);
         if (!(t > 0) || t === el.__dstToplam) { o.innerHTML = ''; return; }
         var a = aylikHesapla(t, el.__dstAktif || 0);
-        o.innerHTML = 'Kaydedince kişi başı <b>' + esc(tl(a)) + '</b> / ay · <b>' + esc(tl(a / 30)) + '</b> / gün';
+        o.innerHTML = 'Kaydedince bu dönemin payı <b>' + esc(tl(a * DONEM_AY)) + '</b> (ayda ' + esc(tl(a)) + ')';
     }
     function ayarArt(n) {
         var g = document.getElementById('dstAyToplam');
@@ -1537,8 +1881,8 @@
         var el = document.getElementById('admin-destek-ayar');
         var a = aylikHesapla(t, (el && el.__dstAktif) || 0);
         sor('Aylık toplam ' + tl(t) + ' olarak kaydedilsin mi?\n' +
-            'Kişi başı ' + tl(a) + ' / ay (' + tl(a / 30) + ' / gün) olur. Bu ayın tutarı yeni değerle hesaplanır; ' +
-            'biten ayların tutarı değişmez.').then(function (evet) {
+            'Bu dönemin kişi başı payı ' + tl(a * DONEM_AY) + ' olur (ayda ' + tl(a) + '). ' +
+            'Geçmiş dönemlerin payı değişmez.').then(function (evet) {
             if (!evet) return;
             Promise.all([ozetOku(true), ayarOku(true)]).then(function (r) {
                 var A = ayarDuzen(r[1], r[0]);
@@ -1549,12 +1893,27 @@
                 _ayar = null;
                 var g2 = document.getElementById('dstAyToplam');
                 if (g2) g2.__dstDegisti = false;
-                return ozetYayinla(_liste.length ? _liste : null, true);
+                return ozetYayinla(_liste.length ? _liste : null, true, { payYenile: true });
             }).then(function () {
                 ayarCiz(); rozetleriYenile();
-                uyar('Aylık toplam kaydedildi: ' + tl(t) + '.');
+                uyar('Aylık toplam kaydedildi: ' + tl(t) + '. Bu dönemin payı: ' + tl(a * DONEM_AY) + '.');
             }).catch(function (e) { uyar('Kaydedilemedi: ' + hataYaz(e)); });
         });
+    }
+
+    /* 22.10.2026: bu dönemin payını şimdiki öğretmen sayısıyla yeniden belirle */
+    function payYenile() {
+        var el = document.getElementById('admin-destek-ayar');
+        var yeni = donemPayHesapla((el && el.__dstToplam) || VARSAYILAN.toplam, (el && el.__dstAktif) || 0);
+        sor('Bu dönemin payı şimdiki öğretmen sayısıyla ' + tl(yeni) + ' olarak yeniden belirlensin mi?' +
+            (el && el.__dstPay ? '\n(Şu an ' + tl(el.__dstPay) + '.)' : '') +
+            '\nBu dönem fazla ödemiş olanların fazlası gelecek döneme sayılır.').then(function (evet) {
+            if (!evet) return;
+            return ozetYayinla(_liste.length ? _liste : null, true, { payYenile: true }).then(function () {
+                ayarCiz(); rozetleriYenile();
+                uyar('Bu dönemin payı: ' + tl(yeni) + '.');
+            });
+        }).catch(function (e) { uyar('Yeniden hesaplanamadı: ' + hataYaz(e)); });
     }
 
     function rozetYaz() {
@@ -1577,10 +1936,23 @@
         });
         return _rozetSoz;
     }
+    /* 22.10.2026: karttaki küçük rozet bu dönemin durumunu söyler */
+    function donemCipi(h) {
+        if (h.durum === 'tamam') return '<span class="dst-cip onaylandi">bu dönem destekçi</span>';
+        if (h.durum === 'kismi') return '<span class="dst-cip" style="background:#FFF4DE; color:#9A6512;">bu dönem ' + esc(tl(h.verilen)) + '</span>';
+        if (h.durum === 'ilkay') return '<span class="dst-cip elle">ilk ay</span>';
+        if (h.durum === 'bos') return '<span class="dst-cip" style="background:#F3F4F6; color:#8A94A3;">bu dönem destek yok</span>';
+        return '';
+    }
+    var _kayitlar = null;     /* uid -> defter kayıtları (22.10.2026) */
     function rozetleriYenile2() {
-        return Promise.all([ozetOku(), tumDefter().catch(function () { return {}; }), tumBekleyen().catch(function () { return []; })])
+        return Promise.all([ozetOku(), tumKayitlar().catch(function () { return {}; }), tumBekleyen().catch(function () { return []; })])
             .then(function (r) {
-                var oz = r[0]; _defter = r[1]; _bekleyen = r[2];
+                var oz = r[0]; _kayitlar = r[1]; _bekleyen = r[2];
+                _defter = {};
+                Object.keys(_kayitlar).forEach(function (u) {
+                    _defter[u] = _kayitlar[u].reduce(function (a, k) { return a + k.tutar; }, 0);
+                });
                 rozetYaz();
                 var bekSay = {};
                 _bekleyen.forEach(function (b) { bekSay[b.uid] = (bekSay[b.uid] || 0) + 1; });
@@ -1593,10 +1965,7 @@
                     if (bekSay[uid]) {
                         html = '<span class="dst-cip bekliyor">💛 ' + bekSay[uid] + ' bildirim</span>';
                     } else if (onayliMi(doc) && oz.hazir) {
-                        var h = hesapla(kayitTarihi(doc), _defter[uid] || 0, oz);
-                        html = h.kalan > 0
-                            ? '<span class="dst-cip" style="background:#FFF4DE; color:#9A6512;">kalan ' + esc(tl(h.kalan)) + '</span>'
-                            : '<span class="dst-cip onaylandi">destek güncel</span>';
+                        html = donemCipi(dagit((_kayitlar[uid] || []).map(kayitOdeme), kayitTarihi(doc), oz));
                     }
                     el.innerHTML = html;
                 });
@@ -1609,7 +1978,7 @@
         return '<div class="dst-y-sat">' +
             (adGoster ? '<b>' + esc(b.ad || b.email || 'Öğretmen') + '</b>' + (b.kod ? '<span class="n">' + esc(b.kod) + '</span>' : '') : '') +
             '<span class="t">' + esc(tl(b.tutar)) + '</span>' +
-            '<span class="n">' + (b.ay ? b.ay + ' ay' : 'serbest tutar') + ' · ' + esc(saatliYaz(b.tarih)) + '</span>' +
+            '<span class="n">' + esc(secimYazi(b)) + ' · ' + esc(saatliYaz(b.tarih)) + '</span>' +
             (b.not ? '<span class="n" style="font-style:italic;">“' + esc(b.not) + '”</span>' : '') +
             /* köşe: onaylanınca ne yayınlanacağı burada görünür (yönetici onaylamadan önce okur) */
             (b.koseGoster
@@ -1644,7 +2013,9 @@
             var oz = r[0], bil = r[1], def = r[2];
             var doc = (bilgi && bilgi.doc) || {};
             var odenen = def.reduce(function (a, k) { return a + k.tutar; }, 0);
-            var h = hesapla(kayitTarihi(doc), odenen, oz);
+            /* 22.10.2026: dönem hesabı */
+            var kayit = kayitTarihi(doc);
+            var h = dagit(def.map(kayitOdeme), kayit, oz);
             var aktif = aktifMi(doc, Date.now());
             var bekleyen = bil.filter(function (b) { return b.durum === 'bekliyor'; });
             var gecmis = bil.filter(function (b) { return b.durum !== 'bekliyor'; });
@@ -1653,14 +2024,18 @@
             if (!onayliMi(doc)) {
                 s += '<p class="dst-y-bilgi" style="margin-top:0;">Bu hesap onaylı değil; onaylanana kadar destek hesabına girmez.</p>';
             }
+            var dn = h.donem;
             s += '<div class="dst-y-kutular">' +
-                '<div class="dst-y-k"><b>' + esc(oz.hazir ? tl(h.beklenen) : '—') + '</b><span>BEKLENEN · ' + h.gun + ' GÜN</span></div>' +
-                '<div class="dst-y-k odenen"><b>' + esc(tl(odenen)) + '</b><span>ÖDENEN</span></div>' +
-                '<div class="dst-y-k kalan"><b>' + esc(oz.hazir ? tl(h.kalan) : '—') + '</b><span>KALAN</span></div>' +
-                (h.fazla > 0 ? '<div class="dst-y-k odenen"><b>' + esc(tl(h.fazla)) + '</b><span>FAZLA (İLERİ AYLAR)</span></div>' : '') +
+                '<div class="dst-y-k"><b>' + esc(h.kisi > 0 ? tl(h.kisi) : (h.ilkAy ? 'ilk ay' : '—')) + '</b><span>BU DÖNEMİN PAYI</span></div>' +
+                '<div class="dst-y-k odenen"><b>' + esc(tl(h.verilen)) + '</b><span>BU DÖNEM VERİLEN</span></div>' +
+                (h.ileri > 0 ? '<div class="dst-y-k odenen"><b>' + esc(tl(h.ileri)) + '</b><span>GELECEK DÖNEME</span></div>' : '') +
+                '<div class="dst-y-k"><b>' + esc(tl(odenen)) + '</b><span>TOPLAM ÖDENEN</span></div>' +
                 '</div>' +
-                '<p class="dst-y-bilgi">Kayıt ' + esc(gunYaz(h.kayit)) + ' · aylık ' + esc(oz.hazir ? tl(oz.aylik) : '—') +
-                (h.gunluk ? ' · her gün +' + esc(tl(h.gunluk)) : '') +
+                '<p class="dst-y-bilgi">' + donemCipi(h) + ' ' + esc(dn.yilAd + ' · ' + dn.ad + ' (' + dn.aralik + ')') +
+                ' · dönem payı ' + esc(h.pay > 0 ? tl(h.pay) : '—') +
+                (h.kisi > 0 && h.kisi < h.pay ? ' (dönem ortasında katıldı: ' + esc(tl(h.kisi)) + ')' : '') +
+                ' · kayıt ' + esc(gunYaz(kayit)) +
+                (h.ilkAy ? ' · ilk ay ücretsiz (bitiş ' + esc(gunYaz(h.ilkAyBitis)) + ')' : '') +
                 ' · son 30 günde ' + (aktif ? '<b style="color:#1E8449;">aktif</b>' : '<b style="color:#A9B2BD;">aktif değil</b>') +
                 ' · açıklama kodu <b>' + esc(aciklamaMetni(uid)) + '</b></p>';
 
@@ -1672,7 +2047,7 @@
                 (def.length ? def.map(function (k) {
                     return '<div class="dst-y-sat">' +
                         '<span class="t">' + esc(tl(k.tutar)) + '</span>' +
-                        '<span class="n">' + (k.ay ? k.ay + ' ay' : 'serbest tutar') + ' · ' + esc(gunYaz(k.tarih)) + '</span>' +
+                        '<span class="n">' + esc(secimYazi(k)) + ' · ' + esc(gunYaz(k.tarih)) + '</span>' +
                         (k.kaynak === 'bildirim' ? '<span class="dst-cip onaylandi">bildirimden</span>' : '<span class="dst-cip elle">elle girildi</span>') +
                         (k.not ? '<span class="n" style="font-style:italic;">“' + esc(k.not) + '”</span>' : '') +
                         '<span class="bos"></span>' +
@@ -1680,11 +2055,15 @@
                         '</div>';
                 }).join('') : '<p class="dst-y-yok">Henüz kayıtlı ödeme yok.</p>');
 
-            var ayOps = '<option value="0">serbest</option>';
-            for (var i = 1; i <= 12; i++) ayOps += '<option value="' + i + '">' + (i === 12 ? '12 ay (yıllık)' : i + ' ay') + '</option>';
+            /* 22.10.2026: ay yerine dönem seçimi (tutar seçenekten dolar) */
+            var SEC = secenekler(h), secOps = '<option value="serbest">serbest</option>', secTutar = {};
+            SEC.forEach(function (o) {
+                secOps += '<option value="' + o.tip + '">' + esc(o.ad.toLocaleLowerCase('tr-TR') + ' (' + tl(o.tutar) + ')') + '</option>';
+                secTutar[o.tip] = o.tutar;
+            });
             s += '<h5>Elle ödeme ekle</h5>' +
                 '<div class="dst-y-form" data-uid="' + esc(uid) + '">' +
-                  '<label>AY<select class="dst-f-ay">' + ayOps + '</select></label>' +
+                  '<label>NE İÇİN<select class="dst-f-sec">' + secOps + '</select></label>' +
                   '<label>TUTAR (TL)<input class="dst-f-tutar" type="number" min="1" step="10" style="width:120px;"></label>' +
                   '<label>ÖDEME TARİHİ<input class="dst-f-tarih" type="date" value="' + inputTarih(new Date()) + '"></label>' +
                   '<label style="flex:1 1 180px;">NOT<input class="dst-f-not" type="text" maxlength="200" placeholder="ör. elden / başka hesaptan"></label>' +
@@ -1692,24 +2071,27 @@
                     '<input class="dst-f-goster" type="checkbox" checked> köşede göster</label>' +
                   '<button type="button" class="dst-yb kaydet" data-dst="elle-ekle" data-uid="' + esc(uid) + '">Kaydet</button>' +
                 '</div>' +
-                '<p class="dst-y-bilgi">Ay seçince tutar o ayın tutarıyla dolar; istersen değiştir. Havale bildirimi gelmeden yapılan ödemeleri buradan gir.</p>';
+                '<p class="dst-y-bilgi">Seçince tutar dolar; istersen değiştir. Havale bildirimi gelmeden yapılan ödemeleri buradan gir. ' +
+                  'Ödeme, yapıldığı dönemin payını doldurur; fazlası gelecek döneme sayılır.</p>';
 
             if (gecmis.length) {
                 s += '<details style="margin-top:12px;"><summary style="cursor:pointer; font-weight:800; color:#8A94A3; font-size:.86rem;">Sonuçlanan bildirimler (' + gecmis.length + ')</summary>' +
                     '<div style="margin-top:8px;">' + gecmis.map(function (b) {
                         return '<div class="dst-y-sat">' + durumCipi(b.durum) +
                             '<span class="t">' + esc(tl(b.tutar)) + '</span>' +
-                            '<span class="n">' + (b.ay ? b.ay + ' ay' : 'serbest tutar') + ' · ' + esc(saatliYaz(b.tarih)) + '</span>' +
+                            '<span class="n">' + esc(secimYazi(b)) + ' · ' + esc(saatliYaz(b.tarih)) + '</span>' +
                             (b.not ? '<span class="n" style="font-style:italic;">“' + esc(b.not) + '”</span>' : '') + '</div>';
                     }).join('') + '</div></details>';
             }
             s += '</div>';
             kutu.innerHTML = s;
-            kutu.__dstAylik = oz.aylik;
+            kutu.__dstSecTutar = secTutar;
 
-            /* öğretmenin kartında gördüğü özet defterle aynı değilse düzelt */
+            /* öğretmenin kartında gördüğü özet defterle aynı değilse (ya da
+               22.10.2026'dan önceki özette ödeme listesi yoksa) düzelt */
             var ozt = doc.destek || {};
-            if ((+ozt.odenen || 0) !== odenen || (+ozt.adet || 0) !== def.length) {
+            if ((+ozt.odenen || 0) !== odenen || (+ozt.adet || 0) !== def.length ||
+                (def.length && !(Array.isArray(ozt.odemeler) && ozt.odemeler.length === def.length))) {
                 ogretmenOzetYaz(uid, def).catch(function () { });
             }
         }).catch(function (e) {
@@ -1729,12 +2111,15 @@
                 top += k.tutar;
                 if (k.tarih && (!son || k.tarih > son)) { son = k.tarih; sonTutar = k.tutar; }
             });
+            /* 22.10.2026: dönem dağıtımı için ödeme listesi {t: ms, tutar} */
+            var odemeler = L.map(kayitOdeme).filter(function (x) { return x.t > 0 && x.tutar > 0; })
+                .sort(function (a, b) { return a.t - b.t; });
             return db().collection('kullanicilar').doc(uid).set({
                 /* sonTutar (20.10.2026): öğretmenin kartındaki teşekkür şeridi için */
-                destek: { odenen: top, adet: L.length, sonOdeme: son || null, sonTutar: sonTutar, guncelleme: sunucuZamani() }
+                destek: { odenen: top, adet: L.length, sonOdeme: son || null, sonTutar: sonTutar, odemeler: odemeler, guncelleme: sunucuZamani() }
             }, { merge: true }).then(function () {
                 var O = window._adminOgretmenler || {};
-                if (O[uid] && O[uid].doc) O[uid].doc.destek = { odenen: top, adet: L.length };
+                if (O[uid] && O[uid].doc) O[uid].doc.destek = { odenen: top, adet: L.length, odemeler: odemeler };
                 return top;
             });
         });
@@ -1747,9 +2132,11 @@
        readByUser:false → yeşil nokta yanar). Kart şeridi kullanicilar
        belgesindeki destek.sonOdeme / sonTutar'dan çizilir. Mesaj yazılamazsa
        ödeme kaydı bozulmaz; yöneticiye söylenir. */
-    function tesekkurMetni(tutar, ay, tarih) {
+    function tesekkurMetni(tutar, ek, tarih) {
+        /* ek: "bu dönem", "bu yıl (iki dönem)", eski kayıtta "3 ay" … (22.10.2026) */
+        if (typeof ek === 'number') ek = ek ? ek + ' ay' : '';
         return 'Desteğin için teşekkürler 💛 ' + gunYaz(tarih) + ' tarihli ' + tl(tutar) +
-            (ay ? ' (' + ay + ' ay)' : '') + ' ödemen hesabına işlendi. ' +
+            (ek ? ' (' + ek + ')' : '') + ' ödemen hesabına işlendi. ' +
             'Katkınla sitedeki yapay zekâ hizmetleri ve yeni içerikler devam ediyor. ' +
             'Durumunu profilindeki Beklenen Destek kartından görebilirsin.';
     }
@@ -1783,6 +2170,10 @@
         }).then(function () { _ozet = null; });
     }
 
+    function tesekkurEk(b) {
+        var y = secimYazi(b);
+        return y === 'serbest tutar' ? '' : y;
+    }
     function tesekkurGonder(uid, bilgi, tutar, ay, tarih) {
         bilgi = bilgi || {};
         var d = db();
@@ -1802,6 +2193,8 @@
         rozetleriYenile();
         ayarCiz();      /* destekçiler köşesi listesi tazelensin */
         seritCiz();
+        /* 22.10.2026: ortak hedef yüzdesi hemen tazelensin (yeniden sayım) */
+        sayimYap(true);
     }
 
     function onayla(id) {
@@ -1811,11 +2204,12 @@
             if (!s.exists) throw new Error('Bildirim bulunamadı');
             var b = bildirimDuzen(s.id, s.data() || {});
             if (b.durum === 'onaylandi') { uyar('Bu bildirim zaten onaylanmış.'); return null; }
-            return sor((b.ad || b.email || 'Öğretmen') + ' · ' + tl(b.tutar) + (b.ay ? ' (' + b.ay + ' ay)' : '') +
-                       '\nÖdeme hesaba geldiyse onaylayın. Onaylanan tutar öğretmenin “Ödenen” kısmına işlenir.').then(function (evet) {
+            return sor((b.ad || b.email || 'Öğretmen') + ' · ' + tl(b.tutar) + ' (' + secimYazi(b) + ')' +
+                       '\nÖdeme hesaba geldiyse onaylayın. Onaylanan tutar öğretmenin bu dönemki desteğine işlenir.').then(function (evet) {
                 if (!evet) return null;
                 return db().collection('siparisler').doc('dk_' + id).set({
                     uid: me, tur: 'destekKayit', ogretmenUid: b.uid, tutar: b.tutar, ay: b.ay,
+                    secim: b.secim || '', donem: b.donem || donemBul(b.tarih || new Date()).kod,
                     kaynak: 'bildirim', siparisId: id, not: b.not || '',
                     odemeTarihi: b.tarih || new Date(), tarih: sunucuZamani()
                 }).then(function () {
@@ -1823,11 +2217,11 @@
                 }).then(function () {
                     return ogretmenOzetYaz(b.uid);
                 }).then(function () {
-                    return tesekkurGonder(b.uid, { ad: b.ad, email: b.email }, b.tutar, b.ay, b.tarih || new Date());
+                    return tesekkurGonder(b.uid, { ad: b.ad, email: b.email }, b.tutar, tesekkurEk(b), b.tarih || new Date());
                 }).then(function (gitti) {
                     var kose = b.koseGoster ? destekciEkle(b.ad, b.koseNot, b.tarih || new Date()) : Promise.resolve(null);
                     return kose.then(function (eklendi) {
-                        uyar('Onaylandı ✅ ' + tl(b.tutar) + ' öğretmenin ödenen kısmına işlendi.' +
+                        uyar('Onaylandı ✅ ' + tl(b.tutar) + ' öğretmenin desteğine işlendi.' +
                              (gitti ? '\nTeşekkür mesajı öğretmenin Mesajlar kutusuna yazıldı.' : '\nTeşekkür mesajı yazılamadı (mesaj kutusu izni).') +
                              (eklendi === true ? '\nDestekçiler köşesine eklendi: ' + kisaAd(b.ad) + '.'
                               : eklendi === false ? '\nDestekçiler köşesine eklenemedi.' : ''));
@@ -1848,7 +2242,8 @@
 
     function elleEkle(form, uid) {
         var tutar = Math.round(+form.querySelector('.dst-f-tutar').value || 0);
-        var ay = Math.floor(+form.querySelector('.dst-f-ay').value || 0);
+        var ay = 0;
+        var secim = ((form.querySelector('.dst-f-sec') || {}).value) || 'serbest';
         var td = form.querySelector('.dst-f-tarih').value;
         var not = (form.querySelector('.dst-f-not').value || '').trim().slice(0, 200);
         if (!(tutar > 0)) { uyar('Tutar yazın.'); return; }
@@ -1857,13 +2252,15 @@
         var bilgi = (_acik && _acik.bilgi) || {};
         var gk = form.querySelector('.dst-f-goster');
         var kosede = !gk || !!gk.checked;
-        sor((bilgi.ad || 'Öğretmen') + ' için ' + tl(tutar) + (ay ? ' (' + ay + ' ay)' : '') + ' ödeme kaydedilsin mi?').then(function (evet) {
+        var ek = tesekkurEk({ secim: secim });
+        sor((bilgi.ad || 'Öğretmen') + ' için ' + tl(tutar) + (ek ? ' (' + ek + ')' : '') + ' ödeme kaydedilsin mi?').then(function (evet) {
             if (!evet) return;
             return db().collection('siparisler').add({
                 uid: benUid(), tur: 'destekKayit', ogretmenUid: uid, tutar: tutar, ay: ay,
+                secim: secim, donem: donemBul(tarih).kod,
                 kaynak: 'elle', siparisId: '', not: not, odemeTarihi: tarih, tarih: sunucuZamani()
             }).then(function () { return ogretmenOzetYaz(uid); })
-              .then(function () { return tesekkurGonder(uid, bilgi, tutar, ay, tarih); })
+              .then(function () { return tesekkurGonder(uid, bilgi, tutar, ek, tarih); })
               .then(function (gitti) {
                   var kose = kosede ? destekciEkle(bilgi.ad, '', tarih) : Promise.resolve(null);
                   return kose.then(function (eklendi) {
@@ -1905,6 +2302,7 @@
         else if (is === 'elle-ekle') elleEkle(t.closest('.dst-y-form'), t.getAttribute('data-uid'));
         else if (is === 'ayar-kaydet') ayarKaydet();
         else if (is === 'ayar-art') ayarArt(+t.getAttribute('data-art') || 0);
+        else if (is === 'pay-yenile') payYenile();
         else if (is === 'kose-sil') {
             sor(t.getAttribute('data-ad') + ' destekçiler köşesinden kaldırılsın mı?').then(function (evet) {
                 if (!evet) return;
@@ -1922,15 +2320,14 @@
         t.__dstDegisti = true;
         onizle();
     });
-    /* elle ödeme: ay seçilince tutarı doldur */
+    /* elle ödeme: seçim yapılınca tutarı doldur (22.10.2026: ay yerine dönem) */
     document.addEventListener('change', function (e) {
         var t = e.target;
-        if (!t || !t.classList || !t.classList.contains('dst-f-ay')) return;
+        if (!t || !t.classList || !t.classList.contains('dst-f-sec')) return;
         var form = t.closest('.dst-y-form');
         var kutu = _acik && _acik.kutu;
-        var aylik = (kutu && kutu.__dstAylik) || 0;
-        var ay = +t.value || 0;
-        if (form && ay && aylik) form.querySelector('.dst-f-tutar').value = ay * aylik;
+        var T = (kutu && kutu.__dstSecTutar) || {};
+        if (form && T[t.value] > 0) form.querySelector('.dst-f-tutar').value = T[t.value];
     });
 
     /* ------------------------------------------------------------------
@@ -1940,6 +2337,9 @@
         /* hesap (test ve diğer modüller için) */
         aylikHesapla: aylikHesapla, hesapla: hesapla, ozetDuzen: ozetDuzen,
         kayitTarihi: kayitTarihi, aktifMi: aktifMi, onayliMi: onayliMi,
+        /* 22.10.2026: dönem */
+        donemBul: donemBul, donemPayHesapla: donemPayHesapla, kisiPay: kisiPay, dagit: dagit,
+        odemeListesi: odemeListesi, payYenile: payYenile,
         /* öğretmen */
         odemeAc: odemeAc, oner: oner, profilKontrol: profilKontrol, tazele: kartTazele,
         /* yönetici */

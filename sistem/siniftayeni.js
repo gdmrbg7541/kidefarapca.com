@@ -26,14 +26,32 @@
    =========================================================================== */
 window.KIDEF_SINIFTA_YENI = [
 
+  /* 22.10.2026 — öğretmen: "sınıfta yeni kısmındaki ekranı yansıt kısmını güncelle, ilk
+     duyuru olsun, kumanda özellikleri vs ekledik". 17.10'daki tahta kaydı bugünkü akışla
+     yeniden yazıldı ve başa alındı (görsel aynı: g 'tahta'). */
+  { t: '2026-10-22', e: 'Akıllı tahta', g: 'tahta', b: 'Tahtanın kumandası artık cebinde',
+    m: 'Telefonla en kısası: «Karekodu tara» ile tahtadaki giriş karekodunu okut ve onayla, '
+     + '«Bu telefon tahtanın kumandası olsun mu?» sorusuna «Evet» de; tahtada oturumun açılır, '
+     + 'telefonun kumanda olur. Bilgisayardan yansıtacaksan tahtayı bir kez başlıktaki kumanda '
+     + 'simgesinden «Sınıf Ekranı» olarak işaretle, bilgisayarda yeşil «Bu cihazı kumanda olarak '
+     + 'kullan»a dokun. Açtığın sayfa, kaydırdığın yer, yazdığın kelime kablosuz olarak tahtada '
+     + 'aynı anda görünür; şifre alanları tahtaya gitmez. Telefondaki kumanda tuşundan «Perde» ile '
+     + 'tahtayı karartır, «Duraklat» ile bekletirsin; «Tahtadan da kullan»ı açarsan öğrenci tahtaya '
+     + 'dokunarak çalışır. Ders sürerken telefonunun ekranı kararmaz; kilitlense de tahta sürer, '
+     + 'açınca kaldığın yerden devam edersin. Kumanda tektir: başka bir cihazı kumanda yaparsan '
+     + 'eskisi kendiliğinden bırakır. Dizinden, ayağından rahatsızsan ders boyunca masanda oturarak '
+     + 'anlatırsın.' },
+
   { t: '2026-10-20', e: 'Destek', b: 'Kidef\'i birlikte ayakta tutuyoruz',
+    /* 22.10.2026: dönemlik sabit pay (günlük tutar kalktı) */
     m: 'Sitedeki yapay zekâ hizmetlerinin giderleri ve materyallerin, oyunların, sınavların arkasındaki '
      + 'öğretmen emeği, siteyi kullanan öğretmenler arasında paylaşılıyor. Profilindeki «Beklenen Destek» '
-     + 'kartında günlük tutarını, birikenini ve «Destek ver» tuşunu bulursun. Tutar her gün yeniden '
-     + 'hesaplanır; siteye giren öğretmen arttıkça herkesin payı küçülür, yani meslektaşını davet etmek '
-     + 'en iyi destek. Ödemen onaylanınca sana teşekkür mesajı gelir; kısa adın (tutar olmadan) ana '
-     + 'sayfadaki destekçiler şeridinde ve kartın altındaki köşede görünür, profilinde yıl rozeti belirir. '
-     + 'İstersen meslektaşlarına tek cümle de bırakabilirsin.' },
+     + 'kartında bu dönemin desteğini görürsün: tutar dönem başında (Eylül ve Şubat) bir kez belirlenir, '
+     + 'dönem boyunca değişmez; siteye katılan öğretmen arttıkça gelecek dönemin payı küçülür, yani '
+     + 'meslektaşını davet etmek en iyi destek. Yeni katılanın ilk ayı bizden. Kartta herkesin birlikte '
+     + 'doldurduğu «ortak hedef» çubuğu da var. Ödemen onaylanınca sana teşekkür mesajı gelir; kısa adın '
+     + '(tutar olmadan) ana sayfadaki destekçiler şeridinde ve kartın altındaki köşede görünür, profilinde '
+     + 'destekçi rozeti belirir. İstersen meslektaşlarına tek cümle de bırakabilirsin.' },
 
   { t: '2026-10-18', e: 'Dijital kitap', b: '5-10. sınıfın ders kitapları sitede, sayfa sayfa',
     m: '5, 6, 7, 8, 9 ve 10. sınıfın ders kitabı artık sitede sayfa çevirmeli olarak açılıyor: '
@@ -43,17 +61,6 @@ window.KIDEF_SINIFTA_YENI = [
      + 'o bölge tahtayı doldurur. 8. sınıf kitabının etkinlikleri de EBA\'ya gitmeden kitabın '
      + 'içinde açılıyor: sınıf tahtada çözüyor, «Kontrol et» hemen gösteriyor, cevap anahtarı '
      + 'tek dokunuşta.' },
-
-  { t: '2026-10-17', e: 'Akıllı tahta', g: 'tahta', b: 'Masandan kalkmadan tahtayı yönet',
-    m: 'Bilgisayarında başlıktaki ekran simgesinden "Bu bilgisayardan yansıt"ı, tahtada aynı '
-     + 'hesapla "Bu cihaz tahta"yı seç. Telefonla daha da kısa: tahtadaki giriş karekodunu '
-     + 'telefonunla okut, onaylayınca gelen "kumanda olsun mu?" sorusuna "Evet" de. Açtığın '
-     + 'sayfa, kaydırdığın yer, bastığın düğme ve '
-     + 'yazdığın kelime kablosuz, ekran paylaşımı olmadan tahtada aynı anda görünür. '
-     + 'Dizlerinden ya da ayaklarından rahatsızsan ders boyunca tahtanın önüne gidip gelmen, '
-     + 'ayakta durman gerekmez; masanda oturarak anlatırsın. Öğrencilerin görmemesi gereken '
-     + 'bir şeye bakacaksan üstteki şeritten "Perde" ile tahtayı karartır, "Duraklat" ile son '
-     + 'görüntüde bekletirsin.' },
 
   { t: '2026-10-14', e: 'Metin Tahlili', b: '5-10. sınıfın metinleri Kidef Arapça kitabının içinde',
     m: 'Kitabın içindekiler sayfasının hemen ardına her sınıf için bir sayfa geldi: '
@@ -323,7 +330,11 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
     '<span class="ty-ok" aria-hidden="true">' + SIM('<path class="ty-okc" d="M3 12h15"/><path d="M14 7l5 5-5 5"/>') + '</span>' +
     '<span class="ty-sabit" aria-hidden="true">' + SIM('<rect x="2.5" y="4" width="19" height="12" rx="1.6"/><path d="M8 20h8M12 16v4"/>') + 'akıllı tahtaya</span>' +
     '</div>';
+  /* 22.10.2026: kumanda çipleri öne (yüzen kumanda tuşu, ekran kararmaz, kaldığı yerden) */
   var CIPLER = '<div class="ty-cipler">' + VURGU +
+    CIP('<rect x="7" y="9" width="10" height="13.5" rx="2.6"/><path d="M12 12.6v.01M10 17.6h4"/><path class="ty-kd1" d="M9.9 6.4a3 3 0 0 1 4.2 0"/><path class="ty-kd2" d="M7.6 4.1a6.2 6.2 0 0 1 8.8 0"/>', 'Kumanda tuşu') +
+    CIP('<circle cx="12" cy="12" r="3.8"/><path class="ty-isin" d="M12 2.6v2.3M12 19.1v2.3M2.6 12h2.3M19.1 12h2.3M5.4 5.4l1.6 1.6M17 17l1.6 1.6M5.4 18.6L7 17M17 7l1.6-1.6"/>', 'Ekran kararmaz') +
+    CIP('<path d="M19.6 12.4a7.6 7.6 0 1 1-2.3-5.6"/><path d="M19.8 3.8v3.6h-3.6"/><path class="ty-oynat" d="M10.2 9.2l4.6 2.8-4.6 2.8z"/>', 'Kaldığın yerden') +
     CIP('<path d="M3 12h5M16 12h5"/><path d="M8 9v6h3V9zM13 9v6h3V9z"/><path class="ty-kes" d="M5 4l14 16"/>', 'Kablo yok') +
     CIP('<path d="M7 3v11M7 14h10M8 14l-1 7M16 14l1 7"/><path d="M7 10h7"/>', 'Oturarak anlat') +
     CIP('<rect x="2" y="5" width="9" height="7" rx="1.5"/><path d="M4 15h5"/><rect x="13" y="3" width="9" height="11" rx="1.5"/><path class="ty-yanson" d="M11 8.5h2"/>', 'Aynı hesap') +
@@ -370,6 +381,14 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
     '.ty-cip svg{ width:21px; height:21px; flex:none; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;',
     '  animation:tyCip 2.8s ease-in-out infinite; }',
     '.ty-cip:nth-child(2) svg{ animation-delay:.4s; } .ty-cip:nth-child(3) svg{ animation-delay:.8s; }',
+    '.ty-cip:nth-child(4) svg{ animation-delay:1.2s; } .ty-cip:nth-child(5) svg{ animation-delay:1.6s; } .ty-cip:nth-child(6) svg{ animation-delay:2s; } .ty-cip:nth-child(7) svg{ animation-delay:2.4s; }',
+    /* 22.10.2026: kumanda dalgaları yanıp söner, güneş ışınları nefes alır, oynat üçgeni dolar */
+    '.ty-kd1{ animation:tyKd 1.6s ease-in-out infinite; } .ty-kd2{ animation:tyKd 1.6s ease-in-out .3s infinite; }',
+    '@keyframes tyKd{ 0%,100%{ opacity:.25; } 45%{ opacity:1; } }',
+    '.ty-isin{ animation:tyIsin 2.4s ease-in-out infinite; }',
+    '@keyframes tyIsin{ 0%,100%{ opacity:.45; } 50%{ opacity:1; } }',
+    '.ty-oynat{ fill:currentColor; fill-opacity:0; animation:tyOynat 2.4s ease-in-out infinite; }',
+    '@keyframes tyOynat{ 0%,40%{ fill-opacity:0; } 60%,100%{ fill-opacity:1; } }',
     '@keyframes tyCip{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-2px); } }',
     '.ty-kes{ stroke:#E74C3C; }',
     '.ty-yanson{ animation:tyYanson 1.2s ease-in-out infinite; }',
@@ -397,6 +416,7 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
     '@media (max-width:860px){ .ty-cip{ font-size:14px; padding:5px 11px 5px 8px; } .ty-cip svg{ width:18px; height:18px; } }',
     '@media (prefers-reduced-motion:reduce){',
     '  .ty-svg *, .ty-cip svg, .ty-cip svg *{ animation:none !important; }',
+    '  .ty-kd1, .ty-kd2, .ty-isin{ opacity:1 !important; } .ty-oynat{ fill-opacity:1 !important; }',
     '  .ty-harf{ stroke-dashoffset:0; } .ty-nokta, .ty-iz{ opacity:.8; } .ty-yasak{ opacity:1; } .ty-imlec{ transform:translate(428px,30px); }',
     '  .ty-d, .ty-okc{ animation:none !important; opacity:1 !important; transform:none !important; } .ty-donen{ display:inline-flex; gap:6px; }',
     '}'
