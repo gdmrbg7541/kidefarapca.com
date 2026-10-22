@@ -568,6 +568,11 @@
     '.th-isaret-halka.fare{width:14px;height:14px;margin:-7px 0 0 -7px;background:#ef4444;border:2px solid #fff;box-shadow:0 0 12px 3px rgba(239,68,68,.65)}',
     '.th-isaret-halka.buyutec{border-color:#16A085;box-shadow:0 0 0 5px rgba(22,160,133,.18),0 0 18px rgba(22,160,133,.5)}',
     '.th-isaret-halka.buyutec.fare{width:30px;height:30px;margin:-15px 0 0 -15px;background:transparent;border:3px solid #16A085}',
+    /* 2. sürüm: bırakılan yer kumandada da işaretli */
+    '.th-isaret-halka.dinlen{width:16px;height:16px;margin:-8px 0 0 -8px;background:#ef4444;border:2px solid #fff;',
+    ' box-shadow:0 0 0 3px rgba(239,68,68,.25),0 0 12px 3px rgba(239,68,68,.55)}',
+    '.th-isaret-halka.buyutec.dinlen{width:36px;height:36px;margin:-18px 0 0 -18px;background:rgba(22,160,133,.08);border:3px solid #16A085;',
+    ' box-shadow:0 0 0 4px rgba(22,160,133,.18)}',
     '.th-araccip{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:47;display:flex;align-items:center;gap:8px;',
     ' max-width:calc(100vw - 20px);box-sizing:border-box;background:rgba(15,42,67,.95);color:#fff;border-radius:999px;padding:6px 6px 6px 14px;',
     ' box-shadow:0 8px 24px rgba(0,0,0,.3);font:700 13.5px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif}',
@@ -583,6 +588,24 @@
     /* tahta: lazer tuvali (sayfanın üstünde, perdenin altında), büyüteç */
     '.th-lazer{position:fixed;left:0;top:0;width:100%;height:100%;z-index:28;pointer-events:none}',
     '.th-cerceve.th-buyuk{will-change:transform}',
+    /* 2. sürüm: lazer noktası (öğe; iz tuvalde) ve mercek */
+    '.th-lazer-nokta{position:fixed;left:0;top:0;width:0;height:0;z-index:29;pointer-events:none;will-change:transform}',
+    '.th-lazer-nokta::before{content:"";position:absolute;left:-29px;top:-29px;width:58px;height:58px;border-radius:50%;',
+    ' background:radial-gradient(circle,rgba(255,70,70,.9) 0,rgba(255,0,0,.45) 35%,rgba(255,0,0,0) 70%);animation:thLzNabiz 1.05s ease-in-out infinite}',
+    '.th-lazer-nokta i{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;box-sizing:border-box;',
+    ' border:2.6px solid #e10000;background:radial-gradient(circle,#fff8f8 0,#fff8f8 4.6px,rgba(255,248,248,0) 5.4px)}',
+    '.th-lazer-nokta.gel{animation:thLzGel .22s ease-out}',
+    '.th-lazer-nokta.disari{opacity:.55}',
+    '.th-lazer-nokta.dinlen::before{animation-duration:1.7s}',
+    '.th-lazer-nokta.git{opacity:0;transition:opacity .2s ease}',
+    '@keyframes thLzNabiz{0%,100%{transform:scale(.9)}50%{transform:scale(1.12)}}',
+    '@keyframes thLzGel{from{opacity:0}}',
+    '.th-mercek{position:fixed;left:0;top:0;z-index:28;border-radius:50%;overflow:hidden;pointer-events:none;background:#fff;will-change:transform;',
+    ' box-shadow:0 0 0 4px #fff,0 0 0 7px rgba(22,160,133,.95),0 16px 44px rgba(0,0,0,.38);transition:opacity .2s ease}',
+    '.th-mercek.gizli{opacity:0}',
+    '.th-mercek::after{content:"";position:absolute;left:0;top:0;right:0;bottom:0;border-radius:50%;box-shadow:inset 0 0 22px rgba(0,0,0,.16);pointer-events:none}',
+    '.th-mercek-ic{position:absolute;left:0;top:0;border:0;margin:0;padding:0;transform-origin:0 0;background:#fff;pointer-events:none}',
+    '@media (prefers-reduced-motion:reduce){.th-lazer-nokta::before{animation:none}}',
     '[hidden]{display:none !important}'
   ].join('\n');
   function stilKur() {
@@ -2022,7 +2045,8 @@
     if (!d || d === S.belge) return;
     try { if (!w.location || w.location.href === 'about:blank') return; } catch (e) { return; }
     S.belge = d;
-    if (CIHAZ === 'tahta') isaretSifirla();             /* lazer · büyüteç: yeni sayfada baştan */
+    if (CIHAZ === 'tahta') { isaretSifirla(); setTimeout(isaretDegerlendir, 350); }   /* lazer · mercek: yeni sayfada baştan; bu sayfanın işareti geldiyse görünür */
+    else if (IA.arac) { IA.sonBilgi = null; kCapa(false); halkaYerlestir(0, 0, false); }   /* kumanda başka sayfaya geçti */
     gecmisSay(w);
     kopruKur(w, d);
     if (S.lider) yYeniBelge(w, d); else zYeniBelge(w, d);
@@ -2211,8 +2235,8 @@
     var hedef = '<select class="th-hedef" id="thHedef" hidden title="' + kac(kd('th.hedef_ip', 'Hangi tahtaya yansıtılsın?')) + '" aria-label="' + kac(kd('th.hedef_ip', 'Hangi tahtaya yansıtılsın?')) + '"></select>';
     /* LAZER · BÜYÜTEÇ (22.10.2026) */
     var araclar =
-      '<button type="button" class="th-dug th-arac" id="thLazerDug" data-arac="lazer" aria-pressed="false" title="' + kac(kd('th.lazer_ip', 'Parmağını ya da fareyi gezdir: tahtada kırmızı nokta aynı yeri gösterir')) + '">' + SVG.lazer + '<span>' + kac(kd('th.lazer', 'Lazer')) + '</span></button>' +
-      '<button type="button" class="th-dug th-arac buyutec" id="thBuyutecDug" data-arac="buyutec" aria-pressed="false" title="' + kac(kd('th.buyutec_ip', 'Dokunduğun yer tahtada büyür')) + '">' + SVG.buyutec + '<span>' + kac(kd('th.buyutec', 'Büyüteç')) + '</span></button>';
+      '<button type="button" class="th-dug th-arac" id="thLazerDug" data-arac="lazer" aria-pressed="false" title="' + kac(kd('th.lazer_ip', 'Parmağını ya da fareyi gezdir: tahtada kırmızı nokta aynı yeri gösterir, bıraktığın yerde kalır')) + '">' + SVG.lazer + '<span>' + kac(kd('th.lazer', 'Lazer')) + '</span></button>' +
+      '<button type="button" class="th-dug th-arac buyutec" id="thBuyutecDug" data-arac="buyutec" aria-pressed="false" title="' + kac(kd('th.buyutec_ip', 'Gezdirdiğin yer tahtada yuvarlak bir mercekle büyür')) + '">' + SVG.buyutec + '<span>' + kac(kd('th.buyutec', 'Büyüteç')) + '</span></button>';
     var tuslar = araclar +
       '<button type="button" class="th-dug th-kip" id="thKipDug" aria-pressed="false" title="' + kac(kd('th.kip_ip', 'Açıkken tahtaya dokunarak da kullanabilirsin; kapalıyken tahta yalnız bilgisayarı gösterir')) + '">' + SVG.dokun + '<span>' + kac(kd('th.kip', 'Tahtadan da kullan')) + '</span></button>' +
       '<button type="button" class="th-dug" id="thPerdeDug" aria-pressed="false" title="' + kac(kd('th.perde_ip', 'Tahtayı karart (öğrenciler ekranı görmesin)')) + '">' + SVG.perde + '<span>' + kac(kd('th.perde', 'Perde')) + '</span></button>' +
@@ -2655,7 +2679,8 @@
     var koruma = !cift() || (os && !!(S.yayin && S.yayin.durak));
     var kr = $('thKoruma');
     if (kr && kr.hidden === koruma) kr.hidden = !koruma;
-    if (IZ.zoom && !oturumVar()) buyutecKapat();        /* kumanda gitti/uyudu: büyüteç kapanır */
+    if ((IZ.a || IZ.zoom) && !os) isaretSifirla();       /* ders bitti: lazer, mercek kalkar (kumanda uyurken kalır) */
+    else if (!IZ.a && IZ.kayit && os) isaretDegerlendir();   /* sonradan açılan ya da yenilenen tahta: bırakılmış nokta */
     var p = !!(os && (S.ayar.perde || S.ayar.kg));
     var pe = $('thPerde');
     if (pe && pe.hidden === p) pe.hidden = !p;
@@ -2701,15 +2726,29 @@
      lazer veya büyüteç gibi". KUMANDA: panelden araç seçilince sayfanın üstüne
      saydam bir yüzey gelir (tıklama ve kaydırma sayfaya gitmez; fare tekerleği
      yine kaydırır). Parmağın ya da farenin altındaki öğe bulunur — yazının
-     üstündeyse o HARF — ve yolu tahta/<uid>/isaret'e yazılır (en çok 20 kez/sn;
-     basılıyken saniyede bir tazelenir). TAHTA: aynı öğeyi (harfi) kendi
+     üstündeyse o HARF — ve yolu tahta/<uid>/isaret'e yazılır (en çok 20 kez/sn).
+     TAHTA: aynı öğeyi (harfi) kendi
      düzeninde bulur; telefonla tahtanın düzeni farklı olsa da nokta aynı
-     kelimenin üstüne düşer. Lazer: kırmızı nokta + kısa iz, parmak kalkınca
-     söner. Büyüteç: çerçeve o noktanın çevresinde k kat büyür (CSS transform),
-     araç kapanınca normale döner. */
-  var ISARET_ARA = 50, ISARET_NABIZ = 1000, ISARET_BAYAT = 3500;
+     kelimenin üstüne düşer. Lazer: kırmızı nokta + kısa iz.
+     2. SÜRÜM (22.10.2026) — öğretmen: "lazeri açınca kaybolmasın en son bırakıldığı
+     yerde, ayrıca mobilde dikey masaüstünde yatay olduğu için daha dengeli olmalı
+     lazer çok hızlı şuan biraz azalt, büyütmeyi yapabiliyoruz ama lazer gibi sadece
+     gezdirdiğimiz yeri büyütebilir miyiz acaba":
+       · Nokta parmak kalkınca sönmez, bırakıldığı yerde durur. Araç yeniden
+         açılınca aynı sayfada en son bırakılan yerde (yoksa ekranın ortasında)
+         hemen belirir; kumandada da o yer işaretli kalır. Sayfa kayarsa nokta
+         kelimesiyle birlikte kayar. Araç kapanınca, sayfa değişince, ders bitince
+         kalkar (kumanda uyurken kalır).
+       · Tahtadaki nokta yaylı bir izleyiciyle gider: yumuşak hızlanır, yavaşlayarak
+         durur, hız sınırı var. Dikey telefonda parmağın küçük bir kayışı yatay
+         tahtada uzun bir yol olduğundan, kumanda ekranı tahtadan ne kadar darsa
+         nokta o kadar yumuşak ve yavaş gider (tahta / kumanda genişliği).
+       · Büyüteç artık MERCEK: sayfanın tamamı büyümez; tahtada yuvarlak bir mercek
+         parmağın/farenin altındaki yeri k kat büyütür, gerisi olduğu gibi görünür.
+         (Mercek kurulamazsa eskisi gibi bütün çerçeve büyür.) */
+  var ISARET_ARA = 50;
   var IA = { arac: null, alan: null, halka: null, cip: null, n: 0, son: 0, z: null, bekleyen: null, sonBilgi: null,
-             basili: false, nabiz: null, k: 2, fare: false, tur: null };
+             basili: false, k: 2, fare: false, tur: null, sonYer: null, capa: null, mx: null, my: null, tekerZ: null };
   function sayfaNo() { return S.lider ? Y.d : Z.d; }
   function sinirla(v) { v = +v; return isNaN(v) ? 0.5 : Math.min(1, Math.max(0, v)); }
   function caretAl(doc, x, y) {
@@ -2784,7 +2823,9 @@
   function isaretYaz(o) {
     if (!S.kok || !IA.arac) return;
     IA.son = SIMDI();
-    var k = { i: BEN, a: IA.arac, d: sayfaNo(), n: ++IA.n, z: sunucuZaman(), k: IA.k };
+    var k = { i: BEN, a: IA.arac, d: sayfaNo(), n: ++IA.n, z: sunucuZaman(), k: IA.k,
+              w: Math.round(window.innerWidth), h: Math.round(window.innerHeight) };     /* w, h: tahtada denge */
+    if (S.bas) k.b = S.bas;                                         /* oturum: eski dersten kalan gösterilmez */
     for (var a in o) if (has(o, a) && o[a] !== undefined) k[a] = o[a];
     try { S.kok.child('isaret').set(k); } catch (e) { }
   }
@@ -2802,25 +2843,36 @@
       if (IA.bekleyen) { var b2 = IA.bekleyen; IA.bekleyen = null; isaretYaz(b2); }
     }, ISARET_ARA - gec);
   }
-  /* basılıyken (ya da fare üstünde dururken) nokta tahtada sönmesin */
-  function nabizBasla() {
-    if (IA.nabiz) return;
-    IA.nabiz = setInterval(function () {
-      if (!IA.arac || !IA.basili || !IA.sonBilgi) { clearInterval(IA.nabiz); IA.nabiz = null; return; }
-      if (SIMDI() - IA.son >= ISARET_NABIZ - 60) isaretYaz(IA.sonBilgi);
-    }, ISARET_NABIZ);
+  /* parmak kalktı / fare yüzeyden çıktı: son yer «bırakıldı» (up) diye yazılır —
+     tahtada sönmez, orada durur (2. sürüm) */
+  function dinlenBilgi() {
+    var o = {}, s = IA.sonBilgi;
+    if (s) for (var a in s) if (has(s, a) && a !== 'up') o[a] = s[a];
+    o.up = 1;
+    return o;
   }
   /* çipteki yazı gerçekten kullanılan işaretçiye göre: parmak / fare */
   function turGor(pt) {
     var t = pt === 'mouse' ? 'fare' : 'dokun';
     if (IA.tur !== t) { IA.tur = t; if (IA.cip) aracCipKur(); }
   }
-  function halkaYerlestir(x, y, gor) {
+  function halkaYerlestir(x, y, gor, dinlen) {
     var h = IA.halka;
     if (!h) return;
-    h.className = 'th-isaret-halka ' + (IA.arac || '') + (IA.fare ? ' fare' : '');
+    h.className = 'th-isaret-halka ' + (IA.arac || '') + (IA.fare ? ' fare' : '') + (dinlen ? ' dinlen' : '');
     h.hidden = !gor;
     if (gor) h.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
+  }
+  /* bırakılan yer kumandada da işaretli kalır; sayfa kayınca kelimesiyle gider */
+  function halkaDinlen() {
+    if (!IA.arac || IA.basili) return;
+    var p = IA.sonBilgi ? isaretNokta(IA.sonBilgi) : null;
+    if (!p) { halkaYerlestir(0, 0, false); return; }
+    halkaYerlestir(p.x, p.y, true, true);
+  }
+  function kCapa(ac) {
+    if (!ac) { clearInterval(IA.capa); IA.capa = null; return; }
+    if (!IA.capa) IA.capa = setInterval(halkaDinlen, 400);
   }
   function isaretAlanKur() {
     var al = document.createElement('div');
@@ -2836,38 +2888,38 @@
       e.preventDefault();
       aktif = e.pointerId; IA.fare = e.pointerType === 'mouse'; turGor(e.pointerType);
       if (!IA.fare) { try { al.setPointerCapture(e.pointerId); } catch (x) { } }
-      IA.basili = true;
+      IA.basili = true; kCapa(false);
       GOR.girdi = SIMDI(); UYANIK.dokunus = SIMDI();
+      IA.mx = e.clientX; IA.my = e.clientY;
       halkaYerlestir(e.clientX, e.clientY, true);
       var o = noktaBilgisi(e.clientX, e.clientY);
       if (o) isaretGonder(o, true);
-      nabizBasla();
     }
     function gez(e) {
       if (e.pointerType === 'mouse') {
         /* fare: basmadan da — üstünde gezdikçe (fare lazeri) */
         if (!IA.fare) { IA.fare = true; al.className = 'th-isaret-alan ' + IA.arac + ' fare'; }
         turGor('mouse');
-        IA.basili = true;
+        IA.basili = true; kCapa(false);
+        IA.mx = e.clientX; IA.my = e.clientY;
         halkaYerlestir(e.clientX, e.clientY, true);
         var o = noktaBilgisi(e.clientX, e.clientY);
         if (o) isaretGonder(o);
-        nabizBasla();
         return;
       }
       if (aktif !== e.pointerId) return;
+      IA.mx = e.clientX; IA.my = e.clientY;
       halkaYerlestir(e.clientX, e.clientY, true);
       var o2 = noktaBilgisi(e.clientX, e.clientY);
       if (o2) isaretGonder(o2);
     }
     function birak(e) {
       if (e.pointerType === 'mouse') {
-        if (e.type === 'pointerup') return;             /* fare: tıklayınca sönmez, yüzeyden çıkınca söner */
+        if (e.type === 'pointerup') return;             /* fare: tıklayınca bırakılmaz, yüzeyden çıkınca */
       } else if (aktif !== e.pointerId) return;
       aktif = null; IA.basili = false;
-      clearInterval(IA.nabiz); IA.nabiz = null;
-      halkaYerlestir(0, 0, false);
-      isaretGonder({ up: 1 }, true);
+      if (IA.sonBilgi) isaretGonder(dinlenBilgi(), true);   /* 2. sürüm: nokta bırakılan yerde durur */
+      halkaDinlen(); kCapa(true);
     }
     al.addEventListener('pointerdown', bas);
     al.addEventListener('pointermove', gez);
@@ -2875,11 +2927,21 @@
     al.addEventListener('pointercancel', birak);
     al.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') birak(e); });
     al.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-    /* fare tekerleği sayfayı yine kaydırır (bilgisayarda lazer açıkken de gezilsin) */
+    /* fare tekerleği sayfayı yine kaydırır (bilgisayarda lazer açıkken de gezilsin);
+       kayma bitince işaret farenin yeni altındaki yere (bırakılmışsa yeri güncellenir) */
     al.addEventListener('wheel', function (e) {
       e.preventDefault();
       try { dokunuldu(); CERCEVE.contentWindow.scrollBy(e.deltaX, e.deltaY); } catch (x) { }
+      clearTimeout(IA.tekerZ);
+      IA.tekerZ = setTimeout(tekerSonra, 140);
     }, { passive: false });
+  }
+  function tekerSonra() {
+    if (!IA.arac) return;
+    if (IA.basili && IA.fare && IA.mx !== null) {
+      var o = noktaBilgisi(IA.mx, IA.my);
+      if (o) isaretGonder(o);
+    } else halkaDinlen();
   }
   function aracCipKur() {
     var c = IA.cip;
@@ -2895,7 +2957,7 @@
         else if (b.getAttribute('data-ac') === 'kat') {
           IA.k = IA.k === 2 ? 3 : (IA.k === 3 ? 1.5 : 2);
           aracCipKur();
-          if (IA.sonBilgi) isaretGonder(IA.sonBilgi, true);
+          if (IA.sonBilgi) isaretGonder(IA.basili ? IA.sonBilgi : dinlenBilgi(), true);
         }
       });
     }
@@ -2904,7 +2966,7 @@
     c.className = 'th-araccip ' + IA.arac;
     c.innerHTML = '<i class="th-acnokta"></i><span>' + kac(lazer
         ? (fare ? kd('th.lazer_cip_fare', 'Lazer açık · fareyi gezdir') : kd('th.lazer_cip', 'Lazer açık · parmağını ekranda gezdir'))
-        : (fare ? kd('th.buyutec_cip_fare', 'Büyüteç açık · fareyi büyüyecek yere götür') : kd('th.buyutec_cip', 'Büyüteç açık · büyüyecek yere dokun'))) + '</span>' +
+        : (fare ? kd('th.buyutec_cip_fare', 'Büyüteç açık · fareyi gezdir') : kd('th.buyutec_cip', 'Büyüteç açık · parmağını gezdir'))) + '</span>' +
       (lazer ? '' : '<button type="button" data-ac="kat" title="' + kac(kd('th.buyutec_kat', 'Büyütme oranı')) + '">' + String(IA.k).replace('.', ',') + '×</button>') +
       '<button type="button" data-ac="kapat" title="' + kac(kd('th.arac_kapat', 'Kapat')) + '" aria-label="' + kac(kd('th.arac_kapat', 'Kapat')) + '">✕</button>';
   }
@@ -2913,8 +2975,9 @@
     a = (a === 'lazer' || a === 'buyutec') ? a : null;
     if (a && (!S.kok || CIHAZ !== 'bilgisayar')) return;
     var once = IA.arac;
+    if (once && IA.sonBilgi) IA.sonYer = { d: sayfaNo(), o: IA.sonBilgi };          /* yeniden açılınca buradan */
     IA.arac = a; IA.basili = false; IA.sonBilgi = null; IA.bekleyen = null; IA.tur = null;
-    clearInterval(IA.nabiz); IA.nabiz = null; clearTimeout(IA.z); IA.z = null;
+    clearTimeout(IA.z); IA.z = null; clearTimeout(IA.tekerZ); kCapa(false);
     if (once && once !== a && S.kok) { try { S.kok.child('isaret').set(null); } catch (e) { } }   /* tahtadaki eski araç kapanır */
     if (!a) {
       [IA.alan, IA.halka, IA.cip].forEach(function (e) { if (e && e.parentNode) e.parentNode.removeChild(e); });
@@ -2928,11 +2991,18 @@
     halkaYerlestir(0, 0, false);
     aracCipKur();
     cubukTazele();
+    /* 2. sürüm: açılır açılmaz tahtada görünür — bu sayfada en son bırakılan yerde,
+       yoksa ekranın ortasındaki yerde */
+    var son = (IA.sonYer && IA.sonYer.d === sayfaNo()) ? IA.sonYer.o : null;
+    if (!son) son = noktaBilgisi(window.innerWidth / 2, window.innerHeight / 2);
+    if (son) { IA.sonBilgi = son; isaretGonder(dinlenBilgi(), true); halkaDinlen(); kCapa(true); }
   }
   document.addEventListener('keydown', function (e) { if (IA.arac && (e.key === 'Escape' || e.key === 'Esc')) aracSec(null); });
 
   /* ---------------------------------------------------------- tahtada çizim */
-  var IZ = { tuval: null, raf: 0, x: null, y: null, hx: null, hy: null, iz: [], up: true, upZ: 0, son: 0, disari: false, zoom: null, dpr: 1 };
+  var IZ = { tuval: null, nokta: null, raf: 0, tz: 0, x: null, y: null, hx: null, hy: null, vx: 0, vy: 0, iz: [], up: true,
+             disari: false, zoom: null, dpr: 1, kayit: null, v: null, a: null, n: null, amp: 1, tik: null, kw: null, kf: null,
+             mercek: null, dene: 0, deneZ: null };
   /* isaret tarifinden kabuktaki nokta (çerçevenin dönüşümsüz yerleşimiyle) */
   function isaretNokta(v) {
     var w = CERCEVE.contentWindow, d = null;
@@ -2971,17 +3041,99 @@
     if (x === null || isNaN(x) || isNaN(y)) return null;
     return { x: x + CERCEVE.offsetLeft + CERCEVE.clientLeft, y: y + CERCEVE.offsetTop + CERCEVE.clientTop };
   }
-  function isaretSifirla() { lazerGizle(true); buyutecKapat(); }
+  /* tahta: gelen kayıt bu ders, bu sayfa için mi (başka/eski oturumdan değil; ders
+     sürüyor ya da kumanda yalnız uyuyor) */
+  function isaretGecerli(v) {
+    if (!v || v.i === BEN || !v.a) return false;
+    if (v.b && S.yayin && S.yayin.bas && v.b !== S.yayin.bas) return false;
+    if (!(oturumVar() || uzaktaMi())) return false;
+    if (typeof v.d === 'number' && v.d !== sayfaNo()) return false;
+    return true;
+  }
+  function isaretSifirla() {
+    IZ.a = null; IZ.v = null; IZ.n = null; IZ.x = null; IZ.vx = IZ.vy = 0; IZ.up = true; IZ.dene = 0;
+    clearTimeout(IZ.deneZ); tCapa(false);
+    lazerGizle(); mercekKapat(); buyutecKapat();
+  }
   function isaretGeldi(s) {
     if (CIHAZ !== 'tahta') return;
-    var v = s.val();
-    if (!v || v.i === BEN || !v.a) { isaretSifirla(); return; }
-    if (typeof v.z === 'number' && sunucuZaman() - v.z > 15000) return;          /* önceki dersten kalan */
-    if (typeof v.d === 'number' && v.d !== sayfaNo()) { lazerGizle(); return; }  /* tahta henüz o sayfada değil */
-    if (v.a === 'lazer') { buyutecKapat(); lazerUygula(v); }
-    else if (v.a === 'buyutec') { lazerGizle(true); buyutecUygula(v); }
-    else isaretSifirla();
+    IZ.kayit = s.val() || null; IZ.dene = 0;
+    isaretDegerlendir();
   }
+  function isaretDegerlendir() {
+    var v = IZ.kayit;
+    if (!isaretGecerli(v)) { if (IZ.a || IZ.zoom) isaretSifirla(); return; }
+    if (IZ.a === v.a && IZ.n === v.n) return;                   /* bu kayıt zaten uygulandı */
+    if (v.a !== 'lazer' && v.a !== 'buyutec') { isaretSifirla(); return; }
+    /* «bırakıldı» ya da 15 sn'den eski (kalkış haberi gelmemiş) kayıt: yerinde durur */
+    var hareket = !v.up && !(typeof v.z === 'number' && sunucuZaman() - v.z > 15000);
+    isaretUygula(v, hareket);
+  }
+  function isaretUygula(v, hareket) {
+    if (IZ.a && IZ.a !== v.a) isaretSifirla();
+    var p = isaretNokta(v);
+    if (!p) {                                                  /* sayfa daha dizilmedi: biraz sonra yine */
+      clearTimeout(IZ.deneZ);
+      if (!IZ.a && (IZ.dene = (IZ.dene || 0) + 1) <= 8) IZ.deneZ = setTimeout(isaretDegerlendir, 400);
+      return;
+    }
+    IZ.v = v; IZ.n = v.n;
+    var W = window.innerWidth, H = window.innerHeight;
+    IZ.disari = p.x < 0 || p.y < 0 || p.x > W || p.y > H;
+    p.x = Math.min(W - 8, Math.max(8, p.x)); p.y = Math.min(H - 8, Math.max(8, p.y));
+    /* denge: kumanda ekranı tahtadan kaç kat dar (dikey telefon ~4, bilgisayar ~1) */
+    var gw = CERCEVE.clientWidth || W;
+    IZ.amp = Math.min(5, Math.max(1, gw / Math.max(240, +v.w || gw)));
+    var yeni = !IZ.a;
+    IZ.a = v.a;
+    if (yeni || IZ.x === null) { IZ.x = p.x; IZ.y = p.y; IZ.vx = IZ.vy = 0; IZ.iz = []; }
+    IZ.hx = p.x; IZ.hy = p.y; IZ.up = !hareket;
+    if (v.a === 'lazer') noktaGoster();
+    else if (mercekAc(v)) { if (IZ.zoom) buyutecKapat(); mercekYerlestir(); }
+    else tamBuyut(v, p);                                        /* mercek kurulamadı: eskisi gibi */
+    tCapa(true);
+    lazerCalis();
+  }
+
+  /* çapa: içerik kayınca (tahta kaydırıldı, düzen değişti) nokta da mercek de
+     kelimesiyle birlikte gider — süzülmeden, olduğu gibi */
+  var KAY_RAF = 0;
+  function tCapa(ac) {
+    if (!ac) {
+      clearInterval(IZ.tik); IZ.tik = null;
+      if (IZ.kw && IZ.kf) { try { IZ.kw.removeEventListener('scroll', IZ.kf, true); } catch (e) { } }
+      IZ.kw = null;
+      return;
+    }
+    if (!IZ.tik) IZ.tik = setInterval(isaretCapala, 300);
+    var w = null;
+    try { w = CERCEVE.contentWindow; } catch (e) { w = null; }
+    if (w && IZ.kw !== w) {
+      if (IZ.kw && IZ.kf) { try { IZ.kw.removeEventListener('scroll', IZ.kf, true); } catch (e) { } }
+      if (!IZ.kf) IZ.kf = function (e) {
+        if (IZ.mercek) mercekKaydir(e && e.target);
+        if (!KAY_RAF) KAY_RAF = requestAnimationFrame(function () { KAY_RAF = 0; isaretCapala(); });
+      };
+      try { w.addEventListener('scroll', IZ.kf, true); IZ.kw = w; } catch (e) { IZ.kw = null; }
+    }
+  }
+  function isaretCapala() {
+    if (!IZ.v || IZ.x === null || !IZ.a) return;
+    var p = isaretNokta(IZ.v);
+    if (!p) return;
+    var W = window.innerWidth, H = window.innerHeight;
+    var dis = p.x < 0 || p.y < 0 || p.x > W || p.y > H;
+    p.x = Math.min(W - 8, Math.max(8, p.x)); p.y = Math.min(H - 8, Math.max(8, p.y));
+    var dx = p.x - IZ.hx, dy = p.y - IZ.hy;
+    if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5 && dis === IZ.disari) return;
+    IZ.hx = p.x; IZ.hy = p.y; IZ.x += dx; IZ.y += dy; IZ.disari = dis;
+    for (var i = 0; i < IZ.iz.length; i++) { IZ.iz[i].x += dx; IZ.iz[i].y += dy; }
+    noktaYerlestir();
+    if (IZ.mercek) mercekYerlestir();
+    lazerCalis();
+  }
+
+  /* ------------------------------------------------ tahta: lazer noktası + iz */
   function lazerTuval() {
     var t = IZ.tuval;
     if (!t) {
@@ -2995,61 +3147,526 @@
     IZ.dpr = dpr;
     return t;
   }
-  function lazerCalis() { if (!IZ.raf) IZ.raf = requestAnimationFrame(lazerCiz); }
-  function lazerUygula(v) {
-    if (v.up) { if (!IZ.up) { IZ.up = true; IZ.upZ = SIMDI(); } lazerCalis(); return; }
-    var p = isaretNokta(v);
-    if (!p) return;
-    var W = window.innerWidth, H = window.innerHeight;
-    IZ.disari = p.x < 0 || p.y < 0 || p.x > W || p.y > H;
-    p.x = Math.min(W - 8, Math.max(8, p.x)); p.y = Math.min(H - 8, Math.max(8, p.y));
-    if (IZ.up || IZ.x === null) { IZ.x = p.x; IZ.y = p.y; IZ.iz = []; }
-    IZ.hx = p.x; IZ.hy = p.y; IZ.up = false; IZ.son = SIMDI();
-    lazerCalis();
-  }
-  function lazerGizle(hemen) {
-    if (hemen) {
-      IZ.up = true; IZ.upZ = 0; IZ.iz = []; IZ.x = null;
-      if (IZ.tuval) { var c = IZ.tuval.getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, IZ.tuval.width, IZ.tuval.height); }
-      return;
+  /* nokta bir öğe (CSS ile parlar, ekran kartında kayar); iz tuvalde */
+  function noktaGoster() {
+    var n = IZ.nokta;
+    if (!n) {
+      n = document.createElement('div');
+      n.id = 'thLazerNokta'; n.setAttribute('aria-hidden', 'true');
+      n.innerHTML = '<i></i>';
+      document.body.appendChild(n);
+      IZ.nokta = n;
     }
-    if (!IZ.up) { IZ.up = true; IZ.upZ = SIMDI(); lazerCalis(); }
+    noktaYerlestir();
+  }
+  function noktaYerlestir() {
+    var n = IZ.nokta;
+    if (!n || IZ.x === null) return;
+    n.style.transform = 'translate3d(' + IZ.x.toFixed(1) + 'px,' + IZ.y.toFixed(1) + 'px,0)';
+    var c = 'th-lazer-nokta gel' + (IZ.up ? ' dinlen' : '') + (IZ.disari ? ' disari' : '');
+    if (n.className !== c) n.className = c;
+  }
+  function lazerGizle() {
+    var n = IZ.nokta;
+    IZ.nokta = null; IZ.iz = [];
+    if (n) {
+      n.classList.add('git');
+      setTimeout(function () { if (n.parentNode) n.parentNode.removeChild(n); }, 240);
+    }
+    if (IZ.tuval) { var c = IZ.tuval.getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, IZ.tuval.width, IZ.tuval.height); }
+  }
+  function lazerCalis() { if (!IZ.raf) IZ.raf = requestAnimationFrame(lazerCiz); }
+  /* yaylı izleyici (kritik sönümlü yay + hız sınırı): nokta yumuşak hızlanır, hedefi
+     geçmeden yavaşlayarak durur. Kumanda dar ekransa (amp büyük) daha yumuşak, yavaş. */
+  function izleyici(dt) {
+    var a = IZ.amp - 1;
+    var st = Math.min(0.2, 0.085 + 0.02 * a);                                          /* ~yetişme süresi, sn */
+    var vmax = Math.max(window.innerWidth, window.innerHeight) * 2.7 / (1 + 0.35 * a);  /* px / sn */
+    var om = 2 / st, x = om * dt, e = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x);
+    var cx = IZ.x - IZ.hx, cy = IZ.y - IZ.hy, L = Math.sqrt(cx * cx + cy * cy), mc = vmax * st;
+    if (L > mc) { cx *= mc / L; cy *= mc / L; }
+    var tx = IZ.x - cx, ty = IZ.y - cy;
+    var gx = (IZ.vx + om * cx) * dt, gy = (IZ.vy + om * cy) * dt;
+    IZ.vx = (IZ.vx - om * gx) * e; IZ.vy = (IZ.vy - om * gy) * e;
+    var nx = tx + (cx + gx) * e, ny = ty + (cy + gy) * e;
+    if ((IZ.hx - IZ.x) * (nx - IZ.hx) + (IZ.hy - IZ.y) * (ny - IZ.hy) > 0) { nx = IZ.hx; ny = IZ.hy; IZ.vx = IZ.vy = 0; }
+    IZ.x = nx; IZ.y = ny;
   }
   function lazerCiz() {
     IZ.raf = 0;
-    var t = lazerTuval(), c = t.getContext('2d'), now = SIMDI(), dpr = IZ.dpr;
+    if (IZ.x === null || !IZ.a) { IZ.tz = 0; return; }
+    var now = SIMDI(), dt = IZ.tz ? Math.min(0.05, Math.max(0.004, (now - IZ.tz) / 1000)) : 1 / 60;
+    IZ.tz = now;
+    izleyici(dt);
+    var hiz = Math.sqrt(IZ.vx * IZ.vx + IZ.vy * IZ.vy), kalan = Math.abs(IZ.hx - IZ.x) + Math.abs(IZ.hy - IZ.y);
+    var kos = hiz > 4 || kalan > 0.5;
+    if (IZ.a === 'lazer') { noktaYerlestir(); izCiz(now, kos); }
+    else if (IZ.mercek) mercekYerlestir();
+    if (kos || IZ.iz.length > 1) lazerCalis();
+    else { IZ.tz = 0; IZ.vx = IZ.vy = 0; }
+  }
+  function izCiz(now, kos) {
+    var t = lazerTuval(), c = t.getContext('2d'), dpr = IZ.dpr;
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     c.clearRect(0, 0, t.width / dpr, t.height / dpr);
-    if (IZ.x === null) return;
-    if (!IZ.up && now - IZ.son > ISARET_BAYAT) { IZ.up = true; IZ.upZ = now; }    /* «kalktı» haberi gelmediyse */
-    var a = IZ.up ? (IZ.upZ ? Math.max(0, 1 - (now - IZ.upZ) / 450) : 0) : 1;
-    if (a <= 0) { IZ.x = null; IZ.iz = []; return; }
-    if (!IZ.up) { IZ.x += (IZ.hx - IZ.x) * 0.42; IZ.y += (IZ.hy - IZ.y) * 0.42; }
-    IZ.iz.push({ x: IZ.x, y: IZ.y, t: now });
-    while (IZ.iz.length && now - IZ.iz[0].t > 380) IZ.iz.shift();
-    var za = (IZ.disari ? 0.55 : 1) * a;
+    if (kos) IZ.iz.push({ x: IZ.x, y: IZ.y, t: now });
+    while (IZ.iz.length && now - IZ.iz[0].t > 300) IZ.iz.shift();
+    if (IZ.iz.length < 2) return;
+    var za = IZ.disari ? 0.55 : 1;
     c.lineCap = 'round';
     for (var i = 1; i < IZ.iz.length; i++) {
       var p0 = IZ.iz[i - 1], p1 = IZ.iz[i], f = i / IZ.iz.length;
-      c.strokeStyle = 'rgba(255,40,40,' + (0.5 * f * za).toFixed(3) + ')';
-      c.lineWidth = 3 + 7 * f;
+      c.strokeStyle = 'rgba(255,40,40,' + (0.42 * f * za).toFixed(3) + ')';
+      c.lineWidth = 2.5 + 6.5 * f;
       c.beginPath(); c.moveTo(p0.x, p0.y); c.lineTo(p1.x, p1.y); c.stroke();
     }
-    var R = 26 + 3 * Math.sin(now / 160);
-    var g = c.createRadialGradient(IZ.x, IZ.y, 0, IZ.x, IZ.y, R);
-    g.addColorStop(0, 'rgba(255,70,70,' + (0.9 * za).toFixed(3) + ')');
-    g.addColorStop(0.35, 'rgba(255,0,0,' + (0.45 * za).toFixed(3) + ')');
-    g.addColorStop(1, 'rgba(255,0,0,0)');
-    c.fillStyle = g; c.beginPath(); c.arc(IZ.x, IZ.y, R, 0, Math.PI * 2); c.fill();
-    c.fillStyle = 'rgba(255,248,248,' + za.toFixed(3) + ')'; c.beginPath(); c.arc(IZ.x, IZ.y, 4.6, 0, Math.PI * 2); c.fill();
-    c.strokeStyle = 'rgba(225,0,0,' + za.toFixed(3) + ')'; c.lineWidth = 2.6; c.beginPath(); c.arc(IZ.x, IZ.y, 7.6, 0, Math.PI * 2); c.stroke();
-    lazerCalis();
   }
-  window.addEventListener('resize', function () { if (IZ.tuval) lazerTuval(); });
-  function buyutecUygula(v) {
-    if (v.up) return;                                   /* büyütme yerinde kalır */
-    var p = isaretNokta(v);
-    if (!p) return;
+  window.addEventListener('resize', function () {
+    if (IZ.tuval) lazerTuval();
+    if (IZ.mercek) { mercekBoyut(); mercekYerlestir(); }
+    if (IZ.a) setTimeout(isaretCapala, 60);
+  });
+
+  /* ------------------------------------------------------- tahta: MERCEK
+     Sayfanın o anki hâlinin bir kopyası (aynı köken, ayrı ve görünmez bir iç
+     çerçeve) yuvarlak merceğin içinde k kat büyük durur; merceğin ortası
+     parmağın yeri. Kopyada hiçbir betik çalışmaz (betiklerin türü değişir, on…
+     nitelikleri silinir), iç çerçeveler boş açılıp kopyalanır, tuvaller (canvas)
+     resim olarak aktarılır, ses/görüntü kendiliğinden başlamaz. Kopya bir kez
+     kurulur; sonra sayfadaki her değişiklik (MutationObserver) yalnız değişen
+     düğüme işlenir — büyük sayfada da tahta takılmasın. Kaydırma anında eşlenir;
+     girdi değerleri, stiller, iç çerçeveler saniyede bir denetlenir. */
+  var MERCEK_STIL = 'html{scroll-behavior:auto!important}' +
+    '*,*::before,*::after{transition:none!important;animation-delay:-60s!important;animation-play-state:paused!important;caret-color:transparent!important}';
+  function mercekAc(v) {
+    var k = Math.min(4, Math.max(1.25, +v.k || 2));
+    var M = IZ.mercek;
+    if (M) { M.k = k; return true; }
+    var od = null;
+    try { od = CERCEVE.contentDocument; } catch (e) { od = null; }
+    if (!od || !od.body || !od.defaultView) return false;
+    try {
+      M = { kap: null, ifr: null, R: 0, k: k, od: od, H: null, mo: null, z: null, son: 0, tuvalZ: null, hafifZ: null,
+            icG: new WeakMap(), icL: [] };
+      var kap = document.createElement('div');
+      kap.id = 'thMercek'; kap.className = 'th-mercek gizli'; kap.setAttribute('aria-hidden', 'true');
+      var ifr = document.createElement('iframe');
+      ifr.className = 'th-mercek-ic'; ifr.setAttribute('tabindex', '-1'); ifr.setAttribute('aria-hidden', 'true');
+      kap.appendChild(ifr);
+      document.body.appendChild(kap);
+      M.kap = kap; M.ifr = ifr;
+      IZ.mercek = M;
+      mercekBoyut();
+      kopyaAc(od, ifr.contentDocument);
+      mercekGovde(M);
+      M.mo = new MutationObserver(mercekDegisim);
+      M.mo.observe(od, { subtree: true, childList: true, attributes: true, characterData: true });
+      od.addEventListener('input', mercekAlanIste, true);
+      od.addEventListener('change', mercekAlanIste, true);
+      M.tuvalZ = setInterval(function () { kopyaTuval(M.od, M.ifr.contentDocument); }, 500);      /* tuval (canvas) çizimleri */
+      M.hafifZ = setInterval(function () { mercekHafif(M); }, 1000);     /* girdi değerleri, stiller, iç çerçeveler */
+      mercekGoster(M);
+      return true;
+    } catch (e) {
+      mercekKapat();
+      return false;
+    }
+  }
+  function mercekKapat() {
+    var M = IZ.mercek;
+    if (!M) return;
+    IZ.mercek = null;
+    clearTimeout(M.z); clearInterval(M.tuvalZ); clearInterval(M.hafifZ);
+    try { if (M.mo) M.mo.disconnect(); } catch (e) { }
+    try { M.od.removeEventListener('input', mercekAlanIste, true); M.od.removeEventListener('change', mercekAlanIste, true); } catch (e) { }
+    M.icL.forEach(function (G) { try { G.mo.disconnect(); G.d.removeEventListener('input', G.f, true); } catch (e) { } });
+    M.H = null; M.icL = [];
+    var kap = M.kap;
+    if (kap) {
+      kap.classList.add('gizli');
+      setTimeout(function () { if (kap.parentNode) kap.parentNode.removeChild(kap); }, 240);
+    }
+  }
+  function mercekBoyut() {
+    var M = IZ.mercek;
+    if (!M) return;
+    var W = CERCEVE.clientWidth || window.innerWidth, H = CERCEVE.clientHeight || window.innerHeight;
+    M.R = Math.round(Math.min(300, Math.max(110, Math.min(W, H) * 0.21)));
+    M.kap.style.width = M.kap.style.height = (2 * M.R) + 'px';
+    M.ifr.style.width = W + 'px'; M.ifr.style.height = H + 'px';
+  }
+  function mercekYerlestir() {
+    var M = IZ.mercek;
+    if (!M || IZ.x === null) return;
+    var R = M.R, k = M.k;
+    var fx = IZ.x - CERCEVE.offsetLeft - CERCEVE.clientLeft, fy = IZ.y - CERCEVE.offsetTop - CERCEVE.clientTop;
+    M.kap.style.transform = 'translate3d(' + Math.round(IZ.x - R) + 'px,' + Math.round(IZ.y - R) + 'px,0)';
+    M.ifr.style.transform = 'translate(' + Math.round(R - fx * k) + 'px,' + Math.round(R - fy * k) + 'px) scale(' + k + ')';
+  }
+  /* stiller yüklenince görünür (yoksa bir an biçimsiz kopya görünürdü) */
+  function mercekGoster(M) {
+    var t0 = SIMDI();
+    (function bak() {
+      if (IZ.mercek !== M) return;
+      var hazir = true;
+      try {
+        var l = M.ifr.contentDocument.querySelectorAll('link[rel~="stylesheet"]');
+        for (var i = 0; i < l.length; i++) if (!l[i].sheet) { hazir = false; break; }
+      } catch (e) { }
+      if (hazir || SIMDI() - t0 > 1500) { M.kap.classList.remove('gizli'); mercekYerlestir(); return; }
+      setTimeout(bak, 40);
+    })();
+  }
+  /* baştan kurma (açılışta; bir şey ters giderse yedek olarak) */
+  function mercekTazeleIste() {
+    var M = IZ.mercek;
+    if (!M || M.z) return;
+    M.z = setTimeout(function () {
+      M.z = null;
+      if (IZ.mercek !== M) return;
+      try { mercekGovde(M); } catch (e) { }
+    }, Math.max(250, 900 - (SIMDI() - M.son)));
+  }
+  function mercekGovde(M) {
+    var ad = M.ifr.contentDocument;
+    kopyaTazele(M.od, ad, 0, M);
+    M.H = new WeakMap();
+    haritaKur(M.od.body, ad.body, M.H);
+    mercekKaydir(null, true);
+    M.son = SIMDI();
+  }
+  /* sayfadaki değişiklik yalnız değişen düğüme işlenir */
+  function mercekDegisim(kayitlar) {
+    var M = IZ.mercek;
+    if (!M || !M.H || M.z) return;                   /* baştan kurma bekliyorsa o yapar */
+    var od = M.od, ad = M.ifr.contentDocument, H = M.H;
+    if (!ad || !ad.body || !od.body || H.get(od.body) !== ad.body) { mercekTazeleIste(); return; }
+    try {
+      var kirli = new Set(), bas = false, ic = false, i, r, t, k;
+      for (i = 0; i < kayitlar.length; i++) {
+        r = kayitlar[i]; t = r.target;
+        if (!od.body.contains(t)) {                     /* gövde dışı: html nitelikleri, başlık */
+          if (t === od.documentElement && r.type === 'attributes') nitelikEsle(od.documentElement, ad.documentElement);
+          else if (t === od.documentElement) { mercekTazeleIste(); return; }
+          else bas = true;
+          continue;
+        }
+        if (r.type === 'childList') { kirli.add(t); continue; }
+        k = H.get(t);
+        if (!k) { if (t.parentNode) kirli.add(t.parentNode); continue; }
+        if (r.type === 'characterData') { if (k.data !== t.data) k.data = t.data; }
+        else if (k.nodeType === 1 && nitelikAktar(t, k, r.attributeName, r.attributeNamespace)) ic = true;
+      }
+      if (bas) kopyaBas(od, ad);
+      if (kirli.size) {
+        var l = [];
+        kirli.forEach(function (x) { if (od.body === x || od.body.contains(x)) l.push(x); });
+        l.sort(function (a, b) { return a === b ? 0 : ((a.compareDocumentPosition(b) & 4) ? -1 : 1); });
+        for (i = 0; i < l.length; i++) {
+          var K = H.get(l[i]);
+          if (!K) { mercekTazeleIste(); return; }
+          if (cocukEsle(l[i], K, ad, H)) ic = true;
+        }
+      }
+      if (ic) mercekIcTara(M);
+    } catch (e) { mercekTazeleIste(); }
+  }
+  function mercekAlanIste() {
+    var M = IZ.mercek;
+    if (M && M.H) alanEsle(M);
+  }
+  function mercekHafif(M) {
+    if (IZ.mercek !== M || !M.H || M.z) return;
+    var ad = M.ifr.contentDocument;
+    if (!ad) return;
+    try { kopyaBas(M.od, ad); alanEsle(M); mercekIcTara(M); } catch (e) { }
+  }
+  /* başlıktaki stiller ve imzaları (değişti mi diye) */
+  function basListesi(od) {
+    var ch = od.head ? od.head.children : [], l = [], imza = [];
+    for (var i = 0; i < ch.length; i++) {
+      var n = ch[i], t = n.tagName;
+      if (t === 'STYLE') {
+        var nk = 0;
+        try { nk = n.sheet ? n.sheet.cssRules.length : 0; } catch (e) { }
+        l.push(n); imza.push('S' + n.textContent.length + '|' + nk + '|' + (n.media || '') + (n.disabled ? '|x' : ''));
+      } else if (t === 'LINK' && /(^|\s)stylesheet(\s|$)/i.test(n.getAttribute('rel') || '')) {
+        l.push(n); imza.push('L' + n.href + '|' + (n.media || '') + (n.disabled ? '|x' : ''));
+      }
+    }
+    return { l: l, imza: imza.join('\n') };
+  }
+  function stilMetni(st) {
+    var t = st.textContent;
+    if (t && /\S/.test(t)) return t;                    /* yazılı stil; boşsa betikle eklenmiş kurallar (CSSOM) */
+    try {
+      var r = st.sheet && st.sheet.cssRules;
+      if (r) { var a = []; for (var i = 0; i < r.length; i++) a.push(r[i].cssText); return a.join('\n'); }
+    } catch (e) { }
+    return st.textContent;
+  }
+  function kapaliEsle(B, ad) {
+    var ks = ad.head.querySelectorAll('[data-th-kopya]');
+    B.l.forEach(function (n, i) { if (n.disabled && ks[i]) { try { ks[i].disabled = true; } catch (e) { } } });
+  }
+  /* boş belgeye iskelet: aynı belge türü (standart/eski kip), aynı taban adresi,
+     sayfanın stilleri (ayrıştırıcıdan geçtiği için biçimsiz bir an görünmez) */
+  function kopyaAc(od, ad) {
+    var dt = od.doctype, tip = '';
+    if (dt) tip = '<!DOCTYPE ' + (dt.name || 'html') + (dt.publicId ? ' PUBLIC "' + dt.publicId + '"' : '') +
+                  (dt.systemId ? (dt.publicId ? '' : ' SYSTEM') + ' "' + dt.systemId + '"' : '') + '>';
+    var B = basListesi(od), h = '';
+    B.l.forEach(function (n) {
+      var md = n.media ? ' media="' + kac(n.media) + '"' : '';
+      if (n.tagName === 'STYLE') h += '<style data-th-kopya' + md + '>' + stilMetni(n).replace(/<\/(style)/gi, '<\\/$1') + '</style>';
+      else h += '<link rel="stylesheet" data-th-kopya href="' + kac(n.href) + '"' + md + (n.crossOrigin ? ' crossorigin="' + kac(n.crossOrigin) + '"' : '') + '>';
+    });
+    ad.open();
+    ad.write(tip + '<html><head><base href="' + kac(od.baseURI) + '">' + h + '<style id="thMercekStil">' + MERCEK_STIL + '</style></head><body></body></html>');
+    ad.close();
+    kapaliEsle(B, ad);
+    ad.__thKopya = { bas: B.imza, kaynak: od };
+  }
+  /* sonradan değişen başlık stilleri (bağlantılar boşuna yeniden yüklenmesin) */
+  function kopyaBas(od, ad) {
+    var K = ad.__thKopya || (ad.__thKopya = { bas: null, kaynak: od });
+    var B = basListesi(od);
+    if (K.bas === B.imza) return;
+    K.bas = B.imza;
+    var eski = ad.head.querySelectorAll('[data-th-kopya]');
+    for (var j = 0; j < eski.length; j++) eski[j].parentNode.removeChild(eski[j]);
+    var bizim = ad.getElementById('thMercekStil');
+    B.l.forEach(function (n) {
+      var c;
+      if (n.tagName === 'STYLE') { c = ad.createElement('style'); c.textContent = stilMetni(n); if (n.media) c.media = n.media; }
+      else { c = ad.createElement('link'); c.rel = 'stylesheet'; c.href = n.href; if (n.media) c.media = n.media; if (n.crossOrigin) c.crossOrigin = n.crossOrigin; }
+      c.setAttribute('data-th-kopya', '');
+      ad.head.insertBefore(c, bizim);                             /* merceğin kendi kuralı en sonda kalır */
+    });
+    kapaliEsle(B, ad);
+  }
+  function nitelikEsle(a, b) {
+    var i, n;
+    for (i = b.attributes.length - 1; i >= 0; i--) { n = b.attributes[i].name; if (!a.hasAttribute(n)) b.removeAttribute(n); }
+    for (i = 0; i < a.attributes.length; i++) {
+      n = a.attributes[i];
+      if (!/^on/i.test(n.name) && b.getAttribute(n.name) !== n.value) b.setAttribute(n.name, n.value);
+    }
+  }
+  /* tek nitelik değişikliği kopyaya (temizlik kuralları korunur); iç çerçeve yeni
+     sayfaya geçtiyse true */
+  function nitelikAktar(a, k, ad, ns) {
+    if (!ad || /^on/i.test(ad)) return false;
+    var t = k.localName;
+    if (t === 'iframe' || t === 'frame') { if (ad === 'src' || ad === 'srcdoc') return true; }
+    else if (t === 'script') { if (ad === 'type' || ad === 'src') return false; }
+    else if (t === 'video' || t === 'audio') { if (ad === 'autoplay' || ad === 'preload' || ad === 'muted') return false; }
+    else if (t === 'object' || t === 'embed') { if (ad === 'data' || ad === 'src') return false; }
+    if (ns) {
+      var n = a.getAttributeNodeNS(ns, ad);
+      if (!n) k.removeAttributeNS(ns, ad); else if (k.getAttributeNS(ns, ad) !== n.value) k.setAttributeNS(ns, n.name, n.value);
+    } else {
+      var v = a.getAttribute(ad);
+      if (v === null) k.removeAttribute(ad); else if (k.getAttribute(ad) !== v) k.setAttribute(ad, v);
+    }
+    return false;
+  }
+  /* kopyada hiçbir şey çalışmasın: betik türü değişir, on… nitelikleri silinir,
+     iç çerçeveler boş açılır, ses/görüntü kendiliğinden başlamaz. Sayfada yüklenmiş
+     resimler kopyada beklemeden (önbellekten, bir anda) çizilir. */
+  function kopyaTemizle(kok, asil) {
+    var tw = kok.ownerDocument.createTreeWalker(kok, 1), el = kok;
+    var tw2 = asil ? asil.ownerDocument.createTreeWalker(asil, 1) : null, ae = asil;
+    do {
+      for (var i = el.attributes.length - 1; i >= 0; i--) {
+        var a = el.attributes[i].name;
+        if (a.length > 2 && (a.charCodeAt(0) | 32) === 111 && (a.charCodeAt(1) | 32) === 110) el.removeAttribute(a);
+      }
+      var t = el.localName;
+      if (t === 'script') el.setAttribute('type', 'text/x-kopya');
+      else if (t === 'iframe' || t === 'frame') { el.removeAttribute('src'); el.removeAttribute('srcdoc'); }
+      else if (t === 'video' || t === 'audio') { el.removeAttribute('autoplay'); el.setAttribute('preload', 'none'); el.setAttribute('muted', ''); }
+      else if (t === 'object' || t === 'embed') { el.removeAttribute('data'); el.removeAttribute('src'); }
+      else if (t === 'img' && ae && ae.localName === 'img' && ae.complete && ae.naturalWidth) {
+        el.setAttribute('decoding', 'sync');
+        if ((el.getAttribute('loading') || '').toLowerCase() === 'lazy') el.setAttribute('loading', 'eager');
+      }
+      ae = tw2 ? tw2.nextNode() : null;
+    } while ((el = tw.nextNode()));
+  }
+  function kopyaTuval(od, ad) {
+    if (!ad) return;
+    var a = od.getElementsByTagName('canvas'), b = ad.getElementsByTagName('canvas');
+    for (var i = 0; i < a.length && i < b.length; i++) {
+      try {
+        if (b[i].width !== a[i].width) b[i].width = a[i].width;
+        if (b[i].height !== a[i].height) b[i].height = a[i].height;
+        var g = b[i].getContext('2d');
+        g.clearRect(0, 0, b[i].width, b[i].height);
+        g.drawImage(a[i], 0, 0);
+      } catch (e) { }
+    }
+  }
+  /* özgün düğüm → kopyadaki düğüm (aynı ağaç, aynı sıra) */
+  function haritaKur(asil, kopya, H) {
+    var ta = asil.ownerDocument.createTreeWalker(asil, 0xFFFFFFFF), tk = kopya.ownerDocument.createTreeWalker(kopya, 0xFFFFFFFF);
+    var a = asil, k = kopya;
+    while (a && k) { H.set(a, k); a = ta.nextNode(); k = tk.nextNode(); }
+  }
+  /* P'nin çocukları kopyada K'nin çocuklarına: eşlenmiş olan yerinde kalır (ya da
+     taşınır), yeni gelen içe aktarılır, giden kalkar. İç çerçeve eklendiyse true. */
+  function cocukEsle(P, K, ad, H) {
+    var liste = [], ic = false, c, k;
+    for (c = P.firstChild; c; c = c.nextSibling) {
+      k = H.get(c);
+      if (!k || k.ownerDocument !== ad) {
+        k = ad.importNode(c, true);
+        if (k.nodeType === 1) {
+          kopyaTemizle(k, c);
+          if (icVar(k)) ic = true;
+        }
+        haritaKur(c, k, H);
+      } else if ((k.nodeType === 3 || k.nodeType === 8) && k.data !== c.data) k.data = c.data;
+      liste.push(k);
+    }
+    var ref = K.firstChild;
+    for (var i = 0; i < liste.length; i++) {
+      k = liste[i];
+      if (k === ref) { ref = ref.nextSibling; continue; }
+      if (k.nodeType === 1 && icVar(k)) ic = true;                  /* taşınan iç çerçeve yeniden yüklenir */
+      K.insertBefore(k, ref);
+    }
+    while (ref) { var s = ref.nextSibling; K.removeChild(ref); ref = s; }
+    return ic;
+  }
+  /* eski kopyadaki yüklü resimler yeni gövdeye taşınır (yeniden yüklenip yanıp sönmesin) */
+  function resimTasi(eskiKok, yeniKok) {
+    if (!eskiKok) return;
+    var es = eskiKok.getElementsByTagName('img'), harita = {}, i;
+    for (i = 0; i < es.length; i++) {
+      var e = es[i], s = e.getAttribute('src') || '';
+      if (s && e.complete && e.naturalWidth) (harita[s] || (harita[s] = [])).push(e);
+    }
+    var ys = [].slice.call(yeniKok.getElementsByTagName('img'));
+    for (i = 0; i < ys.length; i++) {
+      var y = ys[i], l = harita[y.getAttribute('src') || ''];
+      if (!l || !l.length) continue;
+      var eski = l.shift();
+      nitelikEsle(y, eski);
+      y.parentNode.replaceChild(eski, y);
+    }
+  }
+  /* baştan kurmada iç çerçeveler (ve içlerindeki kopya belgeler) yerinde kalır,
+     yalnız içerikleri tazelenir — yeniden yüklenip yanıp sönmesin */
+  function icVar(el) { return el.localName === 'iframe' || el.localName === 'frame' || !!el.querySelector('iframe,frame'); }
+  function birlestir(eski, yeni) {
+    nitelikEsle(yeni, eski);
+    if (eski.localName === 'iframe' || eski.localName === 'frame') return;
+    var ec = eski.childNodes, yc = yeni.childNodes, ayni = ec.length === yc.length, i;
+    for (i = 0; ayni && i < ec.length; i++) if (ec[i].nodeType !== yc[i].nodeType || ec[i].nodeName !== yc[i].nodeName) ayni = false;
+    if (!ayni) {
+      resimTasi(eski, yeni);
+      while (eski.firstChild) eski.removeChild(eski.firstChild);
+      while (yeni.firstChild) eski.appendChild(yeni.firstChild);
+      return;
+    }
+    for (i = ec.length - 1; i >= 0; i--) {              /* sondan: taşınan düğüm öndekilerin sırasını bozmaz */
+      var e = ec[i], y = yc[i];
+      if (e.nodeType === 1 && icVar(e)) birlestir(e, y);
+      else if (e.nodeType === 3 || e.nodeType === 8) { if (e.data !== y.data) e.data = y.data; }
+      else if (e.nodeType === 1 && e.localName === 'img' && e.complete && e.naturalWidth && (e.getAttribute('src') || '') === (y.getAttribute('src') || '')) nitelikEsle(y, e);
+      else { if (e.nodeType === 1) resimTasi(e, y); eski.replaceChild(y, e); }
+    }
+  }
+  /* od'nin o anki hâli kopya belge ad'ye (baştan) */
+  function kopyaTazele(od, ad, kat, M) {
+    if (!ad || !ad.documentElement || !od.body) return;
+    nitelikEsle(od.documentElement, ad.documentElement);
+    kopyaBas(od, ad);
+    var nb = ad.importNode(od.body, true);
+    kopyaTemizle(nb, od.body);
+    if (!ad.body) ad.documentElement.appendChild(nb);
+    else if (ad.body.localName === nb.localName && icVar(ad.body) && icVar(nb)) birlestir(ad.body, nb);
+    else { resimTasi(ad.body, nb); ad.documentElement.replaceChild(nb, ad.body); }
+    kopyaTuval(od, ad);
+    if (kat >= 2) return;
+    var a = od.getElementsByTagName('iframe'), b = ad.getElementsByTagName('iframe');
+    for (var i = 0; i < a.length && i < b.length; i++) icKopya(a[i], b[i], kat, true, M);
+  }
+  /* iç çerçeve sayfasını (ör. açılır sözlük) izleyen gözcü: değişince «kirli» */
+  function icGozcu(M, id) {
+    var G = M.icG.get(id);
+    if (G) return G;
+    G = { kirli: false, mo: null, d: id, f: null };
+    G.f = function () { G.kirli = true; };
+    try {
+      G.mo = new MutationObserver(G.f);
+      G.mo.observe(id, { subtree: true, childList: true, attributes: true, characterData: true });
+      id.addEventListener('input', G.f, true);
+    } catch (e) { }
+    M.icG.set(id, G); M.icL.push(G);
+    return G;
+  }
+  /* iç çerçeve: özgün a, kopyadaki b. Sayfası değiştiyse kopyası tazelenir. */
+  function icKopya(a, b, kat, zorla, M) {
+    var id = null;
+    try { id = a.contentDocument; } catch (e) { id = null; }
+    if (!id || !id.body) return;
+    try {
+      var hd = b.contentDocument;
+      if (!hd) return;
+      var K = hd.__thKopya, G = M ? icGozcu(M, id) : null;
+      if (!K || K.kaynak !== id || !hd.getElementById('thMercekStil')) { kopyaAc(id, hd); K = hd.__thKopya; K.kaynak = id; zorla = true; }
+      if (zorla || !G || G.kirli) { if (G) G.kirli = false; kopyaTazele(id, hd, kat + 1, M); }
+      else kopyaBas(id, hd);
+      b.contentWindow.scrollTo(a.contentWindow.scrollX, a.contentWindow.scrollY);
+    } catch (e) { }
+  }
+  function mercekIcTara(M) {
+    var a = M.od.getElementsByTagName('iframe');
+    for (var i = 0; i < a.length; i++) {
+      var b = M.H.get(a[i]);
+      if (b && b.isConnected) icKopya(a[i], b, 0, false, M);
+    }
+  }
+  /* girdi değerleri (yazılan, betikle verilen, işaretlenen) kopyaya */
+  function alanEsle(M) {
+    var f = M.od.querySelectorAll('input,textarea,select');
+    for (var i = 0; i < f.length; i++) {
+      var a = f[i], k = M.H.get(a);
+      if (!k) continue;
+      try {
+        if (a.localName === 'select') { if (k.selectedIndex !== a.selectedIndex) k.selectedIndex = a.selectedIndex; }
+        else if (a.type === 'checkbox' || a.type === 'radio') { if (k.checked !== a.checked) k.checked = a.checked; }
+        else if (a.type !== 'file' && k.value !== a.value) k.value = a.value;
+      } catch (e) { }
+    }
+  }
+  /* kaydırma eşleme: pencere ve (hepsi: baştan kurmada) kaymış iç kutular */
+  function mercekKaydir(hedef, hepsi) {
+    var M = IZ.mercek;
+    if (!M || !M.ifr) return;
+    var od = M.od, ad = M.ifr.contentDocument, aw = M.ifr.contentWindow, ow = od.defaultView;
+    if (!ad || !aw || !ow || !od.body || !ad.body) return;
+    if (hepsi || !hedef || hedef === od || hedef === od.documentElement || hedef === od.body) {
+      try { aw.scrollTo(ow.scrollX || 0, ow.scrollY || 0); } catch (e) { }
+      if (!hepsi) return;
+    }
+    if (hepsi) {
+      var a = od.body.getElementsByTagName('*'), b = ad.body.getElementsByTagName('*');
+      for (var i = 0; i < a.length && i < b.length; i++) {
+        var el = a[i];
+        if (el.scrollTop || el.scrollLeft) { b[i].scrollTop = el.scrollTop; b[i].scrollLeft = el.scrollLeft; }
+      }
+      return;
+    }
+    if (hedef.nodeType !== 1 || !M.H) return;
+    var k = M.H.get(hedef);
+    if (k && k.nodeType === 1) { k.scrollTop = hedef.scrollTop; k.scrollLeft = hedef.scrollLeft; }
+  }
+
+  /* mercek kurulamazsa (yedek): eskisi gibi bütün çerçeve o noktanın çevresinde büyür */
+  function tamBuyut(v, p) {
     var k = Math.min(4, Math.max(1.25, +v.k || 2));
     var W = CERCEVE.clientWidth || window.innerWidth, H = CERCEVE.clientHeight || window.innerHeight;
     var ox = Math.min(W, Math.max(0, p.x - CERCEVE.offsetLeft)), oy = Math.min(H, Math.max(0, p.y - CERCEVE.offsetTop));
@@ -3244,10 +3861,10 @@
       Y.durak = true; Y.durakD = -1; Y.durakG = 0; Y.durakYeni = [];
       Y.d = Math.max(Y.d, dd.d || 0);
       kok.update({ 'yayin/id': BEN, 'yayin/cihaz': CIHAZ, 'yayin/kimlik': KIMLIK, 'yayin/cihazAd': cihazAdi(), 'yayin/hedef': null, 'yayin/hedefAd': null, 'yayin/cevrimici': true, 'yayin/durak': true, 'yayin/ts': TS(),
-                   'yayin/bas': S.bas, 'yayin/vekil': null, 'yayin/bitir': null });
+                   'yayin/bas': S.bas, 'yayin/vekil': null, 'yayin/bitir': null, 'isaret': null });
     } else {
       kok.update({ 'yayin/id': BEN, 'yayin/cihaz': CIHAZ, 'yayin/kimlik': KIMLIK, 'yayin/cihazAd': cihazAdi(), 'yayin/hedef': null, 'yayin/hedefAd': null, 'yayin/cevrimici': false, 'yayin/durak': false, 'yayin/ts': TS(),
-                   'yayin/bas': S.bas, 'yayin/vekil': null, 'yayin/bitir': null, 'ayar': { kip: kip, perde: false, kg: false } });
+                   'yayin/bas': S.bas, 'yayin/vekil': null, 'yayin/bitir': null, 'ayar': { kip: kip, perde: false, kg: false }, 'isaret': null });
     }
     cubukKur();
     kopmaKur();
@@ -3268,6 +3885,7 @@
   function takipBasla(kok, y) {
     if (S.kok) return;
     S.kok = kok; S.lider = false; S.bas = y.bas || null;
+    try { kok.child('isaret').set(null); } catch (e) { }      /* önceki kumandanın bıraktığı lazer kalkar */
     S.izlenenKumanda = (y && y.cihaz === 'bilgisayar') ? y.id : null;     /* izlenen (kopmuş) eski kumanda: devir sayılmaz */
     UYANIK.bas = SIMDI();
     S.esitBekle = true;
