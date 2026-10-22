@@ -149,7 +149,7 @@
   function kapatHepsi(sessiz) {
     $$('.panel.acik').forEach(function (p) { p.classList.remove('acik'); p.setAttribute('aria-hidden', 'true'); });
     perde.classList.remove('acik');
-    var v = $('#videoOyn'); if (!v.paused) v.pause();
+    var v = $('#videoOyn'); medyaBirak(v); if (!v.paused) v.pause();
     var fr = $('#etkinlikCerceve'); if (fr.getAttribute('src')) fr.removeAttribute('src');
     $$('.tus.etiketli').forEach(function (t) { t.classList.remove('aktif'); });
   }
@@ -173,6 +173,44 @@
     document.body.appendChild(h); setTimeout(function () { h.remove(); }, 500);
   }, true);
 
+  /* ---------- ses / video kesin açılsın (22.10.2026) ----------
+     Öğretmen: "sesler vs açılmıyor … daha garantiye alalım verileri kesin açılsın".
+     Dosya önce kitaptaki adresten açılır; hata verirse ya da 8 sn'de çalmaya hazır
+     olmazsa aynı dosya öbür adresten (kidefarapca.com ⇄ materyal deposu github.io)
+     bir kez daha denenir. Yeni istek ya da kapatma, bekleyen denemeyi iptal eder. */
+  function yedekAdres(u) {
+    var m = /^https:\/\/kidefarapca\.com\/(kidefarapca-materyal-[^\/]+\/.+)$/i.exec(u || '');
+    if (m) return 'https://gdmrbg7541.github.io/' + m[1];
+    m = /^https:\/\/gdmrbg7541\.github\.io\/(kidefarapca-materyal-[^\/]+\/.+)$/i.exec(u || '');
+    return m ? 'https://kidefarapca.com/' + m[1] : null;
+  }
+  function medyaBirak(el) {
+    el.__medyaNo = (el.__medyaNo || 0) + 1;
+    if (el.__medyaTemizle) { el.__medyaTemizle(); el.__medyaTemizle = null; }
+  }
+  function medyaAc(el, adres, bitti) {
+    medyaBirak(el);
+    var no = el.__medyaNo, adresler = [adres], y = yedekAdres(adres), sira = 0, z = null, kapandi = false;
+    if (y) adresler.push(y);
+    function temizle() { clearTimeout(z); el.removeEventListener('canplay', hazir); el.removeEventListener('error', hata); }
+    function son(ok) { if (kapandi) return; kapandi = true; temizle(); el.__medyaTemizle = null; if (bitti) bitti(ok); }
+    function hazir() { if (el.__medyaNo === no) son(true); }
+    function hata() { if (el.__medyaNo === no) { temizle(); sonraki(); } }
+    function dene() {
+      el.addEventListener('canplay', hazir); el.addEventListener('error', hata);
+      z = setTimeout(function () { if (el.__medyaNo === no) { temizle(); sonraki(); } }, 8000);
+      el.src = adresler[sira];
+      var p = el.play();
+      if (p && p.catch) p.catch(function (e) {
+        if (el.__medyaNo !== no || kapandi) return;
+        if (e && e.name === 'NotAllowedError') { son(true); tost('Başlatmak için ▶ tuşuna dokun'); }
+      });
+    }
+    function sonraki() { if (++sira < adresler.length) dene(); else son(false); }
+    el.__medyaTemizle = temizle;
+    dene();
+  }
+
   /* ---------- kaynak açma ---------- */
   var calanK = null;
   /* Analytics olayı: hangi ses/etkinlik/video açıldı (gtag yoksa sessizce geçer) */
@@ -188,9 +226,11 @@
       $('#videoIndir').href = k.yol;
       var v = $('#videoOyn'); v.poster = k.poster || '';
       yukleniyorGoster('#pVideo', 'Video yükleniyor…');
-      v.oncanplay = v.onerror = function () { yukleniyorGizle('#pVideo'); };
-      v.src = k.yol;
-      var p = v.play(); if (p && p.catch) p.catch(function () {});
+      v.oncanplay = v.onerror = null;
+      medyaAc(v, k.yol, function (ok) {                    /* 22.10.2026: açılmazsa öbür adres */
+        yukleniyorGizle('#pVideo');
+        if (!ok) tost('Video açılamadı · internet bağlantını denetle');
+      });
       sesDurdur();
       return;
     }
@@ -213,21 +253,32 @@
   function sesCal(i) {
     var k = K.kaynak[i], a = $('#calarSes');
     if (calanK === i && !a.paused) { a.pause(); return; }
-    if (calanK !== i) { a.src = k.yol; calanK = i; }
+    var sy = k.s ? 'Kitap sayfası ' + k.s : '';
     $('#calarAd').textContent = k.ad;
-    $('#calarSayfa').textContent = k.s ? 'Kitap sayfası ' + k.s : '';
     $('#calar').hidden = false;
-    var p = a.play(); if (p && p.catch) p.catch(function () { tost('Ses dosyası açılamadı'); });
+    if (calanK !== i || a.error || !a.currentSrc) {          /* 22.10.2026: açılmazsa öbür adres */
+      calanK = i;
+      $('#calarSayfa').textContent = (sy ? sy + ' · ' : '') + 'yükleniyor…';
+      medyaAc(a, k.yol, function (ok) {
+        if (calanK !== i) return;
+        $('#calarSayfa').textContent = sy;
+        if (!ok) tost('Ses açılamadı · internet bağlantını denetle');
+      });
+    } else {
+      $('#calarSayfa').textContent = sy;
+      var p = a.play();
+      if (p && p.catch) p.catch(function (e) { if (e && e.name === 'NotAllowedError') tost('Başlatmak için ▶ tuşuna dokun'); });
+    }
     calanIsaretle();
   }
-  function sesDurdur() { var a = $('#calarSes'); if (!a.paused) a.pause(); }
+  function sesDurdur() { var a = $('#calarSes'); medyaBirak(a); if (!a.paused) a.pause(); }
   function calanIsaretle() {
     var a = $('#calarSes'), calan = !a.paused ? calanK : null;
     $$('.nokta.n-ses').forEach(function (n) { n.classList.toggle('calan', calan !== null && +n.dataset.k === calan); });
   }
   ['play', 'pause', 'ended'].forEach(function (ev) { $('#calarSes').addEventListener(ev, calanIsaretle); });
   $('#calarKapat').addEventListener('click', function () {
-    var a = $('#calarSes'); a.pause(); a.removeAttribute('src'); a.load(); calanK = null;
+    var a = $('#calarSes'); medyaBirak(a); a.pause(); a.removeAttribute('src'); a.load(); calanK = null;
     $('#calar').hidden = true; calanIsaretle();
   });
 

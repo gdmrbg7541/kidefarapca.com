@@ -384,3 +384,195 @@
   window.addEventListener('pageshow', tazele);
   tazele();
 })();
+
+/* ============================================================
+   VİDEO · ETKİNLİK: TAM EKRAN VE YENİ SEKME                 22.10.2026
+   Öğretmen: "FLİPBOOK MOTORUNDA VİDEO VE ETKİNLİKLERDE TAM EKRAN VE AYRI
+   SEKMEDE ÖZELLİĞİ YOK MU". Video ve etkinlik pencerelerinin başlığına:
+     · «Tam ekran» — video kendi tam ekranında (iPhone'da da), etkinlik
+       başlığıyla birlikte ekranı kaplar; yeniden basınca «Küçült». Tarayıcı
+       izin vermezse (ör. tahtaya kumandadan gelen dokunuşta) pencere ekranı
+       kaplar. Pencere kapanınca tam ekrandan çıkılır.
+     · «Yeni sekmede» — video sitenin izleme sayfasında (kitap/izle.html,
+       adres çubuğunda kidefarapca.com) kaldığı saniyeden açılır, penceredeki
+       durur; bilgisayara indirilmiş kitapta video dosyasının kendisi açılır.
+       Etkinlik kendi sayfasıyla açılır (zaten «Yeni sekmede aç» bağlantısı
+       olan kitaplarda o kullanılır, ikincisi eklenmez).
+   Bütün kitaplarda aynı (ortak dosya; Kidef 2. baskı dahil).
+   ============================================================ */
+(function () {
+  'use strict';
+  var pV = document.getElementById('pVideo'), pE = document.getElementById('pEtkinlik');
+  if ((!pV && !pE) || window.__kitapMedyaTus) return;
+  window.__kitapMedyaTus = true;
+
+  var IK_TAM = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+  var IK_KUC = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
+  var IK_SEK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/>' +
+               '<path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+  var IK_INDIR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>';
+
+  var st = document.createElement('style');
+  st.textContent =
+    '.km-dug{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;padding:6px 12px;border-radius:99px;cursor:pointer;' +
+    'font-size:12px;font-weight:700;line-height:1.2;font-family:inherit;white-space:nowrap;text-decoration:none;' +
+    'border:1.5px solid var(--line,#E3E8F0);background:#fff;color:var(--ink2,#2B3A55);transition:.15s}' +
+    '.km-dug:hover{border-color:var(--gold,#E3A02A);color:var(--ink,#122040)}' +
+    '.km-dug svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}' +
+    '@media (max-width:560px){.km-dug span{display:none}.km-dug{padding:8px}}' +
+    '@media (pointer:coarse){.km-dug{padding:9px 14px;font-size:13.5px}}' +
+    '.panel.km-tam{position:fixed!important;left:0!important;top:0!important;right:0!important;bottom:0!important;' +
+    'width:100vw!important;height:100vh!important;height:100dvh!important;max-width:none!important;max-height:none!important;' +
+    'transform:none!important;border-radius:0!important;z-index:2147483000!important;opacity:1!important}' +
+    '.panel:fullscreen{width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;' +
+    'transform:none!important;border-radius:0!important;opacity:1!important}' +
+    '.panel:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;' +
+    '-webkit-transform:none!important;transform:none!important;border-radius:0!important;opacity:1!important}';
+  document.head.appendChild(st);
+
+  function tamEleman() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
+  function tamMi(p) {
+    var f = tamEleman();
+    return !!((f && (f === p || p.contains(f))) || p.classList.contains('km-tam'));
+  }
+  function yedekTam(p, ac) { p.classList.toggle('km-tam', !!ac); tazele(); }
+  function tamAc(p, hedef) {
+    var el = hedef || p, iste = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (iste) {
+      try {
+        var s = iste.call(el);
+        if (s && s.then) s.then(tazele, function () { yedekTam(p, true); });
+        else setTimeout(function () { if (!tamEleman()) yedekTam(p, true); else tazele(); }, 400);
+        return;
+      } catch (e) { }
+    }
+    if (hedef && hedef.webkitEnterFullscreen) {                    /* iPhone: videonun kendi tam ekranı */
+      try { hedef.webkitEnterFullscreen(); return; } catch (e) { }
+    }
+    yedekTam(p, true);
+  }
+  function tamKapat(p) {
+    if (tamEleman()) {
+      try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) { }
+    }
+    yedekTam(p, false);
+  }
+
+  function dugme(ad, ik, yazi, ipucu) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'km-dug'; b.setAttribute('data-km', ad);
+    b.title = ipucu; b.setAttribute('aria-label', ipucu);
+    b.innerHTML = ik + '<span>' + yazi + '</span>';
+    return b;
+  }
+  /* başlıktaki eski bağlantılar (İndir, Yeni sekmede aç) yeni düğmelerle aynı görünsün */
+  function susle(a, ik) {
+    if (!a || a.querySelector('svg')) return;
+    var yazi = (a.textContent || '').trim();
+    a.classList.add('km-dug');
+    a.textContent = '';
+    a.insertAdjacentHTML('afterbegin', ik);
+    var sp = document.createElement('span'); sp.textContent = yazi; a.appendChild(sp);
+    if (!a.getAttribute('aria-label')) a.setAttribute('aria-label', yazi);
+  }
+  function yerlestir(p, dugmeler) {
+    var bas = p.querySelector('.pbas');
+    if (!bas) return;
+    var kapat = bas.querySelector('[data-kapat]');
+    dugmeler.forEach(function (b) { if (kapat) bas.insertBefore(b, kapat); else bas.appendChild(b); });
+  }
+  function tamDugTazele(p) {
+    var b = p && p.querySelector('[data-km="tam"]');
+    if (!b) return;
+    var t = tamMi(p);
+    b.innerHTML = (t ? IK_KUC : IK_TAM) + '<span>' + (t ? 'Küçült' : 'Tam ekran') + '</span>';
+    b.title = t ? 'Tam ekrandan çık' : 'Tam ekranda göster';
+    b.setAttribute('aria-label', b.title);
+  }
+  function tazele() { tamDugTazele(pV); tamDugTazele(pE); }
+
+  /* indirilmiş (bilgisayardan açılan) kitapta site sayfası yok: dosyanın kendisi */
+  function siteMi() { return /^https?:$/.test(location.protocol); }
+  function sitePath(u) {                                          /* materyal deposu → site yolu */
+    var m = /^https:\/\/gdmrbg7541\.github\.io(\/kidefarapca-materyal-[^\/]+\/.+)$/i.exec(u);
+    if (m) return m[1];
+    try { var x = new URL(u, location.href); if (x.origin === location.origin) return x.pathname + x.search; } catch (e) { }
+    return u;
+  }
+  function yeniSekme(adres) {
+    var w = null;
+    try { w = window.open(adres, '_blank', 'noopener'); } catch (e) { w = null; }
+    if (!w) {                                                     /* açılır pencere engeli: aynı adres bağlantıyla */
+      var a = document.createElement('a');
+      a.href = adres; a.target = '_blank'; a.rel = 'noopener';
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+  }
+
+  if (pV) {
+    var v = document.getElementById('videoOyn');
+    var vTam = dugme('tam', IK_TAM, 'Tam ekran', 'Tam ekranda göster');
+    var vYeni = dugme('yeni', IK_SEK, 'Yeni sekmede', 'Videoyu yeni sekmede aç');
+    yerlestir(pV, [vTam, vYeni]);
+    susle(document.getElementById('videoIndir'), IK_INDIR);
+    vTam.addEventListener('click', function () {
+      if (tamMi(pV)) { tamKapat(pV); return; }
+      tamAc(pV, v || null);
+    });
+    vYeni.addEventListener('click', function () {
+      if (!v) return;
+      var src = v.currentSrc || v.getAttribute('src') || '';
+      if (!src) return;
+      var t = Math.floor(v.currentTime || 0);
+      try { v.pause(); } catch (e) { }
+      if (!siteMi()) { yeniSekme(src + (t ? '#t=' + t : '')); return; }
+      var b = ((document.getElementById('videoBaslik') || {}).textContent || '').trim();
+      var izle = new URL('../izle.html', location.href);
+      izle.search = '?v=' + encodeURIComponent(sitePath(src)) + (b ? '&b=' + encodeURIComponent(b.slice(0, 140)) : '') + (t ? '&t=' + t : '');
+      yeniSekme(izle.href);
+    });
+  }
+
+  if (pE) {
+    var fr = document.getElementById('etkinlikCerceve');
+    var eTam = dugme('tam', IK_TAM, 'Tam ekran', 'Tam ekranda göster');
+    var ekle = [eTam];
+    if (!document.getElementById('etkinlikYeni')) {                /* Kidef: bağlantı yoksa düğme */
+      var eYeni = dugme('yeni', IK_SEK, 'Yeni sekmede', 'Yeni sekmede aç');
+      eYeni.addEventListener('click', function () {
+        var s = fr && fr.getAttribute('src');
+        if (!s || /^about:/i.test(s)) return;
+        yeniSekme(new URL(s, location.href).href);
+      });
+      ekle.push(eYeni);
+    }
+    yerlestir(pE, ekle);
+    susle(document.getElementById('etkinlikYeni'), IK_SEK);
+    eTam.addEventListener('click', function () {
+      if (tamMi(pE)) { tamKapat(pE); return; }
+      tamAc(pE, null);
+    });
+  }
+
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (ev) {
+    document.addEventListener(ev, function () {
+      [pV, pE].forEach(function (p) { if (p && !tamEleman() && !p.classList.contains('acik')) yedekTam(p, false); });
+      tazele();
+    });
+  });
+  /* pencere kapanınca (her yoldan: ×, perde, Esc, başka pencere) tam ekrandan çık */
+  if (window.MutationObserver) {
+    [pV, pE].forEach(function (p) {
+      if (!p) return;
+      new MutationObserver(function () {
+        if (!p.classList.contains('acik') && tamMi(p)) tamKapat(p);
+      }).observe(p, { attributes: true, attributeFilter: ['class'] });
+    });
+  }
+  document.addEventListener('keydown', function (e) {
+    if ((e.key === 'Escape' || e.key === 'Esc') && !tamEleman()) {
+      [pV, pE].forEach(function (p) { if (p && p.classList.contains('km-tam')) yedekTam(p, false); });
+    }
+  });
+  tazele();
+})();

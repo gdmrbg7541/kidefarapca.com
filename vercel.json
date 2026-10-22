@@ -2,27 +2,27 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
-      "source": "/kidefarapca-materyal-7/:yol(.*\\.(?:mp4|MP4))",
+      "source": "/kidefarapca-materyal-7/:yol(.*\\.(?:mp4|MP4|mp3|MP3|m4a|M4A|aac|AAC|wav|WAV|ogg|OGG|oga|OGA|opus|OPUS|pdf|PDF))",
       "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-7/:yol",
       "permanent": false
     },
     {
-      "source": "/kidefarapca-materyal-8/:yol(.*\\.(?:mp4|MP4))",
+      "source": "/kidefarapca-materyal-8/:yol(.*\\.(?:mp4|MP4|mp3|MP3|m4a|M4A|aac|AAC|wav|WAV|ogg|OGG|oga|OGA|opus|OPUS|pdf|PDF))",
       "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-8/:yol",
       "permanent": false
     },
     {
-      "source": "/kidefarapca-materyal-9/:yol(.*\\.(?:mp4|MP4))",
+      "source": "/kidefarapca-materyal-9/:yol(.*\\.(?:mp4|MP4|mp3|MP3|m4a|M4A|aac|AAC|wav|WAV|ogg|OGG|oga|OGA|opus|OPUS|pdf|PDF))",
       "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-9/:yol",
       "permanent": false
     },
     {
-      "source": "/kidefarapca-materyal-10/:yol(.*\\.(?:mp4|MP4))",
+      "source": "/kidefarapca-materyal-10/:yol(.*\\.(?:mp4|MP4|mp3|MP3|m4a|M4A|aac|AAC|wav|WAV|ogg|OGG|oga|OGA|opus|OPUS|pdf|PDF))",
       "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-10/:yol",
       "permanent": false
     },
     {
-      "source": "/kidefarapca-materyal-kidef/:yol(.*\\.(?:mp4|MP4))",
+      "source": "/kidefarapca-materyal-kidef/:yol(.*\\.(?:mp4|MP4|mp3|MP3|m4a|M4A|aac|AAC|wav|WAV|ogg|OGG|oga|OGA|opus|OPUS|pdf|PDF))",
       "destination": "https://gdmrbg7541.github.io/kidefarapca-materyal-kidef/:yol",
       "permanent": false
     }
