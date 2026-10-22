@@ -1167,24 +1167,59 @@
     });
     if (var_) S.kok.child('alan').update(g);
   }
-  /* --- kaydırma: belge (çapa öğeyle) ve içte kayan kutular (oranla) */
+  /* --- kaydırma: belge (çapa öğeyle) ve içte kayan kutular (oranla)
+     AKICI KAYDIRMA (22.10.2026) — öğretmen: "kumanda mobil olunca dikey kaydırmada
+     masaüstünde sürekli ekran takılıyormuş gibi oluyor, öyle bi oranla yapalım ki bu
+     kasma olmasın". Telefonda alt alta duran kartlar / harfler tahtada yan yana durur:
+     tahta her kartta satırın başına geri sıçrıyordu; çizgi iki bölümün arasındaki
+     boşluğa düşünce sayfanın oranına geçip yine sıçrıyordu; konumlar da tek tek
+     atlanıyordu. Şimdi çapa satır içi öğe (b, span…) olmaz, boşlukta yakındaki öğe
+     aranır ve çapanın atalarındaki yeri de gider (oz): tahta, kendinde yan yana duran
+     öğelerde onları kapsayan kutunun içindeki ORANLA iner (zBelgeKaydir) ve gelen
+     yere sıçramaz, yumuşakça kayar (AK). */
+  function capaUygun(el, w, d, denendi, ust) {
+    var e = el;
+    while (e && e !== d.body && e !== d.documentElement) {
+      if (denendi.indexOf(e) >= 0) return null;            /* buradan yukarısı denendi */
+      denendi.push(e);
+      var cs = w.getComputedStyle(e);
+      if (cs.position === 'fixed' || cs.position === 'sticky') return null;
+      if (cs.display !== 'inline' && cs.display !== 'contents') {
+        var r = e.getBoundingClientRect();
+        if (r.height > 4 && r.height < ust) return e;
+      }
+      e = e.parentElement;
+    }
+    return null;
+  }
   function belgeKonumu() {
     var w = Y.win, d = Y.belge, se = d.scrollingElement || d.documentElement;
     var max = se.scrollHeight - w.innerHeight;
     var f = max > 0 ? se.scrollTop / max : 0;
-    var cizgi = w.innerHeight / 3, a = null, o = 0;
+    var cizgi = w.innerHeight / 3, a = null;
     try {
-      var el = d.elementFromPoint(w.innerWidth / 2, cizgi);
-      while (el && el !== d.body && el !== d.documentElement) {
-        var cs = w.getComputedStyle(el);
-        if (cs.position === 'fixed' || cs.position === 'sticky') { el = null; break; }
-        var r = el.getBoundingClientRect();
-        if (r.height > 4 && r.height < w.innerHeight * 0.9) { a = yolAl(el, d); o = (cizgi - r.top) / r.height; break; }
-        el = el.parentElement;
+      /* çizgi boşluğa (iki bölümün arası, sütun aralığı) düşerse biraz aşağısı/yukarısı, sağı/solu */
+      var xs = [w.innerWidth / 2, w.innerWidth * 0.3, w.innerWidth * 0.7], ds = [0, 10, -10, 24, -24, 50, -50, 100, -100], denendi = [];
+      for (var i = 0; i < ds.length && !a; i++) {
+        for (var j = 0; j < xs.length && !a; j++) {
+          var el = d.elementFromPoint(xs[j], cizgi + ds[i]);
+          if (el) a = capaUygun(el, w, d, denendi, w.innerHeight * 0.9);
+        }
       }
-    } catch (e) { }
+      /* çizgide yalnız ekrandan uzun bir öğe varsa (büyük resim, tuval) o: içinde oranla */
+      if (!a) { var el2 = d.elementFromPoint(xs[0], cizgi); if (el2) a = capaUygun(el2, w, d, [], Infinity); }
+    } catch (e) { a = null; }
     var k = { d: Y.d, f: Math.round(f * 100000) / 100000, z: sunucuZaman() };
-    if (a) { k.a = a; k.o = Math.round(o * 10000) / 10000; }
+    if (a) {
+      var r = a.getBoundingClientRect(), oz = [], ata = a.parentElement;
+      k.a = yolAl(a, d); k.o = Math.round((cizgi - r.top) / r.height * 10000) / 10000;
+      while (ata && ata !== d.body && ata !== d.documentElement && oz.length < 20) {
+        var q = ata.getBoundingClientRect();
+        oz.push(q.height > 0 ? Math.round((cizgi - q.top) / q.height * 10000) / 10000 : 0);
+        ata = ata.parentElement;
+      }
+      if (oz.length) k.oz = oz;
+    }
     return k;
   }
   function yKay(e) {
@@ -1211,7 +1246,7 @@
   }
   function kayZamanla() {
     if (Y.kayZ) return;
-    var bekle = Math.max(0, 70 - (SIMDI() - Y.kaySon));
+    var bekle = Math.max(0, 50 - (SIMDI() - Y.kaySon));            /* akıcı kaydırma: 70 → 50 ms */
     Y.kayZ = setTimeout(function () { Y.kayZ = null; Y.kaySon = SIMDI(); kayGonder(); }, bekle);
   }
   function kayGonder() {
@@ -1572,20 +1607,116 @@
     }
     Z.cevap = [];
   }
+  /* tahta: AKICI KAYDIRMA (22.10.2026). Gelen konuma sıçramaz; kritik sönümlü yayla
+     (yaklaşık 0,1 sn'de yetişir, hedefi geçmez) ekranın her karesinde biraz kayar. Bir
+     belgede/kutuda ilk konum ve 3 ekrandan uzak hedef doğrudan. Tahta lider olunca durur. */
+  var AK = { l: [], raf: 0, tz: 0 };
+  function akKaydir(el, w, y, x, belgeMi) {
+    AK.l = AK.l.filter(function (k) { return k.b === Z.belge && k.el.isConnected && k.el.ownerDocument && k.el.ownerDocument.defaultView; });
+    var k = null;
+    for (var i = 0; i < AK.l.length; i++) if (AK.l[i].el === el) { k = AK.l[i]; break; }
+    var yeni = !k;
+    if (yeni) { k = { el: el, w: w, b: Z.belge, belge: belgeMi, y: el.scrollTop, x: el.scrollLeft, vy: 0, vx: 0, sy: el.scrollTop, sx: el.scrollLeft }; AK.l.push(k); }
+    else {
+      if (Math.abs(el.scrollTop - k.sy) > 3) { k.y = el.scrollTop; k.vy = 0; }       /* başka bir şey kaydırmış */
+      if (Math.abs(el.scrollLeft - k.sx) > 3) { k.x = el.scrollLeft; k.vx = 0; }
+    }
+    k.ty = y; k.tx = x;
+    var boy = belgeMi ? w.innerHeight : (el.clientHeight || w.innerHeight), en = belgeMi ? w.innerWidth : (el.clientWidth || w.innerWidth);
+    var atla = false;
+    if (yeni || Math.abs(y - k.y) > boy * 3) { k.y = y; k.vy = 0; atla = true; }
+    if (yeni || Math.abs(x - k.x) > en * 3) { k.x = x; k.vx = 0; atla = true; }
+    if (atla) akYaz(k);
+    if (k.y !== k.ty || k.x !== k.tx) { if (!AK.raf) AK.raf = requestAnimationFrame(akAdim); }
+  }
+  function akYay(c, h, v, dt) {
+    var om = 2 / 0.1, x = om * dt, e = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x);
+    var d = c - h, g = (v + om * d) * dt;
+    v = (v - om * g) * e;
+    var n = h + (d + g) * e;
+    if ((h - c) * (n - h) > 0) { n = h; v = 0; }                /* hedefi geçmez */
+    return [n, v];
+  }
+  function akAdim() {
+    AK.raf = 0;
+    if (S.lider) { AK.l.forEach(function (k) { k.ty = k.y; k.tx = k.x; k.vy = k.vx = 0; }); AK.tz = 0; return; }
+    var now = SIMDI(), dt = AK.tz ? Math.min(0.05, Math.max(0.004, (now - AK.tz) / 1000)) : 1 / 60;
+    AK.tz = now;
+    var surer = false;
+    AK.l.forEach(function (k) {
+      if (k.b !== Z.belge || !k.el.isConnected) return;
+      if (k.y !== k.ty) {
+        var a = akYay(k.y, k.ty, k.vy, dt); k.y = a[0]; k.vy = a[1];
+        if (Math.abs(k.ty - k.y) < 0.5 && Math.abs(k.vy) < 6) { k.y = k.ty; k.vy = 0; }
+      }
+      if (k.x !== k.tx) {
+        var b = akYay(k.x, k.tx, k.vx, dt); k.x = b[0]; k.vx = b[1];
+        if (Math.abs(k.tx - k.x) < 0.5 && Math.abs(k.vx) < 6) { k.x = k.tx; k.vx = 0; }
+      }
+      akYaz(k);
+      if (k.y !== k.ty || k.x !== k.tx) surer = true;
+    });
+    if (surer) AK.raf = requestAnimationFrame(akAdim); else AK.tz = 0;
+  }
+  function akYaz(k) {
+    try {
+      if (k.belge) k.w.scrollTo({ top: k.y, left: k.x, behavior: 'instant' });
+      else if (k.el.scrollTo) k.el.scrollTo({ top: k.y, left: k.x, behavior: 'instant' });
+      else { k.el.scrollTop = k.y; k.el.scrollLeft = k.x; }
+    } catch (e) { try { k.el.scrollTop = k.y; k.el.scrollLeft = k.x; } catch (x) { } }
+    k.sy = k.el.scrollTop; k.sx = k.el.scrollLeft;
+  }
+  /* tahta: telefonda alt alta, burada yan yana duran öğe (kart, harf, iki sütun).
+     Ekranın 1,5 katından uzun sütunlar (ör. yazı + kenar çubuğu) sayılmaz: onların
+     içinde tahta yine aynı paragrafı aynı yerde tutar. */
+  function yanYana(el, w) {
+    var r = el.getBoundingClientRect();
+    if (!(r.height > 0) || r.height > w.innerHeight * 1.5) return false;
+    var yon = ['previousElementSibling', 'nextElementSibling'];
+    for (var i = 0; i < 2; i++) {
+      var s = el[yon[i]], n = 0;
+      while (s && n++ < 4) {
+        var q = s.getBoundingClientRect();
+        if (q.height > 0 && q.width > 0) {
+          var p = penceresi(s, w).getComputedStyle(s).position;
+          if (p !== 'absolute' && p !== 'fixed') {
+            var ort = Math.min(r.bottom, q.bottom) - Math.max(r.top, q.top);
+            if (ort > 2 && ort > Math.min(r.height, q.height) * 0.3) return true;
+            break;                                            /* en yakın görünen kardeş alt/üstte */
+          }
+        }
+        s = s[yon[i]];
+      }
+    }
+    return false;
+  }
+  /* tahta: çapa ya da atalarından biri burada yan yana duruyorsa en üsttekinin
+     kabı esas alınır — telefon o kapta ne kadar ilerlediyse tahta da o oranda
+     (geri sıçramaz); yoksa çapanın kendisi (aynı öğe aynı yerde) */
   function zBelgeKaydir(s) {
     var w = Z.win, d = Z.belge, se = d.scrollingElement || d.documentElement;
     var hedef = null;
     if (s.a) {
       var el = yolBul(s.a, d);
       if (el) {
-        var r = el.getBoundingClientRect();
-        if (r.height > 0) hedef = se.scrollTop + r.top + (s.o || 0) * r.height - w.innerHeight / 3;
+        var zin = [el], oz = [+s.o || 0], e = el, i, j;
+        for (i = 0; s.oz && i < s.oz.length; i++) {
+          e = e.parentElement;
+          if (!e || e === d.body || e === d.documentElement) break;
+          zin.push(e); oz.push(+s.oz[i] || 0);
+        }
+        var sec = 0;
+        for (j = zin.length - 1; j >= 0; j--) if (yanYana(zin[j], w)) { sec = j + 1; break; }
+        while (sec < zin.length && !(zin[sec].getBoundingClientRect().height > 0)) sec++;
+        if (sec < zin.length) {
+          var r = zin[sec].getBoundingClientRect();
+          hedef = se.scrollTop + r.top + oz[sec] * r.height - w.innerHeight / 3;
+        }
       }
     }
     if (hedef == null) hedef = (s.f || 0) * (se.scrollHeight - w.innerHeight);
-    hedef = Math.max(0, Math.round(hedef));
-    if (Math.abs(se.scrollTop - hedef) < 2) return;
-    try { w.scrollTo({ top: hedef, left: 0, behavior: 'instant' }); } catch (e) { se.scrollTop = hedef; }
+    hedef = Math.max(0, Math.min(se.scrollHeight - w.innerHeight, hedef));
+    akKaydir(se, w, hedef, 0, true);
   }
   function zKayUygula() {
     if (!Z.hazir || !Z.belge || S.lider) return;
@@ -1603,8 +1734,8 @@
             el = dd && (dd.scrollingElement || dd.documentElement);
             if (!el) continue;
           }
-          el.scrollTop = Math.round((s.f || 0) * (el.scrollHeight - el.clientHeight));
-          el.scrollLeft = Math.round((s.x || 0) * (el.scrollWidth - el.clientWidth));
+          akKaydir(el, s.ic ? el.ownerDocument.defaultView : penceresi(el, Z.win),
+                   Math.round((s.f || 0) * (el.scrollHeight - el.clientHeight)), Math.round((s.x || 0) * (el.scrollWidth - el.clientWidth)), !!s.ic);
         }
       } catch (e) { }
     }
@@ -2957,6 +3088,19 @@
     al.addEventListener('pointercancel', birak);
     al.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') birak(e); });
     al.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    /* TAHTA ALANI DIŞINA DOKUNUNCA ARAÇ KAPANIR (22.10.2026) — öğretmen: "büyüteç
+       kullanırken eğer küçük ekran dışına tıklanırsa büyüteç otomatik kapansın, lazer
+       de aynı şekilde". Alan açıkken kararmış sayfaya dokununca (fareyle tıklayınca)
+       lazer / büyüteç kapanır, tahtadaki nokta / mercek kalkar; yeniden açılınca
+       bırakılan yerden sürer. Çipin üstü sayılmaz. Kapanış tıklamanın sonunda: parmağın
+       altındaki sayfaya tıklama geçmez. */
+    al.addEventListener('click', function (e) {
+      if (!alanAcikMi()) return;
+      var c = IA.cip && IA.cip.getBoundingClientRect();
+      if (c && e.clientX >= c.left && e.clientX <= c.right && e.clientY >= c.top && e.clientY <= c.bottom) return;
+      e.preventDefault();
+      aracSec(null);
+    });
     /* fare tekerleği sayfayı yine kaydırır (bilgisayarda lazer açıkken de gezilsin);
        kayma bitince işaret farenin yeni altındaki yere (bırakılmışsa yeri güncellenir) */
     al.addEventListener('wheel', function (e) {
