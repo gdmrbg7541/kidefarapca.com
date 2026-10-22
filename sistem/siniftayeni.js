@@ -35,9 +35,11 @@ window.KIDEF_SINIFTA_YENI = [
      + 'telefonun kumanda olur. Bilgisayardan yansıtacaksan tahtayı bir kez başlıktaki kumanda '
      + 'simgesinden «Sınıf Ekranı» olarak işaretle, bilgisayarda yeşil «Bu cihazı kumanda olarak '
      + 'kullan»a dokun. Açtığın sayfa, kaydırdığın yer, yazdığın kelime kablosuz olarak tahtada '
-     + 'aynı anda görünür; şifre alanları tahtaya gitmez. Telefondaki kumanda tuşundan «Perde» ile '
-     + 'tahtayı karartır, «Duraklat» ile bekletirsin; «Tahtadan da kullan»ı açarsan öğrenci tahtaya '
-     + 'dokunarak çalışır. Ders sürerken telefonunun ekranı kararmaz; kilitlense de tahta sürer, '
+     + 'aynı anda görünür; şifre alanları tahtaya gitmez. Kumanda tuşundan «Perde» ile tahtayı '
+     + 'karartır, «Duraklat» ile bekletirsin. «Lazer» açıkken parmağını gezdirdiğin kelimenin üstünde '
+     + 'tahtada kırmızı nokta belirir, «Büyüteç» dokunduğun yeri tahtada büyütür; «Tahtadan da '
+     + 'kullan»ı açarsan öğrenci tahtaya dokunarak çalışır. Ders sürerken telefonunun ekranı '
+     + 'kararmaz; kilitlense de tahta sürer, '
      + 'açınca kaldığın yerden devam edersin. Kumanda tektir: başka bir cihazı kumanda yaparsan '
      + 'eskisi kendiliğinden bırakır. Dizinden, ayağından rahatsızsan ders boyunca masanda oturarak '
      + 'anlatırsın.' },
@@ -333,6 +335,7 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
   /* 22.10.2026: kumanda çipleri öne (yüzen kumanda tuşu, ekran kararmaz, kaldığı yerden) */
   var CIPLER = '<div class="ty-cipler">' + VURGU +
     CIP('<rect x="7" y="9" width="10" height="13.5" rx="2.6"/><path d="M12 12.6v.01M10 17.6h4"/><path class="ty-kd1" d="M9.9 6.4a3 3 0 0 1 4.2 0"/><path class="ty-kd2" d="M7.6 4.1a6.2 6.2 0 0 1 8.8 0"/>', 'Kumanda tuşu') +
+    CIP('<path d="M3.5 20.5l9-9"/><circle class="ty-lazer" cx="16.6" cy="7.4" r="2.5"/><path class="ty-isin" d="M16.6 2v1.4M22 7.4h-1.4M20.4 3.6l-1 1M20.4 11.2l-1-1M12.8 3.6l1 1"/>', 'Lazer · büyüteç') +
     CIP('<circle cx="12" cy="12" r="3.8"/><path class="ty-isin" d="M12 2.6v2.3M12 19.1v2.3M2.6 12h2.3M19.1 12h2.3M5.4 5.4l1.6 1.6M17 17l1.6 1.6M5.4 18.6L7 17M17 7l1.6-1.6"/>', 'Ekran kararmaz') +
     CIP('<path d="M19.6 12.4a7.6 7.6 0 1 1-2.3-5.6"/><path d="M19.8 3.8v3.6h-3.6"/><path class="ty-oynat" d="M10.2 9.2l4.6 2.8-4.6 2.8z"/>', 'Kaldığın yerden') +
     CIP('<path d="M3 12h5M16 12h5"/><path d="M8 9v6h3V9zM13 9v6h3V9z"/><path class="ty-kes" d="M5 4l14 16"/>', 'Kablo yok') +
@@ -386,6 +389,8 @@ window.KIDEF_SINIFTA_YENI_GORSEL = window.KIDEF_SINIFTA_YENI_GORSEL || {};
     '.ty-kd1{ animation:tyKd 1.6s ease-in-out infinite; } .ty-kd2{ animation:tyKd 1.6s ease-in-out .3s infinite; }',
     '@keyframes tyKd{ 0%,100%{ opacity:.25; } 45%{ opacity:1; } }',
     '.ty-isin{ animation:tyIsin 2.4s ease-in-out infinite; }',
+    '.ty-lazer{ fill:#ef4444; stroke:#ef4444; }',
+    '.ty-cip:nth-child(8) svg{ animation-delay:2.8s; }',
     '@keyframes tyIsin{ 0%,100%{ opacity:.45; } 50%{ opacity:1; } }',
     '.ty-oynat{ fill:currentColor; fill-opacity:0; animation:tyOynat 2.4s ease-in-out infinite; }',
     '@keyframes tyOynat{ 0%,40%{ fill-opacity:0; } 60%,100%{ fill-opacity:1; } }',

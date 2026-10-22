@@ -231,10 +231,54 @@
         '<path d="M52 56l4 5M60 60l0 6M45 62l-4 4"/></g>' +
         '</svg>';
 
+    /* GİRİŞ ÜCRETSİZ (22.10.2026) — öğretmen: "siteyi sadece kaydı olanları
+       girebileceği şekilde yönetici olarak ayarladığımda ücretsiz bi şekilde
+       girilebileceğini sadece kayıt olunmasının yeterli olduğunu belirtelim, bunu
+       daha erken yapalım". «Sadece Girişliler» kilidinde, giriş yapmamış
+       ziyaretçiye kayıt/giriş penceresinin EN ÜSTÜNDE (başlığın hemen altında)
+       yeşil şerit: giriş ücretsiz, kayıt yeterli. Açılan kilit simgesi oynar. */
+    var UCRETSIZ_SVG = '' +
+        '<svg viewBox="0 0 48 48" style="width:46px; height:46px; flex:none; display:block;" aria-hidden="true">' +
+        '<style>' +
+        '@keyframes kuKanca{0%,30%{transform:translateY(0)}45%,85%{transform:translateY(-5px) rotate(-14deg)}100%{transform:translateY(0)}}' +
+        '.ku-kanca{transform-box:fill-box; transform-origin:85% 100%; animation:kuKanca 3.2s ease-in-out infinite}' +
+        '@keyframes kuParla{0%,40%{opacity:0; transform:scale(.4)}55%,80%{opacity:1; transform:scale(1)}100%{opacity:0; transform:scale(.4)}}' +
+        '.ku-parla{transform-box:fill-box; transform-origin:center; animation:kuParla 3.2s ease-in-out infinite}' +
+        '@media (prefers-reduced-motion:reduce){.ku-kanca,.ku-parla{animation:none}}' +
+        '</style>' +
+        '<circle cx="24" cy="24" r="23" fill="#DFF5EC"/>' +
+        '<path class="ku-kanca" d="M16.5 22v-5.5a7.5 7.5 0 0 1 15 0V22" fill="none" stroke="#0E7C66" stroke-width="3.6" stroke-linecap="round"/>' +
+        '<rect x="12" y="21" width="24" height="17" rx="4.5" fill="#16A085"/>' +
+        '<circle cx="24" cy="28.4" r="2.6" fill="#E8FBF4"/><rect x="22.8" y="29.6" width="2.4" height="4.6" rx="1.2" fill="#E8FBF4"/>' +
+        '<path class="ku-parla" d="M39 9l1.2 3 3 1.2-3 1.2L39 17.4l-1.2-3-3-1.2 3-1.2z" fill="#F5B041"/>' +
+        '</svg>';
+    function ucretsizSerit(kap, goster) {
+        var s = document.getElementById('kilitUcretsiz');
+        if (!goster) { if (s) s.remove(); return; }
+        if (s && kap.contains(s)) return;
+        if (s) s.remove();
+        s = document.createElement('div');
+        s.id = 'kilitUcretsiz';
+        s.setAttribute('role', 'note');
+        s.setAttribute('style', 'display:flex; align-items:center; gap:12px; text-align:left;' +
+            ' background:linear-gradient(135deg,#E8F8F1,#F4FCF8); border:1.5px solid #BFE6D6;' +
+            ' border-radius:14px; padding:11px 14px; margin:0 auto 14px; color:#2C5E50;' +
+            ' width:100%; max-width:760px; box-sizing:border-box;' +                     /* formla aynı sütun */
+            ' font-size:.9rem; line-height:1.5; box-shadow:0 4px 14px rgba(22,160,133,.12);');
+        s.innerHTML = UCRETSIZ_SVG +
+            '<div><b style="display:block; color:#0E7C66; font-size:1.02rem; margin-bottom:1px;">Siteye giriş ücretsiz</b>' +
+            'Kidef Arapça\'yı kullanmak için yalnızca <b>kayıt olman yeterli</b>. Hesabın varsa giriş yap, ' +
+            'yoksa birkaç saniyede kayıt ol.</div>';
+        var bas = kap.querySelector('#auth-title');
+        if (bas && bas.parentNode === kap) kap.insertBefore(s, bas.nextSibling);
+        else kap.insertBefore(s, kap.firstChild);
+    }
+
     function uyariGuncelle(kilit, girisli) {
         var lm = document.getElementById('login-modal');
         if (!lm) return;
         var kap = lm.querySelector('.modal-content') || lm;
+        ucretsizSerit(kap, kilit === 'girisli' && !girisli);       /* 22.10.2026 */
         var u = document.getElementById('kilitUyari');
         /* Sahne YALNIZ ogrenci/ogretmen GIRIS YAPINCA cikar; anonim
            ziyaretci duz kayit/giris ekrani gorur (hicbir ipucu yok). */
@@ -401,7 +445,7 @@
     window.kilitPanelHtml = function () {
         var kademe = [
             { k: 'acik',     ad: '🌍 Açık',              acikla: 'Herkes girebilir (normal durum).' },
-            { k: 'girisli',  ad: '🎓 Sadece Girişliler', acikla: 'Yalnız hesapla giriş yapanlar: öğrencilerin ve sen. Ders kipinde dışarıya kapalı.' },
+            { k: 'girisli',  ad: '🎓 Sadece Girişliler', acikla: 'Yalnız hesapla giriş yapanlar: öğrencilerin ve sen. Ders kipinde dışarıya kapalı. Ziyaretçiye «Siteye giriş ücretsiz — kayıt olman yeterli» yazısı çıkar.' },
             { k: 'yonetici', ad: '🔒 Sadece Yönetici',   acikla: 'Herkese kapalı; yalnız yönetici girer. Öğrenciler de kilit ekranı görür.' }
         ];
         var simdiki = K.durum || VARSAYILAN;
