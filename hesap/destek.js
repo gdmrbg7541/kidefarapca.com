@@ -643,7 +643,7 @@
             html: '<div class="dst-tesekkur" role="status">' + kalpSvg('dst-ikon') +
                 '<span><b>Son desteğin için teşekkürler.</b> ' +
                 (tutar ? esc(tl(tutar)) + ' · ' : '') + esc(gunYaz(t)) + ' · hesabına işlendi. ' +
-                'Katkınla yapay zekâ hizmetleri ve yeni içerikler devam ediyor.</span>' +
+                'Katkınla Kidef gelişiyor, yeni içerikler hazırlanıp yayımlanıyor.</span>' +
                 '<button type="button" data-dst-tesekkur-kapat="' + esc(anahtar) + '" title="Kapat" aria-label="Teşekkür notunu kapat">&times;</button>' +
                 '</div>'
         };
@@ -1270,9 +1270,10 @@
         var grafik = '<div class="dst-grafik"><div class="dst-grafik-svg" data-dst-grafik></div>' +
             '<p>Her destek çubuğu biraz daha doldurur; tutarlar ve kimin ne verdiği görünmez.</p></div>';
 
-        var aciklama = '<p class="dst-aciklama">Sitedeki <b>yapay zekâ hizmetlerinin giderleri</b> ve materyallerin, ' +
-            'oyunların, sınavların arkasındaki <b>yoğun öğretmen emeği</b>, siteyi kullanan öğretmenler arasında paylaşılır. ' +
-            'Katkın Kidef\'in büyümesini ve yeni içeriklerin hazırlanmasını sağlar.</p>';
+        /* 23.10.2026 öğretmen: "bu açıklamada yapay zekadan bahsetme, daha çok yayımlama, geliştirme ve emekten bahset" */
+        var aciklama = '<p class="dst-aciklama">Kidef\'teki her materyal, oyun ve sınav, hazırlanmasından yayımlanmasına kadar ' +
+            '<b>yoğun bir öğretmen emeğinin</b> ürünü. Sitenin <b>yayın ve geliştirme giderleri</b> ile bu emek, ' +
+            'siteyi kullanan öğretmenler arasında paylaşılır. Katkın Kidef\'in büyümesini ve yeni içeriklerin hazırlanmasını sağlar.</p>';
 
         /* kişisel durum — «borç / kalan» kelimesi yok */
         var dy;
@@ -2137,7 +2138,7 @@
         if (typeof ek === 'number') ek = ek ? ek + ' ay' : '';
         return 'Desteğin için teşekkürler 💛 ' + gunYaz(tarih) + ' tarihli ' + tl(tutar) +
             (ek ? ' (' + ek + ')' : '') + ' ödemen hesabına işlendi. ' +
-            'Katkınla sitedeki yapay zekâ hizmetleri ve yeni içerikler devam ediyor. ' +
+            'Katkınla Kidef gelişiyor, yeni içerikler hazırlanıp yayımlanıyor. ' +
             'Durumunu profilindeki Beklenen Destek kartından görebilirsin.';
     }
     /* Destekçiler köşesine ekle (yönetici). Aynı ad aynı ay zaten varsa

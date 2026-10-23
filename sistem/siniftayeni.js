@@ -46,9 +46,10 @@ window.KIDEF_SINIFTA_YENI = [
      + 'anlatırsın.' },
 
   { t: '2026-10-20', e: 'Destek', b: 'Kidef\'i birlikte ayakta tutuyoruz',
-    /* 22.10.2026: dönemlik sabit pay (günlük tutar kalktı) */
-    m: 'Sitedeki yapay zekâ hizmetlerinin giderleri ve materyallerin, oyunların, sınavların arkasındaki '
-     + 'öğretmen emeği, siteyi kullanan öğretmenler arasında paylaşılıyor. Profilindeki «Beklenen Destek» '
+    /* 22.10.2026: dönemlik sabit pay (günlük tutar kalktı) · 23.10.2026: yapay zekâ yerine yayın, geliştirme ve emek */
+    m: 'Sitenin yayın ve geliştirme giderleri ile materyallerin, oyunların, sınavların hazırlanmasından '
+     + 'yayımlanmasına kadar süren öğretmen emeği, siteyi kullanan öğretmenler arasında paylaşılıyor. '
+     + 'Profilindeki «Beklenen Destek» '
      + 'kartında bu dönemin desteğini görürsün: tutar dönem başında (Eylül ve Şubat) bir kez belirlenir, '
      + 'dönem boyunca değişmez; siteye katılan öğretmen arttıkça gelecek dönemin payı küçülür, yani '
      + 'meslektaşını davet etmek en iyi destek. Yeni katılanın ilk ayı bizden. Kartta herkesin birlikte '
