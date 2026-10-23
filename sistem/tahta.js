@@ -802,7 +802,7 @@
       if (k) k.child('yayin').onDisconnect().cancel();
       if (k && CIHAZ === 'bilgisayar') {
         /* "Bitir": ders bitti (bitir) — tahta onu üstlenmez, ana sayfa kumandaya geri dönmez */
-        k.update({ 'yayin/cevrimici': false, 'yayin/bitir': true, 'yayin/vekil': null, 'yayin/ts': TS(), 'olay': null, 'kay': null, 'alan': null, 'ayar/perde': false, 'ayar/kg': false, 'isaret': null, 'gorus': null });
+        k.update({ 'yayin/cevrimici': false, 'yayin/bitir': true, 'yayin/vekil': null, 'yayin/ts': TS(), 'olay': null, 'kay': null, 'alan': null, 'ayar/perde': false, 'ayar/kg': false, 'isaret': null, 'gorus': null, 'kanal': null, 'kanalIste': null });
         k.child('izle/' + BEN).remove();
         try { localStorage.removeItem('kidef_kumanda_son'); } catch (e) { }
       } else if (k) {
@@ -1046,6 +1046,7 @@
     if (!e.isTrusted || !S.lider) return;
     var el = hedefOge(e);
     if (!el || !Y.belge) return;
+    if (kanalAlaninda(el, Y.belge)) return;          /* o bölümü sayfa taşır (kanal) */
     var yol = liderYolu(el);
     if (!yol) return;
     var s = yeniTohum();
@@ -1071,6 +1072,7 @@
     if (!e.isTrusted || !S.lider || !Y.belge) return;
     if (/^(Shift|Control|Alt|Meta|CapsLock|Tab|OS|AltGraph)$/.test(e.key)) return;
     var el = hedefOge(e);
+    if (kanalAlaninda(el, Y.belge)) return;
     var alan = yaziAlani(el);
     if (alan && (gizliAlan(el) || !OZEL_TUS.test(e.key) || e.key === ' ')) return;
     var govde = !el || el === Y.belge.body || el === Y.belge.documentElement;
@@ -1128,7 +1130,7 @@
   /* --- yazı alanları: girişte ve kod değiştirdiğinde (ekran klavyesi) */
   function alanAnahtar(el) { return 'a' + ozet(yolMetni(yolAl(el, Y.belge))); }
   function alanIzle(el) {
-    if (!izlenecekAlan(el)) return;
+    if (!izlenecekAlan(el) || kanalAlaninda(el)) return;
     if (Y.alanIz.indexOf(el) < 0) { Y.alanIz.push(el); if (Y.alanIz.length > 60) Y.alanIz.shift(); }
   }
   function alanTara() {
@@ -1144,7 +1146,7 @@
   function yAlanOlay(e) {
     if (!e.isTrusted || !S.lider) return;
     var el = hedefOge(e);
-    if (!izlenecekAlan(el)) return;
+    if (!izlenecekAlan(el) || kanalAlaninda(el)) return;
     alanIzle(el);
     alanKontrol();
   }
@@ -1346,7 +1348,7 @@
       Y.gunluk.forEach(function (o) { if (o.g > Y.durakG) olayYazHam(o); });
       /* duraklatmadayken bağlanan tahta: sayfanın tamamı yalnız ona */
       yeni.forEach(function (h) { yEsitle(h[0], h[1]); });
-      setTimeout(function () { alanKontrol(); kayHepsi(); }, 30);
+      setTimeout(function () { alanKontrol(); kayHepsi(); kanalAnlikYolla(); }, 30);
     } else {
       /* başka sayfaya geçilmiş: tahta o sayfayı açar, sayfada yapılanları uygular */
       yayinYaz(true);
@@ -1758,6 +1760,146 @@
     }
   }
 
+  /* ======================================== KANAL: SAYFANIN KENDİ DURUMU (22.10.2026)
+     Öğretmen: "defterde yazı yazınca da yansıtılan ekranda görünmeli neden görünmüyor".
+     Yansıtma tıklamayı, tuşu, yazı alanını ve kaydırmayı taşır; defterde parmakla /
+     kalemle yazılan çizgi bunların hiçbiri değil, tahtaya gitmiyordu. Bu kanal,
+     çerçevedeki sayfanın KENDİ durumunu öbür cihaza taşır: sayfa (ör. defter)
+     KidefTahta.kanal.kur(ad, {belge, gelen, anlik}) ile bağlanır; lider gonder(m) ile
+     yollar, izleyen gelen(m) ile alır. İletiler tahta/<uid>/kanal halkasında sırayla
+     (n) ve sayfa sayacıyla (d) gider. İzleyen yeni bağlanınca, lider değişince ya da
+     bir ileti kaçınca liderden ANLIK durumu ister (kanalIste): lider sayfanın
+     anlik()'ini yollar, izleyen ondan sürer. Kanalın kurulduğu bölümde
+     ([data-tahta-kanal]) tıklama / tuş / yazı yansıtılmaz — o bölümün durumunu sayfa
+     taşır, işlem iki kez uygulanmaz. */
+  var KN = { h: null, n: 0, enN: 0, son: null, i: null, bek: {}, istek: null, isteZ: null, isteSay: 0, jeton: '', cevapZ: null, boslukZ: null };
+  var KANAL_HALKA = 64;
+  function cerceveBelge() { try { return CERCEVE.contentDocument; } catch (e) { return null; } }
+  function kanalAlaninda(el, d) {
+    try {
+      if (el && el.closest && el.closest('[data-tahta-kanal]')) return true;
+      if (d && (!el || el === d.body || el === d.documentElement) && d.querySelector('[data-tahta-kanal]')) return true;
+    } catch (e) { }
+    return false;
+  }
+  function kanalDurum() { return { oturum: !!(S.kok && oturumVar()), lider: !!S.lider }; }
+  function kanalKur(ad, isl) {
+    if (!ad || !isl || typeof isl.gelen !== 'function') return null;
+    var h = { ad: String(ad), isl: isl, belge: isl.belge || null };
+    KN.h = h;
+    KN.son = null; KN.i = null; KN.bek = {}; KN.isteSay = 0;
+    clearTimeout(KN.boslukZ); KN.boslukZ = null;
+    if (S.kok && !S.lider && oturumVar()) kanalIsteZamanla();      /* izleyen: liderdeki hâli iste */
+    else if (S.lider) kanalIstekBak();                               /* lider: bekleyen istek varsa */
+    return {
+      gonder: function (m) { return KN.h === h ? kanalGonder(h.ad, m) : false; },
+      durum: kanalDurum,
+      iste: function () { if (KN.h === h && !S.lider) { KN.son = null; kanalIsteZamanla(); } },
+      birak: function () { if (KN.h === h) { KN.h = null; KN.bek = {}; KN.son = null; } }
+    };
+  }
+  function kanalGecerli() { return !!(KN.h && KN.h.belge && KN.h.belge === cerceveBelge()); }
+  function kanalGonder(ad, m) {
+    if (!kanalGecerli() || KN.h.ad !== ad || !S.kok || !yayinda() || !Y.belge || KN.h.belge !== Y.belge) return false;
+    KN.n = Math.max(KN.n, KN.enN) + 1;
+    try { S.kok.child('kanal/' + (KN.n % KANAL_HALKA)).set({ n: KN.n, d: Y.d, i: BEN, a: ad, m: m }); } catch (e) { return false; }
+    return true;
+  }
+  function kanalAnlikYolla(jeton) {
+    if (!kanalGecerli() || !S.lider || KN.h.belge !== Y.belge) return;
+    var m = null;
+    try { m = KN.h.isl.anlik ? KN.h.isl.anlik() : null; } catch (e) { m = null; }
+    if (!m) return;
+    m.t = 'h';
+    if (jeton) m.j = jeton;
+    kanalGonder(KN.h.ad, m);
+  }
+  /* lider: izleyenin anlık durum isteği */
+  function kanalIstekBak() {
+    var r = KN.istek;
+    if (!r || !S.lider || r.i === BEN || !kanalGecerli() || r.a !== KN.h.ad || r.d !== Y.d || KN.h.belge !== Y.belge) return;
+    if (KN.cevapZ) return;
+    KN.cevapZ = setTimeout(function () {
+      KN.cevapZ = null;
+      var r2 = KN.istek;
+      if (!r2 || !S.lider) return;
+      kanalAnlikYolla(r2.j || '');
+      try { S.kok.child('kanalIste').set(null); } catch (e) { }
+    }, 60);
+  }
+  /* izleyen: liderden anlık durum iste (yeni bağlandı, lider değişti, ileti kaçtı) */
+  function kanalIsteZamanla() {
+    if (KN.isteZ) return;
+    KN.isteZ = setTimeout(function () { KN.isteZ = null; kanalIste(); }, 120);
+  }
+  function kanalIste() {
+    if (!S.kok || S.lider || !kanalGecerli() || !oturumVar()) return;
+    KN.son = null;
+    KN.jeton = Math.random().toString(36).slice(2, 10);
+    try { S.kok.child('kanalIste').set({ i: BEN, a: KN.h.ad, d: Z.d, j: KN.jeton, z: sunucuZaman() }); } catch (e) { }
+    clearTimeout(KN.yineZ);
+    KN.yineZ = setTimeout(function () {
+      if (KN.son == null && kanalGecerli() && !S.lider && KN.isteSay++ < 8) kanalIste();
+    }, 2500);
+  }
+  function kanalGeldi(s) {
+    var v = s.val();
+    if (!v || typeof v.n !== 'number') return;
+    if (v.n > KN.enN) KN.enN = v.n;
+    if (S.lider || v.i === BEN || !kanalGecerli()) return;
+    var lid = S.yayin && S.yayin.id;
+    if (!lid || v.i !== lid || v.d !== Z.d || v.a !== KN.h.ad) return;
+    if (KN.i !== lid) { KN.i = lid; KN.son = null; KN.bek = {}; kanalIsteZamanla(); }   /* yeni lider: baştan */
+    if (KN.son != null && v.n <= KN.son) return;
+    KN.bek[v.n] = v;
+    kanalIsle();
+  }
+  function kanalVer(m) { try { if (kanalGecerli()) KN.h.isl.gelen(m); } catch (e) { } }
+  function kanalIsle() {
+    var k, n = 0;
+    for (k in KN.bek) n++;
+    if (n > 3 * KANAL_HALKA) {                                       /* çok birikti: en yenileri kalsın */
+      var l = Object.keys(KN.bek).map(Number).sort(function (a, b) { return a - b; });
+      l.slice(0, l.length - KANAL_HALKA).forEach(function (x) { delete KN.bek[x]; });
+    }
+    for (var tur = 0; tur < 1000; tur++) {
+      if (KN.son == null) {
+        /* anlık durum bekleniyor: gelenler arasındaki en yeni «h»den başla */
+        var h = null;
+        for (k in KN.bek) if (KN.bek[k].m && KN.bek[k].m.t === 'h' && (!h || KN.bek[k].n > h.n)) h = KN.bek[k];
+        if (!h) return;
+        for (k in KN.bek) if (+k <= h.n) delete KN.bek[k];
+        KN.son = h.n;
+        clearTimeout(KN.yineZ); KN.isteSay = 0;
+        kanalVer(h.m);
+        continue;
+      }
+      var v = KN.bek[KN.son + 1];
+      if (!v) {
+        var ileride = false;
+        for (k in KN.bek) if (+k > KN.son) { ileride = true; break; }
+        if (ileride && !KN.boslukZ) {
+          /* arada kaçan var: biraz bekle, gelmezse anlık durumu iste */
+          KN.boslukZ = setTimeout(function () {
+            KN.boslukZ = null;
+            if (KN.son != null && !KN.bek[KN.son + 1]) { var ok = false; for (var x in KN.bek) if (+x > KN.son) { ok = true; break; } if (ok) { KN.son = null; kanalIsteZamanla(); } }
+            else kanalIsle();
+          }, 450);
+        }
+        return;
+      }
+      delete KN.bek[KN.son + 1];
+      KN.son = v.n;
+      kanalVer(v.m);
+    }
+  }
+  /* rol değişince: lider olan sırayı sürdürür; izleyen olan liderin hâlini ister */
+  function kanalLider(l) {
+    clearTimeout(KN.boslukZ); KN.boslukZ = null; KN.bek = {};
+    if (l) { KN.n = Math.max(KN.n, KN.enN); KN.son = null; KN.i = null; }
+    else if (KN.h) { KN.son = null; KN.i = null; setTimeout(function () { if (!S.lider) kanalIste(); }, 150); }
+  }
+
   /* ============================================== LİDERLİK (kim kullanıyor)
      Bilgisayar her zaman kontrolü alabilir; tahta yalnız "Tahtadan da
      kullan" açıkken, yansıtma sürüp duraklatılmamışken ve aynı sayfa
@@ -1790,6 +1932,7 @@
     var ayni = !!(belge && Z.belge === belge && yy && Z.d === yy.d && !Z.esit && belge.readyState !== 'loading');
     if (ayni) { Z.hazir = true; try { zIsle(); } catch (e) { } }     /* gelmiş olaylar önce uygulanır */
     S.lider = true;
+    kanalLider(true);
     S.esitBekle = false;
     if (S.devam) devamTamam();
     Y.win = w; Y.belge = belge;
@@ -1816,6 +1959,7 @@
   function liderBirak(y) {
     if (!S.lider) return;
     S.lider = false;
+    kanalLider(false);
     Y.aktif = null; clearTimeout(Y.kayZ); Y.kayZ = null; Y.kayBek = {}; Y.durak = false; Y.durakYeni = []; Y.vekil = null;
     Z.win = Y.win; Z.belge = Y.belge; Z.d = Y.d;
     Z.hazir = !!(Y.belge && Y.belge === S.belge);
@@ -1868,6 +2012,7 @@
     var w = CERCEVE.contentWindow, belge = Z.belge, c = Z.sonCanli;
     try { zIsle(); } catch (e) { }                         /* gelmiş olaylar önce */
     S.lider = true;
+    kanalLider(true);
     Y.win = w; Y.belge = belge;
     Y.durak = false; Y.durakYeni = []; Y.aktif = null; Y.alanIz = []; Y.kayBek = {}; Y.bek = {};
     Y.alanSon = {};
@@ -2319,7 +2464,7 @@
     S.lider = false; S.kok = null;
     try {
       if (k) {
-        ['olay', 'yayin', 'kay', 'alan', 'ayar', 'izle', 'ekran', 'isaret', 'gorus'].forEach(function (p) { try { k.child(p).off(); } catch (e) { } });
+        ['olay', 'yayin', 'kay', 'alan', 'ayar', 'izle', 'ekran', 'isaret', 'gorus', 'kanal', 'kanalIste'].forEach(function (p) { try { k.child(p).off(); } catch (e) { } });
         k.child('yayin').onDisconnect().cancel();
         k.child('izle/' + BEN).onDisconnect().cancel();
         k.child('izle/' + BEN).remove();
@@ -4218,6 +4363,9 @@
       hareketYaz();
     });
     kok.child('alan').on('value', function (s) { Z.alan = s.val() || {}; if (!S.lider && !(S.yayin && S.yayin.baska)) zAlanUygula(); });
+    kok.child('kanal').on('child_added', kanalGeldi);                         /* sayfanın kendi durumu (defter) */
+    kok.child('kanal').on('child_changed', kanalGeldi);
+    kok.child('kanalIste').on('value', function (s) { KN.istek = s.val(); kanalIstekBak(); });
     kok.child('ayar').on('value', function (s) {
       var v = s.val() || {};
       S.ayar = { kip: v.kip === 'tek' ? 'tek' : 'cift', perde: !!v.perde, kg: !!v.kg };
@@ -4506,7 +4654,8 @@
     kimlik: KIMLIK, hedefSec: hedefSec, tahtaListesi: tahtaListesi, tahtaAdiYaz: tahtaAdiYaz, cihazAdi: cihazAdi,
     rol: ROL, cihaz: CIHAZ, id: BEN, S: S, Y: Y, Z: Z, yolAl: yolAl, yolBul: yolBul, VT_ADRES: VT_ADRES,
     liderOl: liderOl, lider: function () { return S.lider; },
-    arac: function (a) { aracSec(a); return IA.arac; }, IA: IA, IZ: IZ, noktaBilgisi: noktaBilgisi, isaretNokta: isaretNokta
+    arac: function (a) { aracSec(a); return IA.arac; }, IA: IA, IZ: IZ, noktaBilgisi: noktaBilgisi, isaretNokta: isaretNokta,
+    kanal: { kur: kanalKur, durum: kanalDurum }
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', basla); else basla();
 })();
