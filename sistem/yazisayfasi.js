@@ -166,6 +166,16 @@
      geçmiş, PDF.
    · «Silik yazı» → Harf: harfe basınca dört yazılışı alfabe sayfasındaki
      motorla büyük yazılır; tahtaya da yansır (HARFİN YAZILIŞI).
+   DEFTER v21 (23.10.2026, öğretmen: "defterde silik yazı seçeneğini de
+   sidebarın içine al, kalemlerin dizilimi yatay ve yukarda olsun", "defterde
+   side bar tuşu hariç araçları ortaya al, sayfa okları sayfa sayısını
+   gösteren kısmı aşağı al"):
+   · Üst çubuk: solda yalnız ☰; geri al, yinele, silgi, sayfayı sil ve
+     kalemler ORTADA; sağda Ana sayfa / Küçült.
+   · ▲ sayfa ▼ kâğıdın altında ortada (altNavHtml, .ys-altnav).
+   · «Silik yazı» perdenin en başında.
+   · Kalemler öntanımlı olarak üstte, yan yana (tercih «kyer»; perdeden
+     «Sağda» seçilebilir).
    ARAÇLAR: 5 renk kalem · hat kalemi · silgi · 3 kalınlık · çizgi sayısı
    (2·3·4·5·7) / güzel yazı · geri al, yinele, temizle · sayfalar (ekle,
    kaldır, ileri / geri, kaydırma çubuğu, dikey / yatay) · PDF · tam ekran.
@@ -1231,7 +1241,7 @@
         kapat(true);
         var t = tercihOku();
         T = { arac: 'kalem', renk: KALEM_SIRA.indexOf(t.renk) >= 0 ? t.renk : 1, kal: t.kal || 'o', mod: t.mod || 'c',
-              ky: t.ky === 'ust' ? 'ust' : 'sag',                                  /* kalemlerin yeri */
+              ky: t.kyer === 'sag' ? 'sag' : 'ust',                                /* kalemlerin yeri: öntanımlı üstte (v21; eski «ky» okunmaz) */
               cizgi: tercihCizgi(t.cizgi), yon: 'd', uc: t.uc === 'h' ? 'h' : 'y',
               sayi: CIZGI_SECENEK.indexOf(+t.sayi) >= 0 ? +t.sayi : null };      /* güzel yazıdan dönünce gelen çizgi sayısı */
         if (T.sayi == null) T.sayi = T.cizgi === 'g' ? CIZGI_VARSAYILAN : T.cizgi;
@@ -1280,6 +1290,7 @@
                 '<div class="ys-kagit" id="ysKagit">' +
                   '<canvas class="ys-alt"></canvas><canvas class="ys-ust"></canvas>' +
                   '<div class="ys-silgi-iz"></div>' +
+                  altNavHtml() +                                /* ▲ sayfa ▼ kâğıdın altında (v21) */
                 '</div>' +
                 /* dikey kipte kalın kaydırma çubuğu solda ("dikeyde solda olsun scroll çubuğu") */
                 '<div class="ys-dray" id="ysRayD" role="scrollbar" aria-orientation="vertical" aria-controls="ysKagit"' +
@@ -1333,6 +1344,19 @@
         perdeStilKur();
         perdeKur();
         ort.addEventListener('click', tikla);
+        /* DOKUNUŞTAN SONRA GELEN TIKLAMA (v21): pointerup'ta işlenen düğme bir şey
+           açtıysa (perdeden «Silik yazı», «Tüm sayfalar», soru penceresi…),
+           tarayıcının dokunuşun ardından gönderdiği tıklama parmağın altına yeni
+           açılan öğeye düşüyordu (pencereyi kapatan ×, bir sayfa kartı, soru
+           penceresinin boşluğu). O tıklama yakalama evresinde yutulur. Klavye ve
+           koddan gelen tıklamalar (detail 0) dokunulmaz. */
+        ort.addEventListener('click', function (e) {
+            var sh = UI && UI.sonHizli;
+            if (!sh || sh.x == null || !e.detail || Date.now() - sh.z > 800) return;
+            if (Math.abs(e.clientX - sh.x) > 14 || Math.abs(e.clientY - sh.y) > 14) return;
+            UI.sonHizli = null;
+            e.stopPropagation(); e.preventDefault();
+        }, true);
         ort.addEventListener('pointerdown', hizliSec);
         ort.addEventListener('pointerdown', tapBas);
         ort.addEventListener('pointerup', tapBirak);
@@ -1595,7 +1619,7 @@
        sayfanın sonu pencerenin altında — pencere bir sayfadan uzunsa
        (telefon, dikey tablet) son sayfanın başı çubuğun altında */
     function enAzY() { return -(UI.ustPay || 0); }
-    function enCokY() { var n = D.sayfalar.length, p = UI.ustPay || 0, ph = sayfaYuk(); return Math.max(-p, (n - 1) * ph - p, n * ph - UI.Lh); }
+    function enCokY() { var n = D.sayfalar.length, p = UI.ustPay || 0, ph = sayfaYuk(); return Math.max(-p, (n - 1) * ph - p, n * ph - UI.Lh + (UI.altPay || 0)); }
     function sinirliY(y) { return Math.max(enAzY(), Math.min(enCokY(), y)); }
     function defterHazirla(d) {
         if (!d.pw) d.pw = (d.sayfalar && d.sayfalar.pw) || W;
@@ -1635,11 +1659,14 @@
             UI.Lh = gh / UI.cssOlcek;
             var sc = UI.ort.querySelector('.ys-sayfalar');
             UI.ustPay = sc ? Math.min(UI.Lh * 0.4, Math.max(0, (sc.offsetTop + sc.offsetHeight + 8) / UI.cssOlcek)) : 0;
+            /* ▲ sayfa ▼ kâğıdın altında (v21): örttüğü şerit kaydırmada hesaba katılır */
+            var an = UI.kagit.querySelector('.ys-altnav');
+            UI.altPay = an && an.offsetHeight ? Math.min(UI.Lh * 0.3, Math.max(0, (gh - an.offsetTop + 6) / UI.cssOlcek)) : 0;
         } else {
             UI.Lw = sayfaYuk() * gw / gh;
             UI.cssOlcek = gw / UI.Lw;
             UI.Lh = sayfaYuk();
-            UI.ustPay = 0;
+            UI.ustPay = 0; UI.altPay = 0;
         }
         UI.olcek = UI.cssOlcek * dpr;
         UI.iz.style.width = UI.iz.style.height = (SILGI_W * UI.cssOlcek) + 'px';
@@ -2079,11 +2106,11 @@
     /* A4 boyunda sayfa (21.10.2026): dikeyde ▼ önce sayfanın İÇİNDE bir ekran
        kaydırır, sayfanın sonuna gelince sonraki sayfaya geçer; ▲ tersi.
        Kısa (eski) sayfalarda eskisi gibi doğrudan sayfa değiştirir. */
-    function ekranAdimi() { return Math.max(sayfaYuk() * 0.25, UI.Lh - (UI.ustPay || 0) - 40); }
+    function ekranAdimi() { return Math.max(sayfaYuk() * 0.25, UI.Lh - (UI.ustPay || 0) - (UI.altPay || 0) - 40); }
     function sola() {
         genelKapat();
         if (dikeyMi()) {
-            var alt = (D.aktif + 1) * sayfaYuk();
+            var alt = (D.aktif + 1) * sayfaYuk() + (UI.altPay || 0);     /* sayfanın sonu alttaki okların üstüne gelsin (v21) */
             if (UI.cy + UI.Lh < alt - 8) { kaydirHedef(Math.min(UI.cy + ekranAdimi(), alt - UI.Lh)); return; }
         }
         var n = D.sayfalar.length, j = D.aktif + 1;
@@ -2128,7 +2155,7 @@
         soru('Bu sayfa (' + (D.aktif + 1) + '. sayfa) üzerindeki yazılarla birlikte kaldırılsın mı?', 'Kaldır', true, yap);
     }
     function modSec() { /* tek düzen: çizgili defter (çizgi sayısı / güzel yazı: cizgiSec) */ }
-    function tercihKaydet() { tercihYaz({ renk: T.renk, kal: T.kal, mod: T.mod, cizgi: T.cizgi, yon: T.yon, uc: T.uc, sayi: T.sayi, sk: T.sk, ky: T.ky }); }
+    function tercihKaydet() { tercihYaz({ renk: T.renk, kal: T.kal, mod: T.mod, cizgi: T.cizgi, yon: T.yon, uc: T.uc, sayi: T.sayi, sk: T.sk, kyer: T.ky }); }
     /* yeni defter: son seçilen çizgi sayısı (2·3·4·5·7) ya da güzel yazı;
        eski tercih (6, 8) artık seçenek değil → 5 */
     function tercihCizgi(v) { return v === 'g' ? 'g' : (CIZGI_SECENEK.indexOf(+v) >= 0 ? +v : CIZGI_VARSAYILAN); }
@@ -2499,7 +2526,7 @@
         if (!b || b.disabled || !UI.ort.contains(b)) return null;
         var is = b.getAttribute('data-is');
         if (is === 'tamEkran' || is === 'pdf') return null;
-        return b.closest('.ys-arac,.ys-yan,.ys-sayfalar,.ys-silik,.ys-hy') ? b : null;
+        return b.closest('.ys-arac,.ys-yan,.ys-sayfalar,.ys-altnav,.ys-silik,.ys-hy') ? b : null;
     }
     function tapBas(e) {
         if (e.pointerType === 'mouse' && e.button !== 0) { _tap = null; return; }
@@ -2511,7 +2538,7 @@
         if (!t || e.pointerId !== t.id || !UI) return;
         if (Math.abs(e.clientX - t.x) > 10 || Math.abs(e.clientY - t.y) > 10) return;
         if (hizliHedef(e.target) !== t.b) return;
-        UI.sonHizli = { b: t.b, z: Date.now() };
+        UI.sonHizli = { b: t.b, z: Date.now(), x: e.clientX, y: e.clientY };
         islem(e, e.target, t.b);
     }
     function tikla(e) {
@@ -3492,7 +3519,7 @@
     function silikGoster(j, y0, y1) {
         if (!UI || !dikeyMi()) return;
         var ph = sayfaYuk(), up = UI.ustPay || 0, a = j * ph + y0 - 50, b = j * ph + y1 + 30;
-        if (a >= UI.cy + up && b <= UI.cy + UI.Lh) return;
+        if (a >= UI.cy + up && b <= UI.cy + UI.Lh - (UI.altPay || 0)) return;
         kaydirHedef(a - up);
     }
     function silikEkle(j, yeni, r, L, satir) {
@@ -3997,6 +4024,9 @@
        alır (perdede de «Kalemler: Sağda | Üstte»). Seçim tarayıcıda kalır.
        Orta sütun ekranın ortasındadır; sol taraf sığmazsa yana kayar, dar
        ekranda kalemler ikinci satıra iner.
+       v21 (aynı gün): solda yalnız ☰; düzenleme ve kalemler ORTADA; ▲ sayfa ▼
+       kâğıdın altında (altNavHtml); «Silik yazı» perdenin başında; kalemler
+       öntanımlı olarak üstte (üstteyken çubukta yer tuşu yok, perdeden seçilir).
        ------------------------------------------------------------------ */
     IK.menu = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>';
     IK.carpi = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>';
@@ -4013,21 +4043,25 @@
     IK.yeniden = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
         '<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4.5v4.6h4.6"/></svg>';
     /* perdeyi kapatan tuşlar: başka bir şey açarlar ya da bir kez yapılırlar */
-    var PERDE_KAPATAN = { tumSayfalar: 1, yeniSayfa: 1, notKaydet: 1, panel: 1, pdf: 1, tamEkran: 1 };
+    var PERDE_KAPATAN = { silik: 1, tumSayfalar: 1, yeniSayfa: 1, notKaydet: 1, panel: 1, pdf: 1, tamEkran: 1 };
 
     function kalemYerTusu(taraf) {
+        if (taraf === 'ust') return '';                 /* v21: üstteyken çubukta tuş yok — yeri perdeden seçilir */
         var ust = taraf === 'ust';
         var t = ust ? 'Kalemleri sağa al — alt alta' : 'Kalemleri üste al — üst çubuğun ortasında yan yana';
         return '<i class="ys-ara"></i><button type="button" class="ys-t ys-kyer" data-is="kalemYer" data-v="' + (ust ? 'sag' : 'ust') +
             '" title="' + t + '" aria-label="' + t + '">' + (ust ? IK.kalemSag : IK.kalemUst) + '</button>';
     }
     function ustCubukHtml(yan, kalin, csay) {
+        /* v21: [☰] [düzenleme · kalemler — ORTADA] [Ana sayfa / Küçült] */
         return '<div class="ys-arac ys-ust3">' +
             '<div class="ys-u3-sol">' +
               '<button type="button" class="ys-t ys-menu" data-is="perde" aria-expanded="false" aria-controls="ysPerde"' +
-                ' title="Öteki araçlar — kalem çeşidi, defter türü, sayfalar, kayıt, PDF">' +
+                ' title="Öteki araçlar — silik yazı, kalem çeşidi, defter türü, sayfalar, kayıt, PDF">' +
                 '<span class="ik-m">' + IK.menu + '</span><span class="ik-x">' + IK.carpi + '</span>' +
                 '<span class="ys-menu-ad">' + (YAZI ? 'Yazı Çalışması' : 'Defter') + '<small>' + esc(etiket()) + '</small></span></button>' +
+            '</div>' +
+            '<div class="ys-u3-orta">' +
               '<span class="ys-dgrup" role="group" aria-label="Düzenleme">' +
                 '<button type="button" class="ys-t" data-is="geri" title="Geri al (Ctrl+Z)" aria-label="Geri al">' + IK.geri + '</button>' +
                 '<button type="button" class="ys-t" data-is="ileri" title="Yinele (Ctrl+Y)" aria-label="Yinele">' + IK.ileri + '</button>' +
@@ -4035,17 +4069,8 @@
                 '<button type="button" class="ys-t" data-is="silgi" title="Silgi (S) — seçiliyken bir daha basınca: Tüm sayfayı sil" aria-label="Silgi">' + IK.silgi + '</button>' +
                 '<button type="button" class="ys-t" data-is="temizle" title="Sayfayı sil" aria-label="Sayfayı sil">' + IK.temizle + '</button>' +
               '</span>' +
-              '<span class="ys-nav" role="group" aria-label="Sayfalar">' +
-                '<button type="button" class="ys-t ys-ok" data-is="saga" title="Geri — önceki sayfa" aria-label="Geri — önceki sayfa">' +
-                  '<span class="ik-y">' + IK.sonraki + '</span><span class="ik-d">' + IK.yukari + '</span></button>' +
-                '<span class="ys-sayfa" id="ysSayfa">1 / 1</span>' +
-                '<button type="button" class="ys-t ys-ok" data-is="sola" title="İleri — sonraki sayfa; son sayfadaysa yeni sayfa" aria-label="İleri — sonraki sayfa">' +
-                  '<span class="ik-y">' + IK.onceki + '</span><span class="ik-d">' + IK.asagi + '</span></button>' +
-              '</span>' +
-              '<button type="button" class="ys-t ys-silikt" data-is="silik" aria-pressed="false" title="Silik yazı — kitabın kelimeleri, kendi yazdığın ya da harfin dört yazılışı; öğrenci üstünden geçer">' +
-                IK.silik + '<span>Silik yazı</span></button>' +
+              yan('ust') +
             '</div>' +
-            '<div class="ys-u3-orta">' + yan('ust') + '</div>' +
             '<div class="ys-u3-sag">' +
               (TEK
                 ? '<a class="ys-t kucult ys-ana" href="index.html" data-is="anasayfa" title="Kidef Arapça ana sayfasına git" aria-label="Ana sayfaya git">' +
@@ -4056,11 +4081,30 @@
             perdeHtml(kalin, csay) +
             '</div>';
     }
+    /* SAYFA OKLARI ALTTA (v21, öğretmen: "sayfa okları sayfa sayısını gösteren
+       kısmı aşağı al"): kâğıdın altında ortada yüzen kutu — ▲ geri · sayfa ·
+       ▼ ileri. Kâğıdın (.ys-kagit) içinde durur: «Silik yazı» penceresi açıkken
+       de kâğıdın ortasında kalır. Örttüğü şerit UI.altPay (cizimAyarla). */
+    function altNavHtml() {
+        return '<div class="ys-altnav" role="group" aria-label="Sayfalar">' +
+            '<button type="button" class="ys-t ys-ok" data-is="saga" title="Geri — önceki sayfa" aria-label="Geri — önceki sayfa">' +
+              '<span class="ik-y">' + IK.sonraki + '</span><span class="ik-d">' + IK.yukari + '</span></button>' +
+            '<span class="ys-sayfa" id="ysSayfa">1 / 1</span>' +
+            '<button type="button" class="ys-t ys-ok" data-is="sola" title="İleri — sonraki sayfa; son sayfadaysa yeni sayfa" aria-label="İleri — sonraki sayfa">' +
+              '<span class="ik-y">' + IK.onceki + '</span><span class="ik-d">' + IK.asagi + '</span></button>' +
+            '</div>';
+    }
     function perdeHtml(kalin, csay) {
         var kare = function (is, ik, ad, ipucu, ek) {
             return '<button type="button" class="ys-t ys-pd-kare' + (ek || '') + '" data-is="' + is + '" title="' + ipucu + '">' + ik + '<span>' + ad + '</span></button>';
         };
         return '<div class="ys-perde" id="ysPerde" role="dialog" aria-label="Öteki araçlar" hidden><div class="ys-pd-ic">' +
+            /* «Silik yazı» perdenin başında (v21) — açınca perde kapanır */
+            '<div class="ys-pd-grup ys-pd-ilk">' +
+              '<button type="button" class="ys-t ys-pd-tus ys-pd-silik" data-is="silik" aria-pressed="false"' +
+                ' title="Silik yazı — kitabın kelimeleri, kendi yazdığın ya da harfin dört yazılışı; öğrenci üstünden geçer">' +
+                IK.silik + '<span>Silik yazı<small>Kelime · kendin yaz · harf</small></span></button>' +
+            '</div>' +
             '<div class="ys-pd-grup"><div class="ys-pd-et">Kalem</div>' +
               '<div class="ys-anahtar ys-ucsec" role="radiogroup" aria-label="Kalem çeşidi"><i class="ys-top"></i>' +
                 '<button type="button" class="ys-asec" data-uc="y" role="radio" aria-checked="true" title="Kalem — yuvarlak uçlu">' + IK.kalem + '<span>Kalem</span></button>' +
@@ -4101,14 +4145,15 @@
         var s = document.createElement('style');
         s.id = 'ys-perde-stil';
         s.textContent = [
-            /* TEK SATIR: [☰ · düzenleme · sayfalar · silik yazı] [kalemler] [ana sayfa / küçült].
-               Yan sütunlar eşit büyür: orta sütun ekranın ortasında kalır, sol sığmazsa yana kayar. */
+            /* TEK SATIR (v21): [☰] [düzenleme · kalemler — ORTADA] [ana sayfa / küçült].
+               Yan sütunlar eşit büyür: orta sütun ekranın ortasında kalır. ▲ sayfa ▼
+               kâğıdın altında (.ys-altnav), «Silik yazı» perdede. */
             '.ys-arac.ys-ust3{display:grid; grid-template-columns:minmax(max-content,1fr) auto minmax(max-content,1fr); align-items:center;',
             '  column-gap:10px; row-gap:6px; padding:7px 10px; position:relative; flex-wrap:nowrap;}',
             '.ys-arac.ys-ust3::after{content:none;}',
             '.ys-u3-sol,.ys-u3-orta,.ys-u3-sag{display:flex; align-items:center; gap:8px; min-width:0;}',
             '.ys-u3-sol{grid-column:1; grid-row:1; justify-self:start;}',
-            '.ys-u3-orta{grid-column:2; grid-row:1; justify-content:center;}',
+            '.ys-u3-orta{grid-column:2; grid-row:1; justify-content:center; gap:14px;}',
             '.ys-u3-sag{grid-column:3; grid-row:1; justify-self:end;}',
             '.ys-ust3 .ys-menu{height:46px; padding:0 15px 0 11px; border-radius:14px; background:#F2F5F9; color:#0E7C66; gap:10px; flex:none;}',
             '.ys-ust3 .ys-menu svg{width:24px; height:24px;}',
@@ -4120,62 +4165,60 @@
             '  font-size:.95rem; white-space:nowrap; text-align:start;}',
             '.ys-ust3 .ys-menu .ys-menu-ad small{font-size:.7rem; font-weight:700; color:#8A94A3;}',
             '.ys-ust3 .ys-menu.sec .ys-menu-ad small{color:rgba(255,255,255,.85);}',
-            '.ys-ust3 .ys-dgrup,.ys-ust3 .ys-nav{display:inline-flex; align-items:center; gap:5px; padding:4px 6px; background:#F2F5F9; border-radius:15px; flex:none;}',
-            '.ys-ust3 .ys-dgrup .ys-t,.ys-ust3 .ys-nav .ys-t{width:46px; height:44px; min-width:46px; padding:0; border-radius:12px; background:#fff; box-shadow:0 0 0 1px #E2E7EE;}',
-            '.ys-ust3 .ys-dgrup .ys-t svg,.ys-ust3 .ys-nav .ys-t svg{width:26px; height:26px;}',
-            '.ys-ust3 .ys-dgrup .ys-t:hover,.ys-ust3 .ys-nav .ys-t:hover{background:#E5EBF3;}',
-            '.ys-ust3 .ys-dgrup .ys-t[disabled],.ys-ust3 .ys-nav .ys-t[disabled]{background:#fff; box-shadow:0 0 0 1px #EEF1F5;}',
+            '.ys-ust3 .ys-dgrup{display:inline-flex; align-items:center; gap:5px; padding:4px 6px; background:#F2F5F9; border-radius:15px; flex:none;}',
+            '.ys-ust3 .ys-dgrup .ys-t{width:46px; height:44px; min-width:46px; padding:0; border-radius:12px; background:#fff; box-shadow:0 0 0 1px #E2E7EE;}',
+            '.ys-ust3 .ys-dgrup .ys-t svg{width:26px; height:26px;}',
+            '.ys-ust3 .ys-dgrup .ys-t:hover{background:#E5EBF3;}',
+            '.ys-ust3 .ys-dgrup .ys-t[disabled]{background:#fff; box-shadow:0 0 0 1px #EEF1F5;}',
             '.ys-ust3 .ys-dgrup .ys-t[data-is="silgi"].sec{background:#16A085; color:#fff; box-shadow:none;}',
             '.ys-ust3 .ys-dgrup .ys-t[data-is="temizle"]:not([disabled]):hover{background:#FDEDEC; color:#C0392B;}',
             '.ys-ust3 .ys-gara{width:1px; height:28px; background:#DDE3EA; margin:0 3px; flex:none;}',
-            '.ys-ust3 .ys-nav .ys-ok{width:56px; min-width:56px; color:#0E7C66; box-shadow:0 0 0 1px #CFE6DF;}',
-            '.ys-ust3 .ys-nav .ys-ok svg{width:34px; height:34px;}',
-            '.ys-ust3 .ys-nav .ys-ok:hover{background:#D6F0E9;}',
-            '.ys-ust3 .ys-nav .ys-sayfa{font-size:1.15rem; min-width:70px; text-align:center; font-weight:900;}',
-            '.ys-ust3 .ys-silikt{height:46px; padding:0 15px 0 12px; border-radius:14px; background:#F2F5F9; color:#3D4756; flex:none;',
-            '  white-space:nowrap; font-size:.86rem;}',
-            '.ys-ust3 .ys-silikt svg{width:24px; height:24px;}',
-            '.ys-ust3 .ys-silikt:hover{background:#E5EBF3;}',
-            '.ys-ust3 .ys-silikt.sec,.ys-ust3 .ys-silikt.sec:hover{background:#16A085; color:#fff; box-shadow:0 2px 6px rgba(14,124,102,.35);}',
             '.ys-ust3 .ys-t.kucult{height:46px; border-radius:14px; padding:0 15px 0 12px; font-size:.86rem; flex:none;}',
             '.ys-ust3 .ys-t.kucult svg{width:24px; height:24px;}',
-            /* kalemler üst çubukta, yan yana */
+            /* kalemler üst çubukta, yan yana (öntanımlı) */
             '.ys-yan.ust{display:none;}',
             '#ysKutu.kalem-ust .ys-yan.sag,#ysKutu.kalem-ust .ys-yan.sol{display:none;}',
             '#ysKutu.kalem-ust .ys-yan.ust{display:flex; position:static; transform:none; flex-direction:row; align-items:center; gap:8px;',
             '  padding:4px 8px; background:#F2F5F9; border-radius:999px; box-shadow:none; -webkit-backdrop-filter:none; backdrop-filter:none; flex:none;}',
-            '#ysKutu .ys-yan.ust .ys-renk{width:40px; height:40px; min-width:40px;}',
-            '#ysKutu .ys-yan.ust .ys-renk svg{width:19px; height:19px;}',
+            '#ysKutu .ys-yan.ust .ys-renk{width:42px; height:42px; min-width:42px;}',
+            '#ysKutu .ys-yan.ust .ys-renk svg{width:20px; height:20px;}',
             '#ysKutu .ys-yan.ust .ys-renk.sec{box-shadow:0 0 0 2.5px #F2F5F9, 0 0 0 5px var(--rk); transform:scale(1.04);}',
             '#ysKutu .ys-yan.ust .ys-ara{width:1px; height:26px; margin:0 1px;}',
             '.ys-yan .ys-t.ys-kyer{width:40px; height:40px; min-width:40px; align-self:center; color:#55606D;}',
             '.ys-yan .ys-t.ys-kyer svg{width:22px; height:22px;}',
             '.ys-yan .ys-t.ys-kyer:hover{background:#E5EBF3;}',
-            '#ysKutu .ys-yan.ust .ys-t.ys-kyer{width:38px; height:38px; min-width:38px; box-shadow:0 0 0 1px #E2E7EE;}',
-            /* sığmayınca: önce yazılar gizlenir; kalemler üstteyken ≤1100 ikinci satıra iner */
-            '@media (max-width:1240px) and (min-width:1101px){#ysKutu.kalem-ust .ys-ust3 .ys-menu .ys-menu-ad{display:none;} #ysKutu.kalem-ust .ys-ust3 .ys-menu{padding:0 11px;}}',
-            '@media (max-width:1100px){#ysKutu.kalem-ust .ys-arac.ys-ust3{grid-template-columns:minmax(max-content,1fr) minmax(max-content,1fr);}',
-            '  #ysKutu.kalem-ust .ys-u3-orta{grid-column:1 / -1; grid-row:2;} #ysKutu.kalem-ust .ys-u3-sag{grid-column:2;}}',
+            /* SAYFA OKLARI ALTTA (v21): kâğıdın altında ortada ▲ sayfa ▼ */
+            '.ys-altnav{position:absolute; left:50%; bottom:14px; transform:translateX(-50%); z-index:4; display:flex; align-items:center;',
+            '  gap:6px; padding:6px 8px; width:max-content; background:rgba(255,255,255,.9); border-radius:999px;',
+            '  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); box-shadow:0 8px 26px rgba(15,23,42,.16), 0 0 0 1px rgba(15,23,42,.07);}',
+            '.ys-altnav .ys-t.ys-ok{width:66px; min-width:66px; height:52px; padding:0; border-radius:999px; background:#fff; color:#0E7C66;',
+            '  box-shadow:0 0 0 1px #CFE6DF;}',
+            '.ys-altnav .ys-t.ys-ok svg{width:36px; height:36px;}',
+            '.ys-altnav .ys-t.ys-ok:hover{background:#D6F0E9;}',
+            '.ys-altnav .ys-sayfa{font-size:1.2rem; min-width:76px;}',
+            '.ys-altnav button{touch-action:manipulation;}',
+            /* «son defter» önerisi ve bildirimler okların üstünde */
+            '#ysKutu .ys-son{bottom:90px;} #ysKutu .ys-bildiri{bottom:146px;}',
+            /* sığmayınca: önce ☰'nin yazısı, sonra «Ana sayfa» yazısı gizlenir */
             '@media (max-width:940px){.ys-ust3 .ys-menu .ys-menu-ad{display:none;} .ys-ust3 .ys-menu{padding:0 11px;}}',
-            '@media (max-width:820px){.ys-ust3 .ys-silikt span{display:none;} .ys-ust3 .ys-silikt{padding:0 11px;}}',
-            /* telefon: sarılan tek akış — 1. satır ☰ · düzenleme · sayfalar, 2. satır silik yazı · (kalemler) · küçült */
-            '@media (max-width:760px){.ys-arac.ys-ust3{display:flex; flex-wrap:wrap; align-items:center; gap:5px; padding:5px 6px;}',
-            '  .ys-u3-sol,.ys-u3-orta,.ys-u3-sag{display:contents;}',
-            '  .ys-ust3 .ys-dgrup,.ys-ust3 .ys-nav{gap:3px; padding:3px 4px; border-radius:12px;}',
-            '  .ys-ust3 .ys-dgrup .ys-t,.ys-ust3 .ys-nav .ys-t{width:36px; height:36px; min-width:36px; border-radius:10px;}',
-            '  .ys-ust3 .ys-dgrup .ys-t svg,.ys-ust3 .ys-nav .ys-t svg{width:21px; height:21px;}',
-            '  .ys-ust3 .ys-nav .ys-ok{width:40px; min-width:40px;} .ys-ust3 .ys-nav .ys-ok svg{width:27px; height:27px;}',
-            '  .ys-ust3 .ys-nav .ys-sayfa{font-size:.95rem; min-width:44px;} .ys-ust3 .ys-gara{margin:0 1px; height:22px;}',
-            '  .ys-ust3 .ys-menu,.ys-ust3 .ys-silikt,.ys-ust3 .ys-t.kucult{height:38px; border-radius:11px;}',
-            '  .ys-ust3 .ys-menu,.ys-ust3 .ys-silikt{padding:0 9px;} .ys-ust3 .ys-t.kucult{padding:0 10px 0 7px; margin-inline-start:auto;}',
-            '  .ys-ust3 .ys-menu svg,.ys-ust3 .ys-silikt svg,.ys-ust3 .ys-t.kucult svg{width:22px; height:22px;}',
-            '  #ysKutu.kalem-ust .ys-yan.ust{gap:5px; padding:3px 5px;}',
-            '  #ysKutu.kalem-ust .ys-arac .ys-t.kucult span{display:none;} #ysKutu.kalem-ust .ys-ust3 .ys-t.kucult{padding:0 9px;}',
-            '  #ysKutu .ys-yan.ust .ys-renk{width:32px; height:32px; min-width:32px;} #ysKutu .ys-yan.ust .ys-renk svg{width:16px; height:16px;}',
-            '  #ysKutu .ys-yan.ust .ys-t.ys-kyer{width:32px; height:32px; min-width:32px;}',
-            '  .ys-yan .ys-t.ys-kyer{width:30px; height:30px; min-width:30px;} .ys-yan .ys-t.ys-kyer svg{width:16px; height:16px;}}',
-            '@media (max-width:400px){.ys-ust3 .ys-dgrup .ys-t,.ys-ust3 .ys-nav .ys-t{width:33px; min-width:33px;} .ys-ust3 .ys-nav .ys-ok{width:36px; min-width:36px;}',
-            '  .ys-ust3 .ys-nav .ys-sayfa{min-width:40px;}}',
+            '@media (max-width:860px){#ysKutu.kalem-ust .ys-ust3 .ys-t.kucult span{display:none;} #ysKutu.kalem-ust .ys-ust3 .ys-t.kucult{padding:0 11px;}}',
+            /* telefon: iki satır — üstte ☰ · düzenleme · ana sayfa, altta kalemler (ikisi de ortada) */
+            '@media (max-width:760px){.ys-arac.ys-ust3{grid-template-columns:auto 1fr auto; column-gap:6px; row-gap:5px; padding:5px 6px;}',
+            '  .ys-u3-orta{display:contents;}',
+            '  .ys-ust3 .ys-dgrup{grid-column:2; grid-row:1; justify-self:center; gap:3px; padding:3px 4px; border-radius:12px;}',
+            '  #ysKutu.kalem-ust .ys-yan.ust{grid-column:1 / -1; grid-row:2; justify-self:center; gap:6px; padding:3px 6px;}',
+            '  .ys-ust3 .ys-dgrup .ys-t{width:38px; height:38px; min-width:38px; border-radius:10px;}',
+            '  .ys-ust3 .ys-dgrup .ys-t svg{width:22px; height:22px;} .ys-ust3 .ys-gara{margin:0 1px; height:22px;}',
+            '  .ys-ust3 .ys-menu,.ys-ust3 .ys-t.kucult{height:40px; border-radius:11px;}',
+            '  .ys-ust3 .ys-menu{padding:0 9px;} .ys-ust3 .ys-t.kucult{padding:0 10px;}',
+            '  .ys-ust3 .ys-menu svg,.ys-ust3 .ys-t.kucult svg{width:22px; height:22px;}',
+            '  .ys-arac.ys-ust3 .ys-t.kucult span{display:none;}',
+            '  #ysKutu .ys-yan.ust .ys-renk{width:36px; height:36px; min-width:36px;} #ysKutu .ys-yan.ust .ys-renk svg{width:17px; height:17px;}',
+            '  .ys-yan .ys-t.ys-kyer{width:30px; height:30px; min-width:30px;} .ys-yan .ys-t.ys-kyer svg{width:16px; height:16px;}',
+            '  .ys-altnav{bottom:10px; gap:4px; padding:4px 5px;} .ys-altnav .ys-t.ys-ok{width:52px; min-width:52px; height:44px;}',
+            '  .ys-altnav .ys-t.ys-ok svg{width:30px; height:30px;} .ys-altnav .ys-sayfa{font-size:1rem; min-width:56px;}',
+            '  #ysKutu .ys-son{bottom:70px;} #ysKutu .ys-bildiri{bottom:122px;}}',
+            '@media (max-width:360px){.ys-ust3 .ys-dgrup .ys-t{width:34px; min-width:34px;}}',
             /* PERDE: ☰'nin altından, solda, yukarıdan aşağı iner; boyu pencerenin altına kadar */
             '.ys-perde{position:absolute; top:calc(100% + 1px); left:0; z-index:9; width:312px; max-width:calc(100vw - 16px); box-sizing:border-box;',
             '  overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; background:#fff; color:#2C3E50;',
@@ -4211,6 +4254,16 @@
             '#ysKutu .ys-perde .ys-pd-tus{display:flex; width:100%; height:48px; justify-content:flex-start; gap:12px; padding:0 14px; border-radius:14px; font-size:.9rem;}',
             '#ysKutu .ys-perde .ys-pd-tus svg{width:22px; height:22px;}',
             '#ysKutu .ys-perde .ys-pd-kare span,#ysKutu .ys-perde .ys-pd-tus span{display:block !important;}',
+            /* «Silik yazı» perdede (v21) */
+            '#ysKutu .ys-perde .ys-pd-ilk{padding-top:10px;}',
+            '#ysKutu .ys-perde .ys-pd-grup{order:0;}',                 /* dar ekranda «Defter» öbeği sona kaçmasın (eski .ys-csec sırası) */
+            '#ysKutu .ys-perde .ys-pd-silik{height:60px; gap:13px; padding:0 16px; background:#EEF8F5; color:#0E6655; box-shadow:inset 0 0 0 1.5px #A9DCCF;}',
+            '#ysKutu .ys-perde .ys-pd-silik:hover{background:#DDF2EC;}',
+            '#ysKutu .ys-perde .ys-pd-silik svg{width:27px; height:27px;}',
+            '#ysKutu .ys-perde .ys-pd-silik span{font-weight:900; font-size:.98rem; line-height:1.15; text-align:start;}',
+            '#ysKutu .ys-perde .ys-pd-silik small{display:block; margin-top:3px; font-size:.74rem; font-weight:700; color:#5B8F83;}',
+            '#ysKutu .ys-perde .ys-pd-silik.sec{background:#16A085; color:#fff; box-shadow:0 2px 8px rgba(14,124,102,.35);}',
+            '#ysKutu .ys-perde .ys-pd-silik.sec small{color:rgba(255,255,255,.85);}',
             '.ys-perde button{touch-action:manipulation;}',
             /* HARFİN YAZILIŞI: kâğıdın üstünde büyük kart (geniş ekranda «Silik yazı» penceresinin yanında) */
             '.ys-hy{position:absolute; top:0; right:0; bottom:0; left:0; z-index:7; display:flex; align-items:center; justify-content:center;',

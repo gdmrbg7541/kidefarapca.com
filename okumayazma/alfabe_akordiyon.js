@@ -2010,6 +2010,26 @@
             '.nav-tabs .ak-yan:hover{background:rgba(6,62,51,.82)}',
             '.nav-tabs .ak-yan .tab-ikon{width:19px;height:19px;flex:none}',
             '.nav-tabs .ak-yanad{font-size:.82rem;line-height:1.1;white-space:nowrap;opacity:.95}',
+            /* İç içe satır ([konu][PDF] + [Dene]) daralabilsin: yoksa «Dene» kenardan taşıyordu. */
+            '.nav-tabs .tab-satir > .tab-satir{flex:1 1 auto;min-width:0}',
+            '.nav-tabs .tab-satir .tab-trigger:not(.ak-yan) .tab-ad{min-width:0;overflow:hidden;text-overflow:ellipsis}',
+            /* KALEMLE ÜZERİNDEN GEÇ (23.10.2026): Harf Tanıtımı'nın yanındaki PDF tuşu
+               ve basınca altında açılan sınıf seçimi. */
+            '.nav-tabs .ak-kugtus.acik,.nav-tabs .ak-kugtus.acik:hover{background:rgba(255,255,255,.94);color:#0E6655}',
+            '.nav-mini .nav-tabs .ak-kugtus.acik .ak-yanad{text-shadow:none}',
+            '.nav-tabs .ak-kug{margin:1px 0 5px;padding:9px 10px 10px;border-radius:12px;direction:ltr;text-align:left;',
+            '  background:rgba(6,62,51,.62);border:1px solid rgba(255,255,255,.3);color:#fff}',
+            '.nav-tabs .ak-kug[hidden]{display:none}',
+            '.nav-tabs .ak-kug-bas{display:flex;flex-direction:column;gap:2px;margin:0 2px 8px}',
+            '.nav-tabs .ak-kug-bas b{font-size:.95rem;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.45)}',
+            '.nav-tabs .ak-kug-bas span{font-size:.75rem;line-height:1.2;opacity:.88;text-shadow:0 1px 2px rgba(0,0,0,.4)}',
+            '.nav-tabs .ak-kug-sinif{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}',
+            '.nav-tabs .ak-kug-s{display:flex;align-items:center;justify-content:center;min-height:40px;padding:0 4px;',
+            '  border-radius:10px;background:rgba(255,255,255,.94);color:#0E6655;font-weight:700;font-size:.92rem;',
+            '  white-space:nowrap;text-decoration:none;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:background .15s,transform .12s}',
+            '.nav-tabs .ak-kug-s:hover{background:#E6FAF5}',
+            '.nav-tabs .ak-kug-s:active{transform:scale(.97)}',
+            '.nav-tabs .ak-kug-s:focus-visible{outline:3px solid #fff;outline-offset:1px}',
             /* Hat Atölyesi: sekme değil indirme satırı — altın tonu onu
                sekmelerden ayırıyor, sağ ucunda ne olduğu yazılı. */
             '.nav-tabs .ak-defter{margin-top:6px;text-decoration:none;',
@@ -2204,6 +2224,53 @@
         a.setAttribute('aria-label', a.title);
         a.innerHTML = PDF_IKON + '<span class="ak-yanad">PDF</span>';
         sar(konuBul('p7'), a);
+
+        /* KALEMLE ÜZERİNDEN GEÇ (23.10.2026, öğretmen: "bu çıktıyı alfabe.html de
+           harf tanıtımı başlığı ile dene yazısının arasında bi pdf tuşu ekle, side
+           barı da ona göre genişlet"): Harf Tanıtımı'nın yanında PDF tuşu —
+           [Harf Tanıtımı][PDF][Dene]. Basınca satırın altında sınıf seçimi açılır.
+           Dosyalar Kidef flipbook'un Çıktılar'ındakilerin aynısı: her sınıfın bu
+           yılki kitabından ünite ünite konuşma metinleri, gri yazı, Word'de 20
+           punto, 4 sayfa; öğrenci kalemle üzerinden geçer.
+           Tuş <a>: alfabe_ihy_kenar.js'in kumanda dinleyicisi bağlantıları
+           «indirme» sayar, açık «Dene» katmanını kapatmaz. */
+        var KUG_YOL = 'kitap/kidef-arapca-2-baski/08_belgeler/kalemle-uzerinden-gec/';
+        var kug = document.createElement('a');
+        kug.className = 'tab-trigger ak-yan ak-kugtus';
+        kug.href = '#akKug';
+        kug.setAttribute('role', 'button');
+        kug.setAttribute('aria-expanded', 'false');
+        kug.setAttribute('aria-controls', 'akKug');
+        kug.title = 'Kalemle Üzerinden Geç — 5–10. sınıf konuşma metinleri, gri yazı (PDF)';
+        kug.setAttribute('aria-label', kug.title);
+        kug.innerHTML = PDF_IKON + '<span class="ak-yanad">PDF</span>';
+        if (sar(konuBul('p1'), kug)) {
+            /* [Harf Tanıtımı][PDF] iç satırının dışındaki ([... ][Dene]) satırın altına */
+            var kugSatir = kug.parentNode;
+            while (kugSatir.parentNode && kugSatir.parentNode.classList &&
+                   kugSatir.parentNode.classList.contains('tab-satir')) kugSatir = kugSatir.parentNode;
+            var kugPano = document.createElement('div');
+            kugPano.className = 'ak-kug';
+            kugPano.id = 'akKug';
+            kugPano.hidden = true;
+            var kh = '<div class="ak-kug-bas"><b>Kalemle Üzerinden Geç</b>' +
+                     '<span>Konuşma metinleri · gri yazı · 4 sayfa PDF</span></div><div class="ak-kug-sinif">';
+            for (var kn = 5; kn <= 10; kn++) {
+                kh += '<a class="ak-kug-s" href="' + KUG_YOL + kn + '-sinif.pdf" download="kalemle-uzerinden-gec-' + kn +
+                      '-sinif.pdf" target="_blank" rel="noopener" title="' + kn + '. sınıf — Kalemle Üzerinden Geç (PDF)">' +
+                      kn + '. sınıf</a>';
+            }
+            kugPano.innerHTML = kh + '</div>';
+            kugSatir.parentNode.insertBefore(kugPano, kugSatir.nextSibling);
+            kug.addEventListener('click', function (e) {
+                e.preventDefault();
+                var acilsin = kugPano.hidden;
+                kugPano.hidden = !acilsin;
+                kug.classList.toggle('acik', acilsin);
+                kug.setAttribute('aria-expanded', acilsin ? 'true' : 'false');
+                tik();
+            });
+        }
 
         /* NOT: Okuma'nın yanında PDF tuşu YOK — orada «Dene» var (yukarıdaki
            BOLUMLER döngüsü koyuyor). Çalışma kâğıtları dosyası siteden

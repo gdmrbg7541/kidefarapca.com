@@ -2805,8 +2805,11 @@
     position: fixed; left: 0; top: 0; bottom: 0; height: 100dvh;
     /* 14.10.2026 — öğretmen: "side bar yatay olarak daha geniş olsun,
        dinle yaz satırında sığmıyor." Sekme adı + yanındaki Dene/PDF
-       tuşu 260 px'e sığmıyordu. */
-    width: min(320px, 86vw); max-width: 86vw;
+       tuşu 260 px'e sığmıyordu.
+       23.10.2026 — Harf Tanıtımı satırına Kalemle Üzerinden Geç PDF tuşu
+       geldi ([Harf Tanıtımı][PDF][Dene]): 320 → 372 px ("side barı da ona
+       göre genişlet"). */
+    width: min(372px, 88vw); max-width: 88vw;
     justify-content: flex-start; gap: 7px;
     padding: 12px 12px 14px 10px;
     border-radius: 0 20px 20px 0; border-left: none;
@@ -2863,7 +2866,7 @@ body.nav-kenar:not(.nav-kapali) #navKol svg { transform: rotate(180deg); }
 .nav-mini.nm-yuzen .nm-yapis svg { width: 15px; height: 15px; display: block; }
 
 @media (max-width: 640px) {
-    .nav-mini.nm-kenar { width: min(290px, 90vw); }
+    .nav-mini.nm-kenar { width: min(330px, 92vw); max-width: 92vw; }   /* 23.10.2026: 290 → 330 (PDF tuşu) */
     #navKol { width: 26px; height: 66px; }
 }
 @media (prefers-reduced-motion: reduce) {
