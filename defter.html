@@ -12,7 +12,9 @@
      simgesi bu sayfayı adlı sekmede açar (defter.html?sinif=5&sube=5-A&seviye=…).
      Defterin kendisi sistem/yazisayfasi.js; burada tek başına kipte çalışır
      (KidefYaziSayfasi.tekBasina). Hesap: aynı site, oturum paylaşılır;
-     seviye notları hesaba yazılır. -->
+     seviye notları hesaba yazılır.
+     YAZI ÇALIŞMASI (23.10.2026): defter.html?yazi=N — İmam Hatip'teki kart
+     açar; giriş gerekmez, «Silik yazı» penceresi açık gelir. -->
 <link rel="stylesheet" href="arakom.css?v=896e5892">
 <style>
   html, body { margin: 0; height: 100%; background: #F4F6F8; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; color: #2C3E50; }
@@ -34,7 +36,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script src="sistem/rol.js?v=c2c8fb6a"></script>
-<script src="sistem/yazisayfasi.js?v=176df0e9"></script>
+<script src="sistem/yazisayfasi.js?v=190b0713"></script>
 <script>
 (function () {
   'use strict';
@@ -58,6 +60,32 @@
     b.innerHTML = '<div class="kutu"><h1>' + kac(baslik) + '</h1><p>' + kac(metin) + '</p>' +
       '<a class="ana" href="index.html">' + EV + 'Ana sayfa</a>' +
       (girisTusu ? '<a class="ikinci" href="index.html?giris=1">Giriş yap</a>' : '') + '</div>';
+  }
+  /* YAZI ÇALIŞMASI (23.10.2026) — İmam Hatip'teki «Yazı Çalışması» kartı
+     defter.html?yazi=N ile açar: GİRİŞ BEKLENMEZ (öğrenci de kendi cihazında
+     yazar). Defter güzel yazı satırlarıyla, «Silik yazı» penceresi açık gelir.
+     Öğretmen / yönetici hesabı açıksa seviye notları (★) da görünür. */
+  var yazi = param('yazi').replace(/[^0-9]/g, '').slice(0, 2);
+  if (yazi) {
+    document.title = 'Yazı Çalışması · ' + yazi + '. sınıf — Kidef Arapça';
+    document.getElementById('dfBekle').hidden = true;
+    var tamam = window.KidefYaziSayfasi && window.KidefYaziSayfasi.tekBasina({ sinif: yazi, sube: 'Yazı çalışması', seviyeAd: yazi + '. sınıf', yazi: true });
+    if (!tamam) { goster('Yazı çalışması açılamadı', 'Sayfayı yenileyip tekrar dene.'); return; }
+    try {
+      if (!firebase.apps.length) firebase.initializeApp(AYAR);
+      firebase.auth().onAuthStateChanged(function (u) {
+        if (!u || u.isAnonymous) return;
+        var db = null; try { db = firebase.firestore(); } catch (e) { }
+        window.KidefRol.coz(u, db).then(function (o) {
+          if (!(o && (o.ogretmen || o.rol === 'admin'))) return;
+          window.appState = window.appState || {};
+          window.appState.userRole = o.rol === 'admin' ? 'admin' : 'teacher';
+          window.appState.currentUserName = (o && o.isim) || u.displayName || '';
+          if (window.KidefYaziSayfasi.rolYenile) window.KidefYaziSayfasi.rolYenile();
+        });
+      });
+    } catch (e) { }
+    return;
   }
   var sinif = param('sinif').replace(/[^0-9A-Za-z_x]/g, '').slice(0, 26);
   var sube = param('sube').slice(0, 40), seviye = param('seviye').slice(0, 60);

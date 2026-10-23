@@ -688,6 +688,47 @@
     url: function () { return 'kitap/kidef-arapca-2-baski/index.html'; }
   });
 
+  /* ---- YAZI ÇALIŞMASI (23.10.2026) ----
+     Öğretmen: "gri renkte kelimeler olsun üstünden geçilebilsin ... ayrıca bi
+     harf görünsün onun altında nasıl yazılması gerektiğini öğrenci çizerek
+     göstersin" — İmam Hatip'te 5-10. sınıfların hepsinde.
+     Hedef : defter.html?yazi=N → defter güzel yazı satırlarıyla, «Silik yazı»
+             penceresi açık gelir (sistem/yazisayfasi.js). Giriş gerekmez:
+             öğrenci de kendi cihazında yazar; öğretmen hesabıyla seviye
+             notları da açılır. Kelimeler o sınıfın seçili kitabından. */
+  function yaziSvg() {
+    var yol = 'M43 25c0 6.6-4.8 10-14.5 10S14 31.8 14 26.6';
+    return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +
+      '<rect x="7" y="7" width="50" height="50" rx="6" fill="#fff" stroke="#16A085" stroke-width="2.6"/>' +
+      '<path d="M50 8.5v47" stroke="#F2A0A0" stroke-width="1.6"/>' +
+      '<path d="M11 17h35M11 43h35" stroke="#D2D8E0" stroke-width="1.3"/>' +
+      '<path d="M11 26.5h35" stroke="#B4BDC9" stroke-width="1.3" stroke-dasharray="2.4 2"/>' +
+      '<path d="M11 35h35" stroke="#8D99A8" stroke-width="2.2"/>' +
+      '<path d="M11 50.5h20" stroke="#D2D8E0" stroke-width="1.3"/>' +
+      /* silik (gri, kesik) be — mavi kalem üstünden geçer */
+      '<path d="' + yol + '" fill="none" stroke="#B7C0CB" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="2.4 3"/>' +
+      '<circle cx="28.6" cy="40.6" r="2" fill="#B7C0CB"/>' +
+      '<path d="' + yol + '" fill="none" stroke="#1E5BD8" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="40" stroke-dashoffset="40">' +
+        '<animate attributeName="stroke-dashoffset" values="40;0;0;40" keyTimes="0;.55;.85;1" dur="3.6s" repeatCount="indefinite"/></path>' +
+      '<g><path d="M0 0l1.3-4.8 8-8 3.5 3.5-8 8z" fill="#F39C12" stroke="#B9650A" stroke-width="1.3" stroke-linejoin="round"/>' +
+        '<animateMotion dur="3.6s" repeatCount="indefinite" keyPoints="0;1;1;0" keyTimes="0;.55;.85;1" calcMode="linear" path="' + yol + '"/></g>' +
+      '</svg>';
+  }
+
+  ekle({
+    id: 'yazicalisma',
+    ad: 'Yazı Çalışması',
+    sira: 12,                      /* harften sonra, kelime listelerinden önce */
+    renk: '#16A085',
+    svg: yaziSvg,
+    aciklama: function () { return 'Silik kelimenin üstünden geç, harfi çizerek göster'; },
+    veriVar: function (s) {
+      var n = sayi(s);
+      return (n >= 5 && n <= 10) ? { rozet: 'Kelime · Harf' } : null;
+    },
+    url: function (s) { return 'defter.html?yazi=' + encodeURIComponent(sayi(s)); }
+  });
+
   /* ---- Sonraki kartlar buraya: aynı kalıpla ekle({...}) ---- */
 
   stilKur();

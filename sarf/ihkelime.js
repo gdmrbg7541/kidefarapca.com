@@ -785,7 +785,9 @@
     window.KidefIHKelime = {
         kategoriEkle: kategoriEkle,
         kip: function () { return _kip; },
-        mufredat: MUFREDAT
+        mufredat: MUFREDAT,
+        /* sınıfın SEÇİLİ kitabının ağacı (defterdeki «Silik yazı» penceresi, 23.10.2026) */
+        agac: mufredat
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', baslat);
     else baslat();
