@@ -468,6 +468,11 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
   font-variant-numeric:tabular-nums;background:#F1F5F9;border:1px solid var(--line);
   border-radius:99px;padding:2px 9px;transition:background .16s,color .16s,border-color .16s}
 .ktp-ders-bas:hover .sy{background:var(--ink2);border-color:var(--ink2);color:#fff}
+/* KİTAPTAN BAĞIMSIZ ÇIKTI ÖBEĞİ (23.10.2026): ders başlığı yerine açıklama
+   satırı — gidilecek sayfa yok, tıklanmaz (uygulama.js ktpVeri/ktpKur). */
+.ktp-ders-bas.ek{cursor:default;font-weight:500;font-size:12px;color:var(--muted)}
+.ktp-ders-bas.ek:hover{background:none;color:var(--muted)}
+.ktp-ders-bas.ek .ad{white-space:normal;line-height:1.45}
 .ktp-sat{display:flex;gap:7px;margin:0 0 6px 7px}
 .ktp-ac{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:9px 12px;
   border-radius:11px;background:#fff;border:1px solid var(--line);text-align:left;

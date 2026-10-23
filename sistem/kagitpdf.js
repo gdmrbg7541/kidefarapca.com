@@ -222,7 +222,10 @@ window.KidefKagit = (function () {
                 var a = document.createElement('a');
                 a.href = u; a.download = sade(ayar.ad || 'belge') + '.pdf';
                 document.body.appendChild(a); a.click(); a.remove();
-                setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
+                /* 60 sn (23.10.2026): iPhone "İndirilsin mi?" diye sorar;
+                   adres 4 sn'de kapatılınca onaydan sonra dosya bulunamıyor,
+                   indirme "WebKitBlobResource" hatasıyla bitiyordu. */
+                setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
                 bitti();
             }).catch(function (e) { bitti(e || new Error('çizilemedi')); });
         }, function () {

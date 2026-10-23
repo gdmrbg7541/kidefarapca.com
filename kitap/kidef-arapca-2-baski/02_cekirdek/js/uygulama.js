@@ -578,6 +578,24 @@
       });
       if (dl.length) g.push({ unite: u, dersler: dl });
     });
+    /* KİTAPTAN BAĞIMSIZ ÇIKTI ÖBEKLERİ (23.10.2026): bir derse bağlı olmayan
+       belgeler — ör. «Kalemle Üzerinden Geç» (5-10. sınıfların konuşma
+       metinleri, gri yazı). 03_veri/belgeler.js → KITAP_BELGE.ek; listenin
+       EN BAŞINDA durur. Ders başlığı tıklanmaz: gidilecek sayfa yok, yalnız
+       açıklama satırı (bkz. ktpKur). */
+    var KB = window.KITAP_BELGE;
+    if (tur !== 'sunu' && KB && KB.ek && KB.ek.length) {
+      var ekler = [];
+      KB.ek.forEach(function (e) {
+        var oge = (e.oge || []).filter(function (x) {
+          if (gor[x.d]) return false;
+          gor[x.d] = 1; return true;
+        });
+        if (oge.length) ekler.push({ unite: { ad: e.ad }, dersler: [{
+          ders: { ad: e.alt || e.ad, sayfa: 0, bitis: -1, ek: true }, oge: oge }] });
+      });
+      g = ekler.concat(g);
+    }
     return g;
   }
 
@@ -668,6 +686,13 @@
       dl.forEach(function (d) {
         var kutu = document.createElement('div');
         kutu.className = 'ktp-ders';
+        if (d.ders.ek) {                 /* kitaptan bağımsız öbek: başlık tıklanmaz */
+          kutu.innerHTML = '<div class="ktp-ders-bas ek"><span class="ad"></span></div>';
+          kutu.querySelector('.ad').textContent = d.ders.ad;
+          d.oge.forEach(function (x) { kutu.appendChild(ktpSatir(x, d.ders)); say++; });
+          g.appendChild(kutu);
+          return;
+        }
         kutu.innerHTML = '<button type="button" class="ktp-ders-bas" ' +
           'title="Kitabı bu derse götür"><span class="ad"></span>' +
           '<span class="sy">s. ' + d.ders.sayfa + '</span></button>';

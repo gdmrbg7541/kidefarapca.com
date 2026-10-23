@@ -123,7 +123,16 @@
         'padding:calc(var(--ae)*.007) !important;}' +
       '@media (pointer:coarse){.kl-indir{padding:12px 18px;font-size:1.1rem;}' +
         '.kl-indir-menu button{padding:17px 14px;font-size:1.1rem;}}' +
-      '@media (max-width:520px){.kl-indir span{display:none;}}';
+      '@media (max-width:520px){.kl-indir span{display:none;}}' +
+      /* KISA EKRAN (yatay telefon, 23.10.2026): menü 430 px, ekran 390 px —
+         alttaki seçenekler ekranın dışında kalıyordu. Menü ekrana sığar,
+         gerekirse kendi içinde kayar; düğmeler biraz incelir.
+         30 = üstte ve altta 8 px pay + menünün iç boşluğu ve çerçevesi. */
+      '.kl-indir-menu{max-height:calc(100vh - 30px);max-height:calc(100dvh - 30px);' +
+        'overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}' +
+      '@media (max-height:500px){.kl-indir-menu b{padding:6px 12px 4px;}' +
+        '.kl-indir-menu .kl-indir-sut{padding:0 12px 4px;}' +
+        '.kl-indir-menu button[data-b]{padding:9px 12px;font-size:1rem;}}';
     document.head.appendChild(s);
   }
 
@@ -159,11 +168,14 @@
       .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'liste';
     return 'kelime-listesi-' + ad + '.' + uzanti;
   }
+  /* Bağlantı 60 sn açık kalıyor (23.10.2026): iPhone "İndirilsin mi?"
+     diye soruyor; 4 sn'de kapatılınca kullanıcı onaylayana kadar dosya
+     kayboluyor, indirme hatayla bitiyordu. */
   function indir(blob, ad) {
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob); a.download = ad;
     document.body.appendChild(a); a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 60000);
   }
   function olay(bicim, L) {
     try { if (window.gtag) window.gtag('event', 'kelime_listesi_indir', { bicim: bicim, liste: L.baslik }); } catch (e) {}
@@ -317,7 +329,7 @@
     if (!kagitYukleniyor) {
       kagitYukleniyor = new Promise(function (ok, hata) {
         var s = document.createElement('script');
-        s.src = new URL('sistem/kagitpdf.js?v=e3461821', location.href).href;
+        s.src = new URL('sistem/kagitpdf.js?v=56d731eb', location.href).href;
         s.onload = function () { window.KidefKagit ? ok() : hata(new Error('yok')); };
         s.onerror = function () { kagitYukleniyor = null; hata(new Error('yüklenemedi')); };
         document.head.appendChild(s);
@@ -426,8 +438,13 @@
   }
 
   /* ---------- menü ---------- */
-  var acikMenu = null;
-  function menuKapat() { if (acikMenu) { acikMenu.remove(); acikMenu = null; } }
+  var acikMenu = null, disDinleyici = null;
+  function menuKapat() {
+    /* Dışarı dokununca kapatan dinleyici de gitsin: kalırsa sonraki
+       menünün düğmesine basınca menü kapanıp hemen yeniden açılıyordu. */
+    if (disDinleyici) { document.removeEventListener('pointerdown', disDinleyici, true); disDinleyici = null; }
+    if (acikMenu) { acikMenu.remove(); acikMenu = null; }
+  }
   function menuAc(key, dugme) {
     menuKapat();
     var L = liste(key);
@@ -478,15 +495,23 @@
     });
     acikMenu = m;
     setTimeout(function () {
-      document.addEventListener('pointerdown', function dis(e) {
-        if (acikMenu && !acikMenu.contains(e.target) && e.target !== dugme && !dugme.contains(e.target)) {
-          menuKapat(); document.removeEventListener('pointerdown', dis, true);
-        }
-      }, true);
+      if (acikMenu !== m) return;
+      disDinleyici = function (e) {
+        if (!m.contains(e.target) && e.target !== dugme && !dugme.contains(e.target)) menuKapat();
+      };
+      document.addEventListener('pointerdown', disDinleyici, true);
     }, 0);
   }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && acikMenu) { e.stopPropagation(); menuKapat(); } }, true);
-  window.addEventListener('resize', menuKapat);
+  /* Yalnız GENİŞLİK değişince kapanır (23.10.2026): telefonda adres
+     çubuğu inip kalkınca da "resize" geliyor — boy değişir, en değişmez;
+     menü parmağın altından kaçıyordu. Ekran dönünce en değişir, kapanır. */
+  var sonEn = window.innerWidth;
+  window.addEventListener('resize', function () {
+    if (Math.abs(window.innerWidth - sonEn) < 2) return;
+    sonEn = window.innerWidth;
+    menuKapat();
+  });
 
   /* ---------- düğme yalnız Liste Modu'nda ----------
      İnen şey bir LİSTE; çalışma kartları, hafıza oyunu ve test kipinde
