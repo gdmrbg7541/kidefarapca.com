@@ -2254,7 +2254,7 @@
             kugPano.id = 'akKug';
             kugPano.hidden = true;
             var kh = '<div class="ak-kug-bas"><b>Kalemle Üzerinden Geç</b>' +
-                     '<span>Konuşma metinleri · gri yazı · 4 sayfa PDF</span></div><div class="ak-kug-sinif">';
+                     '<span>Konuşma metinleri · gri yazı · 2 sayfa PDF</span></div><div class="ak-kug-sinif">';
             for (var kn = 5; kn <= 10; kn++) {
                 kh += '<a class="ak-kug-s" href="' + KUG_YOL + kn + '-sinif.pdf" download="kalemle-uzerinden-gec-' + kn +
                       '-sinif.pdf" target="_blank" rel="noopener" title="' + kn + '. sınıf — Kalemle Üzerinden Geç (PDF)">' +
