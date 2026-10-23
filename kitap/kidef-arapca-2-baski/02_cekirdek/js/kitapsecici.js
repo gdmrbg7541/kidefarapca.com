@@ -38,6 +38,10 @@
      çerçevesinde açık): aynı sekmede sitenin ana sayfası açılır. Site
      dışındaki kopyada (Mac'teki asıl klasör, flaş) kidefarapca.com.
    ========================================================================== */
+/* AYRI SEKME (23.10.2026, öğretmen: "tüm flipbooklar ayrı sekmede açılsın"):
+   listedeki öbür kitaplar YENİ SEKMEDE açılır (açık kitap yerinde kalır); tahta
+   kabuğunda kabuk onu kendi çerçevesinde açar, tahta da izler. «Siteye dön»
+   kitaptan açılan kitapta da sitenin sekmesini bulur (açanların zincirinde). */
 (function () {
   'use strict';
   if (window.KitapSecici) return;
@@ -116,13 +120,19 @@
     var h = location.href.split('#')[0].split('?')[0], i = h.lastIndexOf('/kitap/');
     return i >= 0 ? h.slice(0, i + 1) + 'index.html' : SITE_ANA;
   }
-  /* bu sekmeyi sitenin bir sekmesi mi açtı (ve o sekme hâlâ açık mı)? */
+  /* bu sekmeyi sitenin bir sekmesi mi açtı (ve o sekme hâlâ açık mı)? Kitap
+     başka bir kitaptan açıldıysa (23.10.2026: kitaplar ayrı sekmede) açanların
+     zincirinde geriye gidilir: o kitabı da site açmışsa sitenin sekmesi o. */
   function siteSekmesi() {
     try {
       var o = window.opener;
-      if (!o || o.closed) return null;
-      return o.location.origin === location.origin ? o : null;   /* başka sitenin açtığı sekme kapanmaz */
-    } catch (e) { return null; }
+      for (var i = 0; o && i < 8; i++) {
+        if (o.closed || o.location.origin !== location.origin) return null;   /* başka sitenin açtığı sekme kapanmaz */
+        if (!/\/kitap\//.test(o.location.pathname)) return o;             /* sitenin sekmesi */
+        o = o.opener;                                                       /* kitabı açan kitap: onun açanı */
+      }
+    } catch (e) { }
+    return null;
   }
   function siteyeDon(e) {
     if (e) e.preventDefault();
@@ -325,7 +335,7 @@
         (bu ? '' : '<span class="ks-git">→</span>');
       h += bu
         ? '<div class="ks-kitap acik" style="--ksr:' + k.renk + '">' + ic + '</div>'
-        : '<a class="ks-kitap" style="--ksr:' + k.renk + '" href="' + adres(k) + '">' + ic + '</a>';
+        : '<a class="ks-kitap" style="--ksr:' + k.renk + '" href="' + adres(k) + '" target="_blank" rel="opener">' + ic + '</a>';
     });
     h += '</div>';
     if (!yerel) {
@@ -357,6 +367,9 @@
       if (im.complete && im.naturalWidth) im.classList.add('geldi');
     });
     panel.querySelector('.ks-kapat').addEventListener('click', kapat);
+    [].forEach.call(panel.querySelectorAll('a.ks-kitap'), function (a) {
+      a.addEventListener('click', function () { setTimeout(kapat, 60); });   /* kitap yeni sekmede: bu sekmede panel kapanır */
+    });
 
     document.body.appendChild(perde);
     document.body.appendChild(panel);

@@ -30,6 +30,10 @@
    · ÇİFT TIKLAMA GÜVENCESİ (17.10.2026): büyütme/küçültmeden sonra 0,35 sn
      içinde gelen dokunuş yok sayılır; çift tıklama büyütmeyi geri almaz.
    · İki parmak pinch, tekerlek, trackpad pinch, sürükleyerek gezinme.
+   · TAHTAYA YANSITMA (23.10.2026): tahta kabuğunun çerçevesinde kumandanın
+     sayfası ve yakınlığı Sınıf Ekranı'na da gider (aşağıda 7. bölüm).
+   · KALEM (23.10.2026): sayfaya yapışan, kâğıda yazılmış gibi duran yazı;
+     nerede kalındığını gösterir, tahtaya da yansır (aşağıda 8. bölüm).
 
    SAĞDAN SOLA KİTAPLAR (rtl: true)
    --------------------------------
@@ -73,7 +77,7 @@
     /* Dokunulunca bölgeyi büyütmeyecek öğeler: düğmeler, bağlantılar, paneller.
        Kitaplar kendi seçicilerini ekleyebilir. */
     var YOKSAY = (ayar.yoksay ? ayar.yoksay + ',' : '') +
-      '.nokta,[data-git],.html-sayfa a,button,a,input,select,.panel';
+      '.nokta,[data-git],.html-sayfa a,button,a,input,select,.panel,.kk-palet,.kk-ipucu';
 
     var ENAZ = 1, ENCOK = ayar.encok || 5;
     var z = { o: 1, x: 0, y: 0 };
@@ -89,13 +93,15 @@
       var y = '%' + Math.round(z.o * 100);
       if (etiket) etiket.textContent = y;
       if (bilgi) {
-        bilgi.textContent = y + ' — sürükleyerek gezin, ' +
-          (flip.tekli ? 'dokununca küçülür' : 'yön tuşlarıyla geç, dokununca küçülür');
+        bilgi.textContent = kalemAcik()                 /* kalemde tek parmak yazar (8. bölüm) */
+          ? y + ' — kalem açık: iki parmakla gezin' + (flip.tekli ? '' : ', yön tuşlarıyla geç')
+          : y + ' — sürükleyerek gezin, ' + (flip.tekli ? 'dokununca küçülür' : 'yön tuşlarıyla geç, dokununca küçülür');
         bilgi.classList.toggle('gor', z.o > 1.02);
       }
       sahne.classList.toggle('yakin', z.o > 1.02);
-      flip.kilitli = z.o > 1.02 || !!panelAcik() || tanitimAcik;
+      flip.kilitli = z.o > 1.02 || !!panelAcik() || tanitimAcik || kalemAcik();   /* kalem: 8. bölüm */
       oklariGuncelle();
+      tkZamanla();                       /* tahtaya yansıtma (7. bölüm) */
     }
 
     /* --------------------------------------------------------------
@@ -140,6 +146,7 @@
              büyütmeye geçip yakınlaştırma oranını da değiştiriyor; okun
              işi sadece sayfada aşağı-yukarı gezinmek. Uçtaysa ok zaten
              soluk duruyor ve bir şey yapmıyor. */
+          if (engelli()) return;           /* Sınıf Ekranı: görünüm kumandadan gelir */
           dikeyKay(yukari ? 'yukari' : 'asagi');
           oklariGuncelle();
         });
@@ -178,6 +185,7 @@
 
     /* yeni oran; mx,my verilirse O NOKTA sabit kalacak şekilde büyütür */
     function zAyarla(yeni, mx, my) {
+      if (engelli()) return;               /* Sınıf Ekranı: görünüm kumandadan gelir */
       yeni = Math.max(ENAZ, Math.min(ENCOK, yeni));
       var r = sahne.getBoundingClientRect();
       if (mx == null) { mx = r.width / 2; my = r.height / 2; }
@@ -396,6 +404,7 @@
     /* zoom'luyken yön tuşu yakalanırsa true döner (sayfa kendi işini yapmasın) */
     function zoomTusu(k) {
       if (z.o <= 1.02) return false;
+      if (engelli()) return true;          /* yinelenen tuş: kanaldan gelen görünüm yeter */
       var yon = { ArrowDown: 'asagi', ArrowUp: 'yukari', ArrowRight: 'sag', ArrowLeft: 'sol',
         PageDown: 'asagi', ' ': 'asagi', PageUp: 'yukari' }[k];
       if (!yon) return false;
@@ -414,7 +423,7 @@
        alıyordu; ekran bir an yakınlaşıp dönüyor, "yakınlaşmıyor" sanılıyordu. */
     var CIFT_ARALIK = 350, sonBolge = 0;
     sahne.addEventListener('pointerdown', function (e) {
-      if (panelAcik() || tanitimAcik || e.button > 0 || e.isPrimary === false) { bolgeDokun = null; return; }
+      if (panelAcik() || tanitimAcik || kalemAcik() || e.button > 0 || e.isPrimary === false) { bolgeDokun = null; return; }
       bolgeDokun = { x: e.clientX, y: e.clientY, t: Date.now(), id: e.pointerId, h: bolgeHedefi(e) };
     });
     kok.addEventListener('pointerup', function (e) {
@@ -444,7 +453,7 @@
        -------------------------------------------------------------- */
     var pan = null;
     sahne.addEventListener('pointerdown', function (e) {
-      if (z.o <= 1.02) return;
+      if (z.o <= 1.02 || kalemAcik()) return;           /* kalemde tek parmak yazar, iki parmak gezdirir */
       if (e.target.closest(YOKSAY)) return;
       pan = { x: e.clientX, y: e.clientY, zx: z.x, zy: z.y };
       sahne.style.cursor = 'grabbing';
@@ -533,6 +542,7 @@
              '<path d="M9.6 6.6 12 4.2l2.4 2.4"/>' +
              '<rect x="6.4" y="15.2" width="11.2" height="6.2" rx="2.2" opacity=".45"/>' +
              '<path d="M9.6 17.4 12 19.8l2.4-2.4"/>',
+      kalem: '<path d="M15.2 4.8l4 4L8.4 19.6 3.6 20.4l.8-4.8z"/><path d="M13.6 6.4l4 4"/>',
       tus:   '<rect x="2.6" y="5.6" width="18.8" height="12.8" rx="2.4"/>' +
              '<path d="M6.4 9.6h.01M10 9.6h.01M13.6 9.6h.01M17.2 9.6h.01M8.4 14.2h7.2"/>'
     };
@@ -595,6 +605,10 @@
          'ucuna gelince ok soluklaşır.'],
         [IK.pinch, 'Dokunmatikte',
          'İki parmakla yakınlaştır. Telefonda da bölgeye bir kez dokunmak yeter; tekrar dokununca küçülür.'],
+        [IK.kalem, 'Kalemle yaz',
+         '<b>Kalem</b> düğmesine bas (ya da <b>P</b>) ve sayfaya yaz: yazdığın o sayfaya yapışır, ' +
+         'sayfa çevrilince ve büyütünce onunla gider. Bu tarayıcıda saklanır; <b>Kaldığım yer</b> ' +
+         'en son yazdığın sayfayı açar. İki parmakla büyütüp gezinebilirsin.'],
         [IK.tus, 'Tuşlar',
          '<b>+</b> <b>−</b> yakınlaştırma, <b>0</b> eski hâli, <b>Esc</b> çıkış, <b>F</b> tam ekran.']
       ].map(function (x) {
@@ -602,11 +616,11 @@
       }).join('');
 
       return '<div class="kz-tanitim-ic" role="dialog" aria-modal="true" aria-label="Nasıl kullanılır">' +
-        '<button type="button" class="kz-kapat" aria-label="Kapat">✕</button>' +
+        '<button type="button" class="kz-kapat" data-kz="kapat" aria-label="Kapat">✕</button>' +
         '<h2>Nasıl kullanılır?</h2>' +
         semaHtml() +
         '<ul class="kz-liste">' + satir + '</ul>' +
-        '<div class="kz-alt"><button type="button" class="kz-tamam">Anladım</button>' +
+        '<div class="kz-alt"><button type="button" class="kz-tamam" data-kz="tamam">Anladım</button>' +
         '<small>Bu pencereyi üstteki <b>?</b> düğmesinden her zaman açabilirsin.</small></div>' +
         '</div>';
     }
@@ -652,6 +666,7 @@
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'tus kz-yardim';
+      b.setAttribute('data-kz', 'yardim');      /* tahtaya yansıtmada tuşun kimliği (23.10.2026) */
       b.title = 'Nasıl kullanılır? (?)';
       b.setAttribute('aria-label', 'Nasıl kullanılır');
       b.innerHTML = svg('<circle cx="12" cy="12" r="9.2"/>' +
@@ -683,15 +698,1211 @@
       var gorulmus = false;
       try { gorulmus = !!localStorage.getItem(TANITIM_ANAHTAR); } catch (x) {}
       if (gorulmus) return;
+      /* Sınıf Ekranı'nda kendiliğinden açılmaz (kumandadan kapatılamazdı); pencere gizli
+         kurulur ki kumandadaki pencerenin tuşları tahtada da aynı tuşa düşsün */
+      if (izleCihazi()) { tanitimKur(); return; }
       setTimeout(function () { if (!panelAcik()) tanitimAc(); }, 1200);
     })();
+
+    /* --------------------------------------------------------------
+       7) TAHTAYA YANSITMA                               (23.10.2026)
+       Öğretmen: "flipbook motorunda kumandadan yakınlaşınca yaklaşma vs
+       çalışsın". Kitap tahta kabuğunun çerçevesinde açıkken (telefon ya da
+       bilgisayar kumanda, akıllı tahta Sınıf Ekranı) kabuğun genel
+       yansıtması tıklamaları ve tuşları taşıyor ama parmak hareketlerini
+       taşımıyordu: bölgeye dokunup büyütme, kıstırma, sürükleyerek gezinme,
+       kaydırarak sayfa çevirme tahtaya gitmiyordu, tahta olduğu yerde
+       kalıyordu.
+       Şimdi kumanda (lider) görünümünü her değişimde cihazdan bağımsız
+       yazar (KidefTahta.kanal 'kitap'): ekranın ortasındaki sayfa, o
+       sayfadaki yer (0-1) ve görünen alanın sayfaya oranı. Sınıf Ekranı
+       (izleyen) aynı sayfayı açar (komşu yayılıma çevirerek, uzaksa
+       atlayarak), aynı yeri ortalar; ekranının oranı farklı olduğundan
+       kumandanın gördüğü alanın tamamı sığacak kadar büyütür. Telefon tek
+       sayfada, tahta çift sayfada olsa da aynı yer görünür.
+       İzleyende, kabuğun yinelediği tıklama ve tuşların (isTrusted: false)
+       sayfa çevirmesi ve yakınlaştırması yok sayılır — yoksa aynı hareket
+       iki kez uygulanırdı (bir kez yinelenen tıklamayla, bir kez kanaldan).
+       Bu yalnız kanal bir kez konuştuktan sonra: kumanda eski sürümdeyse
+       genel yansıtma eskisi gibi çalışır. Kabuğun dışında hiçbir şey
+       değişmez. Sınıf Ekranı'nda «Nasıl kullanılır?» kendiliğinden açılmaz
+       (kumandadan kapatılamazdı).
+       -------------------------------------------------------------- */
+    var TK = { k: null, canli: false, z: 0, son: '', bek: null, bz: 0 };
+    function izleCihazi() {
+      try {
+        var u = window.parent;
+        if (!u || u === window) return false;
+        if (u.KidefTahta && u.KidefTahta.cihaz) return u.KidefTahta.cihaz === 'tahta';
+        return /[?&]rol=izle\b/.test(u.location.search);
+      } catch (e) { return false; }
+    }
+    function tkDurum() { try { return TK.k ? TK.k.durum() : null; } catch (e) { return null; } }
+    function tkLider() { var d = tkDurum(); return !!(d && d.oturum && d.lider); }
+    function tkIzleyen() { var d = tkDurum(); return !!(d && d.oturum && !d.lider); }
+    /* izleyende kabuğun yinelediği olaydan gelen sayfa / yakınlık işi mi? */
+    function engelli() {
+      if (!TK || !TK.k || !TK.canli || !tkIzleyen()) return false;
+      try { var e = window.event; return !!(e && e.isTrusted === false); } catch (x) { return false; }
+    }
+    function r4(v) { return Math.round(v * 10000) / 10000; }
+    function sayi(v, d) { v = +v; return isFinite(v) ? v : d; }
+    function tkYayilim(p) { return p <= 1 ? 0 : Math.floor(p / 2); }
+    function tkSayfada(p) { return flip.tekli ? flip.aktif === p : tkYayilim(p) === flip.c; }
+    /* bu cihazda p. sayfanın zoom'suz dikdörtgeni (sayfa açıkken) */
+    function tkSayfa1x(p) {
+      if (flip.tekli) { var t = tekSayfa1x(); return { x: t.x, y: t.y, en: t.en, boy: t.boy }; }
+      var k = kitap1x(), en = k.en / 2, sag;
+      if (ekranSayfa(true) === p) sag = true;
+      else if (ekranSayfa(false) === p) sag = false;
+      else return null;
+      return { x: k.x + (sag ? en : 0), y: k.y, en: en, boy: k.boy };
+    }
+    /* kumandanın görünümü: { p, o } ya da büyükken { p, o, fx, fy, fw, fh } */
+    function tkGorunum() {
+      var W = sahne.clientWidth, H = sahne.clientHeight;
+      var m = { p: flip.tekli ? flip.aktif : (flip.sagSayfa() || flip.solSayfa() || 1), o: 1 };
+      if (kalemAcik()) m.kl = 1;                                 /* kalem açık: izleyen de açar (8. bölüm) */
+      if (z.o <= 1.02 || !W || !H || !sahne.querySelector('.kitap')) return m;
+      var cx = W / 2 - z.x / z.o, cy = H / 2 - z.y / z.o, g;     /* ekran ortasının zoom'suz yeri */
+      if (flip.tekli) { var t = tekSayfa1x(); g = { x: t.x, y: t.y, en: t.en, boy: t.boy }; }
+      else {
+        var k = kitap1x(), en = k.en / 2, sag = cx >= k.x + en, p = ekranSayfa(sag);
+        if (p == null) { sag = !sag; p = ekranSayfa(sag); }
+        if (p == null) return m;
+        m.p = p;
+        g = { x: k.x + (sag ? en : 0), y: k.y, en: en, boy: k.boy };
+      }
+      if (!(g.en > 0 && g.boy > 0)) return m;
+      m.o = r4(z.o);
+      m.fx = r4((cx - g.x) / g.en); m.fy = r4((cy - g.y) / g.boy);
+      m.fw = r4(W / z.o / g.en); m.fh = r4(H / z.o / g.boy);
+      return m;
+    }
+    function tkAnlik() {                                         /* kabuk t:'h' koyar */
+      var m = tkGorunum(), k = kkAnlik();                        /* + açık yayılımın yazısı (8. bölüm) */
+      if (k) m.k = k;
+      return m;
+    }
+    /* lider: değişim bitince (en çok 90 ms'de bir) yazar */
+    function tkZamanla() {
+      if (!TK || !TK.k || TK.z) return;
+      TK.z = setTimeout(function () {
+        TK.z = 0;
+        if (!tkLider()) return;
+        var m = tkGorunum(), s = JSON.stringify(m);
+        if (s === TK.son) return;
+        m.t = 'g';
+        try { if (TK.k.gonder(m)) TK.son = s; } catch (e) { }
+      }, 90);
+    }
+    /* izleyen: liderin görünümü */
+    function tkGelen(m) {
+      if (m && typeof m.t === 'string' && m.t.charAt(0) === 'k') { TK.canli = true; kkGelen(m); return; }   /* kalem (8. bölüm) */
+      if (!m || (m.t !== 'g' && m.t !== 'h')) return;
+      TK.canli = true;
+      if (m.t === 'h' && m.k) kkGelen({ t: 'kb', bk: m.k.bk, L: m.k.L });
+      kkKipEsitle(m);
+      TK.son = '';
+      TK.bek = m;
+      tkUygulaZamanla(0);
+    }
+    function tkUygulaZamanla(ms) { clearTimeout(TK.bz); TK.bz = setTimeout(tkUygula, ms); }
+    function tkUygula() {
+      TK.bz = 0;
+      var m = TK.bek;
+      if (!m || tkLider()) { TK.bek = null; return; }
+      if (flip.animasyonda) { tkUygulaZamanla(80); return; }        /* çevirme bitsin */
+      var p = Math.max(1, Math.min(flip.toplam || 1e6, Math.round(sayi(m.p, 1))));
+      var buyuk = sayi(m.o, 1) > 1.02;
+      if (!tkSayfada(p)) {
+        if (z.o > 1.02 || z.x || z.y) { z.o = 1; z.x = 0; z.y = 0; zUygula(false); }   /* yakınlık eski sayfada kalsın */
+        var ileri = flip.tekli ? p > flip.aktif : tkYayilim(p) > flip.c;
+        var komsu = flip.tekli ? Math.abs(p - flip.aktif) === 1 : Math.abs(tkYayilim(p) - flip.c) === 1;
+        if (komsu && !buyuk && (ileri ? ASIL.ileri : ASIL.geri).call(flip)) { tkUygulaZamanla(80); return; }
+        ASIL.git.call(flip, p);
+      }
+      TK.bek = null;
+      if (!buyuk) {
+        if (z.o > 1.02 || z.x || z.y) { z.o = 1; z.x = 0; z.y = 0; zUygula(true); }
+        return;
+      }
+      var g = tkSayfa1x(p), W = sahne.clientWidth, H = sahne.clientHeight;
+      if (!g || !W || !H) return;
+      var vw = Math.max(0.02, sayi(m.fw, 1)) * g.en, vh = Math.max(0.02, sayi(m.fh, 1)) * g.boy;
+      var o = Math.max(ENAZ, Math.min(ENCOK, Math.min(W / vw, H / vh)));
+      var px = g.x + sayi(m.fx, 0.5) * g.en, py = g.y + sayi(m.fy, 0.5) * g.boy;
+      z.o = o; z.x = (W / 2 - px) * o; z.y = (H / 2 - py) * o;
+      sinirla(); zUygula(true);
+    }
+    /* izleyende yinelenen olayla sayfa çevrilmez; kanalın kendi işi ASIL ile */
+    var ASIL = { ileri: flip.ileri, geri: flip.geri, git: flip.git };
+    ['ileri', 'geri', 'git'].forEach(function (ad) {
+      flip[ad] = function () { if (engelli()) return false; return ASIL[ad].apply(flip, arguments); };
+    });
+    /* sayfa değişince de (kaydırarak çevirme, içindekiler, sayfa no) */
+    var asilDegisti = flip.degisti;
+    flip.degisti = function () { var r = asilDegisti.apply(this, arguments); tkZamanla(); kkSayfaDegisti(); return r; };
+    (function tahtaKanali() {
+      var KT = null;
+      try { var u = window.parent; KT = (u && u !== window && u.KidefTahta && u.KidefTahta.kanal) ? u.KidefTahta : null; } catch (e) { KT = null; }
+      if (!KT) return;
+      try { TK.k = KT.kanal.kur('kitap', { belge: document, gelen: tkGelen, anlik: tkAnlik }); } catch (e) { TK.k = null; }
+    })();
+
+    /* --------------------------------------------------------------
+       8) KALEM — SAYFAYA YAPIŞAN YAZI                   (23.10.2026)
+       Öğretmen: "flipbooklarda kalemle yazma özelliği eklesek, hem
+       böylece nerde kaldığımızı da görürüz, kalem kağıda yazılmış gibi
+       olmalı ama, sayfaya yapışmalı".
+       · Araç çubuğunda «Kalem» (P). Açıkken parmak / kalem / fare sayfaya
+         yazar; kaydırarak sayfa çevirme ve dokununca büyütme durur. Oklar,
+         klavye, iki parmakla kıstırma ve iki parmakla gezinme çalışır.
+         Alttaki takım: mavi · pembe · kırmızı · siyah · yeşil (defterle
+         aynı renkler, 1-5 tuşları), fosforlu (6), üç kalınlık, silgi (E;
+         dokunduğu çizgiyi siler), geri al (Ctrl+Z), sayfayı temizle (iki
+         kez dokun), «Kaldığım yer», «Bitti» (Esc).
+       · KÂĞIDA YAZILMIŞ GİBİ: yazı her sayfa yüzünün kendi katmanında
+         (SVG) ve sayfa resmiyle çarpılarak karışır (mix-blend-mode:
+         multiply): beyaz kâğıtta mürekkep rengi, basılı yazının üstünde
+         koyu kalır. Fosforlu kalem çizgilerin altında kalır, yazıyı
+         örtmez. Kesişen çizgiler biraz koyulaşır (gerçek mürekkep gibi).
+       · SAYFAYA YAPIŞIR: noktalar sayfanın kendi biriminde (en 1000)
+         tutulur; sayfa çevrilince yaprakla birlikte döner, büyütünce
+         keskin büyür; telefonda tek sayfa, tahtada çift sayfa olsa da
+         aynı yerde durur. Kalınlık da sayfaya göredir (kâğıttaki gibi).
+       · NEREDE KALDIK: yazılar bu tarayıcıda kitaba ve sayfaya göre
+         saklanır (IndexedDB, olmazsa localStorage). «Kaldığım yer» en son
+         yazılan sayfaları (renk, gün) sıralar; dokununca o sayfayı açar,
+         son çizginin yerini bir an parlatır. Kitap açılınca en son
+         yazılan yer açık sayfada değilse bir kez öneri çıkar.
+       · TAHTA (kanal 'kitap'): kumandada yazılan çizgi Sınıf Ekranı'nda
+         yazıldıkça görünür. Lider açık yayılımın yazılarını yollar;
+         izleyen onları gösterir, daha yeniyse kendi deposuna da yazar
+         (tahta tek başına açılınca da kaldığınız yer görünür). Sınıf
+         Ekranı'nda kalem takımı görünmez, yazı kumandadan gelir. Kumanda
+         eski sürümdeyse tahta kendi yazılarını gösterir.
+       -------------------------------------------------------------- */
+    var KK_NS = 'http://www.w3.org/2000/svg';
+    var KK_EN = 1000;                                     /* sayfa eni (birim) */
+    var KK_BOY = Math.round(KK_EN * (flip.oran || 1.414)); /* sayfa boyu (birim) */
+    /* renk numaraları defterle (yazisayfasi.js RENKLER) aynı */
+    var KK_RENK = ['#1F2430', '#1E5BD8', '#D93025', '#188038', '#EA7A0C', '#E84393'];
+    var KK_RENK_AD = ['Siyah', 'Mavi', 'Kırmızı', 'Yeşil', 'Turuncu', 'Pembe'];
+    var KK_SIRA = [1, 5, 2, 0, 3];                        /* mavi · pembe · kırmızı · siyah · yeşil */
+    var KK_FOS = ['#FFE04A'];                             /* fosforlu: sarı */
+    var KK_KALIN = { i: 2.6, o: 4.2, k: 7 };              /* kalem çizgisi (birim) */
+    var KK_FKALIN = { i: 15, o: 22, k: 32 };              /* fosforlu */
+    var KK_KAL_AD = { i: 'İnce', o: 'Orta', k: 'Kalın' };
+    var KK_TERCIH = 'kitapKalemTercih';
+    var KK_DB = 'kidef-kitap-kalem', KK_DEPO = 'sayfalar';
+
+    function kkKitapAdi() {
+      var y = String(location.pathname || '').replace(/\/+$/, '').replace(/\/index\.html?$/i, '');
+      var ad = y.split('/').pop() || 'kitap';
+      try { ad = decodeURIComponent(ad); } catch (e) { }
+      return ad;
+    }
+    var KK_KITAP = ayar.kalemAnahtari || kkKitapAdi();
+
+    var KK = {
+      acik: false, arac: 'k', sonArac: 'k', renk: 1, kal: 'o',
+      M: {},            /* bu cihazın deposu: sayfa -> { t, c (kod), L (çözülmüş) } */
+      G: {},            /* izleyen: liderden gelen sayfa kayıtları (yalnız gösterilir) */
+      hazir: false, depo: 'idb',
+      geri: [],         /* geri al */
+      cz: null,         /* yazılan çizgi */
+      bekle: null,      /* sayfanın dışında başlayan çizgi: sayfaya girince başlar */
+      sil: null,        /* silgi hareketi */
+      dok: {},          /* kalem kipinde ekrandaki parmaklar */
+      iki: null,        /* iki parmakla gezinme */
+      uzak: {},         /* izleyen: yazılmakta olan uzak çizgiler */
+      gitti: {},        /* lider: izleyene yollanan sayfaların imzası */
+      rol: '', say: 0, on: Math.random().toString(36).slice(2, 6),
+      tus: null, palet: null, liste: null, imlec: null, temizZ: 0
+    };
+    function kalemAcik() { return !!(KK && KK.acik); }
+
+    /* ---------- kayıt biçimi ----------
+       Çizgi: araç harfi ('k' kalem, 'f' fosforlu) + renk rakamı + kalınlık
+       harfi ('i','o','k') + noktalar. Noktalar yarım birim hassasiyetle tam
+       sayıya çevrilir, ardışık farklar defterdeki gibi "polyline"
+       kodlamasıyla (ASCII 63-126) yazılır. Sayfa: çizgiler boşlukla. */
+    function kkSayiYaz(n, out) {
+      var v = n < 0 ? ~(n << 1) : (n << 1);
+      while (v >= 0x20) { out.push(String.fromCharCode((0x20 | (v & 0x1f)) + 63)); v >>= 5; }
+      out.push(String.fromCharCode(v + 63));
+    }
+    function kkSayiOku(s) {
+      var res = [], i = 0, n = s.length;
+      while (i < n) {
+        var b, kay = 0, r = 0;
+        do { b = s.charCodeAt(i++) - 63; r |= (b & 0x1f) << kay; kay += 5; } while (b >= 0x20 && i <= n);
+        res.push((r & 1) ? ~(r >> 1) : (r >> 1));
+      }
+      return res;
+    }
+    function kkNoktaKodla(p) {
+      var out = [], px = 0, py = 0;
+      for (var i = 0; i + 1 < p.length; i += 2) {
+        var x = Math.round(p[i] * 2), y = Math.round(p[i + 1] * 2);
+        kkSayiYaz(x - px, out); kkSayiYaz(y - py, out); px = x; py = y;
+      }
+      return out.join('');
+    }
+    function kkNoktaCoz(s) {
+      var n = kkSayiOku(String(s || '')), p = [], x = 0, y = 0;
+      for (var i = 0; i + 1 < n.length; i += 2) { x += n[i]; y += n[i + 1]; p.push(x / 2, y / 2); }
+      return p;
+    }
+    function kkKodla(c) { return c.a + String(c.r) + c.w + kkNoktaKodla(c.p); }
+    function kkCoz(t) {
+      if (!t || t.length < 4) return null;
+      var a = t.charAt(0);
+      if (a !== 'k' && a !== 'f') return null;
+      var r = parseInt(t.charAt(1), 10), w = t.charAt(2);
+      if (!(r >= 0)) r = 0;
+      if (a === 'k' && r >= KK_RENK.length) r = 1;
+      if (a === 'f' && r >= KK_FOS.length) r = 0;
+      if (!KK_KALIN[w]) w = 'o';
+      var p = kkNoktaCoz(t.slice(3));
+      return p.length ? { a: a, r: r, w: w, p: p } : null;
+    }
+    function kkSayfaCoz(c) { return String(c || '').split(' ').map(kkCoz).filter(Boolean); }
+    function kkCizgiler(rec) { if (!rec) return []; if (!rec.L) rec.L = kkSayfaCoz(rec.c); return rec.L; }
+    function kkImza(rec) { return rec ? rec.t + ':' + (rec.c || '').length : '0'; }
+
+    /* ---------- depo: IndexedDB, olmazsa localStorage ---------- */
+    var kkIdb = null;
+    function kkIdbAc() {
+      if (kkIdb) return kkIdb;
+      kkIdb = new Promise(function (ok, red) {
+        try {
+          if (!window.indexedDB) { red(new Error('IndexedDB yok')); return; }
+          var r = indexedDB.open(KK_DB, 1);
+          r.onupgradeneeded = function () {
+            var db = r.result;
+            if (!db.objectStoreNames.contains(KK_DEPO)) db.createObjectStore(KK_DEPO, { keyPath: 'id' }).createIndex('kitap', 'kitap');
+          };
+          r.onsuccess = function () { ok(r.result); };
+          r.onerror = function () { red(r.error || new Error('IndexedDB açılamadı')); };
+          r.onblocked = function () { red(new Error('IndexedDB meşgul')); };
+        } catch (e) { red(e); }
+      });
+      kkIdb.catch(function () { });
+      return kkIdb;
+    }
+    function kkLsAnahtar() { return 'kitapKalem|' + KK_KITAP; }
+    function kkLsOku() { try { return JSON.parse(localStorage.getItem(kkLsAnahtar()) || '{}') || {}; } catch (e) { return {}; } }
+    function kkLsYaz() {
+      var o = {};
+      for (var s in KK.M) o[s] = { t: KK.M[s].t, c: KK.M[s].c };
+      try { localStorage.setItem(kkLsAnahtar(), JSON.stringify(o)); }
+      catch (e) { kkTost('Yazılar saklanamadı: tarayıcının deposu dolu'); }
+    }
+    function kkOku() {
+      var ls = kkLsOku();                                   /* eskiden (IndexedDB yokken) yazılanlar */
+      return kkIdbAc().then(function (db) {
+        return new Promise(function (ok, red) {
+          var L = {};
+          try {
+            var q = db.transaction(KK_DEPO, 'readonly').objectStore(KK_DEPO).index('kitap').openCursor(IDBKeyRange.only(KK_KITAP));
+            q.onsuccess = function () {
+              var c = q.result;
+              if (c) { var v = c.value || {}; L[v.s] = { t: +v.t || 0, c: v.c || '' }; c.continue(); }
+              else ok(L);
+            };
+            q.onerror = function () { red(q.error); };
+          } catch (e) { red(e); }
+        });
+      }).then(function (L) {
+        KK.depo = 'idb';
+        for (var s in ls) if (ls[s] && (!L[s] || (+ls[s].t || 0) > L[s].t)) { L[s] = { t: +ls[s].t || 0, c: ls[s].c || '' }; kkKaydet(s); }
+        return L;
+      }, function () { KK.depo = 'ls'; return ls; });
+    }
+    var kkYazBek = {}, kkYazZ = 0;
+    function kkKaydet(s) { kkYazBek[s] = 1; if (!kkYazZ) kkYazZ = setTimeout(kkYazGonder, 200); }
+    function kkYazGonder() {
+      kkYazZ = 0;
+      var L = Object.keys(kkYazBek);
+      kkYazBek = {};
+      if (!L.length) return;
+      if (KK.depo !== 'idb') { kkLsYaz(); return; }
+      kkIdbAc().then(function (db) {
+        var tx = db.transaction(KK_DEPO, 'readwrite'), st = tx.objectStore(KK_DEPO);
+        L.forEach(function (s) {
+          var r = KK.M[s];
+          if (r) st.put({ id: KK_KITAP + '|' + s, kitap: KK_KITAP, s: +s, t: r.t, c: r.c || '' });
+        });
+        tx.onerror = function () { KK.depo = 'ls'; kkLsYaz(); };
+      }, function () { KK.depo = 'ls'; kkLsYaz(); });
+    }
+    window.addEventListener('pagehide', function () { if (kkYazZ) { clearTimeout(kkYazZ); kkYazGonder(); } });
+
+    /* bu cihazın deposunda bir sayfanın yeni hâli */
+    function kkSayfaYaz(s, L, ek) {
+      var r = KK.M[s], kod;
+      if (ek && r && r.L === L && r.c) kod = r.c + ' ' + kkKodla(L[L.length - 1]);   /* sona eklendi */
+      else kod = L.map(kkKodla).join(' ');
+      KK.M[s] = { t: Math.max(Date.now(), r ? r.t + 1 : 0), c: kod, L: L };
+      kkKaydet(s);
+    }
+    /* izleyen: liderden gelen kayıt kendi deposundakinden yeniyse onu da sakla */
+    function kkBirlestir(s, rec) {
+      if (!(rec.t > 0)) return;
+      var o = KK.M[s];
+      if (o && o.t >= rec.t) return;
+      KK.M[s] = { t: rec.t, c: rec.c, L: null };
+      kkKaydet(s);
+    }
+
+    /* ---------- yardımcılar ---------- */
+    function kkR(v) { return Math.round(v * 10) / 10; }
+    function kkTost(m) {
+      var t = document.getElementById('tost');
+      if (t) {
+        t.textContent = m; t.classList.add('gor');
+        clearTimeout(t._kkZ); t._kkZ = setTimeout(function () { t.classList.remove('gor'); }, 2600);
+        return;
+      }
+      if (bilgi) { bilgi.textContent = m; bilgi.classList.add('gor'); setTimeout(function () { if (z.o <= 1.02) bilgi.classList.remove('gor'); }, 2600); }
+    }
+    function kkMisafirKip() { return !!(TK && TK.k && TK.canli && tkIzleyen()); }
+    /* izleyende kabuğun yinelediği tık / tuş: yazıyı değiştiren işi yapma (sonucu kanaldan gelir) */
+    function kkYanki(e) {
+      if (!kkMisafirKip()) return false;
+      try { e = e || window.event; return !!(e && e.isTrusted === false); } catch (x) { return false; }
+    }
+    function kkSayfaAdi(s) {
+      try { if (flip.etiket) { var e = flip.etiket(s); if (e) return /^\d+$/.test(String(e)) ? 's. ' + e : String(e); } } catch (x) { }
+      var K = window.KITAP_VERI || window.KITAP6;          /* MEB kitapları (uygulama.js'teki etiket() ile aynı) */
+      if (K && K.fark != null) {
+        var pr = s - K.fark, son = K.sonBasili || (K.toplam - K.fark - 2);
+        if (pr >= 1 && pr <= son) return 's. ' + pr;
+        if (s === 1) return 'Kapak';
+        if (s === K.toplam) return 'Arka kapak';
+        return pr < 1 ? 'İç kapak' : 'Sayfa ' + s;
+      }
+      return 's. ' + s;
+    }
+    function kkZaman(t) {
+      var d = new Date(t), b = new Date();
+      if (isNaN(d.getTime())) return '';
+      var g0 = new Date(b.getFullYear(), b.getMonth(), b.getDate()).getTime();
+      var saat = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+      if (t >= g0) return 'bugün ' + saat;
+      if (t >= g0 - 864e5) return 'dün ' + saat;
+      if (t >= g0 - 6 * 864e5) return d.toLocaleDateString('tr-TR', { weekday: 'long' }) + ' ' + saat;
+      return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }) + (d.getFullYear() !== b.getFullYear() ? ' ' + d.getFullYear() : '');
+    }
+    function kkEsc(x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    /* ---------- sayfalar ve ekrandaki yerleri ---------- */
+    function kkYuz(s) { return flip.kitap ? flip.kitap.querySelector('.yuz[data-sayfa="' + s + '"]') : null; }
+    function kkGorunen() {                                       /* ekranda açık sayfalar */
+      if (flip.tekli) return [flip.aktif];
+      var L = [], a = flip.solSayfa(), b = flip.sagSayfa();
+      if (a) L.push(a); if (b) L.push(b);
+      return L;
+    }
+    function kkYayilim() {                                       /* açık yayılımın sayfaları (tek sayfada da ikisi) */
+      var L = [], a = flip.solSayfa(), b = flip.sagSayfa();
+      if (a) L.push(a); if (b) L.push(b);
+      if (!L.length) L.push(flip.aktif || 1);
+      return L;
+    }
+    function kkNoktadaki(x, y) {
+      var L = kkGorunen();
+      for (var i = 0; i < L.length; i++) {
+        var yz = kkYuz(L[i]);
+        if (!yz || !yz.querySelector('.katman')) continue;
+        var r = yz.getBoundingClientRect();
+        if (r.width > 4 && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return { s: L[i], yuz: yz, r: r };
+      }
+      return null;
+    }
+    function kkBirim(o, x, y) { return [(x - o.r.left) / o.r.width * KK_EN, (y - o.r.top) / o.r.height * KK_BOY]; }
+
+    /* ---------- çizim (SVG) ---------- */
+    function kkGosterilen(s) { return (kkMisafirKip() && KK.G[s]) || KK.M[s] || null; }
+    function kkSvg(yuz, yap) {
+      var v = yuz._kkSvg, kat = yuz.querySelector('.katman');
+      if (v && v.parentNode === yuz) {
+        if (kat && v.nextSibling !== kat) yuz.insertBefore(v, kat);    /* sonradan gelen katmanlar (metin) altında kalsın */
+        return v;
+      }
+      if (!yap || !kat) return null;                                  /* boş yüz (toplamın ötesi) */
+      v = document.createElementNS(KK_NS, 'svg');
+      v.setAttribute('class', 'kk-m');
+      v.setAttribute('viewBox', '0 0 ' + KK_EN + ' ' + KK_BOY);
+      v.setAttribute('preserveAspectRatio', 'none');
+      v.setAttribute('aria-hidden', 'true');
+      v.setAttribute('focusable', 'false');
+      ['kk-gf', 'kk-gk'].forEach(function (s) {                       /* fosforlu altta, kalem üstte */
+        var g = document.createElementNS(KK_NS, 'g'); g.setAttribute('class', s); v.appendChild(g);
+      });
+      yuz.insertBefore(v, kat);
+      yuz._kkSvg = v;
+      return v;
+    }
+    function kkD(p) {
+      var n = p.length / 2;
+      if (!n) return '';
+      var d = 'M' + kkR(p[0]) + ' ' + kkR(p[1]);
+      if (n === 1) return d + 'l.01 0';
+      if (n === 2) return d + 'L' + kkR(p[2]) + ' ' + kkR(p[3]);
+      for (var i = 1; i < n - 1; i++) {
+        var x = p[2 * i], y = p[2 * i + 1];
+        d += 'Q' + kkR(x) + ' ' + kkR(y) + ' ' + kkR((x + p[2 * i + 2]) / 2) + ' ' + kkR((y + p[2 * i + 3]) / 2);
+      }
+      return d + 'L' + kkR(p[2 * n - 2]) + ' ' + kkR(p[2 * n - 1]);
+    }
+    function kkYolYaz(e, c) {
+      var fos = c.a === 'f';
+      e.setAttribute('d', kkD(c.p));
+      e.setAttribute('stroke', fos ? (KK_FOS[c.r] || KK_FOS[0]) : (KK_RENK[c.r] || KK_RENK[1]));
+      e.setAttribute('stroke-width', fos ? KK_FKALIN[c.w] : KK_KALIN[c.w]);
+      e.setAttribute('class', fos ? 'kk-f' : 'kk-k');
+    }
+    function kkYol(c) { var e = document.createElementNS(KK_NS, 'path'); kkYolYaz(e, c); return e; }
+    function kkGrup(v, c) { return c.a === 'f' ? v.firstChild : v.lastChild; }
+    /* sayfanın yazısını (gerekiyorsa) yeniden çiz */
+    function kkSayfaCiz(s, zorla) {
+      if (!(s >= 1) || s > flip.toplam) return;
+      var yuz = kkYuz(s);
+      if (!yuz) return;
+      var rec = kkGosterilen(s), L = kkCizgiler(rec);
+      var an = rec ? (rec === KK.G[s] ? 'g' : 'm') + kkImza(rec) : '-';
+      var v = kkSvg(yuz, L.length > 0);
+      if (!zorla && yuz._kkAn === an) return;
+      yuz._kkAn = an;
+      if (!v) return;
+      var gf = v.firstChild, gk = v.lastChild;
+      while (gf.firstChild) gf.removeChild(gf.firstChild);
+      while (gk.firstChild) gk.removeChild(gk.firstChild);
+      for (var i = 0; i < L.length; i++) kkGrup(v, L[i]).appendChild(kkYol(L[i]));
+      /* yazılmakta olan çizgiler (bu cihazda ya da kumandada) yerinde kalsın */
+      if (KK.cz && KK.cz.s === s && KK.cz.el) kkGrup(v, KK.cz.c).appendChild(KK.cz.el);
+      for (var k in KK.uzak) { var u = KK.uzak[k]; if (u.s === s && u.el) kkGrup(v, u.c).appendChild(u.el); }
+    }
+    /* sayfaya yalnız sona eklenen çizgiler: ekrandaki hâl bir önceki kayıtsa bütün sayfa yeniden çizilmez
+       (çok yazılı sayfada her çizgide yüzlerce yol kurulmasın) */
+    function kkSayfaEkle(s, onceki, yeniler) {
+      var yuz = kkYuz(s), rec = kkGosterilen(s);
+      if (!yuz || !rec || yuz._kkAn !== onceki) { kkSayfaCiz(s); return; }
+      var v = kkSvg(yuz, true);
+      if (!v) { kkSayfaCiz(s); return; }
+      for (var i = 0; i < yeniler.length; i++) {
+        var e = kkYol(yeniler[i]), g = kkGrup(v, yeniler[i]);
+        if (KK.cz && KK.cz.s === s && KK.cz.el && KK.cz.el.parentNode === g) g.insertBefore(e, KK.cz.el);
+        else g.appendChild(e);
+      }
+      yuz._kkAn = (rec === KK.G[s] ? 'g' : 'm') + kkImza(rec);
+    }
+    /* açık yayılım ve komşuları */
+    function kkTazele(zorla) {
+      if (!KK || !flip.yapraklar) return;
+      var a = Math.max(0, flip.c - 2), b = Math.min(flip.yaprakSayisi - 1, flip.c + 2);
+      for (var i = a; i <= b; i++) { kkSayfaCiz(2 * i + 1, zorla); kkSayfaCiz(2 * i + 2, zorla); }
+    }
+
+    /* ---------- yazma ---------- */
+    function kkCizBasla(e, o) {
+      var b = kkBirim(o, e.clientX, e.clientY), fos = KK.arac === 'f';
+      var c = { a: fos ? 'f' : 'k', r: fos ? 0 : KK.renk, w: KK.kal, p: [kkR(b[0]), kkR(b[1])] };
+      var olcek = o.r.width / KK_EN;                               /* ekranda bir birimin pikseli */
+      KK.cz = { id: e.pointerId, s: o.s, o: o, c: c, t0: Date.now(), sx: b[0], sy: b[1], hx: b[0], hy: b[1],
+                adim: Math.max(0.3, 0.9 / olcek), yum: e.pointerType === 'touch' ? 0.5 : 0.72, el: kkYol(c), k: '', g: 0 };
+      var v = kkSvg(o.yuz, true);
+      if (v) kkGrup(v, c).appendChild(KK.cz.el);
+      kkCanliBasla();
+    }
+    function kkCizEkle(cz, x, y) {
+      var b = kkBirim(cz.o, x, y);
+      cz.hx = b[0]; cz.hy = b[1];
+      cz.sx += (b[0] - cz.sx) * cz.yum; cz.sy += (b[1] - cz.sy) * cz.yum;   /* titremeyi yumuşat (dokunmatik tahta) */
+      var p = cz.c.p, lx = p[p.length - 2], ly = p[p.length - 1];
+      if (Math.abs(cz.sx - lx) + Math.abs(cz.sy - ly) < cz.adim) return false;
+      p.push(kkR(cz.sx), kkR(cz.sy));
+      return true;
+    }
+    var kkCizRaf = 0;
+    function kkCizZamanla() {
+      if (kkCizRaf) return;
+      kkCizRaf = (window.requestAnimationFrame || setTimeout)(function () {
+        kkCizRaf = 0;
+        if (KK.cz && KK.cz.el) KK.cz.el.setAttribute('d', kkD(KK.cz.c.p));
+      });
+    }
+    /* Ramer-Douglas-Peucker: kayıt küçük kalsın */
+    function kkSadelestir(p, eps) {
+      var n = p.length / 2;
+      if (n < 3) return p;
+      var tut = [], yig = [[0, n - 1]], e2 = eps * eps;
+      tut[0] = tut[n - 1] = 1;
+      while (yig.length) {
+        var ab = yig.pop(), a = ab[0], b = ab[1];
+        var ax = p[2 * a], ay = p[2 * a + 1], dx = p[2 * b] - ax, dy = p[2 * b + 1] - ay, L2 = dx * dx + dy * dy, en = -1, ei = -1;
+        for (var i = a + 1; i < b; i++) {
+          var px = p[2 * i] - ax, py = p[2 * i + 1] - ay, d;
+          if (!L2) d = px * px + py * py;
+          else { var t = (px * dx + py * dy) / L2; t = t < 0 ? 0 : (t > 1 ? 1 : t); var qx = px - t * dx, qy = py - t * dy; d = qx * qx + qy * qy; }
+          if (d > en) { en = d; ei = i; }
+        }
+        if (ei > 0 && en > e2) { tut[ei] = 1; yig.push([a, ei], [ei, b]); }
+      }
+      var out = [];
+      for (var j = 0; j < n; j++) if (tut[j]) out.push(p[2 * j], p[2 * j + 1]);
+      return out;
+    }
+    function kkCizBitir() {
+      var cz = KK.cz;
+      if (!cz) return;
+      KK.cz = null;
+      if (cz.el && cz.el.parentNode) cz.el.parentNode.removeChild(cz.el);
+      var c = cz.c, p = c.p;
+      /* parmağın kalktığı yere kadar (yumuşatma geride bırakmasın) */
+      if (Math.abs(cz.hx - p[p.length - 2]) + Math.abs(cz.hy - p[p.length - 1]) > cz.adim * 0.5) p.push(kkR(cz.hx), kkR(cz.hy));
+      c.p = kkSadelestir(p, 0.3);
+      var rec = KK.M[cz.s], L = kkCizgiler(rec), onceki = rec ? 'm' + kkImza(rec) : '-';
+      L.push(c);
+      kkSayfaYaz(cz.s, L, true);
+      KK.geri.push({ t: 'ekle', s: cz.s, c: c });
+      if (KK.geri.length > 120) KK.geri.shift();
+      kkSayfaEkle(cz.s, onceki, [c]);
+      kkGonder([cz.s], cz.k);
+    }
+    function kkCizAt() {                                           /* iki parmak indi: yeni başlamış çizgi kıstırmanın ilk parmağıydı */
+      var cz = KK.cz;
+      if (!cz) return;
+      KK.cz = null;
+      if (cz.el && cz.el.parentNode) cz.el.parentNode.removeChild(cz.el);
+      if (cz.k && tkLider()) { try { TK.k.gonder({ t: 'kx', k: cz.k, bk: KK_KITAP }); } catch (e) { } }
+    }
+
+    /* ---------- silgi: dokunduğu çizgiyi siler ---------- */
+    function kkUzaklik(px, py, ax, ay, bx, by) {
+      var dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy, t = L2 ? ((px - ax) * dx + (py - ay) * dy) / L2 : 0;
+      t = t < 0 ? 0 : (t > 1 ? 1 : t);
+      var qx = ax + t * dx - px, qy = ay + t * dy - py;
+      return Math.sqrt(qx * qx + qy * qy);
+    }
+    function kkKesisir(ax, ay, bx, by, cx, cy, dx, dy) {
+      function yon(px, py, qx, qy, rx, ry) { return (qx - px) * (ry - py) - (qy - py) * (rx - px); }
+      var d1 = yon(cx, cy, dx, dy, ax, ay), d2 = yon(cx, cy, dx, dy, bx, by), d3 = yon(ax, ay, bx, by, cx, cy), d4 = yon(ax, ay, bx, by, dx, dy);
+      return ((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0));
+    }
+    function kkDegiyor(c, ax, ay, bx, by, rr) {
+      var p = c.p, n = p.length / 2, w = (c.a === 'f' ? KK_FKALIN[c.w] : KK_KALIN[c.w]) / 2, s = rr + w;
+      var x0 = Math.min(ax, bx) - s, x1 = Math.max(ax, bx) + s, y0 = Math.min(ay, by) - s, y1 = Math.max(ay, by) + s;
+      for (var i = 0; i < n; i++) {
+        var x = p[2 * i], y = p[2 * i + 1];
+        if (n === 1) return x >= x0 && x <= x1 && y >= y0 && y <= y1 && kkUzaklik(x, y, ax, ay, bx, by) <= s;
+        if (i === n - 1) break;
+        var x2 = p[2 * i + 2], y2 = p[2 * i + 3];
+        if (Math.max(x, x2) < x0 || Math.min(x, x2) > x1 || Math.max(y, y2) < y0 || Math.min(y, y2) > y1) continue;
+        if (kkKesisir(ax, ay, bx, by, x, y, x2, y2)) return true;
+        if (Math.min(kkUzaklik(ax, ay, x, y, x2, y2), kkUzaklik(bx, by, x, y, x2, y2),
+                     kkUzaklik(x, y, ax, ay, bx, by), kkUzaklik(x2, y2, ax, ay, bx, by)) <= s) return true;
+      }
+      return false;
+    }
+    function kkSilgiYaricap(e) { return e && e.pointerType === 'mouse' ? 14 : 24; }   /* ekranda piksel */
+    function kkSilgiBasla(e) {
+      KK.sil = { id: e.pointerId, son: null, once: {}, rp: kkSilgiYaricap(e) };
+      kkSilgiAdim(e.clientX, e.clientY);
+    }
+    function kkSilgiAdim(x, y) {
+      var S = KK.sil;
+      if (!S) return;
+      var o = kkNoktadaki(x, y);
+      if (!o) { S.son = null; return; }
+      var b = kkBirim(o, x, y), rr = S.rp / (o.r.width / KK_EN);
+      var a = (S.son && S.son.s === o.s) ? S.son : { s: o.s, x: b[0], y: b[1] };
+      S.son = { s: o.s, x: b[0], y: b[1] };
+      var rec = KK.M[o.s], L = kkCizgiler(rec);
+      if (!L.length) return;
+      var kalan = [];
+      for (var i = 0; i < L.length; i++) if (!kkDegiyor(L[i], a.x, a.y, b[0], b[1], rr)) kalan.push(L[i]);
+      if (kalan.length === L.length) return;
+      if (!S.once[o.s]) S.once[o.s] = L;
+      kkSayfaYaz(o.s, kalan);
+      kkSayfaCiz(o.s);
+      kkGonder([o.s]);
+    }
+    function kkSilgiBitir() {
+      var S = KK.sil;
+      KK.sil = null;
+      if (S && Object.keys(S.once).length) { KK.geri.push({ t: 'liste', s: S.once }); if (KK.geri.length > 120) KK.geri.shift(); }
+      kkSilgiImlec(null);
+    }
+    function kkSilgiImlec(e) {
+      var im = KK.imlec;
+      if (!im) {
+        if (!e) return;
+        im = KK.imlec = document.createElement('div');
+        im.className = 'kk-silgi-imlec';
+        sahne.appendChild(im);
+      }
+      if (!e || !KK.acik || (KK.arac !== 's' && !KK.sil)) { im.classList.remove('gor'); return; }
+      var r = sahne.getBoundingClientRect(), d = 2 * kkSilgiYaricap(e);
+      im.style.width = im.style.height = d + 'px';
+      im.style.left = (e.clientX - r.left) + 'px'; im.style.top = (e.clientY - r.top) + 'px';
+      im.classList.add('gor');
+    }
+
+    /* ---------- geri al · temizle ---------- */
+    function kkGoster(s) {                                         /* değişen sayfa ekranda değilse aç */
+      if (kkGorunen().indexOf(s) >= 0 || kkMisafirKip()) return;
+      if (z.o > 1.02 || z.x || z.y) { z.o = 1; z.x = 0; z.y = 0; zUygula(false); }
+      flip.git(s);
+    }
+    function kkGeriAl() {
+      var a = KK.geri.pop();
+      if (!a) { kkTost('Geri alınacak yazı yok'); return; }
+      var degisen = [];
+      if (a.t === 'ekle') {
+        var L = kkCizgiler(KK.M[a.s]).slice(), i = L.lastIndexOf(a.c);
+        if (i < 0) { kkTost('Bu yazı başka cihazda değişmiş, geri alınamadı'); return; }
+        L.splice(i, 1);
+        kkSayfaYaz(a.s, L); degisen.push(a.s);
+      } else if (a.t === 'liste') {
+        for (var s in a.s) { kkSayfaYaz(+s, a.s[s].slice()); degisen.push(+s); }
+      }
+      degisen.forEach(function (n) { kkSayfaCiz(n); });
+      kkGonder(degisen);
+      if (degisen.length) kkGoster(degisen[0]);
+    }
+    function kkTemizle() {
+      var L = kkGorunen().filter(function (s) { return kkCizgiler(KK.M[s]).length > 0; });
+      if (!L.length) { kkTost('Bu sayfada yazı yok'); return; }
+      var once = {};
+      L.forEach(function (s) { once[s] = kkCizgiler(KK.M[s]); kkSayfaYaz(s, []); kkSayfaCiz(s); });
+      KK.geri.push({ t: 'liste', s: once });
+      kkGonder(L);
+      kkTost((L.length > 1 ? 'İki sayfanın' : 'Sayfanın') + ' yazıları silindi · «Geri al» ile dönebilirsin');
+    }
+
+    /* ---------- dokunuşlar (kalem kipinde) ---------- */
+    function kkBas(e) {
+      if (!KK.acik || !e.target || !e.target.closest || !e.target.closest('.kitap')) return;
+      if (panelAcik() || tanitimAcik) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault(); e.stopPropagation();
+      if (kkMisafirKip()) return;                                 /* Sınıf Ekranı: yazı kumandadan gelir */
+      KK.dok[e.pointerId] = { x: e.clientX, y: e.clientY };
+      if (Object.keys(KK.dok).length >= 2) { kkIkiBasla(); return; }
+      if (flip.animasyonda) return;
+      try { sahne.setPointerCapture(e.pointerId); } catch (x) { }
+      /* kalemin silgi ucu (Surface, Wacom): o dokunuşta silgi */
+      if (KK.arac === 's' || (e.pointerType === 'pen' && (e.button === 5 || (e.buttons & 32)))) { kkSilgiBasla(e); kkSilgiImlec(e); return; }
+      var o = kkNoktadaki(e.clientX, e.clientY);
+      if (!o) { KK.bekle = { id: e.pointerId }; return; }
+      kkCizBasla(e, o);
+    }
+    function kkOynat(e) {
+      var d = KK.dok[e.pointerId];
+      if (d) { d.x = e.clientX; d.y = e.clientY; }
+      if (KK.iki) { if (d) { e.preventDefault(); kkIkiOynat(); } return; }
+      if (KK.sil && KK.sil.id === e.pointerId) {
+        kkSilgiImlec(e);
+        var ls = (e.getCoalescedEvents && e.getCoalescedEvents()) || [];
+        if (!ls.length) ls = [e];
+        for (var j = 0; j < ls.length; j++) kkSilgiAdim(ls[j].clientX, ls[j].clientY);
+        return;
+      }
+      if (KK.acik && KK.arac === 's' && e.pointerType === 'mouse') kkSilgiImlec(e.target && e.target.closest && e.target.closest('.kitap') ? e : null);   /* fareyle gezinirken */
+      if (KK.bekle && KK.bekle.id === e.pointerId) {
+        var o0 = kkNoktadaki(e.clientX, e.clientY);
+        if (o0) { KK.bekle = null; kkCizBasla(e, o0); }
+        return;
+      }
+      var cz = KK.cz;
+      if (!cz || cz.id !== e.pointerId) return;
+      e.preventDefault();
+      var L = (e.getCoalescedEvents && e.getCoalescedEvents()) || [];
+      if (!L.length) L = [e];
+      var yeni = false;
+      for (var i = 0; i < L.length; i++) {
+        var ev = L[i], b = kkBirim(cz.o, ev.clientX, ev.clientY);
+        if (b[0] < -2 || b[0] > KK_EN + 2 || b[1] < -2 || b[1] > KK_BOY + 2) {
+          /* öbür sayfaya geçti: bu çizgi biter, orada yenisi başlar */
+          var o = kkNoktadaki(ev.clientX, ev.clientY);
+          if (o && o.s !== cz.s) { kkCizEkle(cz, ev.clientX, ev.clientY); kkCizBitir(); kkCizBasla(ev, o); cz = KK.cz; yeni = true; continue; }
+        }
+        if (kkCizEkle(cz, ev.clientX, ev.clientY)) yeni = true;
+      }
+      if (yeni) { kkCizZamanla(); kkCanliZamanla(); }
+    }
+    function kkBirak(e) {
+      var d = KK.dok[e.pointerId];
+      delete KK.dok[e.pointerId];
+      if (KK.iki) { if (Object.keys(KK.dok).length < 2) KK.iki = null; if (d) e.stopPropagation(); return; }
+      if (KK.bekle && KK.bekle.id === e.pointerId) KK.bekle = null;
+      if (KK.sil && KK.sil.id === e.pointerId) { kkSilgiBitir(); if (e.pointerType === 'mouse') kkSilgiImlec(e); return; }
+      if (KK.cz && KK.cz.id === e.pointerId) {
+        if (e.type === 'pointerup') kkCizEkle(KK.cz, e.clientX, e.clientY);
+        kkCizBitir();
+      }
+    }
+    /* iki parmak: kıstırma kitapzoom'un dokunuş işleyicisinde; burada gezinme */
+    function kkOrta() {
+      var k = Object.keys(KK.dok), a = KK.dok[k[0]], b = KK.dok[k[1]];
+      return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    }
+    function kkIkiBasla() {
+      var cz = KK.cz;
+      if (cz) { if (Date.now() - cz.t0 < 280 || cz.c.p.length < 10) kkCizAt(); else kkCizBitir(); }
+      KK.bekle = null;
+      if (KK.sil) kkSilgiBitir();
+      KK.iki = kkOrta();
+    }
+    function kkIkiOynat() {
+      if (Object.keys(KK.dok).length < 2) return;
+      var o = kkOrta(), dx = o.x - KK.iki.x, dy = o.y - KK.iki.y;
+      KK.iki = o;
+      if (z.o <= 1.02 || (!dx && !dy)) return;
+      z.x += dx; z.y += dy;
+      sinirla(); zUygula(false);
+    }
+    sahne.addEventListener('pointerdown', kkBas, true);
+    kok.addEventListener('pointermove', kkOynat, true);
+    kok.addEventListener('pointerup', kkBirak, true);
+    kok.addEventListener('pointercancel', kkBirak, true);
+    sahne.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && !KK.sil) kkSilgiImlec(null); });
+    sahne.addEventListener('contextmenu', function (e) { if (KK.acik && e.target.closest && e.target.closest('.kitap')) e.preventDefault(); });
+    /* kalem kipinde kitabın içindeki tıklamalar (ses düğmesi, bağlantı) bir şey açmasın */
+    sahne.addEventListener('click', function (e) {
+      if (KK.acik && e.target.closest && e.target.closest('.kitap')) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
+
+    /* ---------- tahtaya yansıtma (7. bölümün kanalı) ---------- */
+    function kkKayitListe(L) {
+      return L.map(function (s) {
+        var r = KK.M[s];
+        KK.gitti[s] = kkImza(r);
+        return r && r.c ? { s: s, t: r.t, c: r.c } : { s: s, t: r ? r.t : 0 };
+      });
+    }
+    /* lider: değişen sayfalar (bitti: biten çizginin anahtarı) */
+    function kkGonder(L, bitti) {
+      if (!TK || !TK.k || !L.length || !tkLider()) return;
+      var m = { t: 'kb', bk: KK_KITAP, L: kkKayitListe(L) };
+      if (bitti) m.bit = bitti;
+      try { TK.k.gonder(m); } catch (e) { }
+    }
+    /* lider: açık yayılımın yazısı izleyendekinden farklıysa */
+    function kkYayilimGonder() {
+      if (!TK || !TK.k || !tkLider()) return;
+      var L = kkYayilim().filter(function (s) { return KK.gitti[s] !== kkImza(KK.M[s]); });
+      if (L.length) kkGonder(L);
+    }
+    function kkAnlik() {                                           /* anlık durumda (t:'h') yayılımın yazısı */
+      if (!KK || !KK.hazir) return null;
+      return { bk: KK_KITAP, L: kkKayitListe(kkYayilim()) };
+    }
+    function kkCanliBasla() {
+      var cz = KK.cz;
+      if (!cz || !TK || !TK.k || !tkLider()) return;
+      cz.k = KK.on + (++KK.say);
+      kkCanliZamanla();
+    }
+    var kkCanliZ = 0;
+    function kkCanliZamanla() { if (KK.cz && KK.cz.k && !kkCanliZ) kkCanliZ = setTimeout(kkCanliGonder, 50); }
+    function kkCanliGonder() {
+      kkCanliZ = 0;
+      var cz = KK.cz;
+      if (!cz || !cz.k || cz.c.p.length <= cz.g || !tkLider()) return;
+      var bas = cz.g;
+      cz.g = cz.c.p.length;
+      try {
+        TK.k.gonder({ t: 'kc', bk: KK_KITAP, k: cz.k, s: cz.s, a: cz.c.a, r: cz.c.r, w: cz.c.w, b: bas / 2, d: kkNoktaKodla(cz.c.p.slice(bas)) });
+      } catch (e) { }
+    }
+    /* izleyen: gelen */
+    function kkGelen(m) {
+      if (!KK || !m || (m.bk && m.bk !== KK_KITAP) || tkLider()) return;
+      if (m.t === 'kc') { kkUzakParca(m); return; }
+      if (m.t === 'kx') { kkUzakSil(m.k); return; }
+      if (m.t !== 'kb') return;
+      var L = m.L || [];
+      for (var i = 0; i < L.length; i++) {
+        var it = L[i], s = +(it && it.s);
+        if (!(s >= 1)) continue;
+        var rec = { t: +it.t || 0, c: it.c || '', L: null }, eski = KK.G[s], yuz = kkYuz(s);
+        /* yalnız sona çizgi eklendiyse eski çözümü kullan, yalnız yenisini çiz */
+        var ek = eski && kkMisafirKip() && yuz && yuz._kkAn === 'g' + kkImza(eski) && eski.c && rec.c.length > eski.c.length &&
+                 rec.c.charAt(eski.c.length) === ' ' && rec.c.slice(0, eski.c.length) === eski.c;
+        var yeniler = ek ? kkSayfaCoz(rec.c.slice(eski.c.length + 1)) : null;
+        if (ek) rec.L = kkCizgiler(eski).concat(yeniler);
+        KK.G[s] = rec;
+        kkBirlestir(s, rec);
+        if (ek) kkSayfaEkle(s, 'g' + kkImza(eski), yeniler); else kkSayfaCiz(s);
+      }
+      if (m.bit) kkUzakSil(m.bit);
+    }
+    function kkUzakParca(m) {
+      var p = kkNoktaCoz(m.d), s = +m.s;
+      if (!p.length || !(s >= 1)) return;
+      var u = KK.uzak[m.k];
+      if (!u) {
+        var a = m.a === 'f' ? 'f' : 'k', r = +m.r || 0;
+        u = KK.uzak[m.k] = { s: s, c: { a: a, r: r, w: KK_KALIN[m.w] ? m.w : 'o', p: [] }, el: null };
+      }
+      u.z = Date.now();
+      if ((+m.b || 0) * 2 !== u.c.p.length) { if (+m.b) return; u.c.p = []; }   /* sırayla gelir; uymayan parça atlanır */
+      u.c.p.push.apply(u.c.p, p);
+      var yuz = kkYuz(s), v = yuz && kkSvg(yuz, true);
+      if (!v) return;
+      if (!u.el) u.el = kkYol(u.c);
+      if (u.el.parentNode !== kkGrup(v, u.c)) kkGrup(v, u.c).appendChild(u.el);
+      u.el.setAttribute('d', kkD(u.c.p));
+    }
+    function kkUzakSil(k) {
+      var u = KK.uzak[k];
+      if (!u) return;
+      delete KK.uzak[k];
+      if (u.el && u.el.parentNode) u.el.parentNode.removeChild(u.el);
+    }
+    /* izleyen: kalem kumandada açıksa burada da açık (kumandanın görünüm iletisindeki kl) */
+    function kkKipEsitle(m) {
+      if (!KK || !m || tkLider()) return;
+      if (!!m.kl !== KK.acik) { if (m.kl) kkAc(); else kkKapat(); }
+    }
+    /* rol değişince (tahta liderliği aldı ya da bıraktı) doğru yazı görünsün */
+    function kkRolBak() {
+      if (!TK || !TK.k) return;
+      var l = tkLider(), mi = kkMisafirKip(), r = (l ? 'L' : '') + (mi ? 'I' : '');
+      var simdi = Date.now();
+      for (var k in KK.uzak) if (simdi - (KK.uzak[k].z || 0) > 8000) kkUzakSil(k);     /* bitişi gelmeyen uzak çizgi */
+      if (r === KK.rol) return;
+      KK.rol = r;
+      if (!mi) KK.G = {};
+      if (KK.palet) KK.palet.classList.toggle('kk-izle', mi);
+      kkTazele();
+      if (l) { KK.gitti = {}; kkYayilimGonder(); }
+    }
+    setInterval(kkRolBak, 700);
+
+    /* ---------- kalem takımı ---------- */
+    var KK_IK = {
+      kalem: '<path d="M15.2 4.8l4 4L8.4 19.6 3.6 20.4l.8-4.8z"/><path d="M13.6 6.4l4 4"/>',
+      silgi: '<path d="M8.6 20.4h11.6"/><path d="M5.2 15.4 14.8 5.8a2 2 0 0 1 2.8 0l2.6 2.6a2 2 0 0 1 0 2.8L12 19.4H8.8l-3.6-3.6a.3.3 0 0 1 0-.4z"/><path d="M9.6 11l5.2 5.2"/>',
+      geri: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+      temizle: '<path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/>',
+      yer: '<path d="M7 3.5h10a1 1 0 0 1 1 1V21l-6-4.2L6 21V4.5a1 1 0 0 1 1-1z"/>',
+      bitti: '<path d="M5 12.6l4.3 4.3L19 7.2"/>'
+    };
+    function kkTercihOku() {
+      try {
+        var t = JSON.parse(localStorage.getItem(KK_TERCIH) || '{}') || {};
+        if (KK_SIRA.indexOf(t.r) >= 0) KK.renk = t.r;
+        if (KK_KALIN[t.w]) KK.kal = t.w;
+        if (t.a === 'k' || t.a === 'f') KK.arac = KK.sonArac = t.a;
+      } catch (e) { }
+    }
+    function kkTercihYaz() { try { localStorage.setItem(KK_TERCIH, JSON.stringify({ r: KK.renk, w: KK.kal, a: KK.sonArac })); } catch (e) { } }
+    function kkPaletHtml() {
+      var h = '<div class="kk-g kk-renkler">';
+      KK_SIRA.forEach(function (r, i) {
+        h += '<button type="button" class="kk-d kk-r" data-kk="r' + r + '" style="--kk:' + KK_RENK[r] + '" title="' + KK_RENK_AD[r] + ' kalem (' + (i + 1) + ')" aria-label="' + KK_RENK_AD[r] + ' kalem"><i></i></button>';
+      });
+      h += '<button type="button" class="kk-d kk-r kk-fos" data-kk="fos" style="--kk:' + KK_FOS[0] + '" title="Fosforlu kalem (6)" aria-label="Fosforlu kalem"><i></i></button></div>';
+      h += '<div class="kk-g kk-kalinlar">';
+      ['i', 'o', 'k'].forEach(function (w) {
+        h += '<button type="button" class="kk-d kk-w" data-kk="w' + w + '" title="' + KK_KAL_AD[w] + '" aria-label="' + KK_KAL_AD[w] + ' çizgi"><i class="kk-w-' + w + '"></i></button>';
+      });
+      h += '</div><div class="kk-g">' +
+        '<button type="button" class="kk-d" data-kk="silgi" title="Silgi: dokunduğun çizgiyi siler (E)" aria-label="Silgi">' + svg(KK_IK.silgi) + '</button>' +
+        '<button type="button" class="kk-d" data-kk="geri" title="Geri al (Ctrl+Z)" aria-label="Geri al">' + svg(KK_IK.geri) + '</button>' +
+        '<button type="button" class="kk-d kk-tem" data-kk="temizle" title="Açık sayfanın yazılarını sil" aria-label="Sayfayı temizle">' + svg(KK_IK.temizle) + '<span>Temizle</span></button>' +
+        '</div><div class="kk-g">' +
+        '<button type="button" class="kk-d kk-yer" data-kk="yer" title="Kaldığım yer: en son yazılan sayfalar" aria-label="Kaldığım yer" aria-expanded="false">' + svg(KK_IK.yer) + '<span>Kaldığım yer</span></button>' +
+        '<button type="button" class="kk-d kk-bitti" data-kk="bitti" title="Kalemi kapat (Esc)" aria-label="Bitti">' + svg(KK_IK.bitti) + '<span>Bitti</span></button>' +
+        '</div><div class="kk-liste" role="menu" hidden></div>';
+      return h;
+    }
+    function kkPaletKur() {
+      if (KK.palet) return KK.palet;
+      var p = document.createElement('div');
+      p.className = 'kk-palet';
+      p.setAttribute('role', 'toolbar');
+      p.setAttribute('aria-label', 'Kalem');
+      p.hidden = true;
+      p.innerHTML = kkPaletHtml();
+      sahne.appendChild(p);
+      KK.palet = p;
+      KK.liste = p.querySelector('.kk-liste');
+      p.addEventListener('click', kkPaletTik);
+      /* takıma dokunmak sayfayı büyütmesin / kaydırmasın */
+      ['pointerdown', 'touchstart', 'dblclick'].forEach(function (t) {
+        p.addEventListener(t, function (e) { e.stopPropagation(); }, { passive: true });
+      });
+      return p;
+    }
+    function kkPaletGuncelle() {
+      if (KK.tus) { KK.tus.classList.toggle('aktif', KK.acik); KK.tus.setAttribute('aria-pressed', KK.acik ? 'true' : 'false'); }
+      sahne.classList.toggle('kk-acik', KK.acik);
+      sahne.classList.toggle('kk-silgi', KK.acik && KK.arac === 's');
+      document.documentElement.classList.toggle('kk-acik', KK.acik);
+      var p = KK.palet;
+      if (p) {
+        p.hidden = !KK.acik;
+        p.classList.toggle('kk-izle', kkMisafirKip());
+        var renk = KK.sonArac === 'f' ? '#C9A400' : KK_RENK[KK.renk];
+        p.style.setProperty('--kk-sec', renk);
+        [].forEach.call(p.querySelectorAll('[data-kk]'), function (b) {
+          var k = b.getAttribute('data-kk'), sec = false;
+          if (/^r\d$/.test(k)) sec = KK.arac === 'k' && +k.charAt(1) === KK.renk;
+          else if (k === 'fos') sec = KK.arac === 'f';
+          else if (/^w[iok]$/.test(k)) sec = k.charAt(1) === KK.kal;
+          else if (k === 'silgi') sec = KK.arac === 's';
+          b.classList.toggle('secili', sec);
+          if (k.charAt(0) === 'r' || k === 'fos' || k.charAt(0) === 'w' || k === 'silgi') b.setAttribute('aria-pressed', sec ? 'true' : 'false');
+        });
+      }
+      kkUstYer();
+      kkImlec();
+    }
+    /* bildirim (tost) takımın üstünde dursun: takımın ekranın altından yüksekliği */
+    function kkUstYer() {
+      var p = KK.palet, h = 0;
+      try { if (p && KK.acik && !p.classList.contains('kk-izle')) h = Math.max(0, Math.round(window.innerHeight - sahne.getBoundingClientRect().top - p.offsetTop)); } catch (e) { }   /* offsetTop: açılış kaymasından etkilenmez */
+      if (h) document.documentElement.style.setProperty('--kk-ust', h + 'px');
+      else document.documentElement.style.removeProperty('--kk-ust');
+    }
+    window.addEventListener('resize', function () { if (KK.acik) setTimeout(kkUstYer, 150); });
+    function kkImlec() {
+      if (!KK.acik || KK.arac === 's') { sahne.style.removeProperty('--kk-imlec'); return; }
+      var fos = KK.arac === 'f', renk = fos ? KK_FOS[0] : KK_RENK[KK.renk];
+      var r = fos ? 6 : ({ i: 2.2, o: 3, k: 4.4 })[KK.kal];
+      var s = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="' + (r + 1.8) +
+        '" fill="#fff" fill-opacity=".9" stroke="#000" stroke-opacity=".25"/><circle cx="12" cy="12" r="' + r + '" fill="' + renk + '"/></svg>';
+      sahne.style.setProperty('--kk-imlec', 'url("data:image/svg+xml,' + encodeURIComponent(s) + '") 12 12, crosshair');
+    }
+    function kkAracSec(a, renk) {
+      if (a === 's') { KK.arac = KK.arac === 's' ? KK.sonArac : 's'; }
+      else { KK.arac = KK.sonArac = a; if (a === 'k' && renk != null) KK.renk = renk; kkTercihYaz(); }
+      if (KK.arac !== 's') kkSilgiImlec(null);
+      kkPaletGuncelle();
+    }
+    function kkKalinlik(w) {
+      KK.kal = w;
+      if (KK.arac === 's') KK.arac = KK.sonArac;
+      kkTercihYaz(); kkPaletGuncelle();
+    }
+    function kkTemizOnay(b, ac) {
+      clearTimeout(KK.temizZ);
+      var sp = b && b.querySelector('span');
+      if (!b) return;
+      b.classList.toggle('kk-emin', !!ac);
+      if (sp) sp.textContent = ac ? 'Emin misin?' : 'Temizle';
+      if (ac) KK.temizZ = setTimeout(function () { kkTemizOnay(b, false); }, 3200);
+    }
+    function kkPaletTik(e) {
+      var b = e.target.closest && e.target.closest('[data-kk]');
+      if (!b || !KK.palet.contains(b)) return;
+      e.preventDefault();
+      var k = b.getAttribute('data-kk');
+      if (k !== 'temizle') kkTemizOnay(KK.palet.querySelector('[data-kk="temizle"]'), false);
+      if (k !== 'yer' && k !== 'git') kkListeKapat();
+      if (/^r\d$/.test(k)) kkAracSec('k', +k.charAt(1));
+      else if (k === 'fos') kkAracSec('f');
+      else if (/^w[iok]$/.test(k)) kkKalinlik(k.charAt(1));
+      else if (k === 'silgi') kkAracSec('s');
+      else if (k === 'geri') { if (!kkYanki(e)) kkGeriAl(); }
+      else if (k === 'temizle') {
+        if (!b.classList.contains('kk-emin')) { kkTemizOnay(b, true); return; }
+        kkTemizOnay(b, false);
+        if (!kkYanki(e)) kkTemizle();
+      }
+      else if (k === 'yer') { if (KK.liste.hidden) kkListeAc(); else kkListeKapat(); }
+      else if (k === 'git') { kkListeKapat(); if (!kkYanki(e)) kkYereGit(+b.getAttribute('data-s')); }
+      else if (k === 'bitti') { if (!kkYanki(e)) kkKapat(); }
+    }
+
+    /* ---------- kaldığım yer ---------- */
+    function kkYerler() {
+      var L = [];
+      for (var s in KK.M) { var r = KK.M[s]; if (r && r.c) L.push({ s: +s, t: r.t, r: r }); }
+      L.sort(function (a, b) { return b.t - a.t; });
+      return L.slice(0, 8);
+    }
+    function kkSonRenk(rec) {
+      var L = kkCizgiler(rec);
+      for (var i = L.length - 1; i >= 0; i--) if (L[i].a === 'k') return KK_RENK[L[i].r] || KK_RENK[1];
+      return L.length ? KK_FOS[0] : KK_RENK[1];
+    }
+    function kkListeAc() {
+      var L = kkYerler(), h = '<h4>Kaldığım yer</h4>';
+      if (!L.length) h += '<p class="kk-bos">Henüz yazı yok. Kalemle sayfaya yazdıkların burada en yenisi üstte sıralanır; dokununca o sayfa açılır.</p>';
+      L.forEach(function (x, i) {
+        h += '<button type="button" class="kk-li' + (i === 0 ? ' kk-ilk' : '') + '" role="menuitem" data-kk="git" data-s="' + x.s + '">' +
+          '<i style="--kk:' + kkSonRenk(x.r) + '"></i><b>' + kkEsc(kkSayfaAdi(x.s)) + '</b><small>' + kkEsc(kkZaman(x.t)) + '</small></button>';
+      });
+      KK.liste.innerHTML = h;
+      KK.liste.hidden = false;
+      var y = KK.palet.querySelector('[data-kk="yer"]');
+      if (y) { y.setAttribute('aria-expanded', 'true'); y.classList.add('secili'); }
+    }
+    function kkListeKapat() {
+      if (!KK.liste || KK.liste.hidden) return;
+      KK.liste.hidden = true;
+      var y = KK.palet.querySelector('[data-kk="yer"]');
+      if (y) { y.setAttribute('aria-expanded', 'false'); y.classList.remove('secili'); }
+    }
+    function kkYereGit(s) {
+      if (!(s >= 1)) return;
+      if (z.o > 1.02 || z.x || z.y) { z.o = 1; z.x = 0; z.y = 0; zUygula(false); }
+      if (kkGorunen().indexOf(s) < 0) flip.git(s);
+      setTimeout(function () { kkParlat(s); }, 450);
+    }
+    /* son çizginin yeri bir an parlasın */
+    function kkParlat(s) {
+      var yuz = kkYuz(s), L = kkCizgiler(kkGosterilen(s));
+      if (!yuz || !L.length) return;
+      var p = L[L.length - 1].p, x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+      for (var i = 0; i < p.length; i += 2) { x0 = Math.min(x0, p[i]); x1 = Math.max(x1, p[i]); y0 = Math.min(y0, p[i + 1]); y1 = Math.max(y1, p[i + 1]); }
+      var pay = 18;
+      var d = document.createElement('div');
+      d.className = 'kk-parla';
+      d.style.left = ((x0 - pay) / KK_EN * 100) + '%'; d.style.top = ((y0 - pay) / KK_BOY * 100) + '%';
+      d.style.width = ((x1 - x0 + 2 * pay) / KK_EN * 100) + '%'; d.style.height = ((y1 - y0 + 2 * pay) / KK_BOY * 100) + '%';
+      yuz.appendChild(d);
+      setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); }, 2000);
+    }
+    /* açılışta: en son yazılan yer açık sayfada değilse bir kez öner */
+    function kkAcilisOnerisi() {
+      if (izleCihazi() || kkMisafirKip() || document.querySelector('.kk-ipucu')) return;
+      var L = kkYerler();
+      if (!L.length) return;
+      if (kkYayilim().indexOf(L[0].s) >= 0) { if (kkGorunen().indexOf(L[0].s) >= 0) kkParlat(L[0].s); return; }   /* zaten açık: yerini göster */
+      var s = L[0].s, d = document.createElement('div');
+      d.className = 'kk-ipucu';
+      d.setAttribute('role', 'status');
+      d.innerHTML = svg(KK_IK.yer) + '<span>En son yazdığın yer: <b>' + kkEsc(kkSayfaAdi(s)) + '</b> · ' + kkEsc(kkZaman(L[0].t)) + '</span>' +
+        '<button type="button" class="kk-ipgit" data-kk="ipgit">Oraya git</button>' +
+        '<button type="button" class="kk-x" data-kk="ipkapat" aria-label="Kapat">✕</button>';
+      sahne.appendChild(d);
+      var kapat = function () { if (d.parentNode) d.parentNode.removeChild(d); };
+      d.addEventListener('click', function (e) {
+        var b = e.target.closest && e.target.closest('[data-kk]');
+        if (!b) return;
+        e.preventDefault();
+        if (b.getAttribute('data-kk') === 'ipgit' && !kkYanki(e)) kkYereGit(s);
+        kapat();
+      });
+      ['pointerdown', 'touchstart'].forEach(function (t) { d.addEventListener(t, function (e) { e.stopPropagation(); }, { passive: true }); });
+      setTimeout(kapat, 10000);
+    }
+
+    /* ---------- aç / kapat ---------- */
+    function kkAc() {
+      if (KK.acik) return;
+      KK.acik = true;
+      kkPaletKur();
+      kkPaletGuncelle();
+      zUygula(false);                                        /* kilit ve alttaki bilgi yazısı */
+      var ip = document.querySelector('.kk-ipucu');
+      if (ip && ip.parentNode) ip.parentNode.removeChild(ip);
+    }
+    function kkKapat() {
+      if (!KK.acik) return;
+      if (KK.cz) kkCizBitir();
+      if (KK.sil) kkSilgiBitir();
+      KK.bekle = null; KK.iki = null; KK.dok = {};
+      KK.acik = false;
+      kkListeKapat();
+      kkTemizOnay(KK.palet && KK.palet.querySelector('[data-kk="temizle"]'), false);
+      kkSilgiImlec(null);
+      kkPaletGuncelle();
+      zUygula(false);
+    }
+    (function kalemTusu() {
+      if (document.querySelector('.kk-tus')) return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tus kk-tus';
+      b.id = 'tKalem';
+      b.setAttribute('data-kz', 'kalem');
+      b.title = 'Kalemle yaz (P)';
+      b.setAttribute('aria-label', 'Kalem');
+      b.setAttribute('aria-pressed', 'false');
+      b.innerHTML = svg(KK_IK.kalem);
+      b.addEventListener('click', function (e) {
+        if (kkYanki(e)) return;                                   /* Sınıf Ekranı: kalem kumandayla birlikte açılır (kkKipEsitle) */
+        if (KK.acik) kkKapat(); else kkAc();
+      });
+      KK.tus = b;
+      /* yakınlaştırma takımının önüne (İçindekiler'in ardı); yoksa göz düğmesinin önüne */
+      var ar = document.querySelector('.ust .araclar'), yer = null;
+      ['tUzaklas', 'tIpucu', 'tTamEkran'].some(function (id) {
+        var e = document.getElementById(id);
+        if (e && ar && ar.contains(e)) { yer = e; return true; }
+        return false;
+      });
+      if (yer) { var k = yer.closest('.yan-zoom'); if (k && ar.contains(k)) yer = k; yer.parentNode.insertBefore(b, yer); }
+      else if (ar) ar.appendChild(b);
+      else { b.classList.add('kk-tus-serbest'); document.body.appendChild(b); }
+    })();
+    /* klavye: P aç/kapat; açıkken 1-5 renkler, 6 fosforlu, E silgi, Ctrl+Z geri al, Esc kapat */
+    document.addEventListener('keydown', function (e) {
+      var h = e.target || {};
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(h.tagName || '') || h.isContentEditable) return;
+      if (tanitimAcik || panelAcik()) return;
+      var k = e.key, tus = !e.ctrlKey && !e.metaKey && !e.altKey;
+      if (tus && (k === 'p' || k === 'P')) { e.preventDefault(); e.stopPropagation(); if (kkYanki(e)) return; if (KK.acik) kkKapat(); else kkAc(); return; }
+      if (!KK.acik) return;
+      if (k === 'Escape' || k === 'Esc') {
+        e.preventDefault(); e.stopPropagation();
+        if (KK.liste && !KK.liste.hidden) kkListeKapat(); else if (!kkYanki(e)) kkKapat();
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && (k === 'z' || k === 'Z')) { e.preventDefault(); e.stopPropagation(); if (!kkYanki(e)) kkGeriAl(); return; }
+      if (!tus) return;
+      if (/^[1-5]$/.test(k)) { e.preventDefault(); e.stopPropagation(); kkAracSec('k', KK_SIRA[+k - 1]); }
+      else if (k === '6') { e.preventDefault(); e.stopPropagation(); kkAracSec('f'); }
+      else if (k === 'e' || k === 'E') { e.preventDefault(); e.stopPropagation(); kkAracSec('s'); }
+    }, true);
+
+    /* sayfa değişince (flip.degisti, 7. bölümde sarılı) */
+    function kkSayfaDegisti() {
+      if (!KK) return;
+      if (KK.cz && kkGorunen().indexOf(KK.cz.s) < 0) kkCizBitir();
+      kkListeKapat();
+      kkTazele();
+      kkYayilimGonder();
+    }
+    kkTercihOku();
+    kkOku().then(function (L) {
+      for (var s in L) {
+        var r = L[s], o = KK.M[s];
+        if (r && (!o || (+r.t || 0) > o.t)) KK.M[s] = { t: +r.t || 0, c: r.c || '', L: null };
+      }
+      KK.hazir = true;
+      kkTazele(true);
+      kkYayilimGonder();
+      setTimeout(kkAcilisOnerisi, 1500);
+    });
+    var kkDis = {
+      acik: function () { return KK.acik; }, ac: kkAc, kapat: kkKapat,
+      kitap: KK_KITAP, hazir: function () { return KK.hazir; }, depo: function () { return KK.depo; },
+      cizgiler: function (s, misafir) { return kkCizgiler((misafir ? KK.G : KK.M)[s]).map(function (c) { return { a: c.a, r: c.r, w: c.w, p: c.p.slice() }; }); },
+      kayit: function (s) { var r = KK.M[s]; return r ? { t: r.t, c: r.c } : null; },
+      gosterilen: function (s) { var r = kkGosterilen(s); return r ? { t: r.t, c: r.c, misafir: r === KK.G[s] } : null; },
+      yerler: function () { return kkYerler().map(function (x) { return { s: x.s, t: x.t, ad: kkSayfaAdi(x.s) }; }); },
+      arac: function () { return { arac: KK.arac, renk: KK.renk, kal: KK.kal }; },
+      gorunen: function () { return kkGorunen(); },
+      sec: kkAracSec, geriAl: kkGeriAl, temizle: kkTemizle, git: kkYereGit, kodla: kkKodla, coz: kkCoz
+    };
 
     zUygula(false);
 
     /* --------------------------------------------------------------
        DIŞARIYA AÇILAN
        -------------------------------------------------------------- */
-    return {
+    return (kok.KitapZoom.son = {
       oran: function () { return z.o; },
       ayarla: zAyarla,
       sifirla: function () { zAyarla(1); },
@@ -699,7 +1910,10 @@
       uygula: zUygula,
       olcekle: function () { sinirla(); zUygula(false); },
       tanitim: tanitimAc,
-      tanitimAcikMi: function () { return tanitimAcik; }
-    };
+      tanitimAcikMi: function () { return tanitimAcik; },
+      gorunum: tkGorunum,                  /* yansıtmadaki görünüm (23.10.2026) */
+      tahta: function () { return { kanal: !!TK.k, canli: TK.canli, lider: tkLider(), izleyen: tkIzleyen() }; },
+      kalem: kkDis                         /* kalem (23.10.2026) */
+    });
   };
 })(window);
