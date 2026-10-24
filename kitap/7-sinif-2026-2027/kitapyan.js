@@ -386,6 +386,86 @@
 })();
 
 /* ============================================================
+   DENEME HAKLARI (24.10.2026)
+   Öğretmen: "kitap flipbook indirme ve kalem kullanma ... bunlarda hak
+   verilsin öğretmenlere denemeleri için". Kitap sitenin içinde
+   (kidefarapca.com/kitap/…) açıldığında sitenin sistem/hak.js'i yüklenir:
+   destek vermeyen öğretmene İndir panelindeki paketlerde ve Kalem'de
+   haftada 5 deneme hakkı (düğmede küçük sayı, basınca 5 → 4). Kimin
+   girişli olduğu sitenin oturum deposundan okunur (Firebase yüklenmez);
+   girişli değilse hiçbir şey sınırlanmaz. Bilgisayara indirilmiş kopyada
+   (file://) yok.
+   ============================================================ */
+(function () {
+  'use strict';
+  if (location.protocol === 'file:') return;
+  var yol = location.pathname, i = yol.indexOf('/kitap/');
+  if (i < 0) return;
+  var kok = yol.slice(0, i + 1);
+  function depodan(depo) {
+    try {
+      for (var j = 0; j < depo.length; j++) {
+        var k = depo.key(j);
+        if (k && k.indexOf('firebase:authUser:') === 0) {
+          var v = JSON.parse(depo.getItem(k) || 'null');
+          if (v && v.uid && !v.isAnonymous) return v.uid;
+        }
+      }
+    } catch (e) { }
+    return '';
+  }
+  function hesap() {
+    return new Promise(function (bitir) {
+      var oldu = false;
+      function son(v) { if (!oldu) { oldu = true; bitir(v || ''); } }
+      var y = '';
+      try { y = depodan(window.localStorage) || depodan(window.sessionStorage); } catch (e) { }
+      if (y) return son(y);
+      if (!window.indexedDB) return son('');
+      setTimeout(function () { son(''); }, 3000);
+      var r;
+      try { r = indexedDB.open('firebaseLocalStorageDb'); } catch (e) { return son(''); }
+      r.onupgradeneeded = function () { try { r.transaction.abort(); } catch (e) { } };
+      r.onerror = function (e) { try { e.preventDefault(); } catch (x) { } son(''); };
+      r.onblocked = function () { son(''); };
+      r.onsuccess = function () {
+        var db = r.result;
+        try {
+          if (!db.objectStoreNames.contains('firebaseLocalStorage')) { db.close(); return son(''); }
+          var c = db.transaction('firebaseLocalStorage', 'readonly').objectStore('firebaseLocalStorage').openCursor();
+          c.onsuccess = function () {
+            var k = c.result;
+            if (!k) { db.close(); return son(''); }
+            var x = k.value || {}, v = x.value;
+            if (String(x.fbase_key || k.key || '').indexOf('firebase:authUser:') === 0 && v && v.uid && !v.isAnonymous) { db.close(); return son(v.uid); }
+            k.continue();
+          };
+          c.onerror = function () { db.close(); son(''); };
+        } catch (e) { try { db.close(); } catch (x) { } son(''); }
+      };
+    });
+  }
+  function bildir() {
+    if (!window.KidefHak) return;
+    hesap().then(function (u) { window.KidefHak.uid(u); });
+  }
+  function hazir() {
+    if (!window.KidefHak) return;
+    window.KidefHak.destekAdresi(kok + 'index.html#destek');
+    bildir();
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) bildir(); });
+    window.addEventListener('pageshow', bildir);
+  }
+  if (window.KidefHak) { hazir(); return; }
+  var s = document.createElement('script');
+  var d = new Date();
+  s.src = kok + 'sistem/hak.js?t=' + d.getFullYear() + (d.getMonth() + 1) + d.getDate();
+  s.async = true;
+  s.onload = hazir;
+  (document.head || document.documentElement).appendChild(s);
+})();
+
+/* ============================================================
    VİDEO · ETKİNLİK: TAM EKRAN VE YENİ SEKME                 22.10.2026
    Öğretmen: "FLİPBOOK MOTORUNDA VİDEO VE ETKİNLİKLERDE TAM EKRAN VE AYRI
    SEKMEDE ÖZELLİĞİ YOK MU". Video ve etkinlik pencerelerinin başlığına:

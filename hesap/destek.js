@@ -72,6 +72,17 @@
      kullanicilar/{öğretmen}.destek  öğretmenin kendi kartında gördüğü özet
         { odenen, adet, sonOdeme, guncelleme }  — yönetici defterden yazar.
 
+   DENEME HAKLARI (24.10.2026): öğretmenin bu dönemki durumu tarayıcıya
+   yazılır (localStorage kidefDestekDurum); sistem/hak.js destek vermeyen
+   öğretmene bazı araçlarda haftada 5 deneme hakkı verir (kartta 5 → 4).
+   Sınırsız: yönetici, bu dönem ödeme yapan (kısmi dahil), ilk 30 gün.
+
+   REFERANS · ORTAK HEDEF İÇERİĞİ · HATIRLATMA (24.10.2026): yönetici seçtiği
+   öğretmene referans kodu verir (3 meslektaş destek verince o öğretim yılı payı
+   yarıya iner, 5 olunca ödenmiş sayılır); ortak hedefle açılacak içeriği seçer
+   (mufredat/_destek.hedefIcerik); destek vermeyen öğretmene ana sayfada haftada
+   en çok bir kez kullanım hatırlatması.
+
    IBAN ve alıcı adı bu dosyada YAZILI DEĞİL: hesap/checkout.js'teki
    copyIban / openCheckoutFlow'dan okunur; IBAN değişirse tek yerden değişir.
    ===================================================================== */
@@ -217,6 +228,9 @@
             gecmis: (o.gecmis && typeof o.gecmis === 'object') ? o.gecmis : {},
             yoneticiler: Array.isArray(o.yoneticiler) ? o.yoneticiler : [],
             destekciler: destekciDuzen(o.destekciler),
+            /* 24.10.2026: referans kodları (yalnız kodlar) ve ortak hedefle açılan içerik */
+            refKodlar: (o.refKodlar && typeof o.refKodlar === 'object') ? Object.keys(o.refKodlar).filter(function (k) { return !!o.refKodlar[k]; }) : [],
+            hedefIcerik: hedefDuzen(o.hedefIcerik),
             guncelleme: tarihAl(o.guncelleme),
             /* eski sürümün açık belgeye yazdığı alanlar kaldıysa temizlenir */
             eskiAlan: ['tur', 'toplam', 'taban', 'aktif', 'onayli', 'ayarElle'].some(function (k) { return k in o; })
@@ -363,8 +377,13 @@
     }
     /* Öğretmenin bu dönemki payı: ilk 30 günü ücretsiz; dönemin ortasında
        katıldıysa kalan süreyle orantılı (10 TL'ye yukarı). */
-    function kisiPay(dn, pay, kayit) {
+    function kisiPay(dn, pay, kayit, carpan) {
         if (!(pay > 0)) return 0;
+        /* 24.10.2026 referans: 0,5 → yarısı (10 TL'ye yukarı), 0 → pay yok */
+        if (carpan !== undefined && carpan !== null && carpan < 1) {
+            if (!(carpan > 0)) return 0;
+            pay = Math.ceil(pay * carpan / 10) * 10;
+        }
         var bas = dn.bas.getTime(), bit = dn.bit.getTime();
         var ia = ilkAyBitis(kayit);
         var b = Math.max(bas, ia ? ia.getTime() : 0);
@@ -372,12 +391,77 @@
         if (b <= bas) return pay;
         return Math.ceil(pay * (bit - b) / (bit - bas) / 10) * 10;
     }
+    /* REFERANS (24.10.2026) — öğretmen: "yakın arkadaşlarım için siteye kayıtlı
+       olanlardan istediğime referans kodu oluştursam onlardan 3 öğretmene destek
+       sağlatırsa ona %50 5 öğretmene vesile olursa ödeme yapmış gibi" · "Bir kez
+       kazanılır, yıl boyu". Yönetici öğretmen penceresinden (Ücret) kod verir:
+       kullanicilar/{uid}.referans = { kod, t, davet: {uid: {t, yil, ad}},
+       kazan: {'2026-27': {d: 'yarim'|'tam', t, n}} }; herkese açık özette YALNIZ
+       kodlar (mufredat/_destek.refKodlar). Meslektaşı ödeme bildiriminde kodu
+       yazar (siparisler.refKod); yönetici ödemeyi onaylayınca (ya da elle
+       girerken kodu yazınca) kod sahibine o öğretim yılı için sayılır.
+       3 → o öğretim yılı payı yarıya iner, 5 → ödenmiş sayılır; kazanılan geri
+       alınmaz. Aynı meslektaş bir yılda bir kez sayılır, kendi kodu sayılmaz. */
+    var REF_YARIM = 3, REF_TAM = 5;
+    function yilKodu(d) { return d.yil + '-' + String(d.yil + 1).slice(2); }
+    function yilAdi(kod) { return String(kod || '').replace(/^(\d{4})-\d{2}$/, function (m, a) { return a + '-' + (+a + 1); }); }
+    function refKazanim(ref, yil) {
+        var k = ref && ref.kazan && ref.kazan[yil];
+        return (k && (k.d === 'tam' || k.d === 'yarim')) ? k.d : '';
+    }
+    function refCarpan(ref, d) {
+        var k = refKazanim(ref, yilKodu(d));
+        return k === 'tam' ? 0 : (k === 'yarim' ? 0.5 : 1);
+    }
+    function refSayi(ref, yil) {
+        var n = 0, D = (ref && ref.davet) || {};
+        Object.keys(D).forEach(function (u) { if (D[u] && D[u].yil === yil) n++; });
+        return n;
+    }
+    function refKodDuzen(k) {
+        var tr = { 'ç': 'c', 'Ç': 'C', 'ğ': 'g', 'Ğ': 'G', 'ı': 'i', 'İ': 'I', 'ö': 'o', 'Ö': 'O', 'ş': 's', 'Ş': 'S', 'ü': 'u', 'Ü': 'U' };
+        return String(k || '').replace(/[çÇğĞıİöÖşŞüÜ]/g, function (c) { return tr[c]; })
+            .toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);
+    }
+    /* Türkçe ek: «%50'de» (bulunma) */
+    function deEki(n) {
+        n = Math.round(Math.abs(+n || 0));
+        var B = { 1: 'de', 2: 'de', 3: 'te', 4: 'te', 5: 'te', 6: 'da', 7: 'de', 8: 'de', 9: 'da' };
+        var O = { 1: 'da', 2: 'de', 3: 'da', 4: 'ta', 5: 'de', 6: 'ta', 7: 'te', 8: 'de', 9: 'da' };
+        if (n === 0) return 'da';
+        if (n % 10) return B[n % 10];
+        if (n % 100) return O[(n % 100) / 10];
+        return 'de';
+    }
+    /* ORTAK HEDEFLE AÇILAN İÇERİK (24.10.2026) — yöneticinin seçtiği bağlantı
+       ortak hedef o yüzdeye varana kadar kilitli (sistem/hak.js: kartta 🎯 %50);
+       varınca yönetici sayımı «acildi» damgası koyar, bir daha kilitlenmez.
+       mufredat/_destek.hedefIcerik = [{id, y, ad, a (bağlantı), n (açıklama), acildi}] */
+    function hedefDuzen(L) {
+        if (!Array.isArray(L)) return [];
+        return L.filter(function (x) { return x && +x.y > 0 && String(x.ad || '').trim(); }).map(function (x) {
+            return { id: String(x.id || ''), y: Math.min(100, Math.max(1, Math.round(+x.y))), ad: String(x.ad).trim().slice(0, 60),
+                     a: String(x.a || '').trim().slice(0, 200), n: String(x.n || '').trim().slice(0, 140), acildi: +x.acildi || 0 };
+        }).sort(function (a, b) { return a.y - b.y; }).slice(0, 12);
+    }
+    function buDonemYuzde(oz) {
+        var dn = donemBul(new Date());
+        return (oz && oz.donem && oz.donem.kod === dn.kod) ? oz.donem.yuzde : null;
+    }
+    /* sistem/hak.js'e: hangi içerik kilitli (bütün girişli kullanıcılar için) */
+    function hedefOnbellek(oz) {
+        try {
+            if (!window.KidefHak || !oz) return;
+            window.KidefHak.hedefYaz({ y: buDonemYuzde(oz), L: oz.hedefIcerik || [] });
+        } catch (e) { }
+    }
+
     /* Ödemeleri dönemlere dağıtır. Her ödeme önce YAPILDIĞI dönemin payını
        doldurur; artanı sonraki dönemlere geçer. Geçmiş dönemin eksiği borç
        sayılmaz (ödeme geriye gitmez). Payı henüz belli olmayan gelecek dönem
        artanın tamamını alır.
        odemeler: [{t: ms, tutar}] · kayit: Date|null · oz: ozetDuzen sonucu */
-    function dagit(odemeler, kayit, oz, simdi) {
+    function dagit(odemeler, kayit, oz, simdi, ref) {     /* ref: kullanicilar/{uid}.referans (24.10.2026) */
         simdi = simdi || new Date();
         var dn = donemBul(simdi), ileriD = donemSonraki(dn);
         var V = {}, toplam = 0, son = null;
@@ -390,7 +474,7 @@
             var kalan = o.tutar, d = donemBul(new Date(o.t));
             for (var i = 0; i < 24 && kalan > 0; i++) {
                 var gelecek = d.kod > dn.kod;
-                var P = gelecek ? Infinity : kisiPay(d, donemPayi(oz, d.kod), kayit);
+                var P = gelecek ? Infinity : kisiPay(d, donemPayi(oz, d.kod), kayit, refCarpan(ref, d));
                 var yer = Math.max(0, P - (V[d.kod] || 0));
                 var koy = Math.min(kalan, yer);
                 if (koy > 0) { V[d.kod] = (V[d.kod] || 0) + koy; kalan -= koy; }
@@ -398,12 +482,14 @@
             }
         });
         var pay = donemPayi(oz, dn.kod);
-        var kisi = kisiPay(dn, pay, kayit);
+        var rc = refCarpan(ref, dn);
+        var kisi = kisiPay(dn, pay, kayit, rc);
         var verilen = V[dn.kod] || 0;
         var ia = ilkAyBitis(kayit);
         var ilkAy = !!(ia && simdi < ia);
         var durum;
         if (!(pay > 0)) durum = 'hazirlaniyor';
+        else if (rc === 0) durum = 'tamam';                  /* referansla ödenmiş sayılır */
         else if (kisi > 0 && verilen >= kisi) durum = 'tamam';
         else if (ilkAy) durum = 'ilkay';
         else if (!(kisi > 0)) durum = 'disi';
@@ -415,7 +501,8 @@
             toplam: toplam, son: son ? new Date(son) : null, adet: L.length,
             ilkAy: ilkAy, ilkAyBitis: ia, durum: durum,
             oran: kisi > 0 ? Math.min(1, verilen / kisi) : (verilen > 0 ? 1 : 0),
-            dagilim: V
+            dagilim: V,
+            refD: rc === 0 ? 'tam' : (rc < 1 ? 'yarim' : ''), tamKisi: kisiPay(dn, pay, kayit)
         };
     }
     /* Öğretmenin kendi ödeme listesi: yöneticinin yazdığı destek.odemeler;
@@ -502,6 +589,7 @@
         return d.collection('mufredat').doc('_destek').get().then(function (s) {
             _ozet = ozetDuzen(s.exists ? s.data() : null);
             _ozetZaman = Date.now();
+            hedefOnbellek(_ozet);                /* ortak hedef kilitleri (24.10.2026) */
             return _ozet;
         });
     }
@@ -516,6 +604,7 @@
             koseGoster: v.koseGoster !== false, koseNot: String(v.koseNot || '').trim().slice(0, KOSE_NOT_SINIR),
             /* 22.10.2026: dönem seçimi (donem | tamamla | yil | gelecek | serbest) */
             secim: v.secim || '', donem: v.donem || '',
+            refKod: refKodDuzen(v.refKod),                    /* 24.10.2026 */
             tarih: tarihAl(v.createdAt), onay: tarihAl(v.onayTarihi), red: tarihAl(v.redTarihi)
         };
     }
@@ -616,7 +705,7 @@
     /* 22.10.2026: dönem hesabı (eskiden gün gün biriken) */
     function benHesap(v) {
         var b = (v && v.belge) || {};
-        return dagit(odemeListesi(b, v && v.bildirimler), kayitTarihi(b), v.ozet);
+        return dagit(odemeListesi(b, v && v.bildirimler), kayitTarihi(b), v.ozet, null, b.referans);
     }
 
     /* Teşekkür şeridi (20.10.2026): son ödemeden sonra 30 gün boyunca
@@ -786,6 +875,8 @@
     setInterval(function () {
         if (document.visibilityState === 'hidden') return;
         _seritSayac++;
+        hakTazele();                         /* deneme hakları (24.10.2026) */
+        hatirlatKontrol();                   /* kullanım hatırlatması (24.10.2026) */
         var var_ = !!document.getElementById('dstSerit');
         var r = rol(), ogretmen = r === 'teacher' || r === 'admin';
         if (ogretmen && !var_) seritCiz();
@@ -1087,7 +1178,53 @@
             '.dst-rozet{display:inline-block; min-width:20px; text-align:center; background:#E08E1B; color:#fff;',
             '  border-radius:12px; padding:1px 8px; font-size:.75rem; margin-inline-start:8px; font-weight:800;}',
             '.dst-y-bekleyen{margin:0 0 14px; padding:12px; border:1px solid #F3DDAF; border-radius:12px; background:#FFFBF3;}',
-            '.dst-y-bekleyen > b{display:block; color:#9A6512; margin-bottom:9px;}'
+            '.dst-y-bekleyen > b{display:block; color:#9A6512; margin-bottom:9px;}',
+            /* 24.10.2026: referans kodu, ortak hedefle açılanlar, hatırlatma */
+            '#tpDestek .dst-ref{margin-top:14px; padding:14px 16px; border:1.5px dashed #E8C98A; border-radius:16px; background:#FFFCF5;}',
+            '#tpDestek .dst-ref-bas{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}',
+            '#tpDestek .dst-ref-et{font-size:.74rem; font-weight:900; letter-spacing:.6px; color:#B7791F; margin-inline-end:4px;}',
+            '#tpDestek .dst-ref code{font:900 1.15rem/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; letter-spacing:2px; color:#1F2430;',
+            '  background:#fff; border:1.5px solid #EADBC0; border-radius:10px; padding:7px 12px;}',
+            '#tpDestek .dst-kucuk{border:0; background:#F3EEE4; color:#6B5B45; border-radius:9px; padding:7px 12px; font-weight:800; cursor:pointer; font-family:inherit;}',
+            '#tpDestek .dst-kucuk.tamam{background:#E8F6EF; color:#1E8449;}',
+            '#tpDestek .dst-ref-adim{display:flex; gap:8px; margin:12px 0 4px;}',
+            '#tpDestek .dst-ref-n{flex:1 1 0; height:28px; border-radius:9px; background:#F3EEE4; display:flex; align-items:center; justify-content:center;',
+            '  font-size:.74rem; font-weight:900; color:#B9A88A; position:relative;}',
+            '#tpDestek .dst-ref-n.dolu{background:linear-gradient(135deg,#F2B544,#E08E1B); color:#fff;}',
+            '#tpDestek .dst-ref-n.yarim,#tpDestek .dst-ref-n.tam{outline:2px solid #EAD3A5; outline-offset:1px;}',
+            '#tpDestek .dst-ref-not{margin:8px 0 0; font-size:.88rem; color:#5B4A2A; line-height:1.5;}',
+            '#tpDestek .dst-ref-dip{margin:4px 0 0; font-size:.78rem; color:#A0927E;}',
+            '#tpDestek .dst-hedefler{display:flex; flex-direction:column; gap:6px; margin:6px 8px 8px;}',
+            '#tpDestek .dst-hd-bas{font-size:.72rem; font-weight:900; letter-spacing:.5px; color:#B7791F; text-transform:uppercase;}',
+            '#tpDestek .dst-hd{display:flex; align-items:center; gap:10px; padding:7px 10px; border:1px solid #F0E4CB; border-radius:12px; background:#FFFDF8;',
+            '  color:#5B4A2A; text-decoration:none;}',
+            '#tpDestek .dst-hd-y{flex:none; min-width:44px; text-align:center; font-weight:900; color:#B7791F; background:#FFF1D6; border-radius:8px; padding:3px 6px; font-size:.82rem;}',
+            '#tpDestek .dst-hd-ad{flex:1 1 auto; min-width:0; display:flex; flex-direction:column;}',
+            '#tpDestek .dst-hd-ad b{font-size:.9rem;}',
+            '#tpDestek .dst-hd-ad small{color:#8A7A66; font-size:.76rem;}',
+            '#tpDestek .dst-hd-dur{flex:none; font-size:.76rem; font-weight:800; color:#A0927E;}',
+            '#tpDestek .dst-hd.acik{border-color:#BFE3CC; background:#F3FBF6;}',
+            '#tpDestek .dst-hd.acik .dst-hd-y{background:#E8F6EF; color:#1E8449;}',
+            '#tpDestek .dst-hd.acik .dst-hd-dur{color:#1E8449;}',
+            '#tpDestek a.dst-hd.acik:hover{background:#E8F6EF;}',
+            '#dstKutu .dst-ref-hata{color:#B03A2E;}',
+            '#dstKutu .dst-ref-tamam{color:#1E8449;}',
+            '#dstKutu #dstRef{text-transform:uppercase; letter-spacing:1.5px; font-weight:800;}',
+            '.dst-y .dst-ref-kod{font:900 1rem/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; letter-spacing:1.5px; background:#FFF8EA;',
+            '  border:1px solid #EADBC0; border-radius:8px; padding:5px 9px; color:#5B4A2A;}',
+            '.dst-y-sat .dst-ref-on{color:#1B4F9C !important;}',
+            '#admin-destek-ayar .dst-hd-form input{width:100%; box-sizing:border-box;}',
+            '#admin-destek-ayar .dst-a-dk button[data-dst="ac"]{border:0; background:#FFF1D6; color:#9A6512; border-radius:7px; width:22px; height:22px; cursor:pointer; font-weight:900;}',
+            '.dst-hatirlat{position:fixed; left:16px; bottom:16px; z-index:9000; width:min(420px,calc(100% - 32px)); box-sizing:border-box; display:flex; gap:12px;',
+            '  align-items:flex-start; background:#fff; border:1px solid #F0E0BF; border-left:5px solid #E3A02A; border-radius:18px; padding:14px 40px 14px 14px;',
+            '  box-shadow:0 18px 44px rgba(31,36,48,.18); font-family:inherit; animation:dstHtGel .35s cubic-bezier(.2,1.2,.4,1);}',
+            '.dst-hatirlat .dst-ikon{flex:none; width:42px; height:42px;}',
+            '.dst-hatirlat p{margin:0 0 10px; font-size:.9rem; line-height:1.5; color:#5B4A2A;}',
+            '.dst-hatirlat .dst-ht-tus{display:flex; gap:8px; flex-wrap:wrap;}',
+            '.dst-hatirlat .dst-tus{padding:9px 16px;}',
+            '.dst-hatirlat .dst-ht-x{position:absolute; top:8px; right:10px; border:0; background:none; font-size:1.4rem; line-height:1; color:#B9A88A; cursor:pointer;}',
+            '@keyframes dstHtGel{from{transform:translateY(20px); opacity:0}}',
+            '@media (prefers-reduced-motion:reduce){.dst-hatirlat{animation:none}}'
         ].join('\n');
         document.head.appendChild(s);
     }
@@ -1152,6 +1289,17 @@
         } else if (yuz === null) {
             s += '<text x="' + (x0 + gen / 2).toFixed(1) + '" y="' + (by + 16) + '" text-anchor="middle" font-size="11" fill="#A0927E">yönetici sayımından sonra görünür</text>';
         }
+        /* 24.10.2026: ortak hedefle açılacak içeriğin yerleri (çubuğun altında %) */
+        ((oz && oz.hedefIcerik) || []).forEach(function (e) {
+            var acik = !!e.acildi || (yuz !== null && yuz >= e.y);
+            var xm = Math.min(Math.max(x0 + gen * Math.min(1, e.y / 100), x0 + 8), x1 - 8);
+            var renk = acik ? '#B7791F' : '#C2A878';
+            s += '<g class="dst-hd-isaret' + (acik ? ' acik' : '') + '">' +
+                 '<line x1="' + xm.toFixed(1) + '" x2="' + xm.toFixed(1) + '" y1="' + (by - 3) + '" y2="' + (by + bh + 3) + '" stroke="' + renk + '" stroke-width="2"' +
+                   (acik ? '' : ' stroke-dasharray="3 2"') + '/>' +
+                 '<path d="M' + (xm - 5).toFixed(1) + ' ' + (by + bh + 11) + 'l5 -6 5 6z" fill="' + (acik ? '#E08E1B' : '#C2A878') + '"/>' +
+                 '<text x="' + xm.toFixed(1) + '" y="' + (by + bh + 22) + '" text-anchor="middle" font-size="10" font-weight="800" fill="' + renk + '">%' + e.y + '</text></g>';
+        });
         /* dönemin zaman çizgisi */
         var ty = 136, xb = x0 + gen * gecen;
         s += '<line x1="' + x0 + '" x2="' + x1 + '" y1="' + ty + '" y2="' + ty + '" stroke="#EFE4D0" stroke-width="4" stroke-linecap="round"/>' +
@@ -1253,22 +1401,30 @@
         var tsk = tesekkurSeridi(v);
         var kose = destekciKose(oz);
         imza += '|' + tsk.imza + '|' + kose.imza + '|' + rozetYili(v);
+        /* 24.10.2026: referans ve ortak hedef içeriği değişince yeniden çizilsin */
+        var refB = (v.belge && v.belge.referans) || {};
+        imza += '|' + (refB.kod || '') + ':' + refSayi(refB, yilKodu(dn)) + ':' + h.refD + '|' +
+            (oz.hedefIcerik || []).map(function (e) { return e.id + e.y + (e.acildi ? 'a' : ''); }).join(',');
 
         var ayda = h.pay > 0 ? Math.round(h.pay / DONEM_AY) : 0;
         var tutar = '<div class="dst-tutar">' +
             '<span class="dst-et">Bu dönemin desteği</span>' +
-            (h.kisi > 0
-                ? '<span class="dst-buyuk"><span data-dst-say="' + h.kisi + '">' + sayi(h.kisi) + '</span><small>TL</small></span>'
-                : '<span class="dst-buyuk dst-hediye">İlk ayın bizden</span>') +
+            (h.refD === 'tam'
+                ? '<span class="dst-buyuk dst-hediye">Referansla tamam</span>'
+                : (h.kisi > 0
+                    ? '<span class="dst-buyuk"><span data-dst-say="' + h.kisi + '">' + sayi(h.kisi) + '</span><small>TL</small></span>'
+                    : '<span class="dst-buyuk dst-hediye">İlk ayın bizden</span>')) +
             '<span class="dst-sayi">' + esc(dn.aralik) + ' · ' +
-              (h.kisi > 0 && h.kisi < h.pay ? 'dönemin ortasında katıldığın için kalan süreye göre'
-                                             : (h.kisi > 0 ? '<b>dönem boyunca değişmez</b>' : 'desteğin gelecek dönemden başlar')) +
-              (ayda && h.kisi > 0 ? ' · ayda yaklaşık ' + esc(tl(ayda)) : '') + '</span>' +
+              (h.refD === 'tam' ? 'kodunla ' + REF_TAM + ' meslektaşın destek verdi · <b>bu öğretim yılı ödenmiş sayılıyor</b>'
+               : (h.refD === 'yarim' ? '<s>' + esc(tl(h.tamKisi)) + '</s> · <b>referansla yarı yarıya</b> · dönem boyunca değişmez'
+               : (h.kisi > 0 && h.kisi < h.pay ? 'dönemin ortasında katıldığın için kalan süreye göre'
+                                               : (h.kisi > 0 ? '<b>dönem boyunca değişmez</b>' : 'desteğin gelecek dönemden başlar')))) +
+              (ayda && h.kisi > 0 ? ' · ayda yaklaşık ' + esc(tl(h.refD === 'yarim' ? Math.ceil(ayda / 2 / 10) * 10 : ayda)) : '') + '</span>' +
             '<span class="dst-vurgu">' + okSvg() + '<span><b>Siteye katılan öğretmen arttıkça gelecek dönemin payı azalır.</b> ' +
               'Meslektaşlarını davet ettikçe herkesin payı küçülür.</span></span>' +
             '</div>';
         var grafik = '<div class="dst-grafik"><div class="dst-grafik-svg" data-dst-grafik></div>' +
-            '<p>Her destek çubuğu biraz daha doldurur; tutarlar ve kimin ne verdiği görünmez.</p></div>';
+            '<p>Her destek çubuğu biraz daha doldurur; tutarlar ve kimin ne verdiği görünmez.</p>' + hedefListe(oz) + '</div>';
 
         /* 23.10.2026 öğretmen: "bu açıklamada yapay zekadan bahsetme, daha çok yayımlama, geliştirme ve emekten bahset" */
         var aciklama = '<p class="dst-aciklama">Kidef\'teki her materyal, oyun ve sınav, hazırlanmasından yayımlanmasına kadar ' +
@@ -1277,7 +1433,9 @@
 
         /* kişisel durum — «borç / kalan» kelimesi yok */
         var dy;
-        if (h.durum === 'tamam') {
+        if (h.refD === 'tam') {
+            dy = '<b>Referans kodunla ' + REF_TAM + ' meslektaşın destek verdi; bu öğretim yılı desteğin ödenmiş sayılıyor. Teşekkürler!</b>';
+        } else if (h.durum === 'tamam') {
             dy = '<b>Bu dönemin destekçisisin, teşekkürler!</b> Desteğin ' + esc(uzunTarih(dn.son)) + ' tarihine kadar geçerli.' +
                  (h.ileri > 0 ? ' Fazlası (' + esc(tl(h.ileri)) + ') gelecek döneme sayılacak.' : '');
         } else if (h.durum === 'kismi') {
@@ -1307,6 +1465,7 @@
             '</div>' +
             '<p class="dst-ipucu">Tutar her dönemin başında (1 Eylül ve 1 Şubat) bir kez belirlenir, dönem boyunca değişmez. ' +
               'Bir kerede ya da parça parça gönderebilirsin; fazlası gelecek döneme sayılır.</p>' +
+            refBlok(v, h) +
             '<div class="dst-tuslar">' +
               '<button type="button" class="dst-tus ana" onclick="KidefDestek.odemeAc()">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5C6 16.4 3.5 12.6 5.4 9.6c1.6-2.5 4.9-2.3 6.6.3 1.7-2.6 5-2.8 6.6-.3 1.9 3-.6 6.8-6.6 10.9Z"/></svg>' +
@@ -1325,6 +1484,68 @@
         }
         ben += '</div>';
         return { imza: imza, html: bas + '<div class="dst-ust">' + tutar + grafik + '</div>' + aciklama + ben + kose.html };
+    }
+
+    /* REFERANS bloğu (destek kartı): kod, Kopyala/Paylaş, 5 adım */
+    function refBlok(v, h) {
+        var r = v && v.belge && v.belge.referans;
+        if (!r || !r.kod) return '';
+        var yil = yilKodu(h.donem), n = refSayi(r, yil), k = refKazanim(r, yil);
+        var adim = '';
+        for (var i = 1; i <= REF_TAM; i++) {
+            adim += '<span class="dst-ref-n' + (i <= n ? ' dolu' : '') + (i === REF_YARIM ? ' yarim' : '') + (i === REF_TAM ? ' tam' : '') + '">' +
+                (i === REF_YARIM ? '%50' : (i === REF_TAM ? '✓' : '')) + '</span>';
+        }
+        var not = k === 'tam'
+            ? '<b>Bu öğretim yılı desteğin ödenmiş sayılıyor.</b> Kodunla ' + n + ' meslektaşın destek verdi, teşekkürler!'
+            : (k === 'yarim'
+                ? '<b>Bu öğretim yılı payın yarıya indi.</b> ' + REF_TAM + ' olunca ödenmiş sayılırsın (şu an ' + n + ').'
+                : 'Kodunla <b>' + n + '</b> meslektaşın destek verdi. ' + REF_YARIM + ' olunca bu öğretim yılı payın yarıya iner, ' +
+                  REF_TAM + ' olunca ödenmiş sayılırsın.');
+        return '<div class="dst-ref">' +
+            '<div class="dst-ref-bas"><span class="dst-ref-et">REFERANS KODUN</span><code>' + esc(r.kod) + '</code>' +
+              '<button type="button" class="dst-kucuk" data-dst-ref="kopyala" data-kod="' + esc(r.kod) + '">Kopyala</button>' +
+              '<button type="button" class="dst-kucuk" data-dst-ref="paylas" data-kod="' + esc(r.kod) + '">Paylaş</button></div>' +
+            '<div class="dst-ref-adim" role="img" aria-label="' + n + ' / ' + REF_TAM + '">' + adim + '</div>' +
+            '<p class="dst-ref-not">' + not + '</p>' +
+            '<p class="dst-ref-dip">Meslektaşın destek verirken ödeme bildirimine bu kodu yazar; ödemesi onaylanınca sana sayılır.</p>' +
+            '</div>';
+    }
+    function refPaylasMetni(kod) {
+        return 'Arapça dersleri için materyaller, oyunlar, sınavlar ve sınıf araçları Kidef Arapça\'da. ' +
+            'Kidef\'e destek verirken ödeme bildirimine referans kodumu yazar mısın: ' + kod + ' — ' + SITE;
+    }
+    document.addEventListener('click', function (e) {
+        var t = e.target && e.target.closest ? e.target.closest('[data-dst-ref]') : null;
+        if (!t) return;
+        var kod = t.getAttribute('data-kod') || '';
+        if (t.getAttribute('data-dst-ref') === 'kopyala') {
+            kopyala(kod).then(function () {
+                t.textContent = 'Kopyalandı ✓'; t.classList.add('tamam');
+                setTimeout(function () { t.textContent = 'Kopyala'; t.classList.remove('tamam'); }, 1800);
+            });
+            return;
+        }
+        var metin = refPaylasMetni(kod);
+        try {
+            if (navigator.share) { navigator.share({ title: 'Kidef Arapça', text: metin }).catch(function () { }); return; }
+        } catch (x) { }
+        kopyala(metin).then(function () { uyar('Paylaşım metni kopyalandı; meslektaşına gönderebilirsin.'); });
+    });
+    /* ORTAK HEDEFLE AÇILANLAR (kartın ortak hedef kutusunun altı) */
+    function hedefListe(oz) {
+        var L = (oz && oz.hedefIcerik) || [];
+        if (!L.length) return '';
+        var yuz = buDonemYuzde(oz);
+        return '<div class="dst-hedefler"><span class="dst-hd-bas">Ortak hedefle açılanlar</span>' + L.map(function (e) {
+            var acik = !!e.acildi || (yuz !== null && yuz >= e.y);
+            var ic = '<span class="dst-hd-y">%' + e.y + '</span><span class="dst-hd-ad"><b>' + esc(e.ad) + '</b>' +
+                (e.n ? '<small>' + esc(e.n) + '</small>' : '') + '</span>' +
+                '<span class="dst-hd-dur">' + (acik ? 'açıldı' : '%' + e.y + '\'' + deEki(e.y) + ' açılır') + '</span>';
+            return (acik && e.a)
+                ? '<a class="dst-hd acik" href="' + esc(e.a) + '" target="_blank" rel="opener">' + ic + '</a>'
+                : '<div class="dst-hd' + (acik ? ' acik' : '') + '">' + ic + '</div>';
+        }).join('') + '</div>';
     }
 
     function sayacOynat(kok) {
@@ -1387,6 +1608,7 @@
             if (k) kartCiz(k);
             rozetYerlestir();
             seritCiz();
+            hakTazele(true);                 /* deneme hakları (24.10.2026) */
         }).catch(function (e) {
             _benYukleniyor = false;
             _ben = { uid: uid, zaman: Date.now(), hata: hataYaz(e) };
@@ -1527,6 +1749,12 @@
                   '<button type="button" class="dst-kucuk" data-kopya="' + esc(aciklama) + '">Kopyala</button></div>' +
                 '<p class="dst-dip">Açıklamaya bu kodu yazarsan ödemen sana hızlıca eşleştirilir.</p>' +
               '</div>' +
+              /* referans kodu (24.10.2026) */
+              '<div class="dst-m-bol">' +
+                '<label for="dstRef">REFERANS KODU (VARSA)</label>' +
+                '<input id="dstRef" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ör. AYSE7K">' +
+                '<p class="dst-dip" id="dstRefDurum">Seni Kidef\'e bir meslektaşın getirdiyse onun kodunu yaz; desteğin ona da sayılır.</p>' +
+              '</div>' +
               '<div class="dst-m-bol">' +
                 '<label for="dstNot">NOT (İSTEĞE BAĞLI)</label>' +
                 '<input id="dstNot" type="text" maxlength="200" placeholder="ör. ödemeyi başka bir hesaptan gönderdim">' +
@@ -1575,7 +1803,24 @@
         });
         var sg = document.getElementById('dstSerbest');
         if (sg) sg.addEventListener('input', toplamYaz);
+        var rg = document.getElementById('dstRef');
+        if (rg) rg.addEventListener('input', function () { refDenetle(true); });
         secimUygula(kutu);
+    }
+
+    /* referans kodu alanı: herkese açık kod listesiyle (yalnız kodlar) denetlenir */
+    function refDenetle(yaz) {
+        var g = document.getElementById('dstRef'), d = document.getElementById('dstRefDurum');
+        if (!g) return { kod: '', tamam: true };
+        var kod = refKodDuzen(g.value), v = _ben || {}, oz = v.ozet || {};
+        var ben = (v.belge && v.belge.referans && v.belge.referans.kod) || '';
+        var L = oz.refKodlar || [], s;
+        if (!kod) s = { kod: '', tamam: true, m: 'Seni Kidef\'e bir meslektaşın getirdiyse onun kodunu yaz; desteğin ona da sayılır.', c: '' };
+        else if (kod === ben) s = { kod: kod, tamam: false, m: 'Kendi kodunu yazamazsın; bu alan seni davet eden meslektaşının kodu için.', c: 'hata' };
+        else if (L.length && L.indexOf(kod) < 0) s = { kod: kod, tamam: false, m: 'Bu kod bulunamadı. Harfleri denetle ya da alanı boş bırak.', c: 'hata' };
+        else s = { kod: kod, tamam: true, m: L.length ? '✓ Kod geçerli. Desteğin onaylanınca kod sahibine de sayılacak.' : 'Kod, ödeme onaylanırken denetlenecek.', c: 'tamam' };
+        if (yaz && d) { d.textContent = s.m; d.className = 'dst-dip' + (s.c ? ' dst-ref-' + s.c : ''); }
+        return s;
     }
 
     function bildir() {
@@ -1586,6 +1831,8 @@
         var oz = v.ozet, h = benHesap(v);
         var tutar = seciliTutar(h);
         if (!(tutar >= 10)) { uyar('Lütfen bir seçenek seçin ya da en az 10 TL yazın.'); return; }
+        var rf = refDenetle(true);
+        if (!rf.tamam) { uyar(rf.m); return; }
         var tus = document.getElementById('dstBildir');
         if (tus) { tus.disabled = true; tus.textContent = 'Gönderiliyor…'; }
         var not = ((document.getElementById('dstNot') || {}).value || '').trim().slice(0, 200);
@@ -1598,6 +1845,7 @@
             secim: _secim.tip, donem: h.donem.kod, pay: h.kisi,
             aciklama: aciklamaMetni(u.uid), not: not, kod: ogretmenKodu(u.uid),
             koseGoster: !kg || !!kg.checked, koseNot: koseNot,
+            refKod: rf.kod,                                   /* 24.10.2026 */
             email: u.email || durum('currentUser') || '',
             name: durum('currentUserName') || u.displayName || '',
             phone: durum('currentUserPhone') || '',
@@ -1671,12 +1919,21 @@
                 liste.forEach(function (o) {
                     var uid = o._id || o.uid;
                     if (!uid || !K[uid] || !onayliMi(o)) return;
-                    top += dagit(K[uid].map(kayitOdeme), kayitTarihi(o), ozY).verilen;
+                    top += dagit(K[uid].map(kayitOdeme), kayitTarihi(o), ozY, null, o.referans).verilen;
                 });
                 var gider = A.toplam * DONEM_AY;
                 yuzde = gider > 0 ? Math.round(top / gider * 100) : 0;
             }
-            var degisti = A.aktif !== aktif || A.onayli !== onayli || oz.aylik !== aylik || +oz.gecmis[ay] !== aylik ||
+            /* 24.10.2026: hedefe varan içerik «açıldı» (bir daha kilitlenmez) */
+            var hedefL = (oz.hedefIcerik || []).map(function (e) {
+                if (e.acildi || yuzde === null || yuzde === undefined || yuzde < e.y) return e;
+                var c = {};
+                Object.keys(e).forEach(function (k) { c[k] = e[k]; });
+                c.acildi = simdi;
+                return c;
+            });
+            var hedefDegisti = hedefL.some(function (e, i) { return e.acildi !== oz.hedefIcerik[i].acildi; });
+            var degisti = hedefDegisti || A.aktif !== aktif || A.onayli !== onayli || oz.aylik !== aylik || +oz.gecmis[ay] !== aylik ||
                           !eskiD || eskiD.pay !== pay || eskiD.yuzde !== yuzde || +(oz.donemler || {})[dn.kod] !== pay ||
                           oz.eskiAlan || A.eskiTaban || !A.guvenli || (me && oz.yoneticiler.indexOf(me) < 0);
             var bayat = !oz.guncelleme || (simdi - oz.guncelleme.getTime() > 6 * 3600e3);
@@ -1688,6 +1945,7 @@
                          donem: { kod: dn.kod, pay: pay, yuzde: yuzde, bas: ymd(dn.bas), bit: ymd(dn.son), sabit: sabit },
                          donemler: donemler };
             if (oz.eskiAlan) ['tur', 'toplam', 'taban', 'aktif', 'onayli', 'ayarElle'].forEach(function (k) { acik[k] = FV.delete(); });
+            if (hedefDegisti) acik.hedefIcerik = hedefL;
             var ozel = { uid: me, tur: 'destekAyar', toplam: A.toplam, ayarElle: A.elle,
                          aktif: aktif, onayli: onayli, guncelleme: sunucuZamani() };
             /* 20.10.2026: alt sınır kalktı; eski belgedeki "taban" alanı silinir */
@@ -1846,7 +2104,7 @@
                       }).join('') + '</div>'
                     : '<p class="dst-y-yok" style="margin:8px 0 0;">Henüz kimse yok. İlk ödeme onaylanınca burada ve öğretmenlerin ekranında görünür.</p>') +
                 '</details>';
-            el.insertAdjacentHTML('beforeend', koseHtml);
+            el.insertAdjacentHTML('beforeend', koseHtml + hedefAyarHtml(oz) + refListeHtml());
             if (yazilan) {
                 var g = document.getElementById('dstAyToplam');
                 if (g) { g.value = yazilan; g.__dstDegisti = true; }
@@ -1939,7 +2197,7 @@
     }
     /* 22.10.2026: karttaki küçük rozet bu dönemin durumunu söyler */
     function donemCipi(h) {
-        if (h.durum === 'tamam') return '<span class="dst-cip onaylandi">bu dönem destekçi</span>';
+        if (h.durum === 'tamam') return '<span class="dst-cip onaylandi">' + (h.refD === 'tam' ? 'referansla destekçi' : 'bu dönem destekçi') + '</span>';
         if (h.durum === 'kismi') return '<span class="dst-cip" style="background:#FFF4DE; color:#9A6512;">bu dönem ' + esc(tl(h.verilen)) + '</span>';
         if (h.durum === 'ilkay') return '<span class="dst-cip elle">ilk ay</span>';
         if (h.durum === 'bos') return '<span class="dst-cip" style="background:#F3F4F6; color:#8A94A3;">bu dönem destek yok</span>';
@@ -1966,7 +2224,7 @@
                     if (bekSay[uid]) {
                         html = '<span class="dst-cip bekliyor">💛 ' + bekSay[uid] + ' bildirim</span>';
                     } else if (onayliMi(doc) && oz.hazir) {
-                        html = donemCipi(dagit((_kayitlar[uid] || []).map(kayitOdeme), kayitTarihi(doc), oz));
+                        html = donemCipi(dagit((_kayitlar[uid] || []).map(kayitOdeme), kayitTarihi(doc), oz, null, doc.referans));
                     }
                     el.innerHTML = html;
                 });
@@ -1986,6 +2244,7 @@
                 ? '<span class="n dst-kose-on" title="Onaylanınca destekçiler köşesine eklenir">💛 köşe: <b>' + esc(kisaAd(b.ad) || 'ad yok') + '</b>' +
                   (b.koseNot ? ' — «' + esc(b.koseNot) + '»' : '') + '</span>'
                 : '<span class="n dst-kose-on">köşede görünmek istemiyor</span>') +
+            (b.refKod ? '<span class="n dst-ref-on" title="Onaylanınca kod sahibine sayılır">🔗 referans: <b>' + esc(b.refKod) + '</b></span>' : '') +
             '<span class="bos"></span>' +
             '<button type="button" class="dst-yb onay" data-dst="onayla" data-id="' + esc(b.id) + '">✅ Onayla</button>' +
             '<button type="button" class="dst-yb red" data-dst="reddet" data-id="' + esc(b.id) + '">Reddet</button>' +
@@ -2016,7 +2275,7 @@
             var odenen = def.reduce(function (a, k) { return a + k.tutar; }, 0);
             /* 22.10.2026: dönem hesabı */
             var kayit = kayitTarihi(doc);
-            var h = dagit(def.map(kayitOdeme), kayit, oz);
+            var h = dagit(def.map(kayitOdeme), kayit, oz, null, doc.referans);
             var aktif = aktifMi(doc, Date.now());
             var bekleyen = bil.filter(function (b) { return b.durum === 'bekliyor'; });
             var gecmis = bil.filter(function (b) { return b.durum !== 'bekliyor'; });
@@ -2068,6 +2327,7 @@
                   '<label>TUTAR (TL)<input class="dst-f-tutar" type="number" min="1" step="10" style="width:120px;"></label>' +
                   '<label>ÖDEME TARİHİ<input class="dst-f-tarih" type="date" value="' + inputTarih(new Date()) + '"></label>' +
                   '<label style="flex:1 1 180px;">NOT<input class="dst-f-not" type="text" maxlength="200" placeholder="ör. elden / başka hesaptan"></label>' +
+                  '<label style="width:120px;">REF. KODU<input class="dst-f-ref" type="text" maxlength="16" placeholder="varsa"></label>' +
                   '<label class="dst-f-kose" title="Kısa adı (' + esc(kisaAd(bilgi.ad) || '—') + ') destekçiler köşesine eklenir">' +
                     '<input class="dst-f-goster" type="checkbox" checked> köşede göster</label>' +
                   '<button type="button" class="dst-yb kaydet" data-dst="elle-ekle" data-uid="' + esc(uid) + '">Kaydet</button>' +
@@ -2075,6 +2335,7 @@
                 '<p class="dst-y-bilgi">Seçince tutar dolar; istersen değiştir. Havale bildirimi gelmeden yapılan ödemeleri buradan gir. ' +
                   'Ödeme, yapıldığı dönemin payını doldurur; fazlası gelecek döneme sayılır.</p>';
 
+            s += refYonetici(uid, doc);                    /* 24.10.2026 */
             if (gecmis.length) {
                 s += '<details style="margin-top:12px;"><summary style="cursor:pointer; font-weight:800; color:#8A94A3; font-size:.86rem;">Sonuçlanan bildirimler (' + gecmis.length + ')</summary>' +
                     '<div style="margin-top:8px;">' + gecmis.map(function (b) {
@@ -2189,6 +2450,220 @@
         });
     }
 
+    /* REFERANS — yönetici: kod ver / kaldır, onayda say */
+    function referansIsle(kod, odeyenUid, odeyenAd, tarih) {
+        kod = refKodDuzen(kod);
+        if (!kod || !db()) return Promise.resolve(null);
+        tarih = (tarih && tarih.getTime && !isNaN(tarih.getTime())) ? tarih : new Date();
+        var yil = yilKodu(donemBul(tarih));
+        return db().collection('kullanicilar').where('referans.kod', '==', kod).get().then(function (snap) {
+            var d = null;
+            snap.forEach(function (x) { if (!d) d = x; });
+            if (!d) return { kod: kod, yok: true };
+            if (d.id === odeyenUid) return { kod: kod, kendi: true };
+            var v = d.data() || {}, r = v.referans || {}, D = r.davet || {};
+            if (D[odeyenUid] && D[odeyenUid].yil === yil) {
+                return { kod: kod, uid: d.id, ad: v.name || '', sayi: refSayi(r, yil), zaten: true, d: refKazanim(r, yil) };
+            }
+            var davet = {};
+            davet[odeyenUid] = { t: tarih.getTime(), yil: yil, ad: kisaAd(odeyenAd) };
+            var D2 = {};
+            Object.keys(D).forEach(function (u) { D2[u] = D[u]; });
+            D2[odeyenUid] = davet[odeyenUid];
+            var n = refSayi({ davet: D2 }, yil), once = refKazanim(r, yil);
+            var yeni = n >= REF_TAM ? 'tam' : (n >= REF_YARIM ? 'yarim' : '');
+            var SIRA = { '': 0, yarim: 1, tam: 2 }, arti = SIRA[yeni] > SIRA[once];
+            var guncel = { referans: { davet: davet } };
+            if (arti) { guncel.referans.kazan = {}; guncel.referans.kazan[yil] = { d: yeni, t: Date.now(), n: n }; }
+            return db().collection('kullanicilar').doc(d.id).set(guncel, { merge: true }).then(function () {
+                var O = window._adminOgretmenler || {};
+                if (O[d.id] && O[d.id].doc) {
+                    var rr = O[d.id].doc.referans = O[d.id].doc.referans || {};
+                    rr.davet = D2;
+                    if (arti) { rr.kazan = rr.kazan || {}; rr.kazan[yil] = guncel.referans.kazan[yil]; }
+                }
+                return (arti ? refMesaj(d.id, v, yeni, yil) : Promise.resolve(false)).then(function (gitti) {
+                    return { kod: kod, uid: d.id, ad: v.name || '', sayi: n, d: arti ? yeni : once, yeni: arti, mesaj: gitti };
+                });
+            });
+        }).catch(function (e) { return { kod: kod, hata: hataYaz(e) }; });
+    }
+    function refMesaj(uid, v, d, yil) {
+        var text = d === 'tam'
+            ? 'Tebrikler 🎉 Referans kodunla ' + REF_TAM + ' meslektaşın Kidef\'e destek verdi. ' + yilAdi(yil) +
+              ' öğretim yılı desteğin ödenmiş sayılıyor. Kidef\'i büyüttüğün için teşekkürler!'
+            : 'Tebrikler 🎉 Referans kodunla ' + REF_YARIM + ' meslektaşın Kidef\'e destek verdi. ' + yilAdi(yil) +
+              ' öğretim yılı payın yarıya indi; ' + REF_TAM + ' olunca ödenmiş sayılacaksın. Teşekkürler!';
+        return db().collection('mesajlar').add({
+            uid: uid, email: v.email || '', ad: v.name || 'Öğretmen', from: 'admin', kategori: 'Referans', text: text,
+            createdAt: sunucuZamani(), readByAdmin: true, readByUser: false
+        }).then(function () { return true; }, function () { return false; });
+    }
+    function refMetin(rf) {
+        if (!rf) return '';
+        if (rf.hata) return '\nReferans işlenemedi (' + rf.hata + ').';
+        if (rf.yok) return '\nReferans kodu ' + rf.kod + ' bulunamadı; sayılmadı.';
+        if (rf.kendi) return '\nKendi referans kodunu yazmış; sayılmadı.';
+        var ad = kisaAd(rf.ad) || 'kod sahibi';
+        if (rf.zaten) return '\nReferans ' + rf.kod + ' (' + ad + '): bu meslektaş bu yıl zaten sayılmış (' + rf.sayi + '/' + REF_TAM + ').';
+        return '\nReferans ' + rf.kod + ' (' + ad + '): ' + rf.sayi + '/' + REF_TAM +
+            (rf.yeni ? (rf.d === 'tam' ? ' — artık ödenmiş sayılıyor 🎉' : ' — payı yarıya indi 🎉') + (rf.mesaj ? ' (mesaj gitti)' : '') : '') + '.';
+    }
+    function refYonetici(uid, doc) {
+        var r = (doc && doc.referans) || {}, yil = yilKodu(donemBul(new Date()));
+        var s = '<h5>Referans kodu</h5>';
+        if (!r.kod) {
+            return s + '<div class="dst-y-form"><button type="button" class="dst-yb kaydet" data-dst="ref-olustur" data-uid="' + esc(uid) + '">Bu öğretmene referans kodu ver</button></div>' +
+                '<p class="dst-y-bilgi">Kodla ' + REF_YARIM + ' meslektaşı destek verirse bu öğretim yılı payı yarıya iner, ' + REF_TAM +
+                ' olunca ödenmiş sayılır. Kod öğretmenin destek kartında görünür; meslektaşı ödeme bildiriminde yazar.</p>';
+        }
+        var n = refSayi(r, yil), k = refKazanim(r, yil), D = r.davet || {};
+        var L = Object.keys(D).map(function (u) { return { t: +D[u].t || 0, yil: D[u].yil || '', ad: D[u].ad || '' }; })
+            .sort(function (a, b) { return b.t - a.t; });
+        return s + '<div class="dst-y-sat"><code class="dst-ref-kod">' + esc(r.kod) + '</code>' +
+            '<span class="n">' + esc(yilAdi(yil)) + ': <b>' + n + '/' + REF_TAM + '</b>' +
+            (k === 'tam' ? ' · <b style="color:#1E8449;">ödenmiş sayılıyor</b>' : (k === 'yarim' ? ' · <b style="color:#B5670A;">payı yarıya indi</b>' : '')) + '</span>' +
+            '<span class="bos"></span><button type="button" class="dst-yb sil" data-dst="ref-kaldir" data-uid="' + esc(uid) + '" data-kod="' + esc(r.kod) + '">Kodu kaldır</button></div>' +
+            (L.length
+                ? '<p class="dst-y-bilgi">Kodla destek verenler: ' + L.map(function (x) {
+                    return '<b>' + esc(x.ad || 'öğretmen') + '</b> <span style="color:#A0927E;">' + esc(gunYaz(new Date(x.t))) +
+                        (x.yil !== yil ? ' · ' + esc(yilAdi(x.yil)) : '') + '</span>';
+                  }).join(' · ') + '</p>'
+                : '<p class="dst-y-bilgi">Henüz bu kodla onaylanan destek yok.</p>');
+    }
+    function acikBelgeTazele(uid) {
+        return db().collection('kullanicilar').doc(uid).get().then(function (s) {
+            var v = s.exists ? (s.data() || {}) : {};
+            if (_acik && _acik.uid === uid) {
+                var b = {};
+                Object.keys(_acik.bilgi || {}).forEach(function (k) { b[k] = _acik.bilgi[k]; });
+                b.doc = v;
+                _acik.bilgi = b;
+            }
+            var O = window._adminOgretmenler || {};
+            if (O[uid] && O[uid].doc) O[uid].doc.referans = v.referans;
+            for (var i = 0; i < _liste.length; i++) if ((_liste[i]._id || _liste[i].uid) === uid) _liste[i].referans = v.referans;
+            acikTazele();
+        });
+    }
+    function refOlustur(uid) {
+        var bilgi = (_acik && _acik.uid === uid && _acik.bilgi) || {};
+        return ozetOku(true).then(function (oz) {
+            var L = oz.refKodlar || [];
+            var kok = refKodDuzen(String(bilgi.ad || '').trim().split(/\s+/)[0] || '').slice(0, 5) || 'KIDEF';
+            var H = '23456789ABCDEFGHJKMNPQRSTUVWXYZ', kod = '';
+            for (var i = 0; i < 30; i++) {
+                kod = kok + H.charAt(Math.floor(Math.random() * H.length)) + H.charAt(Math.floor(Math.random() * H.length));
+                if (L.indexOf(kod) < 0) break;
+            }
+            var a = {};
+            a[kod] = 1;
+            return db().collection('kullanicilar').doc(uid).set({ referans: { kod: kod, t: Date.now() } }, { merge: true })
+                .then(function () { return db().collection('mufredat').doc('_destek').set({ refKodlar: a }, { merge: true }); })
+                .then(function () { _ozet = null; return acikBelgeTazele(uid); })
+                .then(function () { ayarCiz(); uyar('Referans kodu verildi: ' + kod + '\nÖğretmen kodu destek kartında görür ve meslektaşlarıyla paylaşır.'); });
+        }).catch(function (e) { uyar('Kod verilemedi: ' + hataYaz(e)); });
+    }
+    function refKaldir(uid, kod) {
+        return sor('Referans kodu ' + kod + ' kaldırılsın mı?\n(Bu yıl kazandıkları silinmez; kod artık bildirimde kabul edilmez.)').then(function (evet) {
+            if (!evet) return;
+            var FV = firebase.firestore.FieldValue, a = {};
+            a[kod] = FV.delete();
+            return db().collection('kullanicilar').doc(uid).set({ referans: { kod: FV.delete() } }, { merge: true })
+                .then(function () { return db().collection('mufredat').doc('_destek').set({ refKodlar: a }, { merge: true }); })
+                .then(function () { _ozet = null; return acikBelgeTazele(uid); })
+                .then(function () { ayarCiz(); uyar('Kod kaldırıldı.'); });
+        }).catch(function (e) { uyar('Kaldırılamadı: ' + hataYaz(e)); });
+    }
+    function refListeHtml() {
+        var yil = yilKodu(donemBul(new Date()));
+        var L = (_liste || []).filter(function (o) { return o && o.referans && o.referans.kod; });
+        return '<details class="dst-a-kose"><summary>🔗 Referans kodları (' + L.length + ')' +
+            '<small>öğretmen penceresinden (Ücret) verilir · ' + REF_YARIM + ' meslektaş destek verince payı yarıya iner, ' + REF_TAM + ' olunca ödenmiş sayılır (o öğretim yılı)</small></summary>' +
+            (L.length
+                ? '<div class="dst-a-kose-liste">' + L.map(function (o) {
+                    var n = refSayi(o.referans, yil), k = refKazanim(o.referans, yil);
+                    return '<span class="dst-a-dk"><b>' + esc(o.name || o.email || 'Öğretmen') + '</b><i>' + esc(o.referans.kod) + ' · ' + n + '/' + REF_TAM +
+                        (k === 'tam' ? ' · ödenmiş' : (k === 'yarim' ? ' · %50' : '')) + '</i>' +
+                        '<button type="button" data-dst="ac" data-uid="' + esc(o._id || o.uid || '') + '" title="Öğretmeni aç" aria-label="Öğretmeni aç">›</button></span>';
+                  }).join('') + '</div>'
+                : '<p class="dst-y-yok" style="margin:8px 0 0;">Henüz kod verilmedi. Öğretmenler › bir öğretmen › Ücret sekmesinden verilir.</p>') +
+            '</details>';
+    }
+    /* ORTAK HEDEF İÇERİĞİ — yönetici seçer */
+    function kartSecenekleri() {
+        var gor = {}, out = '';
+        [].forEach.call(document.querySelectorAll('#home-hub-section a[href], a.game-card[href]'), function (a) {
+            var h = a.getAttribute('href') || '';
+            if (!h || /^(#|javascript:|mailto:|tel:)/i.test(h) || gor[h]) return;
+            gor[h] = 1;
+            var t = a.querySelector('h3');
+            var ad = ((t ? t.textContent : a.textContent) || '').trim().replace(/\s+/g, ' ').slice(0, 50);
+            out += '<option value="' + esc(h) + '">' + esc(ad) + '</option>';
+        });
+        return out;
+    }
+    function hedefAyarHtml(oz) {
+        var L = oz.hedefIcerik || [], yuz = buDonemYuzde(oz);
+        return '<details class="dst-a-kose dst-a-hedef"><summary>🎯 Ortak hedefle açılacaklar (' + L.length + ')' +
+            '<small>seçtiğin içerik ortak hedef o yüzdeye varınca herkese açılır; o zamana kadar kartında 🎯 ve yüzde görünür, basınca açıklama çıkar</small></summary>' +
+            '<div class="dst-y" style="margin-top:8px;">' +
+            (L.length
+                ? L.map(function (e) {
+                    var acik = !!e.acildi || (yuz !== null && yuz >= e.y);
+                    return '<div class="dst-y-sat"><span class="t">%' + e.y + '</span><span class="n"><b>' + esc(e.ad) + '</b> · ' + esc(e.a || '—') +
+                        (e.n ? ' — ' + esc(e.n) : '') + '</span>' +
+                        (acik ? '<span class="dst-cip onaylandi">açıldı' + (e.acildi ? ' ' + esc(gunYaz(new Date(e.acildi))) : '') + '</span>'
+                              : '<span class="dst-cip bekliyor">kilitli</span>') +
+                        '<span class="bos"></span><button type="button" class="dst-yb sil" data-dst="hedef-sil" data-id="' + esc(e.id) + '">Sil</button></div>';
+                  }).join('')
+                : '<p class="dst-y-yok">Henüz içerik seçilmedi.</p>') +
+            '<div class="dst-y-form dst-hd-form" style="margin-top:8px;">' +
+              '<label>YÜZDE<input class="dst-hd-yuzde" type="number" min="1" max="100" step="5" value="50" style="width:80px;"></label>' +
+              '<label style="flex:1 1 220px;">İÇERİK (kart ya da bağlantı)<input class="dst-hd-adres" type="text" list="dstHdKartlar" placeholder="ör. bilgiyarismasi.html?sinif=6"></label>' +
+              '<label style="flex:1 1 160px;">BAŞLIK<input class="dst-hd-ad" type="text" maxlength="60" placeholder="ör. Bilgi Yarışması 6"></label>' +
+              '<label style="flex:1 1 200px;">KISA AÇIKLAMA<input class="dst-hd-not" type="text" maxlength="140" placeholder="isteğe bağlı"></label>' +
+              '<button type="button" class="dst-yb kaydet" data-dst="hedef-ekle">Ekle</button>' +
+              '<datalist id="dstHdKartlar">' + kartSecenekleri() + '</datalist>' +
+            '</div></div></details>';
+    }
+    function hedefKaydet(L, mesaj) {
+        return db().collection('mufredat').doc('_destek').set({ hedefIcerik: hedefDuzen(L) }, { merge: true })
+            .then(function () { _ozet = null; return ozetOku(true); })
+            .then(function (oz) { hedefOnbellek(oz); ayarCiz(); if (mesaj) uyar(mesaj); });
+    }
+    function hedefEkle(form) {
+        var y = Math.round(+form.querySelector('.dst-hd-yuzde').value || 0);
+        var a = (form.querySelector('.dst-hd-adres').value || '').trim();
+        var ad = (form.querySelector('.dst-hd-ad').value || '').trim();
+        var n = (form.querySelector('.dst-hd-not').value || '').trim();
+        if (!(y >= 1 && y <= 100)) { uyar('Yüzde 1 ile 100 arasında olmalı.'); return; }
+        if (!a) { uyar('Açılacak içeriği seç ya da bağlantısını yaz.'); return; }
+        if (!ad) { uyar('Başlık yaz (öğretmenler bu adı görür).'); return; }
+        return ozetOku(true).then(function (oz) {
+            var L = (oz.hedefIcerik || []).slice();
+            if (L.length >= 12) throw new Error('en çok 12 içerik seçilebilir');
+            L.push({ id: 'h' + Date.now().toString(36), y: y, ad: ad, a: a, n: n, acildi: 0 });
+            return hedefKaydet(L, 'Eklendi: %' + y + ' → ' + ad);
+        }).catch(function (e) { uyar('Eklenemedi: ' + hataYaz(e)); });
+    }
+    function hedefSil(id) {
+        return sor('Bu içerik ortak hedef listesinden çıkarılsın mı? (Kilidi kalkar.)').then(function (evet) {
+            if (!evet) return;
+            return ozetOku(true).then(function (oz) {
+                return hedefKaydet((oz.hedefIcerik || []).filter(function (e) { return e.id !== id; }), '');
+            });
+        }).catch(function (e) { uyar('Silinemedi: ' + hataYaz(e)); });
+    }
+    document.addEventListener('input', function (e) {
+        var t = e.target;
+        if (!t || !t.classList || !t.classList.contains('dst-hd-adres')) return;
+        var form = t.closest('.dst-hd-form'), ad = form && form.querySelector('.dst-hd-ad');
+        if (!ad || ad.value.trim()) return;
+        var o = [].filter.call(document.querySelectorAll('#dstHdKartlar option'), function (x) { return x.value === t.value; })[0];
+        if (o) ad.value = o.textContent;
+    });
+
     function sonrasi() {
         acikTazele();
         rozetleriYenile();
@@ -2211,7 +2686,7 @@
                 return db().collection('siparisler').doc('dk_' + id).set({
                     uid: me, tur: 'destekKayit', ogretmenUid: b.uid, tutar: b.tutar, ay: b.ay,
                     secim: b.secim || '', donem: b.donem || donemBul(b.tarih || new Date()).kod,
-                    kaynak: 'bildirim', siparisId: id, not: b.not || '',
+                    kaynak: 'bildirim', siparisId: id, not: b.not || '', refKod: b.refKod || '',
                     odemeTarihi: b.tarih || new Date(), tarih: sunucuZamani()
                 }).then(function () {
                     return ref.update({ durum: 'onaylandi', onayTarihi: sunucuZamani(), onaylayan: me });
@@ -2221,8 +2696,10 @@
                     return tesekkurGonder(b.uid, { ad: b.ad, email: b.email }, b.tutar, tesekkurEk(b), b.tarih || new Date());
                 }).then(function (gitti) {
                     var kose = b.koseGoster ? destekciEkle(b.ad, b.koseNot, b.tarih || new Date()) : Promise.resolve(null);
-                    return kose.then(function (eklendi) {
-                        uyar('Onaylandı ✅ ' + tl(b.tutar) + ' öğretmenin desteğine işlendi.' +
+                    var rfS = referansIsle(b.refKod, b.uid, b.ad, b.tarih || new Date());     /* 24.10.2026 */
+                    return Promise.all([kose, rfS]).then(function (sonuc) {
+                        var eklendi = sonuc[0], rf = sonuc[1];
+                        uyar('Onaylandı ✅ ' + tl(b.tutar) + ' öğretmenin desteğine işlendi.' + refMetin(rf) +
                              (gitti ? '\nTeşekkür mesajı öğretmenin Mesajlar kutusuna yazıldı.' : '\nTeşekkür mesajı yazılamadı (mesaj kutusu izni).') +
                              (eklendi === true ? '\nDestekçiler köşesine eklendi: ' + kisaAd(b.ad) + '.'
                               : eklendi === false ? '\nDestekçiler köşesine eklenemedi.' : ''));
@@ -2253,19 +2730,22 @@
         var bilgi = (_acik && _acik.bilgi) || {};
         var gk = form.querySelector('.dst-f-goster');
         var kosede = !gk || !!gk.checked;
+        var refKod = refKodDuzen((form.querySelector('.dst-f-ref') || {}).value);       /* 24.10.2026 */
         var ek = tesekkurEk({ secim: secim });
         sor((bilgi.ad || 'Öğretmen') + ' için ' + tl(tutar) + (ek ? ' (' + ek + ')' : '') + ' ödeme kaydedilsin mi?').then(function (evet) {
             if (!evet) return;
             return db().collection('siparisler').add({
                 uid: benUid(), tur: 'destekKayit', ogretmenUid: uid, tutar: tutar, ay: ay,
                 secim: secim, donem: donemBul(tarih).kod,
-                kaynak: 'elle', siparisId: '', not: not, odemeTarihi: tarih, tarih: sunucuZamani()
+                kaynak: 'elle', siparisId: '', not: not, refKod: refKod, odemeTarihi: tarih, tarih: sunucuZamani()
             }).then(function () { return ogretmenOzetYaz(uid); })
               .then(function () { return tesekkurGonder(uid, bilgi, tutar, ek, tarih); })
               .then(function (gitti) {
                   var kose = kosede ? destekciEkle(bilgi.ad, '', tarih) : Promise.resolve(null);
-                  return kose.then(function (eklendi) {
-                      uyar('Ödeme kaydedildi ✅' + (gitti ? '\nTeşekkür mesajı öğretmenin Mesajlar kutusuna yazıldı.' : '\nTeşekkür mesajı yazılamadı (mesaj kutusu izni).') +
+                  var rfS = referansIsle(refKod, uid, bilgi.ad, tarih);
+                  return Promise.all([kose, rfS]).then(function (sonuc) {
+                      var eklendi = sonuc[0], rf = sonuc[1];
+                      uyar('Ödeme kaydedildi ✅' + refMetin(rf) + (gitti ? '\nTeşekkür mesajı öğretmenin Mesajlar kutusuna yazıldı.' : '\nTeşekkür mesajı yazılamadı (mesaj kutusu izni).') +
                            (eklendi === true ? '\nDestekçiler köşesine eklendi: ' + kisaAd(bilgi.ad) + '.' : eklendi === false ? '\nDestekçiler köşesine eklenemedi.' : ''));
                       sonrasi();
                   });
@@ -2304,6 +2784,10 @@
         else if (is === 'ayar-kaydet') ayarKaydet();
         else if (is === 'ayar-art') ayarArt(+t.getAttribute('data-art') || 0);
         else if (is === 'pay-yenile') payYenile();
+        else if (is === 'ref-olustur') refOlustur(t.getAttribute('data-uid'));
+        else if (is === 'ref-kaldir') refKaldir(t.getAttribute('data-uid'), t.getAttribute('data-kod'));
+        else if (is === 'hedef-ekle') hedefEkle(t.closest('.dst-hd-form'));
+        else if (is === 'hedef-sil') hedefSil(t.getAttribute('data-id'));
         else if (is === 'kose-sil') {
             sor(t.getAttribute('data-ad') + ' destekçiler köşesinden kaldırılsın mı?').then(function (evet) {
                 if (!evet) return;
@@ -2332,6 +2816,164 @@
     });
 
     /* ------------------------------------------------------------------
+       DENEME HAKLARI (24.10.2026) — sistem/hak.js'in okuduğu durum
+       Öğretmen: "kısıtlama getirelim, ücreti hem hatırlatmak hem siteyi
+       kullanma isteğini arttıracak bi sistem" → destek vermeyen öğretmene
+       bazı araçlarda haftada 5 deneme hakkı (kartta 5 → 4). Sınırsız:
+       yönetici, bu dönem ödeme yapan (kısmi dahil), ilk 30 günündeki,
+       dönem payı belli olmayan. Durum tarayıcıya yazılır:
+       localStorage kidefDestekDurum = {uid, rol, sinirsiz, sebep, bit, z}
+       (flipbooklar ve defter de okur; başka hesabın kaydı sayılmaz).
+       ------------------------------------------------------------------ */
+    var HAK_ARA = 10 * 60e3;
+    var _hakUid = null, _hakZaman = 0, _hakSoz = null, _hakSonraki = 0, _hedefZaman = 0;
+    function hakDurumu(v) {
+        var h = benHesap(v), o = { uid: v.uid, rol: 'teacher', z: Date.now() };
+        var rb = v.belge && v.belge.referans;
+        if (rb && rb.kod) o.ref = { kod: rb.kod, sayi: refSayi(rb, yilKodu(h.donem)) };
+        if (h.durum === 'tamam' && h.refD === 'tam') {
+            o.sinirsiz = true; o.sebep = 'referans';
+            o.bit = (h.donem.no === 1 ? h.sonraki.bit : h.donem.bit).getTime();      /* öğretim yılının sonu */
+        } else if (h.durum === 'tamam') {
+            o.sinirsiz = true; o.sebep = 'odeme';
+            o.bit = (h.ileri > 0 ? h.sonraki.bit : h.donem.bit).getTime();
+        } else if (h.durum === 'kismi') {
+            o.sinirsiz = true; o.sebep = 'kismi'; o.bit = h.donem.bit.getTime();
+        } else if (h.durum === 'ilkay') {
+            o.sinirsiz = true; o.sebep = 'ilkay'; o.bit = (h.ilkAyBitis || h.donem.bit).getTime();
+        } else if (h.durum === 'hazirlaniyor' || h.durum === 'disi') {
+            o.sinirsiz = true; o.sebep = h.durum; o.bit = h.donem.bit.getTime();
+        } else {
+            o.sinirsiz = false; o.sebep = 'destek-yok';
+        }
+        return o;
+    }
+    function hakTazele(zorla) {
+        var H = window.KidefHak;
+        if (!H) return;
+        var u = benKim();
+        if (!u || u.isAnonymous) {
+            if (_fbHazir && _hakUid !== '') { _hakUid = ''; H.uid(''); }     /* oturum kapandı */
+            return;
+        }
+        var r = rol();
+        if (!r) return;                                   /* rol henüz belli değil */
+        if (_hakUid !== u.uid) H.uid(u.uid);
+        if (Date.now() - _hedefZaman > HAK_ARA) { _hedefZaman = Date.now(); ozetOku().catch(function () { }); }
+        if (r !== 'teacher') {
+            if (_hakUid !== u.uid || zorla) {
+                H.durumYaz({ uid: u.uid, rol: r, sinirsiz: true, sebep: r === 'admin' ? 'yonetici' : r, z: Date.now() });
+            }
+            _hakUid = u.uid; _hakZaman = Date.now();
+            return;
+        }
+        if (_hakSoz || (!zorla && _hakUid === u.uid && Date.now() - _hakZaman < HAK_ARA)) return;
+        if (!zorla && Date.now() < _hakSonraki) return;          /* okunamadıysa dakikada bir dene */
+        if (_hakUid !== u.uid) _hakUid = null;
+        _hakSoz = benimVerim().then(function (v) {
+            if (benUid() !== v.uid || v.hata || !v.ozet) { _hakSonraki = Date.now() + 60e3; return; }
+            H.durumYaz(hakDurumu(v));
+            _hakUid = v.uid; _hakZaman = Date.now();
+        }).catch(function () { _hakSonraki = Date.now() + 60e3; }).then(function () { _hakSoz = null; });
+    }
+    /* oturum açılmadan önce currentUser null: «çıkış» sanılmasın diye
+       Firebase'in oturumu bir kez bildirmesi beklenir */
+    var _fbHazir = false;
+    (function fbBekle(n) {
+        try {
+            if (window.firebase && firebase.apps && firebase.apps.length) {
+                firebase.auth().onAuthStateChanged(function () { _fbHazir = true; setTimeout(function () { hakTazele(true); }, 400); });
+                return;
+            }
+        } catch (e) { }
+        if (n < 60) setTimeout(function () { fbBekle(n + 1); }, 500);
+    })(0);
+    /* KULLANIM HATIRLATMASI (24.10.2026) — destek vermeyen öğretmene ana sayfada
+       en çok haftada bir; ilk ayının son haftasındaki öğretmene üç günde bir:
+       bu ay ne kadar kullandığı, bu hafta harcadığı deneme hakları, payı.
+       Sayfa açıldıktan ~20 sn sonra, pencere açık değilken; «Sonra» kapatır. */
+    var HATIRLAT_K = 'kidefDestekHatirlat', _hatirlatBak = Date.now() - 40e3;
+    function sureYaz(sn) {
+        sn = Math.round(+sn || 0);
+        var s = Math.floor(sn / 3600), d = Math.round((sn % 3600) / 60);
+        return s ? s + ' sa' + (d ? ' ' + d + ' dk' : '') : d + ' dk';
+    }
+    function buAySure(b) {
+        var g = (b && b.kullanim && b.kullanim.gun) || {}, a = ayAnahtar(new Date()), t = 0;
+        Object.keys(g).forEach(function (k) { if (k.slice(0, 7) === a) t += +g[k] || 0; });
+        return t;
+    }
+    function hatirlatKontrol(zorla) {
+        if (!zorla && Date.now() - _hatirlatBak < 60e3) return;
+        _hatirlatBak = Date.now();
+        if (document.getElementById('dstHatirlat') || rol() !== 'teacher' || !_ben || _ben.hata || !_ben.ozet || _ben.uid !== benUid()) return;
+        var gor = durum('currentView');
+        if (gor && gor !== 'home-hub-section') return;
+        var ev = document.getElementById('home-hub-section');
+        if (!ev || !ev.getClientRects().length) return;
+        if (document.querySelector('.kh-perde, #dstOrt, #thgPerde')) return;
+        var h = benHesap(_ben), uid = _ben.uid, son = {};
+        try { son = JSON.parse(localStorage.getItem(HATIRLAT_K) || '{}') || {}; } catch (e) { }
+        var gecen = Date.now() - (+son[uid] || 0), metin = '';
+        var araclar = 'tahtaya yansıt, defter PDF\'i, kalıplar tablosu, flipbook indirme ve kalem gibi araçlar';
+        if (h.durum === 'bos') {
+            if (gecen < 7 * GUN) return;
+            var sure = buAySure(_ben.belge), hk = window.KidefHak ? window.KidefHak.haftaKullanim() : 0;
+            if (sure < 30 * 60 && hk < 3) return;
+            metin = '<b>Bu ay Kidef\'te ' + esc(sureYaz(sure)) + ' geçirdin' + (hk ? ', bu hafta ' + hk + ' deneme hakkı kullandın' : '') + '.</b> ' +
+                'Bu dönemin desteği ' + esc(tl(h.kisi)) + '; destek verenlere ' + araclar + ' sınırsız.';
+        } else if (h.durum === 'ilkay' && h.ilkAyBitis) {
+            var kalan = Math.ceil((h.ilkAyBitis.getTime() - Date.now()) / GUN);
+            if (kalan > 7 || kalan < 1 || gecen < 3 * GUN) return;
+            metin = '<b>İlk ayının bitmesine ' + kalan + ' gün var.</b> Sonra ' + araclar + ' için haftada ' +
+                ((window.KidefHak && window.KidefHak.HAFTALIK) || 5) + ' deneme hakkın olur; destek verenlere sınırsız.';
+        } else return;
+        son[uid] = Date.now();
+        try { localStorage.setItem(HATIRLAT_K, JSON.stringify(son)); } catch (e) { }
+        stilKur();
+        var d = document.createElement('div');
+        d.id = 'dstHatirlat';
+        d.className = 'dst-hatirlat';
+        d.setAttribute('role', 'status');
+        d.innerHTML = kalpSvg('dst-ikon') + '<div class="dst-ht-ic"><p>' + metin + '</p><div class="dst-ht-tus">' +
+            '<button type="button" class="dst-tus ana" data-dst-ht="destek">Destek ver</button>' +
+            '<button type="button" class="dst-tus ikinci" data-dst-ht="kapat">Sonra</button></div></div>' +
+            '<button type="button" class="dst-ht-x" data-dst-ht="kapat" aria-label="Kapat">&times;</button>';
+        document.body.appendChild(d);
+    }
+    document.addEventListener('click', function (e) {
+        var t = e.target && e.target.closest ? e.target.closest('[data-dst-ht]') : null;
+        if (!t) return;
+        var d = document.getElementById('dstHatirlat');
+        if (d) d.remove();
+        if (t.getAttribute('data-dst-ht') === 'destek') destekAcHak();
+    });
+
+    /* «Destekle, sınırsız olsun» → profil, destek kartı ve ödeme penceresi */
+    function destekAcHak() {
+        try {
+            if (durum('currentView') !== 'student-profile-section' && typeof window.toggleStudentProfile === 'function') window.toggleStudentProfile();
+        } catch (x) { }
+        setTimeout(function () {
+            var k = document.getElementById('tpDestek');
+            if (k && k.scrollIntoView) k.scrollIntoView({ behavior: azHareket ? 'auto' : 'smooth', block: 'start' });
+            benimVerim().then(function (v) { if (v && v.ozet && v.ozet.hazir && rol() === 'teacher') odemeAc(); }).catch(function () { });
+        }, 600);
+    }
+    if (window.KidefHak) window.KidefHak.destekAc = destekAcHak;
+    /* öteki sayfalardan (defter, flipbook) gelen «index.html#destek» */
+    (function hashBak(n) {
+        if (String(location.hash || '') !== '#destek') return;
+        var r = rol();
+        if (benUid() && (r === 'teacher' || r === 'admin')) {
+            try { history.replaceState(history.state, '', location.pathname + location.search); } catch (e) { }
+            destekAcHak();
+            return;
+        }
+        if (n < 40) setTimeout(function () { hashBak(n + 1); }, 500);
+    })(0);
+
+    /* ------------------------------------------------------------------
        DIŞA AÇILANLAR
        ------------------------------------------------------------------ */
     window.KidefDestek = {
@@ -2347,7 +2989,12 @@
         listeGeldi: listeGeldi, ozetYayinla: ozetYayinla, ayarCiz: ayarCiz, sayimYap: sayimYap,
         seritCiz: seritCiz, kisaAd: kisaAd, destekciEkle: destekciEkle, destekciSil: destekciSil,
         rozetleriYenile: rozetleriYenile, bekleyenCiz: bekleyenCiz, yoneticiBolum: yoneticiBolum,
-        onayla: onayla, reddet: reddet
+        onayla: onayla, reddet: reddet,
+        /* 24.10.2026: deneme hakları */
+        hakTazele: hakTazele, hakDurumu: hakDurumu, destekAc: destekAcHak,
+        /* 24.10.2026: referans, ortak hedef içeriği, hatırlatma */
+        refKodDuzen: refKodDuzen, refSayi: refSayi, referansIsle: referansIsle, refOlustur: refOlustur,
+        hedefDuzen: hedefDuzen, hatirlatKontrol: hatirlatKontrol, deEki: deEki
     };
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gozlemciKur);

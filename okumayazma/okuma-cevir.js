@@ -42,6 +42,13 @@
      şeddeli harf tek Arapça harf ama iki Latin harf olduğu için hücresi
      iki sütunu birden kaplar.
 
+   OKUMA HIZLANDIRMA (24.10.2026) — öğretmen: "alfabe.html de okuma kısmına bi
+   şekilde entegre edelim": konu şeridinin sonunda «Hızlandırma» çipi. Basınca
+   gösterinin yerine okumahiz.html?gomulu=1 çerçevesi açılır (okumayazma/okuma_hiz.js:
+   sınıfın kitabından okumalar, ses, süre tut · sesle birlikte · mikrofon). Öteki
+   konuya basınca gösteri geri gelir; çerçevedeki ses ve mikrofon durdurulur
+   (Okuma sekmesinden çıkınca da). Açıkken ok tuşları çerçevenin.
+
    KULLANIM
      <script src="okumayazma/okuma-cevir.js"></script>
      KidefOkumaCevir.kur('ocSar');      // ya da sekmeden: ocAc()
@@ -381,6 +388,16 @@
       '.oc-hap:hover{color:#FF3B30}' +
       '.oc-hap.aktif,.oc-hap.aktif:hover{color:#fff}' +
       '@media (prefers-reduced-motion:reduce){.oc-kaydirak{transition:none}}' +
+      /* OKUMA HIZLANDIRMA çipi ve çerçevesi (24.10.2026) */
+      '.oc-hap.oc-hiz{display:inline-flex;align-items:center;justify-content:center;gap:.35em}' +
+      '.oc-hap.oc-hiz svg{width:1.05em;height:1.05em;flex:none}' +
+      '.oc-hiz-alan{display:none}' +
+      '.oc-sar.hiz{display:flex;flex-direction:column;height:100%;box-sizing:border-box}' +
+      '.oc-sar.hiz>.oc-not,.oc-sar.hiz>.oc-govde,.oc-sar.hiz>.oc-tuslar-ust,.oc-sar.hiz>.oc-yperde{display:none!important}' +
+      '.oc-sar.hiz>.oc-serit{flex:none}' +
+      '.oc-sar.hiz>.oc-hiz-alan{display:block;flex:1 1 auto;min-height:440px}' +
+      '.oc-hiz-alan iframe{display:block;width:100%;height:100%;border:0;border-radius:16px;background:#fff}' +
+      '@media (max-width:700px){.oc-hap.oc-hiz>span{display:none}.oc-hap.oc-hiz svg{width:1.25em;height:1.25em}}' +
       '.oc-not{text-align:center;color:#64748B;font-size:clamp(.88rem,1.35vw,1.15rem);margin:0 0 14px;line-height:1.5}' +
       /* GÖVDE: yardım tablosu artık yanda değil, AÇILIR PENCEREDE — bütün
          genişlik çalışma alanına kaldı, harfler o kadar büyüyebiliyor. */
@@ -749,7 +766,10 @@
     serit.innerHTML = '<span class="oc-kaydirak" aria-hidden="true"></span>' +
       SIRA.map(function (g) {
         return '<button type="button" class="oc-hap" data-g="' + g + '">' + KELIME[g].ad + '</button>';
-      }).join('');
+      }).join('') +
+      /* OKUMA HIZLANDIRMA (24.10.2026): son çip okumahiz.html çerçevesini açar */
+      '<button type="button" class="oc-hap oc-hiz" data-g="hiz" title="Okuma Hızlandırma — dinle, oku, hızını ölç">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 16.5a8.5 8.5 0 1 1 17 0"/><path d="M12 16.5l4.6-5.2"/><circle cx="12" cy="16.5" r="1.5" fill="currentColor" stroke="none"/></svg>' + '<span>Hızlandırma</span></button>';
     var kaydirak = serit.querySelector('.oc-kaydirak');
 
     /* Kırmızı kaydırağı seçili konunun üstüne getirir. Ölçü DÜĞMEDEN
@@ -861,8 +881,44 @@
     serit.addEventListener('click', function (e) {
       var t = e.target.closest ? e.target.closest('.oc-hap') : null;
       if (!t) return;
+      if (t.getAttribute('data-g') === 'hiz') { hizAc(); return; }
+      hizKapat();
       grup = t.getAttribute('data-g'); sira = 0; kelimeCiz();
     });
+    /* OKUMA HIZLANDIRMA (24.10.2026): gösterinin yerinde okumahiz.html çerçevesi.
+       Çerçeve ilk açılışta kurulur, sonra gizlenip açılır (kaldığı yer korunur). */
+    var hizAlan = null;
+    function hizCerceve() { return hizAlan ? hizAlan.querySelector('iframe') : null; }
+    function hizDurdur() {
+      try { var w = hizCerceve() && hizCerceve().contentWindow; if (w && w.KidefOkumaHiz && w.KidefOkumaHiz.durdur) w.KidefOkumaHiz.durdur(); } catch (x) { }
+    }
+    function hizAc() {
+      if (!hizAlan) {
+        hizAlan = document.createElement('div');
+        hizAlan.className = 'oc-hiz-alan';
+        hizAlan.innerHTML = '<iframe title="Okuma Hızlandırma" allow="microphone; autoplay; clipboard-write"></iframe>';
+        sar.appendChild(hizAlan);
+        hizCerceve().src = 'okumahiz.html?gomulu=1';
+        var p8 = document.getElementById('p8');
+        if (p8 && window.MutationObserver) {
+          new MutationObserver(function () { if (!p8.classList.contains('active')) hizDurdur(); })
+            .observe(p8, { attributes: true, attributeFilter: ['class'] });
+        }
+      }
+      if (yperde && !yperde.hidden) yardimAc(false);
+      sar.classList.add('hiz');
+      mount.style.height = '100%';
+      [].forEach.call(serit.querySelectorAll('.oc-hap'), function (h) {
+        h.classList.toggle('aktif', h.getAttribute('data-g') === 'hiz');
+      });
+      kaydiragiOynat();
+    }
+    function hizKapat() {
+      if (!sar.classList.contains('hiz')) return;
+      hizDurdur();
+      sar.classList.remove('hiz');
+      mount.style.height = '';
+    }
     ileri.addEventListener('click', function () {
       if (asama >= son) { sira = (sira + 1) % KELIME[grup].liste.length; kelimeCiz(); }
       else adimaGec(asama + 1);
@@ -1257,6 +1313,7 @@
       var p8 = document.getElementById('p8');
       if (!p8 || !p8.classList.contains('active')) return;
       if (!mount.offsetParent && mount.offsetHeight === 0) return;
+      if (sar.classList.contains('hiz')) return;                    /* Hızlandırma açık: tuşlar çerçevenin */
       var ov = document.getElementById('hd-overlay');
       if (ov && ov.style.display === 'flex') return;
       /* Yardım penceresi açıkken ok tuşu kelimeyi ilerletmesin; Esc kapatsın. */

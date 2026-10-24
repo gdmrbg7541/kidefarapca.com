@@ -3883,12 +3883,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Metin Tahlilleri kartı: hangi sınıfın hangi kitabında metin var?
          (küçük özet; bütün ders listesi yüklenmiyor) -->
     <script src="metintahlili/ozet.js?v=51bd2b6d"></script>
-    <script src="sistem/sinifmodul.js?v=3894f9af"></script>
+    <script src="sistem/sinifmodul.js?v=5ad9440e"></script>
     <!-- YAZI SAYFASI (19.10.2026): kart yok — Sınıflarım'da bir sınıf açılınca %98'lik
          pencere kendiliğinden açılır, sınıf kapanınca kaydedip kapanır (yalnız öğretmen).
          5 renk, kalem, silgi, Arapça büyük/küçük harf çizgileri, sayfalar; geçmiş bu
          tarayıcıda tarihiyle, seviye notları hesapta (sistem/yazisayfasi.js) -->
-    <script src="sistem/yazisayfasi.js?v=8eaba718"></script>
+    <script src="sistem/yazisayfasi.js?v=e192d133"></script>
     <!-- KİTAP TAKİBİ (15.10.2026) — öğretmen: "giriş yapan öğretmenlerin
          hangi sınıfta hangi kitabı kullandığı iyi takip edilsin".
          Öğretmen panelinde "sınıf → kullandığı kitap" kartını kurar. -->
@@ -8158,7 +8158,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- BEKLENEN DESTEK (19.10.2026): ogretmen profilinde aylik destek karti
          (ogretmen sayisina gore tutar, odeme bildirimi); yoneticide odeme
          kaydi ve ozet (hesap/destek.js) -->
-    <script src="hesap/destek.js?v=33a72816"></script>
+    <!-- DENEME HAKLARI (24.10.2026): destek vermeyen öğretmene bazı araçlarda
+         haftada 5 deneme hakkı (kartta 5 → 4); durumu destek.js yazar -->
+    <script src="sistem/hak.js?v=8ad0e455"></script>
+    <script src="hesap/destek.js?v=4d4edc9e"></script>
     <script src="sistem/alarm.js?v=5af5693a"></script>
     <script src="hesap/live-lesson.js?v=cb8c8026"></script>
     <!-- Haftalık plan tavsiyesi verisi (Yöneticinin tavsiyesi penceresi) -->

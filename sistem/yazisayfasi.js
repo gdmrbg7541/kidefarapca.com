@@ -185,6 +185,12 @@
    DEFTER v23 (24.10.2026, öğretmen: "defterde anasayfa svg si kırmızı dolgulu ve
    en solda olsun"): Ana sayfa en solda (☰'den önce), kırmızı dolgulu ev
    (IK.evDolu), zeminsiz; perde açıkken görünmez, yeri kalır (☰ kaymaz).
+   DEFTER v24 (24.10.2026, öğretmen: "silik yazı kısmında harf eklenince yazılış
+   animasyonu için rehber harflere tıklayınca o harfin yazılışı çıksın, popup
+   olmadan ve sadece o harfin yazılış animasyonu açılmalı"): harf konunca büyük
+   kart açılmaz; kâğıttaki koyu rehber harfe dokununca YALNIZ o yazılış, harfin
+   kendi yerinde ve boyunda yazılır (rehberOynat). Dokunuş çizgi bırakmaz;
+   sürüklenir ya da basılı tutulursa yazı olur. Tahtaya da yansır ('ra').
    ARAÇLAR: 5 renk kalem · hat kalemi · silgi · 3 kalınlık · çizgi sayısı
    (2·3·4·5·7) / güzel yazı · geri al, yinele, temizle · sayfalar (ekle,
    kaldır, ileri / geri, kaydırma çubuğu, dikey / yatay) · PDF · tam ekran.
@@ -1411,6 +1417,7 @@
         silikKapat();
         perdeKapat(true);
         harfAnimKapat();
+        raDurdur(true, true);                          /* v24: rehber harfin yazılışı */
         UI.panel.classList.remove('acik');
         if (D && D.kirli && !bosMu(D.sayfalar)) gecmiseKaydet();
         UI.kucuk = true;
@@ -1577,6 +1584,9 @@
         var kucuktu = UI && UI.kucuk;
         if (UI && UI.anim) cancelAnimationFrame(UI.anim);
         _cz = null; _kay = null; _dok = {}; _ray = null;
+        if (_rb) clearTimeout(_rb.z);
+        if (RA) { clearTimeout(RA.z); hyDurdur(RA.a); }
+        _rb = null; RA = null; _raSol = null; _raTok++;          /* v24 */
         ort.remove();
         pilKaldir();
         if (!kucuktu) document.body.style.overflow = _govdeTasma || '';
@@ -1925,6 +1935,7 @@
                 D.sayfalar[j].cizimler.forEach(function (c) { cizimCiz(ctx, c, o, ox); });
             }
         }
+        if (RA || _raSol) raKonumla();                   /* v24: yerinde yazılan rehber harf kâğıtla kayar */
         aracGuncelle();
     }
 
@@ -1965,8 +1976,11 @@
                      (e.pointerType === 'touch' && (_kalemVar || dokunSay() >= 2));
         if (kaydir) {
             if (_cz) { _cz = null; sayfaCiz(); }                 /* ikinci parmak: yarım çizgi bırakılır */
+            if (_rb) { clearTimeout(_rb.z); _rb = null; }        /* v24: bekleyen rehber dokunuşu da */
             var o0 = e.pointerType === 'touch' ? dokunOrt() : [e.clientX, e.clientY];
-            _kay = { x: o0[0], y: o0[1] };
+            /* v24: kalem kullanılırken parmakla rehber harfe TEK dokunuş da yazılışı açar */
+            var tekP = (e.pointerType === 'touch' && dokunSay() === 1) || (T.arac === 'el' && e.pointerType !== 'touch' && e.button === 0);
+            _kay = { x: o0[0], y: o0[1], d: tekP ? { x: e.clientX, y: e.clientY, t: Date.now() } : null };
             UI.kagit.classList.add('suruk');
             return;
         }
@@ -1982,20 +1996,27 @@
         }
         /* kalemin silgi ucu (button 5 / buttons 32) da siler */
         var silgiMi = T.arac === 'silgi' || (e.pointerType === 'pen' && (e.button === 5 || (e.buttons & 32)));
+        /* v24: koyu rehber harfe basınca çizgi hemen başlamaz: kalkarsa o harfin
+           yazılışı yerinde oynar, sürüklenir ya da basılı kalırsa yazı olur */
+        if (!silgiMi && rehberBekle(e, j, p)) return;
+        kalemBaslat(e.pointerId, j, p, silgiMi);
+        if (T.arac === 'silgi') { izKonum(e); UI.iz.classList.add('gor'); }
+    }
+    function kalemBaslat(id, j, p, silgiMi) {
         var kay = yerelKay(j), of = sayfaOfset(j);
         /* hat kalemi: kalınlık harfi büyük (I/O/K) */
         var kal = silgiMi ? 'o' : (T.uc === 'h' ? String(T.kal || 'o').toUpperCase() : T.kal);
-        _cz = { id: e.pointerId, j: j, kay: kay, ox: of[0], oy: of[1],
+        _cz = { id: id, j: j, kay: kay, ox: of[0], oy: of[1],
                 c: { r: T.renk, k: kal, s: silgiMi ? 1 : 0, p: [p[0] + kay[0], p[1] + kay[1]] } };
         var ctx = UI.ust.getContext('2d');
         cizimCiz(ctx, _cz.c, UI.olcek, _cz.ox, _cz.oy);
-        if (T.arac === 'silgi') { izKonum(e); UI.iz.classList.add('gor'); }
         yCizBasla(_cz);
     }
     function kalemOynat(e) {
         if (e.pointerType === 'touch' && (e.pointerId in _dok)) _dok[e.pointerId] = [e.clientX, e.clientY];
         if (_kay) {
             var q = e.pointerType === 'touch' ? dokunOrt() : [e.clientX, e.clientY];
+            if (_kay.d && Math.abs(e.clientX - _kay.d.x) + Math.abs(e.clientY - _kay.d.y) > 10) _kay.d = null;     /* v24: dokunuş değil, kaydırma */
             var dx = q[0] - _kay.x, dy = q[1] - _kay.y;
             _kay.x = q[0]; _kay.y = q[1];
             /* kâğıt parmağı izler */
@@ -2004,6 +2025,10 @@
             return;
         }
         if (T && T.arac === 'silgi' && UI) { izKonum(e); UI.iz.classList.add('gor'); }
+        if (_rb && e.pointerId === _rb.id) {                     /* v24: rehber harfte bekleyen dokunuş */
+            if (Math.abs(e.clientX - _rb.x) + Math.abs(e.clientY - _rb.y) < 9) return;
+            rehberYaz();                                         /* sürükleniyor: yazı başlar */
+        }
         if (!_cz || e.pointerId !== _cz.id) return;
         e.preventDefault();
         var olaylar = (e.getCoalescedEvents && e.getCoalescedEvents()) || [e];
@@ -2050,9 +2075,19 @@
     function kalemBirak(e) {
         if (e && e.pointerType === 'touch') delete _dok[e.pointerId];
         if (_kay) {
-            if (e && e.pointerType === 'touch' && dokunSay() > 0) { var q = dokunOrt(); _kay.x = q[0]; _kay.y = q[1]; return; }
+            if (e && e.pointerType === 'touch' && dokunSay() > 0) { var q = dokunOrt(); _kay.x = q[0]; _kay.y = q[1]; _kay.d = null; return; }
+            var kd = _kay.d;
             _kay = null;
             if (UI) UI.kagit.classList.remove('suruk');
+            /* v24: kaydırmayan tek dokunuş rehber harfe düştüyse yazılışı */
+            if (kd && e && e.type !== 'pointercancel' && Date.now() - kd.t < 450 &&
+                Math.abs(e.clientX - kd.x) + Math.abs(e.clientY - kd.y) <= 10) rehberDokun(kd.x, kd.y);
+            return;
+        }
+        if (_rb && (!e || e.pointerId === _rb.id)) {             /* v24: rehber harfe dokunuldu — çizgi yok */
+            var rb = _rb;
+            _rb = null; clearTimeout(rb.z);
+            if (e && e.type !== 'pointercancel') rehberOynat(rb.j, rb.s, true);
             return;
         }
         if (!_cz || (e && e.pointerId !== _cz.id)) return;
@@ -2639,6 +2674,7 @@
             e.preventDefault(); e.stopPropagation();
             if (UI.silSor) { silSorKapat(); return; }
             if (perdeAcik()) { perdeKapat(); return; }
+            if (RA) { raDurdur(); return; }                  /* v24: rehber harfin yazılışı */
             if (HY) { harfAnimKapat(); return; }
             if (UI.silik && !UI.silik.hidden) { silikKapat(); return; }
             if (UI.genel) { genelKapat(); return; }
@@ -3149,6 +3185,7 @@
             else if (t === 'r') yRUygula(m);
             else if (t === 'v') yGorus(m);
             else if (t === 'a') yHarfAnim(m);
+            else if (t === 'ra') yRehber(m);                     /* v24: rehber harfin yazılışı */
         } catch (e) { yIste(); }
     }
     function yAnlikUygula(m) {
@@ -3413,6 +3450,7 @@
         for (var i = 0; i < L.length; i++) {
             var s = L[i];
             if (!s || !s.t) continue;
+            if (RA && s === RA.s && UI && ctx.canvas === UI.alt) continue;    /* v24: yerinde yazılıyor */
             ctx.font = (s.k === 'e' ? '700 ' : '') + Math.max(4, s.b) + 'px ' + SILIK_FONT;
             ctx.fillStyle = SILIK_RENK[s.k] || SILIK_RENK.g;
             try { ctx.direction = s.k === 'e' ? 'ltr' : 'rtl'; } catch (e) { }
@@ -3871,7 +3909,7 @@
     function skAyarHtml(sek) {
         var A = sek === 'h'
             ? [['harfSilik', 'Altına silik tekrar (öğrenci üstünden geçer)'], ['bosH', 'Altına boş satır bırak'],
-               ['anim', 'Harfe basınca yazılışı büyük gösterilsin']]
+               ['anim', 'Rehber harfe dokununca yazılışı gösterilsin']]
             : [['tekrar', 'Satırı doldur (kelime tekrarlanır)'], ['bosK', 'Altına boş satır bırak']];
         return '<div class="ys-sl-ayar">' + A.map(function (a) {
             var ac = !!T.sk[a[0]];
@@ -3963,7 +4001,8 @@
         });
     }
     function skHarfCiz(ic) {
-        ic.innerHTML = '<p class="ys-sl-bilgi">Harfe bas: dört yazılışı (ayrı · başta · ortada · sonda) sıradaki satıra konur, öğrenci altındaki satırlara yazarak gösterir.</p>' +
+        ic.innerHTML = '<p class="ys-sl-bilgi">Harfe bas: dört yazılışı (ayrı · başta · ortada · sonda) sıradaki satıra konur, öğrenci altındaki satırlara yazarak gösterir.' +
+            (T.sk.anim ? ' Kâğıttaki koyu harfe dokununca o yazılış yerinde canlanır.' : '') + '</p>' +
             '<div class="ys-sl-harfler">' + HARFLER.map(function (H) {
                 return '<button type="button" class="ys-sl-harf" data-sk="harf" data-v="' + H[0] + '" title="' + esc(H[1]) + '"><b lang="ar">' + H[0] + '</b><small>' + esc(H[1]) + '</small></button>';
             }).join('') + '</div>' + skAyarHtml('h');
@@ -3986,7 +4025,7 @@
         else if (is === 'sek') { T.sk.sek = v === 'h' ? 'h' : 'k'; tercihKaydet(); silikCiz(); }
         else if (is === 'sinif') { UI.skSinif = v; T.sk.sinif = v; tercihKaydet(); silikCiz(); }
         else if (is === 'kelime') { var w = UI.skListe && UI.skListe[+b.getAttribute('data-i')]; if (w) silikKelimeKoy(w.ar, b); }
-        else if (is === 'harf') { silikHarfKoy(v, b); if (T.sk.anim && !yIzleyen()) harfAnimAc(v); }
+        else if (is === 'harf') silikHarfKoy(v, b);             /* v24: büyük kart yok; rehber harfe dokununca yerinde */
         else if (is === 'koy') { var g = UI.ort.querySelector('#ysSlGirdi'); silikKelimeKoy(g ? g.value : ''); }
         else if (is === 'klavye') {
             UI.skKlavye = !UI.skKlavye;
@@ -4317,6 +4356,13 @@
             '.ys-hy-b.yaz{background:#EEF8F5;}',
             '.ys-hy-ghost{fill:#E9EEF4;}',
             '.ys-hy-satir{stroke:rgba(0,0,0,.22); stroke-width:3; vector-effect:non-scaling-stroke;}',
+            /* v24: rehber harfin yazılışı kâğıdın üstünde, harfin kendi yerinde (kart yok) */
+            '.ys-ra{position:absolute; left:0; top:0; width:0; height:0; overflow:visible; pointer-events:none; transition:opacity .35s ease;}',
+            '.ys-ra.sol{opacity:0;}',
+            '.ys-ra svg{position:absolute; left:0; top:0; overflow:visible; pointer-events:none;}',
+            '.ys-ra .ys-hy-satir{display:none;}',
+            '.ys-ra .ys-hy-ghost{fill:#CFD7E1;}',
+            '@media (prefers-reduced-motion: reduce){.ys-ra{transition:none;}}',
             '@media (max-width:760px){.ys-hy{padding:8px;} .ys-hy-kart{padding:10px 12px 12px; border-radius:18px;} .ys-hy-bicimler{column-gap:14px; row-gap:10px;}',
             '  .ys-hy-bas b{font-size:.98rem;} .ys-hy-bas b i{font-size:2rem;} .ys-hy-bas .ys-t span{display:none;}}',
             '@media (prefers-reduced-motion: reduce){.ys-perde,.ys-perde.kapan,.ys-hy{animation:none;}}'
@@ -4506,7 +4552,7 @@
         var nib = a.nib, i = 0, t0 = null, GAP = 90, gapUntil = performance.now() + 120, ucus = null;
         var ease = function (t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
         var adim = function (now) {
-            if (!HY || !hyBagli(a.svg)) { a.raf = null; return; }
+            if ((!HY && !(RA && RA.a === a)) || !hyBagli(a.svg)) { a.raf = null; return; }   /* v24: yerinde oynayan (RA) da */
             if (ucus) {                                   /* darbeler arası: kalem havada uçar, bir şey boyanmaz */
                 var g = Math.min(1, (now - ucus.t0) / ucus.dur), e2 = ease(g), sn = Math.sin(Math.PI * e2);
                 var x = ucus.a.x + (ucus.b.x - ucus.a.x) * e2, y = ucus.a.y + (ucus.b.y - ucus.a.y) * e2 - sn * ucus.kavis;
@@ -4734,6 +4780,176 @@
     /* yansıtma: liderin kartı izleyende de (h boşsa kapanır) */
     function yHarfAnim(m) { if (m && m.h) harfAnimAc(m.h, true, m); else harfAnimKapat(true); }
 
+    /* ------------------------------------------------------------------
+       REHBER HARFİN YAZILIŞI, YERİNDE (DEFTER v24, 24.10.2026) — öğretmen:
+       "silik yazı kısmında harf eklenince yazılış animasyonu için rehber
+       harflere tıklayınca o harfin yazılışı çıksın, popup olmadan ve sadece o
+       harfin yazılış animasyonu açılmalı".
+       Kâğıttaki koyu rehber harfe ('m' parçası: ayrı · başta · ortada · sonda)
+       dokununca YALNIZ o biçim, alfabe motoruyla (hySvg / hyOynat) harfin kendi
+       yerinde ve boyunda yazılır. Veri Arakom'un 600 birimlik çizimi, taban y=410
+       — tuvaldeki harfle aynı ölçek (F / 600); yatayda yalın ve ortadaki harf
+       mürekkebin ortasından, baştaki sağ ucundan, sondaki sol ucundan oturur
+       (kâğıttaki ـ uzantısı veridekinden uzun). Yazılırken tuvaldeki koyu harf
+       çizilmez (silikYaz), bitince 1,2 sn durur, solarak koyu harfe döner.
+       Basış çizgi başlatmaz (rehberBekle): kalkarsa yazılış, 9 px kayarsa ya da
+       0,45 sn basılı kalırsa yazı. Yansıtma: { t:'ra', j, x, y, tx, z } (j<0: dur).
+       ------------------------------------------------------------------ */
+    var RA = null, _raTok = 0, _raSol = null, _rb = null, _raOlcBel = {};
+    var RA_HIZA = { n: 'c', b: 'r', o: 'c', s: 'l' };
+    /* parçanın harfi ve biçimi; sondaki biçimle aynı yazılan ortadaki (ـا ـد ـو) sol uçtan */
+    function rehberHarf(s) {
+        if (!s || s.k !== 'm' || !s.t) return null;
+        for (var i = 0; i < HARFLER.length; i++) {
+            var H = HARFLER[i];
+            if (s.t === H[0]) return { h: H[0], k: 'n', hiza: 'c' };
+            if (s.t === H[2]) return { h: H[0], k: 'b', hiza: 'r' };
+            if (s.t === H[3]) return { h: H[0], k: 'o', hiza: H[3].charAt(H[3].length - 1) === 'ـ' ? 'c' : 'l' };
+            if (s.t === H[4]) return { h: H[0], k: 's', hiza: 'l' };
+        }
+        return null;
+    }
+    /* şerit noktası p, j. sayfadaki hangi koyu rehber harfin üstünde */
+    function rehberBul(j, p) {
+        var sy = D && D.sayfalar[j];
+        if (!sy || !sy.silik || !sy.silik.length) return null;
+        var kay = yerelKay(j), x = p[0] + kay[0], y = p[1] + kay[1], en = null, enD = Infinity;
+        sy.silik.forEach(function (s) {
+            if (!s || s.k !== 'm' || !rehberHarf(s)) return;
+            var F = s.b;
+            if (y < s.y - F * 0.85 || y > s.y + F * 0.5) return;
+            var dx = Math.abs(x - s.x);
+            if (dx > olcu(s.t, F) / 2 + F * 0.12) return;
+            if (dx < enD) { enD = dx; en = s; }
+        });
+        return en;
+    }
+    /* tuvaldeki harfin mürekkep kutusu (600 px'te, ortalanmış, sağdan sola): ortadan sola l, sağa r */
+    function rehberOlc(t) {
+        if (_raOlcBel[t]) return _raOlcBel[t];
+        var r = { l: 0, r: 0 };
+        try {
+            var c = document.createElement('canvas').getContext('2d');
+            c.font = '600px ' + SILIK_FONT;
+            try { c.direction = 'rtl'; } catch (e) { }
+            c.textAlign = 'center';
+            var m = c.measureText(t);
+            if (typeof m.actualBoundingBoxLeft === 'number' && m.actualBoundingBoxLeft + m.actualBoundingBoxRight > 0)
+                r = { l: m.actualBoundingBoxLeft, r: m.actualBoundingBoxRight };
+            else r = { l: m.width / 2, r: m.width / 2 };
+        } catch (e) { }
+        return (_raOlcBel[t] = r);
+    }
+    function rehberBekle(e, j, p) {
+        if (!T.sk || !T.sk.anim || yIzleyen()) return false;
+        var s = rehberBul(j, p);
+        if (!s) return false;
+        if (_rb) clearTimeout(_rb.z);
+        _rb = { id: e.pointerId, j: j, p: p, s: s, x: e.clientX, y: e.clientY };
+        _rb.z = setTimeout(rehberYaz, 450);                      /* basılı kaldı: yazı */
+        return true;
+    }
+    function rehberYaz() {                                       /* bekleyen dokunuş yazıya döner */
+        var b = _rb;
+        if (!b) return;
+        _rb = null; clearTimeout(b.z);
+        if (!UI || !D || _cz) return;
+        kalemBaslat(b.id, b.j, b.p, false);
+    }
+    function rehberDokun(cx, cy) {                               /* kaydırma kipinde (kalemli cihazda parmak) */
+        if (!UI || !D || !T.sk || !T.sk.anim || yIzleyen()) return;
+        var p = nokta({ clientX: cx, clientY: cy }), j = sayfaNo(p), s = rehberBul(j, p);
+        if (s) rehberOynat(j, s, true);
+    }
+    function rehberOynat(j, s, bizden, z) {
+        var bil = rehberHarf(s);
+        if (!bil || !UI || !D) return;
+        var tok = ++_raTok, hiz = (z >= 0 && z <= 4) ? z : hyHizOku();
+        if (bizden && yLider()) yGonder({ t: 'ra', j: j, x: s.x, y: s.y, tx: s.t, z: hiz });
+        Promise.all([hyVeri() ? true : betikYukle(HYZ_YOL), fontHazir()]).then(function () {
+            if (!UI || !D || tok !== _raTok) return;
+            var V = hyVeri(), d = V && V[bil.h] && V[bil.h][bil.k], sy = D.sayfalar[j];
+            if (!d || !d.vb) { if (bizden) bildir('Harfin yazılış animasyonu yüklenemedi', true); return; }
+            if (!sy || (sy.silik || []).indexOf(s) < 0) return;
+            raDurdur(true, true);
+            var renk = HYZ_BICIM[0].renk;
+            HYZ_BICIM.forEach(function (b) { if (b.k === bil.k) renk = b.renk; });
+            var a = hySvg(d, renk), kap = document.createElement('div');
+            kap.className = 'ys-ra';
+            kap.setAttribute('aria-hidden', 'true');
+            kap.appendChild(a.svg);
+            UI.kagit.insertBefore(kap, UI.kagit.querySelector('.ys-altnav'));
+            /* yer: taban y=410 ↔ s.y; ölçek F/600; yatay oturma biçime göre */
+            var k = s.b / 600, m = rehberOlc(s.t), bb = null, ux, px;
+            try { bb = a.golge.getBBox(); } catch (e) { bb = null; }
+            if (!bb || !(bb.width > 0)) { ux = d.vb[2] / 2; px = s.x; }
+            else if (bil.hiza === 'r') { ux = bb.x + bb.width; px = s.x + m.r * k; }
+            else if (bil.hiza === 'l') { ux = bb.x; px = s.x - m.l * k; }
+            else { ux = bb.x + bb.width / 2; px = s.x + (m.r - m.l) / 2 * k; }
+            /* kalem ucu küçük harfte de seçilsin (ekranda ~11 px yarıçap) */
+            var q = Math.max(1, Math.min(4, 11 / Math.max(0.5, 18 * k * (UI.cssOlcek || 1))));
+            [].forEach.call(a.nib.querySelectorAll('circle'), function (c) {
+                c.setAttribute('r', (+c.getAttribute('r') * q).toFixed(2));
+                var w = c.getAttribute('stroke-width');
+                if (w) c.setAttribute('stroke-width', (+w * q).toFixed(2));
+            });
+            RA = { j: j, s: s, a: a, kap: kap, k: bil.k, ox: px - ux * k, oy: s.y - 410 * k, w: d.vb[2] * k, h: d.vb[3] * k, z: 0 };
+            sayfaCiz();                                          /* koyu harf çekilir, yerinde yazılır */
+            hySifirla(a);
+            a.bitince = function () { if (RA && RA.a === a) RA.z = setTimeout(raBitir, 1200); };
+            hyOynat(a, HY_HIZ[hiz] || 1);
+        }, function () { if (bizden) bildir('Harfin yazılış animasyonu yüklenemedi', true); });
+    }
+    function raKonumla() {
+        if (_raSol && UI && UI.vy0 !== _raSol.vy0) raSolKaldir();         /* solarken kâğıt kaydı */
+        if (!RA || !UI || !D || UI.vx0 == null) return;
+        var sy = D.sayfalar[RA.j];
+        if (!dikeyMi() || !sy || (sy.silik || []).indexOf(RA.s) < 0) { raDurdur(true, true); return; }   /* harf kalktı / taşındı */
+        var o = UI.cssOlcek, x = (RA.ox - UI.vx0) * o, y = (RA.j * sayfaYuk() + RA.oy - UI.vy0) * o, st = RA.a.svg.style;
+        st.transform = 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px)';
+        st.width = (RA.w * o).toFixed(2) + 'px';
+        st.height = (RA.h * o).toFixed(2) + 'px';
+    }
+    function raSolKaldir() {
+        if (!_raSol) return;
+        var k = _raSol.kap;
+        _raSol = null;
+        if (k.parentNode) k.parentNode.removeChild(k);
+    }
+    function raBitir() {                                         /* yazıldı, durdu: solarak koyu harfe döner */
+        if (!RA) return;
+        var r = RA;
+        RA = null;
+        clearTimeout(r.z); hyDurdur(r.a);
+        raSolKaldir();
+        sayfaCiz();
+        _raSol = { kap: r.kap, vy0: UI ? UI.vy0 : 0 };
+        r.kap.classList.add('sol');
+        setTimeout(function () { if (_raSol && _raSol.kap === r.kap) raSolKaldir(); }, 380);
+    }
+    function raDurdur(sessiz, cizme) {
+        _raTok++;
+        raSolKaldir();
+        if (!RA) return;
+        var r = RA;
+        RA = null;
+        clearTimeout(r.z); hyDurdur(r.a);
+        if (r.kap.parentNode) r.kap.parentNode.removeChild(r.kap);
+        if (!cizme) sayfaCiz();
+        if (!sessiz && yLider()) yGonder({ t: 'ra', j: -1 });
+    }
+    /* yansıtma: liderin dokunduğu rehber harf izleyende de yazılır (j < 0: durur) */
+    function yRehber(m) {
+        if (!m || m.j == null || m.j < 0) { raDurdur(true); return; }
+        var sy = D.sayfalar[m.j], s = null;
+        (sy && sy.silik || []).forEach(function (x) {
+            if (!s && x.k === 'm' && x.t === m.tx && Math.abs(x.x - m.x) < 0.6 && Math.abs(x.y - m.y) < 0.6) s = x;
+        });
+        if (!s) return;
+        silikGoster(m.j, s.y - s.b, s.y + s.b * 0.6);           /* tahtada görünmüyorsa oraya kayar */
+        rehberOynat(m.j, s, false, parseInt(m.z, 10));
+    }
+
     window.KidefYaziSayfasi = {
         ac: ac, kapat: kapat, kucult: kucult, buyut: buyut, tekBasina: tekBasina,
         tek: function () { return TEK; }, adres: defterAdresi,
@@ -4742,6 +4958,7 @@
                  satirlar: yaziSatirlari, kodla: silikKodla, coz: silikCoz,
                  liste: function () { return D ? D.sayfalar.map(function (x) { return (x.silik || []).slice(); }) : null; } },
         _tamSifirla: function () { if (UI) UI.tamDenendi = false; },      /* deneme */
+        _rehber: function () { return RA ? { j: RA.j, t: RA.s.t, x: RA.s.x, y: RA.s.y, k: RA.k } : null; },   /* deneme (v24) */
         bagli: function () { return BAGLI; },
         gorunum: function () { return UI ? { x0: UI.vx0, x1: UI.vx1, c: UI.c, cy: UI.cy, y0: UI.vy0, y1: UI.vy1, Lh: UI.Lh,
                                              pw: D.pw, aktif: D.aktif, n: D.sayfalar.length, dikey: !!UI.dikey, anim: !!UI.anim, pay: UI.ustPay || 0 } : null; },

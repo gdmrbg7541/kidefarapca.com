@@ -6,6 +6,14 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#16A085">
 <title>Defter — Kidef Arapça</title>
+<!-- Google Analytics (24.10.2026, öğretmen: "deftere ekleyelim") — sitenin öteki sayfalarındakiyle aynı ölçüm kimliği -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9JD15KLW');
+</script>
 <!-- DEFTER AYRI SEKMEDE (21.10.2026) — öğretmen: "defter ayrı sekmede ve tam
      ekran olarak aç, tam ekrandan çıkınca kidefarapca sitesinin anasayfasına
      giden bi tuş görünsün". Ana sayfadaki Sınıflarım'da sağ alttaki Defter
@@ -36,7 +44,9 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script src="sistem/rol.js?v=c2c8fb6a"></script>
-<script src="sistem/yazisayfasi.js?v=8eaba718"></script>
+<!-- DENEME HAKLARI (24.10.2026): PDF indir ve Geçmiş — destek vermeyen öğretmene haftada 5 -->
+<script src="sistem/hak.js?v=8ad0e455"></script>
+<script src="sistem/yazisayfasi.js?v=e192d133"></script>
 <script>
 (function () {
   'use strict';

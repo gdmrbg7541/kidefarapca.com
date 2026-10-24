@@ -729,6 +729,43 @@
     url: function (s) { return 'defter.html?yazi=' + encodeURIComponent(sayi(s)); }
   });
 
+  /* ---- OKUMA HIZLANDIRMA (24.10.2026) ----
+     Öğretmen: "okumayı güçlendirmek için bi çalışma yapalım ... amaç hızına göre
+     öğrenciyi değerlendirmek" · "okuma hızlandırma adında bi kart olarak sınıf
+     materyallerine de ekle". İmam Hatip'te 5-10. sınıfların hepsinde.
+     Hedef : okumahiz.html?sinif=N — sınıfın kitabından 18 okuma (kısa · orta ·
+             uzun), ses oynatıcı, üç ölçme: süre tut · sesle birlikte (0,75×→1,5×)
+             · mikrofon. Giriş gerekmez; öğretmen girişliyse öğrenci adına kayıt.
+             alfabe.html «Okuma» sekmesinde de «Hızlandırma» çipiyle açılır. */
+  function okumaHizSvg() {
+    return '<svg viewBox="0 0 64 64" class="kg" aria-hidden="true">' +
+      '<rect x="5" y="7" width="46" height="37" rx="8" fill="#fff" stroke="#16A085" stroke-width="2.6"/>' +
+      '<text x="28" y="28" font-size="14" fill="#0F2A43" text-anchor="middle">اِقْرَأْ</text>' +
+      '<path d="M43 36H13" stroke="#E2E8F0" stroke-width="3.6" stroke-linecap="round"/>' +
+      '<path d="M43 36H13" stroke="#16A085" stroke-width="3.6" stroke-linecap="round" stroke-dasharray="30" stroke-dashoffset="30">' +
+        '<animate attributeName="stroke-dashoffset" values="30;0;0;30" keyTimes="0;.6;.85;1" dur="3s" repeatCount="indefinite"/></path>' +
+      '<circle cx="47" cy="47" r="11" fill="#FFF7E6" stroke="#F39C12" stroke-width="2.6"/>' +
+      '<path d="M44 33.2h6M47 33.2v2.6" stroke="#F39C12" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<path d="M47 47v-7" stroke="#0F2A43" stroke-width="2.4" stroke-linecap="round">' +
+        '<animateTransform attributeName="transform" type="rotate" values="0 47 47;360 47 47" dur="3s" repeatCount="indefinite"/></path>' +
+      '<circle cx="47" cy="47" r="1.8" fill="#0F2A43"/>' +
+      '</svg>';
+  }
+
+  ekle({
+    id: 'okumahiz',
+    ad: 'Okuma Hızlandırma',
+    sira: 13,                      /* Yazı Çalışması'ndan sonra */
+    renk: '#F39C12',
+    svg: okumaHizSvg,
+    aciklama: function () { return 'Dinle, sesli oku, hızını ölç'; },
+    veriVar: function (s) {
+      var n = sayi(s);
+      return (n >= 5 && n <= 10) ? { rozet: '18 Okuma' } : null;
+    },
+    url: function (s) { return 'okumahiz.html?sinif=' + encodeURIComponent(sayi(s)); }
+  });
+
   /* ---- Sonraki kartlar buraya: aynı kalıpla ekle({...}) ---- */
 
   stilKur();
