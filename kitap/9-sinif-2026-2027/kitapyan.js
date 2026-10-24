@@ -301,6 +301,10 @@
    sayfası Firebase'i yüklemeden yalnız orayı okur; misafir (anonim)
    kimlik giriş sayılmaz. Depo yoksa hiçbir şey OLUŞTURULMAZ.
    Bilgisayardan (file://) açılan indirilmiş kopyada gizleme yok.
+   KALEM DE YALNIZ GİRİŞ YAPANLARA (24.10.2026) — öğretmen: "flipbooklarda
+   öğretmen veya herhangi bi giriş yapmayınca da kalemle yazma özelliği kapalı
+   olacaktı": girişsizken Kalem düğmesi görünmez, P kısayolu çalışmaz, açık
+   kalem kapanır. Sınıf Ekranı kumandanın kalemini yine gösterir.
    ============================================================ */
 (function () {
   'use strict';
@@ -311,7 +315,7 @@
   try {
     var st = document.createElement('style');
     st.id = 'ikStil';
-    st.textContent = 'html.ik-girissiz #tIndir, html.ik-girissiz #pIndir,' +
+    st.textContent = 'html.ik-girissiz #tIndir, html.ik-girissiz #pIndir, html.ik-girissiz #tKalem, html.ik-girissiz .kk-tus,' +
       ' html.ik-girissiz a[download]:not([href^="blob:"]):not([href^="data:"]){display:none !important}';
     (document.head || kok).appendChild(st);
   } catch (e) { }
@@ -373,9 +377,30 @@
     }
   }, true);
 
+  /* kalem: girişsizken basılamaz, P çalışmaz (24.10.2026) */
+  document.addEventListener('click', function (e) {
+    if (izin === true || !e.isTrusted || !e.target || !e.target.closest) return;
+    if (e.target.closest('#tKalem, .kk-tus')) {
+      e.preventDefault(); e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    }
+  }, true);
+  window.addEventListener('keydown', function (e) {
+    if (izin === true || !e.isTrusted || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key !== 'p' && e.key !== 'P') return;
+    var h = e.target || {};
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(h.tagName || '') || h.isContentEditable) return;
+    e.preventDefault(); e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+  }, true);
+  function kalemKapat() {
+    var k = document.getElementById('tKalem');
+    if (k && k.getAttribute('aria-pressed') === 'true') { try { k.click(); } catch (x) { } }
+  }
   function tazele() {
     girisVarMi().then(function (v) {
       izin = v;
+      if (!v) kalemKapat();
       kok.classList.toggle('ik-girissiz', !v);
     });
   }
