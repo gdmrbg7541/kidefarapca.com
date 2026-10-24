@@ -412,3 +412,19 @@ html.kk-acik body .tost { bottom: calc(var(--kk-ust, 90px) + 12px); }
 @media (prefers-reduced-motion: reduce) {
   .kk-palet, .kk-ipucu, .kk-parla { animation: none !important; }
 }
+
+/* ============================================================================
+   AKICI İKİ PARMAK + METİN KATMANI                               (24.10.2026)
+   Yalnız veri.js'inde açık olan kitapta çalışır (kitapzoom.js 5. ve 9. bölüm).
+   ========================================================================== */
+/* Kıstırırken kap tek katman olarak ölçeklenir (akıcı); bırakınca sınıf
+   kalkar, tarayıcı sayfayı yeni boyunda yeniden ve net çizer. */
+.kaydir.pinch { will-change: transform; }
+/* Sayfa resminin üstündeki çizgi yazılar. Kitabın ".yuz img" biçimi kâğıt
+   rengi zemin veriyor; yazı katmanı saydam olmalı. Katman (.katman: ses,
+   etkinlik düğmeleri, kalem) ve sayfa numarası üstte kalır. */
+.yuz img.metin {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+  background: transparent !important; pointer-events: none; z-index: 1;
+  -webkit-user-drag: none; user-select: none;
+}

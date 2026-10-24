@@ -34,6 +34,10 @@
      sayfası ve yakınlığı Sınıf Ekranı'na da gider (aşağıda 7. bölüm).
    · KALEM (23.10.2026): sayfaya yapışan, kâğıda yazılmış gibi duran yazı;
      nerede kalındığını gösterir, tahtaya da yansır (aşağıda 8. bölüm).
+   · AKICI İKİ PARMAK (24.10.2026): veri.js'te pinch: 'akici' olan kitapta
+     sayfa parmakları birebir izler, bırakınca kademeye oturur (5. bölüm).
+   · METİN KATMANI (24.10.2026): veri.js'te metin varsa yazılar PDF'ten
+     çizgi olarak sayfanın üstünde durur, her büyütmede net (9. bölüm).
 
    SAĞDAN SOLA KİTAPLAR (rtl: true)
    --------------------------------
@@ -80,6 +84,9 @@
       '.nokta,[data-git],.html-sayfa a,button,a,input,select,.panel,.kk-palet,.kk-ipucu';
 
     var ENAZ = 1, ENCOK = ayar.encok || 5;
+    /* AKICI PINCH (24.10.2026): kitabın veri.js'inde pinch: 'akici' ise iki
+       parmakla yakınlaşma parmakları birebir izler (5. bölüm). Pilot: 8. sınıf. */
+    var AKICI = (ayar.pinch || (kok.KITAP_VERI && kok.KITAP_VERI.pinch)) === 'akici';
     var z = { o: 1, x: 0, y: 0 };
 
     /* --------------------------------------------------------------
@@ -99,7 +106,7 @@
         bilgi.classList.toggle('gor', z.o > 1.02);
       }
       sahne.classList.toggle('yakin', z.o > 1.02);
-      flip.kilitli = z.o > 1.02 || !!panelAcik() || tanitimAcik || kalemAcik();   /* kalem: 8. bölüm */
+      flip.kilitli = z.o > 1.02 || !!panelAcik() || tanitimAcik || kalemAcik() || pinchAktif;   /* kalem: 8. bölüm · iki parmak: 5. bölüm */
       oklariGuncelle();
       tkZamanla();                       /* tahtaya yansıtma (7. bölüm) */
     }
@@ -186,6 +193,7 @@
     /* yeni oran; mx,my verilirse O NOKTA sabit kalacak şekilde büyütür */
     function zAyarla(yeni, mx, my) {
       if (engelli()) return;               /* Sınıf Ekranı: görünüm kumandadan gelir */
+      atalet(false);                       /* fırlatılmış sayfa durur (5. bölüm) */
       yeni = Math.max(ENAZ, Math.min(ENCOK, yeni));
       var r = sahne.getBoundingClientRect();
       if (mx == null) { mx = r.width / 2; my = r.height / 2; }
@@ -198,8 +206,8 @@
       zUygula(true);
     }
 
-    if (ayar.yaklas) ayar.yaklas.addEventListener('click', function () { zAyarla(z.o * 1.5); });
-    if (ayar.uzaklas) ayar.uzaklas.addEventListener('click', function () { zAyarla(z.o / 1.5); });
+    if (ayar.yaklas) ayar.yaklas.addEventListener('click', function () { zAyarla(AKICI ? komsuKademe(z.o, 1) : z.o * 1.5); });
+    if (ayar.uzaklas) ayar.uzaklas.addEventListener('click', function () { zAyarla(AKICI ? komsuKademe(z.o, -1) : z.o / 1.5); });
 
     /* Piksel piksel gezinme — tekerlek/iki parmak için. zKaydir() oransal
        çalışıyor (yön tuşları için); burada hareketin kendi uzunluğu gerekli. */
@@ -225,6 +233,7 @@
       if (sikistir) {
         var r = sahne.getBoundingClientRect();
         zAyarla(z.o * Math.exp(-e.deltaY / 220), e.clientX - r.left, e.clientY - r.top);
+        if (AKICI) tekerKademe(e.clientX - r.left, e.clientY - r.top);   /* 5. bölüm */
         return;
       }
       /* deltaMode: 0 piksel, 1 satır, 2 sayfa */
@@ -453,18 +462,26 @@
        -------------------------------------------------------------- */
     var pan = null;
     sahne.addEventListener('pointerdown', function (e) {
-      if (z.o <= 1.02 || kalemAcik()) return;           /* kalemde tek parmak yazar, iki parmak gezdirir */
+      atalet(false);                                     /* fırlatılmış sayfa dokununca durur */
+      if (z.o <= 1.02 || kalemAcik() || pinchAktif) return;   /* kalemde tek parmak yazar, iki parmak gezdirir */
       if (e.target.closest(YOKSAY)) return;
-      pan = { x: e.clientX, y: e.clientY, zx: z.x, zy: z.y };
+      pan = { id: e.pointerId, x: e.clientX, y: e.clientY, zx: z.x, zy: z.y, iz: [] };
       sahne.style.cursor = 'grabbing';
     });
     kok.addEventListener('pointermove', function (e) {
-      if (!pan) return;
+      /* 24.10.2026: yalnız sürüklemeyi başlatan parmak gezdirir (ikinci parmak
+         sayfayı oynatmasın); kıstırırken gezinmeyi 5. bölüm yapar */
+      if (!pan || pinchAktif || (pan.id != null && e.pointerId !== pan.id)) return;
       z.x = pan.zx + (e.clientX - pan.x);
       z.y = pan.zy + (e.clientY - pan.y);
+      if (AKICI) { pan.iz.push([performance.now(), e.clientX, e.clientY]); if (pan.iz.length > 8) pan.iz.shift(); }
       sinirla(); zUygula(false);
     });
-    kok.addEventListener('pointerup', function () { pan = null; sahne.style.cursor = ''; });
+    kok.addEventListener('pointerup', function (e) {
+      var p = pan; pan = null; sahne.style.cursor = '';
+      if (AKICI && p && !pinchAktif && (p.id == null || e.pointerId === p.id)) atalet(true, p.iz);
+    });
+    kok.addEventListener('pointercancel', function (e) { if (e.isTrusted) { pan = null; sahne.style.cursor = ''; } });
 
     /* --------------------------------------------------------------
        5) İki parmak pinch (dokunmatik)
@@ -486,7 +503,7 @@
     var PINCH_PIKSEL = 36;   /* ... ve en az bu kadar piksel */
     var pinch = null;
     sahne.addEventListener('touchstart', function (e) {
-      if (e.touches.length === 2) {
+      if (e.touches.length === 2 && !AKICI) {           /* akıcı kitapta aşağıdaki işleyici */
         var a = e.touches[0], b = e.touches[1];
         pinch = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), bitti: false };
         bolgeDokun = null;                     /* kıstırma: bekleyen bölge dokunuşu iptal */
@@ -508,6 +525,160 @@
         (a.clientX + b.clientX) / 2 - r.left, (a.clientY + b.clientY) / 2 - r.top);
     }, { passive: false });
     sahne.addEventListener('touchend', function (e) { if (e.touches.length < 2) pinch = null; }, { passive: true });
+
+    /* AKICI PINCH (24.10.2026) — öğretmen: "flipbooka iki parmakla yaklaşmayı
+       daha hassas ve işlevsel bi hale getirmek istiyorum"; bırakınca:
+       "kademeye otursun". Yalnız veri.js'inde pinch: 'akici' olan kitapta
+       (pilot: 8. sınıf); öbür kitaplarda yukarıdaki kademeli pinch sürer.
+       · Sayfa parmakları birebir izler: parmakların ortasındaki nokta
+         parmakların altında kalır; iki parmakla aynı anda kaydırılır.
+       · Başta 8 piksellik pay: parmak titremesi büyütmez (08.10.2026'da
+         kademeli pinch'e geçilmesinin sebebi buydu).
+       · Bırakınca en yakın kademeye yumuşakça oturur (%100 150 200 300 400
+         500); + ve − düğmeleri ve trackpad de bu kademelerle. Sınırın ötesine
+         biraz esner, bırakınca geri gelir.
+       · İkinci parmak inince ilk parmağın yaprak çevirmesi ve bölge dokunuşu
+         iptal: kıstırma sayfa çevirmez, bölge büyütmez.
+       · Bir parmak kalınca o parmakla gezinme sürer. */
+    var KADEMELER = [1, 1.5, 2, 3, 4, 5];
+    var pinchAktif = false, PK = null, pkKare = 0, dokunan = {}, tekerZ = 0;
+    function kademe(o) {
+      var en = ENAZ, fark = Infinity;
+      KADEMELER.forEach(function (k) {
+        if (k < ENAZ || k > ENCOK) return;
+        var d = Math.abs(Math.log(o / k));
+        if (d < fark) { fark = d; en = k; }
+      });
+      return en;
+    }
+    function komsuKademe(o, yon) {
+      var L = KADEMELER.filter(function (k) { return k >= ENAZ && k <= ENCOK; });
+      if (yon > 0) { for (var i = 0; i < L.length; i++) if (L[i] > o * 1.02) return L[i]; return ENCOK; }
+      for (var j = L.length - 1; j >= 0; j--) if (L[j] < o / 1.02) return L[j];
+      return ENAZ;
+    }
+    function lastik(o) {                                 /* sınırın ötesinde direnç */
+      if (o > ENCOK) return ENCOK * Math.pow(o / ENCOK, 0.35);
+      if (o < ENAZ) return ENAZ * Math.pow(o / ENAZ, 0.35);
+      return o;
+    }
+    function tekerKademe(mx, my) {
+      clearTimeout(tekerZ);
+      tekerZ = setTimeout(function () {
+        tekerZ = 0;
+        var k = kademe(z.o);
+        if (Math.abs(k - z.o) > 0.002) zAyarla(k, mx, my);
+      }, 220);
+    }
+    function ikiParmak(e) {
+      var a = e.touches[0], b = e.touches[1], r = sahne.getBoundingClientRect();
+      return { d: Math.max(1, Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)),
+               x: (a.clientX + b.clientX) / 2 - r.left, y: (a.clientY + b.clientY) / 2 - r.top,
+               w: r.width, h: r.height };
+    }
+    function pkUygula() {
+      pkKare = 0;
+      if (!PK || !PK.basladi) return;
+      var s = PK.son, b = PK.bas;
+      var o = lastik(PK.o0 * s.d / b.d), k = o / PK.o0;
+      /* başlangıçta parmak ortasının altındaki nokta şimdi de parmak ortasının altında */
+      z.x = (s.x - s.w / 2) - ((b.x - b.w / 2) - PK.x0) * k;
+      z.y = (s.y - s.h / 2) - ((b.y - b.h / 2) - PK.y0) * k;
+      z.o = o;
+      sinirla();
+      zUygula(false);
+    }
+    function pkBitir(e) {
+      if (e.touches && e.touches.length >= 2) return;
+      if (!PK) {
+        if (pinchAktif) { pinchAktif = false; kaydir.classList.remove('pinch'); zUygula(false); }
+        return;
+      }
+      if (pkKare) { cancelAnimationFrame(pkKare); pkUygula(); }
+      var p = PK.son, basladi = PK.basladi;
+      PK = null; pinchAktif = false;
+      kaydir.classList.remove('pinch');
+      if (basladi) zAyarla(kademe(z.o), p.x, p.y);         /* en yakın kademeye yumuşakça */
+      else zUygula(false);                                  /* kilidi gerçek duruma göre kur */
+      if (e.touches && e.touches.length === 1 && z.o > 1.02 && !kalemAcik()) {
+        var t = e.touches[0];                               /* kalan parmakla gezinme sürer */
+        pan = { id: null, x: t.clientX, y: t.clientY, zx: z.x, zy: z.y, iz: [] };
+      }
+    }
+    if (AKICI) {
+      /* ikinci parmak inerken (dokunuş olaylarından ÖNCE gelir): yaprak
+         sürüklenmesin, bölge büyümesin, ilk parmağın işi iptal */
+      sahne.addEventListener('pointerdown', function (e) {
+        if (e.pointerType !== 'touch') return;
+        if (e.isPrimary) dokunan = {};
+        var once = Object.keys(dokunan);
+        dokunan[e.pointerId] = 1;
+        if (!once.length || engelli()) return;
+        pinchAktif = true; pan = null; bolgeDokun = null;
+        flip.kilitli = true;
+        if (!kalemAcik()) {
+          try {
+            kok.dispatchEvent(new PointerEvent('pointercancel', { pointerId: +once[0], pointerType: 'touch', bubbles: true }));
+          } catch (x) { }
+        }
+      }, true);
+      kok.addEventListener('pointerup', function (e) { delete dokunan[e.pointerId]; }, true);
+      kok.addEventListener('pointercancel', function (e) { if (e.isTrusted) delete dokunan[e.pointerId]; }, true);
+      sahne.addEventListener('touchstart', function (e) {
+        if (e.touches.length !== 2 || engelli()) return;
+        atalet(false);
+        var p = ikiParmak(e);
+        PK = { bas: p, son: p, basladi: false, o0: z.o, x0: z.x, y0: z.y };
+        pinchAktif = true; pan = null; bolgeDokun = null;
+        kaydir.classList.add('pinch');
+        zUygula(false);
+      }, { passive: true });
+      sahne.addEventListener('touchmove', function (e) {
+        if (!PK || e.touches.length !== 2) return;
+        e.preventDefault();
+        var p = ikiParmak(e);
+        if (!PK.basladi) {                                  /* titreme payı: 8 piksel */
+          if (Math.abs(p.d - PK.bas.d) < 8 && Math.hypot(p.x - PK.bas.x, p.y - PK.bas.y) < 8) return;
+          PK.basladi = true;                                /* aşıldı: parmaklar ilk yerlerinden birebir */
+        }
+        PK.son = p;
+        if (!pkKare) pkKare = requestAnimationFrame(pkUygula);
+      }, { passive: false });
+      sahne.addEventListener('touchend', pkBitir, { passive: true });
+      sahne.addEventListener('touchcancel', pkBitir, { passive: true });
+    }
+
+    /* ATALET (24.10.2026, akıcı kitapta): büyükken tek parmakla hızlıca
+       sürükleyip bırakınca sayfa kaymaya devam eder, yavaşlayarak durur.
+       Dokununca, büyütme değişince ya da sınıra gelince durur. */
+    var AT = null;
+    function atalet(basla, iz) {
+      if (AT) { cancelAnimationFrame(AT.k); AT = null; }
+      if (!basla || !iz || iz.length < 2 || z.o <= 1.02) return;
+      var son = iz[iz.length - 1], ilk = son;
+      if (performance.now() - son[0] > 80) return;          /* durup bıraktı */
+      for (var j = iz.length - 2; j >= 0; j--) { if (son[0] - iz[j][0] > 100) break; ilk = iz[j]; }
+      var dt = son[0] - ilk[0];
+      if (dt < 8) return;
+      var vx = (son[1] - ilk[1]) / dt, vy = (son[2] - ilk[2]) / dt, hiz = Math.hypot(vx, vy);
+      if (hiz < 0.3) return;
+      if (hiz > 2.5) { vx *= 2.5 / hiz; vy *= 2.5 / hiz; }  /* çok sert fırlatma da ölçülü kaysın */
+      AT = { vx: vx, vy: vy, t: performance.now(), k: 0 };
+      var adim = function (t) {
+        if (!AT) return;
+        var d = Math.min(50, Math.max(0, t - AT.t)); AT.t = t;   /* yavaş cihazda da süreye göre yavaşlar */
+        var hx = z.x + AT.vx * d, hy = z.y + AT.vy * d;
+        z.x = hx; z.y = hy; sinirla();
+        if (Math.abs(z.x - hx) > 0.5) AT.vx = 0;           /* sınıra dayandı */
+        if (Math.abs(z.y - hy) > 0.5) AT.vy = 0;
+        zUygula(false);
+        var f = Math.pow(0.92, d / 16);                     /* ~1 saniyede durur */
+        AT.vx *= f; AT.vy *= f;
+        if (Math.hypot(AT.vx, AT.vy) < 0.03) { AT = null; return; }
+        AT.k = requestAnimationFrame(adim);
+      };
+      AT.k = requestAnimationFrame(adim);
+    }
 
 
     /* --------------------------------------------------------------
@@ -1462,6 +1633,7 @@
       if (Object.keys(KK.dok).length < 2) return;
       var o = kkOrta(), dx = o.x - KK.iki.x, dy = o.y - KK.iki.y;
       KK.iki = o;
+      if (AKICI) return;                                  /* akıcı pinch kaydırmayı da yapar (5. bölüm) */
       if (z.o <= 1.02 || (!dx && !dy)) return;
       z.x += dx; z.y += dy;
       sinirla(); zUygula(false);
@@ -1897,6 +2069,61 @@
       sec: kkAracSec, geriAl: kkGeriAl, temizle: kkTemizle, git: kkYereGit, kodla: kkKodla, coz: kkCoz
     };
 
+    /* --------------------------------------------------------------
+       9) METİN KATMANI                                      (24.10.2026)
+       Öğretmen: "görseller değil ama metinlerin kalitesi çok yüksek olmalı".
+       Kitabın veri.js'inde metin: { kok, v, yok } varsa açık ve yakın
+       sayfalarda sayfa resminin yerine yazısız zemin (zemin/NNN.webp) ve
+       üstüne PDF'ten çıkarılmış çizgi yazılar (metin/NNN.svg) konur: yazılar
+       her büyütmede ve her ekranda net. İkisi de gelmeden hiçbir şey
+       değişmez; biri gelmezse bugünkü sayfa resmi kalır. Bilgisayara
+       indirilmiş kopyada (file://) kapalı. Üreten:
+       _kaynak/uretici/metinKatmani.py
+       -------------------------------------------------------------- */
+    (function metinKatmani() {
+      var V = kok.KITAP_VERI || {}, M = ayar.metin || V.metin;
+      if (!M || !M.kok || location.protocol === 'file:' || !flip.yapraklar) return;
+      var yok = {};
+      (M.yok || []).forEach(function (n) { yok[n] = 1; });
+      var ek = M.v ? '?v=' + M.v : '';
+      function adres(kls, no, uz) { return M.kok + kls + '/' + ('00' + no).slice(-3) + uz + ek; }
+      function uygula(yuz) {
+        if (!yuz || !yuz.dataset || yuz.dataset.metin) return;
+        var no = +yuz.dataset.sayfa;
+        if (!no || yok[no] || no > flip.toplam || !yuz.dataset.tamGeldi || yuz.classList.contains('uretilmedi')) return;
+        var img = yuz.querySelector('img');
+        if (!img) return;
+        yuz.dataset.metin = 'bekliyor';
+        var zemin = new Image(), yazi = new Image(), gelen = 0, bozuk = false;
+        var geldi = function () {
+          if (bozuk || ++gelen < 2) return;
+          yazi.className = 'metin'; yazi.alt = ''; yazi.draggable = false;
+          yazi.setAttribute('aria-hidden', 'true');
+          yuz.insertBefore(yazi, yuz.querySelector('.katman'));
+          img.src = zemin.src;
+          yuz.dataset.metin = '1';
+        };
+        var gelmedi = function () { bozuk = true; yuz.dataset.metin = 'yok'; };
+        zemin.onload = geldi; yazi.onload = geldi;
+        zemin.onerror = gelmedi; yazi.onerror = gelmedi;
+        zemin.src = adres('zemin', no, '.webp');
+        yazi.src = adres('metin', no, '.svg');
+      }
+      function yakinlar() {                                  /* açık yayılım ve iki yanı */
+        var a = Math.max(0, flip.c - 1), b = Math.min(flip.yapraklar.length - 1, flip.c + 1);
+        for (var i = a; i <= b; i++) {
+          var y = flip.yapraklar[i];
+          if (y) { uygula(y.children[0]); uygula(y.children[1]); }
+        }
+      }
+      try {                                                  /* sayfa resmi gelince (flip.js data-tam-geldi) */
+        new MutationObserver(yakinlar).observe(flip.kap, { subtree: true, attributes: true, attributeFilter: ['data-tam-geldi'] });
+      } catch (x) { }
+      var onceki = flip.degisti;
+      flip.degisti = function () { var r = onceki.apply(this, arguments); yakinlar(); return r; };
+      yakinlar();
+    })();
+
     zUygula(false);
 
     /* --------------------------------------------------------------
@@ -1913,7 +2140,8 @@
       tanitimAcikMi: function () { return tanitimAcik; },
       gorunum: tkGorunum,                  /* yansıtmadaki görünüm (23.10.2026) */
       tahta: function () { return { kanal: !!TK.k, canli: TK.canli, lider: tkLider(), izleyen: tkIzleyen() }; },
-      kalem: kkDis                         /* kalem (23.10.2026) */
+      kalem: kkDis,                        /* kalem (23.10.2026) */
+      pinch: function () { return { akici: AKICI, aktif: pinchAktif, kilit: !!flip.kilitli }; }   /* deneme için (24.10.2026) */
     });
   };
 })(window);

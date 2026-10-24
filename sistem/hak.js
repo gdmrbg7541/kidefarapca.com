@@ -44,6 +44,9 @@
      KidefHak.bagla({ secici: özellik | {oz, kosul}, … })  tıklamaları yakalar
      KidefHak.rozetBagla({ secici: özellik })  yalnız rozet (tıklama yakalanmaz)
      KidefHak.durumYaz(o) · KidefHak.uid(u) ('' = oturum kapalı) · hedefYaz(o)
+     KidefHak.girisIste(oz)            → giriş yapmamış ziyaretçiye «Giriş yap, destek
+                                        ol» penceresi (flipbookta Kalem / İndir,
+                                        kitapyan.js; 24.10.2026)
    Tahtadaki yinelenen tıklar (isTrusted: false) hak harcamaz, pencere açmaz.
    ===================================================================== */
 (function () {
@@ -166,6 +169,8 @@
       '.kh-kutu .kh-destek svg{width:18px;height:18px}' +
       '.kh-kutu .kh-kapat{background:#F1F5F9;color:#2C3E50}' +
       '.kh-kutu small{display:block;margin-top:10px;color:#94A3B8;font-size:.8rem;line-height:1.45}' +
+      '.kh-kutu p.kh-istege{margin:-6px 0 16px;padding:9px 12px;border-radius:12px;background:#F1FAF4;border:1px solid #CFEBD9;color:#1E6B45;font-size:.9rem}' +
+      '.kh-kutu p.kh-istege b{color:#1E8449}' +
       '.kh-bildir{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:2147483001;max-width:calc(100% - 32px);box-sizing:border-box;' +
         'background:#0F2A43;color:#fff;border-radius:14px;padding:10px 16px;font:700 .9rem/1.35 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;' +
         'box-shadow:0 12px 30px rgba(15,23,42,.3);animation:khGel .2s ease-out;pointer-events:none}' +
@@ -263,9 +268,27 @@
       '<h3>Bu haftaki deneme hakların bitti</h3>' +
       '<p><b>' + esc(AD[oz] || 'Bu araç') + '</b> Kidef\'e destek veren öğretmenlere sınırsız. Desteğin, sitenin yayın ve geliştirme ' +
         'giderlerini ve bu materyallerin arkasındaki öğretmen emeğini karşılıyor. Pazartesi yeniden ' + HAFTALIK + ' hakkın olur.</p>' +
+      '<p class="kh-istege"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin.</p>' +
       '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Destekle, sınırsız olsun</a>' +
       '<button type="button" class="kh-kapat">Kapat</button></div>' +
       refNot(), 'Deneme hakları bitti');
+  }
+  /* GİRİŞ YAPMAMIŞ ZİYARETÇİ (24.10.2026) — öğretmen: "flipbooklarda kalem ve
+     indir seçeneği giriş yapılmasada tuş olarak görünsün ama giriş yapmayanlar
+     için tıklayınca destek istensin, hatta ... isteğe bağlı olduğunu
+     vurgulayalım". Düğme sitenin «index.html#destek»ine gider: girişsizse orada
+     giriş penceresi açılır, girince destek kartı (hesap/destek.js). */
+  var KISA = { kitapKalem: 'Kalem', kitapIndir: 'İndirme' };
+  function girisPencere(oz) {
+    var ad = KISA[oz] || AD[oz] || 'Bu araç';
+    return pencere('<div class="kh-ik">' + KALP + '</div>' +
+      '<h3>' + esc(ad) + ', Kidef\'i destekleyenlere açık</h3>' +
+      '<p>Kidef\'in kalem ve indirme gibi araçları, öğretmenlerin desteğiyle ayakta duruyor. Giriş yapan öğretmen her hafta ' +
+        HAFTALIK + ' kez ücretsiz dener; destek olanlara sınırsız.</p>' +
+      '<p class="kh-istege"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin; ' +
+        'vermesen de Kidef\'i kullanmaya devam edersin.</p>' +
+      '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Giriş yap, destek ol</a>' +
+      '<button type="button" class="kh-kapat">Kapat</button></div>', ad + ' için destek');
   }
 
   /* hak harcar: sınırsızsa true; hak varsa rozet 5→4 canlanır, sonra true; yoksa pencere, false */
@@ -504,6 +527,7 @@
     },
     hedefBul: hedefBul, yeEki: yeEki,
     destekAdresi: function (a) { if (a) _destekAdres = a; return _destekAdres; },
+    girisIste: girisPencere,
     destekAc: null
   };
 })();

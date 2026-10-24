@@ -24,6 +24,14 @@
    DÜRÜSTLÜK NOTU: çıkışı cihazın kendisi yapar (tarayıcı uygulaması
    sunucu oturumunu iptal edemez). Site o cihazda hiç açılmazsa çıkış da
    ancak ilk açılışta olur.
+
+   YALNIZ ÖĞRETMEN VE YÖNETİCİ (24.10.2026) — öğretmen: "öğrenci giriş
+   yapıp çıkış tuşuna basınca cihazın açık olduğu cihazlar vs özellikler
+   olmasın, bu sadece öğretmen ve yönetici için kumanda özellikleri vs
+   açısından önemli". Öğrencide (ve rolü belli olmayanda) kayıt yazılmaz,
+   tuşta rozet yok, çıkış tuşu eski kısa onayı sorar; öğrencinin
+   belgesindeki eski cihaz kayıtları bir kez silinir, belge dinlenmez. Rol
+   hesabın belgesinden (role) okunur; belge gelmeden appState.userRole.
    ===================================================================== */
 (function () {
   'use strict';
@@ -118,12 +126,19 @@
 
   var D = {
     uid: null, liste: {}, ilkGeldi: false, yeniGiris: false, sonDurum: undefined,
-    cikiyor: false, dinleyici: null, istenen: {}     /* çıkış yaptırılan cihaz: istek zamanı */
+    cikiyor: false, dinleyici: null, istenen: {},    /* çıkış yaptırılan cihaz: istek zamanı */
+    rol: '', temiz: false                            /* hesabın rolü (belgeden) · öğrencide eski kayıt silindi mi */
   };
+  /* cihaz özellikleri yalnız öğretmen ve yöneticide (24.10.2026) */
+  function rolNe() {
+    if (D.rol) return D.rol;
+    try { return (typeof appState !== 'undefined' && appState && appState.userRole) || ''; } catch (e) { return ''; }
+  }
+  function yetkili() { var r = rolNe(); return r === 'teacher' || r === 'admin'; }
 
   function kayitYaz(zorla) {
     var u = kullanici();
-    if (!u || u.uid !== D.uid || !D.ilkGeldi || D.cikiyor) return;
+    if (!u || u.uid !== D.uid || !D.ilkGeldi || D.cikiyor || !yetkili()) return;
     var b = D.liste[CID], simdi = Date.now();
     var son = +yerelAl(ANAHTAR_YAZ + '_' + u.uid) || 0;
     var bil = cihazBilgi();
@@ -139,7 +154,7 @@
   /* Bu cihazın kaydını sil (çıkıştan ÖNCE: yetki gerekiyor) */
   function kendiniSil() {
     var u = kullanici();
-    if (!u) return Promise.resolve(false);
+    if (!u || !yetkili()) return Promise.resolve(false);           /* öğrencinin kaydı yok */
     var sil = null;
     try { sil = firebase.firestore.FieldValue.delete(); } catch (e) { return Promise.resolve(false); }
     return zamanAsimi(alanYaz(u.uid, sil), 1500);
@@ -172,6 +187,18 @@
   function snapGeldi(doc) {
     if (!doc || !doc.exists) { D.ilkGeldi = true; D.liste = {}; arayuzTazele(); return; }
     var v = doc.data() || {};
+    D.rol = String(v.role || '');
+    if (!yetkili()) {
+      /* öğrenci: cihaz özellikleri yok — eski kayıtlar bir kez silinir, dinleme biter (24.10.2026) */
+      D.liste = {}; D.ilkGeldi = true;
+      if (!D.temiz && v.cihazlar && typeof v.cihazlar === 'object' && Object.keys(v.cihazlar).length) {
+        D.temiz = true;
+        try { belge(D.uid).update({ cihazlar: firebase.firestore.FieldValue.delete() }).catch(function () { }); } catch (e) { }
+      }
+      if (D.dinleyici) { try { D.dinleyici(); } catch (e) { } D.dinleyici = null; }
+      arayuzTazele();
+      return;
+    }
     D.liste = (v.cihazlar && typeof v.cihazlar === 'object') ? v.cihazlar : {};
     var ilk = !D.ilkGeldi;
     D.ilkGeldi = true;
@@ -190,7 +217,7 @@
 
   function dinle(u) {
     if (D.dinleyici) { try { D.dinleyici(); } catch (e) { } D.dinleyici = null; }
-    D.liste = {}; D.ilkGeldi = false; D.istenen = {};
+    D.liste = {}; D.ilkGeldi = false; D.istenen = {}; D.rol = ''; D.temiz = false;
     if (!u) { arayuzTazele(); return; }
     var b = belge(u.uid);
     if (!b) return;
@@ -466,7 +493,7 @@
   function rozetTazele() {
     var t = document.getElementById('logout-btn');
     if (!t) return;
-    var n = kullanici() ? digerSayisi() : 0;
+    var n = (kullanici() && yetkili()) ? digerSayisi() : 0;       /* öğrencide rozet yok */
     var r = t.querySelector('.cih-rozet');
     if (n > 0) {
       stilKur();
@@ -482,14 +509,15 @@
   setInterval(arayuzTazele, 30000);
 
   /* Çıkış tuşu (hesap/auth.js → cikisOnayla) artık bu pencereyi açar.
-     Misafirde eskisi gibi doğrudan çıkar. */
+     Misafirde eskisi gibi doğrudan çıkar; öğrencide (24.10.2026) eski kısa
+     onay sorulur — cihaz listesi yalnız öğretmen ve yöneticide. */
   function onaySar() {
     if (typeof window.cikisOnayla !== 'function' || window.cikisOnayla.__kidefCihaz) return;
     var eski = window.cikisOnayla;
     var yeni = function () {
       var misafir = false;
       try { misafir = (typeof appState !== 'undefined' && appState.currentUser === 'Misafir Öğrenci'); } catch (e) { }
-      if (misafir || !kullanici()) return eski.apply(this, arguments);
+      if (misafir || !kullanici() || !yetkili()) return eski.apply(this, arguments);   /* öğrenci: kısa onay */
       pencereAc();
     };
     yeni.__kidefCihaz = 1;

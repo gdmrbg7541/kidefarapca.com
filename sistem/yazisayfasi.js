@@ -622,7 +622,7 @@
             cizgiDesen(ctx, a, b - 18, R);
             kenarCiz(ctx, b - 44);
             ctx.save();
-            ctx.fillStyle = '#9AA6B4'; ctx.font = '700 15px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+            ctx.fillStyle = '#9AA6B4'; ctx.font = '700 15px Arakom, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';   /* Arakom: 24.10.2026 */
             ctx.textAlign = 'left'; ctx.textBaseline = 'top';
             ctx.fillText(String(j + 1), a + 12, 7);
             ctx.restore();
@@ -1895,7 +1895,7 @@
                 ctx.strokeStyle = 'rgba(44,62,80,.2)'; ctx.lineWidth = Math.max(1.2, 1 / o); ctx.setLineDash([7, 6]);
                 ctx.beginPath(); ctx.moveTo(x0, j * H); ctx.lineTo(x1, j * H); ctx.stroke();
                 ctx.setLineDash([]);
-                ctx.fillStyle = '#9AA6B4'; ctx.font = '700 15px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+                ctx.fillStyle = '#9AA6B4'; ctx.font = '700 15px Arakom, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';   /* Arakom: 24.10.2026 */
                 ctx.textAlign = 'left'; ctx.textBaseline = 'top';
                 ctx.fillText(String(j + 1), x0 + 12, j * H + 7);
                 ctx.restore();
@@ -2473,7 +2473,7 @@
         ctx.drawImage(tmp, 0, 0);
         ctx.fillStyle = '#E2E7EE'; ctx.fillRect(28, PH + 6, PW - 56, 2);
         ctx.fillStyle = '#7A8594';
-        ctx.font = '600 28px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+        ctx.font = '600 28px Arakom, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';   /* Arakom: 24.10.2026 */
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'left';
         ctx.fillText((YAZI ? 'Yazı Çalışması' : 'Defter') + ' · ' + etiket() + ' · ' + tarihYaz(D.tarih || Date.now()), 28, PH + AY / 2 + 4);

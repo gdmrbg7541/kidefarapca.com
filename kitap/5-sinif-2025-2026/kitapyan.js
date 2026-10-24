@@ -1,4 +1,25 @@
 /* ============================================================
+   ARAYÜZ ARAKOM (24.10.2026)
+   Öğretmen: "sonradan eklediklerimizde arakom yazısı olmayan yazıları
+   var, onları klasördeki arakom tipiyle görelim". Kitap sitenin içinde
+   (kidefarapca.com/kitap/…) açılınca sitenin arakom-arayuz.css'i yüklenir:
+   araç çubuğu, paneller, pencereler, kalem takımı, deneme hakları Arakom;
+   kitap sayfaları (.sahne) kendi yazı tipinde kalır. Bilgisayara
+   indirilmiş kopyada (file://) değişiklik yok.
+   ============================================================ */
+(function () {
+  'use strict';
+  if (location.protocol === 'file:' || document.getElementById('arakomArayuz')) return;
+  var yol = location.pathname, i = yol.indexOf('/kitap/');
+  if (i < 0) return;
+  var l = document.createElement('link');
+  l.id = 'arakomArayuz';
+  l.rel = 'stylesheet';
+  l.href = yol.slice(0, i + 1) + 'arakom-arayuz.css?v=06c07a30';
+  (document.head || document.documentElement).appendChild(l);
+})();
+
+/* ============================================================
    YAN ARAÇ ÇUBUĞU — üstteki şeridi sola taşır              02.10.2026
    Öğretmen: "kitap iki sayfa açıkken çok küçük duruyor, yukardaki tüm
    araç çubukları sola alalım kitap seçme kısmının altına, açılıp
@@ -305,6 +326,13 @@
    öğretmen veya herhangi bi giriş yapmayınca da kalemle yazma özelliği kapalı
    olacaktı": girişsizken Kalem düğmesi görünmez, P kısayolu çalışmaz, açık
    kalem kapanır. Sınıf Ekranı kumandanın kalemini yine gösterir.
+   GİRİŞSİZKEN DE DÜĞME, TIKLAYINCA DESTEK (24.10.2026) — öğretmen:
+   "flipbooklarda kalem ve indir seçeneği giriş yapılmasada tuş olarak
+   görünsün ama giriş yapmayanlar için tıklayınca destek istensin": Kalem ve
+   İndir düğmeleri herkese görünür; girişsiz basınca (P de) iş yapılmaz,
+   sitenin destek penceresi açılır (sistem/hak.js girisIste: «Giriş yap,
+   destek ol», destek isteğe bağlı). Kaynaklardaki tek tek «İndir»
+   bağlantıları girişsizken yine gizli.
    ============================================================ */
 (function () {
   'use strict';
@@ -315,8 +343,8 @@
   try {
     var st = document.createElement('style');
     st.id = 'ikStil';
-    st.textContent = 'html.ik-girissiz #tIndir, html.ik-girissiz #pIndir, html.ik-girissiz #tKalem, html.ik-girissiz .kk-tus,' +
-      ' html.ik-girissiz a[download]:not([href^="blob:"]):not([href^="data:"]){display:none !important}';
+    /* 24.10.2026: Kalem ve İndir düğmeleri girişsizken de görünür (basınca destek penceresi) */
+    st.textContent = 'html.ik-girissiz a[download]:not([href^="blob:"]):not([href^="data:"]){display:none !important}';
     (document.head || kok).appendChild(st);
   } catch (e) { }
   kok.classList.add('ik-girissiz');
@@ -366,23 +394,27 @@
     });
   }
 
-  /* gizliyken bir yoldan tıklanırsa (ör. kalan bir kısayol) yine açılmasın */
+  /* girişsiz: İndir düğmesi ve paketleri iş yapmaz, destek penceresi açılır
+     (24.10.2026); kaynaklardaki gizli «İndir» bağlantıları sessizce durur */
   document.addEventListener('click', function (e) {
     if (izin === true || !e.target || !e.target.closest) return;
     var a = e.target.closest('a[download]');
     if (a && /^(blob|data):/i.test(a.getAttribute('href') || '')) a = null;   /* hazırlanan ZIP'in kendisi */
-    if (e.target.closest('#tIndir') || a) {
+    var d = e.target.closest('#tIndir, #pIndir [data-p]');
+    if (d || a) {
       e.preventDefault(); e.stopPropagation();
       if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      if (d && e.isTrusted) destekIste('kitapIndir');
     }
   }, true);
 
-  /* kalem: girişsizken basılamaz, P çalışmaz (24.10.2026) */
+  /* kalem: girişsizken açılmaz; basınca (P de) destek penceresi (24.10.2026) */
   document.addEventListener('click', function (e) {
     if (izin === true || !e.isTrusted || !e.target || !e.target.closest) return;
     if (e.target.closest('#tKalem, .kk-tus')) {
       e.preventDefault(); e.stopPropagation();
       if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      destekIste('kitapKalem');
     }
   }, true);
   window.addEventListener('keydown', function (e) {
@@ -392,7 +424,21 @@
     if (/^(INPUT|TEXTAREA|SELECT)$/.test(h.tagName || '') || h.isContentEditable) return;
     e.preventDefault(); e.stopPropagation();
     if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    if (!e.repeat) destekIste('kitapKalem');
   }, true);
+  /* girişsiz basışta sitenin destek penceresi (sistem/hak.js girisIste).
+     Giriş henüz anlaşılmadıysa önce o beklenir: girişliyse pencere çıkmaz,
+     ikinci basışta düğme her zamanki gibi çalışır. */
+  function destekIste(oz) {
+    function ac() {
+      var H = window.KidefHak;
+      if (H && typeof H.girisIste === 'function') { H.girisIste(oz); return; }
+      var y = location.pathname, i = y.indexOf('/kitap/');
+      try { window.open((i >= 0 ? y.slice(0, i + 1) : '/') + 'index.html#destek', '_blank'); } catch (x) { }
+    }
+    if (izin === false) { ac(); return; }
+    girisVarMi().then(function (v) { izin = v; kok.classList.toggle('ik-girissiz', !v); if (!v) ac(); });
+  }
   function kalemKapat() {
     var k = document.getElementById('tKalem');
     if (k && k.getAttribute('aria-pressed') === 'true') { try { k.click(); } catch (x) { } }

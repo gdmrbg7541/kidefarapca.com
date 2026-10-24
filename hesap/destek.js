@@ -912,6 +912,12 @@
             '#tpDestek .dst-buyuk small{font-size:1rem; font-weight:800; color:#8A7A66; margin-inline-start:6px;}',
             '#tpDestek .dst-sayi{font-size:.9rem; color:#5B5246;}',
             '#tpDestek .dst-sayi b{color:#1E8449; font-size:1.05rem;}',
+            /* 24.10.2026 öğretmen: "profildeki fiyat kısmının isteğe bağlı olduğunu vurgulayalım" */
+            '#tpDestek .dst-istege{display:inline-block; margin-inline-start:6px; padding:2px 9px; border-radius:999px; vertical-align:1px;',
+            '  background:#E9F7EF; color:#1E8449; border:1px solid #BFE5CC; font-size:.72rem; letter-spacing:.2px; text-transform:none;}',
+            '#tpDestek .dst-istege-not{display:block; font-size:.86rem; color:#1E6B45; background:#F1FAF4; border:1px solid #CFEBD9;',
+            '  border-radius:12px; padding:8px 11px; line-height:1.5;}',
+            '#tpDestek .dst-istege-not b{color:#1E8449;}',
             '.dst-cubuk{transform-box:fill-box; transform-origin:bottom; animation:dstBuyu .5s cubic-bezier(.3,1.3,.5,1) both;}',
             '@keyframes dstBuyu{from{transform:scaleY(0)}to{transform:scaleY(1)}}',
             '.dst-artti{animation:dstArtti 2.6s ease-in-out infinite;}',
@@ -1408,7 +1414,7 @@
 
         var ayda = h.pay > 0 ? Math.round(h.pay / DONEM_AY) : 0;
         var tutar = '<div class="dst-tutar">' +
-            '<span class="dst-et">Bu dönemin desteği</span>' +
+            '<span class="dst-et">Bu dönemin desteği <span class="dst-istege">İsteğe bağlı</span></span>' +
             (h.refD === 'tam'
                 ? '<span class="dst-buyuk dst-hediye">Referansla tamam</span>'
                 : (h.kisi > 0
@@ -1420,11 +1426,15 @@
                : (h.kisi > 0 && h.kisi < h.pay ? 'dönemin ortasında katıldığın için kalan süreye göre'
                                                : (h.kisi > 0 ? '<b>dönem boyunca değişmez</b>' : 'desteğin gelecek dönemden başlar')))) +
               (ayda && h.kisi > 0 ? ' · ayda yaklaşık ' + esc(tl(h.refD === 'yarim' ? Math.ceil(ayda / 2 / 10) * 10 : ayda)) : '') + '</span>' +
+            (h.durum !== 'tamam' && h.refD !== 'tam'
+                ? '<span class="dst-istege-not"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin; ' +
+                  'vermesen de Kidef\'i kullanmaya devam edersin. Destekçilere kalem, indirme gibi araçlar sınırsız açılır.</span>'
+                : '') +
             '<span class="dst-vurgu">' + okSvg() + '<span><b>Siteye katılan öğretmen arttıkça gelecek dönemin payı azalır.</b> ' +
               'Meslektaşlarını davet ettikçe herkesin payı küçülür.</span></span>' +
             '</div>';
-        var grafik = '<div class="dst-grafik"><div class="dst-grafik-svg" data-dst-grafik></div>' +
-            '<p>Her destek çubuğu biraz daha doldurur; tutarlar ve kimin ne verdiği görünmez.</p>' + hedefListe(oz) + '</div>';
+        /* 24.10.2026 öğretmen: "bu açıklamaya gerek yok" — «Her destek çubuğu biraz daha doldurur…» kalktı */
+        var grafik = '<div class="dst-grafik"><div class="dst-grafik-svg" data-dst-grafik></div>' + hedefListe(oz) + '</div>';
 
         /* 23.10.2026 öğretmen: "bu açıklamada yapay zekadan bahsetme, daha çok yayımlama, geliştirme ve emekten bahset" */
         var aciklama = '<p class="dst-aciklama">Kidef\'teki her materyal, oyun ve sınav, hazırlanmasından yayımlanmasına kadar ' +
@@ -2970,7 +2980,13 @@
             destekAcHak();
             return;
         }
-        if (n < 40) setTimeout(function () { hashBak(n + 1); }, 500);
+        /* 24.10.2026: girişsiz gelen (flipbookta «Giriş yap, destek ol»): oturum
+           durumu belli olunca giriş penceresi bir kez açılır; girince destek kartı */
+        if (_fbHazir && !benUid() && !hashBak.acildi && typeof window.showLoginModal === 'function') {
+            hashBak.acildi = true;
+            try { window.showLoginModal(); } catch (e) { }
+        }
+        if (n < 1200) setTimeout(function () { hashBak(n + 1); }, 500);       /* ~10 dk girişi bekler */
     })(0);
 
     /* ------------------------------------------------------------------

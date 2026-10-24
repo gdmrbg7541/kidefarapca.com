@@ -1,0 +1,30 @@
+/* ============================================================
+   ARAKOM — ARAYÜZ                                      (24.10.2026)
+   ------------------------------------------------------------
+   Öğretmen: "sonradan eklediklerimizde arakom yazısı olmayan
+   yazıları var, onları klasördeki arakom tipiyle görelim".
+   Flipbooklarda (kitapyan.js yükler) ve Kidef sunu göstericilerinde
+   ARAYÜZ Arakom: araç çubuğu, paneller, pencereler, kalem takımı,
+   deneme hakları. Kitap sayfaları ve slaytlar (.sahne içi) kendi
+   yazı tiplerinde kalır — kitabın baskısı değişmez.
+   Bütün sayfayı Arakom yapan asıl dosya: arakom.css.
+   :not(#yok1):not(#yok2) hiç eşleşmeyen kimlik seçicileri; tek
+   görevleri önceliği yükseltmek (arakom.css'teki gibi). SİLMEYİN.
+   ============================================================ */
+@font-face { font-family:'Arakom'; src:url('arakom.ttf?v=a248ac86') format('truetype'); font-display:swap; }
+body:not(#yok1):not(#yok2) *:not(.sahne):not(.sahne *),
+body:not(#yok1):not(#yok2) *:not(.sahne):not(.sahne *)::before,
+body:not(#yok1):not(#yok2) *:not(.sahne):not(.sahne *)::after {
+  font-family:'Arakom','Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif,
+              'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji' !important;
+}
+/* Kapak açıkken karşı sayfadaki kidefarapca.com tanıtımı (kapakreklam.js,
+   .kr) kitabın içinde durur ama kitabın baskısı değil, sonradan eklendi:
+   o da Arakom. Ayrı kural — eski tarayıcı üstteki kuralı tanımasa da bu çalışır. */
+body:not(#yok1):not(#yok2) .kr,
+body:not(#yok1):not(#yok2) .kr *,
+body:not(#yok1):not(#yok2) .kr *::before,
+body:not(#yok1):not(#yok2) .kr *::after {
+  font-family:'Arakom','Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif,
+              'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji' !important;
+}
