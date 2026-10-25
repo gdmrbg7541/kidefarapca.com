@@ -106,6 +106,7 @@
         bilgi.classList.toggle('gor', z.o > 1.02);
       }
       sahne.classList.toggle('yakin', z.o > 1.02);
+      duzAyarla();                       /* Safari netliği: büyükken yapraklar 3B'siz (10. bölüm) */
       flip.kilitli = z.o > 1.02 || !!panelAcik() || tanitimAcik || kalemYazar() || pinchAktif;   /* kalem: 8. bölüm · iki parmak: 5. bölüm */
       oklariGuncelle();
       tkZamanla();                       /* tahtaya yansıtma (7. bölüm) */
@@ -2688,6 +2689,42 @@
       var onceki = flip.degisti;
       flip.degisti = function () { var r = onceki.apply(this, arguments); yakinlar(); return r; };
       yakinlar();
+    })();
+
+    /* --------------------------------------------------------------
+       10) SAFARİ NETLİĞİ (25.10.2026) — BÜYÜKKEN DÜZ YAPRAK
+       Öğretmen: "hala yaklaştırınca bozuluyor netlik" (Mac'te Safari,
+       yazılar da bulanık). Sebep çözünürlük değil: Safari (WebKit) dönen
+       yaprakları (3B) ayrı katman olarak büyütmeden önceki boyda boyuyor,
+       sonra resim gibi büyütüyor. Safari'de 8 yolla denendi: 3B olmayınca
+       yazı da resim de her büyüklükte keskin. Bu yüzden büyükken
+       (.sahne.duz) yapraklar düz çizilir: çevrilmiş yaprak 180° dönmek
+       yerine yana kayar, görünmeyen yüzler gizlenir — görüntü aynı
+       (kitapzoom.css "SAFARİ NETLİĞİ"). Büyükken ok tuşuyla sayfa
+       çevrilirse çevirme 3B'de oynar, bitince yine düze dönülür. Geçiş
+       anında yaprakların kendi geçişi kapalı (duz-gecis): yoksa çevrilmiş
+       yapraklar yerinde dönüp kayardı.
+       -------------------------------------------------------------- */
+    function duzGec(ac) {
+      if (sahne.classList.contains('duz') === ac) return;
+      var k = flip.kitap;
+      if (k) k.classList.add('duz-gecis');
+      sahne.classList.toggle('duz', ac);
+      if (k) { void k.offsetWidth; k.classList.remove('duz-gecis'); }
+    }
+    function duzAyarla() { duzGec(z.o > 1.02 && !flip.animasyonda); }
+    ['ileri', 'geri'].forEach(function (ad) {
+      var asil = flip[ad];
+      flip[ad] = function () {
+        duzGec(false);                                 /* çevirme 3B'de oynasın */
+        var r = asil.apply(flip, arguments);
+        duzAyarla();                                   /* çevirme yoksa hemen düze dön */
+        return r;
+      };
+    });
+    (function () {                                     /* çevirme bitince (flip.js _bildir) */
+      var onceki = flip.degisti;
+      flip.degisti = function () { var r = onceki.apply(this, arguments); duzAyarla(); return r; };
     })();
 
     zUygula(false);

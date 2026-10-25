@@ -537,3 +537,22 @@ button.kk-ay-sat:hover { background: #F1F5F9; }
   background: transparent !important; pointer-events: none; z-index: 1;
   -webkit-user-drag: none; user-select: none;
 }
+
+/* ============================================================================
+   SAFARİ NETLİĞİ (25.10.2026) — BÜYÜKKEN DÜZ YAPRAK
+   kitapzoom.js 10. bölüm. Safari (WebKit) dönen yaprakları (3B) büyütmeden
+   önceki boyda boyayıp resim gibi büyütüyordu: büyütünce yazı bulanık.
+   Büyükken (.sahne.duz) 3B yok; görüntü aynı: çevrilmiş yaprak 180° dönmek
+   yerine yana kayar (sağdan sola kitapta sağa), arka yüzü düz durur,
+   görünmeyen yüzler gizlenir.
+   ========================================================================== */
+.sahne.duz .kitap { perspective: none; }
+.sahne.duz .yaprak { transform-style: flat; }
+.sahne.duz .yaprak.cevrildi { transform: translateX(-100%); }
+.sahne.duz .kitap.rtl .yaprak.cevrildi { transform: translateX(100%); }
+.sahne.duz .yuz { -webkit-backface-visibility: visible; backface-visibility: visible; }
+.sahne.duz .yuz.arka { transform: none; }
+.sahne.duz .yaprak.cevrildi > .yuz.on,
+.sahne.duz .yaprak:not(.cevrildi) > .yuz.arka { visibility: hidden; }
+/* düze geçerken ve düzden çıkarken yapraklar kaymasın, dönmesin */
+.kitap.duz-gecis .yaprak { transition: none !important; }
