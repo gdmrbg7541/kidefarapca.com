@@ -256,14 +256,16 @@
 .yaprak.suruklenen:not(.yari) > .yuz.arka > .kk-m { visibility: hidden; }
 .kitap.atla .yuz > .kk-m { transition: none !important; }
 
-/* --- kalem kipi: sayfa yazı alır, düğmeleri / bağlantıları açmaz --- */
-.sahne.kk-acik .kitap { cursor: var(--kk-imlec, crosshair); -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
-.sahne.kk-acik.yakin, .sahne.kk-acik.yakin:active { cursor: default; }
+/* --- kalem kipi: sayfa yazı alır, düğmeleri / bağlantıları açmaz ---
+   İMLEÇ / PARMAK (25.10.2026): imleçte (.kk-gez) sayfa kalem kapalıymış gibi; «Parmakla
+   gez»de (.kk-parmak) düğmeler parmağa açık, kalem ucunun dokunuşunu kitapzoom.js yakalar. */
+.sahne.kk-acik:not(.kk-gez) .kitap { cursor: var(--kk-imlec, crosshair); -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.sahne.kk-acik:not(.kk-gez).yakin, .sahne.kk-acik:not(.kk-gez).yakin:active { cursor: default; }
 .sahne.kk-silgi .kitap { cursor: none; }
-.sahne.kk-acik .kitap .yuz > .katman,
-.sahne.kk-acik .kitap .yuz > .html-sayfa,
-.sahne.kk-acik .kitap .yuz > .metin-katman { pointer-events: none !important; }
-html.kk-acik .halka { display: none !important; }
+.sahne.kk-acik:not(.kk-gez):not(.kk-parmak) .kitap .yuz > .katman,
+.sahne.kk-acik:not(.kk-gez):not(.kk-parmak) .kitap .yuz > .html-sayfa,
+.sahne.kk-acik:not(.kk-gez):not(.kk-parmak) .kitap .yuz > .metin-katman { pointer-events: none !important; }
+html.kk-acik:not(.kk-gez) .halka { display: none !important; }
 
 /* araç çubuğundaki Kalem düğmesi (.tus biçimini kitaptan alır) */
 .kk-tus svg { width: 20px; height: 20px; }
@@ -327,6 +329,39 @@ html.kk-acik .halka { display: none !important; }
 .kk-serit.kk-kucuk.kk-silgide .kk-kapa { background: #16A085; }
 .kk-serit.kk-kucuk.kk-silgide .kk-kapa .kk-kalemik { display: none; }
 .kk-serit.kk-kucuk.kk-silgide .kk-kapa .kk-silgiik { display: block; width: 21px; height: 21px; }
+/* İMLEÇ ve TUTAMAK (25.10.2026): imleç kalemi kapatmadan sayfada gezdirir; tutamak şeridi taşır */
+.kk-sg.kk-gezg { padding-right: 5px; margin-right: 1px; border-right: 1px solid #E3E8F0; }
+.kk-s.kk-tut { width: 20px; height: 34px; border-radius: 9px; color: #A3ACB9; cursor: grab; touch-action: none; }
+.kk-s.kk-tut svg { width: 18px; height: 18px; }
+.kk-s.kk-tut:hover { background: #F1F5F9; color: #55606D; }
+.kk-serit.kk-tasiniyor { transition: opacity .16s ease; box-shadow: 0 18px 40px rgba(10, 20, 40, .30), 0 3px 8px rgba(10, 20, 40, .14); }
+.kk-serit.kk-tasiniyor, .kk-serit.kk-tasiniyor .kk-tut { cursor: grabbing; }
+.kk-kapa .kk-imlecik { display: none; }
+.kk-serit.kk-kucuk .kk-tut { display: none; }
+.kk-serit.kk-kucuk.kk-gezide .kk-kapa { background: #16A085; }
+.kk-serit.kk-kucuk.kk-gezide .kk-kapa .kk-kalemik, .kk-serit.kk-kucuk.kk-gezide .kk-kapa .kk-silgiik { display: none; }
+.kk-serit.kk-kucuk.kk-gezide .kk-kapa .kk-imlecik { display: block; width: 21px; height: 21px; }
+/* sol / sağ kenara bırakılınca dikey: iki sütunlu küçük palet (solda araçlar, sağda renkler),
+   üstte tutamak; o kenardaki sayfa çevirme oklarının üstünde ya da altında durur */
+.kk-serit.kk-dikey { display: grid; grid-template-columns: auto auto; column-gap: 6px; row-gap: 5px; padding: 6px; border-radius: 22px; z-index: 41; }
+.kk-serit.kk-dikey .kk-sg { display: contents; }
+.kk-serit.kk-dikey .kk-s.kk-tut { grid-column: 1 / 3; grid-row: 1; width: auto; height: 18px; }
+.kk-serit.kk-dikey .kk-s.kk-tut svg { transform: rotate(90deg); }
+.kk-serit.kk-dikey .kk-s.kk-kapa { grid-column: 1; grid-row: 2; width: 38px; height: 38px; border-radius: 50%; }
+.kk-serit.kk-dikey .kk-gez { grid-column: 1; grid-row: 3; }
+.kk-serit.kk-dikey [data-kk="silgi"] { grid-column: 1; grid-row: 4; }
+.kk-serit.kk-dikey [data-kk="geri"] { grid-column: 1; grid-row: 5; }
+.kk-serit.kk-dikey [data-kk="ileri"] { grid-column: 1; grid-row: 6; }
+.kk-serit.kk-dikey .kk-r { grid-column: 2; justify-self: center; align-self: center; }
+.kk-serit.kk-dikey .kk-r:nth-child(1) { grid-row: 2; }
+.kk-serit.kk-dikey .kk-r:nth-child(2) { grid-row: 3; }
+.kk-serit.kk-dikey .kk-r:nth-child(3) { grid-row: 4; }
+.kk-serit.kk-dikey .kk-r:nth-child(4) { grid-row: 5; }
+.kk-serit.kk-dikey .kk-r:nth-child(5) { grid-row: 6; }
+.kk-serit.kk-dikey.kk-kucuk { display: flex; padding: 4px; border-radius: 999px; }
+.kk-serit.kk-dikey.kk-kucuk .kk-sg { display: none; }
+.kk-serit.kk-dikey.kk-kucuk .kk-s.kk-kapa { width: 44px; height: 44px; }
+.kk-ay-sat[hidden] { display: none; }
 
 /* --- kalem ayarları: yan çubukta Kalem düğmesinin altında, ya da açılır kutu --- */
 .kk-ayar {
@@ -454,6 +489,9 @@ button.kk-ay-sat:hover { background: #F1F5F9; }
   .kk-s.kk-r { width: 30px; height: 30px; }
   .kk-s.kk-r svg { width: 15px; height: 15px; }
   .kk-s.kk-kapa { width: 20px; height: 30px; }
+  .kk-s.kk-tut { width: 16px; height: 30px; }
+  .kk-sg.kk-gezg { padding-right: 3px; }
+  .kk-serit.kk-dikey .kk-s.kk-kapa { width: 34px; height: 34px; }
   .kk-ay-sat { min-height: 40px; }
   .kk-ipucu { font-size: 12.5px; padding-left: 10px; gap: 6px; }
 }
@@ -472,6 +510,11 @@ button.kk-ay-sat:hover { background: #F1F5F9; }
   .kk-s.kk-r svg { width: 20px; height: 20px; }
   .kk-s.kk-kapa { width: 30px; height: 42px; }
   .kk-serit.kk-kucuk .kk-kapa { width: 54px; height: 54px; }
+  .kk-s.kk-tut { width: 26px; height: 42px; }
+  .kk-serit.kk-dikey { column-gap: 5px; row-gap: 6px; padding: 5px; }
+  .kk-serit.kk-dikey .kk-s.kk-tut { width: auto; height: 24px; }
+  .kk-serit.kk-dikey .kk-s.kk-kapa { width: 48px; height: 48px; }
+  .kk-serit.kk-dikey.kk-kucuk .kk-s.kk-kapa { width: 54px; height: 54px; }
   .kk-ay-sat { min-height: 44px; font-size: 14px; }
   .kk-ay-d { width: 40px; height: 34px; }
 }
