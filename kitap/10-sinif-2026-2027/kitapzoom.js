@@ -1105,7 +1105,8 @@
       yer: null, seritR: null, yolver: false,
       parmak: false, parmakT: null,  /* parmakla gez (kalem uçlu cihaz): açık mı · bu cihazdaki seçim (1/0; yoksa null) */
       sabit: null,      /* taşınmış şeridin yeri { k: ''|'sol'|'sag', x, y } (0-1; kenardaysa dikey) */
-      sonGez: false     /* son dokunuş gezinme miydi: kitabın içindeki tıklamaya izin */
+      sonGez: false,    /* son dokunuş gezinme miydi: kitabın içindeki tıklamaya izin */
+      silme: 'c', silMenu: null, silMenuAcik: false   /* SİLGİ SEÇENEKLERİ (25.10.2026): 'c' dokunduğu çizgiyi, 'y' dokunduğu yeri siler */
     };
     function kalemAcik() { return !!(KK && KK.acik); }
     /* İMLEÇ / PARMAK (25.10.2026): kalem açıkken de sayfada gezilebilsin. Şeritteki imleçte
@@ -1710,6 +1711,81 @@
       }
       return false;
     }
+    /* YER SİLGİSİ — SİLGİ SEÇENEKLERİ (25.10.2026): çizginin yalnız silginin (a→b, yarıçap R)
+       geçtiği kısmı silinir. Döner: null (değmedi) · [] (hepsi silindi) · [{p, b}] (kalan parçalar).
+       Silgiye yakın aralıklar sık örneklenir; kesik ucu silginin kenarına oturur. */
+    function kkKes(c, ax, ay, bx, by, R) {
+      var p = c.p, kb = c.b || null, n = p.length / 2;
+      var x0 = Math.min(ax, bx) - R, x1 = Math.max(ax, bx) + R, y0 = Math.min(ay, by) - R, y1 = Math.max(ay, by) + R;
+      if (n === 1) return (p[0] >= x0 && p[0] <= x1 && p[1] >= y0 && p[1] <= y1 && kkUzaklik(p[0], p[1], ax, ay, bx, by) <= R) ? [] : null;
+      var adim = Math.max(0.3, R / 10), S = [], ic = false;
+      for (var i = 0; i < n; i++) {
+        var x = p[2 * i], y = p[2 * i + 1], f = kb ? kb[i] : 1;
+        if (i > 0) {
+          var px = p[2 * i - 2], py = p[2 * i - 1];
+          if (!(Math.max(px, x) < x0 || Math.min(px, x) > x1 || Math.max(py, y) < y0 || Math.min(py, y) > y1)) {
+            var pf = kb ? kb[i - 1] : 1, L = Math.sqrt((x - px) * (x - px) + (y - py) * (y - py)), k = Math.min(600, Math.ceil(L / adim));
+            for (var j = 1; j < k; j++) {
+              var t = j / k, qx = px + (x - px) * t, qy = py + (y - py) * t, q = kkUzaklik(qx, qy, ax, ay, bx, by) <= R;
+              if (q) ic = true;
+              S.push(qx, qy, pf + (f - pf) * t, q ? 1 : 0, 0);
+            }
+          }
+        }
+        var qi = x >= x0 && x <= x1 && y >= y0 && y <= y1 && kkUzaklik(x, y, ax, ay, bx, by) <= R;
+        if (qi) ic = true;
+        S.push(x, y, f, qi ? 1 : 0, 1);
+      }
+      if (!ic) return null;
+      var out = [], cur = null, m = S.length / 5;
+      for (var s = 0; s < m; s++) {
+        if (S[5 * s + 3]) { if (cur) { out.push(cur); cur = null; } continue; }
+        var son = s === m - 1 || S[5 * s + 8];                      /* parçanın son noktası */
+        if (!cur || son || S[5 * s + 4]) {                           /* baş, son ve asıl noktalar */
+          if (!cur) cur = { p: [], b: kb ? [] : null };
+          cur.p.push(kkR(S[5 * s]), kkR(S[5 * s + 1]));
+          if (cur.b) cur.b.push(Math.round(S[5 * s + 2] * 20) / 20);
+        }
+      }
+      if (cur) out.push(cur);
+      var en = Math.max(1.5, R * 0.15);                              /* kesikten kalan kırıntı atılır */
+      return out.filter(function (o) {
+        var u = 0;
+        for (var i = 2; i < o.p.length; i += 2) u += Math.sqrt((o.p[i] - o.p[i - 2]) * (o.p[i] - o.p[i - 2]) + (o.p[i + 1] - o.p[i - 1]) * (o.p[i + 1] - o.p[i - 1]));
+        return u >= en;
+      });
+    }
+    var kkSilRaf = 0, kkSilKirli = {};
+    function kkSilCizZamanla(s) {                                     /* yer silgisi: kare başına bir çizim ve gönderim */
+      kkSilKirli[s] = 1;
+      if (kkSilRaf) return;
+      kkSilRaf = (window.requestAnimationFrame || setTimeout)(function () {
+        kkSilRaf = 0;
+        var L = Object.keys(kkSilKirli).map(Number);
+        kkSilKirli = {};
+        L.forEach(function (n) { kkSayfaCiz(n); });
+        kkGonder(L);
+      });
+    }
+    function kkYerSil(S, o, a, b, rr, L) {
+      var yeni = [], degisti = false;
+      for (var i = 0; i < L.length; i++) {
+        var c = L[i], w = (kkFos(c) ? KK_FKALIN[c.w] : KK_KALIN[c.w] * kkEnKalin(c)) / 2;
+        var P = kkKes(c, a.x, a.y, b[0], b[1], rr + w);
+        if (!P) { yeni.push(c); continue; }
+        degisti = true;
+        for (var j = 0; j < P.length; j++) {
+          var d = { a: c.a, r: c.r, w: c.w, p: P[j].p };
+          if (c.b && P[j].b) d.b = P[j].b;
+          yeni.push(d);
+        }
+      }
+      if (!degisti) return;
+      if (!S.once[o.s]) S.once[o.s] = L;
+      kkSayfaYaz(o.s, yeni);
+      kkSonYaz(o.s, [b[0], b[1]], rr);
+      kkSilCizZamanla(o.s);
+    }
     function kkSilgiYaricap(e) { return e && e.pointerType === 'mouse' ? 14 : 24; }   /* ekranda piksel */
     function kkSilgiBasla(e) {
       KK.sil = { id: e.pointerId, son: null, once: {}, rp: kkSilgiYaricap(e) };
@@ -1726,6 +1802,7 @@
       S.son = { s: o.s, x: b[0], y: b[1] };
       var rec = KK.M[o.s], L = kkCizgiler(rec);
       if (!L.length) return;
+      if (KK.silme === 'y') { kkYerSil(S, o, a, b, rr, L); return; }   /* dokunduğu yeri sil (25.10.2026) */
       var kalan = [];
       for (var i = 0; i < L.length; i++) if (!kkDegiyor(L[i], a.x, a.y, b[0], b[1], rr)) kalan.push(L[i]);
       if (kalan.length === L.length) return;
@@ -2078,6 +2155,7 @@
         if (t.t === 0 || t.t === 1) KK.takip = t.t === 1;
         if (t.k === 0 || t.k === 1) KK.kucuk = t.k === 1;
         if (t.pg === 0 || t.pg === 1) { KK.parmakT = t.pg; KK.parmak = t.pg === 1; }
+        if (t.sm === 'y' || t.sm === 'c') KK.silme = t.sm;
         var y = t.y;
         if (y && typeof y === 'object' && isFinite(y.x) && isFinite(y.y) && (y.k === '' || y.k === 'sol' || y.k === 'sag'))
           KK.sabit = { k: y.k, x: Math.max(0, Math.min(1, +y.x)), y: Math.max(0, Math.min(1, +y.y)) };
@@ -2086,6 +2164,7 @@
     function kkTercihYaz() {
       var t = { r: KK.renk, w: KK.kal, a: KK.sonArac, t: KK.takip ? 1 : 0, k: KK.kucuk ? 1 : 0 };
       if (KK.parmakT === 0 || KK.parmakT === 1) t.pg = KK.parmakT;
+      if (KK.silme === 'y') t.sm = 'y';
       if (KK.sabit) t.y = { k: KK.sabit.k, x: +KK.sabit.x.toFixed(4), y: +KK.sabit.y.toFixed(4) };
       try { localStorage.setItem(KK_TERCIH, JSON.stringify(t)); } catch (e) { }
     }
@@ -2102,7 +2181,7 @@
           ' kalem (' + (i + 1) + ')" aria-label="' + KK_RENK_AD[r] + ' kalem" aria-pressed="false">' + svg(KK_IK.kalem) + '</button>';
       });
       return h + '</span><span class="kk-sg kk-isler">' +
-        '<button type="button" class="kk-s kk-a" data-kk="silgi" title="Silgi: dokunduğun çizgiyi siler (E)" aria-label="Silgi" aria-pressed="false">' + svg(KK_IK.silgi) + '</button>' +
+        '<button type="button" class="kk-s kk-a" data-kk="silgi" title="Silgi (E) · yine dokun: seçenekler" aria-label="Silgi" aria-pressed="false">' + svg(KK_IK.silgi) + '</button>' +
         '<button type="button" class="kk-s kk-a" data-kk="geri" title="Geri al (Ctrl+Z)" aria-label="Geri al">' + svg(KK_IK.geri) + '</button>' +
         '<button type="button" class="kk-s kk-a" data-kk="ileri" title="Yinele (Ctrl+Y)" aria-label="Yinele">' + svg(KK_IK.ileri) + '</button></span>';
     }
@@ -2141,6 +2220,15 @@
       p.innerHTML = kkSeritHtml();
       sahne.appendChild(p);
       KK.palet = p;
+      var sm = document.createElement('div');                       /* silgi seçenekleri (25.10.2026) */
+      sm.className = 'kk-silmenu';
+      sm.setAttribute('role', 'menu');
+      sm.setAttribute('aria-label', 'Silgi biçimi');
+      sm.hidden = true;
+      sm.innerHTML = kkSilMenuHtml();
+      p.appendChild(sm);
+      KK.silMenu = sm;
+      document.addEventListener('pointerdown', function (e) { if (KK.silMenuAcik && !(KK.palet && KK.palet.contains(e.target))) kkSilMenu(false); }, true);
       var a = document.createElement('div');
       a.className = 'kk-ayar';
       a.setAttribute('role', 'group');
@@ -2237,6 +2325,7 @@
         else if (gizliydi || !KK.yer) kkSeritYerlestir(true);
         else kkSeritZamanla(0);
       }
+      kkSilMenuGuncelle();                                          /* silgi seçenekleri (25.10.2026) */
       var a = KK.ayar;
       if (a) {
         kkAyarYerlestir();
@@ -2536,16 +2625,19 @@
       if (ac) KK.temizZ = setTimeout(function () { kkTemizOnay(b, false); }, 3200);
     }
     function kkPaletTik(e) {
+      var sm = e.target.closest && e.target.closest('[data-sm]');
+      if (sm && KK.silMenu && KK.silMenu.contains(sm)) { e.preventDefault(); kkSilmeSec(sm.getAttribute('data-sm')); return; }
       var b = e.target.closest && e.target.closest('[data-kk]');
       if (!b || !((KK.palet && KK.palet.contains(b)) || (KK.ayar && KK.ayar.contains(b)))) return;
       e.preventDefault();
       var k = b.getAttribute('data-kk');
       if (k !== 'temizle') kkTemizOnay(KK.ayar && KK.ayar.querySelector('[data-kk="temizle"]'), false);
       if (k !== 'yer' && k !== 'git') kkListeKapat();
+      if (k !== 'silgi') kkSilMenu(false);
       if (/^r\d$/.test(k)) kkAracSec('k', +k.charAt(1));
       else if (k === 'fos') kkAracSec('f');
       else if (/^w[iok]$/.test(k)) kkKalinlik(k.charAt(1));
-      else if (k === 'silgi') kkAracSec('s');
+      else if (k === 'silgi') { if (KK.arac === 's' && !KK.kucuk) kkSilMenu(!KK.silMenuAcik); else kkAracSec('s'); }   /* ikinci dokunuş: silme biçimi (25.10.2026) */
       else if (k === 'gez') kkAracSec('g');
       else if (k === 'tut') return;                               /* tutamak: sürükle / çift dokun (kkTut…) */
       else if (k === 'parmak') {
@@ -2571,6 +2663,67 @@
       else if (k === 'yer') { if (KK.liste.hidden) kkListeAc(); else kkListeKapat(); }
       else if (k === 'git') { kkListeKapat(); if (!kkYanki(e)) kkYereGit(+b.getAttribute('data-s')); }
       else if (k === 'bitti') { if (!kkYanki(e)) kkKapat(); }
+    }
+
+    /* ---------- SİLGİ SEÇENEKLERİ (25.10.2026) ----------
+       Öğretmen: "ikinci kez silgiye basınca 2 seçenek çıksın, dokunulan yeri sil, dokunulan
+       çizgiyi sil şeklinde". Silgi seçiliyken silgiye yine dokununca küçük menü açılır (şeridin
+       içinde, silgi düğmesinin altında; dikey şeritte yanında). Seçim bu cihazda hatırlanır. */
+    var KK_SM_IK = {
+      y: '<path d="M3 12h5.2M15.8 12H21"/><circle cx="12" cy="12" r="3.4"/>',
+      c: '<path d="M3.5 15.5c2.6-5.4 5.4-5.4 8 0s5.4 5.4 8 0"/><path d="M18.5 4.5l-4 4M14.5 4.5l4 4"/>'
+    };
+    function kkSilMenuHtml() {
+      return [['y', 'Dokunduğu yeri sil', 'Çizgi bölünür, gerisi kalır'], ['c', 'Dokunduğu çizgiyi sil', 'Çizginin tamamı silinir']]
+        .map(function (x) {
+          return '<button type="button" class="kk-sm" data-sm="' + x[0] + '" role="menuitemradio" aria-checked="false">' +
+            svg(KK_SM_IK[x[0]]) + '<span>' + x[1] + '<small>' + x[2] + '</small></span></button>';
+        }).join('');
+    }
+    function kkSilMenu(ac) {
+      var m = KK.silMenu;
+      ac = !!ac && !!m && KK.acik && KK.arac === 's' && !KK.kucuk && !kkMisafirKip();
+      KK.silMenuAcik = ac;
+      if (!m) return;
+      m.hidden = !ac;
+      var b = KK.palet && KK.palet.querySelector('[data-kk="silgi"]');
+      if (b) b.setAttribute('aria-expanded', ac ? 'true' : 'false');
+      if (ac) kkSilMenuYer();
+    }
+    function kkSilMenuYer() {
+      var m = KK.silMenu, p = KK.palet, b = p && p.querySelector('[data-kk="silgi"]');
+      if (!m || m.hidden || !b) return;
+      var pr = p.getBoundingClientRect(), br = b.getBoundingClientRect(), sr = sahne.getBoundingClientRect();
+      var en = m.offsetWidth, boy = m.offsetHeight, x, y;
+      if (p.classList.contains('kk-dikey')) {                         /* kenardaki dikey şerit: yanında */
+        x = pr.left + pr.width / 2 > sr.left + sr.width / 2 ? pr.left - en - 8 : pr.right + 8;
+        y = br.top + br.height / 2 - boy / 2;
+      } else {                                                         /* yatay şerit: altında, yer yoksa üstünde */
+        x = br.left + br.width / 2 - en / 2; y = pr.bottom + 8;
+        if (y + boy > sr.bottom - 6 && pr.top - 8 - boy >= sr.top + 6) y = pr.top - 8 - boy;
+      }
+      x = Math.max(sr.left + 6, Math.min(sr.right - en - 6, x));
+      y = Math.max(sr.top + 6, Math.min(sr.bottom - boy - 6, y));
+      m.style.left = Math.round(x - pr.left - p.clientLeft) + 'px';
+      m.style.top = Math.round(y - pr.top - p.clientTop) + 'px';
+    }
+    function kkSilmeSec(s) {
+      KK.silme = s === 'y' ? 'y' : 'c';
+      kkTercihYaz();
+      kkSilMenu(false);
+      kkPaletGuncelle();
+      kkTost(KK.silme === 'y' ? 'Silgi: dokunduğu yeri siler' : 'Silgi: dokunduğu çizgiyi siler');
+    }
+    function kkSilMenuGuncelle() {
+      var p = KK.palet, m = KK.silMenu;
+      if (!p) return;
+      p.classList.toggle('kk-silyer', KK.silme === 'y');
+      var b = p.querySelector('[data-kk="silgi"]');
+      if (b) b.title = (KK.silme === 'y' ? 'Silgi: dokunduğu yeri siler (E)' : 'Silgi: dokunduğu çizgiyi siler (E)') + ' · yine dokun: seçenekler';
+      if (m) [].forEach.call(m.querySelectorAll('[data-sm]'), function (x) {
+        x.setAttribute('aria-checked', x.getAttribute('data-sm') === KK.silme ? 'true' : 'false');
+      });
+      if (KK.silMenuAcik && !(KK.acik && KK.arac === 's' && !KK.kucuk)) kkSilMenu(false);
     }
 
     /* ---------- kaldığım yer ---------- */
@@ -2733,7 +2886,8 @@
       if (!KK.acik) return;
       if (k === 'Escape' || k === 'Esc') {
         e.preventDefault(); e.stopPropagation();
-        if (KK.liste && !KK.liste.hidden) kkListeKapat();
+        if (KK.silMenuAcik) kkSilMenu(false);                       /* silgi seçenekleri (25.10.2026) */
+        else if (KK.liste && !KK.liste.hidden) kkListeKapat();
         else if (KK.ayarGor && !kkAyarIcMi()) { KK.ayarGor = false; kkPaletGuncelle(); }
         else if (!kkYanki(e)) kkKapat();
         return;
