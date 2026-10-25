@@ -1147,16 +1147,47 @@
       for (var i = 0; i + 1 < n.length; i += 2) { x += n[i]; y += n[i + 1]; p.push(x / 2, y / 2); }
       return p;
     }
-    function kkKodla(c) { return c.a + String(c.r) + c.w + kkNoktaKodla(c.p); }
+    /* DOĞAL KALEM (25.10.2026): yeni çizgiler büyük harfle yazılır — 'K' kalem, 'F' fosforlu.
+       Noktalar onda bir birim hassas (eskisi yarım birim: büyütünce küçük yazı titremesin);
+       'K'de her noktanın kalınlık katı da var (b; yirmide bir hassas). Eski 'k' / 'f' çizgiler
+       aynen okunur ve eskisi gibi çizilir. */
+    function kkFos(c) { return c.a === 'f' || c.a === 'F'; }
+    function kkEnKalin(c) { var m = 1; if (c.b) for (var i = 0; i < c.b.length; i++) if (c.b[i] > m) m = c.b[i]; return m; }
+    function kkNoktaKodla10(p, b) {
+      var out = [], px = 0, py = 0, pq = 0;
+      for (var i = 0, j = 0; i + 1 < p.length; i += 2, j++) {
+        var x = Math.round(p[i] * 10), y = Math.round(p[i + 1] * 10);
+        kkSayiYaz(x - px, out); kkSayiYaz(y - py, out); px = x; py = y;
+        if (b) { var q = Math.round((b[j] || 1) * 20); kkSayiYaz(q - pq, out); pq = q; }
+      }
+      return out.join('');
+    }
+    function kkNoktaCoz10(s, kalinli) {
+      var n = kkSayiOku(String(s || '')), k = kalinli ? 3 : 2, p = [], b = kalinli ? [] : null, x = 0, y = 0, q = 0;
+      for (var i = 0; i + k - 1 < n.length; i += k) {
+        x += n[i]; y += n[i + 1]; p.push(x / 10, y / 10);
+        if (kalinli) { q += n[i + 2]; b.push(Math.max(0.2, q / 20)); }
+      }
+      return { p: p, b: b };
+    }
+    function kkKodla(c) {
+      if (c.a === 'K' || c.a === 'F') return c.a + String(c.r) + c.w + kkNoktaKodla10(c.p, c.a === 'K' ? c.b : null);
+      return c.a + String(c.r) + c.w + kkNoktaKodla(c.p);
+    }
     function kkCoz(t) {
       if (!t || t.length < 4) return null;
       var a = t.charAt(0);
-      if (a !== 'k' && a !== 'f') return null;
-      var r = parseInt(t.charAt(1), 10), w = t.charAt(2);
+      if (a !== 'k' && a !== 'f' && a !== 'K' && a !== 'F') return null;
+      var r = parseInt(t.charAt(1), 10), w = t.charAt(2), fos = a === 'f' || a === 'F';
       if (!(r >= 0)) r = 0;
-      if (a === 'k' && r >= KK_RENK.length) r = 1;
-      if (a === 'f' && r >= KK_FOS.length) r = 0;
+      if (!fos && r >= KK_RENK.length) r = 1;
+      if (fos && r >= KK_FOS.length) r = 0;
       if (!KK_KALIN[w]) w = 'o';
+      if (a === 'K' || a === 'F') {
+        var Y = kkNoktaCoz10(t.slice(3), a === 'K');
+        if (!Y.p.length) return null;
+        return a === 'K' ? { a: a, r: r, w: w, p: Y.p, b: Y.b } : { a: a, r: r, w: w, p: Y.p };
+      }
       var p = kkNoktaCoz(t.slice(3));
       return p.length ? { a: a, r: r, w: w, p: p } : null;
     }
@@ -1350,15 +1381,80 @@
       }
       return d + 'L' + kkR(p[2 * n - 2]) + ' ' + kkR(p[2 * n - 1]);
     }
+    /* DOĞAL KALEM: bütün noktalarından geçen yumuşak eğri (Catmull-Rom → kübik Bézier). Kollar
+       komşu aralığın %45'iyle sınırlı: seyrek noktada taşıp düğüm atmasın. bas: 'M' yeni yol, '' sürdür */
+    function kkCR(P, d, bas) {
+      var n = P.length / 2;
+      if (!n) return d;
+      if (bas) d += bas + kkR(P[0]) + ' ' + kkR(P[1]);
+      if (n === 1) return bas ? d + 'l.01 0' : d;
+      for (var i = 0; i < n - 1; i++) {
+        var h = Math.max(i - 1, 0), j = Math.min(i + 2, n - 1);
+        var x1 = P[2 * i], y1 = P[2 * i + 1], x2 = P[2 * i + 2], y2 = P[2 * i + 3];
+        var ax = (x2 - P[2 * h]) / 6, ay = (y2 - P[2 * h + 1]) / 6, bx = (P[2 * j] - x1) / 6, by = (P[2 * j + 1] - y1) / 6;
+        var m = 0.45 * Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+        var la = Math.sqrt(ax * ax + ay * ay), lb = Math.sqrt(bx * bx + by * by);
+        if (la > m) { ax *= m / la; ay *= m / la; }
+        if (lb > m) { bx *= m / lb; by *= m / lb; }
+        d += 'C' + kkR(x1 + ax) + ' ' + kkR(y1 + ay) + ' ' + kkR(x2 - bx) + ' ' + kkR(y2 - by) + ' ' + kkR(x2) + ' ' + kkR(y2);
+      }
+      return d;
+    }
+    function kkDaire(x, y, q) {
+      return 'M' + kkR(x - q) + ' ' + kkR(y) + 'a' + kkR(q) + ' ' + kkR(q) + ' 0 1 0 ' + kkR(2 * q) + ' 0a' +
+        kkR(q) + ' ' + kkR(q) + ' 0 1 0 ' + kkR(-2 * q) + ' 0Z';
+    }
+    /* kalınlaşıp incelen kalem: iki kenar + yuvarlak uçlar, dolgu. Keskin dönüşte ya da
+       kalınlığına göre dar kıvrımda parçalara bölünür (iç kenar kendini kesip delik açmasın);
+       parçaların yuvarlak uçları birbirini örter. */
+    function kkKontur(p, b, w) {
+      var n = p.length / 2;
+      if (!n) return '';
+      function r(i) { return Math.max(0.3, w * (b && b[i] != null ? b[i] : 1) / 2); }
+      var d = '', bas = 0;
+      for (var i = 1; i < n - 1; i++) {
+        var ux = p[2 * i] - p[2 * i - 2], uy = p[2 * i + 1] - p[2 * i - 1], vx = p[2 * i + 2] - p[2 * i], vy = p[2 * i + 3] - p[2 * i + 1];
+        var lu = Math.sqrt(ux * ux + uy * uy), lv = Math.sqrt(vx * vx + vy * vy);
+        if (lu < 1e-6 || lv < 1e-6) continue;
+        var ac = Math.acos(Math.max(-1, Math.min(1, (ux * vx + uy * vy) / (lu * lv))));
+        if (ac > 1.05 || Math.min(lu, lv) < ac * r(i) * 1.1) { d += kkParca(p, bas, i, r); bas = i; }
+      }
+      return d + kkParca(p, bas, n - 1, r);
+    }
+    function kkParca(p, a, e, r) {
+      if (e <= a) return kkDaire(p[2 * a], p[2 * a + 1], r(a));
+      var L = [], R = [];
+      for (var i = a; i <= e; i++) {
+        var h = Math.max(i - 1, a), j = Math.min(i + 1, e);
+        var tx = p[2 * j] - p[2 * h], ty = p[2 * j + 1] - p[2 * h + 1], tl = Math.sqrt(tx * tx + ty * ty) || 1;
+        var nx = -ty / tl, ny = tx / tl, q = r(i), x = p[2 * i], y = p[2 * i + 1];
+        L.push(x + nx * q, y + ny * q); R.unshift(x - nx * q, y - ny * q);
+      }
+      var qa = r(a), qe = r(e);
+      var d = kkCR(L, '', 'M') + 'A' + kkR(qe) + ' ' + kkR(qe) + ' 0 0 0 ' + kkR(R[0]) + ' ' + kkR(R[1]);
+      d = kkCR(R, d, '');
+      return d + 'A' + kkR(qa) + ' ' + kkR(qa) + ' 0 0 0 ' + kkR(L[0]) + ' ' + kkR(L[1]) + 'Z';
+    }
+    var kkDBellek = typeof WeakMap === 'function' ? new WeakMap() : null;   /* çizginin hazır dolgusu */
     function kkYolYaz(e, c) {
-      var fos = c.a === 'f';
-      e.setAttribute('d', kkD(c.p));
-      e.setAttribute('stroke', fos ? (KK_FOS[c.r] || KK_FOS[0]) : (KK_RENK[c.r] || KK_RENK[1]));
+      var fos = kkFos(c), renk = fos ? (KK_FOS[c.r] || KK_FOS[0]) : (KK_RENK[c.r] || KK_RENK[1]);
+      if (c.a === 'K') {
+        var on = kkDBellek && kkDBellek.get(c), d;
+        if (on && on.n === c.p.length) d = on.d;
+        else { d = kkKontur(c.p, c.b, KK_KALIN[c.w] || KK_KALIN.o); if (kkDBellek) kkDBellek.set(c, { n: c.p.length, d: d }); }
+        e.setAttribute('d', d);
+        e.setAttribute('fill', renk);
+        e.removeAttribute('stroke'); e.removeAttribute('stroke-width');
+        e.setAttribute('class', 'kk-kd');
+        return;
+      }
+      e.setAttribute('d', c.a === 'F' ? kkCR(c.p, '', 'M') : kkD(c.p));
+      e.setAttribute('stroke', renk);
       e.setAttribute('stroke-width', fos ? KK_FKALIN[c.w] : KK_KALIN[c.w]);
       e.setAttribute('class', fos ? 'kk-f' : 'kk-k');
     }
     function kkYol(c) { var e = document.createElementNS(KK_NS, 'path'); kkYolYaz(e, c); return e; }
-    function kkGrup(v, c) { return c.a === 'f' ? v.firstChild : v.lastChild; }
+    function kkGrup(v, c) { return kkFos(c) ? v.firstChild : v.lastChild; }
     /* sayfanın yazısını (gerekiyorsa) yeniden çiz */
     function kkSayfaCiz(s, zorla) {
       if (!(s >= 1) || s > flip.toplam) return;
@@ -1400,38 +1496,142 @@
     }
 
     /* ---------- yazma ---------- */
+    /* DOĞAL KALEM (25.10.2026). Öğretmen: "flipbooklarda kalemle yazınca kalem hassasiyetini ve
+       performansını nasıl arttırırız, ayrıca çizgiler düzleşiyor nedense, doğal olsun kalem
+       kullanımı" (kalınlık bastırmaya göre; en çok akıllı tahtada parmakla, telefon / tablette).
+       · DÜZLEŞME: eski yumuşatma her noktayı bir öncekiyle ortalıyordu; hızlı yazınca küçük
+         döngüler ve köşeler siliniyordu. Yerine 1€ süzgeci (Casiez, 2012): yavaş yazarken
+         dokunmatik tahtanın titremesini alır, hızlanınca gecikmez. Parmakta noktalar en az
+         ~2 px aralıklı (yavaş yazıda titreme kıvrım yapmasın). Fare süzülmez, kalem ucu çok
+         az süzülür. Çizgi bütün noktalarından geçer (kkCR).
+       · KALINLIK: kalem ucunda bastırmaya göre (iPad kalemi, tablet kalemi); parmak ve farede
+         hıza göre (yavaşta biraz kalın, hızlıda biraz ince; olağan hız bu cihazda öğrenilir);
+         bastırmasız yazıda çizginin ucu hafifçe incelir.
+       · AKICILIK: yazılan çizginin bitmiş kısmı parça parça dondurulur, her karede yalnız son
+         parça yeniden çizilir; tarayıcı veriyorsa (Chrome) kalemin gideceği yer bir adım önden
+         gösterilir (saklanmaz). */
+    var KK_SUZ = { touch: [2.5, 0.08, 10], pen: [6, 0.15, 20] };     /* 1€: en düşük kesim (Hz) · hız katsayısı · hız süzgeci (Hz) */
+    var KK_ADIM = { touch: 1.8 };                                     /* noktalar arası en az (ekranda px; parmakta seyrek: titreme kıvrılmasın) */
+    var KK_PARCA = 48;                                                /* canlı çizimde donan parça (nokta) */
+    var kkHizOrt = 0;                                                 /* bu cihazda olağan yazma hızı (px/sn) */
+    function kkSuzgec(tur) {
+      var k = KK_SUZ[tur] || null, S = { x: null, y: 0, dx: 0, dy: 0, t: 0, v: 0 };
+      function al(fc, te) { return 1 / (1 + 1 / (2 * Math.PI * fc) / te); }
+      S.ekle = function (x, y, t) {
+        if (S.x === null) { S.x = x; S.y = y; S.t = t; return; }
+        var te = (t - S.t) / 1000;
+        if (!(te > 0.0005)) te = 1 / 120;                             /* aynı ya da geri damga */
+        else S.t = t;
+        var ad = al(k ? k[2] : 20, te);
+        S.dx += ((x - S.x) / te - S.dx) * ad; S.dy += ((y - S.y) / te - S.dy) * ad;
+        S.v = Math.sqrt(S.dx * S.dx + S.dy * S.dy);
+        if (!k) { S.x = x; S.y = y; return; }                         /* fare: olduğu gibi */
+        var a = al(k[0] + k[1] * S.v, te);
+        S.x += (x - S.x) * a; S.y += (y - S.y) * a;
+      };
+      return S;
+    }
+    function kkHiz0() {
+      if (kkHizOrt) return kkHizOrt;
+      var kaba = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+      return kaba ? (Math.min(window.innerWidth, window.innerHeight) >= 700 ? 260 : 420) : 650;
+    }
+    function kkHizOgren(L) {
+      if (!L || L.length < 6) return;
+      L.sort(function (a, b) { return a - b; });
+      var m = L[L.length >> 1];
+      kkHizOrt = Math.max(80, Math.min(3000, kkHizOrt ? kkHizOrt * 0.75 + m * 0.25 : m));
+    }
+    function kkBaskili(e) { return e.pointerType === 'pen' && e.pressure > 0 && e.pressure !== 0.5; }
+    function kkOran(cz, e) {                                          /* bu noktada kalınlığın katı */
+      var f;
+      if (cz.baski || kkBaskili(e)) {
+        cz.baski = true;
+        f = 0.45 + 1.1 * Math.pow(Math.max(0, Math.min(1, e.pressure || 0)), 0.65);   /* hafif ~0,7 · olağan ~1 · sert 1,55 */
+      } else {
+        f = 1.2 - 0.2 * Math.min(2.5, cz.f.v / cz.hiz0);              /* yavaş 1,2 · olağan 1 · çok hızlı 0,7 */
+      }
+      cz.fk = cz.fk == null ? f : cz.fk + (f - cz.fk) * 0.3;          /* birden zıplamasın */
+      return Math.round(cz.fk * 20) / 20;
+    }
     function kkCizBasla(e, o) {
-      var b = kkBirim(o, e.clientX, e.clientY), fos = KK.arac === 'f';
-      var c = { a: fos ? 'f' : 'k', r: fos ? 0 : KK.renk, w: KK.kal, p: [kkR(b[0]), kkR(b[1])] };
-      var olcek = o.r.width / KK_EN;                               /* ekranda bir birimin pikseli */
-      KK.cz = { id: e.pointerId, s: o.s, o: o, c: c, t0: Date.now(), sx: b[0], sy: b[1], hx: b[0], hy: b[1],
-                adim: Math.max(0.3, 0.9 / olcek), yum: e.pointerType === 'touch' ? 0.5 : 0.72, el: kkYol(c), k: '', g: 0 };
+      var fos = KK.arac === 'f', b = kkBirim(o, e.clientX, e.clientY);
+      var c = { a: fos ? 'F' : 'K', r: fos ? 0 : KK.renk, w: KK.kal, p: [kkR(b[0]), kkR(b[1])] };
+      var olcek = o.r.width / KK_EN;                                  /* ekranda bir birimin pikseli */
+      var cz = KK.cz = { id: e.pointerId, s: o.s, o: o, c: c, t0: Date.now(), adim: Math.max(0.1, (KK_ADIM[e.pointerType] || 0.75) / olcek), olcek: olcek,
+                         f: kkSuzgec(e.pointerType), hiz0: kkHiz0(), baski: false, fk: null, hizlar: [], don: 0, tah: null,
+                         k: '', g: 0, el: null };
+      cz.f.ekle(e.clientX, e.clientY, e.timeStamp || 0);
+      if (!fos) c.b = [kkBaskili(e) ? kkOran(cz, e) : (cz.fk = 0.9)];
+      cz.el = kkCanliKap(c);
       var v = kkSvg(o.yuz, true);
-      if (v) kkGrup(v, c).appendChild(KK.cz.el);
+      if (v) kkGrup(v, c).appendChild(cz.el);
+      kkCanliCiz(cz);
       KK.seritR = kkSeritKutu();
       kkCanliBasla();
     }
-    function kkCizEkle(cz, x, y) {
-      var b = kkBirim(cz.o, x, y);
-      cz.hx = b[0]; cz.hy = b[1];
-      cz.sx += (b[0] - cz.sx) * cz.yum; cz.sy += (b[1] - cz.sy) * cz.yum;   /* titremeyi yumuşat (dokunmatik tahta) */
-      var p = cz.c.p, lx = p[p.length - 2], ly = p[p.length - 1];
-      if (Math.abs(cz.sx - lx) + Math.abs(cz.sy - ly) < cz.adim) return false;
-      p.push(kkR(cz.sx), kkR(cz.sy));
+    function kkCizEkle(cz, ev) {
+      cz.f.ekle(ev.clientX, ev.clientY, ev.timeStamp || 0);
+      if (cz.f.v > 15 && cz.hizlar.length < 4000) cz.hizlar.push(cz.f.v);
+      var c = cz.c, p = c.p, n = p.length, b = kkBirim(cz.o, cz.f.x, cz.f.y);
+      var f = c.b ? kkOran(cz, ev) : 0;
+      var dx = b[0] - p[n - 2], dy = b[1] - p[n - 1];
+      if (dx * dx + dy * dy < cz.adim * cz.adim) {                    /* çok yakın: yalnız bastırma (nokta koyulaşır) */
+        if (c.b && cz.baski && f > c.b[c.b.length - 1]) c.b[c.b.length - 1] = f;
+        return false;
+      }
+      p.push(kkR(b[0]), kkR(b[1]));
+      if (c.b) c.b.push(f);
       return true;
+    }
+    /* tarayıcının tahmini (Chrome): kalemin bir sonraki yeri — yalnız gösterilir, saklanmaz */
+    function kkTahmin(cz, e) {
+      cz.tah = null;
+      if (cz.c.a !== 'K' || e.pointerType === 'mouse' || !e.getPredictedEvents || cz.f.v < 120) return;
+      var T = e.getPredictedEvents();
+      if (!T || !T.length) return;
+      var b = kkBirim(cz.o, T[0].clientX, T[0].clientY), p = cz.c.p, n = p.length;
+      var dx = (b[0] - p[n - 2]) * cz.olcek, dy = (b[1] - p[n - 1]) * cz.olcek;   /* ekranda piksel */
+      if (dx * dx + dy * dy <= 576) cz.tah = [kkR(b[0]), kkR(b[1])];
+    }
+    /* canlı çizgi: kalem için grup (donmuş parçalar + değişen son parça), fosforlu için tek yol */
+    function kkCanliKap(c) {
+      if (c.a !== 'K') return kkYol(c);
+      var g = document.createElementNS(KK_NS, 'g'), y = document.createElementNS(KK_NS, 'path');
+      g.setAttribute('class', 'kk-canli');
+      g.setAttribute('fill', KK_RENK[c.r] || KK_RENK[1]);
+      y.setAttribute('class', 'kk-kd');
+      g.appendChild(y);
+      return g;
+    }
+    function kkCanliCiz(cz) {
+      var c = cz.c, p = c.p, el = cz.el;
+      if (!el) return;
+      if (c.a !== 'K') { kkYolYaz(el, c); return; }
+      var n = p.length / 2, w = KK_KALIN[c.w] || KK_KALIN.o;
+      while (n - cz.don > KK_PARCA + 8) {                             /* bitmiş kısmı dondur */
+        var a = cz.don, son = a + KK_PARCA, y = document.createElementNS(KK_NS, 'path');
+        y.setAttribute('class', 'kk-kd');
+        y.setAttribute('d', kkKontur(p.slice(2 * a, 2 * son + 2), c.b.slice(a, son + 1), w));
+        el.insertBefore(y, el.lastChild);
+        cz.don = son;
+      }
+      var pp = p.slice(2 * cz.don), bb = c.b.slice(cz.don);
+      if (cz.tah) { pp.push(cz.tah[0], cz.tah[1]); bb.push(bb[bb.length - 1]); }
+      el.lastChild.setAttribute('d', kkKontur(pp, bb, w));
     }
     var kkCizRaf = 0;
     function kkCizZamanla() {
       if (kkCizRaf) return;
       kkCizRaf = (window.requestAnimationFrame || setTimeout)(function () {
         kkCizRaf = 0;
-        if (KK.cz && KK.cz.el) KK.cz.el.setAttribute('d', kkD(KK.cz.c.p));
+        if (KK.cz) kkCanliCiz(KK.cz);
       });
     }
-    /* Ramer-Douglas-Peucker: kayıt küçük kalsın */
-    function kkSadelestir(p, eps) {
+    /* Ramer-Douglas-Peucker: kayıt küçük kalsın (kalınlığı belirgin değişen noktalar da kalır) */
+    function kkSadelestir(p, eps, bb) {
       var n = p.length / 2;
-      if (n < 3) return p;
+      if (n < 3) return { p: p, b: bb };
       var tut = [], yig = [[0, n - 1]], e2 = eps * eps;
       tut[0] = tut[n - 1] = 1;
       while (yig.length) {
@@ -1445,19 +1645,24 @@
         }
         if (ei > 0 && en > e2) { tut[ei] = 1; yig.push([a, ei], [ei, b]); }
       }
-      var out = [];
-      for (var j = 0; j < n; j++) if (tut[j]) out.push(p[2 * j], p[2 * j + 1]);
-      return out;
+      if (bb) for (var k = 1, sn = 0; k < n; k++) { if (tut[k]) { sn = k; continue; } if (Math.abs(bb[k] - bb[sn]) >= 0.12) { tut[k] = 1; sn = k; } }
+      var out = [], ob = bb ? [] : null;
+      for (var j = 0; j < n; j++) if (tut[j]) { out.push(p[2 * j], p[2 * j + 1]); if (ob) ob.push(bb[j]); }
+      return { p: out, b: ob };
     }
     function kkCizBitir() {
       var cz = KK.cz;
       if (!cz) return;
       KK.cz = null;
       if (cz.el && cz.el.parentNode) cz.el.parentNode.removeChild(cz.el);
-      var c = cz.c, p = c.p;
-      /* parmağın kalktığı yere kadar (yumuşatma geride bırakmasın) */
-      if (Math.abs(cz.hx - p[p.length - 2]) + Math.abs(cz.hy - p[p.length - 1]) > cz.adim * 0.5) p.push(kkR(cz.hx), kkR(cz.hy));
-      c.p = kkSadelestir(p, 0.3);
+      var c = cz.c;
+      if (c.b && !cz.baski && c.b.length >= 4) {                       /* bastırmasız yazıda uç hafifçe incelir */
+        var m = c.b.length;
+        c.b[m - 1] = Math.round(c.b[m - 1] * 0.7 * 20) / 20; c.b[m - 2] = Math.round(c.b[m - 2] * 0.86 * 20) / 20;
+      }
+      var sd = kkSadelestir(c.p, 0.2, c.b || null);
+      c.p = sd.p; if (c.b) c.b = sd.b;
+      kkHizOgren(cz.hizlar);
       var rec = KK.M[cz.s], L = kkCizgiler(rec), onceki = rec ? 'm' + kkImza(rec) : '-';
       L.push(c);
       kkSayfaYaz(cz.s, L, true);
@@ -1466,7 +1671,7 @@
       KK.ileri = [];
       kkSayfaEkle(cz.s, onceki, [c]);
       kkGonder([cz.s], cz.k);
-      kkSonYaz(cz.s, c.p, (c.a === 'f' ? KK_FKALIN[c.w] : KK_KALIN[c.w]) / 2 + 2);
+      kkSonYaz(cz.s, c.p, (kkFos(c) ? KK_FKALIN[c.w] : KK_KALIN[c.w] * kkEnKalin(c)) / 2 + 2);
       kkSeritBirak();
     }
     function kkCizAt() {                                           /* iki parmak indi: yeni başlamış çizgi kıstırmanın ilk parmağıydı */
@@ -1491,7 +1696,7 @@
       return ((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0));
     }
     function kkDegiyor(c, ax, ay, bx, by, rr) {
-      var p = c.p, n = p.length / 2, w = (c.a === 'f' ? KK_FKALIN[c.w] : KK_KALIN[c.w]) / 2, s = rr + w;
+      var p = c.p, n = p.length / 2, w = (kkFos(c) ? KK_FKALIN[c.w] : KK_KALIN[c.w] * kkEnKalin(c)) / 2, s = rr + w;
       var x0 = Math.min(ax, bx) - s, x1 = Math.max(ax, bx) + s, y0 = Math.min(ay, by) - s, y1 = Math.max(ay, by) + s;
       for (var i = 0; i < n; i++) {
         var x = p[2 * i], y = p[2 * i + 1];
@@ -1664,11 +1869,13 @@
         if (b[0] < -2 || b[0] > KK_EN + 2 || b[1] < -2 || b[1] > KK_BOY + 2) {
           /* öbür sayfaya geçti: bu çizgi biter, orada yenisi başlar */
           var o = kkNoktadaki(ev.clientX, ev.clientY);
-          if (o && o.s !== cz.s) { kkCizEkle(cz, ev.clientX, ev.clientY); kkCizBitir(); kkCizBasla(ev, o); cz = KK.cz; yeni = true; continue; }
+          if (o && o.s !== cz.s) { kkCizEkle(cz, ev); kkCizBitir(); kkCizBasla(ev, o); cz = KK.cz; yeni = true; continue; }
         }
-        if (kkCizEkle(cz, ev.clientX, ev.clientY)) yeni = true;
+        if (kkCizEkle(cz, ev)) yeni = true;
       }
-      if (yeni) { kkCizZamanla(); kkCanliZamanla(); kkYolVer(e.clientX, e.clientY); }
+      kkTahmin(cz, e);
+      if (yeni || cz.tah) kkCizZamanla();
+      if (yeni) { kkCanliZamanla(); kkYolVer(e.clientX, e.clientY); }
     }
     function kkBirak(e) {
       var d = KK.dok[e.pointerId];
@@ -1677,7 +1884,7 @@
       if (KK.bekle && KK.bekle.id === e.pointerId) KK.bekle = null;
       if (KK.sil && KK.sil.id === e.pointerId) { kkSilgiBitir(); if (e.pointerType === 'mouse') kkSilgiImlec(e); return; }
       if (KK.cz && KK.cz.id === e.pointerId) {
-        if (e.type === 'pointerup') kkCizEkle(KK.cz, e.clientX, e.clientY);
+        if (e.type === 'pointerup') kkCizEkle(KK.cz, e);
         kkCizBitir();
       }
     }
@@ -1753,13 +1960,15 @@
       var bas = cz.g;
       cz.g = cz.c.p.length;
       try {
-        TK.k.gonder({ t: 'kc', bk: KK_KITAP, k: cz.k, s: cz.s, a: cz.c.a, r: cz.c.r, w: cz.c.w, b: bas / 2, d: kkNoktaKodla(cz.c.p.slice(bas)) });
+        var yeni = cz.c.a === 'K' || cz.c.a === 'F';
+        TK.k.gonder({ t: yeni ? 'kd' : 'kc', bk: KK_KITAP, k: cz.k, s: cz.s, a: cz.c.a, r: cz.c.r, w: cz.c.w, b: bas / 2,
+                      d: yeni ? kkNoktaKodla10(cz.c.p.slice(bas), cz.c.b ? cz.c.b.slice(bas / 2) : null) : kkNoktaKodla(cz.c.p.slice(bas)) });
       } catch (e) { }
     }
     /* izleyen: gelen */
     function kkGelen(m) {
       if (!KK || !m || (m.bk && m.bk !== KK_KITAP) || tkLider()) return;
-      if (m.t === 'kc') { kkUzakParca(m); return; }
+      if (m.t === 'kc' || m.t === 'kd') { kkUzakParca(m); return; }
       if (m.t === 'kx') { kkUzakSil(m.k); return; }
       if (m.t !== 'kb') return;
       var L = m.L || [];
@@ -1779,21 +1988,24 @@
       if (m.bit) kkUzakSil(m.bit);
     }
     function kkUzakParca(m) {
-      var p = kkNoktaCoz(m.d), s = +m.s;
+      var yeni = m.t === 'kd', Y = yeni ? kkNoktaCoz10(m.d, m.a === 'K') : null;     /* 'kd': DOĞAL KALEM çizgisi */
+      var p = yeni ? Y.p : kkNoktaCoz(m.d), s = +m.s;
       if (!p.length || !(s >= 1)) return;
       var u = KK.uzak[m.k];
       if (!u) {
-        var a = m.a === 'f' ? 'f' : 'k', r = +m.r || 0;
+        var a = yeni ? (m.a === 'F' ? 'F' : 'K') : (m.a === 'f' ? 'f' : 'k'), r = +m.r || 0;
         u = KK.uzak[m.k] = { s: s, c: { a: a, r: r, w: KK_KALIN[m.w] ? m.w : 'o', p: [] }, el: null };
+        if (a === 'K') u.c.b = [];
       }
       u.z = Date.now();
-      if ((+m.b || 0) * 2 !== u.c.p.length) { if (+m.b) return; u.c.p = []; }   /* sırayla gelir; uymayan parça atlanır */
+      if ((+m.b || 0) * 2 !== u.c.p.length) { if (+m.b) return; u.c.p = []; if (u.c.b) u.c.b = []; }   /* sırayla gelir; uymayan parça atlanır */
       u.c.p.push.apply(u.c.p, p);
+      if (u.c.b && Y && Y.b) u.c.b.push.apply(u.c.b, Y.b);
       var yuz = kkYuz(s), v = yuz && kkSvg(yuz, true);
       if (!v) return;
       if (!u.el) u.el = kkYol(u.c);
       if (u.el.parentNode !== kkGrup(v, u.c)) kkGrup(v, u.c).appendChild(u.el);
-      u.el.setAttribute('d', kkD(u.c.p));
+      kkYolYaz(u.el, u.c);
     }
     function kkUzakSil(k) {
       var u = KK.uzak[k];
@@ -2370,7 +2582,7 @@
     }
     function kkSonRenk(rec) {
       var L = kkCizgiler(rec);
-      for (var i = L.length - 1; i >= 0; i--) if (L[i].a === 'k') return KK_RENK[L[i].r] || KK_RENK[1];
+      for (var i = L.length - 1; i >= 0; i--) if (L[i].a === 'k' || L[i].a === 'K') return KK_RENK[L[i].r] || KK_RENK[1];
       return L.length ? KK_FOS[0] : KK_RENK[1];
     }
     function kkListeAc() {
@@ -2561,7 +2773,7 @@
     var kkDis = {
       acik: function () { return KK.acik; }, ac: kkAc, kapat: kkKapat,
       kitap: KK_KITAP, hazir: function () { return KK.hazir; }, depo: function () { return KK.depo; },
-      cizgiler: function (s, misafir) { return kkCizgiler((misafir ? KK.G : KK.M)[s]).map(function (c) { return { a: c.a, r: c.r, w: c.w, p: c.p.slice() }; }); },
+      cizgiler: function (s, misafir) { return kkCizgiler((misafir ? KK.G : KK.M)[s]).map(function (c) { var o = { a: c.a, r: c.r, w: c.w, p: c.p.slice() }; if (c.b) o.b = c.b.slice(); return o; }); },
       kayit: function (s) { var r = KK.M[s]; return r ? { t: r.t, c: r.c } : null; },
       gosterilen: function (s) { var r = kkGosterilen(s); return r ? { t: r.t, c: r.c, misafir: r === KK.G[s] } : null; },
       yerler: function () { return kkYerler().map(function (x) { return { s: x.s, t: x.t, ad: kkSayfaAdi(x.s) }; }); },

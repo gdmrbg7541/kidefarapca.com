@@ -240,7 +240,12 @@
   overflow: hidden; pointer-events: none;
   mix-blend-mode: multiply;
 }
-.kk-m path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.kk-m path:not(.kk-kd) { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+/* DOĞAL KALEM (25.10.2026): kalınlaşıp incelen kalem dolgu olarak çizilir; yazılırken
+   parçalar bir grupta (grup saydamlığı: parçaların birleştiği yer koyulaşmasın) */
+.kk-m .kk-kd { stroke: none; fill-opacity: .92; }
+.kk-m .kk-canli { opacity: .92; }
+.kk-m .kk-canli .kk-kd { fill-opacity: 1; }
 .kk-m .kk-k { stroke-opacity: .92; }
 .kk-m .kk-f { stroke-opacity: .72; }
 
@@ -312,8 +317,10 @@ html.kk-acik:not(.kk-gez) .halka { display: none !important; }
 /* renkler: defterdeki gibi dolu yuvarlak, içinde beyaz kalem */
 .kk-s.kk-r { width: 34px; height: 34px; background: var(--kk); color: #fff; box-shadow: 0 1px 3px rgba(15, 23, 42, .25); }
 .kk-s.kk-r svg { width: 17px; height: 17px; opacity: .92; }
-.kk-s.kk-r:hover { background: var(--kk); transform: scale(1.07); }
-.kk-s.kk-r.secili { box-shadow: 0 0 0 2.5px #fff, 0 0 0 5px var(--kk); transform: scale(1.04); }
+.kk-s.kk-r:hover { background: var(--kk); }
+@media (hover: hover) { .kk-s.kk-r:not(.secili):hover { transform: scale(1.07); } }
+/* seçili renk: halka yuvarlağın İÇİNDE (25.10.2026; dışa taşan halka yandaki kalemleri örtüyordu) */
+.kk-s.kk-r.secili { box-shadow: inset 0 0 0 2.5px var(--kk), inset 0 0 0 5px #fff, 0 1px 3px rgba(15, 23, 42, .25); }
 .kk-s.kk-a.secili, .kk-s.kk-a.secili:hover { background: #16A085; color: #fff; }
 .kk-s.kk-pasif { opacity: .32; }
 /* ‹ küçült */
