@@ -533,6 +533,10 @@
     var M = D.maddeler, C = [];
     M.forEach(function (x, i) {
       var m = maddeKutu(G, i, x);
+      /* ÖRNEK CEVAPLAR KALKTI (24.10.2026) — öğretmen: "8. sınıfta verilen arapça
+         cevapları silelim". Cevabı öğrenci kendisi yazar/söyler: örnek cevap
+         yalnız veride varsa çıkar (8. sınıfın verisinden silindi). */
+      if (!x.ornek) return;
       var c = document.createElement('div');
       c.className = 'acik-cevap gizli'; c.setAttribute('lang', 'ar'); c.textContent = x.ornek;
       var b = document.createElement('button');
@@ -542,7 +546,7 @@
       C.push([c, b]);
     });
     return {
-      acik: true,
+      acik: true, ornek: C.length > 0,
       goster: function (g) { C.forEach(function (p) { p[0].classList.toggle('gizli', !g); p[1].textContent = g ? 'Örnek cevabı gizle' : 'Örnek cevabı göster'; }); },
       sifirla: function () { C.forEach(function (p) { p[0].classList.add('gizli'); p[1].textContent = 'Örnek cevabı göster'; }); }
     };
@@ -558,7 +562,9 @@
       '<h1 class="yonerge" lang="ar">' + yazi(D.yonerge) + '</h1></div>' +
       '<p class="yonerge-tr">' + esc(D.yonerge_tr) + '</p>' +
       '<div class="kunye"><span class="cip">Kitap s. ' + D.sayfa + '</span><span class="cip">Etkinlik ' + D.no + '</span>' +
-      '<span class="cip k-' + esc(D.kaynak) + '">' + (KAYNAK_AD[D.kaynak] || '') + '</span></div>';
+      ((D.tur === 'acik' && !(D.maddeler || []).some(function (x) { return x && x.ornek; }))      /* örnek cevapsız (24.10.2026) */
+        ? '<span class="cip">Açık uçlu · cevap senden</span>'
+        : '<span class="cip k-' + esc(D.kaynak) + '">' + (KAYNAK_AD[D.kaynak] || '') + '</span>') + '</div>';
     if (D.sesler && D.sesler.length) {
       h += '<div class="sesler">' + D.sesler.map(function (s) {
         return '<div class="ses-kutu"><b lang="ar">صَوْت ' + ar(s.no) + '</b><audio controls preload="none" src="' + esc(s.yol) + '"></audio></div>';
@@ -576,10 +582,12 @@
     if (!tur) { hata('Bu etkinlik türü tanınmadı: ' + D.tur); return; }
     IS = tur($('#govde'));
     if (IS.acik) {
-      alt.innerHTML = '<button type="button" class="tus" id="tGoster">Örnek cevapları göster</button><div class="sonuc"></div>';
-      document.body.appendChild(alt);
-      var acikGor = false;
-      $('#tGoster').addEventListener('click', function () { acikGor = !acikGor; IS.goster(acikGor); this.textContent = acikGor ? 'Örnek cevapları gizle' : 'Örnek cevapları göster'; });
+      if (IS.ornek) {                               /* örnek cevap yoksa (24.10.2026) düğme de yok */
+        alt.innerHTML = '<button type="button" class="tus" id="tGoster">Örnek cevapları göster</button><div class="sonuc"></div>';
+        document.body.appendChild(alt);
+        var acikGor = false;
+        $('#tGoster').addEventListener('click', function () { acikGor = !acikGor; IS.goster(acikGor); this.textContent = acikGor ? 'Örnek cevapları gizle' : 'Örnek cevapları göster'; });
+      }
     } else {
       alt.innerHTML = '<button type="button" class="tus" id="tKontrol">Kontrol et</button>' +
         '<button type="button" class="tus iki" id="tGoster">Cevapları göster</button>' +

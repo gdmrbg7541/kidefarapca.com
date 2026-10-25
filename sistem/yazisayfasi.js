@@ -191,6 +191,11 @@
    kart açılmaz; kâğıttaki koyu rehber harfe dokununca YALNIZ o yazılış, harfin
    kendi yerinde ve boyunda yazılır (rehberOynat). Dokunuş çizgi bırakmaz;
    sürüklenir ya da basılı tutulursa yazı olur. Tahtaya da yansır ('ra').
+   DEFTER v25 (24.10.2026, öğretmen: "defter kısmında bi kelime veya harfleri
+   bilgisayar yazısıyla yazdıktan sonra silemiyoruz"): silgi silik yazının
+   (kelime, rehber harf, harf adı) üstünden geçince o yazı bütünüyle silinir;
+   silgi o hareketinde kalem yazısına değdiyse yalnız kalem yazısı silinir
+   (silgiSilik). Geri al getirir; yansıtmada sayfa bütün gider.
    ARAÇLAR: 5 renk kalem · hat kalemi · silgi · 3 kalınlık · çizgi sayısı
    (2·3·4·5·7) / güzel yazı · geri al, yinele, temizle · sayfalar (ekle,
    kaldır, ileri / geri, kaydırma çubuğu, dikey / yatay) · PDF · tam ekran.
@@ -2095,6 +2100,7 @@
         _cz = null;
         c.p = sadelestir(c.p, 0.32).map(function (v) { return Math.round(v * 2) / 2; });
         yFark();
+        if (c.s && silgiSilik(j, c)) return;                 /* v25: silgi silik yazının üstünden geçti */
         D.sayfalar[j].cizimler.push(c);
         D.geri.push({ t: 'ekle', j: j });
         D.ileri = [];
@@ -3275,6 +3281,7 @@
         if (!sy) { yIste(); return; }
         var zp = sayfaParcala(m.kod);
         sy.cizimler = zp.c; sy.silik = zp.s;
+        for (var uk in YK.uzak) if (YK.uzak[uk] && YK.uzak[uk].j === m.j) delete YK.uzak[uk];    /* v25: yarım silgi izi kalmasın */
         D.geri = []; D.ileri = []; D.kirli = true;
         cizimAyarla();
     }
@@ -3338,7 +3345,8 @@
          bir satır da gri).
        · Sıradaki boş satır: açık sayfada yazı (silik ya da kalemle) olan son
          satırın altı; sayfa doluysa sonraki (gerekirse yeni) sayfa.
-       · Silik yazı ALT tuvalde, çizgilerle birlikte çizilir: silgi silmez.
+       · Silik yazı ALT tuvalde, çizgilerle birlikte çizilir. v25: silgi üstünden
+         geçince siler (o harekette kalem yazısına değmediyse — silgiSilik).
          «Tüm sayfayı sil» yalnız kalemle yazılanı siler (sıradaki öğrenci aynı
          silik yazıya yazar); silik yazı geri al (↶) ya da pencerenin altındaki
          «Silik yazıları kaldır» ile gider.
@@ -3645,15 +3653,91 @@
         if (a.t === 'silik') {
             var cik = sy.silik.splice(Math.max(0, sy.silik.length - a.adet), a.adet);
             D.ileri.push({ t: 'silik', j: a.j, L: cik });
-        } else { D.ileri.push({ t: 'silikSil', j: a.j, onceki: a.onceki }); sy.silik = a.onceki.slice(); }
+        } else { D.ileri.push({ t: 'silikSil', j: a.j, onceki: a.onceki, sonra: a.sonra }); sy.silik = a.onceki.slice(); }
         D.kirli = true; sayfaCiz();
         ySayfaGonder(a.j);
     }
     function silikIleri(a, sy) {
         if (a.t === 'silik') { sy.silik = (sy.silik || []).concat(a.L); D.geri.push({ t: 'silik', j: a.j, adet: a.L.length }); }
-        else { D.geri.push({ t: 'silikSil', j: a.j, onceki: (sy.silik || []).slice() }); sy.silik = []; }
+        else { D.geri.push({ t: 'silikSil', j: a.j, onceki: (sy.silik || []).slice(), sonra: a.sonra }); sy.silik = a.sonra ? a.sonra.slice() : []; }   /* v25: sonra = silgiyle kısmi silme */
         D.kirli = true; sayfaCiz();
         ySayfaGonder(a.j);
+    }
+    /* SİLGİ SİLİK YAZIYI DA SİLER (v25, 24.10.2026) — öğretmen: "defter kısmında bi
+       kelime veya harfleri bilgisayar yazısıyla yazdıktan sonra silemiyoruz". Silgi bir
+       silik yazının (kelime, rehber harf, harf adı) üstünden geçince o yazı bütünüyle
+       silinir; ama silgi o hareketinde görünen kalem yazısına değdiyse yalnız kalem
+       yazısı silinir (öğrenci silik kelimenin üstündeki yazısını silerken kelime gitmez,
+       ikinci geçişte gider). Geri al getirir; yansıtmada sayfa bütün gider. */
+    function silikKutu(s) {
+        var w = olcu(s.t, Math.max(4, s.b));
+        var x0 = s.a === 'c' ? s.x - w / 2 : (s.a === 'l' ? s.x : s.x - w);
+        var ust = s.k === 'e' ? 0.8 : 0.9, alt = s.k === 'e' ? 0.25 : 0.35;
+        return [x0, s.y - s.b * ust, x0 + w, s.y + s.b * alt];
+    }
+    function silgiVurulan(sy, c) {
+        var L = sy && sy.silik, p = c && c.p, r = SILGI_W / 2, adim = SILGI_W / 4, sonuc = [];
+        if (!L || !L.length || !p || !p.length) return sonuc;
+        L.forEach(function (s, i) {
+            if (!s || !s.t) return;
+            var k = silikKutu(s), x0 = k[0] - r, y0 = k[1] - r, x1 = k[2] + r, y1 = k[3] + r;
+            var ic = function (x, y) { return x >= x0 && x <= x1 && y >= y0 && y <= y1; };
+            if (ic(p[0], p[1])) { sonuc.push(i); return; }
+            for (var q = 2; q + 1 < p.length; q += 2) {
+                var ax = p[q - 2], ay = p[q - 1], bx = p[q], by = p[q + 1];
+                var n = Math.max(1, Math.ceil(Math.max(Math.abs(bx - ax), Math.abs(by - ay)) / adim));
+                for (var t = 1; t <= n; t++) if (ic(ax + (bx - ax) * t / n, ay + (by - ay) * t / n)) { sonuc.push(i); return; }
+            }
+        });
+        return sonuc;
+    }
+    /* silgi bu hareketinde görünen kalem yazısına değdi mi? Sayfanın çizgileri (önceki
+       silgiler dahil) silginin kutusunda yeniden çizilir, silginin izi kadarı kalır. */
+    function silgiMurekkep(sy, c) {
+        try {
+            var p = c.p, r = SILGI_W / 2 + 2, x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity, q;
+            if (!sy.cizimler.length) return false;
+            for (q = 0; q + 1 < p.length; q += 2) {
+                x0 = Math.min(x0, p[q]); x1 = Math.max(x1, p[q]); y0 = Math.min(y0, p[q + 1]); y1 = Math.max(y1, p[q + 1]);
+            }
+            x0 = Math.floor(x0 - r); y0 = Math.floor(y0 - r); x1 = Math.ceil(x1 + r); y1 = Math.ceil(y1 + r);
+            var w = x1 - x0, h = y1 - y0;
+            if (!(w > 0 && h > 0) || w * h > 6e6) return true;              /* ölçülemedi: temkinli, silik yazı kalır */
+            var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+            var ctx = cv.getContext('2d');
+            sy.cizimler.forEach(function (z) { cizimCiz(ctx, z, 1, x0, y0); });
+            var m = document.createElement('canvas'); m.width = w; m.height = h;
+            var mc = m.getContext('2d');
+            mc.setTransform(1, 0, 0, 1, -x0, -y0);
+            mc.lineCap = 'round'; mc.lineJoin = 'round'; mc.lineWidth = SILGI_W; mc.strokeStyle = '#000'; mc.fillStyle = '#000';
+            mc.beginPath();
+            if (p.length < 4) { mc.arc(p[0], p[1], SILGI_W / 2, 0, Math.PI * 2); mc.fill(); }
+            else { mc.moveTo(p[0], p[1]); for (q = 2; q + 1 < p.length; q += 2) mc.lineTo(p[q], p[q + 1]); mc.stroke(); }
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.drawImage(m, 0, 0);
+            var d = ctx.getImageData(0, 0, w, h).data, say = 0;
+            for (var i = 3; i < d.length; i += 4) if (d[i] > 60 && ++say >= 4) return true;
+            return false;
+        } catch (e) { return true; }
+    }
+    /* kalemBirak: silgi silik yazının üstünden geçtiyse (ve kalem yazısına değmediyse) */
+    function silgiSilik(j, c) {
+        var sy = D && D.sayfalar[j];
+        if (!sy || !sy.silik || !sy.silik.length) return false;
+        var vur = silgiVurulan(sy, c);
+        if (!vur.length || silgiMurekkep(sy, c)) return false;
+        var onceki = sy.silik.slice(), sil = {};
+        vur.forEach(function (i) { sil[i] = 1; });
+        sy.silik = sy.silik.filter(function (s, i) { return !sil[i]; });
+        D.geri.push({ t: 'silikSil', j: j, onceki: onceki, sonra: sy.silik.slice() });
+        D.ileri = [];
+        D.kirli = true;
+        if (YK) { clearTimeout(YK.czZ); YK.czZ = null; YK.cz = null; }      /* yansıtma: silgi izi değil, sayfa bütün gider */
+        if (RA && RA.j === j && sy.silik.indexOf(RA.s) < 0) raDurdur(true, true);      /* yazılışı oynayan harf silindi */
+        sayfaCiz();
+        ySayfaGonder(j);
+        bildir(vur.length > 1 ? vur.length + ' silik yazı silindi — geri almak için ↶' : 'Silik yazı silindi — geri almak için ↶');
+        return true;
     }
     /* yansıtma: değişen sayfa bütün olarak öbür ekrana (izleyenin geri al yığını bunu bilmez) */
     function ySayfaGonder(j) {
@@ -3855,7 +3939,7 @@
             '<div class="ys-sl-alt">' +
               '<button type="button" class="ys-sl-kaldir" data-sk="kaldir" title="Açık sayfadaki silik yazıları kaldırır (geri alınabilir)">' + IK.temizle +
                 '<span>Bu sayfadaki silik yazıları kaldır</span></button>' +
-              '<p class="ys-sl-ipucu">Silgi silik yazıyı silmez; «Tüm sayfayı sil» yalnız kalemle yazılanı siler.</p>' +
+              '<p class="ys-sl-ipucu">Silgiyle üstünden geçince silik yazı silinir (üstünde kalem yazısı varsa önce o silinir); «Tüm sayfayı sil» yalnız kalemle yazılanı siler.</p>' +
             '</div></div>';
     }
     function silikKur() {

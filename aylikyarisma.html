@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV9JD15KLW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FV9JD15KLW');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aylık Arapça Yarışması — Kidef Arapça</title>
+<meta name="description" content="Her ay Türkiye genelinde öğrenciler arasında Arapça bilgi yarışması.">
+<!-- AYLIK TÜRKİYE ARAPÇA YARIŞMASI (24.10.2026) — öğretmen: "aylık türkiye
+     genel bilgiyarismasikacom.html altyapısıyla bi yarışma yapmak istiyorum …
+     index te geri sayım olacak … gizem macera tasarım ruhunu taşıyacak …
+     öğrenci girişi olmak zorunda, öğretmenler girememeli … sorular için
+     öğrencilerin çalışması gereken konuları 1. seviyeden başlayıp her ay
+     arttırabiliriz" · "ya da aynı anda farklı seviyelerden olabilir".
+     Sorular bilgi yarışmasının havuzundan (oyunlar/aylik_havuz.js, üretici
+     _kaynak/uretici/aylikHavuz.js). Ayarlar ayarlar/aylikYarisma belgesinde
+     (herkes okur, yönetici yazar); katılım bilgiYarismasi/aylik-<kod>/<lig>/<uid>. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="arakom.css?v=896e5892">
+<link rel="stylesheet" href="oyunlar/aylikyarisma.css?v=43868b6f">
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="hesap/oturumguvenlik.js?v=030fbcc3"></script>
+<script src="sistem/rol.js?v=c2c8fb6a"></script>
+<script src="hesap/kayitalani.js?v=1f613da8"></script>
+<link rel="stylesheet" href="hesap/girispenceresi.css?v=d0495581">
+<script src="hesap/girispenceresi.js?v=357bc8c3"></script>
+<script src="hesap/girisdavranis.js?v=024b3260"></script>
+</head>
+<body>
+<div class="ay-gok" aria-hidden="true"></div>
+<header class="ay-ust">
+  <a href="index.html" id="ayEv">← Ana sayfa</a>
+  <button type="button" class="ay-ses" id="aySes" aria-pressed="true" title="Ses">Ses açık</button>
+</header>
+<main class="ay" id="ay">
+  <div class="ay-baslik">
+    <div class="ay-ust-yazi">Kidef Arapça · Türkiye geneli</div>
+    <h1>Aylık Arapça Yarışması</h1>
+    <div class="ay-gorev" id="ayGorev"></div>
+  </div>
+  <div id="ayIcerik"><div class="ay-kart ay-ortala"><p class="ay-not">Görev dosyası açılıyor…</p></div></div>
+  <div id="ayYonetim"></div>
+</main>
+<script src="oyunlar/aylik_havuz.js?v=7040c4a3"></script>
+<script src="oyunlar/aylikyarisma.js?v=8cfef1e3"></script>
+</body>
+</html>

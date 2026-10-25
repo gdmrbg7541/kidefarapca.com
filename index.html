@@ -1135,6 +1135,8 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
 
         <!-- ANA MENÜ (index kart menüsü) -->
         <section id="home-hub-section" class="app-section" style="display:block;">
+        <!-- AYLIK YARIŞMA (24.10.2026): aylık yarışmanın geri sayım kartı (sistem/aylikkart.js doldurur; görev yoksa gizli) -->
+        <div id="aylikYarisma" hidden></div>
 
     <!-- ══════════════════════════════════════════════════════════════════════
          ARAÇ KATALOĞU — yeni sekmede tam sayfa
@@ -3888,7 +3890,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          pencere kendiliğinden açılır, sınıf kapanınca kaydedip kapanır (yalnız öğretmen).
          5 renk, kalem, silgi, Arapça büyük/küçük harf çizgileri, sayfalar; geçmiş bu
          tarayıcıda tarihiyle, seviye notları hesapta (sistem/yazisayfasi.js) -->
-    <script src="sistem/yazisayfasi.js?v=6ab0d7c9"></script>
+    <script src="sistem/yazisayfasi.js?v=959aa317"></script>
     <!-- KİTAP TAKİBİ (15.10.2026) — öğretmen: "giriş yapan öğretmenlerin
          hangi sınıfta hangi kitabı kullandığı iyi takip edilsin".
          Öğretmen panelinde "sınıf → kullandığı kitap" kartını kurar. -->
@@ -8171,6 +8173,9 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Güncellemeler ve Galeri bölümü: liste galeriYenile.py'den,
          duyurular yukarıdaki yenilikler.js'ten gelir. -->
     <script src="sistem/siniftayeni.js?v=523f760d"></script>
+    <!-- AYLIK YARIŞMA (24.10.2026) — ana sayfanın başındaki geri sayım kartı (#aylikYarisma);
+         görev ayarı ayarlar/aylikYarisma, sayfa aylikyarisma.html -->
+    <script defer src="sistem/aylikkart.js?v=f7bf99a7"></script>
     <script src="sistem/galeriveri.js?v=b5d6af07"></script>
     <script src="sistem/galeri.js?v=31382e3d"></script>
     <script src="hesap/listelerim.js?v=249ffe1f"></script>
@@ -8182,7 +8187,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/cihazlar.js?v=2dc1b92a"></script>
     <!-- TAHTAYA YANSIT (17.10.2026): başlıktaki Tahta düğmesi, paneli ve tahta
          cihazının kendiliğinden geçişi. Motor: sistem/tahta.js (tahta.html). -->
-    <script defer src="sistem/tahtagir.js?v=f19587e9"></script>
+    <script defer src="sistem/tahtagir.js?v=83101cba"></script>
     <!-- Oturum güvenliği: 40 dk boşta kalınca çıkış (telefon ve tablette 40 dk yok,
          elle çıkılmadıysa gece 00:00'da çıkış) + duyarlı işlemde PIN.
          listelerim.js'ten SONRA yüklenmeli: switchTab/behKaydet'i sarıyor. -->
