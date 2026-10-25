@@ -2097,10 +2097,18 @@
         var zemin = new Image(), yazi = new Image(), gelen = 0, bozuk = false;
         var geldi = function () {
           if (bozuk || ++gelen < 2) return;
-          yazi.className = 'metin'; yazi.alt = ''; yazi.draggable = false;
-          yazi.setAttribute('aria-hidden', 'true');
-          yuz.insertBefore(yazi, yuz.querySelector('.katman'));
-          img.src = zemin.src;
+          /* TEK ÖĞE (25.10.2026) — öğretmen: "bazı yazılar diğer sayfada da
+             görünüyor". Yazılar ayrı bir <img> olarak yüzün üstüne konunca bazı
+             tarayıcılarda (Safari) çevrilmiş yaprağın öbür yüzünde de
+             görünüyordu: backface-visibility yüzün konumlu çocuğuna işlemiyor.
+             Sayfa yine tek öğe: zemin resmin arka planı, net yazılar (SVG)
+             resmin kendisi. */
+          var st = img.style;
+          st.backgroundImage = 'url("' + zemin.src.replace(/["\\]/g, '\\$&') + '")';
+          st.backgroundPosition = 'center';
+          st.backgroundSize = 'contain';
+          st.backgroundRepeat = 'no-repeat';
+          img.src = yazi.src;
           yuz.dataset.metin = '1';
         };
         var gelmedi = function () { bozuk = true; yuz.dataset.metin = 'yok'; };
