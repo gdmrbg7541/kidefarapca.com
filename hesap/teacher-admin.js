@@ -212,6 +212,7 @@ function renderAdminPanel() {
                 <div style="padding:10px 0;">
                     <p style="font-size:0.86rem; color:#7f8c8d; margin:0 0 10px;">
                         Öğretmen olarak kayıt olanlar buraya düşer; onaylanana kadar siteye giremezler.
+                        Reddettiklerin silinmez, altta <b>Reddedilenler</b>de durur — istersen sonradan onaylayabilirsin.
                     </p>
                     <button class="btn" onclick="loadOgretmenOnaylari()" style="margin-bottom:10px; font-size:0.9rem;">🔄 Yenile</button>
                     <div id="admin-onay-list" style="max-height:400px; overflow-y:auto;">Bölümü açınca yüklenir…</div>
@@ -1011,6 +1012,66 @@ function deleteStudentCard(emailEnc) {
    kırardı), bu yüzden uid ile burada tutuluyor. */
 var _onayBekleyen = {};
 
+/* REDDEDİLENLER (26.10.2026) — yönetici: "yöneticinin reddettiği
+   öğretmenleri görüp sonradan onay verebilmesini istiyorum". Bölüm artık
+   iki liste: üstte onay bekleyenler (eskisi gibi), altta «Reddedilenler»
+   (KidefErisim.reddedilenler). Reddedilen hesap silinmez, kapalı durur;
+   «Onayla» onu açar ve hoş geldin mesajı gider — bekleyeni onaylamakla
+   aynı yol (ogretmenOnayVer → KidefErisim.onayla). Red tarihi bu günden
+   sonra reddedilenlerde görünür (reddet → redTarihi). Ad ve meslek artık
+   HTML'e kaçırılarak basılıyor. */
+function _onayBaslik(ikon, yazi, n, renk) {
+    return '<div style="display:flex; align-items:center; gap:8px; margin:4px 0 8px; font-weight:800; color:' + renk + ';">' +
+             ikon + ' ' + yazi +
+             (n ? '<span style="background:' + renk + '; color:#fff; border-radius:999px; padding:1px 9px; font-size:0.78rem;">' + n + '</span>' : '') +
+           '</div>';
+}
+function _onaySatir(o, red) {
+    var isim = (o.name && o.name !== 'Belirtilmedi') ? o.name : '';
+    var ad = isim || o.email || o._id;
+    /* TELEFON DA TAŞINIYOR (08.10.2026) — hoş geldin mesajı
+       doğrudan öğretmenin numarasına açılabilsin diye. */
+    _onayBekleyen[o._id] = { ad: isim, email: (o.email || ''), tel: (o.phone || '') };
+    var tarih = '';
+    if (red) {
+        var t = [], kayit = o.onayIstekTarihi || o.createdAt;
+        if (kayit && kayit.toDate) t.push('Kayıt ' + _ogrTarih(kayit));
+        if (o.redTarihi && o.redTarihi.toDate) t.push('Reddedildi ' + _ogrTarih(o.redTarihi));
+        if (t.length) tarih = '<span class="aon-tarih" style="display:block; font-size:0.8rem; color:#9AA3AE; margin-top:3px;">' + t.join(' · ') + '</span>';
+    }
+    return '<div class="aon-satir' + (red ? ' aon-red' : '') + '" data-aon-uid="' + o._id + '" style="display:flex; align-items:center; gap:12px; ' +
+                'background:' + (red ? '#FFFBFA' : '#fff') + '; border:1px solid ' + (red ? '#F3D9D5' : '#E9EEF5') + '; ' +
+                'border-radius:10px; padding:11px 14px; margin-bottom:8px; flex-wrap:wrap;">' +
+             '<div style="flex:1; min-width:180px;">' +
+               '<strong style="display:block; color:#2c3e50;">' + _fbEsc(ad) + '</strong>' +
+               /* TELEFON KOPYALANABİLİR (05.10.2026) — öğretmen:
+                  "öğretmen telefonunu kolayca kopyalayabilsin".
+                  Eskiden e-posta/meslek ile aynı yazının içindeydi,
+                  fareyle seçmek zordu. Artık kendi rozetinde:
+                  tıkla → panoya kopyalanır. (sistem/telkopya.js) */
+               '<span style="font-size:0.85rem; color:#7f8c8d;">' + _fbEsc(o.email || '') +
+                 (o.meslek ? ' · ' + _fbEsc(o.meslek) : '') + '</span>' +
+               (window.KidefTelKopya ? window.KidefTelKopya.rozet(o.phone)
+                                    : (o.phone ? '<span style="font-size:0.85rem; color:#7f8c8d;"> · ' + _fbEsc(o.phone) + '</span>' : '')) +
+               tarih +
+             '</div>' +
+             /* BELGE İSTE (13.10.2026) — yönetici: "onaylamadan
+                önce öğretmen olduğunu ispatlamasını istediğim bi
+                mesaj olacak, öğretmenin ismi de olacak."
+                Onaylamadan açılır; metin öğretmenin adıyla gelir,
+                kopyalanıp WhatsApp'tan gönderilir. */
+             '<button class="btn" style="background:#FEF3E2; color:#B5670A; padding:7px 14px; font-size:0.9rem; font-weight:700;" ' +
+               'title="Onaylamadan önce öğretmenlik belgesi iste" ' +
+               'onclick="ogretmenBelgeIste(\'' + o._id + '\')">Belge iste</button>' +
+             '<button class="btn" style="background:#27ae60; color:#fff; padding:7px 16px; font-size:0.9rem;" ' +
+               (red ? 'title="Hesabı aç; hoş geldin mesajı gider" ' : '') +
+               'onclick="ogretmenOnayVer(\'' + o._id + '\', true)">Onayla</button>' +
+             (red ? '' :
+             '<button class="btn" style="background:#EDF1F7; color:#5b6b80; padding:7px 16px; font-size:0.9rem;" ' +
+               'onclick="ogretmenOnayVer(\'' + o._id + '\', false)">Reddet</button>') +
+           '</div>';
+}
+
 function loadOgretmenOnaylari() {
     var kutu = document.getElementById('admin-onay-list');
     var rozet = document.getElementById('admin-onay-badge');
@@ -1020,48 +1081,30 @@ function loadOgretmenOnaylari() {
         return;
     }
     kutu.innerHTML = '<p>Yükleniyor…</p>';
-    window.KidefErisim.bekleyenler().then(function (liste) {
+    /* reddedilenler alınamazsa bekleyenler yine gelsin */
+    var redSoz = (window.KidefErisim.reddedilenler ? window.KidefErisim.reddedilenler() : Promise.resolve([]))
+        .catch(function (e) { return { hata: (e && (e.code || e.message)) || String(e) }; });
+    Promise.all([window.KidefErisim.bekleyenler(), redSoz]).then(function (s) {
+        var liste = s[0] || [], red = s[1] || [];
         if (rozet) rozet.innerHTML = liste.length
             ? '<span style="background:#e74c3c; color:#fff; border-radius:999px; padding:2px 10px; font-size:0.8rem; margin-left:8px;">' + liste.length + '</span>'
             : '';
-        if (!liste.length) { kutu.innerHTML = '<p>Onay bekleyen öğretmen yok.</p>'; return; }
-        var html = '';
         _onayBekleyen = {};
-        liste.forEach(function (o) {
-            var ad = o.name || o.email || o._id;
-            /* TELEFON DA TAŞINIYOR (08.10.2026) — hoş geldin mesajı
-               doğrudan öğretmenin numarasına açılabilsin diye. */
-            _onayBekleyen[o._id] = { ad: (o.name || ''), email: (o.email || ''), tel: (o.phone || '') };
-            html += '<div style="display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #E9EEF5; border-radius:10px; padding:11px 14px; margin-bottom:8px; flex-wrap:wrap;">' +
-                      '<div style="flex:1; min-width:180px;">' +
-                        '<strong style="display:block; color:#2c3e50;">' + ad + '</strong>' +
-                        /* TELEFON KOPYALANABİLİR (05.10.2026) — öğretmen:
-                           "öğretmen telefonunu kolayca kopyalayabilsin".
-                           Eskiden e-posta/meslek ile aynı yazının içindeydi,
-                           fareyle seçmek zordu. Artık kendi rozetinde:
-                           tıkla → panoya kopyalanır. (sistem/telkopya.js) */
-                        '<span style="font-size:0.85rem; color:#7f8c8d;">' + (o.email || '') +
-                          (o.meslek ? ' · ' + o.meslek : '') + '</span>' +
-                        (window.KidefTelKopya ? window.KidefTelKopya.rozet(o.phone)
-                                             : (o.phone ? '<span style="font-size:0.85rem; color:#7f8c8d;"> · ' + o.phone + '</span>' : '')) +
-                      '</div>' +
-                      /* BELGE İSTE (13.10.2026) — yönetici: "onaylamadan
-                         önce öğretmen olduğunu ispatlamasını istediğim bi
-                         mesaj olacak, öğretmenin ismi de olacak."
-                         Onaylamadan açılır; metin öğretmenin adıyla gelir,
-                         kopyalanıp WhatsApp'tan gönderilir. */
-                      '<button class="btn" style="background:#FEF3E2; color:#B5670A; padding:7px 14px; font-size:0.9rem; font-weight:700;" ' +
-                        'title="Onaylamadan önce öğretmenlik belgesi iste" ' +
-                        'onclick="ogretmenBelgeIste(\'' + o._id + '\')">Belge iste</button>' +
-                      '<button class="btn" style="background:#27ae60; color:#fff; padding:7px 16px; font-size:0.9rem;" ' +
-                        'onclick="ogretmenOnayVer(\'' + o._id + '\', true)">Onayla</button>' +
-                      '<button class="btn" style="background:#EDF1F7; color:#5b6b80; padding:7px 16px; font-size:0.9rem;" ' +
-                        'onclick="ogretmenOnayVer(\'' + o._id + '\', false)">Reddet</button>' +
-                    '</div>';
-        });
-        kutu.innerHTML = html;
+        var html = _onayBaslik('⏳', 'Onay bekleyenler', liste.length, '#B5670A');
+        if (!liste.length) html += '<p style="margin:0 0 6px;">Onay bekleyen öğretmen yok.</p>';
+        liste.forEach(function (o) { html += _onaySatir(o, false); });
+        html += '<div class="aon-red-bolum" style="margin-top:16px; padding-top:12px; border-top:1px dashed #E3C9C5;">' +
+                _onayBaslik('⛔', 'Reddedilenler', red.hata ? 0 : red.length, '#B03A2E');
+        if (red.hata) html += '<p style="margin:0; color:#B03A2E; font-size:0.85rem;">Reddedilenler alınamadı: ' + _fbEsc(red.hata) + '</p>';
+        else if (!red.length) html += '<p style="margin:0; font-size:0.85rem; color:#9AA3AE;">Reddedilen öğretmen yok.</p>';
+        else {
+            html += '<p style="margin:0 0 8px; font-size:0.82rem; color:#8A94A3; line-height:1.5;">' +
+                    'Reddedilen hesap silinmez, kapalı durur. <b>Onayla</b>ya basınca açılır ve hoş geldin mesajı gider.</p>';
+            red.forEach(function (o) { html += _onaySatir(o, true); });
+        }
+        kutu.innerHTML = html + '</div>';
     }).catch(function (e) {
-        kutu.innerHTML = '<p>Liste alınamadı: ' + (e && (e.code || e.message)) + '</p>';
+        kutu.innerHTML = '<p>Liste alınamadı: ' + _fbEsc((e && (e.code || e.message)) || e) + '</p>';
     });
 }
 window.loadOgretmenOnaylari = loadOgretmenOnaylari;
@@ -1092,7 +1135,8 @@ function ogretmenOnayVer(uid, onay) {
     var _bilgi = _onayBekleyen[uid] || {};
     islem.then(function () {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert(onay ? 'Öğretmen onaylandı, hoş geldin mesajı gönderildi.' : 'Başvuru reddedildi.');
+            showCustomAlert(onay ? 'Öğretmen onaylandı, hoş geldin mesajı gönderildi.'
+                                 : 'Başvuru reddedildi. Hesap silinmedi; altta «Reddedilenler»de duruyor, istersen sonradan onaylayabilirsin.');
         }
         /* PAYLAŞILACAK MESAJ (07.10.2026) — öğretmen: "onayladıktan sonra
            onun ismiyle bi hoşgeldin mesajı ... hızlıca kopyalayabileyim,
@@ -1101,6 +1145,8 @@ function ogretmenOnayVer(uid, onay) {
            metni veriyor. */
         if (onay) paylasilacakMesaj(uid, _bilgi);
         loadOgretmenOnaylari();
+        /* Öğretmenler listesi açıksa onun durum rozetleri de tazelensin (26.10.2026) */
+        if (document.getElementById('aogGrid') && typeof renderAdminTeacherList === 'function') renderAdminTeacherList();
     }).catch(function (e) {
         if (typeof showCustomAlert === 'function') showCustomAlert('İşlem başarısız: ' + (e && (e.code || e.message)));
     });
@@ -1342,7 +1388,7 @@ function renderAdminTeacherList() {
                 '</div>' +
                 '<div class="aog-ara">' +
                   '<input type="search" id="aogAra" placeholder="Ad, e-posta, kod ya da telefon ara…" oninput="adminOgretmenSuz()">' +
-                  suz('hepsi', 'Hepsi') + suz('onayli', 'Onaylı') + suz('bekliyor', 'Onay bekleyen') +
+                  suz('hepsi', 'Hepsi') + suz('onayli', 'Onaylı') + suz('bekliyor', 'Onay bekleyen') + suz('reddedildi', 'Reddedilen') +
                   suz('destek', '💛 Destek bildirimi') +
                   '<span class="aog-sira-grup"><span class="aog-sira">Sırala:</span>' +
                   sira('ad', 'A → Z') + sira('sure', 'En çok kullanan') + sira('son', 'Son kullanan') + sira('ogrenci', 'En çok öğrencisi') + '</span>' +
@@ -1416,6 +1462,7 @@ function adminOgretmenSuz(yeni) {
         var uy = !ara || (k.getAttribute('data-aog-ara') || '').indexOf(ara) >= 0;
         if (uy && _aogSuzgec === 'onayli') uy = k.getAttribute('data-aog-durum') === 'onayli';
         else if (uy && _aogSuzgec === 'bekliyor') uy = k.getAttribute('data-aog-durum') === 'bekliyor';
+        else if (uy && _aogSuzgec === 'reddedildi') uy = k.getAttribute('data-aog-durum') === 'reddedildi';
         else if (uy && _aogSuzgec === 'destek') uy = !!k.querySelector('[data-dst-rozet] .dst-cip.bekliyor');
         k.style.display = uy ? '' : 'none';
         if (uy) gorunen++;
@@ -1484,7 +1531,7 @@ function adminOgretmenDurum(uid, onay) {
     islem.then(function () {
         if (typeof showCustomAlert === 'function') {
             showCustomAlert(onay ? 'Öğretmen onaylandı, hoş geldin mesajı gönderildi.'
-                                 : 'Öğretmenin erişimi kapatıldı.');
+                                 : 'Öğretmenin erişimi kapatıldı. Öğretmen Onayları › Reddedilenler\'de duruyor; istersen sonradan onaylayabilirsin.');
         }
         if (onay) paylasilacakMesaj(uid, _bilgi);
         renderAdminTeacherList();

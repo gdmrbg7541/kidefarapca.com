@@ -357,6 +357,27 @@
                 return l;
             });
     };
+    /* REDDEDİLENLER (26.10.2026) — yönetici: "yöneticinin reddettiği
+       öğretmenleri görüp sonradan onay verebilmesini istiyorum". Reddedilen
+       hesap silinmez (ogretmenOnay:'reddedildi'); paneldeki «Reddedilenler»
+       bu sorguyla dolar. Sıra: son reddedilen önce (redTarihi), tarihsiz
+       eski kayıtlar sonda, ada göre. */
+    E.reddedilenler = function () {
+        return firebase.firestore().collection('kullanicilar')
+            .where('ogretmenOnay', '==', 'reddedildi').get()
+            .then(function (snap) {
+                var l = [];
+                snap.forEach(function (d) { var v = d.data() || {}; v._id = d.id; l.push(v); });
+                var ms = function (t) {
+                    try { return (t && t.toDate) ? (t.toDate().getTime() || 0) : (typeof t === 'number' ? t : 0); }
+                    catch (e) { return 0; }
+                };
+                l.sort(function (a, b) {
+                    return (ms(b.redTarihi) - ms(a.redTarihi)) || (a.name || '').localeCompare(b.name || '', 'tr');
+                });
+                return l;
+            });
+    };
     /* ------------------------------------------- HOŞ GELDİN MESAJI
        Onay anında öğretmenin gelen kutusuna düşen bilgi mesajı.
        METNİ DEĞİŞTİRMEK İSTERSEN TEK YER BURASI.
@@ -428,8 +449,11 @@
                 });
             });
     };
+    /* Red tarihi de yazılır (26.10.2026): «Reddedilenler»de ne zaman
+       reddedildiği görünsün. Kural yöneticiye her alanı açık. */
     E.reddet = function (uid) {
-        return firebase.firestore().collection('kullanicilar').doc(uid)
-            .update({ ogretmenOnay: 'reddedildi' });
+        var v = { ogretmenOnay: 'reddedildi' };
+        try { v.redTarihi = firebase.firestore.FieldValue.serverTimestamp(); } catch (e) { }
+        return firebase.firestore().collection('kullanicilar').doc(uid).update(v);
     };
 })();

@@ -7,6 +7,9 @@
    yapılan öğretmenlerin tarayıcı hafızasında tutulabilir, ve bu örneğin
    kartta soluk bi 5 yazar basınca 5 dörde 4 dönüşür güzelce sonra açılır
    dosya" (ayrıca tahtaya yansıt / kumanda, defter PDF'i ve geçmiş).
+   Öğretmen (25.10.2026): "Kelime çarkı ücretsiz olsun, her hafta 5 kere
+   seçeneği bi kereliğine 5 defa olsun" → Kelime Çarkı kapıdan çıktı;
+   haklar artık pazartesi yenilenmez, her araç için toplam 5.
 
    KİM SINIRLI
      Giriş yapmış ÖĞRETMEN, bu dönem destek vermemişse. Sınırsız: yönetici,
@@ -21,17 +24,19 @@
      yoksa ya da başka hesaba aitse SINIRLAMAZ (destekçiyi yanlışlıkla
      kısmasın). Oturum kapalıysa (uid '') da sınırlamaz.
    HAKLAR
-     localStorage kidefHak = { <uid>: { h: '2026-W43', k: { <özellik>: kalan } } }
-     Her özellikte haftada 5 hak; pazartesi yeniden 5.
+     localStorage kidefHak = { <uid>: { h: 'tek', k: { <özellik>: kalan } } }
+     Her özellikte BİR KEZ 5 hak; yenilenmez (25.10.2026'ya dek haftalıktı,
+     h: '2026-W43' gibi). Eski haftalık kayıttaki kalan haklar olduğu gibi
+     sürer: kayıt ilk okunuşta h: 'tek' olur.
    ÖZELLİKLER (VARSAYILAN bağlar, hak.js'i yükleyen her sayfada kendiliğinden)
      kalip       ana sayfadaki Kalıplar tablosu kartı (masaüstü + mobil sayfa)
      muhadese    Muhâdese kartı
-     cark        Kelime Çarkı kartı
      tahta       «Bu cihazı kumanda olarak kullan» (sistem/tahtagir.js) ve
                  telefonda karekodla «Evet, kumanda olsun» (hesap/kumanda.js)
      defter      defterde «PDF indir» ve «Geçmiş» (paneli açarken)
      kitapIndir  flipbookta İndir panelindeki paketler (flaşa / bilgisayara)
      kitapKalem  flipbookta Kalem (açarken; P tuşu da)
+     (Kelime Çarkı 25.10.2026'dan beri ücretsiz, kapı yok.)
    ORTAK HEDEF İLE AÇILAN İÇERİK
      Yöneticinin seçtiği bağlantılar (mufredat/_destek.hedefIcerik, destek.js
      önbelleğe yazar: kidefDestekHedef = { y: yüzde, L: [{id, y, ad, a, n}] })
@@ -53,11 +58,13 @@
   'use strict';
   if (window.KidefHak) return;
 
-  var HAFTALIK = 5;
+  var HAK = 5;                 /* her araç için toplam deneme hakkı — bir kez (25.10.2026) */
+  var HAFTALIK = HAK;          /* eski ad; dışarıdan okuyanlar için duruyor */
+  var TEK = 'tek';             /* hak kaydının işareti: yenilenmez */
   var K_DURUM = 'kidefDestekDurum', K_HAK = 'kidefHak', K_HEDEF = 'kidefDestekHedef';
   var AD = {
     tahta: 'Tahtaya yansıt', defter: 'Defter PDF\'i ve geçmiş', kalip: 'Kalıplar tablosu', muhadese: 'Muhâdese',
-    kitapIndir: 'Flipbook indirme', kitapKalem: 'Flipbook kalemi', cark: 'Kelime çarkı'
+    kitapIndir: 'Flipbook indirme', kitapKalem: 'Flipbook kalemi'
   };
 
   function al(k, v) { try { var x = localStorage.getItem(k); return x ? JSON.parse(x) : v; } catch (e) { return v; } }
@@ -98,31 +105,35 @@
     return { sinirli: true, sebep: d.sebep || 'destek-yok', uid: d.uid, rol: d.rol };
   }
   function yoneticiMi() { return durum().rol === 'admin'; }
+  /* 25.10.2026: haklar haftalık yenilenmez, bir kez verilir. Eski haftalık
+     kayıt (h: '2026-W43') silinmez; kalan hakları sürer, yalnız işareti 'tek' olur. */
   function hakKaydi(uid) {
-    var H = al(K_HAK, {}) || {}, h = hafta(), r = H[uid];
-    if (!r || r.h !== h) { r = H[uid] = { h: h, k: {} }; yaz(K_HAK, H); }
+    var H = al(K_HAK, {}) || {}, r = H[uid];
+    if (!r || typeof r !== 'object' || !r.k || typeof r.k !== 'object') { r = H[uid] = { h: TEK, k: {} }; yaz(K_HAK, H); }
+    else if (r.h !== TEK) { r.h = TEK; yaz(K_HAK, H); }
     return { H: H, r: r };
   }
   function kalan(oz) {
     var d = durum();
     if (!d.sinirli) return Infinity;
     var r = hakKaydi(d.uid).r;
-    return (oz in r.k) ? Math.max(0, r.k[oz] | 0) : HAFTALIK;
+    return (oz in r.k) ? Math.max(0, r.k[oz] | 0) : HAK;
   }
   function harca(oz) {
     var d = durum();
     if (!d.sinirli) return Infinity;
-    var x = hakKaydi(d.uid), k = (oz in x.r.k) ? x.r.k[oz] : HAFTALIK;
+    var x = hakKaydi(d.uid), k = (oz in x.r.k) ? x.r.k[oz] : HAK;
     x.r.k[oz] = Math.max(0, k - 1);
     yaz(K_HAK, x.H);
     return x.r.k[oz];
   }
-  /* bu hafta harcanan haklar (hatırlatma için) */
-  function haftaKullanim() {
+  /* şimdiye dek harcanan deneme hakları (hatırlatma için); yalnız kapısı
+     süren araçlar sayılır (Kelime Çarkı ücretsiz oldu) */
+  function kullanim() {
     var d = durum();
     if (!d.sinirli) return 0;
     var r = hakKaydi(d.uid).r, n = 0;
-    Object.keys(r.k).forEach(function (oz) { n += Math.max(0, HAFTALIK - (r.k[oz] | 0)); });
+    Object.keys(r.k).forEach(function (oz) { if (oz in AD) n += Math.max(0, HAK - (r.k[oz] | 0)); });
     return n;
   }
 
@@ -180,7 +191,7 @@
   }
   function rozetCiz(r, k) {
     if (!r || r.classList.contains('kh-cal')) return;              /* canlanırken dokunma */
-    var ic = k > 0 ? '<b>' + k + '</b>' : KILIT, t = k > 0 ? 'Bu hafta ' + k + ' deneme hakkın var (destekçilere sınırsız)' : 'Bu haftaki deneme hakların bitti — destekçilere sınırsız';
+    var ic = k > 0 ? '<b>' + k + '</b>' : KILIT, t = k > 0 ? k + ' deneme hakkın kaldı (destekçilere sınırsız)' : 'Deneme hakların bitti — destekçilere sınırsız';
     if (r.getAttribute('data-k') === String(k)) return;             /* değişmediyse DOM'a dokunma (gözlemci döngüsü olmasın) */
     r.setAttribute('data-k', String(k));
     r.classList.remove('kh-hedef');
@@ -265,9 +276,10 @@
   }
   function bittiPencere(oz) {
     return pencere('<div class="kh-ik">' + KILIT + '</div>' +
-      '<h3>Bu haftaki deneme hakların bitti</h3>' +
-      '<p><b>' + esc(AD[oz] || 'Bu araç') + '</b> Kidef\'e destek veren öğretmenlere sınırsız. Desteğin, sitenin yayın ve geliştirme ' +
-        'giderlerini ve bu materyallerin arkasındaki öğretmen emeğini karşılıyor. Pazartesi yeniden ' + HAFTALIK + ' hakkın olur.</p>' +
+      '<h3>Deneme hakların bitti</h3>' +
+      '<p><b>' + esc(AD[oz] || 'Bu araç') + '</b> Kidef\'e destek veren öğretmenlere sınırsız. Bu araç için verilen ' + HAK +
+        ' deneme hakkını kullandın. Desteğin, sitenin yayın ve geliştirme giderlerini ve bu materyallerin arkasındaki ' +
+        'öğretmen emeğini karşılıyor.</p>' +
       '<p class="kh-istege"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin.</p>' +
       '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Destekle, sınırsız olsun</a>' +
       '<button type="button" class="kh-kapat">Kapat</button></div>' +
@@ -283,8 +295,8 @@
     var ad = KISA[oz] || AD[oz] || 'Bu araç';
     return pencere('<div class="kh-ik">' + KALP + '</div>' +
       '<h3>' + esc(ad) + ', Kidef\'i destekleyenlere açık</h3>' +
-      '<p>Kidef\'in kalem ve indirme gibi araçları, öğretmenlerin desteğiyle ayakta duruyor. Giriş yapan öğretmen her hafta ' +
-        HAFTALIK + ' kez ücretsiz dener; destek olanlara sınırsız.</p>' +
+      '<p>Kidef\'in kalem ve indirme gibi araçları, öğretmenlerin desteğiyle ayakta duruyor. Giriş yapan öğretmen her aracı ' +
+        HAK + ' kez ücretsiz dener; destek olanlara sınırsız.</p>' +
       '<p class="kh-istege"><b>Destek isteğe bağlıdır.</b> Dilersen bir kerede, dilersen parça parça gönderirsin; ' +
         'vermesen de Kidef\'i kullanmaya devam edersin.</p>' +
       '<div class="kh-tus"><a class="kh-destek" href="' + esc(_destekAdres) + '">' + KALP + 'Giriş yap, destek ol</a>' +
@@ -299,7 +311,7 @@
     var r = el ? rozet(el, oz) : null;
     var yeni = harca(oz);
     if (!r || !document.body.contains(r)) {
-      bildir((AD[oz] || 'Deneme hakkı') + ': bu hafta ' + (yeni > 0 ? yeni + ' hakkın kaldı' : 'son hakkını kullandın') + ' · destekçilere sınırsız');
+      bildir((AD[oz] || 'Deneme hakkı') + ': ' + (yeni > 0 ? yeni + ' deneme hakkın kaldı' : 'son deneme hakkını kullandın') + ' · destekçilere sınırsız');
       r = null;
     }
     return canlan(r, k, yeni).then(function () {
@@ -486,7 +498,7 @@
       if (document.body) bas(); else document.addEventListener('DOMContentLoaded', bas);
     }
     window.addEventListener('storage', function (e) { if (e.key === K_DURUM || e.key === K_HAK || e.key === K_HEDEF) rozetler(); });
-    /* hafta dönünce, sınırsızlık süresi bitince */
+    /* sınırsızlık süresi bitince */
     setInterval(function () { if (document.visibilityState !== 'hidden') rozetler(); }, 60000);
   }
   function ekle(liste, harita) {
@@ -502,7 +514,6 @@
   var VARSAYILAN = {
     'a[href^="kaliplartablosu"]': 'kalip',
     'a[href^="muhadese.html"]': 'muhadese',
-    'a[href^="kelimecarki.html"]': 'cark',
     '#thgKutu [data-thg="yansit"]': 'tahta',
     '.kmd-soru .kmd-evet': 'tahta',
     '#ysOrt [data-is="pdf"]': 'defter',
@@ -515,9 +526,9 @@
   TUSLAR.push({ tus: ['p', 'P'], s: '#tKalem', oz: 'kitapKalem', kosul: VARSAYILAN['#tKalem'].kosul });
 
   window.KidefHak = {
-    HAFTALIK: HAFTALIK, AD: AD,
+    HAK: HAK, HAFTALIK: HAFTALIK, AD: AD,
     durum: durum, kalan: kalan, kullan: kullan, rozet: rozet, bagla: bagla, rozetBagla: rozetBagla, rozetler: rozetler,
-    hafta: hafta, haftaKullanim: haftaKullanim,
+    hafta: hafta, kullanim: kullanim, haftaKullanim: kullanim,   /* haftaKullanim: eski ad */
     uid: function (u) { _uid = u ? String(u) : ''; rozetler(); },
     durumYaz: function (o) { if (o) yaz(K_DURUM, o); else { try { localStorage.removeItem(K_DURUM); } catch (e) { } } rozetler(); },
     hedefYaz: function (o) {

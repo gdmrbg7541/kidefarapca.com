@@ -74,7 +74,8 @@
 
    DENEME HAKLARI (24.10.2026): öğretmenin bu dönemki durumu tarayıcıya
    yazılır (localStorage kidefDestekDurum); sistem/hak.js destek vermeyen
-   öğretmene bazı araçlarda haftada 5 deneme hakkı verir (kartta 5 → 4).
+   öğretmene bazı araçlarda 5 deneme hakkı verir (kartta 5 → 4); haklar bir
+   kez verilir, 25.10.2026'ya dek haftalık yenileniyordu.
    Sınırsız: yönetici, bu dönem ödeme yapan (kısmi dahil), ilk 30 gün.
 
    REFERANS · ORTAK HEDEF İÇERİĞİ · HATIRLATMA (24.10.2026): yönetici seçtiği
@@ -2829,7 +2830,8 @@
        DENEME HAKLARI (24.10.2026) — sistem/hak.js'in okuduğu durum
        Öğretmen: "kısıtlama getirelim, ücreti hem hatırlatmak hem siteyi
        kullanma isteğini arttıracak bi sistem" → destek vermeyen öğretmene
-       bazı araçlarda haftada 5 deneme hakkı (kartta 5 → 4). Sınırsız:
+       bazı araçlarda 5 deneme hakkı, bir kez (kartta 5 → 4; 25.10.2026'ya
+       dek haftalıktı). Sınırsız:
        yönetici, bu dönem ödeme yapan (kısmi dahil), ilk 30 günündeki,
        dönem payı belli olmayan. Durum tarayıcıya yazılır:
        localStorage kidefDestekDurum = {uid, rol, sinirsiz, sebep, bit, z}
@@ -2900,7 +2902,7 @@
     })(0);
     /* KULLANIM HATIRLATMASI (24.10.2026) — destek vermeyen öğretmene ana sayfada
        en çok haftada bir; ilk ayının son haftasındaki öğretmene üç günde bir:
-       bu ay ne kadar kullandığı, bu hafta harcadığı deneme hakları, payı.
+       bu ay ne kadar kullandığı, şimdiye dek harcadığı deneme hakları, payı.
        Sayfa açıldıktan ~20 sn sonra, pencere açık değilken; «Sonra» kapatır. */
     var HATIRLAT_K = 'kidefDestekHatirlat', _hatirlatBak = Date.now() - 40e3;
     function sureYaz(sn) {
@@ -2928,15 +2930,16 @@
         var araclar = 'tahtaya yansıt, defter PDF\'i, kalıplar tablosu, flipbook indirme ve kalem gibi araçlar';
         if (h.durum === 'bos') {
             if (gecen < 7 * GUN) return;
-            var sure = buAySure(_ben.belge), hk = window.KidefHak ? window.KidefHak.haftaKullanim() : 0;
+            var KH = window.KidefHak, hk = 0, sure = buAySure(_ben.belge);
+            try { hk = KH ? (KH.kullanim || KH.haftaKullanim)() : 0; } catch (e) { hk = 0; }
             if (sure < 30 * 60 && hk < 3) return;
-            metin = '<b>Bu ay Kidef\'te ' + esc(sureYaz(sure)) + ' geçirdin' + (hk ? ', bu hafta ' + hk + ' deneme hakkı kullandın' : '') + '.</b> ' +
+            metin = '<b>Bu ay Kidef\'te ' + esc(sureYaz(sure)) + ' geçirdin' + (hk ? ', ' + hk + ' deneme hakkı kullandın' : '') + '.</b> ' +
                 'Bu dönemin desteği ' + esc(tl(h.kisi)) + '; destek verenlere ' + araclar + ' sınırsız.';
         } else if (h.durum === 'ilkay' && h.ilkAyBitis) {
             var kalan = Math.ceil((h.ilkAyBitis.getTime() - Date.now()) / GUN);
             if (kalan > 7 || kalan < 1 || gecen < 3 * GUN) return;
-            metin = '<b>İlk ayının bitmesine ' + kalan + ' gün var.</b> Sonra ' + araclar + ' için haftada ' +
-                ((window.KidefHak && window.KidefHak.HAFTALIK) || 5) + ' deneme hakkın olur; destek verenlere sınırsız.';
+            metin = '<b>İlk ayının bitmesine ' + kalan + ' gün var.</b> Sonra ' + araclar + ' için her birinde ' +
+                ((window.KidefHak && (window.KidefHak.HAK || window.KidefHak.HAFTALIK)) || 5) + ' deneme hakkın olur; destek verenlere sınırsız.';
         } else return;
         son[uid] = Date.now();
         try { localStorage.setItem(HATIRLAT_K, JSON.stringify(son)); } catch (e) { }
