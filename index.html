@@ -2042,6 +2042,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       </div>
 
     </section>
+    <!-- İMAM HATİP — KİLİTLİ SİTEDE GÖRÜNÜM (26.10.2026): 🎓 Sadece Girişliler
+         kipinde öğretmen ve öğrencilere gizli, yönetici görür. Bölümün hemen
+         altında duruyor ki karar ilk boyamadan önce verilsin. -->
+    <script src="sistem/ihgorunum.js?v=b69c6deb"></script>
 
 
 
@@ -6273,6 +6277,18 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
         try { [].forEach.call(item.querySelectorAll('.ihdoc-acc'), ihdocKur); } catch (e) { }
       }
       window.ihIcKur = ihIcKur;
+      /* ÖĞRENCİNİN SINIFIM BÖLÜMÜ (26.10.2026 — sistem/sinifim.js): o sınıfın
+         YALNIZ Ders Kitabı kartı (sayfa çevirmeli kitap), İmam Hatip'teki kartın
+         aynısı. Öğretmen belgeleri (defter, plan, sınav…) öğrenciye çizilmez.
+         Kitap yoksa (10. sınıf seçmeli) kabı boşaltır, false döner. */
+      window.ihKitapKur = function (mount, sinif) {
+        if (!mount) return false;
+        var s = String(sinif);
+        var kk = (s === '10' && seciliKitap('10') === 'secmeli') ? null : kitapKarti(s);
+        if (!kk) { mount.innerHTML = ''; return false; }
+        a4IzgaraKur(mount, s + '. SINIF · KİTAP', 'sinif', [kk], function () { return []; });
+        return true;
+      };
       /* «Maarif» etiketi kapalı sınıfta da doğru görünsün: kart kurulumunu
          beklemeden yalnız etiket tazelenir (altı çağrı, DOM kurmaz).
          Normalde bunu sinifmodul.js kart yerleştirirken yapıyordu. */
@@ -8200,6 +8216,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script src="hesap/sinifdefteri.js?v=c88c8d47"></script>
     <script src="hesap/ogrencihesap.js?v=9684ddfe"></script>
     <script src="sistem/ihoneri.js?v=c5f6b6cd"></script>
+    <!-- ÖĞRENCİ · SINIFIM (26.10.2026): giriş yapmış öğrenciye kendi sınıfının
+         ders kitabı ve etkinlik kartları (öğretmen belgeleri yok). Öğretmen bağı
+         hesap/ogrencihesap.js'ten (OH) gelir; ondan SONRA yüklenmeli. -->
+    <script src="sistem/sinifim.js?v=17b63315"></script>
     <script src="sistem/gorev.js?v=ccd7693c"></script>
 
     <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->
