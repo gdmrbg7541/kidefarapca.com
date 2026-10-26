@@ -1,6 +1,10 @@
 /* =====================================================================
    KİDEF · SINIF RAPORU (materyal kullanımı)  (sistem/materyalrapor.js)
    ---------------------------------------------------------------------
+   ADI (26.10.2026): «Nerde Kalmıştık?» — öğretmen: "sınıflar açılan yan
+   rapor popup ın ismini Nerde Kalmıştık? olsun". Pencere başlığı, sol
+   kenardaki dikey dil ve ipuçları bu adla.
+
    Öğretmen (12.10.2026): "o sınıf listesindeki materyal kısmında hangi
    dosyaları açtığımı ne kadar süre işlediğimi gösteren bi rapor eklemek
    istiyorum, dikey bir popup şeklinde bakabileyim ... sınıf listesinde
@@ -511,8 +515,8 @@
         var o = document.createElement('div');
         o.id = 'mrp-ort';
         o.innerHTML =
-            '<div id="mrp-pano" role="dialog" aria-modal="true" aria-label="Sınıf raporu">' +
-            '<div id="mrp-bas"><div><h3 id="mrp-ad">Sınıf raporu</h3>' +
+            '<div id="mrp-pano" role="dialog" aria-modal="true" aria-label="Nerde Kalmıştık?">' +
+            '<div id="mrp-bas"><div><h3 id="mrp-ad">Nerde Kalmıştık?</h3>' +
             '<small id="mrp-alt">ders kitabı, oyun ve etkinlik kartları</small></div>' +
             '<button id="mrp-kapat" title="Kapat" aria-label="Kapat">&times;</button></div>' +
             '<div id="mrp-ozet"></div><div id="mrp-liste"></div>' +
@@ -587,7 +591,7 @@
         }
         /* Sınıf adı listeden okunamadıysa kaydın kendi içindekini kullan. */
         if (!sinifAd) { for (var z = ben.length - 1; z >= 0; z--) if (ben[z].sa) { sinifAd = ben[z].sa; break; } }
-        document.getElementById('mrp-ad').textContent = (sinifAd ? sinifAd + ' · ' : '') + 'Sınıf raporu';
+        document.getElementById('mrp-ad').textContent = (sinifAd ? sinifAd + ' · ' : '') + 'Nerde Kalmıştık?';
         document.getElementById('mrp-alt').textContent = 'ders kitabında kalınan sayfa, oyun ve etkinlik kartları';
 
         /* --- topla: kitaplar ve kartlar; belgeler atlanır --- */
@@ -703,9 +707,9 @@
         var b = document.createElement('button');
         b.id = 'mrp-dil';
         b.type = 'button';
-        b.title = 'Sınıf raporu — ders kitabında kalınan sayfa, kullanılan oyun ve etkinlik kartları';
-        b.setAttribute('aria-label', 'Sınıf raporu');
-        b.innerHTML = '<span class="mrp-dil-yaz">RAPOR</span>'
+        b.title = 'Nerde Kalmıştık? — ders kitabında kalınan sayfa, kullanılan oyun ve etkinlik kartları';
+        b.setAttribute('aria-label', 'Nerde Kalmıştık?');
+        b.innerHTML = '<span class="mrp-dil-yaz">NERDE KALMIŞTIK?</span>'
             + '<svg class="mrp-dil-ok" viewBox="0 0 24 24" aria-hidden="true">'
             + '<path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6"'
             + ' stroke-linecap="round" stroke-linejoin="round"/></svg>';

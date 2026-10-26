@@ -2514,8 +2514,8 @@ function renderSidebar() {
                 html += `
                 <div class="class-item">
                     <button type="button" class="ll-rapor-ok"
-                        title="Sınıf raporu — ders kitabında kalınan sayfa, oyun ve etkinlik kartları"
-                        aria-label="Sınıf raporu"
+                        title="Nerde Kalmıştık? — ders kitabında kalınan sayfa, oyun ve etkinlik kartları"
+                        aria-label="Nerde Kalmıştık?"
                         onclick="event.stopPropagation(); if(window.KidefMateryalRapor) KidefMateryalRapor.ac('${lId}','${cId}');"
                     ><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                     <a class="class-link" onclick="selectClass('${lId}','${cId}')">${lvl.classes[cId].name}</a>
@@ -5261,8 +5261,8 @@ function llSinifListesiAc() {
             satirlar +=
                 '<div class="lss-sat">' +
                 '<button type="button" class="ll-rapor-ok lss-rapor"' +
-                ' title="Sınıf raporu — ders kitabında kalınan sayfa, oyun ve etkinlik kartları"' +
-                ' aria-label="Sınıf raporu"' +
+                ' title="Nerde Kalmıştık? — ders kitabında kalınan sayfa, oyun ve etkinlik kartları"' +
+                ' aria-label="Nerde Kalmıştık?"' +
                 ' onclick="event.stopPropagation(); if(window.KidefMateryalRapor) KidefMateryalRapor.ac(\'' + lId + '\',\'' + cId + '\');">' +
                 '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none"' +
                 ' stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
