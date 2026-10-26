@@ -1,0 +1,17 @@
+# 26.10.2026 — iç dosyalar yayına girmez (_kaynak/uretici/yayinAyar.py).
+# Kurallar, notlar, sunucu kodu, deneme sayfaları: sitenin hiçbir sayfası bunları kullanmıyor.
+/firestore*
+/_stg*
+/_yolkontrol.html
+/scratch_js_check.html
+/listelerim kopyas*
+/YUKLENECEKLER.txt
+/README.md
+/ASAMA1-BIRLESIK-GIRIS.md
+/KLASOR-DUZENI.md
+/Data.txt
+/alfabe_js.txt
+/alfabe_harf_detay_js.txt
+/functions
+/firebase.json
+/.firebaserc

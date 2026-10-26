@@ -77,6 +77,73 @@
         } catch (e) { return false; }
     }
 
+    /* KAYDI EKSİK HESAP (26.10.2026) — yönetici: "kaydı eksik hesapları
+       durdur". Firebase'de hesabı olup sitede kullanicilar/{uid} kaydı
+       OLMAYAN oturum (eski listelerim.html'den açılmış ya da kaydı yarım
+       kalmış; yönetici listelerinde de görünmez) kilitli sitede girişsiz
+       sayılır ve giriş penceresinde «kaydı eksik» şeridi çıkar. Bu sayfada
+       az önce açılan oturumda (yeni kayıt) belge birkaç yüz ms sonra
+       yazıldığı için 6 sn beklenir (_belgeBekle). */
+    K._belgeUid = null; K._belgeYok = false; K._belgeBekle = false;
+    function belgeEksikMi() {
+        try {
+            var u = firebase.auth().currentUser;
+            return !!(u && K._belgeUid === u.uid && K._belgeYok && !K._belgeBekle);
+        } catch (e) { return false; }
+    }
+    function kayitliMi() { return girisliMi() && !belgeEksikMi(); }
+
+    /* SAYFA KAPISI BİLETİ (26.10.2026): ana sayfa dışındaki sayfalar
+       (sistem/kapi.js) kilitliyken bu bilete bakar: {uid, rol, izin, t}.
+       izin = site kaydı var VE (yönetici | öğrenci | onaylı ya da eski kayıt
+       öğretmen) — onay bekleyen/reddedilen öğretmen ve kaydı eksik hesap
+       geçmez. Hesabın kendi kaydı her geldiğinde tazelenir, çıkışta silinir. */
+    var BILET = 'kidefKapiBilet';
+    function biletYaz(uid, v) {
+        try {
+            if (!uid) { localStorage.removeItem(BILET); return; }
+            var rol = v ? (v.role || '') : '';
+            if (v && !rol) {
+                try { rol = (window.KidefRol && KidefRol.rolCoz) ? KidefRol.rolCoz(v) : 'student'; } catch (e) { rol = 'student'; }
+            }
+            var onay = v ? (v.ogretmenOnay || '') : '';
+            var izin = !!v && (rol === 'admin' || rol === 'student' ||
+                               (rol === 'teacher' && (!onay || onay === 'onayli')));
+            localStorage.setItem(BILET, JSON.stringify({ uid: uid, rol: rol, izin: izin, t: Date.now() }));
+        } catch (e) { }
+    }
+    K.biletYaz = biletYaz;   /* test kancası */
+
+    /* DÖNÜŞ (26.10.2026): sistem/kapi.js kilitli sayfadaki ziyaretçiyi
+       index.html?donus=<sayfa> ile buraya gönderir. İzin çıkınca — kilit
+       açıksa hemen, kilitliyse hesabın bileti yazılınca — o sayfaya döner.
+       Yalnız aynı sitenin yolu kabul edilir. */
+    function donusAdres() {
+        try {
+            var d = new URLSearchParams(location.search).get('donus');
+            if (!d || d.charAt(0) !== '/' || d.charAt(1) === '/' || d.indexOf('\\') >= 0) return null;
+            var a = new URL(d, location.href);
+            if (a.origin !== location.origin) return null;
+            if (/^\/(index\.html)?$/i.test(a.pathname)) return null;
+            return a.pathname + a.search + a.hash;
+        } catch (e) { return null; }
+    }
+    function donusDene(kilit) {
+        if (K._donuldu || K.durum == null) return false;     /* canlı kilit bilgisi gelmeden dönülmez */
+        var d = donusAdres();
+        if (!d) return false;
+        if (kilit === 'girisli' || kilit === 'yonetici') {
+            var b = null, u = null;
+            try { b = JSON.parse(localStorage.getItem(BILET) || 'null'); } catch (e) { }
+            try { u = firebase.auth().currentUser; } catch (e) { }
+            if (!b || !u || b.uid !== u.uid) return false;
+            if (kilit === 'yonetici' ? b.rol !== 'admin' : !b.izin) return false;
+        }
+        K._donuldu = true;
+        try { location.replace(d); } catch (e) { K._donuldu = false; return false; }
+        return true;
+    }
+
     /* OTURUM GERİ GELİRKEN PERDE/GİRİŞ YOK (18.10.2026) — öğretmen: "giriş
        yapıldıktan sonra bi daha şifre vs ekranı görünmesin". Sayfa açılırken
        Firebase oturumu birkaç yüz ms'de geri yükleniyor; kilitli sitede perde
@@ -143,6 +210,7 @@
     function bekle(k) {
         if (k.izin) return false;
         if (!girisliMi()) return !authHazir && oturumOlasi !== false;      /* oturum geri yükleniyor / bakılıyor */
+        if (K._belgeBekle) return true;                                    /* 26.10: yeni kayıt — belge yazılıyor */
         if (k.neden === 'yonetici') return !K._rolGeldi;                   /* girişli: rol henüz gelmedi */
         return false;
     }
@@ -274,11 +342,39 @@
         else kap.insertBefore(s, kap.firstChild);
     }
 
+    function eksikSerit(kap, goster) {
+        var s = document.getElementById('kilitEksik');
+        if (!goster) { if (s) s.remove(); return; }
+        if (s && kap.contains(s)) return;
+        if (s) s.remove();
+        s = document.createElement('div');
+        s.id = 'kilitEksik';
+        s.setAttribute('role', 'alert');
+        s.setAttribute('style', 'background:#FFF4F2; border:1.5px solid #F5C6BE; border-radius:14px;' +
+            ' padding:12px 14px; margin:0 auto 14px; width:100%; max-width:760px; box-sizing:border-box;' +
+            ' text-align:left; font-size:.9rem; line-height:1.55; color:#7B3B30;');
+        s.innerHTML = '<b style="display:block; color:#B03A2E; font-size:1rem; margin-bottom:2px;">Bu hesabın site kaydı eksik</b>' +
+            'Hesap eski bir sayfadan açılmış ya da kaydı yarım kalmış görünüyor. Site şu an yalnız kayıtlı ' +
+            'hesaplara açık: çıkış yapıp kayıtlı hesabınla gir ya da iletişim sayfasından yaz.' +
+            '<div style="margin-top:9px;"><button type="button" id="kilitEksikCik" style="border:0; border-radius:10px;' +
+            ' padding:7px 15px; background:#B03A2E; color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Çıkış yap</button></div>';
+        var bas = kap.querySelector('#auth-title');
+        if (bas && bas.parentNode === kap) kap.insertBefore(s, bas.nextSibling);
+        else kap.insertBefore(s, kap.firstChild);
+        var t = s.querySelector('#kilitEksikCik');
+        if (t) t.onclick = function () {
+            try { firebase.auth().signOut().then(function () { location.reload(); }, function () { location.reload(); }); }
+            catch (e) { location.reload(); }
+        };
+    }
+
     function uyariGuncelle(kilit, girisli) {
         var lm = document.getElementById('login-modal');
         if (!lm) return;
         var kap = lm.querySelector('.modal-content') || lm;
-        ucretsizSerit(kap, kilit === 'girisli' && !girisli);       /* 22.10.2026 */
+        var eksik = (kilit === 'girisli' || kilit === 'yonetici') && belgeEksikMi();   /* 26.10.2026 */
+        eksikSerit(kap, eksik);
+        ucretsizSerit(kap, kilit === 'girisli' && !girisli && !eksik);       /* 22.10.2026 */
         var u = document.getElementById('kilitUyari');
         /* Sahne YALNIZ ogrenci/ogretmen GIRIS YAPINCA cikar; anonim
            ziyaretci duz kayit/giris ekrani gorur (hicbir ipucu yok). */
@@ -357,12 +453,13 @@
     }
     /* Sayfalarin sorabilecegi tek soru: bu ziyaretci su an iceri girebilir mi? */
     K.izinliMi = function () {
-        return K.karar(sonKilit(), girisliMi(), rolOku()).izin;
+        return K.karar(sonKilit(), kayitliMi(), rolOku()).izin;
     };
     function uygula() {
         if (GOZLE) return;          /* gozlem kipi: perde hic cizilmez */
         var kilit = sonKilit();
-        var k = K.karar(kilit, girisliMi(), rolOku());
+        var k = K.karar(kilit, kayitliMi(), rolOku());
+        if (k.izin && donusDene(kilit)) return;   /* 26.10: kapıdan gelen ziyaretçi sayfasına döner */
         if (k.izin) { K._mola = 0; carpiKurali(false); uyariGuncelle('acik', false); perdeKaldir(); return; }
         if (bekle(k)) return;       /* 18.10: oturum/rol netleşmeden perde ve giriş penceresi yok */
         carpiKurali(true);   /* kilit aktif: pencerede carpi gorunmez */
@@ -413,25 +510,57 @@
                 .onSnapshot(function (doc) {
                     var v = (doc.exists && doc.data()) || {};
                     K.durum = (v.kilit === 'girisli' || v.kilit === 'yonetici') ? v.kilit : VARSAYILAN;
-                    try { localStorage.setItem('siteKilitSon', K.durum); } catch (e) { }
+                    try { localStorage.setItem('siteKilitSon', K.durum); localStorage.setItem('siteKilitZaman', String(Date.now())); } catch (e) { }
                     uygula();
                     kilitPanelTazele();
                 }, function (e) { console.warn('kilit ayari okunamadi:', e && (e.code || e.message)); });
+            var belgeDinleyici = null, ilkAuth = true;
             if (firebase.auth) firebase.auth().onAuthStateChanged(function (u) {
+                /* bu sayfada az önce açılan oturum mu (kayıt/giriş), yoksa geri yüklenen mi */
+                var tazeGiris = !ilkAuth && !!(u && u.email);
+                ilkAuth = false;
                 authHazir = true;            /* 18.10: oturum durumu artık belli */
                 if (!(u && u.email)) K._rolGeldi = true;
                 if (u) K._mola = 0;          /* giris geldi: mola biter, karar netlesir */
                 K._bulutRol = '';
                 /* appState olmayan sayfalarda rol dogrudan buluttan okunur
-                   (kendi kullanicilar dokumani — kurallar izin verir). */
-                if (u && u.email) {
+                   (kendi kullanicilar dokumani — kurallar izin verir).
+                   26.10.2026: tek okuma yerine CANLI dinleme — yeni kayıtta belge
+                   sonradan yazılır; kaydı hiç olmayan hesap «kaydı eksik» sayılır,
+                   sayfa kapısı bileti (biletYaz) her gelişte tazelenir. */
+                if (belgeDinleyici) { try { belgeDinleyici(); } catch (e) { } belgeDinleyici = null; }
+                K._belgeUid = null; K._belgeYok = false; K._belgeBekle = false;
+                if (u && u.email && !u.isAnonymous) {
+                    var uid = u.uid, bas = Date.now(), zaman = null;
+                    K._belgeUid = uid;
+                    if (tazeGiris) K._belgeBekle = true;
                     try {
-                        firebase.firestore().collection('kullanicilar').doc(u.uid).get().then(function (doc) {
-                            K._bulutRol = ((doc.exists && doc.data()) || {}).role || '';
+                        belgeDinleyici = firebase.firestore().collection('kullanicilar').doc(uid).onSnapshot(function (doc) {
+                            if (K._belgeUid !== uid) return;
+                            var v = doc.exists ? (doc.data() || {}) : null;
+                            K._bulutRol = (v && v.role) || '';
                             K._rolGeldi = true;
+                            if (v) {
+                                K._belgeYok = false; K._belgeBekle = false;
+                                if (zaman) { clearTimeout(zaman); zaman = null; }
+                                biletYaz(uid, v);
+                            } else {
+                                var kalan = tazeGiris ? 6000 - (Date.now() - bas) : 0;
+                                if (kalan > 0) {
+                                    K._belgeBekle = true;
+                                    if (!zaman) zaman = setTimeout(function () {
+                                        zaman = null;
+                                        if (K._belgeUid === uid && K._belgeBekle) {
+                                            K._belgeBekle = false; K._belgeYok = true; biletYaz(uid, null); uygula();
+                                        }
+                                    }, kalan);
+                                } else { K._belgeBekle = false; K._belgeYok = true; biletYaz(uid, null); }
+                            }
                             uygula();
-                        }).catch(function () { K._rolGeldi = true; uygula(); });
-                    } catch (e) { }
+                        }, function () { K._rolGeldi = true; K._belgeBekle = false; uygula(); });
+                    } catch (e) { K._rolGeldi = true; K._belgeBekle = false; }
+                } else {
+                    biletYaz(null);          /* çıkış / anonim: bilet silinir */
                 }
                 if (!u) uygula();            /* oturum yok: perde beklemeden */
                 setTimeout(uygula, 400);

@@ -27,7 +27,9 @@
        bağlantıları (sade adres) eskisi gibi vitrine gider. */
     (function(){
       try{
-        var DERIN = /[?&](qr|sinif|sube|okul|giris|gorev|liveRoom|list|view|rol|ihsinif|amac)=/;
+        /* 26.10.2026: sayfa kapısından dönüş (sistem/kapi.js → ?donus=) de derin bağlantıdır:
+           vitrine giderse dönülecek sayfa kaybolurdu. */
+        var DERIN = /[?&](qr|sinif|sube|okul|giris|gorev|liveRoom|list|view|rol|ihsinif|amac|donus)=/;
         if(DERIN.test(location.search)) sessionStorage.setItem('kidefVitrin','1');
         if(sessionStorage.getItem('kidefVitrin')) return;
         var acilis = 0;
@@ -439,7 +441,7 @@
          girmiyor, gelmezse karekodlar yine çiziliyor. -->
     <script src="pano/qrcode.min.js?v=fbb6b69b"></script>
     <script src="sistem/karekodyedek.js?v=20a3ba23"></script>
-    <script src="sistem/kilit.js?v=2728f98b"></script>
+    <script src="sistem/kilit.js?v=c39831ce"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
     <script src="sistem/erisim.js?v=0786e682"></script>
     <!-- ONAYDAN SONRA PAYLAŞILACAK MESAJ (07.10.2026) — öğretmen:
