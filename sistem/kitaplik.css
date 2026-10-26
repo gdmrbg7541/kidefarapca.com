@@ -178,3 +178,54 @@
     #llOkulPopup .okul-dok-tus,
     #llOkulPopup .okul-raf-tus.acik{ transition: none; transform: none; }
 }
+
+/* ============================================================================
+   BÜTÜN RAKAMLAR (26.10.2026) — öğretmen: "diğer seviyelerin de tuşları görünsün,
+   onlara tıklayınca materyalleri ve + sınıf ekle seçenekleri çıksın".
+   Sınıfı olmayan seviyenin rakamı soluk, köşesinde küçük «+»; rafın plakasında
+   «+ N. sınıf ekle» (sınıfı olanda «+ Şube ekle»).
+   ============================================================================ */
+#llOkulPopup .okul-raf-tus.bos{ opacity: .5; filter: grayscale(.6); }
+#llOkulPopup .okul-raf-tus.bos:hover,
+#llOkulPopup .okul-raf-tus.bos:focus-visible,
+#llOkulPopup .okul-raf-tus.bos.acik{ opacity: 1; filter: none; }
+#llOkulPopup .okul-raf-tus.bos::before{
+    content: '+'; position: absolute; right: -2px; top: -2px; z-index: 2;
+    width: 15px; height: 15px; box-sizing: border-box; border-radius: 50%;
+    border: 1.5px dashed #C9955C; background: #fff; color: #8E5A24;
+    font: 800 11px/12px system-ui, -apple-system, "Segoe UI", sans-serif; text-align: center;
+}
+.kd-kitaplik .kd-plaka-ekle{
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+    margin: 2px auto 0; padding: 8px 16px 8px 12px; border: 0; border-radius: 999px;
+    background: #16A085; color: #fff; font-family: inherit; font-weight: 800; font-size: .9rem; line-height: 1;
+    box-shadow: 0 2px 0 #0E7C66, 0 4px 10px rgba(0, 0, 0, .18);
+    transition: background .15s, transform .12s;
+}
+.kd-kitaplik .kd-plaka-ekle svg{ width: 16px; height: 16px; display: block; }
+.kd-kitaplik .kd-plaka-ekle:hover{ background: #0E9E86; transform: translateY(-1px); }
+.kd-kitaplik .kd-plaka-ekle:focus-visible{ outline: 3px solid #fff; outline-offset: 2px; }
+.kd-kitaplik .kd-plaka-ekle.ikincil{
+    background: rgba(255, 255, 255, .62); color: #6B4E1E; font-size: .82rem; padding: 6px 13px 6px 10px;
+    box-shadow: inset 0 0 0 1.5px rgba(120, 85, 20, .45);
+}
+.kd-kitaplik .kd-plaka-ekle.ikincil:hover{ background: #fff; }
+/* şube harfleriyle açılan satır kısa süre vurgulanır */
+#llOkulPopup .okul-kat.kd-vurgu{ animation: kdVurgu 1.8s ease-out; }
+@keyframes kdVurgu{
+    0%, 35%{ background: #FFF1DD; box-shadow: inset 0 0 0 3px #E67E22; }
+    100%{ box-shadow: inset 0 0 0 0 rgba(230, 126, 34, 0); }
+}
+@media (max-width: 560px){
+    /* telefonda: «Kitaplık», Öğretmen Dökümanları ve + üstte; altı rakam bir sırada */
+    #llOkulPopup .okul-kat-ekle .okul-hizli-bas{ flex: 1 1 auto; flex-basis: auto; margin: 0; order: 0; }
+    #llOkulPopup .okul-kat-ekle .okul-dok-tus{ order: 1; }
+    #llOkulPopup .okul-kat-ekle .okul-seviye-arti{ order: 2; margin-inline-start: 0; width: 34px; height: 34px; }
+    #llOkulPopup .okul-kat-ekle .okul-hizli-sira{ order: 3; flex-basis: 100%; gap: 4px; justify-content: space-between; }
+    #llOkulPopup .okul-kat-ekle .okul-hizli-ipucu{ order: 4; }
+    #llOkulPopup .okul-kat-ekle .okul-raf{ order: 5; }
+    #llOkulPopup .okul-kat-ekle .okul-ihn{ width: 36px; height: 36px; }
+}
+@media (prefers-reduced-motion: reduce){
+    #llOkulPopup .okul-kat.kd-vurgu{ animation: none; box-shadow: inset 0 0 0 3px #E67E22; }
+}

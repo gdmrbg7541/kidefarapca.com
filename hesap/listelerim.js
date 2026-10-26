@@ -5094,6 +5094,19 @@ function llOkulPopupAc() {
             var _n = llSeviyeNo((data.levels[lId] || {}).name);      /* «Yedinci sınıflar» da 7 */
             if (_n) _var[_n] = 1;
         });
+        /* BÜTÜN RAKAMLAR (26.10.2026) — öğretmen: "diyelimki sadece 2 seviyeden sınıf
+           eklenmiş, diğer seviyelerin de tuşları görünsün, onlara tıklayınca materyalleri
+           ve + sınıf ekle seçenekleri çıksın". _dolu: sınıfı olan seviye (tam renk);
+           olmayanlar soluk, rafında «+ Sınıf ekle» (sistem/okulkitaplik.js). */
+        var _dolu = {};
+        uyeler.forEach(function (lId) {
+            var _lv = data.levels[lId] || {}, _cs = _lv.classes || {}, _ids = Object.keys(_cs);
+            if (!_ids.length) return;
+            var _n = llSeviyeNo(_lv.name);
+            if (!_n) _ids.some(function (c) { _n = llSeviyeNo((_cs[c] || {}).name); return !!_n; });
+            if (_n) _dolu[_n] = 1;
+        });
+        var _bosVar = [5, 6, 7, 8, 9, 10].some(function (n) { return !_dolu[n]; });
         /* OKUL KİTAPLIĞI (26.10.2026) — öğretmen: "imam hatip kategorisini
            kaldırıyoruz, okul svg si ile birleştiriyoruz, öğretmen sınıf eklemişse
            yukarda duran hazır sınıf rakamlarına tıklayınca o sınıfların materyalleri
@@ -5103,9 +5116,11 @@ function llOkulPopupAc() {
            (sistem/okulkitaplik.js). Kurulmamış seviyenin rakamı «+» penceresinde. */
         var _rak = '';
         [5, 6, 7, 8, 9, 10].forEach(function (n) {
-            if (!_var[n]) return;
-            _rak += '<button type="button" class="okul-hizli okul-raf-tus" data-raf="' + n + '"' +
-                ' title="' + n + '. sınıfın kitaplığı — ders kitabı, belgeler, etkinlik kartları"' +
+            var _bos = !_dolu[n];
+            _rak += '<button type="button" class="okul-hizli okul-raf-tus' + (_bos ? ' bos' : '') + '" data-raf="' + n + '"' +
+                ' title="' + n + '. sınıfın kitaplığı — ' + (_bos
+                    ? 'henüz sınıfın yok: materyallere bak, buradan sınıf ekle'
+                    : 'ders kitabı, belgeler, etkinlik kartları') + '"' +
                 ' aria-expanded="false"' +
                 ' onclick="llOkulKitaplikAc(\'' + _kHedef + '\',' + n + ')">' +
                 llIhRakam(n) + '</button>';
@@ -5140,10 +5155,9 @@ function llOkulPopupAc() {
             ' stroke-width="2.6" stroke-linecap="round"/></svg>' +
             '</button>' +
             /* İPUCU (21.10.2026): öğretmenler rakamın seviye kurduğunu anlamayıp + 'ya basıyordu */
-            '<span class="okul-hizli-ipucu">' + (_rak
-                ? 'Rakama dokun: o sınıfın kitaplığı açılır — ders kitabı, belgeler, etkinlik kartları. Yeni seviye ya da sınıf için <b>+</b>'
-                : 'Seviye eklemek için <b>+</b> — eklediğin sınıfın rakamı burada durur, dokununca kitaplığı açılır.') +
-            '</span></div>';
+            '<span class="okul-hizli-ipucu">Rakama dokun: o sınıfın kitaplığı açılır. ' +
+            (_bosVar ? 'Soluk rakamlarda henüz sınıfın yok — kitaplığından <b>+ Sınıf ekle</b>. ' : '') +
+            'Başka bir seviye için <b>+</b></span></div>';
         /* EKLEME SATIRI HER ZAMAN EN ÜSTTE (07.10.2026) — öğretmen önce
            "seviye ekle yukarda, henüz seviye yok aşağıda olsun", ardından
            "giriş yaptıktan sonra da seviye ekle en üstte olsun" dedi.

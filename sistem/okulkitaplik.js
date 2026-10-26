@@ -119,12 +119,26 @@
     }
 
     /* ------------------------------------------------------- RAF */
-    function plaka(bas, alt) {
+    function plaka(bas, alt, ek) {
         return '<div class="kd-plaka"><span class="kd-plaka-bas">' + bas + '</span>' +
             '<button type="button" class="kd-plaka-kapat" title="Kitaplığı kapat" aria-label="Kitaplığı kapat"' +
             ' onclick="KidefOkulKitaplik.kapat()">&times;</button>' +
-            '<span class="kd-plaka-alt">' + alt + '</span></div>';
+            '<span class="kd-plaka-alt">' + alt + '</span>' + (ek || '') + '</div>';
     }
+    /* BÜTÜN RAKAMLAR (26.10.2026): sınıfı olmayan seviyenin (soluk rakam) rafında
+       «+ N. sınıf ekle», sınıfı olanın rafında «+ Şube ekle». İkisi de
+       listelerim.js → llHizliSeviye: seviye yoksa kurulur, varsa ona eklenir; şube
+       harfleri (5A, 5B…) o seviyenin satırında açık gelir. */
+    function ekleTusu(row, n) {
+        var t = tusu(row, n), bos = !!(t && t.classList.contains('bos'));
+        var k = String(row.getAttribute('data-kurum') || 'GENEL').replace(/['"\\<>&]/g, '');
+        return '<button type="button" class="kd-plaka-ekle' + (bos ? '' : ' ikincil') + '"' +
+            ' onclick="KidefOkulKitaplik.sinifEkle(\'' + k + '\',' + n + ')">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor"' +
+            ' stroke-width="2.8" stroke-linecap="round"/></svg>' +
+            '<span>' + (bos ? n + '. sınıf ekle' : 'Şube ekle') + '</span></button>';
+    }
+    function bosMu(row, n) { var t = tusu(row, n); return !!(t && t.classList.contains('bos')); }
     function kur(row, n) {
         var kap = document.createElement('div');
         kap.id = ID;
@@ -147,9 +161,11 @@
             return kap;
         }
         kap.style.cssText = renkler(n);
-        kap.innerHTML = plaka(n + '. Sınıf Kitaplığı',
-            'Ders kitabı, belgeler ve etkinlik kartları — bu seviyedeki her sınıfın ortak rafı. ' +
-            'Kapıyı açınca aynı kitaplık sınıfın içinde; «Nerde kalmıştık?» orada tutulur.') +
+        kap.innerHTML = plaka(n + '. Sınıf Kitaplığı', bosMu(row, n)
+            ? 'Bu seviyede henüz sınıfın yok. Materyallere göz atabilirsin; sınıf ekleyince ' +
+              'aynı kitaplık kapıyı açınca sınıfın içinde hazır olur, «Nerde kalmıştık?» orada tutulur.'
+            : 'Ders kitabı, belgeler ve etkinlik kartları — bu seviyedeki her sınıfın ortak rafı. ' +
+              'Kapıyı açınca aynı kitaplık sınıfın içinde; «Nerde kalmıştık?» orada tutulur.', ekleTusu(row, n)) +
             '<div class="ihsec-item ihsec-bassiz"><div class="ihsec-panel"><div class="ihsec-panel-in">' +
             '<div class="ihdoc-acc" data-sinif="' + n + '"></div>' +
             '<div class="ihsec-ayirac" aria-hidden="true"></div>' +
@@ -218,6 +234,28 @@
     }
     /* Pencere kapanmadan önce (listelerim.js → llOkulPopupKapat). */
     function sakla() { kapat(true); }
+    /* Rafın plakasındaki «+ sınıf ekle / + şube ekle»: raf kapanır, seviye kurulur
+       (ya da var olana eklenir), pencere yeniden çizilir; şube harfleri açık satır
+       ekrana getirilip kısa bir süre vurgulanır. */
+    function sinifEkle(kurum, n) {
+        n = parseInt(n, 10) || 0;
+        if (!n) return;
+        kapat(false);
+        try { window._llHizliLid = null; } catch (e) { }
+        try { if (typeof llHizliSeviye === 'function') llHizliSeviye(kurum, n); else return; } catch (e) { return; }
+        var dene = 0;
+        (function bak() {
+            var lid = window._llHizliLid;
+            var r = lid ? document.querySelector('#llOkulPopup .okul-kat[data-lid="' + lid + '"]') : null;
+            if (r && r.querySelector('.okul-sube-sira')) {
+                try { r.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { }
+                r.classList.add('kd-vurgu');
+                setTimeout(function () { r.classList.remove('kd-vurgu'); }, 1800);
+                return;
+            }
+            if (++dene < 25) setTimeout(bak, 100);
+        })();
+    }
 
     /* kelimeler.html'den dönüş: index.html?ihsinif=N → o sınıfın rafı */
     (function () {
@@ -229,7 +267,7 @@
 
     window.llOkulKitaplikAc = function (kurum, n) { try { ac(kurum, n); } catch (e) { } };
     window.KidefOkulKitaplik = {
-        ac: ac, kapat: function () { kapat(false); }, yenile: yenile, sakla: sakla,
+        ac: ac, kapat: function () { kapat(false); }, yenile: yenile, sakla: sakla, sinifEkle: sinifEkle,
         acik: function () { return acik; }
     };
 })();
