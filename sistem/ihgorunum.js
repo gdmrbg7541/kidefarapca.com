@@ -45,13 +45,12 @@
         var s = document.createElement('style');
         s.id = 'kdihStil';
         s.textContent = [
-            'html.kdih-tam #imam-hatip{ display:none !important; }',
-            'html.kdih-ogt #imam-hatip > h2,',
-            'html.kdih-ogt #imam-hatip > .ih-ipucu,',
-            'html.kdih-ogt #imam-hatip > .ih-acc,',
-            'html.kdih-ogt #imam-hatip > .kdih-not{ display:none !important; }',
-            /* başlık gidince Öğretmen Dökümanları bölümün en üstünde: üst boşluk yok */
-            'html.kdih-ogt #imam-hatip > .ih-genel-dok{ margin-top:0 !important; }',
+            /* İMAM HATİP KALKTI (26.10.2026) — öğretmen: "imam hatip kategorisini
+               kaldırıyoruz, okul svg si ile birleştiriyoruz". Bölüm HERKESE gizli
+               (kilitten ve rolden bağımsız); DOM yerinde — Materyaller sekmesi,
+               Sınıfım ve okul kitaplığı (sistem/okulkitaplik.js) aynı çizim
+               işlevlerini ve #dokAccordion'u kullanıyor. */
+            '#imam-hatip{ display:none !important; }',
 
             /* yönetici notu: başlığın hemen altında, ortada küçük hap */
             '#imam-hatip > .kdih-not{ display:none; align-items:center; gap:8px; width:max-content;',
@@ -120,13 +119,12 @@
         }
         return r;
     }
-    /* 'acik' | 'yon' | 'ogt' | 'tam' */
+    /* 'ogt' | 'tam' — 26.10.2026: bölüm herkese gizli, kilit ve «açık» kipi
+       ayrımı kalktı. Öğretmen (ve yönetici) → Sınıflarım tarafı; diğerleri → tam. */
     function durum() {
-        if (kilit() === 'acik') return 'acik';
         var r = rol();
-        if (r === 'admin') return 'yon';
-        if (r === 'teacher') return 'ogt';
-        return 'tam';                 /* öğrenci, veli, rolü bilinmeyen */
+        if (r === 'teacher' || r === 'admin') return 'ogt';
+        return 'tam';                 /* öğrenci, veli, rolü bilinmeyen, misafir */
     }
     function sinifVar() {
         try {
@@ -185,10 +183,10 @@
             ip.className = 'kdih-ipucu';
             ip.innerHTML = KITAP_SVG +
                 '<span class="kdih-yazi">' +
-                '<span class="kdih-var"><b>İmam Hatip materyalleri sınıflarının içinde:</b> bir sınıfına gir → ' +
-                '<b>Materyaller</b> sekmesi. Ders kitabı, belgeler ve etkinlik kartları sınıfın seviyesine göre açılır.</span>' +
-                '<span class="kdih-yok"><b>Önce bir sınıf ekle.</b> 5–10. sınıfların ders kitabı, belgeleri ve ' +
-                'etkinlik kartları sınıfının <b>Materyaller</b> sekmesinde açılır.</span>' +
+                '<span class="kdih-var"><b>Sınıf kitaplığı okulun içinde:</b> üstteki rakama dokun → o sınıfın ' +
+                'ders kitabı, belgeleri ve etkinlik kartları. Kapıyı açınca aynı kitaplık sınıfın <b>Materyaller</b> sekmesinde.</span>' +
+                '<span class="kdih-yok"><b>Önce bir sınıf ekle.</b> 5–10. sınıfların kitaplığı (ders kitabı, belgeler, ' +
+                'etkinlik kartları) okulun ve sınıfın içinde hazır gelir.</span>' +
                 '</span>' +
                 '<button type="button" class="kdih-ekle" onclick="if(window.KidefSiniflarim)KidefSiniflarim.sinifEkle()">' +
                 ARTI_SVG + '<span>Sınıf ekle</span></button>';
@@ -203,6 +201,16 @@
         if (d === 'ogt') return 'siniflarim';
         if (d === 'tam' && r === 'student') return 'sinifim';
         return '';
+    }
+    /* Öğretmen Dökümanları artık okul penceresinin rafında (sistem/okulkitaplik.js) */
+    function okulDokAc() {
+        try {
+            if (!window.KidefOkulKitaplik) return false;
+            var b = document.getElementById('siniflarim');
+            if (b && typeof changeView === 'function') changeView('home-hub-section');
+            window.KidefOkulKitaplik.ac(null, 'dok');
+            return true;
+        } catch (e) { return false; }
     }
     function gorunur(el) {
         if (!el) return false;
@@ -222,7 +230,7 @@
     }
     function adresBak() {
         if (location.hash !== '#imam-hatip' || !gizliMi(durum())) return;
-        if (!rol()) return;                   /* rol netleşince karar */
+        if (oturum() && !rol()) return;       /* rol netleşince karar; misafirde hedef yok */
         var hedef = hedefBolum();
         try { history.replaceState(null, '', location.pathname + location.search + (hedef ? '#' + hedef : '')); } catch (e) { }
         if (hedef) oraya(hedef);
@@ -270,12 +278,7 @@
             /* Öğretmen Dökümanları açık kalıyor; diğerleri: kendi bölümüne */
             try { if (typeof changeView === 'function') changeView('home-hub-section'); } catch (e) { }
             if (d === 'ogt' && bolum === 'ogretmen') {
-                setTimeout(function () {
-                    var h = document.querySelector('#imam-hatip .ih-genel-dok .ihsec-head');
-                    var it = h && h.closest('.ihsec-item');
-                    if (h && it && !it.classList.contains('acik')) h.click();
-                    else if (h) { try { h.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { } }
-                }, 280);
+                setTimeout(function () { okulDokAc(); }, 120);
                 return;
             }
             var hedef = hedefBolum();
@@ -291,9 +294,8 @@
         var d = durum();
         H.classList.toggle('kdih-tam', d === 'tam');
         H.classList.toggle('kdih-ogt', d === 'ogt');
-        H.classList.toggle('kdih-yon', d === 'yon' && kilit() === 'girisli');
+        H.classList.remove('kdih-yon');                       /* yönetici notu kalktı (26.10.2026) */
         H.classList.toggle('kdih-sinifsiz', d === 'ogt' && sinifsizMi());
-        if (d === 'yon') notKur();
         if (d === 'ogt') ipucuKur();
         sarmala();
         if (d !== son) son = d;

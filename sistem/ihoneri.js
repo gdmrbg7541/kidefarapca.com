@@ -133,7 +133,7 @@
     b.style.width = boy + 'px';
     b.style.height = boy + 'px';
     b.style.setProperty('--ihc', RENK[n] || '#16A085');
-    b.title = baslik || (n + '. Sınıf · İmam Hatip evrak ve etkinlikleri');
+    b.title = baslik || (n + '. Sınıf · kitaplık: evrak ve etkinlikler');
     b.setAttribute('aria-label', b.title);
     b.appendChild(kaynak ? kaynak.cloneNode(true) : yedekRozet(n));
     b.addEventListener('click', function (e) {
@@ -188,7 +188,7 @@
       '  <div class="iho-bas"><span class="iho-buyuk"></span>' +
       '    <span class="iho-bas-metin"><b></b><small></small></span></div>' +
       '  <div class="iho-satirlar"></div>' +
-      '  <div class="iho-alt">Bu öneriler <b>İmam Hatip</b> kategorisindeki hazır çalışmalardan gelir.</div>' +
+      '  <div class="iho-alt">Bu öneriler sınıfın <b>kitaplığındaki</b> hazır çalışmalardan gelir.</div>' +
       '</div>';
     document.body.appendChild(_pop);
     _pop.querySelector('.iho-perde').addEventListener('click', popupKapat);
@@ -221,7 +221,7 @@
     buyuk.style.setProperty('--ihc', RENK[n] || '#16A085');
 
     p.querySelector('.iho-bas-metin b').textContent = n + '. Sınıf';
-    p.querySelector('.iho-bas-metin small').textContent = 'İmam Hatip · hazır evrak ve etkinlikler';
+    p.querySelector('.iho-bas-metin small').textContent = 'Kitaplık · hazır evrak ve etkinlikler';
     p.querySelector('.iho-kutu').style.setProperty('--ihc', RENK[n] || '#16A085');
 
     var kap = p.querySelector('.iho-satirlar');
@@ -325,7 +325,7 @@
       sr.classList.add('iho-serit-seviye');
       var et = document.createElement('small');
       et.className = 'iho-etiket';
-      et.textContent = 'İmam Hatip çalışmaları';
+      et.textContent = 'Kitaplık çalışmaları';
       sr.appendChild(et);
       bas.appendChild(sr);
     });
@@ -437,7 +437,7 @@
     siniflar.slice(0, 3).forEach(function (n) { rz.appendChild(rozetYap(n, 34)); });
     var yz = document.createElement('span');
     yz.className = 'iho-mujde-metin';
-    yz.innerHTML = '<b></b><small>İmam Hatip evrak ve etkinlikleri hazır — göz atmak için rozete bas.</small>';
+    yz.innerHTML = '<b></b><small>Kitaplığı hazır: evrak ve etkinlikler — göz atmak için rozete bas.</small>';
     yz.querySelector('b').textContent =
       siniflar.map(function (n) { return n + '. Sınıf'; }).join(', ') + ' algılandı';
     var kp = document.createElement('button');

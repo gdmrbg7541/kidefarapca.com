@@ -1902,7 +1902,7 @@ function llSeviyeEkleAc(kId, sonra) {
         '<div class="lsv-ust"><b id="lsvBas">Seviye ekle' + (kurumAd ? ' · ' + behKacis(kurumAd) : '') + '</b></div>' +
         '<p class="lsv-soru">Hangi sınıf? <b>Rakama dokun</b>: o sınıf seviyesi kurulur, sonra şubeleri seçersin (5A, 5B…).</p>' +
         '<div class="lsv-rakamlar">' + rak + '</div>' +
-        '<p class="lsv-not">5–10. sınıflarda İmam Hatip materyalleri (belgeler, etkinlik kartları, kitap takibi) kendiliğinden açılır.</p>' +
+        '<p class="lsv-not">5–10. sınıfların kitaplığı (ders kitabı, belgeler, etkinlik kartları, kitap takibi) kendiliğinden hazır gelir.</p>' +
         '<div class="lsv-ayrac">ya da adını yaz</div>' +
         '<label for="lsvAd">Başka bir seviye ya da sınıf</label>' +
         '<input type="text" id="lsvAd" placeholder="Ör. 6-B, 11. sınıf, Hazırlık" autocomplete="off" maxlength="60">' +
@@ -1925,7 +1925,7 @@ function llSeviyeEkleAc(kId, sonra) {
             tani.innerHTML = '✓ <b>' + t.no + '. sınıf</b> olarak tanındı' +
                 (var_[t.no] ? ' — var olan ' + t.no + '. sınıfa eklenir' : ' — seviye kurulur') +
                 (t.sube ? ', <b>' + t.no + t.sube + '</b> sınıfı açılır' : '') + '.' +
-                (ih ? ' İmam Hatip materyalleri açık.' : ' (İmam Hatip materyalleri 5–10. sınıflarda.)');
+                (ih ? ' Kitaplığı hazır.' : ' (Hazır kitaplık 5–10. sınıflarda.)');
         } else {
             tani.innerHTML = '«' + behKacis(v) + '» adıyla yeni seviye kurulur.';
         }
@@ -5094,19 +5094,37 @@ function llOkulPopupAc() {
             var _n = llSeviyeNo((data.levels[lId] || {}).name);      /* «Yedinci sınıflar» da 7 */
             if (_n) _var[_n] = 1;
         });
+        /* OKUL KİTAPLIĞI (26.10.2026) — öğretmen: "imam hatip kategorisini
+           kaldırıyoruz, okul svg si ile birleştiriyoruz, öğretmen sınıf eklemişse
+           yukarda duran hazır sınıf rakamlarına tıklayınca o sınıfların materyalleri
+           açılsın, seviye eklemek istediğinde ise + kısmındaki sınıflara tıklarsa
+           sonra eklensin". Satırda yalnız KURULU 5–10. seviyelerin rakamları durur;
+           dokununca o sınıfın kitaplığı satırın altında açılır
+           (sistem/okulkitaplik.js). Kurulmamış seviyenin rakamı «+» penceresinde. */
         var _rak = '';
         [5, 6, 7, 8, 9, 10].forEach(function (n) {
-            if (_var[n]) return;
-            _rak += '<button type="button" class="okul-hizli"' +
-                ' title="' + n + '. sınıf seviyesini ekle"' +
-                ' onclick="llHizliSeviye(\'' + _kHedef + '\',' + n + ')">' +
+            if (!_var[n]) return;
+            _rak += '<button type="button" class="okul-hizli okul-raf-tus" data-raf="' + n + '"' +
+                ' title="' + n + '. sınıfın kitaplığı — ders kitabı, belgeler, etkinlik kartları"' +
+                ' aria-expanded="false"' +
+                ' onclick="llOkulKitaplikAc(\'' + _kHedef + '\',' + n + ')">' +
                 llIhRakam(n) + '</button>';
         });
-        var _ekleSatiri = '<div class="okul-kat okul-kat-ekle">' +
-            '<span class="okul-hizli-bas">Seviye ekle</span>' +
+        var _ekleSatiri = '<div class="okul-kat okul-kat-ekle" data-kurum="' + _kHedef + '">' +
+            '<span class="okul-hizli-bas">Kitaplık</span>' +
             '<span class="okul-hizli-sira">' +
-            (_rak || '<span class="okul-bos">5–10 arası seviyelerin hepsi kurulu</span>') +
+            (_rak || '<span class="okul-bos okul-raf-yok">henüz sınıf yok</span>') +
             '</span>' +
+            '<button type="button" class="okul-dok-tus" aria-expanded="false"' +
+            ' title="Öğretmen Dökümanları — öğretmen dosyası, zümre tutanakları, mevzuat (okul geneli)"' +
+            ' onclick="llOkulKitaplikAc(\'' + _kHedef + '\',\'dok\')">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+            '<rect class="dok-kagit" x="6.4" y="4.6" width="12.2" height="15.4" rx="2.2" fill="#EEE7FB" stroke="#7C3AED" stroke-width="1.4"/>' +
+            '<rect class="dok-kagit" x="3.4" y="6.4" width="12.2" height="15.4" rx="2.2" fill="#fff" stroke="#2563EB" stroke-width="1.4"/>' +
+            '<rect x="6" y="11" width="7" height="1.5" rx=".75" fill="#F39C12"/>' +
+            '<rect x="6" y="14.2" width="7" height="1.5" rx=".75" fill="#16A085"/>' +
+            '<rect x="6" y="17.4" width="4.6" height="1.5" rx=".75" fill="#EE5253"/></svg>' +
+            '<span>Öğretmen Dökümanları</span></button>' +
             /* "BAŞKA" ARTIK TEK DAİRE (07.10.2026) — öğretmen: "5-10 arası
                dışında seviye eklemek için başka ekle kısmı altta bi satır
                olmasın, sadece en sağda bi çizgili dairenin içinde + olsun".
@@ -5122,8 +5140,10 @@ function llOkulPopupAc() {
             ' stroke-width="2.6" stroke-linecap="round"/></svg>' +
             '</button>' +
             /* İPUCU (21.10.2026): öğretmenler rakamın seviye kurduğunu anlamayıp + 'ya basıyordu */
-            '<span class="okul-hizli-ipucu">Rakama dokun: o sınıf seviyesi kurulur, sonra şubeyi seç (5A, 5B…). ' +
-            'Başka bir seviye ya da sınıf için <b>+</b></span></div>';
+            '<span class="okul-hizli-ipucu">' + (_rak
+                ? 'Rakama dokun: o sınıfın kitaplığı açılır — ders kitabı, belgeler, etkinlik kartları. Yeni seviye ya da sınıf için <b>+</b>'
+                : 'Seviye eklemek için <b>+</b> — eklediğin sınıfın rakamı burada durur, dokununca kitaplığı açılır.') +
+            '</span></div>';
         /* EKLEME SATIRI HER ZAMAN EN ÜSTTE (07.10.2026) — öğretmen önce
            "seviye ekle yukarda, henüz seviye yok aşağıda olsun", ardından
            "giriş yaptıktan sonra da seviye ekle en üstte olsun" dedi.
@@ -5210,6 +5230,7 @@ function llOkulPopupAc() {
     k.addEventListener('click', function (e) { if (e.target === k) llOkulPopupKapat(); });
     document.body.appendChild(k);
     try { llKapiGiydir(); } catch (e) { }          /* kapı giydirmeleri (26.10.2026) */
+    try { if (window.KidefOkulKitaplik) window.KidefOkulKitaplik.yenile(); } catch (e) { }   /* açık raf (26.10.2026) */
     /* SAHNE (05.10.2026): binalar sırayla aşağıdan belirsin + katlar
        sürüklenebilir olsun. DOM'a eklendikten SONRA yapılmalı. */
     try {
@@ -5225,6 +5246,7 @@ function llOkulPopupAc() {
 }
 function llOkulPopupKapat() {
     okulTusDurum(false);
+    try { if (window.KidefOkulKitaplik) window.KidefOkulKitaplik.sakla(); } catch (e) { }   /* raf (26.10.2026) */
     var k = document.getElementById('llOkulPopup');
     if (k) k.remove();
     if (window._llOkulEsc) document.removeEventListener('keydown', window._llOkulEsc);

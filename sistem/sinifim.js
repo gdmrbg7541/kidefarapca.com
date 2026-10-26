@@ -403,7 +403,7 @@
     }
 
     function materyalHtml(n) {
-        return '<div id="' + KAP_ID + '" style="' + renkler(n) + '">' +
+        return '<div id="' + KAP_ID + '" class="kd-kitaplik" style="' + renkler(n) + '">' +
             '<div class="ihsec-item ihsec-bassiz"><div class="ihsec-panel"><div class="ihsec-panel-in">' +
             '<div class="snm-kitap" data-sinif="' + n + '"></div>' +
             '<div class="ihsec-ayirac" aria-hidden="true"></div>' +

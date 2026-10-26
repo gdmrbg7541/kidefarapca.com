@@ -318,6 +318,9 @@
          materyal kabı için üretilmiş kopyası. ÜRETİLMİŞ DOSYA —
          _kaynak/uretici/materyalStilUret.py ile tazelenir. -->
     <link rel="stylesheet" href="sistem/materyalstil.css?v=9df247f9">
+    <!-- KİTAPLIK (26.10.2026): materyal kabının kitaplık görünümü — sınıf paneli,
+         Sınıfım ve okul penceresindeki raf (sistem/okulkitaplik.js). -->
+    <link rel="stylesheet" href="sistem/kitaplik.css?v=46e842aa">
     <style>
       /* dikey scroll cubugu hep dursun -> gorunum degisince yatay kayma olmasin */
       html { overflow-y: scroll; }
@@ -2047,7 +2050,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- İMAM HATİP — KİLİTLİ SİTEDE GÖRÜNÜM (26.10.2026): 🎓 Sadece Girişliler
          kipinde öğretmen ve öğrencilere gizli, yönetici görür. Bölümün hemen
          altında duruyor ki karar ilk boyamadan önce verilsin. -->
-    <script src="sistem/ihgorunum.js?v=b69c6deb"></script>
+    <script src="sistem/ihgorunum.js?v=174baa70"></script>
 
 
 
@@ -4193,6 +4196,10 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
       (function () {
         var n = new URLSearchParams(location.search).get('ihsinif');
         if (!n) return;
+        /* 26.10.2026: İmam Hatip bölümü herkese gizli; dönüşü okul kitaplığı
+           karşılıyor (sistem/okulkitaplik.js ?ihsinif). Gizliyken buradaki eski
+           açma hiç çalışmasın (gizli öğeye kaydırmaya kalkmasın). */
+        try { if (getComputedStyle(document.getElementById('imam-hatip')).display === 'none') return; } catch (e) { }
         function ac() {
           /* Başlığın metni rakam SVG'siyle başlıyor; adı içinde arıyoruz. */
           var bas = [].filter.call(document.querySelectorAll('#imam-hatip .ih-head'), function (b) {
@@ -8258,11 +8265,15 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          + butonu olsun ... sınıflara header yerine galeri ve site
          güncellemelerinin üstünde bi kategori olarak hızlıca
          ulaşabilsin." Bölümü kendisi, Güncellemeler'in üstüne koyar. -->
-    <script src="sistem/siniflarim.js?v=32c36721"></script>
+    <script src="sistem/siniflarim.js?v=cd639667"></script>
     <!-- SINIF MATERYALLERİ SEKMESİ (06.10.2026): açık sınıfın seviyesine
          ait İmam Hatip belgeleri ve etkinlik kartları, sınıfın kendi
          panelinde. Kopya değil, aynı kaynaktan çizim. -->
-    <script src="sistem/sinifmateryal.js?v=5ef1d94c"></script>
+    <script src="sistem/sinifmateryal.js?v=acfb6707"></script>
+    <!-- OKUL KİTAPLIĞI (26.10.2026): İmam Hatip bölümü kalktı; okul penceresinin
+         üst satırındaki rakamlar o sınıfın kitaplığını açar. listelerim.js'ten
+         SONRA (llOkulPopupAc'ı kanca ile tazeler). -->
+    <script src="sistem/okulkitaplik.js?v=edcbd896"></script>
     <!-- SEKME SİMGELERİ — DEĞİŞEN ANİMASYONLAR (06.10.2026): öğretmen
          "listede neler varsa, sınıf defterinde neler varsa,
          materyallerde ve sınıf araçlarında değişen svg
@@ -8303,7 +8314,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <script defer src="sistem/aylikkart.js?v=f7bf99a7"></script>
     <script src="sistem/galeriveri.js?v=b5d6af07"></script>
     <script src="sistem/galeri.js?v=31382e3d"></script>
-    <script src="hesap/listelerim.js?v=d8ecae63"></script>
+    <script src="hesap/listelerim.js?v=3d0dde75"></script>
     <!-- SINIFLAR GİRİŞLE AÇILIR (18.10.2026): çıkışta okul penceresi ve sınıf
          listeleri kapanır, sınıf sekmesi girişi bekler (sistem/oturumkapi.js). -->
     <script src="sistem/oturumkapi.js?v=b6afc73e"></script>
@@ -8321,11 +8332,11 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          listelerim.js ve oturumguvenlik.js'ten SONRA: switchTab'ı sarıyor. -->
     <script src="hesap/sinifdefteri.js?v=c88c8d47"></script>
     <script src="hesap/ogrencihesap.js?v=9684ddfe"></script>
-    <script src="sistem/ihoneri.js?v=c5f6b6cd"></script>
+    <script src="sistem/ihoneri.js?v=55d39de4"></script>
     <!-- ÖĞRENCİ · SINIFIM (26.10.2026): giriş yapmış öğrenciye kendi sınıfının
          ders kitabı ve etkinlik kartları (öğretmen belgeleri yok). Öğretmen bağı
          hesap/ogrencihesap.js'ten (OH) gelir; ondan SONRA yüklenmeli. -->
-    <script src="sistem/sinifim.js?v=b1242d4a"></script>
+    <script src="sistem/sinifim.js?v=080a9c89"></script>
     <script src="sistem/gorev.js?v=ccd7693c"></script>
 
     <!-- CHECKOUT GİRİŞ İÇİN KÜÇÜK YARDIMCI SCRIPT -->

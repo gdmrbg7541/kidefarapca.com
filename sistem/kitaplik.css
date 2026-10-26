@@ -1,0 +1,180 @@
+/* ===========================================================================
+   KİTAPLIK  (sistem/kitaplik.css)                                 26.10.2026
+   ---------------------------------------------------------------------------
+   Öğretmen: "sınıf materyalleri de kapı açıldıktan sonra o sınıfın içinde bi
+   kitaplıktan bakılıyormuş gibi olsun". Materyal kabı ahşap çerçeveli bir
+   kitaplık: üstte pirinç plaka, üst rafta kitaplar ve belgeler (A4 kartlar),
+   alt raflarda etkinlik kartları — her kart sırasının altında raf tahtası.
+
+   Üç yerde aynı kitaplık (.kd-kitaplik):
+     #llMateryalKap   sınıf panelindeki Materyaller sekmesi (sistem/sinifmateryal.js)
+     #sinifimKap      öğrencinin Sınıfım bölümü (sistem/sinifim.js)
+     #llOkulKitaplik  okul penceresinde rakama dokununca açılan raf (sistem/okulkitaplik.js)
+   İçeriğin kendi biçimi sistem/materyalstil.css'ten gelir; burası yalnız
+   kitaplık görünümünü ekler. Okul penceresinin üst satırındaki rakam ve
+   tuşların biçimi de bu dosyanın sonunda.
+   =========================================================================== */
+.kd-kitaplik{
+    --raf: #8B5E3C; --raf-acik: #B4825A; --raf-koyu: #5B3A22; --raf-golge: rgba(60, 35, 15, .35);
+    position: relative; isolation: isolate; box-sizing: border-box;
+    margin: 4px 0 14px; padding: 14px 14px 12px; border-radius: 16px;
+    border: 9px solid var(--raf); border-top-width: 13px;
+    background: linear-gradient(180deg, #FFFBF5 0%, #F8EFE3 100%);
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .55), inset 0 12px 18px -12px rgba(0, 0, 0, .35),
+                0 8px 18px rgba(0, 0, 0, .14);
+}
+/* ahşap damarı: çerçevenin üstünde ince çizgiler */
+.kd-kitaplik::before{
+    content: ''; position: absolute; left: -9px; right: -9px; top: -13px; bottom: -9px;
+    border-radius: 16px; pointer-events: none; z-index: -1;
+    background: repeating-linear-gradient(180deg, rgba(255, 255, 255, .07) 0 2px, transparent 2px 7px);
+}
+
+/* ---------------------------------------------------------------- PLAKA */
+.kd-kitaplik .kd-plaka,
+#llMateryalKap.kd-kitaplik .smt-bas{
+    display: flex; align-items: center; justify-content: center; gap: 8px 12px; flex-wrap: wrap;
+    width: max-content; max-width: 100%; box-sizing: border-box; margin: -4px auto 16px; padding: 8px 18px;
+    border-radius: 10px; border: 2px solid #B8903F; border-left-width: 2px;
+    background: linear-gradient(180deg, #F9E6B8 0%, #E6C27A 60%, #D9AE5E 100%);
+    color: #4E3410; text-align: center;
+    box-shadow: 0 2px 0 #9C7430, 0 5px 12px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(255, 255, 255, .75);
+}
+.kd-kitaplik .kd-plaka-bas,
+#llMateryalKap.kd-kitaplik .smt-bas b{
+    color: #4E3410; font-size: 1.04rem; font-weight: 800; letter-spacing: .3px; line-height: 1.3;
+}
+.kd-kitaplik .kd-plaka-alt,
+#llMateryalKap.kd-kitaplik .smt-bas small{
+    flex-basis: 100%; color: #6B4E1E; font-size: .8rem; line-height: 1.45; font-weight: 600;
+}
+.kd-kitaplik .kd-plaka-kapat{
+    border: 0; cursor: pointer; width: 26px; height: 26px; border-radius: 50%; padding: 0; line-height: 1;
+    font-size: 1.15rem; font-weight: 700; color: #6B4E1E; background: rgba(255, 255, 255, .5);
+    box-shadow: inset 0 0 0 1px rgba(120, 85, 20, .35);
+}
+.kd-kitaplik .kd-plaka-kapat:hover{ background: #fff; color: #B9651A; }
+.kd-kitaplik .kd-yok{ padding: 22px 12px; text-align: center; color: #8A93A0; font-size: .92rem; }
+
+/* ----------------------------------------------------------- RAF 1: BELGELER */
+.kd-kitaplik .ihdoc-acc,
+.kd-kitaplik .snm-kitap{ position: relative; padding-top: 22px; padding-bottom: 2px; margin-bottom: 26px; }
+.kd-kitaplik .ihdoc-acc::before,
+.kd-kitaplik .snm-kitap::before,
+.kd-kitaplik .ih-kartlar::before,
+.kd-kitaplik .ih-genel-dok .dok-acc::before{
+    position: absolute; left: 2px; top: 0; z-index: 2; pointer-events: none;
+    font-size: .66rem; font-weight: 800; letter-spacing: 1.4px; color: var(--raf);
+    opacity: .85;
+}
+.kd-kitaplik .ihdoc-acc::before,
+.kd-kitaplik .snm-kitap::before{ content: 'KİTAPLAR & BELGELER'; }
+.kd-kitaplik .ih-kartlar::before{ content: 'ETKİNLİKLER'; }
+.kd-kitaplik .ih-genel-dok .dok-acc::before{ content: 'OKUL GENELİ BELGELER'; }
+/* raf tahtası: şeridin altında, çerçeveden çerçeveye */
+.kd-kitaplik .ihdoc-acc::after,
+.kd-kitaplik .snm-kitap::after,
+.kd-kitaplik .ih-genel-dok .dok-acc::after{
+    content: ''; display: block; height: 13px; margin: -4px -14px 0; border-radius: 2px;
+    background: linear-gradient(180deg, var(--raf-acik), var(--raf) 45%, var(--raf-koyu));
+    box-shadow: 0 5px 7px var(--raf-golge), inset 0 1px 0 rgba(255, 255, 255, .25);
+}
+.kd-kitaplik .ih-genel-dok .dok-acc{ position: relative; padding-top: 22px; }
+/* telefonda (≤600 px) belgeler şerit değil, sarmalı ızgara: tahta her kart sırasının altında */
+@media (max-width: 600px){
+    .kd-kitaplik .ihdoc-acc::after,
+    .kd-kitaplik .snm-kitap::after,
+    .kd-kitaplik .ih-genel-dok .dok-acc::after{ display: none; }
+    .kd-kitaplik .a4-grid{ row-gap: 28px !important; padding-bottom: 12px !important; }
+    .kd-kitaplik .a4-kart{ position: relative; }
+    .kd-kitaplik .a4-kart::after{
+        content: ''; position: absolute; left: -5px; right: -2px; bottom: -15px; height: 11px;
+        border-radius: 2px; pointer-events: none;
+        background: linear-gradient(180deg, var(--raf-acik), var(--raf) 45%, var(--raf-koyu));
+        box-shadow: 0 4px 6px var(--raf-golge), inset 0 1px 0 rgba(255, 255, 255, .25);
+    }
+}
+.kd-kitaplik .ihsec-ayirac{ display: none !important; }
+
+/* ------------------------------------------------- RAF 2+: ETKİNLİK KARTLARI */
+.kd-kitaplik .ih-kartlar{ position: relative; padding-top: 22px; }
+@media (min-width: 769px){
+    /* her kart sırasının altında tahta: kartlar bir sırada eşit boyda
+       (grid-auto-rows 1fr), tahta parçaları yan yana birleşir */
+    .kd-kitaplik .ih-kartlar .game-grid{ row-gap: 36px !important; padding-bottom: 20px; }
+    .kd-kitaplik .ih-kartlar .game-grid .game-card{ position: relative; }
+    .kd-kitaplik .ih-kartlar .game-grid .game-card::after{
+        content: ''; position: absolute; left: -8px; right: -8px; bottom: -19px; height: 13px;
+        border-radius: 2px; pointer-events: none;
+        background: linear-gradient(180deg, var(--raf-acik), var(--raf) 45%, var(--raf-koyu));
+        box-shadow: 0 5px 7px var(--raf-golge), inset 0 1px 0 rgba(255, 255, 255, .25);
+    }
+    /* kart kalkınca tahtası da kalkmasın: kitaplıkta kalkma yok, parlama var */
+    .kd-kitaplik .ih-kartlar .game-grid .game-card:hover{
+        transform: none !important; box-shadow: 0 10px 22px rgba(0, 0, 0, .16) !important;
+    }
+}
+@media (max-width: 768px){
+    /* telefonda kartlar tek sıra kayar: tahta sıranın altında */
+    .kd-kitaplik .ih-kartlar{ padding-bottom: 8px; margin: 0 -14px 4px; padding-left: 14px; padding-right: 14px; }
+    .kd-kitaplik .ih-kartlar::before{ left: 16px; }
+    .kd-kitaplik .ih-kartlar::after{
+        content: ''; display: block; height: 13px; margin: 6px 0 0; border-radius: 2px;
+        background: linear-gradient(180deg, var(--raf-acik), var(--raf) 45%, var(--raf-koyu));
+        box-shadow: 0 5px 7px var(--raf-golge), inset 0 1px 0 rgba(255, 255, 255, .25);
+    }
+    .kd-kitaplik{ padding: 12px 10px 10px; border-width: 7px; border-top-width: 10px; border-radius: 13px; }
+    .kd-kitaplik .ihdoc-acc::after,
+    .kd-kitaplik .snm-kitap::after,
+    .kd-kitaplik .ih-genel-dok .dok-acc::after{ margin-left: -10px; margin-right: -10px; }
+    .kd-kitaplik .kd-plaka,
+    #llMateryalKap.kd-kitaplik .smt-bas{ padding: 7px 12px; margin-bottom: 12px; }
+    .kd-kitaplik .kd-plaka-bas,
+    #llMateryalKap.kd-kitaplik .smt-bas b{ font-size: .96rem; }
+}
+
+/* ============================================================================
+   OKUL PENCERESİ — ÜST SATIR: KİTAPLIK RAKAMLARI, ÖĞRETMEN DÖKÜMANLARI, +
+   (hesap/listelerim.js → binaYap; raf: sistem/okulkitaplik.js)
+   ============================================================================ */
+#llOkulPopup .okul-raf-tus{ position: relative; }
+#llOkulPopup .okul-raf-tus.acik{ transform: translateY(-2px) scale(1.08); }
+#llOkulPopup .okul-raf-tus.acik::after{
+    content: ''; position: absolute; left: 50%; bottom: -9px; width: 7px; height: 7px; margin-left: -3.5px;
+    border-radius: 50%; background: var(--raf, #8B5E3C);
+}
+#llOkulPopup .okul-dok-tus{
+    display: inline-flex; align-items: center; gap: 6px; flex: none; cursor: pointer;
+    margin-inline-start: 4px; padding: 6px 12px 6px 8px; border-radius: 999px;
+    border: 1.5px solid #D9C3A6; background: rgba(255, 255, 255, .6); color: #7A5230;
+    font-family: inherit; font-weight: 800; font-size: .78rem; line-height: 1; white-space: nowrap;
+    transition: background .15s, border-color .15s, transform .12s;
+}
+#llOkulPopup .okul-dok-tus svg{ width: 20px; height: 20px; display: block; flex: none; }
+#llOkulPopup .okul-dok-tus:hover{ background: #FFF4E6; border-color: #E67E22; transform: translateY(-1px); }
+#llOkulPopup .okul-dok-tus.acik{ background: #7A5230; border-color: #7A5230; color: #fff; }
+#llOkulPopup .okul-dok-tus.acik svg .dok-kagit{ fill: #fff; }
+#llOkulPopup .okul-kat-ekle .okul-raf{ flex-basis: 100%; width: 100%; margin: 8px 0 2px; text-align: left; }
+#llOkulPopup .okul-kat-ekle .okul-bos.okul-raf-yok{ font-size: .8rem; }
+@media (max-width: 560px){
+    #llOkulPopup .okul-dok-tus span{ display: none; }
+    #llOkulPopup .okul-dok-tus{ padding: 6px 8px; gap: 0; margin-inline-start: 2px; }
+    /* «Kitaplık» yazısı kendi satırında; rakamlar, belge tuşu ve + bir sırada
+       (listelerim.css telefonda .okul-kat'ı sütun yapıyor; bu satır sarmalı sıra) */
+    #llOkulPopup .okul-kat.okul-kat-ekle{ flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 5px; }
+    #llOkulPopup .okul-kat-ekle .okul-hizli-bas{ flex-basis: 100%; margin: 0 0 -4px; font-size: .84rem; }
+}
+@media (min-width: 900px){
+    #llOkulPopup .okul-dok-tus{ font-size: .86rem; padding: 8px 14px 8px 10px; }
+    #llOkulPopup .okul-dok-tus svg{ width: 23px; height: 23px; }
+    #llOkulPopup .okul-raf-tus.acik::after{ bottom: -11px; width: 8px; height: 8px; margin-left: -4px; }
+    /* bina dar (≤980 px): kart ızgarası üç sütun (iki id: materyalstil kopyasını geçsin) */
+    #llOkulPopup #llOkulKitaplik .ih-kartlar .mobile-scroll-grid-single{ grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 899px) and (min-width: 769px){
+    #llOkulPopup #llOkulKitaplik .ih-kartlar .mobile-scroll-grid-single{ grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (prefers-reduced-motion: reduce){
+    #llOkulPopup .okul-dok-tus,
+    #llOkulPopup .okul-raf-tus.acik{ transition: none; transform: none; }
+}

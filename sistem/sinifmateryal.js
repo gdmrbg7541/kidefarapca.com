@@ -125,11 +125,15 @@
             return;
         }
 
-        panel.innerHTML = '<div id="' + KAP_ID + '">' +
+        /* KİTAPLIK (26.10.2026) — öğretmen: "sınıf materyalleri de kapı açıldıktan
+           sonra o sınıfın içinde bi kitaplıktan bakılıyormuş gibi olsun". Görünüm
+           sistem/kitaplik.css (kd-kitaplik); okul penceresindeki rafla aynı. */
+        panel.innerHTML = '<div id="' + KAP_ID + '" class="kd-kitaplik">' +
             '<div class="smt-bas">' +
-            '<b>' + a.no + '. sınıf belgeleri ve etkinlikleri</b>' +
-            '<small>' + kac(a.sinifAd || a.seviyeAd) + ' için İmam Hatip programından geliyor. ' +
-            'Siteye yeni bir ' + a.no + '. sınıf belgesi eklendiğinde burada da kendiliğinden görünür.</small>' +
+            '<b>' + kac(a.sinifAd || a.seviyeAd) + ' · ' + a.no + '. Sınıf Kitaplığı</b>' +
+            '<small>Ders kitabı, belgeler ve etkinlik kartları — ' + a.no + '. sınıfın hazır kitaplığı. ' +
+            'Siteye yeni bir ' + a.no + '. sınıf belgesi eklendiğinde burada da kendiliğinden görünür; ' +
+            '«Nerde kalmıştık?» bu sınıf için tutulur.</small>' +
             '</div>' +
             '<div class="ihsec-item ihsec-bassiz"><div class="ihsec-panel"><div class="ihsec-panel-in">' +
             '<div class="ihdoc-acc" data-sinif="' + a.no + '"></div>' +

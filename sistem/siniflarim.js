@@ -1294,7 +1294,9 @@
     function baskaSekmeMi() {
         try {
             var q = location.search || '';
-            return q.indexOf('okul=1') > -1 || q.indexOf('sinif=') > -1;
+            /* 26.10.2026: «?ihsinif=6» (kelimeler.html'den dönüş) «sinif=» sayılmasın —
+               okul anasayfada kalsın ki o sınıfın kitaplığı açılsın (sistem/okulkitaplik.js) */
+            return /[?&]okul=1/.test(q) || /[?&]sinif=/.test(q);
         } catch (e) { return false; }
     }
 
