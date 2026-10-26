@@ -68,11 +68,18 @@ function saveTeachers() {
 }
 
 if (typeof firebase !== 'undefined' && isFirebaseReady) {
-    firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            if (isRegistering) return; // kayit akisi rolu kendisi ayarlar
+    /* Oturumun kullanicilar/{uid} belgesini okuyup girişi tamamlar. 26.10.2026:
+       onAuthStateChanged'den ayrıldı — var olan hesaba yeniden kayıtta (belge
+       zaten varsa) ve «Kaydı tamamla» penceresinden de buradan geçilir. */
+    function oturumBelgesiniIsle(user) {
             db.collection('kullanicilar').doc(user.uid).get().then(doc => {
                 const data = doc.exists ? doc.data() : { role: 'student', packages: [], phone: '', name: '' };
+                /* KAYDI EKSİK (26.10.2026): hesap var, site kaydı yok (yönetici silmiş ya da
+                   kayıt yarım kalmış) → «Kaydını tamamla» penceresi (hesap/kayittamamla.js);
+                   yazılan belge yönetici listelerine düşer. */
+                if (!doc.exists && !user.isAnonymous && user.email && window.KidefKayitTamamla) {
+                    setTimeout(function () { try { KidefKayitTamamla.ac(user); } catch (e) { } }, 600);
+                }
                 /* Rol tamamen Firestore'dan gelir (ogrenci/ogretmen aninda, yonetici rol ile).
                    ⚠️ ORTAK COZUCU: sistem/rol.js. "role" alani hic yazilmamis eski
                    ogretmen hesaplarinda eskiden 'student'e dusuluyordu; bu yuzden
@@ -116,6 +123,12 @@ if (typeof firebase !== 'undefined' && isFirebaseReady) {
                 const fallbackName = user.isAnonymous && appState.currentUserName && appState.currentUserName !== "Misafir Öğrenci" ? appState.currentUserName : (user.displayName || "Öğrenci");
                 basariliGiris(user.email || "anonim", "", fallbackName);
             });
+    }
+    window.kidefOturumBelgesiniIsle = oturumBelgesiniIsle;
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            if (isRegistering) return; // kayit akisi rolu kendisi ayarlar
+            oturumBelgesiniIsle(user);
         } else {
             initAppAsGuest();
         }
@@ -218,6 +231,7 @@ function updateAuthUI() {
         document.getElementById('auth-switch-text').innerText = "Hesabınız yok mu?";
         document.getElementById('auth-switch-link').innerText = "Kayıt Ol";
         setD('re-password-group','none'); setD('phone-group','none'); setD('student-extra-group','none');
+        setD('sifre-unut-satir', 'block');          /* «Şifremi unuttum» yalnız girişte (26.10.2026) */
         setD('teacher-cv-group','none'); setD('teacher-file-group','none');
         if (mc) { mc.style.maxWidth = "450px"; mc.style.width = "90%"; }
     } else {
@@ -229,6 +243,7 @@ function updateAuthUI() {
            yazisi kutunun yanina geciyordu. Blok kalsin ki etiket ustte,
            kutu altta dursun — ilk sifre alani gibi. */
         setD('re-password-group','block'); setD('phone-group','block'); setD('student-extra-group','flex');
+        setD('sifre-unut-satir', 'none');
         setD('teacher-cv-group','none'); setD('teacher-file-group','none');
         if (mc) { mc.style.maxWidth = "450px"; mc.style.width = "90%"; }
 
@@ -272,6 +287,14 @@ function togglePassword(inputId) {
         tus.setAttribute('title', gorunur ? 'Şifreyi gizle' : 'Şifreyi göster');
         tus.setAttribute('aria-label', gorunur ? 'Şifreyi gizle' : 'Şifreyi göster');
     }
+}
+
+/* Firebase hatası → Türkçe (hesap/kayitalani.js → KidefKayit.hataMetni). Dosya
+   yüklenmemişse eski ham metin. (26.10.2026: ekranda ham INVALID_LOGIN_CREDENTIALS
+   JSON'u çıkıyordu.) */
+function girisHataMetni(e, kip) {
+    if (window.KidefKayit && KidefKayit.hataMetni) return KidefKayit.hataMetni(e, kip);
+    return (kip === 'kayit' ? "Kayıt başarısız: " : "Giriş başarısız: ") + ((e && e.message) || e);
 }
 
 function authIslemi() {
@@ -369,7 +392,7 @@ function authIslemi() {
         .then((userCredential) => { 
             // onAuthStateChanged verileri Firestore'dan çekecek
         })
-        .catch((error) => { errorEl.innerText = "Giriş başarısız: " + error.message; });
+        .catch((error) => { errorEl.innerText = girisHataMetni(error, 'giris'); });
     } else {
         const pass2 = document.getElementById('re-password').value;
         const phone = document.getElementById('phone').value.trim();
@@ -427,34 +450,30 @@ function authIslemi() {
                     if (_ank2) _kayit.anket = _ank2;
                 } catch (e) { }
             }
-            return db.collection('kullanicilar').doc(userCredential.user.uid).set(_kayit).then(() => {
-                // Yaris onleme: dokuman yazildiktan sonra dogru rolle girisi tamamla
-                /* Kayit formunda ogretmen kodu girildiyse sakla:
-                   giris tamamlaninca ogrencihesap.js otomatik istek gonderir. */
-                try {
-                    var tkEl = document.getElementById('student-teacher-code');
-                    var tkod = tkEl ? tkEl.value.trim() : '';
-                    if (regRole === 'student' && tkod) localStorage.setItem('oh_beklenen_kod', tkod);
-                } catch (e) { }
-                showCustomAlert(regRole === 'teacher'
-                    ? "Kaydın alındı. Öğretmen hesapları yönetici onayından sonra açılıyor; onaylandığında siteyi kullanabileceksin."
-                    : "Kayıt başarılı!");
-                /* ÖĞRETMEN ONAYI (18.10.2026): yeni öğretmen kaydında onay
-                   perdesi, giriş tamamlanmadan önce iner; önbellek de bu
-                   hesabın onay durumunu bilir. */
-                try {
-                    if (window.KidefRol) KidefRol.onbellekYaz(userCredential.user.uid, {
-                        rol: regRole, ogretmen: regRole === 'teacher', isim: sName || '',
-                        onay: _kayit.ogretmenOnay || ''
-                    });
-                    if (window.KidefErisim && KidefErisim.belgeGeldi) KidefErisim.belgeGeldi(userCredential.user, _kayit);
-                } catch (e) { }
-                selectedRole = regRole;
-                isRegistering = false;
-                basariliGiris(email, phone ? ("+90" + phone) : "", sName || "");
-            });
+            return db.collection('kullanicilar').doc(userCredential.user.uid).set(_kayit)
+                .then(() => kayitBelgesiYazildi(userCredential.user, _kayit));
         })
-        .catch((error) => { isRegistering = false; errorEl.innerText = "Kayıt başarısız: " + error.message; });
+        .catch((error) => {
+            /* VAR OLAN HESAP (26.10.2026) — yönetici: "bi öğrenciyi yönetici öğretmenler
+               kısmından silince tekrar kayıt olduğunda … öğretmenler kısmında görelim,
+               onaylayabilelim". Panel belgeyi siler, kimlik hesabı kalır; aynı e-postayla
+               yeniden kayıtta Firebase "e-posta kullanımda" der ve belge hiç yazılmazdı.
+               Şimdi: aynı şifreyle girilir, belge yoksa kayıt belgesi yazılır (öğretmen
+               onay kuyruğuna düşer); belge varsa kişi zaten kayıtlıdır, giriş yapılmış olur.
+               (hesap/kayitalani.js → KidefKayit.varOlanHesap) */
+            if (window.KidefKayit && KidefKayit.hesapZatenVarMi && KidefKayit.hesapZatenVarMi(error)) {
+                KidefKayit.varOlanHesap({ email: email, pass: pass, ad: sName, meslek: sProf, tel: phone, cinsiyet: sGender }, regRole)
+                    .then((s) => {
+                        if (s.durum === 'yazildi') { kayitBelgesiYazildi(s.user, s.belge); return; }
+                        isRegistering = false;
+                        showCustomAlert("Bu e-posta ile zaten kayıtlısın; giriş yapıldı.");
+                        if (typeof window.kidefOturumBelgesiniIsle === 'function') window.kidefOturumBelgesiniIsle(s.user);
+                    })
+                    .catch((e2) => { isRegistering = false; errorEl.innerText = girisHataMetni(e2, 'kayit'); });
+                return;
+            }
+            isRegistering = false; errorEl.innerText = girisHataMetni(error, 'kayit');
+        });
     }
 }
 
@@ -469,6 +488,42 @@ function grantAdminAllPackages() {
     appState.purchasedPackages = ids;
 }
 window.grantAdminAllPackages = grantAdminAllPackages;
+
+/* KAYIT BELGESİ YAZILDI (26.10.2026): yeni hesap, var olan hesaba yeniden kayıt
+   (KidefKayit.varOlanHesap) ya da «Kaydını tamamla» penceresi (hesap/kayittamamla.js) —
+   üçü de buradan geçer: öğretmen kodu, mesaj, rol önbelleği, erişim perdesi, oturum.
+   Eskiden authIslemi'nin içindeydi. */
+function kayitBelgesiYazildi(user, _kayit) {
+    _kayit = _kayit || {};
+    const regRole = (_kayit.role === 'teacher') ? 'teacher' : 'student';
+    const sName = (_kayit.name && _kayit.name !== "Belirtilmedi") ? _kayit.name : "";
+    const tel = _kayit.phone || "";
+    // Yaris onleme: dokuman yazildiktan sonra dogru rolle girisi tamamla
+    /* Kayit formunda ogretmen kodu girildiyse sakla:
+       giris tamamlaninca ogrencihesap.js otomatik istek gonderir. */
+    try {
+        var tkEl = document.getElementById('student-teacher-code');
+        var tkod = tkEl ? tkEl.value.trim() : '';
+        if (regRole === 'student' && tkod) localStorage.setItem('oh_beklenen_kod', tkod);
+    } catch (e) { }
+    showCustomAlert(regRole === 'teacher'
+        ? "Kaydın alındı. Öğretmen hesapları yönetici onayından sonra açılıyor; onaylandığında siteyi kullanabileceksin."
+        : "Kayıt başarılı!");
+    /* ÖĞRETMEN ONAYI (18.10.2026): yeni öğretmen kaydında onay
+       perdesi, giriş tamamlanmadan önce iner; önbellek de bu
+       hesabın onay durumunu bilir. */
+    try {
+        if (window.KidefRol) KidefRol.onbellekYaz(user.uid, {
+            rol: regRole, ogretmen: regRole === 'teacher', isim: sName || '',
+            onay: _kayit.ogretmenOnay || ''
+        });
+        if (window.KidefErisim && KidefErisim.belgeGeldi) KidefErisim.belgeGeldi(user, _kayit);
+    } catch (e) { }
+    selectedRole = regRole;
+    isRegistering = false;
+    basariliGiris(user.email || _kayit.email || "", tel, sName || "");
+}
+window.kidefKayitBelgesiYazildi = kayitBelgesiYazildi;
 
 function basariliGiris(userEmail, userPhone = "", userName = "") {
     appState.currentUser = userEmail;

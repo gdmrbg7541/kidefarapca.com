@@ -155,6 +155,11 @@
     function agVar() {
         return !(typeof firebase === 'undefined' || !firebase.auth);
     }
+    /* Firebase hatası → Türkçe (hesap/kayitalani.js). 26.10.2026: ham INVALID_LOGIN_CREDENTIALS çıkıyordu. */
+    function hataMetni(e, kip) {
+        if (window.KidefKayit && KidefKayit.hataMetni) return KidefKayit.hataMetni(e, kip);
+        return (kip === 'kayit' ? 'Kayıt başarısız: ' : 'Giriş başarısız: ') + ((e && e.message) || e);
+    }
 
     function gonder() {
         hata('');
@@ -177,7 +182,7 @@
                 })
                 .catch(function (err) {
                     mesgul(false);
-                    hata('Giriş başarısız: ' + ((err && err.message) || err));
+                    hata(hataMetni(err, 'giris'));
                 });
             return;
         }
@@ -211,8 +216,25 @@
                 $('biyg-gonder').onclick = kapat;
             })
             .catch(function (err) {
+                /* VAR OLAN HESAP (26.10.2026): e-posta kullanımda → aynı şifreyle girilir, belge
+                   yoksa kayıt belgesi yazılır (hesap/kayitalani.js → KidefKayit.varOlanHesap);
+                   yönetici panelden silmiş olsa da kişi onay kuyruğuna düşer. */
+                if (KidefKayit.hesapZatenVarMi && KidefKayit.hesapZatenVarMi(err)) {
+                    KidefKayit.varOlanHesap(s.veri, 'teacher').then(function (r) {
+                        mesgul(false);
+                        if (r.durum !== 'yazildi') { kapat(); return; }      /* zaten kayıtlı: giriş yapıldı */
+                        var k = panel.querySelector('#biyg-kart');
+                        k.innerHTML = '<button type="button" id="biyg-kapat" aria-label="Kapat">&times;</button>' +
+                            '<h2>Kaydın alındı</h2>' +
+                            '<div id="biyg-bilgi">' + window.KidefKayit.bitisMesaji('teacher') + '</div>' +
+                            '<button type="button" class="biyg-tus" id="biyg-gonder">Tamam</button>';
+                        $('biyg-kapat').onclick = kapat;
+                        $('biyg-gonder').onclick = kapat;
+                    }).catch(function (e2) { mesgul(false); hata(hataMetni(e2, 'kayit')); });
+                    return;
+                }
                 mesgul(false);
-                hata('Kayıt başarısız: ' + ((err && err.message) || err));
+                hata(hataMetni(err, 'kayit'));
             });
     }
 

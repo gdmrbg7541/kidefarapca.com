@@ -354,10 +354,16 @@
             ' padding:12px 14px; margin:0 auto 14px; width:100%; max-width:760px; box-sizing:border-box;' +
             ' text-align:left; font-size:.9rem; line-height:1.55; color:#7B3B30;');
         s.innerHTML = '<b style="display:block; color:#B03A2E; font-size:1rem; margin-bottom:2px;">Bu hesabın site kaydı eksik</b>' +
-            'Hesap eski bir sayfadan açılmış ya da kaydı yarım kalmış görünüyor. Site şu an yalnız kayıtlı ' +
-            'hesaplara açık: çıkış yapıp kayıtlı hesabınla gir ya da iletişim sayfasından yaz.' +
-            '<div style="margin-top:9px;"><button type="button" id="kilitEksikCik" style="border:0; border-radius:10px;' +
+            'Hesap eski bir sayfadan açılmış, kaydı yarım kalmış ya da kaydı silinmiş görünüyor. Site şu an yalnız ' +
+            'kayıtlı hesaplara açık: «Kaydı tamamla» ile bilgilerini yeniden yaz ya da çıkış yapıp kayıtlı hesabınla gir.' +
+            '<div style="margin-top:9px; display:flex; gap:8px; flex-wrap:wrap;">' +
+            /* KAYDI TAMAMLA (26.10.2026): hesap/kayittamamla.js varsa — belge yeniden yazılır, kişi yönetici listelerine düşer */
+            (window.KidefKayitTamamla ? '<button type="button" id="kilitEksikTamamla" style="border:0; border-radius:10px;' +
+            ' padding:7px 15px; background:#16A085; color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Kaydı tamamla</button>' : '') +
+            '<button type="button" id="kilitEksikCik" style="border:0; border-radius:10px;' +
             ' padding:7px 15px; background:#B03A2E; color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Çıkış yap</button></div>';
+        var kt = s.querySelector('#kilitEksikTamamla');
+        if (kt) kt.onclick = function () { try { KidefKayitTamamla.ac(null, true); } catch (e) { } };
         var bas = kap.querySelector('#auth-title');
         if (bas && bas.parentNode === kap) kap.insertBefore(s, bas.nextSibling);
         else kap.insertBefore(s, kap.firstChild);

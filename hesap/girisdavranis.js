@@ -30,6 +30,11 @@
   function g(id, v) { var e = el(id); if (e) e.style.display = v; }
   function yaz(id, m) { var e = el(id); if (e) e.innerText = m; }
   function hata(m) { var e = el('hata-mesaji'); if (e) { e.innerText = m || ''; e.style.display = m ? 'block' : 'none'; } }
+  /* Firebase hatası → Türkçe (hesap/kayitalani.js). 26.10.2026: ham INVALID_LOGIN_CREDENTIALS çıkıyordu. */
+  function hataMetni(e, kip) {
+    if (window.KidefKayit && KidefKayit.hataMetni) return KidefKayit.hataMetni(e, kip);
+    return (kip === 'kayit' ? 'Kayıt başarısız: ' : 'Giriş başarısız: ') + ((e && e.message) || e);
+  }
 
   /* ----------------------------------------------------- pencere açma/kapama */
   function ac() {
@@ -56,6 +61,7 @@
       yaz('auth-switch-link', 'Kayıt Ol');
       g('re-password-group', 'none'); g('phone-group', 'none');
       g('student-extra-group', 'none');
+      g('sifre-unut-satir', 'block');             /* «Şifremi unuttum» yalnız girişte (26.10.2026) */
       g('teacher-cv-group', 'none'); g('teacher-file-group', 'none');
     } else {
       yaz('auth-title', 'Sisteme Kayıt Ol');
@@ -66,6 +72,7 @@
          etiketi kutunun yanına geçiyor (index'teki nottan). */
       g('re-password-group', 'block'); g('phone-group', 'block');
       g('student-extra-group', 'flex');
+      g('sifre-unut-satir', 'none');
       g('teacher-cv-group', 'none'); g('teacher-file-group', 'none');
       g('ogr-kod-grup', D.rol === 'teacher' ? 'none' : 'block');
 
@@ -136,7 +143,7 @@
           mesgul(false); kapat();
           if (typeof D.bittiginde === 'function') D.bittiginde({ kip: 'giris', user: c.user });
         })
-        .catch(function (e) { mesgul(false); hata('Giriş başarısız: ' + ((e && e.message) || e)); });
+        .catch(function (e) { mesgul(false); hata(hataMetni(e, 'giris')); });
       return;
     }
 
@@ -165,7 +172,20 @@
         try { alert(window.KidefKayit.bitisMesaji(rol)); } catch (e) {}
         if (typeof D.bittiginde === 'function') D.bittiginde({ kip: 'kayit', rol: rol, user: cred.user });
       })
-      .catch(function (e) { mesgul(false); hata('Kayıt başarısız: ' + ((e && e.message) || e)); });
+      .catch(function (e) {
+        /* VAR OLAN HESAP (26.10.2026): e-posta kullanımda → aynı şifreyle girilir, belge yoksa
+           kayıt belgesi yazılır (hesap/kayitalani.js → KidefKayit.varOlanHesap). Yönetici
+           panelden silmiş olabilir; kişi yine onay kuyruğuna düşer. */
+        if (KidefKayit.hesapZatenVarMi && KidefKayit.hesapZatenVarMi(e)) {
+          KidefKayit.varOlanHesap(s.veri, rol).then(function (r) {
+            mesgul(false); kapat();
+            try { alert(r.durum === 'yazildi' ? window.KidefKayit.bitisMesaji(rol) : 'Bu e-posta ile zaten kayıtlısın; giriş yapıldı.'); } catch (x) {}
+            if (typeof D.bittiginde === 'function') D.bittiginde({ kip: r.durum === 'yazildi' ? 'kayit' : 'giris', rol: rol, user: r.user });
+          }).catch(function (e2) { mesgul(false); hata(hataMetni(e2, 'kayit')); });
+          return;
+        }
+        mesgul(false); hata(hataMetni(e, 'kayit'));
+      });
   }
 
   /* --------------------------------------------- yalnız EKSİKSE devreye gir

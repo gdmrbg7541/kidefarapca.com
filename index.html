@@ -302,7 +302,7 @@
     <link rel="stylesheet" href="hesap/kurslar.css?v=bb03b3cb">
     <link href="https://fonts.googleapis.com/css2?family=Harmattan:wght@400;700&family=Marhey:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css?v=48dac683">
-    <link rel="stylesheet" href="hesap/qrgiris.css?v=55822f4c">
+    <link rel="stylesheet" href="hesap/qrgiris.css?v=a1e015f2">
     <style>
     /* Kayıt/Giriş penceresi: arka fon site turuncusu (site görünmez, tam kapatır).
        z-index kilit perdesinin (100000000) ÜSTÜNDE: kilitliyken pencere
@@ -442,7 +442,7 @@
          girmiyor, gelmezse karekodlar yine çiziliyor. -->
     <script src="pano/qrcode.min.js?v=fbb6b69b"></script>
     <script src="sistem/karekodyedek.js?v=20a3ba23"></script>
-    <script src="sistem/kilit.js?v=c39831ce"></script>
+    <script src="sistem/kilit.js?v=1efbd006"></script>
     <!-- Erişim katmanı: kilitli sitede öğrenci kategori kısıtı + öğretmen onay kapısı -->
     <script src="sistem/erisim.js?v=83372b2c"></script>
     <!-- ONAYDAN SONRA PAYLAŞILACAK MESAJ (07.10.2026) — öğretmen:
@@ -1022,7 +1022,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
          "tek giriş sayfası olsun, farklı yerlerde de olsa".
          Dosya yüklenince pencereyi buraya, body'ye basıyor.
          Pencereyi düzenlemek için o dosyaya bak. -->
-    <script src="hesap/girispenceresi.js?v=357bc8c3"></script>
+    <script src="hesap/girispenceresi.js?v=85d95157"></script>
     <!-- GÖMÜLÜ GİRİŞ (18.10.2026): Bilgi Yarışması bu sayfanın giriş ekranını
          çerçevede açıyor (index.html?giris=1&gomulu=1). Bu dosya yalnız çerçevedeyken
          çalışır, üst sayfaya «hazır / tamam / kapat» der. -->
@@ -8199,8 +8199,12 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Kayıt alanlarının ve kullanicilar belgesinin tek kaynağı; auth.js'ten
          ÖNCE yüklenmeli. Aynı dosyayı bilgi yarışmasındaki yerinde kayıt
          paneli de okuyor (hesap/biygiris.js). -->
-    <script src="hesap/kayitalani.js?v=1f613da8"></script>
-    <script src="hesap/auth.js?v=c61798a2"></script>
+    <script src="hesap/kayitalani.js?v=2a55e991"></script>
+    <!-- KAYDINI TAMAMLA (26.10.2026): hesabı olup site kaydı olmayan (yönetici
+         silmiş ya da kayıt yarım kalmış) kişiye girişte rol ve bilgilerini sorar,
+         kayıt belgesini yeniden yazar; kişi yönetici listelerine düşer. -->
+    <script src="hesap/kayittamamla.js?v=e2b6c378"></script>
+    <script src="hesap/auth.js?v=93e4260f"></script>
     <!-- Sitede gecirilen sure: yalniz etkin sure sayilir, kullanicilar/{uid}.kullanim -->
     <script src="sistem/kullanimsure.js?v=c876df2f"></script>
     <!-- Materyal kullanım raporu: Materyaller sekmesinde açılan dosyaları ve
@@ -8273,7 +8277,7 @@ body.erisim-ogrenci-kisit #sarfMotorPencere { display: none !important; }
     <!-- Telefonu tek tıkla kopyala (05.10.2026) — yönetici öğretmen
          onaylarında numarayı fareyle seçmek zorunda kalmasın. -->
     <script src="sistem/telkopya.js?v=303ac4d1"></script>
-    <script src="hesap/teacher-admin.js?v=7f5fccf9"></script>
+    <script src="hesap/teacher-admin.js?v=4b057736"></script>
     <!-- Yonetici > ogretmen penceresi (19.10.2026): genel (sure, siniflar),
          ucret durumu, takvim, kayit anketi — ogretmenler listesi kart kart -->
     <script src="hesap/ogretmen-detay.js?v=15c64a17"></script>
@@ -8440,7 +8444,7 @@ function kdDil() {
                 .then((userCredential) => { 
                     // onAuthStateChanged ilgilenecek
                 })
-                .catch((error) => { errorEl.innerText = "Giriş başarısız: " + error.message; });
+                .catch((error) => { errorEl.innerText = (typeof girisHataMetni === 'function') ? girisHataMetni(error, 'giris') : ("Giriş başarısız: " + error.message); });
             } else {
                 const pass2 = document.getElementById('checkout-re-password').value;
                 const phone = document.getElementById('checkout-phone').value.trim();
@@ -8461,7 +8465,7 @@ function kdDil() {
                         // onAuthStateChanged ilgilenecek
                     });
                 })
-                .catch((error) => { errorEl.innerText = "Kayıt başarısız: " + error.message; });
+                .catch((error) => { errorEl.innerText = (typeof girisHataMetni === 'function') ? girisHataMetni(error, 'kayit') : ("Kayıt başarısız: " + error.message); });
             }
         }
     </script>

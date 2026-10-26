@@ -1104,7 +1104,8 @@ function loadOgretmenOnaylari() {
         }
         kutu.innerHTML = html + '</div>';
     }).catch(function (e) {
-        kutu.innerHTML = '<p>Liste alınamadı: ' + _fbEsc((e && (e.code || e.message)) || e) + '</p>';
+        kutu.innerHTML = '<p>' + _fbEsc(_abHataMetni(e)) + '</p>' +
+            '<button class="btn" onclick="loadOgretmenOnaylari()" style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
     });
 }
 window.loadOgretmenOnaylari = loadOgretmenOnaylari;
@@ -1187,6 +1188,12 @@ window.ogretmenBelgeIste = ogretmenBelgeIste;
    role:'teacher' yazar ve listede belirirler.
    =================================================================== */
 var _adminOgretmenler = {};      /* uid -> {ad, email, ogrenci, kullanim, anket} */
+/* Firestore hatası → Türkçe (hesap/kayitalani.js). 26.10.2026: günlük okuma kotası dolunca
+   listeler "resource-exhausted" diyordu; şimdi ne olduğu ve ne zaman düzeleceği yazıyor. */
+function _abHataMetni(e) {
+    if (window.KidefKayit && KidefKayit.hataMetni) return KidefKayit.hataMetni(e, 'okuma');
+    return 'Liste alınamadı: ' + ((e && (e.code || e.message)) || e);
+}
 
 /* Öğretmenin KENDİ sınıf listesinden sınıf/öğrenci sayısı.
    userData, listelerim.js'in buluta yazdığı JSON metindir. "bagli":
@@ -1403,8 +1410,7 @@ function renderAdminTeacherList() {
             if (window.KidefOgretmenDetay && KidefOgretmenDetay.tazele) KidefOgretmenDetay.tazele();
         })
         .catch(function (e) {
-            container.innerHTML = '<p style="color:#EF5350;">Liste alınamadı: ' +
-                _fbEsc((e && (e.code || e.message)) || e) + '</p>' +
+            container.innerHTML = '<p style="color:#EF5350;">' + _fbEsc(_abHataMetni(e)) + '</p>' +
                 '<button class="btn" onclick="renderAdminTeacherList()" ' +
                 'style="margin-top:10px; font-size:.9rem;">🔄 Yenile</button>';
         });

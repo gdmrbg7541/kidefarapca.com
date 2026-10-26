@@ -77,6 +77,12 @@
      da yüzen kumanda tuşu + panel. Panelde «Lazer» ve «Büyüteç»: parmağın ya da
      farenin altındaki öğe (yazıdaysa harf) tahtada kendi düzeninde bulunur.
      Lazer: kırmızı nokta + kısa iz. Büyüteç: tahtada o yer 2× (3×, 1,5×) büyür.
+   · 7. SÜRÜM (26.10.2026) — BİRLİKTE ÇIKIŞ. Öğretmen: "kumanda kullanılırken bi
+     cihazın kumanda özelliğinden çıkınca diğerinden de otomatik çıkılsın".
+     Kumanda «Bitir» deyince Sınıf Ekranı da kabuktan çıkar (ana sayfa; yeni
+     yansıtmada kendiliğinden döner). Tahtada «Çık» ya da «Bu cihaz Sınıf Ekranı
+     değil» denince kumanda da çıkar (açık sayfasında kalır): tahta
+     tahta/<uid>/cikis = { id, bas } yazar. Uyku, bağlantı kopması çıkış sayılmaz.
 
    TUTARLILIK
    · Rastgele karıştıran oyunlar iki cihazda aynı karışsın diye çerçevenin
@@ -794,7 +800,7 @@
     } catch (e) { }
   }
 
-  function cik(adres) {
+  function cik(adres, isaret) {
     try { if (IA.arac) aracSec(null); } catch (e) { }
     var k = S.kok, liderdim = S.lider;
     S.lider = false; S.kok = null;
@@ -811,12 +817,43 @@
         try { localStorage.setItem('kidef_tahta_birakti', JSON.stringify({ bas: (S.yayin && S.yayin.bas) || null, t: Date.now() })); } catch (e) { }
         /* tahta kullanılırken çıkılırsa kontrol bilgisayara döner */
         if (liderdim && S.yayin && S.yayin.cevrimici && S.yayin.id === BEN) k.child('yayin').update({ cevrimici: false, ts: TS() });
+        /* BİRLİKTE ÇIKIŞ (26.10.2026): tahtadan BİLEREK çıkıldı («Çık», «Bu cihaz Sınıf Ekranı
+           değil») — kumanda da çıksın. Yalnız bu yansıtma oturumu (bas) için; bağlantı
+           kopması, başka cihazın Sınıf Ekranı olması çıkış yazmaz. */
+        if (isaret) k.child('cikis').set({ id: BEN, kimlik: KIMLIK, cihaz: CIHAZ, bas: (S.yayin && S.yayin.bas) || null, ts: TS() });
         k.child('izle/' + BEN).onDisconnect().cancel();
         k.child('izle/' + BEN).remove();
       }
     } catch (e) { }
     var u = adres || 'index.html';
-    setTimeout(function () { location.href = u; }, 120);
+    setTimeout(function () { location.href = u; }, isaret ? 300 : 120);
+  }
+  /* BİRLİKTE ÇIKIŞ (26.10.2026): öbür cihaz bilerek çıktı — bu cihaz da çıkar.
+     Tahta: kumanda «Bitir» dedi → ana sayfa. Kumanda: Sınıf Ekranı kapandı → açık
+     sayfasında kalır (Bitir gibi; yansıtma biter). */
+  function birlikteCik(neden) {
+    if (S.cikiyor) return;
+    S.cikiyor = true;
+    try { kumandaKapat(); } catch (e) { }
+    try { var dv = $('thDevam'); if (dv) dv.hidden = true; } catch (e) { }
+    bildir(neden === 'kumanda' ? kd('th.b_birlikte_kumanda', 'Kumanda yansıtmayı bitirdi. Sınıf Ekranı da kapanıyor…')
+                               : kd('th.b_birlikte_tahta', 'Sınıf Ekranı kapandı. Kumanda da kapanıyor…'), 3000);
+    setTimeout(function () {
+      if (CIHAZ === 'tahta') { cik('index.html'); return; }
+      var w = CERCEVE.contentWindow, u = '';
+      try { u = gercekSayfa(w) ? adresAl(w) : ''; } catch (e) { u = ''; }
+      if (!u || /\/tahta\.html/.test(u)) u = 'index.html';
+      cik(u);
+    }, 1500);
+  }
+  /* kumanda: tahtadan bilerek çıkıldı (tahta/<uid>/cikis) — bu oturumun Sınıf Ekranıysa kumanda da çıkar */
+  function cikisGeldi(v) {
+    if (CIHAZ !== 'bilgisayar' || !S.kok || S.cikiyor || S.devredildi || !v || !v.id || v.id === BEN) return;
+    var bas = S.bas || (S.yayin && S.yayin.bas) || null;
+    if (!bas || v.bas !== bas) return;                               /* başka (eski) yansıtmanın çıkışı */
+    var e = S.ekran;
+    if (e && e.id && e.id !== v.id) return;                          /* Sınıf Ekranı başka bir cihaz: o sürüyor */
+    birlikteCik('tahta');
   }
   document.addEventListener('click', function (e) {
     var t = e.target.closest ? e.target.closest('[data-th]') : null;
@@ -824,7 +861,7 @@
     var is = t.getAttribute('data-th');
     if (is === 'anasayfa') cik('index.html');
     else if (is === 'yenile') location.reload();
-    else if (is === 'cik') cik(ROL === 'izle' ? 'index.html' : (adresAl(CERCEVE.contentWindow) || 'index.html'));
+    else if (is === 'cik') cik(ROL === 'izle' ? 'index.html' : (adresAl(CERCEVE.contentWindow) || 'index.html'), true);   /* bilerek: öbür cihaz da çıkar (26.10.2026) */
     else if (is === 'tam') { TAM.istek = true; tamEkran(); setTimeout(tamTusTazele, 400); }
     else if (is === 'tamcik') tamCik();
     else if (is === 'zkip') zKipDegistir();
@@ -846,7 +883,7 @@
       /* hesabın Sınıf Ekranı bu sayfaysa kayıt silinir (kumanda «… bekleniyor» demesin) */
       S.ekranBirakti = true;
       try { if (S.kok && S.ekran && S.ekran.id === BEN) S.kok.child('ekran').remove(); } catch (e) { }
-      cik('index.html');
+      cik('index.html', true);
     }
   });
 
@@ -2464,7 +2501,7 @@
     S.lider = false; S.kok = null;
     try {
       if (k) {
-        ['olay', 'yayin', 'kay', 'alan', 'ayar', 'izle', 'ekran', 'isaret', 'gorus', 'kanal', 'kanalIste'].forEach(function (p) { try { k.child(p).off(); } catch (e) { } });
+        ['olay', 'yayin', 'kay', 'alan', 'ayar', 'izle', 'ekran', 'isaret', 'gorus', 'kanal', 'kanalIste', 'cikis'].forEach(function (p) { try { k.child(p).off(); } catch (e) { } });
         k.child('yayin').onDisconnect().cancel();
         k.child('izle/' + BEN).onDisconnect().cancel();
         k.child('izle/' + BEN).remove();
@@ -4271,6 +4308,15 @@
        dokununca dersi almaz, vekil olmaz. Hedef buraya dönünce sayfayı açıp
        liderden geçmişi ister (sonradan bağlanan tahta yolu). */
     if (hedefDisi(y)) y = { cevrimici: false, bitir: true, baska: y.hedef, baskaAd: y.hedefAd || '', bas: y.bas || null, id: y.id, ts: y.ts || 0 };
+    /* BİRLİKTE ÇIKIŞ (26.10.2026): kumanda bu oturumu «Bitir»le bitirdi — Sınıf Ekranı da
+       kabuktan çıkar (yeni yansıtmada sistem/tahtagir.js geri getirir). Uyku / kopma değil. */
+    if (S.cikiyor) { S.yayin = y; Z.yayin = y; return; }
+    if (CIHAZ === 'tahta' && S.kok && y && y.bitir && !y.baska && once && !once.bitir && !once.baska &&
+        (once.cevrimici || Z.sonCanli || Z.izledi || (S.lider && Y.vekil)) && (!once.bas || !y.bas || once.bas === y.bas)) {
+      S.yayin = y; Z.yayin = y;
+      birlikteCik('kumanda');
+      return;
+    }
     S.yayin = y; Z.yayin = y;
     var liderId = (y && y.cevrimici) ? y.id : null;
     if (liderId && liderId !== BEN) { Z.sonCanli = y; Z.uzak = null; clearTimeout(Z.vekilZ); Z.vekilZ = null; }
@@ -4375,6 +4421,7 @@
     kok.child('ekran').on('value', function (s) { ekranGeldi(s.val()); });     /* tek Sınıf Ekranı (21.10.2026) */
     if (CIHAZ === 'tahta') kok.child('isaret').on('value', isaretGeldi);       /* lazer · büyüteç (22.10.2026) */
     if (CIHAZ === 'bilgisayar') kok.child('gorus').on('value', function (s) { gorusGeldi(s.val()); });   /* tahta alanı */
+    if (CIHAZ === 'bilgisayar') kok.child('cikis').on('value', function (s) { cikisGeldi(s.val()); });   /* tahtadan çıkıldı (26.10.2026) */
   }
 
   /* ============================================ GÖRÜNÜRLÜK · YOKLAMA (18.10.2026)
@@ -4436,10 +4483,10 @@
       Y.durak = true; Y.durakD = -1; Y.durakG = 0; Y.durakYeni = [];
       Y.d = Math.max(Y.d, dd.d || 0);
       kok.update({ 'yayin/id': BEN, 'yayin/cihaz': CIHAZ, 'yayin/kimlik': KIMLIK, 'yayin/cihazAd': cihazAdi(), 'yayin/hedef': null, 'yayin/hedefAd': null, 'yayin/cevrimici': true, 'yayin/durak': true, 'yayin/ts': TS(),
-                   'yayin/bas': S.bas, 'yayin/vekil': null, 'yayin/bitir': null, 'isaret': null });
+                   'yayin/bas': S.bas, 'yayin/vekil': null, 'yayin/bitir': null, 'isaret': null, 'cikis': null });
     } else {
       kok.update({ 'yayin/id': BEN, 'yayin/cihaz': CIHAZ, 'yayin/kimlik': KIMLIK, 'yayin/cihazAd': cihazAdi(), 'yayin/hedef': null, 'yayin/hedefAd': null, 'yayin/cevrimici': false, 'yayin/durak': false, 'yayin/ts': TS(),
-                   'yayin/bas': S.bas, 'yayin/vekil': null, 'yayin/bitir': null, 'ayar': { kip: kip, perde: false, kg: false }, 'isaret': null });
+                   'yayin/bas': S.bas, 'yayin/vekil': null, 'yayin/bitir': null, 'ayar': { kip: kip, perde: false, kg: false }, 'isaret': null, 'cikis': null });
     }
     cubukKur();
     kopmaKur();
@@ -4527,6 +4574,7 @@
     if (S.kok) return;
     S.kok = kok;
     ekranSahiplen();               /* hesabın Sınıf Ekranı bu sayfa (dinleyiciden ÖNCE yazılır) */
+    try { kok.child('cikis').remove(); } catch (e) { }      /* önceki tahtanın çıkışı geçersiz: Sınıf Ekranı yine açık (26.10.2026) */
     Z.katilma = sunucuZaman() + 300;
     stilKur();
     document.body.classList.add('th-izle');
