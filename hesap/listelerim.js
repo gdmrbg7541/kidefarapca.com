@@ -4988,10 +4988,20 @@ function llOkulPopupAc() {
                yuva, kapı açılırken arkasında yanan ışığı taşıyor. */
             /* ÜÇ NOKTA (06.10.2026): kapı her zaman sınıfı açar; adın
                yanındaki ⋯ düzenleme/silme seçeneklerini açar. */
-            kapilar += '<span class="okul-kapi-yuva">' +
+            /* DETAYLI KAPI (26.10.2026) — öğretmen: "sınıf kapılarını çok daha detaylı
+               ve profesyonel yapalım": kasa (.okul-cerceve) + kanat; kanatta cam, ad
+               plakası, kol, tekme sacı — çizim hesap/listelerim.css'te. Kanat tıklanınca
+               llOkulKapiAc 'acildi'yi ebeveyne (artık kasaya) verir. */
+            /* KAPI GİYDİRMELERİ (26.10.2026): data-kapi ile her sınıf kendi giydirmesini
+               alır (hesap/kapigiydirme.js); seçili sınıfın kasası da 'aktif'. */
+            kapilar += '<span class="okul-kapi-yuva"><span class="okul-cerceve' + (aktif ? ' aktif' : '') + '">' +
                 '<button type="button" class="okul-kapi' + (aktif ? ' aktif' : '') + '"' +
+                ' data-kapi="' + lId + '/' + cId + '"' +
+                ' title="' + behKacis(lvl.classes[cId].name) + ' sınıfını aç"' +
                 ' onclick="llOkulKapiAc(this,\'' + lId + '\',\'' + cId + '\')">' +
-                behKacis(lvl.classes[cId].name) + '</button>' +
+                '<i class="okul-kapi-cam" aria-hidden="true"></i>' +
+                '<span class="okul-kapi-ad">' + behKacis(lvl.classes[cId].name) + '</span>' +
+                '<i class="okul-kapi-sac" aria-hidden="true"></i></button></span>' +
                 '<button type="button" class="okul-nokta" title="Bu sınıf için seçenekler"' +
                 ' aria-label="Seçenekler"' +
                 ' onclick="event.stopPropagation(); llKatSinifMenu(\'' + lId + '\',\'' + cId + '\')">' +
@@ -5005,9 +5015,9 @@ function llOkulPopupAc() {
         /* SINIF EKLE (05.10.2026) — öğretmen: "okul svg'sine basınca sınıf
            kurum ekleme gibi işlemler yapılabilsin". Sınıf ağacı profilden
            kalkınca oradaki "+" da gitmişti; aynı kapı buraya kondu. */
-        kapilar += '<span class="okul-kapi-yuva"><button type="button" class="okul-kapi okul-ekle"' +
+        kapilar += '<span class="okul-kapi-yuva"><span class="okul-cerceve"><button type="button" class="okul-kapi okul-ekle"' +
             ' title="Bu seviyeye sınıf ekle" onclick="llOkulSinifEkle(\'' + lId + '\')">' +
-            llIcon('arti') + '</button></span>';
+            llIcon('arti') + '</button></span></span>';
         /* HIZLI ŞUBE (06.10.2026): yeni kurulan seviyenin satırında harfler
            açık durur — 5A, 5B, 5C tek tıkla. Zaten açılmış şube çıkmaz. */
         if (window._llHizliLid === lId) {
@@ -5192,6 +5202,7 @@ function llOkulPopupAc() {
         '<div class="okul-icerik">' + ic + '</div></div>';
     k.addEventListener('click', function (e) { if (e.target === k) llOkulPopupKapat(); });
     document.body.appendChild(k);
+    try { llKapiGiydir(); } catch (e) { }          /* kapı giydirmeleri (26.10.2026) */
     /* SAHNE (05.10.2026): binalar sırayla aşağıdan belirsin + katlar
        sürüklenebilir olsun. DOM'a eklendikten SONRA yapılmalı. */
     try {
@@ -5337,6 +5348,38 @@ window.llSinifListesiSec = llSinifListesiSec;
    animasyon biter bitmez sınıf açılır. Hareket istemeyen kullanıcıda
    (prefers-reduced-motion) beklemeden geçilir.
    ====================================================================== */
+/* ======================================================================
+   KAPI GİYDİRMELERİ (26.10.2026) — öğretmen: "her sınıfın kapı renk ve
+   tasarımları farklı olsun, hani kapı giydirmeleri olur ya, örneğin bi önemli
+   şahsın hayatı, arapça harfler, üstünde güzel sözler olan giydirmeler vs".
+   20 tasarım hesap/kapigiydirme.js'te (üretilmiş, ~600 KB); anasayfa yükünü
+   artırmasın diye pencere İLK AÇILDIĞINDA yüklenir. Her sınıf kimliğinden sabit
+   bir giydirme alır; öğretmenin bütün sınıfları birbirinden farklı.
+   ====================================================================== */
+var LL_KAPI_GIYDIRME = 'hesap/kapigiydirme.js?v=3e6b5b6c';
+function llKapiGiydir() {
+    var idler = [];
+    try {
+        Object.keys((data && data.levels) || {}).forEach(function (l) {
+            Object.keys((data.levels[l] && data.levels[l].classes) || {}).forEach(function (c) { idler.push(l + '/' + c); });
+        });
+    } catch (e) { }
+    var uygula = function () {
+        var p = document.getElementById('llOkulPopup');
+        if (p && window.KidefKapiGiydirme) { try { KidefKapiGiydirme.giydir(p, idler); } catch (e) { } }
+    };
+    if (window.KidefKapiGiydirme) { uygula(); return; }
+    window._llKapiUygula = uygula;                 /* yüklenince en son açılan pencereye */
+    if (window._llKapiYukleniyor) return;
+    window._llKapiYukleniyor = true;
+    var s = document.createElement('script');
+    s.src = LL_KAPI_GIYDIRME; s.async = true;
+    s.onload = function () { window._llKapiYukleniyor = false; try { window._llKapiUygula && window._llKapiUygula(); } catch (e) { } };
+    s.onerror = function () { window._llKapiYukleniyor = false; };
+    (document.head || document.documentElement).appendChild(s);
+}
+window.llKapiGiydir = llKapiGiydir;
+
 function llOkulKapiAc(tus, lId, cId) {
     var bekle = 430;
     try {
