@@ -5014,10 +5014,17 @@ function llOkulPopupAc() {
         if (!kapilar) kapilar = '<span class="okul-bos">sınıf yok</span>';
         /* SINIF EKLE (05.10.2026) — öğretmen: "okul svg'sine basınca sınıf
            kurum ekleme gibi işlemler yapılabilsin". Sınıf ağacı profilden
-           kalkınca oradaki "+" da gitmişti; aynı kapı buraya kondu. */
-        kapilar += '<span class="okul-kapi-yuva"><span class="okul-cerceve"><button type="button" class="okul-kapi okul-ekle"' +
-            ' title="Bu seviyeye sınıf ekle" onclick="llOkulSinifEkle(\'' + lId + '\')">' +
-            llIcon('arti') + '</button></span></span>';
+           kalkınca oradaki "+" da gitmişti; aynı kapı buraya kondu.
+           SINIF EKLE = KESİK ÇİZGİLİ DAİRE (26.10.2026) — öğretmen: "+sınıf eklemek
+           için kapı görünümünde bi dikdörtgen olmasın, tüm sınıf kapıları aynı olsun".
+           Kapı yalnız sınıfın; «+» artık kapı (kasa + mavi kanat) değil, "Seviye
+           ekle"deki gibi kesik çizgili daire. okul-ekle sınıfı kalıyor: salt okunur
+           Sınıfım görünümü (sistem/siniflarim.js) onu gizliyor. */
+        kapilar += '<span class="okul-kapi-yuva ekle"><button type="button" class="okul-ekle okul-sinif-arti"' +
+            ' title="Bu seviyeye sınıf ekle" aria-label="Bu seviyeye sınıf ekle"' +
+            ' onclick="llOkulSinifEkle(\'' + lId + '\')">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5v11M6.5 12h11" fill="none"' +
+            ' stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button></span>';
         /* HIZLI ŞUBE (06.10.2026): yeni kurulan seviyenin satırında harfler
            açık durur — 5A, 5B, 5C tek tıkla. Zaten açılmış şube çıkmaz. */
         if (window._llHizliLid === lId) {
