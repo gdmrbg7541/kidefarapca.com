@@ -83,13 +83,19 @@
        kalıplar tablosu sekmesine geçilir. Harita küçük (35 KB), sarf motoru
        burada YÜKLENMEZ. Yeni ünite eklenince kok_haritasi.js yeniden üretilmeli. */
     y.push('<scr'+'ipt src="' + KOKH + '"><\/scr'+'ipt>');
+    /* CÜMLE SAHNELERİ (26.10.2026): her cümlenin üstüne anlamı çağrıştıran
+       animasyonlu küçük resim. Resimler sitenin SVG kütüphanesinden gelir;
+       kütüphane büyük olduğu için async yüklenir (sayfa onu beklemez),
+       sahne motoru kütüphane gelince resmi kendisi çizer. */
+    y.push('<scr'+'ipt async src="veri/veri_svg.js?v=cb6d950c"><\/scr'+'ipt>');
     /* LEHÇE KATMANI: hem sarfkopru.js hem simultane.js'ten ÖNCE gelmeli.
        Sarf köprüsü lehçe seçiliyken kendini kapatıyor (kök rozetleri ve
        tür şeridi yalnız fushada anlamlı), o karara varabilmesi için
        window.KIDEF_LEHCE yüklenmiş olmalı. */
     y.push('<scr'+'ipt src="muhadese/lehce.js?v=821182e2"><\/scr'+'ipt>');
-    y.push('<scr'+'ipt src="muhadese/sarfkopru.js?v=a537527a"><\/scr'+'ipt>');
-    y.push('<scr'+'ipt src="muhadese/simultane.js?v=b8778019"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="muhadese/sarfkopru.js?v=ffddd811"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="muhadese/sahne.js?v=536bf876"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt src="muhadese/simultane.js?v=b8d4e55c"><\/scr'+'ipt>');
   } else {
     /* Liste modu: kalip ve alan basliklarini da bu iki dosyadan okur */
     y.push('<scr'+'ipt src="muhadese/lehce.js?v=821182e2"><\/scr'+'ipt>');

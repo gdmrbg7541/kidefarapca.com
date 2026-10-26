@@ -936,6 +936,11 @@ function render() {
         renderContent(data.dialog[currentIdx].p1, 'p1-tr', 'p1-ar', 1);
         renderContent(data.dialog[currentIdx].p2, 'p2-tr', 'p2-ar', 2);
     }
+    /* CÜMLE SAHNESİ (26.10.2026): cümlenin / diyalog satırlarının üstüne
+       anlamı çağrıştıran animasyonlu küçük resim (muhadese/sahne.js) */
+    if (window.KidefSahne) {
+        try { KidefSahne.ciz(mode, mode === 'sentence' ? data.sentence[currentIdx].words : data.dialog[currentIdx]); } catch (e) { }
+    }
 
     // Sayfa açıldığında otomatik olarak bir kez seslendirir
     speakCurrentSentence();

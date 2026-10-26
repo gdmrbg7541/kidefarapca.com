@@ -399,7 +399,12 @@
                 'font:600 15px/1 Marhey,system-ui,sans-serif;' +
                 'transition:max-width .28s,opacity .2s,padding .28s;padding:0}' +
             '.kidef-tur-kok.acik{max-width:190px;opacity:1;padding:0 8px 0 4px}' +
-            '.kidef-tur-kok.ar{font-family:arakom,serif;font-size:24px;direction:rtl}' +
+            /* ARAPÇA KÖK TAM GÖRÜNSÜN (26.10.2026) — öğretmen: "bazı arapça harflerin
+               kuyrukları noktaları vs tam görünmüyor". Kutu, açılıp kapanırken
+               genişlik süzülsün diye overflow:hidden; satır yüksekliği 1 olunca
+               Arakom'un noktaları ve kuyrukları (ح، م، ي، ج…) kesiliyordu. */
+            '.kidef-tur-kok.ar{font-family:arakom,serif;font-size:24px;direction:rtl;line-height:1.7}' +
+            '.kidef-tur-kok.acik.ar{padding:2px 8px 4px 4px}' +
             '@media (max-width:640px){.kidef-tur-serit{left:8px;gap:3px;padding:5px 6px;border-radius:12px}' +
                 '.kidef-tur{width:38px;padding:3px 1px}.kidef-tur svg{width:19px;height:19px}' +
                 '.kidef-tur span{font-size:9px}.kidef-tur-kok.acik{max-width:120px}' +
