@@ -39,7 +39,7 @@
      ders verisiyle birlikte yeniden üretildiğinden veri değişince damga
      da değişiyor. (Eski hâli 18.09.2026'dan beri sabitti; bu yüzden
      bazı dosyalar tarayıcıda eski kalabiliyordu.) */
-  var KOKH = 'muhadese/veri/kok_haritasi.js?v=aac92799';
+  var KOKH = 'muhadese/veri/kok_haritasi.js?v=80fa5f03';
   var S    = '?v=' + (KOKH.split('?v=')[1] || '1');
   var p = new URLSearchParams(location.search);
   var d = p.get('ders') || '';
@@ -87,7 +87,7 @@
        animasyonlu küçük resim. Resimler sitenin SVG kütüphanesinden gelir;
        kütüphane büyük olduğu için async yüklenir (sayfa onu beklemez),
        sahne motoru kütüphane gelince resmi kendisi çizer. */
-    y.push('<scr'+'ipt async src="veri/veri_svg.js?v=cb6d950c"><\/scr'+'ipt>');
+    y.push('<scr'+'ipt async src="veri/veri_svg.js?v=f5dd69cc"><\/scr'+'ipt>');
     /* LEHÇE KATMANI: hem sarfkopru.js hem simultane.js'ten ÖNCE gelmeli.
        Sarf köprüsü lehçe seçiliyken kendini kapatıyor (kök rozetleri ve
        tür şeridi yalnız fushada anlamlı), o karara varabilmesi için

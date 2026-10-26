@@ -263,12 +263,12 @@ window.data = {
                 {
                     "tr": "Annen",
                     "order": 2,
-                    "ar": "أَيْن"
+                    "ar": "أُمُّكَ؟"
                 },
                 {
                     "tr": "nerede?",
                     "order": 1,
-                    "ar": "أُمُّكَ؟"
+                    "ar": "أَيْن"
                 }
             ],
             "p2": [
@@ -442,3 +442,4 @@ window.data = {
         }
     ]
 };
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

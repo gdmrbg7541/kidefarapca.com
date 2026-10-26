@@ -308,8 +308,8 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Hangi kitapları", order: 2, ar: "أَيَّ كُتُبٍ" },
-                { tr: "seversin?", order: 1, ar: "تُحِبُّ؟" },
+                { tr: "Hangi kitapları", order: 1, ar: "أَيَّ كُتُبٍ" },
+                { tr: "seversin?", order: 2, ar: "تُحِبُّ؟" },
             ],
             p2: [
                 { tr: "Şiir kitapları", order: 3, ar: "كُتُب الشِّعْر." },
@@ -342,8 +342,8 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Fuardan sonra", order: 2, ar: "بَعْدَ المَعْرِض" },
-                { tr: "ne yaptı?", order: 1, ar: "ماذا فَعَلَتْ؟" },
+                { tr: "Fuardan sonra", order: 1, ar: "بَعْدَ المَعْرِض" },
+                { tr: "ne yaptı?", order: 2, ar: "ماذا فَعَلَتْ؟" },
             ],
             p2: [
                 { tr: "Otobüse bindi", order: 1, ar: "رَكِبَت الحافِلَة" },
@@ -402,3 +402,4 @@ window.data.words = [
     { tr: "bazı", ar: "بَعْض" },
     { tr: "öğle", ar: "الظُّهْر" },
 ];
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

@@ -40,8 +40,8 @@ window.data = {
             words: [
                 { tr: "Aferin!", order: 1, ar: "أَحْسَنْتُم!" },
                 { tr: "Dayanışmayla", order: 2, ar: "بِالتَّعاوُن" },
-                { tr: "her şey", order: 4, ar: "كُلُّ شَيْءٍ" },
-                { tr: "güzelleşir.", order: 3, ar: "يُصْبِحُ جَميلًا." },
+                { tr: "her şey", order: 3, ar: "كُلُّ شَيْءٍ" },
+                { tr: "güzelleşir.", order: 4, ar: "يُصْبِحُ جَميلًا." },
             ]
         },
         {
@@ -174,9 +174,9 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Sen", order: 2, ar: "أنتِ" },
-                { tr: "ne", order: 3, ar: "ماذا" },
-                { tr: "yapacaksın?", order: 1, ar: "ماذا سَتَفْعَلينَ؟" },
+                { tr: "Sen", order: 1, ar: "أنتِ" },
+                { tr: "ne", order: 2, ar: "ماذا" },
+                { tr: "yapacaksın?", order: 3, ar: "سَتَفْعَلينَ؟" },
             ],
             p2: [
                 { tr: "Ben", order: 1, ar: "أنا" },
@@ -197,9 +197,9 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Hatice", order: 2, ar: "خَديجَة" },
+                { tr: "Hatice", order: 3, ar: "خَديجَة؟" },
                 { tr: "nasıl", order: 1, ar: "كَيْف" },
-                { tr: "katılacak?", order: 3, ar: "سَتُشارِكُ" },
+                { tr: "katılacak?", order: 2, ar: "سَتُشارِكُ" },
             ],
             p2: [
                 { tr: "Bize", order: 2, ar: "لَنا" },
@@ -213,8 +213,8 @@ window.data = {
             ],
             p2: [
                 { tr: "Dayanışmayla", order: 1, ar: "بِالتَّعاوُن" },
-                { tr: "her şey", order: 3, ar: "كُلُّ شَيْءٍ" },
-                { tr: "güzelleşir.", order: 2, ar: "يُصْبِحُ جَميلًا." },
+                { tr: "her şey", order: 2, ar: "كُلُّ شَيْءٍ" },
+                { tr: "güzelleşir.", order: 3, ar: "يُصْبِحُ جَميلًا." },
             ]
         },
         {
@@ -279,3 +279,4 @@ window.data.words = [
     { tr: "sınıfımız", ar: "صَفُّنا" },
     { tr: "de, ayrıca", ar: "أَيْضًا" },
 ];
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

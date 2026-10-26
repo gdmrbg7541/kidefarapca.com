@@ -346,12 +346,12 @@ window.data = {
                 {
                     "tr": "Kız kardeşin",
                     "order": 2,
-                    "ar": "أَيْن"
+                    "ar": "أُخْتُكَ؟"
                 },
                 {
                     "tr": "nerede?",
                     "order": 1,
-                    "ar": "أُخْتُكَ؟"
+                    "ar": "أَيْن"
                 }
             ],
             "p2": [
@@ -467,3 +467,4 @@ window.data = {
         }
     ]
 };
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

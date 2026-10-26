@@ -478,12 +478,12 @@ window.data = {
       "p1": [
         {
           "tr": "Hangi mevsimi",
-          "order": 2,
+          "order": 1,
           "ar": "أَيَّ فَصْلٍ"
         },
         {
           "tr": "seviyorsun?",
-          "order": 1,
+          "order": 2,
           "ar": "تُحِبُّ؟"
         }
       ],
@@ -863,3 +863,4 @@ window.data = {
     }
   ]
 };
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

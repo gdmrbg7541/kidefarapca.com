@@ -995,3 +995,4 @@ window.METIN_TAHLILI = [
   ]
  }
 ];
+/* kelimeDizilisi 26.10.2026: ders verisi değişti, damga tazelensin */

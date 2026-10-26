@@ -113,8 +113,8 @@ window.data = {
         },
         {
             words: [
-                { tr: "Hangi sporu", order: 2, ar: "أَيّ رِياضَة" },
-                { tr: "tercih edersin?", order: 1, ar: "تُفَضِّلُ؟" },
+                { tr: "Hangi sporu", order: 1, ar: "أَيّ رِياضَة" },
+                { tr: "tercih edersin?", order: 2, ar: "تُفَضِّلُ؟" },
             ]
         },
         {
@@ -155,12 +155,12 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Hangi sporu", order: 2, ar: "أَيّ رِياضَة" },
-                { tr: "tercih edersin?", order: 1, ar: "تُفَضِّلُ؟" },
+                { tr: "Hangi sporu", order: 1, ar: "أَيّ رِياضَة" },
+                { tr: "tercih edersin?", order: 2, ar: "تُفَضِّلُ؟" },
             ],
             p2: [
-                { tr: "Futbolu", order: 2, ar: "كُرَةَ القَدَم" },
-                { tr: "voleybola tercih ederim.", order: 1, ar: "أُفَضِّلُ عَلى الكُرَة الطّائِرَة." },
+                { tr: "Futbolu", order: 1, ar: "كُرَةَ القَدَم" },
+                { tr: "voleybola tercih ederim.", order: 2, ar: "أُفَضِّلُ عَلى الكُرَة الطّائِرَة." },
             ]
         },
         {
@@ -232,3 +232,4 @@ window.data.words = [
     { tr: "yapmalıyız", ar: "يَجِبُ أَنْ نُمارِسَ" },
     { tr: "her gün", ar: "كُلَّ يَوْم" },
 ];
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

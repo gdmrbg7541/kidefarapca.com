@@ -254,12 +254,12 @@ window.data = {
                 {
                     "tr": "Televizyon",
                     "order": 2,
-                    "ar": "أَيْن"
+                    "ar": "التِّلْفازُ؟"
                 },
                 {
                     "tr": "nerede?",
                     "order": 1,
-                    "ar": "التِّلْفازُ؟"
+                    "ar": "أَيْن"
                 }
             ],
             "p2": [
@@ -437,3 +437,4 @@ window.data = {
         }
     ]
 };
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

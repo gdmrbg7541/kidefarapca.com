@@ -304,11 +304,11 @@ window.data = {
     },
     {
         p1: [
-            { tr: "Ey Hacer,", order: 5, ar: "يا هاجَر،" },
-            { tr: "Müslümanların bazı sıfatlarını", order: 4, ar: "المُسْلِمين" },
-            { tr: "bazı", order: 2, ar: "بَعْض" },
-            { tr: "sıfatlarını", order: 3, ar: "صِفات" },
-            { tr: "say (zikret)?", order: 1, ar: "اُذْكُري" }
+            { tr: "Ey Hacer,", order: 1, ar: "يا هاجَر،" },
+            { tr: "Müslümanların", order: 5, ar: "المُسْلِمين." },
+            { tr: "bazı", order: 3, ar: "بَعْض" },
+            { tr: "sıfatlarını", order: 4, ar: "صِفات" },
+            { tr: "say (zikret).", order: 2, ar: "اُذْكُري" }
         ],
         p2: [
             { tr: "Müslümanlar", order: 1, ar: "المُسْلِمُون" },
@@ -320,10 +320,10 @@ window.data = {
     {
         p1: [
             { tr: "Doğru,", order: 1, ar: "صَحيح،" },
-            { tr: "onlar", order: 3, ar: "وَهُم." },
-            { tr: "onlar küçükleri", order: 3, ar: "الصِّغار." },
-            { tr: "ayrıca", order: 2, ar: " أَيْضًا" },
-            { tr: "severler.", order: 4, ar: "يُحِبّون" } // Boşluk Dolduruldu
+            { tr: "onlar", order: 2, ar: "وَهُم" },
+            { tr: "küçükleri", order: 5, ar: "الصِّغارَ." },
+            { tr: "de", order: 3, ar: "أَيْضًا" },
+            { tr: "severler.", order: 4, ar: "يُحِبّونَ" } // Boşluk Dolduruldu
         ],
         p2: [
             { tr: "Ve Müslümanın", order: 3, ar: "المُسْلِم" },
@@ -339,9 +339,9 @@ window.data = {
             { tr: "ayrıca.", order: 3, ar: "أَيْضًا." }
         ],
         p2: [
-            { tr: "Müslümanın", order: 1, ar: "المُسْلِم" },
-            { tr: "yalancı", order: 2, ar: "كاذِبًا." },
-            { tr: "olmaması", order: 1, ar: "أَلَّا يَكونَ" },
+            { tr: "Müslümanın", order: 3, ar: "المُسْلِم" },
+            { tr: "yalancı", order: 4, ar: "كاذِبًا." },
+            { tr: "olmaması", order: 2, ar: "أَلَّا يَكونَ" },
             { tr: "gerekir.", order: 1, ar: "وَيَجِبُ" },
         ]
     },
@@ -432,3 +432,4 @@ window.data.words = [
     { tr: "Asla / Hiçbir zaman", ar: "أَبَدًا" },
     { tr: "Bayramınız kutlu olsun", ar: "كُلّ عام وَأَنْتُم بِخَيْر" }
     ];
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

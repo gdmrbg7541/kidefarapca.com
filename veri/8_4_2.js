@@ -230,8 +230,8 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Hangi hayvanları", order: 2, ar: "أَيَّ الحَيَوانات" },
-                { tr: "seversin?", order: 1, ar: "تُحِبُّ؟" },
+                { tr: "Hangi hayvanları", order: 1, ar: "أَيَّ الحَيَوانات" },
+                { tr: "seversin?", order: 2, ar: "تُحِبُّ؟" },
             ],
             p2: [
                 { tr: "Büyük hayvanları", order: 2, ar: "الحَيَوانات الكَبيرَة." },
@@ -240,9 +240,9 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Arı", order: 2, ar: "النَّحْلَة" },
+                { tr: "Arı", order: 3, ar: "النَّحْلَة؟" },
                 { tr: "ne", order: 1, ar: "ماذا" },
-                { tr: "yapar?", order: 3, ar: "تَصْنَعُ؟" },
+                { tr: "yapar?", order: 2, ar: "تَصْنَعُ" },
             ],
             p2: [
                 { tr: "Bal", order: 2, ar: "العَسَل." },
@@ -251,7 +251,7 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Balık", order: 3, ar: "السَّمَكَة" },
+                { tr: "Balık", order: 3, ar: "السَّمَكَة؟" },
                 { tr: "nerede", order: 1, ar: "أَيْن" },
                 { tr: "yaşar?", order: 2, ar: "تَعيشُ" },
             ],
@@ -262,8 +262,8 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Aslan", order: 2, ar: "الأَسَد" },
-                { tr: "kimdir?", order: 1, ar: "مَنْ هو؟" },
+                { tr: "Aslan", order: 2, ar: "الأَسَد؟" },
+                { tr: "kimdir?", order: 1, ar: "مَنْ هو" },
             ],
             p2: [
                 { tr: "O", order: 1, ar: "هو" },
@@ -309,3 +309,4 @@ window.data.words = [
     { tr: "hızlı", ar: "سَريعًا" },
     { tr: "su", ar: "الماء" },
 ];
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

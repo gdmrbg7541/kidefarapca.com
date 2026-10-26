@@ -5,9 +5,9 @@ window.data = {
     sentence: [
         {
             words: [
-                { tr: "Sporlardan", order: 3, ar: "مِن الرِّياضات" },
-                { tr: "hangi türü", order: 2, ar: "أَيَّ نَوْع" },
-                { tr: "seversin?", order: 1, ar: "تُحِبّينَ؟" },
+                { tr: "Sporlardan", order: 2, ar: "مِن الرِّياضات" },
+                { tr: "hangi türü", order: 1, ar: "أَيَّ نَوْع" },
+                { tr: "seversin?", order: 3, ar: "تُحِبّينَ؟" },
             ]
         },
         {
@@ -245,3 +245,4 @@ window.data.words = [
     { tr: "kiminle", ar: "مَعَ مَنْ" },
     { tr: "her sabah", ar: "كُلَّ صَباح" },
 ];
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

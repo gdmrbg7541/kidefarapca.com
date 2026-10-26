@@ -528,7 +528,7 @@ window.data = {
         {
           "tr": "İndirim",
           "order": 3,
-          "ar": "تَنْزيلاتٌ"
+          "ar": "تَنْزيلاتٌ؟"
         },
         {
           "tr": "var mı?",
@@ -590,7 +590,7 @@ window.data = {
         {
           "tr": "Nakit mi",
           "order": 2,
-          "ar": "نَقْدًا"
+          "ar": "نَقْدًا؟"
         },
         {
           "tr": "ödeyeceksin?",
@@ -918,3 +918,4 @@ window.data = {
     }
   ]
 };
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

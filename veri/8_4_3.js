@@ -172,8 +172,8 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Afetlerden önce", order: 2, ar: "قَبْلَ الكَوارِث" },
-                { tr: "ne yapmalıyız?", order: 1, ar: "ماذا يَجِبُ عَلَيْنا؟" },
+                { tr: "Afetlerden önce", order: 1, ar: "قَبْلَ الكَوارِث" },
+                { tr: "ne yapmalıyız?", order: 2, ar: "ماذا يَجِبُ عَلَيْنا؟" },
             ],
             p2: [
                 { tr: "Onlara", order: 2, ar: "لَها." },
@@ -182,8 +182,8 @@ window.data = {
         },
         {
             p1: [
-                { tr: "Afetlerden sonra", order: 2, ar: "بَعْدَ الكَوارِث" },
-                { tr: "ne yapmalıyız?", order: 1, ar: "ماذا يَجِبُ عَلَيْنا؟" },
+                { tr: "Afetlerden sonra", order: 1, ar: "بَعْدَ الكَوارِث" },
+                { tr: "ne yapmalıyız?", order: 2, ar: "ماذا يَجِبُ عَلَيْنا؟" },
             ],
             p2: [
                 { tr: "Afetzedelere", order: 2, ar: "المَنْكوبين." },
@@ -262,3 +262,4 @@ window.data.words = [
     { tr: "buz", ar: "الجَليد" },
     { tr: "sebep olur", ar: "يُسَبِّبُ" },
 ];
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

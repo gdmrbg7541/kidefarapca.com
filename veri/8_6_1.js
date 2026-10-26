@@ -153,8 +153,8 @@ window.data = {
                 { tr: "başladı?", order: 2, ar: "بَدَأَتْ؟" },
             ],
             p2: [
-                { tr: "Öğleden sonra", order: 2, ar: "بَعْدَ الظُّهْر" },
-                { tr: "okul bahçesinde başladı.", order: 1, ar: "بَدَأَتْ في حَديقَة المَدْرَسَة." },
+                { tr: "Öğleden sonra", order: 1, ar: "بَعْدَ الظُّهْر" },
+                { tr: "okul bahçesinde başladı.", order: 2, ar: "بَدَأَتْ في حَديقَة المَدْرَسَة." },
             ]
         },
         {
@@ -238,3 +238,4 @@ window.data.words = [
     { tr: "öğleden sonra", ar: "بَعْدَ الظُّهْر" },
     { tr: "okul bahçesi", ar: "حَديقَة المَدْرَسَة" },
 ];
+/* kelimeDizilisi 26.10.2026: Arapça kelime dizilişi düzeltildi */

@@ -1492,3 +1492,4 @@ Object.assign(window.KIDEF_KOK_HARITA, {
     "يميني": ["Yön: Sağ", "zarf"],
     "ينقطع": ["قطع", "fiil"],
 });
+/* kelimeDizilisi 26.10.2026: ders verisi değişti, damga tazelensin */
